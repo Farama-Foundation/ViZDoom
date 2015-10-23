@@ -89,8 +89,8 @@ class MLPQLearner(RandomAgent):
 	def make_action(self):
 		if self.learning_mode:
 			self.steps += 1
-			s=self.game.state.reshape(1,1,self.game.y, self.game.x)
-			predicted_Qs=self.Q_test(s)
+			s = self.game.state.copy().reshape(1,1,self.game.y, self.game.x)
+			predicted_Qs = self.Q_test(s)
 			
 			if self.explore and random.random()<=self.epsilon:
 				#make a random move
@@ -101,14 +101,15 @@ class MLPQLearner(RandomAgent):
 
 			
 			s2, r = self.game.make_action(a)
-			self.actions_stats_learning[a]+=1
+
+			self.actions_stats_learning[a] += 1
 			expected_Q = r
 
 			if not self.game.finished:
 				s2 = s2.reshape(1,1,self.game.y, self.game.x)
 				best_q2 = max(self.Q_test(s2)[0])
 				expected_Q += self.gamma * best_q2
-
+				
 			predicted_Qs[0][a] = expected_Q
 			self.Q_learn(s,predicted_Qs)
 				
@@ -116,10 +117,10 @@ class MLPQLearner(RandomAgent):
 				self.epsilon =max(self.epsilon- self.epsilon_decay_stride,self.end_epsilon)
 		else:
 			s = self.game.state.reshape(1,1,self.game.y, self.game.x)
-			predicted_Qs=self.Q_test(s)
+			predicted_Qs = self.Q_test(s)
 			a = np.argmax(predicted_Qs)
 			self.game.make_action(a)
-			self.actions_stats_test[a]+=1
+			self.actions_stats_test[a] += 1
 
 		#make not-so-random move which is not supported yet
 
@@ -175,9 +176,10 @@ class MLPQLearner(RandomAgent):
 		else:
 			print ("Unsupported loss function: "+str(self.network_params["loss_function"]))
 			exit(1)
+
 		test_q_prediction = lasagne.layers.get_output(network, inputs = inputs, deterministic = True)
 
 		print "\tCompiling network functions."
-		self.Q_learn = theano.function([inputs, targets], q_prediction, updates = updates)
+		self.Q_learn = theano.function([inputs, targets], [q_prediction, loss], updates = updates)
 		self.Q_test = theano.function([inputs], test_q_prediction, on_unused_input='ignore')
 		print "\tNetwork functions compiled."

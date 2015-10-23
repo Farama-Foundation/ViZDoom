@@ -11,20 +11,22 @@ def main(agent, game):
 	print "Initialization . . "
 	max_episodes = np.inf
 	max_steps = np.inf
-	recent_rewards_range = 1000
+	recent_rewards_range = 500
 	satisfactory_mean_reward = 1.1
 	test_n = 50
 	print_stats = True
 
-	mlp_args={}
+	mlp_agent_args={}
 	
-	mlp_args['epsilon_decay_start_step'] = 500000
-	mlp_args['epsilon_decay_steps'] = 5000000
-	mlp_args['start_epsilon'] = 1.0
-	mlp_args['end_epsilon'] = min( 0.1, max(mlp_args['start_epsilon'],0.1))
+	mlp_agent_args['epsilon_decay_start_step'] = 50000
+	mlp_agent_args['epsilon_decay_steps'] = 50000
+	mlp_agent_args['start_epsilon'] = 1.0
+	end_epsilon = 0.0
+	mlp_agent_args['end_epsilon'] = min( end_epsilon, max(mlp_agent_args['start_epsilon'],end_epsilon))
+	mlp_agent_args['gamma'] = 0.9
 	network_params={}
 	network_params['depth'] = 1
-	network_params['hidden_units'] = 40
+	network_params['hidden_units'] = 50
 	network_params['input_dropout'] = False
 	network_params['hidden_dropout'] = False
 	network_params['input_dropout_p'] = 0.2
@@ -33,21 +35,24 @@ def main(agent, game):
 	network_params['momentum'] = 0.3
 	network_params['learning_rate'] = 0.01
 
-	mlp_args['network_params'] = network_params
+
+	mlp_agent_args['network_params'] = network_params
 
 	import agents
 	import games
 	if game ==  'dotshooting':
 	   	
-		game = games.ShootingDotGame(width = 3,height = 3 , max_moves = 50, miss_penalty = 0, living_reward = -1, hit_reward = 150, random_background = False)
+		game = games.ShootingDotGame(width = 7,height = 1 , max_moves = 50, miss_penalty = 10, living_reward = -1, hit_reward = 150, random_background = False)
 	else:
 		print "Unsupported game."
 		exit(1)
 
-	mlp_args['game'] = game
+	mlp_agent_args['game'] = game
 	
+#######################################################
+####################AGENT & GAME ######################
 	if agent ==  'mlpqlearner':
-		learner=agents.MLPQLearner(**mlp_args)
+		learner=agents.MLPQLearner(**mlp_agent_args)
 		
 	elif agent ==  'random':
 		learner = agents.RandomAgent(game)
@@ -56,8 +61,8 @@ def main(agent, game):
 	else:
 		print "Unsupported agent."
 		exit(1)
-
-###########################################################################
+#######################################################
+#########LEARNING LOOP#################################
 	print("\nLEARNING")
 	print("LearnOn | \tLearn Off")
 
@@ -91,7 +96,7 @@ def main(agent, game):
 			test_rewards = []
 			norm_test_rewards = []
 			for i in range(test_n):
-				norm_test_reward, test_reward = learner.run_episode()
+				test_reward, norm_test_reward = learner.run_episode()
 				test_rewards.append(test_reward)
 				norm_test_rewards.append(norm_test_reward)
 
@@ -99,10 +104,15 @@ def main(agent, game):
 			learner.learning_mode = True
 			test_mean = np.mean( test_rewards )
 			norm_test_mean = np.mean( norm_test_rewards )
-			print(str(round(recent_norm_mean,4)) + " " + str(round(recent_mean,4)) + " |  \t" + str( round(test_mean,4) )+ "\t" + str(norm_test_mean))
+			
+			print(str(round(recent_norm_mean,4)) + " " + str(round(recent_mean,4)) + " |  \t" + str( round(norm_test_mean,4) )+ "\t" + str(test_mean))
 			if print_stats:
-				print(" ep:"+ str(played_episodes)+",stps:"+str(learner.steps)+", "+str(learner.actions_stats_learning)+str(learner.actions_stats_test) + ", epsilon= "+ str(learner.epsilon))
+				current_time = time.time()
+				e_time = round(current_time - start,2)
+				display_eps = round(learner.epsilon,2)
+				print("t:"+str(e_time)+ ",ep:"+ str(played_episodes)+",stps:"+str(learner.steps)+", "+str(learner.actions_stats_learning)+str(learner.actions_stats_test) + ", epsilon= "+ str(display_eps))
 				learner.clear_actions_stats()
+
 
 		#finish if satisfactory_mean_reward is reached
 		if len(recent_norm_rewards)>recent_rewards_range and  recent_norm_mean >= satisfactory_mean_reward:
