@@ -89,16 +89,18 @@ class MLPQLearner(RandomAgent):
 	def make_action(self):
 		if self.learning_mode:
 			self.steps += 1
+
 			s = self.game.state.copy().reshape(1,1,self.game.y, self.game.x)
 			predicted_Qs = self.Q_test(s)
-			
-			if self.explore and random.random()<=self.epsilon:
+			predicted_Qs_buffered = predicted_Qs.copy()
+
+			if self.explore and random.random() <= self.epsilon:
 				#make a random move
 				a = random.randint(0,self.actions-1)
 			else:	
-				#make best move				
+				#make the best move				
 				a = np.argmax(predicted_Qs)
-
+			
 			
 			s2, r = self.game.make_action(a)
 
@@ -106,17 +108,20 @@ class MLPQLearner(RandomAgent):
 			expected_Q = r
 
 			if not self.game.finished:
-				s2 = s2.reshape(1,1,self.game.y, self.game.x)
+				s2 = s2.copy().reshape(1,1,self.game.y, self.game.x)
 				best_q2 = max(self.Q_test(s2)[0])
 				expected_Q += self.gamma * best_q2
-				
-			predicted_Qs[0][a] = expected_Q
-			self.Q_learn(s,predicted_Qs)
-				
+
+
+			predicted_Qs[0][a]=expected_Q
+
+			q,l = self.Q_learn(s,predicted_Qs)
+
+
 			if self.epsilon_decay_start_step <= self.steps:
 				self.epsilon =max(self.epsilon- self.epsilon_decay_stride,self.end_epsilon)
 		else:
-			s = self.game.state.reshape(1,1,self.game.y, self.game.x)
+			s = self.game.state.copy().reshape(1,1,self.game.y, self.game.x)
 			predicted_Qs = self.Q_test(s)
 			a = np.argmax(predicted_Qs)
 			self.game.make_action(a)
@@ -125,7 +130,13 @@ class MLPQLearner(RandomAgent):
 		#make not-so-random move which is not supported yet
 
 
+
+	def learned_q_values(self):
+		return self.Q_test(self.game.get_all_states())
 	
+	def get_weights(self, layer=-1):
+		return lasagne.layers.get_all_param_values(self.network)[layer]
+
 	def initialize_network(self):
 		print("Initializing MLP network")
 		
@@ -138,7 +149,7 @@ class MLPQLearner(RandomAgent):
 		momentum = self.network_params["momentum"]
 
 		dtype = self.game.state.dtype
-
+		
 		# input layer
 		inputs = T.tensor4('inputs', dtype = dtype)
 		targets = T.matrix('targets', dtype = dtype)
@@ -150,25 +161,24 @@ class MLPQLearner(RandomAgent):
 			if input_dropout_p > 0:
 				network = lasagne.layers.dropout(network, p = input_dropout_p)
 
-		rectifier = lasagne.nonlinearities.rectify
+		nonlin = lasagne.nonlinearities.leaky_rectify
 
 		# hidden units with dropouts
 		for layer_i in range(hidden_layers):
-			network = lasagne.layers.DenseLayer(network, hidden_units, nonlinearity = rectifier)
+			network = lasagne.layers.DenseLayer(network, hidden_units, nonlinearity = nonlin)
 			if hidden_dropout:
 				hidden_dropout_p = self.network_params["hidden_dropout_p"]
 				if hidden_dropout_p > 0:
 					network = lasagne.layers.dropout(network, p = hidden_dropout_p)
 
-		# output softmax layer
-		softmax = lasagne.nonlinearities.softmax
-		network = lasagne.layers.DenseLayer(network, self.actions, nonlinearity = softmax)
-
+		# output layer
+		network = lasagne.layers.DenseLayer(network, self.actions, nonlinearity = None)
+		self.network = network
 		
-		q_prediction = lasagne.layers.get_output(network, inputs = inputs)
+		q_prediction = lasagne.layers.get_output(network)
 		loss = lasagne.objectives.squared_error(q_prediction, targets).mean()
 		params = lasagne.layers.get_all_params(network, trainable = True)
-
+		
 		if self.network_params["loss_function"] == 'nesterov_momentum':
 			updates = lasagne.updates.nesterov_momentum(loss, params, learning_rate = learning_rate, momentum=momentum)
 		elif self.network_params["loss_function"] == 'sgd':
@@ -177,9 +187,10 @@ class MLPQLearner(RandomAgent):
 			print ("Unsupported loss function: "+str(self.network_params["loss_function"]))
 			exit(1)
 
-		test_q_prediction = lasagne.layers.get_output(network, inputs = inputs, deterministic = True)
+		test_q_prediction = lasagne.layers.get_output(network, deterministic = True)
 
 		print "\tCompiling network functions."
 		self.Q_learn = theano.function([inputs, targets], [q_prediction, loss], updates = updates)
-		self.Q_test = theano.function([inputs], test_q_prediction, on_unused_input='ignore')
+		self.Q_test = theano.function([inputs], test_q_prediction)
 		print "\tNetwork functions compiled."
+

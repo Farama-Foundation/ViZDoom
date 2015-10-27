@@ -3,9 +3,10 @@
 from optparse import OptionParser
 import numpy as np
 import time
-	
 
-    
+
+
+
 def main(agent, game):
 
 	print "Initialization . . "
@@ -15,18 +16,18 @@ def main(agent, game):
 	satisfactory_mean_reward = 1.1
 	test_n = 50
 	print_stats = True
-
+	print_qvalues = False
 	mlp_agent_args={}
 	
-	mlp_agent_args['epsilon_decay_start_step'] = 50000
-	mlp_agent_args['epsilon_decay_steps'] = 50000
+	mlp_agent_args['epsilon_decay_start_step'] = 200000
+	mlp_agent_args['epsilon_decay_steps'] = 500000
 	mlp_agent_args['start_epsilon'] = 1.0
-	end_epsilon = 0.0
+	end_epsilon = 0.1
 	mlp_agent_args['end_epsilon'] = min( end_epsilon, max(mlp_agent_args['start_epsilon'],end_epsilon))
 	mlp_agent_args['gamma'] = 0.9
 	network_params={}
 	network_params['depth'] = 1
-	network_params['hidden_units'] = 50
+	network_params['hidden_units'] = 200
 	network_params['input_dropout'] = False
 	network_params['hidden_dropout'] = False
 	network_params['input_dropout_p'] = 0.2
@@ -42,7 +43,10 @@ def main(agent, game):
 	import games
 	if game ==  'dotshooting':
 	   	
-		game = games.ShootingDotGame(width = 7,height = 1 , max_moves = 50, miss_penalty = 10, living_reward = -1, hit_reward = 150, random_background = False)
+		game = games.ShootingDotGame(width = 21,hit_reward = 25, height = 11 , max_moves = 50, miss_penalty = 0, living_reward = -1, random_background = True)
+		all_states = game.get_all_states()
+		if print_qvalues:
+			q_values = game.compute_qvalues(iterations = 30000, gamma=mlp_agent_args['gamma'])
 	else:
 		print "Unsupported game."
 		exit(1)
@@ -53,7 +57,6 @@ def main(agent, game):
 ####################AGENT & GAME ######################
 	if agent ==  'mlpqlearner':
 		learner=agents.MLPQLearner(**mlp_agent_args)
-		
 	elif agent ==  'random':
 		learner = agents.RandomAgent(game)
 	elif agent ==  'human':
@@ -62,7 +65,7 @@ def main(agent, game):
 		print "Unsupported agent."
 		exit(1)
 #######################################################
-#########LEARNING LOOP#################################
+###################LEARNING LOOP#######################
 	print("\nLEARNING")
 	print("LearnOn | \tLearn Off")
 
@@ -70,7 +73,6 @@ def main(agent, game):
 	recent_norm_rewards = []
 	played_episodes = 0
 	logging_frequency = recent_rewards_range
-	
 
 	start = time.time()
 	while  True:
@@ -112,6 +114,13 @@ def main(agent, game):
 				display_eps = round(learner.epsilon,2)
 				print("t:"+str(e_time)+ ",ep:"+ str(played_episodes)+",stps:"+str(learner.steps)+", "+str(learner.actions_stats_learning)+str(learner.actions_stats_test) + ", epsilon= "+ str(display_eps))
 				learner.clear_actions_stats()
+			
+			if print_qvalues:
+				print "EXPECTED QVALUES:"
+				print q_values
+				print "LEARNED QVALUES:"
+				print learner.learned_q_values()
+			
 
 
 		#finish if satisfactory_mean_reward is reached
@@ -128,24 +137,10 @@ def main(agent, game):
 	end = time.time()
 	print("\nLearning time: "+ str(round(end-start,2)) + "s")
 	#play 100 test episodes without exploration
-	print("\nFinal Testing:")
-	rewards = []
-	norm_rewards = []
-
-	test_n = 100
-	learner.explore = False
-	learner.learning_mode = False
-	for i in range(test_n):
-		reward, norm_reward = learner.run_episode()
-		rewards.append(reward)
-		norm_rewards.append(norm_reward)
-		#print reward
-	print(str(np.mean(rewards)) + "\t" + str(round(np.mean(norm_rewards),4)))
 
 
 if __name__ ==  '__main__':
-    
-    
+       
     option_parser = OptionParser()
     option_parser.add_option("-a", "--agent", dest = "agent",
                   help = "agent name", metavar = "AGENT", type = "string", default = "mlpqlearner")
