@@ -6,7 +6,7 @@ class Api:
 	def __init__(self):
 		self._finished = True
 		self._state = None
-		self._summary_reward = None
+		self._summary_reward = 0
 		#sample _action_format
 		self._action_format = []
 		self._action_format.append({"name":"mouse_horizontal_delta","dtype":np.float32,"range":[-1,1]})
