@@ -16,11 +16,10 @@ def main(agent, game):
 	satisfactory_mean_reward = 1.1
 	test_n = 50
 	print_stats = True
-	print_qvalues = False
 	mlp_agent_args={}
 	
-	mlp_agent_args['epsilon_decay_start_step'] = 200000
-	mlp_agent_args['epsilon_decay_steps'] = 500000
+	mlp_agent_args['epsilon_decay_start_step'] = 1000000
+	mlp_agent_args['epsilon_decay_steps'] = 5000000
 	mlp_agent_args['start_epsilon'] = 1.0
 	end_epsilon = 0.1
 	mlp_agent_args['end_epsilon'] = min( end_epsilon, max(mlp_agent_args['start_epsilon'],end_epsilon))
@@ -43,10 +42,8 @@ def main(agent, game):
 	import games
 	if game ==  'dotshooting':
 	   	
-		game = games.ShootingDotGame(width = 21,hit_reward = 25, height = 11 , max_moves = 50, miss_penalty = 0, living_reward = -1, random_background = True)
+		game = games.ShootingDotGame(width = 21,hit_reward = 25, height = 7 , max_moves = 50, miss_penalty = 0, living_reward = -1, random_background = True)
 		all_states = game.get_all_states()
-		if print_qvalues:
-			q_values = game.compute_qvalues(iterations = 30000, gamma=mlp_agent_args['gamma'])
 	else:
 		print "Unsupported game."
 		exit(1)
@@ -115,11 +112,7 @@ def main(agent, game):
 				print("t:"+str(e_time)+ ",ep:"+ str(played_episodes)+",stps:"+str(learner.steps)+", "+str(learner.actions_stats_learning)+str(learner.actions_stats_test) + ", epsilon= "+ str(display_eps))
 				learner.clear_actions_stats()
 			
-			if print_qvalues:
-				print "EXPECTED QVALUES:"
-				print q_values
-				print "LEARNED QVALUES:"
-				print learner.learned_q_values()
+			
 			
 
 
