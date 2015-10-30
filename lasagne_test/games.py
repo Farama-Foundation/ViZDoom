@@ -95,8 +95,6 @@ class ShootingDotGame:
 			self.summary_reward+=reward
 			return self.state, reward
 			
-
-
 	def compute_qvalues(self,iterations=50000, learning_rate =0.1, gamma = 1.0):
 		state_transformator = np.asarray(range(self.x))
 
