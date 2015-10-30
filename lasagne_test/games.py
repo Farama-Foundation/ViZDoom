@@ -17,7 +17,7 @@ class ShootingDotGame:
 		self._max_moves = max_moves
 		self._random_background = random_background
 		self._state_format = [{"name":"image","dtype":np.float32,"range":[0.0,1.0],"shape":(self._y, self._x)}]
-		self._action_format = None
+		self._action_format = [{"name":"action","dtype":np.int8,"range":[0,3]}]
 		self._state = None
 		self._finished = True
 		self._summary_reward = 0
@@ -61,6 +61,7 @@ class ShootingDotGame:
 		if self._finished:
 			return None
 		else:
+			action = action[0]
 			reward=self._living_reward
 			self._movesMade += 1
 
@@ -89,8 +90,9 @@ class ShootingDotGame:
 			elif action != 3:
 				print "Unknown action. Idle action chosen."
 			self._summary_reward+=reward
-			return self._state, reward
-			
+			return self._state.copy(), reward
+	def get_state(self):
+		return self._state().copy()
 	def compute_qvalues(self,iterations=50000, learning_rate =0.1, gamma = 1.0):
 		state_transformator = np.asarray(range(self._x))
 

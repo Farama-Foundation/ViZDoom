@@ -30,7 +30,7 @@ class Api:
 			return
 		reward = 0
 		self._summary_reward += reward
-		return reward, self._state
+		return self._state,reward
 
 	def get_summary_reward(self):
 		return self._summary_reward
@@ -42,3 +42,6 @@ class Api:
 		self._finished = False
 		self._summary_reward = 0
 		return self._state
+
+	def get_state(self):
+		return self._state().copy()

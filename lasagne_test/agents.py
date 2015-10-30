@@ -13,7 +13,7 @@ class RandomAgent:
 		#Whether exploration should be done according to epsilon
 		self.explore = True
 		self.game = game
-		self.actions = len(self.game.actions)
+		self.actions = self.game.get_action_format["range"][1]+1
 		self.steps = 0
 		self.actions_stats_test = np.zeros(self.actions)
 		self.actions_stats_learning = np.zeros(self.actions)
