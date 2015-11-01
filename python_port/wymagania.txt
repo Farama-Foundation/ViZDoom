@@ -1,0 +1,73 @@
+Jakaś metoda inicjalizacyjna całego środowiska pewnie by się przydałą.
+
+get_state_format() - zwraca (dla danych parametrów inicjalizacyjnych zawsze to samo) format stanu, który zwraca gra w formie listy słowników. Załóżmy, że stan składa się z:
+ -zdjęcia z 3 kanałami (rgb) 320x200, typu np.float32 w zakresie 0 do 1 
+ - health pointów, typu np.float32 i w zakresie 0-100
+Tak powinno wyglądać to co zwróci get_state_format:
+[{"name":"image","dtype":np.float32,"range":[0.0,1.0],"shape":(3,320,200)},{"name":"hp","dtype":np.float32,"range":[0,100]}]
+
+get_action_format() - zwraca (dla danych parametrów inicjalizacyjnych zawsze to samo) format akcji, którą można wykonać w formie listy słowników. Każdy element listy odpowiada za pojedynczy parametr, np wciśnięty przycisk, delte myszki itd.
+Załóżmy, że na akcję skłąda się wciśnięcie (albo nie) klawiszy a,w,s,d i horyzontalna delta myszki (znaczy lewo prawo), zakres myszki -1 do 1 (cokolwiek to ma oznaczać). W tym momencie get_action_format() powinno zwracać coś takiego:
+[
+	{"name":"mouse_horizontal_delta","dtype":np.float32,"range":[-1,1]},
+	{"name":"w_key","dtype":np.bool_},
+	{"name":"s_key","dtype":np.bool_},
+	{"name":"a_key","dtype":np.bool_},
+	{"name":"d_key","dtype":np.bool_},
+	{"name":"ctrl","dtype":np.bool_}
+]
+
+new_episode() - tworzy nowy epizod, zwraca stan tego epizodu zgodnie z formatem zwracanym przez get_state_format
+
+is_finished() - zwraca True albo False w zalezności czy aktualny epizod jest skońćzony czy nie
+
+get_state() - zwraca aktualny stan epizodu
+
+get_summary_reward() - zwraca sumaryczną nagrodę z danego epizodu
+
+make_action(action)
+parametry wejściowe:
+	action - Akcja w postaci listy zgodnej z wyżej wymienionym formatem. Akcja, w której żaden przycisk nie był przyciśnięty, a myszka się nie ruszyła powinna wyglądać tak:
+	[0,False,False,False,False,False]
+return value:
+	next_state, reward
+	(następny stan i nagroda za właśnie wykonaną akcję)
+
+Funkcja powinna zupdateować wewnętrzny stan gry (kolejna klatka), wyliczyć nagrodę (reward) dla tej akcji i stanu. Zwraca następny stan (None - odpowiednik nulla - jeśli gra się skończyła)
+
+
+
+W tym momencie api pozawala na odgrywanie jednego odcinka na raz jakoś tak:
+api.initialize(...)
+number_of_episodes = 10
+state_format = api.get_state_format()
+action_format = api.get_action_format()
+...
+for i in range(number_of_episodes):
+	api.new_episode()
+	
+	while not api.is_finished():
+		state = api.get_state()
+		...
+		next_state, reward = api.make_action(action)
+		...
+
+W przyszłości pewnie lepiej by było pozwolić na więcej odcinków (szczerze to do końca nie wiem po co, ale może na potrzeby jakiegoś testowania czy coś . . .). W tym momencie można by było zrobić tak, żę new_episode tworzy osobną instancję gry i te wszystkie funkcje wymienione wyżej odpalałoby się jakoś tak:
+
+api.initialize(...)
+state_format = api.get_state_format()
+action_format = api.get_action_format()
+...
+number_of_episodes = 10
+for i in range(number_of_episodes):
+	the_episode = api.new_episode()
+
+	while not the_episode.is_finished():
+		state = the_episode.get_state()
+		...
+		next_state, reward = the_episode.make_action(action)
+		...
+
+Można też by było pozwolić na odpalenie kilku instancji o innych parametrach wtedy get_state_format() i get_action_format() by trzeba przesunać do epizodu. Ale to wymagałoby większej rozkminy co z parametrami itd.
+
+Co powinno być w inicjalizacji to nie wiem, ale podejrzewam, że np rozdzielczość inputu, scenariusz, jakieś inne parametry jeśl iscenariusz jest konfigurowalny.
