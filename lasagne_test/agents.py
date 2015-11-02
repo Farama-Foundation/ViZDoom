@@ -156,7 +156,7 @@ class MLPQLearner(RandomAgent):
 			if input_dropout_p > 0:
 				network = lasagne.layers.dropout(network, p = input_dropout_p)
 
-		nonlin = lasagne.nonlinearities.leaky_rectify
+		nonlin = lasagne.nonlinearities.tanh
 
 		# hidden units with dropouts
 		for layer_i in range(hidden_layers):
@@ -168,8 +168,11 @@ class MLPQLearner(RandomAgent):
 
 		# output layer
 		network = lasagne.layers.DenseLayer(network, self.actions, nonlinearity = None)
-		self.network = network
+		self._network = network
 		
+
+
+		#Theano stuff
 		q_prediction = lasagne.layers.get_output(network)
 		loss = lasagne.objectives.squared_error(q_prediction, targets).mean()
 		params = lasagne.layers.get_all_params(network, trainable = True)
@@ -188,6 +191,13 @@ class MLPQLearner(RandomAgent):
 		self.Q_learn = theano.function([inputs, targets], [q_prediction, loss], updates = updates)
 		self.Q_test = theano.function([inputs], test_q_prediction)
 		print "\tNetwork functions compiled."
+
+	def nan_check(self):
+		params = lasagne.layers.get_all_param_values(self._network)
+		for array in params:
+			if np.isnan(array).any():
+				return True
+		return False
 
 class CNNLearner(RandomAgent):
 	def __init__(self,game,gamma = 0.99, epsilon_decay_start_step = 0, start_epsilon = 1.0,end_epsilon = 0.1,epsilon_decay_steps=100000, 
@@ -276,3 +286,4 @@ class CNNLearner(RandomAgent):
 		self.Q_learn = theano.function([inputs, targets], [q_prediction, loss], updates = updates)
 		self.Q_test = theano.function([inputs], test_q_prediction)
 		print "\tNetwork functions compiled."
+
