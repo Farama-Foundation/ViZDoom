@@ -41,9 +41,7 @@ def main(agent, game):
 	import agents
 	import games
 	if game ==  'dotshooting':
-	   	
 		game = games.ShootingDotGame(width = 18,hit_reward = 25, height = 3 , max_moves = 50, miss_penalty = 0, living_reward = -1, random_background = True)
-		all_states = game.get_all_states()
 	else:
 		print "Unsupported game."
 		exit(1)

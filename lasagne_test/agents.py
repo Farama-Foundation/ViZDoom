@@ -13,7 +13,7 @@ class RandomAgent:
 		#Whether exploration should be done according to epsilon
 		self.explore = True
 		self.game = game
-		self.actions = self.game.get_action_format["range"][1]+1
+		self.actions = self.game.get_action_format()[0]["range"][1]+1
 		self.steps = 0
 		self.actions_stats_test = np.zeros(self.actions)
 		self.actions_stats_learning = np.zeros(self.actions)
@@ -25,15 +25,16 @@ class RandomAgent:
 	def make_action(self):
 		move = random.randint(0,self.actions-1)
 		self.actions_stats_test[move] += 1
-		self.game.make_action(move)
+		self.game.make_action([move])
 		self.steps += 1
 
 	def run_episode(self):
-		while not self.game.finished:
+		self.game.new_episode()
+		while not self.game.is_finished():
 			self.make_action()
-		reward = self.game.summary_reward
+		reward = self.game.get_summary_reward()
 		normalized_reward = self.game.get_normalized_summary_reward()
-		self.game.reset()	
+			
 
 		return reward, normalized_reward
 
@@ -42,7 +43,7 @@ class HumanAgent(RandomAgent):
 		RandomAgent.__init__(self, game)
 		self.current_score = 0
 	def make_action(self):
-		print self.game.state
+		print self.game.get_state()
 		move=raw_input()
 
 		if move =='a':
@@ -54,9 +55,9 @@ class HumanAgent(RandomAgent):
 		else:
 			move = 3
 
-		state,reward = self.game.make_action(move)
+		state,reward = self.game.make_action([move])
 		self.current_score += reward
-		print("Current summary reward: "+str(self.current_score))
+		print("Current summary reward: " + str(self.current_score))
 
 
 	def run_episode(self):
@@ -90,7 +91,8 @@ class MLPQLearner(RandomAgent):
 		if self.learning_mode:
 			self.steps += 1
 
-			s = self.game.state.copy().reshape(1,1,self.game.y, self.game.x)
+			s = self.game.get_state()
+			s = s.reshape(1,1,s.shape[0],s.shape[1])
 			predicted_Qs = self.Q_test(s)
 			predicted_Qs_buffered = predicted_Qs.copy()
 
@@ -102,13 +104,13 @@ class MLPQLearner(RandomAgent):
 				a = np.argmax(predicted_Qs)
 			
 			
-			s2, r = self.game.make_action(a)
+			s2, r = self.game.make_action([a])
 
 			self.actions_stats_learning[a] += 1
 			expected_Q = r
 
-			if not self.game.finished:
-				s2 = s2.copy().reshape(1,1,self.game.y, self.game.x)
+			if not self.game.is_finished():
+				s2 = s2.reshape(1,1,s2.shape[0],s2.shape[1])
 				best_q2 = max(self.Q_test(s2)[0])
 				expected_Q += self.gamma * best_q2
 
@@ -121,10 +123,11 @@ class MLPQLearner(RandomAgent):
 			if self.epsilon_decay_start_step <= self.steps:
 				self.epsilon =max(self.epsilon- self.epsilon_decay_stride,self.end_epsilon)
 		else:
-			s = self.game.state.copy().reshape(1,1,self.game.y, self.game.x)
+			s = self.game.get_state()
+			s = s.reshape(1,1,s.shape[0], s.shape[1])
 			predicted_Qs = self.Q_test(s)
 			a = np.argmax(predicted_Qs)
-			self.game.make_action(a)
+			self.game.make_action([a])
 			self.actions_stats_test[a] += 1
 
 		#make not-so-random move which is not supported yet
@@ -141,14 +144,12 @@ class MLPQLearner(RandomAgent):
 		hidden_dropout = self.network_params["hidden_dropout"]
 		learning_rate = self.network_params["learning_rate"]
 		momentum = self.network_params["momentum"]
-
-		dtype = self.game.state.dtype
 		
 		# input layer
-		inputs = T.tensor4('inputs', dtype = dtype)
-		targets = T.matrix('targets', dtype = dtype)
-		network = lasagne.layers.InputLayer(shape=( None, 1, self.game.y, self.game.x ),
-                                     input_var = inputs)
+		inputs = T.tensor4('inputs')
+		targets = T.matrix('targets')
+		y,x = self.game.get_state_format()[0]["shape"]
+		network = lasagne.layers.InputLayer(shape=(None,1,y,x),input_var = inputs)
 		# input dropout layer
 		if input_dropout: 
 			input_dropout_p = self.network_params["input_dropout_p"]
@@ -222,12 +223,12 @@ class CNNLearner(RandomAgent):
 				a = np.argmax(predicted_Qs)
 			
 			
-			s2, r = self.game.make_action(a)
+			s2, r = self.game.make_action([a])
 
 			self.actions_stats_learning[a] += 1
 			expected_Q = r
 
-			if not self.game.finished:
+			if not self.game.is_finished():
 				s2 = s2.copy().reshape(1,1,self.game.y, self.game.x)
 				best_q2 = max(self.Q_test(s2)[0])
 				expected_Q += self.gamma * best_q2
@@ -244,7 +245,7 @@ class CNNLearner(RandomAgent):
 			s = self.game.state.copy().reshape(1,1,self.game.y, self.game.x)
 			predicted_Qs = self.Q_test(s)
 			a = np.argmax(predicted_Qs)
-			self.game.make_action(a)
+			self.game.make_action([a])
 			self.actions_stats_test[a] += 1
 
 		#make not-so-random move which is not supported yet

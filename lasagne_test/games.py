@@ -23,7 +23,7 @@ class ShootingDotGame:
 		self._summary_reward = 0
 
 	def is_finished(self):
-		return self._is_finished
+		return self._finished
 
 	def get_state_format(self):
 		return self._state_format
@@ -56,17 +56,16 @@ class ShootingDotGame:
 			self._min_reward = -np.inf
 		else:
 			self._min_reward = float(self._max_moves*(min(0.0,-self._miss_penalty)+self._living_reward))
-
 	def make_action(self,action):
+	
 		if self._finished:
+			print "Making action in a finished game."
 			return None
 		else:
 			action = action[0]
 			reward=self._living_reward
 			self._movesMade += 1
 
-			if self._movesMade >= self._max_moves:
-				self._finished = True
 			#right
 			if action == 0:
 				if self._aimX>0:
@@ -75,7 +74,7 @@ class ShootingDotGame:
 					self._state[self._aimY,self._aimX] = 1.0
 			#left
 			elif action == 1:
-				if self._aimX<self._state.shape[1]-1:
+				if self._aimX < self._state.shape[1]-1:
 					self._state[self._aimY,self._aimX] = 0.0
 					self._aimX += 1
 					self._state[self._aimY,self._aimX] = 1.0
@@ -85,30 +84,24 @@ class ShootingDotGame:
 					reward -= self._miss_penalty
 				else:
 					reward += self._hit_reward
-					self._state = None
 					self._finished = True;
+					self._state = None
 			elif action != 3:
 				print "Unknown action. Idle action chosen."
+			
 			self._summary_reward+=reward
-			return self._state.copy(), reward
+
+			if self._movesMade >= self._max_moves:
+				self._finished = True
+				self._state = None
+
+			if self._state is None:
+				return self._state, reward
+			else:
+				return self._state.copy(), reward
+
 	def get_state(self):
-		return self._state().copy()
-	def compute_qvalues(self,iterations=50000, learning_rate =0.1, gamma = 1.0):
-		state_transformator = np.asarray(range(self._x))
-
-		Q = np.zeros([self._x, self._actions_num],dtype = self._dtype)
-		self._reset()
-		for i in range(iterations):
-			if self._finished:
-				self._reset()
-			a = random.randint(0,self._actions_num-1)
-			s = np.dot(self._state, state_transformator)[0]
-
-			s2,r = self._make_action(a)
-			best_q2 = 0
-			if not self._finished:
-				s2 = np.dot(s2,state_transformator)[0]
-				best_q2 = Q[s2].max()
-			Q[s,a] += learning_rate *(r +gamma*best_q2-Q[s,a])
-		self._reset()
-		return np.around(Q,2)
+		if self._state is None:
+			return self._state
+		else:
+			return self._state.copy()
