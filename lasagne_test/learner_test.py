@@ -39,8 +39,8 @@ def main(agent, game):
 	mlp_agent_args['network_params'] = network_params
 
 	game_args = {}
-	game_args['width'] = 18
-	game_args['height'] = 5
+	game_args['width'] = 21
+	game_args['height'] = 7
 	game_args['hit_reward'] = 25
 	game_args['max_moves'] = 50
 	game_args['miss_penalty'] = 0 

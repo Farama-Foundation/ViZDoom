@@ -146,7 +146,7 @@ class MLPQLearner(RandomAgent):
 		momentum = self.network_params["momentum"]
 		
 		# input layer
-		inputs = T.tensor2('inputs')
+		inputs = T.tensor4('inputs')
 		targets = T.matrix('targets')
 		y,x = self.game.get_state_format()[0]["shape"]
 		network = lasagne.layers.InputLayer(shape=(None,1,y,x),input_var = inputs)
