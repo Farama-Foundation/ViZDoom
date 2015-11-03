@@ -1,9 +1,10 @@
 class CNNEvaluator:
-	def __init__(self, state_format, actions):
+
+	def __init__(self, state_format, actions_number):
 		None
 
-	def learn(self, input, target):
+	def learn(self, transitions):
 		None
 	
-	def evaluate(self, input):
+	def evaluate(self, state):
 		return None

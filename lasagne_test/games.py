@@ -96,12 +96,12 @@ class ShootingDotGame:
 				self._state = None
 
 			if self._state is None:
-				return self._state, reward
+				return None, reward
 			else:
-				return self._state.copy(), reward
+				return [self._state.copy()], reward
 
 	def get_state(self):
 		if self._state is None:
-			return self._state
+			return None
 		else:
-			return self._state.copy()
+			return [self._state.copy()]

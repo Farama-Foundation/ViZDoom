@@ -43,7 +43,7 @@ class HumanAgent(RandomAgent):
 		RandomAgent.__init__(self, game)
 		self.current_score = 0
 	def make_action(self):
-		print self.game.get_state()
+		print self.game.get_state()[0]
 		move=raw_input()
 
 		if move =='a':
@@ -91,7 +91,7 @@ class MLPQLearner(RandomAgent):
 		if self.learning_mode:
 			self.steps += 1
 
-			s = self.game.get_state()
+			s = self.game.get_state()[0]
 			s = s.reshape(1,1,s.shape[0],s.shape[1])
 			predicted_Qs = self.Q_test(s)
 			predicted_Qs_buffered = predicted_Qs.copy()
@@ -110,6 +110,7 @@ class MLPQLearner(RandomAgent):
 			expected_Q = r
 
 			if not self.game.is_finished():
+				s2 = s2[0]
 				s2 = s2.reshape(1,1,s2.shape[0],s2.shape[1])
 				best_q2 = max(self.Q_test(s2)[0])
 				expected_Q += self.gamma * best_q2
@@ -123,7 +124,7 @@ class MLPQLearner(RandomAgent):
 			if self.epsilon_decay_start_step <= self.steps:
 				self.epsilon =max(self.epsilon- self.epsilon_decay_stride,self.end_epsilon)
 		else:
-			s = self.game.get_state()
+			s = self.game.get_state()[0]
 			s = s.reshape(1,1,s.shape[0], s.shape[1])
 			predicted_Qs = self.Q_test(s)
 			a = np.argmax(predicted_Qs)
