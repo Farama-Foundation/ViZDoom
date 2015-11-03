@@ -19,15 +19,15 @@ def main(agent, game):
 	nan_check = True
 	mlp_agent_args={}
 	
-	mlp_agent_args['epsilon_decay_start_step'] = 100000
-	mlp_agent_args['epsilon_decay_steps'] = 1000000
+	mlp_agent_args['epsilon_decay_start_step'] = 500000
+	mlp_agent_args['epsilon_decay_steps'] = 5000000
 	mlp_agent_args['start_epsilon'] = 1.0
 	end_epsilon = 0.0
 	mlp_agent_args['end_epsilon'] = min( end_epsilon, max(mlp_agent_args['start_epsilon'],end_epsilon))
 	mlp_agent_args['gamma'] = 0.7
 	network_params={}
 	network_params['depth'] = 1
-	network_params['hidden_units'] = 200
+	network_params['hidden_units'] = 300
 	network_params['input_dropout'] = False
 	network_params['hidden_dropout'] = False
 	network_params['input_dropout_p'] = 0.2
@@ -39,12 +39,12 @@ def main(agent, game):
 	mlp_agent_args['network_params'] = network_params
 
 	game_args = {}
-	game_args['width'] = 21
-	game_args['height'] = 7
-	game_args['hit_reward'] = 25
-	game_args['max_moves'] = 50
+	game_args['width'] = 19
+	game_args['height'] = 17
+	game_args['hit_reward'] = 1
+	game_args['max_moves'] = 600
 	game_args['miss_penalty'] = 0 
-	game_args['living_reward'] = -1
+	game_args['living_reward'] = -0.01
 	game_args['random_background'] = True
 
 	import agents

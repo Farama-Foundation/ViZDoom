@@ -1,7 +1,7 @@
 Jakaś metoda inicjalizacyjna całego środowiska pewnie by się przydałą.
 
 get_state_format() - zwraca (dla danych parametrów inicjalizacyjnych zawsze to samo) format stanu, który zwraca gra w formie listy słowników. Załóżmy, że stan składa się z:
- -zdjęcia z 3 kanałami (rgb) 320x200, typu np.float32 w zakresie 0 do 1 
+ - zdjęcia z 3 kanałami (rgb) 320x200, typu np.float32 w zakresie 0 do 1 
  - health pointów, typu np.float32 i w zakresie 0-100
 Tak powinno wyglądać to co zwróci get_state_format:
 [{"name":"image","dtype":np.float32,"range":[0.0,1.0],"shape":(3,320,200)},{"name":"hp","dtype":np.float32,"range":[0,100]}]
@@ -21,7 +21,7 @@ new_episode() - tworzy nowy epizod, zwraca stan tego epizodu zgodnie z formatem 
 
 is_finished() - zwraca True albo False w zalezności czy aktualny epizod jest skońćzony czy nie
 
-get_state() - zwraca aktualny stan epizodu
+get_state() - zwraca aktualny stan epizodu w postaci listy zgodnej ze specyfikacją z get_state_format
 
 get_summary_reward() - zwraca sumaryczną nagrodę z danego epizodu
 
