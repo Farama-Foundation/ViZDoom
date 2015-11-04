@@ -16,7 +16,7 @@ class ShootingDotGame:
 		self._hit_reward = hit_reward
 		self._max_moves = max_moves
 		self._random_background = random_background
-		self._state_format = [{"name":"image","dtype":np.float32,"range":[0.0,1.0],"shape":(self._y, self._x)}]
+		self._state_format = [(self._y, self._x),0]
 		self._action_format = [{"name":"action","dtype":np.int8,"range":[0,3]}]
 		self._state = None
 		self._finished = True

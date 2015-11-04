@@ -10,7 +10,7 @@ class QEngine:
 		self._transitions = TransitionBank(bank_capacity)
 		self._actions = actions_generator(game.get_action_format())
 		self._actions_num =len(self._actions)
-		self._evaluator = evaluator(game.get_state_format(), self._actions)
+		self._evaluator = evaluator(game.get_state_format(), len(self._actions))
 		
 		self._update_frequency = update_frequency
 		self._batch_size = batch_size
@@ -23,7 +23,7 @@ class QEngine:
 
 		self.learning_mode = True
 
-		img_shape = game.get_state_format()[0]["shape"]
+		img_shape = game.get_state_format()[0]
 		if history_length > 1:
 			if len(img_shape)==2:
 				img_shape = (self._history_length, img_shape[0],img_shape[1])
@@ -32,9 +32,9 @@ class QEngine:
 
 		self._current_image_state = np.zeros(img_shape, dtype =  np.float32)
 
-		if len(game.get_state_format())>1:
+		if game.get_state_format()[1] > 0:
 			self._misc_state_included = True
-			self._current_misc_state = np.zeros(len(game.get_state_format())-1, dtype = np.float32)
+			self._current_misc_state = np.zeros(game.get_state_format()[1], dtype = np.float32)
 		else:
 			self._misc_state_included = False
 	
@@ -53,6 +53,13 @@ class QEngine:
 			if self._misc_state_included:
 				self._current_misc_state = np.array(raw_state[1:],dtype = np.float32)
 
+	def _new_game(self):
+		self._game.new_episode()
+		self._current_image_state.fill(0.0)
+		if self._misc_state_included:
+			self.current_misc_state.fill(0.0)
+		self.update_state()
+	
 	def make_step(self):
 		self._steps += 1
 		#epsilon decay:
@@ -61,11 +68,7 @@ class QEngine:
 
 		#if the current episode is finished, spawn a new one
 		if self._game.is_finished():
-			self._game.new_episode()
-			self._current_image_state.fill(0.0)
-			if self._misc_state_included:
-				self.current_misc_state.fill(0.0)
-			self.update_state()
+			self._new_game()
 
 		if self.learning_mode:
 			if self._misc_state_included:
@@ -94,6 +97,11 @@ class QEngine:
 
 			# Perform qlearning once for a while
 			if self._steps % self._update_frequency == 0:
-				self.evaluator.learn(self._transitions.get_sample())
+				self._evaluator.learn(self._transitions.get_sample(self._batch_size))
 		
-	
+	def run_episode(self):
+		self._new_game()
+		while not self._game.is_finished():
+			self.make_step()
+		return self._game.get_summary_reward()
+
