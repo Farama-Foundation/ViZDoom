@@ -34,11 +34,12 @@ class QEngine:
 
 		if game.get_state_format()[1] > 0:
 			self._misc_state_included = True
+
 			self._current_misc_state = np.zeros(game.get_state_format()[1], dtype = np.float32)
 		else:
 			self._misc_state_included = False
 	
-	def update_state(self):
+	def _update_state(self):
 		raw_state = self._game.get_state()
 
 		if self._history_length > 1:
@@ -57,8 +58,8 @@ class QEngine:
 		self._game.new_episode()
 		self._current_image_state.fill(0.0)
 		if self._misc_state_included:
-			self.current_misc_state.fill(0.0)
-		self.update_state()
+			self._current_misc_state.fill(0.0)
+		self._update_state()
 	
 	def make_step(self):
 		self._steps += 1
@@ -87,7 +88,7 @@ class QEngine:
 			if self._game.is_finished():
 				s2 = None
 			else:
-				self.update_state()
+				self._update_state()
 				if self._misc_state_included:
 					s2 = [self._current_image_state.copy(), self._current_misc_state.copy()]
 				else:

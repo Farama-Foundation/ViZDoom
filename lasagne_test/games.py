@@ -4,8 +4,9 @@ import sys
 
 class ShootingDotGame:
 	
-	def __init__(self, width, height, dtype = np.float32, random_background = False,max_moves=np.inf,living_reward=-1,miss_penalty=10,hit_reward=100):
+	def __init__(self, width, height, dtype = np.float32, random_background = False,max_moves=np.inf,living_reward=-1,miss_penalty=10,hit_reward=100, ammo = np.inf):
 		
+		self._ammo = max(ammo,0)
 		self._dtype = dtype
 		width+=1-width%2
 		self._x = width
@@ -16,11 +17,16 @@ class ShootingDotGame:
 		self._hit_reward = hit_reward
 		self._max_moves = max_moves
 		self._random_background = random_background
-		self._state_format = [(self._y, self._x),0]
+		if ammo < np.inf:
+			self._state_format = [(self._y, self._x),1]
+		else:
+			self._state_format = [(self._y, self._x),0]
+		self._current_ammo = np.ndarray([1],dtype = np.float32)
 		self._action_format = [{"name":"action","dtype":np.int8,"range":[0,3]}]
 		self._state = None
 		self._finished = True
 		self._summary_reward = 0
+
 
 	def is_finished(self):
 		return self._finished
@@ -38,6 +44,7 @@ class ShootingDotGame:
 		return self._summary_reward
 
 	def new_episode(self):
+		self._current_ammo[0] = self._ammo
 		self._finished = False
 		self._movesMade = 0
 		self._aimX = random.randint(0,self._x-1)
@@ -80,12 +87,14 @@ class ShootingDotGame:
 					self._state[self._aimY,self._aimX] = 1.0
 			#shoot
 			elif action == 2:
-				if self._aimX != self._state.shape[1]/2:
-					reward -= self._miss_penalty
-				else:
-					reward += self._hit_reward
-					self._finished = True;
-					self._state = None
+				if self._current_ammo[0] > 0:
+					if self._aimX != self._state.shape[1]/2:
+						reward -= self._miss_penalty
+					else:
+						reward += self._hit_reward
+						self._finished = True;
+						self._state = None
+					self._current_ammo[0] -= 1
 			elif action != 3:
 				print "Unknown action. Idle action chosen."
 			
@@ -95,13 +104,13 @@ class ShootingDotGame:
 				self._finished = True
 				self._state = None
 
-			if self._state is None:
-				return None, reward
-			else:
-				return [self._state.copy()], reward
+			return self.get_state(), reward
 
 	def get_state(self):
 		if self._state is None:
-			return None
+			img = None
 		else:
-			return [self._state.copy()]
+			if self._ammo < np.inf:
+				return [self._state.copy(), self._current_ammo]
+			else:
+				return [self._state.copy()]

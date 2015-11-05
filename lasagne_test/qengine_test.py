@@ -3,7 +3,7 @@
 import numpy as np
 from qengine import QEngine
 from games import ShootingDotGame
-from evaluators import CNNEvaluator
+from evaluators import MLPEvaluator
 import random 
 from time import time
 from time import sleep
@@ -28,11 +28,12 @@ game_args['max_moves'] = 600
 game_args['miss_penalty'] = 0 
 game_args['living_reward'] = -0.01
 game_args['random_background'] = False
+game_args['ammo'] = 5
 
 engine_args = {}
 engine_args["history_length"] = 2
 engine_args["bank_capacity"] = 10000
-engine_args["evaluator"] = CNNEvaluator
+engine_args["evaluator"] = MLPEvaluator
 engine_args["game"] = ShootingDotGame(**game_args)
 engine_args['epsilon_decay_start_step'] = 500000
 engine_args['epsilon_decay_steps'] = 5000000
