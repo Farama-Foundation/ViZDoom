@@ -3,29 +3,39 @@ import random
 import theano
 import theano.tensor as T
 import lasagne
+import itertools as it
 
+def actions_generator(game):
+	n = game.get_action_format()
+	actions = []
+	for perm in it.product([False,True],repeat= n):
+		actions.append(perm)
+
+	return actions
 
 class RandomAgent:
 
 	def __init__(self, game):
+		self.epsilon = 0
 		#Whether learning should happen in makeAction
 		self.learning_mode = True
 		#Whether exploration should be done according to epsilon
 		self.explore = True
 		self.game = game
-		self.actions = self.game.get_action_format()[0]["range"][1]+1
+		self.actions = actions_generator(self.game)
+		self.actions_len = len(self.actions)
 		self.steps = 0
-		self.actions_stats_test = np.zeros(self.actions)
-		self.actions_stats_learning = np.zeros(self.actions)
+		self.actions_stats_test = np.zeros(self.actions_len)
+		self.actions_stats_learning = np.zeros(self.actions_len)
 
 	def clear_actions_stats(self):
 		self.actions_stats_test.fill(0)
 		self.actions_stats_learning.fill(0)
 
 	def make_action(self):
-		move = random.randint(0,self.actions-1)
+		move = random.randint(0,self.actions_len-1)
 		self.actions_stats_test[move] += 1
-		self.game.make_action([move])
+		self.game.make_action(self.actions[move])
 		self.steps += 1
 
 	def run_episode(self):
@@ -37,36 +47,9 @@ class RandomAgent:
 			
 
 		return reward, normalized_reward
+	def nan_check(self):
+		return False
 
-class HumanAgent(RandomAgent):
-	def __init__(self,game):
-		RandomAgent.__init__(self, game)
-		self.current_score = 0
-	def make_action(self):
-		print self.game.get_state()[0]
-		move=raw_input()
-
-		if move =='a':
-			move = 0
-		elif move =='d':
-			move = 1
-		elif move =='s':
-			move = 2
-		else:
-			move = 3
-
-		state,reward = self.game.make_action([move])
-		self.current_score += reward
-		print("Current summary reward: " + str(self.current_score))
-
-
-	def run_episode(self):
-		print("\nNew episode")
-		r, norm_r = RandomAgent.run_episode(self)
-		print("\nEpisode finished")
-		self.current_score = 0
-
-		return r, norm_r
 
 class MLPQLearner(RandomAgent):
 
@@ -86,7 +69,7 @@ class MLPQLearner(RandomAgent):
 		self.initialize_network()
 		self.gamma = gamma
 		self.epsilon_decay_start_step = epsilon_decay_start_step
-
+		
 	def make_action(self):
 		if self.learning_mode:
 			self.steps += 1
@@ -98,13 +81,13 @@ class MLPQLearner(RandomAgent):
 
 			if self.explore and random.random() <= self.epsilon:
 				#make a random move
-				a = random.randint(0,self.actions-1)
+				a = random.randint(0,self.actions_len-1)
 			else:	
 				#make the best move				
 				a = np.argmax(predicted_Qs)
 			
 			
-			s2, r = self.game.make_action([a])
+			s2, r = self.game.make_action(self.actions[a])
 
 			self.actions_stats_learning[a] += 1
 			expected_Q = r
@@ -115,11 +98,12 @@ class MLPQLearner(RandomAgent):
 				best_q2 = max(self.Q_test(s2)[0])
 				expected_Q += self.gamma * best_q2
 
-
 			predicted_Qs[0][a]=expected_Q
 
 			q,l = self.Q_learn(s,predicted_Qs)
 
+
+		
 
 			if self.epsilon_decay_start_step <= self.steps:
 				self.epsilon =max(self.epsilon- self.epsilon_decay_stride,self.end_epsilon)
@@ -128,7 +112,7 @@ class MLPQLearner(RandomAgent):
 			s = s.reshape(1,1,s.shape[0], s.shape[1])
 			predicted_Qs = self.Q_test(s)
 			a = np.argmax(predicted_Qs)
-			self.game.make_action([a])
+			self.game.make_action(self.actions[a])
 			self.actions_stats_test[a] += 1
 
 		#make not-so-random move which is not supported yet
@@ -149,7 +133,8 @@ class MLPQLearner(RandomAgent):
 		# input layer
 		inputs = T.tensor4('inputs')
 		targets = T.matrix('targets')
-		y,x = self.game.get_state_format()[0]["shape"]
+
+		y,x = self.game.get_state_format()[0]
 		network = lasagne.layers.InputLayer(shape=(None,1,y,x),input_var = inputs)
 		# input dropout layer
 		if input_dropout: 
@@ -168,7 +153,7 @@ class MLPQLearner(RandomAgent):
 					network = lasagne.layers.dropout(network, p = hidden_dropout_p)
 
 		# output layer
-		network = lasagne.layers.DenseLayer(network, self.actions, nonlinearity = None)
+		network = lasagne.layers.DenseLayer(network, self.actions_len, nonlinearity = None)
 		self._network = network
 		
 

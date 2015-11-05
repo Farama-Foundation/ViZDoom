@@ -3,7 +3,7 @@ import random
 #Class to store transitions of states
 # [initial_state, action, final_state, reward]
 class TransitionBank:
-	def __init__(self, capacity = 1000):
+	def __init__(self, capacity = 10000):
 		self._transitions = []
 		self._size = 0
 		self._capacity = capacity
@@ -11,8 +11,8 @@ class TransitionBank:
 	
 	def add_transition(self, s1,a,s2,r):
 		if self._size == self._capacity:
-			self._transitions[self.oldest_index] = [s1,a,s2,r]
-			self.oldest_index =(self.oldest_index +1) % self._capacity
+			self._transitions[self._oldest_index] = [s1,a,s2,r]
+			self._oldest_index =(self._oldest_index +1) % self._capacity
 		else:
 			self._transitions.append([s1,a,s2,r])
 			self._size += 1

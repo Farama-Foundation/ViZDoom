@@ -10,9 +10,9 @@ import time
 def main(agent, game):
 
 	print "Initialization . . "
-	max_episodes = np.inf
+	max_episodes = 1000
 	max_steps = np.inf
-	recent_rewards_range = 500
+	recent_rewards_range = 100
 	satisfactory_mean_reward = 1.1
 	test_n = 50
 	print_stats = True
@@ -27,7 +27,7 @@ def main(agent, game):
 	mlp_agent_args['gamma'] = 0.7
 	network_params={}
 	network_params['depth'] = 1
-	network_params['hidden_units'] = 300
+	network_params['hidden_units'] = 1000
 	network_params['input_dropout'] = False
 	network_params['hidden_dropout'] = False
 	network_params['input_dropout_p'] = 0.2
@@ -39,13 +39,13 @@ def main(agent, game):
 	mlp_agent_args['network_params'] = network_params
 
 	game_args = {}
-	game_args['width'] = 19
-	game_args['height'] = 17
-	game_args['hit_reward'] = 1
-	game_args['max_moves'] = 600
-	game_args['miss_penalty'] = 0 
-	game_args['living_reward'] = -0.01
-	game_args['random_background'] = True
+	game_args['width'] = 7
+	game_args['height'] = 1
+	game_args['hit_reward'] = 1.0
+	game_args['max_moves'] = 50
+	game_args['miss_penalty'] = 0.0
+	game_args['living_reward'] = -0.05
+	game_args['random_background'] = False
 
 	import agents
 	import games

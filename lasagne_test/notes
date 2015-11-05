@@ -1,9 +1,0 @@
-- think about replay
-- epsilon anealing (NeuralQLearner.lua, lines 373-375)
-- how is history managed
-- loss function? (squared_error used now)
-- update function? (adagrad for now - adagrad sucked, nesterov momentum/sgd used)
-- handle reshaping properly
-- replay and minibatches
-- no miss penalty results in shooting constantly
-- TODO exploration should be guided

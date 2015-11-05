@@ -21,8 +21,9 @@ class ShootingDotGame:
 			self._state_format = [(self._y, self._x),1]
 		else:
 			self._state_format = [(self._y, self._x),0]
+
 		self._current_ammo = np.ndarray([1],dtype = np.float32)
-		self._action_format = [{"name":"action","dtype":np.int8,"range":[0,3]}]
+		self._action_format = 3
 		self._state = None
 		self._finished = True
 		self._summary_reward = 0
@@ -38,7 +39,7 @@ class ShootingDotGame:
 		return self._action_format
 
 	def get_normalized_summary_reward(self):
-		return self._summary_reward / self._max_reward
+		return self._summary_reward / self._hit_reward
 
 	def get_summary_reward(self):
 		return self._summary_reward
@@ -57,7 +58,6 @@ class ShootingDotGame:
 		
 		self._state[self._aimY,self._aimX] = 1.0
 		self._summary_reward = 0
-		self._max_reward = float(self._living_reward * (abs(self._aimX - self._state.shape[1]/2) + 1) +self._hit_reward)
 		
 		if self._max_moves == np.inf:
 			self._min_reward = -np.inf
@@ -69,24 +69,24 @@ class ShootingDotGame:
 			print "Making action in a finished game."
 			return None
 		else:
-			action = action[0]
+			
 			reward=self._living_reward
 			self._movesMade += 1
 
 			#right
-			if action == 0:
+			if action[0] and not action[1]:
 				if self._aimX>0:
 					self._state[self._aimY,self._aimX] = 0.0
 					self._aimX -= 1
 					self._state[self._aimY,self._aimX] = 1.0
 			#left
-			elif action == 1:
+			if action[1] and not action[0]:
 				if self._aimX < self._state.shape[1]-1:
 					self._state[self._aimY,self._aimX] = 0.0
 					self._aimX += 1
 					self._state[self._aimY,self._aimX] = 1.0
 			#shoot
-			elif action == 2:
+			if action[2]:
 				if self._current_ammo[0] > 0:
 					if self._aimX != self._state.shape[1]/2:
 						reward -= self._miss_penalty
@@ -95,8 +95,7 @@ class ShootingDotGame:
 						self._finished = True;
 						self._state = None
 					self._current_ammo[0] -= 1
-			elif action != 3:
-				print "Unknown action. Idle action chosen."
+			
 			
 			self._summary_reward+=reward
 

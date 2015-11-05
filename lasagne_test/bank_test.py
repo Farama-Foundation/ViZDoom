@@ -7,7 +7,7 @@ from time import sleep
 
 insertions = 10000
 capacity = insertions 
-batch_size = 10000
+batch_size = 5000
 
 if insertions > capacity:
 	overflowed_insertions = insertions - capacity
