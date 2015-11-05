@@ -1,34 +1,25 @@
 Jakaś metoda inicjalizacyjna całego środowiska pewnie by się przydałą.
 
-get_state_format() - zwraca (dla danych parametrów inicjalizacyjnych zawsze to samo) format stanu, który zwraca gra w formie listy słowników. Załóżmy, że stan składa się z:
- - zdjęcia z 3 kanałami (rgb) 320x200, typu np.float32 w zakresie 0 do 1 
- - health pointów, typu np.float32 i w zakresie 0-100
-Tak powinno wyglądać to co zwróci get_state_format:
-[{"name":"image","dtype":np.float32,"range":[0.0,1.0],"shape":(3,320,200)},{"name":"hp","dtype":np.float32,"range":[0,100]}]
+get_state_format() - zwraca (dla danych parametrów inicjalizacyjnych zawsze to samo) format stanu, który zwraca gra w formie listy dwu elementowej:
+[image.shape, misc_vector_length]
+image.shape to po prostu kształt zdjęcia, które wypłuwa silnik, np. 3 kanałowe (rgb) zdjęcie 320x200 wypluje (3,320,200) jako shape
+misc_vector_length to długość wektora różnośći (np. hp, ammo itd). Więc jeśli przykładowym wyjściem bedzie sam obrazek to powinno zwrócić:
+[(3,320,200),0], jeśli stanem jest obrazek +ammunicja + hp to [(3,320,200),2].
+W tym momencie zakładam, że zdjęcie stanu to będzie numpy.ndarray o typie np.float32, awektor rózności tak samo (tylko inne wymiary).
 
-get_action_format() - zwraca (dla danych parametrów inicjalizacyjnych zawsze to samo) format akcji, którą można wykonać w formie listy słowników. Każdy element listy odpowiada za pojedynczy parametr, np wciśnięty przycisk, delte myszki itd.
-Załóżmy, że na akcję skłąda się wciśnięcie (albo nie) klawiszy a,w,s,d i horyzontalna delta myszki (znaczy lewo prawo), zakres myszki -1 do 1 (cokolwiek to ma oznaczać). W tym momencie get_action_format() powinno zwracać coś takiego:
-[
-	{"name":"mouse_horizontal_delta","dtype":np.float32,"range":[-1,1]},
-	{"name":"w_key","dtype":np.bool_},
-	{"name":"s_key","dtype":np.bool_},
-	{"name":"a_key","dtype":np.bool_},
-	{"name":"d_key","dtype":np.bool_},
-	{"name":"ctrl","dtype":np.bool_}
-]
+get_action_format() - jak już ustaliliśmy, póki co ignorujemy myszkę więc zwraca jedynie inta, który oznacza ilość przycisków wchdozących w skłąd akcji
 
 new_episode() - tworzy nowy epizod, zwraca stan tego epizodu zgodnie z formatem zwracanym przez get_state_format
 
 is_finished() - zwraca True albo False w zalezności czy aktualny epizod jest skońćzony czy nie
 
-get_state() - zwraca aktualny stan epizodu w postaci listy zgodnej ze specyfikacją z get_state_format
+get_state() - zwraca aktualny stan epizodu w postaci listy zgodnej ze specyfikacją z get_state_format czyli listę dwu/jedno elementową (w zależności od tego czy są inne parametry poza obrazkiem)
 
 get_summary_reward() - zwraca sumaryczną nagrodę z danego epizodu
 
 make_action(action)
 parametry wejściowe:
-	action - Akcja w postaci listy zgodnej z wyżej wymienionym formatem. Akcja, w której żaden przycisk nie był przyciśnięty, a myszka się nie ruszyła powinna wyglądać tak:
-	[0,False,False,False,False,False]
+	action - Akcja w postaci listy booli
 return value:
 	next_state, reward
 	(następny stan i nagroda za właśnie wykonaną akcję)

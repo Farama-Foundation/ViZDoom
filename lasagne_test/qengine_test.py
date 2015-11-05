@@ -32,15 +32,15 @@ game_args['ammo'] = 50
 
 engine_args = {}
 engine_args["history_length"] = 1
-engine_args["bank_capacity"] = 1000
+engine_args["bank_capacity"] = 100000
 engine_args["evaluator"] = MLPEvaluator
 engine_args["game"] = ShootingDotGame(**game_args)
 engine_args['start_epsilon'] = 1.0
 engine_args['epsilon_decay_start_step'] = 100000
 engine_args['epsilon_decay_steps'] = 5000000
 engine_args['actions_generator'] = actions_generator
-engine_args['update_frequency'] = 250
-engine_args['batch_size'] = 250
+engine_args['update_frequency'] = 50
+engine_args['batch_size'] = 50
 engine_args['gamma'] = 0.7
 
 engine = QEngine(**engine_args)
