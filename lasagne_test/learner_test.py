@@ -10,9 +10,9 @@ import time
 def main(agent, game):
 
 	print "Initialization . . "
-	max_episodes = 1000
+	max_episodes = np.inf
 	max_steps = np.inf
-	recent_rewards_range = 100
+	recent_rewards_range = 400
 	satisfactory_mean_reward = 1.1
 	test_n = 50
 	print_stats = True

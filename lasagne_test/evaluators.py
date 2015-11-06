@@ -4,7 +4,7 @@ import theano.tensor as T
 from theano.tensor import tanh
 import theano
 import numpy as np
-
+from theano.compile.nanguardmode import NanGuardMode
 
 class MLPEvaluator:
 
@@ -12,6 +12,13 @@ class MLPEvaluator:
 		print "Initializing MLP network..."
 		self._misc_state_included = (state_format[1] > 0)
 		
+		if self._misc_state_included:
+			misc_inputs = T.matrix('misc_inputs')
+			misc_input_shape = (None, state_format[1])
+			self._misc_input_shape = (1, state_format[1])
+			self._misc_buffer = np.ndarray((batch_size, state_format[1]),dtype = np.float32)
+			self._misc_buffer2 = np.ndarray((batch_size, state_format[1]),dtype = np.float32)
+
 		image_dimensions = len(state_format[0])
 
 		targets = T.matrix('targets')
@@ -35,11 +42,19 @@ class MLPEvaluator:
 
 
 		learning_rate = 0.01
-		hidden_units = 1000
+		hidden_units = 500
 	
-
+		#image input layer
 		network = lasagne.layers.InputLayer(shape = image_input_shape, input_var = image_inputs)
-		network = lasagne.layers.DenseLayer(network, hidden_units ,nonlinearity = tanh)
+		#one hidden layer for now
+		network = lasagne.layers.DenseLayer(network, hidden_units ,nonlinearity = tanh)	
+		if self._misc_state_included:
+			#misc input layer
+			misc_input_layer = lasagne.layers.InputLayer(shape = misc_input_shape, input_var = misc_inputs)
+			#merge layer
+			network = lasagne.layers.ConcatLayer([network, misc_input_layer])
+			
+		#output layer
 		network = lasagne.layers.DenseLayer(network, actions_number, nonlinearity = None)
 		self._network = network
 		
@@ -48,8 +63,14 @@ class MLPEvaluator:
 		params = lasagne.layers.get_all_params(network, trainable = True)
 		updates = lasagne.updates.sgd(loss, params, learning_rate = learning_rate)
 		
-		self._learn = theano.function([image_inputs,targets], loss, updates = updates)
-		self._evaluate = theano.function([image_inputs], predictions)
+		#mode = NanGuardMode(nan_is_error=True, inf_is_error=True, big_is_error=True)
+		mode = None
+		if self._misc_state_included:
+			self._learn = theano.function([image_inputs,misc_inputs,targets], loss, updates = updates, mode = mode, name = "learn_fn")
+			self._evaluate = theano.function([image_inputs,misc_inputs], predictions,mode = mode, name = "eval_fn")
+		else:	
+			self._learn = theano.function([image_inputs,targets], loss, updates = updates)
+			self._evaluate = theano.function([image_inputs], predictions)
 		
 
 	def learn(self, transitions, gamma):
@@ -58,19 +79,30 @@ class MLPEvaluator:
 		#change internal representation of transitions so that it would return
 		#ready ndarrays
 		#prepare the batch
-		
-		for i,trans in zip(range(len(transitions)),transitions):
-			#trans[0] is the whole state in the transition
-			#trans[0][0] - image
-			#trans[0][1] - misc data from the state
-			self._input_image_buffer[i] = trans[0][0]
-			# if it's the terminal state just ignore
-			if trans[2] is not None:		
-				self._input_image_buffer2[i] = trans[2][0]
+		if self._misc_state_included:
+			for i,trans in zip(range(len(transitions)),transitions):
+				self._input_image_buffer[i] = trans[0][0]
+				self._misc_buffer[i] = trans[0][1]
+				# if it's the terminal state just ignore
+				if trans[2] is not None:		
+					self._input_image_buffer2[i] = trans[2][0]
+					self._misc_buffer2[i] = trans[2][1]
+			
+			target = self._evaluate(self._input_image_buffer,self._misc_buffer)
+			#find best q values for s2
+			q2 = np.max(self._evaluate(self._input_image_buffer2,self._misc_buffer2),axis = 1)
 
-		target = self._evaluate(self._input_image_buffer)
-		#best q values for s2
-		q2 = np.max(self._evaluate(self._input_image_buffer2),axis = 1)
+		else:
+			for i,trans in zip(range(len(transitions)),transitions):
+				
+				self._input_image_buffer[i] = trans[0][0]
+				# if it's the terminal state just ignore
+				if trans[2] is not None:		
+					self._input_image_buffer2[i] = trans[2][0]
+
+			target = self._evaluate(self._input_image_buffer)
+			#find best q values for s2
+			q2 = np.max(self._evaluate(self._input_image_buffer2),axis = 1)
 		
 		#set expected output as the reward got from the transition
 		for i,trans in zip(range(len(transitions)),transitions):
@@ -82,11 +114,17 @@ class MLPEvaluator:
 				self._expected_buffer[i] += gamma *q
 			target[i][transitions[i][1]] =self._expected_buffer[i]
 		
-
-		self._learn(self._input_image_buffer,target)
+		if self._misc_state_included:
+			self._learn(self._input_image_buffer,self._misc_buffer, target)
+		else:
+			self._learn(self._input_image_buffer,target)
+		
 
 	def best_action(self, state):
-		a = np.argmax(self._evaluate(state[0].reshape(self._image_input_shape)))
+		if self._misc_state_included:
+			a = np.argmax(self._evaluate(state[0].reshape(self._image_input_shape),state[1].reshape(self._misc_input_shape)))
+		else:
+			a = np.argmax(self._evaluate(state[0].reshape(self._image_input_shape)))
 		return a
 
 

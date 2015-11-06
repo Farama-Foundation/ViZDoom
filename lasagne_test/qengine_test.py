@@ -27,32 +27,33 @@ game_args['max_moves'] = 50
 game_args['miss_penalty'] = 0 
 game_args['living_reward'] = -0.05
 game_args['random_background'] = False
-game_args['ammo'] = 50
+game_args['ammo'] = 1.0
 
 
 engine_args = {}
 engine_args["history_length"] = 1
-engine_args["bank_capacity"] = 1000
+engine_args["bank_capacity"] = 100000
 engine_args["evaluator"] = MLPEvaluator
 engine_args["game"] = ShootingDotGame(**game_args)
 engine_args['start_epsilon'] = 1.0
 engine_args['epsilon_decay_start_step'] = 100000
 engine_args['epsilon_decay_steps'] = 5000000
 engine_args['actions_generator'] = actions_generator
-engine_args['update_frequency'] = 250
-engine_args['batch_size'] = 250
+engine_args['update_frequency'] = 10
+engine_args['batch_size'] = 50
 engine_args['gamma'] = 0.7
 
 engine = QEngine(**engine_args)
 
-epochs = 100 
-training_episodes_per_epoch = 500
-test_episodes_per_epoch = 50
+epochs = np.inf
+training_episodes_per_epoch = 1000
+test_episodes_per_epoch = 100
 
 overall_start = time()
 print "Learning..."
 
-for epoch in range(epochs):
+epoch = 0
+while epoch < epochs:
 	engine.learning_mode = True
 	rewards = []
 	start = time()
@@ -80,6 +81,7 @@ for epoch in range(epochs):
 		print "Test"
 		print engine.get_actions_stats(clear = True,norm = False)
 		print "steps:",engine._steps, ", mean:", np.mean(rewards)
+	epoch += 1
 overall_end = time()
 
 print "Elapsed time:",overall_end-overall_start

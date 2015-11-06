@@ -6,7 +6,7 @@ class ShootingDotGame:
 	
 	def __init__(self, width, height, dtype = np.float32, random_background = False,max_moves=np.inf,living_reward=-1,miss_penalty=10,hit_reward=100, ammo = np.inf):
 		
-		self._ammo = max(ammo,0)
+		self._ammo = np.float32(max(ammo,0))
 		self._dtype = dtype
 		width+=1-width%2
 		self._x = width
@@ -110,6 +110,6 @@ class ShootingDotGame:
 			img = None
 		else:
 			if self._ammo < np.inf:
-				return [self._state.copy(), self._current_ammo]
+				return [self._state.copy(), self._current_ammo/self._ammo]
 			else:
 				return [self._state.copy()]

@@ -105,7 +105,7 @@ class QEngine:
 			self._transitions.add_transition(s,a,s2,r)
 
 			# Perform qlearning once for a while
-			if self._steps % self._update_frequency == 0:
+			if self._steps % self._update_frequency == 0 and self._steps >self._batch_size:
 				self._evaluator.learn(self._transitions.get_sample(self._batch_size), self._gamma)
 		else:
 			a = self._evaluator.best_action(s)
