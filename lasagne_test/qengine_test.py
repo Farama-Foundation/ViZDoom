@@ -40,6 +40,7 @@ engine_args['epsilon_decay_start_step'] = 100000
 engine_args['epsilon_decay_steps'] = 5000000
 engine_args['actions_generator'] = actions_generator
 engine_args['update_frequency'] = 10
+
 engine_args['batch_size'] = 50
 engine_args['gamma'] = 0.7
 
