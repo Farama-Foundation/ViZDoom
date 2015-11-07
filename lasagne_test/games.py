@@ -59,10 +59,6 @@ class ShootingDotGame:
 		self._state[self._aimY,self._aimX] = 1.0
 		self._summary_reward = 0
 		
-		if self._max_moves == np.inf:
-			self._min_reward = -np.inf
-		else:
-			self._min_reward = float(self._max_moves*(min(0.0,-self._miss_penalty)+self._living_reward))
 	def make_action(self,action):
 	
 		if self._finished:
@@ -112,3 +108,10 @@ class ShootingDotGame:
 				return [self._state.copy(), self._current_ammo/self._ammo]
 			else:
 				return [self._state.copy()]
+
+	def average_best_result(self):
+		best = self._hit_reward + self._living_reward
+		worst = self._hit_reward +self._living_reward *(self._x-1)/2.0
+		avg = (best+worst)/2.0
+		r = (best +(self._x -1)*avg)/float(self._x)
+		return r

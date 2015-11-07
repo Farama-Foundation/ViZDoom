@@ -67,7 +67,7 @@ class QEngine:
 		if self.learning_mode:
 			self._steps += 1
 		#epsilon decay:
-		if self._steps > self._epsilon_decay_start:
+		if self._steps > self._epsilon_decay_start and self._epsilon >= 0:
 			self._epsilon -= self._epsilon_decay_stride
 
 		#if the current episode is finished, spawn a new one

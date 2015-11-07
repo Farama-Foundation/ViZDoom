@@ -8,7 +8,7 @@ from theano.compile.nanguardmode import NanGuardMode
 
 class MLPEvaluator:
 
-	def __init__(self, state_format, actions_number, batch_size):
+	def __init__(self, state_format, actions_number, batch_size,hidden_units = 500, learning_rate =0.01,hidden_layers = 1, hidden_nonlin = lasagne.nonlinearities.tanh):
 		print "Initializing MLP network..."
 		self._misc_state_included = (state_format[1] > 0)
 		
@@ -41,13 +41,11 @@ class MLPEvaluator:
 		self._image_input_shape[0] = 1
 
 
-		learning_rate = 0.01
-		hidden_units = 500
-	
 		#image input layer
 		network = lasagne.layers.InputLayer(shape = image_input_shape, input_var = image_inputs)
-		#one hidden layer for now
-		network = lasagne.layers.DenseLayer(network, hidden_units ,nonlinearity = tanh)	
+		#hidden layers
+		for i in range(hidden_layers):
+			network = lasagne.layers.DenseLayer(network, hidden_units ,nonlinearity = hidden_nonlin)	
 		if self._misc_state_included:
 			#misc input layer
 			misc_input_layer = lasagne.layers.InputLayer(shape = misc_input_shape, input_var = misc_inputs)
@@ -79,6 +77,7 @@ class MLPEvaluator:
 		#change internal representation of transitions so that it would return
 		#ready ndarrays
 		#prepare the batch
+		
 		if self._misc_state_included:
 			for i,trans in zip(range(len(transitions)),transitions):
 				self._input_image_buffer[i] = trans[0][0]
@@ -95,10 +94,10 @@ class MLPEvaluator:
 		else:
 			for i,trans in zip(range(len(transitions)),transitions):
 				
-				self._input_image_buffer[i] = trans[0][0]
+				self._input_image_buffer[i] = trans[0]
 				# if it's the terminal state just ignore
 				if trans[2] is not None:		
-					self._input_image_buffer2[i] = trans[2][0]
+					self._input_image_buffer2[i] = trans[2]
 
 			target = self._evaluate(self._input_image_buffer)
 			#find best q values for s2
@@ -124,7 +123,7 @@ class MLPEvaluator:
 		if self._misc_state_included:
 			a = np.argmax(self._evaluate(state[0].reshape(self._image_input_shape),state[1].reshape(self._misc_input_shape)))
 		else:
-			a = np.argmax(self._evaluate(state[0].reshape(self._image_input_shape)))
+			a = np.argmax(self._evaluate(state.reshape(self._image_input_shape)))
 		return a
 
 
