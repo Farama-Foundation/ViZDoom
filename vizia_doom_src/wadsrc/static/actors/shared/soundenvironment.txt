@@ -1,0 +1,9 @@
+
+ACTOR SoundEnvironment native
+{
+	+NOSECTOR
+	+NOBLOCKMAP
+	+NOGRAVITY
+	+DONTSPLASH
+}
+

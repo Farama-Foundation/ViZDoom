@@ -1,0 +1,1 @@
+/usr/bin/cc    -O3 -DNDEBUG     CMakeFiles/updaterevision.dir/updaterevision.o  -o updaterevision -rdynamic 

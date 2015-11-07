@@ -1,0 +1,380 @@
+===============================================================================
+Universal Doom Map Format ZDoom extensions v1.15 - 14.12.2010
+
+
+    Copyright (c) 2008 Christoph Oelckers.
+    Permission is granted to copy, distribute and/or modify this document
+    under the terms of the GNU Free Documentation License, Version 1.2
+    or any later version published by the Free Software Foundation;
+    with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+    
+===============================================================================
+
+This document discusses only the additions ZDoom makes to the UDMF 
+specification.
+
+=======================================
+I. Grammar / Syntax
+=======================================
+
+    No changes.
+
+=======================================
+II. Implementation Semantics
+=======================================
+
+------------------------------------
+II.A : Storage and Retrieval of Data
+------------------------------------
+
+No changes.
+
+-----------------------------------
+II.B : Storage Within Archive Files
+-----------------------------------
+
+In addition to the base specification ZDoom recognizes the following lumps
+between the TEXTMAP and ENDMAP lumps:
+
+    BEHAVIOR = contains compiled ACS code
+    DIALOGUE = contains compiled Strife or USDF conversation scripts.
+    ZNODES = Nodes (must be stored as extended GL nodes. Compression is allowed
+                    but deprecated for portability reasons.)
+    BLOCKMAP = blockmap. It is recommended not to include this lump in UDMF maps.
+    REJECT = reject table. Recommended use is for special effects only.
+    
+    Lumps starting with 'SCRIPT' are guaranteed to be ignored by ZDoom so they
+    can be used to store ACS and dialogue script sources.
+    
+--------------------------------
+II.C : Implementation Dependence
+--------------------------------
+
+ZDoom supports all namespaces defined in the base specification and adds two new
+ones:
+    "ZDoom"
+    "ZDoomTranslated"
+    
+The only difference between these two namespaces is how line, thing and sector
+specials are handled:
+
+'ZDoom' uses Hexen type specials which are ZDoom's native implementation.
+
+'ZDoomTranslated' uses Doom-type specials. Such maps have to be processed by
+a special translator. A special translator is a text lump that defines how
+Doom-format specials are translated into Hexen-format specials. By default
+each game defines its own translation table but these can be overridden in
+MAPINFO. It is the mapper's responsibility to choose the correct translation
+table for a map.
+
+
+=======================================
+III. Standardized Fields
+=======================================
+
+ZDoom's namespaces implement all fields from the standard, regardless of
+any restrictions mentioned in the spec.
+In particular, the 'ZDoomTranslated' namespaces implements thing specials.
+These will ignore the implicit trigger type and triggering semantics are the
+same as for native maps.
+The only field not fully supported is the thing's 'friend' field. ZDoom does
+not offer MBF's friendly monster implementation and will remap any use of this
+field to 'strifeally', even for the 'Doom' namespace.
+
+In addition to the standard fields, ZDoom defines the following:
+Note: All <bool> fields default to false unless mentioned otherwise.
+
+   vertex
+   {
+      zfloor = <float>;         // Floor height at this vertex. Only applies to triangular sectors
+      zceiling = <float>;       // Ceiling height at this vertex. Only applies to triangular sectors
+   }
+
+   linedef
+   {
+      alpha = <float>;            // Translucency of this line, default is 1.0
+      renderstyle = <string>;     // Render style, can be "translucent" or "add",
+                                  // default is "translucent".
+      playeruseback = <bool> ;    // New SPAC flag, true = player can use from back side.
+      anycross = <bool>;          // New SPAC flag, true = any non-projectile 
+                                  // crossing will trigger this line
+      monsteractivate = <bool>;   // Monsters can trigger this line.
+                                  // For compatibility only because this flag's 
+                                  // semantics can not be fully reproduced with
+                                  // explicit trigger flags.
+      blockplayers = <bool>;      // Line blocks players' movement.
+      blockeverything = <bool>;   // Line blocks everything.
+      firstsideonly = <bool>;     // Line can only be triggered from the front side.
+      zoneboundary = <bool>;      // Line is a boundary for sound reverb zones.
+      clipmidtex = <bool>;        // Line's mid textures are clipped to floor and ceiling.
+      wrapmidtex = <bool>;        // Line's mid textures are wrapped.
+      midtex3d = <bool>;          // Actors can walk on mid texture.
+      midtex3dimpassible = <bool>;// Used in conjuction with midtex3d - causes the mid
+                                  // texture to behave like an impassible line (projectiles
+                                  // pass through it).
+      checkswitchrange = <bool>;  // Switches can only be activated when vertically reachable.
+      blockprojectiles = <bool>;  // Line blocks all projectiles
+      blockuse = <bool>;          // Line blocks all use actions
+      blocksight = <bool>;        // Line blocks monster line of sight
+      blockhitscan = <bool>;      // Line blocks hitscan attacks
+      locknumber = <int>;         // Line special is locked
+      arg0str = <string>;         // Alternate string-based version of arg0
+	  moreids = <string>;         // Additional line IDs, specified as a space separated list of numbers (e.g. "2 666 1003 4505")
+
+      transparent   = <bool>; // true = line is a Strife transparent line (alpha 0.25)
+
+      * Note about arg0str
+
+      For lines with ACS specials (80-86 and 226), if arg0str is present and non-null, it
+      will be used as the name of the script to execute, and arg0 will be ignored.
+   }
+
+   sidedef
+   {
+      scalex_top = <float>;    // X scale for upper texture, Default = 1.0.
+      scaley_top = <float>;    // y scale for upper texture, Default = 1.0.
+      scalex_mid = <float>;    // X scale for mid texture, Default = 1.0.
+      scaley_mid = <float>;    // y scale for mid texture, Default = 1.0.
+      scalex_bottom = <float>; // X scale for lower texture, Default = 1.0.
+      scaley_bottom = <float>; // y scale for lower texture, Default = 1.0.
+      offsetx_top = <float>;    // X offset for upper texture, Default = 0.0.
+      offsety_top = <float>;    // y offset for upper texture, Default = 0.0.
+      offsetx_mid = <float>;    // X offset for mid texture, Default = 0.0.
+      offsety_mid = <float>;    // y offset for mid texture, Default = 0.0.
+      offsetx_bottom = <float>; // X offset for lower texture, Default = 0.0.
+      offsety_bottom = <float>; // y offset for lower texture, Default = 0.0.
+                                // When global texture offsets are used they will
+                                // be added on top of these values.
+      light = <integer>;        // This side's light level. Default is 0.
+      lightabsolute = <bool>;   // true = 'light' is an absolute value. Default is 
+                                // relative to the owning sector's light level.
+      lightfog = <bool>;        // true = This side's relative lighting is used even in
+                                // foggy sectors. Default is to disable relative
+                                // lighting in foggy sectors.
+      nofakecontrast = <bool>;  // Disables use of fake contrast on this sidedef.
+      smoothlighting = <bool>;  // Use smooth fake contrast.
+      clipmidtex = <bool>;      // Side's mid textures are clipped to floor and ceiling.
+      wrapmidtex = <bool>;      // Side's mid textures are wrapped.
+      nodecals = <bool>;        // Disables decals on the sidedef.
+   }
+
+   sector
+   {
+      xpanningfloor = <float>;        // X texture offset of floor texture, Default = 0.0.
+      ypanningfloor = <float>;        // Y texture offset of floor texture, Default = 0.0.
+      xpanningceiling = <float>;      // X texture offset of ceiling texture, Default = 0.0.
+      ypanningceiling = <float>;      // Y texture offset of ceiling texture, Default = 0.0.
+      xscalefloor = <float>;          // X texture scale of floor texture, Default = 1.0.
+      yscalefloor = <float>;          // Y texture scale of floor texture, Default = 1.0.
+      xscaleceiling = <float>;        // X texture scale of ceiling texture, Default = 1.0.
+      yscaleceiling = <float>;        // Y texture scale of ceiling texture, Default = 1.0.
+      rotationfloor = <float>;        // Rotation of floor texture in degrees, Default = 0.0.
+      rotationceiling = <float>;      // Rotation of ceiling texture in degrees, Default = 0.0.
+	  ceilingplane_a = <float>;       // Define the plane equation for the sector's ceiling. Default is a horizontal plane at 'heightceiling'.
+	  ceilingplane_b = <float>;       // 'heightceiling' will still be used to calculate texture alignment.
+	  ceilingplane_c = <float>;       // The plane equation will only be used if all 4 values are given.
+	  ceilingplane_d = <float>;
+	  floorplane_a = <float>;         // Define the plane equation for the sector's floor. Default is a horizontal plane at 'heightfloor'.
+	  floorplane_b = <float>;         // 'heightfloor' will still be used to calculate texture alignment.
+	  floorplane_c = <float>;         // The plane equation will only be used if all 4 values are given.
+	  floorplane_d = <float>;
+      lightfloor = <integer>;         // The floor's light level. Default is 0.
+      lightceiling = <integer>;       // The ceiling's light level. Default is 0.
+      lightfloorabsolute = <bool>;    // true = 'lightfloor' is an absolute value. Default is 
+                                      // relative to the owning sector's light level.
+      lightceilingabsolute = <bool>;  // true = 'lightceiling' is an absolute value. Default is 
+                                      // relative to the owning sector's light level.
+      alphafloor = <float>;           // translucency of floor plane (only has meaning with Sector_SetPortal) Default is 1.0.
+      alphaceiling = <float>;         // translucency of ceiling plane (only has meaning with Sector_SetPortal) Default is 1.0.
+      renderstylefloor = <string>;    // floor plane renderstyle (only has meaning with Sector_SetPortal); not implemented yet in software renderer
+                                      // can be "translucent" or "add", default is "translucent".
+      renderstyleceiling = <string>;  // ceiling plane renderstyle (only has meaning with Sector_SetPortal); not implemented yet in software renderer
+                                      // can be "translucent" or "add", default is "translucent".
+      gravity = <float>;              // Sector's gravity. Default is 1.0.
+      lightcolor = <integer>;         // Sector's light color as RRGGBB value, default = 0xffffff.
+      fadecolor = <integer>;          // Sector's fog color as RRGGBB value, default = 0x000000.
+      desaturation = <float>;         // Color desaturation factor. 0 = none, 1 = full, default = 0.
+      silent = <bool>;                // Actors in this sector make no sound,
+      nofallingdamage = <bool>;		  // Falling damage is disabled in this sector
+      dropactors = <bool>;            // Actors drop with instantly moving floors (*)
+      norespawn = <bool>;             // Players can not respawn in this sector
+      soundsequence = <string>;       // The sound sequence to play when this sector moves. Placing a
+                                      // sound sequence thing in the sector will override this property.
+      hidden = <bool>;                // if true this sector will not be drawn on the textured automap.
+      waterzone = <bool>;             // Sector is under water and swimmable
+	  moreids = <string>;             // Additional sector IDs/tags, specified as a space separated list of numbers (e.g. "2 666 1003 4505")
+      
+      * Note about dropactors
+
+      The spec requires this to be false by default. Currently, however, ZDoom assumes this to be true
+      for Doom format maps so any map converter converting to the ZDoomTranslated namespace should
+      set this flag for each tagged sector.
+
+   }
+
+   thing
+   {
+      skill# = <bool>			// Unlike the base spec, # can range from 1-16.
+      class# = <bool>			// Unlike the base spec, # can range from 1-16.
+      conversation = <int>		// Assigns a conversation dialogue to this thing.
+                                // Parameter is the conversation ID, 0 meaning none.
+      countsecret = <bool>;     // Picking up this actor counts as a secret.
+      arg0str = <string>;       // Alternate string-based version of arg0
+	  gravity = <float>;		// Set per-actor gravity. Positive values are multiplied with the class's property, 
+	                            // negative values are used as their absolute. Default = 1.0.
+								
+	  health = <int>;			// Set per-actor health. Positive values are multiplied with the class's property,
+								// negative values are used as their absolute. Default = 1.
+								
+	  renderstyle = <string>;	// Set per-actor render style, overriding the class default. Possible values can be "normal",
+								// "none", "add" or "additive", "subtract" or "subtractive", "stencil", "translucentstencil",
+								// "translucent", "fuzzy", "optfuzzy", "soultrans". Default is an empty string for no change.
+	  fillcolor = <integer>;    // Fill color used by the "stencil" and "translucentstencil" rendestyles, as RRGGBB value, default = 0x000000.
+	  alpha = <float>;          // Translucency of this actor (if applicable to renderstyle), default is 1.0.
+	  score = <int>;			// Score value of this actor, overriding the class default if not null. Default = 0.
+      pitch = <integer>; 		// Pitch of thing in degrees. Default = 0 (horizontal).
+      roll = <integer>; 		// Pitch of thing in degrees. Default = 0 (horizontal).
+	  scalex = <float>;         // Vertical scaling on thing. Default = 0 (ignored).
+	  scaley = <float>;         // Horizontal scaling on thing. Default = 0 (ignored).
+	  scale = <float>;        	// Vertical and horizontal scaling on thing. Default = 0 (ignored).
+
+      * Note about arg0str
+
+      For things with ACS specials (80-86 and 226), if arg0str is present and non-null, it
+      will be used as the name of the script to execute, and arg0 will be ignored.
+   }
+
+
+
+*** Special notes for map format conversions:
+
+   Setting the line's ID via special is not supported so any special using
+   this option must be converted to use the line's ID field instead.
+   Unless mentioned differently the arg being used to define the line ID
+   should be set to 0.
+   The following line specials are affected:
+
+   121: Line_SetIdentification, arg 0
+   208: TranslucentLine, arg0 (arg0 must be preserved)
+     1: Polyobj_StartLine, arg3
+     5: Polyobj_ExplicitLine, arg4
+   181: Plane_Align, arg2
+   215: Teleport_Line, arg0
+   222: Scroll_Texture_Model, arg0 (arg0 must be preserved)
+   160: Sector_3DFloor, arg4 (both uses as high-byte of tag and line ID are not supported in UDMF and must be remapped)
+
+   Some specials also allow setting the extended flags. These must also be
+   converted to explicitly setting the flags through the defined map fields.
+   This affects the following specials:
+
+   121: Line_SetIdentification, arg1
+   208: TranslucentLine, arg3
+
+   These args are to be converted as follows to flags, bit by bit:
+
+   Bit 0 (Value   1): zoneboundary
+   Bit 1 (Value   2): jumpover
+   Bit 2 (Value   4): blockfloaters
+   Bit 3 (Value   8): clipmidtex
+   Bit 4 (Value  16): wrapmidtex
+   Bit 5 (Value  32): midtex3d
+   Bit 6 (Value  64): checkswitchrange
+   Bit 7 (Value 128): firstsideonly
+
+   When used in special 208 this arg should be cleared afterward.
+
+   Special 121 is not being used by UDMF maps in ZDoom and should be completely
+   deleted after conversion.
+
+
+=======================================
+Changelog
+=======================================
+
+1.1: 27.05.2008
+Changed default light mode for sectors and sidedefs to relative and renamed
+associated properties to avoid having a non-intuitive standard value for the
+light field.
+Added 'nofakecontrast' option to sidedefs.
+
+1.2 21.08.2008
+Added smooth lighting option to linedefs
+
+1.3 12.12.2008
+Added NoRespawn sector flag
+Fixed lightfloor and lightceiling properties for sectors. They are of type 
+integer, not float
+
+1.4 27.01.2009
+Changed description of class and skill thing flags to avoid the impression that
+this uses array syntax. No functional changes
+
+1.5 22.02.2009
+Added blockprojectiles to lines and firstsideonly to conversion notes
+
+1.6 28.04.2009
+Added blockuse line flag.
+
+1.7 07.06.2009
+Added sidedef scaling properties and side specific clipmidtex and wrapmidtex.
+
+1.8 16.07.2009
+Added NoDecals sidedef option
+Fixed conversion specifications for TranslucentLine special.
+
+1.9 17.04.2010
+Changed node specifications to deprecate compression of node lump.
+
+1.10 25.04.2010
+Added 'playeruseback' line trigger flag.
+
+1.11 07.08.2010
+Added 'soundsequence' sector property.
+
+1.12 22.08.2010
+Added 'conversation' thing property.
+
+1.13 29.08.2010
+Added 'hidden' sector property.
+
+1.14 19.09.2010
+Added 'countsecret' actor property.
+
+1.15 14.12.2010
+Added vertex floor and ceiling height properties
+
+1.16 23.01.2011
+Added alphaceiling and alphafloor sector properties
+Added blocksight linedef flag
+Removed remarks of 8 being the maximum number of player classes/skill levels the menu can handle so the spec now properly lists 16 as limit.
+
+1.17 12.02.2011
+Added renderstyleceiling and renderstylefloor sector properties
+Added Sector_Set3DFloor to list of specials that need to be handled for line ID remapping
+
+1.18 17.02.2012
+Added arg0str linedef property.
+Standardized whitespace.
+
+1.19 24.02.2012
+Added back locknumber property.
+
+1.20 25.02.2012
+Added arg0str thing property.
+
+1.21 09.08.2013
+Added waterzone sector property.
+
+1.22 12.04.2014
+Added transparent line property (to be folded back to core UDMF standard), and health, score, renderstyle, fillcolor, alpha, scale, scalex, scaley, pitch and roll thing properties.
+
+1.24 14.05.2014
+Added plane equations for sector slopes. (Please read carefully to ensure proper use!)
+Changed language describing the DIALOGUE lump to mention USDF as an option.
+
+1.25 19.04.2015
+Added 'moreids' for linedefs and sectors.
+
+===============================================================================
+EOF
+===============================================================================

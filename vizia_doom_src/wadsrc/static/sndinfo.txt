@@ -1,0 +1,58 @@
+/*
+ * This is the SNDINFO for zdoom.wad. Unlike Hexen, SNDINFO lumps in pwads
+ * are additive, so your SNDINFO only needs to contain the sounds listed
+ * here that you want to change or new sounds you are defining. You do not
+ * need to edit a copy of this file. In fact, if you try to put a copy of
+ * this file in a pwad, you will get an error when ZDoom tries to load the
+ * SNDINFO in your pwad.
+ */
+
+//===========================================================================
+//
+// Generic player sounds
+//
+//===========================================================================
+
+// Use *pain in a script to play any of the pain sounds
+$random *pain			{ *pain100  *pain75  *pain50  *pain25 }
+
+//===========================================================================
+//
+// Compatibility aliases (because older ZDooms did not have them the same)
+//
+//===========================================================================
+
+// Trying to use a locked door
+$alias misc/keytry		*usefail
+
+// Pickup sounds that were not unique before
+$alias misc/health_pkup		misc/i_pkup	// Pickup health
+$alias misc/armor_pkup		misc/i_pkup	// Pickup armor
+$alias misc/ammo_pkup		misc/i_pkup	// Pickup ammo
+
+/***************************************************************************/
+/*                                                                         */
+/* ZDOOM SOUNDS AVAILABLE IN ANY GAME                                      */
+/*                                                                         */
+/***************************************************************************/
+
+world/spark1			spark1
+world/spark2			spark2
+world/spark3			spark3
+$random world/spark		{ world/spark1  world/spark2  world/spark3 }
+
+// These gets redefined below for Hexen
+world/quake			dsquake
+misc/freeze			icedth1
+misc/icebreak			icebrk1a
+
+// The released source code used a min distance of 160. Why?
+// Retail Doom and Strife use 200.
+$rolloff * 200 1200
+
+// Marine's Best Friend -- not just for marines anymore!
+dog/active			dsdgact
+dog/attack			dsdgatk
+dog/death			dsdgdth
+dog/pain			dsdgpain
+dog/sight			dsdgsit
