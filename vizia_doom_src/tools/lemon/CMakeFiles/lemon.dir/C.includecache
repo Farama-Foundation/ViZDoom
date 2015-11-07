@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/marek/Workspace/Vizia/zdoom/tools/lemon/lemon.c
+stdio.h
+-
+stdarg.h
+-
+string.h
+-
+ctype.h
+-
+stdlib.h
+-
+assert.h
+-
+unistd.h
+-
+

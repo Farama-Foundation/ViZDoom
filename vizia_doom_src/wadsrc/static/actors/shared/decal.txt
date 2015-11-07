@@ -1,0 +1,3 @@
+ACTOR Decal native
+{
+}

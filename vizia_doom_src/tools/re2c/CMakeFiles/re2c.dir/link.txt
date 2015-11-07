@@ -1,0 +1,1 @@
+/usr/bin/c++     -O3 -DNDEBUG     CMakeFiles/re2c.dir/actions.o CMakeFiles/re2c.dir/code.o CMakeFiles/re2c.dir/dfa.o CMakeFiles/re2c.dir/main.o CMakeFiles/re2c.dir/mbo_getopt.o CMakeFiles/re2c.dir/parser.o CMakeFiles/re2c.dir/scanner.o CMakeFiles/re2c.dir/substr.o CMakeFiles/re2c.dir/translate.o  -o re2c -rdynamic 

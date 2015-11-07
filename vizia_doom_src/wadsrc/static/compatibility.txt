@@ -1,0 +1,408 @@
+6DC9F6CCEAE7A91AEC48EBE506F22BC4 // void.wad MAP01
+{
+	// Slightly squash the pillars in the starting room with "stimpacks"
+	// floating on them so that they can be obtained.
+	sectorflooroffset 62 -8
+	setwallyscale 286 front bot 1.090909
+	setwallyscale 287 front bot 1.090909
+	setwallyscale 288 front bot 1.090909
+	setwallyscale 289 front bot 1.090909
+	
+	sectorflooroffset 63 -8
+	setwallyscale 290 front bot 1.090909
+	setwallyscale 291 front bot 1.090909
+	setwallyscale 292 front bot 1.090909
+	setwallyscale 293 front bot 1.090909
+	
+	sectorflooroffset 118 -8
+	setwallyscale 710 front bot 1.090909
+	setwallyscale 711 front bot 1.090909
+	setwallyscale 712 front bot 1.090909
+	setwallyscale 713 front bot 1.090909
+	
+	sectorflooroffset 119 -8
+	setwallyscale 714 front bot 1.090909
+	setwallyscale 715 front bot 1.090909
+	setwallyscale 716 front bot 1.090909
+	setwallyscale 717 front bot 1.090909
+
+	setslopeoverflow
+}
+
+B2D8DA03489D1C67F60DC87FBC4EA338 // map01 - Massmouth 2
+801304DA3784308D333951B5E0CF8E9E // map02
+6EA4D5CAEA16857B2A882467E1633BC2 // map03
+A4E01929938958BB9DA9EF3066802184 // map04
+54F4B897BAA50F070CECA25555031C15 // map05
+BB93EA15CA068FBC7E0381E4E959207C // map06
+960397183E44D26212E8876681D2801D // map07
+E4D05765BDB5BF9D22F0548E2807BAE9 // map08
+696203E7A2C8A14C00F8824F74BD3D53 // map09
+EEFB83ABB26A473382FAA063CF120501 // map10
+FD031167E57BD1EEB65279F5895300F2 // map11
+9C69328D5B82392DEA1C0552CF283F38 // map12
+16569BB1F80D52304319DDD0C2DE4B5A // map13
+1760E2F04B4E2C5CDD235855FCAB8327 // map14
+A80E7EE40E0D0C76A6FBD242BE29FE27 // map15
+2F1F8E27FBB5EF21AFBE1F3B13C03037 // map16
+1CE294781A2455DE72C197E0B3DF6212 // map31
+{
+	setslopeoverflow
+	resetplayerspeed
+}
+
+6DA6FCBA8089161BDEC6A1D3F6C8D60F // Eternal Doom MAP25
+{
+	stairs
+	maskedmidtex
+	corpsegibs
+	vileghosts
+}
+
+10E1E2B36302D31AC4AE68C84B5DC457 // Eternal Doom MAP28
+{
+	// What's really sad is that I got a separate bug report for this map
+	// years ago, but nobody made mention of this problem back then.
+	trace
+	useblocking
+}
+
+// mostly cosmetic (except AV MAP07 and MM2 MAP25)
+0EECBF37B328C9CAAF20DED4949A4157 // Sudtic e2m6
+4ACE0644883BDA0CBA254FA02C9ACF83 // Teutic e3m4
+9F2BE080A33F775294BD78822456924E // Nukemine e1m4
+CD31793D3A4B00231B124C0C23649644 // Strain map02
+19094AEB53D12EFC8E0568424F659F11 // Strain map31
+60733BDD1AA3F4B2262ADC79B2E1B5AB // Memento Mori map29
+F84AB4557464A383E93F37CD3A82AC48 // MM2 map03
+1497894956B3C8EBE8A240B7FDD99C6A // MM2 map25
+941E4CB56EE4184E0B1ED43486AB0BBF // AV map07
+{
+	shorttex
+}
+
+2FE901F659A16E58D7BCD7C30021C238 // AV map15
+74AF92E96FE10D039D31C1F6526D7D7C // Real World map11
+{
+	trace
+}
+
+9D50EBE17CEC78938C7A668DB0768611 // Strain map07: Make the exit accessible
+{
+	clearlineflags 1021 1
+}
+
+71C2E6D9CFA3D8750C6A9599FB2453BD // Hacx map03: There are some switches behind 
+96368EB950E33AF62EA6423434E3CEF7 // HacX map17: shootable covers in these levels
+BA530202AF0BA0C6CBAE6A0C7076FB72 // Requiem map04
+{
+	useblocking
+}
+
+// Cosmetic, but that option was added just for this map so it'd be a shame not to use it
+6BC4D6B73165D8C86CF190D44C87EE70 // Suspended in Dusk map01
+{
+	sectorsounds
+}
+
+7F24BFC1791F0107CE8F30B7FD3D9802 // Community Chest map29
+{
+	wallrun
+}
+
+// Doomsday of UAC: both the barons and the cyberdemon need to activate sector tagged 666
+32FC3115A3162B623F0D0F4E7DEE6861 // e1m8
+{
+	anybossdeath
+}
+
+// Arch-Vile ghost monster effect is used by the following maps
+145C4DFCF843F2B92C73036BA0E1D98A // Hell Revealed map26
+5379C080299EB961792B50AD96821543 // Hell to Pay map14
+7837B5334A277F107515D649BCEFB682 // Hell to Pay map22
+2EEB1E12FA9F9545DE9D99990A4A78E5 // Icarus map24
+65A53A09A09525AE42EA210BF879CD37 // Plutonia 2 map32
+2499CF9A9351BE9BC4E9C66FC9F291A7 // Requiem map23
+3CA5493FEFF2E27BFD4181E6C4A3C2BF // The Waterfront map01
+CBDFEFAC579A62DE8F1B48CA4A09D381 // gather2.wad map05 and darkside.wad map01
+C7A2FAFB0AFB2632C50AD625CDB50E51 // Reverie map18
+9E5724BC6135AA6F86EE54FD4D91F1E2 // Project X map14
+01899825FFEAE016D39C02A7DA4B218F // Archie map01
+1D9F3AFDC2517C2E450491ED13896712 // Seej map01
+0AE745A3AB86D15FB2FB74489962C421 // 6pack2 map02
+2EA635C6B6AEC76B6BC77448DAB22F9A // Squadron 417 map21
+1E998262EE319B7D088E01DE782E6B41 // Mayhem 2013 map05
+A81E2734F735A82720D8E0F1442BA0C9 // Imp's [sic] are Ghost Gods map01
+{
+	corpsegibs
+	vileghosts
+}
+
+// invert the sorting order of overlapping sprites at the same spot
+551D6B416EB3324790BC0F0F74B49600 // Strain map13
+2F49C29691F8565F0B99B27FCF2627E6 // Astrostein 1 MAP01
+55A741F9C2955C2B06F2387E45ED6C62 // MAP02
+4E7286B735671A942C54FAC6CB52A8C3 // MAP03
+825772094FF3569FC3722145F82F820A // MAP04
+CB6CF6BE0EA4A6AB9830FBB7F9192B80 // MAP05
+AB24CCF84C2FE1A543FE033589BD1FBC // MAP06
+6BE0908B4DAFF53AA0A7493C04A608A4 // MAP07
+305275E5E07755E17AAB064981279295 // MAP08
+A8FBF3600088E79D02283C40D12B7F26 // MAP09
+A8FBF3600088E79D02283C40D12B7F26 // MAP09
+F0C95C76237DF617560577767EC21E1C // MAP10
+2A2AF2CDAB7E7A66D28AFC3AA6243DCC // Astrostein 2 map01
+0667DA831EB293D3387579565C11F0DD // map02
+76DA72420EBE0A53D861373D7123DE33 // map03
+5A4F8186580FFE41BCD80960B7F19CA8 // map04
+E3A1EE2A0A2FB27496074057E3FA82F0 // map05
+1CA60DE4062F41DC1A39396228913882 // map06
+DABC3033A734DEF402A8FEF6C2FEDCC2 // map07
+2E8211EA051EA8C3241859D1854386D6 // map08
+EAD27C506AFC856BE07DDDDED20D7ED0 // map09
+7DA47B044E2D5D17EAE2960BBFAEDE1A // Astrostein 3 map10
+46E0F4529E8E396DEDC8DB83443078A7 // map13
+2742D556921FBE753C16175F0C980091 // map14
+AB1A6C1D3898D4259C0645306939374C // map15
+0599F0D0CC1F41F52B7E8214D0348EEA // map17
+CA267398C9B3A8F79349D3394F8B2106 // map20
+{
+	spritesort
+}
+
+DCE862393CAAA6FF1294FB7056B53057 // UAC Ultra map07: Contains a scroller depending on Boom side effects
+{
+	setlinespecial 391 Sector_CopyScroller 99 6 0 0 0
+}
+
+1D9E43988940CCD3555724E15DD8B1AB // Happy Time Circus map01 has bad teleporters
+040F83028FFA74456E335ED300BE2C33 // MAP17 (TownInfection.wad)
+156FA31F5FF72A87BF345B68029D3051 // MAP02 (nprject5.wad)
+AF40D0E49BD1B76D4B1AADD8212ADC46 // MAP01 (the wad that shall not be named =P)
+91341EF9250760C9B550752E1D91CC24 // rock and roll rebel radio against satan city (rnrrrasc.wad) map01
+{
+	ignoreteleporttags
+}
+
+8FF30D57F6CE64F085A6567EC302842A // Enjay's test map for this flag
+9D7893D09FEE55C31B73C670DF850962 // Memento Mori II, map12
+91E173901E6F3800B81AB646976247CD // Claustrophobia 1024, map01
+{
+	badangles
+}
+
+E2B5D1400279335811C1C1C0B437D9C8 // Deathknights of the Dark Citadel, map54
+{
+	// This map has two gear boxes which are flagged for player cross
+	// activation instead of the proper player uses activation.
+	setactivation 963 2
+	setactivation 943 2
+}
+
+2B65CB046EA40D2E44576949381769CA // Commercial Doom e3m4
+{
+	// This line is erroneously specified as Door_Raise that monsters
+	// can operate. If they do, they block you off from half the map. Change
+	// this into a one-shot Door_Open so that it won't close.
+	setlinespecial 1069 Door_Open 0 16 0 0 0
+	clearlineflags 1069 0x200
+}
+
+3F249EDD62A3A08F53A6C53CB4C7ABE5 // Artica 3 map01
+{
+	clearlinespecial 66
+}
+
+8FA29398776146189396AA1AC6BB9E13 // Roger Ritenour's Phobos map03
+{
+	floormove
+}
+
+// There is a special at the beginning of the level which relies on the Pain Elemental's lost soul limit.
+811A0C97777A198BC9B2BB558CB46E6A // Hell Revealed map19
+{
+	limitpain
+}
+
+// Daedalus: Fix SPAC_Push lines that aren't on lines you can actually push
+3ABB618A475BCBC531B457BAA6E4E70A // map04
+{
+	// forcefields
+	// the lines we're setting are already set for repeatable SPAC_Push
+	clearlinespecial 90
+	setlinespecial 3749 ACS_Execute 23 0 1 0 0
+	clearlinespecial 94
+	setlinespecial 3766 ACS_Execute 23 0 2 0 0
+	clearlinespecial 92
+	setlinespecial 3777 ACS_Execute 23 0 3 0 0
+	clearlinespecial 98
+	setlinespecial 3784 ACS_Execute 23 0 4 0 0
+}
+795FDE3CC1C97140F326D0152B3FCE2A // map24
+{
+	// doors
+	clearlinespecial 1512
+	setlinespecial 1505 Door_Raise 213 50 100 0 0
+	setlineflags 1505 0x200		// repeatable
+	setactivation 1505 16		// SPAC_Push
+	clearlinespecial 1514
+	setlinespecial 1508 Door_Raise 213 50 100 0 0
+	setlineflags 1508 0x200
+	setactivation 1508 16
+	
+	clearlinespecial 1525
+	setlinespecial 1522 Door_Raise 214 50 100 0 0
+	setlineflags 1522 0x200
+	setactivation 1522 16
+	clearlinespecial 1530
+	setlinespecial 1527 Door_Raise 214 50 100 0 0
+	setlineflags 1527 0x200
+	setactivation 1527 16
+	
+	clearlinespecial 5277
+	setlinespecial 5209 Door_Raise 24 20 255 0 0
+	setlineflags 5209 0x200
+	setactivation 5209 16
+	clearlinespecial 5714
+	setlinespecial 5267 Door_Raise 24 20 255 0 0
+	setlineflags 5267 0x200
+	setactivation 5267 16
+	
+	clearlinespecial 5715
+	setlinespecial 5229 Door_Raise 24 20 255 0 0
+	setlineflags 5229 0x200
+	setactivation 5229 16
+	clearlinespecial 5345
+	setlinespecial 5232 Door_Raise 24 20 255 0 0
+	setlineflags 5232 0x200
+	setactivation 5232 16
+	
+	// consoles?
+	clearlinespecial 3639
+	setlinespecial 3633 ACS_Execute 14 0 0 0 0
+	setlinespecial 3635 ACS_Execute 14 0 0 0 0
+	setlineflags 3633 0x200
+	setlineflags 3635 0x200
+	setactivation 3633 16
+	setactivation 3635 16
+
+	clearlinespecial 3647
+	setlinespecial 3644 ACS_Execute 14 0 0 0 0
+	setlinespecial 3641 ACS_Execute 14 0 0 0 0
+	setlineflags 3644 0x200
+	setlineflags 3641 0x200
+	setactivation 3644 16
+	setactivation 3641 16
+	
+	clearlinespecial 3659
+	clearlinespecial 3657
+	setlinespecial 3653 ACS_Execute 13 0 0 0 0
+	setlinespecial 3655 ACS_Execute 13 0 0 0 0
+	setlinespecial 3651 ACS_Execute 13 0 0 0 0
+	setlinespecial 3654 ACS_Execute 13 0 0 0 0
+	setlineflags 3653 0x200
+	setlineflags 3655 0x200
+	setlineflags 3651 0x200
+	setlineflags 3654 0x200
+	setactivation 3653 16
+	setactivation 3655 16
+	setactivation 3651 16
+	setactivation 3654 16
+}
+
+// Community Chest 3
+F481922F4881F74760F3C0437FD5EDD0 // map03
+{
+	// I have no idea how this conveyor belt setup manages to work under Boom.
+	// Set the sector the voodoo doll ends up standing on when sectors tagged
+	// 1 are raised so that the voodoo doll will be carried.
+	setlinespecial 3559 Sector_CopyScroller 17 6 0 0 0
+}
+
+7C1913DEE396BA26CFF22A0E9369B7D2 // Nuke Mine, e1m2
+{
+	pointonline
+}
+
+5B862477519B21B30059A466F2FF6460 // Khorus, map08
+{
+	// This map uses a voodoo conveyor with slanted walls to shunt the
+	// voodoo doll into side areas. For some reason, this voodoo doll
+	// is unable to slide on them, because the slide calculation gets
+	// them slightly inside the walls and thinks they are stuck. I could
+	// not reproduce this with the real player, which is what has me
+	// stumped. So, help them out be attaching some ThrustThing specials
+	// to the walls.
+	setlinespecial 443 ThrustThing 96 4 0 0 0
+	setlineflags 443 0x200		// repeatable
+	setactivation 443 16		// SPAC_Push
+	setlinespecial 455 ThrustThing 96 4 0 0 0
+	setlineflags 455 0x200		// repeatable
+	setactivation 455 16		// SPAC_Push
+}
+
+8B2AC8D4DB4A49A5DCCBB067E04434D6 // The Hell Factory Hub One, map04
+65A1EB4C87386F290816660A52932FF1 // Master Levels, garrison.wad
+{
+	rebuildnodes
+}
+
+1891E029994B023910CFE0B3209C3CDB // Ultimate Simplicity, map07
+{
+	// It is possible to get stuck on skill 0 or 1 when no shots have been fired
+	// after sector 17 became accessible and before entering famous mancubus room.
+	// Monsters from the mentioned sector won't be alerted and so 
+	// they won't teleport into the battle. ACS will wait forever for their deaths.
+	setlinespecial 397 NoiseAlert 0 0 0 0 0
+	setlinespecial 411 NoiseAlert 0 0 0 0 0
+}
+
+952CC8D03572E17BA550B01B366EFBB9 // Cheogsh map01
+{
+	// make the blue key spawn above the 3D floor
+	setthingz 918 296
+}
+
+64B6CE3CB7349B6F6B1A885C449ACB96 // Super Sonic Doom, map31
+{
+	// During the end-of-level tally, both PROP_FROZEN and PROP_TOTALLYFROZEN
+	// are set, but only PROP_TOTALLYFROZEN is cleared, so PROP_FROZEN is
+	// still set when returning to the origin map.
+	linkfrozenprops
+}
+
+D62DCA9EC226DE49108D5DD9271F7631 // Cheogsh 2 map04
+{
+	// Stuff in megasphere cage is positioned too low
+	setthingz 1640 528
+	setthingz 1641 528
+	setthingz 1642 528
+	setthingz 1643 528
+	setthingz 1644 528
+	setthingz 1645 528
+	setthingz 1646 528
+	setthingz 1647 528
+	setthingz 1648 528
+	setthingz 1649 528
+}
+
+E89CCC7E155F1032F693359CC219BE6C // hexen.wad map30
+B9DFF13207EACAC675C71D82624D0007 // XtheaterIII map01
+{
+	DisablePushWindowCheck
+}
+
+A53AE580A4AF2B5D0B0893F86914781E // TNT: Evilution map31
+{
+	setthingflags 470 2016
+}
+
+D0139194F7817BF06F3988DFC47DB38D // Whispers of Satan map29
+{
+	nopassover
+}
+
+D7F6E9F08C39A17026349A04F8C0B0BE // Return to Hadron, e1m9
+{
+	pointonline
+}

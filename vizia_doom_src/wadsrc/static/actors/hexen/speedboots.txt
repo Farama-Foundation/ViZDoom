@@ -1,0 +1,18 @@
+
+
+ACTOR ArtiSpeedBoots : PowerupGiver
+{
+	+FLOATBOB
+	+COUNTITEM
+	+INVENTORY.PICKUPFLASH
+	Inventory.Icon ARTISPED
+	Inventory.PickupMessage "$TXT_ARTISPEED"
+	Tag "$TAG_ARTISPEED"
+	Powerup.Type Speed
+	States
+	{
+	Spawn:
+		SPED ABCDEFGH 3 Bright
+		Loop
+	}
+}

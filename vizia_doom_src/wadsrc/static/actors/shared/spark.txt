@@ -1,0 +1,8 @@
+
+ACTOR Spark native
+{
+	+NOSECTOR
+	+NOBLOCKMAP
+	+NOGRAVITY
+	+DONTSPLASH
+}

@@ -1,0 +1,1 @@
+/usr/bin/cc    -O3 -DNDEBUG     CMakeFiles/lemon.dir/lemon.o  -o lemon -rdynamic 
