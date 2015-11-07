@@ -21,8 +21,8 @@ make_action(action)
 parametry wejściowe:
 	action - Akcja w postaci listy booli
 return value:
-	next_state, reward
-	(następny stan i nagroda za właśnie wykonaną akcję)
+	reward
+	nagroda za właśnie wykonaną akcję
 
 Funkcja powinna zupdateować wewnętrzny stan gry (kolejna klatka), wyliczyć nagrodę (reward) dla tej akcji i stanu. Zwraca następny stan (None - odpowiednik nulla - jeśli gra się skończyła)
 

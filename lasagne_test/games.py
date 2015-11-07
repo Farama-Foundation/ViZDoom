@@ -104,7 +104,6 @@ class ShootingDotGame:
 				self._state = None
 
 			return self.get_state(), reward
-
 	def get_state(self):
 		if self._state is None:
 			img = None
