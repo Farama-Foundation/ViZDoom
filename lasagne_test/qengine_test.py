@@ -4,6 +4,8 @@ import numpy as np
 from qengine import QEngine
 from games import ShootingDotGame
 from evaluators import MLPEvaluator
+from evaluators import CNNEvaluator
+
 import random 
 from time import time
 from time import sleep
@@ -27,9 +29,23 @@ def create_mlp_evaluator(state_format, actions_number, batch_size):
 	mlp_args["network_args"] = network_args
 	return MLPEvaluator(**mlp_args)
 
+def create_cnn_evaluator(state_format, actions_number, batch_size):
+	cnn_args = {}
+	cnn_args["state_format"] = state_format
+	cnn_args["actions_number"] = actions_number
+	cnn_args["batch_size"] = batch_size
+	network_args ={"hidden_units":[500],"learning_rate":0.01,"hidden_layers":1}
+	cnn_args["network_args"] = network_args
+
+	network_args["updates"] = lasagne.updates.nesterov_momentum
+	network_args["pool_size"] = [(2,2),(2,2)]
+	network_args["num_filters"] = [16,16]
+	network_args["filter_size"] = [4,4]
+	return CNNEvaluator(**cnn_args)
+
 game_args = {}
-game_args['width'] = 11
-game_args['height'] = 5
+game_args['width'] = 21
+game_args['height'] = 11
 game_args['hit_reward'] = 1.0
 game_args['max_moves'] = 50
 #should be positive cause it's treatet as a penalty
@@ -37,7 +53,8 @@ game_args['miss_penalty'] = 0.05
 #should be negative cause it's treatet as a reward
 game_args['living_reward'] = -0.05
 game_args['random_background'] = True
-game_args['ammo'] = 5
+game_args['ammo'] = np.inf
+game_args['add_dimension'] = True
 game = ShootingDotGame(**game_args)
 
 engine_args = {}

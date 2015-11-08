@@ -9,7 +9,7 @@ from theano.compile.nanguardmode import NanGuardMode
 class MLPEvaluator:
 
 	def __init__(self, state_format, actions_number, batch_size, network_args):
-		print "Initializing MLP network..."
+		
 		self._misc_state_included = (state_format[1] > 0)
 		self.online_mode = False
 
@@ -48,6 +48,7 @@ class MLPEvaluator:
 		self._initialize_network(**network_args)
 		
 	def _initialize_network(self,img_shape, misc_shape,output_size, hidden_units = [500], learning_rate =0.01,hidden_layers = 1, hidden_nonlin = lasagne.nonlinearities.tanh, updates = lasagne.updates.sgd):
+		print "Initializing MLP network..."
 		#image input layer
 		network = lasagne.layers.InputLayer(shape = img_shape, input_var = self._image_inputs)
 		#hidden layers
@@ -133,6 +134,46 @@ class MLPEvaluator:
 		return a
 
 
+class CNNEvaluator(MLPEvaluator):
+	def __init__(self, **kwargs):
+		MLPEvaluator.__init__(self,**kwargs)
 
+	def _initialize_network(self,img_shape, misc_shape,output_size, conv_layers = 2, num_filters = [32,32], filter_size = [(5,5),(5,5)], hidden_units = [256], pool_size = [(2,2),(2,2)], learning_rate =0.01, hidden_layers = 1, conv_nonlin =lasagne.nonlinearities.rectify, hidden_nonlin = lasagne.nonlinearities.tanh, updates = lasagne.updates.sgd):
+		
+		
 
-
+		print "Initializing CNN ..."
+		#image input layer
+		network = lasagne.layers.InputLayer(shape = img_shape, input_var = self._image_inputs)
+		
+		#convolutional and pooling layers
+		for i in range(conv_layers):
+			network = lasagne.layers.Conv2DLayer(network, num_filters=num_filters[i], filter_size = filter_size[i],nonlinearity=conv_nonlin)
+	    	network = lasagne.layers.MaxPool2DLayer(network, pool_size=pool_size[i])
+		#dense layers
+		for i in range(hidden_layers):
+			network = lasagne.layers.DenseLayer(network, hidden_units[i] ,nonlinearity = hidden_nonlin)	
+		if self._misc_state_included:
+			#misc input layer
+			misc_input_layer = lasagne.layers.InputLayer(shape = misc_shape, input_var = self._misc_inputs)
+			#merge layer
+			network = lasagne.layers.ConcatLayer([network, misc_input_layer])
+			
+		#output layer
+		network = lasagne.layers.DenseLayer(network, output_size, nonlinearity = None)
+		self._network = network
+		
+		predictions = lasagne.layers.get_output(network)
+		loss =  lasagne.objectives.squared_error(predictions, self._targets).mean()
+		params = lasagne.layers.get_all_params(network, trainable = True)
+		updates = updates(loss, params, learning_rate = learning_rate)
+		
+		#mode = NanGuardMode(nan_is_error=True, inf_is_error=True, big_is_error=True)
+		mode = None
+		if self._misc_state_included:
+			self._learn = theano.function([self._image_inputs,self._misc_inputs,self._targets], loss, updates = updates, mode = mode, name = "learn_fn")
+			self._evaluate = theano.function([self._image_inputs,self._misc_inputs], predictions,mode = mode, name = "eval_fn")
+		else:	
+			self._learn = theano.function([self._image_inputs,self._targets], loss, updates = updates)
+			self._evaluate = theano.function([self._image_inputs], predictions)
+	

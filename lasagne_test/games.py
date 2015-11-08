@@ -4,7 +4,7 @@ import sys
 
 class ShootingDotGame:
 	
-	def __init__(self, width, height, dtype = np.float32, random_background = False,max_moves=np.inf,living_reward=-1,miss_penalty=10,hit_reward=100, ammo = np.inf):
+	def __init__(self, width, height, add_dimension =False,dtype = np.float32, random_background = False,max_moves=np.inf,living_reward=-1,miss_penalty=10,hit_reward=100, ammo = np.inf):
 		
 		self._ammo = np.float32(max(ammo,0))
 		self._dtype = dtype
@@ -17,11 +17,16 @@ class ShootingDotGame:
 		self._hit_reward = hit_reward
 		self._max_moves = max_moves
 		self._random_background = random_background
-		if ammo < np.inf:
-			self._state_format = [(self._y, self._x),1]
+		self._add_dimension = add_dimension
+		if self._add_dimension:
+			self._state_format = [(1,self._y, self._x)]
 		else:
-			self._state_format = [(self._y, self._x),0]
+			self._state_format = [(self._y, self._x)]
 
+		if ammo < np.inf:
+			self._state_format.append(1)
+		else:
+			self._state_format.append(0)
 		self._current_ammo = np.ndarray([1],dtype = np.float32)
 		self._action_format = 3
 		self._state = None
@@ -103,10 +108,11 @@ class ShootingDotGame:
 		if self._state is None:
 			img = None
 		else:
+			ret_val = [self._state.reshape(self._state_format[0]).copy()]
 			if self._ammo < np.inf:
-				return [self._state.copy(), self._current_ammo/self._ammo]
-			else:
-				return [self._state.copy()]
+				ret_val.append(self._current_ammo/self._ammo)
+			
+			return ret_val
 
 	def average_best_result(self):
 		best = self._hit_reward + self._living_reward
