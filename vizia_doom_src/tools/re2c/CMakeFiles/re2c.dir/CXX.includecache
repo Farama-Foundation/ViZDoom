@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/actions.cc
+/home/ebony/vizia/vizia_doom_src/tools/re2c/actions.cc
 time.h
 -
 string.h
@@ -18,19 +18,19 @@ iomanip
 cctype
 -
 globals.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/globals.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/globals.h
 parser.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/parser.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/parser.h
 dfa.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/dfa.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/dfa.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/basics.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/basics.h
 config.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/config.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/config.h
 config_w32.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/config_w32.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/config_w32.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/code.cc
+/home/ebony/vizia/vizia_doom_src/tools/re2c/code.cc
 stdlib.h
 -
 string.h
@@ -42,33 +42,33 @@ iomanip
 iostream
 -
 substr.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/substr.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/substr.h
 globals.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/globals.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/globals.h
 dfa.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/dfa.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/dfa.h
 parser.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/parser.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/parser.h
 code.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/code.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/code.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/code.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/code.h
 re.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/re.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/re.h
 dfa.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/dfa.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/dfa.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/code_names.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/code_names.h
 string
 -
 map
 -
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/config.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/config.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/config_w32.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/config_w32.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/dfa.cc
+/home/ebony/vizia/vizia_doom_src/tools/re2c/dfa.cc
 stdlib.h
 -
 ctype.h
@@ -76,23 +76,23 @@ ctype.h
 string.h
 -
 globals.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/globals.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/globals.h
 substr.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/substr.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/substr.h
 dfa.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/dfa.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/dfa.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/dfa.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/dfa.h
 iosfwd
 -
 map
 -
 re.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/re.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/re.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/globals.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/globals.h
 basics.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/basics.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/basics.h
 set
 -
 algorithm
@@ -100,19 +100,19 @@ algorithm
 string
 -
 stream_lc.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/stream_lc.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/stream_lc.h
 code_names.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/code_names.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/code_names.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/ins.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/ins.h
 basics.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/basics.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/basics.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/main.cc
+/home/ebony/vizia/vizia_doom_src/tools/re2c/main.cc
 config.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/config.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/config.h
 config_w32.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/config_w32.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/config_w32.h
 fstream
 -
 iostream
@@ -122,15 +122,15 @@ stdlib.h
 string.h
 -
 globals.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/globals.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/globals.h
 parser.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/parser.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/parser.h
 dfa.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/dfa.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/dfa.h
 mbo_getopt.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/mbo_getopt.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/mbo_getopt.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/mbo_getopt.cc
+/home/ebony/vizia/vizia_doom_src/tools/re2c/mbo_getopt.cc
 stdio.h
 -
 string.h
@@ -140,13 +140,13 @@ assert.h
 stdlib.h
 -
 mbo_getopt.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/mbo_getopt.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/mbo_getopt.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/mbo_getopt.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/mbo_getopt.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/parser.cc
+/home/ebony/vizia/vizia_doom_src/tools/re2c/parser.cc
 config.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/config.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/config.h
 time.h
 -
 string.h
@@ -156,11 +156,11 @@ stdlib.h
 iostream
 -
 globals.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/globals.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/globals.h
 parser.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/parser.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/parser.h
 basics.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/basics.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/basics.h
 stddef.h
 -
 libintl.h
@@ -176,29 +176,29 @@ stdlib.h
 stdio.h
 -
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/parser.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/parser.h
 scanner.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/scanner.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/scanner.h
 re.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/re.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/re.h
 iosfwd
 -
 map
 -
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/re.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/re.h
 iostream
 -
 set
 -
 token.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/token.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/token.h
 ins.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/ins.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/ins.h
 globals.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/globals.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/globals.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/scanner.cc
+/home/ebony/vizia/vizia_doom_src/tools/re2c/scanner.cc
 stdlib.h
 -
 string.h
@@ -208,29 +208,29 @@ iostream
 sstream
 -
 scanner.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/scanner.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/scanner.h
 parser.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/parser.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/parser.h
 y.tab.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/y.tab.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/y.tab.h
 globals.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/globals.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/globals.h
 dfa.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/dfa.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/dfa.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/scanner.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/scanner.h
 iosfwd
 -
 string
 -
 token.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/token.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/token.h
 re.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/re.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/re.h
 globals.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/globals.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/globals.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/stream_lc.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/stream_lc.h
 iosfwd
 -
 fstream
@@ -240,31 +240,31 @@ assert.h
 stdio.h
 -
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/substr.cc
+/home/ebony/vizia/vizia_doom_src/tools/re2c/substr.cc
 string.h
 -
 stdlib.h
 -
 substr.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/substr.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/substr.h
 globals.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/globals.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/globals.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/substr.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/substr.h
 iostream
 -
 string
 -
 basics.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/basics.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/basics.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/token.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/token.h
 substr.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/substr.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/substr.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/translate.cc
+/home/ebony/vizia/vizia_doom_src/tools/re2c/translate.cc
 globals.h
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/globals.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/globals.h
 
-/home/marek/Workspace/Vizia/zdoom/tools/re2c/y.tab.h
+/home/ebony/vizia/vizia_doom_src/tools/re2c/y.tab.h
 

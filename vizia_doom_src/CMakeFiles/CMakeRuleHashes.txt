@@ -1,0 +1,9 @@
+# Hashes of file build rules.
+81ddccd836b169a578757b63cca10a8c gdtoa/arith.h
+0d97b751940dbc7160555a24ea892c83 gdtoa/gd_qnan.h
+8f4b626035223256f92bc7f4a9f5b2a9 src/CMakeFiles/revision_check
+1a3c818edc2a20c2140314bae5ee7dae src/CMakeFiles/zdoom.dir/asm_x86_64/tmap3.o
+1082643111998a07183d3ca462cf820a src/sc_man_scanner.h
+d57ab76ce4e46e550eca1a990c2f49c3 src/xlat_parser.c
+7ae71dfe33863dac2888202993890026 wadsrc/CMakeFiles/pk3
+b5df38b930ffacf775c4927f22d04a27 zdoom.pk3

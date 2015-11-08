@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/marek/Workspace/Vizia/zdoom/tools/zipdir/zipdir.c
+/home/ebony/vizia/vizia_doom_src/tools/zipdir/zipdir.c
 sys/stat.h
 -
 sys/types.h
@@ -30,15 +30,15 @@ stdlib.h
 time.h
 -
 zlib.h
-/home/marek/Workspace/Vizia/zdoom/tools/zipdir/zlib.h
+/home/ebony/vizia/vizia_doom_src/tools/zipdir/zlib.h
 bzlib.h
-/home/marek/Workspace/Vizia/zdoom/tools/zipdir/bzlib.h
+/home/ebony/vizia/vizia_doom_src/tools/zipdir/bzlib.h
 LzmaEnc.h
-/home/marek/Workspace/Vizia/zdoom/tools/zipdir/LzmaEnc.h
+/home/ebony/vizia/vizia_doom_src/tools/zipdir/LzmaEnc.h
 7zVersion.h
-/home/marek/Workspace/Vizia/zdoom/tools/zipdir/7zVersion.h
+/home/ebony/vizia/vizia_doom_src/tools/zipdir/7zVersion.h
 ../../ppmd/PPMd.h
-/home/marek/Workspace/Vizia/zdoom/ppmd/PPMd.h
+/home/ebony/vizia/vizia_doom_src/ppmd/PPMd.h
 
 lzma/C/7zVersion.h
 

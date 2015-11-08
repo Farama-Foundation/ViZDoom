@@ -1,7 +1,7 @@
 #include <Python.h>
 #include <numpy/arrayobject.h>
 #include "chi2.h"
-
+#include "dot_shooting.h"
 /* Docstrings */
 static char module_docstring[] =
     "Vizia api in python";
@@ -9,7 +9,6 @@ static char module_docstring[] =
 
 /* Available functions */
 static PyObject *api_chi2(PyObject *self, PyObject *args);
-static PyObject *api_add(PyObject *self, PyObject *args);
 static PyObject *api_nothing(PyObject *self, PyObject *args);
 static PyObject *api_dictionary(PyObject *self, PyObject *args);
 static PyObject *api_ndarray(PyObject *self, PyObject *args);
@@ -111,7 +110,11 @@ static PyObject *api_ndarray(PyObject *self, PyObject *args)
     }
     //return Py_None;
     PyObject* array = PyArray_SimpleNewFromData(1, dims, NPY_FLOAT32, data);
-    return array;
+    PyObject* array2 = PyArray_SimpleNewFromData(1, dims, NPY_FLOAT32, data);
+    PyObject* list = PyList_New(0);
+    PyList_Append(list,array);
+    PyList_Append(list,array2);
+    return list;
 }
 static PyObject *api_nothing(PyObject *self, PyObject *args)
 {

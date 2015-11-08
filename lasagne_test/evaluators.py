@@ -8,7 +8,7 @@ from theano.compile.nanguardmode import NanGuardMode
 
 class MLPEvaluator:
 
-	def __init__(self, state_format, actions_number, batch_size,hidden_units = 500, learning_rate =0.01,hidden_layers = 1, hidden_nonlin = lasagne.nonlinearities.tanh):
+	def __init__(self, state_format, actions_number, batch_size,hidden_units = 500, learning_rate =0.01,hidden_layers = 1, hidden_nonlin = lasagne.nonlinearities.tanh, updates = lasagne.updates.sgd):
 		print "Initializing MLP network..."
 		self._misc_state_included = (state_format[1] > 0)
 		
@@ -59,7 +59,7 @@ class MLPEvaluator:
 		predictions = lasagne.layers.get_output(network)
 		loss =  lasagne.objectives.squared_error(predictions, targets).mean()
 		params = lasagne.layers.get_all_params(network, trainable = True)
-		updates = lasagne.updates.sgd(loss, params, learning_rate = learning_rate)
+		updates = updates(loss, params, learning_rate = learning_rate)
 		
 		#mode = NanGuardMode(nan_is_error=True, inf_is_error=True, big_is_error=True)
 		mode = None

@@ -28,7 +28,6 @@ class ShootingDotGame:
 		self._finished = True
 		self._summary_reward = 0
 
-
 	def is_finished(self):
 		return self._finished
 
@@ -66,7 +65,7 @@ class ShootingDotGame:
 			return None
 		else:
 			
-			reward=self._living_reward
+			reward = self._living_reward
 			self._movesMade += 1
 
 			#right
@@ -76,7 +75,7 @@ class ShootingDotGame:
 					self._aimX -= 1
 					self._state[self._aimY,self._aimX] = 1.0
 			#left
-			if action[1] and not action[0]:
+			elif action[1] and not action[0]:
 				if self._aimX < self._state.shape[1]-1:
 					self._state[self._aimY,self._aimX] = 0.0
 					self._aimX += 1
@@ -93,7 +92,7 @@ class ShootingDotGame:
 					self._current_ammo[0] -= 1
 			
 			
-			self._summary_reward+=reward
+			self._summary_reward += reward
 
 			if self._movesMade >= self._max_moves:
 				self._finished = True

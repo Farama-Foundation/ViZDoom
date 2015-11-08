@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/marek/Workspace/Vizia/zdoom/tools/updaterevision/updaterevision.c
+/home/ebony/vizia/vizia_doom_src/tools/updaterevision/updaterevision.c
 stdio.h
 -
 stdlib.h
