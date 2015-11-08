@@ -44,14 +44,14 @@ def create_cnn_evaluator(state_format, actions_number, batch_size):
 	return CNNEvaluator(**cnn_args)
 
 game_args = {}
-game_args['width'] = 21
-game_args['height'] = 11
+game_args['width'] = 31
+game_args['height'] = 21
 game_args['hit_reward'] = 1.0
 game_args['max_moves'] = 50
 #should be positive cause it's treatet as a penalty
 game_args['miss_penalty'] = 0.05
 #should be negative cause it's treatet as a reward
-game_args['living_reward'] = -0.05
+game_args['living_reward'] = -0.01
 game_args['random_background'] = True
 game_args['ammo'] = np.inf
 game_args['add_dimension'] = True
@@ -60,7 +60,7 @@ game = ShootingDotGame(**game_args)
 engine_args = {}
 engine_args["history_length"] = 1
 engine_args["bank_capacity"] = 100000
-engine_args["evaluator"] = create_mlp_evaluator
+engine_args["evaluator"] = create_cnn_evaluator
 engine_args["game"] = game
 engine_args['start_epsilon'] = 1.0
 engine_args['epsilon_decay_start_step'] = 1000000
