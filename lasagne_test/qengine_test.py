@@ -22,24 +22,22 @@ def create_mlp_evaluator(state_format, actions_number, batch_size):
 	mlp_args["state_format"] = state_format
 	mlp_args["actions_number"] = actions_number
 	mlp_args["batch_size"] = batch_size
-	mlp_args["hidden_units"] = 500
-	mlp_args["learning_rate"] = 0.01
-	mlp_args["hidden_layers"] = 1
-	mlp_args["hidden_nonlin"] = lasagne.nonlinearities.tanh
-	mlp_args["updates"] = lasagne.updates.nesterov_momentum
+	network_args ={"hidden_units":[500],"learning_rate":0.01,"hidden_layers":1}
+	network_args["updates"] = lasagne.updates.nesterov_momentum
+	mlp_args["network_args"] = network_args
 	return MLPEvaluator(**mlp_args)
 
 game_args = {}
-game_args['width'] = 31
-game_args['height'] = 1
+game_args['width'] = 11
+game_args['height'] = 5
 game_args['hit_reward'] = 1.0
 game_args['max_moves'] = 50
 #should be positive cause it's treatet as a penalty
-game_args['miss_penalty'] = 0.0
+game_args['miss_penalty'] = 0.05
 #should be negative cause it's treatet as a reward
-game_args['living_reward'] = -0.01
-game_args['random_background'] = False
-game_args['ammo'] = 1
+game_args['living_reward'] = -0.05
+game_args['random_background'] = True
+game_args['ammo'] = 5
 game = ShootingDotGame(**game_args)
 
 engine_args = {}
@@ -62,7 +60,7 @@ training_episodes_per_epoch = 1000
 test_episodes_per_epoch = 100
 stop_mean = 1.0#game.average_best_result()
 overall_start = time()
-print "Stop condition: mean >=",stop_mean
+print "Average best result:",round(game.average_best_result(),4)
 print "Learning..."
 
 epoch = 0

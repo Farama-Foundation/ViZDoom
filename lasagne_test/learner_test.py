@@ -46,6 +46,7 @@ def main(agent, game):
 	game_args['miss_penalty'] = 0.0
 	game_args['living_reward'] = -0.05
 	game_args['random_background'] = False
+	game_args['ammo'] = 1
 
 	import agents
 	import games

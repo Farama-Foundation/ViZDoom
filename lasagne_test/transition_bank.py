@@ -20,3 +20,7 @@ class TransitionBank:
 	def get_sample(self, batch_size):
 		batch_size =min(batch_size,self._size)
 		return random.sample(self._transitions, batch_size)
+	
+	def get_last_sample(self):
+		return self._transitions[-1]
+

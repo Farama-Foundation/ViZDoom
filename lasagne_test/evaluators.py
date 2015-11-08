@@ -8,24 +8,26 @@ from theano.compile.nanguardmode import NanGuardMode
 
 class MLPEvaluator:
 
-	def __init__(self, state_format, actions_number, batch_size,hidden_units = 500, learning_rate =0.01,hidden_layers = 1, hidden_nonlin = lasagne.nonlinearities.tanh, updates = lasagne.updates.sgd):
+	def __init__(self, state_format, actions_number, batch_size, network_args):
 		print "Initializing MLP network..."
 		self._misc_state_included = (state_format[1] > 0)
-		
+		self.online_mode = False
+
 		if self._misc_state_included:
-			misc_inputs = T.matrix('misc_inputs')
+			self._misc_inputs = T.matrix('misc_inputs')
 			misc_input_shape = (None, state_format[1])
 			self._misc_input_shape = (1, state_format[1])
 			self._misc_buffer = np.ndarray((batch_size, state_format[1]),dtype = np.float32)
 			self._misc_buffer2 = np.ndarray((batch_size, state_format[1]),dtype = np.float32)
-
+		else:
+			misc_input_shape = None
 		image_dimensions = len(state_format[0])
 
-		targets = T.matrix('targets')
+		self._targets = T.matrix('targets')
 		if image_dimensions == 2:
-			image_inputs = T.tensor3('image_inputs')
+			self._image_inputs = T.tensor3('image_inputs')
 		elif image_dimensions == 3:
-			image_inputs = T.tensor4('image_inputs')
+			self._image_inputs = T.tensor4('image_inputs')
 
 		image_input_shape = list(state_format[0])
 		image_input_shape.insert(0,None)
@@ -37,40 +39,44 @@ class MLPEvaluator:
 		self._input_image_buffer2 = np.ndarray(self._image_input_shape,dtype = np.float32)
 		self._expected_buffer = np.ndarray([batch_size], dtype = np.float32)
 
-		#remember for the evaluation reshape
+		#save it for the evaluation reshape
 		self._image_input_shape[0] = 1
 
-
+		network_args["img_shape"] = image_input_shape
+		network_args["misc_shape"] = misc_input_shape 
+		network_args["output_size"] = actions_number
+		self._initialize_network(**network_args)
+		
+	def _initialize_network(self,img_shape, misc_shape,output_size, hidden_units = [500], learning_rate =0.01,hidden_layers = 1, hidden_nonlin = lasagne.nonlinearities.tanh, updates = lasagne.updates.sgd):
 		#image input layer
-		network = lasagne.layers.InputLayer(shape = image_input_shape, input_var = image_inputs)
+		network = lasagne.layers.InputLayer(shape = img_shape, input_var = self._image_inputs)
 		#hidden layers
 		for i in range(hidden_layers):
-			network = lasagne.layers.DenseLayer(network, hidden_units ,nonlinearity = hidden_nonlin)	
+			network = lasagne.layers.DenseLayer(network, hidden_units[i] ,nonlinearity = hidden_nonlin)	
 		if self._misc_state_included:
 			#misc input layer
-			misc_input_layer = lasagne.layers.InputLayer(shape = misc_input_shape, input_var = misc_inputs)
+			misc_input_layer = lasagne.layers.InputLayer(shape = misc_shape, input_var = self._misc_inputs)
 			#merge layer
 			network = lasagne.layers.ConcatLayer([network, misc_input_layer])
 			
 		#output layer
-		network = lasagne.layers.DenseLayer(network, actions_number, nonlinearity = None)
+		network = lasagne.layers.DenseLayer(network, output_size, nonlinearity = None)
 		self._network = network
 		
 		predictions = lasagne.layers.get_output(network)
-		loss =  lasagne.objectives.squared_error(predictions, targets).mean()
+		loss =  lasagne.objectives.squared_error(predictions, self._targets).mean()
 		params = lasagne.layers.get_all_params(network, trainable = True)
 		updates = updates(loss, params, learning_rate = learning_rate)
 		
 		#mode = NanGuardMode(nan_is_error=True, inf_is_error=True, big_is_error=True)
 		mode = None
 		if self._misc_state_included:
-			self._learn = theano.function([image_inputs,misc_inputs,targets], loss, updates = updates, mode = mode, name = "learn_fn")
-			self._evaluate = theano.function([image_inputs,misc_inputs], predictions,mode = mode, name = "eval_fn")
+			self._learn = theano.function([self._image_inputs,self._misc_inputs,self._targets], loss, updates = updates, mode = mode, name = "learn_fn")
+			self._evaluate = theano.function([self._image_inputs,self._misc_inputs], predictions,mode = mode, name = "eval_fn")
 		else:	
-			self._learn = theano.function([image_inputs,targets], loss, updates = updates)
-			self._evaluate = theano.function([image_inputs], predictions)
-		
-
+			self._learn = theano.function([self._image_inputs,self._targets], loss, updates = updates)
+			self._evaluate = theano.function([self._image_inputs], predictions)
+	
 	def learn(self, transitions, gamma):
 		 
 		#TODO:
