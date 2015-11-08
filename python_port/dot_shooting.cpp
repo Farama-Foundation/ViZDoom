@@ -22,10 +22,7 @@ int _summary_reward;
 int _aim_y;
 int _aim_x;
 
-int is_finished()
-{
-	return _finished;
-}
+
 
 void init(int x, int y, int random_bg,int max_moves,float living_reward,float miss_penalty, float hit_reward, int ammo)
 {
@@ -67,7 +64,10 @@ void init(int x, int y, int random_bg,int max_moves,float living_reward,float mi
 		_state[i] = new float[_x]; 
 	}
 }
-
+int is_finished()
+{
+	return _finished;
+}
 float get_summary_reward()
 {
 	return _summary_reward;

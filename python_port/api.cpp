@@ -55,6 +55,16 @@ PyMODINIT_FUNC initapi(void)
 /* game functions */
 static PyObject * api_init(PyObject *self, PyObject *args)
 {
+    int _x;
+    int _y;
+    
+    //optional arguments
+    int _random_background;
+    int _max_moves;
+    float _living_reward;
+    float _miss_penalty;
+    float _hit_reward;
+    int _ammo; //may be a number or np.inf
     return Py_None;
 }
 static PyObject *api_is_finished(PyObject *self, PyObject *args)
