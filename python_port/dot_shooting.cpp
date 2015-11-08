@@ -1,3 +1,4 @@
+
 #include <ctime>
 #include <cstdlib>
 
@@ -5,9 +6,9 @@ int _x;
 int _y;
 int _random_background;
 int _max_moves;
-double _living_reward;
-double _miss_penalty;
-double _hit_reward;
+float _living_reward;
+float _miss_penalty;
+float _hit_reward;
 int _ammo;
 
 int _number_of_actions;
@@ -16,14 +17,20 @@ int * _state_format;
 int _moves_made;
 int _current_ammo;
 float* _current_ammo_float;
-int _finished = 1;
+int _finished ;
 int _summary_reward;
 int _aim_y;
 int _aim_x;
 
-void init(int x, int y, int random_bg,int max_moves,double living_reward,double miss_penalty, double hit_reward, int ammo)
+int is_finished()
+{
+	return _finished;
+}
+
+void init(int x, int y, int random_bg,int max_moves,float living_reward,float miss_penalty, float hit_reward, int ammo)
 {
 	srand(time(0));
+	_finished = 1;
 	_x = x;
 	_y = y;
 	_aim_y = _y/2;
@@ -60,11 +67,8 @@ void init(int x, int y, int random_bg,int max_moves,double living_reward,double 
 		_state[i] = new float[_x]; 
 	}
 }
-int is_finished()
-{
-	return _finished;
-}
-double get_summary_reward()
+
+float get_summary_reward()
 {
 	return _summary_reward;
 }
@@ -109,14 +113,14 @@ void new_episode()
 	}
 	_state[_aim_y][_aim_x] = 1.0;
 }
-double make_action(int* action)
+float make_action(int* action)
 {
 	if(_finished)
 	{
 		//THROW something?
 	}
 
-	double reward = _living_reward;
+	float reward = _living_reward;
 	++_moves_made; 
 	if(action[0] && ! action[1])
 	{
@@ -171,10 +175,10 @@ float* get_misc_state()
 }
 float average_best_result()
 {
-	double best = _hit_reward + _living_reward;
-	double worst = _hit_reward + _living_reward *(_x-1)/2.0;
-	double avg = (best+worst)/2.0;
-	double r = (best +(_x -1)*avg)/float(_x);
+	float best = _hit_reward + _living_reward;
+	float worst = _hit_reward + _living_reward *(_x-1)/2.0;
+	float avg = (best+worst)/2.0;
+	float r = (best +(_x -1)*avg)/float(_x);
 	return r;
 }
 int get_action_format()

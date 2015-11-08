@@ -101,8 +101,7 @@ static PyObject *api_ndarray(PyObject *self, PyObject *args)
     npy_intp* dims = (npy_intp*)malloc(sizeof(npy_intp));
     int n =10;
     dims[0]=n;
-    
-     
+
     float* data = (float*)malloc(n *sizeof(float));
     for (int i =0;i<n;i++)
     {
