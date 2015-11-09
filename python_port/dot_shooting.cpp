@@ -1,6 +1,7 @@
 
 #include <ctime>
 #include <cstdlib>
+#include <cstdio>
 
 int _x;
 int _y;
@@ -24,15 +25,18 @@ int _aim_x;
 
 
 
-void init(int x, int y, int random_bg,int max_moves,float living_reward,float miss_penalty, float hit_reward, int ammo)
+void init(int x, int y, int random_bg,int max_moves,float living_reward,float miss_penalty, float hit_reward, int ammo)/////////////////
 {
 	srand(time(0));
 	_finished = 1;
 	_x = x;
+	printf("%d\n",_x);
 	_y = y;
 	_aim_y = _y/2;
 	_aim_x = 0;
 	_random_background = random_bg;
+
+
 	_max_moves = max_moves;
 	_living_reward = living_reward;
 	_miss_penalty = miss_penalty; 
@@ -64,26 +68,29 @@ void init(int x, int y, int random_bg,int max_moves,float living_reward,float mi
 		_state[i] = new float[_x]; 
 	}
 }
-int is_finished()
+int is_finished()/////////////////////////////
 {
+	
 	return _finished;
 }
-float get_summary_reward()
+float get_summary_reward()////////////////////////////////
 {
 	return _summary_reward;
 }
-void new_episode()
+void new_episode()  /////////////////////////////////////
 {
 	_finished = 0;
 	_summary_reward = 0;
 	_moves_made = 0;
-
+	_current_ammo_float[0] = 0.0;
 	if (_ammo > 0)
 	{
 		_current_ammo = _ammo;
 		_current_ammo_float[0] = 1.0;
+
 	}
 	_aim_x = rand()%_x;
+
 	for(int i=0;i<_y;i++)
 	{
 		if(i == _aim_y)
@@ -115,9 +122,11 @@ void new_episode()
 }
 float make_action(int* action)
 {
+	
 	if(_finished)
 	{
 		//THROW something?
+		return NULL;
 	}
 
 	float reward = _living_reward;
@@ -156,6 +165,8 @@ float make_action(int* action)
 			--_current_ammo;
 		}
 		_current_ammo_float[0] = _current_ammo / float(_ammo);
+
+
 	}
 
 	_summary_reward += reward;
@@ -165,11 +176,11 @@ float make_action(int* action)
 	}
 	return reward;
 }
-float** get_image_state()
+float** get_image_state() 
 {
 	return _state;
 }
-float* get_misc_state()
+float* get_misc_state() ////////////////////////////////
 {
 	return _current_ammo_float;
 }
@@ -181,7 +192,11 @@ float average_best_result()
 	float r = (best +(_x -1)*avg)/float(_x);
 	return r;
 }
+
 int get_action_format()
 {
 	return _number_of_actions;
+}
+int* get_state_format(){
+	return _state_format;
 }
