@@ -80,7 +80,7 @@ class QEngine:
 		if self._misc_state_included:
 			s = [self._current_image_state.copy(), self._current_misc_state.copy()]
 		else:
-			s = self._current_image_state.copy()
+			s = [self._current_image_state.copy()]
 		
 		if self.learning_mode:
 
@@ -102,7 +102,7 @@ class QEngine:
 				if self._misc_state_included:
 					s2 = [self._current_image_state.copy(), self._current_misc_state.copy()]
 				else:
-					s2 = self._current_image_state.copy()
+					s2 = [self._current_image_state.copy()]
 
 			self._transitions.add_transition(s,a,s2,r)
 

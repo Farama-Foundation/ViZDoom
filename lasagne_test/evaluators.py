@@ -92,11 +92,11 @@ class MLPEvaluator:
 				s2[1] = s2[1].reshape(self._misc_input_shape)
 				q2 = np.max(self._evaluate(s2[0],s2[1]))
 		else:
-			s = s.reshape(self._image_input_shape)
+			s = s[0].reshape(self._image_input_shape)
 			target = self._evaluate(s)
 			#find best q values for s2
 			if s2 is not None:
-				s2 = s2.reshape(self._image_input_shape)
+				s2 = s2[0].reshape(self._image_input_shape)
 				q2 = np.max(self._evaluate(s2))
 		
 		#set expected output as the reward got from the transition
@@ -138,10 +138,10 @@ class MLPEvaluator:
 		else:
 			for i,trans in zip(range(len(transitions)),transitions):
 				
-				self._input_image_buffer[i] = trans[0]
+				self._input_image_buffer[i] = trans[0][0]
 				# if it's the terminal state just ignore
 				if trans[2] is not None:		
-					self._input_image_buffer2[i] = trans[2]
+					self._input_image_buffer2[i] = trans[2][0]
 
 			target = self._evaluate(self._input_image_buffer)
 			#find best q values for s2
