@@ -1,35 +1,57 @@
-#ifndef VIZIA_SHERED_MEMORY_H
-#define VIZIA_SHERED_MEMORY_H
+#ifndef __VIZIA_SHARED_MEMORY_H__
+#define __VIZIA_SHARED_MEMORY_H__
 
-#include <boost/interprocess/managed_shared_memory.hpp>
+#include "interprocess/shared_memory_object.hpp"
+#include "interprocess/mapped_region.hpp"
 
 using namespace boost::interprocess;
 
+extern shared_memory_object *viziaSM;
+
+#define VBT_ATTACK 0
+#define VBT_USE 1
+#define VBT_JUMP 2
+#define VBT_CROUCH 3
+//#define VBT_TURN180 4
+#define VBT_ALTATTACK 5
+#define VBT_RELOAD 6
+#define VBT_ZOOM 7
+
+#define VBT_SPEED 8
+#define VBT_STRAFE 9
+
+#define VBT_MOVERIGHT 10
+#define VBT_MOVELEFT 11
+#define VBT_BACK 12
+#define VBT_FORWARD 13
+#define VBT_RIGHT 14
+#define VBT_LEFT 15
+#define VBT_LOOKUP 16
+#define VBT_LOOKDOWN 17
+#define VBT_MOVEUP 18
+#define VBT_MOVEDOWN 19
+//#define VBT_SHOWSCORES 20
+
+#define VBT_WEAPON1 21
+#define VBT_WEAPON2 22
+#define VBT_WEAPON3 23
+#define VBT_WEAPON4 24
+#define VBT_WEAPON5 25
+#define VBT_WEAPON6 26
+#define VBT_WEAPON7 27
+
+#define VBT_WEAPONNEXT 28
+#define VBT_WEAPONPREV 29
+
+#define VBT_SIZE 30
+
 struct ViziaInputSMStruct{
-    int MS_DELTAX;
-    int MS_DELTAY;
-
-    bool BT_ATTACK;
-    bool BT_USE;
-    bool BT_JUMP;
-    bool BT_CROUCH;
-
-    bool BT_SPEED;
-    bool BT_STRAFE;
-
-    bool BT_MOVERIGHT;
-    bool BT_MOVELEFT;
-    bool BT_BACK;
-    bool BT_FORWARD;
-    bool BT_RIGHT;
-    bool BT_LEFT;
-    bool BT_MOVEUP;
-    bool BT_MOVEDOWN;
-
-    int BT_WEAPON;
+    int MS_X;
+    int MS_Y;
+    bool BT[VBT_SIZE];
 };
 
-struct ViziaGameDataSMStruct{
+struct ViziaGameVarsSMStruct{
     int TIC;
 
     int SCREEN_WIDTH;
@@ -57,16 +79,20 @@ struct ViziaGameDataSMStruct{
     bool PLAYER_KEY[3];
 };
 
-shared_memory_object *viziaScreenSM;
-shared_memory_object *viziaGameDataSM;
-shared_memory_object *viziaInputSM;
+#define VIZIA_SCREEN_SM_NAME "ViziaScreen"
+#define VIZIA_GAME_VARS_SM_NAME "ViziaGameVars"
+#define VIZIA_INPUT_SM_NAME "ViziaInput"
 
-const char* const viziaScreenSMName = "ViziaScreen";
-const char* const viziaGameDataSMName = "ViziaGameData";
-const char* const viziaInputSMName = "ViziaInput";
+#define VIZIA_SM_NAME "ViziaSM"
 
-uint8_t *viziaScreen;
-struct ViziaInputSMStruct *viziaInput;
-struct ViziaGameDataSMStruct *viziaGameData;
+void Vizia_SMInit();
 
-#endif //VIZIA_SHERED_MEMORY_H
+int Vizia_SMSetSize(int scr_w, int src_h);
+
+size_t Vizia_SMGetInputRegionBeginning();
+size_t Vizia_SMGetGameVarsRegionBeginning();
+size_t Vizia_SMGetScreenRegionBeginning();
+
+void Vizia_SMClose();
+
+#endif

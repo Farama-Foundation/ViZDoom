@@ -445,8 +445,9 @@ if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 		set( CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} -pg" )
 		set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -pg" )
 	endif( PROFILE )
-	
-	set( REL_CXX_FLAGS "-fno-rtti" )
+
+	# Disabled For Boost
+	#set( REL_CXX_FLAGS "-fno-rtti" )
 	if( NOT PROFILE AND NOT APPLE )
 		# On OS X frame pointers are required for exception handling, at least with Clang
 		set( REL_CXX_FLAGS "${REL_CXX_FLAGS} -fomit-frame-pointer" )
@@ -1146,6 +1147,10 @@ add_executable( zdoom WIN32 MACOSX_BUNDLE
 	r_data/r_interpolate.cpp
 	r_data/r_translate.cpp
 	zzautozend.cpp
+	vizia_input.cpp
+	vizia_game.cpp
+	vizia_screen.cpp
+	vizia_shared_memory.cpp
 	vizia_main.cpp
 )
 

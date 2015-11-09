@@ -109,6 +109,7 @@
 #include "p_local.h"
 //VIZIA CODE
 #include "vizia_main.h"
+#include "vizia_screen.h"
 
 EXTERN_CVAR(Bool, hud_althud)
 void DrawHUD();
@@ -637,6 +638,7 @@ CVAR (Flag, compat_pointonline,			compatflags2, COMPATF2_POINTONLINE);
 //
 //==========================================================================
 
+//VIZIA CODE
 void D_Display ()
 {
 	bool wipe;
@@ -749,6 +751,7 @@ void D_Display ()
 			hw2d = screen->Begin2D(false);
 			C_DrawConsole (false);
 			M_Drawer ();
+			//Vizia_ScreenUpdate();
 			screen->Update ();
 			return;
 
@@ -886,6 +889,7 @@ void D_Display ()
 		C_DrawConsole (hw2d);	// draw console
 		M_Drawer ();			// menu is drawn even on top of everything
 		FStat::PrintStat ();
+		//Vizia_ScreenUpdate();
 		screen->Update ();		// page flip or blit buffer
 	}
 	else
@@ -914,6 +918,7 @@ void D_Display ()
 			S_UpdateMusic();		// OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
 			C_DrawConsole (hw2d);	// console and
 			M_Drawer ();			// menu are drawn even on top of wipes
+			//Vizia_ScreenUpdate();
 			screen->Update ();		// page flip or blit buffer
 			NetUpdate ();			// [RH] not sure this is needed anymore
 		} while (!done);
@@ -967,6 +972,8 @@ void D_ErrorCleanup ()
 //VIZIA CODE
 void D_DoomLoop ()
 {
+	//printf("DOOM LOOP");
+
 	int lasttic = 0;
 
 	// Clamp the timer to TICRATE until the playloop has been entered.
@@ -999,6 +1006,7 @@ void D_DoomLoop ()
 				C_Ticker ();
 				M_Ticker ();
 				G_Ticker ();
+				//Vizia_Tic();
 				// [RH] Use the consoleplayer's camera to update sounds
 				//S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
 				gametic++;
@@ -1010,6 +1018,9 @@ void D_DoomLoop ()
 			{
 				TryRunTics (); // will run at least one tic
 			}
+
+			//Vizia_Tic();
+
 			// Update display, next frame, with current state.
 			I_StartTic ();
 			D_Display ();
@@ -2628,7 +2639,7 @@ void D_DoomMain (void)
 			//S_StopMusic(true);
 			//S_StopAllChannels ();
 
-			Vizia_Close();
+			//Vizia_Close();
 
 			M_ClearMenus();					// close menu if open
 			F_EndFinale();					// If an intermission is active, end it now
