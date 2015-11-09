@@ -8,18 +8,21 @@ static char module_docstring[] =
 
 
 /* Available functions */
+static int xstat,ystat;
 static PyObject *api_chi2(PyObject *self, PyObject *args);
 static PyObject *api_nothing(PyObject *self, PyObject *args);
 static PyObject *api_dictionary(PyObject *self, PyObject *args);
 static PyObject *api_ndarray(PyObject *self, PyObject *args);
 
-static PyObject *api_init(PyObject *self, PyObject *args);
-static PyObject *api_is_finished(PyObject *self, PyObject *args);
-static PyObject *api_get_state_format(PyObject *self, PyObject *args);
-static PyObject *api_get_action_format(PyObject *self, PyObject *args);
-static PyObject *api_get_summary_reward(PyObject *self, PyObject *args);
-static PyObject *api_new_episode(PyObject *self, PyObject *args);
-static PyObject *api_make_action(PyObject *self, PyObject *args);
+static PyObject *api_a(PyObject *self, PyObject *args);//api_get_misc_state(PyObject *self, PyObject *args);
+
+static PyObject *api_init(PyObject *self, PyObject *args);////
+static PyObject *api_is_finished(PyObject *self, PyObject *args);///
+static PyObject *api_get_state_format(PyObject *self, PyObject *args);///////
+static PyObject *api_get_action_format(PyObject *self, PyObject *args);///
+static PyObject *api_get_summary_reward(PyObject *self, PyObject *args);////////
+static PyObject *api_new_episode(PyObject *self, PyObject *args);/////////
+static PyObject *api_make_action(PyObject *self, PyObject *args);//////////
 static PyObject *api_get_state(PyObject *self, PyObject *args);
 
 /* Module specification */
@@ -34,6 +37,7 @@ static PyMethodDef module_methods[] = {
     {"get_state_format", api_get_state_format, METH_VARARGS, NULL},
     {"get_action_format", api_get_action_format, METH_VARARGS, NULL},
     {"get_summary_reward", api_get_summary_reward, METH_VARARGS, NULL},
+	{ "a",api_a,METH_VARARGS, NULL},
     {"new_episode", api_new_episode, METH_VARARGS, NULL},
     {"make_action", api_make_action, METH_VARARGS, NULL},
     {"get_state", api_get_state, METH_VARARGS, NULL},
@@ -53,9 +57,11 @@ PyMODINIT_FUNC initapi(void)
     import_array();
 }
 /* game functions */
+
+
 static PyObject * api_init(PyObject *self, PyObject *args)
 {
-    int _x;
+	int _x;
     int _y;
     
     //optional arguments
@@ -65,35 +71,124 @@ static PyObject * api_init(PyObject *self, PyObject *args)
     float _miss_penalty;
     float _hit_reward;
     int _ammo; //may be a number or np.inf
-    return Py_None;
+	
+ if (!PyArg_ParseTuple(args, "iiiifffi", &_x, &_y, &_random_background, &_max_moves,
+                                         &_living_reward,&_miss_penalty,&_hit_reward,&_ammo))
+        return NULL;
+	xstat=_x;
+	ystat=_y;
+    /* Call the external C function to compute the chi-squared. */
+    init(_x,_y, _random_background, _max_moves, _living_reward,_miss_penalty,_hit_reward,_ammo);
+
+return Py_None;
+    
+
 }
 static PyObject *api_is_finished(PyObject *self, PyObject *args)
 {
-    return Py_None;
+	int value=is_finished();	
+	PyObject *ret = Py_BuildValue("i", value);
+	return ret;
 }
+
 static PyObject *api_get_state_format(PyObject *self, PyObject *args)
 {
-    return Py_None;
+	int* value=get_state_format();
+
+    npy_intp* dims = (npy_intp*)malloc(sizeof(npy_intp));
+    int n =4;
+    dims[0]=4;
+
+    int* data = (int*)malloc(n *sizeof(int));
+    for (int i =0;i<n;i++)
+    {
+        data[i] = value[i];
+    }
+    //return Py_None;
+    PyObject* array = PyArray_SimpleNewFromData(1, dims, NPY_INT32, data);
+    PyObject* list = PyList_New(0);
+    PyList_Append(list,array);
+    return list; 
+
 }
+static PyObject *api_a(PyObject *self, PyObject *args)
+{
+	float* value=get_misc_state();
+	int b=1;///////////////////;
+	PyObject *result = PyList_New(b); 
+  for (int i = 0; i < b; ++i) {
+    PyList_SetItem(result, i, PyFloat_FromDouble(value[i]));
+  }
+
+	return result;
+}
+
 static PyObject *api_get_action_format(PyObject *self, PyObject *args)
 {
-    return Py_None;
+	int value=get_action_format();	
+	PyObject *ret = Py_BuildValue("i", value);
+	return ret;
+
 }
 static PyObject *api_get_summary_reward(PyObject *self, PyObject *args)
 {
-    return Py_None;
+   	int value=get_summary_reward();	
+	PyObject *ret = Py_BuildValue("i", value);
+	return ret;
 }
 static PyObject *api_new_episode(PyObject *self, PyObject *args)
 {
-    return Py_None;
+    	new_episode();
+	return Py_None;
 }
 static PyObject *api_make_action(PyObject *self, PyObject *args)
 {
-    return Py_None;
+	PyObject *x_obj;
+	if (!PyArg_ParseTuple(args, "O", &x_obj))
+	{
+		return NULL;
+	}
+
+    /* Interpret the input objects as numpy arrays. */
+    PyObject *x_array = PyArray_FROM_OTF(x_obj, NPY_INT, NPY_IN_ARRAY);
+ 	if (x_array == NULL) {
+        	Py_XDECREF(x_array);
+        	return NULL;
+    	}
+	int *x    = (int*)PyArray_DATA(x_array);
+	float value=make_action(x);
+    	PyObject *ret = Py_BuildValue("f", value);
+	return ret;
 }
 static PyObject *api_get_state(PyObject *self, PyObject *args)
 {
-    return Py_None;
+
+	npy_intp* dims = (npy_intp*)malloc(sizeof(npy_intp));
+    int n =xstat*ystat;
+    	dims[0]=xstat;
+	dims[1]=ystat;
+
+	float** _stat=get_image_state();
+
+    float* data = (float*)malloc(n *sizeof(float));
+    for (int i =0;i<xstat;i++)
+    {
+        for (int j =0;j<ystat;j++)
+    {
+        data[(i*ystat+j)] = _stat[i][j];
+    }
+    }
+    //return Py_None;
+    PyObject* array = PyArray_SimpleNewFromData(2, dims, NPY_FLOAT32, data);
+    PyObject* list = PyList_New(0);
+    PyList_Append(list,array);
+	dims[0]=1;
+	float* temp;
+	temp=get_misc_state();
+	PyObject* array2 = PyArray_SimpleNewFromData(1, dims, NPY_FLOAT32, temp);
+PyList_Append(list,array2);
+    return list;
+    //return Py_None;
 }
 //////////////////////
 static PyObject *api_dictionary(PyObject *self, PyObject *args)
@@ -110,15 +205,16 @@ static PyObject *api_ndarray(PyObject *self, PyObject *args)
 {
     npy_intp* dims = (npy_intp*)malloc(sizeof(npy_intp));
     int n =10;
-    dims[0]=n;
+	printf("%d\n",xstat);
+    dims[0]=3;
 
     float* data = (float*)malloc(n *sizeof(float));
     for (int i =0;i<n;i++)
     {
-        data[i] = i;
+        data[i] = 9;
     }
     //return Py_None;
-    PyObject* array = PyArray_SimpleNewFromData(1, dims, NPY_FLOAT32, data);
+    PyObject* array = PyArray_SimpleNewFromData(2, dims, NPY_FLOAT32, data);
     PyObject* array2 = PyArray_SimpleNewFromData(1, dims, NPY_FLOAT32, data);
     PyObject* list = PyList_New(0);
     PyList_Append(list,array);

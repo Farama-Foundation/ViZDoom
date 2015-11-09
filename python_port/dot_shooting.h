@@ -4,6 +4,7 @@ float get_summary_reward();
 void new_episode();
 float make_action(int* action);
 int* get_state_format();
+int get_action_format();
 float** get_image_state();
 float* get_misc_state();
 float average_best_result();
