@@ -167,7 +167,7 @@ class MLPEvaluator:
 		if self._misc_state_included:
 			a = np.argmax(self._evaluate(state[0].reshape(self._image_input_shape),state[1].reshape(self._misc_input_shape)))
 		else:
-			a = np.argmax(self._evaluate(state.reshape(self._image_input_shape)))
+			a = np.argmax(self._evaluate(state[0].reshape(self._image_input_shape)))
 		return a
 
 
