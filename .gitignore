@@ -10,7 +10,6 @@
 **/install_manifest.txt
 
 #copied from the original zdoom repository (and modified)
-
 /Debug
 **.ncb
 **.suo
@@ -31,23 +30,23 @@
 */DOOMSTATS.TXT
 */src/gitinfo.h
 */src/sc_man_scanner.h
-*/src/xlat/xlat_parser.c
-*/src/xlat/xlat_parser.h
+*/src/xlat_parser.c
+*/src/xlat_parser.h
 */src/xlat/xlat_parser.out
 /tools/*/debug
 /tools/*/release
 /tools/*/*.exe
-/tools/lemon/build
-/tools/re2c/build
-*/tools/updaterevision/x64/
+*/tools/lemon/lemon
+*/tools/re2c/re2c
+*/tools/updaterevision/
 */tools/zipdir/x64
-/wadsrc/*.pk3
-/build_vc2013
-/bzip2/x64/
-/disasm.txt
 /game-music-emu/x64/
-/gdtoa/x64/
-/jpeg-6b/x64/
-/lzma/x64/
-/zlib/x64/
+**/zdoom
+**/zdoom.pk3
 
+#not sure if should be ignored:
+*/dumb/libdumb.a
+*/gdtoa
+*/game-music-emu/gme/libgme.a
+*/lzma/liblzma.a
+*/tools/zipdir/zipdir
