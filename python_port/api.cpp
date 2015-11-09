@@ -16,13 +16,13 @@ static PyObject *api_ndarray(PyObject *self, PyObject *args);
 
 static PyObject *api_a(PyObject *self, PyObject *args);//api_get_misc_state(PyObject *self, PyObject *args);
 
-static PyObject *api_init(PyObject *self, PyObject *args);////
-static PyObject *api_is_finished(PyObject *self, PyObject *args);///
-static PyObject *api_get_state_format(PyObject *self, PyObject *args);///////
-static PyObject *api_get_action_format(PyObject *self, PyObject *args);///
-static PyObject *api_get_summary_reward(PyObject *self, PyObject *args);////////
-static PyObject *api_new_episode(PyObject *self, PyObject *args);/////////
-static PyObject *api_make_action(PyObject *self, PyObject *args);//////////
+static PyObject *api_init(PyObject *self, PyObject *args);
+static PyObject *api_is_finished(PyObject *self, PyObject *args);
+static PyObject *api_get_state_format(PyObject *self, PyObject *args);
+static PyObject *api_get_action_format(PyObject *self, PyObject *args);
+static PyObject *api_get_summary_reward(PyObject *self, PyObject *args);
+static PyObject *api_new_episode(PyObject *self, PyObject *args);
+static PyObject *api_make_action(PyObject *self, PyObject *args);
 static PyObject *api_get_state(PyObject *self, PyObject *args);
 
 /* Module specification */
@@ -72,18 +72,16 @@ static PyObject * api_init(PyObject *self, PyObject *args)
     float _hit_reward;
     int _ammo; //may be a number or np.inf
 	
- if (!PyArg_ParseTuple(args, "iiiifffi", &_x, &_y, &_random_background, &_max_moves,
+    if (!PyArg_ParseTuple(args, "iiiiffff", &_x, &_y, &_random_background, &_max_moves,
                                          &_living_reward,&_miss_penalty,&_hit_reward,&_ammo))
+    {
         return NULL;
-	xstat=_x;
-	ystat=_y;
-    /* Call the external C function to compute the chi-squared. */
-    init(_x,_y, _random_background, _max_moves, _living_reward,_miss_penalty,_hit_reward,_ammo);
+    }   
+    init(_x,_y, _random_background, _max_moves, _living_reward,_miss_penalty,_hit_reward,int(_ammo));
 
-return Py_None;
-    
-
+    return Py_None;
 }
+
 static PyObject *api_is_finished(PyObject *self, PyObject *args)
 {
 	int value=is_finished();	
@@ -104,7 +102,7 @@ static PyObject *api_get_state_format(PyObject *self, PyObject *args)
     {
         data[i] = value[i];
     }
-    //return Py_None;
+
     PyObject* array = PyArray_SimpleNewFromData(1, dims, NPY_INT32, data);
     PyObject* list = PyList_New(0);
     PyList_Append(list,array);
@@ -114,7 +112,7 @@ static PyObject *api_get_state_format(PyObject *self, PyObject *args)
 static PyObject *api_a(PyObject *self, PyObject *args)
 {
 	float* value=get_misc_state();
-	int b=1;///////////////////;
+	int b=1;
 	PyObject *result = PyList_New(b); 
   for (int i = 0; i < b; ++i) {
     PyList_SetItem(result, i, PyFloat_FromDouble(value[i]));
@@ -186,7 +184,7 @@ static PyObject *api_get_state(PyObject *self, PyObject *args)
 	float* temp;
 	temp=get_misc_state();
 	PyObject* array2 = PyArray_SimpleNewFromData(1, dims, NPY_FLOAT32, temp);
-PyList_Append(list,array2);
+    PyList_Append(list,array2);
     return list;
     //return Py_None;
 }

@@ -30,7 +30,6 @@ void init(int x, int y, int random_bg,int max_moves,float living_reward,float mi
 	srand(time(0));
 	_finished = 1;
 	_x = x;
-	printf("%d\n",_x);
 	_y = y;
 	_aim_y = _y/2;
 	_aim_x = 0;
