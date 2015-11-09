@@ -21,7 +21,7 @@ game = ShootingDotGame(**game_args)
 
 steps = 45000
 start = time.time()
-action = [0,0,0]
+action = [0,1,0]
 for i in range(steps):
 	if game.is_finished():
 		game.new_episode()
@@ -31,3 +31,4 @@ for i in range(steps):
 end = time.time()
 print "time:",round(end-start,4)
 print "fps:",steps/(end-start)
+

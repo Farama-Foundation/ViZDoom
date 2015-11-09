@@ -50,3 +50,4 @@
 */game-music-emu/gme/libgme.a
 */lzma/liblzma.a
 */tools/zipdir/zipdir
+**/*.log
