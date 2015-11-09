@@ -19,8 +19,9 @@ def actions_generator(game):
 		actions.append(perm)
 	return actions
 
-def create_mlp_evaluator(state_format, actions_number, batch_size):
+def create_mlp_evaluator(state_format, actions_number, batch_size, gamma):
 	mlp_args = {}
+	mlp_args["gamma"] = gamma;
 	mlp_args["state_format"] = state_format
 	mlp_args["actions_number"] = actions_number
 	mlp_args["batch_size"] = batch_size
@@ -29,8 +30,9 @@ def create_mlp_evaluator(state_format, actions_number, batch_size):
 	mlp_args["network_args"] = network_args
 	return MLPEvaluator(**mlp_args)
 
-def create_cnn_evaluator(state_format, actions_number, batch_size):
+def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
 	cnn_args = {}
+	cnn_args["gamma"] = gamma;
 	cnn_args["state_format"] = state_format
 	cnn_args["actions_number"] = actions_number
 	cnn_args["batch_size"] = batch_size
@@ -44,7 +46,7 @@ def create_cnn_evaluator(state_format, actions_number, batch_size):
 	return CNNEvaluator(**cnn_args)
 
 game_args = {}
-game_args['width'] = 31
+game_args['width'] = 41
 game_args['height'] = 21
 game_args['hit_reward'] = 1.0
 game_args['max_moves'] = 50
@@ -59,18 +61,19 @@ game = ShootingDotGame(**game_args)
 
 engine_args = {}
 engine_args["history_length"] = 1
-engine_args["bank_capacity"] = 100000
+engine_args["bank_capacity"] = 10000
 engine_args["evaluator"] = create_cnn_evaluator
 engine_args["game"] = game
 engine_args['start_epsilon'] = 1.0
-engine_args['epsilon_decay_start_step'] = 1000000
-engine_args['epsilon_decay_steps'] = 10000000
+engine_args['epsilon_decay_start_step'] = 500000
+engine_args['epsilon_decay_steps'] = 1000000
 engine_args['actions_generator'] = actions_generator
 engine_args['update_frequency'] = 4
-engine_args['batch_size'] = 30
-engine_args['gamma'] = 0.9
+engine_args['batch_size'] = 25
+engine_args['gamma'] = 0.8
 
 engine = QEngine(**engine_args)
+#engine.online_mode = True
 
 epochs = np.inf
 training_episodes_per_epoch = 1000
@@ -93,7 +96,7 @@ while epoch < epochs:
 	print "\nEpoch",epoch
 	print "Train:"
 	print engine.get_actions_stats(True)
-	print "steps:",engine._steps, ", mean:", np.mean(rewards), "eps:",engine._epsilon
+	print "steps:",engine._steps, ", mean:", np.mean(rewards),", max:", np.max(rewards), "eps:",engine._epsilon
 	print "t:",round(end-start,2)
 	#learning off
 	if test_episodes_per_epoch >0:
@@ -108,7 +111,7 @@ while epoch < epochs:
 		print "Test"
 		print engine.get_actions_stats(clear = True,norm = False)
 		m = np.mean(rewards)
-		print "steps:",engine._steps, ", mean:", m
+		print "steps:",engine._steps, ", mean:", m, "max:",np.max(rewards)
 		if m > stop_mean:
 			print stop_mean,"mean reached!"
 			break

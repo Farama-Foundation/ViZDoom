@@ -5,6 +5,7 @@ import random
 
 class QEngine:
 	def __init__(self, game, evaluator, actions_generator, gamma = 0.7,batch_size = 500, update_frequency = 500, history_length = 1, bank_capacity = 10000, start_epsilon = 1.0, end_epsilon = 0.0,epsilon_decay_start_step = 100000, epsilon_decay_steps = 100000):
+		self.online_mode = False
 		self._game = game
 		self._history_length = max( history_length,1)
 		self._transitions = TransitionBank(bank_capacity)
@@ -31,7 +32,7 @@ class QEngine:
 				img_shape = (self._history_length*img_shape[0], img_shape[1],img_shape[2])
 
 		state_format = [img_shape,game.get_state_format()[1]]
-		self._evaluator = evaluator(state_format, len(self._actions), batch_size)
+		self._evaluator = evaluator(state_format, len(self._actions), batch_size, self._gamma)
 		self._current_image_state = np.zeros(img_shape, dtype =  np.float32)
 
 		if game.get_state_format()[1] > 0:
@@ -69,6 +70,7 @@ class QEngine:
 		#epsilon decay:
 		if self._steps > self._epsilon_decay_start and self._epsilon > 0:
 			self._epsilon -= self._epsilon_decay_stride
+			self._epsilon = max(self._epsilon,0)
 
 		#if the current episode is finished, spawn a new one
 		if self._game.is_finished():
@@ -105,8 +107,10 @@ class QEngine:
 			self._transitions.add_transition(s,a,s2,r)
 
 			# Perform qlearning once for a while
-			if self._steps % self._update_frequency == 0 and self._steps >self._batch_size:
-				self._evaluator.learn(self._transitions.get_sample(self._batch_size), self._gamma)
+			if self._steps % self._update_frequency == 0 and not self.online_mode and self._steps >self._batch_size:
+				self._evaluator.learn(self._transitions.get_sample(self._batch_size))
+			elif self.online_mode:
+				self._evaluator.learn_one(s,a,s2,r)
 		else:
 			a = self._evaluator.best_action(s)
 			self._actions_stats[a]+=1	

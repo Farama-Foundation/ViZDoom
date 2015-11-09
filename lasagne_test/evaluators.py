@@ -8,10 +8,10 @@ from theano.compile.nanguardmode import NanGuardMode
 
 class MLPEvaluator:
 
-	def __init__(self, state_format, actions_number, batch_size, network_args):
+	def __init__(self, state_format, actions_number, batch_size, network_args, gamma = 0.99):
 		
 		self._misc_state_included = (state_format[1] > 0)
-		self.online_mode = False
+		self._gamma = gamma
 
 		if self._misc_state_included:
 			self._misc_inputs = T.matrix('misc_inputs')
@@ -78,7 +78,44 @@ class MLPEvaluator:
 			self._learn = theano.function([self._image_inputs,self._targets], loss, updates = updates)
 			self._evaluate = theano.function([self._image_inputs], predictions)
 	
-	def learn(self, transitions, gamma):
+	def learn_one(self, s,a,s2,r):
+		
+			
+		
+		if self._misc_state_included:
+			s[0] = s[0].reshape(self._image_input_shape)
+			s[1] = s[1].reshape(self._misc_input_shape)
+			target = self._evaluate(s[0],s[1])
+			#find best q values for s2
+			if s2 is not None:
+				s2[0] = s2[0].reshape(self._image_input_shape)
+				s2[1] = s2[1].reshape(self._misc_input_shape)
+				q2 = np.max(self._evaluate(s2[0],s2[1]))
+		else:
+			s = s.reshape(self._image_input_shape)
+			target = self._evaluate(s)
+			#find best q values for s2
+			if s2 is not None:
+				s2 = s2.reshape(self._image_input_shape)
+				q2 = np.max(self._evaluate(s2))
+		
+		#set expected output as the reward got from the transition
+		expected_q = r
+
+		if s2 is not None:
+			expected_q += self._gamma * q2
+
+		target[0,a] =expected_q
+		
+
+		if self._misc_state_included:
+			self._learn(s[0],s[1], target)
+		else:
+			self._learn(s,target)
+
+		None
+
+	def learn(self, transitions):
 		 
 		#TODO:
 		#change internal representation of transitions so that it would return
@@ -117,7 +154,7 @@ class MLPEvaluator:
 		#substitute expected values for chosen actions 
 		for i,q in zip(range(len(transitions)),q2):
 			if transitions[i][2] is not None:
-				self._expected_buffer[i] += gamma *q
+				self._expected_buffer[i] += self._gamma *q
 			target[i][transitions[i][1]] =self._expected_buffer[i]
 		
 		if self._misc_state_included:
