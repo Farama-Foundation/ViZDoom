@@ -8,6 +8,7 @@
 **/Makefile
 **/cmake_install.cmake
 **/install_manifest.txt
+.idea
 
 #copied from the original zdoom repository (and modified)
 /Debug

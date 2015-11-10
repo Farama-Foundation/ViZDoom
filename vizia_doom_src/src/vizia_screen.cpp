@@ -14,7 +14,8 @@ int viziaScreenHeight;
 int viziaScreenWidth;
 int viziaScreenPitch;
 size_t viziaScreenSize;
-//shared_memory_object *viziaScreenSM;
+
+bip::mapped_region *viziaScreenSMRegion;
 BYTE *viziaScreen;
 
 void Vizia_ScreenInit() {
@@ -23,13 +24,14 @@ void Vizia_ScreenInit() {
     viziaScreenPitch = screen->GetPitch();
     viziaScreenSize = sizeof(BYTE) * viziaScreenWidth * viziaScreenHeight;
 
-    //viziaScreenSM = new shared_memory_object(open_or_create, VIZIA_SCREEN_SM_NAME, read_write);
-    //viziaScreenSM->truncate(viziaScreenSize);
-    //mapped_region viziaScreenSMRegion(viziaScreenSM, read_write);
+    viziaScreenSMRegion = new bip::mapped_region(viziaSM, bip::read_write, Vizia_SMGetScreenRegionBeginning(), viziaScreenSize);
+    viziaScreen = static_cast<BYTE *>(viziaScreenSMRegion->get_address());
 
-    mapped_region viziaScreenSMRegion(viziaSM, read_write, Vizia_SMGetScreenRegionBeginning(), viziaScreenSize);
-    viziaScreen = static_cast<BYTE *>(viziaScreenSMRegion.get_address());
-    memset(viziaScreen, 0, viziaScreenSize);
+    viziaScreen[0] = 2;
+    viziaScreen[viziaScreenSize+100] = 4;
+
+    printf("Screen SM region size: %zu, beginnig: %p, end: %p \n",
+           viziaScreenSMRegion->get_size(), viziaScreenSMRegion->get_address(), viziaScreenSMRegion->get_address() + viziaScreenSMRegion->get_size());
 }
 
 void Vizia_ScreenUpdate(){
@@ -46,14 +48,14 @@ void Vizia_ScreenUpdate(){
         }
 
         screen->Lock(true);
-        const BYTE *buffer = screen->GetBuffer();
-        if (buffer != NULL) {
-            memcpy( viziaScreen, buffer, viziaScreenSize );
+        //const BYTE *buffer = screen->GetBuffer();
+        if (screen->GetBuffer() != NULL) {
+            memcpy( viziaScreen, screen->GetBuffer(), viziaScreenSize );
         }
         screen->Unlock();
     }
 }
 
 void Vizia_ScreenClose(){
-    //shared_memory_object::remove(VIZIA_SCREEN_SM_NAME);
+    delete(viziaScreenSMRegion);
 }
