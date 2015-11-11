@@ -3,10 +3,10 @@
 
 #include <string>
 
-#include "./interprocess/ipc/message_queue.hpp"
-#include "./interprocess/shared_memory_object.hpp"
-#include "./interprocess/mapped_region.hpp"
-#include "./process/process.hpp"
+#include "interprocess/ipc/message_queue.hpp"
+#include "interprocess/shared_memory_object.hpp"
+#include "interprocess/mapped_region.hpp"
+#include <boost/process.hpp>
 
 namespace bip = boost::interprocess;
 namespace bpr = boost::process;
@@ -64,11 +64,9 @@ namespace bpr = boost::process;
 
 #define V_BT_SIZE 30
 
-#define VIZIA_SM_NAME "ViziaSM"
-
 #define VIZIA_MQ_NAME "ViziaMQ"
 #define VIZIA_MQ_MAX_MSG_NUM 32
-#define VIZIA_MQ_MAX_MSG_SIZE sizeof(ViziaDoomController::MessageCommandStruct)
+#define VIZIA_MQ_MAX_MSG_SIZE sizeof(ViziaMessageCommandStruct)
 #define VIZIA_MQ_MAX_CMD_LEN 32
 
 #define VIZIA_MSG_CODE_DOOM_READY 10
@@ -125,10 +123,9 @@ class ViziaDoomController {
         ViziaDoomController(std::string iwad, std::string file, std::string map, int screenWidth, int screenHeight);
         ~ViziaDoomController();
 
-        bool init();
-        bool close();
+        init();
+        close();
 
-        void setScreenSize(int screenWidth, int screenHeight);
         void setGamePath(std::string path);
         void setIwadPath(std::string path);
         void setFilePath(std::string path);
@@ -136,11 +133,11 @@ class ViziaDoomController {
         void setSkill(int skill);
 
         void setFrameRate(); //TO DO
-        void setHUD(); //TO DO
+        void VsetHUD(); //TO DO
         void setCrosshair(); //TO DO
 
-        bool tic();
-        bool update();
+        void tic();
+        void update();
         void resetMap(); //TO DO
         void restartGame(); //TO DO
 
@@ -148,7 +145,7 @@ class ViziaDoomController {
 
         uint8_t* const getScreen();
         InputStruct* const getInput();
-        GameVarsStruct* const getGameVars();
+        GameDataStruct* const getGameVars();
 
         void setMouse(int x, int y);
         void setMouseX(int x);
@@ -201,7 +198,7 @@ class ViziaDoomController {
 
         void SMInit();
 
-        void SMSetSize(int screenWidth, int screenHeight);
+        int SMSetSize(int scr_w, int src_h);
 
         size_t SMGetInputRegionBeginning();
         size_t SMGetGameVarsRegionBeginning();
@@ -215,7 +212,7 @@ class ViziaDoomController {
 
         bool MQTrySend(uint8_t code);
 
-        void MQSend(uint8_t code, const char * command);
+        void MQTSend(uint8_t code, const char * command);
 
         bool MQTrySend(uint8_t code, const char * command);
 
@@ -229,13 +226,13 @@ class ViziaDoomController {
 
         void lunchDoom();
 
-        int gameTic;
+        int tic;
         int screenWidth, screenHeight, screenSize;
 
-        std::string gamePath;
-        std::string iwadPath;
-        std::string file;
-        std::string map;
+        string gamePath;
+        string iwad;
+        string file;
+        string map;
         int skill;
 
 
@@ -253,8 +250,7 @@ class ViziaDoomController {
         bip::mapped_region *ScreenSMRegion;
         uint8_t *Screen;
 
-        //bpr::child doomProcess;
-        bool doomRunning;
+        bpr::child doomProcess;
 };
 
 

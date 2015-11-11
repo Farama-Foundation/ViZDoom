@@ -1,0 +1,24 @@
+cmake_minimum_required( VERSION 2.4 )
+project(ViziaDoomControllerExample)
+
+set(CMAKE_CXX_FLAGS "-g -Wall")
+
+include_directories( . 
+    process
+    process/process
+    process/process/posix
+    process/process/windows
+    interprocess
+    interprocess/ipc
+)
+
+file( GLOB_RECURSE HEADER_FILES
+    process/*.+
+	interprocess/*.+
+)
+
+add_executable(VDMExample 
+    ViziaDoomController.cpp
+    ViziaDoomControllerExample.cpp
+    ${HEADER_FILES}
+)

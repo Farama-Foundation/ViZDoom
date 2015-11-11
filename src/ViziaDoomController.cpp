@@ -5,10 +5,10 @@
 ViziaDoomController::ViziaDoomController(){
     this->screenWidth = 640;
     this->screenHeight = 480;
-    this->screenSize = screenWidth*screenHeight;
+    this->screenSize = screenWidth * screenHeight;
 
     this->gamePath = "./zdoom";
-    this->iwad = "doom2.wad";
+    this->iwadPath = "doom2.wad";
     this->file = "";
     this->map = "MAP01";
     this->skill = 1;
@@ -17,10 +17,10 @@ ViziaDoomController::ViziaDoomController(){
 ViziaDoomController::ViziaDoomController(std::string iwad, std::string file, std::string map, int screenWidth, int screenHeight){
     this->screenWidth = screenWidth;
     this->screenHeight = screenHeight;
-    this->screenSize = screenWidth*screenHeight;
+    this->screenSize = screenWidth * screenHeight;
 
     this->gamePath = "./zdoom";
-    this->iwad = iwad;
+    this->iwadPath = iwad;
     this->file = file;
     this->map = map;
     this->skill = 1;
@@ -30,20 +30,24 @@ ViziaDoomController::~ViziaDoomController(){
     this->close();
 }
 
-void ViziaDoomController::init(){
+bool ViziaDoomController::init(){
 
-    if(this->iwad.lenght != 0 && this->map.length != 0) {
+    if(this->iwadPath.length() != 0 && this->map.length() != 0) {
         this->MQInit();
         this->SMInit();
 
         this->lunchDoom();
         this->waitForDoom();
     }
+
+    return true;
 }
 
-void ViziaDoomController::close(){
+bool ViziaDoomController::close(){
     this->SMClose();
     this->MQClose();
+
+    return true;
 }
 
 void ViziaDoomController::setScreenSize(int screenWidth, int screenHeight){
@@ -55,22 +59,35 @@ void ViziaDoomController::setScreenSize(int screenWidth, int screenHeight){
 void ViziaDoomController::setGamePath(std::string path){ this->gamePath = path; }
 void ViziaDoomController::setIwadPath(std::string path){ this->iwadPath = path; }
 void ViziaDoomController::setFilePath(std::string path){ this->file = path; }
-void ViziaDoomController::setMap(std::string map){ this->map = map; } //TO DO - DURING PLAY CHANGE
-void ViziaDoomController::setSkill(int skill){ this->skill = skill; } //TO DO - DURING PLAY CHANGE
+
+void ViziaDoomController::setMap(std::string map){
+    this->map = map;
+    if(this->doomRunning){
+        this->sendCommand("MAP "+this->map);
+    }
+}
+
+void ViziaDoomController::setSkill(int skill){
+    this->skill = skill;
+    if(this->doomRunning){
+        this->sendCommand("SKILL "+this->skill);
+        this->resetMap();
+    }
+}
 
 void ViziaDoomController::setFrameRate() {} //TO DO
 void ViziaDoomController::setHUD() {} //TO DO
 void ViziaDoomController::setCrosshair() {} //TO DO
 
-void ViziaDoomController::tic(){
-    ViziaMessageCommandStruct msg;
+bool ViziaDoomController::tic(){
+    MessageCommandStruct msg;
 
     unsigned int priority;
     bip::message_queue::size_type recvd_size;
 
     bool nextTic = false;
     do {
-        viziaMQ->receive(&msg, sizeof(ViziaMessageCommandStruct), recvd_size, priority);
+        MQ->receive(&msg, sizeof(MessageCommandStruct), recvd_size, priority);
         switch(msg.code){
             case VIZIA_MSG_CODE_DOOM_READY :
             case VIZIA_MSG_CODE_DOOM_TIC :
@@ -79,14 +96,16 @@ void ViziaDoomController::tic(){
             default : break;
         }
     }while(!nextTic);
+
+    return true;
 }
 
-void ViziaDoomController::update(){
-    tic();
+bool ViziaDoomController::update(){
+    return tic();
 }
 
 void ViziaDoomController::resetMap(){
-    //TO DO
+    this->sendCommand("MAP "+this->map);
 }
 
 void ViziaDoomController::restartGame(){
@@ -94,41 +113,46 @@ void ViziaDoomController::restartGame(){
 }
 
 void ViziaDoomController::sendCommand(std::string command){
-    this->MQTSend(VIZIA_MSG_CODE_COMMAND, command.c_str());
+    this->MQSend(VIZIA_MSG_CODE_COMMAND, command.c_str());
 }
 
 //PRIVATE
 
 void ViziaDoomController::waitForDoom(){
     this->tic();
+
+    doomRunning = true;
 }
 
 void ViziaDoomController::lunchDoom(){
-    std::string exec = gamePath;
-
-    std::vector<std::string> args;
-    args.push_back("-iwad");
-    args.push_back(this->iwadPath);
-    args.push_back("-skill");
-    args.push_back(this->skill);
-    if(this->file.length != 0) {
-        args.push_back("-file");
-        args.push_back(this->file);
-    }
-    args.push_back("+map");
-    args.push_back(this->map);
-
-    bp::context ctx;
-    ctx.stdout_behavior = bp::silence_stream();
-
-    doomProcess = bp::launch(exec, args, ctx);
+//
+//    execute(set_args(args));
+//
+//    std::vector<std::string> args;
+//    args.push_back(gamePath);
+//    args.push_back("-iwad");
+//    args.push_back(this->iwadPath);
+//    args.push_back("-skill");
+//    //args.push_back(this->skill);
+//    args.push_back("1");
+//    if(this->file.length() != 0) {
+//        args.push_back("-file");
+//        args.push_back(this->file);
+//    }
+//    args.push_back("+map");
+//    args.push_back(this->map);
+//
+//    //bpr::context ctx;
+//    //ctx.stdout_behavior = bpr::silence_stream();
+//
+//    doomProcess = bpr::execute(set_args(args));
 }
 
 //SM SETTERS & GETTERS
 
 uint8_t* const ViziaDoomController::getScreen() { return this->Screen; }
-InputStruct* const ViziaDoomController::getInput() { return this->Input; }
-GameDataStruct* const ViziaDoomController::getGameVars() { return this->GameVars; }
+ViziaDoomController::InputStruct* const ViziaDoomController::getInput() { return this->Input; }
+ViziaDoomController::GameVarsStruct* const ViziaDoomController::getGameVars() { return this->GameVars; }
 
 void ViziaDoomController::setMouse(int x, int y){
     this->Input->MS_X = x;
@@ -148,7 +172,7 @@ void ViziaDoomController::setButtonState(int button, bool state){
 }
 
 void ViziaDoomController::setKeyState(int key, bool state){
-    if( button < V_BT_SIZE ) this->Input->BT[key] = state;
+    if( key < V_BT_SIZE ) this->Input->BT[key] = state;
 }
 
 void ViziaDoomController::toggleButtonState(int button){
@@ -156,7 +180,7 @@ void ViziaDoomController::toggleButtonState(int button){
 }
 
 void ViziaDoomController::toggleKeyState(int key){
-    if( button < V_BT_SIZE ) this->Input->BT[key] = !this->Input->BT[key];
+    if( key < V_BT_SIZE ) this->Input->BT[key] = !this->Input->BT[key];
 }
 
 int ViziaDoomController::getGameTic() { return this->GameVars->TIC; }
@@ -164,7 +188,7 @@ int ViziaDoomController::getGameTic() { return this->GameVars->TIC; }
 int ViziaDoomController::getPlayerKillCount() { return this->GameVars->PLAYER_KILLCOUNT; }
 int ViziaDoomController::getPlayerItemCount() { return this->GameVars->PLAYER_ITEMCOUNT; }
 int ViziaDoomController::getPlayerSecretCount() { return this->GameVars->PLAYER_SECRETCOUNT; }
-int ViziaDoomController::getPlayerFragCount() { return this->GameVars->PLAYER_FREGCOUNT; }
+int ViziaDoomController::getPlayerFragCount() { return this->GameVars->PLAYER_FRAGCOUNT; }
 
 int ViziaDoomController::getPlayerHealth() { return this->GameVars->PLAYER_HEALTH; }
 int ViziaDoomController::getPlayerArmor() { return this->GameVars->PLAYER_ARMOR; }
@@ -188,24 +212,24 @@ bool ViziaDoomController::getPlayerKey3() { return this->GameVars->PLAYER_KEY[2]
 
 //SM FUNCTIONS 
 void ViziaDoomController::SMInit(){
-    shared_memory_object::remove(VIZIA_SM_NAME);
+    bip::shared_memory_object::remove(VIZIA_SM_NAME);
 
     this->SM = new bip::shared_memory_object(bip::open_or_create, VIZIA_SM_NAME, bip::read_write);
-    this->SMSetSize(screen->GetWidth(), screen->GetHeight());
+    this->SMSetSize(screenWidth, screenHeight);
 
-    this->viziaInputSMRegion = new bip::mapped_region(this->viziaSM, bip::read_write, this->SMGetInputRegionBeginning(), sizeof(ViziaInputStruct));
-    this->viziaInput = static_cast<ViziaInputStruct *>(this->viziaInputSMRegion->get_address());
+    this->InputSMRegion = new bip::mapped_region(this->SM, bip::read_write, this->SMGetInputRegionBeginning(), sizeof(ViziaDoomController::InputStruct));
+    this->Input = static_cast<ViziaDoomController::InputStruct *>(this->InputSMRegion->get_address());
 
-    this->viziaGameVarsSMRegion = new bip::mapped_region(this->viziaSM, bip::read_write, this->SMGetGameVarsRegionBeginning(), sizeof(ViziaGameVarsStruct));
-    this->viziaGameVars = static_cast<ViziaGameVarsStruct *>(this->viziaGameVarsSMRegion->get_address());
+    this->GameVarsSMRegion = new bip::mapped_region(this->SM, bip::read_write, this->SMGetGameVarsRegionBeginning(), sizeof(ViziaDoomController::GameVarsStruct));
+    this->GameVars = static_cast<ViziaDoomController::GameVarsStruct *>(this->GameVarsSMRegion->get_address());
 
-    this->viziaScreenSMRegion = new bip::mapped_region(this->viziaSM, bip::read_write, this->SMGetScreenRegionBeginning(), this->screenSize);
-    this->viziaScreen = static_cast<BYTE *>(this->viziaScreenSMRegion->get_address());
+    this->ScreenSMRegion = new bip::mapped_region(this->SM, bip::read_write, this->SMGetScreenRegionBeginning(), sizeof(uint8_t) * this->screenSize);
+    this->Screen = static_cast<uint8_t *>(this->ScreenSMRegion->get_address());
 
 }
 
-void ViziaDoomController::SMSetSize(int scr_w, int src_h){
-    this->SMSize = sizeof(InputStruct) + sizeof(GameVarsStruct) + (sizeof(BYTE) * scr_w * src_h);
+void ViziaDoomController::SMSetSize(int screenWidth, int screenHeight){
+    this->SMSize = sizeof(InputStruct) + sizeof(GameVarsStruct) + (sizeof(uint8_t) * screenWidth * screenHeight);
     this->SM->truncate(this->SMSize);
 }
 
@@ -231,7 +255,7 @@ void ViziaDoomController::SMClose(){
 //MQ FUNCTIONS
 void ViziaDoomController::MQInit(){
     bip::message_queue::remove(VIZIA_MQ_NAME);
-    this->MQ = new message_queue(open_or_create, VIZIA_MQ_NAME, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
+    this->MQ = new bip::message_queue(bip::open_or_create, VIZIA_MQ_NAME, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
 }
 
 void ViziaDoomController::MQSend(uint8_t code){
@@ -269,5 +293,5 @@ bool ViziaDoomController::MQTryRecv(void *msg, unsigned long &size, unsigned int
 }
 
 void ViziaDoomController::MQClose(){
-    message_queue::remove(VIZIA_MQ_NAME);
+    bip::message_queue::remove(VIZIA_MQ_NAME);
 }
