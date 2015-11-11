@@ -17,8 +17,9 @@
 
 #define VIZIA_PLAYER players[consoleplayer]
 player_t *viziaPlayer;
-//shared_memory_object *viziaGameVarsSM;
-ViziaGameVarsSMStruct *viziaGameVars;
+
+bip::mapped_region *viziaGameVarsSMRegion;
+ViziaGameVarsStruct *viziaGameVars;
 
 int Vizia_CheckItem(FName name) {
     if(viziaPlayer->mo != NULL) {
@@ -67,13 +68,11 @@ void Vizia_GameVarsInit(){
 
     viziaPlayer = &players[consoleplayer];
 
-    //shared_memory_object::remove(VIZIA_GAME_VARS_SM_NAME);
-    //viziaGameVarsSM = new shared_memory_object(create_only, VIZIA_GAME_VARS_SM_NAME, read_write);
-    //viziaGameVarsSM->truncate(sizeof(ViziaGameVarsSMStruct));
-    //mapped_region viziaGameVarsSMRegion(viziaGameVarsSM, read_write);
+    viziaGameVarsSMRegion = new bip::mapped_region(viziaSM, bip::read_write, Vizia_SMGetGameVarsRegionBeginning(), sizeof(ViziaGameVarsStruct));
+    viziaGameVars = static_cast<ViziaGameVarsStruct *>(viziaGameVarsSMRegion->get_address());
 
-    mapped_region viziaGameVarsSMRegion(viziaSM, read_write, Vizia_SMGetGameVarsRegionBeginning(), sizeof(ViziaGameVarsSMStruct));
-    viziaGameVars = static_cast<ViziaGameVarsSMStruct *>(viziaGameVarsSMRegion.get_address());
+    printf("Game vars SM region size: %zu, beginnig: %p, end: %p \n",
+           viziaGameVarsSMRegion->get_size(), viziaGameVarsSMRegion->get_address(), viziaGameVarsSMRegion->get_address() + viziaGameVarsSMRegion->get_size());
 }
 
 void Vizia_UpdateGameVars(){
@@ -101,8 +100,8 @@ void Vizia_UpdateGameVars(){
 
     viziaGameVars->PLAYER_ARMOR = Vizia_CheckItem(NAME_BasicArmor);
 
-    viziaGameVars->PLAYER_EQUIPPED_WEAPON_AMMO = Vizia_CheckEquippedWeaponAmmo();
-    viziaGameVars->PLAYER_EQUIPPED_WEAPON = Vizia_CheckEquippedWeapon();
+    viziaGameVars->PLAYER_SELECTED_WEAPON_AMMO = Vizia_CheckEquippedWeaponAmmo();
+    viziaGameVars->PLAYER_SELECTED_WEAPON = Vizia_CheckEquippedWeapon();
 
     viziaGameVars->PLAYER_AMMO[0] = Vizia_CheckItem(NAME_Clip);
     viziaGameVars->PLAYER_AMMO[1] = Vizia_CheckItem(NAME_Shell);
@@ -123,7 +122,7 @@ void Vizia_UpdateGameVars(){
 }
 
 void Vizia_GameVarsClose(){
-    //shared_memory_object::remove(VIZIA_GAME_VARS_SM_NAME);
+    delete(viziaGameVarsSMRegion);
 }
 
 

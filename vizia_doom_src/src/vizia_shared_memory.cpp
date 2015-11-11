@@ -4,17 +4,23 @@
 #include "doomstat.h"
 #include "v_video.h"
 
-shared_memory_object *viziaSM;
+bip::shared_memory_object *viziaSM;
+size_t viziaSMSize;
 
 void Vizia_SMInit(){
-    shared_memory_object::remove(VIZIA_SM_NAME);
+    printf("VIZIA SM INIT\n");
 
-    viziaSM = new shared_memory_object(open_or_create, VIZIA_SM_NAME, read_write);
+    bip::shared_memory_object::remove(VIZIA_SM_NAME);
+
+    viziaSM = new bip::shared_memory_object(bip::open_or_create, VIZIA_SM_NAME, bip::read_write);
     Vizia_SMSetSize(screen->GetWidth(), screen->GetHeight());
+
+    printf ("SM size: %zu\n", viziaSMSize);
 }
 
-int Vizia_SMSetSize(int scr_w, int src_h){
-    viziaSM->truncate(sizeof(ViziaInputSMStruct) + sizeof(ViziaGameVarsSMStruct) + sizeof(BYTE) * scr_w * src_h);
+void Vizia_SMSetSize(int scr_w, int src_h){
+    viziaSMSize = sizeof(ViziaInputStruct) + sizeof(ViziaGameVarsStruct) + (sizeof(BYTE) * scr_w * src_h);
+    viziaSM->truncate(viziaSMSize);
 }
 
 size_t Vizia_SMGetInputRegionBeginning(){
@@ -22,13 +28,13 @@ size_t Vizia_SMGetInputRegionBeginning(){
 }
 
 size_t Vizia_SMGetGameVarsRegionBeginning(){
-    return sizeof(ViziaInputSMStruct);
+    return sizeof(ViziaInputStruct);
 }
 
 size_t Vizia_SMGetScreenRegionBeginning(){
-    return sizeof(ViziaInputSMStruct) + sizeof(ViziaGameVarsSMStruct);
+    return sizeof(ViziaInputStruct) + sizeof(ViziaGameVarsStruct);
 }
 
 void Vizia_SMClose(){
-    shared_memory_object::remove(VIZIA_SM_NAME);
+    bip::shared_memory_object::remove(VIZIA_SM_NAME);
 }

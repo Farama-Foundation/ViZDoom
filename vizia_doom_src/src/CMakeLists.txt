@@ -1151,6 +1151,7 @@ add_executable( zdoom WIN32 MACOSX_BUNDLE
 	vizia_game.cpp
 	vizia_screen.cpp
 	vizia_shared_memory.cpp
+	vizia_message_queue.cpp
 	vizia_main.cpp
 )
 
