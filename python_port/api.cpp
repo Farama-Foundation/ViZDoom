@@ -1,20 +1,14 @@
 #include <Python.h>
 #include <numpy/arrayobject.h>
-#include "chi2.h"
+#include <numpy/npy_math.h>
 #include "dot_shooting.h"
+#include <cstdio>
 /* Docstrings */
 static char module_docstring[] =
     "Vizia api in python";
 
 
 /* Available functions */
-static int xstat,ystat;
-static PyObject *api_chi2(PyObject *self, PyObject *args);
-static PyObject *api_nothing(PyObject *self, PyObject *args);
-static PyObject *api_dictionary(PyObject *self, PyObject *args);
-static PyObject *api_ndarray(PyObject *self, PyObject *args);
-
-static PyObject *api_a(PyObject *self, PyObject *args);//api_get_misc_state(PyObject *self, PyObject *args);
 
 static PyObject *api_init(PyObject *self, PyObject *args);
 static PyObject *api_is_finished(PyObject *self, PyObject *args);
@@ -27,17 +21,11 @@ static PyObject *api_get_state(PyObject *self, PyObject *args);
 
 /* Module specification */
 static PyMethodDef module_methods[] = {
-    {"chi2", api_chi2, METH_VARARGS, NULL},
-    {"dictionary", api_dictionary, METH_VARARGS, NULL},
-    {"nothing", api_nothing, METH_VARARGS, NULL},
-    {"ndarray", api_ndarray, METH_VARARGS, NULL},
-    
     {"init", api_init, METH_VARARGS, NULL},
     {"is_finished", api_is_finished, METH_VARARGS, NULL},
     {"get_state_format", api_get_state_format, METH_VARARGS, NULL},
     {"get_action_format", api_get_action_format, METH_VARARGS, NULL},
     {"get_summary_reward", api_get_summary_reward, METH_VARARGS, NULL},
-	{ "a",api_a,METH_VARARGS, NULL},
     {"new_episode", api_new_episode, METH_VARARGS, NULL},
     {"make_action", api_make_action, METH_VARARGS, NULL},
     {"get_state", api_get_state, METH_VARARGS, NULL},
@@ -56,220 +44,125 @@ PyMODINIT_FUNC initapi(void)
     /* Load `numpy` functionality. */
     import_array();
 }
-/* game functions */
+
+
+PyObject* state_format;
+PyObject* action_format;
+PyObject* state;
 
 
 static PyObject * api_init(PyObject *self, PyObject *args)
 {
 	int _x;
     int _y;
-    
     //optional arguments
     int _random_background;
     int _max_moves;
     float _living_reward;
     float _miss_penalty;
     float _hit_reward;
-    int _ammo; //may be a number or np.inf
-	
+    int _ammo; 
+	float float_ammo;
+
+    /* Parse arguments */
     if (!PyArg_ParseTuple(args, "iiiiffff", &_x, &_y, &_random_background, &_max_moves,
-                                         &_living_reward,&_miss_penalty,&_hit_reward,&_ammo))
+                                         &_living_reward,&_miss_penalty,&_hit_reward,&float_ammo))
     {
         return NULL;
     }   
-    init(_x,_y, _random_background, _max_moves, _living_reward,_miss_penalty,_hit_reward,int(_ammo));
+    /* Handle ammo infinite value */
+    if(NPY_INFINITY == float_ammo)
+    {
+        _ammo = -1;
+    }
+    else
+    {
+        _ammo = (int)float_ammo;
+    }
+    /* Run the proper code in c++ api */
+    init(_x,_y, (int)_random_background, _max_moves, _living_reward,_miss_penalty,_hit_reward,_ammo);
+
+    /* Create state format and action format objects */
+    PyObject* image_state_tuple = PyTuple_Pack(2,PyInt_FromLong(_y),PyInt_FromLong(_x));
+    npy_intp image_dimensions[] = {_y,_x};
+    PyObject* img_state = PyArray_SimpleNewFromData(2, image_dimensions, NPY_FLOAT32, get_image_state());
+    
+    if(_ammo == -1)
+    {
+        state_format = PyTuple_Pack(1,image_state_tuple);
+        state = PyTuple_Pack(1,img_state);
+    }
+    else
+    {
+        state_format = PyTuple_Pack(2, image_state_tuple, PyInt_FromLong(_ammo));
+        npy_intp misc_dimensions[] = { 1 };
+        PyObject* misc_state = PyArray_SimpleNewFromData(1, misc_dimensions, NPY_FLOAT32, get_misc_state());
+        state = PyTuple_Pack(2,img_state, misc_state);
+    }
+
 
     return Py_None;
 }
 
 static PyObject *api_is_finished(PyObject *self, PyObject *args)
 {
-	int value=is_finished();	
-	PyObject *ret = Py_BuildValue("i", value);
-	return ret;
+    PyObject * finished = PyBool_FromLong(is_finished());
+    Py_XINCREF(finished);
+	return finished;
 }
 
 static PyObject *api_get_state_format(PyObject *self, PyObject *args)
 {
-	int* value=get_state_format();
-
-    npy_intp* dims = (npy_intp*)malloc(sizeof(npy_intp));
-    int n =4;
-    dims[0]=4;
-
-    int* data = (int*)malloc(n *sizeof(int));
-    for (int i =0;i<n;i++)
-    {
-        data[i] = value[i];
-    }
-
-    PyObject* array = PyArray_SimpleNewFromData(1, dims, NPY_INT32, data);
-    PyObject* list = PyList_New(0);
-    PyList_Append(list,array);
-    return list; 
-
-}
-static PyObject *api_a(PyObject *self, PyObject *args)
-{
-	float* value=get_misc_state();
-	int b=1;
-	PyObject *result = PyList_New(b); 
-  for (int i = 0; i < b; ++i) {
-    PyList_SetItem(result, i, PyFloat_FromDouble(value[i]));
-  }
-
-	return result;
+    Py_XINCREF(state_format);
+	return state_format;
 }
 
 static PyObject *api_get_action_format(PyObject *self, PyObject *args)
 {
-	int value=get_action_format();	
-	PyObject *ret = Py_BuildValue("i", value);
-	return ret;
-
+    PyObject* format = Py_BuildValue("i", get_action_format());
+    Py_XINCREF(format);
+	return format;
 }
+
 static PyObject *api_get_summary_reward(PyObject *self, PyObject *args)
 {
-   	int value=get_summary_reward();	
-	PyObject *ret = Py_BuildValue("i", value);
+   	float summary_reward = get_summary_reward();	
+	PyObject *ret = Py_BuildValue("f", summary_reward);
+    Py_XINCREF(ret);
 	return ret;
 }
+
 static PyObject *api_new_episode(PyObject *self, PyObject *args)
 {
-    	new_episode();
+    new_episode();
 	return Py_None;
 }
+
 static PyObject *api_make_action(PyObject *self, PyObject *args)
 {
-	PyObject *x_obj;
-	if (!PyArg_ParseTuple(args, "O", &x_obj))
+	PyObject *pyobj_action;
+	if (!PyArg_ParseTuple(args, "O", &pyobj_action))
 	{
 		return NULL;
 	}
+    pyobj_action = PyArray_FROM_OTF(pyobj_action, NPY_INT, NPY_IN_ARRAY);
+ 	if (pyobj_action == NULL) 
+    {
+       	Py_XDECREF(pyobj_action);
+       	return NULL;
+    }
 
-    /* Interpret the input objects as numpy arrays. */
-    PyObject *x_array = PyArray_FROM_OTF(x_obj, NPY_INT, NPY_IN_ARRAY);
- 	if (x_array == NULL) {
-        	Py_XDECREF(x_array);
-        	return NULL;
-    	}
-	int *x    = (int*)PyArray_DATA(x_array);
-	float value=make_action(x);
-    	PyObject *ret = Py_BuildValue("f", value);
-	return ret;
+	int *action = (int*)PyArray_DATA(pyobj_action);
+	float reward = make_action(action);
+
+    Py_XDECREF(action);
+
+    PyObject *pyobj_reward = Py_BuildValue("f", reward);
+	return pyobj_reward;
 }
+
 static PyObject *api_get_state(PyObject *self, PyObject *args)
 {
-
-	npy_intp* dims = (npy_intp*)malloc(sizeof(npy_intp));
-    int n =xstat*ystat;
-    	dims[0]=xstat;
-	dims[1]=ystat;
-
-	float** _stat=get_image_state();
-
-    float* data = (float*)malloc(n *sizeof(float));
-    for (int i =0;i<xstat;i++)
-    {
-        for (int j =0;j<ystat;j++)
-    {
-        data[(i*ystat+j)] = _stat[i][j];
-    }
-    }
-    //return Py_None;
-    PyObject* array = PyArray_SimpleNewFromData(2, dims, NPY_FLOAT32, data);
-    PyObject* list = PyList_New(0);
-    PyList_Append(list,array);
-	dims[0]=1;
-	float* temp;
-	temp=get_misc_state();
-	PyObject* array2 = PyArray_SimpleNewFromData(1, dims, NPY_FLOAT32, temp);
-    PyList_Append(list,array2);
-    return list;
-    //return Py_None;
-}
-//////////////////////
-static PyObject *api_dictionary(PyObject *self, PyObject *args)
-{
-    PyObject* dict = PyDict_New();
-    PyObject* key = PyString_FromString("name");
-    PyObject* value = PyString_FromString("whatever");
-    PyDict_SetItem (dict,key,value);
-    PyObject* list = PyList_New(0);
-    PyList_Append(list,dict);
-    return list;
-}
-static PyObject *api_ndarray(PyObject *self, PyObject *args)
-{
-    npy_intp* dims = (npy_intp*)malloc(sizeof(npy_intp));
-    int n =10;
-	printf("%d\n",xstat);
-    dims[0]=3;
-
-    float* data = (float*)malloc(n *sizeof(float));
-    for (int i =0;i<n;i++)
-    {
-        data[i] = 9;
-    }
-    //return Py_None;
-    PyObject* array = PyArray_SimpleNewFromData(2, dims, NPY_FLOAT32, data);
-    PyObject* array2 = PyArray_SimpleNewFromData(1, dims, NPY_FLOAT32, data);
-    PyObject* list = PyList_New(0);
-    PyList_Append(list,array);
-    PyList_Append(list,array2);
-    return list;
-}
-static PyObject *api_nothing(PyObject *self, PyObject *args)
-{
-    return Py_None;
-}
-static PyObject *api_chi2(PyObject *self, PyObject *args)
-{
-    double m, b;
-    PyObject *x_obj, *y_obj, *yerr_obj;
-
-    /* Parse the input tuple */
-    if (!PyArg_ParseTuple(args, "ddOOO", &m, &b, &x_obj, &y_obj,
-                                         &yerr_obj))
-        return NULL;
-
-    /* Interpret the input objects as numpy arrays. */
-    PyObject *x_array = PyArray_FROM_OTF(x_obj, NPY_DOUBLE, NPY_IN_ARRAY);
-    PyObject *y_array = PyArray_FROM_OTF(y_obj, NPY_DOUBLE, NPY_IN_ARRAY);
-    PyObject *yerr_array = PyArray_FROM_OTF(yerr_obj, NPY_DOUBLE,
-                                            NPY_IN_ARRAY);
-
-    /* If that didn't work, throw an exception. */
-    if (x_array == NULL || y_array == NULL || yerr_array == NULL) {
-        Py_XDECREF(x_array);
-        Py_XDECREF(y_array);
-        Py_XDECREF(yerr_array);
-        return NULL;
-    }
-
-    /* How many data points are there? */
-    int N = (int)PyArray_DIM(x_array, 0);
-
-    /* Get pointers to the data as C-types. */
-    double *x    = (double*)PyArray_DATA(x_array);
-    double *y    = (double*)PyArray_DATA(y_array);
-    double *yerr = (double*)PyArray_DATA(yerr_array);
-
-    /* Call the external C function to compute the chi-squared. */
-    double value = chi2(m, b, x, y, yerr, N);
-
-    /* Clean up. */
-    Py_DECREF(x_array);
-    Py_DECREF(y_array);
-    Py_DECREF(yerr_array);
-
-    if (value < 0.0) {
-        PyErr_SetString(PyExc_RuntimeError,
-                    "Chi-squared returned an impossible value.");
-        return NULL;
-    }
-
-    /* Build the output tuple */
-    PyObject *ret = Py_BuildValue("d", value);
-    return ret;
+    Py_XINCREF(state);
+    return state;
 }

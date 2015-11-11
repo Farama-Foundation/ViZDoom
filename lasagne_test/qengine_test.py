@@ -46,8 +46,8 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
 	return CNNEvaluator(**cnn_args)
 
 game_args = {}
-game_args['width'] = 41
-game_args['height'] = 21
+game_args['x'] = 41
+game_args['y'] = 21
 game_args['hit_reward'] = 1.0
 game_args['max_moves'] = 50
 #should be positive cause it's treatet as a penalty

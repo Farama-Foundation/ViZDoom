@@ -4,13 +4,13 @@ import sys
 
 class ShootingDotGame:
 	
-	def __init__(self, width, height, add_dimension =False,dtype = np.float32, random_background = False,max_moves=np.inf,living_reward=-1,miss_penalty=10,hit_reward=100, ammo = np.inf):
+	def __init__(self, x, y, add_dimension =False,dtype = np.float32, random_background = False,max_moves=np.inf,living_reward=-1,miss_penalty=10,hit_reward=100, ammo = np.inf):
 		
 		self._ammo = np.float32(max(ammo,0))
 		self._dtype = dtype
-		width+=1-width%2
-		self._x = width
-		self._y = height
+		x+=1-x%2
+		self._x = x
+		self._y = y
 		self._movesMade = 0
 		self._living_reward = living_reward
 		self._miss_penalty = miss_penalty
@@ -27,6 +27,7 @@ class ShootingDotGame:
 			self._state_format.append(1)
 		else:
 			self._state_format.append(0)
+		self._state_format = tuple(self._state_format)
 		self._current_ammo = np.ndarray([1],dtype = np.float32)
 		self._action_format = 3
 		self._state = None
@@ -108,7 +109,7 @@ class ShootingDotGame:
 		if self._state is None:
 			img = None
 		else:
-			ret_val = [self._state.reshape(self._state_format[0]).copy()]
+			ret_val = [self._state.reshape(self._state_format[0])]
 			if self._ammo < np.inf:
 				ret_val.append(self._current_ammo/self._ammo)
 			

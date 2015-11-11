@@ -2,26 +2,29 @@
 
 from games import ShootingDotGame
 import time
+import api
 import numpy as np
 
-game_args = {}
-game_args['width'] = 320
-game_args['height'] = 200
-game_args['hit_reward'] = 1.0
-game_args['max_moves'] = 50
+args = {}
+args['x'] = 320
+args['y'] = 200
+args['hit_reward'] = 1.0
+args['max_moves'] = 50
 #should be positive cause it's treatet as a penalty
-game_args['miss_penalty'] = 0.05
+args['miss_penalty'] = 0.05
 #should be negative cause it's treatet as a reward
-game_args['living_reward'] = -0.01
-game_args['random_background'] = True
-game_args['ammo'] = np.inf
-game_args['add_dimension'] = True
-game = ShootingDotGame(**game_args)
+args['living_reward'] = -0.01
+args['random_background'] = True
+args['ammo'] = np.inf
+args['add_dimension'] = True
+game = ShootingDotGame(**args)
+
 
 
 steps = 45000
-start = time.time()
 action = [0,1,0]
+
+start = time.time()
 for i in range(steps):
 	if game.is_finished():
 		game.new_episode()
@@ -29,6 +32,19 @@ for i in range(steps):
 	game.make_action(action)
 
 end = time.time()
+print "Python dot_shooting:"
 print "time:",round(end-start,4)
 print "fps:",steps/(end-start)
 
+api.init(args['x'],args['y'],args['random_background'],args['max_moves'],args['living_reward'],args['miss_penalty'],args['hit_reward'],args['ammo'])
+start = time.time()
+for i in range(steps):
+	if api.is_finished():
+		api.new_episode()
+	s = api.get_state()
+	api.make_action(action)
+
+end = time.time()
+print "C++ dot_shooting:"
+print "time:",round(end-start,4)
+print "fps:",steps/(end-start)

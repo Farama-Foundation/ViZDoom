@@ -1,7 +1,7 @@
 from distutils.core import setup, Extension
 import numpy.distutils.misc_util
 
-c_ext = Extension("api", ["api.cpp", "chi2.cpp", "dot_shooting.cpp"])
+c_ext = Extension("api", ["api.cpp", "dot_shooting.cpp"])
 
 setup(
     ext_modules=[c_ext],
