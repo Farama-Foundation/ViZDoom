@@ -13,4 +13,6 @@ print api.is_finished()
 api.new_episode()
 
 actions = [[True,False,False],[False,True,False],[False,False,True]]
+print api.get_state()
 api.make_action(actions[1]);
+print api.get_state()

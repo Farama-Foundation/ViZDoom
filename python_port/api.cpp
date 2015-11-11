@@ -140,6 +140,7 @@ static PyObject *api_new_episode(PyObject *self, PyObject *args)
 
 static PyObject *api_make_action(PyObject *self, PyObject *args)
 {
+    
 	PyObject *pyobj_action;
 	if (!PyArg_ParseTuple(args, "O", &pyobj_action))
 	{
@@ -159,6 +160,7 @@ static PyObject *api_make_action(PyObject *self, PyObject *args)
 
     PyObject *pyobj_reward = Py_BuildValue("f", reward);
 	return pyobj_reward;
+
 }
 
 static PyObject *api_get_state(PyObject *self, PyObject *args)

@@ -27,10 +27,8 @@ int initialized = 0;
 
 //workaround, numpy doesn't cope with not scatteres arrays : ( . . .
 //separate class for contigous 2d array would be better
-float* state_at(int y, int x)
-{
-	return _state +(y*_x+x);
-}
+
+#define zbigniew(Y, X)  ((Y)*_x+(X))
 
 
 void init(int x, int y, int random_bg,int max_moves,float living_reward,float miss_penalty, float hit_reward, int ammo)/////////////////
@@ -107,7 +105,7 @@ void new_episode()
 		{
 			for(int j=0;j<_x;j++)
 			{
-				*state_at(i,j) = 0.0;
+				_state[zbigniew(i,j)] = 0.0;
 			}
 		}
 		else
@@ -116,19 +114,19 @@ void new_episode()
 			{
 				for(int j=0;j<_x;j++)
 				{
-					*state_at(i,j) = rand()/float(RAND_MAX);
+					_state[zbigniew(i,j)] = rand()/float(RAND_MAX);
 				}
 			}
 			else
 			{
 				for(int j=0;j<_x;j++)
 				{
-					*state_at(i,j) = 0.0;
+					_state[zbigniew(i,j)] = 0.0;
 				}
 			}
 		}
 	}
-	*state_at(_aim_y,_aim_x) = 1.0;
+	_state[zbigniew(_aim_y,_aim_x)] = 1.0;
 
 }
 float make_action(int const* action)
@@ -146,18 +144,18 @@ float make_action(int const* action)
 	{
 		if (_aim_x >0)
 		{
-			*state_at(_aim_y,_aim_x) = 0.0;
+			_state[zbigniew(_aim_y,_aim_x)] = 0.0;
 			_aim_x -= 1;
-			*state_at(_aim_y,_aim_x) = 1.0;	
+			_state[zbigniew(_aim_y,_aim_x)] = 1.0;	
 		}
 	}
 	else if(action[1] && ! action[0])
 	{
 		if (_aim_x < _x -1)
 		{
-			*state_at(_aim_y,_aim_x) = 0.0;
+			_state[zbigniew(_aim_y,_aim_x)] = 0.0;
 			_aim_x += 1;
-			*state_at(_aim_y,_aim_x) = 1.0;	
+			_state[zbigniew(_aim_y,_aim_x)] = 1.0;	
 		}
 	}
 	if (action[2])

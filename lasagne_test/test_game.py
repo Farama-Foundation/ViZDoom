@@ -29,7 +29,7 @@ for i in range(steps):
 	if game.is_finished():
 		game.new_episode()
 	s = game.get_state()
-	game.make_action(action)
+	#game.make_action(action)
 
 end = time.time()
 print "Python dot_shooting:"
@@ -42,7 +42,7 @@ for i in range(steps):
 	if api.is_finished():
 		api.new_episode()
 	s = api.get_state()
-	api.make_action(action)
+	#api.make_action(action)
 
 end = time.time()
 print "C++ dot_shooting:"
