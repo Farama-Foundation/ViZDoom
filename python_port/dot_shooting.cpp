@@ -13,16 +13,22 @@ float _hit_reward;
 int _ammo;
 
 int _number_of_actions;
-float ** _state;
+float *_state;
 int * _state_format;
 int _moves_made;
 int _current_ammo;
 float* _current_ammo_float;
-int _finished ;
-int _summary_reward;
+int _finished;
+float _summary_reward;
 int _aim_y;
 int _aim_x;
 
+int initialized = 0;
+
+//workaround, numpy doesn't cope with not scatteres arrays : ( . . .
+//separate class for contigous 2d array would be better
+
+#define zbigniew(Y, X)  ((Y)*_x+(X))
 
 
 void init(int x, int y, int random_bg,int max_moves,float living_reward,float miss_penalty, float hit_reward, int ammo)/////////////////
@@ -61,67 +67,61 @@ void init(int x, int y, int random_bg,int max_moves,float living_reward,float mi
 	_current_ammo_float = new float[1];
 	_summary_reward = 0;
 
-	_state = new float*[_y];
-	for (int i =0; i<_y;i++)
+	if (initialized and _state)
 	{
-		_state[i] = new float[_x]; 
+
+		delete[] _state;
 	}
+	_state = new float[_y *_x];
+	for (int i =0; i<_y*_x;i++)
+	{
+		_state[i] = 0.0;
+	}
+	initialized = 1;
 }
-int is_finished()/////////////////////////////
+int is_finished()
 {
 	
 	return _finished;
 }
-float get_summary_reward()////////////////////////////////
+float get_summary_reward()
 {
 	return _summary_reward;
 }
-void new_episode()  /////////////////////////////////////
+void new_episode()  
 {
 	_finished = 0;
 	_summary_reward = 0;
 	_moves_made = 0;
-	_current_ammo_float[0] = 0.0;
+	
+	
 	if (_ammo > 0)
 	{
 		_current_ammo = _ammo;
 		_current_ammo_float[0] = 1.0;
-
 	}
-	_aim_x = rand()%_x;
+	_state[zbigniew(_aim_y,_aim_x)] = 0.0;
+	_aim_x = rand() % _x ;
 
-	for(int i=0;i<_y;i++)
+	if(_random_background)
 	{
-		if(i == _aim_y)
+		for(int i =0;i<_y*_x;i++)
 		{
-			for(int j=0;j<_x;j++)
+			//skip the "aiming line"
+			if( i ==_aim_y*_x)
 			{
-				_state[i][j] = 0.0;
+				i += _x -1;
+				continue;
 			}
-		}
-		else
-		{
-			if(_random_background)
-			{
-				for(int j=0;j<_x;j++)
-				{
-					_state[i][j] = rand()/float(RAND_MAX);
-				}
-			}
-			else
-			{
-				for(int j=0;j<_x;j++)
-				{
-					_state[i][j]= 0.0;
-				}
-			}
+			_state[i]=rand()/float(RAND_MAX);
 		}
 	}
-	_state[_aim_y][_aim_x] = 1.0;
-}
-float make_action(int* action)
-{
 	
+	_state[zbigniew(_aim_y,_aim_x)] = 1.0;
+
+}
+float make_action(int const* action)
+{
 	if(_finished)
 	{
 		//THROW something?
@@ -130,22 +130,22 @@ float make_action(int* action)
 
 	float reward = _living_reward;
 	++_moves_made; 
-	if(action[0] && ! action[1])
+	if( action[0] && !action[1] )
 	{
-		if (_aim_x >0)
+		if ( _aim_x > 0 )
 		{
-			_state[_aim_y][_aim_x] = 0.0;
+			_state[zbigniew(_aim_y,_aim_x)] = 0.0;
 			_aim_x -= 1;
-			_state[_aim_y][_aim_x] = 1.0;	
+			_state[zbigniew(_aim_y,_aim_x)] = 1.0;	
 		}
 	}
-	else if(action[1] && ! action[0])
+	else if( action[1] && ! action[0])
 	{
-		if (_aim_x < _x -1)
+		if ( _aim_x < _x -1 )
 		{
-			_state[_aim_y][_aim_x] = 0.0;
+			_state[zbigniew(_aim_y,_aim_x)] = 0.0;
 			_aim_x += 1;
-			_state[_aim_y][_aim_x] = 1.0;	
+			_state[zbigniew(_aim_y,_aim_x)] = 1.0;	
 		}
 	}
 	if (action[2])
@@ -175,11 +175,11 @@ float make_action(int* action)
 	}
 	return reward;
 }
-float** get_image_state() 
+float* get_image_state() 
 {
 	return _state;
 }
-float* get_misc_state() ////////////////////////////////
+float* get_misc_state() 
 {
 	return _current_ammo_float;
 }
@@ -196,6 +196,7 @@ int get_action_format()
 {
 	return _number_of_actions;
 }
-int* get_state_format(){
+int * get_state_format()
+{
 	return _state_format;
 }
