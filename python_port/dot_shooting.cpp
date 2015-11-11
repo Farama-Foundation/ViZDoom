@@ -122,7 +122,6 @@ void new_episode()
 }
 float make_action(int const* action)
 {
-	
 	if(_finished)
 	{
 		//THROW something?
@@ -131,18 +130,18 @@ float make_action(int const* action)
 
 	float reward = _living_reward;
 	++_moves_made; 
-	if(action[0] && ! action[1])
+	if( action[0] && !action[1] )
 	{
-		if (_aim_x >0)
+		if ( _aim_x > 0 )
 		{
 			_state[zbigniew(_aim_y,_aim_x)] = 0.0;
 			_aim_x -= 1;
 			_state[zbigniew(_aim_y,_aim_x)] = 1.0;	
 		}
 	}
-	else if(action[1] && ! action[0])
+	else if( action[1] && ! action[0])
 	{
-		if (_aim_x < _x -1)
+		if ( _aim_x < _x -1 )
 		{
 			_state[zbigniew(_aim_y,_aim_x)] = 0.0;
 			_aim_x += 1;

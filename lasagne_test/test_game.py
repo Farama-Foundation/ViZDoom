@@ -23,7 +23,8 @@ game = ShootingDotGame(**args)
 
 steps = 45000
 actions = [[True,False,False],[False,True,False],[False,False,True]]
-action_ind = 2
+action_ind = 0
+
 start = time.time()
 for i in range(steps):
 	if game.is_finished():

@@ -156,9 +156,10 @@ static PyObject *api_make_action(PyObject *self, PyObject *args)
 	int *action = (int*)PyArray_DATA(pyobj_action);
 	float reward = make_action(action);
 
-    Py_XDECREF(action);
+    Py_XDECREF(pyobj_action);
 
     PyObject *pyobj_reward = Py_BuildValue("f", reward);
+    Py_XINCREF(pyobj_reward);
 	return pyobj_reward;
 
 }
