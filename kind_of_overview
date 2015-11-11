@@ -15,6 +15,10 @@ c++ api:
 zdoom configurable stuff:
 	- hud visibility (default off)
 	- weapon visibility (default off)
+	- visual effect like:
+		- green magic stuff during respawn
+		- blinking screen when damaged
+		- blinking surroundings when shooting
 
 zdoom stuff to delete:
 	- sound configuration
