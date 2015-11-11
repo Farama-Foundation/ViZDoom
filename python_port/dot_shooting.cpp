@@ -73,6 +73,10 @@ void init(int x, int y, int random_bg,int max_moves,float living_reward,float mi
 		delete[] _state;
 	}
 	_state = new float[_y *_x];
+	for (int i =0; i<_y*_x;i++)
+	{
+		_state[i] = 0.0;
+	}
 	initialized = 1;
 }
 int is_finished()
@@ -89,43 +93,30 @@ void new_episode()
 	_finished = 0;
 	_summary_reward = 0;
 	_moves_made = 0;
-	_current_ammo_float[0] = 0.0;
+	
 	
 	if (_ammo > 0)
 	{
 		_current_ammo = _ammo;
 		_current_ammo_float[0] = 1.0;
-
 	}
+	_state[zbigniew(_aim_y,_aim_x)] = 0.0;
 	_aim_x = rand() % _x ;
 
-	for(int i=0;i<_y;i++)
+	if(_random_background)
 	{
-		if(i == _aim_y)
+		for(int i =0;i<_y*_x;i++)
 		{
-			for(int j=0;j<_x;j++)
+			//skip the "aiming line"
+			if( i ==_aim_y*_x)
 			{
-				_state[zbigniew(i,j)] = 0.0;
+				i += _x -1;
+				continue;
 			}
-		}
-		else
-		{
-			if(_random_background)
-			{
-				for(int j=0;j<_x;j++)
-				{
-					_state[zbigniew(i,j)] = rand()/float(RAND_MAX);
-				}
-			}
-			else
-			{
-				for(int j=0;j<_x;j++)
-				{
-					_state[zbigniew(i,j)] = 0.0;
-				}
-			}
+			_state[i]=rand()/float(RAND_MAX);
 		}
 	}
+	
 	_state[zbigniew(_aim_y,_aim_x)] = 1.0;
 
 }

@@ -81,7 +81,7 @@ static PyObject * api_init(PyObject *self, PyObject *args)
     }
     /* Run the proper code in c++ api */
     init(_x,_y, (int)_random_background, _max_moves, _living_reward,_miss_penalty,_hit_reward,_ammo);
-
+    _x += (_x +1)%2;
     /* Create state format and action format objects */
     PyObject* image_state_tuple = PyTuple_Pack(2,PyInt_FromLong(_y),PyInt_FromLong(_x));
     npy_intp image_dimensions[] = {_y,_x};

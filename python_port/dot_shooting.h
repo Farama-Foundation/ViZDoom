@@ -1,4 +1,5 @@
 void init(int x, int y, int random_bg,int max_moves,float living_reward,float miss_penalty, float hit_reward, int ammo);
+
 int * get_state_format();
 int get_action_format();
 
