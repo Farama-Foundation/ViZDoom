@@ -4,15 +4,16 @@
 #include "doomstat.h"
 #include "v_video.h"
 
-bip::shared_memory_object *viziaSM;
+bip::shared_memory_object viziaSM;
 size_t viziaSMSize;
 
 void Vizia_SMInit(){
     printf("VIZIA SM INIT\n");
 
-    bip::shared_memory_object::remove(VIZIA_SM_NAME);
+    //bip::shared_memory_object::remove(VIZIA_SM_NAME);
 
-    viziaSM = new bip::shared_memory_object(bip::open_or_create, VIZIA_SM_NAME, bip::read_write);
+    //viziaSM = bip::shared_memory_object(bip::open_or_create, VIZIA_SM_NAME, bip::read_write);
+    viziaSM = bip::shared_memory_object(bip::open_only, VIZIA_SM_NAME, bip::read_write);
     Vizia_SMSetSize(screen->GetWidth(), screen->GetHeight());
 
     printf ("SM size: %zu\n", viziaSMSize);
@@ -20,7 +21,7 @@ void Vizia_SMInit(){
 
 void Vizia_SMSetSize(int scr_w, int src_h){
     viziaSMSize = sizeof(ViziaInputStruct) + sizeof(ViziaGameVarsStruct) + (sizeof(BYTE) * scr_w * src_h);
-    viziaSM->truncate(viziaSMSize);
+    viziaSM.truncate(viziaSMSize);
 }
 
 size_t Vizia_SMGetInputRegionBeginning(){

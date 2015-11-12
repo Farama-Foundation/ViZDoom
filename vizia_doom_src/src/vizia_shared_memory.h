@@ -1,18 +1,18 @@
 #ifndef __VIZIA_SHARED_MEMORY_H__
 #define __VIZIA_SHARED_MEMORY_H__
 
-#include "interprocess/shared_memory_object.hpp"
-#include "interprocess/mapped_region.hpp"
+#include <boost/interprocess/shared_memory_object.hpp>
+#include <boost/interprocess/mapped_region.hpp>
 
 namespace bip = boost::interprocess;
 
-extern bip::shared_memory_object *viziaSM;
+extern bip::shared_memory_object viziaSM;
 
 #define V_ATTACK 0
 #define V_USE 1
 #define V_JUMP 2
 #define V_CROUCH 3
-//#define V_TURN180 4
+#define V_TURN180 4
 #define V_ALTATTACK 5
 #define V_RELOAD 6
 #define V_ZOOM 7

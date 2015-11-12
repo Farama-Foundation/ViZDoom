@@ -712,7 +712,7 @@ elseif( APPLE )
 else( WIN32 )
 	set( EXTRA_HEADER_DIRS posix/*.h posix/sdl/*.h )
 endif( WIN32 )
-file( GLOB HEADER_FILES
+file( GLOB_RECURSE HEADER_FILES
 	${EXTRA_HEADER_DIRS}
 	fragglescript/*.h
 	g_doom/*.h

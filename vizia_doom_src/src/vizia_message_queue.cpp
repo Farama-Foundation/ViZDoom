@@ -1,7 +1,5 @@
 #include "vizia_message_queue.h"
 
-#include "interprocess/ipc/message_queue.hpp"
-
 #include "d_main.h"
 #include "d_event.h"
 #include "c_bind.h"
@@ -9,50 +7,57 @@
 #include "c_dispatch.h"
 
 #include <string.h>
+#include <stdio.h>
 
-bip::message_queue *viziaMQ;
+bip::message_queue *viziaMQController;
+bip::message_queue *viziaMQDoom;
 
 void Vizia_MQInit(){
-    bip::message_queue::remove(VIZIA_MQ_NAME);
-    viziaMQ = new bip::message_queue(bip::open_or_create, VIZIA_MQ_NAME, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
+    //bip::message_queue::remove(VIZIA_MQ_NAME);
+    //viziaMQ = new bip::message_queue(bip::open_or_create, VIZIA_MQ_NAME, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
+    viziaMQController = new bip::message_queue(bip::open_only, VIZIA_MQ_NAME_CTR);
+    viziaMQDoom = new bip::message_queue(bip::open_only, VIZIA_MQ_NAME_DOOM);
 }
 
 void Vizia_MQSend(uint8_t code){
     ViziaMessageSignalStruct msg;
     msg.code = code;
-    viziaMQ->send(&msg, sizeof(ViziaMessageSignalStruct), 0);
+    viziaMQController->send(&msg, sizeof(ViziaMessageSignalStruct), 0);
     //return viziaMQ->try_send(&msg, sizeof(ViziaMessageSignalStruct), 0);
 }
 
 bool Vizia_MQTrySend(uint8_t code){
     ViziaMessageSignalStruct msg;
     msg.code = code;
-    return viziaMQ->try_send(&msg, sizeof(ViziaMessageSignalStruct), 0);
+    return viziaMQController->try_send(&msg, sizeof(ViziaMessageSignalStruct), 0);
 }
 
 void Vizia_MQSend(uint8_t code, const char * command){
     ViziaMessageCommandStruct msg;
     msg.code = code;
     strncpy(msg.command, command, VIZIA_MQ_MAX_CMD_LEN);
-    viziaMQ->send(&msg, sizeof(ViziaMessageCommandStruct), 0);
+    viziaMQController->send(&msg, sizeof(ViziaMessageCommandStruct), 0);
 }
 
 bool Vizia_MQTrySend(uint8_t code, const char * command){
     ViziaMessageCommandStruct msg;
     msg.code = code;
     strncpy(msg.command, command, VIZIA_MQ_MAX_CMD_LEN);
-    return viziaMQ->try_send(&msg, sizeof(ViziaMessageCommandStruct), 0);
+    return viziaMQController->try_send(&msg, sizeof(ViziaMessageCommandStruct), 0);
 }
 
 void Vizia_MQRecv(void *msg, unsigned long &size, unsigned int &priority){
-    viziaMQ->receive(&msg, sizeof(ViziaMessageCommandStruct), size, priority);
+    viziaMQDoom->receive(&msg, sizeof(ViziaMessageCommandStruct), size, priority);
 }
 
 bool Vizia_MQTryRecv(void *msg, unsigned long &size, unsigned int &priority){
-    return viziaMQ->try_receive(&msg, sizeof(ViziaMessageCommandStruct), size, priority);
+    return viziaMQDoom->try_receive(&msg, sizeof(ViziaMessageCommandStruct), size, priority);
 }
 
 void Vizia_MQTic(){
+
+    Vizia_MQSend(VIZIA_MSG_CODE_DOOM_TIC);
+
     ViziaMessageCommandStruct msg;
 
     unsigned int priority;
@@ -60,20 +65,27 @@ void Vizia_MQTic(){
 
     bool nextTic = false;
     do {
-        viziaMQ->receive(&msg, sizeof(ViziaMessageCommandStruct), recvd_size, priority);
+        viziaMQDoom->receive(&msg, sizeof(ViziaMessageCommandStruct), recvd_size, priority);
+        printf("DOOM: GOT MSG - code %d\n", msg.code);
         switch(msg.code){
             case VIZIA_MSG_CODE_READY :
             case VIZIA_MSG_CODE_TIC :
                 nextTic = true;
                 break;
             case VIZIA_MSG_CODE_COMMAND :
+                printf("DOOM: GOT COMMAND %s\n", msg.command);
                 AddCommandString(strdup(msg.command));
+                break;
+            case VIZIA_MSG_CODE_CLOSE :
+                AddCommandString("exit");
                 break;
             default : break;
         }
     }while(!nextTic);
+
 }
 
 void Vizia_MQClose(){
-    bip::message_queue::remove(VIZIA_MQ_NAME);
+    bip::message_queue::remove(VIZIA_MQ_NAME_CTR);
+    bip::message_queue::remove(VIZIA_MQ_NAME_DOOM);
 }

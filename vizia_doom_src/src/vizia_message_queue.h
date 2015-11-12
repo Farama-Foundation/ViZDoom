@@ -1,13 +1,15 @@
 #ifndef __VIZIA_MESSAGE_QUEUE_H__
 #define __VIZIA_MESSAGE_QUEUE_H__
 
-#include "interprocess/ipc/message_queue.hpp"
+#include <boost/interprocess/ipc/message_queue.hpp>
 
 namespace bip = boost::interprocess;
 
-extern bip::message_queue *viziaMQ;
+extern bip::message_queue *viziaMQSend;
+extern bip::message_queue *viziaMQRecv;
 
-#define VIZIA_MQ_NAME "ViziaMQ"
+#define VIZIA_MQ_NAME_CTR "ViziaMQCtr"
+#define VIZIA_MQ_NAME_DOOM "ViziaMQDoom"
 #define VIZIA_MQ_MAX_MSG_NUM 32
 #define VIZIA_MQ_MAX_MSG_SIZE sizeof(ViziaMessageCommandStruct)
 #define VIZIA_MQ_MAX_CMD_LEN 32

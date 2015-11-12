@@ -40,13 +40,29 @@ void Vizia_ButtonEvent(int button, bool state, bool oldState){
     }
 }
 
+int Vizia_CounterBT(int button){
+    switch(button){
+        case V_MOVERIGHT : return V_MOVELEFT;
+        case V_MOVELEFT : return V_MOVERIGHT;
+        case V_BACK : return V_FORWARD;
+        case V_FORWARD : return V_BACK;
+        case V_RIGHT : return V_LEFT;
+        case V_LEFT : return V_RIGHT;
+        case V_LOOKUP : return V_LOOKDOWN;
+        case V_LOOKDOWN : return V_LOOKUP;
+        case V_MOVEUP : return V_MOVEDOWN;
+        case V_MOVEDOWN : return V_MOVEUP;
+        default : return -1;
+    }
+}
+
 char* Vizia_BTToCommand(int button, bool state){
     switch(button){
         case V_ATTACK : return Vizia_GetCommandWithState(strdup(" attack"), state);
         case V_USE : return Vizia_GetCommandWithState(strdup(" use"), state);
         case V_JUMP : return Vizia_GetCommandWithState(strdup(" jump"), state);
         case V_CROUCH : return Vizia_GetCommandWithState(strdup(" crouch"), state);
-        //case V_TURN180 : return strdup("turn180");
+        case V_TURN180 : return strdup("turn180");
         case V_ALTATTACK : return Vizia_GetCommandWithState(strdup(" altattack"), state);
         case V_RELOAD : return Vizia_GetCommandWithState(strdup(" reload"), state);
         case V_ZOOM : return Vizia_GetCommandWithState(strdup(" zoom"), state);
@@ -63,7 +79,7 @@ char* Vizia_BTToCommand(int button, bool state){
         case V_LOOKUP : return Vizia_GetCommandWithState(strdup(" lookup"), state);
         case V_LOOKDOWN : return Vizia_GetCommandWithState(strdup(" lookdown"), state);
         case V_MOVEUP : return Vizia_GetCommandWithState(strdup(" moveup"), state);
-        //case V_MOVEDOWN : return Vizia_GetCommandWithState(strdup(" showscores"), state);
+        case V_MOVEDOWN : return Vizia_GetCommandWithState(strdup(" movedown"), state);
 
         case V_WEAPON1 : return strdup("slot 1");
         case V_WEAPON2 : return strdup("slot 2");
@@ -89,6 +105,7 @@ char* Vizia_GetCommandWithState(char* command, bool state){
 void Vizia_ButtonCommand(int button, bool state, bool oldState){
 
     if(state != oldState){
+        if(state) AddCommandString(Vizia_BTToCommand(Vizia_CounterBT(button), !state));
         AddCommandString(Vizia_BTToCommand(button, state));
     }
 

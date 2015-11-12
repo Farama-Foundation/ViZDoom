@@ -26,7 +26,7 @@ void Vizia_Init(){
     Vizia_GameVarsInit();
     Vizia_ScreenInit();
 
-    Vizia_MQSend(VIZIA_MSG_CODE_DOOM_READY);
+    //Vizia_MQSend(VIZIA_MSG_CODE_DOOM_READY);
 }
 
 void Vizia_Close(){
@@ -38,20 +38,20 @@ void Vizia_Close(){
 
     Vizia_SMClose();
 
-    //Vizia_MQSend(VIZIA_DOOM_CLOSE);
+    //Vizia_MQSend(VIZIA_MSG_CODE_DOOM_CLOSE);
     Vizia_MQClose();
 }
 
 void Vizia_Tic(){
     if (gamestate == GS_LEVEL && !paused) {
-        //printf("VIZIA GAME TIC\n");
+        //printf("DOOM TIC\n");
 
         Vizia_InputTic();
         Vizia_UpdateGameVars();
         Vizia_ScreenUpdate();
 
-        Vizia_MQSend(VIZIA_MSG_CODE_DOOM_TIC);
-        //Vizia_MQTic();
+        //Vizia_MQSend(VIZIA_MSG_CODE_DOOM_TIC);
+        Vizia_MQTic();
     }
 }
 

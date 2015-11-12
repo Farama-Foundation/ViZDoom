@@ -51,7 +51,6 @@ const char* Vizia_CheckItemType(const PClass *type){
     else if (type->ParentClass == RUNTIME_CLASS(AWeapon)){
         return "WEAPON";
     }
-
     return "UNKNOWN";
 }
 
@@ -116,9 +115,9 @@ void Vizia_UpdateGameVars(){
     viziaGameVars->PLAYER_WEAPON[5] = (bool)Vizia_CheckItem(NAME_Plasma);
     viziaGameVars->PLAYER_WEAPON[6] = (bool)Vizia_CheckItem(NAME_BFG);
 
-    //viziaGameVars.PLAYER_KEY[0] = ?
-    //viziaGameVars.PLAYER_KEY[1] = ?
-    //viziaGameVars.PLAYER_KEY[2] = ?
+    viziaGameVars->PLAYER_KEY[0] = 0;
+    viziaGameVars->PLAYER_KEY[1] = 0;
+    viziaGameVars->PLAYER_KEY[2] = 0;
 }
 
 void Vizia_GameVarsClose(){

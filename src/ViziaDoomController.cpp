@@ -1,5 +1,8 @@
 #include "ViziaDoomController.h"
 
+#include <vector>
+#include <iostream>
+
 //PUBLIC FUNCTIONS
 
 ViziaDoomController::ViziaDoomController(){
@@ -36,7 +39,8 @@ bool ViziaDoomController::init(){
         this->MQInit();
         this->SMInit();
 
-        this->lunchDoom();
+        //this->lunchDoom();
+        doomThread = new b::thread(b::bind(&ViziaDoomController::lunchDoom, this));
         this->waitForDoom();
     }
 
@@ -44,6 +48,16 @@ bool ViziaDoomController::init(){
 }
 
 bool ViziaDoomController::close(){
+
+//    if(this->doomRunning) {
+//        bpr::terminate(this->doomProcess);
+//    }
+
+    this->MQSend(VIZIA_MSG_CODE_CLOSE);
+
+    doomThread->interrupt();
+    doomThread->join();
+
     this->SMClose();
     this->MQClose();
 
@@ -80,14 +94,22 @@ void ViziaDoomController::setHUD() {} //TO DO
 void ViziaDoomController::setCrosshair() {} //TO DO
 
 bool ViziaDoomController::tic(){
+
+    std::cout << "VIZIA: DOOM TIC" << std::endl;
+
+    this->MQSend(VIZIA_MSG_CODE_TIC);
+
+    std::cout << "VIZIA: WAITING FOR DOOM" << std::endl;
+
     MessageCommandStruct msg;
 
     unsigned int priority;
     bip::message_queue::size_type recvd_size;
 
     bool nextTic = false;
-    do {
-        MQ->receive(&msg, sizeof(MessageCommandStruct), recvd_size, priority);
+    do{
+        MQController->receive(&msg, sizeof(MessageCommandStruct), recvd_size, priority);
+        std::cout << "VIZIA: GOT MSG - code: " << (int)msg.code << std::endl;
         switch(msg.code){
             case VIZIA_MSG_CODE_DOOM_READY :
             case VIZIA_MSG_CODE_DOOM_TIC :
@@ -97,6 +119,8 @@ bool ViziaDoomController::tic(){
         }
     }while(!nextTic);
 
+    std::cout << "VIZIA: AI TIC" << std::endl;
+
     return true;
 }
 
@@ -105,7 +129,7 @@ bool ViziaDoomController::update(){
 }
 
 void ViziaDoomController::resetMap(){
-    this->sendCommand("MAP "+this->map);
+    this->sendCommand("map "+this->map);
 }
 
 void ViziaDoomController::restartGame(){
@@ -119,33 +143,49 @@ void ViziaDoomController::sendCommand(std::string command){
 //PRIVATE
 
 void ViziaDoomController::waitForDoom(){
-    this->tic();
+    MessageCommandStruct msg;
 
-    doomRunning = true;
+    unsigned int priority;
+    bip::message_queue::size_type recvd_size;
+
+    bool nextTic = false;
+
+    std::cout << "VIZIA: WAITING FOR DOOM INIT" << std::endl;
+    MQController->receive(&msg, sizeof(MessageCommandStruct), recvd_size, priority);
+    std::cout << "VIZIA: GOT MSG - code:" << (int)msg.code << std::endl;
+
+    switch(msg.code){
+        case VIZIA_MSG_CODE_DOOM_READY :
+        case VIZIA_MSG_CODE_DOOM_TIC :
+            doomRunning = true;
+
+            std::cout << "VIZIA: DOOM RUNNING" << std::endl;
+
+            break;
+        default : break;
+    }
 }
 
 void ViziaDoomController::lunchDoom(){
-//
-//    execute(set_args(args));
-//
-//    std::vector<std::string> args;
-//    args.push_back(gamePath);
-//    args.push_back("-iwad");
-//    args.push_back(this->iwadPath);
-//    args.push_back("-skill");
-//    //args.push_back(this->skill);
-//    args.push_back("1");
-//    if(this->file.length() != 0) {
-//        args.push_back("-file");
-//        args.push_back(this->file);
-//    }
-//    args.push_back("+map");
-//    args.push_back(this->map);
-//
-//    //bpr::context ctx;
-//    //ctx.stdout_behavior = bpr::silence_stream();
-//
-//    doomProcess = bpr::execute(set_args(args));
+
+    std::vector<std::string> args;
+    args.push_back(gamePath);
+    args.push_back("-iwad");
+    args.push_back(this->iwadPath);
+    args.push_back("-skill");
+    //args.push_back(this->skill);
+    args.push_back("1");
+    if(this->file.length() != 0) {
+        args.push_back("-file");
+        args.push_back(this->file);
+    }
+    args.push_back("+map");
+    args.push_back(this->map);
+
+    //bpr::context ctx;
+    //ctx.stdout_behavior = bpr::silence_stream();
+    //this->doomProcess = bpr::execute(bpri::set_args(args));
+    bpr::child doomProcess = bpr::execute(bpri::set_args(args), bpri::inherit_env());
 }
 
 //SM SETTERS & GETTERS
@@ -214,7 +254,8 @@ bool ViziaDoomController::getPlayerKey3() { return this->GameVars->PLAYER_KEY[2]
 void ViziaDoomController::SMInit(){
     bip::shared_memory_object::remove(VIZIA_SM_NAME);
 
-    this->SM = new bip::shared_memory_object(bip::open_or_create, VIZIA_SM_NAME, bip::read_write);
+    //this->SM = new bip::shared_memory_object(bip::open_or_create, VIZIA_SM_NAME, bip::read_write);
+    this->SM = bip::shared_memory_object(bip::open_or_create, VIZIA_SM_NAME, bip::read_write);
     this->SMSetSize(screenWidth, screenHeight);
 
     this->InputSMRegion = new bip::mapped_region(this->SM, bip::read_write, this->SMGetInputRegionBeginning(), sizeof(ViziaDoomController::InputStruct));
@@ -230,7 +271,7 @@ void ViziaDoomController::SMInit(){
 
 void ViziaDoomController::SMSetSize(int screenWidth, int screenHeight){
     this->SMSize = sizeof(InputStruct) + sizeof(GameVarsStruct) + (sizeof(uint8_t) * screenWidth * screenHeight);
-    this->SM->truncate(this->SMSize);
+    this->SM.truncate(this->SMSize);
 }
 
 size_t ViziaDoomController::SMGetInputRegionBeginning(){
@@ -254,44 +295,47 @@ void ViziaDoomController::SMClose(){
 
 //MQ FUNCTIONS
 void ViziaDoomController::MQInit(){
-    bip::message_queue::remove(VIZIA_MQ_NAME);
-    this->MQ = new bip::message_queue(bip::open_or_create, VIZIA_MQ_NAME, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
+    bip::message_queue::remove(VIZIA_MQ_NAME_CTR);
+    bip::message_queue::remove(VIZIA_MQ_NAME_DOOM);
+    this->MQController = new bip::message_queue(bip::open_or_create, VIZIA_MQ_NAME_CTR, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
+    this->MQDoom = new bip::message_queue(bip::open_or_create, VIZIA_MQ_NAME_DOOM, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
 }
 
 void ViziaDoomController::MQSend(uint8_t code){
     MessageSignalStruct msg;
     msg.code = code;
-    this->MQ->send(&msg, sizeof(MessageSignalStruct), 0);
+    this->MQDoom->send(&msg, sizeof(MessageSignalStruct), 0);
 }
 
 bool ViziaDoomController::MQTrySend(uint8_t code){
     MessageSignalStruct msg;
     msg.code = code;
-    return this->MQ->try_send(&msg, sizeof(MessageSignalStruct), 0);
+    return this->MQDoom->try_send(&msg, sizeof(MessageSignalStruct), 0);
 }
 
 void ViziaDoomController::MQSend(uint8_t code, const char * command){
     MessageCommandStruct msg;
     msg.code = code;
     strncpy(msg.command, command, VIZIA_MQ_MAX_CMD_LEN);
-    this->MQ->send(&msg, sizeof(MessageCommandStruct), 0);
+    this->MQDoom->send(&msg, sizeof(MessageCommandStruct), 0);
 }
 
 bool ViziaDoomController::MQTrySend(uint8_t code, const char * command){
     MessageCommandStruct msg;
     msg.code = code;
     strncpy(msg.command, command, VIZIA_MQ_MAX_CMD_LEN);
-    return this->MQ->try_send(&msg, sizeof(MessageCommandStruct), 0);
+    return this->MQDoom->try_send(&msg, sizeof(MessageCommandStruct), 0);
 }
 
 void ViziaDoomController::MQRecv(void *msg, unsigned long &size, unsigned int &priority){
-    this->MQ->receive(&msg, sizeof(MessageCommandStruct), size, priority);
+    this->MQController->receive(&msg, sizeof(MessageCommandStruct), size, priority);
 }
 
 bool ViziaDoomController::MQTryRecv(void *msg, unsigned long &size, unsigned int &priority){
-    return this->MQ->try_receive(&msg, sizeof(MessageCommandStruct), size, priority);
+    return this->MQController->try_receive(&msg, sizeof(MessageCommandStruct), size, priority);
 }
 
 void ViziaDoomController::MQClose(){
-    bip::message_queue::remove(VIZIA_MQ_NAME);
+    //bip::message_queue::remove(VIZIA_MQ_NAME_CTR);
+    bip::message_queue::remove(VIZIA_MQ_NAME_DOOM);
 }

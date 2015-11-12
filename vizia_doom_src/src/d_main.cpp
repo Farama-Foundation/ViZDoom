@@ -982,7 +982,7 @@ void D_DoomLoop ()
 
 	vid_cursor.Callback();
 
-	Vizia_Init();
+	//Vizia_Init();
 
 	for (;;)
 	{
@@ -2540,6 +2540,8 @@ void D_DoomMain (void)
 		DThinker::RunThinkers ();
 		gamestate = GS_STARTUP;
 
+		Vizia_Init();
+
 		if (!restart)
 		{
 			// start the apropriate game based on parms
@@ -2639,7 +2641,7 @@ void D_DoomMain (void)
 			//S_StopMusic(true);
 			//S_StopAllChannels ();
 
-			//Vizia_Close();
+			Vizia_Close();
 
 			M_ClearMenus();					// close menu if open
 			F_EndFinale();					// If an intermission is active, end it now

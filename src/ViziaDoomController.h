@@ -3,13 +3,17 @@
 
 #include <string>
 
-#include "./interprocess/ipc/message_queue.hpp"
-#include "./interprocess/shared_memory_object.hpp"
-#include "./interprocess/mapped_region.hpp"
-#include "./process/process.hpp"
+#include <boost/interprocess/ipc/message_queue.hpp>
+#include <boost/interprocess/shared_memory_object.hpp>
+#include <boost/interprocess/mapped_region.hpp>
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
+#include "boost/process.hpp"
 
+namespace b = boost;
 namespace bip = boost::interprocess;
 namespace bpr = boost::process;
+namespace bpri = boost::process::initializers;
 
 #define DOOM_AMMO_Clip 0
 #define DOOM_AMMO_Shell 1
@@ -66,7 +70,8 @@ namespace bpr = boost::process;
 
 #define VIZIA_SM_NAME "ViziaSM"
 
-#define VIZIA_MQ_NAME "ViziaMQ"
+#define VIZIA_MQ_NAME_CTR "ViziaMQCtr"
+#define VIZIA_MQ_NAME_DOOM "ViziaMQDoom"
 #define VIZIA_MQ_MAX_MSG_NUM 32
 #define VIZIA_MQ_MAX_MSG_SIZE sizeof(ViziaDoomController::MessageCommandStruct)
 #define VIZIA_MQ_MAX_CMD_LEN 32
@@ -239,10 +244,11 @@ class ViziaDoomController {
         int skill;
 
 
-        bip::shared_memory_object *SM;
+        bip::shared_memory_object SM;
         size_t SMSize;
 
-        bip::message_queue *MQ;
+        bip::message_queue *MQController;
+        bip::message_queue *MQDoom;
 
         bip::mapped_region *InputSMRegion;
         InputStruct *Input;
@@ -253,6 +259,7 @@ class ViziaDoomController {
         bip::mapped_region *ScreenSMRegion;
         uint8_t *Screen;
 
+        b::thread *doomThread;
         //bpr::child doomProcess;
         bool doomRunning;
 };

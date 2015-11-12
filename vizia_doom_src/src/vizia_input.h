@@ -5,7 +5,9 @@ void Vizia_MouseEvent(int x, int y);
 
 void Vizia_ButtonEvent(int button, bool state, bool oldState);
 
-char* Vizia_BTToCommand(int button);
+int Vizia_CounterBT(int button);
+
+char* Vizia_BTToCommand(int button, bool state);
 
 char* Vizia_GetCommandWithState(char* command, bool state);
 
