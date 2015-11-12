@@ -34,14 +34,14 @@ int main(){
             vdm->getInput()->BT[V_MOVELEFT] = false;
         }
 
-        if(i%loop == 30 || i%loop == 60){
+        if(i%loop == 25 || i%loop == 50 || i%loop == 75){
             vdm->setButtonState(V_ATTACK, true);
         }
         else{
             vdm->setButtonState(V_ATTACK, false);
         }
 
-        if(i%loop == 20 || i%loop == 80){
+        if(i%loop == 30 || i%loop == 60){
             vdm->setButtonState(V_JUMP, true);
         }
         else{

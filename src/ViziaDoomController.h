@@ -243,7 +243,6 @@ class ViziaDoomController {
         std::string map;
         int skill;
 
-
         bip::shared_memory_object SM;
         size_t SMSize;
 

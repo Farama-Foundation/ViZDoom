@@ -182,6 +182,12 @@ void ViziaDoomController::lunchDoom(){
     args.push_back("+map");
     args.push_back(this->map);
 
+    args.push_back("+wipetype");
+    args.push_back("0");
+
+    args.push_back("+screenblocks");
+    args.push_back("12");
+
     //bpr::context ctx;
     //ctx.stdout_behavior = bpr::silence_stream();
     //this->doomProcess = bpr::execute(bpri::set_args(args));

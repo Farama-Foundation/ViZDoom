@@ -211,9 +211,7 @@ TArray<FString> allwads;
 bool devparm;				// started game with -devparm
 const char *D_DrawIcon;	// [RH] Patch name of icon to draw on next refresh
 int NoWipe;				// [RH] Allow wipe? (Needs to be set each time)
-//VIZIA CODE
-//bool singletics = false;	// debug flag to cancel adaptiveness
-bool singletics = true;
+bool singletics = false;	// debug flag to cancel adaptivenes
 FString startmap;
 bool autostart;
 FString StoredWarp;
@@ -996,10 +994,11 @@ void D_DoomLoop ()
 			}
 			
 			// process one or more tics
-			if (singletics)
+			//if (singletics)
+			if (true)
 			{
 				I_StartTic ();
-				D_ProcessEvents ();
+				//D_ProcessEvents ();
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				if (advancedemo)
 					D_DoAdvanceDemo ();
