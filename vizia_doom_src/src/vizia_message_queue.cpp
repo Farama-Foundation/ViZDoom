@@ -1,16 +1,20 @@
 #include "vizia_message_queue.h"
 
-#include "d_main.h"
-#include "d_event.h"
+#include "info.h"
 #include "c_bind.h"
 #include "c_console.h"
 #include "c_dispatch.h"
+#include "g_game.h"
+#include "g_level.h"
 
 #include <string.h>
-#include <stdio.h>
 
 bip::message_queue *viziaMQController;
 bip::message_queue *viziaMQDoom;
+
+void Vizia_Command(char * command){
+    AddCommandString(command);
+}
 
 void Vizia_MQInit(){
     //bip::message_queue::remove(VIZIA_MQ_NAME);
@@ -66,18 +70,16 @@ void Vizia_MQTic(){
     bool nextTic = false;
     do {
         viziaMQDoom->receive(&msg, sizeof(ViziaMessageCommandStruct), recvd_size, priority);
-        printf("DOOM: GOT MSG - code %d\n", msg.code);
         switch(msg.code){
             case VIZIA_MSG_CODE_READY :
             case VIZIA_MSG_CODE_TIC :
                 nextTic = true;
                 break;
             case VIZIA_MSG_CODE_COMMAND :
-                printf("DOOM: GOT COMMAND %s\n", msg.command);
-                AddCommandString(strdup(msg.command));
+                Vizia_Command(strdup(msg.command));
                 break;
             case VIZIA_MSG_CODE_CLOSE :
-                AddCommandString("exit");
+                Vizia_Command(strdup("exit"));
                 break;
             default : break;
         }

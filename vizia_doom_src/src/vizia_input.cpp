@@ -2,42 +2,19 @@
 #include "vizia_shared_memory.h"
 
 #include "d_main.h"
+#include "g_game.h"
 #include "d_event.h"
 #include "c_bind.h"
 #include "c_console.h"
 #include "c_dispatch.h"
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 bip::mapped_region *viziaInputSMRegion;
 ViziaInputStruct *viziaLastInput;
 ViziaInputStruct *viziaInput;
 
-void Vizia_MouseEvent(int x, int y){
-    event_t ev = { 0 };
-
-    ev.x = x;
-    ev.y = y;
-
-    if (ev.x || ev.y) {
-        ev.type = EV_Mouse;
-        D_PostEvent(&ev);
-    }
-}
-
-void Vizia_ButtonEvent(int button, bool state, bool oldState){
-
-    if(state != oldState){
-        event_t ev = { 0 };
-
-        if(state == true) ev.type = EV_KeyDown;
-        else ev.type = EV_KeyUp;
-
-        ev.data1 = 1<<button;
-        D_PostEvent(&ev);
-    }
+void Vizia_Mouse(int x, int y){
+    if(x) G_AddViewPitch (x);
+    if(y) G_AddViewAngle (y);
 }
 
 int Vizia_CounterBT(int button){
@@ -55,6 +32,8 @@ int Vizia_CounterBT(int button){
         default : return -1;
     }
 }
+
+
 
 char* Vizia_BTToCommand(int button, bool state){
     switch(button){
@@ -125,8 +104,6 @@ void Vizia_InputTic(){
 
     Vizia_MouseEvent(viziaInput->MS_X, viziaInput->MS_Y);
 
-    //printf("%d %d \n", viziaInput->MS_X, viziaInput->MS_Y);
-
     for(int i = 0; i<V_BT_SIZE; ++i){
         Vizia_ButtonCommand(i, viziaInput->BT[i], viziaLastInput->BT[i]);
     }
@@ -135,10 +112,35 @@ void Vizia_InputTic(){
 
     viziaInput->MS_X = 0;
     viziaInput->MS_Y = 0;
-    //memset(viziaInput, 0, sizeof(ViziaInputStruct) );
 }
 
 void Vizia_InputClose(){
     delete(viziaLastInput);
     delete(viziaInputSMRegion);
+}
+
+// OLD EVENTS CODE
+void Vizia_MouseEvent(int x, int y){
+    event_t ev = { 0 };
+
+    ev.x = x;
+    ev.y = y;
+
+    if (ev.x || ev.y) {
+        ev.type = EV_Mouse;
+        D_PostEvent(&ev);
+    }
+}
+
+void Vizia_ButtonEvent(int button, bool state, bool oldState){
+
+    if(state != oldState){
+        event_t ev = { 0 };
+
+        if(state == true) ev.type = EV_KeyDown;
+        else ev.type = EV_KeyUp;
+
+        ev.data1 = 1<<button;
+        D_PostEvent(&ev);
+    }
 }

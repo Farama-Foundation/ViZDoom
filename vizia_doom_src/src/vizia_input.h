@@ -13,6 +13,8 @@ char* Vizia_GetCommandWithState(char* command, bool state);
 
 void Vizia_ButtonCommand(int button, bool state, bool oldState);
 
+void Vizia_Mouse(int x, int y);
+
 void Vizia_InputInit();
 
 void Vizia_InputTic();

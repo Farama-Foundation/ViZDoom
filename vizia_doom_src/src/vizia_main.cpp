@@ -43,15 +43,12 @@ void Vizia_Close(){
 }
 
 void Vizia_Tic(){
-    if (gamestate == GS_LEVEL && !paused) {
-        //printf("DOOM TIC\n");
+    if (gamestate == GS_LEVEL && !paused){ //menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
 
         Vizia_InputTic();
         Vizia_UpdateGameVars();
         Vizia_ScreenUpdate();
 
-        //Vizia_MQSend(VIZIA_MSG_CODE_DOOM_TIC);
         Vizia_MQTic();
     }
 }
-

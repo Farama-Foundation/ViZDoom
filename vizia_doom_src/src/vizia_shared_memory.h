@@ -52,12 +52,18 @@ struct ViziaInputStruct{
 };
 
 struct ViziaGameVarsStruct{
-    int TIC;
+    int GAME_TIC;
 
     int SCREEN_WIDTH;
     int SCREEN_HEIGHT;
 
-    bool MAP_FINISHED;
+    int MAP_START_TIC;
+    int MAP_TIC;
+
+    int MAP_KILLCOUNT;
+    int MAP_ITEMCOUNT;
+    int MAP_SECRETCOUNT;
+    bool MAP_END;
 
     bool PLAYER_DEAD;
 

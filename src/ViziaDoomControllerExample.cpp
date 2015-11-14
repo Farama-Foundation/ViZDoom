@@ -11,15 +11,26 @@ int main(){
     vdm->setIwadPath("./dooom2.wad");
     vdm->setFilePath("./s1.wad");
     vdm->setMap("map01");
+    vdm->setMapTimeout(300);
 
-    std::cout << "STARTING DOOM " << std::endl;
+    // w przypadku nie zachowania proporcji 4:3, 16:10, 16:9
+    // silnik weźmie wysokość i pomnoży razy 4/3
+    // możemy spróbować to wyłączyć, ale pewnie wtedy obraz będzie zniekształocny
+    vdm->setScreenSize(320, 240);
+    // rozdzielczość znacząco wpływa na szybkość działania
+
+    vdm->showHud(false);
+    vdm->showCrosshair(true);
+    vdm->showWeapon(true);
+    vdm->showDecals(false);
+    vdm->showParticles(false);
 
     vdm->init();
 
     int loop = 100;
-    for(int i = 0; i < 3000; ++i){
+    for(int i = 0; i < 1000; ++i){
 
-        vdm->setMouse(0, 0);
+        //vdm->setMouseX(-10); //obrót w lewo
 
         if(i%loop < 50) {
             vdm->setButtonState(V_MOVERIGHT, true);   //ustaw inpup
@@ -48,13 +59,9 @@ int main(){
             vdm->setButtonState(V_JUMP, false);
         }
 
-        std::cout << "GAMETIC: " << vdm->getGameTic() << std::endl <<
+        std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<
                 " HP: " << vdm->getPlayerHealth() << " AMMO: " << vdm->getGameVars()->PLAYER_AMMO[2] << std::endl;
 
-        if(i == 1000 || i == 2000 || vdm->getPlayerHealth() <= 0){
-            std::cout << "RESTART MAP " << std::endl;
-            vdm->resetMap();
-        }
         vdm->tic();
     }
 

@@ -11,6 +11,12 @@
 #include "v_video.h"
 #include "r_renderer.h"
 
+#include "info.h"
+#include "g_game.h"
+#include "g_level.h"
+#include "c_console.h"
+#include "c_dispatch.h"
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -76,16 +82,22 @@ void Vizia_GameVarsInit(){
 
 void Vizia_UpdateGameVars(){
 
-    viziaGameVars->TIC = gametic;
-
-    //printf("%d %d %d %d\n", viziaGameVars->TIC, viziaGameVars->PLAYER_HEALTH, viziaGameVars->PLAYER_AMMO[2], viziaGameVars->PLAYER_EQUIPPED_WEAPON);
+    viziaGameVars->GAME_TIC = gametic;
 
     viziaGameVars->SCREEN_WIDTH = screen->GetWidth();
     viziaGameVars->SCREEN_HEIGHT = screen->GetHeight();
 
-    viziaGameVars->MAP_FINISHED = 0;
+    viziaGameVars->MAP_START_TIC = level.starttime;
+    viziaGameVars->MAP_TIC = level.maptime;
 
-    viziaGameVars->PLAYER_DEAD = viziaPlayer->playerstate == PST_DEAD;
+    viziaGameVars->MAP_KILLCOUNT = level.killed_monsters;
+    viziaGameVars->MAP_ITEMCOUNT = level.found_items;
+    viziaGameVars->MAP_SECRETCOUNT = level.found_secrets;
+
+    viziaGameVars->MAP_END = false;
+
+    if(viziaPlayer->mo) viziaGameVars->PLAYER_DEAD = viziaPlayer->playerstate == PST_DEAD || viziaPlayer->mo->health <= 0;
+    else viziaGameVars->PLAYER_DEAD = viziaPlayer->playerstate == PST_DEAD || viziaPlayer->health <= 0;
 
     viziaGameVars->PLAYER_KILLCOUNT = viziaPlayer->killcount;
     viziaGameVars->PLAYER_ITEMCOUNT = viziaPlayer->itemcount;

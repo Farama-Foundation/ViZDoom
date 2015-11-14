@@ -997,6 +997,7 @@ void D_DoomLoop ()
 			//if (singletics)
 			if (true)
 			{
+
 				I_StartTic ();
 				//D_ProcessEvents ();
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
@@ -1023,8 +1024,8 @@ void D_DoomLoop ()
 			// Update display, next frame, with current state.
 			I_StartTic ();
 			D_Display ();
-			//S_UpdateMusic();	// OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
 			Vizia_Tic();
+			//S_UpdateMusic();	// OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
 		}
 		catch (CRecoverableError &error)
 		{

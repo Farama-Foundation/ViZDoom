@@ -22,8 +22,6 @@ extern bip::message_queue *viziaMQRecv;
 #define VIZIA_MSG_CODE_TIC 1
 #define VIZIA_MSG_CODE_CLOSE 2
 #define VIZIA_MSG_CODE_COMMAND 3
-#define VIZIA_MSG_CODE_RESET 4
-#define VIZIA_MSG_CODE_RESTART 5
 
 struct ViziaMessageSignalStruct{
     uint8_t code;
@@ -33,6 +31,8 @@ struct ViziaMessageCommandStruct{
     uint8_t code;
     char command[VIZIA_MQ_MAX_CMD_LEN];
 };
+
+void Vizia_Command(char * command);
 
 void Vizia_MQInit();
 

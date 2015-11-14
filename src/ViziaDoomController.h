@@ -6,6 +6,7 @@
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/mapped_region.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include "boost/process.hpp"
@@ -84,8 +85,14 @@ namespace bpri = boost::process::initializers;
 #define VIZIA_MSG_CODE_TIC 1
 #define VIZIA_MSG_CODE_CLOSE 2
 #define VIZIA_MSG_CODE_COMMAND 3
-#define VIZIA_MSG_CODE_RESET 4
-#define VIZIA_MSG_CODE_RESTART 5
+
+float DoomTic2S (unsigned int);
+
+int DoomTic2Ms (unsigned int);
+
+unsigned int S2DoomTic (float);
+
+unsigned int Ms2DoomTic (float);
 
 class ViziaDoomController {
     
@@ -98,19 +105,25 @@ class ViziaDoomController {
         };
 
         struct GameVarsStruct{
-            int TIC;
+            int GAME_TIC;
 
             int SCREEN_WIDTH;
             int SCREEN_HEIGHT;
 
-            bool MAP_FINISHED;
+            int MAP_START_TIC;
+            int MAP_TIC;
+
+            int MAP_KILLCOUNT;
+            int MAP_ITEMCOUNT;
+            int MAP_SECRETCOUNT;
+            bool MAP_END;
 
             bool PLAYER_DEAD;
 
             int PLAYER_KILLCOUNT;
             int PLAYER_ITEMCOUNT;
             int PLAYER_SECRETCOUNT;
-            int PLAYER_FRAGCOUNT;
+            int PLAYER_FRAGCOUNT; //for multiplayer
 
             bool PLAYER_ONGROUND;
 
@@ -125,31 +138,44 @@ class ViziaDoomController {
             bool PLAYER_KEY[3];
         };
 
-
         ViziaDoomController();
-        ViziaDoomController(std::string iwad, std::string file, std::string map, int screenWidth, int screenHeight);
         ~ViziaDoomController();
+
+        //FLOW CONTROL
 
         bool init();
         bool close();
+        bool tic(); bool update();
+        void restartMap(); void resetMap();
+        void restartGame();
+        bool isDoomRunning();
+        bool isRestartMapInLastTic();
+        void sendCommand(std::string command);
 
-        void setScreenSize(int screenWidth, int screenHeight);
+        //SETTINGS
+
+        //GAME & MAP SETTINGS
+
         void setGamePath(std::string path);
         void setIwadPath(std::string path);
         void setFilePath(std::string path);
         void setMap(std::string map);
         void setSkill(int skill);
 
-        void setFrameRate(); //TO DO
-        void setHUD(); //TO DO
-        void setCrosshair(); //TO DO
+        void setAutoMapRestartOnTimeout(bool set);
+        void setAutoMapRestartOnPlayerDeath(bool set);
+        void setMapTimeout(unsigned int tics);
 
-        bool tic();
-        bool update();
-        void resetMap(); //TO DO
-        void restartGame(); //TO DO
+        //GRAPHIC SETTINGS
 
-        void sendCommand(std::string command);
+        void setScreenSize(int screenWidth, int screenHeight);
+        void showHud(bool hud);
+        void showWeapon(bool weapon);
+        void showCrosshair(bool crosshair);
+        void showDecals(bool decals);
+        void showParticles(bool particles);
+
+        void addViziaDoomStartArgument(std::string arg);
 
         uint8_t* const getScreen();
         InputStruct* const getInput();
@@ -164,6 +190,11 @@ class ViziaDoomController {
         void toggleKeyState(int key);
 
         int getGameTic();
+        int getMapTic();
+
+        int getMapKillCount();
+        int getMapItemCount();
+        int getMapSecretCount();
 
         int getPlayerKillCount();
         int getPlayerItemCount();
@@ -234,14 +265,25 @@ class ViziaDoomController {
 
         void lunchDoom();
 
-        int gameTic;
-        int screenWidth, screenHeight, screenSize;
+        // OPTIONS
+
+        unsigned int screenWidth, screenHeight, screenSize, colorDepth;
+
+        bool hud, weapon, crosshair, decals, particles;
 
         std::string gamePath;
         std::string iwadPath;
         std::string file;
         std::string map;
         int skill;
+        bool autoRestartOnTimeout;
+        bool autoRestartOnPlayersDeath;
+        unsigned int mapTimeout;
+        unsigned int mapRestartCount;
+        bool mapRestarting;
+
+
+        // COMMUNICATION
 
         bip::shared_memory_object SM;
         size_t SMSize;
@@ -261,6 +303,7 @@ class ViziaDoomController {
         b::thread *doomThread;
         //bpr::child doomProcess;
         bool doomRunning;
+        bool doomTic;
 };
 
 
