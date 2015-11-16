@@ -104,7 +104,7 @@ class ShootingDotGame:
                 self._finished = True
                 self._state = None
 
-            return self.get_state(), reward
+            return reward
 
     def get_state(self):
         if self._state is None:

@@ -92,7 +92,7 @@ class QEngine:
                 a = self._evaluator.best_action(s)
 
             self._actions_stats[a] += 1
-            _, r = self._game.make_action(self._actions[a])
+            r = self._game.make_action(self._actions[a])
 
             if self._game.is_finished():
                 s2 = None

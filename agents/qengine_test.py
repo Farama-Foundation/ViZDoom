@@ -8,7 +8,10 @@ from evaluators import CNNEvaluator
 from time import time
 import itertools as it
 import lasagne
+import api
 
+def api_init_wrapper(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo, add_dimension):
+    api.init(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo)
 
 def actions_generator(the_game):
     n = the_game.get_action_format()
@@ -47,23 +50,26 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
 
 
 game_args = dict()
-game_args['x'] = 21
-game_args['y'] = 21
+game_args['x'] = 11
+game_args['y'] = 5
 game_args['hit_reward'] = 1.0
 game_args['max_moves'] = 50
 # should be positive cause it's treated as a penalty
 game_args['miss_penalty'] = 0.05
 # should be negative cause it's treated as a reward
 game_args['living_reward'] = -0.01
-game_args['random_background'] = True
+game_args['random_background'] = False
 game_args['ammo'] = np.inf
-game_args['add_dimension'] = True
-game = ShootingDotGame(**game_args)
+game_args['add_dimension'] = False
+
+#game = ShootingDotGame(**game_args)
+api_init_wrapper(**game_args)
+game = api
 
 engine_args = dict()
 engine_args["history_length"] = 1
 engine_args["bank_capacity"] = 10000
-engine_args["evaluator"] = create_cnn_evaluator
+engine_args["evaluator"] = create_mlp_evaluator
 engine_args["game"] = game
 engine_args['start_epsilon'] = 1.0
 engine_args['epsilon_decay_start_step'] = 500000
