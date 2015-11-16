@@ -52,7 +52,7 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
 game_args = dict()
 game_args['x'] = 11
 game_args['y'] = 5
-game_args['hit_reward'] = 1.0
+game_args['hit_reward'] = 1.01
 game_args['max_moves'] = 50
 # should be positive cause it's treated as a penalty
 game_args['miss_penalty'] = 0.05
@@ -62,9 +62,12 @@ game_args['random_background'] = False
 game_args['ammo'] = np.inf
 game_args['add_dimension'] = False
 
-#game = ShootingDotGame(**game_args)
-api_init_wrapper(**game_args)
-game = api
+shooting_game = False
+if shooting_game:
+    game = ShootingDotGame(**game_args)
+else:
+    api_init_wrapper(**game_args)
+    game = api
 
 engine_args = dict()
 engine_args["history_length"] = 1

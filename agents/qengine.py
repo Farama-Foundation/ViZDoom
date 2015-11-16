@@ -49,15 +49,15 @@ class QEngine:
 
         if self._history_length > 1:
             self._current_image_state[0:-1] = self._current_image_state[1:]
-            self._current_image_state[-1] = raw_state[0]
+            self._current_image_state[-1] = raw_state[0].copy()
             if self._misc_state_included:
                 self._current_misc_state[0:-1] = self._current_misc_state[1:]
-                self._current_misc_state[-1] = np.array(raw_state[1:], dtype=np.float32)
+                self._current_misc_state[-1] = np.array(raw_state[1].copy(), dtype=np.float32)
 
         else:
-            self._current_image_state = raw_state[0]
+            self._current_image_state = raw_state[0].copy()
             if self._misc_state_included:
-                self._current_misc_state = np.array(raw_state[1:], dtype=np.float32)
+                self._current_misc_state = np.array(raw_state[1].copy(), dtype=np.float32)
 
     def _new_game(self):
         self._game.new_episode()

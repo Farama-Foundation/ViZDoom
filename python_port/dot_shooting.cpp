@@ -7,9 +7,9 @@ int _x;
 int _y;
 int _random_background;
 int _max_moves;
-float _living_reward;
-float _miss_penalty;
-float _hit_reward;
+double _living_reward;
+double _miss_penalty;
+double _hit_reward;
 int _ammo;
 
 int _number_of_actions;
@@ -19,7 +19,7 @@ int _moves_made;
 int _current_ammo;
 float* _current_ammo_float;
 int _finished;
-float _summary_reward;
+double _summary_reward;
 int _aim_y;
 int _aim_x;
 
@@ -31,7 +31,7 @@ int initialized = 0;
 #define zbigniew(Y, X)  ((Y)*_x+(X))
 
 
-void init(int x, int y, int random_bg,int max_moves,float living_reward,float miss_penalty, float hit_reward, int ammo)/////////////////
+void init(int x, int y, int random_bg,int max_moves,double living_reward,double miss_penalty, double hit_reward, int ammo)/////////////////
 {
 	srand(time(0));
 	_finished = 1;
@@ -47,7 +47,6 @@ void init(int x, int y, int random_bg,int max_moves,float living_reward,float mi
 	_miss_penalty = miss_penalty; 
 	_hit_reward = hit_reward;
 	_ammo = ammo;
-
 	if (_ammo > 0)
 	{
 		_state_format = new int[4];
@@ -84,7 +83,7 @@ int is_finished()
 	
 	return _finished;
 }
-float get_summary_reward()
+double get_summary_reward()
 {
 	return _summary_reward;
 }
@@ -120,7 +119,7 @@ void new_episode()
 	_state[zbigniew(_aim_y,_aim_x)] = 1.0;
 
 }
-float make_action(int const* action)
+double make_action(int const* action)
 {
 	if(_finished)
 	{
@@ -128,7 +127,7 @@ float make_action(int const* action)
 		return NULL;
 	}
 
-	float reward = _living_reward;
+	double reward = _living_reward;
 	++_moves_made; 
 	if( action[0] && !action[1] )
 	{
@@ -184,12 +183,12 @@ float* get_misc_state()
 {
 	return _current_ammo_float;
 }
-float average_best_result()
+double average_best_result()
 {
-	float best = _hit_reward + _living_reward;
-	float worst = _hit_reward + _living_reward *(_x-1)/2.0;
-	float avg = (best+worst)/2.0;
-	float r = (best +(_x -1)*avg)/float(_x);
+	double best = _hit_reward + _living_reward;
+	double worst = _hit_reward + _living_reward *(_x-1)/2.0;
+	double avg = (best+worst)/2.0;
+	double r = (best +(_x -1)*avg)/double(_x);
 	return r;
 }
 
