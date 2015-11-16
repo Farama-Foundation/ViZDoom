@@ -35,8 +35,8 @@ void init(int x, int y, int random_bg,int max_moves,double living_reward,double 
 {
 	srand(time(0));
 	_finished = 1;
-	_x = x;
-	_y = y;
+	_x = x + (x+1)%2;
+	_y = y + (y+1)%2;
 	_aim_y = _y/2;
 	_aim_x = 0;
 	_random_background = random_bg;
