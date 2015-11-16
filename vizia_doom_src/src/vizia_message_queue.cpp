@@ -11,16 +11,21 @@
 
 bip::message_queue *viziaMQController;
 bip::message_queue *viziaMQDoom;
+char * viziaMQControllerName;
+char * viziaMQDoomName;
 
 void Vizia_Command(char * command){
     AddCommandString(command);
 }
 
-void Vizia_MQInit(){
+void Vizia_MQInit(const char * id){
     //bip::message_queue::remove(VIZIA_MQ_NAME);
     //viziaMQ = new bip::message_queue(bip::open_or_create, VIZIA_MQ_NAME, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
-    viziaMQController = new bip::message_queue(bip::open_only, VIZIA_MQ_NAME_CTR);
-    viziaMQDoom = new bip::message_queue(bip::open_only, VIZIA_MQ_NAME_DOOM);
+    viziaMQControllerName = strcat(strdup(VIZIA_MQ_NAME_CTR_BASE), id);
+    viziaMQDoomName = strcat(strdup(VIZIA_MQ_NAME_DOOM_BASE), id);
+
+    viziaMQController = new bip::message_queue(bip::open_or_create, viziaMQControllerName, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
+    viziaMQDoom = new bip::message_queue(bip::open_or_create, viziaMQDoomName, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
 }
 
 void Vizia_MQSend(uint8_t code){
@@ -88,6 +93,6 @@ void Vizia_MQTic(){
 }
 
 void Vizia_MQClose(){
-    bip::message_queue::remove(VIZIA_MQ_NAME_CTR);
-    bip::message_queue::remove(VIZIA_MQ_NAME_DOOM);
+    bip::message_queue::remove(viziaMQControllerName);
+    bip::message_queue::remove(viziaMQDoomName);
 }
