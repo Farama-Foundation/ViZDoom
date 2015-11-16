@@ -1,4 +1,5 @@
 
+#include "dot_shooting.h"
 #include <ctime>
 #include <cstdlib>
 #include <cstdio>
@@ -13,16 +14,15 @@ double _hit_reward;
 int _ammo;
 
 int _number_of_actions;
-float *_state;
-int * _state_format;
+
 int _moves_made;
 int _current_ammo;
-float* _current_ammo_float;
 int _finished;
 double _summary_reward;
 int _aim_y;
 int _aim_x;
-
+VIZIA_StateFormat* _state_format;
+VIZIA_State* _state;
 int initialized = 0;
 
 //workaround, numpy doesn't cope with not scatteres arrays : ( . . .
@@ -40,41 +40,57 @@ void init(int x, int y, int random_bg,int max_moves,double living_reward,double 
 	_aim_y = _y/2;
 	_aim_x = 0;
 	_random_background = random_bg;
-
+	_state_format = new VIZIA_StateFormat();
+	_state = new VIZIA_State();
 
 	_max_moves = max_moves;
 	_living_reward = living_reward;
 	_miss_penalty = miss_penalty; 
 	_hit_reward = hit_reward;
 	_ammo = ammo;
+
 	if (_ammo > 0)
 	{
-		_state_format = new int[4];
-		_state_format[0] = 3;
-		_state_format[3] = 1;
+		_state_format->misc_len = 1;
 	}
 	else
 	{
-		_state_format = new int[3];
-		_state_format[0] = 2;
+		_state_format->misc_len = 0;
 	}
-	_state_format[1] = _y;
-	_state_format[2] = _x;
+	_state_format->image_shape_len = 2;
+	_state_format->image_shape = new int[2];
+	_state_format->image_shape[0] = _y;
+	_state_format->image_shape[1] = _x;
 
 	_number_of_actions = 3;
 	_moves_made = 0;
-	_current_ammo_float = new float[1];
 	_summary_reward = 0;
 
 	if (initialized and _state)
 	{
+		if(_state->image)
+		{
+			delete[] _state->image;
+		}
+		if(_state->misc)
+		{
+			delete[] _state->misc;
+		}
 
-		delete[] _state;
 	}
-	_state = new float[_y *_x];
+	else
+	{
+		_state = new VIZIA_State();
+	}
+	_state->image = new float[_y *_x];
 	for (int i =0; i<_y*_x;i++)
 	{
-		_state[i] = 0.0;
+		_state->image[i] = 0.0;
+	}
+	if(_ammo >0)
+	{
+		_state->misc = new float[1];
+		_state->misc[0] = 0.0;
 	}
 	initialized = 1;
 }
@@ -97,9 +113,9 @@ void new_episode()
 	if (_ammo > 0)
 	{
 		_current_ammo = _ammo;
-		_current_ammo_float[0] = 1.0;
+		_state->misc[0] = 1.0;
 	}
-	_state[zbigniew(_aim_y,_aim_x)] = 0.0;
+	_state->image[zbigniew(_aim_y,_aim_x)] = 0.0;
 	_aim_x = rand() % _x ;
 
 	if(_random_background)
@@ -112,11 +128,11 @@ void new_episode()
 				i += _x -1;
 				continue;
 			}
-			_state[i]=rand()/float(RAND_MAX);
+			_state->image[i]=rand()/float(RAND_MAX);
 		}
 	}
 	
-	_state[zbigniew(_aim_y,_aim_x)] = 1.0;
+	_state->image[zbigniew(_aim_y,_aim_x)] = 1.0;
 
 }
 double make_action(int const* action)
@@ -133,18 +149,18 @@ double make_action(int const* action)
 	{
 		if ( _aim_x > 0 )
 		{
-			_state[zbigniew(_aim_y,_aim_x)] = 0.0;
+			_state->image[zbigniew(_aim_y,_aim_x)] = 0.0;
 			_aim_x -= 1;
-			_state[zbigniew(_aim_y,_aim_x)] = 1.0;	
+			_state->image[zbigniew(_aim_y,_aim_x)] = 1.0;	
 		}
 	}
 	else if( action[1] && ! action[0])
 	{
 		if ( _aim_x < _x -1 )
 		{
-			_state[zbigniew(_aim_y,_aim_x)] = 0.0;
+			_state->image[zbigniew(_aim_y,_aim_x)] = 0.0;
 			_aim_x += 1;
-			_state[zbigniew(_aim_y,_aim_x)] = 1.0;	
+			_state->image[zbigniew(_aim_y,_aim_x)] = 1.0;	
 		}
 	}
 	if (action[2])
@@ -161,9 +177,14 @@ double make_action(int const* action)
 				reward += _hit_reward;
 				_finished = 1;
 			}
-			--_current_ammo;
+			
 		}
-		_current_ammo_float[0] = _current_ammo / float(_ammo);
+		if(_ammo > 0)
+		{
+			--_current_ammo;
+			_state->misc[0] = _current_ammo / float(_ammo);
+		}
+		
 
 
 	}
@@ -175,14 +196,7 @@ double make_action(int const* action)
 	}
 	return reward;
 }
-float* get_image_state() 
-{
-	return _state;
-}
-float* get_misc_state() 
-{
-	return _current_ammo_float;
-}
+
 double average_best_result()
 {
 	double best = _hit_reward + _living_reward;
@@ -196,7 +210,12 @@ int get_action_format()
 {
 	return _number_of_actions;
 }
-int * get_state_format()
+VIZIA_StateFormat* get_state_format()
 {
 	return _state_format;
+}
+
+VIZIA_State* get_state() 
+{
+	return _state;
 }
