@@ -52,3 +52,4 @@
 */lzma/liblzma.a
 */tools/zipdir/zipdir
 **/*.log
+**/example
