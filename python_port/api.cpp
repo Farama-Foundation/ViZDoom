@@ -59,14 +59,14 @@ static PyObject * api_init(PyObject *self, PyObject *args)
     //optional arguments
     int _random_background;
     int _max_moves;
-    float _living_reward;
-    float _miss_penalty;
-    float _hit_reward;
+    double _living_reward;
+    double _miss_penalty;
+    double _hit_reward;
     int _ammo; 
-	float float_ammo;
+	double float_ammo;
 
     /* Parse arguments */
-    if (!PyArg_ParseTuple(args, "iiiiffff", &_x, &_y, &_random_background, &_max_moves,
+    if (!PyArg_ParseTuple(args, "iiiidddd", &_x, &_y, &_random_background, &_max_moves,
                                          &_living_reward,&_miss_penalty,&_hit_reward,&float_ammo))
     {
         return NULL;
@@ -80,6 +80,7 @@ static PyObject * api_init(PyObject *self, PyObject *args)
     {
         _ammo = (int)float_ammo;
     }
+
     /* Run the proper code in c++ api */
     init(_x,_y, (int)_random_background, _max_moves, _living_reward,_miss_penalty,_hit_reward,_ammo);
     _x += (_x +1)%2;
@@ -99,7 +100,7 @@ static PyObject * api_init(PyObject *self, PyObject *args)
     state = PyTuple_Pack(2,img_state, misc_state);
 
 
-    return Py_None;
+    Py_RETURN_NONE;
 }
 
 static PyObject *api_is_finished(PyObject *self, PyObject *args)
@@ -124,8 +125,8 @@ static PyObject *api_get_action_format(PyObject *self, PyObject *args)
 
 static PyObject *api_get_summary_reward(PyObject *self, PyObject *args)
 {
-   	float summary_reward = get_summary_reward();	
-	PyObject *ret = Py_BuildValue("f", summary_reward);
+   	double summary_reward = get_summary_reward();	
+	PyObject *ret = Py_BuildValue("d", summary_reward);
     Py_XINCREF(ret);
 	return ret;
 }
@@ -133,7 +134,7 @@ static PyObject *api_get_summary_reward(PyObject *self, PyObject *args)
 static PyObject *api_new_episode(PyObject *self, PyObject *args)
 {
     new_episode();
-	return Py_None;
+	Py_RETURN_NONE;
 }
 
 static PyObject *api_make_action(PyObject *self, PyObject *args)
@@ -152,11 +153,11 @@ static PyObject *api_make_action(PyObject *self, PyObject *args)
     }
 
 	int *action = (int*)PyArray_DATA(pyobj_action);
-	float reward = make_action(action);
+	double reward = make_action(action);
 
     Py_XDECREF(pyobj_action);
 
-    PyObject *pyobj_reward = Py_BuildValue("f", reward);
+    PyObject *pyobj_reward = Py_BuildValue("d", reward);
     Py_XINCREF(pyobj_reward);
 	return pyobj_reward;
 
@@ -170,7 +171,7 @@ static PyObject *api_get_state(PyObject *self, PyObject *args)
 
 static PyObject *api_average_best_result(PyObject *self, PyObject *args)
 {
-    PyObject *pyobj_reward = Py_BuildValue("f", average_best_result());
+    PyObject *pyobj_reward = Py_BuildValue("d", average_best_result());
     Py_XINCREF(pyobj_reward);
     return pyobj_reward;
 }

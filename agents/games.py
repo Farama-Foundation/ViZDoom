@@ -10,7 +10,7 @@ class ShootingDotGame:
         x += 1 - x % 2
         self._x = x
         self._y = y
-        self._movesMade = 0
+        self._moves_made = 0
         self._living_reward = living_reward
         self._miss_penalty = miss_penalty
         self._hit_reward = hit_reward
@@ -53,7 +53,7 @@ class ShootingDotGame:
     def new_episode(self):
         self._current_ammo[0] = self._ammo
         self._finished = False
-        self._movesMade = 0
+        self._moves_made = 0
         self._aimX = random.randint(0, self._x - 1)
         self._aimY = int(self._y / 2)
         if self._random_background:
@@ -73,7 +73,7 @@ class ShootingDotGame:
         else:
 
             reward = self._living_reward
-            self._movesMade += 1
+            self._moves_made += 1
 
             # right
             if action[0] and not action[1]:
@@ -100,7 +100,7 @@ class ShootingDotGame:
 
             self._summary_reward += reward
 
-            if self._movesMade >= self._max_moves:
+            if self._moves_made >= self._max_moves:
                 self._finished = True
                 self._state = None
 
