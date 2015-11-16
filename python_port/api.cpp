@@ -49,8 +49,8 @@ PyMODINIT_FUNC initapi(void)
 
 PyObject* state_format;
 PyObject* action_format;
-PyObject* state;
-
+PyObject* img_state;
+PyObject* misc_state;
 static PyObject * api_init(PyObject *self, PyObject *args)
 {
     /* Initialization */
@@ -81,39 +81,34 @@ static PyObject * api_init(PyObject *self, PyObject *args)
         _ammo = (int)float_ammo;
     }
 
-    /* Run the proper code in c++ api */
+    /* Run init in c++ api */
     init(_x,_y, (int)_random_background, _max_moves, _living_reward,_miss_penalty,_hit_reward,_ammo);
+
     /* Create state format and action format objects */
     PyObject* image_state_format_tuple = PyTuple_New(get_state_format()->image_shape_len);
-
     for(int i = 0; i < get_state_format()->image_shape_len; i++)
     {
         PyTuple_SetItem(image_state_format_tuple,i,PyInt_FromLong(get_state_format()->image_shape[i]));
     }
     state_format = PyTuple_Pack(2, image_state_format_tuple, PyInt_FromLong(get_state_format()->misc_len));    
 
-    /* Create state object */
+    /* Create img_state object */
     npy_intp* img_shape = new npy_intp[get_state_format()-> image_shape_len];
     for (int i = 0; i<get_state_format()->image_shape_len; ++i)
     {
         img_shape[i] = get_state_format()->image_shape[i];
     }
-    PyObject* img_state = PyArray_SimpleNewFromData(get_state_format()->image_shape_len, img_shape, NPY_FLOAT32, get_state()->image);
+    img_state = PyArray_SimpleNewFromData(get_state_format()->image_shape_len, img_shape, NPY_FLOAT32, get_state()->image);
     delete[] img_shape;
     
-    int misc_len = get_state_format()->misc_len;
-    if( misc_len > 0)
+    /* Create misc_state object */
+    if( get_state_format()->misc_len > 0)
     {
         npy_intp misc_dimensions[] = { 1 };
-        misc_dimensions[0] = misc_len;
-        PyObject* misc_state = PyArray_SimpleNewFromData(misc_len, misc_dimensions, NPY_FLOAT32, get_state()->misc);
-        state = PyTuple_Pack(2,img_state, misc_state);
+        misc_dimensions[0] = get_state_format()->misc_len;
+        misc_state = PyArray_SimpleNewFromData(get_state_format()->misc_len, misc_dimensions, NPY_FLOAT32, get_state()->misc);
     }
-    else
-    {
-        state = PyTuple_Pack(1, img_state);
-    }
-
+   
     Py_RETURN_NONE;
 }
 
@@ -185,12 +180,42 @@ static PyObject *api_make_action(PyObject *self, PyObject *args)
 
 static PyObject *api_get_state(PyObject *self, PyObject *args)
 {
+
     if( is_finished() )
     {
         Py_RETURN_NONE;
     }
-    Py_XINCREF(state);
-    return state;
+    PyObject* return_state;
+    /*
+    PyObject* image_copy = PyArray_NewLikeArray((PyArrayObject*)img_state,NPY_KEEPORDER,NULL,1);
+    PyArray_CopyInto((PyArrayObject*)image_copy, (PyArrayObject*)img_state);
+    
+
+    if( get_state_format()->misc_len > 0)
+    {
+        PyObject* misc_copy = PyArray_NewLikeArray((PyArrayObject*)misc_state,NPY_KEEPORDER,NULL,1);
+        PyArray_CopyInto((PyArrayObject*)misc_copy, (PyArrayObject*)misc_state);
+        return_state = PyTuple_Pack(2,image_copy, misc_copy);
+    }
+    else
+    {
+        return_state = PyTuple_Pack(1, image_copy);
+    }*/
+    //TODO the commented copying procedure somehow causes a memory leak, find why and make it stop and then remove the code below
+
+    ////////the code below///////////////
+    if( get_state_format()->misc_len > 0)
+    {
+        return_state = PyTuple_Pack(2, img_state, misc_state);
+    }
+    else
+    {
+        return_state = PyTuple_Pack(1, img_state);
+    }
+    ///////end of the code below////////
+    
+    Py_XINCREF(return_state);
+    return return_state;
 }
 
 static PyObject *api_average_best_result(PyObject *self, PyObject *args)
