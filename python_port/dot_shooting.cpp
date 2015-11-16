@@ -150,7 +150,8 @@ float make_action(int const* action)
 	}
 	if (action[2])
 	{
-		if(_current_ammo >0)
+		
+		if(_ammo == -1 or _current_ammo > 0)
 		{
 			if (_aim_x != _x/2)
 			{

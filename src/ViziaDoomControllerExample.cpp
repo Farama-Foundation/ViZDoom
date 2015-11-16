@@ -7,9 +7,9 @@ int main(){
 
     std::cout << "SETTING DOOM " << std::endl;
 
-    vdm->setGamePath("./zdoom");
-    vdm->setIwadPath("./dooom2.wad");
-    vdm->setFilePath("./s1.wad");
+    vdm->setGamePath("./vizia_doom_scenerio/zdoom");
+    vdm->setIwadPath("./vizia_doom_scenerio/dooom2.wad");
+    vdm->setFilePath("./vizia_doom_scenerio/s1.wad");
     vdm->setMap("map01");
     vdm->setMapTimeout(300);
 

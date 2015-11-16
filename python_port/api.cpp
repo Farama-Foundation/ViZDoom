@@ -18,6 +18,7 @@ static PyObject *api_get_summary_reward(PyObject *self, PyObject *args);
 static PyObject *api_new_episode(PyObject *self, PyObject *args);
 static PyObject *api_make_action(PyObject *self, PyObject *args);
 static PyObject *api_get_state(PyObject *self, PyObject *args);
+static PyObject *api_average_best_result(PyObject *self, PyObject *args);
 
 /* Module specification */
 static PyMethodDef module_methods[] = {
@@ -29,7 +30,7 @@ static PyMethodDef module_methods[] = {
     {"new_episode", api_new_episode, METH_VARARGS, NULL},
     {"make_action", api_make_action, METH_VARARGS, NULL},
     {"get_state", api_get_state, METH_VARARGS, NULL},
-
+    {"average_best_result", api_average_best_result, METH_VARARGS, NULL},
 
 
 };
@@ -87,18 +88,15 @@ static PyObject * api_init(PyObject *self, PyObject *args)
     npy_intp image_dimensions[] = {_y,_x};
     PyObject* img_state = PyArray_SimpleNewFromData(2, image_dimensions, NPY_FLOAT32, get_image_state());
     
+    npy_intp misc_dimensions[] = { 1 };
     if(_ammo == -1)
     {
-        state_format = PyTuple_Pack(1,image_state_tuple);
-        state = PyTuple_Pack(1,img_state);
+        misc_dimensions[0] = 0;
     }
-    else
-    {
-        state_format = PyTuple_Pack(2, image_state_tuple, PyInt_FromLong(_ammo));
-        npy_intp misc_dimensions[] = { 1 };
-        PyObject* misc_state = PyArray_SimpleNewFromData(1, misc_dimensions, NPY_FLOAT32, get_misc_state());
-        state = PyTuple_Pack(2,img_state, misc_state);
-    }
+    
+    state_format = PyTuple_Pack(2, image_state_tuple, PyInt_FromLong(_ammo));
+    PyObject* misc_state = PyArray_SimpleNewFromData(1, misc_dimensions, NPY_FLOAT32, get_misc_state());
+    state = PyTuple_Pack(2,img_state, misc_state);
 
 
     return Py_None;
@@ -168,4 +166,11 @@ static PyObject *api_get_state(PyObject *self, PyObject *args)
 {
     Py_XINCREF(state);
     return state;
+}
+
+static PyObject *api_average_best_result(PyObject *self, PyObject *args)
+{
+    PyObject *pyobj_reward = Py_BuildValue("f", average_best_result());
+    Py_XINCREF(pyobj_reward);
+    return pyobj_reward;
 }
