@@ -22,14 +22,11 @@ class MLPEvaluator:
         image_dimensions = len(state_format[0])
 
         self._targets = tensor.matrix('targets')
-        if image_dimensions == 2:
-            self._image_inputs = tensor.tensor3('image_inputs')
-        elif image_dimensions == 3:
-            self._image_inputs = tensor.tensor4('image_inputs')
+        self._image_inputs = tensor.tensor4('image_inputs')
 
-        image_input_shape = list(state_format[0])
-        image_input_shape.insert(0, None)
-        self._image_input_shape = list(image_input_shape)
+        network_image_input_shape = list(state_format[0])
+        network_image_input_shape.insert(0, None)
+        self._image_input_shape = list(network_image_input_shape)
         self._image_input_shape[0] = batch_size
 
         # create buffers for batch learning
@@ -40,7 +37,7 @@ class MLPEvaluator:
         # save it for the evaluation reshape
         self._image_input_shape[0] = 1
 
-        network_args["img_shape"] = image_input_shape
+        network_args["img_shape"] = network_image_input_shape
         network_args["misc_shape"] = misc_input_shape
         network_args["output_size"] = actions_number
         self._initialize_network(**network_args)
