@@ -9,29 +9,32 @@ class QEngine:
                  epsilon_decay_start_step=100000, epsilon_decay_steps=100000):
         self.online_mode = False
         self._game = game
-        self._history_length = max(history_length, 1)
-        self._transitions = TransitionBank(bank_capacity)
-        self._actions = actions_generator(game)
-        self._actions_num = len(self._actions)
-        self._actions_stats = np.zeros([self._actions_num], np.int)
-        self._update_frequency = update_frequency
+        self._gamma = gamma
         self._batch_size = batch_size
+        self._history_length = max(history_length, 1)
+        self._update_frequency = update_frequency
         self._epsilon = max(min(start_epsilon, 1.0), 0.0)
         self._end_epsilon = min(max(end_epsilon, 0.0), self._epsilon)
         self._epsilon_decay_stride = (self._epsilon - end_epsilon) / epsilon_decay_steps
         self._epsilon_decay_start = epsilon_decay_start_step
-        self._steps = 0
-        self._gamma = gamma
 
         self.learning_mode = True
+        self._transitions = TransitionBank(bank_capacity)
+        self._steps = 0
+        self._actions = actions_generator(game)
+        self._actions_num = len(self._actions)
+        self._actions_stats = np.zeros([self._actions_num], np.int)
 
+        
         # change img_shape according to the history size
-        img_shape = game.get_state_format()[0]
+        self._single_img_shape = list(game.get_state_format()[0])
+        if len(self._single_img_shape) == 2:
+            self._single_img_shape = [1,self._single_img_shape[0],self._single_img_shape[1]]
+        self._channels = self._single_img_shape[0]
+
+        img_shape = self._single_img_shape
         if history_length > 1:
-            if len(img_shape) == 2:
-                img_shape = (self._history_length, img_shape[0], img_shape[1])
-            else:
-                img_shape = (self._history_length * img_shape[0], img_shape[1], img_shape[2])
+            img_shape[0] *= history_length
 
         state_format = [img_shape, game.get_state_format()[1]]
         self._evaluator = evaluator(state_format, len(self._actions), batch_size, self._gamma)
@@ -39,25 +42,27 @@ class QEngine:
 
         if game.get_state_format()[1] > 0:
             self._misc_state_included = True
-
             self._current_misc_state = np.zeros(game.get_state_format()[1], dtype=np.float32)
         else:
             self._misc_state_included = False
 
     def _update_state(self):
         raw_state = self._game.get_state()
+        img = raw_state[0].copy()
 
+        if self._misc_state_included:
+            misc = raw_state[1].copy()
         if self._history_length > 1:
-            self._current_image_state[0:-1] = self._current_image_state[1:]
-            self._current_image_state[-1] = raw_state[0].copy()
+            self._current_image_state[0:-self._channels] = self._current_image_state[self._channels:]
+            self._current_image_state[-self._channels:] = raw_state[0].copy()
             if self._misc_state_included:
                 self._current_misc_state[0:-1] = self._current_misc_state[1:]
-                self._current_misc_state[-1] = np.array(raw_state[1].copy(), dtype=np.float32)
+                self._current_misc_state[-1] = misc
 
         else:
-            self._current_image_state = raw_state[0].copy()
+            self._current_image_state[:] = img
             if self._misc_state_included:
-                self._current_misc_state = np.array(raw_state[1].copy(), dtype=np.float32)
+                self._current_misc_state = misc
 
     def _new_game(self):
         self._game.new_episode()
