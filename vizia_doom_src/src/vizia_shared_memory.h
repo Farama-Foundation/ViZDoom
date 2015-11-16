@@ -85,11 +85,11 @@ struct ViziaGameVarsStruct{
     bool PLAYER_KEY[3];
 };
 
-#define VIZIA_SM_NAME "ViziaSM"
+#define VIZIA_SM_NAME_BASE "ViziaSM"
 
-void Vizia_SMInit();
+void Vizia_SMInit(const char * id);
 
-void Vizia_SMSetSize(int scr_w, int src_h);
+void Vizia_SMSetSize(int screenWidth, int screenHeight);
 
 size_t Vizia_SMGetInputRegionBeginning();
 size_t Vizia_SMGetGameVarsRegionBeginning();

@@ -69,10 +69,10 @@ namespace bpri = boost::process::initializers;
 
 #define V_BT_SIZE 30
 
-#define VIZIA_SM_NAME "ViziaSM"
+#define VIZIA_SM_NAME_BASE "ViziaSM"
 
-#define VIZIA_MQ_NAME_CTR "ViziaMQCtr"
-#define VIZIA_MQ_NAME_DOOM "ViziaMQDoom"
+#define VIZIA_MQ_NAME_CTR_BASE "ViziaMQCtr"
+#define VIZIA_MQ_NAME_DOOM_BASE "ViziaMQDoom"
 #define VIZIA_MQ_MAX_MSG_NUM 32
 #define VIZIA_MQ_MAX_MSG_SIZE sizeof(ViziaDoomController::MessageCommandStruct)
 #define VIZIA_MQ_MAX_CMD_LEN 32
@@ -156,6 +156,7 @@ class ViziaDoomController {
 
         //GAME & MAP SETTINGS
 
+        void setInstanceId(std::string id);
         void setGamePath(std::string path);
         void setIwadPath(std::string path);
         void setFilePath(std::string path);
@@ -276,20 +277,29 @@ class ViziaDoomController {
         std::string file;
         std::string map;
         int skill;
+
+        // AUTO RESTART
+
         bool autoRestartOnTimeout;
         bool autoRestartOnPlayersDeath;
         unsigned int mapTimeout;
         unsigned int mapRestartCount;
         bool mapRestarting;
 
-
         // COMMUNICATION
+
+        void generateInstanceId();
+
+        std::string instanceId;
 
         bip::shared_memory_object SM;
         size_t SMSize;
+        std::string SMName;
 
         bip::message_queue *MQController;
         bip::message_queue *MQDoom;
+        std::string MQControllerName;
+        std::string MQDoomName;
 
         bip::mapped_region *InputSMRegion;
         InputStruct *Input;

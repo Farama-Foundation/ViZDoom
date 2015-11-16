@@ -6,21 +6,23 @@
 
 bip::shared_memory_object viziaSM;
 size_t viziaSMSize;
+char * viziaSMName;
 
-void Vizia_SMInit(){
-    printf("VIZIA SM INIT\n");
+void Vizia_SMInit(const char * id){
 
     //bip::shared_memory_object::remove(VIZIA_SM_NAME);
 
     //viziaSM = bip::shared_memory_object(bip::open_or_create, VIZIA_SM_NAME, bip::read_write);
-    viziaSM = bip::shared_memory_object(bip::open_only, VIZIA_SM_NAME, bip::read_write);
+
+    viziaSMName = strcat(strdup(VIZIA_SM_NAME_BASE), id);
+    viziaSM = bip::shared_memory_object(bip::open_or_create, viziaSMName, bip::read_write);
     Vizia_SMSetSize(screen->GetWidth(), screen->GetHeight());
 
     printf ("SM size: %zu\n", viziaSMSize);
 }
 
-void Vizia_SMSetSize(int scr_w, int src_h){
-    viziaSMSize = sizeof(ViziaInputStruct) + sizeof(ViziaGameVarsStruct) + (sizeof(BYTE) * scr_w * src_h);
+void Vizia_SMSetSize(int screenWidth, int screenHeight){
+    viziaSMSize = sizeof(ViziaInputStruct) + sizeof(ViziaGameVarsStruct) + (sizeof(BYTE) * screenWidth * screenHeight);
     viziaSM.truncate(viziaSMSize);
 }
 
@@ -37,5 +39,5 @@ size_t Vizia_SMGetScreenRegionBeginning(){
 }
 
 void Vizia_SMClose(){
-    bip::shared_memory_object::remove(VIZIA_SM_NAME);
+    bip::shared_memory_object::remove(viziaSMName);
 }
