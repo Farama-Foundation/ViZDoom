@@ -8,8 +8,8 @@ namespace bip = boost::interprocess;
 extern bip::message_queue *viziaMQSend;
 extern bip::message_queue *viziaMQRecv;
 
-#define VIZIA_MQ_NAME_CTR "ViziaMQCtr"
-#define VIZIA_MQ_NAME_DOOM "ViziaMQDoom"
+#define VIZIA_MQ_NAME_CTR_BASE "ViziaMQCtr"
+#define VIZIA_MQ_NAME_DOOM_BASE "ViziaMQDoom"
 #define VIZIA_MQ_MAX_MSG_NUM 32
 #define VIZIA_MQ_MAX_MSG_SIZE sizeof(ViziaMessageCommandStruct)
 #define VIZIA_MQ_MAX_CMD_LEN 32
@@ -34,7 +34,7 @@ struct ViziaMessageCommandStruct{
 
 void Vizia_Command(char * command);
 
-void Vizia_MQInit();
+void Vizia_MQInit(const char * id);
 
 void Vizia_MQSend(uint8_t code);
 

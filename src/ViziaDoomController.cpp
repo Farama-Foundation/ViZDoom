@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 //PUBLIC FUNCTIONS
 
@@ -27,6 +29,7 @@ ViziaDoomController::ViziaDoomController(){
     this->mapTimeout = 0;
     this->mapRestartCount = 0;
 
+    generateInstanceId();
     this->doomRunning = false;
     this->doomTic = false;
 }
@@ -40,6 +43,9 @@ ViziaDoomController::~ViziaDoomController(){
 bool ViziaDoomController::init(){
 
     if(!this->doomRunning && this->iwadPath.length() != 0 && this->map.length() != 0) {
+
+        if(this->instanceId.length() == 0) generateInstanceId();
+
         this->MQInit();
         this->SMInit();
 
@@ -145,6 +151,7 @@ bool ViziaDoomController::isDoomRunning(){ return this->doomRunning; }
 
 //GAME & MAP SETTINGS
 
+void ViziaDoomController::setInstanceId(std::string id){ this->instanceId = id; }
 void ViziaDoomController::setGamePath(std::string path){ this->gamePath = path; }
 void ViziaDoomController::setIwadPath(std::string path){ this->iwadPath = path; }
 void ViziaDoomController::setFilePath(std::string path){ this->file = path; }
@@ -329,6 +336,12 @@ void ViziaDoomController::lunchDoom(){
 
     //TEMP CONST ARGS
 
+    args.push_back("+vizia_controlled");
+    args.push_back("1");
+
+    args.push_back("+vizia_instance_id");
+    args.push_back(this->instanceId);
+
     args.push_back("+wipetype");
     args.push_back("0");
 
@@ -415,12 +428,24 @@ bool ViziaDoomController::getPlayerKey1() { return this->GameVars->PLAYER_KEY[0]
 bool ViziaDoomController::getPlayerKey2() { return this->GameVars->PLAYER_KEY[1]; }
 bool ViziaDoomController::getPlayerKey3() { return this->GameVars->PLAYER_KEY[2]; }
 
+//PRIVATE
+
+void ViziaDoomController::generateInstanceId(){
+    std::string chars ="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    this->instanceId = "";
+
+    srand(time(NULL));
+    for(int i = 0; i < 10; ++i) {
+        this->instanceId += chars[rand()%(chars.length()-1)];
+    }
+}
+
 //SM FUNCTIONS 
 void ViziaDoomController::SMInit(){
-    bip::shared_memory_object::remove(VIZIA_SM_NAME);
+    this->SMName = VIZIA_SM_NAME_BASE + instanceId;
+    bip::shared_memory_object::remove(this->SMName.c_str());
 
-    //this->SM = new bip::shared_memory_object(bip::open_or_create, VIZIA_SM_NAME, bip::read_write);
-    this->SM = bip::shared_memory_object(bip::open_or_create, VIZIA_SM_NAME, bip::read_write);
+    this->SM = bip::shared_memory_object(bip::open_or_create, this->SMName.c_str(), bip::read_write);
     this->SMSetSize(screenWidth, screenHeight);
 
     this->InputSMRegion = new bip::mapped_region(this->SM, bip::read_write, this->SMGetInputRegionBeginning(), sizeof(ViziaDoomController::InputStruct));
@@ -454,15 +479,20 @@ void ViziaDoomController::SMClose(){
     delete(this->InputSMRegion);
     delete(this->GameVarsSMRegion);
     delete(this->ScreenSMRegion);
-    bip::shared_memory_object::remove(VIZIA_SM_NAME);
+    bip::shared_memory_object::remove(this->SMName.c_str());
 }
 
 //MQ FUNCTIONS
 void ViziaDoomController::MQInit(){
-    bip::message_queue::remove(VIZIA_MQ_NAME_CTR);
-    bip::message_queue::remove(VIZIA_MQ_NAME_DOOM);
-    this->MQController = new bip::message_queue(bip::open_or_create, VIZIA_MQ_NAME_CTR, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
-    this->MQDoom = new bip::message_queue(bip::open_or_create, VIZIA_MQ_NAME_DOOM, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
+
+    this->MQControllerName = VIZIA_MQ_NAME_CTR_BASE + instanceId;
+    this->MQDoomName = VIZIA_MQ_NAME_DOOM_BASE + instanceId;
+
+    bip::message_queue::remove(this->MQControllerName.c_str());
+    bip::message_queue::remove(this->MQDoomName.c_str());
+
+    this->MQController = new bip::message_queue(bip::open_or_create, this->MQControllerName.c_str(), VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
+    this->MQDoom = new bip::message_queue(bip::open_or_create, this->MQDoomName.c_str(), VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
 }
 
 void ViziaDoomController::MQSend(uint8_t code){
@@ -501,5 +531,5 @@ bool ViziaDoomController::MQTryRecv(void *msg, unsigned long &size, unsigned int
 
 void ViziaDoomController::MQClose(){
     //bip::message_queue::remove(VIZIA_MQ_NAME_CTR);
-    bip::message_queue::remove(VIZIA_MQ_NAME_DOOM);
+    bip::message_queue::remove(this->MQControllerName.c_str());
 }
