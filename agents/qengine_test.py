@@ -10,7 +10,7 @@ import itertools as it
 import lasagne
 import api
 
-def api_init_wrapper(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo, add_dimension):
+def api_init_wrapper(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo):
     api.init(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo)
 
 def actions_generator(the_game):
@@ -48,46 +48,53 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     network_args["filter_size"] = [4, 4]
     return CNNEvaluator(**cnn_args)
 
+def create_game(shooting_game = True):
+    game_args = dict()
+    game_args['x'] = 21
+    game_args['y'] = 21
+    game_args['hit_reward'] = 1.01
+    game_args['max_moves'] = 600
+    # should be positive cause it's treated as a penalty
+    game_args['miss_penalty'] = 0.05
+    # should be negative cause it's treated as a reward
+    game_args['living_reward'] = -0.01
+    game_args['random_background'] = True
+    game_args['ammo'] = np.inf
 
-game_args = dict()
-game_args['x'] = 11
-game_args['y'] = 5
-game_args['hit_reward'] = 1.01
-game_args['max_moves'] = 50
-# should be positive cause it's treated as a penalty
-game_args['miss_penalty'] = 0.05
-# should be negative cause it's treated as a reward
-game_args['living_reward'] = -0.01
-game_args['random_background'] = False
-game_args['ammo'] = np.inf
-game_args['add_dimension'] = False
+    if shooting_game:
+        game = ShootingDotGame(**game_args)
+    else:
+        api_init_wrapper(**game_args)
+        game = api
+    return game
 
-shooting_game = False
-if shooting_game:
-    game = ShootingDotGame(**game_args)
-else:
-    api_init_wrapper(**game_args)
-    game = api
+def create_engine( game, online_mode=False ):
+    engine_args = dict()
+    engine_args["history_length"] = 1
+    engine_args["bank_capacity"] = 10000
+    engine_args["evaluator"] = create_cnn_evaluator
+    engine_args["game"] = game
+    engine_args['start_epsilon'] = 1.0
+    engine_args['epsilon_decay_start_step'] = 5000000
+    engine_args['epsilon_decay_steps'] = 1000000
+    engine_args['actions_generator'] = actions_generator
+    engine_args['update_frequency'] = 4
+    engine_args['batch_size'] = 25
+    engine_args['gamma'] = 0.8
+    if online_mode:
+        engine.online_mode = True
+    engine = QEngine(**engine_args)
+    return engine
 
-engine_args = dict()
-engine_args["history_length"] = 1
-engine_args["bank_capacity"] = 10000
-engine_args["evaluator"] = create_mlp_evaluator
-engine_args["game"] = game
-engine_args['start_epsilon'] = 1.0
-engine_args['epsilon_decay_start_step'] = 500000
-engine_args['epsilon_decay_steps'] = 1000000
-engine_args['actions_generator'] = actions_generator
-engine_args['update_frequency'] = 4
-engine_args['batch_size'] = 25
-engine_args['gamma'] = 0.8
+game = create_game(False)
+engine = create_engine(game)
 
-engine = QEngine(**engine_args)
-# engine.online_mode = True
+
+
 
 epochs = np.inf
-training_episodes_per_epoch = 1000
-test_episodes_per_epoch = 100
+training_episodes_per_epoch = 500
+test_episodes_per_epoch = 50
 stop_mean = 1.0  # game.average_best_result()
 overall_start = time()
 print "Average best result:", round(game.average_best_result(), 4)

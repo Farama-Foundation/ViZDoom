@@ -49,11 +49,11 @@ PyMODINIT_FUNC initapi(void)
 
 PyObject* state_format;
 PyObject* action_format;
-PyObject* state;
-
-
+PyObject* img_state;
+PyObject* misc_state;
 static PyObject * api_init(PyObject *self, PyObject *args)
 {
+    /* Initialization */
 	int _x;
     int _y;
     //optional arguments
@@ -81,25 +81,34 @@ static PyObject * api_init(PyObject *self, PyObject *args)
         _ammo = (int)float_ammo;
     }
 
-    /* Run the proper code in c++ api */
+    /* Run init in c++ api */
     init(_x,_y, (int)_random_background, _max_moves, _living_reward,_miss_penalty,_hit_reward,_ammo);
-    _x += (_x +1)%2;
+
     /* Create state format and action format objects */
-    PyObject* image_state_tuple = PyTuple_Pack(2,PyInt_FromLong(_y),PyInt_FromLong(_x));
-    npy_intp image_dimensions[] = {_y,_x};
-    PyObject* img_state = PyArray_SimpleNewFromData(2, image_dimensions, NPY_FLOAT32, get_image_state());
-    
-    npy_intp misc_dimensions[] = { 1 };
-    if(_ammo == -1)
+    PyObject* image_state_format_tuple = PyTuple_New(get_state_format()->image_shape_len);
+    for(int i = 0; i < get_state_format()->image_shape_len; i++)
     {
-        misc_dimensions[0] = 0;
+        PyTuple_SetItem(image_state_format_tuple,i,PyInt_FromLong(get_state_format()->image_shape[i]));
     }
+    state_format = PyTuple_Pack(2, image_state_format_tuple, PyInt_FromLong(get_state_format()->misc_len));    
+
+    /* Create img_state object */
+    npy_intp* img_shape = new npy_intp[get_state_format()-> image_shape_len];
+    for (int i = 0; i<get_state_format()->image_shape_len; ++i)
+    {
+        img_shape[i] = get_state_format()->image_shape[i];
+    }
+    img_state = PyArray_SimpleNewFromData(get_state_format()->image_shape_len, img_shape, NPY_FLOAT32, get_state()->image);
+    delete[] img_shape;
     
-    state_format = PyTuple_Pack(2, image_state_tuple, PyInt_FromLong(_ammo));
-    PyObject* misc_state = PyArray_SimpleNewFromData(1, misc_dimensions, NPY_FLOAT32, get_misc_state());
-    state = PyTuple_Pack(2,img_state, misc_state);
-
-
+    /* Create misc_state object */
+    if( get_state_format()->misc_len > 0)
+    {
+        npy_intp misc_dimensions[] = { 1 };
+        misc_dimensions[0] = get_state_format()->misc_len;
+        misc_state = PyArray_SimpleNewFromData(get_state_format()->misc_len, misc_dimensions, NPY_FLOAT32, get_state()->misc);
+    }
+   
     Py_RETURN_NONE;
 }
 
@@ -139,16 +148,22 @@ static PyObject *api_new_episode(PyObject *self, PyObject *args)
 
 static PyObject *api_make_action(PyObject *self, PyObject *args)
 {
-    
+    if (is_finished())
+    {
+        // TODO throw some exception
+        return NULL;
+    }
 	PyObject *pyobj_action;
 	if (!PyArg_ParseTuple(args, "O", &pyobj_action))
 	{
+        // TODO throw some exception
 		return NULL;
 	}
     pyobj_action = PyArray_FROM_OTF(pyobj_action, NPY_INT, NPY_IN_ARRAY);
  	if (pyobj_action == NULL) 
     {
        	Py_XDECREF(pyobj_action);
+        // TODO throw some exception
        	return NULL;
     }
 
@@ -165,8 +180,42 @@ static PyObject *api_make_action(PyObject *self, PyObject *args)
 
 static PyObject *api_get_state(PyObject *self, PyObject *args)
 {
-    Py_XINCREF(state);
-    return state;
+
+    if( is_finished() )
+    {
+        Py_RETURN_NONE;
+    }
+    PyObject* return_state;
+    /*
+    PyObject* image_copy = PyArray_NewLikeArray((PyArrayObject*)img_state,NPY_KEEPORDER,NULL,1);
+    PyArray_CopyInto((PyArrayObject*)image_copy, (PyArrayObject*)img_state);
+    
+
+    if( get_state_format()->misc_len > 0)
+    {
+        PyObject* misc_copy = PyArray_NewLikeArray((PyArrayObject*)misc_state,NPY_KEEPORDER,NULL,1);
+        PyArray_CopyInto((PyArrayObject*)misc_copy, (PyArrayObject*)misc_state);
+        return_state = PyTuple_Pack(2,image_copy, misc_copy);
+    }
+    else
+    {
+        return_state = PyTuple_Pack(1, image_copy);
+    }*/
+    //TODO the commented copying procedure somehow causes a memory leak, find why and make it stop and then remove the code below
+
+    ////////the code below///////////////
+    if( get_state_format()->misc_len > 0)
+    {
+        return_state = PyTuple_Pack(2, img_state, misc_state);
+    }
+    else
+    {
+        return_state = PyTuple_Pack(1, img_state);
+    }
+    ///////end of the code below////////
+    
+    Py_XINCREF(return_state);
+    return return_state;
 }
 
 static PyObject *api_average_best_result(PyObject *self, PyObject *args)
