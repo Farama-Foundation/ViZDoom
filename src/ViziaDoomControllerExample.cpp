@@ -8,7 +8,7 @@ int main(){
     std::cout << "SETTING DOOM " << std::endl;
 
     vdm->setGamePath("zdoom");
-    vdm->setIwadPath("dooom2.wad");
+    vdm->setIwadPath("doom2.wad");
     vdm->setFilePath("s1_b.wad");
     vdm->setMap("map01");
     vdm->setMapTimeout(300);
@@ -26,7 +26,6 @@ int main(){
     vdm->showParticles(false);
 
     vdm->init();
-
     int loop = 100;
     for(int i = 0; i < 1000; ++i){
 
