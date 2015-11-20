@@ -1,0 +1,7 @@
+To test these scenarios:
+- mac&windows: download zdoom from: http://zdoom.org/Download
+- linux: compile zdoom from: https://github.com/rheit/zdoom
+
+run this command:
+	./zdoom -iwad "/doom2.wad" -skill "1" -file "s1_b.wad" +map MAP01
+Change "s1_b.wad" to any scenario you like.
