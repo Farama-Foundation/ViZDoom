@@ -16,58 +16,62 @@ namespace bip = boost::interprocess;
 namespace bpr = boost::process;
 namespace bpri = boost::process::initializers;
 
-#define DOOM_AMMO_Clip 0
-#define DOOM_AMMO_Shell 1
-#define DOOM_AMMO_Rocket 2
-#define DOOM_AMMO_Cell 3
+#define DOOM_AMMO_CLIP 0
+#define DOOM_AMMO_SHELL 1
+#define DOOM_AMMO_ROCKET 2
+#define DOOM_AMMO_CELL 3
 
-#define DOOM_WEAPON_Fist 0
-#define DOOM_WEAPON_Chainsaw 0
-#define DOOM_WEAPON_Pistol 1
-#define DOOM_WEAPON_Shotgun 3
+#define DOOM_WEAPON_FIST 0
+#define DOOM_WEAPON_CHAINSAW 0
+#define DOOM_WEAPON_PISTOL 1
+#define DOOM_WEAPON_SHOTGUN 3
 #define DOOM_WEAPON_SSG 3
-#define DOOM_WEAPON_SuperShotgun 3
-#define DOOM_WEAPON_Chaingun 4
-#define DOOM_WEAPON_RocketLuncher 5
-#define DOOM_WEAPON_Plasma 6
+#define DOOM_WEAPON_SUPER_SHOTGUN 3
+#define DOOM_WEAPON_CHAINGUN 4
+#define DOOM_WEAPON_ROCKET_LUNCHER 5
+#define DOOM_WEAPON_PLASMA_GUN 6
 #define DOOM_WEAPON_BFG 7
 
-#define V_ATTACK 0
-#define V_USE 1
-#define V_JUMP 2
-#define V_CROUCH 3
-//#define V_TURN180 4
-#define V_ALTATTACK 5
-#define V_RELOAD 6
-#define V_ZOOM 7
+#define DOOM_KEY_BLUE 0
+#define DOOM_KEY_RED 1
+#define DOOM_KEY_YELLOW 2
 
-#define V_SPEED 8
-#define V_STRAFE 9
+#define A_ATTACK 0
+#define A_USE 1
+#define A_JUMP 2
+#define A_CROUCH 3
+#define A_TURN180 4
+#define A_ALTATTACK 5
+#define A_RELOAD 6
+#define A_ZOOM 7
 
-#define V_MOVERIGHT 10
-#define V_MOVELEFT 11
-#define V_BACK 12
-#define V_FORWARD 13
-#define V_RIGHT 14
-#define V_LEFT 15
-#define V_LOOKUP 16
-#define V_LOOKDOWN 17
-#define V_MOVEUP 18
-#define V_MOVEDOWN 19
-//#define V_SHOWSCORES 20
+#define A_SPEED 8
+#define A_STRAFE 9
 
-#define V_WEAPON1 21
-#define V_WEAPON2 22
-#define V_WEAPON3 23
-#define V_WEAPON4 24
-#define V_WEAPON5 25
-#define V_WEAPON6 26
-#define V_WEAPON7 27
+#define A_MOVERIGHT 10
+#define A_MOVELEFT 11
+#define A_BACK 12
+#define A_FORWARD 13
+#define A_RIGHT 14
+#define A_LEFT 15
+#define A_LOOKUP 16
+#define A_LOOKDOWN 17
+#define A_MOVEUP 18
+#define A_MOVEDOWN 19
+//#define A_SHOWSCORES 20
 
-#define V_WEAPONNEXT 28
-#define V_WEAPONPREV 29
+#define A_WEAPON1 21
+#define A_WEAPON2 22
+#define A_WEAPON3 23
+#define A_WEAPON4 24
+#define A_WEAPON5 25
+#define A_WEAPON6 26
+#define A_WEAPON7 27
 
-#define V_BT_SIZE 30
+#define A_WEAPONNEXT 28
+#define A_WEAPONPREV 29
+
+#define A_BT_SIZE 30
 
 #define VIZIA_SM_NAME_BASE "ViziaSM"
 
@@ -86,13 +90,16 @@ namespace bpri = boost::process::initializers;
 #define VIZIA_MSG_CODE_CLOSE 2
 #define VIZIA_MSG_CODE_COMMAND 3
 
-float DoomTic2S (unsigned int);
-
-int DoomTic2Ms (unsigned int);
-
-unsigned int S2DoomTic (float);
-
-unsigned int Ms2DoomTic (float);
+#define VIZIA_SCREEN_CRCGCB 0
+#define VIZIA_SCREEN_CRCGCBCA 1
+#define VIZIA_SCREEN_RGB24 2
+#define VIZIA_SCREEN_RGBA32 3
+#define VIZIA_SCREEN_ARGB32 4
+#define VIZIA_SCREEN_CBCGCR 5
+#define VIZIA_SCREEN_CBCGCRCA 6
+#define VIZIA_SCREEN_BGR24 7
+#define VIZIA_SCREEN_BGRA32 8
+#define VIZIA_SCREEN_ABGR32 9
 
 class ViziaDoomController {
     
@@ -101,7 +108,10 @@ class ViziaDoomController {
         struct InputStruct{
             int MS_X;
             int MS_Y;
-            bool BT[V_BT_SIZE];
+            int MS_MAX_X;
+            int MS_MAX_Y;
+            bool BT[A_BT_SIZE];
+            bool BT_AVAILABLE[A_BT_SIZE];
         };
 
         struct GameVarsStruct{
@@ -109,6 +119,11 @@ class ViziaDoomController {
 
             int SCREEN_WIDTH;
             int SCREEN_HEIGHT;
+            int SCREEN_PITCH;
+            int SCREEN_SIZE;
+            int SCREEN_FORMAT;
+
+            int MAP_REWARD;;
 
             int MAP_START_TIC;
             int MAP_TIC;
@@ -133,9 +148,9 @@ class ViziaDoomController {
             int PLAYER_SELECTED_WEAPON;
             int PLAYER_SELECTED_WEAPON_AMMO;
 
-            int PLAYER_AMMO[4];
-            bool PLAYER_WEAPON[7];
-            bool PLAYER_KEY[3];
+            int PLAYER_AMMO[10];
+            bool PLAYER_WEAPON[10];
+            bool PLAYER_KEY[10];
         };
 
         ViziaDoomController();
@@ -151,6 +166,7 @@ class ViziaDoomController {
         bool isDoomRunning();
         bool isRestartMapInLastTic();
         void sendCommand(std::string command);
+        void resetConfig();
 
         //SETTINGS
 
@@ -162,6 +178,7 @@ class ViziaDoomController {
         void setFilePath(std::string path);
         void setMap(std::string map);
         void setSkill(int skill);
+        void setConfigPath(std::string path);
 
         void setAutoMapRestartOnTimeout(bool set);
         void setAutoMapRestartOnPlayerDeath(bool set);
@@ -169,14 +186,23 @@ class ViziaDoomController {
 
         //GRAPHIC SETTINGS
 
-        void setScreenSize(int screenWidth, int screenHeight);
-        void showHud(bool hud);
-        void showWeapon(bool weapon);
-        void showCrosshair(bool crosshair);
-        void showDecals(bool decals);
-        void showParticles(bool particles);
+        void setScreenResolution(int width, int height);
+        void setScreenWidth(int width);
+        void setScreenHeight(int height);
+        void setScreenFormat(int format);
+        void setRenderHud(bool hud);
+        void setRenderWeapon(bool weapon);
+        void setRenderCrosshair(bool crosshair);
+        void setRenderDecals(bool decals);
+        void setRenderParticles(bool particles);
 
-        void addViziaDoomStartArgument(std::string arg);
+        int getScreenWidth();
+        int getScreenHeight();
+        int getScreenPitch();
+        int getScreenSize();
+        int getScreenFormat();
+
+        //PUBLIC SETTERS & GETTERS
 
         uint8_t* const getScreen();
         InputStruct* const getInput();
@@ -191,6 +217,10 @@ class ViziaDoomController {
         void toggleKeyState(int key);
 
         int getGameTic();
+
+        int getMapReward();
+        int getMapTimeout();
+
         int getMapTic();
 
         int getMapKillCount();
@@ -227,6 +257,16 @@ class ViziaDoomController {
 
     private:
 
+        void generateInstanceId();
+        std::string instanceId;
+
+        b::thread *doomThread;
+        //bpr::child doomProcess;
+        bool doomRunning;
+        bool doomTic;
+
+        //MESSAGE QUEUES
+
         struct MessageSignalStruct{
             uint8_t code;
         };
@@ -235,16 +275,6 @@ class ViziaDoomController {
             uint8_t code;
             char command[VIZIA_MQ_MAX_CMD_LEN];
         };
-
-        void SMInit();
-
-        void SMSetSize(int screenWidth, int screenHeight);
-
-        size_t SMGetInputRegionBeginning();
-        size_t SMGetGameVarsRegionBeginning();
-        size_t SMGetScreenRegionBeginning();
-
-        void SMClose();
 
         void MQInit();
 
@@ -262,44 +292,19 @@ class ViziaDoomController {
 
         void MQClose();
 
-        void waitForDoom();
-
-        void lunchDoom();
-
-        // OPTIONS
-
-        unsigned int screenWidth, screenHeight, screenSize, colorDepth;
-
-        bool hud, weapon, crosshair, decals, particles;
-
-        std::string gamePath;
-        std::string iwadPath;
-        std::string file;
-        std::string map;
-        int skill;
-
-        // AUTO RESTART
-
-        bool autoRestartOnTimeout;
-        bool autoRestartOnPlayersDeath;
-        unsigned int mapTimeout;
-        unsigned int mapRestartCount;
-        bool mapRestarting;
-
-        // COMMUNICATION
-
-        void generateInstanceId();
-
-        std::string instanceId;
-
-        bip::shared_memory_object SM;
-        size_t SMSize;
-        std::string SMName;
-
         bip::message_queue *MQController;
         bip::message_queue *MQDoom;
         std::string MQControllerName;
         std::string MQDoomName;
+
+        //SHARED MEMORY
+
+        void SMInit();
+
+        void SMClose();
+
+        bip::shared_memory_object SM;
+        std::string SMName;
 
         bip::mapped_region *InputSMRegion;
         InputStruct *Input;
@@ -310,10 +315,33 @@ class ViziaDoomController {
         bip::mapped_region *ScreenSMRegion;
         uint8_t *Screen;
 
-        b::thread *doomThread;
-        //bpr::child doomProcess;
-        bool doomRunning;
-        bool doomTic;
+        //HELPERS
+
+        void waitForDoom();
+
+        void lunchDoom();
+
+        // OPTIONS
+
+        unsigned int screenWidth, screenHeight, screenPitch, screenSize, screenFormat;
+
+        bool hud, weapon, crosshair, decals, particles;
+
+        std::string gamePath;
+        std::string iwadPath;
+        std::string filePath;
+        std::string map;
+        std::string configPath;
+        int skill;
+
+        // AUTO RESTART
+
+        bool autoRestartOnTimeout;
+        bool autoRestartOnPlayersDeath;
+        unsigned int mapTimeout;
+        unsigned int mapRestartCount;
+        bool mapRestarting;
+
 };
 
 

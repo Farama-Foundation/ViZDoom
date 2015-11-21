@@ -8,47 +8,50 @@ namespace bip = boost::interprocess;
 
 extern bip::shared_memory_object viziaSM;
 
-#define V_ATTACK 0
-#define V_USE 1
-#define V_JUMP 2
-#define V_CROUCH 3
-#define V_TURN180 4
-#define V_ALTATTACK 5
-#define V_RELOAD 6
-#define V_ZOOM 7
+#define A_ATTACK 0
+#define A_USE 1
+#define A_JUMP 2
+#define A_CROUCH 3
+#define A_TURN180 4
+#define A_ALTATTACK 5
+#define A_RELOAD 6
+#define A_ZOOM 7
 
-#define V_SPEED 8
-#define V_STRAFE 9
+#define A_SPEED 8
+#define A_STRAFE 9
 
-#define V_MOVERIGHT 10
-#define V_MOVELEFT 11
-#define V_BACK 12
-#define V_FORWARD 13
-#define V_RIGHT 14
-#define V_LEFT 15
-#define V_LOOKUP 16
-#define V_LOOKDOWN 17
-#define V_MOVEUP 18
-#define V_MOVEDOWN 19
-//#define V_SHOWSCORES 20
+#define A_MOVERIGHT 10
+#define A_MOVELEFT 11
+#define A_BACK 12
+#define A_FORWARD 13
+#define A_RIGHT 14
+#define A_LEFT 15
+#define A_LOOKUP 16
+#define A_LOOKDOWN 17
+#define A_MOVEUP 18
+#define A_MOVEDOWN 19
+//#define A_SHOWSCORES 20
 
-#define V_WEAPON1 21
-#define V_WEAPON2 22
-#define V_WEAPON3 23
-#define V_WEAPON4 24
-#define V_WEAPON5 25
-#define V_WEAPON6 26
-#define V_WEAPON7 27
+#define A_WEAPON1 21
+#define A_WEAPON2 22
+#define A_WEAPON3 23
+#define A_WEAPON4 24
+#define A_WEAPON5 25
+#define A_WEAPON6 26
+#define A_WEAPON7 27
 
-#define V_WEAPONNEXT 28
-#define V_WEAPONPREV 29
+#define A_WEAPONNEXT 28
+#define A_WEAPONPREV 29
 
-#define V_BT_SIZE 30
+#define A_BT_SIZE 30
 
 struct ViziaInputStruct{
     int MS_X;
     int MS_Y;
-    bool BT[V_BT_SIZE];
+    int MS_MAX_X;
+    int MS_MAX_Y;
+    bool BT[A_BT_SIZE];
+    bool BT_AVAILABLE[A_BT_SIZE];
 };
 
 struct ViziaGameVarsStruct{
@@ -56,6 +59,11 @@ struct ViziaGameVarsStruct{
 
     int SCREEN_WIDTH;
     int SCREEN_HEIGHT;
+    int SCREEN_PITCH;
+    int SCREEN_SIZE;
+    int SCREEN_FORMAT;
+
+    int MAP_REWARD;;
 
     int MAP_START_TIC;
     int MAP_TIC;
@@ -80,16 +88,14 @@ struct ViziaGameVarsStruct{
     int PLAYER_SELECTED_WEAPON;
     int PLAYER_SELECTED_WEAPON_AMMO;
 
-    int PLAYER_AMMO[4];
-    bool PLAYER_WEAPON[7];
-    bool PLAYER_KEY[3];
+    int PLAYER_AMMO[10];
+    bool PLAYER_WEAPON[10];
+    bool PLAYER_KEY[10];
 };
 
 #define VIZIA_SM_NAME_BASE "ViziaSM"
 
 void Vizia_SMInit(const char * id);
-
-void Vizia_SMSetSize(int screenWidth, int screenHeight);
 
 size_t Vizia_SMGetInputRegionBeginning();
 size_t Vizia_SMGetGameVarsRegionBeginning();

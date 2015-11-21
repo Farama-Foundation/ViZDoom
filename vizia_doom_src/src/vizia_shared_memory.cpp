@@ -10,20 +10,15 @@ char * viziaSMName;
 
 void Vizia_SMInit(const char * id){
 
-    //bip::shared_memory_object::remove(VIZIA_SM_NAME);
-
-    //viziaSM = bip::shared_memory_object(bip::open_or_create, VIZIA_SM_NAME, bip::read_write);
-
     viziaSMName = strcat(strdup(VIZIA_SM_NAME_BASE), id);
+
+    bip::shared_memory_object::remove(viziaSMName);
     viziaSM = bip::shared_memory_object(bip::open_or_create, viziaSMName, bip::read_write);
-    Vizia_SMSetSize(screen->GetWidth(), screen->GetHeight());
 
-    printf ("SM size: %zu\n", viziaSMSize);
-}
-
-void Vizia_SMSetSize(int screenWidth, int screenHeight){
-    viziaSMSize = sizeof(ViziaInputStruct) + sizeof(ViziaGameVarsStruct) + (sizeof(BYTE) * screenWidth * screenHeight);
+    viziaSMSize = sizeof(ViziaInputStruct) + sizeof(ViziaGameVarsStruct) + (sizeof(BYTE) * screen->GetWidth() * screen->GetHeight() * 4);
     viziaSM.truncate(viziaSMSize);
+
+    printf ("Vizia_SMInit: Size: %zu\n", viziaSMSize);
 }
 
 size_t Vizia_SMGetInputRegionBeginning(){

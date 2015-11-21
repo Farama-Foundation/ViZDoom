@@ -93,6 +93,6 @@ void Vizia_MQTic(){
 }
 
 void Vizia_MQClose(){
-    bip::message_queue::remove(viziaMQControllerName);
+    //bip::message_queue::remove(viziaMQControllerName);
     bip::message_queue::remove(viziaMQDoomName);
 }

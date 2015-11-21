@@ -62,6 +62,11 @@
 #include "hardware.h"
 #include "intermission/intermission.h"
 
+//VIZIA CODE
+
+EXTERN_CVAR (Bool, vizia_controlled)
+EXTERN_CVAR (Bool, vizia_singletic)
+
 EXTERN_CVAR (Int, disableautosave)
 EXTERN_CVAR (Int, autosavecount)
 
@@ -929,6 +934,7 @@ void GetPackets (void)
 //
 int gametime;
 
+//VIZIA CODE
 void NetUpdate (void)
 {
 	int		lowtic;
@@ -972,10 +978,9 @@ void NetUpdate (void)
 	for (i = 0; i < newtics; i++)
 	{
 		I_StartTic ();
-		D_ProcessEvents ();
+		if(!*vizia_controlled) D_ProcessEvents ();
 		if ((maketic - gametic) / ticdup >= BACKUPTICS/2-1)
 			break;			// can't hold any more
-		
 		//Printf ("mk:%i ",maketic);
 		G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
 		maketic++;
