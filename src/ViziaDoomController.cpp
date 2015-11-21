@@ -2,8 +2,84 @@
 
 #include <vector>
 #include <iostream>
+#include <string>
 #include <cstdlib>
 #include <ctime>
+
+int ViziaDoomController::getButtonId(std::string name){
+    if(name.compare("ATTACK") == 0) return A_ATTACK;
+    else if(name.compare("USE") == 0) return A_USE;
+    else if(name.compare("JUMP") == 0) return A_JUMP;
+    else if(name.compare("CROUCH") == 0) return A_CROUCH;
+    else if(name.compare("TURN180") == 0) return A_TURN180;
+    else if(name.compare("ALTATTACK") == 0) return A_ALTATTACK;
+    else if(name.compare("RELOAD") == 0) return A_RELOAD;
+    else if(name.compare("ZOOM") == 0) return A_ZOOM;
+    else if(name.compare("SPEED") == 0) return A_SPEED;
+    else if(name.compare("STRAFE") == 0) return A_STRAFE;
+    else if(name.compare("MOVERIGHT") == 0) return A_MOVERIGHT;
+    else if(name.compare("MOVELEFT") == 0) return A_MOVELEFT;
+    else if(name.compare("BACK") == 0) return A_BACK;
+    else if(name.compare("FORWARD") == 0) return A_FORWARD;
+    else if(name.compare("RIGHT") == 0) return A_RIGHT;
+    else if(name.compare("LEFT") == 0) return A_LEFT;
+    else if(name.compare("LOOKUP") == 0) return A_LOOKUP;
+    else if(name.compare("LOOKDOWN") == 0) return A_LOOKDOWN;
+    else if(name.compare("MOVEUP") == 0) return A_MOVEUP;
+    else if(name.compare("MOVEDOWN") == 0) return A_MOVEDOWN;
+    else if(name.compare("WEAPON1") == 0) return A_WEAPON1;
+    else if(name.compare("WEAPON2") == 0) return A_WEAPON2;
+    else if(name.compare("WEAPON3") == 0) return A_WEAPON3;
+    else if(name.compare("WEAPON4") == 0) return A_WEAPON4;
+    else if(name.compare("WEAPON5") == 0) return A_WEAPON5;
+    else if(name.compare("WEAPON6") == 0) return A_WEAPON6;
+    else if(name.compare("WEAPON7") == 0) return A_WEAPON7;
+    else if(name.compare("WEAPONNEXT") == 0) return A_WEAPONNEXT;
+    else if(name.compare("WEAPONPREV") == 0) return A_WEAPONPREV;
+    else return -1;
+};
+
+int ViziaDoomController::getGameVarId(std::string name){
+    if(name.compare("KILLCOUNT") == 0) return V_KILLCOUNT;
+    else if(name.compare("ITEMCOUNT") == 0) return V_ITEMCOUNT;
+    else if(name.compare("SECRETCOUNT") == 0) return V_SECRETCOUNT;
+    else if(name.compare("HEALTH") == 0) return V_HEALTH;
+    else if(name.compare("ARMOR") == 0) return V_ARMOR;
+    else if(name.compare("SELECTED_WEAPON") == 0) return V_SELECTED_WEAPON;
+    else if(name.compare("SELECTED_WEAPON_AMMO") == 0) return V_SELECTED_WEAPON_AMMO;
+    else if(name.compare("AMMO1") == 0) return V_AMMO1;
+    else if(name.compare("AMMO_CLIP") == 0) return V_AMMO1;
+    else if(name.compare("AMMO2") == 0) return V_AMMO2;
+    else if(name.compare("AMMO_SHELL") == 0) return V_AMMO2;
+    else if(name.compare("AMMO3") == 0) return V_AMMO3;
+    else if(name.compare("AMMO_ROCKET") == 0) return V_AMMO3;
+    else if(name.compare("AMMO4") == 0) return V_AMMO4;
+    else if(name.compare("AMMO_CELL") == 0) return V_AMMO4;
+    else if(name.compare("WEAPON1") == 0) return V_WEAPON1;
+    else if(name.compare("WEAPON_FIST") == 0) return V_WEAPON1;
+    else if(name.compare("WEAPON_CHAINSAW") == 0) return V_WEAPON1;
+    else if(name.compare("WEAPON2") == 0) return V_WEAPON2;
+    else if(name.compare("WEAPON_PISTOL") == 0) return V_WEAPON2;
+    else if(name.compare("WEAPON3") == 0) return V_WEAPON3;
+    else if(name.compare("WEAPON_SHOTGUN") == 0) return V_WEAPON3;
+    else if(name.compare("WEAPON_SSG") == 0) return V_WEAPON3;
+    else if(name.compare("WEAPON_SUPER_SHOTGUN") == 0) return V_WEAPON3;
+    else if(name.compare("WEAPON4") == 0) return V_WEAPON4;
+    else if(name.compare("WEAPON_CHAINGUN") == 0) return V_WEAPON4;
+    else if(name.compare("WEAPON5") == 0) return V_WEAPON5;
+    else if(name.compare("WEAPON_ROCKET_LUNCHER") == 0) return V_WEAPON5;
+    else if(name.compare("WEAPON6") == 0) return V_WEAPON6;
+    else if(name.compare("WEAPON_PLASMA_GUN") == 0) return V_WEAPON6;
+    else if(name.compare("WEAPON7") == 0) return V_WEAPON7;
+    else if(name.compare("WEAPON_BFG") == 0) return V_WEAPON7;
+    else if(name.compare("KEY1") == 0) return V_KEY1;
+    else if(name.compare("KEY_BLUE") == 0) return V_KEY1;
+    else if(name.compare("KEY2") == 0) return V_KEY2;
+    else if(name.compare("KEY_RED") == 0) return V_KEY2;
+    else if(name.compare("KEY3") == 0) return V_KEY3;
+    else if(name.compare("KEY_YELLOW") == 0) return V_KEY3;
+    else return -1;
+}
 
 //PUBLIC FUNCTIONS
 
@@ -411,19 +487,46 @@ void ViziaDoomController::setMouseY(int y){
 }
 
 void ViziaDoomController::setButtonState(int button, bool state){
-    if( button < A_BT_SIZE ) this->Input->BT[button] = state;
+    if( button < A_BT_SIZE && button >= 0 ) this->Input->BT[button] = state;
 }
 
 void ViziaDoomController::setKeyState(int key, bool state){
-    if( key < A_BT_SIZE ) this->Input->BT[key] = state;
+    if( key < A_BT_SIZE && key >= 0 ) this->Input->BT[key] = state;
 }
 
 void ViziaDoomController::toggleButtonState(int button){
-    if( button < A_BT_SIZE ) this->Input->BT[button] = !this->Input->BT[button];
+    if( button < A_BT_SIZE && button >= 0 ) this->Input->BT[button] = !this->Input->BT[button];
 }
 
 void ViziaDoomController::toggleKeyState(int key){
-    if( key < A_BT_SIZE ) this->Input->BT[key] = !this->Input->BT[key];
+    if( key < A_BT_SIZE && key >= 0 ) this->Input->BT[key] = !this->Input->BT[key];
+}
+
+int ViziaDoomController::getGameVar(int var){
+    switch(var){
+        case V_KILLCOUNT : return this->GameVars->MAP_KILLCOUNT;
+        case V_ITEMCOUNT : return this->GameVars->MAP_ITEMCOUNT;
+        case V_SECRETCOUNT : return this->GameVars->MAP_SECRETCOUNT;
+        case V_HEALTH : return this->GameVars->PLAYER_HEALTH;
+        case V_ARMOR : return this->GameVars->PLAYER_ARMOR;
+        case V_SELECTED_WEAPON : return this->GameVars->PLAYER_SELECTED_WEAPON;
+        case V_SELECTED_WEAPON_AMMO : return this->GameVars->PLAYER_SELECTED_WEAPON_AMMO;
+        case V_AMMO1 : return this->GameVars->PLAYER_AMMO[0];
+        case V_AMMO2 : return this->GameVars->PLAYER_AMMO[1];
+        case V_AMMO3 : return this->GameVars->PLAYER_AMMO[2];
+        case V_AMMO4 : return this->GameVars->PLAYER_AMMO[3];
+        case V_WEAPON1 : return this->GameVars->PLAYER_WEAPON[0];
+        case V_WEAPON2 : return this->GameVars->PLAYER_WEAPON[1];
+        case V_WEAPON3 : return this->GameVars->PLAYER_WEAPON[2];
+        case V_WEAPON4 : return this->GameVars->PLAYER_WEAPON[3];
+        case V_WEAPON5 : return this->GameVars->PLAYER_WEAPON[4];
+        case V_WEAPON6 : return this->GameVars->PLAYER_WEAPON[5];
+        case V_WEAPON7 : return this->GameVars->PLAYER_WEAPON[6];
+        case V_KEY1 : return this->GameVars->PLAYER_KEY[0];
+        case V_KEY2 : return this->GameVars->PLAYER_KEY[1];
+        case V_KEY3 : return this->GameVars->PLAYER_KEY[2];
+        default: return 0;
+    }
 }
 
 int ViziaDoomController::getGameTic() { return this->GameVars->GAME_TIC; }

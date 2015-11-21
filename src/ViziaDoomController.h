@@ -73,6 +73,29 @@ namespace bpri = boost::process::initializers;
 
 #define A_BT_SIZE 30
 
+#define V_KILLCOUNT 0
+#define V_ITEMCOUNT 1
+#define V_SECRETCOUNT 2
+#define V_HEALTH 3
+#define V_ARMOR 4
+#define V_SELECTED_WEAPON 5
+#define V_SELECTED_WEAPON_AMMO 6
+#define V_AMMO1 7
+#define V_AMMO2 8
+#define V_AMMO3 9
+#define V_AMMO4 10
+#define V_WEAPON1 11
+#define V_WEAPON2 12
+#define V_WEAPON3 13
+#define V_WEAPON4 14
+#define V_WEAPON5 15
+#define V_WEAPON6 16
+#define V_WEAPON7 17
+#define V_KEY1 18
+#define V_KEY2 19
+#define V_KEY3 20
+#define V_SIZE 21
+
 #define VIZIA_SM_NAME_BASE "ViziaSM"
 
 #define VIZIA_MQ_NAME_CTR_BASE "ViziaMQCtr"
@@ -153,6 +176,9 @@ class ViziaDoomController {
             bool PLAYER_KEY[10];
         };
 
+        static int getButtonId(std::string name);
+        static int getGameVarId(std::string name);
+
         ViziaDoomController();
         ~ViziaDoomController();
 
@@ -215,6 +241,8 @@ class ViziaDoomController {
         void setKeyState(int key, bool state);
         void toggleButtonState(int button);
         void toggleKeyState(int key);
+
+        int getGameVar(int var);
 
         int getGameTic();
 
