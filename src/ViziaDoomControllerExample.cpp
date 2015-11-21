@@ -37,7 +37,7 @@ int main(){
     std::cout << "SETTING DOOM " << std::endl;
 
     vdm->setGamePath("zdoom");
-    vdm->setIwadPath("dooom2.wad");
+    vdm->setIwadPath("doom2.wad");
     vdm->setFilePath("s1.wad");
     vdm->setMap("map01");
     vdm->setMapTimeout(300);
@@ -58,7 +58,7 @@ int main(){
 
     vdm->init();
     if(sdl) initSDL(vdm->getScreenWidth(), vdm->getScreenHeight());
-
+    
     int loop = 100;
     for(int i = 0; i < 600; ++i){
 
