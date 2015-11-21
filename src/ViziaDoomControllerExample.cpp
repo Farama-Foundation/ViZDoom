@@ -34,18 +34,18 @@ int main(){
 
     ViziaDoomController *vdm = new ViziaDoomController;
 
-    std::cout << "SETTING DOOM " << std::endl;
+    std::cout << "\n\nVIZIA CONTROLLER EXAMPLE\n\n";
 
     vdm->setGamePath("zdoom");
     vdm->setIwadPath("doom2.wad");
     vdm->setFilePath("s1.wad");
     vdm->setMap("map01");
-    vdm->setMapTimeout(300);
+    vdm->setMapTimeout(200);
 
     // w przypadku nie zachowania proporcji 4:3, 16:10, 16:9
     // silnik weźmie wysokość i pomnoży razy 4/3
     // możemy spróbować to wyłączyć, ale pewnie wtedy obraz będzie zniekształocny
-    vdm->setScreenResolution(100, 75);
+    vdm->setScreenResolution(320, 240);
     // rozdzielczość znacząco wpływa na szybkość działania
 
     vdm->setScreenFormat(VIZIA_SCREEN_RGB24);
@@ -60,7 +60,7 @@ int main(){
     if(sdl) initSDL(vdm->getScreenWidth(), vdm->getScreenHeight());
     
     int loop = 100;
-    for(int i = 0; i < 600; ++i){
+    for(int i = 0; i < 500; ++i){
 
         //vdm->setMouseX(-10); //obrót w lewo
 
