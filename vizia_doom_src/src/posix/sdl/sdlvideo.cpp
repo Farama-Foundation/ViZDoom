@@ -134,6 +134,18 @@ CUSTOM_CVAR (Float, bgamma, 1.f, CVAR_ARCHIVE|CVAR_GLOBALCONFIG)
 // Dummy screen sizes to pass when windowed
 static MiniModeInfo WinModes[] =
 {
+//VIZIA RESOLUTIONS
+	{ 40, 30 },
+	{ 60, 45 },
+	{ 80, 50 },
+	{ 80, 60 },
+	{ 100, 75 },
+	{ 120, 75 },
+	{ 120, 90 },
+	{ 160, 100 },
+	{ 160, 120 },
+	{ 200, 150 },
+
 	{ 320, 200 },
 	{ 320, 240 },
 	{ 400, 225 },	// 16:9
