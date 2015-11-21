@@ -33,17 +33,17 @@ void Vizia_ScreenInit() {
 
     switch(*vizia_screen_format){
         case VIZIA_SCREEN_CRCGCB :
-            viziaScreenSize *= 3;
             posMulti = 1;
             rPos = 0; gPos = (int)viziaScreenSize; bPos = 2 * (int)viziaScreenSize;
             alpha = false;
+            viziaScreenSize *= 3;
             break;
 
         case VIZIA_SCREEN_CRCGCBCA :
-            viziaScreenSize *= 4;
             posMulti = 1;
             rPos = 0; gPos = (int)viziaScreenSize; bPos = 2 * (int)viziaScreenSize;
             alpha = true; aPos = 3 * (int)viziaScreenSize;
+            viziaScreenSize *= 4;
             break;
 
         case VIZIA_SCREEN_RGB24 :
@@ -71,17 +71,17 @@ void Vizia_ScreenInit() {
             break;
 
         case VIZIA_SCREEN_CBCGCR :
-            viziaScreenSize *= 3;
             posMulti = 1;
             rPos = 2 * (int)viziaScreenSize; gPos = (int)viziaScreenSize, bPos = 0;
             alpha = false;
+            viziaScreenSize *= 3;
             break;
 
         case VIZIA_SCREEN_CBCGCRCA :
-            viziaScreenSize *= 3;
             posMulti = 1;
             rPos = 2 * (int)viziaScreenSize; gPos = (int)viziaScreenSize, bPos = 0;
             alpha = true; aPos = 3 * (int)viziaScreenSize;
+            viziaScreenSize *= 4;
             break;
 
         case VIZIA_SCREEN_BGR24 :
