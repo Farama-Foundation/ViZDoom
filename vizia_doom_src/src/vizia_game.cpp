@@ -1,5 +1,6 @@
 #include "vizia_game.h"
 #include "vizia_shared_memory.h"
+#include "vizia_screen.h"
 
 #include "info.h"
 #include "d_player.h"
@@ -8,8 +9,6 @@
 #include "g_level.h"
 #include "g_shared/a_pickups.h"
 #include "g_shared/a_keys.h"
-#include "v_video.h"
-#include "r_renderer.h"
 
 #include "info.h"
 #include "g_game.h"
@@ -20,6 +19,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+EXTERN_CVAR (Int, vizia_screen_format)
 
 #define VIZIA_PLAYER players[consoleplayer]
 player_t *viziaPlayer;
@@ -84,8 +85,11 @@ void Vizia_UpdateGameVars(){
 
     viziaGameVars->GAME_TIC = gametic;
 
-    viziaGameVars->SCREEN_WIDTH = screen->GetWidth();
-    viziaGameVars->SCREEN_HEIGHT = screen->GetHeight();
+    viziaGameVars->SCREEN_WIDTH = viziaScreenWidth;
+    viziaGameVars->SCREEN_HEIGHT = viziaScreenHeight;
+    viziaGameVars->SCREEN_PITCH = viziaScreenPitch;
+    viziaGameVars->SCREEN_SIZE = (int)viziaScreenSize;
+    viziaGameVars->SCREEN_FORMAT = *vizia_screen_format;
 
     viziaGameVars->MAP_START_TIC = level.starttime;
     viziaGameVars->MAP_TIC = level.maptime;

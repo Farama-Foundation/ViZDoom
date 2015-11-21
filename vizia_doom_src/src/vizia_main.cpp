@@ -38,9 +38,11 @@
 
 CVAR (Bool, vizia_controlled, false, CVAR_NOSET)
 CVAR (String, vizia_instance_id, "", CVAR_NOSET)
+CVAR (Bool, vizia_singletic, true, CVAR_NOSET)
+CVAR (Int, vizia_screen_format, 0, CVAR_NOSET)
 
 void Vizia_Init(){
-    printf("Vizia_Init - instance id: %s\n", *vizia_instance_id);
+    printf("Vizia_Init: Instance id: %s\n", *vizia_instance_id);
 
     if(*vizia_controlled) {
         printf("Vizia_Init: Init message queues\n");
@@ -58,7 +60,7 @@ void Vizia_Init(){
 }
 
 void Vizia_Close(){
-    printf("Vizia_Close - instance id: %s\n", *vizia_instance_id);
+    printf("Vizia_Close: Instance id: %s\n", *vizia_instance_id);
 
     if(*vizia_controlled) {
         Vizia_InputClose();

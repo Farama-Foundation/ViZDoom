@@ -108,8 +108,10 @@
 #include "r_renderer.h"
 #include "p_local.h"
 //VIZIA CODE
+
 #include "vizia_main.h"
-#include "vizia_screen.h"
+EXTERN_CVAR (Bool, vizia_controlled)
+EXTERN_CVAR (Bool, vizia_singletic)
 
 EXTERN_CVAR(Bool, hud_althud)
 void DrawHUD();
@@ -980,7 +982,7 @@ void D_DoomLoop ()
 
 	vid_cursor.Callback();
 
-	//Vizia_Init();
+	Vizia_Init();
 
 	for (;;)
 	{
@@ -994,38 +996,37 @@ void D_DoomLoop ()
 			}
 			
 			// process one or more tics
-			//if (singletics)
-			if (true)
+			if (singletics || (*vizia_controlled && *vizia_singletic))
 			{
 
 				I_StartTic ();
-				//D_ProcessEvents ();
+				if(!*vizia_controlled) D_ProcessEvents ();
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				if (advancedemo)
 					D_DoAdvanceDemo ();
 				C_Ticker ();
 				M_Ticker ();
 				G_Ticker ();
-				//Vizia_Tic();
 				// [RH] Use the consoleplayer's camera to update sounds
-				//S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
+				S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
 				gametic++;
 				maketic++;
 				GC::CheckGC ();
-				//Net_NewMakeTic ();
+				Net_NewMakeTic ();
+				//if(*vizia_controlled) Vizia_SingleTic(); - in future;
 			}
 			else
 			{
 				TryRunTics (); // will run at least one tic
+				//if(*vizia_controlled) Vizia_Tics(); - in future;
 			}
-
-			//Vizia_Tic();
 
 			// Update display, next frame, with current state.
 			I_StartTic ();
 			D_Display ();
+			S_UpdateMusic();	// OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
+
 			Vizia_Tic();
-			//S_UpdateMusic();	// OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
 		}
 		catch (CRecoverableError &error)
 		{
@@ -2540,7 +2541,7 @@ void D_DoomMain (void)
 		DThinker::RunThinkers ();
 		gamestate = GS_STARTUP;
 
-		Vizia_Init();
+		//Vizia_Init();
 
 		if (!restart)
 		{
