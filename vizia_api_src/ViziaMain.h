@@ -24,7 +24,8 @@ class ViziaMain{
         ViziaMain();
         ~ViziaMain();
 
-        void loadConfig(std::string file);
+        bool loadConfig(std::string file);
+        bool saveConfig(std::string file);
 
         void init();
         void close();
@@ -35,6 +36,7 @@ class ViziaMain{
         ViziaMain::State getState();
         bool * getLastActions();
         bool isNewEpisode();
+        bool isEpisodeFinished();
 
         void addAvailableAction(int action);
         void addAvailableAction(std::string action);
@@ -53,6 +55,7 @@ class ViziaMain{
         void setDoomSkill(int skill);
         void setDoomConfigPath(std::string path);
 
+        void setAutoNewEpisode(bool set);
         void setNewEpisodeOnTimeout(bool set);
         void setNewEpisodeOnPlayerDeath(bool set);
         void setEpisodeTimeoutInMiliseconds(unsigned int ms);

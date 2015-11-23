@@ -190,7 +190,6 @@ class ViziaDoomController {
         void restartMap(); void resetMap();
         void restartGame();
         bool isDoomRunning();
-        bool isRestartMapInLastTic();
         void sendCommand(std::string command);
         void resetConfig();
 
@@ -206,9 +205,12 @@ class ViziaDoomController {
         void setSkill(int skill);
         void setConfigPath(std::string path);
 
+        void setAutoMapRestart(bool set);
         void setAutoMapRestartOnTimeout(bool set);
         void setAutoMapRestartOnPlayerDeath(bool set);
         void setMapTimeout(unsigned int tics);
+        bool isMapLastTic();
+        bool isMapFirstTic();
 
         //GRAPHIC SETTINGS
 
@@ -241,6 +243,7 @@ class ViziaDoomController {
         void setKeyState(int key, bool state);
         void toggleButtonState(int button);
         void toggleKeyState(int key);
+        void resetInput();
 
         int getGameVar(int var);
 
@@ -254,6 +257,8 @@ class ViziaDoomController {
         int getMapKillCount();
         int getMapItemCount();
         int getMapSecretCount();
+
+        bool isPlayerDead();
 
         int getPlayerKillCount();
         int getPlayerItemCount();
@@ -364,11 +369,13 @@ class ViziaDoomController {
 
         // AUTO RESTART
 
+        bool autoRestart;
         bool autoRestartOnTimeout;
         bool autoRestartOnPlayersDeath;
         unsigned int mapTimeout;
         unsigned int mapRestartCount;
         bool mapRestarting;
+        bool mapEnded;
 
 };
 
