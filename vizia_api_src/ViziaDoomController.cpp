@@ -176,6 +176,9 @@ bool ViziaDoomController::tic(){
         }
 
         if(!mapEnded || mapRestarting) {
+
+            if(mapRestarting) this->resetInput();
+
             this->MQSend(VIZIA_MSG_CODE_TIC);
 
             this->doomTic = true;
@@ -218,7 +221,6 @@ void ViziaDoomController::restartMap(){
         ++this->mapRestartCount;
         this->mapRestarting = true;
         this->mapEnded = false;
-        this->resetInput();
     }
 }
 
@@ -253,7 +255,6 @@ void ViziaDoomController::setMap(std::string map){
         this->sendCommand("map "+this->map);
         this->mapRestarting = true;
         this->mapEnded = false;
-        this->resetInput();
     }
 }
 
