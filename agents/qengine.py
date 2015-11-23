@@ -111,8 +111,9 @@ class QEngine:
             self._transitions.add_transition(s, a, s2, r)
 
             # Perform q-learning once for a while
-            if self._steps % self._update_frequency == 0 and not self.online_mode and self._steps > self._batch_size:
-                self._evaluator.learn(self._transitions.get_sample(self._batch_size))
+            if self._steps % self._update_frequency[0] == 0 and not self.online_mode and self._steps > self._batch_size:
+                for i in range(self._update_frequency[1]):
+                    self._evaluator.learn(self._transitions.get_sample(self._batch_size))
             elif self.online_mode:
                 self._evaluator.learn_one(s, a, s2, r)
         else:
