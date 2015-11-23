@@ -29,6 +29,8 @@ actions = [[True,False,False],[False,True,False],[False,False,True]]
 iters = 1000
 sleep_time = 0.01
 for i in range(iters):
+	if i%50==0:
+		game.newEpisode()
 	game.makeAction(actions[0])
 	sleep(sleep_time)
 
