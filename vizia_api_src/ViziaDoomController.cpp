@@ -101,10 +101,12 @@ ViziaDoomController::ViziaDoomController(){
     this->decals = true;
     this->particles = true;
 
+    this->autoRestart = false;
     this->autoRestartOnTimeout = true;
     this->autoRestartOnPlayersDeath = true;
     this->mapTimeout = 0;
     this->mapRestartCount = 0;
+    this->mapEnded = false;
 
     generateInstanceId();
     this->doomRunning = false;
@@ -161,41 +163,46 @@ bool ViziaDoomController::tic(){
     if(doomRunning) {
 
         if(this->autoRestartOnPlayersDeath && this->GameVars->PLAYER_DEAD){
-            this->restartMap();
+            this->mapEnded = true;
+            if(this->autoRestart) this->restartMap();
         }
         else if(this->autoRestartOnTimeout && this->mapTimeout > 0 && this->GameVars->MAP_TIC >= mapTimeout-1){
-            this->restartMap();
+            this->mapEnded = true;
+            if(this->autoRestart) this->restartMap();
         }
         else{
             this->mapRestarting = false;
+            this->mapEnded = false;
         }
 
-        this->MQSend(VIZIA_MSG_CODE_TIC);
+        if(!mapEnded || mapRestarting) {
+            this->MQSend(VIZIA_MSG_CODE_TIC);
 
-        this->doomTic = true;
+            this->doomTic = true;
 
-        MessageCommandStruct msg;
+            MessageCommandStruct msg;
 
-        unsigned int priority;
-        bip::message_queue::size_type recvd_size;
+            unsigned int priority;
+            bip::message_queue::size_type recvd_size;
 
-        bool nextTic = false;
-        do {
-            MQController->receive(&msg, sizeof(MessageCommandStruct), recvd_size, priority);
-            switch (msg.code) {
-                case VIZIA_MSG_CODE_DOOM_READY :
-                case VIZIA_MSG_CODE_DOOM_TIC :
-                    nextTic = true;
-                    break;
-                case VIZIA_MSG_CODE_DOOM_CLOSE :
-                    this->close();
-                    break;
-                default :
-                    break;
-            }
-        } while (!nextTic);
+            bool nextTic = false;
+            do {
+                MQController->receive(&msg, sizeof(MessageCommandStruct), recvd_size, priority);
+                switch (msg.code) {
+                    case VIZIA_MSG_CODE_DOOM_READY :
+                    case VIZIA_MSG_CODE_DOOM_TIC :
+                        nextTic = true;
+                        break;
+                    case VIZIA_MSG_CODE_DOOM_CLOSE :
+                        this->close();
+                        break;
+                    default :
+                        break;
+                }
+            } while (!nextTic);
 
-        this->doomTic = false;
+            this->doomTic = false;
+        }
     }
 
     return true;
@@ -210,6 +217,8 @@ void ViziaDoomController::restartMap(){
         this->sendCommand("map " + this->map);
         ++this->mapRestartCount;
         this->mapRestarting = true;
+        this->mapEnded = false;
+        this->resetInput();
     }
 }
 
@@ -242,6 +251,9 @@ void ViziaDoomController::setMap(std::string map){
     this->map = map;
     if(this->doomRunning){
         this->sendCommand("map "+this->map);
+        this->mapRestarting = true;
+        this->mapEnded = false;
+        this->resetInput();
     }
 }
 
@@ -253,9 +265,22 @@ void ViziaDoomController::setSkill(int skill){
     }
 }
 
+void ViziaDoomController::setAutoMapRestart(bool set){ this->autoRestart = set; }
 void ViziaDoomController::setAutoMapRestartOnTimeout(bool set){ this->autoRestartOnTimeout = set; }
 void ViziaDoomController::setAutoMapRestartOnPlayerDeath(bool set){ this->autoRestartOnPlayersDeath = set; }
 void ViziaDoomController::setMapTimeout(unsigned int tics){ this->mapTimeout = tics; }
+
+bool ViziaDoomController::isMapFirstTic(){
+    if(this->GameVars->MAP_TIC <= 1) return true;
+    else return false;
+}
+
+bool ViziaDoomController::isMapLastTic(){
+    if(this->mapTimeout > 0) {
+        if (this->GameVars->MAP_TIC >= this->mapTimeout-1) return true;
+        else return false;
+    }
+}
 
 void ViziaDoomController::setScreenResolution(int width, int height){
     this->screenWidth = width;
@@ -332,6 +357,122 @@ int ViziaDoomController::getScreenFormat(){
 int ViziaDoomController::getScreenSize(){
     if(this->doomRunning) return this->GameVars->SCREEN_SIZE;
     else return 0;
+}
+
+//SM SETTERS & GETTERS
+
+uint8_t* const ViziaDoomController::getScreen() { return this->Screen; }
+ViziaDoomController::InputStruct* const ViziaDoomController::getInput() { return this->Input; }
+ViziaDoomController::GameVarsStruct* const ViziaDoomController::getGameVars() { return this->GameVars; }
+
+void ViziaDoomController::setMouse(int x, int y){
+    this->Input->MS_X = x;
+    this->Input->MS_Y = y;
+}
+
+void ViziaDoomController::setMouseX(int x){
+    this->Input->MS_X = x;
+}
+
+void ViziaDoomController::setMouseY(int y){
+    this->Input->MS_Y = y;
+}
+
+void ViziaDoomController::setButtonState(int button, bool state){
+    if( button < A_BT_SIZE && button >= 0 ) this->Input->BT[button] = state;
+}
+
+void ViziaDoomController::setKeyState(int key, bool state){
+    if( key < A_BT_SIZE && key >= 0 ) this->Input->BT[key] = state;
+}
+
+void ViziaDoomController::toggleButtonState(int button){
+    if( button < A_BT_SIZE && button >= 0 ) this->Input->BT[button] = !this->Input->BT[button];
+}
+
+void ViziaDoomController::toggleKeyState(int key) {
+    if (key < A_BT_SIZE && key >= 0) this->Input->BT[key] = !this->Input->BT[key];
+}
+
+void ViziaDoomController::resetInput(){
+    this->Input->MS_X = 0;
+    this->Input->MS_Y = 0;
+    for(int i =0; i < A_BT_SIZE; ++i) this->Input->BT[i] = false;
+}
+
+int ViziaDoomController::getGameVar(int var){
+    switch(var){
+        case V_KILLCOUNT : return this->GameVars->MAP_KILLCOUNT;
+        case V_ITEMCOUNT : return this->GameVars->MAP_ITEMCOUNT;
+        case V_SECRETCOUNT : return this->GameVars->MAP_SECRETCOUNT;
+        case V_HEALTH : return this->GameVars->PLAYER_HEALTH;
+        case V_ARMOR : return this->GameVars->PLAYER_ARMOR;
+        case V_SELECTED_WEAPON : return this->GameVars->PLAYER_SELECTED_WEAPON;
+        case V_SELECTED_WEAPON_AMMO : return this->GameVars->PLAYER_SELECTED_WEAPON_AMMO;
+        case V_AMMO1 : return this->GameVars->PLAYER_AMMO[0];
+        case V_AMMO2 : return this->GameVars->PLAYER_AMMO[1];
+        case V_AMMO3 : return this->GameVars->PLAYER_AMMO[2];
+        case V_AMMO4 : return this->GameVars->PLAYER_AMMO[3];
+        case V_WEAPON1 : return this->GameVars->PLAYER_WEAPON[0];
+        case V_WEAPON2 : return this->GameVars->PLAYER_WEAPON[1];
+        case V_WEAPON3 : return this->GameVars->PLAYER_WEAPON[2];
+        case V_WEAPON4 : return this->GameVars->PLAYER_WEAPON[3];
+        case V_WEAPON5 : return this->GameVars->PLAYER_WEAPON[4];
+        case V_WEAPON6 : return this->GameVars->PLAYER_WEAPON[5];
+        case V_WEAPON7 : return this->GameVars->PLAYER_WEAPON[6];
+        case V_KEY1 : return this->GameVars->PLAYER_KEY[0];
+        case V_KEY2 : return this->GameVars->PLAYER_KEY[1];
+        case V_KEY3 : return this->GameVars->PLAYER_KEY[2];
+        default: return 0;
+    }
+}
+
+int ViziaDoomController::getGameTic() { return this->GameVars->GAME_TIC; }
+int ViziaDoomController::getMapTic() { return this->GameVars->MAP_TIC; }
+
+int ViziaDoomController::getMapReward() { return this->GameVars->MAP_REWARD; }
+
+int ViziaDoomController::getMapKillCount() { return this->GameVars->MAP_KILLCOUNT; }
+int ViziaDoomController::getMapItemCount() { return this->GameVars->MAP_ITEMCOUNT; }
+int ViziaDoomController::getMapSecretCount() { return this->GameVars->MAP_SECRETCOUNT; }
+
+bool ViziaDoomController::isPlayerDead() { return this->GameVars->PLAYER_DEAD; }
+
+int ViziaDoomController::getPlayerKillCount() { return this->GameVars->PLAYER_KILLCOUNT; }
+int ViziaDoomController::getPlayerItemCount() { return this->GameVars->PLAYER_ITEMCOUNT; }
+int ViziaDoomController::getPlayerSecretCount() { return this->GameVars->PLAYER_SECRETCOUNT; }
+int ViziaDoomController::getPlayerFragCount() { return this->GameVars->PLAYER_FRAGCOUNT; }
+
+int ViziaDoomController::getPlayerHealth() { return this->GameVars->PLAYER_HEALTH; }
+int ViziaDoomController::getPlayerArmor() { return this->GameVars->PLAYER_ARMOR; }
+
+int ViziaDoomController::getPlayerAmmo1() { return this->GameVars->PLAYER_AMMO[0]; }
+int ViziaDoomController::getPlayerAmmo2() { return this->GameVars->PLAYER_AMMO[1]; }
+int ViziaDoomController::getPlayerAmmo3() { return this->GameVars->PLAYER_AMMO[2]; }
+int ViziaDoomController::getPlayerAmmo4() { return this->GameVars->PLAYER_AMMO[3]; }
+
+bool ViziaDoomController::getPlayerWeapon1() { return this->GameVars->PLAYER_WEAPON[0]; }
+bool ViziaDoomController::getPlayerWeapon2() { return this->GameVars->PLAYER_WEAPON[1]; }
+bool ViziaDoomController::getPlayerWeapon3() { return this->GameVars->PLAYER_WEAPON[2]; }
+bool ViziaDoomController::getPlayerWeapon4() { return this->GameVars->PLAYER_WEAPON[3]; }
+bool ViziaDoomController::getPlayerWeapon5() { return this->GameVars->PLAYER_WEAPON[4]; }
+bool ViziaDoomController::getPlayerWeapon6() { return this->GameVars->PLAYER_WEAPON[5]; }
+bool ViziaDoomController::getPlayerWeapon7() { return this->GameVars->PLAYER_WEAPON[6]; }
+
+bool ViziaDoomController::getPlayerKey1() { return this->GameVars->PLAYER_KEY[0]; }
+bool ViziaDoomController::getPlayerKey2() { return this->GameVars->PLAYER_KEY[1]; }
+bool ViziaDoomController::getPlayerKey3() { return this->GameVars->PLAYER_KEY[2]; }
+
+//PRIVATE
+
+void ViziaDoomController::generateInstanceId(){
+    std::string chars ="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    this->instanceId = "";
+
+    srand(time(NULL));
+    for(int i = 0; i < 10; ++i) {
+        this->instanceId += chars[rand()%(chars.length()-1)];
+    }
 }
 
 void ViziaDoomController::waitForDoom(){
@@ -454,6 +595,10 @@ void ViziaDoomController::lunchDoom(){
     args.push_back("-nojoy");
     args.push_back("-nosound");
 
+    //temp disable mouse
+    args.push_back("+use_mouse");
+    args.push_back("0");
+
     //35 fps and no vsync
     args.push_back("+cl_capfps");
     args.push_back("true");
@@ -465,114 +610,6 @@ void ViziaDoomController::lunchDoom(){
     //ctx.stdout_behavior = bpr::silence_stream();
     //this->doomProcess = bpr::execute(bpri::set_args(args));
     bpr::child doomProcess = bpr::execute(bpri::set_args(args), bpri::inherit_env());
-}
-
-//SM SETTERS & GETTERS
-
-uint8_t* const ViziaDoomController::getScreen() { return this->Screen; }
-ViziaDoomController::InputStruct* const ViziaDoomController::getInput() { return this->Input; }
-ViziaDoomController::GameVarsStruct* const ViziaDoomController::getGameVars() { return this->GameVars; }
-
-void ViziaDoomController::setMouse(int x, int y){
-    this->Input->MS_X = x;
-    this->Input->MS_Y = y;
-}
-
-void ViziaDoomController::setMouseX(int x){
-    this->Input->MS_X = x;
-}
-
-void ViziaDoomController::setMouseY(int y){
-    this->Input->MS_Y = y;
-}
-
-void ViziaDoomController::setButtonState(int button, bool state){
-    if( button < A_BT_SIZE && button >= 0 ) this->Input->BT[button] = state;
-}
-
-void ViziaDoomController::setKeyState(int key, bool state){
-    if( key < A_BT_SIZE && key >= 0 ) this->Input->BT[key] = state;
-}
-
-void ViziaDoomController::toggleButtonState(int button){
-    if( button < A_BT_SIZE && button >= 0 ) this->Input->BT[button] = !this->Input->BT[button];
-}
-
-void ViziaDoomController::toggleKeyState(int key){
-    if( key < A_BT_SIZE && key >= 0 ) this->Input->BT[key] = !this->Input->BT[key];
-}
-
-int ViziaDoomController::getGameVar(int var){
-    switch(var){
-        case V_KILLCOUNT : return this->GameVars->MAP_KILLCOUNT;
-        case V_ITEMCOUNT : return this->GameVars->MAP_ITEMCOUNT;
-        case V_SECRETCOUNT : return this->GameVars->MAP_SECRETCOUNT;
-        case V_HEALTH : return this->GameVars->PLAYER_HEALTH;
-        case V_ARMOR : return this->GameVars->PLAYER_ARMOR;
-        case V_SELECTED_WEAPON : return this->GameVars->PLAYER_SELECTED_WEAPON;
-        case V_SELECTED_WEAPON_AMMO : return this->GameVars->PLAYER_SELECTED_WEAPON_AMMO;
-        case V_AMMO1 : return this->GameVars->PLAYER_AMMO[0];
-        case V_AMMO2 : return this->GameVars->PLAYER_AMMO[1];
-        case V_AMMO3 : return this->GameVars->PLAYER_AMMO[2];
-        case V_AMMO4 : return this->GameVars->PLAYER_AMMO[3];
-        case V_WEAPON1 : return this->GameVars->PLAYER_WEAPON[0];
-        case V_WEAPON2 : return this->GameVars->PLAYER_WEAPON[1];
-        case V_WEAPON3 : return this->GameVars->PLAYER_WEAPON[2];
-        case V_WEAPON4 : return this->GameVars->PLAYER_WEAPON[3];
-        case V_WEAPON5 : return this->GameVars->PLAYER_WEAPON[4];
-        case V_WEAPON6 : return this->GameVars->PLAYER_WEAPON[5];
-        case V_WEAPON7 : return this->GameVars->PLAYER_WEAPON[6];
-        case V_KEY1 : return this->GameVars->PLAYER_KEY[0];
-        case V_KEY2 : return this->GameVars->PLAYER_KEY[1];
-        case V_KEY3 : return this->GameVars->PLAYER_KEY[2];
-        default: return 0;
-    }
-}
-
-int ViziaDoomController::getGameTic() { return this->GameVars->GAME_TIC; }
-int ViziaDoomController::getMapTic() { return this->GameVars->MAP_TIC; }
-
-int ViziaDoomController::getMapReward() { return this->GameVars->MAP_REWARD; }
-
-int ViziaDoomController::getMapKillCount() { return this->GameVars->MAP_KILLCOUNT; }
-int ViziaDoomController::getMapItemCount() { return this->GameVars->MAP_ITEMCOUNT; }
-int ViziaDoomController::getMapSecretCount() { return this->GameVars->MAP_SECRETCOUNT; }
-
-int ViziaDoomController::getPlayerKillCount() { return this->GameVars->PLAYER_KILLCOUNT; }
-int ViziaDoomController::getPlayerItemCount() { return this->GameVars->PLAYER_ITEMCOUNT; }
-int ViziaDoomController::getPlayerSecretCount() { return this->GameVars->PLAYER_SECRETCOUNT; }
-int ViziaDoomController::getPlayerFragCount() { return this->GameVars->PLAYER_FRAGCOUNT; }
-
-int ViziaDoomController::getPlayerHealth() { return this->GameVars->PLAYER_HEALTH; }
-int ViziaDoomController::getPlayerArmor() { return this->GameVars->PLAYER_ARMOR; }
-
-int ViziaDoomController::getPlayerAmmo1() { return this->GameVars->PLAYER_AMMO[0]; }
-int ViziaDoomController::getPlayerAmmo2() { return this->GameVars->PLAYER_AMMO[1]; }
-int ViziaDoomController::getPlayerAmmo3() { return this->GameVars->PLAYER_AMMO[2]; }
-int ViziaDoomController::getPlayerAmmo4() { return this->GameVars->PLAYER_AMMO[3]; }
-
-bool ViziaDoomController::getPlayerWeapon1() { return this->GameVars->PLAYER_WEAPON[0]; }
-bool ViziaDoomController::getPlayerWeapon2() { return this->GameVars->PLAYER_WEAPON[1]; }
-bool ViziaDoomController::getPlayerWeapon3() { return this->GameVars->PLAYER_WEAPON[2]; }
-bool ViziaDoomController::getPlayerWeapon4() { return this->GameVars->PLAYER_WEAPON[3]; }
-bool ViziaDoomController::getPlayerWeapon5() { return this->GameVars->PLAYER_WEAPON[4]; }
-bool ViziaDoomController::getPlayerWeapon6() { return this->GameVars->PLAYER_WEAPON[5]; }
-bool ViziaDoomController::getPlayerWeapon7() { return this->GameVars->PLAYER_WEAPON[6]; }
-
-bool ViziaDoomController::getPlayerKey1() { return this->GameVars->PLAYER_KEY[0]; }
-bool ViziaDoomController::getPlayerKey2() { return this->GameVars->PLAYER_KEY[1]; }
-bool ViziaDoomController::getPlayerKey3() { return this->GameVars->PLAYER_KEY[2]; }
-
-//PRIVATE
-
-void ViziaDoomController::generateInstanceId(){
-    std::string chars ="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-    this->instanceId = "";
-
-    srand(time(NULL));
-    for(int i = 0; i < 10; ++i) {
-        this->instanceId += chars[rand()%(chars.length()-1)];
-    }
 }
 
 //SM FUNCTIONS 
