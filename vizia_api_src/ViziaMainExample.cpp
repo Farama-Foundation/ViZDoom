@@ -28,12 +28,18 @@ int main(){
     v->addStateAvailableVar("HEALTH");
     v->addStateAvailableVar("AMMO1");
 
+    //v->setAutoNewEpisode(true); //enables episode auto reloading
+
     v->init();
 
     int loop = 100;
     int iterations = 2000;
-
     for(int i = 0; i < iterations; ++i){
+
+        if(v->isEpisodeFinished()){
+            std::cout << "\nEPISODE FINISHED\n\n";
+            v->newEpisode();
+        }
 
         bool *actions = new bool[3];
         actions[0]=true;
