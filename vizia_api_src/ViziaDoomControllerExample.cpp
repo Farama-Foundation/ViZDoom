@@ -65,20 +65,18 @@ int main(){
 
         //vdm->setMouseX(-10); //obrót w lewo
 
-        vdm->setButtonState(A_MOVERIGHT, true);
-
-//        if(i%loop < 50) {
-//            vdm->setButtonState(A_MOVERIGHT, true);   //ustaw inpup
-//        }
-//        else{
-//            vdm->setButtonState(A_MOVERIGHT, false);
-//        }
-//        if(i%loop >= 50) {
-//            vdm->getInput()->BT[A_MOVELEFT] = true;  //lub w ten sposób
-//        }
-//        else{
-//            vdm->getInput()->BT[A_MOVELEFT] = false;
-//        }
+        if(i%loop < 50) {
+            vdm->setButtonState(A_MOVERIGHT, true);   //ustaw inpup
+        }
+        else{
+            vdm->setButtonState(A_MOVERIGHT, false);
+        }
+        if(i%loop >= 50) {
+            vdm->getInput()->BT[A_MOVELEFT] = true;  //lub w ten sposób
+        }
+        else{
+            vdm->getInput()->BT[A_MOVELEFT] = false;
+        }
 
         if(i%loop == 25 || i%loop == 50 || i%loop == 75){
             vdm->setButtonState(A_ATTACK, true);

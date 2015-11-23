@@ -42,15 +42,13 @@ int main(){
 
         bool *actions = new bool[3];
 
-        actions[1] = true;
+        if(i%loop < 50) {
+            actions[1] = true;
+        }
 
-//        if(i%loop < 50) {
-//            actions[1] = true;
-//        }
-//
-//        else{
-//            actions[0] = true;
-//        }
+        else{
+            actions[0] = true;
+        }
 
         if(i%loop == 25 || i%loop == 50 || i%loop == 75){
             actions[2] = true;
