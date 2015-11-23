@@ -1,1 +1,1 @@
-if [ ! -e /home/marek/Workspace/Vizia/vizia_doom_src/zdoom ]; then ln -sf /home/marek/Workspace/Vizia/vizia_doom_src/src/zdoom /home/marek/Workspace/Vizia/vizia_doom_src/zdoom; fi
+if [ ! -e /home/ebony/vizia/vizia_doom_src/zdoom ]; then ln -sf /home/ebony/vizia/vizia_doom_src/src/zdoom /home/ebony/vizia/vizia_doom_src/zdoom; fi
