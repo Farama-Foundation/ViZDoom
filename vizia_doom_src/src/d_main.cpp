@@ -1012,7 +1012,7 @@ void D_DoomLoop ()
 				gametic++;
 				maketic++;
 				GC::CheckGC ();
-				Net_NewMakeTic ();
+				//Net_NewMakeTic ();
 				//if(*vizia_controlled) Vizia_SingleTic(); - in future;
 			}
 			else
