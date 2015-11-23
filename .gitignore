@@ -53,3 +53,7 @@
 */tools/zipdir/zipdir
 **/*.log
 **/example
+src/controllerExample
+src/doom2.wad
+src/mainExample
+src/s1_b.wad
