@@ -41,6 +41,7 @@ int main(){
     vdm->setFilePath("s1.wad");
     vdm->setMap("map01");
     vdm->setMapTimeout(200);
+    vdm->setAutoMapRestart(true);
 
     // w przypadku nie zachowania proporcji 4:3, 16:10, 16:9
     // silnik weźmie wysokość i pomnoży razy 4/3
@@ -93,6 +94,7 @@ int main(){
 
         std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<
                 " HP: " << vdm->getPlayerHealth() << " AMMO: " << vdm->getGameVars()->PLAYER_AMMO[2] << std::endl;
+        if(vdm->isMapLastTic()) std::cout << "\nMAP FINISHED\n\n";
 
         if(sdl) updateSDL(vdm->getScreenWidth(), vdm->getScreenHeight(), vdm->getScreenPitch(), (void*)vdm->getScreen());
 

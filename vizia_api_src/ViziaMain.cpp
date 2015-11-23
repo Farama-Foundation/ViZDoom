@@ -21,7 +21,11 @@ ViziaMain::~ViziaMain(){
     delete(this->doomController);
 }
 
-void ViziaMain::loadConfig(std::string file){
+bool ViziaMain::loadConfig(std::string file){
+    //TO DO
+}
+
+bool ViziaMain::saveConfig(std::string file){
     //TO DO
 }
 
@@ -78,8 +82,11 @@ ViziaMain::State ViziaMain::getState(){
 bool * ViziaMain::getLastActions(){ return this->lastActions; }
 
 bool ViziaMain::isNewEpisode(){
-    if(this->doomController->getMapTic() <= 1) return true;
-    else return false;
+    return this->doomController->isMapFirstTic();
+}
+
+bool ViziaMain::isEpisodeFinished(){
+    return this->doomController->isMapLastTic() || this->doomController->isPlayerDead();
 }
 
 void ViziaMain::addAvailableAction(int action){
@@ -107,6 +114,7 @@ void ViziaMain::setDoomMap(std::string map){ this->doomController->setMap(map); 
 void ViziaMain::setDoomSkill(int skill){ this->doomController->setSkill(skill); }
 void ViziaMain::setDoomConfigPath(std::string path){ this->doomController->setConfigPath(path); }
 
+void ViziaMain::setAutoNewEpisode(bool set){ this->doomController->setAutoMapRestart(set); }
 void ViziaMain::setNewEpisodeOnTimeout(bool set){ this->doomController->setAutoMapRestartOnTimeout(set); }
 void ViziaMain::setNewEpisodeOnPlayerDeath(bool set){ this->doomController->setAutoMapRestartOnTimeout(set); }
 
