@@ -1,5 +1,6 @@
 #include "ViziaMain.h"
 #include <iostream>
+#include <vector>
 #include <Python.h>
 #include <numpy/arrayobject.h>
 #include <numpy/npy_math.h>
@@ -7,12 +8,15 @@
 #include <boost/fusion/include/list.hpp>
 #include <boost/fusion/container/list/list_fwd.hpp>
 #include <boost/fusion/include/list_fwd.hpp>
+
+
 class ViziaMainApi{
 		
     public:
         ViziaMainApi(){
-this->main=new ViziaMain();
-import_array();}
+            this->main=new ViziaMain();
+            import_array();
+        }
         ~ViziaMainApi(){delete(this->main);}
 
         void loadConfig(std::string file){this->main->loadConfig(file);}
@@ -22,21 +26,21 @@ import_array();}
 
         void newEpisode(){this->main->newEpisode();}
         
-	void makeAction(boost::python::list _list)
+	float makeAction(boost::python::list _list)
 	{
 		int list_length = boost::python::len(_list);
-		bool* action=new bool[list_length];
-		for (int i=0;i<list_length;i++)
+		std::vector<bool> action = std::vector<bool>(list_length);
+		for (int i=0; i<list_length; i++)
 		{
-			action[i]=boost::python::extract<int>(_list.pop(0));
+			action[i]=boost::python::extract<bool>(_list[i]);
 		}
-		this->main->makeAction(action);
+		return this->main->makeAction(action);
 	}
 
         ViziaMain::State getState(){return this->main->getState();}
         bool * getLastActions(){return this->main-> getLastActions();}
         bool isNewEpisode(){return this->main->isNewEpisode();}
-
+        bool isEpisodeFinished(){ return this->main->isEpisodeFinished();}
         void addAvailableAction(int action){this->main->addAvailableAction(action);}
         void addAvailableAction(std::string action){this->main->addAvailableAction(action);}
 

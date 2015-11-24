@@ -31,6 +31,7 @@ def("Ms2DoomTics", Ms2DoomTics);
 	.def("loadConfig", &ViziaMainApi::loadConfig)
 	.def("close", &ViziaMainApi::close)
 	.def("newEpisode", &ViziaMainApi::newEpisode)
+	.def("isEpisodeFinished", &ViziaMainApi::isEpisodeFinished)
 	//.def("getLastActions", &ViziaMain::getLastActions)
 	.def("addStateAvailableVar", addStateAvailableVarInt)
 	.def("addStateAvailableVar", addStateAvailableVarString)
