@@ -107,6 +107,7 @@ ViziaDoomController::ViziaDoomController(){
     this->mapTimeout = 0;
     this->mapRestartCount = 0;
     this->mapEnded = false;
+    this->mapLastTic = 0;
 
     generateInstanceId();
     this->doomRunning = false;
@@ -170,14 +171,15 @@ bool ViziaDoomController::tic(){
             this->mapEnded = true;
             if(this->autoRestart) this->restartMap();
         }
-        else{
+        else if(this->GameVars->MAP_TIC < this->mapLastTic){
             this->mapRestarting = false;
             this->mapEnded = false;
         }
 
-        if(!mapEnded || mapRestarting) {
+        if(!this->mapEnded || this->mapRestarting) {
 
-            if(mapRestarting) this->resetInput();
+            if(this->mapRestarting) this->resetInput();
+            this->mapLastTic = this->GameVars->MAP_TIC;
 
             this->MQSend(VIZIA_MSG_CODE_TIC);
 
