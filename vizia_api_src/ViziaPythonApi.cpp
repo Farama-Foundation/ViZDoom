@@ -11,6 +11,7 @@
 #include <boost/python/tuple.hpp>
 
 using boost::python::tuple;
+
 using boost::python::api::object;
 
 #define PY_NONE object()
@@ -58,6 +59,18 @@ class ViziaPythonApi{
             
         }
 
+        tuple getStateFormat(){
+            ViziaMain::StateFormat format = this->main->getStateFormat();
+            boost::python::list image_shape;
+            int image_shape_len = 3;
+            for (int i = 0; i <image_shape_len; ++i) {
+                image_shape.append(format.image_shape[i]);
+            }
+            
+
+            return boost::python::make_tuple(tuple(image_shape),format.var_len);
+        }
+        int getActionFormat(){return this->main->getActionFormat();}
         bool isNewEpisode(){return this->main->isNewEpisode();}
         bool isEpisodeFinished(){ return this->main->isEpisodeFinished();}
        
@@ -103,10 +116,10 @@ class ViziaPythonApi{
 
         ViziaMain * main;
 
-        std::vector<int> stateAvailableVars;
-        std::vector<int> availableActions;
+        //std::vector<int> stateAvailableVars;
+        //std::vector<int> availableActions;
 
-        int *stateVars;
-        bool *lastActions;
+        //int *stateVars;
+        //bool *lastActions;
 
 };

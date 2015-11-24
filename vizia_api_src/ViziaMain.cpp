@@ -15,7 +15,6 @@ unsigned int Ms2DoomTics (unsigned int ms){
 
 ViziaMain::ViziaMain(){
     initialized = false;
-    rgbConversion = false;
     this->doomController = new ViziaDoomController();
 }
 
@@ -86,10 +85,10 @@ ViziaMain::State ViziaMain::getState(){
     state.number = this->doomController->getMapTic();
     state.vars = this->stateVars;
 
-    state.imageBuffer = this->doomController->getScreen();
-    if ( this->rgbConversion ){
-        //TODO
-    }
+    uint8_t* imageBuffer = this->doomController->getScreen();
+   
+    //TODO change imageBuffer to float* rgb and fill state.image
+    
     return state;
 }
 
@@ -149,10 +148,22 @@ void ViziaMain::setRenderWeapon(bool weapon){ this->doomController->setRenderWea
 void ViziaMain::setRenderCrosshair(bool crosshair){ this->doomController->setRenderCrosshair(crosshair); }
 void ViziaMain::setRenderDecals(bool decals){ this->doomController->setRenderDecals(decals); }
 void ViziaMain::setRenderParticles(bool particles){ this->doomController->setRenderParticles(particles); }
-void ViziaMain::setRGBConversion(bool rgbOn){ this->rgbConversion = rgbOn;}
 
 int ViziaMain::getScreenWidth(){ return this->doomController->getScreenWidth(); }
 int ViziaMain::getScreenHeight(){ return this->doomController->getScreenHeight(); }
 int ViziaMain::getScreenPitch(){ return this->doomController->getScreenPitch(); }
 int ViziaMain::getScreenSize(){ return this->doomController->getScreenSize(); }
 int ViziaMain::getScreenFormat(){ return this->doomController->getScreenFormat(); }
+
+ViziaMain::StateFormat ViziaMain::getStateFormat()
+{
+    int y = this->doomController->getScreenWidth();
+    int x = this->doomController->getScreenHeight();
+    int channels = 3;
+    int var_len = this->stateAvailableVars.size();
+    return ViziaMain::StateFormat(channels,y,x,var_len);
+}
+int ViziaMain::getActionFormat()
+{
+    return this->availableActions.size();
+}

@@ -22,7 +22,9 @@ game.setRenderParticles(False);
 game.addAvailableAction("MOVELEFT")
 game.addAvailableAction("MOVERIGHT")
 game.addAvailableAction("ATTACK")
+game.addAvailableAction("ATTACK")
 
+game.addStateAvailableVar("HP");
 game.addStateAvailableVar("HP");
 
 game.init()
@@ -30,7 +32,7 @@ game.init()
 
 actions = [[True,False,False],[False,True,False],[False,False,True]]
 
-iters = 10000
+iters = 100
 sleep_time = 0.01
 game.newEpisode()
 start = time()
@@ -39,7 +41,8 @@ for i in range(iters):
 		game.newEpisode()
 	game.makeAction(random.choice(actions))
 	print game.getState()
-	sleep(sleep_time)
+	print game.getActionFormat()
+	print game.getStateFormat()
 end=time()
 
 t = end-start

@@ -15,11 +15,22 @@ class ViziaMain{
         struct State{
             int number;
             int* vars;
-            //TODO maybe turn it to void* and interpret it accordingly
-            uint8_t* imageBuffer;
-            float* rgbImage;
+            float* image;
         };
-
+        struct StateFormat
+        {
+            //TODO some way to disable changing var_len and image_shape
+            /* shape[0] - num. of channels, 1 - y, 2 - x */
+            int image_shape[3];
+            int var_len;
+            StateFormat(int channels, int y, int x, int var_len)
+            {
+                this->image_shape[0] = channels;
+                this->image_shape[1] = y;
+                this->image_shape[2] = x;
+                this->var_len = var_len;
+            }
+        };
         ViziaMain();
         ~ViziaMain();
 
@@ -47,7 +58,6 @@ class ViziaMain{
 
         const ViziaDoomController* getController();
 
-        void setRGBConversion(bool rgbOn);
         void setDoomGamePath(std::string path);
         void setDoomIwadPath(std::string path);
         void setDoomFilePath(std::string path);
@@ -71,6 +81,8 @@ class ViziaMain{
         void setRenderDecals(bool decals);
         void setRenderParticles(bool particles);
 
+        StateFormat getStateFormat();
+        int getActionFormat();
         int getScreenWidth();
         int getScreenHeight();
         int getScreenPitch();
@@ -88,7 +100,7 @@ class ViziaMain{
         bool *lastActions;
 
         bool initialized;
-        bool rgbConversion;
+
 };
 
 #endif
