@@ -7,7 +7,8 @@ from time import time
 
 game = ViziaGame()
 
-game.setScreenResolution(320,240)
+game.setScreenResolution(320,0)
+
 game.setDoomGamePath("zdoom")
 game.setDoomIwadPath("doom2.wad")
 game.setDoomFilePath("s1_b.wad")
@@ -19,12 +20,13 @@ game.setRenderWeapon(True)
 game.setRenderDecals(False)
 game.setRenderParticles(False);
 
-game.addAvailableAction("MOVELEFT")
-game.addAvailableAction("MOVERIGHT")
-game.addAvailableAction("ATTACK")
+game.addAvailableKey("MOVELEFT")
+game.addAvailableKey("MOVERIGHT")
+game.addAvailableKey("ATTACK")
 
 
 game.addStateAvailableVar("HP");
+game.addStateAvailableVar("AMMO1");
 
 game.init()
 
@@ -42,7 +44,7 @@ start = time()
 for i in range(iters):
 	if game.isEpisodeFinished():
 		game.newEpisode()
-	game.makeAction(shoot)
+	game.makeAction(random.choice(actions))
 	print game.getState()
 	print game.getActionFormat()
 	print game.getStateFormat()

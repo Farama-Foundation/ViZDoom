@@ -18,8 +18,8 @@ static ViziaMain* init(){
 BOOST_PYTHON_MODULE(vizia)
 {
 
-void    (ViziaPythonApi::*addAvailableActionInt)(int)              = &ViziaPythonApi::addAvailableAction;
-void    (ViziaPythonApi::*addAvailableActionString)(std::string)      = &ViziaPythonApi::addAvailableAction;
+void    (ViziaPythonApi::*addAvailableKeyInt)(int)              = &ViziaPythonApi::addAvailableKey;
+void    (ViziaPythonApi::*addAvailableKeyString)(std::string)      = &ViziaPythonApi::addAvailableKey;
 void    (ViziaPythonApi::*addStateAvailableVarInt)(int)              = &ViziaPythonApi::addStateAvailableVar;
 void    (ViziaPythonApi::*addStateAvailableVarString)(std::string)      = &ViziaPythonApi::addStateAvailableVar;
 
@@ -41,8 +41,8 @@ def("Ms2DoomTics", Ms2DoomTics);
 
 	.def("addStateAvailableVar", addStateAvailableVarInt)
 	.def("addStateAvailableVar", addStateAvailableVarString)
-	.def("addAvailableAction", addAvailableActionInt)
-	.def("addAvailableAction", addAvailableActionString)
+	.def("addAvailableKey", addAvailableKeyInt)
+	.def("addAvailableKey", addAvailableKeyString)
 	.def("setDoomGamePath", &ViziaPythonApi::setDoomGamePath)
 	.def("setDoomIwadPath", &ViziaPythonApi::setDoomIwadPath)
 	.def("setDoomFilePath", &ViziaPythonApi::setDoomFilePath)

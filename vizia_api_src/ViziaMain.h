@@ -37,19 +37,19 @@ class ViziaMain{
         bool loadConfig(std::string file);
         bool saveConfig(std::string file);
 
-        void init();
+        int init();
         void close();
 
         void newEpisode();
         float makeAction(std::vector<bool>& actions);
 
         ViziaMain::State getState();
-        bool * getLastActions();
+        bool * getlastAction();
         bool isNewEpisode();
         bool isEpisodeFinished();
 
-        void addAvailableAction(int action);
-        void addAvailableAction(std::string action);
+        void addAvailableKey(int action);
+        void addAvailableKey(std::string action);
 
         void addStateAvailableVar(int var);
         void addStateAvailableVar(std::string var);
@@ -94,10 +94,10 @@ class ViziaMain{
         ViziaDoomController * doomController;
 
         std::vector<int> stateAvailableVars;
-        std::vector<int> availableActions;
+        std::vector<int> availableKeys;
 
         int *stateVars;
-        bool *lastActions;
+        bool *lastAction;
 
         bool initialized;
 
