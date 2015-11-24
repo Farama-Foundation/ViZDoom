@@ -6,15 +6,16 @@ from time import time
 
 game = ViziaGame()
 
-game.setScreenResolution(320,0)
+#available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
+game.setScreenResolution(640,0)
 
 game.setDoomGamePath("zdoom")
 game.setDoomIwadPath("doom2.wad")
 game.setDoomFilePath("s1_b.wad")
 game.setEpisodeTimeoutInDoomTics(200)
 
-game.setRenderHud(True)
-game.setRenderCrosshair(True)
+game.setRenderHud(False)
+game.setRenderCrosshair(False)
 game.setRenderWeapon(True)
 game.setRenderDecals(False)
 game.setRenderParticles(False);
@@ -23,14 +24,8 @@ game.addAvailableKey("MOVELEFT")
 game.addAvailableKey("MOVERIGHT")
 game.addAvailableKey("ATTACK")
 
-
-game.addStateAvailableVar("HEALTH");
-game.addStateAvailableVar("AMMO1");
-game.addStateAvailableVar("AMMO2");
-game.addStateAvailableVar("AMMO3");
-game.addStateAvailableVar("AMMO4");
-
-
+#game.addStateAvailableVar("HEALTH");
+#game.addStateAvailableVar("AMMO1");
 
 game.init()
 
@@ -49,9 +44,10 @@ for i in range(iters):
 	if game.isEpisodeFinished():
 		game.newEpisode()
 	game.makeAction(random.choice(actions))
-	print game.getState()
-	print game.getActionFormat()
-	print game.getStateFormat()
+	s = game.getState()
+	print s[1].shape
+	print "action format:",game.getActionFormat()
+	print "state format: ",game.getStateFormat()
 	sleep(0.01)
 end=time()
 

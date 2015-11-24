@@ -45,6 +45,7 @@ class ViziaPythonApi: public ViziaMain
                 int image_shape_len = 3;
                 for (int i = 0; i <image_shape_len; ++i) 
                 {
+                    this->image_shape[i] = cpp_format.image_shape[i];
                     image_shape.append(cpp_format.image_shape[i]);
                 }
                 this->state_format = boost::python::make_tuple(tuple(image_shape),cpp_format.var_len);
@@ -71,6 +72,11 @@ class ViziaPythonApi: public ViziaMain
             }
             ViziaMain::State state = ViziaMain::getState();
             //TODO convert the image state to numpy array
+            PyObject* img = PyArray_SimpleNewFromData(3, this->image_shape, NPY_INT32, state.image);
+            boost::python::handle<> handle( img );
+            boost::python::numeric::array npy_img( handle );
+                
+                //TODO copy or no?
             if (state.vars != NULL)
             {
 
@@ -79,11 +85,13 @@ class ViziaPythonApi: public ViziaMain
                 boost::python::handle<> handle( vars );
                 boost::python::numeric::array npy_vars( handle );
                 
-                return boost::python::make_tuple(state.number, PY_NONE, npy_vars.copy());
+                //TODO copy or no?
+                return boost::python::make_tuple(state.number, npy_img.copy(), npy_vars.copy());
             }
             else
             {
-                return boost::python::make_tuple(state.number, PY_NONE);
+                //TODO copy or no?
+                return boost::python::make_tuple(state.number, npy_img.copy());
             }
             
         }
@@ -103,5 +111,6 @@ class ViziaPythonApi: public ViziaMain
     private:
 
         tuple state_format;
+        npy_intp image_shape[3];
 
 };
