@@ -23,9 +23,9 @@ int main(){
     v.setRenderDecals(true);
     v.setRenderParticles(true);
 
-    v.addAvailableAction("MOVELEFT");
-    v.addAvailableAction("MOVERIGHT");
-    v.addAvailableAction("ATTACK");
+    v.addAvailableKey("MOVELEFT");
+    v.addAvailableKey("MOVERIGHT");
+    v.addAvailableKey("ATTACK");
 
     v.addStateAvailableVar("HEALTH");
     v.addStateAvailableVar("AMMO1");

@@ -35,15 +35,16 @@ bool ViziaMain::saveConfig(std::string file){
     return false;
 }
 
-void ViziaMain::init(){
+int ViziaMain::init(){
     if(initialized){
         std::cerr<<"Initialization Has already been done. Aborting init.";
+        return -1;
     }
     else{
         initialized = true;
     }
     this->stateVars = new int[this->stateAvailableVars.size()];
-    this->lastActions = new bool[this->availableActions.size()];
+    this->lastAction = new bool[this->availableKeys.size()];
 
     this->doomController->init();
 
@@ -51,12 +52,13 @@ void ViziaMain::init(){
     for (std::vector<int>::iterator i = this->stateAvailableVars.begin() ; i != this->stateAvailableVars.end(); ++i, ++j){
         this->stateVars[j] = this->doomController->getGameVar(*i);
     }
+    return 0;
 }
 
 void ViziaMain::close(){
     this->doomController->close();
     delete(this->stateVars);
-    delete(this->lastActions);
+    delete(this->lastAction);
 }
 
 void ViziaMain::newEpisode(){
@@ -66,14 +68,13 @@ void ViziaMain::newEpisode(){
 float ViziaMain::makeAction(std::vector<bool>& actions){
 
     int j = 0;
-    for (std::vector<int>::iterator i = this->availableActions.begin() ; i != this->availableActions.end(); ++i, ++j){
-        this->lastActions[j] = actions[j];
+    for (std::vector<int>::iterator i = this->availableKeys.begin() ; i != this->availableKeys.end(); ++i, ++j){
+        this->lastAction[j] = actions[j];
         this->doomController->setButtonState(*i, actions[j]);
     }
 
     this->doomController->tic();
 
-    j = 0;
     for (std::vector<int>::iterator i = this->stateAvailableVars.begin() ; i != this->stateAvailableVars.end(); ++i, ++j){
         this->stateVars[j] = this->doomController->getGameVar(*i);
     }
@@ -85,7 +86,7 @@ ViziaMain::State ViziaMain::getState(){
     ViziaMain::State state;
     state.number = this->doomController->getMapTic();
     state.vars = this->stateVars;
-
+    state.vars[0] = 1;
     uint8_t* imageBuffer = this->doomController->getScreen();
    
     //TODO change imageBuffer to float* rgb and fill state.image
@@ -93,7 +94,7 @@ ViziaMain::State ViziaMain::getState(){
     return state;
 }
 
-bool * ViziaMain::getLastActions(){ return this->lastActions; }
+bool * ViziaMain::getlastAction(){ return this->lastAction; }
 
 bool ViziaMain::isNewEpisode(){
     return this->doomController->isMapFirstTic();
@@ -103,17 +104,17 @@ bool ViziaMain::isEpisodeFinished(){
     return this->doomController->isMapLastTic() || this->doomController->isPlayerDead();
 }
 
-void ViziaMain::addAvailableAction(int action){
+void ViziaMain::addAvailableKey(int key){
     //Check for uniqueness
-    if(std::find(this->availableActions.begin(),this->availableActions.end(), action) == this->availableActions.end())
+    if(std::find(this->availableKeys.begin(),this->availableKeys.end(), key) == this->availableKeys.end())
     {
-        this->availableActions.push_back(action);
+        this->availableKeys.push_back(key);
     }
     
 }
 
-void ViziaMain::addAvailableAction(std::string action){
-    this->addAvailableAction(ViziaDoomController::getButtonId(action));   
+void ViziaMain::addAvailableKey(std::string key){
+    this->addAvailableKey(ViziaDoomController::getButtonId(key));   
 }
 
 void ViziaMain::addStateAvailableVar(int var){
@@ -175,5 +176,5 @@ ViziaMain::StateFormat ViziaMain::getStateFormat()
 }
 int ViziaMain::getActionFormat()
 {
-    return this->availableActions.size();
+    return this->availableKeys.size();
 }

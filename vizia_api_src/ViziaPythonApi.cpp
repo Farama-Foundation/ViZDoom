@@ -18,6 +18,7 @@ using boost::python::api::object;
 
 /* C++ code that wraps ViziaMain with python object */
 
+/* isn't it a good idea just to extend ViziaMain?*/
 class ViziaPythonApi{
 	
     public:
@@ -31,7 +32,21 @@ class ViziaPythonApi{
         }
 
         void loadConfig(std::string file){this->main->loadConfig(file);}
-        void init(){this->main->init();}
+        void init()
+        {
+            bool init_success = (this->main->init() == 0);
+            /* fill state format */
+            if (init_success)
+            {
+                ViziaMain::StateFormat cpp_format = this->main->getStateFormat();
+                boost::python::list image_shape;
+                int image_shape_len = 3;
+                for (int i = 0; i <image_shape_len; ++i) {
+                    image_shape.append(cpp_format.image_shape[i]);
+                }
+                this->state_format = boost::python::make_tuple(tuple(image_shape),cpp_format.var_len);
+            }
+        }
         void close(){this->main->close();}
 
         void newEpisode(){this->main->newEpisode();}
@@ -60,23 +75,20 @@ class ViziaPythonApi{
         }
 
         tuple getStateFormat(){
-            ViziaMain::StateFormat format = this->main->getStateFormat();
-            boost::python::list image_shape;
-            int image_shape_len = 3;
-            for (int i = 0; i <image_shape_len; ++i) {
-                image_shape.append(format.image_shape[i]);
-            }
-            
-
-            return boost::python::make_tuple(tuple(image_shape),format.var_len);
+           return this->state_format;
         }
         int getActionFormat(){return this->main->getActionFormat();}
         bool isNewEpisode(){return this->main->isNewEpisode();}
         bool isEpisodeFinished(){ return this->main->isEpisodeFinished();}
        
+        /* not sure if we need this */
+        object getLastAction(){
+            //TODO
+            return PY_NONE;
+        }
         /* Pre init methods */
-        void addAvailableAction(int action){this->main->addAvailableAction(action);}
-        void addAvailableAction(std::string action){this->main->addAvailableAction(action);}
+        void addAvailableKey(int key){this->main->addAvailableKey(key);}
+        void addAvailableKey(std::string key){this->main->addAvailableKey(key);}
         void addStateAvailableVar(int var){this->main->addStateAvailableVar(var);}
         void addStateAvailableVar(std::string var){this->main->addStateAvailableVar(var);}
 
@@ -110,16 +122,11 @@ class ViziaPythonApi{
 
         /* why should we need this? */
         const ViziaDoomController* getController(){return this->main->getController();}
-        bool * getLastActions(){return this->main-> getLastActions();}
+        
 
     private:
 
         ViziaMain * main;
-
-        //std::vector<int> stateAvailableVars;
-        //std::vector<int> availableActions;
-
-        //int *stateVars;
-        //bool *lastActions;
+        tuple state_format;
 
 };
