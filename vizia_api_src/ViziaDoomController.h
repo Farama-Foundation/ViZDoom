@@ -376,6 +376,7 @@ class ViziaDoomController {
         unsigned int mapRestartCount;
         bool mapRestarting;
         bool mapEnded;
+        int mapLastTic;
 
 };
 
