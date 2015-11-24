@@ -36,6 +36,8 @@ def("Ms2DoomTics", Ms2DoomTics);
 	.def("isNewEpisode", &ViziaPythonApi::isNewEpisode)
 	.def("makeAction",&ViziaPythonApi::makeAction)
 	.def("getState", &ViziaPythonApi::getState)
+	.def("getStateFormat", &ViziaPythonApi::getStateFormat)
+	.def("getActionFormat", &ViziaPythonApi::getActionFormat)
 
 	.def("addStateAvailableVar", addStateAvailableVarInt)
 	.def("addStateAvailableVar", addStateAvailableVarString)
