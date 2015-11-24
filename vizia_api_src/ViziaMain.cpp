@@ -83,6 +83,7 @@ float ViziaMain::makeAction(std::vector<bool>& actions){
 
     this->doomController->tic();
 
+    j=0;
     for (std::vector<int>::iterator i = this->stateAvailableVars.begin() ; i != this->stateAvailableVars.end(); ++i, ++j){
         this->stateVars[j] = this->doomController->getGameVar(*i);
     }
