@@ -13,7 +13,7 @@ game.setDoomIwadPath("doom2.wad")
 game.setDoomFilePath("s1_b.wad")
 game.setEpisodeTimeoutInDoomTics(200)
 
-game.setRenderHud(False)
+game.setRenderHud(True)
 game.setRenderCrosshair(True)
 game.setRenderWeapon(True)
 game.setRenderDecals(False)
@@ -22,27 +22,31 @@ game.setRenderParticles(False);
 game.addAvailableAction("MOVELEFT")
 game.addAvailableAction("MOVERIGHT")
 game.addAvailableAction("ATTACK")
-game.addAvailableAction("ATTACK")
 
-game.addStateAvailableVar("HP");
+
 game.addStateAvailableVar("HP");
 
 game.init()
 
 
 actions = [[True,False,False],[False,True,False],[False,False,True]]
+left = actions[0]
+right = actions[1]
+shoot = actions[2]
+idle = [False,False,False]
 
-iters = 100
+iters = 1000
 sleep_time = 0.01
 game.newEpisode()
 start = time()
 for i in range(iters):
 	if game.isEpisodeFinished():
 		game.newEpisode()
-	game.makeAction(random.choice(actions))
+	game.makeAction(shoot)
 	print game.getState()
 	print game.getActionFormat()
 	print game.getStateFormat()
+	sleep(0.01)
 end=time()
 
 t = end-start

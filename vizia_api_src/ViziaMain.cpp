@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 unsigned int DoomTics2Ms (unsigned int tics){
     return (unsigned int)std::floor((float)1000/35 * tics);
@@ -103,19 +104,28 @@ bool ViziaMain::isEpisodeFinished(){
 }
 
 void ViziaMain::addAvailableAction(int action){
-    this->availableActions.push_back(action);
+    //Check for uniqueness
+    if(std::find(this->availableActions.begin(),this->availableActions.end(), action) == this->availableActions.end())
+    {
+        this->availableActions.push_back(action);
+    }
+    
 }
 
 void ViziaMain::addAvailableAction(std::string action){
-    this->availableActions.push_back(ViziaDoomController::getButtonId(action));
+    this->addAvailableAction(ViziaDoomController::getButtonId(action));   
 }
 
 void ViziaMain::addStateAvailableVar(int var){
-    this->stateAvailableVars.push_back(var);
+    //Check for uniqueness
+    if(std::find(this->stateAvailableVars.begin(),this->stateAvailableVars.end(), var) == this->stateAvailableVars.end())
+    {
+        this->stateAvailableVars.push_back(var);
+    }
 }
 
 void ViziaMain::addStateAvailableVar(std::string var){
-    this->stateAvailableVars.push_back(ViziaDoomController::getGameVarId(var));
+    this->addStateAvailableVar(ViziaDoomController::getGameVarId(var));
 }
 
 const ViziaDoomController* ViziaMain::getController(){ return this->doomController; }
