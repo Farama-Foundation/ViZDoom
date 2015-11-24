@@ -3,11 +3,12 @@ from vizia import ViziaGame
 import random
 from time import sleep
 from time import time
-
+import cv2
+import numpy as np
 game = ViziaGame()
 
 #available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
-game.setScreenResolution(640,0)
+game.setScreenResolution(320,0)
 
 game.setDoomGamePath("zdoom")
 game.setDoomIwadPath("doom2.wad")
@@ -45,10 +46,15 @@ for i in range(iters):
 		game.newEpisode()
 	game.makeAction(random.choice(actions))
 	s = game.getState()
-	print s[1].shape
-	print "action format:",game.getActionFormat()
-	print "state format: ",game.getStateFormat()
-	sleep(0.01)
+	if not game.isEpisodeFinished():
+		print "action format:",game.getActionFormat()
+		print "state format: ",game.getStateFormat()
+		cv2.namedWindow('image', cv2.WINDOW_NORMAL)
+		cv2.imshow('image',s[1][0]/256.0)
+		cv2.waitKey(10)
+		#cv2.destroyAllWindows()
+
+	#sleep(0.01)
 end=time()
 
 t = end-start

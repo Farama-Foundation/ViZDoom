@@ -68,6 +68,7 @@ int ViziaMain::init(){
     /* Create state buffer */
     this->state.image = new float[channels*y*x];
     this->updateState();
+    
     return 0;
 }
 
@@ -115,6 +116,17 @@ void ViziaMain::updateState()
         this->state.vars[j] = this->doomController->getGameVar(*i);
     }
     /* Update float rgb image */
+
+    uint8_t* rawBuffer = this->doomController->getScreen();
+    int bufferLen = this->stateFormat.image_shape[1]*this->stateFormat.image_shape[2];
+    for(int i=0; i<3; ++i)
+    {
+        for(int j=0; j<bufferLen; ++j)
+        {
+            this->state.image[bufferLen*i +j] = rawBuffer[j];
+        }
+
+    }
 }
 bool * ViziaMain::getlastAction(){ return this->lastAction; }
 
