@@ -23,6 +23,8 @@ class ViziaMain{
             /* shape[0] - num. of channels, 1 - y, 2 - x */
             int image_shape[3];
             int var_len;
+            StateFormat(){}
+
             StateFormat(int channels, int y, int x, int var_len)
             {
                 this->image_shape[0] = channels;
@@ -100,6 +102,9 @@ class ViziaMain{
         bool *lastAction;
 
         bool initialized;
+        
+        StateFormat stateFormat;
+        State state;
 
 };
 

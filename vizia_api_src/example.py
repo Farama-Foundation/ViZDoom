@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 from vizia import ViziaGame
 import random
 from time import sleep
@@ -25,9 +24,8 @@ game.addAvailableKey("MOVERIGHT")
 game.addAvailableKey("ATTACK")
 
 
-game.addStateAvailableVar("HP");
+game.addStateAvailableVar("HEALTH");
 game.addStateAvailableVar("AMMO1");
-
 game.init()
 
 

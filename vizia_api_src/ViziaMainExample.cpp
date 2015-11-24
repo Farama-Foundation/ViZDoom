@@ -51,10 +51,10 @@ int main(){
         actions[2] = true;
         
 
-        //ViziaMain::State s = v.getState();
+        ViziaMain::State s = v.getState();
 
-        //std::cout << "STATE NUMBER: " << s.number <<
-        //" HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
+        std::cout << "STATE NUMBER: " << s.number <<
+        " HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
 
         v.makeAction(actions);
         usleep(10000);

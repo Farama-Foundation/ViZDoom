@@ -2,8 +2,6 @@
 #include "ViziaPythonApi.cpp"
 #include "ViziaMain.cpp"
 #include "ViziaDoomController.cpp"
-#include <numpy/arrayobject.h>
-#include <numpy/npy_math.h>
 
 /*C++ code to expose ViziaPythonApi via python */
 using namespace boost::python;
