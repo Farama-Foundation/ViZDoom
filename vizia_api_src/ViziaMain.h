@@ -31,7 +31,7 @@ class ViziaMain{
         void close();
 
         void newEpisode();
-        void makeAction(const bool * actions);
+        float makeAction(std::vector<bool>& actions);
 
         ViziaMain::State getState();
         bool * getLastActions();
