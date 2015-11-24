@@ -24,7 +24,6 @@ game.addAvailableAction("MOVERIGHT")
 game.addAvailableAction("ATTACK")
 
 game.addStateAvailableVar("HP");
-game.addStateAvailableVar("AMMO1");
 
 game.init()
 
@@ -39,7 +38,8 @@ for i in range(iters):
 	if game.isEpisodeFinished():
 		game.newEpisode()
 	game.makeAction(random.choice(actions))
-	#sleep(sleep_time)
+	print game.getState()
+	sleep(sleep_time)
 end=time()
 
 t = end-start

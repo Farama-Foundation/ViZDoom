@@ -33,10 +33,12 @@ def("Ms2DoomTics", Ms2DoomTics);
 	.def("close", &ViziaPythonApi::close)
 	.def("newEpisode", &ViziaPythonApi::newEpisode)
 	.def("isEpisodeFinished", &ViziaPythonApi::isEpisodeFinished)
-	//.def("getLastActions", &ViziaMain::getLastActions)
+	.def("isNewEpisode", &ViziaPythonApi::isNewEpisode)
+	.def("makeAction",&ViziaPythonApi::makeAction)
+	.def("getState", &ViziaPythonApi::getState)
+
 	.def("addStateAvailableVar", addStateAvailableVarInt)
 	.def("addStateAvailableVar", addStateAvailableVarString)
-	.def("isNewEpisode", &ViziaPythonApi::isNewEpisode)
 	.def("addAvailableAction", addAvailableActionInt)
 	.def("addAvailableAction", addAvailableActionString)
 	.def("setDoomGamePath", &ViziaPythonApi::setDoomGamePath)
@@ -63,7 +65,7 @@ def("Ms2DoomTics", Ms2DoomTics);
 	.def("getScreenSize", &ViziaPythonApi::getScreenSize)
 	.def("getScreenPitch", &ViziaPythonApi::getScreenPitch)
 	.def("getScreenFormat", &ViziaPythonApi::getScreenFormat)
-	.def("makeAction",&ViziaPythonApi::makeAction)
+	
     ;
 
 }
