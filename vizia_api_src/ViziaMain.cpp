@@ -14,23 +14,34 @@ unsigned int Ms2DoomTics (unsigned int ms){
 }
 
 ViziaMain::ViziaMain(){
+    initialized = false;
+    rgbConversion = false;
     this->doomController = new ViziaDoomController();
 }
 
 ViziaMain::~ViziaMain(){
+    //TODO deleting stuff created in init
     this->close();
     delete(this->doomController);
 }
 
 bool ViziaMain::loadConfig(std::string file){
     //TO DO
+    return false;
 }
 
 bool ViziaMain::saveConfig(std::string file){
     //TO DO
+    return false;
 }
 
 void ViziaMain::init(){
+    if(initialized){
+        std::cerr<<"Initialization Has already been done. Aborting init.";
+    }
+    else{
+        initialized = true;
+    }
     this->stateVars = new int[this->stateAvailableVars.size()];
     this->lastActions = new bool[this->availableActions.size()];
 
@@ -74,11 +85,11 @@ ViziaMain::State ViziaMain::getState(){
     ViziaMain::State state;
     state.number = this->doomController->getMapTic();
     state.vars = this->stateVars;
-    state.imageWidth = this->doomController->getScreenWidth();
-    state.imageHeight = this->doomController->getScreenHeight();
-    state.imagePitch = this->doomController->getScreenPitch();
-    state.imageBuffer = this->doomController->getScreen();
 
+    state.imageBuffer = this->doomController->getScreen();
+    if ( this->rgbConversion ){
+        //TODO
+    }
     return state;
 }
 
@@ -138,6 +149,7 @@ void ViziaMain::setRenderWeapon(bool weapon){ this->doomController->setRenderWea
 void ViziaMain::setRenderCrosshair(bool crosshair){ this->doomController->setRenderCrosshair(crosshair); }
 void ViziaMain::setRenderDecals(bool decals){ this->doomController->setRenderDecals(decals); }
 void ViziaMain::setRenderParticles(bool particles){ this->doomController->setRenderParticles(particles); }
+void ViziaMain::setRGBConversion(bool rgbOn){ this->rgbConversion = rgbOn;}
 
 int ViziaMain::getScreenWidth(){ return this->doomController->getScreenWidth(); }
 int ViziaMain::getScreenHeight(){ return this->doomController->getScreenHeight(); }

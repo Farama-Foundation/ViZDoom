@@ -15,10 +15,9 @@ class ViziaMain{
         struct State{
             int number;
             int* vars;
-            int imageWidth;
-            int imageHeight;
-            int imagePitch;
+            //TODO maybe turn it to void* and interpret it accordingly
             uint8_t* imageBuffer;
+            float* rgbImage;
         };
 
         ViziaMain();
@@ -48,6 +47,7 @@ class ViziaMain{
 
         const ViziaDoomController* getController();
 
+        void setRGBConversion(bool rgbOn);
         void setDoomGamePath(std::string path);
         void setDoomIwadPath(std::string path);
         void setDoomFilePath(std::string path);
@@ -87,6 +87,8 @@ class ViziaMain{
         int *stateVars;
         bool *lastActions;
 
+        bool initialized;
+        bool rgbConversion;
 };
 
 #endif
