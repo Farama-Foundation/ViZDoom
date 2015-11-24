@@ -92,17 +92,17 @@ class ViziaMain{
         int getScreenFormat();
 
     private:
+        void updateState();
 
         ViziaDoomController * doomController;
 
         std::vector<int> stateAvailableVars;
         std::vector<int> availableKeys;
 
-        int *stateVars;
         bool *lastAction;
 
         bool initialized;
-        
+
         StateFormat stateFormat;
         State state;
 
