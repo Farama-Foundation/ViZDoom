@@ -26,6 +26,12 @@ game.addAvailableKey("ATTACK")
 
 game.addStateAvailableVar("HEALTH");
 game.addStateAvailableVar("AMMO1");
+game.addStateAvailableVar("AMMO2");
+game.addStateAvailableVar("AMMO3");
+game.addStateAvailableVar("AMMO4");
+
+
+
 game.init()
 
 
