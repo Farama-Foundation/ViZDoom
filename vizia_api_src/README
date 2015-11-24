@@ -1,0 +1,22 @@
+To compile:
+	-all: make
+	-python api: make python_api
+	-doom controller example: make doom_controller
+	-vizia main example (proper c++ api example): make vizia_main
+
+
+Troubleshooting:
+1. /usr/include/boost/python/detail/wrap_python.hpp:50:23: fatal error: pyconfig.h: No such file or directory
+ # include <pyconfig.h>
+                       ^
+compilation terminated.
+
+add this to .bashrc:
+if [[ $CPLUS_INCLUDE_PATH="" ]];
+then
+	export CPLUS_INCLUDE_PATH=/usr/include/python2.7
+else
+	export CPLUS_INCLUDE_PATH="$CPLUS_INCLUDE_PATH;/usr/include/python2.7"
+fi
+
+Change /usr/include/python2.7 to yout python include path.

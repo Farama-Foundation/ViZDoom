@@ -5,9 +5,9 @@
 **/CMakeCache.txt
 **/CMakeFiles
 **/CMakeScripts
-**/Makefile
 **/cmake_install.cmake
 **/install_manifest.txt
+vizia_doom_src/**/Makefile
 .idea
 
 #copied from the original zdoom repository (and modified)
