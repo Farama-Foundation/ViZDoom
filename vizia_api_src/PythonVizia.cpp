@@ -5,8 +5,9 @@
 #include <numpy/arrayobject.h>
 #include <numpy/npy_math.h>
 
+/*C++ code to expose ViziaPythonApi via python */
 using namespace boost::python;
-class ViziaMain2{
+class Py_ViziaMain{
 public:
 static ViziaMain* init(){
     return new ViziaMain();
