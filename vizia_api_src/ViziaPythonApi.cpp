@@ -9,15 +9,19 @@
 #include <boost/fusion/container/list/list_fwd.hpp>
 #include <boost/fusion/include/list_fwd.hpp>
 
+/* C++ code that wraps ViziaMain with python object */
 
 class ViziaPythonApi{
-		
+	
     public:
         ViziaPythonApi(){
             this->main=new ViziaMain();
             import_array();
         }
-        ~ViziaPythonApi(){delete(this->main);}
+        ~ViziaPythonApi(){
+            this->main->close();
+            delete(this->main);
+        }
 
         void loadConfig(std::string file){this->main->loadConfig(file);}
 
