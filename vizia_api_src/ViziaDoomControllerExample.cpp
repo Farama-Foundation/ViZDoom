@@ -93,7 +93,9 @@ int main(){
         }
 
         std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<
-                " HP: " << vdm->getPlayerHealth() << " AMMO: " << vdm->getGameVars()->PLAYER_AMMO[2] << std::endl;
+                " HP: " << vdm->getPlayerHealth() << " AMMO: " << vdm->getGameVars()->PLAYER_AMMO[2] << 
+                " REWARD: " << vdm->getMapReward() << std::endl;
+
         if(vdm->isMapLastTic()) std::cout << "\nMAP FINISHED\n\n";
 
         if(sdl) updateSDL(vdm->getScreenWidth(), vdm->getScreenHeight(), vdm->getScreenPitch(), (void*)vdm->getScreen());
