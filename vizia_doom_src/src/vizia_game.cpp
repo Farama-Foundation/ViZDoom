@@ -15,6 +15,8 @@
 #include "g_level.h"
 #include "c_console.h"
 #include "c_dispatch.h"
+#include "p_acs.h"
+
 
 #include <string.h>
 #include <stdio.h>
@@ -97,6 +99,8 @@ void Vizia_UpdateGameVars(){
     viziaGameVars->MAP_KILLCOUNT = level.killed_monsters;
     viziaGameVars->MAP_ITEMCOUNT = level.found_items;
     viziaGameVars->MAP_SECRETCOUNT = level.found_secrets;
+
+    viziaGameVars->MAP_REWARD = ACS_GlobalVars[0];
 
     viziaGameVars->MAP_END = false;
 
