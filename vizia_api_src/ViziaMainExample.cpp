@@ -1,5 +1,7 @@
 #include "ViziaMain.h"
 #include <iostream>
+#include <unistd.h>
+#include <vector>
 
 int main(){
 
@@ -9,7 +11,7 @@ int main(){
 
     v->setDoomGamePath("zdoom");
     v->setDoomIwadPath("doom2.wad");
-    v->setDoomFilePath("s1.wad");
+    v->setDoomFilePath("s1_b.wad");
     v->setDoomMap("map01");
     v->setEpisodeTimeoutInDoomTics(200);
 
@@ -40,19 +42,14 @@ int main(){
             v->newEpisode();
         }
 
-        bool *actions = new bool[3];
+        std::vector<bool> actions(3);
 
-        if(i%loop < 50) {
-            actions[1] = true;
-        }
-
-        else{
-            actions[0] = true;
-        }
-
-        if(i%loop == 25 || i%loop == 50 || i%loop == 75){
-            actions[2] = true;
-        }
+        actions[0] = false;
+        
+        actions[1] = false;
+        
+        actions[2] = true;
+        
 
         ViziaMain::State s = v->getState();
 
@@ -60,6 +57,7 @@ int main(){
         " HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
 
         v->makeAction(actions);
+        usleep(10000);
     }
 
     v->close();

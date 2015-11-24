@@ -3,6 +3,7 @@
 #include <boost/lexical_cast.hpp>
 #include <cmath>
 #include <iostream>
+#include <vector>
 
 unsigned int DoomTics2Ms (unsigned int tics){
     return (unsigned int)std::floor((float)1000/35 * tics);
@@ -51,7 +52,7 @@ void ViziaMain::newEpisode(){
     this->doomController->restartMap();
 }
 
-void ViziaMain::makeAction(const bool * actions){
+float ViziaMain::makeAction(std::vector<bool>& actions){
 
     int j = 0;
     for (std::vector<int>::iterator i = this->availableActions.begin() ; i != this->availableActions.end(); ++i, ++j){
@@ -65,6 +66,8 @@ void ViziaMain::makeAction(const bool * actions){
     for (std::vector<int>::iterator i = this->stateAvailableVars.begin() ; i != this->stateAvailableVars.end(); ++i, ++j){
         this->stateVars[j] = this->doomController->getGameVar(*i);
     }
+    //TODO return reward
+    return 0.0;
 }
 
 ViziaMain::State ViziaMain::getState(){
