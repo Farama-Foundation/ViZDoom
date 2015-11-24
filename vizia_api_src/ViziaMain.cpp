@@ -43,6 +43,7 @@ int ViziaMain::init(){
     else{
         initialized = true;
     }
+
     this->stateVars = new int[this->stateAvailableVars.size()];
     this->lastAction = new bool[this->availableKeys.size()];
 
@@ -52,6 +53,13 @@ int ViziaMain::init(){
     for (std::vector<int>::iterator i = this->stateAvailableVars.begin() ; i != this->stateAvailableVars.end(); ++i, ++j){
         this->stateVars[j] = this->doomController->getGameVar(*i);
     }
+
+    /* Initialize state format */
+    int y = this->doomController->getScreenWidth();
+    int x = this->doomController->getScreenHeight();
+    int channels = 3;
+    int var_len = this->stateAvailableVars.size();
+    this->stateFormat = StateFormat(channels,y,x,var_len);
     return 0;
 }
 
@@ -83,15 +91,13 @@ float ViziaMain::makeAction(std::vector<bool>& actions){
 }
 
 ViziaMain::State ViziaMain::getState(){
-    ViziaMain::State state;
-    state.number = this->doomController->getMapTic();
-    state.vars = this->stateVars;
-    state.vars[0] = 1;
-    uint8_t* imageBuffer = this->doomController->getScreen();
-   
+    this->state.number = this->doomController->getMapTic();
+    this->state.vars = this->stateVars;
+    
+    //uint8_t* imageBuffer = this->doomController->getScreen();
     //TODO change imageBuffer to float* rgb and fill state.image
     
-    return state;
+    return this->state;
 }
 
 bool * ViziaMain::getlastAction(){ return this->lastAction; }
@@ -168,11 +174,7 @@ int ViziaMain::getScreenFormat(){ return this->doomController->getScreenFormat()
 
 ViziaMain::StateFormat ViziaMain::getStateFormat()
 {
-    int y = this->doomController->getScreenWidth();
-    int x = this->doomController->getScreenHeight();
-    int channels = 3;
-    int var_len = this->stateAvailableVars.size();
-    return ViziaMain::StateFormat(channels,y,x,var_len);
+    return this->stateFormat;
 }
 int ViziaMain::getActionFormat()
 {
