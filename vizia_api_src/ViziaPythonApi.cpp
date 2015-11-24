@@ -10,14 +10,14 @@
 #include <boost/fusion/include/list_fwd.hpp>
 
 
-class ViziaMainApi{
+class ViziaPythonApi{
 		
     public:
-        ViziaMainApi(){
+        ViziaPythonApi(){
             this->main=new ViziaMain();
             import_array();
         }
-        ~ViziaMainApi(){delete(this->main);}
+        ~ViziaPythonApi(){delete(this->main);}
 
         void loadConfig(std::string file){this->main->loadConfig(file);}
 
