@@ -79,7 +79,7 @@ void Vizia_GameVarsInit(){
     viziaGameVarsSMRegion = new bip::mapped_region(viziaSM, bip::read_write, Vizia_SMGetGameVarsRegionBeginning(), sizeof(ViziaGameVarsStruct));
     viziaGameVars = static_cast<ViziaGameVarsStruct *>(viziaGameVarsSMRegion->get_address());
 
-    printf("Game vars SM region size: %zu, beginnig: %p, end: %p \n",
+    printf("Vizia_GameVarsInit: GameVars SM region size: %zu, beginnig: %p, end: %p \n",
            viziaGameVarsSMRegion->get_size(), viziaGameVarsSMRegion->get_address(), viziaGameVarsSMRegion->get_address() + viziaGameVarsSMRegion->get_size());
 }
 
@@ -90,7 +90,7 @@ void Vizia_UpdateGameVars(){
     viziaGameVars->SCREEN_WIDTH = viziaScreenWidth;
     viziaGameVars->SCREEN_HEIGHT = viziaScreenHeight;
     viziaGameVars->SCREEN_PITCH = viziaScreenPitch;
-    viziaGameVars->SCREEN_SIZE = (int)viziaScreenSize;
+    viziaGameVars->SCREEN_SIZE = viziaScreenSize;
     viziaGameVars->SCREEN_FORMAT = *vizia_screen_format;
 
     viziaGameVars->MAP_START_TIC = level.starttime;

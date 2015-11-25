@@ -1,6 +1,8 @@
 #ifndef __VIZIA_DOOM_CONTROLLER_H__
 #define __VIZIA_DOOM_CONTROLLER_H__
 
+#include "ViziaDefines.h"
+
 #include <string>
 
 #include <boost/interprocess/ipc/message_queue.hpp>
@@ -15,86 +17,6 @@ namespace b = boost;
 namespace bip = boost::interprocess;
 namespace bpr = boost::process;
 namespace bpri = boost::process::initializers;
-
-#define DOOM_AMMO_CLIP 0
-#define DOOM_AMMO_SHELL 1
-#define DOOM_AMMO_ROCKET 2
-#define DOOM_AMMO_CELL 3
-
-#define DOOM_WEAPON_FIST 0
-#define DOOM_WEAPON_CHAINSAW 0
-#define DOOM_WEAPON_PISTOL 1
-#define DOOM_WEAPON_SHOTGUN 3
-#define DOOM_WEAPON_SSG 3
-#define DOOM_WEAPON_SUPER_SHOTGUN 3
-#define DOOM_WEAPON_CHAINGUN 4
-#define DOOM_WEAPON_ROCKET_LUNCHER 5
-#define DOOM_WEAPON_PLASMA_GUN 6
-#define DOOM_WEAPON_BFG 7
-
-#define DOOM_KEY_BLUE 0
-#define DOOM_KEY_RED 1
-#define DOOM_KEY_YELLOW 2
-
-#define A_ATTACK 0
-#define A_USE 1
-#define A_JUMP 2
-#define A_CROUCH 3
-#define A_TURN180 4
-#define A_ALTATTACK 5
-#define A_RELOAD 6
-#define A_ZOOM 7
-
-#define A_SPEED 8
-#define A_STRAFE 9
-
-#define A_MOVERIGHT 10
-#define A_MOVELEFT 11
-#define A_BACK 12
-#define A_FORWARD 13
-#define A_RIGHT 14
-#define A_LEFT 15
-#define A_LOOKUP 16
-#define A_LOOKDOWN 17
-#define A_MOVEUP 18
-#define A_MOVEDOWN 19
-//#define A_SHOWSCORES 20
-
-#define A_WEAPON1 21
-#define A_WEAPON2 22
-#define A_WEAPON3 23
-#define A_WEAPON4 24
-#define A_WEAPON5 25
-#define A_WEAPON6 26
-#define A_WEAPON7 27
-
-#define A_WEAPONNEXT 28
-#define A_WEAPONPREV 29
-
-#define A_BT_SIZE 30
-
-#define V_KILLCOUNT 0
-#define V_ITEMCOUNT 1
-#define V_SECRETCOUNT 2
-#define V_HEALTH 3
-#define V_ARMOR 4
-#define V_SELECTED_WEAPON 5
-#define V_SELECTED_WEAPON_AMMO 6
-#define V_AMMO1 7
-#define V_AMMO2 8
-#define V_AMMO3 9
-#define V_AMMO4 10
-#define V_WEAPON1 11
-#define V_WEAPON2 12
-#define V_WEAPON3 13
-#define V_WEAPON4 14
-#define V_WEAPON5 15
-#define V_WEAPON6 16
-#define V_WEAPON7 17
-#define V_KEY1 18
-#define V_KEY2 19
-#define V_KEY3 20
-#define V_SIZE 21
 
 #define VIZIA_SM_NAME_BASE "ViziaSM"
 
@@ -113,17 +35,6 @@ namespace bpri = boost::process::initializers;
 #define VIZIA_MSG_CODE_CLOSE 2
 #define VIZIA_MSG_CODE_COMMAND 3
 
-#define VIZIA_SCREEN_CRCGCB 0
-#define VIZIA_SCREEN_CRCGCBCA 1
-#define VIZIA_SCREEN_RGB24 2
-#define VIZIA_SCREEN_RGBA32 3
-#define VIZIA_SCREEN_ARGB32 4
-#define VIZIA_SCREEN_CBCGCR 5
-#define VIZIA_SCREEN_CBCGCRCA 6
-#define VIZIA_SCREEN_BGR24 7
-#define VIZIA_SCREEN_BGRA32 8
-#define VIZIA_SCREEN_ABGR32 9
-
 class ViziaDoomController {
     
     public:
@@ -133,23 +44,23 @@ class ViziaDoomController {
             int MS_Y;
             int MS_MAX_X;
             int MS_MAX_Y;
-            bool BT[A_BT_SIZE];
-            bool BT_AVAILABLE[A_BT_SIZE];
+            bool BT[ViziaButtonsNumber];
+            bool BT_AVAILABLE[ViziaButtonsNumber];
         };
 
         struct GameVarsStruct{
-            int GAME_TIC;
+            unsigned int GAME_TIC;
 
-            int SCREEN_WIDTH;
-            int SCREEN_HEIGHT;
-            int SCREEN_PITCH;
-            int SCREEN_SIZE;
+            unsigned int SCREEN_WIDTH;
+            unsigned int SCREEN_HEIGHT;
+            size_t SCREEN_PITCH;
+            size_t SCREEN_SIZE;
             int SCREEN_FORMAT;
 
             int MAP_REWARD;;
 
-            int MAP_START_TIC;
-            int MAP_TIC;
+            unsigned int MAP_START_TIC;
+            unsigned int MAP_TIC;
 
             int MAP_KILLCOUNT;
             int MAP_ITEMCOUNT;
@@ -176,8 +87,8 @@ class ViziaDoomController {
             bool PLAYER_KEY[10];
         };
 
-        static int getButtonId(std::string name);
-        static int getGameVarId(std::string name);
+        static ViziaButton getButtonId(std::string name);
+        static ViziaGameVar getGameVarId(std::string name);
 
         ViziaDoomController();
         ~ViziaDoomController();
@@ -217,7 +128,7 @@ class ViziaDoomController {
         void setScreenResolution(int width, int height);
         void setScreenWidth(int width);
         void setScreenHeight(int height);
-        void setScreenFormat(int format);
+        void setScreenFormat(ViziaScreenFormat format);
         void setRenderHud(bool hud);
         void setRenderWeapon(bool weapon);
         void setRenderCrosshair(bool crosshair);
@@ -226,9 +137,9 @@ class ViziaDoomController {
 
         int getScreenWidth();
         int getScreenHeight();
-        int getScreenPitch();
-        int getScreenSize();
-        int getScreenFormat();
+        size_t getScreenPitch();
+        size_t getScreenSize();
+        ViziaScreenFormat getScreenFormat();
 
         //PUBLIC SETTERS & GETTERS
 
@@ -239,13 +150,13 @@ class ViziaDoomController {
         void setMouse(int x, int y);
         void setMouseX(int x);
         void setMouseY(int y);
-        void setButtonState(int button, bool state);
-        void setKeyState(int key, bool state);
-        void toggleButtonState(int button);
-        void toggleKeyState(int key);
+        void setButtonState(ViziaButton button, bool state);
+        void toggleButtonState(ViziaButton button);
+        void setAllowButton(ViziaButton button, bool allow);
+        void allowAllButtons();
         void resetInput();
 
-        int getGameVar(int var);
+        int getGameVar(ViziaGameVar var);
 
         int getGameTic();
 
@@ -356,7 +267,9 @@ class ViziaDoomController {
 
         // OPTIONS
 
-        unsigned int screenWidth, screenHeight, screenPitch, screenSize, screenFormat;
+        unsigned int screenWidth, screenHeight;
+        size_t screenPitch, screenSize;
+        ViziaScreenFormat screenFormat;
 
         bool hud, weapon, crosshair, decals, particles;
 
@@ -376,7 +289,7 @@ class ViziaDoomController {
         unsigned int mapRestartCount;
         bool mapRestarting;
         bool mapEnded;
-        int mapLastTic;
+        unsigned int mapLastTic;
 
 };
 

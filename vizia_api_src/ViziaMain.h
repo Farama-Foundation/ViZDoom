@@ -1,9 +1,12 @@
 #ifndef __VIZIA_MAIN_H__
 #define __VIZIA_MAIN_H__
 
+#include "ViziaDefines.h"
+#include "ViziaDoomController.h"
+
 #include <string>
 #include <vector>
-#include "ViziaDoomController.h"
+
 
 unsigned int DoomTics2Ms (unsigned int tics);
 unsigned int Ms2DoomTics (unsigned int ms);
@@ -50,11 +53,11 @@ class ViziaMain{
         bool isNewEpisode();
         bool isEpisodeFinished();
 
-        void addAvailableKey(int action);
-        void addAvailableKey(std::string action);
+        void addAvailableButton(ViziaButton button);
+        //void addAvailableButton(std::string action);
 
-        void addStateAvailableVar(int var);
-        void addStateAvailableVar(std::string var);
+        void addStateAvailableVar(ViziaGameVar var);
+        //void addStateAvailableVar(std::string var);
 
         //OPTIONS
 
@@ -73,10 +76,10 @@ class ViziaMain{
         void setEpisodeTimeoutInMiliseconds(unsigned int ms);
         void setEpisodeTimeoutInDoomTics(unsigned int tics);
 
-        void setScreenResolution(int width, int height);
-        void setScreenWidth(int width);
-        void setScreenHeight(int height);
-        void setScreenFormat(int format);
+        void setScreenResolution(unsigned int width, unsigned int height);
+        void setScreenWidth(unsigned int width);
+        void setScreenHeight(unsigned int height);
+        void setScreenFormat(ViziaScreenFormat format);
         void setRenderHud(bool hud);
         void setRenderWeapon(bool weapon);
         void setRenderCrosshair(bool crosshair);
@@ -87,16 +90,16 @@ class ViziaMain{
         int getActionFormat();
         int getScreenWidth();
         int getScreenHeight();
-        int getScreenPitch();
-        int getScreenSize();
-        int getScreenFormat();
+        size_t getScreenPitch();
+        size_t getScreenSize();
+        ViziaScreenFormat getScreenFormat();
 
     private:
 
         ViziaDoomController * doomController;
 
-        std::vector<int> stateAvailableVars;
-        std::vector<int> availableKeys;
+        std::vector<ViziaGameVar> stateAvailableVars;
+        std::vector<ViziaButton> availableButtons;
 
         bool *lastAction;
 

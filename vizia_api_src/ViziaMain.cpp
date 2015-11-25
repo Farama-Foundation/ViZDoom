@@ -52,7 +52,7 @@ int ViziaMain::init(){
     }
     
     /* set all if none are set */
-    this->lastAction = new bool[this->availableKeys.size()];
+    this->lastAction = new bool[this->availableButtons.size()];
 
     this->doomController->init();
 
@@ -83,7 +83,7 @@ void ViziaMain::newEpisode(){
 float ViziaMain::makeAction(std::vector<bool>& actions){
 
     int j = 0;
-    for (std::vector<int>::iterator i = this->availableKeys.begin() ; i != this->availableKeys.end(); ++i, ++j){
+    for (std::vector<ViziaButton>::iterator i = this->availableButtons.begin() ; i != this->availableButtons.end(); ++i, ++j){
         this->lastAction[j] = actions[j];
         this->doomController->setButtonState(*i, actions[j]);
     }
@@ -91,8 +91,8 @@ float ViziaMain::makeAction(std::vector<bool>& actions){
     this->doomController->tic();
 
     /* Updates vars */
-    j=0;
-    for (std::vector<int>::iterator i = this->stateAvailableVars.begin() ; i != this->stateAvailableVars.end(); ++i, ++j){
+    j = 0;
+    for (std::vector<ViziaGameVar>::iterator i = this->stateAvailableVars.begin() ; i != this->stateAvailableVars.end(); ++i, ++j){
         this->state.vars[j] = this->doomController->getGameVar(*i);
     }
 
@@ -116,27 +116,22 @@ bool ViziaMain::isNewEpisode(){
     return this->doomController->isMapFirstTic();
 }
 
-bool ViziaMain::isEpisodeFinished(){
-    return this->doomController->isMapLastTic() || this->doomController->isPlayerDead();
-}
+//bool ViziaMain::isEpisodeFinished(){
+//    return this->doomController->isMapLastTic() || this->doomController->isPlayerDead();
+//}
 
-void ViziaMain::addAvailableKey(int key){
-    //Check for uniqueness
-    if(std::find(this->availableKeys.begin(),this->availableKeys.end(), key) == this->availableKeys.end())
-    {
-        this->availableKeys.push_back(key);
+void ViziaMain::addAvailableButton(ViziaButton button){
+    if(std::find(this->availableButtons.begin(),this->availableButtons.end(), button) == this->availableButtons.end()) {
+        this->availableButtons.push_back(button);
     }
-    
 }
 
-void ViziaMain::addAvailableKey(std::string key){
-    this->addAvailableKey(ViziaDoomController::getButtonId(key));   
-}
+//void ViziaMain::addAvailableButton(std::string button){
+//    this->addAvailableButton(ViziaDoomController::getButtonId(button));
+//}
 
-void ViziaMain::addStateAvailableVar(int var){
-    //Check for uniqueness
-    if(std::find(this->stateAvailableVars.begin(),this->stateAvailableVars.end(), var) == this->stateAvailableVars.end())
-    {
+void ViziaMain::addStateAvailableVar(ViziaGameVar var){
+    if(std::find(this->stateAvailableVars.begin(),this->stateAvailableVars.end(), var) == this->stateAvailableVars.end()) {
         this->stateAvailableVars.push_back(var);
     }
 }
@@ -166,10 +161,10 @@ void ViziaMain::setEpisodeTimeoutInDoomTics(unsigned int tics){
     this->doomController->setMapTimeout(tics);
 }
 
-void ViziaMain::setScreenResolution(int width, int height){ this->doomController->setScreenResolution(width, height); }
-void ViziaMain::setScreenWidth(int width){ this->doomController->setScreenWidth(width); }
-void ViziaMain::setScreenHeight(int height){ this->doomController->setScreenHeight(height); }
-void ViziaMain::setScreenFormat(int format){ this->doomController->setScreenFormat(format); }
+void ViziaMain::setScreenResolution(unsigned int width, unsigned int height){ this->doomController->setScreenResolution(width, height); }
+void ViziaMain::setScreenWidth(unsigned int width){ this->doomController->setScreenWidth(width); }
+void ViziaMain::setScreenHeight(unsigned int height){ this->doomController->setScreenHeight(height); }
+void ViziaMain::setScreenFormat(ViziaScreenFormat format){ this->doomController->setScreenFormat(format); }
 void ViziaMain::setRenderHud(bool hud){ this->doomController->setRenderHud(hud); }
 void ViziaMain::setRenderWeapon(bool weapon){ this->doomController->setRenderWeapon(weapon); }
 void ViziaMain::setRenderCrosshair(bool crosshair){ this->doomController->setRenderCrosshair(crosshair); }
@@ -178,9 +173,9 @@ void ViziaMain::setRenderParticles(bool particles){ this->doomController->setRen
 
 int ViziaMain::getScreenWidth(){ return this->doomController->getScreenWidth(); }
 int ViziaMain::getScreenHeight(){ return this->doomController->getScreenHeight(); }
-int ViziaMain::getScreenPitch(){ return this->doomController->getScreenPitch(); }
-int ViziaMain::getScreenSize(){ return this->doomController->getScreenSize(); }
-int ViziaMain::getScreenFormat(){ return this->doomController->getScreenFormat(); }
+size_t ViziaMain::getScreenPitch(){ return this->doomController->getScreenPitch(); }
+size_t ViziaMain::getScreenSize(){ return this->doomController->getScreenSize(); }
+ViziaScreenFormat ViziaMain::getScreenFormat(){ return this->doomController->getScreenFormat(); }
 
 ViziaMain::StateFormat ViziaMain::getStateFormat()
 {
@@ -188,5 +183,5 @@ ViziaMain::StateFormat ViziaMain::getStateFormat()
 }
 int ViziaMain::getActionFormat()
 {
-    return this->availableKeys.size();
+    return this->availableButtons.size();
 }

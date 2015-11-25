@@ -49,7 +49,7 @@ int main(){
     vdm->setScreenResolution(320, 240);
     // rozdzielczość znacząco wpływa na szybkość działania
 
-    vdm->setScreenFormat(VIZIA_SCREEN_RGB24);
+    vdm->setScreenFormat(RGB24);
 
     vdm->setRenderHud(true);
     vdm->setRenderCrosshair(true);
@@ -66,30 +66,30 @@ int main(){
         //vdm->setMouseX(-10); //obrót w lewo
 
         if(i%loop < 50) {
-            vdm->setButtonState(A_MOVERIGHT, true);   //ustaw inpup
+            vdm->setButtonState(MOVERIGHT, true);   //ustaw inpup
         }
         else{
-            vdm->setButtonState(A_MOVERIGHT, false);
+            vdm->setButtonState(MOVERIGHT, false);
         }
         if(i%loop >= 50) {
-            vdm->getInput()->BT[A_MOVELEFT] = true;  //lub w ten sposób
+            vdm->getInput()->BT[MOVELEFT] = true;  //lub w ten sposób
         }
         else{
-            vdm->getInput()->BT[A_MOVELEFT] = false;
+            vdm->getInput()->BT[MOVELEFT] = false;
         }
 
         if(i%loop == 25 || i%loop == 50 || i%loop == 75){
-            vdm->setButtonState(A_ATTACK, true);
+            vdm->setButtonState(ATTACK, true);
         }
         else{
-            vdm->setButtonState(A_ATTACK, false);
+            vdm->setButtonState(ATTACK, false);
         }
 
         if(i%loop == 30 || i%loop == 60){
-            vdm->setButtonState(A_JUMP, true);
+            vdm->setButtonState(JUMP, true);
         }
         else{
-            vdm->setButtonState(A_JUMP, false);
+            vdm->setButtonState(JUMP, false);
         }
 
         std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<

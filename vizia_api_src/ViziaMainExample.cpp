@@ -23,12 +23,12 @@ int main(){
     v.setRenderDecals(true);
     v.setRenderParticles(true);
 
-    v.addAvailableKey("MOVELEFT");
-    v.addAvailableKey("MOVERIGHT");
-    v.addAvailableKey("ATTACK");
+    v.addAvailableButton(MOVELEFT);
+    v.addAvailableButton(MOVERIGHT);
+    v.addAvailableButton(ATTACK);
 
-    v.addStateAvailableVar("HEALTH");
-    v.addStateAvailableVar("AMMO1");
+    v.addStateAvailableVar(HEALTH);
+    v.addStateAvailableVar(AMMO1);
 
     //v.setAutoNewEpisode(true); //enables episode auto reloading
 

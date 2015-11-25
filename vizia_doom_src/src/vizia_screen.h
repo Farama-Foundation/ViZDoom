@@ -14,9 +14,9 @@
 #define VIZIA_SCREEN_BGRA32 8
 #define VIZIA_SCREEN_ABGR32 9
 
-extern int viziaScreenWidth;
-extern int viziaScreenHeight;
-extern int viziaScreenPitch;
+extern unsigned int viziaScreenWidth;
+extern unsigned int viziaScreenHeight;
+extern size_t viziaScreenPitch;
 extern size_t viziaScreenSize;
 
 void Vizia_ScreenInit();

@@ -10,9 +10,9 @@
 #include "v_video.h"
 #include "r_renderer.h"
 
-int viziaScreenHeight;
-int viziaScreenWidth;
-int viziaScreenPitch;
+unsigned int viziaScreenHeight;
+unsigned int viziaScreenWidth;
+size_t viziaScreenPitch;
 size_t viziaScreenSize;
 
 int posMulti, rPos, gPos, bPos, aPos;
@@ -25,8 +25,8 @@ bip::mapped_region *viziaScreenSMRegion;
 BYTE *viziaScreen;
 
 void Vizia_ScreenInit() {
-    viziaScreenWidth = screen->GetWidth();
-    viziaScreenHeight = screen->GetHeight();
+    viziaScreenWidth = (unsigned int) screen->GetWidth();
+    viziaScreenHeight = (unsigned int) screen->GetHeight();
     viziaScreenSize = sizeof(BYTE) * viziaScreenWidth * viziaScreenHeight;
     //viziaScreenPitch = screen->GetPitch(); // returns 0 ??
     viziaScreenPitch = viziaScreenWidth;
@@ -117,7 +117,7 @@ void Vizia_ScreenInit() {
 
     printf("Vizia_ScreenInit: ViziaScreen SM region size: %zu, beginnig: %p, end: %p \n",
            viziaScreenSMRegion->get_size(), viziaScreenSMRegion->get_address(), viziaScreenSMRegion->get_address() + viziaScreenSMRegion->get_size());
-    printf("Vizia_ScreenInit: width: %d, height: %d, pitch: %d, format, %d\n",
+    printf("Vizia_ScreenInit: width: %d, height: %d, pitch: %d, format: %d\n",
            viziaScreenWidth, viziaScreenHeight, viziaScreenPitch, *vizia_screen_format);
 
 }
@@ -136,8 +136,8 @@ void Vizia_ScreenUpdate(){
             PalEntry *palette;
             palette = screen->GetPalette ();
 
-            for(uint i = 0; i < bufferSize; ++i){
-                uint pos = i * posMulti;
+            for(unsigned int i = 0; i < bufferSize; ++i){
+                unsigned int pos = i * posMulti;
                 viziaScreen[pos + rPos] = palette[buffer[i]].r;
                 viziaScreen[pos + gPos] = palette[buffer[i]].g;
                 viziaScreen[pos + bPos] = palette[buffer[i]].b;
