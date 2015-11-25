@@ -25,15 +25,15 @@ class ViziaMain{
         };
         struct StateFormat{
             /* shape[0] - num. of channels, 1 - x, 2 - y */
-            int image_shape[3];
-            int var_len;
+            int imageShape[3];
+            int varLen;
             StateFormat(){}
-            StateFormat(int channels, int x, int y, int var_len)
+            StateFormat(int channels, int x, int y, int varLen)
             {
-                this->image_shape[0] = channels;
-                this->image_shape[1] = x;
-                this->image_shape[2] = y;
-                this->var_len = var_len;
+                this->imageShape[0] = channels;
+                this->imageShape[1] = x;
+                this->imageShape[2] = y;
+                this->varLen = varLen;
             }
         };
         ViziaMain();
