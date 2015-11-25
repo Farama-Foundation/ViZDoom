@@ -60,8 +60,8 @@ int ViziaMain::init(){
     int y = this->doomController->getScreenWidth();
     int x = this->doomController->getScreenHeight();
     int channels = 3;
-    int var_len = this->stateAvailableVars.size();
-    this->stateFormat = StateFormat(channels, x, y, var_len);
+    int varLen = this->stateAvailableVars.size();
+    this->stateFormat = StateFormat(channels, x, y, varLen);
 
     /* TODO fill state here? */    
     return 0;
