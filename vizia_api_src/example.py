@@ -1,5 +1,7 @@
 #!/usr/bin/python
 from vizia import ViziaGame
+from vizia import Button
+from vizia import GameVar
 import random
 from time import sleep
 from time import time
@@ -21,12 +23,11 @@ game.setRenderWeapon(True)
 game.setRenderDecals(False)
 game.setRenderParticles(False);
 
-game.addAvailableKey("MOVELEFT")
-game.addAvailableKey("MOVERIGHT")
-game.addAvailableKey("ATTACK")
+game.addAvailableButton(Button.MOVELEFT)#moveleft
+game.addAvailableButton(Button.MOVERIGHT)#moveright
+game.addAvailableButton(Button.ATTACK)#attack
 
-#game.addStateAvailableVar("HEALTH");
-#game.addStateAvailableVar("AMMO1");
+game.addStateAvailableVar(GameVar.AMMO1);
 
 game.init()
 
@@ -37,7 +38,7 @@ right = actions[1]
 shoot = actions[2]
 idle = [False,False,False]
 
-iters = 1000
+iters = 10000
 sleep_time = 0.01
 game.newEpisode()
 start = time()
@@ -46,18 +47,9 @@ for i in range(iters):
 		game.newEpisode()
 	game.makeAction(random.choice(actions))
 	s = game.getState()
-	if not game.isEpisodeFinished():
-		img = np.float32(s[1])/256.0
-		img = np.swapaxes(img,0,2)
-		img = np.swapaxes(img,0,1)
-		img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-
-		cv2.namedWindow('doom', cv2.WINDOW_NORMAL)
-		cv2.imshow('doom',img)
-		cv2.waitKey(1)
-		#cv2.destroyAllWindows()
-
-	#sleep(0.01)
+	if 	not game.isEpisodeFinished():
+		print s[2]
+	sleep(0.01)
 end=time()
 
 t = end-start
