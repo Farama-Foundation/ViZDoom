@@ -1,2 +1,6 @@
 s1.wad
 Simple hardcoded script based reward for our base scenario. Working with controllerExample.
+
+s1_b.wad 
+Early reward calculations. Ammo amount not working.
+

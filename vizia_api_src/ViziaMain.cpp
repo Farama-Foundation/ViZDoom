@@ -6,6 +6,8 @@
 #include <vector>
 #include <algorithm>
 
+float lastReward = 0.0f;//awful, temporary solution
+
 unsigned int DoomTics2Ms (unsigned int tics){
     return (unsigned int)std::floor((float)1000/35 * tics);
 }
@@ -102,8 +104,14 @@ float ViziaMain::makeAction(std::vector<bool>& actions){
     this->state.imageWidth = this->doomController->getScreenWidth();
     this->state.imageHeight = this->doomController->getScreenHeight();
     this->state.imagePitch = this->doomController->getScreenPitch();
-    //TODO return reward
-    return 0.0;
+    
+    /* Return tic reward */    
+    
+    float mapReward = (float) this->doomController->getMapReward();
+    float reward = mapReward - lastReward;
+    lastReward = mapReward;
+      
+    return reward;
 }
 
 ViziaMain::State ViziaMain::getState(){
