@@ -124,9 +124,9 @@ bool ViziaMain::isNewEpisode(){
     return this->doomController->isMapFirstTic();
 }
 
-//bool ViziaMain::isEpisodeFinished(){
-//    return this->doomController->isMapLastTic() || this->doomController->isPlayerDead();
-//}
+bool ViziaMain::isEpisodeFinished(){
+    return this->doomController->isMapLastTic() || this->doomController->isPlayerDead();
+}
 
 void ViziaMain::addAvailableButton(ViziaButton button){
     if(std::find(this->availableButtons.begin(),this->availableButtons.end(), button) == this->availableButtons.end()) {
@@ -144,9 +144,9 @@ void ViziaMain::addStateAvailableVar(ViziaGameVar var){
     }
 }
 
-void ViziaMain::addStateAvailableVar(std::string var){
-    this->addStateAvailableVar(ViziaDoomController::getGameVarId(var));
-}
+//void ViziaMain::addStateAvailableVar(std::string var){
+//    this->addStateAvailableVar(ViziaDoomController::getGameVarId(var));
+//}
 
 const ViziaDoomController* ViziaMain::getController(){ return this->doomController; }
 
