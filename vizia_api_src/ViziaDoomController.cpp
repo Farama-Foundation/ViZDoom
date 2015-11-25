@@ -387,7 +387,7 @@ void ViziaDoomController::toggleButtonState(ViziaButton button){
     if( button < ViziaButtonsNumber && button >= 0 ) this->Input->BT[button] = !this->Input->BT[button];
 }
 
-void setAllowButton(ViziaButton button, bool allow){
+void ViziaDoomController::setAllowButton(ViziaButton button, bool allow){
     if( button < ViziaButtonsNumber && button >= 0 ) this->Input->BT_AVAILABLE[button] = allow;
 }
 
