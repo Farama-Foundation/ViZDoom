@@ -47,11 +47,14 @@ for i in range(iters):
 	game.makeAction(random.choice(actions))
 	s = game.getState()
 	if not game.isEpisodeFinished():
-		print "action format:",game.getActionFormat()
-		print "state format: ",game.getStateFormat()
-		cv2.namedWindow('image', cv2.WINDOW_NORMAL)
-		cv2.imshow('image',s[1][0]/256.0)
-		cv2.waitKey(10)
+		img = np.float32(s[1])/256.0
+		img = np.swapaxes(img,0,2)
+		img = np.swapaxes(img,0,1)
+		img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+
+		cv2.namedWindow('doom', cv2.WINDOW_NORMAL)
+		cv2.imshow('doom',img)
+		cv2.waitKey(1)
 		#cv2.destroyAllWindows()
 
 	#sleep(0.01)
