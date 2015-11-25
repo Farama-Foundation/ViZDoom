@@ -55,18 +55,18 @@ struct ViziaInputStruct{
 };
 
 struct ViziaGameVarsStruct{
-    int GAME_TIC;
+    unsigned int GAME_TIC;
 
-    int SCREEN_WIDTH;
-    int SCREEN_HEIGHT;
-    int SCREEN_PITCH;
-    int SCREEN_SIZE;
+    unsigned int SCREEN_WIDTH;
+    unsigned int SCREEN_HEIGHT;
+    size_t SCREEN_PITCH;
+    size_t SCREEN_SIZE;
     int SCREEN_FORMAT;
 
-    int MAP_REWARD;;
+    int MAP_REWARD;
 
-    int MAP_START_TIC;
-    int MAP_TIC;
+    unsigned int MAP_START_TIC;
+    unsigned int MAP_TIC;
 
     int MAP_KILLCOUNT;
     int MAP_ITEMCOUNT;

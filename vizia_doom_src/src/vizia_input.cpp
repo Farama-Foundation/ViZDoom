@@ -104,7 +104,7 @@ void Vizia_InputInit(){
     viziaInput->MS_X = 0;
     viziaInput->MS_Y = 0;
 
-    printf("Input SM region size: %zu, beginnig: %p, end: %p \n",
+    printf("Vizia_InputInit: Input SM region size: %zu, beginnig: %p, end: %p \n",
            viziaInputSMRegion->get_size(), viziaInputSMRegion->get_address(), viziaInputSMRegion->get_address() + viziaInputSMRegion->get_size());
 }
 
