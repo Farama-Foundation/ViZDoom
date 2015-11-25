@@ -72,7 +72,7 @@ class ViziaPythonApi: public ViziaMain
             }
             ViziaMain::State state = ViziaMain::getState();
             //TODO convert the image state to numpy array
-            PyObject* img = PyArray_SimpleNewFromData(3, this->image_shape, NPY_FLOAT32, state.image);
+            PyObject* img = PyArray_SimpleNewFromData(3, this->image_shape, NPY_INT8, state.imageBuffer);
             boost::python::handle<> handle( img );
             boost::python::numeric::array npy_img( handle );
                 

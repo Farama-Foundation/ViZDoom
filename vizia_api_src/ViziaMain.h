@@ -15,21 +15,21 @@ class ViziaMain{
         struct State{
             int number;
             int* vars;
-            float* image;
+            int imageWidth;
+            int imageHeight;
+            int imagePitch;
+            uint8_t* imageBuffer;
         };
-        struct StateFormat
-        {
-            //TODO some way to disable changing var_len and image_shape
-            /* shape[0] - num. of channels, 1 - y, 2 - x */
+        struct StateFormat{
+            /* shape[0] - num. of channels, 1 - x, 2 - y */
             int image_shape[3];
             int var_len;
             StateFormat(){}
-
-            StateFormat(int channels, int y, int x, int var_len)
+            StateFormat(int channels, int x, int y, int var_len)
             {
                 this->image_shape[0] = channels;
-                this->image_shape[1] = y;
-                this->image_shape[2] = x;
+                this->image_shape[1] = x;
+                this->image_shape[2] = y;
                 this->var_len = var_len;
             }
         };
@@ -92,7 +92,6 @@ class ViziaMain{
         int getScreenFormat();
 
     private:
-        void updateState();
 
         ViziaDoomController * doomController;
 

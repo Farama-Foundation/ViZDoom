@@ -37,19 +37,17 @@ bool ViziaMain::saveConfig(std::string file){
 
 int ViziaMain::init(){
     if(initialized){
-        std::cerr<<"Initialization Has already been done. Aborting init.";
+        std::cerr<<"Initialization has already been done. Aborting init.";
         return -1;
     }
     else{
         initialized = true;
     }
 
-    if( this->stateAvailableVars.size())
-    {
+    if( this->stateAvailableVars.size()){
         this->state.vars = new int[this->stateAvailableVars.size()];
     }
-    else
-    {
+    else{
         this->state.vars = NULL;
     }
     
@@ -63,12 +61,9 @@ int ViziaMain::init(){
     int x = this->doomController->getScreenHeight();
     int channels = 3;
     int var_len = this->stateAvailableVars.size();
-    this->stateFormat = StateFormat(channels,y,x,var_len);
+    this->stateFormat = StateFormat(channels, x, y, var_len);
 
-    /* Create state buffer */
-    this->state.image = new float[channels*y*x];
-    this->updateState();
-    
+    /* TODO fill state here? */    
     return 0;
 }
 
@@ -78,7 +73,6 @@ void ViziaMain::close(){
     {
         delete[](this->state.vars);
     }
-    delete[](this->state.image);
     delete[](this->lastAction);
 }
 
@@ -96,8 +90,18 @@ float ViziaMain::makeAction(std::vector<bool>& actions){
 
     this->doomController->tic();
 
-    this->updateState();
-    
+    /* Updates vars */
+    j=0;
+    for (std::vector<int>::iterator i = this->stateAvailableVars.begin() ; i != this->stateAvailableVars.end(); ++i, ++j){
+        this->state.vars[j] = this->doomController->getGameVar(*i);
+    }
+
+    /* Update float rgb image */
+    this->state.number = this->doomController->getMapTic();
+    this->state.imageBuffer = this->doomController->getScreen();
+    this->state.imageWidth = this->doomController->getScreenWidth();
+    this->state.imageHeight = this->doomController->getScreenHeight();
+    this->state.imagePitch = this->doomController->getScreenPitch();
     //TODO return reward
     return 0.0;
 }
@@ -106,28 +110,6 @@ ViziaMain::State ViziaMain::getState(){
     return this->state;
 }
 
-void ViziaMain::updateState()
-{
-    this->state.number = this->doomController->getMapTic();
-
-    /* Updates vars */
-    int j=0;
-    for (std::vector<int>::iterator i = this->stateAvailableVars.begin() ; i != this->stateAvailableVars.end(); ++i, ++j){
-        this->state.vars[j] = this->doomController->getGameVar(*i);
-    }
-    /* Update float rgb image */
-
-    uint8_t* rawBuffer = this->doomController->getScreen();
-    int bufferLen = this->stateFormat.image_shape[1]*this->stateFormat.image_shape[2];
-    for(int i=0; i<3; ++i)
-    {
-        for(int j=0; j<bufferLen; ++j)
-        {
-            this->state.image[bufferLen*i +j] = rawBuffer[j];
-        }
-
-    }
-}
 bool * ViziaMain::getlastAction(){ return this->lastAction; }
 
 bool ViziaMain::isNewEpisode(){
