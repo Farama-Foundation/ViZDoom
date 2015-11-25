@@ -45,11 +45,11 @@ start = time()
 for i in range(iters):
 	if game.isEpisodeFinished():
 		game.newEpisode()
-	game.makeAction(random.choice(actions))
+	r = game.makeAction(random.choice(actions))
 	s = game.getState()
-	if 	not game.isEpisodeFinished():
-		print s[2]
-	sleep(0.01)
+	if r!=0.0:
+		print "reward:",r
+	sleep(0.3)
 end=time()
 
 t = end-start
