@@ -1,6 +1,6 @@
-all: python_api mainExample controllerExample
+all: vizia.so mainExample controllerExample
 
-python_api: ViziaPythonWrapper.cpp ViziaMainPython.o ViziaMain.o ViziaDoomController.o ViziaMainPython.h
+vizia.so: ViziaPythonWrapper.cpp ViziaMainPython.o ViziaMain.o ViziaDoomController.o ViziaMainPython.h
 	g++ -fPIC -shared -Wl,-soname,vizia.so -o vizia.so ViziaPythonWrapper.cpp ViziaMainPython.o ViziaMain.o ViziaDoomController.o -lpython2.7 -lboost_python -I . -lrt -lpthread  -L/usr/local/lib -lboost_system -lboost_thread
 
 ViziaMainPython.o:  ViziaMainPython.cpp ViziaMainPython.h ViziaMain.h ViziaDefines.h
