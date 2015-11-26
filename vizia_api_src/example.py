@@ -7,6 +7,8 @@ from time import sleep
 from time import time
 import cv2
 import numpy as np
+
+
 game = ViziaGame()
 
 #available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
@@ -29,8 +31,9 @@ game.addAvailableButton(Button.ATTACK)#attack
 
 game.addStateAvailableVar(GameVar.AMMO1);
 
-##game.init()
-exit(0)
+#exit(0)
+game.init()
+
 
 actions = [[True,False,False],[False,True,False],[False,False,True]]
 left = actions[0]
@@ -38,7 +41,7 @@ right = actions[1]
 shoot = actions[2]
 idle = [False,False,False]
 
-iters = 10000
+iters = 1000
 sleep_time = 0.01
 game.newEpisode()
 start = time()
@@ -46,7 +49,7 @@ for i in range(iters):
 	if game.isEpisodeFinished():
 		game.newEpisode()
 	r = game.makeAction(random.choice(actions))
-	s = game.getState()
+	#s = game.getState()
 	#if r!=0:
 		#print "reward:",r
 	#sleep(0.01)
@@ -55,6 +58,8 @@ end=time()
 t = end-start
 print "time:",round(t,3)
 print "fps: ",round(iters/t,2)
+
+
 game.close()
 
  

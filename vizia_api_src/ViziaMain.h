@@ -37,7 +37,7 @@ class ViziaMain{
             }
         };
         ViziaMain();
-        ~ViziaMain();
+        virtual ~ViziaMain();
 
         bool loadConfig(std::string file);
         bool saveConfig(std::string file);

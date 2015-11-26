@@ -24,7 +24,7 @@ ViziaMain::ViziaMain(){
 ViziaMain::~ViziaMain(){
     //TODO deleting stuff created in init
     this->close();
-    delete(this->doomController);
+    delete this->doomController;
 }
 
 bool ViziaMain::loadConfig(std::string file){
