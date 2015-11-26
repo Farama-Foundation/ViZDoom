@@ -1,23 +1,13 @@
 #include <boost/python.hpp>
-#include "ViziaPythonApi.cpp"
-#include "ViziaMain.cpp"
-#include "ViziaDoomController.cpp"
+#include "ViziaMainPython.h"
 #include "ViziaDefines.h"
-/*C++ code to expose ViziaPythonApi via python */
+/*C++ code to expose ViziaMainPython via python */
 using namespace boost::python;
-
-
-
-class Py_ViziaMain{
-public:
-static ViziaMain* init(){
-    return new ViziaMain();
-}
-};
-
 
 BOOST_PYTHON_MODULE(vizia)
 {
+	/*I don't know if it's needed or not */
+	//Py_Initialize();
 
 	enum_<ViziaScreenFormat>("ScreenFormat")
 		.value("CRCGCB", CRCGCB)
@@ -92,44 +82,44 @@ BOOST_PYTHON_MODULE(vizia)
 	def("DoomTics2Ms", DoomTics2Ms);
 	def("Ms2DoomTics", Ms2DoomTics);
 
-    class_<ViziaPythonApi>("ViziaGame", init<>())
-	.def("init", &ViziaPythonApi::init)
-	.def("loadConfig", &ViziaPythonApi::loadConfig)
-	.def("close", &ViziaPythonApi::close)
-	.def("newEpisode", &ViziaPythonApi::newEpisode)
-	.def("isEpisodeFinished", &ViziaPythonApi::isEpisodeFinished)
-	.def("isNewEpisode", &ViziaPythonApi::isNewEpisode)
-	.def("makeAction",&ViziaPythonApi::makeAction)
-	.def("getState", &ViziaPythonApi::getState)
-	.def("getStateFormat", &ViziaPythonApi::getStateFormat)
-	.def("getActionFormat", &ViziaPythonApi::getActionFormat)
+    class_<ViziaMainPython>("ViziaGame", init<>())
+		.def("init", &ViziaMainPython::init)
+		.def("loadConfig", &ViziaMainPython::loadConfig)
+		.def("close", &ViziaMainPython::close)
+		.def("newEpisode", &ViziaMainPython::newEpisode)
+		.def("isEpisodeFinished", &ViziaMainPython::isEpisodeFinished)
+		.def("isNewEpisode", &ViziaMainPython::isNewEpisode)
+		.def("makeAction",&ViziaMainPython::makeAction)
+		.def("getState", &ViziaMainPython::getState)
+		.def("getStateFormat", &ViziaMainPython::getStateFormat)
+		.def("getActionFormat", &ViziaMainPython::getActionFormat)
 
-	.def("addStateAvailableVar", &ViziaPythonApi::addStateAvailableVar)
-	.def("addAvailableButton", &ViziaPythonApi::addAvailableButton)
-	.def("setDoomGamePath", &ViziaPythonApi::setDoomGamePath)
-	.def("setDoomIwadPath", &ViziaPythonApi::setDoomIwadPath)
-	.def("setDoomFilePath", &ViziaPythonApi::setDoomFilePath)
-	.def("setDoomMap", &ViziaPythonApi::setDoomMap)
-	.def("setDoomSkill", &ViziaPythonApi::setDoomSkill)
-	.def("setDoomConfigPath", &ViziaPythonApi::setDoomConfigPath)
-	.def("setNewEpisodeOnTimeout", &ViziaPythonApi::setNewEpisodeOnTimeout)
-	.def("setNewEpisodeOnPlayerDeath", &ViziaPythonApi::setNewEpisodeOnPlayerDeath)
-	.def("setEpisodeTimeoutInMiliseconds", &ViziaPythonApi::setEpisodeTimeoutInMiliseconds)
-	.def("setEpisodeTimeoutInDoomTics", &ViziaPythonApi::setEpisodeTimeoutInDoomTics)
-	.def("setScreenResolution", &ViziaPythonApi::setScreenResolution)
-	.def("setScreenWidth", &ViziaPythonApi::setScreenWidth)
-	.def("setScreenHeight", &ViziaPythonApi::setScreenHeight)
-	.def("setScreenFormat", &ViziaPythonApi::setScreenFormat)
-	.def("setRenderHud", &ViziaPythonApi::setRenderHud)
-	.def("setRenderWeapon", &ViziaPythonApi::setRenderWeapon)
-	.def("setRenderCrosshair", &ViziaPythonApi::setRenderCrosshair)
-	.def("setRenderDecals", &ViziaPythonApi::setRenderDecals)
-	.def("setRenderParticles", &ViziaPythonApi::setRenderParticles)
-	.def("getScreenWidth", &ViziaPythonApi::getScreenWidth)
-	.def("getScreenHeight", &ViziaPythonApi::getScreenHeight)
-	.def("getScreenSize", &ViziaPythonApi::getScreenSize)
-	.def("getScreenPitch", &ViziaPythonApi::getScreenPitch)
-	.def("getScreenFormat", &ViziaPythonApi::getScreenFormat)
+		.def("addStateAvailableVar", &ViziaMainPython::addStateAvailableVar)
+		.def("addAvailableButton", &ViziaMainPython::addAvailableButton)
+		.def("setDoomGamePath", &ViziaMainPython::setDoomGamePath)
+		.def("setDoomIwadPath", &ViziaMainPython::setDoomIwadPath)
+		.def("setDoomFilePath", &ViziaMainPython::setDoomFilePath)
+		.def("setDoomMap", &ViziaMainPython::setDoomMap)
+		.def("setDoomSkill", &ViziaMainPython::setDoomSkill)
+		.def("setDoomConfigPath", &ViziaMainPython::setDoomConfigPath)
+		.def("setNewEpisodeOnTimeout", &ViziaMainPython::setNewEpisodeOnTimeout)
+		.def("setNewEpisodeOnPlayerDeath", &ViziaMainPython::setNewEpisodeOnPlayerDeath)
+		.def("setEpisodeTimeoutInMiliseconds", &ViziaMainPython::setEpisodeTimeoutInMiliseconds)
+		.def("setEpisodeTimeoutInDoomTics", &ViziaMainPython::setEpisodeTimeoutInDoomTics)
+		.def("setScreenResolution", &ViziaMainPython::setScreenResolution)
+		.def("setScreenWidth", &ViziaMainPython::setScreenWidth)
+		.def("setScreenHeight", &ViziaMainPython::setScreenHeight)
+		.def("setScreenFormat", &ViziaMainPython::setScreenFormat)
+		.def("setRenderHud", &ViziaMainPython::setRenderHud)
+		.def("setRenderWeapon", &ViziaMainPython::setRenderWeapon)
+		.def("setRenderCrosshair", &ViziaMainPython::setRenderCrosshair)
+		.def("setRenderDecals", &ViziaMainPython::setRenderDecals)
+		.def("setRenderParticles", &ViziaMainPython::setRenderParticles)
+		.def("getScreenWidth", &ViziaMainPython::getScreenWidth)
+		.def("getScreenHeight", &ViziaMainPython::getScreenHeight)
+		.def("getScreenSize", &ViziaMainPython::getScreenSize)
+		.def("getScreenPitch", &ViziaMainPython::getScreenPitch)
+		.def("getScreenFormat", &ViziaMainPython::getScreenFormat)
 	
     ;
 

@@ -1,16 +1,21 @@
-all: doom_controller vizia_main python_api clean
+all: python_api mainExample controllerExample
 
-doom_controller: ViziaDoomController.cpp ViziaDoomController.h ViziaDoomControllerExample.cpp boost/process.hpp ViziaDefines.h
-	g++ -Wall -I . ViziaDoomController.cpp ViziaDoomControllerExample.cpp -o controllerExample -lrt -lpthread -L/usr/local/lib -lboost_system -lboost_thread -lSDL2
+python_api: PythonVizia.cpp ViziaMainPython.o ViziaMain.o ViziaDoomController.o ViziaMainPython.h
+	g++ -fPIC -shared -Wl,-soname,vizia.so -o vizia.so PythonVizia.cpp ViziaMainPython.o ViziaMain.o ViziaDoomController.o -lpython2.7 -lboost_python -I . -lrt -lpthread  -L/usr/local/lib -lboost_system -lboost_thread
 
-vizia_main: ViziaMain.cpp ViziaMain.h ViziaDoomController.h boost/process.hpp ViziaDefines.h
-	g++ -Wall -I . ViziaDoomController.cpp ViziaMain.cpp ViziaMainExample.cpp -o mainExample -lrt -lpthread -L/usr/local/lib -lboost_system -lboost_thread
+ViziaMainPython.o:  ViziaMainPython.cpp ViziaMainPython.h ViziaMain.h ViziaDefines.h
+	g++ -Wall -fPIC -I . -c -fPIC ViziaMainPython.cpp  -lrt -lpthread  -L/usr/local/lib -lboost_system -lboost_thread -lboost_python -lpython2.7
 
-PythonVizia.o: PythonVizia.cpp ViziaPythonApi.cpp ViziaMain.h ViziaDoomController.h  ViziaMain.cpp ViziaDefines.h
-	g++  -c -fPIC PythonVizia.cpp -o PythonVizia.o -I . -lrt -lpthread  -L/usr/local/lib -lboost_system -lboost_thread
+mainExample: ViziaMainExample.cpp ViziaMain.o ViziaDoomController.o ViziaMain.h   
+	g++ -Wall -I . ViziaMainExample.cpp ViziaMain.o  ViziaDoomController.o -o mainExample -lrt -lpthread -L/usr/local/lib -lboost_system -lboost_thread
+ViziaMain.o: ViziaMain.cpp ViziaMain.h ViziaDoomController.h  ViziaDefines.h
+	g++ -Wall -fPIC -I . -c  ViziaMain.cpp -lrt -lpthread -L/usr/local/lib -lboost_system -lboost_thread
 
-python_api: PythonVizia.o
-	g++ -shared -Wl,-soname,vizia.so -o vizia.so PythonVizia.o -lpython2.7 -lboost_python -I . -lrt -lpthread  -L/usr/local/lib -lboost_system -lboost_thread
+controllerExample:  ViziaDoomControllerExample.cpp  ViziaDoomController.h  ViziaDefines.h ViziaDoomController.o
+	g++ -Wall -I . -o controllerExample ViziaDoomController.o ViziaDoomControllerExample.cpp  -lrt -lpthread -L/usr/local/lib -lboost_system -lboost_thread -lSDL2
+ViziaDoomController.o: ViziaDoomController.cpp ViziaDoomController.h ViziaDefines.h boost/process.hpp
+	g++ -Wall -fPIC -I . -c ViziaDoomController.cpp -lrt -lpthread -L/usr/local/lib -lboost_system -lboost_thread -lSDL2
+
 
 clean:
-	rm -rf *.o
+	rm -rf *.o vizia.so
