@@ -19,6 +19,19 @@ static ViziaMain* init(){
 BOOST_PYTHON_MODULE(vizia)
 {
 
+	enum_<ViziaScreenFormat>("ScreenFormat")
+		.value("CRCGCB", CRCGCB)
+		.value("CRCGCBCA", CRCGCBCA)
+		.value("RGB24", RGB24)
+		.value("RGBA32", RGBA32)
+		.value("ARGB32", ARGB32)
+		.value("CBCGCR", CBCGCR)
+		.value("CBCGCRCA", CBCGCRCA)
+		.value("BGR24", BGR24)
+		.value("BGRA32", BGRA32)
+		.value("ABGR32", ABGR32)
+		;
+
 	enum_<ViziaButton>("Button")
         .value("ATTACK", ATTACK)
         .value("USE", USE)
