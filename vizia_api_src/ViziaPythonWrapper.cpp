@@ -1,6 +1,7 @@
 #include <boost/python.hpp>
 #include "ViziaMainPython.h"
 #include "ViziaDefines.h"
+
 /*C++ code to expose ViziaMainPython via python */
 using namespace boost::python;
 
