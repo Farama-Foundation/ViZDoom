@@ -210,3 +210,8 @@ class CNNEvaluator(MLPEvaluator):
         else:
             self._learn = theano.function([self._image_inputs, self._targets], loss, updates=updates)
             self._evaluate = theano.function([self._image_inputs], predictions)
+
+        params = lasagne.layers.get_all_param_values(self._network)
+        for p in params:
+            print p.shape
+        exit(0)

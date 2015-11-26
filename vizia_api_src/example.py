@@ -29,8 +29,8 @@ game.addAvailableButton(Button.ATTACK)#attack
 
 game.addStateAvailableVar(GameVar.AMMO1);
 
-game.init()
-
+##game.init()
+exit(0)
 
 actions = [[True,False,False],[False,True,False],[False,False,True]]
 left = actions[0]
@@ -47,10 +47,9 @@ for i in range(iters):
 		game.newEpisode()
 	r = game.makeAction(random.choice(actions))
 	s = game.getState()
-	if r!=0:
-
-		print "reward:",r
-	sleep(0.01)
+	#if r!=0:
+		#print "reward:",r
+	#sleep(0.01)
 end=time()
 
 t = end-start

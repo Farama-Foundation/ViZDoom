@@ -8,7 +8,6 @@ from evaluators import CNNEvaluator
 from time import time
 import itertools as it
 import lasagne
-import api
 
 def api_init_wrapper(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo):
     api.init(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo)
@@ -48,7 +47,7 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     network_args["filter_size"] = [4, 4]
     return CNNEvaluator(**cnn_args)
 
-def create_game(shooting_game = True):
+def create_game():
     game_args = dict()
     game_args['x'] = 31
     game_args['y'] = 31
@@ -61,11 +60,7 @@ def create_game(shooting_game = True):
     game_args['random_background'] = True
     game_args['ammo'] = np.inf
 
-    if shooting_game:
-        game = ShootingDotGame(**game_args)
-    else:
-        api_init_wrapper(**game_args)
-        game = api
+    game = ShootingDotGame(**game_args)
     return game
 
 def create_engine( game, online_mode=False ):
@@ -86,7 +81,7 @@ def create_engine( game, online_mode=False ):
     engine = QEngine(**engine_args)
     return engine
 
-game = create_game(False)
+game = create_game()
 engine = create_engine(game)
 
 
