@@ -17,7 +17,7 @@ class ViziaMain{
 
         struct State{
             int number;
-            int* vars;
+            std::vector<int> vars;
             int imageWidth;
             int imageHeight;
             int imagePitch;
@@ -49,7 +49,7 @@ class ViziaMain{
         float makeAction(std::vector<bool>& actions);
 
         ViziaMain::State getState();
-        bool * getlastAction();
+        std::vector<bool> getlastAction();
         bool isNewEpisode();
         bool isEpisodeFinished();
 
@@ -101,7 +101,7 @@ class ViziaMain{
         std::vector<ViziaGameVar> stateAvailableVars;
         std::vector<ViziaButton> availableButtons;
 
-        bool *lastAction;
+        std::vector<bool> lastAction;
 
         bool initialized;
 

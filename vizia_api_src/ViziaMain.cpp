@@ -18,6 +18,7 @@ unsigned int Ms2DoomTics (unsigned int ms){
 
 ViziaMain::ViziaMain(){
     initialized = false;
+    /* Should usually be 0 but not always it seems. */
     this->doomController = new ViziaDoomController();
 }
 
@@ -46,15 +47,10 @@ int ViziaMain::init(){
         initialized = true;
     }
 
-    if( this->stateAvailableVars.size()){
-        this->state.vars = new int[this->stateAvailableVars.size()];
-    }
-    else{
-        this->state.vars = NULL;
-    }
     
+    this->state.vars.resize(this->stateAvailableVars.size());
     /* set all if none are set */
-    this->lastAction = new bool[this->availableButtons.size()];
+    this->lastAction.resize(this->availableButtons.size());
 
     this->doomController->init();
 
@@ -71,11 +67,8 @@ int ViziaMain::init(){
 
 void ViziaMain::close(){
     this->doomController->close();
-    if( this->stateAvailableVars.size())
-    {
-        delete[](this->state.vars);
-    }
-    delete[](this->lastAction);
+    this->state.vars.clear();
+    this->lastAction.clear();
 }
 
 void ViziaMain::newEpisode(){
@@ -118,7 +111,7 @@ ViziaMain::State ViziaMain::getState(){
     return this->state;
 }
 
-bool * ViziaMain::getlastAction(){ return this->lastAction; }
+std::vector<bool> ViziaMain::getlastAction(){ return this->lastAction; }
 
 bool ViziaMain::isNewEpisode(){
     return this->doomController->isMapFirstTic();
