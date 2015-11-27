@@ -44,8 +44,11 @@ shoot = actions[2]
 idle = [False,False,False]
 
 iters = 1000
+<<<<<<< HEAD
 sleep_time = 0.01
+=======
 #game.new_episode()
+>>>>>>> f5be3de637a20e5d137d2ac3895537c9124ea534
 start = time()
 for i in range(iters):
 	if game.is_episode_finished():

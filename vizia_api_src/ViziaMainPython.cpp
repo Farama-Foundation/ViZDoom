@@ -55,11 +55,11 @@ object ViziaMainPython::getState()
     boost::python::numeric::array npyImg( handle );
 
     //TODO copy or no?
-    if (state.vars != NULL)
+    if ( state.vars.size() > 0 )
     {
 
         npy_intp varLen = boost::python::extract<int>(this->stateFormat[1]);
-        PyObject* vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, state.vars);
+        PyObject* vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, state.vars.data());
         boost::python::handle<> handle( vars );
         boost::python::numeric::array npyVars( handle );
 

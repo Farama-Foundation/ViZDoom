@@ -17,51 +17,44 @@ int main(){
 
     v->setScreenResolution(320, 240);
 
-    v->setRenderHud(true);
-    v->setRenderCrosshair(true);
+    v->setRenderHud(false);
+    v->setRenderCrosshair(false);
     v->setRenderWeapon(true);
-    v->setRenderDecals(true);
-    v->setRenderParticles(true);
+    v->setRenderDecals(false);
+    v->setRenderParticles(false);
 
     v->addAvailableButton(MOVELEFT);
     v->addAvailableButton(MOVERIGHT);
     v->addAvailableButton(ATTACK);
 
-    v->addStateAvailableVar(HEALTH);
+    //v->addStateAvailableVar(HEALTH);
     v->addStateAvailableVar(AMMO1);
 
-    //v->setAutoNewEpisode(true); //enables episode auto reloading
-    std::cout<<"Expecting segfault:"<<std::endl;
-    v->close();
-    delete v;
-    return 0;
+
     v->init();
 
-    int iterations = 10000;
+    std::vector<bool> action(3);
+
+    action[0] = true;
+    action[1] = false;
+    action[2] = false;
+
+    int iterations = 1000;
     for(int i = 0; i < iterations; ++i){
 
         if( v->isEpisodeFinished() ){
             std::cout << "\nNEW EPISODE\n\n";
             v->newEpisode();
         }
-
-        std::vector<bool> actions(3);
-
-        actions[0] = false;
-        
-        actions[1] = false;
-        
-        actions[2] = true;
-        
-
         //ViziaMain::State s = v->getState();
 
         //std::cout << "STATE NUMBER: " << s.number <<
         //" HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
 
-        v->makeAction(actions);
-        //usleep(10000);
+        v->makeAction(action);
+        usleep(15000);
     }
 
     v->close();
+    delete v;
 }
