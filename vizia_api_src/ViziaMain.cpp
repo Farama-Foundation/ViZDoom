@@ -18,6 +18,9 @@ unsigned int Ms2DoomTics (unsigned int ms){
 
 ViziaMain::ViziaMain(){
     initialized = false;
+    /* Should usually be 0 but not always it seems. */
+    this->state.vars = NULL;
+    this->lastAction = NULL;
     this->doomController = new ViziaDoomController();
 }
 
@@ -49,10 +52,7 @@ int ViziaMain::init(){
     if( this->stateAvailableVars.size()){
         this->state.vars = new int[this->stateAvailableVars.size()];
     }
-    else{
-        this->state.vars = NULL;
-    }
-    
+   
     /* set all if none are set */
     this->lastAction = new bool[this->availableButtons.size()];
 
@@ -71,11 +71,11 @@ int ViziaMain::init(){
 
 void ViziaMain::close(){
     this->doomController->close();
-    if( this->stateAvailableVars.size())
-    {
-        delete[](this->state.vars);
-    }
+
+    delete[](this->state.vars);
+    this->state.vars= NULL;
     delete[](this->lastAction);
+    this->lastAction = NULL;
 }
 
 void ViziaMain::newEpisode(){

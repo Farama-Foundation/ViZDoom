@@ -32,9 +32,7 @@ int main(){
 
     //v->setAutoNewEpisode(true); //enables episode auto reloading
     std::cout<<"Expecting segfault:"<<std::endl;
-    v->close();
-    delete v;
-    return 0;
+
     v->init();
 
     int iterations = 10000;
@@ -64,4 +62,5 @@ int main(){
     }
 
     v->close();
+    delete v;
 }
