@@ -133,11 +133,17 @@ bool ViziaDoomController::init(){
         doomThread = new b::thread(b::bind(&ViziaDoomController::lunchDoom, this));
         this->waitForDoom();
 
-        if(this->doomRunning) this->SMInit();
-        else this->MQClose();
+        if(this->doomRunning) {
+            this->SMInit();
+            return true;
+        }
+        else{
+            this->MQClose();
+            return false;
+        }
     }
 
-    return true;
+    return false;
 }
 
 bool ViziaDoomController::close(){
@@ -146,17 +152,21 @@ bool ViziaDoomController::close(){
 //        bpr::terminate(this->doomProcess);
 //    }
 
-    this->MQSend(VIZIA_MSG_CODE_CLOSE);
+    if(this->doomRunning) {
+        this->MQSend(VIZIA_MSG_CODE_CLOSE);
 
-    doomThread->interrupt();
-    doomThread->join();
+        doomThread->interrupt();
+        doomThread->join();
 
-    this->SMClose();
-    this->MQClose();
+        this->SMClose();
+        this->MQClose();
 
-    this->doomRunning = false;
+        this->doomRunning = false;
 
-    return true;
+        return true;
+    }
+
+    return false;
 }
 
 bool ViziaDoomController::tic(){
