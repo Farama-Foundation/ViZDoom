@@ -84,8 +84,10 @@ ViziaGameVar ViziaDoomController::getGameVarId(std::string name){
 //PUBLIC FUNCTIONS
 
 ViziaDoomController::ViziaDoomController(){
-    this->screenWidth = 640;
-    this->screenHeight = 480;
+    this->screenWidth = 320;
+    this->screenHeight = 240;
+    this->screenPitch = 0;
+    this->screenSize = 0;
     this->screenFormat = CRCGCB;
 
     this->gamePath = "zdoom";
@@ -106,8 +108,11 @@ ViziaDoomController::ViziaDoomController(){
     this->autoRestartOnPlayersDeath = true;
     this->mapTimeout = 0;
     this->mapRestartCount = 0;
+    this->mapRestarting = false;
     this->mapEnded = false;
     this->mapLastTic = 0;
+
+    // AUTO RESTART
 
     generateInstanceId();
     this->doomRunning = false;
