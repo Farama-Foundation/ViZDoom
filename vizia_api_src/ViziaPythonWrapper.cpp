@@ -22,7 +22,6 @@ BOOST_PYTHON_MODULE(vizia)
 		.value("BGRA32", BGRA32)
 		.value("ABGR32", ABGR32)
 		;
-
 	enum_<ViziaButton>("Button")
         .value("ATTACK", ATTACK)
         .value("USE", USE)
@@ -53,7 +52,6 @@ BOOST_PYTHON_MODULE(vizia)
         .value("SELECT_PREV_WEAPON", SELECT_PREV_WEAPON)
         .value("UNDEFINED_BUTTON", UNDEFINED_BUTTON)
         ;
-
     enum_<ViziaGameVar>("GameVar")
         .value("KILLCOUNT", KILLCOUNT)
         .value("ITEMCOUNT", ITEMCOUNT)
@@ -79,7 +77,6 @@ BOOST_PYTHON_MODULE(vizia)
         .value("UNDEFINED_VAR", UNDEFINED_VAR)
         ;
     
-
 	def("DoomTics2Ms", DoomTics2Ms);
 	def("Ms2DoomTics", Ms2DoomTics);
 
@@ -121,7 +118,6 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("getScreenSize", &ViziaMainPython::getScreenSize)
 		.def("getScreenPitch", &ViziaMainPython::getScreenPitch)
 		.def("getScreenFormat", &ViziaMainPython::getScreenFormat)
-	
     ;
 
 }
