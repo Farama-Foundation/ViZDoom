@@ -43,7 +43,6 @@ idle = [False,False,False]
 
 iters = 1000
 sleep_time = 0.01
-game.newEpisode()
 start = time()
 for i in range(iters):
 	if game.isEpisodeFinished():
