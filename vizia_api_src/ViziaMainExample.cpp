@@ -5,41 +5,44 @@
 
 int main(){
 
-    ViziaMain v= ViziaMain();
+    ViziaMain* v= new ViziaMain();
 
     std::cout << "\n\nVIZIA MAIN EXAMPLE\n\n";
 
-    v.setDoomGamePath("zdoom");
-    v.setDoomIwadPath("doom2.wad");
-    v.setDoomFilePath("s1_b.wad");
-    v.setDoomMap("map01");
-    v.setEpisodeTimeoutInDoomTics(200);
+    v->setDoomGamePath("zdoom");
+    v->setDoomIwadPath("doom2.wad");
+    v->setDoomFilePath("s1_b.wad");
+    v->setDoomMap("map01");
+    v->setEpisodeTimeoutInDoomTics(200);
 
-    v.setScreenResolution(320, 240);
+    v->setScreenResolution(320, 240);
 
-    v.setRenderHud(true);
-    v.setRenderCrosshair(true);
-    v.setRenderWeapon(true);
-    v.setRenderDecals(true);
-    v.setRenderParticles(true);
+    v->setRenderHud(true);
+    v->setRenderCrosshair(true);
+    v->setRenderWeapon(true);
+    v->setRenderDecals(true);
+    v->setRenderParticles(true);
 
-    v.addAvailableButton(MOVELEFT);
-    v.addAvailableButton(MOVERIGHT);
-    v.addAvailableButton(ATTACK);
+    v->addAvailableButton(MOVELEFT);
+    v->addAvailableButton(MOVERIGHT);
+    v->addAvailableButton(ATTACK);
 
-    v.addStateAvailableVar(HEALTH);
-    v.addStateAvailableVar(AMMO1);
+    v->addStateAvailableVar(HEALTH);
+    v->addStateAvailableVar(AMMO1);
 
-    //v.setAutoNewEpisode(true); //enables episode auto reloading
+    //v->setAutoNewEpisode(true); //enables episode auto reloading
+    std::cout<<"Expecting segfault:"<<std::endl;
+    v->close();
+    delete v;
+    return 0;
+    v->init();
 
-    v.init();
-
-    int iterations = 1000;
+    int iterations = 10000;
     for(int i = 0; i < iterations; ++i){
 
-        if( v.isEpisodeFinished() ){
+        if( v->isEpisodeFinished() ){
             std::cout << "\nNEW EPISODE\n\n";
-            v.newEpisode();
+            v->newEpisode();
         }
 
         std::vector<bool> actions(3);
@@ -51,14 +54,14 @@ int main(){
         actions[2] = true;
         
 
-        //ViziaMain::State s = v.getState();
+        //ViziaMain::State s = v->getState();
 
         //std::cout << "STATE NUMBER: " << s.number <<
         //" HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
 
-        v.makeAction(actions);
+        v->makeAction(actions);
         //usleep(10000);
     }
 
-    v.close();
+    v->close();
 }
