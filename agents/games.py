@@ -106,9 +106,9 @@ class ShootingDotGame:
         if self._state is None:
             return None
         else:
-            ret_val = [self._state]
+            ret_val = [self._state.copy()]
             if self._ammo < np.inf:
-                ret_val.append(self._current_ammo / self._ammo)
+                ret_val.append(self._current_ammo.copy() / self._ammo)
 
             return ret_val
 
