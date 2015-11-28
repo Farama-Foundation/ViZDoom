@@ -46,15 +46,14 @@ class QEngine:
         else:
             self._misc_state_included = False
 
-    def _update_state(self):
-        raw_state = self._game.get_state()
-        img = raw_state[0].copy()
-
+    # it doesn't copy the state
+    def _update_state(self, raw_state):
+        img = raw_state[0]
         if self._misc_state_included:
-            misc = raw_state[1].copy()
+            misc = raw_state[1]
         if self._history_length > 1:
             self._current_image_state[0:-self._channels] = self._current_image_state[self._channels:]
-            self._current_image_state[-self._channels:] = raw_state[0].copy()
+            self._current_image_state[-self._channels:] = img
             if self._misc_state_included:
                 self._current_misc_state[0:-1] = self._current_misc_state[1:]
                 self._current_misc_state[-1] = misc
@@ -66,67 +65,92 @@ class QEngine:
 
     def _new_game(self):
         self._game.new_episode()
-        self._current_image_state.fill(0.0)
-        if self._misc_state_included:
-            self._current_misc_state.fill(0.0)
-        self._update_state()
+        self.reset_state()
+        self._update_state(self._game.get_state())
 
-    def make_step(self):
-        if self.learning_mode:
-            self._steps += 1
-        # epsilon decay:
-        if self._steps > self._epsilon_decay_start and self._epsilon > 0:
-            self._epsilon -= self._epsilon_decay_stride
-            self._epsilon = max(self._epsilon, 0)
-
-        # if the current episode is finished, spawn a new one
-        if self._game.is_finished():
-            self._new_game()
-
-        if self._misc_state_included:
+    def _copy_current_state(self):
+    	if self._misc_state_included:
             s = [self._current_image_state.copy(), self._current_misc_state.copy()]
         else:
             s = [self._current_image_state.copy()]
+        return s
+    
+    def _current_state(self):
+    	if self._misc_state_included:
+            s = [self._current_image_state, self._current_misc_state]
+        else:
+            s = [self._current_image_state]
+        return s
 
-        if self.learning_mode:
+    def _choose_action_index(self, state):
+    	self._update_state(state)
+    	s = self._current_state()
+    	return self._evaluator.best_action(s)
 
-            # with probability epsilon make random action:
-            if self._epsilon >= random.random():
-                a = random.randint(0, len(self._actions) - 1)
-            else:
-                a = self._evaluator.best_action(s)
+    def learn_from_master(self, state_action):
+    	pass
+        #TODO
 
-            self._actions_stats[a] += 1
-            r = self._game.make_action(self._actions[a])
+    def choose_action(self, state):
+        return self._actions(self._choose_action_index(state))
 
-            if self._game.is_finished():
-                s2 = None
-            else:
-                self._update_state()
-                if self._misc_state_included:
-                    s2 = [self._current_image_state.copy(), self._current_misc_state.copy()]
-                else:
-                    s2 = [self._current_image_state.copy()]
+    def reset_state(self):
+        self._current_image_state.fill(0.0)
+        if self._misc_state_included:
+            self._current_misc_state.fill(0.0)
 
-            self._transitions.add_transition(s, a, s2, r)
+    def make_step(self):
+    	a = self._choose_action_index(self._game.get_state())
+    	self._actions_stats[a] += 1
+    	self._game.make_action(self._actions[a])
 
-            # Perform q-learning once for a while
-            if self._steps % self._update_frequency[0] == 0 and not self.online_mode and self._steps > self._batch_size:
-                for i in range(self._update_frequency[1]):
-                    self._evaluator.learn(self._transitions.get_sample(self._batch_size))
-            elif self.online_mode:
-                self._evaluator.learn_one(s, a, s2, r)
+    def make_learning_step(self):
+        self._steps += 1
+       	# epsilon decay:
+        if self._steps > self._epsilon_decay_start and self._epsilon > 0:
+	        self._epsilon -= self._epsilon_decay_stride
+	        self._epsilon = max(self._epsilon, 0)
+
+	    # copy needed as it will be stored in transitions
+        s = self._copy_current_state();
+
+        # with probability epsilon choose a random action:
+        if self._epsilon >= random.random():
+            a = random.randint(0, len(self._actions) - 1)
         else:
             a = self._evaluator.best_action(s)
-            self._actions_stats[a] += 1
-            self._game.make_action(self._actions[a])
-            if not self._game.is_finished():
-                self._update_state()
+        self._actions_stats[a] += 1
 
+        # make action and get the reward
+        r = self._game.make_action(self._actions[a])
+
+        #update state s2 accordingly
+        if self._game.is_finished():
+            # terminal state
+            s2 = None
+        else:
+            self._update_state(self._game.get_state())
+            s2 = self._copy_current_state()
+
+        self._transitions.add_transition(s, a, s2, r)
+
+        # Perform q-learning once for a while
+        if self._steps % self._update_frequency[0] == 0 and not self.online_mode and self._steps > self._batch_size:
+            for i in range(self._update_frequency[1]):
+                self._evaluator.learn(self._transitions.get_sample(self._batch_size))
+        elif self.online_mode:
+            self._evaluator.learn_one(s, a, s2, r)
+      
     def run_episode(self):
         self._new_game()
-        while not self._game.is_finished():
-            self.make_step()
+       	if self.learning_mode:
+       		self._update_state(self._game.get_state())
+	        while not self._game.is_finished():
+	            self.make_learning_step()
+       	else:
+	        while not self._game.is_finished():
+	            self.make_step()
+        
 
         return self._game.get_summary_reward()
 

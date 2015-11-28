@@ -19,7 +19,6 @@ def actions_generator(the_game):
         actions.append(perm)
     return actions
 
-
 def create_mlp_evaluator(state_format, actions_number, batch_size, gamma):
     mlp_args = dict()
     mlp_args["gamma"] = gamma
@@ -30,7 +29,6 @@ def create_mlp_evaluator(state_format, actions_number, batch_size, gamma):
     network_args["updates"] = lasagne.updates.nesterov_momentum
     mlp_args["network_args"] = network_args
     return MLPEvaluator(**mlp_args)
-
 
 def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     cnn_args = dict()
@@ -49,15 +47,15 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
 
 def create_game():
     game_args = dict()
-    game_args['x'] = 31
-    game_args['y'] = 31
+    game_args['x'] = 61
+    game_args['y'] = 45
     game_args['hit_reward'] = 1.01
     game_args['max_moves'] = 300
     # should be positive cause it's treated as a penalty
     game_args['miss_penalty'] = 0.05
     # should be negative cause it's treated as a reward
     game_args['living_reward'] = -0.01
-    game_args['random_background'] = True
+    game_args['random_background'] = False
     game_args['ammo'] = np.inf
 
     game = ShootingDotGame(**game_args)
@@ -70,12 +68,12 @@ def create_engine( game, online_mode=False ):
     engine_args["evaluator"] = create_cnn_evaluator
     engine_args["game"] = game
     engine_args['start_epsilon'] = 0.9
-    engine_args['epsilon_decay_start_step'] = 80000
-    engine_args['epsilon_decay_steps'] = 500000
+    engine_args['epsilon_decay_start_step'] = 100000
+    engine_args['epsilon_decay_steps'] = 1000000
     engine_args['actions_generator'] = actions_generator
-    engine_args['update_frequency'] = (4,10)
+    engine_args['update_frequency'] = (4,5)
     engine_args['batch_size'] = 25
-    engine_args['gamma'] = 0.8
+    engine_args['gamma'] = 0.85
     if online_mode:
         engine.online_mode = True
     engine = QEngine(**engine_args)
@@ -84,13 +82,10 @@ def create_engine( game, online_mode=False ):
 game = create_game()
 engine = create_engine(game)
 
-
-
-
 epochs = np.inf
-training_episodes_per_epoch = 50
+training_episodes_per_epoch = 200
 test_episodes_per_epoch = 50
-test_frequency = 4;
+test_frequency = 1;
 stop_mean = 1.0  # game.average_best_result()
 overall_start = time()
 print "Average best result:", round(game.average_best_result(), 4)
@@ -113,15 +108,17 @@ while epoch < epochs:
         rewards), "eps:", engine.get_epsilon()
     print "t:", round(end - start, 2)
     # learning off
+
     if (epoch+1) % test_frequency == 0 and test_episodes_per_epoch > 0:
         engine.learning_mode = False
         rewards = []
+
         start = time()
         for test_episode in range(test_episodes_per_epoch):
             r = engine.run_episode()
             rewards.append(r)
-
         end = time()
+        
         print "Test"
         print engine.get_actions_stats(clear=True, norm=False)
         m = np.mean(rewards)
@@ -129,6 +126,7 @@ while epoch < epochs:
         if m > stop_mean:
             print stop_mean, "mean reached!"
             break
+        print "t:", round(end - start, 2)
     epoch += 1
     print "========================="
 overall_end = time()
