@@ -35,7 +35,7 @@ class QEngine:
         img_shape = self._single_img_shape
         if history_length > 1:
             img_shape[0] *= history_length
-
+        
         state_format = [img_shape, game.get_state_format()[1]]
         self._evaluator = evaluator(state_format, len(self._actions), batch_size, self._gamma)
         self._current_image_state = np.zeros(img_shape, dtype=np.float32)
