@@ -43,15 +43,20 @@ right = actions[1]
 shoot = actions[2]
 idle = [False,False,False]
 
-iters = 1000
+iters = 10000
 sleep_time = 0.01
 #game.new_episode()
 start = time()
 for i in range(iters):
 	if game.is_episode_finished():
 		game.new_episode()
-	r = game.make_action(actions[0])
-	#s = game.getState()
+		print "new episode"
+		sleep(2)
+
+	r = game.make_action(choice(actions))
+	
+	print "reward:",r
+	s = game.get_state()
 	#if r!=0:
 		#print "reward:",r
 	sleep(0.01)
