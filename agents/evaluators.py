@@ -3,10 +3,16 @@ import theano.tensor as tensor
 import theano
 import numpy as np
 from theano.compile.nanguardmode import NanGuardMode
+from lasagne.nonlinearities import tanh, rectify, leaky_rectify
+from lasagne.updates import sgd, nesterov_momentum
+from lasagne.objectives import squared_error
+from lasagne.objectives import squared_error
+from lasagne.regularization import regularize_layer_params
+import lasagne.layers as ls
 
 
 class MLPEvaluator:
-    def __init__(self, state_format, actions_number, batch_size, network_args, gamma=0.99, updates=lasagne.updates.sgd, learning_rate = 0.01, regularization = None):
+    def __init__(self, state_format, actions_number, batch_size, network_args, gamma=0.99, updates=sgd, learning_rate = 0.01, regularization = None):
 
         self._misc_state_included = (state_format[1] > 0)
         self._gamma = gamma
@@ -45,12 +51,14 @@ class MLPEvaluator:
         self._compile(updates, learning_rate, regularization)
 
     def _compile(self, updates, learning_rate, regularization ):
-        predictions = lasagne.layers.get_output(self._network)
+        predictions = ls.get_output(self._network)
+        regularization_term = 0.0
         if regularization:
-            pass
-            #TODO
-        loss = lasagne.objectives.squared_error(predictions, self._targets).mean()
-        params = lasagne.layers.get_all_params(self._network, trainable=True)
+            for method, coefficient in regularization:
+                regularization_term += coefficient * regularize_layer_params(self._network, method)
+
+        loss = squared_error(predictions, self._targets).mean() + regularization_term
+        params = ls.get_all_params(self._network, trainable=True)
         updates = updates(loss, params, learning_rate=learning_rate)
 
         # mode = NanGuardMode(nan_is_error=True, inf_is_error=True, big_is_error=True)
@@ -65,21 +73,21 @@ class MLPEvaluator:
             self._evaluate = theano.function([self._image_inputs], predictions)
 
     def _initialize_network(self, img_input_shape, misc_shape, output_size, hidden_units=[500],
-                            hidden_layers=1, hidden_nonlin=lasagne.nonlinearities.tanh, output_nonlin = None, updates=lasagne.updates.sgd):
+                            hidden_layers=1, hidden_nonlin=tanh, output_nonlin = None, updates=sgd):
         print "Initializing MLP network..."
         # image input layer
-        network = lasagne.layers.InputLayer(shape=img_input_shape, input_var=self._image_inputs)
+        network = ls.InputLayer(shape=img_input_shape, input_var=self._image_inputs)
         # hidden layers
         for i in range(hidden_layers):
-            network = lasagne.layers.DenseLayer(network, hidden_units[i], nonlinearity=hidden_nonlin)
+            network = ls.DenseLayer(network, hidden_units[i], nonlinearity=hidden_nonlin)
         if self._misc_state_included:
             # misc input layer
-            misc_input_layer = lasagne.layers.InputLayer(shape=misc_shape, input_var=self._misc_inputs)
+            misc_input_layer = ls.InputLayer(shape=misc_shape, input_var=self._misc_inputs)
             # merge layer
-            network = lasagne.layers.ConcatLayer([network, misc_input_layer])
+            network = ls.ConcatLayer([network, misc_input_layer])
 
         # output layer
-        network = lasagne.layers.DenseLayer(network, output_size, nonlinearity = output_nonlin)
+        network = ls.DenseLayer(network, output_size, nonlinearity = output_nonlin)
         self._network = network
         
 
@@ -177,17 +185,17 @@ class LinearEvaluator(MLPEvaluator):
     def _initialize_network(self, img_input_shape, misc_shape, output_size):
         print "Initializing MLP network..."
         # image input layer
-        network = lasagne.layers.InputLayer(shape=img_input_shape, input_var=self._image_inputs)
+        network = ls.InputLayer(shape=img_input_shape, input_var=self._image_inputs)
         # hidden layers
                 
         if self._misc_state_included:
             # misc input layer
-            misc_input_layer = lasagne.layers.InputLayer(shape=misc_shape, input_var=self._misc_inputs)
+            misc_input_layer = ls.InputLayer(shape=misc_shape, input_var=self._misc_inputs)
             # merge layer
-            network = lasagne.layers.ConcatLayer([network, misc_input_layer])
+            network = ls.ConcatLayer([network, misc_input_layer])
 
         # output layer
-        network = lasagne.layers.DenseLayer(network, output_size, nonlinearity = None)
+        network = ls.DenseLayer(network, output_size, nonlinearity = None)
         self._network = network
 
 class CNNEvaluator(MLPEvaluator):
@@ -196,27 +204,27 @@ class CNNEvaluator(MLPEvaluator):
 
     def _initialize_network(self, img_input_shape, misc_shape, output_size, conv_layers=2, num_filters=[32, 32],
                             filter_size=[(5, 5), (5, 5)], hidden_units=[256], pool_size=[(2, 2), (2, 2)],
-                            hidden_layers=1, conv_nonlin=lasagne.nonlinearities.rectify,
-                            hidden_nonlin=lasagne.nonlinearities.tanh, output_nonlin = None):
+                            hidden_layers=1, conv_nonlin=rectify,
+                            hidden_nonlin=tanh, output_nonlin = None):
 
         print "Initializing CNN ..."
         # image input layer
-        network = lasagne.layers.InputLayer(shape=img_input_shape, input_var=self._image_inputs)
+        network = ls.InputLayer(shape=img_input_shape, input_var=self._image_inputs)
 
         # convolution and pooling layers
         for i in range(conv_layers):
-            network = lasagne.layers.Conv2DLayer(network, num_filters=num_filters[i], filter_size=filter_size[i],
+            network = ls.Conv2DLayer(network, num_filters=num_filters[i], filter_size=filter_size[i],
                                                  nonlinearity=conv_nonlin)
-            network = lasagne.layers.MaxPool2DLayer(network, pool_size=pool_size[i])
+            network = ls.MaxPool2DLayer(network, pool_size=pool_size[i])
         # dense layers
         for i in range(hidden_layers):
-            network = lasagne.layers.DenseLayer(network, hidden_units[i], nonlinearity=hidden_nonlin)
+            network = ls.DenseLayer(network, hidden_units[i], nonlinearity=hidden_nonlin)
         if self._misc_state_included:
             # misc input layer
-            misc_input_layer = lasagne.layers.InputLayer(shape=misc_shape, input_var=self._misc_inputs)
+            misc_input_layer = ls.InputLayer(shape=misc_shape, input_var=self._misc_inputs)
             # merge layer
-            network = lasagne.layers.ConcatLayer([network, misc_input_layer])
+            network = ls.ConcatLayer([network, misc_input_layer])
 
         # output layer
-        network = lasagne.layers.DenseLayer(network, output_size, None)
+        network = ls.DenseLayer(network, output_size, None)
         self._network = network

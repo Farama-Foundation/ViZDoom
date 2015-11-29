@@ -10,6 +10,7 @@ from time import time
 import itertools as it
 import lasagne
 import vizia
+from lasagne.regularization import l1, l2
 
 def api_init_wrapper(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo):
     api.init(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo)
@@ -28,7 +29,8 @@ def create_mlp_evaluator(state_format, actions_number, batch_size, gamma):
     mlp_args["actions_number"] = actions_number
     mlp_args["batch_size"] = batch_size
     mlp_args["learning_rate"] = 0.01
-    network_args["updates"] = lasagne.updates.nesterov_momentum
+    mlp_args["updates"] = lasagne.updates.nesterov_momentum
+    #mlp_args["regularization"] = [[l1,0.001],[l2,0.001]]
 
     network_args = dict(hidden_units=[100], hidden_layers=1)
     #network_args["hidden_nonlin"] = None
@@ -71,7 +73,7 @@ def create_linear_evaluator(state_format,actions_number, batch_size, gamma):
 
 def create_game():
     game_args = dict()
-    game_args['x'] = 31
+    game_args['x'] = 21
     game_args['y'] = 1
     
     game_args['hit_reward'] = 1.01
@@ -93,7 +95,7 @@ def create_engine( game, online_mode=False ):
     engine_args = dict()
     engine_args["history_length"] = 1
     engine_args["bank_capacity"] = 10000
-    engine_args["evaluator"] = create_linear_evaluator
+    engine_args["evaluator"] = create_mlp_evaluator
     engine_args["game"] = game
     engine_args['start_epsilon'] = 0.9
     engine_args['end_epsilon'] = 0.0
