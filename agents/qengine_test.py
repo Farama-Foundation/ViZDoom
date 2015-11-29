@@ -5,9 +5,11 @@ from qengine import QEngine
 from games import ShootingDotGame
 from evaluators import MLPEvaluator
 from evaluators import CNNEvaluator
+from evaluators import LinearEvaluator
 from time import time
 import itertools as it
 import lasagne
+import vizia
 
 def api_init_wrapper(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo):
     api.init(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo)
@@ -25,9 +27,14 @@ def create_mlp_evaluator(state_format, actions_number, batch_size, gamma):
     mlp_args["state_format"] = state_format
     mlp_args["actions_number"] = actions_number
     mlp_args["batch_size"] = batch_size
-    network_args = dict(hidden_units=[500], learning_rate=0.01, hidden_layers=1)
+    mlp_args["learning_rate"] = 0.01
     network_args["updates"] = lasagne.updates.nesterov_momentum
+
+    network_args = dict(hidden_units=[100], hidden_layers=1)
+    #network_args["hidden_nonlin"] = None
+    #network_args["output_nonlin"] = None
     mlp_args["network_args"] = network_args
+
     return MLPEvaluator(**mlp_args)
 
 def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
@@ -36,19 +43,37 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     cnn_args["state_format"] = state_format
     cnn_args["actions_number"] = actions_number
     cnn_args["batch_size"] = batch_size
-    network_args = dict(hidden_units=[500], learning_rate=0.01, hidden_layers=1)
-    cnn_args["network_args"] = network_args
+    cnn_args["updates"] = lasagne.updates.nesterov_momentum
+    #cnn_args["learning_rate"] = 0.01
 
-    network_args["updates"] = lasagne.updates.nesterov_momentum
+    network_args = dict(hidden_units=[500], hidden_layers=1)
     network_args["pool_size"] = [(2, 2), (2, 2)]
     network_args["num_filters"] = [16, 16]
     network_args["filter_size"] = [4, 4]
+    #network_args["hidden_nonlin"] = None
+    #network_args["output_nonlin"] = None
+
+    cnn_args["network_args"] = network_args
     return CNNEvaluator(**cnn_args)
+
+def create_linear_evaluator(state_format,actions_number, batch_size, gamma):
+    lin_args = dict()
+    lin_args["gamma"] = gamma
+    lin_args["state_format"] = state_format
+    lin_args["actions_number"] = actions_number
+    lin_args["batch_size"] = batch_size
+    lin_args["learning_rate"] = 0.01
+    lin_args["updates"] = lasagne.updates.nesterov_momentum
+    network_args = dict()
+    lin_args["network_args"] = network_args
+
+    return LinearEvaluator(**lin_args)
 
 def create_game():
     game_args = dict()
-    game_args['x'] = 61
-    game_args['y'] = 45
+    game_args['x'] = 31
+    game_args['y'] = 1
+    
     game_args['hit_reward'] = 1.01
     game_args['max_moves'] = 300
     # should be positive cause it's treated as a penalty
@@ -61,19 +86,23 @@ def create_game():
     game = ShootingDotGame(**game_args)
     return game
 
+def setup_vizia():
+    pass
+
 def create_engine( game, online_mode=False ):
     engine_args = dict()
     engine_args["history_length"] = 1
     engine_args["bank_capacity"] = 10000
-    engine_args["evaluator"] = create_cnn_evaluator
+    engine_args["evaluator"] = create_linear_evaluator
     engine_args["game"] = game
     engine_args['start_epsilon'] = 0.9
-    engine_args['epsilon_decay_start_step'] = 100000
-    engine_args['epsilon_decay_steps'] = 1000000
+    engine_args['end_epsilon'] = 0.0
+    engine_args['epsilon_decay_start_step'] = 5000000
+    engine_args['epsilon_decay_steps'] = 2000000
     engine_args['actions_generator'] = actions_generator
     engine_args['update_frequency'] = (4,5)
     engine_args['batch_size'] = 25
-    engine_args['gamma'] = 0.85
+    engine_args['gamma'] = 0.99
     if online_mode:
         engine.online_mode = True
     engine = QEngine(**engine_args)
