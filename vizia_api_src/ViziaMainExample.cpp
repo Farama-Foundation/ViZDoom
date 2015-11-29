@@ -35,9 +35,9 @@ int main(){
 
     std::vector<bool> action(3);
 
-    action[0] = true;
+    action[0] = false;
     action[1] = false;
-    action[2] = false;
+    action[2] = true;
 
     int iterations = 1000;
     for(int i = 0; i < iterations; ++i){
@@ -45,14 +45,16 @@ int main(){
         if( v->isEpisodeFinished() ){
             std::cout << "\nNEW EPISODE\n\n";
             v->newEpisode();
+            usleep(2000000);
         }
         //ViziaMain::State s = v->getState();
 
         //std::cout << "STATE NUMBER: " << s.number <<
         //" HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
 
-        v->makeAction(action);
-        usleep(15000);
+        float r = v->makeAction(action);
+        std::cout<<"reward: "<<r<<std::endl;
+        usleep(11000);
     }
 
     v->close();
