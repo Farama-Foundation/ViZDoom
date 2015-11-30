@@ -1,6 +1,8 @@
 #ifndef __VIZIA_MAIN_PYTHON_H__
 #define __VIZIA_MAIN_PYTHON_H__
 
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+
 #include "ViziaMain.h"
 #include <iostream>
 #include <vector>
@@ -11,8 +13,6 @@
 #include <boost/python/object.hpp>
 #include <boost/python/tuple.hpp>
 #include <numpy/ndarrayobject.h>
-
-#include <numpy/arrayobject.h>
 #include <numpy/npy_math.h>
 
 /* C++ code to expose C arrays as python objects */
