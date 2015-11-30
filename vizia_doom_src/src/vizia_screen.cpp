@@ -117,7 +117,7 @@ void Vizia_ScreenInit() {
 
     printf("Vizia_ScreenInit: ViziaScreen SM region size: %zu, beginnig: %p, end: %p \n",
            viziaScreenSMRegion->get_size(), viziaScreenSMRegion->get_address(), viziaScreenSMRegion->get_address() + viziaScreenSMRegion->get_size());
-    printf("Vizia_ScreenInit: width: %d, height: %d, pitch: %d, format: %d\n",
+    printf("Vizia_ScreenInit: width: %d, height: %d, pitch: %zu, format: %d\n",
            viziaScreenWidth, viziaScreenHeight, viziaScreenPitch, *vizia_screen_format);
 
 }

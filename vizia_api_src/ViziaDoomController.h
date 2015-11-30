@@ -57,7 +57,8 @@ class ViziaDoomController {
             size_t SCREEN_SIZE;
             int SCREEN_FORMAT;
 
-            int MAP_REWARD;;
+            int MAP_REWARD;
+            int SHAPING_REWARD;
 
             unsigned int MAP_START_TIC;
             unsigned int MAP_TIC;
@@ -163,6 +164,8 @@ class ViziaDoomController {
         int getGameTic();
 
         int getMapReward();
+        int getShapingReward();
+
         int getMapTimeout();
 
         int getMapTic();

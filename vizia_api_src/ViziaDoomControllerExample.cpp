@@ -94,7 +94,7 @@ int main(){
 
         std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<
                 " HP: " << vdm->getPlayerHealth() << " AMMO: " << vdm->getGameVars()->PLAYER_AMMO[2] << 
-                " REWARD: " << vdm->getMapReward() << std::endl;
+                " REWARD: " << vdm->getMapReward() << " SHAPING: " << vdm->getShapingReward() << std::endl;
 
         if(vdm->isMapLastTic()) std::cout << "\nMAP FINISHED\n\n";
 
