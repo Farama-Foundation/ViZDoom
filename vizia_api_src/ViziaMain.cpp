@@ -6,8 +6,6 @@
 #include <vector>
 #include <algorithm>
 
-float lastReward = 0.0f;//awful, temporary solution
-
 unsigned int DoomTics2Ms (unsigned int tics){
     return (unsigned int)std::floor((float)1000/35 * tics);
 }
@@ -38,41 +36,38 @@ bool ViziaMain::saveConfig(std::string file){
     return false;
 }
 
-int ViziaMain::init(){
-    if(initialized){
-        std::cerr<<"Initialization has already been done. Aborting init.";
-        return -1;
+bool ViziaMain::init(){
+    if(!this->running) {
+
+        this->state.vars.resize(this->stateAvailableVars.size());
+        /* set all if none are set */
+        this->lastAction.resize(this->availableButtons.size());
+
+        this-> running = this->doomController->init();
+
+        /* Initialize state format */
+        int y = this->doomController->getScreenWidth();
+        int x = this->doomController->getScreenHeight();
+        int channels = 3;
+        int varLen = this->stateAvailableVars.size();
+        this->stateFormat = StateFormat(channels, x, y, varLen);
+
+        return running;
     }
-    else{
-        initialized = true;
-    }
-
-    
-    this->state.vars.resize(this->stateAvailableVars.size());
-    /* set all if none are set */
-    this->lastAction.resize(this->availableButtons.size());
-
-    this->doomController->init();
-
-    /* Initialize state format */
-    int y = this->doomController->getScreenWidth();
-    int x = this->doomController->getScreenHeight();
-    int channels = 3;
-    int varLen = this->stateAvailableVars.size();
-    this->stateFormat = StateFormat(channels, x, y, varLen);
-
-    /* TODO fill state here? */    
-    return 0;
+    else return false;
 }
 
-void ViziaMain::close(){
+bool ViziaMain::close(){
     this->doomController->close();
     this->state.vars.clear();
     this->lastAction.clear();
+
+    this->running = false;
 }
 
 void ViziaMain::newEpisode(){
     this->doomController->restartMap();
+    this->lastReward = 0;
 }
 
 float ViziaMain::makeAction(std::vector<bool>& actions){
@@ -100,9 +95,9 @@ float ViziaMain::makeAction(std::vector<bool>& actions){
     
     /* Return tic reward */    
     
-    float mapReward = (float) this->doomController->getMapReward();
-    float reward = mapReward - lastReward;
-    lastReward = mapReward;
+    int mapReward = this->doomController->getMapReward();
+    float reward = (float)(mapReward - lastReward);
+    this->lastReward = mapReward;
       
     return reward;
 }
@@ -118,7 +113,9 @@ bool ViziaMain::isNewEpisode(){
 }
 
 bool ViziaMain::isEpisodeFinished(){
-    return this->doomController->isMapLastTic() || this->doomController->isPlayerDead();
+    return this->doomController->isMapLastTic()
+           || this->doomController->isPlayerDead()
+           || this->doomController->isMapEnded();
 }
 
 void ViziaMain::addAvailableButton(ViziaButton button){
@@ -178,11 +175,10 @@ size_t ViziaMain::getScreenPitch(){ return this->doomController->getScreenPitch(
 size_t ViziaMain::getScreenSize(){ return this->doomController->getScreenSize(); }
 ViziaScreenFormat ViziaMain::getScreenFormat(){ return this->doomController->getScreenFormat(); }
 
-ViziaMain::StateFormat ViziaMain::getStateFormat()
-{
+ViziaMain::StateFormat ViziaMain::getStateFormat() {
     return this->stateFormat;
 }
-int ViziaMain::getActionFormat()
-{
+
+int ViziaMain::getActionFormat() {
     return this->availableButtons.size();
 }

@@ -102,7 +102,7 @@ void Vizia_UpdateGameVars(){
 
     viziaGameVars->MAP_REWARD = ACS_GlobalVars[0];
 
-    viziaGameVars->MAP_END = false;
+    viziaGameVars->MAP_END = gamestate != GS_LEVEL;
 
     if(viziaPlayer->mo) viziaGameVars->PLAYER_DEAD = viziaPlayer->playerstate == PST_DEAD || viziaPlayer->mo->health <= 0;
     else viziaGameVars->PLAYER_DEAD = viziaPlayer->playerstate == PST_DEAD || viziaPlayer->health <= 0;

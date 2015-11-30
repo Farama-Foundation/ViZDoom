@@ -119,9 +119,11 @@ class ViziaDoomController {
         void setAutoMapRestart(bool set);
         void setAutoMapRestartOnTimeout(bool set);
         void setAutoMapRestartOnPlayerDeath(bool set);
+        void setAutoMapRestartOnMapEnd(bool set);
         void setMapTimeout(unsigned int tics);
         bool isMapLastTic();
         bool isMapFirstTic();
+        bool isMapEnded();
 
         //GRAPHIC SETTINGS
 
@@ -261,7 +263,8 @@ class ViziaDoomController {
 
         //HELPERS
 
-        void waitForDoom();
+        void waitForDoomStart();
+        void waitForDoomTic();
 
         void lunchDoom();
 
@@ -285,6 +288,7 @@ class ViziaDoomController {
         bool autoRestart;
         bool autoRestartOnTimeout;
         bool autoRestartOnPlayersDeath;
+        bool autoRestartOnMapEnd;
         unsigned int mapTimeout;
         unsigned int mapRestartCount;
         bool mapRestarting;
