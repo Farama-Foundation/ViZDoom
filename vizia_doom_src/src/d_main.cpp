@@ -112,6 +112,7 @@
 #include "vizia_main.h"
 EXTERN_CVAR (Bool, vizia_controlled)
 EXTERN_CVAR (Bool, vizia_singletic)
+EXTERN_CVAR (Bool, vizia_clear_render)
 
 EXTERN_CVAR(Bool, hud_althud)
 void DrawHUD();
@@ -702,7 +703,7 @@ void D_Display ()
 	}
 
 	// [RH] Allow temporarily disabling wipes
-	if (NoWipe)
+	if (NoWipe || (*vizia_controlled && *vizia_clear_render))
 	{
 		V_SetBorderNeedRefresh();
 		NoWipe--;
@@ -843,7 +844,7 @@ void D_Display ()
 		}
 	}
 	// draw pause pic
-	if ((paused || pauseext) && menuactive == MENU_Off)
+	if ((paused || pauseext) && menuactive == MENU_Off && ((*vizia_controlled && !*vizia_clear_render) || !*vizia_controlled))
 	{
 		FTexture *tex;
 		int x;
