@@ -18,6 +18,9 @@ class ViziaMain{
         struct State{
             int number;
             std::vector<int> vars;
+            int imageWidth;
+            int imageHeight;
+            int imagePitch;
             uint8_t* imageBuffer;
         };
 
@@ -48,7 +51,7 @@ class ViziaMain{
         float makeAction(std::vector<bool>& actions);
 
         ViziaMain::State getState();
-        std::vector<bool> getlastAction();
+        std::vector<bool> getLastAction();
         bool isNewEpisode();
         bool isEpisodeFinished();
 
@@ -87,6 +90,7 @@ class ViziaMain{
 
         StateFormat getStateFormat();
         int getActionFormat();
+
         int getScreenWidth();
         int getScreenHeight();
         size_t getScreenPitch();
@@ -106,8 +110,6 @@ class ViziaMain{
 
         bool running;
         int lastReward;
-
-
 
         StateFormat stateFormat;
 

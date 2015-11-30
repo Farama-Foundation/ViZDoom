@@ -15,13 +15,13 @@ unsigned int Ms2DoomTics (unsigned int ms){
 }
 
 ViziaMain::ViziaMain(){
-    initialized = false;
+    running = false;
+    lastReward = 0;
     /* Should usually be 0 but not always it seems. */
     this->doomController = new ViziaDoomController();
 }
 
 ViziaMain::~ViziaMain(){
-    //TODO deleting stuff created in init
     this->close();
     delete this->doomController;
 }
@@ -63,6 +63,8 @@ bool ViziaMain::close(){
     this->lastAction.clear();
 
     this->running = false;
+
+    return true;
 }
 
 void ViziaMain::newEpisode(){
@@ -106,7 +108,7 @@ ViziaMain::State ViziaMain::getState(){
     return this->state;
 }
 
-std::vector<bool> ViziaMain::getlastAction(){ return this->lastAction; }
+std::vector<bool> ViziaMain::getLastAction(){ return this->lastAction; }
 
 bool ViziaMain::isNewEpisode(){
     return this->doomController->isMapFirstTic();
