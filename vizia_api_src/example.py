@@ -17,7 +17,7 @@ game.set_screen_resolution(320,0)
 
 game.set_doom_game_path("zdoom")
 game.set_doom_iwad_path("doom2.wad")
-game.set_doom_file_path("s1_b.wad")
+game.set_doom_file_path("end_test.wad")
 game.set_doom_map("map01")
 game.set_episode_timeout_in_doom_tics(200)
 
@@ -43,7 +43,7 @@ right = actions[1]
 shoot = actions[2]
 idle = [False,False,False]
 
-iters = 10000
+iters = 1000
 sleep_time = 0.01
 #game.new_episode()
 start = time()

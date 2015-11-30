@@ -106,6 +106,7 @@ ViziaDoomController::ViziaDoomController(){
     this->autoRestart = false;
     this->autoRestartOnTimeout = true;
     this->autoRestartOnPlayersDeath = true;
+    this->autoRestartOnMapEnd = true;
     this->mapTimeout = 0;
     this->mapRestartCount = 0;
     this->mapRestarting = false;
@@ -136,7 +137,7 @@ bool ViziaDoomController::init(){
 
         //this->lunchDoom();
         doomThread = new b::thread(b::bind(&ViziaDoomController::lunchDoom, this));
-        this->waitForDoom();
+        this->waitForDoomStart();
 
         if(this->doomRunning) {
             this->SMInit();
@@ -178,50 +179,24 @@ bool ViziaDoomController::tic(){
 
     if(doomRunning) {
 
-        if(this->autoRestartOnPlayersDeath && this->GameVars->PLAYER_DEAD){
+        if(this->GameVars->PLAYER_DEAD){
             this->mapEnded = true;
-            if(this->autoRestart) this->restartMap();
+            if(this->autoRestart && this->autoRestartOnPlayersDeath) this->restartMap();
         }
-        else if(this->autoRestartOnTimeout && this->mapTimeout > 0 && this->GameVars->MAP_TIC >= mapTimeout-1){
+        else if(this->mapTimeout > 0 && this->GameVars->MAP_TIC >= mapTimeout){
             this->mapEnded = true;
-            if(this->autoRestart) this->restartMap();
+            if(this->autoRestart && this->autoRestartOnTimeout) this->restartMap();
         }
-        else if(this->GameVars->MAP_TIC < this->mapLastTic){
-            this->mapRestarting = false;
-            this->mapEnded = false;
+        else if(this->GameVars->MAP_END){
+            this->mapEnded = true;
+            if(this->autoRestart && this->autoRestartOnMapEnd) this->restartMap();
         }
 
-        if(!this->mapEnded || this->mapRestarting) {
+        if(!this->mapEnded) {
 
-            if(this->mapRestarting) this->resetInput();
             this->mapLastTic = this->GameVars->MAP_TIC;
 
-            this->MQSend(VIZIA_MSG_CODE_TIC);
-
-            this->doomTic = true;
-
-            MessageCommandStruct msg;
-
-            unsigned int priority;
-            bip::message_queue::size_type recvd_size;
-
-            bool nextTic = false;
-            do {
-                MQController->receive(&msg, sizeof(MessageCommandStruct), recvd_size, priority);
-                switch (msg.code) {
-                    case VIZIA_MSG_CODE_DOOM_READY :
-                    case VIZIA_MSG_CODE_DOOM_TIC :
-                        nextTic = true;
-                        break;
-                    case VIZIA_MSG_CODE_DOOM_CLOSE :
-                        this->close();
-                        break;
-                    default :
-                        break;
-                }
-            } while (!nextTic);
-
-            this->doomTic = false;
+            this->waitForDoomTic();
         }
     }
 
@@ -233,12 +208,7 @@ bool ViziaDoomController::update(){
 }
 
 void ViziaDoomController::restartMap(){
-    if(this->doomRunning && !this->mapRestarting) {
-        this->sendCommand("map " + this->map);
-        ++this->mapRestartCount;
-        this->mapRestarting = true;
-        this->mapEnded = false;
-    }
+    this->setMap(this->map);
 }
 
 void ViziaDoomController::resetMap(){
@@ -266,11 +236,20 @@ void ViziaDoomController::setFilePath(std::string path){ this->filePath = path; 
 void ViziaDoomController::setConfigPath(std::string path){ this->configPath = path; }
 
 void ViziaDoomController::setMap(std::string map){
-    if(map != this->map) this->mapRestartCount = 0;
     this->map = map;
-    if(this->doomRunning){
-        this->sendCommand("map "+this->map);
+    if(this->doomRunning && !this->mapRestarting) {
+        this->sendCommand("map " + this->map);
+        if(map != this->map) this->mapRestartCount = 0;
+        else ++this->mapRestartCount;
+
         this->mapRestarting = true;
+
+        this->resetInput();
+        while(this->GameVars->MAP_END || this->GameVars->MAP_TIC > this->mapLastTic){
+            this->waitForDoomTic();
+        }
+
+        this->mapRestarting = false;
         this->mapEnded = false;
     }
 }
@@ -286,6 +265,7 @@ void ViziaDoomController::setSkill(int skill){
 void ViziaDoomController::setAutoMapRestart(bool set){ this->autoRestart = set; }
 void ViziaDoomController::setAutoMapRestartOnTimeout(bool set){ this->autoRestartOnTimeout = set; }
 void ViziaDoomController::setAutoMapRestartOnPlayerDeath(bool set){ this->autoRestartOnPlayersDeath = set; }
+void ViziaDoomController::setAutoMapRestartOnMapEnd(bool set){ this->autoRestartOnMapEnd = set; }
 void ViziaDoomController::setMapTimeout(unsigned int tics){ this->mapTimeout = tics; }
 
 bool ViziaDoomController::isMapFirstTic(){
@@ -294,7 +274,12 @@ bool ViziaDoomController::isMapFirstTic(){
 }
 
 bool ViziaDoomController::isMapLastTic(){
-    if(this->mapTimeout > 0 && this->GameVars->MAP_TIC >= this->mapTimeout-1) return true;
+    if(this->mapTimeout > 0 && this->GameVars->MAP_TIC >= this->mapTimeout) return true;
+    else return false;
+}
+
+bool ViziaDoomController::isMapEnded(){
+    if(this->GameVars->MAP_END) return true;
     else return false;
 }
 
@@ -487,7 +472,7 @@ void ViziaDoomController::generateInstanceId(){
     }
 }
 
-void ViziaDoomController::waitForDoom(){
+void ViziaDoomController::waitForDoomStart(){
 
     this->doomTic = true;
 
@@ -512,6 +497,37 @@ void ViziaDoomController::waitForDoom(){
     }
 
     this->doomTic = false;
+}
+
+void ViziaDoomController::waitForDoomTic(){
+    if(doomRunning) {
+        this->MQSend(VIZIA_MSG_CODE_TIC);
+
+        this->doomTic = true;
+
+        MessageCommandStruct msg;
+
+        unsigned int priority;
+        bip::message_queue::size_type recvd_size;
+
+        bool nextTic = false;
+        do {
+            MQController->receive(&msg, sizeof(MessageCommandStruct), recvd_size, priority);
+            switch (msg.code) {
+                case VIZIA_MSG_CODE_DOOM_READY :
+                case VIZIA_MSG_CODE_DOOM_TIC :
+                    nextTic = true;
+                    break;
+                case VIZIA_MSG_CODE_DOOM_CLOSE :
+                    this->close();
+                    break;
+                default :
+                    break;
+            }
+        } while (!nextTic);
+
+        this->doomTic = false;
+    }
 }
 
 void ViziaDoomController::lunchDoom(){

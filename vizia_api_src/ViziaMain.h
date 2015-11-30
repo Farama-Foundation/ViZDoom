@@ -18,11 +18,9 @@ class ViziaMain{
         struct State{
             int number;
             std::vector<int> vars;
-            int imageWidth;
-            int imageHeight;
-            int imagePitch;
             uint8_t* imageBuffer;
         };
+
         struct StateFormat{
             /* shape[0] - num. of channels, 1 - x, 2 - y */
             int imageShape[3];
@@ -36,14 +34,15 @@ class ViziaMain{
                 this->varLen = varLen;
             }
         };
+
         ViziaMain();
         virtual ~ViziaMain();
 
         bool loadConfig(std::string file);
         bool saveConfig(std::string file);
 
-        int init();
-        void close();
+        bool init();
+        bool close();
 
         void newEpisode();
         float makeAction(std::vector<bool>& actions);
@@ -98,15 +97,20 @@ class ViziaMain{
 
         ViziaDoomController * doomController;
 
+        State state;
+
         std::vector<ViziaGameVar> stateAvailableVars;
         std::vector<ViziaButton> availableButtons;
 
         std::vector<bool> lastAction;
 
-        bool initialized;
+        bool running;
+        int lastReward;
+
+
 
         StateFormat stateFormat;
-        State state;
+
 
 };
 

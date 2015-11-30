@@ -37,8 +37,9 @@
 */
 
 CVAR (Bool, vizia_controlled, false, CVAR_NOSET)
-CVAR (String, vizia_instance_id, "", CVAR_NOSET)
 CVAR (Bool, vizia_singletic, true, CVAR_NOSET)
+CVAR (Bool, vizia_clear_render, true, CVAR_NOSET)
+CVAR (String, vizia_instance_id, "0", CVAR_NOSET)
 CVAR (Int, vizia_screen_format, 0, CVAR_NOSET)
 
 void Vizia_Init(){
@@ -75,8 +76,8 @@ void Vizia_Close(){
 }
 
 void Vizia_Tic(){
-    if (*vizia_controlled && gamestate == GS_LEVEL
-        && !paused && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
+    if (*vizia_controlled && (gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
+            && !paused && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
 
         Vizia_InputTic();
         Vizia_UpdateGameVars();
