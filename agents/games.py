@@ -4,7 +4,7 @@ import random
 
 class ShootingDotGame:
     def __init__(self, x, y, dtype=np.float32, random_background=False, max_moves=np.inf,
-                 living_reward=-1, miss_penalty=10, hit_reward=100, ammo=np.inf):
+                 living_reward=-1, miss_penalty=10, hit_reward=100, ammo=np.inf, noise_level = 1.0):
         self._ammo = np.float32(max(ammo, 0))
         self._dtype = dtype
         x += 1 - x % 2
@@ -16,6 +16,7 @@ class ShootingDotGame:
         self._hit_reward = hit_reward
         self._max_moves = max_moves
         self._random_background = random_background
+        self._noise_level = noise_level
         self._state_format = [(self._y, self._x)]
 
         if ammo < np.inf:
@@ -31,7 +32,7 @@ class ShootingDotGame:
         self._aimX = -1
         self._aimY = -1
 
-    def is_finished(self):
+    def is_episode_finished(self):
         return self._finished
 
     def get_state_format(self):
@@ -53,7 +54,7 @@ class ShootingDotGame:
         self._aimX = random.randint(0, self._x - 1)
         self._aimY = int(self._y / 2)
         if self._random_background:
-            self._state = self._dtype(np.random.rand(self._y, self._x))
+            self._state = self._dtype(np.random.rand(self._y, self._x)) * self._noise_level
             self._state[self._aimY] = 0.0
         else:
             self._state = np.zeros([self._y, self._x], dtype=self._dtype)

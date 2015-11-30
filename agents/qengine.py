@@ -6,8 +6,9 @@ import random
 class QEngine:
     def __init__(self, game, evaluator, actions_generator, gamma=0.7, batch_size=500, update_frequency=500,
                  history_length=1, bank_capacity=10000, start_epsilon=1.0, end_epsilon=0.0,
-                 epsilon_decay_start_step=100000, epsilon_decay_steps=100000):
+                 epsilon_decay_start_step=100000, epsilon_decay_steps=100000, reward_scale = 1.0):
         self.online_mode = False
+        self._reward_scale = reward_scale
         self._game = game
         self._gamma = gamma
         self._batch_size = batch_size
@@ -48,7 +49,7 @@ class QEngine:
 
     # it doesn't copy the state
     def _update_state(self, raw_state):
-        img = raw_state[0]
+        img = np.float32(raw_state[0])/256.0
         if self._misc_state_included:
             misc = raw_state[1]
         if self._history_length > 1:
@@ -64,7 +65,9 @@ class QEngine:
                 self._current_misc_state = misc
 
     def _new_game(self):
-        self._game.new_episode()
+        #remove the check after vizia bug is corrected
+        if self._game.is_episode_finished():
+            self._game.new_episode()
         self.reset_state()
         self._update_state(self._game.get_state())
 
@@ -123,9 +126,9 @@ class QEngine:
 
         # make action and get the reward
         r = self._game.make_action(self._actions[a])
-
+        r = np.float32(r)/self._reward_scale
         #update state s2 accordingly
-        if self._game.is_finished():
+        if self._game.is_episode_finished():
             # terminal state
             s2 = None
         else:
@@ -145,14 +148,14 @@ class QEngine:
         self._new_game()
        	if self.learning_mode:
        		self._update_state(self._game.get_state())
-	        while not self._game.is_finished():
+	        while not self._game.is_episode_finished():
 	            self.make_learning_step()
        	else:
-	        while not self._game.is_finished():
+	        while not self._game.is_episode_finished():
 	            self.make_step()
         
 
-        return self._game.get_summary_reward()
+        return np.float32((self._game.get_summary_reward())*self._reward_scale)
 
     def get_actions_stats(self, clear=False, norm=True):
         stats = self._actions_stats.copy()
