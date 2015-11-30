@@ -64,6 +64,11 @@ struct ViziaGameVarsStruct{
     int SCREEN_FORMAT;
 
     int MAP_REWARD;
+    int SHAPING_REWARD;
+
+    /*TODO good numbers for calls
+    int MAP_USER_VARS[8];
+    */
 
     unsigned int MAP_START_TIC;
     unsigned int MAP_TIC;

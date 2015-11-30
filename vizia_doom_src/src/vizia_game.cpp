@@ -101,6 +101,7 @@ void Vizia_UpdateGameVars(){
     viziaGameVars->MAP_SECRETCOUNT = level.found_secrets;
 
     viziaGameVars->MAP_REWARD = ACS_GlobalVars[0];
+    viziaGameVars->SHAPING_REWARD = ACS_GlobalVars[1];
 
     viziaGameVars->MAP_END = gamestate != GS_LEVEL;
 

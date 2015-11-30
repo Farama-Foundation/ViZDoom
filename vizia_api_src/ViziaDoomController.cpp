@@ -428,6 +428,7 @@ int ViziaDoomController::getGameTic() { return this->GameVars->GAME_TIC; }
 int ViziaDoomController::getMapTic() { return this->GameVars->MAP_TIC; }
 
 int ViziaDoomController::getMapReward() { return this->GameVars->MAP_REWARD; }
+int ViziaDoomController::getShapingReward() { return this->GameVars->SHAPING_REWARD; }
 
 int ViziaDoomController::getMapKillCount() { return this->GameVars->MAP_KILLCOUNT; }
 int ViziaDoomController::getMapItemCount() { return this->GameVars->MAP_ITEMCOUNT; }
