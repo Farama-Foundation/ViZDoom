@@ -9,9 +9,10 @@ ViziaMainPython::ViziaMainPython()
 {
     import_array();
 }
-void ViziaMainPython::init()
+
+bool ViziaMainPython::init()
 {
-    bool initSuccess = (ViziaMain::init() == 0);
+    bool initSuccess = ViziaMain::init();
     /* fill state format */
     if (initSuccess)
     {
@@ -28,6 +29,7 @@ void ViziaMainPython::init()
         }
         this->stateFormat = boost::python::make_tuple( tuple(imageShape), cppFormat.varLen );
     }
+    return initSuccess;
 }
 
 float ViziaMainPython::makeAction(boost::python::list actionList)

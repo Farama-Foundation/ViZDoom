@@ -21,7 +21,7 @@ class ViziaMainPython: public ViziaMain
 	
     public:
         ViziaMainPython();
-        void init();
+        bool init();
     	float makeAction(boost::python::list actionList);
         boost::python::api::object getState();
         boost::python::tuple getStateFormat();
