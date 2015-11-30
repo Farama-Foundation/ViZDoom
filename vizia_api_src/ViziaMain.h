@@ -65,6 +65,9 @@ class ViziaMain{
 
         const ViziaDoomController* getController();
 
+        void setLivingReward(int livingReward);
+        int getSummaryReward();
+
         void setDoomGamePath(std::string path);
         void setDoomIwadPath(std::string path);
         void setDoomFilePath(std::string path);
@@ -110,6 +113,8 @@ class ViziaMain{
 
         bool running;
         int lastReward;
+        int livingReward;
+        int summaryReward;
 
         StateFormat stateFormat;
 

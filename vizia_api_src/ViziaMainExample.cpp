@@ -45,6 +45,7 @@ int main(){
         if( v->isEpisodeFinished() ){
             std::cout << "\nNEW EPISODE\n\n";
             v->newEpisode();
+            std::cout<<"New epizode"<<std::endl;
             usleep(2000000);
         }
         //ViziaMain::State s = v->getState();

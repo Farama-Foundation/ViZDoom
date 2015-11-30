@@ -15,8 +15,10 @@ unsigned int Ms2DoomTics (unsigned int ms){
 }
 
 ViziaMain::ViziaMain(){
-    running = false;
-    lastReward = 0;
+    this->running = false;
+    this->lastReward = 0;
+    this->livingReward = 0;
+    this->summaryReward = 0;
     /* Should usually be 0 but not always it seems. */
     this->doomController = new ViziaDoomController();
 }
@@ -70,6 +72,7 @@ bool ViziaMain::close(){
 void ViziaMain::newEpisode(){
     this->doomController->restartMap();
     this->lastReward = 0;
+    this->summaryReward = 0;
 }
 
 float ViziaMain::makeAction(std::vector<bool>& actions){
@@ -98,9 +101,10 @@ float ViziaMain::makeAction(std::vector<bool>& actions){
     /* Return tic reward */    
     
     int mapReward = this->doomController->getMapReward();
-    float reward = (float)(mapReward - lastReward);
+    int reward = (mapReward - lastReward) + this->livingReward;
     this->lastReward = mapReward;
       
+    this->summaryReward += reward;
     return reward;
 }
 
@@ -160,6 +164,9 @@ void ViziaMain::setEpisodeTimeoutInMiliseconds(unsigned int ms){
 void ViziaMain::setEpisodeTimeoutInDoomTics(unsigned int tics){
     this->doomController->setMapTimeout(tics);
 }
+
+void ViziaMain::setLivingReward(int livingReward){ this->livingReward = livingReward; }
+int ViziaMain::getSummaryReward(){ return this->summaryReward; }
 
 void ViziaMain::setScreenResolution(unsigned int width, unsigned int height){ this->doomController->setScreenResolution(width, height); }
 void ViziaMain::setScreenWidth(unsigned int width){ this->doomController->setScreenWidth(width); }

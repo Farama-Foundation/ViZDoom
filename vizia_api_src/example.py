@@ -21,6 +21,7 @@ game.set_doom_file_path("s1_b.wad")
 game.set_doom_map("map01")
 game.set_episode_timeout_in_doom_tics(300)
 
+game.set_living_reward(-1)
 game.set_render_hud(False)
 game.set_render_crosshair(False)
 game.set_render_weapon(True)
@@ -50,17 +51,11 @@ start = time()
 for i in range(iters):
 	if game.is_episode_finished():
 		game.new_episode()
-		print "new episode"
-		sleep(2)
 
-	print "action"
 	r = game.make_action(choice(actions))
-
-	print "reward:",r
 	s = game.get_state()
-	#if r!=0:
-		#print "reward:",r
-	sleep(0.01)
+	if r:
+		print "reward:",r
 end=time()
 
 t = end-start

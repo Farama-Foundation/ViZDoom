@@ -92,6 +92,8 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("get_state_format", &ViziaMainPython::getStateFormat)
 		.def("get_action_format", &ViziaMainPython::getActionFormat)
 
+        .def("set_living_reward", &ViziaMainPython::setLivingReward)
+        .def("get_summary_reward", &ViziaMainPython::getSummaryReward)
 		.def("add_state_available_var", &ViziaMainPython::addStateAvailableVar)
 		.def("add_available_button", &ViziaMainPython::addAvailableButton)
 		.def("set_doom_game_path", &ViziaMainPython::setDoomGamePath)
