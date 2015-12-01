@@ -59,4 +59,7 @@ vizia_api_src/doom2.wad
 vizia_api_src/mainExample
 vizia_api_src/s1_b.wad
 vizia_api_src/end_test.wad
+agents/doom2.wad
+agents/s1_b.wad
+agents/end_test.wad
 **/link-make

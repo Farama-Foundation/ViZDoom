@@ -13,7 +13,7 @@ import lasagne.layers as ls
 
 class MLPEvaluator:
     def __init__(self, state_format, actions_number, batch_size, network_args, gamma=0.99, updates=sgd, learning_rate = 0.01, regularization = None):
-
+        self._loss_history = []
         self._misc_state_included = (state_format[1] > 0)
         self._gamma = gamma
 
@@ -57,9 +57,10 @@ class MLPEvaluator:
             for method, coefficient in regularization:
                 regularization_term += coefficient * regularize_layer_params(self._network, method)
 
-        loss = squared_error(predictions, self._targets).mean() + regularization_term
+        loss = squared_error(predictions, self._targets).mean()
+        regularized_loss = loss + regularization_term
         params = ls.get_all_params(self._network, trainable=True)
-        updates = updates(loss, params, learning_rate=learning_rate)
+        updates = updates(regularized_loss, params, learning_rate=learning_rate)
 
         # mode = NanGuardMode(nan_is_error=True, inf_is_error=True, big_is_error=True)
         mode = None
@@ -89,6 +90,24 @@ class MLPEvaluator:
         # output layer
         network = ls.DenseLayer(network, output_size, nonlinearity = output_nonlin)
         self._network = network
+
+        self._img_i_s = img_input_shape
+        self._hid_uns = hidden_units
+
+    # Just debug checking
+    def zero_params(self):
+        params = ls.get_all_param_values(self._network)
+        w = params[0]
+        b = params[0]
+        
+        y = self._img_i_s[2]
+        x = self._img_i_s[3]
+        n = self._hid_uns[0]
+        for i in range(n):
+            ww = w[:,i].reshape(y,x)
+            ww[0:(y-1)/2,:].fill(0)
+            ww[(y+1)/2,:].fill(0)        
+        ls.set_all_param_values(self._network, params)    
         
 
     def learn_one(self, s, a, s2, r):
@@ -124,11 +143,6 @@ class MLPEvaluator:
             self._learn(s, target)
 
     def learn(self, transitions):
-
-        # TODO:
-        # change internal representation of transitions so that it would return
-        # ready ndarrays
-        # prepare the batch
 
         if self._misc_state_included:
             for i, trans in zip(range(len(transitions)), transitions):
@@ -166,9 +180,10 @@ class MLPEvaluator:
             target[i][transitions[i][1]] = self._expected_buffer[i]
 
         if self._misc_state_included:
-            self._learn(self._input_image_buffer, self._misc_buffer, target)
+            loss = self._learn(self._input_image_buffer, self._misc_buffer, target)
         else:
-            self._learn(self._input_image_buffer, target)
+            loss = self._learn(self._input_image_buffer, target)
+        self._loss_history.append(loss)
 
     def best_action(self, state):
         if self._misc_state_included:
@@ -178,11 +193,16 @@ class MLPEvaluator:
             a = np.argmax(self._evaluate(state[0].reshape(self._image_input_shape)))
         return a
 
+    def get_mean_loss(self, clear = True):
+        m = np.mean(self._loss_history)
+        self._loss_history = []
+        return m
+
 class LinearEvaluator(MLPEvaluator):
     def __init__(self, **kwargs):
         MLPEvaluator.__init__(self, **kwargs)
 
-    def _initialize_network(self, img_input_shape, misc_shape, output_size):
+    def _initialize_network(self, img_input_shape, misc_shape, output_size, output_nonlin = None):
         print "Initializing MLP network..."
         # image input layer
         network = ls.InputLayer(shape=img_input_shape, input_var=self._image_inputs)
@@ -195,7 +215,7 @@ class LinearEvaluator(MLPEvaluator):
             network = ls.ConcatLayer([network, misc_input_layer])
 
         # output layer
-        network = ls.DenseLayer(network, output_size, nonlinearity = None)
+        network = ls.DenseLayer(network, output_size, nonlinearity = output_nonlin)
         self._network = network
 
 class CNNEvaluator(MLPEvaluator):
@@ -219,6 +239,7 @@ class CNNEvaluator(MLPEvaluator):
         # dense layers
         for i in range(hidden_layers):
             network = ls.DenseLayer(network, hidden_units[i], nonlinearity=hidden_nonlin)
+        
         if self._misc_state_included:
             # misc input layer
             misc_input_layer = ls.InputLayer(shape=misc_shape, input_var=self._misc_inputs)
@@ -226,5 +247,5 @@ class CNNEvaluator(MLPEvaluator):
             network = ls.ConcatLayer([network, misc_input_layer])
 
         # output layer
-        network = ls.DenseLayer(network, output_size, None)
+        network = ls.DenseLayer(network, output_size, nonlinearity=output_nonlin)
         self._network = network

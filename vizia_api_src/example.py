@@ -13,13 +13,13 @@ import numpy as np
 game = ViziaGame()
 
 #available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
-game.set_screen_resolution(320,0)
+game.set_screen_resolution(40,30)
 
 game.set_doom_game_path("zdoom")
 game.set_doom_iwad_path("doom2.wad")
 game.set_doom_file_path("s1_b.wad")
 game.set_doom_map("map01")
-game.set_episode_timeout_in_doom_tics(300)
+game.set_episode_timeout_in_doom_tics(200)
 
 game.set_living_reward(-1)
 game.set_render_hud(False)
@@ -28,15 +28,13 @@ game.set_render_weapon(True)
 game.set_render_decals(False)
 game.set_render_particles(False);
 
-game.add_available_button(Button.MOVELEFT)#moveleft
-game.add_available_button(Button.MOVERIGHT)#moveright
-game.add_available_button(Button.ATTACK)#attack
+game.add_available_button(Button.MOVELEFT)
+game.add_available_button(Button.MOVERIGHT)
+game.add_available_button(Button.ATTACK)
 
-game.add_state_available_var(GameVar.AMMO1);
+#game.add_state_available_var(GameVar.AMMO1);
 
-#exit(0)
 game.init()
-
 
 actions = [[True,False,False],[False,True,False],[False,False,True]]
 left = actions[0]
@@ -46,16 +44,19 @@ idle = [False,False,False]
 
 iters = 1200
 sleep_time = 0.01
-#game.new_episode()
 start = time()
-for i in range(iters):
+#for i in range(iters):
+i =0
+while True:
 	if game.is_episode_finished():
+		#print "summary reward:",game.get_summary_reward()
+		print i
+		i+=1
 		game.new_episode()
-
 	r = game.make_action(choice(actions))
 	s = game.get_state()
-	if r:
-		print "reward:",r
+	#print "reward:",r
+	#sleep(0.01)
 end=time()
 
 t = end-start

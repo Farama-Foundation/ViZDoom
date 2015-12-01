@@ -15,7 +15,7 @@ int main(){
     v->setDoomMap("map01");
     v->setEpisodeTimeoutInDoomTics(200);
 
-    v->setScreenResolution(320, 240);
+    v->setScreenResolution(40, 30);
 
     v->setRenderHud(false);
     v->setRenderCrosshair(false);
@@ -32,7 +32,7 @@ int main(){
 
 
     v->init();
-
+    //v->newEpisode();
     std::vector<bool> action(3);
 
     action[0] = false;
@@ -40,13 +40,13 @@ int main(){
     action[2] = true;
 
     int iterations = 1000;
-    for(int i = 0; i < iterations; ++i){
+    int ep=1;
+    for(int i = 0; true; ++i){
 
         if( v->isEpisodeFinished() ){
-            std::cout << "\nNEW EPISODE\n\n";
+            std::cout << ep++ << std::endl;
             v->newEpisode();
-            std::cout<<"New epizode"<<std::endl;
-            usleep(2000000);
+           // usleep(2000000);
         }
         //ViziaMain::State s = v->getState();
 
@@ -54,8 +54,8 @@ int main(){
         //" HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
 
         float r = v->makeAction(action);
-        std::cout<<"reward: "<<r<<std::endl;
-        usleep(11000);
+        //std::cout<<"reward: "<<r<<std::endl;
+        //usleep(11000);
     }
 
     v->close();
