@@ -245,9 +245,18 @@ void ViziaDoomController::setMap(std::string map){
         this->mapRestarting = true;
 
         this->resetInput();
+
+        int restartingTics = 0;
+
         do{
-            std::cout << "RT: " << this->GameVars->MAP_END << " " << this->GameVars->MAP_TIC << std::endl;
+            ++restartingTics;
             this->waitForDoomTic();
+
+            if(restartingTics > 4){
+                this->sendCommand("map " + this->map);
+                restartingTics = 0;
+            }
+
         }while(this->GameVars->MAP_END || this->GameVars->MAP_TIC > 1);
 
         this->mapRestarting = false;
