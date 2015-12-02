@@ -111,7 +111,7 @@ ViziaDoomController::ViziaDoomController(){
     this->mapRestartCount = 0;
     this->mapRestarting = false;
     this->mapEnded = false;
-    this->mapLastTic = 0;
+    this->mapLastTic = 1;
 
     // AUTO RESTART
 
@@ -245,9 +245,10 @@ void ViziaDoomController::setMap(std::string map){
         this->mapRestarting = true;
 
         this->resetInput();
-        while(this->GameVars->MAP_END || this->GameVars->MAP_TIC > this->mapLastTic){
+        do{
+            std::cout << "RT: " << this->GameVars->MAP_END << " " << this->GameVars->MAP_TIC << std::endl;
             this->waitForDoomTic();
-        }
+        }while(this->GameVars->MAP_END || this->GameVars->MAP_TIC > 1);
 
         this->mapRestarting = false;
         this->mapEnded = false;
