@@ -127,6 +127,7 @@ static GameAtExit *ExitCmdList;
 #define SCROLLNO 0
 
 EXTERN_CVAR (Bool, show_messages)
+EXTERN_CVAR(Bool, vizia_no_console)
 
 static unsigned int TickerAt, TickerMax;
 static bool TickerPercent;
@@ -545,6 +546,11 @@ void AddToConsole (int printlevel, const char *text)
 /* Adds a string to the console and also to the notify buffer */
 int PrintString (int printlevel, const char *outline)
 {
+	if(*vizia_no_console){
+		printf("gunwo");
+		return 0;
+	}
+
 	if (printlevel < msglevel || *outline == '\0')
 	{
 		return 0;

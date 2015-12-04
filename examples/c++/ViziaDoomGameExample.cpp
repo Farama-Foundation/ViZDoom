@@ -1,15 +1,17 @@
-#include "ViziaMain.h"
+#include "ViziaDoomGame.h"
 #include <iostream>
 #include <unistd.h>
 #include <vector>
 
+using namespace Vizia;
+
 int main(){
 
-    ViziaMain* v= new ViziaMain();
+    DoomGame* v= new DoomGame();
 
     std::cout << "\n\nVIZIA MAIN EXAMPLE\n\n";
 
-    v->setDoomGamePath("zdoom");
+    v->setDoomGamePath("viziazdoom");
     v->setDoomIwadPath("doom2.wad");
     v->setDoomFilePath("s1_b.wad");
     v->setDoomMap("map01");

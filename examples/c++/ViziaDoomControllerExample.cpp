@@ -2,6 +2,8 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 
+using namespace Vizia;
+
 SDL_Window* window = NULL;
 SDL_Surface* screen = NULL;
 SDL_Surface* viziaBuffer = NULL;
@@ -32,13 +34,13 @@ int main(){
 
     bool sdl = true;
 
-    ViziaDoomController *vdm = new ViziaDoomController;
+    DoomController *vdm = new DoomController;
 
     std::cout << "\n\nVIZIA CONTROLLER EXAMPLE\n\n";
 
-    vdm->setGamePath("zdoom");
+    vdm->setGamePath("viziazdoom");
     vdm->setIwadPath("doom2.wad");
-    vdm->setFilePath("s1.wad");
+    vdm->setFilePath("s1_b.wad");
     vdm->setMap("map01");
     vdm->setMapTimeout(200);
     vdm->setAutoMapRestart(true);
@@ -61,7 +63,7 @@ int main(){
     if(sdl) initSDL(vdm->getScreenWidth(), vdm->getScreenHeight());
     
     int loop = 100;
-    for(int i = 0; i < 500; ++i){
+    for(int i = 0; i < 50000; ++i){
 
         //vdm->setMouseX(-10); //obrót w lewo
 
@@ -93,8 +95,8 @@ int main(){
         }
 
         std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<
-                " HP: " << vdm->getPlayerHealth() << " AMMO: " << vdm->getGameVars()->PLAYER_AMMO[2] << 
-                " REWARD: " << vdm->getMapReward() << " SHAPING: " << vdm->getShapingReward() << std::endl;
+                " HP: " << vdm->getPlayerHealth() << " AMMO: " << vdm->getGameVars()->PLAYER_AMMO[2] <<
+                " REWARD: " << vdm->getMapReward() << " SHAPING: " << vdm->getMapShapingReward() << std::endl;
 
         if(vdm->isMapLastTic()) std::cout << "\nMAP FINISHED\n\n";
 

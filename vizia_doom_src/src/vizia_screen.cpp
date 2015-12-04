@@ -1,5 +1,6 @@
 #include "vizia_screen.h"
 #include "vizia_shared_memory.h"
+#include "vizia_message_queue.h"
 
 #include "d_main.h"
 #include "d_net.h"
@@ -25,6 +26,9 @@ bip::mapped_region *viziaScreenSMRegion;
 BYTE *viziaScreen;
 
 void Vizia_ScreenInit() {
+
+    viziaScreenSMRegion = NULL;
+
     viziaScreenWidth = (unsigned int) screen->GetWidth();
     viziaScreenHeight = (unsigned int) screen->GetHeight();
     viziaScreenSize = sizeof(BYTE) * viziaScreenWidth * viziaScreenHeight;
@@ -112,13 +116,21 @@ void Vizia_ScreenInit() {
             break;
     }
 
-    viziaScreenSMRegion = new bip::mapped_region(viziaSM, bip::read_write, Vizia_SMGetScreenRegionBeginning(), viziaScreenSize);
-    viziaScreen = static_cast<BYTE *>(viziaScreenSMRegion->get_address());
+    try {
+        viziaScreenSMRegion = new bip::mapped_region(viziaSM, bip::read_write, Vizia_SMGetScreenRegionBeginning(), viziaScreenSize);
+        viziaScreen = static_cast<BYTE *>(viziaScreenSMRegion->get_address());
 
-    printf("Vizia_ScreenInit: ViziaScreen SM region size: %zu, beginnig: %p, end: %p \n",
-           viziaScreenSMRegion->get_size(), viziaScreenSMRegion->get_address(), viziaScreenSMRegion->get_address() + viziaScreenSMRegion->get_size());
-    printf("Vizia_ScreenInit: width: %d, height: %d, pitch: %zu, format: %d\n",
-           viziaScreenWidth, viziaScreenHeight, viziaScreenPitch, *vizia_screen_format);
+        printf("Vizia_ScreenInit: ViziaScreen SM region size: %zu, beginnig: %p, end: %p \n",
+               viziaScreenSMRegion->get_size(), viziaScreenSMRegion->get_address(),
+               viziaScreenSMRegion->get_address() + viziaScreenSMRegion->get_size());
+        printf("Vizia_ScreenInit: width: %d, height: %d, pitch: %zu, format: %d\n",
+               viziaScreenWidth, viziaScreenHeight, viziaScreenPitch, *vizia_screen_format);
+    }
+    catch(bip::interprocess_exception &ex){
+        printf("Vizia_Vizia_ScreenInit: Error creating ViziaScreen SM");
+        Vizia_MQSend(VIZIA_MSG_CODE_DOOM_ERROR);
+        Vizia_Command(strdup("exit"));
+    }
 
 }
 

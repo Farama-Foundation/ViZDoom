@@ -19,13 +19,19 @@ void Vizia_Command(char * command){
 }
 
 void Vizia_MQInit(const char * id){
-    //bip::message_queue::remove(VIZIA_MQ_NAME);
-    //viziaMQ = new bip::message_queue(bip::open_or_create, VIZIA_MQ_NAME, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
+
     viziaMQControllerName = strcat(strdup(VIZIA_MQ_NAME_CTR_BASE), id);
     viziaMQDoomName = strcat(strdup(VIZIA_MQ_NAME_DOOM_BASE), id);
 
-    viziaMQController = new bip::message_queue(bip::open_or_create, viziaMQControllerName, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
-    viziaMQDoom = new bip::message_queue(bip::open_or_create, viziaMQDoomName, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
+    try{
+        viziaMQController = new bip::message_queue(bip::open_only, viziaMQControllerName);//, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
+        viziaMQDoom = new bip::message_queue(bip::open_only, viziaMQDoomName);//, VIZIA_MQ_MAX_MSG_NUM, VIZIA_MQ_MAX_MSG_SIZE);
+    }
+    catch(bip::interprocess_exception &ex){
+        printf("Vizia_MQInit: Error creating message queues");
+        Vizia_MQSend(VIZIA_MSG_CODE_DOOM_ERROR);
+        Vizia_Command(strdup("exit"));
+    }
 }
 
 void Vizia_MQSend(uint8_t code){
@@ -84,6 +90,7 @@ void Vizia_MQTic(){
                 Vizia_Command(strdup(msg.command));
                 break;
             case VIZIA_MSG_CODE_CLOSE :
+            case VIZIA_MSG_CODE_ERROR:
                 Vizia_Command(strdup("exit"));
                 break;
             default : break;
@@ -94,5 +101,5 @@ void Vizia_MQTic(){
 
 void Vizia_MQClose(){
     //bip::message_queue::remove(viziaMQControllerName);
-    bip::message_queue::remove(viziaMQDoomName);
+    //bip::message_queue::remove(viziaMQDoomName);
 }

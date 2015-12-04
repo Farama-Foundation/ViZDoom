@@ -8,8 +8,13 @@
 **/CMakeScripts
 **/cmake_install.cmake
 **/install_manifest.txt
-vizia_doom_src/**/Makefile
 .idea
+
+/bin
+Makefile
+ImportExecutables.cmake
+link-make
+
 
 #copied from the original zdoom repository (and modified)
 /Debug

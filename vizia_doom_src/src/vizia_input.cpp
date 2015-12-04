@@ -1,5 +1,6 @@
 #include "vizia_input.h"
 #include "vizia_shared_memory.h"
+#include "vizia_message_queue.h"
 
 #include "d_main.h"
 #include "g_game.h"
@@ -19,55 +20,55 @@ void Vizia_Mouse(int x, int y){
 
 int Vizia_CounterBT(int button){
     switch(button){
-        case A_MOVERIGHT : return A_MOVELEFT;
-        case A_MOVELEFT : return A_MOVERIGHT;
-        case A_BACK : return A_FORWARD;
-        case A_FORWARD : return A_BACK;
-        case A_RIGHT : return A_LEFT;
-        case A_LEFT : return A_RIGHT;
-        case A_LOOKUP : return A_LOOKDOWN;
-        case A_LOOKDOWN : return A_LOOKUP;
-        case A_MOVEUP : return A_MOVEDOWN;
-        case A_MOVEDOWN : return A_MOVEUP;
+        case VIZIA_BT_MOVERIGHT : return VIZIA_BT_MOVELEFT;
+        case VIZIA_BT_MOVELEFT : return VIZIA_BT_MOVERIGHT;
+        case VIZIA_BT_BACK : return VIZIA_BT_FORWARD;
+        case VIZIA_BT_FORWARD : return VIZIA_BT_BACK;
+        case VIZIA_BT_RIGHT : return VIZIA_BT_LEFT;
+        case VIZIA_BT_LEFT : return VIZIA_BT_RIGHT;
+        case VIZIA_BT_LOOKUP : return VIZIA_BT_LOOKDOWN;
+        case VIZIA_BT_LOOKDOWN : return VIZIA_BT_LOOKUP;
+        case VIZIA_BT_MOVEUP : return VIZIA_BT_MOVEDOWN;
+        case VIZIA_BT_MOVEDOWN : return VIZIA_BT_MOVEUP;
         default : return -1;
     }
 }
 
 char* Vizia_BTToCommand(int button, bool state){
     switch(button){
-        case A_ATTACK : return Vizia_GetCommandWithState(strdup(" attack"), state);
-        case A_USE : return Vizia_GetCommandWithState(strdup(" use"), state);
-        case A_JUMP : return Vizia_GetCommandWithState(strdup(" jump"), state);
-        case A_CROUCH : return Vizia_GetCommandWithState(strdup(" crouch"), state);
-        case A_TURN180 : return strdup("turn180");
-        case A_ALTATTACK : return Vizia_GetCommandWithState(strdup(" altattack"), state);
-        case A_RELOAD : return Vizia_GetCommandWithState(strdup(" reload"), state);
-        case A_ZOOM : return Vizia_GetCommandWithState(strdup(" zoom"), state);
+        case VIZIA_BT_ATTACK : return Vizia_GetCommandWithState(strdup(" attack"), state);
+        case VIZIA_BT_USE : return Vizia_GetCommandWithState(strdup(" use"), state);
+        case VIZIA_BT_JUMP : return Vizia_GetCommandWithState(strdup(" jump"), state);
+        case VIZIA_BT_CROUCH : return Vizia_GetCommandWithState(strdup(" crouch"), state);
+        case VIZIA_BT_TURN180 : return strdup("turn180");
+        case VIZIA_BT_ALTATTACK : return Vizia_GetCommandWithState(strdup(" altattack"), state);
+        case VIZIA_BT_RELOAD : return Vizia_GetCommandWithState(strdup(" reload"), state);
+        case VIZIA_BT_ZOOM : return Vizia_GetCommandWithState(strdup(" zoom"), state);
 
-        case A_SPEED : return Vizia_GetCommandWithState(strdup(" speed"), state);
-        case A_STRAFE : return Vizia_GetCommandWithState(strdup(" strafe"), state);
+        case VIZIA_BT_SPEED : return Vizia_GetCommandWithState(strdup(" speed"), state);
+        case VIZIA_BT_STRAFE : return Vizia_GetCommandWithState(strdup(" strafe"), state);
 
-        case A_MOVERIGHT : return Vizia_GetCommandWithState(strdup(" moveright"), state);
-        case A_MOVELEFT : return Vizia_GetCommandWithState(strdup(" moveleft"), state);
-        case A_BACK : return Vizia_GetCommandWithState(strdup(" back"), state);
-        case A_FORWARD : return Vizia_GetCommandWithState(strdup(" forward"), state);
-        case A_RIGHT : return Vizia_GetCommandWithState(strdup(" right"), state);
-        case A_LEFT : return Vizia_GetCommandWithState(strdup(" left"), state);
-        case A_LOOKUP : return Vizia_GetCommandWithState(strdup(" lookup"), state);
-        case A_LOOKDOWN : return Vizia_GetCommandWithState(strdup(" lookdown"), state);
-        case A_MOVEUP : return Vizia_GetCommandWithState(strdup(" moveup"), state);
-        case A_MOVEDOWN : return Vizia_GetCommandWithState(strdup(" movedown"), state);
+        case VIZIA_BT_MOVERIGHT : return Vizia_GetCommandWithState(strdup(" moveright"), state);
+        case VIZIA_BT_MOVELEFT : return Vizia_GetCommandWithState(strdup(" moveleft"), state);
+        case VIZIA_BT_BACK : return Vizia_GetCommandWithState(strdup(" back"), state);
+        case VIZIA_BT_FORWARD : return Vizia_GetCommandWithState(strdup(" forward"), state);
+        case VIZIA_BT_RIGHT : return Vizia_GetCommandWithState(strdup(" right"), state);
+        case VIZIA_BT_LEFT : return Vizia_GetCommandWithState(strdup(" left"), state);
+        case VIZIA_BT_LOOKUP : return Vizia_GetCommandWithState(strdup(" lookup"), state);
+        case VIZIA_BT_LOOKDOWN : return Vizia_GetCommandWithState(strdup(" lookdown"), state);
+        case VIZIA_BT_MOVEUP : return Vizia_GetCommandWithState(strdup(" moveup"), state);
+        case VIZIA_BT_MOVEDOWN : return Vizia_GetCommandWithState(strdup(" movedown"), state);
 
-        case A_WEAPON1 : return strdup("slot 1");
-        case A_WEAPON2 : return strdup("slot 2");
-        case A_WEAPON3 : return strdup("slot 3");
-        case A_WEAPON4 : return strdup("slot 4");
-        case A_WEAPON5 : return strdup("slot 5");
-        case A_WEAPON6 : return strdup("slot 6");
-        case A_WEAPON7 : return strdup("slot 7");
+        case VIZIA_BT_WEAPON1 : return strdup("slot 1");
+        case VIZIA_BT_WEAPON2 : return strdup("slot 2");
+        case VIZIA_BT_WEAPON3 : return strdup("slot 3");
+        case VIZIA_BT_WEAPON4 : return strdup("slot 4");
+        case VIZIA_BT_WEAPON5 : return strdup("slot 5");
+        case VIZIA_BT_WEAPON6 : return strdup("slot 6");
+        case VIZIA_BT_WEAPON7 : return strdup("slot 7");
 
-        case A_WEAPONNEXT : return strdup("weapnext");
-        case A_WEAPONPREV : return strdup("weapprev");
+        case VIZIA_BT_WEAPONNEXT : return strdup("weapnext");
+        case VIZIA_BT_WEAPONPREV : return strdup("weapprev");
 
         default : return strdup("");
     }
@@ -88,13 +89,27 @@ void Vizia_ButtonCommand(int button, bool state, bool oldState){
 
 }
 
-void Vizia_InputInit(){
+void Vizia_InputInit() {
+    viziaInputSMRegion = NULL;
+
     viziaLastInput = new ViziaInputStruct();
 
-    viziaInputSMRegion = new bip::mapped_region(viziaSM, bip::read_write, Vizia_SMGetInputRegionBeginning(), sizeof(ViziaInputStruct));
-    viziaInput = static_cast<ViziaInputStruct *>(viziaInputSMRegion->get_address());
+    try {
+        viziaInputSMRegion = new bip::mapped_region(viziaSM, bip::read_write, Vizia_SMGetInputRegionBeginning(),
+                                                    sizeof(ViziaInputStruct));
+        viziaInput = static_cast<ViziaInputStruct *>(viziaInputSMRegion->get_address());
 
-    for(int i = 0; i < A_BT_SIZE; ++i) {
+        printf("Vizia_InputInit: Input SM region size: %zu, beginnig: %p, end: %p \n",
+               viziaInputSMRegion->get_size(), viziaInputSMRegion->get_address(),
+               viziaInputSMRegion->get_address() + viziaInputSMRegion->get_size());
+    }
+    catch (bip::interprocess_exception &ex) {
+        printf("Vizia_InputInit: Error creating Input SM");
+        Vizia_MQSend(VIZIA_MSG_CODE_DOOM_ERROR);
+        Vizia_Command(strdup("exit"));
+    }
+
+    for (int i = 0; i < VIZIA_BT_SIZE; ++i) {
         viziaInput->BT[i] = false;
         viziaInput->BT_AVAILABLE[i] = true;
     }
@@ -104,15 +119,13 @@ void Vizia_InputInit(){
     viziaInput->MS_X = 0;
     viziaInput->MS_Y = 0;
 
-    printf("Vizia_InputInit: Input SM region size: %zu, beginnig: %p, end: %p \n",
-           viziaInputSMRegion->get_size(), viziaInputSMRegion->get_address(), viziaInputSMRegion->get_address() + viziaInputSMRegion->get_size());
 }
 
 void Vizia_InputTic(){
 
     Vizia_MouseEvent(viziaInput->MS_X, viziaInput->MS_Y);
 
-    for(int i = 0; i<A_BT_SIZE; ++i){
+    for(int i = 0; i<VIZIA_BT_SIZE; ++i){
         if(viziaInput->BT_AVAILABLE[i]) Vizia_ButtonCommand(i, viziaInput->BT[i], viziaLastInput->BT[i]);
     }
 

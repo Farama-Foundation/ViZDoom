@@ -3,7 +3,7 @@
 
 #define NPY_NO_DEPRECATED_API NPY_1_8_API_VERSION
 
-#include "ViziaMain.h"
+#include "ViziaDoomGame.h"
 #include <iostream>
 #include <vector>
 #include <Python.h>
@@ -15,14 +15,16 @@
 #include <numpy/ndarrayobject.h>
 #include <numpy/npy_math.h>
 
+namespace Vizia {
+
 /* C++ code to expose C arrays as python objects */
-class ViziaMainPython: public ViziaMain 
-{
-	
+    class DoomGamePython : public DoomGame {
+
     public:
-        ViziaMainPython();
+        DoomGamePython();
+
         bool init();
-    	float makeAction(boost::python::list actionList);
+        float makeAction(boost::python::list actionList);
         boost::python::api::object getState();
         boost::python::tuple getStateFormat();
         boost::python::api::object getLastAction();
@@ -32,7 +34,8 @@ class ViziaMainPython: public ViziaMain
         boost::python::tuple stateFormat;
         npy_intp imageShape[3];
 
-};
+    };
 
+}
 
 #endif

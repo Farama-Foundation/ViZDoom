@@ -1,5 +1,7 @@
 cmake_minimum_required( VERSION 2.4 )
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}" "${CMAKE_SOURCE_DIR}/vizia_doom_src")
+
 if( COMMAND cmake_policy )
 	cmake_policy( SET CMP0003 NEW )
 endif( COMMAND cmake_policy )
@@ -534,16 +536,18 @@ endif( BACKPATCH )
 
 # Update gitinfo.h
 
-add_custom_target( revision_check ALL
-	COMMAND updaterevision src/gitinfo.h
-	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-	DEPENDS updaterevision )
+#add_custom_target( revision_check ALL
+#	COMMAND updaterevision src/gitinfo.h
+#	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+#	DEPENDS updaterevision )
 
 # Libraries ZDoom needs
 
+find_package(Boost COMPONENTS system thread REQUIRED)
+
 message( STATUS "Fluid synth libs: ${FLUIDSYNTH_LIBRARIES}" )
-set( ZDOOM_LIBS ${ZDOOM_LIBS} "${ZLIB_LIBRARIES}" "${JPEG_LIBRARIES}" "${BZIP2_LIBRARIES}" "${GME_LIBRARIES}" )
-include_directories( "${ZLIB_INCLUDE_DIR}" "${BZIP2_INCLUDE_DIR}" "${LZMA_INCLUDE_DIR}" "${JPEG_INCLUDE_DIR}" "${GME_INCLUDE_DIR}" )
+set( ZDOOM_LIBS ${ZDOOM_LIBS} "${ZLIB_LIBRARIES}" "${JPEG_LIBRARIES}" "${BZIP2_LIBRARIES}" "${GME_LIBRARIES}"  ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
+include_directories( "${ZLIB_INCLUDE_DIR}" "${BZIP2_INCLUDE_DIR}" "${LZMA_INCLUDE_DIR}" "${JPEG_INCLUDE_DIR}" "${GME_INCLUDE_DIR}" ${Boost_INCLUDE_DIR} )
 
 if( SNDFILE_FOUND )
     set( ZDOOM_LIBS ${ZDOOM_LIBS} "${SNDFILE_LIBRARIES}" )
@@ -833,7 +837,7 @@ set( NOT_COMPILED_SOURCE_FILES
 	asm_x86_64/tmap3.s
 )
 
-add_executable( zdoom WIN32 MACOSX_BUNDLE
+add_executable( viziazdoom WIN32 MACOSX_BUNDLE
 	${HEADER_FILES}
 	${NOT_COMPILED_SOURCE_FILES}
 	__autostart.cpp
@@ -1164,7 +1168,7 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "SunOS")
 	set( ZDOOM_LIBS ${ZDOOM_LIBS} nsl socket)
 endif(${CMAKE_SYSTEM_NAME} STREQUAL "SunOS")
 
-target_link_libraries( zdoom ${ZDOOM_LIBS} gdtoa dumb lzma )
+target_link_libraries( viziazdoom ${ZDOOM_LIBS} gdtoa dumb lzma )
 include_directories( .
 	g_doom
 	g_heretic
@@ -1183,16 +1187,16 @@ include_directories( .
 	${CMAKE_BINARY_DIR}/gdtoa
 	${SYSTEM_SOURCES_DIR} )
 
-add_dependencies( zdoom revision_check )
+#add_dependencies( viziazdoom revision_check )
 
 # Due to some quirks, we need to do this in this order
 if( NOT ZDOOM_OUTPUT_OLDSTYLE OR NO_GENERATOR_EXPRESSIONS )
 	# RUNTIME_OUTPUT_DIRECTORY does not exist in CMake 2.4.
 	# Linux distributions are slow to adopt 2.6. :(
-	set_target_properties( zdoom PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${ZDOOM_OUTPUT_DIR} )
-	set_target_properties( zdoom PROPERTIES OUTPUT_NAME ${ZDOOM_EXE_NAME} )
+	set_target_properties( viziazdoom PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${ZDOOM_OUTPUT_DIR} )
+	set_target_properties( viziazdoom PROPERTIES OUTPUT_NAME ${ZDOOM_EXE_NAME} )
 else( NOT ZDOOM_OUTPUT_OLDSTYLE OR NO_GENERATOR_EXPRESSIONS )
-	set_target_properties( zdoom PROPERTIES
+	set_target_properties( viziazdoom PROPERTIES
 		RUNTIME_OUTPUT_NAME ${ZDOOM_EXE_NAME}
 		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${ZDOOM_OUTPUT_DIR}
 		RUNTIME_OUTPUT_NAME_DEBUG ${ZDOOM_EXE_NAME}d
@@ -1207,29 +1211,29 @@ endif( NOT ZDOOM_OUTPUT_OLDSTYLE OR NO_GENERATOR_EXPRESSIONS )
 if( MSVC )
 	option( ZDOOM_GENERATE_MAPFILE "Generate .map file for debugging." OFF )
 	if( ZDOOM_GENERATE_MAPFILE )
-		set_target_properties(zdoom PROPERTIES LINK_FLAGS "/MANIFEST:NO /DELAYLOAD:\"fmodex${X64}.dll\" /DELAYLOAD:\"openal32.dll\" /DELAYLOAD:\"libmpg123-0.dll\" /DELAYLOAD:\"libsndfile-1.dll\" /MAP")
+		set_target_properties(viziazdoom PROPERTIES LINK_FLAGS "/MANIFEST:NO /DELAYLOAD:\"fmodex${X64}.dll\" /DELAYLOAD:\"openal32.dll\" /DELAYLOAD:\"libmpg123-0.dll\" /DELAYLOAD:\"libsndfile-1.dll\" /MAP")
 	else( ZDOOM_GENERATE_MAPFILE )
-		set_target_properties(zdoom PROPERTIES LINK_FLAGS "/MANIFEST:NO /DELAYLOAD:\"fmodex${X64}.dll\" /DELAYLOAD:\"openal32.dll\" /DELAYLOAD:\"libmpg123-0.dll\" /DELAYLOAD:\"libsndfile-1.dll\"")
+		set_target_properties(viziazdoom PROPERTIES LINK_FLAGS "/MANIFEST:NO /DELAYLOAD:\"fmodex${X64}.dll\" /DELAYLOAD:\"openal32.dll\" /DELAYLOAD:\"libmpg123-0.dll\" /DELAYLOAD:\"libsndfile-1.dll\"")
 	endif( ZDOOM_GENERATE_MAPFILE )
 
 	if( NO_GENERATOR_EXPRESSIONS )
-		add_custom_command(TARGET zdoom POST_BUILD
+		add_custom_command(TARGET viziazdoom POST_BUILD
 			COMMAND "mt.exe" -manifest \"${CMAKE_CURRENT_SOURCE_DIR}\\win32\\zdoom.exe.manifest\" -outputresource:\"$(TargetDir)$(TargetFileName)\"\;\#1
 			COMMENT "Adding manifest..."
 		)
 	else( NO_GENERATOR_EXPRESSIONS )
-		add_custom_command(TARGET zdoom POST_BUILD
-			COMMAND "mt.exe" -manifest \"${CMAKE_CURRENT_SOURCE_DIR}\\win32\\zdoom.exe.manifest\" -outputresource:\"$<TARGET_FILE:zdoom>\"\;\#1
+		add_custom_command(TARGET viziazdoom POST_BUILD
+			COMMAND "mt.exe" -manifest \"${CMAKE_CURRENT_SOURCE_DIR}\\win32\\zdoom.exe.manifest\" -outputresource:\"$<TARGET_FILE:viziazdoom>\"\;\#1
 			COMMENT "Adding manifest..."
 		)
 	endif( NO_GENERATOR_EXPRESSIONS )
 
-	create_default_target_launcher( zdoom WORKING_DIRECTORY ${ZDOOM_OUTPUT_DIR} )
+	create_default_target_launcher( viziazdoom WORKING_DIRECTORY ${ZDOOM_OUTPUT_DIR} )
 endif( MSVC )
 
 if( NOT WIN32 )
 	FILE( WRITE ${CMAKE_CURRENT_BINARY_DIR}/link-make "if [ ! -e ${ZDOOM_OUTPUT_DIR}/${ZDOOM_EXE_NAME} ]; then ln -sf ${CMAKE_CURRENT_BINARY_DIR}/${ZDOOM_EXE_NAME} ${ZDOOM_OUTPUT_DIR}/${ZDOOM_EXE_NAME}; fi" )
-	add_custom_command( TARGET zdoom POST_BUILD
+	add_custom_command( TARGET viziazdoom POST_BUILD
 		COMMAND chmod +x ${CMAKE_CURRENT_BINARY_DIR}/link-make
 		COMMAND /bin/sh -c ${CMAKE_CURRENT_BINARY_DIR}/link-make )
 endif( NOT WIN32 )
@@ -1245,7 +1249,7 @@ if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 endif( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 
 if( APPLE )
-	set_target_properties(zdoom PROPERTIES
+	set_target_properties(viziazdoom PROPERTIES
 		LINK_FLAGS "-framework Carbon -framework Cocoa -framework IOKit -framework OpenGL"
 		MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/posix/osx/zdoom-info.plist" )
 
@@ -1259,8 +1263,8 @@ if( APPLE )
 			COMMAND awk "{print $1}"
 			OUTPUT_VARIABLE FMOD_LINK
 			OUTPUT_STRIP_TRAILING_WHITESPACE )
-		add_custom_command( TARGET zdoom POST_BUILD
-			COMMAND "${INSTALL_NAME_TOOL}" -change "${FMOD_LINK}" @executable_path/../Frameworks/libfmodex.dylib "$<TARGET_FILE:zdoom>"
+		add_custom_command( TARGET viziazdoom POST_BUILD
+			COMMAND "${INSTALL_NAME_TOOL}" -change "${FMOD_LINK}" @executable_path/../Frameworks/libfmodex.dylib "$<TARGET_FILE:viziazdoom>"
 			COMMENT "Relinking FMOD Ex" )
 	endif( NOT NO_FMOD )
 endif( APPLE )
