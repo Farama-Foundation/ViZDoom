@@ -17,11 +17,13 @@ extern bip::message_queue *viziaMQRecv;
 #define VIZIA_MSG_CODE_DOOM_READY 10
 #define VIZIA_MSG_CODE_DOOM_TIC 11
 #define VIZIA_MSG_CODE_DOOM_CLOSE 12
+#define VIZIA_MSG_CODE_DOOM_ERROR 13
 
-#define VIZIA_MSG_CODE_READY 0
-#define VIZIA_MSG_CODE_TIC 1
-#define VIZIA_MSG_CODE_CLOSE 2
-#define VIZIA_MSG_CODE_COMMAND 3
+#define VIZIA_MSG_CODE_READY 20
+#define VIZIA_MSG_CODE_TIC 21
+#define VIZIA_MSG_CODE_CLOSE 22
+#define VIZIA_MSG_CODE_ERROR 23
+#define VIZIA_MSG_CODE_COMMAND 24
 
 struct ViziaMessageSignalStruct{
     uint8_t code;

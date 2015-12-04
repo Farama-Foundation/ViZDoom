@@ -1,4 +1,6 @@
 #include <boost/interprocess/ipc/message_queue.hpp>
+#include <boost/thread.hpp>
+#include <boost/thread/thread.hpp>
 
 #include "vizia_main.h"
 #include "vizia_input.h"
@@ -13,6 +15,9 @@
 #include "doomdef.h"
 #include "doomstat.h"
 #include "c_console.h"
+
+namespace b = boost;
+namespace bt = boost::this_thread;
 
 /*
     CVAR (type, name, init value, flags)
@@ -41,6 +46,7 @@ CVAR (Bool, vizia_singletic, true, CVAR_NOSET)
 CVAR (Bool, vizia_clear_render, true, CVAR_NOSET)
 CVAR (String, vizia_instance_id, "0", CVAR_NOSET)
 CVAR (Int, vizia_screen_format, 0, CVAR_NOSET)
+CVAR (Bool, vizia_no_console, false, CVAR_NOSET)
 
 void Vizia_Init(){
     printf("Vizia_Init: Instance id: %s\n", *vizia_instance_id);
@@ -61,8 +67,6 @@ void Vizia_Init(){
 }
 
 void Vizia_Close(){
-    printf("Vizia_Close: Instance id: %s\n", *vizia_instance_id);
-
     if(*vizia_controlled) {
         Vizia_InputClose();
         Vizia_GameVarsClose();
@@ -70,12 +74,20 @@ void Vizia_Close(){
 
         Vizia_SMClose();
 
-        Vizia_MQSend(VIZIA_MSG_CODE_DOOM_CLOSE);
+        //  Vizia_MQSend(VIZIA_MSG_CODE_DOOM_CLOSE);
         Vizia_MQClose();
     }
 }
 
 void Vizia_Tic(){
+
+    try{
+        bt::interruption_point();
+    }
+    catch(b::thread_interrupted &ex ){
+        Vizia_Command(strdup("exit"));
+    }
+
     if (*vizia_controlled && (gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
             && !paused && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
 

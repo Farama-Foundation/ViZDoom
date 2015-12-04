@@ -1,5 +1,6 @@
 #include "vizia_game.h"
 #include "vizia_shared_memory.h"
+#include "vizia_message_queue.h"
 #include "vizia_screen.h"
 
 #include "info.h"
@@ -74,13 +75,22 @@ int Vizia_CheckEquippedWeaponAmmo(){
 
 void Vizia_GameVarsInit(){
 
+    viziaGameVarsSMRegion = NULL;
+
     viziaPlayer = &players[consoleplayer];
+    try {
+        viziaGameVarsSMRegion = new bip::mapped_region(viziaSM, bip::read_write, Vizia_SMGetGameVarsRegionBeginning(), sizeof(ViziaGameVarsStruct));
+        viziaGameVars = static_cast<ViziaGameVarsStruct *>(viziaGameVarsSMRegion->get_address());
 
-    viziaGameVarsSMRegion = new bip::mapped_region(viziaSM, bip::read_write, Vizia_SMGetGameVarsRegionBeginning(), sizeof(ViziaGameVarsStruct));
-    viziaGameVars = static_cast<ViziaGameVarsStruct *>(viziaGameVarsSMRegion->get_address());
-
-    printf("Vizia_GameVarsInit: GameVars SM region size: %zu, beginnig: %p, end: %p \n",
-           viziaGameVarsSMRegion->get_size(), viziaGameVarsSMRegion->get_address(), viziaGameVarsSMRegion->get_address() + viziaGameVarsSMRegion->get_size());
+        printf("Vizia_GameVarsInit: GameVars SM region size: %zu, beginnig: %p, end: %p \n",
+               viziaGameVarsSMRegion->get_size(), viziaGameVarsSMRegion->get_address(),
+               viziaGameVarsSMRegion->get_address() + viziaGameVarsSMRegion->get_size());
+    }
+    catch(bip::interprocess_exception &ex){
+        printf("Vizia_GameVarsInit: Error GameVars SM");
+        Vizia_MQSend(VIZIA_MSG_CODE_DOOM_ERROR);
+        Vizia_Command(strdup("exit"));
+    }
 }
 
 void Vizia_UpdateGameVars(){
@@ -101,7 +111,11 @@ void Vizia_UpdateGameVars(){
     viziaGameVars->MAP_SECRETCOUNT = level.found_secrets;
 
     viziaGameVars->MAP_REWARD = ACS_GlobalVars[0];
-    viziaGameVars->SHAPING_REWARD = ACS_GlobalVars[1];
+    viziaGameVars->MAP_SHAPING_REWARD = ACS_GlobalVars[1];
+
+    for(int i = 0; i < VIZIA_GV_USER_SIZE; ++i){
+        viziaGameVars->MAP_USER_VARS[i] = ACS_GlobalVars[i+2];
+    }
 
     viziaGameVars->MAP_END = gamestate != GS_LEVEL;
 

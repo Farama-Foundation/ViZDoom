@@ -1,5 +1,5 @@
 cmake_minimum_required( VERSION 2.4 )
-project(ZDoom)
+project(ViziaZDoom)
 
 if( COMMAND cmake_policy )
 	if( POLICY CMP0011 )
@@ -37,14 +37,14 @@ endif(CMAKE_CROSSCOMPILING)
 function( add_pk3 PK3_NAME PK3_DIR )
 	# Generate target name. Just use "pk3" for main pk3 target.
 	string( REPLACE "." "_" PK3_TARGET ${PK3_NAME} )
-	if( ${PK3_TARGET} STREQUAL "zdoom_pk3" )
+	if( ${PK3_TARGET} STREQUAL "viziazdoom_pk3" )
 		set( PK3_TARGET "pk3" )
-	endif( ${PK3_TARGET} STREQUAL "zdoom_pk3" )
+	endif( ${PK3_TARGET} STREQUAL "viziazdoom_pk3" )
 
 	if( NOT NO_GENERATOR_EXPRESSIONS AND NOT ZDOOM_OUTPUT_OLDSTYLE )
 		add_custom_command( OUTPUT ${ZDOOM_OUTPUT_DIR}/${PK3_NAME}
 			COMMAND zipdir -udf ${ZDOOM_OUTPUT_DIR}/${PK3_NAME} ${PK3_DIR}
-			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ZDOOM_OUTPUT_DIR}/${PK3_NAME} $<TARGET_FILE_DIR:zdoom>/${PK3_NAME}
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ZDOOM_OUTPUT_DIR}/${PK3_NAME} $<TARGET_FILE_DIR:viziazdoom>/${PK3_NAME}
 			DEPENDS zipdir )
 	else( NOT NO_GENERATOR_EXPRESSIONS AND NOT ZDOOM_OUTPUT_OLDSTYLE )
 		add_custom_command( OUTPUT ${ZDOOM_OUTPUT_DIR}/${PK3_NAME}
@@ -77,8 +77,8 @@ IF( NOT CMAKE_BUILD_TYPE )
 		FORCE )
 ENDIF( NOT CMAKE_BUILD_TYPE )
 
-set( ZDOOM_OUTPUT_DIR ${CMAKE_BINARY_DIR} CACHE PATH "Directory where zdoom.pk3 and the executable will be created." )
-set( ZDOOM_EXE_NAME "zdoom" CACHE FILEPATH "Name of the executable to create." )
+set( ZDOOM_OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin CACHE PATH "Directory where zdoom.pk3 and the executable will be created." )
+set( ZDOOM_EXE_NAME "viziazdoom" CACHE FILEPATH "Name of the executable to create." )
 if( MSVC )
 	# Allow the user to use ZDOOM_OUTPUT_DIR as a single release point.
 	# Use zdoom, zdoomd, zdoom64, and zdoomd64 for the binary names

@@ -8,54 +8,58 @@ namespace bip = boost::interprocess;
 
 extern bip::shared_memory_object viziaSM;
 
-#define A_ATTACK 0
-#define A_USE 1
-#define A_JUMP 2
-#define A_CROUCH 3
-#define A_TURN180 4
-#define A_ALTATTACK 5
-#define A_RELOAD 6
-#define A_ZOOM 7
+#define VIZIA_BT_ATTACK 0
+#define VIZIA_BT_USE 1
+#define VIZIA_BT_JUMP 2
+#define VIZIA_BT_CROUCH 3
+#define VIZIA_BT_TURN180 4
+#define VIZIA_BT_ALTATTACK 5
+#define VIZIA_BT_RELOAD 6
+#define VIZIA_BT_ZOOM 7
 
-#define A_SPEED 8
-#define A_STRAFE 9
+#define VIZIA_BT_SPEED 8
+#define VIZIA_BT_STRAFE 9
 
-#define A_MOVERIGHT 10
-#define A_MOVELEFT 11
-#define A_BACK 12
-#define A_FORWARD 13
-#define A_RIGHT 14
-#define A_LEFT 15
-#define A_LOOKUP 16
-#define A_LOOKDOWN 17
-#define A_MOVEUP 18
-#define A_MOVEDOWN 19
-//#define A_SHOWSCORES 20
+#define VIZIA_BT_MOVERIGHT 10
+#define VIZIA_BT_MOVELEFT 11
+#define VIZIA_BT_BACK 12
+#define VIZIA_BT_FORWARD 13
+#define VIZIA_BT_RIGHT 14
+#define VIZIA_BT_LEFT 15
+#define VIZIA_BT_LOOKUP 16
+#define VIZIA_BT_LOOKDOWN 17
+#define VIZIA_BT_MOVEUP 18
+#define VIZIA_BT_MOVEDOWN 19
+//#define VIZIA_BT_SHOWSCORES 20
 
-#define A_WEAPON1 21
-#define A_WEAPON2 22
-#define A_WEAPON3 23
-#define A_WEAPON4 24
-#define A_WEAPON5 25
-#define A_WEAPON6 26
-#define A_WEAPON7 27
+#define VIZIA_BT_WEAPON1 21
+#define VIZIA_BT_WEAPON2 22
+#define VIZIA_BT_WEAPON3 23
+#define VIZIA_BT_WEAPON4 24
+#define VIZIA_BT_WEAPON5 25
+#define VIZIA_BT_WEAPON6 26
+#define VIZIA_BT_WEAPON7 27
 
-#define A_WEAPONNEXT 28
-#define A_WEAPONPREV 29
+#define VIZIA_BT_WEAPONNEXT 28
+#define VIZIA_BT_WEAPONPREV 29
 
-#define A_BT_SIZE 30
+#define VIZIA_BT_SIZE 30
+
+#define VIZIA_GV_USER_SIZE 30
 
 struct ViziaInputStruct{
     int MS_X;
     int MS_Y;
     int MS_MAX_X;
     int MS_MAX_Y;
-    bool BT[A_BT_SIZE];
-    bool BT_AVAILABLE[A_BT_SIZE];
+    bool BT[VIZIA_BT_SIZE];
+    bool BT_AVAILABLE[VIZIA_BT_SIZE];
 };
 
 struct ViziaGameVarsStruct{
     unsigned int GAME_TIC;
+    unsigned int GAME_SEED;
+    unsigned int GAME_STATIC_SEED;
 
     unsigned int SCREEN_WIDTH;
     unsigned int SCREEN_HEIGHT;
@@ -64,11 +68,9 @@ struct ViziaGameVarsStruct{
     int SCREEN_FORMAT;
 
     int MAP_REWARD;
-    int SHAPING_REWARD;
+    int MAP_SHAPING_REWARD;
 
-    /*TODO good numbers for calls
-    int MAP_USER_VARS[8];
-    */
+    int MAP_USER_VARS[VIZIA_GV_USER_SIZE];
 
     unsigned int MAP_START_TIC;
     unsigned int MAP_TIC;

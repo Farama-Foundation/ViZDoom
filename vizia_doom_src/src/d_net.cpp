@@ -937,7 +937,8 @@ int gametime;
 //VIZIA CODE
 void NetUpdate (void)
 {
-	/*
+	if(*vizia_controlled) return;
+
 	int		lowtic;
 	int 	nowtime;
 	int 	newtics;
@@ -1367,7 +1368,6 @@ void NetUpdate (void)
 			oldnettics = nettics[0];
 		}
 	}
-	*/
 }
 
 

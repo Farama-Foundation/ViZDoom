@@ -7,30 +7,33 @@
 #include <string>
 #include <vector>
 
+namespace Vizia {
 
-unsigned int DoomTics2Ms (unsigned int tics);
-unsigned int Ms2DoomTics (unsigned int ms);
+    unsigned int DoomTics2Ms(unsigned int tics);
 
-class ViziaMain{
+    unsigned int Ms2DoomTics(unsigned int ms);
+
+    class DoomGame {
 
     public:
 
-        struct State{
+        struct State {
             int number;
             std::vector<int> vars;
             int imageWidth;
             int imageHeight;
             int imagePitch;
-            uint8_t* imageBuffer;
+            uint8_t *imageBuffer;
         };
 
-        struct StateFormat{
+        struct StateFormat {
             /* shape[0] - num. of channels, 1 - x, 2 - y */
             int imageShape[3];
             int varLen;
-            StateFormat(){}
-            StateFormat(int channels, int x, int y, int varLen)
-            {
+
+            StateFormat() { }
+
+            StateFormat(int channels, int x, int y, int varLen) {
                 this->imageShape[0] = channels;
                 this->imageShape[1] = x;
                 this->imageShape[2] = y;
@@ -38,34 +41,47 @@ class ViziaMain{
             }
         };
 
-        ViziaMain();
-        virtual ~ViziaMain();
+        DoomGame();
+        virtual ~DoomGame();
 
         bool loadConfig(std::string file);
         bool saveConfig(std::string file);
 
         bool init();
-        bool close();
+        void close();
 
         void newEpisode();
-        float makeAction(std::vector<bool>& actions);
 
-        ViziaMain::State getState();
+        float makeAction(std::vector<bool> &actions);
+
+        State getState();
+
         std::vector<bool> getLastAction();
+
         bool isNewEpisode();
         bool isEpisodeFinished();
 
-        void addAvailableButton(ViziaButton button);
+        void addAvailableButton(Button button);
         //void addAvailableButton(std::string action);
 
-        void addStateAvailableVar(ViziaGameVar var);
+        void addStateAvailableVar(GameVar var);
         //void addStateAvailableVar(std::string var);
 
         //OPTIONS
 
-        const ViziaDoomController* getController();
+        const DoomController *getController();
 
+        int getGameVar(GameVar var);
+
+        bool isIncludeShapingReward();
+        void setIncludeShapingReward(int set);
+
+        int getLivingReward();
         void setLivingReward(int livingReward);
+        int getDeathPenalty();
+        void setDeathPenalty(int deathPenalty);
+
+        int getLastReward();
         int getSummaryReward();
 
         void setDoomGamePath(std::string path);
@@ -78,13 +94,21 @@ class ViziaMain{
         void setAutoNewEpisode(bool set);
         void setNewEpisodeOnTimeout(bool set);
         void setNewEpisodeOnPlayerDeath(bool set);
+        void setNewEpisodeOnMapEnd(bool set);
+
+        //void setEpisodeStartTimeInMiliseconds(unsigned int ms);
+        //void setEpisodeStartTimeInDoomTics(unsigned int tics);
+
+        unsigned int getEpisodeTimeoutInMiliseconds();
         void setEpisodeTimeoutInMiliseconds(unsigned int ms);
+
+        unsigned int getEpisodeTimeoutInDoomTics();
         void setEpisodeTimeoutInDoomTics(unsigned int tics);
 
         void setScreenResolution(unsigned int width, unsigned int height);
         void setScreenWidth(unsigned int width);
         void setScreenHeight(unsigned int height);
-        void setScreenFormat(ViziaScreenFormat format);
+        void setScreenFormat(ScreenFormat format);
         void setRenderHud(bool hud);
         void setRenderWeapon(bool weapon);
         void setRenderCrosshair(bool crosshair);
@@ -98,27 +122,38 @@ class ViziaMain{
         int getScreenHeight();
         size_t getScreenPitch();
         size_t getScreenSize();
-        ViziaScreenFormat getScreenFormat();
+
+        ScreenFormat getScreenFormat();
 
     private:
 
-        ViziaDoomController * doomController;
+        DoomController *doomController;
+        bool running;
 
+        //STATE AND ACTIONS
         State state;
 
-        std::vector<ViziaGameVar> stateAvailableVars;
-        std::vector<ViziaButton> availableButtons;
+        std::vector <GameVar> stateAvailableVars;
+        std::vector <Button> availableButtons;
 
         std::vector<bool> lastAction;
 
-        bool running;
+        //REWARD
+
+        bool includeShapingReward;
+
         int lastReward;
-        int livingReward;
+
+        int lastMapReward;
+        int lastShapingReward;
+
         int summaryReward;
 
+        int livingReward;
+        int deathPenalty;
+
         StateFormat stateFormat;
-
-
-};
+    };
+}
 
 #endif

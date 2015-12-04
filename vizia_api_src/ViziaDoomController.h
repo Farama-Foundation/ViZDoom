@@ -13,43 +13,49 @@
 #include <boost/bind.hpp>
 #include "boost/process.hpp"
 
-namespace b = boost;
-namespace bip = boost::interprocess;
-namespace bpr = boost::process;
-namespace bpri = boost::process::initializers;
+namespace Vizia{
 
-#define VIZIA_SM_NAME_BASE "ViziaSM"
+    namespace b = boost;
+    namespace bip = boost::interprocess;
+    namespace bpr = boost::process;
+    namespace bpri = boost::process::initializers;
 
-#define VIZIA_MQ_NAME_CTR_BASE "ViziaMQCtr"
-#define VIZIA_MQ_NAME_DOOM_BASE "ViziaMQDoom"
-#define VIZIA_MQ_MAX_MSG_NUM 32
-#define VIZIA_MQ_MAX_MSG_SIZE sizeof(ViziaDoomController::MessageCommandStruct)
-#define VIZIA_MQ_MAX_CMD_LEN 32
+#define SM_NAME_BASE "ViziaSM"
 
-#define VIZIA_MSG_CODE_DOOM_READY 10
-#define VIZIA_MSG_CODE_DOOM_TIC 11
-#define VIZIA_MSG_CODE_DOOM_CLOSE 12
+#define MQ_NAME_CTR_BASE "ViziaMQCtr"
+#define MQ_NAME_DOOM_BASE "ViziaMQDoom"
+#define MQ_MAX_MSG_NUM 32
+#define MQ_MAX_MSG_SIZE sizeof(DoomController::MessageCommandStruct)
+#define MQ_MAX_CMD_LEN 32
 
-#define VIZIA_MSG_CODE_READY 0
-#define VIZIA_MSG_CODE_TIC 1
-#define VIZIA_MSG_CODE_CLOSE 2
-#define VIZIA_MSG_CODE_COMMAND 3
+#define MSG_CODE_DOOM_READY 10
+#define MSG_CODE_DOOM_TIC 11
+#define MSG_CODE_DOOM_CLOSE 12
+#define MSG_CODE_DOOM_ERROR 13
 
-class ViziaDoomController {
-    
+#define MSG_CODE_READY 20
+#define MSG_CODE_TIC 21
+#define MSG_CODE_CLOSE 22
+#define MSG_CODE_ERROR 23
+#define MSG_CODE_COMMAND 24
+
+    class DoomController {
+
     public:
 
-        struct InputStruct{
+        struct InputStruct {
             int MS_X;
             int MS_Y;
             int MS_MAX_X;
             int MS_MAX_Y;
-            bool BT[ViziaButtonsNumber];
-            bool BT_AVAILABLE[ViziaButtonsNumber];
+            bool BT[ButtonsNumber];
+            bool BT_AVAILABLE[ButtonsNumber];
         };
 
-        struct GameVarsStruct{
+        struct GameVarsStruct {
             unsigned int GAME_TIC;
+            unsigned int GAME_SEED;
+            unsigned int GAME_STATIC_SEED;
 
             unsigned int SCREEN_WIDTH;
             unsigned int SCREEN_HEIGHT;
@@ -59,6 +65,8 @@ class ViziaDoomController {
 
             int MAP_REWARD;
             int SHAPING_REWARD;
+
+            int MAP_USER_VARS[30];
 
             unsigned int MAP_START_TIC;
             unsigned int MAP_TIC;
@@ -88,18 +96,21 @@ class ViziaDoomController {
             bool PLAYER_KEY[10];
         };
 
-        static ViziaButton getButtonId(std::string name);
-        static ViziaGameVar getGameVarId(std::string name);
+        static Button getButtonId(std::string name);
+        static GameVar getGameVarId(std::string name);
 
-        ViziaDoomController();
-        ~ViziaDoomController();
+        DoomController();
+        ~DoomController();
 
         //FLOW CONTROL
 
         bool init();
-        bool close();
-        bool tic(); bool update();
-        void restartMap(); void resetMap();
+        void close();
+
+        bool tic();
+        bool update();
+        void restartMap();
+        void resetMap();
         void restartGame();
         bool isDoomRunning();
         void sendCommand(std::string command);
@@ -121,7 +132,10 @@ class ViziaDoomController {
         void setAutoMapRestartOnTimeout(bool set);
         void setAutoMapRestartOnPlayerDeath(bool set);
         void setAutoMapRestartOnMapEnd(bool set);
+
+        unsigned int getMapTimeout();
         void setMapTimeout(unsigned int tics);
+
         bool isMapLastTic();
         bool isMapFirstTic();
         bool isMapEnded();
@@ -131,7 +145,8 @@ class ViziaDoomController {
         void setScreenResolution(int width, int height);
         void setScreenWidth(int width);
         void setScreenHeight(int height);
-        void setScreenFormat(ViziaScreenFormat format);
+        void setScreenFormat(ScreenFormat format);
+
         void setRenderHud(bool hud);
         void setRenderWeapon(bool weapon);
         void setRenderCrosshair(bool crosshair);
@@ -142,31 +157,36 @@ class ViziaDoomController {
         int getScreenHeight();
         size_t getScreenPitch();
         size_t getScreenSize();
-        ViziaScreenFormat getScreenFormat();
+
+        ScreenFormat getScreenFormat();
 
         //PUBLIC SETTERS & GETTERS
 
-        uint8_t* const getScreen();
-        InputStruct* const getInput();
-        GameVarsStruct* const getGameVars();
+        uint8_t *const getScreen();
+
+        InputStruct *const getInput();
+
+        GameVarsStruct *const getGameVars();
 
         void setMouse(int x, int y);
         void setMouseX(int x);
         void setMouseY(int y);
-        void setButtonState(ViziaButton button, bool state);
-        void toggleButtonState(ViziaButton button);
-        void setAllowButton(ViziaButton button, bool allow);
+
+        void setButtonState(Button button, bool state);
+        void toggleButtonState(Button button);
+        void setAllowButton(Button button, bool allow);
         void allowAllButtons();
+
         void resetInput();
 
-        int getGameVar(ViziaGameVar var);
+        int getGameVar(GameVar var);
 
         int getGameTic();
 
         int getMapReward();
-        int getShapingReward();
+        int getMapShapingReward();
 
-        int getMapTimeout();
+        int getUserVar(int number);
 
         int getMapTic();
 
@@ -183,7 +203,6 @@ class ViziaDoomController {
 
         int getPlayerHealth();
         int getPlayerArmor();
-
         int getPlayerSelectedWeaponAmmo();
         int getPlayerSelectedWeapon();
 
@@ -207,6 +226,7 @@ class ViziaDoomController {
     private:
 
         void generateInstanceId();
+
         std::string instanceId;
 
         b::thread *doomThread;
@@ -216,24 +236,26 @@ class ViziaDoomController {
 
         //MESSAGE QUEUES
 
-        struct MessageSignalStruct{
+        struct MessageSignalStruct {
             uint8_t code;
         };
 
-        struct MessageCommandStruct{
+        struct MessageCommandStruct {
             uint8_t code;
-            char command[VIZIA_MQ_MAX_CMD_LEN];
+            char command[MQ_MAX_CMD_LEN];
         };
 
-        void MQInit();
+        bool MQInit();
 
         void MQSend(uint8_t code);
 
+        void MQSelfSend(uint8_t code);
+
         bool MQTrySend(uint8_t code);
 
-        void MQSend(uint8_t code, const char * command);
+        void MQSend(uint8_t code, const char *command);
 
-        bool MQTrySend(uint8_t code, const char * command);
+        bool MQTrySend(uint8_t code, const char *command);
 
         void MQRecv(void *msg, unsigned long &size, unsigned int &priority);
 
@@ -248,7 +270,7 @@ class ViziaDoomController {
 
         //SHARED MEMORY
 
-        void SMInit();
+        bool SMInit();
 
         void SMClose();
 
@@ -267,6 +289,7 @@ class ViziaDoomController {
         //HELPERS
 
         void waitForDoomStart();
+
         void waitForDoomTic();
 
         void lunchDoom();
@@ -275,7 +298,7 @@ class ViziaDoomController {
 
         unsigned int screenWidth, screenHeight;
         size_t screenPitch, screenSize;
-        ViziaScreenFormat screenFormat;
+        ScreenFormat screenFormat;
 
         bool hud, weapon, crosshair, decals, particles;
 
@@ -292,13 +315,16 @@ class ViziaDoomController {
         bool autoRestartOnTimeout;
         bool autoRestartOnPlayersDeath;
         bool autoRestartOnMapEnd;
+
+        unsigned int mapStartTime;
         unsigned int mapTimeout;
         unsigned int mapRestartCount;
         bool mapRestarting;
         bool mapEnded;
         unsigned int mapLastTic;
 
-};
+    };
 
+}
 
 #endif
