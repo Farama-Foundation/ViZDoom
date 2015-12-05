@@ -88,7 +88,7 @@ class QEngine:
     def _choose_action_index(self, state):
     	self._update_state(state)
     	s = self._current_state()
-    	return self._evaluator.best_action(s)
+    	return self._evaluator.best_action(s, verbose = False)
 
     def learn_from_master(self, state_action):
     	pass
@@ -126,7 +126,7 @@ class QEngine:
 
         # make action and get the reward
         r = self._game.make_action(self._actions[a])
-        r = np.float32(r)/self._reward_scale
+        r = np.float32(r)*self._reward_scale
         #update state s2 accordingly
         if self._game.is_episode_finished():
             # terminal state
@@ -134,7 +134,6 @@ class QEngine:
         else:
             self._update_state(self._game.get_state())
             s2 = self._copy_current_state()
-
         self._transitions.add_transition(s, a, s2, r)
 
         # Perform q-learning once for a while
