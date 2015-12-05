@@ -106,7 +106,7 @@ def setup_vizia():
     game = ViziaGame()
 
     #available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
-    game.set_screen_resolution(40,30)
+    game.set_screen_resolution(40,0)
 
     game.set_doom_game_path("zdoom")
     game.set_doom_iwad_path("doom2.wad")
@@ -136,13 +136,13 @@ def create_engine( game, online_mode=False ):
     engine_args["evaluator"] = create_cnn_evaluator
     engine_args["game"] = game
     engine_args['start_epsilon'] = 0.9
-    engine_args['end_epsilon'] = 0.0
-    engine_args['epsilon_decay_start_step'] = 400000
-    engine_args['epsilon_decay_steps'] = 2000000
+    engine_args['end_epsilon'] = 0.1
+    engine_args['epsilon_decay_start_step'] = 1200000
+    engine_args['epsilon_decay_steps'] = 20000000
     engine_args['actions_generator'] = actions_generator
     engine_args['update_frequency'] = (4,4)
     engine_args['batch_size'] = 40
-    engine_args['gamma'] = 0.8
+    engine_args['gamma'] = 0.85
     engine_args['reward_scale'] = 0.01
     if online_mode:
         engine.online_mode = True
@@ -155,7 +155,7 @@ engine = create_engine(game)
 epochs = np.inf
 training_episodes_per_epoch = 200
 test_episodes_per_epoch = 50
-test_frequency = 2;
+test_frequency = 1;
 stop_mean = 1.0  # game.average_best_result()
 overall_start = time()
 print "Learning..."
@@ -164,11 +164,16 @@ while epoch < epochs:
     engine.learning_mode = True
     rewards = []
     start = time()
+    print "\nEpoch", epoch
+    
     for episode in range(training_episodes_per_epoch):
+        #if (episode+1)% (training_episodes_per_epoch/20)==0:
+        #    print(episode+1)
         r = engine.run_episode()
         rewards.append(r)
+        
     end = time()
-    print "\nEpoch", epoch
+    
     print "Train:"
     print engine.get_actions_stats(True)
     mean_loss = engine._evaluator.get_mean_loss()

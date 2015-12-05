@@ -185,12 +185,16 @@ class MLPEvaluator:
             loss = self._learn(self._input_image_buffer, target)
         self._loss_history.append(loss)
 
-    def best_action(self, state):
+    def best_action(self, state, verbose = False):
         if self._misc_state_included:
-            a = np.argmax(
-                self._evaluate(state[0].reshape(self._image_input_shape), state[1].reshape(self._misc_input_shape)))
+            qvals = self._evaluate(state[0].reshape(self._image_input_shape), state[1].reshape(self._misc_input_shape))
+            a = np.argmax(qvals)
         else:
-            a = np.argmax(self._evaluate(state[0].reshape(self._image_input_shape)))
+            qvals = self._evaluate(state[0].reshape(self._image_input_shape))
+            a = np.argmax(qvals)
+        
+        if verbose:
+            print qvals 
         return a
 
     def get_mean_loss(self, clear = True):
