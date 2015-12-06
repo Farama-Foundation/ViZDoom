@@ -122,11 +122,11 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("get_state_format", &DoomGamePython::getStateFormat)
 		.def("get_action_format", &DoomGamePython::getActionFormat)
     
-        .def("get_game_var", $DoomGamePython::getGameVar)
+        .def("get_game_var", &DoomGamePython::getGameVar)
 
-        .def("isIncludeShapingReward()", $DoomGamePython::isIncludeShapingReward)
-        .def("setIncludeShapingReward()", $DoomGamePython::setIncludeShapingReward)
-    
+        //.def("isIncludeShapingReward()", &DoomGamePython::isIncludeShapingReward)
+        //.def("setIncludeShapingReward()", &DoomGamePython::setIncludeShapingReward)
+    	//TO DO: They need implementation - whole wrapper isn't working because of that if included.
         .def("get_living_reward", &DoomGamePython::getLivingReward)
         .def("set_living_reward", &DoomGamePython::setLivingReward)
         
