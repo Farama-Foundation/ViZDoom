@@ -48,9 +48,11 @@ class MLPEvaluator:
         network_args["output_size"] = actions_number
 
         self._initialize_network(**network_args)
+        print "Network initialized."
         self._compile(updates, learning_rate, regularization)
 
     def _compile(self, updates, learning_rate, regularization ):
+        
         predictions = ls.get_output(self._network)
         regularization_term = 0.0
         if regularization:
@@ -62,6 +64,8 @@ class MLPEvaluator:
         params = ls.get_all_params(self._network, trainable=True)
         updates = updates(regularized_loss, params, learning_rate=learning_rate)
 
+
+        print "Compiling Theano functions."
         # mode = NanGuardMode(nan_is_error=True, inf_is_error=True, big_is_error=True)
         mode = None
         if self._misc_state_included:
@@ -72,6 +76,7 @@ class MLPEvaluator:
         else:
             self._learn = theano.function([self._image_inputs, self._targets], loss, updates=updates)
             self._evaluate = theano.function([self._image_inputs], predictions)
+        print "Theano functions compiled."
 
     def _initialize_network(self, img_input_shape, misc_shape, output_size, hidden_units=[500],
                             hidden_layers=1, hidden_nonlin=tanh, output_nonlin = None, updates=sgd):
