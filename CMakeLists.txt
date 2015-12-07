@@ -18,6 +18,11 @@ find_package(PythonLibs)
 #find_package(Threads REQUIRED)  
 find_package(SDL2 REQUIRED)
 find_package(Boost COMPONENTS system thread python REQUIRED)
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+#add_definitions("-Wall")
+add_definitions("-fPIC")
 
 set( VIZIA_INCLUDE_DIR vizia_api_src vizia_api_bindings/python )
 
@@ -36,7 +41,15 @@ set( VIZIA_API_SOURCES
 
 add_library(vizia ${VIZIA_API_SOURCES})
 target_link_libraries (vizia ${VIZIA_LIBS}) 
-	 
+
+set( VIZIA_PYTHON_SOURCES
+    vizia_api_bindings/python/ViziaPythonWrapper.cpp
+    vizia_api_bindings/python/ViziaDoomGamePython.cpp  )
+
+python_add_module(python_vizia ${VIZIA_PYTHON_SOURCES})
+#add_library(vizia SHARED ${VIZIA_PYTHON_SOURCES})
+target_link_libraries (python_vizia ${VIZIA_LIBS} vizia) 
+
 add_executable( doomControllerExample 
     ${VIZIA_API_SOURCES}
     examples/c++/ViziaDoomControllerExample.cpp )
@@ -52,4 +65,11 @@ set_target_properties( vizia doomGameExample doomControllerExample
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+)
+set_target_properties( python_vizia 
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/python
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/python
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/python
+    OUTPUT_NAME vizia
 )	
