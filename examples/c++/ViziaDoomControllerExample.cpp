@@ -59,6 +59,8 @@ int main(){
     vdm->setRenderDecals(true);
     vdm->setRenderParticles(true);
 
+    vdm->setWindowMode(false);
+
     vdm->init();
     if(sdl) initSDL(vdm->getScreenWidth(), vdm->getScreenHeight());
     

@@ -47,6 +47,7 @@ CVAR (Bool, vizia_clear_render, true, CVAR_NOSET)
 CVAR (String, vizia_instance_id, "0", CVAR_NOSET)
 CVAR (Int, vizia_screen_format, 0, CVAR_NOSET)
 CVAR (Bool, vizia_no_console, false, CVAR_NOSET)
+CVAR (Bool, vizia_no_window_soft, false, CVAR_NOSET)
 
 void Vizia_Init(){
     printf("Vizia_Init: Instance id: %s\n", *vizia_instance_id);
