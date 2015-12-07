@@ -74,7 +74,7 @@ namespace Vizia {
         int getGameVar(GameVar var);
 
         bool isIncludeShapingReward();
-        void setIncludeShapingReward(int set);
+        void setIncludeShapingReward(bool include);
 
         int getLivingReward();
         void setLivingReward(int livingReward);

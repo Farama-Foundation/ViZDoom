@@ -1,6 +1,6 @@
 #include <boost/python.hpp>
 #include "ViziaDoomGamePython.h"
-#include "../../vizia_api_src/ViziaDefines.h"
+#include "ViziaDefines.h"
 
 /*C++ code to expose DoomGamePython via python */
 
@@ -120,9 +120,9 @@ BOOST_PYTHON_MODULE(vizia)
     
         .def("get_game_var", &DoomGamePython::getGameVar)
 
-        //.def("isIncludeShapingReward()", &DoomGamePython::isIncludeShapingReward)
-        //.def("setIncludeShapingReward()", &DoomGamePython::setIncludeShapingReward)
-    	//TO DO: They need implementation - whole wrapper isn't working because of that is included.
+        .def("isIncludeShapingReward()", &DoomGamePython::isIncludeShapingReward)
+        .def("setIncludeShapingReward()", &DoomGamePython::setIncludeShapingReward)
+
         .def("get_living_reward", &DoomGamePython::getLivingReward)
         .def("set_living_reward", &DoomGamePython::setLivingReward)
         
