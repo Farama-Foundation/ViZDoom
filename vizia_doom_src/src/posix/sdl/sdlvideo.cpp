@@ -98,6 +98,7 @@ EXTERN_CVAR (Float, Gamma)
 EXTERN_CVAR (Int, vid_maxfps)
 EXTERN_CVAR (Bool, cl_capfps)
 EXTERN_CVAR (Bool, vid_vsync)
+EXTERN_CVAR (Bool, vizia_no_window_soft)
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
@@ -394,7 +395,8 @@ SDLFB::SDLFB (int width, int height, bool fullscreen, SDL_Window *oldwin)
 
 		Screen = SDL_CreateWindow (caption,
 			SDL_WINDOWPOS_UNDEFINED_DISPLAY(vid_adapter), SDL_WINDOWPOS_UNDEFINED_DISPLAY(vid_adapter),
-			width, height, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0)|SDL_WINDOW_RESIZABLE);
+			width, height, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0)|SDL_WINDOW_RESIZABLE |
+										   (vizia_no_window_soft ? SDL_WINDOW_HIDDEN : 0));
 
 		if (Screen == NULL)
 			return;
