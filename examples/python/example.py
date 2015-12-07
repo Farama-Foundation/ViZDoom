@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from vizia import ViziaGame
+from vizia import DoomGame
 from vizia import Button
 from vizia import GameVar
 from random import choice
@@ -10,14 +10,14 @@ import cv2
 import numpy as np
 
 
-game = ViziaGame()
+game = DoomGame()
 
 #available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
-game.set_screen_resolution(40,30)
+game.set_screen_resolution(320,0)
 
-game.set_doom_game_path("zdoom")
-game.set_doom_iwad_path("doom2.wad")
-game.set_doom_file_path("s1_b.wad")
+game.set_doom_game_path("../../bin/viziazdoom")
+game.set_doom_iwad_path("../../scenarios/doom2.wad")
+game.set_doom_file_path("../../scenarios/s1_b.wad")
 game.set_doom_map("map01")
 game.set_episode_timeout_in_doom_tics(200)
 

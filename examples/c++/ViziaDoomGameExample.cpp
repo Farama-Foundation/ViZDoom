@@ -12,12 +12,12 @@ int main(){
     std::cout << "\n\nVIZIA MAIN EXAMPLE\n\n";
 
     v->setDoomGamePath("viziazdoom");
-    v->setDoomIwadPath("doom2.wad");
-    v->setDoomFilePath("s1_b.wad");
+    v->setDoomIwadPath("../scenarios/doom2.wad");
+    v->setDoomFilePath("../scenarios/s1_b.wad");
     v->setDoomMap("map01");
     v->setEpisodeTimeoutInDoomTics(200);
 
-    v->setScreenResolution(40, 30);
+    v->setScreenResolution(100, 0);
 
     v->setRenderHud(false);
     v->setRenderCrosshair(false);
@@ -41,12 +41,12 @@ int main(){
     action[1] = false;
     action[2] = true;
 
-    int iterations = 1000;
+    int iterations = 10000;
     int ep=1;
-    for(int i = 0; true; ++i){
+    for(int i = 0;i<iterations; ++i){
 
         if( v->isEpisodeFinished() ){
-            std::cout << ep++ << std::endl;
+            //std::cout << ep++ << std::endl;
             v->newEpisode();
            // usleep(2000000);
         }
