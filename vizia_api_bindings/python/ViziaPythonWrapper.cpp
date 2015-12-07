@@ -1,15 +1,13 @@
 #include <boost/python.hpp>
 #include "ViziaDoomGamePython.h"
-#include "ViziaDefines.h"
+#include "../../vizia_api_src/ViziaDefines.h"
 
 /*C++ code to expose DoomGamePython via python */
-using namespace boost::python;
-using namespace Vizia;
 
 BOOST_PYTHON_MODULE(vizia)
 {
-	/*I don't know if it's needed or not */
-	//Py_Initialize();
+    using namespace boost::python;
+    using namespace Vizia;
 
 	enum_<ScreenFormat>("ScreenFormat")
 		.value("CRCGCB", CRCGCB)
@@ -22,7 +20,6 @@ BOOST_PYTHON_MODULE(vizia)
 		.value("BGR24", BGR24)
 		.value("BGRA32", BGRA32)
 		.value("ABGR32", ABGR32);
-
 	enum_<Button>("Button")
         .value("ATTACK", ATTACK)
         .value("USE", USE)
@@ -106,7 +103,6 @@ BOOST_PYTHON_MODULE(vizia)
         .value("USER29", USER29)
         .value("USER30", USER30)
         .value("UNDEFINED_VAR", UNDEFINED_VAR);
-    
 	def("DoomTics2Ms", DoomTics2Ms);
 	def("Ms2DoomTics", Ms2DoomTics);
 
@@ -126,7 +122,7 @@ BOOST_PYTHON_MODULE(vizia)
 
         //.def("isIncludeShapingReward()", &DoomGamePython::isIncludeShapingReward)
         //.def("setIncludeShapingReward()", &DoomGamePython::setIncludeShapingReward)
-    	//TO DO: They need implementation - whole wrapper isn't working because of that if included.
+    	//TO DO: They need implementation - whole wrapper isn't working because of that is included.
         .def("get_living_reward", &DoomGamePython::getLivingReward)
         .def("set_living_reward", &DoomGamePython::setLivingReward)
         

@@ -1,1 +1,0 @@
-if [ ! -e /home/marek/Workspace/Vizia/bin/viziazdoom ]; then ln -sf /home/marek/Workspace/Vizia/vizia_doom_src/src/viziazdoom /home/marek/Workspace/Vizia/bin/viziazdoom; fi

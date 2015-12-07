@@ -13,7 +13,7 @@
 /bin
 Makefile
 ImportExecutables.cmake
-link-make
+**/link-make
 
 
 #copied from the original zdoom repository (and modified)
