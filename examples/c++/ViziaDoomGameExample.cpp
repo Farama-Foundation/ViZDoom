@@ -25,8 +25,8 @@ int main(){
     v->setRenderDecals(false);
     v->setRenderParticles(false);
 
-    v->addAvailableButton(MOVELEFT);
-    v->addAvailableButton(MOVERIGHT);
+    v->addAvailableButton(MOVE_LEFT);
+    v->addAvailableButton(MOVE_RIGHT);
     v->addAvailableButton(ATTACK);
 
     //v->addStateAvailableVar(HEALTH);

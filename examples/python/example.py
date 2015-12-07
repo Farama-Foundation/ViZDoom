@@ -28,8 +28,8 @@ game.set_render_weapon(True)
 game.set_render_decals(False)
 game.set_render_particles(False);
 
-game.add_available_button(Button.MOVELEFT)
-game.add_available_button(Button.MOVERIGHT)
+game.add_available_button(Button.MOVE_LEFT)
+game.add_available_button(Button.MOVE_RIGHT)
 game.add_available_button(Button.ATTACK)
 
 #game.add_state_available_var(GameVar.AMMO1);
