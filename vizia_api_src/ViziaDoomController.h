@@ -141,6 +141,7 @@ namespace Vizia{
         bool isMapEnded();
 
         //GRAPHIC SETTINGS
+        void setWindowMode(bool windowMode);
 
         void setScreenResolution(int width, int height);
         void setScreenWidth(int width);
@@ -301,6 +302,8 @@ namespace Vizia{
         ScreenFormat screenFormat;
 
         bool hud, weapon, crosshair, decals, particles;
+
+        bool windowMode;
 
         std::string gamePath;
         std::string iwadPath;
