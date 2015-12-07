@@ -20,16 +20,16 @@ namespace Vizia {
         else if (name.compare("ZOOM") == 0) return ZOOM;
         else if (name.compare("SPEED") == 0) return SPEED;
         else if (name.compare("STRAFE") == 0) return STRAFE;
-        else if (name.compare("MOVERIGHT") == 0) return MOVERIGHT;
-        else if (name.compare("MOVELEFT") == 0) return MOVELEFT;
-        else if (name.compare("BACK") == 0) return BACK;
-        else if (name.compare("FORWARD") == 0) return FORWARD;
-        else if (name.compare("RIGHT") == 0) return RIGHT;
-        else if (name.compare("LEFT") == 0) return LEFT;
-        else if (name.compare("LOOKUP") == 0) return LOOKUP;
-        else if (name.compare("LOOKDOWN") == 0) return LOOKDOWN;
-        else if (name.compare("MOVEUP") == 0) return MOVEUP;
-        else if (name.compare("MOVEDOWN") == 0) return MOVEDOWN;
+        else if (name.compare("MOVERIGHT") == 0) return MOVE_RIGHT;
+        else if (name.compare("MOVELEFT") == 0) return MOVE_LEFT;
+        else if (name.compare("BACK") == 0) return MOVE_BACK;
+        else if (name.compare("FORWARD") == 0) return MOVE_FORWARD;
+        else if (name.compare("RIGHT") == 0) return TURN_RIGHT;
+        else if (name.compare("LEFT") == 0) return TURN_LEFT;
+        else if (name.compare("LOOKUP") == 0) return LOOK_UP;
+        else if (name.compare("LOOKDOWN") == 0) return LOOK_DOWN;
+        else if (name.compare("MOVEUP") == 0) return MOVE_UP;
+        else if (name.compare("MOVEDOWN") == 0) return MOVE_DOWN;
         else if (name.compare("WEAPON1") == 0) return SELECT_WEAPON1;
         else if (name.compare("WEAPON2") == 0) return SELECT_WEAPON2;
         else if (name.compare("WEAPON3") == 0) return SELECT_WEAPON3;
@@ -727,8 +727,11 @@ namespace Vizia {
 
     void DoomController::SMClose() {
         delete (this->InputSMRegion);
+        this->InputSMRegion = NULL;
         delete (this->GameVarsSMRegion);
+        this->GameVarsSMRegion = NULL;
         delete (this->ScreenSMRegion);
+        this->ScreenSMRegion = NULL;
         bip::shared_memory_object::remove(this->SMName.c_str());
     }
 
@@ -742,10 +745,8 @@ namespace Vizia {
             bip::message_queue::remove(this->MQControllerName.c_str());
             bip::message_queue::remove(this->MQDoomName.c_str());
 
-            this->MQController = new bip::message_queue(bip::open_or_create, this->MQControllerName.c_str(),
-                                                        MQ_MAX_MSG_NUM, MQ_MAX_MSG_SIZE);
-            this->MQDoom = new bip::message_queue(bip::open_or_create, this->MQDoomName.c_str(), MQ_MAX_MSG_NUM,
-                                                  MQ_MAX_MSG_SIZE);
+            this->MQController = new bip::message_queue(bip::open_or_create, this->MQControllerName.c_str(), MQ_MAX_MSG_NUM, MQ_MAX_MSG_SIZE);
+            this->MQDoom = new bip::message_queue(bip::open_or_create, this->MQDoomName.c_str(), MQ_MAX_MSG_NUM, MQ_MAX_MSG_SIZE);
         }
         catch (bip::interprocess_exception &ex) {
             return false;
@@ -797,6 +798,11 @@ namespace Vizia {
 
     void DoomController::MQClose() {
         bip::message_queue::remove(this->MQDoomName.c_str());
+        delete(this->MQDoom);
+        this->MQDoom = NULL;
+
         bip::message_queue::remove(this->MQControllerName.c_str());
+        delete(this->MQController);
+        this->MQController = NULL;
     }
 }
