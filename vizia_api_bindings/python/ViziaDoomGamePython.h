@@ -3,7 +3,7 @@
 
 #define NPY_NO_DEPRECATED_API NPY_1_8_API_VERSION
 
-#include "../../vizia_api_src/ViziaDoomGame.h"
+#include "ViziaDoomGame.h"
 #include <iostream>
 #include <vector>
 #include <Python.h>
