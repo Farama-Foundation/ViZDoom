@@ -120,8 +120,8 @@ BOOST_PYTHON_MODULE(vizia)
     
         .def("get_game_var", &DoomGamePython::getGameVar)
 
-        .def("isIncludeShapingReward()", &DoomGamePython::isIncludeShapingReward)
-        .def("setIncludeShapingReward()", &DoomGamePython::setIncludeShapingReward)
+        .def("is_include_shaping_reward", &DoomGamePython::isIncludeShapingReward)
+        .def("set_include_shaping_reward", &DoomGamePython::setIncludeShapingReward)
 
         .def("get_living_reward", &DoomGamePython::getLivingReward)
         .def("set_living_reward", &DoomGamePython::setLivingReward)
