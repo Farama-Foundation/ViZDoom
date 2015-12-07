@@ -1,6 +1,8 @@
 #ifndef __VIZIA_DEFINES_H__
 #define __VIZIA_DEFINES_H__
 
+#include <SDL2/SDL.h>
+
 namespace Vizia{
 
     enum ScreenFormat {
@@ -84,16 +86,16 @@ namespace Vizia{
         SPEED = 8,
         STRAFE = 9,
 
-        MOVERIGHT = 10,
-        MOVELEFT = 11,
-        BACK = 12,
-        FORWARD = 13,
-        RIGHT = 14,
-        LEFT = 15,
-        LOOKUP = 16,
-        LOOKDOWN = 17,
-        MOVEUP = 18,
-        MOVEDOWN = 19,
+        MOVE_RIGHT = 10,
+        MOVE_LEFT = 11,
+        MOVE_BACK = 12,
+        MOVE_FORWARD = 13,
+        TURN_RIGHT = 14,
+        TURN_LEFT = 15,
+        LOOK_UP = 16,
+        LOOK_DOWN = 17,
+        MOVE_UP = 18,
+        MOVE_DOWN = 19,
         //SHOWSCORES 20
 
         SELECT_WEAPON1 = 21,
@@ -110,7 +112,6 @@ namespace Vizia{
     };
 
     static const int ButtonsNumber = 30;
-
 
     static const int DOOM_AMMO_CLIP = 0;
     static const int DOOM_AMMO_SHELL = 1;
@@ -131,6 +132,96 @@ namespace Vizia{
     static const int DOOM_KEY_BLUE = 0;
     static const int DOOM_KEY_RED = 1;
     static const int DOOM_KEY_YELLOW = 2;
+
+#define VK_2_SDLK(vk) vk = SDLK_ ## vk
+#define VK_T_2_SDLK(vk, sk) vk = SDLK_ ## sk
+
+    enum Key {
+        VK_2_SDLK(TAB),
+        VK_T_2_SDLK(CAPS_LOCK, CAPSLOCK),
+        VK_2_SDLK(RSHIFT),
+        VK_2_SDLK(RCTRL),
+        VK_2_SDLK(RALT),
+        VK_2_SDLK(LSHIFT),
+        VK_2_SDLK(LCTRL),
+        VK_2_SDLK(LALT),
+        VK_2_SDLK(SPACE),
+        VK_T_2_SDLK(ENTER, RETURN),
+        VK_2_SDLK(BACKSPACE),
+        VK_2_SDLK(ESCAPE),
+        VK_T_2_SDLK(RIGHT_ARROW, RIGHT),
+        VK_T_2_SDLK(LEFT_ARROW, LEFT),
+        VK_T_2_SDLK(UP_ARROW, UP),
+        VK_T_2_SDLK(DOWN_ARROW, DOWN),
+        VK_2_SDLK(INSERT),
+        VK_2_SDLK(END),
+        VK_2_SDLK(HOME),
+        VK_T_2_SDLK(PAGE_UP, PAGEUP),
+        VK_T_2_SDLK(PAGE_DOWN, PAGEDOWN),
+        VK_2_SDLK(F1),
+        VK_2_SDLK(F2),
+        VK_2_SDLK(F3),
+        VK_2_SDLK(F4),
+        VK_2_SDLK(F5),
+        VK_2_SDLK(F6),
+        VK_2_SDLK(F7),
+        VK_2_SDLK(F8),
+        VK_2_SDLK(F9),
+        VK_2_SDLK(F10),
+        VK_2_SDLK(F11),
+        VK_2_SDLK(F12),
+
+        VK_T_2_SDLK(CHAR_Q, q),
+        VK_T_2_SDLK(CHAR_W, w),
+        VK_T_2_SDLK(CHAR_E, e),
+        VK_T_2_SDLK(CHAR_R, r),
+        VK_T_2_SDLK(CHAR_T, t),
+        VK_T_2_SDLK(CHAR_Y, y),
+        VK_T_2_SDLK(CHAR_U, u),
+        VK_T_2_SDLK(CHAR_I, i),
+        VK_T_2_SDLK(CHAR_O, o),
+        VK_T_2_SDLK(CHAR_P, p),
+        VK_T_2_SDLK(CHAR_A, a),
+        VK_T_2_SDLK(CHAR_S, s),
+        VK_T_2_SDLK(CHAR_D, d),
+        VK_T_2_SDLK(CHAR_F, f),
+        VK_T_2_SDLK(CHAR_G, g),
+        VK_T_2_SDLK(CHAR_H, h),
+        VK_T_2_SDLK(CHAR_J, j),
+        VK_T_2_SDLK(CHAR_K, k),
+        VK_T_2_SDLK(CHAR_L, l),
+        VK_T_2_SDLK(CHAR_Z, z),
+        VK_T_2_SDLK(CHAR_X, x),
+        VK_T_2_SDLK(CHAR_C, c),
+        VK_T_2_SDLK(CHAR_V, v),
+        VK_T_2_SDLK(CHAR_B, b),
+        VK_T_2_SDLK(CHAR_N, n),
+        VK_T_2_SDLK(CHAR_M, m),
+
+        VK_T_2_SDLK(CHAR_1, 1),
+        VK_T_2_SDLK(CHAR_2, 2),
+        VK_T_2_SDLK(CHAR_3, 3),
+        VK_T_2_SDLK(CHAR_4, 4),
+        VK_T_2_SDLK(CHAR_5, 5),
+        VK_T_2_SDLK(CHAR_6, 6),
+        VK_T_2_SDLK(CHAR_7, 7),
+        VK_T_2_SDLK(CHAR_8, 8),
+        VK_T_2_SDLK(CHAR_9, 9),
+        VK_T_2_SDLK(CHAR_0, 0),
+        VK_T_2_SDLK(CHAR_MINUS, MINUS),
+        VK_T_2_SDLK(CHAR_EQUALS, EQUALS),
+
+        VK_T_2_SDLK(CHAR_COMMA, COMMA),
+        VK_T_2_SDLK(CHAR_PERIOD, PERIOD),
+        VK_T_2_SDLK(CHAR_LEFT_BRACKET, LEFTBRACKET),
+        VK_T_2_SDLK(CHAR_RIGHT_BRACKET, RIGHTBRACKET),
+        VK_T_2_SDLK(CHAR_SLASH, SLASH),
+        VK_T_2_SDLK(CHAR_BACKSLASH, BACKSLASH),
+        VK_T_2_SDLK(CHAR_SEMICOLON, SEMICOLON),
+        VK_T_2_SDLK(CHAR_QUOTE, QUOTE),
+
+        UNDEFINED_KEY
+    };
 
 }
 #endif
