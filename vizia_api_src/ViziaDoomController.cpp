@@ -114,6 +114,8 @@ namespace Vizia {
         this->decals = true;
         this->particles = true;
 
+        this->windowMode = true;
+
         this->autoRestart = false;
         this->autoRestartOnTimeout = true;
         this->autoRestartOnPlayersDeath = true;
@@ -296,6 +298,8 @@ namespace Vizia {
         else return false;
     }
 
+
+
     void DoomController::setScreenResolution(int width, int height) {
         this->screenWidth = width;
         this->screenHeight = height;
@@ -304,6 +308,10 @@ namespace Vizia {
     void DoomController::setScreenWidth(int width) { this->screenWidth = width; }
     void DoomController::setScreenHeight(int height) { this->screenHeight = height; }
     void DoomController::setScreenFormat(ScreenFormat format) { this->screenFormat = format; }
+
+    void DoomController::setWindowMode(bool windowMode){
+        this->windowMode=windowMode;
+    }
 
     void DoomController::setRenderHud(bool hud) {
         this->hud = hud;
@@ -646,6 +654,11 @@ namespace Vizia {
 
         args.push_back("+vizia_screen_format");
         args.push_back(b::lexical_cast<std::string>(this->screenFormat));
+
+        args.push_back("+vizia_no_window_soft");
+        if(!this->windowMode) args.push_back("1");
+        else args.push_back("0");
+
 
         //no wipe animation
         args.push_back("+wipetype");
