@@ -114,7 +114,6 @@ namespace Vizia{
         void restartGame();
         bool isDoomRunning();
         void sendCommand(std::string command);
-        void resetConfig();
 
         //SETTINGS
 
@@ -176,7 +175,6 @@ namespace Vizia{
         void setButtonState(Button button, bool state);
         void toggleButtonState(Button button);
         void setAllowButton(Button button, bool allow);
-        void allowAllButtons();
 
         void resetInput();
 
@@ -186,8 +184,6 @@ namespace Vizia{
 
         int getMapReward();
         int getMapShapingReward();
-
-        int getUserVar(int number);
 
         int getMapTic();
 
@@ -246,7 +242,7 @@ namespace Vizia{
             char command[MQ_MAX_CMD_LEN];
         };
 
-        bool MQInit();
+        void MQInit();
 
         void MQSend(uint8_t code);
 
@@ -271,7 +267,7 @@ namespace Vizia{
 
         //SHARED MEMORY
 
-        bool SMInit();
+        void SMInit();
 
         void SMClose();
 

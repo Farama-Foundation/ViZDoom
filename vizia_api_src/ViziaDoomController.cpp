@@ -143,25 +143,27 @@ namespace Vizia {
 
         if (!this->doomRunning && this->iwadPath.length() != 0 && this->map.length() != 0) {
 
-            if (this->instanceId.length() == 0) generateInstanceId();
+            try{
+                if (this->instanceId.length() == 0) generateInstanceId();
 
-            if (!this->MQInit()) return false;
+                this->MQInit();
+                doomThread = new b::thread(b::bind(&DoomController::lunchDoom, this));
+                this->waitForDoomStart();
 
-            doomThread = new b::thread(b::bind(&DoomController::lunchDoom, this));
-            this->waitForDoomStart();
+                this->doomRunning = true;
 
-            if (this->doomRunning) this->doomRunning = this->SMInit();
-            if (!this->doomRunning) MQClose();
+                this->SMInit();
+            }
+            catch(const Exception &e){
+                this->close();
+                throw;
+            }
         }
 
         return this->doomRunning;
     }
 
     void DoomController::close() {
-
-//    if(this->doomRunning) {
-//        bpr::terminate(this->doomProcess);
-//    }
 
         if (this->doomRunning) {
             this->MQSend(MSG_CODE_CLOSE);
@@ -298,8 +300,6 @@ namespace Vizia {
         else return false;
     }
 
-
-
     void DoomController::setScreenResolution(int width, int height) {
         this->screenWidth = width;
         this->screenHeight = height;
@@ -308,10 +308,7 @@ namespace Vizia {
     void DoomController::setScreenWidth(int width) { this->screenWidth = width; }
     void DoomController::setScreenHeight(int height) { this->screenHeight = height; }
     void DoomController::setScreenFormat(ScreenFormat format) { this->screenFormat = format; }
-
-    void DoomController::setWindowMode(bool windowMode){
-        this->windowMode=windowMode;
-    }
+    void DoomController::setWindowMode(bool windowMode){ this->windowMode=windowMode; }
 
     void DoomController::setRenderHud(bool hud) {
         this->hud = hud;
@@ -522,8 +519,10 @@ namespace Vizia {
                 break;
 
             case MSG_CODE_DOOM_CLOSE :
-                this->doomRunning = false;
-                break;
+                throw DoomUnexpectedExitException();
+
+            case MSG_CODE_DOOM_ERROR :
+                throw DoomErrorException();
 
             default :
                 break;
@@ -560,10 +559,15 @@ namespace Vizia {
                     case MSG_CODE_DOOM_TIC :
                         nextTic = true;
                         break;
+
                     case MSG_CODE_DOOM_CLOSE :
                         this->close();
-                        printf("CLOSE SIGNAL");
-                        break;
+                        throw DoomUnexpectedExitException();
+
+                    case MSG_CODE_DOOM_ERROR :
+                        this->close();
+                        throw DoomErrorException();
+
                     default :
                         break;
                 }
@@ -675,21 +679,20 @@ namespace Vizia {
 
         //35 fps and no vsync
         args.push_back("+cl_capfps");
-        args.push_back("true");
+        args.push_back("1");
 
         args.push_back("+vid_vsync");
-        args.push_back("false");
+        args.push_back("0");
 
         //bpr::context ctx;
         //ctx.stdout_behavior = bpr::silence_stream();
         bpr::child doomProcess = bpr::execute(bpri::set_args(args), bpri::inherit_env());
-        //bpr::wait_for_exit(doomProcess);
-        //this->MQSelfSend(MSG_CODE_DOOM_CLOSE);
-
+        bpr::wait_for_exit(doomProcess);
+        this->MQSelfSend(MSG_CODE_DOOM_CLOSE);
     }
 
 //SM FUNCTIONS 
-    bool DoomController::SMInit() {
+    void DoomController::SMInit() {
         this->SMName = SM_NAME_BASE + instanceId;
         //bip::shared_memory_object::remove(this->SMName.c_str());
         try {
@@ -718,11 +721,8 @@ namespace Vizia {
             this->Screen = static_cast<uint8_t *>(this->ScreenSMRegion->get_address());
         }
         catch (bip::interprocess_exception &ex) {
-            this->MQSend(MSG_CODE_ERROR);
-            return false;
+            throw SharedMemoryException();
         }
-
-        return true;
     }
 
     void DoomController::SMClose() {
@@ -736,7 +736,7 @@ namespace Vizia {
     }
 
 //MQ FUNCTIONS
-    bool DoomController::MQInit() {
+    void DoomController::MQInit() {
 
         this->MQControllerName = MQ_NAME_CTR_BASE + instanceId;
         this->MQDoomName = MQ_NAME_DOOM_BASE + instanceId;
@@ -749,12 +749,9 @@ namespace Vizia {
             this->MQDoom = new bip::message_queue(bip::open_or_create, this->MQDoomName.c_str(), MQ_MAX_MSG_NUM, MQ_MAX_MSG_SIZE);
         }
         catch (bip::interprocess_exception &ex) {
-            return false;
+            throw MessageQueueException();
         }
-
-        return true;
     }
-
 
     void DoomController::MQSend(uint8_t code) {
         MessageSignalStruct msg;
