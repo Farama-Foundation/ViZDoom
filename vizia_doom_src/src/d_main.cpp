@@ -778,6 +778,7 @@ void D_Display ()
 				V_SetBorderNeedRefresh();
 			}
 			Renderer->DrawRemainingPlayerSprites();
+
 			screen->DrawBlendingRect();
 			if (automapactive)
 			{
@@ -854,6 +855,7 @@ void D_Display ()
 		x = (SCREENWIDTH - tex->GetScaledWidth() * CleanXfac)/2 +
 			tex->GetScaledLeftOffset() * CleanXfac;
 		screen->DrawTexture (tex, x, 4, DTA_CleanNoMove, true, TAG_DONE);
+
 		if (paused && multiplayer)
 		{
 			pstring += players[paused - 1].userinfo.GetName();
@@ -1002,6 +1004,7 @@ void D_DoomLoop ()
 
 				I_StartTic ();
 				if(!*vizia_controlled) D_ProcessEvents ();
+
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				if (advancedemo)
 					D_DoAdvanceDemo ();
@@ -1009,10 +1012,11 @@ void D_DoomLoop ()
 				M_Ticker ();
 				G_Ticker ();
 				// [RH] Use the consoleplayer's camera to update sounds
-				S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
+				//S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
 				gametic++;
 				maketic++;
 				GC::CheckGC ();
+
 				//Net_NewMakeTic ();
 				//if(*vizia_controlled) Vizia_SingleTic(); - in future;
 			}
@@ -1025,9 +1029,11 @@ void D_DoomLoop ()
 			// Update display, next frame, with current state.
 			I_StartTic ();
 			D_Display ();
-			S_UpdateMusic();	// OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
-
+			printf("A:Display\n");
+			//S_UpdateMusic();	// OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
+			printf("B:ViziaTic\n");
 			Vizia_Tic();
+			printf("A:ViziaTic\n");
 		}
 		catch (CRecoverableError &error)
 		{
