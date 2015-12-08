@@ -53,7 +53,10 @@ namespace Vizia {
             /* set all if none are set */
             this->lastAction.resize(this->availableButtons.size());
 
-            this->running = this->doomController->init();
+            try {
+                this->running = this->doomController->init();
+            }
+            catch(const Exception &e){ throw; }
 
             /* Initialize state format */
             int y = this->doomController->getScreenWidth();
@@ -75,7 +78,14 @@ namespace Vizia {
         this->running = false;
     }
 
+    bool DoomGame::isRunning(){
+        return this->running && this->doomController->isDoomRunning();
+    }
+
     void DoomGame::newEpisode() {
+
+        if(!this->isRunning()) throw DoomIsNotRunningException();
+
         this->doomController->restartMap();
 
         this->lastReward = 0;
@@ -86,44 +96,57 @@ namespace Vizia {
 
     float DoomGame::makeAction(std::vector<bool> &actions) {
 
+        if(!this->isRunning()) throw DoomIsNotRunningException();
+
         int j = 0;
-        for (std::vector<Button>::iterator i = this->availableButtons.begin();
-             i != this->availableButtons.end(); ++i, ++j) {
-            this->lastAction[j] = actions[j];
-            this->doomController->setButtonState(*i, actions[j]);
+        try {
+            for (std::vector<Button>::iterator i = this->availableButtons.begin();
+                 i != this->availableButtons.end(); ++i, ++j) {
+                this->lastAction[j] = actions[j];
+                this->doomController->setButtonState(*i, actions[j]);
+            }
         }
+        catch (...){ throw SharedMemoryException(); }
 
-        this->doomController->tic();
-
-        /* Updates vars */
-        j = 0;
-        for (std::vector<GameVar>::iterator i = this->stateAvailableVars.begin();
-             i != this->stateAvailableVars.end(); ++i, ++j) {
-            this->state.vars[j] = this->doomController->getGameVar(*i);
+        try {
+            this->doomController->tic();
         }
+        catch(const Exception &e){ throw; }
 
-        /* Update float rgb image */
-        this->state.number = this->doomController->getMapTic();
-        this->state.imageBuffer = this->doomController->getScreen();
-        this->state.imageWidth = this->doomController->getScreenWidth();
-        this->state.imageHeight = this->doomController->getScreenHeight();
-        this->state.imagePitch = this->doomController->getScreenPitch();
+        int reward = 0;
 
-        /* Return tic reward */
+        try {
+            /* Updates vars */
+            j = 0;
+            for (std::vector<GameVar>::iterator i = this->stateAvailableVars.begin();
+                 i != this->stateAvailableVars.end(); ++i, ++j) {
+                this->state.vars[j] = this->doomController->getGameVar(*i);
+            }
 
-        int mapReward = this->doomController->getMapReward();
-        int shapingReward = this->doomController->getMapShapingReward();
+            /* Update float rgb image */
+            this->state.number = this->doomController->getMapTic();
+            this->state.imageBuffer = this->doomController->getScreen();
+            this->state.imageWidth = this->doomController->getScreenWidth();
+            this->state.imageHeight = this->doomController->getScreenHeight();
+            this->state.imagePitch = this->doomController->getScreenPitch();
 
-        int reward = (mapReward - this->lastMapReward) + this->livingReward;
-        if(this->includeShapingReward) reward += (shapingReward - this->lastShapingReward);
-        if(this->doomController->isPlayerDead()) reward -= this->deathPenalty;
+            /* Return tic reward */
 
-        this->lastMapReward = mapReward;
-        this->lastShapingReward = shapingReward;
+            int mapReward = this->doomController->getMapReward();
+            int shapingReward = this->doomController->getMapShapingReward();
 
-        this->summaryReward += reward;
+            int reward = (mapReward - this->lastMapReward) + this->livingReward;
+            if(this->includeShapingReward) reward += (shapingReward - this->lastShapingReward);
+            if(this->doomController->isPlayerDead()) reward -= this->deathPenalty;
 
-        this->lastReward = reward;
+            this->lastMapReward = mapReward;
+            this->lastShapingReward = shapingReward;
+
+            this->summaryReward += reward;
+
+            this->lastReward = reward;
+        }
+        catch (...){ throw SharedMemoryException(); }
 
         return reward;
     }
@@ -135,10 +158,14 @@ namespace Vizia {
     std::vector<bool> DoomGame::getLastAction() { return this->lastAction; }
 
     bool DoomGame::isNewEpisode() {
+        if(!this->isRunning()) throw DoomIsNotRunningException();
+
         return this->doomController->isMapFirstTic();
     }
 
     bool DoomGame::isEpisodeFinished() {
+        if(!this->isRunning()) throw DoomIsNotRunningException();
+
         return this->doomController->isMapLastTic()
                || this->doomController->isPlayerDead()
                || this->doomController->isMapEnded();
@@ -168,7 +195,11 @@ namespace Vizia {
 
     const DoomController* DoomGame::getController() { return this->doomController; }
 
-    int DoomGame::getGameVar(GameVar var){ return this->doomController->getGameVar(var); }
+    int DoomGame::getGameVar(GameVar var){
+        if(!this->isRunning()) throw DoomIsNotRunningException();
+
+        return this->doomController->getGameVar(var);
+    }
 
     void DoomGame::setDoomGamePath(std::string path) { this->doomController->setGamePath(path); }
     void DoomGame::setDoomIwadPath(std::string path) { this->doomController->setIwadPath(path); }

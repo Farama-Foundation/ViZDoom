@@ -51,6 +51,7 @@ namespace Vizia {
         void close();
 
         void newEpisode();
+        bool isRunning();
 
         float makeAction(std::vector<bool> &actions);
 
