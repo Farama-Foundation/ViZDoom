@@ -231,8 +231,8 @@ namespace Vizia {
         this->doomController->setMapTimeout(tics);
     }
 
-    bool DoomGame::isIncludeShapingReward() { return this->includeShapingReward; }
-    void DoomGame::setIncludeShapingReward(bool include){ this->includeShapingReward = include; };
+    bool DoomGame::isShapingRewardIncluded() { return this->includeShapingReward; }
+    void DoomGame::setShapingRewardIncluded(bool include){ this->includeShapingReward = include; };
 
     int DoomGame::getLivingReward() { return this->livingReward; }
     void DoomGame::setLivingReward(int livingReward) { this->livingReward = livingReward; }

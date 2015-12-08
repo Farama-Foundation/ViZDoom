@@ -1343,8 +1343,8 @@ bool V_DoModeSetup (int width, int height, int bits)
 
 	CleanWidth = width / CleanXfac;
 	CleanHeight = height / CleanYfac;
-	assert(CleanWidth >= 320);
-	assert(CleanHeight >= 200);
+	assert(CleanWidth >= 40);
+	assert(CleanHeight >= 30);
 
 	if (width < 800 || width >= 960)
 	{
