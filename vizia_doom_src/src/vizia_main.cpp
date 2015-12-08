@@ -61,7 +61,9 @@ void Vizia_Init(){
 
         Vizia_InputInit();
         Vizia_GameVarsInit();
+
         Vizia_ScreenInit();
+
     }
 
     //Vizia_MQSend(VIZIA_MSG_CODE_DOOM_READY);
@@ -94,7 +96,9 @@ void Vizia_Tic(){
 
         Vizia_InputTic();
         Vizia_UpdateGameVars();
+        printf("B:ScreenUpdate\n");
         Vizia_ScreenUpdate();
+        printf("A:ScreenInit\n");
 
         Vizia_MQTic();
     }
