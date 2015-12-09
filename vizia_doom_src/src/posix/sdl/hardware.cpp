@@ -52,6 +52,7 @@
 EXTERN_CVAR (Bool, ticker)
 EXTERN_CVAR (Bool, fullscreen)
 EXTERN_CVAR (Float, vid_winscale)
+EXTERN_CVAR (Bool, vizia_no_x_server)
 
 IVideo *Video;
 
@@ -72,14 +73,17 @@ void I_ShutdownGraphics ()
 
 void I_InitGraphics ()
 {
-	if (SDL_InitSubSystem (SDL_INIT_VIDEO) < 0)
+	if(!(*vizia_no_x_server))
 	{
-		I_FatalError ("Could not initialize SDL video:\n%s\n", SDL_GetError());
-		return;
+		if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) {
+			I_FatalError("Could not initialize SDL video:\n%s\n", SDL_GetError());
+			return;
+		}
+
+		Printf("Using video driver %s\n", SDL_GetCurrentVideoDriver());
 	}
-
-	Printf("Using video driver %s\n", SDL_GetCurrentVideoDriver());
-
+	else
+		Printf("Not using any video driver. Check-mate GUI believers!\n");
 	UCVarValue val;
 
 	val.Bool = !!Args->CheckParm ("-devparm");
