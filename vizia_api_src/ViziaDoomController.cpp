@@ -114,7 +114,8 @@ namespace Vizia {
         this->decals = true;
         this->particles = true;
 
-        this->windowMode = true;
+        this->windowHidden = false;
+        this->noXServer = false;
 
         this->autoRestart = false;
         this->autoRestartOnTimeout = true;
@@ -308,7 +309,9 @@ namespace Vizia {
     void DoomController::setScreenWidth(int width) { this->screenWidth = width; }
     void DoomController::setScreenHeight(int height) { this->screenHeight = height; }
     void DoomController::setScreenFormat(ScreenFormat format) { this->screenFormat = format; }
-    void DoomController::setWindowMode(bool windowMode){ this->windowMode=windowMode; }
+
+    void DoomController::setWindowHidden(bool windowHidden){ this->windowHidden=windowHidden; }
+    void DoomController::setNoXServer(bool noXServer) { this->noXServer=noXServer; }
 
     void DoomController::setRenderHud(bool hud) {
         this->hud = hud;
@@ -659,8 +662,12 @@ namespace Vizia {
         args.push_back("+vizia_screen_format");
         args.push_back(b::lexical_cast<std::string>(this->screenFormat));
 
-        args.push_back("+vizia_no_window_soft");
-        if(!this->windowMode) args.push_back("1");
+        args.push_back("+vizia_window_hidden");
+        if (this->windowHidden) args.push_back("1");
+        else args.push_back("0");
+
+        args.push_back("+vizia_no_x_server");
+        if (this->noXServer) args.push_back("1");
         else args.push_back("0");
 
 

@@ -98,7 +98,8 @@ EXTERN_CVAR (Float, Gamma)
 EXTERN_CVAR (Int, vid_maxfps)
 EXTERN_CVAR (Bool, cl_capfps)
 EXTERN_CVAR (Bool, vid_vsync)
-EXTERN_CVAR (Bool, vizia_no_window_soft)
+EXTERN_CVAR (Bool, vizia_window_hidden)
+EXTERN_CVAR (Bool, vizia_no_x_server)
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
@@ -291,13 +292,14 @@ DFrameBuffer *SDLVideo::CreateFrameBuffer (int width, int height, bool fullscree
 		if (fb->Width == width &&
 			fb->Height == height)
 		{
-			bool fsnow = fullscreen;//(SDL_GetWindowFlags (fb->Screen) & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0;//FIXME GR
-	
-			if (fsnow != fullscreen)
-			{
-				fb->SetFullscreen (fullscreen);
+			if(!(*vizia_no_x_server)) {
+				bool fsnow = (SDL_GetWindowFlags (fb->Screen) & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0;
+
+				if (fsnow != fullscreen) {
+					fb->SetFullscreen(fullscreen);
+				}
+				return old;
 			}
-			return old;
 		}
 
 		oldwin = fb->Screen;
@@ -393,13 +395,16 @@ SDLFB::SDLFB (int width, int height, bool fullscreen, SDL_Window *oldwin)
 		FString caption;
 		caption.Format(GAMESIG " %s (%s)", GetVersionString(), GetGitTime());
 
-		/*Screen = SDL_CreateWindow (caption,
+		if(!(*vizia_no_x_server))
+		{
+			Screen = SDL_CreateWindow (caption,
 			SDL_WINDOWPOS_UNDEFINED_DISPLAY(vid_adapter), SDL_WINDOWPOS_UNDEFINED_DISPLAY(vid_adapter),
-			width, height, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0)|SDL_WINDOW_RESIZABLE |
-										   (vizia_no_window_soft ? SDL_WINDOW_HIDDEN : 0));
+			width, height, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0) |
+										   (vizia_window_hidden ? SDL_WINDOW_HIDDEN : SDL_WINDOW_RESIZABLE));
 
-		if (Screen == NULL)
-			return;*///FIXME GR
+			if (Screen == NULL)
+				return;
+		}
 	}
 
 	Renderer = NULL;
@@ -437,7 +442,7 @@ SDLFB::~SDLFB ()
 
 bool SDLFB::IsValid ()
 {
-	return true;//DFrameBuffer::IsValid();// && Screen != NULL;//FIXME GR
+	return *vizia_no_x_server==true ? true : (DFrameBuffer::IsValid() && Screen != NULL);
 }
 
 int SDLFB::GetPageCount ()
@@ -499,39 +504,42 @@ void SDLFB::Update ()
 
 	void *pixels;
 	int pitch;
-	if (UsingRenderer)
+	if(!(*vizia_no_x_server))
 	{
-		if (SDL_LockTexture (Texture, NULL, &pixels, &pitch))
-			return;
-	}
-	else
-	{
-		/*if (SDL_LockSurface (Surface))
-			return;
-
-		pixels = Surface->pixels;
-		pitch = Surface->pitch;
-	}
-
-	if (NotPaletted)
-	{
-		GPfx.Convert (MemBuffer, Pitch,
-			pixels, pitch, Width, Height,
-			FRACUNIT, FRACUNIT, 0, 0);
-	}
-	else
-	{
-		if (pitch == Pitch)
+		if (UsingRenderer)
 		{
-			memcpy (pixels, MemBuffer, Width*Height);
+			if (SDL_LockTexture (Texture, NULL, &pixels, &pitch))
+				return;
 		}
 		else
 		{
-			for (int y = 0; y < Height; ++y)
+			if (SDL_LockSurface (Surface))
+				return;
+
+			pixels = Surface->pixels;
+			pitch = Surface->pitch;
+		}
+
+		if (NotPaletted)
+		{
+			GPfx.Convert (MemBuffer, Pitch,
+				pixels, pitch, Width, Height,
+				FRACUNIT, FRACUNIT, 0, 0);
+		}
+		else
+		{
+			if (pitch == Pitch)
 			{
-				memcpy ((BYTE *)pixels+y*pitch, MemBuffer+y*Pitch, Width);
+				memcpy (pixels, MemBuffer, Width*Height);
 			}
-		}*///FIXME GR
+			else
+			{
+				for (int y = 0; y < Height; ++y)
+				{
+					memcpy ((BYTE *)pixels+y*pitch, MemBuffer+y*Pitch, Width);
+				}
+			}
+		}
 	}
 
 	if (UsingRenderer)
@@ -546,10 +554,12 @@ void SDLFB::Update ()
 	}
 	else
 	{
-		//SDL_UnlockSurface (Surface);//FIXME GR
+		if(!(*vizia_no_x_server))
+			SDL_UnlockSurface (Surface);
 
 		SDLFlipCycles.Clock();
-		//SDL_UpdateWindowSurface (Screen);//FIXME GR
+		if(!(*vizia_no_x_server))
+			SDL_UpdateWindowSurface (Screen);
 		SDLFlipCycles.Unclock();
 	}
 
@@ -608,7 +618,8 @@ void SDLFB::UpdateColors ()
 				256, GammaTable[2][Flash.b], GammaTable[1][Flash.g], GammaTable[0][Flash.r],
 				FlashAmount);
 		}
-		//SDL_SetPaletteColors (Surface->format->palette, colors, 0, 256);//FIXME GR
+		if(!(*vizia_no_x_server))
+			SDL_SetPaletteColors (Surface->format->palette, colors, 0, 256);
 	}
 }
 
@@ -670,7 +681,7 @@ void SDLFB::SetFullscreen (bool fullscreen)
 
 bool SDLFB::IsFullscreen ()
 {
-	return false;//(SDL_GetWindowFlags (Screen) & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0;//FIXME GR
+	return (*vizia_no_x_server)==true ? false : ((SDL_GetWindowFlags (Screen) & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0);
 }
 
 void SDLFB::ResetSDLRenderer ()
@@ -682,7 +693,7 @@ void SDLFB::ResetSDLRenderer ()
 		SDL_DestroyRenderer (Renderer);
 	}
 
-	UsingRenderer = false;//!vid_forcesurface;//FIXME GR
+	UsingRenderer = (*vizia_no_x_server)==true ? false : !vid_forcesurface;
 	if (UsingRenderer)
 	{
 		Renderer = SDL_CreateRenderer (Screen, -1,SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE|
@@ -716,16 +727,19 @@ void SDLFB::ResetSDLRenderer ()
 		}
 	}
 	else
-	{/*
-		Surface = SDL_GetWindowSurface (Screen);
-
-		if (Surface->format->palette == NULL)
+	{
+		if(!(*vizia_no_x_server))
 		{
-			NotPaletted = true;
-			GPfx.SetFormat (Surface->format->BitsPerPixel, Surface->format->Rmask, Surface->format->Gmask, Surface->format->Bmask);
+			Surface = SDL_GetWindowSurface (Screen);
+
+			if (Surface->format->palette == NULL)
+			{
+				NotPaletted = true;
+				GPfx.SetFormat (Surface->format->BitsPerPixel, Surface->format->Rmask, Surface->format->Gmask, Surface->format->Bmask);
+			}
+			else
+				NotPaletted = false;
 		}
-		else
-			NotPaletted = false;*///FIXME GR
 	}
 
 	// In fullscreen, set logical size according to animorphic ratio.
@@ -764,7 +778,10 @@ void SDLFB::SetVSync (bool vsync)
 void SDLFB::ScaleCoordsFromWindow(SWORD &x, SWORD &y)
 {
 	int w, h;
-	return;//FIXME GR
+
+	if(*vizia_no_x_server)
+		return;
+
 	SDL_GetWindowSize (Screen, &w, &h);
 
 	// Detect if we're doing scaling in the Window and adjust the mouse
