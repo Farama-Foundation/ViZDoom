@@ -5,7 +5,7 @@ import random
 
 class QEngine:
     def __init__(self, game, evaluator, actions_generator, gamma=0.7, batch_size=500, update_frequency=500,
-                 history_length=1, bank_capacity=10000, start_epsilon=1.0, end_epsilon=0.0,
+                 history_length=1, bank = None, bank_capacity=10000, start_epsilon=1.0, end_epsilon=0.0,
                  epsilon_decay_start_step=100000, epsilon_decay_steps=100000, reward_scale = 1.0):
         self.online_mode = False
         self._reward_scale = reward_scale
@@ -20,7 +20,10 @@ class QEngine:
         self._epsilon_decay_start = epsilon_decay_start_step
 
         self.learning_mode = True
-        self._transitions = TransitionBank(bank_capacity)
+        if bank and type(bank) == type(TransitionBank):
+            self._transitions = bank
+        else:
+            self._transitions = TransitionBank(bank_capacity)
         self._steps = 0
         self._actions = actions_generator(game)
         self._actions_num = len(self._actions)
@@ -172,3 +175,6 @@ class QEngine:
 
     def get_epsilon(self):
         return self._epsilon
+
+    def get_network(self):
+        return self._evaluator.get_network()
