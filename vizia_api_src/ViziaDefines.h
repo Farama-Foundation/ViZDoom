@@ -1,9 +1,41 @@
 #ifndef __VIZIA_DEFINES_H__
 #define __VIZIA_DEFINES_H__
 
+#include <exception>
 #include <SDL2/SDL.h>
 
 namespace Vizia{
+
+    class Exception : public std::exception {
+    public:
+        virtual const char* what() const throw(){ return "Unknown exception."; }
+    };
+
+    class SharedMemoryException : public Exception {
+    public:
+        const char* what() const throw(){ return "Shared memory error."; }
+    };
+
+    class MessageQueueException : public Exception {
+    public:
+        const char* what() const throw(){ return "Message queue error."; }
+    };
+
+    class DoomErrorException : public Exception {
+    public:
+        const char* what() const throw(){ return "Controlled ViziaZDoom instance raported error."; }
+    };
+
+    class DoomUnexpectedExitException : public Exception {
+    public:
+        const char* what() const throw(){ return "Controlled ViziaZDoom instance exited unexpectedly."; }
+    };
+
+    class DoomIsNotRunningException : public Exception {
+    public:
+        const char* what() const throw(){ return "Controlled ViziaZDoom instance is not running or not ready."; }
+    };
+
 
     enum ScreenFormat {
         CRCGCB = 0,
