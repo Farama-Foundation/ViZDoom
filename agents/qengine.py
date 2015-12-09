@@ -70,6 +70,7 @@ class QEngine:
   
     def _new_game(self):
         self._game.new_episode()
+        self._game.new_episode()
         self.reset_state()
         print "A"
         raw_state = self._game.get_state()
@@ -91,7 +92,6 @@ class QEngine:
         return s
 
     def _choose_action_index(self, state):
-    	self._update_state(state)
     	s = self._current_state()
     	return self._evaluator.best_action(s, verbose = False)
 
@@ -100,6 +100,7 @@ class QEngine:
         #TODO
 
     def choose_action(self, state):
+        self._update_state(state)
         return self._actions(self._choose_action_index(state))
 
     def reset_state(self):
@@ -108,9 +109,13 @@ class QEngine:
             self._current_misc_state.fill(0.0)
 
     def make_step(self):
-    	a = self._choose_action_index(self._game.get_state())
+    	raw_state = self._game.get_state()
+        a = self._choose_action_index(raw_state)
     	self._actions_stats[a] += 1
     	self._game.make_action(self._actions[a])
+        if not self._game.is_episode_finished():
+            raw_state = self._game.get_state()
+            self._update_state(raw_state)
 
     def make_learning_step(self):
         self._steps += 1
@@ -137,7 +142,8 @@ class QEngine:
             # terminal state
             s2 = None
         else:
-            self._update_state(self._game.get_state())
+            raw_state = self._game.get_state()
+            self._update_state( raw_state )
             s2 = self._copy_current_state()
         self._transitions.add_transition(s, a, s2, r)
 
@@ -151,7 +157,6 @@ class QEngine:
     def run_episode(self):
         self._new_game()
        	if self.learning_mode:
-            self._update_state(self._game.get_state())
             while not self._game.is_episode_finished():
                 self.make_learning_step()
        	else:
