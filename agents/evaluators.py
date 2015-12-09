@@ -207,6 +207,9 @@ class MLPEvaluator:
         self._loss_history = []
         return m
 
+    def get_network(self):
+        return self._network
+        
 class LinearEvaluator(MLPEvaluator):
     def __init__(self, **kwargs):
         MLPEvaluator.__init__(self, **kwargs)
