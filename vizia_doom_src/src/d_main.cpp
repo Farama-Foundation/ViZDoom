@@ -1029,11 +1029,8 @@ void D_DoomLoop ()
 			// Update display, next frame, with current state.
 			I_StartTic ();
 			D_Display ();
-			printf("A:Display\n");
 			//S_UpdateMusic();	// OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
-			printf("B:ViziaTic\n");
 			Vizia_Tic();
-			printf("A:ViziaTic\n");
 		}
 		catch (CRecoverableError &error)
 		{
