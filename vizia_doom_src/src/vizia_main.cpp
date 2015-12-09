@@ -47,7 +47,8 @@ CVAR (Bool, vizia_clear_render, true, CVAR_NOSET)
 CVAR (String, vizia_instance_id, "0", CVAR_NOSET)
 CVAR (Int, vizia_screen_format, 0, CVAR_NOSET)
 CVAR (Bool, vizia_no_console, false, CVAR_NOSET)
-CVAR (Bool, vizia_no_window_soft, false, CVAR_NOSET)
+CVAR (Bool, vizia_window_hidden, false, CVAR_NOSET)
+CVAR (Bool, vizia_no_x_server, false, CVAR_NOSET)
 
 void Vizia_Init(){
     printf("Vizia_Init: Instance id: %s\n", *vizia_instance_id);
@@ -61,7 +62,9 @@ void Vizia_Init(){
 
         Vizia_InputInit();
         Vizia_GameVarsInit();
+
         Vizia_ScreenInit();
+
     }
 
     //Vizia_MQSend(VIZIA_MSG_CODE_DOOM_READY);
