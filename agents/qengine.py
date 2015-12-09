@@ -67,12 +67,14 @@ class QEngine:
             if self._misc_state_included:
                 self._current_misc_state = misc
 
+  
     def _new_game(self):
-        #remove the check after vizia bug is corrected
-        if self._game.is_episode_finished():
-            self._game.new_episode()
+        self._game.new_episode()
         self.reset_state()
-        self._update_state(self._game.get_state())
+        print "A"
+        raw_state = self._game.get_state()
+        print "B"
+        self._update_state(raw_state)
 
     def _copy_current_state(self):
     	if self._misc_state_included:
@@ -149,9 +151,9 @@ class QEngine:
     def run_episode(self):
         self._new_game()
        	if self.learning_mode:
-       		self._update_state(self._game.get_state())
-	        while not self._game.is_episode_finished():
-	            self.make_learning_step()
+            self._update_state(self._game.get_state())
+            while not self._game.is_episode_finished():
+                self.make_learning_step()
        	else:
 	        while not self._game.is_episode_finished():
 	            self.make_step()

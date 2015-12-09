@@ -1,9 +1,0 @@
-####A lame description of what is it this folder####
-
-QEngine - class representing q-learning engine capable of making actions and learning from them. To work it needs a game and evaluator(e.g. neural net).
-
-Evaluator - is responsible for q-value estimation and learning via theano functions.
-
-ShootingDotGame (in games.py) - a mock-up game. State is defined by x * y pixels which are white/random (in <0,1>). The central, horizontal line is always filled with zeros and one 1.0 - the target (in random position on x axis). There are 3 "keys" available: LEFT, RIGHT and SHOOT. Using LEFT/RIGHT causes the target to move accordingly. SHOOT results in hit when the target is in the exact center and in miss otherwise. For every action the agent earns a living reward (no matter what he does). Hitting and missing result in an additional reward/penalty. 
-
-In order to test qengine + evaluator on dot shooting use ./qengine_test.py.
