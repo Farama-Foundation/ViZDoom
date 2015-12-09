@@ -140,7 +140,8 @@ namespace Vizia{
         bool isMapEnded();
 
         //GRAPHIC SETTINGS
-        void setWindowMode(bool windowMode);
+        void setWindowHidden(bool windowHidden);
+        void setNoXServer(bool noXServer);
 
         void setScreenResolution(int width, int height);
         void setScreenWidth(int width);
@@ -299,7 +300,7 @@ namespace Vizia{
 
         bool hud, weapon, crosshair, decals, particles;
 
-        bool windowMode;
+        bool windowHidden, noXServer;
 
         std::string gamePath;
         std::string iwadPath;
