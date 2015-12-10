@@ -122,7 +122,7 @@ namespace Vizia {
 
             int mapReward = this->doomController->getMapReward();
 
-            int reward = (mapReward - this->lastMapReward) + this->livingReward;
+            reward = (mapReward - this->lastMapReward) + this->livingReward;
             if(this->doomController->isPlayerDead()) reward -= this->deathPenalty;
 
             this->lastMapReward = mapReward;
@@ -130,6 +130,7 @@ namespace Vizia {
             this->lastReward = reward;
         }
         catch (...){ throw SharedMemoryException(); }
+
 
         return reward;
     }
