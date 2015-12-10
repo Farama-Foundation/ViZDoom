@@ -65,12 +65,20 @@ const char* Vizia_CheckItemType(const PClass *type){
 }
 
 int Vizia_CheckEquippedWeapon(){
-    return 0;
+    FName weaponName = viziaPlayer->ReadyWeapon->GetSpecies();
+    if(weaponName == NAME_Fist || weaponName == NAME_Chainsaw) return 1;
+    else if(weaponName == NAME_Pistol) return 2;
+    else if(weaponName == NAME_Shotgun || weaponName == NAME_SSG) return 3;
+    else if(weaponName == NAME_Chaingun) return 4;
+    else if(weaponName == NAME_Rocket) return 5;
+    else if(weaponName == NAME_Plasma) return 6;
+    else if(weaponName == NAME_BFG) return 7;
 }
 
 int Vizia_CheckEquippedWeaponAmmo(){
-    //return Vizia_CheckItem(viziaPlayer->ReadyWeapon->AmmoType1);
-    return 0;
+    return viziaPlayer->ReadyWeapon->CheckAmmo (
+            viziaPlayer->ReadyWeapon->bAltFire ? AWeapon::AltFire : AWeapon::PrimaryFire,
+            true);
 }
 
 void Vizia_GameVarsInit(){
@@ -153,6 +161,7 @@ void Vizia_UpdateGameVars(){
     viziaGameVars->PLAYER_KEY[0] = 0;
     viziaGameVars->PLAYER_KEY[1] = 0;
     viziaGameVars->PLAYER_KEY[2] = 0;
+
 }
 
 void Vizia_GameVarsClose(){

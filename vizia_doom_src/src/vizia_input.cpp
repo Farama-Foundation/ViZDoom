@@ -4,6 +4,7 @@
 
 #include "d_main.h"
 #include "g_game.h"
+#include "d_player.h"
 #include "d_event.h"
 #include "c_bind.h"
 #include "c_console.h"
@@ -18,18 +19,36 @@ void Vizia_Mouse(int x, int y){
     if(y) G_AddViewAngle (y);
 }
 
+bool Vizia_HasCounterBT(int button){
+    switch(button){
+        case VIZIA_BT_MOVE_RIGHT :
+        case VIZIA_BT_MOVE_LEFT :
+        case VIZIA_BT_MOVE_BACK :
+        case VIZIA_BT_MOVE_FORWARD :
+        case VIZIA_BT_TURN_RIGHT :
+        case VIZIA_BT_TURN_LEFT :
+        case VIZIA_BT_LOOK_UP :
+        case VIZIA_BT_LOOK_DOWN :
+        case VIZIA_BT_MOVE_UP :
+        case VIZIA_BT_MOVE_DOWN :
+            return true;
+        default :
+            return false;
+    }
+}
+
 int Vizia_CounterBT(int button){
     switch(button){
-        case VIZIA_BT_MOVERIGHT : return VIZIA_BT_MOVELEFT;
-        case VIZIA_BT_MOVELEFT : return VIZIA_BT_MOVERIGHT;
-        case VIZIA_BT_BACK : return VIZIA_BT_FORWARD;
-        case VIZIA_BT_FORWARD : return VIZIA_BT_BACK;
-        case VIZIA_BT_RIGHT : return VIZIA_BT_LEFT;
-        case VIZIA_BT_LEFT : return VIZIA_BT_RIGHT;
-        case VIZIA_BT_LOOKUP : return VIZIA_BT_LOOKDOWN;
-        case VIZIA_BT_LOOKDOWN : return VIZIA_BT_LOOKUP;
-        case VIZIA_BT_MOVEUP : return VIZIA_BT_MOVEDOWN;
-        case VIZIA_BT_MOVEDOWN : return VIZIA_BT_MOVEUP;
+        case VIZIA_BT_MOVE_RIGHT : return VIZIA_BT_MOVE_LEFT;
+        case VIZIA_BT_MOVE_LEFT : return VIZIA_BT_MOVE_RIGHT;
+        case VIZIA_BT_MOVE_BACK : return VIZIA_BT_MOVE_FORWARD;
+        case VIZIA_BT_MOVE_FORWARD : return VIZIA_BT_MOVE_BACK;
+        case VIZIA_BT_TURN_RIGHT : return VIZIA_BT_TURN_LEFT;
+        case VIZIA_BT_TURN_LEFT : return VIZIA_BT_TURN_RIGHT;
+        case VIZIA_BT_LOOK_UP : return VIZIA_BT_LOOK_DOWN;
+        case VIZIA_BT_LOOK_DOWN : return VIZIA_BT_LOOK_UP;
+        case VIZIA_BT_MOVE_UP : return VIZIA_BT_MOVE_DOWN;
+        case VIZIA_BT_MOVE_DOWN : return VIZIA_BT_MOVE_UP;
         default : return -1;
     }
 }
@@ -48,27 +67,27 @@ char* Vizia_BTToCommand(int button, bool state){
         case VIZIA_BT_SPEED : return Vizia_GetCommandWithState(strdup(" speed"), state);
         case VIZIA_BT_STRAFE : return Vizia_GetCommandWithState(strdup(" strafe"), state);
 
-        case VIZIA_BT_MOVERIGHT : return Vizia_GetCommandWithState(strdup(" moveright"), state);
-        case VIZIA_BT_MOVELEFT : return Vizia_GetCommandWithState(strdup(" moveleft"), state);
-        case VIZIA_BT_BACK : return Vizia_GetCommandWithState(strdup(" back"), state);
-        case VIZIA_BT_FORWARD : return Vizia_GetCommandWithState(strdup(" forward"), state);
-        case VIZIA_BT_RIGHT : return Vizia_GetCommandWithState(strdup(" right"), state);
-        case VIZIA_BT_LEFT : return Vizia_GetCommandWithState(strdup(" left"), state);
-        case VIZIA_BT_LOOKUP : return Vizia_GetCommandWithState(strdup(" lookup"), state);
-        case VIZIA_BT_LOOKDOWN : return Vizia_GetCommandWithState(strdup(" lookdown"), state);
-        case VIZIA_BT_MOVEUP : return Vizia_GetCommandWithState(strdup(" moveup"), state);
-        case VIZIA_BT_MOVEDOWN : return Vizia_GetCommandWithState(strdup(" movedown"), state);
+        case VIZIA_BT_MOVE_RIGHT : return Vizia_GetCommandWithState(strdup(" moveright"), state);
+        case VIZIA_BT_MOVE_LEFT : return Vizia_GetCommandWithState(strdup(" moveleft"), state);
+        case VIZIA_BT_MOVE_BACK : return Vizia_GetCommandWithState(strdup(" back"), state);
+        case VIZIA_BT_MOVE_FORWARD : return Vizia_GetCommandWithState(strdup(" forward"), state);
+        case VIZIA_BT_TURN_RIGHT : return Vizia_GetCommandWithState(strdup(" right"), state);
+        case VIZIA_BT_TURN_LEFT : return Vizia_GetCommandWithState(strdup(" left"), state);
+        case VIZIA_BT_LOOK_UP : return Vizia_GetCommandWithState(strdup(" lookup"), state);
+        case VIZIA_BT_LOOK_DOWN : return Vizia_GetCommandWithState(strdup(" lookdown"), state);
+        case VIZIA_BT_MOVE_UP : return Vizia_GetCommandWithState(strdup(" moveup"), state);
+        case VIZIA_BT_MOVE_DOWN : return Vizia_GetCommandWithState(strdup(" movedown"), state);
 
-        case VIZIA_BT_WEAPON1 : return strdup("slot 1");
-        case VIZIA_BT_WEAPON2 : return strdup("slot 2");
-        case VIZIA_BT_WEAPON3 : return strdup("slot 3");
-        case VIZIA_BT_WEAPON4 : return strdup("slot 4");
-        case VIZIA_BT_WEAPON5 : return strdup("slot 5");
-        case VIZIA_BT_WEAPON6 : return strdup("slot 6");
-        case VIZIA_BT_WEAPON7 : return strdup("slot 7");
+        case VIZIA_BT_SELECT_WEAPON1 : return strdup("slot 1");
+        case VIZIA_BT_SELECT_WEAPON2 : return strdup("slot 2");
+        case VIZIA_BT_SELECT_WEAPON3 : return strdup("slot 3");
+        case VIZIA_BT_SELECT_WEAPON4 : return strdup("slot 4");
+        case VIZIA_BT_SELECT_WEAPON5 : return strdup("slot 5");
+        case VIZIA_BT_SELECT_WEAPON6 : return strdup("slot 6");
+        case VIZIA_BT_SELECT_WEAPON7 : return strdup("slot 7");
 
-        case VIZIA_BT_WEAPONNEXT : return strdup("weapnext");
-        case VIZIA_BT_WEAPONPREV : return strdup("weapprev");
+        case VIZIA_BT_WEAPON_NEXT : return strdup("weapnext");
+        case VIZIA_BT_WEAPON_PREV : return strdup("weapprev");
 
         default : return strdup("");
     }
@@ -78,15 +97,6 @@ char* Vizia_GetCommandWithState(char* command, bool state){
     if(state) command[0] = '+';
     else command[0] = '-';
     return command;
-}
-
-void Vizia_ButtonCommand(int button, bool state, bool oldState){
-
-    if(state != oldState){
-        if(state) AddCommandString(Vizia_BTToCommand(Vizia_CounterBT(button), !state));
-        AddCommandString(Vizia_BTToCommand(button, state));
-    }
-
 }
 
 void Vizia_InputInit() {
@@ -123,10 +133,27 @@ void Vizia_InputInit() {
 
 void Vizia_InputTic(){
 
-    Vizia_MouseEvent(viziaInput->MS_X, viziaInput->MS_Y);
+    //Vizia_Mouse(viziaInput->MS_X, viziaInput->MS_Y);
 
     for(int i = 0; i<VIZIA_BT_SIZE; ++i){
-        if(viziaInput->BT_AVAILABLE[i]) Vizia_ButtonCommand(i, viziaInput->BT[i], viziaLastInput->BT[i]);
+
+        if(viziaInput->BT_AVAILABLE[i]){
+
+            if(viziaInput->BT[i] && Vizia_HasCounterBT(i)){
+                int c = Vizia_CounterBT(i);
+
+                if(viziaInput->BT_AVAILABLE[c] && viziaInput->BT[c]){
+                    AddCommandString(Vizia_BTToCommand(i, false));
+                    AddCommandString(Vizia_BTToCommand(c, false));
+                    continue;
+                }
+                else AddCommandString(Vizia_BTToCommand(c, false));
+            }
+
+            if(viziaInput->BT[i] != viziaLastInput->BT[i]){
+                AddCommandString(Vizia_BTToCommand(i, viziaInput->BT[i]));
+            }
+        }
     }
 
     memcpy ( viziaLastInput, viziaInput, sizeof(ViziaInputStruct) );
@@ -138,30 +165,4 @@ void Vizia_InputTic(){
 void Vizia_InputClose(){
     delete(viziaLastInput);
     delete(viziaInputSMRegion);
-}
-
-// OLD EVENTS CODE
-void Vizia_MouseEvent(int x, int y){
-    event_t ev = { 0 };
-
-    ev.x = x;
-    ev.y = y;
-
-    if (ev.x || ev.y) {
-        ev.type = EV_Mouse;
-        D_PostEvent(&ev);
-    }
-}
-
-void Vizia_ButtonEvent(int button, bool state, bool oldState){
-
-    if(state != oldState){
-        event_t ev = { 0 };
-
-        if(state == true) ev.type = EV_KeyDown;
-        else ev.type = EV_KeyUp;
-
-        ev.data1 = 1<<button;
-        D_PostEvent(&ev);
-    }
 }
