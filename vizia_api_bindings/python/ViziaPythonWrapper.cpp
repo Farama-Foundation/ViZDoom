@@ -205,7 +205,7 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("get_action_format", &DoomGamePython::getActionFormat)
     
         .def("get_game_var", &DoomGamePython::getGameVar)
-
+        .def("get_game_var_len", &DoomGamePython::getGameVarLen)
         .def("get_living_reward", &DoomGamePython::getLivingReward)
         .def("set_living_reward", &DoomGamePython::setLivingReward)
         
@@ -245,6 +245,7 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("set_render_particles", &DoomGamePython::setRenderParticles)
 		.def("get_screen_width", &DoomGamePython::getScreenWidth)
 		.def("get_screen_height", &DoomGamePython::getScreenHeight)
+        .def("get_screen_channels", &DoomGamePython::getScreenChannels)
 		.def("get_screen_size", &DoomGamePython::getScreenSize)
 		.def("get_screen_pitch", &DoomGamePython::getScreenPitch)
 		.def("get_screen_format", &DoomGamePython::getScreenFormat);

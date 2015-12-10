@@ -183,6 +183,10 @@ namespace Vizia {
 
         return this->doomController->getGameVar(var);
     }
+    int DoomGame::getGameVarLen()
+    {
+        return this->state.vars.size();
+    }
 
     void DoomGame::setDoomGamePath(std::string path) { this->doomController->setGamePath(path); }
     void DoomGame::setDoomIwadPath(std::string path) { this->doomController->setIwadPath(path); }

@@ -48,6 +48,7 @@ namespace Vizia {
         //void addAvailableButton(std::string action);
 
         void addStateAvailableVar(GameVar var);
+        int getGameVarLen();
         //void addStateAvailableVar(std::string var);
 
         //OPTIONS
