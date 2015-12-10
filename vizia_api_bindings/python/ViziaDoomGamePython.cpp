@@ -13,6 +13,8 @@ namespace Vizia {
         /* Numpy arrays won't work unless this strnage function is envoked.*/
         boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
         //boost::numpy::initialize();
+        this->numpyImage = NULL;
+        this->numpyVars = NULL;
     }
     DoomGamePython::~DoomGamePython() {
         delete this->numpyImage;
