@@ -20,25 +20,7 @@ namespace Vizia {
         struct State {
             int number;
             std::vector<int> vars;
-            int imageWidth;
-            int imageHeight;
-            int imagePitch;
             uint8_t *imageBuffer;
-        };
-
-        struct StateFormat {
-            /* shape[0] - num. of channels, 1 - x, 2 - y */
-            int imageShape[3];
-            int varLen;
-
-            StateFormat() { }
-
-            StateFormat(int channels, int x, int y, int varLen) {
-                this->imageShape[0] = channels;
-                this->imageShape[1] = x;
-                this->imageShape[2] = y;
-                this->varLen = varLen;
-            }
         };
 
         DoomGame();
@@ -73,9 +55,6 @@ namespace Vizia {
         const DoomController *getController();
 
         int getGameVar(GameVar var);
-
-        bool isShapingRewardIncluded();
-        void setShapingRewardIncluded(bool include);
 
         int getLivingReward();
         void setLivingReward(int livingReward);
@@ -116,7 +95,6 @@ namespace Vizia {
         void setRenderDecals(bool decals);
         void setRenderParticles(bool particles);
 
-        StateFormat getStateFormat();
         int getActionFormat();
 
         int getScreenWidth();
@@ -141,19 +119,13 @@ namespace Vizia {
 
         //REWARD
 
-        bool includeShapingReward;
-
         int lastReward;
-
         int lastMapReward;
-        int lastShapingReward;
-
         int summaryReward;
 
         int livingReward;
         int deathPenalty;
 
-        StateFormat stateFormat;
     };
 }
 

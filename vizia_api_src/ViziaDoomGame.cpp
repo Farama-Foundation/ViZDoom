@@ -22,7 +22,6 @@ namespace Vizia {
         this->lastReward = 0;
 
         this->lastMapReward = 0;
-        this->lastShapingReward = 0;
 
         this->deathPenalty = 0;
         this->livingReward = 0;
@@ -58,13 +57,6 @@ namespace Vizia {
             }
             catch(const Exception &e){ throw; }
 
-            /* Initialize state format */
-            int y = this->doomController->getScreenWidth();
-            int x = this->doomController->getScreenHeight();
-            int channels = 3;
-            int varLen = this->stateAvailableVars.size();
-            this->stateFormat = StateFormat(channels, x, y, varLen);
-
             return running;
         }
         else return false;
@@ -90,7 +82,6 @@ namespace Vizia {
 
         this->lastReward = 0;
         this->lastMapReward = 0;
-        this->lastShapingReward = 0;
         this->summaryReward = 0;
     }
 
@@ -126,24 +117,16 @@ namespace Vizia {
             /* Update float rgb image */
             this->state.number = this->doomController->getMapTic();
             this->state.imageBuffer = this->doomController->getScreen();
-            this->state.imageWidth = this->doomController->getScreenWidth();
-            this->state.imageHeight = this->doomController->getScreenHeight();
-            this->state.imagePitch = this->doomController->getScreenPitch();
 
             /* Return tic reward */
 
             int mapReward = this->doomController->getMapReward();
-            int shapingReward = this->doomController->getMapShapingReward();
 
             int reward = (mapReward - this->lastMapReward) + this->livingReward;
-            if(this->includeShapingReward) reward += (shapingReward - this->lastShapingReward);
             if(this->doomController->isPlayerDead()) reward -= this->deathPenalty;
 
             this->lastMapReward = mapReward;
-            this->lastShapingReward = shapingReward;
-
             this->summaryReward += reward;
-
             this->lastReward = reward;
         }
         catch (...){ throw SharedMemoryException(); }
@@ -231,9 +214,6 @@ namespace Vizia {
         this->doomController->setMapTimeout(tics);
     }
 
-    bool DoomGame::isShapingRewardIncluded() { return this->includeShapingReward; }
-    void DoomGame::setShapingRewardIncluded(bool include){ this->includeShapingReward = include; };
-
     int DoomGame::getLivingReward() { return this->livingReward; }
     void DoomGame::setLivingReward(int livingReward) { this->livingReward = livingReward; }
 
@@ -260,10 +240,6 @@ namespace Vizia {
     size_t DoomGame::getScreenPitch() { return this->doomController->getScreenPitch(); }
     size_t DoomGame::getScreenSize() { return this->doomController->getScreenSize(); }
     ScreenFormat DoomGame::getScreenFormat() { return this->doomController->getScreenFormat(); }
-
-    DoomGame::StateFormat DoomGame::getStateFormat() {
-        return this->stateFormat;
-    }
 
     int DoomGame::getActionFormat() {
         return this->availableButtons.size();
