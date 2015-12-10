@@ -99,19 +99,20 @@ namespace Vizia {
 
         int getScreenWidth();
         int getScreenHeight();
+        int getScreenChannels();
         size_t getScreenPitch();
         size_t getScreenSize();
 
         ScreenFormat getScreenFormat();
 
-    private:
+    protected:
 
         DoomController *doomController;
         bool running;
 
         //STATE AND ACTIONS
         State state;
-
+        /* I'm not aware of any value that could be used so I'm adding this custom one */
         std::vector <GameVar> stateAvailableVars;
         std::vector <Button> availableButtons;
 

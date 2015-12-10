@@ -237,6 +237,7 @@ namespace Vizia {
     void DoomGame::setRenderParticles(bool particles) { this->doomController->setRenderParticles(particles); }
     int DoomGame::getScreenWidth() { return this->doomController->getScreenWidth(); }
     int DoomGame::getScreenHeight() { return this->doomController->getScreenHeight(); }
+    int DoomGame::getScreenChannels() { return this->doomController->getScreenChannels(); }
     size_t DoomGame::getScreenPitch() { return this->doomController->getScreenPitch(); }
     size_t DoomGame::getScreenSize() { return this->doomController->getScreenSize(); }
     ScreenFormat DoomGame::getScreenFormat() { return this->doomController->getScreenFormat(); }

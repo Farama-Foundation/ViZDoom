@@ -97,6 +97,7 @@ namespace Vizia {
 
         this->screenWidth = 320;
         this->screenHeight = 240;
+        this->screenChannels = 3;
         this->screenPitch = 0;
         this->screenSize = 0;
         this->screenFormat = CRCGCB;
@@ -308,7 +309,20 @@ namespace Vizia {
 
     void DoomController::setScreenWidth(int width) { this->screenWidth = width; }
     void DoomController::setScreenHeight(int height) { this->screenHeight = height; }
-    void DoomController::setScreenFormat(ScreenFormat format) { this->screenFormat = format; }
+    void DoomController::setScreenFormat(ScreenFormat format) { 
+       //TODO shouldn't it be disabled when doom is running?
+        this->screenFormat = format; 
+        switch(format)
+        {
+            case CRCGCB:
+            case RGB24:
+            case CBCGCR:
+            case BGR24:
+                this->screenChannels = 3;
+            default:
+                this->screenChannels = 4;
+        }
+    }
 
     void DoomController::setWindowHidden(bool windowHidden){ this->windowHidden=windowHidden; }
     void DoomController::setNoXServer(bool noXServer) { this->noXServer=noXServer; }
@@ -363,6 +377,10 @@ namespace Vizia {
 
     int DoomController::getScreenHeight() {
         if (this->doomRunning) return this->GameVars->SCREEN_HEIGHT;
+        else return 0;
+    }
+    int DoomController::getScreenChannels() {
+        if (this->doomRunning) return this->screenChannels;
         else return 0;
     }
 

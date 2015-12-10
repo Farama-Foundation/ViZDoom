@@ -156,6 +156,7 @@ namespace Vizia{
 
         int getScreenWidth();
         int getScreenHeight();
+        int getScreenChannels();
         size_t getScreenPitch();
         size_t getScreenSize();
 
@@ -294,7 +295,7 @@ namespace Vizia{
 
         // OPTIONS
 
-        unsigned int screenWidth, screenHeight;
+        unsigned int screenWidth, screenHeight, screenChannels;
         size_t screenPitch, screenSize;
         ScreenFormat screenFormat;
 

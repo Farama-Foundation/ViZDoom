@@ -202,13 +202,9 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("is_new_episode", &DoomGamePython::isNewEpisode)
 		.def("make_action",&DoomGamePython::makeAction)
 		.def("get_state", &DoomGamePython::getState)
-		.def("get_state_format", &DoomGamePython::getStateFormat)
 		.def("get_action_format", &DoomGamePython::getActionFormat)
     
         .def("get_game_var", &DoomGamePython::getGameVar)
-
-        .def("is_shaping_reward_included", &DoomGamePython::isShapingRewardIncluded)
-        .def("set_shaping_reward_included", &DoomGamePython::setShapingRewardIncluded)
 
         .def("get_living_reward", &DoomGamePython::getLivingReward)
         .def("set_living_reward", &DoomGamePython::setLivingReward)
