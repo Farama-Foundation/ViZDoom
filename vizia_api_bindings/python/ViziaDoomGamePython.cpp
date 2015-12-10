@@ -1,9 +1,5 @@
 #include "ViziaDoomGamePython.h"
 
-#include <iostream>
-using std::cout;
-using std::endl;
-
 namespace Vizia {
 
     using boost::python::tuple;
@@ -12,27 +8,53 @@ namespace Vizia {
 #define PY_NONE object()
 
     DoomGamePython::DoomGamePython() {
-        import_array();
         Py_Initialize();
+        import_array();
         /* Numpy arrays won't work unless this strnage function is envoked.*/
         boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
         //boost::numpy::initialize();
     }
+    DoomGamePython::~DoomGamePython() {
+        delete this->numpyImage;
+        delete this->numpyVars;
+        this->numpyImage = NULL;
+        this->numpyVars = NULL;
+    }
 
     bool DoomGamePython::init() {
         bool initSuccess = DoomGame::init();
-        /* fill state format */
-        if (initSuccess) {
-            
 
-            DoomGame::StateFormat cppFormat = DoomGame::getStateFormat();
-            boost::python::list imageShape;
-            int imageShapeLen = 3;
-            for (int i = 0; i < imageShapeLen; ++i) {
-                this->imageShape[i] = cppFormat.imageShape[i];
-                imageShape.append(cppFormat.imageShape[i]);
+        if (initSuccess) {
+
+            int channels = this->getScreenChannels();
+            int x = this->getScreenWidth();
+            int y = this->getScreenHeight();
+            npy_intp imageShape[3];
+            switch(this->getScreenFormat())
+            {
+                case CRCGCB:
+                case CRCGCBCA:
+                case CBCGCR:
+                case CBCGCRCA:
+                    imageShape[0] = channels;
+                    imageShape[1] = x;
+                    imageShape[2] = y;
+                    break;
+                default:
+                    imageShape[0] = x;
+                    imageShape[1] = y;
+                    imageShape[2] = channels;
             }
-            this->stateFormat = boost::python::make_tuple(tuple(imageShape), cppFormat.varLen);
+            PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, this->state.imageBuffer);
+            boost::python::handle<> handle(img);
+            this->numpyImage = (boost::python::numeric::array*)(new boost::python::object(handle));
+            if (this->state.vars.size() > 0) {
+                npy_intp varLen = this->state.vars.size();
+                PyObject *vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, this->state.vars.data());
+                boost::python::handle<> handle(vars);
+                this->numpyVars = (boost::python::numeric::array*)(new boost::python::numeric::array(handle));
+
+            }
         }
         return initSuccess;
     }
@@ -51,30 +73,13 @@ namespace Vizia {
         if (isEpisodeFinished()) {
             return PY_NONE;
         }
-        DoomGame::State state = DoomGame::getState();
-        PyObject *img = PyArray_SimpleNewFromData(3, this->imageShape, NPY_UBYTE, state.imageBuffer);
-        boost::python::handle<> handle(img);
-        boost::python::numeric::array npyImg(handle);
-        //TODO copy or not?
         if (state.vars.size() > 0) {
-
-            npy_intp varLen = boost::python::extract<int>(this->stateFormat[1]);
-            PyObject *vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, state.vars.data());
-            boost::python::handle<> handle(vars);
-            boost::python::numeric::array npyVars(handle);
-
-            //TODO copy or not?
-            return boost::python::make_tuple(state.number, npyImg.copy(), npyVars.copy());
+            return boost::python::make_tuple(this->state.number, this->numpyImage->copy(), this->numpyVars->copy());
         }
         else {
-            //TODO copy or not?
-            return boost::python::make_tuple(state.number, npyImg.copy());
+            return boost::python::make_tuple(this->state.number, this->numpyImage->copy());
         }
 
-    }
-
-    tuple DoomGamePython::getStateFormat() {
-        return this->stateFormat;
     }
 
 /* not sure if we need this */

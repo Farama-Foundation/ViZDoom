@@ -22,17 +22,16 @@ namespace Vizia {
 
     public:
         DoomGamePython();
-
+        ~DoomGamePython();
         bool init();
         float makeAction(boost::python::list actionList);
         boost::python::api::object getState();
-        boost::python::tuple getStateFormat();
         boost::python::api::object getLastAction();
 
     private:
 
-        boost::python::tuple stateFormat;
-        npy_intp imageShape[3];
+        boost::python::numeric::array* numpyImage;
+        boost::python::numeric::array* numpyVars;
 
     };
 
