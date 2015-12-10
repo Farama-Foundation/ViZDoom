@@ -31,30 +31,27 @@ class QEngine:
 
         
         # change img_shape according to the history size
-        self._single_img_shape = list(game.get_state_format()[0])
-        if len(self._single_img_shape) == 2:
-            self._single_img_shape = [1,self._single_img_shape[0],self._single_img_shape[1]]
-        self._channels = self._single_img_shape[0]
-
-        img_shape = self._single_img_shape
+        self._channels = game.get_screen_channels()
+        img_shape = [self._channels, game.get_screen_width(), game.get_screen_height()]
+        
         if history_length > 1:
             img_shape[0] *= history_length
         
-        state_format = [img_shape, game.get_state_format()[1]]
+        state_format = [img_shape, game.get_game_var_len()]
         self._evaluator = evaluator(state_format, len(self._actions), batch_size, self._gamma)
         self._current_image_state = np.zeros(img_shape, dtype=np.float32)
 
-        if game.get_state_format()[1] > 0:
+        if game.get_game_var_len() > 0:
             self._misc_state_included = True
-            self._current_misc_state = np.zeros(game.get_state_format()[1], dtype=np.float32)
+            self._current_misc_state = np.zeros(game.get_game_var_len(), dtype=np.float32)
         else:
             self._misc_state_included = False
 
     # it doesn't copy the state
     def _update_state(self, raw_state):
-        img = np.float32(raw_state[0])/256.0
+        img = np.float32(raw_state[1])/256.0
         if self._misc_state_included:
-            misc = raw_state[1]
+            misc = raw_state[2]
         if self._history_length > 1:
             self._current_image_state[0:-self._channels] = self._current_image_state[self._channels:]
             self._current_image_state[-self._channels:] = img
@@ -70,13 +67,9 @@ class QEngine:
   
     def _new_game(self):
         self._game.new_episode()
-        self._game.new_episode()
         self.reset_state()
-        print "A"
         raw_state = self._game.get_state()
-        print "B"
         self._update_state(raw_state)
-
     def _copy_current_state(self):
     	if self._misc_state_included:
             s = [self._current_image_state.copy(), self._current_misc_state.copy()]
@@ -146,7 +139,6 @@ class QEngine:
             self._update_state( raw_state )
             s2 = self._copy_current_state()
         self._transitions.add_transition(s, a, s2, r)
-
         # Perform q-learning once for a while
         if self._steps % self._update_frequency[0] == 0 and not self.online_mode and self._steps > self._batch_size:
             for i in range(self._update_frequency[1]):
