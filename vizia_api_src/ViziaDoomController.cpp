@@ -649,6 +649,10 @@ namespace Vizia {
         if (this->decals) args.push_back("1");
         else args.push_back("0");
 
+        //weapon auto switch
+        //args.push_back("+neverswitchonpickup");
+        //args.push_back("1");
+
         //vizia args
         args.push_back("+vizia_controlled");
         args.push_back("1");
