@@ -55,7 +55,7 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     #cnn_args["learning_rate"] = 0.01
 
     network_args = dict(hidden_units=[800], hidden_layers=1)
-    network_args["conv_layers"] = 3
+    network_args["conv_layers"] = 2
     network_args["pool_size"] = [(2, 2),(2,2),(1,2)]
     network_args["num_filters"] = [32,32,32]
     network_args["filter_size"] = [7,4,2]
@@ -126,15 +126,16 @@ def setup_vizia():
     game.add_available_button(Button.MOVE_RIGHT)
     game.add_available_button(Button.ATTACK)
 
+    print "Initializin DOOM ..."
     game.init()
-
+    print "DOOM initialized ..."
     return game
 
 def create_engine( game, online_mode=False ):
     engine_args = dict()
     engine_args["history_length"] = 1
     engine_args["bank_capacity"] = 10000
-    engine_args["bank"] = TransitionBank( capacity=10000, rejection_range = [-0.02,0.5], rejection_probability=0.95)
+    #engine_args["bank"] = TransitionBank( capacity=10000, rejection_range = [-0.02,0.5], rejection_probability=0.95)
     engine_args["evaluator"] = create_cnn_evaluator
     engine_args["game"] = game
     engine_args['start_epsilon'] = 0.9
