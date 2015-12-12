@@ -25,6 +25,8 @@ int main(){
     v->setRenderDecals(false);
     v->setRenderParticles(false);
 
+    v->setVisibleWindow(false);
+
     v->addAvailableButton(MOVE_LEFT);
     v->addAvailableButton(MOVE_RIGHT);
     v->addAvailableButton(ATTACK);
@@ -59,7 +61,6 @@ int main(){
         //std::cout<<"reward: "<<r<<std::endl;
         //usleep(11000);
     }
-
     v->close();
     delete v;
 }

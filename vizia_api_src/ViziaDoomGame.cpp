@@ -240,6 +240,10 @@ namespace Vizia {
     void DoomGame::setRenderCrosshair(bool crosshair) { this->doomController->setRenderCrosshair(crosshair); }
     void DoomGame::setRenderDecals(bool decals) { this->doomController->setRenderDecals(decals); }
     void DoomGame::setRenderParticles(bool particles) { this->doomController->setRenderParticles(particles); }
+    void DoomGame::setVisibleWindow(bool visibility) {
+        this->doomController->setNoXServer(!visibility);
+        this->doomController->setWindowHidden(!visibility);
+    }
     int DoomGame::getScreenWidth() { return this->doomController->getScreenWidth(); }
     int DoomGame::getScreenHeight() { return this->doomController->getScreenHeight(); }
     int DoomGame::getScreenChannels() { return this->doomController->getScreenChannels(); }
