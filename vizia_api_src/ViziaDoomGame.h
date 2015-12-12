@@ -95,6 +95,7 @@ namespace Vizia {
         void setRenderCrosshair(bool crosshair);
         void setRenderDecals(bool decals);
         void setRenderParticles(bool particles);
+        void setVisibleWindow(bool visibility);
 
         int getActionFormat();
 
