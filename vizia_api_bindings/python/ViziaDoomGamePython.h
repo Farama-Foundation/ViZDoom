@@ -31,7 +31,9 @@ namespace Vizia {
     private:
 
         boost::python::numeric::array* numpyImage;
+        boost::python::handle<> numpyImageHandle;
         boost::python::numeric::array* numpyVars;
+        boost::python::handle<> numpyVarsHandle;
 
     };
 

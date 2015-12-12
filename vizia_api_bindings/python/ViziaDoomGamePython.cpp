@@ -1,17 +1,18 @@
 #include "ViziaDoomGamePython.h"
-
+#include <iostream>
+using std::cout;
+using std::endl;
 namespace Vizia {
 
     using boost::python::tuple;
     using boost::python::api::object;
-
+    using boost::python::numeric::array;
 #define PY_NONE object()
 
     DoomGamePython::DoomGamePython() {
-        Py_Initialize();
-        import_array();
-        /* Numpy arrays won't work unless this strnage function is envoked.*/
         boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
+        import_array();
+        
         //boost::numpy::initialize();
         this->numpyImage = NULL;
         this->numpyVars = NULL;
@@ -48,15 +49,20 @@ namespace Vizia {
                     imageShape[2] = channels;
             }
             PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, this->state.imageBuffer);
-            boost::python::handle<> handle(img);
-            this->numpyImage = (boost::python::numeric::array*)(new boost::python::object(handle));
+            this->numpyImageHandle = boost::python::handle<>(img);
+            this->numpyImage = new array(this->numpyImageHandle);
+
             if (this->state.vars.size() > 0) {
                 npy_intp varLen = this->state.vars.size();
                 PyObject *vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, this->state.vars.data());
-                boost::python::handle<> handle(vars);
-                this->numpyVars = (boost::python::numeric::array*)(new boost::python::numeric::array(handle));
-
+                this->numpyVarsHandle = boost::python::handle<>(vars);
+                this->numpyVars = new array(this->numpyVarsHandle);
             }
+            /*cout<<"HERE"<<endl;
+            this->numpyImage->copy();
+            this->close();
+            exit(0);*/
+
         }
         return initSuccess;
     }
@@ -81,6 +87,7 @@ namespace Vizia {
         else {
             return boost::python::make_tuple(this->state.number, this->numpyImage->copy());
         }
+
 
     }
 

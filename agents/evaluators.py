@@ -65,7 +65,7 @@ class MLPEvaluator:
         updates = updates(regularized_loss, params, learning_rate=learning_rate)
 
 
-        print "Compiling Theano functions."
+        print "Compiling Theano functions ..."
         # mode = NanGuardMode(nan_is_error=True, inf_is_error=True, big_is_error=True)
         mode = None
         if self._misc_state_included:

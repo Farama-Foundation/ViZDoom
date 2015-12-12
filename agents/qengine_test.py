@@ -1,6 +1,9 @@
 #!/usr/bin/python
-
+from vizia import DoomGame
+from vizia import Button
+from vizia import GameVar
 import numpy as np
+
 from qengine import QEngine
 from games import ShootingDotGame
 from evaluators import MLPEvaluator
@@ -9,14 +12,14 @@ from evaluators import LinearEvaluator
 from time import time, sleep
 import itertools as it
 import lasagne
-from vizia import DoomGame
-from vizia import Button
-from vizia import GameVar
+
 from lasagne.regularization import l1, l2
 from lasagne.updates import adagrad, nesterov_momentum, sgd
+from lasagne.nonlinearities import leaky_rectify
 from random import choice 
 from transition_bank import TransitionBank
 from lasagne.layers import get_all_param_values
+
 
 def api_init_wrapper(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo):
     api.init(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo)
@@ -39,7 +42,7 @@ def create_mlp_evaluator(state_format, actions_number, batch_size, gamma):
     #mlp_args["regularization"] = [[l1,0.001]]
 
     network_args = dict(hidden_units=[3000], hidden_layers=1)
-    #network_args["hidden_nonlin"] = None
+    network_args["hidden_nonlin"] = leaky_rectify
     #network_args["output_nonlin"] = None
     mlp_args["network_args"] = network_args
 
@@ -128,7 +131,7 @@ def setup_vizia():
 
     print "Initializin DOOM ..."
     game.init()
-    print "DOOM initialized ..."
+    print "\nDOOM initialized."
     return game
 
 def create_engine( game, online_mode=False ):
@@ -145,7 +148,7 @@ def create_engine( game, online_mode=False ):
     engine_args['actions_generator'] = actions_generator
     engine_args['update_frequency'] = (4,4)
     engine_args['batch_size'] = 40
-    engine_args['gamma'] = 0.85
+    engine_args['gamma'] = 0.99
     engine_args['reward_scale'] = 0.01
     if online_mode:
         engine.online_mode = True
@@ -167,8 +170,9 @@ test_episodes_per_epoch = 50
 test_frequency = 1;
 stop_mean = 1.0  # game.average_best_result()
 overall_start = time()
-print "Learning..."
+print "\nLearning ..."
 epoch = 0
+verbose = False
 while epoch < epochs:
     engine.learning_mode = True
     rewards = []
@@ -178,7 +182,7 @@ while epoch < epochs:
     for episode in range(training_episodes_per_epoch):
         #if (episode+1)% (training_episodes_per_epoch/20)==0:
         #    print(episode+1)
-        r = engine.run_episode()
+        r = engine.run_episode(verbose)
         rewards.append(r)
         
     end = time()
@@ -195,9 +199,11 @@ while epoch < epochs:
         engine.learning_mode = False
         rewards = []
 
+        
+
         start = time()
         for test_episode in range(test_episodes_per_epoch):
-            r = engine.run_episode()
+            r = engine.run_episode(verbose = verbose)
             rewards.append(r)
         end = time()
         
