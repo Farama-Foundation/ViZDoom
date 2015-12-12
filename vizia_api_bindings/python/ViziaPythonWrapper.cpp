@@ -8,7 +8,10 @@ BOOST_PYTHON_MODULE(vizia)
 {
     using namespace boost::python;
     using namespace Vizia;
-
+    Py_Initialize();
+    boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
+    import_array();
+    
 #define ENUM_VAL_2_PYT(v) .value( #v , v )
 
 	enum_<ScreenFormat>("ScreenFormat")
