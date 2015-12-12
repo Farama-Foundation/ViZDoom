@@ -251,6 +251,6 @@ BOOST_PYTHON_MODULE(vizia)
         .def("get_screen_channels", &DoomGamePython::getScreenChannels)
 		.def("get_screen_size", &DoomGamePython::getScreenSize)
 		.def("get_screen_pitch", &DoomGamePython::getScreenPitch)
-		.def("get_screen_format", &DoomGamePython::getScreenFormat);
-
+		.def("get_screen_format", &DoomGamePython::getScreenFormat)
+        .def("set_visible_window", &DoomGamePython::setVisibleWindow);
 }
