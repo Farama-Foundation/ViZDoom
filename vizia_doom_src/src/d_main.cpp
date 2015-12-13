@@ -113,6 +113,7 @@
 EXTERN_CVAR (Bool, vizia_controlled)
 EXTERN_CVAR (Bool, vizia_singletic)
 EXTERN_CVAR (Bool, vizia_clear_render)
+EXTERN_CVAR (Bool, vizia_input_events)
 
 EXTERN_CVAR(Bool, hud_althud)
 void DrawHUD();
@@ -1005,7 +1006,7 @@ void D_DoomLoop ()
 			{
 
 				I_StartTic ();
-				if(!*vizia_controlled) D_ProcessEvents ();
+				if(!*vizia_controlled || *vizia_input_events) D_ProcessEvents ();
 
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				if (advancedemo)
@@ -1020,12 +1021,10 @@ void D_DoomLoop ()
 				GC::CheckGC ();
 
 				//Net_NewMakeTic ();
-				//if(*vizia_controlled) Vizia_SingleTic(); - in future;
 			}
 			else
 			{
 				TryRunTics (); // will run at least one tic
-				//if(*vizia_controlled) Vizia_Tics(); - in future;
 			}
 
 			// Update display, next frame, with current state.

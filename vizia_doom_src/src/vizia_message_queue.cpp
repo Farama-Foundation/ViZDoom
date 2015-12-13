@@ -1,11 +1,5 @@
 #include "vizia_message_queue.h"
-
-#include "info.h"
-#include "c_bind.h"
-#include "c_console.h"
-#include "c_dispatch.h"
-#include "g_game.h"
-#include "g_level.h"
+#include "vizia_input.h"
 
 #include <string.h>
 
@@ -14,9 +8,7 @@ bip::message_queue *viziaMQDoom;
 char * viziaMQControllerName;
 char * viziaMQDoomName;
 
-void Vizia_Command(char * command){
-    AddCommandString(command);
-}
+bool firstTic;
 
 void Vizia_MQInit(const char * id){
 
@@ -32,6 +24,8 @@ void Vizia_MQInit(const char * id){
         Vizia_MQSend(VIZIA_MSG_CODE_DOOM_ERROR);
         Vizia_Command(strdup("exit"));
     }
+
+    firstTic = true;
 }
 
 void Vizia_MQSend(uint8_t code){
@@ -71,7 +65,11 @@ bool Vizia_MQTryRecv(void *msg, unsigned long &size, unsigned int &priority){
 
 void Vizia_MQTic(){
 
-    Vizia_MQSend(VIZIA_MSG_CODE_DOOM_TIC);
+    if(firstTic){
+        Vizia_MQSend(VIZIA_MSG_CODE_DOOM_READY);
+        firstTic = false;
+    }
+    else Vizia_MQSend(VIZIA_MSG_CODE_DOOM_TIC);
 
     ViziaMessageCommandStruct msg;
 

@@ -1,13 +1,17 @@
 #ifndef __VIZIA_INPUT_H__
 #define __VIZIA_INPUT_H__
 
+void Vizia_Command(char * command);
+
+bool Vizia_CommmandFilter(const char *cmd);
+
+char* Vizia_BTToCommand(int button);
+
 bool Vizia_HasCounterBT(int button);
 
 int Vizia_CounterBT(int button);
 
-char* Vizia_BTToCommand(int button, bool state);
-
-char* Vizia_GetCommandWithState(char* command, bool state);
+void Vizia_AddBTCommand(char* command, bool state);
 
 void Vizia_Mouse(int x, int y);
 

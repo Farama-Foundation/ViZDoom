@@ -28,8 +28,8 @@ EXTERN_CVAR (Int, vizia_screen_format)
 #define VIZIA_PLAYER players[consoleplayer]
 player_t *viziaPlayer;
 
-bip::mapped_region *viziaGameVarsSMRegion;
-ViziaGameVarsStruct *viziaGameVars;
+bip::mapped_region *viziaGameVarsSMRegion = NULL;
+ViziaGameVarsStruct *viziaGameVars = NULL;
 
 int Vizia_CheckItem(FName name) {
     if(viziaPlayer->mo != NULL) {
@@ -64,7 +64,14 @@ const char* Vizia_CheckItemType(const PClass *type){
     return "UNKNOWN";
 }
 
-int Vizia_CheckEquippedWeapon(){
+bool Vizia_CheckSelectedWeaponState(){
+
+}
+
+int Vizia_CheckSelectedWeapon(){
+
+    if(viziaPlayer->ReadyWeapon == NULL) return 0;
+
     FName weaponName = viziaPlayer->ReadyWeapon->GetSpecies();
     if(weaponName == NAME_Fist || weaponName == NAME_Chainsaw) return 1;
     else if(weaponName == NAME_Pistol) return 2;
@@ -75,15 +82,13 @@ int Vizia_CheckEquippedWeapon(){
     else if(weaponName == NAME_BFG) return 7;
 }
 
-int Vizia_CheckEquippedWeaponAmmo(){
+int Vizia_CheckSelectedWeaponAmmo(){
     return viziaPlayer->ReadyWeapon->CheckAmmo (
             viziaPlayer->ReadyWeapon->bAltFire ? AWeapon::AltFire : AWeapon::PrimaryFire,
             true);
 }
 
 void Vizia_GameVarsInit(){
-
-    viziaGameVarsSMRegion = NULL;
 
     viziaPlayer = &players[consoleplayer];
     try {
@@ -101,7 +106,7 @@ void Vizia_GameVarsInit(){
     }
 }
 
-void Vizia_UpdateGameVars(){
+void Vizia_GameVarsUpdate(){
 
     viziaGameVars->GAME_TIC = gametic;
 
@@ -119,10 +124,9 @@ void Vizia_UpdateGameVars(){
     viziaGameVars->MAP_SECRETCOUNT = level.found_secrets;
 
     viziaGameVars->MAP_REWARD = ACS_GlobalVars[0];
-    viziaGameVars->MAP_SHAPING_REWARD = ACS_GlobalVars[1];
 
     for(int i = 0; i < VIZIA_GV_USER_SIZE; ++i){
-        viziaGameVars->MAP_USER_VARS[i] = ACS_GlobalVars[i+2];
+        viziaGameVars->MAP_USER_VARS[i] = ACS_GlobalVars[i+1];
     }
 
     viziaGameVars->MAP_END = gamestate != GS_LEVEL;
@@ -135,15 +139,16 @@ void Vizia_UpdateGameVars(){
     viziaGameVars->PLAYER_SECRETCOUNT = viziaPlayer->secretcount;
     viziaGameVars->PLAYER_FRAGCOUNT = viziaPlayer->fragcount;
 
-    viziaGameVars->PLAYER_ONGROUND = viziaPlayer->onground;
+    viziaGameVars->PLAYER_WEAPON_READY = Vizia_CheckSelectedWeaponState();
+    viziaGameVars->PLAYER_ON_GROUND = viziaPlayer->onground;
 
     if(viziaPlayer->mo) viziaGameVars->PLAYER_HEALTH = viziaPlayer->mo->health;
     else viziaGameVars->PLAYER_HEALTH = viziaPlayer->health;
 
     viziaGameVars->PLAYER_ARMOR = Vizia_CheckItem(NAME_BasicArmor);
 
-    viziaGameVars->PLAYER_SELECTED_WEAPON_AMMO = Vizia_CheckEquippedWeaponAmmo();
-    viziaGameVars->PLAYER_SELECTED_WEAPON = Vizia_CheckEquippedWeapon();
+    viziaGameVars->PLAYER_SELECTED_WEAPON_AMMO = Vizia_CheckSelectedWeaponAmmo();
+    viziaGameVars->PLAYER_SELECTED_WEAPON = Vizia_CheckSelectedWeapon();
 
     viziaGameVars->PLAYER_AMMO[0] = Vizia_CheckItem(NAME_Clip);
     viziaGameVars->PLAYER_AMMO[1] = Vizia_CheckItem(NAME_Shell);
