@@ -15,7 +15,7 @@ int main(){
     v->setDoomIwadPath("../scenarios/doom2.wad");
     v->setDoomFilePath("../scenarios/s1_b.wad");
     v->setDoomMap("map01");
-    v->setEpisodeTimeoutInDoomTics(200);
+    v->setEpisodeTimeout(200);
 
     v->setScreenResolution(100, 0);
 

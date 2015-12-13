@@ -54,6 +54,11 @@ namespace Vizia {
 
             try {
                 this->running = this->doomController->init();
+
+                this->doomController->disableAllButtons();
+                for (int i = 0; i < this->availableButtons.size(); ++i) {
+                    this->doomController->setButtonAvailable(this->availableButtons[i], true);
+                }
             }
             catch(const Exception &e){ throw; }
 
@@ -89,18 +94,23 @@ namespace Vizia {
 
         if(!this->isRunning()) throw DoomIsNotRunningException();
 
-        int j = 0;
         try {
-            for (std::vector<Button>::iterator i = this->availableButtons.begin();
-                 i != this->availableButtons.end(); ++i, ++j) {
-                this->lastAction[j] = actions[j];
-                this->doomController->setButtonState(*i, actions[j]);
+            for (int i = 0; i < this->availableButtons.size(); ++i) {
+                this->lastAction[i] = actions[i];
+                this->doomController->setButtonState(this->availableButtons[i], actions[i]);
             }
         }
         catch (...){ throw SharedMemoryException(); }
 
         try {
-            this->doomController->tic();
+            if(this->actionInterval > 1){
+                for(int i = 0; i < actionInterval; ++i){
+                    this->doomController->tic();
+                    if(i == 0) this->doomController->resetDescreteButtons();
+                }
+            }
+            else this->doomController->tic();
+
         }
         catch(const Exception &e){ throw; }
 
@@ -108,10 +118,8 @@ namespace Vizia {
 
         try {
             /* Updates vars */
-            j = 0;
-            for (std::vector<GameVar>::iterator i = this->stateAvailableVars.begin();
-                 i != this->stateAvailableVars.end(); ++i, ++j) {
-                this->state.vars[j] = this->doomController->getGameVar(*i);
+            for (int i = 0; i < this->stateAvailableVars.size(); ++i) {
+                this->state.vars[i] = this->doomController->getGameVar(this->stateAvailableVars[i]);
             }
 
             /* Update float rgb image */
@@ -130,7 +138,6 @@ namespace Vizia {
             this->lastReward = reward;
         }
         catch (...){ throw SharedMemoryException(); }
-
 
         return reward;
     }
@@ -156,26 +163,26 @@ namespace Vizia {
     }
 
     void DoomGame::addAvailableButton(Button button) {
-        if (std::find(this->availableButtons.begin(), this->availableButtons.end(), button) ==
+        if (!this->running && std::find(this->availableButtons.begin(), this->availableButtons.end(), button) ==
             this->availableButtons.end()) {
             this->availableButtons.push_back(button);
         }
     }
 
-//void DoomGame::addAvailableButton(std::string button){
-//    this->addAvailableButton(ViziaDoomController::getButtonId(button));
-//}
+    int DoomGame::getActionFormat() {
+        return this->availableButtons.size();
+    }
 
     void DoomGame::addStateAvailableVar(GameVar var) {
-        if (std::find(this->stateAvailableVars.begin(), this->stateAvailableVars.end(), var) ==
+        if (!this->running && std::find(this->stateAvailableVars.begin(), this->stateAvailableVars.end(), var) ==
             this->stateAvailableVars.end()) {
             this->stateAvailableVars.push_back(var);
         }
     }
 
-//void DoomGame::addStateAvailableVar(std::string var){
-//    this->addStateAvailableVar(ViziaDoomController::getGameVarId(var));
-//}
+    int DoomGame::getGameVarLen() {
+        return this->stateAvailableVars.size();
+    }
 
     const DoomController* DoomGame::getController() { return this->doomController; }
 
@@ -183,10 +190,6 @@ namespace Vizia {
         if(!this->isRunning()) throw DoomIsNotRunningException();
 
         return this->doomController->getGameVar(var);
-    }
-    int DoomGame::getGameVarLen()
-    {
-        return this->state.vars.size();
     }
 
     void DoomGame::setDoomGamePath(std::string path) { this->doomController->setGamePath(path); }
@@ -196,26 +199,21 @@ namespace Vizia {
     void DoomGame::setDoomSkill(int skill) { this->doomController->setSkill(skill); }
     void DoomGame::setDoomConfigPath(std::string path) { this->doomController->setConfigPath(path); }
 
+    unsigned int DoomGame::getSeed(){ return this->doomController->getSeed(); }
+    void DoomGame::setSeed(unsigned int seed){ this->doomController->setSeed(seed); }
+
     void DoomGame::setAutoNewEpisode(bool set) { this->doomController->setAutoMapRestart(set); }
     void DoomGame::setNewEpisodeOnTimeout(bool set) { this->doomController->setAutoMapRestartOnTimeout(set); }
     void DoomGame::setNewEpisodeOnPlayerDeath(bool set) { this->doomController->setAutoMapRestartOnTimeout(set); }
     void DoomGame::setNewEpisodeOnMapEnd(bool set) { this->doomController->setAutoMapRestartOnMapEnd(set); }
 
-//void DoomGame::setEpisodeStartTimeInMiliseconds(unsigned int ms){
-//    this->doomController->setMapStartTime(Ms2DoomTics(ms));
-//}
-//
-//void DoomGame::setEpisodeStartTimeInDoomTics(unsigned int tics){
-//    this->doomController->setMapStartTime(tics);
-//}
-
-    unsigned int DoomGame::getEpisodeTimeoutInMiliseconds(){ return DoomTics2Ms(this->doomController->getMapTimeout()); }
-    void DoomGame::setEpisodeTimeoutInMiliseconds(unsigned int ms) {
-        this->doomController->setMapTimeout(Ms2DoomTics(ms));
+    unsigned int DoomGame::getEpisodeStartTime(){ return this->doomController->getMapStartTime(); }
+    void DoomGame::setEpisodeStartTime(unsigned int tics){
+        this->doomController->setMapStartTime(tics);
     }
 
-    unsigned int DoomGame::getEpisodeTimeoutInDoomTics(){ return this->doomController->getMapTimeout(); }
-    void DoomGame::setEpisodeTimeoutInDoomTics(unsigned int tics) {
+    unsigned int DoomGame::getEpisodeTimeout(){ return this->doomController->getMapTimeout(); }
+    void DoomGame::setEpisodeTimeout(unsigned int tics) {
         this->doomController->setMapTimeout(tics);
     }
 
@@ -251,7 +249,4 @@ namespace Vizia {
     size_t DoomGame::getScreenSize() { return this->doomController->getScreenSize(); }
     ScreenFormat DoomGame::getScreenFormat() { return this->doomController->getScreenFormat(); }
 
-    int DoomGame::getActionFormat() {
-        return this->availableButtons.size();
-    }
 }

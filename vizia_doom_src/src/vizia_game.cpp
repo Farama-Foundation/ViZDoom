@@ -109,6 +109,8 @@ void Vizia_GameVarsInit(){
 void Vizia_GameVarsUpdate(){
 
     viziaGameVars->GAME_TIC = gametic;
+    viziaGameVars->GAME_SEED = rngseed;
+    viziaGameVars->GAME_STATIC_SEED = staticrngseed;
 
     viziaGameVars->SCREEN_WIDTH = viziaScreenWidth;
     viziaGameVars->SCREEN_HEIGHT = viziaScreenHeight;

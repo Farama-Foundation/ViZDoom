@@ -55,7 +55,7 @@ namespace Vizia{
         struct GameVarsStruct {
             unsigned int GAME_TIC;
             unsigned int GAME_SEED;
-            unsigned int GAME_STATIC_SEED;
+            unsigned int GAME_STAIC_SEED;
 
             unsigned int SCREEN_WIDTH;
             unsigned int SCREEN_HEIGHT;
@@ -63,13 +63,12 @@ namespace Vizia{
             size_t SCREEN_SIZE;
             int SCREEN_FORMAT;
 
-            int MAP_REWARD;
-            int SHAPING_REWARD;
-
-            int MAP_USER_VARS[30];
-
             unsigned int MAP_START_TIC;
             unsigned int MAP_TIC;
+
+            int MAP_REWARD;
+
+            int MAP_USER_VARS[UserVarsNumber];
 
             int MAP_KILLCOUNT;
             int MAP_ITEMCOUNT;
@@ -81,23 +80,22 @@ namespace Vizia{
             int PLAYER_KILLCOUNT;
             int PLAYER_ITEMCOUNT;
             int PLAYER_SECRETCOUNT;
-            int PLAYER_FRAGCOUNT; //for multiplayer
+            int PLAYER_FRAGCOUNT; //in multi
 
-            bool PLAYER_ONGROUND;
+            bool PLAYER_ON_GROUND;
 
             int PLAYER_HEALTH;
             int PLAYER_ARMOR;
 
+            bool PLAYER_WEAPON_READY;
+
             int PLAYER_SELECTED_WEAPON;
             int PLAYER_SELECTED_WEAPON_AMMO;
 
-            int PLAYER_AMMO[10];
-            bool PLAYER_WEAPON[10];
-            bool PLAYER_KEY[10];
+            int PLAYER_AMMO[4];
+            bool PLAYER_WEAPON[7];
+            bool PLAYER_KEY[3];
         };
-
-        static Button getButtonId(std::string name);
-        static GameVar getGameVarId(std::string name);
 
         DoomController();
         ~DoomController();
@@ -106,12 +104,11 @@ namespace Vizia{
 
         bool init();
         void close();
+        void restart();
 
         bool tic();
-        bool update();
         void restartMap();
         void resetMap();
-        void restartGame();
         bool isDoomRunning();
         void sendCommand(std::string command);
 
@@ -119,18 +116,38 @@ namespace Vizia{
 
         //GAME & MAP SETTINGS
 
+        unsigned int getCurrentSeed();
+        unsigned int getSeed();
+        void setSeed(unsigned int seed);
+
+        std::string getInstanceId();
         void setInstanceId(std::string id);
+
+        std::string getGamePath();
         void setGamePath(std::string path);
+
+        std::string getIwadPath();
         void setIwadPath(std::string path);
+
+        std::string getFilePath();
         void setFilePath(std::string path);
+
+        std::string getMap();
         void setMap(std::string map);
+
+        int getSkill();
         void setSkill(int skill);
+
+        std::string getConfigPath();
         void setConfigPath(std::string path);
 
         void setAutoMapRestart(bool set);
         void setAutoMapRestartOnTimeout(bool set);
         void setAutoMapRestartOnPlayerDeath(bool set);
         void setAutoMapRestartOnMapEnd(bool set);
+
+        unsigned int getMapStartTime();
+        void setMapStartTime(unsigned int tics);
 
         unsigned int getMapTimeout();
         void setMapTimeout(unsigned int tics);
@@ -143,9 +160,9 @@ namespace Vizia{
         void setWindowHidden(bool windowHidden);
         void setNoXServer(bool noXServer);
 
-        void setScreenResolution(int width, int height);
-        void setScreenWidth(int width);
-        void setScreenHeight(int height);
+        void setScreenResolution(unsigned int width, unsigned int height);
+        void setScreenWidth(unsigned int width);
+        void setScreenHeight(unsigned int height);
         void setScreenFormat(ScreenFormat format);
 
         void setRenderHud(bool hud);
@@ -171,23 +188,32 @@ namespace Vizia{
         GameVarsStruct *const getGameVars();
 
         void setMouse(int x, int y);
+        int getMouseX();
         void setMouseX(int x);
+        int getMouseY();
         void setMouseY(int y);
+        void resetMouse();
 
+        bool getButtonState(Button button);
         void setButtonState(Button button, bool state);
         void toggleButtonState(Button button);
-        void setAllowButton(Button button, bool allow);
+        bool isButtonAvailable(Button button);
+        void setButtonAvailable(Button button, bool set);
+        void resetButtons();
+        void resetDescreteButtons();
+        void disableAllButtons();
+        void availableAllButtons();
 
         void resetInput();
+
+        bool isAllowDoomInput();
+        void setAllowDoomInput(bool set);
 
         int getGameVar(GameVar var);
 
         int getGameTic();
-
-        int getMapReward();
-        int getMapShapingReward();
-
         int getMapTic();
+        int getMapReward();
 
         int getMapKillCount();
         int getMapItemCount();
@@ -224,8 +250,10 @@ namespace Vizia{
 
     private:
 
+        void generateSeed();
         void generateInstanceId();
 
+        int seed;
         std::string instanceId;
 
         b::thread *doomThread;
@@ -245,21 +273,13 @@ namespace Vizia{
         };
 
         void MQInit();
-
         void MQSend(uint8_t code);
-
         void MQSelfSend(uint8_t code);
-
         bool MQTrySend(uint8_t code);
-
         void MQSend(uint8_t code, const char *command);
-
         bool MQTrySend(uint8_t code, const char *command);
-
         void MQRecv(void *msg, unsigned long &size, unsigned int &priority);
-
         bool MQTryRecv(void *msg, unsigned long &size, unsigned int &priority);
-
         void MQClose();
 
         bip::message_queue *MQController;
@@ -270,7 +290,6 @@ namespace Vizia{
         //SHARED MEMORY
 
         void SMInit();
-
         void SMClose();
 
         bip::shared_memory_object SM;
@@ -288,9 +307,8 @@ namespace Vizia{
         //HELPERS
 
         void waitForDoomStart();
-
         void waitForDoomTic();
-
+        void waitForDoomMapStartTime();
         void lunchDoom();
 
         // OPTIONS
@@ -309,6 +327,8 @@ namespace Vizia{
         std::string map;
         std::string configPath;
         int skill;
+
+        bool allowDoomInput;
 
         // AUTO RESTART
 

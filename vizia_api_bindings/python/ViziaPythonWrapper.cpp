@@ -14,6 +14,10 @@ BOOST_PYTHON_MODULE(vizia)
     
 #define ENUM_VAL_2_PYT(v) .value( #v , v )
 
+    enum_<GameMode>("GameMode")
+        ENUM_VAL_2_PYT(PLAYER)
+        ENUM_VAL_2_PYT(SPECATOR);
+
 	enum_<ScreenFormat>("ScreenFormat")
         ENUM_VAL_2_PYT(CRCGCB)
         ENUM_VAL_2_PYT(CRCGCBCA)
@@ -204,11 +208,13 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("is_episode_finished", &DoomGamePython::isEpisodeFinished)
 		.def("is_new_episode", &DoomGamePython::isNewEpisode)
 		.def("make_action",&DoomGamePython::makeAction)
+            
 		.def("get_state", &DoomGamePython::getState)
 		.def("get_action_format", &DoomGamePython::getActionFormat)
     
         .def("get_game_var", &DoomGamePython::getGameVar)
         .def("get_game_var_len", &DoomGamePython::getGameVarLen)
+
         .def("get_living_reward", &DoomGamePython::getLivingReward)
         .def("set_living_reward", &DoomGamePython::setLivingReward)
         
@@ -220,22 +226,26 @@ BOOST_PYTHON_MODULE(vizia)
         
 		.def("add_state_available_var", &DoomGamePython::addStateAvailableVar)
 		.def("add_available_button", &DoomGamePython::addAvailableButton)
+
 		.def("set_doom_game_path", &DoomGamePython::setDoomGamePath)
 		.def("set_doom_iwad_path", &DoomGamePython::setDoomIwadPath)
 		.def("set_doom_file_path", &DoomGamePython::setDoomFilePath)
 		.def("set_doom_map", &DoomGamePython::setDoomMap)
 		.def("set_doom_skill", &DoomGamePython::setDoomSkill)
 		.def("set_doom_config_path", &DoomGamePython::setDoomConfigPath)
+
+        .def("get_seed", &DoomGamePython::getSeed)
+        .def("set_seed", &DoomGamePython::setSeed)
 		
 		.def("set_auto_new_episode", &DoomGamePython::setAutoNewEpisode)
 		.def("set_new_episode_on_timeout", &DoomGamePython::setNewEpisodeOnTimeout)
 		.def("set_new_episode_on_player_death", &DoomGamePython::setNewEpisodeOnPlayerDeath)
 		.def("set_new_episode_on_map_end", &DoomGamePython::setNewEpisodeOnMapEnd)
-		
-		.def("get_episode_timeout_in_miliseconds", &DoomGamePython::getEpisodeTimeoutInMiliseconds)
-		.def("get_episode_timeout_in_doom_tics", &DoomGamePython::getEpisodeTimeoutInDoomTics)
-		.def("set_episode_timeout_in_miliseconds", &DoomGamePython::setEpisodeTimeoutInMiliseconds)
-		.def("set_episode_timeout_in_doom_tics", &DoomGamePython::setEpisodeTimeoutInDoomTics)
+
+        .def("get_episode_start_time", &DoomGamePython::getEpisodeStartTime)
+        .def("set_episode_start_time", &DoomGamePython::setEpisodeStartTime)
+		.def("get_episode_timeout", &DoomGamePython::getEpisodeTimeout)
+		.def("set_episode_timeout", &DoomGamePython::setEpisodeTimeout)
 		
 		.def("set_screen_resolution", &DoomGamePython::setScreenResolution)
 		.def("set_screen_width", &DoomGamePython::setScreenWidth)
