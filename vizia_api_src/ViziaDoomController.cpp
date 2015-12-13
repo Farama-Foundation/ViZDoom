@@ -193,7 +193,7 @@ namespace Vizia {
 
             do {
                 ++restartingTics;
-                this->waitForDoomTic(); std::cout << "CALLED1";
+                this->waitForDoomTic();
 
                 if (restartingTics > 4) {
                     this->sendCommand("map " + this->map);
