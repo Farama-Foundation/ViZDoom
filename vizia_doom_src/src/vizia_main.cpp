@@ -87,16 +87,16 @@ void Vizia_Close(){
 
 void Vizia_Tic(){
 
-    if ((gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
-        && !paused && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
-
+//    if ((gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
+//        && !paused && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
+//
 //        printf("BUTTONS: %d %d %d %d\n", players[consoleplayer].oldbuttons,
 //               players[consoleplayer].original_oldbuttons,
 //               players[consoleplayer].original_cmd.buttons,
 //               players[consoleplayer].cmd.ucmd.buttons);
-
-        printf("SEED: %d %d\n", rngseed, staticrngseed);
-    }
+//
+//        printf("SEED: %d %d\n", rngseed, staticrngseed);
+//    }
 
     try{
         bt::interruption_point();
