@@ -46,13 +46,13 @@ namespace bt = boost::this_thread;
 
 CVAR (Bool, vizia_controlled, false, CVAR_NOSET)
 CVAR (Bool, vizia_singletic, true, CVAR_NOSET)
-CVAR (Bool, vizia_clear_render, true, CVAR_NOSET)
+CVAR (Bool, vizia_clean_render, true, CVAR_NOSET)
 CVAR (String, vizia_instance_id, "0", CVAR_NOSET)
 CVAR (Int, vizia_screen_format, 0, CVAR_NOSET)
 CVAR (Bool, vizia_no_console, false, CVAR_NOSET)
 CVAR (Bool, vizia_window_hidden, false, CVAR_NOSET)
 CVAR (Bool, vizia_no_x_server, false, CVAR_NOSET)
-CVAR (Bool, vizia_input_events, false, CVAR_NOSET)
+CVAR (Bool, vizia_allow_input, false, CVAR_NOSET)
 
 void Vizia_Init(){
     printf("Vizia_Init: Instance id: %s\n", *vizia_instance_id);
@@ -87,16 +87,16 @@ void Vizia_Close(){
 
 void Vizia_Tic(){
 
-//    if ((gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
-//        && !paused && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
-//
+    if ((gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
+        && !paused && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
+
 //        printf("BUTTONS: %d %d %d %d\n", players[consoleplayer].oldbuttons,
 //               players[consoleplayer].original_oldbuttons,
 //               players[consoleplayer].original_cmd.buttons,
 //               players[consoleplayer].cmd.ucmd.buttons);
-//
-//        printf("SEED: %d %d\n", rngseed, staticrngseed);
-//    }
+
+        printf("SEED: %d %d\n", rngseed, staticrngseed);
+    }
 
     try{
         bt::interruption_point();

@@ -45,11 +45,13 @@ namespace Vizia {
         bool isEpisodeFinished();
 
         void addAvailableButton(Button button);
-        //void addAvailableButton(std::string action);
+        int getActionFormat();
 
         void addStateAvailableVar(GameVar var);
         int getGameVarLen();
-        //void addStateAvailableVar(std::string var);
+
+        unsigned int getActionInterval(unsigned int tics){ return this->actionInterval; }
+        void setActionInterval(unsigned int tics){ this->actionInterval = tics; }
 
         //OPTIONS
 
@@ -61,7 +63,6 @@ namespace Vizia {
         void setLivingReward(int livingReward);
         int getDeathPenalty();
         void setDeathPenalty(int deathPenalty);
-
         int getLastReward();
         int getSummaryReward();
 
@@ -72,19 +73,19 @@ namespace Vizia {
         void setDoomSkill(int skill);
         void setDoomConfigPath(std::string path);
 
+        unsigned int getSeed();
+        void setSeed(unsigned int seed);
+
         void setAutoNewEpisode(bool set);
         void setNewEpisodeOnTimeout(bool set);
         void setNewEpisodeOnPlayerDeath(bool set);
         void setNewEpisodeOnMapEnd(bool set);
 
-        //void setEpisodeStartTimeInMiliseconds(unsigned int ms);
-        //void setEpisodeStartTimeInDoomTics(unsigned int tics);
+        unsigned int getEpisodeStartTime();
+        void setEpisodeStartTime(unsigned int tics);
 
-        unsigned int getEpisodeTimeoutInMiliseconds();
-        void setEpisodeTimeoutInMiliseconds(unsigned int ms);
-
-        unsigned int getEpisodeTimeoutInDoomTics();
-        void setEpisodeTimeoutInDoomTics(unsigned int tics);
+        unsigned int getEpisodeTimeout();
+        void setEpisodeTimeout(unsigned int tics);
 
         void setScreenResolution(unsigned int width, unsigned int height);
         void setScreenWidth(unsigned int width);
@@ -96,8 +97,6 @@ namespace Vizia {
         void setRenderDecals(bool decals);
         void setRenderParticles(bool particles);
         void setVisibleWindow(bool visibility);
-
-        int getActionFormat();
 
         int getScreenWidth();
         int getScreenHeight();
@@ -114,13 +113,15 @@ namespace Vizia {
 
         //STATE AND ACTIONS
         State state;
-        /* I'm not aware of any value that could be used so I'm adding this custom one */
+
         std::vector <GameVar> stateAvailableVars;
         std::vector <Button> availableButtons;
 
         std::vector<bool> lastAction;
 
         //REWARD
+
+        unsigned int actionInterval;
 
         int lastReward;
         int lastMapReward;

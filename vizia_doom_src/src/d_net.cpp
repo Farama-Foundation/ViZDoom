@@ -66,7 +66,7 @@
 
 EXTERN_CVAR (Bool, vizia_controlled)
 EXTERN_CVAR (Bool, vizia_singletic)
-EXTERN_CVAR (Bool, vizia_input_events)
+EXTERN_CVAR (Bool, vizia_allow_input)
 
 EXTERN_CVAR (Int, disableautosave)
 EXTERN_CVAR (Int, autosavecount)
@@ -938,7 +938,7 @@ int gametime;
 //VIZIA CODE
 void NetUpdate (void)
 {
-	if(*vizia_controlled || !*vizia_input_events) return;
+	if(*vizia_controlled || !*vizia_allow_input) return;
 
 	int		lowtic;
 	int 	nowtime;
@@ -981,7 +981,7 @@ void NetUpdate (void)
 	for (i = 0; i < newtics; i++)
 	{
 		I_StartTic ();
-		if(!*vizia_controlled || *vizia_input_events) D_ProcessEvents ();
+		if(!*vizia_controlled || *vizia_allow_input) D_ProcessEvents ();
 		if ((maketic - gametic) / ticdup >= BACKUPTICS/2-1)
 			break;			// can't hold any more
 		//Printf ("mk:%i ",maketic);

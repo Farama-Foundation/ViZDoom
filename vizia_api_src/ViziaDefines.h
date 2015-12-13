@@ -36,6 +36,11 @@ namespace Vizia{
         const char* what() const throw(){ return "Controlled ViziaZDoom instance is not running or not ready."; }
     };
 
+    enum GameMode {
+        PLAYER,
+        SPECATOR
+    };
+
     enum ScreenFormat {
         CRCGCB = 0,
         CRCGCBCA = 1,
@@ -105,6 +110,8 @@ namespace Vizia{
         USER30,
         UNDEFINED_VAR
     };
+
+    static const int UserVarsNumber = 30;
 
     enum Button {
         ATTACK = 0,

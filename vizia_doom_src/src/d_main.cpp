@@ -112,8 +112,8 @@
 #include "vizia_main.h"
 EXTERN_CVAR (Bool, vizia_controlled)
 EXTERN_CVAR (Bool, vizia_singletic)
-EXTERN_CVAR (Bool, vizia_clear_render)
-EXTERN_CVAR (Bool, vizia_input_events)
+EXTERN_CVAR (Bool, vizia_clean_render)
+EXTERN_CVAR (Bool, vizia_allow_input)
 
 EXTERN_CVAR(Bool, hud_althud)
 void DrawHUD();
@@ -706,7 +706,7 @@ void D_Display ()
 	}
 
 	// [RH] Allow temporarily disabling wipes
-	if (NoWipe || (*vizia_controlled && *vizia_clear_render))
+	if (NoWipe || (*vizia_controlled && *vizia_clean_render))
 	{
 		V_SetBorderNeedRefresh();
 		NoWipe--;
@@ -848,7 +848,7 @@ void D_Display ()
 		}
 	}
 	// draw pause pic
-	if ((paused || pauseext) && menuactive == MENU_Off && ((*vizia_controlled && !*vizia_clear_render) || !*vizia_controlled))
+	if ((paused || pauseext) && menuactive == MENU_Off && ((*vizia_controlled && !*vizia_clean_render) || !*vizia_controlled))
 	{
 		FTexture *tex;
 		int x;
@@ -1006,7 +1006,7 @@ void D_DoomLoop ()
 			{
 
 				I_StartTic ();
-				if(!*vizia_controlled || *vizia_input_events) D_ProcessEvents ();
+				if(!*vizia_controlled || *vizia_allow_input) D_ProcessEvents ();
 
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				if (advancedemo)
@@ -1998,7 +1998,9 @@ static void D_DoomInit()
 	if (v)
 	{
 		rngseed = staticrngseed = atoi(v);
-		use_staticrng = true;
+		//VIZIA_CODE
+		//use_staticrng = true;
+		use_staticrng = false;
 		Printf("D_DoomInit: Static RNGseed %d set.\n", rngseed);
 	}
 	else

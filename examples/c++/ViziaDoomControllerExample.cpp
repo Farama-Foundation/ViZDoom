@@ -44,6 +44,7 @@ int main(){
     vdm->setMap("map01");
     vdm->setMapTimeout(200);
     vdm->setAutoMapRestart(true);
+    vdm->setSeed(131313);
 
     // w przypadku nie zachowania proporcji 4:3, 16:10, 16:9
     // silnik weźmie wysokość i pomnoży razy 4/3
@@ -67,6 +68,8 @@ int main(){
     
     int loop = 100;
     for(int i = 0; i < 50000; ++i){
+
+        if(vdm->isMapLastTic()) std::cout << "\nMAP FINISHED\n\n";
 
         //vdm->setMouseX(-10); //obrót w lewo
 
@@ -98,10 +101,8 @@ int main(){
         }
 
         std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<
-                " HP: " << vdm->getPlayerHealth() << " AMMO: " << vdm->getGameVars()->PLAYER_AMMO[2] <<
-                " REWARD: " << vdm->getMapReward() << " SHAPING: " << vdm->getMapShapingReward() << std::endl;
-
-        if(vdm->isMapLastTic()) std::cout << "\nMAP FINISHED\n\n";
+                " HP: " << vdm->getPlayerHealth() << " AMMO: " << vdm->getGameVars()->PLAYER_AMMO[0] <<
+                " REWARD: " << vdm->getMapReward() << " SHAPING: " << vdm->getGameVar(USER1) << std::endl;
 
         if(sdl) updateSDL(vdm->getScreenWidth(), vdm->getScreenHeight(), vdm->getScreenPitch(), (void*)vdm->getScreen());
 

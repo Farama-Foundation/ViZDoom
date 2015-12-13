@@ -15,7 +15,7 @@ ViziaInputStruct *viziaLastInput = NULL;
 ViziaInputStruct *viziaInput = NULL;
 bool viziaInputInited = false;
 
-EXTERN_CVAR (Bool, vizia_input_events);
+EXTERN_CVAR (Bool, vizia_allow_input);
 
 void Vizia_Command(char * command){
     if(strlen(command) >= 1) AddCommandString(command);
@@ -23,7 +23,7 @@ void Vizia_Command(char * command){
 
 bool Vizia_CommmandFilter(const char *cmd){
 
-    if(!viziaInputInited || !*vizia_input_events) return true;
+    if(!viziaInputInited || !*vizia_allow_input) return true;
 
     bool action = false;
     bool state = true;
@@ -209,7 +209,7 @@ void Vizia_InputInit() {
 void Vizia_InputTic(){
 
     //Vizia_Mouse(viziaInput->MS_X, viziaInput->MS_Y);
-    if(!*vizia_input_events) {
+    if(!*vizia_allow_input) {
         for (int i = 0; i < VIZIA_BT_SIZE; ++i) {
 
             if (viziaInput->BT_AVAILABLE[i]) {
