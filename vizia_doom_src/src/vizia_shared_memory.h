@@ -67,13 +67,12 @@ struct ViziaGameVarsStruct{
     size_t SCREEN_SIZE;
     int SCREEN_FORMAT;
 
-    int MAP_REWARD;
-    int MAP_SHAPING_REWARD;
-
-    int MAP_USER_VARS[VIZIA_GV_USER_SIZE];
-
     unsigned int MAP_START_TIC;
     unsigned int MAP_TIC;
+
+    int MAP_REWARD;
+
+    int MAP_USER_VARS[VIZIA_GV_USER_SIZE];
 
     int MAP_KILLCOUNT;
     int MAP_ITEMCOUNT;
@@ -85,19 +84,21 @@ struct ViziaGameVarsStruct{
     int PLAYER_KILLCOUNT;
     int PLAYER_ITEMCOUNT;
     int PLAYER_SECRETCOUNT;
-    int PLAYER_FRAGCOUNT; //for multiplayer
+    int PLAYER_FRAGCOUNT; //in multi
 
-    bool PLAYER_ONGROUND;
+    bool PLAYER_ON_GROUND;
 
     int PLAYER_HEALTH;
     int PLAYER_ARMOR;
 
+    bool PLAYER_WEAPON_READY;
+
     int PLAYER_SELECTED_WEAPON;
     int PLAYER_SELECTED_WEAPON_AMMO;
 
-    int PLAYER_AMMO[10];
-    bool PLAYER_WEAPON[10];
-    bool PLAYER_KEY[10];
+    int PLAYER_AMMO[4];
+    bool PLAYER_WEAPON[7];
+    bool PLAYER_KEY[3];
 };
 
 #define VIZIA_SM_NAME_BASE "ViziaSM"

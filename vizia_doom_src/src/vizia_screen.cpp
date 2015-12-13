@@ -19,11 +19,10 @@ size_t viziaScreenSize;
 int posMulti, rPos, gPos, bPos, aPos;
 bool alpha;
 
-
 EXTERN_CVAR (Int, vizia_screen_format)
 
-bip::mapped_region *viziaScreenSMRegion;
-BYTE *viziaScreen;
+bip::mapped_region *viziaScreenSMRegion = NULL;
+BYTE *viziaScreen = NULL;
 
 void Vizia_ScreenInit() {
 

@@ -17,13 +17,15 @@ int Vizia_CheckItem(PClass *type);
 
 const char* Vizia_CheckItemType(PClass *type);
 
-int Vizia_CheckEquippedWeapon();
+bool Vizia_CheckSelectedWeaponState();
 
-int Vizia_CheckEquippedWeaponAmmo();
+int Vizia_CheckSelectedWeapon();
+
+int Vizia_CheckSelectedWeaponAmmo();
 
 void Vizia_GameVarsInit();
 
-void Vizia_UpdateGameVars();
+void Vizia_GameVarsUpdate();
 
 void Vizia_GameVarsClose();
 

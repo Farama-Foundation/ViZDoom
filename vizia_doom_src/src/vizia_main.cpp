@@ -16,6 +16,9 @@
 #include "doomstat.h"
 #include "c_console.h"
 
+#include "d_player.h"
+#include "d_event.h"
+
 namespace b = boost;
 namespace bt = boost::this_thread;
 
@@ -49,6 +52,7 @@ CVAR (Int, vizia_screen_format, 0, CVAR_NOSET)
 CVAR (Bool, vizia_no_console, false, CVAR_NOSET)
 CVAR (Bool, vizia_window_hidden, false, CVAR_NOSET)
 CVAR (Bool, vizia_no_x_server, false, CVAR_NOSET)
+CVAR (Bool, vizia_input_events, false, CVAR_NOSET)
 
 void Vizia_Init(){
     printf("Vizia_Init: Instance id: %s\n", *vizia_instance_id);
@@ -64,9 +68,7 @@ void Vizia_Init(){
         Vizia_GameVarsInit();
 
         Vizia_ScreenInit();
-
     }
-
     //Vizia_MQSend(VIZIA_MSG_CODE_DOOM_READY);
 }
 
@@ -85,6 +87,17 @@ void Vizia_Close(){
 
 void Vizia_Tic(){
 
+//    if ((gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
+//        && !paused && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
+//
+//        printf("BUTTONS: %d %d %d %d\n", players[consoleplayer].oldbuttons,
+//               players[consoleplayer].original_oldbuttons,
+//               players[consoleplayer].original_cmd.buttons,
+//               players[consoleplayer].cmd.ucmd.buttons);
+//
+//        printf("SEED: %d %d\n", rngseed, staticrngseed);
+//    }
+
     try{
         bt::interruption_point();
     }
@@ -96,7 +109,7 @@ void Vizia_Tic(){
             && !paused && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
 
         Vizia_InputTic();
-        Vizia_UpdateGameVars();
+        Vizia_GameVarsUpdate();
         Vizia_ScreenUpdate();
 
         Vizia_MQTic();
