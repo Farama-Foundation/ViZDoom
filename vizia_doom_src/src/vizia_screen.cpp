@@ -136,31 +136,42 @@ void Vizia_ScreenInit() {
 
 void Vizia_ScreenUpdate(){
 
-    if (gamestate == GS_LEVEL && !paused) {
+    screen->Lock(true);
 
-        screen->Lock(true);
+    const BYTE *buffer = screen->GetBuffer();
+    const int bufferSize = screen->GetWidth() * screen->GetHeight();
 
-        const BYTE *buffer = screen->GetBuffer();
-        const int bufferSize = screen->GetWidth() * screen->GetHeight();
+    if (buffer != NULL) {
 
-        if (buffer != NULL) {
-
-            PalEntry *palette;
-            palette = screen->GetPalette ();
-
+        if(*vizia_screen_format == VIZIA_SCREEN_DOOM_256_COLORS){
             for(unsigned int i = 0; i < bufferSize; ++i){
-                unsigned int pos = i * posMulti;
-                viziaScreen[pos + rPos] = palette[buffer[i]].r;
-                viziaScreen[pos + gPos] = palette[buffer[i]].g;
-                viziaScreen[pos + bPos] = palette[buffer[i]].b;
-                if(alpha) viziaScreen[pos + aPos] = 255;
-                //if(alpha) viziaScreen[pos + aPos] = palette[buffer[i]].a;
+                viziaScreen[i] = buffer[i];
             }
-
-            //memcpy( viziaScreen, screen->GetBuffer(), viziaScreenSize );
         }
-        screen->Unlock();
+        else {
+            PalEntry *palette;
+            palette = screen->GetPalette();
+
+            if(*vizia_screen_format == VIZIA_SCREEN_GRAY8){
+                for(unsigned int i = 0; i < bufferSize; ++i){
+                    viziaScreen[i] = 0.21 * palette[buffer[i]].r + 0.72 * palette[buffer[i]].g + 0.07 *palette[buffer[i]].b;
+                }
+            }
+            else {
+                for (unsigned int i = 0; i < bufferSize; ++i) {
+                    unsigned int pos = i * posMulti;
+                    viziaScreen[pos + rPos] = palette[buffer[i]].r;
+                    viziaScreen[pos + gPos] = palette[buffer[i]].g;
+                    viziaScreen[pos + bPos] = palette[buffer[i]].b;
+                    if (alpha) viziaScreen[pos + aPos] = 255;
+                    //if(alpha) viziaScreen[pos + aPos] = palette[buffer[i]].a;
+                }
+            }
+        }
+
+        //memcpy( viziaScreen, screen->GetBuffer(), viziaScreenSize );
     }
+    screen->Unlock();
 }
 
 void Vizia_ScreenClose(){

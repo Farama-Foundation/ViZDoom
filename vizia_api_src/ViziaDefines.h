@@ -36,7 +36,6 @@ namespace Vizia{
         const char* what() const throw(){ return "Controlled ViziaZDoom instance is not running or not ready."; }
     };
 
-
     enum ScreenFormat {
         CRCGCB = 0,
         CRCGCBCA = 1,
@@ -47,7 +46,9 @@ namespace Vizia{
         CBCGCRCA = 6,
         BGR24 = 7,
         BGRA32 = 8,
-        ABGR32 = 9
+        ABGR32 = 9,
+        GRAY8 = 10,
+        DOOM_256_COLORS = 11,
     };
 
     enum GameVar {
