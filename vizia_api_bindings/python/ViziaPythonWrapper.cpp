@@ -2,7 +2,30 @@
 #include "ViziaDoomGamePython.h"
 #include "ViziaDefines.h"
 
+
+
 /*C++ code to expose DoomGamePython via python */
+
+PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_Exception)
+{
+    using std::string;
+    namespace bp = boost::python;
+
+    string scopeName = bp::extract<string>(bp::scope().attr("__name__"));
+    string qualifiedName0 = scopeName + "." + name;
+    char* qualifiedName1 = const_cast<char*>(qualifiedName0.c_str());
+
+    PyObject* typeObj = PyErr_NewException(qualifiedName1, baseTypeObj, 0);
+    if(!typeObj) bp::throw_error_already_set();
+    bp::scope().attr(name) = bp::handle<>(bp::borrowed(typeObj));
+    return typeObj;
+}
+
+PyObject* myExceptionTypeObj = NULL; 
+void translate(Vizia::DoomIsNotRunningException const &e)
+{
+    PyErr_SetString(myExceptionTypeObj, e.what());
+}
 
 BOOST_PYTHON_MODULE(vizia)
 {
@@ -11,6 +34,13 @@ BOOST_PYTHON_MODULE(vizia)
     Py_Initialize();
     boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
     import_array();
+    
+    //exception
+    myExceptionTypeObj = createExceptionClass("doom_is_not_running_exception");
+    boost::python::register_exception_translator<Vizia::DoomIsNotRunningException>(&translate);
+
+
+
     
 #define ENUM_VAL_2_PYT(v) .value( #v , v )
 
