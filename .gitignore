@@ -35,7 +35,6 @@ ImportExecutables.cmake
 */dumb/vc6/dumb_static/debug
 */dumb/vc6/dumb_static/x64
 */DOOMSTATS.TXT
-*/src/gitinfo.h
 */src/sc_man_scanner.h
 */src/xlat_parser.c
 */src/xlat_parser.h
