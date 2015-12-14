@@ -1,6 +1,7 @@
 #include <boost/python.hpp>
 #include "ViziaDoomGamePython.h"
 #include "ViziaDefines.h"
+#include <exception>
 
 
 
@@ -22,7 +23,7 @@ PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_E
 }
 
 PyObject* myExceptionTypeObj = NULL; 
-void translate(Vizia::DoomIsNotRunningException const &e)
+void translate(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj, e.what());
 }
@@ -35,12 +36,21 @@ BOOST_PYTHON_MODULE(vizia)
     boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
     import_array();
     
-    //exception
+    //exceptions
+    myExceptionTypeObj = createExceptionClass("doom_unexpected_exit_exception");
+    boost::python::register_exception_translator<Vizia::DoomUnexpectedExitException>(&translate);
+
     myExceptionTypeObj = createExceptionClass("doom_is_not_running_exception");
     boost::python::register_exception_translator<Vizia::DoomIsNotRunningException>(&translate);
 
+    myExceptionTypeObj = createExceptionClass("doom_error_exception");
+    boost::python::register_exception_translator<Vizia::DoomErrorException>(&translate);
 
+    myExceptionTypeObj = createExceptionClass("shared_memory_exception");
+    boost::python::register_exception_translator<Vizia::SharedMemoryException>(&translate);
 
+    myExceptionTypeObj = createExceptionClass("message_queue_exception");
+    boost::python::register_exception_translator<Vizia::MessageQueueException>(&translate);
     
 #define ENUM_VAL_2_PYT(v) .value( #v , v )
 
