@@ -38,7 +38,6 @@ class MLPEvaluator:
         # create buffers for batch learning
         self._input_image_buffer = np.ndarray(self._image_input_shape, dtype=np.float32)
         self._input_image_buffer2 = np.ndarray(self._image_input_shape, dtype=np.float32)
-        self._expected_buffer = np.ndarray([batch_size], dtype=np.float32)
 
         # save it for the evaluation reshape
         self._image_input_shape[0] = 1
@@ -79,7 +78,7 @@ class MLPEvaluator:
         print "Theano functions compiled."
 
     def _initialize_network(self, img_input_shape, misc_shape, output_size, hidden_units=[500],
-                            hidden_layers=1, hidden_nonlin=tanh, output_nonlin = None, updates=sgd):
+                            hidden_layers=1, hidden_nonlin=leaky_rectify, output_nonlin = None, updates=sgd):
         print "Initializing MLP network..."
         # image input layer
         network = ls.InputLayer(shape=img_input_shape, input_var=self._image_inputs)
@@ -175,14 +174,13 @@ class MLPEvaluator:
             q2 = np.max(self._evaluate(self._input_image_buffer2), axis=1)
 
         # set expected output as the reward got from the transition
-        for i, trans in zip(range(len(transitions)), transitions):
-            self._expected_buffer[i] = trans[3]
+        
 
         # substitute expected values for chosen actions
         for i, q in zip(range(len(transitions)), q2):
+            target[i][transitions[i][1]] = transitions[i][3]
             if transitions[i][2] is not None:
-                self._expected_buffer[i] += self._gamma * q
-            target[i][transitions[i][1]] = self._expected_buffer[i]
+                target[i][transitions[i][1]] += self._gamma * q
 
         if self._misc_state_included:
             loss = self._learn(self._input_image_buffer, self._misc_buffer, target)
@@ -215,7 +213,7 @@ class LinearEvaluator(MLPEvaluator):
         MLPEvaluator.__init__(self, **kwargs)
 
     def _initialize_network(self, img_input_shape, misc_shape, output_size, output_nonlin = None):
-        print "Initializing MLP network..."
+        print "Initializing Linear Evaluator"
         # image input layer
         network = ls.InputLayer(shape=img_input_shape, input_var=self._image_inputs)
         # hidden layers
@@ -230,6 +228,7 @@ class LinearEvaluator(MLPEvaluator):
         network = ls.DenseLayer(network, output_size, nonlinearity = output_nonlin)
         self._network = network
 
+    
 class CNNEvaluator(MLPEvaluator):
     def __init__(self, **kwargs):
         MLPEvaluator.__init__(self, **kwargs)
@@ -237,7 +236,7 @@ class CNNEvaluator(MLPEvaluator):
     def _initialize_network(self, img_input_shape, misc_shape, output_size, conv_layers=2, num_filters=[32, 32],
                             filter_size=[(5, 5), (5, 5)], hidden_units=[256], pool_size=[(2, 2), (2, 2)],
                             hidden_layers=1, conv_nonlin=rectify,
-                            hidden_nonlin=tanh, output_nonlin = None):
+                            hidden_nonlin=leaky_rectify, output_nonlin = None):
 
         print "Initializing CNN ..."
         # image input layer
