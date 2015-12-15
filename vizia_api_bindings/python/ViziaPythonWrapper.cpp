@@ -211,6 +211,9 @@ BOOST_PYTHON_MODULE(vizia)
             
 		.def("get_state", &DoomGamePython::getState)
 		.def("get_action_format", &DoomGamePython::getActionFormat)
+
+        .def("get_action_interval", &DoomGamePython::getActionInterval)
+        .def("set_action_interval", &DoomGamePython::setActionInterval)
     
         .def("get_game_var", &DoomGamePython::getGameVar)
         .def("get_game_var_len", &DoomGamePython::getGameVarLen)

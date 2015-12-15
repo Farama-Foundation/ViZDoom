@@ -26,6 +26,7 @@ namespace Vizia {
         this->deathPenalty = 0;
         this->livingReward = 0;
         this->summaryReward = 0;
+        this->actionInterval = 1;
 
         this->doomController = new DoomController();
     }
@@ -103,14 +104,11 @@ namespace Vizia {
         catch (...){ throw SharedMemoryException(); }
 
         try {
-            if(this->actionInterval > 1){
-                for(int i = 0; i < actionInterval; ++i){
-                    this->doomController->tic();
-                    if(i == 0) this->doomController->resetDescreteButtons();
-                }
+            for(int i = 1; i < actionInterval; ++i){
+                this->doomController->tic();
+                if(i == 0) this->doomController->resetDescreteButtons();
             }
-            else this->doomController->tic();
-
+            this->doomController->tic();
         }
         catch(const Exception &e){ throw; }
 
@@ -142,9 +140,7 @@ namespace Vizia {
         return reward;
     }
 
-    DoomGame::State DoomGame::getState() {
-        return this->state;
-    }
+    DoomGame::State DoomGame::getState() { return this->state; }
 
     std::vector<bool> DoomGame::getLastAction() { return this->lastAction; }
 
@@ -183,6 +179,9 @@ namespace Vizia {
     int DoomGame::getGameVarLen() {
         return this->stateAvailableVars.size();
     }
+
+    unsigned int DoomGame::getActionInterval(unsigned int tics){ return this->actionInterval; }
+    void DoomGame::setActionInterval(unsigned int tics){ this->actionInterval = tics ? tics : 1; }
 
     const DoomController* DoomGame::getController() { return this->doomController; }
 
