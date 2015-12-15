@@ -1,8 +1,52 @@
 #include <boost/python.hpp>
 #include "ViziaDoomGamePython.h"
 #include "ViziaDefines.h"
+#include <exception>
+
+
 
 /*C++ code to expose DoomGamePython via python */
+
+PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_Exception)
+{
+    using std::string;
+    namespace bp = boost::python;
+
+    string scopeName = bp::extract<string>(bp::scope().attr("__name__"));
+    string qualifiedName0 = scopeName + "." + name;
+    char* qualifiedName1 = const_cast<char*>(qualifiedName0.c_str());
+
+    PyObject* typeObj = PyErr_NewException(qualifiedName1, baseTypeObj, 0);
+    if(!typeObj) bp::throw_error_already_set();
+    bp::scope().attr(name) = bp::handle<>(bp::borrowed(typeObj));
+    return typeObj;
+}
+//they need to be remembered!!!
+PyObject* myExceptionTypeObj5 = NULL;
+PyObject* myExceptionTypeObj4 = NULL;
+PyObject* myExceptionTypeObj3 = NULL;
+PyObject* myExceptionTypeObj2 = NULL; 
+PyObject* myExceptionTypeObj = NULL; 
+void translate(Vizia::Exception const &e)
+{
+    PyErr_SetString(myExceptionTypeObj, e.what());
+}
+void translate2(Vizia::Exception const &e)
+{
+    PyErr_SetString(myExceptionTypeObj2, e.what());
+}
+void translate3(Vizia::Exception const &e)
+{
+    PyErr_SetString(myExceptionTypeObj3, e.what());
+}
+void translate4(Vizia::Exception const &e)
+{
+    PyErr_SetString(myExceptionTypeObj4, e.what());
+}
+void translate5(Vizia::Exception const &e)
+{
+    PyErr_SetString(myExceptionTypeObj5, e.what());
+}
 
 BOOST_PYTHON_MODULE(vizia)
 {
@@ -11,6 +55,22 @@ BOOST_PYTHON_MODULE(vizia)
     Py_Initialize();
     boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
     import_array();
+    
+    //exceptions
+    myExceptionTypeObj = createExceptionClass("doom_unexpected_exit_exception");
+   boost::python::register_exception_translator<Vizia::DoomUnexpectedExitException>(&translate);
+
+    myExceptionTypeObj2 = createExceptionClass("doom_is_not_running_exception");
+    boost::python::register_exception_translator<Vizia::DoomIsNotRunningException>(&translate2);
+
+    myExceptionTypeObj3 = createExceptionClass("doom_error_exception");
+    boost::python::register_exception_translator<Vizia::DoomErrorException>(&translate3);
+
+    myExceptionTypeObj4 = createExceptionClass("shared_memory_exception");
+    boost::python::register_exception_translator<Vizia::SharedMemoryException>(&translate4);
+
+    myExceptionTypeObj5 = createExceptionClass("message_queue_exception");
+    boost::python::register_exception_translator<Vizia::MessageQueueException>(&translate5);
     
 #define ENUM_VAL_2_PYT(v) .value( #v , v )
 

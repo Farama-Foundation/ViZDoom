@@ -5,7 +5,7 @@ from vizia import GameVar
 import numpy as np
 
 from qengine import QEngine
-from games import ShootingDotGame
+from mockvizia import MockDoomGame
 from evaluators import MLPEvaluator
 from evaluators import CNNEvaluator
 from evaluators import LinearEvaluator
@@ -19,7 +19,7 @@ from lasagne.nonlinearities import leaky_rectify
 from random import choice 
 from transition_bank import TransitionBank
 from lasagne.layers import get_all_param_values
-
+from theano.tensor import tanh
 
 def api_init_wrapper(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo):
     api.init(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo)
@@ -63,7 +63,7 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     network_args["num_filters"] = [32,32,32]
     network_args["filter_size"] = [7,4,2]
     #network_args["hidden_nonlin"] = None
-    #network_args["output_nonlin"] = None
+    network_args["output_nonlin"] = double_tanh
 
     cnn_args["network_args"] = network_args
     return CNNEvaluator(**cnn_args)
@@ -81,30 +81,12 @@ def create_linear_evaluator(state_format,actions_number, batch_size, gamma):
 
     return LinearEvaluator(**lin_args)
 
-def create_game():
-    game_args = dict()
-    game_args['x'] = 61
-    game_args['y'] = 41
-    
-    game_args['hit_reward'] = 1.01
-    game_args['max_moves'] = 300
-    # should be positive cause it's treated as a penalty
-    game_args['miss_penalty'] = 0.05
-    # should be negative cause it's treated as a reward
-    game_args['living_reward'] = -0.01
-    game_args['random_background'] = True
-    game_args['noise_level'] = 0.05
-    game_args['ammo'] = np.inf
-
-    game = ShootingDotGame(**game_args)
+def setup_mockvizia():
+    game = MockDoomGame()
+    game.set_screen_resolution(40,30)
+    game.set_no_shooting_time(8)
+    game.init()
     return game
-
-doom_actions = [[True,False,False],[False,True,False],[False,False,True]]
-left = doom_actions[0]
-right = doom_actions[1]
-shoot = doom_actions[2]
-idle = [False,False,False]
-
 
 def setup_vizia():
     game = DoomGame()
@@ -116,7 +98,7 @@ def setup_vizia():
     game.set_doom_iwad_path("../scenarios/doom2.wad")
     game.set_doom_file_path("../scenarios/s1_b.wad")
     game.set_doom_map("map01")
-    game.set_episode_timeout_in_doom_tics(200)
+    game.set_episode_timeout(200)
 
     game.set_living_reward(-1)
     game.set_render_hud(False)
@@ -124,6 +106,8 @@ def setup_vizia():
     game.set_render_weapon(True)
     game.set_render_decals(False)
     game.set_render_particles(False);
+
+    game.set_visible_window(False)
 
     game.add_available_button(Button.MOVE_LEFT)
     game.add_available_button(Button.MOVE_RIGHT)
@@ -133,6 +117,10 @@ def setup_vizia():
     game.init()
     print "\nDOOM initialized."
     return game
+
+def double_tanh(x):
+    return 2*tanh(x)
+
 
 def create_engine( game, online_mode=False ):
     engine_args = dict()
@@ -155,7 +143,7 @@ def create_engine( game, online_mode=False ):
     engine = QEngine(**engine_args)
     return engine
 
-game = setup_vizia()
+game = setup_mockvizia()
 engine = create_engine(game)
 
  
@@ -170,9 +158,12 @@ test_episodes_per_epoch = 50
 test_frequency = 1;
 stop_mean = 1.0  # game.average_best_result()
 overall_start = time()
-print "\nLearning ..."
-epoch = 0
 verbose = False
+
+
+
+epoch = 0
+print "\nLearning ..."
 while epoch < epochs:
     engine.learning_mode = True
     rewards = []
