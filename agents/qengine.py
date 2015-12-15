@@ -49,7 +49,7 @@ class QEngine:
 
     # it doesn't copy the state
     def _update_state(self, raw_state):
-        img = np.float32(raw_state[1])/256.0
+        img = np.float32(raw_state[1])/255.0
         if self._misc_state_included:
             misc = raw_state[2]
         if self._history_length > 1:
@@ -63,8 +63,7 @@ class QEngine:
             self._current_image_state[:] = img
             if self._misc_state_included:
                 self._current_misc_state = misc
-
-  
+        
     def _new_game(self):
         self._game.new_episode()
         self.reset_state()
@@ -139,7 +138,9 @@ class QEngine:
             raw_state = self._game.get_state()
             self._update_state( raw_state )
             s2 = self._copy_current_state()
+
         self._transitions.add_transition(s, a, s2, r)
+
         # Perform q-learning once for a while
         if self._steps % self._update_frequency[0] == 0 and not self.online_mode and self._steps > self._batch_size:
             for i in range(self._update_frequency[1]):
