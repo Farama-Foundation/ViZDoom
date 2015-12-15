@@ -50,8 +50,8 @@ namespace Vizia {
         void addStateAvailableVar(GameVar var);
         int getGameVarLen();
 
-        unsigned int getActionInterval(unsigned int tics){ return this->actionInterval; }
-        void setActionInterval(unsigned int tics){ this->actionInterval = tics; }
+        unsigned int getActionInterval(unsigned int tics);
+        void setActionInterval(unsigned int tics);
 
         //OPTIONS
 
