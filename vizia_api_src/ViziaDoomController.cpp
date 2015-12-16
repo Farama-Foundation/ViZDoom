@@ -266,6 +266,7 @@ namespace Vizia {
                 case CBCGCR:
                 case BGR24:
                     this->screenChannels = 3;
+                    break;
                 case CRCGCBCA:
                 case RGBA32:
                 case ARGB32:
@@ -273,9 +274,11 @@ namespace Vizia {
                 case BGRA32:
                 case ABGR32:
                     this->screenChannels = 4;
+                    break;
                 case GRAY8:
                 case DOOM_256_COLORS:
                     this->screenChannels = 1;
+                    break;
                 default:
                     this->screenChannels = 0;
             }
