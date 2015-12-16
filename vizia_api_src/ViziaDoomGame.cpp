@@ -115,7 +115,7 @@ namespace Vizia {
         try {
             for(int i = 1; i < actionInterval; ++i){
                 this->doomController->tic();
-                if(i == 0) this->doomController->resetDescreteButtons();
+                if(i == 1) this->doomController->resetDescreteButtons();
             }
             this->doomController->tic();
         }
