@@ -49,7 +49,8 @@ namespace Vizia {
     bool DoomGame::init() {
         if (!this->running) {
 
-            this->state.vars.resize(this->stateAvailableVars.size());
+
+
             /* set all if none are set */
             this->lastAction.resize(this->availableButtons.size());
 
@@ -60,6 +61,11 @@ namespace Vizia {
                 for (int i = 0; i < this->availableButtons.size(); ++i) {
                     this->doomController->setButtonAvailable(this->availableButtons[i], true);
                 }
+
+                this->state.vars.resize(this->stateAvailableVars.size());
+                this->state.number = this->doomController->getMapTic();
+                this->state.imageBuffer = this->doomController->getScreen();
+
             }
             catch(const Exception &e){ throw; }
 
@@ -86,6 +92,9 @@ namespace Vizia {
 
         this->doomController->restartMap();
 
+        this->state.number = this->doomController->getMapTic();
+        this->state.imageBuffer = this->doomController->getScreen();
+        
         this->lastReward = 0;
         this->lastMapReward = 0;
         this->summaryReward = 0;
