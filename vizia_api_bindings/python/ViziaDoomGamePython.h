@@ -35,7 +35,7 @@ namespace Vizia {
         bool init();
         float makeAction(boost::python::list actionList);
         PythonState getState();
-        object getLastAction();
+        boost::python::list getLastAction();
 
     private:
 

@@ -88,7 +88,9 @@ BOOST_PYTHON_MODULE(vizia)
         ENUM_VAL_2_PYT(CBCGCRCA)
         ENUM_VAL_2_PYT(BGR24)
         ENUM_VAL_2_PYT(BGRA32)
-        ENUM_VAL_2_PYT(ABGR32);
+        ENUM_VAL_2_PYT(ABGR32)
+        ENUM_VAL_2_PYT(GRAY8)
+        ENUM_VAL_2_PYT(DOOM_256_COLORS);
 
 	enum_<Button>("Button")
         ENUM_VAL_2_PYT(ATTACK)
@@ -291,6 +293,8 @@ BOOST_PYTHON_MODULE(vizia)
         
         .def("get_last_reward", &DoomGamePython::getLastReward)
         .def("get_summary_reward", &DoomGamePython::getSummaryReward)
+        
+        .def("get_last_action", &DoomGamePython::getLastAction)
         
 		.def("add_state_available_var", &DoomGamePython::addStateAvailableVar)
 		.def("add_available_button", &DoomGamePython::addAvailableButton)
