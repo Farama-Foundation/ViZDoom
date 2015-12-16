@@ -12,18 +12,9 @@ namespace Vizia {
 
     DoomGamePython::DoomGamePython() {
         boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
-        import_array();
-        
-        //boost::numpy::initialize();
-        this->numpyImage = NULL;
-        this->numpyVars = NULL;
+        import_array(); 
     }
-    DoomGamePython::~DoomGamePython() {
-        delete this->numpyImage;
-        delete this->numpyVars;
-        this->numpyImage = NULL;
-        this->numpyVars = NULL;
-    }
+
 
     bool DoomGamePython::init() {
         bool initSuccess = DoomGame::init();
@@ -33,31 +24,23 @@ namespace Vizia {
             int channels = this->getScreenChannels();
             int x = this->getScreenWidth();
             int y = this->getScreenHeight();
-            npy_intp imageShape[3];
+            
             switch(this->getScreenFormat())
             {
                 case CRCGCB:
                 case CRCGCBCA:
                 case CBCGCR:
                 case CBCGCRCA:
-                    imageShape[0] = channels;
-                    imageShape[1] = x;
-                    imageShape[2] = y;
+                    this->imageShape[0] = channels;
+                    this->imageShape[1] = y;
+                    this->imageShape[2] = x;
                     break;
                 default:
-                    imageShape[0] = x;
-                    imageShape[1] = y;
-                    imageShape[2] = channels;
+                    this->imageShape[0] = y;
+                    this->imageShape[1] = x;
+                    this->imageShape[2] = channels;
             }
-            PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, this->doomController->getScreen());
-            this->numpyImageHandle = boost::python::handle<>(img);
-            this->numpyImage = new array(this->numpyImageHandle);
-            if (this->state.vars.size() > 0) {
-                npy_intp varLen = this->state.vars.size();
-                PyObject *vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, this->state.vars.data());
-                this->numpyVarsHandle = boost::python::handle<>(vars);
-                this->numpyVars = new array(this->numpyVarsHandle);
-            }
+            
 
         }
         return initSuccess;
@@ -84,11 +67,22 @@ namespace Vizia {
         if (isEpisodeFinished()) {
             return DoomGamePython::PythonState(this->state.number);
         }
+
+
+        PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, this->doomController->getScreen());
+        boost::python::handle<> numpyImageHandle = boost::python::handle<>(img);
+        boost::python::numeric::array numpyImage = array(numpyImageHandle);
+
         if (this->state.vars.size() > 0) {
-            return DoomGamePython::PythonState(this->state.number, this->numpyImage->copy(), this->numpyVars->copy());
+            npy_intp varLen = this->state.vars.size();
+            PyObject *vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, this->state.vars.data());
+            boost::python::handle<> numpyVarsHandle = boost::python::handle<>(vars);
+            boost::python::numeric::array numpyVars = array(numpyVarsHandle);
+
+            return DoomGamePython::PythonState(state.number, numpyImage.copy(), numpyVars.copy());
         }
         else {
-            return DoomGamePython::PythonState(this->state.number, this->numpyImage->copy());
+            return DoomGamePython::PythonState(state.number, numpyImage.copy());
         }
 
 

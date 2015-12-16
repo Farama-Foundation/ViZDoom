@@ -32,7 +32,6 @@ namespace Vizia {
             PythonState(int n):number(n){}
         };
         DoomGamePython();
-        ~DoomGamePython();
         bool init();
         float makeAction(boost::python::list actionList);
         PythonState getState();
@@ -40,10 +39,7 @@ namespace Vizia {
 
     private:
 
-        boost::python::numeric::array* numpyImage;
-        boost::python::handle<> numpyImageHandle;
-        boost::python::numeric::array* numpyVars;
-        boost::python::handle<> numpyVarsHandle;
+        npy_intp imageShape[3];
 
     };
 
