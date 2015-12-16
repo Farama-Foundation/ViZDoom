@@ -547,7 +547,6 @@ void AddToConsole (int printlevel, const char *text)
 int PrintString (int printlevel, const char *outline)
 {
 	if(*vizia_no_console){
-		printf("gunwo");
 		return 0;
 	}
 
@@ -1025,6 +1024,8 @@ void C_FullConsole ()
 
 void C_ToggleConsole ()
 {
+	if(*vizia_no_console)
+		return;
 	if (gamestate == GS_DEMOSCREEN || demoplayback)
 	{
 		gameaction = ga_fullconsole;

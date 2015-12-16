@@ -27,6 +27,8 @@ int main(){
 
     v->setVisibleWindow(false);
 
+    v->setDisabledConsole(true);
+
     v->addAvailableButton(MOVE_LEFT);
     v->addAvailableButton(MOVE_RIGHT);
     v->addAvailableButton(ATTACK);
