@@ -156,6 +156,8 @@ namespace Vizia{
         bool isMapFirstTic();
         bool isMapEnded();
 
+        void setNoConsole(bool console);
+
         //GRAPHIC SETTINGS
         void setWindowHidden(bool windowHidden);
         void setNoXServer(bool noXServer);
@@ -320,6 +322,8 @@ namespace Vizia{
         bool hud, weapon, crosshair, decals, particles;
 
         bool windowHidden, noXServer;
+
+        bool noConsole;
 
         std::string gamePath;
         std::string iwadPath;
