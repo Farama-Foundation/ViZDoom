@@ -1,6 +1,7 @@
 #include "ViziaDoomGamePython.h"
 #include <iostream>
 using std::cout;
+using std::cerr;
 using std::endl;
 namespace Vizia {
 
@@ -48,20 +49,15 @@ namespace Vizia {
                     imageShape[1] = y;
                     imageShape[2] = channels;
             }
-            PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, this->state.imageBuffer);
+            PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, this->doomController->getScreen());
             this->numpyImageHandle = boost::python::handle<>(img);
             this->numpyImage = new array(this->numpyImageHandle);
-
             if (this->state.vars.size() > 0) {
                 npy_intp varLen = this->state.vars.size();
                 PyObject *vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, this->state.vars.data());
                 this->numpyVarsHandle = boost::python::handle<>(vars);
                 this->numpyVars = new array(this->numpyVarsHandle);
             }
-            /*cout<<"HERE"<<endl;
-            this->numpyImage->copy();
-            this->close();
-            exit(0);*/
 
         }
         return initSuccess;
@@ -70,22 +66,29 @@ namespace Vizia {
     float DoomGamePython::makeAction(boost::python::list actionList) {
         // TODO what if isFinished()?
         int listLength = boost::python::len(actionList);
+        if( listLength != this->getActionFormat())
+        {
+            cerr<<"Incorrect action length: "<<listLength<<" Should be: "<<this->getActionFormat()<<endl;
+            //maybe throw something?
+            return 0;
+        }
         std::vector<bool> action = std::vector<bool>(listLength);
         for (int i = 0; i < listLength; i++) {
             action[i] = boost::python::extract<bool>(actionList[i]);
         }
         return DoomGame::makeAction(action);
+        
     }
 
-    object DoomGamePython::getState() {
+    DoomGamePython::PythonState DoomGamePython::getState() {
         if (isEpisodeFinished()) {
-            return PY_NONE;
+            return DoomGamePython::PythonState(this->state.number);
         }
-        if (state.vars.size() > 0) {
-            return boost::python::make_tuple(this->state.number, this->numpyImage->copy(), this->numpyVars->copy());
+        if (this->state.vars.size() > 0) {
+            return DoomGamePython::PythonState(this->state.number, this->numpyImage->copy(), this->numpyVars->copy());
         }
         else {
-            return boost::python::make_tuple(this->state.number, this->numpyImage->copy());
+            return DoomGamePython::PythonState(this->state.number, this->numpyImage->copy());
         }
 
 

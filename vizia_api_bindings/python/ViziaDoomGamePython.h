@@ -16,17 +16,27 @@
 #include <numpy/npy_math.h>
 
 namespace Vizia {
-
+    using boost::python::api::object;
 /* C++ code to expose C arrays as python objects */
     class DoomGamePython : public DoomGame {
-
+        
     public:
+        struct PythonState
+        {
+
+            int number;
+            object imageBuffer;
+            object vars;
+            PythonState(int n, object buf, object v ):number(n),imageBuffer(buf),vars(v){}
+            PythonState(int n, object buf):number(n),imageBuffer(buf){}
+            PythonState(int n):number(n){}
+        };
         DoomGamePython();
         ~DoomGamePython();
         bool init();
         float makeAction(boost::python::list actionList);
-        boost::python::api::object getState();
-        boost::python::api::object getLastAction();
+        PythonState getState();
+        object getLastAction();
 
     private:
 
@@ -36,6 +46,7 @@ namespace Vizia {
         boost::python::handle<> numpyVarsHandle;
 
     };
+
 
 }
 
