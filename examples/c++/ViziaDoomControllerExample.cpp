@@ -40,7 +40,7 @@ int main(){
 
     vdm->setGamePath("viziazdoom");
     vdm->setIwadPath("doom2.wad");
-    vdm->setFilePath("s1_b.wad");
+    vdm->setFilePath("../scenarios/s1_b.wad");
     vdm->setMap("map01");
     vdm->setMapTimeout(200);
     vdm->setAutoMapRestart(true);
@@ -62,6 +62,8 @@ int main(){
 
     vdm->setWindowHidden(true);
     vdm->setNoXServer(false);
+
+    vdm->setNoConsole(true);
 
     vdm->init();
     if(sdl) initSDL(vdm->getScreenWidth(), vdm->getScreenHeight());
@@ -100,10 +102,10 @@ int main(){
             vdm->setButtonState(JUMP, false);
         }
 
-        std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<
+        /*std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<
                 " HP: " << vdm->getPlayerHealth() << " AMMO: " << vdm->getGameVars()->PLAYER_AMMO[0] <<
                 " REWARD: " << vdm->getMapReward() << " SHAPING: " << vdm->getGameVar(USER1) << std::endl;
-
+*/
         if(sdl) updateSDL(vdm->getScreenWidth(), vdm->getScreenHeight(), vdm->getScreenPitch(), (void*)vdm->getScreen());
 
         vdm->tic();
