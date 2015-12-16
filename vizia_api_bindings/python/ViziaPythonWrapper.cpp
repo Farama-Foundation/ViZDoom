@@ -260,6 +260,11 @@ BOOST_PYTHON_MODULE(vizia)
 	def("DoomTics2Ms", DoomTics2Ms);
 	def("Ms2DoomTics", Ms2DoomTics);
 
+    class_<DoomGamePython::PythonState>("State", no_init)
+        .def_readonly("number", &DoomGamePython::PythonState::number)
+        .def_readonly("image_buffer", &DoomGamePython::PythonState::imageBuffer)
+        .def_readonly("vars", &DoomGamePython::PythonState::vars);
+
     class_<DoomGamePython>("DoomGame", init<>())
 		.def("init", &DoomGamePython::init)
 		.def("load_config", &DoomGamePython::loadConfig)
