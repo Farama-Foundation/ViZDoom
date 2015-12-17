@@ -2,11 +2,40 @@ import numpy as np
 from transition_bank import TransitionBank
 import random
 
+class IdentityImageConverter:
+    def __init__(self, source):
+        self._source = source
+
+    def convert(self, img):
+        return  img
+
+    def get_screen_width(self):
+        return self._source.get_screen_width()
+
+    def get_screen_height(self):
+        return self._source.get_screen_height()
+
+    def get_screen_channels(self):
+        return self._source.get_screen_channels()
+
+
+class Float32ImageConverter(IdentityImageConverter):
+    def __init__(self, source):
+        self._source = source
+
+    def convert(self, img):
+        return  np.float32(img)/255.0
+
 
 class QEngine:
     def __init__(self, game, evaluator, actions_generator, gamma=0.7, batch_size=500, update_frequency=500,
                  history_length=1, bank = None, bank_capacity=10000, start_epsilon=1.0, end_epsilon=0.0,
-                 epsilon_decay_start_step=100000, epsilon_decay_steps=100000, reward_scale = 1.0):
+                 epsilon_decay_start_step=100000, epsilon_decay_steps=100000, reward_scale = 1.0, image_converter=None):
+        if image_converter:
+            self._image_converter = image_converter(game)
+        else:
+            self._image_converter = Float32ImageConverter(game)
+
         self.online_mode = False
         self._reward_scale = reward_scale
         self._game = game
@@ -31,8 +60,8 @@ class QEngine:
 
         
         # change img_shape according to the history size
-        self._channels = game.get_screen_channels()
-        img_shape = [self._channels, game.get_screen_width(), game.get_screen_height()]
+        self._channels = self._image_converter.get_screen_channels()
+        img_shape = [self._channels, self._image_converter.get_screen_height(), self._image_converter.get_screen_width()]
         
         if history_length > 1:
             img_shape[0] *= history_length
@@ -49,9 +78,9 @@ class QEngine:
 
     # it doesn't copy the state
     def _update_state(self, raw_state):
-        img = np.float32(raw_state[1])/255.0
+        img = self._image_converter.convert(raw_state.image_buffer)
         if self._misc_state_included:
-            misc = raw_state[2]
+            misc = raw_state.vars
         if self._history_length > 1:
             self._current_image_state[0:-self._channels] = self._current_image_state[self._channels:]
             self._current_image_state[-self._channels:] = img
@@ -139,8 +168,9 @@ class QEngine:
             self._update_state( raw_state )
             s2 = self._copy_current_state()
 
-        self._transitions.add_transition(s, a, s2, r)
 
+        self._transitions.add_transition(s, a, s2, r)
+    
         # Perform q-learning once for a while
         if self._steps % self._update_frequency[0] == 0 and not self.online_mode and self._steps > self._batch_size:
             for i in range(self._update_frequency[1]):

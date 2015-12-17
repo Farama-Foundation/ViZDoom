@@ -285,6 +285,10 @@ namespace Vizia {
         else return false;
     }
 
+    void DoomController::setNoConsole(bool console) {
+        if(!this->doomRunning) this->noConsole=console;
+    }
+
     void DoomController::setScreenResolution(unsigned int width, unsigned int height) {
         if(!this->doomRunning) {
             this->screenWidth = width;
@@ -716,6 +720,12 @@ namespace Vizia {
 
         args.push_back("+vizia_singletic");
         args.push_back("1");
+
+        if(this->noConsole)
+        {
+            args.push_back("+vizia_no_console");
+            args.push_back("1");
+        }
 
         if(this->allowDoomInput){
             args.push_back("+vizia_allow_input");

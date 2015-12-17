@@ -247,6 +247,9 @@ namespace Vizia {
         this->doomController->setNoXServer(!visibility);
         this->doomController->setWindowHidden(!visibility);
     }
+    void DoomGame::setDisabledConsole(bool noConsole) {
+        this->doomController->setNoConsole(noConsole);
+    }
     int DoomGame::getScreenWidth() { return this->doomController->getScreenWidth(); }
     int DoomGame::getScreenHeight() { return this->doomController->getScreenHeight(); }
     int DoomGame::getScreenChannels() { return this->doomController->getScreenChannels(); }

@@ -1,6 +1,15 @@
 import numpy as np
 import random
+from time import sleep
 
+class MockState:
+    
+    def __init__(self, num):
+        self.number = num
+    
+    def __init__(self, num, buf):
+        self.number = num
+        self.image_buffer = buf
 
 class MockDoomGame:
     def __init__(self):        
@@ -12,7 +21,8 @@ class MockDoomGame:
         self._hit_reward = 101.0
         self._timeout = 200
         self._random_background = False
-        self._noise_level = 0.0
+        self._noise_level = 0.4
+        self._target_color = 60
 
         self._action_format = 3
         self._state = None
@@ -46,13 +56,15 @@ class MockDoomGame:
         
         target_x = max(1, int(self._x/10))
         target_y = max(1, int(self._y/10))
-        self._state_template = np.zeros([self._x, self._y], dtype=np.uint8)
-        #self._state_template.fill(0.3)
+        self._state_template = np.zeros([self._y, self._x], dtype=np.uint8)
+        self._state_template.fill(int(255*self._noise_level))
+        
         self._left_space = int((self._x - target_x)/2)
         self._right_space = self._x - self._left_space - target_x
         up_space = int((self._y - target_y)/2)
         down_space = self._y - up_space - target_y
-        self._state_template[self._left_space:self._x - self._right_space, up_space:self._y - down_space] = 255
+        
+        self._state_template[up_space:self._y - down_space, self._left_space:self._x - self._right_space] = self._target_color
         
         self.new_episode()
 
@@ -71,13 +83,10 @@ class MockDoomGame:
         self._finished = False
         self._state_num = 0
         self._summary_reward = 0
-
-        #self._state = self._dtype(np.random.rand(self._y, self._x)) * self._noise_level
-        #self._state[self._aimY] = 0.0
        
         self._offset = random.randint(-self._left_space, self._right_space)
-        self._state = np.roll(self._state_template, self._offset,0)
-        self._no_shooting_count = self._no_shooting
+        self._state = np.roll(self._state_template, self._offset, axis = 1)
+        self._no_shooting_count = 2*self._no_shooting+2
 
         
     def make_action(self, action):
@@ -91,7 +100,7 @@ class MockDoomGame:
 
             # shoot
             if action[2] and self._no_shooting_count == 0 :
-                if self._state[ max(0, self._x/2 -1), max(0,self._y/2-1)] >0:
+                if self._state[ max(0, self._y/2 -1), max(0,self._x/2-1)] == self._target_color:
                     reward += self._hit_reward
                     self._finished = True
                     self._state = None
@@ -106,12 +115,12 @@ class MockDoomGame:
                 if action[0] and not action[1]:
                     if self._offset > -self._left_space:
                         self._offset -= 1
-                        self._state = np.roll(self._state, -1, axis = 0)
+                        self._state = np.roll(self._state, -1, axis = 1)
                 # left
                 elif action[1] and not action[0]:
                     if self._offset < self._right_space :
                         self._offset += 1
-                        self._state = np.roll(self._state, 1, axis = 0)
+                        self._state = np.roll(self._state, 1, axis = 1)
                 
 
             
@@ -130,11 +139,9 @@ class MockDoomGame:
 
     def get_state(self):
         if self._state is None:
-            return None
+            return MockState(self._state_num)
         else:
-            ret_val = (self._state_num, self._state.copy())
-
-            return ret_val
+            return MockState(self._state_num, self._state.copy().reshape(1,self._y,self._x))
 
     def get_game_var_len(self):
         return 0

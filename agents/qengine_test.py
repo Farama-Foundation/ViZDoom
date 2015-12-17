@@ -2,9 +2,11 @@
 from vizia import DoomGame
 from vizia import Button
 from vizia import GameVar
+from vizia import ScreenFormat
 import numpy as np
 
 from qengine import QEngine
+from qengine import IdentityImageConverter
 from mockvizia import MockDoomGame
 from evaluators import MLPEvaluator
 from evaluators import CNNEvaluator
@@ -21,8 +23,7 @@ from transition_bank import TransitionBank
 from lasagne.layers import get_all_param_values
 from theano.tensor import tanh
 
-def api_init_wrapper(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo):
-    api.init(x, y, random_background, max_moves, living_reward, miss_penalty, hit_reward, ammo)
+import cv2
 
 def actions_generator(the_game):
     n = the_game.get_action_format()
@@ -92,18 +93,18 @@ def setup_vizia():
     game = DoomGame()
 
     #available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
-    game.set_screen_resolution(40,0)
-
+    game.set_screen_resolution(120,90)
+    game.set_screen_format(ScreenFormat.GRAY8)
     game.set_doom_game_path("../bin/viziazdoom")
     game.set_doom_iwad_path("../scenarios/doom2.wad")
     game.set_doom_file_path("../scenarios/s1_b.wad")
     game.set_doom_map("map01")
-    game.set_episode_timeout(200)
+    game.set_episode_timeout(300)
 
-    game.set_living_reward(-1)
+    game.set_living_reward(-2)
     game.set_render_hud(False)
     game.set_render_crosshair(False)
-    game.set_render_weapon(True)
+    game.set_render_weapon(False)
     game.set_render_decals(False)
     game.set_render_particles(False);
 
@@ -112,6 +113,7 @@ def setup_vizia():
     game.add_available_button(Button.MOVE_LEFT)
     game.add_available_button(Button.MOVE_RIGHT)
     game.add_available_button(Button.ATTACK)
+    game.set_action_interval(4)
 
     print "Initializin DOOM ..."
     game.init()
@@ -121,6 +123,61 @@ def setup_vizia():
 def double_tanh(x):
     return 2*tanh(x)
 
+class BNWDisplayImageConverter(IdentityImageConverter):
+    def __init__(self, source):
+        self._source = source
+
+    def convert(self, img):
+        img =  np.float32(img)/255.0
+       #if len(img.shape) == 3:
+        #    bnw_img = np.ma.average(img,axis=0, weights=[0.2989,0.5870,0.1140])
+        
+        bnw_img = cv2.resize(img, (320, 240)) 
+        cv2.imshow('image',bnw_img)
+        cv2.waitKey(1)
+        return img
+
+class ScaleConverter(IdentityImageConverter):
+    def __init__(self, source):
+        self._source = source
+        self.x = 60
+        self.y = 45 
+    def convert(self, img):
+
+        img =  np.float32(img)/255.0
+        img = cv2.resize(img[0], (self.x,self.y))
+        img =  img.reshape(1,self.y,self.x)
+        
+        return img
+
+    def get_screen_width(self):
+        return self.x
+
+    def get_screen_height(self):
+        return self.y
+
+class ThresholdScaler(IdentityImageConverter):
+    def __init__(self, source):
+        self._source = source 
+        self.x = 60
+        self.y = 45 
+    def convert(self, img):
+
+        img =  np.float32(img)/255.0
+
+        img[ img>0.2 ] = 1.0
+        img = cv2.resize(img[0], (self.x,self.y))
+        img[ img < 1.0 ] = 0.0
+        
+        img =  img.reshape(1,self.y,self.x)
+        return img
+
+    def get_screen_width(self):
+        return self.x
+
+    def get_screen_height(self):
+        return self.y
+    
 
 def create_engine( game, online_mode=False ):
     engine_args = dict()
@@ -131,19 +188,23 @@ def create_engine( game, online_mode=False ):
     engine_args["game"] = game
     engine_args['start_epsilon'] = 0.9
     engine_args['end_epsilon'] = 0.1
-    engine_args['epsilon_decay_start_step'] = 1200000
-    engine_args['epsilon_decay_steps'] = 20000000
+    engine_args['epsilon_decay_start_step'] = 100000
+    engine_args['epsilon_decay_steps'] = 400000
     engine_args['actions_generator'] = actions_generator
     engine_args['update_frequency'] = (4,4)
     engine_args['batch_size'] = 40
     engine_args['gamma'] = 0.99
     engine_args['reward_scale'] = 0.01
+    
+    #engine_args['image_converter'] = BNWDisplayImageConverter
+    engine_args['image_converter'] = ScaleConverter
+    
     if online_mode:
         engine.online_mode = True
     engine = QEngine(**engine_args)
     return engine
 
-game = setup_mockvizia()
+game = setup_vizia()
 engine = create_engine(game)
 
  
@@ -153,8 +214,8 @@ for p in get_all_param_values(engine.get_network()):
 
 
 epochs = np.inf
-training_episodes_per_epoch = 200
-test_episodes_per_epoch = 50
+training_episodes_per_epoch = 400
+test_episodes_per_epoch = 100
 test_frequency = 1;
 stop_mean = 1.0  # game.average_best_result()
 overall_start = time()
@@ -171,8 +232,6 @@ while epoch < epochs:
     print "\nEpoch", epoch
     
     for episode in range(training_episodes_per_epoch):
-        #if (episode+1)% (training_episodes_per_epoch/20)==0:
-        #    print(episode+1)
         r = engine.run_episode(verbose)
         rewards.append(r)
         
@@ -184,13 +243,11 @@ while epoch < epochs:
     print "steps:", engine.get_steps(), ", mean:", np.mean(rewards), ", max:", np.max(
         rewards),"mean_loss:",mean_loss, "eps:", engine.get_epsilon()
     print "t:", round(end - start, 2)
+        
     # learning mode off
-
     if (epoch+1) % test_frequency == 0 and test_episodes_per_epoch > 0:
         engine.learning_mode = False
         rewards = []
-
-        
 
         start = time()
         for test_episode in range(test_episodes_per_epoch):
