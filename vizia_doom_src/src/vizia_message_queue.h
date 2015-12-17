@@ -14,16 +14,16 @@ extern bip::message_queue *viziaMQRecv;
 #define VIZIA_MQ_MAX_MSG_SIZE sizeof(ViziaMessageCommandStruct)
 #define VIZIA_MQ_MAX_CMD_LEN 32
 
-#define VIZIA_MSG_CODE_DOOM_READY 10
-#define VIZIA_MSG_CODE_DOOM_TIC 11
+#define VIZIA_MSG_CODE_DOOM_DONE 11
 #define VIZIA_MSG_CODE_DOOM_CLOSE 12
 #define VIZIA_MSG_CODE_DOOM_ERROR 13
 
-#define VIZIA_MSG_CODE_READY 20
 #define VIZIA_MSG_CODE_TIC 21
-#define VIZIA_MSG_CODE_CLOSE 22
-#define VIZIA_MSG_CODE_ERROR 23
+#define VIZIA_MSG_CODE_UPDATE 22
+#define VIZIA_MSG_CODE_TIC_N_UPDATE 23
 #define VIZIA_MSG_CODE_COMMAND 24
+#define VIZIA_MSG_CODE_CLOSE 25
+#define VIZIA_MSG_CODE_ERROR 26
 
 struct ViziaMessageSignalStruct{
     uint8_t code;

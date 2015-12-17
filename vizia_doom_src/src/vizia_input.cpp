@@ -3,6 +3,7 @@
 #include "vizia_shared_memory.h"
 
 #include "d_main.h"
+#include "d_net.h"
 #include "g_game.h"
 #include "d_player.h"
 #include "d_event.h"
@@ -231,8 +232,9 @@ void Vizia_InputTic(){
             }
         }
     }
+    else D_ProcessEvents();
 
-    memcpy ( viziaLastInput, viziaInput, sizeof(ViziaInputStruct) );
+    memcpy( viziaLastInput, viziaInput, sizeof(ViziaInputStruct) );
 
     viziaInput->MS_X = 0;
     viziaInput->MS_Y = 0;

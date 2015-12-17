@@ -136,7 +136,8 @@ const FIWADInfo *D_FindIWAD(TArray<FString> &wadfiles, const char *iwad, const c
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
 
 void D_CheckNetGame ();
-void D_ProcessEvents ();
+//VIZIA_CODE
+//void D_ProcessEvents ();
 void G_BuildTiccmd (ticcmd_t* cmd);
 void D_DoAdvanceDemo ();
 void D_AddWildFile (TArray<FString> &wadfiles, const char *pattern);
@@ -1006,7 +1007,7 @@ void D_DoomLoop ()
 			{
 
 				I_StartTic ();
-				if(!*vizia_controlled || *vizia_allow_input) D_ProcessEvents ();
+				if(!*vizia_controlled) D_ProcessEvents ();
 
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				if (advancedemo)
@@ -1029,7 +1030,7 @@ void D_DoomLoop ()
 
 			// Update display, next frame, with current state.
 			I_StartTic ();
-			D_Display ();
+			if(!*vizia_controlled) D_Display ();
 			//S_UpdateMusic();	// OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
 			Vizia_Tic();
 		}
