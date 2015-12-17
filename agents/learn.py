@@ -25,6 +25,8 @@ from theano.tensor import tanh
 
 import cv2
 
+savefile = "params/rgb_60_skip4_2"
+
 def actions_generator(the_game):
     n = the_game.get_action_format()
     actions = []
@@ -123,25 +125,12 @@ def setup_vizia():
 def double_tanh(x):
     return 2*tanh(x)
 
-class BNWDisplayImageConverter(IdentityImageConverter):
-    def __init__(self, source):
-        self._source = source
-
-    def convert(self, img):
-        img =  np.float32(img)/255.0
-       #if len(img.shape) == 3:
-        #    bnw_img = np.ma.average(img,axis=0, weights=[0.2989,0.5870,0.1140])
-        
-        bnw_img = cv2.resize(img, (320, 240)) 
-        cv2.imshow('image',bnw_img)
-        cv2.waitKey(1)
-        return img
-
 class ScaleConverter(IdentityImageConverter):
     def __init__(self, source):
         self._source = source
         self.x = 60
         self.y = 45 
+    
     def convert(self, img):
 
         img =  np.float32(img)/255.0
@@ -162,7 +151,6 @@ class ChannelScaleConverter(IdentityImageConverter):
         self.x = 60
         self.y = 45 
     def convert(self, img):
-
         img =  np.float32(img)/255.0
         new_image = np.ndarray([img.shape[0], self.y, self.x], dtype=np.float32)
         for i in range(img.shape[0]):
@@ -175,7 +163,6 @@ class ChannelScaleConverter(IdentityImageConverter):
     def get_screen_height(self):
         return self.y
     
-
 def create_engine( game, online_mode=False ):
     engine_args = dict()
     engine_args["history_length"] = 1
@@ -261,7 +248,7 @@ while epoch < epochs:
     epoch += 1
 
     print ""
-    engine.save_params("rgb_60_skip4.params")
+    engine.save_params(savefile)
 
     print "========================="
 
