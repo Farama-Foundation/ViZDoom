@@ -97,6 +97,7 @@ namespace Vizia {
         void setRenderDecals(bool decals);
         void setRenderParticles(bool particles);
         void setVisibleWindow(bool visibility);
+        void setDisabledConsole(bool noConsole);
 
         int getScreenWidth();
         int getScreenHeight();
