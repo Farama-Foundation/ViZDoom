@@ -151,6 +151,8 @@ namespace Vizia {
         }
         else throw DoomIsNotRunningException();
 
+        this->lastTicTimePoint = bc::steady_clock::now();
+
         return !this->mapEnded;
     }
 
@@ -190,6 +192,13 @@ namespace Vizia {
     }
 
     bool DoomController::isDoomRunning() { return this->doomRunning; }
+
+    void DoomController::waitTicsRealTime(unsigned int tics){
+        unsigned int msToWait = std::floor((float)1000/35 * tics);
+        bc::steady_clock::time_point now = bc::steady_clock::now();
+        bc::milliseconds wait = bc::duration_cast<bc::milliseconds>(bc::milliseconds(msToWait) - (now - this->lastTicTimePoint));
+        b::this_thread::sleep_for( wait );
+    }
 
 //SETTINGS
 
@@ -323,6 +332,29 @@ namespace Vizia {
                 default:
                     this->screenChannels = 0;
             }
+
+            switch (format) {
+                case RGB24:
+                case BGR24:
+                    this->screenDepth = 24;
+                    break;
+                case RGBA32:
+                case ARGB32:
+                case BGRA32:
+                case ABGR32:
+                    this->screenDepth = 32;
+                    break;
+                case CRCGCB:
+                case CBCGCR:
+                case CRCGCBCA:
+                case CBCGCRCA:
+                case GRAY8:
+                case DOOM_256_COLORS:
+                    this->screenDepth = 8;
+                    break;
+                default:
+                    this->screenDepth = 0;
+            }
         }
     }
 
@@ -372,17 +404,23 @@ namespace Vizia {
         }
     }
 
-    int DoomController::getScreenWidth() {
+    unsigned int DoomController::getScreenWidth() {
         if (this->doomRunning) return this->GameVars->SCREEN_WIDTH;
         else return 0;
     }
 
-    int DoomController::getScreenHeight() {
+    unsigned int DoomController::getScreenHeight() {
         if (this->doomRunning) return this->GameVars->SCREEN_HEIGHT;
         else return 0;
     }
-    int DoomController::getScreenChannels() {
+
+    unsigned int DoomController::getScreenChannels() {
         if (this->doomRunning) return this->screenChannels;
+        else return 0;
+    }
+
+    unsigned int DoomController::getScreenDepth() {
+        if (this->doomRunning) return this->screenDepth;
         else return 0;
     }
 

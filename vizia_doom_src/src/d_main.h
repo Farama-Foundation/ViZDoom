@@ -44,7 +44,7 @@ struct CRestartException
 
 void D_DoomMain (void);
 
-
+void D_ProcessEvents (void);
 void D_Display ();
 
 

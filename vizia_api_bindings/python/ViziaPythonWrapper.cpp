@@ -275,6 +275,7 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("is_episode_finished", &DoomGamePython::isEpisodeFinished)
 		.def("is_new_episode", &DoomGamePython::isNewEpisode)
 		.def("make_action",&DoomGamePython::makeAction)
+        .def("observe_action",&DoomGamePython::observeAction)
             
 		.def("get_state", &DoomGamePython::getState)
 		.def("get_action_format", &DoomGamePython::getActionFormat)
@@ -298,6 +299,9 @@ BOOST_PYTHON_MODULE(vizia)
         
 		.def("add_state_available_var", &DoomGamePython::addStateAvailableVar)
 		.def("add_available_button", &DoomGamePython::addAvailableButton)
+
+        .def("get_game_mode", &DoomGamePython::getGameMode)
+        .def("set_game_mode", &DoomGamePython::setGameMode)
 
 		.def("set_doom_game_path", &DoomGamePython::setDoomGamePath)
 		.def("set_doom_iwad_path", &DoomGamePython::setDoomIwadPath)
