@@ -25,14 +25,14 @@ from theano.tensor import tanh
 
 import cv2
 
+load_file = "params/rgb_60_skip4"
+
 def actions_generator(the_game):
     n = the_game.get_action_format()
     actions = []
     for perm in it.product([False, True], repeat=n):
         actions.append(list(perm))
     return actions
-
-
 
 def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     cnn_args = dict()
@@ -53,7 +53,6 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
 
     cnn_args["network_args"] = network_args
     return CNNEvaluator(**cnn_args)
-
 
 def setup_vizia():
     game = DoomGame()
@@ -161,7 +160,7 @@ print "\nCreated network params:"
 for p in get_all_param_values(engine.get_network()):
 	print p.shape
 
-engine.load_params("params/rgb_60_skip4")
+engine.load_params(load_file)
 
 
 episodes = 20
