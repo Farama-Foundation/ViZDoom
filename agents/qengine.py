@@ -1,6 +1,9 @@
 import numpy as np
 from transition_bank import TransitionBank
 import random
+import cPickle as pickle
+from lasagne.layers import get_all_param_values
+from lasagne.layers import set_all_param_values
 
 class IdentityImageConverter:
     def __init__(self, source):
@@ -113,33 +116,33 @@ class QEngine:
             s = [self._current_image_state]
         return s
 
-    def _choose_action_index(self, state, verbose = False):
+    def _choose_action_index(self, state):
     	s = self._current_state()
-    	return self._evaluator.best_action(s, verbose = verbose)
+    	return self._evaluator.best_action(s)
 
     def learn_from_master(self, state_action):
     	pass
         #TODO
 
-    def choose_action(self, state, verbose = False):
+    def choose_action(self, state):
         self._update_state(state)
-        return self._actions(self._choose_action_index(state, verbose))
+        return self._actions(self._choose_action_index(state))
 
     def reset_state(self):
         self._current_image_state.fill(0.0)
         if self._misc_state_included:
             self._current_misc_state.fill(0.0)
 
-    def make_step(self, verbose = False):
+    def make_step(self):
     	raw_state = self._game.get_state()
-        a = self._choose_action_index(raw_state, verbose)
+        a = self._choose_action_index(raw_state)
     	self._actions_stats[a] += 1
     	self._game.make_action(self._actions[a])
         if not self._game.is_episode_finished():
             raw_state = self._game.get_state()
             self._update_state(raw_state)
 
-    def make_learning_step(self, verbose = False):
+    def make_learning_step(self):
         self._steps += 1
        	# epsilon decay:
         if self._steps > self._epsilon_decay_start and self._epsilon > 0:
@@ -153,7 +156,7 @@ class QEngine:
         if self._epsilon >= random.random():
             a = random.randint(0, len(self._actions) - 1)
         else:
-            a = self._evaluator.best_action(s, verbose = verbose)
+            a = self._evaluator.best_action(s)
         self._actions_stats[a] += 1
 
         # make action and get the reward
@@ -178,14 +181,14 @@ class QEngine:
         elif self.online_mode:
             self._evaluator.learn_one(s, a, s2, r)
       
-    def run_episode(self, verbose = False):
+    def run_episode(self):
         self._new_game()
        	if self.learning_mode:
             while not self._game.is_episode_finished():
-                self.make_learning_step(verbose)
+                self.make_learning_step()
        	else:
 	        while not self._game.is_episode_finished():
-	            self.make_step(verbose)
+	            self.make_step()
 
         return np.float32((self._game.get_summary_reward())*self._reward_scale)
 
@@ -208,3 +211,15 @@ class QEngine:
 
     def get_network(self):
         return self._evaluator.get_network()
+
+    def save_params(self, filename):
+        print "Saving evaluator parameters..."
+        params = get_all_param_values( self._evaluator.get_network() )
+        pickle.dump( params, open( filename, "wb" ) )
+        print "Saving finished."
+    
+    def load_params(self, filename):
+        print "Loading evaluator parameters..."
+        params = pickle.load( open( filename, "rb" ) )
+        set_all_param_values( self._evaluator.get_network(), params )
+        print "Loading finished."
