@@ -17,7 +17,7 @@ find_package(PythonInterp)
 find_package(PythonLibs)
 #find_package(Threads REQUIRED)  
 find_package(SDL2 REQUIRED)
-find_package(Boost COMPONENTS system thread python REQUIRED)
+find_package(Boost COMPONENTS system thread chrono python REQUIRED)
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
@@ -51,16 +51,18 @@ python_add_module(python_vizia ${VIZIA_PYTHON_SOURCES})
 target_link_libraries (python_vizia ${VIZIA_LIBS} vizia) 
 
 add_executable( doomControllerExample 
-    ${VIZIA_API_SOURCES}
     examples/c++/ViziaDoomControllerExample.cpp )
 target_link_libraries( doomControllerExample ${VIZIA_LIBS} vizia )
 
 add_executable( doomGameExample 
-    ${VIZIA_API_SOURCES}
     examples/c++/ViziaDoomGameExample.cpp )
 target_link_libraries( doomGameExample ${VIZIA_LIBS} vizia )
 
-set_target_properties( vizia doomGameExample doomControllerExample 
+add_executable( doomRealTimeExample 
+    examples/c++/ViziaDoomRealTimeExample.cpp )
+target_link_libraries( doomRealTimeExample ${VIZIA_LIBS} vizia )
+
+set_target_properties( vizia doomGameExample doomControllerExample doomRealTimeExample
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
