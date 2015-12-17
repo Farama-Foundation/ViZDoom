@@ -98,22 +98,7 @@ class MLPEvaluator:
         self._img_i_s = img_input_shape
         self._hid_uns = hidden_units
 
-    # Just debug checking
-    def zero_params(self):
-        params = ls.get_all_param_values(self._network)
-        w = params[0]
-        b = params[0]
-        
-        y = self._img_i_s[2]
-        x = self._img_i_s[3]
-        n = self._hid_uns[0]
-        for i in range(n):
-            ww = w[:,i].reshape(y,x)
-            ww[0:(y-1)/2,:].fill(0)
-            ww[(y+1)/2,:].fill(0)        
-        ls.set_all_param_values(self._network, params)    
-        
-
+    #not used yet    
     def learn_one(self, s, a, s2, r):
 
         if self._misc_state_included:

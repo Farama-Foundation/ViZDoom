@@ -32,22 +32,7 @@ def actions_generator(the_game):
         actions.append(list(perm))
     return actions
 
-def create_mlp_evaluator(state_format, actions_number, batch_size, gamma):
-    mlp_args = dict()
-    mlp_args["gamma"] = gamma
-    mlp_args["state_format"] = state_format
-    mlp_args["actions_number"] = actions_number
-    mlp_args["batch_size"] = batch_size
-    mlp_args["learning_rate"] = 0.01
-    mlp_args["updates"] = nesterov_momentum
-    #mlp_args["regularization"] = [[l1,0.001]]
 
-    network_args = dict(hidden_units=[3000], hidden_layers=1)
-    network_args["hidden_nonlin"] = leaky_rectify
-    #network_args["output_nonlin"] = None
-    mlp_args["network_args"] = network_args
-
-    return MLPEvaluator(**mlp_args)
 
 def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     cnn_args = dict()
@@ -69,31 +54,12 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     cnn_args["network_args"] = network_args
     return CNNEvaluator(**cnn_args)
 
-def create_linear_evaluator(state_format,actions_number, batch_size, gamma):
-    lin_args = dict()
-    lin_args["gamma"] = gamma
-    lin_args["state_format"] = state_format
-    lin_args["actions_number"] = actions_number
-    lin_args["batch_size"] = batch_size
-    lin_args["learning_rate"] = 0.01
-    lin_args["updates"] = lasagne.updates.nesterov_momentum
-    network_args = dict()
-    lin_args["network_args"] = network_args
-
-    return LinearEvaluator(**lin_args)
-
-def setup_mockvizia():
-    game = MockDoomGame()
-    game.set_screen_resolution(40,30)
-    game.set_no_shooting_time(8)
-    game.init()
-    return game
 
 def setup_vizia():
     game = DoomGame()
 
     #available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
-    game.set_screen_resolution(120,90)
+    game.set_screen_resolution(320,240)
     game.set_screen_format(ScreenFormat.GRAY8)
     game.set_doom_game_path("../bin/viziazdoom")
     game.set_doom_iwad_path("../scenarios/doom2.wad")
@@ -104,11 +70,11 @@ def setup_vizia():
     game.set_living_reward(-2)
     game.set_render_hud(False)
     game.set_render_crosshair(False)
-    game.set_render_weapon(False)
+    game.set_render_weapon(True)
     game.set_render_decals(False)
     game.set_render_particles(False);
 
-    game.set_visible_window(False)
+    game.set_visible_window(True)
 
     game.add_available_button(Button.MOVE_LEFT)
     game.add_available_button(Button.MOVE_RIGHT)
@@ -122,20 +88,6 @@ def setup_vizia():
 
 def double_tanh(x):
     return 2*tanh(x)
-
-class BNWDisplayImageConverter(IdentityImageConverter):
-    def __init__(self, source):
-        self._source = source
-
-    def convert(self, img):
-        img =  np.float32(img)/255.0
-       #if len(img.shape) == 3:
-        #    bnw_img = np.ma.average(img,axis=0, weights=[0.2989,0.5870,0.1140])
-        
-        bnw_img = cv2.resize(img, (320, 240)) 
-        cv2.imshow('image',bnw_img)
-        cv2.waitKey(1)
-        return img
 
 class ScaleConverter(IdentityImageConverter):
     def __init__(self, source):
@@ -156,21 +108,18 @@ class ScaleConverter(IdentityImageConverter):
     def get_screen_height(self):
         return self.y
 
-class ThresholdScaler(IdentityImageConverter):
+class ChannelScaleConverter(IdentityImageConverter):
     def __init__(self, source):
-        self._source = source 
+        self._source = source
         self.x = 60
         self.y = 45 
     def convert(self, img):
 
         img =  np.float32(img)/255.0
-
-        img[ img>0.2 ] = 1.0
-        img = cv2.resize(img[0], (self.x,self.y))
-        img[ img < 1.0 ] = 0.0
-        
-        img =  img.reshape(1,self.y,self.x)
-        return img
+        new_image = np.ndarray([img.shape[0], self.y, self.x], dtype=np.float32)
+        for i in range(img.shape[0]):
+            new_image[i] = cv2.resize( img[i], (self.x, self.y))
+        return new_image
 
     def get_screen_width(self):
         return self.x
@@ -189,7 +138,7 @@ def create_engine( game, online_mode=False ):
     engine_args['start_epsilon'] = 0.9
     engine_args['end_epsilon'] = 0.1
     engine_args['epsilon_decay_start_step'] = 100000
-    engine_args['epsilon_decay_steps'] = 400000
+    engine_args['epsilon_decay_steps'] = 100000
     engine_args['actions_generator'] = actions_generator
     engine_args['update_frequency'] = (4,4)
     engine_args['batch_size'] = 40
@@ -197,8 +146,8 @@ def create_engine( game, online_mode=False ):
     engine_args['reward_scale'] = 0.01
     
     #engine_args['image_converter'] = BNWDisplayImageConverter
-    engine_args['image_converter'] = ScaleConverter
-    
+    #engine_args['image_converter'] = ScaleConverter
+    engine_args['image_converter'] = ChannelScaleConverter
     if online_mode:
         engine.online_mode = True
     engine = QEngine(**engine_args)
@@ -212,59 +161,18 @@ print "\nCreated network params:"
 for p in get_all_param_values(engine.get_network()):
 	print p.shape
 
-
-epochs = np.inf
-training_episodes_per_epoch = 400
-test_episodes_per_epoch = 100
-test_frequency = 1;
-stop_mean = 1.0  # game.average_best_result()
-overall_start = time()
-verbose = False
+engine.load_params("params/rgb_60_skip4")
 
 
+episodes = 20
 
-epoch = 0
-print "\nLearning ..."
-while epoch < epochs:
-    engine.learning_mode = True
-    rewards = []
-    start = time()
-    print "\nEpoch", epoch
-    
-    for episode in range(training_episodes_per_epoch):
-        r = engine.run_episode(verbose)
-        rewards.append(r)
-        
-    end = time()
-    
-    print "Train:"
-    print engine.get_actions_stats(True)
-    mean_loss = engine._evaluator.get_mean_loss()
-    print "steps:", engine.get_steps(), ", mean:", np.mean(rewards), ", max:", np.max(
-        rewards),"mean_loss:",mean_loss, "eps:", engine.get_epsilon()
-    print "t:", round(end - start, 2)
-        
-    # learning mode off
-    if (epoch+1) % test_frequency == 0 and test_episodes_per_epoch > 0:
-        engine.learning_mode = False
-        rewards = []
+for i in range(episodes):
 
-        start = time()
-        for test_episode in range(test_episodes_per_epoch):
-            r = engine.run_episode(verbose = verbose)
-            rewards.append(r)
-        end = time()
-        
-        print "Test"
-        print engine.get_actions_stats(clear=True, norm=False)
-        m = np.mean(rewards)
-        print "steps:", engine.get_steps(), ", mean:", m, "max:", np.max(rewards)
-        if m > stop_mean:
-            print stop_mean, "mean reached!"
-            break
-        print "t:", round(end - start, 2)
-    epoch += 1
-    print "========================="
-overall_end = time()
+    game.new_episode()
+    while not game.is_episode_finished():
+        engine.make_step()
+        img = game.get_state().image_buffer
+        sleep(0.1)
+    print "Reward:", game.get_summary_reward()
 
-print "Elapsed time:", overall_end - overall_start
+game.close()
