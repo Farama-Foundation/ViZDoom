@@ -37,6 +37,8 @@ namespace Vizia {
 
         float makeAction(std::vector<bool> &actions);
 
+        void observeAction();
+
         State getState();
 
         std::vector<bool> getLastAction();
@@ -52,6 +54,9 @@ namespace Vizia {
 
         unsigned int getActionInterval(unsigned int tics);
         void setActionInterval(unsigned int tics);
+
+        GameMode getGameMode();
+        void setGameMode(GameMode mode);
 
         //OPTIONS
 
@@ -113,7 +118,10 @@ namespace Vizia {
         bool running;
 
         //STATE AND ACTIONS
+        GameMode gameMode;
+
         State state;
+        void updateState();
 
         std::vector <GameVar> stateAvailableVars;
         std::vector <Button> availableButtons;
@@ -121,7 +129,6 @@ namespace Vizia {
         std::vector<bool> lastAction;
 
         //REWARD
-
         unsigned int actionInterval;
 
         int lastReward;

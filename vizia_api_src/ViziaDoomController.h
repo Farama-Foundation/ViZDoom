@@ -11,6 +11,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
+#include <boost/chrono/chrono.hpp>
 #include "boost/process.hpp"
 
 namespace Vizia{
@@ -19,6 +20,7 @@ namespace Vizia{
     namespace bip = boost::interprocess;
     namespace bpr = boost::process;
     namespace bpri = boost::process::initializers;
+    namespace bc = boost::chrono;
 
 #define SM_NAME_BASE "ViziaSM"
 
@@ -115,6 +117,8 @@ namespace Vizia{
         bool isDoomRunning();
         void sendCommand(std::string command);
 
+        void waitTicsRealTime(unsigned int tics);
+
         //SETTINGS
 
         //GAME & MAP SETTINGS
@@ -176,9 +180,10 @@ namespace Vizia{
         void setRenderDecals(bool decals);
         void setRenderParticles(bool particles);
 
-        int getScreenWidth();
-        int getScreenHeight();
-        int getScreenChannels();
+        unsigned int getScreenWidth();
+        unsigned int getScreenHeight();
+        unsigned int getScreenChannels();
+        unsigned int getScreenDepth();
         size_t getScreenPitch();
         size_t getScreenSize();
 
@@ -318,7 +323,7 @@ namespace Vizia{
 
         // OPTIONS
 
-        unsigned int screenWidth, screenHeight, screenChannels;
+        unsigned int screenWidth, screenHeight, screenChannels, screenDepth;
         size_t screenPitch, screenSize;
         ScreenFormat screenFormat;
 
@@ -350,6 +355,10 @@ namespace Vizia{
         bool mapRestarting;
         bool mapEnded;
         unsigned int mapLastTic;
+
+        // TIME
+
+        bc::steady_clock::time_point lastTicTimePoint;
 
     };
 

@@ -27,6 +27,7 @@ namespace Vizia {
         this->livingReward = 0;
         this->summaryReward = 0;
         this->actionInterval = 1;
+        this->gameMode = PLAYER;
 
         this->doomController = new DoomController();
     }
@@ -49,10 +50,27 @@ namespace Vizia {
     bool DoomGame::init() {
         if (!this->running) {
 
+            if(this->availableButtons.size() == 0) {
+                //Basic action set
+                this->availableButtons.push_back(ATTACK);
+                this->availableButtons.push_back(USE);
+                this->availableButtons.push_back(JUMP);
+                this->availableButtons.push_back(CROUCH);
+                this->availableButtons.push_back(SPEED);
 
+                this->availableButtons.push_back(MOVE_RIGHT);
+                this->availableButtons.push_back(MOVE_LEFT);
+                this->availableButtons.push_back(MOVE_BACK);
+                this->availableButtons.push_back(MOVE_FORWARD);
+                this->availableButtons.push_back(TURN_RIGHT);
+                this->availableButtons.push_back(TURN_LEFT);
+            }
 
-            /* set all if none are set */
             this->lastAction.resize(this->availableButtons.size());
+
+            if(this->gameMode == SPECATOR){
+                this->doomController->setAllowDoomInput(true);
+            }
 
             try {
                 this->running = this->doomController->init();
@@ -65,7 +83,6 @@ namespace Vizia {
                 this->state.vars.resize(this->stateAvailableVars.size());
                 this->state.number = this->doomController->getMapTic();
                 this->state.imageBuffer = this->doomController->getScreen();
-
             }
             catch(const Exception &e){ throw; }
 
@@ -121,17 +138,9 @@ namespace Vizia {
         int reward = 0;
 
         try {
-            /* Updates vars */
-            for (int i = 0; i < this->stateAvailableVars.size(); ++i) {
-                this->state.vars[i] = this->doomController->getGameVar(this->stateAvailableVars[i]);
-            }
-
-            /* Update float rgb image */
-            this->state.number = this->doomController->getMapTic();
-            this->state.imageBuffer = this->doomController->getScreen();
+            this->updateState();
 
             /* Return tic reward */
-
             int mapReward = this->doomController->getMapReward();
 
             reward = (mapReward - this->lastMapReward) + this->livingReward;
@@ -145,6 +154,46 @@ namespace Vizia {
 
         return reward;
     }
+
+    void DoomGame::observeAction() {
+
+        if(!this->isRunning()) throw DoomIsNotRunningException();
+
+        try {
+            if(this->actionInterval > 1){
+                this->doomController->waitTicsRealTime(this->actionInterval);
+                this->doomController->tics(this->actionInterval);
+            }
+            else{
+                this->doomController->waitTicsRealTime(1);
+                this->doomController->tic();
+            }
+        }
+        catch(const Exception &e){ throw; }
+
+        try {
+            this->updateState();
+
+            //Update last action
+            for (int i = 0; i < this->availableButtons.size(); ++i) {
+                this->lastAction[i] = this->doomController->getButtonState(this->availableButtons[i]);
+            }
+
+        }
+        catch (...){ throw SharedMemoryException(); }
+    }
+
+    void DoomGame::updateState(){
+        /* Updates vars */
+        for (int i = 0; i < this->stateAvailableVars.size(); ++i) {
+            this->state.vars[i] = this->doomController->getGameVar(this->stateAvailableVars[i]);
+        }
+
+        /* Update float rgb image */
+        this->state.number = this->doomController->getMapTic();
+        this->state.imageBuffer = this->doomController->getScreen();
+    }
+
 
     DoomGame::State DoomGame::getState() { return this->state; }
 
@@ -188,6 +237,9 @@ namespace Vizia {
 
     unsigned int DoomGame::getActionInterval(unsigned int tics){ return this->actionInterval; }
     void DoomGame::setActionInterval(unsigned int tics){ this->actionInterval = tics ? tics : 1; }
+
+    GameMode DoomGame::getGameMode(){ return this->gameMode; };
+    void DoomGame::setGameMode(GameMode mode){ if (!this->running) this->gameMode = mode; }
 
     const DoomController* DoomGame::getController() { return this->doomController; }
 
