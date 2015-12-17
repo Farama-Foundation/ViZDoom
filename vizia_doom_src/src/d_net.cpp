@@ -938,7 +938,7 @@ int gametime;
 //VIZIA CODE
 void NetUpdate (void)
 {
-	if(*vizia_controlled || !*vizia_allow_input) return;
+	if(*vizia_controlled && !*vizia_allow_input) return;
 
 	int		lowtic;
 	int 	nowtime;

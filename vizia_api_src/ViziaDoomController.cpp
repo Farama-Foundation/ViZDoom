@@ -61,7 +61,7 @@ namespace Vizia {
         this->generateInstanceId();
         this->generateSeed();
         this->doomRunning = false;
-        this->doomTic = false;
+        this->doomWorking = false;
     }
 
     DoomController::~DoomController() {
@@ -86,6 +86,9 @@ namespace Vizia {
                 this->SMInit();
 
                 this->waitForDoomMapStartTime();
+
+                this->MQSend(MSG_CODE_UPDATE);
+                this->waitForDoomWork();
             }
             catch(const Exception &e){
                 this->close();
@@ -119,12 +122,18 @@ namespace Vizia {
     }
 
     bool DoomController::tic() {
+        this->tic(true);
+    }
 
-        if (doomRunning) {
+    bool DoomController::tic(bool update) {
+
+        if (this->doomRunning) {
 
             if (!this->mapEnded) {
                 this->mapLastTic = this->GameVars->MAP_TIC;
-                this->waitForDoomTic();
+                if(update) this->MQSend(MSG_CODE_TIC_N_UPDATE);
+                else this->MQSend(MSG_CODE_TIC);
+                this->waitForDoomWork();
             }
 
             if (this->GameVars->PLAYER_DEAD) {
@@ -140,8 +149,32 @@ namespace Vizia {
                 if (this->autoRestart && this->autoRestartOnMapEnd) this->restartMap();
             }
         }
+        else throw DoomIsNotRunningException();
 
-        return true;
+        return !this->mapEnded;
+    }
+
+    bool DoomController::tics(unsigned int tics){
+        this->tics(tics, true);
+    }
+
+    bool DoomController::tics(unsigned int tics, bool update){
+        bool lastTic = this->mapEnded;
+
+        for(int i = 0; i < tics; ++i){
+            if(i == tics - 1) lastTic = this->tic(true);
+            else lastTic = this->tic(false);
+
+            if(!lastTic){
+                this->MQSend(MSG_CODE_UPDATE);
+                this->waitForDoomWork();
+                break;
+            }
+
+            if(tics > 1 && i == 0) this->resetDescreteButtons();
+        }
+
+        return lastTic;
     }
 
     void DoomController::restartMap() {
@@ -193,7 +226,8 @@ namespace Vizia {
 
             do {
                 ++restartingTics;
-                this->waitForDoomTic();
+                this->MQSend(MSG_CODE_TIC);
+                this->waitForDoomWork();
 
                 if (restartingTics > 4) {
                     this->sendCommand("map " + this->map);
@@ -203,6 +237,9 @@ namespace Vizia {
             } while (this->GameVars->MAP_END || this->GameVars->MAP_TIC > 1);
 
             this->waitForDoomMapStartTime();
+
+            this->MQSend(MSG_CODE_UPDATE);
+            this->waitForDoomWork();
 
             this->mapRestarting = false;
             this->mapEnded = false;
@@ -527,7 +564,7 @@ namespace Vizia {
 
     void DoomController::waitForDoomStart() {
 
-        this->doomTic = true;
+        this->doomWorking = true;
 
         MessageCommandStruct msg;
 
@@ -537,8 +574,7 @@ namespace Vizia {
         MQController->receive(&msg, sizeof(MessageCommandStruct), recvd_size, priority);
 
         switch (msg.code) {
-            case MSG_CODE_DOOM_READY :
-            case MSG_CODE_DOOM_TIC :
+            case MSG_CODE_DOOM_DONE :
                 this->doomRunning = true;
                 break;
 
@@ -547,33 +583,27 @@ namespace Vizia {
 
             case MSG_CODE_DOOM_ERROR :
                 throw DoomErrorException();
-
-            default :
-                break;
         }
 
-        this->doomTic = false;
+        this->doomWorking = false;
     }
 
-    void DoomController::waitForDoomTic() {
-        if (this->doomRunning) {
+    void DoomController::waitForDoomWork() {
 
-            this->MQSend(MSG_CODE_TIC);
-
-            this->doomTic = true;
+        if(doomRunning){
+            this->doomWorking = true;
 
             MessageCommandStruct msg;
 
             unsigned int priority;
             bip::message_queue::size_type recvd_size;
 
-            bool nextTic = false;
+            bool done = false;
             do {
                 MQController->receive(&msg, sizeof(MessageCommandStruct), recvd_size, priority);
                 switch (msg.code) {
-                    case MSG_CODE_DOOM_READY :
-                    case MSG_CODE_DOOM_TIC :
-                        nextTic = true;
+                    case MSG_CODE_DOOM_DONE :
+                        done = true;
                         break;
 
                     case MSG_CODE_DOOM_CLOSE :
@@ -587,15 +617,17 @@ namespace Vizia {
                     default :
                         break;
                 }
-            } while (!nextTic);
+            } while (!done);
 
-            this->doomTic = false;
+            this->doomWorking = false;
         }
+        else throw DoomIsNotRunningException();
     }
 
     void DoomController::waitForDoomMapStartTime() {
         while(this->GameVars->MAP_TIC < this->mapStartTime) {
-            this->waitForDoomTic();
+            this->MQSend(MSG_CODE_TIC);
+            this->waitForDoomWork();
         }
     }
 

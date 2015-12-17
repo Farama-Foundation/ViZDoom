@@ -1006,7 +1006,7 @@ void D_DoomLoop ()
 			{
 
 				I_StartTic ();
-				if(!*vizia_controlled || *vizia_allow_input) D_ProcessEvents ();
+				if(!*vizia_controlled && (*vizia_controlled && !*vizia_allow_input)) D_ProcessEvents ();
 
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				if (advancedemo)
@@ -1029,7 +1029,7 @@ void D_DoomLoop ()
 
 			// Update display, next frame, with current state.
 			I_StartTic ();
-			D_Display ();
+			if(!*vizia_controlled) D_Display ();
 			//S_UpdateMusic();	// OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
 			Vizia_Tic();
 		}

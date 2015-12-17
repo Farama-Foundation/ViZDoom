@@ -25,6 +25,8 @@ int Vizia_CheckSelectedWeaponAmmo();
 
 void Vizia_GameVarsInit();
 
+void Vizia_GameVarsTic();
+
 void Vizia_GameVarsUpdate();
 
 void Vizia_GameVarsClose();
