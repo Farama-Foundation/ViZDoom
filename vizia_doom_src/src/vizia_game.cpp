@@ -106,8 +106,7 @@ void Vizia_GameVarsInit(){
     }
 }
 
-void Vizia_GameVarsUpdate(){
-
+void Vizia_GameVarsTic(){
     viziaGameVars->GAME_TIC = gametic;
     viziaGameVars->GAME_SEED = rngseed;
     viziaGameVars->GAME_STATIC_SEED = staticrngseed;
@@ -121,10 +120,6 @@ void Vizia_GameVarsUpdate(){
     viziaGameVars->MAP_START_TIC = level.starttime;
     viziaGameVars->MAP_TIC = level.maptime;
 
-    viziaGameVars->MAP_KILLCOUNT = level.killed_monsters;
-    viziaGameVars->MAP_ITEMCOUNT = level.found_items;
-    viziaGameVars->MAP_SECRETCOUNT = level.found_secrets;
-
     viziaGameVars->MAP_REWARD = ACS_GlobalVars[0];
 
     for(int i = 0; i < VIZIA_GV_USER_SIZE; ++i){
@@ -135,6 +130,13 @@ void Vizia_GameVarsUpdate(){
 
     if(viziaPlayer->mo) viziaGameVars->PLAYER_DEAD = viziaPlayer->playerstate == PST_DEAD || viziaPlayer->mo->health <= 0;
     else viziaGameVars->PLAYER_DEAD = viziaPlayer->playerstate == PST_DEAD || viziaPlayer->health <= 0;
+}
+
+void Vizia_GameVarsUpdate(){
+
+    viziaGameVars->MAP_KILLCOUNT = level.killed_monsters;
+    viziaGameVars->MAP_ITEMCOUNT = level.found_items;
+    viziaGameVars->MAP_SECRETCOUNT = level.found_secrets;
 
     viziaGameVars->PLAYER_KILLCOUNT = viziaPlayer->killcount;
     viziaGameVars->PLAYER_ITEMCOUNT = viziaPlayer->itemcount;
@@ -168,7 +170,6 @@ void Vizia_GameVarsUpdate(){
     viziaGameVars->PLAYER_KEY[0] = 0;
     viziaGameVars->PLAYER_KEY[1] = 0;
     viziaGameVars->PLAYER_KEY[2] = 0;
-
 }
 
 void Vizia_GameVarsClose(){

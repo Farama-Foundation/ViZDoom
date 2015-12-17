@@ -54,6 +54,9 @@ CVAR (Bool, vizia_window_hidden, false, CVAR_NOSET)
 CVAR (Bool, vizia_no_x_server, false, CVAR_NOSET)
 CVAR (Bool, vizia_allow_input, false, CVAR_NOSET)
 
+bool vizia_update = false;
+unsigned int vizia_last_update = 0;
+
 void Vizia_Init(){
     printf("Vizia_Init: Instance id: %s\n", *vizia_instance_id);
 
@@ -69,6 +72,7 @@ void Vizia_Init(){
 
         Vizia_ScreenInit();
     }
+
     //Vizia_MQSend(VIZIA_MSG_CODE_DOOM_READY);
 }
 
@@ -108,10 +112,22 @@ void Vizia_Tic(){
     if (*vizia_controlled && (gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
             && !paused && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
 
-        Vizia_InputTic();
-        Vizia_GameVarsUpdate();
-        Vizia_ScreenUpdate();
+        Vizia_GameVarsTic();
+
+        if(vizia_update){
+            Vizia_Update();
+        }
 
         Vizia_MQTic();
+
+        Vizia_InputTic();
     }
+}
+
+void Vizia_Update(){
+    vizia_last_update = gametic;
+    vizia_update = false;
+    D_Display();
+    Vizia_GameVarsUpdate();
+    Vizia_ScreenUpdate();
 }

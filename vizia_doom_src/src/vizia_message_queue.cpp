@@ -1,5 +1,6 @@
 #include "vizia_message_queue.h"
 #include "vizia_input.h"
+#include "vizia_main.h"
 
 #include <string.h>
 
@@ -7,8 +8,6 @@ bip::message_queue *viziaMQController;
 bip::message_queue *viziaMQDoom;
 char * viziaMQControllerName;
 char * viziaMQDoomName;
-
-bool firstTic;
 
 void Vizia_MQInit(const char * id){
 
@@ -24,8 +23,6 @@ void Vizia_MQInit(const char * id){
         Vizia_MQSend(VIZIA_MSG_CODE_DOOM_ERROR);
         Vizia_Command(strdup("exit"));
     }
-
-    firstTic = true;
 }
 
 void Vizia_MQSend(uint8_t code){
@@ -65,11 +62,7 @@ bool Vizia_MQTryRecv(void *msg, unsigned long &size, unsigned int &priority){
 
 void Vizia_MQTic(){
 
-    if(firstTic){
-        Vizia_MQSend(VIZIA_MSG_CODE_DOOM_READY);
-        firstTic = false;
-    }
-    else Vizia_MQSend(VIZIA_MSG_CODE_DOOM_TIC);
+    Vizia_MQSend(VIZIA_MSG_CODE_DOOM_DONE);
 
     ViziaMessageCommandStruct msg;
 
@@ -80,8 +73,15 @@ void Vizia_MQTic(){
     do {
         viziaMQDoom->receive(&msg, sizeof(ViziaMessageCommandStruct), recvd_size, priority);
         switch(msg.code){
-            case VIZIA_MSG_CODE_READY :
             case VIZIA_MSG_CODE_TIC :
+                nextTic = true;
+                break;
+            case VIZIA_MSG_CODE_UPDATE:
+                Vizia_Update();
+                Vizia_MQSend(VIZIA_MSG_CODE_DOOM_DONE);
+                break;
+            case VIZIA_MSG_CODE_TIC_N_UPDATE:
+                vizia_update = true;
                 nextTic = true;
                 break;
             case VIZIA_MSG_CODE_COMMAND :
@@ -94,7 +94,6 @@ void Vizia_MQTic(){
             default : break;
         }
     }while(!nextTic);
-
 }
 
 void Vizia_MQClose(){

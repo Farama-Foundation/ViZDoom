@@ -49,7 +49,7 @@ int main(){
     // w przypadku nie zachowania proporcji 4:3, 16:10, 16:9
     // silnik weźmie wysokość i pomnoży razy 4/3
     // możemy spróbować to wyłączyć, ale pewnie wtedy obraz będzie zniekształocny
-    vdm->setScreenResolution(320, 240);
+    vdm->setScreenResolution(640, 480);
     // rozdzielczość znacząco wpływa na szybkość działania
 
     vdm->setScreenFormat(RGB24);
@@ -102,13 +102,18 @@ int main(){
             vdm->setButtonState(JUMP, false);
         }
 
-        /*std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<
-                " HP: " << vdm->getPlayerHealth() << " AMMO: " << vdm->getGameVars()->PLAYER_AMMO[0] <<
-                " REWARD: " << vdm->getMapReward() << " SHAPING: " << vdm->getGameVar(USER1) << std::endl;
-*/
-        if(sdl) updateSDL(vdm->getScreenWidth(), vdm->getScreenHeight(), vdm->getScreenPitch(), (void*)vdm->getScreen());
+        if(i%10 == 0) {
+            vdm->tic(true);
+            if (sdl)
+                updateSDL(vdm->getScreenWidth(), vdm->getScreenHeight(), vdm->getScreenPitch(),
+                          (void *) vdm->getScreen());
 
-        vdm->tic();
+            std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<
+            " HP: " << vdm->getPlayerHealth() << " AMMO: " << vdm->getGameVars()->PLAYER_AMMO[0] <<
+            " REWARD: " << vdm->getMapReward() << " SHAPING: " << vdm->getGameVar(USER1) << std::endl;
+        }
+        else vdm->tic(false);
+
     }
 
     vdm->close();
