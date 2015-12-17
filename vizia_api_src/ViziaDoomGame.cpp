@@ -113,11 +113,8 @@ namespace Vizia {
         catch (...){ throw SharedMemoryException(); }
 
         try {
-            for(int i = 1; i < actionInterval; ++i){
-                this->doomController->tic();
-                if(i == 0) this->doomController->resetDescreteButtons();
-            }
-            this->doomController->tic();
+            if(this->actionInterval > 1) this->doomController->tics(this->actionInterval);
+            else this->doomController->tic();
         }
         catch(const Exception &e){ throw; }
 

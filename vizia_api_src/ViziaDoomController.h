@@ -28,16 +28,16 @@ namespace Vizia{
 #define MQ_MAX_MSG_SIZE sizeof(DoomController::MessageCommandStruct)
 #define MQ_MAX_CMD_LEN 32
 
-#define MSG_CODE_DOOM_READY 10
-#define MSG_CODE_DOOM_TIC 11
+#define MSG_CODE_DOOM_DONE 11
 #define MSG_CODE_DOOM_CLOSE 12
 #define MSG_CODE_DOOM_ERROR 13
 
-#define MSG_CODE_READY 20
 #define MSG_CODE_TIC 21
-#define MSG_CODE_CLOSE 22
-#define MSG_CODE_ERROR 23
+#define MSG_CODE_UPDATE 22
+#define MSG_CODE_TIC_N_UPDATE 23
 #define MSG_CODE_COMMAND 24
+#define MSG_CODE_CLOSE 25
+#define MSG_CODE_ERROR 26
 
     class DoomController {
 
@@ -107,6 +107,9 @@ namespace Vizia{
         void restart();
 
         bool tic();
+        bool tic(bool update);
+        bool tics(unsigned int tics);
+        bool tics(unsigned int tics, bool update);
         void restartMap();
         void resetMap();
         bool isDoomRunning();
@@ -259,7 +262,7 @@ namespace Vizia{
         b::thread *doomThread;
         //bpr::child doomProcess;
         bool doomRunning;
-        bool doomTic;
+        bool doomWorking;
 
         //MESSAGE QUEUES
 
@@ -307,7 +310,7 @@ namespace Vizia{
         //HELPERS
 
         void waitForDoomStart();
-        void waitForDoomTic();
+        void waitForDoomWork();
         void waitForDoomMapStartTime();
         void lunchDoom();
 
