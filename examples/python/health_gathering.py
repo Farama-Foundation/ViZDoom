@@ -25,8 +25,7 @@ def setup_vizia():
 	game.set_doom_skill(5)
 	game.set_episode_timeout(2100)
 
-	#uncomment after removing the living reward from the scenario
-	#game.set_living_reward(1)
+	game.set_living_reward(1)
 	game.set_death_penalty(5)
 
 	game.set_render_hud(False)	
