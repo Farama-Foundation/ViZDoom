@@ -25,8 +25,8 @@ def setup_vizia():
 	game.set_doom_skill(5)
 	game.set_episode_timeout(4200)
 
-	game.set_living_reward(-1)
-	game.set_death_penalty(5)
+	game.set_living_reward(0)
+	game.set_death_penalty(100)
 
 	game.set_render_hud(False)	
 	game.set_render_crosshair(False)
@@ -44,10 +44,12 @@ def setup_vizia():
 	game.set_visible_window(True)
 	game.add_state_available_var(GameVar.HEALTH)
 
+	print "AAAAAAAAAAAAAAAAAAAAA"
 	game.init()
-
+	print "BBBBBBBBBBBBBBBB"
+	
 	return game
-
+	
 	
 
 game = setup_vizia()
@@ -56,7 +58,7 @@ game = setup_vizia()
 forward = [False, False, False, True, False, False]
 
 iters = 10000
-sleep_time = 0.1
+sleep_time = 0.05
 
 
 for i in range(iters):
@@ -65,6 +67,7 @@ for i in range(iters):
 		print "episode finished!"
 		print "summary reward:", game.get_summary_reward()
 		print "************************"
+		sleep(2)
 		game.new_episode()
 
 	s = game.get_state()
