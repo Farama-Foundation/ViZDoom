@@ -213,13 +213,13 @@ class QEngine:
         return self._evaluator.get_network()
 
     def save_params(self, filename):
-        print "Saving evaluator parameters..."
+        print "Saving to " + filename +"..."
         params = get_all_param_values( self._evaluator.get_network() )
         pickle.dump( params, open( filename, "wb" ) )
         print "Saving finished."
     
     def load_params(self, filename):
-        print "Loading evaluator parameters..."
+        print "Loading parameters from " + filename + "..."
         params = pickle.load( open( filename, "rb" ) )
         set_all_param_values( self._evaluator.get_network(), params )
         print "Loading finished."

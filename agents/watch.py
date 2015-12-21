@@ -25,7 +25,7 @@ from theano.tensor import tanh
 
 import cv2
 
-load_file = "params/rgb_60_skip4"
+load_file = "params/rgb_60_noskip"
 
 def actions_generator(the_game):
     n = the_game.get_action_format()
@@ -57,6 +57,7 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
 def setup_vizia():
     game = DoomGame()
 
+    skiprate = 1
     #available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
     game.set_screen_resolution(320,240)
     game.set_screen_format(ScreenFormat.GRAY8)
@@ -66,7 +67,7 @@ def setup_vizia():
     game.set_doom_map("map01")
     game.set_episode_timeout(300)
 
-    game.set_living_reward(-2)
+    game.set_living_reward(-skiprate)
     game.set_render_hud(False)
     game.set_render_crosshair(False)
     game.set_render_weapon(True)
@@ -78,7 +79,7 @@ def setup_vizia():
     game.add_available_button(Button.MOVE_LEFT)
     game.add_available_button(Button.MOVE_RIGHT)
     game.add_available_button(Button.ATTACK)
-    game.set_action_interval(4)
+    game.set_action_interval(skiprate)
 
     print "Initializin DOOM ..."
     game.init()
@@ -171,7 +172,7 @@ for i in range(episodes):
     while not game.is_episode_finished():
         engine.make_step()
         img = game.get_state().image_buffer
-        sleep(0.1)
+        sleep(0.02)
     print "Reward:", game.get_summary_reward()
 
 game.close()
