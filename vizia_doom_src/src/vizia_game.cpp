@@ -65,7 +65,7 @@ const char* Vizia_CheckItemType(const PClass *type){
 }
 
 bool Vizia_CheckSelectedWeaponState(){
-
+    return false;
 }
 
 int Vizia_CheckSelectedWeapon(){
@@ -83,9 +83,10 @@ int Vizia_CheckSelectedWeapon(){
 }
 
 int Vizia_CheckSelectedWeaponAmmo(){
-    return viziaPlayer->ReadyWeapon->CheckAmmo (
-            viziaPlayer->ReadyWeapon->bAltFire ? AWeapon::AltFire : AWeapon::PrimaryFire,
-            true);
+    if(viziaPlayer->ReadyWeapon != NULL) return viziaPlayer->ReadyWeapon->CheckAmmo (
+                viziaPlayer->ReadyWeapon->bAltFire ? AWeapon::AltFire : AWeapon::PrimaryFire,
+                true);
+    else return 0;
 }
 
 void Vizia_GameVarsInit(){
