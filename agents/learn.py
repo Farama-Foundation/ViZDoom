@@ -25,7 +25,9 @@ from theano.tensor import tanh
 
 import cv2
 
-savefile = "params/rgb_60_skip4_2"
+savefile = "params/rgb_60_noskip"
+loadfile = savefile
+
 
 def actions_generator(the_game):
     n = the_game.get_action_format()
@@ -94,8 +96,9 @@ def setup_mockvizia():
 def setup_vizia():
     game = DoomGame()
 
+    skiprate = 1
     #available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
-    game.set_screen_resolution(120,90)
+    game.set_screen_resolution(320,240)
     game.set_screen_format(ScreenFormat.GRAY8)
     game.set_doom_game_path("../bin/viziazdoom")
     game.set_doom_iwad_path("../scenarios/doom2.wad")
@@ -103,7 +106,7 @@ def setup_vizia():
     game.set_doom_map("map01")
     game.set_episode_timeout(300)
 
-    game.set_living_reward(-2)
+    game.set_living_reward(-skiprate)
     game.set_render_hud(False)
     game.set_render_crosshair(False)
     game.set_render_weapon(True)
@@ -115,7 +118,7 @@ def setup_vizia():
     game.add_available_button(Button.MOVE_LEFT)
     game.add_available_button(Button.MOVE_RIGHT)
     game.add_available_button(Button.ATTACK)
-    game.set_action_interval(4)
+    game.set_action_interval(skiprate)
 
     print "Initializin DOOM ..."
     game.init()
@@ -170,10 +173,10 @@ def create_engine( game, online_mode=False ):
     #engine_args["bank"] = TransitionBank( capacity=10000, rejection_range = [-0.02,0.5], rejection_probability=0.95)
     engine_args["evaluator"] = create_cnn_evaluator
     engine_args["game"] = game
-    engine_args['start_epsilon'] = 0.9
-    engine_args['end_epsilon'] = 0.1
-    engine_args['epsilon_decay_start_step'] = 100000
-    engine_args['epsilon_decay_steps'] = 100000
+    engine_args['start_epsilon'] = 0.0
+    engine_args['end_epsilon'] = 0.0
+    engine_args['epsilon_decay_start_step'] = 1
+    engine_args['epsilon_decay_steps'] = 1000000
     engine_args['actions_generator'] = actions_generator
     engine_args['update_frequency'] = (4,4)
     engine_args['batch_size'] = 40
@@ -191,7 +194,9 @@ def create_engine( game, online_mode=False ):
 game = setup_vizia()
 engine = create_engine(game)
 
- 
+if loadfile:
+    engine.load_params(loadfile)
+
 print "\nCreated network params:"
 for p in get_all_param_values(engine.get_network()):
 	print p.shape
@@ -249,10 +254,10 @@ while epoch < epochs:
 
     print ""
     engine.save_params(savefile)
-
+    overall_end = time()
+    print "Elapsed time:", round(overall_end - overall_start,2), "s"  
     print "========================="
 
 
 overall_end = time()
-
-print "Elapsed time:", overall_end - overall_start
+print "Elapsed time:", round(overall_end - overall_start,2), "s"  

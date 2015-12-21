@@ -67,3 +67,4 @@ agents/doom2.wad
 agents/s1_b.wad
 agents/end_test.wad
 **/link-make
+**/params/*
