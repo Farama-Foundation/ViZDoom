@@ -195,9 +195,9 @@ namespace Vizia {
 
     void DoomController::waitTicsRealTime(unsigned int tics){
         unsigned int msToWait = std::floor((float)1000/35 * tics);
-        bc::steady_clock::time_point now = bc::steady_clock::now();
-        bc::milliseconds wait = bc::duration_cast<bc::milliseconds>(bc::milliseconds(msToWait) - (now - this->lastTicTimePoint));
-        b::this_thread::sleep_for( wait );
+        //bc::steady_clock::time_point now = bc::steady_clock::now();
+        //bc::milliseconds wait = bc::duration_cast<bc::milliseconds>(bc::milliseconds(msToWait) - (now - this->lastTicTimePoint));
+        b::this_thread::sleep_for( bc::milliseconds(23 * tics) );
     }
 
 //SETTINGS
@@ -755,9 +755,6 @@ namespace Vizia {
 
         args.push_back("+vizia_instance_id");
         args.push_back(this->instanceId);
-
-        args.push_back("+vizia_singletic");
-        args.push_back("1");
 
         if(this->noConsole)
         {
