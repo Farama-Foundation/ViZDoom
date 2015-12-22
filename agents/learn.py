@@ -28,6 +28,8 @@ import cv2
 savefile = "params/rgb_60_noskip"
 loadfile = savefile
 
+def double_tanh(x):
+    return 2*tanh(x)
 
 def actions_generator(the_game):
     n = the_game.get_action_format()
@@ -35,23 +37,6 @@ def actions_generator(the_game):
     for perm in it.product([False, True], repeat=n):
         actions.append(list(perm))
     return actions
-
-def create_mlp_evaluator(state_format, actions_number, batch_size, gamma):
-    mlp_args = dict()
-    mlp_args["gamma"] = gamma
-    mlp_args["state_format"] = state_format
-    mlp_args["actions_number"] = actions_number
-    mlp_args["batch_size"] = batch_size
-    mlp_args["learning_rate"] = 0.01
-    mlp_args["updates"] = nesterov_momentum
-    #mlp_args["regularization"] = [[l1,0.001]]
-
-    network_args = dict(hidden_units=[3000], hidden_layers=1)
-    network_args["hidden_nonlin"] = leaky_rectify
-    #network_args["output_nonlin"] = None
-    mlp_args["network_args"] = network_args
-
-    return MLPEvaluator(**mlp_args)
 
 def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     cnn_args = dict()
@@ -72,26 +57,6 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
 
     cnn_args["network_args"] = network_args
     return CNNEvaluator(**cnn_args)
-
-def create_linear_evaluator(state_format,actions_number, batch_size, gamma):
-    lin_args = dict()
-    lin_args["gamma"] = gamma
-    lin_args["state_format"] = state_format
-    lin_args["actions_number"] = actions_number
-    lin_args["batch_size"] = batch_size
-    lin_args["learning_rate"] = 0.01
-    lin_args["updates"] = lasagne.updates.nesterov_momentum
-    network_args = dict()
-    lin_args["network_args"] = network_args
-
-    return LinearEvaluator(**lin_args)
-
-def setup_mockvizia():
-    game = MockDoomGame()
-    game.set_screen_resolution(40,30)
-    game.set_no_shooting_time(8)
-    game.init()
-    return game
 
 def setup_vizia():
     game = DoomGame()
@@ -125,28 +90,6 @@ def setup_vizia():
     print "\nDOOM initialized."
     return game
 
-def double_tanh(x):
-    return 2*tanh(x)
-
-class ScaleConverter(IdentityImageConverter):
-    def __init__(self, source):
-        self._source = source
-        self.x = 60
-        self.y = 45 
-    
-    def convert(self, img):
-
-        img =  np.float32(img)/255.0
-        img = cv2.resize(img[0], (self.x,self.y))
-        img =  img.reshape(1,self.y,self.x)
-        
-        return img
-
-    def get_screen_width(self):
-        return self.x
-
-    def get_screen_height(self):
-        return self.y
 
 class ChannelScaleConverter(IdentityImageConverter):
     def __init__(self, source):
