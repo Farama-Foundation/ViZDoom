@@ -1,6 +1,7 @@
 #include "vizia_screen.h"
 #include "vizia_shared_memory.h"
 #include "vizia_message_queue.h"
+#include "vizia_depth.h"
 
 #include "d_main.h"
 #include "d_net.h"
@@ -50,8 +51,8 @@ void Vizia_ScreenInit() {
             break;
 
         case VIZIA_SCREEN_RGB24 :
-            viziaScreenSize *= 3;
-            viziaScreenPitch *= 3;
+            viziaScreenSize *= 4;
+            viziaScreenPitch *= 4;
             posMulti = 3;
             rPos = 2; gPos = 1; bPos = 0;
             alpha = false;
@@ -167,7 +168,8 @@ void Vizia_ScreenUpdate(){
                 }
             }
         }
-
+        //if(depthBufferNeeded)
+        //TODO memcpy(viziaScreen+3*viziaScreenHeight*viziaScreenWidth, depthBuffer->getBuffer(), depthBuffer->getBufferSize())
         //memcpy( viziaScreen, screen->GetBuffer(), viziaScreenSize );
     }
     screen->Unlock();

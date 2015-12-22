@@ -7,16 +7,43 @@ using namespace Vizia;
 SDL_Window* window = NULL;
 SDL_Surface* screen = NULL;
 SDL_Surface* viziaBuffer = NULL;
+SDL_Surface* viziaDepth = NULL;
+unsigned char dBf[320][240];
 
 void initSDL(int scrW, int scrH){
     SDL_Init( SDL_INIT_VIDEO );
-    window = SDL_CreateWindow( "Vizia Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scrW, scrH, SDL_WINDOW_SHOWN );
+    window = SDL_CreateWindow( "Vizia Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 2*scrW, scrH, SDL_WINDOW_SHOWN );
     screen = SDL_GetWindowSurface( window );
+    //BEGIN TEMP
+    for(int i = 0;i< 320; i++)
+        for(int j=0;j<240; j++)
+            dBf[i][j]= j;
+    //END TEMP
 }
 
 void updateSDL(int scrW, int scrH, int pitch, void* bufferPointer){
+    SDL_Color colors[256];
+    SDL_Rect ptrs;
+    int i;
+
+    for(i = 0; i < 256; i++)
+    {
+        colors[i].r = colors[i].g = colors[i].b = i;
+    }
+    viziaDepth = SDL_CreateRGBSurfaceFrom(dBf, scrW, scrH, 8, scrW, 0, 0, 0, 0);
+
+    SDL_SetPaletteColors(viziaDepth->format->palette, colors, 0, 256);
+
     viziaBuffer = SDL_CreateRGBSurfaceFrom(bufferPointer, scrW, scrH, 24, pitch, 0, 0, 0, 0);
-    SDL_BlitSurface( viziaBuffer, NULL, screen, NULL );
+    printf("A\n");
+    ptrs.x=0;
+    ptrs.y=0;
+
+    SDL_BlitSurface( viziaBuffer, NULL, screen, &ptrs );
+    printf("C\n");
+    ptrs.x = scrW;
+    SDL_BlitSurface( viziaDepth, NULL, screen, &ptrs);
+    printf("b\n");
     SDL_UpdateWindowSurface( window );
 }
 
@@ -49,7 +76,7 @@ int main(){
     // w przypadku nie zachowania proporcji 4:3, 16:10, 16:9
     // silnik weźmie wysokość i pomnoży razy 4/3
     // możemy spróbować to wyłączyć, ale pewnie wtedy obraz będzie zniekształocny
-    vdm->setScreenResolution(640, 480);
+    vdm->setScreenResolution(320, 240);
     // rozdzielczość znacząco wpływa na szybkość działania
 
     vdm->setScreenFormat(RGB24);
@@ -60,8 +87,8 @@ int main(){
     vdm->setRenderDecals(true);
     vdm->setRenderParticles(true);
 
-    vdm->setWindowHidden(true);
-    vdm->setNoXServer(false);
+    vdm->setWindowHidden(false);
+    vdm->setNoXServer(true);
 
     vdm->setNoConsole(true);
 
