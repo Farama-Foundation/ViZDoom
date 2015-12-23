@@ -323,6 +323,8 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("get_episode_timeout", &DoomGamePython::getEpisodeTimeout)
 		.def("set_episode_timeout", &DoomGamePython::setEpisodeTimeout)
 		
+        .def("set_disabled_console",&DoomGamePython::setDisabledConsole)
+        
 		.def("set_screen_resolution", &DoomGamePython::setScreenResolution)
 		.def("set_screen_width", &DoomGamePython::setScreenWidth)
 		.def("set_screen_height", &DoomGamePython::setScreenHeight)
