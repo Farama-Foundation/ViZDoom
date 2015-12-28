@@ -230,6 +230,7 @@ void R_RenderMaskedSegRange (drawseg_t *ds, int x1, int x2)
 	bool		notrelevant = false;
 
 	const sector_t *sec;
+//FIXME GR barierka z przezroczystoscia
 
 	sprflipvert = false;
 
@@ -1059,7 +1060,7 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 	fixed_t light = rw_light - rw_lightstep;
 	SDWORD texturemid, xoffset;
 	BYTE *basecolormapdata;
-
+//FIXME GR jakby wszystkie sciany
 	// This function also gets used to draw skies. Unlike BUILD, skies are
 	// drawn by visplane instead of by bunch, so these checks are invalid.
 	//if ((uwal[x1] > viewheight) && (uwal[x2] > viewheight)) return;

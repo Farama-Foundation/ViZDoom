@@ -152,7 +152,7 @@ void rt_map1col_c (int hx, int sx, int yl, int yh)
 	BYTE *dest;
 	int count;
 	int pitch;
-
+//FIXME GR przezroczystosc
 	count = yh-yl;
 	if (count < 0)
 		return;
@@ -187,7 +187,7 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 	BYTE *dest;
 	int count;
 	int pitch;
-
+//FIXME GR przezroczystosc
 	count = yh-yl;
 	if (count < 0)
 		return;
@@ -1014,7 +1014,7 @@ void rt_initcols (BYTE *buff)
 // Stretches a column into a temporary buffer which is later
 // drawn to the screen along with up to three other columns.
 void R_DrawColumnHorizP_C (void)
-{
+{	//FIXME GR przezroczyste jakby
 	int count = dc_count;
 	BYTE *dest;
 	fixed_t fracstep;
@@ -1075,6 +1075,7 @@ void R_DrawColumnHorizP_C (void)
 // [RH] Just fills a column with a given color
 void R_FillColumnHorizP (void)
 {
+
 	int count = dc_count;
 	BYTE color = dc_color;
 	BYTE *dest;
@@ -1108,6 +1109,7 @@ void R_FillColumnHorizP (void)
 
 void R_DrawMaskedColumnHoriz (const BYTE *column, const FTexture::Span *span)
 {
+	//FIXME GR PRZEZROCZYSTE OBIEKTY
 	while (span->Length != 0)
 	{
 		const int length = span->Length;

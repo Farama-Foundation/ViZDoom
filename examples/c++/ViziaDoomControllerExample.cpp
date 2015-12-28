@@ -8,42 +8,37 @@ SDL_Window* window = NULL;
 SDL_Surface* screen = NULL;
 SDL_Surface* viziaBuffer = NULL;
 SDL_Surface* viziaDepth = NULL;
-unsigned char dBf[320][240];
 
 void initSDL(int scrW, int scrH){
     SDL_Init( SDL_INIT_VIDEO );
     window = SDL_CreateWindow( "Vizia Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 2*scrW, scrH, SDL_WINDOW_SHOWN );
     screen = SDL_GetWindowSurface( window );
-    //BEGIN TEMP
-    for(int i = 0;i< 320; i++)
-        for(int j=0;j<240; j++)
-            dBf[i][j]= j;
-    //END TEMP
 }
 
 void updateSDL(int scrW, int scrH, int pitch, void* bufferPointer){
     SDL_Color colors[256];
     SDL_Rect ptrs;
     int i;
-
+    uint8_t *dBf = ((uint8_t*)bufferPointer) + 3*scrW*scrH;
     for(i = 0; i < 256; i++)
     {
         colors[i].r = colors[i].g = colors[i].b = i;
     }
+
     viziaDepth = SDL_CreateRGBSurfaceFrom(dBf, scrW, scrH, 8, scrW, 0, 0, 0, 0);
 
     SDL_SetPaletteColors(viziaDepth->format->palette, colors, 0, 256);
 
     viziaBuffer = SDL_CreateRGBSurfaceFrom(bufferPointer, scrW, scrH, 24, pitch, 0, 0, 0, 0);
-    printf("A\n");
+
     ptrs.x=0;
     ptrs.y=0;
 
     SDL_BlitSurface( viziaBuffer, NULL, screen, &ptrs );
-    printf("C\n");
+
     ptrs.x = scrW;
     SDL_BlitSurface( viziaDepth, NULL, screen, &ptrs);
-    printf("b\n");
+
     SDL_UpdateWindowSurface( window );
 }
 
@@ -92,12 +87,13 @@ int main(){
 
     vdm->setNoConsole(true);
 
+
     vdm->init();
     if(sdl) initSDL(vdm->getScreenWidth(), vdm->getScreenHeight());
     
     int loop = 100;
     for(int i = 0; i < 50000; ++i){
-
+        SDL_Delay(10);
         if(vdm->isMapLastTic()) std::cout << "\nMAP FINISHED\n\n";
 
         //vdm->setMouseX(-10); //obrót w lewo
@@ -135,10 +131,10 @@ int main(){
                 updateSDL(vdm->getScreenWidth(), vdm->getScreenHeight(), vdm->getScreenPitch(),
                           (void *) vdm->getScreen());
 
-            std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<
+           /* std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<
             " HP: " << vdm->getPlayerHealth() << " AMMO: " << vdm->getGameVars()->PLAYER_AMMO[0] <<
             " REWARD: " << vdm->getMapReward() << " SHAPING: " << vdm->getGameVar(USER1) << std::endl;
-        }
+        */}
         else vdm->tic(false);
 
     }
