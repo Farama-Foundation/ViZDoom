@@ -58,6 +58,7 @@
 #include "r_3dfloors.h"
 #include "v_palette.h"
 #include "r_data/colormaps.h"
+#include "vizia_depth.h"
 
 #ifdef _MSC_VER
 #pragma warning(disable:4244)
@@ -221,7 +222,7 @@ void R_MapPlane (int y, int x1)
 	ds_ystep = FixedMul (distance, ystepscale);
 	ds_xfrac = FixedMul (distance, basexfrac) + pviewx;
 	ds_yfrac = FixedMul (distance, baseyfrac) + pviewy;
-
+	//printf("Distance: %d\n", distance);
 	if (plane_shade)
 	{
 		// Determine lighting based on the span's distance from the viewer.
@@ -233,6 +234,8 @@ void R_MapPlane (int y, int x1)
 	if (ds_colormap != ds_curcolormap)
 		R_SetSpanColormap_ASM (ds_colormap);
 #endif
+
+	depthMap->setActualDepthConv(distance);
 
 	ds_y = y;
 	ds_x1 = x1;

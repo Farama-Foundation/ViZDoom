@@ -1505,6 +1505,7 @@ void R_DrawPlayerSprites ()
 
 void R_DrawRemainingPlayerSprites()
 {
+
 	for (int i = 0; i < NUMPSPRITES; ++i)
 	{
 		vissprite_t *vis;
@@ -1791,7 +1792,7 @@ void R_DrawSprite (vissprite_t *spr)
 	lighttable_t *colormap = spr->Style.colormap;
 	F3DFloor *rover;
 	FDynamicColormap *mybasecolormap;
-
+//FIXME GR sprajty
 	// [RH] Check for particles
 	if (!spr->bIsVoxel && spr->pic == NULL)
 	{

@@ -43,6 +43,7 @@
 #include "gi.h"
 #include "stats.h"
 #include "x86.h"
+#include "vizia_depth.h"
 
 #undef RANGECHECK
 
@@ -1058,7 +1059,7 @@ void R_SetupSpanBits(FTexture *tex)
 //
 // Draws the actual span.
 #ifndef X86_ASM
-void R_DrawSpanP_C (void)
+void R_DrawSpanP_C (void)//FIXME GR POGLOGI I SUFITY!
 {
 	dsfixed_t			xfrac;
 	dsfixed_t			yfrac;
@@ -1100,7 +1101,7 @@ void R_DrawSpanP_C (void)
 			// Lookup pixel from flat texture tile,
 			//  re-index using light/colormap.
 			*dest++ = colormap[source[spot]];
-
+			depthMap->setPoint(ds_x2-count,ds_y);
 			// Next step in u,v.
 			xfrac += xstep;
 			yfrac += ystep;
@@ -1120,7 +1121,7 @@ void R_DrawSpanP_C (void)
 			// Lookup pixel from flat texture tile,
 			//  re-index using light/colormap.
 			*dest++ = colormap[source[spot]];
-
+			depthMap->setPoint(ds_x2-count,ds_y);
 			// Next step in u,v.
 			xfrac += xstep;
 			yfrac += ystep;
@@ -1673,7 +1674,7 @@ DWORD STACK_ARGS vlinec1 ()
 	int pitch = dc_pitch;
 
 	do
-	{
+	{//FIXME GR TROCHE SCIAN
 		*dest = colormap[source[frac>>bits]];
 		frac += fracstep;
 		dest += pitch;
@@ -2004,7 +2005,10 @@ void tmvline4_addclamp ()
 				a &= 0x3fffffff;
 				b = b - (b >> 5);
 				a |= b;
-				dest[i] = RGB32k.All[a & (a>>15)];
+
+				//
+				//
+				 dest[i] = RGB32k.All[a & (a>>15)];
 			}
 			vplce[i] += vince[i];
 		}

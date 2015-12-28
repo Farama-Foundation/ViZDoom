@@ -52,7 +52,7 @@ void Vizia_ScreenInit() {
 
         case VIZIA_SCREEN_RGB24 :
             viziaScreenSize *= 4;
-            viziaScreenPitch *= 4;
+            viziaScreenPitch *= 3;
             posMulti = 3;
             rPos = 2; gPos = 1; bPos = 0;
             alpha = false;
@@ -132,6 +132,8 @@ void Vizia_ScreenInit() {
         Vizia_Command(strdup("exit"));
     }
 
+    depthMap = new depthBuffer(viziaScreenWidth, viziaScreenHeight);
+    depthMap->setDepthBoundries(30000000, 2000000);
 }
 
 void Vizia_ScreenUpdate(){
@@ -168,8 +170,9 @@ void Vizia_ScreenUpdate(){
                 }
             }
         }
+
         //if(depthBufferNeeded)
-        //TODO memcpy(viziaScreen+3*viziaScreenHeight*viziaScreenWidth, depthBuffer->getBuffer(), depthBuffer->getBufferSize())
+        memcpy(viziaScreen+3*viziaScreenHeight*viziaScreenWidth, depthMap->getBuffer(), depthMap->getBufferSize());
         //memcpy( viziaScreen, screen->GetBuffer(), viziaScreenSize );
     }
     screen->Unlock();
@@ -177,4 +180,5 @@ void Vizia_ScreenUpdate(){
 
 void Vizia_ScreenClose(){
     delete(viziaScreenSMRegion);
+    delete depthMap;
 }

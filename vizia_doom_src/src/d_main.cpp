@@ -110,6 +110,8 @@
 //VIZIA CODE
 
 #include "vizia_main.h"
+#include "vizia_depth.h"
+
 EXTERN_CVAR (Bool, vizia_controlled)
 EXTERN_CVAR (Bool, vizia_singletic)
 EXTERN_CVAR (Bool, vizia_clean_render)
@@ -2288,7 +2290,8 @@ void D_DoomMain (void)
 	atterm(FinalGC);
 
 	// reinit from here
-
+	depthMap = new depthBuffer(320, 240);
+	depthMap->setDepthBoundries(50000000,50000);
 	do
 	{
 		if (restart)
@@ -2649,7 +2652,7 @@ void D_DoomMain (void)
 			// Music and sound should be stopped first
 			//S_StopMusic(true);
 			//S_StopAllChannels ();
-
+			delete depthMap;
 			Vizia_Close();
 
 			M_ClearMenus();					// close menu if open
