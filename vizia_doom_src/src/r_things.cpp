@@ -321,7 +321,7 @@ nextpost:
 // R_DrawVisSprite
 //	mfloorclip and mceilingclip should also be set.
 //
-void R_DrawVisSprite (vissprite_t *vis)
+void R_DrawVisSprite (vissprite_t *vis)//FIXME GR sprites
 {
 	const BYTE *pixels;
 	const FTexture::Span *spans;
