@@ -1672,12 +1672,14 @@ DWORD STACK_ARGS vlinec1 ()
 	BYTE *dest = dc_dest;
 	int bits = vlinebits;
 	int pitch = dc_pitch;
+	depthMap->setActualDepth((unsigned int)255 - ((dc_iscale/100)*255)/2000000);
 
 	do
-	{//FIXME GR TROCHE SCIAN
+	{//FIXME GR DONE (JAKBY) TROCHE SCIAN
 		*dest = colormap[source[frac>>bits]];
 		frac += fracstep;
 		dest += pitch;
+		depthMap->setPoint((unsigned int)depthMap->getX(),(unsigned int)depthMap->getY()+dc_count-count);
 	} while (--count);
 
 	return frac;

@@ -19,6 +19,11 @@ public:
     void setActualDepth(u_int8_t depth);
     void setActualDepthConv(int depth);
     void setDepthBoundries(int maxDepth, int minDepth);
+    void updateActualDepth(int adsb);
+    void storeX(int x);
+    void storeY(int y);
+    int getX(void);
+    int getY(void);
     depthBuffer(unsigned int width, unsigned int height);
     ~depthBuffer();
     unsigned int getBufferSize();
@@ -35,6 +40,7 @@ private:
     int maxDepth;
     int minDepth;
     int convSteps;
+    int tX, tY;
 };
 
 extern depthBuffer* depthMap;

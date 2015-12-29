@@ -62,6 +62,7 @@
 #include "r_data/colormaps.h"
 #include "r_data/voxels.h"
 #include "p_local.h"
+#include "vizia_depth.h"
 
 // [RH] A c-buffer. Used for keeping track of offscreen voxel spans.
 
@@ -388,6 +389,7 @@ void R_DrawVisSprite (vissprite_t *vis)//FIXME GR sprites
 					dc_x++;
 					frac += xiscale;
 				}
+				depthMap->setActualDepth((unsigned int)255 - (dc_iscale*255)/50000);
 				rt_draw4cols (dc_x - 4);
 			}
 

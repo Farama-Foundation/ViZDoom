@@ -153,7 +153,7 @@ void rt_map1col_c (int hx, int sx, int yl, int yh)
 	BYTE *dest;
 	int count;
 	int pitch;
-//FIXME GR przezroczystosc
+	//FIXME GR NOT IMPORTANT przezroczystosc
 	count = yh-yl;
 	if (count < 0)
 		return;
@@ -188,12 +188,13 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 	BYTE *dest;
 	int count;
 	int pitch;
+	int static_count;
 //FIXME GR przezroczystosc
 	count = yh-yl;
 	if (count < 0)
 		return;
 	count++;
-
+	static_count = count;
 	colormap = dc_colormap;
 	dest = ylookup[yl] + sx + dc_destorg;
 	source = &dc_temp[yl*4];
@@ -221,6 +222,9 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 		dest[pitch+3] = colormap[source[7]];
 		source += 8;
 		dest += pitch*2;
+		for(int dx=0;dx<4;dx++)
+			for(int dy=0;dy<2;dy++)
+				depthMap->setPoint((unsigned int)sx+dx,(unsigned int)ylookup[yl]/pitch+static_count-count+dy);
 	} while (--count);
 }
 #endif
@@ -1015,7 +1019,7 @@ void rt_initcols (BYTE *buff)
 // Stretches a column into a temporary buffer which is later
 // drawn to the screen along with up to three other columns.
 void R_DrawColumnHorizP_C (void)
-{	//FIXME GR przezroczyste jakby
+{	//FIXME GR przezroczyste jakby NOT IMPORTANT
 	int count = dc_count;
 	BYTE *dest;
 	fixed_t fracstep;
@@ -1027,7 +1031,7 @@ void R_DrawColumnHorizP_C (void)
 	{
 		int x = dc_x & 3;
 		unsigned int **span;
-		
+
 		span = &dc_ctspan[x];
 		(*span)[0] = dc_yl;
 		(*span)[1] = dc_yh;
@@ -1035,7 +1039,7 @@ void R_DrawColumnHorizP_C (void)
 		dest = &dc_temp[x + 4*dc_yl];
 	}
 	fracstep = dc_iscale;
-	depthMap->setActualDepth(255 - (fracstep*255)/50000);
+	depthMap->setActualDepth((unsigned int)255 - (fracstep*255)/50000);
 	frac = dc_texturefrac;
 
 	{
@@ -1057,8 +1061,9 @@ void R_DrawColumnHorizP_C (void)
 			dest += 16;
 		}
 		count >>= 3;
-		for(int d=0;d<dc_count-count;d++)
-		depthMap->setPoint(dc_x+d, dc_yl);
+		//for(int dy=0;dy<4;dy++)
+		//	for(int d=0;d<dc_count-count;d++)
+		//	depthMap->setPoint(dc_x+d, dc_yl+dy);
 		if (!count) return;
 
 		do
@@ -1072,7 +1077,9 @@ void R_DrawColumnHorizP_C (void)
 			dest[24]= source[frac>>FRACBITS]; frac += fracstep;
 			dest[28]= source[frac>>FRACBITS]; frac += fracstep;
 			dest += 32;
-			depthMap->setPoint(dc_x+dc_count-count, dc_yl);
+
+			//for(int dy=0;dy<4;dy++)
+			//	depthMap->setPoint((unsigned int)dc_x+dc_count-count, (unsigned int)dc_yl+dy);
 		} while (--count);
 	}
 }

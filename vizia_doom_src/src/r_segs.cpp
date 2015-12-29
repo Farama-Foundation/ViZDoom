@@ -52,6 +52,7 @@
 #include "r_3dfloors.h"
 #include "v_palette.h"
 #include "r_data/colormaps.h"
+#include "vizia_depth.h"
 
 #define WALLYREPEAT 8
 
@@ -1060,7 +1061,7 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 	fixed_t light = rw_light - rw_lightstep;
 	SDWORD texturemid, xoffset;
 	BYTE *basecolormapdata;
-//FIXME GR jakby wszystkie sciany
+//FIXME GR DONE (JAKBY) jakby wszystkie sciany
 	// This function also gets used to draw skies. Unlike BUILD, skies are
 	// drawn by visplane instead of by bunch, so these checks are invalid.
 	//if ((uwal[x1] > viewheight) && (uwal[x2] > viewheight)) return;
@@ -1114,6 +1115,8 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 		dc_count = y2ve[0] - y1ve[0];
 		dc_texturefrac = texturemid + FixedMul (dc_iscale, (y1ve[0]<<FRACBITS)-centeryfrac+FRACUNIT);
 
+		depthMap->storeX(x);
+		depthMap->storeY(y1ve[0]);
 		dovline1();
 	}
 
@@ -1156,6 +1159,8 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 			{
 				if (!(bad & 1))
 				{
+					depthMap->storeX(x+z);
+					depthMap->storeY(y1ve[z]);
 					prevline1(vince[z],palookupoffse[z],y2ve[z]-y1ve[z],vplce[z],bufplce[z],ylookup[y1ve[z]]+x+z+dc_destorg);
 				}
 				bad >>= 1;
@@ -1167,6 +1172,8 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 		{
 			if (u4 > y1ve[z])
 			{
+				depthMap->storeX(x+z);
+				depthMap->storeY(y1ve[z]);
 				vplce[z] = prevline1(vince[z],palookupoffse[z],u4-y1ve[z],vplce[z],bufplce[z],ylookup[y1ve[z]]+x+z+dc_destorg);
 			}
 		}
@@ -1175,6 +1182,13 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 		{
 			dc_count = d4-u4;
 			dc_dest = ylookup[u4]+x+dc_destorg;
+
+			depthMap->setActualDepth(255 - ((dc_iscale/100)*255)/2000000);
+			for(int pcf=0;pcf<4;pcf++) {
+				for (int c = 0; c < dc_count; c++)
+					depthMap->setPoint(x + pcf, ylookup[u4] / depthMap->getBufferWidth() + c);
+				//depthMap->updateActualDepth(2);
+			}
 			dovline4();
 		}
 
@@ -1183,6 +1197,8 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 		{
 			if (y2ve[z] > d4)
 			{
+				depthMap->storeX(x+z);
+				depthMap->storeY(d4);
 				prevline1(vince[z],palookupoffse[0],y2ve[z]-d4,vplce[z],bufplce[z],i+z);
 			}
 		}
@@ -1206,7 +1222,8 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 		dc_iscale = swal[x] * yrepeat;
 		dc_count = y2ve[0] - y1ve[0];
 		dc_texturefrac = texturemid + FixedMul (dc_iscale, (y1ve[0]<<FRACBITS)-centeryfrac+FRACUNIT);
-
+		depthMap->storeX(x);
+		depthMap->storeY(y1ve[0]);
 		dovline1();
 	}
 

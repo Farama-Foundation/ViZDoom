@@ -48,6 +48,25 @@ void depthBuffer::setActualDepthConv(int depth) {
     }
 }
 
+void depthBuffer::updateActualDepth(int adsb) {
+    int act = this->actualDepth;
+    if(act+adsb>255)
+        this->actualDepth=255;
+    else if(act+adsb<0)
+        this->actualDepth=0;
+    else
+        this->actualDepth+=adsb;
+}
+
+void depthBuffer::storeX(int x) {this->tX=x; }
+
+void depthBuffer::storeY(int y) {this->tY=y; }
+
+int depthBuffer::getX() {return this->tX; }
+
+int depthBuffer::getY() {return this->tY; }
+
+
 unsigned int depthBuffer::getBufferSize(){
     return this->bufferSize;
 }
