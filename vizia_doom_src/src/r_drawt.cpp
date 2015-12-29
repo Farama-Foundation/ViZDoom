@@ -46,6 +46,7 @@
 #include "r_main.h"
 #include "r_things.h"
 #include "v_video.h"
+#include "vizia_depth.h"
 
 // I should have commented this stuff better.
 //
@@ -1034,6 +1035,7 @@ void R_DrawColumnHorizP_C (void)
 		dest = &dc_temp[x + 4*dc_yl];
 	}
 	fracstep = dc_iscale;
+	depthMap->setActualDepth(255 - (fracstep*255)/50000);
 	frac = dc_texturefrac;
 
 	{
@@ -1055,6 +1057,8 @@ void R_DrawColumnHorizP_C (void)
 			dest += 16;
 		}
 		count >>= 3;
+		for(int d=0;d<dc_count-count;d++)
+		depthMap->setPoint(dc_x+d, dc_yl);
 		if (!count) return;
 
 		do
@@ -1068,6 +1072,7 @@ void R_DrawColumnHorizP_C (void)
 			dest[24]= source[frac>>FRACBITS]; frac += fracstep;
 			dest[28]= source[frac>>FRACBITS]; frac += fracstep;
 			dest += 32;
+			depthMap->setPoint(dc_x+dc_count-count, dc_yl);
 		} while (--count);
 	}
 }

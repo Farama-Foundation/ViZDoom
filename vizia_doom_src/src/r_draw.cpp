@@ -1059,7 +1059,7 @@ void R_SetupSpanBits(FTexture *tex)
 //
 // Draws the actual span.
 #ifndef X86_ASM
-void R_DrawSpanP_C (void)//FIXME GR POGLOGI I SUFITY!
+void R_DrawSpanP_C (void)//FIXME GR DONE POGLOGI I SUFITY!
 {
 	dsfixed_t			xfrac;
 	dsfixed_t			yfrac;
