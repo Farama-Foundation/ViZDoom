@@ -13,6 +13,8 @@ namespace Vizia {
 
     unsigned int Ms2DoomTics(unsigned int ms);
 
+    float DoomFixedToFloat(int doomFixed);
+
     class DoomGame {
 
     public:
@@ -64,12 +66,12 @@ namespace Vizia {
 
         int getGameVar(GameVar var);
 
-        int getLivingReward();
-        void setLivingReward(int livingReward);
-        int getDeathPenalty();
-        void setDeathPenalty(int deathPenalty);
-        int getLastReward();
-        int getSummaryReward();
+        float getLivingReward();
+        void setLivingReward(float livingReward);
+        float getDeathPenalty();
+        void setDeathPenalty(float deathPenalty);
+        float getLastReward();
+        float getSummaryReward();
 
         void setDoomGamePath(std::string path);
         void setDoomIwadPath(std::string path);
@@ -131,12 +133,12 @@ namespace Vizia {
         //REWARD
         unsigned int actionInterval;
 
-        int lastReward;
-        int lastMapReward;
-        int summaryReward;
+        float lastReward;
+        float lastMapReward;
+        float summaryReward;
 
-        int livingReward;
-        int deathPenalty;
+        float livingReward;
+        float deathPenalty;
 
     };
 }
