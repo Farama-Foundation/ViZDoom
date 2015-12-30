@@ -23,12 +23,11 @@ def setup_vizia():
 
 	game.set_doom_game_path("../../bin/viziazdoom")
 	game.set_doom_iwad_path("../../scenarios/doom2.wad")
-	game.set_doom_file_path("../../scenarios/s1_b.wad")
+	game.set_doom_file_path("../../scenarios/predict_position.wad")
 	game.set_doom_map("map01")
 	game.set_episode_timeout(100)
 
-	game.set_living_reward(-1.0)
-	game.set_death_penalty(100.0)
+	game.set_living_reward(-0.0001)
 
 	game.set_render_hud(False)	
 	game.set_render_crosshair(False)
@@ -36,12 +35,11 @@ def setup_vizia():
 	game.set_render_decals(False)
 	game.set_render_particles(False);
 
-	game.add_available_button(Button.MOVE_LEFT)
-	game.add_available_button(Button.MOVE_RIGHT)
+	game.add_available_button(Button.TURN_LEFT)
+	game.add_available_button(Button.TURN_RIGHT)
 	game.add_available_button(Button.ATTACK)
 
 	game.set_visible_window(True)
-	game.add_state_available_var(GameVar.AMMO1)
 
 	game.set_doom_skill(1)
 
@@ -74,7 +72,6 @@ for i in range(iters):
 	r = game.make_action(choice(actions))
 
 	print "state #" +str(s.number)
-	print "ammo:", s.vars[0]
 	print "reward:",r
 	print "====================="	
 	if sleep_time>0:
