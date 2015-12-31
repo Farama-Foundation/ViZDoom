@@ -1187,7 +1187,6 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 			for(int pcf=0;pcf<4;pcf++) {
 				for (int c = 0; c < dc_count; c++)
 					depthMap->setPoint(x + pcf, ylookup[u4] / depthMap->getBufferWidth() + c);
-				//depthMap->updateActualDepth(2);
 			}
 			dovline4();
 		}

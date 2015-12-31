@@ -210,7 +210,7 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 	}
 	if (!(count >>= 1))
 		return;
-
+	int y_mod=0;
 	do {
 		dest[0] = colormap[source[0]];
 		dest[1] = colormap[source[1]];
@@ -224,7 +224,8 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 		dest += pitch*2;
 		for(int dx=0;dx<4;dx++)
 			for(int dy=0;dy<2;dy++)
-				depthMap->setPoint((unsigned int)sx+dx,(unsigned int)ylookup[yl]/pitch+static_count-count+dy);
+				depthMap->setPoint((unsigned int)sx+dx,(unsigned int)ylookup[yl]/pitch+y_mod+dy);
+		y_mod+=2;
 	} while (--count);
 }
 #endif
