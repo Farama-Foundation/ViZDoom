@@ -63,7 +63,7 @@ int main(){
     vdm->setWindowHidden(true);
     vdm->setNoXServer(false);
 
-    vdm->setNoConsole(true);
+    vdm->setNoConsole(false);
 
     vdm->init();
     if(sdl) initSDL(vdm->getScreenWidth(), vdm->getScreenHeight());
