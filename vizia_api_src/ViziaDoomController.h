@@ -26,9 +26,9 @@ namespace Vizia{
 
 #define MQ_NAME_CTR_BASE "ViziaMQCtr"
 #define MQ_NAME_DOOM_BASE "ViziaMQDoom"
-#define MQ_MAX_MSG_NUM 32
+#define MQ_MAX_MSG_NUM 64
 #define MQ_MAX_MSG_SIZE sizeof(DoomController::MessageCommandStruct)
-#define MQ_MAX_CMD_LEN 32
+#define MQ_MAX_CMD_LEN 64
 
 #define MSG_CODE_DOOM_DONE 11
 #define MSG_CODE_DOOM_CLOSE 12
@@ -46,12 +46,10 @@ namespace Vizia{
     public:
 
         struct InputStruct {
-            int MS_X;
-            int MS_Y;
-            int MS_MAX_X;
-            int MS_MAX_Y;
-            bool BT[ButtonsNumber];
+            int BT[ButtonsNumber];
             bool BT_AVAILABLE[ButtonsNumber];
+            int MAX_VIEW_PITCH_CHANGE;
+            int MAX_VIEW_ANGLE_CHANGE;
         };
 
         struct GameVarsStruct {
@@ -94,9 +92,8 @@ namespace Vizia{
             int PLAYER_SELECTED_WEAPON;
             int PLAYER_SELECTED_WEAPON_AMMO;
 
-            int PLAYER_AMMO[4];
-            bool PLAYER_WEAPON[7];
-            bool PLAYER_KEY[3];
+            int PLAYER_AMMO[SlotsNumber];
+            int PLAYER_WEAPON[SlotsNumber];
         };
 
         DoomController();
@@ -116,8 +113,14 @@ namespace Vizia{
         void resetMap();
         bool isDoomRunning();
         void sendCommand(std::string command);
+        void addCustomArg(std::string arg);
+        void clearCustomArgs();
 
         void waitTicsRealTime(unsigned int tics);
+        bool realTimeTic();
+        bool realTimeTic(bool update);
+        bool realTimeTics(unsigned int tics);
+        bool realTimeTics(unsigned int tics, bool update);
 
         //SETTINGS
 
@@ -166,6 +169,7 @@ namespace Vizia{
         void setNoConsole(bool console);
 
         //GRAPHIC SETTINGS
+
         void setWindowHidden(bool windowHidden);
         void setNoXServer(bool noXServer);
 
@@ -191,21 +195,12 @@ namespace Vizia{
 
         //PUBLIC SETTERS & GETTERS
 
-        uint8_t *const getScreen();
+        uint8_t * const getScreen();
+        InputStruct * const getInput();
+        GameVarsStruct * const getGameVars();
 
-        InputStruct *const getInput();
-
-        GameVarsStruct *const getGameVars();
-
-        void setMouse(int x, int y);
-        int getMouseX();
-        void setMouseX(int x);
-        int getMouseY();
-        void setMouseY(int y);
-        void resetMouse();
-
-        bool getButtonState(Button button);
-        void setButtonState(Button button, bool state);
+        int getButtonState(Button button);
+        void setButtonState(Button button, int state);
         void toggleButtonState(Button button);
         bool isButtonAvailable(Button button);
         void setButtonAvailable(Button button, bool set);
@@ -213,8 +208,6 @@ namespace Vizia{
         void resetDescreteButtons();
         void disableAllButtons();
         void availableAllButtons();
-
-        void resetInput();
 
         bool isAllowDoomInput();
         void setAllowDoomInput(bool set);
@@ -241,22 +234,8 @@ namespace Vizia{
         int getPlayerSelectedWeaponAmmo();
         int getPlayerSelectedWeapon();
 
-        int getPlayerAmmo1();
-        int getPlayerAmmo2();
-        int getPlayerAmmo3();
-        int getPlayerAmmo4();
-
-        bool getPlayerWeapon1();
-        bool getPlayerWeapon2();
-        bool getPlayerWeapon3();
-        bool getPlayerWeapon4();
-        bool getPlayerWeapon5();
-        bool getPlayerWeapon6();
-        bool getPlayerWeapon7();
-
-        bool getPlayerKey1();
-        bool getPlayerKey2();
-        bool getPlayerKey3();
+        int getPlayerAmmo(unsigned int slot);
+        int getPlayerWeapon(unsigned int slot);
 
     private:
 
@@ -359,6 +338,10 @@ namespace Vizia{
         // TIME
 
         bc::steady_clock::time_point lastTicTimePoint;
+
+        //CUSTOM ARGS
+
+        std::vector <std::string> customArgs;
 
     };
 

@@ -7,6 +7,7 @@
 #include "dobjtype.h"
 #include "doomtype.h"
 #include "name.h"
+#include "d_player.h"
 //#include "namedef.h"
 //#include "sc_man.h"
 //#include "sc_man_tokens.h"
@@ -21,7 +22,13 @@ bool Vizia_CheckSelectedWeaponState();
 
 int Vizia_CheckSelectedWeapon();
 
+int Vizia_CheckWeaponAmmo(AWeapon* weapon);
+
 int Vizia_CheckSelectedWeaponAmmo();
+
+int Vizia_CheckSlotAmmo(int slot);
+
+int Vizia_CheckSlotWeapons(int slot);
 
 void Vizia_GameVarsInit();
 

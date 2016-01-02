@@ -27,22 +27,22 @@ bool Vizia_CommmandFilter(const char *cmd){
     if(!viziaInputInited || !*vizia_allow_input) return true;
 
     bool action = false;
-    bool state = true;
+    int state = 1;
 
     if (*cmd == '+'){
         action = true;
-        state = true;
+        state = 1;
     }
     else if(*cmd == '-'){
         action = true;
-        state = false;
+        state = 0;
     }
 
     const char* beg;
     if(action) beg = cmd+1;
     else beg = cmd;
 
-    for(int i =0; i<VIZIA_BT_SIZE; ++i){
+    for(int i =0; i<VIZIA_BT_CMD_BT_SIZE; ++i){
         if(strcmp(beg, Vizia_BTToCommand(i)) == 0){
             if(!viziaInput->BT_AVAILABLE[i]) return false;
             else{
@@ -86,17 +86,25 @@ char* Vizia_BTToCommand(int button){
         case VIZIA_BT_SELECT_WEAPON5 : return strdup("slot 5");
         case VIZIA_BT_SELECT_WEAPON6 : return strdup("slot 6");
         case VIZIA_BT_SELECT_WEAPON7 : return strdup("slot 7");
+        case VIZIA_BT_SELECT_WEAPON8 : return strdup("slot 8");
+        case VIZIA_BT_SELECT_WEAPON9 : return strdup("slot 9");
+        case VIZIA_BT_SELECT_WEAPON0 : return strdup("slot 0");
 
-        case VIZIA_BT_WEAPON_NEXT : return strdup("weapnext");
-        case VIZIA_BT_WEAPON_PREV : return strdup("weapprev");
+        case VIZIA_BT_SELECT_NEXT_WEAPON : return strdup("weapnext");
+        case VIZIA_BT_SELECT_PREV_WEAPON : return strdup("weapprev");
+
+        case VIZIA_BT_DROP_SELECTED_WEAPON : return strdup("weapnext");
+
+        case VIZIA_BT_ACTIVATE_SELECTED_ITEM : return strdup("weapnext");
+        case VIZIA_BT_SELECT_NEXT_ITEM : return strdup("weapnext");
+        case VIZIA_BT_SELECT_PREV_ITEM : return strdup("weapnext");
+        case VIZIA_BT_DROP_SELECTED_ITEM : return strdup("weapnext");
+
+        case VIZIA_BT_VIEW_PITCH : return strdup("");
+        case VIZIA_BT_VIEW_ANGLE : return strdup("");
 
         default : return strdup("");
     }
-}
-
-void Vizia_Mouse(int x, int y){
-    if(x) G_AddViewPitch (x);
-    if(y) G_AddViewAngle (y);
 }
 
 bool Vizia_HasCounterBT(int button){
@@ -133,7 +141,7 @@ int Vizia_CounterBT(int button){
     }
 }
 
-void Vizia_AddBTCommand(int button, bool state){
+void Vizia_AddBTCommand(int button, int state){
 
     switch(button){
         case VIZIA_BT_ATTACK :
@@ -167,9 +175,25 @@ void Vizia_AddBTCommand(int button, bool state){
         case VIZIA_BT_SELECT_WEAPON5 :
         case VIZIA_BT_SELECT_WEAPON6 :
         case VIZIA_BT_SELECT_WEAPON7 :
-        case VIZIA_BT_WEAPON_NEXT :
-        case VIZIA_BT_WEAPON_PREV :
+        case VIZIA_BT_SELECT_WEAPON8 :
+        case VIZIA_BT_SELECT_WEAPON9 :
+        case VIZIA_BT_SELECT_WEAPON0 :
+        case VIZIA_BT_SELECT_NEXT_WEAPON :
+        case VIZIA_BT_SELECT_PREV_WEAPON :
+        case VIZIA_BT_DROP_SELECTED_WEAPON :
+        case VIZIA_BT_ACTIVATE_SELECTED_ITEM :
+        case VIZIA_BT_SELECT_NEXT_ITEM :
+        case VIZIA_BT_SELECT_PREV_ITEM :
+        case VIZIA_BT_DROP_SELECTED_ITEM :
             if(state) Vizia_Command(Vizia_BTToCommand(button));
+            break;
+
+        case VIZIA_BT_VIEW_ANGLE :
+            if(state != 0) G_AddViewAngle(state);
+            break;
+
+        case VIZIA_BT_VIEW_PITCH :
+            if(state != 0) G_AddViewPitch(state);
             break;
     }
 
@@ -195,14 +219,12 @@ void Vizia_InputInit() {
     }
 
     for (int i = 0; i < VIZIA_BT_SIZE; ++i) {
-        viziaInput->BT[i] = false;
+        viziaInput->BT[i] = 0;
         viziaInput->BT_AVAILABLE[i] = true;
     }
 
-    viziaInput->MS_MAX_X = 90;
-    viziaInput->MS_MAX_Y = 90;
-    viziaInput->MS_X = 0;
-    viziaInput->MS_Y = 0;
+    viziaInput->MAX_VIEW_ANGLE_CHANGE = 90;
+    viziaInput->MAX_VIEW_PITCH_CHANGE = 90;
 
     viziaInputInited = true;
 }
@@ -232,12 +254,9 @@ void Vizia_InputTic(){
             }
         }
     }
-    else D_ProcessEvents();
+    //else D_ProcessEvents();
 
     memcpy( viziaLastInput, viziaInput, sizeof(ViziaInputStruct) );
-
-    viziaInput->MS_X = 0;
-    viziaInput->MS_Y = 0;
 }
 
 void Vizia_InputClose(){
