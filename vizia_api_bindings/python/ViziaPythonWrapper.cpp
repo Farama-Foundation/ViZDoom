@@ -76,7 +76,7 @@ BOOST_PYTHON_MODULE(vizia)
 
     enum_<GameMode>("GameMode")
         ENUM_VAL_2_PYT(PLAYER)
-        ENUM_VAL_2_PYT(SPECATOR);
+        ENUM_VAL_2_PYT(SPECTATOR);
 
 	enum_<ScreenFormat>("ScreenFormat")
         ENUM_VAL_2_PYT(CRCGCB)
@@ -105,7 +105,7 @@ BOOST_PYTHON_MODULE(vizia)
         ENUM_VAL_2_PYT(STRAFE)
         ENUM_VAL_2_PYT(MOVE_RIGHT)
         ENUM_VAL_2_PYT(MOVE_LEFT)
-        ENUM_VAL_2_PYT(MOVE_BACK)
+        ENUM_VAL_2_PYT(MOVE_BACKWARD)
         ENUM_VAL_2_PYT(MOVE_FORWARD)
         ENUM_VAL_2_PYT(TURN_RIGHT)
         ENUM_VAL_2_PYT(TURN_LEFT)
@@ -129,7 +129,10 @@ BOOST_PYTHON_MODULE(vizia)
         ENUM_VAL_2_PYT(SELECT_PREV_ITEM)
         ENUM_VAL_2_PYT(DROP_SELECTED_ITEM)
         ENUM_VAL_2_PYT(VIEW_PITCH)
-        ENUM_VAL_2_PYT(VIEW_ANGLE);
+        ENUM_VAL_2_PYT(VIEW_ANGLE)
+        ENUM_VAL_2_PYT(FORWARD_BACKWARD)
+        ENUM_VAL_2_PYT(LEFT_RIGHT)
+        ENUM_VAL_2_PYT(UP_DOWN);
 
     enum_<GameVar>("GameVar")
         ENUM_VAL_2_PYT(KILLCOUNT)
@@ -205,14 +208,12 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("new_episode", &DoomGamePython::newEpisode)
 		.def("is_episode_finished", &DoomGamePython::isEpisodeFinished)
 		.def("is_new_episode", &DoomGamePython::isNewEpisode)
-		.def("set_next_action",&DoomGamePython::set_next_action)
+		.def("set_next_action",&DoomGamePython::setNextAction)
 		.def("advance_action",&DoomGamePython::advanceAction)
             
 		.def("get_state", &DoomGamePython::getState)
-		.def("get_action_format", &DoomGamePython::getActionFormat)
     
         .def("get_game_var", &DoomGamePython::getGameVar)
-        .def("get_game_var_len", &DoomGamePython::getGameVarLen)
 
         .def("get_living_reward", &DoomGamePython::getLivingReward)
         .def("set_living_reward", &DoomGamePython::setLivingReward)
@@ -226,16 +227,20 @@ BOOST_PYTHON_MODULE(vizia)
         .def("get_last_action", &DoomGamePython::getLastAction)
         
 		.def("add_state_available_var", &DoomGamePython::addStateAvailableVar)
-		.def("clear_state_available_var", &DoomGamePython::clearStateAvailableVar)
+		.def("clear_state_available_var", &DoomGamePython::clearStateAvailableVars)
+        .def("get_state_available_vars_size", &DoomGamePython::getStateAvailableVarsSize)
+
 		.def("add_available_button", &DoomGamePython::addAvailableButton)
-		.def("clear_available_button", &DoomGamePython::clearAvailableButton)
+		.def("clear_available_button", &DoomGamePython::clearAvailableButtons)
+        .def("get_available_buttons_size", &DoomGamePython::getAvailableButtonsSize)
+        .def("set_button_max_value", &DoomGamePython::setButtonMaxValue)
 
-        .def("add_custom_game_arg", &DoomGamePython::addCustomGameArg);
-        .def("clear_custom_game_args", &DoomGamePython::clearCustomGameArgs);
+        .def("add_custom_game_arg", &DoomGamePython::addCustomGameArg)
+        .def("clear_custom_game_args", &DoomGamePython::clearCustomGameArgs)
 
-        .def("send_game_command, &DoomGamePython::sendGameCommand);
+        .def("send_game_command", &DoomGamePython::sendGameCommand)
 
-        .def("get_game_buffer", &DoomGamePython::getGameBuffer);
+        .def("get_game_buffer", &DoomGamePython::getGameScreen)
 
         .def("get_game_mode", &DoomGamePython::getGameMode)
         .def("set_game_mode", &DoomGamePython::setGameMode)

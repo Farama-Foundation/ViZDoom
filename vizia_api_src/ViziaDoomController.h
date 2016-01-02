@@ -48,8 +48,7 @@ namespace Vizia{
         struct InputStruct {
             int BT[ButtonsNumber];
             bool BT_AVAILABLE[ButtonsNumber];
-            int MAX_VIEW_PITCH_CHANGE;
-            int MAX_VIEW_ANGLE_CHANGE;
+            int BT_MAX_VALUE[AxisButtonsNumber];
         };
 
         struct GameVarsStruct {
@@ -207,7 +206,10 @@ namespace Vizia{
         void resetButtons();
         void resetDescreteButtons();
         void disableAllButtons();
+        void setButtonMaxValue(Button button, int value);
         void availableAllButtons();
+        bool isButtonDiscrete(Button button);
+        bool isButtonAxis(Button button);
 
         bool isAllowDoomInput();
         void setAllowDoomInput(bool set);

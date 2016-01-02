@@ -73,8 +73,6 @@ int main(){
 
         if(vdm->isMapLastTic()) std::cout << "\nMAP FINISHED\n\n";
 
-        //vdm->setMouseX(-10); //obrót w lewo
-
         if(i%loop < 50) {
             vdm->setButtonState(MOVE_RIGHT, 1);   //ustaw inpup
         }
@@ -119,7 +117,6 @@ int main(){
         else vdm->tic(false);
 
     }
-
     vdm->close();
     if(sdl) closeSDL();
 }

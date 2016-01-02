@@ -16,7 +16,7 @@ int main(){
     v->setDoomMap("map01");
     v->setEpisodeTimeout(2000);
     v->setEpisodeStartTime(1);
-    v->setGameMode(SPECATOR);
+    v->setGameMode(SPECTATOR);
 
     v->setScreenResolution(640, 480);
 
@@ -33,7 +33,7 @@ int main(){
     v->addAvailableButton(TURN_LEFT);
     v->addAvailableButton(TURN_RIGHT);
     v->addAvailableButton(MOVE_FORWARD);
-    v->addAvailableButton(MOVE_BACK);
+    v->addAvailableButton(MOVE_BACKWARD);
     v->addAvailableButton(ATTACK);
 
     v->addStateAvailableVar(HEALTH);
