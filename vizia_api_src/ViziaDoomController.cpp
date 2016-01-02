@@ -525,6 +525,18 @@ namespace Vizia {
         for (int i = 0; i < ButtonsNumber; ++i) this->Input->BT_AVAILABLE[i] = true;
     }
 
+    void DoomController::setButtonMaxValue(Button button, int value){
+        if(button >= DiscreteButtonsNumber) this->Input->BT_MAX_VALUE[button - DiscreteButtonsNumber] = value;
+    }
+
+    bool DoomController::isButtonDiscrete(Button button){
+        return button < DiscreteButtonsNumber;
+    }
+
+    bool DoomController::isButtonAxis(Button button){
+        return button >= DiscreteButtonsNumber;
+    }
+
     bool DoomController::isAllowDoomInput(){ return this->allowDoomInput; }
     void DoomController::setAllowDoomInput(bool set){ if(!this->doomRunning) this->allowDoomInput = set; }
 
@@ -756,8 +768,7 @@ namespace Vizia {
         args.push_back("+vizia_instance_id");
         args.push_back(this->instanceId);
 
-        if(this->noConsole)
-        {
+        if(this->noConsole){
             args.push_back("+vizia_no_console");
             args.push_back("1");
         }
@@ -788,8 +799,8 @@ namespace Vizia {
         args.push_back("-nosound");
 
         //temp disable mouse
-        args.push_back("+use_mouse");
-        args.push_back("0");
+        //args.push_back("+use_mouse");
+        //args.push_back("0");
 
         //35 fps and no vsync
         args.push_back("+cl_capfps");
@@ -798,6 +809,7 @@ namespace Vizia {
         args.push_back("+vid_vsync");
         args.push_back("0");
 
+        //custom args
         for(int i = 0; i < this->customArgs.size(); ++i){
             args.push_back(customArgs[i]);
         }

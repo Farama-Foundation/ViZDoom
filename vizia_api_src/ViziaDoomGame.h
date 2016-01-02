@@ -50,14 +50,14 @@ namespace Vizia {
         bool isEpisodeFinished();
 
         void addAvailableButton(Button button);
-        void removeAvailableButton(Button button);
+        void addAvailableButton(Button button, int maxValue);
         void clearAvailableButtons();
-        int getActionFormat();
+        int getAvailableButtonsSize();
+        void setButtonMaxValue(Button button, int maxValue);
 
         void addStateAvailableVar(GameVar var);
-        void removeStateAvailableVar(GameVar var);
         void clearStateAvailableVars();
-        int getGameVarLen();
+        int getStateAvailableVarsSize();
 
         void addCustomGameArg(std::string arg);
         void clearCustomGameArgs();

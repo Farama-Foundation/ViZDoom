@@ -30,21 +30,17 @@ int main(){
 
     v->setDisabledConsole(true);
 
-    v->addAvailableButton(MOVE_LEFT);
-    v->addAvailableButton(MOVE_RIGHT);
-    v->addAvailableButton(ATTACK);
-
-    v->addStateAvailableVar(HEALTH);
-    v->addStateAvailableVar(AMMO1);
-
+    v->addAvailableButton(LEFT_RIGHT);
+    v->addAvailableButton(FORWARD_BACKWARD);
+    v->addAvailableButton(VIEW_ANGLE);
 
     v->init();
     //v->newEpisode();
     std::vector<int> action(3);
 
-    action[0] = 0;
-    action[1] = 0;
-    action[2] = 1;
+    action[0] = -5;
+    action[1] = 1;
+    action[2] = 100;
 
     int iterations = 10000;
     int ep=1;
@@ -55,12 +51,10 @@ int main(){
         }
         DoomGame::State s = v->getState();
 
-        std::cout << "STATE NUMBER: " << s.number << " HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
+        std::cout << "STATE NUMBER: " << s.number << std::endl;
 
         v->setNextAction(action);
-        v->advanceAction(true, true, 4);
-
-        std::cout<<"reward: "<<v->getLastReward()<<std::endl;
+        v->advanceAction();
     }
     v->close();
     delete v;

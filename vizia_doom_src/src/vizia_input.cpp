@@ -1,4 +1,5 @@
 #include "vizia_input.h"
+#include "vizia_defines.h"
 #include "vizia_message_queue.h"
 #include "vizia_shared_memory.h"
 
@@ -10,6 +11,7 @@
 #include "c_bind.h"
 #include "c_console.h"
 #include "c_dispatch.h"
+#include "r_utility.h"
 
 bip::mapped_region *viziaInputSMRegion = NULL;
 ViziaInputStruct *viziaLastInput = NULL;
@@ -52,6 +54,39 @@ bool Vizia_CommmandFilter(const char *cmd){
     }
 
     return true;
+}
+
+int Vizia_AxisFilter(int button, int value){
+    if(button >= VIZIA_BT_CMD_BT_SIZE && button < VIZIA_BT_SIZE){
+        int axis = button - VIZIA_BT_CMD_BT_SIZE;
+        if(viziaInput->BT_MAX_VALUE[axis] != 0 && (int)labs(value) > (int)labs(viziaInput->BT_MAX_VALUE[axis]))
+            value = value/(int)labs(value) * (int)labs(viziaInput->BT_MAX_VALUE[axis]);
+        viziaInput->BT[button] = value;
+    }
+    return value;
+}
+
+void Vizia_AddAxisBT(int button, int value){
+    value = Vizia_AxisFilter(button, value);
+    switch(button){
+        case VIZIA_BT_VIEW_PITCH :
+            G_AddViewPitch(value);
+            //LocalViewPitch = value;
+            break;
+        case VIZIA_BT_VIEW_ANGLE :
+            G_AddViewAngle(value);
+            //LocalViewAngle = value;
+            break;
+        case VIZIA_BT_FORWARD_BACKWARD :
+            LocalForward = value;
+            break;
+        case VIZIA_BT_LEFT_RIGHT:
+            LocalSide = value;
+            break;
+        case VIZIA_BT_UP_DOWN :
+            LocalFly = value;
+            break;
+    }
 }
 
 char* Vizia_BTToCommand(int button){
@@ -101,7 +136,6 @@ char* Vizia_BTToCommand(int button){
 
         case VIZIA_BT_VIEW_PITCH :
         case VIZIA_BT_VIEW_ANGLE :
-
         default : return strdup("");
     }
 }
@@ -187,15 +221,14 @@ void Vizia_AddBTCommand(int button, int state){
             if(state) Vizia_Command(Vizia_BTToCommand(button));
             break;
 
-        case VIZIA_BT_VIEW_ANGLE :
-            if(state != 0) G_AddViewAngle(state);
-            break;
-
         case VIZIA_BT_VIEW_PITCH :
-            if(state != 0) G_AddViewPitch(state);
+        case VIZIA_BT_VIEW_ANGLE :
+        case VIZIA_BT_FORWARD_BACKWARD :
+        case VIZIA_BT_LEFT_RIGHT :
+        case VIZIA_BT_UP_DOWN :
+            if(state != 0) Vizia_AddAxisBT(button, state);
             break;
     }
-
 }
 
 void Vizia_InputInit() {
@@ -222,8 +255,15 @@ void Vizia_InputInit() {
         viziaInput->BT_AVAILABLE[i] = true;
     }
 
-    viziaInput->MAX_VIEW_ANGLE_CHANGE = 90;
-    viziaInput->MAX_VIEW_PITCH_CHANGE = 90;
+    for(int i = 0; i < VIZIA_BT_AXIS_BT_SIZE; ++i){
+        viziaInput->BT_MAX_VALUE[i] = 0;
+    }
+
+    LocalForward = 0;
+    LocalSide = 0;
+    LocalFly = 0;
+    LocalViewAngle = 0;
+    LocalViewPitch = 0;
 
     viziaInputInited = true;
 }
@@ -232,14 +272,14 @@ void Vizia_InputTic(){
 
     //Vizia_Mouse(viziaInput->MS_X, viziaInput->MS_Y);
     if(!*vizia_allow_input) {
-        for (int i = 0; i < VIZIA_BT_SIZE; ++i) {
+        for (int i = 0; i < VIZIA_BT_CMD_BT_SIZE; ++i) {
 
             if (viziaInput->BT_AVAILABLE[i]) {
 
-                if (viziaInput->BT[i] && Vizia_HasCounterBT(i)) {
+                if (viziaInput->BT[i] != 0 && Vizia_HasCounterBT(i)) {
                     int c = Vizia_CounterBT(i);
 
-                    if (viziaInput->BT_AVAILABLE[c] && viziaInput->BT[c]) {
+                    if (viziaInput->BT_AVAILABLE[c] && viziaInput->BT[c] != 0) {
                         Vizia_AddBTCommand(i, false);
                         Vizia_AddBTCommand(c, false);
                         continue;
@@ -250,6 +290,12 @@ void Vizia_InputTic(){
                 if (viziaInput->BT[i] != viziaLastInput->BT[i]) {
                     Vizia_AddBTCommand(i, viziaInput->BT[i]);
                 }
+            }
+        }
+
+        for (int i = VIZIA_BT_CMD_BT_SIZE; i < VIZIA_BT_SIZE; ++i) {
+            if (viziaInput->BT_AVAILABLE[i]) {
+                Vizia_AddBTCommand(i, viziaInput->BT[i]);
             }
         }
     }

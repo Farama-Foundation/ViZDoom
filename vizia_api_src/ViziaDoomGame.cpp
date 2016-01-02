@@ -63,7 +63,7 @@ namespace Vizia {
 
                 this->availableButtons.push_back(MOVE_RIGHT);
                 this->availableButtons.push_back(MOVE_LEFT);
-                this->availableButtons.push_back(MOVE_BACK);
+                this->availableButtons.push_back(MOVE_BACKWARD);
                 this->availableButtons.push_back(MOVE_FORWARD);
                 this->availableButtons.push_back(TURN_RIGHT);
                 this->availableButtons.push_back(TURN_LEFT);
@@ -71,7 +71,7 @@ namespace Vizia {
 
             this->lastAction.resize(this->availableButtons.size());
 
-            if(this->gameMode == SPECATOR){
+            if(this->gameMode == SPECTATOR){
                 this->doomController->setAllowDoomInput(true);
             }
 
@@ -151,7 +151,7 @@ namespace Vizia {
 
         try {
             if(this->gameMode == PLAYER) this->doomController->tics(tics, updateState || renderOnly);
-            else if(this->gameMode == SPECATOR) this->doomController->realTimeTics(tics, updateState || renderOnly);
+            else if(this->gameMode == SPECTATOR) this->doomController->realTimeTics(tics, updateState || renderOnly);
         }
         catch(const Exception &e){ throw; }
 
@@ -179,9 +179,10 @@ namespace Vizia {
             /* Update float rgb image */
             this->state.number = this->doomController->getMapTic();
             this->state.imageBuffer = this->doomController->getScreen();
+
             this->lastStateNumber = this->state.number;
 
-            if (this->gameMode == SPECATOR) {
+            if (this->gameMode == SPECTATOR) {
                 //Update last action
                 for (int i = 0; i < this->availableButtons.size(); ++i) {
                     this->lastAction[i] = this->doomController->getButtonState(this->availableButtons[i]);
@@ -216,12 +217,24 @@ namespace Vizia {
         }
     }
 
+    void DoomGame::addAvailableButton(Button button, int maxValue) {
+        if (!this->running && std::find(this->availableButtons.begin(), this->availableButtons.end(), button) ==
+                              this->availableButtons.end()) {
+            this->availableButtons.push_back(button);
+            this->doomController->setButtonMaxValue(button, maxValue);
+        }
+    }
+
     void DoomGame::clearAvailableButtons(){
         if(!this->running) this->availableButtons.clear();
     }
 
-    int DoomGame::getActionFormat() {
+    int DoomGame::getAvailableButtonsSize() {
         return this->availableButtons.size();
+    }
+
+    void DoomGame::setButtonMaxValue(Button button, int maxValue){
+        this->doomController->setButtonMaxValue(button, maxValue);
     }
 
     void DoomGame::addStateAvailableVar(GameVar var) {
@@ -235,7 +248,7 @@ namespace Vizia {
         if(!this->running) this->stateAvailableVars.clear();
     }
 
-    int DoomGame::getGameVarLen() {
+    int DoomGame::getStateAvailableVarsSize() {
         return this->stateAvailableVars.size();
     }
 

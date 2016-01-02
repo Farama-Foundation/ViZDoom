@@ -38,7 +38,7 @@ namespace Vizia{
 
     enum GameMode {
         PLAYER,
-        SPECATOR
+        SPECTATOR,
     };
 
     enum ScreenFormat {
@@ -134,7 +134,7 @@ namespace Vizia{
 
         MOVE_RIGHT = 10,
         MOVE_LEFT = 11,
-        MOVE_BACK = 12,
+        MOVE_BACKWARD = 12,
         MOVE_FORWARD = 13,
         TURN_RIGHT = 14,
         TURN_LEFT = 15,
@@ -166,9 +166,14 @@ namespace Vizia{
 
         VIEW_PITCH = 38,
         VIEW_ANGLE = 39,
+        FORWARD_BACKWARD = 40,
+        LEFT_RIGHT = 41,
+        UP_DOWN = 42,
     };
 
-    static const int ButtonsNumber = 40;
+    static const int DiscreteButtonsNumber = 38;
+    static const int AxisButtonsNumber = 5;
+    static const int ButtonsNumber = 43;
     
 #define VK_2_DK(vk, dk) static const std::string KEY_ ## vk = dk;
     
