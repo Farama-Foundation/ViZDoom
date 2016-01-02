@@ -240,7 +240,7 @@ namespace Vizia {
         this->doomController->addCustomArg(arg);
     }
 
-    void DoomGame::clearCustomGameArg(){
+    void DoomGame::clearCustomGameArgs(){
         this->doomController->clearCustomArgs();
     }
 

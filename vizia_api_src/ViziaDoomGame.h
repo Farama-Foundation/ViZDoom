@@ -58,7 +58,7 @@ namespace Vizia {
         int getGameVarLen();
 
         void addCustomGameArg(std::string arg);
-        void clearCustomGameArg();
+        void clearCustomGameArgs();
 
         void sendGameCommand(std::string cmd);
 
