@@ -16,16 +16,20 @@ namespace Vizia {
         return (unsigned int) std::ceil((float) 35 / 1000 * ms);
     }
 
+    float DoomFixedToFloat(int doomFixed)
+    {
+        float res = float(doomFixed)/65536.0;
+        return res;
+    }
+
     DoomGame::DoomGame() {
         this->running = false;
-
         this->lastReward = 0;
         this->lastMapReward = 0;
         this->deathPenalty = 0;
         this->livingReward = 0;
         this->summaryReward = 0;
         this->lastStateNumber = 0;
-
         this->gameMode = PLAYER;
 
         this->doomController = new DoomController();
@@ -115,9 +119,9 @@ namespace Vizia {
         this->state.number = this->doomController->getMapTic();
         this->state.imageBuffer = this->doomController->getScreen();
         
-        this->lastReward = 0;
-        this->lastMapReward = 0;
-        this->summaryReward = 0;
+        this->lastReward = 0.0;
+        this->lastMapReward = 0.0;
+        this->summaryReward = 0.0;
     }
 
     void DoomGame::setNextAction(std::vector<int> &actions) {
@@ -155,11 +159,10 @@ namespace Vizia {
     }
 
     void DoomGame::updateState(){
-        try{
-            //Update reward
-            int mapReward = this->doomController->getMapReward();
-
-            int reward = (mapReward - this->lastMapReward);
+        try {
+            float reward = 0;
+            float mapReward = DoomFixedToFloat(this->doomController->getMapReward());
+            reward = (mapReward - this->lastMapReward);
             int liveTime = this->doomController->getMapTic() - this->lastStateNumber;
             reward += (liveTime > 0 ? liveTime : 0) * this->livingReward;
             if (this->doomController->isPlayerDead()) reward -= this->deathPenalty;
@@ -248,7 +251,7 @@ namespace Vizia {
         this->doomController->sendCommand(cmd);
     }
 
-    uint8_t * const DoomGame::getGameBuffer(){
+    uint8_t * const DoomGame::getGameScreen(){
         this->doomController->getScreen();
     }
 
@@ -288,14 +291,14 @@ namespace Vizia {
         this->doomController->setMapTimeout(tics);
     }
 
-    int DoomGame::getLivingReward() { return this->livingReward; }
-    void DoomGame::setLivingReward(int livingReward) { this->livingReward = livingReward; }
+    float DoomGame::getLivingReward() { return this->livingReward; }
+    void DoomGame::setLivingReward(float livingReward) { this->livingReward = livingReward; }
 
-    int DoomGame::getDeathPenalty() { return this->deathPenalty; }
-    void DoomGame::setDeathPenalty(int deathPenalty) { this->deathPenalty = deathPenalty; }
+    float DoomGame::getDeathPenalty() { return this->deathPenalty; }
+    void DoomGame::setDeathPenalty(float deathPenalty) { this->deathPenalty = deathPenalty; }
 
-    int DoomGame::getLastReward(){ return this->lastReward; }
-    int DoomGame::getSummaryReward() { return this->summaryReward; }
+    float DoomGame::getLastReward(){ return this->lastReward; }
+    float DoomGame::getSummaryReward() { return this->summaryReward; }
 
     void DoomGame::setScreenResolution(unsigned int width, unsigned int height) {
         this->doomController->setScreenResolution(width, height);
