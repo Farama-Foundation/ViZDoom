@@ -92,16 +92,15 @@ char* Vizia_BTToCommand(int button){
 
         case VIZIA_BT_SELECT_NEXT_WEAPON : return strdup("weapnext");
         case VIZIA_BT_SELECT_PREV_WEAPON : return strdup("weapprev");
+        case VIZIA_BT_DROP_SELECTED_WEAPON : return strdup("weapdrop");
 
-        case VIZIA_BT_DROP_SELECTED_WEAPON : return strdup("weapnext");
+        case VIZIA_BT_ACTIVATE_SELECTED_ITEM : return strdup("invuse");
+        case VIZIA_BT_SELECT_NEXT_ITEM : return strdup("invnext");
+        case VIZIA_BT_SELECT_PREV_ITEM : return strdup("invprev");
+        case VIZIA_BT_DROP_SELECTED_ITEM : return strdup("invdrop");
 
-        case VIZIA_BT_ACTIVATE_SELECTED_ITEM : return strdup("weapnext");
-        case VIZIA_BT_SELECT_NEXT_ITEM : return strdup("weapnext");
-        case VIZIA_BT_SELECT_PREV_ITEM : return strdup("weapnext");
-        case VIZIA_BT_DROP_SELECTED_ITEM : return strdup("weapnext");
-
-        case VIZIA_BT_VIEW_PITCH : return strdup("");
-        case VIZIA_BT_VIEW_ANGLE : return strdup("");
+        case VIZIA_BT_VIEW_PITCH :
+        case VIZIA_BT_VIEW_ANGLE :
 
         default : return strdup("");
     }

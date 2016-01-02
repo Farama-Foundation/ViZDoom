@@ -14,9 +14,8 @@ int main(){
     v->setDoomIwadPath("../scenarios/doom2.wad");
     v->setDoomFilePath("../scenarios/s1_b.wad");
     v->setDoomMap("map01");
-    v->setEpisodeTimeout(1000);
-    v->setEpisodeStartTime(10);
-    v->setActionInterval(5);
+    v->setEpisodeTimeout(2000);
+    v->setEpisodeStartTime(1);
     v->setGameMode(SPECATOR);
 
     v->setScreenResolution(640, 480);
@@ -33,6 +32,8 @@ int main(){
 
     v->addAvailableButton(TURN_LEFT);
     v->addAvailableButton(TURN_RIGHT);
+    v->addAvailableButton(MOVE_FORWARD);
+    v->addAvailableButton(MOVE_BACK);
     v->addAvailableButton(ATTACK);
 
     v->addStateAvailableVar(HEALTH);
@@ -58,7 +59,7 @@ int main(){
         }
         DoomGame::State s = v->getState();
         std::cout << "STATE NUMBER: " << s.number << " HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
-        v->observeAction();
+        v->advanceAction();
         //float r = v->makeAction(action);
         //std::cout<<"reward: "<<r<<std::endl;
         //usleep(11000);

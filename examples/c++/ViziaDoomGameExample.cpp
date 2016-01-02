@@ -16,8 +16,9 @@ int main(){
     v->setDoomFilePath("../scenarios/s1_b.wad");
     v->setDoomMap("map01");
     v->setEpisodeTimeout(200);
+    v->setLivingReward(-1);
 
-    v->setScreenResolution(100, 0);
+    v->setScreenResolution(640, 480);
 
     v->setRenderHud(false);
     v->setRenderCrosshair(false);
@@ -25,7 +26,7 @@ int main(){
     v->setRenderDecals(false);
     v->setRenderParticles(false);
 
-    v->setVisibleWindow(false);
+    v->setVisibleWindow(true);
 
     v->setDisabledConsole(true);
 
@@ -33,17 +34,17 @@ int main(){
     v->addAvailableButton(MOVE_RIGHT);
     v->addAvailableButton(ATTACK);
 
-    //v->addStateAvailableVar(HEALTH);
+    v->addStateAvailableVar(HEALTH);
     v->addStateAvailableVar(AMMO1);
 
 
     v->init();
     //v->newEpisode();
-    std::vector<bool> action(3);
+    std::vector<int> action(3);
 
-    action[0] = false;
-    action[1] = false;
-    action[2] = true;
+    action[0] = 0;
+    action[1] = 0;
+    action[2] = 1;
 
     int iterations = 10000;
     int ep=1;
@@ -54,13 +55,14 @@ int main(){
             v->newEpisode();
            // usleep(2000000);
         }
-        //ViziaMain::State s = v->getState();
+        DoomGame::State s = v->getState();
 
-        //std::cout << "STATE NUMBER: " << s.number <<
-        //" HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
+        std::cout << "STATE NUMBER: " << s.number << " HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
 
-        float r = v->makeAction(action);
-        //std::cout<<"reward: "<<r<<std::endl;
+        v->setNextAction(action);
+        v->advanceAction(true, true, 4);
+
+        std::cout<<"reward: "<<v->getLastReward()<<std::endl;
         //usleep(11000);
     }
     v->close();

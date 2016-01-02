@@ -39,7 +39,7 @@ int main(){
     std::cout << "\n\nVIZIA CONTROLLER EXAMPLE\n\n";
 
     vdm->setGamePath("viziazdoom");
-    vdm->setIwadPath("doom2.wad");
+    vdm->setIwadPath("../scenarios/doom2.wad");
     vdm->setFilePath("../scenarios/s1_b.wad");
     vdm->setMap("map01");
     vdm->setMapTimeout(200);
@@ -76,41 +76,45 @@ int main(){
         //vdm->setMouseX(-10); //obrót w lewo
 
         if(i%loop < 50) {
-            vdm->setButtonState(MOVE_RIGHT, true);   //ustaw inpup
+            vdm->setButtonState(MOVE_RIGHT, 1);   //ustaw inpup
         }
         else{
-            vdm->setButtonState(MOVE_RIGHT, false);
+            vdm->setButtonState(MOVE_RIGHT, 0);
         }
         if(i%loop >= 50) {
-            vdm->getInput()->BT[MOVE_LEFT] = true;  //lub w ten sposób
+            vdm->getInput()->BT[MOVE_LEFT] = 1;  //lub w ten sposób
         }
         else{
-            vdm->getInput()->BT[MOVE_LEFT] = false;
+            vdm->getInput()->BT[MOVE_LEFT] = 0;
         }
 
         if(i%loop == 25 || i%loop == 50 || i%loop == 75){
-            vdm->setButtonState(ATTACK, true);
+            vdm->setButtonState(ATTACK, 1);
         }
         else{
-            vdm->setButtonState(ATTACK, false);
+            vdm->setButtonState(ATTACK, 0);
         }
 
         if(i%loop == 30 || i%loop == 60){
-            vdm->setButtonState(JUMP, true);
+            vdm->setButtonState(JUMP, 1);
         }
         else{
-            vdm->setButtonState(JUMP, false);
+            vdm->setButtonState(JUMP, 0);
         }
 
         if(i%10 == 0) {
-            vdm->tic(true);
             if (sdl)
                 updateSDL(vdm->getScreenWidth(), vdm->getScreenHeight(), vdm->getScreenPitch(),
                           (void *) vdm->getScreen());
 
             std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<
-            " HP: " << vdm->getPlayerHealth() << " AMMO: " << vdm->getGameVars()->PLAYER_AMMO[0] <<
-            " REWARD: " << vdm->getMapReward() << " SHAPING: " << vdm->getGameVar(USER1) << std::endl;
+            " HP: " << vdm->getPlayerHealth() << " ARMOR: " << vdm->getGameVars()->PLAYER_ARMOR<<std::endl;
+            std::cout << "SELECTED AMMO: " << vdm->getGameVars()->PLAYER_SELECTED_WEAPON_AMMO << " WEAPON: " << vdm->getGameVars()->PLAYER_SELECTED_WEAPON << std::endl;
+            for(int i = 0; i < 4; ++i){
+                std::cout << "AMMO " << i  << ": " << vdm->getGameVars()->PLAYER_AMMO[i] << " WEAPON " << i << ": " << vdm->getGameVars()->PLAYER_WEAPON[i] << std::endl;
+            }
+            std::cout << "REWARD: " << vdm->getMapReward() << " SHAPING: " << vdm->getGameVar(USER1) << std::endl;
+            vdm->tic(true);
         }
         else vdm->tic(false);
 
