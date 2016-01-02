@@ -13,8 +13,6 @@ int Vizia_CounterBT(int button);
 
 void Vizia_AddBTCommand(char* command, bool state);
 
-void Vizia_Mouse(int x, int y);
-
 void Vizia_InputInit();
 
 void Vizia_InputTic();

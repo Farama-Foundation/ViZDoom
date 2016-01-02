@@ -3,17 +3,11 @@
 #include "vizia_message_queue.h"
 #include "vizia_screen.h"
 
-#include "info.h"
-#include "d_player.h"
 #include "d_netinf.h"
 #include "g_game.h"
 #include "g_level.h"
 #include "g_shared/a_pickups.h"
 #include "g_shared/a_keys.h"
-
-#include "info.h"
-#include "g_game.h"
-#include "g_level.h"
 #include "c_console.h"
 #include "c_dispatch.h"
 #include "p_acs.h"
@@ -42,51 +36,53 @@ int Vizia_CheckItem(FName name) {
 int Vizia_CheckItem(const PClass *type) {
     if(viziaPlayer->mo != NULL) {
         AInventory *item = viziaPlayer->mo->FindInventory(type);
-        if (item != NULL) item->Amount;
+        if (item != NULL) return item->Amount;
     }
     return 0;
-}
-
-const char* Vizia_CheckItemType(const PClass *type){
-
-    if (type->ParentClass == RUNTIME_CLASS(AAmmo)) {
-        return "AMMO";
-    }
-    else if (type->ParentClass == RUNTIME_CLASS(AKey)){
-        return "KEY";
-    }
-    else if (type->ParentClass == RUNTIME_CLASS(AArmor)){
-        return "ARMOR";
-    }
-    else if (type->ParentClass == RUNTIME_CLASS(AWeapon)){
-        return "WEAPON";
-    }
-    return "UNKNOWN";
 }
 
 bool Vizia_CheckSelectedWeaponState(){
     return false;
 }
 
+int Vizia_CheckWeaponAmmo(AWeapon* weapon){
+    return Vizia_CheckItem(weapon->AmmoType1);
+}
+
 int Vizia_CheckSelectedWeapon(){
 
-    if(viziaPlayer->ReadyWeapon == NULL) return 0;
+    if(viziaPlayer->ReadyWeapon == NULL) return -1;
 
-    FName weaponName = viziaPlayer->ReadyWeapon->GetSpecies();
-    if(weaponName == NAME_Fist || weaponName == NAME_Chainsaw) return 1;
-    else if(weaponName == NAME_Pistol) return 2;
-    else if(weaponName == NAME_Shotgun || weaponName == NAME_SSG) return 3;
-    else if(weaponName == NAME_Chaingun) return 4;
-    else if(weaponName == NAME_Rocket) return 5;
-    else if(weaponName == NAME_Plasma) return 6;
-    else if(weaponName == NAME_BFG) return 7;
+    const PClass *type1 = viziaPlayer->ReadyWeapon->GetClass();
+    if(type1 == NULL) return -1;
+
+    for(int i=0; i< VIZIA_GV_SLOTS_SIZE; ++i){
+        for(int j = 0; j < viziaPlayer->weapons.Slots[i].Size(); ++j){
+            const PClass *type2 = viziaPlayer->weapons.Slots[i].GetWeapon(j);
+            //if(strcmp(type1->TypeName.GetChars(), type2->TypeName.GetChars()) == 0) return i;
+            if(type1 == type2) return i;
+        }
+    }
+
+    return -1;
+
 }
 
 int Vizia_CheckSelectedWeaponAmmo(){
-    if(viziaPlayer->ReadyWeapon != NULL) return viziaPlayer->ReadyWeapon->CheckAmmo (
-                viziaPlayer->ReadyWeapon->bAltFire ? AWeapon::AltFire : AWeapon::PrimaryFire,
-                true);
-    else return 0;
+    return Vizia_CheckWeaponAmmo(viziaPlayer->ReadyWeapon);
+}
+
+int Vizia_CheckSlotAmmo(int slot){
+    return Vizia_CheckWeaponAmmo(viziaPlayer->weapons.Slots[slot].PickWeapon(viziaPlayer, false));
+}
+
+int Vizia_CheckSlotWeapons(int slot){
+    int inSlot = 0;
+    for(int i = 0; i < viziaPlayer->weapons.Slots[slot].Size(); ++i){
+        const PClass *type = viziaPlayer->weapons.Slots[slot].GetWeapon(i);
+        inSlot += Vizia_CheckItem(type);
+    }
+    return inSlot;
 }
 
 void Vizia_GameVarsInit(){
@@ -155,22 +151,10 @@ void Vizia_GameVarsUpdate(){
     viziaGameVars->PLAYER_SELECTED_WEAPON_AMMO = Vizia_CheckSelectedWeaponAmmo();
     viziaGameVars->PLAYER_SELECTED_WEAPON = Vizia_CheckSelectedWeapon();
 
-    viziaGameVars->PLAYER_AMMO[0] = Vizia_CheckItem(NAME_Clip);
-    viziaGameVars->PLAYER_AMMO[1] = Vizia_CheckItem(NAME_Shell);
-    viziaGameVars->PLAYER_AMMO[2] = Vizia_CheckItem(NAME_RocketAmmo);
-    viziaGameVars->PLAYER_AMMO[3] = Vizia_CheckItem(NAME_Cell);
-
-    viziaGameVars->PLAYER_WEAPON[0] = Vizia_CheckItem(NAME_Fist) || Vizia_CheckItem(NAME_Chainsaw);
-    viziaGameVars->PLAYER_WEAPON[1] = (bool)Vizia_CheckItem(NAME_Pistol);
-    viziaGameVars->PLAYER_WEAPON[2] = Vizia_CheckItem(NAME_Shotgun) || Vizia_CheckItem(NAME_SSG);
-    viziaGameVars->PLAYER_WEAPON[3] = (bool)Vizia_CheckItem(NAME_Chaingun);
-    viziaGameVars->PLAYER_WEAPON[4] = (bool)Vizia_CheckItem(NAME_Rocket);
-    viziaGameVars->PLAYER_WEAPON[5] = (bool)Vizia_CheckItem(NAME_Plasma);
-    viziaGameVars->PLAYER_WEAPON[6] = (bool)Vizia_CheckItem(NAME_BFG);
-
-    viziaGameVars->PLAYER_KEY[0] = 0;
-    viziaGameVars->PLAYER_KEY[1] = 0;
-    viziaGameVars->PLAYER_KEY[2] = 0;
+    for(int i = 0; i < VIZIA_GV_SLOTS_SIZE; ++i) {
+        viziaGameVars->PLAYER_AMMO[i] = Vizia_CheckSlotAmmo(i);
+        viziaGameVars->PLAYER_WEAPON[i] = Vizia_CheckSlotWeapons(i);
+    }
 }
 
 void Vizia_GameVarsClose(){

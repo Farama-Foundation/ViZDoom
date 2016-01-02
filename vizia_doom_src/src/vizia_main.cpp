@@ -119,7 +119,6 @@ void Vizia_Tic(){
         }
 
         Vizia_MQTic();
-
         Vizia_InputTic();
     }
 }

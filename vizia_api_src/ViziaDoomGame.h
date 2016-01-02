@@ -18,9 +18,9 @@ namespace Vizia {
     public:
 
         struct State {
-            int number;
+            unsigned int number;
             std::vector<int> vars;
-            uint8_t *imageBuffer;
+            uint8_t * imageBuffer;
         };
 
         DoomGame();
@@ -35,9 +35,10 @@ namespace Vizia {
         void newEpisode();
         bool isRunning();
 
-        float makeAction(std::vector<bool> &actions);
-
-        void observeAction();
+        void setNextAction(std::vector<int> &actions);
+        void advanceAction();
+        void advanceAction(bool stateUpdate, bool renderOnly);
+        void advanceAction(bool stateUpdate, bool renderOnly, unsigned int tics);
 
         State getState();
 
@@ -47,13 +48,21 @@ namespace Vizia {
         bool isEpisodeFinished();
 
         void addAvailableButton(Button button);
+        void removeAvailableButton(Button button);
+        void clearAvailableButtons();
         int getActionFormat();
 
         void addStateAvailableVar(GameVar var);
+        void removeStateAvailableVar(GameVar var);
+        void clearStateAvailableVars();
         int getGameVarLen();
 
-        unsigned int getActionInterval(unsigned int tics);
-        void setActionInterval(unsigned int tics);
+        void addCustomGameArg(std::string arg);
+        void clearCustomGameArg();
+
+        void sendGameCommand(std::string cmd);
+
+        uint8_t * const getGameBuffer();
 
         GameMode getGameMode();
         void setGameMode(GameMode mode);
@@ -68,6 +77,7 @@ namespace Vizia {
         void setLivingReward(int livingReward);
         int getDeathPenalty();
         void setDeathPenalty(int deathPenalty);
+
         int getLastReward();
         int getSummaryReward();
 
@@ -129,8 +139,7 @@ namespace Vizia {
         std::vector<bool> lastAction;
 
         //REWARD
-        unsigned int actionInterval;
-
+        unsigned int lastStateNumber;
         int lastReward;
         int lastMapReward;
         int summaryReward;
