@@ -89,7 +89,6 @@ namespace Vizia {
 
     }
 
-/* not sure if we need this */
     boost::python::list DoomGamePython::getLastAction() {
         boost::python::list res;
         std::vector<bool> lastAction = DoomGame::getLastAction();
