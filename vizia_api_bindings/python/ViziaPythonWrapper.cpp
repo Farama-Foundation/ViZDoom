@@ -2,6 +2,10 @@
 #include "ViziaDoomGamePython.h"
 #include "ViziaDefines.h"
 #include <exception>
+#include <boost/python/overloads.hpp>
+#include <boost/python/return_internal_reference.hpp>
+#include <boost/python/args.hpp>
+#include <boost/python/def.hpp>
 
 
 
@@ -47,6 +51,8 @@ void translate5(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj5, e.what());
 }
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(f_member_overloads, advance_action, 0, 3);
 
 BOOST_PYTHON_MODULE(vizia)
 {
@@ -205,9 +211,13 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("new_episode", &DoomGamePython::newEpisode)
 		.def("is_episode_finished", &DoomGamePython::isEpisodeFinished)
 		.def("is_new_episode", &DoomGamePython::isNewEpisode)
-		.def("set_next_action",&DoomGamePython::set_next_action)
-		.def("advance_action",&DoomGamePython::advanceAction)
-            
+		.def("set_next_action",&DoomGamePython::setNextAction)
+		//.def("advance_action",&DoomGamePython::advanceAction)
+        .def("advance_action", &DoomGamePython::advanceAction, 
+                f_member_overloads(
+                    args("stateUpdate", "renderOnly"),
+                    "advance_action's docstring")
+            )  
 		.def("get_state", &DoomGamePython::getState)
 		.def("get_action_format", &DoomGamePython::getActionFormat)
     
@@ -230,12 +240,12 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("add_available_button", &DoomGamePython::addAvailableButton)
 		.def("clear_available_button", &DoomGamePython::clearAvailableButton)
 
-        .def("add_custom_game_arg", &DoomGamePython::addCustomGameArg);
-        .def("clear_custom_game_args", &DoomGamePython::clearCustomGameArgs);
+        .def("add_custom_game_arg", &DoomGamePython::addCustomGameArg)
+        .def("clear_custom_game_args", &DoomGamePython::clearCustomGameArgs)
 
-        .def("send_game_command, &DoomGamePython::sendGameCommand);
+        .def("send_game_command", &DoomGamePython::sendGameCommand)
 
-        .def("get_game_buffer", &DoomGamePython::getGameBuffer);
+        .def("get_game_buffer", &DoomGamePython::getGameBuffer)
 
         .def("get_game_mode", &DoomGamePython::getGameMode)
         .def("set_game_mode", &DoomGamePython::setGameMode)
