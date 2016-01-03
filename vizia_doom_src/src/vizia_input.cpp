@@ -59,23 +59,31 @@ bool Vizia_CommmandFilter(const char *cmd){
 int Vizia_AxisFilter(int button, int value){
     if(button >= VIZIA_BT_CMD_BT_SIZE && button < VIZIA_BT_SIZE){
         int axis = button - VIZIA_BT_CMD_BT_SIZE;
-        if(viziaInput->BT_MAX_VALUE[axis] != 0 && (int)labs(value) > (int)labs(viziaInput->BT_MAX_VALUE[axis]))
-            value = value/(int)labs(value) * (int)labs(viziaInput->BT_MAX_VALUE[axis]);
-        viziaInput->BT[button] = value;
+        if(viziaInput->BT_MAX_VALUE[axis] != 0){
+            int maxValue;
+            if(button == VIZIA_BT_VIEW_ANGLE || button == VIZIA_BT_VIEW_PITCH)
+                maxValue = (int)((float)viziaInput->BT_MAX_VALUE[axis]/180 * 32768);
+            else maxValue = viziaInput->BT_MAX_VALUE[axis];
+            if((int)labs(value) > (int)labs(maxValue))
+                value = value/(int)labs(value) * (int)labs(maxValue);
+        }
+        if(button == VIZIA_BT_VIEW_ANGLE || button == VIZIA_BT_VIEW_PITCH)
+            viziaInput->BT[button] = (int)((float)value/32768 * 180);
+        else viziaInput->BT[button] = value;
     }
     return value;
 }
 
 void Vizia_AddAxisBT(int button, int value){
+    if(button == VIZIA_BT_VIEW_ANGLE || button == VIZIA_BT_VIEW_PITCH)
+        value = (int)((float)value/180 * 32768);
     value = Vizia_AxisFilter(button, value);
     switch(button){
         case VIZIA_BT_VIEW_PITCH :
-            value = (int)((float)value/180 * 32768);
             G_AddViewPitch(value);
             //LocalViewPitch = value;
             break;
         case VIZIA_BT_VIEW_ANGLE :
-            value = (int)((float)value/180 * 32768);
             G_AddViewAngle(value);
             //LocalViewAngle = value;
             break;

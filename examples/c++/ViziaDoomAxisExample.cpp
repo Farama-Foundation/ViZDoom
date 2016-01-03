@@ -54,7 +54,6 @@ int main(){
         std::cout << "STATE NUMBER: " << s.number << std::endl;
 
         dg->setNextAction(action);
-        getchar();
         dg->advanceAction();
     }
     dg->close();
