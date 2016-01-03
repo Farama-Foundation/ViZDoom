@@ -30,6 +30,12 @@ extern int				validcount;
 
 extern angle_t			LocalViewAngle;			// [RH] Added to consoleplayer's angle
 extern int				LocalViewPitch;			// [RH] Used directly instead of consoleplayer's pitch
+
+//VIZIA_CODE
+extern int LocalForward;
+extern int LocalSide;
+extern int LocalFly;
+
 extern bool				LocalKeyboardTurner;	// [RH] The local player used the keyboard to turn, so interpolate
 extern int				WidescreenRatio;
 

@@ -42,22 +42,24 @@ namespace Vizia {
         void advanceAction(bool stateUpdate, bool renderOnly);
         void advanceAction(bool stateUpdate, bool renderOnly, unsigned int tics);
 
+        float makeAction(std::vector<int> &actions);
+        
         State getState();
 
-        std::vector<bool> getLastAction();
+        std::vector<int> getLastAction();
 
         bool isNewEpisode();
         bool isEpisodeFinished();
 
         void addAvailableButton(Button button);
-        void removeAvailableButton(Button button);
+        void addAvailableButton(Button button, int maxValue);
         void clearAvailableButtons();
-        int getActionFormat();
+        int getAvailableButtonsSize();
+        void setButtonMaxValue(Button button, int maxValue);
 
         void addStateAvailableVar(GameVar var);
-        void removeStateAvailableVar(GameVar var);
         void clearStateAvailableVars();
-        int getGameVarLen();
+        int getStateAvailableVarsSize();
 
         void addCustomGameArg(std::string arg);
         void clearCustomGameArgs();
@@ -138,7 +140,7 @@ namespace Vizia {
         std::vector <GameVar> stateAvailableVars;
         std::vector <Button> availableButtons;
 
-        std::vector<bool> lastAction;
+        std::vector<int> lastAction;
 
         //REWARD
         unsigned int lastStateNumber;
