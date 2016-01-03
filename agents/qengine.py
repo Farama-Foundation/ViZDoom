@@ -69,13 +69,13 @@ class QEngine:
         if history_length > 1:
             img_shape[0] *= history_length
         
-        state_format = [img_shape, game.get_game_var_len()]
+        state_format = [img_shape, game.get_state_available_vars_size()]
         self._evaluator = evaluator(state_format, len(self._actions), batch_size, self._gamma)
         self._current_image_state = np.zeros(img_shape, dtype=np.float32)
 
-        if game.get_game_var_len() > 0:
+        if game.get_state_available_vars_size() > 0:
             self._misc_state_included = True
-            self._current_misc_state = np.zeros(game.get_game_var_len(), dtype=np.float32)
+            self._current_misc_state = np.zeros(game.get_state_available_vars_size(), dtype=np.float32)
         else:
             self._misc_state_included = False
 
@@ -83,7 +83,7 @@ class QEngine:
     def _update_state(self, raw_state):
         img = self._image_converter.convert(raw_state.image_buffer)
         if self._misc_state_included:
-            misc = raw_state.vars
+            misc = np.float32(raw_state.vars)
         if self._history_length > 1:
             self._current_image_state[0:-self._channels] = self._current_image_state[self._channels:]
             self._current_image_state[-self._channels:] = img
@@ -151,7 +151,6 @@ class QEngine:
 
 	    # copy needed as it will be stored in transitions
         s = self._copy_current_state();
-
         # with probability epsilon choose a random action:
         if self._epsilon >= random.random():
             a = random.randint(0, len(self._actions) - 1)

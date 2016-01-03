@@ -7,16 +7,13 @@ import numpy as np
 
 from qengine import QEngine
 from qengine import IdentityImageConverter
-from mockvizia import MockDoomGame
-from evaluators import MLPEvaluator
 from evaluators import CNNEvaluator
-from evaluators import LinearEvaluator
 from time import time, sleep
 import itertools as it
 import lasagne
 
 from lasagne.regularization import l1, l2
-from lasagne.updates import adagrad, nesterov_momentum, sgd
+from lasagne.updates import nesterov_momentum, sgd
 from lasagne.nonlinearities import leaky_rectify
 from random import choice 
 from transition_bank import TransitionBank
@@ -25,14 +22,18 @@ from theano.tensor import tanh
 
 import cv2
 
-savefile = "params/rgb_60_noskip"
+savefile = None
+
+#savefile = "params/health_320_to80_skip4"
+#savefile = "params/center_120_to80_skip4"
+#savefile = "params/s1b_120_to60_skip1"
 loadfile = savefile
 
 def double_tanh(x):
     return 2*tanh(x)
 
 def actions_generator(the_game):
-    n = the_game.get_action_format()
+    n = the_game.get_available_buttons_size()
     actions = []
     for perm in it.product([False, True], repeat=n):
         actions.append(list(perm))
@@ -58,34 +59,68 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     cnn_args["network_args"] = network_args
     return CNNEvaluator(**cnn_args)
 
+def s1_b(game):
+    game.set_doom_file_path("../scenarios/s1_b.wad")
+
+    game.add_available_button(Button.MOVE_LEFT)
+    game.add_available_button(Button.MOVE_RIGHT)
+    game.add_available_button(Button.ATTACK)
+
+    game.set_episode_timeout(300)
+    game.set_living_reward(-1)
+
+def health_gathering(game):
+    game.set_doom_file_path("../scenarios/health_gathering.wad")
+
+    game.add_available_button(Button.TURN_LEFT)
+    game.add_available_button(Button.TURN_RIGHT)
+    game.add_available_button(Button.MOVE_FORWARD)
+
+    game.set_episode_timeout(2100)
+    game.set_living_reward(1)
+    game.set_death_penalty(100)
+
+    game.set_disabled_console(False)
+    game.add_state_available_var(GameVar.HEALTH)
+
+def defend_the_center(game):
+    game.set_doom_file_path("../scenarios/defend_the_center")
+
+    game.add_available_button(Button.TURN_LEFT)
+    game.add_available_button(Button.TURN_RIGHT)
+    game.add_available_button(Button.ATTACK)
+
+    game.set_episode_timeout(2100)
+    game.set_living_reward(0)
+    game.set_death_penalty(1)
+
+    game.set_disabled_console(True)
+    game.add_state_available_var(GameVar.HEALTH)
+
 def setup_vizia():
     game = DoomGame()
 
-    skiprate = 1
     #available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
-    game.set_screen_resolution(320,240)
-    game.set_screen_format(ScreenFormat.GRAY8)
+    game.set_screen_resolution(120,90)
+    game.set_screen_format(ScreenFormat.CRCGCB)
     game.set_doom_game_path("../bin/viziazdoom")
     game.set_doom_iwad_path("../scenarios/doom2.wad")
-    game.set_doom_file_path("../scenarios/s1_b.wad")
+    
     game.set_doom_map("map01")
-    game.set_episode_timeout(300)
-
-    game.set_living_reward(-skiprate)
+    
     game.set_render_hud(False)
     game.set_render_crosshair(False)
     game.set_render_weapon(True)
     game.set_render_decals(False)
     game.set_render_particles(False);
 
-    game.set_visible_window(False)
+    game.set_visible_window(True)
+    
+    s1_b(game)
+    #health_gathering(game)
+    #defend_the_center(game)
 
-    game.add_available_button(Button.MOVE_LEFT)
-    game.add_available_button(Button.MOVE_RIGHT)
-    game.add_available_button(Button.ATTACK)
-    game.set_action_interval(skiprate)
-
-    print "Initializin DOOM ..."
+    print "Initializing DOOM ..."
     game.init()
     print "\nDOOM initialized."
     return game
@@ -95,7 +130,7 @@ class ChannelScaleConverter(IdentityImageConverter):
     def __init__(self, source):
         self._source = source
         self.x = 60
-        self.y = 45 
+        self.y = int(self.x*3/4) 
     def convert(self, img):
         img =  np.float32(img)/255.0
         new_image = np.ndarray([img.shape[0], self.y, self.x], dtype=np.float32)
@@ -116,15 +151,15 @@ def create_engine( game, online_mode=False ):
     #engine_args["bank"] = TransitionBank( capacity=10000, rejection_range = [-0.02,0.5], rejection_probability=0.95)
     engine_args["evaluator"] = create_cnn_evaluator
     engine_args["game"] = game
-    engine_args['start_epsilon'] = 0.0
+    engine_args['start_epsilon'] = 0.95
     engine_args['end_epsilon'] = 0.0
-    engine_args['epsilon_decay_start_step'] = 1
+    engine_args['epsilon_decay_start_step'] = 1000000
     engine_args['epsilon_decay_steps'] = 1000000
     engine_args['actions_generator'] = actions_generator
     engine_args['update_frequency'] = (4,4)
     engine_args['batch_size'] = 40
     engine_args['gamma'] = 0.99
-    engine_args['reward_scale'] = 0.01
+    #engine_args['reward_scale'] = 0.01
     
     #engine_args['image_converter'] = BNWDisplayImageConverter
     #engine_args['image_converter'] = ScaleConverter
@@ -149,7 +184,6 @@ epochs = np.inf
 training_episodes_per_epoch = 400
 test_episodes_per_epoch = 100
 test_frequency = 1;
-stop_mean = 1.0  # game.average_best_result()
 overall_start = time()
 
 
@@ -189,14 +223,14 @@ while epoch < epochs:
         print engine.get_actions_stats(clear=True, norm=False)
         m = np.mean(rewards)
         print "steps:", engine.get_steps(), ", mean:", m, "max:", np.max(rewards)
-        if m > stop_mean:
-            print stop_mean, "mean reached!"
-            break
         print "t:", round(end - start, 2)
     epoch += 1
 
     print ""
-    engine.save_params(savefile)
+
+    if savefile:
+        engine.save_params(savefile)
+
     overall_end = time()
     print "Elapsed time:", round(overall_end - overall_start,2), "s"  
     print "========================="

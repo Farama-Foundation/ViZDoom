@@ -25,7 +25,7 @@ from theano.tensor import tanh
 
 import cv2
 
-load_file = "params/rgb_60_noskip"
+load_file = "params/s1b_120_to60_skip1"
 
 def actions_generator(the_game):
     n = the_game.get_action_format()
@@ -54,20 +54,42 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     cnn_args["network_args"] = network_args
     return CNNEvaluator(**cnn_args)
 
+def s1_b(game, skiprate):
+    game.set_doom_file_path("../scenarios/s1_b.wad")
+
+    game.add_available_button(Button.MOVE_LEFT)
+    game.add_available_button(Button.MOVE_RIGHT)
+    game.add_available_button(Button.ATTACK)
+
+    game.set_episode_timeout(300)
+    game.set_living_reward(-skiprate)
+
+def health_gathering(game, skiprate):
+    game.set_doom_file_path("../scenarios/health_gathering.wad")
+
+    game.add_available_button(Button.TURN_LEFT)
+    game.add_available_button(Button.TURN_RIGHT)
+    game.add_available_button(Button.MOVE_FORWARD)
+
+    game.set_episode_timeout(2100)
+    game.set_living_reward(skiprate)
+    game.set_death_penalty(100)
+    #game.add_state_available_var(GameVar.HEALTH)
+
 def setup_vizia():
     game = DoomGame()
 
     skiprate = 1
     #available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
-    game.set_screen_resolution(320,240)
-    game.set_screen_format(ScreenFormat.GRAY8)
+    game.set_screen_resolution(120,90)
+    game.set_screen_format(ScreenFormat.CRCGCB)
     game.set_doom_game_path("../bin/viziazdoom")
     game.set_doom_iwad_path("../scenarios/doom2.wad")
-    game.set_doom_file_path("../scenarios/s1_b.wad")
+    
     game.set_doom_map("map01")
-    game.set_episode_timeout(300)
+    
+    game.set_action_interval(skiprate)
 
-    game.set_living_reward(-skiprate)
     game.set_render_hud(False)
     game.set_render_crosshair(False)
     game.set_render_weapon(True)
@@ -75,16 +97,15 @@ def setup_vizia():
     game.set_render_particles(False);
 
     game.set_visible_window(True)
+    
+    s1_b(game, skiprate)
+    #health_gathering(game, skiprate)
 
-    game.add_available_button(Button.MOVE_LEFT)
-    game.add_available_button(Button.MOVE_RIGHT)
-    game.add_available_button(Button.ATTACK)
-    game.set_action_interval(skiprate)
-
-    print "Initializin DOOM ..."
+    print "Initializing DOOM ..."
     game.init()
     print "\nDOOM initialized."
     return game
+
 
 def double_tanh(x):
     return 2*tanh(x)
@@ -93,7 +114,7 @@ class ScaleConverter(IdentityImageConverter):
     def __init__(self, source):
         self._source = source
         self.x = 60
-        self.y = 45 
+        self.y = int(self.x*3/4) 
     def convert(self, img):
 
         img =  np.float32(img)/255.0
@@ -172,7 +193,7 @@ for i in range(episodes):
     while not game.is_episode_finished():
         engine.make_step()
         img = game.get_state().image_buffer
-        sleep(0.02)
+        sleep(0.01)
     print "Reward:", game.get_summary_reward()
 
 game.close()

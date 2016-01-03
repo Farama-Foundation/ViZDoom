@@ -16,22 +16,20 @@ class MLPEvaluator:
         self._loss_history = []
         self._misc_state_included = (state_format[1] > 0)
         self._gamma = gamma
-
         if self._misc_state_included:
             self._misc_inputs = tensor.matrix('misc_inputs')
-            misc_input_shape = (None, state_format[1])
             self._misc_input_shape = (1, state_format[1])
             self._misc_buffer = np.ndarray((batch_size, state_format[1]), dtype=np.float32)
             self._misc_buffer2 = np.ndarray((batch_size, state_format[1]), dtype=np.float32)
         else:
-            misc_input_shape = None
-        image_dimensions = len(state_format[0])
+            self._misc_input_shape = None
 
         self._targets = tensor.matrix('targets')
         self._image_inputs = tensor.tensor4('image_inputs')
 
         network_image_input_shape = list(state_format[0])
         network_image_input_shape.insert(0, None)
+
         self._image_input_shape = list(network_image_input_shape)
         self._image_input_shape[0] = batch_size
 
@@ -43,7 +41,7 @@ class MLPEvaluator:
         self._image_input_shape[0] = 1
 
         network_args["img_input_shape"] = network_image_input_shape
-        network_args["misc_shape"] = misc_input_shape
+        network_args["misc_shape"] = self._misc_input_shape
         network_args["output_size"] = actions_number
 
         self._initialize_network(**network_args)
@@ -68,6 +66,7 @@ class MLPEvaluator:
         # mode = NanGuardMode(nan_is_error=True, inf_is_error=True, big_is_error=True)
         mode = None
         if self._misc_state_included:
+            print "asdasd"
             self._learn = theano.function([self._image_inputs, self._misc_inputs, self._targets], loss, updates=updates,
                                           mode=mode, name="learn_fn")
             self._evaluate = theano.function([self._image_inputs, self._misc_inputs], predictions, mode=mode,
@@ -97,39 +96,6 @@ class MLPEvaluator:
 
         self._img_i_s = img_input_shape
         self._hid_uns = hidden_units
-
-    #not used yet    
-    def learn_one(self, s, a, s2, r):
-
-        if self._misc_state_included:
-            s[0] = s[0].reshape(self._image_input_shape)
-            s[1] = s[1].reshape(self._misc_input_shape)
-            target = self._evaluate(s[0], s[1])
-            # find best q values for s2
-            if s2 is not None:
-                s2[0] = s2[0].reshape(self._image_input_shape)
-                s2[1] = s2[1].reshape(self._misc_input_shape)
-                q2 = np.max(self._evaluate(s2[0], s2[1]))
-        else:
-            s = s[0].reshape(self._image_input_shape)
-            target = self._evaluate(s)
-            # find best q values for s2
-            if s2 is not None:
-                s2 = s2[0].reshape(self._image_input_shape)
-                q2 = np.max(self._evaluate(s2))
-
-        # set expected output as the reward got from the transition
-        expected_q = r
-
-        if s2 is not None:
-            expected_q += self._gamma * q2
-
-        target[0, a] = expected_q
-
-        if self._misc_state_included:
-            self._learn(s[0], s[1], target)
-        else:
-            self._learn(s, target)
 
     def learn(self, transitions):
 

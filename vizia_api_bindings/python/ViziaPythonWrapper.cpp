@@ -237,6 +237,7 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("get_state", &DoomGamePython::getState)
     
         .def("get_game_var", &DoomGamePython::getGameVar)
+        .def("get_game_screen", &DoomGamePython::getGameScreen)
 
         .def("get_living_reward", &DoomGamePython::getLivingReward)
         .def("set_living_reward", &DoomGamePython::setLivingReward)
@@ -264,7 +265,6 @@ BOOST_PYTHON_MODULE(vizia)
         .def("clear_custom_game_args", &DoomGamePython::clearCustomGameArgs)
 
         .def("send_game_command", &DoomGamePython::sendGameCommand)
-        .def("get_game_screen", &DoomGamePython::getGameScreen)
 
 
         .def("get_game_mode", &DoomGamePython::getGameMode)
