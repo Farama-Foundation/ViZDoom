@@ -38,7 +38,7 @@ namespace Vizia{
 
     enum GameMode {
         PLAYER,
-        SPECATOR
+        SPECTATOR,
     };
 
     enum ScreenFormat {
@@ -57,13 +57,16 @@ namespace Vizia{
     };
 
     enum GameVar {
-        KILLCOUNT = 0,
-        ITEMCOUNT = 1,
-        SECRETCOUNT = 2,
-        HEALTH = 3,
-        ARMOR = 4,
-        SELECTED_WEAPON = 5,
-        SELECTED_WEAPON_AMMO = 6,
+        KILLCOUNT,
+        ITEMCOUNT,
+        SECRETCOUNT,
+        HEALTH,
+        ARMOR,
+        ON_GROUND,
+        ATTACK_READY,
+        ALTATTACK_READY,
+        SELECTED_WEAPON,
+        SELECTED_WEAPON_AMMO,
         AMMO1,
         AMMO2,
         AMMO3,
@@ -134,7 +137,7 @@ namespace Vizia{
 
         MOVE_RIGHT = 10,
         MOVE_LEFT = 11,
-        MOVE_BACK = 12,
+        MOVE_BACKWARD = 12,
         MOVE_FORWARD = 13,
         TURN_RIGHT = 14,
         TURN_LEFT = 15,
@@ -142,6 +145,7 @@ namespace Vizia{
         LOOK_DOWN = 17,
         MOVE_UP = 18,
         MOVE_DOWN = 19,
+        LAND = 20,
         //SHOWSCORES 20
 
         SELECT_WEAPON1 = 21,
@@ -166,9 +170,14 @@ namespace Vizia{
 
         VIEW_PITCH = 38,
         VIEW_ANGLE = 39,
+        FORWARD_BACKWARD = 40,
+        LEFT_RIGHT = 41,
+        UP_DOWN = 42,
     };
 
-    static const int ButtonsNumber = 40;
+    static const int DiscreteButtonsNumber = 38;
+    static const int AxisButtonsNumber = 5;
+    static const int ButtonsNumber = 43;
     
 #define VK_2_DK(vk, dk) static const std::string KEY_ ## vk = dk;
     

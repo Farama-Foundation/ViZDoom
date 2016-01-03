@@ -1,4 +1,5 @@
 #include "vizia_game.h"
+#include "vizia_defines.h"
 #include "vizia_shared_memory.h"
 #include "vizia_message_queue.h"
 #include "vizia_screen.h"
@@ -41,12 +42,9 @@ int Vizia_CheckItem(const PClass *type) {
     return 0;
 }
 
-bool Vizia_CheckSelectedWeaponState(){
-    return false;
-}
-
 int Vizia_CheckWeaponAmmo(AWeapon* weapon){
-    return Vizia_CheckItem(weapon->AmmoType1);
+    if(weapon != NULL) return Vizia_CheckItem(weapon->AmmoType1);
+    return -1;
 }
 
 int Vizia_CheckSelectedWeapon(){
@@ -73,7 +71,17 @@ int Vizia_CheckSelectedWeaponAmmo(){
 }
 
 int Vizia_CheckSlotAmmo(int slot){
-    return Vizia_CheckWeaponAmmo(viziaPlayer->weapons.Slots[slot].PickWeapon(viziaPlayer, false));
+    if(viziaPlayer->weapons.Slots[slot].Size() <= 0) return 0;
+
+    const PClass *typeWeapon = viziaPlayer->weapons.Slots[slot].GetWeapon(0);
+    AWeapon *weapon = (AWeapon*) typeWeapon->CreateNew();
+    //AWeapon *weapon = (AWeapon*)viziaPlayer->mo->FindInventory(type);
+    if (weapon != NULL){
+        const PClass *typeAmmo = weapon->AmmoType1;
+        weapon->Destroy();
+        return Vizia_CheckItem(typeAmmo);
+    }
+    else return 0;
 }
 
 int Vizia_CheckSlotWeapons(int slot){
@@ -140,13 +148,15 @@ void Vizia_GameVarsUpdate(){
     viziaGameVars->PLAYER_SECRETCOUNT = viziaPlayer->secretcount;
     viziaGameVars->PLAYER_FRAGCOUNT = viziaPlayer->fragcount;
 
-    viziaGameVars->PLAYER_WEAPON_READY = Vizia_CheckSelectedWeaponState();
+    viziaGameVars->PLAYER_ATTACK_READY = (viziaPlayer->WeaponState & WF_WEAPONREADY);
+    viziaGameVars->PLAYER_ALTATTACK_READY = (viziaPlayer->WeaponState & WF_WEAPONREADYALT);
     viziaGameVars->PLAYER_ON_GROUND = viziaPlayer->onground;
 
     if(viziaPlayer->mo) viziaGameVars->PLAYER_HEALTH = viziaPlayer->mo->health;
     else viziaGameVars->PLAYER_HEALTH = viziaPlayer->health;
 
     viziaGameVars->PLAYER_ARMOR = Vizia_CheckItem(NAME_BasicArmor);
+    //TO DO? support for diffrent types of armor
 
     viziaGameVars->PLAYER_SELECTED_WEAPON_AMMO = Vizia_CheckSelectedWeaponAmmo();
     viziaGameVars->PLAYER_SELECTED_WEAPON = Vizia_CheckSelectedWeapon();

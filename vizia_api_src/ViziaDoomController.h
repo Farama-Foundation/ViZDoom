@@ -3,6 +3,7 @@
 
 #include "ViziaDefines.h"
 
+#include <ctime>
 #include <string>
 
 #include <boost/interprocess/ipc/message_queue.hpp>
@@ -48,8 +49,7 @@ namespace Vizia{
         struct InputStruct {
             int BT[ButtonsNumber];
             bool BT_AVAILABLE[ButtonsNumber];
-            int MAX_VIEW_PITCH_CHANGE;
-            int MAX_VIEW_ANGLE_CHANGE;
+            int BT_MAX_VALUE[AxisButtonsNumber];
         };
 
         struct GameVarsStruct {
@@ -87,7 +87,8 @@ namespace Vizia{
             int PLAYER_HEALTH;
             int PLAYER_ARMOR;
 
-            bool PLAYER_WEAPON_READY;
+            bool PLAYER_ATTACK_READY;
+            bool PLAYER_ALTATTACK_READY;
 
             int PLAYER_SELECTED_WEAPON;
             int PLAYER_SELECTED_WEAPON_AMMO;
@@ -207,7 +208,10 @@ namespace Vizia{
         void resetButtons();
         void resetDescreteButtons();
         void disableAllButtons();
+        void setButtonMaxValue(Button button, int value);
         void availableAllButtons();
+        bool isButtonDiscrete(Button button);
+        bool isButtonAxis(Button button);
 
         bool isAllowDoomInput();
         void setAllowDoomInput(bool set);
@@ -231,6 +235,9 @@ namespace Vizia{
 
         int getPlayerHealth();
         int getPlayerArmor();
+        bool isPlayerOnGround();
+        bool isPlayerAttackReady();
+        bool isPlayerAltAttackReady();
         int getPlayerSelectedWeaponAmmo();
         int getPlayerSelectedWeapon();
 
@@ -337,7 +344,8 @@ namespace Vizia{
 
         // TIME
 
-        bc::steady_clock::time_point lastTicTimePoint;
+        //bc::steady_clock::time_point lastTicTime;
+        std::clock_t lastTicTime;
 
         //CUSTOM ARGS
 

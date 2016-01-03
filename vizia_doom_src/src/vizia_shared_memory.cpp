@@ -1,5 +1,6 @@
 #include "vizia_shared_memory.h"
 #include "vizia_message_queue.h"
+#include "vizia_defines.h"
 
 #include "doomdef.h"
 #include "doomstat.h"
