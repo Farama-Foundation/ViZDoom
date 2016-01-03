@@ -34,93 +34,90 @@ int main(){
 
     bool sdl = true;
 
-    DoomController *vdm = new DoomController;
+    DoomController *dc = new DoomController;
 
     std::cout << "\n\nVIZIA CONTROLLER EXAMPLE\n\n";
 
-    vdm->setGamePath("viziazdoom");
-    vdm->setIwadPath("../scenarios/doom2.wad");
-    vdm->setFilePath("../scenarios/s1_b.wad");
-    vdm->setMap("map01");
-    vdm->setMapTimeout(200);
-    vdm->setAutoMapRestart(true);
-    vdm->setSeed(131313);
+    dc->setGamePath("viziazdoom");
+    dc->setIwadPath("../scenarios/doom2.wad");
+    dc->setFilePath("../scenarios/s1_b.wad");
+    dc->setMap("map01");
+    dc->setMapTimeout(200);
+    dc->setAutoMapRestart(true);
+    dc->setSeed(131313);
 
     // w przypadku nie zachowania proporcji 4:3, 16:10, 16:9
     // silnik weźmie wysokość i pomnoży razy 4/3
     // możemy spróbować to wyłączyć, ale pewnie wtedy obraz będzie zniekształocny
-    vdm->setScreenResolution(640, 480);
+    dc->setScreenResolution(640, 480);
     // rozdzielczość znacząco wpływa na szybkość działania
 
-    vdm->setScreenFormat(RGB24);
+    dc->setScreenFormat(RGB24);
 
-    vdm->setRenderHud(true);
-    vdm->setRenderCrosshair(true);
-    vdm->setRenderWeapon(true);
-    vdm->setRenderDecals(true);
-    vdm->setRenderParticles(true);
+    dc->setRenderHud(true);
+    dc->setRenderCrosshair(true);
+    dc->setRenderWeapon(true);
+    dc->setRenderDecals(true);
+    dc->setRenderParticles(true);
 
-    vdm->setWindowHidden(true);
-    vdm->setNoXServer(false);
+    dc->setWindowHidden(true);
+    dc->setNoXServer(false);
 
-    vdm->setNoConsole(false);
+    dc->setNoConsole(false);
 
-    vdm->init();
-    if(sdl) initSDL(vdm->getScreenWidth(), vdm->getScreenHeight());
+    dc->init();
+    if(sdl) initSDL(dc->getScreenWidth(), dc->getScreenHeight());
     
     int loop = 100;
     for(int i = 0; i < 50000; ++i){
 
-        if(vdm->isMapLastTic()) std::cout << "\nMAP FINISHED\n\n";
-
-        //vdm->setMouseX(-10); //obrót w lewo
+        if(dc->isMapLastTic()) std::cout << "\nMAP FINISHED\n\n";
 
         if(i%loop < 50) {
-            vdm->setButtonState(MOVE_RIGHT, 1);   //ustaw inpup
+            dc->setButtonState(MOVE_RIGHT, 1);   //ustaw inpup
         }
         else{
-            vdm->setButtonState(MOVE_RIGHT, 0);
+            dc->setButtonState(MOVE_RIGHT, 0);
         }
         if(i%loop >= 50) {
-            vdm->getInput()->BT[MOVE_LEFT] = 1;  //lub w ten sposób
+            dc->getInput()->BT[MOVE_LEFT] = 1;  //lub w ten sposób
         }
         else{
-            vdm->getInput()->BT[MOVE_LEFT] = 0;
+            dc->getInput()->BT[MOVE_LEFT] = 0;
         }
 
         if(i%loop == 25 || i%loop == 50 || i%loop == 75){
-            vdm->setButtonState(ATTACK, 1);
+            dc->setButtonState(ATTACK, 1);
         }
         else{
-            vdm->setButtonState(ATTACK, 0);
+            dc->setButtonState(ATTACK, 0);
         }
 
         if(i%loop == 30 || i%loop == 60){
-            vdm->setButtonState(JUMP, 1);
+            dc->setButtonState(JUMP, 1);
         }
         else{
-            vdm->setButtonState(JUMP, 0);
+            dc->setButtonState(JUMP, 0);
         }
 
         if(i%10 == 0) {
             if (sdl)
-                updateSDL(vdm->getScreenWidth(), vdm->getScreenHeight(), vdm->getScreenPitch(),
-                          (void *) vdm->getScreen());
+                updateSDL(dc->getScreenWidth(), dc->getScreenHeight(), dc->getScreenPitch(),
+                          (void *) dc->getScreen());
 
-            std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<
-            " HP: " << vdm->getPlayerHealth() << " ARMOR: " << vdm->getGameVars()->PLAYER_ARMOR<<std::endl;
-            std::cout << "SELECTED AMMO: " << vdm->getGameVars()->PLAYER_SELECTED_WEAPON_AMMO << " WEAPON: " << vdm->getGameVars()->PLAYER_SELECTED_WEAPON << std::endl;
+            std::cout << "GAME TIC: " << dc->getGameTic() << " MAP TIC: " << dc->getMapTic() <<
+            " HP: " << dc->getPlayerHealth() << " ARMOR: " << dc->getGameVars()->PLAYER_ARMOR<<std::endl;
+            std::cout << "ATTACK READY: " << dc->getGameVars()->PLAYER_ATTACK_READY << " SELECTED WEAPON: " << dc->getGameVars()->PLAYER_SELECTED_WEAPON << " SELECTED AMMO: " << dc->getGameVars()->PLAYER_SELECTED_WEAPON_AMMO << std::endl;
             for(int i = 0; i < 4; ++i){
-                std::cout << "AMMO " << i  << ": " << vdm->getGameVars()->PLAYER_AMMO[i] << " WEAPON " << i << ": " << vdm->getGameVars()->PLAYER_WEAPON[i] << std::endl;
+                std::cout << "WEAPON " << i << ": " << dc->getGameVars()->PLAYER_WEAPON[i] << " AMMO " << i  << ": " << dc->getGameVars()->PLAYER_AMMO[i] << std::endl;
             }
-            std::cout << "REWARD: " << vdm->getMapReward() << " SHAPING: " << vdm->getGameVar(USER1) << std::endl;
-            vdm->tic(true);
+            std::cout << "REWARD: " << dc->getMapReward() << " SHAPING: " << dc->getGameVar(USER1) << std::endl;
+            dc->tic(true);
         }
-        else vdm->tic(false);
+        else dc->tic(false);
 
     }
-
-    vdm->close();
+    dc->close();
     if(sdl) closeSDL();
 }
 
