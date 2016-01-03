@@ -7,55 +7,56 @@ using namespace Vizia;
 
 int main(){
 
-    DoomGame* v= new DoomGame();
+    DoomGame* dg = new DoomGame();
 
     std::cout << "\n\nVIZIA MAIN EXAMPLE\n\n";
 
-    v->setDoomGamePath("viziazdoom");
-    v->setDoomIwadPath("../scenarios/doom2.wad");
-    v->setDoomFilePath("../scenarios/s1_b.wad");
-    v->setDoomMap("map01");
-    v->setEpisodeTimeout(200);
-    v->setLivingReward(-1);
+    dg->setDoomGamePath("viziazdoom");
+    dg->setDoomIwadPath("../scenarios/doom2.wad");
+    dg->setDoomFilePath("../scenarios/s1_b.wad");
+    dg->setDoomMap("map01");
+    dg->setEpisodeTimeout(200);
+    dg->setLivingReward(-1);
 
-    v->setScreenResolution(640, 480);
+    dg->setScreenResolution(640, 480);
 
-    v->setRenderHud(false);
-    v->setRenderCrosshair(false);
-    v->setRenderWeapon(true);
-    v->setRenderDecals(false);
-    v->setRenderParticles(false);
+    dg->setRenderHud(false);
+    dg->setRenderCrosshair(false);
+    dg->setRenderWeapon(true);
+    dg->setRenderDecals(false);
+    dg->setRenderParticles(false);
 
-    v->setVisibleWindow(true);
+    dg->setVisibleWindow(true);
 
-    v->setDisabledConsole(true);
+    dg->setDisabledConsole(true);
 
-    v->addAvailableButton(LEFT_RIGHT);
-    v->addAvailableButton(FORWARD_BACKWARD);
-    v->addAvailableButton(VIEW_ANGLE);
+    dg->addAvailableButton(LEFT_RIGHT);
+    dg->addAvailableButton(FORWARD_BACKWARD);
+    dg->addAvailableButton(VIEW_ANGLE);
 
-    v->init();
-    //v->newEpisode();
+    dg->init();
+    //dg->newEpisode();
     std::vector<int> action(3);
 
     action[0] = -5;
     action[1] = 1;
-    action[2] = 100;
+    action[2] = -45;
 
     int iterations = 10000;
     int ep=1;
     for(int i = 0;i<iterations; ++i){
 
-        if( v->isEpisodeFinished() ){
-            v->newEpisode();
+        if( dg->isEpisodeFinished() ){
+            dg->newEpisode();
         }
-        DoomGame::State s = v->getState();
+        DoomGame::State s = dg->getState();
 
         std::cout << "STATE NUMBER: " << s.number << std::endl;
 
-        v->setNextAction(action);
-        v->advanceAction();
+        dg->setNextAction(action);
+        getchar();
+        dg->advanceAction();
     }
-    v->close();
-    delete v;
+    dg->close();
+    delete dg;
 }

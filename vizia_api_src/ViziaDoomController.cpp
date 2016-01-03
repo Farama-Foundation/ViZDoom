@@ -130,6 +130,10 @@ namespace Vizia {
         if (this->doomRunning) {
 
             if (!this->mapEnded) {
+
+                //this->lastTicTime = bc::steady_clock::now();
+                this->lastTicTime = std::clock();
+
                 this->mapLastTic = this->GameVars->MAP_TIC;
                 if(update) this->MQSend(MSG_CODE_TIC_N_UPDATE);
                 else this->MQSend(MSG_CODE_TIC);
@@ -151,8 +155,6 @@ namespace Vizia {
         }
         else throw DoomIsNotRunningException();
 
-        this->lastTicTimePoint = bc::steady_clock::now();
-
         return !this->mapEnded;
     }
 
@@ -173,7 +175,7 @@ namespace Vizia {
                 break;
             }
 
-            if(i == 0) this->resetDescreteButtons();
+            if(i == 0 && !this->allowDoomInput) this->resetDescreteButtons();
         }
 
         return lastTic;
@@ -202,9 +204,13 @@ namespace Vizia {
     bool DoomController::isDoomRunning() { return this->doomRunning; }
 
     void DoomController::waitTicsRealTime(unsigned int tics){
-        unsigned int msToWait = std::floor((float)1000/35 * tics);
-        bc::steady_clock::time_point now = bc::steady_clock::now();
-        bc::milliseconds wait = bc::duration_cast<bc::milliseconds>(bc::milliseconds(msToWait) - (now - this->lastTicTimePoint));
+        //unsigned int msToWait = std::floor((float)1000/35 * tics);
+        unsigned long long nsToWait = 1000000000/35 * tics;
+        std::time_t now = std::clock();
+        //bc::steady_clock::time_point now = bc::steady_clock::now();
+        //bc::milliseconds wait = bc::duration_cast<bc::milliseconds>(bc::milliseconds(msToWait) - (now - this->lastTicTimePoint));
+        unsigned long long nsLeft = nsToWait - (now - this->lastTicTime);///(CLOCKS_PER_SEC/1000);
+        bc::nanoseconds wait(nsLeft);
         b::this_thread::sleep_for( wait );
     }
 
@@ -212,7 +218,7 @@ namespace Vizia {
         bool lastTic = this->mapEnded;
 
         for(int i = 0; i < tics; ++i){
-            waitTicsRealTime(1);
+            this->waitTicsRealTime(1);
             if(i == tics - 1) lastTic = this->tic(true);
             else lastTic = this->tic(false);
 
@@ -222,7 +228,7 @@ namespace Vizia {
                 break;
             }
 
-            if(i == 0) this->resetDescreteButtons();
+            if(i == 0 && !this->allowDoomInput) this->resetDescreteButtons();
         }
 
         return lastTic;
@@ -552,6 +558,12 @@ namespace Vizia {
                 return this->GameVars->PLAYER_HEALTH;
             case ARMOR :
                 return this->GameVars->PLAYER_ARMOR;
+            case ON_GROUND :
+                return this->GameVars->PLAYER_ON_GROUND;
+            case ATTACK_READY :
+                return this->GameVars->PLAYER_ATTACK_READY;
+            case ALTATTACK_READY :
+                return this->GameVars->PLAYER_ALTATTACK_READY;
             case SELECTED_WEAPON :
                 return this->GameVars->PLAYER_SELECTED_WEAPON;
             case SELECTED_WEAPON_AMMO :
@@ -587,6 +599,10 @@ namespace Vizia {
 
     int DoomController::getPlayerHealth() { return this->GameVars->PLAYER_HEALTH; }
     int DoomController::getPlayerArmor() { return this->GameVars->PLAYER_ARMOR; }
+
+    bool DoomController::isPlayerOnGround() { return this->GameVars->PLAYER_ON_GROUND; }
+    bool DoomController::isPlayerAttackReady() { return this->GameVars->PLAYER_ATTACK_READY; }
+    bool DoomController::isPlayerAltAttackReady() { return this->GameVars->PLAYER_ALTATTACK_READY; }
 
     int DoomController::getPlayerSelectedWeaponAmmo() { return this->GameVars->PLAYER_SELECTED_WEAPON_AMMO; }
     int DoomController::getPlayerSelectedWeapon() { return this->GameVars->PLAYER_SELECTED_WEAPON; }
@@ -777,6 +793,11 @@ namespace Vizia {
             args.push_back("+vizia_allow_input");
             args.push_back("1");
         }
+        else{
+            //disable mouse
+            args.push_back("+use_mouse");
+            args.push_back("0");
+        }
 
         args.push_back("+vizia_screen_format");
         args.push_back(b::lexical_cast<std::string>(this->screenFormat));
@@ -797,10 +818,6 @@ namespace Vizia {
         args.push_back("-noidle");
         args.push_back("-nojoy");
         args.push_back("-nosound");
-
-        //temp disable mouse
-        //args.push_back("+use_mouse");
-        //args.push_back("0");
 
         //35 fps and no vsync
         args.push_back("+cl_capfps");

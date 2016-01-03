@@ -57,13 +57,16 @@ namespace Vizia{
     };
 
     enum GameVar {
-        KILLCOUNT = 0,
-        ITEMCOUNT = 1,
-        SECRETCOUNT = 2,
-        HEALTH = 3,
-        ARMOR = 4,
-        SELECTED_WEAPON = 5,
-        SELECTED_WEAPON_AMMO = 6,
+        KILLCOUNT,
+        ITEMCOUNT,
+        SECRETCOUNT,
+        HEALTH,
+        ARMOR,
+        ON_GROUND,
+        ATTACK_READY,
+        ALTATTACK_READY,
+        SELECTED_WEAPON,
+        SELECTED_WEAPON_AMMO,
         AMMO1,
         AMMO2,
         AMMO3,
@@ -142,6 +145,7 @@ namespace Vizia{
         LOOK_DOWN = 17,
         MOVE_UP = 18,
         MOVE_DOWN = 19,
+        LAND = 20,
         //SHOWSCORES 20
 
         SELECT_WEAPON1 = 21,

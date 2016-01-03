@@ -57,15 +57,15 @@ add_executable( doomGameExample
     examples/c++/ViziaDoomGameExample.cpp )
 target_link_libraries( doomGameExample ${VIZIA_LIBS} vizia )
 
-add_executable( doomRealTimeExample 
-    examples/c++/ViziaDoomRealTimeExample.cpp )
-target_link_libraries( doomRealTimeExample ${VIZIA_LIBS} vizia )
+add_executable( doomSpectatorExample
+        examples/c++/ViziaDoomSpectatorExample.cpp)
+target_link_libraries( doomSpectatorExample ${VIZIA_LIBS} vizia )
 
 add_executable( doomAxisExample 
     examples/c++/ViziaDoomAxisExample.cpp )
 target_link_libraries( doomAxisExample ${VIZIA_LIBS} vizia )
 
-set_target_properties( vizia doomGameExample doomControllerExample doomRealTimeExample doomAxisExample
+set_target_properties( vizia doomGameExample doomControllerExample doomSpectatorExample doomAxisExample
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
