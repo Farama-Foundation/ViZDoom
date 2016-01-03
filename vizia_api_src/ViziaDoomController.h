@@ -3,6 +3,7 @@
 
 #include "ViziaDefines.h"
 
+#include <ctime>
 #include <string>
 
 #include <boost/interprocess/ipc/message_queue.hpp>
@@ -86,7 +87,8 @@ namespace Vizia{
             int PLAYER_HEALTH;
             int PLAYER_ARMOR;
 
-            bool PLAYER_WEAPON_READY;
+            bool PLAYER_ATTACK_READY;
+            bool PLAYER_ALTATTACK_READY;
 
             int PLAYER_SELECTED_WEAPON;
             int PLAYER_SELECTED_WEAPON_AMMO;
@@ -233,6 +235,9 @@ namespace Vizia{
 
         int getPlayerHealth();
         int getPlayerArmor();
+        bool isPlayerOnGround();
+        bool isPlayerAttackReady();
+        bool isPlayerAltAttackReady();
         int getPlayerSelectedWeaponAmmo();
         int getPlayerSelectedWeapon();
 
@@ -339,7 +344,8 @@ namespace Vizia{
 
         // TIME
 
-        bc::steady_clock::time_point lastTicTimePoint;
+        //bc::steady_clock::time_point lastTicTime;
+        std::clock_t lastTicTime;
 
         //CUSTOM ARGS
 

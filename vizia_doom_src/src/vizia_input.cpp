@@ -70,10 +70,12 @@ void Vizia_AddAxisBT(int button, int value){
     value = Vizia_AxisFilter(button, value);
     switch(button){
         case VIZIA_BT_VIEW_PITCH :
+            value = (int)((float)value/180 * 32768);
             G_AddViewPitch(value);
             //LocalViewPitch = value;
             break;
         case VIZIA_BT_VIEW_ANGLE :
+            value = (int)((float)value/180 * 32768);
             G_AddViewAngle(value);
             //LocalViewAngle = value;
             break;
@@ -113,6 +115,7 @@ char* Vizia_BTToCommand(int button){
         case VIZIA_BT_LOOK_DOWN : return strdup("lookdown");
         case VIZIA_BT_MOVE_UP : return strdup("moveup");
         case VIZIA_BT_MOVE_DOWN : return strdup("movedown");
+        case VIZIA_BT_LAND : return strdup("land");
 
         case VIZIA_BT_SELECT_WEAPON1 : return strdup("slot 1");
         case VIZIA_BT_SELECT_WEAPON2 : return strdup("slot 2");
@@ -136,6 +139,9 @@ char* Vizia_BTToCommand(int button){
 
         case VIZIA_BT_VIEW_PITCH :
         case VIZIA_BT_VIEW_ANGLE :
+        case VIZIA_BT_FORWARD_BACKWARD :
+        case VIZIA_BT_LEFT_RIGHT :
+        case VIZIA_BT_UP_DOWN :
         default : return strdup("");
     }
 }
@@ -201,6 +207,7 @@ void Vizia_AddBTCommand(int button, int state){
             break;
 
         case VIZIA_BT_TURN180 :
+        case VIZIA_BT_LAND :
         case VIZIA_BT_SELECT_WEAPON1 :
         case VIZIA_BT_SELECT_WEAPON2 :
         case VIZIA_BT_SELECT_WEAPON3 :
