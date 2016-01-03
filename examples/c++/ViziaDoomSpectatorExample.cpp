@@ -1,13 +1,12 @@
 #include "ViziaDoomGame.h"
 #include <iostream>
-#include <unistd.h>
 #include <vector>
 
 using namespace Vizia;
 
 int main(){
 
-    DoomGame* dg= new DoomGame();
+    DoomGame* dg = new DoomGame();
 
     std::cout << "\n\nVIZIA MAIN EXAMPLE\n\n";
 
@@ -15,8 +14,9 @@ int main(){
     dg->setDoomIwadPath("../scenarios/doom2.wad");
     dg->setDoomFilePath("../scenarios/s1_b.wad");
     dg->setDoomMap("map01");
-    dg->setEpisodeTimeout(200);
-    dg->setLivingReward(-1);
+    dg->setEpisodeTimeout(2000);
+    dg->setEpisodeStartTime(1);
+    dg->setGameMode(SPECTATOR);
 
     dg->setScreenResolution(640, 480);
 
@@ -30,8 +30,10 @@ int main(){
 
     dg->setDisabledConsole(true);
 
-    dg->addAvailableButton(MOVE_LEFT);
-    dg->addAvailableButton(MOVE_RIGHT);
+    dg->addAvailableButton(TURN_LEFT);
+    dg->addAvailableButton(TURN_RIGHT);
+    dg->addAvailableButton(MOVE_FORWARD);
+    dg->addAvailableButton(MOVE_BACKWARD);
     dg->addAvailableButton(ATTACK);
 
     dg->addStateAvailableVar(HEALTH);
@@ -40,27 +42,27 @@ int main(){
 
     dg->init();
     //dg->newEpisode();
-    std::vector<int> action(3);
+    std::vector<bool> action(3);
 
-    action[0] = 0;
-    action[1] = 0;
-    action[2] = 1;
+    action[0] = false;
+    action[1] = false;
+    action[2] = true;
 
     int iterations = 10000;
     int ep=1;
     for(int i = 0;i<iterations; ++i){
 
         if( dg->isEpisodeFinished() ){
+            //std::cout << ep++ << std::endl;
             dg->newEpisode();
+            // usleep(2000000);
         }
         DoomGame::State s = dg->getState();
-
         std::cout << "STATE NUMBER: " << s.number << " HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
-
-        dg->setNextAction(action);
-        dg->advanceAction(true, true, 4);
-
-        std::cout<<"reward: "<<dg->getLastReward()<<std::endl;
+        dg->advanceAction();
+        //float r = dg->makeAction(action);
+        //std::cout<<"reward: "<<r<<std::endl;
+        //usleep(11000);
     }
     dg->close();
     delete dg;

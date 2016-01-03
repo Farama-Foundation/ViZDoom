@@ -7,7 +7,7 @@ using namespace Vizia;
 
 int main(){
 
-    DoomGame* dg= new DoomGame();
+    DoomGame* dg = new DoomGame();
 
     std::cout << "\n\nVIZIA MAIN EXAMPLE\n\n";
 
@@ -30,21 +30,17 @@ int main(){
 
     dg->setDisabledConsole(true);
 
-    dg->addAvailableButton(MOVE_LEFT);
-    dg->addAvailableButton(MOVE_RIGHT);
-    dg->addAvailableButton(ATTACK);
-
-    dg->addStateAvailableVar(HEALTH);
-    dg->addStateAvailableVar(AMMO1);
-
+    dg->addAvailableButton(LEFT_RIGHT);
+    dg->addAvailableButton(FORWARD_BACKWARD);
+    dg->addAvailableButton(VIEW_ANGLE);
 
     dg->init();
     //dg->newEpisode();
     std::vector<int> action(3);
 
-    action[0] = 0;
-    action[1] = 0;
-    action[2] = 1;
+    action[0] = -5;
+    action[1] = 1;
+    action[2] = -45;
 
     int iterations = 10000;
     int ep=1;
@@ -55,12 +51,10 @@ int main(){
         }
         DoomGame::State s = dg->getState();
 
-        std::cout << "STATE NUMBER: " << s.number << " HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
+        std::cout << "STATE NUMBER: " << s.number << std::endl;
 
         dg->setNextAction(action);
-        dg->advanceAction(true, true, 4);
-
-        std::cout<<"reward: "<<dg->getLastReward()<<std::endl;
+        dg->advanceAction();
     }
     dg->close();
     delete dg;

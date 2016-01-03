@@ -128,6 +128,12 @@ bool			r_showviewer;
 
 angle_t			LocalViewAngle;
 int				LocalViewPitch;
+
+//VIZIA_CODE
+int LocalForward;
+int	LocalSide;
+int LocalFly;
+
 bool			LocalKeyboardTurner;
 
 float			LastFOV;

@@ -2,17 +2,12 @@
 #include "ViziaDoomGamePython.h"
 #include "ViziaDefines.h"
 #include <exception>
-#include <boost/python/overloads.hpp>
-#include <boost/python/return_internal_reference.hpp>
-#include <boost/python/args.hpp>
-#include <boost/python/def.hpp>
 
-
+using namespace Vizia;
 
 /*C++ code to expose DoomGamePython via python */
 
-PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_Exception)
-{
+PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_Exception) {
     using std::string;
     namespace bp = boost::python;
 
@@ -25,46 +20,60 @@ PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_E
     bp::scope().attr(name) = bp::handle<>(bp::borrowed(typeObj));
     return typeObj;
 }
+
 //they need to be remembered!!!
 PyObject* myExceptionTypeObj5 = NULL;
 PyObject* myExceptionTypeObj4 = NULL;
 PyObject* myExceptionTypeObj3 = NULL;
 PyObject* myExceptionTypeObj2 = NULL; 
 PyObject* myExceptionTypeObj = NULL; 
+
 void translate(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj, e.what());
 }
+
 void translate2(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj2, e.what());
 }
+
 void translate3(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj3, e.what());
 }
+
 void translate4(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj4, e.what());
 }
+
 void translate5(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj5, e.what());
 }
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(f_member_overloads, advance_action, 0, 3);
+/* DoomGamePython methods overloading */
+
+void (DoomGamePython::*addAvailableButton_1)(Button) = &DoomGamePython::addAvailableButton;
+void (DoomGamePython::*addAvailableButton_2)(Button, int) = &DoomGamePython::addAvailableButton;
+
+void (DoomGamePython::*advanceAction_1)() = &DoomGamePython::advanceAction;
+void (DoomGamePython::*advanceAction_2)(bool, bool) = &DoomGamePython::advanceAction;
+void (DoomGamePython::*advanceAction_3)(bool, bool, unsigned int) = &DoomGamePython::advanceAction;
+
+
 
 BOOST_PYTHON_MODULE(vizia)
 {
     using namespace boost::python;
-    using namespace Vizia;
     Py_Initialize();
     boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
     import_array();
     
     //exceptions
     myExceptionTypeObj = createExceptionClass("doom_unexpected_exit_exception");
-   boost::python::register_exception_translator<Vizia::DoomUnexpectedExitException>(&translate);
+    boost::python::register_exception_translator<Vizia::DoomUnexpectedExitException>(&translate);
 
     myExceptionTypeObj2 = createExceptionClass("doom_is_not_running_exception");
     boost::python::register_exception_translator<Vizia::DoomIsNotRunningException>(&translate2);
@@ -82,7 +91,7 @@ BOOST_PYTHON_MODULE(vizia)
 
     enum_<GameMode>("GameMode")
         ENUM_VAL_2_PYT(PLAYER)
-        ENUM_VAL_2_PYT(SPECATOR);
+        ENUM_VAL_2_PYT(SPECTATOR);
 
 	enum_<ScreenFormat>("ScreenFormat")
         ENUM_VAL_2_PYT(CRCGCB)
@@ -111,12 +120,13 @@ BOOST_PYTHON_MODULE(vizia)
         ENUM_VAL_2_PYT(STRAFE)
         ENUM_VAL_2_PYT(MOVE_RIGHT)
         ENUM_VAL_2_PYT(MOVE_LEFT)
-        ENUM_VAL_2_PYT(MOVE_BACK)
+        ENUM_VAL_2_PYT(MOVE_BACKWARD)
         ENUM_VAL_2_PYT(MOVE_FORWARD)
         ENUM_VAL_2_PYT(TURN_RIGHT)
         ENUM_VAL_2_PYT(TURN_LEFT)
         ENUM_VAL_2_PYT(LOOK_UP)
         ENUM_VAL_2_PYT(LOOK_DOWN)
+        ENUM_VAL_2_PYT(LAND)
         ENUM_VAL_2_PYT(SELECT_WEAPON1)
         ENUM_VAL_2_PYT(SELECT_WEAPON2)
         ENUM_VAL_2_PYT(SELECT_WEAPON3)
@@ -135,7 +145,10 @@ BOOST_PYTHON_MODULE(vizia)
         ENUM_VAL_2_PYT(SELECT_PREV_ITEM)
         ENUM_VAL_2_PYT(DROP_SELECTED_ITEM)
         ENUM_VAL_2_PYT(VIEW_PITCH)
-        ENUM_VAL_2_PYT(VIEW_ANGLE);
+        ENUM_VAL_2_PYT(VIEW_ANGLE)
+        ENUM_VAL_2_PYT(FORWARD_BACKWARD)
+        ENUM_VAL_2_PYT(LEFT_RIGHT)
+        ENUM_VAL_2_PYT(UP_DOWN);
 
     enum_<GameVar>("GameVar")
         ENUM_VAL_2_PYT(KILLCOUNT)
@@ -143,6 +156,9 @@ BOOST_PYTHON_MODULE(vizia)
         ENUM_VAL_2_PYT(SECRETCOUNT)
         ENUM_VAL_2_PYT(HEALTH)
         ENUM_VAL_2_PYT(ARMOR)
+        ENUM_VAL_2_PYT(ON_GROUND)
+        ENUM_VAL_2_PYT(ATTACK_READY)
+        ENUM_VAL_2_PYT(ALTATTACK_READY)
         ENUM_VAL_2_PYT(SELECTED_WEAPON)
         ENUM_VAL_2_PYT(SELECTED_WEAPON_AMMO)
         ENUM_VAL_2_PYT(AMMO1)
@@ -211,18 +227,16 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("new_episode", &DoomGamePython::newEpisode)
 		.def("is_episode_finished", &DoomGamePython::isEpisodeFinished)
 		.def("is_new_episode", &DoomGamePython::isNewEpisode)
-		.def("set_next_action",&DoomGamePython::setNextAction)
-		//.def("advance_action",&DoomGamePython::advanceAction)
-        .def("advance_action", &DoomGamePython::advanceAction, 
-                f_member_overloads(
-                    args("stateUpdate", "renderOnly"),
-                    "advance_action's docstring")
-            )  
+		.def("set_next_action", &DoomGamePython::setNextAction)
+        .def("make_action", &DoomGamePython::makeAction)
+		.def("advance_action",advanceAction_1)
+        .def("advance_action",advanceAction_2)
+        .def("advance_action",advanceAction_3)
+        
+        
 		.def("get_state", &DoomGamePython::getState)
-		.def("get_action_format", &DoomGamePython::getActionFormat)
     
         .def("get_game_var", &DoomGamePython::getGameVar)
-        .def("get_game_var_len", &DoomGamePython::getGameVarLen)
 
         .def("get_living_reward", &DoomGamePython::getLivingReward)
         .def("set_living_reward", &DoomGamePython::setLivingReward)
@@ -236,16 +250,22 @@ BOOST_PYTHON_MODULE(vizia)
         .def("get_last_action", &DoomGamePython::getLastAction)
         
 		.def("add_state_available_var", &DoomGamePython::addStateAvailableVar)
-		.def("clear_state_available_var", &DoomGamePython::clearStateAvailableVar)
-		.def("add_available_button", &DoomGamePython::addAvailableButton)
-		.def("clear_available_button", &DoomGamePython::clearAvailableButton)
+		.def("clear_state_available_var", &DoomGamePython::clearStateAvailableVars)
+        .def("get_state_available_vars_size", &DoomGamePython::getStateAvailableVarsSize)
+
+		.def("add_available_button", addAvailableButton_1)
+        .def("add_available_button", addAvailableButton_2)
+
+		.def("clear_available_button", &DoomGamePython::clearAvailableButtons)
+        .def("get_available_buttons_size", &DoomGamePython::getAvailableButtonsSize)
+        .def("set_button_max_value", &DoomGamePython::setButtonMaxValue)
 
         .def("add_custom_game_arg", &DoomGamePython::addCustomGameArg)
         .def("clear_custom_game_args", &DoomGamePython::clearCustomGameArgs)
 
         .def("send_game_command", &DoomGamePython::sendGameCommand)
+        .def("get_game_screen", &DoomGamePython::getGameScreen)
 
-        .def("get_game_buffer", &DoomGamePython::getGameBuffer)
 
         .def("get_game_mode", &DoomGamePython::getGameMode)
         .def("set_game_mode", &DoomGamePython::setGameMode)
