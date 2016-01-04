@@ -1023,7 +1023,7 @@ void D_DoomLoop ()
 			{
 
 				I_StartTic ();
-				if(!*vizia_controlled || vizia_update) D_ProcessEvents ();
+				if(!*vizia_controlled || (vizia_update && *vizia_allow_input)) D_ProcessEvents ();
 
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				if (advancedemo)

@@ -71,7 +71,10 @@ namespace Vizia {
 
             this->lastAction.resize(this->availableButtons.size());
 
-            if(this->gameMode == SPECTATOR){
+            if(this->gameMode == PLAYER){
+                this->doomController->setAllowDoomInput(false);
+            }
+            else if(this->gameMode == SPECTATOR){
                 this->doomController->setAllowDoomInput(true);
             }
 
