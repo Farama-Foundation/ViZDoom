@@ -63,7 +63,6 @@ int Vizia_CheckSelectedWeapon(){
     }
 
     return -1;
-
 }
 
 int Vizia_CheckSelectedWeaponAmmo(){
