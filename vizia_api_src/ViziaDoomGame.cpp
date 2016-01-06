@@ -71,7 +71,10 @@ namespace Vizia {
 
             this->lastAction.resize(this->availableButtons.size());
 
-            if(this->gameMode == SPECTATOR){
+            if(this->gameMode == PLAYER){
+                this->doomController->setAllowDoomInput(false);
+            }
+            else if(this->gameMode == SPECTATOR){
                 this->doomController->setAllowDoomInput(true);
             }
 
@@ -158,6 +161,12 @@ namespace Vizia {
         if(updateState) this->updateState();
     }
 
+    float DoomGame::makeAction(std::vector<int> &actions){
+        this->setNextAction(actions);
+        this->advanceAction();
+        return this->getLastReward();
+    }
+
     void DoomGame::updateState(){
         try {
             float reward = 0;
@@ -194,7 +203,7 @@ namespace Vizia {
 
     DoomGame::State DoomGame::getState() { return this->state; }
 
-    std::vector<bool> DoomGame::getLastAction() { return this->lastAction; }
+    std::vector<int> DoomGame::getLastAction() { return this->lastAction; }
 
     bool DoomGame::isNewEpisode() {
         if(!this->isRunning()) throw DoomIsNotRunningException();

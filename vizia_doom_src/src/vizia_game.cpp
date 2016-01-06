@@ -43,7 +43,8 @@ int Vizia_CheckItem(const PClass *type) {
 }
 
 int Vizia_CheckWeaponAmmo(AWeapon* weapon){
-    return Vizia_CheckItem(weapon->AmmoType1);
+    if(weapon != NULL) return Vizia_CheckItem(weapon->AmmoType1);
+    return -1;
 }
 
 int Vizia_CheckSelectedWeapon(){
@@ -62,7 +63,6 @@ int Vizia_CheckSelectedWeapon(){
     }
 
     return -1;
-
 }
 
 int Vizia_CheckSelectedWeaponAmmo(){

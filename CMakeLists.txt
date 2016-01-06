@@ -46,8 +46,8 @@ set( VIZIA_PYTHON_SOURCES
     vizia_api_bindings/python/ViziaPythonWrapper.cpp
     vizia_api_bindings/python/ViziaDoomGamePython.cpp  )
 
-#python_add_module(python_vizia ${VIZIA_PYTHON_SOURCES})
-#target_link_libraries (python_vizia ${VIZIA_LIBS} vizia) 
+python_add_module(python_vizia ${VIZIA_PYTHON_SOURCES})
+target_link_libraries (python_vizia ${VIZIA_LIBS} vizia) 
 
 add_executable( doomControllerExample 
     examples/c++/ViziaDoomControllerExample.cpp )
@@ -72,10 +72,10 @@ set_target_properties( vizia doomGameExample doomControllerExample doomSpectator
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
 
-#set_target_properties( python_vizia 
-#    PROPERTIES
-#    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/python
-#    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/python
-#    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/python
-#    OUTPUT_NAME vizia
-#)	
+set_target_properties( python_vizia 
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/python
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/python
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/python
+    OUTPUT_NAME vizia
+)	

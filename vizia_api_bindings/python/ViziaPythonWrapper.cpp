@@ -3,12 +3,11 @@
 #include "ViziaDefines.h"
 #include <exception>
 
-
+using namespace Vizia;
 
 /*C++ code to expose DoomGamePython via python */
 
-PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_Exception)
-{
+PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_Exception) {
     using std::string;
     namespace bp = boost::python;
 
@@ -21,44 +20,60 @@ PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_E
     bp::scope().attr(name) = bp::handle<>(bp::borrowed(typeObj));
     return typeObj;
 }
+
 //they need to be remembered!!!
 PyObject* myExceptionTypeObj5 = NULL;
 PyObject* myExceptionTypeObj4 = NULL;
 PyObject* myExceptionTypeObj3 = NULL;
 PyObject* myExceptionTypeObj2 = NULL; 
 PyObject* myExceptionTypeObj = NULL; 
+
 void translate(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj, e.what());
 }
+
 void translate2(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj2, e.what());
 }
+
 void translate3(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj3, e.what());
 }
+
 void translate4(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj4, e.what());
 }
+
 void translate5(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj5, e.what());
 }
 
+/* DoomGamePython methods overloading */
+
+void (DoomGamePython::*addAvailableButton_1)(Button) = &DoomGamePython::addAvailableButton;
+void (DoomGamePython::*addAvailableButton_2)(Button, int) = &DoomGamePython::addAvailableButton;
+
+void (DoomGamePython::*advanceAction_1)() = &DoomGamePython::advanceAction;
+void (DoomGamePython::*advanceAction_2)(bool, bool) = &DoomGamePython::advanceAction;
+void (DoomGamePython::*advanceAction_3)(bool, bool, unsigned int) = &DoomGamePython::advanceAction;
+
+
+
 BOOST_PYTHON_MODULE(vizia)
 {
     using namespace boost::python;
-    using namespace Vizia;
     Py_Initialize();
     boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
     import_array();
     
     //exceptions
     myExceptionTypeObj = createExceptionClass("doom_unexpected_exit_exception");
-   boost::python::register_exception_translator<Vizia::DoomUnexpectedExitException>(&translate);
+    boost::python::register_exception_translator<Vizia::DoomUnexpectedExitException>(&translate);
 
     myExceptionTypeObj2 = createExceptionClass("doom_is_not_running_exception");
     boost::python::register_exception_translator<Vizia::DoomIsNotRunningException>(&translate2);
@@ -212,12 +227,17 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("new_episode", &DoomGamePython::newEpisode)
 		.def("is_episode_finished", &DoomGamePython::isEpisodeFinished)
 		.def("is_new_episode", &DoomGamePython::isNewEpisode)
-		.def("set_next_action",&DoomGamePython::setNextAction)
-		.def("advance_action",&DoomGamePython::advanceAction)
-            
+		.def("set_next_action", &DoomGamePython::setNextAction)
+        .def("make_action", &DoomGamePython::makeAction)
+		.def("advance_action",advanceAction_1)
+        .def("advance_action",advanceAction_2)
+        .def("advance_action",advanceAction_3)
+        
+        
 		.def("get_state", &DoomGamePython::getState)
     
         .def("get_game_var", &DoomGamePython::getGameVar)
+        .def("get_game_screen", &DoomGamePython::getGameScreen)
 
         .def("get_living_reward", &DoomGamePython::getLivingReward)
         .def("set_living_reward", &DoomGamePython::setLivingReward)
@@ -234,7 +254,9 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("clear_state_available_var", &DoomGamePython::clearStateAvailableVars)
         .def("get_state_available_vars_size", &DoomGamePython::getStateAvailableVarsSize)
 
-		.def("add_available_button", &DoomGamePython::addAvailableButton)
+		.def("add_available_button", addAvailableButton_1)
+        .def("add_available_button", addAvailableButton_2)
+
 		.def("clear_available_button", &DoomGamePython::clearAvailableButtons)
         .def("get_available_buttons_size", &DoomGamePython::getAvailableButtonsSize)
         .def("set_button_max_value", &DoomGamePython::setButtonMaxValue)
@@ -244,7 +266,6 @@ BOOST_PYTHON_MODULE(vizia)
 
         .def("send_game_command", &DoomGamePython::sendGameCommand)
 
-        .def("get_game_buffer", &DoomGamePython::getGameScreen)
 
         .def("get_game_mode", &DoomGamePython::getGameMode)
         .def("set_game_mode", &DoomGamePython::setGameMode)

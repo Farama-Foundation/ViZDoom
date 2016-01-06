@@ -42,7 +42,7 @@ namespace Vizia {
 
         this->windowHidden = false;
         this->noXServer = false;
-        this->noConsole=true;
+        this->noConsole = true;
 
         this->autoRestart = false;
         this->autoRestartOnTimeout = true;
