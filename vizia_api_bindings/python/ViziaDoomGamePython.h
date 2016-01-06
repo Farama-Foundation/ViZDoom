@@ -33,9 +33,11 @@ namespace Vizia {
         };
         DoomGamePython();
         bool init();
-        float makeAction(boost::python::list actionList);
+        void setNextAction(boost::python::list &action);
         PythonState getState();
         boost::python::list getLastAction();
+        object getGameScreen();
+        float makeAction(boost::python::list &action);
 
     private:
 
