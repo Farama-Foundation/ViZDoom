@@ -7,8 +7,9 @@
 
 #include <sys/types.h>
 #include <stddef.h>
+#include <SDL_video.h>
 
-
+#define VIZIA_DEPTH_TEST 1
 
 class depthBuffer{
 public:
@@ -31,6 +32,10 @@ public:
     unsigned int getBufferHeight();
     void clearBuffer();
     void clearBuffer(u_int8_t color);
+
+#ifdef VIZIA_DEPTH_TEST
+    void Update();
+#endif
 private:
     u_int8_t *buffer;
     unsigned int bufferSize;
@@ -41,6 +46,11 @@ private:
     int minDepth;
     int convSteps;
     int tX, tY;
+#ifdef VIZIA_DEPTH_TEST
+    SDL_Window* window;
+    SDL_Surface* surface;
+    SDL_Color colors[256];
+#endif
 };
 
 extern depthBuffer* depthMap;

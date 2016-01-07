@@ -13,7 +13,7 @@
 #include "sdlvideo.h"
 #include "r_swrenderer.h"
 #include "version.h"
-
+#include "vizia_depth.h"
 #include <SDL.h>
 
 #ifdef __APPLE__
@@ -580,6 +580,9 @@ void SDLFB::Update ()
 		NeedPalUpdate = false;
 		UpdateColors ();
 	}
+#ifdef VIZIA_DEPTH_TEST
+	depthMap->Update();
+#endif
 }
 
 void SDLFB::UpdateColors ()
