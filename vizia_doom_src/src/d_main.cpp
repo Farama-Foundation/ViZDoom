@@ -2290,8 +2290,7 @@ void D_DoomMain (void)
 	atterm(FinalGC);
 
 	// reinit from here
-	depthMap = new depthBuffer(320, 240);
-	depthMap->setDepthBoundries(50000000,50000);
+
 	do
 	{
 		if (restart)
@@ -2576,6 +2575,9 @@ void D_DoomMain (void)
 
 			V_Init2();
 			UpdateJoystickMenu(NULL);
+
+			depthMap = new depthBuffer(screen->GetWidth(), screen->GetHeight());
+			depthMap->setDepthBoundries(50000000,50000);
 
 			v = Args->CheckValue ("-loadgame");
 			if (v)
