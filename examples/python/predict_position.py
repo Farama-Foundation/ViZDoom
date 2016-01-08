@@ -16,7 +16,7 @@ def setup_vizia():
 	game = DoomGame()
 
 	#available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
-	game.set_screen_resolution(320,240)
+	game.set_screen_resolution(640,480)
 
 	#set desired screen format
 	game.set_screen_format(ScreenFormat.CRCGCB)
@@ -29,7 +29,7 @@ def setup_vizia():
 
 	game.set_living_reward(-0.0001)
 
-	game.set_render_hud(False)	
+	game.set_render_hud(True)	
 	game.set_render_crosshair(False)
 	game.set_render_weapon(True)
 	game.set_render_decals(False)
