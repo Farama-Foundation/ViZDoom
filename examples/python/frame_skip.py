@@ -21,10 +21,11 @@ def setup_vizia():
 
 	game.set_doom_game_path("../../bin/viziazdoom")
 	game.set_doom_iwad_path("../../scenarios/doom2.wad")
-	game.set_doom_file_path("../../scenarios/my_way_home.wad")
+	game.set_doom_file_path("../../scenarios/health_gathering.wad")
 	game.set_episode_timeout(2100)
 
-	game.set_living_reward(-0.0001)
+	game.set_living_reward(0.25)
+	game.set_death_penalty(100)
 
 	game.set_render_hud(False)	
 	game.set_render_crosshair(False)
@@ -38,6 +39,7 @@ def setup_vizia():
 
 
 	game.set_window_visible(True)
+	game.add_state_available_var(GameVar.HEALTH)
 
 	game.init()
 	
@@ -47,13 +49,13 @@ def setup_vizia():
 
 game = setup_vizia()
 
-left = [True,False,False]
-right = [False,True,False]
+left = [True,False,True]
+right = [False,True,True]
 forward =[False, False, True]
 actions = [left, right, forward]
 
 iters = 10000
-sleep_time = 0.05
+sleep_time = 0.5
 
 
 for i in range(iters):
@@ -65,10 +67,15 @@ for i in range(iters):
 		sleep(1)
 		game.new_episode()
 
+	skiprate = 4
 	s = game.get_state()
-	r = game.make_action(choice(actions))
+
+	game.set_action(choice(actions))
+	game.advance_action(True,True,skiprate)
+	r = game.get_last_reward()
 
 	print "state #" +str(s.number)
+	print "HP:", s.vars[0]
 	print "reward:",r
 	print "====================="	
 	if sleep_time>0:

@@ -3,8 +3,9 @@ from vizia import DoomGame
 from vizia import Button
 from vizia import GameVar
 from vizia import ScreenFormat
-from random import choice
+from vizia import ScreenResolution
 
+from random import choice
 
 from time import sleep
 from time import time
@@ -15,10 +16,7 @@ def setup_vizia():
 
 	game = DoomGame()
 
-	#available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
-	game.set_screen_resolution(320,240)
-
-	#set desired screen format
+	game.set_screen_resolution(ScreenResolution.RES_960X720)
 	game.set_screen_format(ScreenFormat.CRCGCB)
 
 	game.set_doom_game_path("../../bin/viziazdoom")
@@ -40,7 +38,7 @@ def setup_vizia():
 	game.add_available_button(Button.MOVE_RIGHT)
 	game.add_available_button(Button.ATTACK)
 
-	game.set_visible_window(True)
+	game.set_window_visible(True)
 	game.add_state_available_var(GameVar.AMMO1)
 
 	game.set_doom_skill(1)
