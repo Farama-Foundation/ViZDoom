@@ -3,6 +3,8 @@ from vizia import DoomGame
 from vizia import Button
 from vizia import GameVar
 from vizia import ScreenFormat
+from vizia import ScreenResolution
+
 from random import choice
 
 
@@ -15,14 +17,11 @@ def setup_vizia():
 
 	game = DoomGame()
 
-	#available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
-	game.set_screen_resolution(320,240)
+	game.set_screen_resolution(ScreenResolution.RES_320X240)
 
 	game.set_doom_game_path("../../bin/viziazdoom")
 	game.set_doom_iwad_path("../../scenarios/doom2.wad")
 	game.set_doom_file_path("../../scenarios/health_gathering.wad")
-	game.set_doom_map("map01")
-	game.set_doom_skill(5)
 	game.set_episode_timeout(2100)
 
 	game.set_living_reward(0.125)
@@ -39,7 +38,7 @@ def setup_vizia():
 	game.add_available_button(Button.MOVE_FORWARD)
 
 
-	game.set_visible_window(True)
+	game.set_window_visible(True)
 	game.add_state_available_var(GameVar.HEALTH)
 
 	game.init()
@@ -68,12 +67,8 @@ for i in range(iters):
 		sleep(1)
 		game.new_episode()
 
-	skiprate = 8
 	s = game.get_state()
-	#r = game.make_action(choice(actions))
-	game.set_next_action(choice(actions))
-	game.advance_action(True,True,skiprate)
-	r = game.get_last_reward()
+	r = game.make_action(choice(actions))
 
 	print "state #" +str(s.number)
 	print "HP:", s.vars[0]
