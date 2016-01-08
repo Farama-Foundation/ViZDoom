@@ -127,7 +127,7 @@ namespace Vizia {
         this->summaryReward = 0.0;
     }
 
-    void DoomGame::setNextAction(std::vector<int> &actions) {
+    void DoomGame::setAction(std::vector<int> &actions) {
 
         if (!this->isRunning()) throw DoomIsNotRunningException();
 
@@ -141,11 +141,7 @@ namespace Vizia {
     }
 
     void DoomGame::advanceAction() {
-        this->advanceAction(true, 1);
-    }
-
-    void DoomGame::advanceAction(bool updateState, bool renderOnly) {
-        this->advanceAction(updateState, renderOnly, 1);
+        this->advanceAction(true, true, 1);
     }
 
     void DoomGame::advanceAction(bool updateState, bool renderOnly, unsigned int tics) {
@@ -162,8 +158,14 @@ namespace Vizia {
     }
 
     float DoomGame::makeAction(std::vector<int> &actions){
-        this->setNextAction(actions);
+        this->setAction(actions);
         this->advanceAction();
+        return this->getLastReward();
+    }
+
+    float DoomGame::makeAction(std::vector<int> &actions, unsigned int tics){
+        this->setAction(actions);
+        this->advanceAction(true, true, tics);
         return this->getLastReward();
     }
 
@@ -322,7 +324,86 @@ namespace Vizia {
     float DoomGame::getLastReward(){ return this->lastReward; }
     float DoomGame::getSummaryReward() { return this->summaryReward; }
 
-    void DoomGame::setScreenResolution(unsigned int width, unsigned int height) {
+    void DoomGame::setScreenResolution(ScreenResolution resolution) {
+        unsigned int width = 0, height = 0;
+
+#define CASE_RES(w, h) case RES_##w##X##h : width = w; height = h; break;
+        switch(resolution){
+            CASE_RES(40, 30)
+            CASE_RES(60, 45)
+            CASE_RES(80, 50)
+            CASE_RES(80, 60)
+            CASE_RES(100, 75)
+            CASE_RES(120, 75)
+            CASE_RES(120, 90)
+            CASE_RES(160, 100)
+            CASE_RES(160, 120)
+            CASE_RES(200, 120)
+            CASE_RES(200, 150)
+            CASE_RES(240, 135)
+            CASE_RES(240, 150)
+            CASE_RES(240, 180)
+            CASE_RES(256, 144)
+            CASE_RES(256, 160)
+            CASE_RES(256, 192)
+            CASE_RES(320, 200)
+            CASE_RES(320, 240)
+            CASE_RES(400, 225)	// 16:9
+            CASE_RES(400, 300)
+            CASE_RES(480, 270)	// 16:9
+            CASE_RES(480, 360)
+            CASE_RES(512, 288)	// 16:9
+            CASE_RES(512, 384)
+            CASE_RES(640, 360)	// 16:9
+            CASE_RES(640, 400)
+            CASE_RES(640, 480)
+            CASE_RES(720, 480)	// 16:10
+            CASE_RES(720, 540)
+            CASE_RES(800, 450)	// 16:9
+            CASE_RES(800, 480)
+            CASE_RES(800, 500)	// 16:10
+            CASE_RES(800, 600)
+            CASE_RES(848, 480)	// 16:9
+            CASE_RES(960, 600)	// 16:10
+            CASE_RES(960, 720)
+            CASE_RES(1024, 576)	// 16:9
+            CASE_RES(1024, 600)	// 17:10
+            CASE_RES(1024, 640)	// 16:10
+            CASE_RES(1024, 768)
+            CASE_RES(1088, 612)	// 16:9
+            CASE_RES(1152, 648)	// 16:9
+            CASE_RES(1152, 720)	// 16:10
+            CASE_RES(1152, 864)
+            CASE_RES(1280, 720)	// 16:9
+            CASE_RES(1280, 854)
+            CASE_RES(1280, 800)	// 16:10
+            CASE_RES(1280, 960)
+            CASE_RES(1280, 1024)	// 5:4
+            CASE_RES(1360, 768)	// 16:9
+            CASE_RES(1366, 768)
+            CASE_RES(1400, 787)	// 16:9
+            CASE_RES(1400, 875)	// 16:10
+            CASE_RES(1400, 1050)
+            CASE_RES(1440, 900)
+            CASE_RES(1440, 960)
+            CASE_RES(1440, 1080)
+            CASE_RES(1600, 900)	// 16:9
+            CASE_RES(1600, 1000)	// 16:10
+            CASE_RES(1600, 1200)
+            CASE_RES(1680, 1050)	// 16:10
+            CASE_RES(1920, 1080)
+            CASE_RES(1920, 1200)
+            CASE_RES(2048, 1536)
+            CASE_RES(2560, 1440)
+            CASE_RES(2560, 1600)
+            CASE_RES(2560, 2048)
+            CASE_RES(2880, 1800)
+            CASE_RES(3200, 1800)
+            CASE_RES(3840, 2160)
+            CASE_RES(3840, 2400)
+            CASE_RES(4096, 2160)
+            CASE_RES(5120, 2880)
+        }
         this->doomController->setScreenResolution(width, height);
     }
 
@@ -334,12 +415,12 @@ namespace Vizia {
     void DoomGame::setRenderCrosshair(bool crosshair) { this->doomController->setRenderCrosshair(crosshair); }
     void DoomGame::setRenderDecals(bool decals) { this->doomController->setRenderDecals(decals); }
     void DoomGame::setRenderParticles(bool particles) { this->doomController->setRenderParticles(particles); }
-    void DoomGame::setVisibleWindow(bool visibility) {
+    void DoomGame::setWindowVisible(bool visibility) {
         this->doomController->setNoXServer(!visibility);
         this->doomController->setWindowHidden(!visibility);
     }
-    void DoomGame::setDisabledConsole(bool noConsole) {
-        this->doomController->setNoConsole(noConsole);
+    void DoomGame::setConsoleEnabled(bool console) {
+        this->doomController->setNoConsole(!console);
     }
     int DoomGame::getScreenWidth() { return this->doomController->getScreenWidth(); }
     int DoomGame::getScreenHeight() { return this->doomController->getScreenHeight(); }

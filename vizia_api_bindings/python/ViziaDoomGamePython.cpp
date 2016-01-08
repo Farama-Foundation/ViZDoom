@@ -27,9 +27,9 @@ namespace Vizia {
             switch(this->getScreenFormat())
             {
                 case CRCGCB:
-                case CRCGCBCA:
+                case CRCGCBZB:
                 case CBCGCR:
-                case CBCGCRCA:
+                case CBCGCRZB:
                 case GRAY8:
                     this->imageShape[0] = channels;
                     this->imageShape[1] = y;
@@ -46,7 +46,7 @@ namespace Vizia {
         return initSuccess;
     }
 
-    void DoomGamePython::setNextAction(boost::python::list &action) {
+    void DoomGamePython::setAction(boost::python::list &action) {
         // TODO what if isFinished()?
         int listLength = boost::python::len(action);
         if( listLength != this->getAvailableButtonsSize())
@@ -59,14 +59,21 @@ namespace Vizia {
         for (int i = 0; i < listLength; i++) {
             properAction[i] = boost::python::extract<int>(action[i]);
         }
-        DoomGame::setNextAction(properAction);
+        DoomGame::setAction(properAction);
         
     }
 
     float DoomGamePython::makeAction(boost::python::list &action)
     {
-        this->setNextAction(action);
+        this->setAction(action);
         DoomGame::advanceAction();
+        return DoomGame::getLastReward();
+    }
+
+    float DoomGamePython::makeAction(boost::python::list &action, unsigned int tics)
+    {
+        this->setAction(action);
+        DoomGame::advanceAction(true, true, tics);
         return DoomGame::getLastReward();
     }
 

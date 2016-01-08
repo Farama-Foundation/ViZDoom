@@ -18,7 +18,7 @@ int main(){
     dg->setEpisodeTimeout(200);
     dg->setLivingReward(-1);
 
-    dg->setScreenResolution(640, 480);
+    dg->setScreenResolution(RES_640X480);
 
     dg->setRenderHud(false);
     dg->setRenderCrosshair(false);
@@ -26,9 +26,7 @@ int main(){
     dg->setRenderDecals(false);
     dg->setRenderParticles(false);
 
-    dg->setVisibleWindow(true);
-
-    dg->setDisabledConsole(true);
+    dg->setWindowVisible(true);
 
     dg->addAvailableButton(LEFT_RIGHT);
     dg->addAvailableButton(FORWARD_BACKWARD);
@@ -53,8 +51,7 @@ int main(){
 
         std::cout << "STATE NUMBER: " << s.number << std::endl;
 
-        dg->setNextAction(action);
-        dg->advanceAction();
+        dg->makeAction(action);
     }
     dg->close();
     delete dg;

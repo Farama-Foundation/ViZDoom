@@ -18,7 +18,7 @@ int main(){
     dg->setEpisodeStartTime(1);
     dg->setGameMode(SPECTATOR);
 
-    dg->setScreenResolution(640, 480);
+    dg->setScreenResolution(RES_640X480);
 
     dg->setRenderHud(false);
     dg->setRenderCrosshair(false);
@@ -26,9 +26,7 @@ int main(){
     dg->setRenderDecals(false);
     dg->setRenderParticles(false);
 
-    dg->setVisibleWindow(true);
-
-    dg->setDisabledConsole(true);
+    dg->setWindowVisible(true);
 
     dg->addAvailableButton(TURN_LEFT);
     dg->addAvailableButton(TURN_RIGHT);

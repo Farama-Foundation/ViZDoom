@@ -37,12 +37,12 @@ namespace Vizia {
         void newEpisode();
         bool isRunning();
 
-        void setNextAction(std::vector<int> &actions);
+        void setAction(std::vector<int> &actions);
         void advanceAction();
-        void advanceAction(bool stateUpdate, bool renderOnly);
         void advanceAction(bool stateUpdate, bool renderOnly, unsigned int tics);
 
         float makeAction(std::vector<int> &actions);
+        float makeAction(std::vector<int> &actions, unsigned int tics);
         
         State getState();
 
@@ -106,7 +106,7 @@ namespace Vizia {
         unsigned int getEpisodeTimeout();
         void setEpisodeTimeout(unsigned int tics);
 
-        void setScreenResolution(unsigned int width, unsigned int height);
+        void setScreenResolution(ScreenResolution resolution);
         void setScreenWidth(unsigned int width);
         void setScreenHeight(unsigned int height);
         void setScreenFormat(ScreenFormat format);
@@ -115,8 +115,8 @@ namespace Vizia {
         void setRenderCrosshair(bool crosshair);
         void setRenderDecals(bool decals);
         void setRenderParticles(bool particles);
-        void setVisibleWindow(bool visibility);
-        void setDisabledConsole(bool noConsole);
+        void setWindowVisible(bool visibility);
+        void setConsoleEnabled(bool console);
 
         int getScreenWidth();
         int getScreenHeight();

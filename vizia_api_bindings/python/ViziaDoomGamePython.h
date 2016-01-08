@@ -23,7 +23,6 @@ namespace Vizia {
     public:
         struct PythonState
         {
-
             int number;
             object imageBuffer;
             object vars;
@@ -33,11 +32,12 @@ namespace Vizia {
         };
         DoomGamePython();
         bool init();
-        void setNextAction(boost::python::list &action);
+        void setAction(boost::python::list &action);
         PythonState getState();
         boost::python::list getLastAction();
         object getGameScreen();
         float makeAction(boost::python::list &action);
+        float makeAction(boost::python::list &action, unsigned int tics);
 
     private:
 

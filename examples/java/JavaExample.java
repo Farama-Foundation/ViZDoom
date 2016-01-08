@@ -14,7 +14,7 @@ public static void main (String[] args) {
 	System.out.println("VIZIA MAIN EXAMPLE");
 
 
-    dg.setDoomGamePath("../../vizia_doom_src/bin/viziazdoom");
+    dg.setDoomGamePath("./viziazdoom");
     dg.setDoomIwadPath("../../scenarios/doom2.wad");
     dg.setDoomFilePath("../../scenarios/s1_b.wad");
     dg.setDoomMap("map01");
