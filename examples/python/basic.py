@@ -19,9 +19,9 @@ def setup_vizia():
 	game.set_screen_resolution(ScreenResolution.RES_960X720)
 	game.set_screen_format(ScreenFormat.CRCGCB)
 
-	game.set_doom_game_path("../../bin/viziazdoom")
+	game.set_doom_game_path("./viziazdoom")
 	game.set_doom_iwad_path("../../scenarios/doom2.wad")
-	game.set_doom_file_path("../../scenarios/s1_b.wad")
+	game.set_doom_file_path("../../scenarios/basic.wad")
 	game.set_doom_map("map01")
 	game.set_episode_timeout(100)
 

@@ -21,7 +21,6 @@ def setup_vizia():
 	#set desired screen format
 	game.set_screen_format(ScreenFormat.CRCGCB)
 
-	game.set_doom_game_path("../../bin/viziazdoom")
 	game.set_doom_iwad_path("../../scenarios/doom2.wad")
 	game.set_doom_file_path("../../scenarios/predict_position.wad")
 	game.set_episode_timeout(300)

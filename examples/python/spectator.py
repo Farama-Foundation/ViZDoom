@@ -4,9 +4,9 @@ from vizia import Button
 from vizia import GameVar
 from vizia import ScreenFormat
 from vizia import ScreenResolution
+from vizia import GameMode
 
 from random import choice
-
 
 from time import sleep
 from time import time
@@ -17,45 +17,41 @@ def setup_vizia():
 
 	game = DoomGame()
 
-	game.set_screen_resolution(ScreenResolution.RES_320X240)
+	game.set_game_mode(GameMode.SPECTATOR)
+	game.set_screen_resolution(ScreenResolution.RES_960X720)
+	game.set_screen_format(ScreenFormat.CRCGCB)
 
 	game.set_doom_iwad_path("../../scenarios/doom2.wad")
-	game.set_doom_file_path("../../scenarios/health_gathering.wad")
-	game.set_episode_timeout(2100)
+	game.set_doom_file_path("../../scenarios/basic.wad")
 
-	game.set_living_reward(0.125)
-	game.set_death_penalty(100)
+	game.set_episode_timeout(100)
 
-	game.set_render_hud(False)	
+	game.set_living_reward(-1.0)
+	game.set_death_penalty(300.0)
+
+	game.set_render_hud(True)	
 	game.set_render_crosshair(False)
 	game.set_render_weapon(True)
 	game.set_render_decals(False)
 	game.set_render_particles(False);
 
-	game.add_available_button(Button.TURN_LEFT)
-	game.add_available_button(Button.TURN_RIGHT)
-	game.add_available_button(Button.MOVE_FORWARD)
-
+	game.add_available_button(Button.MOVE_LEFT)
+	game.add_available_button(Button.MOVE_RIGHT)
+	game.add_available_button(Button.ATTACK)
 
 	game.set_window_visible(True)
-	game.add_state_available_var(GameVar.HEALTH)
+
+	game.set_doom_skill(1)
 
 	game.init()
-	
 	return game
 
 	
 
 game = setup_vizia()
 
-left = [True,False,True]
-right = [False,True,True]
-forward =[False, False, True]
-actions = [left, right, forward]
 
 iters = 10000
-sleep_time = 0.5
-
 
 for i in range(iters):
 
@@ -63,19 +59,16 @@ for i in range(iters):
 		print "episode finished!"
 		print "summary reward:", game.get_summary_reward()
 		print "************************"
-		sleep(1)
 		game.new_episode()
 
+	#not supported in python yet
+	#a = game.get_last_action()
 	s = game.get_state()
-	r = game.make_action(choice(actions))
-
+	r = game.get_last_reward()
 	print "state #" +str(s.number)
-	print "HP:", s.vars[0]
 	print "reward:",r
 	print "====================="	
-	if sleep_time>0:
-		sleep(sleep_time)
-	
+	game.advance_action()
 
 
 game.close()
