@@ -19,7 +19,6 @@ def setup_vizia():
 
 	game.set_screen_resolution(ScreenResolution.RES_640X480)
 
-	game.set_doom_game_path("../../bin/viziazdoom")
 	game.set_doom_iwad_path("../../scenarios/doom2.wad")
 	game.set_doom_file_path("../../scenarios/defend_the_center.wad")
 	game.set_doom_skill(0)
