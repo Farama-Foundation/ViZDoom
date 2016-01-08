@@ -44,10 +44,8 @@ def setup_vizia():
 	game.set_visible_window(True)
 	game.add_state_available_var(GameVar.HEALTH)
 
-	print "AAAAAAAAAAAAAAAAAAAAA"
 	game.init()
-	print "BBBBBBBBBBBBBBBB"
-	
+		
 	return game
 	
 	
@@ -67,7 +65,7 @@ for i in range(iters):
 		print "episode finished!"
 		print "summary reward:", game.get_summary_reward()
 		print "************************"
-		sleep(2)
+		sleep(1)
 		game.new_episode()
 
 	s = game.get_state()

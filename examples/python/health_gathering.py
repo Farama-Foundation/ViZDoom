@@ -25,8 +25,8 @@ def setup_vizia():
 	game.set_doom_skill(5)
 	game.set_episode_timeout(2100)
 
-	game.set_living_reward(1)
-	game.set_death_penalty(5)
+	game.set_living_reward(0.125)
+	game.set_death_penalty(100)
 
 	game.set_render_hud(False)	
 	game.set_render_crosshair(False)
@@ -56,7 +56,7 @@ forward =[False, False, True]
 actions = [left, right, forward]
 
 iters = 10000
-sleep_time = 0.05
+sleep_time = 0.5
 
 
 for i in range(iters):
@@ -68,8 +68,12 @@ for i in range(iters):
 		sleep(1)
 		game.new_episode()
 
+	skiprate = 8
 	s = game.get_state()
-	r = game.make_action(choice(actions))
+	#r = game.make_action(choice(actions))
+	game.set_next_action(choice(actions))
+	game.advance_action(True,True,skiprate)
+	r = game.get_last_reward()
 
 	print "state #" +str(s.number)
 	print "HP:", s.vars[0]

@@ -71,7 +71,7 @@ for i in range(iters):
 		game.new_episode()
 
 	s = game.get_state()
-	r = game.make_action(choice(actions))
+	r = game.make_action(shoot)
 
 	print "state #" +str(s.number)
 	print "ammo:", s.vars[0]
