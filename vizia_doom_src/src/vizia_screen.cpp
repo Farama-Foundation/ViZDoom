@@ -1,4 +1,5 @@
 #include "vizia_screen.h"
+#include "vizia_defines.h"
 #include "vizia_shared_memory.h"
 #include "vizia_message_queue.h"
 
@@ -42,10 +43,10 @@ void Vizia_ScreenInit() {
             viziaScreenSize *= 3;
             break;
 
-        case VIZIA_SCREEN_CRCGCBCA :
+        case VIZIA_SCREEN_CRCGCBZB :
             posMulti = 1;
             rPos = 0; gPos = (int)viziaScreenSize; bPos = 2 * (int)viziaScreenSize;
-            alpha = true; aPos = 3 * (int)viziaScreenSize;
+            alpha = false;
             viziaScreenSize *= 4;
             break;
 
@@ -80,10 +81,10 @@ void Vizia_ScreenInit() {
             viziaScreenSize *= 3;
             break;
 
-        case VIZIA_SCREEN_CBCGCRCA :
+        case VIZIA_SCREEN_CBCGCRZB :
             posMulti = 1;
             rPos = 2 * (int)viziaScreenSize; gPos = (int)viziaScreenSize, bPos = 0;
-            alpha = true; aPos = 3 * (int)viziaScreenSize;
+            alpha = false;
             viziaScreenSize *= 4;
             break;
 
@@ -156,6 +157,9 @@ void Vizia_ScreenUpdate(){
                     viziaScreen[i] = 0.21 * palette[buffer[i]].r + 0.72 * palette[buffer[i]].g + 0.07 *palette[buffer[i]].b;
                 }
             }
+            else if(*vizia_screen_format == VIZIA_SCREEN_ZBUFFER8){
+
+            }
             else {
                 for (unsigned int i = 0; i < bufferSize; ++i) {
                     unsigned int pos = i * posMulti;
@@ -164,6 +168,10 @@ void Vizia_ScreenUpdate(){
                     viziaScreen[pos + bPos] = palette[buffer[i]].b;
                     if (alpha) viziaScreen[pos + aPos] = 255;
                     //if(alpha) viziaScreen[pos + aPos] = palette[buffer[i]].a;
+                }
+
+                if(*vizia_screen_format == VIZIA_SCREEN_CRCGCBZB || *vizia_screen_format == VIZIA_SCREEN_CBCGCRZB){
+
                 }
             }
         }
