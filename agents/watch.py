@@ -3,6 +3,8 @@ from vizia import DoomGame
 from vizia import Button
 from vizia import GameVar
 from vizia import ScreenFormat
+from vizia import ScreenResolution
+
 import numpy as np
 
 from qengine import QEngine
@@ -27,8 +29,11 @@ import cv2
 
 load_file = "params/s1b_120_to60_skip1"
 
+def double_tanh(x):
+    return 2*tanh(x)
+
 def actions_generator(the_game):
-    n = the_game.get_action_format()
+    n = the_game.get_available_buttons_size()
     actions = []
     for perm in it.product([False, True], repeat=n):
         actions.append(list(perm))
@@ -54,17 +59,17 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     cnn_args["network_args"] = network_args
     return CNNEvaluator(**cnn_args)
 
-def s1_b(game, skiprate):
-    game.set_doom_file_path("../scenarios/s1_b.wad")
+def basic(game):
+    game.set_doom_file_path("../scenarios/basic.wad")
 
     game.add_available_button(Button.MOVE_LEFT)
     game.add_available_button(Button.MOVE_RIGHT)
     game.add_available_button(Button.ATTACK)
 
     game.set_episode_timeout(300)
-    game.set_living_reward(-skiprate)
+    game.set_living_reward(-1)
 
-def health_gathering(game, skiprate):
+def health_gathering(game):
     game.set_doom_file_path("../scenarios/health_gathering.wad")
 
     game.add_available_button(Button.TURN_LEFT)
@@ -72,34 +77,42 @@ def health_gathering(game, skiprate):
     game.add_available_button(Button.MOVE_FORWARD)
 
     game.set_episode_timeout(2100)
-    game.set_living_reward(skiprate)
+    game.set_living_reward(0.125)
     game.set_death_penalty(100)
-    #game.add_state_available_var(GameVar.HEALTH)
+
+    game.add_state_available_var(GameVar.HEALTH)
+
+def defend_the_center(game):
+    game.set_doom_file_path("../scenarios/defend_the_center")
+
+    game.add_available_button(Button.TURN_LEFT)
+    game.add_available_button(Button.TURN_RIGHT)
+    game.add_available_button(Button.ATTACK)
+
+    game.set_episode_timeout(2100)
+    game.set_living_reward(0)
+    game.set_death_penalty(1)
+
+    game.add_state_available_var(GameVar.HEALTH)
 
 def setup_vizia():
     game = DoomGame()
 
-    skiprate = 1
-    #available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
-    game.set_screen_resolution(120,90)
-    game.set_screen_format(ScreenFormat.CRCGCB)
-    game.set_doom_game_path("../bin/viziazdoom")
+    game.set_screen_resolution(ScreenResolution.RES_60X45)
+    game.set_screen_format(ScreenFormat.GRAY8)
     game.set_doom_iwad_path("../scenarios/doom2.wad")
-    
-    game.set_doom_map("map01")
-    
-    game.set_action_interval(skiprate)
-
+        
     game.set_render_hud(False)
     game.set_render_crosshair(False)
     game.set_render_weapon(True)
     game.set_render_decals(False)
     game.set_render_particles(False);
 
-    game.set_visible_window(True)
+    game.set_window_visible(False)
     
-    s1_b(game, skiprate)
-    #health_gathering(game, skiprate)
+    basic(game)
+    #health_gathering(game)
+    #defend_the_center(game)
 
     print "Initializing DOOM ..."
     game.init()
@@ -107,35 +120,12 @@ def setup_vizia():
     return game
 
 
-def double_tanh(x):
-    return 2*tanh(x)
-
-class ScaleConverter(IdentityImageConverter):
+class ChannelScaleConverter(IdentityImageConverter):
     def __init__(self, source):
         self._source = source
         self.x = 60
         self.y = int(self.x*3/4) 
     def convert(self, img):
-
-        img =  np.float32(img)/255.0
-        img = cv2.resize(img[0], (self.x,self.y))
-        img =  img.reshape(1,self.y,self.x)
-        
-        return img
-
-    def get_screen_width(self):
-        return self.x
-
-    def get_screen_height(self):
-        return self.y
-
-class ChannelScaleConverter(IdentityImageConverter):
-    def __init__(self, source):
-        self._source = source
-        self.x = 60
-        self.y = 45 
-    def convert(self, img):
-
         img =  np.float32(img)/255.0
         new_image = np.ndarray([img.shape[0], self.y, self.x], dtype=np.float32)
         for i in range(img.shape[0]):
@@ -148,29 +138,25 @@ class ChannelScaleConverter(IdentityImageConverter):
     def get_screen_height(self):
         return self.y
     
-
-def create_engine( game, online_mode=False ):
+def create_engine( game ):
     engine_args = dict()
     engine_args["history_length"] = 1
     engine_args["bank_capacity"] = 10000
     #engine_args["bank"] = TransitionBank( capacity=10000, rejection_range = [-0.02,0.5], rejection_probability=0.95)
     engine_args["evaluator"] = create_cnn_evaluator
     engine_args["game"] = game
-    engine_args['start_epsilon'] = 0.9
-    engine_args['end_epsilon'] = 0.1
-    engine_args['epsilon_decay_start_step'] = 100000
-    engine_args['epsilon_decay_steps'] = 100000
+    engine_args['start_epsilon'] = 0.95
+    engine_args['end_epsilon'] = 0.0
+    engine_args['epsilon_decay_start_step'] = 1
+    engine_args['epsilon_decay_steps'] = 1000000
     engine_args['actions_generator'] = actions_generator
-    engine_args['update_frequency'] = (4,4)
+    engine_args['update_frequency'] = (4,4) #every 4 steps, 4 updates each time
     engine_args['batch_size'] = 40
     engine_args['gamma'] = 0.99
+    engine_args['skiprate'] = 4 
     engine_args['reward_scale'] = 0.01
-    
-    #engine_args['image_converter'] = BNWDisplayImageConverter
-    #engine_args['image_converter'] = ScaleConverter
-    engine_args['image_converter'] = ChannelScaleConverter
-    if online_mode:
-        engine.online_mode = True
+    #engine_args['image_converter'] = ChannelScaleConverter
+ 
     engine = QEngine(**engine_args)
     return engine
 

@@ -16,17 +16,16 @@ def setup_vizia():
 
 	game = DoomGame()
 
-	game.set_screen_resolution(ScreenResolution.RES_960X720)
+	game.set_screen_resolution(ScreenResolution.RES_320X240)
 	game.set_screen_format(ScreenFormat.CRCGCB)
 
 	game.set_doom_game_path("./viziazdoom")
 	game.set_doom_iwad_path("../../scenarios/doom2.wad")
 	game.set_doom_file_path("../../scenarios/basic.wad")
 	game.set_doom_map("map01")
-	game.set_episode_timeout(100)
 
+	game.set_episode_timeout(300)
 	game.set_living_reward(-1.0)
-	game.set_death_penalty(100.0)
 
 	game.set_render_hud(False)	
 	game.set_render_crosshair(False)
@@ -63,14 +62,17 @@ sleep_time = 0.15
 for i in range(iters):
 
 	if game.is_episode_finished():
+		
 		print "episode finished!"
 		print "summary reward:", game.get_summary_reward()
 		print "************************"
+		game.close()
+		exit(0)
 		game.new_episode()
 
 	s = game.get_state()
-	r = game.make_action(shoot)
-
+	r = game.make_action(choice(actions))
+	
 	print "state #" +str(s.number)
 	print "ammo:", s.vars[0]
 	print "reward:",r
