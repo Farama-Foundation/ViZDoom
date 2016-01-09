@@ -1,0 +1,57 @@
+% Szkielet dla pracy inżynierskiej pisanej w języku angielskim.
+
+\documentclass[english,bachelor,a4paper,twoside]{ppfcmthesis}
+
+\usepackage[utf8]{inputenc}
+\usepackage[OT4]{fontenc}
+\usepackage[T1]{fontenc}
+
+% Authors here.
+\author{%
+   Michał Kempka \album{102030} \and 
+   Grzegorz Runc \album{405060} \and 
+   Jakub Toczek \album{708090} \and 
+   Marek Wydmuch \album{807060}}
+\authortitle{}                                        % Do not change.
+\title{VIZAI-RL : Visual~Information ZDoom-based Artificial~Intelligence Reinforcement~Learning Framework}        % Note how we protect the final title phrase from breaking (~zamiast spacyj)
+\ppsupervisor{dr~inż.~Wojciech Jaśkowski} % Your supervisor comes here.
+\ppyear{2016}                                         % Year of final submission (not graduation!)
+
+\begin{document}
+
+% Front matter starts here
+\frontmatter\pagestyle{empty}%
+\maketitle\cleardoublepage%
+
+% Blank info page for "karta dyplomowa"
+\thispagestyle{empty}\vspace*{\fill}%
+\begin{center}Tutaj przychodzi karta pracy dyplomowej;\\oryginał wstawiamy do wersji dla archiwum PP, w pozostałych kopiach wstawiamy ksero.\end{center}%
+\vfill\cleardoublepage%
+
+%Streszczenie i abstrakt
+\input{03-abstract.tex}
+\cleardoublepage
+
+% Table of contents.
+\pagenumbering{Roman}\pagestyle{ppfcmthesis}%
+\tableofcontents* \cleardoublepage%
+
+% Main content of your thesis starts here.
+\mainmatter%
+
+
+\input{0x-lorem-ipsum.tex}
+
+
+
+% Bibliography (books, articles) starts here.
+\bibliographystyle{plain}{\raggedright\sloppy\small\bibliography{bibliography}}
+
+% All appendices and extra material, if you have any.
+\cleardoublepage\appendix%
+\input{0a-appendix.tex}
+
+% Colophon is a place where you should let others know about copyrights etc.
+\ppcolophon
+
+\end{document}

@@ -1,0 +1,74 @@
+
+Wspólne
+-------
+
+- Znakiem myślnika jest w LaTeXu dywiz pełen (---) albo półpauza (--), przykład:
+  A niech to jasna cholera --- wrzasnąłem.
+
+- Połączenie między wyrazami to zwykły myślnik, przykład: 
+  północno-zachodni
+
+- Sprawdź czy tutuł pracy ma maksymalnie dwa wiersze i czy stanowią one pełne frazy
+  (czy nie ma przeniesienia bez sensu).
+
+- Sprawdź ostrzeżenia o 'overfull' i 'underful' boxes. Niektóre z nich można zignorować (spójrz
+  na wynik formatowania), niektóre trzeba poprawić; czasem przeformułować zdanie.
+
+- Przypisy stawia się wewnątrz zdań lub za kropką, przykład:
+  Footnote is added after a comma.\footnote{Here is a footnote.}
+
+- Nie używaj przypisów zbyt często. Zobacz, czy nie lepiej będzie zintegrować przypis z tekstem.
+
+- Tytuły tabel, rysunków powinny kończyć się kropką.
+
+- Nie używaj modyfikatora [h] (here) do rysunków i tabel. Rysunki i tabele powinny być
+  justowane do góry strony lub na stronie osobnej.
+
+- Wyróżnienie w tekście to polecenie \emph{wyraz}, nie należy używać czcionki pogrubionej (która
+  wystaje wizualnie z tekstu i rozprasza).
+
+- Nazwy plików, katalogów, ścieżek, zmiennych środowiskowych, klas i metod formatujemy poleceniem
+  \texttt{plik\_o\_pewnej\_nazwie}.
+
+
+Prace pisane w języku polskim
+-----------------------------
+
+- Nie używaj " jako cudzysłowu; polski cudzysłów zaczyna się znakiem ,, a kończy '', przykład:
+  ,,dobry''
+
+- Sprawdź pisownię wyrazów ze słownikiem polskim. Przykład:
+  aspell --lang=pl -t -c plik.tex
+
+- Po ostatniej zmianie do treści, sprawdź i przenieś wiszące spójniki wstawiając przed nie znak
+  tyldy (twardej spacji), przykład:
+  Ala i~kotek nie lubią mleczka, a~Stasiu lubi.
+
+
+
+Prace pisane w języku angielskim
+--------------------------------
+
+- Nie używaj " jako cudzysłowu; angielski cudzysłów zaczyna się znakiem ` a kończy ', przykład:
+  `good'
+  ewentualnie podwójny (ale spójnie!)
+  ``good''
+
+- Sprawdź pisownię wyrazów ze słownikiem amerykańskim lub brytyjskim (spójnie). Przykład:
+  aspell --lang=en_gb -t -c plik.tex
+
+- Za i.e. (id est) i e.g. (exempli gratia) stawia się zwyczajowo przecinek w typografii 
+  amerykańskiej.
+
+- Przed i za pełną pauza nie ma zwyczajowo spacji w typografii amerykańskiej, przykład:
+  Darn, this looks good---said Mary.
+
+- Zamykający cudzysłów oraz footnote wychodzą za ostatni znak interpunkcji w typografii 
+  amerykańskiej, przykłady:
+  It can be called a ``curiosity,'' but it's actually normal.
+  Footnote is added after a comma.\footnote{Here is a footnote.}
+
+- Odwołania do tabel i rysunków zawsze z wielkiej litery, przykład:
+  In Figure~\ref{} we illustrated XXX and in Table~\ref{} we show detailed data.
+
+
