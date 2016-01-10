@@ -3,6 +3,7 @@ import enums.Button;
 import enums.GameVar;
 import enums.ScreenFormat;
 import enums.GameMode;
+import enums.ScreenResolution;
 import java.util.*;
 import java.lang.Integer;
 import java.lang.Boolean;
@@ -14,14 +15,14 @@ public static void main (String[] args) {
 	System.out.println("VIZIA MAIN EXAMPLE");
 
 
-    dg.setDoomGamePath("./viziazdoom");
+    dg.setDoomGamePath("../../vizia_doom_src/bin/viziazdoom");
     dg.setDoomIwadPath("../../scenarios/doom2.wad");
     dg.setDoomFilePath("../../scenarios/s1_b.wad");
     dg.setDoomMap("map01");
     dg.setEpisodeTimeout(200);
     dg.setLivingReward(-1);
 
-    dg.setScreenResolution(640, 480);
+    dg.setScreenResolution(ScreenResolution.RES_320X240);
 
     dg.setRenderHud(false);
     dg.setRenderCrosshair(false);
@@ -29,9 +30,9 @@ public static void main (String[] args) {
     dg.setRenderDecals(false);
     dg.setRenderParticles(false);
 
-    dg.setVisibleWindow(true);
+    dg.setWindowVisible(true);
 
-    dg.setDisabledConsole(true);
+    dg.setConsoleEnabled(true);
 
     dg.addAvailableButton(Button.MOVE_LEFT);
     dg.addAvailableButton(Button.MOVE_RIGHT);
@@ -60,7 +61,7 @@ public static void main (String[] args) {
 
         System.out.println( "STATE NUMBER: " + s.number + " HP: " + s.vars[0] + " KILLS: " + s.vars[1] );
 
-        dg.setNextAction(action);
+        dg.setAction(action);
         dg.advanceAction(true, true, 4);
 
          System.out.println("reward: "+dg.getLastReward());
