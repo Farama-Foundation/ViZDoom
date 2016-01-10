@@ -1672,8 +1672,21 @@ DWORD STACK_ARGS vlinec1 ()
 	BYTE *dest = dc_dest;
 	int bits = vlinebits;
 	int pitch = dc_pitch;
-	depthMap->setActualDepth((unsigned int)255 - ((dc_iscale/100)*255)/2000000);
-
+	depthMap->setActualDepth((unsigned int)255 - ((dc_iscale-550000)*255)/(1005000000-550000));
+	if(dc_iscale>1005000000)
+		depthMap->setActualDepth(0);//not siur
+	if(dc_iscale<550000)
+		depthMap->setActualDepth(255);
+	/*static long max, min;
+	if(min==0) min=max;
+	if(dc_iscale>max||dc_iscale<min)
+	{
+		if(dc_iscale>max)
+			max=dc_iscale;
+		else
+			min=dc_iscale;
+		printf("MAX: %ld MIN: %ld\n", max, min);
+	}*/
 	do
 	{//FIXME GR DONE (JAKBY) TROCHE SCIAN
 		*dest = colormap[source[frac>>bits]];

@@ -389,7 +389,20 @@ void R_DrawVisSprite (vissprite_t *vis)//FIXME GR sprites
 					dc_x++;
 					frac += xiscale;
 				}
-				depthMap->setActualDepth((unsigned int)255 - (dc_iscale*255)/50000);
+				depthMap->setActualDepth((unsigned int)255 - ((dc_iscale-500)*255)/(300000-500));
+				if(dc_iscale>300000)
+					depthMap->setActualDepth(0);
+				//FIXME SET GR MAX/MIN SET
+				/*static long max, min;
+				if(min==0) min=max;
+				if(dc_iscale>max||dc_iscale<min)
+				{
+					if(dc_iscale>max)
+						max=dc_iscale;
+					else
+						min=dc_iscale;
+					printf("MAX: %ld MIN: %ld\n", max, min);
+				}*/
 				rt_draw4cols (dc_x - 4);
 			}
 

@@ -188,13 +188,11 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 	BYTE *dest;
 	int count;
 	int pitch;
-	int static_count;
 //FIXME GR przezroczystosc
 	count = yh-yl;
 	if (count < 0)
 		return;
 	count++;
-	static_count = count;
 	colormap = dc_colormap;
 	dest = ylookup[yl] + sx + dc_destorg;
 	source = &dc_temp[yl*4];
