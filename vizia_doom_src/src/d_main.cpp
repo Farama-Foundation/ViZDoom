@@ -2577,7 +2577,7 @@ void D_DoomMain (void)
 			UpdateJoystickMenu(NULL);
 
 			depthMap = new depthBuffer(screen->GetWidth(), screen->GetHeight());
-			depthMap->setDepthBoundries(50000000,50000);
+			depthMap->setDepthBoundries(120000000,200000);//probabli gud
 
 			v = Args->CheckValue ("-loadgame");
 			if (v)

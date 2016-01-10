@@ -236,6 +236,16 @@ void R_MapPlane (int y, int x1)
 #endif
 
 	depthMap->setActualDepthConv(distance);
+	/*static long max, min;
+	if(min==0) min=max;
+	if(distance>max||distance<min)
+	{
+		if(distance>max)
+			max=distance;
+		else
+			min=distance;
+		printf("MAX: %ld MIN: %ld\n", max, min);
+	}*/
 
 	ds_y = y;
 	ds_x1 = x1;

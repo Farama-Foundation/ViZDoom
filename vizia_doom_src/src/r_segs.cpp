@@ -308,6 +308,23 @@ void R_RenderMaskedSegRange (drawseg_t *ds, int x1, int x2)
 	MaskedScaleY = ds->yrepeat;
 	maskedtexturecol = (fixed_t *)(openings + ds->maskedtexturecol) - ds->x1;
 	spryscale = ds->iscale + ds->iscalestep * (x1 - ds->x1);
+
+	depthMap->setActualDepth((unsigned int)255 - ((ds->iscale/100+4000)*255)/(8000000+4000));
+	if(ds->iscale>800000000)
+		depthMap->setActualDepth(0);
+	if(ds->iscale<-400000)
+		depthMap->setActualDepth(0);
+	static long max, min;
+	if(min==0) min=max;
+	if(ds->iscale>max||ds->iscale<min)
+	{
+		if(ds->iscale>max)
+			max=ds->iscale;
+		else
+			min=ds->iscale;
+		printf("MAX: %ld MIN: %ld\n", max, min);
+	}
+
 	rw_scalestep = ds->iscalestep;
 
 	// find positioning
@@ -1183,8 +1200,22 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 			dc_count = d4-u4;
 			dc_dest = ylookup[u4]+x+dc_destorg;
 
-			depthMap->setActualDepth(255 - ((dc_iscale/100)*255)/2000000);
-			for(int pcf=0;pcf<4;pcf++) {
+			depthMap->setActualDepth((unsigned int)255 - ((dc_iscale/100+4000)*255)/(8000000+4000));
+			if(dc_iscale>800000000)
+				depthMap->setActualDepth(0);
+			if(dc_iscale<-400000)
+				depthMap->setActualDepth(255);
+			/*static long max, min;
+			if(min==0) min=max;
+			if(dc_iscale>max||dc_iscale<min)
+			{
+				if(dc_iscale>max)
+					max=dc_iscale;
+				else
+					min=dc_iscale;
+				printf("MAX: %ld MIN: %ld ACT: %d\n", max, min, 255 - ((dc_iscale/100-0)*255)/(10000000-0));
+			}*/
+			for(unsigned int pcf=0;pcf<4;pcf++) {
 				for (int c = 0; c < dc_count; c++)
 					depthMap->setPoint(x + pcf, ylookup[u4] / depthMap->getBufferWidth() + c);
 			}
