@@ -1,16 +1,17 @@
 package enums;
 public enum ScreenFormat {
-        CRCGCB ,
-        CRCGCBCA ,
-        RGB24 ,
+        CRCGCB,
+        CRCGCBZB,
+        RGB24,
         RGBA32,
-        ARGB32 ,
+        ARGB32,
         CBCGCR,
-        CBCGCRCA,
+        CBCGCRZB,
         BGR24,
-        BGRA32 ,
-        ABGR32 ,
-        GRAY8 ,
-        DOOM_256_COLORS ;
+        BGRA32,
+        ABGR32,
+        GRAY8,
+        ZBUFFER8,
+        DOOM_256_COLORS;
 
     }
