@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from vizia import DoomGame
 from vizia import Button
-from vizia import GameVar
+from vizia import GameVariable
 from vizia import ScreenFormat
 from vizia import ScreenResolution
 import numpy as np
@@ -29,7 +29,7 @@ savefile = None
 savefile = "params/health_guided_120_to60_skip4"
 #savefile = "params/center_120_to80_skip4"
 #savefile = "params/s1b_120_to60_skip1"
-loadfile = None
+loadfile = savefile
 
 def double_tanh(x):
     return 2*tanh(x)
@@ -82,7 +82,7 @@ def health_gathering(game):
     game.set_living_reward(0.25)
     game.set_death_penalty(100)
 
-    game.add_state_available_var(GameVar.HEALTH)
+    game.add_available_game_variable(GameVariable.HEALTH)
 
 def health_guided(game):
     game.set_doom_file_path("../scenarios/health_guided.wad")
@@ -95,7 +95,7 @@ def health_guided(game):
     game.set_living_reward(0.25)
     game.set_death_penalty(100)
 
-    game.add_state_available_var(GameVar.HEALTH)
+    game.add_available_game_variable(GameVariable.HEALTH)
 
 def defend_the_center(game):
     game.set_doom_file_path("../scenarios/defend_the_center")
@@ -108,7 +108,7 @@ def defend_the_center(game):
     game.set_living_reward(0)
     game.set_death_penalty(1)
 
-    game.add_state_available_var(GameVar.HEALTH)
+    game.add_available_game_variable(GameVariable.HEALTH)
 
 def setup_vizia():
     game = DoomGame()
