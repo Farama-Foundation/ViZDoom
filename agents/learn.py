@@ -25,11 +25,11 @@ import cv2
 
 savefile = None
 
-savefile = "params/basic_60_skip4_gray"
-#savefile = "params/health_120_to60_skip8"
+#savefile = "params/basic_120to60"
+savefile = "params/health_guided_120_to60_skip4"
 #savefile = "params/center_120_to80_skip4"
 #savefile = "params/s1b_120_to60_skip1"
-loadfile = savefile
+loadfile = None
 
 def double_tanh(x):
     return 2*tanh(x)
@@ -79,7 +79,20 @@ def health_gathering(game):
     game.add_available_button(Button.MOVE_FORWARD)
 
     game.set_episode_timeout(2100)
-    game.set_living_reward(0.125)
+    game.set_living_reward(0.25)
+    game.set_death_penalty(100)
+
+    game.add_state_available_var(GameVar.HEALTH)
+
+def health_guided(game):
+    game.set_doom_file_path("../scenarios/health_guided.wad")
+
+    game.add_available_button(Button.TURN_LEFT)
+    game.add_available_button(Button.TURN_RIGHT)
+    game.add_available_button(Button.MOVE_FORWARD)
+
+    game.set_episode_timeout(2100)
+    game.set_living_reward(0.25)
     game.set_death_penalty(100)
 
     game.add_state_available_var(GameVar.HEALTH)
@@ -100,8 +113,8 @@ def defend_the_center(game):
 def setup_vizia():
     game = DoomGame()
 
-    game.set_screen_resolution(ScreenResolution.RES_60X45)
-    game.set_screen_format(ScreenFormat.GRAY8)
+    game.set_screen_resolution(ScreenResolution.RES_160X100)
+    game.set_screen_format(ScreenFormat.CRCGCB)
     game.set_doom_iwad_path("../scenarios/doom2.wad")
         
     game.set_render_hud(False)
@@ -112,8 +125,9 @@ def setup_vizia():
 
     game.set_window_visible(False)
     
-    basic(game)
+    #basic(game)
     #health_gathering(game)
+    health_guided(game)
     #defend_the_center(game)
 
     print "Initializing DOOM ..."
@@ -149,16 +163,18 @@ def create_engine( game ):
     engine_args["game"] = game
     engine_args['start_epsilon'] = 0.95
     engine_args['end_epsilon'] = 0.0
-    engine_args['epsilon_decay_start_step'] = 1
-    engine_args['epsilon_decay_steps'] = 1000000
+    engine_args['epsilon_decay_start_step'] = 500000
+    engine_args['epsilon_decay_steps'] = 5000000
     engine_args['actions_generator'] = actions_generator
     engine_args['update_frequency'] = (4,4) #every 4 steps, 4 updates each time
     engine_args['batch_size'] = 40
     engine_args['gamma'] = 0.99
-    engine_args['skiprate'] = 4 
+    engine_args['skiprate'] = 4
     engine_args['reward_scale'] = 0.01
-    #engine_args['image_converter'] = ChannelScaleConverter
  
+    engine_args['image_converter'] = ChannelScaleConverter
+    engine_args["shaping_on"] = True
+
     engine = QEngine(**engine_args)
     return engine
 

@@ -27,7 +27,7 @@ from theano.tensor import tanh
 
 import cv2
 
-load_file = "params/s1b_120_to60_skip1"
+load_file = "params/basic_120to60"
 
 def double_tanh(x):
     return 2*tanh(x)
@@ -98,8 +98,8 @@ def defend_the_center(game):
 def setup_vizia():
     game = DoomGame()
 
-    game.set_screen_resolution(ScreenResolution.RES_60X45)
-    game.set_screen_format(ScreenFormat.GRAY8)
+    game.set_screen_resolution(ScreenResolution.RES_320X240)
+    game.set_screen_format(ScreenFormat.CRCGCB)
     game.set_doom_iwad_path("../scenarios/doom2.wad")
         
     game.set_render_hud(False)
@@ -108,7 +108,7 @@ def setup_vizia():
     game.set_render_decals(False)
     game.set_render_particles(False);
 
-    game.set_window_visible(False)
+    game.set_window_visible(True)
     
     basic(game)
     #health_gathering(game)
@@ -141,21 +141,12 @@ class ChannelScaleConverter(IdentityImageConverter):
 def create_engine( game ):
     engine_args = dict()
     engine_args["history_length"] = 1
-    engine_args["bank_capacity"] = 10000
-    #engine_args["bank"] = TransitionBank( capacity=10000, rejection_range = [-0.02,0.5], rejection_probability=0.95)
     engine_args["evaluator"] = create_cnn_evaluator
     engine_args["game"] = game
-    engine_args['start_epsilon'] = 0.95
-    engine_args['end_epsilon'] = 0.0
-    engine_args['epsilon_decay_start_step'] = 1
-    engine_args['epsilon_decay_steps'] = 1000000
-    engine_args['actions_generator'] = actions_generator
-    engine_args['update_frequency'] = (4,4) #every 4 steps, 4 updates each time
-    engine_args['batch_size'] = 40
-    engine_args['gamma'] = 0.99
-    engine_args['skiprate'] = 4 
+    engine_args["actions_generator"] = actions_generator
+    #engine_args['skiprate'] = 4 
     engine_args['reward_scale'] = 0.01
-    #engine_args['image_converter'] = ChannelScaleConverter
+    engine_args['image_converter'] = ChannelScaleConverter
  
     engine = QEngine(**engine_args)
     return engine
@@ -179,7 +170,7 @@ for i in range(episodes):
     while not game.is_episode_finished():
         engine.make_step()
         img = game.get_state().image_buffer
-        sleep(0.01)
+        sleep(0.03)
     print "Reward:", game.get_summary_reward()
 
 game.close()
