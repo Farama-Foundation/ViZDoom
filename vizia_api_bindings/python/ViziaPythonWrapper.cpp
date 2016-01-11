@@ -289,9 +289,10 @@ BOOST_PYTHON_MODULE(vizia)
         ENUM_VAL_2_PYT(USER29)
         ENUM_VAL_2_PYT(USER30);
 
-	def("DoomTics2Ms", DoomTics2Ms);
-	def("Ms2DoomTics", Ms2DoomTics);
-
+	def("doom_tics_2_ms", DoomTics2Ms);
+	def("ms_to_doom_tics", Ms2DoomTics);
+    def("doom_fixed_to_float", DoomFixedToFloat);
+    
     class_<DoomGamePython::PythonState>("State", no_init)
         .def_readonly("number", &DoomGamePython::PythonState::number)
         .def_readonly("image_buffer", &DoomGamePython::PythonState::imageBuffer)
