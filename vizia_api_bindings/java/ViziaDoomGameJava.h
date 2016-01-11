@@ -209,26 +209,26 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setButtonMaxValue
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    addStateAvailableVar
- * Signature: (Lenums/GameVar;)V
+ * Method:    addAvailableGameVariable
+ * Signature: (Lenums/GameVariable;)V
  */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_addStateAvailableVar
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_addAvailableGameVariable
   (JNIEnv *, jobject, jobject);
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    clearStateAvailableVars
+ * Method:    clearAvailableGameVariables
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_clearStateAvailableVars
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_clearAvailableGameVariables
   (JNIEnv *, jobject);
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    getStateAvailableVarsSize
+ * Method:    getAvailableGameVariablesSize
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getStateAvailableVarsSize
+JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getAvailableGameVariablesSize
   (JNIEnv *, jobject);
 
 /*
@@ -281,8 +281,8 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setGameMode
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    getGameVar
- * Signature: (Lenums/GameVar;)I
+ * Method:    getGameVariable
+ * Signature: (Lenums/GameVariable;)I
  */
 JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getGameVar
   (JNIEnv *, jobject, jobject);

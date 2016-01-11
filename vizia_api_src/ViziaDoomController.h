@@ -198,7 +198,7 @@ namespace Vizia{
 
         uint8_t * const getScreen();
         InputStruct * const getInput();
-        GameVarsStruct * const getGameVars();
+        GameVarsStruct * const getGameVariables();
 
         int getButtonState(Button button);
         void setButtonState(Button button, int state);
@@ -216,7 +216,7 @@ namespace Vizia{
         bool isAllowDoomInput();
         void setAllowDoomInput(bool set);
 
-        int getGameVar(GameVar var);
+        int getGameVariable(GameVariable var);
 
         int getGameTic();
         int getMapTic();

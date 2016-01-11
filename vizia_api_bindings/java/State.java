@@ -7,12 +7,12 @@ public class State{
 	public int[] imageBuffer;
 	public State(){
 		this.number=-1;
-		this.vars=null;
+		this.game_variables=null;
 		this.imageBuffer=null;
 	};
 	public State(int number, int[] vars , int[] imageBuffer){
 		this.number=number;
-		this.vars=vars;
+		this.gameVariables=vars;
 		this.imageBuffer=imageBuffer;
 	}
 }

@@ -77,8 +77,8 @@ namespace Vizia {
 
             try{
                 if (this->instanceId.length() == 0) generateInstanceId();
-
                 this->MQInit();
+
                 doomThread = new b::thread(b::bind(&DoomController::lunchDoom, this));
                 this->waitForDoomStart();
 
@@ -481,7 +481,7 @@ namespace Vizia {
 
     DoomController::InputStruct *const DoomController::getInput() { return this->Input; }
 
-    DoomController::GameVarsStruct *const DoomController::getGameVars() { return this->GameVars; }
+    DoomController::GameVarsStruct *const DoomController::getGameVariables() { return this->GameVars; }
 
     int DoomController::getButtonState(Button button){ return this->Input->BT[button]; }
 
@@ -548,7 +548,7 @@ namespace Vizia {
     bool DoomController::isAllowDoomInput(){ return this->allowDoomInput; }
     void DoomController::setAllowDoomInput(bool set){ if(!this->doomRunning) this->allowDoomInput = set; }
 
-    int DoomController::getGameVar(GameVar var) {
+    int DoomController::getGameVariable(GameVariable var) {
         switch (var) {
             case KILLCOUNT :
                 return this->GameVars->MAP_KILLCOUNT;

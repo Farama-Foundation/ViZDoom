@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from vizia import DoomGame
 from vizia import Button
-from vizia import GameVar
+from vizia import GameVariable
 from vizia import ScreenFormat
 from vizia import ScreenResolution
 
@@ -38,7 +38,7 @@ def setup_vizia():
 
 
 	game.set_window_visible(True)
-	game.add_state_available_var(GameVar.HEALTH)
+	game.add_available_game_variable(GameVariable.HEALTH)
 
 	game.init()
 	
@@ -70,7 +70,7 @@ for i in range(iters):
 	r = game.make_action(choice(actions))
 
 	print "state #" +str(s.number)
-	print "HP:", s.vars[0]
+	print "HP:", s.game_variables[0]
 	print "reward:",r
 	print "====================="	
 	if sleep_time>0:

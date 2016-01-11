@@ -1,5 +1,5 @@
 package enums;
-public enum GameVar {
+public enum GameVariable {
  	KILLCOUNT,
         ITEMCOUNT,
         SECRETCOUNT,

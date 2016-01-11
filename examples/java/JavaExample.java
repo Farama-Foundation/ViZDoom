@@ -1,6 +1,6 @@
 
 import enums.Button;
-import enums.GameVar;
+import enums.GameVariable;
 import enums.ScreenFormat;
 import enums.GameMode;
 import enums.ScreenResolution;
@@ -38,8 +38,8 @@ public static void main (String[] args) {
     dg.addAvailableButton(Button.MOVE_RIGHT);
     dg.addAvailableButton(Button.ATTACK);
 
-    dg.addStateAvailableVar(GameVar.HEALTH);
-    dg.addStateAvailableVar(GameVar.KILLCOUNT);
+    dg.addAvailableGameVariable(GameVariable.HEALTH);
+    dg.addAvailableGameVariable(GameVariable.KILLCOUNT);
 
 
     dg.init();
@@ -59,7 +59,7 @@ public static void main (String[] args) {
         }
         State s = dg.getState();
 
-        System.out.println( "STATE NUMBER: " + s.number + " HP: " + s.vars[0] + " KILLS: " + s.vars[1] );
+        System.out.println( "STATE NUMBER: " + s.number + " HP: " + s.gameVariables[0] + " KILLS: " + s.gameVariables[1] );
 
         dg.setAction(action);
         dg.advanceAction(true, true, 4);

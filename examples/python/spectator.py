@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from vizia import DoomGame
 from vizia import Button
-from vizia import GameVar
+from vizia import GameVariable
 from vizia import ScreenFormat
 from vizia import ScreenResolution
 from vizia import GameMode

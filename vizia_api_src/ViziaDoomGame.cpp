@@ -86,7 +86,7 @@ namespace Vizia {
                     this->doomController->setButtonAvailable(this->availableButtons[i], true);
                 }
 
-                this->state.vars.resize(this->stateAvailableVars.size());
+                this->state.gameVariables.resize(this->availableGameVariables.size());
 
                 this->lastReward = 0;
                 this->lastMapReward = 0;
@@ -103,7 +103,7 @@ namespace Vizia {
 
     void DoomGame::close() {
         this->doomController->close();
-        this->state.vars.clear();
+        this->state.gameVariables.clear();
         this->lastAction.clear();
 
         this->running = false;
@@ -119,9 +119,8 @@ namespace Vizia {
 
         this->doomController->restartMap();
 
-        this->state.number = this->doomController->getMapTic();
-        this->state.imageBuffer = this->doomController->getScreen();
-        
+        this->updateState();
+
         this->lastReward = 0.0;
         this->lastMapReward = 0.0;
         this->summaryReward = 0.0;
@@ -183,8 +182,8 @@ namespace Vizia {
             this->lastReward = reward;
 
             /* Updates vars */
-            for (int i = 0; i < this->stateAvailableVars.size(); ++i) {
-                this->state.vars[i] = this->doomController->getGameVar(this->stateAvailableVars[i]);
+            for (int i = 0; i < this->availableGameVariables.size(); ++i) {
+                this->state.gameVariables[i] = this->doomController->getGameVariable(this->availableGameVariables[i]);
             }
 
             /* Update float rgb image */
@@ -248,19 +247,19 @@ namespace Vizia {
         this->doomController->setButtonMaxValue(button, maxValue);
     }
 
-    void DoomGame::addStateAvailableVar(GameVar var) {
-        if (!this->running && std::find(this->stateAvailableVars.begin(), this->stateAvailableVars.end(), var) ==
-            this->stateAvailableVars.end()) {
-            this->stateAvailableVars.push_back(var);
+    void DoomGame::addAvailableGameVariable(GameVariable var) {
+        if (!this->running && std::find(this->availableGameVariables.begin(), this->availableGameVariables.end(), var) ==
+            this->availableGameVariables.end()) {
+            this->availableGameVariables.push_back(var);
         }
     }
 
-    void DoomGame::clearStateAvailableVars() {
-        if(!this->running) this->stateAvailableVars.clear();
+    void DoomGame::clearAvailableGameVariables() {
+        if(!this->running) this->availableGameVariables.clear();
     }
 
-    int DoomGame::getStateAvailableVarsSize() {
-        return this->stateAvailableVars.size();
+    int DoomGame::getAvailableGameVariablesSize() {
+        return this->availableGameVariables.size();
     }
 
     void DoomGame::addCustomGameArg(std::string arg){
@@ -284,10 +283,10 @@ namespace Vizia {
 
     const DoomController* DoomGame::getController() { return this->doomController; }
 
-    int DoomGame::getGameVar(GameVar var){
+    int DoomGame::getGameVariable(GameVariable var){
         if(!this->isRunning()) throw DoomIsNotRunningException();
 
-        return this->doomController->getGameVar(var);
+        return this->doomController->getGameVariable(var);
     }
 
     void DoomGame::setDoomGamePath(std::string path) { this->doomController->setGamePath(path); }

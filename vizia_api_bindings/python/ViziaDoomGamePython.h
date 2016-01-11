@@ -25,8 +25,8 @@ namespace Vizia {
         {
             int number;
             object imageBuffer;
-            object vars;
-            PythonState(int n, object buf, object v ):number(n),imageBuffer(buf),vars(v){}
+            object gameVariables;
+            PythonState(int n, object buf, object v ):number(n),imageBuffer(buf),gameVariables(v){}
             PythonState(int n, object buf):number(n),imageBuffer(buf){}
             PythonState(int n):number(n){}
         };

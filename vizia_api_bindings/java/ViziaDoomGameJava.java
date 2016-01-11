@@ -41,9 +41,9 @@ public class ViziaDoomGameJava{
         public native void clearAvailableButtons();
         public native int getAvailableButtonsSize();
         public native void setButtonMaxValue(Button button, int maxValue);
-	public native void addStateAvailableVar(GameVar var); 
-	public native void clearStateAvailableVars();
-        public native int getStateAvailableVarsSize();
+	public native void addAvailableGameVariable(GameVariable var);
+	public native void clearAvailableGameVariables();
+        public native int getAvailableGameVariablesSize();
  	public native void addCustomGameArg(String arg);
         public native void clearCustomGameArgs();
 
@@ -59,7 +59,7 @@ public class ViziaDoomGameJava{
 	
 	public native void setGameMode(GameMode mode);
 
-	public native int getGameVar(GameVar var);
+	public native int getGameVariable(GameVariable var);
 
         public native float getLivingReward();
        	public native  void setLivingReward(float livingReward);
