@@ -227,7 +227,7 @@ BOOST_PYTHON_MODULE(vizia)
         ENUM_VAL_2_PYT(LEFT_RIGHT)
         ENUM_VAL_2_PYT(UP_DOWN);
 
-    enum_<GameVar>("GameVar")
+    enum_<GameVariable>("GameVariable")
         ENUM_VAL_2_PYT(KILLCOUNT)
         ENUM_VAL_2_PYT(ITEMCOUNT)
         ENUM_VAL_2_PYT(SECRETCOUNT)
@@ -295,7 +295,7 @@ BOOST_PYTHON_MODULE(vizia)
     class_<DoomGamePython::PythonState>("State", no_init)
         .def_readonly("number", &DoomGamePython::PythonState::number)
         .def_readonly("image_buffer", &DoomGamePython::PythonState::imageBuffer)
-        .def_readonly("vars", &DoomGamePython::PythonState::vars);
+        .def_readonly("game_variables", &DoomGamePython::PythonState::gameVariables);
 
     class_<DoomGamePython>("DoomGame", init<>())
 		.def("init", &DoomGamePython::init)
@@ -312,7 +312,7 @@ BOOST_PYTHON_MODULE(vizia)
         
 		.def("get_state", &DoomGamePython::getState)
     
-        .def("get_game_var", &DoomGamePython::getGameVar)
+        .def("get_game_variable", &DoomGamePython::getGameVariable)
         .def("get_game_screen", &DoomGamePython::getGameScreen)
 
         .def("get_living_reward", &DoomGamePython::getLivingReward)
@@ -326,9 +326,9 @@ BOOST_PYTHON_MODULE(vizia)
         
         .def("get_last_action", &DoomGamePython::getLastAction)
         
-		.def("add_state_available_var", &DoomGamePython::addStateAvailableVar)
-		.def("clear_state_available_var", &DoomGamePython::clearStateAvailableVars)
-        .def("get_state_available_vars_size", &DoomGamePython::getStateAvailableVarsSize)
+		.def("add_available_game_variable", &DoomGamePython::addAvailableGameVariable)
+		.def("clear_available_game_variable", &DoomGamePython::clearAvailableGameVariables)
+        .def("get_available_game_variables_size", &DoomGamePython::getAvailableGameVariablesSize)
 
 		.def("add_available_button", addAvailableButton1)
         .def("add_available_button", addAvailableButton2)
@@ -341,7 +341,6 @@ BOOST_PYTHON_MODULE(vizia)
         .def("clear_custom_game_args", &DoomGamePython::clearCustomGameArgs)
 
         .def("send_game_command", &DoomGamePython::sendGameCommand)
-
 
         .def("get_game_mode", &DoomGamePython::getGameMode)
         .def("set_game_mode", &DoomGamePython::setGameMode)

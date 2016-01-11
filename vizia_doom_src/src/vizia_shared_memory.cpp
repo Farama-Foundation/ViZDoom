@@ -21,8 +21,6 @@ void Vizia_SMInit(const char * id){
         viziaSMSize = sizeof(ViziaInputStruct) + sizeof(ViziaGameVarsStruct) +
                       (sizeof(BYTE) * screen->GetWidth() * screen->GetHeight() * 4);
         viziaSM.truncate(viziaSMSize);
-
-        printf("Vizia_SMInit: Size: %zu\n", viziaSMSize);
     }
     catch(bip::interprocess_exception &ex){
         printf("Vizia_SMInit: Error creating shared memory");

@@ -106,12 +106,12 @@ int main(){
                           (void *) dc->getScreen());
 
             std::cout << "GAME TIC: " << dc->getGameTic() << " MAP TIC: " << dc->getMapTic() <<
-            " HP: " << dc->getPlayerHealth() << " ARMOR: " << dc->getGameVars()->PLAYER_ARMOR<<std::endl;
-            std::cout << "ATTACK READY: " << dc->getGameVars()->PLAYER_ATTACK_READY << " SELECTED WEAPON: " << dc->getGameVars()->PLAYER_SELECTED_WEAPON << " SELECTED AMMO: " << dc->getGameVars()->PLAYER_SELECTED_WEAPON_AMMO << std::endl;
+            " HP: " << dc->getPlayerHealth() << " ARMOR: " << dc->getGameVariables()->PLAYER_ARMOR<<std::endl;
+            std::cout << "ATTACK READY: " << dc->getGameVariables()->PLAYER_ATTACK_READY << " SELECTED WEAPON: " << dc->getGameVariables()->PLAYER_SELECTED_WEAPON << " SELECTED AMMO: " << dc->getGameVariables()->PLAYER_SELECTED_WEAPON_AMMO << std::endl;
             for(int i = 0; i < 4; ++i){
-                std::cout << "WEAPON " << i << ": " << dc->getGameVars()->PLAYER_WEAPON[i] << " AMMO " << i  << ": " << dc->getGameVars()->PLAYER_AMMO[i] << std::endl;
+                std::cout << "WEAPON " << i << ": " << dc->getGameVariables()->PLAYER_WEAPON[i] << " AMMO " << i  << ": " << dc->getGameVariables()->PLAYER_AMMO[i] << std::endl;
             }
-            std::cout << "REWARD: " << dc->getMapReward() << " SHAPING: " << dc->getGameVar(USER1) << std::endl;
+            std::cout << "REWARD: " << dc->getMapReward() << " SHAPING: " << dc->getGameVariable(USER1) << std::endl;
             dc->tic(true);
         }
         else dc->tic(false);

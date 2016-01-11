@@ -98,10 +98,6 @@ void Vizia_GameVarsInit(){
     try {
         viziaGameVarsSMRegion = new bip::mapped_region(viziaSM, bip::read_write, Vizia_SMGetGameVarsRegionBeginning(), sizeof(ViziaGameVarsStruct));
         viziaGameVars = static_cast<ViziaGameVarsStruct *>(viziaGameVarsSMRegion->get_address());
-
-        printf("Vizia_GameVarsInit: GameVars SM region size: %zu, beginnig: %p, end: %p \n",
-               viziaGameVarsSMRegion->get_size(), viziaGameVarsSMRegion->get_address(),
-               viziaGameVarsSMRegion->get_address() + viziaGameVarsSMRegion->get_size());
     }
     catch(bip::interprocess_exception &ex){
         printf("Vizia_GameVarsInit: Error GameVars SM");
@@ -134,9 +130,6 @@ void Vizia_GameVarsTic(){
 
     if(viziaPlayer->mo) viziaGameVars->PLAYER_DEAD = viziaPlayer->playerstate == PST_DEAD || viziaPlayer->mo->health <= 0;
     else viziaGameVars->PLAYER_DEAD = viziaPlayer->playerstate == PST_DEAD || viziaPlayer->health <= 0;
-}
-
-void Vizia_GameVarsUpdate(){
 
     viziaGameVars->MAP_KILLCOUNT = level.killed_monsters;
     viziaGameVars->MAP_ITEMCOUNT = level.found_items;

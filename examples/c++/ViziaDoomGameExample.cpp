@@ -32,8 +32,8 @@ int main(){
     dg->addAvailableButton(MOVE_RIGHT);
     dg->addAvailableButton(ATTACK);
 
-    dg->addStateAvailableVar(HEALTH);
-    dg->addStateAvailableVar(AMMO1);
+    dg->addAvailableGameVariable(HEALTH);
+    dg->addAvailableGameVariable(AMMO1);
 
 
     dg->init();
@@ -53,7 +53,7 @@ int main(){
         }
         DoomGame::State s = dg->getState();
 
-        std::cout << "STATE NUMBER: " << s.number << " HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
+        std::cout << "STATE NUMBER: " << s.number << " HP: " << s.gameVariables[0] << " AMMO: " << s.gameVariables[1] << std::endl;
 
         dg->makeAction(action, 4);
 

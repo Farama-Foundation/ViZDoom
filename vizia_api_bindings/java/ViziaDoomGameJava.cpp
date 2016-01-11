@@ -376,7 +376,7 @@ JNIEXPORT jobject JNICALL Java_ViziaDoomGameJava_getState
 	std::vector<int> ourvector;
 	Vizia::DoomGame::State statec=game->getState();
 	
-	ourvector=statec.vars;
+	ourvector=statec.gameVariables;
 	jintArray jbuffer = env->NewIntArray(ourvector.size());
 	jint *oarr = env->GetIntArrayElements(jbuffer, NULL);
 	
@@ -586,13 +586,13 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setButtonMaxValue
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    addStateAvailableVar
- * Signature: (Lenums/GameVar;)V
+ * Method:    addAvailableGameVariable
+ * Signature: (Lenums/GameVariable;)V
  */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_addStateAvailableVar
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_addAvailableGameVariable
   (JNIEnv *env, jobject obj, jobject enumVal){
 	Vizia::DoomGame* game=GetObject(env,obj);
-	jclass jclassEnum = env->FindClass("enums/GameVar");
+	jclass jclassEnum = env->FindClass("enums/GameVariable");
 	if(jclassEnum != 0)
     	{	
         	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
@@ -600,8 +600,8 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_addStateAvailableVar
 			return;
 		}
 		jint value = env->CallIntMethod(enumVal, ordinal_ID);
-		Vizia::GameVar ret=static_cast<Vizia::GameVar>(value);
-		game->addStateAvailableVar(ret);
+		Vizia::GameVariable ret=static_cast<Vizia::GameVariable>(value);
+		game->addAvailableGameVariable(ret);
 	// Delete local references created		
         	env->DeleteLocalRef(jclassEnum);
     	}
@@ -610,25 +610,25 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_addStateAvailableVar
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    clearStateAvailableVars
+ * Method:    clearAvailableGameVariables
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_clearStateAvailableVars
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_clearAvailableGameVariables
   (JNIEnv *env, jobject obj){
 	Vizia::DoomGame* game=GetObject(env,obj);
-	game->clearStateAvailableVars();
+	game->clearAvailableGameVariables();
 
 }
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    getStateAvailableVarsSize
+ * Method:    getAvailableGameVariablesSize
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getStateAvailableVarsSize
+JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getAvailableGameVariablesSize
   (JNIEnv *env, jobject obj){
 	Vizia::DoomGame* game=GetObject(env,obj);
-	int ret=game->getStateAvailableVarsSize();
+	int ret=game->getAvailableGameVariablesSize();
 	return ret;
 }
 
@@ -758,13 +758,13 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setGameMode
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    getGameVar
- * Signature: (Lenums/GameVar;)I
+ * Method:    getGameVariable
+ * Signature: (Lenums/GameVariable;)I
  */
 JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getGameVar
   (JNIEnv *env, jobject obj, jobject enumVal){
 	Vizia::DoomGame* game=GetObject(env,obj);
-	jclass jclassEnum = env->FindClass("enums/GameVar");
+	jclass jclassEnum = env->FindClass("enums/GameVariable");
 	
 	if(jclassEnum != 0)
     	{	
@@ -773,8 +773,8 @@ JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getGameVar
 			return -1;
 		}
 		jint value = env->CallIntMethod(enumVal, ordinal_ID);
-		Vizia::GameVar ret=static_cast<Vizia::GameVar>(value);
-		int retint=game->getGameVar(ret);
+		Vizia::GameVariable ret=static_cast<Vizia::GameVariable>(value);
+		int retint=game->getGameVariable(ret);
 	// Delete local references created		
         	env->DeleteLocalRef(jclassEnum);
 		return retint;

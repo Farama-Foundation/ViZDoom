@@ -134,7 +134,7 @@ namespace Vizia{
         RES_5120X2880,
     };
 
-    enum GameVar {
+    enum GameVariable {
         KILLCOUNT,
         ITEMCOUNT,
         SECRETCOUNT,

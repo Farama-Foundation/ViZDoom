@@ -5,6 +5,6 @@
 #include <string>
 namespace Vizia{
     Button getButtonId(std::string name);
-    GameVar getGameVarId(std::string name);
+    GameVariable getGameVarId(std::string name);
 }
 #endif

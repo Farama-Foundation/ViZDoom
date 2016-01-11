@@ -87,9 +87,9 @@ namespace Vizia {
         boost::python::handle<> numpyImageHandle = boost::python::handle<>(img);
         boost::python::numeric::array numpyImage = array(numpyImageHandle);
 
-        if (this->state.vars.size() > 0) {
-            npy_intp varLen = this->state.vars.size();
-            PyObject *vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, this->state.vars.data());
+        if (this->state.gameVariables.size() > 0) {
+            npy_intp varLen = this->state.gameVariables.size();
+            PyObject *vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, this->state.gameVariables.data());
             boost::python::handle<> numpyVarsHandle = boost::python::handle<>(vars);
             boost::python::numeric::array numpyVars = array(numpyVarsHandle);
 

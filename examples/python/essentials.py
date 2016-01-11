@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from vizia import DoomGame
 from vizia import Button
-from vizia import GameVar
+from vizia import GameVariable
 from vizia import ScreenFormat
 from vizia import ScreenResolution
 
@@ -22,7 +22,7 @@ game.add_available_button(Button.MOVE_LEFT)
 game.add_available_button(Button.MOVE_RIGHT)
 game.add_available_button(Button.ATTACK)
 
-game.add_state_available_var(GameVar.AMMO1)
+game.add_available_game_variable(GameVariable.AMMO1)
 
 game.set_episode_timeout(200)
 game.init()
@@ -45,7 +45,7 @@ for i in range(iters):
 	r = game.make_action(choice(actions))
 
 	print "state #" +str(s.number)
-	print "ammo:", s.vars[0]
+	print "ammo:", s.game_variables[0]
 	print "reward:",r
 	print "====================="	
 	if sleep_time>0:

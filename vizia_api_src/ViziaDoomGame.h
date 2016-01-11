@@ -21,7 +21,7 @@ namespace Vizia {
 
         struct State {
             unsigned int number;
-            std::vector<int> vars;
+            std::vector<int> gameVariables;
             uint8_t * imageBuffer;
         };
 
@@ -57,9 +57,9 @@ namespace Vizia {
         int getAvailableButtonsSize();
         void setButtonMaxValue(Button button, int maxValue);
 
-        void addStateAvailableVar(GameVar var);
-        void clearStateAvailableVars();
-        int getStateAvailableVarsSize();
+        void addAvailableGameVariable(GameVariable var);
+        void clearAvailableGameVariables();
+        int getAvailableGameVariablesSize();
 
         void addCustomGameArg(std::string arg);
         void clearCustomGameArgs();
@@ -75,7 +75,7 @@ namespace Vizia {
 
         const DoomController *getController();
 
-        int getGameVar(GameVar var);
+        int getGameVariable(GameVariable var);
 
         float getLivingReward();
         void setLivingReward(float livingReward);
@@ -137,7 +137,7 @@ namespace Vizia {
         State state;
         void updateState();
 
-        std::vector <GameVar> stateAvailableVars;
+        std::vector <GameVariable> availableGameVariables;
         std::vector <Button> availableButtons;
 
         std::vector<int> lastAction;

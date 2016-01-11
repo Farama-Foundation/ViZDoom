@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from vizia import DoomGame
 from vizia import Button
-from vizia import GameVar
+from vizia import GameVariable
 from random import choice
 from vizia import ScreenResolution
 

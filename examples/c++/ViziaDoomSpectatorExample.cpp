@@ -34,8 +34,8 @@ int main(){
     dg->addAvailableButton(MOVE_BACKWARD);
     dg->addAvailableButton(ATTACK);
 
-    dg->addStateAvailableVar(HEALTH);
-    dg->addStateAvailableVar(AMMO1);
+    dg->addAvailableGameVariable(HEALTH);
+    dg->addAvailableGameVariable(AMMO1);
 
 
     dg->init();
@@ -56,7 +56,7 @@ int main(){
             // usleep(2000000);
         }
         DoomGame::State s = dg->getState();
-        std::cout << "STATE NUMBER: " << s.number << " HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
+        std::cout << "STATE NUMBER: " << s.number << " HP: " << s.gameVariables[0] << " AMMO: " << s.gameVariables[1] << std::endl;
         dg->advanceAction();
         //float r = dg->makeAction(action);
         //std::cout<<"reward: "<<r<<std::endl;

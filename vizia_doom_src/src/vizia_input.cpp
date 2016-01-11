@@ -255,9 +255,6 @@ void Vizia_InputInit() {
                                                     sizeof(ViziaInputStruct));
         viziaInput = static_cast<ViziaInputStruct *>(viziaInputSMRegion->get_address());
 
-        printf("Vizia_InputInit: Input SM region size: %zu, beginnig: %p, end: %p \n",
-               viziaInputSMRegion->get_size(), viziaInputSMRegion->get_address(),
-               viziaInputSMRegion->get_address() + viziaInputSMRegion->get_size());
     }
     catch (bip::interprocess_exception &ex) {
         printf("Vizia_InputInit: Error creating Input SM");
