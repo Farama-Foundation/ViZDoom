@@ -66,7 +66,6 @@ class MLPEvaluator:
         # mode = NanGuardMode(nan_is_error=True, inf_is_error=True, big_is_error=True)
         mode = None
         if self._misc_state_included:
-            print "asdasd"
             self._learn = theano.function([self._image_inputs, self._misc_inputs, self._targets], loss, updates=updates,
                                           mode=mode, name="learn_fn")
             self._evaluate = theano.function([self._image_inputs, self._misc_inputs], predictions, mode=mode,
