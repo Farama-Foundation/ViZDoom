@@ -235,7 +235,7 @@ void R_MapPlane (int y, int x1)
 		R_SetSpanColormap_ASM (ds_colormap);
 #endif
 
-	depthMap->setActualDepthConv(distance);
+	if(depthMap!=NULL) depthMap->setActualDepthConv(distance);
 	/*static long max, min;
 	if(min==0) min=max;
 	if(distance>max||distance<min)

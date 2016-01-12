@@ -231,7 +231,7 @@ void R_RenderMaskedSegRange (drawseg_t *ds, int x1, int x2)
 	bool		notrelevant = false;
 
 	const sector_t *sec;
-FIXME GR barierka z przezroczystoscia
+//FIXME GR barierka z przezroczystoscia
 
 	sprflipvert = false;
 
@@ -308,12 +308,13 @@ FIXME GR barierka z przezroczystoscia
 	MaskedScaleY = ds->yrepeat;
 	maskedtexturecol = (fixed_t *)(openings + ds->maskedtexturecol) - ds->x1;
 	spryscale = ds->iscale + ds->iscalestep * (x1 - ds->x1);
-
-	depthMap->setActualDepth((unsigned int)255 - ((ds->iscale/100-180)*255)/(23000-180));
-	if(ds->iscale>2300000)
-		depthMap->setActualDepth(0);
-	if(ds->iscale<18000)
-		depthMap->setActualDepth(255);
+	if(depthMap!=NULL) {
+		depthMap->setActualDepth((unsigned int) 255 - ((ds->iscale / 100 - 180) * 255) / (23000 - 180));
+		if (ds->iscale > 2300000)
+			depthMap->setActualDepth(0);
+		if (ds->iscale < 18000)
+			depthMap->setActualDepth(255);
+	}
 	static long max, min;
 	if(min==0) min=max;
 	if(ds->iscale>max||ds->iscale<min)
@@ -1131,9 +1132,10 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 		dc_iscale = swal[x] * yrepeat;
 		dc_count = y2ve[0] - y1ve[0];
 		dc_texturefrac = texturemid + FixedMul (dc_iscale, (y1ve[0]<<FRACBITS)-centeryfrac+FRACUNIT);
-
-		depthMap->storeX(x);
-		depthMap->storeY(y1ve[0]);
+		if(depthMap!=NULL) {
+			depthMap->storeX(x);
+			depthMap->storeY(y1ve[0]);
+		}
 		dovline1();
 	}
 
@@ -1176,8 +1178,10 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 			{
 				if (!(bad & 1))
 				{
-					depthMap->storeX(x+z);
-					depthMap->storeY(y1ve[z]);
+					if(depthMap!=NULL) {
+						depthMap->storeX(x + z);
+						depthMap->storeY(y1ve[z]);
+					}
 					prevline1(vince[z],palookupoffse[z],y2ve[z]-y1ve[z],vplce[z],bufplce[z],ylookup[y1ve[z]]+x+z+dc_destorg);
 				}
 				bad >>= 1;
@@ -1189,8 +1193,10 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 		{
 			if (u4 > y1ve[z])
 			{
-				depthMap->storeX(x+z);
-				depthMap->storeY(y1ve[z]);
+				if(depthMap!=NULL) {
+					depthMap->storeX(x + z);
+					depthMap->storeY(y1ve[z]);
+				}
 				vplce[z] = prevline1(vince[z],palookupoffse[z],u4-y1ve[z],vplce[z],bufplce[z],ylookup[y1ve[z]]+x+z+dc_destorg);
 			}
 		}
@@ -1200,24 +1206,27 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 			dc_count = d4-u4;
 			dc_dest = ylookup[u4]+x+dc_destorg;
 
-			depthMap->setActualDepth((unsigned int)255 - ((dc_iscale/100+4000)*255)/(8000000+4000));
-			if(dc_iscale>800000000)
-				depthMap->setActualDepth(0);
-			if(dc_iscale<-400000)
-				depthMap->setActualDepth(255);
-			/*static long max, min;
-			if(min==0) min=max;
-			if(dc_iscale>max||dc_iscale<min)
-			{
-				if(dc_iscale>max)
-					max=dc_iscale;
-				else
-					min=dc_iscale;
-				printf("MAX: %ld MIN: %ld ACT: %d\n", max, min, 255 - ((dc_iscale/100-0)*255)/(10000000-0));
-			}*/
-			for(unsigned int pcf=0;pcf<4;pcf++) {
-				for (int c = 0; c < dc_count; c++)
-					depthMap->setPoint(x + pcf, ylookup[u4] / depthMap->getBufferWidth() + c);
+			if(depthMap!=NULL) {
+				depthMap->setActualDepth((unsigned int) 255 - ((dc_iscale / 100 + 4000) * 255) / (8000000 + 4000));
+				if (dc_iscale > 800000000)
+					depthMap->setActualDepth(0);
+				if (dc_iscale < -400000)
+					depthMap->setActualDepth(255);
+
+				/*static long max, min;
+                if(min==0) min=max;
+                if(dc_iscale>max||dc_iscale<min)
+                {
+                    if(dc_iscale>max)
+                        max=dc_iscale;
+                    else
+                        min=dc_iscale;
+                    printf("MAX: %ld MIN: %ld ACT: %d\n", max, min, 255 - ((dc_iscale/100-0)*255)/(10000000-0));
+                }*/
+				for (unsigned int pcf = 0; pcf < 4; pcf++) {
+					for (int c = 0; c < dc_count; c++)
+						depthMap->setPoint(x + pcf, ylookup[u4] / depthMap->getBufferWidth() + c);
+				}
 			}
 			dovline4();
 		}
@@ -1227,8 +1236,10 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 		{
 			if (y2ve[z] > d4)
 			{
-				depthMap->storeX(x+z);
-				depthMap->storeY(d4);
+				if(depthMap!=NULL) {
+					depthMap->storeX(x + z);
+					depthMap->storeY(d4);
+				}
 				prevline1(vince[z],palookupoffse[0],y2ve[z]-d4,vplce[z],bufplce[z],i+z);
 			}
 		}

@@ -52,7 +52,7 @@ void Vizia_ScreenInit() {
             break;
 
         case VIZIA_SCREEN_RGB24 :
-            viziaScreenSize *= 4;
+            viziaScreenSize *= 3;
             viziaScreenPitch *= 3;
             posMulti = 3;
             rPos = 2; gPos = 1; bPos = 0;
@@ -147,8 +147,11 @@ void Vizia_ScreenInit() {
         Vizia_Command(strdup("exit"));
     }
 
-    depthMap = new depthBuffer(viziaScreenWidth, viziaScreenHeight);
-    depthMap->setDepthBoundries(30000000, 2000000);
+    if(*vizia_screen_format==VIZIA_SCREEN_CBCGCRZB||*vizia_screen_format==VIZIA_SCREEN_CRCGCBZB
+       ||*vizia_screen_format==VIZIA_SCREEN_ZBUFFER8) {
+        depthMap = new depthBuffer(viziaScreenWidth, viziaScreenHeight);
+        depthMap->setDepthBoundries(30000000, 2000000);//SHOULDN'T BE HERE!
+    }
 }
 
 void Vizia_ScreenUpdate(){
@@ -175,7 +178,7 @@ void Vizia_ScreenUpdate(){
                 }
             }
             else if(*vizia_screen_format == VIZIA_SCREEN_ZBUFFER8){
-
+                memcpy(viziaScreen, depthMap->getBuffer(), depthMap->getBufferSize());
             }
             else {
                 for (unsigned int i = 0; i < bufferSize; ++i) {
@@ -188,13 +191,11 @@ void Vizia_ScreenUpdate(){
                 }
 
                 if(*vizia_screen_format == VIZIA_SCREEN_CRCGCBZB || *vizia_screen_format == VIZIA_SCREEN_CBCGCRZB){
-
+                    memcpy(viziaScreen+3*bufferSize, depthMap->getBuffer(), depthMap->getBufferSize());
                 }
             }
         }
 
-        //if(depthBufferNeeded)
-        memcpy(viziaScreen+3*viziaScreenHeight*viziaScreenWidth, depthMap->getBuffer(), depthMap->getBufferSize());
         //memcpy( viziaScreen, screen->GetBuffer(), viziaScreenSize );
     }
     screen->Unlock();
