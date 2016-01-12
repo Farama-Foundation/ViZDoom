@@ -2592,9 +2592,10 @@ void D_DoomMain (void)
 			V_Init2();
 			UpdateJoystickMenu(NULL);
 
+#ifdef VIZIA_DEPTH_TEST
 			depthMap = new depthBuffer(screen->GetWidth(), screen->GetHeight());
-			depthMap->setDepthBoundries(120000000,200000);//probabli gud
-
+			depthMap->setDepthBoundries(120000000,200000);//probabli gud, but SHOULDN'T BE HERE
+#endif
 			v = Args->CheckValue ("-loadgame");
 			if (v)
 			{

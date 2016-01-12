@@ -220,10 +220,12 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 		dest[pitch+3] = colormap[source[7]];
 		source += 8;
 		dest += pitch*2;
-		for(int dx=0;dx<4;dx++)
-			for(int dy=0;dy<2;dy++)
-				depthMap->setPoint((unsigned int)sx+dx,(unsigned int)ylookup[yl]/pitch+y_mod+dy);
-		y_mod+=2;
+		if(depthMap!=NULL) {
+			for (int dx = 0; dx < 4; dx++)
+				for (int dy = 0; dy < 2; dy++)
+					depthMap->setPoint((unsigned int) sx + dx, (unsigned int) ylookup[yl] / pitch + y_mod + dy);
+			y_mod += 2;
+		}
 	} while (--count);
 }
 #endif
@@ -1038,7 +1040,7 @@ void R_DrawColumnHorizP_C (void)
 		dest = &dc_temp[x + 4*dc_yl];
 	}
 	fracstep = dc_iscale;
-	depthMap->setActualDepth((unsigned int)255 - (fracstep*255)/50000);
+	//if(depthMap!=NULL) depthMap->setActualDepth((unsigned int)255 - (fracstep*255)/50000);
 	frac = dc_texturefrac;
 
 	{

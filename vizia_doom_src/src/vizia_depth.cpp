@@ -79,9 +79,9 @@ void depthBuffer::storeX(int x) {this->tX=x; }
 
 void depthBuffer::storeY(int y) {this->tY=y; }
 
-int depthBuffer::getX() {return this->tX; }
+int depthBuffer::getX(void) {return this->tX; }
 
-int depthBuffer::getY() {return this->tY; }
+int depthBuffer::getY(void) {return this->tY; }
 
 
 unsigned int depthBuffer::getBufferSize(){

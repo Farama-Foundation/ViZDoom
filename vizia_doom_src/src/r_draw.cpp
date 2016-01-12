@@ -1101,7 +1101,7 @@ void R_DrawSpanP_C (void)//FIXME GR DONE POGLOGI I SUFITY!
 			// Lookup pixel from flat texture tile,
 			//  re-index using light/colormap.
 			*dest++ = colormap[source[spot]];
-			depthMap->setPoint(ds_x2-count,ds_y);
+			if(depthMap!=NULL) depthMap->setPoint(ds_x2-count,ds_y);
 			// Next step in u,v.
 			xfrac += xstep;
 			yfrac += ystep;
@@ -1121,7 +1121,7 @@ void R_DrawSpanP_C (void)//FIXME GR DONE POGLOGI I SUFITY!
 			// Lookup pixel from flat texture tile,
 			//  re-index using light/colormap.
 			*dest++ = colormap[source[spot]];
-			depthMap->setPoint(ds_x2-count,ds_y);
+			if(depthMap!=NULL) depthMap->setPoint(ds_x2-count,ds_y);
 			// Next step in u,v.
 			xfrac += xstep;
 			yfrac += ystep;
@@ -1672,11 +1672,14 @@ DWORD STACK_ARGS vlinec1 ()
 	BYTE *dest = dc_dest;
 	int bits = vlinebits;
 	int pitch = dc_pitch;
-	depthMap->setActualDepth((unsigned int)255 - ((dc_iscale-550000)*255)/(1005000000-550000));
-	if(dc_iscale>1005000000)
-		depthMap->setActualDepth(0);//not siur
-	if(dc_iscale<550000)
-		depthMap->setActualDepth(255);
+
+	if(depthMap!=NULL) {
+		depthMap->setActualDepth((unsigned int) 255 - ((dc_iscale - 550000) * 255) / (1005000000 - 550000));
+		if (dc_iscale > 1005000000)
+			depthMap->setActualDepth(0);//not siur
+		if (dc_iscale < 550000)
+			depthMap->setActualDepth(255);
+	}
 	/*static long max, min;
 	if(min==0) min=max;
 	if(dc_iscale>max||dc_iscale<min)
@@ -1692,7 +1695,7 @@ DWORD STACK_ARGS vlinec1 ()
 		*dest = colormap[source[frac>>bits]];
 		frac += fracstep;
 		dest += pitch;
-		depthMap->setPoint((unsigned int)depthMap->getX(),(unsigned int)depthMap->getY()+dc_count-count);
+		if(depthMap!=NULL) depthMap->setPoint((unsigned int)depthMap->getX(),(unsigned int)depthMap->getY()+dc_count-count);
 	} while (--count);
 
 	return frac;
