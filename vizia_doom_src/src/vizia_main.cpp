@@ -119,7 +119,6 @@ void Vizia_Tic(){
         }
 
         Vizia_MQTic();
-
         Vizia_InputTic();
     }
 }
@@ -128,6 +127,5 @@ void Vizia_Update(){
     vizia_last_update = gametic;
     vizia_update = false;
     D_Display();
-    Vizia_GameVarsUpdate();
     Vizia_ScreenUpdate();
 }

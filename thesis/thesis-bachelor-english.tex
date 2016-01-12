@@ -1,0 +1,61 @@
+% Szkielet dla pracy inżynierskiej pisanej w języku angielskim.
+
+\documentclass[english,bachelor,a4paper,twoside]{ppfcmthesis}
+
+\usepackage[utf8]{inputenc}
+\usepackage[OT4]{fontenc}
+\usepackage[T1]{fontenc}
+
+% Authors here.
+\author{%
+   Michał Kempka \album{105256} \and 
+   Grzegorz Runc \album{109759} \and 
+   Jakub Toczek \album{109704} \and 
+   Marek Wydmuch \album{109746}}
+\authortitle{}                                        % Do not change.
+\title{VIZAI-RL : Visual~Information ZDoom-based Artificial~Intelligence Reinforcement~Learning Framework}        % Note how we protect the final title phrase from breaking (~zamiast spacyj)
+\ppsupervisor{~Wojciech Jaśkowski,~Ph.~D.} % Your supervisor comes here.
+\ppyear{2016}                                         % Year of final submission (not graduation!)
+
+\begin{document}
+
+% Front matter starts here
+\frontmatter\pagestyle{empty}%
+\maketitle\cleardoublepage%
+
+% Blank info page for "karta dyplomowa"
+\thispagestyle{empty}\vspace*{\fill}%
+\begin{center}Tutaj przychodzi karta pracy dyplomowej;\\oryginał wstawiamy do wersji dla archiwum PP, w pozostałych kopiach wstawiamy ksero.\end{center}%
+\vfill\cleardoublepage%
+
+%Streszczenie i abstrakt
+\input{0-abstract.tex}
+\cleardoublepage
+
+% Table of contents.
+\pagenumbering{Roman}\pagestyle{ppfcmthesis}%
+\tableofcontents* \cleardoublepage%
+
+% Main content of your thesis starts here.
+\mainmatter%
+
+
+\input{1-introduction.tex}
+\input{2-framework.tex}
+\input{3-api.tex}
+\input{4-scenarios.tex}
+\input{5-experiments.tex}
+\input{6-conclusions.tex}
+
+
+% Bibliography (books, articles) starts here.
+\bibliographystyle{plain}{\raggedright\sloppy\small\bibliography{bibliography}}
+
+% All appendices and extra material, if you have any.
+\cleardoublepage\appendix%
+\input{0a-appendix.tex}
+
+% Colophon is a place where you should let others know about copyrights etc.
+\ppcolophon
+
+\end{document}

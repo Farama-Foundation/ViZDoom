@@ -1,5 +1,6 @@
 #include "vizia_shared_memory.h"
 #include "vizia_message_queue.h"
+#include "vizia_defines.h"
 
 #include "doomdef.h"
 #include "doomstat.h"
@@ -20,8 +21,6 @@ void Vizia_SMInit(const char * id){
         viziaSMSize = sizeof(ViziaInputStruct) + sizeof(ViziaGameVarsStruct) +
                       (sizeof(BYTE) * screen->GetWidth() * screen->GetHeight() * 4);
         viziaSM.truncate(viziaSMSize);
-
-        printf("Vizia_SMInit: Size: %zu\n", viziaSMSize);
     }
     catch(bip::interprocess_exception &ex){
         printf("Vizia_SMInit: Error creating shared memory");

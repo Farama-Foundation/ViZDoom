@@ -1,0 +1,16 @@
+all: lib enums exceptions
+lib: libDoomLIB.so
+libDoomLIB.so: ViziaDoomGameJava.cpp ViziaDoomGame.o ViziaDoomController.o
+	g++ -Wall -fPIC -shared -Wl,-soname,vizia.so -o libDoomLIB.so ViziaDoomGameJava.cpp ViziaDoomGame.o ViziaDoomController.o -I ../../vizia_api_src/ -lrt -lpthread  -L/usr/local/lib -lboost_system -lboost_thread -I/usr/java/jdk1.8.0_65/include -I/usr/java/jdk1.8.0_65/include/linux -I/usr/lib/jvm/java-8-oracle/include/
+
+ViziaDoomGame.o: ../../vizia_api_src/ViziaDoomGame.cpp ../../vizia_api_src/ViziaDoomGame.h ../../vizia_api_src/ViziaDoomController.h  ../../vizia_api_src/ViziaDefines.h
+	g++ -Wall -fPIC -I ../../vizia_api_src -c  ../../vizia_api_src/ViziaDoomGame.cpp -lrt -lpthread -L/usr/local/lib -lboost_system -lboost_thread
+
+ViziaDoomController.o: ../../vizia_api_src/ViziaDoomController.cpp ../../vizia_api_src/ViziaDoomController.h ../../vizia_api_src/ViziaDefines.h ../../vizia_api_src/boost/process.hpp
+	g++ -Wall -fPIC -I ../../vizia_api_src/ -c ../../vizia_api_src/ViziaDoomController.cpp -lrt -lpthread -L/usr/local/lib -lboost_system -lboost_thread -lSDL2
+enums: 
+	javac enums/*.java
+exceptions: 
+	javac errors/*.java
+
+

@@ -34,7 +34,7 @@ namespace Vizia {
         else return UNDEFINED_BUTTON;
     };
 
-    GameVar getGameVarId(std::string name) {
+    GameVariable getGameVarId(std::string name) {
         if (name.compare("KILLCOUNT") == 0) return KILLCOUNT;
         else if (name.compare("ITEMCOUNT") == 0) return ITEMCOUNT;
         else if (name.compare("SECRETCOUNT") == 0) return SECRETCOUNT;

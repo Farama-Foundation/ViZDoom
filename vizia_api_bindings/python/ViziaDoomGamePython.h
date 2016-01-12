@@ -23,19 +23,21 @@ namespace Vizia {
     public:
         struct PythonState
         {
-
             int number;
             object imageBuffer;
-            object vars;
-            PythonState(int n, object buf, object v ):number(n),imageBuffer(buf),vars(v){}
+            object gameVariables;
+            PythonState(int n, object buf, object v ):number(n),imageBuffer(buf),gameVariables(v){}
             PythonState(int n, object buf):number(n),imageBuffer(buf){}
             PythonState(int n):number(n){}
         };
         DoomGamePython();
         bool init();
-        float makeAction(boost::python::list actionList);
+        void setAction(boost::python::list &action);
         PythonState getState();
         boost::python::list getLastAction();
+        object getGameScreen();
+        float makeAction(boost::python::list &action);
+        float makeAction(boost::python::list &action, unsigned int tics);
 
     private:
 

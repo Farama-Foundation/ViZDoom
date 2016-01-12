@@ -13,14 +13,16 @@ namespace Vizia {
 
     unsigned int Ms2DoomTics(unsigned int ms);
 
+    float DoomFixedToFloat(int doomFixed);
+
     class DoomGame {
 
     public:
 
         struct State {
-            int number;
-            std::vector<int> vars;
-            uint8_t *imageBuffer;
+            unsigned int number;
+            std::vector<int> gameVariables;
+            uint8_t * imageBuffer;
         };
 
         DoomGame();
@@ -35,25 +37,36 @@ namespace Vizia {
         void newEpisode();
         bool isRunning();
 
-        float makeAction(std::vector<bool> &actions);
+        void setAction(std::vector<int> &actions);
+        void advanceAction();
+        void advanceAction(bool stateUpdate, bool renderOnly, unsigned int tics);
 
-        void observeAction();
-
+        float makeAction(std::vector<int> &actions);
+        float makeAction(std::vector<int> &actions, unsigned int tics);
+        
         State getState();
 
-        std::vector<bool> getLastAction();
+        std::vector<int> getLastAction();
 
         bool isNewEpisode();
         bool isEpisodeFinished();
 
         void addAvailableButton(Button button);
-        int getActionFormat();
+        void addAvailableButton(Button button, int maxValue);
+        void clearAvailableButtons();
+        int getAvailableButtonsSize();
+        void setButtonMaxValue(Button button, int maxValue);
 
-        void addStateAvailableVar(GameVar var);
-        int getGameVarLen();
+        void addAvailableGameVariable(GameVariable var);
+        void clearAvailableGameVariables();
+        int getAvailableGameVariablesSize();
 
-        unsigned int getActionInterval(unsigned int tics);
-        void setActionInterval(unsigned int tics);
+        void addCustomGameArg(std::string arg);
+        void clearCustomGameArgs();
+
+        void sendGameCommand(std::string cmd);
+
+        uint8_t * const getGameScreen();
 
         GameMode getGameMode();
         void setGameMode(GameMode mode);
@@ -62,14 +75,15 @@ namespace Vizia {
 
         const DoomController *getController();
 
-        int getGameVar(GameVar var);
+        int getGameVariable(GameVariable var);
 
-        int getLivingReward();
-        void setLivingReward(int livingReward);
-        int getDeathPenalty();
-        void setDeathPenalty(int deathPenalty);
-        int getLastReward();
-        int getSummaryReward();
+        float getLivingReward();
+        void setLivingReward(float livingReward);
+        float getDeathPenalty();
+        void setDeathPenalty(float deathPenalty);
+
+        float getLastReward();
+        float getSummaryReward();
 
         void setDoomGamePath(std::string path);
         void setDoomIwadPath(std::string path);
@@ -92,7 +106,7 @@ namespace Vizia {
         unsigned int getEpisodeTimeout();
         void setEpisodeTimeout(unsigned int tics);
 
-        void setScreenResolution(unsigned int width, unsigned int height);
+        void setScreenResolution(ScreenResolution resolution);
         void setScreenWidth(unsigned int width);
         void setScreenHeight(unsigned int height);
         void setScreenFormat(ScreenFormat format);
@@ -101,8 +115,8 @@ namespace Vizia {
         void setRenderCrosshair(bool crosshair);
         void setRenderDecals(bool decals);
         void setRenderParticles(bool particles);
-        void setVisibleWindow(bool visibility);
-        void setDisabledConsole(bool noConsole);
+        void setWindowVisible(bool visibility);
+        void setConsoleEnabled(bool console);
 
         int getScreenWidth();
         int getScreenHeight();
@@ -123,20 +137,20 @@ namespace Vizia {
         State state;
         void updateState();
 
-        std::vector <GameVar> stateAvailableVars;
+        std::vector <GameVariable> availableGameVariables;
         std::vector <Button> availableButtons;
 
-        std::vector<bool> lastAction;
+        std::vector<int> lastAction;
 
         //REWARD
-        unsigned int actionInterval;
+        unsigned int lastStateNumber;
 
-        int lastReward;
-        int lastMapReward;
-        int summaryReward;
+        float lastReward;
+        float lastMapReward;
+        float summaryReward;
 
-        int livingReward;
-        int deathPenalty;
+        float livingReward;
+        float deathPenalty;
 
     };
 }

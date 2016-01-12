@@ -2,13 +2,13 @@
 #include "ViziaDoomGamePython.h"
 #include "ViziaDefines.h"
 #include <exception>
+#include <vector>
 
-
+using namespace Vizia;
 
 /*C++ code to expose DoomGamePython via python */
 
-PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_Exception)
-{
+PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_Exception) {
     using std::string;
     namespace bp = boost::python;
 
@@ -21,44 +21,60 @@ PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_E
     bp::scope().attr(name) = bp::handle<>(bp::borrowed(typeObj));
     return typeObj;
 }
+
 //they need to be remembered!!!
 PyObject* myExceptionTypeObj5 = NULL;
 PyObject* myExceptionTypeObj4 = NULL;
 PyObject* myExceptionTypeObj3 = NULL;
 PyObject* myExceptionTypeObj2 = NULL; 
 PyObject* myExceptionTypeObj = NULL; 
+
 void translate(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj, e.what());
 }
+
 void translate2(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj2, e.what());
 }
+
 void translate3(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj3, e.what());
 }
+
 void translate4(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj4, e.what());
 }
+
 void translate5(Vizia::Exception const &e)
 {
     PyErr_SetString(myExceptionTypeObj5, e.what());
 }
 
+/* DoomGamePython methods overloading */
+
+void (DoomGamePython::*addAvailableButton1)(Button) = &DoomGamePython::addAvailableButton;
+void (DoomGamePython::*addAvailableButton2)(Button, int) = &DoomGamePython::addAvailableButton;
+
+void (DoomGamePython::*advanceAction1)() = &DoomGamePython::advanceAction;
+void (DoomGamePython::*advanceAction2)(bool, bool, unsigned int) = &DoomGamePython::advanceAction;
+
+float (DoomGamePython::*makeAction1)(boost::python::list &) = &DoomGamePython::makeAction;
+float (DoomGamePython::*makeAction2)(boost::python::list &, unsigned int) = &DoomGamePython::makeAction;
+
 BOOST_PYTHON_MODULE(vizia)
 {
     using namespace boost::python;
-    using namespace Vizia;
     Py_Initialize();
     boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
     import_array();
     
     //exceptions
     myExceptionTypeObj = createExceptionClass("doom_unexpected_exit_exception");
-   boost::python::register_exception_translator<Vizia::DoomUnexpectedExitException>(&translate);
+    boost::python::register_exception_translator<Vizia::DoomUnexpectedExitException>(&translate);
 
     myExceptionTypeObj2 = createExceptionClass("doom_is_not_running_exception");
     boost::python::register_exception_translator<Vizia::DoomIsNotRunningException>(&translate2);
@@ -76,21 +92,97 @@ BOOST_PYTHON_MODULE(vizia)
 
     enum_<GameMode>("GameMode")
         ENUM_VAL_2_PYT(PLAYER)
-        ENUM_VAL_2_PYT(SPECATOR);
+        ENUM_VAL_2_PYT(SPECTATOR);
 
 	enum_<ScreenFormat>("ScreenFormat")
         ENUM_VAL_2_PYT(CRCGCB)
-        ENUM_VAL_2_PYT(CRCGCBCA)
+        ENUM_VAL_2_PYT(CRCGCBZB)
         ENUM_VAL_2_PYT(RGB24)
         ENUM_VAL_2_PYT(RGBA32)
         ENUM_VAL_2_PYT(ARGB32)
         ENUM_VAL_2_PYT(CBCGCR)
-        ENUM_VAL_2_PYT(CBCGCRCA)
+        ENUM_VAL_2_PYT(CBCGCRZB)
         ENUM_VAL_2_PYT(BGR24)
         ENUM_VAL_2_PYT(BGRA32)
         ENUM_VAL_2_PYT(ABGR32)
         ENUM_VAL_2_PYT(GRAY8)
-        ENUM_VAL_2_PYT(DOOM_256_COLORS);
+        ENUM_VAL_2_PYT(ZBUFFER8);
+    
+    enum_<ScreenResolution>("ScreenResolution")
+        ENUM_VAL_2_PYT(RES_40X30)
+        ENUM_VAL_2_PYT(RES_60X45)
+        ENUM_VAL_2_PYT(RES_80X50)
+        ENUM_VAL_2_PYT(RES_80X60)
+        ENUM_VAL_2_PYT(RES_100X75)
+        ENUM_VAL_2_PYT(RES_120X75)
+        ENUM_VAL_2_PYT(RES_120X90)
+        ENUM_VAL_2_PYT(RES_160X100)
+        ENUM_VAL_2_PYT(RES_160X120)
+        ENUM_VAL_2_PYT(RES_200X120)
+        ENUM_VAL_2_PYT(RES_200X150)
+        ENUM_VAL_2_PYT(RES_240X135)
+        ENUM_VAL_2_PYT(RES_240X150)
+        ENUM_VAL_2_PYT(RES_240X180)
+        ENUM_VAL_2_PYT(RES_256X144)
+        ENUM_VAL_2_PYT(RES_256X160)
+        ENUM_VAL_2_PYT(RES_256X192)
+        ENUM_VAL_2_PYT(RES_320X200)
+        ENUM_VAL_2_PYT(RES_320X240)
+        ENUM_VAL_2_PYT(RES_400X225)    // 16:9
+        ENUM_VAL_2_PYT(RES_400X300)
+        ENUM_VAL_2_PYT(RES_480X270)    // 16:9
+        ENUM_VAL_2_PYT(RES_480X360)
+        ENUM_VAL_2_PYT(RES_512X288)    // 16:9
+        ENUM_VAL_2_PYT(RES_512X384)
+        ENUM_VAL_2_PYT(RES_640X360)    // 16:9
+        ENUM_VAL_2_PYT(RES_640X400)
+        ENUM_VAL_2_PYT(RES_640X480)
+        ENUM_VAL_2_PYT(RES_720X480)    // 16:10
+        ENUM_VAL_2_PYT(RES_720X540)
+        ENUM_VAL_2_PYT(RES_800X450)    // 16:9
+        ENUM_VAL_2_PYT(RES_800X480)
+        ENUM_VAL_2_PYT(RES_800X500)    // 16:10
+        ENUM_VAL_2_PYT(RES_800X600)
+        ENUM_VAL_2_PYT(RES_848X480)    // 16:9
+        ENUM_VAL_2_PYT(RES_960X600)    // 16:10
+        ENUM_VAL_2_PYT(RES_960X720)
+        ENUM_VAL_2_PYT(RES_1024X576)    // 16:9
+        ENUM_VAL_2_PYT(RES_1024X600)    // 17:10
+        ENUM_VAL_2_PYT(RES_1024X640)    // 16:10
+        ENUM_VAL_2_PYT(RES_1024X768)
+        ENUM_VAL_2_PYT(RES_1088X612)    // 16:9
+        ENUM_VAL_2_PYT(RES_1152X648)    // 16:9
+        ENUM_VAL_2_PYT(RES_1152X720)    // 16:10
+        ENUM_VAL_2_PYT(RES_1152X864)
+        ENUM_VAL_2_PYT(RES_1280X720)    // 16:9
+        ENUM_VAL_2_PYT(RES_1280X854)
+        ENUM_VAL_2_PYT(RES_1280X800)    // 16:10
+        ENUM_VAL_2_PYT(RES_1280X960)
+        ENUM_VAL_2_PYT(RES_1280X1024)    // 5:4
+        ENUM_VAL_2_PYT(RES_1360X768)    // 16:9
+        ENUM_VAL_2_PYT(RES_1366X768)
+        ENUM_VAL_2_PYT(RES_1400X787)    // 16:9
+        ENUM_VAL_2_PYT(RES_1400X875)    // 16:10
+        ENUM_VAL_2_PYT(RES_1400X1050)
+        ENUM_VAL_2_PYT(RES_1440X900)
+        ENUM_VAL_2_PYT(RES_1440X960)
+        ENUM_VAL_2_PYT(RES_1440X1080)
+        ENUM_VAL_2_PYT(RES_1600X900)    // 16:9
+        ENUM_VAL_2_PYT(RES_1600X1000)    // 16:10
+        ENUM_VAL_2_PYT(RES_1600X1200)
+        ENUM_VAL_2_PYT(RES_1680X1050)    // 16:10
+        ENUM_VAL_2_PYT(RES_1920X1080)
+        ENUM_VAL_2_PYT(RES_1920X1200)
+        ENUM_VAL_2_PYT(RES_2048X1536)
+        ENUM_VAL_2_PYT(RES_2560X1440)
+        ENUM_VAL_2_PYT(RES_2560X1600)
+        ENUM_VAL_2_PYT(RES_2560X2048)
+        ENUM_VAL_2_PYT(RES_2880X1800)
+        ENUM_VAL_2_PYT(RES_3200X1800)
+        ENUM_VAL_2_PYT(RES_3840X2160)
+        ENUM_VAL_2_PYT(RES_3840X2400)
+        ENUM_VAL_2_PYT(RES_4096X2160)
+        ENUM_VAL_2_PYT(RES_5120X2880);
 
 	enum_<Button>("Button")
         ENUM_VAL_2_PYT(ATTACK)
@@ -105,12 +197,13 @@ BOOST_PYTHON_MODULE(vizia)
         ENUM_VAL_2_PYT(STRAFE)
         ENUM_VAL_2_PYT(MOVE_RIGHT)
         ENUM_VAL_2_PYT(MOVE_LEFT)
-        ENUM_VAL_2_PYT(MOVE_BACK)
+        ENUM_VAL_2_PYT(MOVE_BACKWARD)
         ENUM_VAL_2_PYT(MOVE_FORWARD)
         ENUM_VAL_2_PYT(TURN_RIGHT)
         ENUM_VAL_2_PYT(TURN_LEFT)
         ENUM_VAL_2_PYT(LOOK_UP)
         ENUM_VAL_2_PYT(LOOK_DOWN)
+        ENUM_VAL_2_PYT(LAND)
         ENUM_VAL_2_PYT(SELECT_WEAPON1)
         ENUM_VAL_2_PYT(SELECT_WEAPON2)
         ENUM_VAL_2_PYT(SELECT_WEAPON3)
@@ -118,22 +211,43 @@ BOOST_PYTHON_MODULE(vizia)
         ENUM_VAL_2_PYT(SELECT_WEAPON5)
         ENUM_VAL_2_PYT(SELECT_WEAPON6)
         ENUM_VAL_2_PYT(SELECT_WEAPON7)
+        ENUM_VAL_2_PYT(SELECT_WEAPON8)
+        ENUM_VAL_2_PYT(SELECT_WEAPON9)
+        ENUM_VAL_2_PYT(SELECT_WEAPON0)
         ENUM_VAL_2_PYT(SELECT_NEXT_WEAPON)
         ENUM_VAL_2_PYT(SELECT_PREV_WEAPON)
-        ENUM_VAL_2_PYT(UNDEFINED_BUTTON);
+        ENUM_VAL_2_PYT(DROP_SELECTED_WEAPON)
+        ENUM_VAL_2_PYT(ACTIVATE_SELECTED_ITEM)
+        ENUM_VAL_2_PYT(SELECT_NEXT_ITEM)
+        ENUM_VAL_2_PYT(SELECT_PREV_ITEM)
+        ENUM_VAL_2_PYT(DROP_SELECTED_ITEM)
+        ENUM_VAL_2_PYT(VIEW_PITCH)
+        ENUM_VAL_2_PYT(VIEW_ANGLE)
+        ENUM_VAL_2_PYT(FORWARD_BACKWARD)
+        ENUM_VAL_2_PYT(LEFT_RIGHT)
+        ENUM_VAL_2_PYT(UP_DOWN);
 
-    enum_<GameVar>("GameVar")
+    enum_<GameVariable>("GameVariable")
         ENUM_VAL_2_PYT(KILLCOUNT)
         ENUM_VAL_2_PYT(ITEMCOUNT)
         ENUM_VAL_2_PYT(SECRETCOUNT)
         ENUM_VAL_2_PYT(HEALTH)
         ENUM_VAL_2_PYT(ARMOR)
+        ENUM_VAL_2_PYT(ON_GROUND)
+        ENUM_VAL_2_PYT(ATTACK_READY)
+        ENUM_VAL_2_PYT(ALTATTACK_READY)
         ENUM_VAL_2_PYT(SELECTED_WEAPON)
         ENUM_VAL_2_PYT(SELECTED_WEAPON_AMMO)
         ENUM_VAL_2_PYT(AMMO1)
         ENUM_VAL_2_PYT(AMMO2)
         ENUM_VAL_2_PYT(AMMO3)
         ENUM_VAL_2_PYT(AMMO4)
+        ENUM_VAL_2_PYT(AMMO5)
+        ENUM_VAL_2_PYT(AMMO6)
+        ENUM_VAL_2_PYT(AMMO7)
+        ENUM_VAL_2_PYT(AMMO8)
+        ENUM_VAL_2_PYT(AMMO9)
+        ENUM_VAL_2_PYT(AMMO0)
         ENUM_VAL_2_PYT(WEAPON1)
         ENUM_VAL_2_PYT(WEAPON2)
         ENUM_VAL_2_PYT(WEAPON3)
@@ -141,9 +255,9 @@ BOOST_PYTHON_MODULE(vizia)
         ENUM_VAL_2_PYT(WEAPON5)
         ENUM_VAL_2_PYT(WEAPON6)
         ENUM_VAL_2_PYT(WEAPON7)
-        ENUM_VAL_2_PYT(KEY1)
-        ENUM_VAL_2_PYT(KEY2)
-        ENUM_VAL_2_PYT(KEY3)
+        ENUM_VAL_2_PYT(WEAPON8)
+        ENUM_VAL_2_PYT(WEAPON9)
+        ENUM_VAL_2_PYT(WEAPON0)
         ENUM_VAL_2_PYT(USER1)
         ENUM_VAL_2_PYT(USER2)
         ENUM_VAL_2_PYT(USER3)
@@ -173,99 +287,16 @@ BOOST_PYTHON_MODULE(vizia)
         ENUM_VAL_2_PYT(USER27)
         ENUM_VAL_2_PYT(USER28)
         ENUM_VAL_2_PYT(USER29)
-        ENUM_VAL_2_PYT(USER30)
-        ENUM_VAL_2_PYT(UNDEFINED_VAR);
+        ENUM_VAL_2_PYT(USER30);
 
-    enum_<Key>("Key")
-        ENUM_VAL_2_PYT(TAB)
-        ENUM_VAL_2_PYT(CAPS_LOCK)
-        ENUM_VAL_2_PYT(RSHIFT)
-        ENUM_VAL_2_PYT(RCTRL)
-        ENUM_VAL_2_PYT(RALT)
-        ENUM_VAL_2_PYT(LSHIFT)
-        ENUM_VAL_2_PYT(LCTRL)
-        ENUM_VAL_2_PYT(LALT)
-        ENUM_VAL_2_PYT(SPACE)
-        ENUM_VAL_2_PYT(ENTER)
-        ENUM_VAL_2_PYT(BACKSPACE)
-        ENUM_VAL_2_PYT(ESCAPE)
-        ENUM_VAL_2_PYT(RIGHT_ARROW)
-        ENUM_VAL_2_PYT(LEFT_ARROW)
-        ENUM_VAL_2_PYT(UP_ARROW)
-        ENUM_VAL_2_PYT(DOWN_ARROW)
-        ENUM_VAL_2_PYT(INSERT)
-        ENUM_VAL_2_PYT(END)
-        ENUM_VAL_2_PYT(HOME)
-        ENUM_VAL_2_PYT(PAGE_UP)
-        ENUM_VAL_2_PYT(PAGE_DOWN)
-        ENUM_VAL_2_PYT(F1)
-        ENUM_VAL_2_PYT(F2)
-        ENUM_VAL_2_PYT(F3)
-        ENUM_VAL_2_PYT(F4)
-        ENUM_VAL_2_PYT(F5)
-        ENUM_VAL_2_PYT(F6)
-        ENUM_VAL_2_PYT(F7)
-        ENUM_VAL_2_PYT(F8)
-        ENUM_VAL_2_PYT(F9)
-        ENUM_VAL_2_PYT(F10)
-        ENUM_VAL_2_PYT(F11)
-        ENUM_VAL_2_PYT(F12)
-        ENUM_VAL_2_PYT(CHAR_Q)
-        ENUM_VAL_2_PYT(CHAR_W)
-        ENUM_VAL_2_PYT(CHAR_E)
-        ENUM_VAL_2_PYT(CHAR_R)
-        ENUM_VAL_2_PYT(CHAR_T)
-        ENUM_VAL_2_PYT(CHAR_Y)
-        ENUM_VAL_2_PYT(CHAR_U)
-        ENUM_VAL_2_PYT(CHAR_I)
-        ENUM_VAL_2_PYT(CHAR_O)
-        ENUM_VAL_2_PYT(CHAR_P)
-        ENUM_VAL_2_PYT(CHAR_A)
-        ENUM_VAL_2_PYT(CHAR_S)
-        ENUM_VAL_2_PYT(CHAR_D)
-        ENUM_VAL_2_PYT(CHAR_F)
-        ENUM_VAL_2_PYT(CHAR_G)
-        ENUM_VAL_2_PYT(CHAR_H)
-        ENUM_VAL_2_PYT(CHAR_J)
-        ENUM_VAL_2_PYT(CHAR_K)
-        ENUM_VAL_2_PYT(CHAR_L)
-        ENUM_VAL_2_PYT(CHAR_Z)
-        ENUM_VAL_2_PYT(CHAR_X)
-        ENUM_VAL_2_PYT(CHAR_C)
-        ENUM_VAL_2_PYT(CHAR_V)
-        ENUM_VAL_2_PYT(CHAR_B)
-        ENUM_VAL_2_PYT(CHAR_N)
-        ENUM_VAL_2_PYT(CHAR_M)
-        ENUM_VAL_2_PYT(CHAR_1)
-        ENUM_VAL_2_PYT(CHAR_2)
-        ENUM_VAL_2_PYT(CHAR_3)
-        ENUM_VAL_2_PYT(CHAR_4)
-        ENUM_VAL_2_PYT(CHAR_5)
-        ENUM_VAL_2_PYT(CHAR_6)
-        ENUM_VAL_2_PYT(CHAR_7)
-        ENUM_VAL_2_PYT(CHAR_8)
-        ENUM_VAL_2_PYT(CHAR_9)
-        ENUM_VAL_2_PYT(CHAR_0)
-        ENUM_VAL_2_PYT(CHAR_MINUS)
-        ENUM_VAL_2_PYT(CHAR_EQUALS)
-        ENUM_VAL_2_PYT(CHAR_COMMA)
-        ENUM_VAL_2_PYT(CHAR_PERIOD)
-        ENUM_VAL_2_PYT(CHAR_LEFT_BRACKET)
-        ENUM_VAL_2_PYT(CHAR_RIGHT_BRACKET)
-        ENUM_VAL_2_PYT(CHAR_SLASH)
-        ENUM_VAL_2_PYT(CHAR_BACKSLASH)
-        ENUM_VAL_2_PYT(CHAR_SEMICOLON)
-        ENUM_VAL_2_PYT(CHAR_QUOTE)
-        ENUM_VAL_2_PYT(UNDEFINED_KEY);
-
-
-	def("DoomTics2Ms", DoomTics2Ms);
-	def("Ms2DoomTics", Ms2DoomTics);
-
+	def("doom_tics_2_ms", DoomTics2Ms);
+	def("ms_to_doom_tics", Ms2DoomTics);
+    def("doom_fixed_to_float", DoomFixedToFloat);
+    
     class_<DoomGamePython::PythonState>("State", no_init)
         .def_readonly("number", &DoomGamePython::PythonState::number)
         .def_readonly("image_buffer", &DoomGamePython::PythonState::imageBuffer)
-        .def_readonly("vars", &DoomGamePython::PythonState::vars);
+        .def_readonly("game_variables", &DoomGamePython::PythonState::gameVariables);
 
     class_<DoomGamePython>("DoomGame", init<>())
 		.def("init", &DoomGamePython::init)
@@ -274,17 +305,16 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("new_episode", &DoomGamePython::newEpisode)
 		.def("is_episode_finished", &DoomGamePython::isEpisodeFinished)
 		.def("is_new_episode", &DoomGamePython::isNewEpisode)
-		.def("make_action",&DoomGamePython::makeAction)
-        .def("observe_action",&DoomGamePython::observeAction)
-            
+		.def("set_action", &DoomGamePython::setAction)
+        .def("make_action", makeAction1)
+        .def("make_action", makeAction2)
+		.def("advance_action", advanceAction1)
+        .def("advance_action", advanceAction2)
+        
 		.def("get_state", &DoomGamePython::getState)
-		.def("get_action_format", &DoomGamePython::getActionFormat)
-
-        .def("get_action_interval", &DoomGamePython::getActionInterval)
-        .def("set_action_interval", &DoomGamePython::setActionInterval)
     
-        .def("get_game_var", &DoomGamePython::getGameVar)
-        .def("get_game_var_len", &DoomGamePython::getGameVarLen)
+        .def("get_game_variable", &DoomGamePython::getGameVariable)
+        .def("get_game_screen", &DoomGamePython::getGameScreen)
 
         .def("get_living_reward", &DoomGamePython::getLivingReward)
         .def("set_living_reward", &DoomGamePython::setLivingReward)
@@ -297,8 +327,21 @@ BOOST_PYTHON_MODULE(vizia)
         
         .def("get_last_action", &DoomGamePython::getLastAction)
         
-		.def("add_state_available_var", &DoomGamePython::addStateAvailableVar)
-		.def("add_available_button", &DoomGamePython::addAvailableButton)
+		.def("add_available_game_variable", &DoomGamePython::addAvailableGameVariable)
+		.def("clear_available_game_variable", &DoomGamePython::clearAvailableGameVariables)
+        .def("get_available_game_variables_size", &DoomGamePython::getAvailableGameVariablesSize)
+
+		.def("add_available_button", addAvailableButton1)
+        .def("add_available_button", addAvailableButton2)
+
+		.def("clear_available_button", &DoomGamePython::clearAvailableButtons)
+        .def("get_available_buttons_size", &DoomGamePython::getAvailableButtonsSize)
+        .def("set_button_max_value", &DoomGamePython::setButtonMaxValue)
+
+        .def("add_custom_game_arg", &DoomGamePython::addCustomGameArg)
+        .def("clear_custom_game_args", &DoomGamePython::clearCustomGameArgs)
+
+        .def("send_game_command", &DoomGamePython::sendGameCommand)
 
         .def("get_game_mode", &DoomGamePython::getGameMode)
         .def("set_game_mode", &DoomGamePython::setGameMode)
@@ -323,6 +366,8 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("get_episode_timeout", &DoomGamePython::getEpisodeTimeout)
 		.def("set_episode_timeout", &DoomGamePython::setEpisodeTimeout)
 		
+        .def("set_console_enabled",&DoomGamePython::setConsoleEnabled)
+        
 		.def("set_screen_resolution", &DoomGamePython::setScreenResolution)
 		.def("set_screen_width", &DoomGamePython::setScreenWidth)
 		.def("set_screen_height", &DoomGamePython::setScreenHeight)
@@ -338,5 +383,5 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("get_screen_size", &DoomGamePython::getScreenSize)
 		.def("get_screen_pitch", &DoomGamePython::getScreenPitch)
 		.def("get_screen_format", &DoomGamePython::getScreenFormat)
-        .def("set_visible_window", &DoomGamePython::setVisibleWindow);
+        .def("set_window_visible", &DoomGamePython::setWindowVisible);
 }

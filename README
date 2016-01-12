@@ -1,3 +1,10 @@
+Building steps:
+
+cmake -DCMAKE_BUILD_TYPE=Release
+make all
+
+Everything will be build in bin directory.
+
 Troubleshooting:
 1. /usr/include/boost/python/detail/wrap_python.hpp:50:23: fatal error: pyconfig.h: No such file or directory
  # include <pyconfig.h>
@@ -12,4 +19,5 @@ else
 	export CPLUS_INCLUDE_PATH="$CPLUS_INCLUDE_PATH;/usr/include/python2.7"
 fi
 
-Change /usr/include/python2.7 to yout python include path.
+Change /usr/include/python2.7 to your python include path.
+

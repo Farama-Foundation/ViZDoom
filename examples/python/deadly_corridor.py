@@ -1,8 +1,10 @@
 #!/usr/bin/python
 from vizia import DoomGame
 from vizia import Button
-from vizia import GameVar
+from vizia import GameVariable
 from vizia import ScreenFormat
+from vizia import ScreenResolution
+
 from random import choice
 
 
@@ -15,13 +17,10 @@ def setup_vizia():
 
 	game = DoomGame()
 
-	#available resolutions: 40x30, 60x45, 80x60, 100x75, 120x90, 160x120, 200x150, 320x240, 640x480
-	game.set_screen_resolution(320,240)
+	game.set_screen_resolution(ScreenResolution.RES_320X240)
 
-	game.set_doom_game_path("../../bin/viziazdoom")
 	game.set_doom_iwad_path("../../scenarios/doom2.wad")
 	game.set_doom_file_path("../../scenarios/deadly_corridor.wad")
-	game.set_doom_map("map01")
 	game.set_doom_skill(5)
 	game.set_episode_timeout(4200)
 
@@ -41,13 +40,11 @@ def setup_vizia():
 	game.add_available_button(Button.TURN_LEFT)
 	game.add_available_button(Button.TURN_RIGHT)
 
-	game.set_visible_window(True)
-	game.add_state_available_var(GameVar.HEALTH)
+	game.set_window_visible(True)
+	game.add_available_game_variable(GameVariable.HEALTH)
 
-	print "AAAAAAAAAAAAAAAAAAAAA"
 	game.init()
-	print "BBBBBBBBBBBBBBBB"
-	
+		
 	return game
 	
 	
@@ -67,14 +64,14 @@ for i in range(iters):
 		print "episode finished!"
 		print "summary reward:", game.get_summary_reward()
 		print "************************"
-		sleep(2)
+		sleep(1)
 		game.new_episode()
 
 	s = game.get_state()
 	r = game.make_action(forward)
 
 	print "state #" +str(s.number)
-	print "HP:", s.vars[0]
+	print "HP:", s.game_variables[0]
 	print "reward:",r
 	print "====================="	
 	if sleep_time>0:
