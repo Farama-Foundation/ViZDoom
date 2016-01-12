@@ -7,38 +7,16 @@ using namespace Vizia;
 SDL_Window* window = NULL;
 SDL_Surface* screen = NULL;
 SDL_Surface* viziaBuffer = NULL;
-SDL_Surface* viziaDepth = NULL;
 
 void initSDL(int scrW, int scrH){
     SDL_Init( SDL_INIT_VIDEO );
-    window = SDL_CreateWindow( "Vizia Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 2*scrW, scrH, SDL_WINDOW_SHOWN );
+    window = SDL_CreateWindow( "Vizia Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scrW, scrH, SDL_WINDOW_SHOWN );
     screen = SDL_GetWindowSurface( window );
 }
 
 void updateSDL(int scrW, int scrH, int pitch, void* bufferPointer){
-    SDL_Color colors[256];
-    SDL_Rect ptrs;
-    int i;
-    uint8_t *dBf = ((uint8_t*)bufferPointer) + 3*scrW*scrH;
-    for(i = 0; i < 256; i++)
-    {
-        colors[i].r = colors[i].g = colors[i].b = i;
-    }
-
-    viziaDepth = SDL_CreateRGBSurfaceFrom(dBf, scrW, scrH, 8, scrW, 0, 0, 0, 0);
-
-    SDL_SetPaletteColors(viziaDepth->format->palette, colors, 0, 256);
-
     viziaBuffer = SDL_CreateRGBSurfaceFrom(bufferPointer, scrW, scrH, 24, pitch, 0, 0, 0, 0);
-
-    ptrs.x=0;
-    ptrs.y=0;
-
-    SDL_BlitSurface( viziaBuffer, NULL, screen, &ptrs );
-
-    ptrs.x = scrW;
-    SDL_BlitSurface( viziaDepth, NULL, screen, &ptrs);
-
+    SDL_BlitSurface( viziaBuffer, NULL, screen, NULL );
     SDL_UpdateWindowSurface( window );
 }
 
@@ -56,90 +34,90 @@ int main(){
 
     bool sdl = true;
 
-    DoomController *vdm = new DoomController;
+    DoomController *dc = new DoomController;
 
     std::cout << "\n\nVIZIA CONTROLLER EXAMPLE\n\n";
 
-    vdm->setGamePath("viziazdoom");
-    vdm->setIwadPath("doom2.wad");
-    vdm->setFilePath("../scenarios/s1_b.wad");
-    vdm->setMap("map01");
-    vdm->setMapTimeout(200);
-    vdm->setAutoMapRestart(true);
-    vdm->setSeed(131313);
+    dc->setGamePath("viziazdoom");
+    dc->setIwadPath("../scenarios/doom2.wad");
+    dc->setFilePath("../scenarios/s1_b.wad");
+    dc->setMap("map01");
+    dc->setMapTimeout(200);
+    dc->setAutoMapRestart(true);
+    dc->setSeed(131313);
 
     // w przypadku nie zachowania proporcji 4:3, 16:10, 16:9
     // silnik weźmie wysokość i pomnoży razy 4/3
     // możemy spróbować to wyłączyć, ale pewnie wtedy obraz będzie zniekształocny
-    vdm->setScreenResolution(320, 240);
+    dc->setScreenResolution(640, 480);
     // rozdzielczość znacząco wpływa na szybkość działania
 
-    vdm->setScreenFormat(RGB24);
+    dc->setScreenFormat(RGB24);
 
-    vdm->setRenderHud(true);
-    vdm->setRenderCrosshair(true);
-    vdm->setRenderWeapon(true);
-    vdm->setRenderDecals(true);
-    vdm->setRenderParticles(true);
+    dc->setRenderHud(true);
+    dc->setRenderCrosshair(true);
+    dc->setRenderWeapon(true);
+    dc->setRenderDecals(true);
+    dc->setRenderParticles(true);
 
-    vdm->setWindowHidden(false);
-    vdm->setNoXServer(true);
+    dc->setWindowHidden(true);
+    dc->setNoXServer(false);
 
-    vdm->setNoConsole(true);
+    dc->setNoConsole(false);
 
-
-    vdm->init();
-    if(sdl) initSDL(vdm->getScreenWidth(), vdm->getScreenHeight());
+    dc->init();
+    if(sdl) initSDL(dc->getScreenWidth(), dc->getScreenHeight());
     
     int loop = 100;
     for(int i = 0; i < 50000; ++i){
-        SDL_Delay(10);
-        if(vdm->isMapLastTic()) std::cout << "\nMAP FINISHED\n\n";
 
-        //vdm->setMouseX(-10); //obrót w lewo
+        if(dc->isMapLastTic()) std::cout << "\nMAP FINISHED\n\n";
 
         if(i%loop < 50) {
-            vdm->setButtonState(MOVE_RIGHT, true);   //ustaw inpup
+            dc->setButtonState(MOVE_RIGHT, 1);   //ustaw inpup
         }
         else{
-            vdm->setButtonState(MOVE_RIGHT, false);
+            dc->setButtonState(MOVE_RIGHT, 0);
         }
         if(i%loop >= 50) {
-            vdm->getInput()->BT[MOVE_LEFT] = true;  //lub w ten sposób
+            dc->getInput()->BT[MOVE_LEFT] = 1;  //lub w ten sposób
         }
         else{
-            vdm->getInput()->BT[MOVE_LEFT] = false;
+            dc->getInput()->BT[MOVE_LEFT] = 0;
         }
 
         if(i%loop == 25 || i%loop == 50 || i%loop == 75){
-            vdm->setButtonState(ATTACK, true);
+            dc->setButtonState(ATTACK, 1);
         }
         else{
-            vdm->setButtonState(ATTACK, false);
+            dc->setButtonState(ATTACK, 0);
         }
 
         if(i%loop == 30 || i%loop == 60){
-            vdm->setButtonState(JUMP, true);
+            dc->setButtonState(JUMP, 1);
         }
         else{
-            vdm->setButtonState(JUMP, false);
+            dc->setButtonState(JUMP, 0);
         }
 
         if(i%10 == 0) {
-            vdm->tic(true);
             if (sdl)
-                updateSDL(vdm->getScreenWidth(), vdm->getScreenHeight(), vdm->getScreenPitch(),
-                          (void *) vdm->getScreen());
+                updateSDL(dc->getScreenWidth(), dc->getScreenHeight(), dc->getScreenPitch(),
+                          (void *) dc->getScreen());
 
-            std::cout << "GAME TIC: " << vdm->getGameTic() << " MAP TIC: " << vdm->getMapTic() <<
-            " HP: " << vdm->getPlayerHealth() << " AMMO: " << vdm->getGameVars()->PLAYER_AMMO[0] <<
-            " REWARD: " << vdm->getMapReward() << " SHAPING: " << vdm->getGameVar(USER1) << std::endl;
+            std::cout << "GAME TIC: " << dc->getGameTic() << " MAP TIC: " << dc->getMapTic() <<
+            " HP: " << dc->getPlayerHealth() << " ARMOR: " << dc->getGameVariables()->PLAYER_ARMOR<<std::endl;
+            std::cout << "ATTACK READY: " << dc->getGameVariables()->PLAYER_ATTACK_READY << " SELECTED WEAPON: " << dc->getGameVariables()->PLAYER_SELECTED_WEAPON << " SELECTED AMMO: " << dc->getGameVariables()->PLAYER_SELECTED_WEAPON_AMMO << std::endl;
+            for(int i = 0; i < 4; ++i){
+                std::cout << "WEAPON " << i << ": " << dc->getGameVariables()->PLAYER_WEAPON[i] << " AMMO " << i  << ": " << dc->getGameVariables()->PLAYER_AMMO[i] << std::endl;
+            }
+            std::cout << "REWARD: " << dc->getMapReward() << " SHAPING: " << dc->getGameVariable(USER1) << std::endl;
+            dc->tic(true);
         }
-        else vdm->tic(false);
+        else dc->tic(false);
 
     }
-
-    vdm->close();
+    dc->close();
     if(sdl) closeSDL();
 }
 

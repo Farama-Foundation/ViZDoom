@@ -112,6 +112,9 @@
 #include "vizia_main.h"
 #include "vizia_depth.h"
 
+#include "vizia_input.h"
+#include "vizia_defines.h"
+
 EXTERN_CVAR (Bool, vizia_controlled)
 EXTERN_CVAR (Bool, vizia_singletic)
 EXTERN_CVAR (Bool, vizia_clean_render)
@@ -299,7 +302,7 @@ void D_ProcessEvents (void)
 // Called by the I/O functions when input is detected.
 //
 //==========================================================================
-
+//VIZIA CODE
 void D_PostEvent (const event_t *ev)
 {
 	// Do not post duplicate consecutive EV_DeviceChange events.
@@ -316,12 +319,25 @@ void D_PostEvent (const event_t *ev)
 			int look = int(ev->y * m_pitch * mouse_sensitivity * 16.0);
 			if (invertmouse)
 				look = -look;
-			G_AddViewPitch (look);
+			if(!*vizia_controlled) G_AddViewPitch (look);
+			else{
+				if(*vizia_allow_input){
+					look = Vizia_AxisFilter(VIZIA_BT_VIEW_PITCH, look);
+					G_AddViewPitch (look);
+				}
+			}
 			events[eventhead].y = 0;
 		}
 		if (!Button_Strafe.bDown && !lookstrafe)
 		{
-			G_AddViewAngle (int(ev->x * m_yaw * mouse_sensitivity * 8.0));
+			int look = int(ev->x * m_yaw * mouse_sensitivity * 8.0);
+			if(!*vizia_controlled) G_AddViewAngle (look);
+			else{
+				if(*vizia_allow_input){
+					look = Vizia_AxisFilter(VIZIA_BT_VIEW_PITCH, look);
+					G_AddViewAngle (look);
+				}
+			}
 			events[eventhead].x = 0;
 		}
 		if ((events[eventhead].x | events[eventhead].y) == 0)
@@ -1009,7 +1025,7 @@ void D_DoomLoop ()
 			{
 
 				I_StartTic ();
-				if(!*vizia_controlled) D_ProcessEvents ();
+				if(!*vizia_controlled || (vizia_update && *vizia_allow_input)) D_ProcessEvents ();
 
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				if (advancedemo)
@@ -2001,7 +2017,7 @@ static void D_DoomInit()
 	if (v)
 	{
 		rngseed = staticrngseed = atoi(v);
-		//VIZIA_CODE
+		//VIZIA CODE
 		//use_staticrng = true;
 		use_staticrng = false;
 		Printf("D_DoomInit: Static RNGseed %d set.\n", rngseed);

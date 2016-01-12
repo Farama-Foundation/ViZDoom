@@ -5,15 +5,17 @@ void Vizia_Command(char * command);
 
 bool Vizia_CommmandFilter(const char *cmd);
 
+int Vizia_AxisFilter(int button, int value);
+
+void Vizia_AddAxisBT(int button, int value);
+
 char* Vizia_BTToCommand(int button);
 
 bool Vizia_HasCounterBT(int button);
 
 int Vizia_CounterBT(int button);
 
-void Vizia_AddBTCommand(char* command, bool state);
-
-void Vizia_Mouse(int x, int y);
+void Vizia_AddBTCommand(char* command, int state);
 
 void Vizia_InputInit();
 

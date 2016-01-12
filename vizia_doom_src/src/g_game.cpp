@@ -86,6 +86,12 @@
 
 #include "g_hub.h"
 
+//VIZIA CODE
+#include "vizia_input.h"
+#include "vizia_defines.h"
+
+EXTERN_CVAR (Bool, vizia_controlled)
+EXTERN_CVAR (Bool, vizia_allow_input)
 
 static FRandom pr_dmspawn ("DMSpawn");
 static FRandom pr_pspawn ("PlayerSpawn");
@@ -529,6 +535,8 @@ static inline int joyint(double val)
 // or reads it from the demo buffer.
 // If recording a demo, write it out
 //
+
+//VIZIA CODE
 void G_BuildTiccmd (ticcmd_t *cmd)
 {
 	int 		strafe;
@@ -547,7 +555,12 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	strafe = Button_Strafe.bDown;
 	speed = Button_Speed.bDown ^ (int)cl_run;
 
-	forward = side = fly = 0;
+	//VIZIA CODE
+	forward = LocalForward;
+	side = LocalSide;
+	fly = LocalFly;
+
+	LocalForward = LocalSide = LocalFly = 0;
 
 	// [RH] only use two stage accelerative turning on the keyboard
 	//		and not the joystick, since we treat the joystick as
@@ -681,23 +694,36 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	fly += joyint(joyaxes[JOYAXIS_Up] * 2048);
 
 	// Handle mice.
-	if (!Button_Mlook.bDown && !freelook)
-	{
-		forward += (int)((float)mousey * m_forward);
+	if (!Button_Mlook.bDown && !freelook) {
+		int value = (int) ((float) mousey * m_forward);
+		if(!*vizia_controlled) forward += value;
+		else{
+			if(*vizia_allow_input){
+				value = Vizia_AxisFilter(VIZIA_BT_FORWARD_BACKWARD, value);
+				forward += value;
+			}
+		}
 	}
+
+	if (strafe || lookstrafe) {
+		int value = (int) ((float) mousex * m_side);
+		if(!*vizia_controlled) side += value;
+		else{
+			if(*vizia_allow_input){
+				value = Vizia_AxisFilter(VIZIA_BT_LEFT_RIGHT, value);
+				side += value;
+			}
+		}
+	}
+
+	mousex = mousey = 0;
 
 	cmd->ucmd.pitch = LocalViewPitch >> 16;
 
-	if (SendLand)
-	{
+	if (SendLand) {
 		SendLand = false;
 		fly = -32768;
 	}
-
-	if (strafe || lookstrafe)
-		side += (int)((float)mousex * m_side);
-
-	mousex = mousey = 0;
 
 	// Build command.
 	if (forward > MAXPLMOVE)
@@ -760,12 +786,14 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 //[Graf Zahl] This really helps if the mouse update rate can't be increased!
 CVAR (Bool,		smooth_mouse,	false,	CVAR_GLOBALCONFIG|CVAR_ARCHIVE)
 
+//VIZIA CODE
 void G_AddViewPitch (int look)
 {
 	if (gamestate == GS_TITLELEVEL)
 	{
 		return;
 	}
+
 	look <<= 16;
 	if (players[consoleplayer].playerstate != PST_DEAD &&		// No adjustment while dead.
 		players[consoleplayer].ReadyWeapon != NULL &&			// No adjustment if no weapon.
@@ -807,20 +835,25 @@ void G_AddViewPitch (int look)
 	}
 }
 
+//VIZIA_CODE
 void G_AddViewAngle (int yaw)
 {
 	if (gamestate == GS_TITLELEVEL)
 	{
 		return;
 	}
+
 	yaw <<= 16;
+
 	if (players[consoleplayer].playerstate != PST_DEAD &&	// No adjustment while dead.
 		players[consoleplayer].ReadyWeapon != NULL &&		// No adjustment if no weapon.
 		players[consoleplayer].ReadyWeapon->FOVScale > 0)	// No adjustment if it is non-positive.
 	{
 		yaw = int(yaw * players[consoleplayer].ReadyWeapon->FOVScale);
 	}
+
 	LocalViewAngle -= yaw;
+
 	if (yaw != 0)
 	{
 		LocalKeyboardTurner = smooth_mouse;

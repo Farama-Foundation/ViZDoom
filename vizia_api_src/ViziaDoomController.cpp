@@ -42,6 +42,7 @@ namespace Vizia {
 
         this->windowHidden = false;
         this->noXServer = false;
+        this->noConsole = true;
 
         this->autoRestart = false;
         this->autoRestartOnTimeout = true;
@@ -76,15 +77,14 @@ namespace Vizia {
 
             try{
                 if (this->instanceId.length() == 0) generateInstanceId();
-
                 this->MQInit();
+
                 doomThread = new b::thread(b::bind(&DoomController::lunchDoom, this));
                 this->waitForDoomStart();
 
                 this->doomRunning = true;
 
                 this->SMInit();
-
                 this->waitForDoomMapStartTime();
 
                 this->MQSend(MSG_CODE_UPDATE);
@@ -130,6 +130,10 @@ namespace Vizia {
         if (this->doomRunning) {
 
             if (!this->mapEnded) {
+
+                //this->lastTicTime = bc::steady_clock::now();
+                this->lastTicTime = std::clock();
+
                 this->mapLastTic = this->GameVars->MAP_TIC;
                 if(update) this->MQSend(MSG_CODE_TIC_N_UPDATE);
                 else this->MQSend(MSG_CODE_TIC);
@@ -151,8 +155,6 @@ namespace Vizia {
         }
         else throw DoomIsNotRunningException();
 
-        this->lastTicTimePoint = bc::steady_clock::now();
-
         return !this->mapEnded;
     }
 
@@ -173,7 +175,7 @@ namespace Vizia {
                 break;
             }
 
-            if(tics > 1 && i == 0) this->resetDescreteButtons();
+            if(i == 0 && !this->allowDoomInput) this->resetDescreteButtons();
         }
 
         return lastTic;
@@ -191,13 +193,45 @@ namespace Vizia {
         this->MQSend(MSG_CODE_COMMAND, command.c_str());
     }
 
+    void DoomController::addCustomArg(std::string arg){
+        this->customArgs.push_back(arg);
+    }
+
+    void DoomController::clearCustomArgs(){
+        this->customArgs.clear();
+    }
+
     bool DoomController::isDoomRunning() { return this->doomRunning; }
 
     void DoomController::waitTicsRealTime(unsigned int tics){
-        unsigned int msToWait = std::floor((float)1000/35 * tics);
+        //unsigned int msToWait = std::floor((float)1000/35 * tics);
+        unsigned long long nsToWait = 1000000000/35 * tics;
+        std::time_t now = std::clock();
         //bc::steady_clock::time_point now = bc::steady_clock::now();
         //bc::milliseconds wait = bc::duration_cast<bc::milliseconds>(bc::milliseconds(msToWait) - (now - this->lastTicTimePoint));
-        b::this_thread::sleep_for( bc::milliseconds(23 * tics) );
+        unsigned long long nsLeft = nsToWait - (now - this->lastTicTime);///(CLOCKS_PER_SEC/1000);
+        bc::nanoseconds wait(nsLeft);
+        b::this_thread::sleep_for( wait );
+    }
+
+    bool DoomController::realTimeTics(unsigned int tics, bool update){
+        bool lastTic = this->mapEnded;
+
+        for(int i = 0; i < tics; ++i){
+            this->waitTicsRealTime(1);
+            if(i == tics - 1) lastTic = this->tic(true);
+            else lastTic = this->tic(false);
+
+            if(!lastTic){
+                this->MQSend(MSG_CODE_UPDATE);
+                this->waitForDoomWork();
+                break;
+            }
+
+            if(i == 0 && !this->allowDoomInput) this->resetDescreteButtons();
+        }
+
+        return lastTic;
     }
 
 //SETTINGS
@@ -229,7 +263,7 @@ namespace Vizia {
 
             this->mapRestarting = true;
 
-            this->resetInput();
+            this->resetButtons();
 
             int restartingTics = 0;
 
@@ -317,15 +351,16 @@ namespace Vizia {
                 case BGR24:
                     this->screenChannels = 3;
                     break;
-                case CRCGCBCA:
+                case CRCGCBZB:
                 case RGBA32:
                 case ARGB32:
-                case CBCGCRCA:
+                case CBCGCRZB:
                 case BGRA32:
                 case ABGR32:
                     this->screenChannels = 4;
                     break;
                 case GRAY8:
+                case ZBUFFER8:
                 case DOOM_256_COLORS:
                     this->screenChannels = 1;
                     break;
@@ -346,9 +381,10 @@ namespace Vizia {
                     break;
                 case CRCGCB:
                 case CBCGCR:
-                case CRCGCBCA:
-                case CBCGCRCA:
+                case CRCGCBZB:
+                case CBCGCRZB:
                 case GRAY8:
+                case ZBUFFER8:
                 case DOOM_256_COLORS:
                     this->screenDepth = 8;
                     break;
@@ -445,27 +481,11 @@ namespace Vizia {
 
     DoomController::InputStruct *const DoomController::getInput() { return this->Input; }
 
-    DoomController::GameVarsStruct *const DoomController::getGameVars() { return this->GameVars; }
+    DoomController::GameVarsStruct *const DoomController::getGameVariables() { return this->GameVars; }
 
-    void DoomController::setMouse(int x, int y) {
-        this->Input->MS_X = x;
-        this->Input->MS_Y = y;
-    }
+    int DoomController::getButtonState(Button button){ return this->Input->BT[button]; }
 
-    int DoomController::getMouseX() { return this->Input->MS_X; }
-    void DoomController::setMouseX(int x) { this->Input->MS_X = x; }
-
-    int DoomController::getMouseY() { return this->Input->MS_Y; }
-    void DoomController::setMouseY(int y) { this->Input->MS_Y = y; }
-
-    void DoomController::resetMouse(){
-        this->Input->MS_X = 0;
-        this->Input->MS_Y = 0;
-    }
-
-    bool DoomController::getButtonState(Button button){ return this->Input->BT[button]; }
-
-    void DoomController::setButtonState(Button button, bool state) {
+    void DoomController::setButtonState(Button button, int state) {
         if (button < ButtonsNumber && button >= 0) this->Input->BT[button] = state;
     }
 
@@ -480,24 +500,29 @@ namespace Vizia {
     }
 
     void DoomController::resetButtons(){
-        for (int i = 0; i < ButtonsNumber; ++i) this->Input->BT[i] = false;
+        for (int i = 0; i < ButtonsNumber; ++i) this->Input->BT[i] = 0;
     }
 
     void DoomController::resetDescreteButtons(){
-        this->Input->BT[ATTACK] = false;
-        this->Input->BT[USE] = false;
+        this->Input->BT[ATTACK] = 0;
+        this->Input->BT[USE] = 0;
 
-        this->Input->BT[JUMP] = false;
-        this->Input->BT[TURN180] = false;
-        this->Input->BT[ALTATTACK] = false;
-        this->Input->BT[RELOAD] = false;
+        this->Input->BT[JUMP] = 0;
+        this->Input->BT[TURN180] = 0;
+        this->Input->BT[ALTATTACK] = 0;
+        this->Input->BT[RELOAD] = 0;
 
-        for(int i = SELECT_WEAPON1; i <= SELECT_WEAPON7; ++i){
-            this->Input->BT[i] = false;
+        for(int i = SELECT_WEAPON1; i <= SELECT_WEAPON0; ++i){
+            this->Input->BT[i] = 0;
         }
 
-        this->Input->BT[SELECT_NEXT_WEAPON] = false;
-        this->Input->BT[SELECT_PREV_WEAPON] = false;
+        this->Input->BT[SELECT_NEXT_WEAPON] = 0;
+        this->Input->BT[SELECT_PREV_WEAPON] = 0;
+        this->Input->BT[DROP_SELECTED_WEAPON] = 0;
+        this->Input->BT[ACTIVATE_SELECTED_ITEM] = 0;
+        this->Input->BT[SELECT_NEXT_ITEM] = 0;
+        this->Input->BT[SELECT_PREV_ITEM] = 0;
+        this->Input->BT[DROP_SELECTED_ITEM] = 0;
     }
 
     void DoomController::disableAllButtons(){
@@ -508,15 +533,22 @@ namespace Vizia {
         for (int i = 0; i < ButtonsNumber; ++i) this->Input->BT_AVAILABLE[i] = true;
     }
 
-    void DoomController::resetInput() {
-        this->resetMouse();
-        this->resetButtons();
+    void DoomController::setButtonMaxValue(Button button, int value){
+        if(button >= DiscreteButtonsNumber) this->Input->BT_MAX_VALUE[button - DiscreteButtonsNumber] = value;
+    }
+
+    bool DoomController::isButtonDiscrete(Button button){
+        return button < DiscreteButtonsNumber;
+    }
+
+    bool DoomController::isButtonAxis(Button button){
+        return button >= DiscreteButtonsNumber;
     }
 
     bool DoomController::isAllowDoomInput(){ return this->allowDoomInput; }
     void DoomController::setAllowDoomInput(bool set){ if(!this->doomRunning) this->allowDoomInput = set; }
 
-    int DoomController::getGameVar(GameVar var) {
+    int DoomController::getGameVariable(GameVariable var) {
         switch (var) {
             case KILLCOUNT :
                 return this->GameVars->MAP_KILLCOUNT;
@@ -528,19 +560,22 @@ namespace Vizia {
                 return this->GameVars->PLAYER_HEALTH;
             case ARMOR :
                 return this->GameVars->PLAYER_ARMOR;
+            case ON_GROUND :
+                return this->GameVars->PLAYER_ON_GROUND;
+            case ATTACK_READY :
+                return this->GameVars->PLAYER_ATTACK_READY;
+            case ALTATTACK_READY :
+                return this->GameVars->PLAYER_ALTATTACK_READY;
             case SELECTED_WEAPON :
                 return this->GameVars->PLAYER_SELECTED_WEAPON;
             case SELECTED_WEAPON_AMMO :
                 return this->GameVars->PLAYER_SELECTED_WEAPON_AMMO;
         }
-        if(var >= AMMO1 && var <= AMMO4){
+        if(var >= AMMO1 && var <= AMMO0){
             return this->GameVars->PLAYER_AMMO[var-AMMO1];
         }
-        else if(var >= WEAPON1 && var <= WEAPON7){
+        else if(var >= WEAPON1 && var <= WEAPON0){
             return this->GameVars->PLAYER_WEAPON[var-WEAPON1];
-        }
-        else if(var >= KEY1 && var <= KEY3){
-            return this->GameVars->PLAYER_WEAPON[var-KEY1];
         }
         else if(var >= USER1 && var <= USER30){
             return this->GameVars->MAP_USER_VARS[var-USER1];
@@ -567,25 +602,20 @@ namespace Vizia {
     int DoomController::getPlayerHealth() { return this->GameVars->PLAYER_HEALTH; }
     int DoomController::getPlayerArmor() { return this->GameVars->PLAYER_ARMOR; }
 
+    bool DoomController::isPlayerOnGround() { return this->GameVars->PLAYER_ON_GROUND; }
+    bool DoomController::isPlayerAttackReady() { return this->GameVars->PLAYER_ATTACK_READY; }
+    bool DoomController::isPlayerAltAttackReady() { return this->GameVars->PLAYER_ALTATTACK_READY; }
+
     int DoomController::getPlayerSelectedWeaponAmmo() { return this->GameVars->PLAYER_SELECTED_WEAPON_AMMO; }
     int DoomController::getPlayerSelectedWeapon() { return this->GameVars->PLAYER_SELECTED_WEAPON; }
 
-    int DoomController::getPlayerAmmo1() { return this->GameVars->PLAYER_AMMO[0]; }
-    int DoomController::getPlayerAmmo2() { return this->GameVars->PLAYER_AMMO[1]; }
-    int DoomController::getPlayerAmmo3() { return this->GameVars->PLAYER_AMMO[2]; }
-    int DoomController::getPlayerAmmo4() { return this->GameVars->PLAYER_AMMO[3]; }
+    int DoomController::getPlayerAmmo(unsigned int slot) {
+        return slot < SlotsNumber ? this->GameVars->PLAYER_AMMO[slot] : 0;
+    }
 
-    bool DoomController::getPlayerWeapon1() { return this->GameVars->PLAYER_WEAPON[0]; }
-    bool DoomController::getPlayerWeapon2() { return this->GameVars->PLAYER_WEAPON[1]; }
-    bool DoomController::getPlayerWeapon3() { return this->GameVars->PLAYER_WEAPON[2]; }
-    bool DoomController::getPlayerWeapon4() { return this->GameVars->PLAYER_WEAPON[3]; }
-    bool DoomController::getPlayerWeapon5() { return this->GameVars->PLAYER_WEAPON[4]; }
-    bool DoomController::getPlayerWeapon6() { return this->GameVars->PLAYER_WEAPON[5]; }
-    bool DoomController::getPlayerWeapon7() { return this->GameVars->PLAYER_WEAPON[6]; }
-
-    bool DoomController::getPlayerKey1() { return this->GameVars->PLAYER_KEY[0]; }
-    bool DoomController::getPlayerKey2() { return this->GameVars->PLAYER_KEY[1]; }
-    bool DoomController::getPlayerKey3() { return this->GameVars->PLAYER_KEY[2]; }
+    int DoomController::getPlayerWeapon(unsigned int slot) {
+        return slot < SlotsNumber ? this->GameVars->PLAYER_WEAPON[slot] : 0;
+    }
 
 //PRIVATE
 
@@ -756,8 +786,7 @@ namespace Vizia {
         args.push_back("+vizia_instance_id");
         args.push_back(this->instanceId);
 
-        if(this->noConsole)
-        {
+        if(this->noConsole){
             args.push_back("+vizia_no_console");
             args.push_back("1");
         }
@@ -765,6 +794,11 @@ namespace Vizia {
         if(this->allowDoomInput){
             args.push_back("+vizia_allow_input");
             args.push_back("1");
+        }
+        else{
+            //disable mouse
+            args.push_back("+use_mouse");
+            args.push_back("0");
         }
 
         args.push_back("+vizia_screen_format");
@@ -778,7 +812,6 @@ namespace Vizia {
         if (this->noXServer) args.push_back("1");
         else args.push_back("0");
 
-
         //no wipe animation
         args.push_back("+wipetype");
         args.push_back("0");
@@ -788,16 +821,17 @@ namespace Vizia {
         args.push_back("-nojoy");
         args.push_back("-nosound");
 
-        //temp disable mouse
-        args.push_back("+use_mouse");
-        args.push_back("0");
-
         //35 fps and no vsync
         args.push_back("+cl_capfps");
         args.push_back("1");
 
         args.push_back("+vid_vsync");
         args.push_back("0");
+
+        //custom args
+        for(int i = 0; i < this->customArgs.size(); ++i){
+            args.push_back(customArgs[i]);
+        }
 
         //bpr::context ctx;
         //ctx.stdout_behavior = bpr::silence_stream();

@@ -1,0 +1,40 @@
+
+WSTĘP
+-----
+
+
+Niniejszy katalog zawiera LaTeX-owy style, który odpowiadają wytycznym
+formatowania prac inżynierskich i magisterskich 
+Wydziału Informatyki i Zarządzania Politechniki Poznańskiej.
+
+Pytania proszę kierować na grupę użytkowników systemu LaTeX
+(po uprzednim zapisaniu się):
+
+put-latex@yahoogroups.com
+
+Zawsze aktualne wersje stylu PPFCM oraz przykłady pełnych prac
+formatowanych w tym stylu są dostępne w repozytorium SVN.
+
+https://github.com/politechnika/put-latex
+
+
+
+KOMPILACJA
+----------
+
+Zaleca się używanie kompilatora pdflatex, choć jest możliwe (i powinno działać)
+kompilowanie również przy pomocy latex (do pliku DVI).
+
+Użyteczne zapewne będą następujące narzędzia:
+
+- TeXlipse (http://texlipse.sourceforge.net/)
+
+- LED (http://www.latexeditor.org/)
+
+- KILE (http://kile.sourceforge.net/)
+
+- JEdit + latexmk (skrypt do kompilacji z linii poleceń)
+
+//VIZAI(IA) UPDATE
+kompilacja:
+    ./render.sh

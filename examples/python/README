@@ -1,0 +1,9 @@
+To run examples in this directory you need to have vizia.so library and viziazdoom present (or symlinked).
+
+ln -s ../../bin/viziazdoom .
+ln -s ../../bin/python/vizia.so .
+
+Examples description:
+#TODO
+
+

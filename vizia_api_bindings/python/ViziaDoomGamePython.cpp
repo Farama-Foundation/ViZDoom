@@ -20,7 +20,6 @@ namespace Vizia {
         bool initSuccess = DoomGame::init();
 
         if (initSuccess) {
-
             int channels = this->getScreenChannels();
             int x = this->getScreenWidth();
             int y = this->getScreenHeight();
@@ -28,9 +27,9 @@ namespace Vizia {
             switch(this->getScreenFormat())
             {
                 case CRCGCB:
-                case CRCGCBCA:
+                case CRCGCBZB:
                 case CBCGCR:
-                case CBCGCRCA:
+                case CBCGCRZB:
                 case GRAY8:
                     this->imageShape[0] = channels;
                     this->imageShape[1] = y;
@@ -41,27 +40,41 @@ namespace Vizia {
                     this->imageShape[1] = x;
                     this->imageShape[2] = channels;
             }
-            
+                
 
         }
         return initSuccess;
     }
 
-    float DoomGamePython::makeAction(boost::python::list actionList) {
+    void DoomGamePython::setAction(boost::python::list &action) {
         // TODO what if isFinished()?
-        int listLength = boost::python::len(actionList);
-        if( listLength != this->getActionFormat())
+        int listLength = boost::python::len(action);
+        if( listLength != this->getAvailableButtonsSize())
         {
-            cerr<<"Incorrect action length: "<<listLength<<" Should be: "<<this->getActionFormat()<<endl;
+            cerr<<"Incorrect action length: "<<listLength<<" Should be: "<<this->getAvailableButtonsSize()<<endl;
             //maybe throw something?
-            return 0;
+            return ;
         }
-        std::vector<bool> action = std::vector<bool>(listLength);
+        std::vector<int> properAction = std::vector<int>(listLength);
         for (int i = 0; i < listLength; i++) {
-            action[i] = boost::python::extract<bool>(actionList[i]);
+            properAction[i] = boost::python::extract<int>(action[i]);
         }
-        return DoomGame::makeAction(action);
+        DoomGame::setAction(properAction);
         
+    }
+
+    float DoomGamePython::makeAction(boost::python::list &action)
+    {
+        this->setAction(action);
+        DoomGame::advanceAction();
+        return DoomGame::getLastReward();
+    }
+
+    float DoomGamePython::makeAction(boost::python::list &action, unsigned int tics)
+    {
+        this->setAction(action);
+        DoomGame::advanceAction(true, true, tics);
+        return DoomGame::getLastReward();
     }
 
     DoomGamePython::PythonState DoomGamePython::getState() {
@@ -74,9 +87,9 @@ namespace Vizia {
         boost::python::handle<> numpyImageHandle = boost::python::handle<>(img);
         boost::python::numeric::array numpyImage = array(numpyImageHandle);
 
-        if (this->state.vars.size() > 0) {
-            npy_intp varLen = this->state.vars.size();
-            PyObject *vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, this->state.vars.data());
+        if (this->state.gameVariables.size() > 0) {
+            npy_intp varLen = this->state.gameVariables.size();
+            PyObject *vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, this->state.gameVariables.data());
             boost::python::handle<> numpyVarsHandle = boost::python::handle<>(vars);
             boost::python::numeric::array numpyVars = array(numpyVarsHandle);
 
@@ -89,11 +102,10 @@ namespace Vizia {
 
     }
 
-/* not sure if we need this */
     boost::python::list DoomGamePython::getLastAction() {
         boost::python::list res;
-        std::vector<bool> lastAction = DoomGame::getLastAction();
-        for (std::vector<bool>::iterator it = lastAction.begin(); it!=lastAction.end();++it)
+        std::vector<int> lastAction = DoomGame::getLastAction();
+        for (std::vector<int>::iterator it = lastAction.begin(); it!=lastAction.end();++it)
         {
             //TODO
             //insert *it somehow
@@ -101,4 +113,13 @@ namespace Vizia {
         }
         return res;
     }
+
+    object DoomGamePython::getGameScreen(){
+        //TODO check if it works
+        PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, this->doomController->getScreen());
+        boost::python::handle<> numpyImageHandle = boost::python::handle<>(img);
+        boost::python::numeric::array numpyImage = array(numpyImageHandle);
+        return numpyImage.copy();
+    }
+
 }

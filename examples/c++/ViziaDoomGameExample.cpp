@@ -7,62 +7,58 @@ using namespace Vizia;
 
 int main(){
 
-    DoomGame* v= new DoomGame();
+    DoomGame* dg= new DoomGame();
 
     std::cout << "\n\nVIZIA MAIN EXAMPLE\n\n";
 
-    v->setDoomGamePath("viziazdoom");
-    v->setDoomIwadPath("../scenarios/doom2.wad");
-    v->setDoomFilePath("../scenarios/s1_b.wad");
-    v->setDoomMap("map01");
-    v->setEpisodeTimeout(200);
+    dg->setDoomGamePath("viziazdoom");
+    dg->setDoomIwadPath("../scenarios/doom2.wad");
+    dg->setDoomFilePath("../scenarios/health_gathering.wad");
+    dg->setDoomMap("map01");
+    dg->setEpisodeTimeout(200);
+    dg->setLivingReward(-1);
 
-    v->setScreenResolution(100, 0);
+    dg->setScreenResolution(RES_640X480);
 
-    v->setRenderHud(false);
-    v->setRenderCrosshair(false);
-    v->setRenderWeapon(true);
-    v->setRenderDecals(false);
-    v->setRenderParticles(false);
+    dg->setRenderHud(false);
+    dg->setRenderCrosshair(false);
+    dg->setRenderWeapon(true);
+    dg->setRenderDecals(false);
+    dg->setRenderParticles(false);
 
-    v->setVisibleWindow(false);
+    dg->setWindowVisible(true);
 
-    v->setDisabledConsole(true);
+    dg->addAvailableButton(MOVE_LEFT);
+    dg->addAvailableButton(MOVE_RIGHT);
+    dg->addAvailableButton(ATTACK);
 
-    v->addAvailableButton(MOVE_LEFT);
-    v->addAvailableButton(MOVE_RIGHT);
-    v->addAvailableButton(ATTACK);
-
-    //v->addStateAvailableVar(HEALTH);
-    v->addStateAvailableVar(AMMO1);
+    dg->addAvailableGameVariable(HEALTH);
+    dg->addAvailableGameVariable(AMMO1);
 
 
-    v->init();
-    //v->newEpisode();
-    std::vector<bool> action(3);
+    dg->init();
+    //dg->newEpisode();
+    std::vector<int> action(3);
 
-    action[0] = false;
-    action[1] = false;
-    action[2] = true;
+    action[0] = 0;
+    action[1] = 0;
+    action[2] = 1;
 
     int iterations = 10000;
     int ep=1;
     for(int i = 0;i<iterations; ++i){
 
-        if( v->isEpisodeFinished() ){
-            //std::cout << ep++ << std::endl;
-            v->newEpisode();
-           // usleep(2000000);
+        if( dg->isEpisodeFinished() ){
+            dg->newEpisode();
         }
-        //ViziaMain::State s = v->getState();
+        DoomGame::State s = dg->getState();
 
-        //std::cout << "STATE NUMBER: " << s.number <<
-        //" HP: " << s.vars[0] << " AMMO: " << s.vars[1] << std::endl;
+        std::cout << "STATE NUMBER: " << s.number << " HP: " << s.gameVariables[0] << " AMMO: " << s.gameVariables[1] << std::endl;
 
-        float r = v->makeAction(action);
-        //std::cout<<"reward: "<<r<<std::endl;
-        //usleep(11000);
+        dg->makeAction(action, 4);
+
+        std::cout<<"reward: "<<dg->getLastReward()<<std::endl;
     }
-    v->close();
-    delete v;
+    dg->close();
+    delete dg;
 }
