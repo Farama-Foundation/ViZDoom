@@ -231,7 +231,7 @@ void R_RenderMaskedSegRange (drawseg_t *ds, int x1, int x2)
 	bool		notrelevant = false;
 
 	const sector_t *sec;
-//FIXME GR barierka z przezroczystoscia
+FIXME GR barierka z przezroczystoscia
 
 	sprflipvert = false;
 
@@ -309,11 +309,11 @@ void R_RenderMaskedSegRange (drawseg_t *ds, int x1, int x2)
 	maskedtexturecol = (fixed_t *)(openings + ds->maskedtexturecol) - ds->x1;
 	spryscale = ds->iscale + ds->iscalestep * (x1 - ds->x1);
 
-	depthMap->setActualDepth((unsigned int)255 - ((ds->iscale/100+4000)*255)/(8000000+4000));
-	if(ds->iscale>800000000)
+	depthMap->setActualDepth((unsigned int)255 - ((ds->iscale/100-180)*255)/(23000-180));
+	if(ds->iscale>2300000)
 		depthMap->setActualDepth(0);
-	if(ds->iscale<-400000)
-		depthMap->setActualDepth(0);
+	if(ds->iscale<18000)
+		depthMap->setActualDepth(255);
 	static long max, min;
 	if(min==0) min=max;
 	if(ds->iscale>max||ds->iscale<min)
