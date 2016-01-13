@@ -36,7 +36,7 @@ namespace Vizia{
         const char* what() const throw(){ return "Controlled ViziaZDoom instance is not running or not ready."; }
     };
 
-    enum GameMode {
+    enum Mode {
         PLAYER,
         SPECTATOR,
     };

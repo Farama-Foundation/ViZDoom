@@ -28,8 +28,8 @@ namespace Vizia {
         DoomGame();
         virtual ~DoomGame();
 
-        bool loadConfig(std::string file);
-        bool saveConfig(std::string file);
+        bool loadConfig(std::string filename);
+        bool saveConfig(std::string filename);
 
         bool init();
         void close();
@@ -68,8 +68,8 @@ namespace Vizia {
 
         uint8_t * const getGameScreen();
 
-        GameMode getGameMode();
-        void setGameMode(GameMode mode);
+        Mode getMode();
+        void setMode(Mode mode);
 
         //OPTIONS
 
@@ -131,8 +131,8 @@ namespace Vizia {
         DoomController *doomController;
         bool running;
 
-        //STATE AND ACTIONS
-        GameMode gameMode;
+        /* STATE AND ACTIONS */
+        Mode mode;
 
         State state;
         void updateState();
