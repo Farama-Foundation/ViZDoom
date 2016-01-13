@@ -107,8 +107,6 @@ namespace Vizia {
         void setEpisodeTimeout(unsigned int tics);
 
         void setScreenResolution(ScreenResolution resolution);
-        void setScreenWidth(unsigned int width);
-        void setScreenHeight(unsigned int height);
         void setScreenFormat(ScreenFormat format);
         void setRenderHud(bool hud);
         void setRenderWeapon(bool weapon);
@@ -142,7 +140,7 @@ namespace Vizia {
 
         std::vector<int> lastAction;
 
-        //REWARD
+        /* Reward */
         unsigned int lastStateNumber;
 
         float lastReward;
@@ -151,7 +149,14 @@ namespace Vizia {
 
         float livingReward;
         float deathPenalty;
-
+    
+    private:
+        static bool ParseBool(std::string boolString);
+        static ScreenResolution StringToResolution(std::string str);
+        static ScreenFormat StringToFormat(std::string str);
+        static Button StringToButton(std::string);
+        static GameVariable StringToGameVariable(std::string);
+    
     };
 }
 
