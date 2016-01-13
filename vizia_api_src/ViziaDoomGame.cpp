@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <fstream>
 
 namespace Vizia {
 
@@ -30,7 +31,7 @@ namespace Vizia {
         this->livingReward = 0;
         this->summaryReward = 0;
         this->lastStateNumber = 0;
-        this->gameMode = PLAYER;
+        this->mode = PLAYER;
 
         this->doomController = new DoomController();
     }
@@ -40,12 +41,12 @@ namespace Vizia {
         delete this->doomController;
     }
 
-    bool DoomGame::loadConfig(std::string file) {
-        //TO DO
+    bool DoomGame::loadConfig(std::string filename) {
+        //std::ifstream 
         return false;
     }
 
-    bool DoomGame::saveConfig(std::string file) {
+    bool DoomGame::saveConfig(std::string filename) {
         //TO DO
         return false;
     }
@@ -71,10 +72,10 @@ namespace Vizia {
 
             this->lastAction.resize(this->availableButtons.size());
 
-            if(this->gameMode == PLAYER){
+            if(this->mode == PLAYER){
                 this->doomController->setAllowDoomInput(false);
             }
-            else if(this->gameMode == SPECTATOR){
+            else if(this->mode == SPECTATOR){
                 this->doomController->setAllowDoomInput(true);
             }
 
@@ -148,8 +149,8 @@ namespace Vizia {
         if (!this->isRunning()) throw DoomIsNotRunningException();
 
         try {
-            if(this->gameMode == PLAYER) this->doomController->tics(tics, updateState || renderOnly);
-            else if(this->gameMode == SPECTATOR) this->doomController->realTimeTics(tics, updateState || renderOnly);
+            if(this->mode == PLAYER) this->doomController->tics(tics, updateState || renderOnly);
+            else if(this->mode == SPECTATOR) this->doomController->realTimeTics(tics, updateState || renderOnly);
         }
         catch(const Exception &e){ throw; }
 
@@ -192,7 +193,7 @@ namespace Vizia {
 
             this->lastStateNumber = this->state.number;
 
-            if (this->gameMode == SPECTATOR) {
+            if (this->mode == SPECTATOR) {
                 //Update last action
                 for (int i = 0; i < this->availableButtons.size(); ++i) {
                     this->lastAction[i] = this->doomController->getButtonState(this->availableButtons[i]);
@@ -278,8 +279,8 @@ namespace Vizia {
         this->doomController->getScreen();
     }
 
-    GameMode DoomGame::getGameMode(){ return this->gameMode; };
-    void DoomGame::setGameMode(GameMode mode){ if (!this->running) this->gameMode = mode; }
+    Mode DoomGame::getMode(){ return this->mode; };
+    void DoomGame::setMode(Mode mode){ if (!this->running) this->mode = mode; }
 
     const DoomController* DoomGame::getController() { return this->doomController; }
 

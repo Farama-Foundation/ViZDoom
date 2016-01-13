@@ -26,7 +26,7 @@ import cv2
 savefile = None
 
 #savefile = "params/basic_120to60"
-savefile = "params/health_guided_120_to60_skip4"
+savefile = "params/health_guided_120_to60_skip8"
 #savefile = "params/center_120_to80_skip4"
 #savefile = "params/s1b_120_to60_skip1"
 loadfile = savefile
@@ -92,7 +92,7 @@ def health_guided(game):
     game.add_available_button(Button.MOVE_FORWARD)
 
     game.set_episode_timeout(2100)
-    game.set_living_reward(0.25)
+    game.set_living_reward(0.125)
     game.set_death_penalty(100)
 
     game.add_available_game_variable(GameVariable.HEALTH)
@@ -169,7 +169,7 @@ def create_engine( game ):
     engine_args['update_frequency'] = (4,4) #every 4 steps, 4 updates each time
     engine_args['batch_size'] = 40
     engine_args['gamma'] = 0.99
-    engine_args['skiprate'] = 4
+    engine_args['skiprate'] = 8
     engine_args['reward_scale'] = 0.01
  
     engine_args['image_converter'] = ChannelScaleConverter

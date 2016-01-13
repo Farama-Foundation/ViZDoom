@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from vizia import DoomGame
 from vizia import Button
-from vizia import GameVar
+from vizia import GameVariable
 from vizia import ScreenFormat
 from vizia import ScreenResolution
 from vizia import doom_fixed_to_float
@@ -38,7 +38,7 @@ def setup_vizia():
 
 
 	game.set_window_visible(True)
-	game.add_state_available_var(GameVar.HEALTH)
+	game.add_available_game_variable(GameVariable.HEALTH)
 
 	game.init()
 	
@@ -54,7 +54,7 @@ forward =[False, False, True]
 actions = [left, right, forward]
 
 iters = 10000
-sleep_time = 0.2
+sleep_time = 0.4
 
 
 for i in range(iters):
@@ -67,11 +67,11 @@ for i in range(iters):
 		game.new_episode()
 
 	s = game.get_state()
-	r = game.make_action(choice(actions))
-	sr = doom_fixed_to_float(game.get_game_var(GameVar.USER1))
+	r = game.make_action(choice(actions),8)
+	sr = doom_fixed_to_float(game.get_game_variable(GameVariable.USER1))
 
 	print "state #" +str(s.number)
-	print "HP:", s.vars[0]
+	print "HP:", s.game_variables[0]
 	print "reward:",r
 	print "summmary shaping reward:", sr
 	print "====================="	
