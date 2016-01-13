@@ -1,0 +1,26 @@
+###################### Sample config file ######################
+
+screen_resolution = RES_320X240
+screen_format = CRCGCB
+game.doom_game_path = ./viziazdoom
+set_doom_iwad_path = ../../scenarios/doom2.wad
+doom_file_path = ../../scenarios/basic.wad
+doom_map = "map01"
+
+episode_timeout = 300
+living_reward = -1.0
+
+render_hud = True
+render_crosshair = false
+render_weapon = true
+render_decals = false
+render_particles = false
+
+available_button = MOVE_LEFT
+available_button = MOVE_RIGHT
+available_button = ATTACK
+
+window_visible = true
+available_game_variable = AMMO1
+
+mode = PLAYER

@@ -1,11 +1,17 @@
 #include "ViziaDoomGame.h"
 
 #include <boost/lexical_cast.hpp>
-#include <cmath>
-#include <iostream>
+#include <cmath> //  floor, ceil
+#include <iostream> // cerr, cout
 #include <vector>
 #include <algorithm>
-#include <fstream>
+#include <fstream> // ifstream
+#include <string> // getline
+#include <cstdlib> // atoi
+#include <stdexcept> // invalid_argument
+#include <boost/algorithm/string.hpp> // to_lower
+#include <boost/algorithm/string/trim_all.hpp> // trim_all
+#include <exception>
 
 namespace Vizia {
 
@@ -41,9 +47,436 @@ namespace Vizia {
         delete this->doomController;
     }
 
+    bool DoomGame::ParseBool(std::string boolString)
+    {
+        if(boolString == "true" or boolString == "1")
+            return true;
+        if(boolString == "false" or boolString == "0")
+            return false;
+        throw std::exception();
+    }
+
+    ScreenResolution DoomGame::StringToResolution(std::string str)
+    {
+        if(str == "res_40x30")
+            return RES_40X30;
+        if(str == "res_60x45")
+            return RES_60X45;
+        if(str == "res_80x50")
+            return RES_80X50;
+        if(str == "res_80x60")
+            return RES_80X60;
+        if(str == "res_100x75")
+            return RES_100X75;
+        if(str == "res_120x75")
+            return RES_120X75;
+        if(str == "res_120x90")
+            return RES_120X90;
+        if(str == "res_160x100")
+            return RES_160X100;
+        if(str == "res_160x120")
+            return RES_160X120;
+        if(str == "res_200x120")
+            return RES_200X120;
+        if(str == "res_200x150")
+            return RES_200X150;
+        if(str == "res_240x135")
+            return RES_240X135;
+        if(str == "res_240x150")
+            return RES_240X150;
+        if(str == "res_240x180")
+            return RES_240X180;
+        if(str == "res_256x144")
+            return RES_256X144;
+        if(str == "res_256x160")
+            return RES_256X160;
+        if(str == "res_256x192")
+            return RES_256X192;
+        if(str == "res_320x200")
+            return RES_320X200;
+        if(str == "res_320x240")
+            return RES_320X240;
+        if(str == "res_400x225")
+            return RES_400X225;
+        if(str == "res_400x300")
+            return RES_400X300;
+        if(str == "res_480x270")
+            return RES_480X270;
+        if(str == "res_480x360")
+            return RES_480X360;
+        if(str == "res_512x288")
+            return RES_512X288;
+        if(str == "res_512x384")
+            return RES_512X384;
+        if(str == "res_640x360")
+            return RES_640X400;
+        if(str == "res_640x400")
+            return RES_640X400;
+        if(str == "res_640x480")
+            return RES_640X480;
+        if(str == "res_720x480")
+            return RES_720X480;
+        if(str == "res_720x540")
+            return RES_720X540;
+        if(str == "res_800x450")
+            return RES_800X450;
+        if(str == "res_800x480")
+            return RES_800X480;
+        if(str == "res_800x500")
+            return RES_800X500;
+        if(str == "res_800x600")
+            return RES_800X600;
+        if(str == "res_848x480")
+            return RES_848X480;
+        if(str == "res_960x600")
+            return RES_960X600;
+        if(str == "res_960x720")
+            return RES_960X720;
+        if(str == "res_1024x576")
+            return RES_1024X576;
+        if(str == "res_1024x600")
+            return RES_1024X600;
+        if(str == "res_1024x640")
+            return RES_1024X640;
+        if(str == "res_1024x768")
+            return RES_1024X768;
+        if(str == "res_1088x612")
+            return RES_1088X612;
+        if(str == "res_1152x648")
+            return RES_1152X648;
+        if(str == "res_1152x720")
+            return RES_1152X720;
+        if(str == "res_1152x864")
+            return RES_1152X864;
+        if(str == "res_1280x720")
+            return RES_1280X720;
+        if(str == "res_1280x854")
+            return RES_1280X854;
+        if(str == "res_1280x800")
+            return RES_1280X800;
+        if(str == "res_1280x960")
+            return RES_1280X960;
+        if(str == "res_1280x1024")
+            return RES_1280X1024;
+        if(str == "res_1360x768")
+            return RES_1360X768;
+        if(str == "res_1366x768")
+            return RES_1366X768;
+        if(str == "res_1400x787")
+            return RES_1400X787;
+        if(str == "res_1400x875")
+            return RES_1400X875;
+        if(str == "res_1400x1050")
+            return RES_1400X1050;
+        if(str == "res_1440x900")
+            return RES_1440X900;
+        if(str == "res_1440x960")
+            return RES_1440X960;
+        if(str == "res_1440x1080")
+            return RES_1440X1080;
+        if(str == "res_1600x900")
+            return RES_1600X900;
+        if(str == "res_1600x1000")
+            return RES_1600X1000;
+        if(str == "res_1600x1200")
+            return RES_1600X1200;
+        if(str == "res_1680x1050")
+            return RES_1680X1050;
+        if(str == "res_1920x1080")
+            return RES_1920X1080;
+        if(str == "res_1920x1200")
+            return RES_1920X1200;
+        if(str == "res_2048x1536")
+            return RES_2048X1536;
+        if(str == "res_2560x1440")
+            return RES_2560X1440;
+        if(str == "res_2560x1600")
+            return RES_2560X1600;
+        if(str == "res_2560x2048")
+            return RES_2560X2048;
+        if(str == "res_2880x1800")
+            return RES_2880X1800;
+        if(str == "res_3200x1800")
+            return RES_3200X1800;
+        if(str == "res_3840x2160")
+            return RES_3840X2160;
+        if(str == "res_3840x2400")
+            return RES_3840X2400;
+        if(str == "res_4096x2160")
+            return RES_4096X2160;
+        if(str == "res_5120x2880")
+            return RES_5120X2880;
+        throw std::exception();
+    }
+        
+    ScreenFormat DoomGame::StringToFormat(std::string str)
+    {
+        if(str == "crcgcb")
+            return CRCGCB;
+        if(str == "crcgcbzb")
+            return CRCGCBZB;
+        if(str == "rgb24")
+            return RGB24;
+        if(str == "rgba32")
+            return RGBA32;
+        if(str == "argb32")
+            return ARGB32;
+        if(str == "cbcgcr")
+            return CBCGCR;
+        if(str == "cbcgcrzb")
+            return CBCGCRZB;
+        if(str == "bgr24")
+            return BGR24;
+        if(str == "bgra32")
+            return BGRA32;
+        if(str == "abgr32")
+            return ABGR32;
+        if(str == "gray8")
+            return GRAY8;
+        if(str == "zbuffer8")
+            return ZBUFFER8;
+        if(str == "doom_256_colors")
+            return DOOM_256_COLORS;
+        throw std::exception();
+    }
+
+    Button DoomGame::StringToButton(std::string)
+    {
+        //TODO
+        throw std::exception();
+    }
+    GameVariable DoomGame::StringToGameVariable(std::string)
+    {
+        //TODO
+        throw std::exception();
+    }
+
     bool DoomGame::loadConfig(std::string filename) {
-        //std::ifstream 
-        return false;
+        bool success = true;
+        std::ifstream file(filename.c_str());
+        
+        if(!file.good() )
+        {
+            std::cerr<<"WARNING! Loading config from: \""<<filename<<"\" failed. Something's wrong with the file. Check your spelling and permissions.\n";
+            return false;
+        }
+        std::string line;
+        int line_number = 0;
+
+        /* Read every line. */
+        while(!file.eof())
+        {
+            ++line_number;
+            using namespace boost::algorithm;
+
+            std::getline(file, line);
+
+            /* Ignore empty and comment lines */
+            trim_all(line);
+
+            if(line.empty() or line[0] == '#'){
+                continue;
+            }
+
+            /* Check if = is there */
+            int equals_sign_pos = line.find_first_of('=');
+            std::string key;
+            std::string val;
+            std::string raw_val;
+            if( equals_sign_pos != std::string::npos )
+            {
+                key = line.substr(0,equals_sign_pos);
+                val = line.substr(equals_sign_pos + 1);
+                raw_val = val;
+                trim_all(key);
+                trim_all(val);
+                to_lower(val);
+                to_lower(key);
+            }
+            else
+            {
+                std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Missing \"=\" in line #"<<line_number<<". Line ignored.\n";
+                success = false;
+                continue;
+            }
+            
+            if(key.empty())
+            {
+                std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Empty key in line #"<<line_number<<". Line ignored.\n";
+                success = false;
+                continue;
+            }
+            if(val.empty())
+            {
+                std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Empty value in line #"<<line_number<<". Line ignored.\n";
+                success = false;
+                continue;
+            }
+            /* Parse int properties */
+            try{
+                if (key =="seed"){
+                    unsigned int value = boost::lexical_cast<unsigned int>(val);
+                    if(val[0] == '-')
+                        throw boost::bad_lexical_cast();
+                    this->setSeed((unsigned int)value);
+                    continue;
+                }
+                if (key == "episodetimeout" or key == "episode_timeout"){
+                    unsigned int value = boost::lexical_cast<unsigned int>(val);
+                    if(val[0] == '-')
+                        throw boost::bad_lexical_cast();
+                    this->setEpisodeTimeout((unsigned int)value);
+                    continue;
+                }
+                if (key == "doom_skill" or key == "doomskill"){
+                    unsigned int value = boost::lexical_cast<unsigned int>(val);
+                    if(val[0] == '-')
+                        throw boost::bad_lexical_cast();
+                    this->setDoomSkill((unsigned int)value);
+                    continue;
+                }
+            }
+            catch(boost::bad_lexical_cast &){
+                std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Unsigned int value expected insted of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
+                success = false;
+                continue;
+            }
+
+            /* Parse float properties */
+            try{
+                if (key =="living_reward" or key =="livingreward"){
+                    float value = boost::lexical_cast<float>(val);
+                    this->setLivingReward((unsigned int)value);
+                    continue;
+                }
+                if (key == "deathpenalty" or key == "death_penalty"){
+                    float value = boost::lexical_cast<float>(val);
+                    this->setDeathPenalty((unsigned int)value);
+                    continue;
+                }
+
+            }
+            catch(boost::bad_lexical_cast &){
+                std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Float value expected insted of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
+                success = false;
+                continue;
+            }
+            
+            /* Parse string properties */
+            if(key == "doom_map" or key == "doommap"){
+                this->setDoomMap(val);
+                continue;
+            }
+            if(key == "doom_game_path" or key == "doomgamepath"){
+                this->setDoomGamePath(val);
+                continue;
+            }
+            if(key == "doom_iwad_path" or key == "doomiwadpath"){
+                this->setDoomIwadPath(val);
+                continue;
+            }
+            if(key == "doom_file_path" or key == "doomfilepath"){
+                this->setDoomFilePath(val);
+                continue;
+            }
+            if(key == "doom_config_path" or key == "doomconfigpath"){
+                this->setDoomConfigPath(val);
+                continue;
+            }
+    
+            /* Parse bool properties */
+            try{
+                if (key =="auto_new_episode" or key =="autonewepisode"){
+                    this->setAutoNewEpisode(ParseBool(val));
+                    continue;
+                }
+                if (key =="new_episode_on_timeout" or key =="newepisodeontimeout"){
+                    this->setNewEpisodeOnTimeout(ParseBool(val));
+                    continue;
+                }
+                if (key =="new_episode_on_player_death" or key =="newepisodeonplayerdeath"){
+                    this->setNewEpisodeOnPlayerDeath(ParseBool(val));
+                    continue;
+                }
+                if (key =="new_episode_on_map_end" or key =="newepisodeonmapend"){
+                    this->setNewEpisodeOnMapEnd(ParseBool(val));
+                    continue;
+                }
+                if (key =="console_enabled" or key =="consoleenabled"){
+                    this->setConsoleEnabled(ParseBool(val));
+                    continue;
+                }
+                if (key =="render_hud" or key =="renderhud"){
+                    this->setRenderHud(ParseBool(val));
+                    continue;
+                }
+                if (key =="render_weapon" or key =="renderweapon"){
+                    this->setRenderWeapon(ParseBool(val));
+                    continue;
+                }
+                if (key =="render_corsshair" or key =="rendercorsshair"){
+                    this->setRenderCrosshair(ParseBool(val));
+                    continue;
+                }
+                if (key =="render_particles" or key =="renderparticles"){
+                    this->setRenderDecals(ParseBool(val));
+                    continue;
+                }
+                if (key =="window_visible" or key =="windowvisible"){
+                    this->setWindowVisible(ParseBool(val));
+                    continue;
+                }
+               
+            }
+            catch( std::exception )
+            {
+                std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Boolean value expected insted of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
+                continue;
+                success = false;            
+            }
+            
+            /* Parse enum properties */
+
+            if(key =="mode")
+            {
+                if(val == "spectator"){
+                    this->setMode(SPECTATOR);
+                    continue;
+                }
+                if(val == "player"){
+                    this->setMode(PLAYER);
+                    continue;
+                }
+                
+                std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". SPECTATOR or PLAYER expected instead of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
+                success = false;
+                continue;
+                
+            }
+
+            try{
+                if(key == "screen_resolution" or key == "screenresolution"){
+                    this->setScreenResolution(StringToResolution(val));
+                    continue;
+                }
+                if(key == "screen_format" or key == "screenformat"){
+                    this->setScreenFormat(StringToFormat(val));
+                    continue;
+                }
+
+            }
+            catch(std::exception)
+            {
+                std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Unsupported value: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
+                success = false;
+                continue;
+            }
+            //std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Unsupported key: "<<key<<" in line #"<<line_number<<". Line ignored.\n";
+            success = false;
+            
+        }
+
+        return success;
     }
 
     bool DoomGame::saveConfig(std::string filename) {
@@ -294,7 +727,10 @@ namespace Vizia {
     void DoomGame::setDoomIwadPath(std::string path) { this->doomController->setIwadPath(path); }
     void DoomGame::setDoomFilePath(std::string path) { this->doomController->setFilePath(path); }
     void DoomGame::setDoomMap(std::string map) { this->doomController->setMap(map); }
-    void DoomGame::setDoomSkill(int skill) { this->doomController->setSkill(skill); }
+    void DoomGame::setDoomSkill(int skill) { 
+        //TODO warning when out of range
+        this->doomController->setSkill(skill); 
+    }
     void DoomGame::setDoomConfigPath(std::string path) { this->doomController->setConfigPath(path); }
 
     unsigned int DoomGame::getSeed(){ return this->doomController->getSeed(); }
@@ -407,8 +843,6 @@ namespace Vizia {
         this->doomController->setScreenResolution(width, height);
     }
 
-    void DoomGame::setScreenWidth(unsigned int width) { this->doomController->setScreenWidth(width); }
-    void DoomGame::setScreenHeight(unsigned int height) { this->doomController->setScreenHeight(height); }
     void DoomGame::setScreenFormat(ScreenFormat format) { this->doomController->setScreenFormat(format); }
     void DoomGame::setRenderHud(bool hud) { this->doomController->setRenderHud(hud); }
     void DoomGame::setRenderWeapon(bool weapon) { this->doomController->setRenderWeapon(weapon); }

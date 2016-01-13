@@ -369,8 +369,6 @@ BOOST_PYTHON_MODULE(vizia)
         .def("set_console_enabled",&DoomGamePython::setConsoleEnabled)
         
 		.def("set_screen_resolution", &DoomGamePython::setScreenResolution)
-		.def("set_screen_width", &DoomGamePython::setScreenWidth)
-		.def("set_screen_height", &DoomGamePython::setScreenHeight)
 		.def("set_screen_format", &DoomGamePython::setScreenFormat)
 		.def("set_render_hud", &DoomGamePython::setRenderHud)
 		.def("set_render_weapon", &DoomGamePython::setRenderWeapon)
