@@ -74,8 +74,6 @@ namespace Vizia {
 
         //OPTIONS
 
-        const DoomController *getController();
-
         int getGameVariable(GameVariable var);
 
         float getLivingReward();

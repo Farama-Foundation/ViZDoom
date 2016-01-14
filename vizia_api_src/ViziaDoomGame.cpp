@@ -287,8 +287,6 @@ namespace Vizia {
     Mode DoomGame::getMode(){ return this->mode; };
     void DoomGame::setMode(Mode mode){ if (!this->running) this->mode = mode; }
 
-    const DoomController* DoomGame::getController() { return this->doomController; }
-
     int DoomGame::getGameVariable(GameVariable var){
         if(!this->isRunning()) throw DoomIsNotRunningException();
 
