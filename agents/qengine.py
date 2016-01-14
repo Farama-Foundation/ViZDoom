@@ -4,7 +4,7 @@ import random
 import cPickle as pickle
 from lasagne.layers import get_all_param_values
 from lasagne.layers import set_all_param_values
-from vizia import  GameVar
+from vizia import  GameVariable
 from vizia import doom_fixed_to_float
 
 class IdentityImageConverter:
@@ -76,13 +76,13 @@ class QEngine:
         if history_length > 1:
             img_shape[0] *= history_length
         
-        state_format = [img_shape, game.get_state_available_vars_size()]
+        state_format = [img_shape, game.get_available_game_variables_size()]
         self._evaluator = evaluator(state_format, len(self._actions), batch_size, self._gamma)
         self._current_image_state = np.zeros(img_shape, dtype=np.float32)
 
-        if game.get_state_available_vars_size() > 0:
+        if game.get_available_game_variables_size() > 0:
             self._misc_state_included = True
-            self._current_misc_state = np.zeros(game.get_state_available_vars_size(), dtype=np.float32)
+            self._current_misc_state = np.zeros(game.get_available_game_variables_size(), dtype=np.float32)
         else:
             self._misc_state_included = False
 
@@ -92,7 +92,7 @@ class QEngine:
     def _update_state(self, raw_state):
         img = self._image_converter.convert(raw_state.image_buffer)
         if self._misc_state_included:
-            misc = np.float32(raw_state.vars)
+            misc = np.float32(raw_state.game_variables)
         if self._history_length > 1:
             self._current_image_state[0:-self._channels] = self._current_image_state[self._channels:]
             self._current_image_state[-self._channels:] = img
@@ -172,7 +172,7 @@ class QEngine:
         r = self._game.make_action(self._actions[a], self._skiprate)
 
         if self._shaping_on:
-            sr = doom_fixed_to_float(self._game.get_game_var(GameVar.USER1))
+            sr = doom_fixed_to_float(self._game.get_game_variable(GameVariable.USER1))
             r += sr - self._last_shaping_reward
             self._last_shaping_reward = sr
 
