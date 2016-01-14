@@ -21,3 +21,276 @@ fi
 
 Change /usr/include/python2.7 to your python include path.
 
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+Sketch of the API description:
+
+//C++ uses camelcase naming convention. Python API implements the same methods but underscore naming convention is used (except for the constructor). Enum types stay the same (capitals with underscore).
+
+	
+DoomGame();
+	//Constructor that creates an instance of the game. Zdoom is not ready for action after the constructor, it needs further initialization.
+virtual ~DoomGame();
+
+#### RUNTIME API ####
+//These are methods which do THE THING. Thou shalt not use them before initialization.
+
+        
+void newEpisode();
+	// Initializes new episode. All rewards, map state etc are restarted.
+
+void setAction(std::vector<int> &actions);
+	// Sets action that will be performed by next advanceAction. Action is a vector of int values (list in Python).
+	// Each vector entry corresponds to buttons specified with addAvailableButton (including order of invokation).
+	// Most buttons use only boolean values but python really doesn't care much: [1, True, 0, False] would be treated the same as
+	// [True, True, False, False] or [1,1,0,0]
+
+void advanceAction();
+	// Doom engine performs a tic using action obtained by setAction. Note that action is not restarted and firther calls to 
+	// advanceAction will perform the same action.
+
+void advanceAction(bool stateUpdate, bool renderOnly, unsigned int tics);
+	// Same as before but (this descriptionwill be more thourough and unambigous in the future):
+	// stateUpdate - if state should be updated or not
+	// renderOnly - if true the buffer won't be updated (zdoom window will update it's contet though anyway)
+	// tics - it will perform not 1 tic but <tics> tics. Analog actions (moving, turning) will be repeated.
+	// Descrete actions (e.g. ATTACK) will be only performed in the first tic.
+
+float getLastReward();
+	// Returns the reward from last advanceAction, if tics>1 it will return cumulative reward from all tics that where part of
+	// this multi-tic advance.
+
+float makeAction(std::vector<int> &actions);
+float makeAction(std::vector<int> &actions, unsigned int tics);
+	// Convinience methods which wrap setAction, advanceAction and getLastReward.
+	// It sets the action ,performs it and returns the reward.
+
+State getState();
+	// Returns struct State with the current state. More detailed description is in the last section of the sketch.
+
+std::vector<int> getLastAction();
+	// Returns a vector (list in python) with the last action performed. Format is the same as for setAction.
+	// Most usefull in SPECTATOR mode
+
+uint8_t * const getGameScreen();
+	// Returns the screen buffer.
+
+int getGameVariable(GameVariable var);
+	// Returns value of the specified game variable (AMMO1, HEALTH etc.). It need not be returned by getState.
+	// It could be used for e.g. shaping 
+
+float getSummaryReward();
+	// Returns all rewards gathered in the current episode.
+
+bool isNewEpisode();
+	//Returns true if the episode is in the initial state (no tic was performed).
+
+bool isEpisodeFinished();
+	// Returns true if the current episode is in the terminal state.
+	// Calling makeAction/advance when episode is finished will fry the motherboard.
+
+void setSeed(unsigned int seed);
+	// Sets the seed of the randomizing engine.
+        
+void close();
+	// Closes zdoom engine and tidies up.
+	// It is invoked by destructor so it's not that useful unless you won't to close doom in the middle of processing.
+
+bool isRunning();
+	// Returns true if zdoom process is up and running (after init) I guess.
+
+void sendGameCommand(std::string cmd);
+	// Sends a command to doom console (cheats, multiplayer? etc.)
+
+#### MISC/UTIL ####
+bool saveConfig(std::string filename);
+	// Saves configuration to a file. Detailed behaviour is yet unknown as the method is not implemented.
+	// Nevertheless file's format will be compliant with loadConfig standard.
+
+#### PREINITIZALIZATION METHODS ####
+//Methods described below should be invoked before the init() method. Any attempt to invoke them after initialization will result in a warning/exception depending on severity of consequences.
+
+bool init();
+	//Initializes doom. Separate process is created for zdoom. Configuration cannot be changed after invokation of init();.
+
+bool loadConfig(std::string filename);
+	//Loads configuration from a configuration file whose format will be described in future. To see a sample config file check ./examples/python/sample_config.dcfg. Config file can achieve everything that is described below. Multiple invokations are allowed and they will overwrite any settings from previous calls. Note that configuration will not be cleared, any buttons, game variables and settings will persist.
+
+void addAvailableButton(Button button);
+	//Adds support for the specified button (e.g. TURN_LEFT, MOVE_FORWARD ). If no buttons are specified (the method is not called) 11 default buttons are added. Their list will be added soon.
+
+void addAvailableButton(Button button, int maxValue);
+	//Adds support for the specified button and sets its max value. It only applies to "buttons" responsible for rotation, it effectively constraints rotation speed.
+
+void setButtonMaxValue(Button button, int maxValue);
+	//Sets the button's max value. It only applies to "buttons" responsible for rotation and moving(with specified speed), it effectively constraints rotation/moving speed.
+	// 0 means no constraint and it's the default behavior
+
+void addAvailableGameVariable(GameVariable var);
+	//var (e.g. AMMO1, HEALTH, ATTACK_READY) will be part of gameVariables field of state returned by getState(). If no gameVariables are specified
+
+void clearAvailableButtons();
+	//Disables support for any specified buttons. Note that it will result in default behaviour (11 buttons that will be specified soon)
+
+void clearAvailableGameVariables();
+	//Clears the list of game variables in state returned by getState.
+
+void addCustomGameArg(std::string arg);
+	//Adds a custom argument for the zdoom process.
+
+void clearCustomGameArgs();;
+	//Clears any arguments specified by addCustomGameArg.
+
+void setMode(Mode mode);
+	//Sets mode to SPECTATOR or PLAYER.
+
+void setDoomGamePath(std::string path);
+	//Sets path to zdoom executable. Default path: "./viziazdoom" (or something else if we decide to change the name).
+
+void setDoomIwadPath(std::string path);
+	//Sets path to the game iwad file. Default path: "./doom2.wad"
+
+void setDoomFilePath(std::string path);
+	//Sets path to additional iwad file (e.g. scenario).
+
+void setDoomMap(std::string map);
+	//Sets map to be used by doom. Default: "map01" which is usually the first map created in the iwad file if it's not changed purposefully.
+        
+void setDoomSkill(int skill);
+	//Sets doom game difficulty level (0-5) which is called skill in doom. Less means easier .
+
+void setDoomConfigPath(std::string path);
+	//Sets path for doom configuration file. Some magic happens there. I honestly don't know what can be achieved there.
+        
+void setEpisodeStartTime(unsigned int tics);
+	//Sets start delay of every episodes to <tics> doom tics. Every episode will effectively start (from the user's perspective) after <tics> tics.
+
+void setEpisodeTimeout(unsigned int tics);
+	Sets quantity of tics after which the episode will be finished. timeout == X tics will allow you to perform advance/makeAction X times.
+
+void setLivingReward(float livingReward);
+	//Sets the reward granted after each tic.
+
+void setDeathPenalty(float deathPenalty);
+	//Sets penalty for dying. Note that it's a penalty so positive value is anticipated (unless you are creating a suicidal agent and reward him for dying).
+
+void setAutoNewEpisode(bool set);
+void setNewEpisodeOnTimeout(bool set);
+void setNewEpisodeOnPlayerDeath(bool set);
+void setNewEpisodeOnMapEnd(bool set);
+	//These methods cause engine to invoke newEpisode() after events that can be inferred from names. Not sure if we need them.
+
+void setScreenResolution(ScreenResolution resolution);
+	//Sets screen resolution. Supported resolutions are part of ScreenResolution Enumeration type and their format is: RES_xXy (e.g. RES_320X240, RES_1920X1080). Buffer as well as content of zdoom's window will be affected.
+
+ void setScreenFormat(ScreenFormat format);
+ 	//Sets format of the screen buffer. Supported formats are defined in ScreenFormat Enumaration (e.g. CRCGCB, RGB24, GRAY8). Note that content displayed in zdoom's window what change no matter which format you choose - it only affects the buffer.
+        
+void setRenderHud(bool hud);
+void setRenderWeapon(bool weapon);
+void setRenderCrosshair(bool crosshair);
+void setRenderDecals(bool decals);
+void setRenderParticles(bool particles);
+	//Methods that determine if some elements (hud, weapon, crosshair, decals, particles) will be displayed. All are displayed by default.
+
+void setWindowVisible(bool visibility);
+	//Determines if zdoom's window will be visible. Default behaviour is true.
+	//visibility = false will result in:
+		//LINUX - total skipping of rendering and any computations connected with the window; it will result in processing acceleration,
+		//WINDOWS - hiding the window,
+		//MAC - ???
+
+void setConsoleEnabled(bool console);
+	//Enables/disables zdoom's and vizia's console output (e.g. "You picked up a medpack", "Player killed himself.", "Vizia_init ....")
+
+#### QUERY INTERFACE ####
+//These are getters which usually are self-explanatory and are tightly bound with settings which are described above.
+        
+int getAvailableButtonsSize();
+int getAvailableGameVariablesSize();
+Mode getMode();
+float getLivingReward();
+float getDeathPenalty();
+unsigned int getEpisodeStartTime();
+unsigned int getEpisodeTimeout();
+int getScreenWidth();
+int getScreenHeight();
+int getScreenChannels();
+size_t getScreenPitch();
+size_t getScreenSize();
+ScreenFormat getScreenFormat();
+
+####### Structures and enumerations: #######
+
+
+struct State {
+	/* Number of the state in the current episode */
+    unsigned int number; 
+    /* Vector of gameVariables, empty if there are none or it's a terminal state */
+    std::vector<int> gameVariables;
+    /* pointer to the screen buffer, null if it's a terminal state */
+    uint8_t * imageBuffer;
+};
+// PYTHON VERION:
+
+struct PythonState{
+    unsigned int number;
+    /* same as above but it's a numpy array, None if a terminal state */
+    object imageBuffer;
+    /* same as above but it's a python list, None if empty or a terminal state */
+    object gameVariables;
+};
+
+//I've pasted only first n values of enums cause there are so many of them. To see them all go to ./vizia_api_src/ViziaDefines.h
+
+	enum Mode {
+	    PLAYER,
+	    SPECTATOR,
+	};
+
+    enum ScreenFormat {
+        CRCGCB = 0,
+        CRCGCBZB = 1,
+        RGB24 = 2,
+        RGBA32 = 3,
+        ARGB32 = 4,
+        CBCGCR = 5,
+        CBCGCRZB = 6,
+        BGR24 = 7,
+        BGRA32 = 8,
+        ABGR32 = 9,
+        GRAY8 = 10,
+        ZBUFFER8 = 11,
+        DOOM_256_COLORS = 12,
+    };
+
+    enum ScreenResolution {
+        RES_40X30,
+        RES_60X45,
+        RES_80X50,
+        RES_80X60,
+        RES_100X75,
+        RES_120X75
+
+    };
+
+    enum GameVariable {
+        KILLCOUNT,
+        ITEMCOUNT,
+        SECRETCOUNT,
+        HEALTH,
+        ARMOR
+   
+    };
+
+    enum Button {
+        ATTACK = 0,
+        USE = 1,
+        JUMP = 2,
+        CROUCH = 3,
+        TURN180 = 4,
+        ALTATTACK = 5,
+        RELOAD = 6,
+        ZOOM = 7
+    };

@@ -23,7 +23,7 @@ namespace Vizia {
     public:
         struct PythonState
         {
-            int number;
+            unsigned int number;
             object imageBuffer;
             object gameVariables;
             PythonState(int n, object buf, object v ):number(n),imageBuffer(buf),gameVariables(v){}
