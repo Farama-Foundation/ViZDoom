@@ -11,6 +11,10 @@ namespace Vizia {
 
 //PUBLIC FUNCTIONS
 
+    void signalHandler(ba::signal_set& signal, DoomController* controller, const bs::error_code& error, int signal_number){
+        controller->intSignal();
+    }
+
     DoomController::DoomController() {
 
         this->MQController = NULL;
@@ -79,16 +83,19 @@ namespace Vizia {
                 if (this->instanceId.length() == 0) generateInstanceId();
                 this->MQInit();
 
-                doomThread = new b::thread(b::bind(&DoomController::lunchDoom, this));
-                this->waitForDoomStart();
-
                 this->doomRunning = true;
+
+                this->signalThread = new b::thread(b::bind(&DoomController::handleSignals, this));
+
+                this->doomThread = new b::thread(b::bind(&DoomController::lunchDoom, this));
+                this->waitForDoomStart();
 
                 this->SMInit();
                 this->waitForDoomMapStartTime();
 
                 this->MQSend(MSG_CODE_UPDATE);
                 this->waitForDoomWork();
+
             }
             catch(const Exception &e){
                 this->close();
@@ -99,26 +106,44 @@ namespace Vizia {
         return this->doomRunning;
     }
 
+    void DoomController::handleSignals(){
+        ba::io_service io;
+        ba::signal_set signals(io, SIGINT, SIGABRT, SIGTERM);
+        signals.async_wait(b::bind(signalHandler, b::ref(signals), this, _1, _2));
+
+        io.run();
+    }
+
     void DoomController::close() {
 
         if (this->doomRunning) {
+
+            this->doomRunning = false;
+
+            if (this->signalThread->joinable()) {
+                this->signalThread->interrupt();
+                this->signalThread->join();
+            }
+
             this->MQSend(MSG_CODE_CLOSE);
 
             if (this->doomThread->joinable()) {
                 this->doomThread->interrupt();
                 this->doomThread->join();
             }
-
-            this->doomRunning = false;
         }
 
         this->SMClose();
         this->MQClose();
     }
 
+    void DoomController::intSignal(){
+        this->MQSelfSend(MSG_CODE_SIGNAL_INT_ABRT_TERM);
+    }
+
     void DoomController::restart() {
-        close();
-        init();
+        this->close();
+        this->init();
     }
 
     bool DoomController::tic() {
@@ -651,10 +676,15 @@ namespace Vizia {
                 break;
 
             case MSG_CODE_DOOM_CLOSE :
+            case MSG_CODE_DOOM_PROCESS_EXIT :
                 throw DoomUnexpectedExitException();
 
             case MSG_CODE_DOOM_ERROR :
                 throw DoomErrorException();
+
+            case MSG_CODE_SIGNAL_INT_ABRT_TERM :
+                this->close();
+                break;
         }
 
         this->doomWorking = false;
@@ -680,14 +710,18 @@ namespace Vizia {
 
                     case MSG_CODE_DOOM_CLOSE :
                         this->close();
-                        throw DoomUnexpectedExitException();
+                        break;
 
                     case MSG_CODE_DOOM_ERROR :
-                        this->close();
                         throw DoomErrorException();
 
-                    default :
+                    case MSG_CODE_DOOM_PROCESS_EXIT :
+                        if(this->doomRunning) throw DoomUnexpectedExitException();
                         break;
+
+                    case MSG_CODE_SIGNAL_INT_ABRT_TERM :
+                        this->close();
+                        exit(0);
                 }
             } while (!done);
 
@@ -837,7 +871,7 @@ namespace Vizia {
         //ctx.stdout_behavior = bpr::silence_stream();
         bpr::child doomProcess = bpr::execute(bpri::set_args(args), bpri::inherit_env());
         bpr::wait_for_exit(doomProcess);
-        this->MQSelfSend(MSG_CODE_DOOM_CLOSE);
+        this->MQSelfSend(MSG_CODE_DOOM_PROCESS_EXIT);
     }
 
 //SM FUNCTIONS 

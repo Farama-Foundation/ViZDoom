@@ -152,6 +152,7 @@ namespace Vizia {
         float deathPenalty;
     
     private:
+        /* Load config helpers */
         static bool ParseBool(std::string boolString);
         static ScreenResolution StringToResolution(std::string str);
         static ScreenFormat StringToFormat(std::string str);
@@ -159,6 +160,15 @@ namespace Vizia {
         static GameVariable StringToGameVariable(std::string str);
         static bool ParseListProperty(int& line_number, std::string& value, std::ifstream& input, std::vector<std::string>& output);
     
+
+        //HELPERS
+        bool checkFilePath(std::string path);
+
+        void logError(std::string error);
+
+        void logWarning(std::string warning);
+
+        void log(std::string log);
     };
 }
 
