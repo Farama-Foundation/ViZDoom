@@ -152,6 +152,14 @@ namespace Vizia {
         float livingReward;
         float deathPenalty;
 
+        //HELPERS
+        bool checkFilePath(std::string path);
+
+        void logError(std::string error);
+
+        void logWarning(std::string warning);
+
+        void log(std::string log);
     };
 }
 

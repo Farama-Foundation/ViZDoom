@@ -13,6 +13,7 @@
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/chrono/chrono.hpp>
+#include <boost/asio.hpp>
 #include "boost/process.hpp"
 
 namespace Vizia{
@@ -22,6 +23,8 @@ namespace Vizia{
     namespace bpr = boost::process;
     namespace bpri = boost::process::initializers;
     namespace bc = boost::chrono;
+    namespace bs = boost::system;
+    namespace ba = boost::asio;
 
 #define SM_NAME_BASE "ViziaSM"
 
@@ -34,6 +37,7 @@ namespace Vizia{
 #define MSG_CODE_DOOM_DONE 11
 #define MSG_CODE_DOOM_CLOSE 12
 #define MSG_CODE_DOOM_ERROR 13
+#define MSG_CODE_DOOM_PROCESS_EXIT 14
 
 #define MSG_CODE_TIC 21
 #define MSG_CODE_UPDATE 22
@@ -41,6 +45,8 @@ namespace Vizia{
 #define MSG_CODE_COMMAND 24
 #define MSG_CODE_CLOSE 25
 #define MSG_CODE_ERROR 26
+
+#define MSG_CODE_SIGNAL_INT_ABRT_TERM 30
 
     class DoomController {
 
@@ -105,6 +111,8 @@ namespace Vizia{
         bool init();
         void close();
         void restart();
+
+        void intSignal();
 
         bool tic();
         bool tic(bool update);
@@ -253,6 +261,7 @@ namespace Vizia{
         std::string instanceId;
 
         b::thread *doomThread;
+        b::thread *signalThread;
         //bpr::child doomProcess;
         bool doomRunning;
         bool doomWorking;
@@ -306,6 +315,7 @@ namespace Vizia{
         void waitForDoomWork();
         void waitForDoomMapStartTime();
         void lunchDoom();
+        void handleSignals();
 
         // OPTIONS
 

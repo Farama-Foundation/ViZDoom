@@ -36,6 +36,26 @@ namespace Vizia{
         const char* what() const throw(){ return "Controlled ViziaZDoom instance is not running or not ready."; }
     };
 
+    class IncorrectDoomGamePathException : public Exception {
+    public:
+        const char* what() const throw(){ return "Doom game executable path is incorrect."; }
+    };
+
+    class IncorrectDoomIwadPathException : public Exception {
+    public:
+        const char* what() const throw(){ return "Doom iwad path is incorrect."; }
+    };
+
+    class IncorrectDoomFilePathException : public Exception {
+    public:
+        const char* what() const throw(){ return "Doom file path is incorrect."; }
+    };
+
+    class IncorrectDoomConfigPathException : public Exception {
+    public:
+        const char* what() const throw(){ return "Doom config path is incorrect."; }
+    };
+
     enum GameMode {
         PLAYER,
         SPECTATOR,
