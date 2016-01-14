@@ -4,7 +4,7 @@ from vizia import Button
 from vizia import GameVariable
 from vizia import ScreenFormat
 from vizia import ScreenResolution
-from vizia import GameMode
+from vizia import Mode
 
 from random import choice
 
@@ -17,7 +17,7 @@ def setup_vizia():
 
 	game = DoomGame()
 
-	game.set_game_mode(GameMode.SPECTATOR)
+	game.set_mode(Mode.SPECTATOR)
 	game.set_screen_resolution(ScreenResolution.RES_960X720)
 	game.set_screen_format(ScreenFormat.CRCGCB)
 

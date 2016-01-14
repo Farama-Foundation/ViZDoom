@@ -72,7 +72,7 @@ BOOST_PYTHON_MODULE(vizia)
     boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
     import_array();
     
-    //exceptions
+    /* exceptions */
     myExceptionTypeObj = createExceptionClass("doom_unexpected_exit_exception");
     boost::python::register_exception_translator<Vizia::DoomUnexpectedExitException>(&translate);
 
@@ -90,7 +90,7 @@ BOOST_PYTHON_MODULE(vizia)
     
 #define ENUM_VAL_2_PYT(v) .value( #v , v )
 
-    enum_<GameMode>("GameMode")
+    enum_<Mode>("Mode")
         ENUM_VAL_2_PYT(PLAYER)
         ENUM_VAL_2_PYT(SPECTATOR);
 
@@ -328,13 +328,13 @@ BOOST_PYTHON_MODULE(vizia)
         .def("get_last_action", &DoomGamePython::getLastAction)
         
 		.def("add_available_game_variable", &DoomGamePython::addAvailableGameVariable)
-		.def("clear_available_game_variable", &DoomGamePython::clearAvailableGameVariables)
+		.def("clear_available_game_variables", &DoomGamePython::clearAvailableGameVariables)
         .def("get_available_game_variables_size", &DoomGamePython::getAvailableGameVariablesSize)
 
 		.def("add_available_button", addAvailableButton1)
         .def("add_available_button", addAvailableButton2)
 
-		.def("clear_available_button", &DoomGamePython::clearAvailableButtons)
+		.def("clear_available_buttons", &DoomGamePython::clearAvailableButtons)
         .def("get_available_buttons_size", &DoomGamePython::getAvailableButtonsSize)
         .def("set_button_max_value", &DoomGamePython::setButtonMaxValue)
 
@@ -343,8 +343,8 @@ BOOST_PYTHON_MODULE(vizia)
 
         .def("send_game_command", &DoomGamePython::sendGameCommand)
 
-        .def("get_game_mode", &DoomGamePython::getGameMode)
-        .def("set_game_mode", &DoomGamePython::setGameMode)
+        .def("get_mode", &DoomGamePython::getMode)
+        .def("set_mode", &DoomGamePython::setMode)
 
 		.def("set_doom_game_path", &DoomGamePython::setDoomGamePath)
 		.def("set_doom_iwad_path", &DoomGamePython::setDoomIwadPath)

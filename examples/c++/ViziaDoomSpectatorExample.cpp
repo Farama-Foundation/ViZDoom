@@ -16,7 +16,7 @@ int main(){
     dg->setDoomMap("map01");
     dg->setEpisodeTimeout(2000);
     dg->setEpisodeStartTime(1);
-    dg->setGameMode(SPECTATOR);
+    dg->setMode(SPECTATOR);
 
     dg->setScreenResolution(RES_640X480);
 

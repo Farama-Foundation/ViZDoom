@@ -56,7 +56,7 @@ namespace Vizia{
         const char* what() const throw(){ return "Doom config path is incorrect."; }
     };
 
-    enum GameMode {
+    enum Mode {
         PLAYER,
         SPECTATOR,
     };
