@@ -6,6 +6,7 @@
 
 #include <string>
 #include <vector>
+#include <list>
 
 namespace Vizia {
 
@@ -154,8 +155,9 @@ namespace Vizia {
         static bool ParseBool(std::string boolString);
         static ScreenResolution StringToResolution(std::string str);
         static ScreenFormat StringToFormat(std::string str);
-        static Button StringToButton(std::string);
-        static GameVariable StringToGameVariable(std::string);
+        static Button StringToButton(std::string str);
+        static GameVariable StringToGameVariable(std::string str);
+        static bool ParseListProperty(int& line_number, std::string& value, std::ifstream& input, std::vector<std::string>& output);
     
     };
 }
