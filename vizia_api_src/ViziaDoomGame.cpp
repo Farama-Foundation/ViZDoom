@@ -3,6 +3,7 @@
 #include <boost/lexical_cast.hpp>
 #include <cmath>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <algorithm>
 
@@ -77,6 +78,13 @@ namespace Vizia {
             else if(this->gameMode == SPECTATOR){
                 this->doomController->setAllowDoomInput(true);
             }
+
+//            if(this->checkFilePath(this->doomController->getGamePath())) throw IncorrectDoomGamePathException();
+//            if(this->checkFilePath(this->doomController->getIwadPath())) throw IncorrectDoomIwadPathException();
+//            if(this->doomController->getFilePath().length() && this->checkFilePath(this->doomController->getFilePath()))
+//                throw IncorrectDoomGamePathException();
+//            if(this->doomController->getConfigPath().length() && this->checkFilePath(this->doomController->getConfigPath()))
+//                throw IncorrectDoomConfigPathException();
 
             try {
                 this->running = this->doomController->init();
@@ -347,49 +355,49 @@ namespace Vizia {
             CASE_RES(256, 192)
             CASE_RES(320, 200)
             CASE_RES(320, 240)
-            CASE_RES(400, 225)	// 16:9
+            CASE_RES(400, 225)	
             CASE_RES(400, 300)
-            CASE_RES(480, 270)	// 16:9
+            CASE_RES(480, 270)	
             CASE_RES(480, 360)
-            CASE_RES(512, 288)	// 16:9
+            CASE_RES(512, 288)	
             CASE_RES(512, 384)
-            CASE_RES(640, 360)	// 16:9
+            CASE_RES(640, 360)	
             CASE_RES(640, 400)
             CASE_RES(640, 480)
-            CASE_RES(720, 480)	// 16:10
+            CASE_RES(720, 480)	
             CASE_RES(720, 540)
-            CASE_RES(800, 450)	// 16:9
+            CASE_RES(800, 450)	
             CASE_RES(800, 480)
-            CASE_RES(800, 500)	// 16:10
+            CASE_RES(800, 500)	
             CASE_RES(800, 600)
-            CASE_RES(848, 480)	// 16:9
-            CASE_RES(960, 600)	// 16:10
+            CASE_RES(848, 480)	
+            CASE_RES(960, 600)	
             CASE_RES(960, 720)
-            CASE_RES(1024, 576)	// 16:9
-            CASE_RES(1024, 600)	// 17:10
-            CASE_RES(1024, 640)	// 16:10
+            CASE_RES(1024, 576)	
+            CASE_RES(1024, 600)
+            CASE_RES(1024, 640)	
             CASE_RES(1024, 768)
-            CASE_RES(1088, 612)	// 16:9
-            CASE_RES(1152, 648)	// 16:9
-            CASE_RES(1152, 720)	// 16:10
+            CASE_RES(1088, 612)	
+            CASE_RES(1152, 648)	
+            CASE_RES(1152, 720)	
             CASE_RES(1152, 864)
-            CASE_RES(1280, 720)	// 16:9
+            CASE_RES(1280, 720)	
             CASE_RES(1280, 854)
-            CASE_RES(1280, 800)	// 16:10
+            CASE_RES(1280, 800)	
             CASE_RES(1280, 960)
-            CASE_RES(1280, 1024)	// 5:4
-            CASE_RES(1360, 768)	// 16:9
+            CASE_RES(1280, 1024)
+            CASE_RES(1360, 768)	
             CASE_RES(1366, 768)
-            CASE_RES(1400, 787)	// 16:9
-            CASE_RES(1400, 875)	// 16:10
+            CASE_RES(1400, 787)	
+            CASE_RES(1400, 875)	
             CASE_RES(1400, 1050)
             CASE_RES(1440, 900)
             CASE_RES(1440, 960)
             CASE_RES(1440, 1080)
-            CASE_RES(1600, 900)	// 16:9
-            CASE_RES(1600, 1000)	// 16:10
+            CASE_RES(1600, 900)	
+            CASE_RES(1600, 1000)	
             CASE_RES(1600, 1200)
-            CASE_RES(1680, 1050)	// 16:10
+            CASE_RES(1680, 1050)	
             CASE_RES(1920, 1080)
             CASE_RES(1920, 1200)
             CASE_RES(2048, 1536)
@@ -427,5 +435,15 @@ namespace Vizia {
     size_t DoomGame::getScreenPitch() { return this->doomController->getScreenPitch(); }
     size_t DoomGame::getScreenSize() { return this->doomController->getScreenSize(); }
     ScreenFormat DoomGame::getScreenFormat() { return this->doomController->getScreenFormat(); }
+
+
+    bool DoomGame::checkFilePath(std::string path){
+        std::ifstream file(path.c_str());
+        return file;
+    }
+
+    void DoomGame::logError(std::string error){ std::cerr << error << std::endl; }
+    void DoomGame::logWarning(std::string warning){ std::cerr << warning << std::endl; }
+    void DoomGame::log(std::string log){ std::clog << log; }
 
 }
