@@ -434,12 +434,20 @@ namespace Vizia {
     /* Code used for parsing the config file. */
 
     //TODO warnings, refactoring, comments
-    bool DoomGame::ParseBool(std::string boolString){
+    bool DoomGame::StringToBool(std::string boolString){
         if(boolString == "true" or boolString == "1")
             return true;
         if(boolString == "false" or boolString == "0")
             return false;
         throw std::exception();
+    }
+
+    unsigned int DoomGame::StringToUint(std::string str)
+    {
+        unsigned int value = boost::lexical_cast<unsigned int>(str);
+        if(str[0] == '-')
+            throw boost::bad_lexical_cast();
+        return value;
     }
 
     ScreenResolution DoomGame::StringToResolution(std::string str){
@@ -849,7 +857,7 @@ namespace Vizia {
     bool DoomGame::ParseListProperty(int& line_number, std::string& value, std::ifstream& input, std::vector<std::string>& output){
         using namespace boost::algorithm;
         int start_line = line_number;
-        /* Find '{' */
+    /* Find '{' */
         while(value.empty()){
             if(!input.eof()){
                 ++line_number;
@@ -866,7 +874,7 @@ namespace Vizia {
         
         value = value.substr(1);
                 
-        /* Find '}' */
+    /* Find '}' */
         while((value.empty() or value[value.size()-1] != '}') and !input.eof()){
             ++line_number;
             std::string newline;
@@ -878,7 +886,7 @@ namespace Vizia {
         if(value.empty() or value[value.size()-1] != '}')
             return false;
         
-        /* Fill the vector */
+    /* Fill the vector */
         value[value.size() -1] = ' ';
         trim_all(value);
         to_lower(value);
@@ -903,7 +911,7 @@ namespace Vizia {
         std::string line;
         int line_number = 0;
 
-    /* Read every line. */
+    /* Process every line. */
         while(!file.eof())
         {
             ++line_number;
@@ -918,7 +926,7 @@ namespace Vizia {
                 continue;
             }
 
-        /* Check if = is there */
+        /* Check if '=' is there */
             int equals_sign_pos = line.find_first_of('=');
             std::string key;
             std::string val;
@@ -1017,31 +1025,19 @@ namespace Vizia {
         /* Parse int properties */
             try{
                 if (key =="seed"){
-                    unsigned int value = boost::lexical_cast<unsigned int>(val);
-                    if(val[0] == '-')
-                        throw boost::bad_lexical_cast();
-                    this->setSeed((unsigned int)value);
+                    this->setSeed(StringToUint(val));
                     continue;
                 }
                 if (key == "episode_timeout" or key == "episodetimeout"){
-                    unsigned int value = boost::lexical_cast<unsigned int>(val);
-                    if(val[0] == '-')
-                        throw boost::bad_lexical_cast();
-                    this->setEpisodeTimeout((unsigned int)value);
+                    this->setEpisodeTimeout(StringToUint(val));
                     continue;
                 }
                 if (key == "episode_start_time" or key == "episodestarttime"){
-                    unsigned int value = boost::lexical_cast<unsigned int>(val);
-                    if(val[0] == '-')
-                        throw boost::bad_lexical_cast();
-                    this->setEpisodeStartTime((unsigned int)value);
+                    this->setEpisodeStartTime(StringToUint(val));
                     continue;
                 }
                 if (key == "doom_skill" or key == "doomskill"){
-                    unsigned int value = boost::lexical_cast<unsigned int>(val);
-                    if(val[0] == '-')
-                        throw boost::bad_lexical_cast();
-                    this->setDoomSkill((unsigned int)value);
+                    this->setDoomSkill(StringToUint(val));
                     continue;
                 }
             }
@@ -1054,16 +1050,13 @@ namespace Vizia {
         /* Parse float properties */
             try{
                 if (key =="living_reward" or key =="livingreward"){
-                    float value = boost::lexical_cast<float>(val);
-                    this->setLivingReward(value);
+                    this->setLivingReward(boost::lexical_cast<float>(val));
                     continue;
                 }
                 if (key == "deathpenalty" or key == "death_penalty"){
-                    float value = boost::lexical_cast<float>(val);
-                    this->setDeathPenalty(value);
+                    this->setDeathPenalty(boost::lexical_cast<float>(val));
                     continue;
                 }
-
             }
             catch(boost::bad_lexical_cast &){
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Float value expected insted of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
@@ -1096,47 +1089,47 @@ namespace Vizia {
         /* Parse bool properties */
             try{
                 if (key =="auto_new_episode" or key =="autonewepisode"){
-                    this->setAutoNewEpisode(ParseBool(val));
+                    this->setAutoNewEpisode(StringToBool(val));
                     continue;
                 }
                 if (key =="new_episode_on_timeout" or key =="newepisodeontimeout"){
-                    this->setNewEpisodeOnTimeout(ParseBool(val));
+                    this->setNewEpisodeOnTimeout(StringToBool(val));
                     continue;
                 }
                 if (key =="new_episode_on_player_death" or key =="newepisodeonplayerdeath"){
-                    this->setNewEpisodeOnPlayerDeath(ParseBool(val));
+                    this->setNewEpisodeOnPlayerDeath(StringToBool(val));
                     continue;
                 }
                 if (key =="new_episode_on_map_end" or key =="newepisodeonmapend"){
-                    this->setNewEpisodeOnMapEnd(ParseBool(val));
+                    this->setNewEpisodeOnMapEnd(StringToBool(val));
                     continue;
                 }
                 if (key =="console_enabled" or key =="consoleenabled"){
-                    this->setConsoleEnabled(ParseBool(val));
+                    this->setConsoleEnabled(StringToBool(val));
                     continue;
                 }
                 if (key =="render_hud" or key =="renderhud"){
-                    this->setRenderHud(ParseBool(val));
+                    this->setRenderHud(StringToBool(val));
                     continue;
                 }
                 if (key =="render_weapon" or key =="renderweapon"){
-                    this->setRenderWeapon(ParseBool(val));
+                    this->setRenderWeapon(StringToBool(val));
                     continue;
                 }
                 if (key =="render_crosshair" or key =="rendercrosshair"){
-                    this->setRenderCrosshair(ParseBool(val));
+                    this->setRenderCrosshair(StringToBool(val));
                     continue;
                 }
                 if (key =="render_particles" or key =="renderparticles"){
-                    this->setRenderParticles(ParseBool(val));
+                    this->setRenderParticles(StringToBool(val));
                     continue;
                 }
                 if (key =="render_decals" or key =="renderdecals"){
-                    this->setRenderDecals(ParseBool(val));
+                    this->setRenderDecals(StringToBool(val));
                     continue;
                 }
                 if (key =="window_visible" or key =="windowvisible"){
-                    this->setWindowVisible(ParseBool(val));
+                    this->setWindowVisible(StringToBool(val));
                     continue;
                 }
                
@@ -1159,11 +1152,9 @@ namespace Vizia {
                     this->setMode(PLAYER);
                     continue;
                 }
-                
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". SPECTATOR or PLAYER expected instead of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
                 success = false;
-                continue;
-                
+                continue;  
             }
 
             try{
@@ -1187,7 +1178,6 @@ namespace Vizia {
                     this->setButtonMaxValue(button,max_value);
                     continue;
                 }
-
             }
             catch(std::exception&)
             {
