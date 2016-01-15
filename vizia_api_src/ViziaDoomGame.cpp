@@ -1023,11 +1023,18 @@ namespace Vizia {
                     this->setSeed((unsigned int)value);
                     continue;
                 }
-                if (key == "episodetimeout" or key == "episode_timeout"){
+                if (key == "episode_timeout" or key == "episodetimeout"){
                     unsigned int value = boost::lexical_cast<unsigned int>(val);
                     if(val[0] == '-')
                         throw boost::bad_lexical_cast();
                     this->setEpisodeTimeout((unsigned int)value);
+                    continue;
+                }
+                if (key == "episode_start_time" or key == "episodestarttime"){
+                    unsigned int value = boost::lexical_cast<unsigned int>(val);
+                    if(val[0] == '-')
+                        throw boost::bad_lexical_cast();
+                    this->setEpisodeStartTime((unsigned int)value);
                     continue;
                 }
                 if (key == "doom_skill" or key == "doomskill"){
