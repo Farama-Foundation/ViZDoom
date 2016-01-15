@@ -32,7 +32,9 @@ public:
     unsigned int getBufferHeight();
     void clearBuffer();
     void clearBuffer(u_int8_t color);
-
+    void lock();
+    void unlock();
+    bool isLocked();
 #ifdef VIZIA_DEPTH_TEST
     void Update();
 #endif
@@ -46,6 +48,7 @@ private:
     int minDepth;
     int convSteps;
     int tX, tY;
+    bool locked;
 #ifdef VIZIA_DEPTH_TEST
     SDL_Window* window;
     SDL_Surface* surface;

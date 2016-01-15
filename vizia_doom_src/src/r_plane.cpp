@@ -968,6 +968,11 @@ static void R_DrawSky (visplane_t *pl)
 	frontyScale = rw_pic->yScale;
 	dc_texturemid = MulScale16 (skymid, frontyScale);
 //FIXME GR sky drawing
+	if(depthMap!=NULL)
+	{
+		depthMap->setActualDepth(0);
+		depthMap->lock();
+	}
 	if (1 << frontskytex->HeightBits == frontskytex->GetHeight())
 	{ // The texture tiles nicely
 		for (x = 0; x < 4; ++x)
@@ -990,6 +995,10 @@ static void R_DrawSky (visplane_t *pl)
 			skymid -= FRACUNIT;
 		}
 		R_DrawSkyStriped (pl);
+	}
+	if(depthMap!=NULL)
+	{
+		depthMap->unlock();
 	}
 }
 

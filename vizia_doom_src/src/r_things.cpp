@@ -1412,7 +1412,16 @@ void R_DrawPSprite (pspdef_t* psp, int pspnum, AActor *owner, fixed_t sx, fixed_
 			return;
 		}
 	}
+	if(depthMap!=NULL)
+	{
+		depthMap->setActualDepth(255);
+		depthMap->lock();
+	}
 	R_DrawVisSprite (vis);
+	if(depthMap!=NULL)
+	{
+		depthMap->unlock();
+	}
 }
 
 
