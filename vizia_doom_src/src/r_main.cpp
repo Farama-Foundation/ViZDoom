@@ -809,7 +809,7 @@ void R_RenderActorView (AActor *actor, bool dontmaplines)
 	if (viewactive)
 	{
 		PlaneCycles.Clock();
-		R_DrawPlanes ();
+		R_DrawPlanes ();//also skajboks
 		R_DrawSkyBoxes ();
 		PlaneCycles.Unclock();
 
@@ -823,7 +823,7 @@ void R_RenderActorView (AActor *actor, bool dontmaplines)
 		NetUpdate ();
 		
 		MaskedCycles.Clock();
-		R_DrawMasked ();
+		R_DrawMasked ();//every sprite
 		MaskedCycles.Unclock();
 
 		NetUpdate ();

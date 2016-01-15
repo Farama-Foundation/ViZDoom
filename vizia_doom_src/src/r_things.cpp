@@ -2305,7 +2305,7 @@ void R_DrawMasked (void)
 		R_3D_DeleteHeights();
 		fake3D = 0;
 	}
-	R_DrawPlayerSprites ();
+	R_DrawPlayerSprites ();//FIXME GR weapon draving
 }
 
 
