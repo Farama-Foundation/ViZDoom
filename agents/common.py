@@ -67,7 +67,7 @@ def agenerator_left_right_move(the_game):
     right = [0,1,0]
     move = [0,0,1]
     move_left = [1,0,1]
-    move_right = [0,0,1]
+    move_right = [0,1,1]
     return [left, right, move, move_left, move_right]
 
 def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
@@ -134,7 +134,7 @@ def create_engine( game ):
     #engine_args["bank"] = TransitionBank( capacity=10000, rejection_range = [-0.02,0.5], rejection_probability=0.95)
     engine_args["evaluator"] = create_cnn_evaluator
     engine_args["game"] = game
-    engine_args['start_epsilon'] = 0.95
+    engine_args['start_epsilon'] = 1.0
     engine_args['end_epsilon'] = 0.0
     engine_args['epsilon_decay_start_step'] = 500000
     engine_args['epsilon_decay_steps'] = 5000000
@@ -144,7 +144,7 @@ def create_engine( game ):
     engine_args['skiprate'] = 8
     engine_args['reward_scale'] = 0.01
  
-    #engine_args['actions_generator'] = agenerator_left_right_move
+    engine_args['actions_generator'] = agenerator_left_right_move
     engine_args['image_converter'] = ChannelScaleConverter
     engine_args["shaping_on"] = True
 

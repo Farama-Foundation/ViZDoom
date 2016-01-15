@@ -4,10 +4,10 @@ from common import *
 savefile = None
 
 #savefile = "params/basic_120to60"
-savefile = "params/health_guided_120_to60_skip8_3l_f48"
+savefile = "params/health_guided_160_to60_skip8_3l_f48"
 #savefile = "params/center_120_to80_skip4"
 #savefile = "params/s1b_120_to60_skip1"
-loadfile = None
+loadfile = savefile
 
 
 game = setup_vizia(scenario=health_guided, init=True)
