@@ -1048,12 +1048,12 @@ namespace Vizia {
             try{
                 if (key =="living_reward" or key =="livingreward"){
                     float value = boost::lexical_cast<float>(val);
-                    this->setLivingReward((unsigned int)value);
+                    this->setLivingReward(value);
                     continue;
                 }
                 if (key == "deathpenalty" or key == "death_penalty"){
                     float value = boost::lexical_cast<float>(val);
-                    this->setDeathPenalty((unsigned int)value);
+                    this->setDeathPenalty(value);
                     continue;
                 }
 
