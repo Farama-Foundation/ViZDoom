@@ -23,8 +23,7 @@ namespace Vizia {
         return (unsigned int) std::ceil((float) 35 / 1000 * ms);
     }
 
-    float DoomFixedToFloat(int doomFixed)
-    {
+    float DoomFixedToFloat(int doomFixed){
         float res = float(doomFixed)/65536.0;
         return res;
     }
@@ -46,8 +45,6 @@ namespace Vizia {
         this->close();
         delete this->doomController;
     }
-
-    
 
     bool DoomGame::init() {
         if (!this->running) {
@@ -81,7 +78,7 @@ namespace Vizia {
 //            if(this->checkFilePath(this->doomController->getIwadPath())) throw IncorrectDoomIwadPathException();
 //            if(this->doomController->getFilePath().length() && this->checkFilePath(this->doomController->getFilePath()))
 //                throw IncorrectDoomGamePathException();
-//            if(this->doomController->getConfigPath().length() && this->checkFilePath(this->doomController->getConfigPath()))
+//            if(this->doomControlle
 //                throw IncorrectDoomConfigPathException();
 
             try {
@@ -333,7 +330,7 @@ namespace Vizia {
     void DoomGame::setScreenResolution(ScreenResolution resolution) {
         unsigned int width = 0, height = 0;
 
-#define CASE_RES(w, h) case RES_##w##X##h : width = w; height = h; break;
+        #define CASE_RES(w, h) case RES_##w##X##h : width = w; height = h; break;
         switch(resolution){
             CASE_RES(40, 30)
             CASE_RES(60, 45)
@@ -434,9 +431,9 @@ namespace Vizia {
     ScreenFormat DoomGame::getScreenFormat() { return this->doomController->getScreenFormat(); }
 
 
-/* Code used for parsing the config file. */
+    /* Code used for parsing the config file. */
 
-//TODO warnings, refactoring, comments
+    //TODO warnings, refactoring, comments
     bool DoomGame::ParseBool(std::string boolString){
         if(boolString == "true" or boolString == "1")
             return true;
@@ -847,6 +844,7 @@ namespace Vizia {
             return USER30;
         throw std::exception();
     }
+
     typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
     bool DoomGame::ParseListProperty(int& line_number, std::string& value, std::ifstream& input, std::vector<std::string>& output){
         using namespace boost::algorithm;
@@ -905,7 +903,7 @@ namespace Vizia {
         std::string line;
         int line_number = 0;
 
-        /* Read every line. */
+    /* Read every line. */
         while(!file.eof())
         {
             ++line_number;
@@ -913,14 +911,14 @@ namespace Vizia {
 
             std::getline(file, line);
 
-            /* Ignore empty and comment lines */
+        /* Ignore empty and comment lines */
             trim_all(line);
 
             if(line.empty() or line[0] == '#'){
                 continue;
             }
 
-            /* Check if = is there */
+        /* Check if = is there */
             int equals_sign_pos = line.find_first_of('=');
             std::string key;
             std::string val;
@@ -948,7 +946,7 @@ namespace Vizia {
                 continue;
             }
 
-            /* Parse enum list properties */
+        /* Parse enum list properties */
 
             if(key == "available_buttons" or key == "availablebuttons"){
                 std::vector<std::string> str_buttons;
@@ -1008,14 +1006,15 @@ namespace Vizia {
                 continue;
             }           
 
-
+        /* Check if value is not empty */
             if(val.empty())
             {
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Empty value in line #"<<line_number<<". Line ignored.\n";
                 success = false;
                 continue;
             }
-            /* Parse int properties */
+        
+        /* Parse int properties */
             try{
                 if (key =="seed"){
                     unsigned int value = boost::lexical_cast<unsigned int>(val);
@@ -1045,7 +1044,7 @@ namespace Vizia {
                 continue;
             }
 
-            /* Parse float properties */
+        /* Parse float properties */
             try{
                 if (key =="living_reward" or key =="livingreward"){
                     float value = boost::lexical_cast<float>(val);
@@ -1065,7 +1064,7 @@ namespace Vizia {
                 continue;
             }
             
-            /* Parse string properties */
+        /* Parse string properties */
             if(key == "doom_map" or key == "doommap"){
                 this->setDoomMap(val);
                 continue;
@@ -1087,7 +1086,7 @@ namespace Vizia {
                 continue;
             }
     
-            /* Parse bool properties */
+        /* Parse bool properties */
             try{
                 if (key =="auto_new_episode" or key =="autonewepisode"){
                     this->setAutoNewEpisode(ParseBool(val));
@@ -1141,7 +1140,7 @@ namespace Vizia {
                 success = false;            
             }
 
-            /* Parse enum properties */
+        /* Parse enum properties */
 
             if(key =="mode")
             {
@@ -1169,9 +1168,21 @@ namespace Vizia {
                     this->setScreenFormat(StringToFormat(val));
                     continue;
                 }
+                if(key == "button_max_value" or key == "buttonmaxvalue"){
+                    size_t space = val.find_first_of(" ");
+                    if(space == std::string::npos)
+                        throw std::exception();
+                    Button button = DoomGame::StringToButton(val.substr(0,space));
+                    val = val.substr(space+1);
+                    unsigned int max_value = boost::lexical_cast<unsigned int>(val);
+                    if(val[0] == '-')
+                        throw boost::bad_lexical_cast();
+                    this->setButtonMaxValue(button,max_value);
+                    continue;
+                }
 
             }
-            catch(std::exception)
+            catch(std::exception&)
             {
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Unsupported value: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
                 success = false;

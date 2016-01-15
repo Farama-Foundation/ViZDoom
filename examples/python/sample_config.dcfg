@@ -1,5 +1,9 @@
 ###################### Sample config file ######################
 
+# Lines starting with # are treated as comments (or with whitespaces+#).
+# It doesn't matter if you use capital letters or not.
+# It doesn't matter if you use underscore or camel notation for keys. episode_timeout is the same as episodeTimeout.
+
 screen_resolution = RES_320X240
 screen_format = CRCGCB
 doom_game_path = ./viziazdoom
@@ -16,6 +20,7 @@ render_weapon = true
 render_decals = false
 render_particles = false
 
+# List properties can be placed in multiple lines for convinience
 available_buttons = 
 	{ 
 		MOVE_LEFT 

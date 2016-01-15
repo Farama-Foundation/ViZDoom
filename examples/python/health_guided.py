@@ -23,7 +23,7 @@ def setup_vizia():
 	game.set_doom_file_path("../../scenarios/health_guided.wad")
 	game.set_episode_timeout(2100)
 
-	game.set_living_reward(1)
+	game.set_living_reward(0.125)
 	game.set_death_penalty(100)
 
 	game.set_render_hud(False)	
@@ -54,7 +54,7 @@ forward =[False, False, True]
 actions = [left, right, forward]
 
 iters = 10000
-sleep_time = 0.4
+sleep_time = 0.1
 
 
 for i in range(iters):
@@ -63,7 +63,7 @@ for i in range(iters):
 		print "episode finished!"
 		print "summary reward:", game.get_summary_reward()
 		print "************************"
-		sleep(1)
+		sleep(5)
 		game.new_episode()
 
 	s = game.get_state()
