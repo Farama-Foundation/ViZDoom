@@ -3,7 +3,7 @@ from common import *
 from vizia import ScreenResolution
 load_file = "params/basic_120to60"
 
-game = setup_vizia(basic)
+game = setup_vizia(scenario=basic,init=False)
 print "Initializing DOOM ..."
 game.set_window_visible(True)
 game.set_screen_resolution(ScreenResolution.RES_320X240)
@@ -21,13 +21,14 @@ engine.load_params(load_file)
 
 episodes = 20
 
+sleep_time = 0.03
 for i in range(episodes):
 
     game.new_episode()
     while not game.is_episode_finished():
         engine.make_step()
         img = game.get_state().image_buffer
-        sleep(0.03)
+        sleep(sleep_time)
     print i+1,"Reward:", game.get_summary_reward()
 print "Finished"
 print "Doom hangs during close :(."

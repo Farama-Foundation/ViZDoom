@@ -60,7 +60,7 @@ class QEngine:
         self._end_epsilon = min(max(end_epsilon, 0.0), self._epsilon)
         self._epsilon_decay_stride = (self._epsilon - end_epsilon) / epsilon_decay_steps
         self._epsilon_decay_start = epsilon_decay_start_step
-        self._skiprate = skiprate
+        self._skiprate = max(skiprate, 1)
         self._shaping_on = shaping_on
 
         if self._shaping_on:

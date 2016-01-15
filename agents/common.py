@@ -141,9 +141,9 @@ def create_engine( game ):
     engine_args['update_frequency'] = (4,4) #every 4 steps, 4 updates each time
     engine_args['batch_size'] = 40
     engine_args['gamma'] = 0.99
-    engine_args['skiprate'] = 8
     engine_args['reward_scale'] = 0.01
  
+    engine_args['skiprate'] = 8
     engine_args['actions_generator'] = agenerator_left_right_move
     engine_args['image_converter'] = ChannelScaleConverter
     engine_args["shaping_on"] = True
