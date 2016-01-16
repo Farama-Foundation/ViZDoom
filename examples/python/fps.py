@@ -8,7 +8,7 @@ from time import time
 
 game = DoomGame()
 game.load_config("config_basic.properties")
-game.set_screen_resolution(res.RES_640X480)
+game.set_screen_resolution(res.RES_320X240)
 game.set_window_visible(False)
 game.init()
 

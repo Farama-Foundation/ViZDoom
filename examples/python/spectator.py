@@ -2,6 +2,8 @@
 from vizia import DoomGame
 from vizia import ScreenResolution
 from vizia import Mode
+from vizia import Button
+
 from random import choice
 
 from time import sleep
