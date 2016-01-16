@@ -106,7 +106,8 @@ BOOST_PYTHON_MODULE(vizia)
         ENUM_VAL_2_PYT(BGRA32)
         ENUM_VAL_2_PYT(ABGR32)
         ENUM_VAL_2_PYT(GRAY8)
-        ENUM_VAL_2_PYT(ZBUFFER8);
+        ENUM_VAL_2_PYT(ZBUFFER8)
+        ENUM_VAL_2_PYT(DOOM_256_COLORS);
     
     enum_<ScreenResolution>("ScreenResolution")
         ENUM_VAL_2_PYT(RES_40X30)
