@@ -153,7 +153,7 @@ void rt_map1col_c (int hx, int sx, int yl, int yh)
 	BYTE *dest;
 	int count;
 	int pitch;
-	//FIXME GR NOT IMPORTANT przezroczystosc
+	//FIXME GR przezroczystosc barierka
 	count = yh-yl;
 	if (count < 0)
 		return;
@@ -178,6 +178,13 @@ void rt_map1col_c (int hx, int sx, int yl, int yh)
 		source += 8;
 		dest += pitch*2;
 	} while (--count);
+
+	if(depthMap!=NULL)
+	{
+		depthMap->setActualDepth(5);
+		for(int y=yl;y<=yh;y++)
+			depthMap->setPoint(sx, y);
+	}
 }
 
 // Maps all four spans to the screen starting at sx.
@@ -1020,7 +1027,7 @@ void rt_initcols (BYTE *buff)
 // Stretches a column into a temporary buffer which is later
 // drawn to the screen along with up to three other columns.
 void R_DrawColumnHorizP_C (void)
-{	//FIXME GR przezroczyste jakby NOT IMPORTANT
+{
 	int count = dc_count;
 	BYTE *dest;
 	fixed_t fracstep;
@@ -1040,7 +1047,6 @@ void R_DrawColumnHorizP_C (void)
 		dest = &dc_temp[x + 4*dc_yl];
 	}
 	fracstep = dc_iscale;
-	//if(depthMap!=NULL) depthMap->setActualDepth((unsigned int)255 - (fracstep*255)/50000);
 	frac = dc_texturefrac;
 
 	{
@@ -1049,11 +1055,13 @@ void R_DrawColumnHorizP_C (void)
 		if (count & 1) {
 			*dest = source[frac>>FRACBITS]; dest += 4; frac += fracstep;
 		}
+
 		if (count & 2) {
 			dest[0] = source[frac>>FRACBITS]; frac += fracstep;
 			dest[4] = source[frac>>FRACBITS]; frac += fracstep;
 			dest += 8;
 		}
+
 		if (count & 4) {
 			dest[0] = source[frac>>FRACBITS]; frac += fracstep;
 			dest[4] = source[frac>>FRACBITS]; frac += fracstep;
@@ -1061,10 +1069,8 @@ void R_DrawColumnHorizP_C (void)
 			dest[12]= source[frac>>FRACBITS]; frac += fracstep;
 			dest += 16;
 		}
+
 		count >>= 3;
-		//for(int dy=0;dy<4;dy++)
-		//	for(int d=0;d<dc_count-count;d++)
-		//	depthMap->setPoint(dc_x+d, dc_yl+dy);
 		if (!count) return;
 
 		do
@@ -1079,8 +1085,6 @@ void R_DrawColumnHorizP_C (void)
 			dest[28]= source[frac>>FRACBITS]; frac += fracstep;
 			dest += 32;
 
-			//for(int dy=0;dy<4;dy++)
-			//	depthMap->setPoint((unsigned int)dc_x+dc_count-count, (unsigned int)dc_yl+dy);
 		} while (--count);
 	}
 }
