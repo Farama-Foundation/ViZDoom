@@ -1,55 +1,15 @@
 #!/usr/bin/python
 from vizia import DoomGame
-from vizia import Button
-from vizia import GameVariable
-from vizia import ScreenFormat
-from vizia import ScreenResolution
-
 from random import choice
 
 
 from time import sleep
 from time import time
 
-import cv2
-
-def setup_vizia():
-
-	game = DoomGame()
-
-	game.set_screen_resolution(ScreenResolution.RES_640X480)
-
-	game.set_doom_iwad_path("../../scenarios/doom2.wad")
-	game.set_doom_file_path("../../scenarios/defend_the_center.wad")
-	game.set_doom_skill(0)
-	game.set_episode_timeout(2100)
-
-	game.set_living_reward(0)
-	game.set_death_penalty(5)
-
-	game.set_render_hud(False)	
-	game.set_render_crosshair(False)
-	game.set_render_weapon(True)
-	game.set_render_decals(False)
-	game.set_render_particles(False);
-
-	game.add_available_button(Button.TURN_LEFT)
-	game.add_available_button(Button.TURN_RIGHT)
-	game.add_available_button(Button.ATTACK)
-
-
-	game.set_window_visible(True)
-	game.add_available_game_variable(GameVariable.HEALTH)
-	game.add_available_game_variable(GameVariable.AMMO1)
-
-	game.init()
+game = DoomGame()
+game.load_config("config_defend_the_center.properties")
+game.init()
 	
-	return game
-
-	
-
-game = setup_vizia()
-
 left = [True,False,False]
 leftnshoot =[True, False, True]
 actions = [left, leftnshoot]

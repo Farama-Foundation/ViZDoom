@@ -79,7 +79,7 @@ namespace Vizia {
 //            if(this->checkFilePath(this->doomController->getIwadPath())) throw IncorrectDoomIwadPathException();
 //            if(this->doomController->getFilePath().length() && this->checkFilePath(this->doomController->getFilePath()))
 //                throw IncorrectDoomGamePathException();
-//            if(this->doomController->getConfigPath().length() && this->checkFilePath(this->doomController->getConfigPath()))
+//            if(this->doomControlle
 //                throw IncorrectDoomConfigPathException();
 
             try {
@@ -347,7 +347,7 @@ namespace Vizia {
     void DoomGame::setScreenResolution(ScreenResolution resolution) {
         unsigned int width = 0, height = 0;
 
-#define CASE_RES(w, h) case RES_##w##X##h : width = w; height = h; break;
+        #define CASE_RES(w, h) case RES_##w##X##h : width = w; height = h; break;
         switch(resolution){
             CASE_RES(40, 30)
             CASE_RES(60, 45)
@@ -448,15 +448,22 @@ namespace Vizia {
     ScreenFormat DoomGame::getScreenFormat() { return this->doomController->getScreenFormat(); }
 
 
-/* Code used for parsing the config file. */
-
-//TODO warnings, refactoring, comments
-    bool DoomGame::ParseBool(std::string boolString){
+    /* Code used for parsing the config file. */
+    //TODO warnings, refactoring, comments
+    bool DoomGame::StringToBool(std::string boolString){
         if(boolString == "true" || boolString == "1")
             return true;
         if(boolString == "false" || boolString == "0")
             return false;
         throw std::exception();
+    }
+
+    unsigned int DoomGame::StringToUint(std::string str)
+    {
+        unsigned int value = boost::lexical_cast<unsigned int>(str);
+        if(str[0] == '-')
+            throw boost::bad_lexical_cast();
+        return value;
     }
 
     ScreenResolution DoomGame::StringToResolution(std::string str){
@@ -861,11 +868,12 @@ namespace Vizia {
             return USER30;
         throw std::exception();
     }
+
     typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
     bool DoomGame::ParseListProperty(int& line_number, std::string& value, std::ifstream& input, std::vector<std::string>& output){
         using namespace boost::algorithm;
         int start_line = line_number;
-        /* Find '{' */
+    /* Find '{' */
         while(value.empty()){
             if(!input.eof()){
                 ++line_number;
@@ -881,7 +889,7 @@ namespace Vizia {
             return false;
         
         value = value.substr(1);
-                
+
         /* Find '}' */
         while((value.empty() || value[value.size()-1] != '}') and !input.eof()){
             ++line_number;
@@ -894,7 +902,7 @@ namespace Vizia {
         if(value.empty() || value[value.size()-1] != '}')
             return false;
         
-        /* Fill the vector */
+    /* Fill the vector */
         value[value.size() -1] = ' ';
         trim_all(value);
         to_lower(value);
@@ -919,7 +927,7 @@ namespace Vizia {
         std::string line;
         int line_number = 0;
 
-        /* Read every line. */
+    /* Process every line. */
         while(!file.eof())
         {
             ++line_number;
@@ -927,14 +935,14 @@ namespace Vizia {
 
             std::getline(file, line);
 
-            /* Ignore empty and comment lines */
+        /* Ignore empty and comment lines */
             trim_all(line);
 
             if(line.empty() || line[0] == '#'){
                 continue;
             }
 
-            /* Check if = is there */
+        /* Check if '=' is there */
             int equals_sign_pos = line.find_first_of('=');
             std::string key;
             std::string val;
@@ -962,7 +970,7 @@ namespace Vizia {
                 continue;
             }
 
-            /* Parse enum list properties */
+        /* Parse enum list properties */
 
             if(key == "available_buttons" || key == "availablebuttons"){
                 std::vector<std::string> str_buttons;
@@ -1022,34 +1030,30 @@ namespace Vizia {
                 continue;
             }           
 
-
+        /* Check if value is not empty */
             if(val.empty())
             {
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Empty value in line #"<<line_number<<". Line ignored.\n";
                 success = false;
                 continue;
             }
-            /* Parse int properties */
+        
+        /* Parse int properties */
             try{
                 if (key =="episodeseed" || key == "episode_seed"){
-                    unsigned int value = boost::lexical_cast<unsigned int>(val);
-                    if(val[0] == '-')
-                        throw boost::bad_lexical_cast();
-                    this->setEpisodeSeed((unsigned int)value);
+                    this->setEpisodeSeed(StringToUint(val));
                     continue;
                 }
-                if (key == "episodetimeout" || key == "episode_timeout"){
-                    unsigned int value = boost::lexical_cast<unsigned int>(val);
-                    if(val[0] == '-')
-                        throw boost::bad_lexical_cast();
-                    this->setEpisodeTimeout((unsigned int)value);
+                if (key == "episode_timeout" || key == "episodetimeout"){
+                    this->setEpisodeTimeout(StringToUint(val));
+                    continue;
+                }
+                if (key == "episode_start_time" || key == "episodestarttime"){
+                    this->setEpisodeStartTime(StringToUint(val));
                     continue;
                 }
                 if (key == "doom_skill" || key == "doomskill"){
-                    unsigned int value = boost::lexical_cast<unsigned int>(val);
-                    if(val[0] == '-')
-                        throw boost::bad_lexical_cast();
-                    this->setDoomSkill((unsigned int)value);
+                    this->setDoomSkill(StringToUint(val));
                     continue;
                 }
             }
@@ -1059,26 +1063,23 @@ namespace Vizia {
                 continue;
             }
 
-            /* Parse float properties */
+        /* Parse float properties */
             try{
                 if (key =="living_reward" || key =="livingreward"){
-                    float value = boost::lexical_cast<float>(val);
-                    this->setLivingReward((unsigned int)value);
+                    this->setLivingReward(boost::lexical_cast<float>(val));
                     continue;
                 }
                 if (key == "deathpenalty" || key == "death_penalty"){
-                    float value = boost::lexical_cast<float>(val);
-                    this->setDeathPenalty((unsigned int)value);
+                    this->setDeathPenalty(boost::lexical_cast<float>(val));
                     continue;
                 }
-
             }
             catch(boost::bad_lexical_cast &){
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Float value expected insted of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
                 success = false;
                 continue;
             }
-            
+                        
             /* Parse string properties */
             if(key == "doom_map" || key == "doommap"){
                 this->setDoomMap(val);
@@ -1101,50 +1102,50 @@ namespace Vizia {
                 continue;
             }
     
-            /* Parse bool properties */
+        /* Parse bool properties */
             try{
                 if (key =="auto_new_episode" || key =="autonewepisode"){
-                    this->setAutoNewEpisode(ParseBool(val));
+                    this->setAutoNewEpisode(StringToBool(val));
                     continue;
                 }
                 if (key =="new_episode_on_timeout" || key =="newepisodeontimeout"){
-                    this->setNewEpisodeOnTimeout(ParseBool(val));
+                    this->setNewEpisodeOnTimeout(StringToBool(val));
                     continue;
                 }
                 if (key =="new_episode_on_player_death" || key =="newepisodeonplayerdeath"){
-                    this->setNewEpisodeOnPlayerDeath(ParseBool(val));
+                    this->setNewEpisodeOnPlayerDeath(StringToBool(val));
                     continue;
                 }
                 if (key =="new_episode_on_map_end" || key =="newepisodeonmapend"){
-                    this->setNewEpisodeOnMapEnd(ParseBool(val));
+                    this->setNewEpisodeOnMapEnd(StringToBool(val));
                     continue;
                 }
                 if (key =="console_enabled" || key =="consoleenabled"){
-                    this->setConsoleEnabled(ParseBool(val));
+                    this->setConsoleEnabled(StringToBool(val));
                     continue;
                 }
                 if (key =="render_hud" || key =="renderhud"){
-                    this->setRenderHud(ParseBool(val));
+                    this->setRenderHud(StringToBool(val));
                     continue;
                 }
                 if (key =="render_weapon" || key =="renderweapon"){
-                    this->setRenderWeapon(ParseBool(val));
+                    this->setRenderWeapon(StringToBool(val));
                     continue;
                 }
                 if (key =="render_crosshair" || key =="rendercrosshair"){
-                    this->setRenderCrosshair(ParseBool(val));
+                    this->setRenderCrosshair(StringToBool(val));
                     continue;
                 }
                 if (key =="render_particles" || key =="renderparticles"){
-                    this->setRenderParticles(ParseBool(val));
+                    this->setRenderParticles(StringToBool(val));
                     continue;
                 }
                 if (key =="render_decals" || key =="renderdecals"){
-                    this->setRenderDecals(ParseBool(val));
+                    this->setRenderDecals(StringToBool(val));
                     continue;
                 }
                 if (key =="window_visible" || key =="windowvisible"){
-                    this->setWindowVisible(ParseBool(val));
+                    this->setWindowVisible(StringToBool(val));
                     continue;
                 }
                
@@ -1155,7 +1156,7 @@ namespace Vizia {
                 success = false;            
             }
 
-            /* Parse enum properties */
+        /* Parse enum properties */
 
             if(key =="mode")
             {
@@ -1167,11 +1168,9 @@ namespace Vizia {
                     this->setMode(PLAYER);
                     continue;
                 }
-                
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". SPECTATOR || PLAYER expected instead of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
                 success = false;
-                continue;
-                
+                continue;  
             }
 
             try{
@@ -1183,9 +1182,20 @@ namespace Vizia {
                     this->setScreenFormat(StringToFormat(val));
                     continue;
                 }
-
+                if(key == "button_max_value" || key == "buttonmaxvalue"){
+                    size_t space = val.find_first_of(" ");
+                    if(space == std::string::npos)
+                        throw std::exception();
+                    Button button = DoomGame::StringToButton(val.substr(0,space));
+                    val = val.substr(space+1);
+                    unsigned int max_value = boost::lexical_cast<unsigned int>(val);
+                    if(val[0] == '-')
+                        throw boost::bad_lexical_cast();
+                    this->setButtonMaxValue(button,max_value);
+                    continue;
+                }
             }
-            catch(std::exception)
+            catch(std::exception&)
             {
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Unsupported value: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
                 success = false;
