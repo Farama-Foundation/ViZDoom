@@ -35,6 +35,7 @@ public:
     void lock();
     void unlock();
     bool isLocked();
+    unsigned int helperBuffer[4];
 #ifdef VIZIA_DEPTH_TEST
     void Update();
 #endif

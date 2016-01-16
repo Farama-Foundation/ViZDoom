@@ -186,7 +186,7 @@ void R_DrawColumnP_C (void)
 	BYTE*				dest;
 	fixed_t 			frac;
 	fixed_t 			fracstep;
-
+//FIXME GR przezroczysta barierka
 	count = dc_count;
 
 	// Zero length, column does not exceed a pixel.
@@ -201,6 +201,24 @@ void R_DrawColumnP_C (void)
 	fracstep = dc_iscale; 
 	frac = dc_texturefrac;
 
+	if(depthMap!=NULL) {
+		depthMap->setActualDepth((unsigned int) 255 - ((dc_iscale - 500) * 255) / (300000 - 500));
+		if (dc_iscale > 300000)
+			depthMap->setActualDepth(0);
+		if (dc_iscale < 500)
+			depthMap->setActualDepth(255);
+	}
+
+	/*static long max, min;
+    if(min==0) min=max;
+    if(dc_iscale>max||dc_iscale<min)
+    {
+        if(dc_iscale>max)
+            max=dc_iscale;
+        else
+            min=dc_iscale;
+        printf("MAX: %ld MIN: %ld\n", max, min);
+    }*/
 	{
 		// [RH] Get local copies of these variables so that the compiler
 		//		has a better chance of optimizing this well.
@@ -219,6 +237,7 @@ void R_DrawColumnP_C (void)
 
 			dest += pitch;
 			frac += fracstep;
+			if(depthMap!=NULL) depthMap->setPoint(dc_x, dc_yl+dc_count-count);
 
 		} while (--count);
 	}
@@ -1673,23 +1692,16 @@ DWORD STACK_ARGS vlinec1 ()
 	int bits = vlinebits;
 	int pitch = dc_pitch;
 
-	if(depthMap!=NULL) {
-		depthMap->setActualDepth((unsigned int) 255 - ((dc_iscale - 550000) * 255) / (1005000000 - 550000));
-		if (dc_iscale > 1005000000)
-			depthMap->setActualDepth(0);//not siur
-		if (dc_iscale < 550000)
-			depthMap->setActualDepth(255);
-	}
 	/*static long max, min;
-	if(min==0) min=max;
-	if(dc_iscale>max||dc_iscale<min)
-	{
-		if(dc_iscale>max)
-			max=dc_iscale;
-		else
-			min=dc_iscale;
-		printf("MAX: %ld MIN: %ld\n", max, min);
-	}*/
+if(min==0) min=max;
+if(dc_iscale>max||dc_iscale<min)
+{
+    if(dc_iscale>max)
+        max=dc_iscale;
+    else
+        min=dc_iscale;
+    printf("MAX: %ld MIN: %ld\n", max, min);
+}*/
 	do
 	{//FIXME GR DONE (JAKBY) TROCHE SCIAN
 		*dest = colormap[source[frac>>bits]];

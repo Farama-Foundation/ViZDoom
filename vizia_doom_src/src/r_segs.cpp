@@ -309,13 +309,15 @@ void R_RenderMaskedSegRange (drawseg_t *ds, int x1, int x2)
 	maskedtexturecol = (fixed_t *)(openings + ds->maskedtexturecol) - ds->x1;
 	spryscale = ds->iscale + ds->iscalestep * (x1 - ds->x1);
 	if(depthMap!=NULL) {
-		depthMap->setActualDepth((unsigned int) 255 - ((ds->iscale / 100 - 180) * 255) / (23000 - 180));
+		depthMap->setActualDepth((unsigned int) 255 - ((ds->iscale - 20000) * 255) / (2300000 - 20000));
 		if (ds->iscale > 2300000)
 			depthMap->setActualDepth(0);
-		if (ds->iscale < 18000)
+		if (ds->iscale < 20000)
 			depthMap->setActualDepth(255);
 	}
-	static long max, min;
+	//printf("%d\n", ds->iscale);
+	//printf("%u %d\n", (unsigned int) 255 - ((ds->iscale / 100 - 180) * 255) / (23000 - 180),ds->iscale);
+	/*static long max, min;
 	if(min==0) min=max;
 	if(ds->iscale>max||ds->iscale<min)
 	{
@@ -324,7 +326,7 @@ void R_RenderMaskedSegRange (drawseg_t *ds, int x1, int x2)
 		else
 			min=ds->iscale;
 		printf("MAX: %ld MIN: %ld\n", max, min);
-	}
+	}*/
 
 	rw_scalestep = ds->iscalestep;
 
@@ -1104,6 +1106,9 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 	x = x1;
 	//while ((umost[x] > dmost[x]) && (x <= x2)) x++;
 
+
+
+
 	bool fixed = (fixedcolormap != NULL || fixedlightlev >= 0);
 	if (fixed)
 	{
@@ -1130,6 +1135,24 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 		dc_source = getcol (rw_pic, (lwal[x] + xoffset) >> FRACBITS);
 		dc_dest = ylookup[y1ve[0]] + x + dc_destorg;
 		dc_iscale = swal[x] * yrepeat;
+		int a_dc_iscale = dc_iscale<0 ? -dc_iscale : dc_iscale;
+		if(depthMap!=NULL) {
+			depthMap->setActualDepth((unsigned int) 255 - ((a_dc_iscale / 100 - 9500) * 255) / (1600000 - 9500));
+			if (a_dc_iscale > 160000000)
+				depthMap->setActualDepth(0);
+			if (a_dc_iscale < 950000)
+				depthMap->setActualDepth(255);
+		}
+		/*static long long max, min;
+		if(min==0) min=max;
+		if(a_dc_iscale>max||a_dc_iscale<min)
+		{
+			if(a_dc_iscale>max)
+				max=a_dc_iscale;
+			else
+				min=a_dc_iscale;
+			printf("MAX: %ld MIN: %ld ACT: %d\n", max, min, 255 - ((a_dc_iscale / 100 - 10000) * 255) / (13000000 - 10000));
+		}*/
 		dc_count = y2ve[0] - y1ve[0];
 		dc_texturefrac = texturemid + FixedMul (dc_iscale, (y1ve[0]<<FRACBITS)-centeryfrac+FRACUNIT);
 		if(depthMap!=NULL) {
@@ -1152,6 +1175,10 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 
 			bufplce[z] = getcol (rw_pic, (lwal[x+z] + xoffset) >> FRACBITS);
 			vince[z] = swal[x+z] * yrepeat;
+			if(depthMap!=NULL) {
+				long tmp = swal[x + z]*yrepeat;
+				depthMap->helperBuffer[z] = tmp<0 ? (unsigned int)-tmp : (unsigned int)tmp;
+			}
 			vplce[z] = texturemid + FixedMul (vince[z], (y1ve[z]<<FRACBITS)-centeryfrac+FRACUNIT);
 		}
 		if (bad == 15)
@@ -1181,6 +1208,12 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 					if(depthMap!=NULL) {
 						depthMap->storeX(x + z);
 						depthMap->storeY(y1ve[z]);
+						unsigned int a_dc_iscale = vince[z]<0 ? -vince[z] : vince[z];
+						depthMap->setActualDepth((unsigned int) 255 - ((a_dc_iscale / 100 - 9500) * 255) / (1600000 - 9500));
+						if (a_dc_iscale > 160000000)
+							depthMap->setActualDepth(0);
+						if (a_dc_iscale < 950000)
+							depthMap->setActualDepth(255);
 					}
 					prevline1(vince[z],palookupoffse[z],y2ve[z]-y1ve[z],vplce[z],bufplce[z],ylookup[y1ve[z]]+x+z+dc_destorg);
 				}
@@ -1197,6 +1230,14 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 					depthMap->storeX(x + z);
 					depthMap->storeY(y1ve[z]);
 				}
+				unsigned int a_dc_iscale = vince[z]<0 ? -vince[z] : vince[z];
+				if(depthMap!=NULL) {
+					depthMap->setActualDepth((unsigned int) 255 - ((a_dc_iscale / 100 - 9500) * 255) / (1600000 - 9500));
+					if (a_dc_iscale > 160000000)
+						depthMap->setActualDepth(0);
+					if (a_dc_iscale < 950000)
+						depthMap->setActualDepth(255);
+				}
 				vplce[z] = prevline1(vince[z],palookupoffse[z],u4-y1ve[z],vplce[z],bufplce[z],ylookup[y1ve[z]]+x+z+dc_destorg);
 			}
 		}
@@ -1207,25 +1248,26 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 			dc_dest = ylookup[u4]+x+dc_destorg;
 
 			if(depthMap!=NULL) {
-				depthMap->setActualDepth((unsigned int) 255 - ((dc_iscale / 100 + 4000) * 255) / (8000000 + 4000));
-				if (dc_iscale > 800000000)
-					depthMap->setActualDepth(0);
-				if (dc_iscale < -400000)
-					depthMap->setActualDepth(255);
-
-				/*static long max, min;
-                if(min==0) min=max;
-                if(dc_iscale>max||dc_iscale<min)
-                {
-                    if(dc_iscale>max)
-                        max=dc_iscale;
-                    else
-                        min=dc_iscale;
-                    printf("MAX: %ld MIN: %ld ACT: %d\n", max, min, 255 - ((dc_iscale/100-0)*255)/(10000000-0));
-                }*/
 				for (unsigned int pcf = 0; pcf < 4; pcf++) {
+					unsigned int a_dc_iscale = depthMap->helperBuffer[pcf];//vince[pcf]<0 ? -vince[pcf] : vince[pcf];
+					depthMap->setActualDepth((unsigned int) 255 - ((a_dc_iscale / 100 - 9500) * 255) / (1600000 - 9500));
+					if (a_dc_iscale > 160000000)
+						depthMap->setActualDepth(127);
+					else
+					if (a_dc_iscale < 950000)
+						depthMap->setActualDepth(255);
 					for (int c = 0; c < dc_count; c++)
 						depthMap->setPoint(x + pcf, ylookup[u4] / depthMap->getBufferWidth() + c);
+					static long long max, min;
+					if(min==0) min=max;
+					if(a_dc_iscale>max||a_dc_iscale<min)
+					{
+						if(a_dc_iscale>max)
+							max=a_dc_iscale;
+						else
+							min=a_dc_iscale;
+						printf("MAX: %lld MIN: %lld ACT: %d\n", max, min, 255 - ((a_dc_iscale / 100 - 9500) * 255) / (1600000 - 9500));
+					}
 				}
 			}
 			dovline4();
@@ -1239,6 +1281,14 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 				if(depthMap!=NULL) {
 					depthMap->storeX(x + z);
 					depthMap->storeY(d4);
+				}
+				unsigned int a_dc_iscale = vince[z]<0 ? -vince[z] : vince[z];
+				if(depthMap!=NULL) {
+					depthMap->setActualDepth((unsigned int) 255 - ((a_dc_iscale / 100 - 9500) * 255) / (1600000 - 9500));
+					if (a_dc_iscale > 160000000)
+						depthMap->setActualDepth(0);
+					if (a_dc_iscale < 950000)
+						depthMap->setActualDepth(255);
 				}
 				prevline1(vince[z],palookupoffse[0],y2ve[z]-d4,vplce[z],bufplce[z],i+z);
 			}
@@ -1265,6 +1315,14 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 		dc_texturefrac = texturemid + FixedMul (dc_iscale, (y1ve[0]<<FRACBITS)-centeryfrac+FRACUNIT);
 		depthMap->storeX(x);
 		depthMap->storeY(y1ve[0]);
+		unsigned int a_dc_iscale = dc_iscale<0 ? -dc_iscale : dc_iscale;
+		if(depthMap!=NULL) {
+			depthMap->setActualDepth((unsigned int) 255 - ((a_dc_iscale / 100 - 9500) * 255) / (1600000 - 9500));
+			if (a_dc_iscale > 160000000)
+				depthMap->setActualDepth(0);
+			if (a_dc_iscale < 950000)
+				depthMap->setActualDepth(255);
+		}
 		dovline1();
 	}
 
