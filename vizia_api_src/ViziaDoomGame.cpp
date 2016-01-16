@@ -23,8 +23,7 @@ namespace Vizia {
         return (unsigned int) std::ceil((float) 35 / 1000 * ms);
     }
 
-    float DoomFixedToFloat(int doomFixed)
-    {
+    float DoomFixedToFloat(int doomFixed) {
         float res = float(doomFixed)/65536.0;
         return res;
     }
@@ -36,7 +35,8 @@ namespace Vizia {
         this->deathPenalty = 0;
         this->livingReward = 0;
         this->summaryReward = 0;
-        this->lastStateNumber = 0;
+        this->lastMapTic = 0;
+        this->nextStateNumber = 1;
         this->mode = PLAYER;
 
         this->doomController = new DoomController();
@@ -46,8 +46,6 @@ namespace Vizia {
         this->close();
         delete this->doomController;
     }
-
-    
 
     bool DoomGame::init() {
         if (!this->running) {
@@ -94,11 +92,15 @@ namespace Vizia {
 
                 this->state.gameVariables.resize(this->availableGameVariables.size());
 
-                this->lastReward = 0;
-                this->lastMapReward = 0;
-                this->lastStateNumber = 0;
+                this->lastMapTic = 0;
+                this->nextStateNumber = 1;
 
                 this->updateState();
+
+                //this->lastMapReward = 0;
+                this->lastReward = 0;
+                this->summaryReward = 0;
+
             }
             catch(const Exception &e){ throw; }
 
@@ -108,11 +110,13 @@ namespace Vizia {
     }
 
     void DoomGame::close() {
-        this->doomController->close();
-        this->state.gameVariables.clear();
-        this->lastAction.clear();
+        if (this->running) {
+            this->doomController->close();
+            this->state.gameVariables.clear();
+            this->lastAction.clear();
 
-        this->running = false;
+            this->running = false;
+        }
     }
 
     bool DoomGame::isRunning(){
@@ -125,11 +129,14 @@ namespace Vizia {
 
         this->doomController->restartMap();
 
+        this->lastMapTic = 0;
+        this->nextStateNumber = 1;
+
         this->updateState();
 
-        this->lastReward = 0.0;
-        this->lastMapReward = 0.0;
-        this->summaryReward = 0.0;
+        //this->lastMapReward = 0;
+        this->lastReward = 0;
+        this->summaryReward = 0;
     }
 
     void DoomGame::setAction(std::vector<int> &actions) {
@@ -176,10 +183,13 @@ namespace Vizia {
 
     void DoomGame::updateState(){
         try {
+
+            this->state.number = this->nextStateNumber++;
+
             float reward = 0;
             float mapReward = DoomFixedToFloat(this->doomController->getMapReward());
             reward = (mapReward - this->lastMapReward);
-            int liveTime = this->doomController->getMapTic() - this->lastStateNumber;
+            int liveTime = this->doomController->getMapTic() - this->lastMapTic;
             reward += (liveTime > 0 ? liveTime : 0) * this->livingReward;
             if (this->doomController->isPlayerDead()) reward -= this->deathPenalty;
 
@@ -187,16 +197,15 @@ namespace Vizia {
             this->summaryReward += reward;
             this->lastReward = reward;
 
+            this->lastMapTic = this->doomController->getMapTic();
+
             /* Updates vars */
             for (int i = 0; i < this->availableGameVariables.size(); ++i) {
                 this->state.gameVariables[i] = this->doomController->getGameVariable(this->availableGameVariables[i]);
             }
 
             /* Update float rgb image */
-            this->state.number = this->doomController->getMapTic();
             this->state.imageBuffer = this->doomController->getScreen();
-
-            this->lastStateNumber = this->state.number;
 
             if (this->mode == SPECTATOR) {
                 //Update last action
@@ -253,6 +262,10 @@ namespace Vizia {
         this->doomController->setButtonMaxValue(button, maxValue);
     }
 
+    int DoomGame::getButtonMaxValue(Button button){
+        return this->doomController->getButtonMaxValue(button);
+    }
+
     void DoomGame::addAvailableGameVariable(GameVariable var) {
         if (!this->running && std::find(this->availableGameVariables.begin(), this->availableGameVariables.end(), var) ==
             this->availableGameVariables.end()) {
@@ -303,8 +316,9 @@ namespace Vizia {
     }
     void DoomGame::setDoomConfigPath(std::string path) { this->doomController->setConfigPath(path); }
 
-    unsigned int DoomGame::getSeed(){ return this->doomController->getSeed(); }
-    void DoomGame::setSeed(unsigned int seed){ this->doomController->setSeed(seed); }
+    unsigned int DoomGame::getCurrentSeed(){ return this->doomController->getSeed(); }
+    unsigned int DoomGame::getEpisodeSeed(){ return this->doomController->getStaticSeed(); }
+    void DoomGame::setEpisodeSeed(unsigned int seed){ this->doomController->setStaticSeed(seed); }
 
     void DoomGame::setAutoNewEpisode(bool set) { this->doomController->setAutoMapRestart(set); }
     void DoomGame::setNewEpisodeOnTimeout(bool set) { this->doomController->setAutoMapRestartOnTimeout(set); }
@@ -438,9 +452,9 @@ namespace Vizia {
 
 //TODO warnings, refactoring, comments
     bool DoomGame::ParseBool(std::string boolString){
-        if(boolString == "true" or boolString == "1")
+        if(boolString == "true" || boolString == "1")
             return true;
-        if(boolString == "false" or boolString == "0")
+        if(boolString == "false" || boolString == "0")
             return false;
         throw std::exception();
     }
@@ -863,13 +877,13 @@ namespace Vizia {
             else
                 break;
         }
-        if(value.empty() or value[0] != '{')
+        if(value.empty() || value[0] != '{')
             return false;
         
         value = value.substr(1);
                 
         /* Find '}' */
-        while((value.empty() or value[value.size()-1] != '}') and !input.eof()){
+        while((value.empty() || value[value.size()-1] != '}') and !input.eof()){
             ++line_number;
             std::string newline;
             std::getline(input, newline);
@@ -877,7 +891,7 @@ namespace Vizia {
             if(!newline.empty() and newline[0]!='#')
                 value += " " + newline;
         }
-        if(value.empty() or value[value.size()-1] != '}')
+        if(value.empty() || value[value.size()-1] != '}')
             return false;
         
         /* Fill the vector */
@@ -916,7 +930,7 @@ namespace Vizia {
             /* Ignore empty and comment lines */
             trim_all(line);
 
-            if(line.empty() or line[0] == '#'){
+            if(line.empty() || line[0] == '#'){
                 continue;
             }
 
@@ -950,7 +964,7 @@ namespace Vizia {
 
             /* Parse enum list properties */
 
-            if(key == "available_buttons" or key == "availablebuttons"){
+            if(key == "available_buttons" || key == "availablebuttons"){
                 std::vector<std::string> str_buttons;
                 int start_line = line_number;
                 bool success = DoomGame::ParseListProperty(line_number, val, file, str_buttons );
@@ -979,7 +993,7 @@ namespace Vizia {
                 continue;
             }
 
-            if(key == "available_game_variables" or key == "availablegamevariables"){
+            if(key == "available_game_variables" || key == "availablegamevariables"){
                 std::vector<std::string> str_variables;
                 int start_line = line_number;
                 bool success = DoomGame::ParseListProperty(line_number, val, file, str_variables );
@@ -1017,21 +1031,21 @@ namespace Vizia {
             }
             /* Parse int properties */
             try{
-                if (key =="seed"){
+                if (key =="episodeseed" || key == "episode_seed"){
                     unsigned int value = boost::lexical_cast<unsigned int>(val);
                     if(val[0] == '-')
                         throw boost::bad_lexical_cast();
-                    this->setSeed((unsigned int)value);
+                    this->setEpisodeSeed((unsigned int)value);
                     continue;
                 }
-                if (key == "episodetimeout" or key == "episode_timeout"){
+                if (key == "episodetimeout" || key == "episode_timeout"){
                     unsigned int value = boost::lexical_cast<unsigned int>(val);
                     if(val[0] == '-')
                         throw boost::bad_lexical_cast();
                     this->setEpisodeTimeout((unsigned int)value);
                     continue;
                 }
-                if (key == "doom_skill" or key == "doomskill"){
+                if (key == "doom_skill" || key == "doomskill"){
                     unsigned int value = boost::lexical_cast<unsigned int>(val);
                     if(val[0] == '-')
                         throw boost::bad_lexical_cast();
@@ -1047,12 +1061,12 @@ namespace Vizia {
 
             /* Parse float properties */
             try{
-                if (key =="living_reward" or key =="livingreward"){
+                if (key =="living_reward" || key =="livingreward"){
                     float value = boost::lexical_cast<float>(val);
                     this->setLivingReward((unsigned int)value);
                     continue;
                 }
-                if (key == "deathpenalty" or key == "death_penalty"){
+                if (key == "deathpenalty" || key == "death_penalty"){
                     float value = boost::lexical_cast<float>(val);
                     this->setDeathPenalty((unsigned int)value);
                     continue;
@@ -1066,70 +1080,70 @@ namespace Vizia {
             }
             
             /* Parse string properties */
-            if(key == "doom_map" or key == "doommap"){
+            if(key == "doom_map" || key == "doommap"){
                 this->setDoomMap(val);
                 continue;
             }
-            if(key == "doom_game_path" or key == "doomgamepath"){
+            if(key == "doom_game_path" || key == "doomgamepath"){
                 this->setDoomGamePath(val);
                 continue;
             }
-            if(key == "doom_iwad_path" or key == "doomiwadpath"){
+            if(key == "doom_iwad_path" || key == "doomiwadpath"){
                 this->setDoomIwadPath(val);
                 continue;
             }
-            if(key == "doom_file_path" or key == "doomfilepath"){
+            if(key == "doom_file_path" || key == "doomfilepath"){
                 this->setDoomFilePath(val);
                 continue;
             }
-            if(key == "doom_config_path" or key == "doomconfigpath"){
+            if(key == "doom_config_path" || key == "doomconfigpath"){
                 this->setDoomConfigPath(val);
                 continue;
             }
     
             /* Parse bool properties */
             try{
-                if (key =="auto_new_episode" or key =="autonewepisode"){
+                if (key =="auto_new_episode" || key =="autonewepisode"){
                     this->setAutoNewEpisode(ParseBool(val));
                     continue;
                 }
-                if (key =="new_episode_on_timeout" or key =="newepisodeontimeout"){
+                if (key =="new_episode_on_timeout" || key =="newepisodeontimeout"){
                     this->setNewEpisodeOnTimeout(ParseBool(val));
                     continue;
                 }
-                if (key =="new_episode_on_player_death" or key =="newepisodeonplayerdeath"){
+                if (key =="new_episode_on_player_death" || key =="newepisodeonplayerdeath"){
                     this->setNewEpisodeOnPlayerDeath(ParseBool(val));
                     continue;
                 }
-                if (key =="new_episode_on_map_end" or key =="newepisodeonmapend"){
+                if (key =="new_episode_on_map_end" || key =="newepisodeonmapend"){
                     this->setNewEpisodeOnMapEnd(ParseBool(val));
                     continue;
                 }
-                if (key =="console_enabled" or key =="consoleenabled"){
+                if (key =="console_enabled" || key =="consoleenabled"){
                     this->setConsoleEnabled(ParseBool(val));
                     continue;
                 }
-                if (key =="render_hud" or key =="renderhud"){
+                if (key =="render_hud" || key =="renderhud"){
                     this->setRenderHud(ParseBool(val));
                     continue;
                 }
-                if (key =="render_weapon" or key =="renderweapon"){
+                if (key =="render_weapon" || key =="renderweapon"){
                     this->setRenderWeapon(ParseBool(val));
                     continue;
                 }
-                if (key =="render_crosshair" or key =="rendercrosshair"){
+                if (key =="render_crosshair" || key =="rendercrosshair"){
                     this->setRenderCrosshair(ParseBool(val));
                     continue;
                 }
-                if (key =="render_particles" or key =="renderparticles"){
+                if (key =="render_particles" || key =="renderparticles"){
                     this->setRenderParticles(ParseBool(val));
                     continue;
                 }
-                if (key =="render_decals" or key =="renderdecals"){
+                if (key =="render_decals" || key =="renderdecals"){
                     this->setRenderDecals(ParseBool(val));
                     continue;
                 }
-                if (key =="window_visible" or key =="windowvisible"){
+                if (key =="window_visible" || key =="windowvisible"){
                     this->setWindowVisible(ParseBool(val));
                     continue;
                 }
@@ -1154,18 +1168,18 @@ namespace Vizia {
                     continue;
                 }
                 
-                std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". SPECTATOR or PLAYER expected instead of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
+                std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". SPECTATOR || PLAYER expected instead of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
                 success = false;
                 continue;
                 
             }
 
             try{
-                if(key == "screen_resolution" or key == "screenresolution"){
+                if(key == "screen_resolution" || key == "screenresolution"){
                     this->setScreenResolution(StringToResolution(val));
                     continue;
                 }
-                if(key == "screen_format" or key == "screenformat"){
+                if(key == "screen_format" || key == "screenformat"){
                     this->setScreenFormat(StringToFormat(val));
                     continue;
                 }
@@ -1186,12 +1200,6 @@ namespace Vizia {
 
         return success;
     }
-
-    bool DoomGame::saveConfig(std::string filename) {
-        //TO DO
-        return false;
-    }
-
 
     bool DoomGame::checkFilePath(std::string path){
         std::ifstream file(path.c_str());

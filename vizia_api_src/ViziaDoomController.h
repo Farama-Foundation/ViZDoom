@@ -58,7 +58,7 @@ namespace Vizia{
             int BT_MAX_VALUE[AxisButtonsNumber];
         };
 
-        struct GameVarsStruct {
+        struct GameVariablesStruct {
             unsigned int GAME_TIC;
             unsigned int GAME_SEED;
             unsigned int GAME_STAIC_SEED;
@@ -74,7 +74,7 @@ namespace Vizia{
 
             int MAP_REWARD;
 
-            int MAP_USER_VARS[UserVarsNumber];
+            int MAP_USER_VARS[UserVariablesNumber];
 
             int MAP_KILLCOUNT;
             int MAP_ITEMCOUNT;
@@ -135,9 +135,9 @@ namespace Vizia{
 
         //GAME & MAP SETTINGS
 
-        unsigned int getCurrentSeed();
         unsigned int getSeed();
-        void setSeed(unsigned int seed);
+        unsigned int getStaticSeed();
+        void setStaticSeed(unsigned int seed);
 
         std::string getInstanceId();
         void setInstanceId(std::string id);
@@ -206,7 +206,7 @@ namespace Vizia{
 
         uint8_t * const getScreen();
         InputStruct * const getInput();
-        GameVarsStruct * const getGameVariables();
+        GameVariablesStruct * const getGameVariables();
 
         int getButtonState(Button button);
         void setButtonState(Button button, int state);
@@ -217,6 +217,7 @@ namespace Vizia{
         void resetDescreteButtons();
         void disableAllButtons();
         void setButtonMaxValue(Button button, int value);
+        int getButtonMaxValue(Button button);
         void availableAllButtons();
         bool isButtonDiscrete(Button button);
         bool isButtonAxis(Button button);
@@ -254,13 +255,14 @@ namespace Vizia{
 
     private:
 
-        void generateSeed();
+        void generateStaticSeed();
         void generateInstanceId();
 
-        int seed;
+        int staticSeed;
         std::string instanceId;
 
         b::thread *doomThread;
+        ba::io_service ioService;
         b::thread *signalThread;
         //bpr::child doomProcess;
         bool doomRunning;
@@ -301,13 +303,14 @@ namespace Vizia{
         std::string SMName;
 
         bip::mapped_region *InputSMRegion;
-        InputStruct *Input;
+        InputStruct *input;
+        InputStruct *_input;
 
-        bip::mapped_region *GameVarsSMRegion;
-        GameVarsStruct *GameVars;
+        bip::mapped_region *GameVariablesSMRegion;
+        GameVariablesStruct *gameVariables;
 
         bip::mapped_region *ScreenSMRegion;
-        uint8_t *Screen;
+        uint8_t *screen;
 
         //HELPERS
 

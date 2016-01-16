@@ -30,7 +30,6 @@ namespace Vizia {
         virtual ~DoomGame();
 
         bool loadConfig(std::string filename);
-        bool saveConfig(std::string filename);
 
         bool init();
         void close();
@@ -57,8 +56,10 @@ namespace Vizia {
         void clearAvailableButtons();
         int getAvailableButtonsSize();
         void setButtonMaxValue(Button button, int maxValue);
+        int getButtonMaxValue(Button button);
 
         void addAvailableGameVariable(GameVariable var);
+
         void clearAvailableGameVariables();
         int getAvailableGameVariablesSize();
 
@@ -91,8 +92,9 @@ namespace Vizia {
         void setDoomSkill(int skill);
         void setDoomConfigPath(std::string path);
 
-        unsigned int getSeed();
-        void setSeed(unsigned int seed);
+        unsigned int getEpisodeSeed();
+        unsigned int getCurrentSeed();
+        void setEpisodeSeed(unsigned int seed);
 
         void setAutoNewEpisode(bool set);
         void setNewEpisodeOnTimeout(bool set);
@@ -140,7 +142,8 @@ namespace Vizia {
         std::vector<int> lastAction;
 
         /* Reward */
-        unsigned int lastStateNumber;
+        unsigned int nextStateNumber;
+        unsigned int lastMapTic;
 
         float lastReward;
         float lastMapReward;

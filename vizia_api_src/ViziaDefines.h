@@ -165,6 +165,7 @@ namespace Vizia{
         ALTATTACK_READY,
         SELECTED_WEAPON,
         SELECTED_WEAPON_AMMO,
+        AMMO0,
         AMMO1,
         AMMO2,
         AMMO3,
@@ -174,7 +175,7 @@ namespace Vizia{
         AMMO7,
         AMMO8,
         AMMO9,
-        AMMO0,
+        WEAPON0,
         WEAPON1,
         WEAPON2,
         WEAPON3,
@@ -184,7 +185,6 @@ namespace Vizia{
         WEAPON7,
         WEAPON8,
         WEAPON9,
-        WEAPON0,
         USER1,
         USER2,
         USER3,
@@ -217,7 +217,7 @@ namespace Vizia{
         USER30,
     };
 
-    static const int UserVarsNumber = 30;
+    static const int UserVariablesNumber = 30;
     static const int SlotsNumber = 10;
 
     enum Button {
@@ -276,7 +276,7 @@ namespace Vizia{
     static const int DiscreteButtonsNumber = 38;
     static const int AxisButtonsNumber = 5;
     static const int ButtonsNumber = 43;
-    
+
 #define VK_2_DK(vk, dk) static const std::string KEY_ ## vk = dk;
     
     VK_2_DK(TAB, "tab")

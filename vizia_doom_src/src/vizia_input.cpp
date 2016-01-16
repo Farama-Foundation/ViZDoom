@@ -311,6 +311,11 @@ void Vizia_InputTic(){
             }
         }
     }
+    else{
+        for(int i = 0; i < VIZIA_BT_AXIS_BT_SIZE; ++i){
+            viziaInput->BT[VIZIA_BT_CMD_BT_SIZE + i] = 0;
+        }
+    }
     //else D_ProcessEvents();
 
     memcpy( viziaLastInput, viziaInput, sizeof(ViziaInputStruct) );
