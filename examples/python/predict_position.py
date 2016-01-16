@@ -1,52 +1,15 @@
 #!/usr/bin/python
 from vizia import DoomGame
-from vizia import Button
-from vizia import GameVariable
-from vizia import ScreenFormat
-from vizia import ScreenResolution
 
 from random import choice
-
 
 from time import sleep
 from time import time
 
-import cv2
 
-def setup_vizia():
-
-	game = DoomGame()
-
-	game.set_screen_resolution(ScreenResolution.RES_640X480)
-	#set desired screen format
-	game.set_screen_format(ScreenFormat.CRCGCB)
-
-	game.set_doom_iwad_path("../../scenarios/doom2.wad")
-	game.set_doom_file_path("../../scenarios/predict_position.wad")
-	game.set_episode_timeout(300)
-
-	game.set_living_reward(-0.0001)
-
-	game.set_render_hud(True)	
-	game.set_render_crosshair(False)
-	game.set_render_weapon(True)
-	game.set_render_decals(False)
-	game.set_render_particles(False);
-
-	game.add_available_button(Button.TURN_LEFT)
-	game.add_available_button(Button.TURN_RIGHT)
-	game.add_available_button(Button.ATTACK)
-
-	game.set_window_visible(True)
-
-	game.set_doom_skill(1)
-
-	game.init()
-	return game
-
-	
-
-game = setup_vizia()
+game = DoomGame()
+game.load_config("config_predict_position.properties")
+game.init()
 
 
 actions = [[True,False,False],[False,True,False],[False,False,True]]
@@ -56,7 +19,7 @@ shoot = actions[2]
 idle = [False,False,False]
 
 iters = 10000
-sleep_time = 0.15
+sleep_time = 0.1
 
 for i in range(iters):
 
@@ -68,7 +31,6 @@ for i in range(iters):
 
 	s = game.get_state()
 	r = game.make_action(choice(actions))
-
 	print "state #" +str(s.number)
 	print "reward:",r
 	print "====================="	

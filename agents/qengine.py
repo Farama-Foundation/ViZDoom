@@ -6,6 +6,8 @@ from lasagne.layers import get_all_param_values
 from lasagne.layers import set_all_param_values
 from vizia import  GameVariable
 from vizia import doom_fixed_to_float
+import itertools as it
+
 
 class IdentityImageConverter:
     def __init__(self, source):
@@ -31,9 +33,15 @@ class Float32ImageConverter(IdentityImageConverter):
     def convert(self, img):
         return  np.float32(img)/255.0
 
+def default_actions_generator(the_game):
+    n = the_game.get_available_buttons_size()
+    actions = []
+    for perm in it.product([0, 1], repeat=n):
+        actions.append(list(perm))
+    return actions
 
 class QEngine:
-    def __init__(self, game, evaluator, actions_generator, gamma=0.7, batch_size=500, update_frequency=500,
+    def __init__(self, game, evaluator, actions_generator=default_actions_generator, gamma=0.7, batch_size=500, update_frequency=500,
                  history_length=1, bank = None, bank_capacity=10000, start_epsilon=1.0, end_epsilon=0.0,
                  epsilon_decay_start_step=100000, epsilon_decay_steps=100000, reward_scale = 1.0, image_converter=None, skiprate = 1, shaping_on = False):
         if image_converter:
@@ -52,7 +60,7 @@ class QEngine:
         self._end_epsilon = min(max(end_epsilon, 0.0), self._epsilon)
         self._epsilon_decay_stride = (self._epsilon - end_epsilon) / epsilon_decay_steps
         self._epsilon_decay_start = epsilon_decay_start_step
-        self._skiprate = skiprate
+        self._skiprate = max(skiprate, 1)
         self._shaping_on = shaping_on
 
         if self._shaping_on:
@@ -205,7 +213,7 @@ class QEngine:
 	        while not self._game.is_episode_finished():
 	            self.make_step()
 
-        return np.float32((self._game.get_summary_reward())*self._reward_scale)
+        return np.float32(self._game.get_summary_reward())
 
     def get_actions_stats(self, clear=False, norm=True):
         stats = self._actions_stats.copy()
