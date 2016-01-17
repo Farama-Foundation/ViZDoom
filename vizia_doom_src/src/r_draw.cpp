@@ -1098,7 +1098,6 @@ void R_DrawSpanP_C (void)//FIXME GR DONE POGLOGI I SUFITY!
 	}
 //		dscount++;
 #endif
-
 	xfrac = ds_xfrac;
 	yfrac = ds_yfrac;
 
@@ -1120,7 +1119,7 @@ void R_DrawSpanP_C (void)//FIXME GR DONE POGLOGI I SUFITY!
 			// Lookup pixel from flat texture tile,
 			//  re-index using light/colormap.
 			*dest++ = colormap[source[spot]];
-			if(depthMap!=NULL) depthMap->setPoint(ds_x2-count,ds_y);
+			if(depthMap!=NULL) depthMap->setPoint(ds_x2-count+1,ds_y);
 			// Next step in u,v.
 			xfrac += xstep;
 			yfrac += ystep;
@@ -1140,7 +1139,7 @@ void R_DrawSpanP_C (void)//FIXME GR DONE POGLOGI I SUFITY!
 			// Lookup pixel from flat texture tile,
 			//  re-index using light/colormap.
 			*dest++ = colormap[source[spot]];
-			if(depthMap!=NULL) depthMap->setPoint(ds_x2-count,ds_y);
+			if(depthMap!=NULL) depthMap->setPoint(ds_x2-count+1,ds_y);
 			// Next step in u,v.
 			xfrac += xstep;
 			yfrac += ystep;
@@ -1692,16 +1691,6 @@ DWORD STACK_ARGS vlinec1 ()
 	int bits = vlinebits;
 	int pitch = dc_pitch;
 
-	/*static long max, min;
-if(min==0) min=max;
-if(dc_iscale>max||dc_iscale<min)
-{
-    if(dc_iscale>max)
-        max=dc_iscale;
-    else
-        min=dc_iscale;
-    printf("MAX: %ld MIN: %ld\n", max, min);
-}*/
 	do
 	{//FIXME GR DONE (JAKBY) TROCHE SCIAN
 		*dest = colormap[source[frac>>bits]];
