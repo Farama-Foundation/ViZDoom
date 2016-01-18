@@ -1,8 +1,38 @@
 
-\chapter{Framework}
+\chapter{Framework Architecture}
 
 \section{Used Technologies}
+What we used and why.
+\begin{itemize}
+\item zdoom, whole table with alternatives alternatives (full page)
+\item linux focus, cpp core, python wrapper
+\item acs scripting in doombuilder 2 for scenarios
+\item python and lasagne for experiments
+\end{itemize}
+
 \section{Architecture}
-\section{Problems}
-\section{Solutions and Decisions}
+Nice diagram (in DOOM style) with the arcitecture.
+\begin{itemize}
+\item Zdoom separate process.
+\item Boost interprocess: shared memory to comunicate with zdoom.
+\item Flow control and PLAYER vs SPECTATOR mode.
+\item Warnings and exceptions.
+\end{itemize}
+
+\section{Problems and Solutions}
+\begin{itemize}
+\item Why shared memory and separate doom process and what it entails.
+\item Why make/set action are like they are. Why action is a vector not just number.
+\item Why state is copied in Python but not in cpp.
+\item Zbuffer struggles.
+\item Why Windows and Mac are not supported so well.
+\item Why scenario is effectively divided into config file nad doom iwad file.
+\item Why multiplayer is barely usable.
+\end{itemize}
+
+\section{Performance}
+Table with some fps ratings and a graph.
+Conclusions: it's fast enough, any reasonably good AI will be much slower during learning process.
+
+
 

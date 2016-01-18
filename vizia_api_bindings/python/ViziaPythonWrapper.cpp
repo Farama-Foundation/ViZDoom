@@ -62,8 +62,8 @@ void (DoomGamePython::*addAvailableButton2)(Button, int) = &DoomGamePython::addA
 void (DoomGamePython::*advanceAction1)() = &DoomGamePython::advanceAction;
 void (DoomGamePython::*advanceAction2)(bool, bool, unsigned int) = &DoomGamePython::advanceAction;
 
-float (DoomGamePython::*makeAction1)(boost::python::list &) = &DoomGamePython::makeAction;
-float (DoomGamePython::*makeAction2)(boost::python::list &, unsigned int) = &DoomGamePython::makeAction;
+double (DoomGamePython::*makeAction1)(boost::python::list &) = &DoomGamePython::makeAction;
+double (DoomGamePython::*makeAction2)(boost::python::list &, unsigned int) = &DoomGamePython::makeAction;
 
 BOOST_PYTHON_MODULE(vizia)
 {
@@ -72,7 +72,7 @@ BOOST_PYTHON_MODULE(vizia)
     boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
     import_array();
     
-    //exceptions
+    /* exceptions */
     myExceptionTypeObj = createExceptionClass("doom_unexpected_exit_exception");
     boost::python::register_exception_translator<Vizia::DoomUnexpectedExitException>(&translate);
 
@@ -90,7 +90,7 @@ BOOST_PYTHON_MODULE(vizia)
     
 #define ENUM_VAL_2_PYT(v) .value( #v , v )
 
-    enum_<GameMode>("GameMode")
+    enum_<Mode>("Mode")
         ENUM_VAL_2_PYT(PLAYER)
         ENUM_VAL_2_PYT(SPECTATOR);
 
@@ -106,7 +106,8 @@ BOOST_PYTHON_MODULE(vizia)
         ENUM_VAL_2_PYT(BGRA32)
         ENUM_VAL_2_PYT(ABGR32)
         ENUM_VAL_2_PYT(GRAY8)
-        ENUM_VAL_2_PYT(ZBUFFER8);
+        ENUM_VAL_2_PYT(ZBUFFER8)
+        ENUM_VAL_2_PYT(DOOM_256_COLORS);
     
     enum_<ScreenResolution>("ScreenResolution")
         ENUM_VAL_2_PYT(RES_40X30)
@@ -291,7 +292,7 @@ BOOST_PYTHON_MODULE(vizia)
 
 	def("doom_tics_2_ms", DoomTics2Ms);
 	def("ms_to_doom_tics", Ms2DoomTics);
-    def("doom_fixed_to_float", DoomFixedToFloat);
+    def("doom_fixed_to_double", DoomFixedToDouble);
     
     class_<DoomGamePython::PythonState>("State", no_init)
         .def_readonly("number", &DoomGamePython::PythonState::number)
@@ -328,23 +329,24 @@ BOOST_PYTHON_MODULE(vizia)
         .def("get_last_action", &DoomGamePython::getLastAction)
         
 		.def("add_available_game_variable", &DoomGamePython::addAvailableGameVariable)
-		.def("clear_available_game_variable", &DoomGamePython::clearAvailableGameVariables)
+		.def("clear_available_game_variables", &DoomGamePython::clearAvailableGameVariables)
         .def("get_available_game_variables_size", &DoomGamePython::getAvailableGameVariablesSize)
 
 		.def("add_available_button", addAvailableButton1)
         .def("add_available_button", addAvailableButton2)
 
-		.def("clear_available_button", &DoomGamePython::clearAvailableButtons)
+		.def("clear_available_buttons", &DoomGamePython::clearAvailableButtons)
         .def("get_available_buttons_size", &DoomGamePython::getAvailableButtonsSize)
         .def("set_button_max_value", &DoomGamePython::setButtonMaxValue)
+		.def("get_button_max_value", &DoomGamePython::getButtonMaxValue)
 
         .def("add_custom_game_arg", &DoomGamePython::addCustomGameArg)
         .def("clear_custom_game_args", &DoomGamePython::clearCustomGameArgs)
 
         .def("send_game_command", &DoomGamePython::sendGameCommand)
 
-        .def("get_game_mode", &DoomGamePython::getGameMode)
-        .def("set_game_mode", &DoomGamePython::setGameMode)
+        .def("get_mode", &DoomGamePython::getMode)
+        .def("set_mode", &DoomGamePython::setMode)
 
 		.def("set_doom_game_path", &DoomGamePython::setDoomGamePath)
 		.def("set_doom_iwad_path", &DoomGamePython::setDoomIwadPath)
@@ -353,8 +355,8 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("set_doom_skill", &DoomGamePython::setDoomSkill)
 		.def("set_doom_config_path", &DoomGamePython::setDoomConfigPath)
 
-        .def("get_seed", &DoomGamePython::getSeed)
-        .def("set_seed", &DoomGamePython::setSeed)
+        .def("get_seed", &DoomGamePython::getEpisodeSeed)
+        .def("set_seed", &DoomGamePython::setEpisodeSeed)
 		
 		.def("set_auto_new_episode", &DoomGamePython::setAutoNewEpisode)
 		.def("set_new_episode_on_timeout", &DoomGamePython::setNewEpisodeOnTimeout)
@@ -369,8 +371,6 @@ BOOST_PYTHON_MODULE(vizia)
         .def("set_console_enabled",&DoomGamePython::setConsoleEnabled)
         
 		.def("set_screen_resolution", &DoomGamePython::setScreenResolution)
-		.def("set_screen_width", &DoomGamePython::setScreenWidth)
-		.def("set_screen_height", &DoomGamePython::setScreenHeight)
 		.def("set_screen_format", &DoomGamePython::setScreenFormat)
 		.def("set_render_hud", &DoomGamePython::setRenderHud)
 		.def("set_render_weapon", &DoomGamePython::setRenderWeapon)

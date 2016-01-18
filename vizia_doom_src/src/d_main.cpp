@@ -334,7 +334,7 @@ void D_PostEvent (const event_t *ev)
 			if(!*vizia_controlled) G_AddViewAngle (look);
 			else{
 				if(*vizia_allow_input){
-					look = Vizia_AxisFilter(VIZIA_BT_VIEW_PITCH, look);
+					look = Vizia_AxisFilter(VIZIA_BT_VIEW_ANGLE, look);
 					G_AddViewAngle (look);
 				}
 			}
@@ -2018,8 +2018,8 @@ static void D_DoomInit()
 	{
 		rngseed = staticrngseed = atoi(v);
 		//VIZIA CODE
-		//use_staticrng = true;
-		use_staticrng = false;
+		use_staticrng = true;
+		//use_staticrng = false;
 		Printf("D_DoomInit: Static RNGseed %d set.\n", rngseed);
 	}
 	else

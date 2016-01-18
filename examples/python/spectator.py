@@ -1,77 +1,63 @@
 #!/usr/bin/python
-from vizia import DoomGame
-from vizia import Button
-from vizia import GameVariable
-from vizia import ScreenFormat
-from vizia import ScreenResolution
-from vizia import GameMode
 
-from random import choice
+#####################################################################
+# This script presents SPECTATOR mode. In SPECTATOR mode you play and
+# your agent can learn from it.
+# Configuration is loaded from "config_<SCENARIO_NAME>.properties" file.
+# 
+# To see the scenario description go to "../../scenarios/README"
+# 
+#####################################################################
+from vizia import *
 
-from time import sleep
-from time import time
 
-import cv2
+game = DoomGame()
 
-def setup_vizia():
+# Choose scenario config file you wish to watch.
+# Don't load two configs cause the second will overrite the first one.
+# Multiple config files are ok but combining these ones doesn't make much sense.
 
-	game = DoomGame()
+game.load_config("config_basic.properties")
+#game.load_config("config_deadly_corridor.properties")
+#game.load_config("config_defend_the_center.properties")
+#game.load_config("config_defend_the_line.properties")
+#game.load_config("config_health_gathering.properties")
+#game.load_config("config_my_way_home.properties")
+#game.load_config("config_predict_position.properties")
 
-	game.set_game_mode(GameMode.SPECTATOR)
-	game.set_screen_resolution(ScreenResolution.RES_960X720)
-	game.set_screen_format(ScreenFormat.CRCGCB)
+game.set_screen_resolution(ScreenResolution.RES_640X480)
 
-	game.set_doom_iwad_path("../../scenarios/doom2.wad")
-	game.set_doom_file_path("../../scenarios/basic.wad")
+# Enables spectator mode, so you can play. Sounds strange but it is agent who is supposed to watch not you.
+game.set_mode(Mode.SPECTATOR)
 
-	game.set_episode_timeout(100)
+# Add some mouse support for fun.
+# TODO game.add_available_button(Button.???)
 
-	game.set_living_reward(-1.0)
-	game.set_death_penalty(300.0)
+game.init()
 
-	game.set_render_hud(True)	
-	game.set_render_crosshair(False)
-	game.set_render_weapon(True)
-	game.set_render_decals(False)
-	game.set_render_particles(False);
+episodes = 10
+print ""
+for i in range(episodes):
 
-	game.add_available_button(Button.MOVE_LEFT)
-	game.add_available_button(Button.MOVE_RIGHT)
-	game.add_available_button(Button.ATTACK)
+	game.new_episode()
+	while not game.is_episode_finished():
+		
+		s = game.get_state()
+		img = s.image_buffer
+		misc = s.game_variables
 
-	game.set_window_visible(True)
-
-	game.set_doom_skill(1)
-
-	game.init()
-	return game
-
+		#game.advance_action()
+		a = game.get_last_action()
+		r = game.get_last_reward()
+		print "state #"+str(s.number)
+		print "game variables: ", misc
+		print "action:", a
+		print "reward:",r
+		print "====================="
+		
 	
-
-game = setup_vizia()
-
-
-iters = 10000
-
-for i in range(iters):
-
-	if game.is_episode_finished():
-		print "episode finished!"
-		print "summary reward:", game.get_summary_reward()
-		print "************************"
-		game.new_episode()
-
-	#not supported in python yet
-	#a = game.get_last_action()
-	s = game.get_state()
-	r = game.get_last_reward()
-	print "state #" +str(s.number)
-	print "reward:",r
-	print "====================="	
-	game.advance_action()
-
+	print "episode finished!"
+	print "summary reward:", game.get_summary_reward()
+	print "************************"
 
 game.close()
-
-
-    

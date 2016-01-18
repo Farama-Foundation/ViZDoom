@@ -23,7 +23,7 @@ namespace Vizia {
     public:
         struct PythonState
         {
-            int number;
+            unsigned int number;
             object imageBuffer;
             object gameVariables;
             PythonState(int n, object buf, object v ):number(n),imageBuffer(buf),gameVariables(v){}
@@ -36,8 +36,8 @@ namespace Vizia {
         PythonState getState();
         boost::python::list getLastAction();
         object getGameScreen();
-        float makeAction(boost::python::list &action);
-        float makeAction(boost::python::list &action, unsigned int tics);
+        double makeAction(boost::python::list &action);
+        double makeAction(boost::python::list &action, unsigned int tics);
 
     private:
 
