@@ -14,7 +14,7 @@ namespace Vizia {
 
     unsigned int Ms2DoomTics(unsigned int ms);
 
-    float DoomFixedToFloat(int doomFixed);
+    double DoomFixedToDouble(int doomFixed);
 
     class DoomGame {
 
@@ -41,8 +41,8 @@ namespace Vizia {
         void advanceAction();
         void advanceAction(bool stateUpdate, bool renderOnly, unsigned int tics);
 
-        float makeAction(std::vector<int> &actions);
-        float makeAction(std::vector<int> &actions, unsigned int tics);
+        double makeAction(std::vector<int> &actions);
+        double makeAction(std::vector<int> &actions, unsigned int tics);
         
         State getState();
 
@@ -77,13 +77,13 @@ namespace Vizia {
 
         int getGameVariable(GameVariable var);
 
-        float getLivingReward();
-        void setLivingReward(float livingReward);
-        float getDeathPenalty();
-        void setDeathPenalty(float deathPenalty);
+        double getLivingReward();
+        void setLivingReward(double livingReward);
+        double getDeathPenalty();
+        void setDeathPenalty(double deathPenalty);
 
-        float getLastReward();
-        float getSummaryReward();
+        double getLastReward();
+        double getSummaryReward();
 
         void setDoomGamePath(std::string path);
         void setDoomIwadPath(std::string path);
@@ -145,12 +145,12 @@ namespace Vizia {
         unsigned int nextStateNumber;
         unsigned int lastMapTic;
 
-        float lastReward;
-        float lastMapReward;
-        float summaryReward;
+        double lastReward;
+        double lastMapReward;
+        double summaryReward;
 
-        float livingReward;
-        float deathPenalty;
+        double livingReward;
+        double deathPenalty;
     
     private:
         /* Load config helpers */

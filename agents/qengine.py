@@ -4,8 +4,7 @@ import random
 import cPickle as pickle
 from lasagne.layers import get_all_param_values
 from lasagne.layers import set_all_param_values
-from vizia import  GameVariable
-from vizia import doom_fixed_to_float
+from vizia import  *
 import itertools as it
 
 
@@ -183,7 +182,7 @@ class QEngine:
         r = self._game.make_action(self._actions[a], self._skiprate)
 
         if self._shaping_on:
-            sr = doom_fixed_to_float(self._game.get_game_variable(GameVariable.USER1))
+            sr = np.float32(doom_fixed_to_double(self._game.get_game_variable(GameVariable.USER1)))
             r += sr - self._last_shaping_reward
             self._last_shaping_reward = sr
 

@@ -63,14 +63,14 @@ namespace Vizia {
         
     }
 
-    float DoomGamePython::makeAction(boost::python::list &action)
+    double DoomGamePython::makeAction(boost::python::list &action)
     {
         this->setAction(action);
         DoomGame::advanceAction();
         return DoomGame::getLastReward();
     }
 
-    float DoomGamePython::makeAction(boost::python::list &action, unsigned int tics)
+    double DoomGamePython::makeAction(boost::python::list &action, unsigned int tics)
     {
         this->setAction(action);
         DoomGame::advanceAction(true, true, tics);
