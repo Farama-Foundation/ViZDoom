@@ -1,5 +1,28 @@
 
 \chapter{Application Programming Interface}
 
+Mr Jaśkowski's note:\\
+''Przykłady też będą w C++? Wydaje mi się, że to może być dość niewygodne, bo wiadomo, że C++ jest mniej czytelny niż taki Python.\\
+\\
+Zastanawiam się czy z p. widzenia czytelności tego rozdziału nie lepiej byłoby jednak pokazać API Pythonowe, a następnie wskazać różnice z C++ i wskazać na to, że jest wrapper.\\''
 
+This chapter desribes C++ api of the framework. \"Methods\"" and \"Structures and Enumerations\"" sections describe methods and structures exposed by api along with short examples if needed. \"Python wrapper\" outlines differences between C++ and Python Api. \"Extended examples\" sections shows fully functional examples in a proper context.
 
+\section{Methods}
+All that is written in README (the api part) but nicer, more thorough and with examples
+\section{Structures and Enumerations}
+Just like above
+\begin{itemize}
+\item struct state
+\item enumeration types . . .or maybe move it to the apendinx?
+\end{itemize}
+
+\section{Python Wrapper}
+
+\begin{itemize}
+\item naming convention is underscore not camelcase for all methods except for the constructor
+\item State is changed structuraly: bufer is a numpy array and game variables are a Python list.
+\item getState COPIES the buffer and gameVariables, it doesn't happen in cpp. 
+\end{itemize}
+
+\section{Extended Examples}

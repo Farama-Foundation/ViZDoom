@@ -52,7 +52,7 @@ namespace Vizia {
         if( listLength != this->getAvailableButtonsSize())
         {
             cerr<<"Incorrect action length: "<<listLength<<" Should be: "<<this->getAvailableButtonsSize()<<endl;
-            //maybe throw something?
+            //TODO maybe throw something?
             return ;
         }
         std::vector<int> properAction = std::vector<int>(listLength);
@@ -63,14 +63,14 @@ namespace Vizia {
         
     }
 
-    float DoomGamePython::makeAction(boost::python::list &action)
+    double DoomGamePython::makeAction(boost::python::list &action)
     {
         this->setAction(action);
         DoomGame::advanceAction();
         return DoomGame::getLastReward();
     }
 
-    float DoomGamePython::makeAction(boost::python::list &action, unsigned int tics)
+    double DoomGamePython::makeAction(boost::python::list &action, unsigned int tics)
     {
         this->setAction(action);
         DoomGame::advanceAction(true, true, tics);
@@ -81,7 +81,6 @@ namespace Vizia {
         if (isEpisodeFinished()) {
             return DoomGamePython::PythonState(this->state.number);
         }
-
 
         PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, this->doomController->getScreen());
         boost::python::handle<> numpyImageHandle = boost::python::handle<>(img);
@@ -107,9 +106,7 @@ namespace Vizia {
         std::vector<int> lastAction = DoomGame::getLastAction();
         for (std::vector<int>::iterator it = lastAction.begin(); it!=lastAction.end();++it)
         {
-            //TODO
-            //insert *it somehow
-            //res.append(*it); <- this doesn't work and I have other stuff to do
+            res.append(*it); 
         }
         return res;
     }

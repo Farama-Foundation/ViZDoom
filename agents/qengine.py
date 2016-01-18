@@ -4,8 +4,9 @@ import random
 import cPickle as pickle
 from lasagne.layers import get_all_param_values
 from lasagne.layers import set_all_param_values
-from vizia import  GameVariable
-from vizia import doom_fixed_to_float
+from vizia import  *
+import itertools as it
+
 
 class IdentityImageConverter:
     def __init__(self, source):
@@ -31,9 +32,15 @@ class Float32ImageConverter(IdentityImageConverter):
     def convert(self, img):
         return  np.float32(img)/255.0
 
+def default_actions_generator(the_game):
+    n = the_game.get_available_buttons_size()
+    actions = []
+    for perm in it.product([0, 1], repeat=n):
+        actions.append(list(perm))
+    return actions
 
 class QEngine:
-    def __init__(self, game, evaluator, actions_generator, gamma=0.7, batch_size=500, update_frequency=500,
+    def __init__(self, game, evaluator, actions_generator=None, gamma=0.7, batch_size=500, update_frequency=500,
                  history_length=1, bank = None, bank_capacity=10000, start_epsilon=1.0, end_epsilon=0.0,
                  epsilon_decay_start_step=100000, epsilon_decay_steps=100000, reward_scale = 1.0, image_converter=None, skiprate = 1, shaping_on = False):
         if image_converter:
@@ -52,7 +59,7 @@ class QEngine:
         self._end_epsilon = min(max(end_epsilon, 0.0), self._epsilon)
         self._epsilon_decay_stride = (self._epsilon - end_epsilon) / epsilon_decay_steps
         self._epsilon_decay_start = epsilon_decay_start_step
-        self._skiprate = skiprate
+        self._skiprate = max(skiprate, 1)
         self._shaping_on = shaping_on
 
         if self._shaping_on:
@@ -64,7 +71,10 @@ class QEngine:
         else:
             self._transitions = TransitionBank(bank_capacity)
         self._steps = 0
-        self._actions = actions_generator(game)
+        if actions_generator == None:
+            self._actions = default_actions_generator(game)
+        else:
+            self._actions = actions_generator(game)
         self._actions_num = len(self._actions)
         self._actions_stats = np.zeros([self._actions_num], np.int)
 
@@ -172,7 +182,7 @@ class QEngine:
         r = self._game.make_action(self._actions[a], self._skiprate)
 
         if self._shaping_on:
-            sr = doom_fixed_to_float(self._game.get_game_variable(GameVariable.USER1))
+            sr = np.float32(doom_fixed_to_double(self._game.get_game_variable(GameVariable.USER1)))
             r += sr - self._last_shaping_reward
             self._last_shaping_reward = sr
 
@@ -205,7 +215,7 @@ class QEngine:
 	        while not self._game.is_episode_finished():
 	            self.make_step()
 
-        return np.float32((self._game.get_summary_reward())*self._reward_scale)
+        return np.float32(self._game.get_summary_reward())
 
     def get_actions_stats(self, clear=False, norm=True):
         stats = self._actions_stats.copy()

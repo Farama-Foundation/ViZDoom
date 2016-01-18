@@ -11,13 +11,17 @@ namespace Vizia {
 
 //PUBLIC FUNCTIONS
 
+    void signalHandler(ba::signal_set& signal, DoomController* controller, const bs::error_code& error, int signal_number){
+        controller->intSignal();
+    }
+
     DoomController::DoomController() {
 
         this->MQController = NULL;
         this->MQDoom = NULL;
 
         this->InputSMRegion = NULL;
-        this->GameVarsSMRegion = NULL;
+        this->GameVariablesSMRegion = NULL;
         this->ScreenSMRegion = NULL;
 
         this->screenWidth = 320;
@@ -60,13 +64,21 @@ namespace Vizia {
         // AUTO RESTART
 
         this->generateInstanceId();
-        this->generateSeed();
+        //this->generateStaticSeed();
+        this->staticSeed = 0;
         this->doomRunning = false;
         this->doomWorking = false;
+
+        //THREADS
+        this->signalThread = NULL;
+        this->doomThread = NULL;
+
+        this->_input = new InputStruct();
     }
 
     DoomController::~DoomController() {
-        this->close();
+        //this->close();
+        delete _input;
     }
 
 //FLOW CONTROL
@@ -76,21 +88,26 @@ namespace Vizia {
         if (!this->doomRunning && this->iwadPath.length() != 0 && this->map.length() != 0) {
 
             try{
+                this->doomRunning = true;
+
                 if (this->instanceId.length() == 0) generateInstanceId();
                 this->MQInit();
 
-                doomThread = new b::thread(b::bind(&DoomController::lunchDoom, this));
-                this->waitForDoomStart();
+                this->signalThread = new b::thread(b::bind(&DoomController::handleSignals, this));
 
-                this->doomRunning = true;
+                this->doomThread = new b::thread(b::bind(&DoomController::lunchDoom, this));
+                this->waitForDoomStart();
 
                 this->SMInit();
                 this->waitForDoomMapStartTime();
 
                 this->MQSend(MSG_CODE_UPDATE);
                 this->waitForDoomWork();
+
+                *this->input = *this->_input;
             }
             catch(const Exception &e){
+                this->doomRunning = false;
                 this->close();
                 throw;
             }
@@ -102,23 +119,33 @@ namespace Vizia {
     void DoomController::close() {
 
         if (this->doomRunning) {
+
+            this->doomRunning = false;
+            if (this->signalThread && this->signalThread->joinable()) {
+                this->ioService.stop();
+                this->signalThread->interrupt();
+                this->signalThread->join();
+            }
+
             this->MQSend(MSG_CODE_CLOSE);
 
-            if (this->doomThread->joinable()) {
+            if (this->doomThread && this->doomThread->joinable()) {
                 this->doomThread->interrupt();
                 this->doomThread->join();
             }
 
-            this->doomRunning = false;
+            this->SMClose();
+            this->MQClose();
         }
+    }
 
-        this->SMClose();
-        this->MQClose();
+    void DoomController::intSignal(){
+        this->MQSelfSend(MSG_CODE_SIGNAL_INT_ABRT_TERM);
     }
 
     void DoomController::restart() {
-        close();
-        init();
+        this->close();
+        this->init();
     }
 
     bool DoomController::tic() {
@@ -134,21 +161,21 @@ namespace Vizia {
                 //this->lastTicTime = bc::steady_clock::now();
                 this->lastTicTime = std::clock();
 
-                this->mapLastTic = this->GameVars->MAP_TIC;
+                this->mapLastTic = this->gameVariables->MAP_TIC;
                 if(update) this->MQSend(MSG_CODE_TIC_N_UPDATE);
                 else this->MQSend(MSG_CODE_TIC);
                 this->waitForDoomWork();
             }
 
-            if (this->GameVars->PLAYER_DEAD) {
+            if (this->gameVariables->PLAYER_DEAD) {
                 this->mapEnded = true;
                 if (this->autoRestart && this->autoRestartOnPlayersDeath) this->restartMap();
             }
-            else if (this->mapTimeout > 0 && this->GameVars->MAP_TIC >= this->mapTimeout + this->mapStartTime) {
+            else if (this->mapTimeout > 0 && this->gameVariables->MAP_TIC >= this->mapTimeout + this->mapStartTime) {
                 this->mapEnded = true;
                 if (this->autoRestart && this->autoRestartOnTimeout) this->restartMap();
             }
-            else if (this->GameVars->MAP_END) {
+            else if (this->gameVariables->MAP_END) {
                 this->mapEnded = true;
                 if (this->autoRestart && this->autoRestartOnMapEnd) this->restartMap();
             }
@@ -212,6 +239,7 @@ namespace Vizia {
         unsigned long long nsLeft = nsToWait - (now - this->lastTicTime);///(CLOCKS_PER_SEC/1000);
         bc::nanoseconds wait(nsLeft);
         b::this_thread::sleep_for( wait );
+        //std::cout << "CZEKANO: " << nsLeft << std::endl;
     }
 
     bool DoomController::realTimeTics(unsigned int tics, bool update){
@@ -277,7 +305,7 @@ namespace Vizia {
                     restartingTics = 0;
                 }
 
-            } while (this->GameVars->MAP_END || this->GameVars->MAP_TIC > 1);
+            } while (this->gameVariables->MAP_END || this->gameVariables->MAP_TIC > 1);
 
             this->waitForDoomMapStartTime();
 
@@ -298,9 +326,9 @@ namespace Vizia {
         }
     }
 
-    unsigned int DoomController::getCurrentSeed(){ return this->GameVars->GAME_SEED; }
-    unsigned int DoomController::getSeed(){ return this->seed; }
-    void DoomController::setSeed(unsigned int seed){ if(!this->doomRunning) this->seed = seed; }
+    unsigned int DoomController::getSeed(){ return this->gameVariables->GAME_SEED; }
+    unsigned int DoomController::getStaticSeed(){ return this->staticSeed; }
+    void DoomController::setStaticSeed(unsigned int seed){ if(!this->doomRunning) this->staticSeed = seed; }
 
     void DoomController::setAutoMapRestart(bool set) { this->autoRestart = set; }
     void DoomController::setAutoMapRestartOnTimeout(bool set) { this->autoRestartOnTimeout = set; }
@@ -314,17 +342,17 @@ namespace Vizia {
     void DoomController::setMapTimeout(unsigned int tics) { this->mapTimeout = tics; }
 
     bool DoomController::isMapFirstTic() {
-        if (this->doomRunning && this->GameVars->MAP_TIC <= 1) return true;
+        if (this->doomRunning && this->gameVariables->MAP_TIC <= 1) return true;
         else return false;
     }
 
     bool DoomController::isMapLastTic() {
-        if (this->doomRunning && this->mapTimeout > 0 && this->GameVars->MAP_TIC >= this->mapTimeout + this->mapStartTime) return true;
+        if (this->doomRunning && this->mapTimeout > 0 && this->gameVariables->MAP_TIC >= this->mapTimeout + this->mapStartTime) return true;
         else return false;
     }
 
     bool DoomController::isMapEnded() {
-        if (this->doomRunning && this->GameVars->MAP_END) return true;
+        if (this->doomRunning && this->gameVariables->MAP_END) return true;
         else return false;
     }
 
@@ -441,12 +469,12 @@ namespace Vizia {
     }
 
     unsigned int DoomController::getScreenWidth() {
-        if (this->doomRunning) return this->GameVars->SCREEN_WIDTH;
+        if (this->doomRunning) return this->gameVariables->SCREEN_WIDTH;
         else return 0;
     }
 
     unsigned int DoomController::getScreenHeight() {
-        if (this->doomRunning) return this->GameVars->SCREEN_HEIGHT;
+        if (this->doomRunning) return this->gameVariables->SCREEN_HEIGHT;
         else return 0;
     }
 
@@ -461,80 +489,115 @@ namespace Vizia {
     }
 
     size_t DoomController::getScreenPitch() {
-        if (this->doomRunning) return (size_t) this->GameVars->SCREEN_PITCH;
+        if (this->doomRunning) return (size_t) this->gameVariables->SCREEN_PITCH;
         else return 0;
     }
 
     ScreenFormat DoomController::getScreenFormat() {
-        if (this->doomRunning) return (ScreenFormat) this->GameVars->SCREEN_FORMAT;
+        if (this->doomRunning) return (ScreenFormat) this->gameVariables->SCREEN_FORMAT;
         else return this->screenFormat;
     }
 
     size_t DoomController::getScreenSize() {
-        if (this->doomRunning) return (size_t) this->GameVars->SCREEN_SIZE;
+        if (this->doomRunning) return (size_t) this->gameVariables->SCREEN_SIZE;
         else return 0;
     }
 
 //SM SETTERS & GETTERS
 
-    uint8_t *const DoomController::getScreen() { return this->Screen; }
+    uint8_t *const DoomController::getScreen() { return this->screen; }
 
-    DoomController::InputStruct *const DoomController::getInput() { return this->Input; }
+    DoomController::InputStruct *const DoomController::getInput() { return this->input; }
 
-    DoomController::GameVarsStruct *const DoomController::getGameVariables() { return this->GameVars; }
+    DoomController::GameVariablesStruct *const DoomController::getGameVariables() { return this->gameVariables; }
 
-    int DoomController::getButtonState(Button button){ return this->Input->BT[button]; }
+    int DoomController::getButtonState(Button button){
+        if(this->doomRunning) return this->input->BT[button];
+        else return 0;
+    }
 
     void DoomController::setButtonState(Button button, int state) {
-        if (button < ButtonsNumber && button >= 0) this->Input->BT[button] = state;
+        if (button < ButtonsNumber && button >= 0 && this->doomRunning)
+            this->input->BT[button] = state;
+
     }
 
     void DoomController::toggleButtonState(Button button) {
-        if (button < ButtonsNumber && button >= 0) this->Input->BT[button] = !this->Input->BT[button];
+        if (button < ButtonsNumber && button >= 0 && this->doomRunning)
+            this->input->BT[button] = !this->input->BT[button];
+
     }
 
-    bool DoomController::isButtonAvailable(Button button){ return this->Input->BT_AVAILABLE[button]; }
+    bool DoomController::isButtonAvailable(Button button){
+        if(this->doomRunning) return this->input->BT_AVAILABLE[button];
+        else return this->_input->BT_AVAILABLE[button];
+    }
 
     void DoomController::setButtonAvailable(Button button, bool allow) {
-        if (button < ButtonsNumber && button >= 0) this->Input->BT_AVAILABLE[button] = allow;
+        if (button < ButtonsNumber && button >= 0) {
+            if (this->doomRunning) this->input->BT_AVAILABLE[button] = allow;
+            this->_input->BT_AVAILABLE[button] = allow;
+        }
     }
 
     void DoomController::resetButtons(){
-        for (int i = 0; i < ButtonsNumber; ++i) this->Input->BT[i] = 0;
+        if (this->doomRunning)
+            for (int i = 0; i < ButtonsNumber; ++i)
+                this->input->BT[i] = 0;
     }
 
     void DoomController::resetDescreteButtons(){
-        this->Input->BT[ATTACK] = 0;
-        this->Input->BT[USE] = 0;
+        if (this->doomRunning) {
+            this->input->BT[ATTACK] = 0;
+            this->input->BT[USE] = 0;
 
-        this->Input->BT[JUMP] = 0;
-        this->Input->BT[TURN180] = 0;
-        this->Input->BT[ALTATTACK] = 0;
-        this->Input->BT[RELOAD] = 0;
+            this->input->BT[JUMP] = 0;
+            this->input->BT[TURN180] = 0;
+            this->input->BT[ALTATTACK] = 0;
+            this->input->BT[RELOAD] = 0;
+            this->input->BT[LAND] = 0;
 
-        for(int i = SELECT_WEAPON1; i <= SELECT_WEAPON0; ++i){
-            this->Input->BT[i] = 0;
+            for (int i = SELECT_WEAPON1; i <= SELECT_WEAPON0; ++i) {
+                this->input->BT[i] = 0;
+            }
+
+            this->input->BT[SELECT_NEXT_WEAPON] = 0;
+            this->input->BT[SELECT_PREV_WEAPON] = 0;
+            this->input->BT[DROP_SELECTED_WEAPON] = 0;
+            this->input->BT[ACTIVATE_SELECTED_ITEM] = 0;
+            this->input->BT[SELECT_NEXT_ITEM] = 0;
+            this->input->BT[SELECT_PREV_ITEM] = 0;
+            this->input->BT[DROP_SELECTED_ITEM] = 0;
         }
-
-        this->Input->BT[SELECT_NEXT_WEAPON] = 0;
-        this->Input->BT[SELECT_PREV_WEAPON] = 0;
-        this->Input->BT[DROP_SELECTED_WEAPON] = 0;
-        this->Input->BT[ACTIVATE_SELECTED_ITEM] = 0;
-        this->Input->BT[SELECT_NEXT_ITEM] = 0;
-        this->Input->BT[SELECT_PREV_ITEM] = 0;
-        this->Input->BT[DROP_SELECTED_ITEM] = 0;
     }
 
     void DoomController::disableAllButtons(){
-        for (int i = 0; i < ButtonsNumber; ++i) this->Input->BT_AVAILABLE[i] = false;
+        for (int i = 0; i < ButtonsNumber; ++i){
+            if (this->doomRunning) this->input->BT_AVAILABLE[i] = false;
+            this->_input->BT_AVAILABLE[i] = false;
+        }
     }
 
     void DoomController::availableAllButtons(){
-        for (int i = 0; i < ButtonsNumber; ++i) this->Input->BT_AVAILABLE[i] = true;
+        for (int i = 0; i < ButtonsNumber; ++i){
+            if (this->doomRunning) this->input->BT_AVAILABLE[i] = true;
+            this->_input->BT_AVAILABLE[i] = true;
+        }
     }
 
     void DoomController::setButtonMaxValue(Button button, int value){
-        if(button >= DiscreteButtonsNumber) this->Input->BT_MAX_VALUE[button - DiscreteButtonsNumber] = value;
+        if(button >= DiscreteButtonsNumber){
+            if (this->doomRunning) this->input->BT_MAX_VALUE[button - DiscreteButtonsNumber] = value;
+            this->_input->BT_MAX_VALUE[button - DiscreteButtonsNumber] = value;
+        }
+    }
+
+    int DoomController::getButtonMaxValue(Button button){
+        if(button >= DiscreteButtonsNumber){
+            if (this->doomRunning) return this->input->BT_MAX_VALUE[button - DiscreteButtonsNumber];
+            else return this->_input->BT_MAX_VALUE[button - DiscreteButtonsNumber];
+        }
+        else return 1;
     }
 
     bool DoomController::isButtonDiscrete(Button button){
@@ -551,77 +614,77 @@ namespace Vizia {
     int DoomController::getGameVariable(GameVariable var) {
         switch (var) {
             case KILLCOUNT :
-                return this->GameVars->MAP_KILLCOUNT;
+                return this->gameVariables->MAP_KILLCOUNT;
             case ITEMCOUNT :
-                return this->GameVars->MAP_ITEMCOUNT;
+                return this->gameVariables->MAP_ITEMCOUNT;
             case SECRETCOUNT :
-                return this->GameVars->MAP_SECRETCOUNT;
+                return this->gameVariables->MAP_SECRETCOUNT;
             case HEALTH :
-                return this->GameVars->PLAYER_HEALTH;
+                return this->gameVariables->PLAYER_HEALTH;
             case ARMOR :
-                return this->GameVars->PLAYER_ARMOR;
+                return this->gameVariables->PLAYER_ARMOR;
             case ON_GROUND :
-                return this->GameVars->PLAYER_ON_GROUND;
+                return this->gameVariables->PLAYER_ON_GROUND;
             case ATTACK_READY :
-                return this->GameVars->PLAYER_ATTACK_READY;
+                return this->gameVariables->PLAYER_ATTACK_READY;
             case ALTATTACK_READY :
-                return this->GameVars->PLAYER_ALTATTACK_READY;
+                return this->gameVariables->PLAYER_ALTATTACK_READY;
             case SELECTED_WEAPON :
-                return this->GameVars->PLAYER_SELECTED_WEAPON;
+                return this->gameVariables->PLAYER_SELECTED_WEAPON;
             case SELECTED_WEAPON_AMMO :
-                return this->GameVars->PLAYER_SELECTED_WEAPON_AMMO;
+                return this->gameVariables->PLAYER_SELECTED_WEAPON_AMMO;
         }
-        if(var >= AMMO1 && var <= AMMO0){
-            return this->GameVars->PLAYER_AMMO[var-AMMO1];
+        if(var >= AMMO0 && var <= AMMO9){
+            return this->gameVariables->PLAYER_AMMO[var - AMMO0];
         }
-        else if(var >= WEAPON1 && var <= WEAPON0){
-            return this->GameVars->PLAYER_WEAPON[var-WEAPON1];
+        else if(var >= WEAPON0 && var <= WEAPON9){
+            return this->gameVariables->PLAYER_WEAPON[var - WEAPON0];
         }
         else if(var >= USER1 && var <= USER30){
-            return this->GameVars->MAP_USER_VARS[var-USER1];
+            return this->gameVariables->MAP_USER_VARS[var - USER1];
         }
         else return 0;
     }
 
-    int DoomController::getGameTic() { return this->GameVars->GAME_TIC; }
-    int DoomController::getMapTic() { return this->GameVars->MAP_TIC; }
+    int DoomController::getGameTic() { return this->gameVariables->GAME_TIC; }
+    int DoomController::getMapTic() { return this->gameVariables->MAP_TIC; }
 
-    int DoomController::getMapReward() { return this->GameVars->MAP_REWARD; }
+    int DoomController::getMapReward() { return this->gameVariables->MAP_REWARD; }
 
-    int DoomController::getMapKillCount() { return this->GameVars->MAP_KILLCOUNT; }
-    int DoomController::getMapItemCount() { return this->GameVars->MAP_ITEMCOUNT; }
-    int DoomController::getMapSecretCount() { return this->GameVars->MAP_SECRETCOUNT; }
+    int DoomController::getMapKillCount() { return this->gameVariables->MAP_KILLCOUNT; }
+    int DoomController::getMapItemCount() { return this->gameVariables->MAP_ITEMCOUNT; }
+    int DoomController::getMapSecretCount() { return this->gameVariables->MAP_SECRETCOUNT; }
 
-    bool DoomController::isPlayerDead() { return this->GameVars->PLAYER_DEAD; }
+    bool DoomController::isPlayerDead() { return this->gameVariables->PLAYER_DEAD; }
 
-    int DoomController::getPlayerKillCount() { return this->GameVars->PLAYER_KILLCOUNT; }
-    int DoomController::getPlayerItemCount() { return this->GameVars->PLAYER_ITEMCOUNT; }
-    int DoomController::getPlayerSecretCount() { return this->GameVars->PLAYER_SECRETCOUNT; }
-    int DoomController::getPlayerFragCount() { return this->GameVars->PLAYER_FRAGCOUNT; }
+    int DoomController::getPlayerKillCount() { return this->gameVariables->PLAYER_KILLCOUNT; }
+    int DoomController::getPlayerItemCount() { return this->gameVariables->PLAYER_ITEMCOUNT; }
+    int DoomController::getPlayerSecretCount() { return this->gameVariables->PLAYER_SECRETCOUNT; }
+    int DoomController::getPlayerFragCount() { return this->gameVariables->PLAYER_FRAGCOUNT; }
 
-    int DoomController::getPlayerHealth() { return this->GameVars->PLAYER_HEALTH; }
-    int DoomController::getPlayerArmor() { return this->GameVars->PLAYER_ARMOR; }
+    int DoomController::getPlayerHealth() { return this->gameVariables->PLAYER_HEALTH; }
+    int DoomController::getPlayerArmor() { return this->gameVariables->PLAYER_ARMOR; }
 
-    bool DoomController::isPlayerOnGround() { return this->GameVars->PLAYER_ON_GROUND; }
-    bool DoomController::isPlayerAttackReady() { return this->GameVars->PLAYER_ATTACK_READY; }
-    bool DoomController::isPlayerAltAttackReady() { return this->GameVars->PLAYER_ALTATTACK_READY; }
+    bool DoomController::isPlayerOnGround() { return this->gameVariables->PLAYER_ON_GROUND; }
+    bool DoomController::isPlayerAttackReady() { return this->gameVariables->PLAYER_ATTACK_READY; }
+    bool DoomController::isPlayerAltAttackReady() { return this->gameVariables->PLAYER_ALTATTACK_READY; }
 
-    int DoomController::getPlayerSelectedWeaponAmmo() { return this->GameVars->PLAYER_SELECTED_WEAPON_AMMO; }
-    int DoomController::getPlayerSelectedWeapon() { return this->GameVars->PLAYER_SELECTED_WEAPON; }
+    int DoomController::getPlayerSelectedWeaponAmmo() { return this->gameVariables->PLAYER_SELECTED_WEAPON_AMMO; }
+    int DoomController::getPlayerSelectedWeapon() { return this->gameVariables->PLAYER_SELECTED_WEAPON; }
 
     int DoomController::getPlayerAmmo(unsigned int slot) {
-        return slot < SlotsNumber ? this->GameVars->PLAYER_AMMO[slot] : 0;
+        return slot < SlotsNumber ? this->gameVariables->PLAYER_AMMO[slot] : 0;
     }
 
     int DoomController::getPlayerWeapon(unsigned int slot) {
-        return slot < SlotsNumber ? this->GameVars->PLAYER_WEAPON[slot] : 0;
+        return slot < SlotsNumber ? this->gameVariables->PLAYER_WEAPON[slot] : 0;
     }
 
 //PRIVATE
 
-    void DoomController::generateSeed(){
+    void DoomController::generateStaticSeed(){
         srand(time(NULL));
-        this->seed = rand();
+        this->staticSeed = rand();
     }
 
     void DoomController::generateInstanceId() {
@@ -651,10 +714,15 @@ namespace Vizia {
                 break;
 
             case MSG_CODE_DOOM_CLOSE :
+            case MSG_CODE_DOOM_PROCESS_EXIT :
                 throw DoomUnexpectedExitException();
 
             case MSG_CODE_DOOM_ERROR :
                 throw DoomErrorException();
+
+            case MSG_CODE_SIGNAL_INT_ABRT_TERM :
+                this->close();
+                break;
         }
 
         this->doomWorking = false;
@@ -680,14 +748,18 @@ namespace Vizia {
 
                     case MSG_CODE_DOOM_CLOSE :
                         this->close();
-                        throw DoomUnexpectedExitException();
+                        break;
 
                     case MSG_CODE_DOOM_ERROR :
-                        this->close();
                         throw DoomErrorException();
 
-                    default :
+                    case MSG_CODE_DOOM_PROCESS_EXIT :
+                        if(this->doomRunning) throw DoomUnexpectedExitException();
                         break;
+
+                    case MSG_CODE_SIGNAL_INT_ABRT_TERM :
+                        this->close();
+                        exit(0);
                 }
             } while (!done);
 
@@ -697,7 +769,7 @@ namespace Vizia {
     }
 
     void DoomController::waitForDoomMapStartTime() {
-        while(this->GameVars->MAP_TIC < this->mapStartTime) {
+        while(this->gameVariables->MAP_TIC < this->mapStartTime) {
             this->MQSend(MSG_CODE_TIC);
             this->waitForDoomWork();
         }
@@ -729,8 +801,10 @@ namespace Vizia {
             args.push_back(this->configPath);
         }
 
-        args.push_back("-rngseed");
-        args.push_back(b::lexical_cast<std::string>(this->seed));
+        if(staticSeed) {
+            args.push_back("-rngseed");
+            args.push_back(b::lexical_cast<std::string>(this->staticSeed));
+        }
 
         //map
         args.push_back("+map");
@@ -794,6 +868,9 @@ namespace Vizia {
         if(this->allowDoomInput){
             args.push_back("+vizia_allow_input");
             args.push_back("1");
+            //allow mouse
+            args.push_back("+use_mouse");
+            args.push_back("1");
         }
         else{
             //disable mouse
@@ -837,7 +914,14 @@ namespace Vizia {
         //ctx.stdout_behavior = bpr::silence_stream();
         bpr::child doomProcess = bpr::execute(bpri::set_args(args), bpri::inherit_env());
         bpr::wait_for_exit(doomProcess);
-        this->MQSelfSend(MSG_CODE_DOOM_CLOSE);
+        this->MQSelfSend(MSG_CODE_DOOM_PROCESS_EXIT);
+    }
+
+    void DoomController::handleSignals(){
+        ba::signal_set signals(this->ioService, SIGINT, SIGABRT, SIGTERM);
+        signals.async_wait(b::bind(signalHandler, b::ref(signals), this, _1, _2));
+
+        this->ioService.run();
     }
 
 //SM FUNCTIONS 
@@ -849,24 +933,24 @@ namespace Vizia {
 
             this->InputSMRegion = new bip::mapped_region(this->SM, bip::read_write, 0,
                                                          sizeof(DoomController::InputStruct));
-            this->Input = static_cast<DoomController::InputStruct *>(this->InputSMRegion->get_address());
+            this->input = static_cast<DoomController::InputStruct *>(this->InputSMRegion->get_address());
 
-            this->GameVarsSMRegion = new bip::mapped_region(this->SM, bip::read_only,
+            this->GameVariablesSMRegion = new bip::mapped_region(this->SM, bip::read_only,
                                                             sizeof(DoomController::InputStruct),
-                                                            sizeof(DoomController::GameVarsStruct));
-            this->GameVars = static_cast<DoomController::GameVarsStruct *>(this->GameVarsSMRegion->get_address());
+                                                            sizeof(DoomController::GameVariablesStruct));
+            this->gameVariables = static_cast<DoomController::GameVariablesStruct *>(this->GameVariablesSMRegion->get_address());
 
-            this->screenWidth = this->GameVars->SCREEN_WIDTH;
-            this->screenHeight = this->GameVars->SCREEN_HEIGHT;
-            this->screenPitch = this->GameVars->SCREEN_PITCH;
-            this->screenSize = this->GameVars->SCREEN_SIZE;
-            this->screenFormat = (ScreenFormat)this->GameVars->SCREEN_FORMAT;
+            this->screenWidth = this->gameVariables->SCREEN_WIDTH;
+            this->screenHeight = this->gameVariables->SCREEN_HEIGHT;
+            this->screenPitch = this->gameVariables->SCREEN_PITCH;
+            this->screenSize = this->gameVariables->SCREEN_SIZE;
+            this->screenFormat = (ScreenFormat)this->gameVariables->SCREEN_FORMAT;
 
             this->ScreenSMRegion = new bip::mapped_region(this->SM, bip::read_only,
                                                           sizeof(DoomController::InputStruct) +
-                                                          sizeof(DoomController::GameVarsStruct),
+                                                          sizeof(DoomController::GameVariablesStruct),
                                                           this->screenSize);
-            this->Screen = static_cast<uint8_t *>(this->ScreenSMRegion->get_address());
+            this->screen = static_cast<uint8_t *>(this->ScreenSMRegion->get_address());
         }
         catch (bip::interprocess_exception &ex) {
             throw SharedMemoryException();
@@ -874,11 +958,11 @@ namespace Vizia {
     }
 
     void DoomController::SMClose() {
-        delete (this->InputSMRegion);
+        delete this->InputSMRegion;
         this->InputSMRegion = NULL;
-        delete (this->GameVarsSMRegion);
-        this->GameVarsSMRegion = NULL;
-        delete (this->ScreenSMRegion);
+        delete this->GameVariablesSMRegion;
+        this->GameVariablesSMRegion = NULL;
+        delete this->ScreenSMRegion;
         this->ScreenSMRegion = NULL;
         bip::shared_memory_object::remove(this->SMName.c_str());
     }
@@ -943,11 +1027,11 @@ namespace Vizia {
 
     void DoomController::MQClose() {
         bip::message_queue::remove(this->MQDoomName.c_str());
-        delete(this->MQDoom);
+        delete this->MQDoom;
         this->MQDoom = NULL;
 
         bip::message_queue::remove(this->MQControllerName.c_str());
-        delete(this->MQController);
+        delete this->MQController;
         this->MQController = NULL;
     }
 }

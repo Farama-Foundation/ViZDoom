@@ -6,6 +6,7 @@
 
 #include <string>
 #include <vector>
+#include <list>
 
 namespace Vizia {
 
@@ -13,7 +14,7 @@ namespace Vizia {
 
     unsigned int Ms2DoomTics(unsigned int ms);
 
-    float DoomFixedToFloat(int doomFixed);
+    double DoomFixedToDouble(int doomFixed);
 
     class DoomGame {
 
@@ -28,8 +29,7 @@ namespace Vizia {
         DoomGame();
         virtual ~DoomGame();
 
-        bool loadConfig(std::string file);
-        bool saveConfig(std::string file);
+        bool loadConfig(std::string filename);
 
         bool init();
         void close();
@@ -41,8 +41,8 @@ namespace Vizia {
         void advanceAction();
         void advanceAction(bool stateUpdate, bool renderOnly, unsigned int tics);
 
-        float makeAction(std::vector<int> &actions);
-        float makeAction(std::vector<int> &actions, unsigned int tics);
+        double makeAction(std::vector<int> &actions);
+        double makeAction(std::vector<int> &actions, unsigned int tics);
         
         State getState();
 
@@ -56,8 +56,10 @@ namespace Vizia {
         void clearAvailableButtons();
         int getAvailableButtonsSize();
         void setButtonMaxValue(Button button, int maxValue);
+        int getButtonMaxValue(Button button);
 
         void addAvailableGameVariable(GameVariable var);
+
         void clearAvailableGameVariables();
         int getAvailableGameVariablesSize();
 
@@ -68,22 +70,20 @@ namespace Vizia {
 
         uint8_t * const getGameScreen();
 
-        GameMode getGameMode();
-        void setGameMode(GameMode mode);
+        Mode getMode();
+        void setMode(Mode mode);
 
         //OPTIONS
 
-        const DoomController *getController();
-
         int getGameVariable(GameVariable var);
 
-        float getLivingReward();
-        void setLivingReward(float livingReward);
-        float getDeathPenalty();
-        void setDeathPenalty(float deathPenalty);
+        double getLivingReward();
+        void setLivingReward(double livingReward);
+        double getDeathPenalty();
+        void setDeathPenalty(double deathPenalty);
 
-        float getLastReward();
-        float getSummaryReward();
+        double getLastReward();
+        double getSummaryReward();
 
         void setDoomGamePath(std::string path);
         void setDoomIwadPath(std::string path);
@@ -92,8 +92,9 @@ namespace Vizia {
         void setDoomSkill(int skill);
         void setDoomConfigPath(std::string path);
 
-        unsigned int getSeed();
-        void setSeed(unsigned int seed);
+        unsigned int getEpisodeSeed();
+        unsigned int getCurrentSeed();
+        void setEpisodeSeed(unsigned int seed);
 
         void setAutoNewEpisode(bool set);
         void setNewEpisodeOnTimeout(bool set);
@@ -107,8 +108,6 @@ namespace Vizia {
         void setEpisodeTimeout(unsigned int tics);
 
         void setScreenResolution(ScreenResolution resolution);
-        void setScreenWidth(unsigned int width);
-        void setScreenHeight(unsigned int height);
         void setScreenFormat(ScreenFormat format);
         void setRenderHud(bool hud);
         void setRenderWeapon(bool weapon);
@@ -131,8 +130,8 @@ namespace Vizia {
         DoomController *doomController;
         bool running;
 
-        //STATE AND ACTIONS
-        GameMode gameMode;
+        /* STATE AND ACTIONS */
+        Mode mode;
 
         State state;
         void updateState();
@@ -142,16 +141,36 @@ namespace Vizia {
 
         std::vector<int> lastAction;
 
-        //REWARD
-        unsigned int lastStateNumber;
+        /* Reward */
+        unsigned int nextStateNumber;
+        unsigned int lastMapTic;
 
-        float lastReward;
-        float lastMapReward;
-        float summaryReward;
+        double lastReward;
+        double lastMapReward;
+        double summaryReward;
 
-        float livingReward;
-        float deathPenalty;
+        double livingReward;
+        double deathPenalty;
+    
+    private:
+        /* Load config helpers */
+        static bool StringToBool(std::string boolString);
+        static ScreenResolution StringToResolution(std::string str);
+        static ScreenFormat StringToFormat(std::string str);
+        static Button StringToButton(std::string str);
+        static GameVariable StringToGameVariable(std::string str);
+        static unsigned int StringToUint(std::string str);
+        static bool ParseListProperty(int& line_number, std::string& value, std::ifstream& input, std::vector<std::string>& output);
+    
 
+        //HELPERS
+        bool checkFilePath(std::string path);
+
+        void logError(std::string error);
+
+        void logWarning(std::string warning);
+
+        void log(std::string log);
     };
 }
 

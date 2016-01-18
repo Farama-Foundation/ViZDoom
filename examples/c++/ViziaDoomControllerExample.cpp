@@ -44,7 +44,7 @@ int main(){
     dc->setMap("map01");
     dc->setMapTimeout(200);
     dc->setAutoMapRestart(true);
-    dc->setSeed(131313);
+    dc->setStaticSeed(131313);
 
     // w przypadku nie zachowania proporcji 4:3, 16:10, 16:9
     // silnik weźmie wysokość i pomnoży razy 4/3
