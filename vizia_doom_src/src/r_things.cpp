@@ -391,8 +391,8 @@ void R_DrawVisSprite (vissprite_t *vis)//FIXME GR sprites
 				}
 				if(depthMap!=NULL) {
 					for(int pcf=0;pcf<4;pcf++) {
-						depthMap->helperBuffer[pcf]=((unsigned int) 255 - ((dc_iscale - 500) * 255) / (300000 - 500));
-						if (dc_iscale > 300000)
+						depthMap->helperBuffer[pcf]=((unsigned int) 255 - ((dc_iscale - 500) * 255) / (320000 - 500));
+						if (dc_iscale > 320000)
 							depthMap->helperBuffer[pcf]=(0);
 						if (dc_iscale < 500)
 							depthMap->helperBuffer[pcf]=(255);
