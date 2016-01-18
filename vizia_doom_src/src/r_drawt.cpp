@@ -181,7 +181,7 @@ void rt_map1col_c (int hx, int sx, int yl, int yh)
 
 	if(depthMap!=NULL)
 	{
-		depthMap->setActualDepth(5);
+		//depthMap->setActualDepth(5);
 		for(int y=yl;y<=yh;y++)
 			depthMap->setPoint(sx, y);
 	}
@@ -228,9 +228,11 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 		source += 8;
 		dest += pitch*2;
 		if(depthMap!=NULL) {
-			for (int dx = 0; dx < 4; dx++)
+			for (int dx = 0; dx < 4; dx++) {
+				depthMap->setActualDepth(depthMap->helperBuffer[dx]);
 				for (int dy = 0; dy < 2; dy++)
 					depthMap->setPoint((unsigned int) sx + dx, (unsigned int) ylookup[yl] / pitch + y_mod + dy);
+			}
 			y_mod += 2;
 		}
 	} while (--count);
@@ -854,7 +856,7 @@ void STACK_ARGS rt_tlaterevsubclamp4cols (int sx, int yl, int yh)
 // Copies all spans in all four columns to the screen starting at sx.
 // sx should be dword-aligned.
 void rt_draw4cols (int sx)
-{
+{//FIXME GR przezroczyste
 	int x, bad;
 	unsigned int maxtop, minbot, minnexttop;
 
@@ -1126,7 +1128,6 @@ void R_FillColumnHorizP (void)
 
 void R_DrawMaskedColumnHoriz (const BYTE *column, const FTexture::Span *span)
 {
-	//FIXME GR PRZEZROCZYSTE OBIEKTY
 	while (span->Length != 0)
 	{
 		const int length = span->Length;

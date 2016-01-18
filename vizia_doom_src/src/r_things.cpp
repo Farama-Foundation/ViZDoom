@@ -390,11 +390,13 @@ void R_DrawVisSprite (vissprite_t *vis)//FIXME GR sprites
 					frac += xiscale;
 				}
 				if(depthMap!=NULL) {
-					depthMap->setActualDepth((unsigned int) 255 - ((dc_iscale - 500) * 255) / (300000 - 500));
-					if (dc_iscale > 300000)
-						depthMap->setActualDepth(0);
-					if (dc_iscale < 500)
-						depthMap->setActualDepth(255);
+					for(int pcf=0;pcf<4;pcf++) {
+						depthMap->helperBuffer[pcf]=((unsigned int) 255 - ((dc_iscale - 500) * 255) / (300000 - 500));
+						if (dc_iscale > 300000)
+							depthMap->helperBuffer[pcf]=(0);
+						if (dc_iscale < 500)
+							depthMap->helperBuffer[pcf]=(255);
+					}
 				}
 				//FIXME SET GR MAX/MIN SET
 				/*static long max, min;
@@ -2314,7 +2316,7 @@ void R_DrawMasked (void)
 		R_3D_DeleteHeights();
 		fake3D = 0;
 	}
-	R_DrawPlayerSprites ();//FIXME GR weapon draving
+	R_DrawPlayerSprites ();
 }
 
 

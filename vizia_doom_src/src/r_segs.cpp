@@ -308,25 +308,7 @@ void R_RenderMaskedSegRange (drawseg_t *ds, int x1, int x2)
 	MaskedScaleY = ds->yrepeat;
 	maskedtexturecol = (fixed_t *)(openings + ds->maskedtexturecol) - ds->x1;
 	spryscale = ds->iscale + ds->iscalestep * (x1 - ds->x1);
-	if(depthMap!=NULL) {
-		depthMap->setActualDepth((unsigned int) 255 - ((ds->iscale - 20000) * 255) / (2300000 - 20000));
-		if (ds->iscale > 2300000)
-			depthMap->setActualDepth(0);
-		if (ds->iscale < 20000)
-			depthMap->setActualDepth(255);
-	}
-	//printf("%d\n", ds->iscale);
-	//printf("%u %d\n", (unsigned int) 255 - ((ds->iscale / 100 - 180) * 255) / (23000 - 180),ds->iscale);
-	/*static long max, min;
-	if(min==0) min=max;
-	if(ds->iscale>max||ds->iscale<min)
-	{
-		if(ds->iscale>max)
-			max=ds->iscale;
-		else
-			min=ds->iscale;
-		printf("MAX: %ld MIN: %ld\n", max, min);
-	}*/
+
 
 	rw_scalestep = ds->iscalestep;
 
@@ -465,12 +447,37 @@ void R_RenderMaskedSegRange (drawseg_t *ds, int x1, int x2)
 
 			while ((dc_x < stop) && (dc_x & 3))
 			{
+				if(depthMap!=NULL) {
+					depthMap->setActualDepth((unsigned int) 255 - ((MaskedSWall[dc_x] - 7500) * 255) / (850000 - 7500));
+					if (MaskedSWall[dc_x] > 850000)
+						depthMap->setActualDepth(0);
+					if (MaskedSWall[dc_x] < 7500)
+						depthMap->setActualDepth(255);
+				}
 				BlastMaskedColumn (R_DrawMaskedColumn, tex);
 				dc_x++;
 			}
 
 			while (dc_x < stop)
 			{
+				for(int pcf=0;pcf<4;pcf++) {
+					if(depthMap!=NULL) {
+						depthMap->helperBuffer[pcf]=(unsigned int) 255 - ((MaskedSWall[dc_x+pcf] - 7500) * 255) / (850000 - 7500);
+						if (MaskedSWall[dc_x+pcf] > 850000)
+							depthMap->helperBuffer[pcf]=(0);
+						if (MaskedSWall[dc_x+pcf] < 7500)
+							depthMap->helperBuffer[pcf]=(255);
+					}
+					/*static long max, min;
+					if (min == 0) min = max;
+					if (MaskedSWall[dc_x] > max || MaskedSWall[dc_x] < min) {
+						if (MaskedSWall[dc_x] > max)
+							max = MaskedSWall[dc_x];
+						else
+							min = MaskedSWall[dc_x];
+						printf("MAX: %ld MIN: %ld\n", max, min);
+					}*/
+				}
 				rt_initcols();
 				BlastMaskedColumn (R_DrawMaskedColumnHoriz, tex); dc_x++;
 				BlastMaskedColumn (R_DrawMaskedColumnHoriz, tex); dc_x++;
@@ -482,6 +489,13 @@ void R_RenderMaskedSegRange (drawseg_t *ds, int x1, int x2)
 
 			while (dc_x <= x2)
 			{
+				if(depthMap!=NULL) {
+					depthMap->setActualDepth((unsigned int) 255 - ((MaskedSWall[dc_x] - 7500) * 255) / (850000 - 7500));
+					if (MaskedSWall[dc_x] > 850000)
+						depthMap->setActualDepth(0);
+					if (MaskedSWall[dc_x] < 7500)
+						depthMap->setActualDepth(255);
+				}
 				BlastMaskedColumn (R_DrawMaskedColumn, tex);
 				dc_x++;
 			}
@@ -1081,7 +1095,7 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 	fixed_t light = rw_light - rw_lightstep;
 	SDWORD texturemid, xoffset;
 	BYTE *basecolormapdata;
-//FIXME GR DONE (JAKBY) jakby wszystkie sciany
+
 	// This function also gets used to draw skies. Unlike BUILD, skies are
 	// drawn by visplane instead of by bunch, so these checks are invalid.
 	//if ((uwal[x1] > viewheight) && (uwal[x2] > viewheight)) return;
