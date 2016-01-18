@@ -186,7 +186,6 @@ void R_DrawColumnP_C (void)
 	BYTE*				dest;
 	fixed_t 			frac;
 	fixed_t 			fracstep;
-//FIXME GR przezroczysta barierka DONE
 	count = dc_count;
 
 	// Zero length, column does not exceed a pixel.

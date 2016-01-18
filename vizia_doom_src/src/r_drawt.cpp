@@ -153,7 +153,6 @@ void rt_map1col_c (int hx, int sx, int yl, int yh)
 	BYTE *dest;
 	int count;
 	int pitch;
-	//FIXME GR przezroczystosc barierka
 	count = yh-yl;
 	if (count < 0)
 		return;
@@ -181,7 +180,6 @@ void rt_map1col_c (int hx, int sx, int yl, int yh)
 
 	if(depthMap!=NULL)
 	{
-		//depthMap->setActualDepth(5);
 		for(int y=yl;y<=yh;y++)
 			depthMap->setPoint(sx, y);
 	}
@@ -195,7 +193,7 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 	BYTE *dest;
 	int count;
 	int pitch;
-//FIXME GR przezroczystosc
+
 	count = yh-yl;
 	if (count < 0)
 		return;
@@ -204,7 +202,7 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 	dest = ylookup[yl] + sx + dc_destorg;
 	source = &dc_temp[yl*4];
 	pitch = dc_pitch;
-	
+	int y_mod=0;
 	if (count & 1) {
 		dest[0] = colormap[source[0]];
 		dest[1] = colormap[source[1]];
@@ -212,10 +210,17 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 		dest[3] = colormap[source[3]];
 		source += 4;
 		dest += pitch;
+		if(depthMap!=NULL) {
+			for (int dx = 0; dx < 4; dx++) {
+				depthMap->setActualDepth(depthMap->helperBuffer[dx]);
+				depthMap->setPoint((unsigned int) sx + dx, (unsigned int) yl + y_mod);
+			}
+			y_mod+=1;
+		}
 	}
 	if (!(count >>= 1))
 		return;
-	int y_mod=0;
+
 	do {
 		dest[0] = colormap[source[0]];
 		dest[1] = colormap[source[1]];
@@ -856,7 +861,7 @@ void STACK_ARGS rt_tlaterevsubclamp4cols (int sx, int yl, int yh)
 // Copies all spans in all four columns to the screen starting at sx.
 // sx should be dword-aligned.
 void rt_draw4cols (int sx)
-{//FIXME GR przezroczyste
+{
 	int x, bad;
 	unsigned int maxtop, minbot, minnexttop;
 

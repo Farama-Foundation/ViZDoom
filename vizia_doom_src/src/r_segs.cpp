@@ -231,7 +231,6 @@ void R_RenderMaskedSegRange (drawseg_t *ds, int x1, int x2)
 	bool		notrelevant = false;
 
 	const sector_t *sec;
-//FIXME GR barierka z przezroczystoscia
 
 	sprflipvert = false;
 
@@ -1151,6 +1150,9 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 		dc_iscale = swal[x] * yrepeat;
 		int a_dc_iscale = dc_iscale<0 ? -dc_iscale : dc_iscale;
 		if(yrepeat==1024) a_dc_iscale/=8;
+		if(yrepeat==512) a_dc_iscale/=4;
+		if(yrepeat==256) a_dc_iscale/=2;
+		//if(yrepeat!=256) printf("YREPEAT: %d\n", yrepeat);
 		if(depthMap!=NULL) {
 			depthMap->setActualDepth((unsigned int) 255 - ((a_dc_iscale / 100 - 9500) * 255) / (1600000 - 9500));
 			if (a_dc_iscale > 160000000)
@@ -1194,6 +1196,10 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 				long tmp = swal[x + z]*yrepeat;
 				if(yrepeat==1024)
 					tmp/=8;
+				if(yrepeat==512)
+					tmp/=4;
+				if(yrepeat==256)
+					tmp/=2;
 				depthMap->helperBuffer[z] = tmp<0 ? (unsigned int)-tmp : (unsigned int)tmp;
 			}
 			vplce[z] = texturemid + FixedMul (vince[z], (y1ve[z]<<FRACBITS)-centeryfrac+FRACUNIT);
@@ -1334,6 +1340,10 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 		unsigned int a_dc_iscale = dc_iscale<0 ? -dc_iscale : dc_iscale;
 		if(yrepeat==1024)
 			a_dc_iscale/=8;
+		if(yrepeat==512)
+			a_dc_iscale/=4;
+		if(yrepeat==256)
+			a_dc_iscale/=2;
 		if(depthMap!=NULL) {
 			depthMap->setActualDepth((unsigned int) 255 - ((a_dc_iscale / 100 - 9500) * 255) / (1600000 - 9500));
 			if (a_dc_iscale > 160000000)
