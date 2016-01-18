@@ -1253,8 +1253,9 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 					depthMap->storeX(x + z);
 					depthMap->storeY(y1ve[z]);
 				}
-				unsigned int a_dc_iscale = depthMap->helperBuffer[z];
+
 				if(depthMap!=NULL) {
+					unsigned int a_dc_iscale = depthMap->helperBuffer[z];
 					depthMap->setActualDepth((unsigned int) 255 - ((a_dc_iscale / 100 - 9500) * 255) / (1600000 - 9500));
 					if (a_dc_iscale > 160000000)
 						depthMap->setActualDepth(0);
@@ -1304,8 +1305,9 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 					depthMap->storeX(x + z);
 					depthMap->storeY(d4);
 				}
-				unsigned int a_dc_iscale = depthMap->helperBuffer[z];
+
 				if(depthMap!=NULL) {
+					unsigned int a_dc_iscale = depthMap->helperBuffer[z];
 					depthMap->setActualDepth((unsigned int) 255 - ((a_dc_iscale / 100 - 9500) * 255) / (1600000 - 9500));
 					if (a_dc_iscale > 160000000)
 						depthMap->setActualDepth(0);
@@ -1335,16 +1337,17 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 		dc_iscale = swal[x] * yrepeat;
 		dc_count = y2ve[0] - y1ve[0];
 		dc_texturefrac = texturemid + FixedMul (dc_iscale, (y1ve[0]<<FRACBITS)-centeryfrac+FRACUNIT);
-		depthMap->storeX(x);
-		depthMap->storeY(y1ve[0]);
-		unsigned int a_dc_iscale = dc_iscale<0 ? -dc_iscale : dc_iscale;
-		if(yrepeat==1024)
-			a_dc_iscale/=8;
-		if(yrepeat==512)
-			a_dc_iscale/=4;
-		if(yrepeat==256)
-			a_dc_iscale/=2;
+
 		if(depthMap!=NULL) {
+			depthMap->storeX(x);
+			depthMap->storeY(y1ve[0]);
+			unsigned int a_dc_iscale = dc_iscale<0 ? -dc_iscale : dc_iscale;
+			if(yrepeat==1024)
+				a_dc_iscale/=8;
+			if(yrepeat==512)
+				a_dc_iscale/=4;
+			if(yrepeat==256)
+				a_dc_iscale/=2;
 			depthMap->setActualDepth((unsigned int) 255 - ((a_dc_iscale / 100 - 9500) * 255) / (1600000 - 9500));
 			if (a_dc_iscale > 160000000)
 				depthMap->setActualDepth(0);

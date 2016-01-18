@@ -150,7 +150,7 @@ void Vizia_ScreenInit() {
     if(*vizia_screen_format==VIZIA_SCREEN_CBCGCRZB||*vizia_screen_format==VIZIA_SCREEN_CRCGCBZB
        ||*vizia_screen_format==VIZIA_SCREEN_ZBUFFER8) {
         depthMap = new depthBuffer(viziaScreenWidth, viziaScreenHeight);
-        depthMap->setDepthBoundries(30000000, 2000000);//SHOULDN'T BE HERE!
+        depthMap->setDepthBoundries(120000000, 2000000);//SHOULDN'T BE HERE!
     }
 }
 
