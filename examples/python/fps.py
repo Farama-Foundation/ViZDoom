@@ -1,9 +1,17 @@
 #!/usr/bin/python
+
+#####################################################################
+# This script test performance in frames per second.
+# Change iters, resolution, window visibility, use get_ state or not.
+# It should give you some idea how fast the framework can work on
+# your hardware. The test involes copying the state to make it more 
+# simillar to any reasonable usage. Comment the line with get_state 
+# to exclude copying process.
+#####################################################################
+
 from vizia import DoomGame
 from random import choice
 from vizia import ScreenResolution as res
-
-
 from time import time
 
 game = DoomGame()
@@ -19,7 +27,6 @@ shoot = actions[2]
 idle = [False,False,False]
 
 iters = 10000
-sleep_time = 0.0
 start = time()
 
 print "\nChecking FPS rating. It may take some time. Be patient."
@@ -28,8 +35,10 @@ for i in range(iters):
 
 	if game.is_episode_finished():		
 		game.new_episode()
-	s = game.get_state()
-	r = game.make_action(choice(actions))
+
+	# Copying happens here 
+	s = game.get_state() 
+	game.make_action(choice(actions))
 	
 end=time()
 t = end-start
