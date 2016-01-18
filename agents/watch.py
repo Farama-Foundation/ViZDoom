@@ -1,17 +1,22 @@
 #!/usr/bin/python
 from common import *
 from vizia import ScreenResolution
-load_file = "params/health_guided_160_to60_skip8_3l_f48"
+load_file = "params/health_guided_160to60_skip8"
 
-game = setup_vizia(scenario=health_guided,init=False)
+game = DoomGame()
+game.load_config("config_common.properties")
+game.load_config("config_health_guided.properties")
+#game.load_config("config_basic.properties")
+
 print "Initializing DOOM ..."
 game.set_window_visible(True)
-game.set_screen_resolution(ScreenResolution.RES_120X90)
+game.set_screen_resolution(ScreenResolution.RES_320X240)
 game.init()
 print "\nDOOM initialized."
 
 engine_args = engine_setup(game)
-engine_args["skiprate"] = 1
+engine_args['image_converter'] = ChannelScaleConverter
+#engine_args["skiprate"] = 1
 engine = QEngine(**engine_args)
 
 
