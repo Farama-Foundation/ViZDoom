@@ -4,7 +4,7 @@ from common import *
 savefile = None
 
 #savefile = "params/basic_120to60"
-savefile = "params/health_guided_160_to60_skip8_3l_f48"
+savefile = "params/health_guided_160to60_skip4"
 #savefile = "params/center_120_to80_skip4"
 #savefile = "params/s1b_120_to60_skip1"
 loadfile = savefile
@@ -12,7 +12,12 @@ loadfile = savefile
 
 game = setup_vizia(scenario=health_guided, init=True)
 
-engine = create_engine(game)
+engine_args = engine_setup(game)
+engine_args["start_epsilon"] = 0.0
+engine_args["gamma"] = 0.999
+#engine_args["image_converter"] = None
+
+engine = QEngine(**engine_args)
 
 if loadfile:
     engine.load_params(loadfile)
@@ -47,7 +52,7 @@ while epoch < epochs:
     print engine.get_actions_stats(True)
     mean_loss = engine._evaluator.get_mean_loss()
     print "steps:", engine.get_steps(), ", mean:", np.mean(rewards), ", max:", np.max(
-        rewards),"mean_loss:",mean_loss, "eps:", engine.get_epsilon()
+        rewards), "min:", np.min(rewards), "mean_loss:",mean_loss, "eps:", engine.get_epsilon()
     print "t:", round(end - start, 2)
         
     # learning mode off
@@ -64,8 +69,8 @@ while epoch < epochs:
         print "Test"
         print engine.get_actions_stats(clear=True, norm=False)
         m = np.mean(rewards)
-        print "steps:", engine.get_steps(), ", mean:", m, "max:", np.max(rewards)
-        print "t:", round(end - start, 2)
+        print "steps:", engine.get_steps(), ", mean:", m, "max:", np.max(rewards), "min:", np.min(rewards)
+        print "t:", round(end - start, 2),"s"
     epoch += 1
 
     print ""

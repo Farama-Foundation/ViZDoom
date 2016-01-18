@@ -41,7 +41,7 @@ def default_actions_generator(the_game):
     return actions
 
 class QEngine:
-    def __init__(self, game, evaluator, actions_generator=default_actions_generator, gamma=0.7, batch_size=500, update_frequency=500,
+    def __init__(self, game, evaluator, actions_generator=None, gamma=0.7, batch_size=500, update_frequency=500,
                  history_length=1, bank = None, bank_capacity=10000, start_epsilon=1.0, end_epsilon=0.0,
                  epsilon_decay_start_step=100000, epsilon_decay_steps=100000, reward_scale = 1.0, image_converter=None, skiprate = 1, shaping_on = False):
         if image_converter:
@@ -72,7 +72,10 @@ class QEngine:
         else:
             self._transitions = TransitionBank(bank_capacity)
         self._steps = 0
-        self._actions = actions_generator(game)
+        if actions_generator == None:
+            self._actions = default_actions_generator(game)
+        else:
+            self._actions = actions_generator(game)
         self._actions_num = len(self._actions)
         self._actions_stats = np.zeros([self._actions_num], np.int)
 
