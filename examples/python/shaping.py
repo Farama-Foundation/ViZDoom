@@ -59,7 +59,7 @@ for i in range(episodes):
 		r = game.make_action(choice(actions))
 		
 		# Retrieve the shaping reward 
-		sr = doom_fixed_to_float(game.get_game_variable(GameVariable.USER1))
+		sr = doom_fixed_to_double(game.get_game_variable(GameVariable.USER1))
 		sr = sr - last_summary_shaping_reward
 		last_summary_shaping_reward += sr
 
