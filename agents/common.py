@@ -53,7 +53,7 @@ def health_guided(game):
     game.add_available_button(Button.MOVE_FORWARD)
 
     game.set_episode_timeout(2100)
-    game.set_living_reward(0.125)
+    game.set_living_reward(1)
     game.set_death_penalty(100)
 
     game.add_available_game_variable(GameVariable.HEALTH)
@@ -68,7 +68,7 @@ def agenerator_left_right_move(the_game):
     move = [0,0,1]
     move_left = [1,0,1]
     move_right = [0,1,1]
-    return [left, right, move, move_left, move_right]
+    return [left, right, move]
 
 def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     cnn_args = dict()
@@ -79,10 +79,10 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     cnn_args["updates"] = lasagne.updates.nesterov_momentum
     #cnn_args["learning_rate"] = 0.01
 
-    network_args = dict(hidden_units=[800], hidden_layers=1)
-    network_args["conv_layers"] = 2
+    network_args = dict(hidden_units=[1200], hidden_layers=1)
+    network_args["conv_layers"] = 3
     network_args["pool_size"] = [(2, 2),(2,2),(1,2)]
-    network_args["num_filters"] = [32,32,48]
+    network_args["num_filters"] = [48,48,48]
     network_args["filter_size"] = [7,4,2]
     #network_args["hidden_nonlin"] = None
 
@@ -92,7 +92,7 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
 def setup_vizia( scenario=basic, init=False):
     game = DoomGame()
 
-    game.set_screen_resolution(ScreenResolution.RES_160X100)
+    game.set_screen_resolution(ScreenResolution.RES_60X45)
     game.set_screen_format(ScreenFormat.CRCGCB)
     game.set_doom_iwad_path("../scenarios/doom2.wad")
         
@@ -127,7 +127,7 @@ class ChannelScaleConverter(IdentityImageConverter):
     def get_screen_height(self):
         return self.y
     
-def create_engine( game ):
+def engine_setup( game ):
     engine_args = dict()
     engine_args["history_length"] = 1
     engine_args["bank_capacity"] = 10000
@@ -136,8 +136,8 @@ def create_engine( game ):
     engine_args["game"] = game
     engine_args['start_epsilon'] = 1.0
     engine_args['end_epsilon'] = 0.0
-    engine_args['epsilon_decay_start_step'] = 500000
-    engine_args['epsilon_decay_steps'] = 5000000
+    engine_args['epsilon_decay_start_step'] = 100000
+    engine_args['epsilon_decay_steps'] = 1000000
     engine_args['update_frequency'] = (4,4) #every 4 steps, 4 updates each time
     engine_args['batch_size'] = 40
     engine_args['gamma'] = 0.99
@@ -145,10 +145,9 @@ def create_engine( game ):
  
     engine_args['skiprate'] = 8
     engine_args['actions_generator'] = agenerator_left_right_move
-    engine_args['image_converter'] = ChannelScaleConverter
+    #engine_args['image_converter'] = ChannelScaleConverter
     engine_args["shaping_on"] = True
 
-    engine = QEngine(**engine_args)
-    return engine
+    return engine_args
 
 
