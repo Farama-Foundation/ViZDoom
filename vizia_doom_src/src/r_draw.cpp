@@ -186,7 +186,7 @@ void R_DrawColumnP_C (void)
 	BYTE*				dest;
 	fixed_t 			frac;
 	fixed_t 			fracstep;
-//FIXME GR przezroczysta barierka
+//FIXME GR przezroczysta barierka DONE
 	count = dc_count;
 
 	// Zero length, column does not exceed a pixel.
@@ -1078,7 +1078,7 @@ void R_SetupSpanBits(FTexture *tex)
 //
 // Draws the actual span.
 #ifndef X86_ASM
-void R_DrawSpanP_C (void)//FIXME GR DONE POGLOGI I SUFITY!
+void R_DrawSpanP_C (void)
 {
 	dsfixed_t			xfrac;
 	dsfixed_t			yfrac;
@@ -1692,7 +1692,7 @@ DWORD STACK_ARGS vlinec1 ()
 	int pitch = dc_pitch;
 
 	do
-	{//FIXME GR DONE (JAKBY) TROCHE SCIAN
+	{
 		*dest = colormap[source[frac>>bits]];
 		frac += fracstep;
 		dest += pitch;

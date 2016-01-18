@@ -967,7 +967,7 @@ static void R_DrawSky (visplane_t *pl)
 
 	frontyScale = rw_pic->yScale;
 	dc_texturemid = MulScale16 (skymid, frontyScale);
-//FIXME GR sky drawing
+
 	if(depthMap!=NULL)
 	{
 		depthMap->setActualDepth(0);
