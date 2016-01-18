@@ -942,20 +942,24 @@ namespace Vizia {
                 continue;
             }
 
+
+        bool append = false; //it looks for +=
+
         /* Check if '=' is there */
-            int equals_sign_pos = line.find_first_of('=');
+            size_t equals_sign_pos = line.find_first_of('=');
+            size_t append_sign_pos = line.find("+=");
+
             std::string key;
             std::string val;
             std::string raw_val;
-            if( equals_sign_pos != std::string::npos )
-            {
-                key = line.substr(0,equals_sign_pos);
+            if( append_sign_pos != std::string::npos){
+                key = line.substr(0, append_sign_pos);
+                val = line.substr(append_sign_pos + 2);
+                append = true;
+            }
+            else if( equals_sign_pos != std::string::npos ){
+                key = line.substr(0, equals_sign_pos);
                 val = line.substr(equals_sign_pos + 1);
-                raw_val = val;
-                trim_all(key);
-                trim_all(val);
-                to_lower(val);
-                to_lower(key);
             }
             else
             {
@@ -963,12 +967,21 @@ namespace Vizia {
                 success = false;
                 continue;
             }
+
+            
+            raw_val = val;
+            trim_all(key);
+            trim_all(val);
+            to_lower(val);
+            to_lower(key);
+
             if(key.empty())
             {
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Empty key in line #"<<line_number<<". Line ignored.\n";
                 success = false;
                 continue;
             }
+
 
         /* Parse enum list properties */
 
@@ -984,6 +997,8 @@ namespace Vizia {
                             buttons.push_back(DoomGame::StringToButton(str_buttons[i]));
 
                         }
+                        if (!append)
+                            this->clearAvailableButtons();
                         for( i =0; i < buttons.size(); ++i ){
                             this->addAvailableButton(buttons[i]);
                         }
@@ -1013,6 +1028,8 @@ namespace Vizia {
                             variables.push_back(DoomGame::StringToGameVariable(str_variables[i]));
 
                         }
+                        if(!append)
+                            this->clearAvailableGameVariables();
                         for( i =0; i < variables.size(); ++i ){
                             this->addAvailableGameVariable(variables[i]);
                         }
@@ -1030,6 +1047,12 @@ namespace Vizia {
                 continue;
             }           
 
+        /* Check if "+=" was not used for non-list property */
+            if(append){
+                std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". \"+=\" is not supported for non-list properties. Line #"<<line_number<<" ignored.\n";
+                success = false;
+                continue;
+            }
         /* Check if value is not empty */
             if(val.empty())
             {
