@@ -448,8 +448,8 @@ void R_RenderMaskedSegRange (drawseg_t *ds, int x1, int x2)
 			while ((dc_x < stop) && (dc_x & 3))
 			{
 				if(depthMap!=NULL) {
-					depthMap->setActualDepth((unsigned int) 255 - ((MaskedSWall[dc_x] - 7500) * 255) / (1350000 - 7500));
-					if (MaskedSWall[dc_x] > 1350000)
+					depthMap->setActualDepth((unsigned int) 255 - ((MaskedSWall[dc_x] - 7500) * 255) / (1250000 - 7500));
+					if (MaskedSWall[dc_x] > 1250000)
 						depthMap->setActualDepth(0);
 					if (MaskedSWall[dc_x] < 7500)
 						depthMap->setActualDepth(255);
@@ -490,8 +490,8 @@ void R_RenderMaskedSegRange (drawseg_t *ds, int x1, int x2)
 			while (dc_x <= x2)
 			{
 				if(depthMap!=NULL) {
-					depthMap->setActualDepth((unsigned int) 255 - ((MaskedSWall[dc_x] - 7500) * 255) / (1150000 - 7500));
-					if (MaskedSWall[dc_x] > 1150000)
+					depthMap->setActualDepth((unsigned int) 255 - ((MaskedSWall[dc_x] - 7500) * 255) / (1250000 - 7500));
+					if (MaskedSWall[dc_x] > 1250000)
 						depthMap->setActualDepth(0);
 					if (MaskedSWall[dc_x] < 7500)
 						depthMap->setActualDepth(255);
