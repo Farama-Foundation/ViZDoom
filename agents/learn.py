@@ -1,16 +1,23 @@
 #!/usr/bin/python
 from common import *
+from vizia import *
 
 savefile = None
-
 #savefile = "params/basic_120to60"
-savefile = "params/health_guided_160to60_skip4"
+savefile = "params/health_guided_160to60_skip8"
 #savefile = "params/center_120_to80_skip4"
 #savefile = "params/s1b_120_to60_skip1"
 loadfile = savefile
 
 
-game = setup_vizia(scenario=health_guided, init=True)
+game = DoomGame()
+game.load_config("config_common.properties")
+game.load_config("config_health_guided.properties")
+#game.load_config("config_basic.properties")
+
+print "Initializing DOOM ..."
+game.init()
+print "\nDOOM initialized."
 
 engine_args = engine_setup(game)
 engine_args["start_epsilon"] = 0.0

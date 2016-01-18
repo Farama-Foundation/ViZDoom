@@ -1,8 +1,4 @@
-from vizia import DoomGame
-from vizia import Button
-from vizia import GameVariable
-from vizia import ScreenFormat
-from vizia import ScreenResolution
+from vizia import *
 import numpy as np
 
 from qengine import QEngine
@@ -20,47 +16,7 @@ from lasagne.layers import get_all_param_values
 
 import cv2
 
-
-# Different scenarios  initializations
-def basic(game):
-    game.set_doom_file_path("../scenarios/basic.wad")
-
-    game.add_available_button(Button.MOVE_LEFT)
-    game.add_available_button(Button.MOVE_RIGHT)
-    game.add_available_button(Button.ATTACK)
-
-    game.set_episode_timeout(300)
-    game.set_living_reward(-1)
-
-def health_gathering(game):
-    game.set_doom_file_path("../scenarios/health_gathering.wad")
-
-    game.add_available_button(Button.TURN_LEFT)
-    game.add_available_button(Button.TURN_RIGHT)
-    game.add_available_button(Button.MOVE_FORWARD)
-
-    game.set_episode_timeout(2100)
-    game.set_living_reward(0.25)
-    game.set_death_penalty(100)
-
-    game.add_available_game_variable(GameVariable.HEALTH)
-
-def health_guided(game):
-    game.set_doom_file_path("../scenarios/health_guided.wad")
-
-    game.add_available_button(Button.TURN_LEFT)
-    game.add_available_button(Button.TURN_RIGHT)
-    game.add_available_button(Button.MOVE_FORWARD)
-
-    game.set_episode_timeout(2100)
-    game.set_living_reward(1)
-    game.set_death_penalty(100)
-
-    game.add_available_game_variable(GameVariable.HEALTH)
-
-
 # Common functions for learn.py and watch.py 
-
 def agenerator_left_right_move(the_game):
     idle = [0,0,0]
     left = [1,0,0]
@@ -89,30 +45,12 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     cnn_args["network_args"] = network_args
     return CNNEvaluator(**cnn_args)
 
-def setup_vizia( scenario=basic, init=False):
-    game = DoomGame()
 
-    game.set_screen_resolution(ScreenResolution.RES_60X45)
-    game.set_screen_format(ScreenFormat.CRCGCB)
-    game.set_doom_iwad_path("../scenarios/doom2.wad")
-        
-    game.set_render_hud(False)
-    game.set_render_crosshair(False)
-    game.set_render_weapon(True)
-    game.set_render_decals(False)
-    game.set_render_particles(False);
-
-    game.set_window_visible(False)
-    scenario(game)
-
-    if init:
-        game.init()
-    return game
-
+reshape_x = 60
 class ChannelScaleConverter(IdentityImageConverter):
     def __init__(self, source):
         self._source = source
-        self.x = 60
+        self.x = reshape_x
         self.y = int(self.x*3/4) 
     def convert(self, img):
         img =  np.float32(img)/255.0
