@@ -45,10 +45,11 @@ last_summary_shaping_reward = 0
 
 for i in range(episodes):
 
+	print "Episode #" +str(i+1)
 	# Not needed for the first episdoe but the loop is nicer.
 	game.new_episode()
 	while not game.is_episode_finished():
-		print "Episode #" +str(i+1)
+		
 
 		# Gets the state and possibly to something with it
 		s = game.get_state()

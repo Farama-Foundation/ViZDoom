@@ -38,7 +38,8 @@ game.init()
 episodes = 10
 print ""
 for i in range(episodes):
-
+	print "Episode #" +str(i+1)
+	
 	game.new_episode()
 	while not game.is_episode_finished():
 		

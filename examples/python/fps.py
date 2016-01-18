@@ -32,7 +32,7 @@ start = time()
 print "\nChecking FPS rating. It may take some time. Be patient."
 
 for i in range(iters):
-
+	
 	if game.is_episode_finished():		
 		game.new_episode()
 
