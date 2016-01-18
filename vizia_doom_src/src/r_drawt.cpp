@@ -231,7 +231,7 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 			for (int dx = 0; dx < 4; dx++) {
 				depthMap->setActualDepth(depthMap->helperBuffer[dx]);
 				for (int dy = 0; dy < 2; dy++)
-					depthMap->setPoint((unsigned int) sx + dx, (unsigned int) ylookup[yl] / pitch + y_mod + dy);
+					depthMap->setPoint((unsigned int) sx + dx, (unsigned int) yl + y_mod + dy);
 			}
 			y_mod += 2;
 		}
@@ -964,12 +964,14 @@ void rt_draw4cols (int sx)
 				{
 					if (horizspan[x][1] < minnexttop)
 					{
+						if(depthMap!=NULL) depthMap->setActualDepth(depthMap->helperBuffer[x]);
 						hcolfunc_post1 (x, sx+x, horizspan[x][0], horizspan[x][1]);
 						horizspan[x] += 2;
 						drawcount++;
 					}
 					else if (minnexttop > horizspan[x][0])
 					{
+						if(depthMap!=NULL) depthMap->setActualDepth(depthMap->helperBuffer[x]);
 						hcolfunc_post1 (x, sx+x, horizspan[x][0], minnexttop-1);
 						horizspan[x][0] = minnexttop;
 						drawcount++;
@@ -991,6 +993,7 @@ void rt_draw4cols (int sx)
 		{
 			if (maxtop > horizspan[x][0])
 			{
+				if(depthMap!=NULL) depthMap->setActualDepth(depthMap->helperBuffer[x]);
 				hcolfunc_post1 (x, sx+x, horizspan[x][0], maxtop-1);
 			}
 		}
