@@ -322,7 +322,7 @@ nextpost:
 // R_DrawVisSprite
 //	mfloorclip and mceilingclip should also be set.
 //
-void R_DrawVisSprite (vissprite_t *vis)//FIXME GR sprites
+void R_DrawVisSprite (vissprite_t *vis)
 {
 	const BYTE *pixels;
 	const FTexture::Span *spans;
@@ -374,7 +374,7 @@ void R_DrawVisSprite (vissprite_t *vis)//FIXME GR sprites
 			while ((dc_x < stop4) && (dc_x & 3))
 			{
 				pixels = tex->GetColumn (frac >> FRACBITS, &spans);
-				//R_DrawMaskedColumn (pixels, spans);
+				R_DrawMaskedColumn (pixels, spans);
 				dc_x++;
 				frac += xiscale;
 			}
@@ -415,7 +415,7 @@ void R_DrawVisSprite (vissprite_t *vis)//FIXME GR sprites
 			while (dc_x < x2)
 			{
 				pixels = tex->GetColumn (frac >> FRACBITS, &spans);
-				//R_DrawMaskedColumn (pixels, spans);
+				R_DrawMaskedColumn (pixels, spans);
 				dc_x++;
 				frac += xiscale;
 			}
@@ -1822,7 +1822,7 @@ void R_DrawSprite (vissprite_t *spr)
 	lighttable_t *colormap = spr->Style.colormap;
 	F3DFloor *rover;
 	FDynamicColormap *mybasecolormap;
-//FIXME GR sprajty
+
 	// [RH] Check for particles
 	if (!spr->bIsVoxel && spr->pic == NULL)
 	{
