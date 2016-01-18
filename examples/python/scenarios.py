@@ -71,6 +71,7 @@ for i in range(episodes):
 		
 		print "State #" +str(s.number)
 		print "Game Variables:", misc
+		print "Performed action:",game.get_last_action()
 		print "Last Reward:",r
 		print "====================="	
 
