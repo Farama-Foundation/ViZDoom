@@ -970,7 +970,7 @@ static void R_DrawSky (visplane_t *pl)
 
 	if(depthMap!=NULL)
 	{
-		depthMap->setActualDepth(0);
+		depthMap->setActualDepth(255);
 		depthMap->lock();
 	}
 	if (1 << frontskytex->HeightBits == frontskytex->GetHeight())
