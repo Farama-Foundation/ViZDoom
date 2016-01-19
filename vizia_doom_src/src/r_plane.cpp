@@ -58,6 +58,7 @@
 #include "r_3dfloors.h"
 #include "v_palette.h"
 #include "r_data/colormaps.h"
+#include "vizia_depth.h"
 
 #ifdef _MSC_VER
 #pragma warning(disable:4244)
@@ -221,7 +222,7 @@ void R_MapPlane (int y, int x1)
 	ds_ystep = FixedMul (distance, ystepscale);
 	ds_xfrac = FixedMul (distance, basexfrac) + pviewx;
 	ds_yfrac = FixedMul (distance, baseyfrac) + pviewy;
-
+	//printf("Distance: %d\n", distance);
 	if (plane_shade)
 	{
 		// Determine lighting based on the span's distance from the viewer.
@@ -233,6 +234,18 @@ void R_MapPlane (int y, int x1)
 	if (ds_colormap != ds_curcolormap)
 		R_SetSpanColormap_ASM (ds_colormap);
 #endif
+
+	if(depthMap!=NULL) depthMap->setActualDepthConv(distance);
+	/*static long max, min;
+	if(min==0) min=max;
+	if(distance>max||distance<min)
+	{
+		if(distance>max)
+			max=distance;
+		else
+			min=distance;
+		printf("MAX: %ld MIN: %ld\n", max, min);
+	}*/
 
 	ds_y = y;
 	ds_x1 = x1;
@@ -955,6 +968,11 @@ static void R_DrawSky (visplane_t *pl)
 	frontyScale = rw_pic->yScale;
 	dc_texturemid = MulScale16 (skymid, frontyScale);
 
+	if(depthMap!=NULL)
+	{
+		depthMap->setActualDepth(0);
+		depthMap->lock();
+	}
 	if (1 << frontskytex->HeightBits == frontskytex->GetHeight())
 	{ // The texture tiles nicely
 		for (x = 0; x < 4; ++x)
@@ -977,6 +995,10 @@ static void R_DrawSky (visplane_t *pl)
 			skymid -= FRACUNIT;
 		}
 		R_DrawSkyStriped (pl);
+	}
+	if(depthMap!=NULL)
+	{
+		depthMap->unlock();
 	}
 }
 
