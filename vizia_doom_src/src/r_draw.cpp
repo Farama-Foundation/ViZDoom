@@ -43,6 +43,7 @@
 #include "gi.h"
 #include "stats.h"
 #include "x86.h"
+#include "vizia_depth.h"
 
 #undef RANGECHECK
 
@@ -185,7 +186,6 @@ void R_DrawColumnP_C (void)
 	BYTE*				dest;
 	fixed_t 			frac;
 	fixed_t 			fracstep;
-
 	count = dc_count;
 
 	// Zero length, column does not exceed a pixel.
@@ -200,6 +200,24 @@ void R_DrawColumnP_C (void)
 	fracstep = dc_iscale; 
 	frac = dc_texturefrac;
 
+	if(depthMap!=NULL) {
+		depthMap->setActualDepth((unsigned int) 255 - ((dc_iscale - 500) * 255) / (320000 - 500));
+		if (dc_iscale > 320000)
+			depthMap->setActualDepth(0);
+		if (dc_iscale < 500)
+			depthMap->setActualDepth(255);
+	}
+
+	/*static long max, min;
+    if(min==0) min=max;
+    if(dc_iscale>max||dc_iscale<min)
+    {
+        if(dc_iscale>max)
+            max=dc_iscale;
+        else
+            min=dc_iscale;
+        printf("MAX: %ld MIN: %ld\n", max, min);
+    }*/
 	{
 		// [RH] Get local copies of these variables so that the compiler
 		//		has a better chance of optimizing this well.
@@ -218,6 +236,7 @@ void R_DrawColumnP_C (void)
 
 			dest += pitch;
 			frac += fracstep;
+			if(depthMap!=NULL) depthMap->setPoint(dc_x, dc_yl+dc_count-count);
 
 		} while (--count);
 	}
@@ -1078,7 +1097,6 @@ void R_DrawSpanP_C (void)
 	}
 //		dscount++;
 #endif
-
 	xfrac = ds_xfrac;
 	yfrac = ds_yfrac;
 
@@ -1100,7 +1118,7 @@ void R_DrawSpanP_C (void)
 			// Lookup pixel from flat texture tile,
 			//  re-index using light/colormap.
 			*dest++ = colormap[source[spot]];
-
+			if(depthMap!=NULL) depthMap->setPoint(ds_x2-count+1,ds_y);
 			// Next step in u,v.
 			xfrac += xstep;
 			yfrac += ystep;
@@ -1120,7 +1138,7 @@ void R_DrawSpanP_C (void)
 			// Lookup pixel from flat texture tile,
 			//  re-index using light/colormap.
 			*dest++ = colormap[source[spot]];
-
+			if(depthMap!=NULL) depthMap->setPoint(ds_x2-count+1,ds_y);
 			// Next step in u,v.
 			xfrac += xstep;
 			yfrac += ystep;
@@ -1677,6 +1695,7 @@ DWORD STACK_ARGS vlinec1 ()
 		*dest = colormap[source[frac>>bits]];
 		frac += fracstep;
 		dest += pitch;
+		if(depthMap!=NULL) depthMap->setPoint((unsigned int)depthMap->getX(),(unsigned int)depthMap->getY()+dc_count-count);
 	} while (--count);
 
 	return frac;
@@ -2004,7 +2023,10 @@ void tmvline4_addclamp ()
 				a &= 0x3fffffff;
 				b = b - (b >> 5);
 				a |= b;
-				dest[i] = RGB32k.All[a & (a>>15)];
+
+				//
+				//
+				 dest[i] = RGB32k.All[a & (a>>15)];
 			}
 			vplce[i] += vince[i];
 		}

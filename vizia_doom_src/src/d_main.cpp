@@ -110,6 +110,8 @@
 //VIZIA CODE
 
 #include "vizia_main.h"
+#include "vizia_depth.h"
+
 #include "vizia_input.h"
 #include "vizia_defines.h"
 
@@ -139,7 +141,7 @@ const FIWADInfo *D_FindIWAD(TArray<FString> &wadfiles, const char *iwad, const c
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
 
 void D_CheckNetGame ();
-//VIZIA CODE
+//VIZIA_CODE
 //void D_ProcessEvents ();
 void G_BuildTiccmd (ticcmd_t* cmd);
 void D_DoAdvanceDemo ();
@@ -2590,6 +2592,10 @@ void D_DoomMain (void)
 			V_Init2();
 			UpdateJoystickMenu(NULL);
 
+#ifdef VIZIA_DEPTH_TEST
+			depthMap = new depthBuffer(screen->GetWidth(), screen->GetHeight());
+			depthMap->setDepthBoundries(120000000,200000);//probabli gud, but SHOULDN'T BE HERE
+#endif
 			v = Args->CheckValue ("-loadgame");
 			if (v)
 			{
@@ -2665,7 +2671,7 @@ void D_DoomMain (void)
 			// Music and sound should be stopped first
 			//S_StopMusic(true);
 			//S_StopAllChannels ();
-
+			delete depthMap;
 			Vizia_Close();
 
 			M_ClearMenus();					// close menu if open
