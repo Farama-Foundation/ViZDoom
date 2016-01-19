@@ -391,11 +391,11 @@ void R_DrawVisSprite (vissprite_t *vis)
 				}
 				if(depthMap!=NULL) {
 					for(int pcf=0;pcf<4;pcf++) {
-						depthMap->helperBuffer[pcf]=((unsigned int) 255 - ((dc_iscale - 500) * 255) / (320000 - 500));
+						depthMap->helperBuffer[pcf]=((unsigned int)  ((dc_iscale - 500) * 255) / (320000 - 500));
 						if (dc_iscale > 320000)
-							depthMap->helperBuffer[pcf]=(0);
-						if (dc_iscale < 500)
 							depthMap->helperBuffer[pcf]=(255);
+						if (dc_iscale < 500)
+							depthMap->helperBuffer[pcf]=(0);
 					}
 					//depthMap->setActualDepth(0);
 				}
@@ -1416,7 +1416,7 @@ void R_DrawPSprite (pspdef_t* psp, int pspnum, AActor *owner, fixed_t sx, fixed_
 	}
 	if(depthMap!=NULL)
 	{
-		depthMap->setActualDepth(255);
+		depthMap->setActualDepth(0);
 		depthMap->lock();
 	}
 	R_DrawVisSprite (vis);

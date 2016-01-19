@@ -201,11 +201,11 @@ void R_DrawColumnP_C (void)
 	frac = dc_texturefrac;
 
 	if(depthMap!=NULL) {
-		depthMap->setActualDepth((unsigned int) 255 - ((dc_iscale - 500) * 255) / (320000 - 500));
+		depthMap->setActualDepth((unsigned int)((dc_iscale - 500) * 255) / (320000 - 500));
 		if (dc_iscale > 320000)
-			depthMap->setActualDepth(0);
-		if (dc_iscale < 500)
 			depthMap->setActualDepth(255);
+		if (dc_iscale < 500)
+			depthMap->setActualDepth(0);
 	}
 
 	/*static long max, min;

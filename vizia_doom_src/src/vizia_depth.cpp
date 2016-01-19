@@ -67,12 +67,12 @@ void depthBuffer::setActualDepthConv(int depth) {
     if(this->isLocked())
         return;
     if(depth>maxDepth)
-        this->actualDepth=0;
-    else if(depth<minDepth)
         this->actualDepth=255;
+    else if(depth<minDepth)
+        this->actualDepth=0;
     else {
         depth-=minDepth;
-        this->actualDepth = (unsigned int) 255 - (depth-minDepth) / this->convSteps;
+        this->actualDepth = (unsigned int)  (depth-minDepth) / this->convSteps;
     }
 }
 
