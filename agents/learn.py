@@ -4,8 +4,7 @@ from vizia import *
 
 savefile = None
 #savefile = "params/basic_120to60"
-savefile = "params/health_guided_160to60_skip8"
-#savefile = "params/center_120_to80_skip4"
+savefile = "params/health_guided_60_skip8"
 #savefile = "params/s1b_120_to60_skip1"
 loadfile = savefile
 
@@ -19,17 +18,18 @@ print "Initializing DOOM ..."
 game.init()
 print "\nDOOM initialized."
 
-engine_args = engine_setup(game)
-engine_args["start_epsilon"] = 0.0
-engine_args["gamma"] = 0.999
-#engine_args["image_converter"] = None
-
-engine = QEngine(**engine_args)
 
 if loadfile:
-    engine.load_params(loadfile)
+    engine = QEngine.load(game, loadfile)
+    engine.set_epsilon(0)
+else:
+    engine_args = engine_setup(game)
+    engine_args["start_epsilon"] = 1.0
+    engine_args["gamma"] = 0.9999
+    #engine_args["image_converter"] = None
+    engine = QEngine(**engine_args)
 
-print "\nCreated network params:"
+print "\nNetwork architecture:"
 for p in get_all_param_values(engine.get_network()):
 	print p.shape
 
@@ -83,7 +83,7 @@ while epoch < epochs:
     print ""
 
     if savefile:
-        engine.save_params(savefile)
+        engine.save(savefile)
 
     overall_end = time()
     print "Elapsed time:", round(overall_end - overall_start,2), "s"  
