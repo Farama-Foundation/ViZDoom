@@ -31,6 +31,7 @@ namespace Vizia {
                 case CBCGCR:
                 case CBCGCRZB:
                 case GRAY8:
+                case ZBUFFER8:
                     this->imageShape[0] = channels;
                     this->imageShape[1] = y;
                     this->imageShape[2] = x;

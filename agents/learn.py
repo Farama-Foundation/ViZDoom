@@ -60,7 +60,7 @@ while epoch < epochs:
     mean_loss = engine._evaluator.get_mean_loss()
     print "steps:", engine.get_steps(), ", mean:", np.mean(rewards), ", max:", np.max(
         rewards), "min:", np.min(rewards), "mean_loss:",mean_loss, "eps:", engine.get_epsilon()
-    print "t:", round(end - start, 2)
+    print "t:", sec_to_str(end - start)
         
     # learning mode off
     if (epoch+1) % test_frequency == 0 and test_episodes_per_epoch > 0:
@@ -77,7 +77,7 @@ while epoch < epochs:
         print engine.get_actions_stats(clear=True, norm=False)
         m = np.mean(rewards)
         print "steps:", engine.get_steps(), ", mean:", m, "max:", np.max(rewards), "min:", np.min(rewards)
-        print "t:", round(end - start, 2),"s"
+        print "t:", sec_to_str(end - start)
     epoch += 1
 
     print ""
@@ -86,9 +86,9 @@ while epoch < epochs:
         engine.save(savefile)
 
     overall_end = time()
-    print "Elapsed time:", round(overall_end - overall_start,2), "s"  
+    print "Elapsed time:", sec_to_str(overall_end - overall_start)
     print "========================="
 
 
 overall_end = time()
-print "Elapsed time:", round(overall_end - overall_start,2), "s"  
+print "Elapsed time:", sec_to_stri(overall_end - overall_start)
