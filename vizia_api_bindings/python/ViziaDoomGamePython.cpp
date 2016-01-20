@@ -31,6 +31,7 @@ namespace Vizia {
                 case CBCGCR:
                 case CBCGCRZB:
                 case GRAY8:
+                case ZBUFFER8:
                     this->imageShape[0] = channels;
                     this->imageShape[1] = y;
                     this->imageShape[2] = x;
@@ -63,14 +64,14 @@ namespace Vizia {
         
     }
 
-    float DoomGamePython::makeAction(boost::python::list &action)
+    double DoomGamePython::makeAction(boost::python::list &action)
     {
         this->setAction(action);
         DoomGame::advanceAction();
         return DoomGame::getLastReward();
     }
 
-    float DoomGamePython::makeAction(boost::python::list &action, unsigned int tics)
+    double DoomGamePython::makeAction(boost::python::list &action, unsigned int tics)
     {
         this->setAction(action);
         DoomGame::advanceAction(true, true, tics);

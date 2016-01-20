@@ -23,8 +23,8 @@ namespace Vizia {
         return (unsigned int) std::ceil((float) 35 / 1000 * ms);
     }
 
-    float DoomFixedToFloat(int doomFixed) {
-        float res = float(doomFixed)/65536.0;
+    double DoomFixedToDouble(int doomFixed) {
+        double res = double(doomFixed)/65536.0;
         return res;
     }
 
@@ -173,13 +173,13 @@ namespace Vizia {
         if(updateState) this->updateState();
     }
 
-    float DoomGame::makeAction(std::vector<int> &actions){
+    double DoomGame::makeAction(std::vector<int> &actions){
         this->setAction(actions);
         this->advanceAction();
         return this->getLastReward();
     }
 
-    float DoomGame::makeAction(std::vector<int> &actions, unsigned int tics){
+    double DoomGame::makeAction(std::vector<int> &actions, unsigned int tics){
         this->setAction(actions);
         this->advanceAction(true, true, tics);
         return this->getLastReward();
@@ -190,8 +190,8 @@ namespace Vizia {
 
             this->state.number = this->nextStateNumber++;
 
-            float reward = 0;
-            float mapReward = DoomFixedToFloat(this->doomController->getMapReward());
+            double reward = 0;
+            double mapReward = DoomFixedToDouble(this->doomController->getMapReward());
             reward = (mapReward - this->lastMapReward);
             int liveTime = this->doomController->getMapTic() - this->lastMapTic;
             reward += (liveTime > 0 ? liveTime : 0) * this->livingReward;
@@ -343,14 +343,14 @@ namespace Vizia {
 
     unsigned int DoomGame::getEpisodeTime(){ return this->doomController->getMapTic(); }
 
-    float DoomGame::getLivingReward() { return this->livingReward; }
-    void DoomGame::setLivingReward(float livingReward) { this->livingReward = livingReward; }
+    double DoomGame::getLivingReward() { return this->livingReward; }
+    void DoomGame::setLivingReward(double livingReward) { this->livingReward = livingReward; }
 
-    float DoomGame::getDeathPenalty() { return this->deathPenalty; }
-    void DoomGame::setDeathPenalty(float deathPenalty) { this->deathPenalty = deathPenalty; }
+    double DoomGame::getDeathPenalty() { return this->deathPenalty; }
+    void DoomGame::setDeathPenalty(double deathPenalty) { this->deathPenalty = deathPenalty; }
 
-    float DoomGame::getLastReward(){ return this->lastReward; }
-    float DoomGame::getSummaryReward() { return this->summaryReward; }
+    double DoomGame::getLastReward(){ return this->lastReward; }
+    double DoomGame::getSummaryReward() { return this->summaryReward; }
 
     void DoomGame::setScreenResolution(ScreenResolution resolution) {
         unsigned int width = 0, height = 0;
@@ -950,20 +950,24 @@ namespace Vizia {
                 continue;
             }
 
+
+        bool append = false; //it looks for +=
+
         /* Check if '=' is there */
-            int equals_sign_pos = line.find_first_of('=');
+            size_t equals_sign_pos = line.find_first_of('=');
+            size_t append_sign_pos = line.find("+=");
+
             std::string key;
             std::string val;
             std::string raw_val;
-            if( equals_sign_pos != std::string::npos )
-            {
-                key = line.substr(0,equals_sign_pos);
+            if( append_sign_pos != std::string::npos){
+                key = line.substr(0, append_sign_pos);
+                val = line.substr(append_sign_pos + 2);
+                append = true;
+            }
+            else if( equals_sign_pos != std::string::npos ){
+                key = line.substr(0, equals_sign_pos);
                 val = line.substr(equals_sign_pos + 1);
-                raw_val = val;
-                trim_all(key);
-                trim_all(val);
-                to_lower(val);
-                to_lower(key);
             }
             else
             {
@@ -971,12 +975,21 @@ namespace Vizia {
                 success = false;
                 continue;
             }
+
+            
+            raw_val = val;
+            trim_all(key);
+            trim_all(val);
+            to_lower(val);
+            to_lower(key);
+
             if(key.empty())
             {
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Empty key in line #"<<line_number<<". Line ignored.\n";
                 success = false;
                 continue;
             }
+
 
         /* Parse enum list properties */
 
@@ -992,6 +1005,8 @@ namespace Vizia {
                             buttons.push_back(DoomGame::StringToButton(str_buttons[i]));
 
                         }
+                        if (!append)
+                            this->clearAvailableButtons();
                         for( i =0; i < buttons.size(); ++i ){
                             this->addAvailableButton(buttons[i]);
                         }
@@ -1021,6 +1036,8 @@ namespace Vizia {
                             variables.push_back(DoomGame::StringToGameVariable(str_variables[i]));
 
                         }
+                        if(!append)
+                            this->clearAvailableGameVariables();
                         for( i =0; i < variables.size(); ++i ){
                             this->addAvailableGameVariable(variables[i]);
                         }
@@ -1038,6 +1055,12 @@ namespace Vizia {
                 continue;
             }           
 
+        /* Check if "+=" was not used for non-list property */
+            if(append){
+                std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". \"+=\" is not supported for non-list properties. Line #"<<line_number<<" ignored.\n";
+                success = false;
+                continue;
+            }
         /* Check if value is not empty */
             if(val.empty())
             {
@@ -1074,11 +1097,11 @@ namespace Vizia {
         /* Parse float properties */
             try{
                 if (key =="living_reward" || key =="livingreward"){
-                    this->setLivingReward(boost::lexical_cast<float>(val));
+                    this->setLivingReward(boost::lexical_cast<double>(val));
                     continue;
                 }
                 if (key == "deathpenalty" || key == "death_penalty"){
-                    this->setDeathPenalty(boost::lexical_cast<float>(val));
+                    this->setDeathPenalty(boost::lexical_cast<double>(val));
                     continue;
                 }
             }

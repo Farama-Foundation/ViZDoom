@@ -62,6 +62,7 @@
 #include "r_data/colormaps.h"
 #include "r_data/voxels.h"
 #include "p_local.h"
+#include "vizia_depth.h"
 
 // [RH] A c-buffer. Used for keeping track of offscreen voxel spans.
 
@@ -388,6 +389,26 @@ void R_DrawVisSprite (vissprite_t *vis)
 					dc_x++;
 					frac += xiscale;
 				}
+				if(depthMap!=NULL) {
+					for(int pcf=0;pcf<4;pcf++) {
+						depthMap->helperBuffer[pcf]=((unsigned int)  ((dc_iscale - 500) * 255) / (320000 - 500));
+						if (dc_iscale > 320000)
+							depthMap->helperBuffer[pcf]=(255);
+						if (dc_iscale < 500)
+							depthMap->helperBuffer[pcf]=(0);
+					}
+					//depthMap->setActualDepth(0);
+				}
+				/*static long max, min;
+				if(min==0) min=max;
+				if(dc_iscale>max||dc_iscale<min)
+				{
+					if(dc_iscale>max)
+						max=dc_iscale;
+					else
+						min=dc_iscale;
+					printf("MAX: %ld MIN: %ld ACT: %d\n", max, min, 255 - ((dc_iscale - 500) * 255) / (320000 - 500));
+				}*/
 				rt_draw4cols (dc_x - 4);
 			}
 
@@ -1393,7 +1414,16 @@ void R_DrawPSprite (pspdef_t* psp, int pspnum, AActor *owner, fixed_t sx, fixed_
 			return;
 		}
 	}
+	if(depthMap!=NULL)
+	{
+		depthMap->setActualDepth(0);
+		depthMap->lock();
+	}
 	R_DrawVisSprite (vis);
+	if(depthMap!=NULL)
+	{
+		depthMap->unlock();
+	}
 }
 
 
@@ -1505,6 +1535,7 @@ void R_DrawPlayerSprites ()
 
 void R_DrawRemainingPlayerSprites()
 {
+
 	for (int i = 0; i < NUMPSPRITES; ++i)
 	{
 		vissprite_t *vis;
