@@ -10,7 +10,7 @@
 #include <SDL_video.h>
 
 //UNCOMMENT TO ENABLE DEPTH BUFFER DEBUG WINDOW
-#define VIZIA_DEPTH_TEST 1
+//#define VIZIA_DEPTH_TEST 1
 
 class depthBuffer{
 public:

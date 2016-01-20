@@ -1279,9 +1279,9 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 						depthMap->setActualDepth(255);
 					if (a_dc_iscale < 950000)
 						depthMap->setActualDepth(0);
-					for (int c = 0; c < dc_count; c++)
-						depthMap->setPoint(x + pcf, ylookup[u4] / depthMap->getBufferWidth() + c);
-					static long long max, min;
+					for (int c = 0; c <= dc_count; c++)
+						depthMap->setPoint(x + pcf, u4 + c);
+					/*static long long max, min;
 					if(min==0) min=max;
 					if(a_dc_iscale>max||a_dc_iscale<min)
 					{
@@ -1290,7 +1290,7 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 						else
 							min=a_dc_iscale;
 						printf("MAX: %lld MIN: %lld ACT: %d H: %d W: %d\n", max, min, ((a_dc_iscale / 100 - 9500) * 255) / (1600000 - 9500), screen->GetHeight(), screen->GetWidth());
-					}
+					}*/
 				}
 			}
 			dovline4();
