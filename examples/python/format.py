@@ -19,6 +19,7 @@ from random import choice
 import cv2
 
 game = DoomGame()
+
 # Use other config file if you wish.
 game.load_config("config_basic.properties")
 #game.set_window_visible(False)
@@ -28,10 +29,10 @@ game.load_config("config_basic.properties")
 
 #game.set_screen_format(ScreenFormat.RGB24)
 #game.set_screen_format(ScreenFormat.ARGB32)
-game.set_screen_format(ScreenFormat.GRAY8)
+#game.set_screen_format(ScreenFormat.GRAY8)
 
-#Not working yet but will be soon
-#game.set_screen_format(ScreenFormat.ZBUFFER8)
+# This is most fun. It looks best if you inverse colors.
+game.set_screen_format(ScreenFormat.ZBUFFER8)
 
 #These formats can be use bet they do not make much sense for cv2, you'll just get mixed up colors.
 #game.set_screen_format(ScreenFormat.BGR24)
@@ -39,9 +40,10 @@ game.set_screen_format(ScreenFormat.GRAY8)
 #game.set_screen_format(ScreenFormat.BGRA32) 
 #game.set_screen_format(ScreenFormat.ABGR32)
 
-#This one makes no sense especially :D
+#This one makes no sense in particular
 #game.set_screen_format(ScreenFormat.DOOM_256_COLORS)
 
+game.set_screen_resolution(ScreenResolution.RES_640X480)
 game.init()
 
 actions = [[True,False,False],[False,True,False],[False,False,True]]
@@ -60,7 +62,7 @@ for i in range(episodes):
 		misc = s.game_variables
 
 		# Gray8 shape is not cv2 compliant
-		if game.get_screen_format() == ScreenFormat.GRAY8:
+		if game.get_screen_format() in [ScreenFormat.GRAY8, ScreenFormat.ZBUFFER8]:
 			img = img.reshape(img.shape[1],img.shape[2],1)
 
 		# Display the image here!
