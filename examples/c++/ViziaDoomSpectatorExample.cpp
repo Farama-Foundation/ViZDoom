@@ -1,6 +1,7 @@
 #include "ViziaDoomGame.h"
 #include <iostream>
 #include <vector>
+#include <unistd.h>
 
 using namespace Vizia;
 
@@ -12,7 +13,7 @@ int main(){
 
     dg->setDoomGamePath("viziazdoom");
     dg->setDoomIwadPath("../scenarios/doom2.wad");
-    dg->setDoomFilePath("../scenarios/s1_b.wad");
+    //dg->setDoomFilePath("../scenarios/s1_b.wad");
     dg->setDoomMap("map01");
     dg->setEpisodeTimeout(2000);
     dg->setEpisodeStartTime(1);
@@ -28,23 +29,19 @@ int main(){
 
     dg->setWindowVisible(true);
 
+    dg->addAvailableButton(VIEW_ANGLE, 30);
+    dg->addAvailableButton(FORWARD_BACKWARD, 30);
+    dg->addAvailableButton(MOVE_FORWARD);
     dg->addAvailableButton(TURN_LEFT);
     dg->addAvailableButton(TURN_RIGHT);
-    dg->addAvailableButton(MOVE_FORWARD);
-    dg->addAvailableButton(MOVE_BACKWARD);
     dg->addAvailableButton(ATTACK);
+    dg->addAvailableButton(SELECT_WEAPON1);
+    dg->addAvailableButton(SELECT_WEAPON2);
 
     dg->addAvailableGameVariable(HEALTH);
-    dg->addAvailableGameVariable(AMMO1);
-
+    dg->addAvailableGameVariable(AMMO2);
 
     dg->init();
-    //dg->newEpisode();
-    std::vector<bool> action(3);
-
-    action[0] = false;
-    action[1] = false;
-    action[2] = true;
 
     int iterations = 10000;
     int ep=1;
@@ -56,11 +53,10 @@ int main(){
             // usleep(2000000);
         }
         DoomGame::State s = dg->getState();
-        std::cout << "STATE NUMBER: " << s.number << " HP: " << s.gameVariables[0] << " AMMO: " << s.gameVariables[1] << std::endl;
-        dg->advanceAction();
-        //float r = dg->makeAction(action);
-        //std::cout<<"reward: "<<r<<std::endl;
-        //usleep(11000);
+        std::cout << "STATE NUMBER: " << s.number << " HP: " << s.gameVariables[0] << " AMMO2: " << s.gameVariables[1] << std::endl;
+        std::cout<<"TIC: " << dg->getEpisodeTime() << "LAST ACTION: " << dg->getLastAction()[0] << " " << dg->getLastAction()[1]
+        << " " << dg->getLastAction()[2] << " " << dg->getLastAction()[3] << " " << dg->getLastAction()[4] << dg->getLastAction()[5] << std::endl;
+        dg->advanceAction(true,false,4);
     }
     dg->close();
     delete dg;
