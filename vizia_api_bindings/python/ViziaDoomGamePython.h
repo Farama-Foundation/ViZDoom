@@ -36,8 +36,8 @@ namespace Vizia {
         PythonState getState();
         boost::python::list getLastAction();
         object getGameScreen();
-        float makeAction(boost::python::list &action);
-        float makeAction(boost::python::list &action, unsigned int tics);
+        double makeAction(boost::python::list &action);
+        double makeAction(boost::python::list &action, unsigned int tics);
 
     private:
 

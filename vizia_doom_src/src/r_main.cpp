@@ -57,6 +57,7 @@
 #include "v_font.h"
 #include "r_data/colormaps.h"
 #include "farchive.h"
+#include "vizia_depth.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -755,7 +756,7 @@ void R_RenderActorView (AActor *actor, bool dontmaplines)
 	R_ClearDrawSegs ();
 	R_ClearPlanes (true);
 	R_ClearSprites ();
-
+	if(depthMap!=NULL) depthMap->clearBuffer();
 	NetUpdate ();
 
 	// [RH] Show off segs if r_drawflat is 1
@@ -808,7 +809,7 @@ void R_RenderActorView (AActor *actor, bool dontmaplines)
 	if (viewactive)
 	{
 		PlaneCycles.Clock();
-		R_DrawPlanes ();
+		R_DrawPlanes ();//also skajboks
 		R_DrawSkyBoxes ();
 		PlaneCycles.Unclock();
 
@@ -822,7 +823,7 @@ void R_RenderActorView (AActor *actor, bool dontmaplines)
 		NetUpdate ();
 		
 		MaskedCycles.Clock();
-		R_DrawMasked ();
+		R_DrawMasked ();//every sprite
 		MaskedCycles.Unclock();
 
 		NetUpdate ();

@@ -62,8 +62,8 @@ void (DoomGamePython::*addAvailableButton2)(Button, int) = &DoomGamePython::addA
 void (DoomGamePython::*advanceAction1)() = &DoomGamePython::advanceAction;
 void (DoomGamePython::*advanceAction2)(bool, bool, unsigned int) = &DoomGamePython::advanceAction;
 
-float (DoomGamePython::*makeAction1)(boost::python::list &) = &DoomGamePython::makeAction;
-float (DoomGamePython::*makeAction2)(boost::python::list &, unsigned int) = &DoomGamePython::makeAction;
+double (DoomGamePython::*makeAction1)(boost::python::list &) = &DoomGamePython::makeAction;
+double (DoomGamePython::*makeAction2)(boost::python::list &, unsigned int) = &DoomGamePython::makeAction;
 
 BOOST_PYTHON_MODULE(vizia)
 {
@@ -106,7 +106,8 @@ BOOST_PYTHON_MODULE(vizia)
         ENUM_VAL_2_PYT(BGRA32)
         ENUM_VAL_2_PYT(ABGR32)
         ENUM_VAL_2_PYT(GRAY8)
-        ENUM_VAL_2_PYT(ZBUFFER8);
+        ENUM_VAL_2_PYT(ZBUFFER8)
+        ENUM_VAL_2_PYT(DOOM_256_COLORS);
     
     enum_<ScreenResolution>("ScreenResolution")
         ENUM_VAL_2_PYT(RES_40X30)
@@ -291,7 +292,7 @@ BOOST_PYTHON_MODULE(vizia)
 
 	def("doom_tics_2_ms", DoomTics2Ms);
 	def("ms_to_doom_tics", Ms2DoomTics);
-    def("doom_fixed_to_float", DoomFixedToFloat);
+    def("doom_fixed_to_double", DoomFixedToDouble);
     
     class_<DoomGamePython::PythonState>("State", no_init)
         .def_readonly("number", &DoomGamePython::PythonState::number)

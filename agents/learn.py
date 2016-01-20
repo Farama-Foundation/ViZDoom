@@ -1,23 +1,35 @@
 #!/usr/bin/python
 from common import *
+from vizia import *
 
 savefile = None
-
 #savefile = "params/basic_120to60"
-savefile = "params/health_guided_160_to60_skip8_3l_f48"
-#savefile = "params/center_120_to80_skip4"
+savefile = "params/health_guided_60_skip8"
 #savefile = "params/s1b_120_to60_skip1"
 loadfile = savefile
 
 
-game = setup_vizia(scenario=health_guided, init=True)
+game = DoomGame()
+game.load_config("config_common.properties")
+game.load_config("config_health_guided.properties")
+#game.load_config("config_basic.properties")
 
-engine = create_engine(game)
+print "Initializing DOOM ..."
+game.init()
+print "\nDOOM initialized."
+
 
 if loadfile:
-    engine.load_params(loadfile)
+    engine = QEngine.load(game, loadfile)
+    engine.set_epsilon(0)
+else:
+    engine_args = engine_setup(game)
+    engine_args["start_epsilon"] = 1.0
+    engine_args["gamma"] = 0.9999
+    #engine_args["image_converter"] = None
+    engine = QEngine(**engine_args)
 
-print "\nCreated network params:"
+print "\nNetwork architecture:"
 for p in get_all_param_values(engine.get_network()):
 	print p.shape
 
@@ -47,8 +59,8 @@ while epoch < epochs:
     print engine.get_actions_stats(True)
     mean_loss = engine._evaluator.get_mean_loss()
     print "steps:", engine.get_steps(), ", mean:", np.mean(rewards), ", max:", np.max(
-        rewards),"mean_loss:",mean_loss, "eps:", engine.get_epsilon()
-    print "t:", round(end - start, 2)
+        rewards), "min:", np.min(rewards), "mean_loss:",mean_loss, "eps:", engine.get_epsilon()
+    print "t:", sec_to_str(end - start)
         
     # learning mode off
     if (epoch+1) % test_frequency == 0 and test_episodes_per_epoch > 0:
@@ -64,19 +76,19 @@ while epoch < epochs:
         print "Test"
         print engine.get_actions_stats(clear=True, norm=False)
         m = np.mean(rewards)
-        print "steps:", engine.get_steps(), ", mean:", m, "max:", np.max(rewards)
-        print "t:", round(end - start, 2)
+        print "steps:", engine.get_steps(), ", mean:", m, "max:", np.max(rewards), "min:", np.min(rewards)
+        print "t:", sec_to_str(end - start)
     epoch += 1
 
     print ""
 
     if savefile:
-        engine.save_params(savefile)
+        engine.save(savefile)
 
     overall_end = time()
-    print "Elapsed time:", round(overall_end - overall_start,2), "s"  
+    print "Elapsed time:", sec_to_str(overall_end - overall_start)
     print "========================="
 
 
 overall_end = time()
-print "Elapsed time:", round(overall_end - overall_start,2), "s"  
+print "Elapsed time:", sec_to_stri(overall_end - overall_start)

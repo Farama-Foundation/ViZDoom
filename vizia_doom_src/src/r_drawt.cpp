@@ -46,6 +46,7 @@
 #include "r_main.h"
 #include "r_things.h"
 #include "v_video.h"
+#include "vizia_depth.h"
 
 // I should have commented this stuff better.
 //
@@ -152,7 +153,6 @@ void rt_map1col_c (int hx, int sx, int yl, int yh)
 	BYTE *dest;
 	int count;
 	int pitch;
-
 	count = yh-yl;
 	if (count < 0)
 		return;
@@ -177,6 +177,12 @@ void rt_map1col_c (int hx, int sx, int yl, int yh)
 		source += 8;
 		dest += pitch*2;
 	} while (--count);
+
+	if(depthMap!=NULL)
+	{
+		for(int y=yl;y<=yh;y++)
+			depthMap->setPoint(sx, y);
+	}
 }
 
 // Maps all four spans to the screen starting at sx.
@@ -192,12 +198,11 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 	if (count < 0)
 		return;
 	count++;
-
 	colormap = dc_colormap;
 	dest = ylookup[yl] + sx + dc_destorg;
 	source = &dc_temp[yl*4];
 	pitch = dc_pitch;
-	
+	int y_mod=0;
 	if (count & 1) {
 		dest[0] = colormap[source[0]];
 		dest[1] = colormap[source[1]];
@@ -205,6 +210,13 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 		dest[3] = colormap[source[3]];
 		source += 4;
 		dest += pitch;
+		if(depthMap!=NULL) {
+			for (int dx = 0; dx < 4; dx++) {
+				depthMap->setActualDepth(depthMap->helperBuffer[dx]);
+				depthMap->setPoint((unsigned int) sx + dx, (unsigned int) yl + y_mod);
+			}
+			y_mod+=1;
+		}
 	}
 	if (!(count >>= 1))
 		return;
@@ -220,6 +232,14 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 		dest[pitch+3] = colormap[source[7]];
 		source += 8;
 		dest += pitch*2;
+		if(depthMap!=NULL) {
+			for (int dx = 0; dx < 4; dx++) {
+				depthMap->setActualDepth(depthMap->helperBuffer[dx]);
+				for (int dy = 0; dy < 2; dy++)
+					depthMap->setPoint((unsigned int) sx + dx, (unsigned int) yl + y_mod + dy);
+			}
+			y_mod += 2;
+		}
 	} while (--count);
 }
 #endif
@@ -949,12 +969,14 @@ void rt_draw4cols (int sx)
 				{
 					if (horizspan[x][1] < minnexttop)
 					{
+						if(depthMap!=NULL) depthMap->setActualDepth(depthMap->helperBuffer[x]);
 						hcolfunc_post1 (x, sx+x, horizspan[x][0], horizspan[x][1]);
 						horizspan[x] += 2;
 						drawcount++;
 					}
 					else if (minnexttop > horizspan[x][0])
 					{
+						if(depthMap!=NULL) depthMap->setActualDepth(depthMap->helperBuffer[x]);
 						hcolfunc_post1 (x, sx+x, horizspan[x][0], minnexttop-1);
 						horizspan[x][0] = minnexttop;
 						drawcount++;
@@ -976,6 +998,7 @@ void rt_draw4cols (int sx)
 		{
 			if (maxtop > horizspan[x][0])
 			{
+				if(depthMap!=NULL) depthMap->setActualDepth(depthMap->helperBuffer[x]);
 				hcolfunc_post1 (x, sx+x, horizspan[x][0], maxtop-1);
 			}
 		}
@@ -1026,7 +1049,7 @@ void R_DrawColumnHorizP_C (void)
 	{
 		int x = dc_x & 3;
 		unsigned int **span;
-		
+
 		span = &dc_ctspan[x];
 		(*span)[0] = dc_yl;
 		(*span)[1] = dc_yh;
@@ -1042,11 +1065,13 @@ void R_DrawColumnHorizP_C (void)
 		if (count & 1) {
 			*dest = source[frac>>FRACBITS]; dest += 4; frac += fracstep;
 		}
+
 		if (count & 2) {
 			dest[0] = source[frac>>FRACBITS]; frac += fracstep;
 			dest[4] = source[frac>>FRACBITS]; frac += fracstep;
 			dest += 8;
 		}
+
 		if (count & 4) {
 			dest[0] = source[frac>>FRACBITS]; frac += fracstep;
 			dest[4] = source[frac>>FRACBITS]; frac += fracstep;
@@ -1054,6 +1079,7 @@ void R_DrawColumnHorizP_C (void)
 			dest[12]= source[frac>>FRACBITS]; frac += fracstep;
 			dest += 16;
 		}
+
 		count >>= 3;
 		if (!count) return;
 
@@ -1068,6 +1094,7 @@ void R_DrawColumnHorizP_C (void)
 			dest[24]= source[frac>>FRACBITS]; frac += fracstep;
 			dest[28]= source[frac>>FRACBITS]; frac += fracstep;
 			dest += 32;
+
 		} while (--count);
 	}
 }
@@ -1075,6 +1102,7 @@ void R_DrawColumnHorizP_C (void)
 // [RH] Just fills a column with a given color
 void R_FillColumnHorizP (void)
 {
+
 	int count = dc_count;
 	BYTE color = dc_color;
 	BYTE *dest;

@@ -1,43 +1,64 @@
 #!/usr/bin/python
-from vizia import DoomGame
-from vizia import ScreenResolution
-from vizia import Mode
-from random import choice
 
-from time import sleep
-from time import time
+#####################################################################
+# This script presents SPECTATOR mode. In SPECTATOR mode you play and
+# your agent can learn from it.
+# Configuration is loaded from "config_<SCENARIO_NAME>.properties" file.
+# 
+# To see the scenario description go to "../../scenarios/README"
+# 
+#####################################################################
+from vizia import *
+
 
 game = DoomGame()
 
-game.load_config("config_basic.properties")              
-#game.load_config("config_deadly_corridor.properties")    
-#game.load_config("config_defend_the_center.properties")  
+# Choose scenario config file you wish to watch.
+# Don't load two configs cause the second will overrite the first one.
+# Multiple config files are ok but combining these ones doesn't make much sense.
+
+game.load_config("config_basic.properties")
+#game.load_config("config_deadly_corridor.properties")
+#game.load_config("config_defend_the_center.properties")
 #game.load_config("config_defend_the_line.properties")
 #game.load_config("config_health_gathering.properties")
 #game.load_config("config_my_way_home.properties")
 #game.load_config("config_predict_position.properties")
 
-game.set_screen_resolution(ScreenResolution.RES_800X450)
+game.set_screen_resolution(ScreenResolution.RES_640X480)
+
+# Enables spectator mode, so you can play. Sounds strange but it is agent who is supposed to watch not you.
 game.set_mode(Mode.SPECTATOR)
+
+# Add some mouse support for fun.
+# TODO game.add_available_button(Button.???)
+
 game.init()
 
-iters = 10000
-for i in range(iters):
-
-	if game.is_episode_finished():
-		print "episode finished!"
-		print "summary reward:", game.get_summary_reward()
-		print "************************"
-		game.new_episode()
-
-	a = game.get_last_action()
-	s = game.get_state()
-	r = game.get_last_reward()
+episodes = 10
+print ""
+for i in range(episodes):
+	print "Episode #" +str(i+1)
 	
-	print "state #" +str(s.number)
-	print "action: ", a
-	print "reward:",r
-	print "====================="
-	game.advance_action()
+	game.new_episode()
+	while not game.is_episode_finished():
+		
+		s = game.get_state()
+		img = s.image_buffer
+		misc = s.game_variables
+
+		#game.advance_action()
+		a = game.get_last_action()
+		r = game.get_last_reward()
+		print "state #"+str(s.number)
+		print "game variables: ", misc
+		print "action:", a
+		print "reward:",r
+		print "====================="
+		
+	
+	print "episode finished!"
+	print "summary reward:", game.get_summary_reward()
+	print "************************"
 
 game.close()
