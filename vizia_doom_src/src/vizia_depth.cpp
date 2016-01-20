@@ -60,8 +60,15 @@ void depthBuffer::setPoint(unsigned int x, unsigned int y, u_int8_t depth) {
 void depthBuffer::setActualDepth(u_int8_t depth) {
     if(this->isLocked())
         return;
-
-    this->actualDepth=depth;
+    if(this->bufferHeight==480)
+        this->actualDepth=depth;
+    else {
+        int dpth=depth;
+        dpth *= (double) this->bufferHeight / 480;
+        if(dpth>255)
+            dpth=255;
+        this->actualDepth=(u_int8_t) dpth;
+    }
 }
 
 //store depth value for later usage with automated conversion based on stored boundries
