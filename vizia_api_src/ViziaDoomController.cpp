@@ -27,8 +27,9 @@ namespace Vizia {
         this->screenWidth = 320;
         this->screenHeight = 240;
         this->screenChannels = 3;
-        this->screenPitch = 0;
+        this->screenPitch = 320;
         this->screenSize = 0;
+        this->screenDepth = 8;
         this->screenFormat = CRCGCB;
 
         this->gamePath = "viziazdoom";
@@ -230,36 +231,17 @@ namespace Vizia {
 
     bool DoomController::isDoomRunning() { return this->doomRunning; }
 
-    void DoomController::waitTicsRealTime(unsigned int tics){
+    void DoomController::waitRealTimeForTics(unsigned int tics){
         //unsigned int msToWait = std::floor((float)1000/35 * tics);
-        unsigned long long nsToWait = 1000000000/35 * tics;
+        long long nsToWait = 1000000000/35 * tics;
         std::time_t now = std::clock();
         //bc::steady_clock::time_point now = bc::steady_clock::now();
         //bc::milliseconds wait = bc::duration_cast<bc::milliseconds>(bc::milliseconds(msToWait) - (now - this->lastTicTimePoint));
-        unsigned long long nsLeft = nsToWait - (now - this->lastTicTime);///(CLOCKS_PER_SEC/1000);
-        bc::nanoseconds wait(nsLeft);
-        b::this_thread::sleep_for( wait );
-        //std::cout << "CZEKANO: " << nsLeft << std::endl;
-    }
-
-    bool DoomController::realTimeTics(unsigned int tics, bool update){
-        bool lastTic = this->mapEnded;
-
-        for(int i = 0; i < tics; ++i){
-            this->waitTicsRealTime(1);
-            if(i == tics - 1) lastTic = this->tic(true);
-            else lastTic = this->tic(false);
-
-            if(!lastTic){
-                this->MQSend(MSG_CODE_UPDATE);
-                this->waitForDoomWork();
-                break;
-            }
-
-            if(i == 0 && !this->allowDoomInput) this->resetDescreteButtons();
+        long long nsLeft = nsToWait - (now - this->lastTicTime);///(CLOCKS_PER_SEC/1000);
+        if(nsLeft > 0) {
+            bc::nanoseconds wait(nsLeft);
+            b::this_thread::sleep_for(wait);
         }
-
-        return lastTic;
     }
 
 //SETTINGS
@@ -326,9 +308,23 @@ namespace Vizia {
         }
     }
 
-    unsigned int DoomController::getSeed(){ return this->gameVariables->GAME_SEED; }
+    unsigned int DoomController::getSeed(){
+        if (this->doomRunning) return this->gameVariables->GAME_SEED;
+        else return 0;
+    }
+
     unsigned int DoomController::getStaticSeed(){ return this->staticSeed; }
-    void DoomController::setStaticSeed(unsigned int seed){ if(!this->doomRunning) this->staticSeed = seed; }
+
+    void DoomController::setStaticSeed(unsigned int seed){
+        this->useStaticSeed = true;
+        this->staticSeed = seed;
+        if (this->doomRunning) {
+            this->sendCommand("rngseed " + this->skill);
+        }
+    }
+
+    void DoomController::setUseStaticSeed(bool set){ this->useStaticSeed = true; }
+    bool DoomController::isUseStaticSeed(){ return this->useStaticSeed; }
 
     void DoomController::setAutoMapRestart(bool set) { this->autoRestart = set; }
     void DoomController::setAutoMapRestartOnTimeout(bool set) { this->autoRestartOnTimeout = set; }
@@ -470,27 +466,21 @@ namespace Vizia {
 
     unsigned int DoomController::getScreenWidth() {
         if (this->doomRunning) return this->gameVariables->SCREEN_WIDTH;
-        else return 0;
+        else return this->screenWidth;
     }
 
     unsigned int DoomController::getScreenHeight() {
         if (this->doomRunning) return this->gameVariables->SCREEN_HEIGHT;
-        else return 0;
+        else return this->screenHeight;
     }
 
-    unsigned int DoomController::getScreenChannels() {
-        if (this->doomRunning) return this->screenChannels;
-        else return 0;
-    }
+    unsigned int DoomController::getScreenChannels() { return this->screenChannels; }
 
-    unsigned int DoomController::getScreenDepth() {
-        if (this->doomRunning) return this->screenDepth;
-        else return 0;
-    }
+    unsigned int DoomController::getScreenDepth() { return this->screenDepth; }
 
     size_t DoomController::getScreenPitch() {
         if (this->doomRunning) return (size_t) this->gameVariables->SCREEN_PITCH;
-        else return 0;
+        else return (size_t) this->screenDepth/8*this->screenWidth;
     }
 
     ScreenFormat DoomController::getScreenFormat() {
@@ -500,7 +490,7 @@ namespace Vizia {
 
     size_t DoomController::getScreenSize() {
         if (this->doomRunning) return (size_t) this->gameVariables->SCREEN_SIZE;
-        else return 0;
+        else return (size_t) this->screenChannels * this->screenWidth * this->screenHeight;
     }
 
 //SM SETTERS & GETTERS
@@ -801,7 +791,7 @@ namespace Vizia {
             args.push_back(this->configPath);
         }
 
-        if(staticSeed) {
+        if(this->useStaticSeed) {
             args.push_back("-rngseed");
             args.push_back(b::lexical_cast<std::string>(this->staticSeed));
         }
@@ -868,6 +858,7 @@ namespace Vizia {
         if(this->allowDoomInput){
             args.push_back("+vizia_allow_input");
             args.push_back("1");
+
             //allow mouse
             args.push_back("+use_mouse");
             args.push_back("1");

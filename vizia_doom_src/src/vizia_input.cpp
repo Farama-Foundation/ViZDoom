@@ -20,8 +20,9 @@ bool viziaInputInited = false;
 
 EXTERN_CVAR (Bool, vizia_allow_input);
 
-void Vizia_Command(char * command){
-    if(strlen(command) >= 1) AddCommandString(command);
+void Vizia_Command(char * cmd){
+    //printf("VIZIA CMD %d %s\n", gametic, cmd);
+    if(strlen(cmd) >= 1) AddCommandString(cmd);
 }
 
 bool Vizia_CommmandFilter(const char *cmd){
@@ -44,14 +45,14 @@ bool Vizia_CommmandFilter(const char *cmd){
     if(action) beg = cmd+1;
     else beg = cmd;
 
-    for(int i =0; i<VIZIA_BT_CMD_BT_SIZE; ++i){
+    for(int i = 0; i<VIZIA_BT_CMD_BT_SIZE; ++i){
         if(strcmp(beg, Vizia_BTToCommand(i)) == 0){
             if(!viziaInput->BT_AVAILABLE[i]) return false;
-            else{
-                viziaInput->BT[i] = state;
-            }
+            else viziaInput->BT[i] = state;
         }
     }
+
+    //printf("%d %s\n",gametic, cmd);
 
     return true;
 }
@@ -282,7 +283,6 @@ void Vizia_InputInit() {
 
 void Vizia_InputTic(){
 
-    //Vizia_Mouse(viziaInput->MS_X, viziaInput->MS_Y);
     if(!*vizia_allow_input) {
         for (int i = 0; i < VIZIA_BT_CMD_BT_SIZE; ++i) {
 
@@ -319,6 +319,7 @@ void Vizia_InputTic(){
     //else D_ProcessEvents();
 
     memcpy( viziaLastInput, viziaInput, sizeof(ViziaInputStruct) );
+
 }
 
 void Vizia_InputClose(){

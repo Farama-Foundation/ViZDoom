@@ -125,11 +125,7 @@ namespace Vizia{
         void addCustomArg(std::string arg);
         void clearCustomArgs();
 
-        void waitTicsRealTime(unsigned int tics);
-        bool realTimeTic();
-        bool realTimeTic(bool update);
-        bool realTimeTics(unsigned int tics);
-        bool realTimeTics(unsigned int tics, bool update);
+        void waitRealTimeForTics(unsigned int tics);
 
         //SETTINGS
 
@@ -138,6 +134,8 @@ namespace Vizia{
         unsigned int getSeed();
         unsigned int getStaticSeed();
         void setStaticSeed(unsigned int seed);
+        void setUseStaticSeed(bool use);
+        bool isUseStaticSeed();
 
         std::string getInstanceId();
         void setInstanceId(std::string id);
@@ -258,6 +256,7 @@ namespace Vizia{
         void generateStaticSeed();
         void generateInstanceId();
 
+        bool useStaticSeed;
         int staticSeed;
         std::string instanceId;
 
