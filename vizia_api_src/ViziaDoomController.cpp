@@ -49,6 +49,7 @@ namespace Vizia {
         this->noXServer = false;
         this->noConsole = true;
 
+        // AUTO RESTART && TIMEOUT
         this->autoRestart = false;
         this->autoRestartOnTimeout = true;
         this->autoRestartOnPlayersDeath = true;
@@ -62,10 +63,10 @@ namespace Vizia {
 
         this->allowDoomInput = false;
 
-        // AUTO RESTART
-
+        //SEED
         this->generateInstanceId();
         //this->generateStaticSeed();
+        this->useStaticSeed = false;
         this->staticSeed = 0;
         this->doomRunning = false;
         this->doomWorking = false;
@@ -106,6 +107,8 @@ namespace Vizia {
                 this->waitForDoomWork();
 
                 *this->input = *this->_input;
+
+                this->lastTicTime = std::clock();
             }
             catch(const Exception &e){
                 this->doomRunning = false;
@@ -451,7 +454,7 @@ namespace Vizia {
     void DoomController::setRenderDecals(bool decals) {
         this->decals = decals;
         if (this->doomRunning) {
-            if (this->decals) this->sendCommand("cl_maxdecals 128");
+            if (this->decals) this->sendCommand("cl_maxdecals 1024");
             else this->sendCommand("cl_maxdecals 0");
         }
     }
@@ -834,7 +837,7 @@ namespace Vizia {
 
         //decals
         args.push_back("+cl_maxdecals");
-        if (this->decals) args.push_back("128");
+        if (this->decals) args.push_back("1024");
         else args.push_back("0");
 
         //particles
