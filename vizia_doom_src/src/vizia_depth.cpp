@@ -3,6 +3,7 @@
 //
 #include <SDL_events.h>
 #include "vizia_depth.h"
+#include "v_video.h"
 
 depthBuffer* depthMap = NULL;
 
@@ -59,7 +60,15 @@ void depthBuffer::setPoint(unsigned int x, unsigned int y, u_int8_t depth) {
 void depthBuffer::setActualDepth(u_int8_t depth) {
     if(this->isLocked())
         return;
-    this->actualDepth=depth;
+    if(this->bufferHeight==480)
+        this->actualDepth=depth;
+    else {
+        int dpth=depth;
+        dpth *= (double) this->bufferHeight / 480;
+        if(dpth>255)
+            dpth=255;
+        this->actualDepth=(u_int8_t) dpth;
+    }
 }
 
 //store depth value for later usage with automated conversion based on stored boundries
@@ -139,6 +148,21 @@ void depthBuffer::lock() {this->locked=true; }
 void depthBuffer::unlock() {this->locked=false; }
 
 bool depthBuffer::isLocked() { return this->locked; }
+
+void depthBuffer::sizeUpdate() {
+    if(this->bufferWidth!= screen->GetWidth() || this->bufferHeight!=screen->GetHeight())
+    {
+        delete[] this->buffer;
+        this->bufferHeight=(unsigned)screen->GetHeight();
+        this->bufferWidth= (unsigned)screen->GetWidth();
+        this->bufferSize=this->bufferHeight*this->bufferWidth;
+        this->buffer = new u_int8_t[this->bufferSize];
+#ifdef VIZIA_DEPTH_TEST
+        SDL_SetWindowSize(this->window, this->bufferWidth,this->bufferHeight);
+        this->surface=SDL_GetWindowSurface(this->window);
+#endif
+    }
+}
 
 #ifdef VIZIA_DEPTH_TEST
 //update depth debug window
