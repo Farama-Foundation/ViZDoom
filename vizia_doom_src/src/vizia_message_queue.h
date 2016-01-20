@@ -40,15 +40,9 @@ void Vizia_MQInit(const char * id);
 
 void Vizia_MQSend(uint8_t code);
 
-bool Vizia_MQTrySend(uint8_t code);
-
 void Vizia_MQSend(uint8_t code, const char * command);
 
-bool Vizia_MQTrySend(uint8_t code, const char * command);
-
 void Vizia_MQRecv(void *msg, unsigned long &size, unsigned int &priority);
-
-bool Vizia_MQTryRecv(void *msg, unsigned long &size, unsigned int &priority);
 
 void Vizia_MQTic();
 

@@ -32,12 +32,6 @@ void Vizia_MQSend(uint8_t code){
     //return viziaMQ->try_send(&msg, sizeof(ViziaMessageSignalStruct), 0);
 }
 
-bool Vizia_MQTrySend(uint8_t code){
-    ViziaMessageSignalStruct msg;
-    msg.code = code;
-    return viziaMQController->try_send(&msg, sizeof(ViziaMessageSignalStruct), 0);
-}
-
 void Vizia_MQSend(uint8_t code, const char * command){
     ViziaMessageCommandStruct msg;
     msg.code = code;
@@ -45,19 +39,8 @@ void Vizia_MQSend(uint8_t code, const char * command){
     viziaMQController->send(&msg, sizeof(ViziaMessageCommandStruct), 0);
 }
 
-bool Vizia_MQTrySend(uint8_t code, const char * command){
-    ViziaMessageCommandStruct msg;
-    msg.code = code;
-    strncpy(msg.command, command, VIZIA_MQ_MAX_CMD_LEN);
-    return viziaMQController->try_send(&msg, sizeof(ViziaMessageCommandStruct), 0);
-}
-
 void Vizia_MQRecv(void *msg, unsigned long &size, unsigned int &priority){
-    viziaMQDoom->receive(&msg, sizeof(ViziaMessageCommandStruct), size, priority);
-}
-
-bool Vizia_MQTryRecv(void *msg, unsigned long &size, unsigned int &priority){
-    return viziaMQDoom->try_receive(&msg, sizeof(ViziaMessageCommandStruct), size, priority);
+    viziaMQDoom->receive(msg, sizeof(ViziaMessageCommandStruct), size, priority);
 }
 
 void Vizia_MQTic(){
@@ -67,11 +50,11 @@ void Vizia_MQTic(){
     ViziaMessageCommandStruct msg;
 
     unsigned int priority;
-    bip::message_queue::size_type recvd_size;
+    bip::message_queue::size_type recv_size;
 
     bool nextTic = false;
     do {
-        viziaMQDoom->receive(&msg, sizeof(ViziaMessageCommandStruct), recvd_size, priority);
+        Vizia_MQRecv(&msg, recv_size, priority);
         switch(msg.code){
             case VIZIA_MSG_CODE_TIC :
                 nextTic = true;

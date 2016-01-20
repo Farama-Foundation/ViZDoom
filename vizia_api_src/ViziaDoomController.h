@@ -61,7 +61,7 @@ namespace Vizia{
         struct GameVariablesStruct {
             unsigned int GAME_TIC;
             unsigned int GAME_SEED;
-            unsigned int GAME_STAIC_SEED;
+            unsigned int GAME_STATIC_SEED;
 
             unsigned int SCREEN_WIDTH;
             unsigned int SCREEN_HEIGHT;
@@ -279,13 +279,10 @@ namespace Vizia{
         };
 
         void MQInit();
-        void MQSend(uint8_t code);
-        void MQSelfSend(uint8_t code);
-        bool MQTrySend(uint8_t code);
-        void MQSend(uint8_t code, const char *command);
-        bool MQTrySend(uint8_t code, const char *command);
-        void MQRecv(void *msg, unsigned long &size, unsigned int &priority);
-        bool MQTryRecv(void *msg, unsigned long &size, unsigned int &priority);
+        void MQControllerSend(uint8_t code);
+        void MQDoomSend(uint8_t code);
+        void MQDoomSend(uint8_t code, const char *command);
+        void MQControllerRecv(void *msg, unsigned long &size, unsigned int &priority);
         void MQClose();
 
         bip::message_queue *MQController;
@@ -316,7 +313,7 @@ namespace Vizia{
         void waitForDoomStart();
         void waitForDoomWork();
         void waitForDoomMapStartTime();
-        void lunchDoom();
+        void launchDoom();
         void handleSignals();
 
         // OPTIONS

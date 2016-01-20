@@ -43,17 +43,17 @@ namespace Vizia{
 
     class IncorrectDoomIwadPathException : public Exception {
     public:
-        const char* what() const throw(){ return "Doom iwad path is incorrect."; }
+        const char* what() const throw(){ return "Game wad (iwad) path is incorrect."; }
     };
 
     class IncorrectDoomFilePathException : public Exception {
     public:
-        const char* what() const throw(){ return "Doom file path is incorrect."; }
+        const char* what() const throw(){ return "Scenario wad path is incorrect."; }
     };
 
     class IncorrectDoomConfigPathException : public Exception {
     public:
-        const char* what() const throw(){ return "Doom config path is incorrect."; }
+        const char* what() const throw(){ return "Game config path is incorrect."; }
     };
 
     enum Mode {
@@ -158,8 +158,10 @@ namespace Vizia{
         KILLCOUNT,
         ITEMCOUNT,
         SECRETCOUNT,
+        FRAGCOUNT,
         HEALTH,
         ARMOR,
+        DEAD,
         ON_GROUND,
         ATTACK_READY,
         ALTATTACK_READY,

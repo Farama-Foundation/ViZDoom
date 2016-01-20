@@ -96,13 +96,13 @@ namespace Vizia {
 
                 this->signalThread = new b::thread(b::bind(&DoomController::handleSignals, this));
 
-                this->doomThread = new b::thread(b::bind(&DoomController::lunchDoom, this));
+                this->doomThread = new b::thread(b::bind(&DoomController::launchDoom, this));
                 this->waitForDoomStart();
 
                 this->SMInit();
                 this->waitForDoomMapStartTime();
 
-                this->MQSend(MSG_CODE_UPDATE);
+                this->MQDoomSend(MSG_CODE_UPDATE);
                 this->waitForDoomWork();
 
                 *this->input = *this->_input;
@@ -128,7 +128,7 @@ namespace Vizia {
                 this->signalThread->join();
             }
 
-            this->MQSend(MSG_CODE_CLOSE);
+            this->MQDoomSend(MSG_CODE_CLOSE);
 
             if (this->doomThread && this->doomThread->joinable()) {
                 this->doomThread->interrupt();
@@ -141,7 +141,7 @@ namespace Vizia {
     }
 
     void DoomController::intSignal(){
-        this->MQSelfSend(MSG_CODE_SIGNAL_INT_ABRT_TERM);
+        this->MQControllerSend(MSG_CODE_SIGNAL_INT_ABRT_TERM);
     }
 
     void DoomController::restart() {
@@ -163,8 +163,8 @@ namespace Vizia {
                 this->lastTicTime = std::clock();
 
                 this->mapLastTic = this->gameVariables->MAP_TIC;
-                if(update) this->MQSend(MSG_CODE_TIC_N_UPDATE);
-                else this->MQSend(MSG_CODE_TIC);
+                if(update) this->MQDoomSend(MSG_CODE_TIC_N_UPDATE);
+                else this->MQDoomSend(MSG_CODE_TIC);
                 this->waitForDoomWork();
             }
 
@@ -198,7 +198,7 @@ namespace Vizia {
             else lastTic = this->tic(false);
 
             if(!lastTic){
-                this->MQSend(MSG_CODE_UPDATE);
+                this->MQDoomSend(MSG_CODE_UPDATE);
                 this->waitForDoomWork();
                 break;
             }
@@ -218,7 +218,7 @@ namespace Vizia {
     }
 
     void DoomController::sendCommand(std::string command) {
-        this->MQSend(MSG_CODE_COMMAND, command.c_str());
+        this->MQDoomSend(MSG_CODE_COMMAND, command.c_str());
     }
 
     void DoomController::addCustomArg(std::string arg){
@@ -279,7 +279,7 @@ namespace Vizia {
 
             do {
                 ++restartingTics;
-                this->MQSend(MSG_CODE_TIC);
+                this->MQDoomSend(MSG_CODE_TIC);
                 this->waitForDoomWork();
 
                 if (restartingTics > 4) {
@@ -291,7 +291,7 @@ namespace Vizia {
 
             this->waitForDoomMapStartTime();
 
-            this->MQSend(MSG_CODE_UPDATE);
+            this->MQDoomSend(MSG_CODE_UPDATE);
             this->waitForDoomWork();
 
             this->mapRestarting = false;
@@ -609,10 +609,14 @@ namespace Vizia {
                 return this->gameVariables->MAP_ITEMCOUNT;
             case SECRETCOUNT :
                 return this->gameVariables->MAP_SECRETCOUNT;
+            case FRAGCOUNT:
+                return this->gameVariables->PLAYER_FRAGCOUNT;
             case HEALTH :
                 return this->gameVariables->PLAYER_HEALTH;
             case ARMOR :
                 return this->gameVariables->PLAYER_ARMOR;
+            case DEAD :
+                return this->gameVariables->PLAYER_DEAD;
             case ON_GROUND :
                 return this->gameVariables->PLAYER_ON_GROUND;
             case ATTACK_READY :
@@ -694,10 +698,9 @@ namespace Vizia {
         MessageCommandStruct msg;
 
         unsigned int priority;
-        bip::message_queue::size_type recvd_size;
+        bip::message_queue::size_type recv_size;
 
-        MQController->receive(&msg, sizeof(MessageCommandStruct), recvd_size, priority);
-
+        this->MQControllerRecv(&msg, recv_size, priority);
         switch (msg.code) {
             case MSG_CODE_DOOM_DONE :
                 this->doomRunning = true;
@@ -726,11 +729,11 @@ namespace Vizia {
             MessageCommandStruct msg;
 
             unsigned int priority;
-            bip::message_queue::size_type recvd_size;
+            bip::message_queue::size_type recv_size;
 
             bool done = false;
             do {
-                MQController->receive(&msg, sizeof(MessageCommandStruct), recvd_size, priority);
+                this->MQControllerRecv(&msg, recv_size, priority);
                 switch (msg.code) {
                     case MSG_CODE_DOOM_DONE :
                         done = true;
@@ -760,12 +763,12 @@ namespace Vizia {
 
     void DoomController::waitForDoomMapStartTime() {
         while(this->gameVariables->MAP_TIC < this->mapStartTime) {
-            this->MQSend(MSG_CODE_TIC);
+            this->MQDoomSend(MSG_CODE_TIC);
             this->waitForDoomWork();
         }
     }
 
-    void DoomController::lunchDoom() {
+    void DoomController::launchDoom() {
 
         std::vector <std::string> args;
 
@@ -905,7 +908,7 @@ namespace Vizia {
         //ctx.stdout_behavior = bpr::silence_stream();
         bpr::child doomProcess = bpr::execute(bpri::set_args(args), bpri::inherit_env());
         bpr::wait_for_exit(doomProcess);
-        this->MQSelfSend(MSG_CODE_DOOM_PROCESS_EXIT);
+        this->MQControllerSend(MSG_CODE_DOOM_PROCESS_EXIT);
     }
 
     void DoomController::handleSignals(){
@@ -976,44 +979,27 @@ namespace Vizia {
         }
     }
 
-    void DoomController::MQSend(uint8_t code) {
-        MessageSignalStruct msg;
-        msg.code = code;
-        this->MQDoom->send(&msg, sizeof(MessageSignalStruct), 0);
-    }
-
-    void DoomController::MQSelfSend(uint8_t code) {
+    void DoomController::MQControllerSend(uint8_t code) {
         MessageSignalStruct msg;
         msg.code = code;
         this->MQController->send(&msg, sizeof(MessageSignalStruct), 0);
     }
 
-    bool DoomController::MQTrySend(uint8_t code) {
+    void DoomController::MQDoomSend(uint8_t code) {
         MessageSignalStruct msg;
         msg.code = code;
-        return this->MQDoom->try_send(&msg, sizeof(MessageSignalStruct), 0);
+        this->MQDoom->send(&msg, sizeof(MessageSignalStruct), 0);
     }
 
-    void DoomController::MQSend(uint8_t code, const char *command) {
+    void DoomController::MQDoomSend(uint8_t code, const char *command) {
         MessageCommandStruct msg;
         msg.code = code;
         strncpy(msg.command, command, MQ_MAX_CMD_LEN);
         this->MQDoom->send(&msg, sizeof(MessageCommandStruct), 0);
     }
 
-    bool DoomController::MQTrySend(uint8_t code, const char *command) {
-        MessageCommandStruct msg;
-        msg.code = code;
-        strncpy(msg.command, command, MQ_MAX_CMD_LEN);
-        return this->MQDoom->try_send(&msg, sizeof(MessageCommandStruct), 0);
-    }
-
-    void DoomController::MQRecv(void *msg, unsigned long &size, unsigned int &priority) {
-        this->MQController->receive(&msg, sizeof(MessageCommandStruct), size, priority);
-    }
-
-    bool DoomController::MQTryRecv(void *msg, unsigned long &size, unsigned int &priority) {
-        return this->MQController->try_receive(&msg, sizeof(MessageCommandStruct), size, priority);
+    void DoomController::MQControllerRecv(void *msg, unsigned long &size, unsigned int &priority) {
+        this->MQController->receive(msg, sizeof(MessageCommandStruct), size, priority);
     }
 
     void DoomController::MQClose() {

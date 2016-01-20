@@ -54,8 +54,8 @@ int main(){
         }
         DoomGame::State s = dg->getState();
         std::cout << "STATE NUMBER: " << s.number << " HP: " << s.gameVariables[0] << " AMMO2: " << s.gameVariables[1] << std::endl;
-        std::cout<<"TIC: " << dg->getEpisodeTime() << "LAST ACTION: " << dg->getLastAction()[0] << " " << dg->getLastAction()[1]
-        << " " << dg->getLastAction()[2] << " " << dg->getLastAction()[3] << " " << dg->getLastAction()[4] << dg->getLastAction()[5] << std::endl;
+        std::cout<<"TIC: " << dg->getEpisodeTime() << " LAST ACTION: " << dg->getLastAction()[0] << " " << dg->getLastAction()[1]
+        << " " << dg->getLastAction()[2] << " " << dg->getLastAction()[3] << " " << dg->getLastAction()[4] << " " << dg->getLastAction()[5] << std::endl;
         dg->advanceAction(true,false,4);
     }
     dg->close();
