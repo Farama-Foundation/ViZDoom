@@ -28,8 +28,8 @@ game.load_config("config_basic.properties")
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 
 # Enables spectator mode, so you can play. Sounds strange but it is agent who is supposed to watch not you.
+game.set_windoiw_visible(True)
 game.set_mode(Mode.SPECTATOR)
-
 # Add some mouse support for fun.
 # TODO game.add_available_button(Button.???)
 
@@ -47,7 +47,7 @@ for i in range(episodes):
 		img = s.image_buffer
 		misc = s.game_variables
 
-		#game.advance_action()
+		game.advance_action()
 		a = game.get_last_action()
 		r = game.get_last_reward()
 		print "state #"+str(s.number)
