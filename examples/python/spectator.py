@@ -28,7 +28,7 @@ game.load_config("config_basic.properties")
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 
 # Enables spectator mode, so you can play. Sounds strange but it is agent who is supposed to watch not you.
-game.set_windoiw_visible(True)
+game.set_window_visible(True)
 game.set_mode(Mode.SPECTATOR)
 # Add some mouse support for fun.
 # TODO game.add_available_button(Button.???)
