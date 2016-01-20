@@ -24,6 +24,7 @@ game.load_config("config_basic.properties")
 #game.load_config("config_health_gathering.properties")
 #game.load_config("config_my_way_home.properties")
 #game.load_config("config_predict_position.properties")
+#game.load_config("config_take_cover.properties")
 
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 
