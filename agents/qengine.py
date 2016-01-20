@@ -47,14 +47,16 @@ class QEngine:
 
     def _initialize(self, game, evaluator, actions_generator=None, gamma=0.7, batch_size=500, update_frequency=500,
                  history_length=1, bank = None, bank_capacity=10000, start_epsilon=1.0, end_epsilon=0.0,
-                 epsilon_decay_start_step=100000, epsilon_decay_steps=100000, reward_scale = 1.0, image_converter=None, skiprate = 1, shaping_on = False):
+                 epsilon_decay_start_step=100000, epsilon_decay_steps=100000, reward_scale = 1.0, max_reward = 1.0, 
+                 image_converter=None, skiprate = 1, shaping_on = False):
     # Line that makes sublime collapse code correctly
 
         if image_converter:
             self._image_converter = image_converter(game)
         else:
             self._image_converter = Float32ImageConverter(game)
-
+        print max_reward
+        self._max_reward = np.float32(max_reward) 
         self._reward_scale = reward_scale
         self._game = game
         self._gamma = gamma
@@ -193,6 +195,8 @@ class QEngine:
             self._last_shaping_reward = sr
         r = r*self._reward_scale
 
+        if self._max_reward:
+            r = min(r, self._max_reward)
         #update state s2 accordingly
         if self._game.is_episode_finished():
             # terminal state
