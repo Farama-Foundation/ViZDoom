@@ -354,9 +354,8 @@ BOOST_PYTHON_MODULE(vizia)
 		.def("set_doom_skill", &DoomGamePython::setDoomSkill)
 		.def("set_doom_config_path", &DoomGamePython::setDoomConfigPath)
 
-		.def("get_current_seed", &DoomGamePython::getCurrentSeed)
-        .def("get_episode_seed", &DoomGamePython::getEpisodeSeed)
-        .def("set_episode_seed", &DoomGamePython::setEpisodeSeed)
+        .def("get_seed", &DoomGamePython::getSeed)
+        .def("set_seed", &DoomGamePython::setSeed)
 		
 		.def("set_auto_new_episode", &DoomGamePython::setAutoNewEpisode)
 		.def("set_new_episode_on_timeout", &DoomGamePython::setNewEpisodeOnTimeout)

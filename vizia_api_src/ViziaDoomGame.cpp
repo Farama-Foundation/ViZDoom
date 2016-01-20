@@ -162,7 +162,11 @@ namespace Vizia {
 
         try {
             if(this->mode == PLAYER) this->doomController->tics(tics, updateState || renderOnly);
-            else if(this->mode == SPECTATOR) this->doomController->realTimeTics(tics, updateState || renderOnly);
+            else if(this->mode == SPECTATOR) {
+                this->doomController->waitRealTimeForTics(tics);
+                this->doomController->tics(tics, updateState || renderOnly);
+            }
+            //this->doomController->tics(tics, updateState || renderOnly);
         }
         catch(const Exception &e){ throw; }
 
@@ -316,9 +320,11 @@ namespace Vizia {
     }
     void DoomGame::setDoomConfigPath(std::string path) { this->doomController->setConfigPath(path); }
 
-    unsigned int DoomGame::getCurrentSeed(){ return this->doomController->getSeed(); }
-    unsigned int DoomGame::getEpisodeSeed(){ return this->doomController->getStaticSeed(); }
-    void DoomGame::setEpisodeSeed(unsigned int seed){ this->doomController->setStaticSeed(seed); }
+    unsigned int DoomGame::getSeed(){
+        if(this->doomController->isUseStaticSeed()) return this->doomController->getStaticSeed();
+        else this->doomController->getSeed();
+    }
+    void DoomGame::setSeed(unsigned int seed){ this->doomController->setStaticSeed(seed); }
 
     void DoomGame::setAutoNewEpisode(bool set) { this->doomController->setAutoMapRestart(set); }
     void DoomGame::setNewEpisodeOnTimeout(bool set) { this->doomController->setAutoMapRestartOnTimeout(set); }
@@ -334,6 +340,8 @@ namespace Vizia {
     void DoomGame::setEpisodeTimeout(unsigned int tics) {
         this->doomController->setMapTimeout(tics);
     }
+
+    unsigned int DoomGame::getEpisodeTime(){ return this->doomController->getMapTic(); }
 
     float DoomGame::getLivingReward() { return this->livingReward; }
     void DoomGame::setLivingReward(float livingReward) { this->livingReward = livingReward; }
@@ -1040,8 +1048,8 @@ namespace Vizia {
         
         /* Parse int properties */
             try{
-                if (key =="episodeseed" || key == "episode_seed"){
-                    this->setEpisodeSeed(StringToUint(val));
+                if (key =="seed" || key == "seed"){
+                    this->setSeed(StringToUint(val));
                     continue;
                 }
                 if (key == "episode_timeout" || key == "episodetimeout"){

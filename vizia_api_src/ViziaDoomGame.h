@@ -92,9 +92,8 @@ namespace Vizia {
         void setDoomSkill(int skill);
         void setDoomConfigPath(std::string path);
 
-        unsigned int getEpisodeSeed();
-        unsigned int getCurrentSeed();
-        void setEpisodeSeed(unsigned int seed);
+        unsigned int getSeed();
+        void setSeed(unsigned int seed);
 
         void setAutoNewEpisode(bool set);
         void setNewEpisodeOnTimeout(bool set);
@@ -106,6 +105,8 @@ namespace Vizia {
 
         unsigned int getEpisodeTimeout();
         void setEpisodeTimeout(unsigned int tics);
+
+        unsigned int getEpisodeTime();
 
         void setScreenResolution(ScreenResolution resolution);
         void setScreenFormat(ScreenFormat format);
@@ -151,7 +152,7 @@ namespace Vizia {
 
         float livingReward;
         float deathPenalty;
-    
+
     private:
         /* Load config helpers */
         static bool StringToBool(std::string boolString);

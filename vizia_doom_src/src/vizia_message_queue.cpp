@@ -91,7 +91,7 @@ void Vizia_MQTic(){
             case VIZIA_MSG_CODE_ERROR:
                 exit(0);
                 //Vizia_Command(strdup("exit"));
-                //  break;
+                //break;
             default : break;
         }
     }while(!nextTic);

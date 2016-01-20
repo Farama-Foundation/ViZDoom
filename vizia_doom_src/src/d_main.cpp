@@ -114,7 +114,7 @@
 #include "vizia_defines.h"
 
 EXTERN_CVAR (Bool, vizia_controlled)
-EXTERN_CVAR (Bool, vizia_singletic)
+EXTERN_CVAR (Bool, vizia_singletics)
 EXTERN_CVAR (Bool, vizia_clean_render)
 EXTERN_CVAR (Bool, vizia_allow_input)
 
@@ -263,7 +263,7 @@ static int pagetic;
 void D_ProcessEvents (void)
 {
 	event_t *ev;
-		
+
 	// [RH] If testing mode, do not accept input until test is over
 	if (testingmode)
 	{
@@ -995,8 +995,6 @@ void D_ErrorCleanup ()
 //VIZIA CODE
 void D_DoomLoop ()
 {
-	//printf("DOOM LOOP");
-
 	int lasttic = 0;
 
 	// Clamp the timer to TICRATE until the playloop has been entered.
@@ -1006,6 +1004,7 @@ void D_DoomLoop ()
 	vid_cursor.Callback();
 
 	Vizia_Init();
+	//singletics = *vizia_singletics;
 
 	for (;;)
 	{
@@ -1017,37 +1016,56 @@ void D_DoomLoop ()
 				lasttic = gametic;
 				I_StartFrame ();
 			}
-			
-			// process one or more tics
-			if (singletics || (*vizia_controlled && *vizia_singletic))
-			{
+
+			//VIZIA CODE
+			if(*vizia_controlled){
+
+				//P_UnPredictPlayer();
+
+				GC::CheckGC();
 
 				I_StartTic ();
-				if(!*vizia_controlled || (vizia_update && *vizia_allow_input)) D_ProcessEvents ();
-
+				if(vizia_update && *vizia_allow_input) D_ProcessEvents ();
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
-				if (advancedemo)
-					D_DoAdvanceDemo ();
+				//G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
+				maketic++;
+				Net_NewMakeTic ();
+
+				C_Ticker ();
+				M_Ticker ();
+				I_GetTime (true);
+				G_Ticker();
+				gametic++;
+
+				//P_PredictPlayer(&players[consoleplayer]);
+			}
+			// process one or more tics
+			else if (singletics) {
+				I_StartTic ();
+				D_ProcessEvents ();
+				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
+				if (advancedemo) D_DoAdvanceDemo ();
+
 				C_Ticker ();
 				M_Ticker ();
 				G_Ticker ();
 				// [RH] Use the consoleplayer's camera to update sounds
-				//S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
+				S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
 				gametic++;
 				maketic++;
 				GC::CheckGC ();
-
-				//Net_NewMakeTic ();
+				Net_NewMakeTic ();
 			}
-			else
-			{
+			else {
 				TryRunTics (); // will run at least one tic
 			}
 
 			// Update display, next frame, with current state.
 			I_StartTic ();
-			if(!*vizia_controlled) D_Display ();
-			//S_UpdateMusic();	// OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
+			if(!*vizia_controlled) {
+				D_Display();
+				S_UpdateMusic();    // OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
+			}
 			Vizia_Tic();
 		}
 		catch (CRecoverableError &error)
