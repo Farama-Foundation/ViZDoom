@@ -709,6 +709,8 @@ void D_Display ()
 		}
 	}
 
+	if(depthMap!=NULL) depthMap->sizeUpdate();
+
 	RenderTarget = screen;
 
 	// change the view size if needed

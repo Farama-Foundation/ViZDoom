@@ -166,7 +166,6 @@ namespace Vizia {
                 this->doomController->waitRealTimeForTics(tics);
                 this->doomController->tics(tics, updateState || renderOnly);
             }
-            //this->doomController->tics(tics, updateState || renderOnly);
         }
         catch(const Exception &e){ throw; }
 
