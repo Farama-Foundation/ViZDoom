@@ -4,9 +4,9 @@ from vizia import *
 
 savefile = None
 #savefile = "params/basic_120to60"
-savefile = "params/health_guided_60_skip8"
+savefile = "params/health_guided_60_skip8_2"
 #savefile = "params/s1b_120_to60_skip1"
-loadfile = savefile
+loadfile = "params/health_guided_60_skip8"
 
 
 game = DoomGame()
@@ -21,11 +21,13 @@ print "\nDOOM initialized."
 
 if loadfile:
     engine = QEngine.load(game, loadfile)
-    engine.set_epsilon(0)
+    engine.set_epsilon(0.0)
 else:
     engine_args = engine_setup(game)
-    engine_args["start_epsilon"] = 1.0
+    #engine_args["start_epsilon"] = 0.0
     engine_args["gamma"] = 0.9999
+    engine_args["max_reward"] = 1.0
+    
     #engine_args["image_converter"] = None
     engine = QEngine(**engine_args)
 

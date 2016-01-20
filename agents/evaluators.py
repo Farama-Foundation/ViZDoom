@@ -13,6 +13,9 @@ import lasagne.layers as ls
 def double_tanh(x):
     return 2*tanh(x)
 
+def quadruple_tanh(x):
+    return 4*tanh(x)
+
 class MLPEvaluator:
     def __init__(self, state_format, actions_number, batch_size, network_args, gamma=0.99, updates=sgd, learning_rate = 0.01, regularization = None):
         self._loss_history = []
@@ -127,12 +130,12 @@ class MLPEvaluator:
 
         # set expected output as the reward got from the transition
         
-
         # substitute expected values for chosen actions
         for i, q in zip(range(len(transitions)), q2):
             target[i][transitions[i][1]] = transitions[i][3]
             if transitions[i][2] is not None:
                 target[i][transitions[i][1]] += self._gamma * q
+        
 
         if self._misc_state_included:
             loss = self._learn(self._input_image_buffer, self._misc_buffer, target)
@@ -156,28 +159,7 @@ class MLPEvaluator:
 
     def get_network(self):
         return self._network
-        
-class LinearEvaluator(MLPEvaluator):
-    def __init__(self, **kwargs):
-        MLPEvaluator.__init__(self, **kwargs)
 
-    def _initialize_network(self, img_input_shape, misc_shape, output_size, output_nonlin=double_tanh):
-        print "Initializing Linear Evaluator"
-        # image input layer
-        network = ls.InputLayer(shape=img_input_shape, input_var=self._image_inputs)
-        # hidden layers
-                
-        if self._misc_state_included:
-            # misc input layer
-            misc_input_layer = ls.InputLayer(shape=misc_shape, input_var=self._misc_inputs)
-            # merge layer
-            network = ls.ConcatLayer([network, misc_input_layer])
-
-        # output layer
-        network = ls.DenseLayer(network, output_size, nonlinearity = output_nonlin)
-        self._network = network
-
-    
 class CNNEvaluator(MLPEvaluator):
     def __init__(self, **kwargs):
         MLPEvaluator.__init__(self, **kwargs)

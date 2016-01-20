@@ -2,7 +2,7 @@
 from common import *
 from vizia import ScreenResolution
 #load_file = "params/health_guided_160to60_skip8"
-loadfile = "params/health_guided_60_skip8"
+loadfile = "params/health_guided_60_skip8_bcp"
 game = DoomGame()
 game.load_config("config_common.properties")
 #game.load_config("config_health_guided.properties")
@@ -35,7 +35,7 @@ for i in range(episodes):
 
         s = game.get_state()
         img = s.image_buffer
-        print "HP:",s.game_variables
+        #print "HP:",s.game_variables
         
         if sleep_time>0:
         	sleep(sleep_time)
