@@ -96,13 +96,13 @@ void Vizia_GameVarsInit(){
 
     viziaPlayer = &players[consoleplayer];
     try {
-        viziaGameVarsSMRegion = new bip::mapped_region(viziaSM, bip::read_write, Vizia_SMGetGameVarsRegionBeginning(), sizeof(ViziaGameVarsStruct));
+        viziaGameVarsSMRegion = new bip::mapped_region(viziaSM, bip::read_write, sizeof(ViziaInputStruct), sizeof(ViziaGameVarsStruct));
         viziaGameVars = static_cast<ViziaGameVarsStruct *>(viziaGameVarsSMRegion->get_address());
     }
     catch(bip::interprocess_exception &ex){
         printf("Vizia_GameVarsInit: Error GameVars SM");
         Vizia_MQSend(VIZIA_MSG_CODE_DOOM_ERROR);
-        Vizia_Command(strdup("exit"));
+        exit(1);
     }
 }
 
@@ -144,16 +144,16 @@ void Vizia_GameVarsTic(){
     viziaGameVars->PLAYER_ALTATTACK_READY = (viziaPlayer->WeaponState & WF_WEAPONREADYALT);
     viziaGameVars->PLAYER_ON_GROUND = viziaPlayer->onground;
 
-    if(viziaPlayer->mo) viziaGameVars->PLAYER_HEALTH = viziaPlayer->mo->health;
+    if (viziaPlayer->mo) viziaGameVars->PLAYER_HEALTH = viziaPlayer->mo->health;
     else viziaGameVars->PLAYER_HEALTH = viziaPlayer->health;
 
     viziaGameVars->PLAYER_ARMOR = Vizia_CheckItem(NAME_BasicArmor);
-    //TO DO? support for diffrent types of armor
+    //TO DO? support for other types of armor
 
     viziaGameVars->PLAYER_SELECTED_WEAPON_AMMO = Vizia_CheckSelectedWeaponAmmo();
     viziaGameVars->PLAYER_SELECTED_WEAPON = Vizia_CheckSelectedWeapon();
 
-    for(int i = 0; i < VIZIA_GV_SLOTS_SIZE; ++i) {
+    for (int i = 0; i < VIZIA_GV_SLOTS_SIZE; ++i) {
         viziaGameVars->PLAYER_AMMO[i] = Vizia_CheckSlotAmmo(i);
         viziaGameVars->PLAYER_WEAPON[i] = Vizia_CheckSlotWeapons(i);
     }

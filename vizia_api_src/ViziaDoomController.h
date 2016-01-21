@@ -223,6 +223,9 @@ namespace Vizia{
         bool isAllowDoomInput();
         void setAllowDoomInput(bool set);
 
+        bool isRunDoomAsync();
+        void setRunDoomAsync(bool set);
+
         int getGameVariable(GameVariable var);
 
         int getGameTic();
@@ -336,8 +339,9 @@ namespace Vizia{
         int skill;
 
         bool allowDoomInput;
+        bool runDoomAsync;
 
-        // AUTO RESTART
+        // AUTO RESTART & MAP TIME
 
         bool autoRestart;
         bool autoRestartOnTimeout;

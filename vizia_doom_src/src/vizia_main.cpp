@@ -14,6 +14,7 @@
 #include "g_game.h"
 #include "doomdef.h"
 #include "doomstat.h"
+#include "doomtype.h"
 #include "c_console.h"
 
 #include "d_player.h"
@@ -45,7 +46,7 @@ namespace bt = boost::this_thread;
 */
 
 CVAR (Bool, vizia_controlled, false, CVAR_NOSET)
-CVAR (Bool, vizia_singletics, true, CVAR_NOSET)
+CVAR (Bool, vizia_async, false, CVAR_NOSET)
 CVAR (Bool, vizia_clean_render, true, CVAR_NOSET)
 CVAR (String, vizia_instance_id, "0", CVAR_NOSET)
 CVAR (Int, vizia_screen_format, 0, CVAR_NOSET)
@@ -58,22 +59,22 @@ bool vizia_update = false;
 unsigned int vizia_last_update = 0;
 
 void Vizia_Init(){
-    printf("Vizia_Init: Instance id: %s\n", *vizia_instance_id);
+    Printf("Vizia_Init: Instance id: %s\n", *vizia_instance_id);
 
     if(*vizia_controlled) {
-        printf("Vizia_Init: Init message queues\n");
+        Printf("Vizia_Init: Init message queues\n");
         Vizia_MQInit(*vizia_instance_id);
 
-        printf("Vizia_Init: Init shared memory\n");
+        Printf("Vizia_Init: Init shared memory\n");
         Vizia_SMInit(*vizia_instance_id);
 
         Vizia_InputInit();
         Vizia_GameVarsInit();
 
         Vizia_ScreenInit();
-    }
 
-    //Vizia_MQSend(VIZIA_MSG_CODE_DOOM_READY);
+        if(*vizia_async) Vizia_MQSend(VIZIA_MSG_CODE_DOOM_DONE);
+    }
 }
 
 void Vizia_Close(){
@@ -83,43 +84,30 @@ void Vizia_Close(){
         Vizia_ScreenClose();
 
         Vizia_SMClose();
-
-        //  Vizia_MQSend(VIZIA_MSG_CODE_DOOM_CLOSE);
         Vizia_MQClose();
     }
 }
 
 void Vizia_Tic(){
 
-//    if ((gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
-//        && !paused && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
-//
-//        printf("BUTTONS: %d %d %d %d\n", players[consoleplayer].oldbuttons,
-//               players[consoleplayer].original_oldbuttons,
-//               players[consoleplayer].original_cmd.buttons,
-//               players[consoleplayer].cmd.ucmd.buttons);
-//
-//        printf("SEED: %d %d\n", rngseed, staticrngseed);
-//    }
-
     try{
         bt::interruption_point();
     }
     catch(b::thread_interrupted &ex ){
-        Vizia_Command(strdup("exit"));
+        exit(0);
     }
 
     if (*vizia_controlled && (gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
             && !paused && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
 
-        if(vizia_update){
-            Vizia_Update();
+        if(!*vizia_async){
+            if(vizia_update){
+                Vizia_Update();
+            }
+            Vizia_GameVarsTic();
         }
 
-        Vizia_GameVarsTic();
-
         Vizia_MQTic();
-
         Vizia_InputTic();
     }
 }

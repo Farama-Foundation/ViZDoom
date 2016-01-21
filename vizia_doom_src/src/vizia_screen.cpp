@@ -118,7 +118,8 @@ void Vizia_ScreenInit() {
     }
 
     try {
-        viziaScreenSMRegion = new bip::mapped_region(viziaSM, bip::read_write, Vizia_SMGetScreenRegionBeginning(), viziaScreenSize);
+        viziaScreenSMRegion = new bip::mapped_region(viziaSM, bip::read_write,
+            sizeof(ViziaInputStruct) + sizeof(ViziaGameVarsStruct), viziaScreenSize);
         viziaScreen = static_cast<BYTE *>(viziaScreenSMRegion->get_address());
 
         printf("Vizia_ScreenInit: width: %d, height: %d, pitch: %zu, format: ",
@@ -144,7 +145,7 @@ void Vizia_ScreenInit() {
     catch(bip::interprocess_exception &ex){
         printf("Vizia_Vizia_ScreenInit: Error creating ViziaScreen SM");
         Vizia_MQSend(VIZIA_MSG_CODE_DOOM_ERROR);
-        Vizia_Command(strdup("exit"));
+        exit(1);
     }
 
     if(*vizia_screen_format==VIZIA_SCREEN_CBCGCRZB||*vizia_screen_format==VIZIA_SCREEN_CRCGCBZB

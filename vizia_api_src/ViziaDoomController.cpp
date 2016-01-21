@@ -62,6 +62,7 @@ namespace Vizia {
         this->mapLastTic = 1;
 
         this->allowDoomInput = false;
+        this->runDoomAsync = false;
 
         //SEED
         this->generateInstanceId();
@@ -604,6 +605,9 @@ namespace Vizia {
     bool DoomController::isAllowDoomInput(){ return this->allowDoomInput; }
     void DoomController::setAllowDoomInput(bool set){ if(!this->doomRunning) this->allowDoomInput = set; }
 
+    bool DoomController::isRunDoomAsync(){ return this->runDoomAsync; }
+    void DoomController::setRunDoomAsync(bool set){ if(!this->doomRunning) this->runDoomAsync = set; }
+
     int DoomController::getGameVariable(GameVariable var) {
         switch (var) {
             case KILLCOUNT :
@@ -873,6 +877,11 @@ namespace Vizia {
             //disable mouse
             args.push_back("+use_mouse");
             args.push_back("0");
+        }
+
+        if(this->runDoomAsync){
+            args.push_back("+vizia_async");
+            args.push_back("1");
         }
 
         args.push_back("+vizia_screen_format");
