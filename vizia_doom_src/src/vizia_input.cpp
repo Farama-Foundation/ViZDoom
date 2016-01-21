@@ -12,6 +12,7 @@
 #include "c_console.h"
 #include "c_dispatch.h"
 #include "r_utility.h"
+#include "doomtype.h"
 
 bip::mapped_region *viziaInputSMRegion = NULL;
 ViziaInputStruct *viziaLastInput = NULL;
@@ -252,13 +253,13 @@ void Vizia_InputInit() {
     viziaLastInput = new ViziaInputStruct();
 
     try {
-        viziaInputSMRegion = new bip::mapped_region(viziaSM, bip::read_write, Vizia_SMGetInputRegionBeginning(),
-                                                    sizeof(ViziaInputStruct));
+
+        viziaInputSMRegion = new bip::mapped_region(viziaSM, bip::read_write, 0, sizeof(ViziaInputStruct));
         viziaInput = static_cast<ViziaInputStruct *>(viziaInputSMRegion->get_address());
 
     }
     catch (bip::interprocess_exception &ex) {
-        printf("Vizia_InputInit: Error creating Input SM");
+        Printf("Vizia_InputInit: Error creating Input SM");
         Vizia_MQSend(VIZIA_MSG_CODE_DOOM_ERROR);
         Vizia_Command(strdup("exit"));
     }

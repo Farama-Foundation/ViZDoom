@@ -11,11 +11,6 @@ extern bip::shared_memory_object viziaSM;
 #define VIZIA_SM_NAME_BASE "ViziaSM"
 
 void Vizia_SMInit(const char * id);
-
-size_t Vizia_SMGetInputRegionBeginning();
-size_t Vizia_SMGetGameVarsRegionBeginning();
-size_t Vizia_SMGetScreenRegionBeginning();
-
 void Vizia_SMClose();
 
 #endif

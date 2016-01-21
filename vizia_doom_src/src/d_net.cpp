@@ -66,6 +66,7 @@
 #include "vizia_main.h"
 
 EXTERN_CVAR (Bool, vizia_controlled)
+EXTERN_CVAR (Bool, vizia_async)
 EXTERN_CVAR (Bool, vizia_allow_input)
 
 EXTERN_CVAR (Int, disableautosave)
@@ -938,7 +939,8 @@ int gametime;
 //VIZIA CODE
 void NetUpdate (void)
 {
-	if(*vizia_controlled) return;
+	//VIZIA CODE
+	if(*vizia_controlled && !*vizia_async) return;
 
 	int		lowtic;
 	int 	nowtime;
@@ -981,7 +983,8 @@ void NetUpdate (void)
 	for (i = 0; i < newtics; i++)
 	{
 		I_StartTic ();
-		D_ProcessEvents ();
+		//VIZIA CODE
+		if(!*vizia_controlled || (*vizia_async && *vizia_allow_input)) D_ProcessEvents ();
 		if ((maketic - gametic) / ticdup >= BACKUPTICS/2-1)
 			break;			// can't hold any more
 		//Printf ("mk:%i ",maketic);
@@ -1821,6 +1824,8 @@ void TryRunTics (void)
 	if (pauseext) r_NoInterpolate = true;
 	bool doWait = cl_capfps || r_NoInterpolate /*|| netgame*/;
 
+	if(*vizia_controlled) doWait = true;
+
 	// get real tics
 	if (doWait)
 	{
@@ -1943,13 +1948,13 @@ void TryRunTics (void)
 			C_Ticker ();
 			M_Ticker ();
 			I_GetTime (true);
-			if (!pauseext) G_Ticker();
+			if (!pauseext || *vizia_controlled) G_Ticker();
 			gametic++;
 
 			NetUpdate ();	// check for new console commands
 		}
 		P_PredictPlayer(&players[consoleplayer]);
-		S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
+		if(!*vizia_controlled) S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
 	}
 }
 

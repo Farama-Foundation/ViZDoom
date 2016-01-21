@@ -107,16 +107,15 @@
 #include "resourcefiles/resourcefile.h"
 #include "r_renderer.h"
 #include "p_local.h"
-//VIZIA CODE
 
+//VIZIA CODE
 #include "vizia_main.h"
 #include "vizia_depth.h"
-
 #include "vizia_input.h"
 #include "vizia_defines.h"
 
 EXTERN_CVAR (Bool, vizia_controlled)
-EXTERN_CVAR (Bool, vizia_singletics)
+EXTERN_CVAR (Bool, vizia_async)
 EXTERN_CVAR (Bool, vizia_clean_render)
 EXTERN_CVAR (Bool, vizia_allow_input)
 
@@ -1014,6 +1013,7 @@ void D_DoomLoop ()
 	{
 		try
 		{
+
 			// frame syncronous IO operations
 			if (gametic > lasttic)
 			{
@@ -1022,10 +1022,7 @@ void D_DoomLoop ()
 			}
 
 			//VIZIA CODE
-			if(*vizia_controlled){
-
-				//P_UnPredictPlayer();
-
+			if(*vizia_controlled && !*vizia_async){
 				GC::CheckGC();
 
 				I_StartTic ();
@@ -1033,15 +1030,13 @@ void D_DoomLoop ()
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				//G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
 				maketic++;
-				Net_NewMakeTic ();
+				//Net_NewMakeTic ();
 
 				C_Ticker ();
 				M_Ticker ();
 				I_GetTime (true);
 				G_Ticker();
 				gametic++;
-
-				//P_PredictPlayer(&players[consoleplayer]);
 			}
 			// process one or more tics
 			else if (singletics) {

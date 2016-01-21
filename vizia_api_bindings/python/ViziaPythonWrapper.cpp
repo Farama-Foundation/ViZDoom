@@ -92,7 +92,9 @@ BOOST_PYTHON_MODULE(vizia)
 
     enum_<Mode>("Mode")
         ENUM_VAL_2_PYT(PLAYER)
-        ENUM_VAL_2_PYT(SPECTATOR);
+        ENUM_VAL_2_PYT(SPECTATOR)
+		ENUM_VAL_2_PYT(ASYNC_PLAYER)
+		ENUM_VAL_2_PYT(ASYNC_SPECTATOR);
 
 	enum_<ScreenFormat>("ScreenFormat")
         ENUM_VAL_2_PYT(CRCGCB)
@@ -367,6 +369,7 @@ BOOST_PYTHON_MODULE(vizia)
         .def("set_episode_start_time", &DoomGamePython::setEpisodeStartTime)
 		.def("get_episode_timeout", &DoomGamePython::getEpisodeTimeout)
 		.def("set_episode_timeout", &DoomGamePython::setEpisodeTimeout)
+		.def("get_episode_time", &DoomGamePython::getEpisodeTime)
 		
         .def("set_console_enabled",&DoomGamePython::setConsoleEnabled)
         

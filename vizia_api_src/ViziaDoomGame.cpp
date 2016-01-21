@@ -68,11 +68,16 @@ namespace Vizia {
 
             this->lastAction.resize(this->availableButtons.size());
 
-            if(this->mode == PLAYER){
+            if(this->mode == SPECTATOR || this->mode == ASYNC_SPECTATOR){
+                this->doomController->setAllowDoomInput(true);
+            } else {
                 this->doomController->setAllowDoomInput(false);
             }
-            else if(this->mode == SPECTATOR){
-                this->doomController->setAllowDoomInput(true);
+
+            if(this->mode == ASYNC_PLAYER || this->mode == ASYNC_SPECTATOR){
+                this->doomController->setRunDoomAsync(true);
+            } else {
+                this->doomController->setRunDoomAsync(false);
             }
 
 //            if(this->checkFilePath(this->doomController->getGamePath())) throw IncorrectDoomGamePathException();
@@ -161,7 +166,8 @@ namespace Vizia {
         if (!this->isRunning()) throw DoomIsNotRunningException();
 
         try {
-            if(this->mode == PLAYER) this->doomController->tics(tics, updateState || renderOnly);
+            if(this->mode == PLAYER || this->mode == ASYNC_PLAYER || this->mode == ASYNC_SPECTATOR)
+                this->doomController->tics(tics, updateState || renderOnly);
             else if(this->mode == SPECTATOR) {
                 this->doomController->waitRealTimeForTics(tics);
                 this->doomController->tics(tics, updateState || renderOnly);

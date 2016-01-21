@@ -34,15 +34,12 @@ struct ViziaMessageCommandStruct{
     char command[VIZIA_MQ_MAX_CMD_LEN];
 };
 
-void Vizia_Command(char * command);
-
 void Vizia_MQInit(const char * id);
 
 void Vizia_MQSend(uint8_t code);
-
 void Vizia_MQSend(uint8_t code, const char * command);
-
 void Vizia_MQRecv(void *msg, unsigned long &size, unsigned int &priority);
+bool Vizia_MQTryRecv(void *msg, unsigned long &size, unsigned int &priority);
 
 void Vizia_MQTic();
 

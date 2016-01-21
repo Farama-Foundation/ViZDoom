@@ -25,20 +25,8 @@ void Vizia_SMInit(const char * id){
     catch(bip::interprocess_exception &ex){
         printf("Vizia_SMInit: Error creating shared memory");
         Vizia_MQSend(VIZIA_MSG_CODE_DOOM_ERROR);
-        Vizia_Command(strdup("exit"));
+        exit(1);
     }
-}
-
-size_t Vizia_SMGetInputRegionBeginning(){
-    return 0;
-}
-
-size_t Vizia_SMGetGameVarsRegionBeginning(){
-    return sizeof(ViziaInputStruct);
-}
-
-size_t Vizia_SMGetScreenRegionBeginning(){
-    return sizeof(ViziaInputStruct) + sizeof(ViziaGameVarsStruct);
 }
 
 void Vizia_SMClose(){
