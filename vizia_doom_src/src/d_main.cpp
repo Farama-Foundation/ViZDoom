@@ -1007,7 +1007,6 @@ void D_DoomLoop ()
 	vid_cursor.Callback();
 
 	Vizia_Init();
-	//singletics = *vizia_singletics;
 
 	for (;;)
 	{

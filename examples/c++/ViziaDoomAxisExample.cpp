@@ -28,9 +28,9 @@ int main(){
 
     dg->setWindowVisible(true);
 
-    dg->addAvailableButton(LEFT_RIGHT);
-    dg->addAvailableButton(FORWARD_BACKWARD);
-    dg->addAvailableButton(VIEW_ANGLE);
+    dg->addAvailableButton(MOVE_LEFT_RIGHT_DELTA);
+    dg->addAvailableButton(MOVE_FORWARD_BACKWARD_DELTA);
+    dg->addAvailableButton(TURN_LEFT_RIGHT_DELTA);
 
     dg->init();
     //dg->newEpisode();

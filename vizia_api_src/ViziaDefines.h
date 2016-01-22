@@ -6,6 +6,14 @@
 
 namespace Vizia{
 
+    /* Warnings TO DO:
+     * When config after init
+     * When run time stuff before init
+     * When skill level > 5 < 1
+     * When value in action > MaxValue
+     * When action shorter or longer
+     */
+
     class Exception : public std::exception {
     public:
         virtual const char* what() const throw(){ return "Unknown exception."; }
@@ -270,11 +278,11 @@ namespace Vizia{
         SELECT_PREV_ITEM = 36,
         DROP_SELECTED_ITEM = 37,
 
-        VIEW_PITCH = 38,
-        VIEW_ANGLE = 39,
-        FORWARD_BACKWARD = 40,
-        LEFT_RIGHT = 41,
-        UP_DOWN = 42,
+        LOOK_UP_DOWN_DELTA = 38,
+        TURN_LEFT_RIGHT_DELTA = 39,
+        MOVE_FORWARD_BACKWARD_DELTA = 40,
+        MOVE_LEFT_RIGHT_DELTA = 41,
+        MOVE_UP_DOWN_DELTA = 42,
     };
 
     static const int DiscreteButtonsNumber = 38;

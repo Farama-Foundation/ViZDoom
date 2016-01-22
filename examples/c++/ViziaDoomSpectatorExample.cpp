@@ -29,8 +29,8 @@ int main(){
 
     dg->setWindowVisible(true);
 
-    dg->addAvailableButton(VIEW_ANGLE, 30);
-    dg->addAvailableButton(FORWARD_BACKWARD, 30);
+    dg->addAvailableButton(TURN_LEFT_RIGHT_DELTA, 30);
+    dg->addAvailableButton(MOVE_FORWARD_BACKWARD_DELTA, 30);
     dg->addAvailableButton(MOVE_FORWARD);
     dg->addAvailableButton(TURN_LEFT);
     dg->addAvailableButton(TURN_RIGHT);
