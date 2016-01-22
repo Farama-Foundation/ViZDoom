@@ -10,12 +10,6 @@ from lasagne.objectives import squared_error
 from lasagne.regularization import regularize_layer_params
 import lasagne.layers as ls
 
-def double_tanh(x):
-    return 2*tanh(x)
-
-def quadruple_tanh(x):
-    return 4*tanh(x)
-
 class MLPEvaluator:
     def __init__(self, state_format, actions_number, batch_size, network_args, gamma=0.99, updates=sgd, learning_rate = 0.01, regularization = None):
         self._loss_history = []
@@ -81,7 +75,7 @@ class MLPEvaluator:
         print "Theano functions compiled."
 
     def _initialize_network(self, img_input_shape, misc_shape, output_size, hidden_units=[500],
-                            hidden_layers=1, hidden_nonlin=leaky_rectify, output_nonlin=double_tanh, updates=sgd):
+                            hidden_layers=1, hidden_nonlin=leaky_rectify, output_nonlin=tanh, updates=sgd):
         print "Initializing MLP network..."
         # image input layer
         network = ls.InputLayer(shape=img_input_shape, input_var=self._image_inputs)
@@ -130,7 +124,7 @@ class MLPEvaluator:
 
         # set expected output as the reward got from the transition
         
-        # substitute expected values for chosen actions
+        # substitute expected values for calues of chosen actions
         for i, q in zip(range(len(transitions)), q2):
             target[i][transitions[i][1]] = transitions[i][3]
             if transitions[i][2] is not None:
@@ -167,7 +161,7 @@ class CNNEvaluator(MLPEvaluator):
     def _initialize_network(self, img_input_shape, misc_shape, output_size, conv_layers=2, num_filters=[32, 32],
                             filter_size=[(5, 5), (5, 5)], hidden_units=[256], pool_size=[(2, 2), (2, 2)],
                             hidden_layers=1, conv_nonlin=rectify,
-                            hidden_nonlin=leaky_rectify, output_nonlin=double_tanh):
+                            hidden_nonlin=leaky_rectify, output_nonlin=tanh):
 
         print "Initializing CNN ..."
         # image input layer

@@ -24,7 +24,6 @@ class IdentityImageConverter:
     def get_screen_channels(self):
         return self._source.get_screen_channels()
 
-
 class Float32ImageConverter(IdentityImageConverter):
     def __init__(self, source):
         self._source = source
@@ -45,24 +44,25 @@ class QEngine:
         self._initialize(**kwargs)
         kwargs["game"] = None
 
-    def _initialize(self, game, evaluator, actions_generator=None, gamma=0.7, batch_size=500, update_frequency=500,
-                 history_length=1, bank = None, bank_capacity=10000, start_epsilon=1.0, end_epsilon=0.0,
-                 epsilon_decay_start_step=100000, epsilon_decay_steps=100000, reward_scale = 1.0, max_reward = 1.0, 
-                 image_converter=None, skiprate = 1, shaping_on = False):
+    def _initialize(self, game, evaluator, history_length=1, bank=None, actions_generator=None, gamma=0.99, batch_size=40, update_pattern=(4,4),
+                   bank_capacity=10000, start_epsilon=1.0, end_epsilon=0.0,epsilon_decay_start_step=100000, epsilon_decay_steps=100000, 
+                   reward_scale = 1.0, max_reward = None, image_converter=None, skiprate = 1, shaping_on = False, count_states = False):
     # Line that makes sublime collapse code correctly
 
         if image_converter:
             self._image_converter = image_converter(game)
         else:
             self._image_converter = Float32ImageConverter(game)
-        print max_reward
+
+        if count_states is not None:
+            self._count_states = bool(count_states)
         self._max_reward = np.float32(max_reward) 
         self._reward_scale = reward_scale
         self._game = game
         self._gamma = gamma
         self._batch_size = batch_size
         self._history_length = max(history_length, 1)
-        self._update_frequency = update_frequency
+        self._update_pattern = update_pattern
         self._epsilon = max(min(start_epsilon, 1.0), 0.0)
         self._end_epsilon = min(max(end_epsilon, 0.0), self._epsilon)
         self._epsilon_decay_stride = (self._epsilon - end_epsilon) / epsilon_decay_steps
@@ -89,43 +89,63 @@ class QEngine:
         
         # change img_shape according to the history size
         self._channels = self._image_converter.get_screen_channels()
-        img_shape = [self._channels, self._image_converter.get_screen_height(), self._image_converter.get_screen_width()]
-        
-        if history_length > 1:
-            img_shape[0] *= history_length
-        
-        state_format = [img_shape, game.get_available_game_variables_size()]
-        self._evaluator = evaluator(state_format, len(self._actions), batch_size, self._gamma)
-        self._current_image_state = np.zeros(img_shape, dtype=np.float32)
+        if self._history_length > 1:
+            self._channels *= self._history_length
 
-        if game.get_available_game_variables_size() > 0:
+        y = self._image_converter.get_screen_height()
+        x = self._image_converter.get_screen_width()
+        img_shape = [self._channels, y, x]
+        
+        self._misc_len = game.get_available_game_variables_size() + self._count_states
+        
+
+        if self._misc_len> 0 :
             self._misc_state_included = True
-            self._current_misc_state = np.zeros(game.get_available_game_variables_size(), dtype=np.float32)
+            self._current_misc_state = np.zeros(self._misc_len*self._history_length, dtype=np.float32)
         else:
             self._misc_state_included = False
 
+        state_format = [img_shape, self._misc_len*self._history_length]
+
+        self._evaluator = evaluator(state_format, len(self._actions), batch_size, self._gamma)
+        self._current_image_state = np.zeros(img_shape, dtype=np.float32)
+
    
-    def _update_state(self, raw_state):
+    def _update_state(self):
+        raw_state = self._game.get_state()
         img = self._image_converter.convert(raw_state.image_buffer)
+
         if self._misc_state_included:
             misc = np.float32(raw_state.game_variables)
+
         if self._history_length > 1:
-            self._current_image_state[0:-self._channels] = self._current_image_state[self._channels:]
-            self._current_image_state[-self._channels:] = img
+            pure_channels = self._channels/self._history_length
+            self._current_image_state[0:-pure_channels] = self._current_image_state[pure_channels:]
+            self._current_image_state[-pure_channels:] = img
             if self._misc_state_included:
                 self._current_misc_state[0:-1] = self._current_misc_state[1:]
                 self._current_misc_state[-1] = misc
+            if self._misc_state_included:
+                border = (self._history_length-1)*self._misc_len
+                self._current_misc_state[0:border] = self._current_misc_state[self._misc_len:]
+                if self._count_states:
+                    self._current_misc_state[border:border+self._misc_len-self._count_states] = misc
+                    self._current_misc_state[-1] = np.float32(raw_state.number)
+                else:
+                    self._current_misc_state[0:self._misc_len] = misc
 
         else:
             self._current_image_state[:] = img
             if self._misc_state_included:
-                self._current_misc_state = misc
-        
+                if self._count_states:
+                    self._current_misc_state[0:self._misc_len-self._count_states] = misc
+                    self._current_misc_state[-1] = np.float32(raw_state.number)
+                else:
+                    self._current_misc_state[0:self._misc_len] = misc
+
     def new_episode(self):
         self._game.new_episode()
-        self.reset_state()
-        #raw_state = self._game.get_state()
-        #self._update_state(raw_state)        
+        self.reset_state()     
 
     # Return current state including history
     def _current_state(self):
@@ -154,16 +174,14 @@ class QEngine:
             self._current_misc_state.fill(0.0)
 
     def make_step(self):
-    	raw_state = self._game.get_state()
-        self._update_state(raw_state)
+        self._update_state()
         a = self._choose_action_index(self._current_state())
     	self._actions_stats[a] += 1
     	self._game.make_action(self._actions[a], self._skiprate)
 
     # UPDATES state (hisotry). Returns the best action. State should not include history
     def best_action(self, state):
-        raw_state = self._game.get_state()
-        self._update_state(raw_state)
+        self._update_state()
         return self._actions[self._choose_action_index(self._current_state())]
 
     def make_random_step(self):
@@ -202,23 +220,24 @@ class QEngine:
             # terminal state
             s2 = None
         else:
-            raw_state = self._game.get_state()
-            self._update_state( raw_state )
+            self._update_state()
             s2 = self._current_state_copy()
 
         self._transitions.add_transition(s, a, s2, r)
     
         # Perform q-learning once for a while
-        if self._steps % self._update_frequency[0] == 0 and self._steps > self._batch_size:
-            for i in range(self._update_frequency[1]):
-                self._evaluator.learn(self._transitions.get_sample(self._batch_size))
+        if self._steps % self._update_pattern[0] == 0 and self._steps > self._batch_size:
+            for i in range(self._update_pattern[1]):
+                self.learn_batch()
+    
+    def learn_batch(self):
+        self._evaluator.learn(self._transitions.get_sample(self._batch_size))
       
     # Runs a single episode in current mode. It ignores the mode if learn==true/false
     def run_episode(self, learn = None):
         self.new_episode()
        	if self.learning_mode and learn != False:
-            raw_state = self._game.get_state()
-            self._update_state(raw_state)
+            self._update_state()
             while not self._game.is_episode_finished():
                 self.make_learning_step()
        	else:
