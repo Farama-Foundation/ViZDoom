@@ -59,7 +59,8 @@ bool Vizia_CommmandFilter(const char *cmd){
 }
 
 int Vizia_AxisFilter(int button, int value){
-    if(button >= VIZIA_BT_CMD_BT_SIZE && button < VIZIA_BT_SIZE && viziaInput->BT_AVAILABLE[button]){
+    if(button >= VIZIA_BT_CMD_BT_SIZE && button < VIZIA_BT_SIZE){
+        if(!viziaInput->BT_AVAILABLE[button]) return 0;
         int axis = button - VIZIA_BT_CMD_BT_SIZE;
         if(viziaInput->BT_MAX_VALUE[axis] != 0){
             int maxValue;
@@ -73,7 +74,6 @@ int Vizia_AxisFilter(int button, int value){
             viziaInput->BT[button] = (int)((float)value/32768 * 180);
         else viziaInput->BT[button] = value;
     }
-    else return 0;
     return value;
 }
 
