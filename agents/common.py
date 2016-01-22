@@ -50,7 +50,7 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     network_args["pool_size"] = [(2, 2),(2,2),(1,2)]
     network_args["num_filters"] = [32,32,48]
     network_args["filter_size"] = [7,4,2]
-    #network_args["output_nonlin"] = None
+    network_args["output_nonlin"] = None
     #network_args["hidden_nonlin"] = None
 
     cnn_args["network_args"] = network_args
@@ -78,19 +78,11 @@ class ChannelScaleConverter(IdentityImageConverter):
     
 def engine_setup( game ):
     engine_args = dict()
-    engine_args["history_length"] = 1
-    engine_args["bank_capacity"] = 10000
     #engine_args["bank"] = TransitionBank( capacity=10000, rejection_range = [-0.02,0.5], rejection_probability=0.95)
     engine_args["evaluator"] = create_cnn_evaluator
     engine_args["game"] = game
-    engine_args['start_epsilon'] = 1.0
-    engine_args['end_epsilon'] = 0.0
-    engine_args['epsilon_decay_start_step'] = 100000
-    engine_args['epsilon_decay_steps'] = 1000000
-    engine_args['update_frequency'] = (4,4) #every 4 steps, 4 updates each time
-    engine_args['batch_size'] = 40
-    engine_args['gamma'] = 0.9999
-    engine_args['reward_scale'] = 0.01
+    engine_args['gamma'] = 1
+   
  
     engine_args['skiprate'] = 8
     engine_args['actions_generator'] = agenerator_left_right_move

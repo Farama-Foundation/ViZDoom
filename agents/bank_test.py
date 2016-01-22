@@ -42,3 +42,4 @@ if batch_size > 0:
     batch = bank.get_sample(batch_size)
     end = time()
     print "Batchsize:", batch_size, "time: ", round(end - start, 2), "s"
+

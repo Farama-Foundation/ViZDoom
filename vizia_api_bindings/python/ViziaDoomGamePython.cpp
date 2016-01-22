@@ -50,12 +50,6 @@ namespace Vizia {
     void DoomGamePython::setAction(boost::python::list &action) {
         // TODO what if isFinished()?
         int listLength = boost::python::len(action);
-        if( listLength != this->getAvailableButtonsSize())
-        {
-            cerr<<"Incorrect action length: "<<listLength<<" Should be: "<<this->getAvailableButtonsSize()<<endl;
-            //TODO maybe throw something?
-            return ;
-        }
         std::vector<int> properAction = std::vector<int>(listLength);
         for (int i = 0; i < listLength; i++) {
             properAction[i] = boost::python::extract<int>(action[i]);
