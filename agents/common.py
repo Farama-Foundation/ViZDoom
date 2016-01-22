@@ -36,12 +36,11 @@ def agenerator_left_right_move(the_game):
     move_right = [0,1,1]
     return [idle,left, right, move]
 
-def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
+def create_cnn_evaluator(state_format, actions_number, gamma):
     cnn_args = dict()
     cnn_args["gamma"] = gamma
     cnn_args["state_format"] = state_format
     cnn_args["actions_number"] = actions_number
-    cnn_args["batch_size"] = batch_size
     cnn_args["updates"] = lasagne.updates.nesterov_momentum
     #cnn_args["learning_rate"] = 0.01
 
@@ -50,7 +49,7 @@ def create_cnn_evaluator(state_format, actions_number, batch_size, gamma):
     network_args["pool_size"] = [(2, 2),(2,2),(1,2)]
     network_args["num_filters"] = [32,32,48]
     network_args["filter_size"] = [7,4,2]
-    network_args["output_nonlin"] = None
+    #network_args["output_nonlin"] = None
     #network_args["hidden_nonlin"] = None
 
     cnn_args["network_args"] = network_args
@@ -76,19 +75,29 @@ class ChannelScaleConverter(IdentityImageConverter):
     def get_screen_height(self):
         return self.y
     
-def engine_setup( game ):
+def engine_setup_basic( game ):
     engine_args = dict()
-    #engine_args["bank"] = TransitionBank( capacity=10000, rejection_range = [-0.02,0.5], rejection_probability=0.95)
     engine_args["evaluator"] = create_cnn_evaluator
     engine_args["game"] = game
-    engine_args['gamma'] = 1
-   
- 
+    engine_args['gamma'] = 0.99
+    engine_args["reward_scale"] = 0.01
     engine_args['skiprate'] = 8
-    engine_args['actions_generator'] = agenerator_left_right_move
     #engine_args['image_converter'] = ChannelScaleConverter
-    engine_args["shaping_on"] = True
 
     return engine_args
 
+def engine_setup_health( game ):
 
+    engine_args = dict()
+    engine_args["evaluator"] = create_cnn_evaluator
+    engine_args["game"] = game
+    engine_args['gamma'] = 1
+    engine_args["reward_scale"] = 0.01
+    engine_args['skiprate'] = 8
+
+    engine_args['actions_generator'] = agenerator_left_right_move
+    #engine_args['image_converter'] = ChannelScaleConverter
+    engine_args["shaping_on"] = True
+    engine_args["count_states"] = True
+    engine_args["misc_scale"] = [100.0, 1/2100.0]
+    return engine_args

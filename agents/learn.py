@@ -1,19 +1,20 @@
 #!/usr/bin/python
 from common import *
 from vizia import *
+from tqdm import tqdm
 
+np.set_printoptions(precision=4, suppress = True)
 savefile = None
 #savefile = "params/basic_120to60"
-savefile = "params/health_guided_60_skip8_2"
+#savefile = "params/health_guided_60_skip8"
 #savefile = "params/s1b_120_to60_skip1"
-loadfile = "params/health_guided_60_skip8"
+loadfile = None
 
 
 game = DoomGame()
 game.load_config("config_common.properties")
 game.load_config("config_health_guided.properties")
 #game.load_config("config_basic.properties")
-
 print "Initializing DOOM ..."
 game.init()
 print "\nDOOM initialized."
@@ -21,14 +22,10 @@ print "\nDOOM initialized."
 
 if loadfile:
     engine = QEngine.load(game, loadfile)
-    engine.set_epsilon(0.0)
+    #engine.set_epsilon(0.0)
 else:
-    engine_args = engine_setup(game)
-    #engine_args["start_epsilon"] = 0.0
-    engine_args["gamma"] = 0.9999
-    engine_args["max_reward"] = 1.0
-    
-    #engine_args["image_converter"] = None
+    engine_args = engine_setup_basic(game)
+
     engine = QEngine(**engine_args)
 
 print "\nNetwork architecture:"
@@ -51,7 +48,7 @@ while epoch < epochs:
     start = time()
     print "\nEpoch", epoch
     
-    for episode in range(training_episodes_per_epoch):
+    for episode in tqdm(range(training_episodes_per_epoch)):
         r = engine.run_episode()
         rewards.append(r)
         
@@ -70,7 +67,7 @@ while epoch < epochs:
         rewards = []
 
         start = time()
-        for test_episode in range(test_episodes_per_epoch):
+        for test_episode in tqdm(range(test_episodes_per_epoch)):
             r = engine.run_episode()
             rewards.append(r)
         end = time()

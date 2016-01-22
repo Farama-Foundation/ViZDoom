@@ -44,9 +44,9 @@ class QEngine:
         self._initialize(**kwargs)
         kwargs["game"] = None
 
-    def _initialize(self, game, evaluator, history_length=1, bank=None, actions_generator=None, gamma=0.99, batch_size=40, update_pattern=(4,4),
+    def _initialize(self, game, evaluator, history_length=1, actions_generator=None, gamma=0.99, batch_size=40, update_pattern=(4,4),
                    bank_capacity=10000, start_epsilon=1.0, end_epsilon=0.0,epsilon_decay_start_step=100000, epsilon_decay_steps=100000, 
-                   reward_scale = 1.0, max_reward = None, image_converter=None, skiprate = 1, shaping_on = False, count_states = False):
+                   reward_scale=1.0, misc_scale=None, max_reward=None, image_converter=None, skiprate = 1, shaping_on = False, count_states = False):
     # Line that makes sublime collapse code correctly
 
         if image_converter:
@@ -74,10 +74,7 @@ class QEngine:
             self._last_shaping_reward = 0
 
         self.learning_mode = True
-        if bank and type(bank) == type(TransitionBank):
-            self._transitions = bank
-        else:
-            self._transitions = TransitionBank(bank_capacity)
+        
         self._steps = 0
         if actions_generator == None:
             self._actions = default_actions_generator(game)
@@ -97,51 +94,53 @@ class QEngine:
         img_shape = [self._channels, y, x]
         
         self._misc_len = game.get_available_game_variables_size() + self._count_states
-        
-
         if self._misc_len> 0 :
             self._misc_state_included = True
             self._current_misc_state = np.zeros(self._misc_len*self._history_length, dtype=np.float32)
+            self._misc_buffer = np.zeros(self._misc_len, dtype=np.float32)
+            if misc_scale is not None:
+                self._misc_scale = np.array(misc_scale,dtype=np.float32)
+            else:
+                self._misc_scale = None
         else:
             self._misc_state_included = False
 
-        state_format = [img_shape, self._misc_len*self._history_length]
 
-        self._evaluator = evaluator(state_format, len(self._actions), batch_size, self._gamma)
+        state_format = dict()
+        state_format["s_img"] = img_shape
+        state_format["s_misc"] = self._misc_len*self._history_length
+        self._transitions = TransitionBank(state_format, bank_capacity, batch_size)
+
+        self._evaluator = evaluator(state_format, len(self._actions), self._gamma)
         self._current_image_state = np.zeros(img_shape, dtype=np.float32)
-
-   
+ 
     def _update_state(self):
         raw_state = self._game.get_state()
         img = self._image_converter.convert(raw_state.image_buffer)
-
+        
         if self._misc_state_included:
-            misc = np.float32(raw_state.game_variables)
+            misc_len = self._misc_len
+            misc = self._misc_buffer
+            misc[0:misc_len-self._count_states] = np.float32(raw_state.game_variables)
+            misc[-1] = raw_state.number
+            if self._misc_scale is not None:
+                misc = misc*self._misc_scale
 
         if self._history_length > 1:
             pure_channels = self._channels/self._history_length
             self._current_image_state[0:-pure_channels] = self._current_image_state[pure_channels:]
             self._current_image_state[-pure_channels:] = img
-            if self._misc_state_included:
-                self._current_misc_state[0:-1] = self._current_misc_state[1:]
-                self._current_misc_state[-1] = misc
+            
             if self._misc_state_included:
                 border = (self._history_length-1)*self._misc_len
                 self._current_misc_state[0:border] = self._current_misc_state[self._misc_len:]
-                if self._count_states:
-                    self._current_misc_state[border:border+self._misc_len-self._count_states] = misc
-                    self._current_misc_state[-1] = np.float32(raw_state.number)
-                else:
-                    self._current_misc_state[0:self._misc_len] = misc
+                self._current_misc_state[border:] = misc
 
         else:
             self._current_image_state[:] = img
             if self._misc_state_included:
-                if self._count_states:
-                    self._current_misc_state[0:self._misc_len-self._count_states] = misc
-                    self._current_misc_state[-1] = np.float32(raw_state.number)
-                else:
-                    self._current_misc_state[0:self._misc_len] = misc
+                self._current_misc_state[:] = misc
+                
 
     def new_episode(self):
         self._game.new_episode()
@@ -194,7 +193,7 @@ class QEngine:
 	        self._epsilon -= self._epsilon_decay_stride
 	        self._epsilon = max(self._epsilon, 0)
 
-	    # Copy is made because it will be stored in transitions
+	    # Copy because state will be changed in a second
         s = self._current_state_copy();
 
         # With probability epsilon choose a random action:
@@ -221,7 +220,7 @@ class QEngine:
             s2 = None
         else:
             self._update_state()
-            s2 = self._current_state_copy()
+            s2 = self._current_state()
 
         self._transitions.add_transition(s, a, s2, r)
     
@@ -231,7 +230,7 @@ class QEngine:
                 self.learn_batch()
     
     def learn_batch(self):
-        self._evaluator.learn(self._transitions.get_sample(self._batch_size))
+        self._evaluator.learn(self._transitions.get_sample())
       
     # Runs a single episode in current mode. It ignores the mode if learn==true/false
     def run_episode(self, learn = None):

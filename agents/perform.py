@@ -2,21 +2,14 @@
 from common import *
 from vizia import *
 
-savefile = None
-#savefile = "params/basic_120to60"
-savefile = "params/health_guided_60_skip8_2"
-#savefile = "params/s1b_120_to60_skip1"
-loadfile = "params/health_guided_60_skip8"
-
-
 game = DoomGame()
 game.load_config("config_common.properties")
 game.load_config("config_health_guided.properties")
-game.set_window_visible(False)
+#game.set_window_visible(True)
 game.set_screen_resolution(ScreenResolution.RES_60X45)
 game.init()
 
-steps = 1000
+steps = 500
 
 def test_engine(eng, steps):
     print "==============================="
@@ -36,12 +29,11 @@ def test_engine(eng, steps):
     print "All:",round(all_end-all_start,3)
     print "Learning:",round(end-start,3)
 
-def create_cnn_evaluator1(state_format, actions_number, batch_size, gamma):
+def create_cnn_evaluator1(state_format, actions_number, gamma):
     cnn_args = dict()
     cnn_args["gamma"] = gamma
     cnn_args["state_format"] = state_format
     cnn_args["actions_number"] = actions_number
-    cnn_args["batch_size"] = batch_size
     cnn_args["updates"] = lasagne.updates.nesterov_momentum
     #cnn_args["learning_rate"] = 0.01
 
@@ -56,27 +48,27 @@ def create_cnn_evaluator1(state_format, actions_number, batch_size, gamma):
     cnn_args["network_args"] = network_args
     return CNNEvaluator(**cnn_args)
 
-# Engine one:
-engine_args = dict()
-engine_args["evaluator"] = create_cnn_evaluator1
-engine_args["game"] = game
-engine_args['gamma'] = 1
-engine_args['reward_scale'] = 0.01
-#engine_args['image_converter'] = ChannelScaleConverter
-engine_args["shaping_on"] = True
-engine_args["count_states"] = True
-engine_args["update_pattern"]=[5*steps,0]
-engine_args["batch_size"] = 40
-#engine_args["history_length"] = 8
+def create_engine_one(game):
+    # Engine one:
+    engine_args = dict()
+    engine_args["evaluator"] = create_cnn_evaluator1
+    engine_args["game"] = game
+    engine_args['gamma'] = 1
+    engine_args['reward_scale'] = 0.01
+    #engine_args['image_converter'] = ChannelScaleConverter
+    engine_args["shaping_on"] = True
+    engine_args["count_states"] = True
+    engine_args["update_pattern"]=[5*steps,0]
+    engine_args["batch_size"] = 40
+    engine_args['misc_scale'] = [100.0, 1/2100.0]
+    #engine_args["history_length"] = 3
+    return QEngine(**engine_args)
 
-engine1 = QEngine(**engine_args)
-
-def create_cnn_evaluator2(state_format, actions_number, batch_size, gamma):
+def create_cnn_evaluator2(state_format, actions_number, gamma):
     cnn_args = dict()
     cnn_args["gamma"] = gamma
     cnn_args["state_format"] = state_format
     cnn_args["actions_number"] = actions_number
-    cnn_args["batch_size"] = batch_size
     cnn_args["updates"] = lasagne.updates.nesterov_momentum
     #cnn_args["learning_rate"] = 0.01
 
@@ -90,19 +82,24 @@ def create_cnn_evaluator2(state_format, actions_number, batch_size, gamma):
 
     cnn_args["network_args"] = network_args
     return CNNEvaluator(**cnn_args)
-# Engine two:
-engine_args = dict()
-engine_args["evaluator"] = create_cnn_evaluator2
-engine_args["game"] = game
-engine_args['gamma'] = 1
-engine_args['reward_scale'] = 0.01
-#engine_args['image_converter'] = ChannelScaleConverter
-engine_args["shaping_on"] = True
-#engine_args["count_states"] = True
-engine_args["update_pattern"]=[5*steps,0]
-engine_args["batch_size"] = 40
-#engine_args["history_length"] = 5
-engine2 = QEngine(**engine_args)
+ 
+def create_engine_two(game):   
+    # Engine two:
+    engine_args = dict()
+    engine_args["evaluator"] = create_cnn_evaluator2
+    engine_args["game"] = game
+    engine_args['gamma'] = 1
+    engine_args['reward_scale'] = 0.01
+    #engine_args['image_converter'] = ChannelScaleConverter
+    engine_args["shaping_on"] = True
+    #engine_args["count_states"] = True
+    engine_args["update_pattern"]=[5*steps,0]
+    engine_args["batch_size"] = 40
+    #engine_args["history_length"] = 5
+    return QEngine(**engine_args)
+
+engine1 =  create_engine_one(game)
+engine2 = create_engine_two(game)
 
 disp_shit = False
 if disp_shit:

@@ -4,42 +4,45 @@ import numpy as np
 from transition_bank import TransitionBank
 from time import time
 
+batches = 2000
+batch_size = 40
 insertions = 10000
 capacity = insertions
-batch_size = 5000
 
-if insertions > capacity:
-    overflowed_insertions = insertions - capacity
-    insertions -= overflowed_insertions
-else:
-    overflowed_insertions = 0
 
-bank = TransitionBank(capacity)
+format = dict()
+format["s_img"] = (3,45,60)
+format["s_misc"] = 3
 
-s1 = np.float32(np.random.rand(4, 120, 90))
-s2 = np.float32(np.random.rand(4, 120, 90))
-r = np.float32(1)
-a = np.float32(2)
+
+bank = TransitionBank(format, capacity, batch_size)
+
+s1 = np.float32(np.random.random(format["s_img"]))
+s2 = np.float32(np.random.random(format["s_img"]))
+misc1 = np.float32(np.random.rand(format["s_misc"]))
+misc2 = np.float32(np.random.rand(format["s_misc"]))
+print misc1
+r = np.random.rand(1)
+a = np.random.rand(1)
 
 print "Capacity:", capacity
 
 start = time()
-for i in range(insertions):
-    bank.add_transition(s1.copy(), a, s2.copy(), r)
-
+if format["s_misc"]>0:
+    for i in range(insertions):
+        bank.add_transition([s1,misc1], a, [s2,misc2], r)
+else:
+    for i in range(insertions):
+        bank.add_transition([s1], a, [s2], r)
 end = time()
 print "Insertions:", insertions, "time: ", round(end - start, 2), "s"
 
-if overflowed_insertions > 0:
-    start = time()
-    for i in range(overflowed_insertions):
-        bank.add_transition(s1.copy(), a, s2.copy(), r)
-    end = time()
-    print "Overflowed insertions:", overflowed_insertions, "time: ", round(end - start, 2), "s"
 
-if batch_size > 0:
+
+if batch_size>0 and batches>0:
     start = time()
-    batch = bank.get_sample(batch_size)
+    for i in range(batches):
+        sample = bank.get_sample()
     end = time()
-    print "Batchsize:", batch_size, "time: ", round(end - start, 2), "s"
+    print "batches:",batches,"batchsize:", batch_size, "time: ", round(end - start, 2), "s"
 
