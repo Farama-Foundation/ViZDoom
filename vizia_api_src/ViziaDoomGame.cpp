@@ -149,7 +149,7 @@ namespace Vizia {
         if (!this->isRunning()) throw DoomIsNotRunningException();
 
         try {
-            for (int i = 0; i < this->availableButtons.size(); ++i) {
+            for (int i = 0; i < this->availableButtons.size() && i < actions.size(); ++i) {
                 this->lastAction[i] = actions[i];
                 this->doomController->setButtonState(this->availableButtons[i], actions[i]);
             }
@@ -198,7 +198,7 @@ namespace Vizia {
             double reward = 0;
             double mapReward = DoomFixedToDouble(this->doomController->getMapReward());
             reward = (mapReward - this->lastMapReward);
-            int liveTime = this->doomController->getMapTic() - this->lastMapTic;
+            int liveTime = this->doomController->getMapLastTic() - this->lastMapTic;
             reward += (liveTime > 0 ? liveTime : 0) * this->livingReward;
             if (this->doomController->isPlayerDead()) reward -= this->deathPenalty;
 
@@ -741,16 +741,16 @@ namespace Vizia {
         if(str == "drop_selected_item")
             return DROP_SELECTED_ITEM;
 
-        if(str == "view_pitch")
-            return VIEW_PITCH;
-        if(str == "view_angle")
-            return VIEW_ANGLE;
-        if(str == "forward_backward")
-            return FORWARD_BACKWARD;
-        if(str == "left_right")
-            return LEFT_RIGHT;
-        if(str == "up_down")
-            return UP_DOWN;
+        if(str == "look_up_down_delta")
+            return LOOK_UP_DOWN_DELTA;
+        if(str == "turn_left_right_delta")
+            return TURN_LEFT_RIGHT_DELTA;
+        if(str == "move_forward_backward_delta")
+            return MOVE_FORWARD_BACKWARD_DELTA;
+        if(str == "move_left_right_delta")
+            return MOVE_LEFT_RIGHT_DELTA;
+        if(str == "move_up_down_delta")
+            return MOVE_UP_DOWN_DELTA;
        
         throw std::exception();
     }

@@ -143,7 +143,7 @@ void Vizia_ScreenInit() {
         }
     }
     catch(bip::interprocess_exception &ex){
-        printf("Vizia_Vizia_ScreenInit: Error creating ViziaScreen SM");
+        Printf("Vizia_Vizia_ScreenInit: Error creating ViziaScreen SM");
         Vizia_MQSend(VIZIA_MSG_CODE_DOOM_ERROR);
         exit(1);
     }

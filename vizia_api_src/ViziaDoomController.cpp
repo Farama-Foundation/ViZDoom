@@ -110,6 +110,7 @@ namespace Vizia {
                 *this->input = *this->_input;
 
                 this->lastTicTime = std::clock();
+                this->mapLastTic = this->gameVariables->MAP_TIC;
             }
             catch(const Exception &e){
                 this->doomRunning = false;
@@ -166,7 +167,7 @@ namespace Vizia {
                 //this->lastTicTime = bc::steady_clock::now();
                 this->lastTicTime = std::clock();
 
-                this->mapLastTic = this->gameVariables->MAP_TIC;
+                this->mapLastTic = this->gameVariables->MAP_TIC + 1;
                 if(update) this->MQDoomSend(MSG_CODE_TIC_N_UPDATE);
                 else this->MQDoomSend(MSG_CODE_TIC);
                 this->waitForDoomWork();
@@ -298,6 +299,8 @@ namespace Vizia {
             this->MQDoomSend(MSG_CODE_UPDATE);
             this->waitForDoomWork();
 
+            this->mapLastTic = this->gameVariables->MAP_TIC;
+
             this->mapRestarting = false;
             this->mapEnded = false;
         }
@@ -354,6 +357,10 @@ namespace Vizia {
     bool DoomController::isMapEnded() {
         if (this->doomRunning && this->gameVariables->MAP_END) return true;
         else return false;
+    }
+
+    unsigned int DoomController::getMapLastTic() {
+        return this->mapLastTic;
     }
 
     void DoomController::setNoConsole(bool console) {

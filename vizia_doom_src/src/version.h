@@ -41,7 +41,7 @@ const char *GetVersionString();
 
 /** Lots of different version numbers **/
 
-#define VERSIONSTR "2.8pre"
+#define VERSIONSTR "ZDOOM 2.8pre VIZIA 1.0"
 
 // The version as seen in the Windows resource
 #define RC_FILEVERSION 2,7,9999,0

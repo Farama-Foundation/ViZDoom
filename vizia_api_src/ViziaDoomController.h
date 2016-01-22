@@ -172,6 +172,7 @@ namespace Vizia{
         bool isMapLastTic();
         bool isMapFirstTic();
         bool isMapEnded();
+        unsigned int getMapLastTic();
 
         void setNoConsole(bool console);
 
