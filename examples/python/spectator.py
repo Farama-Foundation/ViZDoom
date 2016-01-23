@@ -9,7 +9,7 @@
 # 
 #####################################################################
 from vizia import *
-
+from time import sleep
 
 game = DoomGame()
 
@@ -27,6 +27,10 @@ game.load_config("config_basic.properties")
 #game.load_config("config_take_cover.properties")
 
 game.set_screen_resolution(ScreenResolution.RES_640X480)
+# Adds mouse support for fun:
+game.add_available_button(Button.TURN_LEFT_RIGHT_DELTA)
+#TODO up and down doesnt work doesn't work!
+#game.add_available_button(Button.LOOK_UP_DOWN_DELTA)
 
 # Enables spectator mode, so you can play. Sounds strange but it is agent who is supposed to watch not you.
 game.set_window_visible(True)
@@ -51,6 +55,7 @@ for i in range(episodes):
 		game.advance_action()
 		a = game.get_last_action()
 		r = game.get_last_reward()
+		
 		print "state #"+str(s.number)
 		print "game variables: ", misc
 		print "action:", a
