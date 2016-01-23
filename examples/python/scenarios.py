@@ -25,7 +25,6 @@ game = DoomGame()
 game.load_config("config_basic.properties")
 #game.load_config("config_deadly_corridor.properties")
 #game.load_config("config_deathmatch.properties")
-
 #game.load_config("config_defend_the_center.properties")
 #game.load_config("config_defend_the_line.properties")
 #game.load_config("config_health_gathering.properties")
