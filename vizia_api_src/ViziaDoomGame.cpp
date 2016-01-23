@@ -762,10 +762,14 @@ namespace Vizia {
             return ITEMCOUNT;
         if(str == "secretcount")
             return SECRETCOUNT;
+        if(str == "fragcount")
+            return FRAGCOUNT;
         if(str == "health")
             return HEALTH;
         if(str == "armor")
             return ARMOR;
+        if(str == "dead")
+            return DEAD;
         if(str == "on_ground")
             return ON_GROUND;
          if(str == "attack_ready")
@@ -1204,7 +1208,19 @@ namespace Vizia {
                     this->setMode(PLAYER);
                     continue;
                 }
-                std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". SPECTATOR || PLAYER expected instead of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
+                if(val == "spectator"){
+                    this->setMode(SPECTATOR);
+                    continue;
+                }
+                if(val == "async_player"){
+                    this->setMode(ASYNC_PLAYER);
+                    continue;
+                }
+                if(val == "async_spectator"){
+                    this->setMode(ASYNC_SPECTATOR);
+                    continue;
+                }
+                std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". (ASYNC_)SPECTATOR || PLAYER expected instead of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
                 success = false;
                 continue;  
             }
