@@ -1,6 +1,8 @@
+#!/usr/bin/python
+
 #use ./viziazdoom -host 2 -deathmatch -warp 01 to start game host
 
-#!/usr/bin/python
+
 from vizia import *
 
 from random import choice
@@ -8,7 +10,6 @@ from random import choice
 from time import sleep
 from time import time
 
-import cv2
 
 def setup_vizia():
 

@@ -17,9 +17,9 @@ game = DoomGame()
 # Don't load two configs cause the second will overrite the first one.
 # Multiple config files are ok but combining these ones doesn't make much sense.
 
-game.load_config("config_basic.properties")
+#game.load_config("config_basic.properties")
 #game.load_config("config_deadly_corridor.properties")
-#game.load_config("config_deathmatch.properties")
+game.load_config("config_deathmatch.properties")
 #game.load_config("config_defend_the_center.properties")
 #game.load_config("config_defend_the_line.properties")
 #game.load_config("config_health_gathering.properties")
