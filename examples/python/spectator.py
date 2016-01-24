@@ -27,7 +27,7 @@ game.load_config("config_deathmatch.properties")
 #game.load_config("config_predict_position.properties")
 #game.load_config("config_take_cover.properties")
 
-game.set_screen_resolution(ScreenResolution.RES_640X480)
+game.set_screen_resolution(ScreenResolution.RES_320X240)
 # Adds mouse support for fun:
 game.add_available_button(Button.TURN_LEFT_RIGHT_DELTA)
 #TODO up and down doesnt work doesn't work!
