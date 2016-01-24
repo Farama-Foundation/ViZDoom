@@ -15,7 +15,9 @@ depthBuffer::depthBuffer(unsigned int width, unsigned int height) : bufferSize(h
 #ifdef VIZIA_DEPTH_TEST
     for(int j = 0; j < 256; j++)
     {
-        //colors[j].r = colors[j].g = colors[j].b = j;
+#ifndef VIZIA_DEPTH_COLORS
+        colors[j].r = colors[j].g = colors[j].b = j;
+#else
         colors[j].r= j%3==0 ? 255 : 0;
         colors[j].g= j%3==1 ? 255 : 0;
         colors[j].b= j%3==2 ? 255 : 0;
@@ -25,7 +27,9 @@ depthBuffer::depthBuffer(unsigned int width, unsigned int height) : bufferSize(h
             colors[j].r = 100;
             colors[j].g = 200;
             colors[j].b = 255;
+
         }
+#endif
     }
     this->window = SDL_CreateWindow("Vizia Depth Buffer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width,
                                     height, SDL_WINDOW_SHOWN);
