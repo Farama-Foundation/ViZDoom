@@ -12,6 +12,9 @@
 //UNCOMMENT TO ENABLE DEPTH BUFFER DEBUG WINDOW
 #define VIZIA_DEPTH_TEST 1
 
+//UNCOMMENT TO ENABLE COLOR-BASED DEPTH TEST
+#define VIZIA_DEPTH_COLORS 1
+
 class depthBuffer{
 public:
     u_int8_t *getBuffer();

@@ -2608,7 +2608,7 @@ void D_DoomMain (void)
 
 #ifdef VIZIA_DEPTH_TEST
 			depthMap = new depthBuffer(screen->GetWidth(), screen->GetHeight());
-			depthMap->setDepthBoundries(123000000,310000);//probabli gud, but SHOULDN'T BE HERE
+			depthMap->setDepthBoundries(120000000,358000);//probabli gud, but SHOULDN'T BE HERE
 #endif
 			v = Args->CheckValue ("-loadgame");
 			if (v)
