@@ -44,8 +44,25 @@ class QEngine:
         self._initialize(**kwargs)
         kwargs["game"] = None
 
+    def params_to_print(self):
+        res = ""
+        res += "gamma " +str(self._gamma)
+        res += "\nskiprate "+str(self._skiprate)
+        res += "\nepsilon_start "+str(self._start_epsilon)
+        res += "\nepsilon_end" +str(self._end_epsilon)
+        res += "\nepsilon_decay_steps " +str(self._epsilon_decay_steps)
+        res += "\nepsilon_decay_start " +str(self._epsilon_decay_start)
+        res += "\nbatch_size " + str(self._batch_size)
+        res += "\nupdate_pattern " + str(self._update_pattern)
+        res += "\nreward_scale " +str(self._reward_scale)
+        res +="\n\nNetwork params:\n"
+        for p in get_all_param_values(self.get_network()):
+            res+= str(p.shape) +"\n"
+        res +="\n" 
+        return res
+
     def _initialize(self, game, evaluator, history_length=1, actions_generator=None, gamma=0.99, batch_size=40, update_pattern=(4,4),
-                   bank_capacity=10000, start_epsilon=1.0, end_epsilon=0.0,epsilon_decay_start_step=100000, epsilon_decay_steps=100000, 
+                   bank_capacity=10000, start_epsilon=1.0, end_epsilon=0.1,epsilon_decay_start_step=100000, epsilon_decay_steps=100000, 
                    reward_scale=1.0, misc_scale=None, max_reward=None, image_converter=None, skiprate = 1, shaping_on = False, count_states = False):
     # Line that makes sublime collapse code correctly
 
@@ -63,8 +80,10 @@ class QEngine:
         self._batch_size = batch_size
         self._history_length = max(history_length, 1)
         self._update_pattern = update_pattern
-        self._epsilon = max(min(start_epsilon, 1.0), 0.0)
+        self._start_epsilon = max(min(start_epsilon, 1.0), 0.0)
+        self._epsilon = self._start_epsilon
         self._end_epsilon = min(max(end_epsilon, 0.0), self._epsilon)
+        self._epsilon_decay_steps = epsilon_decay_steps
         self._epsilon_decay_stride = (self._epsilon - end_epsilon) / epsilon_decay_steps
         self._epsilon_decay_start = epsilon_decay_start_step
         self._skiprate = max(skiprate, 1)
@@ -142,9 +161,12 @@ class QEngine:
                 self._current_misc_state[:] = misc
                 
 
-    def new_episode(self):
+    def new_episode(self, update_state=False):
         self._game.new_episode()
         self.reset_state()     
+        self._last_shaping_reward = 0
+        if update_state:
+            self._update_state()
 
     # Return current state including history
     def _current_state(self):
@@ -189,7 +211,7 @@ class QEngine:
     def make_learning_step(self):
         self._steps += 1
        	# epsilon decay:
-        if self._steps > self._epsilon_decay_start and self._epsilon > 0:
+        if self._steps > self._epsilon_decay_start and self._epsilon > self._end_epsilon:
 	        self._epsilon -= self._epsilon_decay_stride
 	        self._epsilon = max(self._epsilon, 0)
 
@@ -211,18 +233,18 @@ class QEngine:
             r += sr - self._last_shaping_reward
             self._last_shaping_reward = sr
         r = r*self._reward_scale
-
         if self._max_reward:
             r = min(r, self._max_reward)
+        
         #update state s2 accordingly
         if self._game.is_episode_finished():
             # terminal state
             s2 = None
+            self._transitions.add_transition(s, a, s2, r, terminal = True)
         else:
             self._update_state()
             s2 = self._current_state()
-
-        self._transitions.add_transition(s, a, s2, r)
+            self._transitions.add_transition(s, a, s2, r)
     
         # Perform q-learning once for a while
         if self._steps % self._update_pattern[0] == 0 and self._steps > self._batch_size:

@@ -10,6 +10,7 @@ game.load_config("config_basic.properties")
 
 
 game = DoomGame()
+game.set_console_enabled(False)
 game.load_config("config_common.properties")
 game.load_config("config_health_guided.properties")
 #game.load_config("config_basic.properties")
