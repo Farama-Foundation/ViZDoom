@@ -967,16 +967,15 @@ void rt_draw4cols (int sx)
 			{
 				if (!(bad & 1))
 				{
+					if(depthMap!=NULL) depthMap->setActualDepth(depthMap->helperBuffer[x]);
 					if (horizspan[x][1] < minnexttop)
 					{
-						if(depthMap!=NULL) depthMap->setActualDepth(depthMap->helperBuffer[x]);
 						hcolfunc_post1 (x, sx+x, horizspan[x][0], horizspan[x][1]);
 						horizspan[x] += 2;
 						drawcount++;
 					}
 					else if (minnexttop > horizspan[x][0])
 					{
-						if(depthMap!=NULL) depthMap->setActualDepth(depthMap->helperBuffer[x]);
 						hcolfunc_post1 (x, sx+x, horizspan[x][0], minnexttop-1);
 						horizspan[x][0] = minnexttop;
 						drawcount++;

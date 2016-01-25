@@ -102,6 +102,8 @@ static int NumTerms;
 
 // CODE --------------------------------------------------------------------
 
+EXTERN_CVAR(Bool, vizia_no_console)
+
 void addterm (void (*func) (), const char *name)
 {
 	// Make sure this function wasn't already registered.
@@ -244,6 +246,12 @@ int main (int argc, char **argv)
 	}
 #endif // !__APPLE__
 
+	//I'm not proud of this solution. Shame on me.
+	for(int i=0;i<argc;i++)
+		if(strcmp("+vizia_no_console", argv[i])==0)
+			if(i+1<argc&&strcmp(argv[i+1], "1")==0)
+				vizia_no_console=true;;
+	if(!vizia_no_console)
 	printf(GAMENAME" %s - %s - SDL version\nCompiled on %s\n",
 		GetVersionString(), GetGitTime(), __DATE__);
 

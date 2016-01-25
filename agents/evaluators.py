@@ -4,13 +4,16 @@ import theano
 import numpy as np
 from theano.compile.nanguardmode import NanGuardMode
 from lasagne.nonlinearities import tanh, rectify, leaky_rectify
-from lasagne.updates import sgd, nesterov_momentum
+from lasagne.updates import sgd, nesterov_momentum, norm_constraint
 from lasagne.objectives import squared_error
 from lasagne.objectives import squared_error
 from lasagne.regularization import regularize_layer_params
 import lasagne.layers as ls
 from time import time
 
+def relu_weights_initializer(alpha = 0.01):
+    return lasagne.init.GlorotNormal(gain=np.sqrt(2/(1+alpha**2)))
+    
 class MLPEvaluator:
     def __init__(self, state_format, actions_number, network_args, gamma=0.99, updates=sgd, learning_rate = 0.01, regularization = None):
 
@@ -53,7 +56,7 @@ class MLPEvaluator:
         loss = squared_error(predictions, self._targets).mean()
         regularized_loss = loss + regularization_term
         params = ls.get_all_params(self._network, trainable=True)
-        updates = updates(regularized_loss, params, learning_rate=learning_rate)
+        updates = updates(regularized_loss, params, learning_rate)
 
 
         print "Compiling Theano functions ..."
@@ -79,8 +82,9 @@ class MLPEvaluator:
         network = ls.InputLayer(shape=img_input_shape, input_var=self._image_inputs)
         # hidden layers
         for i in range(hidden_layers):
-            network = ls.DenseLayer(network, hidden_units[i], nonlinearity=hidden_nonlin)
+            network = ls.DenseLayer(network, hidden_units[i], nonlinearity=hidden_nonlin, W=weights_initializer())
         
+        # misc layer and merge with rest of the network
         if self._misc_state_included:
             # misc input layer
             misc_input_layer = ls.InputLayer(shape=(None, misc_len), input_var=self._misc_inputs)
@@ -102,16 +106,32 @@ class MLPEvaluator:
             X_misc = transitions["s1_misc"]
             X2_misc = transitions["s2_misc"]
             Y =  self._evaluate(X, X_misc)
-            Q2 = np.max(self._evaluate(X2,X2_misc),axis=1)
+            Q2 = self._gamma*np.max(self._evaluate(X2,X2_misc),axis=1)
         else:
-
             Y =  self._evaluate(X)
             Q2 = self._gamma*np.max(self._evaluate(X2 ),axis=1) 
+        
+        DEBUG = False
+        if DEBUG:
+            print "REWARD:"
+            print transitions['r']
+            print "ACTIONS:"
+            print transitions['a']
+            print "Q2"
+            print Q2
+            print "Y learned:"
+            print Y
+            print "\nWeights means"
+            for p in ls.get_all_param_values(self._network):
+                print p.mean()
+            print
 
         for row,a,y in zip(Y,transitions["a"],transitions["r"] +(-transitions["terminal"]*Q2)):
             row[a] = y
-
-
+        if DEBUG:
+            print "Target Y:"
+            print Y
+            print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
         if self._misc_state_included:
             loss = self._learn(X, X_misc, Y)
         else:
@@ -123,7 +143,7 @@ class MLPEvaluator:
     def best_action(self, state):
         if self._misc_state_included:
             qvals = self._evaluate(state[0].reshape(self._single_image_input_shape), state[1].reshape(1,self._misc_len))
-            a = np.argmax(qvals)
+            a = np.argmax(qvals)      
         else:
             qvals = self._evaluate(state[0].reshape(self._single_image_input_shape))
             a = np.argmax(qvals)
@@ -150,20 +170,24 @@ class CNNEvaluator(MLPEvaluator):
         # image input layer
         network = ls.InputLayer(shape=img_input_shape, input_var=self._image_inputs)
 
+
         # convolution and pooling layers
         for i in range(conv_layers):
             network = ls.Conv2DLayer(network, num_filters=num_filters[i], filter_size=filter_size[i],
-                                                 nonlinearity=conv_nonlin)
+                                                 nonlinearity=conv_nonlin, W=relu_weights_initializer())
             network = ls.MaxPool2DLayer(network, pool_size=pool_size[i])
-        # dense layers
-        for i in range(hidden_layers):
-            network = ls.DenseLayer(network, hidden_units[i], nonlinearity=hidden_nonlin)
+       
+        network = ls.FlattenLayer(network)
         
         if self._misc_state_included:
             # misc input layer
             misc_input_layer = ls.InputLayer(shape=(None,misc_len), input_var=self._misc_inputs)
             # merge layer
             network = ls.ConcatLayer([network, misc_input_layer])
+
+         # dense layers
+        for i in range(hidden_layers):
+            network = ls.DenseLayer(network, hidden_units[i], nonlinearity=hidden_nonlin, W=relu_weights_initializer())
 
         # output layer
         network = ls.DenseLayer(network, output_size, nonlinearity=output_nonlin)
