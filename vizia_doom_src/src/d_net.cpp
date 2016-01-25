@@ -1930,6 +1930,9 @@ void TryRunTics (void)
 		players[i].waiting = false;
 	lastglobalrecvtime = I_GetTime (false); //Update the last time the game tic'd over
 
+	//VIZIA CODE
+	if(*vizia_controlled && *vizia_async) Vizia_AsyncStartTic();
+
 	// run the count tics
 	if (counts > 0)
 	{

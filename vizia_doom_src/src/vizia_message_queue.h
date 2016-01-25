@@ -12,7 +12,7 @@ extern bip::message_queue *viziaMQRecv;
 #define VIZIA_MQ_NAME_DOOM_BASE "ViziaMQDoom"
 #define VIZIA_MQ_MAX_MSG_NUM 64
 #define VIZIA_MQ_MAX_MSG_SIZE sizeof(ViziaMessageCommandStruct)
-#define VIZIA_MQ_MAX_CMD_LEN 64
+#define VIZIA_MQ_MAX_CMD_LEN 128
 
 #define VIZIA_MSG_CODE_DOOM_DONE 11
 #define VIZIA_MSG_CODE_DOOM_CLOSE 12

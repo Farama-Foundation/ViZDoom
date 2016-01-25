@@ -15,11 +15,14 @@
 #include "doomtype.h"
 
 bip::mapped_region *viziaInputSMRegion = NULL;
-ViziaInputStruct *viziaLastInput = NULL;
+//ViziaInputStruct *viziaLastInput = NULL;
 ViziaInputStruct *viziaInput = NULL;
 bool viziaInputInited = false;
+int viziaLastInputBT[VIZIA_BT_SIZE];
+int viziaLastInputUpdate[VIZIA_BT_SIZE];
 
 EXTERN_CVAR (Bool, vizia_allow_input);
+EXTERN_CVAR (Bool, vizia_async);
 
 void Vizia_Command(char * cmd){
     //printf("VIZIA CMD %d %s\n", gametic, cmd);
@@ -48,8 +51,14 @@ bool Vizia_CommmandFilter(const char *cmd){
 
     for(int i = 0; i<VIZIA_BT_CMD_BT_SIZE; ++i){
         if(strcmp(beg, Vizia_BTToCommand(i)) == 0){
-            if(!viziaInput->BT_AVAILABLE[i]) return false;
-            else viziaInput->BT[i] = state;
+            if(!viziaInput->BT_AVAILABLE[i]) {
+                viziaInput->BT[i] = 0;
+                return false;
+            }
+            else{
+                viziaInput->BT[i] = state;
+                viziaLastInputUpdate[i] = VIZIA_TIME;
+            }
         }
     }
 
@@ -59,7 +68,8 @@ bool Vizia_CommmandFilter(const char *cmd){
 }
 
 int Vizia_AxisFilter(int button, int value){
-    if(button >= VIZIA_BT_CMD_BT_SIZE && button < VIZIA_BT_SIZE){
+    if(value != 0 && button >= VIZIA_BT_CMD_BT_SIZE && button < VIZIA_BT_SIZE){
+
         if(!viziaInput->BT_AVAILABLE[button]) return 0;
         int axis = button - VIZIA_BT_CMD_BT_SIZE;
         if(viziaInput->BT_MAX_VALUE[axis] != 0){
@@ -67,12 +77,14 @@ int Vizia_AxisFilter(int button, int value){
             if(button == VIZIA_BT_VIEW_ANGLE || button == VIZIA_BT_VIEW_PITCH)
                 maxValue = (int)((float)viziaInput->BT_MAX_VALUE[axis]/180 * 32768);
             else maxValue = viziaInput->BT_MAX_VALUE[axis];
+
             if((int)labs(value) > (int)labs(maxValue))
-                value = value/(int)labs(value) * (int)labs(maxValue);
+                value = value/(int)labs(value) * (int)(labs(maxValue) + 1);
         }
         if(button == VIZIA_BT_VIEW_ANGLE || button == VIZIA_BT_VIEW_PITCH)
             viziaInput->BT[button] = (int)((float)value/32768 * 180);
         else viziaInput->BT[button] = value;
+        viziaLastInputUpdate[button] = VIZIA_TIME;
     }
     return value;
 }
@@ -157,37 +169,11 @@ char* Vizia_BTToCommand(int button){
     }
 }
 
-bool Vizia_HasCounterBT(int button){
-    switch(button){
-        case VIZIA_BT_MOVE_RIGHT :
-        case VIZIA_BT_MOVE_LEFT :
-        case VIZIA_BT_MOVE_BACK :
-        case VIZIA_BT_MOVE_FORWARD :
-        case VIZIA_BT_TURN_RIGHT :
-        case VIZIA_BT_TURN_LEFT :
-        case VIZIA_BT_LOOK_UP :
-        case VIZIA_BT_LOOK_DOWN :
-        case VIZIA_BT_MOVE_UP :
-        case VIZIA_BT_MOVE_DOWN :
-            return true;
-        default :
-            return false;
-    }
-}
+void Vizia_ResetDiscontinuousBT(){
 
-int Vizia_CounterBT(int button){
-    switch(button){
-        case VIZIA_BT_MOVE_RIGHT : return VIZIA_BT_MOVE_LEFT;
-        case VIZIA_BT_MOVE_LEFT : return VIZIA_BT_MOVE_RIGHT;
-        case VIZIA_BT_MOVE_BACK : return VIZIA_BT_MOVE_FORWARD;
-        case VIZIA_BT_MOVE_FORWARD : return VIZIA_BT_MOVE_BACK;
-        case VIZIA_BT_TURN_RIGHT : return VIZIA_BT_TURN_LEFT;
-        case VIZIA_BT_TURN_LEFT : return VIZIA_BT_TURN_RIGHT;
-        case VIZIA_BT_LOOK_UP : return VIZIA_BT_LOOK_DOWN;
-        case VIZIA_BT_LOOK_DOWN : return VIZIA_BT_LOOK_UP;
-        case VIZIA_BT_MOVE_UP : return VIZIA_BT_MOVE_DOWN;
-        case VIZIA_BT_MOVE_DOWN : return VIZIA_BT_MOVE_UP;
-        default : return -1;
+    if(viziaLastInputUpdate[VIZIA_BT_TURN180] < VIZIA_TIME) viziaInput->BT[VIZIA_BT_TURN180] = 0;
+    for(int i = VIZIA_BT_LAND; i < VIZIA_BT_SIZE; ++i){
+        if(viziaLastInputUpdate[i] < VIZIA_TIME) viziaInput->BT[i] = 0;
     }
 }
 
@@ -251,23 +237,23 @@ void Vizia_AddBTCommand(int button, int state){
 
 void Vizia_InputInit() {
 
-    viziaLastInput = new ViziaInputStruct();
+    //viziaLastInput = new ViziaInputStruct();
 
     try {
-
         viziaInputSMRegion = new bip::mapped_region(viziaSM, bip::read_write, 0, sizeof(ViziaInputStruct));
         viziaInput = static_cast<ViziaInputStruct *>(viziaInputSMRegion->get_address());
-
     }
     catch (bip::interprocess_exception &ex) {
         Printf("Vizia_InputInit: Error creating Input SM");
         Vizia_MQSend(VIZIA_MSG_CODE_DOOM_ERROR);
-        Vizia_Command(strdup("exit"));
+        exit(1);
     }
 
     for (int i = 0; i < VIZIA_BT_SIZE; ++i) {
         viziaInput->BT[i] = 0;
         viziaInput->BT_AVAILABLE[i] = true;
+        viziaLastInputBT[i] = 0;
+        viziaLastInputUpdate[i] = 0;
     }
 
     for(int i = 0; i < VIZIA_BT_AXIS_BT_SIZE; ++i){
@@ -288,22 +274,8 @@ void Vizia_InputTic(){
     if(!*vizia_allow_input) {
         for (int i = 0; i < VIZIA_BT_CMD_BT_SIZE; ++i) {
 
-            if (viziaInput->BT_AVAILABLE[i]) {
-
-                if (viziaInput->BT[i] != 0 && Vizia_HasCounterBT(i)) {
-                    int c = Vizia_CounterBT(i);
-
-                    if (viziaInput->BT_AVAILABLE[c] && viziaInput->BT[c] != 0) {
-                        Vizia_AddBTCommand(i, false);
-                        Vizia_AddBTCommand(c, false);
-                        continue;
-                    }
-                    else Vizia_AddBTCommand(c, false);
-                }
-
-                if (viziaInput->BT[i] != viziaLastInput->BT[i]) {
-                    Vizia_AddBTCommand(i, viziaInput->BT[i]);
-                }
+            if (viziaInput->BT_AVAILABLE[i] && viziaInput->BT[i] != viziaLastInputBT[i]){ //viziaLastInput->BT[i]) {
+                Vizia_AddBTCommand(i, viziaInput->BT[i]);
             }
         }
 
@@ -313,18 +285,19 @@ void Vizia_InputTic(){
             }
         }
     }
-    else{
-        for(int i = 0; i < VIZIA_BT_AXIS_BT_SIZE; ++i){
-            viziaInput->BT[VIZIA_BT_CMD_BT_SIZE + i] = 0;
-        }
+    else if(viziaLastUpdate == VIZIA_TIME){
+        Vizia_ResetDiscontinuousBT();
+        D_ProcessEvents ();
     }
-    //else D_ProcessEvents();
 
-    memcpy( viziaLastInput, viziaInput, sizeof(ViziaInputStruct) );
+    for (int i = 0; i < VIZIA_BT_SIZE; ++i) {
+        viziaLastInputBT[i] =  viziaInput->BT[i];
+    }
+    //memcpy( viziaLastInput, viziaInput, sizeof(ViziaInputStruct) );
 
 }
 
 void Vizia_InputClose(){
-    delete(viziaLastInput);
+    //delete(viziaLastInput);
     delete(viziaInputSMRegion);
 }

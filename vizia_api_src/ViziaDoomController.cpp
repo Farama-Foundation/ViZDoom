@@ -37,7 +37,7 @@ namespace Vizia {
         this->filePath = "";
         this->map = "map01";
         this->configPath = "";
-        this->skill = 1;
+        this->skill = 0;
 
         this->hud = true;
         this->weapon = true;
@@ -198,6 +198,14 @@ namespace Vizia {
     bool DoomController::tics(unsigned int tics, bool update){
         bool lastTic = this->mapEnded;
 
+        if(this->allowDoomInput && !this->runDoomAsync){
+            for(int i = 0; i < AxisButtonsNumber; ++i){
+                this->input->BT_MAX_VALUE[i] = tics * this->_input->BT_MAX_VALUE[i];
+            }
+        }
+
+        int ticsMade = 0;
+
         for(int i = 0; i < tics; ++i){
             if(i == tics - 1) lastTic = this->tic(true);
             else lastTic = this->tic(false);
@@ -207,8 +215,15 @@ namespace Vizia {
                 this->waitForDoomWork();
                 break;
             }
+            else ++ticsMade;
+            //if(i == 0) this->resetDescreteButtons();
+        }
 
-            if(i == 0 && !this->allowDoomInput) this->resetDescreteButtons();
+        if(this->allowDoomInput && !this->runDoomAsync){
+            for(int i = DiscreteButtonsNumber; i < ButtonsNumber; ++i){
+                this->input->BT_MAX_VALUE[i - DiscreteButtonsNumber] = this->_input->BT_MAX_VALUE[i - DiscreteButtonsNumber];
+                this->input->BT[i] = this->input->BT[i]/ticsMade;
+            }
         }
 
         return lastTic;
@@ -223,7 +238,7 @@ namespace Vizia {
     }
 
     void DoomController::sendCommand(std::string command) {
-        this->MQDoomSend(MSG_CODE_COMMAND, command.c_str());
+        if(command.length() <= MQ_MAX_CMD_LEN) this->MQDoomSend(MSG_CODE_COMMAND, command.c_str());
     }
 
     void DoomController::addCustomArg(std::string arg){
@@ -272,7 +287,7 @@ namespace Vizia {
     void DoomController::setMap(std::string map) {
         this->map = map;
         if (this->doomRunning && !this->mapRestarting) {
-            this->sendCommand("map " + this->map);
+            this->sendCommand(std::string("map ") + this->map);
             if (map != this->map) this->mapRestartCount = 0;
             else ++this->mapRestartCount;
 
@@ -288,7 +303,7 @@ namespace Vizia {
                 this->waitForDoomWork();
 
                 if (restartingTics > 4) {
-                    this->sendCommand("map " + this->map);
+                    this->sendCommand(std::string("map ") + this->map);
                     restartingTics = 0;
                 }
 
@@ -308,9 +323,11 @@ namespace Vizia {
 
     int DoomController::getSkill(){ return this->skill; }
     void DoomController::setSkill(int skill) {
+        if(skill > 4) skill = 4;
+        else if(skill < 0) skill = 0;
         this->skill = skill;
         if (this->doomRunning) {
-            this->sendCommand("skill " + this->skill);
+            this->sendCommand(std::string("skill set ") + b::lexical_cast<std::string>(this->skill));
             //this->resetMap();
         }
     }
@@ -320,13 +337,25 @@ namespace Vizia {
         else return 0;
     }
 
-    unsigned int DoomController::getStaticSeed(){ return this->staticSeed; }
+    unsigned int DoomController::getStaticSeed(){
+        if (this->doomRunning) return this->gameVariables->GAME_STATIC_SEED;
+        else return this->staticSeed;
+    }
 
     void DoomController::setStaticSeed(unsigned int seed){
-        this->useStaticSeed = true;
-        this->staticSeed = seed;
-        if (this->doomRunning) {
-            this->sendCommand("rngseed " + this->skill);
+        if(seed == 0){
+            this->useStaticSeed = false;
+            this->staticSeed = 0;
+            if (this->doomRunning) {
+                this->sendCommand("rngseed clear");
+            }
+        }
+        else {
+            this->useStaticSeed = true;
+            this->staticSeed = seed;
+            if (this->doomRunning) {
+                this->sendCommand(std::string("rngseed set ") + b::lexical_cast<std::string>(this->staticSeed));
+            }
         }
     }
 
