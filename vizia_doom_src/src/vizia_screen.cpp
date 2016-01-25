@@ -126,20 +126,20 @@ void Vizia_ScreenInit() {
                viziaScreenWidth, viziaScreenHeight, viziaScreenPitch);
 
         switch(*vizia_screen_format){
-            case VIZIA_SCREEN_CRCGCB: printf("CRCGCB\n"); break;
-            case VIZIA_SCREEN_CRCGCBZB: printf("CRCGCBZB\n"); break;
-            case VIZIA_SCREEN_RGB24: printf("RGB24\n"); break;
-            case VIZIA_SCREEN_RGBA32: printf("RGBA32\n"); break;
-            case VIZIA_SCREEN_ARGB32: printf("ARGB32\n"); break;
-            case VIZIA_SCREEN_CBCGCR: printf("CBCGCR\n"); break;
-            case VIZIA_SCREEN_CBCGCRZB: printf("CBCGCRZB\n"); break;
-            case VIZIA_SCREEN_BGR24: printf("BGR24\n"); break;
-            case VIZIA_SCREEN_BGRA32: printf("BGRA32\n"); break;
-            case VIZIA_SCREEN_ABGR32: printf("ABGR32\n"); break;
-            case VIZIA_SCREEN_GRAY8: printf("GRAY8\n"); break;
-            case VIZIA_SCREEN_ZBUFFER8: printf("ZBUFFER8\n"); break;
-            case VIZIA_SCREEN_DOOM_256_COLORS: printf("DOOM\n"); break;
-            default: printf("UNKNOWN\n");
+            case VIZIA_SCREEN_CRCGCB: Printf("CRCGCB\n"); break;
+            case VIZIA_SCREEN_CRCGCBZB: Printf("CRCGCBZB\n"); break;
+            case VIZIA_SCREEN_RGB24: Printf("RGB24\n"); break;
+            case VIZIA_SCREEN_RGBA32: Printf("RGBA32\n"); break;
+            case VIZIA_SCREEN_ARGB32: Printf("ARGB32\n"); break;
+            case VIZIA_SCREEN_CBCGCR: Printf("CBCGCR\n"); break;
+            case VIZIA_SCREEN_CBCGCRZB: Printf("CBCGCRZB\n"); break;
+            case VIZIA_SCREEN_BGR24: Printf("BGR24\n"); break;
+            case VIZIA_SCREEN_BGRA32: Printf("BGRA32\n"); break;
+            case VIZIA_SCREEN_ABGR32: Printf("ABGR32\n"); break;
+            case VIZIA_SCREEN_GRAY8: Printf("GRAY8\n"); break;
+            case VIZIA_SCREEN_ZBUFFER8: Printf("ZBUFFER8\n"); break;
+            case VIZIA_SCREEN_DOOM_256_COLORS: Printf("DOOM\n"); break;
+            default: Printf("UNKNOWN\n");
         }
     }
     catch(bip::interprocess_exception &ex){
