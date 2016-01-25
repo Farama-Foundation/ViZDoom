@@ -1025,7 +1025,7 @@ void D_DoomLoop ()
 				GC::CheckGC();
 
 				I_StartTic ();
-				if(vizia_update && *vizia_allow_input) D_ProcessEvents ();
+				//if(viziaUpdate && *vizia_allow_input) D_ProcessEvents ();
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				//G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
 				maketic++;

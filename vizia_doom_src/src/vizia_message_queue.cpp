@@ -2,6 +2,7 @@
 #include "vizia_input.h"
 #include "vizia_game.h"
 #include "vizia_main.h"
+#include "vizia_defines.h"
 
 #include "doomtype.h"
 #include "c_cvars.h"
@@ -35,7 +36,6 @@ void Vizia_MQSend(uint8_t code){
     ViziaMessageSignalStruct msg;
     msg.code = code;
     viziaMQController->send(&msg, sizeof(ViziaMessageSignalStruct), 0);
-    //return viziaMQ->try_send(&msg, sizeof(ViziaMessageSignalStruct), 0);
 }
 
 void Vizia_MQSend(uint8_t code, const char * command){
@@ -55,14 +55,11 @@ bool Vizia_MQTryRecv(void *msg, unsigned long &size, unsigned int &priority){
 
 void Vizia_MQTic(){
 
-    if(!*vizia_async) Vizia_MQSend(VIZIA_MSG_CODE_DOOM_DONE);
-
     ViziaMessageCommandStruct msg;
 
     unsigned int priority;
     bip::message_queue::size_type recv_size;
 
-    bool nextTic = false;
     do {
         if(!*vizia_async) Vizia_MQRecv(&msg, recv_size, priority);
         else{
@@ -71,29 +68,18 @@ void Vizia_MQTic(){
         }
         switch(msg.code){
             case VIZIA_MSG_CODE_TIC :
-                if(*vizia_async){
-                    Vizia_GameVarsTic();
-                    Vizia_MQSend(VIZIA_MSG_CODE_DOOM_DONE);
-                }
-                nextTic = true;
+                viziaNextTic = true;
                 break;
 
             case VIZIA_MSG_CODE_UPDATE:
                 Vizia_Update();
-                if(*vizia_async){
-                    Vizia_GameVarsTic();
-                }
+                Vizia_GameVarsTic();
                 Vizia_MQSend(VIZIA_MSG_CODE_DOOM_DONE);
                 break;
 
             case VIZIA_MSG_CODE_TIC_N_UPDATE:
-                vizia_update = true;
-                nextTic = true;
-                if(*vizia_async){
-                    Vizia_Update();
-                    Vizia_GameVarsTic();
-                    Vizia_MQSend(VIZIA_MSG_CODE_DOOM_DONE);
-                }
+                viziaUpdate = true;
+                viziaNextTic = true;
                 break;
 
             case VIZIA_MSG_CODE_COMMAND :
@@ -106,7 +92,7 @@ void Vizia_MQTic(){
 
             default : break;
         }
-    }while(!nextTic);
+    }while(!viziaNextTic);
 }
 
 void Vizia_MQClose(){

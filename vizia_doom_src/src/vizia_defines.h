@@ -3,6 +3,12 @@
 
 #include <stdlib.h>
 
+extern bool viziaNextTic;
+extern bool viziaUpdate;
+extern unsigned int viziaLastUpdate;
+
+#define VIZIA_TIME (level.starttime + level.maptime)
+
 #define VIZIA_BT_ATTACK 0
 #define VIZIA_BT_USE 1
 #define VIZIA_BT_JUMP 2
