@@ -6,10 +6,17 @@ game = DoomGame()
 game.load_config("config_common.properties")
 game.load_config("config_health_guided.properties")
 #game.set_window_visible(True)
-game.set_screen_resolution(ScreenResolution.RES_60X45)
+game.set_screen_resolution(ScreenResolution.RES_320X240)
 game.init()
 
-steps = 500
+game2 = DoomGame()
+game2.load_config("config_common.properties")
+game2.load_config("config_health_guided.properties")
+#game.set_window_visible(True)
+game2.set_screen_resolution(ScreenResolution.RES_60X45)
+game2.init()
+
+steps = 1000
 
 def test_engine(eng, steps):
     print "==============================="
@@ -17,8 +24,8 @@ def test_engine(eng, steps):
     all_start = time()
     for i in range(steps):
         
-        if game.is_episode_finished():
-            game.new_episode()
+        if eng._game.is_episode_finished():
+            eng.new_episode()
         eng.make_learning_step()
     start = time()
     for i in range(steps):
@@ -61,6 +68,7 @@ def create_engine_one(game):
     engine_args["update_pattern"]=[5*steps,0]
     engine_args["batch_size"] = 40
     engine_args['misc_scale'] = [100.0, 1/2100.0]
+    engine_args['image_converter'] = ChannelScaleConverter
     #engine_args["history_length"] = 3
     return QEngine(**engine_args)
 
@@ -92,14 +100,14 @@ def create_engine_two(game):
     engine_args['reward_scale'] = 0.01
     #engine_args['image_converter'] = ChannelScaleConverter
     engine_args["shaping_on"] = True
-    #engine_args["count_states"] = True
+    engine_args["count_states"] = True
     engine_args["update_pattern"]=[5*steps,0]
     engine_args["batch_size"] = 40
     #engine_args["history_length"] = 5
     return QEngine(**engine_args)
 
 engine1 =  create_engine_one(game)
-engine2 = create_engine_two(game)
+engine2 = create_engine_two(game2)
 
 disp_shit = False
 if disp_shit:
@@ -111,4 +119,4 @@ if disp_shit:
         print p.shape
 
 test_engine(engine1,steps)
-#test_engine(engine2,steps)
+test_engine(engine2,steps)

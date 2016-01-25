@@ -53,13 +53,12 @@ class TransitionBank:
     def add_transition(self, s1, a, s2, r, terminal = False):
         
         self._s1_img [self._oldest_index] = s1[0] 
-        if s2 is not None:
+        if not terminal:
             self._s2_img[self._oldest_index] = s2[0]
        
-
         if self._misc:
             self._s1_misc [self._oldest_index] = s1[1]
-            if s2 is not None:
+            if not terminal:
                 self._s2_misc [self._oldest_index] = s2[1]
 
         self._a [self._oldest_index] = a
