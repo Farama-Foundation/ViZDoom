@@ -128,10 +128,9 @@ In this chapter we define what a scenario is (see Section \ref{sec:scenario_defi
 			\caption{Doom gameplay frame from `defend the line' scenario.}\label{fig:defend_the_line}
 		\end{figure}
 		\paragraph{Motivation} 
-			The purpose of this scenarios is to tech agents risk assessment and basic monster biology by presenting them with monsters of two types: melee and shoting. Agents should be able to recognize that shooters pose more imidiate threat than melee monster (unless they are at point blank range). Obviously, agents should also learn that monsters are sinister and killing them is rewarding, but it is not sufficient. Coincidentaly an agent could be expected to learn to impersonate a calissical Greek tragic hero: he is doomed to die pitifully (ammunition finite) no matter his acions.
-
+			The purpose of this scenarios is to tech agents risk assessment and basic monster biology by presenting them with monsters of two types: melee and shoting. Agents should be able to recognize that shooters pose more imidiate threat than melee monster (unless they are at point blank range). Obviously, agents should also learn that monsters are sinister and killing them is rewarding, but it is not sufficient.
 		\paragraph{Decription}
-			The map is a rectangle. Player is spawned along the longer wall, in the center. 3 melee and 3 shooting monsters are spawned along the oposite wall. Monsters are killed after a single shot, at first. After dying each monster is respawned after some time and can endure more damage. Episode ends when the player dies (it's inevitable becuse of limitted ammo).
+			The map is a rectangle. Player is spawned along the longer wall, in the center. 3 melee and 3 shooting monsters are spawned along the oposite wall. Monsters are killed after a single shot, at first. After dying each monster is respawned after some time and can endure more damage. Episode ends when the player dies (it's inevitable because at some point monsters will be too tough to kill).
 		\paragraph{Rewards}
 			\begin{itemize}
 				\item +1 for killing a monster
@@ -268,23 +267,62 @@ In this chapter we define what a scenario is (see Section \ref{sec:scenario_defi
 	\subsection{Fixed Point Numbers}\label{subsec:fixed_point}
 		ACS does not support floating point numbers. However, fixed point numbers are implemented with integers. By adding decimal point you force compiler to treat it as a fixed point number so for instance `1' will be treated as an integer whereas `1.0' as a fixed point numeral. Mixing integers and fixed point numbers is allowed but will produce unexpected results if performed unknowingly. For more detailed information consult ZDOOM Wiki //TODO REFERENCE
 
-	\subsection{Global Variables}
+	\subsection{Global Variables}\label{subsec:global_variable}
 		ACS, except from ordinary variables, provide global variables which can be accessed by Vizia api as user variables(see //REFERENCE TO API//). Global variables behave the same as ordinary variables but need to be declared in global scope and in a slightly different way:
 		\begin{lstlisting}[language=C++]
-		global int <X>:reward;
+global int <X>:reward;
 		\end{lstlisting}
 		<X> denotes the ordinal number of the variable.
 		
 	\subsection{Rewards}
 		In order to support rewarding mechanism, it is neccessary to utilize global variable 0 in ACS script. Name given to the variable does not matter. Value of the variable represents total reward accumulated throughout whole episode so in order to give reward for specific action you need to increase global variable 0 by the desired value not assign it. Vizia will treat the variable as a fixed point number(see \ref{subsec:fixed_point}).
 
-
 	\subsection{Advices}
 		This section shows code snippets showing how we achive some ACS scripting behaviors that may prove useful. The code snippets intend to be relatively self-explanatory and assumes knowledge of the very basics of ACS scripting and can use documentation to make sense of used functions. Zdoom wiki page is the suggested source. //TODO REFERENCE
-		\paragraph{Ending} 
-		\paragraph{Reward for Killing a Monster}
-		\paragraph{Friendly Monster}
-		\paragraph{Stationary Monster}
-		\paragraph{Single Hit Monster}
-		\paragraph{Infinite Ammo}
-		\paragraph{Disappearing Corpses}
+
+		\subsubsection*{Ending an Episode}
+
+			\begin{lstlisting}[language=C++]
+Exit_Normal(0);
+			\end{lstlisting}
+		\subsubsection*{Reward for Killing a Monster} This snippet is also useful for triggering any event after killing a monster or collecting an item.
+			\begin{lstlisting}[language=C++]
+script 123 (void)
+{
+	reward = reward + 1;
+}
+SetThingSpecial(MONSTER_TID, ACS_ExecuteAlways, 123);
+			\end{lstlisting}
+\subsubsection*{Friendly Monster}
+			\begin{lstlisting}[language=C++]
+Thing_Hate (MONSTER_TID, SOME_UNUSED_TID, 6);
+			\end{lstlisting}
+		\subsubsection*{Stationary Monster}
+			\begin{lstlisting}[language=C++]
+SetActorProperty(MONSTER_TID, APROP_Speed, 0);
+			\end{lstlisting}
+		\subsubsection*{Single Hit Monster}
+			\begin{lstlisting}[language=C++]
+SetActorProperty(MONSTER_TID, APROP_Health, 1);
+			\end{lstlisting}
+		\subsubsection*{Self-replenishing Ammo}
+		Note that this can also be achieved by  *****//TODO
+			\begin{lstlisting}[language=C++]
+script 2 ENTER
+{   
+    while(1)
+    {
+        delay(1);
+        GiveInventory("Clip", 1 );
+    }
+}
+
+			\end{lstlisting}
+		\subsubsection*{Disappearing Corpses}
+			\begin{lstlisting}[language=C++]
+script 234 (int TID)
+{
+	Thing_Remove(TID);
+}
+SetThingSpecial(MONSTER_TID, ACS_ExecuteAlways, 234, MONSTER_TID);
+			\end{lstlisting}
