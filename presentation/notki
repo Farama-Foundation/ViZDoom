@@ -1,0 +1,33 @@
+features:
+MAREK: tryby przetwarzania, input, output
+GRZESIU: rendering
+KUBA: wrappery
+MAREK: architektera
+KUBA: co użyte
+MICHAŁ: scenariusze, <filmik> eksperymenty
+
+używane:
+ZDOOM
+DoomBuilder2, SLADE3
+
+libs:
+SDL
+BOOST
+
+Theano
+Lasagne
+OpenCV
+
+CUDA
+
+bindy:
+JNI
+
+langs:
+C++
+JAVA
+PYTHON
+
+
+
+
