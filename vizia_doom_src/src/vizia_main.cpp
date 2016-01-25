@@ -3,6 +3,7 @@
 #include <boost/thread/thread.hpp>
 
 #include "vizia_main.h"
+#include "vizia_defines.h"
 #include "vizia_input.h"
 #include "vizia_game.h"
 #include "vizia_screen.h"
@@ -55,8 +56,9 @@ CVAR (Bool, vizia_window_hidden, false, CVAR_NOSET)
 CVAR (Bool, vizia_no_x_server, false, CVAR_NOSET)
 CVAR (Bool, vizia_allow_input, false, CVAR_NOSET)
 
-bool vizia_update = false;
-unsigned int vizia_last_update = 0;
+bool viziaNextTic = false;
+bool viziaUpdate = false;
+unsigned int viziaLastUpdate = 0;
 
 void Vizia_Init(){
     Printf("Vizia_Init: Instance id: %s\n", *vizia_instance_id);
@@ -73,7 +75,8 @@ void Vizia_Init(){
 
         Vizia_ScreenInit();
 
-        if(*vizia_async) Vizia_MQSend(VIZIA_MSG_CODE_DOOM_DONE);
+        viziaNextTic = true;
+        viziaUpdate = true;
     }
 }
 
@@ -85,6 +88,22 @@ void Vizia_Close(){
 
         Vizia_SMClose();
         Vizia_MQClose();
+    }
+}
+
+void Vizia_AsyncStartTic(){
+    try{
+        bt::interruption_point();
+    }
+    catch(b::thread_interrupted &ex ){
+        exit(0);
+    }
+
+    if (*vizia_controlled && (gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
+        && !paused && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
+
+        Vizia_MQTic();
+        if(viziaNextTic) Vizia_InputTic();
     }
 }
 
@@ -100,21 +119,25 @@ void Vizia_Tic(){
     if (*vizia_controlled && (gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
             && !paused && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
 
-        if(!*vizia_async){
-            if(vizia_update){
-                Vizia_Update();
-            }
+        if(viziaUpdate) {
+            Vizia_Update();
+        }
+        if(viziaNextTic) {
             Vizia_GameVarsTic();
+            Vizia_MQSend(VIZIA_MSG_CODE_DOOM_DONE);
+            viziaNextTic = false;
         }
 
-        Vizia_MQTic();
-        Vizia_InputTic();
+        if(!*vizia_async){
+            Vizia_MQTic();
+            Vizia_InputTic();
+        }
     }
 }
 
 void Vizia_Update(){
-    vizia_last_update = gametic;
-    vizia_update = false;
     D_Display();
     Vizia_ScreenUpdate();
+    viziaLastUpdate = VIZIA_TIME;
+    viziaUpdate = false;
 }

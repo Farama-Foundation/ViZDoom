@@ -32,7 +32,7 @@ namespace Vizia{
 #define MQ_NAME_DOOM_BASE "ViziaMQDoom"
 #define MQ_MAX_MSG_NUM 64
 #define MQ_MAX_MSG_SIZE sizeof(DoomController::MessageCommandStruct)
-#define MQ_MAX_CMD_LEN 64
+#define MQ_MAX_CMD_LEN 128
 
 #define MSG_CODE_DOOM_DONE 11
 #define MSG_CODE_DOOM_CLOSE 12
