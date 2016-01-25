@@ -19,15 +19,15 @@ game = DoomGame()
 
 #game.load_config("config_basic.properties")
 #game.load_config("config_deadly_corridor.properties")
-game.load_config("config_deathmatch.properties")
+#game.load_config("config_deathmatch.properties")
 #game.load_config("config_defend_the_center.properties")
 #game.load_config("config_defend_the_line.properties")
 #game.load_config("config_health_gathering.properties")
 #game.load_config("config_my_way_home.properties")
-#game.load_config("config_predict_position.properties")
+game.load_config("config_predict_position.properties")
 #game.load_config("config_take_cover.properties")
 
-game.set_screen_resolution(ScreenResolution.RES_320X240)
+game.set_screen_resolution(ScreenResolution.RES_640X480)
 # Adds mouse support for fun:
 game.add_available_button(Button.TURN_LEFT_RIGHT_DELTA)
 #TODO up and down doesnt work doesn't work!
