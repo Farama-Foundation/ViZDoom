@@ -122,7 +122,7 @@ void Vizia_ScreenInit() {
             sizeof(ViziaInputStruct) + sizeof(ViziaGameVarsStruct), viziaScreenSize);
         viziaScreen = static_cast<BYTE *>(viziaScreenSMRegion->get_address());
 
-        printf("Vizia_ScreenInit: width: %d, height: %d, pitch: %zu, format: ",
+        Printf("Vizia_ScreenInit: width: %d, height: %d, pitch: %zu, format: ",
                viziaScreenWidth, viziaScreenHeight, viziaScreenPitch);
 
         switch(*vizia_screen_format){
