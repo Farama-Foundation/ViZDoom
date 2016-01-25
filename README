@@ -1,7 +1,19 @@
-Building steps:
+Before building:
+	Debian/Ubuntu:
+	sudo apt-get install build-essential zlib1g-dev libsdl2-dev libjpeg-dev nasm tar libbz2-dev libgtk2.0-dev cmake git libfluidsynth-dev libgme-dev libopenal-dev timidity
 
-cmake -DCMAKE_BUILD_TYPE=Release
-make all
+	Fedora:
+	yum install gcc-c++ make zlib-devel SDL2-devel libjpeg-turbo-devel nasm tar bzip2-devel gtk2-devel cmake git fluidsynth-devel game-music-emu-devel	openal-soft-devel timidity++
+
+	Arch linux:
+	pacman -S --needed gcc make zlib sdl2 libjpeg-turbo nasm tar bzip2 gtk2 cmake git fluidsynth libgme fmodex openal timidity++
+	
+	openSUSE:
+	zypper install gcc-c++ make zlib-devel libSDL2-devel libjpeg-devel nasm tar libbz2-devel gtk2-devel cmake git fluidsynth-devel libgme-devel openal-soft-devel timidity
+
+Building steps:
+	cmake -DCMAKE_BUILD_TYPE=Release
+	make all
 
 Everything will be built in bin directory.
 
