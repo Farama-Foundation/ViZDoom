@@ -11,9 +11,7 @@ void Vizia_AddAxisBT(int button, int value);
 
 char* Vizia_BTToCommand(int button);
 
-bool Vizia_HasCounterBT(int button);
-
-int Vizia_CounterBT(int button);
+void Vizia_ResetDiscontinuousBT();
 
 void Vizia_AddBTCommand(int button, int state);
 

@@ -216,11 +216,9 @@ namespace Vizia {
             /* Update float rgb image */
             this->state.imageBuffer = this->doomController->getScreen();
 
-            if (this->mode == SPECTATOR) {
-                //Update last action
-                for (int i = 0; i < this->availableButtons.size(); ++i) {
-                    this->lastAction[i] = this->doomController->getButtonState(this->availableButtons[i]);
-                }
+            //Update last action
+            for (int i = 0; i < this->availableButtons.size(); ++i) {
+                this->lastAction[i] = this->doomController->getButtonState(this->availableButtons[i]);
             }
         }
         catch (...) { throw SharedMemoryException(); }
