@@ -262,14 +262,29 @@ In this chapter we define what a scenario is (see Section \ref{sec:scenario_defi
 
 
 \section{Creating scenarios}\label{sec:creating_scenarios}
+	This section is not intended as a reference manual for Action Code Script (ACS) or map creation thus mentions only subjects directly relevant to interfacing between Doom game engine and Vizia api.
+
+
+	\subsection{Fixed Point Numbers}\label{subsec:fixed_point}
+		ACS does not support floating point numbers. However, fixed point numbers are implemented with integers. By adding decimal point you force compiler to treat it as a fixed point number so for instance `1' will be treated as an integer whereas `1.0' as a fixed point numeral. Mixing integers and fixed point numbers is allowed but will produce unexpected results if performed unknowingly. For more detailed information consult ZDOOM Wiki //TODO REFERENCE
+
+	\subsection{Global Variables}
+		ACS, except from ordinary variables, provide global variables which can be accessed by Vizia api as user variables(see //REFERENCE TO API//). Global variables behave the same as ordinary variables but need to be declared in global scope and in a slightly different way:
+		\begin{lstlisting}[language=C++]
+		global int <X>:reward;
+		\end{lstlisting}
+		<X> denotes the ordinal number of the variable.
+		
 	\subsection{Rewards}
-	In order to support reward it is neccessary to utilize global variable 0 in ACS script and it can be achieved by the following code:\\
-	//TODO make it look like code \\
-	global int 0:reward;\\
-	Name given to the variable does not matter. Vizia will treat the variable as fixed point number ....bla bla bla going to bed. . .
+		In order to support rewarding mechanism, it is neccessary to utilize global variable 0 in ACS script. Name given to the variable does not matter. Value of the variable represents total reward accumulated throughout whole episode so in order to give reward for specific action you need to increase global variable 0 by the desired value not assign it. Vizia will treat the variable as a fixed point number(see \ref{subsec:fixed_point}).
 
-	\subsection{User Variables}
-		How to easily achieve some most common tasks in acs scripts which are not so obvious and~were used here.
-		e.g. shaping rewards, infinite ammo, respawning, friendly monsters, 
 
-\section{Resources}
+	\subsection{Advices}
+		This section shows code snippets showing how we achive some ACS scripting behaviors that may prove useful. The code snippets intend to be relatively self-explanatory and assumes knowledge of the very basics of ACS scripting and can use documentation to make sense of used functions. Zdoom wiki page is the suggested source. //TODO REFERENCE
+		\paragraph{Ending} 
+		\paragraph{Reward for Killing a Monster}
+		\paragraph{Friendly Monster}
+		\paragraph{Stationary Monster}
+		\paragraph{Single Hit Monster}
+		\paragraph{Infinite Ammo}
+		\paragraph{Disappearing Corpses}
