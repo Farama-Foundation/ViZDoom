@@ -1951,7 +1951,7 @@ void TryRunTics (void)
 			C_Ticker ();
 			M_Ticker ();
 			I_GetTime (true);
-			if (!pauseext || *vizia_controlled) G_Ticker();
+			if (!pauseext) G_Ticker();
 			gametic++;
 
 			NetUpdate ();	// check for new console commands

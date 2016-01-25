@@ -1025,17 +1025,17 @@ void D_DoomLoop ()
 				GC::CheckGC();
 
 				I_StartTic ();
-				//if(viziaUpdate && *vizia_allow_input) D_ProcessEvents ();
+				if (pauseext) D_ProcessEvents ();
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				//G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
-				maketic++;
+				++maketic;
 				//Net_NewMakeTic ();
 
 				C_Ticker ();
 				M_Ticker ();
 				I_GetTime (true);
 				G_Ticker();
-				gametic++;
+				++gametic;
 			}
 			// process one or more tics
 			else if (singletics) {
@@ -1049,8 +1049,8 @@ void D_DoomLoop ()
 				G_Ticker ();
 				// [RH] Use the consoleplayer's camera to update sounds
 				S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
-				gametic++;
-				maketic++;
+				++gametic;
+				++maketic;
 				GC::CheckGC ();
 				Net_NewMakeTic ();
 			}
