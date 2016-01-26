@@ -44,7 +44,7 @@ for perm in it.product([False, True], repeat=actions_num):
 
 
 episodes = 10
-sleep_time = 0.05
+sleep_time = 0.028
 
 for i in range(episodes):
 	print "Episode #" +str(i+1)

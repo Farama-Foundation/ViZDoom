@@ -56,10 +56,8 @@ game.init()
 actions = [[True,False,False],[False,True,False],[False,False,True]]
 
 
-sleep_time = 0.05
-
 episodes = 10
-sleep_time = 0.05
+sleep_time = 0.028
 
 for i in range(episodes):
 	print "Episode #" +str(i+1)

@@ -40,7 +40,7 @@ for perm in it.product([False, True], repeat=actions_num):
 
 
 episodes = 10
-sleep_time = 0.05
+sleep_time = 0.028
 last_summary_shaping_reward = 0
 
 for i in range(episodes):

@@ -49,6 +49,9 @@ game.init()
 actions = [[True,False,False],[False,True,False],[False,False,True]]
 
 episodes = 10
+# sleep time in ms
+sleep_time = 20
+
 for i in range(episodes):
 	print "Episode #" +str(i+1)
 	# Not needed for the first episdoe but the loop is nicer.
@@ -67,7 +70,7 @@ for i in range(episodes):
 
 		# Display the image here!
 		cv2.imshow('Doom Buffer',img)
-		cv2.waitKey(20)
+		cv2.waitKey(sleep_time)
 
 		# Makes a random action and save the reward.
 		r = game.make_action(choice(actions))
