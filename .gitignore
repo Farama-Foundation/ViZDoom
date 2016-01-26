@@ -71,3 +71,5 @@ agents/end_test.wad
 **/results/*
 **/viziazdoom
 **/mytester.py
+scenarios/*dbs
+scenarios/*baks
