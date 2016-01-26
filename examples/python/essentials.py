@@ -79,7 +79,7 @@ episodes = 10
 # Sets time that will pause the engine after each action.
 # Without this everything would go too fast for you to keep track of what's happening.
 # 0.05 is quite arbitrary, nice to watch with my hardware setup. 
-sleep_time = 0.05
+sleep_time = 0.028
 
 for i in range(episodes):
 	print "Episode #" +str(i+1)

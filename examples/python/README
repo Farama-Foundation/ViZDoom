@@ -4,6 +4,114 @@ ln -s ../../bin/viziazdoom .
 ln -s ../../bin/python/vizia.so .
 
 Examples description:
-#TODO
+
+==> essentials.py <==
+#####################################################################
+# This script presents how use most basic features of the framework.
+# It configures the engine, and makes agent perfrom random actions.
+# It also gets current state and reward earned with the action.
+# Configuration is loaded from "config_<SCENARIO_NAME>.properties" file.
+# <episodes> number of episodes are played. 
+# Random combination of buttons is chosen for every action.
+# Game variables from state and last reward are printed.
+# To see the scenario description go to "../../scenarios/README"
+# 
+#####################################################################
+
+==> format.py <==
+#####################################################################
+# This script presents different formats of the screen buffer.
+# OpenCV is used here to display images, install it or remove any
+# references to cv2
+# Configuration is loaded from "config_basic.properties" file.
+# <episodes> number of episodes are played. 
+# Random combination of buttons is chosen for every action.
+# Game variables from state and last reward are printed.
+# 
+# To see the scenario description go to "../../scenarios/README"
+# 
+#####################################################################
+
+==> fps.py <==
+#####################################################################
+# This script test performance in frames per second.
+# Change iters, resolution, window visibility, use get_ state or not.
+# It should give you some idea how fast the framework can work on
+# your hardware. The test involes copying the state to make it more 
+# simillar to any reasonable usage. Comment the line with get_state 
+# to exclude copying process.
+#####################################################################
 
 
+==> host_multiplayer.py <==
+#####################################################################
+#This example is not ready yet
+#####################################################################
+
+==> multiplayer.py <==
+#####################################################################
+#This example is not ready yet
+#####################################################################
+
+==> no_config_file.py <==
+#####################################################################
+# This script presents how to configure	the engine without loading
+# any configuration files.
+# <episodes> number of episodes are played. 
+# Random combination of buttons is chosen for every action.
+# Game variables from state and last reward are printed.
+#
+# To see the scenario description go to "../../scenarios/README"
+# 
+#####################################################################
+
+==> scenarios.py <==
+#####################################################################
+# This script presents how to run some scenarios.
+# Configuration is loaded from "config_<SCENARIO_NAME>.properties" file.
+# <episodes> number of episodes are played. 
+# Random combination of buttons is chosen for every action.
+# Game variables from state and last reward are printed.
+# To see the scenario description go to "../../scenarios/README"
+# 
+#####################################################################
+
+==> seed.py <==
+#####################################################################
+# This script presents how to run deterministic episodes by setting
+# seed. After setting the seed every episode will look the same (if 
+# agent will behave deterministicly of course).
+# Configuration is loaded from "config_<SCENARIO_NAME>.properties" file.
+# <episodes> number of episodes are played. 
+# Random combination of buttons is chosen for every action.
+# 
+#Game variables from state and last reward are printed.
+#
+# To see the scenario description go to "../../scenarios/README"
+# 
+#####################################################################
+
+==> shaping.py <==
+#####################################################################
+# This script presents how to make use of game variables to implement
+# shaping using health_guided.wad scenario
+# Health_guided scenario is just like health_gathering 
+# (see "../../scenarios/README") but for each collected medkit global
+# variable number 1 in acs script (coresponding to USER1) is increased
+# by 100.0. It is not considered a part of reward but will possibly
+# reduce learning time.
+# <episodes> number of episodes are played. 
+# Random combination of buttons is chosen for every action.
+# Game variables from state and last reward are printed.
+# 
+#####################################################################
+
+==> spectator.py <==
+#####################################################################
+# This script presents SPECTATOR mode. In SPECTATOR mode you play and
+# your agent can learn from it.
+# Configuration is loaded from "config_<SCENARIO_NAME>.properties" file.
+# 
+# To see the scenario description go to "../../scenarios/README"
+# 
+#####################################################################
