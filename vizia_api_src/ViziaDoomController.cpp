@@ -210,12 +210,14 @@ namespace Vizia {
             if(i == tics - 1) lastTic = this->tic(true);
             else lastTic = this->tic(false);
 
+            ++ticsMade;
+
             if(!lastTic){
                 this->MQDoomSend(MSG_CODE_UPDATE);
                 this->waitForDoomWork();
                 break;
             }
-            else ++ticsMade;
+
             //if(i == 0) this->resetDescreteButtons();
         }
 
