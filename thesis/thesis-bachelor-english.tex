@@ -7,7 +7,48 @@
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{listings}
+\usepackage{xcolor}
 
+\definecolor{codestrings}{rgb}{0.164,0,1}
+\definecolor{codecomment}{rgb}{0.25,0.49,0.37}
+\definecolor{codekeywords}{rgb}{0.8,0,0.33}
+\definecolor{codebackground}{rgb}{0.95,0.95,0.95}
+\lstdefinestyle{cblockstyle}{
+	inputencoding=utf8,
+	language=C++,
+	extendedchars=true,
+	basicstyle=\ttfamily\scriptsize,
+	numbers=left,
+  	numbersep=3pt,
+	framexleftmargin=2pt,
+  	framerule=0pt,
+  	frame=lines,
+	numberstyle=\tiny,
+	tabsize=2,
+	showstringspaces=false,
+	showspaces=false,
+	  keywordstyle=\bfseries\color{codekeywords},
+	  identifierstyle=\color{black},
+	  stringstyle=\color{codestrings},
+	  commentstyle=\color{codecomment},
+	  columns=fullflexible,
+	  abovecaptionskip=\medskipamount,
+	  belowcaptionskip=\medskipamount,
+	  backgroundcolor=\color{codebackground},
+}
+\lstdefinestyle{clinestyle}{
+	tabsize=2,
+	frame=lines,
+	inputencoding=utf8,
+	language=C++,
+	keywordstyle=\bfseries\color{codekeywords},
+	identifierstyle=\color{black},
+	stringstyle=\color{codestrings},
+	commentstyle=\color{codecomment},
+	basicstyle=\ttfamily,
+}
+\lstnewenvironment{cblock}{\lstset{style=cblockstyle}}{}
+\lstnewenvironment{clinee}{\lstset{style=clinestyle}}{}
 \graphicspath{ {figures/} }
 
 % Authors here.
