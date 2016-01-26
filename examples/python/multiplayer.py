@@ -3,6 +3,7 @@
 #use ./viziazdoom -host 2 -deathmatch -warp 01 to start game host
 #or run host_multiplayer.py
 
+from __future__ import print_function
 from vizia import *
 from random import choice
 from time import sleep
@@ -27,23 +28,23 @@ sleep_time = 0
 for i in range(iters):
 
 	if game.is_episode_finished():
-		print "episode finished!"
-		print "summary reward:", game.get_summary_reward()
-		print "************************"
+		print("episode finished!")
+		print("summary reward:", game.get_summary_reward())
+		print("************************")
 		exit(0)
 
 	s = game.get_state()
 
-	print "gametic:", str(game.get_episode_time())
-	print "state:", str(s.number)
+	print("gametic:", game.get_episode_time())
+	print("state:", s.number)
 
 	if sleep_time>0:
 		sleep(sleep_time)
 
 	r = game.make_action(choice(actions))
 
-	print "reward:",r
-	print "====================="
+	print("reward:", r)
+	print("=====================")
 
 game.close()
 

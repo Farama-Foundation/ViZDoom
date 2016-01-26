@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 
+from __future__ import print_function
 from vizia import *
 from random import choice
 from time import sleep
@@ -28,15 +29,15 @@ while not game.is_episode_finished():
 	a = game.get_last_action()
 	r = game.get_last_reward()
 		
-	print "state #"+str(s.number)
-	print "game variables: ", misc
-	print "action:", a
-	print "reward:",r
-	print "====================="
+	print("state #"+str(s.number))
+	print("game variables: ", misc)
+	print("action:", a)
+	print("reward:", r)
+	print("=====================")
 		
 	
-print "episode finished!"
-print "summary reward:", game.get_summary_reward()
-print "************************"
+print("episode finished!")
+print("summary reward:", game.get_summary_reward())
+print("************************")
 
 game.close()

@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import print_function
 from vizia import *
 from random import choice
 import itertools as it

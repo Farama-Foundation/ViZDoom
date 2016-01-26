@@ -9,11 +9,11 @@
 # To see the scenario description go to "../../scenarios/README"
 # 
 #####################################################################
+from __future__ import print_function
 from vizia import DoomGame, ScreenResolution
 from random import choice
 import itertools as it
 from time import sleep
-
 import cv2
 
 game = DoomGame()
@@ -47,7 +47,7 @@ episodes = 10
 sleep_time = 0.028
 
 for i in range(episodes):
-	print "Episode #" +str(i+1)
+	print("Episode #" +str(i+1))
 
 	# Not needed for the first episdoe but the loop is nicer.
 	game.new_episode()
@@ -71,16 +71,16 @@ for i in range(episodes):
 		# game.advance_action(True, True, skiprate)
 		# r = game.get_last_reward()
 		
-		print "State #" +str(s.number)
-		print "Game Variables:", misc
-		print "Performed action:",game.get_last_action()
-		print "Last Reward:",r
-		print "====================="	
+		print("State #" +str(s.number))
+		print("Game Variables:", misc)
+		print("Performed action:",game.get_last_action())
+		print("Last Reward:",r)
+		print("=====================")
 
 		# Sleep some time because processing is too fast to watch.
 		if sleep_time>0:
 			sleep(sleep_time)
 
-	print "Episode finished!"
-	print "Summary reward:", game.get_summary_reward()
-	print "************************"
+	print("Episode finished!")
+	print("Summary reward:", game.get_summary_reward())
+	print("************************")

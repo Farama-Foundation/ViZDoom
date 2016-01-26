@@ -8,8 +8,8 @@
 # simillar to any reasonable usage. Comment the line with get_state 
 # to exclude copying process.
 #####################################################################
-
-from vizia import DoomGame
+from __future__ import print_function
+from vizia import *
 from random import choice
 from vizia import ScreenResolution as res
 from time import time
@@ -29,7 +29,7 @@ idle = [False,False,False]
 iters = 10000
 start = time()
 
-print "\nChecking FPS rating. It may take some time. Be patient."
+print("\nChecking FPS rating. It may take some time. Be patient.")
 
 for i in range(iters):
 	
@@ -42,9 +42,9 @@ for i in range(iters):
 	
 end=time()
 t = end-start
-print "Results:"
-print "time:",round(t,3)
-print "fps: ",round(iters/t,2)
+print("Results:")
+print("time:",round(t,3))
+print("fps: ",round(iters/t,2))
 
 
 game.close()
