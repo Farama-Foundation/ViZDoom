@@ -62,10 +62,11 @@ for i in range(episodes):
 		print "action:", a
 		print "reward:",r
 		print "====================="
-		
+
 	
 	print "episode finished!"
 	print "summary reward:", game.get_summary_reward()
 	print "************************"
+	sleep(2.0)
 
 game.close()
