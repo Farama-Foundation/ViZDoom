@@ -11,7 +11,7 @@
 # To see the scenario description go to "../../scenarios/README"
 # 
 #####################################################################
-
+from __future__ import print_function
 from vizia import *
 from time import sleep
 from time import time
@@ -53,7 +53,7 @@ episodes = 10
 sleep_time = 20
 
 for i in range(episodes):
-	print "Episode #" +str(i+1)
+	print("Episode #" +str(i+1))
 	# Not needed for the first episdoe but the loop is nicer.
 	game.new_episode()
 	while not game.is_episode_finished():
@@ -75,14 +75,14 @@ for i in range(episodes):
 		# Makes a random action and save the reward.
 		r = game.make_action(choice(actions))
 
-		print "State #" +str(s.number)
-		print "Game Variables:", misc
-		print "Last Reward:",r
-		print "====================="	
+		print("State #" +str(s.number))
+		print("Game Variables:", misc)
+		print("Last Reward:",r)
+		print("=====================")
 
 
-	print "Episode finished!"
-	print "Summary reward:", game.get_summary_reward()
-	print "************************"
+	print("Episode finished!")
+	print("Summary reward:", game.get_summary_reward())
+	print("************************")
 
 cv2.destroyAllWindows()
