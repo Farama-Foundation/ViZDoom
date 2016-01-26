@@ -279,8 +279,8 @@ int main (int argc, char **argv)
 		return -1;
 	}
 	atterm (SDL_Quit);
-
-	printf("\n");
+	if(!vizia_no_console)
+		printf("\n");
 	
     try
     {
