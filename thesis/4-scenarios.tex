@@ -1,9 +1,9 @@
 
 \chapter{Scenarios}
 
-To allow researchers to evaluate learning agents in conditions of different characteristics, we provide a mechanism of scenarios.
+To allow researchers to evaluate learning agents in conditions of different characteristics, Vizia provides a mechanism of scenarios.
 
-In this chapter we define what a scenario is (see Section \ref{sec:scenario_definition}), describe sample scenarios included with the API (see Section \ref{sec:scenarios}) and point out essentials of creating custom scenarios (see Section \ref{sec:creating_scenarios}).
+This chapter defines what a scenario is (see Section \ref{sec:scenario_definition}), describes sample scenarios included with the API (see Section \ref{sec:scenarios}) and points out essentials of creating custom scenarios (see Section \ref{sec:creating_scenarios}).
 
 \section{Definition}\label{sec:scenario_definition}
 	Scenarios are DOOM resource files in special iwad format. A single scenario defines a map (structure of the world e.g. walls, corridors, monsters) and~a~script which determines behavior of entities and events. The script is also the place to assign rewards for various events. A scenario can define multiple maps in one iwad and~they all can be accessed by the framework. Default name for a map is `map01' but in general it can be completely arbitrary. Each map requires a separate script file.
@@ -34,7 +34,7 @@ In this chapter we define what a scenario is (see Section \ref{sec:scenario_defi
 		\item \textbf{testrunning} - possibility to test your scenario without resorting to external software or~calls. Test running requires providing a \emph{zdoom} executive file and \emph{doom2.wad} file (or~any other basic resource file) . 
 	\end{itemize}
 
-	Both tools are robust, reasonably easy to use and~provide much elasticity in sceanrio creation. However, due to the lack of native \emph{Linux} support and~some bad design solutions (mainly concerning interface) we consider \emph{Doom~Builder~2} a slightly inferior choice. 
+	Both tools are robust, reasonably easy to use and~provide much elasticity in sceanrio creation. However, due to the lack of native \emph{Linux} support \emph{Doom~Builder~2} seems to be a less flexible solution. 
 
 	\newpage
 \section{Provided Scenarios}\label{sec:scenarios}
