@@ -37,12 +37,12 @@ namespace Vizia {
         void newEpisode();
         bool isRunning();
 
-        void setAction(std::vector<int> &actions);
+        void setAction(std::vector<int> const &actions);
         void advanceAction();
         void advanceAction(bool stateUpdate, bool renderOnly, unsigned int tics);
 
-        double makeAction(std::vector<int> &actions);
-        double makeAction(std::vector<int> &actions, unsigned int tics);
+        double makeAction(std::vector<int> const &actions);
+        double makeAction(std::vector<int> const &actions, unsigned int tics);
         
         State getState();
 
@@ -161,7 +161,7 @@ namespace Vizia {
         static Button StringToButton(std::string str);
         static GameVariable StringToGameVariable(std::string str);
         static unsigned int StringToUint(std::string str);
-        static bool ParseListProperty(int& line_number, std::string& value, std::ifstream& input, std::vector<std::string>& output);
+        static bool ParseListProperty(int &line_number, std::string &value, std::ifstream& input, std::vector<std::string> &output);
     
 
         //HELPERS
