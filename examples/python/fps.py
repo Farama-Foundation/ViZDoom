@@ -16,7 +16,7 @@ from time import time
 
 # Some options:
 resolution =res.RES_320X240
-screen_format = ScreenFormat.CRCGCB
+screen_format = ScreenFormat.ZBUFFER8
 iterations = 10000
 
 game = DoomGame()
@@ -45,7 +45,7 @@ for i in range(iterations):
 		game.new_episode()
 
 	# Copying happens here 
-	#s = game.get_state() 
+	s = game.get_state() 
 	game.make_action(choice(actions))
 	
 end=time()
