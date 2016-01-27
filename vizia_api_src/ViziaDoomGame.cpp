@@ -144,7 +144,7 @@ namespace Vizia {
         this->summaryReward = 0;
     }
 
-    void DoomGame::setAction(std::vector<int> &actions) {
+    void DoomGame::setAction(std::vector<int> const &actions) {
 
         if (!this->isRunning()) throw DoomIsNotRunningException();
 
@@ -178,13 +178,13 @@ namespace Vizia {
         if(updateState) this->updateState();
     }
 
-    double DoomGame::makeAction(std::vector<int> &actions){
+    double DoomGame::makeAction(std::vector<int> const &actions){
         this->setAction(actions);
         this->advanceAction();
         return this->getLastReward();
     }
 
-    double DoomGame::makeAction(std::vector<int> &actions, unsigned int tics){
+    double DoomGame::makeAction(std::vector<int> const &actions, unsigned int tics){
         this->setAction(actions);
         this->advanceAction(true, true, tics);
         return this->getLastReward();

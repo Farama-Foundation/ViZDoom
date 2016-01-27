@@ -32,16 +32,18 @@ namespace Vizia {
         };
         DoomGamePython();
         bool init();
-        void setAction(boost::python::list &action);
+        
         PythonState getState();
         boost::python::list getLastAction();
         object getGameScreen();
-        double makeAction(boost::python::list &action);
-        double makeAction(boost::python::list &action, unsigned int tics);
+        void setAction(boost::python::list const &action);
+        double makeAction(boost::python::list const &action);
+        double makeAction(boost::python::list const &action, unsigned int tics);
 
     private:
 
         npy_intp imageShape[3];
+        static std::vector<int> pyListToIntVector(boost::python::list const &action);
 
     };
 

@@ -1,8 +1,5 @@
 #include "ViziaDoomGamePython.h"
-#include <iostream>
-using std::cout;
-using std::cerr;
-using std::endl;
+
 namespace Vizia {
 
     using boost::python::tuple;
@@ -47,29 +44,27 @@ namespace Vizia {
         return initSuccess;
     }
 
-    void DoomGamePython::setAction(boost::python::list &action) {
-        // TODO what if isFinished()?
+    std::vector<int> DoomGamePython::pyListToIntVector(boost::python::list const &action)
+    {
         int listLength = boost::python::len(action);
         std::vector<int> properAction = std::vector<int>(listLength);
         for (int i = 0; i < listLength; i++) {
             properAction[i] = boost::python::extract<int>(action[i]);
         }
-        DoomGame::setAction(properAction);
-        
+        return properAction;
+    }
+    void DoomGamePython::setAction(boost::python::list const &action) {
+        DoomGame::setAction(DoomGamePython::pyListToIntVector(action));
     }
 
-    double DoomGamePython::makeAction(boost::python::list &action)
+    double DoomGamePython::makeAction(boost::python::list const &action)
     {
-        this->setAction(action);
-        DoomGame::advanceAction();
-        return DoomGame::getLastReward();
+        return DoomGame::makeAction(DoomGamePython::pyListToIntVector(action));
     }
 
-    double DoomGamePython::makeAction(boost::python::list &action, unsigned int tics)
+    double DoomGamePython::makeAction(boost::python::list const &action, unsigned int tics)
     {
-        this->setAction(action);
-        DoomGame::advanceAction(true, true, tics);
-        return DoomGame::getLastReward();
+        return DoomGame::makeAction(DoomGamePython::pyListToIntVector(action), tics);   
     }
 
     DoomGamePython::PythonState DoomGamePython::getState() {
@@ -98,8 +93,7 @@ namespace Vizia {
 
     boost::python::list DoomGamePython::getLastAction() {
         boost::python::list res;
-        std::vector<int> lastAction = DoomGame::getLastAction();
-        for (std::vector<int>::iterator it = lastAction.begin(); it!=lastAction.end();++it)
+        for (std::vector<int>::iterator it = DoomGame::lastAction.begin(); it!=DoomGame::lastAction.end(); ++it)
         {
             res.append(*it); 
         }
