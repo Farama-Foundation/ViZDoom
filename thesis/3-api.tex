@@ -1,13 +1,13 @@
 
 \chapter{Application Programming Interface}
 \section{Methods}
-\subsection{Configuration}
-Methods described below are setting the main parameters of the environment, such as resolution of the generated image or Intelligent Agent's available actions. They should be invoked before the init() method. Any attempt to invoke them after initialization will result in a warning/exception depending on severity of consequences. 
-\vspace{20pt}
+	\subsection{Configuration}
+	Methods described below are setting the main parameters of the environment, such as resolution of the generated image or Intelligent Agent's available actions. They should be invoked before the init() method. Any attempt to invoke them after initialization will result in a warning/exception depending on severity of consequences. 
+	\vspace{20pt}
 
-\begin{clinee}
-DoomGame();
-\end{clinee}
+		\begin{clinee}
+		DoomGame();
+		\end{clinee}
 
 Constructor that creates an instance of the game. Zdoom is not ready for action after the constructor, it needs further initialization. Object is inicialized with the following values:
 	\begin{itemize}
@@ -15,8 +15,14 @@ Constructor that creates an instance of the game. Zdoom is not ready for action 
 \item Game path: ./viziazdoom
 \item Game iwad path: "./doom2.wad"
 \item Map: map01 (first map created in the iwad file if it's not changed purposefully)
-\item Particles, hud, weapon, crosshair, decals are displayed 
-\item Window is displayed 
+\item Mode: PLAYER
+\item GameVariables: none
+\item CustomGameArg: none
+\item Available buttons: ATTACK, USE, JUMP, CROUCH, SPEED, MOVE\_RIGHT, MOVE\_LEFT, MOVE\_BACKWARD, MOVE\_FORWARD, TURN\_RIGHT, TURN\_LEFT
+\item Rendering: All
+\item Window: displayed 
+\item DoomSkill: ??????????
+\item Co z tymi autostartami i rewardami?
 	\end{itemize}
 
 
@@ -437,8 +443,13 @@ Sends a given command to zdoom console. Can be used for cheats, multiplayer e.t.
 
 \vspace{20pt}
 \subsection{QUERY INTERFACE}
-These are getters which usually are self-explanatory and are tightly bound with settings which are described above.
-  \begin{clinee}
+
+
+Api provides a number of getters associated with the above-mentioned functions and a set of additional methods to help converts units.
+  
+
+\vspace{20pt}
+\begin{clinee}
 int getAvailableButtonsSize();
 int getAvailableGameVariablesSize();
 Mode getMode();
@@ -456,32 +467,53 @@ ScreenFormat getScreenFormat();
 unsigned int getSeed();
 int getButtonMaxValue(Button button);
 \end{clinee}
-Metods outsite the DoomClass:
+
+
+\paragraph {Metods} Metods outsite the DoomClass:
+
+
 \begin{clinee}
 unsigned int DoomTics2Ms(unsigned int tics);
 \end{clinee}
-Function calculating number of ms during given tics.
+
+Function calculating number of milliseconds during given tics.
+
+
+\vspace{20pt}
 \begin{clinee}
 unsigned int Ms2DoomTics(unsigned int ms);
 \end{clinee}
-Function calculating how many tics will be made during given ms.
+
+Function calculating how many tics will be made during given number of milliseconds.
+
+
+\vspace{20pt}
 \begin{clinee}
 double DoomFixedToDouble(int doomFixed);
 \end{clinee}
 
+DO OPISANIA
+
+
+\vspace{20pt}
 \section{Structures and Enumerations} \label{sec:structs}
-\subsection{State}	
+\subsection{State}
+
+
+Structure created to store all the information needed by inteligent agent to process the image.  
+It is composed of three public fields:
+
+\vspace{20pt}	
 \begin{clinee}
 	struct State {
 	    unsigned int number; 
 	    std::vector<int> gameVariables;
 	    uint8_t * imageBuffer;
 	};
-	\end{clinee}
-Structure with gives the programist information about current state in game.\\
-number - Number of the state in the current episode.\\
-gameVariables - Vector of gameVariables, empty if there are none or it's a terminal state\\
-imageBuffer - pointer to the screen buffer, null if it's a terminal state (length ?????)
+\end{clinee}
+number - Number of the state in the current episode. (tic number?)\\
+gameVariables - vector storing user-defined, during the configuration, values drawn from the game such as AMMO or HEALTH 
+imageBuffer - pointer to the screen buffer, containing the image information.
 \begin{itemize}
 \item struct state
 \item enumeration types . . .or maybe move it to the apendinx?
@@ -740,9 +772,7 @@ mode = PLAYER
 \end{cblock}
 Each setting should be separated from each other by a sign of the new line. In order to improve readability, it's possible to add a comment line by adding a '\#' sign at the beginning of the new line.
 
-
-Wyjątkowo zachowują się tutaj funkcje availablebuttons i availablegamevariables które zamiast pojedynczych wartości przyjmują ich listę. Pojedyncze składniki powinny być oddzielone od siebie znakiem nowej linii i znajdować się między znakami '\{\}'
-
+An exceptionally behave here availablebuttons and availablegamevariables functions because instead of individual variables, take as an argument the list of values in '\{\}'. The individual components should be separated from each other by a newline.
 \begin{cblock}
 ...
 # Available buttons
@@ -759,31 +789,52 @@ available_game_variables = { AMMO2}
 
 \section{Wrappers}
 \subsection{Python}
-Python functions and metods are very similar to the c++ ones. Howewer, because of the language differences, some of the values may vary.
-\begin{itemize}
-\item Naming convention is underscore not camelcase for all methods except for the constructor
-\begin{clinee}
+
+Python functions and metods are very similar to the c++ ones. Howewer, because of the language differences, some of the values may vary. All differences are listed below.
+
+\paragraph {Naming}
+Naming convention used in python binding is underscore. The only exception is the constructor which is named in the same way like in c++.
+
+\begin{cblock}
 c++: DoomFixedToDouble(int doomFixed)
-python: doom\_fixed\_to\_double(int doomFixed)
-\end{clinee}
-\item State is changed structuraly: bufer is a numpy array and game variables are a Python list. Whats more, getState copies the buffer and gameVariables, it doesn't happen in cpp. 
-\item vectors in all functions  are changed to python lists.
-\item Enumerations are created the same like in c++
-\item uint8\_t, unsigned int, size\_t are changed to int
+python: doom_fixed_to_double(int doomFixed)
+\end{cblock}
+
+
+\paragraph {Structures}
+ State is changed structuraly: bufer is a numpy array and game variables are contained in a Python list. Whats more, getState() copies the buffer and gameVariables what doesn't happen in cpp. 
+\paragraph {Enumerations}
+Python equivalent of enums were created with the same names.
+\paragraph {Types}
+Due to the languages differences, some types have been modified.
+\begin{itemize} 
+\item Vectors in all functions were changed to python lists of compatible type.
+
+\item  uint8\_t, unsigned int, size\_t were changed to int
 \end{itemize}
+
+
+
 \subsection{Java}
-\begin{itemize}
-\item Naming convention is camelcase for all methods
+Java, like python, is a bit different then c++. All differences and the most important principles of using are listed below.
+
+\paragraph {Naming}
+ Naming convention is camelcase 
 \begin{clinee}
 c++: DoomFixedToDouble(int doomFixed)
 java: DoomFixedToDouble(int doomFixed)
 \end{clinee}
-\item State is changed structuraly: bufer and game variables are int tables (int[]). Whats more, getState copies the buffer and gameVariables, it doesn't happen in cpp. 
-\item vectors in all functions  are changed to java tables.
-\item Enumerations are created the same like in c++ (you have to use them like in java: )
+\paragraph {Structures}
+State is changed structuraly: bufer and game variables are int tables (int[]). Whats more, getState copies the buffer and gameVariables, it doesn't happen in cpp. 
+\paragraph {Enumerations}
+ Enumerations were created the same like in c++ (you have to use them like in java:)
 \begin{clinee}
  dg.addAvailableButton(Button.ATTACK);
 \end{clinee}
-\item uint8\_t, unsigned int, size\_t are changed to int
+\paragraph {Types}
+Due to the languages differences, some types have been modified.
+\begin{itemize}
+\item Vectors in all functions were changed to java tables of compatible type (vector<int> = int[]).
+\item uint8\_t, unsigned int, size\_t were changed to int
 \end{itemize}
 \section{Extended Examples}
