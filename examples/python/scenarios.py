@@ -68,7 +68,7 @@ for i in range(episodes):
 		# The same could be achieved with:
 		# game.set_action(choice(actions))
 		# skiprate = 3
-		# game.advance_action(True, True, skiprate)
+		# game.advance_action(skiprate)
 		# r = game.get_last_reward()
 		
 		print "State #" +str(s.number)

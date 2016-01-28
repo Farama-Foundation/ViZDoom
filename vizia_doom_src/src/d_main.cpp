@@ -116,7 +116,6 @@
 
 EXTERN_CVAR (Bool, vizia_controlled)
 EXTERN_CVAR (Bool, vizia_async)
-EXTERN_CVAR (Bool, vizia_clean_render)
 EXTERN_CVAR (Bool, vizia_allow_input)
 
 EXTERN_CVAR(Bool, hud_althud)
@@ -726,7 +725,7 @@ void D_Display ()
 	}
 
 	// [RH] Allow temporarily disabling wipes
-	if (NoWipe || (*vizia_controlled && *vizia_clean_render))
+	if (NoWipe)
 	{
 		V_SetBorderNeedRefresh();
 		NoWipe--;
@@ -775,7 +774,6 @@ void D_Display ()
 			hw2d = screen->Begin2D(false);
 			C_DrawConsole (false);
 			M_Drawer ();
-			//Vizia_ScreenUpdate();
 			screen->Update ();
 			return;
 
@@ -867,8 +865,9 @@ void D_Display ()
 			break;
 		}
 	}
+	//VIZIA_CODE
 	// draw pause pic
-	if ((paused || pauseext) && menuactive == MENU_Off && ((*vizia_controlled && !*vizia_clean_render) || !*vizia_controlled))
+	if ((paused || pauseext) && menuactive == MENU_Off && !*vizia_controlled)
 	{
 		FTexture *tex;
 		int x;
@@ -915,7 +914,6 @@ void D_Display ()
 		C_DrawConsole (hw2d);	// draw console
 		M_Drawer ();			// menu is drawn even on top of everything
 		FStat::PrintStat ();
-		//Vizia_ScreenUpdate();
 		screen->Update ();		// page flip or blit buffer
 	}
 	else
@@ -1022,10 +1020,12 @@ void D_DoomLoop ()
 
 			//VIZIA CODE
 			if(*vizia_controlled && !*vizia_async){
+
+				if(*vizia_allow_input) I_WaitForTic (gametic+1);
 				GC::CheckGC();
 
 				I_StartTic ();
-				if (pauseext) D_ProcessEvents ();
+				if(*vizia_allow_input && menuactive != MENU_Off) D_ProcessEvents ();
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				//G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
 				++maketic;
@@ -1034,8 +1034,9 @@ void D_DoomLoop ()
 				C_Ticker ();
 				M_Ticker ();
 				I_GetTime (true);
-				G_Ticker();
+				if (menuactive == MENU_Off) G_Ticker();
 				++gametic;
+
 			}
 			// process one or more tics
 			else if (singletics) {
