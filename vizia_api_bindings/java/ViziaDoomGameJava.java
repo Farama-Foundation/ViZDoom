@@ -14,13 +14,11 @@ public class ViziaDoomGameJava{
 
 	public native int DoomTics2Ms(int tics);
  	public native int Ms2DoomTics(int ms);
-	public native float DoomFixedToFloat(int doomFixed);
+	public native double DoomFixedToDouble(int doomFixed);
 //----------------------------------------------------------------------
 	private native void DoomGame(); 
-	private native void DoomGameDes();
 //----------------------------------------------------------------------
 	public native boolean loadConfig(String file); 
-	public native boolean saveConfig(String file); 	
 	
 	public native boolean init(); 
 	public native void close();
@@ -28,10 +26,14 @@ public class ViziaDoomGameJava{
 	public native void newEpisode();
 	public native boolean isRunning(); 
 	
-	public native void setNextAction(int[] actions);
+	public native void setAction(int[] actions);
         public native void advanceAction();
         public native void advanceAction(boolean stateUpdate, boolean renderOnly);
         public native void advanceAction(boolean stateUpdate, boolean renderOnly, int tics);
+	public native double makeAction(int[] actions);
+        public native double makeAction(int[] actions, int tics);
+
+
 	public native State getState(); 
 	public native boolean[] getLastAction();
 	public native boolean isNewEpisode();
@@ -41,7 +43,7 @@ public class ViziaDoomGameJava{
         public native void clearAvailableButtons();
         public native int getAvailableButtonsSize();
         public native void setButtonMaxValue(Button button, int maxValue);
-	public native void addAvailableGameVariable(GameVariable var);
+	public native void addAvailableGameVariable(GameVar var);
 	public native void clearAvailableGameVariables();
         public native int getAvailableGameVariablesSize();
  	public native void addCustomGameArg(String arg);
@@ -50,16 +52,16 @@ public class ViziaDoomGameJava{
         public native void sendGameCommand(String cmd);	
 	public native int[] getGameScreen();
 	
-	private native int getGameMod(); 		
-	public GameMode getGameMode(){
-		GameMode ret=GameMode.values()[getGameMod()];
+	private native int getMod(); 		
+	public Mode getMode(){
+		Mode ret=Mode.values()[getMod()];
 		return ret;
 
 	}
 	
-	public native void setGameMode(GameMode mode);
+	public native void setMode(Mode mode);
 
-	public native int getGameVariable(GameVariable var);
+	public native int getGameVariable(GameVar var);
 
         public native float getLivingReward();
        	public native  void setLivingReward(float livingReward);
@@ -90,20 +92,16 @@ public class ViziaDoomGameJava{
         public native int getEpisodeTimeout();
         public native void setEpisodeTimeout(int tics);
 
-        public native void setScreenResolution(int width, int height);
-        public native void setScreenWidth(int width);
-        public native void setScreenHeight(int height);
+        public native void setScreenResolution(ScreenResolution resolution);
         public native void setScreenFormat(ScreenFormat format);
         public native void setRenderHud(boolean hud);
         public native void setRenderWeapon(boolean weapon);
         public native void setRenderCrosshair(boolean crosshair);
         public native void setRenderDecals(boolean decals);
         public native void setRenderParticles(boolean particles);
-        public native void setVisibleWindow(boolean visibility);
-        public native void setDisabledConsole(boolean noConsole);
+        public native void setWindowVisible(boolean visibility);
+        public native void setConsoleEnabled(boolean console);
 
-        public native int getScreenWidth();
-        public native int getScreenHeight();
         public native int getScreenChannels();
         public native int getScreenPitch();
         public native int getScreenSize();

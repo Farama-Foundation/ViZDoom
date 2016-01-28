@@ -25,10 +25,10 @@ JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_Ms2DoomTics
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    DoomFixedToFloat
- * Signature: (I)F
+ * Method:    DoomFixedToDouble
+ * Signature: (I)D
  */
-JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_DoomFixedToFloat
+JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_DoomFixedToDouble
   (JNIEnv *, jobject, jint);
 
 /*
@@ -39,13 +39,6 @@ JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_DoomFixedToFloat
 JNIEXPORT void JNICALL Java_ViziaDoomGameJava_DoomGame
   (JNIEnv *, jobject);
 
-/*
- * Class:     ViziaDoomGameJava
- * Method:    DoomGameDes
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_DoomGameDes
-  (JNIEnv *, jobject);
 
 /*
  * Class:     ViziaDoomGameJava
@@ -53,14 +46,6 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_DoomGameDes
  * Signature: (Ljava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_ViziaDoomGameJava_loadConfig
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    saveConfig
- * Signature: (Ljava/lang/String;)Z
- */
-JNIEXPORT jboolean JNICALL Java_ViziaDoomGameJava_saveConfig
   (JNIEnv *, jobject, jstring);
 
 /*
@@ -124,7 +109,7 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_advanceAction__ZZI
  * Method:    makeAction
  * Signature: ([I)F
  */
-JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_makeAction___3I
+JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_makeAction___3I
   (JNIEnv *, jobject, jintArray);
 
 /*
@@ -132,7 +117,7 @@ JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_makeAction___3I
  * Method:    makeAction
  * Signature: ([II)F
  */
-JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_makeAction___3II
+JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_makeAction___3II
   (JNIEnv *, jobject, jintArray, jint);
 
 /*
@@ -265,18 +250,18 @@ JNIEXPORT jintArray JNICALL Java_ViziaDoomGameJava_getGameScreen
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    getGameMod
+ * Method:    getMod
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getGameMod
+JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getMod
   (JNIEnv *, jobject);
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    setGameMode
- * Signature: (Lenums/GameMode;)V
+ * Method:    setMode
+ * Signature: (Lenums/Mode;)V
  */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setGameMode
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setMode
   (JNIEnv *, jobject, jobject);
 
 /*
@@ -473,22 +458,6 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setScreenResolution
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    setScreenWidth
- * Signature: (I)V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setScreenWidth
-  (JNIEnv *, jobject, jint);
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    setScreenHeight
- * Signature: (I)V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setScreenHeight
-  (JNIEnv *, jobject, jint);
-
-/*
- * Class:     ViziaDoomGameJava
  * Method:    setScreenFormat
  * Signature: (Lenums/ScreenFormat;)V
  */
@@ -550,22 +519,6 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setWindowVisible
  */
 JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setConsoleEnabled
   (JNIEnv *, jobject, jboolean);
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    getScreenWidth
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getScreenWidth
-  (JNIEnv *, jobject);
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    getScreenHeight
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getScreenHeight
-  (JNIEnv *, jobject);
 
 /*
  * Class:     ViziaDoomGameJava

@@ -45,9 +45,9 @@ public enum Button {
         SELECT_PREV_ITEM ,
         DROP_SELECTED_ITEM ,
 
-        VIEW_PITCH ,
-        VIEW_ANGLE ,
-        FORWARD_BACKWARD,
-        LEFT_RIGHT ,
-        UP_DOWN;
+        LOOK_UP_DOWN_DELTA ,
+        TURN_LEFT_RIGHT_DELTA ,
+        MOVE_FORWARD_BACKWARD_DELTA ,
+        MOVE_LEFT_RIGHT_DELTA ,
+        MOVE_UP_DOWN_DELTA;
     };
