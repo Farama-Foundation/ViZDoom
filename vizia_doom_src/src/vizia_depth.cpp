@@ -1,9 +1,13 @@
 //
 // Created by gregory on 22.12.15.
 //
-#include <SDL_events.h>
+
 #include "vizia_depth.h"
 #include "v_video.h"
+
+#ifdef VIZIA_DEPTH_TEST
+#include <SDL_events.h>
+#endif
 
 depthBuffer* depthMap = NULL;
 
@@ -164,7 +168,7 @@ void depthBuffer::unlock() {this->locked=false; }
 bool depthBuffer::isLocked() { return this->locked; }
 
 void depthBuffer::sizeUpdate() {
-    if(this->bufferWidth!= screen->GetWidth() || this->bufferHeight!=screen->GetHeight())
+    if(this->bufferWidth!= (unsigned int)screen->GetWidth() || this->bufferHeight!=(unsigned int)screen->GetHeight())
     {
         delete[] this->buffer;
         this->bufferHeight=(unsigned)screen->GetHeight();

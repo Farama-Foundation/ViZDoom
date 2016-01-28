@@ -5,15 +5,17 @@
 #ifndef VIZIAAPI_VIZIA_DEPTH_H
 #define VIZIAAPI_VIZIA_DEPTH_H
 
-#include <sys/types.h>
-#include <stddef.h>
-#include <SDL_video.h>
-
 //UNCOMMENT TO ENABLE DEPTH BUFFER DEBUG WINDOW
 //#define VIZIA_DEPTH_TEST 1
 
 //UNCOMMENT TO ENABLE COLOR-BASED DEPTH TEST
 //#define VIZIA_DEPTH_COLORS 1
+
+#include <sys/types.h>
+#include <stddef.h>
+#ifdef VIZIA_DEPTH_TEST
+#include <SDL_video.h>
+#endif
 
 class depthBuffer{
 public:
