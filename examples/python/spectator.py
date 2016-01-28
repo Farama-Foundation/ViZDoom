@@ -8,6 +8,7 @@
 # To see the scenario description go to "../../scenarios/README"
 # 
 #####################################################################
+from __future__ import print_function
 from vizia import *
 from time import sleep
 
@@ -19,12 +20,12 @@ game = DoomGame()
 
 #game.load_config("config_basic.properties")
 #game.load_config("config_deadly_corridor.properties")
-#game.load_config("config_deathmatch.properties")
+game.load_config("config_deathmatch.properties")
 #game.load_config("config_defend_the_center.properties")
 #game.load_config("config_defend_the_line.properties")
 #game.load_config("config_health_gathering.properties")
 #game.load_config("config_my_way_home.properties")
-game.load_config("config_predict_position.properties")
+#game.load_config("config_predict_position.properties")
 #game.load_config("config_take_cover.properties")
 
 game.set_screen_resolution(ScreenResolution.RES_640X480)
@@ -42,9 +43,9 @@ game.set_mode(Mode.SPECTATOR)
 game.init()
 
 episodes = 10
-print ""
+print("")
 for i in range(episodes):
-	print "Episode #" +str(i+1)
+	print("Episode #" +str(i+1))
 	
 	game.new_episode()
 	while not game.is_episode_finished():
@@ -57,15 +58,16 @@ for i in range(episodes):
 		a = game.get_last_action()
 		r = game.get_last_reward()
 		
-		print "state #"+str(s.number)
-		print "game variables: ", misc
-		print "action:", a
-		print "reward:",r
-		print "====================="
-		
+		print("state #"+str(s.number))
+		print("game variables: ", misc)
+		print("action:", a)
+		print("reward:",r)
+		print("=====================")
+
 	
-	print "episode finished!"
-	print "summary reward:", game.get_summary_reward()
-	print "************************"
+	print("episode finished!")
+	print("summary reward:", game.get_summary_reward())
+	print("************************")
+	sleep(2.0)
 
 game.close()

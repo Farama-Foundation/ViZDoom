@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
+#use multiplayer.py to have the second player
 
+from __future__ import print_function
 from vizia import *
 from random import choice
 from time import sleep
@@ -15,28 +17,30 @@ game.add_custom_game_arg("-deathmatch")
 game.add_custom_game_arg("-warp")
 game.add_custom_game_arg("-01")
 game.set_mode(Mode.ASYNC_SPECTATOR)
-
 game.init()
 
 	
-while not game.is_episode_finished():	
-	s = game.get_state()
-	img = s.image_buffer
-	misc = s.game_variables
+episodes = 1
 
-	game.advance_action()
-	a = game.get_last_action()
-	r = game.get_last_reward()
-		
-	print "state #"+str(s.number)
-	print "game variables: ", misc
-	print "action:", a
-	print "reward:",r
-	print "====================="
-		
+for i in range(episodes):
 	
-print "episode finished!"
-print "summary reward:", game.get_summary_reward()
-print "************************"
+	while not game.is_episode_finished():	
+		s = game.get_state()
+		img = s.image_buffer
+		misc = s.game_variables
+
+		game.advance_action()
+		a = game.get_last_action()
+		r = game.get_last_reward()
+			
+		print("state #"+str(s.number))
+		print("game variables: ", misc)
+		print("action:", a)
+		print("reward:", r)
+		print("=====================")
+	
+print("episode finished!")
+print("summary reward:", game.get_summary_reward())
+print("************************")
 
 game.close()

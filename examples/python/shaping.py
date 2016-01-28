@@ -13,6 +13,7 @@
 # Game variables from state and last reward are printed.
 # 
 #####################################################################
+from __future__ import print_function
 from vizia import *
 from random import choice
 import itertools as it
@@ -40,12 +41,12 @@ for perm in it.product([False, True], repeat=actions_num):
 
 
 episodes = 10
-sleep_time = 0.05
+sleep_time = 0.028
 last_summary_shaping_reward = 0
 
 for i in range(episodes):
 
-	print "Episode #" +str(i+1)
+	print("Episode #" + str(i+1))
 	# Not needed for the first episdoe but the loop is nicer.
 	game.new_episode()
 	while not game.is_episode_finished():
@@ -64,49 +65,20 @@ for i in range(episodes):
 		sr = sr - last_summary_shaping_reward
 		last_summary_shaping_reward += sr
 
-		print "State #" +str(s.number)
-		print "Health:", misc[0]
-		print "Last Reward:",r
-		print "Last Shaping Reward:", sr
-		print "====================="	
+		print("State #" +str(s.number))
+		print("Health:", misc[0])
+		print("Last Reward:", r)
+		print("Last Shaping Reward:", sr)
+		print("=====================")
 
 		# Sleep some time because processing is too fast to watch.
 		if sleep_time>0:
 			sleep(sleep_time)
 
-	print "Episode finished!"
-	print "Summary reward:", game.get_summary_reward()
-	print "************************"
+	print("Episode finished!")
+	print("Summary reward:", game.get_summary_reward())
+	print("************************")
 
 
 game.close()
 
-
-
-for i in range(iters):
-
-	if game.is_episode_finished():
-		print "episode finished!"
-		print "summary reward:", game.get_summary_reward()
-		print "************************"
-		sleep(1)
-		game.new_episode()
-
-	s = game.get_state()
-	r = game.make_action(choice(actions))
-	
-
-	print "state #" +str(s.number)
-	print "HP:", s.game_variables[0]
-	print "reward:",r
-	print "summmary shaping reward:", sr
-	print "====================="	
-	if sleep_time>0:
-		sleep(sleep_time)
-	
-
-
-game.close()
-
-
-    

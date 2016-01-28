@@ -10,7 +10,7 @@
 # To see the scenario description go to "../../scenarios/README"
 # 
 #####################################################################
-
+from __future__ import print_function
 from vizia import DoomGame
 from vizia import Button
 from vizia import GameVariable
@@ -56,13 +56,11 @@ game.init()
 actions = [[True,False,False],[False,True,False],[False,False,True]]
 
 
-sleep_time = 0.05
-
 episodes = 10
-sleep_time = 0.05
+sleep_time = 0.028
 
 for i in range(episodes):
-	print "Episode #" +str(i+1)
+	print("Episode #" +str(i+1))
 	
 	# Not needed for the first episdoe but the loop is nicer.
 	game.new_episode()
@@ -76,15 +74,15 @@ for i in range(episodes):
 		# Makes a random action and save the reward.
 		r = game.make_action(choice(actions))
 
-		print "State #" +str(s.number)
-		print "Game Variables:", misc
-		print "Last Reward:",r
-		print "====================="	
+		print("State #" +str(s.number))
+		print("Game Variables:", misc)
+		print("Last Reward:", r)
+		print("=====================")	
 
 		# Sleep some time because processing is too fast to watch.
 		if sleep_time>0:
 			sleep(sleep_time)
 
-	print "Episode finished!"
-	print "Summary reward:", game.get_summary_reward()
-	print "************************"
+	print("Episode finished!")
+	print("Summary reward:", game.get_summary_reward())
+	print("************************")

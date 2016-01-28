@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import print_function
 from vizia import *
 from random import choice
 import itertools as it
@@ -28,7 +29,7 @@ for perm in it.product([False, True], repeat=actions_num):
 
 
 episodes = 10
-sleep_time = 0.01
+sleep_time = 0.028
 skiprate = 8
 
 for i in range(episodes):

@@ -1,13 +1,13 @@
 
 \chapter{Application Programming Interface}
 \section{Methods}
-\subsection{Configuration}
-Methods described below are setting the main parameters of the environment, such as resolution of the generated image or Intelligent Agent's available actions. They should be invoked before the init() method. Any attempt to invoke them after initialization will result in a warning/exception depending on severity of consequences. 
-\vspace{20pt}
+	\subsection{Configuration}
+	Methods described below are setting the main parameters of the environment, such as resolution of the generated image or Intelligent Agent's available actions. They should be invoked before the init() method. Any attempt to invoke them after initialization will result in a warning/exception depending on severity of consequences. 
+	\vspace{20pt}
 
-\begin{clinee}
-DoomGame();
-\end{clinee}
+		\begin{clinee}
+		DoomGame();
+		\end{clinee}
 
 Constructor that creates an instance of the game. Zdoom is not ready for action after the constructor, it needs further initialization. Object is inicialized with the following values:
 	\begin{itemize}
@@ -15,8 +15,14 @@ Constructor that creates an instance of the game. Zdoom is not ready for action 
 \item Game path: ./viziazdoom
 \item Game iwad path: "./doom2.wad"
 \item Map: map01 (first map created in the iwad file if it's not changed purposefully)
-\item Particles, hud, weapon, crosshair, decals are displayed 
-\item Window is displayed 
+\item Mode: PLAYER
+\item GameVariables: none
+\item CustomGameArg: none
+\item Available buttons: ATTACK, USE, JUMP, CROUCH, SPEED, MOVE\_RIGHT, MOVE\_LEFT, MOVE\_BACKWARD, MOVE\_FORWARD, TURN\_RIGHT, TURN\_LEFT
+\item Rendering: All
+\item Window: displayed 
+\item DoomSkill: ??????????
+\item Co z tymi autostartami i rewardami?
 	\end{itemize}
 
 
@@ -316,7 +322,7 @@ Method performs a tic using action obtained by setAction(). After function call,
 \end{clinee}
 
 Method performs a given number of tic in the row. Descrete actions (e.g. ATTACK) will be only performed in the first tic, analog actions (moving, turning) will be repeated every tic. 
-Function also determines if state should be updated. What's more, setting renderOnly option will disable buffer update. Hovewer, it will not affect zdoom main window.  
+Function also determines if state should be updated. What's more, setting renderOnly option as true will disable buffer update. Hovewer, it will not affect zdoom main window.  
 
 
 \vspace{20pt}
@@ -328,66 +334,122 @@ Returns the reward from last advanceAction. If a single action lasted longer the
 
 
 \vspace{20pt}
-///////////////////////////DALEJ TYLKO NA BRUDNO///////////////////////////
 \begin{clinee}
 	double makeAction(std::vector<int> &actions);
 \end{clinee}
+
+Function combining usibility of setAction(), advanceAction() and getLastReward(). It sets the player's behavior in the next tic, performe one and returns reward.
+Each vector's value corresponds to button specified with addAvailableButton() function (in invocation order).
+In case of possitive value, picked action will be triggered with the specified strength. Descrete actions (e.g. ATTACK) will be performed once. 
+
+
+\vspace{20pt}
 \begin{clinee}
 	double makeAction(std::vector<int> &actions, unsigned int tics);
 \end{clinee}
-Convinience methods which wrap setAction, advanceAction and getLastReward.
-It sets the action, performs it and returns the reward. (set actions, advancedaction(t,t,tics), getLastReward)
 
+Function combining usibility of setAction(), advanceAction() and getLastReward(). It sets the player's behavior in the next number of tics given to the function, performes it and returns cumulative reward from all tics. Each vector's value corresponds to button specified with addAvailableButton() function (in invocation order). Descrete actions (e.g. ATTACK) will be only performed in the first tic, analog actions (moving, turning) will be repeated every tic with given strength.
+State will be updated after that. Buffer will not be updated.
+
+
+\vspace{20pt}
 \begin{clinee}
 	State getState();
 \end{clinee}
-Returns struct State with the current state. More detailed description is in the last section of the sketch.
+
+Returns struct State with the current game state. More detailed description of the struct can be found in Section~\ref{sec:structs}.
+
+
+\vspace{20pt}
 \begin{clinee}
 	std::vector<int> getLastAction();
 \end{clinee}
-Returns a vector (list in python) with the last action performed. Format is the same as for setAction.
-Most usefull in SPECTATOR mode
+
+Returns a vector with the last action performed. Each vector's value corresponds to button specified with addAvailableButton() function (in invocation order). Most usefull in SPECTATOR mode.
+
+
+\vspace{20pt}
 \begin{clinee}
 	uint8_t * const getGameScreen();
 \end{clinee}
-Returns the screen buffer. //TODO jak długi, co w pythonie i javie
+
+Returns the screen buffer. Values depend on the settings set befor inicialization. The same value may be found in State structure. Its length is returned in getScreenPitch() function.
+
+
+\vspace{20pt}
 \begin{clinee}
 	int getGameVariable(GameVariable var);
 \end{clinee}
-Returns value of the specified game variable (AMMO1, HEALTH etc.). It need not be returned by getState.
-It could be used for e.g. shaping. It can return 0 if GameVariable wasnt found;
+
+Returns value of the specified game variable (AMMO1, HEALTH etc.). It does not need to be a value returned in State.
+It could be used for e.g. shaping. Returns 0 in case of not finding given GameVariable.
+
+
+\vspace{20pt}
 \begin{clinee}
 	double getSummaryReward();
 \end{clinee}
-Returns all rewards gathered in the current episode.
+
+Returns sum of all rewards gathered in the current episode.
+
+
+\vspace{20pt}
 \begin{clinee}
 	bool isNewEpisode();
 \end{clinee}
-Returns true if the episode is in the initial state (no tic was performed).
+
+Checks if the current episode is in the initial state. Returns true if no tic was performed.
+
+
+\vspace{20pt}
 \begin{clinee}
 	bool isEpisodeFinished();
 \end{clinee}
-Returns true if the current episode is in the terminal state.
-Calling makeAction/advance when episode is finished will fry the motherboard. xD
+
+Checks if the current episode is in the terminal state. Returns true if the episode has ended. No makeAction/advanceAction functions should be called after this point.
+
+
+\vspace{20pt}
 \begin{clinee}
 	void setSeed(unsigned int seed);
 \end{clinee}
-Sets the seed of the randomizing engine. Next time, using the same sid and actions, game can be repeted.
+
+Sets the seed of the randomizing engine. Using the same seed and actions in another episode will affect in reproducing the gameplay.
+
+
+\vspace{20pt}
 \begin{clinee}
 	void close();
 \end{clinee}
-Closes zdoom engine and tidies up. It is invoked by destructor so it's not that useful unless you won't to close doom in the middle of processing.
+
+Closes zdoom engine and corresponding processes. Metod frees used resources (memory allocations e.t.c). It is automatically invoked by destructor - should be used only when closing zdoom engine in the middle of processing is needed.
+
+
+\vspace{20pt}
 \begin{clinee}
 	bool isRunning();
 \end{clinee}
-Returns true if zdoom process is up and running (after init).
+
+Checks if the current zdoom process is running.
+
+
+\vspace{20pt}
 \begin{clinee}
 	void sendGameCommand(std::string cmd);
 \end{clinee}
-Sends a command to doom console (cheats, multiplayer? etc.)
+
+Sends a given command to zdoom console. Can be used for cheats, multiplayer e.t.c.
+
+
+\vspace{20pt}
 \subsection{QUERY INTERFACE}
-These are getters which usually are self-explanatory and are tightly bound with settings which are described above.
-  \begin{clinee}
+
+
+Api provides a number of getters associated with the above-mentioned functions and a set of additional methods to help converts units.
+  
+
+\vspace{20pt}
+\begin{clinee}
 int getAvailableButtonsSize();
 int getAvailableGameVariablesSize();
 Mode getMode();
@@ -405,289 +467,374 @@ ScreenFormat getScreenFormat();
 unsigned int getSeed();
 int getButtonMaxValue(Button button);
 \end{clinee}
-Metods outsite the DoomClass:
+
+
+\paragraph {Metods} Metods outsite the DoomClass:
+
+
 \begin{clinee}
 unsigned int DoomTics2Ms(unsigned int tics);
 \end{clinee}
-Function calculating number of ms during given tics.
+
+Function calculating number of milliseconds during given tics.
+
+
+\vspace{20pt}
 \begin{clinee}
 unsigned int Ms2DoomTics(unsigned int ms);
 \end{clinee}
-Function calculating how many tics will be made during given ms.
+
+Function calculating how many tics will be made during given number of milliseconds.
+
+
+\vspace{20pt}
 \begin{clinee}
 double DoomFixedToDouble(int doomFixed);
 \end{clinee}
 
-\section{Structures and Enumerations}
-\subsection{State}	
+DO OPISANIA
+
+
+\vspace{20pt}
+\section{Structures and Enumerations} \label{sec:structs}
+\subsection{State}
+
+
+Structure created to store all the information needed by inteligent agent to process the image.  
+It is composed of three public fields:
+
+\vspace{20pt}	
 \begin{clinee}
 	struct State {
 	    unsigned int number; 
 	    std::vector<int> gameVariables;
 	    uint8_t * imageBuffer;
 	};
-	\end{clinee}
-Structure with gives the programist information about current state in game.\\
-number - Number of the state in the current episode.\\
-gameVariables - Vector of gameVariables, empty if there are none or it's a terminal state\\
-imageBuffer - pointer to the screen buffer, null if it's a terminal state (length ?????)
+\end{clinee}
+number - Number of the state in the current episode. (tic number?)\\
+gameVariables - vector storing user-defined, during the configuration, values drawn from the game such as AMMO or HEALTH 
+imageBuffer - pointer to the screen buffer, containing the image information.
 \begin{itemize}
 \item struct state
 \item enumeration types . . .or maybe move it to the apendinx?
 \end{itemize}
 \subsection{Mode}
-Used to set who is playing the game.
-\begin{clinee}
-    enum Mode {
-        PLAYER,
-        SPECTATOR,
-        ASYNC_PLAYER,
-        ASYNC_SPECTATOR,
-    };
-\end{clinee}
+Enumeration used to set the general game mode.
+Posible values:
+\begin{itemize}
+\item PLAYER - 
+\item SPECTATOR -
+\item ASYNC\_PLAYER -
+\item ASYNC\_SPECTATOR -
+\end{itemize}
 \subsection{ScreenFormat}
-\begin{clinee}
-CRCGCB = 0,
-        CRCGCBZB = 1,
-        RGB24 = 2,
-        RGBA32 = 3,
-        ARGB32 = 4,
-        CBCGCR = 5,
-        CBCGCRZB = 6,
-        BGR24 = 7,
-        BGRA32 = 8,
-        ABGR32 = 9,
-        GRAY8 = 10,
-        ZBUFFER8 = 11,
-        DOOM_256_COLORS = 12,
-\end{clinee}
+Enumeration used to set the general game mode.
+\begin{itemize}
+ \item CRCGCB 
+ \item CRCGCBZB
+ \item RGB24
+ \item RGBA32
+ \item ARGB32
+ \item CBCGCR
+ \item CBCGCRZB
+ \item BGR24
+ \item BGRA32
+ \item ABGR32
+ \item GRAY8
+ \item ZBUFFER8
+ \item DOOM\_256\_COLORS
+\end{itemize}
 \subsection{ScreenResolution}
-\begin{clinee}
-RES_40X30,
-        RES_60X45,
-        RES_80X50,
-        RES_80X60,
-        RES_100X75,
-        RES_120X75,
-        RES_120X90,
-        RES_160X100,
-        RES_160X120,
-        RES_200X120,
-        RES_200X150,
-        RES_240X135,
-        RES_240X150,
-        RES_240X180,
-        RES_256X144,
-        RES_256X160,
-        RES_256X192,
-        RES_320X200,
-        RES_320X240,
-        RES_400X225,	// 16:9
-        RES_400X300,
-        RES_480X270,	// 16:9
-        RES_480X360,
-        RES_512X288,	// 16:9
-        RES_512X384,
-        RES_640X360,	// 16:9
-        RES_640X400,
-        RES_640X480,
-        RES_720X480,	// 16:10
-        RES_720X540,
-        RES_800X450,	// 16:9
-        RES_800X480,
-        RES_800X500,	// 16:10
-        RES_800X600,
-        RES_848X480,	// 16:9
-        RES_960X600,	// 16:10
-        RES_960X720,
-        RES_1024X576,	// 16:9
-        RES_1024X600,	// 17:10
-        RES_1024X640,	// 16:10
-        RES_1024X768,
-        RES_1088X612,	// 16:9
-        RES_1152X648,	// 16:9
-        RES_1152X720,	// 16:10
-        RES_1152X864,
-        RES_1280X720,	// 16:9
-        RES_1280X854,
-        RES_1280X800,	// 16:10
-        RES_1280X960,
-        RES_1280X1024,	// 5:4
-        RES_1360X768,	// 16:9
-        RES_1366X768,
-        RES_1400X787,	// 16:9
-        RES_1400X875,	// 16:10
-        RES_1400X1050,
-        RES_1440X900,
-        RES_1440X960,
-        RES_1440X1080,
-        RES_1600X900,	// 16:9
-        RES_1600X1000,	// 16:10
-        RES_1600X1200,
-        RES_1680X1050,	// 16:10
-        RES_1920X1080,
-        RES_1920X1200,
-        RES_2048X1536,
-        RES_2560X1440,
-        RES_2560X1600,
-        RES_2560X2048,
-        RES_2880X1800,
-        RES_3200X1800,
-        RES_3840X2160,
-        RES_3840X2400,
-        RES_4096X2160,
-        RES_5120X2880,
-\end{clinee}
+\begin{itemize}
+\item RES\_40X30,
+ \item      RES\_60X45,
+ \item       RES\_80X50,
+ \item       RES\_80X60,
+ \item       RES\_100X75,
+ \item       RES\_120X75,
+ \item       RES\_120X90
+ \item       RES\_160X100,
+ \item      RES\_160X120,
+      \item  RES\_200X120,
+      \item  RES\_200X150,
+      \item  RES\_240X135,
+      \item  RES\_240X150,
+      \item  RES\_240X180,
+      \item  RES\_256X144,
+      \item  RES\_256X160,
+      \item  RES\_256X192,
+      \item  RES\_320X200,
+      \item  RES\_320X240,
+      \item  RES\_400X225,	// 16:9
+      \item  RES\_400X300,
+  \item      RES\_480X270,	// 16:9
+ \item       RES\_480X360,
+ \item       RES\_512X288,	// 16:9
+ \item       RES\_512X384,
+ \item       RES\_640X360,	// 16:9
+ \item       RES\_640X400,
+ \item       RES\_640X480,
+ \item       RES\_720X480,	// 16:10
+ \item       RES\_720X540,
+ \item       RES\_800X450,	// 16:9
+ \item       RES\_800X480,
+ \item       RES\_800X500,	// 16:10
+  \item      RES\_800X600,
+ \item       RES\_848X480,	// 16:9
+ \item       RES\_960X600,	// 16:10
+ \item       RES\_960X720,
+ \item       RES\_1024X576,	// 16:9
+ \item       RES\_1024X600,	// 17:10
+ \item       RES\_1024X640,	// 16:10
+ \item       RES\_1088X612,	// 16:9
+ \item       RES\_1152X648,	// 16:9
+ \item       RES\_1152X720,	// 16:10
+ \item       RES\_1152X864,
+ \item       RES\_1280X720,	// 16:9
+ \item       RES\_1280X854,
+ \item       RES\_1280X800,	// 16:10
+ \item       RES\_1280X960,
+ \item       RES\_1280X1024,	// 5:4
+ \item       RES\_1360X768,	// 16:9
+ \item       RES\_1366X768,
+ \item       RES\_1400X787,	// 16:9
+ \item       RES\_1400X875,	// 16:10
+ \item       RES\_1400X1050,
+ \item       RES\_1440X900,
+ \item       RES\_1440X960,
+ \item       RES\_1440X1080,
+  \item      RES\_1600X900,	// 16:9
+ \item       RES\_1600X1000,	// 16:10
+ \item       RES\_1600X1200,
+ \item       RES\_1680X1050,	// 16:10
+ \item       RES\_1920X1080,
+ \item       RES\_1920X1200,
+ \item       RES\_2048X1536,
+ \item       RES\_2560X1440,
+ \item       RES\_2560X1600,
+ \item       RES\_2560X2048,
+ \item       RES\_2880X1800,
+ \item       RES\_3200X1800,
+  \item      RES\_3840X2160,
+ \item       RES\_3840X2400,
+ \item       RES\_4096X2160,
+  \item      RES\_5120X2880,
+\end{itemize}
 \subsection{GameVariable}
-\begin{clinee}
-KILLCOUNT,
-        ITEMCOUNT,
-        SECRETCOUNT,
-        FRAGCOUNT,
-        HEALTH,
-        ARMOR,
-        DEAD,
-        ON_GROUND,
-        ATTACK_READY,
-        ALTATTACK_READY,
-        SELECTED_WEAPON,
-        SELECTED_WEAPON_AMMO,
-        AMMO0,
-        AMMO1,
-        AMMO2,
-        AMMO3,
-        AMMO4,
-        AMMO5,
-        AMMO6,
-        AMMO7,
-        AMMO8,
-        AMMO9,
-        WEAPON0,
-        WEAPON1,
-        WEAPON2,
-        WEAPON3,
-        WEAPON4,
-        WEAPON5,
-        WEAPON6,
-        WEAPON7,
-        WEAPON8,
-        WEAPON9,
-        USER1,
-        USER2,
-        USER3,
-        USER4,
-        USER5,
-        USER6,
-        USER7,
-        USER8,
-        USER9,
-        USER10,
-        USER11,
-        USER12,
-        USER13,
-        USER14,
-        USER15,
-        USER16,
-        USER17,
-        USER18,
-        USER19,
-        USER20,
-        USER21,
-        USER22,
-        USER23,
-        USER24,
-        USER25,
-        USER26,
-        USER27,
-        USER28,
-        USER29,
-        USER30,
-\end{clinee}
+\begin{itemize}
+\item KILLCOUNT,
+\item        ITEMCOUNT,
+\item        SECRETCOUNT,
+\item        FRAGCOUNT,
+\item        HEALTH,
+\item        ARMOR,
+\item        DEAD,
+\item        ON\_GROUND,
+\item        ATTACK\_READY,
+\item        ALTATTACK\_READY,
+ \item       SELECTED\_WEAPON,
+\item      SELECTED\_WEAPON\_AMMO,
+ \item       AMMO0,
+\item        AMMO1,
+\item        AMMO2,
+\item        AMMO3,
+ \item       AMMO4,
+ \item       AMMO5,
+ \item       AMMO6,
+ \item       AMMO7,
+\item       AMMO8,
+\item        AMMO9,
+ \item       WEAPON0,
+ \item       WEAPON1,
+\item        WEAPON2,
+ \item       WEAPON3,
+ \item       WEAPON4,
+ \item       WEAPON5,
+\item        WEAPON6,
+\item        WEAPON7,
+\item        WEAPON8,
+\item        WEAPON9,
+ \item       USER1,
+ \item       USER2,
+ \item       USER3,
+ \item       USER4,
+ \item       USER5,
+\item        USER6,
+\item        USER7,
+\item        USER8,
+\item        USER9,
+\item        USER10,
+\item        USER11,
+\item        USER12,
+\item        USER13,
+\item        USER14,
+\item        USER15,
+\item        USER16,
+\item        USER17,
+\item        USER18,
+\item        USER19,
+\item        USER20,
+\item        USER21,
+\item        USER22,
+\item        USER23,
+\item        USER24,
+\item        USER25,
+\item        USER26,
+\item        USER27,
+\item        USER28,
+\item        USER29,
+\item        USER30,
+\end{itemize}
 \subsection{Button}
-\begin{clinee}
-ATTACK = 0,
-        USE = 1,
-        JUMP = 2,
-        CROUCH = 3,
-        TURN180 = 4,
-        ALTATTACK = 5,
-        RELOAD = 6,
-        ZOOM = 7,
+\begin{itemize}
+\item ATTACK = 0,
+\item         USE = 1,
+\item         JUMP = 2,
+\item         CROUCH = 3,
+\item         TURN180 = 4,
+\item         ALTATTACK = 5,
+\item         RELOAD = 6,
+\item         ZOOM = 7,
 
-        SPEED = 8,
-        STRAFE = 9,
+\item         SPEED = 8,
+\item         STRAFE = 9,
 
-        MOVE_RIGHT = 10,
-        MOVE_LEFT = 11,
-        MOVE_BACKWARD = 12,
-        MOVE_FORWARD = 13,
-        TURN_RIGHT = 14,
-        TURN_LEFT = 15,
-        LOOK_UP = 16,
-        LOOK_DOWN = 17,
-        MOVE_UP = 18,
-        MOVE_DOWN = 19,
-        LAND = 20,
+\item         MOVE\_RIGHT = 10,
+\item         MOVE\_LEFT = 11,
+\item         MOVE\_BACKWARD = 12,
+\item         MOVE\_FORWARD = 13,
+\item         TURN\_RIGHT = 14,
+\item         TURN\_LEFT = 15,
+\item         LOOK\_UP = 16,
+\item         LOOK\_DOWN = 17,
+\item         MOVE\_UP = 18,
+\item         MOVE\_DOWN = 19,
+\item         LAND = 20,
         //SHOWSCORES 20
 
-        SELECT_WEAPON1 = 21,
-        SELECT_WEAPON2 = 22,
-        SELECT_WEAPON3 = 23,
-        SELECT_WEAPON4 = 24,
-        SELECT_WEAPON5 = 25,
-        SELECT_WEAPON6 = 26,
-        SELECT_WEAPON7 = 27,
-        SELECT_WEAPON8 = 28,
-        SELECT_WEAPON9 = 29,
-        SELECT_WEAPON0 = 30,
+\item         SELECT\_WEAPON1 = 21,
+\item         SELECT\_WEAPON2 = 22,
+\item         SELECT\_WEAPON3 = 23,
+\item         SELECT\_WEAPON4 = 24,
+\item         SELECT\_WEAPON5 = 25,
+\item         SELECT\_WEAPON6 = 26,
+\item         SELECT\_WEAPON7 = 27,
+\item         SELECT\_WEAPON8 = 28,
+\item         SELECT\_WEAPON9 = 29,
+ \item        SELECT\_WEAPON0 = 30,
 
-        SELECT_NEXT_WEAPON = 31,
-        SELECT_PREV_WEAPON = 32,
-        DROP_SELECTED_WEAPON = 33,
+\item     SELECT\_NEXT\_WEAPON = 31,
+ \item        SELECT\_PREV\_WEAPON = 32,
+\item         DROP\_SELECTED\_WEAPON = 33,
 
-        ACTIVATE_SELECTED_ITEM = 34,
-        SELECT_NEXT_ITEM = 35,
-        SELECT_PREV_ITEM = 36,
-        DROP_SELECTED_ITEM = 37,
+ \item        ACTIVATE\_SELECTED\_ITEM = 34,
+ \item        SELECT\_NEXT\_ITEM = 35,
+ \item        SELECT\_PREV\_ITEM = 36,
+ \item        DROP\_SELECTED\_ITEM = 37,
 
-        LOOK_UP_DOWN_DELTA = 38,
-        TURN_LEFT_RIGHT_DELTA = 39,
-        MOVE_FORWARD_BACKWARD_DELTA = 40,
-        MOVE_LEFT_RIGHT_DELTA = 41,
-        MOVE_UP_DOWN_DELTA = 42,
-\end{clinee}
-\section{Configuration file}\label{sec:configuration_file}
-\begin{itemize}
-\item structure
+ \item        LOOK\_UP\_DOWN\_DELTA = 38,
+ \item        TURN\_LEFT\_RIGHT\_DELTA = 39,
+ \item        MOVE\_FORWARD\_BACKWARD\_DELTA = 40,
+ \item        MOVE\_LEFT\_RIGHT\_DELTA = 41,
+ \item        MOVE\_UP\_DOWN\_DELTA = 42,
 \end{itemize}
+\section{Configuration file}\label{sec:configuration_file}
+
+
+Configuration file stores group of parameters and initial settings for the future use. It can be loaded into the game before inicialization. Settings can be overwritten after that action, giving the possibility of changing sigle parameter without interference in the file itself. There should be met certain requirements as to its content and name to make it load successfully.
+
+Name of the configuration file should be with .properties suffix.
+
+Content of the file should be composed of keywords identifying the setting and the value assigned to it separated with '='. Keyword is constructed similarly to the setting name, for example: episodeStartTime, windowVisible. However, two of them differ: availablebuttons, availablegamevariables.
+Keyword can be written in both underscore and camel notation (case-insensitive). 
+
+
+Value should be placed after '=' sign. File paths should not be placed between "" marks like the rest of the string values.
+\begin{cblock}
+...
+#Values
+living_reward = -1
+render_crosshair = false
+#Path
+doom_iwad_path = ../../scenarios/doom2.wad
+doom_file_path = ../../scenarios/basic.wad
+#Normal String
+doom_map = "map01"
+...
+\end{cblock}
+Enum values should be passed using their name.
+\begin{cblock}
+...
+#Enums
+screen_format = CRCGCB
+mode = PLAYER
+...
+\end{cblock}
+Each setting should be separated from each other by a sign of the new line. In order to improve readability, it's possible to add a comment line by adding a '\#' sign at the beginning of the new line.
+
+An exceptionally behave here availablebuttons and availablegamevariables functions because instead of individual variables, take as an argument the list of values in '\{\}'. The individual components should be separated from each other by a newline.
+\begin{cblock}
+...
+# Available buttons
+available_buttons = 
+	{ 
+		MOVE_LEFT 
+		MOVE_RIGHT 
+		ATTACK 
+	}
+# Game variables that will be in the state
+available_game_variables = { AMMO2}
+...
+\end{cblock}
 
 \section{Wrappers}
 \subsection{Python}
-Python functions and metods are very similar to the c++ ones. Howewer, because of the language differences, some of the values may vary.
-\begin{itemize}
-\item Naming convention is underscore not camelcase for all methods except for the constructor
-\begin{clinee}
+
+Python functions and metods are very similar to the c++ ones. Howewer, because of the language differences, some of the values may vary. All differences are listed below.
+
+\paragraph {Naming}
+Naming convention used in python binding is underscore. The only exception is the constructor which is named in the same way like in c++.
+
+\begin{cblock}
 c++: DoomFixedToDouble(int doomFixed)
-python: doom\_fixed\_to\_double(int doomFixed)
-\end{clinee}
-\item State is changed structuraly: bufer is a numpy array and game variables are a Python list. Whats more, getState copies the buffer and gameVariables, it doesn't happen in cpp. 
-\item vectors in all functions  are changed to python lists.
-\item Enumerations are created the same like in c++
-\item uint8\_t, unsigned int, size\_t are changed to int
+python: doom_fixed_to_double(int doomFixed)
+\end{cblock}
+
+
+\paragraph {Structures}
+ State is changed structuraly: bufer is a numpy array and game variables are contained in a Python list. Whats more, getState() copies the buffer and gameVariables what doesn't happen in cpp. 
+\paragraph {Enumerations}
+Python equivalent of enums were created with the same names.
+\paragraph {Types}
+Due to the languages differences, some types have been modified.
+\begin{itemize} 
+\item Vectors in all functions were changed to python lists of compatible type.
+
+\item  uint8\_t, unsigned int, size\_t were changed to int
 \end{itemize}
+
+
+
 \subsection{Java}
-\begin{itemize}
-\item Naming convention is camelcase for all methods
+Java, like python, is a bit different then c++. All differences and the most important principles of using are listed below.
+
+\paragraph {Naming}
+ Naming convention is camelcase 
 \begin{clinee}
 c++: DoomFixedToDouble(int doomFixed)
 java: DoomFixedToDouble(int doomFixed)
 \end{clinee}
-\item State is changed structuraly: bufer and game variables are int tables (int[]). Whats more, getState copies the buffer and gameVariables, it doesn't happen in cpp. 
-\item vectors in all functions  are changed to java tables.
-\item Enumerations are created the same like in c++ (you have to use them like in java: )
+\paragraph {Structures}
+State is changed structuraly: bufer and game variables are int tables (int[]). Whats more, getState copies the buffer and gameVariables, it doesn't happen in cpp. 
+\paragraph {Enumerations}
+ Enumerations were created the same like in c++ (you have to use them like in java:)
 \begin{clinee}
  dg.addAvailableButton(Button.ATTACK);
 \end{clinee}
-\item uint8\_t, unsigned int, size\_t are changed to int
+\paragraph {Types}
+Due to the languages differences, some types have been modified.
+\begin{itemize}
+\item Vectors in all functions were changed to java tables of compatible type (vector<int> = int[]).
+\item uint8\_t, unsigned int, size\_t were changed to int
 \end{itemize}
 \section{Extended Examples}

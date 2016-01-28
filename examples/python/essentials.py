@@ -10,7 +10,7 @@
 # To see the scenario description go to "../../scenarios/README"
 # 
 #####################################################################
-
+from __future__ import print_function
 from vizia import DoomGame
 from vizia import Button
 from vizia import GameVariable
@@ -79,10 +79,10 @@ episodes = 10
 # Sets time that will pause the engine after each action.
 # Without this everything would go too fast for you to keep track of what's happening.
 # 0.05 is quite arbitrary, nice to watch with my hardware setup. 
-sleep_time = 0.05
+sleep_time = 0.028
 
 for i in range(episodes):
-	print "Episode #" +str(i+1)
+	print("Episode #" + str(i+1))
 
 	# Starts a new episode. It is not neaded right after init() but it doesn't cost much. At least the loop is nicer.
 	game.new_episode()
@@ -96,18 +96,18 @@ for i in range(episodes):
 		r = game.make_action(choice(actions))
 
 		# Prints state's game variables. Printing the image is quite pointless.
-		print "State #" + str(s.number)
-		print "Game variables:", s.game_variables[0]
-		print "Reward:",r
-		print "====================="
+		print("State #" + str(s.number))
+		print("Game variables:", s.game_variables[0])
+		print("Reward:", r)
+		print("=====================")
 
 		if sleep_time>0:
 			sleep(sleep_time)
 
 	# Check how the episode went.
-	print "Episode finished."
-	print "Summary reward:", game.get_summary_reward()
-	print "************************"
+	print("Episode finished.")
+	print("Summary reward:", game.get_summary_reward())
+	print("************************")
 
 
 # It will be done automatically anyway but sometimes you need to do it in the middle of the program...
