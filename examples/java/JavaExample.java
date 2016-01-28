@@ -1,8 +1,8 @@
 
 import enums.Button;
-import enums.GameVariable;
+import enums.GameVar;
 import enums.ScreenFormat;
-import enums.GameMode;
+import enums.Mode;
 import enums.ScreenResolution;
 import java.util.*;
 import java.lang.Integer;
@@ -15,7 +15,7 @@ public static void main (String[] args) {
 	System.out.println("VIZIA MAIN EXAMPLE");
 
 
-    dg.setDoomGamePath("../../vizia_doom_src/bin/viziazdoom");
+    dg.setDoomGamePath("../../bin/viziazdoom");
     dg.setDoomIwadPath("../../scenarios/doom2.wad");
     dg.setDoomFilePath("../../scenarios/s1_b.wad");
     dg.setDoomMap("map01");
@@ -23,7 +23,7 @@ public static void main (String[] args) {
     dg.setLivingReward(-1);
 
     dg.setScreenResolution(ScreenResolution.RES_320X240);
-
+System.out.println("1");
     dg.setRenderHud(false);
     dg.setRenderCrosshair(false);
     dg.setRenderWeapon(true);
@@ -33,13 +33,16 @@ public static void main (String[] args) {
     dg.setWindowVisible(true);
 
     dg.setConsoleEnabled(true);
-
+System.out.println("2");
     dg.addAvailableButton(Button.MOVE_LEFT);
     dg.addAvailableButton(Button.MOVE_RIGHT);
     dg.addAvailableButton(Button.ATTACK);
-
-    dg.addAvailableGameVariable(GameVariable.HEALTH);
-    dg.addAvailableGameVariable(GameVariable.KILLCOUNT);
+System.out.println("3");
+	GameVar bob = GameVar.HEALTH;
+System.out.println("4");
+    dg.addAvailableGameVariable(GameVar.HEALTH);
+System.out.println("5");
+    dg.addAvailableGameVariable(GameVar.KILLCOUNT);
 
 
     dg.init();
@@ -50,7 +53,7 @@ public static void main (String[] args) {
     action[1] = 0;
     action[2] = 1;
 
-    int iterations = 10;
+    int iterations = 100;
     int ep=1;
     for(int i = 0;i<iterations; ++i){
 
@@ -59,11 +62,11 @@ public static void main (String[] args) {
         }
         State s = dg.getState();
 
-        System.out.println( "STATE NUMBER: " + s.number + " HP: " + s.gameVariables[0] + " KILLS: " + s.gameVariables[1] );
+        System.out.println( "STATE NUMBER: " + s.number + " HP: " + s.vars[0] + " KILLS: " + s.vars[1] );
 
         dg.setAction(action);
-        dg.advanceAction(4);
-
+        //dg.advanceAction();
+	dg.makeAction(action)
          System.out.println("reward: "+dg.getLastReward());
     }
     dg.close();

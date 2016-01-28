@@ -40,9 +40,9 @@ JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_Ms2DoomTics
  * Method:    DoomFixedToFloat
  * Signature: (I)F
  */
-JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_DoomFixedToFloat
+JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_DoomFixedToDouble
   (JNIEnv * env, jobject obj, jint time){
-	float ret=Vizia::DoomFixedToFloat(time);
+	double ret=Vizia::DoomFixedToDouble(time);
 	return ret;
 	}
 
@@ -60,13 +60,6 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_DoomGame
 	env->SetLongField(obj,fidNumber, (jlong) game );
 }
 
-/*
- * Class:     ViziaDoomGameJava
- * Method:    DoomGameDes
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_DoomGameDes //TODO
-  (JNIEnv *, jobject);
 
 /*
  * Class:     ViziaDoomGameJava
@@ -81,21 +74,6 @@ JNIEXPORT jboolean JNICALL Java_ViziaDoomGameJava_loadConfig
 	bool ret = game->loadConfig(path2);
 	return (jboolean) ret;
 
-}
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    saveConfig
- * Signature: (Ljava/lang/String;)Z
- */
-JNIEXPORT jboolean JNICALL Java_ViziaDoomGameJava_saveConfig
-(JNIEnv *env, jobject obj, jstring path){
-	Vizia::DoomGame* game=GetObject(env,obj);
- 	char * path2;
-    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;
-	bool ret;	
-	ret = game->saveConfig(path2);
-	return (jboolean) ret;
 }
 
 /*
@@ -306,7 +284,7 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_advanceAction__ZZI
  * Method:    makeAction
  * Signature: ([I)F
  */
-JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_makeAction___3I
+JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_makeAction___3I
   (JNIEnv *env, jobject obj, jintArray ourarray)
 {
 	try {
@@ -317,17 +295,20 @@ JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_makeAction___3I
 	for (int i=0;i<NumElts;i++){
 		ourvector.push_back(oarr[i]);
 	}
-	game->makeAction(ourvector);
+	double ret = game->makeAction(ourvector);
+	return ret;	
 	}
 	catch (Vizia::DoomIsNotRunningException& e)
   	{	
 
  		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
         	env->ThrowNew(DoomIsNotRunningException, e.what());
+		return 0;
   	}
 	catch (std::exception& e)
   	{
     		std::cout << "C++ unknown exception"<< '\n';
+		return 0;
   	}
 }
 
@@ -338,7 +319,7 @@ JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_makeAction___3I
  * Method:    makeAction
  * Signature: ([II)F
  */
-JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_makeAction___3II
+JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_makeAction___3II
   (JNIEnv *env, jobject obj, jintArray ourarray, jint integ)
 {
 	try {
@@ -349,17 +330,20 @@ JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_makeAction___3II
 	for (int i=0;i<NumElts;i++){
 		ourvector.push_back(oarr[i]);
 	}
-	game->makeAction(ourvector, integ);
+	double ret = game->makeAction(ourvector, integ);
+	return ret;
 	}
 	catch (Vizia::DoomIsNotRunningException& e)
   	{	
 
  		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
         	env->ThrowNew(DoomIsNotRunningException, e.what());
+		return 0;
   	}
 	catch (std::exception& e)
   	{
     		std::cout << "C++ unknown exception"<< '\n';
+		return 0;
   	}
 }
 
@@ -592,7 +576,7 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setButtonMaxValue
 JNIEXPORT void JNICALL Java_ViziaDoomGameJava_addAvailableGameVariable
   (JNIEnv *env, jobject obj, jobject enumVal){
 	Vizia::DoomGame* game=GetObject(env,obj);
-	jclass jclassEnum = env->FindClass("enums/GameVariable");
+	jclass jclassEnum = env->FindClass("enums/GameVar");
 	if(jclassEnum != 0)
     	{	
         	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
@@ -722,25 +706,25 @@ JNIEXPORT jintArray JNICALL Java_ViziaDoomGameJava_getGameScreen
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    getGameMode
- * Signature: ()Lenums/GameMode;
+ * Method:    getMode
+ * Signature: ()Lenums/Mode;
  */
-JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getGameMod
+JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getMod
   (JNIEnv *env, jobject obj){
 	Vizia::DoomGame* game=GetObject(env,obj);
-	Vizia::GameMode mode=game->getGameMode();
+	Vizia::Mode mode=game->getMode();
 	return (jint) mode;
 }
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    setGameMode
- * Signature: (Lenums/GameMode;)V
+ * Method:    setGMode
+ * Signature: (Lenums/Mode;)V
  */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setGameMode
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setMode
   (JNIEnv *env, jobject obj, jobject enumVal){
 	Vizia::DoomGame* game=GetObject(env,obj);
-	jclass jclassEnum = env->FindClass("enums/GameMode");
+	jclass jclassEnum = env->FindClass("enums/Mode");
 	
 	if(jclassEnum != 0)
     	{	
@@ -749,8 +733,8 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setGameMode
 			return;
 		}
 		jint value = env->CallIntMethod(enumVal, ordinal_ID);
-		Vizia::GameMode ret=static_cast<Vizia::GameMode>(value);
-		game->setGameMode(ret);
+		Vizia::Mode ret=static_cast<Vizia::Mode>(value);
+		game->setMode(ret);
 	// Delete local references created		
         	env->DeleteLocalRef(jclassEnum);
     	}
@@ -1078,27 +1062,6 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setScreenResolution
 }
 	
 
-/*
- * Class:     ViziaDoomGameJava
- * Method:    setScreenWidth
- * Signature: (I)V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setScreenWidth
-  (JNIEnv *env, jobject obj, jint width){
-	Vizia::DoomGame* game=GetObject(env,obj);
-	game->setScreenWidth(width);
-}
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    setScreenHeight
- * Signature: (I)V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setScreenHeight
-  (JNIEnv *env, jobject obj, jint height){
-	Vizia::DoomGame* game=GetObject(env,obj);
-	game->setScreenHeight(height);
-}
 
 /*
  * Class:     ViziaDoomGameJava
@@ -1202,33 +1165,6 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setConsoleEnabled
   (JNIEnv *env, jobject obj, jboolean bol){
 	Vizia::DoomGame* game=GetObject(env,obj);
 	game->setConsoleEnabled(bol);
-
-}
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    getScreenWidth
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getScreenWidth
-  (JNIEnv *env, jobject obj){
-	Vizia::DoomGame* game=GetObject(env,obj);
-	int ret;
-	ret=game->getScreenWidth();
-	return ret;
-}
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    getScreenHeight
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getScreenHeight
-  (JNIEnv *env, jobject obj){
-	Vizia::DoomGame* game=GetObject(env,obj);
-	int ret;
-	ret=game->getScreenHeight();
-	return (jint)ret;
 
 }
 
