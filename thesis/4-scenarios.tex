@@ -1,9 +1,9 @@
 
 \chapter{Scenarios}
 
-To allow researchers to evaluate learning agents in conditions of different characteristics, we provide a mechanism of scenarios.
+To allow researchers to evaluate learning agents in conditions of different characteristics, Vizia provides a mechanism of scenarios.
 
-In this chapter we define what a scenario is (see Section \ref{sec:scenario_definition}), describe sample scenarios included with the API (see Section \ref{sec:scenarios}) and point out essentials of creating custom scenarios (see Section \ref{sec:creating_scenarios}).
+This chapter defines what a scenario is (see Section \ref{sec:scenario_definition}), describes sample scenarios included with the API (see Section \ref{sec:scenarios}) and points out essentials of creating custom scenarios (see Section \ref{sec:creating_scenarios}).
 
 \section{Definition}\label{sec:scenario_definition}
 	Scenarios are DOOM resource files in special iwad format. A single scenario defines a map (structure of the world e.g. walls, corridors, monsters) and~a~script which determines behavior of entities and events. The script is also the place to assign rewards for various events. A scenario can define multiple maps in one iwad and~they all can be accessed by the framework. Default name for a map is `map01' but in general it can be completely arbitrary. Each map requires a separate script file.
@@ -34,7 +34,7 @@ In this chapter we define what a scenario is (see Section \ref{sec:scenario_defi
 		\item \textbf{testrunning} - possibility to test your scenario without resorting to external software or~calls. Test running requires providing a \emph{zdoom} executive file and \emph{doom2.wad} file (or~any other basic resource file) . 
 	\end{itemize}
 
-	Both tools are robust, reasonably easy to use and~provide much elasticity in sceanrio creation. However, due to the lack of native \emph{Linux} support and~some bad design solutions (mainly concerning interface) we consider \emph{Doom~Builder~2} a slightly inferior choice. 
+	Both tools are robust, reasonably easy to use and~provide much elasticity in sceanrio creation. However, due to the lack of native \emph{Linux} support \emph{Doom~Builder~2} seems to be a less flexible solution. 
 
 	\newpage
 \section{Provided Scenarios}\label{sec:scenarios}
@@ -100,7 +100,7 @@ In this chapter we define what a scenario is (see Section \ref{sec:scenario_defi
 		\begin{figure}
 			\centering
 			\includegraphics[scale=0.5]{defend_the_center.png}
-			\caption{Doom gameplay frame from `defend the center' scenario.}\label{fig:basic}
+			\caption{Doom gameplay frame from `defend the center' scenario.}\label{fig:defend_the_center}
 		\end{figure}
 		\paragraph{Motivation} 
 			The purpose of this scenario is to encourage agents to develop some intuition about depth and awareness of potential danger coming from behind. Obviously, agents should also learn that monsters are sinister and killing them is rewarding, but it is not sufficient. Coincidentaly an agent could be expected to learn to impersonate a calissical Greek tragic hero: he is doomed to die pitifully (ammunition is finite) no matter his acions.
@@ -269,9 +269,9 @@ In this chapter we define what a scenario is (see Section \ref{sec:scenario_defi
 
 	\subsection{Global Variables}\label{subsec:global_variable}
 		ACS, except from ordinary variables, provide global variables which can be accessed by Vizia api as user variables(see //REFERENCE TO API//). Global variables behave the same as ordinary variables but need to be declared in global scope and in a slightly different way:
-		\begin{lstlisting}[language=C++]
+		\begin{clinee}
 global int <X>:reward;
-		\end{lstlisting}
+		\end{clinee}
 		<X> denotes the ordinal number of the variable.
 		
 	\subsection{Rewards}
@@ -282,32 +282,32 @@ global int <X>:reward;
 
 		\subsubsection*{Ending an Episode}
 
-			\begin{lstlisting}[language=C++]
+			\begin{clinee}
 Exit_Normal(0);
-			\end{lstlisting}
+			\end{clinee}
 		\subsubsection*{Reward for Killing a Monster} This snippet is also useful for triggering any event after killing a monster or collecting an item.
-			\begin{lstlisting}[language=C++]
+			\begin{clinee}
 script 123 (void)
 {
 	reward = reward + 1;
 }
 SetThingSpecial(MONSTER_TID, ACS_ExecuteAlways, 123);
-			\end{lstlisting}
+			\end{clinee}
 \subsubsection*{Friendly Monster}
-			\begin{lstlisting}[language=C++]
+			\begin{clinee}
 Thing_Hate (MONSTER_TID, SOME_UNUSED_TID, 6);
-			\end{lstlisting}
+			\end{clinee}
 		\subsubsection*{Stationary Monster}
-			\begin{lstlisting}[language=C++]
+			\begin{clinee}
 SetActorProperty(MONSTER_TID, APROP_Speed, 0);
-			\end{lstlisting}
+			\end{clinee}
 		\subsubsection*{Single Hit Monster}
-			\begin{lstlisting}[language=C++]
+			\begin{clinee}
 SetActorProperty(MONSTER_TID, APROP_Health, 1);
-			\end{lstlisting}
+			\end{clinee}
 		\subsubsection*{Self-replenishing Ammo}
 		Note that this can also be achieved by  *****//TODO
-			\begin{lstlisting}[language=C++]
+			\begin{clinee}
 script 2 ENTER
 {   
     while(1)
@@ -316,13 +316,12 @@ script 2 ENTER
         GiveInventory("Clip", 1 );
     }
 }
-
-			\end{lstlisting}
+			\end{clinee}
 		\subsubsection*{Disappearing Corpses}
-			\begin{lstlisting}[language=C++]
+			\begin{clinee}
 script 234 (int TID)
 {
 	Thing_Remove(TID);
 }
 SetThingSpecial(MONSTER_TID, ACS_ExecuteAlways, 234, MONSTER_TID);
-			\end{lstlisting}
+			\end{clinee}

@@ -63,8 +63,8 @@ void (DoomGamePython::*advanceAction1)() = &DoomGamePython::advanceAction;
 void (DoomGamePython::*advanceAction2)(unsigned int) = &DoomGamePython::advanceAction;
 void (DoomGamePython::*advanceAction3)(unsigned int, bool, bool) = &DoomGamePython::advanceAction;
 
-double (DoomGamePython::*makeAction1)(boost::python::list &) = &DoomGamePython::makeAction;
-double (DoomGamePython::*makeAction2)(boost::python::list &, unsigned int) = &DoomGamePython::makeAction;
+double (DoomGamePython::*makeAction1)(boost::python::list const &) = &DoomGamePython::makeAction;
+double (DoomGamePython::*makeAction2)(boost::python::list const &, unsigned int) = &DoomGamePython::makeAction;
 
 BOOST_PYTHON_MODULE(vizia)
 {
