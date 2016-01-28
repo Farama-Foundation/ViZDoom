@@ -1,17 +1,21 @@
 \chapter{Experiment}
 
 \section{Goal of the Experiment}
-This chapter shows that using Vizia for AI training is feasible. It was possible to train an AI agent on \"basic\" scenario described in chapter ...section ... <link> 
+The main purpose of the experiment is to show that Reinforcement Learning from visual input is possible using Vizia Environment. 	
+Additionally, the eperiments tries to research influence of frame skipping on learning process.
 
-\section{AI Agent Design}
-\begin{itemize}
-\item ugabuga
-\item python, theano, lasagne
-\item Based on Google's DeepMind Atari DQN.\cite{mnih-dqn-2015}
-\item Q learning, convolutional neural network, eps-greedy policy with linear epsilon decay, action replay
-\item pseudo code here? (ommit if short on time)
-\item network architecture used in the experiment, fancy diagram of this architecture here? (there are 2 conv and 2 mlp layers so it can be drawn and still make sense)
-\end{itemize}
+\section{Tested Agent Design}
+	The agent is heavily inspired by Google DeepMind Atari DQN paper\cite{mnih-dqn-2015} and is conceptually very similar to DeepMind's code. Code is written in Python and uses Theano\cite{Bastien-Theano-2012}\cite{bergstra+al:2010-scipy} and Lasagne\cite{sander_dieleman_2015_27878} to implement neural networks.
+	\\
+	The agent is divided into two separate modules:
+
+	\subsubsection{Q-learning engine:} 
+	\subsubsection{Q Value Approximator:} 
+	\begin{itemize}
+		\item python, theano, lasagne
+		\item Q learning, convolutional neural network, eps-greedy policy with linear epsilon decay, action replay
+		\item pseudo code here? (ommit if short on time)
+	\end{itemize}
 
 \section{Experimental Settings} 
 
@@ -22,9 +26,11 @@ This chapter shows that using Vizia for AI training is feasible. It was possible
 		\item[GPU] GeForce GTX 970, 1664 CUDA cores, 4GB RAM
 	\end{description}
 
+	\subsection{Game Settings}
+		The experiment uses the most basic scenario from the pool, that is `basic' scenario (see \ref{subsec:basic}). Screen buffer consists of 3 channels (RGB) and resolution is 60x45 pixels.
 
 	\subsection{Neural Network Architecture}
-	
+		network architecture used in the experiment, fancy diagram of this architecture here? (there are 2 conv and 2 mlp layers so it can be drawn and still make sense)
 	\subsection{Agent Parameters}
 
 \section{Results}
