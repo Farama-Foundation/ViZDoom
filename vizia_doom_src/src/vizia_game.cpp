@@ -5,6 +5,7 @@
 #include "vizia_screen.h"
 
 #include "d_netinf.h"
+#include "d_event.h"
 #include "g_game.h"
 #include "g_level.h"
 #include "g_shared/a_pickups.h"
@@ -126,7 +127,7 @@ void Vizia_GameVarsTic(){
         viziaGameVars->MAP_USER_VARS[i] = ACS_GlobalVars[i+1];
     }
 
-    viziaGameVars->MAP_END = gamestate != GS_LEVEL;
+    viziaGameVars->MAP_END = gamestate != GS_LEVEL || gameaction == ga_completed;
 
     if(viziaPlayer->mo) viziaGameVars->PLAYER_DEAD = viziaPlayer->playerstate == PST_DEAD || viziaPlayer->mo->health <= 0;
     else viziaGameVars->PLAYER_DEAD = viziaPlayer->playerstate == PST_DEAD || viziaPlayer->health <= 0;

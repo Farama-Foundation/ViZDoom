@@ -62,7 +62,7 @@ public static void main (String[] args) {
         System.out.println( "STATE NUMBER: " + s.number + " HP: " + s.gameVariables[0] + " KILLS: " + s.gameVariables[1] );
 
         dg.setAction(action);
-        dg.advanceAction(true, true, 4);
+        dg.advanceAction(4);
 
          System.out.println("reward: "+dg.getLastReward());
     }

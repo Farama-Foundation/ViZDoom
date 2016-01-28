@@ -60,7 +60,8 @@ void (DoomGamePython::*addAvailableButton1)(Button) = &DoomGamePython::addAvaila
 void (DoomGamePython::*addAvailableButton2)(Button, int) = &DoomGamePython::addAvailableButton;
 
 void (DoomGamePython::*advanceAction1)() = &DoomGamePython::advanceAction;
-void (DoomGamePython::*advanceAction2)(bool, bool, unsigned int) = &DoomGamePython::advanceAction;
+void (DoomGamePython::*advanceAction2)(unsigned int) = &DoomGamePython::advanceAction;
+void (DoomGamePython::*advanceAction3)(unsigned int, bool, bool) = &DoomGamePython::advanceAction;
 
 double (DoomGamePython::*makeAction1)(boost::python::list const &) = &DoomGamePython::makeAction;
 double (DoomGamePython::*makeAction2)(boost::python::list const &, unsigned int) = &DoomGamePython::makeAction;
@@ -313,6 +314,7 @@ BOOST_PYTHON_MODULE(vizia)
         .def("make_action", makeAction2)
 		.def("advance_action", advanceAction1)
         .def("advance_action", advanceAction2)
+		.def("advance_action", advanceAction3)
         
 		.def("get_state", &DoomGamePython::getState)
     

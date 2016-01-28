@@ -39,7 +39,8 @@ namespace Vizia {
 
         void setAction(std::vector<int> const &actions);
         void advanceAction();
-        void advanceAction(bool stateUpdate, bool renderOnly, unsigned int tics);
+        void advanceAction(unsigned int tics);
+        void advanceAction(unsigned int tics, bool updateState, bool renderOnly);
 
         double makeAction(std::vector<int> const &actions);
         double makeAction(std::vector<int> const &actions, unsigned int tics);
