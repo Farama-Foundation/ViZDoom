@@ -158,20 +158,19 @@ namespace Vizia {
     }
 
     void DoomGame::advanceAction() {
-        this->advanceAction(true, true, 1);
+        this->advanceAction(1, true, true);
     }
 
-    void DoomGame::advanceAction(bool updateState, bool renderOnly, unsigned int tics) {
+    void DoomGame::advanceAction(unsigned int tics) {
+        this->advanceAction(tics, true, true);
+    }
+
+    void DoomGame::advanceAction(unsigned int tics, bool updateState, bool renderOnly) {
 
         if (!this->isRunning()) throw DoomIsNotRunningException();
 
         try {
-            if(this->mode == PLAYER || this->mode == ASYNC_PLAYER || this->mode == ASYNC_SPECTATOR)
-                this->doomController->tics(tics, updateState || renderOnly);
-            else if(this->mode == SPECTATOR) {
-                this->doomController->waitRealTimeForTics(tics);
-                this->doomController->tics(tics, updateState || renderOnly);
-            }
+            this->doomController->tics(tics, updateState || renderOnly);
         }
         catch(const Exception &e){ throw; }
 
@@ -186,7 +185,7 @@ namespace Vizia {
 
     double DoomGame::makeAction(std::vector<int> const &actions, unsigned int tics){
         this->setAction(actions);
-        this->advanceAction(true, true, tics);
+        this->advanceAction(tics);
         return this->getLastReward();
     }
 
