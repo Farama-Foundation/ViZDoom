@@ -300,7 +300,7 @@ Initializes new episode. All rewards, map state etc are restarted.
 
 \vspace{20pt}
 \begin{clinee}
-	void setAction(std::vector<int> &actions);
+	void setAction(std::vector<int> const &actions);
 \end{clinee}
 
 Sets the player's behavior in the next tic.
@@ -335,7 +335,7 @@ Returns the reward from last advanceAction. If a single action lasted longer the
 
 \vspace{20pt}
 \begin{clinee}
-	double makeAction(std::vector<int> &actions);
+	double makeAction(std::vector<int> const &actions);
 \end{clinee}
 
 Function combining usibility of setAction(), advanceAction() and getLastReward(). It sets the player's behavior in the next tic, performe one and returns reward.
@@ -345,7 +345,7 @@ In case of possitive value, picked action will be triggered with the specified s
 
 \vspace{20pt}
 \begin{clinee}
-	double makeAction(std::vector<int> &actions, unsigned int tics);
+	double makeAction(std::vector<int> const &actions, unsigned int tics);
 \end{clinee}
 
 Function combining usibility of setAction(), advanceAction() and getLastReward(). It sets the player's behavior in the next number of tics given to the function, performes it and returns cumulative reward from all tics. Each vector's value corresponds to button specified with addAvailableButton() function (in invocation order). Descrete actions (e.g. ATTACK) will be only performed in the first tic, analog actions (moving, turning) will be repeated every tic with given strength.
@@ -511,24 +511,30 @@ It is composed of three public fields:
 	    uint8_t * imageBuffer;
 	};
 \end{clinee}
-number - Number of the state in the current episode. (tic number?)\\
-gameVariables - vector storing user-defined, during the configuration, values drawn from the game such as AMMO or HEALTH 
-imageBuffer - pointer to the screen buffer, containing the image information.
-\begin{itemize}
-\item struct state
-\item enumeration types . . .or maybe move it to the apendinx?
-\end{itemize}
+\paragraph{number} Number of the state in the current episode. (tic number?)
+\paragraph{gameVariables} Vector storing user-defined, during the configuration, values drawn from the game such as AMMO or HEALTH. 
+\paragraph{imageBuffer} Pointer to the screen buffer, containing the image information.
+
 \subsection{Mode}
-Enumeration used to set the general game mode.
-Posible values:
+ScreenResolution enum has been designed to represent available game modes.
+//TODO ZROBIĆ OPISY!!!!
+
+
+\vspace{20pt}
+\textbf{Modes:}
 \begin{itemize}
-\item PLAYER - 
-\item SPECTATOR -
-\item ASYNC\_PLAYER -
-\item ASYNC\_SPECTATOR -
+\item PLAYER 
+\item SPECTATOR
+\item ASYNC\_PLAYER
+\item ASYNC\_SPECTATOR
 \end{itemize}
+
 \subsection{ScreenFormat}
-Enumeration used to set the general game mode.
+ScreenResolution enum has been designed to represent the possible screen formats in witch game image will be returned. 
+
+
+\vspace{20pt}
+\textbf{ScreenFormats:}
 \begin{itemize}
  \item CRCGCB 
  \item CRCGCBZB
@@ -545,199 +551,74 @@ Enumeration used to set the general game mode.
  \item DOOM\_256\_COLORS
 \end{itemize}
 \subsection{ScreenResolution}
+ScreenResolution enum has been designed to represent the possible screen resolutions in the game. Their full list can be found in the apendix.
+
+
+\vspace{20pt}
+\textbf{ScreenResolution examples:}
 \begin{itemize}
-\item RES\_40X30,
- \item      RES\_60X45,
- \item       RES\_80X50,
- \item       RES\_80X60,
- \item       RES\_100X75,
- \item       RES\_120X75,
- \item       RES\_120X90
- \item       RES\_160X100,
- \item      RES\_160X120,
-      \item  RES\_200X120,
-      \item  RES\_200X150,
-      \item  RES\_240X135,
-      \item  RES\_240X150,
-      \item  RES\_240X180,
-      \item  RES\_256X144,
-      \item  RES\_256X160,
-      \item  RES\_256X192,
-      \item  RES\_320X200,
-      \item  RES\_320X240,
-      \item  RES\_400X225,	// 16:9
-      \item  RES\_400X300,
-  \item      RES\_480X270,	// 16:9
- \item       RES\_480X360,
- \item       RES\_512X288,	// 16:9
- \item       RES\_512X384,
- \item       RES\_640X360,	// 16:9
- \item       RES\_640X400,
- \item       RES\_640X480,
- \item       RES\_720X480,	// 16:10
- \item       RES\_720X540,
- \item       RES\_800X450,	// 16:9
- \item       RES\_800X480,
- \item       RES\_800X500,	// 16:10
-  \item      RES\_800X600,
- \item       RES\_848X480,	// 16:9
- \item       RES\_960X600,	// 16:10
- \item       RES\_960X720,
- \item       RES\_1024X576,	// 16:9
- \item       RES\_1024X600,	// 17:10
- \item       RES\_1024X640,	// 16:10
- \item       RES\_1088X612,	// 16:9
- \item       RES\_1152X648,	// 16:9
- \item       RES\_1152X720,	// 16:10
- \item       RES\_1152X864,
- \item       RES\_1280X720,	// 16:9
- \item       RES\_1280X854,
- \item       RES\_1280X800,	// 16:10
- \item       RES\_1280X960,
- \item       RES\_1280X1024,	// 5:4
- \item       RES\_1360X768,	// 16:9
- \item       RES\_1366X768,
- \item       RES\_1400X787,	// 16:9
- \item       RES\_1400X875,	// 16:10
- \item       RES\_1400X1050,
- \item       RES\_1440X900,
- \item       RES\_1440X960,
- \item       RES\_1440X1080,
-  \item      RES\_1600X900,	// 16:9
- \item       RES\_1600X1000,	// 16:10
- \item       RES\_1600X1200,
- \item       RES\_1680X1050,	// 16:10
- \item       RES\_1920X1080,
- \item       RES\_1920X1200,
- \item       RES\_2048X1536,
- \item       RES\_2560X1440,
- \item       RES\_2560X1600,
- \item       RES\_2560X2048,
- \item       RES\_2880X1800,
- \item       RES\_3200X1800,
-  \item      RES\_3840X2160,
- \item       RES\_3840X2400,
- \item       RES\_4096X2160,
-  \item      RES\_5120X2880,
+\item RES\_40X30
+\item RES\_160X120	
+\item RES\_480X270	
+\item RES\_480X360	
+\item RES\_800X600
+\item RES\_5120X2880
 \end{itemize}
+
 \subsection{GameVariable}
+GameVariable enum has been designed to represent the possible parameters in the game that can be downloaded and used to determine the next behavior of artificial intelligence. Its value after their inicialization can be found in the \textit{gameVariables} vector returned in game state. Their full list can be found in the apendix.
+
+//TODO OPISAĆ DO CZEGO SĄ USER0-30
+
+
+\vspace{20pt}
+\textbf{ScreenResolution examples:}
 \begin{itemize}
-\item KILLCOUNT,
-\item        ITEMCOUNT,
-\item        SECRETCOUNT,
-\item        FRAGCOUNT,
-\item        HEALTH,
-\item        ARMOR,
-\item        DEAD,
-\item        ON\_GROUND,
-\item        ATTACK\_READY,
-\item        ALTATTACK\_READY,
- \item       SELECTED\_WEAPON,
-\item      SELECTED\_WEAPON\_AMMO,
- \item       AMMO0,
-\item        AMMO1,
-\item        AMMO2,
-\item        AMMO3,
- \item       AMMO4,
- \item       AMMO5,
- \item       AMMO6,
- \item       AMMO7,
-\item       AMMO8,
-\item        AMMO9,
- \item       WEAPON0,
- \item       WEAPON1,
-\item        WEAPON2,
- \item       WEAPON3,
- \item       WEAPON4,
- \item       WEAPON5,
-\item        WEAPON6,
-\item        WEAPON7,
-\item        WEAPON8,
-\item        WEAPON9,
- \item       USER1,
- \item       USER2,
- \item       USER3,
- \item       USER4,
- \item       USER5,
-\item        USER6,
-\item        USER7,
-\item        USER8,
-\item        USER9,
-\item        USER10,
-\item        USER11,
-\item        USER12,
-\item        USER13,
-\item        USER14,
-\item        USER15,
-\item        USER16,
-\item        USER17,
-\item        USER18,
-\item        USER19,
-\item        USER20,
-\item        USER21,
-\item        USER22,
-\item        USER23,
-\item        USER24,
-\item        USER25,
-\item        USER26,
-\item        USER27,
-\item        USER28,
-\item        USER29,
-\item        USER30,
+\item KILLCOUNT
+\item ITEMCOUNT
+\item SECRETCOUNT
+\item HEALTH
+\item AMMO1
+\item AMMO2
+\item WEAPON1
+\item WEAPON2
+\item USER1
+\item USER2
 \end{itemize}
+
 \subsection{Button}
-\begin{itemize}
-\item ATTACK = 0,
-\item         USE = 1,
-\item         JUMP = 2,
-\item         CROUCH = 3,
-\item         TURN180 = 4,
-\item         ALTATTACK = 5,
-\item         RELOAD = 6,
-\item         ZOOM = 7,
+Button enum has been designed to represent the possible prime factors that make up a single action. Some of them can be further configured with a value indicating the angle of rotation or shift done in a single call. If not set, default force is used. Setting this additional value to the simple button without this option will not affect its call. If action lasting longer than 1 tic is performed, buttons correlated with move will be made continuously when simple actions will be made once in the first tic. Their full list can be found in the apendix.
 
-\item         SPEED = 8,
-\item         STRAFE = 9,
 
-\item         MOVE\_RIGHT = 10,
-\item         MOVE\_LEFT = 11,
-\item         MOVE\_BACKWARD = 12,
-\item         MOVE\_FORWARD = 13,
-\item         TURN\_RIGHT = 14,
-\item         TURN\_LEFT = 15,
-\item         LOOK\_UP = 16,
-\item         LOOK\_DOWN = 17,
-\item         MOVE\_UP = 18,
-\item         MOVE\_DOWN = 19,
-\item         LAND = 20,
-        //SHOWSCORES 20
-
-\item         SELECT\_WEAPON1 = 21,
-\item         SELECT\_WEAPON2 = 22,
-\item         SELECT\_WEAPON3 = 23,
-\item         SELECT\_WEAPON4 = 24,
-\item         SELECT\_WEAPON5 = 25,
-\item         SELECT\_WEAPON6 = 26,
-\item         SELECT\_WEAPON7 = 27,
-\item         SELECT\_WEAPON8 = 28,
-\item         SELECT\_WEAPON9 = 29,
- \item        SELECT\_WEAPON0 = 30,
-
-\item     SELECT\_NEXT\_WEAPON = 31,
- \item        SELECT\_PREV\_WEAPON = 32,
-\item         DROP\_SELECTED\_WEAPON = 33,
-
- \item        ACTIVATE\_SELECTED\_ITEM = 34,
- \item        SELECT\_NEXT\_ITEM = 35,
- \item        SELECT\_PREV\_ITEM = 36,
- \item        DROP\_SELECTED\_ITEM = 37,
-
- \item        LOOK\_UP\_DOWN\_DELTA = 38,
- \item        TURN\_LEFT\_RIGHT\_DELTA = 39,
- \item        MOVE\_FORWARD\_BACKWARD\_DELTA = 40,
- \item        MOVE\_LEFT\_RIGHT\_DELTA = 41,
- \item        MOVE\_UP\_DOWN\_DELTA = 42,
+\vspace{20pt}
+\textbf{Simple buttons examples:}
+\begin{itemize} 
+\item ATTACK
+\item USE
+\item JUMP
+\item CROUCH
+\item TURN180
 \end{itemize}
+
+
+\vspace{20pt}
+\textbf{Move buttons examples:}
+\begin{itemize} 
+\item MOVE\_RIGHT
+\item MOVE\_BACKWARD
+\end{itemize} 
+
+
+\vspace{20pt}
+\textbf{Move/rotation buttons examples:}
+\begin{itemize} 
+ \item LOOK\_UP\_DOWN\_DELTA
+ \item TURN\_LEFT\_RIGHT\_DELTA
+ \item MOVE\_FORWARD\_BACKWARD\_DELTA
+ \item MOVE\_LEFT\_RIGHT\_DELTA
+ \item MOVE\_UP\_DOWN\_DELTA
+\end{itemize}
+
 \section{Configuration file}\label{sec:configuration_file}
 
 
@@ -805,6 +686,10 @@ python: doom_fixed_to_double(int doomFixed)
  State is changed structuraly: bufer is a numpy array and game variables are contained in a Python list. Whats more, getState() copies the buffer and gameVariables what doesn't happen in cpp. 
 \paragraph {Enumerations}
 Python equivalent of enums were created with the same names.
+\begin{cblock}
+game.add_available_button(Button.TURN_LEFT_RIGHT_DELTA)
+game.add_available_button(Button.MOVE_LEFT)
+\end{cblock}
 \paragraph {Types}
 Due to the languages differences, some types have been modified.
 \begin{itemize} 
@@ -819,18 +704,19 @@ Due to the languages differences, some types have been modified.
 Java, like python, is a bit different then c++. All differences and the most important principles of using are listed below.
 
 \paragraph {Naming}
- Naming convention is camelcase 
-\begin{clinee}
+ Naming convention is camelcase, the same like in c++. 
+\begin{cblock}
 c++: DoomFixedToDouble(int doomFixed)
 java: DoomFixedToDouble(int doomFixed)
-\end{clinee}
+\end{cblock}
 \paragraph {Structures}
-State is changed structuraly: bufer and game variables are int tables (int[]). Whats more, getState copies the buffer and gameVariables, it doesn't happen in cpp. 
+State is changed structuraly: bufer and game variables are int tables (int[]). Whats more, getState() copies the buffer and gameVariables what doesn't happen in cpp. 
 \paragraph {Enumerations}
- Enumerations were created the same like in c++ (you have to use them like in java:)
-\begin{clinee}
- dg.addAvailableButton(Button.ATTACK);
-\end{clinee}
+Java equivalent of enums were created with the same names.
+\begin{cblock}
+dg.addAvailableButton(Button.ATTACK);
+dg.addAvailableButton(Button.MOVE_LEFT);
+\end{cblock}
 \paragraph {Types}
 Due to the languages differences, some types have been modified.
 \begin{itemize}
@@ -838,3 +724,213 @@ Due to the languages differences, some types have been modified.
 \item uint8\_t, unsigned int, size\_t were changed to int
 \end{itemize}
 \section{Extended Examples}
+\paragraph {Spectator mode}
+Spectator mode is designed to enable artificial intelligence to learn directly from humans game.
+Python listing presented below demonstrates the use of this option in which a human takes control over the game and Intelligent Agent looks at and analyzes the movements. In this synchronous mode, Artificial Intelligence has power over the engine and decides when human can make the next move. 
+
+
+After the initial configuration in which available actions and collected variables from the game are set, the script runs sequence of 10 episodes. During their run, the image is downloaded and the human gets the opportunity to perform a single action which are then read and stored by the script. After this process, processing of AI follows. Downloaded data is printed at the end of the loop, such as the values of game variables set in the game and operations taken with associated reward. What's more, before the end of each episode, a summary is displayed followed by 2 second delay.
+
+\begin{pblock}
+from __future__ import print_function
+from vizia import *
+from time import sleep
+
+game = DoomGame()
+game.load_config("config_deathmatch.properties")
+game.set_screen_resolution(ScreenResolution.RES_640X480)
+game.add_available_button(Button.TURN_LEFT_RIGHT_DELTA)
+game.set_window_visible(True)
+game.set_mode(Mode.SPECTATOR)
+game.init()
+
+episodes = 10
+print("")
+for i in range(episodes):
+	print("Episode #" +str(i+1))
+	
+	game.new_episode()
+	while not game.is_episode_finished():
+		
+		s = game.get_state()
+		img = s.image_buffer
+		misc = s.game_variables
+
+		game.advance_action()
+		a = game.get_last_action()
+		r = game.get_last_reward()
+		...		
+		#IA processing
+		...
+		print("state #"+str(s.number))
+		print("game variables: ", misc)
+		print("action:", a)
+		print("reward:",r)
+		print("=====================")
+
+	
+	print("episode finished!")
+	print("summary reward:", game.get_summary_reward())
+	print("************************")
+	sleep(2.0)
+
+game.close()
+\end{pblock}
+
+\paragraph {Seed}
+Seed setting was created to enable running deterministic episodes. Thanks to that, if agent behaves in the same way, each episode can be recreated.
+
+The following listing demonstrates usiage of a seed in the script. Once it is set along with other parameters in the configuration phase, list of all possible actions is made. In each episode, state of the game is processed and action is made based on AI decision. In that point, operation taken in the game should be saved to make it possible to recreate the episode in the future. Downloaded data is printed at the end of the loop, such as game state number, the values of variables set in the game and reward for last action made. After each episode, quick summary is displayed. To recreate one of the episodes, the same seed should be set and the same actions in wright time should be taken.
+
+\begin{pblock}
+from __future__ import print_function
+from vizia import *
+from random import choice
+import itertools as it
+from time import sleep
+
+game = DoomGame()
+
+game.load_config("config_basic.properties")
+game.set_screen_resolution(ScreenResolution.RES_640X480)
+
+seed = 1234
+# Sets the seed.
+game.set_seed(seed)
+
+game.init()
+
+# Creates all possible actions depending on how many buttons there are.
+actions_num = game.get_available_buttons_size()
+actions = []
+for perm in it.product([False, True], repeat=actions_num):
+    actions.append(list(perm))
+
+episodes = 10
+sleep_time = 0.028
+
+for i in range(episodes):
+	print("Episode #" + str(i+1))
+	game.new_episode()
+
+	while not game.is_episode_finished():
+		# Gets the state and possibly do something with it
+		s = game.get_state()
+		img = s.image_buffer
+		misc = s.game_variables
+
+		...
+		# IA processing
+		...		
+		
+		# Check which action you chose and save it!
+		r = game.make_action(choice(actions))
+		
+		
+		print("State #" + str(s.number))
+		print("Game Variables:", misc)
+		print("Last Reward:", r)
+		print("=====================")
+
+	print("Episode finished!")
+	print("Summary reward:", game.get_summary_reward())
+	print("************************")
+
+
+game.close()
+\end{pblock}
+
+\paragraph {Multiplayer}
+Host player.
+\begin{pblock}
+from __future__ import print_function
+from vizia import *
+from random import choice
+from time import sleep
+from time import time
+
+game = DoomGame()
+game.load_config("config_multi.properties")
+
+game.add_custom_game_arg("-host")
+game.add_custom_game_arg("2")
+game.add_custom_game_arg("-deathmatch")
+game.add_custom_game_arg("-warp")
+game.add_custom_game_arg("-01")
+game.set_mode(Mode.ASYNC_SPECTATOR)
+game.init()
+
+	
+episodes = 1
+
+for i in range(episodes):
+	
+	while not game.is_episode_finished():	
+		s = game.get_state()
+		img = s.image_buffer
+		misc = s.game_variables
+
+		game.advance_action()
+		a = game.get_last_action()
+		r = game.get_last_reward()
+			
+		print("state #"+str(s.number))
+		print("game variables: ", misc)
+		print("action:", a)
+		print("reward:", r)
+		print("=====================")
+	
+print("episode finished!")
+print("summary reward:", game.get_summary_reward())
+print("************************")
+
+game.close()
+\end{pblock}
+Second player.
+\begin{pblock}
+from __future__ import print_function
+from vizia import *
+from random import choice
+from time import sleep
+from time import time
+
+
+
+game = DoomGame()
+game.load_config("config_multi.properties")
+
+game.set_mode(Mode.ASYNC_PLAYER)
+game.add_custom_game_arg("-join")
+game.add_custom_game_arg("127.0.0.1")
+game.set_window_visible(False)
+game.init()
+
+
+actions = [[1,0,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0]]
+
+episodes = 1
+
+for i in range(episodes):
+	
+	while not game.is_episode_finished():	
+		s = game.get_state()
+		img = s.image_buffer
+		misc = s.game_variables
+
+		game.make_action(choice(actions))
+		a = game.get_last_action()
+		r = game.get_last_reward()
+			
+		print("state #"+str(s.number))
+		print("game variables: ", misc)
+		print("action:", a)
+		print("reward:", r)
+		print("=====================")
+	
+	print("episode finished!")
+	print("summary reward:", game.get_summary_reward())
+	print("************************")
+
+game.close()
+\end{pblock}
+
