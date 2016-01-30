@@ -36,6 +36,29 @@
 	  belowcaptionskip=\medskipamount,
 	  backgroundcolor=\color{codebackground},
 }
+\lstdefinestyle{pblockstyle}{
+	inputencoding=utf8,
+	language=python,
+	extendedchars=true,
+	basicstyle=\ttfamily\scriptsize,
+	numbers=left,
+  	numbersep=3pt,
+	framexleftmargin=2pt,
+  	framerule=0pt,
+  	frame=lines,
+	numberstyle=\tiny,
+	tabsize=2,
+	showstringspaces=false,
+	showspaces=false,
+	  keywordstyle=\bfseries\color{codekeywords},
+	  identifierstyle=\color{black},
+	  stringstyle=\color{codestrings},
+	  commentstyle=\color{codecomment},
+	  columns=fullflexible,
+	  abovecaptionskip=\medskipamount,
+	  belowcaptionskip=\medskipamount,
+	  backgroundcolor=\color{codebackground},
+}
 \lstdefinestyle{clinestyle}{
 	tabsize=2,
 	frame=lines,
@@ -49,6 +72,7 @@
 }
 \lstnewenvironment{cblock}{\lstset{style=cblockstyle}}{}
 \lstnewenvironment{clinee}{\lstset{style=clinestyle}}{}
+\lstnewenvironment{pblock}{\lstset{style=pblockstyle}}{}
 \graphicspath{ {figures/} }
 
 % Authors here.
