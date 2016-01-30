@@ -3,15 +3,14 @@ from common import *
 from vizia import *
 from tqdm import tqdm
 
-skiprate = 7
+suffix = "xxx"
+skiprate = 1
 np.set_printoptions(precision=4, suppress = True)
 savefile = None
-#savefile = "params/basic_120to60"
-savefile = "params/exp_skip"+str(skiprate)
-#savefile = "params/s1b_120_to60_skip1"
+savefile = "params/exp_skip"+str(skiprate) + suffix
 loadfile = None
 
-results_savefile = "results/res_exp_skip"+str(skiprate)
+results_savefile = "results/raw/res_exp_skip"+str(skiprate) + suffix
 
 game = DoomGame()
 game.load_config("config_common.properties")
@@ -27,6 +26,7 @@ print "\nDOOM initialized."
 
 if loadfile:
     engine = QEngine.load(game, loadfile)
+    engine._epsilon = 0.1
 
 else:
     engine_args = engine_setup_basic(game)
