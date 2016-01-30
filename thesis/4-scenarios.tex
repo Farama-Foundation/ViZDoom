@@ -1,5 +1,4 @@
-
-\chapter{Scenarios}
+\chapter{Scenarios}\label{ch:scenarios}
 
 To allow researchers to evaluate learning agents in conditions of different characteristics, Vizia provides a mechanism of scenarios.
 
@@ -17,7 +16,7 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 		\item engine's reaction to player's death.
 	\end{itemize}
 
-	Due to scenarios' ability to set rewards they could be used to implement so called \emph{living~reward} and a~penalty for dying. Nonetheless, using API's \emph{setLivingReward} and \emph{setDeathPenalty} methods is the preferred way(see Section //TODO REF//) .
+	Due to scenarios' ability to set rewards they could be used to implement so called \emph{living~reward} and a~penalty for dying. Nonetheless, using API's \emph{setLivingReward} and \emph{setDeathPenalty} methods is the preferred way(see Section \ref{subsec:config_methods} and \ref{sec:configuration_file}) .
 
 \section{Tools}\label{sec:tools}
 	\begin{figure}
@@ -30,17 +29,17 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 
 	\begin{description}
 		\item [Visual map editor] - a simple tool for map creation which is easy to use and~allows to build any imaginable map that Doom engine is capable of running.
-		\item [Action Code Script support] - dedicated language resembling C that is suitable for determining behavior of any monster, player and~object in the game.
-		\item [Testrunning] - possibility to test your scenario without leaving the editor. Test running requires providing a \emph{zdoom} executive file and \emph{doom2.wad} file (or~any other basic resource file) . 
+		\item [Action Code Script support] - dedicated language resembling C that is suitable for regulating behaviors of monsters, players and~objects in the game.
+		\item [Testrunning] - possibility to test a scenario without leaving the editor. Test running requires providing a \emph{zdoom} executive file and \emph{doom2.wad} file (or~any other basic resource file) . 
 	\end{description}
 
-	Both tools are robust, reasonably easy to use and~provide much elasticity in sceanrio creation, although neither program is free from serious user experience shortcommings. Nevertheless, they still remain superior to other existing alternatives. Due to the lack of native \emph{Linux} support from \emph{Doom~Builder~2}, \emph{Slade~3} seems to be a more flexible solution. 
+	Both tools are robust, reasonably easy to use and~provide much elasticity in sceanrio creation, although neither program is free from serious user experience shortcomings. Nevertheless, they still remain superior to other existing alternatives. Due to the lack of native \emph{Linux} support from \emph{Doom~Builder~2}, \emph{Slade~3} seems to be a more flexible solution. 
 
 	\newpage
 \section{Provided Scenarios}\label{sec:scenarios}
 	This section describes ready-to-use scenarios that come with Vizia API.
 
-	Each subsection includes `Suggested configuration' which suggests additional configuration which can be achieved by loading	configuration from a file or using additional API methods (see Section /REF/). These particular configurations are quite arbitrary and adjusting them to personal preferences is encouraged.
+	Each subsection includes `Suggested configuration' which suggests additional configuration which can be achieved by loading	configuration from a file (see Section \ref{sec:configuration_file}) or using additional API methods (see Section \ref{subsec:config_methods}). These particular configurations are quite arbitrary and adjusting them to personal preferences is encouraged.
 
 	\subsection{Basic}\label{subsec:basic}
 		
@@ -268,10 +267,10 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 
 
 	\subsection{Fixed Point Numbers}\label{subsec:fixed_point}
-		ACS does not support floating point numbers. However, fixed point numbers are implemented with integers. By adding a decimal point you force compiler to treat it as a fixed point number so for instance `1' will be treated as an integer whereas `1.0' as a fixed point numeral. Mixing integers and fixed point numbers is allowed but will produce unexpected results if performed unknowingly. For more detailed information consult ZDOOM Wiki //TODO REFERENCE
+		ACS does not support floating point numbers. However, fixed point numbers are implemented with integers. By adding a decimal point you force compiler to treat it as a fixed point number so for instance `1' will be treated as an integer whereas `1.0' as a fixed point numeral. Mixing integers and fixed point numbers is allowed but will produce unexpected results if performed unknowingly. For more detailed information consult Zdoom Wiki Webpage\cite{zdoom-wiki}.
 
 	\subsection{Global Variables}\label{subsec:global_variable}
-		ACS, except from ordinary variables, provide global variables which can be accessed by Vizia api as user variables (see //TODO REF TO API//). Global variables behave the same as ordinary variables but need to be declared in global scope and in a slightly different way:
+		ACS provides a special type of variables called \emph{global~variables} that are seen by Vizia API as game variables (see Section \ref{subsec:gamevar}) named USER<X>. Global variables behave the same as ordinary variables but need to be declared in global scope and in a slightly different way:
 		\begin{clinee}
 global int <X>:reward;
 		\end{clinee}
@@ -281,7 +280,7 @@ global int <X>:reward;
 		In order to support rewarding mechanism, it is neccessary to utilize global variable 0 in ACS script. Name given to the variable does not matter. Value of the variable represents total reward accumulated throughout whole episode so in order to give reward for specific action you need to increase global variable 0 by the desired value not assign it. Vizia will treat the variable as a fixed point number(see \ref{subsec:fixed_point}).
 
 	\subsection{Advices}
-		This section shows code snippets showing how we achive some ACS scripting behaviors that may prove useful. The code snippets intend to be relatively self-explanatory and assume knowledge of the very basics of ACS scripting and capability of reading documentation to make sense of used functions. For documentation and more detailed information consult ZDOOM Wiki //TODO REFERENCE
+		This section shows code snippets showing how we achive some ACS scripting behaviors that may prove useful. The code snippets intend to be relatively self-explanatory and assume knowledge of the very basics of ACS scripting and capability of reading documentation to make sense of used functions. For documentation and more detailed information consult Zdoom Wiki Webpage\cite{zdoom-wiki}.
 
 		\subsubsection*{Ending an Episode}
 
