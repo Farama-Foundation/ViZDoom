@@ -199,7 +199,7 @@ namespace Vizia {
         bool lastTic = this->mapEnded;
 
         if(this->allowDoomInput && !this->runDoomAsync){
-            for(int i = 0; i < AxisButtonsNumber; ++i){
+            for(int i = 0; i < DeltaButtonsNumber; ++i){
                 this->input->BT_MAX_VALUE[i] = tics * this->_input->BT_MAX_VALUE[i];
             }
         }
@@ -207,7 +207,7 @@ namespace Vizia {
         int ticsMade = 0;
 
         for(int i = 0; i < tics; ++i){
-            if(i == tics - 1) lastTic = this->tic(true);
+            if(i == tics - 1) lastTic = this->tic(update);
             else lastTic = this->tic(false);
 
             ++ticsMade;
@@ -252,19 +252,6 @@ namespace Vizia {
     }
 
     bool DoomController::isDoomRunning() { return this->doomRunning; }
-
-    void DoomController::waitRealTimeForTics(unsigned int tics){
-        //unsigned int msToWait = std::floor((float)1000/35 * tics);
-        long long nsToWait = 1000000000/35 * tics;
-        std::time_t now = std::clock();
-        //bc::steady_clock::time_point now = bc::steady_clock::now();
-        //bc::milliseconds wait = bc::duration_cast<bc::milliseconds>(bc::milliseconds(msToWait) - (now - this->lastTicTimePoint));
-        long long nsLeft = nsToWait - (now - this->lastTicTime);///(CLOCKS_PER_SEC/1000);
-        if(nsLeft > 0) {
-            bc::nanoseconds wait(nsLeft);
-            b::this_thread::sleep_for(wait);
-        }
-    }
 
 //SETTINGS
 
