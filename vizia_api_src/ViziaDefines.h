@@ -286,7 +286,7 @@ namespace Vizia{
     };
 
     static const int DiscreteButtonsNumber = 38;
-    static const int AxisButtonsNumber = 5;
+    static const int DeltaButtonsNumber = 5;
     static const int ButtonsNumber = 43;
 
 #define VK_2_DK(vk, dk) static const std::string KEY_ ## vk = dk;
