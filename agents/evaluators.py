@@ -15,7 +15,7 @@ def relu_weights_initializer(alpha = 0.01):
     return lasagne.init.GlorotNormal(gain=np.sqrt(2/(1+alpha**2)))
     
 class MLPEvaluator:
-    def __init__(self, state_format, actions_number, network_args, gamma=0.99, updates=sgd, learning_rate = 0.01, regularization = None):
+    def __init__(self, state_format, actions_number, network_args=dict(), gamma=0.99, updates=sgd, learning_rate = 0.01, regularization = None):
 
         self._loss_history = []
         self._misc_state_included = (state_format["s_misc"] > 0)
@@ -99,6 +99,7 @@ class MLPEvaluator:
         self._hid_uns = hidden_units
 
     def learn(self, transitions):
+        ## TODO get rid of second forward pass
         # Learning approximation: Q = r + terminal * 
         X = transitions["s1_img"]
         X2 = transitions["s2_img"]
@@ -110,28 +111,10 @@ class MLPEvaluator:
         else:
             Y =  self._evaluate(X)
             Q2 = self._gamma*np.max(self._evaluate(X2 ),axis=1) 
-        
-        DEBUG = False
-        if DEBUG:
-            print "REWARD:"
-            print transitions['r']
-            print "ACTIONS:"
-            print transitions['a']
-            print "Q2"
-            print Q2
-            print "Y learned:"
-            print Y
-            print "\nWeights means"
-            for p in ls.get_all_param_values(self._network):
-                print p.mean()
-            print
 
-        for row,a,y in zip(Y,transitions["a"],transitions["r"] +(-transitions["terminal"]*Q2)):
-            row[a] = y
-        if DEBUG:
-            print "Target Y:"
-            print Y
-            print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        for row,a,target in zip(Y,transitions["a"],transitions["r"] +(-transitions["terminal"]*Q2)):
+            row[a] = target
+
         if self._misc_state_included:
             loss = self._learn(X, X_misc, Y)
         else:
@@ -188,6 +171,27 @@ class CNNEvaluator(MLPEvaluator):
          # dense layers
         for i in range(hidden_layers):
             network = ls.DenseLayer(network, hidden_units[i], nonlinearity=hidden_nonlin, W=relu_weights_initializer())
+
+        # output layer
+        network = ls.DenseLayer(network, output_size, nonlinearity=output_nonlin)
+        self._network = network
+
+class LinearEvaluator(MLPEvaluator):
+    def __init__(self, **kwargs):
+        MLPEvaluator.__init__(self, **kwargs)
+
+    def _initialize_network(self, img_input_shape, misc_len, output_size, output_nonlin = None):
+
+        print "Initializing Linear evaluator ..."
+        # image input layer
+        network = ls.InputLayer(shape=img_input_shape, input_var=self._image_inputs)
+
+        if self._misc_state_included:
+            # misc input layer
+            misc_input_layer = ls.InputLayer(shape=(None,misc_len), input_var=self._misc_inputs)
+            # merge layer
+            network = ls.ConcatLayer([network, misc_input_layer])
+
 
         # output layer
         network = ls.DenseLayer(network, output_size, nonlinearity=output_nonlin)
