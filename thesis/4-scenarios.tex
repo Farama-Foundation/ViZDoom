@@ -11,7 +11,7 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 	\begin{itemize}
 		\item constraints regarding buttons that can and cannot be used,
 		\item episode timeout,
-		\item skill level (they can affect; however, behaviors that depand on it),
+		\item skill level (they can affect; however, behaviors that depend on it),
 		\item any rendering options e.g. screen resolution or~crosshair visibility,
 		\item engine's reaction to player's death.
 	\end{itemize}
@@ -33,7 +33,7 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 		\item [Testrunning] - possibility to test a scenario without leaving the editor. Test running requires providing a \emph{zdoom} executive file and \emph{doom2.wad} file (or~any other basic resource file) . 
 	\end{description}
 
-	Both tools are robust, reasonably easy to use and~provide much elasticity in sceanrio creation, although neither program is free from serious user experience shortcomings. Nevertheless, they still remain superior to other existing alternatives. Due to the lack of native \emph{Linux} support from \emph{Doom~Builder~2}, \emph{Slade~3} seems to be a more flexible solution. 
+	Both tools are robust, reasonably easy to use and~provide much elasticity in sceanrio creation, although neither program is free from serious user experience shortcomings. Nevertheless, they still remain superior to existing alternatives. Due to the lack of native \emph{Linux} support from \emph{Doom~Builder~2}, \emph{Slade~3} seems to be a more flexible solution. 
 
 	\newpage
 \section{Provided Scenarios}\label{sec:scenarios}
@@ -158,7 +158,7 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 			The map consists of a square room (hall) of considerable size and 4 small rooms (supply rooms) adjacent to each wall of the hall. 2 supply rooms contain signifficant quantity of medkits and armours. Other 2 contain (each one) a shotgun, chainsaw, plasma gun, chaingun, rocket launcher and ammunition needed for aformentioned weapons. Agent is spawned in random location inside the hall. After a very short period monsters start spawning in random locations of the hall. Monsters include shooters and melee brawlers. Agent is rewarded for killing monsters. Toughest mosters are less probable to appear and produce greater rewards.
 		\paragraph{Rewards}
 			\begin{itemize}
-				\item +1/2/3/4/5/10 for killing a monster (exact value depands on monster type).
+				\item +1/2/3/4/5/10 for killing a monster (exact value depends on monster type).
 			\end{itemize}
 		
 		\paragraph{Suggested configuration}
@@ -180,7 +180,7 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 			The purpose of this scenario is to teach an agent that every second of his life is precious and collecting things increase his life expectancy in this brutal world. The agent should be able to see that deteriorating health causes death and how walking into medkits influences his health. It is advisable to equip the agent with some kind of memory because medkits that are directly in front of agent's feet cannot be noticed. In case of developing consciousness agent could also deduce that there is a devine being in the skies that loves him and sends medkits to save him.
 
 		\paragraph{Decription}
-			The map is a rectangle with green, acidic floor which hurts players periodically. Deadliness of acid depands on skill level. Agent is spawned in the exact center of the map and is able to turn and move forward (config).  Initially there are some medkits uniformly distributed over the map. New medkits fall from the skies peridically. A medkit heals some portion of player's health - to survive agent needs to pick them up. Episode finishes after player's death or on timeout.
+			The map is a rectangle with green, acidic floor which hurts players periodically. Deadliness of acid depends on skill level. Agent is spawned in the exact center of the map and is able to turn and move forward (config).  Initially there are some medkits uniformly distributed over the map. New medkits fall from the skies periodically. A medkit heals some portion of player's health - to survive agent needs to pick them up. Episode finishes after player's death or on timeout.
 
 		\paragraph{Suggested configuration}
 		\begin{itemize}
@@ -260,7 +260,6 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 			\item 2 available buttons: move left, move right
 		\end{itemize}
 	\newpage
-
 
 \section{Creating scenarios}\label{sec:creating_scenarios}
 	This section is not intended as a reference manual for Action Code Script (ACS) or map creation thus covers only subjects directly relevant to interfacing between Doom game engine and Vizia API.
