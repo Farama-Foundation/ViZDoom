@@ -17,7 +17,7 @@ find_package(PythonInterp)
 find_package(PythonLibs)
 #find_package(Threads REQUIRED)  
 find_package(SDL2 REQUIRED)
-find_package(Boost COMPONENTS system thread chrono python REQUIRED)
+find_package(Boost COMPONENTS system thread chrono timer python REQUIRED)
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
@@ -49,23 +49,27 @@ set( VIZIA_PYTHON_SOURCES
 python_add_module(python_vizia ${VIZIA_PYTHON_SOURCES})
 target_link_libraries (python_vizia ${VIZIA_LIBS} vizia) 
 
-add_executable( doomControllerExample 
-    examples/c++/ViziaDoomControllerExample.cpp )
-target_link_libraries( doomControllerExample ${VIZIA_LIBS} vizia )
+add_executable( ControllerExample 
+    examples/c++/ControllerExample.cpp )
+target_link_libraries( ControllerExample ${VIZIA_LIBS} vizia )
 
-add_executable( doomGameExample 
-    examples/c++/ViziaDoomGameExample.cpp )
-target_link_libraries( doomGameExample ${VIZIA_LIBS} vizia )
+add_executable( BasicExample 
+    examples/c++/BasicExample.cpp )
+target_link_libraries( BasicExample ${VIZIA_LIBS} vizia )
 
-add_executable( doomSpectatorExample
-        examples/c++/ViziaDoomSpectatorExample.cpp)
-target_link_libraries( doomSpectatorExample ${VIZIA_LIBS} vizia )
+add_executable( SpectatorModeExample
+    examples/c++/SpectatorModeExample.cpp)
+target_link_libraries( SpectatorModeExample ${VIZIA_LIBS} vizia )
 
-add_executable( doomAxisExample 
-    examples/c++/ViziaDoomAxisExample.cpp )
-target_link_libraries( doomAxisExample ${VIZIA_LIBS} vizia )
+add_executable( DeltaButtonsExample 
+    examples/c++/DeltaButtonsExample.cpp )
+target_link_libraries( DeltaButtonsExample ${VIZIA_LIBS} vizia )
 
-set_target_properties( vizia doomGameExample doomControllerExample doomSpectatorExample doomAxisExample
+add_executable( FpsTest 
+    examples/c++/FpsTest.cpp )
+target_link_libraries( FpsTest ${VIZIA_LIBS} vizia )
+
+set_target_properties( vizia BasicExample ControllerExample SpectatorModeExample DeltaButtonsExample FpsTest
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin

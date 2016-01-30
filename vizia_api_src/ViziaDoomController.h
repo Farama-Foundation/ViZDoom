@@ -55,7 +55,7 @@ namespace Vizia{
         struct InputStruct {
             int BT[ButtonsNumber];
             bool BT_AVAILABLE[ButtonsNumber];
-            int BT_MAX_VALUE[AxisButtonsNumber];
+            int BT_MAX_VALUE[DeltaButtonsNumber];
         };
 
         struct GameVariablesStruct {
@@ -124,8 +124,6 @@ namespace Vizia{
         void sendCommand(std::string command);
         void addCustomArg(std::string arg);
         void clearCustomArgs();
-
-        void waitRealTimeForTics(unsigned int tics);
 
         //SETTINGS
 

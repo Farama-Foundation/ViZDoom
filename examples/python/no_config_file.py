@@ -27,9 +27,9 @@ game = DoomGame()
 game.set_screen_resolution(ScreenResolution.RES_320X240)
 game.set_screen_format(ScreenFormat.CRCGCB)
 
-game.set_doom_game_path("./viziazdoom")
-game.set_doom_iwad_path("../../scenarios/doom2.wad")
-game.set_doom_file_path("../../scenarios/basic.wad")
+game.set_doom_path("./viziazdoom")
+game.set_game_file_path("../../scenarios/doom2.wad")
+game.set_scenario_file_path("../../scenarios/basic.wad")
 game.set_doom_map("map01")
 
 game.set_episode_timeout(300)
