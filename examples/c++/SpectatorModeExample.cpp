@@ -11,9 +11,9 @@ int main(){
 
     std::cout << "\n\nVIZIA MAIN EXAMPLE\n\n";
 
-    dg->setDoomGamePath("viziazdoom");
-    dg->setDoomIwadPath("../scenarios/doom2.wad");
-    //dg->setDoomFilePath("../scenarios/s1_b.wad");
+    dg->setDoomPath("viziazdoom");
+    dg->setGameFilePath("../scenarios/doom2.wad");
+    //dg->setScenarioFilePath("../scenarios/s1_b.wad");
     dg->setDoomMap("map01");
     dg->setEpisodeTimeout(200);
     dg->setEpisodeStartTime(1);
