@@ -2,7 +2,7 @@
 
 \section{Goal of the Experiment}
 The main purpose of the experiment is to show that Reinforcement Learning from visual input is possible using Vizia Environment. 	
-Additionally, the eperiment tries to investigate how skipping varying number of frames influences learning process.
+Additionally, the experiment tries to investigate how skipping varying number of frames influences learning process.
 
 \section{Experiment's Design}
 During the experiment agents with varying \emph{skiprates} are to be tested. We define \emph{skiprate} as the number of game frames that are skipped(ignored) by agent for every frame that is processed. Skipping a frame is acomplished with makeAction method with tics argument set to skiprate (see Section \ref{subsec:runtime_methods}) so rewards are acummulated and the chosen action is extended for the duration of skipped frames. Skiprate values of 0,1,2,3,4,5~and~7 are included in the experiment. 
