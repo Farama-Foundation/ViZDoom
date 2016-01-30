@@ -5,13 +5,14 @@
 	Methods described below are setting the main parameters of the environment, such as resolution of the generated image or Intelligent Agent's available actions. They should be invoked before the init() method. Any attempt to invoke them after initialization will result in a warning/exception depending on severity of consequences. 
 	\vspace{20pt}
 
-		\begin{clinee}
-		DoomGame();
-		\end{clinee}
+\begin{clinee}
+DoomGame();
+\end{clinee}
 
 Constructor that creates an instance of the game. Zdoom is not ready for action after the constructor, it needs further initialization. Object is inicialized with the following values:
 	\begin{itemize}
-\item Resolution: 640x480
+\item Resolution: 320x240
+\item Screen Format: CRCGCB
 \item Game path: ./viziazdoom
 \item Game iwad path: "./doom2.wad"
 \item Map: map01 (first map created in the iwad file if it's not changed purposefully)
@@ -19,10 +20,13 @@ Constructor that creates an instance of the game. Zdoom is not ready for action 
 \item GameVariables: none
 \item CustomGameArg: none
 \item Available buttons: ATTACK, USE, JUMP, CROUCH, SPEED, MOVE\_RIGHT, MOVE\_LEFT, MOVE\_BACKWARD, MOVE\_FORWARD, TURN\_RIGHT, TURN\_LEFT
-\item Rendering: All
+\item Rendering: All without crosshair
 \item Window: displayed 
-\item DoomSkill: ??????????
-\item Co z tymi autostartami i rewardami?
+\item DoomSkill: 0
+\item Rewards: 0
+\item Console: false
+\item Restart: OnTimeout, OnPlayersDeath, OnMapEnd
+\item Timeout: 0
 	\end{itemize}
 
 
@@ -63,7 +67,7 @@ Adds support for the specified actions (e.g. TURN\_LEFT, MOVE\_FORWARD ). If no 
 void addAvailableButton(Button button, int maxValue);
 \end{clinee}
 
-Adds support for the specified actions responsible for rotation and sets the amount of movement done. It only applies to "buttons" responsible for rotation. it effectively constraints rotation speed. %TODO CO TO ROBI?!
+Adds support for the specified actions responsible for movement and rotation and sets the amount of movement done. Its list can be found in Section~\ref{subsec:button}.
 
 
 \vspace{20pt}
@@ -71,8 +75,8 @@ Adds support for the specified actions responsible for rotation and sets the amo
 void setButtonMaxValue(Button button, int maxValue);
 \end{clinee}
 
-Sets the button's max value. It only applies to "buttons" responsible fors rotation and moving(with specified speed), it effectively constraints rotation/moving speed.
-0 means no constraint and it's the default behavior TODO %TODO CO TO ROBI?!
+Sets the button's max value. It only applies to actions responsible for rotation and movement, it effectively constraints rotation/moving speed.
+0 means no constraint and it's the default behavior. Its list can be found in Section~\ref{subsec:button}.
 
 
 \vspace{20pt}
@@ -80,7 +84,7 @@ Sets the button's max value. It only applies to "buttons" responsible fors rotat
 void addAvailableGameVariable(GameVariable var);
 \end{clinee}
 
-Adds given GameVariable to the list of values returned in getState() (e.g. AMMO1, HEALTH, ATTACK\_READY).
+Adds given GameVariable to the list of values returned in getState() (e.g. AMMO1, HEALTH, ATTACK\_READY). It list can be found in Section~\ref{subsec:gamevar}.
 
 
 \vspace{20pt}
@@ -104,7 +108,7 @@ Clears the list of game variables returned in getState().
 void addCustomGameArg(std::string arg);
 \end{clinee}
 
-Adds a custom argument for the zdoom process. %TODO OPIS
+Adds a custom argument for the zdoom process.
 
 
 \vspace{20pt}
@@ -120,7 +124,7 @@ Clears all arguments specified by addCustomGameArg().
 void setMode(Mode mode);
 \end{clinee}
 
-Sets mode in which the game will be started. Supported formats are defined in Mode enumaration (e.g. PLAYER, SPECTATOR).
+Sets mode in which the game will be started. Supported formats are defined in Mode enumaration (e.g. PLAYER, SPECTATOR) and can be found in Section~\ref{subsec:mode}..
 
 
 \vspace{20pt}
@@ -160,7 +164,7 @@ Sets map to be used by doom.
 void setDoomSkill(int skill);
 \end{clinee}
 
-Sets doom game difficulty level (0-5) which is called skill in doom. Less means easier. It affects ammo, life amount and monster aggressiveness. %TODO co tutaj? 
+Sets doom game difficulty level (0-5) which is called skill in doom. Less means easier. It affects ammo, life amount and monster aggressiveness.
 
 
 \vspace{20pt}
@@ -240,7 +244,7 @@ Determines if automatic episode restart is set when player reaches the end of th
 void setScreenResolution(ScreenResolution resolution);
 \end{clinee}
 
-Sets screen resolution. Supported resolutions are part of ScreenResolution Enumeration type and their format is: RES\_xXy (e.g. RES\_320X240, RES\_1920X1080). Buffer as well as content of zdoom's window is affected.
+Sets screen resolution. Supported resolutions are part of ScreenResolution enumeration type and their format is: RES\_xXy (e.g. RES\_320X240, RES\_1920X1080). Buffer as well as content of zdoom's window is affected. Its list can be found in Section~\ref{subsec:resolution}.
 
 
 \vspace{20pt}
@@ -248,7 +252,7 @@ Sets screen resolution. Supported resolutions are part of ScreenResolution Enume
  void setScreenFormat(ScreenFormat format);
 \end{clinee}
 
-Sets format of the screen buffer. Supported formats are defined in ScreenFormat enumaration (e.g. CRCGCB, RGB24, GRAY8). Content displayed in zdoom's window what change no matter which format you choose - it only affects the buffer.
+Sets format of the screen buffer. Supported formats are defined in ScreenFormat enumaration (e.g. CRCGCB, RGB24, GRAY8). Content displayed in zdoom's window what change no matter which format you choose - it only affects the buffer. It list can be found in Section~\ref{subsec:screenformat}.
 
 
 \vspace{20pt}
@@ -271,7 +275,7 @@ void setWindowVisible(bool visibility);
 Determines if zdoom's window will be visible.
 Turning it off will result in:
 \begin{itemize}
-\item Linux - rendering and any computations connected with the window will be skipped. It results in processing acceleration
+\item Linux - rendering and any computations connected with the window will be skipped. It results in processing acceleration.
 \item Windows - window will be hided. No processing acceleration
 \end{itemize}
 
@@ -281,7 +285,7 @@ Turning it off will result in:
 void setConsoleEnabled(bool console);
 \end{clinee}
 
-Determines if zdoom's and vizia's console output will be displayed (e.g. "You picked up a medpack", "Player killed himself.", "Vizia\_init ....")
+Determines if zdoom's and vizia's console output will be displayed (e.g. "You picked up a medpack", "Player killed himself.", "Vizia\_init")
 
 
 \vspace{20pt}
@@ -295,7 +299,7 @@ Any attempt to invoke them before it will result in a warning/exception dependin
 void newEpisode();
 \end{clinee}
 
-Initializes new episode. All rewards, map state etc are restarted.
+Initializes new episode. All rewards and map states are restarted.
 
 
 \vspace{20pt}
@@ -313,7 +317,7 @@ In case of possitive value, picked action will be triggered with the specified s
 	void advanceAction();
 \end{clinee}
 
-Method performs a tic using action obtained by setAction(). After function call, action vector is not reseted and will be performed once again if not changed.
+Method performs a tic using action obtained by setAction(). After function call, action vector is not reseted and will be performed once again if not changed in the next tic.
 
 
 \vspace{20pt}
@@ -321,7 +325,7 @@ Method performs a tic using action obtained by setAction(). After function call,
 	void advanceAction(bool stateUpdate, bool renderOnly, unsigned int tics);
 \end{clinee}
 
-Method performs a given number of tic in the row. Descrete actions (e.g. ATTACK) will be only performed in the first tic, analog actions (moving, turning) will be repeated every tic. 
+Method performs a given number of tics in the row. Descrete actions (e.g. ATTACK) will be only performed in the first tic, analog actions (moving, turning) will be repeated every tic. 
 Function also determines if state should be updated. What's more, setting renderOnly option as true will disable buffer update. Hovewer, it will not affect zdoom main window.  
 
 
@@ -330,7 +334,7 @@ Function also determines if state should be updated. What's more, setting render
 	double getLastReward();
 \end{clinee}
 
-Returns the reward from last advanceAction. If a single action lasted longer then one tick, function it will return cumulative reward from all tics.
+Returns the reward from last advanceAction. If a single action lasted longer then one tick, function will return cumulative reward from all tics.
 
 
 \vspace{20pt}
@@ -338,7 +342,7 @@ Returns the reward from last advanceAction. If a single action lasted longer the
 	double makeAction(std::vector<int> const &actions);
 \end{clinee}
 
-Function combining usibility of setAction(), advanceAction() and getLastReward(). It sets the player's behavior in the next tic, performe one and returns reward.
+Function combining usibility of setAction(), advanceAction() and getLastReward(). It sets the player's behavior in the next tic, performes one and returns reward.
 Each vector's value corresponds to button specified with addAvailableButton() function (in invocation order).
 In case of possitive value, picked action will be triggered with the specified strength. Descrete actions (e.g. ATTACK) will be performed once. 
 
@@ -442,10 +446,10 @@ Sends a given command to zdoom console. Can be used for cheats, multiplayer e.t.
 
 
 \vspace{20pt}
-\subsection{QUERY INTERFACE}
+\subsection{Universal}
 
 
-Api provides a number of getters associated with the above-mentioned functions and a set of additional methods to help converts units.
+Api provides a number of getters associated with the above-mentioned functions and a set of additional methods to help converts game units.
   
 
 \vspace{20pt}
@@ -492,7 +496,7 @@ Function calculating how many tics will be made during given number of milliseco
 double DoomFixedToDouble(int doomFixed);
 \end{clinee}
 
-DO OPISANIA
+Function calculating values of global variables (USER1, USER2 etc.) to double.
 
 
 \vspace{20pt}
@@ -511,25 +515,29 @@ It is composed of three public fields:
 	    uint8_t * imageBuffer;
 	};
 \end{clinee}
-\paragraph{number} Number of the state in the current episode. (tic number?)
-\paragraph{gameVariables} Vector storing user-defined, during the configuration, values drawn from the game such as AMMO or HEALTH. 
+\paragraph{number} States number in the current episode.
+\paragraph{gameVariables} Vector storing user-defined during the configuration values drawn from the game such as AMMO or HEALTH. 
 \paragraph{imageBuffer} Pointer to the screen buffer, containing the image information.
 
-\subsection{Mode}
+\subsection{Mode}\label{subsec:mode}
 ScreenResolution enum has been designed to represent available game modes.
-//TODO ZROBIĆ OPISY!!!!
 
 
 \vspace{20pt}
 \textbf{Modes:}
 \begin{itemize}
-\item PLAYER 
-\item SPECTATOR
-\item ASYNC\_PLAYER
-\item ASYNC\_SPECTATOR
+\item PLAYER \\
+Setting where AI has full control over the game. It makes decision which action to perform and decides when the engine should make another processing loop.
+\item SPECTATOR \\
+Setting where human has control over the game and Inteligent Agent learns from his gameplay. AI only decides when the engine should make another loop to be able to process all the image data. Human makes decision which action should be performed and have to wait until AI is ready. 
+\item ASYNC\_PLAYER \\ 
+Setting where AI has control over the game. It makes decision which action to perform but AI can not control engines processing loop. If Inteligent Agent will not manage to perform any action and will not end image processing, next tic will be made with previous operations.
+//TODO ILE CZASU?!
+\item ASYNC\_SPECTATOR \\
+Setting where human has control over the game and Inteligent Agent learns from his gameplay. AI has access to current visual information, a last action taken along with an award and the rest of the variables on the basis of which should draw conclusions. Human plays with a standard number of fps and does not need to wait for the completion of AIs processing.
 \end{itemize}
 
-\subsection{ScreenFormat}
+\subsection{ScreenFormat}\label{subsec:screenformat}
 ScreenResolution enum has been designed to represent the possible screen formats in witch game image will be returned. 
 
 
@@ -550,7 +558,7 @@ ScreenResolution enum has been designed to represent the possible screen formats
  \item ZBUFFER8
  \item DOOM\_256\_COLORS
 \end{itemize}
-\subsection{ScreenResolution}
+\subsection{ScreenResolution} \label{subsec:screenresolution}
 ScreenResolution enum has been designed to represent the possible screen resolutions in the game. Their full list can be found in the apendix.
 
 
@@ -565,28 +573,31 @@ ScreenResolution enum has been designed to represent the possible screen resolut
 \item RES\_5120X2880
 \end{itemize}
 
-\subsection{GameVariable}
+\subsection{GameVariable} \label{subsec:gamevar}
 GameVariable enum has been designed to represent the possible parameters in the game that can be downloaded and used to determine the next behavior of artificial intelligence. Its value after their inicialization can be found in the \textit{gameVariables} vector returned in game state. Their full list can be found in the apendix.
-
-//TODO OPISAĆ DO CZEGO SĄ USER0-30
 
 
 \vspace{20pt}
 \textbf{ScreenResolution examples:}
 \begin{itemize}
-\item KILLCOUNT
-\item ITEMCOUNT
-\item SECRETCOUNT
-\item HEALTH
+\item KILLCOUNT\\
+Variables which represent number of kills performed by the player in the episode.
+\item ITEMCOUNT\\
+Variables which represent number of items taken in the episode.
+\item HEALTH\\
+Variable which represent players condition.
 \item AMMO1
-\item AMMO2
+\item AMMO2\\
+Variables which represent available ammunition to each weapon.
 \item WEAPON1
-\item WEAPON2
-\item USER1
-\item USER2
+\item WEAPON2 \\
+Variables which represent presence of the weapons.
+\item USER1 \\
+\item USER2 \\
+User-defined global variables. More in Section~\ref{subsec:global_variable}.
 \end{itemize}
 
-\subsection{Button}
+\subsection{Button} \label{subsec:button}
 Button enum has been designed to represent the possible prime factors that make up a single action. Some of them can be further configured with a value indicating the angle of rotation or shift done in a single call. If not set, default force is used. Setting this additional value to the simple button without this option will not affect its call. If action lasting longer than 1 tic is performed, buttons correlated with move will be made continuously when simple actions will be made once in the first tic. Their full list can be found in the apendix.
 
 
@@ -631,7 +642,7 @@ Keyword can be written in both underscore and camel notation (case-insensitive).
 
 
 Value should be placed after '=' sign. File paths should not be placed between "" marks like the rest of the string values.
-\begin{cblock}
+\begin{pblock}
 ...
 #Values
 living_reward = -1
@@ -642,19 +653,19 @@ doom_file_path = ../../scenarios/basic.wad
 #Normal String
 doom_map = "map01"
 ...
-\end{cblock}
+\end{pblock}
 Enum values should be passed using their name.
-\begin{cblock}
+\begin{pblock}
 ...
 #Enums
 screen_format = CRCGCB
 mode = PLAYER
 ...
-\end{cblock}
+\end{pblock}
 Each setting should be separated from each other by a sign of the new line. In order to improve readability, it's possible to add a comment line by adding a '\#' sign at the beginning of the new line.
 
 An exceptionally behave here availablebuttons and availablegamevariables functions because instead of individual variables, take as an argument the list of values in '\{\}'. The individual components should be separated from each other by a newline.
-\begin{cblock}
+\begin{pblock}
 ...
 # Available buttons
 available_buttons = 
@@ -666,7 +677,7 @@ available_buttons =
 # Game variables that will be in the state
 available_game_variables = { AMMO2}
 ...
-\end{cblock}
+\end{pblock}
 
 \section{Wrappers}
 \subsection{Python}
@@ -724,7 +735,7 @@ Due to the languages differences, some types have been modified.
 \item uint8\_t, unsigned int, size\_t were changed to int
 \end{itemize}
 \section{Extended Examples}
-\paragraph {Spectator mode}
+\subsection{Spectator mode}
 Spectator mode is designed to enable artificial intelligence to learn directly from humans game.
 Python listing presented below demonstrates the use of this option in which a human takes control over the game and Intelligent Agent looks at and analyzes the movements. In this synchronous mode, Artificial Intelligence has power over the engine and decides when human can make the next move. 
 
@@ -777,7 +788,7 @@ for i in range(episodes):
 game.close()
 \end{pblock}
 
-\paragraph {Seed}
+\subsection {Seed}
 Seed setting was created to enable running deterministic episodes. Thanks to that, if agent behaves in the same way, each episode can be recreated.
 
 The following listing demonstrates usiage of a seed in the script. Once it is set along with other parameters in the configuration phase, list of all possible actions is made. In each episode, state of the game is processed and action is made based on AI decision. In that point, operation taken in the game should be saved to make it possible to recreate the episode in the future. Downloaded data is printed at the end of the loop, such as game state number, the values of variables set in the game and reward for last action made. After each episode, quick summary is displayed. To recreate one of the episodes, the same seed should be set and the same actions in wright time should be taken.
@@ -840,8 +851,12 @@ for i in range(episodes):
 game.close()
 \end{pblock}
 
-\paragraph {Multiplayer}
-Host player.
+\subsection {Multiplayer}
+Multiplayer mode was configured to enable creating deathmatch between human and AI (or only AI). To create such game, at least two scripts should be prepered.
+
+\paragraph{Host player}
+To create the game, host player script should be implemented with all appropriate configuration. After setting basic options like resolution and gamemode (asynchronous should be used), some addition game arguments should be passed using addCustomGameArg() function. They define max number of players, variant of the game and used map. In the following script, Spectator mode is picked and AI is only processing image data and updating game state using advance\_action(). At the end of each loop, log is displayed on the console window.
+
 \begin{pblock}
 from __future__ import print_function
 from vizia import *
@@ -851,7 +866,6 @@ from time import time
 
 game = DoomGame()
 game.load_config("config_multi.properties")
-
 game.add_custom_game_arg("-host")
 game.add_custom_game_arg("2")
 game.add_custom_game_arg("-deathmatch")
@@ -886,7 +900,10 @@ print("************************")
 
 game.close()
 \end{pblock}
-Second player.
+
+
+To join an existing game, some additional configuration using game arguments should be made. Host player should be pointed by passing his ip number. In followinig egzample, AI can make 3 types of actions: shoot, move left or move right. It is picked after image processing. At the end of each loop, log is displayed on the console window.
+
 \begin{pblock}
 from __future__ import print_function
 from vizia import *
@@ -899,6 +916,9 @@ from time import time
 game = DoomGame()
 game.load_config("config_multi.properties")
 
+game.add_available_button(Button.ATTACK)
+game.add_available_button(Button.MOVE_LEFT)
+game.add_available_button(Button.MOVE_RIGHT)
 game.set_mode(Mode.ASYNC_PLAYER)
 game.add_custom_game_arg("-join")
 game.add_custom_game_arg("127.0.0.1")
@@ -906,7 +926,7 @@ game.set_window_visible(False)
 game.init()
 
 
-actions = [[1,0,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0]]
+actions = [[1,0,0],[0,1,0],[0,0,1]]
 
 episodes = 1
 
