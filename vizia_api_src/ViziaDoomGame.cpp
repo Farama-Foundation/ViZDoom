@@ -1117,7 +1117,7 @@ namespace Vizia {
                 continue;
             }
                         
-            /* Parse string properties */
+        /* Parse string properties */
             if(key == "doom_map" || key == "doommap"){
                 this->setDoomMap(val);
                 continue;

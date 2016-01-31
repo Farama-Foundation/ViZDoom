@@ -1,7 +1,6 @@
-
-\chapter{Application Programming Interface}
-\section{Methods}
-	\subsection{Configuration}
+\chapter{Application Programming Interface}\label{ch:api}
+\section{Methods}\label{sec:methods}
+	\subsection{Configuration}\label{subsec:config_methods}
 	Methods described below are setting the main parameters of the environment, such as resolution of the generated image or Intelligent Agent's available actions. They should be invoked before the init() method. Any attempt to invoke them after initialization will result in a warning/exception depending on severity of consequences. 
 	\vspace{20pt}
 
@@ -289,7 +288,7 @@ Determines if zdoom's and vizia's console output will be displayed (e.g. "You pi
 
 
 \vspace{20pt}
-\subsection{Runtime}
+\subsection{Runtime}\label{subsec:runtime_methods}
 The following methods handles gameplay. They directly affect the game and should be used after inicialization. 
 Any attempt to invoke them before it will result in a warning/exception depending on severity of consequences. 
 
