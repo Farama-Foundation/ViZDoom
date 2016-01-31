@@ -312,9 +312,9 @@ namespace Vizia {
         return this->doomController->getGameVariable(var);
     }
 
-    void DoomGame::setDoomEngineDoomEnginePath(std::string path) { this->doomController->setGamePath(path); }
-    void DoomGame::setDoomDoomGamePath(std::string path) { this->doomController->setIwadPath(path); }
-    void DoomGame::setDoomDoomScenarioPath(std::string path) { this->doomController->setFilePath(path); }
+    void DoomGame::setDoomEnginePath(std::string path) { this->doomController->setGamePath(path); }
+    void DoomGame::setDoomGamePath(std::string path) { this->doomController->setIwadPath(path); }
+    void DoomGame::setDoomScenarioPath(std::string path) { this->doomController->setFilePath(path); }
     void DoomGame::setDoomMap(std::string map) { this->doomController->setMap(map); }
     void DoomGame::setDoomSkill(int skill) { 
         //TODO warning when out of range
@@ -1126,7 +1126,7 @@ namespace Vizia {
                 this->setDoomEnginePath(val);
                 continue;
             }
-            if(key == "doom_doom_game_path" || key == "doomgamepath"){
+            if(key == "doom_game_path" || key == "doomgamepath"){
                 this->setDoomGamePath(val);
                 continue;
             }
