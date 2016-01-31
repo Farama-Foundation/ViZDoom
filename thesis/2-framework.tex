@@ -3,13 +3,86 @@
 \label{ch:architecture}
 \section{Used Technologies}
 \label{sec:technologies}
-What we used and why.
-\begin{itemize}
-\item zdoom, whole table with alternatives alternatives (full page)
-\item linux focus, cpp core, python wrapper
-\item acs scripting in doombuilder 2 for scenarios
-\item python and lasagne for experiments
-\end{itemize}
+
+\subsection{3D FPS Game Engine}
+
+
+VIZIA Environment was build around FPS game called Doom using it's game engine's modern version -- ZDoom. 
+It was selected from among 6 other recognizable FPS games: Quake III Arena, Doom 3, Half-Life 2, Unreal Tournament 2004, Unreal Tournament and Cube.
+Comparision between mentioned games was shown in Table~\ref{tab:engines}.
+
+
+Lack of scripting support and unaccessible screen buffer were considered as critical factors for rejecting such game.
+Also accessing engine only by SDK was considered a major drawback.
+Some of the criteria could not be addressed in form of statement. becouse they were based on engine's analysis in the context of internal architecture and easiness of modification.
+
+
+ZDoom based Doom met most of given requirements and 
+It's ability to render graphics on processor was good basis for possibiliy of implementing offscreen rendering. 
+\begin{table}[]
+\centering
+\caption{Overview of 3D FPS games considered as base of VIZIA environment}
+\label{tab:engines}
+\begin{tabular}{|r||p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|}
+\hline
+Game                      & Quake III: Arena & Doom  & Doom 3    & Half-Life 2 & Unreal Tournament 2004 & Unreal Tournament & Cube        \\ \hline
+Game Engine               & ioquake3         & zdoom & Doom3.gpl & Source      & Unreal Engine 2        & Unreal Engine 4   & Cube Engine \\ \hline
+Relase year               & 1999             & 1993  & 2003      & 2004        & 2004                   & 2016              & 2001        \\ \hline
+Open Source               & \OK              & \OK   & \OK       &             &                        & \OK               & \OK         \\ \hline
+Licence                   & GPLv2            & GPL   & GPLv3     & Closed      & Closed                 & Custom            & ZLIB        \\ \hline
+Language                  & C                & C++   & C++       & C++         & C++                    & C++               & C++         \\ \hline
+DirectX                   &                  &       &           & \OK         &                        & \OK               &             \\ \hline
+OpenGL                    & \OK              & \OK   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
+Software Render           &                  & \OK   &           &             &                        &                   &             \\ \hline
+Windows                   & \OK              & \OK   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
+Linux                     & \OK              & \OK   &           & \OK         & \OK                    & \OK               & \OK         \\ \hline
+Mac OS                    & \OK              & \OK   & \OK       & \OK         & \OK                    & \OK               &             \\ \hline
+Scripting                 &                  & \OK   &           & \OK         & \OK                    & \OK               & \OK         \\ \hline
+Custom assets             & \OK              & \OK   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
+Map editor                & \OK              & \OK   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
+Multiplayer               & \OK              & \OK   &           &             & \OK                    & \OK               & \OK         \\ \hline
+Engine access             & Code             & Code  & Code      & SDK         & SDK                    & SDK               & Code        \\ \hline
+Small resolutions         & \OK              & \OK   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
+Screen access             & \OK              & \OK   & \OK       &             &                        & \OK               & \OK         \\ \hline
+RAM                       & \OK              & \OK   & \OK       & \OK         & \OK                    &                   & \OK         \\ \hline
+Disk space                & 70MB             & 40MB  & 2GB       & 4,5GB       & 6GB                    & \textgreater10GB  & 35MB        \\ \hline
+Code complexity           & 6                & 5     & 8         & NA          & NA                     & 11                & 3           \\ \hline
+Brand recognition         & 41,1             & 99    & 99        & 36,6        & 1,2                    & 1,2               & 0,1         \\ \hline
+Active community          & \OK              & \OK   & \OK       & \OK         &                        & \OK               &             \\ \hline
+Free original assets      &                  &       &           &             &                        & \OK               & \OK         \\ \hline
+\end{tabular}
+\end{table}
+
+
+\subsection{Operating System}
+
+
+Linux has been choosen as a target operating system for this environment.
+Compilation tool-chain based on CMake and makefile allowed to automate building process and simplify project configuration.
+It's stability makes it perfect platform for a long-term research and the biggest share in supercomputers market [http://www.top500.org/statistics/overtime/] proves it's computing abilities.
+It is not insignificant that...
+
+\subsection{Game Controller and API}
+
+
+The basic module for control over Doom - game controller - was written in C++ with usage of Boost[LINK?] library.
+It allowed to use same communication mechanisms in both ZDoom and game controller as ZDoom was written in C++.
+
+Above that controller the higher layer of abstraction was developed -- Application Programming Interface for intelligent agents modules.
+It was designed also in C++ having in mind binding in to Python.
+
+
+Python API was considered as main way of controlling VIZIA Environment by users.
+This language is one of the most popular in data science [http://www.kdnuggets.com/polls/2014/languages-analytics-data-mining-data-science.html] and googling phrase: "python machine learning" returns over 4.6 Millions results (as at 28.01.2016).
+There are many machine learning libraries for Python such as scikit-learn[http://scikit-learn.org/stable/] or PyBrain[http://pybrain.org/].
+
+
+\subsection{Map Editor and Scripting}
+
+
+Creation of test environments has been made possible by using tools developed by Doom's community for maps and scripts editing: SLADE 3 and Doom Bulider 2. Those tools utilizes ACC -- compilter for Action Code Script (ACS), language, which support is build in ZDoom engine.
+...
+This topic was discussed further in Chapter~\ref{ch:scenarios}.
 
 \section{Architecture}
 Nice diagram (in DOOM style) with the arcitecture.
