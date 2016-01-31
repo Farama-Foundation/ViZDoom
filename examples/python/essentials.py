@@ -31,14 +31,14 @@ game = DoomGame()
 # If load_file is used in-code configuration will work. Note that the most recent changes will add to previous ones.
 
 # Sets path to zdoom engine executive which will be spawned as a separate process. Default is just the same.
-game.set_doom_path("./viziazdoom")
+game.set_doom_engine_path("./viziazdoom")
 
 # Sets path to doom2 iwad resource file which contains the actual doom game. Default is "./doom2.wad".
-game.set_game_file_path("../../scenarios/doom2.wad")
+game.set_doom_doom_game_path("../../scenarios/doom2.wad")
 
 # Sets path to additional resources iwad file which is basically your scenario iwad.
 # If not specified default doom2 maps will be used and it's pretty much useles... unless you want to play doom.
-game.set_scenario_file_path("../../scenarios/basic.wad")
+game.set_doom_scenario_path("../../scenarios/basic.wad")
 
 # Sets resolution. Default is 320X240
 game.set_screen_resolution(ScreenResolution.RES_640X480)
