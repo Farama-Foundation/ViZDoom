@@ -38,8 +38,8 @@ int main(){
 
     DoomGame* dg= new DoomGame();
 
-    dg->setDoomPath("./viziazdoom");
-    dg->setGameFilePath("../scenarios/doom2.wad");
+    dg->setDoomEnginePath("./viziazdoom");
+    dg->setDoomGamePath("../scenarios/doom2.wad");
     dg->setDoomMap("map01");
 
     dg->setRenderHud(false);
@@ -74,7 +74,7 @@ int main(){
     std::cout << "\nTICS: " <<iters <<"\n";
 
     std::cout << "\nSCENE: 20 ACTORS\n";
-    dg->setScenarioFilePath("../scenarios/20_actors.wad");
+    dg->setDoomScenarioPath("../scenarios/20_actors.wad");
     dg->setScreenFormat(CRCGCB);
     std::cout << "\nTEST,\tRES,\t\tPOSIX_TIME,\t\tPOSIX_FPS,\t\tBOOST_TIME,\t\tBOOST_FPS\n";
     std::cout << ++testCount << ",\tlogic only,\t";
@@ -115,7 +115,7 @@ int main(){
 
     std::cout << "\n\nSCENE: 50 ACTORS\n";
     std::cout << "\nTEST,\tRES,\t\tPOSIX_TIME,\t\tPOSIX_FPS,\t\tBOOST_TIME,\t\tBOOST_FPS\n";
-    dg->setScenarioFilePath("../scenarios/50_actors.wad");
+    dg->setDoomScenarioPath("../scenarios/50_actors.wad");
     dg->setScreenFormat(CRCGCB);
     std::cout << ++testCount << ",\tlogic only,\t";
     totalTime += test(dg, action, iters, false);
@@ -155,7 +155,7 @@ int main(){
 
     std::cout << "\n\nSCENE: 100 ACTORS\n";
     std::cout << "\nTEST,\tRES,\t\tPOSIX_TIME,\t\tPOSIX_FPS,\t\tBOOST_TIME,\t\tBOOST_FPS\n";
-    dg->setScenarioFilePath("../scenarios/100_actors.wad");
+    dg->setDoomScenarioPath("../scenarios/100_actors.wad");
     dg->setScreenFormat(CRCGCB);
     std::cout << ++testCount << ",\tlogic only,\t";
     totalTime += test(dg, action, iters, false);
@@ -194,7 +194,7 @@ int main(){
 
     std::cout << "\n\nSCENE: 300 ACTORS\n";
     std::cout << "\nTEST,\tRES,\t\tPOSIX_TIME,\t\tPOSIX_FPS,\t\tBOOST_TIME,\t\tBOOST_FPS\n";
-    dg->setScenarioFilePath("../scenarios/550_actors.wad");
+    dg->setDoomScenarioPath("../scenarios/550_actors.wad");
     dg->setScreenFormat(CRCGCB);
     std::cout << ++testCount << ",\tlogic only,\t";
     totalTime += test(dg, action, iters, false);
@@ -233,7 +233,7 @@ int main(){
 
     std::cout << "\n\nSCENE: 500 ACTORS\n";
     std::cout << "\nTEST,\tRES,\t\tPOSIX_TIME,\t\tPOSIX_FPS,\t\tBOOST_TIME,\t\tBOOST_FPS\n";
-    dg->setScenarioFilePath("../scenarios/500_actors.wad");
+    dg->setDoomScenarioPath("../scenarios/500_actors.wad");
     dg->setScreenFormat(CRCGCB);
     std::cout << ++testCount << ",\tlogic only,\t";
     totalTime += test(dg, action, iters, false);

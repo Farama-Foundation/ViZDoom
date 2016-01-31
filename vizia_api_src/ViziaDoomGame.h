@@ -86,9 +86,9 @@ namespace Vizia {
         double getLastReward();
         double getSummaryReward();
 
-        void setDoomPath(std::string path);
-        void setGameFilePath(std::string path);
-        void setScenarioFilePath(std::string path);
+        void setDoomEnginePath(std::string path);
+        void setDoomGamePath(std::string path);
+        void setDoomScenarioPath(std::string path);
         void setDoomMap(std::string map);
         void setDoomSkill(int skill);
         void setDoomConfigPath(std::string path);

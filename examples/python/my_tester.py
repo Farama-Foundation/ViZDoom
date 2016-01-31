@@ -17,7 +17,7 @@ game.load_config("config_health_gathering.properties")
 #game.load_config("config_my_way_home.properties")
 #game.load_config("config_predict_position.properties")
 
-game.set_scenario_file_path("../../scenarios/health_guided.wad")
+game.set_doom_scenario_path("../../scenarios/health_guided.wad")
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 
 game.init()
