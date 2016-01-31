@@ -125,23 +125,23 @@ This topic was discussed further in Chapter~\ref{ch:scenarios}.
 
 The main components of Vizia environament:
     \begin{itemize}
-    \item Vizia library --- which provides a DoomGame API that allows user to configure, launch and play the game in several flow control modes.
-    \item ViziaZDoom --- modified ZDoom engine with a Vizia module to communicate with a DoomGame object, control the game flow and adding additional rendering modes. It can act as a process under the control of the DoomGame object, Dome engine used for testing in Doom editors or as standalone process.
-    \item Python and Java bindings - allowing the use of the DoomGame API in these languages.
+    \item Vizia library -- which provides a DoomGame API that allows user to configure, launch and play the game in several flow control modes.
+    \item ViziaZDoom -- modified ZDoom engine with a Vizia module to communicate with a DoomGame object, control the game flow and adding additional rendering modes. It can act as a process under the control of the DoomGame object, Dome engine used for testing in Doom editors or as standalone process.
+    \item Python and Java bindings -- allowing the use of the DoomGame API in these languages.
     \end{itemize}
 
 
 \subsection{The separate API and game processes}\label{sec:architecture_separate_processes}
 
-When the user initiates the processing, the DoomGame object creates a second thread that starts ViziaZDoom process with the appropriate settings and supervises it. From this point the API and the game communicate using only a shared memory.
+When the API user initiates the processing, the DoomGame object creates a second thread that starts ViziaZDoom process with the appropriate settings and supervises it. From this point the API and the game communicate using only a shared memory.
 
 
 \subsection{Shared memory to communicate}\label{sec:architecture_shared_memory}
 
 During initialization set of spaces are created in the shared memory space, which includes:
     \begin{itemize}
-    \item A Pair of message queues to control the processing flow, and sending messages to the game.
-    \item A Shared memory area  to exchange information about game input status. Both the API process and the game process reads and writes to shared memory.
+    \item A pair of message queues to control the processing flow and sending commands to the game.
+    \item A shared memory area to exchange information about game input status. Both the API process and the game process reads and writes to shared memory.
     \item Shared memory areas where the game provides state of the game. These are the values of the variables games necessary to control the processing variables and a copy provided to you buffor wyrenderowanego in the game image. The game process saves to the memory, the process of API support.
     \end{itemize}
 All shared memory spaces have unique names for each DoomGame object, which allows the coexistence of multiple instances.
@@ -149,7 +149,7 @@ All shared memory spaces have unique names for each DoomGame object, which allow
 
 \subsection{Vizia module inside ViziaZDoom}\label{sec:architecture_inside_viziazdoom}
 
-Vizja module inside the engine initializes the shared memory to exchange information with this instance of the game. Then controls the flow of the game depending on the processing mode, and received messages and determines the following processing steps:
+Vizia module inside the engine initializes the shared memory to exchange information with this instance of the game. Then controls the flow of the game depending on the processing mode, and received messages and determines the following processing steps:
 
     \begin{itemize}
     \item Starting processing of the next game tic.
@@ -249,7 +249,7 @@ Zostawiam Ci to Grzesiu. //TO DO
 \subsubsection{Why multiplayer will not work in synchronous modes?}
 
 Doom engine uses a peer-to-peer communication in multiplayer and requires tight synchronization between all game clients based on real time.
-In synchronous modes time when next tic will be processed is unknown - too slow or too fast processing leads to synchronization and unpredictable behaviors and errors in processing. Therefore, the game network code has been disabled in synchronous modes.
+In synchronous modes time when next tic will be processed is unknown - too slow or too fast processing leads to desynchronization, unpredictable game behaviors and errors in processing. Therefore, the game network code has been disabled in synchronous modes.
 
 \subsubsection{Why OSX is not supported?}
 
