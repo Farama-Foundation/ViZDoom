@@ -25,12 +25,7 @@ Comparision between mentioned games was shown in Table~\ref{tab:engines}.
 \caption{Screenshot of Doom}
 \label{fig:doom}
 \end{figure}
-
-%%Czy opisać każdą z pozostałych gier/omawiać konkretny powód jej odrzucenia?
-%%Omówić tablę w tekście? Jeśli tak to w jaki sposób - omówić wszystkie wymienione w tabeli kryteria i powody ich wprowadzenia?
-%%Tabela jest oparta na wielu źródłach. Jak to przedstawić w pracy?
-%%Czy przypisy w komórkach tabeli są akceptowalne? Jeśli nie to w jaki sposób objaśnić zawartość komórki (np. wskazać na istnienie GZDooma korzystającego z OpenGL do renderowania)?  
-
+  
 
 Lack of scripting support and unaccessible screen buffer were considered as critical factors for rejecting such game and accessing engine's logic only by SDK was considered as a major drawback.
 Some of the criteria could not be addressed in form of the statement, becouse they were based on analysis of engine's code in the context of internal architecture and easiness of modification.
@@ -244,7 +239,17 @@ Because the game process uses shared memory only at the API request (and the API
 
 \subsubsection{Zbuffer}
 
-Zostawiam Ci to Grzesiu. //TO DO
+Rendering algorithm used in Doom engine uses binary space partitioning (BSP) trees and other rendering techniques which does not make use of depth buffer and therefore it is not generated.
+Depth buffer could be find usefull for learning depth perception by agent so it was added to the engine as presented on figure~\ref{fig:zbuffer}.
+It is drawn only when demanded rendering mode includes it (see~\ref{subsec:screenformat}).
+Depth is aproximated by texture's scaling factor and stored as 8-bit value which gives enough accuracy and allows to use it as additional color channel rather than as seperate image.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.3]{zbuffer.png}
+\caption{Example of implemented Zbuffer}
+\label{fig:zbuffer}
+\end{figure}
 
 \subsubsection{Why multiplayer will not work in synchronous modes?}
 
