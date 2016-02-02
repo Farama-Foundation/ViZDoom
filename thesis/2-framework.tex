@@ -133,7 +133,7 @@ When the API user initiates the processing, the DoomGame object creates a second
 
 \subsection{Shared memory to communicate}\label{sec:architecture_shared_memory}
 
-During initialization set of spaces are created in the shared memory space, which includes:
+During initialization set of spaces are created in the shared memory, which includes:
     \begin{itemize}
     \item A pair of message queues to control the processing flow and sending commands to the game.
     \item A shared memory area to exchange information about game input status. Both the API process and the game process reads and writes to shared memory.
@@ -176,9 +176,9 @@ The DoomGame API implements four flow control modes:
         
 	    Synchronous player mode provides synchronous communication between the process that uses the API and the game process. It allows AI agent to make actions as a player. 
 	    
-	    In this mode, the API and the game processes communicates every tic and are waiting for each other. The game process waits until the API sends a message requesting processing of the next tic and optional update. The game process, after receiving the message, sends input information (AI agent's action) to the game console, process next game tic, and if update was requested renders the current frame and updates the information about the current game state in the shared memory. After this the game process sends a message about completing request and starts waiting for the message processing of the next tic. The process that uses the API waits for the message about completing request.
+	    In this mode, the API and the game processes communicates every tic and are waiting for each other. The game process waits until the API sends a message requesting processing of the next tic and optional update. The game process, after receiving the message, sends input information (AI agent's action) to the game console, process next game tic, and if update was requested renders the current frame and updates the information about the current game state in the shared memory. After this, the game process sends a message about completing request and starts waiting for the message processing of the next tic. The process that uses the API waits for the message about completing request.
 	    
-	    This mode is designed for the singleplayer, the multiplayer will not work correctly - the game net code is disabled in this mode.
+	    This mode is designed for the singleplayer, the multiplayer will not work correctly. To prevent errors the game network code is disabled in this mode.
 
     \subsubsection{Synchronous spectator mode}\label{sec:architecture_spectator_mode}
 
@@ -190,11 +190,11 @@ The DoomGame API implements four flow control modes:
 	    
 	    Synchronous spectator mode provides synchronous communication between the process that uses the API and the game process. It allows AI agent to observe a human player's actions. 
 	    
-	    In this mode the API and the game processes communicates every tic and are waiting for each other. The game process waits until the API sends a message requesting processing of the next tic and optional update. The game process, after receiving the message, process the window input events that have taken place since the last update request (last human player's action), updates the input information in the shared memory, process next game tic and if update was requested renders the current frame and updates the information about the current game state in the shared memory. After this the game process sends a message about completing request and starts waiting for the message processing of the next tic. The process that uses the API waits for the message about completing request.
+	    In this mode the API and the game processes communicates every tic and are waiting for each other. The game process waits until the API sends a message requesting processing of the next tic and optional update. The game process, after receiving the message, process the window input events that have taken place since the two last update requests (last human player's action), updates the input information in the shared memory, process next game tic and if update was requested renders the current frame and updates the information about the current game state in the shared memory. After this, the game process sends a message about completing request and starts waiting for the message processing of the next tic. The process that uses the API waits for the message about completing request.
 
         Before processing of the next game tic the delay may be introduced in order to ensure the maximum processing speed of 35 tics per second (designed Doom ticrate).
         
-        This mode is designed for the singleplayer, the multiplayer will not work correctly - the game network code is disabled in this mode.
+        This mode is designed for the singleplayer, the multiplayer will not work correctly. To prevent errors the game network code is disabled in this mode.
 
     \subsubsection{Asynchronous player mode}\label{sec:architecture_async_player_mode}
 
@@ -206,9 +206,9 @@ The DoomGame API implements four flow control modes:
 	    
 	    Asynchronous player mode provides asynchronous communication between the process that uses the API and the game process. It allows AI agent to make actions as a player. 
 	    
-	    In this mode, the game process continuously process the game tics a constant speed of 35 tics per second (designed Doom ticrate) without waiting for the API process. The API can send a message requesting update. Before each tic the game process checks if it received a message requesting update. After receiving such the message, it sends the input information (AI agent's action) to the game console, process next game tic, updates the information about the current game state in the shared memory, sends a message about completing request and continues processing of the game tics. The process that uses the API waits for the message about completing request.
+	    In this mode, the game process continuously process the game tics at a constant speed of 35 tics per second (designed Doom ticrate) without waiting for the API process. The API can send a message requesting update. Before each tic the game process checks if it received a message requesting update. After receiving such the message, it sends the input information (AI agent's action) to the game console, process next game tic, updates the information about the current game state in the shared memory, sends a message about completing request and continues processing of the game tics. The process that uses the API waits for the message about completing request.
 	    
-	    In this mode, both the singleplayer as well as the multiplayer will work correctly - the game network code is disabled in this mode.
+	    In this mode, both the singleplayer as well as the multiplayer will work correctly.
 
     \subsubsection{Asynchronous spectator mode}\label{sec:architecture_async_spectator_mode}
 
@@ -230,14 +230,14 @@ The DoomGame API implements four flow control modes:
 
 \subsubsection{Why separate doom executable?}
 
-Doom engine was designed as standalone executable. It has a diffrent entry point for every operating system and a lot of exit points what makes it difficult to pack it inside library without making any fundamental changes in it's code, in addition, this approach would not give any additional benefits. Also, leaving the Doom engine as a separate executable allows to use it with Doom editors and as standalone Doom engine for testing scenarios.
+Doom engine was designed as standalone executable. It has a diffrent entry point for every operating system and a lot of exit points what makes it difficult to pack it inside library without making any fundamental changes to it's code. In addition this approach would not give any significant benefits. Also leaving the Doom engine as a separate executable allows to use it with Doom editors and as standalone Doom engine for testing scenarios.
 
 \subsubsection{Why shared memory to communicate?}
 
-Shared memory is the fastest way to transfer large amounts of data and allows to use this data witout additional copying and processing. 
-Because the game process uses shared memory only at the API request (and the API is waiting for completion of it) additional access control mechanism is not needed.
+Shared memory is the fastest way to transfer large amounts of data and allows to use it witout additional copying in the process that recives it. 
+Because the game process uses shared memory only on the API request and the API is waiting for completion of it, additional access control mechanism is not needed.
 
-\subsubsection{Zbuffer}
+\subsubsection{Why depth buffer has been added?}
 
 Rendering algorithm used in Doom engine uses binary space partitioning (BSP) trees and other rendering techniques which does not make use of depth buffer and therefore it is not generated.
 Depth buffer could be find usefull for learning depth perception by agent so it was added to the engine as presented on figure~\ref{fig:zbuffer}.
@@ -247,14 +247,14 @@ Depth is aproximated by texture's scaling factor and stored as 8-bit value which
 \begin{figure}
 \centering
 \includegraphics[scale=0.3]{zbuffer.png}
-\caption{Example of implemented Zbuffer}
+\caption{Example of implemented depth buffer}
 \label{fig:zbuffer}
 \end{figure}
 
 \subsubsection{Why multiplayer will not work in synchronous modes?}
 
-Doom engine uses a peer-to-peer communication in multiplayer and requires tight synchronization between all game clients based on real time.
-In synchronous modes time when next tic will be processed is unknown - too slow or too fast processing leads to desynchronization, unpredictable game behaviors and errors in processing. Therefore, the game network code has been disabled in synchronous modes.
+Doom engine uses a peer-to-peer communication in multiplayer and requires tight synchronization, between all game clients.
+In synchronous modes time when next tic will be processed is unknown - too slow or too fast processing may lead to desynchronization, unpredictable game behaviors and errors that interupts processing. Therefore, the game network code has been disabled in synchronous modes.
 
 \subsubsection{Why OSX is not supported?}
 
@@ -262,7 +262,7 @@ All Vizia environment code is OSX compatible. Due to the lack of access to OSX m
 
 \subsubsection{Why game and scenario files are separated?}
 
-Doom engine uses diffrent type of files for storing data and resources. (WAD and PK3 files) It allows to load main game resources from one file and many additional (scenario) resources from separate files. 
+Doom engine uses diffrent type of files for storing data and resources. (WAD and PK3 files) It allows to load main game resources from one file and many additional (scenario) resources from separate files. For more detailed information consult Zdoom Wiki Webpage\cite{zdoom-wiki}.
 
 \section{Performance}
 Table with some fps ratings and a graph.
