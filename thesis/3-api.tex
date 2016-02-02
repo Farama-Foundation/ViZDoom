@@ -1,31 +1,33 @@
 \chapter{Application Programming Interface}\label{ch:api}
 \section{Methods}\label{sec:methods}
 	\subsection{Configuration}\label{subsec:config_methods}
-	Methods described below are setting the main parameters of the environment, such as resolution of the generated image or Intelligent Agent's available actions. They should be invoked before the init() method. Any attempt to invoke them after initialization will result in a warning/exception depending on severity of consequences. 
+	Methods described in this section set main parameters of the environment, such as resolution of generated image or available actions. They should be invoked after creation and before invoking of the initialization method (init). Any attempt to call them after initialization will result in a warning or an exception, depending on severity of consequences. 
 	\vspace{20pt}
 
 \begin{clinee}
 DoomGame();
 \end{clinee}
 
-Constructor that creates an instance of the game. Zdoom is not ready for action after the constructor, it needs further initialization. Object is inicialized with the following values:
+Constructor that creates an instance of the game. Zdoom is not ready for using after creation and needs initialization. Freshly created DoomGame is initialized with the following parameters:
+%maybe some reference to where we describe what it all means . . .if we do anywhere . . .
 	\begin{itemize}
-\item Resolution: 320x240
-\item Screen Format: CRCGCB
-\item Game path: ./viziazdoom
-\item Game iwad path: "./doom2.wad"
-\item Map: map01 (first map created in the iwad file if it's not changed purposefully)
-\item Mode: PLAYER
-\item GameVariables: none
-\item CustomGameArg: none
-\item Available buttons: ATTACK, USE, JUMP, CROUCH, SPEED, MOVE\_RIGHT, MOVE\_LEFT, MOVE\_BACKWARD, MOVE\_FORWARD, TURN\_RIGHT, TURN\_LEFT
-\item Rendering: All without crosshair
-\item Window: displayed 
-\item DoomSkill: 0
-\item Rewards: 0
-\item Console: false
-\item Restart: OnTimeout, OnPlayersDeath, OnMapEnd
-\item Timeout: 0
+		\item screenResolution: RES\_320x240
+		\item screenFormat: CRCGCB
+		\item Game path: ``./viziazdoom''
+		\item Game iwad path: ``./doom2.wad''
+		\item map: ``map01'' (first map created in the iwad file if it's not changed purposefully)
+		\item mode: PLAYER
+		\item gameVariables: none
+		\item customGameArgs: none
+		\item available buttons: none
+%we should mention somewhere that these values will be set if none is left:
+%ATTACK, USE, JUMP, CROUCH, SPEED, MOVE\_RIGHT, MOVE\_LEFT, MOVE\_BACKWARD, MOVE\_FORWARD, TURN\_RIGHT, TURN\_LEFT
+		\item rendering: all without crosshair
+		\item windowVisible: true 
+		\item doomSkill: 3
+		\item livingReward/deathPenalty: 0
+		\item consoleEnabled: false
+		\item episodeTimeout: 0
 	\end{itemize}
 
 
