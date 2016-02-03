@@ -7,8 +7,8 @@
 \subsection{3D FPS Game Engine}
 
 
-VIZIA Environment was build around FPS game called Doom using it's game engine's modern version -- ZDoom. It was shown on Figure~\ref{fig:doom}. 
-It was selected from among 6 other recognizable FPS games: 
+VIZIA Environment was build around FPS (First Person Shooter) game Doom and it's game engine's modernized version -- ZDoom. It is shown in Figure~\ref{fig:doom}. 
+Doom was selected from 6 other recognizable FPS games: 
 \begin{itemize}
 \item Quake III Arena 
 \item Doom 3
@@ -17,7 +17,7 @@ It was selected from among 6 other recognizable FPS games:
 \item Unreal Tournament
 \item Cube
 \end{itemize}
-Comparision between mentioned games was shown in Table~\ref{tab:engines}.
+Comparision between mentioned games is shown in Table~\ref{tab:engines}.
 
 \begin{figure}
 \centering
@@ -27,14 +27,14 @@ Comparision between mentioned games was shown in Table~\ref{tab:engines}.
 \end{figure}
   
 
-Lack of scripting support and unaccessible screen buffer were considered as critical factors for rejecting such game and accessing engine's logic only by SDK was considered as a major drawback.
-Some of the criteria could not be addressed in form of the statement, becouse they were based on analysis of engine's code in the context of internal architecture and easiness of modification.
-Multi-threaded or client-server architecture would make difficult to fully control speed of execution. 
+Lack of scripting support and unaccessible screen buffer were considered as a critical factors for rejecting such game and accessing engine's logic only by SDK was considered as a major drawback.
+Some of the criteria could not be addressed in form of a statement, becouse they were based on analysis of engine's code in the context of internal architecture and easiness of modification.
+Multi-threaded or client-server architecture would make it difficult to fully control the speed of execution. 
 
 
-ZDoom based Doom met most of given requirements and allowed to implement features that would by hard or impossible to achieve in other games eg. offscreen rendering and reward computation.
+ZDoom based Doom met most of given requirements and allowed to implement features that would be barely achievable in other games eg. offscreen rendering and reward computation.
 Although Doom wasn't greatly used in research on reinforcement learning, it's recognizability exceeds Unreal Tournament brand.
-Originally Doom was designed to work in 320x240 resolution and even so modern implementation allow bigger resolutions, it still utilizes same low resolution textures and rendering algorithm what makes it perfect for generating small visual input data (320x240 or smaller) for reinforcement learning algorithm.
+Originally Doom was designed to work in 320x240 resolution and even so modern implementations allow bigger resolutions, it still utilizes same low resolution textures and a rendering algorithm which makes it perfect for generating small visual input data (320x240 or smaller) for reinforcement learning algorithm.
 Code analysis showed that access to game logic should be easy, as it is not object-oriented code.
 Unique Doom's feature is software renderer. Because of that it could be used without desktop environment (eg. remotely over ssh).
 Doom's gameplay is quite simple compared to newer FPS games as it consists mostly of running around and shooting and possible actions could be easly translated for reinforcement learning needs. 
