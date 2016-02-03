@@ -303,8 +303,7 @@ void DoomGame::newEpisode();
 
 \vspace{20pt}
 \begin{clinee}
-	double DoomGame::makeAction(std::vector<int> const &actions,
-					 unsigned int tics);
+	double DoomGame::makeAction(std::vector<int> const &actions, unsigned int tics);
 \end{clinee}
 
 	Function combining usibility of \emph{setAction}, \emph{advanceAction} and \emph{getLastReward}. Sets the player's action for the next tics, processes a specified number of tics, updates the state and calulates a new reward, which is returned.
