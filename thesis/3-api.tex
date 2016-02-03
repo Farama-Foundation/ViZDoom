@@ -244,40 +244,35 @@ void DoomGame::newEpisode();
 
 \vspace{20pt}
 \begin{clinee}
-	void DoomGame::setAction(std::vector<int> const &actions);
+	void DoomGame::setAction(std::vector<int> const &action);
 \end{clinee}
-	Sets the player's behavior in the next tic.
+	Sets the player's action for the next tics.
 	Each vector's value corresponds to a button specified with \emph{addAvailableButton} method or in configuration files (in order of appearance).
+
+
+\vspace{20pt}
+\begin{clinee}
+	void DoomGame::advanceAction(unsigned int tics, bool stateUpdate, bool renderOnly);
+\end{clinee}
+    Process a specified number of tics. If stateUpdate is set the state will be updated after last processed tic and a new reward will be calucated. To get new state use \emph{getState} and to get the new reward use  \emph{getLastReward}. If stateUpdate is not set but renderOnly is set the state will not be updated but a new frame will be rendered after last processed tic. To get the new frame use \emph{getGameScreen}.
+
+\vspace{20pt}
+\begin{clinee}
+	void DoomGame::advanceAction(unsigned int tics);
+\end{clinee}
+    Process a specified number of tics, updates state and calulates a new reward. Short for \emph{advanceAction(tics, true, false)}.
 
 \vspace{20pt}
 \begin{clinee}
 	void DoomGame::advanceAction();
 \end{clinee}
-	Performs a single tic using the action set with \emph{setAction}. After the call, action vector is not reset and will be used once again if not changed before the next advance.
-
-
-\vspace{20pt}
-\begin{clinee}
-	void DoomGame::advanceAction(bool stateUpdate, bool renderOnly, unsigned int tics);
-\end{clinee}
-	Performs a specified number of tics using the action set with \emph{setAction}. After the call, action vector is not reset and will be used once again if not changed before the next advance.
-
+	Process one tic, updates the state and calulates a new reward. Short for \emph{advanceAction(1, true, false)}.
 
 \vspace{20pt}
 \begin{clinee}
 	double DoomGame::getLastReward();
 \end{clinee}
-	Returns a reward granted after last \emph{advanceAction}. If a single action lasted longer then one tic, the cumulative reward from all tics will be returned.
-
-
-\vspace{20pt}
-\begin{clinee}
-	double DoomGame::makeAction(std::vector<int> const &actions);
-\end{clinee}
-
-Function combining usibility of setAction(), advanceAction() and getLastReward(). It sets the player's behavior in the next tic, performes one and returns reward.
-Each vector's value corresponds to button specified with addAvailableButton() function (in invocation order).
-In case of possitive value, picked action will be triggered with the specified strength. Descrete actions (e.g. ATTACK) will be performed once. 
+	Returns a reward granted after last update of State. 
 
 
 \vspace{20pt}
@@ -285,8 +280,14 @@ In case of possitive value, picked action will be triggered with the specified s
 	double DoomGame::makeAction(std::vector<int> const &actions, unsigned int tics);
 \end{clinee}
 
-Function combining usibility of setAction(), advanceAction() and getLastReward(). It sets the player's behavior in the next number of tics given to the function, performes it and returns cumulative reward from all tics. Each vector's value corresponds to button specified with addAvailableButton() function (in invocation order). Descrete actions (e.g. ATTACK) will be only performed in the first tic, analog actions (moving, turning) will be repeated every tic with given strength.
-State will be updated after that. Buffer will not be updated.
+Function combining usibility of \emph{setAction}, \emph{advanceAction} and \emph{getLastReward}. Sets the player's action for the next tics, process a specified number of tics, updates the state and calulates a new reward, which is returned.
+
+\vspace{20pt}   
+\begin{clinee}
+	double DoomGame::makeAction(std::vector<int> const &action);
+\end{clinee}
+
+Function combining usibility of \emph{setAction}, \emph{advanceAction} and \emph{getLastReward}. Sets the player's action for the next tics, process one tic, updates the state and calulates a new reward, which is returned. Short for \emph{makeAction(action, 1}.
 
 
 \vspace{20pt}
@@ -308,7 +309,7 @@ State will be updated after that. Buffer will not be updated.
 \begin{clinee}
 	uint8_t * const getGameScreen();
 \end{clinee}
-	Returns a pointer the screen buffer. //TODO
+	Returns a pointer the screen buffer.
 
 \vspace{20pt}
 \begin{clinee}
@@ -354,7 +355,7 @@ State will be updated after that. Buffer will not be updated.
 \begin{clinee}
 	void DoomGame::close();
 \end{clinee}
-	Closes Zdoom engine and corresponding processes. Metod frees used resources (memory allocations etc.). It is automatically invoked by the destructor so it is necessary only when there is a need to close zdoom engine in the middle of processing.
+	Closes Doom engine and corresponding processes. Metod frees used resources (memory allocations etc.). It is automatically invoked by the destructor so it is necessary only when there is a need to close zdoom engine in the middle of processing.
 
 
 \vspace{20pt}
@@ -368,7 +369,7 @@ State will be updated after that. Buffer will not be updated.
 \begin{clinee}
 	void DoomGame::sendGameCommand(std::string cmd);
 \end{clinee}
-	Sends the command to zdoom console. Can be used for cheats, multiplayer etc. For more details consult Zdoom Wiki Webpage\cite{zdoom-wiki}.
+	Sends the command to Doom console. Can be used for cheats, multiplayer etc. For more details consult Zdoom Wiki Webpage\cite{zdoom-wiki}.
 
 \vspace{20pt}
 \subsection{Query Methods}
@@ -446,10 +447,10 @@ Enumeration type representing available game modes. For datailed description of 
 \paragraph{Modes:}
 
 \begin{itemize}
-	\item PLAYER
-	\item SPECTATOR
-	\item ASYNC\_PLAYER 
-	\item ASYNC\_SPECTATOR 
+	\item PLAYER - synchronous player mode
+	\item SPECTATOR - synchronous spectator mode
+	\item ASYNC\_PLAYER - asynchronous player mode
+	\item ASYNC\_SPECTATOR - asynchronous spector mode 
 \end{itemize}
 
 \subsection{ScreenFormat}\label{subsec:screenformat}
@@ -459,19 +460,19 @@ Enumeration type representing the screen format in witch the game screen buffer 
 \vspace{20pt}
 \textbf{ScreenFormats:}
 \begin{itemize}
- \item CRCGCB 
- \item CRCGCBDB
- \item RGB24
- \item RGBA32
- \item ARGB32
- \item CBCGCR
- \item CBCGCRDB
- \item BGR24
- \item BGRA32
- \item ABGR32
- \item GRAY8
- \item DEPTH\_BUFFER8
- \item DOOM\_256\_COLORS
+ \item CRCGCB - 3 channels of 8 bit values in RGB order
+ \item CRCGCBDB - 4 channels of 8 bit values in RGB + depth buffer order
+ \item RGB24 - channel of RGB values stored in 24 bits, where R value is stored in oldes 8 bits
+ \item RGBA32 - channel of RGBA values stored in 32 bits, where R value is stored in oldes 8 bits
+ \item ARGB32 - channel of ARGB values stored in 32 bits, where A value is stored in oldes 8 bits
+ \item CBCGCR - 3 channels of 8 bit values in BGR order
+ \item CBCGCRDB - 4 channels of 8 bit values in BGR + depth buffer order
+ \item BGR24 - channel of BGR values stored in 24 bits, where B value is stored in oldes 8 bits
+ \item BGRA32 - channel of BGRA values stored in 32 bits, where B value is stored in oldes 8 bits 
+ \item ABGR32 - channel of ABGR values stored in 32 bits, where A value is stored in oldes 8 bits
+ \item GRAY8 - 8 bit gray channel
+ \item DEPTH\_BUFFER8 - 8 bit depth buffer channel
+ \item DOOM\_256\_COLORS - 8 bit channel with Doom palette values
 \end{itemize}
 \subsection{ScreenResolution} \label{subsec:screenresolution}
 Enumeration type representing the screen resolutions. Because of the terrifying multitude of possible resolutions only a couple of sample resolutions are listed here. For the full list of resolutions see Apendix ~\ref{sec:appendix_structs_and_enums}.
