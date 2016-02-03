@@ -1,5 +1,15 @@
 \chapter*{Streszczenie}
-Zawartość streszczenia.
+Niniejsza praca jest poświęcona wykorzystaniu trójwymiarowych gier typu FPS (ang. first-person shooter) do badań nad inteligentnymi agentami, które działają i uczą się w oparciu o informację obrazową.
+Rezultatem niniejszej pracy jest środowisko oparte na grze Doom dostosowane do potrzeb idei uczenia ze wzmocnieniem.
+Stworzony został interfejs programistyczny zaimplementowany w C++ pozwalajacy na wykonywanie akcji, pobieranie obrazu i informacji o bohaterze gry, jak i swobodny dobór parametrów wykonania gry.
+Parametry te mogą być zapisywane w postaci plików konfiguracyjnych.
+Zapewniono również wsparcie dla Pythona i Javy.
+Środowisko to wspiera tworzenie scenariuszy testowych w zewnętrznych edytorach i implementację funkcji nagrody za pomocą języka skryptowego ACS.
+Poza trybem pełnej kontroli nad grą zaimplementowano również tryb obserwatora, pozwalający na uczenie agenta na podstawie rozgrywki prowadzonej przez człowieka.
+Dodatkowo środowisko może pracować w trybie zarówno synchronicznym, w którym gra jest zsynchronizowana z agentem, jak i asynchronicznym, w którym gra działa we własnym tempem, co pozwala na wykorzystanie w rozgrywkach sieciowych.
+Stworzone oprogramowanie zostało przygotowane do pracy w systemie Linux i udostępnia tryb niewymagający środowiska graficznego.
+Przeprowadzone dla prostych środowisk testowych eksperymenty wskazują na użyteczność stworzonego środowiska.
+
 
 \chapter*{Abstract}
-Abstract's content.
+This thesis is concentrated on usage of 3-dimensional FPS games in research on intelligent agents that act and learn based on purely visual information. Work on this thesis resulted in creation of environment employing a vintage game: Doom to expose an interface proper for reinforcement learning: Vizia. Vizia's application programming interface was fully written in C++ and allows to make in-game actions, retrieve game's screen buffer and plenty of in-game parameters such as player's health or ammunition. The API offers a myriad of configuration options which can easily be written and stored in text files. In addition to C++ support bindings for Python and Java has been created as these languages are more popular for AI research purposes. The environment offers a mechanism of scenarios that enables researchers to design custom research conditions that support reinforcement learning paradigm. What is more, multiple different modes of operation are available and allow to take full control over game's engine processing, perform apprenticeship learning or even engage in multiplayer/multiagent skirmishes. Vizia is mainly targeted at Linux platforms and provides options for off-screen rendering that requires no graphical environment. In order to test practicality of using Vizia in AI research, a simple experiment has been conducted that in fact proves that the environemnt serves its purpose.
