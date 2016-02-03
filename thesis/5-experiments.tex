@@ -27,7 +27,7 @@ Every agent is to run 80 epochs. Each epoch requires performing 5000 learning st
 	\subsection{Neural Network Architecture}
 		\begin{figure}
 			\centering
-			\includegraphics[scale=0.4]{network.jpg}
+			\includegraphics[scale=0.25]{net_diagram.png}
 			\caption{Schematic illustration of neural network used for the experiment.}\label{fig:network}
 		\end{figure}
 		 Network used in the experiment consists of two convolutional layers with 32 square filters (7 and 4 pixels wide) each connected to a max-pooling layer with poolsize equal to 2 and rectifiers. Convolutional layers are followed by a fully connected layer with 800 leaky rectified linear units and output layer with 8 linear units coresponding to 8 available actions (combinations of 3 available buttons). The architecture used is rather a modest one, nonetheless it still might be excesively robust for such a simple problem.

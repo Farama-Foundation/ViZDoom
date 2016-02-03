@@ -1,3 +1,590 @@
 \chapter{Methods and Structures Handout}
 \section{Methods}
+
+
+\begin{clinee}
+DoomGame::~DoomGame();
+\end{clinee}
+
+
+\begin{clinee}
+bool DoomGame::init();
+\end{clinee}
+
+
+\begin{clinee}
+bool DoomGame::loadConfig(std::string configFilePath);
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::addAvailableButton(Button button);
+\end{clinee}
+
+\begin{clinee}
+void DoomGame::setButtonMaxValue(Button button, int maxValue);
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::addAvailableButton(Button button, int maxValue);
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::clearAvailableButtons();
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::addAvailableGameVariable(GameVariable var);
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::clearAvailableGameVariables();
+\end{clinee}
+	
+
+\begin{clinee}
+void DoomGame::addCustomGameArg(std::string arg);
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::clearCustomGameArgs();
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::setMode(Mode mode);
+\end{clinee}
+	
+
+\begin{clinee}
+void DoomGame::setDoomEnginePath(std::string path);
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::setDoomGamePath(std::string path);
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::setDoomScenarioPath(std::string path);
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::setDoomConfigPath(std::string path);
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::setDoomMap(std::string map);
+\end{clinee}
+	
+
+\begin{clinee}      
+void DoomGame::setDoomSkill(int skill);
+\end{clinee}
+	
+
+\begin{clinee}    
+void DoomGame::setEpisodeStartTime(unsigned int tics);
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::setEpisodeTimeout(unsigned int tics);
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::setLivingReward(double livingReward);
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::setDeathPenalty(double deathPenalty);
+\end{clinee}
+	
+
+\begin{clinee}
+void DoomGame::setScreenResolution(ScreenResolution resolution);
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::setScreenFormat(ScreenFormat format);
+\end{clinee}
+	
+
+\begin{clinee}       
+void DoomGame::setRenderHud(bool hud);
+\end{clinee}
+
+
+\begin{clinee}  
+void DoomGame::setRenderWeapon(bool weapon);
+\end{clinee}
+
+
+\begin{clinee}  
+void DoomGame::setRenderCrosshair(bool crosshair);
+\end{clinee}
+
+
+\begin{clinee}  
+void DoomGame::setRenderDecals(bool decals);
+\end{clinee}
+
+
+\begin{clinee}  
+void DoomGame::setRenderParticles(bool particles);
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::setWindowVisible(bool visibility);
+\end{clinee}
+
+
+\begin{clinee}
+void DoomGame::setConsoleEnabled(bool console);
+\end{clinee}
+	
+
+\subsection{Runtime Methods}\label{subsec:runtime_methods}
+	
+
+\begin{clinee}
+void DoomGame::newEpisode();
+\end{clinee}
+
+
+\begin{clinee}
+	void DoomGame::setAction(std::vector<int> const &actions);
+\end{clinee}
+
+
+\begin{clinee}
+	void DoomGame::advanceAction(unsigned int tics, bool stateUpdate, bool renderOnly);
+\end{clinee}
+
+
+\begin{clinee}
+	void DoomGame::advanceAction(unsigned int tics);
+\end{clinee}
+
+
+\begin{clinee}
+	void DoomGame::advanceAction();
+\end{clinee}
+
+
+\begin{clinee}
+	void DoomGame::advanceAction(unsigned int tics, bool stateUpdate, bool renderOnly);
+\end{clinee}
+
+
+\begin{clinee}
+	double DoomGame::getLastReward();
+\end{clinee}
+
+
+\begin{clinee}
+	double DoomGame::makeAction(std::vector<int> const &actions, unsigned int tics);
+\end{clinee}
+
+   
+\begin{clinee}
+	double DoomGame::makeAction(std::vector<int> const &actions);
+\end{clinee}
+
+
+\begin{clinee}
+	DoomGame::State DoomGame::getState();
+\end{clinee}
+
+
+\begin{clinee}
+	std::vector<int> DoomGame::getLastAction();
+\end{clinee}
+
+
+\begin{clinee}
+	uint8_t * const getGameScreen();
+\end{clinee}
+
+
+\begin{clinee}
+	int DoomGame::getGameVariable(GameVariable var);
+\end{clinee}
+
+
+\begin{clinee}
+	double DoomGame::getSummaryReward();
+\end{clinee}
+
+
+\begin{clinee}
+	bool DoomGame::isNewEpisode();
+\end{clinee}
+
+
+\begin{clinee}
+	bool DoomGame::isEpisodeFinished();
+\end{clinee}
+
+
+\begin{clinee}
+	void DoomGame::setSeed(unsigned int seed);
+\end{clinee}
+
+
+\begin{clinee}
+	void DoomGame::close();
+\end{clinee}
+
+
+\begin{clinee}
+	bool DoomGame::isRunning();
+\end{clinee}
+
+
+\begin{clinee}
+	void DoomGame::sendGameCommand(std::string cmd);
+\end{clinee}
+
+
+\subsection{Query Methods}
+
+
+\begin{clinee}
+int DoomGame::getAvailableButtonsSize();
+\end{clinee}
+
+\begin{clinee}
+int DoomGame::getAvailableGameVariablesSize();
+\end{clinee}
+
+\begin{clinee}
+Mode DoomGame::getMode();
+\end{clinee}
+
+\begin{clinee}
+double DoomGame::getLivingReward();
+\end{clinee}
+
+\begin{clinee}
+double DoomGame::getDeathPenalty();
+\end{clinee}
+
+\begin{clinee}
+unsigned int DoomGame::getEpisodeStartTime();
+\end{clinee}
+
+\begin{clinee}
+unsigned int DoomGame::getEpisodeTimeout();
+\end{clinee}
+
+\begin{clinee}
+unsigned int DoomGame::getEpisodeTime();
+\end{clinee}
+
+\begin{clinee}
+int DoomGame::getScreenWidth();
+\end{clinee}
+
+\begin{clinee}
+int DoomGame::getScreenHeight();
+\end{clinee}
+
+\begin{clinee}
+int DoomGame::getScreenChannels();
+\end{clinee}
+
+\begin{clinee}
+size_t DoomGame::getScreenPitch();
+\end{clinee}
+
+\begin{clinee}
+size_t DoomGame::getScreenSize();
+\end{clinee}
+
+\begin{clinee}
+ScreenFormat DoomGame::getScreenFormat();
+\end{clinee}
+
+\begin{clinee}
+unsigned int DoomGame::getSeed();
+\end{clinee}
+
+\begin{clinee}
+int DoomGame::getButtonMaxValue(Button button);
+\end{clinee}
+
+\section {Utility Functions}
+
+
+\begin{clinee}
+unsigned int DoomTics2Ms(unsigned int tics);
+\end{clinee}
+
+
+\begin{clinee}
+unsigned int Ms2DoomTics(unsigned int ms);
+\end{clinee}
+
+
+\begin{clinee}
+double DoomFixedToDouble(int doomFixed);
+\end{clinee}
+
+
 \section{Structures and Enumerations}\label{sec:appendix_structs_and_enums}
+\subsection{State}
+
+	
+\begin{clinee}
+	struct State {
+	    unsigned int number; 
+	    std::vector<int> gameVariables;
+	    uint8_t * imageBuffer;
+	};
+\end{clinee}
+
+\subsection{Mode}\label{subsec:mode}
+
+\paragraph{Modes:}
+
+\begin{itemize}
+	\item PLAYER
+	\item SPECTATOR
+	\item ASYNC\_PLAYER 
+	\item ASYNC\_SPECTATOR 
+\end{itemize}
+
+\subsection{ScreenFormat}\label{subsec:screenformat}
+
+
+\textbf{ScreenFormats:}
+\begin{itemize}
+     \item CRCGCB 
+     \item CRCGCBDB
+     \item RGB24
+     \item RGBA32
+     \item ARGB32
+     \item CBCGCR
+     \item CBCGCRDB
+     \item BGR24
+     \item BGRA32
+     \item ABGR32
+     \item GRAY8
+     \item DEPTH\_BUFFER8
+     \item DOOM\_256\_COLORS8
+\end{itemize}
+\subsection{ScreenResolution} \label{subsec:screenresolution}
+
+
+\textbf{ScreenResolutions:}
+\begin{itemize}
+    \item RES\_40X30
+    \item RES\_60X45
+    \item RES\_80X50
+    \item RES\_80X60
+    \item RES\_100X75
+    \item RES\_120X75
+    \item RES\_120X90
+    \item RES\_160X100
+    \item RES\_160X120
+    \item RES\_200X120
+    \item RES\_200X150
+    \item RES\_240X135
+    \item RES\_240X150
+    \item RES\_240X180
+    \item RES\_256X144
+    \item RES\_256X160
+    \item RES\_256X192
+    \item RES\_320X200
+    \item RES\_320X240
+    \item RES\_400X225
+    \item RES\_400X300
+    \item RES\_480X270
+    \item RES\_480X360
+    \item RES\_512X288
+    \item RES\_512X384
+    \item RES\_640X360
+    \item RES\_640X400
+    \item RES\_640X480
+    \item RES\_720X480
+    \item RES\_720X540
+    \item RES\_800X450
+    \item RES\_800X480
+    \item RES\_800X500
+    \item RES\_800X600
+    \item RES\_848X480
+    \item RES\_960X600
+    \item RES\_960X720
+    \item RES\_1024X576
+    \item RES\_1024X600
+    \item RES\_1024X640
+    \item RES\_1024X768
+    \item RES\_1088X612
+    \item RES\_1152X648
+    \item RES\_1152X720
+    \item RES\_1152X864
+    \item RES\_1280X720
+    \item RES\_1280X854
+    \item RES\_1280X800
+    \item RES\_1280X960
+    \item RES\_1280X1024
+    \item RES\_1360X768
+    \item RES\_1366X768
+    \item RES\_1400X787
+    \item RES\_1400X875
+    \item RES\_1400X1050
+    \item RES\_1440X900
+    \item RES\_1440X960
+    \item RES\_1440X1080
+    \item RES\_1600X900
+    \item RES\_1600X1000
+    \item RES\_1600X1200
+    \item RES\_1680X1050
+    \item RES\_1920X1080
+    \item RES\_1920X1200
+    \item RES\_2048X1536
+    \item RES\_2560X1440
+    \item RES\_2560X1600
+    \item RES\_2560X2048
+    \item RES\_2880X1800
+    \item RES\_3200X1800
+    \item RES\_3840X2160
+    \item RES\_3840X2400
+    \item RES\_4096X2160
+    \item RES\_5120X2880
+\end{itemize}
+
+\subsection{GameVariable} \label{subsec:gamevar}
+
+
+\textbf{Game Variables:}
+\begin{itemize}
+    \item KILLCOUNT
+    \item ITEMCOUNT
+    \item SECRETCOUNT
+    \item FRAGCOUNT
+    \item HEALTH
+    \item ARMOR
+    \item DEAD
+    \item ON\_GROUND
+    \item ATTACK\_READY
+    \item ALTATTACK\_READY
+    \item SELECTED\_WEAPON
+    \item SELECTED\_WEAPON\_AMMO
+    \item AMMO0
+    \item AMMO1
+    \item AMMO2
+    \item AMMO3
+    \item AMMO4
+    \item AMMO5
+    \item AMMO6
+    \item AMMO7
+    \item AMMO8
+    \item AMMO9
+    \item WEAPON0
+    \item WEAPON1
+    \item WEAPON2
+    \item WEAPON3
+    \item WEAPON4
+    \item WEAPON5
+    \item WEAPON6
+    \item WEAPON7
+    \item WEAPON8
+    \item WEAPON9
+    \item USER1
+    \item USER2
+    \item USER3
+    \item USER4
+    \item USER5
+    \item USER6
+    \item USER7
+    \item USER8
+    \item USER9
+    \item USER10
+    \item USER11
+    \item USER12
+    \item USER13
+    \item USER14
+    \item USER15
+    \item USER16
+    \item USER17
+    \item USER18
+    \item USER19
+    \item USER20
+    \item USER21
+    \item USER22
+    \item USER23
+    \item USER24
+    \item USER25
+    \item USER26
+    \item USER27
+    \item USER28
+    \item USER29
+    \item USER30
+\end{itemize}
+
+\subsection{Button} \label{subsec:button}
+
+
+\textbf{Buttons:}
+\begin{itemize}
+    \item ATTACK
+    \item USE
+    \item JUMP
+    \item CROUCH
+    \item TURN180
+    \item ALTATTACK
+    \item RELOAD
+    \item ZOOM
+    \item SPEED
+    \item STRAFE
+    \item MOVE\_RIGHT
+    \item MOVE\_LEFT
+    \item MOVE\_BACKWARD
+    \item MOVE\_FORWARD
+    \item TURN\_RIGHT
+    \item TURN\_LEFT
+    \item LOOK\_UP
+    \item LOOK\_DOWN
+    \item MOVE\_UP
+    \item MOVE\_DOWN
+    \item LAND
+    \item SELECT\_WEAPON1
+    \item SELECT\_WEAPON2
+    \item SELECT\_WEAPON3
+    \item SELECT\_WEAPON4
+    \item SELECT\_WEAPON5
+    \item SELECT\_WEAPON6
+    \item SELECT\_WEAPON7
+    \item SELECT\_WEAPON8
+    \item SELECT\_WEAPON9
+    \item SELECT\_WEAPON0
+    \item SELECT\_NEXT\_WEAPON
+    \item SELECT\_PREV\_WEAPON
+    \item DROP\_SELECTED\_WEAPON
+    \item ACTIVATE\_SELECTED\_ITEM
+    \item SELECT\_NEXT\_ITEM
+    \item SELECT\_PREV\_ITEM
+    \item DROP\_SELECTED\_ITEM
+    \item LOOK\_UP\_DOWN\_DELTA
+    \item TURN\_LEFT\_RIGHT\_DELTA
+    \item MOVE\_FORWARD\_BACKWARD\_DELTA
+    \item MOVE\_LEFT\_RIGHT\_DELTA
+    \item MOVE\_UP\_DOWN\_DELTA
+\end{itemize}
+
+
+
