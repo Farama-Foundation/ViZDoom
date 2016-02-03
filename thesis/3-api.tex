@@ -271,8 +271,7 @@ void DoomGame::newEpisode();
 
 \vspace{20pt}
 \begin{clinee}
-	void DoomGame::advanceAction(unsigned int tics, bool stateUpdate, 
-						bool renderOnly);
+	void DoomGame::advanceAction(unsigned int tics, bool stateUpdate, bool renderOnly);
 \end{clinee}
 
     	Processes a specified number of tics. If stateUpdate is set the state will be updated after last processed tic and a new reward will be calucated. To get new state use \emph{getState} and to get the new reward use  \emph{getLastReward}. If stateUpdate is not set but renderOnly is turned on, the state will not be updated but a new frame will be rendered after last processed tic. To get the new frame use \emph{getGameScreen}.
