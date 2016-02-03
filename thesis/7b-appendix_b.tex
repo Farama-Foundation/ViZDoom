@@ -1,14 +1,29 @@
 \chapter{Building}
 \section{Prerequisites}
 \begin{itemize}
-\item preferably linux
+\item preferably Linux
 \item cmake
 \item make
 \item gcc 4.??
-\item boost v ?
-\item python 2.6 with numpy (v?) for pyhon wrapper
-\item java ? for java wrapper
-\item ...
+\item Boost 
+\item Python 2.6+ with Numpy and Boost.Python (for pyhon binding)
+\item Java compiler (for Java binding)
 \end{itemize}
+\section{Before Building}
+	In addition to prerequisites mentioned above, the following packages need to be install to build Zdoom itself:
+	\begin{description}
+		\item[Debian/Ubuntu:] \hfill \\
+		sudo apt-get install build-essential zlib1g-dev libsdl2-dev libjpeg-dev nasm tar libbz2-dev libgtk2.0-dev cmake git libfluidsynth-dev libgme-dev libopenal-dev timidity
+		\item[Fedora:] \hfill \\
+		yum install gcc-c++ make zlib-devel SDL2-devel libjpeg-turbo-devel nasm tar bzip2-devel gtk2-devel cmake git fluidsynth-devel game-music-emu-devel	openal-soft-devel timidity++
+		\item[Arch linux:] \hfill \\
+		pacman -S --needed gcc make zlib sdl2 libjpeg-turbo nasm tar bzip2 gtk2 cmake git fluidsynth libgme fmodex openal timidity++
+		\item[openSUSE:] \hfill \\
+		zypper install gcc-c++ make zlib-devel libSDL2-devel libjpeg-devel nasm tar libbz2-devel gtk2-devel cmake git fluidsynth-devel libgme-devel openal-soft-devel timidity
+	\end{description}
 \section{Compilation}
-cmake, make and they lived happily ever after
+To compile Vizia run this commands 
+	\begin{lstlisting}
+cmake -DCMAKE_BUILD_TYPE=Release
+make all
+	\end{lstlisting}
