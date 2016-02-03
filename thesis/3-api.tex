@@ -1,6 +1,6 @@
 \chapter{Application Programming Interface}\label{ch:api}
 \section{DoomGame Methods}\label{sec:methods}
-	This section documents all methods implemented by DoomGame class which is a part of Vizia namespace (C++), vizia module (Python), or //TODO// (Java). DoomGame object incorporates a single instance of Doom game engine and is the way to interface with it.
+	This section documents all methods implemented by DoomGame class which is a part of Vizia namespace (C++), vizia module (Python), or vizia package (Java). DoomGame object incorporates a single instance of Doom game engine and is the way to interface with it.
 	\subsection{Configuration Methods}\label{subsec:config_methods}
 	Methods described in this section set main parameters of the environment, such as resolution of generated image or available actions. They should be invoked after creation and before the initialization method (\emph{init}). Calling them after initialization will result in a warning or an exception, depending on severity of consequences. 
 	\vspace{20pt}
@@ -9,8 +9,7 @@
 DoomGame::DoomGame();
 \end{clinee}
 
-Constructs an instance of DoomGame. Zdoom engine is not ready for using after creation and needs initialization (init method). Freshly created DoomGame is initialized with the following parameters:
-%maybe some reference to where we describe what it all means . . .if we do anywhere . . .
+	Constructs an instance of DoomGame. Zdoom engine is not ready for using after creation and needs initialization (init method). Freshly created DoomGame is initialized with the following parameters:
 	\begin{itemize}
 		\item screenResolution: RES\_320x240
 		\item screenFormat: CRCGCB
@@ -34,15 +33,15 @@ Constructs an instance of DoomGame. Zdoom engine is not ready for using after cr
 \begin{clinee}
 DoomGame::~DoomGame();
 \end{clinee}
+	Destroys DoomGame object and safely ends work of the environment.
 
-Destroys DoomGame object and safely ends work of the environment.
 
 \vspace{20pt}
 \begin{clinee}
 bool DoomGame::init();
 \end{clinee}
 
-Initializes the enviroment and spawns the Doom eginge process. Configuration cannot be changed after calling \emph{init} method. Init returns true when the game engine was started properly and flase otherwise. 
+	Initializes the enviroment and spawns the Doom engine process. Configuration cannot be changed after calling \emph{init} method. Init returns true when the game engine was started properly and false otherwise. 
 
 
 \vspace{20pt}
@@ -50,7 +49,7 @@ Initializes the enviroment and spawns the Doom eginge process. Configuration can
 bool DoomGame::loadConfig(std::string configFilePath);
 \end{clinee}
 
-Loads configuration (resolution, available buttons etc.) from a configuration file. Proper syntax of configuration files is described in Section~\ref{sec:configuration_file}. In case of multiple invocations, older configurations will be overwritten by the recent ones. Note that overwriting does not involve resetting to default values, thus only overlapping parameters will be changed. The method returns true if the whole configuration file was correctly read and applied, false if the file was inaccessible or contained errors.
+	Loads configuration (resolution, available buttons etc.) from a configuration file. Proper syntax of configuration files is described in Section~\ref{sec:configuration_file}. In case of multiple invocations, older configurations will be overwritten by the recent ones. Note that overwriting does not involve resetting to default values, thus only overlapping parameters will be changed. The method returns true if the whole configuration file was correctly read and applied, false if the file was inaccessible or contained errors.
 
 
 \vspace{20pt}
@@ -58,13 +57,14 @@ Loads configuration (resolution, available buttons etc.) from a configuration fi
 void DoomGame::addAvailableButton(Button button);
 \end{clinee}
 
-Makes the specified input type (e.g. TURN\_LEFT, MOVE\_FORWARD ) available (possible to use). If the given button has already been added the method has no effect. If the specified button supports non-boolean values, no maximum value constraint is set. For the full list of supported buttons see Section~\ref{subsec:button}.
+	Makes the specified input type (e.g. TURN\_LEFT, MOVE\_FORWARD ) available (possible to use). If the given button has already been added, the method has no effect. If the specified button supports non-boolean values, no maximum value constraint is set. For more details see Section~\ref{subsec:button}.
 
 
+\vspace{20pt}
 \begin{clinee}
 void DoomGame::setButtonMaxValue(Button button, int maxValue);
 \end{clinee}
-Sets the maximum allowed (absolute) value for the specified button. If the button has not been added yet it is not added, but the maximum value is set anywa. Setting maximum value equal to 0 results in no constraint at all (infinity). This method makes sense only for buttons that use non-boolean values:  
+	Sets the maximum allowed (absolute) value for the specified button. If the button has not been added yet it is not added, but the maximum value is set anyway. Setting maximum value equal to 0 results in no constraint at all (infinity). This method makes sense only for buttons that use non-boolean values:  
 	\begin{itemize}
 		\item LOOK\_UP\_DOWN\_DELTA
 		\item TURN\_LEFT\_RIGHT\_DELTA
@@ -72,7 +72,8 @@ Sets the maximum allowed (absolute) value for the specified button. If the butto
 		\item MOVE\_LEFT\_RIGHT\_DELTA
 		\item MOVE\_UP\_DOWN\_DELTA
  	\end{itemize}
-This method will work and take effect even after call to \emph{init} method.
+This method will work and take effect even after calling \emph{init} method.
+
 
 \vspace{20pt}
 \begin{clinee}
@@ -80,17 +81,20 @@ void DoomGame::addAvailableButton(Button button, int maxValue);
 \end{clinee}
 	Combines functionalities of \emph{addAvailableButton} and \emph{setMaxButtonValue} in one method. If the button has already been added the maximum value is overridden. 
 
+
 \vspace{20pt}
 \begin{clinee}
 void DoomGame::clearAvailableButtons();
 \end{clinee}
 	Clears all available buttons addded so far.
 
+
 \vspace{20pt}
 \begin{clinee}
 void DoomGame::addAvailableGameVariable(GameVariable var);
 \end{clinee}
-	Adds the specified GameVariable to the list of game variables(e.g. AMMO1, HEALTH, ATTACK\_READY) that are included in the game's state (returned by \emph{getState} method). For the full list of available game variables see Section~`{subsec:gamevar}.
+	Adds the specified GameVariable to the list of game variables (e.g. AMMO1, HEALTH, ATTACK\_READY) that are included in the game's state (returned by \emph{getState} method). For the full list of available game variables see Section~`{subsec:gamevar}.
+
 
 \vspace{20pt}
 \begin{clinee}
@@ -98,11 +102,13 @@ void DoomGame::clearAvailableGameVariables();
 \end{clinee}
 	Clears the list of available game variables that are included in the game's state (returned by \emph{getState} method).
 
+
 \vspace{20pt}
 \begin{clinee}
 void DoomGame::addCustomGameArg(std::string arg);
 \end{clinee}
-	Adds a custom argument that will be passed to vizazdoom process during initialization. //TODO reference to wehere you can find possible arguments
+	Adds a custom argument that will be passed to vizazdoom process during initialization. For more details consult Zdoom Wiki Webpage\cite{zdoom-wiki}
+
 
 \vspace{20pt}
 \begin{clinee}
@@ -115,7 +121,8 @@ void DoomGame::clearCustomGameArgs();
 \begin{clinee}
 void DoomGame::setMode(Mode mode);
 \end{clinee}
-	Sets mode (e.g. PLAYER, SPECTATOR) in which the game will be started. For the full list of supported modes and their descriptions see Section~\ref{sec:architecture_modes}.
+	Sets mode (e.g. PLAYER, SPECTATOR) in which the game will be started. For more details see Section~\ref{sec:architecture_modes}.
+
 
 \vspace{20pt}
 \begin{clinee}
@@ -139,11 +146,13 @@ void DoomGame::setDoomScenarioPath(std::string path);
 \end{clinee}
 	Sets path to additional file or files (e.g. scenario).
 
+
 \vspace{20pt}
 \begin{clinee}
 void DoomGame::setDoomConfigPath(std::string path);
 \end{clinee}
 	Sets path for Doom configuration file. This configuration file is \emph{not} Vizia's configuration file that can be loaded and affects initialization parameters such as available buttons or screen resolution. The file in question is responsible for configuration of Doom engine itself (key bindings etc.) and is created after viziazdoom executable is run for the first time. This method is not needed for most of the tasks and is added for convinience of users with hacking tendencies. For more details consult Zdoom Wiki Webpage\cite{zdoom-wiki}.
+%hacking tendencies ???
 
 \vspace{20pt}
 \begin{clinee}
@@ -158,12 +167,13 @@ void DoomGame::setDoomSkill(int skill);
 \end{clinee}
 	Sets Doom game difficulty level (0-4) which is called `skill' in Doom. The higher is the skill ther harder the game becomes. Skill level affects monster' aggressiveness, monster's speed, weapon damage, ammunition quantities etc. For more details consult Zdoom Wiki Webpage\cite{zdoom-wiki}.
 
+
 \vspace{20pt}
 \begin{clinee}    
 void DoomGame::setEpisodeStartTime(unsigned int tics);
 \end{clinee}
 
-Sets start delay of every episodes in doom tics. Every episode will effectively start (from the user's perspective) after given number of tics.
+Sets start delay of every episode in doom tics. Every episode will effectively start (from the user's perspective) after given number of tics.
 
 
 \vspace{20pt}
@@ -186,19 +196,24 @@ Sets the reward granted to the player for each action (no matter if he survives 
 \begin{clinee}
 void DoomGame::setDeathPenalty(double deathPenalty);
 \end{clinee}
+
 	Sets a penalty for player's death. Note that in case of a negative value, the player will be rawarded upon dying.
+
 
 \vspace{20pt}
 \begin{clinee}
 void DoomGame::setScreenResolution(ScreenResolution resolution);
 \end{clinee}
-	Sets the screen resolution. Supported resolutions are part of ScreenResolution enumeration type and their format is: RES\_xXy (e.g. RES\_320X240, RES\_1920X1080). The buffer as well as content of zdoom's display window will be affected. For the full list of supported resolutions see Section~\ref{subsec:resolution}.
+
+	Sets the screen resolution. Supported resolutions are part of ScreenResolution enumeration type and their format is: RES\_xXy (e.g. RES\_320X240, RES\_1920X1080). The buffer as well as content of zdoom's display window will be affected. For the list of supported resolutions see Section~\ref{subsec:resolution}.
+
 
 \vspace{20pt}
 \begin{clinee}
 void DoomGame::setScreenFormat(ScreenFormat format);
 \end{clinee}
-	Sets the format of the screen buffer. Supported formats are defined in ScreenFormat enumaration type(e.g. CRCGCB, RGB24, GRAY8). The format change affects only the buffer so it will not have any effect on the content of zdoom's display window. To see the full list of supported screen formats see Section~\ref{subsec:screenformat}.
+	
+	Sets the format of the screen buffer. Supported formats are defined in ScreenFormat enumaration type (e.g. CRCGCB, RGB24, GRAY8). The format change affects only the buffer so it will not have any effect on the content of zdoom's display window. For more details see Section~\ref{subsec:screenformat}.
 
 
 \vspace{20pt}
@@ -209,6 +224,7 @@ void DoomGame::setRenderCrosshair(bool crosshair);
 void DoomGame::setRenderDecals(bool decals);
 void DoomGame::setRenderParticles(bool particles);
 \end{clinee}
+
 	Methods that determine if elements specified in the methods' names (hud, weapon, crosshair, decals and particles) will be displayed.
 
 
@@ -216,10 +232,10 @@ void DoomGame::setRenderParticles(bool particles);
 \begin{clinee}
 void DoomGame::setWindowVisible(bool visibility);
 \end{clinee}
-	Determines if zdoom's window will be visible.
-	Turning visibility off will result in:
+
+	Determines if zdoom's window will be visible. Turning visibility off will result in:
 	\begin{itemize}
-		\item Linux - rendering and any computations connected with the window will be skipped. Processing acceleration should be expected.
+		\item Linux - rendering and any computation connected with the window will be skipped. Processing acceleration should be expected.
 		\item Windows - window will be hidden. No processing acceleration should be expected.
 	\end{itemize}
 
@@ -228,7 +244,8 @@ void DoomGame::setWindowVisible(bool visibility);
 \begin{clinee}
 void DoomGame::setConsoleEnabled(bool console);
 \end{clinee}
-	Determines if Zdoom's and Vizia's console output will be enabled(e.g. `You picked up a medpac', `Player killed himself.', `Vizia\_init')
+
+	Determines if Zdoom's and Vizia's console output will be enabled (e.g. `You picked up a medpac', `Player killed himself.', `Vizia\_init')
 
 
 \vspace{20pt}
@@ -239,6 +256,7 @@ void DoomGame::setConsoleEnabled(bool console);
 \begin{clinee}
 void DoomGame::newEpisode();
 \end{clinee}
+
 	Initializes a new episode. All rewards and map states are restarted.
 
 
@@ -246,48 +264,57 @@ void DoomGame::newEpisode();
 \begin{clinee}
 	void DoomGame::setAction(std::vector<int> const &action);
 \end{clinee}
+
 	Sets the player's action for the next tics.
-	Each vector's value corresponds to a button specified with \emph{addAvailableButton} method or in configuration files (in order of appearance).
+	Each vector's value corresponds to a button specified with \emph{addAvailableButton} method or in configuration file (in order of appearance).
 
 
 \vspace{20pt}
 \begin{clinee}
-	void DoomGame::advanceAction(unsigned int tics, bool stateUpdate, bool renderOnly);
+	void DoomGame::advanceAction(unsigned int tics, bool stateUpdate, 
+						bool renderOnly);
 \end{clinee}
-    Process a specified number of tics. If stateUpdate is set the state will be updated after last processed tic and a new reward will be calucated. To get new state use \emph{getState} and to get the new reward use  \emph{getLastReward}. If stateUpdate is not set but renderOnly is set the state will not be updated but a new frame will be rendered after last processed tic. To get the new frame use \emph{getGameScreen}.
+
+    	Processes a specified number of tics. If stateUpdate is set the state will be updated after last processed tic and a new reward will be calucated. To get new state use \emph{getState} and to get the new reward use  \emph{getLastReward}. If stateUpdate is not set but renderOnly is turned on, the state will not be updated but a new frame will be rendered after last processed tic. To get the new frame use \emph{getGameScreen}.
 
 \vspace{20pt}
 \begin{clinee}
 	void DoomGame::advanceAction(unsigned int tics);
 \end{clinee}
-    Process a specified number of tics, updates state and calulates a new reward. Short for \emph{advanceAction(tics, true, false)}.
+
+    	Processes a specified number of tics, updates state and calulates a new reward. Short for \emph{advanceAction(tics, true, false)}.
+
 
 \vspace{20pt}
 \begin{clinee}
 	void DoomGame::advanceAction();
 \end{clinee}
-	Process one tic, updates the state and calulates a new reward. Short for \emph{advanceAction(1, true, false)}.
+
+	Processes one tic, updates the state and calulates a new reward. Short for \emph{advanceAction(1, true, false)}.
+
 
 \vspace{20pt}
 \begin{clinee}
 	double DoomGame::getLastReward();
 \end{clinee}
+
 	Returns a reward granted after last update of State. 
 
 
 \vspace{20pt}
 \begin{clinee}
-	double DoomGame::makeAction(std::vector<int> const &actions, unsigned int tics);
+	double DoomGame::makeAction(std::vector<int> const &actions,
+					 unsigned int tics);
 \end{clinee}
 
-Function combining usibility of \emph{setAction}, \emph{advanceAction} and \emph{getLastReward}. Sets the player's action for the next tics, process a specified number of tics, updates the state and calulates a new reward, which is returned.
+	Function combining usibility of \emph{setAction}, \emph{advanceAction} and \emph{getLastReward}. Sets the player's action for the next tics, processes a specified number of tics, updates the state and calulates a new reward, which is returned.
 
 \vspace{20pt}   
 \begin{clinee}
 	double DoomGame::makeAction(std::vector<int> const &action);
 \end{clinee}
 
-Function combining usibility of \emph{setAction}, \emph{advanceAction} and \emph{getLastReward}. Sets the player's action for the next tics, process one tic, updates the state and calulates a new reward, which is returned. Short for \emph{makeAction(action, 1}.
+	Function combining usibility of \emph{setAction}, \emph{advanceAction} and \emph{getLastReward}. Sets the player's action for the next tics, processes one tic, updates the state and calulates a new reward, which is returned. Short for \emph{makeAction(action, 1)}.
 
 
 \vspace{20pt}
@@ -302,6 +329,7 @@ Function combining usibility of \emph{setAction}, \emph{advanceAction} and \emph
 \begin{clinee}
 	std::vector<int> DoomGame::getLastAction();
 \end{clinee}
+
 	Returns a vector with the last action performed. Each vector's value corresponds to a button added with \emph{addAvailableButton} (in order of appearance). Most usefull in SPECTATOR mode.
 
 
@@ -309,14 +337,16 @@ Function combining usibility of \emph{setAction}, \emph{advanceAction} and \emph
 \begin{clinee}
 	uint8_t * const getGameScreen();
 \end{clinee}
-	Returns a pointer the screen buffer.
+
+	Returns a pointer to the screen buffer.
+
 
 \vspace{20pt}
 \begin{clinee}
 	int DoomGame::getGameVariable(GameVariable var);
 \end{clinee}
 
-	Returns the current value of the specified game variable (AMMO1, HEALTH etc.). The specified game variabled does not need to be among available game variables (included in the state).
+	Returns the current value of the specified game variable (AMMO1, HEALTH etc.). The specified game variable does not need to be among available game variables (included in the state).
 	It could be used for e.g. shaping. Returns 0 in case of not finding given GameVariable.
 
 
@@ -340,6 +370,7 @@ Function combining usibility of \emph{setAction}, \emph{advanceAction} and \emph
 \begin{clinee}
 	bool DoomGame::isEpisodeFinished();
 \end{clinee}
+
 	Returns true if the current episode is in the terminal state (is finished). \emph{MakeAction} and \emph{advanceAction} methods should not be called after this point (unless \emph{newEpisode} method is called).
 
 
@@ -348,13 +379,14 @@ Function combining usibility of \emph{setAction}, \emph{advanceAction} and \emph
 	void DoomGame::setSeed(unsigned int seed);
 \end{clinee}
 
-	Sets the seed of the randomizing engine. Using the same seed and actions in another episode will result in exactly the same gameplay (granted that the same actions will be performed).
+	Sets the seed of the randomizing engine. Using the same seed in another episode will result in exactly the same gameplay (granted that the same actions will be performed).
 
 
 \vspace{20pt}
 \begin{clinee}
 	void DoomGame::close();
 \end{clinee}
+
 	Closes Doom engine and corresponding processes. Metod frees used resources (memory allocations etc.). It is automatically invoked by the destructor so it is necessary only when there is a need to close zdoom engine in the middle of processing.
 
 
@@ -362,6 +394,7 @@ Function combining usibility of \emph{setAction}, \emph{advanceAction} and \emph
 \begin{clinee}
 	bool DoomGame::isRunning();
 \end{clinee}
+	
 	Checks if the current zdoom process is running.
 
 
@@ -369,12 +402,15 @@ Function combining usibility of \emph{setAction}, \emph{advanceAction} and \emph
 \begin{clinee}
 	void DoomGame::sendGameCommand(std::string cmd);
 \end{clinee}
+
 	Sends the command to Doom console. Can be used for cheats, multiplayer etc. For more details consult Zdoom Wiki Webpage\cite{zdoom-wiki}.
+
 
 \vspace{20pt}
 \subsection{Query Methods}
 
-DoomGame provides a number of getters associated with configuration methods described in Section~\ref{subsec:config_methods}. Getters can be used before and after initialization and return values of parameters that are specified in their names.
+	DoomGame provides a number of getters associated with configuration methods described in Section~\ref{subsec:config_methods}. Getters can be used before and after initialization and return values of parameters that are specified in their names.
+
 
 \vspace{20pt}
 \begin{clinee}
@@ -398,13 +434,14 @@ int DoomGame::getButtonMaxValue(Button button);
 
 
 \section {Utility Functions}
-In addition to DoomGame class, Vizia provides 3 utility functions that may be help with interaction with the Doom engine.
+	In addition to DoomGame class, Vizia provides 3 utility functions that may be helpfull with the interaction with the Doom engine.
 
 \vspace{20pt}
 \begin{clinee}
 unsigned int DoomTics2Ms(unsigned int tics);
 \end{clinee}
-	Calculates the number of milliseconds that will pass after specified number of tics (assuming 35 tics per second - designed Doom ticrate).
+
+	Calculates the number of milliseconds that will pass during specified number of tics (assuming 35 tics per second - designed Doom ticrate).
 
 
 \vspace{20pt}
@@ -419,6 +456,7 @@ unsigned int Ms2DoomTics(unsigned int ms);
 \begin{clinee}
 double DoomFixedToDouble(int doomFixed);
 \end{clinee}
+
 	Converts Doom's fixed point numeral to a double value.
 
 
@@ -426,7 +464,7 @@ double DoomFixedToDouble(int doomFixed);
 \section{Structures and Enumerations} \label{sec:structs}
 \subsection{State}
 
-A structure that represents the current state of the game.
+	A structure that represents the current state of the game.
 
 \vspace{20pt}	
 \begin{clinee}
@@ -442,7 +480,7 @@ A structure that represents the current state of the game.
 	\item[imageBuffer] Pointer to the screen buffer containing the image information.
 \end{description}
 \subsection{Mode}\label{subsec:mode}
-Enumeration type representing available game modes. For datailed description of all modes see Section~\ref{sec:architecture_modes}
+	Enumeration type representing available game modes. For datailed description of all modes see Section~\ref{sec:architecture_modes}
 
 \paragraph{Modes:}
 
@@ -454,7 +492,7 @@ Enumeration type representing available game modes. For datailed description of 
 \end{itemize}
 
 \subsection{ScreenFormat}\label{subsec:screenformat}
-Enumeration type representing the screen format in witch the game screen buffer will be kept. 
+	Enumeration type representing the screen format in witch the game screen buffer will be kept. 
 
 
 \vspace{20pt}
@@ -475,7 +513,8 @@ Enumeration type representing the screen format in witch the game screen buffer 
  \item DOOM\_256\_COLORS - 8 bit channel with Doom palette values
 \end{itemize}
 \subsection{ScreenResolution} \label{subsec:screenresolution}
-Enumeration type representing the screen resolutions. Because of the terrifying multitude of possible resolutions only a couple of sample resolutions are listed here. For the full list of resolutions see Apendix ~\ref{sec:appendix_structs_and_enums}.
+
+	Enumeration type representing the screen resolutions. Because of the multitude of possible resolutions only a couple of sample resolutions are listed here. For the full list of resolutions see Apendix ~\ref{sec:appendix_structs_and_enums}.
 
 
 \vspace{20pt}
@@ -490,28 +529,27 @@ Enumeration type representing the screen resolutions. Because of the terrifying 
 \end{itemize}
 
 \subsection{GameVariable} \label{subsec:gamevar}
-Enumeration type representing various game parameters like player's health or ammunition.
+Enumeration type representing various game parameters like player's health or ammunition. For the full list of Buttons see Apendix ~\ref{sec:appendix_structs_and_enums}.
 
 
-% TODO list and describe them all
 \vspace{20pt}
-\textbf{Game Variables:}
+\textbf{Game Variables Examples:}
 \begin{itemize}
-	\item KILLCOUNT\\
-	\item ITEMCOUNT\\
-	\item HEALTH\\
-	\item AMMO1\\
-	\item AMMO2\\
+	\item KILLCOUNT
+	\item ITEMCOUNT
+	\item HEALTH
+	\item SELECTED\_WEAPON
+	\item AMMO0
+	\item AMMO1
+	\item WEAPON0
 	\item WEAPON1
-	\item WEAPON2\\
-	\item USER1\\
 \end{itemize}
 
 \subsection{Button} \label{subsec:button}
-Enumeration type representing the possible prime factors that constitute a single action. Some of them can be further configured with a value indicating the angle of rotation or shift done in a single call. If not set, default force is used. Setting this additional value to the simple button without this option will not affect its call. If action lasting longer than 1 tic is performed, buttons correlated with move will be made continuously when simple actions will be made once in the first tic. Their full list can be found in the apendix.
 
-% TODO write about distinction between binary and delta buttons
-% TODO list and describe them all
+	Enumeration type representing the possible prime factors that constitute a single action. Some of them can be further configured with a value indicating the angle of rotation or shift done in a single call. If not set, default force is used. Setting this additional value to the simple button without this option will not affect its call. If action lasting longer than 1 tic is performed, buttons correlated with move will be made continuously when simple actions will be made once in the first tic. For the full list of Buttons see Apendix ~\ref{sec:appendix_structs_and_enums}.
+
+
 \vspace{20pt}
 \textbf{Binary Buttons Examples:}
 \begin{itemize} 
@@ -534,16 +572,14 @@ Enumeration type representing the possible prime factors that constitute a singl
 
 \section{Configuration file}\label{sec:configuration_file}
 
+	Configuration file stores group of parameters and initial settings for the future use. It can be loaded into the game before inicialization. Settings can be overwritten after that action, giving the possibility of changing sigle parameter without interference in the file itself. There should be met certain requirements as to its content and name to make it load successfully.
 
-Configuration file stores group of parameters and initial settings for the future use. It can be loaded into the game before inicialization. Settings can be overwritten after that action, giving the possibility of changing sigle parameter without interference in the file itself. There should be met certain requirements as to its content and name to make it load successfully.
 
-Name of the configuration file should be with .properties suffix.
+	\emph{Name} of the configuration file should be with .properties suffix.
 
-Content of the file should be composed of keywords identifying the setting and the value assigned to it separated with '='. Keyword is constructed similarly to the setting name, for example: episodeStartTime, windowVisible. However, two of them differ: availablebuttons, availablegamevariables.
+	\emph{Content} of the file should be composed of keywords identifying the setting and the value assigned to it separated with `='. Keyword is constructed similarly to the setting name, for example: episodeStartTime, windowVisible. However, two of them differ: availablebuttons, availablegamevariables.
 Keyword can be written in both underscore and camel notation (case-insensitive). 
-
-
-Value should be placed after '=' sign. File paths should not be placed between "" marks like the rest of the string values.
+	Value should be placed after `=' sign. File paths should not be placed between "" marks like the rest of the string values.
 \begin{pblock}
 ...
 #Values
@@ -556,7 +592,10 @@ doom_file_path = ../../scenarios/basic.wad
 doom_map = "map01"
 ...
 \end{pblock}
-Enum values should be passed using their name.
+
+	Enum values should be passed using their name.
+
+
 \begin{pblock}
 ...
 #Enums
@@ -564,9 +603,10 @@ screen_format = CRCGCB
 mode = PLAYER
 ...
 \end{pblock}
-Each setting should be separated from each other by a sign of the new line. In order to improve readability, it's possible to add a comment line by adding a '\#' sign at the beginning of the new line.
 
-An exceptionally behave here availablebuttons and availablegamevariables functions because instead of individual variables, take as an argument the list of values in '\{\}'. The individual components should be separated from each other by a newline.
+	Each setting should be separated from each other by a sign of the new line. In order to improve readability, it's possible to add a comment line by adding a `\#' sign at the beginning of the new line.
+
+Availablebuttons and availablegamevariables keywords instead of individual values, take the list of them in `\{\}'. The individual components should be separated from each other by a newline.
 \begin{pblock}
 ...
 # Available buttons
@@ -596,9 +636,9 @@ python: doom_fixed_to_double(int doomFixed)
 
 
 \paragraph {Structures}
- State is changed structuraly: bufer is a numpy array and game variables are contained in a Python list. Whats more, getState() copies the buffer and gameVariables what doesn't happen in cpp. 
+ State is changed structuraly: bufer is a numpy array and game variables are contained in a Python list. Whats more, \emph{getState} copies the buffer and gameVariables what doesn't happen in cpp. 
 \paragraph {Enumerations}
-Python equivalent of enums were created with the same names.
+Python equivalent of enumerations were created with the same names.
 \begin{cblock}
 game.add_available_button(Button.TURN_LEFT_RIGHT_DELTA)
 game.add_available_button(Button.MOVE_LEFT)
@@ -612,7 +652,6 @@ Due to the languages differences, some types have been modified.
 \end{itemize}
 
 
-
 \subsection{Java}
 Java, like python, is a bit different then c++. All differences and the most important principles of using are listed below.
 
@@ -623,7 +662,7 @@ c++: DoomFixedToDouble(int doomFixed)
 java: DoomFixedToDouble(int doomFixed)
 \end{cblock}
 \paragraph {Structures}
-State is changed structuraly: bufer and game variables are int tables (int[]). Whats more, getState() copies the buffer and gameVariables what doesn't happen in cpp. 
+State is changed structuraly: bufer and game variables are int tables (int[]). Whats more, \emph{getState} copies the buffer and gameVariables what doesn't happen in cpp. 
 \paragraph {Enumerations}
 Java equivalent of enums were created with the same names.
 \begin{cblock}
@@ -638,11 +677,11 @@ Due to the languages differences, some types have been modified.
 \end{itemize}
 \section{Extended Examples}
 \subsection{Spectator mode}
-Spectator mode is designed to enable artificial intelligence to learn directly from humans game.
+	Spectator mode is designed to enable artificial intelligence to learn directly from humans game.
 Python listing presented below demonstrates the use of this option in which a human takes control over the game and Intelligent Agent looks at and analyzes the movements. In this synchronous mode, Artificial Intelligence has power over the engine and decides when human can make the next move. 
 
 
-After the initial configuration in which available actions and collected variables from the game are set, the script runs sequence of 10 episodes. During their run, the image is downloaded and the human gets the opportunity to perform a single action which are then read and stored by the script. After this process, processing of AI follows. Downloaded data is printed at the end of the loop, such as the values of game variables set in the game and operations taken with associated reward. What's more, before the end of each episode, a summary is displayed followed by 2 second delay.
+After the initial configuration in which available buttons and collected variables from the game are set, the script runs sequence of 10 episodes. During their run, the image is downloaded and the human gets the opportunity to perform a single action which are then read and stored by the script. After this process, processing of AI follows. Downloaded data is printed at the end of the loop, such as the values of game variables set in the game and operations taken with associated reward. What's more, before the end of each episode, a summary is displayed followed by 2 second delay.
 
 \begin{pblock}
 from __future__ import print_function
@@ -691,9 +730,9 @@ game.close()
 \end{pblock}
 
 \subsection {Seed}
-Seed setting was created to enable running deterministic episodes. Thanks to that, if agent behaves in the same way, each episode can be recreated.
+	Seed setting was created to enable running deterministic episodes. Thanks to that, if agent behaves in the same way, each episode can be recreated.
 
-The following listing demonstrates usiage of a seed in the script. Once it is set along with other parameters in the configuration phase, list of all possible actions is made. In each episode, state of the game is processed and action is made based on AI decision. In that point, operation taken in the game should be saved to make it possible to recreate the episode in the future. Downloaded data is printed at the end of the loop, such as game state number, the values of variables set in the game and reward for last action made. After each episode, quick summary is displayed. To recreate one of the episodes, the same seed should be set and the same actions in wright time should be taken.
+The following listing demonstrates usiage of seed in the script. Once it is set along with other parameters in the configuration phase, list of all possible actions is made. In each episode, state of the game is processed and action is made based on AI decision. In that point, operation taken in the game should be saved to make it possible to recreate the episode in the future. Downloaded data is printed at the end of the loop, such as game state number, the values of variables set in the game and reward for last action made. After each episode, quick summary is displayed. To recreate one of the episodes, the same seed should be set and the same actions in wright time should be taken.
 
 \begin{pblock}
 from __future__ import print_function
@@ -754,10 +793,10 @@ game.close()
 \end{pblock}
 
 \subsection {Multiplayer}
-Multiplayer mode was configured to enable creating deathmatch between human and AI (or only AI). To create such game, at least two scripts should be prepered.
+	Multiplayer mode was configured to enable creating deathmatch between human and AI (or only AI). To create such game, at least two scripts should be prepered.
 
-\paragraph{Host player}
-To create the game, host player script should be implemented with all appropriate configuration. After setting basic options like resolution and gamemode (asynchronous should be used), some addition game arguments should be passed using addCustomGameArg() function. They define max number of players, variant of the game and used map. In the following script, Spectator mode is picked and AI is only processing image data and updating game state using advance\_action(). At the end of each loop, log is displayed on the console window.
+
+	To create the game, host player script should be implemented with all appropriate configuration. After setting basic options like resolution and gamemode (asynchronous should be used), some addition game arguments should be passed using \emph{addCustomGameArg} function. They define max number of players, variant of the game and used map. In the following script, Spectator mode is picked and AI is only processing image data. At the end of each loop, log is displayed on the console window.
 
 \begin{pblock}
 from __future__ import print_function
@@ -804,7 +843,7 @@ game.close()
 \end{pblock}
 
 
-To join an existing game, some additional configuration using game arguments should be made. Host player should be pointed by passing his ip number. In followinig egzample, AI can make 3 types of actions: shoot, move left or move right. It is picked after image processing. At the end of each loop, log is displayed on the console window.
+	To join an existing game, some additional configuration using game arguments should be made. Host player should be pointed by passing his ip number. In followinig egzample, AI can make 3 types of actions: shoot, move left or move right. It is picked after image processing. At the end of each loop, log is displayed on the console window.
 
 \begin{pblock}
 from __future__ import print_function
