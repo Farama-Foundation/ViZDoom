@@ -13,7 +13,6 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 		\item episode timeout,
 		\item skill level (they can affect; however, behaviors that depend on it),
 		\item any rendering options e.g. screen resolution or~crosshair visibility,
-		\item engine's reaction to player's death.
 	\end{itemize}
 
 	Due to scenarios' ability to set rewards they could be used to implement so called \emph{living~reward} and a~penalty for dying. Nonetheless, using API's \emph{setLivingReward} and \emph{setDeathPenalty} methods is the preferred way(see Section \ref{subsec:config_methods} and \ref{sec:configuration_file}) .
@@ -276,7 +275,7 @@ global int <X>:reward;
 		Where <X> denotes the ordinal number of the variable.
 		
 	\subsection{Rewards}
-		In order to support rewarding mechanism, it is neccessary to utilize global variable 0 in ACS script. Name given to the variable does not matter. Value of the variable represents total reward accumulated throughout whole episode so in order to give reward for specific action you need to increase global variable 0 by the desired value not assign it. Vizia will treat the variable as a fixed point number(see \ref{subsec:fixed_point}).
+		In order to support the rewarding mechanism, it is neccessary to utilize global variable 0 in the ACS script. Name given to the variable does not matter. The value of the variable represents total reward accumulated throughout the whole episode so in order to give a reward for a specific action it is needed to increase global variable 0 by the desired value not to assign it. Vizia will treat the reward global variable as a fixed point number(see \ref{subsec:fixed_point}).
 
 	\subsection{Advices}
 		This section shows code snippets showing how we achive some ACS scripting behaviors that may prove useful. The code snippets intend to be relatively self-explanatory and assume knowledge of the very basics of ACS scripting and capability of reading documentation to make sense of used functions. For documentation and more detailed information consult Zdoom Wiki Webpage\cite{zdoom-wiki}.

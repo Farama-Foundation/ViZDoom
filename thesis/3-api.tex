@@ -1,27 +1,26 @@
 \chapter{Application Programming Interface}\label{ch:api}
-\section{Methods}\label{sec:methods}
-	\subsection{Configuration}\label{subsec:config_methods}
-	Methods described in this section set main parameters of the environment, such as resolution of generated image or available actions. They should be invoked after creation and before invoking of the initialization method (init). Any attempt to call them after initialization will result in a warning or an exception, depending on severity of consequences. 
+\section{DoomGame Methods}\label{sec:methods}
+	This section documents all methods implemented by DoomGame class which is a part of Vizia namespace (C++), vizia module (Python), or //TODO// (Java). DoomGame object incorporates a single instance of Doom game engine and is the way to interface with it.
+	\subsection{Configuration Methods}\label{subsec:config_methods}
+	Methods described in this section set main parameters of the environment, such as resolution of generated image or available actions. They should be invoked after creation and before the initialization method (\emph{init}). Calling them after initialization will result in a warning or an exception, depending on severity of consequences. 
 	\vspace{20pt}
 
 \begin{clinee}
-DoomGame();
+DoomGame::DoomGame();
 \end{clinee}
 
-Constructor that creates an instance of the game. Zdoom is not ready for using after creation and needs initialization. Freshly created DoomGame is initialized with the following parameters:
+Constructs an instance of DoomGame. Zdoom engine is not ready for using after creation and needs initialization (init method). Freshly created DoomGame is initialized with the following parameters:
 %maybe some reference to where we describe what it all means . . .if we do anywhere . . .
 	\begin{itemize}
 		\item screenResolution: RES\_320x240
 		\item screenFormat: CRCGCB
-		\item Game path: ``./viziazdoom''
-		\item Game iwad path: ``./doom2.wad''
-		\item map: ``map01'' (first map created in the iwad file if it's not changed purposefully)
+		\item Game path: `./viziazdoom'
+		\item Game iwad path: `./doom2.wad'
+		\item map: `map01' (first map created in the iwad file if it's not changed purposefully)
 		\item mode: PLAYER
 		\item gameVariables: none
 		\item customGameArgs: none
 		\item available buttons: none
-%we should mention somewhere that these values will be set if none is left:
-%ATTACK, USE, JUMP, CROUCH, SPEED, MOVE\_RIGHT, MOVE\_LEFT, MOVE\_BACKWARD, MOVE\_FORWARD, TURN\_RIGHT, TURN\_LEFT
 		\item rendering: all without crosshair
 		\item windowVisible: true 
 		\item doomSkill: 3
@@ -31,107 +30,96 @@ Constructor that creates an instance of the game. Zdoom is not ready for using a
 		\item episodeTimeout: 0
 	\end{itemize}
 
-
 \vspace{20pt}
 \begin{clinee}
-~DoomGame();
+DoomGame::~DoomGame();
 \end{clinee}
 
-The destructor that safely ends the work of environment and removes the object.
-
+Destroys DoomGame object and safely ends work of the environment.
 
 \vspace{20pt}
 \begin{clinee}
-bool init();
+bool DoomGame::init();
 \end{clinee}
 
-Function which initializes enviroment. Configuration cannot be changed after invokation of init(). Dooms instance is created in separate process. Returns true when game was started properly. 
+Initializes the enviroment and spawns the Doom eginge process. Configuration cannot be changed after calling \emph{init} method. Init returns true when the game engine was started properly and flase otherwise. 
 
 
 \vspace{20pt}
 \begin{clinee}
-bool loadConfig(std::string filename);
+bool DoomGame::loadConfig(std::string configFilePath);
 \end{clinee}
 
-Loads and sets configuration from a configuration file. It's syntax is better described in Section~\ref{sec:configuration_file}. The configuration file can substitute any combination of the following methods call. In case of multiple invokations, they will overwrite selected settings from previous calls. Return true when all configuration was read properly.
+Loads configuration (resolution, available buttons etc.) from a configuration file. Proper syntax of configuration files is described in Section~\ref{sec:configuration_file}. In case of multiple invocations, older configurations will be overwritten by the recent ones. Note that overwriting does not involve resetting to default values, thus only overlapping parameters will be changed. The method returns true if the whole configuration file was correctly read and applied, false if the file was inaccessible or contained errors.
 
 
 \vspace{20pt}
 \begin{clinee}
-void addAvailableButton(Button button);
+void DoomGame::addAvailableButton(Button button);
 \end{clinee}
 
-Makes the specified input type (e.g. TURN\_LEFT, MOVE\_FORWARD ) available (possible) in the AI agent's actions in PLAYER and ASYNC\_PLAYER modes and the human player's actions in SPECTATOR and ASYNC\_SPECTATOR modes. If no buttons are specified (the method is not called) 11 default buttons are added. Their list may be found in constructor description.
+Makes the specified input type (e.g. TURN\_LEFT, MOVE\_FORWARD ) available (possible to use). If the given button has already been added the method has no effect. If the specified button supports non-boolean values, no maximum value constraint is set. For the full list of supported buttons see Section~\ref{subsec:button}.
 
 
-\vspace{20pt}
 \begin{clinee}
-void addAvailableButton(Button button, int maxValue);
+void DoomGame::setButtonMaxValue(Button button, int maxValue);
 \end{clinee}
-
-Makes the specified input type available in actions and sets the maximum allowed value for that input type. 0 as maxValue means no  Its list can be found in Section~\ref{subsec:button}.
-
+Sets the maximum allowed (absolute) value for the specified button. If the button has not been added yet it is not added, but the maximum value is set anywa. Setting maximum value equal to 0 results in no constraint at all (infinity). This method makes sense only for buttons that use non-boolean values:  
+	\begin{itemize}
+		\item LOOK\_UP\_DOWN\_DELTA
+		\item TURN\_LEFT\_RIGHT\_DELTA
+		\item MOVE\_FORWARD\_BACKWARD\_DELTA
+		\item MOVE\_LEFT\_RIGHT\_DELTA
+		\item MOVE\_UP\_DOWN\_DELTA
+ 	\end{itemize}
+This method will work and take effect even after call to \emph{init} method.
 
 \vspace{20pt}
 \begin{clinee}
-void setButtonMaxValue(Button button, int maxValue);
+void DoomGame::addAvailableButton(Button button, int maxValue);
 \end{clinee}
-
-Sets the maximum allowed value for the specified input type. It only applies to actions responsible for rotation and movement, it effectively constraints rotation/moving speed.
-0 means no constraint and it is the default behavior. Its list can be found in Section~\ref{subsec:button}.
-
+	Combines functionalities of \emph{addAvailableButton} and \emph{setMaxButtonValue} in one method. If the button has already been added the maximum value is overridden. 
 
 \vspace{20pt}
 \begin{clinee}
-void addAvailableGameVariable(GameVariable var);
+void DoomGame::clearAvailableButtons();
 \end{clinee}
-
-Adds given GameVariable to the list of values returned in getState() (e.g. AMMO1, HEALTH, ATTACK\_READY). It list can be found in Section~\ref{subsec:gamevar}.
-
+	Clears all available buttons addded so far.
 
 \vspace{20pt}
 \begin{clinee}
-void clearAvailableButtons();
+void DoomGame::addAvailableGameVariable(GameVariable var);
 \end{clinee}
-
-Disables all input type in action. It will result in default setting which can be found in constructor description.
-
+	Adds the specified GameVariable to the list of game variables(e.g. AMMO1, HEALTH, ATTACK\_READY) that are included in the game's state (returned by \emph{getState} method). For the full list of available game variables see Section~`{subsec:gamevar}.
 
 \vspace{20pt}
 \begin{clinee}
-void clearAvailableGameVariables();
+void DoomGame::clearAvailableGameVariables();
 \end{clinee}
-
-Clears the list of game variables returned in getState().
-
+	Clears the list of available game variables that are included in the game's state (returned by \emph{getState} method).
 
 \vspace{20pt}
 \begin{clinee}
-void addCustomGameArg(std::string arg);
+void DoomGame::addCustomGameArg(std::string arg);
 \end{clinee}
-
-Adds a custom argument for the ViziaZDoom process.
-
+	Adds a custom argument that will be passed to vizazdoom process during initialization. //TODO reference to wehere you can find possible arguments
 
 \vspace{20pt}
 \begin{clinee}
-void clearCustomGameArgs();
+void DoomGame::clearCustomGameArgs();
 \end{clinee}
-
-Clears all arguments specified by addCustomGameArg().
+	Clears all arguments previously added with \emph{addCustomGameArg} method.
 
 
 \vspace{20pt}
 \begin{clinee}
-void setMode(Mode mode);
+void DoomGame::setMode(Mode mode);
 \end{clinee}
-
-Sets mode in which the game will be started. Supported formats are defined in Mode enumaration (e.g. PLAYER, SPECTATOR) and can be found in Section~\ref{subsec:mode}..
-
+	Sets mode (e.g. PLAYER, SPECTATOR) in which the game will be started. For the full list of supported modes and their descriptions see Section~\ref{sec:architecture_modes}.
 
 \vspace{20pt}
 \begin{clinee}
-void setDoomEnginePath(std::string path);
+void DoomGame::setDoomEnginePath(std::string path);
 \end{clinee}
 
 Sets path to Doom engine executable.
@@ -139,47 +127,40 @@ Sets path to Doom engine executable.
 
 \vspace{20pt}
 \begin{clinee}
-void setDoomGamePath(std::string path);
+void DoomGame::setDoomGamePath(std::string path);
 \end{clinee}
 
-Sets path to the Doom engine based game file.
+Sets path to the Doom engine based game file (wad format).
 
 
 \vspace{20pt}
 \begin{clinee}
-void setDoomScenarioPath(std::string path);
+void DoomGame::setDoomScenarioPath(std::string path);
 \end{clinee}
-
-Sets path to additional file or files (e.g. scenario).
-
+	Sets path to additional file or files (e.g. scenario).
 
 \vspace{20pt}
 \begin{clinee}
-void setDoomMap(std::string map);
+void DoomGame::setDoomConfigPath(std::string path);
 \end{clinee}
+	Sets path for Doom configuration file. This configuration file is \emph{not} Vizia's configuration file that can be loaded and affects initialization parameters such as available buttons or screen resolution. The file in question is responsible for configuration of Doom engine itself (key bindings etc.) and is created after viziazdoom executable is run for the first time. This method is not needed for most of the tasks and is added for convinience of users with hacking tendencies. For more details consult Zdoom Wiki Webpage\cite{zdoom-wiki}.
 
-Sets map to be used by doom.
+\vspace{20pt}
+\begin{clinee}
+void DoomGame::setDoomMap(std::string map);
+\end{clinee}
+	Sets the map to be used.
 
 
 \vspace{20pt}
 \begin{clinee}      
-void setDoomSkill(int skill);
+void DoomGame::setDoomSkill(int skill);
 \end{clinee}
-
-Sets Doom game difficulty level (0-4) which is called skill in Doom. Less means easier. It affects ammo, damage and monster aggressiveness.
-
-
-\vspace{20pt}
-\begin{clinee}
-void setDoomConfigPath(std::string path);
-\end{clinee}
-
-Sets path for Doom configuration file.
-
+	Sets Doom game difficulty level (0-4) which is called `skill' in Doom. The higher is the skill ther harder the game becomes. Skill level affects monster' aggressiveness, monster's speed, weapon damage, ammunition quantities etc. For more details consult Zdoom Wiki Webpage\cite{zdoom-wiki}.
 
 \vspace{20pt}
 \begin{clinee}    
-void setEpisodeStartTime(unsigned int tics);
+void DoomGame::setEpisodeStartTime(unsigned int tics);
 \end{clinee}
 
 Sets start delay of every episodes in doom tics. Every episode will effectively start (from the user's perspective) after given number of tics.
@@ -187,161 +168,111 @@ Sets start delay of every episodes in doom tics. Every episode will effectively 
 
 \vspace{20pt}
 \begin{clinee}
-void setEpisodeTimeout(unsigned int tics);
+void DoomGame::setEpisodeTimeout(unsigned int tics);
 \end{clinee}
 
-Sets quantity of tics after which the episode will be finished.
+Sets quantity of tics after which the episode will be finished. 0 will result in no timeout.
 
 
 \vspace{20pt}
 \begin{clinee}
-void setLivingReward(double livingReward);
+void DoomGame::setLivingReward(double livingReward);
 \end{clinee}
 
-Sets the reward granted for player being alive after each tic.
+Sets the reward granted to the player for each action (no matter if he survives it). A negative value will result in living penalty rather than a reward.
 
 
 \vspace{20pt}
 \begin{clinee}
-void setDeathPenalty(double deathPenalty);
+void DoomGame::setDeathPenalty(double deathPenalty);
 \end{clinee}
-
-Sets penalty for player's death. In case of negative value, player will be rawarded for each decease.
-
+	Sets a penalty for player's death. Note that in case of a negative value, the player will be rawarded upon dying.
 
 \vspace{20pt}
 \begin{clinee}
-void setAutoNewEpisode(bool set);
+void DoomGame::setScreenResolution(ScreenResolution resolution);
 \end{clinee}
-
-Determines if automatic episode restart will be set in case of the end of previous one.
-
+	Sets the screen resolution. Supported resolutions are part of ScreenResolution enumeration type and their format is: RES\_xXy (e.g. RES\_320X240, RES\_1920X1080). The buffer as well as content of zdoom's display window will be affected. For the full list of supported resolutions see Section~\ref{subsec:resolution}.
 
 \vspace{20pt}
 \begin{clinee}
-void setNewEpisodeOnTimeout(bool set);
+void DoomGame::setScreenFormat(ScreenFormat format);
 \end{clinee}
-
-Determines if automatic episode restart will be set in case of the timeout.
-
-
-\vspace{20pt}
-\begin{clinee}
-void setNewEpisodeOnPlayerDeath(bool set);
-\end{clinee}
-
-Determines if automatic episode restart will be set in case of players death.
-
-
-\vspace{20pt}
-\begin{clinee}
-void setNewEpisodeOnMapEnd(bool set);
-\end{clinee}
-
-Determines if automatic episode restart is set when player reaches the end of the map.
-
-
-\vspace{20pt}
-\begin{clinee}
-void setScreenResolution(ScreenResolution resolution);
-\end{clinee}
-
-Sets screen resolution. Supported resolutions are part of ScreenResolution enumeration type and their format is: RES\_xXy (e.g. RES\_320X240, RES\_1920X1080). Buffer as well as content of zdoom's window is affected. Its list can be found in Section~\ref{subsec:resolution}.
-
-
-\vspace{20pt}
-\begin{clinee}
- void setScreenFormat(ScreenFormat format);
-\end{clinee}
-
-Sets format of the screen buffer. Supported formats are defined in ScreenFormat enumaration (e.g. CRCGCB, RGB24, GRAY8). Content displayed in zdoom's window what change no matter which format you choose - it only affects the buffer. It list can be found in Section~\ref{subsec:screenformat}.
+	Sets the format of the screen buffer. Supported formats are defined in ScreenFormat enumaration type(e.g. CRCGCB, RGB24, GRAY8). The format change affects only the buffer so it will not have any effect on the content of zdoom's display window. To see the full list of supported screen formats see Section~\ref{subsec:screenformat}.
 
 
 \vspace{20pt}
 \begin{clinee}       
-void setRenderHud(bool hud);
-void setRenderWeapon(bool weapon);
-void setRenderCrosshair(bool crosshair);
-void setRenderDecals(bool decals);
-void setRenderParticles(bool particles);
+void DoomGame::setRenderHud(bool hud);
+void DoomGame::setRenderWeapon(bool weapon);
+void DoomGame::setRenderCrosshair(bool crosshair);
+void DoomGame::setRenderDecals(bool decals);
+void DoomGame::setRenderParticles(bool particles);
 \end{clinee}
-
-Methods that determine if some elements (hud, weapon, crosshair, decals, particles) will be displayed.
+	Methods that determine if elements specified in the methods' names (hud, weapon, crosshair, decals and particles) will be displayed.
 
 
 \vspace{20pt}
 \begin{clinee}
-void setWindowVisible(bool visibility);
+void DoomGame::setWindowVisible(bool visibility);
 \end{clinee}
-
-Determines if zdoom's window will be visible.
-Turning it off will result in:
-\begin{itemize}
-\item Linux - rendering and any computations connected with the window will be skipped. It results in processing acceleration.
-\item Windows - window will be hided. No processing acceleration
-\end{itemize}
+	Determines if zdoom's window will be visible.
+	Turning visibility off will result in:
+	\begin{itemize}
+		\item Linux - rendering and any computations connected with the window will be skipped. Processing acceleration should be expected.
+		\item Windows - window will be hidden. No processing acceleration should be expected.
+	\end{itemize}
 
 
 \vspace{20pt}
 \begin{clinee}
-void setConsoleEnabled(bool console);
+void DoomGame::setConsoleEnabled(bool console);
 \end{clinee}
-
-Determines if zdoom's and vizia's console output will be displayed (e.g. "You picked up a medpack", "Player killed himself.", "Vizia\_init")
+	Determines if Zdoom's and Vizia's console output will be enabled(e.g. `You picked up a medpac', `Player killed himself.', `Vizia\_init')
 
 
 \vspace{20pt}
-\subsection{Runtime}\label{subsec:runtime_methods}
-The following methods handles gameplay. They directly affect the game and should be used after inicialization. 
-Any attempt to invoke them before it will result in a warning/exception depending on severity of consequences. 
+\subsection{Runtime Methods}\label{subsec:runtime_methods}
+	The following methods directly interact with the game's state and should be used after inicialization. Calling them before \emph{init} method will result in a warning or exception depending on severity of consequences. 
+
+\vspace{20pt}
+\begin{clinee}
+void DoomGame::newEpisode();
+\end{clinee}
+	Initializes a new episode. All rewards and map states are restarted.
 
 
 \vspace{20pt}
 \begin{clinee}
-void newEpisode();
+	void DoomGame::setAction(std::vector<int> const &actions);
 \end{clinee}
+	Sets the player's behavior in the next tic.
+	Each vector's value corresponds to a button specified with \emph{addAvailableButton} method or in configuration files (in order of appearance).
 
-Initializes new episode. All rewards and map states are restarted.
+\vspace{20pt}
+\begin{clinee}
+	void DoomGame::advanceAction();
+\end{clinee}
+	Performs a single tic using the action set with \emph{setAction}. After the call, action vector is not reset and will be used once again if not changed before the next advance.
 
 
 \vspace{20pt}
 \begin{clinee}
-	void setAction(std::vector<int> const &actions);
+	void DoomGame::advanceAction(bool stateUpdate, bool renderOnly, unsigned int tics);
 \end{clinee}
-
-Sets the player's behavior in the next tic.
-Each vector's value corresponds to button specified with addAvailableButton() function (in invocation order).
-In case of possitive value, picked action will be triggered with the specified strength. Descrete actions (e.g. ATTACK) will be performed once.
+	Performs a specified number of tics using the action set with \emph{setAction}. After the call, action vector is not reset and will be used once again if not changed before the next advance.
 
 
 \vspace{20pt}
 \begin{clinee}
-	void advanceAction();
+	double DoomGame::getLastReward();
 \end{clinee}
-
-Method performs a tic using action obtained by setAction(). After function call, action vector is not reseted and will be performed once again if not changed in the next tic.
+	Returns a reward granted after last \emph{advanceAction}. If a single action lasted longer then one tic, the cumulative reward from all tics will be returned.
 
 
 \vspace{20pt}
 \begin{clinee}
-	void advanceAction(bool stateUpdate, bool renderOnly, unsigned int tics);
-\end{clinee}
-
-Method performs a given number of tics in the row. Descrete actions (e.g. ATTACK) will be only performed in the first tic, analog actions (moving, turning) will be repeated every tic. 
-Function also determines if state should be updated. What's more, setting renderOnly option as true will disable buffer update. Hovewer, it will not affect zdoom main window.  
-
-
-\vspace{20pt}
-\begin{clinee}
-	double getLastReward();
-\end{clinee}
-
-Returns the reward from last advanceAction. If a single action lasted longer then one tick, function will return cumulative reward from all tics.
-
-
-\vspace{20pt}
-\begin{clinee}
-	double makeAction(std::vector<int> const &actions);
+	double DoomGame::makeAction(std::vector<int> const &actions);
 \end{clinee}
 
 Function combining usibility of setAction(), advanceAction() and getLastReward(). It sets the player's behavior in the next tic, performes one and returns reward.
@@ -351,7 +282,7 @@ In case of possitive value, picked action will be triggered with the specified s
 
 \vspace{20pt}
 \begin{clinee}
-	double makeAction(std::vector<int> const &actions, unsigned int tics);
+	double DoomGame::makeAction(std::vector<int> const &actions, unsigned int tics);
 \end{clinee}
 
 Function combining usibility of setAction(), advanceAction() and getLastReward(). It sets the player's behavior in the next number of tics given to the function, performes it and returns cumulative reward from all tics. Each vector's value corresponds to button specified with addAvailableButton() function (in invocation order). Descrete actions (e.g. ATTACK) will be only performed in the first tic, analog actions (moving, turning) will be repeated every tic with given strength.
@@ -360,129 +291,119 @@ State will be updated after that. Buffer will not be updated.
 
 \vspace{20pt}
 \begin{clinee}
-	State getState();
+	DoomGame::State DoomGame::getState();
 \end{clinee}
 
-Returns struct State with the current game state. More detailed description of the struct can be found in Section~\ref{sec:structs}.
+	Returns DoomGame::State structure with the current game state. For more details see Section~\ref{sec:structs}.
 
 
 \vspace{20pt}
 \begin{clinee}
-	std::vector<int> getLastAction();
+	std::vector<int> DoomGame::getLastAction();
 \end{clinee}
-
-Returns a vector with the last action performed. Each vector's value corresponds to button specified with addAvailableButton() function (in invocation order). Most usefull in SPECTATOR mode.
+	Returns a vector with the last action performed. Each vector's value corresponds to a button added with \emph{addAvailableButton} (in order of appearance). Most usefull in SPECTATOR mode.
 
 
 \vspace{20pt}
 \begin{clinee}
 	uint8_t * const getGameScreen();
 \end{clinee}
+	Returns a pointer the screen buffer. //TODO
 
-Returns the screen buffer. Values depend on the settings set befor inicialization. The same value may be found in State structure. Its length is returned in getScreenPitch() function.
+\vspace{20pt}
+\begin{clinee}
+	int DoomGame::getGameVariable(GameVariable var);
+\end{clinee}
+
+	Returns the current value of the specified game variable (AMMO1, HEALTH etc.). The specified game variabled does not need to be among available game variables (included in the state).
+	It could be used for e.g. shaping. Returns 0 in case of not finding given GameVariable.
 
 
 \vspace{20pt}
 \begin{clinee}
-	int getGameVariable(GameVariable var);
+	double DoomGame::getSummaryReward();
 \end{clinee}
 
-Returns value of the specified game variable (AMMO1, HEALTH etc.). It does not need to be a value returned in State.
-It could be used for e.g. shaping. Returns 0 in case of not finding given GameVariable.
+	Returns the sum of all rewards gathered in the current episode.
 
 
 \vspace{20pt}
 \begin{clinee}
-	double getSummaryReward();
+	bool DoomGame::isNewEpisode();
 \end{clinee}
 
-Returns sum of all rewards gathered in the current episode.
+	Returns true if the current episode is in the initial state (no actions were performed yet).
 
 
 \vspace{20pt}
 \begin{clinee}
-	bool isNewEpisode();
+	bool DoomGame::isEpisodeFinished();
 \end{clinee}
-
-Checks if the current episode is in the initial state. Returns true if no tic was performed.
+	Returns true if the current episode is in the terminal state (is finished). \emph{MakeAction} and \emph{advanceAction} methods should not be called after this point (unless \emph{newEpisode} method is called).
 
 
 \vspace{20pt}
 \begin{clinee}
-	bool isEpisodeFinished();
+	void DoomGame::setSeed(unsigned int seed);
 \end{clinee}
 
-Checks if the current episode is in the terminal state. Returns true if the episode has ended. No makeAction/advanceAction functions should be called after this point.
+	Sets the seed of the randomizing engine. Using the same seed and actions in another episode will result in exactly the same gameplay (granted that the same actions will be performed).
 
 
 \vspace{20pt}
 \begin{clinee}
-	void setSeed(unsigned int seed);
+	void DoomGame::close();
 \end{clinee}
-
-Sets the seed of the randomizing engine. Using the same seed and actions in another episode will affect in reproducing the gameplay.
+	Closes Zdoom engine and corresponding processes. Metod frees used resources (memory allocations etc.). It is automatically invoked by the destructor so it is necessary only when there is a need to close zdoom engine in the middle of processing.
 
 
 \vspace{20pt}
 \begin{clinee}
-	void close();
+	bool DoomGame::isRunning();
 \end{clinee}
-
-Closes zdoom engine and corresponding processes. Metod frees used resources (memory allocations e.t.c). It is automatically invoked by destructor - should be used only when closing zdoom engine in the middle of processing is needed.
+	Checks if the current zdoom process is running.
 
 
 \vspace{20pt}
 \begin{clinee}
-	bool isRunning();
+	void DoomGame::sendGameCommand(std::string cmd);
 \end{clinee}
+	Sends the command to zdoom console. Can be used for cheats, multiplayer etc. For more details consult Zdoom Wiki Webpage\cite{zdoom-wiki}.
 
-Checks if the current zdoom process is running.
+\vspace{20pt}
+\subsection{Query Methods}
 
+DoomGame provides a number of getters associated with configuration methods described in Section~\ref{subsec:config_methods}. Getters can be used before and after initialization and return values of parameters that are specified in their names.
 
 \vspace{20pt}
 \begin{clinee}
-	void sendGameCommand(std::string cmd);
-\end{clinee}
-
-Sends a given command to zdoom console. Can be used for cheats, multiplayer e.t.c.
-
-
-\vspace{20pt}
-\subsection{Universal}
-
-
-Api provides a number of getters associated with the above-mentioned functions and a set of additional methods to help converts game units.
-  
-
-\vspace{20pt}
-\begin{clinee}
-int getAvailableButtonsSize();
-int getAvailableGameVariablesSize();
-Mode getMode();
-double getLivingReward();
-double getDeathPenalty();
-unsigned int getEpisodeStartTime();
-unsigned int getEpisodeTimeout();
-unsigned int getEpisodeTime();
-int getScreenWidth();
-int getScreenHeight();
-int getScreenChannels();
-size_t getScreenPitch();
-size_t getScreenSize();
-ScreenFormat getScreenFormat();
-unsigned int getSeed();
-int getButtonMaxValue(Button button);
+int DoomGame::getAvailableButtonsSize();
+int DoomGame::getAvailableGameVariablesSize();
+Mode DoomGame::getMode();
+double DoomGame::getLivingReward();
+double DoomGame::getDeathPenalty();
+unsigned int DoomGame::getEpisodeStartTime();
+unsigned int DoomGame::getEpisodeTimeout();
+unsigned int DoomGame::getEpisodeTime();
+int DoomGame::getScreenWidth();
+int DoomGame::getScreenHeight();
+int DoomGame::getScreenChannels();
+size_t DoomGame::getScreenPitch();
+size_t DoomGame::getScreenSize();
+ScreenFormat DoomGame::getScreenFormat();
+unsigned int DoomGame::getSeed();
+int DoomGame::getButtonMaxValue(Button button);
 \end{clinee}
 
 
-\paragraph {Metods} Metods outsite the DoomClass:
+\section {Utility Functions}
+In addition to DoomGame class, Vizia provides 3 utility functions that may be help with interaction with the Doom engine.
 
-
+\vspace{20pt}
 \begin{clinee}
 unsigned int DoomTics2Ms(unsigned int tics);
 \end{clinee}
-
-Function calculating number of milliseconds during given tics (assuming 35 tics per second - designed Doom ticrate).
+	Calculates the number of milliseconds that will pass after specified number of tics (assuming 35 tics per second - designed Doom ticrate).
 
 
 \vspace{20pt}
@@ -490,24 +411,21 @@ Function calculating number of milliseconds during given tics (assuming 35 tics 
 unsigned int Ms2DoomTics(unsigned int ms);
 \end{clinee}
 
-Function calculating how many tics will be made during given number of milliseconds (assuming 35 ticks per second - designed Doom ticrate).
+	Calculates how many tics will be made during given number of milliseconds (assuming 35 ticks per second - designed Doom ticrate).
 
 
 \vspace{20pt}
 \begin{clinee}
 double DoomFixedToDouble(int doomFixed);
 \end{clinee}
-
-Function calculating values of user's DoomFixed ACS variables (USER1, USER2 etc.) to double.
+	Converts Doom's fixed point numeral to a double value.
 
 
 \vspace{20pt}
 \section{Structures and Enumerations} \label{sec:structs}
 \subsection{State}
 
-
-Structure created to store all the information needed by inteligent agent to process the image.  
-It is composed of three public fields:
+A structure that represents the current state of the game.
 
 \vspace{20pt}	
 \begin{clinee}
@@ -517,30 +435,25 @@ It is composed of three public fields:
 	    uint8_t * imageBuffer;
 	};
 \end{clinee}
-\paragraph{number} States number in the current episode.
-\paragraph{gameVariables} Vector storing user-defined during the configuration values drawn from the game such as AMMO or HEALTH. 
-\paragraph{imageBuffer} Pointer to the screen buffer, containing the image information.
-
+\begin{description}
+	\item[number] State's ordinal number in the current episode.
+	\item[gameVariables] Vector storing game variables (e.g. AMMO, HEALTH) specified in configuration. 
+	\item[imageBuffer] Pointer to the screen buffer containing the image information.
+\end{description}
 \subsection{Mode}\label{subsec:mode}
-ScreenResolution enum has been designed to represent available game modes.
+Enumeration type representing available game modes. For datailed description of all modes see Section~\ref{sec:architecture_modes}
 
+\paragraph{Modes:}
 
-\vspace{20pt}
-\textbf{Modes:}
 \begin{itemize}
-\item PLAYER \\
-Setting where AI has full control over the game. It makes decision which action to perform and decides when the engine should make another processing loop.
-\item SPECTATOR \\
-Setting where human has control over the game and Inteligent Agent learns from his gameplay. AI only decides when the engine should make another loop to be able to process all the image data. Human makes decision which action should be performed and have to wait until AI is ready. 
-\item ASYNC\_PLAYER \\ 
-Setting where AI has control over the game. It makes decision which action to perform but AI can not control engines processing loop. If Inteligent Agent will not manage to perform any action and will not end image processing, next tic will be made with previous operations.
-//TODO ILE CZASU?!
-\item ASYNC\_SPECTATOR \\
-Setting where human has control over the game and Inteligent Agent learns from his gameplay. AI has access to current visual information, a last action taken along with an award and the rest of the variables on the basis of which should draw conclusions. Human plays with a standard number of fps and does not need to wait for the completion of AIs processing.
+	\item PLAYER
+	\item SPECTATOR
+	\item ASYNC\_PLAYER 
+	\item ASYNC\_SPECTATOR 
 \end{itemize}
 
 \subsection{ScreenFormat}\label{subsec:screenformat}
-ScreenResolution enum has been designed to represent the possible screen formats in witch game image will be returned. 
+Enumeration type representing the screen format in witch the game screen buffer will be kept. 
 
 
 \vspace{20pt}
@@ -557,15 +470,15 @@ ScreenResolution enum has been designed to represent the possible screen formats
  \item BGRA32
  \item ABGR32
  \item GRAY8
- \item DEPTH_BUFFER8
+ \item DEPTH\_BUFFER8
  \item DOOM\_256\_COLORS
 \end{itemize}
 \subsection{ScreenResolution} \label{subsec:screenresolution}
-ScreenResolution enum has been designed to represent the possible screen resolutions in the game. Their full list can be found in the apendix.
+Enumeration type representing the screen resolutions. Because of the terrifying multitude of possible resolutions only a couple of sample resolutions are listed here. For the full list of resolutions see Apendix ~\ref{sec:appendix_structs_and_enums}.
 
 
 \vspace{20pt}
-\textbf{ScreenResolution examples:}
+\textbf{ScreenResolution sample values:}
 \begin{itemize}
 \item RES\_40X30
 \item RES\_160X120	
@@ -576,60 +489,46 @@ ScreenResolution enum has been designed to represent the possible screen resolut
 \end{itemize}
 
 \subsection{GameVariable} \label{subsec:gamevar}
-GameVariable enum has been designed to represent the possible parameters in the game that can be downloaded and used to determine the next behavior of artificial intelligence. Its value after their inicialization can be found in the \textit{gameVariables} vector returned in game state. Their full list can be found in the apendix.
+Enumeration type representing various game parameters like player's health or ammunition.
 
 
+% TODO list and describe them all
 \vspace{20pt}
-\textbf{ScreenResolution examples:}
+\textbf{Game Variables:}
 \begin{itemize}
-\item KILLCOUNT\\
-Variables which represent number of kills performed by the player in the episode.
-\item ITEMCOUNT\\
-Variables which represent number of items taken in the episode.
-\item HEALTH\\
-Variable which represent players condition.
-\item AMMO1
-\item AMMO2\\
-Variables which represent available ammunition to each weapon.
-\item WEAPON1
-\item WEAPON2 \\
-Variables which represent presence of the weapons.
-\item USER1 \\
-\item USER2 \\
-User-defined global variables. More in Section~\ref{subsec:global_variable}.
+	\item KILLCOUNT\\
+	\item ITEMCOUNT\\
+	\item HEALTH\\
+	\item AMMO1\\
+	\item AMMO2\\
+	\item WEAPON1
+	\item WEAPON2\\
+	\item USER1\\
 \end{itemize}
 
 \subsection{Button} \label{subsec:button}
-Button enum has been designed to represent the possible prime factors that make up a single action. Some of them can be further configured with a value indicating the angle of rotation or shift done in a single call. If not set, default force is used. Setting this additional value to the simple button without this option will not affect its call. If action lasting longer than 1 tic is performed, buttons correlated with move will be made continuously when simple actions will be made once in the first tic. Their full list can be found in the apendix.
+Enumeration type representing the possible prime factors that constitute a single action. Some of them can be further configured with a value indicating the angle of rotation or shift done in a single call. If not set, default force is used. Setting this additional value to the simple button without this option will not affect its call. If action lasting longer than 1 tic is performed, buttons correlated with move will be made continuously when simple actions will be made once in the first tic. Their full list can be found in the apendix.
 
-
+% TODO write about distinction between binary and delta buttons
+% TODO list and describe them all
 \vspace{20pt}
-\textbf{Simple buttons examples:}
+\textbf{Binary Buttons Examples:}
 \begin{itemize} 
-\item ATTACK
-\item USE
-\item JUMP
-\item CROUCH
-\item TURN180
+	\item ATTACK
+	\item MOVE\_FORWARD
+	\item MOVE\_RIGHT
+	\item TURN\_LEFT
+	\item USE
 \end{itemize}
 
-
 \vspace{20pt}
-\textbf{Move buttons examples:}
+\textbf{Delta Buttons:}
 \begin{itemize} 
-\item MOVE\_RIGHT
-\item MOVE\_BACKWARD
-\end{itemize} 
-
-
-\vspace{20pt}
-\textbf{Move/rotation buttons examples:}
-\begin{itemize} 
- \item LOOK\_UP\_DOWN\_DELTA
- \item TURN\_LEFT\_RIGHT\_DELTA
- \item MOVE\_FORWARD\_BACKWARD\_DELTA
- \item MOVE\_LEFT\_RIGHT\_DELTA
- \item MOVE\_UP\_DOWN\_DELTA
+	 \item LOOK\_UP\_DOWN\_DELTA
+	 \item TURN\_LEFT\_RIGHT\_DELTA
+	 \item MOVE\_FORWARD\_BACKWARD\_DELTA
+	 \item MOVE\_LEFT\_RIGHT\_DELTA
+	 \item MOVE\_UP\_DOWN\_DELTA
 \end{itemize}
 
 \section{Configuration file}\label{sec:configuration_file}
