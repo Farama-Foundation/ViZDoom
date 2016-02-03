@@ -281,9 +281,29 @@ All Vizia environment code is OSX compatible. Due to the lack of access to OSX m
 
 Doom engine uses diffrent type of files for storing data and resources. (WAD and PK3 files) It allows to load main game resources from one file and many additional (scenario) resources from separate files. For more detailed information consult Zdoom Wiki Webpage\cite{zdoom-wiki}.
 
-\section{Performance}\label{sec:performance}
-Table with some fps ratings and a graph.
-Conclusions: it's fast enough, any reasonably good AI will be much slower during learning process.
+\section{Performance tests}\label{sec:performance}
+
+All the Doom's processing including rendering is performed on a single processor thread. The main factors affecting the processing speed is a geometry of the map, amount of the actors (in-game objects like items and enemies) and the resolution.
+
+These factors have beed taken into account during performance tests. Tests have been made in the synchronous player mode, where are no additional delays in processing.
+
+	\subsection{Operating System and Hardware}
+	
+	Tests have been performed on the following specification:
+	
+	\begin{description}
+		\item[Operating System] Linux Mint 17 x86\_64, kernel 3.13.0-24-generic
+		\item[CPU] Intel Core i7-4790, 4x4GHz
+	\end{description}
+
+\subsection{Test results}
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.5]{result_fps.png}
+\caption{Results of performance test.}
+\label{fig:fps_test}
+\end{figure}
 
 
 
