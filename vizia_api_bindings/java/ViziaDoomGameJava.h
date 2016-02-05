@@ -99,10 +99,18 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_advanceAction__
 /*
  * Class:     ViziaDoomGameJava
  * Method:    advanceAction
- * Signature: (ZZI)V
+ * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_advanceAction__ZZI
-  (JNIEnv *, jobject, jboolean, jboolean, jint);
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_advanceAction__I
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     ViziaDoomGameJava
+ * Method:    advanceAction
+ * Signature: (IZZ)V
+ */
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_advanceAction__IZZ
+  (JNIEnv *, jobject, jint, jboolean, jboolean);
 
 /*
  * Class:     ViziaDoomGameJava
@@ -194,6 +202,14 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setButtonMaxValue
 
 /*
  * Class:     ViziaDoomGameJava
+ * Method:    getButtonMaxValue
+ * Signature: (Lenums/Button)V
+ */
+JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getButtonMaxValue
+  (JNIEnv *, jobject, jobject);
+
+/*
+ * Class:     ViziaDoomGameJava
  * Method:    addAvailableGameVariable
  * Signature: (Lenums/GameVariable;)V
  */
@@ -275,9 +291,9 @@ JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getGameVar
 /*
  * Class:     ViziaDoomGameJava
  * Method:    getLivingReward
- * Signature: ()F
+ * Signature: ()D
  */
-JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_getLivingReward
+JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_getLivingReward
   (JNIEnv *, jobject);
 
 /*
@@ -286,14 +302,14 @@ JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_getLivingReward
  * Signature: (F)V
  */
 JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setLivingReward
-  (JNIEnv *, jobject, jfloat);
+  (JNIEnv *, jobject, jdouble);
 
 /*
  * Class:     ViziaDoomGameJava
  * Method:    getDeathPenalty
  * Signature: ()F
  */
-JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_getDeathPenalty
+JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_getDeathPenalty
   (JNIEnv *, jobject);
 
 /*
@@ -302,14 +318,14 @@ JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_getDeathPenalty
  * Signature: (F)V
  */
 JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDeathPenalty
-  (JNIEnv *, jobject, jfloat);
+  (JNIEnv *, jobject, jdouble);
 
 /*
  * Class:     ViziaDoomGameJava
  * Method:    getLastReward
  * Signature: ()F
  */
-JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_getLastReward
+JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_getLastReward
   (JNIEnv *, jobject);
 
 /*
@@ -317,8 +333,16 @@ JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_getLastReward
  * Method:    getSummaryReward
  * Signature: ()F
  */
-JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_getSummaryReward
+JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_getSummaryReward
   (JNIEnv *, jobject);
+
+/*
+ * Class:     ViziaDoomGameJava
+ * Method:    setDoomEnginePath
+ * Signature: (Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDoomEnginePath
+  (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     ViziaDoomGameJava
@@ -330,18 +354,10 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDoomGamePath
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    setDoomIwadPath
+ * Method:    setDoomScenarioPath
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDoomIwadPath
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    setDoomFilePath
- * Signature: (Ljava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDoomFilePath
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDoomScenarioPath
   (JNIEnv *, jobject, jstring);
 
 /*
@@ -383,38 +399,6 @@ JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getSeed
  */
 JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setSeed
   (JNIEnv *, jobject, jint);
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    setAutoNewEpisode
- * Signature: (Z)V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setAutoNewEpisode
-  (JNIEnv *, jobject, jboolean);
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    setNewEpisodeOnTimeout
- * Signature: (Z)V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setNewEpisodeOnTimeout
-  (JNIEnv *, jobject, jboolean);
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    setNewEpisodeOnPlayerDeath
- * Signature: (Z)V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setNewEpisodeOnPlayerDeath
-  (JNIEnv *, jobject, jboolean);
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    setNewEpisodeOnMapEnd
- * Signature: (Z)V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setNewEpisodeOnMapEnd
-  (JNIEnv *, jobject, jboolean);
 
 /*
  * Class:     ViziaDoomGameJava
@@ -519,6 +503,22 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setWindowVisible
  */
 JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setConsoleEnabled
   (JNIEnv *, jobject, jboolean);
+
+/*
+ * Class:     ViziaDoomGameJava
+ * Method:    getScreenWidth
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getScreenWidth
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     ViziaDoomGameJava
+ * Method:    getScreenHeight
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getScreenHeight
+  (JNIEnv *, jobject);
 
 /*
  * Class:     ViziaDoomGameJava

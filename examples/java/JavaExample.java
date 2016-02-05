@@ -1,6 +1,6 @@
 
 import enums.Button;
-import enums.GameVar;
+import enums.GameVariable;
 import enums.ScreenFormat;
 import enums.Mode;
 import enums.ScreenResolution;
@@ -15,9 +15,9 @@ public static void main (String[] args) {
 	System.out.println("VIZIA MAIN EXAMPLE");
 
 
-    dg.setDoomGamePath("../../bin/viziazdoom");
-    dg.setDoomIwadPath("../../scenarios/doom2.wad");
-    dg.setDoomFilePath("../../scenarios/s1_b.wad");
+    dg.setDoomEnginePath("../../bin/viziazdoom");
+    dg.setDoomGamePath("../../scenarios/doom2.wad");
+    dg.setDoomScenarioPath("../../scenarios/s1_b.wad");
     dg.setDoomMap("map01");
     dg.setEpisodeTimeout(200);
     dg.setLivingReward(-1);
@@ -38,11 +38,11 @@ System.out.println("2");
     dg.addAvailableButton(Button.MOVE_RIGHT);
     dg.addAvailableButton(Button.ATTACK);
 System.out.println("3");
-	GameVar bob = GameVar.HEALTH;
+	GameVariable bob = GameVariable.HEALTH;
 System.out.println("4");
-    dg.addAvailableGameVariable(GameVar.HEALTH);
+    dg.addAvailableGameVariable(GameVariable.HEALTH);
 System.out.println("5");
-    dg.addAvailableGameVariable(GameVar.KILLCOUNT);
+    dg.addAvailableGameVariable(GameVariable.KILLCOUNT);
 
 
     dg.init();
@@ -66,7 +66,7 @@ System.out.println("5");
 
         dg.setAction(action);
         //dg.advanceAction();
-	dg.makeAction(action)
+	dg.makeAction(action);
          System.out.println("reward: "+dg.getLastReward());
     }
     dg.close();
