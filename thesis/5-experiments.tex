@@ -46,6 +46,11 @@ Every agent is to run 80 epochs. Each epoch requires performing 5000 learning st
 	
 
 \section{Results}
+		\begin{figure}
+			\centering
+			\includegraphics{results.png}
+			\caption{Graphs showing mean performance of tested agent with different skip values throughout 80 learning epochs.}\label{fig:results}
+		\end{figure}
 	\subsection{Numerical Issues}
 		In case of 0 skiprate a major numerical problem was encountered. Estimated Q-values usually ($\approx$50\% of runs) rapidly grew to infinite values (in the first epoch) which prevented further learning. Quite unexpectedly, increasing resolution from 60x45 to 120x90 eliminated the problem at the cost of longer learning time. Faulty code would be an obvious explanation, however no apparent error has been found yet therefore a conceptually oriented mechanism is also to be considered. It is hypothesized that combination of zero skiprate and low resolution may produce state transitions that incorporate barely distinguishable states. As a consequence each update would significantly inflate Q-values for each state and rapidly reach infinity. Although changing the resolution seemed to solve the problem, it is not a satisfying solution and one based on mechanics of q-learning itself would be much more desirable.
 
@@ -53,13 +58,15 @@ Every agent is to run 80 epochs. Each epoch requires performing 5000 learning st
 
 	\subsection{Learning Quality}
 		As seen in Figure \ref{fig:results}, all agents reached estimated maximum average score of $\approx$80 or showed trend towards achieving similar value. Watching agents play the scenario proved that agents in fact behave very reasonably. They move towards the target and shoot when it appears in front of them. Occasionally agents fire marginally too soon or stay idle (first available action) throughout whole episode. 
-
-	\subsection{Skiprate Influence}
 		
+	\subsection{Skiprate Influence}
+			
+			
 		\subsubsection*{Learning speed} 
+
 			\begin{table}
 				\begin{center}
-					\begin{tabular}{ |l | c |}
+					\begin{tabular}{ |c | c |}
 						\hline
 						Skiprate & Average epoch duration [s] \\ \hline
 						0 & 51.79 \\ \hline
@@ -73,7 +80,7 @@ Every agent is to run 80 epochs. Each epoch requires performing 5000 learning st
 				\end{center}
 				\caption{Influence of skiprate on processing time for resolution of 60X45}\label{tab:time_results}
 			\end{table}
-			As seen in the Figure \ref{fig:results} higher skiprate leads to quicker (in terms of learning steps) and smoother learning, which was expected as higher skiprate makes consequences of actions more immediate and easier to notice. However, it must be pointed out that epoch's duration slightly increases with raising skiprate (see Table \ref{tab:time_results}). Obviously, such behavior was anticipated because Doom engine has to process skiprate as many frames for a single state snapshot.
+			As seen in the Figure \ref{fig:results} higher skiprate leads to quicker (in terms of learning steps) and smoother learning, which was expected as higher skiprate makes consequences of actions more immediate and easier to notice. However, it must be pointed out that epoch's duration slightly increases with raising skiprate (see Table \ref{tab:time_results}). Obviously, such behavior was anticipated because Doom engine has to process skiprate as many frames (which we skip) for a single learning step (action). Additionally, higher skiprate results in episodes being shorter (because we skip most of frames) which increases overhead associated with episode restarts (restarts are more frequent). 
 
 		\subsubsection*{Score}
 			\begin{table}
@@ -81,16 +88,16 @@ Every agent is to run 80 epochs. Each epoch requires performing 5000 learning st
 					\begin{tabular}{ |l || c | r |}
 						\hline
 						Skiprate & Best epoch score & Mean of 10 best epochs \\ \hline
-						0 & 69.18 & 60.973 \\ \hline
-						1 & 77.84 & 76.187 \\ \hline
-						2 & 79.35 & 77.914 \\ \hline
-						3 & 80.98 & 78.695 \\ \hline
-						4 & 81.8 & 80.755 \\ \hline
-						5 & 81.32 & 80.162 \\ \hline
-						7 & 81.08 & 80.496 \\ \hline
+						0 & 69.18 $\pm$ 50.24 & 60.97 \\ \hline
+						1 & 77.84 $\pm$ 22.71 & 76.19 \\ \hline
+						2 & 79.35 $\pm$ 20.68 & 77.91 \\ \hline
+						3 & 80.98 $\pm$ 22.89 & 78.69 \\ \hline
+						4 & 81.8 $\pm$ 17.99 & 80.75 \\ \hline
+						5 & 81.32 $\pm$ 19.47 & 80.16 \\ \hline
+						7 & 81.08 $\pm$ 18.9 & 80.5 \\ \hline
 					\end{tabular}
 				\end{center}
-				\caption{Influence of skiprate highscores achieved in 80 epochs.}\label{tab:results}
+				\caption{Influence of skiprate on highscores achieved in 80 epochs.}\label{tab:results}
 			\end{table}
 			It was also anticipated that higher skiprate could slightly lower scores due to the lack of small-grained control. As seen in Table \ref{tab:results}, it is exactly the opposite. It is doubtful whether too short training is the culprit of this trend, since most of agents reach significant stability in 80 epochs and do not appear to be able to ever transcend achieved highscores (at least for skiprates $\geq$ 2). What is more, it was observed that agents with higher skiprates were less prone to irrational behaviors like staying idle or going the opposite way which may coincide with much smoother learning. However, it is hypothesized that careful fine-tuning of hyper parameters could positively influence learning rate and smoothness. 
 
@@ -102,8 +109,4 @@ Every agent is to run 80 epochs. Each epoch requires performing 5000 learning st
 		\caption{Graphs showing mean performance of agent with zero skiprate and resolution 120x90 throughout 350 learning epochs.}\label{fig:results_skiprate0}
 	\end{figure}
 
-	\begin{figure}
-		\centering
-		\includegraphics{results.png}
-		\caption{Graphs showing mean performance of tested agent with different skip values throughout 80 learning epochs.}\label{fig:results}
-	\end{figure}
+	
