@@ -1,14 +1,23 @@
 \chapter*{Streszczenie}
+
+%Abstrakt streszcza cala prace, wiec musi zawierac i zaczac sie od motywacji (DL, visual info, DRL). Potem jasno trzeba npisac co bylo celem pracy (w odniesieniu do celu): Celem pracy bylo opracowanie... A nastepnie dopiero o rezultatach (co jest OK).
+
+%[Zdania w abstrakcie i reszcie pracy moga sie powtarzac. Mozna tez podzielic abstrakt na paragrafy]
+
 Niniejsza praca jest poświęcona wykorzystaniu trójwymiarowych gier typu FPS (ang. first-person shooter) do badań nad inteligentnymi agentami, które działają i uczą się w oparciu o informację obrazową.
-Rezultatem niniejszej pracy jest środowisko oparte na grze Doom dostosowane do potrzeb idei uczenia ze wzmocnieniem.
+Rezultatem niniejszej pracy jest środowisko oparte na grze Doom dostosowane do potrzeb paradygmatu uczenia ze wzmocnieniem.
 Stworzony został interfejs programistyczny zaimplementowany w C++ pozwalajacy na wykonywanie akcji, pobieranie obrazu i informacji o bohaterze gry, jak i swobodny dobór parametrów wykonania gry.
 Parametry te mogą być zapisywane w postaci plików konfiguracyjnych.
 Zapewniono również wsparcie dla Pythona i Javy.
-Środowisko to wspiera tworzenie scenariuszy testowych w zewnętrznych edytorach i implementację funkcji nagrody za pomocą języka skryptowego ACS.
+Środowisko to wspiera tworzenie scenariuszy testowych w zewnętrznych edytorach i implementację funkcji nagrody za pomocą języka skryptowego ACS (ROZWINIECIE!).
 Poza trybem pełnej kontroli nad grą zaimplementowano również tryb obserwatora, pozwalający na uczenie agenta na podstawie rozgrywki prowadzonej przez człowieka.
-Dodatkowo środowisko może pracować w trybie zarówno synchronicznym, w którym gra jest zsynchronizowana z agentem, jak i asynchronicznym, w którym gra działa we własnym tempem, co pozwala na wykorzystanie w rozgrywkach sieciowych.
+Dodatkowo środowisko może pracować w trybie zarówno synchronicznym, w którym gra czeka na akcje agenta, jak i asynchronicznym, w którym gra działa ze stałą prędkością, co pozwala na wykorzystanie jej w rozgrywkach sieciowych.
 Stworzone oprogramowanie zostało przygotowane do pracy w systemie Linux i udostępnia tryb niewymagający środowiska graficznego.
-Przeprowadzone dla prostych środowisk testowych eksperymenty wskazują na użyteczność stworzonego środowiska.
+%dzieki czemu moze byc uruchamiane na...
+%W tym samym watku warto wspomiec, ze srodowisko umozliwia przetwarzanie X klatek na sekunde...
+Przeprowadzone dla prostych środowisk testowych eksperymenty
+wykorzystujace uczenie ze wzmocnieniem głębokich sieci neuronowych
+ wskazują na użyteczność stworzonego środowiska do badan nad DRL z informacji obrazowej.
 
 
 \chapter*{Abstract}
