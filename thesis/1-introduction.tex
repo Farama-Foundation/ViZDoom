@@ -3,31 +3,33 @@
 \label{ch:introduction}
 \section{Motivation}
 
-
-Visual signals are one of the main sources of information about the surrounding environment and are heavily relied by all humans and animals.
-While computers have greatly exceeded humans in terms of raw data processing, they still do not match their ability to process images.
+%W rozdziale 1 nie pojawia sie nazwa VIZIA
+Visual signals are one of the main sources of information about the surrounding environment for humans and animals.
+% ?? przy czym humans\in animals
+While computers have already greatly exceeded humans in terms of raw data processing, they still do not match their ability to process images.
 However, recent increase in computing power and emergence of affordable technologies allowing to perform general computations on graphics cards (CUDA, OpenCL) enabled a significant progress in this area.
-An important part of this advance are deep convolutional neural networks (CNNs), which consist of multiple layers that analyse image on different levels of abstraction.
+An important part of this advance are deep convolutional neural networks (CNNs).
 
 
-CNNs for the first time came into promience when were used to clasify 1.6 millions images into 1000 classes~\cite{NIPS2012_4824}.
+CNNs for the first time came into prominence when they were used to classify 1.6 millions images into 1000 classes~\cite{NIPS2012_4824}.
 This solution was so effective that now this is the prevalent method of image classification.
-This succes hugely popularized CNNs and soon enough they were used for much more complex tasks.
-In combination with reinforcement learning, they were used to model intellient agent which attempted playing 7 Atari 2600 games from Arcade Learning Platform\cite{mnih-atari-2013}.
-In 6 of them the acheived results were better than in all of the previous approaches, and in the case of 3 results were better than those achievable by human players.
+This success hugely popularised CNNs and soon enough they were used for much more complex tasks.
+In combination with reinforcement learning, they were used to model intelligent agent which attempted playing 7 Atari 2600 games from Arcade Learning Platform\cite{mnih-atari-2013}.
+In 6 of them the achieved results were better than in all of the previous approaches, and in the case of 3 results were better than those achievable by human players.
 The main drawback of Atari games is that they are only two-dimensional, so their usability at solving real-world problems is quite limited, but reinforcement learning itself was successfully used for identifying features in static images \cite{conf/cvpr/GoodrichA12} and in robotics for controlling racing slot car using only image from the camera \cite{rieijcnn12} and even for steering RC helicopter\cite{Abbeel07anapplication}.
 
 Bigger scope of practical applications is offered by 3D games which are a better approximation of the real-world.
-Among 3D games, First Person Shooter (FPS) are interesting in particular becuase they offer simple and straightforward ways to implement rewarding mechanism, crucial in reinforcement learning.
+Among 3D games, First Person Shooter (FPS) are particularly interesting because 
+%Moze odwolac sie do robotyki - widzenie swiata oczami robota - bliskie zastosowaniom praktycznym? Takze: popularity.
 
 FPS games have already been successfully used in research on artificial intelligence, especially the most popular ones such as Unreal Tournament \cite{6314567} \cite{6922494}, Counter-Strike \cite{5035619} or Quake III Arena \cite{el2007hybrid}.
-However, in these studies agents acted upon high-level data which are normally inaccessible to human player like positions of all enemies, locations of item etc.
-Supplying only raw visual information would relieve reaserchers of the burden of supplying AI high-level information and handcrafted features.
+However, in these studies agents acted upon high-level information like positions of walls, enemies, locations of item etc, which are normally inaccessible to human player.
+Supplying only raw visual information would relieve researchers of the burden of supplying AI high-level information and handcrafted features.
 What is more it would force agents to become more autonomous and behave in a way more resembling real intelligent agents (humans and animals).
 So far no studies have been conducted on the reinforcement learning from visual information obtained from 3D FPS games.
 
 
-Currently there are no environments that allow using FPS games for research on artificial intelligence algorithms, in which agents could rely exclusively on raw visual information.
+Currently there are no environments that allow using FPS games for research on artificial intelligence algorithms, in which agents rely exclusively on raw visual information.
 This could be a serious factor that is impending the progress of visual information-based research on reinforcement learning.
 Engaging in that kind of research would require a large amount of work associated with creation of an environment integrating game engine with interface suited to reinforcement learning paradigm.
 The existence of such a tool would allow to conduct experiments and focus on the goal of research without having to worry about availability of the test environments.
@@ -36,25 +38,29 @@ The existence of such a tool would allow to conduct experiments and focus on the
 \section{Aims and scope}
 
 
-The main aim of this thesis is to create easy to use and flexible environment for research on intelligent agents that work and learn using the raw visual information generated by the engine of 3D FPS game and conduct experiments that confirm the usability of the created environment.
+The main aim of this thesis is to create easy to use and flexible environment for research on intelligent agents that work and learn using the raw visual information generated by the engine of 3D FPS game. In order to confirm usability of the created environment conduct experiments.%FIXME
 
 The goal will be achieved by meeting the following objectives:
 \begin{itemize}
- \item to compare and select needed technologies
- \item to implement environment
- \item to define and implement test scenarios in the created environment
- \item to select learning algorithms for deep neural networks
- \item to conduct experiments for simple test scenarios
+ \item to compare and select needed technologies,
+ \item to implement the environment,
+ \item define API,
+ \item to define and implement test scenarios in the created environment,
+ \item to implement learning algorithms for deep neural networks,
+ \item to conduct experiments for simple test scenarios.
 \end{itemize}
 
 
-The created environment should be based on opensource, lightweight 3D FPS game that allows total control over game's processing and customizing resolution and rendering parameters.
-There should be implemented spectator mode, in which agent observes human playing.
-Support for creation of custom scenarios should be essential part of the environment. 
+The created environment should be based on open-source, lightweight 3D FPS game that allows total control over game's processing and customising resolution and rendering parameters.
+There should be implemented spectator mode, in which agent can learn from observations of a human playing.
+Support for easy and convenient creation of custom scenarios should be essential part of the environment. 
 Designed API should be reinforcement learning friendly and implemented in C++ with bindings to Python and possibly other languages (Java, Lua etc.)
 The environment should be multiplatform, focused on Linux, with Windows and OS X support.
+
+%Brakuje o multiplayer i o tym, ze ma byc szybkie (powod).
+%To jest bardzo wazny paragraf i chcialbym, zeby go rozwinac. Niech bedzie sie zaczynal od tego, ze przyjeto, ze srodowisko ma spelniac nastepujace zalozenia. I tutaj punktowana lista zalozen: 1) based on open-source (powod), 2) lightweight (powod)...	
 	
-\section{Thesis organization}
+\section{Thesis organisation}
 
 
 This thesis is structured as follows. 
@@ -78,19 +84,19 @@ Chapter~\ref{ch:conclusions} concludes this thesis and proposes directions for f
 			\end{itemize}
 		\item[Grzegorz Runc] \hfill
 			\begin{itemize}
-				\item generation of depth buffer
-				\item support for offscreen rendering
+				\item generation of depth buffer,
+				\item support for off-screen rendering.
 			\end{itemize}
 		\item[Jakub Toczek] \hfill
 			\begin{itemize}
-				\item python wrapper
-				\item java wrapper
+				\item python wrapper,
+				\item java wrapper.
 			\end{itemize}
 		\item[Marek Wydmuch] \hfill
 			\begin{itemize}
-				\item Vizia API design
-				\item Vizia API and ViziaDoomModule implementation
-				\item CMake configuration
+				\item VIZIA API design,
+				\item VIZIA API and ViziaDoomModule implementation,
+				\item CMake configuration.
 			\end{itemize}
 	\end{description}
 	
@@ -107,18 +113,18 @@ Chapter~\ref{ch:conclusions} concludes this thesis and proposes directions for f
 			\end{itemize}
 		\item[Grzegorz Runc] \hfill
 			\begin{itemize}
-				\item Chapter~\ref{ch:introduction}
-				\item Section~\ref{sec:technologies}
+				\item Chapter~\ref{ch:introduction},
+				\item Section~\ref{sec:technologies}.
                 \item the abstract
 			\end{itemize}
 		\item[Jakub Toczek] \hfill
 			\begin{itemize}
-				\item Chapter~\ref{ch:api}
+				\item Chapter~\ref{ch:api}.
 			\end{itemize}
 		\item[Marek Wydmuch] \hfill
 			\begin{itemize}
-				\item Section~\ref{sec:architecture}
-				\item Section~\ref{sec:architecture_solutions}
-				\item Section~\ref{sec:performance}
+				\item Section~\ref{sec:architecture},
+				\item Section~\ref{sec:architecture_solutions},
+				\item Section~\ref{sec:performance}.
 			\end{itemize}
 	\end{description}
