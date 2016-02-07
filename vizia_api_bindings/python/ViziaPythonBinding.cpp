@@ -1,19 +1,22 @@
 #include <boost/python.hpp>
 #include "ViziaDoomGamePython.h"
-#include "ViziaDefines.h"
+#include "ViziaDoomDefines.h"
+#include "ViziaDoomExceptions.h"
+#include "ViziaDoomUtilities.h"
 #include <exception>
 #include <vector>
 
 using namespace Vizia;
 
-/*C++ code to expose DoomGamePython via python */
+namespace bp = boost::python;
+
+/* C++ code to expose DoomGamePython via python */
 
 PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_Exception) {
     using std::string;
-    namespace bp = boost::python;
 
-    string scopeName = bp::extract<string>(bp::scope().attr("__name__"));
-    string qualifiedName0 = scopeName + "." + name;
+	std::string scopeName = bp::extract<std::string>(bp::scope().attr("__name__"));
+	std::string qualifiedName0 = scopeName + "." + name;
     char* qualifiedName1 = const_cast<char*>(qualifiedName0.c_str());
 
     PyObject* typeObj = PyErr_NewException(qualifiedName1, baseTypeObj, 0);
@@ -22,37 +25,20 @@ PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_E
     return typeObj;
 }
 
-//they need to be remembered!!!
-PyObject* myExceptionTypeObj5 = NULL;
-PyObject* myExceptionTypeObj4 = NULL;
-PyObject* myExceptionTypeObj3 = NULL;
-PyObject* myExceptionTypeObj2 = NULL; 
-PyObject* myExceptionTypeObj = NULL; 
+#define EXCEPTION_TRANSLATE_TO_PYT(n) PyObject* type ## n = NULL; \
+void translate ## n (Vizia::Exception const &e){ PyErr_SetString( type ## n  , e.what()); }
+/*
+ * PyObject* typeMyException = NULL;
+ * void translate(Vizia::Exception const &e) { PyErr_SetString(typeMyException, e.what()); }
+ */
 
-void translate(Vizia::Exception const &e)
-{
-    PyErr_SetString(myExceptionTypeObj, e.what());
-}
+EXCEPTION_TRANSLATE_TO_PYT(DoomUnexpectedExitException)
+EXCEPTION_TRANSLATE_TO_PYT(DoomIsNotRunningException)
+EXCEPTION_TRANSLATE_TO_PYT(DoomErrorException)
+EXCEPTION_TRANSLATE_TO_PYT(SharedMemoryException)
+EXCEPTION_TRANSLATE_TO_PYT(MessageQueueException)
+EXCEPTION_TRANSLATE_TO_PYT(PathDoesNotExistsException)
 
-void translate2(Vizia::Exception const &e)
-{
-    PyErr_SetString(myExceptionTypeObj2, e.what());
-}
-
-void translate3(Vizia::Exception const &e)
-{
-    PyErr_SetString(myExceptionTypeObj3, e.what());
-}
-
-void translate4(Vizia::Exception const &e)
-{
-    PyErr_SetString(myExceptionTypeObj4, e.what());
-}
-
-void translate5(Vizia::Exception const &e)
-{
-    PyErr_SetString(myExceptionTypeObj5, e.what());
-}
 
 /* DoomGamePython methods overloading */
 
@@ -70,26 +56,27 @@ BOOST_PYTHON_MODULE(vizia)
 {
     using namespace boost::python;
     Py_Initialize();
-    boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
+    bp::numeric::array::set_module_and_type("numpy", "ndarray");
     import_array();
     
     /* exceptions */
-    myExceptionTypeObj = createExceptionClass("doom_unexpected_exit_exception");
-    boost::python::register_exception_translator<Vizia::DoomUnexpectedExitException>(&translate);
 
-    myExceptionTypeObj2 = createExceptionClass("doom_is_not_running_exception");
-    boost::python::register_exception_translator<Vizia::DoomIsNotRunningException>(&translate2);
+#define EXCEPTION_TO_PYT(n, pytn) type ## n = createExceptionClass(#pytn); \
+bp::register_exception_translator<Vizia:: n >(&translate ## n );
 
-    myExceptionTypeObj3 = createExceptionClass("doom_error_exception");
-    boost::python::register_exception_translator<Vizia::DoomErrorException>(&translate3);
+	/* typeMyException = createExceptionClass("myException");
+	 * bp::register_exception_translator<Vizia::myException>(&translate);
+	 */
 
-    myExceptionTypeObj4 = createExceptionClass("shared_memory_exception");
-    boost::python::register_exception_translator<Vizia::SharedMemoryException>(&translate4);
+	EXCEPTION_TO_PYT(DoomUnexpectedExitException, doom_unexpected_exit_exception)
+	EXCEPTION_TO_PYT(DoomIsNotRunningException, doom_is_not_running_exception)
+	EXCEPTION_TO_PYT(DoomErrorException, doom_error_exception)
+	EXCEPTION_TO_PYT(SharedMemoryException, shared_memory_exception)
+	EXCEPTION_TO_PYT(MessageQueueException, message_queue_exception)
+	EXCEPTION_TO_PYT(PathDoesNotExistsException, path_does_not_exists_exception)
 
-    myExceptionTypeObj5 = createExceptionClass("message_queue_exception");
-    boost::python::register_exception_translator<Vizia::MessageQueueException>(&translate5);
-    
 #define ENUM_VAL_2_PYT(v) .value( #v , v )
+    /* .value("VALUE_IN_PYTHON", VALUE_IN_CPP) */
 
     enum_<Mode>("Mode")
         ENUM_VAL_2_PYT(PLAYER)
@@ -99,18 +86,18 @@ BOOST_PYTHON_MODULE(vizia)
 
 	enum_<ScreenFormat>("ScreenFormat")
         ENUM_VAL_2_PYT(CRCGCB)
-        ENUM_VAL_2_PYT(CRCGCBZB)
+        ENUM_VAL_2_PYT(CRCGCBDB)
         ENUM_VAL_2_PYT(RGB24)
         ENUM_VAL_2_PYT(RGBA32)
         ENUM_VAL_2_PYT(ARGB32)
         ENUM_VAL_2_PYT(CBCGCR)
-        ENUM_VAL_2_PYT(CBCGCRZB)
+        ENUM_VAL_2_PYT(CBCGCRDB)
         ENUM_VAL_2_PYT(BGR24)
         ENUM_VAL_2_PYT(BGRA32)
         ENUM_VAL_2_PYT(ABGR32)
         ENUM_VAL_2_PYT(GRAY8)
-        ENUM_VAL_2_PYT(ZBUFFER8)
-        ENUM_VAL_2_PYT(DOOM_256_COLORS);
+        ENUM_VAL_2_PYT(DEPTH_BUFFER8)
+        ENUM_VAL_2_PYT(DOOM_256_COLORS8);
     
     enum_<ScreenResolution>("ScreenResolution")
         ENUM_VAL_2_PYT(RES_40X30)
@@ -361,11 +348,6 @@ BOOST_PYTHON_MODULE(vizia)
 
         .def("get_seed", &DoomGamePython::getSeed)
         .def("set_seed", &DoomGamePython::setSeed)
-		
-		.def("set_auto_new_episode", &DoomGamePython::setAutoNewEpisode)
-		.def("set_new_episode_on_timeout", &DoomGamePython::setNewEpisodeOnTimeout)
-		.def("set_new_episode_on_player_death", &DoomGamePython::setNewEpisodeOnPlayerDeath)
-		.def("set_new_episode_on_map_end", &DoomGamePython::setNewEpisodeOnMapEnd)
 
         .def("get_episode_start_time", &DoomGamePython::getEpisodeStartTime)
         .def("set_episode_start_time", &DoomGamePython::setEpisodeStartTime)

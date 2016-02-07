@@ -1,7 +1,7 @@
-#ifndef __VIZIA_MAIN_H__
-#define __VIZIA_MAIN_H__
+#ifndef __VIZIA_DOOM_GAME_H__
+#define __VIZIA_DOOM_GAME_H__
 
-#include "ViziaDefines.h"
+#include "ViziaDoomDefines.h"
 #include "ViziaDoomController.h"
 
 #include <string>
@@ -9,12 +9,6 @@
 #include <list>
 
 namespace Vizia {
-
-    unsigned int DoomTics2Ms(unsigned int tics);
-
-    unsigned int Ms2DoomTics(unsigned int ms);
-
-    double DoomFixedToDouble(int doomFixed);
 
     class DoomGame {
 
@@ -96,10 +90,12 @@ namespace Vizia {
         unsigned int getSeed();
         void setSeed(unsigned int seed);
 
+        /* Functionality removed
         void setAutoNewEpisode(bool set);
         void setNewEpisodeOnTimeout(bool set);
         void setNewEpisodeOnPlayerDeath(bool set);
         void setNewEpisodeOnMapEnd(bool set);
+         */
 
         unsigned int getEpisodeStartTime();
         void setEpisodeStartTime(unsigned int tics);
@@ -163,11 +159,8 @@ namespace Vizia {
         static GameVariable StringToGameVariable(std::string str);
         static unsigned int StringToUint(std::string str);
         static bool ParseListProperty(int &line_number, std::string &value, std::ifstream& input, std::vector<std::string> &output);
-    
 
         //HELPERS
-        bool checkFilePath(std::string path);
-
         void logError(std::string error);
 
         void logWarning(std::string warning);

@@ -9,28 +9,28 @@ extern unsigned int viziaLastUpdate;
 
 #define VIZIA_TIME (level.starttime + level.maptime)
 
-#define VIZIA_BT_ATTACK 0
-#define VIZIA_BT_USE 1
-#define VIZIA_BT_JUMP 2
-#define VIZIA_BT_CROUCH 3
-#define VIZIA_BT_TURN180 4
-#define VIZIA_BT_ALTATTACK 5
-#define VIZIA_BT_RELOAD 6
-#define VIZIA_BT_ZOOM 7
+#define VIZIA_BT_ATTACK         0
+#define VIZIA_BT_USE            1
+#define VIZIA_BT_JUMP           2
+#define VIZIA_BT_CROUCH         3
+#define VIZIA_BT_TURN180        4
+#define VIZIA_BT_ALTATTACK      5
+#define VIZIA_BT_RELOAD         6
+#define VIZIA_BT_ZOOM           7
 
-#define VIZIA_BT_SPEED 8
-#define VIZIA_BT_STRAFE 9
+#define VIZIA_BT_SPEED          8
+#define VIZIA_BT_STRAFE         9
 
-#define VIZIA_BT_MOVE_RIGHT 10
-#define VIZIA_BT_MOVE_LEFT 11
-#define VIZIA_BT_MOVE_BACK 12
-#define VIZIA_BT_MOVE_FORWARD 13
-#define VIZIA_BT_TURN_RIGHT 14
-#define VIZIA_BT_TURN_LEFT 15
-#define VIZIA_BT_LOOK_UP 16
-#define VIZIA_BT_LOOK_DOWN 17
-#define VIZIA_BT_MOVE_UP 18
-#define VIZIA_BT_MOVE_DOWN 19
+#define VIZIA_BT_MOVE_RIGHT     10
+#define VIZIA_BT_MOVE_LEFT      11
+#define VIZIA_BT_MOVE_BACK      12
+#define VIZIA_BT_MOVE_FORWARD   13
+#define VIZIA_BT_TURN_RIGHT     14
+#define VIZIA_BT_TURN_LEFT      15
+#define VIZIA_BT_LOOK_UP        16
+#define VIZIA_BT_LOOK_DOWN      17
+#define VIZIA_BT_MOVE_UP        18
+#define VIZIA_BT_MOVE_DOWN      19
 #define VIZIA_BT_LAND 20
 //#define VIZIA_BT_SHOWSCORES 20
 
@@ -120,17 +120,17 @@ struct ViziaGameVarsStruct{
 };
 
 #define VIZIA_SCREEN_CRCGCB 0
-#define VIZIA_SCREEN_CRCGCBZB 1
+#define VIZIA_SCREEN_CRCGCBDB 1
 #define VIZIA_SCREEN_RGB24 2
 #define VIZIA_SCREEN_RGBA32 3
 #define VIZIA_SCREEN_ARGB32 4
 #define VIZIA_SCREEN_CBCGCR 5
-#define VIZIA_SCREEN_CBCGCRZB 6
+#define VIZIA_SCREEN_CBCGCRDB 6
 #define VIZIA_SCREEN_BGR24 7
 #define VIZIA_SCREEN_BGRA32 8
 #define VIZIA_SCREEN_ABGR32 9
 #define VIZIA_SCREEN_GRAY8 10
-#define VIZIA_SCREEN_ZBUFFER8 11
-#define VIZIA_SCREEN_DOOM_256_COLORS 12
+#define VIZIA_SCREEN_DEPTH_BUFFER8 11
+#define VIZIA_SCREEN_DOOM_256_COLORS8 12
 
 #endif

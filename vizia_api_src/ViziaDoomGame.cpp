@@ -1,6 +1,7 @@
 #include "ViziaDoomGame.h"
+#include "ViziaDoomUtilities.h"
+#include "ViziaDoomExceptions.h"
 
-#include <boost/lexical_cast.hpp>
 #include <cmath> //  floor, ceil
 #include <iostream> // cerr, cout
 #include <vector>
@@ -8,25 +9,13 @@
 #include <fstream> // ifstream
 #include <cstdlib> // atoi
 #include <stdexcept> // invalid_argument
+#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp> // to_lower
 #include <boost/algorithm/string/trim_all.hpp> // trim_all
 #include <boost/tokenizer.hpp>
 #include <exception>
 
 namespace Vizia {
-
-    unsigned int DoomTics2Ms(unsigned int tics) {
-        return (unsigned int) std::floor((float) 1000 / 35 * tics);
-    }
-
-    unsigned int Ms2DoomTics(unsigned int ms) {
-        return (unsigned int) std::ceil((float) 35 / 1000 * ms);
-    }
-
-    double DoomFixedToDouble(int doomFixed) {
-        double res = double(doomFixed)/65536.0;
-        return res;
-    }
 
     DoomGame::DoomGame() {
         this->running = false;
@@ -50,22 +39,6 @@ namespace Vizia {
     bool DoomGame::init() {
         if (!this->running) {
 
-            if(this->availableButtons.size() == 0) {
-                //Basic action set
-                this->availableButtons.push_back(ATTACK);
-                this->availableButtons.push_back(USE);
-                this->availableButtons.push_back(JUMP);
-                this->availableButtons.push_back(CROUCH);
-                this->availableButtons.push_back(SPEED);
-
-                this->availableButtons.push_back(MOVE_RIGHT);
-                this->availableButtons.push_back(MOVE_LEFT);
-                this->availableButtons.push_back(MOVE_BACKWARD);
-                this->availableButtons.push_back(MOVE_FORWARD);
-                this->availableButtons.push_back(TURN_RIGHT);
-                this->availableButtons.push_back(TURN_LEFT);
-            }
-
             this->lastAction.resize(this->availableButtons.size());
 
             if(this->mode == SPECTATOR || this->mode == ASYNC_SPECTATOR){
@@ -79,13 +52,6 @@ namespace Vizia {
             } else {
                 this->doomController->setRunDoomAsync(false);
             }
-
-//            if(this->checkFilePath(this->doomController->getGamePath())) throw IncorrectDoomGamePathException();
-//            if(this->checkFilePath(this->doomController->getIwadPath())) throw IncorrectDoomIwadPathException();
-//            if(this->doomController->getFilePath().length() && this->checkFilePath(this->doomController->getFilePath()))
-//                throw IncorrectDoomGamePathException();
-//            if(this->doomControlle
-//                throw IncorrectDoomConfigPathException();
 
             try {
                 this->running = this->doomController->init();
@@ -312,12 +278,11 @@ namespace Vizia {
         return this->doomController->getGameVariable(var);
     }
 
-    void DoomGame::setDoomEnginePath(std::string path) { this->doomController->setGamePath(path); }
+    void DoomGame::setDoomEnginePath(std::string path) { this->doomController->setEnginePath(path); }
     void DoomGame::setDoomGamePath(std::string path) { this->doomController->setIwadPath(path); }
     void DoomGame::setDoomScenarioPath(std::string path) { this->doomController->setFilePath(path); }
     void DoomGame::setDoomMap(std::string map) { this->doomController->setMap(map); }
-    void DoomGame::setDoomSkill(int skill) { 
-        //TODO warning when out of range
+    void DoomGame::setDoomSkill(int skill) {
         this->doomController->setSkill(skill); 
     }
     void DoomGame::setDoomConfigPath(std::string path) { this->doomController->setConfigPath(path); }
@@ -327,11 +292,6 @@ namespace Vizia {
         else this->doomController->getSeed();
     }
     void DoomGame::setSeed(unsigned int seed){ this->doomController->setStaticSeed(seed); }
-
-    void DoomGame::setAutoNewEpisode(bool set) { this->doomController->setAutoMapRestart(set); }
-    void DoomGame::setNewEpisodeOnTimeout(bool set) { this->doomController->setAutoMapRestartOnTimeout(set); }
-    void DoomGame::setNewEpisodeOnPlayerDeath(bool set) { this->doomController->setAutoMapRestartOnTimeout(set); }
-    void DoomGame::setNewEpisodeOnMapEnd(bool set) { this->doomController->setAutoMapRestartOnMapEnd(set); }
 
     unsigned int DoomGame::getEpisodeStartTime(){ return this->doomController->getMapStartTime(); }
     void DoomGame::setEpisodeStartTime(unsigned int tics){
@@ -461,425 +421,234 @@ namespace Vizia {
     /* Code used for parsing the config file. */
     //TODO warnings, refactoring, comments
     bool DoomGame::StringToBool(std::string boolString){
-        if(boolString == "true" || boolString == "1")
-            return true;
-        if(boolString == "false" || boolString == "0")
-            return false;
+        if(boolString == "true" || boolString == "1")   return true;
+        if(boolString == "false" || boolString == "0")  return false;
+
         throw std::exception();
     }
 
     unsigned int DoomGame::StringToUint(std::string str)
     {
         unsigned int value = boost::lexical_cast<unsigned int>(str);
-        if(str[0] == '-')
-            throw boost::bad_lexical_cast();
+        if(str[0] == '-') throw boost::bad_lexical_cast();
         return value;
     }
 
     ScreenResolution DoomGame::StringToResolution(std::string str){
-        if(str == "res_40x30")
-            return RES_40X30;
-        if(str == "res_60x45")
-            return RES_60X45;
-        if(str == "res_80x50")
-            return RES_80X50;
-        if(str == "res_80x60")
-            return RES_80X60;
-        if(str == "res_100x75")
-            return RES_100X75;
-        if(str == "res_120x75")
-            return RES_120X75;
-        if(str == "res_120x90")
-            return RES_120X90;
-        if(str == "res_160x100")
-            return RES_160X100;
-        if(str == "res_160x120")
-            return RES_160X120;
-        if(str == "res_200x120")
-            return RES_200X120;
-        if(str == "res_200x150")
-            return RES_200X150;
-        if(str == "res_240x135")
-            return RES_240X135;
-        if(str == "res_240x150")
-            return RES_240X150;
-        if(str == "res_240x180")
-            return RES_240X180;
-        if(str == "res_256x144")
-            return RES_256X144;
-        if(str == "res_256x160")
-            return RES_256X160;
-        if(str == "res_256x192")
-            return RES_256X192;
-        if(str == "res_320x200")
-            return RES_320X200;
-        if(str == "res_320x240")
-            return RES_320X240;
-        if(str == "res_400x225")
-            return RES_400X225;
-        if(str == "res_400x300")
-            return RES_400X300;
-        if(str == "res_480x270")
-            return RES_480X270;
-        if(str == "res_480x360")
-            return RES_480X360;
-        if(str == "res_512x288")
-            return RES_512X288;
-        if(str == "res_512x384")
-            return RES_512X384;
-        if(str == "res_640x360")
-            return RES_640X400;
-        if(str == "res_640x400")
-            return RES_640X400;
-        if(str == "res_640x480")
-            return RES_640X480;
-        if(str == "res_720x480")
-            return RES_720X480;
-        if(str == "res_720x540")
-            return RES_720X540;
-        if(str == "res_800x450")
-            return RES_800X450;
-        if(str == "res_800x480")
-            return RES_800X480;
-        if(str == "res_800x500")
-            return RES_800X500;
-        if(str == "res_800x600")
-            return RES_800X600;
-        if(str == "res_848x480")
-            return RES_848X480;
-        if(str == "res_960x600")
-            return RES_960X600;
-        if(str == "res_960x720")
-            return RES_960X720;
-        if(str == "res_1024x576")
-            return RES_1024X576;
-        if(str == "res_1024x600")
-            return RES_1024X600;
-        if(str == "res_1024x640")
-            return RES_1024X640;
-        if(str == "res_1024x768")
-            return RES_1024X768;
-        if(str == "res_1088x612")
-            return RES_1088X612;
-        if(str == "res_1152x648")
-            return RES_1152X648;
-        if(str == "res_1152x720")
-            return RES_1152X720;
-        if(str == "res_1152x864")
-            return RES_1152X864;
-        if(str == "res_1280x720")
-            return RES_1280X720;
-        if(str == "res_1280x854")
-            return RES_1280X854;
-        if(str == "res_1280x800")
-            return RES_1280X800;
-        if(str == "res_1280x960")
-            return RES_1280X960;
-        if(str == "res_1280x1024")
-            return RES_1280X1024;
-        if(str == "res_1360x768")
-            return RES_1360X768;
-        if(str == "res_1366x768")
-            return RES_1366X768;
-        if(str == "res_1400x787")
-            return RES_1400X787;
-        if(str == "res_1400x875")
-            return RES_1400X875;
-        if(str == "res_1400x1050")
-            return RES_1400X1050;
-        if(str == "res_1440x900")
-            return RES_1440X900;
-        if(str == "res_1440x960")
-            return RES_1440X960;
-        if(str == "res_1440x1080")
-            return RES_1440X1080;
-        if(str == "res_1600x900")
-            return RES_1600X900;
-        if(str == "res_1600x1000")
-            return RES_1600X1000;
-        if(str == "res_1600x1200")
-            return RES_1600X1200;
-        if(str == "res_1680x1050")
-            return RES_1680X1050;
-        if(str == "res_1920x1080")
-            return RES_1920X1080;
-        if(str == "res_1920x1200")
-            return RES_1920X1200;
-        if(str == "res_2048x1536")
-            return RES_2048X1536;
-        if(str == "res_2560x1440")
-            return RES_2560X1440;
-        if(str == "res_2560x1600")
-            return RES_2560X1600;
-        if(str == "res_2560x2048")
-            return RES_2560X2048;
-        if(str == "res_2880x1800")
-            return RES_2880X1800;
-        if(str == "res_3200x1800")
-            return RES_3200X1800;
-        if(str == "res_3840x2160")
-            return RES_3840X2160;
-        if(str == "res_3840x2400")
-            return RES_3840X2400;
-        if(str == "res_4096x2160")
-            return RES_4096X2160;
-        if(str == "res_5120x2880")
-            return RES_5120X2880;
+        if(str == "res_40x30")      return RES_40X30;
+        if(str == "res_60x45")      return RES_60X45;
+        if(str == "res_80x50")      return RES_80X50;
+        if(str == "res_80x60")      return RES_80X60;
+        if(str == "res_100x75")     return RES_100X75;
+        if(str == "res_120x75")     return RES_120X75;
+        if(str == "res_120x90")     return RES_120X90;
+        if(str == "res_160x100")    return RES_160X100;
+        if(str == "res_160x120")    return RES_160X120;
+        if(str == "res_200x120")    return RES_200X120;
+        if(str == "res_200x150")    return RES_200X150;
+        if(str == "res_240x135")    return RES_240X135;
+        if(str == "res_240x150")    return RES_240X150;
+        if(str == "res_240x180")    return RES_240X180;
+        if(str == "res_256x144")    return RES_256X144;
+        if(str == "res_256x160")    return RES_256X160;
+        if(str == "res_256x192")    return RES_256X192;
+        if(str == "res_320x200")    return RES_320X200;
+        if(str == "res_320x240")    return RES_320X240;
+        if(str == "res_400x225")    return RES_400X225;
+        if(str == "res_400x300")    return RES_400X300;
+        if(str == "res_480x270")    return RES_480X270;
+        if(str == "res_480x360")    return RES_480X360;
+        if(str == "res_512x288")    return RES_512X288;
+        if(str == "res_512x384")    return RES_512X384;
+        if(str == "res_640x360")    return RES_640X400;
+        if(str == "res_640x400")    return RES_640X400;
+        if(str == "res_640x480")    return RES_640X480;
+        if(str == "res_720x480")    return RES_720X480;
+        if(str == "res_720x540")    return RES_720X540;
+        if(str == "res_800x450")    return RES_800X450;
+        if(str == "res_800x480")    return RES_800X480;
+        if(str == "res_800x500")    return RES_800X500;
+        if(str == "res_800x600")    return RES_800X600;
+        if(str == "res_848x480")    return RES_848X480;
+        if(str == "res_960x600")    return RES_960X600;
+        if(str == "res_960x720")    return RES_960X720;
+        if(str == "res_1024x576")   return RES_1024X576;
+        if(str == "res_1024x600")   return RES_1024X600;
+        if(str == "res_1024x640")   return RES_1024X640;
+        if(str == "res_1024x768")   return RES_1024X768;
+        if(str == "res_1088x612")   return RES_1088X612;
+        if(str == "res_1152x648")   return RES_1152X648;
+        if(str == "res_1152x720")   return RES_1152X720;
+        if(str == "res_1152x864")   return RES_1152X864;
+        if(str == "res_1280x720")   return RES_1280X720;
+        if(str == "res_1280x854")   return RES_1280X854;
+        if(str == "res_1280x800")   return RES_1280X800;
+        if(str == "res_1280x960")   return RES_1280X960;
+        if(str == "res_1280x1024")  return RES_1280X1024;
+        if(str == "res_1360x768")   return RES_1360X768;
+        if(str == "res_1366x768")   return RES_1366X768;
+        if(str == "res_1400x787")   return RES_1400X787;
+        if(str == "res_1400x875")   return RES_1400X875;
+        if(str == "res_1400x1050")  return RES_1400X1050;
+        if(str == "res_1440x900")   return RES_1440X900;
+        if(str == "res_1440x960")   return RES_1440X960;
+        if(str == "res_1440x1080")  return RES_1440X1080;
+        if(str == "res_1600x900")   return RES_1600X900;
+        if(str == "res_1600x1000")  return RES_1600X1000;
+        if(str == "res_1600x1200")  return RES_1600X1200;
+        if(str == "res_1680x1050")  return RES_1680X1050;
+        if(str == "res_1920x1080")  return RES_1920X1080;
+        if(str == "res_1920x1200")  return RES_1920X1200;
+        if(str == "res_2048x1536")  return RES_2048X1536;
+        if(str == "res_2560x1440")  return RES_2560X1440;
+        if(str == "res_2560x1600")  return RES_2560X1600;
+        if(str == "res_2560x2048")  return RES_2560X2048;
+        if(str == "res_2880x1800")  return RES_2880X1800;
+        if(str == "res_3200x1800")  return RES_3200X1800;
+        if(str == "res_3840x2160")  return RES_3840X2160;
+        if(str == "res_3840x2400")  return RES_3840X2400;
+        if(str == "res_4096x2160")  return RES_4096X2160;
+        if(str == "res_5120x2880")  return RES_5120X2880;
+
         throw std::exception();
     }
         
     ScreenFormat DoomGame::StringToFormat(std::string str){
-        if(str == "crcgcb")
-            return CRCGCB;
-        if(str == "crcgcbzb")
-            return CRCGCBZB;
-        if(str == "rgb24")
-            return RGB24;
-        if(str == "rgba32")
-            return RGBA32;
-        if(str == "argb32")
-            return ARGB32;
-        if(str == "cbcgcr")
-            return CBCGCR;
-        if(str == "cbcgcrzb")
-            return CBCGCRZB;
-        if(str == "bgr24")
-            return BGR24;
-        if(str == "bgra32")
-            return BGRA32;
-        if(str == "abgr32")
-            return ABGR32;
-        if(str == "gray8")
-            return GRAY8;
-        if(str == "zbuffer8")
-            return ZBUFFER8;
-        if(str == "doom_256_colors")
-            return DOOM_256_COLORS;
+        if(str == "crcgcb")             return CRCGCB;
+        if(str == "crcgcbzb")           return CRCGCBDB;
+        if(str == "rgb24")              return RGB24;
+        if(str == "rgba32")             return RGBA32;
+        if(str == "argb32")             return ARGB32;
+        if(str == "cbcgcr")             return CBCGCR;
+        if(str == "cbcgcrzb")           return CBCGCRDB;
+        if(str == "bgr24")              return BGR24;
+        if(str == "bgra32")             return BGRA32;
+        if(str == "abgr32")             return ABGR32;
+        if(str == "gray8")              return GRAY8;
+        if(str == "zbuffer8")           return DEPTH_BUFFER8;
+        if(str == "doom_256_colors8")   return DOOM_256_COLORS8;
+
         throw std::exception();
     }
      
     Button DoomGame::StringToButton(std::string str){
-        if(str == "attack")
-            return ATTACK;
-        if(str == "use")
-            return USE;
-        if(str == "jump")
-            return JUMP;
-        if(str == "crouch")
-            return CROUCH;
-        if(str == "turn180")
-            return TURN180;
-        if(str == "alattack")
-            return ALTATTACK;
-        if(str == "reload")
-            return RELOAD;
-        if(str == "zoom")
-            return ZOOM;
-        if(str == "speed")
-            return SPEED;
-        if(str == "strafe")
-            return STRAFE;
-        if(str == "move_right")
-            return MOVE_RIGHT;
-        if(str == "move_left")
-            return MOVE_LEFT;
-        if(str == "move_backward")
-            return MOVE_BACKWARD;
-        if(str == "move_forward")
-            return MOVE_FORWARD;
-        if(str == "turn_right")
-            return TURN_RIGHT;
-        if(str == "turn_left")
-            return TURN_LEFT;
-        if(str == "look_up")
-            return LOOK_UP;
-        if(str == "look_down")
-            return LOOK_DOWN;
-        if(str == "move_up")
-            return MOVE_UP;
-        if(str == "move_down")
-            return MOVE_DOWN;
-        if(str == "land")
-            return LAND;
+        if(str == "attack")         return ATTACK;
+        if(str == "use")            return USE;
+        if(str == "jump")           return JUMP;
+        if(str == "crouch")         return CROUCH;
+        if(str == "turn180")        return TURN180;
+        if(str == "alattack")       return ALTATTACK;
+        if(str == "reload")         return RELOAD;
+        if(str == "zoom")           return ZOOM;
+        if(str == "speed")          return SPEED;
+        if(str == "strafe")         return STRAFE;
+        if(str == "move_right")     return MOVE_RIGHT;
+        if(str == "move_left")      return MOVE_LEFT;
+        if(str == "move_backward")  return MOVE_BACKWARD;
+        if(str == "move_forward")   return MOVE_FORWARD;
+        if(str == "turn_right")     return TURN_RIGHT;
+        if(str == "turn_left")      return TURN_LEFT;
+        if(str == "look_up")        return LOOK_UP;
+        if(str == "look_down")      return LOOK_DOWN;
+        if(str == "move_up")        return MOVE_UP;
+        if(str == "move_down")      return MOVE_DOWN;
+        if(str == "land")           return LAND;
 
-        if(str == "select_weapon1")
-            return SELECT_WEAPON1;
-        if(str == "select_weapon2")
-            return SELECT_WEAPON2;
-        if(str == "select_weapon3")
-            return SELECT_WEAPON3;
-        if(str == "select_weapon4")
-            return SELECT_WEAPON4;
-        if(str == "select_weapon5")
-            return SELECT_WEAPON5;
-        if(str == "select_weapon6")
-            return SELECT_WEAPON6;
-        if(str == "select_weapon7")
-            return SELECT_WEAPON7;
-        if(str == "select_weapon8")
-            return SELECT_WEAPON8;
-        if(str == "select_weapon9")
-            return SELECT_WEAPON9;
-        if(str == "select_weapon0")
-            return SELECT_WEAPON0;
+        if(str == "select_weapon1") return SELECT_WEAPON1;
+        if(str == "select_weapon2") return SELECT_WEAPON2;
+        if(str == "select_weapon3") return SELECT_WEAPON3;
+        if(str == "select_weapon4") return SELECT_WEAPON4;
+        if(str == "select_weapon5") return SELECT_WEAPON5;
+        if(str == "select_weapon6") return SELECT_WEAPON6;
+        if(str == "select_weapon7") return SELECT_WEAPON7;
+        if(str == "select_weapon8") return SELECT_WEAPON8;
+        if(str == "select_weapon9") return SELECT_WEAPON9;
+        if(str == "select_weapon0") return SELECT_WEAPON0;
 
-        if(str == "select_next_weapon")
-            return SELECT_NEXT_WEAPON;
-        if(str == "select_prev_weapon")
-            return SELECT_PREV_WEAPON;
-        if(str == "drop_selected_weapon")
-            return DROP_SELECTED_WEAPON;
-        if(str == "activate_selected_weapon")
-            return ACTIVATE_SELECTED_ITEM;
-        if(str == "select_next_item")
-            return SELECT_NEXT_ITEM;
-        if(str == "select_prev_item")
-            return SELECT_PREV_ITEM;
-        if(str == "drop_selected_item")
-            return DROP_SELECTED_ITEM;
+        if(str == "select_next_weapon")         return SELECT_NEXT_WEAPON;
+        if(str == "select_prev_weapon")         return SELECT_PREV_WEAPON;
+        if(str == "drop_selected_weapon")       return DROP_SELECTED_WEAPON;
+        if(str == "activate_selected_weapon")   return ACTIVATE_SELECTED_ITEM;
+        if(str == "select_next_item")           return SELECT_NEXT_ITEM;
+        if(str == "select_prev_item")           return SELECT_PREV_ITEM;
+        if(str == "drop_selected_item")         return DROP_SELECTED_ITEM;
 
-        if(str == "look_up_down_delta")
-            return LOOK_UP_DOWN_DELTA;
-        if(str == "turn_left_right_delta")
-            return TURN_LEFT_RIGHT_DELTA;
-        if(str == "move_forward_backward_delta")
-            return MOVE_FORWARD_BACKWARD_DELTA;
-        if(str == "move_left_right_delta")
-            return MOVE_LEFT_RIGHT_DELTA;
-        if(str == "move_up_down_delta")
-            return MOVE_UP_DOWN_DELTA;
+        if(str == "look_up_down_delta")         return LOOK_UP_DOWN_DELTA;
+        if(str == "turn_left_right_delta")      return TURN_LEFT_RIGHT_DELTA;
+        if(str == "move_forward_backward_delta")return MOVE_FORWARD_BACKWARD_DELTA;
+        if(str == "move_left_right_delta")      return MOVE_LEFT_RIGHT_DELTA;
+        if(str == "move_up_down_delta")         return MOVE_UP_DOWN_DELTA;
        
         throw std::exception();
     }
 
     GameVariable DoomGame::StringToGameVariable(std::string str){
-        if(str == "killcount")
-            return KILLCOUNT;
-        if(str == "itemcount")
-            return ITEMCOUNT;
-        if(str == "secretcount")
-            return SECRETCOUNT;
-        if(str == "fragcount")
-            return FRAGCOUNT;
-        if(str == "health")
-            return HEALTH;
-        if(str == "armor")
-            return ARMOR;
-        if(str == "dead")
-            return DEAD;
-        if(str == "on_ground")
-            return ON_GROUND;
-         if(str == "attack_ready")
-            return ATTACK_READY;
-         if(str == "altattack_ready")
-            return ALTATTACK_READY;
-         if(str == "selected_weapon")
-            return SELECTED_WEAPON;
-         if(str == "selected_weapon_ammo")
-            return SELECTED_WEAPON_AMMO;
+        if(str == "killcount")              return KILLCOUNT;
+        if(str == "itemcount")              return ITEMCOUNT;
+        if(str == "secretcount")            return SECRETCOUNT;
+        if(str == "fragcount")              return FRAGCOUNT;
+        if(str == "health")                 return HEALTH;
+        if(str == "armor")                  return ARMOR;
+        if(str == "dead")                   return DEAD;
+        if(str == "on_ground")              return ON_GROUND;
+        if(str == "attack_ready")           return ATTACK_READY;
+        if(str == "altattack_ready")        return ALTATTACK_READY;
+        if(str == "selected_weapon")        return SELECTED_WEAPON;
+        if(str == "selected_weapon_ammo")   return SELECTED_WEAPON_AMMO;
          
-        if(str == "ammo1")
-            return AMMO1;
-        if(str == "ammo2")
-            return AMMO2;
-        if(str == "ammo3")
-            return AMMO3;
-        if(str == "ammo4")
-            return AMMO4;
-        if(str == "ammo5")
-            return AMMO5;
-        if(str == "ammo6")
-            return AMMO6;
-        if(str == "ammo7")
-            return AMMO7;
-        if(str == "ammo8")
-            return AMMO8;
-        if(str == "ammo9")
-            return AMMO9;
-        if(str == "ammo0")
-            return AMMO0;
+        if(str == "ammo1")      return AMMO1;
+        if(str == "ammo2")      return AMMO2;
+        if(str == "ammo3")      return AMMO3;
+        if(str == "ammo4")      return AMMO4;
+        if(str == "ammo5")      return AMMO5;
+        if(str == "ammo6")      return AMMO6;
+        if(str == "ammo7")      return AMMO7;
+        if(str == "ammo8")      return AMMO8;
+        if(str == "ammo9")      return AMMO9;
+        if(str == "ammo0")      return AMMO0;
 
-        if(str == "weapon1")
-            return WEAPON1;
-        if(str == "weapon2")
-            return WEAPON2;
-        if(str == "weapon3")
-            return WEAPON3;
-        if(str == "weapon4")
-            return WEAPON4;
-        if(str == "weapon5")
-            return WEAPON5;
-        if(str == "weapon6")
-            return WEAPON6;
-        if(str == "weapon7")
-            return WEAPON7;
-        if(str == "weapon8")
-            return WEAPON8;
-        if(str == "weapon9")
-            return WEAPON9;
-        if(str == "weapon0")
-            return WEAPON0;
+        if(str == "weapon1")    return WEAPON1;
+        if(str == "weapon2")    return WEAPON2;
+        if(str == "weapon3")    return WEAPON3;
+        if(str == "weapon4")    return WEAPON4;
+        if(str == "weapon5")    return WEAPON5;
+        if(str == "weapon6")    return WEAPON6;
+        if(str == "weapon7")    return WEAPON7;
+        if(str == "weapon8")    return WEAPON8;
+        if(str == "weapon9")    return WEAPON9;
+        if(str == "weapon0")    return WEAPON0;
 
-        if(str == "user1")
-            return USER1;
-        if(str == "user2")
-            return USER2;
-        if(str == "user3")
-            return USER3;
-        if(str == "user4")
-            return USER4;
-        if(str == "user5")
-            return USER5;
-        if(str == "user6")
-            return USER6;
-        if(str == "user7")
-            return USER7;
-        if(str == "user8")
-            return USER8;
-        if(str == "user9")
-            return USER9;
-        if(str == "user10")
-            return USER10;
-        if(str == "user11")
-            return USER11;
-        if(str == "user12")
-            return USER12;
-        if(str == "user13")
-            return USER13;
-        if(str == "user14")
-            return USER14;
-        if(str == "user15")
-            return USER15;
-        if(str == "user16")
-            return USER16;
-        if(str == "user17")
-            return USER17;
-        if(str == "user18")
-            return USER18;
-        if(str == "user19")
-            return USER19;
-        if(str == "user20")
-            return USER20;
-        if(str == "user21")
-            return USER21;
-        if(str == "user22")
-            return USER22;
-        if(str == "user23")
-            return USER23;
-        if(str == "user24")
-            return USER24;
-        if(str == "user25")
-            return USER25;
-        if(str == "user26")
-            return USER26;
-        if(str == "user27")
-            return USER27;
-        if(str == "user28")
-            return USER28;
-        if(str == "user29")
-            return USER29;
-        if(str == "user30")
-            return USER30;
+        if(str == "user1")      return USER1;
+        if(str == "user2")      return USER2;
+        if(str == "user3")      return USER3;
+        if(str == "user4")      return USER4;
+        if(str == "user5")      return USER5;
+        if(str == "user6")      return USER6;
+        if(str == "user7")      return USER7;
+        if(str == "user8")      return USER8;
+        if(str == "user9")      return USER9;
+        if(str == "user10")     return USER10;
+        if(str == "user11")     return USER11;
+        if(str == "user12")     return USER12;
+        if(str == "user13")     return USER13;
+        if(str == "user14")     return USER14;
+        if(str == "user15")     return USER15;
+        if(str == "user16")     return USER16;
+        if(str == "user17")     return USER17;
+        if(str == "user18")     return USER18;
+        if(str == "user19")     return USER19;
+        if(str == "user20")     return USER20;
+        if(str == "user21")     return USER21;
+        if(str == "user22")     return USER22;
+        if(str == "user23")     return USER23;
+        if(str == "user24")     return USER24;
+        if(str == "user25")     return USER25;
+        if(str == "user26")     return USER26;
+        if(str == "user27")     return USER27;
+        if(str == "user28")     return USER28;
+        if(str == "user29")     return USER29;
+        if(str == "user30")     return USER30;
+
         throw std::exception();
     }
 
@@ -899,8 +668,7 @@ namespace Vizia {
             else
                 break;
         }
-        if(value.empty() || value[0] != '{')
-            return false;
+        if(value.empty() || value[0] != '{') return false;
         
         value = value.substr(1);
 
@@ -913,8 +681,7 @@ namespace Vizia {
             if(!newline.empty() and newline[0]!='#')
                 value += " " + newline;
         }
-        if(value.empty() || value[value.size()-1] != '}')
-            return false;
+        if(value.empty() || value[value.size()-1] != '}') return false;
         
     /* Fill the vector */
         value[value.size() -1] = ' ';
@@ -1141,22 +908,6 @@ namespace Vizia {
     
         /* Parse bool properties */
             try{
-                if (key =="auto_new_episode" || key =="autonewepisode"){
-                    this->setAutoNewEpisode(StringToBool(val));
-                    continue;
-                }
-                if (key =="new_episode_on_timeout" || key =="newepisodeontimeout"){
-                    this->setNewEpisodeOnTimeout(StringToBool(val));
-                    continue;
-                }
-                if (key =="new_episode_on_player_death" || key =="newepisodeonplayerdeath"){
-                    this->setNewEpisodeOnPlayerDeath(StringToBool(val));
-                    continue;
-                }
-                if (key =="new_episode_on_map_end" || key =="newepisodeonmapend"){
-                    this->setNewEpisodeOnMapEnd(StringToBool(val));
-                    continue;
-                }
                 if (key =="console_enabled" || key =="consoleenabled"){
                     this->setConsoleEnabled(StringToBool(val));
                     continue;
@@ -1251,18 +1002,12 @@ namespace Vizia {
                 continue;
             }
 
-            
             std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Unsupported key: "<<key<<" in line #"<<line_number<<". Line ignored.\n";
             success = false;
             
         }
 
         return success;
-    }
-
-    bool DoomGame::checkFilePath(std::string path){
-        std::ifstream file(path.c_str());
-        return file;
     }
 
     void DoomGame::logError(std::string error){ std::cerr << error << std::endl; }
