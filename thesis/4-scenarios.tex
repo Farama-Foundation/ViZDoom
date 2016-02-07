@@ -250,7 +250,7 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 			The purpose of this scenario is to teach agents to link incoming missiles with their estimated lifespan. Agents should learn that being hit means a decrease in health and this in turn leads to death that is most undesirable. In effect agents should learn how to avoid missiles.
 
 		\paragraph{Description}
-			Map is a rectangle. Player is spawned along the longer wall, in the center. A couple of fireball-spitting monsters are spawned randomly somewhere along the opposite wall and try to kill the player with fireballs. The player has no weapon and can only move sideways (config). More monsters appear with time. Episode ends when player dies which is inevitable.
+			Map is a rectangle. Player is spawned along the longer wall, in the center. A couple of fireball-spitting monsters are spawned randomly somewhere along the opposite wall and try to kill the player with fireballs. The player has no weapon and can only move sideways (config). More monsters appear with time. Episode ends when player dies which is inevitable. In case the agent was expected to reach super-human performance some timeout(config) might be suggested as death may not be inevitable.
 
 		\paragraph{Suggested configuration}
 		\begin{itemize}
