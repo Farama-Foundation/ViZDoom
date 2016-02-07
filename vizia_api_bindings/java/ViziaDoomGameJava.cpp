@@ -37,8 +37,8 @@ JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_Ms2DoomTics
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    DoomFixedToFloat
- * Signature: (I)F
+ * Method:    DoomFixedToDouble
+ * Signature: (I)D
  */
 JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_DoomFixedToDouble
   (JNIEnv * env, jobject obj, jint time){
@@ -68,11 +68,25 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_DoomGame
  */
 JNIEXPORT jboolean JNICALL Java_ViziaDoomGameJava_loadConfig
   (JNIEnv *env, jobject obj, jstring path){
-	Vizia::DoomGame* game=GetObject(env,obj);
- 	char * path2;
-    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;	
-	bool ret = game->loadConfig(path2);
-	return (jboolean) ret;
+	try{
+		Vizia::DoomGame* game=GetObject(env,obj);
+	 	char * path2;
+	    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;	
+		bool ret = game->loadConfig(path2);
+		return (jboolean) ret;
+	}	
+	catch (Vizia::IncorrectDoomConfigPathException& e)
+  	{	
+
+ 		jclass IncorrectDoomConfigPathException = env->FindClass("errors/IncorrectDoomConfigPathException");
+        	env->ThrowNew(IncorrectDoomConfigPathException, e.what());
+		return 0;
+  	}
+	catch (std::exception& e)
+  	{
+    		std::cout << "C++ unknown exception"<< '\n';
+		return 0;
+  	}
 
 }
 
@@ -250,13 +264,44 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_advanceAction__
 /*
  * Class:     ViziaDoomGameJava
  * Method:    advanceAction
- * Signature: (ZZI)V
+ * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_advanceAction__ZZI
-  (JNIEnv *env, jobject obj, jboolean bol1, jboolean bol2, jint int1){
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_advanceAction__I
+  (JNIEnv *env, jobject obj, jint int1){
 	try{
 	Vizia::DoomGame* game=GetObject(env,obj);
-	game->advanceAction(bol1,bol2,int1);
+	game->advanceAction(int1);
+	}
+	catch (Vizia::DoomIsNotRunningException& e)
+  	{	
+
+ 		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
+        	env->ThrowNew(DoomIsNotRunningException, e.what());
+  	}
+	catch (Vizia::Exception& e)
+  	{	
+
+ 		jclass Exception = env->FindClass("errors/Exception");
+        	env->ThrowNew(Exception, e.what());
+
+  	}
+	catch (std::exception& e)
+  	{
+    		std::cout << "C++ unknown exception"<< '\n';
+
+  	}
+}
+
+/*
+ * Class:     ViziaDoomGameJava
+ * Method:    advanceAction
+ * Signature: (IZZ)V
+ */
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_advanceAction__IZZ
+  (JNIEnv *env, jobject obj, jint int1, jboolean bol1, jboolean bol2){
+	try{
+	Vizia::DoomGame* game=GetObject(env,obj);
+	game->advanceAction(int1, bol1,bol2);
 	}
 	catch (Vizia::DoomIsNotRunningException& e)
   	{	
@@ -567,6 +612,30 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setButtonMaxValue
         	env->DeleteLocalRef(jclassEnum);
     	}
 }
+/*
+ * Class:     ViziaDoomGameJava
+ * Method:    getButtonMaxValue
+ * Signature: (Lenums/Button)V
+ */
+JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getButtonMaxValue
+  (JNIEnv *env, jobject obj, jobject enumVal){
+Vizia::DoomGame* game=GetObject(env,obj);
+	jclass jclassEnum = env->FindClass("enums/Button");
+	if(jclassEnum != 0)
+    	{	
+        	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
+		if (ordinal_ID == 0){
+			return 0;
+		}
+		jint value = env->CallIntMethod(enumVal, ordinal_ID);
+		Vizia::Button ret=static_cast<Vizia::Button>(value);
+		int retval = game->getButtonMaxValue(ret);
+	// Delete local references created		
+        	env->DeleteLocalRef(jclassEnum);
+		return retval;
+    	}
+}
+
 
 /*
  * Class:     ViziaDoomGameJava
@@ -576,7 +645,7 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setButtonMaxValue
 JNIEXPORT void JNICALL Java_ViziaDoomGameJava_addAvailableGameVariable
   (JNIEnv *env, jobject obj, jobject enumVal){
 	Vizia::DoomGame* game=GetObject(env,obj);
-	jclass jclassEnum = env->FindClass("enums/GameVar");
+	jclass jclassEnum = env->FindClass("enums/GameVariable");
 	if(jclassEnum != 0)
     	{	
         	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
@@ -656,14 +725,12 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_sendGameCommand //TODO wywala jvm
 	}
 	catch (Vizia::DoomIsNotRunningException& e)
   	{	
-		std::cout<<"To tu 1"<<std::endl;
  		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
         	env->ThrowNew(DoomIsNotRunningException, e.what());
 
   	}
 	catch (Vizia::Exception& e)
   	{	
-		std::cout<<"To tu 2"<<std::endl;
  		jclass Exception = env->FindClass("errors/Exception");
         	env->ThrowNew(Exception, e.what());
 
@@ -771,10 +838,10 @@ JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getGameVar
  * Method:    getLivingReward
  * Signature: ()F
  */
-JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_getLivingReward
+JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_getLivingReward
  (JNIEnv *env, jobject obj){
 	Vizia::DoomGame* game=GetObject(env,obj);
-	float ret = game->getLivingReward();
+	double ret = game->getLivingReward();
 	return ret;
 }
 
@@ -785,7 +852,7 @@ JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_getLivingReward
  * Signature: (F)V
  */
 JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setLivingReward
-(JNIEnv *env, jobject obj, jfloat rew){
+(JNIEnv *env, jobject obj, jdouble rew){
 	Vizia::DoomGame* game=GetObject(env,obj);
 	game->setLivingReward(rew);
 }
@@ -795,10 +862,10 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setLivingReward
  * Method:    getDeathPenalty
  * Signature: ()F
  */
-JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_getDeathPenalty
+JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_getDeathPenalty
  (JNIEnv *env, jobject obj){
 	Vizia::DoomGame* game=GetObject(env,obj);
-	float ret = game->getDeathPenalty();
+	double ret = game->getDeathPenalty();
 	return ret;
 }
 
@@ -808,7 +875,7 @@ JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_getDeathPenalty
  * Signature: (F)V
  */
 JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDeathPenalty
-  (JNIEnv *env, jobject obj, jfloat rew){
+  (JNIEnv *env, jobject obj, jdouble rew){
 	Vizia::DoomGame* game=GetObject(env,obj);
 	game->setDeathPenalty(rew);
 }
@@ -818,10 +885,10 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDeathPenalty
  * Method:    getLastReward
  * Signature: ()F
  */
-JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_getLastReward
+JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_getLastReward
   (JNIEnv *env, jobject obj){
 	Vizia::DoomGame* game=GetObject(env,obj);
-	float ret=game->getLastReward();
+	double ret=game->getLastReward();
 	return ret;
 
 }
@@ -831,51 +898,89 @@ JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_getLastReward
  * Method:    getSummaryReward
  * Signature: ()F
  */
-JNIEXPORT jfloat JNICALL Java_ViziaDoomGameJava_getSummaryReward
+JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_getSummaryReward
   (JNIEnv *env, jobject obj){
 	Vizia::DoomGame* game=GetObject(env,obj);
-	float ret=game->getSummaryReward();
+	double ret=game->getSummaryReward();
 	return ret;
 
 }
 
 /*
  * Class:     ViziaDoomGameJava
+ * Method:    setDoomEnginePath
+ * Signature: (Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDoomEnginePath
+ (JNIEnv *env, jobject obj, jstring path){
+	try{
+		Vizia::DoomGame* game=GetObject(env,obj);
+	 	char * path2;
+	    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;	
+		game->setDoomEnginePath(path2);
+	}
+	catch (Vizia::IncorrectDoomGamePathException& e)
+	{	
+ 		jclass IncorrectDoomGamePathException = env->FindClass("errors/IncorrectDoomGamePathException");
+        	env->ThrowNew(IncorrectDoomGamePathException, e.what());
+
+  	}
+	catch (...)
+  	{
+    		std::cout << "C++ unknown exception"<<std::endl;
+
+  	}
+}
+/*
+ * Class:     ViziaDoomGameJava
  * Method:    setDoomGamePath
  * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDoomGamePath
- (JNIEnv *env, jobject obj, jstring path){
-	Vizia::DoomGame* game=GetObject(env,obj);
- 	char * path2;
-    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;	
-	game->setDoomGamePath(path2);
-}
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    setDoomIwadPath
- * Signature: (Ljava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDoomIwadPath
   (JNIEnv *env, jobject obj, jstring path){
-	Vizia::DoomGame* game=GetObject(env,obj);
-	char * path2;
-    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;
-	game->setDoomIwadPath(path2);
+	try{	
+		Vizia::DoomGame* game=GetObject(env,obj);
+		char * path2;
+	    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;
+		game->setDoomGamePath(path2);
+	}
+	catch (Vizia::IncorrectDoomIwadPathException& e)
+	{	
+ 		jclass IncorrectDoomIwadPathException = env->FindClass("errors/IncorrectDoomIwadPathException");
+        	env->ThrowNew(IncorrectDoomIwadPathException, e.what());
+
+  	}
+	catch (...)
+  	{
+    		std::cout << "C++ unknown exception"<<std::endl;
+
+  	}
 }
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    setDoomFilePath
+ * Method:    setDoomScenarioPath
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDoomFilePath
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDoomScenarioPath
  (JNIEnv *env, jobject obj, jstring path){
-	Vizia::DoomGame* game=GetObject(env,obj);
-	char * path2;
-    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;
-	game->setDoomFilePath(path2);
+	try{
+		Vizia::DoomGame* game=GetObject(env,obj);
+		char * path2;
+	    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;
+		game->setDoomScenarioPath(path2);
+	}
+	catch (Vizia::IncorrectDoomFilePathException& e)
+	{	
+ 		jclass IncorrectDoomFilePathException = env->FindClass("errors/IncorrectDoomFilePathException");
+        	env->ThrowNew(IncorrectDoomFilePathException, e.what());
+
+  	}
+	catch (...)
+  	{
+    		std::cout << "C++ unknown exception"<<std::endl;
+
+  	}
 }
 
 /*
@@ -941,53 +1046,6 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setSeed
 	game->setSeed(seed);
 }
 
-/*
- * Class:     ViziaDoomGameJava
- * Method:    setAutoNewEpisode
- * Signature: (Z)V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setAutoNewEpisode
-  (JNIEnv * env, jobject obj, jboolean bol){
-	Vizia::DoomGame* game=GetObject(env,obj);
-	game->setAutoNewEpisode(bol);
-
-}
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    setNewEpisodeOnTimeout
- * Signature: (Z)V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setNewEpisodeOnTimeout
-  (JNIEnv *env, jobject obj, jboolean bol){
-	Vizia::DoomGame* game=GetObject(env,obj);
-	game->setNewEpisodeOnTimeout(bol);
-
-}
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    setNewEpisodeOnPlayerDeath
- * Signature: (Z)V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setNewEpisodeOnPlayerDeath
-  (JNIEnv *env, jobject obj , jboolean bol){
-	Vizia::DoomGame* game=GetObject(env,obj);
-	game->setNewEpisodeOnPlayerDeath(bol);
-
-}
-
-/*
- * Class:     ViziaDoomGameJava
- * Method:    setNewEpisodeOnMapEnd
- * Signature: (Z)V
- */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setNewEpisodeOnMapEnd
-  (JNIEnv *env, jobject obj, jboolean bol){
-	Vizia::DoomGame* game=GetObject(env,obj);
-	game->setNewEpisodeOnMapEnd(bol);
-
-}
 
 /*
  * Class:     ViziaDoomGameJava
@@ -1168,6 +1226,31 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setConsoleEnabled
 
 }
 
+/*
+ * Class:     ViziaDoomGameJava
+ * Method:    getScreenWidth
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getScreenWidth
+  (JNIEnv *env, jobject obj){
+	Vizia::DoomGame* game=GetObject(env,obj);
+	int ret;
+	ret=game->getScreenWidth();
+	return (jint)ret;
+}
+
+/*
+ * Class:     ViziaDoomGameJava
+ * Method:    getScreenHeight
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getScreenHeight
+  (JNIEnv *env, jobject obj){
+	Vizia::DoomGame* game=GetObject(env,obj);
+	int ret;
+	ret=game->getScreenHeight();
+	return (jint)ret;
+}
 /*
  * Class:     ViziaDoomGameJava
  * Method:    getScreenChannels

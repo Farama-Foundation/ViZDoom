@@ -1,14 +1,29 @@
 \chapter*{Streszczenie}
+
 Niniejsza praca jest poświęcona wykorzystaniu trójwymiarowych gier typu FPS (ang. first-person shooter) do badań nad inteligentnymi agentami, które działają i uczą się w oparciu o informację obrazową.
-Rezultatem niniejszej pracy jest środowisko oparte na grze Doom dostosowane do potrzeb idei uczenia ze wzmocnieniem.
-Stworzony został interfejs programistyczny zaimplementowany w C++ pozwalajacy na wykonywanie akcji, pobieranie obrazu i informacji o bohaterze gry, jak i swobodny dobór parametrów wykonania gry.
+
+W ciągu ostatnich lat komputery znacznie przewyższyły ludzi pod względem możliwości przetwarzania surowych danych.
+Nie dotyczy to jednak przetwarzania informacji obrazowej, w przypadku której postęp dotyczy tylko ograniczonych zastosowań.
+Konwolucyjne sieci neuronowe z powodzeniem są wykorzystywane do klasyfikacji zdjęć, a w połączeniu z uczeniem ze wzmocnieniem znajdują zastosowanie m.in. w robotyce.
+Głębokie uczenie ze wzmocnieniem zostało również wykorzystane do nauczenia agenta grania w 7 gier z Atari 2600.
+Przestrzeń praktycznych zastosowań jest jednak w tym przypadku ograniczona, ponieważ jest to informacja obrazowa o dwuwymiarowym charakterze.
+Dodanie aspektu głębi, a zatem wykorzystanie gier trójwymiarowych, znacznie zwiększyłoby możliwość praktycznych zastosowań.
+Ze względu na obserwowanie świata z perspektywy pierwszej osoby szczególnie interesujące pod tym względem wydają się być gry FPS, jednak dotychczas nie prowadzono badań nad wykorzystaniem uczenia ze wzmocnieniem z informacji obrazowej pochodzącej z gry FPS.
+
+Celem pracy było opracowanie łatwego w użyciu środowiska do badań nad inteligentnymi agentami, które działają i uczą się w oparciu o informację obrazową generowaną przez trójwymiarową grę FPS, oraz przeprowadzenie eksperymentów dla prostych scenariuszy.
+
+Rezultatem niniejszej pracy jest środowisko VIZIA oparte na grze Doom dostosowane do potrzeb paradygmatu uczenia ze wzmocnieniem.
+Stworzony został interfejs programistyczny zaimplementowany w C++ pozwalający na wykonywanie akcji, pobieranie obrazu i informacji o bohaterze gry, jak i swobodny dobór parametrów wykonania gry.
 Parametry te mogą być zapisywane w postaci plików konfiguracyjnych.
 Zapewniono również wsparcie dla Pythona i Javy.
-Środowisko to wspiera tworzenie scenariuszy testowych w zewnętrznych edytorach i implementację funkcji nagrody za pomocą języka skryptowego ACS.
+Środowisko to wspiera tworzenie scenariuszy testowych w zewnętrznych edytorach i implementację funkcji nagrody za pomocą języka skryptowego Action Code Script.
 Poza trybem pełnej kontroli nad grą zaimplementowano również tryb obserwatora, pozwalający na uczenie agenta na podstawie rozgrywki prowadzonej przez człowieka.
-Dodatkowo środowisko może pracować w trybie zarówno synchronicznym, w którym gra jest zsynchronizowana z agentem, jak i asynchronicznym, w którym gra działa we własnym tempem, co pozwala na wykorzystanie w rozgrywkach sieciowych.
-Stworzone oprogramowanie zostało przygotowane do pracy w systemie Linux i udostępnia tryb niewymagający środowiska graficznego.
-Przeprowadzone dla prostych środowisk testowych eksperymenty wskazują na użyteczność stworzonego środowiska.
+Dodatkowo środowisko może pracować w trybie zarówno synchronicznym, w którym gra czeka na akcje agenta, jak i asynchronicznym, w którym gra działa ze stałą prędkością, co pozwala na wykorzystanie jej w rozgrywkach sieciowych.
+
+Stworzone oprogramowanie zostało przygotowane do pracy w systemie Linux i udostępnia tryb niewymagający środowiska graficznego, dzięki czemu może być uruchamiane na zdalnych stanowiskach.
+Środowisko umożliwia przetwarzanie 35 klatek na sekundę.
+
+Przeprowadzone dla prostych środowisk testowych eksperymenty wykorzystujące uczenie ze wzmocnieniem głębokich sieci neuronowych wskazują na użyteczność stworzonego środowiska do badań nad głębokim uczeniem ze wzmocnieniem z informacji obrazowej.
 
 
 \chapter*{Abstract}
