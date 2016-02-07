@@ -12,11 +12,17 @@
 
 %Nad ta sekcja warto jeszcze popracowac. Troche wiecej daloby sie tutaj napisac, np. jak zostalo ocenione code complexity i brand recognition. W wielu miejscach brakuje tutaj logicznego przeplywu mysli i sekcja jest dosc chaotyczna.
 
-VIZIA Environment was build around FPS (First Person Shooter) game Doom and its game engine's modernised version -- ZDoom. 
-%troche niezgrabne to zdanie
-It is shown in Figure~\ref{fig:doom}. 
-%it czyli?
-Doom was chosen out of 6 other recognisable FPS games considered: 
+\begin{figure}
+\centering
+\includegraphics[scale=0.5]{doom.png}
+\caption{Screenshot of Doom}
+\label{fig:doom}
+\end{figure}
+
+VIZIA Environment was build around FPS game Doom. 
+The environment uses  modernized version of Doom's original engine --- ZDoom~\cite{zdoom-main}. 
+Screenshot from the game is shown in Figure~\ref{fig:doom}.
+Doom was chosen out of 6 other recognizable FPS games considered: 
 
 \begin{itemize}
 \item Quake III Arena 
@@ -27,23 +33,13 @@ Doom was chosen out of 6 other recognisable FPS games considered:
 \item Cube
 \end{itemize}
 The comparison between them is shown in Table~\ref{tab:engines}.
+% <--
+Some of the criteria had to be subjective (System requirements, Code complexity), because they were based on analysis of game engine's code in the context of internal architecture, easiness of modification and performance. 
+As brand recognition was treated a number (in millions) of Google results of 20.10.2016 for phrases containing only the brand name e.g., `doom' for Doom and Doom 3, `unreal tournament' for Unreal Tournament 2004 and Unreal Tournament etc.
+Game was considered as able to generate small resolution image if it is possible to set resolution to smaller than 640x480.
+Selecting the game was done by discarding those not meeting requirements deemed necessary.
+% >--
 
-
-\begin{figure}
-\centering
-\includegraphics[scale=0.5]{doom.png}
-\caption{Screenshot of Doom}
-\label{fig:doom}
-\end{figure}
-  
-
-
-
-
-Lack of scripting support and inaccessible screen buffer were considered as a critical factors for rejecting such game %o jakie such game tutaj chodiz? 
-and accessing engine's logic only by SDK was considered as a major drawback, so Unreal Tournament 2004 and Half-Life 2 could not be accepted.
-Multi-threaded or client-server architecture would make it difficult to fully control speed of the execution, therefore Quake III Arena had to be rejected.%niezgrabne zdanie. do poprawki
-Doom 3 had to be ignored not only for this reason, but also because of its complexity, Windows-only tools and OS-dependent rendering mechanisms.
 \begin{table}[]
 \centering
 \caption{Overview of 3D FPS games considered as base of VIZIA environment}
@@ -54,7 +50,7 @@ Game                      & Quake III: Arena \cite{quake1}~\cite{quake2} & Doom 
 Game Engine               & ioquake3         & zdoom & id tech 4 & Source      & Unreal Engine 2        & Unreal Engine 4   & Cube Engine \\ \hline
 Release year               & 1999             & 1993  & 2003      & 2004        & 2004                   & --\footnotemark              & 2001        \\ \hline
 Open Source               & \OK              & \OK   & \OK       &             &                        & \OK               & \OK         \\ \hline
-Licence                   & GPLv2            & GPL   & GPLv3     & Closed      & Closed                 & Custom            & ZLIB        \\ \hline
+License                   & GPLv2            & GPL   & GPLv3     & Closed      & Closed                 & Custom            & ZLIB        \\ \hline
 Language                  & C                & C++   & C++       & C++         & C++                    & C++               & C++         \\ \hline
 DirectX                   &                  &       &           & \OK         &                        & \OK               &             \\ \hline
 OpenGL                    & \OK              & \OK\footnotemark   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
@@ -66,7 +62,7 @@ Scripting                 &                  & \OK   &           & \OK         &
 Custom assets             & \OK              & \OK   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
 Map editor                & \OK              & \OK   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
 Multiplayer               & \OK              & \OK   &           &             & \OK                    & \OK               & \OK         \\ \hline
-Engine access             & Code             & Code  & Code      & SDK         & SDK                    & SDK               & Code        \\ \hline
+Engine access             & Code             & Code  & Code      & SDK         & SDK                    & Code               & Code        \\ \hline
 Small resolutions         & \OK              & \OK   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
 Screen buffor access      & \OK              & \OK   & \OK       &             &                        & \OK               & \OK         \\ \hline
 System requirements       & Low              & Low   & Medium    & Medium      & Medium                 & High              & Low         \\ \hline
@@ -83,59 +79,67 @@ Free original assets      &                  &       &           &             &
 \footnotetext{GZDoom, ZDoom fork, is OpenGL based.}
 \stepcounter{footnote}
 \footnotetext{Disk requirements are yet unknown, but they will be greater than requirements of Unreal Engine 4.}
-Cube's lack of recognizability was reason of rejecting it, although it comes with highly intuitive map editor.
-Despite active community and great capabilities Unreal Tournament was out of question, because of its very high system requirements.
+  
+% <-- MOCNO ZMODYFIKOWANE, WRĘCZ NA NOWO NAPISANE
+Unreal Tournament 2004 had to rejected because its engine is only accessible by Software Development Kit~(SDK) and it lacks support for controlling speed of execution and direct screen buffer access.
+The game was not prepared to be heavily modified and its use in research was so far limited to server modifications.
+
+Similar problems would have to be overcome in case of Half-Life 2, although Source engine is widely known for modding capabilities.
+Although the lack of multiplayer could be solved by the use of the game Counter Strike:Source, it would introduce problems associated with the separation of game logic into client and server.
+
+Client-server architecture was also the reason for the rejection of Quake III: Arena.
+Despite wide recognition and active community, even access to the screen buffer and the possibility to modify the code could not overcome the lack of support for scripting.
+
+Lack of scripting also concerned Doom 3. 
+It had to be ignored not only for this reason, but also because of its complexity, Windows-only tools and OS-dependent rendering mechanisms.
+Although its source code has been re lased, it does not have united community, so there are several rarely updated versions of its sources.%FIXME
+
+Community activity is also a problem in case of Cube, as its last update was in August 2005~\cite{cube}.
+However low complexity and highly intuitive map editor would make it a good choice, but its recognizably is so low that it had to be taken out of consideration. 
+
+In case of Unreal Tournament there are no problems with recognition or lack of capabilities.%FIXME
+Despite active community and access to source code it was out of question, because of its very high system requirements.
+
+% >--
 
 
 
+% <-- NAJGORSZA CZĘŚĆ FIXME
+Doom met most of the given requirements and allowed to implement features that would be barely achievable in other games e.g., off-screen rendering and reward computation.
+The game is highly recognizable and offers support for all needed platforms.
+It was also designed to work in 320x240 resolution and despite the fact that modern implementations allow bigger resolutions, it still utilizes same low resolution textures and a rendering algorithm which makes it perfect for generating small (320x240 or smaller) visual input data for AI algorithms.
+In addition its source code analysis showed that access to game logic should be easy, as its code is not object-oriented.
 
-ZDoom based Doom met most of the given requirements and allowed to implement features that would be barely achievable in other games e.g., off-screen rendering and reward computation.
-Although Doom was not highly popular in research on reinforcement learning, it's recognizability exceeds Unreal Tournament brand.
-%nie ma ciagu logicznego
-Originally Doom was designed to work in 320x240 resolution and even so
-%even so? despite the fact that...?
-modern implementations allow bigger resolutions, it still utilises same low resolution textures and a rendering algorithm which makes it perfect for generating small visual input data (320x240 or smaller) for reinforcement learning algorithm.
-%za duzo odwolan do RL. Szerzej: AI
-Code analysis showed that access to game logic should be easy, as it is not object-oriented code.
-%it, czyli?
-%znow brak logicznego ciagu
-
-
-Unique Doom's feature is software renderer. Because of that it could be used without desktop environment (eg. remotely over ssh).
-Doom's gameplay is quite simple compared to newer FPS games as it
-%czy to aby na pewno prawda? a jesli tak to jakie ma to w tym miejscu naczenie?
- consists mostly of running around and shooting and possible actions could be easily translated for reinforcement learning needs. 
-
-
-
-
-
+Unique Doom's feature is software renderer. Because of that it could be used without desktop environment (e.g., remotely over ssh) and accessing screen buffer would not require transferring it from graphics card.
+% >--
 
 \subsection{Operating System}
 
-%WEŹ COŚ SENSOWNEGO TU WYMYŚL
-Linux has been chosen as a target operating system for this environment.
-Compilation tool-chain based on CMake and makefile allowed to automate building process and simplify project configuration.
-
-
+% <--
+Development was focused on providing full functionality for Linux, taking into account the compatibility of code with Windows and Mac OS.
+However, on systems other than Linux VIZIA Environment has not been thoroughly tested, so support for them is limited.
+% >--
+% NIE MAM POMYSŁU CO MOŻNA WIĘCEJ NAPISAĆ. NIE JESTEM TEŻ PRZEKONANY CO DO OBECNOŚCI TEGO PARAGRAFU W "WYKORZYSTYWANYCH TECHNOLOGIACH". SZCZEGÓLNIE PRZY INFORMACJACH O MAC OS (OSX?) W DALSZEJ CZĘŚCI PRACY I PRZEMILCZANYM W ZASADZIE WINDOWSIE.
 
 \subsection{Game Controller and API}
 
 
 The basic module for control over Doom --- game controller --- was written in C++ with usage of Boost library.
-It allowed to use Boost::interprocess library in both ZDoom and game controller, as ZDoom was written in C++, what made connecting game controller and game easier than it would be using low level language on the engine side and high level language for the controller.%zdanie zbyt dlugie. podzielic na 2-3
+It allowed to use Boost::interprocess library in both ZDoom and game controller, as ZDoom was written in C++.
+% <--
+It also made connecting game controller and game easier than it would be using low level language on the engine side and high level language for the controller.
+% >--
 Experimental Boost::process library was used for control over Doom process.
 
 
 Above the controller, a higher layer of abstraction was implemented defining Application Programming Interface for intelligent agents modules.
-It was also developed in C++, which allowed to provide bindings to Python and Java, with possibility to add another languages e.g., Lua, Julia.
-%it=API?
+API was also developed in C++, which allowed to provide bindings to Python and Java, with possibility to add another languages e.g., Lua, Julia.
 
 
 Python API was considered as the main way of controlling VIZIA Environment by users.
 Bindings were prepared by using Boost::python library.
 This language is one of the most popular in data science~\cite{ds_lang} and widely known as it is taught at many universities all around the world~\cite{pythons_schools}.
-There are many machine learning libraries for Python such as scikit-learn[] or PyBrain[].
+There are many machine learning libraries for Python such as scikit-learn~\cite{scikit} or PyBrain~\cite{pybrain}.
 Because of that, providing fully functional Python API was one of the biggest priorities of this project.
 
 
@@ -145,7 +149,7 @@ For Java bindings Java Native Interface (JNI) was used.
 \subsection{Map Editor and Scripting}
 
 %test environements? test scenarios? w ogole nie podoba mi sie “test scenarios”. Wole samo “scenarios” lub “game scenarios”
-Creation of test environments has been made possible by using tools developed by Doom community for maps and scripts editing: SLADE 3[] and Doom Bulider 2[]. Those tools utilizes ACC --- a compilter for Action Code Script (ACS), language, which is supported in ZDoom engine.
+Creation of game scenarios has been made possible by using tools developed by Doom community for maps and scripts editing: SLADE 3~\cite{slade3} and Doom Builder 2~\cite{db2}. Those tools utilizes ACC --- a compiler for Action Code Script (ACS), language, which is supported in ZDoom engine.
 This topic was discussed further in Chapter~\ref{ch:scenarios}.
 
 \section{Architecture}\label{sec:architecture}
@@ -277,9 +281,11 @@ Because the game process uses shared memory only on the API request and the API 
 \subsubsection{Why depth buffer has been added?}
 
 The rendering algorithm used in ZDoom engine uses binary space partitioning (BSP) trees and other rendering techniques which does not make use of depth buffer and therefore it is not generated.
-Depth buffer could be find usefull for learning depth perception
-%dodatkowo: jest to informacja, ktora moze posiadac robot w podobnym srodowisku
- by agent so it was added to the engine as presented in Figure~\ref{fig:zbuffer}.
+% <--
+Depth buffer could be find usefull for learning depth perception by agent.
+In addition, information about the depth can be used to simulate the distance sensors widely used in mobile robots.  
+Becouse of that, depth buffer was added to the engine as presented in Figure~\ref{fig:zbuffer}.
+% >--
 It is drawn only when demanded rendering mode includes it (see~\ref{subsec:screenformat}).
 Depth is aproximated by texture's scaling factor and stored as 8-bit value which gives enough accuracy and allows to use it as additional color channel rather than as seperate image.
 
