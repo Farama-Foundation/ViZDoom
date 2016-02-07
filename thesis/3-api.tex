@@ -436,7 +436,7 @@ int DoomGame::getButtonMaxValue(Button button);
 
 \vspace{20pt}
 \begin{clinee}
-unsigned int DoomTics2Ms(unsigned int tics);
+	double DoomTics2Ms(double tics);
 \end{clinee}
 
 	Calculates the number of milliseconds that will pass during specified number of tics (assuming 35 tics per second --- designed Doom tic-rate).
@@ -444,7 +444,7 @@ unsigned int DoomTics2Ms(unsigned int tics);
 
 \vspace{20pt}
 \begin{clinee}
-unsigned int Ms2DoomTics(unsigned int ms);
+	double Ms2DoomTics(double ms);
 \end{clinee}
 
 	Calculates how many tics will be made during given number of milliseconds (assuming 35 ticks per second --- designed Doom tic-rate).
@@ -452,7 +452,7 @@ unsigned int Ms2DoomTics(unsigned int ms);
 
 \vspace{20pt}
 \begin{clinee}
-double DoomFixedToDouble(int doomFixed);
+	double DoomFixedToDouble(int doomFixed);
 \end{clinee}
 
 	Converts Doom's fixed point numeral to a double value.
