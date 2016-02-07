@@ -150,11 +150,11 @@ When the API user initiates the processing, the DoomGame object creates a second
 
 \subsection{Shared memory to communicate}\label{sec:architecture_shared_memory}
 
-During initialization set of spaces are created in the shared memory, which includes:
+During initialization set of spaces is created in the shared memory, which includes:
     \begin{itemize}
     \item A pair of message queues to control the processing flow and sending commands to the game.
     \item A shared memory area to exchange information about game input status. Both the API process and the game process reads and writes to shared memory.
-    \item Shared memory areas where the game provides state of the game. These are the values of the variables games necessary to control the processing variables and a copy provided to you buffor wyrenderowanego in the game image. The game process saves to the memory, the process of API support.
+    \item Shared memory areas where the game provides state of the game. These are the values of the variables games necessary to control the processing variables and a copy provided  in the game image. The game process saves to the memory, the process of API support.
     \end{itemize}
 All shared memory spaces have unique names for each DoomGame object, which allows the coexistence of multiple instances.
 
@@ -166,7 +166,7 @@ Vizia module inside the engine initializes the shared memory to exchange informa
     \begin{itemize}
     \item Starting processing of the next game tic.
     \item Transmiting commands from the message queue to the game console.
-    \item Sending inputu information from shared memory to the game console.
+    \item Sending input information from shared memory to the game console.
     \item Processing of events that the game window recieved since the last tic.
     \item Rendering the current frame.
     \item Updating the information about the current game state in the shared memory.
@@ -232,7 +232,7 @@ The DoomGame API implements four control modes:
 	    \begin{figure}
 			    \centering
 			    \includegraphics[scale=0.25]{async_spectator_mode_diagram.png}
-			    \caption{Processing flow in asynchronous spectator mode.}\label{fig:async_spectator_mode_diagram}
+			    \caption{Proce      ssing flow in asynchronous spectator mode.}\label{fig:async_spectator_mode_diagram}
 	    \end{figure}
 	    
 	    Asynchronous spectator mode provides asynchronous communication between the process that uses the API and the game process.It allows AI agent to observe a human player's actions. 
@@ -251,8 +251,8 @@ Doom engine was designed as standalone executable. It has a diffrent entry point
 
 \subsubsection{Why shared memory to communicate?}
 
-Shared memory is the fastest way to transfer large amounts of data and allows to use it witout additional copying in the process that recives it. 
-Because the game process uses shared memory only on the API request and the API is waiting for completion of it, additional access control mechanism is not needed.
+Shared memory is the fastest way to transfer large amounts of data between processes. It allows to use the data witout additional copying in the process that recives it. 
+Since the game process uses shared memory only on the API request and the API process is waiting for completion of this request, additional access control mechanism (such as mutexes) is not needed.
 
 \subsubsection{Why depth buffer has been added?}
 
@@ -283,9 +283,9 @@ Doom engine uses diffrent type of files for storing data and resources. (WAD and
 
 \section{Performance tests}\label{sec:performance}
 
-All the Doom's processing including rendering is performed on a single processor thread. The main factors affecting the processing speed is a geometry of the map, amount of the actors (in-game objects like items and enemies) and the resolution.
+All the Doom's processing including rendering is performed on a single processor thread. Additionally, rendering takes up most of the processing time. Therefore, the main factors affecting the processing speed is a geometry of the map, number of the actors (in-game objects like items and enemies) and the resolution. 
 
-These factors have beed taken into account during performance tests. Tests have been made in the synchronous player mode, where are no additional delays in processing.
+These factors have beed taken into account during performance tests. Tests have been made in the synchronous player mode, where are no additional delays between tics and the image has been rendered in each tic.
 
 	\subsection{Operating System and Hardware}
 	
@@ -305,7 +305,7 @@ These factors have beed taken into account during performance tests. Tests have 
 \label{fig:fps_test}
 \end{figure}
 
-Tests show that the most important factor affecting performance is the rendering resolution. In case of using small resolutions, time needed to render one frame is insignificant compared to the time any reasonably good AI need for a learning process.
+Tests show that the most important factor affecting performance is the rendering resolution. In case of using small resolutions, time needed to render one frame is insignificant compared to the time any reasonably good AI needs for a learning process.
 
 
 
