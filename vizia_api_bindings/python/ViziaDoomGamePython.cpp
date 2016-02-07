@@ -24,11 +24,12 @@ namespace Vizia {
             switch(this->getScreenFormat())
             {
                 case CRCGCB:
-                case CRCGCBZB:
+                case CRCGCBDB:
                 case CBCGCR:
-                case CBCGCRZB:
+                case CBCGCRDB:
                 case GRAY8:
-                case ZBUFFER8:
+                case DEPTH_BUFFER8:
+                case DOOM_256_COLORS8:
                     this->imageShape[0] = channels;
                     this->imageShape[1] = y;
                     this->imageShape[2] = x;

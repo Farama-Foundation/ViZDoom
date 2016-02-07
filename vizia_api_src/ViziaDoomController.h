@@ -1,53 +1,51 @@
 #ifndef __VIZIA_DOOM_CONTROLLER_H__
 #define __VIZIA_DOOM_CONTROLLER_H__
 
-#include "ViziaDefines.h"
+#include "ViziaDoomDefines.h"
 
-#include <ctime>
+#include <vector>
 #include <string>
 
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/mapped_region.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/thread.hpp>
-#include <boost/bind.hpp>
-#include <boost/chrono/chrono.hpp>
 #include <boost/asio.hpp>
-#include "boost/process.hpp"
+
 
 namespace Vizia{
 
-    namespace b = boost;
-    namespace bip = boost::interprocess;
-    namespace bpr = boost::process;
-    namespace bpri = boost::process::initializers;
-    namespace bc = boost::chrono;
-    namespace bs = boost::system;
-    namespace ba = boost::asio;
+    namespace b         = boost;
+    namespace bip       = boost::interprocess;
+    namespace ba        = boost::asio;
 
-#define SM_NAME_BASE "ViziaSM"
 
-#define MQ_NAME_CTR_BASE "ViziaMQCtr"
-#define MQ_NAME_DOOM_BASE "ViziaMQDoom"
-#define MQ_MAX_MSG_NUM 64
-#define MQ_MAX_MSG_SIZE sizeof(DoomController::MessageCommandStruct)
-#define MQ_MAX_CMD_LEN 128
+/* Shared memory's settings */
+#define SM_NAME_BASE        "ViziaSM"
 
-#define MSG_CODE_DOOM_DONE 11
-#define MSG_CODE_DOOM_CLOSE 12
-#define MSG_CODE_DOOM_ERROR 13
-#define MSG_CODE_DOOM_PROCESS_EXIT 14
+/* Message queues' settings */
+#define MQ_NAME_CTR_BASE    "ViziaMQCtr"
+#define MQ_NAME_DOOM_BASE   "ViziaMQDoom"
+#define MQ_MAX_MSG_NUM      64
+#define MQ_MAX_MSG_SIZE     sizeof(DoomController::MessageCommandStruct)
+#define MQ_MAX_CMD_LEN      128
 
-#define MSG_CODE_TIC 21
-#define MSG_CODE_UPDATE 22
-#define MSG_CODE_TIC_N_UPDATE 23
-#define MSG_CODE_COMMAND 24
-#define MSG_CODE_CLOSE 25
-#define MSG_CODE_ERROR 26
+/* Messages' codes */
+#define MSG_CODE_DOOM_DONE              11
+#define MSG_CODE_DOOM_CLOSE             12
+#define MSG_CODE_DOOM_ERROR             13
+#define MSG_CODE_DOOM_PROCESS_EXIT      14
 
-#define MSG_CODE_SIGNAL_INT_ABRT_TERM 30
+#define MSG_CODE_TIC                    21
+#define MSG_CODE_UPDATE                 22
+#define MSG_CODE_TIC_N_UPDATE           23
+#define MSG_CODE_COMMAND                24
+#define MSG_CODE_CLOSE                  25
+#define MSG_CODE_ERROR                  26
 
+#define MSG_CODE_SIGNAL_INT_ABRT_TERM   30
+
+/* DoomController class */
     class DoomController {
 
     public:
@@ -114,21 +112,19 @@ namespace Vizia{
 
         void intSignal();
 
+        /* Controll */
+
         bool tic();
         bool tic(bool update);
         bool tics(unsigned int tics);
         bool tics(unsigned int tics, bool update);
         void restartMap();
-        void resetMap();
         bool isDoomRunning();
         void sendCommand(std::string command);
-        void addCustomArg(std::string arg);
-        void clearCustomArgs();
 
-        //SETTINGS
+        /* Settings */
 
-        //GAME & MAP SETTINGS
-
+        /* Game settings */
         unsigned int getSeed();
         unsigned int getStaticSeed();
         void setStaticSeed(unsigned int seed);
@@ -138,8 +134,8 @@ namespace Vizia{
         std::string getInstanceId();
         void setInstanceId(std::string id);
 
-        std::string getGamePath();
-        void setGamePath(std::string path);
+        std::string getEnginePath();
+        void setEnginePath(std::string path);
 
         std::string getIwadPath();
         void setIwadPath(std::string path);
@@ -156,11 +152,6 @@ namespace Vizia{
         std::string getConfigPath();
         void setConfigPath(std::string path);
 
-        void setAutoMapRestart(bool set);
-        void setAutoMapRestartOnTimeout(bool set);
-        void setAutoMapRestartOnPlayerDeath(bool set);
-        void setAutoMapRestartOnMapEnd(bool set);
-
         unsigned int getMapStartTime();
         void setMapStartTime(unsigned int tics);
 
@@ -174,7 +165,10 @@ namespace Vizia{
 
         void setNoConsole(bool console);
 
-        //GRAPHIC SETTINGS
+        void addCustomArg(std::string arg);
+        void clearCustomArgs();
+
+        /* Rendering settings */
 
         void setWindowHidden(bool windowHidden);
         void setNoXServer(bool noXServer);
@@ -190,6 +184,8 @@ namespace Vizia{
         void setRenderDecals(bool decals);
         void setRenderParticles(bool particles);
 
+        /* Getters */
+
         unsigned int getScreenWidth();
         unsigned int getScreenHeight();
         unsigned int getScreenChannels();
@@ -198,8 +194,6 @@ namespace Vizia{
         size_t getScreenSize();
 
         ScreenFormat getScreenFormat();
-
-        //PUBLIC SETTERS & GETTERS
 
         uint8_t * const getScreen();
         InputStruct * const getInput();
@@ -211,13 +205,10 @@ namespace Vizia{
         bool isButtonAvailable(Button button);
         void setButtonAvailable(Button button, bool set);
         void resetButtons();
-        void resetDescreteButtons();
         void disableAllButtons();
         void setButtonMaxValue(Button button, int value);
         int getButtonMaxValue(Button button);
         void availableAllButtons();
-        bool isButtonDiscrete(Button button);
-        bool isButtonAxis(Button button);
 
         bool isAllowDoomInput();
         void setAllowDoomInput(bool set);
@@ -252,6 +243,7 @@ namespace Vizia{
 
         int getPlayerAmmo(unsigned int slot);
         int getPlayerWeapon(unsigned int slot);
+        int getUser(unsigned int slot);
 
     private:
 
@@ -269,7 +261,6 @@ namespace Vizia{
         bool doomRunning;
         bool doomWorking;
 
-        //MESSAGE QUEUES
 
         struct MessageSignalStruct {
             uint8_t code;
@@ -292,7 +283,6 @@ namespace Vizia{
         std::string MQControllerName;
         std::string MQDoomName;
 
-        //SHARED MEMORY
 
         void SMInit();
         void SMClose();
@@ -310,15 +300,14 @@ namespace Vizia{
         bip::mapped_region *ScreenSMRegion;
         uint8_t *screen;
 
-        //HELPERS
 
         void waitForDoomStart();
         void waitForDoomWork();
         void waitForDoomMapStartTime();
+        void createDoomArgs();
         void launchDoom();
         void handleSignals();
 
-        // OPTIONS
 
         unsigned int screenWidth, screenHeight, screenChannels, screenDepth;
         size_t screenPitch, screenSize;
@@ -330,7 +319,7 @@ namespace Vizia{
 
         bool noConsole;
 
-        std::string gamePath;
+        std::string enginePath;
         std::string iwadPath;
         std::string filePath;
         std::string map;
@@ -340,12 +329,6 @@ namespace Vizia{
         bool allowDoomInput;
         bool runDoomAsync;
 
-        // AUTO RESTART & MAP TIME
-
-        bool autoRestart;
-        bool autoRestartOnTimeout;
-        bool autoRestartOnPlayersDeath;
-        bool autoRestartOnMapEnd;
 
         unsigned int mapStartTime;
         unsigned int mapTimeout;
@@ -354,14 +337,8 @@ namespace Vizia{
         bool mapEnded;
         unsigned int mapLastTic;
 
-        // TIME
-
-        //bc::steady_clock::time_point lastTicTime;
-        std::clock_t lastTicTime;
-
-        //CUSTOM ARGS
-
         std::vector <std::string> customArgs;
+        std::vector <std::string> doomArgs;
 
     };
 

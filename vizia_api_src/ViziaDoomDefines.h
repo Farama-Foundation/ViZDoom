@@ -1,99 +1,38 @@
 #ifndef __VIZIA_DEFINES_H__
 #define __VIZIA_DEFINES_H__
 
-#include <exception>
-#include <string>
-
 namespace Vizia{
 
-    /* Warnings TO DO:
-     * When config after init
-     * When run time stuff before init
-     * When skill level > 5 < 1
-     * When value in action > MaxValue
-     * When action shorter or longer
-     */
-
-    class Exception : public std::exception {
-    public:
-        virtual const char* what() const throw(){ return "Unknown exception."; }
-    };
-
-    class SharedMemoryException : public Exception {
-    public:
-        const char* what() const throw(){ return "Shared memory error."; }
-    };
-
-    class MessageQueueException : public Exception {
-    public:
-        const char* what() const throw(){ return "Message queue error."; }
-    };
-
-    class DoomErrorException : public Exception {
-    public:
-        const char* what() const throw(){ return "Controlled ViziaZDoom instance raported error."; }
-    };
-
-    class DoomUnexpectedExitException : public Exception {
-    public:
-        const char* what() const throw(){ return "Controlled ViziaZDoom instance exited unexpectedly."; }
-    };
-
-    class DoomIsNotRunningException : public Exception {
-    public:
-        const char* what() const throw(){ return "Controlled ViziaZDoom instance is not running or not ready."; }
-    };
-
-    class IncorrectDoomGamePathException : public Exception {
-    public:
-        const char* what() const throw(){ return "Doom game executable path is incorrect."; }
-    };
-
-    class IncorrectDoomIwadPathException : public Exception {
-    public:
-        const char* what() const throw(){ return "Game wad (iwad) path is incorrect."; }
-    };
-
-    class IncorrectDoomFilePathException : public Exception {
-    public:
-        const char* what() const throw(){ return "Scenario wad path is incorrect."; }
-    };
-
-    class IncorrectDoomConfigPathException : public Exception {
-    public:
-        const char* what() const throw(){ return "Game config path is incorrect."; }
-    };
-
     enum Mode {
-        PLAYER,
-        SPECTATOR,
-        ASYNC_PLAYER,
-        ASYNC_SPECTATOR,
+        PLAYER,             // synchronous player mode
+        SPECTATOR,          // synchronous spectator mode
+        ASYNC_PLAYER,       // asynchronous player mode
+        ASYNC_SPECTATOR,    // asynchronous spectator mode
     };
 
     enum ScreenFormat {
         CRCGCB = 0,
-        CRCGCBZB = 1,
+        CRCGCBDB = 1,
         RGB24 = 2,
         RGBA32 = 3,
         ARGB32 = 4,
         CBCGCR = 5,
-        CBCGCRZB = 6,
+        CBCGCRDB = 6,
         BGR24 = 7,
         BGRA32 = 8,
         ABGR32 = 9,
         GRAY8 = 10,
-        ZBUFFER8 = 11,
-        DOOM_256_COLORS = 12,
+        DEPTH_BUFFER8 = 11,
+        DOOM_256_COLORS8 = 12,
     };
 
     enum ScreenResolution {
         RES_40X30,
         RES_60X45,
-        RES_80X50,
+        RES_80X50,      // 16:10
         RES_80X60,
         RES_100X75,
-        RES_120X75,
+        RES_120X75,     // 16:10
         RES_120X90,
         RES_160X100,
         RES_160X120,
@@ -150,7 +89,7 @@ namespace Vizia{
         RES_1600X1000,	// 16:10
         RES_1600X1200,
         RES_1680X1050,	// 16:10
-        RES_1920X1080,
+        RES_1920X1080,  // 16:9
         RES_1920X1200,
         RES_2048X1536,
         RES_2560X1440,
@@ -285,104 +224,9 @@ namespace Vizia{
         MOVE_UP_DOWN_DELTA = 42,
     };
 
-    static const int DiscreteButtonsNumber = 38;
+    static const int BinaryButtonsNumber = 38;
     static const int DeltaButtonsNumber = 5;
     static const int ButtonsNumber = 43;
-
-#define VK_2_DK(vk, dk) static const std::string KEY_ ## vk = dk;
-    
-    VK_2_DK(TAB, "tab")
-    VK_2_DK(CAPS_LOCK, "capslock")
-    VK_2_DK(SHIFT, "shift")
-    VK_2_DK(CTRL, "ctrl")
-    VK_2_DK(ALT, "alt")
-    VK_2_DK(SPACE, "space")
-    VK_2_DK(ENTER, "enter")
-    VK_2_DK(RIGHT_ARROW, "rightarrow")
-    VK_2_DK(LEFT_ARROW, "leftarrow")
-    VK_2_DK(UP_ARROW, "uparrow")
-    VK_2_DK(DOWN_ARROW, "downarrow")
-    VK_2_DK(INSERT, "ins")
-    VK_2_DK(END, "end")
-    VK_2_DK(HOME, "home")
-    VK_2_DK(PAGE_UP, "pgup")
-    VK_2_DK(PAGE_DOWN, "pgdn")
-    VK_2_DK(F1, "f1")
-    VK_2_DK(F2, "f2")
-    VK_2_DK(F3, "f3")
-    VK_2_DK(F4, "f4")
-    VK_2_DK(F5, "f5")
-    VK_2_DK(F6, "f6")
-    VK_2_DK(F7, "f7")
-    VK_2_DK(F8, "f8")
-    VK_2_DK(F9, "f9")
-    VK_2_DK(F10, "f10")
-    VK_2_DK(F11, "f11")
-    VK_2_DK(F12, "f12")
-    
-    VK_2_DK(Q, "q")
-    VK_2_DK(W, "w")
-    VK_2_DK(E, "e")
-    VK_2_DK(R, "r")
-    VK_2_DK(T, "t")
-    VK_2_DK(Y, "y")
-    VK_2_DK(U, "u")
-    VK_2_DK(I, "i")
-    VK_2_DK(O, "o")
-    VK_2_DK(P, "p")
-    VK_2_DK(A, "a")
-    VK_2_DK(S, "s")
-    VK_2_DK(D, "d")
-    VK_2_DK(F, "f")
-    VK_2_DK(G, "g")
-    VK_2_DK(H, "h")
-    VK_2_DK(J, "j")
-    VK_2_DK(K, "k")
-    VK_2_DK(L, "l")
-    VK_2_DK(Z, "z")
-    VK_2_DK(X, "x")
-    VK_2_DK(C, "c")
-    VK_2_DK(V, "v")
-    VK_2_DK(B, "b")
-    VK_2_DK(N, "n")
-    VK_2_DK(M, "m")
-    
-    VK_2_DK(1, "1")
-    VK_2_DK(2, "2")
-    VK_2_DK(3, "3")
-    VK_2_DK(4, "4")
-    VK_2_DK(5, "5")
-    VK_2_DK(6, "6")
-    VK_2_DK(7, "7")
-    VK_2_DK(8, "8")
-    VK_2_DK(9, "9")
-    VK_2_DK(0, "0")
-    VK_2_DK(MINUS, "-")
-    VK_2_DK(EQUALS, "Equals")
-    
-    VK_2_DK(COMMA, ",")
-    VK_2_DK(PERIOD, ".")
-    VK_2_DK(LEFT_BRACKET, "LeftBracket")
-    VK_2_DK(RIGHT_BRACKET, "RightBracket")
-    VK_2_DK(SLASH, "/")
-    VK_2_DK(BACKSLASH, "\\")
-    VK_2_DK(SEMICOLON, ";")
-    VK_2_DK(QUOTE, "'")
-
-    VK_2_DK(MOUSE_1, "mouse1")
-    VK_2_DK(MOUSE_2, "mouse2")
-    VK_2_DK(MOUSE_3, "mouse3")
-    VK_2_DK(MOUSE_4, "mouse4")
-
-    static const int DOOM_WEAPON_FIST = 0;
-    static const int DOOM_WEAPON_CHAINSAW = 0;
-    static const int DOOM_WEAPON_PISTOL = 1;
-    static const int DOOM_WEAPON_SHOTGUN = 3;
-    static const int DOOM_WEAPON_SUPER_SHOTGUN = 3;
-    static const int DOOM_WEAPON_CHAINGUN = 4;
-    static const int DOOM_WEAPON_ROCKET_LUNCHER = 5;
-    static const int DOOM_WEAPON_PLASMA_GUN = 6;
-    static const int DOOM_WEAPON_BFG = 7;
 
 }
 #endif

@@ -24,28 +24,6 @@
 namespace b = boost;
 namespace bt = boost::this_thread;
 
-/*
-    CVAR (type, name, init value, flags)
-    in other file EXTERN_CVAR (type, name)
-
-    CVAR_ARCHIVE		= 1,	// set to cause it to be saved to config
-    CVAR_USERINFO		= 2,	// added to userinfo  when changed
-    CVAR_SERVERINFO		= 4,	// added to serverinfo when changed
-    CVAR_NOSET			= 8,	// don't allow change from console at all,
-                                // but can be set from the command line
-    CVAR_LATCH			= 16,	// save changes until server restart
-    CVAR_UNSETTABLE		= 32,	// can unset this var from console
-    CVAR_DEMOSAVE		= 64,	// save the value of this cvar in a demo
-    CVAR_ISDEFAULT		= 128,	// is cvar unchanged since creation?
-    CVAR_AUTO			= 256,	// allocated; needs to be freed when destroyed
-    CVAR_NOINITCALL		= 512,	// don't call callback at game start
-    CVAR_GLOBALCONFIG	= 1024,	// cvar is saved to global config section
-    CVAR_VIDEOCONFIG	= 2048, // cvar is saved to video config section (not implemented)
-    CVAR_NOSAVE			= 4096, // when used with CVAR_SERVERINFO, do not save var to savegame
-    CVAR_MOD			= 8192,	// cvar was defined by a mod
-    CVAR_IGNORE			= 16384,// do not send cvar across the network/inaccesible from ACS (dummy mod cvar)
-*/
-
 CVAR (Bool, vizia_controlled, false, CVAR_NOSET)
 CVAR (Bool, vizia_async, false, CVAR_NOSET)
 CVAR (String, vizia_instance_id, "0", CVAR_NOSET)

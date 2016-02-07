@@ -237,8 +237,6 @@ void Vizia_AddBTCommand(int button, int state){
 
 void Vizia_InputInit() {
 
-    //viziaLastInput = new ViziaInputStruct();
-
     try {
         viziaInputSMRegion = new bip::mapped_region(viziaSM, bip::read_write, 0, sizeof(ViziaInputStruct));
         viziaInput = static_cast<ViziaInputStruct *>(viziaInputSMRegion->get_address());

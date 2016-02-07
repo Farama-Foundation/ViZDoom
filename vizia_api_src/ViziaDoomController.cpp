@@ -1,13 +1,24 @@
 #include "ViziaDoomController.h"
+#include "ViziaDoomExceptions.h"
 
-#include <vector>
 #include <iostream>
-#include <string>
 #include <cstdlib>
-#include <ctime>
 #include <cstdio>
 
+#include <boost/bind.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string.hpp>
+#include "boost/process.hpp"
+
+
+
 namespace Vizia {
+
+    namespace bpr       = boost::process;
+    namespace bpri      = boost::process::initializers;
+    namespace bs        = boost::system;
+    namespace bfs       = boost::filesystem;
+    namespace bal       = boost::algorithm;
 
 //PUBLIC FUNCTIONS
 
@@ -24,6 +35,14 @@ namespace Vizia {
         this->GameVariablesSMRegion = NULL;
         this->ScreenSMRegion = NULL;
 
+        this->enginePath = "viziazdoom";
+        this->iwadPath = "doom2.wad";
+        this->filePath = "";
+        this->map = "map01";
+        this->configPath = "";
+        this->skill = 0;
+
+        /* Rendering */
         this->screenWidth = 320;
         this->screenHeight = 240;
         this->screenChannels = 3;
@@ -31,13 +50,6 @@ namespace Vizia {
         this->screenSize = 0;
         this->screenDepth = 8;
         this->screenFormat = CRCGCB;
-
-        this->gamePath = "viziazdoom";
-        this->iwadPath = "doom2.wad";
-        this->filePath = "";
-        this->map = "map01";
-        this->configPath = "";
-        this->skill = 0;
 
         this->hud = true;
         this->weapon = true;
@@ -49,11 +61,7 @@ namespace Vizia {
         this->noXServer = false;
         this->noConsole = true;
 
-        // AUTO RESTART && TIMEOUT
-        this->autoRestart = false;
-        this->autoRestartOnTimeout = true;
-        this->autoRestartOnPlayersDeath = true;
-        this->autoRestartOnMapEnd = true;
+        /* Map time */
         this->mapStartTime = 1;
         this->mapTimeout = 0;
         this->mapRestartCount = 0;
@@ -64,7 +72,7 @@ namespace Vizia {
         this->allowDoomInput = false;
         this->runDoomAsync = false;
 
-        //SEED
+        /* Seed */
         this->generateInstanceId();
         //this->generateStaticSeed();
         this->useStaticSeed = false;
@@ -72,7 +80,7 @@ namespace Vizia {
         this->doomRunning = false;
         this->doomWorking = false;
 
-        //THREADS
+        /* Threads */
         this->signalThread = NULL;
         this->doomThread = NULL;
 
@@ -98,6 +106,7 @@ namespace Vizia {
 
                 this->signalThread = new b::thread(b::bind(&DoomController::handleSignals, this));
 
+                this->createDoomArgs();
                 this->doomThread = new b::thread(b::bind(&DoomController::launchDoom, this));
                 this->waitForDoomStart();
 
@@ -109,7 +118,6 @@ namespace Vizia {
 
                 *this->input = *this->_input;
 
-                this->lastTicTime = std::clock();
                 this->mapLastTic = this->gameVariables->MAP_TIC;
             }
             catch(const Exception &e){
@@ -163,28 +171,15 @@ namespace Vizia {
         if (this->doomRunning) {
 
             if (!this->mapEnded) {
-
-                //this->lastTicTime = bc::steady_clock::now();
-                this->lastTicTime = std::clock();
-
                 this->mapLastTic = this->gameVariables->MAP_TIC + 1;
                 if(update) this->MQDoomSend(MSG_CODE_TIC_N_UPDATE);
                 else this->MQDoomSend(MSG_CODE_TIC);
                 this->waitForDoomWork();
             }
 
-            if (this->gameVariables->PLAYER_DEAD) {
-                this->mapEnded = true;
-                if (this->autoRestart && this->autoRestartOnPlayersDeath) this->restartMap();
-            }
-            else if (this->mapTimeout > 0 && this->gameVariables->MAP_TIC >= this->mapTimeout + this->mapStartTime) {
-                this->mapEnded = true;
-                if (this->autoRestart && this->autoRestartOnTimeout) this->restartMap();
-            }
-            else if (this->gameVariables->MAP_END) {
-                this->mapEnded = true;
-                if (this->autoRestart && this->autoRestartOnMapEnd) this->restartMap();
-            }
+            if (this->gameVariables->PLAYER_DEAD) this->mapEnded = true;
+            else if (this->mapTimeout > 0 && this->gameVariables->MAP_TIC >= this->mapTimeout + this->mapStartTime) this->mapEnded = true;
+            else if (this->gameVariables->MAP_END) this->mapEnded = true;
         }
         else throw DoomIsNotRunningException();
 
@@ -217,13 +212,11 @@ namespace Vizia {
                 this->waitForDoomWork();
                 break;
             }
-
-            //if(i == 0) this->resetDescreteButtons();
         }
 
         if(this->allowDoomInput && !this->runDoomAsync){
-            for(int i = DiscreteButtonsNumber; i < ButtonsNumber; ++i){
-                this->input->BT_MAX_VALUE[i - DiscreteButtonsNumber] = this->_input->BT_MAX_VALUE[i - DiscreteButtonsNumber];
+            for(int i = BinaryButtonsNumber; i < ButtonsNumber; ++i){
+                this->input->BT_MAX_VALUE[i - BinaryButtonsNumber] = this->_input->BT_MAX_VALUE[i - BinaryButtonsNumber];
                 this->input->BT[i] = this->input->BT[i]/ticsMade;
             }
         }
@@ -233,10 +226,6 @@ namespace Vizia {
 
     void DoomController::restartMap() {
         this->setMap(this->map);
-    }
-
-    void DoomController::resetMap() {
-        this->restartMap();
     }
 
     void DoomController::sendCommand(std::string command) {
@@ -260,8 +249,8 @@ namespace Vizia {
     std::string DoomController::getInstanceId() { return this->instanceId; }
     void DoomController::setInstanceId(std::string id) { if(!this->doomRunning) this->instanceId = id; }
 
-    std::string DoomController::getGamePath() { return this->gamePath; }
-    void DoomController::setGamePath(std::string path) { if(!this->doomRunning) this->gamePath = path; }
+    std::string DoomController::getEnginePath() { return this->enginePath; }
+    void DoomController::setEnginePath(std::string path) { if(!this->doomRunning) this->enginePath = path; }
 
     std::string DoomController::getIwadPath() { return this->iwadPath; }
     void DoomController::setIwadPath(std::string path) { if(!this->doomRunning) this->iwadPath = path; }
@@ -351,11 +340,6 @@ namespace Vizia {
     void DoomController::setUseStaticSeed(bool set){ this->useStaticSeed = true; }
     bool DoomController::isUseStaticSeed(){ return this->useStaticSeed; }
 
-    void DoomController::setAutoMapRestart(bool set) { this->autoRestart = set; }
-    void DoomController::setAutoMapRestartOnTimeout(bool set) { this->autoRestartOnTimeout = set; }
-    void DoomController::setAutoMapRestartOnPlayerDeath(bool set) { this->autoRestartOnPlayersDeath = set; }
-    void DoomController::setAutoMapRestartOnMapEnd(bool set) { this->autoRestartOnMapEnd = set; }
-
     unsigned int DoomController::getMapStartTime() { return this->mapStartTime; }
     void DoomController::setMapStartTime(unsigned int tics) { this->mapStartTime = tics ? tics : 1; }
 
@@ -404,17 +388,17 @@ namespace Vizia {
                 case BGR24:
                     this->screenChannels = 3;
                     break;
-                case CRCGCBZB:
+                case CRCGCBDB:
                 case RGBA32:
                 case ARGB32:
-                case CBCGCRZB:
+                case CBCGCRDB:
                 case BGRA32:
                 case ABGR32:
                     this->screenChannels = 4;
                     break;
                 case GRAY8:
-                case ZBUFFER8:
-                case DOOM_256_COLORS:
+                case DEPTH_BUFFER8:
+                case DOOM_256_COLORS8:
                     this->screenChannels = 1;
                     break;
                 default:
@@ -434,11 +418,11 @@ namespace Vizia {
                     break;
                 case CRCGCB:
                 case CBCGCR:
-                case CRCGCBZB:
-                case CBCGCRZB:
+                case CRCGCBDB:
+                case CBCGCRDB:
                 case GRAY8:
-                case ZBUFFER8:
-                case DOOM_256_COLORS:
+                case DEPTH_BUFFER8:
+                case DOOM_256_COLORS8:
                     this->screenDepth = 8;
                     break;
                 default:
@@ -565,31 +549,6 @@ namespace Vizia {
                 this->input->BT[i] = 0;
     }
 
-    void DoomController::resetDescreteButtons(){
-        if (this->doomRunning) {
-            this->input->BT[ATTACK] = 0;
-            this->input->BT[USE] = 0;
-
-            this->input->BT[JUMP] = 0;
-            this->input->BT[TURN180] = 0;
-            this->input->BT[ALTATTACK] = 0;
-            this->input->BT[RELOAD] = 0;
-            this->input->BT[LAND] = 0;
-
-            for (int i = SELECT_WEAPON1; i <= SELECT_WEAPON0; ++i) {
-                this->input->BT[i] = 0;
-            }
-
-            this->input->BT[SELECT_NEXT_WEAPON] = 0;
-            this->input->BT[SELECT_PREV_WEAPON] = 0;
-            this->input->BT[DROP_SELECTED_WEAPON] = 0;
-            this->input->BT[ACTIVATE_SELECTED_ITEM] = 0;
-            this->input->BT[SELECT_NEXT_ITEM] = 0;
-            this->input->BT[SELECT_PREV_ITEM] = 0;
-            this->input->BT[DROP_SELECTED_ITEM] = 0;
-        }
-    }
-
     void DoomController::disableAllButtons(){
         for (int i = 0; i < ButtonsNumber; ++i){
             if (this->doomRunning) this->input->BT_AVAILABLE[i] = false;
@@ -605,26 +564,18 @@ namespace Vizia {
     }
 
     void DoomController::setButtonMaxValue(Button button, int value){
-        if(button >= DiscreteButtonsNumber){
-            if (this->doomRunning) this->input->BT_MAX_VALUE[button - DiscreteButtonsNumber] = value;
-            this->_input->BT_MAX_VALUE[button - DiscreteButtonsNumber] = value;
+        if(button >= BinaryButtonsNumber){
+            if (this->doomRunning) this->input->BT_MAX_VALUE[button - BinaryButtonsNumber] = value;
+            this->_input->BT_MAX_VALUE[button - BinaryButtonsNumber] = value;
         }
     }
 
     int DoomController::getButtonMaxValue(Button button){
-        if(button >= DiscreteButtonsNumber){
-            if (this->doomRunning) return this->input->BT_MAX_VALUE[button - DiscreteButtonsNumber];
-            else return this->_input->BT_MAX_VALUE[button - DiscreteButtonsNumber];
+        if(button >= BinaryButtonsNumber){
+            if (this->doomRunning) return this->input->BT_MAX_VALUE[button - BinaryButtonsNumber];
+            else return this->_input->BT_MAX_VALUE[button - BinaryButtonsNumber];
         }
         else return 1;
-    }
-
-    bool DoomController::isButtonDiscrete(Button button){
-        return button < DiscreteButtonsNumber;
-    }
-
-    bool DoomController::isButtonAxis(Button button){
-        return button >= DiscreteButtonsNumber;
     }
 
     bool DoomController::isAllowDoomInput(){ return this->allowDoomInput; }
@@ -800,150 +751,160 @@ namespace Vizia {
         }
     }
 
-    void DoomController::launchDoom() {
-
-        std::vector <std::string> args;
+    void DoomController::createDoomArgs(){
+        this->doomArgs.clear();
 
         //exe
-        args.push_back(gamePath);
+        if(!bfs::exists(this->enginePath)) throw PathDoesNotExistsException(this->enginePath);
+        this->doomArgs.push_back(this->enginePath);
 
         //main wad
-        args.push_back("-iwad");
-        args.push_back(this->iwadPath);
-
-        //skill
-        args.push_back("-skill");
-        args.push_back(b::lexical_cast<std::string>(this->skill));
+        if(this->iwadPath.length() != 0){
+            if(!bfs::exists(this->iwadPath)) throw PathDoesNotExistsException(this->iwadPath);
+            this->doomArgs.push_back("-iwad");
+            this->doomArgs.push_back(this->iwadPath);
+        }
 
         //wads
         if (this->filePath.length() != 0) {
-            args.push_back("-file");
-            args.push_back(this->filePath);
+            std::vector<std::string> paths;
+            b::split(paths, this->filePath, b::is_any_of("\t\n "));
+            for (int i = 0; i < paths.size(); ++i) {
+                if(paths[i].length() > 0 && !bfs::exists(paths[i])) throw PathDoesNotExistsException(paths[i]);
+            }
+
+            this->doomArgs.push_back("-file");
+            this->doomArgs.push_back(this->filePath);
         }
 
-        if (this->configPath.length() != 0) {
-            args.push_back("-config");
-            args.push_back(this->configPath);
-        }
+        this->doomArgs.push_back("-config");
+        if (this->configPath.length() != 0) this->doomArgs.push_back(this->configPath);
+        else this->doomArgs.push_back("viziazdoom.ini");
 
         if(this->useStaticSeed) {
-            args.push_back("-rngseed");
-            args.push_back(b::lexical_cast<std::string>(this->staticSeed));
+            this->doomArgs.push_back("-rngseed");
+            this->doomArgs.push_back(b::lexical_cast<std::string>(this->staticSeed));
         }
 
         //map
-        args.push_back("+map");
-        args.push_back(this->map);
+        this->doomArgs.push_back("+map");
+        this->doomArgs.push_back(this->map);
+
+        //skill
+        this->doomArgs.push_back("-skill");
+        this->doomArgs.push_back(b::lexical_cast<std::string>(this->skill));
 
         //resolution
 
-        args.push_back("-width");
-        //args.push_back("+vid_defwidth");
-        args.push_back(b::lexical_cast<std::string>(this->screenWidth));
+        this->doomArgs.push_back("-width");
+        //this->doomArgs.push_back("+vid_defwidth");
+        this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenWidth));
 
-        args.push_back("-height");
-        //args.push_back("+vid_defheight");
-        args.push_back(b::lexical_cast<std::string>(this->screenHeight));
+        this->doomArgs.push_back("-height");
+        //this->doomArgs.push_back("+vid_defheight");
+        this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenHeight));
 
         //hud
-        args.push_back("+screenblocks");
-        if (this->hud) args.push_back("10");
-        else args.push_back("12");
+        this->doomArgs.push_back("+screenblocks");
+        if (this->hud) this->doomArgs.push_back("10");
+        else this->doomArgs.push_back("12");
 
         //weapon
-        args.push_back("+r_drawplayersprites");
-        if (this->weapon) args.push_back("1");
-        else args.push_back("0");
+        this->doomArgs.push_back("+r_drawplayersprites");
+        if (this->weapon) this->doomArgs.push_back("1");
+        else this->doomArgs.push_back("0");
 
         //crosshair
-        args.push_back("+crosshair");
+        this->doomArgs.push_back("+crosshair");
         if (this->crosshair) {
-            args.push_back("1");
-            args.push_back("+crosshairhealth");
-            args.push_back("0");
+            this->doomArgs.push_back("1");
+            this->doomArgs.push_back("+crosshairhealth");
+            this->doomArgs.push_back("0");
         }
-        else args.push_back("0");
+        else this->doomArgs.push_back("0");
 
         //decals
-        args.push_back("+cl_maxdecals");
-        if (this->decals) args.push_back("1024");
-        else args.push_back("0");
+        this->doomArgs.push_back("+cl_maxdecals");
+        if (this->decals) this->doomArgs.push_back("1024");
+        else this->doomArgs.push_back("0");
 
         //particles
-        args.push_back("+r_particles");
-        if (this->decals) args.push_back("1");
-        else args.push_back("0");
+        this->doomArgs.push_back("+r_particles");
+        if (this->decals) this->doomArgs.push_back("1");
+        else this->doomArgs.push_back("0");
 
         //weapon auto switch
-        //args.push_back("+neverswitchonpickup");
-        //args.push_back("1");
+        //this->doomArgs.push_back("+neverswitchonpickup");
+        //this->doomArgs.push_back("1");
 
-        //vizia args
-        args.push_back("+vizia_controlled");
-        args.push_back("1");
+        //vizia this->doomArgs
+        this->doomArgs.push_back("+vizia_controlled");
+        this->doomArgs.push_back("1");
 
-        args.push_back("+vizia_instance_id");
-        args.push_back(this->instanceId);
+        this->doomArgs.push_back("+vizia_instance_id");
+        this->doomArgs.push_back(this->instanceId);
 
         if(this->noConsole){
-            args.push_back("+vizia_no_console");
-            args.push_back("1");
+            this->doomArgs.push_back("+vizia_no_console");
+            this->doomArgs.push_back("1");
         }
 
         if(this->allowDoomInput){
-            args.push_back("+vizia_allow_input");
-            args.push_back("1");
+            this->doomArgs.push_back("+vizia_allow_input");
+            this->doomArgs.push_back("1");
 
             //allow mouse
-            args.push_back("+use_mouse");
-            args.push_back("1");
+            this->doomArgs.push_back("+use_mouse");
+            this->doomArgs.push_back("1");
         }
         else{
             //disable mouse
-            args.push_back("+use_mouse");
-            args.push_back("0");
+            this->doomArgs.push_back("+use_mouse");
+            this->doomArgs.push_back("0");
         }
 
         if(this->runDoomAsync){
-            args.push_back("+vizia_async");
-            args.push_back("1");
+            this->doomArgs.push_back("+vizia_async");
+            this->doomArgs.push_back("1");
         }
 
-        args.push_back("+vizia_screen_format");
-        args.push_back(b::lexical_cast<std::string>(this->screenFormat));
+        this->doomArgs.push_back("+vizia_screen_format");
+        this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenFormat));
 
-        args.push_back("+vizia_window_hidden");
-        if (this->windowHidden) args.push_back("1");
-        else args.push_back("0");
+        this->doomArgs.push_back("+vizia_window_hidden");
+        if (this->windowHidden) this->doomArgs.push_back("1");
+        else this->doomArgs.push_back("0");
 
-        args.push_back("+vizia_no_x_server");
-        if (this->noXServer) args.push_back("1");
-        else args.push_back("0");
+        this->doomArgs.push_back("+vizia_no_x_server");
+        if (this->noXServer) this->doomArgs.push_back("1");
+        else this->doomArgs.push_back("0");
 
         //no wipe animation
-        args.push_back("+wipetype");
-        args.push_back("0");
+        this->doomArgs.push_back("+wipetype");
+        this->doomArgs.push_back("0");
 
         //no sound/idle/joy
-        args.push_back("-noidle");
-        args.push_back("-nojoy");
-        args.push_back("-nosound");
+        this->doomArgs.push_back("-noidle");
+        this->doomArgs.push_back("-nojoy");
+        this->doomArgs.push_back("-nosound");
 
         //35 fps and no vsync
-        args.push_back("+cl_capfps");
-        args.push_back("1");
+        this->doomArgs.push_back("+cl_capfps");
+        this->doomArgs.push_back("1");
 
-        args.push_back("+vid_vsync");
-        args.push_back("0");
+        this->doomArgs.push_back("+vid_vsync");
+        this->doomArgs.push_back("0");
 
         //custom args
         for(int i = 0; i < this->customArgs.size(); ++i){
-            args.push_back(customArgs[i]);
+            this->doomArgs.push_back(customArgs[i]);
         }
+    }
 
+    void DoomController::launchDoom() {
         //bpr::context ctx;
         //ctx.stdout_behavior = bpr::silence_stream();
-        bpr::child doomProcess = bpr::execute(bpri::set_args(args), bpri::inherit_env());
+        bpr::child doomProcess = bpr::execute(bpri::set_args(this->doomArgs), bpri::inherit_env());
         bpr::wait_for_exit(doomProcess);
         this->MQControllerSend(MSG_CODE_DOOM_PROCESS_EXIT);
     }

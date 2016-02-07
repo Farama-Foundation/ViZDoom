@@ -44,7 +44,7 @@ void Vizia_ScreenInit() {
             viziaScreenSize *= 3;
             break;
 
-        case VIZIA_SCREEN_CRCGCBZB :
+        case VIZIA_SCREEN_CRCGCBDB :
             posMulti = 1;
             rPos = 0; gPos = (int)viziaScreenSize; bPos = 2 * (int)viziaScreenSize;
             alpha = false;
@@ -82,7 +82,7 @@ void Vizia_ScreenInit() {
             viziaScreenSize *= 3;
             break;
 
-        case VIZIA_SCREEN_CBCGCRZB :
+        case VIZIA_SCREEN_CBCGCRDB :
             posMulti = 1;
             rPos = 2 * (int)viziaScreenSize; gPos = (int)viziaScreenSize, bPos = 0;
             alpha = false;
@@ -127,29 +127,30 @@ void Vizia_ScreenInit() {
 
         switch(*vizia_screen_format){
             case VIZIA_SCREEN_CRCGCB: Printf("CRCGCB\n"); break;
-            case VIZIA_SCREEN_CRCGCBZB: Printf("CRCGCBZB\n"); break;
+            case VIZIA_SCREEN_CRCGCBDB: Printf("CRCGCBDB\n"); break;
             case VIZIA_SCREEN_RGB24: Printf("RGB24\n"); break;
             case VIZIA_SCREEN_RGBA32: Printf("RGBA32\n"); break;
             case VIZIA_SCREEN_ARGB32: Printf("ARGB32\n"); break;
             case VIZIA_SCREEN_CBCGCR: Printf("CBCGCR\n"); break;
-            case VIZIA_SCREEN_CBCGCRZB: Printf("CBCGCRZB\n"); break;
+            case VIZIA_SCREEN_CBCGCRDB: Printf("CBCGCRDB\n"); break;
             case VIZIA_SCREEN_BGR24: Printf("BGR24\n"); break;
             case VIZIA_SCREEN_BGRA32: Printf("BGRA32\n"); break;
             case VIZIA_SCREEN_ABGR32: Printf("ABGR32\n"); break;
             case VIZIA_SCREEN_GRAY8: Printf("GRAY8\n"); break;
-            case VIZIA_SCREEN_ZBUFFER8: Printf("ZBUFFER8\n"); break;
-            case VIZIA_SCREEN_DOOM_256_COLORS: Printf("DOOM\n"); break;
+            case VIZIA_SCREEN_DEPTH_BUFFER8: Printf("DEPTH_BUFFER8\n"); break;
+            case VIZIA_SCREEN_DOOM_256_COLORS8: Printf("DOOM_256_COLORS\n"); break;
             default: Printf("UNKNOWN\n");
         }
     }
     catch(bip::interprocess_exception &ex){
-        Printf("Vizia_Vizia_ScreenInit: Error creating ViziaScreen SM");
+        Printf("Vizia_ScreenInit: Error creating ViziaScreen SM");
         Vizia_MQSend(VIZIA_MSG_CODE_DOOM_ERROR);
         exit(1);
     }
 
-    if(*vizia_screen_format==VIZIA_SCREEN_CBCGCRZB||*vizia_screen_format==VIZIA_SCREEN_CRCGCBZB
-       ||*vizia_screen_format==VIZIA_SCREEN_ZBUFFER8) {
+    if(*vizia_screen_format==VIZIA_SCREEN_CBCGCRDB
+       ||*vizia_screen_format==VIZIA_SCREEN_CRCGCBDB
+       ||*vizia_screen_format==VIZIA_SCREEN_DEPTH_BUFFER8) {
         depthMap = new depthBuffer(viziaScreenWidth, viziaScreenHeight);
         depthMap->setDepthBoundries(120000000, 358000);//SHOULDN'T BE HERE!
     }
@@ -164,7 +165,7 @@ void Vizia_ScreenUpdate(){
 
     if (buffer != NULL) {
 
-        if(*vizia_screen_format == VIZIA_SCREEN_DOOM_256_COLORS){
+        if(*vizia_screen_format == VIZIA_SCREEN_DOOM_256_COLORS8){
             for(unsigned int i = 0; i < bufferSize; ++i){
                 viziaScreen[i] = buffer[i];
             }
@@ -178,7 +179,7 @@ void Vizia_ScreenUpdate(){
                     viziaScreen[i] = 0.21 * palette[buffer[i]].r + 0.72 * palette[buffer[i]].g + 0.07 *palette[buffer[i]].b;
                 }
             }
-            else if(*vizia_screen_format == VIZIA_SCREEN_ZBUFFER8){
+            else if(*vizia_screen_format == VIZIA_SCREEN_DEPTH_BUFFER8){
                 memcpy(viziaScreen, depthMap->getBuffer(), depthMap->getBufferSize());
             }
             else {
@@ -191,7 +192,7 @@ void Vizia_ScreenUpdate(){
                     //if(alpha) viziaScreen[pos + aPos] = palette[buffer[i]].a;
                 }
 
-                if(*vizia_screen_format == VIZIA_SCREEN_CRCGCBZB || *vizia_screen_format == VIZIA_SCREEN_CBCGCRZB){
+                if(*vizia_screen_format == VIZIA_SCREEN_CRCGCBDB || *vizia_screen_format == VIZIA_SCREEN_CBCGCRDB){
                     memcpy(viziaScreen+3*bufferSize, depthMap->getBuffer(), depthMap->getBufferSize());
                 }
             }
