@@ -52,16 +52,16 @@ Release year               & 1999             & 1993  & 2003      & 2004        
 Open Source               & \OK              & \OK   & \OK       &             &                        & \OK               & \OK         \\ \hline
 License                   & GPLv2            & GPL   & GPLv3     & Closed      & Closed                 & Custom            & ZLIB        \\ \hline
 Language                  & C                & C++   & C++       & C++         & C++                    & C++               & C++         \\ \hline
-DirectX                   &                  &       &           & \OK         &                        & \OK               &             \\ \hline
+DirectX                   &                  &       & \OK       & \OK         &                        & \OK               &             \\ \hline
 OpenGL                    & \OK              & \OK\footnotemark   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
 Software Render           &                  & \OK   &           &             &                        &                   &             \\ \hline
 Windows                   & \OK              & \OK   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
-Linux                     & \OK              & \OK   &           & \OK         & \OK                    & \OK               & \OK         \\ \hline
+Linux                     & \OK              & \OK   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
 Mac OS                    & \OK              & \OK   & \OK       & \OK         & \OK                    & \OK               &             \\ \hline
-Scripting                 &                  & \OK   &           & \OK         & \OK                    & \OK               & \OK         \\ \hline
+Scripting                 &                  & \OK   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
 Custom assets             & \OK              & \OK   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
 Map editor                & \OK              & \OK   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
-Multiplayer               & \OK              & \OK   &           &             & \OK                    & \OK               & \OK         \\ \hline
+Multiplayer               & \OK              & \OK   & \OK       &             & \OK                    & \OK               & \OK         \\ \hline
 Engine access             & Code             & Code  & Code      & SDK         & SDK                    & Code               & Code        \\ \hline
 Small resolutions         & \OK              & \OK   & \OK       & \OK         & \OK                    & \OK               & \OK         \\ \hline
 Screen buffor access      & \OK              & \OK   & \OK       &             &                        & \OK               & \OK         \\ \hline
@@ -85,19 +85,19 @@ Unreal Tournament 2004 had to rejected because its engine is only accessible by 
 The game was not prepared to be heavily modified and its use in research was so far limited to server modifications.
 
 Similar problems would have to be overcome in case of Half-Life 2, although Source engine is widely known for modding capabilities.
-Although the lack of multiplayer could be solved by the use of the game Counter Strike:Source, it would introduce problems associated with the separation of game logic into client and server.
+Although the lack of multiplayer could be solved by the use of the game Counter Strike:Source or even Half-Life 2:Deathmatch, as Source engine itself has multiplayer support, it would introduce problems associated with the separation of game logic into client and server.
 
 Client-server architecture was also the reason for the rejection of Quake III: Arena.
 Despite wide recognition and active community, even access to the screen buffer and the possibility to modify the code could not overcome the lack of support for scripting.
 
-Lack of scripting also concerned Doom 3. 
-It had to be ignored not only for this reason, but also because of its complexity, Windows-only tools and OS-dependent rendering mechanisms.
-Although its source code has been re lased, it does not have united community, so there are several rarely updated versions of its sources.%FIXME
+Lack of scripting does not concern Doom 3, but its disk reqiurements was considered as a major drawback.
+It had to be ignored also because of its complexity, Windows-only tools and OS-dependent rendering mechanisms.
+Although its source code has been re lased, it does not have united community, so there are several rarely updated versions of its sources.
 
 Community activity is also a problem in case of Cube, as its last update was in August 2005~\cite{cube}.
 However low complexity and highly intuitive map editor would make it a good choice, but its recognizably is so low that it had to be taken out of consideration. 
 
-In case of Unreal Tournament there are no problems with recognition or lack of capabilities.%FIXME
+In case of Unreal Tournament there are no problems with recognition or lack of capabilities.
 Despite active community and access to source code it was out of question, because of its very high system requirements.
 
 % >--
@@ -155,7 +155,7 @@ This topic was discussed further in Chapter~\ref{ch:scenarios}.
 \section{Architecture}\label{sec:architecture}
 	\begin{figure}
 			\centering
-			\includegraphics[scale=0.25]{architecture_diagram.png}
+			\includegraphics[scale=0.24]{architecture_diagram.png}
 			\caption{Architecture of Vizia Environment.}\label{fig:architecture_diagram}
 	\end{figure}
 
