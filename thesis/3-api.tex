@@ -165,7 +165,7 @@ void DoomGame::setDoomMap(std::string map);
 \begin{clinee}      
 void DoomGame::setDoomSkill(int skill);
 \end{clinee}
-	Sets Doom game difficulty level (0-4) which is called `skill' in Doom. The higher is the skill the harder the game becomes. Skill level affects monster' aggressiveness, monster's speed, weapon damage, ammunition quantities etc. For more details consult Zdoom Wiki Website\cite{zdoom-wiki}.
+	Sets Doom game difficulty level (0--4) which is called `skill' in Doom. The higher is the skill the harder the game becomes. Skill level affects monster' aggressiveness, monster's speed, weapon damage, ammunition quantities etc. For more details consult Zdoom Wiki Website\cite{zdoom-wiki}.
 
 
 \vspace{20pt}
@@ -235,8 +235,8 @@ void DoomGame::setWindowVisible(bool visibility);
 
 	Determines if zdoom's window will be visible. Turning visibility off will result in:
 	\begin{itemize}
-		\item Linux - rendering and any computation connected with the window will be skipped. Processing acceleration should be expected.
-		\item Windows - window will be hidden. No processing acceleration should be expected.
+		\item Linux --- rendering and any computation connected with the window will be skipped. Processing acceleration should be expected.
+		\item Windows --- window will be hidden. No processing acceleration should be expected.
 	\end{itemize}
 
 
@@ -249,7 +249,7 @@ void DoomGame::setConsoleEnabled(bool console);
 
 
 \vspace{20pt}
-\subsection{Run-time Methods}\label{subsec:runtime_methods}
+\subsection{Runtime Methods}\label{subsec:runtime_methods}
 	The following methods directly interact with the game's state and should be used after initialization. Calling them before \emph{init} method will result in a warning or exception depending on severity of consequences. 
 
 \vspace{20pt}
@@ -439,7 +439,7 @@ int DoomGame::getButtonMaxValue(Button button);
 unsigned int DoomTics2Ms(unsigned int tics);
 \end{clinee}
 
-	Calculates the number of milliseconds that will pass during specified number of tics (assuming 35 tics per second - designed Doom tic-rate).
+	Calculates the number of milliseconds that will pass during specified number of tics (assuming 35 tics per second --- designed Doom tic-rate).
 
 
 \vspace{20pt}
@@ -447,7 +447,7 @@ unsigned int DoomTics2Ms(unsigned int tics);
 unsigned int Ms2DoomTics(unsigned int ms);
 \end{clinee}
 
-	Calculates how many tics will be made during given number of milliseconds (assuming 35 ticks per second - designed Doom tic-rate).
+	Calculates how many tics will be made during given number of milliseconds (assuming 35 ticks per second --- designed Doom tic-rate).
 
 
 \vspace{20pt}
@@ -483,10 +483,10 @@ double DoomFixedToDouble(int doomFixed);
 \paragraph{Modes:}
 
 \begin{itemize}
-	\item PLAYER - synchronous player mode
-	\item SPECTATOR - synchronous spectator mode
-	\item ASYNC\_PLAYER - asynchronous player mode
-	\item ASYNC\_SPECTATOR - asynchronous spectator mode 
+	\item PLAYER --- synchronous player mode
+	\item SPECTATOR --- synchronous spectator mode
+	\item ASYNC\_PLAYER --- asynchronous player mode
+	\item ASYNC\_SPECTATOR --- asynchronous spectator mode 
 \end{itemize}
 
 \subsection{ScreenFormat}\label{subsec:screenformat}
@@ -496,19 +496,19 @@ double DoomFixedToDouble(int doomFixed);
 \vspace{20pt}
 \textbf{ScreenFormats:}
 \begin{itemize}
- \item CRCGCB - 3 channels of 8 bit values in RGB order
- \item CRCGCBDB - 4 channels of 8 bit values in RGB + depth buffer order
- \item RGB24 - channel of RGB values stored in 24 bits, where R value is stored in the oldest 8 bits
- \item RGBA32 - channel of RGBA values stored in 32 bits, where R value is stored in the oldest 8 bits
- \item ARGB32 - channel of ARGB values stored in 32 bits, where A value is stored in the oldest 8 bits
- \item CBCGCR - 3 channels of 8 bit values in BGR order
- \item CBCGCRDB - 4 channels of 8 bit values in BGR + depth buffer order
- \item BGR24 - channel of BGR values stored in 24 bits, where B value is stored in the oldest 8 bits
- \item BGRA32 - channel of BGRA values stored in 32 bits, where B value is stored in the oldest 8 bits 
- \item ABGR32 - channel of ABGR values stored in 32 bits, where A value is stored in the oldest 8 bits
- \item GRAY8 - 8 bit gray channel
- \item DEPTH\_BUFFER8 - 8 bit depth buffer channel
- \item DOOM\_256\_COLORS - 8 bit channel with Doom palette values
+ \item CRCGCB --- 3 channels of 8 bit values in RGB order
+ \item CRCGCBDB --- 4 channels of 8 bit values in RGB + depth buffer order
+ \item RGB24 --- channel of RGB values stored in 24 bits, where R value is stored in the oldest 8 bits
+ \item RGBA32 --- channel of RGBA values stored in 32 bits, where R value is stored in the oldest 8 bits
+ \item ARGB32 --- channel of ARGB values stored in 32 bits, where A value is stored in the oldest 8 bits
+ \item CBCGCR --- 3 channels of 8 bit values in BGR order
+ \item CBCGCRDB --- 4 channels of 8 bit values in BGR + depth buffer order
+ \item BGR24 --- channel of BGR values stored in 24 bits, where B value is stored in the oldest 8 bits
+ \item BGRA32 --- channel of BGRA values stored in 32 bits, where B value is stored in the oldest 8 bits 
+ \item ABGR32 --- channel of ABGR values stored in 32 bits, where A value is stored in the oldest 8 bits
+ \item GRAY8 --- 8 bit gray channel
+ \item DEPTH\_BUFFER8 --- 8 bit depth buffer channel
+ \item DOOM\_256\_COLORS --- 8 bit channel with Doom palette values
 \end{itemize}
 \subsection{ScreenResolution} \label{subsec:screenresolution}
 
