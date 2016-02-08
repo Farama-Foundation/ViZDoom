@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
-//import errors.*;
+import errors.*;
 import enums.*;
 public class ViziaDoomGameJava{
 	static {
-      		System.loadLibrary("DoomLIB"); 
+      		System.loadLibrary("vizia"); 
    	}
 
 	public long internalPtr = 0; 
