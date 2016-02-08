@@ -1,9 +1,6 @@
 
-import enums.Button;
-import enums.GameVariable;
-import enums.ScreenFormat;
-import enums.Mode;
-import enums.ScreenResolution;
+import enums.*;
+import errors.*;
 import java.util.*;
 import java.lang.Integer;
 import java.lang.Boolean;
@@ -17,13 +14,13 @@ public static void main (String[] args) {
 
     dg.setDoomEnginePath("../../bin/viziazdoom");
     dg.setDoomGamePath("../../scenarios/doom2.wad");
-    dg.setDoomScenarioPath("../../scenarios/s1_b.wad");
+    dg.setDoomScenarioPath("../../scenarios/basic.wad");
     dg.setDoomMap("map01");
     dg.setEpisodeTimeout(200);
     dg.setLivingReward(-1);
 
     dg.setScreenResolution(ScreenResolution.RES_320X240);
-System.out.println("1");
+	System.out.println("1");
     dg.setRenderHud(false);
     dg.setRenderCrosshair(false);
     dg.setRenderWeapon(true);

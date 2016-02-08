@@ -83,6 +83,7 @@ if(BUILD_VIZIA_JAVA)
 
     find_package(Java REQUIRED)
     find_package(JNI REQUIRED)
+    include(UseJava)
     set( VIZIA_JAVA_INCLUDE_DIR ${VIZIA_INCLUDE_DIR} vizia_api_bindings/java )
     
     set( VIZIA_PYTHON_LIBS 
@@ -95,13 +96,22 @@ if(BUILD_VIZIA_JAVA)
                         ${Boost_INCLUDE_DIR}
                         ${Java_INCLUDE_DIRS} 
                         ${_JAVA_HOME}/include
+			${_JAVA_HOME}/include/linux
                         ${JNI_INCLUDE_DIR} )  
 
     set( VIZIA_JAVA_SOURCES
 	    vizia_api_bindings/java/ViziaDoomGameJava.cpp )
 
+
     add_library(viziajava SHARED ${VIZIA_JAVA_SOURCES})
     target_link_libraries (viziajava ${VIZIA_PYTHON_LIBS} viziastatic) 
+
+	exec_program(javac .
+             ARGS ./vizia_api_bindings/java/State.java)
+	exec_program(javac .
+             ARGS ./vizia_api_bindings/java/errors/*.java)
+	exec_program(javac .
+		     ARGS ./vizia_api_bindings/java/enums/*.java)
 
     set_target_properties( viziajava 
         PROPERTIES
