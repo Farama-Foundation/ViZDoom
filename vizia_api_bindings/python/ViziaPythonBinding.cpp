@@ -63,7 +63,6 @@ BOOST_PYTHON_MODULE(vizia)
 
 #define EXCEPTION_TO_PYT(n, pytn) type ## n = createExceptionClass(#pytn); \
 bp::register_exception_translator<Vizia:: n >(&translate ## n );
-
 	/* typeMyException = createExceptionClass("myException");
 	 * bp::register_exception_translator<Vizia::myException>(&translate);
 	 */

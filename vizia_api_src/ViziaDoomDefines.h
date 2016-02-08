@@ -11,33 +11,33 @@ namespace Vizia{
     };
 
     enum ScreenFormat {
-        CRCGCB = 0,
-        CRCGCBDB = 1,
-        RGB24 = 2,
-        RGBA32 = 3,
-        ARGB32 = 4,
-        CBCGCR = 5,
-        CBCGCRDB = 6,
-        BGR24 = 7,
-        BGRA32 = 8,
-        ABGR32 = 9,
-        GRAY8 = 10,
-        DEPTH_BUFFER8 = 11,
-        DOOM_256_COLORS8 = 12,
+        CRCGCB = 0,         // 3 channels of 8-bit values in RGB order
+        CRCGCBDB = 1,       // 4 channels of 8-bit values in RGB + depth buffer order
+        RGB24 = 2,          // channel of RGB values stored in 24 bits, where R value is stored in the oldest 8 bits
+        RGBA32 = 3,         // channel of RGBA values stored in 32 bits, where R value is stored in the oldest 8 bits
+        ARGB32 = 4,         // channel of ARGB values stored in 32 bits, where A value is stored in the oldest 8 bits
+        CBCGCR = 5,         // 3 channels of 8-bit values in BGR order
+        CBCGCRDB = 6,       // 4 channels of 8-bit values in BGR + depth buffer order
+        BGR24 = 7,          // channel of BGR values stored in 24 bits, where B value is stored in the oldest 8 bits
+        BGRA32 = 8,         // channel of BGRA values stored in 32 bits, where B value is stored in the oldest 8 bits
+        ABGR32 = 9,         // channel of ABGR values stored in 32 bits, where A value is stored in the oldest 8 bits
+        GRAY8 = 10,         // 8-bit gray channel
+        DEPTH_BUFFER8 = 11, // 8-bit depth buffer channel
+        DOOM_256_COLORS8 = 12,  //8-bit channel with Doom palette values
     };
 
     enum ScreenResolution {
-        RES_40X30,
-        RES_60X45,
+        RES_40X30,      // 4:3
+        RES_60X45,      // 4:3
         RES_80X50,      // 16:10
-        RES_80X60,
-        RES_100X75,
+        RES_80X60,      // 4:3
+        RES_100X75,     // 4:3
         RES_120X75,     // 16:10
-        RES_120X90,
-        RES_160X100,
-        RES_160X120,
+        RES_120X90,     // 4:3
+        RES_160X100,    // 16:10
+        RES_160X120,    // 4:3
         RES_200X120,
-        RES_200X150,
+        RES_200X150,    // 4:3
         RES_240X135,
         RES_240X150,
         RES_240X180,
@@ -45,29 +45,29 @@ namespace Vizia{
         RES_256X160,
         RES_256X192,
         RES_320X200,
-        RES_320X240,
+        RES_320X240,    // 4:3
         RES_400X225,	// 16:9
-        RES_400X300,
+        RES_400X300,    // 4:3
         RES_480X270,	// 16:9
-        RES_480X360,
+        RES_480X360,    // 4:3
         RES_512X288,	// 16:9
         RES_512X384,
         RES_640X360,	// 16:9
         RES_640X400,
-        RES_640X480,
+        RES_640X480,    // 4:3
         RES_720X480,	// 16:10
         RES_720X540,
         RES_800X450,	// 16:9
         RES_800X480,
         RES_800X500,	// 16:10
-        RES_800X600,
+        RES_800X600,    // 4:3
         RES_848X480,	// 16:9
         RES_960X600,	// 16:10
         RES_960X720,
         RES_1024X576,	// 16:9
         RES_1024X600,	// 17:10
         RES_1024X640,	// 16:10
-        RES_1024X768,
+        RES_1024X768,   // 4:3
         RES_1088X612,	// 16:9
         RES_1152X648,	// 16:9
         RES_1152X720,	// 16:10
@@ -87,7 +87,7 @@ namespace Vizia{
         RES_1440X1080,
         RES_1600X900,	// 16:9
         RES_1600X1000,	// 16:10
-        RES_1600X1200,
+        RES_1600X1200,  // 4:3
         RES_1680X1050,	// 16:10
         RES_1920X1080,  // 16:9
         RES_1920X1200,
