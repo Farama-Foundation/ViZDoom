@@ -20,7 +20,7 @@
 \end{figure}
 
 VIZIA Environment was build around FPS game Doom. 
-The environment uses  modernized version of Doom's original engine --- ZDoom~\cite{zdoom-main}. 
+The environment uses  modernized version of Doom's Boriginal engine --- ZDoom~\cite{zdoom-main}. 
 Screenshot from the game is shown in Figure~\ref{fig:doom}.
 Doom was chosen out of 6 other recognizable FPS games considered: 
 
@@ -128,11 +128,11 @@ However, on systems other than Linux VIZIA Environment has not been thoroughly t
 
 
 The basic module for control over Doom --- game controller --- was written in C++ with usage of Boost library.
-It allowed to use Boost::interprocess library in both ZDoom and game controller, as ZDoom was written in C++.
+It allowed to use Boost.Interprocess library in both ZDoom and game controller, as ZDoom was written in C++.
 % <--
 It also made connecting game controller and game easier than it would be using low level language on the engine side and high level language for the controller.
 % >--
-Experimental Boost::process library was used for control over Doom process.
+Experimental Boost.Process library was used for control over Doom process.
 
 
 Above the controller, a higher layer of abstraction was implemented defining Application Programming Interface for intelligent agents modules.
@@ -140,7 +140,7 @@ API was also developed in C++, which allowed to provide bindings to Python and J
 
 
 Python API was considered as the main way of controlling VIZIA Environment by users.
-Bindings were prepared by using Boost::python library.
+Bindings were prepared by using Boost.Python library.
 This language is one of the most popular in data science~\cite{ds_lang} and widely known as it is taught at many universities all around the world~\cite{pythons_schools}.
 There are many machine learning libraries for Python such as scikit-learn~\cite{scikit} or PyBrain~\cite{pybrain}.
 Because of that, providing fully functional Python API was one of the biggest priorities of this project.
@@ -165,7 +165,7 @@ This topic was discussed further in Chapter~\ref{ch:scenarios}.
 The main components of VIZIA Environment:
     \begin{itemize}
     \item VIZIA library --- which provides a DoomGame API that allows user to configure, launch and play the game in several control modes.
-    \item VIZIAZDoom --- modified ZDoom engine with a VIZIA Module to communicate with a DoomGame object, control the game flow and adding additional rendering modes. It can act as a process under the control of the DoomGame object, Dome engine used for testing in Doom editors or as standalone process.
+    \item VIZIAZDoom --- modified ZDoom engine with a VIZIA module to communicate with a DoomGame object, control the game flow and adding additional rendering modes. It can act as a process under the control of the DoomGame object, Dome engine used for testing in Doom editors or as standalone process.
     \item Python and Java bindings --- allowing the use of the DoomGame API in these languages.
     \end{itemize}
 
@@ -272,11 +272,11 @@ The DoomGame API implements four control modes:
 
 \section{Other Design Decisions, Encountered problems and their Solutions}\label{sec:architecture_solutions}
 
-\subsubsection{Why is the separate Doom executable?}
+\subsubsection{Why is there the separate Doom executable?}
 
 Doom engine was designed as standalone executable. It has a different entry point for every operating system and a lot of exit points what makes it difficult to pack it inside library without making any fundamental changes to its code. In addition, this approach would not give any significant benefits. Also, leaving the Doom engine as a separate executable allows using it with Doom editors and as standalone Doom engine, which can be used for testing scenarios or human versus AI agent game in multiplayer mode.
 
-\subsubsection{Why does shared memory is used to communication?}
+\subsubsection{Why is shared memory used to communication?}
 
 Shared memory is the fastest way to transfer large amounts of data between processes. It allows using the data without additional copying in the process that receives it. 
 Since the game process uses shared memory only on the API request and the API process is waiting for completion of this request, additional access control mechanism (such as mutexes) is not needed.
@@ -299,12 +299,12 @@ Depth is approximated by texture's scaling factor and stored as 8-bit value whic
 \label{fig:zbuffer}
 \end{figure}
 
-\subsubsection{Why does multiplayer is not supported in synchronous modes?}\label{sec:architecture_solution_multi}
+\subsubsection{Why is multiplayer not supported in synchronous modes?}\label{sec:architecture_solution_multi}
 
 Doom engine uses a peer-to-peer communication in multiplayer and requires synchronization between all game clients. In each tic (every 1/35th of a second) a information about input is generated and game clients should exchange it with each other. 
 In synchronous modes time when next tic will be processed is unknown and may vary in different clients --- too slow or too fast processing leads to unpredictable game behaviors and errors that interrupt processing. Due to lack of time the network code has not been adapted for synchronous modes, instead it has been disabled.
 
-\subsubsection{Why do the game and the scenario files are separated?}
+\subsubsection{Why are the game and the scenario files separated?}
 
 Doom engine uses different type of files for storing data and resources. (WAD and PK3 files) It allows loading main game resources from one file and many additional (scenario) resources from separate files. For more detailed information consult ZDoom Wiki Webpage\cite{zdoom-wiki}.
 
