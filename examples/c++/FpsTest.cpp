@@ -96,7 +96,7 @@ int main(){
     dg->setScreenResolution(RES_1024X768);
     totalTime += test(dg, action, iters, true);
 
-    dg->setScreenFormat(CRCGCBZB);
+    dg->setScreenFormat(CRCGCBDB);
     std::cout << ++testCount << ",\t160x120+Z,\t";
     dg->setScreenResolution(RES_160X120);
     totalTime += test(dg, action, iters, true);
@@ -136,7 +136,7 @@ int main(){
     dg->setScreenResolution(RES_1024X768);
     totalTime += test(dg, action, iters, true);
 
-    dg->setScreenFormat(CRCGCBZB);
+    dg->setScreenFormat(CRCGCBDB);
     std::cout << ++testCount << ",\t160x120+Z,\t";
     dg->setScreenResolution(RES_160X120);
     totalTime += test(dg, action, iters, true);
@@ -175,7 +175,7 @@ int main(){
     dg->setScreenResolution(RES_1024X768);
     totalTime += test(dg, action, iters, true);
 
-    dg->setScreenFormat(CRCGCBZB);
+    dg->setScreenFormat(CRCGCBDB);
     std::cout << ++testCount << ",\t160x120+Z,\t";
     dg->setScreenResolution(RES_160X120);
     totalTime += test(dg, action, iters, true);
@@ -214,7 +214,7 @@ int main(){
     dg->setScreenResolution(RES_1024X768);
     totalTime += test(dg, action, iters, true);
 
-    dg->setScreenFormat(CRCGCBZB);
+    dg->setScreenFormat(CRCGCBDB);
     std::cout << ++testCount << ",\t160x120+Z,\t";
     dg->setScreenResolution(RES_160X120);
     totalTime += test(dg, action, iters, true);
@@ -254,7 +254,7 @@ int main(){
     dg->setScreenResolution(RES_1024X768);
     totalTime += test(dg, action, iters, true);
 
-    dg->setScreenFormat(CRCGCBZB);
+    dg->setScreenFormat(CRCGCBDB);
     std::cout << ++testCount << ",\t160x120+Z,\t";
     dg->setScreenResolution(RES_160X120);
     totalTime += test(dg, action, iters, true);

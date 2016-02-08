@@ -265,7 +265,7 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 
 
 	\subsection{Fixed Point Numbers}\label{subsec:fixed_point}
-		ACS does not support floating point numbers, however fixed point numbers are implemented using integers. By adding a decimal point the compiler is force to treat \emph{int} variable as a fixed point number so for instance `1' will be treated as an integer whereas `1.0' as a fixed point numeral. Mixing integers and fixed point numbers is allowed but will produce unexpected results if performed unknowingly. For more detailed information consult Zdoom Wiki Webpage\cite{zdoom-wiki}.
+		ACS does not support floating point numbers, however fixed point numbers are implemented using integers. By adding a decimal point the compiler is force to treat \emph{int} variable as a fixed point number so for instance `1' will be treated as an integer whereas `1.0' as a fixed point numeral. Mixing integers and fixed point numbers is allowed but will produce unexpected results if performed unknowingly. For more detailed information consult ZDoom Wiki Webpage\cite{zdoom-wiki}.
 
 	\subsection{Global Variables}\label{subsec:global_variable}
 		ACS provides a special type of variables called \emph{global~variables} that are seen by VIZIA API as game variables (see Section \ref{subsec:gamevar}) named USER<X>. Global variables behave the same as ordinary variables but need to be declared in global scope and in a slightly different way:
@@ -278,7 +278,7 @@ global int <X>:reward;
 		In order to support the rewarding mechanism, it is necessary to utilize global variable 0 in the ACS script. Name given to the variable does not matter. The value of the variable represents total reward accumulated throughout the whole episode so in order to give a reward for a specific action it is needed to increase global variable 0 by the desired value not to assign it. VIZIA treats the reward global variable as a fixed point number(see \ref{subsec:fixed_point}).
 
 	\subsection{Advices}
-		This section shows code snippets showing how we achieved some ACS scripting behaviors that may prove useful. The code snippets intend to be relatively self-explanatory and assume knowledge of the very basics of ACS scripting and capability of reading documentation to make sense of used functions. For documentation and more detailed information consult Zdoom Wiki Webpage\cite{zdoom-wiki}.
+		This section shows code snippets showing how we achieved some ACS scripting behaviors that may prove useful. The code snippets intend to be relatively self-explanatory and assume knowledge of the very basics of ACS scripting and capability of reading documentation to make sense of used functions. For documentation and more detailed information consult ZDoom Wiki Webpage\cite{zdoom-wiki}.
 
 		\subsubsection*{Ending an Episode}
 
@@ -306,7 +306,7 @@ SetActorProperty(MONSTER_TID, APROP_Speed, 0);
 SetActorProperty(MONSTER_TID, APROP_Health, 1);
 			\end{clinee}
 		\subsubsection*{Self-replenishing Ammo}
-		Note that this can also be achieved by changing Zdoom's configuration but these changes are persistent.
+		Note that this can also be achieved by changing ZDoom's configuration but these changes are persistent.
 			\begin{clinee}
 script 2 ENTER
 {   

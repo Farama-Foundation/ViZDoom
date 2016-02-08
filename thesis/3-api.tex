@@ -9,7 +9,7 @@
 DoomGame::DoomGame();
 \end{clinee}
 
-	Constructs an instance of DoomGame. Zdoom engine is not ready for using after creation and needs initialization (init method). Freshly created DoomGame is initialized with the following parameters:
+	Constructs an instance of DoomGame. ZDoom engine is not ready for using after creation and needs initialization (init method). Freshly created DoomGame is initialized with the following parameters:
 	\begin{itemize}
 		\item screenResolution: RES\_320x240
 		\item screenFormat: CRCGCB
@@ -107,7 +107,7 @@ void DoomGame::clearAvailableGameVariables();
 \begin{clinee}
 void DoomGame::addCustomGameArg(std::string arg);
 \end{clinee}
-	Adds a custom argument that will be passed to vizazdoom process during initialization. For more details consult Zdoom Wiki Website\cite{zdoom-wiki}
+	Adds a custom argument that will be passed to vizazdoom process during initialization. For more details consult ZDoom Wiki Website\cite{zdoom-wiki}
 
 
 \vspace{20pt}
@@ -151,7 +151,7 @@ void DoomGame::setDoomScenarioPath(std::string path);
 \begin{clinee}
 void DoomGame::setDoomConfigPath(std::string path);
 \end{clinee}
-	Sets path for Doom configuration file. This configuration file is \emph{not} Vizia's configuration file that can be loaded and affects initialization parameters such as available buttons or screen resolution. The file in question is responsible for configuration of Doom engine itself (key bindings etc.) and is created after viziazdoom executable is run for the first time. This method is not needed for most of the tasks and is added for convenience of users with hacking tendencies. For more details, consult Zdoom Wiki Website\cite{zdoom-wiki}.
+	Sets path for Doom configuration file. This configuration file is \emph{not} VIZIA's configuration file that can be loaded and affects initialization parameters such as available buttons or screen resolution. The file in question is responsible for configuration of Doom engine itself (key bindings etc.) and is created after viziazdoom executable is run for the first time. This method is not needed for most of the tasks and is added for convenience of users with hacking tendencies. For more details, consult ZDoom Wiki Website\cite{zdoom-wiki}.
 
 
 \vspace{20pt}
@@ -165,7 +165,7 @@ void DoomGame::setDoomMap(std::string map);
 \begin{clinee}      
 void DoomGame::setDoomSkill(int skill);
 \end{clinee}
-	Sets Doom game difficulty level (0--4) which is called `skill' in Doom. The higher is the skill the harder the game becomes. Skill level affects monster' aggressiveness, monster's speed, weapon damage, ammunition quantities etc. For more details consult Zdoom Wiki Website\cite{zdoom-wiki}.
+	Sets Doom game difficulty level (0--4) which is called `skill' in Doom. The higher is the skill the harder the game becomes. Skill level affects monster' aggressiveness, monster's speed, weapon damage, ammunition quantities etc. For more details consult ZDoom Wiki Website\cite{zdoom-wiki}.
 
 
 \vspace{20pt}
@@ -245,7 +245,7 @@ void DoomGame::setWindowVisible(bool visibility);
 void DoomGame::setConsoleEnabled(bool console);
 \end{clinee}
 
-	Determines if Zdoom's and Vizia's console output will be enabled (e.g. `You picked up a medpac', `Player killed himself.', `Vizia\_init')
+	Determines if ZDoom's and VIZIA's console output will be enabled (e.g. `You picked up a medpac', `Player killed himself.', `VIZIA\_init')
 
 
 \vspace{20pt}
@@ -401,7 +401,7 @@ void DoomGame::newEpisode();
 	void DoomGame::sendGameCommand(std::string cmd);
 \end{clinee}
 
-	Sends the command to Doom console. Can be used for cheats, multiplayer etc. For more details consult Zdoom Wiki Website\cite{zdoom-wiki}.
+	Sends the command to Doom console. Can be used for cheats, multiplayer etc. For more details consult ZDoom Wiki Website\cite{zdoom-wiki}.
 
 
 \vspace{20pt}
@@ -432,7 +432,7 @@ int DoomGame::getButtonMaxValue(Button button);
 
 
 \section {Utility Functions}
-	In addition to DoomGame class, Vizia provides 3 utility functions that may be helpful with the interaction with the Doom engine.
+	In addition to DoomGame class, VIZIA provides 3 utility functions that may be helpful with the interaction with the Doom engine.
 
 \vspace{20pt}
 \begin{clinee}

@@ -42,7 +42,7 @@ Selecting the game was done by discarding those not meeting requirements deemed 
 
 \begin{table}[]
 \centering
-\caption{Overview of 3D FPS games considered as base of VIZIA environment}
+\caption{Overview of 3D FPS games considered as base of VIZIA Environment}
 \label{tab:engines}
 \begin{tabular}{|p{2cm}||p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|}
 \hline
@@ -92,7 +92,7 @@ Despite wide recognition and active community, even access to the screen buffer 
 
 Lack of scripting does not concern Doom 3, but its disk reqiurements was considered as a major drawback.
 It had to be ignored also because of its complexity, Windows-only tools and OS-dependent rendering mechanisms.
-Although its source code has been re lased, it does not have united community, so there are several rarely updated versions of its sources.
+Although its source code has been relased, it does not have united community, so there are several rarely updated versions of its sources.
 
 Community activity is also a problem in case of Cube, as its last update was in August 2005~\cite{cube}.
 However low complexity and highly intuitive map editor would make it a good choice, but its recognizably is so low that it had to be taken out of consideration. 
@@ -108,7 +108,7 @@ Despite active community and access to source code it was out of question, becau
 Doom met most of the given requirements and allowed to implement features that would be barely achievable in other games e.g., off-screen rendering and reward computation.
 The game is highly recognizable and offers support for all needed platforms.
 It was also designed to work in 320x240 resolution and despite the fact that modern implementations allow bigger resolutions, it still utilizes same low resolution textures and a rendering algorithm which makes it perfect for generating small (320x240 or smaller) visual input data for AI algorithms.
-In addition its source code analysis showed that access to game logic should be easy, as its code is not object-oriented.
+In addition, its source code analysis showed that access to game logic should be easy, as its code is not object-oriented.
 
 Unique Doom's feature is software renderer. Because of that it could be used without desktop environment (e.g., remotely over ssh) and accessing screen buffer would not require transferring it from graphics card.
 % >--
@@ -116,8 +116,10 @@ Unique Doom's feature is software renderer. Because of that it could be used wit
 \subsection{Operating System}
 
 % <--
-Development was focused on providing full functionality for Linux taking into account the compatibility of code with Windows and Mac OS.
-However, on systems other than Linux VIZIA Environment has not been thoroughly tested, so support for them is limited.
+Development was focused on providing full functionality for Linux, while maintaining full compatibility of code with Windows and OSX. 
+However, on systems other than Linux VIZIA Environment has not been thoroughly tested and build system does not support them fully.
+%Development was focused on providing full functionality for Linux taking into account the compatibility of code with Windows and Mac OS.
+%However, on systems other than Linux VIZIA Environment has not been thoroughly tested so support for them is limited.
 
 % >--
 % NIE MAM POMYSŁU CO MOŻNA WIĘCEJ NAPISAĆ. NIE JESTEM TEŻ PRZEKONANY CO DO OBECNOŚCI TEGO PARAGRAFU W "WYKORZYSTYWANYCH TECHNOLOGIACH". SZCZEGÓLNIE PRZY INFORMACJACH O MAC OS (OSX?) W DALSZEJ CZĘŚCI PRACY I PRZEMILCZANYM W ZASADZIE WINDOWSIE.
@@ -160,10 +162,10 @@ This topic was discussed further in Chapter~\ref{ch:scenarios}.
 			\caption{Architecture of VIZIA Environment.}\label{fig:architecture_diagram}
 	\end{figure}
 
-The main components of VIZIA environament:
+The main components of VIZIA Environment:
     \begin{itemize}
-    \item VIZIA library --- which provides a DoomGame API that allows user to configure, launch and play the game in several flow control modes.
-    \item VIZIAZDoom --- modified ZDoom engine with a VIZIA module to communicate with a DoomGame object, control the game flow and adding additional rendering modes. It can act as a process under the control of the DoomGame object, Dome engine used for testing in Doom editors or as standalone process.
+    \item VIZIA library --- which provides a DoomGame API that allows user to configure, launch and play the game in several ontrol modes.
+    \item VIZIAZDoom --- modified ZDoom engine with a VIZIA Module to communicate with a DoomGame object, control the game flow and adding additional rendering modes. It can act as a process under the control of the DoomGame object, Dome engine used for testing in Doom editors or as standalone process.
     \item Python and Java bindings --- allowing the use of the DoomGame API in these languages.
     \end{itemize}
 
@@ -272,7 +274,7 @@ The DoomGame API implements four control modes:
 
 \subsubsection{Why is the separate Doom executable?}
 
-Doom engine was designed as standalone executable. It has a different entry point for every operating system and a lot of exit points what makes it difficult to pack it inside library without making any fundamental changes to its code. In addition, this approach would not give any significant benefits. Also leaving the Doom engine as a separate executable allows to use it with Doom editors and as standalone Doom engine, which can be used for testing scenarios or human versus AI agent game in multiplayer mode.
+Doom engine was designed as standalone executable. It has a different entry point for every operating system and a lot of exit points what makes it difficult to pack it inside library without making any fundamental changes to its code. In addition, this approach would not give any significant benefits. Also, leaving the Doom engine as a separate executable allows using it with Doom editors and as standalone Doom engine, which can be used for testing scenarios or human versus AI agent game in multiplayer mode.
 
 \subsubsection{Why does shared memory is used to communication?}
 
@@ -283,12 +285,12 @@ Since the game process uses shared memory only on the API request and the API pr
 
 The rendering algorithm used in ZDoom engine uses binary space partitioning (BSP) trees and other rendering techniques which does not make use of depth buffer and therefore it is not generated.
 % <--
-Depth buffer could be find usefull for learning depth perception by agent.
+Depth buffer could be find useful for learning depth perception by agent.
 In addition, information about the depth can be used to simulate the distance sensors widely used in mobile robots.  
-Becouse of that, depth buffer was added to the engine as presented in Figure~\ref{fig:zbuffer}.
+Because of that, depth buffer was added to the engine as presented in Figure~\ref{fig:zbuffer}.
 % >--
 It is drawn only when demanded rendering mode includes it (see~\ref{subsec:screenformat}).
-Depth is aproximated by texture's scaling factor and stored as 8-bit value which gives enough accuracy and allows to use it as additional color channel rather than as seperate image.
+Depth is approximated by texture's scaling factor and stored as 8-bit value which gives enough accuracy and allows using it as additional color channel rather than as separate image.
 
 \begin{figure}
 \centering
@@ -304,7 +306,7 @@ In synchronous modes time when next tic will be processed is unknown and may var
 
 \subsubsection{Why do the game and the scenario files are separated?}
 
-Doom engine uses different type of files for storing data and resources. (WAD and PK3 files) It allows to load main game resources from one file and many additional (scenario) resources from separate files. For more detailed information consult Zdoom Wiki Webpage\cite{zdoom-wiki}.
+Doom engine uses different type of files for storing data and resources. (WAD and PK3 files) It allows loading main game resources from one file and many additional (scenario) resources from separate files. For more detailed information consult ZDoom Wiki Webpage\cite{zdoom-wiki}.
 
 \section{Performance tests}\label{sec:performance}
 
