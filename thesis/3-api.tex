@@ -530,7 +530,8 @@ int DoomGame::getButtonMaxValue(Button button);
 Enumeration type representing various game parameters like player's health or ammunition. For the full list of Buttons see Apendix ~\ref{sec:appendix_structs_and_enums}.
 
 
-\vspace{20pt}
+%\vspace{20pt}
+\vspace{30pt}
 \textbf{Game Variables Examples:}
 \begin{itemize}
 	\item KILLCOUNT
@@ -619,7 +620,7 @@ available_game_variables = { AMMO2}
 ...
 \end{pblock}
 
-\section{Wrappers}
+\section{Bindings}
 \subsection{Python}
 
 Python functions and methods are very similar to the c++ ones. However, because of the language differences, some of the values may vary. All differences are listed below.
@@ -679,7 +680,7 @@ Due to the languages differences, some types have been modified.
 Python listing presented below demonstrates the use of this option in which a human takes control over the game and Intelligent Agent looks at and analyzes the movements. In this synchronous mode, Artificial Intelligence has power over the engine and decides when human can make the next move. 
 
 
-After the initial configuration in which available buttons and collected variables from the game are set, the script runs sequence of 10 episodes. During their run, the image is downloaded and the human gets the opportunity to perform a single action which are then read and stored by the script. After this process, processing of AI follows. Downloaded data is printed at the end of the loop, such as the values of game variables set in the game and operations taken with associated reward. What's more, before the end of each episode, a summary is displayed followed by 2 second delay.
+After the initial configuration in which available buttons and collected variables from the game are set, the script runs sequence of 10 episodes. During their run, the image is retrieved and the human gets the opportunity to perform a single action which are then read and stored by the script. After this process, processing of AI follows. Retrieved data is printed at the end of the loop, such as the values of game variables set in the game and operations taken with associated reward. What's more, before the end of each episode, a summary is displayed followed by 2 second delay.
 
 \begin{pblock}
 #Necessary imports
