@@ -1,8 +1,11 @@
 #include <jni.h>
 #include "ViziaDoomGameJava.h"
-#include "../../vizia_api_src/ViziaDoomGame.h"
+#include "ViziaDoomGame.h"
+#include "ViziaDoomDefines.h"
+#include "ViziaDoomExceptions.h"
+#include "ViziaDoomUtilities.h"
 #include <unistd.h>
-#include "../../vizia_api_src/ViziaDefines.h"
+
 
 Vizia::DoomGame* GetObject(JNIEnv *env, jobject obj){
 	jclass thisClass = env->GetObjectClass(obj);
@@ -74,14 +77,7 @@ JNIEXPORT jboolean JNICALL Java_ViziaDoomGameJava_loadConfig
 	    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;	
 		bool ret = game->loadConfig(path2);
 		return (jboolean) ret;
-	}	
-	catch (Vizia::IncorrectDoomConfigPathException& e)
-  	{	
-
- 		jclass IncorrectDoomConfigPathException = env->FindClass("errors/IncorrectDoomConfigPathException");
-        	env->ThrowNew(IncorrectDoomConfigPathException, e.what());
-		return 0;
-  	}
+	}
 	catch (std::exception& e)
   	{
     		std::cout << "C++ unknown exception"<< '\n';
@@ -111,6 +107,12 @@ JNIEXPORT jboolean JNICALL Java_ViziaDoomGameJava_init
         	env->ThrowNew(DoomUnexpectedExitException, e.what());
 		return 0;
   	}
+	catch (Vizia::PathDoesNotExistsException& e)
+	{
+		jclass PathDoesNotExistsException = env->FindClass("errors/PathDoesNotExistsException");
+			env->ThrowNew(PathDoesNotExistsException, e.what());
+		return 0;
+	}
 	catch (Vizia::SharedMemoryException& e)
   	{	
 
@@ -242,11 +244,15 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_advanceAction__
 	game->advanceAction();
 	}
 	catch (Vizia::DoomIsNotRunningException& e)
-  	{	
-
+	{
  		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
         	env->ThrowNew(DoomIsNotRunningException, e.what());
   	}
+	catch (Vizia::DoomUnexpectedExitException& e)
+	{
+		jclass DoomUnexpectedExitException = env->FindClass("errors/DoomUnexpectedExitException");
+			env->ThrowNew(DoomUnexpectedExitException, e.what());
+	}
 	catch (Vizia::Exception& e)
   	{	
 
@@ -278,6 +284,11 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_advanceAction__I
  		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
         	env->ThrowNew(DoomIsNotRunningException, e.what());
   	}
+	catch (Vizia::DoomUnexpectedExitException& e)
+	{
+		jclass DoomUnexpectedExitException = env->FindClass("errors/DoomUnexpectedExitException");
+			env->ThrowNew(DoomUnexpectedExitException, e.what());
+	}
 	catch (Vizia::Exception& e)
   	{	
 
@@ -309,6 +320,11 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_advanceAction__IZZ
  		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
         	env->ThrowNew(DoomIsNotRunningException, e.what());
   	}
+	catch (Vizia::DoomUnexpectedExitException& e)
+	{
+		jclass DoomUnexpectedExitException = env->FindClass("errors/DoomUnexpectedExitException");
+			env->ThrowNew(DoomUnexpectedExitException, e.what());
+	}
 	catch (Vizia::Exception& e)
   	{	
 
@@ -350,6 +366,11 @@ JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_makeAction___3I
         	env->ThrowNew(DoomIsNotRunningException, e.what());
 		return 0;
   	}
+	catch (Vizia::DoomUnexpectedExitException& e)
+	{
+		jclass DoomUnexpectedExitException = env->FindClass("errors/DoomUnexpectedExitException");
+			env->ThrowNew(DoomUnexpectedExitException, e.what());
+	}
 	catch (std::exception& e)
   	{
     		std::cout << "C++ unknown exception"<< '\n';
@@ -385,6 +406,11 @@ JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_makeAction___3II
         	env->ThrowNew(DoomIsNotRunningException, e.what());
 		return 0;
   	}
+	catch (Vizia::DoomUnexpectedExitException& e)
+	{
+		jclass DoomUnexpectedExitException = env->FindClass("errors/DoomUnexpectedExitException");
+			env->ThrowNew(DoomUnexpectedExitException, e.what());
+	}
 	catch (std::exception& e)
   	{
     		std::cout << "C++ unknown exception"<< '\n';
@@ -919,12 +945,6 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDoomEnginePath
 	    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;	
 		game->setDoomEnginePath(path2);
 	}
-	catch (Vizia::IncorrectDoomGamePathException& e)
-	{	
- 		jclass IncorrectDoomGamePathException = env->FindClass("errors/IncorrectDoomGamePathException");
-        	env->ThrowNew(IncorrectDoomGamePathException, e.what());
-
-  	}
 	catch (...)
   	{
     		std::cout << "C++ unknown exception"<<std::endl;
@@ -944,12 +964,6 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDoomGamePath
 	    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;
 		game->setDoomGamePath(path2);
 	}
-	catch (Vizia::IncorrectDoomIwadPathException& e)
-	{	
- 		jclass IncorrectDoomIwadPathException = env->FindClass("errors/IncorrectDoomIwadPathException");
-        	env->ThrowNew(IncorrectDoomIwadPathException, e.what());
-
-  	}
 	catch (...)
   	{
     		std::cout << "C++ unknown exception"<<std::endl;
@@ -970,12 +984,6 @@ JNIEXPORT void JNICALL Java_ViziaDoomGameJava_setDoomScenarioPath
 	    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;
 		game->setDoomScenarioPath(path2);
 	}
-	catch (Vizia::IncorrectDoomFilePathException& e)
-	{	
- 		jclass IncorrectDoomFilePathException = env->FindClass("errors/IncorrectDoomFilePathException");
-        	env->ThrowNew(IncorrectDoomFilePathException, e.what());
-
-  	}
 	catch (...)
   	{
     		std::cout << "C++ unknown exception"<<std::endl;

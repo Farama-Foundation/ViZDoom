@@ -1,16 +1,15 @@
-\chapter{Building}
+\chapter{Building on Linux}
 \section{Prerequisites}
 \begin{itemize}
-\item preferably Linux
 \item cmake
 \item make
-\item gcc 4.??
-\item Boost 
-\item Python 2.6+ with Numpy and Boost.Python (for pyhon binding)
+\item gcc 4+
+\item Boost 1.5+
+\item Python 2.6+ with Numpy and Boost.Python (for Python binding)
 \item Java compiler (for Java binding)
 \end{itemize}
 \section{Before Building}
-	In addition to prerequisites mentioned above, the following packages need to be install to build Zdoom itself:
+	In addition to prerequisites mentioned above, the following packages need to be install to build ZDoom itself:
 	\begin{description}
 		\item[Debian/Ubuntu:] \hfill \\
 		sudo apt-get install build-essential zlib1g-dev libsdl2-dev libjpeg-dev nasm tar libbz2-dev libgtk2.0-dev cmake git libfluidsynth-dev libgme-dev libopenal-dev timidity
@@ -22,8 +21,13 @@
 		zypper install gcc-c++ make zlib-devel libSDL2-devel libjpeg-devel nasm tar libbz2-devel gtk2-devel cmake git fluidsynth-devel libgme-devel openal-soft-devel timidity
 	\end{description}
 \section{Compilation}
-To compile Vizia run this commands 
+To compile VIZIA run this commands in VIZIA's root directory:
 	\begin{lstlisting}
-cmake -DCMAKE_BUILD_TYPE=Release
+cmake -DBUILD_VIZIA_PYTHON=ON -DBUILD_VIZIA_JAVA=ON -DCMAKE_BUILD_TYPE=Release
+
 make all
-	\end{lstlisting}
+    \end{lstlisting}
+
+"-DBUILD_VIZIA_PYTHON=ON" and "-DBUILD_VIZIA_JAVA=ON" may be omitted, if the bindigs are not needed.
+Target directory for VIZIA C++ library is "bin" directory, for Python binding is "bin/python" and for Java binding is "bin/java".
+
