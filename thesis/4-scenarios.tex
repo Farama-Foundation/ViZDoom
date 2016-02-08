@@ -20,16 +20,16 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 \section{Tools}\label{sec:tools}
 	\begin{figure}
 			\centering
-			\includegraphics[scale=0.3]{slade.png}
+			\includegraphics[scale=0.25]{slade.png}
 			\caption{Slade 3 application for scenario creation.}\label{fig:slade}
 	\end{figure}
 
 	Creating WAD files involves compilation thus it~requires dedicated software. \emph{Slade~3} and \emph{Doom~Builder~2} were the editors of choice because of huge popularity, availability of resources and quality. The editors differ mostly in user interface details but~both provide most crucial functionalities:
 
 	\begin{description}
-		\item [Visual map editor] - a simple tool for map creation which is easy to use and~allows to build any imaginable map that Doom engine is capable of running.
-		\item [Action Code Script support] - dedicated language resembling C that is suitable for regulating behaviors of monsters, players and~objects in the game.
-		\item [Test running] - possibility to test a scenario without leaving the editor. Test running requires providing a \emph{zdoom} executive file and \emph{doom2.wad} file (or~any other basic resource file) . 
+		\item [Visual map editor] --- a simple tool for map creation which is easy to use and~allows to build any imaginable map that Doom engine is capable of running.
+		\item [Action Code Script support] --- dedicated language resembling C that is suitable for regulating behaviors of monsters, players and~objects in the game.
+		\item [Test running] --- possibility to test a scenario without leaving the editor. Test running requires providing a \emph{zdoom} executive file and \emph{doom2.wad} file (or~any other basic resource file) . 
 	\end{description}
 
 	Both tools are robust, reasonably easy to use and~provide much elasticity in scenario creation, although neither program is free from serious user experience shortcomings. Nevertheless, they still remain superior to existing alternatives. Due to the lack of native \emph{Linux} support from \emph{Doom~Builder~2}, \emph{Slade~3} seems to be a more flexible solution. 
@@ -56,13 +56,13 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 		
 		\paragraph{Rewards}
 			\begin{itemize}
-				\item +101 for killing the monster
-				\item -5 for missing
+				\item $+101$ for killing the monster
+				\item $-5$ for missing
 			\end{itemize}
 		
 		\paragraph{Suggested configuration}
 			\begin{itemize}
-				\item living reward = -1
+				\item living reward = $-1$
 				\item available buttons: move left, move right, shoot (attack)
 				\item timeout = 300
 			\end{itemize}
@@ -110,7 +110,7 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 
 		\paragraph{Rewards}
 			\begin{itemize}
-				\item +1 for killing a monster
+				\item $+1$ for killing a monster
 			\end{itemize}
 		
 		\paragraph{Suggested configuration}
@@ -133,7 +133,7 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 			The map is a rectangle. Player is spawned along the longer wall, in the center and is able to turn and shoot(config). 3 melee and 3 shooting monsters are spawned along the opposite wall. Monsters are killed after a single shot, at first. When slain, each monster is respawned after some time and can endure more damage than before. Episode ends when the player dies (it's inevitable because at some point monsters will be too tough to kill).
 		\paragraph{Rewards}
 			\begin{itemize}
-				\item +1 for killing a monster
+				\item $+1$ for killing a monster
 			\end{itemize}
 
 		\paragraph{Suggested configuration}
@@ -157,7 +157,7 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 			The map consists of a square room (hall) of considerable size and 4 small rooms (supply rooms) adjacent to each wall of the hall. 2 supply rooms contain significant quantity of medkits and armors. Other 2 contain (each one) a shotgun, chainsaw, plasma gun, chaingun, rocket launcher and ammunition needed for aforementioned weapons. Agent is spawned in random location inside the hall. After a very short period monsters start spawning in random locations of the hall. Monsters include shooters and melee brawlers. Agent is rewarded for killing monsters. Toughest monsters are less probable to appear and produce greater rewards.
 		\paragraph{Rewards}
 			\begin{itemize}
-				\item +1/2/3/4/5/10 for killing a monster (exact value depends on monster type).
+				\item $+1/2/3/4/5/10$ for killing a monster (exact value depends on monster type).
 			\end{itemize}
 		
 		\paragraph{Suggested configuration}
@@ -179,7 +179,7 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 			The purpose of this scenario is to teach an agent that every second of his life is precious and collecting things increases his life expectancy in this brutal world. The agent should be able to see that deteriorating health causes death and how walking into medkits influences his health. It is advisable to equip the agent with some kind of memory because medkits that are directly in front of agent's feet cannot be noticed. In case of developing consciousness agent could also deduce that there is a divine being in the skies that loves him and sends provisions to save him.
 
 		\paragraph{Description}
-			The map is a rectangle with green, acidic floor which hurts players periodically. Deadliness of acid depends on skill level. Agent is spawned in the exact center of the map and is able to turn and move forward (config).  Initially there are some medkits uniformly distributed over the map. New medkits fall from the skies periodically. A medkit heals some portion of player's health - to survive agent needs to pick them up. Episode finishes after player's death or on timeout.
+			The map is a rectangle with green, acidic floor which hurts players periodically. Deadliness of acid depends on skill level. Agent is spawned in the exact center of the map and is able to turn and move forward (config).  Initially there are some medkits uniformly distributed over the map. New medkits fall from the skies periodically. A medkit heals some portion of player's health --- to survive agent needs to pick them up. Episode finishes after player's death or on timeout.
 
 		\paragraph{Suggested configuration}
 		\begin{itemize}
@@ -205,12 +205,12 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 		\paragraph{Rewards}
 
 		\begin{itemize}
-			\item +1 for reaching the vest
+			\item $+1$ for reaching the vest
 		\end{itemize}
 		
 		\paragraph{Suggested configuration}
 		\begin{itemize}
-			\item living reward = -0.0001
+			\item living reward = $-0.0001$
 			\item available buttons: move left, move right, shoot (attack)
 			\item timeout = 2100
 		\end{itemize}
@@ -229,12 +229,12 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 			The map is a rectangle room. Agent is spawned along the longer wall, in the center and is allowed to turn and shoot(config). A monster is spawned randomly somewhere along the opposite wall and walks between left and right corners along the wall. Player is equipped with a rocket launcher and a single rocket. Episode ends when the missile hits the monster (or a wall) or on timeout.
 		\paragraph{Rewards}
 		\begin{itemize}
-			\item +1 for killing the monster
+			\item $+1$ for killing the monster
 		\end{itemize}
 		
 		\paragraph{Suggested configuration}
 		\begin{itemize}
-			\item living reward =-0.0001
+			\item living reward = $-0.0001$
 			\item available buttons: turn left, turn right, shoot (attack)
 			\item timeout = 300
 		\end{itemize}
@@ -250,7 +250,7 @@ This chapter defines what a scenario is (see Section \ref{sec:scenario_definitio
 			The purpose of this scenario is to teach agents to link incoming missiles with their estimated lifespan. Agents should learn that being hit means a decrease in health and this in turn leads to death that is most undesirable. In effect agents should learn how to avoid missiles.
 
 		\paragraph{Description}
-			Map is a rectangle. Player is spawned along the longer wall, in the center. A couple of fireball-spitting monsters are spawned randomly somewhere along the opposite wall and try to kill the player with fireballs. The player has no weapon and can only move sideways (config). More monsters appear with time. Episode ends when player dies which is inevitable.
+			Map is a rectangle. Player is spawned along the longer wall, in the center. A couple of fireball-spitting monsters are spawned randomly somewhere along the opposite wall and try to kill the player with fireballs. The player has no weapon and can only move sideways (config). More monsters appear with time. Episode ends when player dies which is inevitable. In case the agent was expected to reach super-human performance some timeout(config) might be suggested as death may not be inevitable.
 
 		\paragraph{Suggested configuration}
 		\begin{itemize}
