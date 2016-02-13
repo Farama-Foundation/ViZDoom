@@ -1,4 +1,13 @@
-Before building:
+Prerequisites:
+• preferably Linux
+• cmake
+• make
+• gcc 4.??
+• Boost
+• Python 2.6+ with Numpy and Boost.Python (for pyhon binding)
+• Java compiler (for Java binding)
+
+Before building (needed for zdoom):
 	Debian/Ubuntu:
 	sudo apt-get install build-essential zlib1g-dev libsdl2-dev libjpeg-dev nasm tar libbz2-dev libgtk2.0-dev cmake git libfluidsynth-dev libgme-dev libopenal-dev timidity
 

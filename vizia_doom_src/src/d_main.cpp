@@ -2351,10 +2351,10 @@ void D_DoomMain (void)
 		gameinfo.ConfigName = iwad_info->Configname;
 		lastIWAD = iwad;
 
-		if ((gameinfo.flags & GI_SHAREWARE) && pwads.Size() > 0)
-		{
-			I_FatalError ("You cannot -file with the shareware version. Register!");
-		}
+		//if ((gameinfo.flags & GI_SHAREWARE) && pwads.Size() > 0)
+		//{
+		//	I_FatalError ("You cannot -file with the shareware version. Register!");
+		//}
 
 		FBaseCVar::DisableCallbacks();
 		GameConfig->DoGameSetup (gameinfo.ConfigName);
