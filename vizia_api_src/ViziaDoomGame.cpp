@@ -753,9 +753,9 @@ namespace Vizia {
             raw_val = val;
             trim_all(key);
             trim_all(val);
+            std::string original_val = val;
             to_lower(val);
             to_lower(key);
-
             if(key.empty())
             {
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Empty key in line #"<<line_number<<". Line ignored.\n";
@@ -890,21 +890,22 @@ namespace Vizia {
                 continue;
             }
             if(key == "doom_engine_path" || key == "doomenginepath"){
-                this->setDoomEnginePath(val);
+                this->setDoomEnginePath(original_val);
                 continue;
             }
             if(key == "doom_game_path" || key == "doomgamepath"){
-                this->setDoomGamePath(val);
+                this->setDoomGamePath(original_val);
                 continue;
             }
             if(key == "doom_scenario_path" || key == "doomscenariopath"){
-                this->setDoomScenarioPath(val);
+                this->setDoomScenarioPath(original_val);
                 continue;
             }
             if(key == "doom_config_path" || key == "doomconfigpath"){
-                this->setDoomConfigPath(val);
+                this->setDoomConfigPath(original_val);
                 continue;
             }
+
     
         /* Parse bool properties */
             try{
