@@ -215,14 +215,16 @@ bp::register_exception_translator<Vizia:: n >(&translate ## n );
         ENUM_VAL_2_PYT(TURN_LEFT_RIGHT_DELTA)
         ENUM_VAL_2_PYT(MOVE_FORWARD_BACKWARD_DELTA)
         ENUM_VAL_2_PYT(MOVE_LEFT_RIGHT_DELTA)
-        ENUM_VAL_2_PYT(MOVE_UP_DOWN_DELTA);
-
+        ENUM_VAL_2_PYT(MOVE_UP_DOWN_DELTA);        
+        
     enum_<GameVariable>("GameVariable")
         ENUM_VAL_2_PYT(KILLCOUNT)
         ENUM_VAL_2_PYT(ITEMCOUNT)
         ENUM_VAL_2_PYT(SECRETCOUNT)
+        ENUM_VAL_2_PYT(FRAGCOUNT)
         ENUM_VAL_2_PYT(HEALTH)
         ENUM_VAL_2_PYT(ARMOR)
+        ENUM_VAL_2_PYT(DEAD)
         ENUM_VAL_2_PYT(ON_GROUND)
         ENUM_VAL_2_PYT(ATTACK_READY)
         ENUM_VAL_2_PYT(ALTATTACK_READY)
