@@ -7,7 +7,7 @@ from lasagne.layers import set_all_param_values
 from vizia import  *
 import itertools as it
 from random import choice
-
+from time import sleep
 class IdentityImageConverter:
     def __init__(self, source):
         self._source = source
@@ -62,7 +62,7 @@ class QEngine:
         return res
 
     def _initialize(self, game, evaluator, history_length=1, actions_generator=None, gamma=0.99, batch_size=40, update_pattern=(4,4),
-                   bank_capacity=10000, start_epsilon=1.0, end_epsilon=0.1,epsilon_decay_start_step=100000, epsilon_decay_steps=100000, 
+                   bank_capacity=10000, start_epsilon=1.0, end_epsilon=0.1,epsilon_decay_start_step=100000, epsilon_decay_steps=100000, gamma_delta=0, 
                    reward_scale=1.0, misc_scale=None, max_reward=None, image_converter=None, skiprate = 1, shaping_on = False, count_states = False):
     # Line that makes sublime collapse code correctly
 
@@ -86,6 +86,7 @@ class QEngine:
         self._epsilon_decay_steps = epsilon_decay_steps
         self._epsilon_decay_stride = (self._epsilon - end_epsilon) / epsilon_decay_steps
         self._epsilon_decay_start = epsilon_decay_start_step
+        self._gamma_delta = gamma_delta
         self._skiprate = max(skiprate, 1)
         self._shaping_on = shaping_on
 
@@ -184,10 +185,7 @@ class QEngine:
             s = [self._current_image_state.copy()]
         return s
 
-    # Returns index of the best action. State should include history.
-    def _choose_action_index(self, state):
-    	return self._evaluator.best_action(state)
-
+   
     # Sets the whole state to zeros. 
     def reset_state(self):
         self._current_image_state.fill(0.0)
@@ -196,24 +194,42 @@ class QEngine:
 
     def make_step(self):
         self._update_state()
-        a = self._choose_action_index(self._current_state())
+        # current_state_COPY - copy is here cause tests go worse than training
+        a = self._evaluator.best_action(self._current_state_copy())
     	self._actions_stats[a] += 1
     	self._game.make_action(self._actions[a], self._skiprate)
 
+    def make_rendered_step(self, sleep_time = 0):
+        self._update_state()
+        a = self._evaluator.best_action(self._current_state_copy())
+        self._actions_stats[a] += 1
+
+        self._game.set_action(self._actions[a])
+        for i in range(self._skiprate -1):
+            self._game.advance_action(1,False,True)
+            sleep(sleep_time)
+        self._game.advance_action()
+        sleep(sleep_time)
+        
     # UPDATES state (hisotry). Returns the best action. State should not include history
     def best_action(self, state):
         self._update_state()
-        return self._actions[self._choose_action_index(self._current_state())]
+        return self._actions[self._evaluator.best_action(self._current_state())]
 
     def make_random_step(self):
         self._game.make_action(choice(self._actions), self._skiprate)
 
     def make_learning_step(self):
         self._steps += 1
-       	# epsilon decay:
+       	# epsilon decay
         if self._steps > self._epsilon_decay_start and self._epsilon > self._end_epsilon:
 	        self._epsilon -= self._epsilon_decay_stride
 	        self._epsilon = max(self._epsilon, 0)
+
+        # gamma changes
+        if self._gamma <1 and self._gamma_delta>0:
+            self._gamma += self._gamma_delta
+            self._evaluator._gamma = self._gamma
 
 	    # Copy because state will be changed in a second
         s = self._current_state_copy();
@@ -243,6 +259,7 @@ class QEngine:
             self._transitions.add_transition(s, a, s2, r, terminal = True)
         else:
             self._update_state()
+            #copy is not needed here cuase add transition copies it anyway
             s2 = self._current_state()
             self._transitions.add_transition(s, a, s2, r)
     

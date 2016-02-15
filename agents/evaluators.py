@@ -75,8 +75,7 @@ class MLPEvaluator:
             self._evaluate = theano.function([self._image_inputs], predictions)
         print "Theano functions compiled."
 
-    def _initialize_network(self, img_input_shape, misc_len, output_size, hidden_units=[500],
-                            hidden_layers=1, hidden_nonlin=leaky_rectify, output_nonlin=tanh, updates=sgd):
+    def _initialize_network(self, img_input_shape, misc_len, output_size, hidden_units=[500], hidden_layers=1, hidden_nonlin=leaky_rectify, output_nonlin=tanh, updates=sgd):
         print "Initializing MLP network..."
         # image input layer
         network = ls.InputLayer(shape=img_input_shape, input_var=self._image_inputs)
@@ -94,9 +93,6 @@ class MLPEvaluator:
         # output layer
         network = ls.DenseLayer(network, output_size, nonlinearity = output_nonlin)
         self._network = network
-
-        self._img_i_s = img_input_shape
-        self._hid_uns = hidden_units
 
     def learn(self, transitions):
         ## TODO get rid of second forward pass
@@ -121,7 +117,6 @@ class MLPEvaluator:
             loss = self._learn(X, Y)
             
         self._loss_history.append(loss)
-
 
     def best_action(self, state):
         if self._misc_state_included:

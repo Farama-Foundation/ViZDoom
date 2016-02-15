@@ -91,7 +91,7 @@ def create_cnn_evaluator(state_format, actions_number, gamma):
     network_args["num_filters"] = [32,32,48]
     network_args["filter_size"] = [7,4,2]
     network_args["output_nonlin"] = None
-    #network_args["output_nonlin"] = create_scaled_tanh(1000)
+    #network_args["output_nonlin"] = create_cutoff(2100)
     #network_args["hidden_nonlin"] = None
     
 
@@ -99,7 +99,7 @@ def create_cnn_evaluator(state_format, actions_number, gamma):
     return CNNEvaluator(**cnn_args)
 
 
-reshape_x = 60
+reshape_x = 120
 class ChannelScaleConverter(IdentityImageConverter):
     def __init__(self, source):
         self._source = source
@@ -124,7 +124,6 @@ def engine_setup_basic( game ):
     engine_args["game"] = game
     engine_args['gamma'] = 0.99
     engine_args["reward_scale"] = 0.01
-    engine_args['skiprate'] = 3
     engine_args['image_converter'] = ChannelScaleConverter
     engine_args["epsilon_decay_steps"] = 100000
     engine_args["epsilon_decay_start_step"] = 100000
@@ -136,16 +135,16 @@ def engine_setup_health( game ):
     engine_args = dict()
     engine_args["evaluator"] = create_cnn_evaluator
     engine_args["game"] = game
-    engine_args['gamma'] = 0.999
+    engine_args['gamma'] = 0.91
+    #engine_args['gamma_delta'] = 1/1000000.0
     engine_args["reward_scale"] = 0.01
-    engine_args['skiprate'] = 8
 
-    engine_args['actions_generator'] = agenerator_left_right_move
+    #engine_args['actions_generator'] = agenerator_left_right_move
     engine_args['image_converter'] = ChannelScaleConverter
     engine_args["shaping_on"] = True
     engine_args["count_states"] = True
-    engine_args["misc_scale"] = [0.01,1.0]
-    engine_args["epsilon_decay_steps"]=5000000
-    engine_args["epsilon_decay_start_step"]=500000
-    engine_args["batch_size"] = 100
+    engine_args["misc_scale"] = [0.01,1/2100.0]
+    engine_args["epsilon_decay_steps"]= 500000
+    engine_args["epsilon_decay_start_step"]= 50000
+    engine_args["batch_size"] = 40
     return engine_args
