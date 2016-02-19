@@ -3,7 +3,7 @@ Prerequisites:
 • cmake
 • make
 • gcc 4.??
-• Boost
+• Boost, Boost.System, Boost.filesystem, Boost.Thread
 • Python 2.6+ with Numpy and Boost.Python (for pyhon binding)
 • Java compiler (for Java binding)
 
