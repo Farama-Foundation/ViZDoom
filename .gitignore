@@ -73,3 +73,7 @@ agents/end_test.wad
 **/mytester.py
 scenarios/*dbs
 scenarios/*bak
+**/doom2.wad
+**/doom.wad
+**/viziazdoom.ini
+**/freedoom2.wad
