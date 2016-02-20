@@ -1,4 +1,4 @@
-![banner](banner.jpg)
+#ViAI Doom
 
 Doom-based environment for visual learning. Vizia uses [Zdoom engine]( https://github.com/rheit/zdoom) to provide the game mechanics. 
 

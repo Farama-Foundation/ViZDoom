@@ -9,6 +9,7 @@ from time import sleep
 from time import time
 
 game = DoomGame()
+game.load_config("../../scenarios/config_cig1.properties")
 game.load_config("../../scenarios/config_cig1_bots.properties")
 
 game.add_custom_game_arg("-host")
@@ -23,6 +24,6 @@ game.init()
 
 while not game.is_episode_finished():	
 	game.advance_action()
-	print("frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
-	print("kills:", game.get_game_variable(GameVariable.KILLCOUNT))
+	print("Overall kills	:", game.get_game_variable(GameVariable.USER1))
+	#if game.get_game_variable(GameVariable.DEAD):
 game.close()
