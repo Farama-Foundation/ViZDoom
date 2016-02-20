@@ -9,8 +9,9 @@ from time import sleep
 from time import time
 
 game = DoomGame()
-game.load_config("../../scenarios/config_cig1.properties")
-game.set_doom_map("map02")
+game.load_config("../../scenarios/config_cig2.properties")
+game.set_doom_map("map03")
+
 game.add_custom_game_arg("-host")
 game.add_custom_game_arg("1")
 game.add_custom_game_arg("-deathmatch")
