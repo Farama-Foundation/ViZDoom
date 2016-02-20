@@ -3,7 +3,7 @@
 #####################################################################
 # This script presents SPECTATOR mode. In SPECTATOR mode you play and
 # your agent can learn from it.
-# Configuration is loaded from "config_<SCENARIO_NAME>.properties" file.
+# gguration is loaded from "../../scenarios/config_<SCENARIO_NAME>.properties" file.
 # 
 # To see the scenario description go to "../../scenarios/README"
 # 
@@ -18,15 +18,15 @@ game = DoomGame()
 # Don't load two configs cause the second will overrite the first one.
 # Multiple config files are ok but combining these ones doesn't make much sense.
 
-#game.load_config("config_basic.properties")
-#game.load_config("config_deadly_corridor.properties")
-game.load_config("config_deathmatch.properties")
-#game.load_config("config_defend_the_center.properties")
-#game.load_config("config_defend_the_line.properties")
-#game.load_config("config_health_gathering.properties")
-#game.load_config("config_my_way_home.properties")
-#game.load_config("config_predict_position.properties")
-#game.load_config("config_take_cover.properties")
+#game.load_config("../../scenarios/config_basic.properties")
+#game.load_config("../../scenarios/config_deadly_corridor.properties")
+game.load_config("../../scenarios/config_deathmatch.properties")
+#game.load_config("../../scenarios/config_defend_the_center.properties")
+#game.load_config("../../scenarios/config_defend_the_line.properties")
+#game.load_config("../../scenarios/config_health_gathering.properties")
+#game.load_config("../../scenarios/config_my_way_home.properties")
+#game.load_config("../../scenarios/config_predict_position.properties")
+#game.load_config("../../scenarios/config_take_cover.properties")
 
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 # Adds mouse support for fun:

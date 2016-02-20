@@ -2,6 +2,7 @@
 
 #use ./viziazdoom -host 2 -deathmatch -warp 01 to start game host
 #or run host_multiplayer.py to have a host
+#TODO add description
 
 from __future__ import print_function
 from vizia import *
@@ -9,10 +10,8 @@ from random import choice
 from time import sleep
 from time import time
 
-
-
 game = DoomGame()
-game.load_config("config_multi.properties")
+game.load_config("../../scenarios/config_multi.properties")
 
 game.set_mode(Mode.ASYNC_PLAYER)
 game.add_custom_game_arg("-join")

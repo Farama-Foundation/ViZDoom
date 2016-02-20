@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 #use multiplayer.py to have the second player
+#TODO add description
 
 from __future__ import print_function
 from vizia import *
@@ -9,7 +10,7 @@ from time import sleep
 from time import time
 
 game = DoomGame()
-game.load_config("config_multi.properties")
+game.load_config("../../scenarios/config_multi.properties")
 
 game.add_custom_game_arg("-host")
 game.add_custom_game_arg("2")

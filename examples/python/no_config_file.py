@@ -28,8 +28,8 @@ game.set_screen_resolution(ScreenResolution.RES_320X240)
 game.set_screen_format(ScreenFormat.CRCGCB)
 
 game.set_doom_engine_path("./viziazdoom")
-game.set_doom_doom_game_path("../../scenarios/doom2.wad")
-game.set_doom_scenario_path("../../scenarios/basic.wad")
+game.set_doom_game_path("../../scenarios/doom2.wad")
+game.set_doom_scenario_path("../../scenarios/basic2.wad")
 game.set_doom_map("map01")
 
 game.set_episode_timeout(300)

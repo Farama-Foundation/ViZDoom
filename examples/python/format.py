@@ -3,7 +3,7 @@
 # This script presents different formats of the screen buffer.
 # OpenCV is used here to display images, install it or remove any
 # references to cv2
-# Configuration is loaded from "config_basic.properties" file.
+# Configuration is loaded from "../../scenarios/config_basic.properties" file.
 # <episodes> number of episodes are played. 
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
@@ -21,7 +21,7 @@ import cv2
 game = DoomGame()
 
 # Use other config file if you wish.
-game.load_config("config_basic.properties")
+game.load_config("../../scenarios/config_basic.properties")
 #game.set_window_visible(False)
 
 # Just umcomment desired format. The last uncommented will be applied.
@@ -32,7 +32,7 @@ game.load_config("config_basic.properties")
 #game.set_screen_format(ScreenFormat.GRAY8)
 
 # This is most fun. It looks best if you inverse colors.
-game.set_screen_format(ScreenFormat.ZBUFFER8)
+game.set_screen_format(ScreenFormat.DEPTH_BUFFER8)
 
 #These formats can be use bet they do not make much sense for cv2, you'll just get mixed up colors.
 #game.set_screen_format(ScreenFormat.BGR24)
@@ -65,7 +65,7 @@ for i in range(episodes):
 		misc = s.game_variables
 
 		# Gray8 shape is not cv2 compliant
-		if game.get_screen_format() in [ScreenFormat.GRAY8, ScreenFormat.ZBUFFER8]:
+		if game.get_screen_format() in [ScreenFormat.GRAY8, ScreenFormat.DEPTH_BUFFER8]:
 			img = img.reshape(img.shape[1],img.shape[2],1)
 
 		# Display the image here!
