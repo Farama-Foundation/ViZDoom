@@ -2,7 +2,7 @@
 
 #####################################################################
 # This script presents how to run some scenarios.
-# Configuration is loaded from "config_<SCENARIO_NAME>.properties" file.
+# Configuration is loaded from "../../scenarios/config_<SCENARIO_NAME>.properties" file.
 # <episodes> number of episodes are played. 
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
@@ -22,15 +22,15 @@ game = DoomGame()
 # Don't load two configs cause the second will overrite the first one.
 # Multiple config files are ok but combining these ones doesn't make much sense.
 
-game.load_config("config_basic.properties")
-#game.load_config("config_deadly_corridor.properties")
-#game.load_config("config_deathmatch.properties")
-#game.load_config("config_defend_the_center.properties")
-#game.load_config("config_defend_the_line.properties")
-#game.load_config("config_health_gathering.properties")
-#game.load_config("config_my_way_home.properties")
-#game.load_config("config_predict_position.properties")
-#game.load_config("config_take_cover.properties")
+game.load_config("../../scenarios/config_basic.properties")
+#game.load_config("../../scenarios/config_deadly_corridor.properties")
+#game.load_config("../../scenarios/config_deathmatch.properties")
+#game.load_config("../../scenarios/config_defend_the_center.properties")
+#game.load_config("../../scenarios/config_defend_the_line.properties")
+#game.load_config("../../scenarios/config_health_gathering.properties")
+#game.load_config("../../scenarios/config_my_way_home.properties")
+#game.load_config("../../scenarios/config_predict_position.properties")
+#game.load_config("../../scenarios/config_take_cover.properties")
 
 # Makes the screen bigger to see more details.
 game.set_screen_resolution(ScreenResolution.RES_640X480)

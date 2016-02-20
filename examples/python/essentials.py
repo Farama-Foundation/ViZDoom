@@ -3,7 +3,6 @@
 # This script presents how use most basic features of the framework.
 # It configures the engine, and makes agent perfrom random actions.
 # It also gets current state and reward earned with the action.
-# Configuration is loaded from "config_<SCENARIO_NAME>.properties" file.
 # <episodes> number of episodes are played. 
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.

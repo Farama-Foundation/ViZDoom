@@ -16,11 +16,11 @@ from time import time
 
 # Some options:
 resolution =res.RES_320X240
-screen_format = ScreenFormat.ZBUFFER8
+screen_format = ScreenFormat.DEPTH_BUFFER8
 iterations = 10000
 
 game = DoomGame()
-game.load_config("config_basic.properties")
+game.load_config("../../scenarios/config_basic.properties")
 
 game.set_screen_resolution(resolution)
 game.set_screen_format(screen_format)

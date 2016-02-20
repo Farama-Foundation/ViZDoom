@@ -27,7 +27,7 @@ game = DoomGame()
 # Don't load two configs cause the second will overrite the first one.
 # Multiple config files are ok but combining these ones doesn't make much sense.
 
-game.load_config("config_health_gathering.properties")
+game.load_config("../../scenarios/config_health_gathering.properties")
 game.set_doom_scenario_path("../../scenarios/health_guided.wad")
 #game.set_screen_resolution(ScreenResolution.RES_640X480)
 
