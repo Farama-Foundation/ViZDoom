@@ -1,8 +1,8 @@
 cmake_minimum_required( VERSION 2.4 )
 project(ViziaAPI)
 
-option(BUILD_VIZIA_PYTHON "Build Vizia Python binding." OFF)
-option(BUILD_VIZIA_JAVA "Build Vizia Python binding." OFF)
+option(BUILD_PYTHON "Build Vizia Python binding." OFF)
+option(BUILD_JAVA "Build Vizia Java binding." OFF)
 
 if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
@@ -47,7 +47,7 @@ set_target_properties( viziastatic viziashared
     OUTPUT_NAME vizia
 )
 
-if(BUILD_VIZIA_PYTHON)
+if(BUILD_PYTHON)
     find_package(PythonInterp)
     find_package(PythonLibs)
     find_package(Boost COMPONENTS python REQUIRED)
@@ -79,7 +79,7 @@ if(BUILD_VIZIA_PYTHON)
     )	
 endif()
 
-if(BUILD_VIZIA_JAVA)
+if(BUILD_JAVA)
 
     find_package(Java REQUIRED)
     find_package(JNI REQUIRED)
