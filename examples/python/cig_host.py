@@ -1,12 +1,7 @@
 #!/usr/bin/python
 
-#use multiplayer.py to have the second player
-
 from __future__ import print_function
 from vizia import *
-from random import choice
-from time import sleep
-from time import time
 
 game = DoomGame()
 game.load_config("../../scenarios/config_cig1.properties")
@@ -17,10 +12,13 @@ game.add_custom_game_arg("2")
 game.add_custom_game_arg("-deathmatch")
 game.set_mode(Mode.ASYNC_SPECTATOR)
 game.init()
+game.send_game_command("sv_forcerespawn 1");
 
-	
-
-while not game.is_episode_finished():	
+while True:#not game.is_episode_finished():	
 	game.advance_action()
-	print("frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
-game.close()
+	print(game.get_episode_time()," Frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
+
+	while game.get_game_variable(GameVariable.DEAD):
+		print("DEAD, waiting for respawn.")
+		game.advance_action()
+
