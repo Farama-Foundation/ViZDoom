@@ -10,12 +10,11 @@ from time import time
 
 game = DoomGame()
 game.load_config("../../scenarios/config_cig1.properties")
-game.set_doom_map("map02")
+game.set_doom_map("map01_bt")
+
 game.add_custom_game_arg("-host")
 game.add_custom_game_arg("1")
 game.add_custom_game_arg("-deathmatch")
-game.add_custom_game_arg("-warp")
-game.add_custom_game_arg("-01")
 game.set_mode(Mode.ASYNC_SPECTATOR)
 game.init()
 

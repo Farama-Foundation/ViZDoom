@@ -13,6 +13,7 @@ from time import time
 
 game = DoomGame()
 game.load_config("../../scenarios/config_cig1.properties")
+game.set_doom_map("map01")
 
 game.set_mode(Mode.ASYNC_PLAYER)
 game.add_custom_game_arg("-join")

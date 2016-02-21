@@ -15,8 +15,6 @@ game.load_config("../../scenarios/config_multi.properties")
 game.add_custom_game_arg("-host")
 game.add_custom_game_arg("2")
 game.add_custom_game_arg("-deathmatch")
-game.add_custom_game_arg("-warp")
-game.add_custom_game_arg("-01")
 game.set_mode(Mode.ASYNC_SPECTATOR)
 game.init()
 
