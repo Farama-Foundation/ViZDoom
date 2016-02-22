@@ -75,9 +75,14 @@ struct ViziaInputStruct{
 };
 
 struct ViziaGameVarsStruct{
+
     unsigned int GAME_TIC;
+    int GAME_STATE;
+    int GAME_ACTION;
     unsigned int GAME_SEED;
     unsigned int GAME_STATIC_SEED;
+    bool GAME_SETTINGS_CONTROLLER;
+    bool NET_GAME;
 
     unsigned int SCREEN_WIDTH;
     unsigned int SCREEN_HEIGHT;

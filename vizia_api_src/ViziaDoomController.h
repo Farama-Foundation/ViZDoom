@@ -58,8 +58,12 @@ namespace Vizia{
 
         struct GameVariablesStruct {
             unsigned int GAME_TIC;
+            int GAME_STATE;
+            int GAME_ACTION;
             unsigned int GAME_SEED;
             unsigned int GAME_STATIC_SEED;
+            bool GAME_SETTINGS_CONTROLLER;
+            bool NET_GAME;
 
             unsigned int SCREEN_WIDTH;
             unsigned int SCREEN_HEIGHT;
@@ -114,11 +118,13 @@ namespace Vizia{
 
         /* Controll */
 
-        bool tic();
-        bool tic(bool update);
-        bool tics(unsigned int tics);
-        bool tics(unsigned int tics, bool update);
+        bool isTicPossible();
+        void tic();
+        void tic(bool update);
+        void tics(unsigned int tics);
+        void tics(unsigned int tics, bool update);
         void restartMap();
+        void respawnPlayer();
         bool isDoomRunning();
         void sendCommand(std::string command);
 
@@ -218,7 +224,10 @@ namespace Vizia{
 
         int getGameVariable(GameVariable var);
 
+
         int getGameTic();
+        bool isNetGame();
+
         int getMapTic();
         int getMapReward();
 
@@ -300,7 +309,6 @@ namespace Vizia{
         bip::mapped_region *ScreenSMRegion;
         uint8_t *screen;
 
-
         void waitForDoomStart();
         void waitForDoomWork();
         void waitForDoomMapStartTime();
@@ -329,12 +337,10 @@ namespace Vizia{
         bool allowDoomInput;
         bool runDoomAsync;
 
-
         unsigned int mapStartTime;
         unsigned int mapTimeout;
         unsigned int mapRestartCount;
         bool mapRestarting;
-        bool mapEnded;
         unsigned int mapLastTic;
 
         std::vector <std::string> customArgs;

@@ -564,7 +564,7 @@ void C_DoCommand (const char *cmd, int keynum)
 
 	const size_t len = end - beg;
 
-	//VIZIA CODE
+	//VIZIA_CODE
 	if(!Vizia_CommmandFilter(cmd)) return;
 
 	if (ParsingKeyConf)

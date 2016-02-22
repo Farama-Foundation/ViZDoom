@@ -297,6 +297,8 @@ bp::register_exception_translator<Vizia:: n >(&translate ## n );
 		.def("new_episode", &DoomGamePython::newEpisode)
 		.def("is_episode_finished", &DoomGamePython::isEpisodeFinished)
 		.def("is_new_episode", &DoomGamePython::isNewEpisode)
+		.def("is_player_dead", &DoomGamePython::isPlayerDead)
+		.def("respawn_player", &DoomGamePython::respawnPlayer)
 		.def("set_action", &DoomGamePython::setAction)
         .def("make_action", makeAction1)
         .def("make_action", makeAction2)

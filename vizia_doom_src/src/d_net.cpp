@@ -62,7 +62,7 @@
 #include "hardware.h"
 #include "intermission/intermission.h"
 
-//VIZIA CODE
+//VIZIA_CODE
 #include "vizia_main.h"
 
 EXTERN_CVAR (Bool, vizia_controlled)
@@ -936,10 +936,10 @@ void GetPackets (void)
 //
 int gametime;
 
-//VIZIA CODE
+//VIZIA_CODE
 void NetUpdate (void)
 {
-	//VIZIA CODE
+	//VIZIA_CODE
 	if(*vizia_controlled && !*vizia_async) return;
 
 	int		lowtic;
@@ -983,7 +983,7 @@ void NetUpdate (void)
 	for (i = 0; i < newtics; i++)
 	{
 		I_StartTic ();
-		//VIZIA CODE
+		//VIZIA_CODE
 		if(!*vizia_controlled || (*vizia_async && *vizia_allow_input)) D_ProcessEvents ();
 		if ((maketic - gametic) / ticdup >= BACKUPTICS/2-1)
 			break;			// can't hold any more
@@ -1930,7 +1930,7 @@ void TryRunTics (void)
 		players[i].waiting = false;
 	lastglobalrecvtime = I_GetTime (false); //Update the last time the game tic'd over
 
-	//VIZIA CODE
+	//VIZIA_CODE
 	if(*vizia_controlled && *vizia_async) Vizia_AsyncStartTic();
 
 	// run the count tics
