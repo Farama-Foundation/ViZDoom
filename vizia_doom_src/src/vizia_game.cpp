@@ -109,8 +109,13 @@ void Vizia_GameVarsInit(){
 
 void Vizia_GameVarsTic(){
     viziaGameVars->GAME_TIC = gametic;
+    viziaGameVars->GAME_STATE = gamestate;
+    viziaGameVars->GAME_ACTION = gameaction;
     viziaGameVars->GAME_SEED = rngseed;
     viziaGameVars->GAME_STATIC_SEED = staticrngseed;
+    viziaGameVars->GAME_SETTINGS_CONTROLLER = viziaPlayer->settings_controller;
+    viziaGameVars->NET_GAME = netgame;
+
 
     viziaGameVars->SCREEN_WIDTH = viziaScreenWidth;
     viziaGameVars->SCREEN_HEIGHT = viziaScreenHeight;
@@ -129,8 +134,9 @@ void Vizia_GameVarsTic(){
 
     viziaGameVars->MAP_END = gamestate != GS_LEVEL || gameaction == ga_completed;
 
+
     if(viziaPlayer->mo) viziaGameVars->PLAYER_DEAD = viziaPlayer->playerstate == PST_DEAD || viziaPlayer->mo->health <= 0;
-    else viziaGameVars->PLAYER_DEAD = viziaPlayer->playerstate == PST_DEAD || viziaPlayer->health <= 0;
+    else viziaGameVars->PLAYER_DEAD = true; //viziaGameVars->PLAYER_DEAD = viziaPlayer->playerstate == PST_DEAD || viziaPlayer->health <= 0;
 
     viziaGameVars->MAP_KILLCOUNT = level.killed_monsters;
     viziaGameVars->MAP_ITEMCOUNT = level.found_items;

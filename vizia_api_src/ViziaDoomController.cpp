@@ -66,7 +66,6 @@ namespace Vizia {
         this->mapTimeout = 0;
         this->mapRestartCount = 0;
         this->mapRestarting = false;
-        this->mapEnded = false;
         this->mapLastTic = 1;
 
         this->allowDoomInput = false;
@@ -162,36 +161,36 @@ namespace Vizia {
         this->init();
     }
 
-    bool DoomController::tic() {
+    bool DoomController::isTicPossible(){
+        if (!this->gameVariables->NET_GAME && this->gameVariables->PLAYER_DEAD) return false;
+        else if (this->mapTimeout > 0 && this->gameVariables->MAP_TIC >= this->mapTimeout + this->mapStartTime) return false;
+        else if (this->gameVariables->MAP_END) return false;
+        else return true;
+    }
+
+    void DoomController::tic() {
         this->tic(true);
     }
 
-    bool DoomController::tic(bool update) {
+    void DoomController::tic(bool update) {
 
         if (this->doomRunning) {
 
-            if (!this->mapEnded) {
+            if (this->isTicPossible()) {
                 this->mapLastTic = this->gameVariables->MAP_TIC + 1;
                 if(update) this->MQDoomSend(MSG_CODE_TIC_N_UPDATE);
                 else this->MQDoomSend(MSG_CODE_TIC);
                 this->waitForDoomWork();
             }
-
-            if (this->gameVariables->PLAYER_DEAD) this->mapEnded = true;
-            else if (this->mapTimeout > 0 && this->gameVariables->MAP_TIC >= this->mapTimeout + this->mapStartTime) this->mapEnded = true;
-            else if (this->gameVariables->MAP_END) this->mapEnded = true;
         }
         else throw DoomIsNotRunningException();
-
-        return !this->mapEnded;
     }
 
-    bool DoomController::tics(unsigned int tics){
+    void DoomController::tics(unsigned int tics){
         this->tics(tics, true);
     }
 
-    bool DoomController::tics(unsigned int tics, bool update){
-        bool lastTic = this->mapEnded;
+    void DoomController::tics(unsigned int tics, bool update){
 
         if(this->allowDoomInput && !this->runDoomAsync){
             for(int i = 0; i < DeltaButtonsNumber; ++i){
@@ -202,12 +201,12 @@ namespace Vizia {
         int ticsMade = 0;
 
         for(int i = 0; i < tics; ++i){
-            if(i == tics - 1) lastTic = this->tic(update);
-            else lastTic = this->tic(false);
+            if(i == tics - 1) this->tic(update);
+            else this->tic(false);
 
             ++ticsMade;
 
-            if(!lastTic){
+            if(!this->isTicPossible() && i != tics - 1){
                 this->MQDoomSend(MSG_CODE_UPDATE);
                 this->waitForDoomWork();
                 break;
@@ -220,12 +219,33 @@ namespace Vizia {
                 this->input->BT[i] = this->input->BT[i]/ticsMade;
             }
         }
-
-        return lastTic;
     }
 
     void DoomController::restartMap() {
         this->setMap(this->map);
+    }
+
+    void DoomController::respawnPlayer(){
+
+        if(this->doomRunning && !this->mapRestarting && !this->gameVariables->MAP_END && this->gameVariables->PLAYER_DEAD){
+            if(this->gameVariables->NET_GAME){
+                do {
+
+                    this->sendCommand(std::string("+use"));
+
+                    this->MQDoomSend(MSG_CODE_TIC);
+                    this->waitForDoomWork();
+
+                    std::cout<<"RESTARTING: " << this->gameVariables->MAP_END << this->gameVariables->PLAYER_DEAD << std::endl;
+
+                } while (!this->gameVariables->MAP_END && this->gameVariables->PLAYER_DEAD );
+
+                this->MQDoomSend(MSG_CODE_UPDATE);
+                this->waitForDoomWork();
+                this->mapLastTic = this->gameVariables->MAP_TIC;
+            }
+            else this->restartMap();
+        }
     }
 
     void DoomController::sendCommand(std::string command) {
@@ -265,7 +285,12 @@ namespace Vizia {
     void DoomController::setMap(std::string map) {
         this->map = map;
         if (this->doomRunning && !this->mapRestarting) {
-            this->sendCommand(std::string("map ") + this->map);
+
+            if(this->gameVariables->NET_GAME){
+                if(this->gameVariables->GAME_SETTINGS_CONTROLLER) this->sendCommand(std::string("changemap ") + this->map);
+            }
+            else this->sendCommand(std::string("map ") + this->map);
+
             if (map != this->map) this->mapRestartCount = 0;
             else ++this->mapRestartCount;
 
@@ -280,12 +305,16 @@ namespace Vizia {
                 this->MQDoomSend(MSG_CODE_TIC);
                 this->waitForDoomWork();
 
-                if (restartingTics > 4) {
+                if(this->gameVariables->NET_GAME) this->sendCommand(std::string("+use"));
+
+                if (!this->gameVariables->NET_GAME && restartingTics > 3) {
                     this->sendCommand(std::string("map ") + this->map);
                     restartingTics = 0;
                 }
 
-            } while (this->gameVariables->MAP_END || this->gameVariables->MAP_TIC > 1);
+            } while (this->gameVariables->MAP_END
+                     || this->gameVariables->PLAYER_DEAD
+                     || this->gameVariables->MAP_TIC > this->mapLastTic);
 
             this->waitForDoomMapStartTime();
 
@@ -293,9 +322,7 @@ namespace Vizia {
             this->waitForDoomWork();
 
             this->mapLastTic = this->gameVariables->MAP_TIC;
-
             this->mapRestarting = false;
-            this->mapEnded = false;
         }
     }
 
@@ -624,6 +651,7 @@ namespace Vizia {
     }
 
     int DoomController::getGameTic() { return this->gameVariables->GAME_TIC; }
+    bool DoomController::isNetGame() { return this->gameVariables->NET_GAME; }
     int DoomController::getMapTic() { return this->gameVariables->MAP_TIC; }
 
     int DoomController::getMapReward() { return this->gameVariables->MAP_REWARD; }

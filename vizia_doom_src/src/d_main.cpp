@@ -108,7 +108,7 @@
 #include "r_renderer.h"
 #include "p_local.h"
 
-//VIZIA CODE
+//VIZIA_CODE
 #include "vizia_main.h"
 #include "vizia_depth.h"
 #include "vizia_input.h"
@@ -300,7 +300,7 @@ void D_ProcessEvents (void)
 // Called by the I/O functions when input is detected.
 //
 //==========================================================================
-//VIZIA CODE
+//VIZIA_CODE
 void D_PostEvent (const event_t *ev)
 {
 	// Do not post duplicate consecutive EV_DeviceChange events.
@@ -659,7 +659,7 @@ CVAR (Flag, compat_pointonline,			compatflags2, COMPATF2_POINTONLINE);
 //
 //==========================================================================
 
-//VIZIA CODE
+//VIZIA_CODE
 void D_Display ()
 {
 	bool wipe;
@@ -993,7 +993,7 @@ void D_ErrorCleanup ()
 //
 //==========================================================================
 
-//VIZIA CODE
+//VIZIA_CODE
 void D_DoomLoop ()
 {
 	int lasttic = 0;
@@ -1018,18 +1018,18 @@ void D_DoomLoop ()
 				I_StartFrame ();
 			}
 
-			//VIZIA CODE
+			//VIZIA_CODE
 			if(*vizia_controlled && !*vizia_async){
 
 				if(*vizia_allow_input) I_WaitForTic (gametic+1);
 				GC::CheckGC();
+				//Net_NewMakeTic ();
 
 				I_StartTic ();
 				if(*vizia_allow_input && menuactive != MENU_Off) D_ProcessEvents ();
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				//G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
 				++maketic;
-				//Net_NewMakeTic ();
 
 				C_Ticker ();
 				M_Ticker ();
@@ -2032,7 +2032,7 @@ static void D_DoomInit()
 	if (v)
 	{
 		rngseed = staticrngseed = atoi(v);
-		//VIZIA CODE
+		//VIZIA_CODE
 		use_staticrng = true;
 		//use_staticrng = false;
 		Printf("D_DoomInit: Static RNGseed %d set.\n", rngseed);
@@ -2260,7 +2260,7 @@ static void FinalGC()
 //
 //==========================================================================
 
-//VIZIA CODE
+//VIZIA_CODE
 void D_DoomMain (void)
 {
 	int p;

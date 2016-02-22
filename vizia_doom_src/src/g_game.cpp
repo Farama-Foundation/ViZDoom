@@ -86,7 +86,7 @@
 
 #include "g_hub.h"
 
-//VIZIA CODE
+//VIZIA_CODE
 #include "vizia_input.h"
 #include "vizia_defines.h"
 
@@ -536,7 +536,7 @@ static inline int joyint(double val)
 // If recording a demo, write it out
 //
 
-//VIZIA CODE
+//VIZIA_CODE
 void G_BuildTiccmd (ticcmd_t *cmd)
 {
 	int 		strafe;
@@ -555,7 +555,7 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	strafe = Button_Strafe.bDown;
 	speed = Button_Speed.bDown ^ (int)cl_run;
 
-	//VIZIA CODE
+	//VIZIA_CODE
 	forward = LocalForward;
 	side = LocalSide;
 	fly = LocalFly;
@@ -763,7 +763,7 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	}
 	if (SendItemUse == (const AInventory *)1)
 	{
-		//VIZIA CODE
+		//VIZIA_CODE
 		if(*vizia_controlled){
 			{
 				AInventory *item = players[consoleplayer].mo->Inventory;
@@ -786,7 +786,7 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	}
 	else if (SendItemUse != NULL)
 	{
-		//VIZIA CODE
+		//VIZIA_CODE
 		if(*vizia_controlled){
 			if (gamestate == GS_LEVEL && !paused && players[consoleplayer].playerstate != PST_DEAD) {
 				AInventory *item = players[consoleplayer].mo->Inventory;
@@ -804,7 +804,7 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	}
 	if (SendItemDrop != NULL)
 	{
-		//VIZIA CODE
+		//VIZIA_CODE
 		if(*vizia_controlled){
 			if (gamestate == GS_LEVEL && !paused && players[consoleplayer].playerstate != PST_DEAD) {
 				AInventory *item = players[consoleplayer].mo->Inventory;
@@ -828,7 +828,7 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 //[Graf Zahl] This really helps if the mouse update rate can't be increased!
 CVAR (Bool,		smooth_mouse,	false,	CVAR_GLOBALCONFIG|CVAR_ARCHIVE)
 
-//VIZIA CODE
+//VIZIA_CODE
 void G_AddViewPitch (int look)
 {
 	if (gamestate == GS_TITLELEVEL)

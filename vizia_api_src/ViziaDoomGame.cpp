@@ -202,9 +202,20 @@ namespace Vizia {
     bool DoomGame::isEpisodeFinished() {
         if(!this->isRunning()) throw DoomIsNotRunningException();
 
-        return this->doomController->isMapLastTic()
-               || this->doomController->isPlayerDead()
-               || this->doomController->isMapEnded();
+        return !this->doomController->isTicPossible();
+    }
+
+    bool DoomGame::isPlayerDead() {
+        if(!this->isRunning()) throw DoomIsNotRunningException();
+        return this->doomController->isPlayerDead();
+    }
+
+    void DoomGame::respawnPlayer(){
+        if(!this->isRunning()) throw DoomIsNotRunningException();
+
+        this->doomController->respawnPlayer();
+        this->updateState();
+        this->lastReward = 0;
     }
 
     void DoomGame::addAvailableButton(Button button) {

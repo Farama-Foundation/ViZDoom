@@ -82,12 +82,12 @@ const char *GetVersionString();
 #define SAVEVERSTRINGIFY(x) SAVEVERSTRINGIFY2(x)
 #define SAVESIG "ZDOOMSAVE" SAVEVERSTRINGIFY(SAVEVER)
 
-//VIZIA CODE
+//VIZIA_CODE
 // This is so that derivates can use the same savegame versions without worrying about engine compatibility
 #define GAMESIG "VIZIAZDOOM"
 #define BASEWAD "viziazdoom.pk3"
 
-//VIZIA CODE
+//VIZIA_CODE
 // More stuff that needs to be different for derivatives.
 #define GAMENAME "ViziaZDoom"
 #define GAMENAMELOWERCASE "viziazdoom"

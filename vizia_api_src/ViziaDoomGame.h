@@ -46,6 +46,9 @@ namespace Vizia {
         bool isNewEpisode();
         bool isEpisodeFinished();
 
+        bool isPlayerDead();
+        void respawnPlayer();
+
         void addAvailableButton(Button button);
         void addAvailableButton(Button button, int maxValue);
         void clearAvailableButtons();
@@ -89,13 +92,6 @@ namespace Vizia {
 
         unsigned int getSeed();
         void setSeed(unsigned int seed);
-
-        /* Functionality removed
-        void setAutoNewEpisode(bool set);
-        void setNewEpisodeOnTimeout(bool set);
-        void setNewEpisodeOnPlayerDeath(bool set);
-        void setNewEpisodeOnMapEnd(bool set);
-         */
 
         unsigned int getEpisodeStartTime();
         void setEpisodeStartTime(unsigned int tics);
@@ -160,7 +156,7 @@ namespace Vizia {
         static unsigned int StringToUint(std::string str);
         static bool ParseListProperty(int &line_number, std::string &value, std::ifstream& input, std::vector<std::string> &output);
 
-        //HELPERS
+        /* helpers */
         void logError(std::string error);
 
         void logWarning(std::string warning);
