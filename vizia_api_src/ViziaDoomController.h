@@ -83,6 +83,7 @@ namespace Vizia{
             int MAP_SECRETCOUNT;
             bool MAP_END;
 
+            bool PLAYER_HAS_ACTOR;
             bool PLAYER_DEAD;
 
             int PLAYER_KILLCOUNT;

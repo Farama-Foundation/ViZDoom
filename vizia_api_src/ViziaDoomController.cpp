@@ -230,13 +230,10 @@ namespace Vizia {
         if(this->doomRunning && !this->mapRestarting && !this->gameVariables->MAP_END && this->gameVariables->PLAYER_DEAD){
             if(this->gameVariables->NET_GAME){
                 do {
-
                     this->sendCommand(std::string("+use"));
 
                     this->MQDoomSend(MSG_CODE_TIC);
                     this->waitForDoomWork();
-
-                    std::cout<<"RESTARTING: " << this->gameVariables->MAP_END << this->gameVariables->PLAYER_DEAD << std::endl;
 
                 } while (!this->gameVariables->MAP_END && this->gameVariables->PLAYER_DEAD );
 
