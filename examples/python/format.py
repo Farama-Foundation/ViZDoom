@@ -3,7 +3,7 @@
 # This script presents different formats of the screen buffer.
 # OpenCV is used here to display images, install it or remove any
 # references to cv2
-# Configuration is loaded from "../../scenarios/config_basic.properties" file.
+# Configuration is loaded from "../config/basic.cfg" file.
 # <episodes> number of episodes are played. 
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
@@ -21,7 +21,7 @@ import cv2
 game = DoomGame()
 
 # Use other config file if you wish.
-game.load_config("../../scenarios/config_basic.properties")
+game.load_config("../config/basic.cfg")
 #game.set_window_visible(False)
 
 # Just umcomment desired format. The last uncommented will be applied.

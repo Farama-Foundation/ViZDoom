@@ -5,7 +5,7 @@ from vizia import *
 from random import choice
 
 game = DoomGame()
-game.load_config("../../scenarios/config_cig1.properties")
+game.load_config("../config/cig1.cfg")
 game.set_doom_map("map01")
 
 game.set_mode(Mode.ASYNC_PLAYER)

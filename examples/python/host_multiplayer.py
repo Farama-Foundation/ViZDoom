@@ -10,7 +10,7 @@ from time import sleep
 from time import time
 
 game = DoomGame()
-game.load_config("../../scenarios/config_multi.properties")
+game.load_config("../config/multi.cfg")
 
 game.add_game_args("-host")
 game.add_game_args("2")

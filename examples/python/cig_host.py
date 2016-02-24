@@ -4,7 +4,7 @@ from __future__ import print_function
 from vizia import *
 
 game = DoomGame()
-game.load_config("../../scenarios/config_cig1.properties")
+game.load_config("../config/cig1.cfg")
 game.set_doom_map("map01")
 
 game.add_game_args("-host")
