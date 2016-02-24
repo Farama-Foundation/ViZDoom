@@ -20,7 +20,7 @@ actions = [[1,0,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0]]
 
 while not game.is_episode_finished():	
 	if game.is_player_dead():
-		game.advance_action(
+		game.advance_action()
 		continue
 	game.make_action(choice(actions))
 	print("Frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
