@@ -8,17 +8,19 @@ int main(){
 
     DoomGame* game = new DoomGame();
 
-    std::cout << "CIG TRAINING WITH BOTS EXAMPLE\n\n";
+    std::cout << "CIG BOTS EXAMPLE\n\n";
 
-    //Use one of CIG example configs or Your own.
+    //Use CIG example config or Your own.
     game->loadConfig("../../examples/config/cig.cfg");
-    //game->loadConfig("../../examples/config/cig2.cfg");
+    game->setDoomMap("map01");
+    //game->setDoomMap("map02");
 
     //Start multiplayer game only with Your AI (with options that will be used in the competition).
     game->addGameArgs("-host 1 -deathmatch +timelimit 10.0 "
                       "+sv_forcerespawn 1 +sv_losefrag 1 +sv_noautoaim 1 +sv_respawnprotect 1 +sv_spawnfarthest 1");
 
-    game->setWindowVisible(true);
+    //Name Your AI.
+    game->addGameArgs("+name AI");
 
     game->setMode(ASYNC_PLAYER);                //Multiplayer requires the use of asynchronous modes.
     game->init();
