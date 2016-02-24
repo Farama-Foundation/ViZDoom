@@ -12,9 +12,9 @@ from time import time
 game = DoomGame()
 game.load_config("../../scenarios/config_multi.properties")
 
-game.add_custom_game_arg("-host")
-game.add_custom_game_arg("2")
-game.add_custom_game_arg("-deathmatch")
+game.add_game_args("-host")
+game.add_game_args("2")
+game.add_game_args("-deathmatch")
 game.set_mode(Mode.ASYNC_SPECTATOR)
 game.init()
 
