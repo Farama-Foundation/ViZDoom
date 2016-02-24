@@ -5,7 +5,7 @@ from vizia import *
 
 game = DoomGame()
 game.load_config("../config/cig.cfg")
-game.set_doom_map("map01")
+game.set_doom_map("map02")
 #game.set_doom_map("map02")
 
 game.add_game_args("-host")
