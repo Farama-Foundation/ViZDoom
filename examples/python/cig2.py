@@ -9,8 +9,8 @@ game.load_config("../../scenarios/config_cig2.properties")
 game.set_doom_map("map02")
 
 game.set_mode(Mode.ASYNC_PLAYER)
-game.add_custom_game_arg("-join")
-game.add_custom_game_arg("127.0.0.1")
+game.add_game_args("-join")
+game.add_game_args("127.0.0.1")
 game.set_window_visible(False)
 game.init()
 game.send_game_command("sv_forcerespawn 1");

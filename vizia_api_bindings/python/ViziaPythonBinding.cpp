@@ -334,8 +334,8 @@ bp::register_exception_translator<Vizia:: n >(&translate ## n );
         .def("set_button_max_value", &DoomGamePython::setButtonMaxValue)
 		.def("get_button_max_value", &DoomGamePython::getButtonMaxValue)
 
-        .def("add_custom_game_arg", &DoomGamePython::addCustomGameArg)
-        .def("clear_custom_game_args", &DoomGamePython::clearCustomGameArgs)
+        .def("add_game_args", &DoomGamePython::addGameArgs)
+        .def("clear_game_args", &DoomGamePython::clearGameArgs)
 
         .def("send_game_command", &DoomGamePython::sendGameCommand)
 

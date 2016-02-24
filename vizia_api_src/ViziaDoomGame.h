@@ -61,8 +61,8 @@ namespace Vizia {
         void clearAvailableGameVariables();
         int getAvailableGameVariablesSize();
 
-        void addCustomGameArg(std::string arg);
-        void clearCustomGameArgs();
+        void addGameArgs(std::string args);
+        void clearGameArgs();
 
         void sendGameCommand(std::string cmd);
 
@@ -156,12 +156,6 @@ namespace Vizia {
         static unsigned int StringToUint(std::string str);
         static bool ParseListProperty(int &line_number, std::string &value, std::ifstream& input, std::vector<std::string> &output);
 
-        /* helpers */
-        void logError(std::string error);
-
-        void logWarning(std::string warning);
-
-        void log(std::string log);
     };
 }
 

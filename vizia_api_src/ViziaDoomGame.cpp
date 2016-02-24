@@ -264,11 +264,17 @@ namespace Vizia {
         return this->availableGameVariables.size();
     }
 
-    void DoomGame::addCustomGameArg(std::string arg){
-        this->doomController->addCustomArg(arg);
+    void DoomGame::addGameArgs(std::string args){
+        if (args.length() != 0) {
+            std::vector<std::string> _args;
+            b::split(_args, args, b::is_any_of("\t\n "));
+            for (int i = 0; i < _args.size(); ++i) {
+                if(_args[i].length() > 0) this->doomController->addCustomArg(_args[i]);
+            }
+        }
     }
 
-    void DoomGame::clearCustomGameArgs(){
+    void DoomGame::clearGameArgs(){
         this->doomController->clearCustomArgs();
     }
 
@@ -1021,10 +1027,6 @@ namespace Vizia {
 
         return success;
     }
-
-    void DoomGame::logError(std::string error){ std::cerr << error << std::endl; }
-    void DoomGame::logWarning(std::string warning){ std::cerr << warning << std::endl; }
-    void DoomGame::log(std::string log){ std::clog << log; }
 
 }
 

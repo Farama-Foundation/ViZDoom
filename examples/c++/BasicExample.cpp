@@ -1,43 +1,49 @@
 #include "ViziaDoomGame.h"
 #include <iostream>
-#include <unistd.h>
 #include <vector>
 
 using namespace Vizia;
 
 int main(){
 
-    DoomGame* dg= new DoomGame();
+    DoomGame* game= new DoomGame();
 
-    std::cout << "\n\nVIZIA MAIN EXAMPLE\n\n";
+    std::cout << "\n\nSIMPLE EXAMPLE\n\n";
 
-    dg->setDoomEnginePath("viziazdoom");
-    dg->setDoomGamePath("../scenarios/doom2.wad");
-    dg->setDoomScenarioPath("../scenarios/s1_b.wad");
-    dg->setDoomMap("map01");
-    dg->setEpisodeTimeout(200);
-    dg->setLivingReward(-1);
+    game->setDoomEnginePath("./viziazdoom");
+    game->setDoomGamePath("../scenarios/doom.wad");
+    //game->setDoomGamePath("../scenarios/freedoom.wad");
+    
+    game->setDoomScenarioPath("../scenarios/simple.wad");
+    game->setDoomMap("map01");
+    game->setEpisodeTimeout(200);
+    game->setLivingReward(-1);
 
-    dg->setScreenResolution(RES_640X480);
+    game->setScreenResolution(RES_320X240);
 
-    dg->setRenderHud(false);
-    dg->setRenderCrosshair(false);
-    dg->setRenderWeapon(true);
-    dg->setRenderDecals(false);
-    dg->setRenderParticles(false);
+    game->setRenderHud(false);
+    game->setRenderCrosshair(false);
+    game->setRenderWeapon(true);
+    game->setRenderDecals(false);
+    game->setRenderParticles(false);
 
-    dg->setWindowVisible(true);
+    game->setWindowVisible(true);
 
-    dg->addAvailableButton(MOVE_LEFT);
-    dg->addAvailableButton(MOVE_RIGHT);
-    dg->addAvailableButton(ATTACK);
+    game->addAvailableButton(MOVE_FORWARD);
+    game->addAvailableButton(MOVE_BACKWARD);
+    game->addAvailableButton(TURN_LEFT);
+    game->addAvailableButton(TURN_RIGHT);
+    game->addAvailableButton(ATTACK);
 
-    dg->addAvailableGameVariable(HEALTH);
-    dg->addAvailableGameVariable(AMMO1);
+    game->addAvailableGameVariable(HEALTH);
+    game->addAvailableGameVariable(ARMOR);
+    game->addAvailableGameVariable(AMMO2);
+    game->addAvailableGameVariable(AMMO3);
 
 
-    dg->init();
-    //dg->newEpisode();
+    game->init();
+
+
     std::vector<int> action(3);
 
     action[0] = 0;
@@ -48,17 +54,18 @@ int main(){
     int ep=1;
     for(int i = 0;i<iterations; ++i){
 
-        if( dg->isEpisodeFinished() ){
-            dg->newEpisode();
+        if( game->isEpisodeFinished() ){
+            game->newEpisode();
         }
-        DoomGame::State s = dg->getState();
+
+        DoomGame::State s = game->getState();
 
         std::cout << "STATE NUMBER: " << s.number << " HP: " << s.gameVariables[0] << " AMMO: " << s.gameVariables[1] << std::endl;
 
-        dg->makeAction(action, 4);
+        game->makeAction(action, 4);
 
-        std::cout<<"reward: "<<dg->getLastReward()<<std::endl;
+        std::cout<<"reward: "<<game->getLastReward()<<std::endl;
     }
-    dg->close();
-    delete dg;
+    game->close();
+    delete game;
 }

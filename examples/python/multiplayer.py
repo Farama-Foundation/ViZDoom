@@ -14,8 +14,7 @@ game = DoomGame()
 game.load_config("../../scenarios/config_multi.properties")
 
 game.set_mode(Mode.ASYNC_PLAYER)
-game.add_custom_game_arg("-join")
-game.add_custom_game_arg("127.0.0.1")
+game.add_game_args("-join 127.0.0.1")
 game.set_window_visible(False)
 game.init()
 
