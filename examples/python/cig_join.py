@@ -10,8 +10,8 @@ game.set_doom_map("map01")
 #game.set_doom_map("map02")
 
 game.set_mode(Mode.ASYNC_PLAYER)
-game.add_game_args("-join")
-game.add_game_args("127.0.0.1")
+game.add_game_args("-join 127.0.0.1")
+
 game.set_window_visible(False)
 game.init()
 
