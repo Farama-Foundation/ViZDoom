@@ -5,10 +5,10 @@ from vizia import *
 
 game = DoomGame()
 game.load_config("../config/cig.cfg")
-game.set_doom_map("map02")
+game.set_doom_map("map01")
 #game.set_doom_map("map02")
 
-game.add_game_args("-host")
+game.add_game_args("-host 1")
 game.add_game_args("1")
 game.add_game_args("-deathmatch")
 game.add_game_args("-respawn")
@@ -26,4 +26,3 @@ while not game.is_episode_finished():
 	if game.is_player_dead():
 		continue
 	print("Frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
-	

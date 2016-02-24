@@ -15,9 +15,9 @@ game.add_game_args("-respawn")
 game.set_mode(Mode.ASYNC_SPECTATOR)
 
 game.init()
-game.send_game_command("sv_forcerespawn 1");
+game.send_game_command("sv_forcerespawn 1")
 
-hile not game.is_episode_finished():	
+while not game.is_episode_finished():	
 	game.advance_action()
 	if game.is_player_dead():
 		continue
