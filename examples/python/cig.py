@@ -25,7 +25,6 @@ while not game.is_episode_finished():
 	while game.get_game_variable(GameVariable.DEAD):
 		print("DEAD, waiting for respawn.")
 		game.advance_action()
-
-
+		
 game.close()
 
