@@ -8,27 +8,23 @@ int main(){
 
     DoomGame* game = new DoomGame();
 
-    std::cout << "CIG EXAMPLE\n\n";
+    std::cout << "CIG HOST EXAMPLE\n\n";
 
-    //Use one of CIG example configs or Your own.
-    game->loadConfig("../../examples/config/cig1.cfg");
-    //game->loadConfig("../../examples/config/cig2.cfg");
+    //Use CIG example config or Your own.
+    game->loadConfig("../../examples/config/cig.cfg");
+    game->setDoomMap("map01");
+    //game->setDoomMap("map02");
 
     //Host game with options that will be used in the competition.
     game->addGameArgs("-host 8 "                //This machine will function as a host for a multiplayer game with this many players (including this machine). It will wait for other machines to connect using the -join parameter and then start the game when everyone is connected.
                       "-deathmatch "            //Deathmatch rules are used for the game.
                       "+timelimit 10.0 "        //The game (episode) will end after this many minutes have elapsed.
                       "+sv_forcerespawn 1 "     //Players will respawn automatically after they die.
-                      "+sv_losefrag 1"          //Player's frag count is decreased each time this player is killed
+                      "+sv_losefrag 1 "         //Player's frag count is decreased each time this player is killed
                       "+sv_noautoaim 1 "        //Autoaim is disabled for all players.
                       "+sv_respawnprotect 1 "   //Players will be invulnerable for two second after spawning.
                       "+sv_spawnfarthest 1 "    //Players will be spawned as far as possible from any other players.
                       "+vizia_nocheat 1");      //Disables depth buffer and the ability to use commands that could interfere with multiplayer game.
-
-    //Or connect to existing game.
-    //game->addGameArgs("-join 127.0.0.1");     //Connect to a host for a multiplayer game.
-
-
 
     //Name Your AI.
     game->addGameArgs("+name AI");

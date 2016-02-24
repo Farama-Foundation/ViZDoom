@@ -81,12 +81,18 @@ endif()
 
 if(BUILD_JAVA)
 
+    if (NOT DEFINED ENV{JAVA_HOME})
+        message( SEND_ERROR "JAVA_HOME environment variable is not set." )
+    else()
+        
+    endif()
+
     find_package(Java REQUIRED)
     find_package(JNI REQUIRED)
     include(UseJava)
     set( VIZIA_JAVA_INCLUDE_DIR ${VIZIA_INCLUDE_DIR} vizia_api_bindings/java )
     
-    set( VIZIA_PYTHON_LIBS 
+    set( VIZIA_JAVA_LIBS 
         ${VIZIA_LIBS}
         ${Boost_LIBRARIES}  
         ${Java_LIBRARIES}
@@ -96,7 +102,7 @@ if(BUILD_JAVA)
                         ${Boost_INCLUDE_DIR}
                         ${Java_INCLUDE_DIRS} 
                         ${_JAVA_HOME}/include
-			${_JAVA_HOME}/include/linux
+			            ${_JAVA_HOME}/include/linux
                         ${JNI_INCLUDE_DIR} )  
 
     set( VIZIA_JAVA_SOURCES
@@ -104,7 +110,7 @@ if(BUILD_JAVA)
 
 
     add_library(viziajava SHARED ${VIZIA_JAVA_SOURCES})
-    target_link_libraries (viziajava ${VIZIA_PYTHON_LIBS} viziastatic) 
+    target_link_libraries (viziajava ${VIZIA_JAVA_LIBS} viziastatic) 
 
 	exec_program(javac .
              ARGS ./vizia_api_bindings/java/State.java)
