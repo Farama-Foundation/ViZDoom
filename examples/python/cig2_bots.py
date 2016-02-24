@@ -20,7 +20,7 @@ game.send_game_command("sv_forcerespawn 1");
 
 	
 
-while True:#not game.is_episode_finished():	
+while not game.is_episode_finished():	
 	game.advance_action()
 	print("Overall kills:", game.get_game_variable(GameVariable.KILLCOUNT))
 	print("Your frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
