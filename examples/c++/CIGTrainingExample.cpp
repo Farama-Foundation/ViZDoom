@@ -11,8 +11,8 @@ int main(){
     std::cout << "CIG TRAINING WITH BOTS EXAMPLE\n\n";
 
     //Use one of CIG example configs or Your own.
-    game->loadConfig("../../examples/cig.cfg");
-    //game->loadConfig("../../examples/cig2.cfg");
+    game->loadConfig("../../examples/config/cig.cfg");
+    //game->loadConfig("../../examples/config/cig2.cfg");
 
     //Start multiplayer game only with Your AI (with options that will be used in the competition).
     game->addGameArgs("-host 1 -deathmatch +timelimit 10.0 "

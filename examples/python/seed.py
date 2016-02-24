@@ -4,7 +4,7 @@
 # This script presents how to run deterministic episodes by setting
 # seed. After setting the seed every episode will look the same (if 
 # agent will behave deterministicly of course).
-# Configuration is loaded from "../../scenarios/config_<SCENARIO_NAME>.properties" file.
+# Configuration is loaded from "../config/<SCENARIO_NAME>.cfg" file.
 # <episodes> number of episodes are played. 
 # Random combination of buttons is chosen for every action.
 # 
@@ -25,13 +25,13 @@ game = DoomGame()
 # Don't load two configs cause the second will overrite the first one.
 # Multiple config files are ok but combining these ones doesn't make much sense.
 
-game.load_config("../../scenarios/config_basic.properties")
-#game.load_config("../../scenarios/config_deadly_corridor.properties")
-#game.load_config("../../scenarios/config_defend_the_center.properties")
-#game.load_config("../../scenarios/config_defend_the_line.properties")
-#game.load_config("../../scenarios/config_health_gathering.properties")
-#game.load_config("../../scenarios/config_my_way_home.properties")
-#game.load_config("../../scenarios/config_predict_position.properties")
+game.load_config("../config/basic.cfg")
+#game.load_config("../config/deadly_corridor.cfg")
+#game.load_config("../config/defend_the_center.cfg")
+#game.load_config("../config/defend_the_line.cfg")
+#game.load_config("../config/health_gathering.cfg")
+#game.load_config("../config/my_way_home.cfg")
+#game.load_config("../config/predict_position.cfg")
 
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 

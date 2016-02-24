@@ -11,8 +11,8 @@ int main(){
     std::cout << "CIG EXAMPLE\n\n";
 
     //Use one of CIG example configs or Your own.
-    game->loadConfig("../../examples/cig.cfg");
-    //game->loadConfig("../../examples/cig2.cfg");
+    game->loadConfig("../../examples/config/cig1.cfg");
+    //game->loadConfig("../../examples/config/cig2.cfg");
 
     //Host game with options that will be used in the competition.
     game->addGameArgs("-host 8 "                //This machine will function as a host for a multiplayer game with this many players (including this machine). It will wait for other machines to connect using the -join parameter and then start the game when everyone is connected.

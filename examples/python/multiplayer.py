@@ -11,7 +11,7 @@ from time import sleep
 from time import time
 
 game = DoomGame()
-game.load_config("../../scenarios/config_multi.properties")
+game.load_config("../config/multi.cfg")
 
 game.set_mode(Mode.ASYNC_PLAYER)
 game.add_game_args("-join 127.0.0.1")
