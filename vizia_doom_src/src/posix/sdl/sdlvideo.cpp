@@ -275,7 +275,7 @@ bool SDLVideo::NextMode (int *width, int *height, bool *letterbox)
 	}
 	return false;
 }
-
+//VIZIA_CODE
 DFrameBuffer *SDLVideo::CreateFrameBuffer (int width, int height, bool fullscreen, DFrameBuffer *old)
 {
 	static int retry = 0;
@@ -369,7 +369,7 @@ void SDLVideo::SetWindowedScale (float scale)
 }
 
 // FrameBuffer implementation -----------------------------------------------
-
+//VIZIA_CODE
 SDLFB::SDLFB (int width, int height, bool fullscreen, SDL_Window *oldwin)
 	: DFrameBuffer (width, height)
 {
@@ -439,7 +439,7 @@ SDLFB::~SDLFB ()
 		SDL_DestroyWindow (Screen);
 	}
 }
-
+//VIZIA_CODE
 bool SDLFB::IsValid ()
 {
 	return *vizia_no_x_server==true ? true : (DFrameBuffer::IsValid() && Screen != NULL);
@@ -472,7 +472,7 @@ void SDLFB::Unlock ()
 		LockCount = 0;
 	}
 }
-
+//VIZIA_CODE
 void SDLFB::Update ()
 {
 	if (LockCount != 1)
@@ -584,7 +584,7 @@ void SDLFB::Update ()
 	depthMap->Update();
 #endif
 }
-
+//VIZIA_CODE
 void SDLFB::UpdateColors ()
 {
 	if (NotPaletted)
@@ -681,12 +681,12 @@ void SDLFB::SetFullscreen (bool fullscreen)
 
 	ResetSDLRenderer ();
 }
-
+//VIZIA_CODE
 bool SDLFB::IsFullscreen ()
 {
 	return (*vizia_no_x_server)==true ? false : ((SDL_GetWindowFlags (Screen) & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0);
 }
-
+//VIZIA_CODE
 void SDLFB::ResetSDLRenderer ()
 {
 	if (Renderer)
@@ -777,7 +777,7 @@ void SDLFB::SetVSync (bool vsync)
 	ResetSDLRenderer ();
 #endif // __APPLE__
 }
-
+//VIZIA_CODE
 void SDLFB::ScaleCoordsFromWindow(SWORD &x, SWORD &y)
 {
 	int w, h;

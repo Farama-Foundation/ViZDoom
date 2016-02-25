@@ -322,6 +322,7 @@ nextpost:
 // R_DrawVisSprite
 //	mfloorclip and mceilingclip should also be set.
 //
+//VIZIA_CODE
 void R_DrawVisSprite (vissprite_t *vis)
 {
 	const BYTE *pixels;
@@ -397,7 +398,6 @@ void R_DrawVisSprite (vissprite_t *vis)
 						if (dc_iscale < 500)
 							depthMap->helperBuffer[pcf]=(0);
 					}
-					//depthMap->setActualDepth(0);
 				}
 				/*static long max, min;
 				if(min==0) min=max;
@@ -409,7 +409,7 @@ void R_DrawVisSprite (vissprite_t *vis)
 						min=dc_iscale;
 					printf("MAX: %ld MIN: %ld ACT: %d\n", max, min, 255 - ((dc_iscale - 500) * 255) / (320000 - 500));
 				}*/
-				rt_draw4cols (dc_x - 4);
+				rt_draw4cols (dc_x - 4);//TU
 			}
 
 			while (dc_x < x2)
@@ -1184,6 +1184,7 @@ void R_AddSprites (sector_t *sec, int lightlevel, int fakeside)
 //
 // R_DrawPSprite
 //
+//VIZIA_CODE
 void R_DrawPSprite (pspdef_t* psp, int pspnum, AActor *owner, fixed_t sx, fixed_t sy)
 {
 	fixed_t 			tx;

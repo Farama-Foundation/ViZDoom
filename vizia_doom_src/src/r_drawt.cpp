@@ -185,6 +185,7 @@ void rt_map1col_c (int hx, int sx, int yl, int yh)
 	}
 }
 
+//VIZIA_CODE
 // Maps all four spans to the screen starting at sx.
 void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 {
@@ -526,6 +527,7 @@ void STACK_ARGS rt_shaded4cols_c (int sx, int yl, int yh)
 	} while (--count);
 }
 
+//VIZIA_CODE
 // Adds one span at hx to the screen at sx with clamping.
 void rt_addclamp1col (int hx, int sx, int yl, int yh)
 {
@@ -559,9 +561,13 @@ void rt_addclamp1col (int hx, int sx, int yl, int yh)
 		*dest = RGB32k.All[(a>>15) & a];
 		source += 4;
 		dest += pitch;
+		if(depthMap!=NULL) {
+			depthMap->setPoint((unsigned int) sx, (unsigned int) yh-count);
+		}
 	} while (--count);
 }
 
+//VIZIA_CODE
 // Adds all four spans to the screen starting at sx with clamping.
 void STACK_ARGS rt_addclamp4cols_c (int sx, int yl, int yh)
 {
@@ -620,7 +626,12 @@ void STACK_ARGS rt_addclamp4cols_c (int sx, int yl, int yh)
 		b = b - (b >> 5);
 		a |= b;
 		dest[3] = RGB32k.All[(a>>15) & a];
-
+		if(depthMap!=NULL) {
+			for (int dx = 0; dx < 4; dx++) {
+				depthMap->setActualDepth(depthMap->helperBuffer[dx]);
+				depthMap->setPoint((unsigned int) sx + dx, (unsigned int) yh-count);
+			}
+		}
 		source += 4;
 		dest += pitch;
 	} while (--count);
@@ -860,6 +871,7 @@ void STACK_ARGS rt_tlaterevsubclamp4cols (int sx, int yl, int yh)
 
 // Copies all spans in all four columns to the screen starting at sx.
 // sx should be dword-aligned.
+//VIZIA_CODE
 void rt_draw4cols (int sx)
 {
 	int x, bad;
@@ -998,12 +1010,12 @@ void rt_draw4cols (int sx)
 			if (maxtop > horizspan[x][0])
 			{
 				if(depthMap!=NULL) depthMap->setActualDepth(depthMap->helperBuffer[x]);
-				hcolfunc_post1 (x, sx+x, horizspan[x][0], maxtop-1);
+				hcolfunc_post1 (x, sx+x, horizspan[x][0], maxtop-1);//TU
 			}
 		}
 
 		// Draw the shared area.
-		hcolfunc_post4 (sx, maxtop, minbot);
+		hcolfunc_post4 (sx, maxtop, minbot);//TU
 
 		// For each column, if part of the span is past the shared area,
 		// set its top to just below the shared area. Otherwise, advance
@@ -1101,7 +1113,6 @@ void R_DrawColumnHorizP_C (void)
 // [RH] Just fills a column with a given color
 void R_FillColumnHorizP (void)
 {
-
 	int count = dc_count;
 	BYTE color = dc_color;
 	BYTE *dest;

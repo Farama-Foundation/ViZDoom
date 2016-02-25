@@ -706,7 +706,7 @@ void D_Display ()
 			vid_cursor.Callback();
 		}
 	}
-
+//VIZIA_CODE
 	if(depthMap!=NULL) depthMap->sizeUpdate();
 
 	RenderTarget = screen;

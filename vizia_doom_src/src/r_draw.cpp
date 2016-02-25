@@ -179,7 +179,8 @@ void R_InitShadeMaps()
 //	will always have constant z depth.
 // Thus a special case loop for very fast rendering can
 //	be used. It has also been used with Wolfenstein 3D.
-// 
+//
+//VIZIA_CODE
 void R_DrawColumnP_C (void)
 {
 	int 				count;
@@ -618,6 +619,7 @@ void R_DrawTranslatedColumnP_C (void)
 
 	fracstep = dc_iscale;
 	frac = dc_texturefrac;
+
 
 	{
 		// [RH] Local copies of global vars to improve compiler optimizations
@@ -1076,6 +1078,7 @@ void R_SetupSpanBits(FTexture *tex)
 
 //
 // Draws the actual span.
+//VIZIA_CODE
 #ifndef X86_ASM
 void R_DrawSpanP_C (void)
 {
@@ -1677,7 +1680,7 @@ void setupvline (int fracbits)
 #endif
 #endif
 }
-
+//VIZIA_CODE
 #if !defined(X86_ASM)
 DWORD STACK_ARGS vlinec1 ()
 {
