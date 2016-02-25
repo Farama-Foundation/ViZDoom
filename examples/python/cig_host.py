@@ -8,7 +8,7 @@ game.load_config("../config/cig.cfg")
 game.set_doom_map("map01")
 #game.set_doom_map("map02")
 
-game.add_game_args("-host 2 -deathmatch +sv_forcerespawn 1 +sv_losefrag 1")
+game.add_game_args("-host 2 -deathmatch +sv_forcerespawn 1 +sv_respawnprotect 1 +sv_spawnfarthest 1")
 game.set_mode(Mode.ASYNC_SPECTATOR)
 game.init()
 
