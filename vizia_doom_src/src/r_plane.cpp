@@ -200,7 +200,7 @@ void R_DeinitPlanes ()
 // pviewx, pviewy, xoffs, yoffs, basecolormap, xscale, yscale.
 //
 //==========================================================================
-
+//VIZIA_CODE
 void R_MapPlane (int y, int x1)
 {
 	int x2 = spanend[y];
@@ -930,7 +930,7 @@ static const BYTE *R_GetTwoSkyColumns (FTexture *fronttex, int x)
 	} while (++i, --count);
 	return composite;
 }
-
+//VIZIA_CODE
 static void R_DrawSky (visplane_t *pl)
 {
 	int x;

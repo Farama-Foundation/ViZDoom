@@ -737,7 +737,7 @@ void R_SetupBuffer ()
 // R_RenderActorView
 //
 //==========================================================================
-
+//VIZIA_CODE
 void R_RenderActorView (AActor *actor, bool dontmaplines)
 {
 	WallCycles.Reset();

@@ -70,7 +70,7 @@ void I_ShutdownGraphics ()
 
 	SDL_QuitSubSystem (SDL_INIT_VIDEO);
 }
-
+//VIZIA_CODE
 void I_InitGraphics ()
 {
 	if(!(*vizia_no_x_server))

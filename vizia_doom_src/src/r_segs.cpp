@@ -221,7 +221,7 @@ void ClipMidtex(int x1, int x2)
 }
 
 void R_RenderFakeWallRange(drawseg_t *ds, int x1, int x2);
-
+//VIZIA_CODE
 void R_RenderMaskedSegRange (drawseg_t *ds, int x1, int x2)
 {
 	FTexture	*tex;
@@ -1084,7 +1084,7 @@ inline fixed_t prevline1 (fixed_t vince, BYTE *colormap, int count, fixed_t vplc
 	dc_dest = dest;
 	return doprevline1 ();
 }
-
+//VIZIA_CODE
 void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t *lwal,
 			   fixed_t yrepeat, const BYTE *(*getcol)(FTexture *tex, int x))
 {
