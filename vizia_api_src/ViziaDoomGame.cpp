@@ -845,12 +845,22 @@ namespace Vizia {
                 continue;
             }           
 
+        /* Parse game args which ae string but enables "+=" */
+            if(key == "game_args" || key == "game_args"){
+            	if(!append){
+            		this->clearGameArgs();
+            	}
+                this->addGameArgs(original_val);
+                continue;
+            }
         /* Check if "+=" was not used for non-list property */
             if(append){
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". \"+=\" is not supported for non-list properties. Line #"<<line_number<<" ignored.\n";
                 success = false;
                 continue;
             }
+
+           	
         /* Check if value is not empty */
             if(val.empty())
             {
