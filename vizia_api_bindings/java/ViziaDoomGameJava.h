@@ -234,18 +234,18 @@ JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_getAvailableGameVariablesSize
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    addCustomGameArg
+ * Method:    addGameArgs
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_addCustomGameArg
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_addGameArgs
   (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     ViziaDoomGameJava
- * Method:    clearCustomGameArgs
+ * Method:    clearGameArgs
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_ViziaDoomGameJava_clearCustomGameArgs
+JNIEXPORT void JNICALL Java_ViziaDoomGameJava_clearGameArgs
   (JNIEnv *, jobject);
 
 /*

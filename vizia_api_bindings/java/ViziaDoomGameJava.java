@@ -51,8 +51,8 @@ public class ViziaDoomGameJava{
 	public native void clearAvailableGameVariables();
         public native int getAvailableGameVariablesSize();
 
- 	public native void addCustomGameArg(String arg);
-        public native void clearCustomGameArgs();
+ 	public native void addGameArgs(String arg);
+        public native void clearGameArgs();
 
         public native void sendGameCommand(String cmd);	
 
