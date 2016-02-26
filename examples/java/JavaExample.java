@@ -20,7 +20,6 @@ public static void main (String[] args) {
     dg.setLivingReward(-1);
 
     dg.setScreenResolution(ScreenResolution.RES_320X240);
-	System.out.println("1");
     dg.setRenderHud(false);
     dg.setRenderCrosshair(false);
     dg.setRenderWeapon(true);
@@ -30,15 +29,10 @@ public static void main (String[] args) {
     dg.setWindowVisible(true);
 
     dg.setConsoleEnabled(true);
-System.out.println("2");
     dg.addAvailableButton(Button.MOVE_LEFT);
     dg.addAvailableButton(Button.MOVE_RIGHT);
     dg.addAvailableButton(Button.ATTACK);
-System.out.println("3");
-	GameVariable bob = GameVariable.HEALTH;
-System.out.println("4");
     dg.addAvailableGameVariable(GameVariable.HEALTH);
-System.out.println("5");
     dg.addAvailableGameVariable(GameVariable.KILLCOUNT);
 
 
@@ -46,7 +40,7 @@ System.out.println("5");
     //dg->newEpisode();
     int[] action=new int[3];
 
-    action[0] = 1;
+    action[0] = 0;
     action[1] = 0;
     action[2] = 1;
 
