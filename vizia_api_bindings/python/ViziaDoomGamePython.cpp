@@ -68,9 +68,9 @@ namespace Vizia {
         return DoomGame::makeAction(DoomGamePython::pyListToIntVector(action), tics);   
     }
 
-    DoomGamePython::PythonState DoomGamePython::getState() {
+    GameStatePython DoomGamePython::getState() {
         if (isEpisodeFinished()) {
-            return DoomGamePython::PythonState(this->state.number);
+            return GameStatePython(this->state.number);
         }
 
         PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, this->doomController->getScreen());
@@ -83,10 +83,10 @@ namespace Vizia {
             boost::python::handle<> numpyVarsHandle = boost::python::handle<>(vars);
             boost::python::numeric::array numpyVars = array(numpyVarsHandle);
 
-            return DoomGamePython::PythonState(state.number, numpyImage.copy(), numpyVars.copy());
+            return GameStatePython(state.number, numpyImage.copy(), numpyVars.copy());
         }
         else {
-            return DoomGamePython::PythonState(state.number, numpyImage.copy());
+            return GameStatePython(state.number, numpyImage.copy());
         }
 
 

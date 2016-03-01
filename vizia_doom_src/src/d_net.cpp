@@ -940,7 +940,6 @@ int gametime;
 void NetUpdate (void)
 {
 	//VIZIA_CODE
-	if(*vizia_controlled && !*vizia_async) return;
 
 	int		lowtic;
 	int 	nowtime;
@@ -952,13 +951,17 @@ void NetUpdate (void)
 
 	GC::CheckGC();
 
-	if (ticdup == 0)
-	{
-		return;
-	}
+	//VIZIA_CODE
+	if(*vizia_controlled && !*vizia_async) nowtime = gametic;
+	else{
+		if (ticdup == 0)
+		{
+			return;
+		}
 
-	// check time
-	nowtime = I_GetTime (false);
+	 	//check time
+		nowtime = I_GetTime (false);
+	}
 	newtics = nowtime - gametime;
 	gametime = nowtime;
 
@@ -985,8 +988,7 @@ void NetUpdate (void)
 		I_StartTic ();
 		//VIZIA_CODE
 		if(!*vizia_controlled || (*vizia_async && *vizia_allow_input)) D_ProcessEvents ();
-		if ((maketic - gametic) / ticdup >= BACKUPTICS/2-1)
-			break;			// can't hold any more
+		if ((maketic - gametic) / ticdup >= BACKUPTICS/2-1) break; // can't hold any more
 		//Printf ("mk:%i ",maketic);
 		G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
 		maketic++;

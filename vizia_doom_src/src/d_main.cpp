@@ -1022,19 +1022,14 @@ void D_DoomLoop ()
 			if(*vizia_controlled && !*vizia_async){
 
 				if(*vizia_allow_input) I_WaitForTic (gametic+1);
-				GC::CheckGC();
-				//Net_NewMakeTic ();
 
-				I_StartTic ();
 				if(*vizia_allow_input && menuactive != MENU_Off) D_ProcessEvents ();
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
-				//G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
-				++maketic;
 
 				C_Ticker ();
 				M_Ticker ();
 				I_GetTime (true);
-				if (menuactive == MENU_Off) G_Ticker();
+				if (menuactive == MENU_Off) G_Ticker ();
 				++gametic;
 
 			}

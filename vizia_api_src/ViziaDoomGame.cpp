@@ -189,7 +189,7 @@ namespace Vizia {
         catch (...) { throw SharedMemoryException(); }
     }
 
-    DoomGame::State DoomGame::getState() { return this->state; }
+    GameState DoomGame::getState() { return this->state; }
 
     std::vector<int> DoomGame::getLastAction() { return this->lastAction; }
 

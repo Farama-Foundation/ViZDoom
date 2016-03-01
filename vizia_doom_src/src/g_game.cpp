@@ -763,61 +763,66 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	}
 	if (SendItemUse == (const AInventory *)1)
 	{
-		//VIZIA_CODE
-		if(*vizia_controlled){
-			{
-				AInventory *item = players[consoleplayer].mo->Inventory;
-
-				while (item != NULL)
-				{
-					AInventory *next = item->Inventory;
-					if (item->ItemFlags & IF_INVBAR && !(item->IsKindOf(RUNTIME_CLASS(APuzzleItem))))
-					{
-						players[consoleplayer].mo->UseInventory (item);
-					}
-					item = next;
-				}
-			}
-		}
-		else {
-			Net_WriteByte (DEM_INVUSEALL);
-		}
+		//VIZIA_CODE_OLD
+//		if(*vizia_controlled){
+//			{
+//				AInventory *item = players[consoleplayer].mo->Inventory;
+//
+//				while (item != NULL)
+//				{
+//					AInventory *next = item->Inventory;
+//					if (item->ItemFlags & IF_INVBAR && !(item->IsKindOf(RUNTIME_CLASS(APuzzleItem))))
+//					{
+//						players[consoleplayer].mo->UseInventory (item);
+//					}
+//					item = next;
+//				}
+//			}
+//		}
+//		else {
+//			Net_WriteByte (DEM_INVUSEALL);
+//		}
+		Net_WriteByte (DEM_INVUSEALL);
 		SendItemUse = NULL;
 	}
 	else if (SendItemUse != NULL)
 	{
-		//VIZIA_CODE
-		if(*vizia_controlled){
-			if (gamestate == GS_LEVEL && !paused && players[consoleplayer].playerstate != PST_DEAD) {
-				AInventory *item = players[consoleplayer].mo->Inventory;
-				while (item != NULL && item->InventoryID != SendItemUse->InventoryID) {
-					item = item->Inventory;
-				}
-				if (item != NULL) players[consoleplayer].mo->UseInventory (item);
-			}
-		}
-		else {
-			Net_WriteByte(DEM_INVUSE);
-			Net_WriteLong(SendItemUse->InventoryID);
-		}
+		//VIZIA_CODE_OLD
+//		if(*vizia_controlled){
+//			if (gamestate == GS_LEVEL && !paused && players[consoleplayer].playerstate != PST_DEAD) {
+//				AInventory *item = players[consoleplayer].mo->Inventory;
+//				while (item != NULL && item->InventoryID != SendItemUse->InventoryID) {
+//					item = item->Inventory;
+//				}
+//				if (item != NULL) players[consoleplayer].mo->UseInventory (item);
+//			}
+//		}
+//		else {
+//			Net_WriteByte(DEM_INVUSE);
+//			Net_WriteLong(SendItemUse->InventoryID);
+//		}
+		Net_WriteByte(DEM_INVUSE);
+		Net_WriteLong(SendItemUse->InventoryID);
 		SendItemUse = NULL;
 	}
 	if (SendItemDrop != NULL)
 	{
-		//VIZIA_CODE
-		if(*vizia_controlled){
-			if (gamestate == GS_LEVEL && !paused && players[consoleplayer].playerstate != PST_DEAD) {
-				AInventory *item = players[consoleplayer].mo->Inventory;
-				while (item != NULL && item->InventoryID != SendItemUse->InventoryID){
-					item = item->Inventory;
-				}
-				if (item != NULL) players[consoleplayer].mo->DropInventory (item);
-			}
-		}
-		else {
-			Net_WriteByte (DEM_INVDROP);
-			Net_WriteLong (SendItemDrop->InventoryID);
-		}
+		//VIZIA_CODE_OLD
+//		if(*vizia_controlled){
+//			if (gamestate == GS_LEVEL && !paused && players[consoleplayer].playerstate != PST_DEAD) {
+//				AInventory *item = players[consoleplayer].mo->Inventory;
+//				while (item != NULL && item->InventoryID != SendItemUse->InventoryID){
+//					item = item->Inventory;
+//				}
+//				if (item != NULL) players[consoleplayer].mo->DropInventory (item);
+//			}
+//		}
+//		else {
+//			Net_WriteByte (DEM_INVDROP);
+//			Net_WriteLong (SendItemDrop->InventoryID);
+//		}
+		Net_WriteByte (DEM_INVDROP);
+		Net_WriteLong (SendItemDrop->InventoryID);
 		SendItemDrop = NULL;
 	}
 
@@ -877,7 +882,6 @@ void G_AddViewPitch (int look)
 	}
 }
 
-//VIZIA_CODE
 void G_AddViewAngle (int yaw)
 {
 	if (gamestate == GS_TITLELEVEL)
