@@ -1,7 +1,18 @@
 #ifndef __VIZIA_DEFINES_H__
 #define __VIZIA_DEFINES_H__
 
+#include <cstdlib>
+#include <vector>
+
 namespace Vizia{
+
+    typedef unsigned char uint8_t;
+
+    struct GameState {
+        unsigned int number;
+        std::vector<int> gameVariables;
+        uint8_t * imageBuffer;
+    };
 
     enum Mode {
         PLAYER,             // synchronous player mode

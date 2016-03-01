@@ -11,7 +11,6 @@
 #include "boost/process.hpp"
 
 
-
 namespace Vizia {
 
     namespace bpr       = boost::process;
@@ -40,7 +39,7 @@ namespace Vizia {
         this->filePath = "";
         this->map = "map01";
         this->configPath = "";
-        this->skill = 0;
+        this->skill = 3;
 
         /* Rendering */
         this->screenWidth = 320;
@@ -229,7 +228,12 @@ namespace Vizia {
 
         if(this->doomRunning && !this->mapRestarting && !this->gameVariables->MAP_END && this->gameVariables->PLAYER_DEAD){
             if(this->gameVariables->NET_GAME){
+
+                bool useAvailable = this->input->BT_AVAILABLE[USE];
+                this->input->BT_AVAILABLE[USE] = true;
+
                 do {
+
                     this->sendCommand(std::string("+use"));
 
                     this->MQDoomSend(MSG_CODE_TIC);
@@ -239,7 +243,12 @@ namespace Vizia {
 
                 this->MQDoomSend(MSG_CODE_UPDATE);
                 this->waitForDoomWork();
+
+                this->input->BT_AVAILABLE[USE] = useAvailable;
+
                 this->mapLastTic = this->gameVariables->MAP_TIC;
+
+
             }
             else this->restartMap();
         }

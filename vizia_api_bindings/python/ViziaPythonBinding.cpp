@@ -285,10 +285,10 @@ bp::register_exception_translator<Vizia:: n >(&translate ## n );
 	def("ms_to_doom_tics", Ms2DoomTics);
     def("doom_fixed_to_double", DoomFixedToDouble);
     
-    class_<DoomGamePython::PythonState>("State", no_init)
-        .def_readonly("number", &DoomGamePython::PythonState::number)
-        .def_readonly("image_buffer", &DoomGamePython::PythonState::imageBuffer)
-        .def_readonly("game_variables", &DoomGamePython::PythonState::gameVariables);
+    class_<GameStatePython>("GameState", no_init)
+        .def_readonly("number", &GameStatePython::number)
+        .def_readonly("image_buffer", &GameStatePython::imageBuffer)
+        .def_readonly("game_variables", &GameStatePython::gameVariables);
 
     class_<DoomGamePython>("DoomGame", init<>())
 		.def("init", &DoomGamePython::init)

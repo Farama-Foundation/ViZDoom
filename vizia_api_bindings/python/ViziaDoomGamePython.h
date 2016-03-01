@@ -18,22 +18,23 @@
 namespace Vizia {
     using boost::python::api::object;
 /* C++ code to expose C arrays as python objects */
+
+    struct GameStatePython {
+        unsigned int number;
+        object imageBuffer;
+        object gameVariables;
+        GameStatePython(int n, object buf, object v ):number(n),imageBuffer(buf),gameVariables(v){}
+        GameStatePython(int n, object buf):number(n),imageBuffer(buf){}
+        GameStatePython(int n):number(n){}
+    };
+
     class DoomGamePython : public DoomGame {
         
-    public:
-        struct PythonState
-        {
-            unsigned int number;
-            object imageBuffer;
-            object gameVariables;
-            PythonState(int n, object buf, object v ):number(n),imageBuffer(buf),gameVariables(v){}
-            PythonState(int n, object buf):number(n),imageBuffer(buf){}
-            PythonState(int n):number(n){}
-        };
+    public:        
         DoomGamePython();
         bool init();
         
-        PythonState getState();
+        GameStatePython getState();
         boost::python::list getLastAction();
         object getGameScreen();
         void setAction(boost::python::list const &action);

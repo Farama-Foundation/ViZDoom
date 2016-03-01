@@ -14,12 +14,6 @@ namespace Vizia {
 
     public:
 
-        struct State {
-            unsigned int number;
-            std::vector<int> gameVariables;
-            uint8_t * imageBuffer;
-        };
-
         DoomGame();
         virtual ~DoomGame();
 
@@ -39,7 +33,7 @@ namespace Vizia {
         double makeAction(std::vector<int> const &actions);
         double makeAction(std::vector<int> const &actions, unsigned int tics);
         
-        State getState();
+        GameState getState();
 
         std::vector<int> getLastAction();
 
@@ -127,7 +121,7 @@ namespace Vizia {
         /* STATE AND ACTIONS */
         Mode mode;
 
-        State state;
+        GameState state;
         void updateState();
 
         std::vector <GameVariable> availableGameVariables;

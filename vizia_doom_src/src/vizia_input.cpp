@@ -22,7 +22,6 @@ int viziaLastInputBT[VIZIA_BT_SIZE];
 int viziaLastInputUpdate[VIZIA_BT_SIZE];
 
 EXTERN_CVAR (Bool, vizia_allow_input);
-EXTERN_CVAR (Bool, vizia_async);
 
 void Vizia_Command(char * cmd){
     //printf("VIZIA CMD %d %s\n", gametic, cmd);
