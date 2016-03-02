@@ -281,8 +281,8 @@ bp::register_exception_translator<Vizia:: n >(&translate ## n );
         ENUM_VAL_2_PYT(USER29)
         ENUM_VAL_2_PYT(USER30);
 
-	def("doom_tics_2_ms", DoomTics2Ms);
-	def("ms_to_doom_tics", Ms2DoomTics);
+	def("doom_tics_to_ms", DoomTicsToMs);
+	def("ms_to_doom_tics", MsToDoomTics);
     def("doom_fixed_to_double", DoomFixedToDouble);
     
     class_<GameStatePython>("GameState", no_init)
