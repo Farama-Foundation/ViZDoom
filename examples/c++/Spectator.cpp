@@ -27,6 +27,7 @@ int main(){
     game->set_screen_resolution(ScreenResolution.RES_640X480);
 
     // Enables spectator mode, so You can play and agent watch your actions.
+    // You can only use the buttons selected as available.
     game->setMode(Mode.SPECTATOR);
 
     game->init();
