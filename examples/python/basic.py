@@ -26,21 +26,36 @@ from time import time
 game = DoomGame()
 
 # Now it's time for configuration!
-# load_file could be used to load configuration instead of doing it here with code.
-# If load_file is used in-code configuration will work. Note that the most recent changes will add to previous ones.
+# load_config could be used to load configuration instead of doing it here with code.
+# If load_config is used in-code configuration will work. Note that the most recent changes will add to previous ones.
+#game.load_config("../../examples/config/basic.cfg")
 
-# Sets path to zdoom engine executive which will be spawned as a separate process. Default is just the same.
+# Sets path to viziazdoom engine executive which will be spawned as a separate process. Default is just the same.
 game.set_doom_engine_path("viziazdoom")
 
 # Sets path to doom2 iwad resource file which contains the actual doom game. Default is "./doom2.wad".
-game.set_doom_game_path("../../scenarios/doom2.wad")
+game.set_doom_game_path("../../scenarios/freedoom2.wad")
+#game.set_doom_game_path("../../scenarios/doom2.wad")   # Not provided with environment due to licences.
 
 # Sets path to additional resources iwad file which is basically your scenario iwad.
 # If not specified default doom2 maps will be used and it's pretty much useles... unless you want to play doom.
 game.set_doom_scenario_path("../../scenarios/basic.wad")
 
+# Set map to start (scenario .wad files can contain many maps).
+game.set_doom_map("map01")
+
 # Sets resolution. Default is 320X240
 game.set_screen_resolution(ScreenResolution.RES_640X480)
+
+# Sets the screen buffer format. Not used here but now you can change it. Defalut is CRCGCB.
+game.set_screen_format(ScreenFormat.RGB24)
+
+# Sets other rendering options
+game.set_render_hud(False)
+game.set_render_crosshair(False)
+game.set_render_weapon(True)
+game.set_render_decals(False)
+game.set_render_particles(False)
 
 # Adds buttons that will be allowed. 
 game.add_available_button(Button.MOVE_LEFT)
@@ -48,19 +63,16 @@ game.add_available_button(Button.MOVE_RIGHT)
 game.add_available_button(Button.ATTACK)
 
 # Adds game variables that will be included in state.
-game.add_available_game_variable(GameVariable.AMMO1)
+game.add_available_game_variable(GameVariable.AMMO2)
 
 # Causes episodes to finish after 200 tics (actions)
 game.set_episode_timeout(200)
 
-# Makes episodes start after 10 tics (~after producing the weapon)
+# Makes episodes start after 10 tics (~after raising the weapon)
 game.set_episode_start_time(10)
 
 # Makes the window appear (turned on by default)
 game.set_window_visible(True)
-
-# Sets the screen buffer format. Not used here but now you now that you can change it.
-game.set_screen_format(ScreenFormat.RGB24)
 
 # Initialize the game. Further configuration won't take any effect from now on.
 game.init()
@@ -88,7 +100,7 @@ for i in range(episodes):
 
 	while not game.is_episode_finished():
 		
-		# Gets the state (copy so you can break it)
+		# Gets the state
 		s = game.get_state()
 
 		# Makes a random action and get remember reward.
