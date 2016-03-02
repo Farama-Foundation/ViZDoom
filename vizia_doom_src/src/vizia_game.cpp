@@ -132,8 +132,9 @@ void Vizia_GameVarsTic(){
     }
 
     viziaGameVars->MAP_END = gamestate != GS_LEVEL || gameaction == ga_completed;
+    if(viziaGameVars->MAP_END) viziaGameVars->PLAYER_DEATHCOUNT = 0;
 
-
+    bool prevDead = viziaGameVars->PLAYER_DEAD;
 
     if(viziaPlayer->mo) {
         viziaGameVars->PLAYER_HAS_ACTOR = true;
@@ -144,6 +145,8 @@ void Vizia_GameVarsTic(){
         viziaGameVars->PLAYER_DEAD = true;
         //viziaGameVars->PLAYER_DEAD = viziaPlayer->playerstate == PST_DEAD || viziaPlayer->health <= 0;
     }
+
+    if(viziaGameVars->PLAYER_DEAD && !prevDead) ++viziaGameVars->PLAYER_DEATHCOUNT;
 
     viziaGameVars->MAP_KILLCOUNT = level.killed_monsters;
     viziaGameVars->MAP_ITEMCOUNT = level.found_items;

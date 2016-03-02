@@ -627,6 +627,8 @@ namespace Vizia {
                 return this->gameVariables->MAP_SECRETCOUNT;
             case FRAGCOUNT:
                 return this->gameVariables->PLAYER_FRAGCOUNT;
+            case DEATHCOUNT:
+                return this->gameVariables->PLAYER_DEATHCOUNT;
             case HEALTH :
                 return this->gameVariables->PLAYER_HEALTH;
             case ARMOR :
@@ -672,6 +674,7 @@ namespace Vizia {
     int DoomController::getPlayerItemCount() { return this->gameVariables->PLAYER_ITEMCOUNT; }
     int DoomController::getPlayerSecretCount() { return this->gameVariables->PLAYER_SECRETCOUNT; }
     int DoomController::getPlayerFragCount() { return this->gameVariables->PLAYER_FRAGCOUNT; }
+    int DoomController::getPlayerDeathCount() { return this->gameVariables->PLAYER_DEATHCOUNT; }
 
     int DoomController::getPlayerHealth() { return this->gameVariables->PLAYER_HEALTH; }
     int DoomController::getPlayerArmor() { return this->gameVariables->PLAYER_ARMOR; }

@@ -119,6 +119,7 @@ namespace Vizia{
         ITEMCOUNT,
         SECRETCOUNT,
         FRAGCOUNT,
+        DEATHCOUNT,
         HEALTH,
         ARMOR,
         DEAD,

@@ -18,10 +18,10 @@ game.set_doom_map("map01")      # Limited deathmatch.
 
 # Start multiplayer game only with Your AI (with options that will be used in the competition, details in cig_host example).
 game.add_game_args("-host 1 -deathmatch +timelimit 10.0 "
-"+sv_forcerespawn 1 +sv_losefrag 1 +sv_noautoaim 1 +sv_respawnprotect 1 +sv_spawnfarthest 1")
+"+sv_forcerespawn 1 +sv_noautoaim 1 +sv_respawnprotect 1 +sv_spawnfarthest 1")
 
 # Name Your AI.
-game->addGameArgs("+name AI");
+game.addGameArgs("+name AI");
 
 # Multiplayer requires the use of asynchronous modes.
 game.set_mode(Mode.ASYNC_PLAYER)
