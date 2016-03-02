@@ -1,7 +1,7 @@
 package enums;
 public enum Mode {
  	PLAYER, 
-	SPECATOR,
+	SPECTATOR,
 	ASYNC_PLAYER,
         ASYNC_SPECTATOR;
 }

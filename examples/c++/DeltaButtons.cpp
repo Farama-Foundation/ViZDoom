@@ -44,6 +44,10 @@ int main(){
 
     // If button's absolute value > max button's value then value = max value with original value sign.
 
+    // Delta buttons in spectator modes correspond to mouse movements.
+    // Maximum allowed values also apply to spectator modes.
+    // game->addGameArgs("+freelook 1");    //Use this to enable look around with the mouse.
+    // game->setMode(SPECTATOR);
 
     game->setWindowVisible(True);
     game->init();

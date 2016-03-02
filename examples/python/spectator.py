@@ -1,4 +1,4 @@
-h#!/usr/bin/python
+#!/usr/bin/python
 
 #####################################################################
 # This script presents SPECTATOR mode. In SPECTATOR mode you play and
@@ -14,6 +14,7 @@ from time import sleep
 
 game = DoomGame()
 
+
 # Choose scenario config file you wish to watch.
 # Don't load two configs cause the second will overrite the first one.
 # Multiple config files are ok but combining these ones doesn't make much sense.
@@ -28,11 +29,10 @@ game.load_config("../config/deathmatch.cfg")
 #game.load_config("../config/predict_position.cfg")
 #game.load_config("../config/take_cover.cfg")
 
+#enables freelook
+game.add_game_args("+freelook 1")
+
 game.set_screen_resolution(ScreenResolution.RES_640X480)
-# Adds mouse support for fun:
-game.add_available_button(Button.TURN_LEFT_RIGHT_DELTA)
-#TODO up and down doesnt work doesn't work!
-#game.add_available_button(Button.LOOK_UP_DOWN_DELTA)
 
 # Enables spectator mode, so you can play. Sounds strange but it is agent who is supposed to watch not you.
 game.set_window_visible(True)
