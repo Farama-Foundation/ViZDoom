@@ -5,9 +5,9 @@
 
 namespace Vizia {
 
-    double DoomTics2Ms(double tics);
+    double DoomTicsToMs(double tics);
 
-    double Ms2DoomTics(double ms);
+    double MsToDoomTics(double ms);
 
     double DoomFixedToDouble(int doomFixed);
 

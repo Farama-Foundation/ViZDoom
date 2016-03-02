@@ -2,11 +2,11 @@
 
 namespace Vizia {
 
-    double DoomTics2Ms(double tics) {
+    double DoomTicsToMs(double tics) {
         return (double) 1000 / 35 * tics;
     }
 
-    double Ms2DoomTics(double ms) {
+    double MsToDoomTics(double ms) {
         return (double) 35 / 1000 * ms;
     }
 

@@ -81,7 +81,7 @@ int main() {
     int episodes = 10;
 
     for (int i = 0; i < episodes; ++i) {
-        
+
         std::cout << "Episode #" << i + 1 << "\n";
 
         // Starts a new episode. It is not needed right after init() but it doesn't cost much and the loop is nicer.
