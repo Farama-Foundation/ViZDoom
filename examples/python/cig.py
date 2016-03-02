@@ -20,7 +20,7 @@ game.set_doom_map("map01")      # Limited deathmatch.
 game.add_game_args("-join 127.0.0.1") # Connect to a host for a multiplayer game.
 
 # Name Your AI.
-game->addGameArgs("+name AI");
+game.addGameArgs("+name AI");
 
 # Multiplayer requires the use of asynchronous modes.
 game.set_mode(Mode.ASYNC_PLAYER)

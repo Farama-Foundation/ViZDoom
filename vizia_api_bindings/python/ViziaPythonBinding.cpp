@@ -222,6 +222,7 @@ bp::register_exception_translator<Vizia:: n >(&translate ## n );
         ENUM_VAL_2_PYT(ITEMCOUNT)
         ENUM_VAL_2_PYT(SECRETCOUNT)
         ENUM_VAL_2_PYT(FRAGCOUNT)
+		ENUM_VAL_2_PYT(DEATHCOUNT)
         ENUM_VAL_2_PYT(HEALTH)
         ENUM_VAL_2_PYT(ARMOR)
         ENUM_VAL_2_PYT(DEAD)

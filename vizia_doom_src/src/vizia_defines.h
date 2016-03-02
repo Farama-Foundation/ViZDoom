@@ -109,6 +109,7 @@ struct ViziaGameVarsStruct{
     int PLAYER_ITEMCOUNT;
     int PLAYER_SECRETCOUNT;
     int PLAYER_FRAGCOUNT; //in multi
+    int PLAYER_DEATHCOUNT;
 
     bool PLAYER_ON_GROUND;
 
