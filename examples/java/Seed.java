@@ -72,7 +72,7 @@ public class Seed {
 			Random rn = new Random();
 			while ( !game.isEpisodeFinished()){
 				// Gets the state and possibly to something with it
-				State s = game.getState();
+				GameState s = game.getState();
 				int[] img = s.imageBuffer;
 				int[] gameVariables = s.gameVariables;
 
