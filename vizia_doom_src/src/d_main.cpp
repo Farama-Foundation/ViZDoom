@@ -1023,14 +1023,18 @@ void D_DoomLoop ()
 
 				if(*vizia_allow_input) I_WaitForTic (gametic+1);
 
-				if(*vizia_allow_input && menuactive != MENU_Off) D_ProcessEvents ();
+				if(*vizia_allow_input) D_ProcessEvents ();
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 
 				C_Ticker ();
 				M_Ticker ();
 				I_GetTime (true);
-				if (menuactive == MENU_Off) G_Ticker ();
+				G_Ticker ();
 				++gametic;
+				++maketic;
+
+				//GC::CheckGC ();
+				//Net_NewMakeTic ();
 
 			}
 			// process one or more tics
