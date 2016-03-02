@@ -8,29 +8,14 @@ using namespace Vizia;
 
 int main(){
 
-    std::cout << "\n\nSEED EXAMPLE\n\n";
+    std::cout << "\n\nSHAPING EXAMPLE\n\n";
 
     DoomGame *game = new DoomGame();
 
-    // Choose scenario config file you wish to be watched by agent.
-    // Don't load two configs cause the second will overwrite the first one.
-    // Multiple config files are ok but combining these ones doesn't make much sense.
-
-    game->loadConfig("../config/basic.cfg");
-    // game->loadConfig("../config/deadly_corridor.cfg");
-    // game->loadConfig("../config/deathmatch.cfg");
-    // game->loadConfig("../config/defend_the_center.cfg");
-    // game->loadConfig("../config/defend_the_line.cfg");
-    // game->loadConfig("../config/health_gathering.cfg");
-    // game->loadConfig("../config/my_way_home.cfg");
-    // game->loadConfig("../config/predict_position.cfg");
-    // game->loadConfig("../config/take_cover.cfg");
+    // Health gathering scenario has scripted shaping reward.
+    game->loadConfig("../config/health_gathering.cfg");
 
     game->set_screen_resolution(ScreenResolution.RES_640X480);
-
-    unsigned int seed = 1234;
-    // Sets the seed. It could be after init as well.
-    game->setSeed(seed);
 
     game->init();
 
@@ -46,8 +31,11 @@ int main(){
 
     std::srand(time());
 
-    // Run this many episodes
+    // Run this many episodes.
     int episodes = 10;
+
+    // Use this to remember last shaping reward value.
+    double lastSummaryShapingReward = 0;
 
     for (int i = 0; i < episodes; ++i) {
 
@@ -65,9 +53,16 @@ int main(){
             // Make random action and get reward
             game->makeAction(actions[std::rand() % 3]);
 
+            // Retrieve the shaping reward
+            int _ssr = game->getGameVariable(GameVariable.USER1);  // Get value of scripted variable
+            double ssr = DoomFixedToDouble(_ssr);                  // If value is in DoomFixed format project it to double
+            double sr = ssr - lastSummaryShapingReward;
+            lastSummaryShapingReward = ssr;
+
             std::cout << "State #" << s.number << "\n";
+            std::cout << "Health: " << s.gameVariables[0] << "\n";
             std::cout << "Action reward: " << r << "\n";
-            std::cout << "Seed: " << game->getSeed() << "\n";
+            std::cout << "Action shaping reward: " << sr << "\n";
             std::cout << "=====================\n";
 
         }
