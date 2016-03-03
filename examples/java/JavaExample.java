@@ -51,7 +51,7 @@ public static void main (String[] args) {
         if( dg.isEpisodeFinished() ){
             dg.newEpisode();
         }
-        State s = dg.getState();
+        GameState s = dg.getState();
 
         System.out.println( "STATE NUMBER: " + s.number + " HP: " + s.vars[0] + " KILLS: " + s.vars[1] );
 

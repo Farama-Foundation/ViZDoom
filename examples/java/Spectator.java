@@ -51,7 +51,7 @@ public class Spectator {
 	
 			game.newEpisode();
 			while (! game.isEpisodeFinished()){
-				State s = game.getState();
+				GameState s = game.getState();
 				int[] img = s.imageBuffer;
 				int[] misc = s.gameVariables;
 
