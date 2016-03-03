@@ -131,7 +131,7 @@ JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_makeAction___3II
 /*
  * Class:     ViziaDoomGameJava
  * Method:    getState
- * Signature: ()LState;
+ * Signature: ()LGameState;
  */
 JNIEXPORT jobject JNICALL Java_ViziaDoomGameJava_getState
   (JNIEnv *, jobject);

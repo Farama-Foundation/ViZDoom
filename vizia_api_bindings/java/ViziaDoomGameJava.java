@@ -32,7 +32,7 @@ public class ViziaDoomGameJava{
         public native double makeAction(int[] actions, int tics);
 
 
-	public native State getState(); 
+	public native GameState getState(); 
 
 	public native boolean[] getLastAction();
 

@@ -21,9 +21,9 @@ Vizia::DoomGame* GetObject(JNIEnv *env, jobject obj){
  * Method:    DoomTics2Ms
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_DoomTics2Ms
+JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_DoomTicsToMs
   (JNIEnv *env, jobject obj, jint time){
-	int ret=Vizia::DoomTics2Ms(time);
+	int ret=Vizia::DoomTicsToMs(time);
 	return ret;
 	}
 
@@ -32,9 +32,9 @@ JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_DoomTics2Ms
  * Method:    Ms2DoomTics
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_Ms2DoomTics
+JNIEXPORT jint JNICALL Java_ViziaDoomGameJava_MsToDoomTics
   (JNIEnv * env, jobject obj, jint time){
-	int ret=Vizia::Ms2DoomTics(time);
+	int ret=Vizia::MsToDoomTics(time);
 	return ret;
 }
 
@@ -421,15 +421,15 @@ JNIEXPORT jdouble JNICALL Java_ViziaDoomGameJava_makeAction___3II
 /*
  * Class:     ViziaDoomGameJava
  * Method:    getState
- * Signature: ()LState;
+ * Signature: ()LGameState;
  */
 JNIEXPORT jobject JNICALL Java_ViziaDoomGameJava_getState
   (JNIEnv *env, jobject obj){
 	Vizia::DoomGame* game=GetObject(env,obj);
-	jclass state = env->FindClass("State");	
+	jclass state = env->FindClass("GameState");	
 	int rozmiar=game->getScreenSize();	
 	std::vector<int> ourvector;
-	Vizia::DoomGame::State statec=game->getState();
+	Vizia::GameState statec=game->getState();
 	
 	ourvector=statec.gameVariables;
 	jintArray jbuffer = env->NewIntArray(ourvector.size());
