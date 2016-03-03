@@ -990,8 +990,10 @@ void NetUpdate (void)
 		if(!*vizia_controlled || (*vizia_async && *vizia_allow_input)) D_ProcessEvents ();
 		if ((maketic - gametic) / ticdup >= BACKUPTICS/2-1) break; // can't hold any more
 		//Printf ("mk:%i ",maketic);
-		G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
-		maketic++;
+		if(!*vizia_controlled || *vizia_async){
+			G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
+			maketic++;
+		}
 
 		if (ticdup == 1 || maketic == 0)
 		{
