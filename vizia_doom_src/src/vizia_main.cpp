@@ -33,6 +33,7 @@ CVAR (Bool, vizia_window_hidden, false, CVAR_NOSET)
 CVAR (Bool, vizia_no_x_server, false, CVAR_NOSET)
 CVAR (Bool, vizia_allow_input, false, CVAR_NOSET)
 
+int vizia_time = 0;
 bool viziaNextTic = false;
 bool viziaUpdate = false;
 unsigned int viziaLastUpdate = 0;
@@ -76,9 +77,7 @@ void Vizia_AsyncStartTic(){
         exit(0);
     }
 
-    if (*vizia_controlled && (gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
-        && !paused && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
-
+    if (*vizia_controlled && !Vizia_IsPaused()){
         Vizia_MQTic();
         if(viziaNextTic) Vizia_InputTic();
     }
@@ -93,8 +92,7 @@ void Vizia_Tic(){
         exit(0);
     }
 
-    if (*vizia_controlled && (gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
-            && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling ) {
+    if (*vizia_controlled && !Vizia_IsPaused()){
 
         if(viziaUpdate) {
             Vizia_Update();
@@ -118,3 +116,11 @@ void Vizia_Update(){
     viziaLastUpdate = VIZIA_TIME;
     viziaUpdate = false;
 }
+
+bool Vizia_IsPaused(){
+    return menuactive != MENU_Off;
+
+    //&& (gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
+    //&& !paused && !pauseext && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling
+}
+

@@ -1021,21 +1021,23 @@ void D_DoomLoop ()
 			//VIZIA_CODE
 			if(*vizia_controlled && !*vizia_async){
 
-				if(*vizia_allow_input) I_WaitForTic (gametic+1);
+				if(*vizia_allow_input) {
+					vizia_time = I_GetTime (true);
+					I_WaitForTic(vizia_time);
+					//I_WaitForTic(gametic + 1);
+					D_ProcessEvents ();
+				}
 
-				if(*vizia_allow_input) D_ProcessEvents ();
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 
 				C_Ticker ();
 				M_Ticker ();
-				I_GetTime (true);
-				G_Ticker ();
-				++gametic;
-				++maketic;
 
-				//GC::CheckGC ();
-				//Net_NewMakeTic ();
-
+				if(!Vizia_IsPaused()){
+					G_Ticker ();
+					++gametic;
+					++maketic;
+				}
 			}
 			// process one or more tics
 			else if (singletics) {
