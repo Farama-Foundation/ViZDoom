@@ -21,7 +21,7 @@ game.add_game_args("-host 1 -deathmatch +timelimit 10.0 "
 "+sv_forcerespawn 1 +sv_noautoaim 1 +sv_respawnprotect 1 +sv_spawnfarthest 1")
 
 # Name Your AI.
-game.addGameArgs("+name AI");
+game.add_game_args("+name AI");
 
 # Multiplayer requires the use of asynchronous modes.
 game.set_mode(Mode.ASYNC_PLAYER)
@@ -49,12 +49,12 @@ while not game.is_episode_finished():
 	# game.advance_action();
 	# continue;
 
-    s = game.get_state()
+	s = game.get_state()
     # Analyze the state.
 
-    game.make_action(choice(actions))
+	game.make_action(choice(actions))
     # Make your action.
 
-    print("Frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
+	print("Frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
 
 game.close()

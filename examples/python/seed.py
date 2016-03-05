@@ -70,7 +70,7 @@ for i in range(episodes):
 		print("State #" + str(s.number))
 		print("Game Variables:", misc)
 		print("Last Reward:", r)
-		print("Seed:", game->get_seed())
+		print("Seed:", game.get_seed())
 		print("=====================")
 
 		# Sleep some time because processing is too fast to watch.

@@ -13,14 +13,14 @@ game.load_config("../config/cig.cfg")
 game.set_doom_game_path("../../scenarios/freedoom2.wad")
 # game.set_doom_game_path("../../scenarios/doom2.wad")  # Not provided with environment due to licences
 
-game.set_doom_map("map01")      # Limited deathmatch.
-# game.set_doom_map("map02")    # Full deathmatch.
+game.set_doom_map("map01")	  # Limited deathmatch.
+# game.set_doom_map("map02")	# Full deathmatch.
 
 # Join existing game.
 game.add_game_args("-join 127.0.0.1") # Connect to a host for a multiplayer game.
 
 # Name Your AI.
-game.addGameArgs("+name AI");
+game.add_game_args("+name AI");
 
 # Multiplayer requires the use of asynchronous modes.
 game.set_mode(Mode.ASYNC_PLAYER)
@@ -43,12 +43,12 @@ while not game.is_episode_finished():
 	# game.advance_action();
 	# continue;
 
-    s = game.get_state()
-    # Analyze the state.
+	s = game.get_state()
+	# Analyze the state.
 
-    game.make_action(choice(actions))
-    # Make your action.
+	game.make_action(choice(actions))
+	# Make your action.
 
-    print("Frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
+	print("Frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
 
 game.close()
