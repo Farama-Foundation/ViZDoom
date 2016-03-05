@@ -1,5 +1,5 @@
 To test these scenarios:
-1. Build viziazdoom and python wrapper.
+1. Build vizdoom and python wrapper.
 2. Read README there and do what it says.
 3. Run spectator.py. Edit the script accordingly to use different scenarios (uncommenting some lines).
 

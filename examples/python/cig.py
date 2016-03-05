@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from __future__ import print_function
-from vizia import *
+from vizdoom import *
 from random import choice
 
 game = DoomGame()

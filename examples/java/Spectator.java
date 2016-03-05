@@ -35,7 +35,7 @@ public class Spectator {
 		//game.loadConfig("../config/take_cover.cfg");
 		game.setScreenResolution(ScreenResolution.RES_640X480);
 		game.setDoomGamePath("../../scenarios/doom2.wad");
-		game.setDoomEnginePath("../../bin/viziazdoom");
+		game.setDoomEnginePath("../../bin/vizdoom");
 		//Adds mouse support:
 		game.addAvailableButton(Button.TURN_LEFT_RIGHT_DELTA);
 		// Enables spectator mode, so you can play. Agent is supposed to watch you playing and learn from it.

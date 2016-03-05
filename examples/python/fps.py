@@ -9,9 +9,9 @@
 # to exclude copying process.
 #####################################################################
 from __future__ import print_function
-from vizia import *
+from vizdoom import *
 from random import choice
-from vizia import ScreenResolution as res
+from vizdoom import ScreenResolution as res
 from time import time
 
 # Some options:

@@ -1,8 +1,8 @@
-#include "ViziaDoomGame.h"
+#include "ViZDoomGame.h"
 #include <iostream>
 #include <vector>
 
-using namespace Vizia;
+using namespace vizdoom;
 
 int main(){
 

@@ -1,10 +1,10 @@
-#include "ViziaDoomGame.h"
+#include "ViZDoomGame.h"
 #include <iostream>
 #include <vector>
 #include <cstdlib>
 #inlucde <ctime>
 
-using namespace Vizia;
+using namespace ViZDoom;
 
 int main(){
 
@@ -12,7 +12,7 @@ int main(){
 
     DoomGame *game = new DoomGame();
 
-    game->setDoomEnginePath("../../bin/viziazdoom");
+    game->setDoomEnginePath("../../bin/vizdoom");
 
     game->setDoomGamePath("../../scenarios/freedoom2.wad");
     // game->setDoomGamePath("../../scenarios/doom2.wad");   # Not provided with environment due to licences.
