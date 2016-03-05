@@ -12,7 +12,7 @@
 # 
 #####################################################################
 from __future__ import print_function
-from vizia import *
+from vizdoom import *
 from time import sleep
 from time import time
 from random import choice

@@ -1,4 +1,4 @@
-To run examples in this directory you need to have vizia.so library and viziazdoom present (or symlinked).
+To run examples in this directory you need to have vizdoom.so library and vizdoom present (or symlinked).
 
-ln -s ../../bin/viziazdoom .
-ln -s ../../bin/python/vizia.so .
+ln -s ../../bin/vizdoom .
+ln -s ../../bin/python/vizdoom.so .

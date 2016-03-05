@@ -14,7 +14,7 @@
 # 
 #####################################################################
 from __future__ import print_function
-from vizia import *
+from vizdoom import *
 from random import choice
 import itertools as it
 from time import sleep

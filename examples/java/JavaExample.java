@@ -12,7 +12,7 @@ public static void main (String[] args) {
 	System.out.println("VIZIA MAIN EXAMPLE");
 
 
-    dg.setDoomEnginePath("../../bin/viziazdoom");
+    dg.setDoomEnginePath("../../bin/vizdoom");
     dg.setDoomGamePath("../../scenarios/doom2.wad");
     dg.setDoomScenarioPath("../../scenarios/basic.wad");
     dg.setDoomMap("map01");

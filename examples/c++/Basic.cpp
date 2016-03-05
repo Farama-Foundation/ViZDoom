@@ -1,10 +1,10 @@
-#include "ViziaDoomGame.h"
+#include "ViZDoomGame.h"
 #include <iostream>
 #include <vector>
 #include <cstdlib>
 #inlucde <ctime>
 
-using namespace Vizia;
+using namespace ViZDoom;
 
 int main() {
 

@@ -9,7 +9,7 @@
 # 
 #####################################################################
 from __future__ import print_function
-from vizia import *
+from vizdoom import *
 from time import sleep
 
 game = DoomGame()

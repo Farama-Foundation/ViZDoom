@@ -47,7 +47,7 @@ public class Seed {
 		game.LoadConfig("../config/predict_position.cfg")
 		*/
 		game.loadConfig("../config/basic.cfg");
-    		game.setDoomEnginePath("../../bin/viziazdoom");
+    		game.setDoomEnginePath("../../bin/vizdoom");
     		game.setDoomGamePath("../../scenarios/doom2.wad");
 		game.setScreenResolution(ScreenResolution.RES_640X480);
 

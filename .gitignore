@@ -1,6 +1,12 @@
-#Python 
+/bin
+Makefile
+ImportExecutables.cmake
+**/link-make
+
+**/vizdoom
+**/vizdoom.pk3
+
 *~
-**.pyc
 **.o
 **.so
 **/build
@@ -11,15 +17,14 @@
 **/install_manifest.txt
 .idea
 
-#Java
+# Python 
+**.pyc
+
+# Java
 **.class
-/bin
-Makefile
-ImportExecutables.cmake
-**/link-make
 
-
-#copied from the original zdoom repository (and modified)
+# ZDoom
+# Copied from the original zdoom repository (and modified)
 /Debug
 **.ncb
 **.suo
@@ -53,7 +58,7 @@ ImportExecutables.cmake
 **/zdoom
 **/zdoom.pk3
 
-#not sure if should be ignored:
+# not sure if should be ignored:
 */dumb/libdumb.a
 */gdtoa
 */game-music-emu/gme/libgme.a
@@ -62,21 +67,14 @@ ImportExecutables.cmake
 **/*.log
 **/example
 
-vizia_api_src/controllerExample
-vizia_api_src/doom2.wad
-vizia_api_src/mainExample
-vizia_api_src/s1_b.wad
-vizia_api_src/end_test.wad
-
 **/link-make
-**/viziazdoom
 **/mytester.py
 
-# Licensed ads, scenarios backups and personal configurations
+# Licensed wads, scenarios backups and personal configurations
 **.bak
 **/doom2.wad
 **/doom.wad
-**/viziazdoom.ini
+**/vizdoom.ini
 **/freedoom2.wad
 **/freedoom1.wad
 **/freedm.wad

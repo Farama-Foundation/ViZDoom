@@ -10,7 +10,7 @@
 # 
 #####################################################################
 from __future__ import print_function
-from vizia import DoomGame, ScreenResolution
+from vizdoom import DoomGame, ScreenResolution
 from random import choice
 import itertools as it
 from time import sleep
