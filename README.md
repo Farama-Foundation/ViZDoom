@@ -10,7 +10,7 @@ Doom-based environment for visual learning. ViZDoom uses [Zdoom engine]( https:/
 
 ---
 ## Building
-Compilation for Windows is discouraged and downloading already [compiled version](http://www.cs.put.poznan.pl/visualdoomai/TOBEGIVENLATER) is encouraged.
+Compilation on Windows is discouraged and downloading already [compiled Windows version](http://www.cs.put.poznan.pl/visualdoomai/TOBEGIVENLATER) is the suggested solution.
 
 ###Prerequisites:
 * Linux
