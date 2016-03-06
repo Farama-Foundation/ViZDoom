@@ -2,11 +2,12 @@
 
 Doom-based environment for visual learning. ViZDoom uses [Zdoom engine]( https://github.com/rheit/zdoom) to provide the game mechanics.
 
+---
 ## Supported Languages:
 * Python 2
 * Java
 * C++
-
+---
 ## Building
 Compilation for Windows is discouraged and downloading already [compiled version](http://www.cs.put.poznan.pl/visualdoomai/TOBEGIVENLATER) is encouraged.
 
@@ -36,6 +37,7 @@ Java and Python bindings are optional, to build them additional cmake flags are 
 ```bash
 -DBUILD_PYTHON=ON
 ```
+---
 ##Examples
 
 To run provided examples [freedoom2.wad]( https://freedoom.github.io/download.html) file is needed and should be placed in scenarios subdirectory.
