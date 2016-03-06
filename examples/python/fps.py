@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 #####################################################################
-# This script test performance in frames per second.
+# This script tests performance in frames per second.
 # Change iters, resolution, window visibility, use get_ state or not.
 # It should give you some idea how fast the framework can work on
 # your hardware. The test involes copying the state to make it more 

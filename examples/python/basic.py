@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #####################################################################
-# This script presents how use most basic features of the framework.
-# It configures the engine, and makes agent perfrom random actions.
+# This script presents how to usethe most basic features of the environment.
+# It configures the engine, and makes the agent perform random actions.
 # It also gets current state and reward earned with the action.
 # <episodes> number of episodes are played. 
 # Random combination of buttons is chosen for every action.
