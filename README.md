@@ -7,6 +7,7 @@ Doom-based environment for visual learning. ViZDoom uses [Zdoom engine]( https:/
 * Python 2
 * Java
 * C++
+
 ---
 ## Building
 Compilation for Windows is discouraged and downloading already [compiled version](http://www.cs.put.poznan.pl/visualdoomai/TOBEGIVENLATER) is encouraged.
@@ -22,18 +23,18 @@ Compilation for Windows is discouraged and downloading already [compiled version
 
 Additionaly [Zdoom dependancies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
-##Building commands
+###Building commands
 ```bash
 cmake -DCMAKE_BUILD_TYPE=Release
 make
 ```
-###Options
+####Options
 Java and Python bindings are optional, to build them additional cmake flags are necessary (they can be combined).
-####Java Binding
+#####Java Binding
 ```bash
 -DBUILD_JAVA=ON
 ```
-####Python Binding
+#####Python Binding
 ```bash
 -DBUILD_PYTHON=ON
 ```
