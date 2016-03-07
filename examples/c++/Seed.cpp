@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib>
-#inlucde <ctime>
+#include <ctime>
 
 using namespace vizdoom;
 

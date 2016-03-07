@@ -1,6 +1,8 @@
 #include "ViZDoomGame.h"
 #include <iostream>
 #include <vector>
+#include <cstdlib>
+#include <ctime>
 
 using namespace vizdoom;
 
@@ -8,19 +10,15 @@ int main(){
 
     DoomGame* game = new DoomGame();
 
-    std::cout << "MULTIPLAYER EXAMPLE\n\n";
+    std::cout << "\n\nMULTIPLAYER EXAMPLE\n\n";
 
-    // Use CIG example config or Your own.
     game->loadConfig("../../examples/config/multi.cfg");
 
     game->setDoomGamePath("../../scenarios/freedoom2.wad");
     // game->setDoomGamePath("../../scenarios/doom2.wad");     // Not provided with environment due to licences.
 
-    // Host game.
-    game.addGameArgs("-host 2 -deathmatch +map map01");
-
-    // Or join existing game.
-    // game->addGameArgs("-join 127.0.0.1");       // Connect to a host for a multiplayer game.
+    // Join existing game (see MultiplayerHost.cpp example)
+    game->addGameArgs("-join 127.0.0.1");       // Connect to a host for a multiplayer game.
 
     game->setMode(ASYNC_PLAYER);                // Multiplayer requires the use of asynchronous modes.
     game->init();
