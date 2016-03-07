@@ -8,7 +8,7 @@ int main(){
 
     DoomGame* game = new DoomGame();
 
-    std::cout << "CIG BOTS EXAMPLE\n\n";
+    std::cout << "\n\nCIG BOTS EXAMPLE\n\n";
 
 
     // Use CIG example config or Your own.

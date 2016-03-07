@@ -2,9 +2,9 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib>
-#inlucde <ctime>
+#include <ctime>
 
-using namespace ViZDoom;
+using namespace VizDoom;
 
 int main(){
 
@@ -46,7 +46,7 @@ int main(){
 
     // Delta buttons in spectator modes correspond to mouse movements.
     // Maximum allowed values also apply to spectator modes.
-    // game->addGameArgs("+freelook 1");    //Use this to enable look around with the mouse.
+    // game->addGameArgs("+freelook 1");    //Use this to enable looking around with the mouse.
     // game->setMode(SPECTATOR);
 
     game->setWindowVisible(True);
