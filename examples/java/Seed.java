@@ -11,65 +11,47 @@ import java.util.Arrays;
 import java.lang.Math;
 public class Seed {
 
-	//Example function creating list of all possible moves
-	public static List possibilities(int x, long pos){
-			List<int[]> list = new ArrayList<int[]>();
-			for (long k=0;k<pos;k++){
-				int [] action = new int[x];
-				for (int j=0;j<x;j++){
-				
-					if ((k & (long)(1<<(j))) != 0){
-						action[j]=1;
-					}
-					else {
-						action[j]=0;
-					}
-				}
-				list.add(action);
-				System.out.println(Arrays.toString(action));
-			}
-			return list;
-	}
-
 	public static void main (String[] args) {
+		
+		System.out.println("\nSEED EXAMPLE\n");
+		ViZDoomGameJava game= new ViZDoomGameJava();
+		
+		// Choose scenario config file you wish to be watched by agent.
+    		// Don't load two configs cause the second will overwrite the first one.
+    		// Multiple config files are ok but combining these ones doesn't make much sense.
 
-		ViziaDoomGameJava game= new ViziaDoomGameJava();
-		/*
-		Choose the scenario config file you wish to watch.
-		Don't load two configs cause the second will overrite the first one.
-		Multiple config files are ok but combining these ones doesn't make much sense.
-
-		game.LoadConfig("../config/deadly_corridor.cfg")
-		game.LoadConfig("../config/defend_the_center.cfg")
-		game.LoadConfig("../config/defend_the_line.cfg")
-		game.LoadConfig("../config/health_gathering.cfg")
-		game.LoadConfig("../config/my_way_home.cfg")
-		game.LoadConfig("../config/predict_position.cfg")
-		*/
+		//game.loadConfig("../config/deadly_corridor.cfg")
+		//game.loadConfig("../config/defend_the_center.cfg")
+		//game.loadConfig("../config/defend_the_line.cfg")
+		//game.loadConfig("../config/health_gathering.cfg")
+		//game.loadConfig("../config/my_way_home.cfg")
+		//game.loadConfig("../config/predict_position.cfg")
+		
 		game.loadConfig("../config/basic.cfg");
     		game.setDoomEnginePath("../../bin/vizdoom");
     		game.setDoomGamePath("../../scenarios/doom2.wad");
+
 		game.setScreenResolution(ScreenResolution.RES_640X480);
 
 		int seed = 1234;
-		//Sets the seed. It could be after init as well but it's not needed here.
+		// Sets the seed. It could be after init as well.
 		game.setSeed(seed);
 		game.init();
 
-		int actionsNum = game.getAvailableButtonsSize();
-		//Number of possible moves
-		long pos = (long)Math.pow(2,actionsNum);
-		
-		List<int[]> actionList = possibilities(actionsNum, pos);
-		int episodes = 10;
-		long sleepTime = 28;
+		List<int[]> actions = new ArrayList<int[]>();
+	    	actions.add(new int[] {1, 0, 1});
+		actions.add(new int[] {0, 1, 1});
+		actions.add(new int[] {0, 0, 1});
 
+	    	Random ran = new Random();
+
+		int episodes = 10;
 
 		for (int i=0;i<episodes;i++){
-			int b=i+1;
-			System.out.println("Episode #" + b);
+
+			System.out.println("Episode #" + (i+1));
 			game.newEpisode();
-			Random rn = new Random();
+
 			while ( !game.isEpisodeFinished()){
 				// Gets the state and possibly to something with it
 				GameState s = game.getState();
@@ -77,32 +59,21 @@ public class Seed {
 				int[] gameVariables = s.gameVariables;
 
 
-				//Selecting made action - random one in this example
-				int[] selectedAction = actionList.get(rn.nextInt((int)pos));
-				// Check which action you chose!
-				double reward = game.makeAction(selectedAction);
+ 				// Make random action and get reward
+				double reward = game.makeAction(actions.get(ran.nextInt(3)));
 		
 		
 				System.out.println("State #" + s.number);
-				System.out.println("Game Variables: " + Arrays.toString(gameVariables));
-				System.out.println("Made Action: " + Arrays.toString(selectedAction));
-				System.out.println("Last Reward: " + reward);
+				System.out.println("Action Reward: " + reward);
+				System.out.println("Seed: " + game.getSeed());
 				System.out.println("=====================");
 
-				// Sleep some time because processing is too fast to watch.
-				if (sleepTime>0)
-				{
-					try {
-					    Thread.sleep(sleepTime);                 
-					} catch(InterruptedException ex) {
-					    Thread.currentThread().interrupt();
-					}
-				}
 			}
 			System.out.println("Episode finished!");
 			System.out.println("Summary reward: " + game.getSummaryReward());
 			System.out.println("************************");
 		}
+ 		// It will be done automatically in destructor but after close You can init it again with different settings.
 		game.close();
 	}
 

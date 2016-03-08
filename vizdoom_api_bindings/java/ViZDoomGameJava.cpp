@@ -52,6 +52,53 @@ JNIEXPORT jdouble JNICALL Java_ViZDoomGameJava_DoomFixedToDouble
 
 /*
  * Class:     ViZDoomGameJava
+ * Method:    isBinaryButton
+ * Signature: (Lenums/Button)Z
+ */
+JNIEXPORT jboolean JNICALL Java_ViZDoomGameJava_isBinaryButton
+  (JNIEnv *env, jobject obj, jobject enumVal){
+	jclass jclassEnum = env->FindClass("enums/Button");
+	if(jclassEnum != 0)
+    	{	
+        	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
+		if (ordinal_ID == 0){
+			return 0;
+		}
+		jint value = env->CallIntMethod(enumVal, ordinal_ID);
+		Button ret=static_cast<Button>(value);
+		bool retval = isBinaryButton(ret);
+	// Delete local references created		
+        	env->DeleteLocalRef(jclassEnum);
+		return retval;
+    	}
+}
+
+/*
+ * Class:     ViZDoomGameJava
+ * Method:    isDeltaButton
+ * Signature: (Lenums/Button)Z
+ */
+JNIEXPORT jboolean JNICALL Java_ViZDoomGameJava_isDeltaButton
+    (JNIEnv *env, jobject obj, jobject enumVal){
+	jclass jclassEnum = env->FindClass("enums/Button");
+	if(jclassEnum != 0)
+    	{	
+        	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
+		if (ordinal_ID == 0){
+			return 0;
+		}
+		jint value = env->CallIntMethod(enumVal, ordinal_ID);
+		Button ret=static_cast<Button>(value);
+		bool retval = isDeltaButton(ret);
+	// Delete local references created		
+        	env->DeleteLocalRef(jclassEnum);
+		return retval;
+    	}
+
+}
+
+/*
+ * Class:     ViZDoomGameJava
  * Method:    DoomGame
  * Signature: ()V
  */
@@ -548,6 +595,50 @@ JNIEXPORT jboolean JNICALL Java_ViZDoomGameJava_isEpisodeFinished
 
 /*
  * Class:     ViZDoomGameJava
+ * Method:    isPlayerDead
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_ViZDoomGameJava_isPlayerDead
+  (JNIEnv *env, jobject obj){
+	try{
+		DoomGame* game=GetObject(env,obj);
+		bool ret=game->isPlayerDead();
+		return (jboolean)ret;
+	}
+	catch (DoomIsNotRunningException& e)
+  	{	
+
+ 		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
+        	env->ThrowNew(DoomIsNotRunningException, e.what());
+		return 0;
+  	}
+	catch (Exception& e)
+  	{	
+
+ 		jclass Exception = env->FindClass("errors/Exception");
+        	env->ThrowNew(Exception, e.what());
+		return 0;
+  	}
+	catch (std::exception& e)
+  	{
+    		std::cout << "C++ unknown exception"<< '\n';
+		return 0;
+  	}
+}
+
+/*
+ * Class:     ViZDoomGameJava
+ * Method:    respawnPlayer
+ * Signature: ()Z
+ */
+JNIEXPORT void JNICALL Java_ViZDoomGameJava_respawnPlayer
+  (JNIEnv *env, jobject obj){
+		DoomGame* game=GetObject(env,obj);
+		game->respawnPlayer();
+
+}
+/*
+ * Class:     ViZDoomGameJava
  * Method:    addAvailableButton
  * Signature: (Lenums/Button;)V
  */
@@ -839,7 +930,7 @@ JNIEXPORT void JNICALL Java_ViZDoomGameJava_setMode
  * Method:    getGameVariable
  * Signature: (Lenums/GameVariable;)I
  */
-JNIEXPORT jint JNICALL Java_ViZDoomGameJava_getGameVar
+JNIEXPORT jint JNICALL Java_ViZDoomGameJava_getGameVariable
   (JNIEnv *env, jobject obj, jobject enumVal){
 	DoomGame* game=GetObject(env,obj);
 	jclass jclassEnum = env->FindClass("enums/GameVariable");
@@ -1101,6 +1192,18 @@ JNIEXPORT void JNICALL Java_ViZDoomGameJava_setEpisodeTimeout
 	DoomGame* game=GetObject(env,obj);
 	game->setEpisodeTimeout(tics);
 
+}
+
+/*
+ * Class:     ViZDoomGameJava
+ * Method:    getEpisodeTime
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_ViZDoomGameJava_getEpisodeTime
+    (JNIEnv *env, jobject obj){
+	DoomGame* game=GetObject(env,obj);
+	int ret = game->getEpisodeTime();
+	return ret;
 }
 
 /*

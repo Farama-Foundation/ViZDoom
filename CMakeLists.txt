@@ -128,7 +128,7 @@ if(BUILD_JAVA)
     target_link_libraries (vizdoomjava ${VIZDOOM_JAVA_LIBS} vizdoomstatic)
 
 	exec_program(javac .
-             ARGS ./vizdoom_api_bindings/java/State.java)
+             ARGS ./vizdoom_api_bindings/java/GameState.java)
 	exec_program(javac .
              ARGS ./vizdoom_api_bindings/java/errors/*.java)
 	exec_program(javac .
