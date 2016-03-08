@@ -33,6 +33,23 @@ JNIEXPORT jint JNICALL Java_ViZDoomGameJava_Ms2DoomTics
 JNIEXPORT jdouble JNICALL Java_ViZDoomGameJava_DoomFixedToDouble
   (JNIEnv *, jobject, jint);
 
+
+/*
+ * Class:     ViZDoomGameJava
+ * Method:    isBinaryButton
+ * Signature: (Lenums/Button)Z
+ */
+JNIEXPORT jboolean JNICALL Java_ViZDoomGameJava_isBinaryButton
+  (JNIEnv *, jobject, jobject);
+
+/*
+ * Class:     ViZDoomGameJava
+ * Method:    isDeltaButton
+ * Signature: (Lenums/Button)Z
+ */
+JNIEXPORT jboolean JNICALL Java_ViZDoomGameJava_isDeltaButton
+  (JNIEnv *, jobject, jobject);
+
 /*
  * Class:     ViZDoomGameJava
  * Method:    DoomGame
@@ -164,6 +181,24 @@ JNIEXPORT jboolean JNICALL Java_ViZDoomGameJava_isEpisodeFinished
 
 /*
  * Class:     ViZDoomGameJava
+ * Method:    isPlayerDead
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_ViZDoomGameJava_isPlayerDead
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     ViZDoomGameJava
+ * Method:    respawnPlayer
+ * Signature: ()Z
+ */
+JNIEXPORT void JNICALL Java_ViZDoomGameJava_respawnPlayer
+  (JNIEnv *, jobject);
+
+
+
+/*
+ * Class:     ViZDoomGameJava
  * Method:    addAvailableButton
  * Signature: (Lenums/Button;)V
  */
@@ -287,7 +322,7 @@ JNIEXPORT void JNICALL Java_ViZDoomGameJava_setMode
  * Method:    getGameVariable
  * Signature: (Lenums/GameVariable;)I
  */
-JNIEXPORT jint JNICALL Java_ViZDoomGameJava_getGameVar
+JNIEXPORT jint JNICALL Java_ViZDoomGameJava_getGameVariable
   (JNIEnv *, jobject, jobject);
 
 /*
@@ -433,6 +468,14 @@ JNIEXPORT jint JNICALL Java_ViZDoomGameJava_getEpisodeTimeout
  */
 JNIEXPORT void JNICALL Java_ViZDoomGameJava_setEpisodeTimeout
   (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     ViZDoomGameJava
+ * Method:    getEpisodeTime
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_ViZDoomGameJava_getEpisodeTime
+  (JNIEnv *, jobject);
 
 /*
  * Class:     ViZDoomGameJava

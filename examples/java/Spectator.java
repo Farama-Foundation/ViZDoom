@@ -19,7 +19,7 @@ public class Spectator {
 
 	public static void main (String[] args) {
 	
-		ViziaDoomGameJava game= new ViziaDoomGameJava();
+		ViZDoomGameJava game= new ViZDoomGameJava();
 		// Choose scenario config file you wish to watch.
 		// Don't load two configs cause the second will overrite the first one.
 		// Multiple config files are ok but combining these ones doesn't make much sense.
@@ -44,10 +44,9 @@ public class Spectator {
 		game.init();
 
 		int episodes = 10;
-		System.out.println("");
 		for (int i=0;i<episodes;i++){
-			int b=i+1;
-			System.out.println("Episode #" +b);
+
+			System.out.println("Episode #" +(i+1));
 	
 			game.newEpisode();
 			while (! game.isEpisodeFinished()){
@@ -59,10 +58,10 @@ public class Spectator {
 				boolean[] a = game.getLastAction();
 				double r = game.getLastReward();
 		
-				System.out.println("state #"+s.number);
-				System.out.println("game variables: "+Arrays.toString(misc));
-				System.out.println("action: "+ Arrays.toString(a));
-				System.out.println("reward: "+r);
+				System.out.println("State #"+s.number);
+				System.out.println("Game Variables: "+Arrays.toString(misc));
+				System.out.println("Action: "+ Arrays.toString(a));
+				System.out.println("Reward: "+r);
 				System.out.println("=====================");
 			}
 	

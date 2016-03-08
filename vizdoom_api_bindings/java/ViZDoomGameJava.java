@@ -3,19 +3,22 @@ import java.util.List;
 import errors.*;
 import enums.*;
 
-public class DoomGameJava{
+public class ViZDoomGameJava{
 	static {
       		System.loadLibrary("vizdoom");
    	}
 
 	public long internalPtr = 0; 
-	public DoomGameJava(){
+	public ViZDoomGameJava(){
 		DoomGame();
 	}
 
 	public native int DoomTics2Ms(int tics);
  	public native int Ms2DoomTics(int ms);
 	public native double DoomFixedToDouble(int doomFixed);
+	public native boolean isBinaryButton(Button button);
+    	public native boolean isDeltaButton(Button button);
+	
 	private native void DoomGame(); 
 	public native boolean loadConfig(String file); 
 	
@@ -26,11 +29,11 @@ public class DoomGameJava{
 	public native boolean isRunning(); 
 	
 	public native void setAction(int[] actions);
-    public native void advanceAction();
-    public native void advanceAction(int tics);
-    public native void advanceAction(int tics, boolean stateUpdate, boolean renderOnly);
+    	public native void advanceAction();
+    	public native void advanceAction(int tics);
+    	public native void advanceAction(int tics, boolean stateUpdate, boolean renderOnly);
 	public native double makeAction(int[] actions);
-    public native double makeAction(int[] actions, int tics);
+    	public native double makeAction(int[] actions, int tics);
 
 
 	public native GameState getState(); 
@@ -39,6 +42,9 @@ public class DoomGameJava{
 
 	public native boolean isNewEpisode();
 	public native boolean isEpisodeFinished();
+
+	public native boolean isPlayerDead(); 
+        public native void respawnPlayer(); 
 
 	public native void addAvailableButton(Button button); 
 	public native void addAvailableButton(Button button, int maxValue); 	
@@ -50,12 +56,12 @@ public class DoomGameJava{
 	public native void addAvailableGameVariable(GameVariable var);
 
 	public native void clearAvailableGameVariables();
-    public native int getAvailableGameVariablesSize();
+    	public native int getAvailableGameVariablesSize();
 
  	public native void addGameArgs(String arg);
-    public native void clearGameArgs();
+    	public native void clearGameArgs();
 
-    public native void sendGameCommand(String cmd);
+    	public native void sendGameCommand(String cmd);
 
 	public native int[] getGameScreen();
 	
@@ -72,31 +78,33 @@ public class DoomGameJava{
 
 	public native int getGameVariable(GameVariable var);
 
-    public native double getLivingReward();
-    public native  void setLivingReward(double livingReward);
-    public native double getDeathPenalty();
-    public native void setDeathPenalty(double deathPenalty);
+    	public native double getLivingReward();
+    	public native  void setLivingReward(double livingReward);
+    	public native double getDeathPenalty();
+    	public native void setDeathPenalty(double deathPenalty);
 
-    public native double getLastReward();
-    public native double getSummaryReward();
+    	public native double getLastReward();
+    	public native double getSummaryReward();
 
-    public native void setDoomEnginePath(String path);
-    public native void setDoomGamePath(String path);
-    public native void setDoomScenarioPath(String path);
-    public native void setDoomMap(String map);
-    public native void setDoomSkill(int skill);
-    public native void setDoomConfigPath(String path);
+	public native void setDoomEnginePath(String path);
+	public native void setDoomGamePath(String path);
+	public native void setDoomScenarioPath(String path);
+	public native void setDoomMap(String map);
+	public native void setDoomSkill(int skill);
+	public native void setDoomConfigPath(String path);
 
-    public native int getSeed();
-    public native void setSeed(int seed);
+    	public native int getSeed();
+    	public native void setSeed(int seed);
 
-    public native int getEpisodeStartTime();
-    public native void setEpisodeStartTime(int tics);
+    	public native int getEpisodeStartTime();
+    	public native void setEpisodeStartTime(int tics);
 
-    public native int getEpisodeTimeout();
-    public native void setEpisodeTimeout(int tics);
+    	public native int getEpisodeTimeout();
+    	public native void setEpisodeTimeout(int tics);
 
-    public native void setScreenResolution(ScreenResolution resolution);
+	public native int getEpisodeTime();
+
+    	public native void setScreenResolution(ScreenResolution resolution);
     public native void setScreenFormat(ScreenFormat format);
     public native void setRenderHud(boolean hud);
     public native void setRenderWeapon(boolean weapon);
