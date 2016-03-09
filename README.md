@@ -1,25 +1,25 @@
 #ViZDoom
 
-ViZDoom allows to code AI bots for Doom which play using only the visual information (the screen buffer). It is primarly intended for research in machine visual learning, and reinforcement deep learning, in particular.
+ViZDoom allows to develop AI bots that play Doom using only the visual information (the screen buffer). It is primarly intended for research in machine visual learning, and reinforcement deep learning, in particular.
 
-ViZDoom is based on [Zdoom engine]( https://github.com/rheit/zdoom) to provide the game mechanics.
+ViZDoom is based on [ZDoom]( https://github.com/rheit/zdoom) to provide the game mechanics.
 
-## Features:
+## Features
 * API for C++, Python and Java,
 * Easy-to-create custom scenarios (examples available),
 * Fast (>2000 frames per second),
-* Single-player, multi-player, sync and async modes,
+* Single-player (sync or async) and multi-player modes,
 * Customizable resolution and rendering parameters,
 * Off-screen rendering,
 * Lightweight (few MBs),
-* Linux and Windows.
+* Supports Linux and Windows.
 
 ViZDoom API is reinforcement learning friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
 ---
 ## Building
 
-###Prerequisites:
+###Prerequisites
 * cmake 2.4+
 * make
 * gcc 4.0+
@@ -47,10 +47,14 @@ Java and Python bindings are optional; to build them, appropriate cmake flags ha
 ```bash
 -DBUILD_PYTHON=ON
 ```
+
+###Building on Windows
+``TODO``
+
 ---
 ##Examples
 
-To run the provided examples, download [freedoom2.wad]( https://freedoom.github.io/download.html) and place it in the `scenarios` subdirectory.
+To run the provided examples, download [freedoom2.wad]( https://freedoom.github.io/download.html) and place it in the ``scenarios`` subdirectory.
 
 * [Python](https://github.com/Marqt/ViZDoom/tree/master/examples/python).
 * [C++](https://github.com/Marqt/ViZDoom/tree/master/examples/c%2B%2B)
