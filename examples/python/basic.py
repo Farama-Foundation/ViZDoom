@@ -31,7 +31,7 @@ game = DoomGame()
 #game.load_config("../../examples/config/basic.cfg")
 
 # Sets path to vizdoom engine executive which will be spawned as a separate process. Default is just the same.
-game.set_doom_engine_path("vizdoom")
+game.set_doom_engine_path("../../bin/vizdoom")
 
 # Sets path to doom2 iwad resource file which contains the actual doom game. Default is "./doom2.wad".
 game.set_doom_game_path("../../scenarios/freedoom2.wad")
