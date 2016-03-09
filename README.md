@@ -1,6 +1,6 @@
 #ViZDoom
 
-ViZDoom allows to develop AI bots that play Doom using only the visual information (the screen buffer). It is primarly intended for research in machine visual learning, and reinforcement deep learning, in particular.
+ViZDoom allows developing AI bots that play Doom using only the visual information (the screen buffer). It is primarily intended for research in machine visual learning, and reinforcement deep learning, in particular.
 
 ViZDoom is based on [ZDoom]( https://github.com/rheit/zdoom) to provide the game mechanics.
 
@@ -27,7 +27,7 @@ ViZDoom API is reinforcement learning friendly (suitable also for learning from 
 * Python 2.6+ with Numpy and Boost.Python for Pyhon binding (optional)
 * Java compiler and Java for Java binding (optional)
 
-Additionaly, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
+Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
 ###Compiled versions
 We provide a compiled [version for Windows](http://www.cs.put.poznan.pl/visualdoomai/TOBEGIVENLATER).
