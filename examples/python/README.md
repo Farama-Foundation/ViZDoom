@@ -1,10 +1,6 @@
 To run the examples, [freedoom2.wad]( https://freedoom.github.io/download.html) should be placed in the  ``../scenarios`` subdirectory.
-Furthermore, you need to have ``vizdoom.so`` and ``vizdoom`` present (or symlinked) in the ``examples/python`` directory.
+Furthermore, you need to have ``vizdoom.so`` present (or symlinked) in the ``examples/python`` directory. These steps should be done automatically by the building process.
 
-```bash
-ln -s ../../bin/vizdoom .
-ln -s ../../bin/python/vizdoom.so .
-```
 ---
 ##Examples
 
