@@ -1,19 +1,25 @@
 #ViZDoom
 
-Doom-based environment for visual learning. ViZDoom uses [Zdoom engine]( https://github.com/rheit/zdoom) to provide the game mechanics.
+ViZDoom allows to code AI bots for Doom which play using only the visual information (the screen buffer). It is primarly intended for research in machine visual learning, and reinforcement deep learning, in particular.
 
----
-## Supported Languages:
-* Python 2
-* Java
-* C++
+ViZDoom is based on [Zdoom engine]( https://github.com/rheit/zdoom) to provide the game mechanics.
+
+## Features:
+* API for C++, Python and Java,
+* Easy-to-create custom scenarios (examples available),
+* Fast (>2000 frames per second),
+* Single-player, multi-player, sync and async modes,
+* Customizable resolution and rendering parameters,
+* Off-screen rendering,
+* Lightweight (few MBs),
+* Linux and Windows.
+
+ViZDoom API is reinforcement learning friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
 ---
 ## Building
-Compilation on Windows is discouraged and downloading already [compiled Windows version](http://www.cs.put.poznan.pl/visualdoomai/TOBEGIVENLATER) is the suggested solution.
 
 ###Prerequisites:
-* Linux
 * cmake 2.4+
 * make
 * gcc 4.0+
@@ -21,7 +27,10 @@ Compilation on Windows is discouraged and downloading already [compiled Windows 
 * Python 2.6+ with Numpy and Boost.Python for Pyhon binding (optional)
 * Java compiler and Java for Java binding (optional)
 
-Additionaly [Zdoom dependancies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
+Additionaly, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
+
+###Compiled versions
+We provide a compiled [version for Windows](http://www.cs.put.poznan.pl/visualdoomai/TOBEGIVENLATER).
 
 ###Building commands
 ```bash
@@ -29,7 +38,7 @@ cmake -DCMAKE_BUILD_TYPE=Release
 make
 ```
 ####Options
-Java and Python bindings are optional, to build them additional cmake flags are necessary (they can be combined).
+Java and Python bindings are optional; to build them, appropriate cmake flags have to be set.
 #####Java Binding
 ```bash
 -DBUILD_JAVA=ON
@@ -41,11 +50,8 @@ Java and Python bindings are optional, to build them additional cmake flags are 
 ---
 ##Examples
 
-To run provided examples [freedoom2.wad]( https://freedoom.github.io/download.html) file is needed and should be placed in scenarios subdirectory.
+To run the provided examples, download [freedoom2.wad]( https://freedoom.github.io/download.html) and place it in the `scenarios` subdirectory.
 
-###Python
-To check examples in Python go to [examples/python](https://github.com/Marqt/ViZDoom/tree/master/examples/python) and read README file.
-###C++
- TODO
-###Java
- TODO
+* [Python](https://github.com/Marqt/ViZDoom/tree/master/examples/python).
+* [C++](https://github.com/Marqt/ViZDoom/tree/master/examples/c%2B%2B)
+* [Java](https://github.com/Marqt/ViZDoom/tree/master/examples/java)
