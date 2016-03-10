@@ -5,7 +5,8 @@ namespace vizdoom {
     using boost::python::tuple;
     using boost::python::api::object;
     using boost::python::numeric::array;
-#define PY_NONE object()
+
+    #define PY_NONE object()
 
     DoomGamePython::DoomGamePython() {
         boost::python::numeric::array::set_module_and_type("numpy", "ndarray");

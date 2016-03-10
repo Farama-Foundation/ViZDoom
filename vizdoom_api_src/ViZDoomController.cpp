@@ -956,7 +956,7 @@ namespace vizdoom {
 
 //SM FUNCTIONS 
     void DoomController::SMInit() {
-        this->SMName = SM_NAME_BASE + instanceId;
+        this->SMName = std::string(SM_NAME_BASE) + instanceId;
         //bip::shared_memory_object::remove(this->SMName.c_str());
         try {
             this->SM = bip::shared_memory_object(bip::open_only, this->SMName.c_str(), bip::read_write);
@@ -1000,8 +1000,8 @@ namespace vizdoom {
 //MQ FUNCTIONS
     void DoomController::MQInit() {
 
-        this->MQControllerName = MQ_NAME_CTR_BASE + instanceId;
-        this->MQDoomName = MQ_NAME_DOOM_BASE + instanceId;
+        this->MQControllerName = std::string(MQ_NAME_CTR_BASE) + instanceId;
+        this->MQDoomName = std::string(MQ_NAME_DOOM_BASE) + instanceId;
 
         try {
             bip::message_queue::remove(this->MQControllerName.c_str());
