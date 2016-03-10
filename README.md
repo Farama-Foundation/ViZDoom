@@ -54,7 +54,7 @@ Java and Python bindings are optional; to build them, appropriate cmake flags ha
 ---
 ##Examples
 
-To run the provided examples, download [freedoom2.wad]( https://freedoom.github.io/download.html) and place it in the ``scenarios`` subdirectory.
+Before running the provided examples, make sure that [freedoom2.wad]( https://freedoom.github.io/download.html) is placed it in the ``scenarios`` subdirectory (it should be done automatically by the building process).
 
 * [Python](https://github.com/Marqt/ViZDoom/tree/master/examples/python).
 * [C++](https://github.com/Marqt/ViZDoom/tree/master/examples/c%2B%2B)
