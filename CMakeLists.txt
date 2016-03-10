@@ -1,5 +1,5 @@
 cmake_minimum_required( VERSION 2.4 )
-project(ViZDoomEnvironment)
+project(ViZDoom)
 
 option(BUILD_PYTHON "Build ViZDoom API Python binding." OFF)
 option(BUILD_JAVA "Build ViZDoom API Java binding." OFF)
@@ -9,37 +9,76 @@ if(COMMAND cmake_policy)
 endif(COMMAND cmake_policy)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
-set(Boost_USE_STATIC_LIBS OFF)
-set(Boost_USE_MULTITHREADED ON)
-#set(Boost_USE_STATIC_RUNTIME OFF)
-set(Boost_USE_DEBUG_RUNTIME OFF)
 
+# System dependent settings    
+if( UNIX )
+
+	set(Boost_USE_STATIC_LIBS OFF)
+	set(Boost_USE_MULTITHREADED ON)
+	set(Boost_USE_STATIC_RUNTIME OFF)
+
+endif()
+
+if( WIN32 )
+
+	set(Boost_USE_STATIC_LIBS ON)
+	set(Boost_USE_MULTITHREADED ON)
+	set(Boost_USE_STATIC_RUNTIME ON)
+
+	macro(get_WIN32_WINNT version)
+		if (WIN32 AND CMAKE_SYSTEM_VERSION)
+			set(ver ${CMAKE_SYSTEM_VERSION})
+			string(REPLACE "." "" ver ${ver})
+			string(REGEX REPLACE "([0-9])" "0\\1" ver ${ver})
+
+			set(${version} "0x${ver}")
+		endif()
+	endmacro()
+
+	get_WIN32_WINNT(ver)
+	add_definitions(-D_WIN32_WINNT=${ver})
+
+endif()
+
+# Compiler dependent settings     
+if(CMAKE_COMPILER_IS_GNUCXX)
+
+    add_definitions("-fPIC")
+	
+endif()  
+
+if( MSVC )
+
+	string(REPLACE "/MD " "/MT " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE} )
+	string(REPLACE "/MD " "/MT " CMAKE_CXX_FLAGS_MINSIZEREL ${CMAKE_CXX_FLAGS_MINSIZEREL} )
+	string(REPLACE "/MD " "/MT " CMAKE_CXX_FLAGS_RELWITHDEBINFO ${CMAKE_CXX_FLAGS_RELWITHDEBINFO} )
+	string(REPLACE "/MDd " "/MTd " CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} )
+	
+endif()
+
+
+# Targets
 add_subdirectory( vizdoom_src )
 
-find_package(Boost COMPONENTS system filesystem thread REQUIRED)
+find_package(Boost COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
 find_package(Threads REQUIRED)
 
 set( VIZDOOM_INCLUDE_DIR vizdoom_api_src )
 
-include_directories( ${VIZDOOM_INCLUDE_DIR} ${Boost_INCLUDE_DIR} )
+include_directories( ${VIZDOOM_INCLUDE_DIR} 
+	${Boost_INCLUDE_DIR} )
 
 set( VIZDOOM_LIBS
     ${Boost_LIBRARIES}  
     ${CMAKE_THREAD_LIBS_INIT} )
-    
-if(UNIX)
+	
+if( UNIX )
 
     set( VIZDOOM_LIBS ${VIZDOOM_LIBS} 
     pthread
     rt )
-
-endif()
-  
-if(CMAKE_COMPILER_IS_GNUCXX)
-
-    add_definitions("-fPIC")
-
-endif()  
+	
+endif()	
     
 set( VIZDOOM_API_SOURCES
     vizdoom_api_src/ViZDoomUtilities.cpp
@@ -65,24 +104,29 @@ if(BUILD_PYTHON)
     
     find_package(PythonInterp 2.7 REQUIRED)
     find_package(PythonLibs 2.7 REQUIRED)
+	find_package(NumPy REQUIRED)
     find_package(Boost COMPONENTS python REQUIRED)
-    
-    message( ${PYTHON_INCLUDE_DIR})
 
     set( VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} vizdoom_api_bindings/python )
 
     set( VIZDOOM_PYTHON_LIBS 
         ${VIZDOOM_LIBS}
-        ${Boost_LIBRARIES}  
-        ${PYTHON_LIBRARIES} )
+        ${Boost_PYTHON_LIBRARY}
+        ${PYTHON_LIBRARIES}
+		${NUMPY_LIBRARIES} )
         
-    include_directories( ${VIZDOOM_INCLUDE_DIR} 
+    include_directories( ${VIZDOOM_PYTHON_INCLUDE_DIR} 
                         ${Boost_INCLUDE_DIR} 
-                        ${PYTHON_INCLUDE_DIR} )  
+                        ${PYTHON_INCLUDE_DIR}
+						${NUMPY_INCLUDES} )  
 
     set( VIZDOOM_PYTHON_SOURCES
 	    vizdoom_api_bindings/python/ViZDoomPythonBinding.cpp
         vizdoom_api_bindings/python/ViZDoomGamePython.cpp )
+	
+	if(WIN32)	
+		add_definitions( -DBOOST_PYTHON_STATIC_LIB )
+	endif()
 
     python_add_module(vizdoompython ${VIZDOOM_PYTHON_SOURCES})
     target_link_libraries (vizdoompython ${VIZDOOM_PYTHON_LIBS} vizdoomstatic)
@@ -104,6 +148,7 @@ if(BUILD_JAVA)
         
     find_package(Java REQUIRED)
     find_package(JNI REQUIRED)
+	
     include(UseJava)
     set( VIZDOOM_JAVA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} vizdoom_api_bindings/java )
     
@@ -112,12 +157,22 @@ if(BUILD_JAVA)
         ${Boost_LIBRARIES}  
         ${Java_LIBRARIES}
         ${JNI_LIBRARIES} )
+		
+	if( UNIX )
+		set( JNI_INCLUDE_DIR ${JNI_INCLUDE_DIR}
+			${_JAVA_HOME}/include	
+			${_JAVA_HOME}/include/linux )
+	endif()
+
+	if( WIN32 )
+		set( JNI_INCLUDE_DIR ${JNI_INCLUDE_DIR}
+			${_JAVA_HOME}/include
+			${_JAVA_HOME}/include/win32 )
+	endif()	
         
-    include_directories( ${VIZDOOM_INCLUDE_DIR} 
+    include_directories( ${VIZDOOM_JAVA_INCLUDE_DIR} 
                         ${Boost_INCLUDE_DIR}
                         ${Java_INCLUDE_DIRS} 
-                        ${_JAVA_HOME}/include
-			            ${_JAVA_HOME}/include/linux
                         ${JNI_INCLUDE_DIR} )  
 
     set( VIZDOOM_JAVA_SOURCES
@@ -142,3 +197,9 @@ if(BUILD_JAVA)
         OUTPUT_NAME vizdoom )
         	
 endif()
+
+
+message("-- Downloading Freedoom WADs")
+message("-- Original Doom WADs can not be provided due to licences")
+
+file( DOWNLOAD "https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip" ./bin/freedoom.zip SHOW_PROGRESS )
