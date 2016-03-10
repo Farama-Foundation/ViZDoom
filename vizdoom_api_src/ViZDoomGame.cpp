@@ -57,7 +57,7 @@ namespace vizdoom {
                 this->running = this->doomController->init();
 
                 this->doomController->disableAllButtons();
-                for (int i = 0; i < this->availableButtons.size(); ++i) {
+                for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
                     this->doomController->setButtonAvailable(this->availableButtons[i], true);
                 }
 
@@ -115,7 +115,7 @@ namespace vizdoom {
         if (!this->isRunning()) throw DoomIsNotRunningException();
 
         try {
-            for (int i = 0; i < this->availableButtons.size() && i < actions.size(); ++i) {
+            for (unsigned int i = 0; i < this->availableButtons.size() && i < actions.size(); ++i) {
                 this->lastAction[i] = actions[i];
                 this->doomController->setButtonState(this->availableButtons[i], actions[i]);
             }
@@ -174,7 +174,7 @@ namespace vizdoom {
             this->lastMapTic = this->doomController->getMapTic();
 
             /* Updates vars */
-            for (int i = 0; i < this->availableGameVariables.size(); ++i) {
+            for (unsigned int i = 0; i < this->availableGameVariables.size(); ++i) {
                 this->state.gameVariables[i] = this->doomController->getGameVariable(this->availableGameVariables[i]);
             }
 
@@ -182,7 +182,7 @@ namespace vizdoom {
             this->state.imageBuffer = this->doomController->getScreen();
 
             //Update last action
-            for (int i = 0; i < this->availableButtons.size(); ++i) {
+            for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
                 this->lastAction[i] = this->doomController->getButtonState(this->availableButtons[i]);
             }
         }
@@ -268,7 +268,7 @@ namespace vizdoom {
         if (args.length() != 0) {
             std::vector<std::string> _args;
             b::split(_args, args, b::is_any_of("\t\n "));
-            for (int i = 0; i < _args.size(); ++i) {
+            for (unsigned int i = 0; i < _args.size(); ++i) {
                 if(_args[i].length() > 0) this->doomController->addCustomArg(_args[i]);
             }
         }
@@ -306,7 +306,7 @@ namespace vizdoom {
 
     unsigned int DoomGame::getSeed(){
         if(this->doomController->isUseStaticSeed()) return this->doomController->getStaticSeed();
-        else this->doomController->getSeed();
+        else return this->doomController->getSeed();
     }
     void DoomGame::setSeed(unsigned int seed){ this->doomController->setStaticSeed(seed); }
 
@@ -679,7 +679,7 @@ namespace vizdoom {
                 ++line_number;
                 std::getline(input, value);
                 trim_all(value);
-                if(!value.empty() and value[0]=='#')
+                if(!value.empty() && value[0]=='#')
                     value="";
             }
             else
@@ -690,12 +690,12 @@ namespace vizdoom {
         value = value.substr(1);
 
         /* Find '}' */
-        while((value.empty() || value[value.size()-1] != '}') and !input.eof()){
+        while((value.empty() || value[value.size()-1] != '}') && !input.eof()){
             ++line_number;
             std::string newline;
             std::getline(input, newline);
             trim_all(newline);
-            if(!newline.empty() and newline[0]!='#')
+            if(!newline.empty() && newline[0]!='#')
                 value += " " + newline;
         }
         if(value.empty() || value[value.size()-1] != '}') return false;
@@ -788,16 +788,16 @@ namespace vizdoom {
                 int start_line = line_number;
                 bool success = DoomGame::ParseListProperty(line_number, val, file, str_buttons );
                 if(success){
-                    int i =0;
+                    unsigned int i = 0;
                     try{
                         std::vector<Button> buttons;
-                        for( i =0; i < str_buttons.size(); ++i ){
+                        for( i = 0; i < str_buttons.size(); ++i ){
                             buttons.push_back(DoomGame::StringToButton(str_buttons[i]));
 
                         }
                         if (!append)
                             this->clearAvailableButtons();
-                        for( i =0; i < buttons.size(); ++i ){
+                        for( i = 0; i < buttons.size(); ++i ){
                             this->addAvailableButton(buttons[i]);
                         }
                     }
@@ -819,16 +819,16 @@ namespace vizdoom {
                 int start_line = line_number;
                 bool success = DoomGame::ParseListProperty(line_number, val, file, str_variables );
                 if(success){
-                    int i =0;
+                    unsigned int i = 0;
                     try{
                         std::vector<GameVariable> variables;
-                        for( i =0; i < str_variables.size(); ++i ){
+                        for( i = 0; i < str_variables.size(); ++i ){
                             variables.push_back(DoomGame::StringToGameVariable(str_variables[i]));
 
                         }
                         if(!append)
                             this->clearAvailableGameVariables();
-                        for( i =0; i < variables.size(); ++i ){
+                        for( i = 0; i < variables.size(); ++i ){
                             this->addAvailableGameVariable(variables[i]);
                         }
                     }
