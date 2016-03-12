@@ -137,6 +137,16 @@ if(BUILD_PYTHON)
         LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/python
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/python
         OUTPUT_NAME vizdoom )
+    
+    if(UNIX)
+        ADD_CUSTOM_COMMAND( 
+            TARGET vizdoompython
+            COMMAND ln -sf ${CMAKE_BINARY_DIR}/bin/python/vizdoom.so ${CMAKE_BINARY_DIR}/examples/python/vizdoom.so
+            COMMAND ln -sf ${CMAKE_BINARY_DIR}/examples/config/bots.cfg ${CMAKE_BINARY_DIR}/examples/python/bots.cfg
+            COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/python."
+        )
+       
+    endif()
         
 endif()
 
@@ -202,4 +212,5 @@ endif()
 message("-- Downloading Freedoom WADs")
 message("-- Original Doom WADs can not be provided due to licences")
 
-file( DOWNLOAD "https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip" ./bin/freedoom.zip SHOW_PROGRESS )
+# It doesn't work, just creates an empty file
+file( DOWNLOAD "https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip" ./bin/freedoom-0.10.1.zip SHOW_PROGRESS )
