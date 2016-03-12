@@ -209,8 +209,15 @@ if(BUILD_JAVA)
 endif()
 
 
-message("-- Downloading Freedoom WADs")
-message("-- Original Doom WADs can not be provided due to licences")
+#message("-- Downloading Freedoom WADs")
+#message("-- Original Doom WADs can not be provided due to licences")
 
 # It doesn't work, just creates an empty file
-file( DOWNLOAD "https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip" ./bin/freedoom-0.10.1.zip SHOW_PROGRESS )
+#file( DOWNLOAD https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip ./bin/freedoom-0.10.1.zip SHOW_PROGRESS )
+
+if(UNIX)
+    add_custom_target( freedoom2 ALL
+        COMMAND ./download_freedoom.sh
+        
+    )
+endif()
