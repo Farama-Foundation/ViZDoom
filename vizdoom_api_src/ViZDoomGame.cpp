@@ -113,11 +113,16 @@ namespace vizdoom {
     void DoomGame::setAction(std::vector<int> const &actions) {
 
         if (!this->isRunning()) throw DoomIsNotRunningException();
-
         try {
-            for (unsigned int i = 0; i < this->availableButtons.size() && i < actions.size(); ++i) {
-                this->lastAction[i] = actions[i];
-                this->doomController->setButtonState(this->availableButtons[i], actions[i]);
+            for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
+                if(i < actions.size()){
+                    this->lastAction[i] = actions[i];
+
+                }
+                else{
+                    this->lastAction[i] = 0;
+                }
+                this->doomController->setButtonState(this->availableButtons[i], this->lastAction[i]);
             }
         }
         catch (...) { throw SharedMemoryException(); }
