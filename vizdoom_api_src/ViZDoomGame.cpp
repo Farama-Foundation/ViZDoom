@@ -719,7 +719,7 @@ namespace vizdoom {
         
         if(!file.good() )
         {
-            throw PathDoesNotExistsException(filename);
+            throw PathDoesNotExistException(filename);
             //std::cerr<<"WARNING! Loading config from: \""<<filename<<"\" failed. Something's wrong with the file. Check your spelling and permissions.\n";
             return false;
         }

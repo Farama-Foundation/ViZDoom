@@ -155,10 +155,10 @@ JNIEXPORT jboolean JNICALL Java_ViZDoomGameJava_init
         	env->ThrowNew(DoomUnexpectedExitException, e.what());
 		return 0;
   	}
-	catch (PathDoesNotExistsException& e)
+	catch (PathDoesNotExistException& e)
 	{
-		jclass PathDoesNotExistsException = env->FindClass("errors/PathDoesNotExistsException");
-			env->ThrowNew(PathDoesNotExistsException, e.what());
+		jclass PathDoesNotExistException = env->FindClass("errors/PathDoesNotExistException");
+			env->ThrowNew(PathDoesNotExistException, e.what());
 		return 0;
 	}
 	catch (SharedMemoryException& e)
