@@ -38,7 +38,7 @@ EXCEPTION_TRANSLATE_TO_PYT(DoomIsNotRunningException)
 EXCEPTION_TRANSLATE_TO_PYT(DoomErrorException)
 EXCEPTION_TRANSLATE_TO_PYT(SharedMemoryException)
 EXCEPTION_TRANSLATE_TO_PYT(MessageQueueException)
-EXCEPTION_TRANSLATE_TO_PYT(PathDoesNotExistsException)
+EXCEPTION_TRANSLATE_TO_PYT(PathDoesNotExistException)
 
 
 /* DoomGamePython methods overloading */
@@ -73,7 +73,7 @@ bp::register_exception_translator< n >(&translate ## n );
 	EXCEPTION_TO_PYT(DoomErrorException, doom_error_exception)
 	EXCEPTION_TO_PYT(SharedMemoryException, shared_memory_exception)
 	EXCEPTION_TO_PYT(MessageQueueException, message_queue_exception)
-	EXCEPTION_TO_PYT(PathDoesNotExistsException, path_does_not_exists_exception)
+	EXCEPTION_TO_PYT(PathDoesNotExistException, path_does_not_exist_exception)
 
 #define ENUM_VAL_2_PYT(v) .value( #v , v )
     /* .value("VALUE_IN_PYTHON", VALUE_IN_CPP) */

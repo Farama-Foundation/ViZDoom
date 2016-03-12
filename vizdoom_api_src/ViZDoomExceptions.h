@@ -46,12 +46,12 @@ namespace vizdoom{
         const char* what() const throw(){ return "Controlled Doom instance is not running or not ready."; }
     };
 
-    class PathDoesNotExistsException : public Exception {
+    class PathDoesNotExistException : public Exception {
     public:
-        PathDoesNotExistsException(std::string path){
+        PathDoesNotExistException(std::string path){
             this->path = path;
         }
-        ~PathDoesNotExistsException() throw(){}
+        ~PathDoesNotExistException() throw(){}
         const char* what() const throw(){
             std::string what = std::string("Path \"") + this->path + "\" does not exists.";
             return strdup(what.c_str());

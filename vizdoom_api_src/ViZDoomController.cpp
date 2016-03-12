@@ -793,12 +793,12 @@ namespace vizdoom {
         this->doomArgs.clear();
 
         //exe
-        if(!bfs::exists(this->enginePath)) throw PathDoesNotExistsException(this->enginePath);
+        if(!bfs::exists(this->enginePath)) throw PathDoesNotExistException(this->enginePath);
         this->doomArgs.push_back(this->enginePath);
 
         //main wad
         if(this->iwadPath.length() != 0){
-            if(!bfs::exists(this->iwadPath)) throw PathDoesNotExistsException(this->iwadPath);
+            if(!bfs::exists(this->iwadPath)) throw PathDoesNotExistException(this->iwadPath);
             this->doomArgs.push_back("-iwad");
             this->doomArgs.push_back(this->iwadPath);
         }
@@ -808,7 +808,7 @@ namespace vizdoom {
             std::vector<std::string> paths;
             b::split(paths, this->filePath, b::is_any_of("\t\n "));
             for (int i = 0; i < paths.size(); ++i) {
-                if(paths[i].length() > 0 && !bfs::exists(paths[i])) throw PathDoesNotExistsException(paths[i]);
+                if(paths[i].length() > 0 && !bfs::exists(paths[i])) throw PathDoesNotExistException(paths[i]);
             }
 
             this->doomArgs.push_back("-file");
