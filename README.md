@@ -1,6 +1,6 @@
 #ViZDoom
 
-ViZDoom allows developing AI bots that play Doom using only the visual information (the screen buffer). It is primarily intended for research in machine visual learning, and reinforcement deep learning, in particular.
+ViZDoom allows developing AI **bots that play Doom using only the visual information** (the screen buffer). It is primarily intended for research in machine visual learning, and reinforcement deep learning, in particular.
 
 ViZDoom is based on [ZDoom]( https://github.com/rheit/zdoom) to provide the game mechanics.
 
