@@ -7,9 +7,10 @@ ViZDoom is based on [ZDoom]( https://github.com/rheit/zdoom) to provide the game
 ## Features
 * API for C++, Python and Java,
 * Easy-to-create custom scenarios (examples available),
-* Fast (>2000 fps in sync mode),
+* Fast (>1500 fps in sync mode, single thread),
 * Single-player (sync or async) and multi-player modes,
 * Customizable resolution and rendering parameters,
+* Access to the depth buffer (3D vision)
 * Off-screen rendering,
 * Lightweight (few MBs),
 * Supports Linux and Windows.
