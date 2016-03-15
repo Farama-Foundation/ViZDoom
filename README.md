@@ -7,15 +7,15 @@ ViZDoom is based on [ZDoom]( https://github.com/rheit/zdoom) to provide the game
 ## Features
 * API for C++, Python and Java,
 * Easy-to-create custom scenarios (examples available),
-* Fast (>1500 fps in sync mode, single thread),
-* Single-player (sync or async) and multi-player modes,
+* Fast (up to 7000 fps in sync mode, single thread),
+* Single-player (sync) and multi-player (async) modes,
 * Customizable resolution and rendering parameters,
 * Access to the depth buffer (3D vision)
 * Off-screen rendering,
 * Lightweight (few MBs),
 * Supports Linux and Windows.
 
-ViZDoom API is reinforcement learning friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
+ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
 ---
 ## Building
