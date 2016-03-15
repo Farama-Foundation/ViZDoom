@@ -192,12 +192,23 @@ if(BUILD_JAVA)
     add_library(vizdoomjava SHARED ${VIZDOOM_JAVA_SOURCES})
     target_link_libraries (vizdoomjava ${VIZDOOM_JAVA_LIBS} vizdoomstatic)
 
-	exec_program(javac .
-             ARGS ./vizdoom_api_bindings/java/GameState.java)
-	exec_program(javac .
-             ARGS ./vizdoom_api_bindings/java/errors/*.java)
-	exec_program(javac .
-		     ARGS ./vizdoom_api_bindings/java/enums/*.java)
+
+    add_jar(vizjavaclasses 
+	    ./vizdoom_api_bindings/java/errors/DoomErrorException.java
+	    ./vizdoom_api_bindings/java/GameState.java 
+            ./vizdoom_api_bindings/java/errors/DoomIsNotRunningException.java
+	    ./vizdoom_api_bindings/java/errors/DoomUnexpectedExitException.java
+	    ./vizdoom_api_bindings/java/errors/ExceptionJava.java
+	    ./vizdoom_api_bindings/java/errors/MessageQueueException.java
+	    ./vizdoom_api_bindings/java/errors/PathDoesNotExistException.java
+	    ./vizdoom_api_bindings/java/errors/SharedMemoryException.java
+	    ./vizdoom_api_bindings/java/enums/Button.java
+	    ./vizdoom_api_bindings/java/enums/GameVariable.java
+	    ./vizdoom_api_bindings/java/enums/Mode.java
+	    ./vizdoom_api_bindings/java/enums/ScreenFormat.java
+	    ./vizdoom_api_bindings/java/enums/ScreenResolution.java
+	    ./vizdoom_api_bindings/java/ViZDoomGameJava.java 
+  	    OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin/java)
 
     set_target_properties( vizdoomjava
         PROPERTIES

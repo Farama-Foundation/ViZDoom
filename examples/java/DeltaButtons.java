@@ -17,8 +17,8 @@ public class DeltaButtons {
 	    System.out.println("\n\nDELTA BUTTONS EXAMPLE\n");
 	    game.setDoomEnginePath("../../bin/vizdoom");
 
-	   // game.setDoomGamePath("../../scenarios/freedoom2.wad");
-	    game.setDoomGamePath("../../scenarios/doom2.wad");   
+	    game.setDoomGamePath("../../scenarios/freedoom2.wad");
+	    //game.setDoomGamePath("../../scenarios/doom2.wad");   
 		//Not provided with environment due to licences.
 
 	    game.setDoomMap("map01");
