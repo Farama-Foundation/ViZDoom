@@ -21,8 +21,8 @@ public class Shaping {
 	    game.setDoomEnginePath("../../bin/vizdoom");
 
 	    // Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".
-	    //game.setDoomGamePath("../../scenarios/freedoom2.wad");
-	     game.setDoomGamePath("../../scenarios/doom2.wad");  
+	    game.setDoomGamePath("../../scenarios/freedoom2.wad");
+	    //game.setDoomGamePath("../../scenarios/doom2.wad");  
 	    // Not provided with environment due to licences.
 
 	    

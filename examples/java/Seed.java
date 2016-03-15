@@ -29,7 +29,10 @@ public class Seed {
 		
 		game.loadConfig("../config/basic.cfg");
     		game.setDoomEnginePath("../../bin/vizdoom");
-    		game.setDoomGamePath("../../scenarios/doom2.wad");
+    		
+		// Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".
+	    	game.setDoomGamePath("../../scenarios/freedoom2.wad");
+		//game.setDoomGamePath("../../scenarios/doom2.wad");
 
 		game.setScreenResolution(ScreenResolution.RES_640X480);
 
