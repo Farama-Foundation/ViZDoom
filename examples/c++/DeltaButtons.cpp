@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <ctime>
 
-using namespace VizDoom;
+using namespace vizdoom;
 
 int main(){
 

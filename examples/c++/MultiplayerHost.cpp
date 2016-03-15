@@ -6,9 +6,10 @@ using namespace vizdoom;
 
 int main(){
 
-    DoomGame* game = new DoomGame();
-
     std::cout << "\n\nMULTIPLAYER HOST EXAMPLE\n\n";
+
+
+    DoomGame* game = new DoomGame();
 
     game->loadConfig("../../examples/config/multi.cfg");
 
