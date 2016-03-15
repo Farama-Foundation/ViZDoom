@@ -1,32 +1,33 @@
 #!/bin/bash
-#javac -classpath ".:../../vizdoom_api_bindings/java" Basic.java
-#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java" Basic
 
-#javac -classpath ".:../../vizdoom_api_bindings/java" CIG.java
-#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java" CIG
+#javac -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" Basic.java
+#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" Basic
 
-#javac -classpath ".:../../vizdoom_api_bindings/java" CIGBots.java
-#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java" CIGBots
+#javac -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" CIG.java
+#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" CIG
 
-#javac -classpath ".:../../vizdoom_api_bindings/java" CIGHost.java
-#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java" CIGHost
+#javac -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" CIGBots.java
+#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" CIGBots
 
-#javac -classpath ".:../../vizdoom_api_bindings/java" DeltaButtons.java
-#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java" DeltaButtons
+#javac -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" CIGHost.java
+#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" CIGHost
 
-#javac -classpath ".:../../vizdoom_api_bindings/java" Multiplayer.java
-#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java" Multiplayer
+#javac -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" DeltaButtons.java
+#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" DeltaButtons
 
-#javac -classpath ".:../../vizdoom_api_bindings/java" MultiplayerHost.java
-#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java" MultiplayerHost
+#javac -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" Multiplayer.java
+#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" Multiplayer
 
-#javac -classpath ".:../../vizdoom_api_bindings/java" Seed.java
-#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java" Seed
+#javac -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" MultiplayerHost.java
+#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" MultiplayerHost
 
-#javac -classpath ".:../../vizdoom_api_bindings/java" Shaping.java
-#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java" Shaping
+#javac -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" Seed.java
+#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" Seed
 
-javac -classpath ".:../../vizdoom_api_bindings/java" Spectator.java
-java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java" Spectator
+#javac -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" Shaping.java
+#java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" Shaping
+
+javac -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" Spectator.java
+java -Djava.library.path="../../vizdoom_api_bindings/java:../../bin/java" -classpath ".:../../vizdoom_api_bindings/java:../../bin/java/vizjavaclasses.jar" Spectator
 
 

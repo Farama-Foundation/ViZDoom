@@ -12,16 +12,16 @@ public class Basic {
 	public static void main (String[] args) {
 
 	    System.out.println("\n\nBASIC EXAMPLE\n");
-
+		System.out.println("\n\nWORKING HERE\n");
 
 	    // Create DoomGame instance. It will run the game and communicate with you.
 	    ViZDoomGameJava game = new ViZDoomGameJava();
-
+	
 	    game.setDoomEnginePath("../../bin/vizdoom");
 
 	    // Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".
-	    //game.setDoomGamePath("../../scenarios/freedoom2.wad");
-	    game.setDoomGamePath("../../scenarios/doom2.wad");   
+	    game.setDoomGamePath("../../scenarios/freedoom2.wad");
+	    //game.setDoomGamePath("../../scenarios/doom2.wad");   
 	    // Not provided with environment due to licences.
 
 	    // Sets path to additional resources iwad file which is basically your scenario iwad.
@@ -60,10 +60,10 @@ public class Basic {
 
 	    // Makes the window appear (turned on by default)
 	    game.setWindowVisible(true);
-
+	System.out.println("\n\nWORKING HERE2\n");
 	    // Initialize the game. Further configuration won't take any effect from now on.
 	    game.init();
-
+System.out.println("\n\nWORKING HERE3\n");
 
 	    // Define some actions. Each list entry corresponds to declared buttons:
 	    // MOVE_LEFT, MOVE_RIGHT, ATTACK
@@ -88,8 +88,9 @@ public class Basic {
 		while (!game.isEpisodeFinished()) {
 
 		    // Get the state
+System.out.println("\n\nWORKING HERE4\n");
 		    GameState s = game.getState();
-
+System.out.println("\n\nWORKING HERE5\n");
 		    // Make random action and get reward
 		    double r = game.makeAction(actions.get(ran.nextInt(3)));
 
