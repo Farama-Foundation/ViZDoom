@@ -1,8 +1,8 @@
 /*
 #####################################################################
-# This script presents SPECTATOR mode. In SPECTATOR mode you play and
+# This java file presents SPECTATOR mode. In SPECTATOR mode you play and
 # your agent can learn from it.
-# gguration is loaded from "../config/<SCENARIO_NAME>.cfg" file.
+# configuration is loaded from "../config/<SCENARIO_NAME>.cfg" file.
 # 
 # To see the scenario description go to "../../scenarios/README"
 # 
@@ -34,7 +34,10 @@ public class Spectator {
 		//game.loadConfig("../config/predict_position.cfg");
 		//game.loadConfig("../config/take_cover.cfg");
 		game.setScreenResolution(ScreenResolution.RES_640X480);
-		game.setDoomGamePath("../../scenarios/doom2.wad");
+		
+		// Select game and map You want to use.
+	    	game.setDoomGamePath("../../scenarios/freedoom2.wad");
+		//game.setDoomGamePath("../../scenarios/doom2.wad");
 		game.setDoomEnginePath("../../bin/vizdoom");
 		//Adds mouse support:
 		game.addAvailableButton(Button.TURN_LEFT_RIGHT_DELTA);
