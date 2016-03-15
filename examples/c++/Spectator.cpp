@@ -8,6 +8,7 @@ int main(){
 
     std::cout << "\n\nSPECTATOR EXAMPLE\n\n";
 
+
     DoomGame *game = new DoomGame();
 
     // Choose scenario config file you wish to be watched by agent.

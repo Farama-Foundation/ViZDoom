@@ -10,6 +10,7 @@ int main(){
 
     std::cout << "\n\nSHAPING EXAMPLE\n\n";
 
+
     DoomGame *game = new DoomGame();
 
     // Health gathering scenario has scripted shaping reward.

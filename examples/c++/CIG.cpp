@@ -6,10 +6,10 @@ using namespace vizdoom;
 
 int main(){
 
-    DoomGame* game = new DoomGame();
-
     std::cout << "\n\nCIG EXAMPLE\n\n";
 
+
+    DoomGame* game = new DoomGame();
 
     // Use CIG example config or Your own.
     game->loadConfig("../../examples/config/cig.cfg");

@@ -451,8 +451,7 @@ int DThinker::TickThinkers (FThinkerList *list, FThinkerList *dest)
 				node->Remove();
 				dest->AddTail(node);
 			}
-			// VIZDOOM_CODE
-			// snode->PostBeginPlay();
+			node->PostBeginPlay();
 		}
 		else if (dest != NULL)
 		{
