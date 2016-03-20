@@ -45,7 +45,7 @@ Also, for Java binding JAVA_HOME environment variable must be set.
 
 ###Windows
 
-ViZDoom is now highly unstable on Windows - we are working to fix it. 
+>>> ViZDoom is now highly unstable on Windows - we are working to fix it. 
 In the future, we will provide compiled runtime binaries and development libraries for Windows.
 
 ####Dependencies
