@@ -805,12 +805,8 @@ namespace vizdoom {
 
         //wads
         if (this->filePath.length() != 0) {
-            std::vector<std::string> paths;
-            b::split(paths, this->filePath, b::is_any_of("\t\n "));
-            for (int i = 0; i < paths.size(); ++i) {
-                if(paths[i].length() > 0 && !bfs::exists(paths[i])) throw PathDoesNotExistException(paths[i]);
-            }
-
+            if(!bfs::exists(this->filePath)) throw PathDoesNotExistException(this->filePath);
+            
             this->doomArgs.push_back("-file");
             this->doomArgs.push_back(this->filePath);
         }
