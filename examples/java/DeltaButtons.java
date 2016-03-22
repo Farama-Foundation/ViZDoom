@@ -12,7 +12,7 @@ public class DeltaButtons {
 
 	public static void main (String[] args) {
 
-	    ViZDoomGameJava game = new ViZDoomGameJava();
+	    DoomGame game = new DoomGame();
 
 	    System.out.println("\n\nDELTA BUTTONS EXAMPLE\n");
 	    game.setViZDoomPath("../../bin/vizdoom");

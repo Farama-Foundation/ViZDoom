@@ -9,7 +9,7 @@ public class CIGBots {
 
 	public static void main (String[] args) {
 
-	    ViZDoomGameJava game = new ViZDoomGameJava();
+	    DoomGame game = new DoomGame();
 
 	    System.out.println("\n\nCIG BOTS EXAMPLE\n");
 

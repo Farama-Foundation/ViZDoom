@@ -8,7 +8,7 @@ if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}")
 
 # System dependent settings    
 if( UNIX )
@@ -73,9 +73,7 @@ set( VIZDOOM_LIBS
 	
 if( UNIX )
 
-    set( VIZDOOM_LIBS ${VIZDOOM_LIBS} 
-    pthread
-    rt )
+    set( VIZDOOM_LIBS ${VIZDOOM_LIBS} rt )
 	
 endif()	
     
@@ -92,9 +90,9 @@ target_link_libraries (vizdoomshared ${VIZDOOM_LIBS})
 
 set_target_properties( vizdoomstatic vizdoomshared
     PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+    ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin
+    LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin
+    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin
     OUTPUT_NAME vizdoom )
 
 if(BUILD_PYTHON)
@@ -132,16 +130,16 @@ if(BUILD_PYTHON)
 
     set_target_properties( vizdoompython
         PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/python
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/python
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/python
+        ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/python
+        LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/python
+        RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/python
         OUTPUT_NAME vizdoom )
     
     if(UNIX)
         ADD_CUSTOM_COMMAND( 
             TARGET vizdoompython
-            COMMAND ln -sf ${CMAKE_BINARY_DIR}/bin/python/vizdoom.so ${CMAKE_BINARY_DIR}/examples/python/vizdoom.so
-            COMMAND ln -sf ${CMAKE_BINARY_DIR}/examples/config/bots.cfg ${CMAKE_BINARY_DIR}/examples/python/bots.cfg
+            COMMAND ln -sf ${PROJECT_SOURCE_DIR}/bin/python/vizdoom.so ${PROJECT_SOURCE_DIR}/examples/python/vizdoom.so
+            COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/config/bots.cfg ${PROJECT_SOURCE_DIR}/examples/python/bots.cfg
             COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/python."
         )
        
@@ -192,7 +190,7 @@ if(BUILD_JAVA)
     target_link_libraries (vizdoomjava ${VIZDOOM_JAVA_LIBS} vizdoomstatic)
 
 
-    add_jar(vizjavaclasses 
+    add_jar(vizdoomjavaclasses 
 	    ./vizdoom_api_bindings/java/enums/Button.java
 	    ./vizdoom_api_bindings/java/enums/GameVariable.java
 	    ./vizdoom_api_bindings/java/enums/Mode.java
@@ -207,14 +205,14 @@ if(BUILD_JAVA)
 	    ./vizdoom_api_bindings/java/errors/PathDoesNotExistException.java
 	    ./vizdoom_api_bindings/java/errors/SharedMemoryException.java
 	    ./vizdoom_api_bindings/java/GameState.java
-        ./vizdoom_api_bindings/java/ViZDoomGameJava.java 
-  	    OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin/java)
+        ./vizdoom_api_bindings/java/DoomGame.java 
+  	    OUTPUT_DIR ${PROJECT_SOURCE_DIR}/bin/java OUTPUT_NAME vizdoom)
 
     set_target_properties( vizdoomjava
         PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/java
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/java
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/java
+        ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/java
+        LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/java
+        RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/java
         OUTPUT_NAME vizdoom )
         	
 endif()

@@ -6,7 +6,6 @@ if(COMMAND cmake_policy)
 endif(COMMAND cmake_policy)
 
 
-
 find_package(Boost COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
 find_package(Threads REQUIRED)
 
@@ -23,9 +22,7 @@ set( VIZDOOM_LIBS vizdoom
     	
 if( UNIX )
 
-    set( VIZDOOM_LIBS ${VIZDOOM_LIBS} 
-    pthread
-    rt )
+    set( VIZDOOM_LIBS ${VIZDOOM_LIBS} rt )
 	
 endif()	
 	
@@ -61,7 +58,7 @@ target_link_libraries (spectator ${VIZDOOM_LIBS})
 
 set_target_properties( basic cig cigbots cighost deltabuttons multiplayer multiplayerhost seed shaping spectator
     PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../../bin/examples
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../../bin/examples
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../../bin/examples
+    ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin/examples
+    LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin/examples
+    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin/examples
 )
