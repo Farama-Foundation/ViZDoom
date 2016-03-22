@@ -4,7 +4,9 @@ from __future__ import print_function
 from vizdoom import *
 from random import choice
 
-game = DoomGame()
+game = Game()
+
+game.set_vizdoom_path("../../bin/vizdoom")
 
 # Use CIG example config or Your own.
 game.load_config("../config/cig.cfg")
@@ -23,8 +25,8 @@ game.add_game_args("-host 1 -deathmatch +timelimit 10.0 "
 # Name Your AI.
 game.add_game_args("+name AI");
 
-# Multiplayer requires the use of asynchronous modes.
-game.set_mode(Mode.ASYNC_PLAYER)
+# Multiplayer requires the use of asynchronous modes but
+game.set_mode(Mode.SPECTATOR)
 
 # game.set_window_visible(false)
 

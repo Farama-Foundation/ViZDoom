@@ -237,7 +237,7 @@ void ViZDoom_AddBTCommand(int button, int state){
 void ViZDoom_InputInit() {
 
     try {
-        vizdoomInputSMRegion = new bip::mapped_region(vizdoomSM, bip::read_write, 0, sizeof(ViZDoomInputStruct));
+        vizdoomInputSMRegion = new bip::mapped_region(vizdoomSM, bip::read_write, sizeof(ViZDoomGameVarsStruct), sizeof(ViZDoomInputStruct));
         vizdoomInput = static_cast<ViZDoomInputStruct *>(vizdoomInputSMRegion->get_address());
     }
     catch (bip::interprocess_exception &ex) {

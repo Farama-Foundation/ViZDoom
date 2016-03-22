@@ -120,7 +120,7 @@ void ViZDoom_ScreenInit() {
 
     try {
         vizdoomScreenSMRegion = new bip::mapped_region(vizdoomSM, bip::read_write,
-            sizeof(ViZDoomInputStruct) + sizeof(ViZDoomGameVarsStruct), vizdoomScreenSize);
+            sizeof(ViZDoomGameVarsStruct) + sizeof(ViZDoomInputStruct), vizdoomScreenSize);
         vizdoomScreen = static_cast<BYTE *>(vizdoomScreenSMRegion->get_address());
 
         Printf("ViZDoom_ScreenInit: width: %d, height: %d, pitch: %zu, format: ",

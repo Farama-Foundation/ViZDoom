@@ -6,6 +6,9 @@
 
 namespace vizdoom{
 
+#define VIZDOOM_API_VERSION_STR "1.0.0"
+#define VIZDOOM_API_VERSION_INT 100
+
     typedef unsigned char uint8_t;
 
     struct GameState {

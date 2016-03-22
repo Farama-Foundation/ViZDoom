@@ -375,10 +375,10 @@ JNIEXPORT jdouble JNICALL Java_ViZDoomGameJava_getSummaryReward
 
 /*
  * Class:     ViZDoomGameJava
- * Method:    setDoomEnginePath
+ * Method:    setViZDoomPath
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_ViZDoomGameJava_setDoomEnginePath
+JNIEXPORT void JNICALL Java_ViZDoomGameJava_setViZDoomPath
   (JNIEnv *, jobject, jstring);
 
 /*

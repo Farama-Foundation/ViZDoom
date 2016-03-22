@@ -148,11 +148,16 @@ JNIEXPORT jboolean JNICALL Java_ViZDoomGameJava_init
 	return (jboolean) ret;
 	
 	}
-  	catch (DoomUnexpectedExitException& e)
-  	{	
-
- 		jclass DoomUnexpectedExitException = env->FindClass("errors/DoomUnexpectedExitException");
-        	env->ThrowNew(DoomUnexpectedExitException, e.what());
+	catch (ViZDoomMismatchedVersionException& e)
+	{
+		jclass ViZDoomMismatchedVersionException = env->FindClass("errors/ViZDoomMismatchedVersionException");
+			env->ThrowNew(ViZDoomMismatchedVersionException, e.what());
+		return 0;
+	}
+  	catch (ViZDoomUnexpectedExitException& e)
+  	{
+ 		jclass ViZDoomUnexpectedExitException = env->FindClass("errors/ViZDoomUnexpectedExitException");
+        	env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
 		return 0;
   	}
 	catch (PathDoesNotExistException& e)
@@ -175,18 +180,18 @@ JNIEXPORT jboolean JNICALL Java_ViZDoomGameJava_init
         	env->ThrowNew(MessageQueueException, e.what());
 		return 0;
   	}
-	catch (DoomErrorException& e)
+	catch (ViZDoomErrorException& e)
   	{	
 
- 		jclass DoomErrorException = env->FindClass("errors/DoomErrorException");
-        	env->ThrowNew(DoomErrorException, e.what());
+ 		jclass ViZDoomErrorException = env->FindClass("errors/ViZDoomErrorException");
+        	env->ThrowNew(ViZDoomErrorException, e.what());
 		return 0;
   	}
-	catch (DoomIsNotRunningException& e)
+	catch (ViZDoomIsNotRunningException& e)
   	{	
 
- 		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
-        	env->ThrowNew(DoomIsNotRunningException, e.what());
+ 		jclass ViZDoomIsNotRunningException = env->FindClass("errors/ViZDoomIsNotRunningException");
+        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
 		return 0;
   	}
 	catch (Exception& e)
@@ -226,11 +231,11 @@ JNIEXPORT void JNICALL Java_ViZDoomGameJava_newEpisode
 	game->newEpisode();
 	}
 	
-	catch (DoomIsNotRunningException& e)
+	catch (ViZDoomIsNotRunningException& e)
   	{	
 
- 		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
-        	env->ThrowNew(DoomIsNotRunningException, e.what());
+ 		jclass ViZDoomIsNotRunningException = env->FindClass("errors/ViZDoomIsNotRunningException");
+        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
   	}
 	catch (std::exception& e)
   	{
@@ -268,11 +273,11 @@ JNIEXPORT void JNICALL Java_ViZDoomGameJava_setAction
 	}
 	game->setAction(ourvector);
 	}
-	catch (DoomIsNotRunningException& e)
+	catch (ViZDoomIsNotRunningException& e)
   	{	
 
- 		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
-        	env->ThrowNew(DoomIsNotRunningException, e.what());
+ 		jclass ViZDoomIsNotRunningException = env->FindClass("errors/ViZDoomIsNotRunningException");
+        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
   	}
 	catch (std::exception& e)
   	{
@@ -291,15 +296,15 @@ JNIEXPORT void JNICALL Java_ViZDoomGameJava_advanceAction__
 	DoomGame* game=GetObject(env,obj);
 	game->advanceAction();
 	}
-	catch (DoomIsNotRunningException& e)
+	catch (ViZDoomIsNotRunningException& e)
 	{
- 		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
-        	env->ThrowNew(DoomIsNotRunningException, e.what());
+ 		jclass ViZDoomIsNotRunningException = env->FindClass("errors/ViZDoomIsNotRunningException");
+        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
   	}
-	catch (DoomUnexpectedExitException& e)
+	catch (ViZDoomUnexpectedExitException& e)
 	{
-		jclass DoomUnexpectedExitException = env->FindClass("errors/DoomUnexpectedExitException");
-			env->ThrowNew(DoomUnexpectedExitException, e.what());
+		jclass ViZDoomUnexpectedExitException = env->FindClass("errors/ViZDoomUnexpectedExitException");
+			env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
 	}
 	catch (Exception& e)
   	{	
@@ -326,16 +331,16 @@ JNIEXPORT void JNICALL Java_ViZDoomGameJava_advanceAction__I
 	DoomGame* game=GetObject(env,obj);
 	game->advanceAction(int1);
 	}
-	catch (DoomIsNotRunningException& e)
+	catch (ViZDoomIsNotRunningException& e)
   	{	
 
- 		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
-        	env->ThrowNew(DoomIsNotRunningException, e.what());
+ 		jclass ViZDoomIsNotRunningException = env->FindClass("errors/ViZDoomIsNotRunningException");
+        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
   	}
-	catch (DoomUnexpectedExitException& e)
+	catch (ViZDoomUnexpectedExitException& e)
 	{
-		jclass DoomUnexpectedExitException = env->FindClass("errors/DoomUnexpectedExitException");
-			env->ThrowNew(DoomUnexpectedExitException, e.what());
+		jclass ViZDoomUnexpectedExitException = env->FindClass("errors/ViZDoomUnexpectedExitException");
+			env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
 	}
 	catch (Exception& e)
   	{	
@@ -362,16 +367,16 @@ JNIEXPORT void JNICALL Java_ViZDoomGameJava_advanceAction__IZZ
 	DoomGame* game=GetObject(env,obj);
 	game->advanceAction(int1, bol1,bol2);
 	}
-	catch (DoomIsNotRunningException& e)
+	catch (ViZDoomIsNotRunningException& e)
   	{	
 
- 		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
-        	env->ThrowNew(DoomIsNotRunningException, e.what());
+ 		jclass ViZDoomIsNotRunningException = env->FindClass("errors/ViZDoomIsNotRunningException");
+        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
   	}
-	catch (DoomUnexpectedExitException& e)
+	catch (ViZDoomUnexpectedExitException& e)
 	{
-		jclass DoomUnexpectedExitException = env->FindClass("errors/DoomUnexpectedExitException");
-			env->ThrowNew(DoomUnexpectedExitException, e.what());
+		jclass ViZDoomUnexpectedExitException = env->FindClass("errors/ViZDoomUnexpectedExitException");
+			env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
 	}
 	catch (Exception& e)
   	{	
@@ -407,17 +412,17 @@ JNIEXPORT jdouble JNICALL Java_ViZDoomGameJava_makeAction___3I
 	double ret = game->makeAction(ourvector);
 	return ret;	
 	}
-	catch (DoomIsNotRunningException& e)
+	catch (ViZDoomIsNotRunningException& e)
   	{	
 
- 		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
-        	env->ThrowNew(DoomIsNotRunningException, e.what());
+ 		jclass ViZDoomIsNotRunningException = env->FindClass("errors/ViZDoomIsNotRunningException");
+        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
 		return 0;
   	}
-	catch (DoomUnexpectedExitException& e)
+	catch (ViZDoomUnexpectedExitException& e)
 	{
-		jclass DoomUnexpectedExitException = env->FindClass("errors/DoomUnexpectedExitException");
-			env->ThrowNew(DoomUnexpectedExitException, e.what());
+		jclass ViZDoomUnexpectedExitException = env->FindClass("errors/ViZDoomUnexpectedExitException");
+			env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
 	}
 	catch (std::exception& e)
   	{
@@ -447,17 +452,17 @@ JNIEXPORT jdouble JNICALL Java_ViZDoomGameJava_makeAction___3II
 	double ret = game->makeAction(ourvector, integ);
 	return ret;
 	}
-	catch (DoomIsNotRunningException& e)
+	catch (ViZDoomIsNotRunningException& e)
   	{	
 
- 		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
-        	env->ThrowNew(DoomIsNotRunningException, e.what());
+ 		jclass ViZDoomIsNotRunningException = env->FindClass("errors/ViZDoomIsNotRunningException");
+        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
 		return 0;
   	}
-	catch (DoomUnexpectedExitException& e)
+	catch (ViZDoomUnexpectedExitException& e)
 	{
-		jclass DoomUnexpectedExitException = env->FindClass("errors/DoomUnexpectedExitException");
-			env->ThrowNew(DoomUnexpectedExitException, e.what());
+		jclass ViZDoomUnexpectedExitException = env->FindClass("errors/ViZDoomUnexpectedExitException");
+			env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
 	}
 	catch (std::exception& e)
   	{
@@ -539,11 +544,11 @@ JNIEXPORT jboolean JNICALL Java_ViZDoomGameJava_isNewEpisode
 		bool ret=game->isNewEpisode();
 		return (jboolean)ret;
 	}
-	catch (DoomIsNotRunningException& e)
+	catch (ViZDoomIsNotRunningException& e)
   	{	
 
- 		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
-        	env->ThrowNew(DoomIsNotRunningException, e.what());
+ 		jclass ViZDoomIsNotRunningException = env->FindClass("errors/ViZDoomIsNotRunningException");
+        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
 		return 0;
   	}
 	catch (Exception& e)
@@ -572,11 +577,11 @@ JNIEXPORT jboolean JNICALL Java_ViZDoomGameJava_isEpisodeFinished
 		bool ret=game->isEpisodeFinished();
 		return (jboolean)ret;
 	}
-	catch (DoomIsNotRunningException& e)
+	catch (ViZDoomIsNotRunningException& e)
   	{	
 
- 		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
-        	env->ThrowNew(DoomIsNotRunningException, e.what());
+ 		jclass ViZDoomIsNotRunningException = env->FindClass("errors/ViZDoomIsNotRunningException");
+        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
 		return 0;
   	}
 	catch (Exception& e)
@@ -605,11 +610,11 @@ JNIEXPORT jboolean JNICALL Java_ViZDoomGameJava_isPlayerDead
 		bool ret=game->isPlayerDead();
 		return (jboolean)ret;
 	}
-	catch (DoomIsNotRunningException& e)
+	catch (ViZDoomIsNotRunningException& e)
   	{	
 
- 		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
-        	env->ThrowNew(DoomIsNotRunningException, e.what());
+ 		jclass ViZDoomIsNotRunningException = env->FindClass("errors/ViZDoomIsNotRunningException");
+        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
 		return 0;
   	}
 	catch (Exception& e)
@@ -841,10 +846,10 @@ JNIEXPORT void JNICALL Java_ViZDoomGameJava_sendGameCommand //TODO wywala jvm
 		game->sendGameCommand(str2);
 		
 	}
-	catch (DoomIsNotRunningException& e)
+	catch (ViZDoomIsNotRunningException& e)
   	{	
- 		jclass DoomIsNotRunningException = env->FindClass("errors/DoomIsNotRunningException");
-        	env->ThrowNew(DoomIsNotRunningException, e.what());
+ 		jclass ViZDoomIsNotRunningException = env->FindClass("errors/ViZDoomIsNotRunningException");
+        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
 
   	}
 	catch (Exception& e)
@@ -1026,16 +1031,16 @@ JNIEXPORT jdouble JNICALL Java_ViZDoomGameJava_getSummaryReward
 
 /*
  * Class:     ViZDoomGameJava
- * Method:    setDoomEnginePath
+ * Method:    setViZDoomPath
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_ViZDoomGameJava_setDoomEnginePath
+JNIEXPORT void JNICALL Java_ViZDoomGameJava_setViZDoomPath
  (JNIEnv *env, jobject obj, jstring path){
 	try{
 		DoomGame* game=GetObject(env,obj);
 	 	char * path2;
 	    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;	
-		game->setDoomEnginePath(path2);
+		game->setViZDoomPath(path2);
 	}
 	catch (...)
   	{

@@ -35,7 +35,7 @@ namespace vizdoom {
         this->GameVariablesSMRegion = NULL;
         this->ScreenSMRegion = NULL;
 
-        this->enginePath = "vizdoom";
+        this->exePath = "vizdoom";
         this->iwadPath = "doom2.wad";
         this->filePath = "";
         this->map = "map01";
@@ -112,6 +112,10 @@ namespace vizdoom {
                 this->SMInit();
                 this->waitForDoomMapStartTime();
 
+                if(this->gameVariables->VIZDOOM_VERSION != VIZDOOM_API_VERSION_INT){
+                    throw ViZDoomMismatchedVersionException();
+                }
+
                 this->MQDoomSend(MSG_CODE_UPDATE);
                 this->waitForDoomWork();
 
@@ -183,7 +187,7 @@ namespace vizdoom {
                 this->waitForDoomWork();
             }
         }
-        else throw DoomIsNotRunningException();
+        else throw ViZDoomIsNotRunningException();
     }
 
     void DoomController::tics(unsigned int tics){
@@ -276,8 +280,8 @@ namespace vizdoom {
     std::string DoomController::getInstanceId() { return this->instanceId; }
     void DoomController::setInstanceId(std::string id) { if(!this->doomRunning) this->instanceId = id; }
 
-    std::string DoomController::getEnginePath() { return this->enginePath; }
-    void DoomController::setEnginePath(std::string path) { if(!this->doomRunning) this->enginePath = path; }
+    std::string DoomController::getExePath() { return this->exePath; }
+    void DoomController::setExePath(std::string path) { if(!this->doomRunning) this->exePath = path; }
 
     std::string DoomController::getIwadPath() { return this->iwadPath; }
     void DoomController::setIwadPath(std::string path) { if(!this->doomRunning) this->iwadPath = path; }
@@ -729,10 +733,10 @@ namespace vizdoom {
 
             case MSG_CODE_DOOM_CLOSE :
             case MSG_CODE_DOOM_PROCESS_EXIT :
-                throw DoomUnexpectedExitException();
+                throw ViZDoomUnexpectedExitException();
 
             case MSG_CODE_DOOM_ERROR :
-                throw DoomErrorException();
+                throw ViZDoomErrorException();
 
             case MSG_CODE_SIGNAL_INT_ABRT_TERM :
                 this->close();
@@ -765,10 +769,10 @@ namespace vizdoom {
                         break;
 
                     case MSG_CODE_DOOM_ERROR :
-                        throw DoomErrorException();
+                        throw ViZDoomErrorException();
 
                     case MSG_CODE_DOOM_PROCESS_EXIT :
-                        if(this->doomRunning) throw DoomUnexpectedExitException();
+                        if(this->doomRunning) throw ViZDoomUnexpectedExitException();
                         break;
 
                     case MSG_CODE_SIGNAL_INT_ABRT_TERM :
@@ -779,7 +783,7 @@ namespace vizdoom {
 
             this->doomWorking = false;
         }
-        else throw DoomIsNotRunningException();
+        else throw ViZDoomIsNotRunningException();
     }
 
     void DoomController::waitForDoomMapStartTime() {
@@ -793,8 +797,8 @@ namespace vizdoom {
         this->doomArgs.clear();
 
         //exe
-        if(!bfs::exists(this->enginePath)) throw PathDoesNotExistException(this->enginePath);
-        this->doomArgs.push_back(this->enginePath);
+        if(!bfs::exists(this->exePath)) throw PathDoesNotExistException(this->exePath);
+        this->doomArgs.push_back(this->exePath);
 
         //main wad
         if(this->iwadPath.length() != 0){
@@ -957,15 +961,15 @@ namespace vizdoom {
         try {
             this->SM = bip::shared_memory_object(bip::open_only, this->SMName.c_str(), bip::read_write);
 
-            this->InputSMRegion = new bip::mapped_region(this->SM, bip::read_write, 0,
+            this->GameVariablesSMRegion = new bip::mapped_region(this->SM, bip::read_only, 0, 
+                                                                 sizeof(DoomController::GameVariablesStruct));
+            this->gameVariables = static_cast<DoomController::GameVariablesStruct *>(this->GameVariablesSMRegion->get_address());
+            
+            this->InputSMRegion = new bip::mapped_region(this->SM, bip::read_write,
+                                                         sizeof(DoomController::GameVariablesStruct),
                                                          sizeof(DoomController::InputStruct));
             this->input = static_cast<DoomController::InputStruct *>(this->InputSMRegion->get_address());
-
-            this->GameVariablesSMRegion = new bip::mapped_region(this->SM, bip::read_only,
-                                                            sizeof(DoomController::InputStruct),
-                                                            sizeof(DoomController::GameVariablesStruct));
-            this->gameVariables = static_cast<DoomController::GameVariablesStruct *>(this->GameVariablesSMRegion->get_address());
-
+            
             this->screenWidth = this->gameVariables->SCREEN_WIDTH;
             this->screenHeight = this->gameVariables->SCREEN_HEIGHT;
             this->screenPitch = this->gameVariables->SCREEN_PITCH;
@@ -973,8 +977,7 @@ namespace vizdoom {
             this->screenFormat = (ScreenFormat)this->gameVariables->SCREEN_FORMAT;
 
             this->ScreenSMRegion = new bip::mapped_region(this->SM, bip::read_only,
-                                                          sizeof(DoomController::InputStruct) +
-                                                          sizeof(DoomController::GameVariablesStruct),
+                                                          sizeof(DoomController::GameVariablesStruct) + sizeof(DoomController::InputStruct),
                                                           this->screenSize);
             this->screen = static_cast<uint8_t *>(this->ScreenSMRegion->get_address());
         }

@@ -28,7 +28,7 @@ public class Seed {
 		//game.loadConfig("../config/predict_position.cfg")
 		
 		game.loadConfig("../config/basic.cfg");
-    		game.setDoomEnginePath("../../bin/vizdoom");
+    		game.setViZDoomPath("../../bin/vizdoom");
     		
 		// Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".
 	    	game.setDoomGamePath("../../scenarios/freedoom2.wad");

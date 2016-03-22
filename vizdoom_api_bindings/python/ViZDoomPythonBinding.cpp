@@ -33,9 +33,10 @@ void translate ## n (Exception const &e){ PyErr_SetString( type ## n  , e.what()
  * void translate(Exception const &e) { PyErr_SetString(typeMyException, e.what()); }
  */
 
-EXCEPTION_TRANSLATE_TO_PYT(DoomUnexpectedExitException)
-EXCEPTION_TRANSLATE_TO_PYT(DoomIsNotRunningException)
-EXCEPTION_TRANSLATE_TO_PYT(DoomErrorException)
+EXCEPTION_TRANSLATE_TO_PYT(ViZDoomMismatchedVersionException)
+EXCEPTION_TRANSLATE_TO_PYT(ViZDoomUnexpectedExitException)
+EXCEPTION_TRANSLATE_TO_PYT(ViZDoomIsNotRunningException)
+EXCEPTION_TRANSLATE_TO_PYT(ViZDoomErrorException)
 EXCEPTION_TRANSLATE_TO_PYT(SharedMemoryException)
 EXCEPTION_TRANSLATE_TO_PYT(MessageQueueException)
 EXCEPTION_TRANSLATE_TO_PYT(PathDoesNotExistException)
@@ -67,10 +68,11 @@ bp::register_exception_translator< n >(&translate ## n );
 	/* typeMyException = createExceptionClass("myException");
 	 * bp::register_exception_translator<myException>(&translate);
 	 */
-
-	EXCEPTION_TO_PYT(DoomUnexpectedExitException, doom_unexpected_exit_exception)
-	EXCEPTION_TO_PYT(DoomIsNotRunningException, doom_is_not_running_exception)
-	EXCEPTION_TO_PYT(DoomErrorException, doom_error_exception)
+        
+    EXCEPTION_TO_PYT(ViZDoomMismatchedVersionException, vizdoom_mismatched_version)
+	EXCEPTION_TO_PYT(ViZDoomUnexpectedExitException, doom_unexpected_exit_exception)
+	EXCEPTION_TO_PYT(ViZDoomIsNotRunningException, doom_is_not_running_exception)
+	EXCEPTION_TO_PYT(ViZDoomErrorException, doom_error_exception)
 	EXCEPTION_TO_PYT(SharedMemoryException, shared_memory_exception)
 	EXCEPTION_TO_PYT(MessageQueueException, message_queue_exception)
 	EXCEPTION_TO_PYT(PathDoesNotExistException, path_does_not_exist_exception)
@@ -344,7 +346,7 @@ bp::register_exception_translator< n >(&translate ## n );
         .def("get_mode", &DoomGamePython::getMode)
         .def("set_mode", &DoomGamePython::setMode)
 
-		.def("set_doom_engine_path", &DoomGamePython::setDoomEnginePath)
+		.def("set_vizdoom_path", &DoomGamePython::setViZDoomPath)
 		.def("set_doom_game_path", &DoomGamePython::setDoomGamePath)
 		.def("set_doom_scenario_path", &DoomGamePython::setDoomScenarioPath)
 		.def("set_doom_map", &DoomGamePython::setDoomMap)

@@ -97,14 +97,16 @@ void ViZDoom_GameVarsInit(){
 
     vizdoomPlayer = &players[consoleplayer];
     try {
-        vizdoomGameVarsSMRegion = new bip::mapped_region(vizdoomSM, bip::read_write, sizeof(ViZDoomInputStruct), sizeof(ViZDoomGameVarsStruct));
+        vizdoomGameVarsSMRegion = new bip::mapped_region(vizdoomSM, bip::read_write, 0, sizeof(ViZDoomGameVarsStruct));
         vizdoomGameVars = static_cast<ViZDoomGameVarsStruct *>(vizdoomGameVarsSMRegion->get_address());
     }
     catch(bip::interprocess_exception &ex){
-        printf("ViZDoom_GameVarsInit: Error GameVars SM");
+        Printf("ViZDoom_GameVarsInit: Error GameVars SM");
         ViZDoom_MQSend(VIZDOOM_MSG_CODE_DOOM_ERROR);
         exit(1);
     }
+
+    vizdoomGameVars->VIZDOOM_VERSION = VIZDOOM_VERSION_INT;
 }
 
 void ViZDoom_GameVarsTic(){

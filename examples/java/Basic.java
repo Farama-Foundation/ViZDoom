@@ -17,7 +17,7 @@ public class Basic {
 	    // Create DoomGame instance. It will run the game and communicate with you.
 	    ViZDoomGameJava game = new ViZDoomGameJava();
 	
-	    game.setDoomEnginePath("../../bin/vizdoom");
+	    game.setViZDoomPath("../../bin/vizdoom");
 
 	    // Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".
 	    game.setDoomGamePath("../../scenarios/freedoom2.wad");

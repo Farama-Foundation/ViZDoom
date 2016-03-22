@@ -96,7 +96,7 @@ namespace vizdoom {
 
     void DoomGame::newEpisode() {
 
-        if(!this->isRunning()) throw DoomIsNotRunningException();
+        if(!this->isRunning()) throw ViZDoomIsNotRunningException();
 
         this->doomController->restartMap();
 
@@ -112,7 +112,7 @@ namespace vizdoom {
 
     void DoomGame::setAction(std::vector<int> const &actions) {
 
-        if (!this->isRunning()) throw DoomIsNotRunningException();
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         try {
             for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
                 if(i < actions.size()){
@@ -138,7 +138,7 @@ namespace vizdoom {
 
     void DoomGame::advanceAction(unsigned int tics, bool updateState, bool renderOnly) {
 
-        if (!this->isRunning()) throw DoomIsNotRunningException();
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
 
         try {
             this->doomController->tics(tics, updateState || renderOnly);
@@ -199,24 +199,24 @@ namespace vizdoom {
     std::vector<int> DoomGame::getLastAction() { return this->lastAction; }
 
     bool DoomGame::isNewEpisode() {
-        if(!this->isRunning()) throw DoomIsNotRunningException();
+        if(!this->isRunning()) throw ViZDoomIsNotRunningException();
 
         return this->doomController->isMapFirstTic();
     }
 
     bool DoomGame::isEpisodeFinished() {
-        if(!this->isRunning()) throw DoomIsNotRunningException();
+        if(!this->isRunning()) throw ViZDoomIsNotRunningException();
 
         return !this->doomController->isTicPossible();
     }
 
     bool DoomGame::isPlayerDead() {
-        if(!this->isRunning()) throw DoomIsNotRunningException();
+        if(!this->isRunning()) throw ViZDoomIsNotRunningException();
         return this->doomController->isPlayerDead();
     }
 
     void DoomGame::respawnPlayer(){
-        if(!this->isRunning()) throw DoomIsNotRunningException();
+        if(!this->isRunning()) throw ViZDoomIsNotRunningException();
 
         this->doomController->respawnPlayer();
         this->updateState();
@@ -295,12 +295,12 @@ namespace vizdoom {
     void DoomGame::setMode(Mode mode){ if (!this->running) this->mode = mode; }
 
     int DoomGame::getGameVariable(GameVariable var){
-        if(!this->isRunning()) throw DoomIsNotRunningException();
+        if(!this->isRunning()) throw ViZDoomIsNotRunningException();
 
         return this->doomController->getGameVariable(var);
     }
 
-    void DoomGame::setDoomEnginePath(std::string path) { this->doomController->setEnginePath(path); }
+    void DoomGame::setViZDoomPath(std::string path) { this->doomController->setExePath(path); }
     void DoomGame::setDoomGamePath(std::string path) { this->doomController->setIwadPath(path); }
     void DoomGame::setDoomScenarioPath(std::string path) { this->doomController->setFilePath(path); }
     void DoomGame::setDoomMap(std::string map) { this->doomController->setMap(map); }
@@ -922,8 +922,8 @@ namespace vizdoom {
                 this->setDoomMap(val);
                 continue;
             }
-            if(key == "doom_engine_path" || key == "doomenginepath"){
-                this->setDoomEnginePath(original_val);
+            if(key == "vizdoom_path" || key == "vizdoompath"){
+                this->setViZDoomPath(original_val);
                 continue;
             }
             if(key == "doom_game_path" || key == "doomgamepath"){

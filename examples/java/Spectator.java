@@ -38,7 +38,7 @@ public class Spectator {
 		// Select game and map You want to use.
 	    	game.setDoomGamePath("../../scenarios/freedoom2.wad");
 		//game.setDoomGamePath("../../scenarios/doom2.wad");
-		game.setDoomEnginePath("../../bin/vizdoom");
+		game.setViZDoomPath("../../bin/vizdoom");
 		//Adds mouse support:
 		game.addAvailableButton(Button.TURN_LEFT_RIGHT_DELTA);
 		// Enables spectator mode, so you can play. Agent is supposed to watch you playing and learn from it.

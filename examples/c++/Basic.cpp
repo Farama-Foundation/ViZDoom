@@ -14,7 +14,7 @@ int main() {
     // Create DoomGame instance. It will run the game and communicate with you.
     DoomGame *game = new DoomGame();
 
-    game->setDoomEnginePath("./vizdoom");
+    game->setViZDoomPath("../../bin/vizdoom");
 
     // Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".
     game->setDoomGamePath("../../scenarios/freedoom2.wad");
