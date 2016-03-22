@@ -1,4 +1,4 @@
-#include "ViZDoomGame.h"
+#include "ViZDoom.h"
 #include <iostream>
 #include <vector>
 #include <cstdlib>
@@ -25,17 +25,17 @@ int main(){
     game->init();
 
 
-    std::vactor<int> actions[3];
-    int action[] = {1, 0, 0};
-    actions[0] = std::vector<int>(action, action + sizeof(action) / sizeof(int));
+    std::vector<int> actions[3];
+    int action0[] = {1, 0, 0};
+    actions[0] = std::vector<int>(action0, action0 + sizeof(action0) / sizeof(int));
 
-    int action[] = {0, 1, 0};
-    actions[1] = std::vector<int>(action, action + sizeof(action) / sizeof(int));
+    int action1[] = {0, 1, 0};
+    actions[1] = std::vector<int>(action1, action1 + sizeof(action1) / sizeof(int));
 
-    int action[] = {0, 0, 1};
-    actions[2] = std::vector<int>(action, action + sizeof(action) / sizeof(int));
+    int action2[] = {0, 0, 1};
+    actions[2] = std::vector<int>(action2, action2 + sizeof(action2) / sizeof(int));
 
-    std::srand(time());
+    std::srand(time(0));
 
     while(!game->isEpisodeFinished()){          // Play until the game (episode) is over.
 
@@ -48,15 +48,15 @@ int main(){
         }
 
         // Get the state
-        GameState state = game->getState();
+        GameState s = game->getState();
 
         // Make random action and get reward
         double r = game->makeAction(actions[std::rand() % 3]);
 
         std::cout << "State #" << s.number << "\n";
         std::cout << "Action reward: " << r <<"\n";
-        std::cout << "Frags: " << game.getGameVariable(FRAGCOUNT) << std::endl;
-        std::cout << "=====================\n");
+        std::cout << "Frags: " << game->getGameVariable(FRAGCOUNT) << std::endl;
+        std::cout << "=====================\n";
 
     }
 

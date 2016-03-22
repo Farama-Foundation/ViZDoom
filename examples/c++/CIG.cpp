@@ -1,4 +1,4 @@
-#include "ViZDoomGame.h"
+#include "ViZDoom.h"
 #include <iostream>
 #include <vector>
 
@@ -48,7 +48,7 @@ int main(){
 
         game->makeAction(action);
 
-        std::cout << game->getEpisodeTime() << " Frags: " << game.getGameVariable(FRAGCOUNT) << std::endl;
+        std::cout << game->getEpisodeTime() << " Frags: " << game->getGameVariable(FRAGCOUNT) << std::endl;
     }
 
     game->close();

@@ -1,4 +1,4 @@
-#include "ViZDoomGame.h"
+#include "ViZDoom.h"
 #include <iostream>
 #include <vector>
 
@@ -17,7 +17,7 @@ int main(){
     // game->setDoomGamePath("../../scenarios/doom2.wad");     // Not provided with environment due to licences.
 
     // Host game.
-    game.addGameArgs("-host 2 -deathmatch +map map01");
+    game->addGameArgs("-host 2 -deathmatch +map map01");
 
     game->setMode(ASYNC_SPECTATOR);                // Multiplayer requires the use of asynchronous modes.
     game->init();
