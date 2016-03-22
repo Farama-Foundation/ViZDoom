@@ -1337,7 +1337,7 @@ void wallscan (int x1, int x2, short *uwal, short *dwal, fixed_t *swal, fixed_t 
 			}
 		}
 	}
-	for(;x<=x2;x++)
+	for(;x<x2;x++)
 	{
 		light += rw_lightstep;
 		y1ve[0] = uwal[x];//max(uwal[x],umost[x]);
