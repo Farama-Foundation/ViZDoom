@@ -1,5 +1,5 @@
 cmake_minimum_required( VERSION 2.4 )
-project(ViziaZDoom)
+project(ViZDoom)
 
 if( COMMAND cmake_policy )
 	if( POLICY CMP0011 )
@@ -123,7 +123,7 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS( GME
 if( MSVC )
 	# Eliminate unreferenced functions and data
 	# Perform identical COMDAT folding
-	set( REL_LINKER_FLAGS "/opt:ref /opt:icf /nodefaultlib:msvcrt /TSAWARE" )
+	set( REL_LINKER_FLAGS "/opt:ref /opt:icf /nodefaultlib:msvcrt /TSAWARE /LARGEADDRESSAWARE" )
 
 	# String pooling
 	# Function-level linking

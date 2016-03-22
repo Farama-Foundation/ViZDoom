@@ -178,11 +178,7 @@ FString M_GetCajunPath(const char *botfilename)
 	path << progdir << "zcajun/" << botfilename;
 	if (!FileExists(path))
 	{
-		path << progdir << botfilename;
-		if (!FileExists(path))
-		{
-			path = "";
-		}
+		path = "";
 	}
 	return path;
 }
@@ -390,13 +386,8 @@ FString M_GetCajunPath(const char *botfilename)
 	path << progdir << "zcajun/" << botfilename;
 	if (!FileExists(path))
 	{
-		path << progdir << botfilename;
-		if (!FileExists(path))
-		{
-			path = "";
-		}
+		path = "";
 	}
-
 	return path;
 }
 
@@ -511,7 +502,7 @@ FString GetUserFile (const char *file)
 			if (rename(oldpath, path) == -1)
 			{
 				I_Error ("Failed to move old " GAMENAMELOWERCASE " directory (%s) to new location (%s).",
-						 oldpath.GetChars(), path.GetChars());
+					oldpath.GetChars(), path.GetChars());
 			}
 			else
 				moved = true;
@@ -520,7 +511,7 @@ FString GetUserFile (const char *file)
 		if (!moved && mkdir (path, S_IRUSR | S_IWUSR | S_IXUSR) == -1)
 		{
 			I_FatalError ("Failed to create %s directory:\n%s",
-						  path.GetChars(), strerror (errno));
+				path.GetChars(), strerror (errno));
 		}
 	}
 	else
@@ -584,10 +575,7 @@ FString M_GetCajunPath(const char *botfilename)
 	if (!FileExists(path))
 	{
 		// Then check in SHARE_DIR/botfilename.
-		//path = SHARE_DIR;
-
-		//Then check executable folder
-		path = "./";
+		path = SHARE_DIR;
 		path << botfilename;
 		if (!FileExists(path))
 		{

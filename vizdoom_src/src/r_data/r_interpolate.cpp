@@ -157,7 +157,10 @@ public:
 //
 //==========================================================================
 
-IMPLEMENT_ABSTRACT_CLASS(DInterpolation)
+IMPLEMENT_ABSTRACT_POINTY_CLASS(DInterpolation)
+DECLARE_POINTER(Next)
+DECLARE_POINTER(Prev)
+END_POINTERS
 IMPLEMENT_CLASS(DSectorPlaneInterpolation)
 IMPLEMENT_CLASS(DSectorScrollInterpolation)
 IMPLEMENT_CLASS(DWallScrollInterpolation)
@@ -213,9 +216,9 @@ void FInterpolator::UpdateInterpolations()
 void FInterpolator::AddInterpolation(DInterpolation *interp)
 {
 	interp->Next = Head;
-	if (Head != NULL) Head->Prev = &interp->Next;
+	if (Head != NULL) Head->Prev = interp;
+	interp->Prev = NULL;
 	Head = interp;
-	interp->Prev = &Head;
 	count++;
 }
 
@@ -227,14 +230,19 @@ void FInterpolator::AddInterpolation(DInterpolation *interp)
 
 void FInterpolator::RemoveInterpolation(DInterpolation *interp)
 {
-	if (interp->Prev != NULL)
+	if (Head == interp)
 	{
-		*interp->Prev = interp->Next;
-		if (interp->Next != NULL) interp->Next->Prev = interp->Prev;
-		interp->Next = NULL;
-		interp->Prev = NULL;
-		count--;
+		Head = interp->Next;
+		if (Head != NULL) Head->Prev = NULL;
 	}
+	else
+	{
+		if (interp->Prev != NULL) interp->Prev->Next = interp->Next;
+		if (interp->Next != NULL) interp->Next->Prev = interp->Prev;
+	}
+	interp->Next = NULL;
+	interp->Prev = NULL;
+	count--;
 }
 
 //==========================================================================
@@ -253,9 +261,12 @@ void FInterpolator::DoInterpolations(fixed_t smoothratio)
 
 	didInterp = true;
 
-	for (DInterpolation *probe = Head; probe != NULL; probe = probe->Next)
+	DInterpolation *probe = Head;
+	while (probe != NULL)
 	{
+		DInterpolation *next = probe->Next;
 		probe->Interpolate(smoothratio);
+		probe = next;
 	}
 }
 
@@ -285,13 +296,15 @@ void FInterpolator::RestoreInterpolations()
 
 void FInterpolator::ClearInterpolations()
 {
-	for (DInterpolation *probe = Head; probe != NULL; )
+	DInterpolation *probe = Head;
+	Head = NULL;
+	while (probe != NULL)
 	{
 		DInterpolation *next = probe->Next;
+		probe->Next = probe->Prev = NULL;
 		probe->Destroy();
 		probe = next;
 	}
-	Head = NULL;
 }
 
 
@@ -331,13 +344,10 @@ int DInterpolation::AddRef()
 //
 //==========================================================================
 
-int DInterpolation::DelRef()
+int DInterpolation::DelRef(bool force)
 {
 	if (refcount > 0) --refcount;
-	if (refcount <= 0 && !(ObjectFlags & OF_EuthanizeMe))
-	{
-		Destroy();
-	}
+	if (force && refcount == 0) Destroy();
 	return refcount;
 }
 
@@ -486,9 +496,16 @@ void DSectorPlaneInterpolation::Interpolate(fixed_t smoothratio)
 	bakheight = *pheight;
 	baktexz = sector->GetPlaneTexZ(pos);
 
-	*pheight = oldheight + FixedMul(bakheight - oldheight, smoothratio);
-	sector->SetPlaneTexZ(pos, oldtexz + FixedMul(baktexz - oldtexz, smoothratio));
-	P_RecalculateAttached3DFloors(sector);
+	if (refcount == 0 && oldheight == bakheight)
+	{
+		Destroy();
+	}
+	else
+	{
+		*pheight = oldheight + FixedMul(bakheight - oldheight, smoothratio);
+		sector->SetPlaneTexZ(pos, oldtexz + FixedMul(baktexz - oldtexz, smoothratio));
+		P_RecalculateAttached3DFloors(sector);
+	}
 }
 
 //==========================================================================
@@ -612,8 +629,15 @@ void DSectorScrollInterpolation::Interpolate(fixed_t smoothratio)
 	bakx = sector->GetXOffset(ceiling);
 	baky = sector->GetYOffset(ceiling, false);
 
-	sector->SetXOffset(ceiling, oldx + FixedMul(bakx - oldx, smoothratio));
-	sector->SetYOffset(ceiling, oldy + FixedMul(baky - oldy, smoothratio));
+	if (refcount == 0 && oldx == bakx && oldy == baky)
+	{
+		Destroy();
+	}
+	else
+	{
+		sector->SetXOffset(ceiling, oldx + FixedMul(bakx - oldx, smoothratio));
+		sector->SetYOffset(ceiling, oldy + FixedMul(baky - oldy, smoothratio));
+	}
 }
 
 //==========================================================================
@@ -696,8 +720,15 @@ void DWallScrollInterpolation::Interpolate(fixed_t smoothratio)
 	bakx = side->GetTextureXOffset(part);
 	baky = side->GetTextureYOffset(part);
 
-	side->SetTextureXOffset(part, oldx + FixedMul(bakx - oldx, smoothratio));
-	side->SetTextureYOffset(part, oldy + FixedMul(baky - oldy, smoothratio));
+	if (refcount == 0 && oldx == bakx && oldy == baky)
+	{
+		Destroy();
+	}
+	else
+	{
+		side->SetTextureXOffset(part, oldx + FixedMul(bakx - oldx, smoothratio));
+		side->SetTextureYOffset(part, oldy + FixedMul(baky - oldy, smoothratio));
+	}
 }
 
 //==========================================================================
@@ -788,6 +819,7 @@ void DPolyobjInterpolation::Restore()
 
 void DPolyobjInterpolation::Interpolate(fixed_t smoothratio)
 {
+	bool changed = false;
 	for(unsigned int i = 0; i < poly->Vertices.Size(); i++)
 	{
 		fixed_t *px = &poly->Vertices[i]->x;
@@ -796,15 +828,26 @@ void DPolyobjInterpolation::Interpolate(fixed_t smoothratio)
 		bakverts[i*2  ] = *px;
 		bakverts[i*2+1] = *py;
 
-		*px = oldverts[i*2  ] + FixedMul(bakverts[i*2  ] - oldverts[i*2  ], smoothratio);
-		*py = oldverts[i*2+1] + FixedMul(bakverts[i*2+1] - oldverts[i*2+1], smoothratio);
+		if (bakverts[i * 2] != oldverts[i * 2] || bakverts[i * 2 + 1] != oldverts[i * 2 + 1])
+		{
+			changed = true;
+			*px = oldverts[i * 2] + FixedMul(bakverts[i * 2] - oldverts[i * 2], smoothratio);
+			*py = oldverts[i * 2 + 1] + FixedMul(bakverts[i * 2 + 1] - oldverts[i * 2 + 1], smoothratio);
+		}
 	}
-	bakcx = poly->CenterSpot.x;
-	bakcy = poly->CenterSpot.y;
-	poly->CenterSpot.x = bakcx + FixedMul(bakcx - oldcx, smoothratio);
-	poly->CenterSpot.y = bakcy + FixedMul(bakcy - oldcy, smoothratio);
+	if (refcount == 0 && !changed)
+	{
+		Destroy();
+	}
+	else
+	{
+		bakcx = poly->CenterSpot.x;
+		bakcy = poly->CenterSpot.y;
+		poly->CenterSpot.x = bakcx + FixedMul(bakcx - oldcx, smoothratio);
+		poly->CenterSpot.y = bakcy + FixedMul(bakcy - oldcy, smoothratio);
 
-	poly->ClearSubsectorLinks();
+		poly->ClearSubsectorLinks();
+	}
 }
 
 //==========================================================================
@@ -893,20 +936,6 @@ DInterpolation *sector_t::SetInterpolation(int position, bool attach)
 	interpolations[position]->AddRef();
 	GC::WriteBarrier(interpolations[position]);
 	return interpolations[position];
-}
-
-//==========================================================================
-//
-//
-//
-//==========================================================================
-
-void sector_t::StopInterpolation(int position)
-{
-	if (interpolations[position] != NULL)
-	{
-		interpolations[position]->DelRef();
-	}
 }
 
 //==========================================================================

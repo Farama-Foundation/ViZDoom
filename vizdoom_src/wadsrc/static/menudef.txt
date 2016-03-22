@@ -364,18 +364,6 @@ OptionValue "Gender"
 	2, "Other"
 }
 
-OptionValue "Autoaim"
-{
-	0, "Never"
-	1, "Very low"
-	2, "Low"
-	3, "Medium"
-	4, "High"
-	5, "Very high"
-	6, "Always"
-}
-
-
 ListMenu "PlayerMenu"
 {
 	StaticTextCentered 160, 6, "$MNU_PLAYERSETUP"
@@ -414,7 +402,7 @@ ListMenu "PlayerMenu"
 	ValueText "Class", "Class"
 	ValueText "Skin", "Skin"
 	ValueText "Gender", "Gender", "Gender"
-	ValueText "Autoaim", "Autoaim", "Autoaim"
+	Slider "Autoaim", "Autoaim", 0, 35, 1
 	ValueText "Switch on pickup", "Switch", "OffOn"
 	ValueText "Always Run", "AlwaysRun", "OnOff"
 	Class "PlayerMenu"
@@ -435,8 +423,12 @@ OptionMenu "CustomizeControls"
 	StaticText 	"Controls", 1
 	Control 	"Fire",					"+attack"
 	Control 	"Secondary Fire",		"+altattack"
-	Control 	"Weapon Reload",			"+reload"
-	Control 	"Weapon Zoom",				"+zoom"
+	Control 	"Weapon Reload",		"+reload"
+	Control 	"Weapon Zoom",			"+zoom"
+	Control		"Weapon State 1",		"+user1"
+	Control		"Weapon State 2",		"+user2"
+	Control		"Weapon State 3",		"+user3"
+	Control		"Weapon State 4",		"+user4"
 	Control 	"Use / Open",			"+use"
 	Control 	"Move forward",			"+forward"
 	Control 	"Move backward",		"+back"
@@ -444,6 +436,7 @@ OptionMenu "CustomizeControls"
 	Control 	"Strafe right",			"+moveright"
 	Control 	"Turn left",			"+left"
 	Control 	"Turn right",			"+right"
+	Control		"Quick Turn",			"turn180"
 	Control 	"Jump",					"+jump"
 	Control 	"Crouch",				"+crouch"
 	Control 	"Crouch Toggle",		"crouch"
@@ -693,6 +686,8 @@ OptionMenu "VideoOptions"
 	Option "Teleporter zoom",			"telezoom", "OnOff"
 	Slider "Earthquake shake intensity",	"r_quakeintensity", 0.0, 1.0, 0.05, 2
 	Option "Interpolate monster movement",	"nomonsterinterpolation", "NoYes"
+	Slider "Menu dim",					"dimamount", 0, 1.0, 0.05, 2
+	ColorPicker "Dim color",			"dimcolor"
 }
 
 //-------------------------------------------------------------------------------------------
@@ -888,6 +883,10 @@ OptionMenu "MiscOptions"
 	{
 		Option "Merge left+right Alt/Ctrl/Shift", 		"k_mergekeys", "OnOff"
 		Option "Alt-Enter toggles fullscreen",			"k_allowfullscreentoggle", "OnOff"
+	}
+	IfOption(Mac)
+	{
+		Option "Command-F toggles fullscreen",			"k_allowfullscreentoggle", "OnOff"
 	}
 	Option "Show IWAD selection dialog",			"queryiwad", "OnOff"
 	StaticText " "
@@ -1590,10 +1589,27 @@ OptionMenu AdvSoundOptions
 	Option "OPL Emulator Core", "opl_core", "OplCores"
 	StaticText " "
 	StaticText "GUS Emulation",	1
+	TextField "GUS config file", "midi_config"
 	Slider "MIDI voices",	"midi_voices", 16, 256, 4, 0
-	Option "Emulate TiMidity", "midi_timiditylike", "OnOff"
 	Option "Read DMXGUS lumps", "midi_dmxgus", "OnOff"
 	Option "GUS memory size", "gus_memsize", "GusMemory"
+	StaticText " "
+	StaticText "FluidSynth",	1
+	TextField "Patch set", "fluid_patchset"
+	Slider "Gain",	"fluid_gain", 0, 10, 0.5, 1
+	Option "Reverb", "fluid_reverb", "OnOff"
+	Slider "MIDI voices", "fluid_voices", 16, 4096, 16, 1
+	// Leaving out the more advanced stuff for now.
+	StaticText " "
+	StaticText "Timidity++",	1
+	TextField "Path for executable", "timidity_exe"
+	Option "Reverb", "timidity_reverb", "OnOff"
+	Option "Chorus", "timidity_chorus", "OnOff"
+	Slider "Relative volume",	"timidity_mastervolume", 0, 4, 0.2, 1
+	StaticText " "
+	StaticText "WildMidi",	1
+	TextField "WildMidi config file", "wildmidi_config"
+	Option "Reverb", "wildmidi_reverb", "OnOff"
 }
 
 /*=======================================
@@ -1635,6 +1651,7 @@ OptionMenu ModReplayerOptions
 	Title "MODULE REPLAYER OPTIONS"
 	Option "Replayer engine",		"mod_dumb", "ModReplayers"
 	StaticText " "
+	Slider "Master Volume",			"mod_dumb_mastervolume", 1, 16, 0.5, 1
 	Option "Sample rate",			"mod_samplerate", "SampleRates", "mod_dumb"
 	Option "Quality",				"mod_interp", "ModQuality", "mod_dumb"
 	Option "Volume ramping",		"mod_volramp", "ModVolumeRamps", "mod_dumb"

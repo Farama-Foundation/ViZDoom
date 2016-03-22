@@ -86,13 +86,6 @@
 
 #include "g_hub.h"
 
-//VIZDOOM_CODE
-#include "vizdoom_input.h"
-#include "vizdoom_defines.h"
-
-EXTERN_CVAR (Bool, vizdoom_controlled)
-EXTERN_CVAR (Bool, vizdoom_async)
-EXTERN_CVAR (Bool, vizdoom_allow_input)
 
 static FRandom pr_dmspawn ("DMSpawn");
 static FRandom pr_pspawn ("PlayerSpawn");
@@ -536,8 +529,6 @@ static inline int joyint(double val)
 // or reads it from the demo buffer.
 // If recording a demo, write it out
 //
-
-//VIZDOOM_CODE
 void G_BuildTiccmd (ticcmd_t *cmd)
 {
 	int 		strafe;
@@ -556,12 +547,7 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	strafe = Button_Strafe.bDown;
 	speed = Button_Speed.bDown ^ (int)cl_run;
 
-	//VIZDOOM_CODE
-	forward = LocalForward;
-	side = LocalSide;
-	fly = LocalFly;
-
-	LocalForward = LocalSide = LocalFly = 0;
+	forward = side = fly = 0;
 
 	// [RH] only use two stage accelerative turning on the keyboard
 	//		and not the joystick, since we treat the joystick as
@@ -695,36 +681,23 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	fly += joyint(joyaxes[JOYAXIS_Up] * 2048);
 
 	// Handle mice.
-	if (!Button_Mlook.bDown && !freelook) {
-		int value = (int) ((float) mousey * m_forward);
-		if(!*vizdoom_controlled) forward += value;
-		else{
-			if(*vizdoom_allow_input){
-				value = ViZDoom_AxisFilter(VIZDOOM_BT_FORWARD_BACKWARD, value);
-				forward += value;
-			}
-		}
+	if (!Button_Mlook.bDown && !freelook)
+	{
+		forward += (int)((float)mousey * m_forward);
 	}
-
-	if (strafe || lookstrafe) {
-		int value = (int) ((float) mousex * m_side);
-		if(!*vizdoom_controlled) side += value;
-		else{
-			if(*vizdoom_allow_input){
-				value = ViZDoom_AxisFilter(VIZDOOM_BT_LEFT_RIGHT, value);
-				side += value;
-			}
-		}
-	}
-
-	mousex = mousey = 0;
 
 	cmd->ucmd.pitch = LocalViewPitch >> 16;
 
-	if (SendLand) {
+	if (SendLand)
+	{
 		SendLand = false;
 		fly = -32768;
 	}
+
+	if (strafe || lookstrafe)
+		side += (int)((float)mousex * m_side);
+
+	mousex = mousey = 0;
 
 	// Build command.
 	if (forward > MAXPLMOVE)
@@ -764,66 +737,19 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	}
 	if (SendItemUse == (const AInventory *)1)
 	{
-		//VIZDOOM_CODE
-		if(*vizdoom_controlled && !*vizdoom_async){
-			{
-				AInventory *item = players[consoleplayer].mo->Inventory;
-
-				while (item != NULL)
-				{
-					AInventory *next = item->Inventory;
-					if (item->ItemFlags & IF_INVBAR && !(item->IsKindOf(RUNTIME_CLASS(APuzzleItem))))
-					{
-						players[consoleplayer].mo->UseInventory (item);
-					}
-					item = next;
-				}
-			}
-		}
-		else {
-			Net_WriteByte (DEM_INVUSEALL);
-		}
-//		Net_WriteByte (DEM_INVUSEALL);
+		Net_WriteByte (DEM_INVUSEALL);
 		SendItemUse = NULL;
 	}
 	else if (SendItemUse != NULL)
 	{
-		//VIZDOOM_CODE
-		if(*vizdoom_controlled && !*vizdoom_async){
-			if (gamestate == GS_LEVEL && !paused && players[consoleplayer].playerstate != PST_DEAD) {
-				AInventory *item = players[consoleplayer].mo->Inventory;
-				while (item != NULL && item->InventoryID != SendItemUse->InventoryID) {
-					item = item->Inventory;
-				}
-				if (item != NULL) players[consoleplayer].mo->UseInventory (item);
-			}
-		}
-		else {
-			Net_WriteByte(DEM_INVUSE);
-			Net_WriteLong(SendItemUse->InventoryID);
-		}
-//		Net_WriteByte(DEM_INVUSE);
-//		Net_WriteLong(SendItemUse->InventoryID);
+		Net_WriteByte (DEM_INVUSE);
+		Net_WriteLong (SendItemUse->InventoryID);
 		SendItemUse = NULL;
 	}
 	if (SendItemDrop != NULL)
 	{
-		//VIZDOOM_CODE
-		if(*vizdoom_controlled && !*vizdoom_async){
-			if (gamestate == GS_LEVEL && !paused && players[consoleplayer].playerstate != PST_DEAD) {
-				AInventory *item = players[consoleplayer].mo->Inventory;
-				while (item != NULL && item->InventoryID != SendItemUse->InventoryID){
-					item = item->Inventory;
-				}
-				if (item != NULL) players[consoleplayer].mo->DropInventory (item);
-			}
-		}
-		else {
-			Net_WriteByte (DEM_INVDROP);
-			Net_WriteLong (SendItemDrop->InventoryID);
-		}
-//		Net_WriteByte (DEM_INVDROP);
-//		Net_WriteLong (SendItemDrop->InventoryID);
+		Net_WriteByte (DEM_INVDROP);
+		Net_WriteLong (SendItemDrop->InventoryID);
 		SendItemDrop = NULL;
 	}
 
@@ -834,14 +760,12 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 //[Graf Zahl] This really helps if the mouse update rate can't be increased!
 CVAR (Bool,		smooth_mouse,	false,	CVAR_GLOBALCONFIG|CVAR_ARCHIVE)
 
-//VIZDOOM_CODE
 void G_AddViewPitch (int look)
 {
 	if (gamestate == GS_TITLELEVEL)
 	{
 		return;
 	}
-
 	look <<= 16;
 	if (players[consoleplayer].playerstate != PST_DEAD &&		// No adjustment while dead.
 		players[consoleplayer].ReadyWeapon != NULL &&			// No adjustment if no weapon.
@@ -889,18 +813,14 @@ void G_AddViewAngle (int yaw)
 	{
 		return;
 	}
-
 	yaw <<= 16;
-
 	if (players[consoleplayer].playerstate != PST_DEAD &&	// No adjustment while dead.
 		players[consoleplayer].ReadyWeapon != NULL &&		// No adjustment if no weapon.
 		players[consoleplayer].ReadyWeapon->FOVScale > 0)	// No adjustment if it is non-positive.
 	{
 		yaw = int(yaw * players[consoleplayer].ReadyWeapon->FOVScale);
 	}
-
 	LocalViewAngle -= yaw;
-
 	if (yaw != 0)
 	{
 		LocalKeyboardTurner = smooth_mouse;
@@ -1031,8 +951,6 @@ bool G_Responder (event_t *ev)
 				return C_DoKey (ev, &Bindings, &DoubleBindings);
 			}
 		}
-
-		//VIZDOOM_CODE
 		if (cmd && cmd[0] == '+')
 			return C_DoKey (ev, &Bindings, &DoubleBindings);
 
@@ -1258,7 +1176,7 @@ void G_Ticker ()
 				}
 				if (players[i].mo)
 				{
-					DWORD sum = rngsum + players[i].mo->x + players[i].mo->y + players[i].mo->z
+					DWORD sum = rngsum + players[i].mo->X() + players[i].mo->Y() + players[i].mo->Z()
 						+ players[i].mo->angle + players[i].mo->pitch;
 					sum ^= players[i].health;
 					consistancy[i][buf] = sum;
@@ -1504,6 +1422,8 @@ bool G_CheckSpot (int playernum, FPlayerStart *mthing)
 	fixed_t z, oldz;
 	int i;
 
+	if (mthing->type == 0) return false;
+
 	x = mthing->x;
 	y = mthing->y;
 	z = mthing->z;
@@ -1517,13 +1437,13 @@ bool G_CheckSpot (int playernum, FPlayerStart *mthing)
 	if (!players[playernum].mo)
 	{ // first spawn of level, before corpses
 		for (i = 0; i < playernum; i++)
-			if (players[i].mo && players[i].mo->x == x && players[i].mo->y == y)
+			if (players[i].mo && players[i].mo->X() == x && players[i].mo->Y() == y)
 				return false;
 		return true;
 	}
 
-	oldz = players[playernum].mo->z;	// [RH] Need to save corpse's z-height
-	players[playernum].mo->z = z;		// [RH] Checks are now full 3-D
+	oldz = players[playernum].mo->Z();	// [RH] Need to save corpse's z-height
+	players[playernum].mo->SetZ(z);		// [RH] Checks are now full 3-D
 
 	// killough 4/2/98: fix bug where P_CheckPosition() uses a non-solid
 	// corpse to detect collisions with other players in DM starts
@@ -1535,7 +1455,7 @@ bool G_CheckSpot (int playernum, FPlayerStart *mthing)
 	players[playernum].mo->flags |=  MF_SOLID;
 	i = P_CheckPosition(players[playernum].mo, x, y);
 	players[playernum].mo->flags &= ~MF_SOLID;
-	players[playernum].mo->z = oldz;	// [RH] Restore corpse's height
+	players[playernum].mo->SetZ(oldz);	// [RH] Restore corpse's height
 	if (!i)
 		return false;
 
@@ -1561,8 +1481,7 @@ static fixed_t PlayersRangeFromSpot (FPlayerStart *spot)
 		if (!playeringame[i] || !players[i].mo || players[i].health <= 0)
 			continue;
 
-		distance = P_AproxDistance (players[i].mo->x - spot->x,
-									players[i].mo->y - spot->y);
+		distance = players[i].mo->AproxDistance (spot->x, spot->y);
 
 		if (distance < closest)
 			closest = distance;
@@ -1640,7 +1559,7 @@ void G_DeathMatchSpawnPlayer (int playernum)
 			if (spot == NULL)
 			{ // We have a player 1 start, right?
 				spot = &playerstarts[0];
-				if (spot == NULL)
+				if (spot->type == 0)
 				{ // Fine, whatever.
 					spot = &deathmatchstarts[0];
 				}
@@ -1656,7 +1575,13 @@ void G_DeathMatchSpawnPlayer (int playernum)
 //
 FPlayerStart *G_PickPlayerStart(int playernum, int flags)
 {
-	if ((level.flags2 & LEVEL2_RANDOMPLAYERSTARTS) || (flags & PPS_FORCERANDOM))
+	if (AllPlayerStarts.Size() == 0) // No starts to pick
+	{
+		return NULL;
+	}
+
+	if ((level.flags2 & LEVEL2_RANDOMPLAYERSTARTS) || (flags & PPS_FORCERANDOM) ||
+		playerstarts[playernum].type == 0)
 	{
 		if (!(flags & PPS_NOBLOCKINGCHECK))
 		{
@@ -1675,7 +1600,7 @@ FPlayerStart *G_PickPlayerStart(int playernum, int flags)
 			{ // Pick an open spot at random.
 				return good_starts[pr_pspawn(good_starts.Size())];
 			}
-	}
+		}
 		// Pick a spot at random, whether it's open or not.
 		return &AllPlayerStarts[pr_pspawn(AllPlayerStarts.Size())];
 	}
@@ -1704,6 +1629,18 @@ static void G_QueueBody (AActor *body)
 		*translationtables[TRANSLATION_PlayerCorpses][modslot] = *TranslationToTable(body->Translation);
 		body->Translation = TRANSLATION(TRANSLATION_PlayerCorpses,modslot);
 		translationtables[TRANSLATION_PlayerCorpses][modslot]->UpdateNative();
+	}
+
+	const int skinidx = body->player->userinfo.GetSkin();
+
+	if (0 != skinidx && !(body->flags4 & MF4_NOSKIN))
+	{
+		// Apply skin's scale to actor's scale, it will be lost otherwise
+		const AActor *const defaultActor = body->GetDefault();
+		const FPlayerSkin &skin = skins[skinidx];
+
+		body->scaleX = Scale(body->scaleX, skin.ScaleX, defaultActor->scaleX);
+		body->scaleY = Scale(body->scaleY, skin.ScaleY, defaultActor->scaleY);
 	}
 
 	bodyqueslot++;
@@ -1748,16 +1685,17 @@ void G_DoReborn (int playernum, bool freshbot)
 		}
 
 		if (!(level.flags2 & LEVEL2_RANDOMPLAYERSTARTS) &&
+			playerstarts[playernum].type != 0 &&
 			G_CheckSpot (playernum, &playerstarts[playernum]))
 		{
 			AActor *mo = P_SpawnPlayer(&playerstarts[playernum], playernum);
-			if (mo != NULL) P_PlayerStartStomp(mo);
+			if (mo != NULL) P_PlayerStartStomp(mo, true);
 		}
 		else
 		{ // try to spawn at any random player's spot
 			FPlayerStart *start = G_PickPlayerStart(playernum, PPS_FORCERANDOM);
 			AActor *mo = P_SpawnPlayer(start, playernum);
-			if (mo != NULL) P_PlayerStartStomp(mo);
+			if (mo != NULL) P_PlayerStartStomp(mo, true);
 		}
 	}
 }
@@ -1795,6 +1733,8 @@ void G_DoPlayerPop(int playernum)
 
 	// [RH] Make the player disappear
 	FBehavior::StaticStopMyScripts(players[playernum].mo);
+	// [RH] Let the scripts know the player left
+	FBehavior::StaticStartTypedScripts(SCRIPT_Disconnect, players[playernum].mo, true, playernum, true);
 	if (players[playernum].mo != NULL)
 	{
 		P_DisconnectEffect(players[playernum].mo);
@@ -1808,8 +1748,6 @@ void G_DoPlayerPop(int playernum)
 		players[playernum].mo = NULL;
 		players[playernum].camera = NULL;
 	}
-	// [RH] Let the scripts know the player left
-	FBehavior::StaticStartTypedScripts(SCRIPT_Disconnect, NULL, true, playernum);
 }
 
 void G_ScreenShot (char *filename)
@@ -2013,9 +1951,6 @@ void G_DoLoadGame ()
 	}
 
 	G_ReadSnapshots (png);
-	STAT_Read(png);
-	FRandom::StaticReadRNGState (png);
-	P_ReadACSDefereds (png);
 
 	// load a base level
 	savegamerestore = true;		// Use the player actors in the savegame
@@ -2025,6 +1960,9 @@ void G_DoLoadGame ()
 	delete[] map;
 	savegamerestore = false;
 
+	STAT_Read(png);
+	FRandom::StaticReadRNGState(png);
+	P_ReadACSDefereds(png);
 	P_ReadACSVars(png);
 
 	NextSkill = -1;
@@ -2710,12 +2648,12 @@ bool G_ProcessIFFDemo (FString &mapname)
 
 	if (uncompSize > 0)
 	{
-		BYTE *uncompressed = new BYTE[uncompSize];
+		BYTE *uncompressed = (BYTE*)M_Malloc(uncompSize);
 		int r = uncompress (uncompressed, &uncompSize, demo_p, uLong(zdembodyend - demo_p));
 		if (r != Z_OK)
 		{
 			Printf ("Could not decompress demo! %s\n", M_ZLibError(r).GetChars());
-			delete[] uncompressed;
+			M_Free(uncompressed);
 			return true;
 		}
 		M_Free (demobuffer);

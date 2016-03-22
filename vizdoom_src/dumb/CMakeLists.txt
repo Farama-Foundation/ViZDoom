@@ -9,6 +9,9 @@ set( CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D_DEBUG -DDEBUGMODE=1" )
 
 if( ZD_CMAKE_COMPILER_IS_GNUC_COMPATIBLE )
 	set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-pointer-sign -Wno-uninitialized" )
+	if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.5")
+		set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-but-set-variable" )
+	endif(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.5")
 endif( ZD_CMAKE_COMPILER_IS_GNUC_COMPATIBLE )
 
 CHECK_FUNCTION_EXISTS( itoa ITOA_EXISTS )
@@ -39,7 +42,6 @@ add_library( dumb
     src/helpers/memfile.c
     src/helpers/clickrem.c
     src/helpers/barray.c
-    src/helpers/tarray.c
     src/it/xmeffect.c
     src/it/readxm2.c
     src/it/readxm.c

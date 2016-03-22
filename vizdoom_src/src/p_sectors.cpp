@@ -26,9 +26,11 @@
 #include "doomstat.h"
 #include "g_level.h"
 #include "nodebuild.h"
+#include "p_terrain.h"
 #include "po_man.h"
 #include "farchive.h"
 #include "r_utility.h"
+#include "a_sharedglobal.h"
 #include "r_data/colormaps.h"
 
 
@@ -48,7 +50,7 @@ sector_t *sector_t::NextSpecialSector (int type, sector_t *nogood) const
 
 		if (NULL != (tsec = getNextSector (ln, this)) &&
 			tsec != nogood &&
-			(tsec->special & 0x00ff) == type)
+			tsec->special == type)
 		{
 			return tsec;
 		}
@@ -800,6 +802,15 @@ int sector_t::GetCeilingLight () const
 	}
 }
 
+
+ASkyViewpoint *sector_t::GetSkyBox(int which)
+{
+	if (SkyBoxes[which] != NULL) return SkyBoxes[which];
+	if (MoreFlags & (SECF_NOFLOORSKYBOX << which)) return NULL;
+	return level.DefaultSkybox;
+}
+
+
 sector_t *sector_t::GetHeightSec() const 
 {
 	if (heightsec == NULL)
@@ -823,6 +834,66 @@ sector_t *sector_t::GetHeightSec() const
 	}
 	return heightsec;
 }
+
+
+void sector_t::GetSpecial(secspecial_t *spec)
+{
+	spec->special = special;
+	spec->damageamount = damageamount;
+	spec->damagetype = damagetype;
+	spec->damageinterval = damageinterval;
+	spec->leakydamage = leakydamage;
+	spec->Flags = Flags & SECF_SPECIALFLAGS;
+}
+
+void sector_t::SetSpecial(const secspecial_t *spec)
+{
+	special = spec->special;
+	damageamount = spec->damageamount;
+	damagetype = spec->damagetype;
+	damageinterval = spec->damageinterval;
+	leakydamage = spec->leakydamage;
+	Flags = (Flags & ~SECF_SPECIALFLAGS) | (spec->Flags & SECF_SPECIALFLAGS);
+}
+
+void sector_t::TransferSpecial(sector_t *model)
+{
+	special = model->special;
+	damageamount = model->damageamount;
+	damagetype = model->damagetype;
+	damageinterval = model->damageinterval;
+	leakydamage = model->leakydamage;
+	Flags = (Flags&~SECF_SPECIALFLAGS) | (model->Flags & SECF_SPECIALFLAGS);
+}
+
+int sector_t::GetTerrain(int pos) const
+{
+	return terrainnum[pos] >= 0 ? terrainnum[pos] : TerrainTypes[GetTexture(pos)];
+}
+
+FArchive &operator<< (FArchive &arc, secspecial_t &p)
+{
+	if (SaveVersion < 4529)
+	{
+		int special;
+		arc << special;
+		sector_t sec;
+		memset(&sec, 0, sizeof(sec));
+		P_InitSectorSpecial(&sec, special, true);
+		sec.GetSpecial(&p);
+	}
+	else
+	{
+		arc << p.special
+			<< p.damageamount
+			<< p.damagetype
+			<< p.damageinterval
+			<< p.leakydamage
+			<< p.Flags;
+	}
+	return arc;
+}
+
 
 
 bool secplane_t::CopyPlaneIfValid (secplane_t *dest, const secplane_t *opp) const
@@ -953,9 +1024,9 @@ CUSTOM_CVAR(Int, r_fakecontrast, true, CVAR_ARCHIVE|CVAR_GLOBALCONFIG)
 //
 //==========================================================================
 
-int side_t::GetLightLevel (bool foggy, int baselight, bool noabsolute, int *pfakecontrast) const
+int side_t::GetLightLevel (bool foggy, int baselight, bool is3dlight, int *pfakecontrast) const
 {
-	if (!noabsolute && (Flags & WALLF_ABSLIGHTING))
+	if (!is3dlight && (Flags & WALLF_ABSLIGHTING))
 	{
 		baselight = Light;
 	}
@@ -995,7 +1066,7 @@ int side_t::GetLightLevel (bool foggy, int baselight, bool noabsolute, int *pfak
 			}
 		}
 	}
-	if (!(Flags & WALLF_ABSLIGHTING) && (!foggy || (Flags & WALLF_LIGHT_FOG)))
+	if (!is3dlight && !(Flags & WALLF_ABSLIGHTING) && (!foggy || (Flags & WALLF_LIGHT_FOG)))
 	{
 		baselight += this->Light;
 	}

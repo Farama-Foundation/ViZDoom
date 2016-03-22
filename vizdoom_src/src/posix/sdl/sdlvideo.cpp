@@ -136,7 +136,7 @@ CUSTOM_CVAR (Float, bgamma, 1.f, CVAR_ARCHIVE|CVAR_GLOBALCONFIG)
 // Dummy screen sizes to pass when windowed
 static MiniModeInfo WinModes[] =
 {
-//VIZDOOM RESOLUTIONS
+//VIZDOOM_CODE
 	{ 40, 30 },
 	{ 60, 45 },
 

@@ -1219,7 +1219,7 @@ void NetUpdate (void)
 
 		// Send current network delay
 		// The number of tics we just made should be removed from the count.
-		netbuffer[k++] = ((maketic - newtics - gametic) / ticdup);
+		netbuffer[k++] = ((maketic - numtics - gametic) / ticdup);
 
 		if (numtics > 0)
 		{
@@ -1955,7 +1955,7 @@ void TryRunTics (void)
 			C_Ticker ();
 			M_Ticker ();
 			I_GetTime (true);
-			if (!pauseext) G_Ticker();
+			G_Ticker();
 			gametic++;
 
 			NetUpdate ();	// check for new console commands
@@ -2335,10 +2335,9 @@ void Net_DoCommand (int type, BYTE **stream, int player)
 					else
 					{
 						const AActor *def = GetDefaultByType (typeinfo);
-						AActor *spawned = Spawn (typeinfo,
-							source->x + FixedMul (def->radius * 2 + source->radius, finecosine[source->angle>>ANGLETOFINESHIFT]),
-							source->y + FixedMul (def->radius * 2 + source->radius, finesine[source->angle>>ANGLETOFINESHIFT]),
-							source->z + 8 * FRACUNIT, ALLOW_REPLACE);
+						fixedvec3 spawnpos = source->Vec3Angle(def->radius * 2 + source->radius, source->angle, 8 * FRACUNIT);
+
+						AActor *spawned = Spawn (typeinfo, spawnpos, ALLOW_REPLACE);
 						if (spawned != NULL)
 						{
 							if (type == DEM_SUMMONFRIEND || type == DEM_SUMMONFRIEND2 || type == DEM_SUMMONMBF)
@@ -2389,8 +2388,8 @@ void Net_DoCommand (int type, BYTE **stream, int player)
 
 			s = ReadString (stream);
 
-			if (Trace (players[player].mo->x, players[player].mo->y,
-				players[player].mo->z + players[player].mo->height - (players[player].mo->height>>2),
+			if (Trace (players[player].mo->X(), players[player].mo->Y(),
+				players[player].mo->Top() - (players[player].mo->height>>2),
 				players[player].mo->Sector,
 				vx, vy, vz, 172*FRACUNIT, 0, ML_BLOCKEVERYTHING, players[player].mo,
 				trace, TRACE_NoSky))
@@ -2683,6 +2682,11 @@ void Net_DoCommand (int type, BYTE **stream, int player)
 
 	case DEM_REVERTCAMERA:
 		players[player].camera = players[player].mo;
+		break;
+
+	case DEM_FINISHGAME:
+		// Simulate an end-of-game action
+		G_ChangeLevel(NULL, 0, 0);
 		break;
 
 	default:

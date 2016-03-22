@@ -129,6 +129,10 @@ const int WRF_NOFIRE = WRF_NOPRIMARY | WRF_NOSECONDARY;
 const int WRF_ALLOWRELOAD = 16;
 const int WRF_ALLOWZOOM = 32;
 const int WRF_DISABLESWITCH = 64;
+const int WRF_ALLOWUSER1 = 128;
+const int WRF_ALLOWUSER2 = 256;
+const int WRF_ALLOWUSER3 = 512;
+const int WRF_ALLOWUSER4 = 1024;
 
 // Morph constants
 const int MRF_ADDSTAMINA = 1;
@@ -204,6 +208,7 @@ enum
 	TF_USEACTORFOG =	0x00000100, // Use the actor's TeleFogSourceType and TeleFogDestType fogs.
 	TF_NOJUMP =			0x00000200, // Don't jump after teleporting.
 	TF_OVERRIDE =		0x00000400, // Ignore NOTELEPORT.
+	TF_SENSITIVEZ =		0x00000800, // Fail if the actor wouldn't fit in the position (for Z).
 
 	TF_KEEPORIENTATION = TF_KEEPVELOCITY|TF_KEEPANGLE,
 	TF_NOFOG = TF_NOSRCFOG|TF_NODESTFOG,
@@ -362,6 +367,8 @@ Const Int WARPF_ABSOLUTEPOSITION = 0x400;
 Const Int WARPF_BOB = 0x800;
 Const Int WARPF_MOVEPTR = 0x1000;
 Const Int WARPF_USETID = 0x2000;
+Const Int WARPF_COPYVELOCITY = 0x4000;
+Const Int WARPF_COPYPITCH = 0x8000;
 
 // flags for A_SetPitch/SetAngle/SetRoll
 const int SPF_FORCECLAMP = 1;
@@ -482,6 +489,24 @@ enum
 	QF_WAVE =			1 << 5,
 };
 
+// A_CheckProximity flags
+enum
+{
+	CPXF_ANCESTOR			= 1,
+	CPXF_LESSOREQUAL		= 1 << 1,
+	CPXF_NOZ				= 1 << 2,
+	CPXF_COUNTDEAD			= 1 << 3,
+	CPXF_DEADONLY			= 1 << 4,
+	CPXF_EXACT				= 1 << 5,
+	CPXF_SETTARGET =		1 << 6,
+	CPXF_SETMASTER =		1 << 7,
+	CPXF_SETTRACER =		1 << 8,
+	CPXF_FARTHEST =			1 << 9,
+	CPXF_CLOSEST =			1 << 10,
+	CPXF_SETONPTR =			1 << 11,
+	CPXF_CHECKSIGHT =		1 << 12,
+};
+
 // Flags for A_CheckBlock
 // These flags only affect the calling actor('s pointer), not the ones being searched.
 enum 
@@ -491,6 +516,26 @@ enum
 	CBF_SETMASTER		= 1 << 2,	//^ but with master.
 	CBF_SETTRACER		= 1 << 3,	//^ but with tracer.
 	CBF_SETONPTR		= 1 << 4,	//Sets the pointer change on the actor doing the checking instead of self.
+	CBF_DROPOFF			= 1 << 5,	//Check for dropoffs.
+};
+
+enum
+{
+	SPF_FULLBRIGHT =	1,
+	SPF_RELPOS =		1 << 1,
+	SPF_RELVEL =		1 << 2,
+	SPF_RELACCEL =		1 << 3,
+	SPF_RELANG =		1 << 4,
+
+	SPF_RELATIVE =	SPF_RELPOS|SPF_RELVEL|SPF_RELACCEL|SPF_RELANG
+};
+
+//Flags for A_FaceMovementDirection
+enum
+{
+	FMDF_NOPITCH =			1 << 0,
+	FMDF_INTERPOLATE =		1 << 1,
+	FMDF_NOANGLE =			1 << 2,
 };
 
 // This is only here to provide one global variable for testing.

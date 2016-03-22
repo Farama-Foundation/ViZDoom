@@ -31,7 +31,6 @@ gameinfo
 	defaultrespawntime = 12
 	defaultdropstyle = 1
 	endoom = "ENDOOM"
-	player5start = 4001
 	pickupcolor = "c0 c0 c0"
 	quitmessages = "Do you want to quit?"
 
@@ -54,6 +53,14 @@ gameinfo
 	statscreen_mapnamefont = "BigFont"
 	statscreen_finishedpatch = "WIF"
 	statscreen_enteringpatch = "WIENTER"
+}
+
+DoomEdNums
+{
+  4001 = "$Player5Start"
+  4002 = "$Player6Start"
+  4003 = "$Player7Start"
+  4004 = "$Player8Start"
 }
 
 include "mapinfo/common.txt"

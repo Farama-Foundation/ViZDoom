@@ -189,6 +189,7 @@ else( WIN32 )
 			if( GTK2_FOUND )
 				set( ZDOOM_LIBS ${ZDOOM_LIBS} ${GTK2_LIBRARIES} )
 				include_directories( ${GTK2_INCLUDE_DIRS} )
+				link_directories( ${GTK2_LIBRARY_DIRS} )
 			else( GTK2_FOUND )
 				set( NO_GTK ON )
 			endif( GTK2_FOUND )
@@ -217,13 +218,12 @@ endif( WIN32 )
 
 if( NOT NO_OPENAL )
     find_package( OpenAL )
-	mark_as_advanced(CLEAR OPENAL_LIBRARY OPENAL_INCLUDE_DIR)
-    if( OPENAL_FOUND )
+	mark_as_advanced(CLEAR OPENAL_INCLUDE_DIR)
+    if( OPENAL_INCLUDE_DIR )
         include_directories( ${OPENAL_INCLUDE_DIR} )
-        set( ZDOOM_LIBS ${OPENAL_LIBRARY} ${ZDOOM_LIBS} )
-    else( OPENAL_FOUND )
-        set( NO_OPENAL ON )
-    endif( OPENAL_FOUND )
+    else( OPENAL_INCLUDE_DIR )
+		set( NO_OPENAL ON )
+    endif( OPENAL_INCLUDE_DIR )
 endif( NOT NO_OPENAL )
 
 if( NOT NO_FMOD )
@@ -287,15 +287,18 @@ if( NO_FMOD )
 endif( NO_FMOD )
 if( NO_OPENAL )
 	add_definitions( -DNO_OPENAL=1 )
+
+	set(MPG123_FOUND NO)
+	set(SNDFILE_FOUND NO)
+else( NO_OPENAL )
+	# Search for libSndFile
+
+	find_package( SndFile )
+
+	# Search for libmpg123
+
+	find_package( MPG123 )
 endif( NO_OPENAL )
-
-# Search for libSndFile
-
-find_package( SndFile )
-
-# Search for libmpg123
-
-find_package( MPG123 )
 
 # Search for FluidSynth
 
@@ -448,7 +451,7 @@ if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 		set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -pg" )
 	endif( PROFILE )
 
-	# Disabled For Boost
+	#Disabled For Boost
 	#set( REL_CXX_FLAGS "-fno-rtti" )
 	if( NOT PROFILE AND NOT APPLE )
 		# On OS X frame pointers are required for exception handling, at least with Clang
@@ -458,6 +461,11 @@ if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 	set( CMAKE_CXX_FLAGS_MINSIZEREL "${REL_CXX_FLAGS} ${CMAKE_CXX_FLAGS_MINSIZEREL}" )
 	set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "${REL_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}" )
 
+	if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.5")
+                set( CMAKE_C_FLAGS "-Wno-unused-result ${CMAKE_C_FLAGS}" )
+		set( CMAKE_CXX_FLAGS "-Wno-unused-result ${CMAKE_CXX_FLAGS}" )
+        endif(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.5")
+	set( CMAKE_C_FLAGS "-Wall -Wextra -Wno-unused -Wno-unused-parameter -Wno-missing-field-initializers ${CMAKE_C_FLAGS}" )
 	set( CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused -Wno-unused-parameter -Wno-missing-field-initializers ${CMAKE_CXX_FLAGS}" )
 
 	# Remove extra warnings when using the official DirectX headers.
@@ -498,6 +506,11 @@ endif( NOT STRNICMP_EXISTS )
 if( NOT MSVC )
 	add_definitions( -D__forceinline=inline )
 endif( NOT MSVC )
+
+# Fix stat in v140_xp (broken in RTM and Update 1 so far)
+if( MSVC AND MSVC_VERSION EQUAL 1900 AND CMAKE_GENERATOR_TOOLSET STREQUAL "v140_xp" )
+	add_definitions( -D_stat64i32=VS14Stat )
+endif( MSVC AND MSVC_VERSION EQUAL 1900 AND CMAKE_GENERATOR_TOOLSET STREQUAL "v140_xp" )
 
 if( UNIX )
 	CHECK_LIBRARY_EXISTS( rt clock_gettime "" CLOCK_GETTIME_IN_RT )
@@ -590,9 +603,7 @@ set( PLAT_WIN32_SOURCES
 set( PLAT_POSIX_SOURCES
 	posix/i_cd.cpp
 	posix/i_movie.cpp
-	posix/i_steam.cpp
-	posix/i_system.cpp
-	posix/st_start.cpp )
+	posix/i_steam.cpp )
 set( PLAT_SDL_SOURCES
 	posix/sdl/crashcatcher.c
 	posix/sdl/hardware.cpp
@@ -600,8 +611,10 @@ set( PLAT_SDL_SOURCES
 	posix/sdl/i_input.cpp
 	posix/sdl/i_joystick.cpp
 	posix/sdl/i_main.cpp
+	posix/sdl/i_system.cpp
 	posix/sdl/i_timer.cpp
-	posix/sdl/sdlvideo.cpp )
+	posix/sdl/sdlvideo.cpp
+	posix/sdl/st_start.cpp )
 set( PLAT_OSX_SOURCES
 	posix/osx/iwadpicker_cocoa.mm
 	posix/osx/zdoom.icns )
@@ -610,8 +623,11 @@ set( PLAT_COCOA_SOURCES
 	posix/cocoa/i_input.mm
 	posix/cocoa/i_joystick.cpp
 	posix/cocoa/i_main.mm
+	posix/cocoa/i_system.mm
 	posix/cocoa/i_timer.cpp
-	posix/cocoa/i_video.mm )
+	posix/cocoa/i_video.mm
+	posix/cocoa/st_console.mm
+	posix/cocoa/st_start.mm )
 
 if( WIN32 )
 	set( SYSTEM_SOURCES_DIR win32 )
@@ -716,7 +732,7 @@ elseif( APPLE )
 else( WIN32 )
 	set( EXTRA_HEADER_DIRS posix/*.h posix/sdl/*.h )
 endif( WIN32 )
-file( GLOB_RECURSE HEADER_FILES
+file( GLOB HEADER_FILES
 	${EXTRA_HEADER_DIRS}
 	fragglescript/*.h
 	g_doom/*.h
@@ -914,6 +930,7 @@ add_executable( vizdoom WIN32 MACOSX_BUNDLE
 		nodebuild_extract.cpp
 		nodebuild_gl.cpp
 		nodebuild_utility.cpp
+		pathexpander.cpp
 		p_3dfloors.cpp
 		p_3dmidtex.cpp
 		p_acs.cpp
@@ -993,6 +1010,8 @@ add_executable( vizdoom WIN32 MACOSX_BUNDLE
 		wi_stuff.cpp
 		zstrformat.cpp
 		zstring.cpp
+		GuillotineBinPack.cpp
+		SkylineBinPack.cpp
 		g_doom/a_doommisc.cpp
 		g_heretic/a_hereticmisc.cpp
 		g_hexen/a_hexenmisc.cpp
@@ -1090,6 +1109,7 @@ add_executable( vizdoom WIN32 MACOSX_BUNDLE
 		sound/music_fluidsynth_mididevice.cpp
 		sound/music_softsynth_mididevice.cpp
 		sound/music_timidity_mididevice.cpp
+		sound/music_wildmidi_mididevice.cpp
 		sound/music_win_mididevice.cpp
 		sound/oalsound.cpp
 		sound/sndfile_decoder.cpp
@@ -1133,6 +1153,11 @@ add_executable( vizdoom WIN32 MACOSX_BUNDLE
 		timidity/playmidi.cpp
 		timidity/resample.cpp
 		timidity/timidity.cpp
+		wildmidi/file_io.cpp
+		wildmidi/gus_pat.cpp
+		wildmidi/reverb.cpp
+		wildmidi/wildmidi_lib.cpp
+		wildmidi/wm_error.cpp
 		xlat/parse_xlat.cpp
 		fragglescript/t_fspic.cpp
 		fragglescript/t_func.cpp
@@ -1275,6 +1300,8 @@ source_group("Audio Files\\OPL Synth" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURC
 source_group("Audio Files\\OPL Synth\\DOSBox" FILES oplsynth/dosbox/opl.cpp oplsynth/dosbox/opl.h)
 source_group("Audio Files\\Timidity\\Headers" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/timidity/.+\\.h$")
 source_group("Audio Files\\Timidity\\Source" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/timidity/.+\\.cpp$")
+source_group("Audio Files\\WildMidi\\Headers" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/wildmidi/.+\\.h$")
+source_group("Audio Files\\WildMidi\\Source" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/wildmidi/.+\\.cpp$")
 source_group("Decorate++" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/thingdef/.+")
 source_group("FraggleScript" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/fragglescript/.+")
 source_group("Games\\Doom Game" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/g_doom/.+")

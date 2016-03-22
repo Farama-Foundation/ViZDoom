@@ -335,6 +335,7 @@ static void MarkRoot()
 		SectorMarker->SecNum = 0;
 	}
 	Mark(SectorMarker);
+	Mark(interpolator.Head);
 	// Mark bot stuff.
 	Mark(bglobal.firstthing);
 	Mark(bglobal.body1);
@@ -640,8 +641,8 @@ size_t DSectorMarker::PropagateMark()
 		{
 			sector_t *sec = &sectors[SecNum + i];
 			GC::Mark(sec->SoundTarget);
-			GC::Mark(sec->CeilingSkyBox);
-			GC::Mark(sec->FloorSkyBox);
+			GC::Mark(sec->SkyBoxes[sector_t::ceiling]);
+			GC::Mark(sec->SkyBoxes[sector_t::floor]);
 			GC::Mark(sec->SecActTarget);
 			GC::Mark(sec->floordata);
 			GC::Mark(sec->ceilingdata);

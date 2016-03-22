@@ -56,6 +56,7 @@
 #include "p_3dmidtex.h"
 #include "d_net.h"
 #include "d_event.h"
+#include "gstrings.h"
 #include "r_data/colormaps.h"
 
 #define FUNC(a) static int a (line_t *ln, AActor *it, bool backSide, \
@@ -147,7 +148,7 @@ FUNC(LS_Polyobj_MoveToSpot)
 	FActorIterator iterator (arg2);
 	AActor *spot = iterator.Next();
 	if (spot == NULL) return false;
-	return EV_MovePolyTo (ln, arg0, SPEED(arg1), spot->x, spot->y, false);
+	return EV_MovePolyTo (ln, arg0, SPEED(arg1), spot->X(), spot->Y(), false);
 }
 
 FUNC(LS_Polyobj_DoorSwing)
@@ -198,7 +199,7 @@ FUNC(LS_Polyobj_OR_MoveToSpot)
 	FActorIterator iterator (arg2);
 	AActor *spot = iterator.Next();
 	if (spot == NULL) return false;
-	return EV_MovePolyTo (ln, arg0, SPEED(arg1), spot->x, spot->y, true);
+	return EV_MovePolyTo (ln, arg0, SPEED(arg1), spot->X(), spot->Y(), true);
 }
 
 FUNC(LS_Polyobj_Stop)
@@ -879,19 +880,38 @@ FUNC(LS_Teleport_NewMap)
 FUNC(LS_Teleport)
 // Teleport (tid, sectortag, bNoSourceFog)
 {
-	return EV_Teleport (arg0, arg1, ln, backSide, it, true, !arg2, false);
+	int flags = TELF_DESTFOG;
+	if (!arg2)
+	{
+		flags |= TELF_SOURCEFOG;
+	}
+	return EV_Teleport (arg0, arg1, ln, backSide, it, flags);
 }
 
 FUNC( LS_Teleport_NoStop )
 // Teleport_NoStop (tid, sectortag, bNoSourceFog)
 {
-	return EV_Teleport( arg0, arg1, ln, backSide, it, true, !arg2, false, false );
+	int flags = TELF_DESTFOG | TELF_KEEPVELOCITY;
+	if (!arg2)
+	{
+		flags |= TELF_SOURCEFOG;
+	}
+	return EV_Teleport( arg0, arg1, ln, backSide, it, flags);
 }
 
 FUNC(LS_Teleport_NoFog)
 // Teleport_NoFog (tid, useang, sectortag, keepheight)
 {
-	return EV_Teleport (arg0, arg2, ln, backSide, it, false, false, !arg1, true, !!arg3);
+	int flags = 0;
+	if (!arg1)
+	{
+		flags |= TELF_KEEPORIENTATION;
+	}
+	if (arg3)
+	{
+		flags |= TELF_KEEPHEIGHT;
+	}
+	return EV_Teleport (arg0, arg2, ln, backSide, it, flags);
 }
 
 FUNC(LS_Teleport_ZombieChanger)
@@ -900,7 +920,7 @@ FUNC(LS_Teleport_ZombieChanger)
 	// This is practically useless outside of Strife, but oh well.
 	if (it != NULL)
 	{
-		EV_Teleport (arg0, arg1, ln, backSide, it, false, false, false);
+		EV_Teleport (arg0, arg1, ln, backSide, it, 0);
 		if (it->health >= 0) it->SetState (it->FindState(NAME_Pain));
 		return true;
 	}
@@ -1599,6 +1619,11 @@ FUNC(LS_Thing_Move)		// [BC]
 	return P_Thing_Move (arg0, it, arg1, arg2 ? false : true);
 }
 
+enum
+{
+	TRANSLATION_ICE = 0x100007
+};
+
 FUNC(LS_Thing_SetTranslation)
 // Thing_SetTranslation (tid, range)
 {
@@ -1614,6 +1639,10 @@ FUNC(LS_Thing_SetTranslation)
 	else if (arg1 >= 1 && arg1 < MAX_ACS_TRANSLATIONS)
 	{
 		range = TRANSLATION(TRANSLATION_LevelScripted, (arg1-1));
+	}
+	else if (arg1 == TRANSLATION_ICE)
+	{
+		range = TRANSLATION(TRANSLATION_Standard, 7);
 	}
 	else
 	{
@@ -1935,6 +1964,9 @@ FUNC(LS_Sector_ChangeFlags)
 
 	rtn = false;
 	FSectorTagIterator itr(arg0);
+	// exclude protected flags
+	arg1 &= ~SECF_NOMODIFY;
+	arg2 &= ~SECF_NOMODIFY;
 	while ((secNum = itr.Next()) >= 0)
 	{
 		sectors[secNum].Flags = (sectors[secNum].Flags | arg1) & ~arg2;
@@ -2236,7 +2268,7 @@ FUNC(LS_PointPush_SetForce)
 }
 
 FUNC(LS_Sector_SetDamage)
-// Sector_SetDamage (tag, amount, mod)
+// Sector_SetDamage (tag, amount, mod, interval, leaky)
 {
 	// The sector still stores the mod in its old format because
 	// adding an FName to the sector_t structure might cause
@@ -2247,8 +2279,28 @@ FUNC(LS_Sector_SetDamage)
 	int secnum;
 	while ((secnum = itr.Next()) >= 0)
 	{
-		sectors[secnum].damage = arg1;
-		sectors[secnum].mod = arg2;
+		if (arg3 <= 0)	// emulate old and hacky method to handle leakiness.
+		{
+			if (arg1 < 20)
+			{
+				arg4 = 0;
+				arg3 = 32;
+			}
+			else if (arg1 < 50)
+			{
+				arg4 = 5;
+				arg3 = 32;
+			}
+			else
+			{
+				arg4 = 256;
+				arg3 = 1;
+			}
+		}
+		sectors[secnum].damageamount = (short)arg1;
+		sectors[secnum].damagetype = MODtoDamageType(arg2);
+		sectors[secnum].damageinterval = (short)arg3;
+		sectors[secnum].leakydamage = (short)arg4;
 	}
 	return true;
 }
@@ -2577,6 +2629,7 @@ FUNC(LS_Line_SetBlocking)
 		ML_BLOCKUSE,
 		ML_BLOCKSIGHT,
 		ML_BLOCKHITSCAN,
+		ML_SOUNDBLOCK,
 		-1
 	};
 
@@ -2985,13 +3038,14 @@ FUNC(LS_SendToCommunicator)
 		{
 			S_StopSound (CHAN_VOICE);
 			S_Sound (CHAN_VOICE, name, 1, ATTN_NORM);
-			if (arg2 == 0)
+
+			// Get the message from the LANGUAGE lump.
+			FString msg;
+			msg.Format("TXT_COMM%d", arg2);
+			const char *str = GStrings[msg];
+			if (str != NULL)
 			{
-				Printf (PRINT_CHAT, "Incoming Message\n");
-			}
-			else if (arg2 == 1)
-			{
-				Printf (PRINT_CHAT, "Incoming Message from BlackBird\n");
+				Printf (PRINT_CHAT, "%s\n", str);
 			}
 		}
 		return true;
@@ -3072,7 +3126,7 @@ FUNC(LS_GlassBreak)
 			{
 				glass = Spawn("GlassJunk", x, y, ONFLOORZ, ALLOW_REPLACE);
 
-				glass->z += 24 * FRACUNIT;
+				glass->AddZ(24 * FRACUNIT);
 				glass->SetState (glass->SpawnState + (pr_glass() % glass->health));
 				an = pr_glass() << (32-8);
 				glass->angle = an;

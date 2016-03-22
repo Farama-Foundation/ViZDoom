@@ -36,6 +36,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #define USE_WINDOWS_DWORD
+#else
+#include <dlfcn.h>
 #endif
 
 #include "except.h"
@@ -54,40 +56,66 @@
 #include "i_musicinterns.h"
 #include "tempfiles.h"
 
+#include "oalload.h"
 
 CVAR (String, snd_aldevice, "Default", CVAR_ARCHIVE|CVAR_GLOBALCONFIG)
 CVAR (Bool, snd_efx, true, CVAR_ARCHIVE|CVAR_GLOBALCONFIG)
 
+#ifdef _WIN32
+static HMODULE hmodOpenAL;
+#define OPENALLIB "openal32.dll"
+#else
+static void* hmodOpenAL;
+#ifdef __APPLE__
+#define OPENALLIB "OpenAL.framework/OpenAL"
+#else
+#define OPENALLIB "libopenal.so"
+#endif
+#define LoadLibrary(x) dlopen((x), RTLD_LAZY)
+#define GetProcAddress(a,b) dlsym((a),(b))
+#define FreeLibrary(x) dlclose((x))
+#endif
 
 bool IsOpenALPresent()
 {
 #ifdef NO_OPENAL
 	return false;
-#elif !defined _WIN32
-	return true;	// on non-Windows we cannot delay load the library so it has to be present.
 #else
-	static bool cached_result;
+	static bool cached_result = false;
 	static bool done = false;
 
 	if (!done)
 	{
 		done = true;
-
-		__try
+		if (hmodOpenAL == NULL)
 		{
-			// just call one function from the API to force loading the DLL
-			alcGetError(NULL);
-		}
-		__except (CheckException(GetExceptionCode()))
-		{
-			// FMod could not be delay loaded
-			return false;
+			hmodOpenAL = LoadLibrary(NicePath("$PROGDIR/" OPENALLIB));
+			if (hmodOpenAL == NULL)
+			{
+				hmodOpenAL = LoadLibrary(OPENALLIB);
+				if (hmodOpenAL == NULL)
+				{
+					return false;
+				}
+			}
+			for(int i = 0; oalfuncs[i].name != NULL; i++)
+			{
+				*oalfuncs[i].funcaddr = GetProcAddress(hmodOpenAL, oalfuncs[i].name);
+				if (*oalfuncs[i].funcaddr == NULL)
+				{
+					FreeLibrary(hmodOpenAL);
+					hmodOpenAL = NULL;
+					return false;
+				}
+			}
 		}
 		cached_result = true;
 	}
 	return cached_result;
 #endif
 }
+
+
 
 void I_BuildALDeviceList(FOptionValues *opt)
 {
@@ -1349,7 +1377,7 @@ FISoundChannel *OpenALSoundRenderer::StartSound3D(SoundHandle sfx, SoundListener
     alSourcei(source, AL_LOOPING, (chanflags&SNDF_LOOP) ? AL_TRUE : AL_FALSE);
 
     alSourcef(source, AL_MAX_GAIN, SfxVolume);
-    alSourcef(source, AL_GAIN, SfxVolume);
+    alSourcef(source, AL_GAIN, SfxVolume*vol);
 
     if(EnvSlot)
     {
