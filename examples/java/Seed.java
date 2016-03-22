@@ -14,20 +14,20 @@ public class Seed {
 	public static void main (String[] args) {
 		
 		System.out.println("\nSEED EXAMPLE\n");
-		ViZDoomGameJava game= new ViZDoomGameJava();
+		DoomGame game= new DoomGame();
 		
 		// Choose scenario config file you wish to be watched by agent.
     		// Don't load two configs cause the second will overwrite the first one.
     		// Multiple config files are ok but combining these ones doesn't make much sense.
 
-		//game.loadConfig("../config/deadly_corridor.cfg")
-		//game.loadConfig("../config/defend_the_center.cfg")
-		//game.loadConfig("../config/defend_the_line.cfg")
-		//game.loadConfig("../config/health_gathering.cfg")
-		//game.loadConfig("../config/my_way_home.cfg")
-		//game.loadConfig("../config/predict_position.cfg")
+		//game.loadConfig("../../examples/config/deadly_corridor.cfg")
+		//game.loadConfig("../../examples/config/defend_the_center.cfg")
+		//game.loadConfig("../../examples/config/defend_the_line.cfg")
+		//game.loadConfig("../../examples/config/health_gathering.cfg")
+		//game.loadConfig("../../examples/config/my_way_home.cfg")
+		//game.loadConfig("../../examples/config/predict_position.cfg")
 		
-		game.loadConfig("../config/basic.cfg");
+		game.loadConfig("../../examples/config/basic.cfg");
     		game.setViZDoomPath("../../bin/vizdoom");
     		
 		// Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".

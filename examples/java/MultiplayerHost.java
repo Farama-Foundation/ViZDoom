@@ -8,7 +8,7 @@ public class MultiplayerHost {
 
 	public static void main (String[] args) {
 
-	    ViZDoomGameJava game = new ViZDoomGameJava();
+	    DoomGame game = new DoomGame();
 
 	    System.out.println("\n\nnMULTIPLAYER HOST EXAMPLE\n");
 

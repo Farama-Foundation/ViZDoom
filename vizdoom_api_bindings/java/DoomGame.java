@@ -3,13 +3,13 @@ import java.util.List;
 import errors.*;
 import enums.*;
 
-public class ViZDoomGameJava{
+public class DoomGame{
 	static {
       		System.loadLibrary("vizdoom");
    	}
 
 	public long internalPtr = 0; 
-	public ViZDoomGameJava(){
+	public DoomGame(){
 		DoomGame();
 	}
 
@@ -17,9 +17,9 @@ public class ViZDoomGameJava{
  	public native int Ms2DoomTics(int ms);
 	public native double DoomFixedToDouble(int doomFixed);
 	public native boolean isBinaryButton(Button button);
-    	public native boolean isDeltaButton(Button button);
+    public native boolean isDeltaButton(Button button);
 	
-	private native void DoomGame(); 
+	private native void DoomGame();
 	public native boolean loadConfig(String file); 
 	
 	public native boolean init(); 
