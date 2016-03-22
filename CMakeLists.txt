@@ -65,8 +65,7 @@ find_package(Threads REQUIRED)
 
 set( VIZDOOM_INCLUDE_DIR vizdoom_api_src )
 
-include_directories( ${VIZDOOM_INCLUDE_DIR} 
-	${Boost_INCLUDE_DIR} )
+include_directories( ${VIZDOOM_IrmNCLUDE_DIR} ${Boost_INCLUDE_DIR} )
 
 set( VIZDOOM_LIBS
     ${Boost_LIBRARIES}  

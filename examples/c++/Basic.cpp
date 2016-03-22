@@ -1,4 +1,4 @@
-#include "ViZDoomGame.h"
+#include "ViZDoom.h"
 #include <iostream>
 #include <vector>
 #include <cstdlib>
@@ -28,25 +28,25 @@ int main() {
     game->setDoomMap("map01");
 
     // Sets resolution. Default is 320X240
-    game->setScreenResolution(ScreenResolution.RES_640X480);
+    game->setScreenResolution(RES_640X480);
 
     // Sets the screen buffer format. Not used here but now you can change it. Defalut is CRCGCB.
-    game->setScreenFormat(ScreenFormat.RGB24);
+    game->setScreenFormat(RGB24);
 
     // Sets other rendering options
-    game->setRenderHud(False);
-    game->setRenderCrosshair(False);
-    game->setRenderWeapon(True);
-    game->setRenderDecals(False);
-    game->setRenderParticles(False);
+    game->setRenderHud(false);
+    game->setRenderCrosshair(false);
+    game->setRenderWeapon(true);
+    game->setRenderDecals(false);
+    game->setRenderParticles(false);
 
     // Adds buttons that will be allowed.
-    game->addAvailableButton(Button.MOVE_LEFT);
-    game->addAvailableButton(Button.MOVE_RIGHT);
-    game->addAvailableButton(Button.ATTACK);
+    game->addAvailableButton(MOVE_LEFT);
+    game->addAvailableButton(MOVE_RIGHT);
+    game->addAvailableButton(ATTACK);
 
     // Adds game variables that will be included in state.
-    game->addAvailableGameVariable(GameVariable.AMMO2);
+    game->addAvailableGameVariable(AMMO2);
 
     // Causes episodes to finish after 200 tics (actions)
     game->setEpisodeTimeout(200);
@@ -55,7 +55,7 @@ int main() {
     game->setEpisodeStartTime(10);
 
     // Makes the window appear (turned on by default)
-    game->setWindowVisible(True);
+    game->setWindowVisible(true);
 
     // Initialize the game. Further configuration won't take any effect from now on.
     game->init();
@@ -65,17 +65,17 @@ int main() {
     // MOVE_LEFT, MOVE_RIGHT, ATTACK
     // more combinations are naturally possible but only 3 are included for transparency when watching.
 
-    std::vactor<int> actions[3];
-    int action[] = {1, 0, 0};
-    actions[0] = std::vector<int>(action, action + sizeof(action) / sizeof(int));
+    std::vector<int> actions[3];
+    int action0[] = {1, 0, 0};
+    actions[0] = std::vector<int>(action0, action0 + sizeof(action0) / sizeof(int));
 
-    int action[] = {0, 1, 0};
-    actions[1] = std::vector<int>(action, action + sizeof(action) / sizeof(int));
+    int action1[] = {0, 1, 0};
+    actions[1] = std::vector<int>(action1, action1 + sizeof(action1) / sizeof(int));
 
-    int action[] = {0, 0, 1};
-    actions[2] = std::vector<int>(action, action + sizeof(action) / sizeof(int));
+    int action2[] = {0, 0, 1};
+    actions[2] = std::vector<int>(action2, action2 + sizeof(action2) / sizeof(int));
 
-    std::srand(time());
+    std::srand(time(0));
 
     // Run this many episodes
     int episodes = 10;
@@ -87,7 +87,7 @@ int main() {
         // Starts a new episode. It is not needed right after init() but it doesn't cost much and the loop is nicer.
         game->newEpisode();
 
-        while (!game->isEpisodeFinihsed()) {
+        while (!game->isEpisodeFinished()) {
 
             // Get the state
             GameState s = game->getState();
@@ -99,7 +99,7 @@ int main() {
             // double r = game->getLastReward();
 
             std::cout << "State #" << s.number << "\n";
-            std::cout << "Game variables: " << s.game_variables[0] << "\n";
+            std::cout << "Game variables: " << s.gameVariables[0] << "\n";
             std::cout << "Action reward: " << r << "\n";
             std::cout << "=====================\n";
 

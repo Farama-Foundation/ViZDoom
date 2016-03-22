@@ -1,4 +1,4 @@
-#include "ViZDoomGame.h"
+#include "ViZDoom.h"
 #include <iostream>
 #include <vector>
 
@@ -15,21 +15,21 @@ int main(){
     // Don't load two configs cause the second will overwrite the first one.
     // Multiple config files are ok but combining these ones doesn't make much sense.
 
-    // game->loadConfig("../config/basic.cfg");
-    // game->loadConfig("../config/deadly_corridor.cfg");
-    game->loadConfig("../config/deathmatch.cfg");
-    // game->loadConfig("../config/defend_the_center.cfg");
-    // game->loadConfig("../config/defend_the_line.cfg");
-    // game->loadConfig("../config/health_gathering.cfg");
-    // game->loadConfig("../config/my_way_home.cfg");
-    // game->loadConfig("../config/predict_position.cfg");
-    // game->loadConfig("../config/take_cover.cfg");
+    // game->loadConfig("../../examples/config/basic.cfg");
+    // game->loadConfig("../../examples/config/deadly_corridor.cfg");
+    game->loadConfig("../../examples/config/deathmatch.cfg");
+    // game->loadConfig("../../examples/config/defend_the_center.cfg");
+    // game->loadConfig("../../examples/config/defend_the_line.cfg");
+    // game->loadConfig("../../examples/config/health_gathering.cfg");
+    // game->loadConfig("../../examples/config/my_way_home.cfg");
+    // game->loadConfig("../../examples/config/predict_position.cfg");
+    // game->loadConfig("../../examples/config/take_cover.cfg");
 
-    game->set_screen_resolution(ScreenResolution.RES_640X480);
+    game->setScreenResolution(RES_640X480);
 
     // Enables spectator mode, so You can play and agent watch your actions.
     // You can only use the buttons selected as available.
-    game->setMode(Mode.SPECTATOR);
+    game->setMode(SPECTATOR);
 
     game->init();
 
@@ -43,7 +43,7 @@ int main(){
         // Starts a new episode. It is not needed right after init() but it doesn't cost much and the loop is nicer.
         game->newEpisode();
 
-        while (!game->isEpisodeFinihsed()) {
+        while (!game->isEpisodeFinished()) {
 
             // Get the state.
             GameState s = game->getState();
@@ -65,7 +65,7 @@ int main(){
             for(int i = 0; i < a.size(); ++i) std::cout << " " << a[i];
             std::cout <<"\n";
             std::cout << "Action reward: " << r <<"\n";
-            std::cout << "=====================\n");
+            std::cout << "=====================\n";
 
         }
 
