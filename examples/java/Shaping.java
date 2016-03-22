@@ -18,7 +18,7 @@ public class Shaping {
 	    ViZDoomGameJava game = new ViZDoomGameJava();
 	    // Health gathering scenario has scripted shaping reward.
     	    game.loadConfig("../config/health_gathering.cfg");
-	    game.setDoomEnginePath("../../bin/vizdoom");
+	    game.setViZDoomPath("../../bin/vizdoom");
 
 	    // Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".
 	    game.setDoomGamePath("../../scenarios/freedoom2.wad");

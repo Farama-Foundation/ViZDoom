@@ -194,20 +194,21 @@ if(BUILD_JAVA)
 
 
     add_jar(vizjavaclasses 
-	    ./vizdoom_api_bindings/java/errors/DoomErrorException.java
-	    ./vizdoom_api_bindings/java/GameState.java 
-            ./vizdoom_api_bindings/java/errors/DoomIsNotRunningException.java
-	    ./vizdoom_api_bindings/java/errors/DoomUnexpectedExitException.java
-	    ./vizdoom_api_bindings/java/errors/ExceptionJava.java
-	    ./vizdoom_api_bindings/java/errors/MessageQueueException.java
-	    ./vizdoom_api_bindings/java/errors/PathDoesNotExistException.java
-	    ./vizdoom_api_bindings/java/errors/SharedMemoryException.java
 	    ./vizdoom_api_bindings/java/enums/Button.java
 	    ./vizdoom_api_bindings/java/enums/GameVariable.java
 	    ./vizdoom_api_bindings/java/enums/Mode.java
 	    ./vizdoom_api_bindings/java/enums/ScreenFormat.java
 	    ./vizdoom_api_bindings/java/enums/ScreenResolution.java
-	    ./vizdoom_api_bindings/java/ViZDoomGameJava.java 
+	    ./vizdoom_api_bindings/java/errors/ViZDoomMismatchedVersionException.java
+	    ./vizdoom_api_bindings/java/errors/ViZDoomErrorException.java
+        ./vizdoom_api_bindings/java/errors/ViZDoomIsNotRunningException.java
+	    ./vizdoom_api_bindings/java/errors/ViZDoomUnexpectedExitException.java
+	    ./vizdoom_api_bindings/java/errors/ExceptionJava.java
+	    ./vizdoom_api_bindings/java/errors/MessageQueueException.java
+	    ./vizdoom_api_bindings/java/errors/PathDoesNotExistException.java
+	    ./vizdoom_api_bindings/java/errors/SharedMemoryException.java
+	    ./vizdoom_api_bindings/java/GameState.java
+        ./vizdoom_api_bindings/java/ViZDoomGameJava.java 
   	    OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin/java)
 
     set_target_properties( vizdoomjava
@@ -223,12 +224,12 @@ endif()
 #message("-- Downloading Freedoom WADs")
 #message("-- Original Doom WADs can not be provided due to licences")
 
-# It doesn't work, just creates an empty file
-#file( DOWNLOAD https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip ./bin/freedoom-0.10.1.zip SHOW_PROGRESS )
+if( WIN32 )
+    file( DOWNLOAD https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip ./scenarios/freedoom-0.10.1.zip SHOW_PROGRESS )
+endif()    
 
 if(UNIX)
     add_custom_target( freedoom2 ALL
         COMMAND ./download_freedoom.sh
-        
     )
 endif()

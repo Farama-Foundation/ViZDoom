@@ -28,7 +28,8 @@ int main(){
     // Name Your AI.
     game->addGameArgs("+name AI");
 
-    game->setMode(ASYNC_PLAYER);                // Multiplayer requires the use of asynchronous modes.
+    // Multiplayer requires the use of asynchronous modes, but when playing only with bots, synchronous modes can also be used.
+    game->setMode(ASYNC_PLAYER);
     game->init();
 
     // Add bots (file examples/bots.cfg must be placed in the same directory as the Doom executable file).

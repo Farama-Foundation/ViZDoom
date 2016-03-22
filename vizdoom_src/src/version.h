@@ -34,6 +34,8 @@
 #ifndef __VERSION_H__
 #define __VERSION_H__
 
+#include "vizdoom_defines.h"
+
 const char *GetGitDescription();
 const char *GetGitHash();
 const char *GetGitTime();
@@ -41,7 +43,7 @@ const char *GetVersionString();
 
 /** Lots of different version numbers **/
 //VIZDOOM_CODE
-#define VERSIONSTR "1.0.0 (ZDOOM 2.8.1)"
+#define VERSIONSTR VIZDOOM_VERSION_STR " (ZDOOM 2.8.1)"
 
 // The version as seen in the Windows resource
 #define RC_FILEVERSION 2,8,1,0

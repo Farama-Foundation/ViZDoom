@@ -10,9 +10,10 @@ int main(){
 
     std::cout << "\n\nDELTA BUTTONS EXAMPLE\n\n";
 
+
     DoomGame *game = new DoomGame();
 
-    game->setDoomEnginePath("../../bin/vizdoom");
+    game->setViZDoomPath("../../bin/vizdoom");
 
     game->setDoomGamePath("../../scenarios/freedoom2.wad");
     // game->setDoomGamePath("../../scenarios/doom2.wad");   # Not provided with environment due to licences.

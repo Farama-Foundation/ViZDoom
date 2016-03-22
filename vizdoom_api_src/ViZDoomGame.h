@@ -77,7 +77,7 @@ namespace vizdoom {
         double getLastReward();
         double getSummaryReward();
 
-        void setDoomEnginePath(std::string path);
+        void setViZDoomPath(std::string path);
         void setDoomGamePath(std::string path);
         void setDoomScenarioPath(std::string path);
         void setDoomMap(std::string map);

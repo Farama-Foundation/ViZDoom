@@ -31,19 +31,24 @@ namespace vizdoom{
         const char* what() const throw(){ return "Message queue error."; }
     };
 
-    class DoomErrorException : public Exception {
+    class ViZDoomErrorException : public Exception {
     public:
-        const char* what() const throw(){ return "Controlled Doom instance raported error."; }
+        const char* what() const throw(){ return "Controlled ViZDoom instance reported error."; }
     };
 
-    class DoomUnexpectedExitException : public Exception {
+    class ViZDoomMismatchedVersionException : public Exception {
     public:
-        const char* what() const throw(){ return "Controlled Doom instance exited unexpectedly."; }
+        const char* what() const throw(){ return "Controlled ViZDoom version does not match API version."; }
     };
 
-    class DoomIsNotRunningException : public Exception {
+    class ViZDoomUnexpectedExitException : public Exception {
     public:
-        const char* what() const throw(){ return "Controlled Doom instance is not running or not ready."; }
+        const char* what() const throw(){ return "Controlled ViZDoom instance exited unexpectedly."; }
+    };
+
+    class ViZDoomIsNotRunningException : public Exception {
+    public:
+        const char* what() const throw(){ return "Controlled ViZDoom instance is not running or not ready."; }
     };
 
     class PathDoesNotExistException : public Exception {

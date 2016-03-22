@@ -7,6 +7,9 @@ extern bool vizdoomNextTic;
 extern bool vizdoomUpdate;
 extern unsigned int vizdoomLastUpdate;
 
+#define VIZDOOM_VERSION_STR "1.0.0"
+#define VIZDOOM_VERSION_INT 100
+
 #define VIZDOOM_TIME (level.starttime + level.maptime)
 
 #define VIZDOOM_BT_ATTACK         0
@@ -75,6 +78,8 @@ struct ViZDoomInputStruct{
 };
 
 struct ViZDoomGameVarsStruct{
+
+    unsigned int VIZDOOM_VERSION;
 
     unsigned int GAME_TIC;
     int GAME_STATE;

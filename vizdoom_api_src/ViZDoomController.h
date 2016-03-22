@@ -57,6 +57,8 @@ namespace vizdoom{
         };
 
         struct GameVariablesStruct {
+            unsigned int VIZDOOM_VERSION;
+
             unsigned int GAME_TIC;
             int GAME_STATE;
             int GAME_ACTION;
@@ -142,8 +144,8 @@ namespace vizdoom{
         std::string getInstanceId();
         void setInstanceId(std::string id);
 
-        std::string getEnginePath();
-        void setEnginePath(std::string path);
+        std::string getExePath();
+        void setExePath(std::string path);
 
         std::string getIwadPath();
         void setIwadPath(std::string path);
@@ -330,7 +332,7 @@ namespace vizdoom{
 
         bool noConsole;
 
-        std::string enginePath;
+        std::string exePath;
         std::string iwadPath;
         std::string filePath;
         std::string map;

@@ -86,7 +86,7 @@ public class ViZDoomGameJava{
     	public native double getLastReward();
     	public native double getSummaryReward();
 
-	public native void setDoomEnginePath(String path);
+	public native void setViZDoomPath(String path);
 	public native void setDoomGamePath(String path);
 	public native void setDoomScenarioPath(String path);
 	public native void setDoomMap(String map);
