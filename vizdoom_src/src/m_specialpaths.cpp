@@ -171,6 +171,7 @@ FString M_GetAutoexecPath()
 //
 //===========================================================================
 
+//VIZDOOM_CODE
 FString M_GetCajunPath(const char *botfilename)
 {
 	FString path;
@@ -178,7 +179,11 @@ FString M_GetCajunPath(const char *botfilename)
 	path << progdir << "zcajun/" << botfilename;
 	if (!FileExists(path))
 	{
-		path = "";
+		path << progdir << botfilename;
+		if (!FileExists(path))
+		{
+			path = "";
+		}
 	}
 	return path;
 }
@@ -378,6 +383,7 @@ FString M_GetAutoexecPath()
 //
 //===========================================================================
 
+//VIZDOOM_CODE
 FString M_GetCajunPath(const char *botfilename)
 {
 	FString path;
@@ -386,7 +392,11 @@ FString M_GetCajunPath(const char *botfilename)
 	path << progdir << "zcajun/" << botfilename;
 	if (!FileExists(path))
 	{
-		path = "";
+		path << progdir << botfilename;
+		if (!FileExists(path))
+		{
+			path = "";
+		}
 	}
 	return path;
 }
@@ -566,6 +576,7 @@ FString M_GetAutoexecPath()
 //
 //===========================================================================
 
+//VIZDOOM_CODE
 FString M_GetCajunPath(const char *botfilename)
 {
 	FString path;
@@ -575,7 +586,10 @@ FString M_GetCajunPath(const char *botfilename)
 	if (!FileExists(path))
 	{
 		// Then check in SHARE_DIR/botfilename.
-		path = SHARE_DIR;
+		//path = SHARE_DIR;
+
+		//Then check executable folder
+		path = "./";
 		path << botfilename;
 		if (!FileExists(path))
 		{
