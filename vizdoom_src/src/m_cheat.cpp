@@ -136,6 +136,7 @@ void cht_DoCheat (player_t *player, int cheat)
 			player->cheats &= ~CF_NOCLIP;
 			msg = GStrings("STSTR_NCOFF");
 		}
+		if (player->mo->velx == 0) player->mo->velx = 1;	// force some lateral movement so that internal variables are up to date
 		break;
 
 	case CHT_NOVELOCITY:
@@ -580,7 +581,7 @@ void GiveSpawner (player_t *player, const PClass *type, int amount)
 	}
 
 	AInventory *item = static_cast<AInventory *>
-		(Spawn (type, player->mo->x, player->mo->y, player->mo->z, NO_REPLACE));
+		(Spawn (type, player->mo->X(), player->mo->Y(), player->mo->Z(), NO_REPLACE));
 	if (item != NULL)
 	{
 		if (amount > 0)

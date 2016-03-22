@@ -541,7 +541,7 @@ void R_AddLine (seg_t *line)
 	if (WallC.Init(tx1, ty1, tx2, ty2, 32))
 		return;
 
-	if (WallC.sx1 > WindowRight || WallC.sx2 < WindowLeft)
+	if (WallC.sx1 >= WindowRight || WallC.sx2 <= WindowLeft)
 		return;
 
 	if (line->linedef == NULL)
@@ -1087,7 +1087,8 @@ void R_Subsector (subsector_t *sub)
 		basecolormap = frontsector->ColorMap;
 	}
 
-	skybox = frontsector->CeilingSkyBox != NULL ? frontsector->CeilingSkyBox : level.DefaultSkybox;
+	skybox = frontsector->GetSkyBox(sector_t::ceiling);
+
 	ceilingplane = frontsector->ceilingplane.PointOnSide(viewx, viewy, viewz) > 0 ||
 		frontsector->GetTexture(sector_t::ceiling) == skyflatnum ||
 		(skybox != NULL && skybox->bAlways) ||
@@ -1127,7 +1128,7 @@ void R_Subsector (subsector_t *sub)
 	// killough 3/7/98: Add (x,y) offsets to flats, add deep water check
 	// killough 3/16/98: add floorlightlevel
 	// killough 10/98: add support for skies transferred from sidedefs
-	skybox = frontsector->FloorSkyBox != NULL ? frontsector->FloorSkyBox : level.DefaultSkybox;
+	skybox = frontsector->GetSkyBox(sector_t::floor);
 	floorplane = frontsector->floorplane.PointOnSide(viewx, viewy, viewz) > 0 || // killough 3/7/98
 		frontsector->GetTexture(sector_t::floor) == skyflatnum ||
 		(skybox != NULL && skybox->bAlways) ||

@@ -848,7 +848,7 @@ public:
 	bool MouseEvent(int type, int x, int y)
 	{
 		int sel = -1;
-		int fh = SmallFont->GetHeight();
+		int fh = OptionSettings.mLinespacing;
 
 		// convert x/y from screen to virtual coordinates, according to CleanX/Yfac use in DrawTexture
 		x = ((x - (screen->GetWidth() / 2)) / CleanXfac) + 160;
@@ -1117,7 +1117,7 @@ void P_StartConversation (AActor *npc, AActor *pc, bool facetalker, bool saveang
 	if (facetalker)
 	{
 		A_FaceTarget (npc);
-		pc->angle = R_PointToAngle2 (pc->x, pc->y, npc->x, npc->y);
+		pc->angle = pc->AngleTo(npc);
 	}
 	if ((npc->flags & MF_FRIENDLY) || (npc->flags4 & MF4_NOHATEPLAYERS))
 	{
@@ -1345,22 +1345,29 @@ static void HandleReply(player_t *player, bool isconsole, int nodenum, int reply
 	if (reply->NextNode != 0)
 	{
 		int rootnode = npc->ConversationRoot;
-		if (reply->NextNode < 0)
+		const bool isNegative = reply->NextNode < 0;
+		const unsigned next = (unsigned)(rootnode + (isNegative ? -1 : 1) * reply->NextNode - 1);
+
+		if (next < StrifeDialogues.Size())
 		{
-			npc->Conversation = StrifeDialogues[rootnode - reply->NextNode - 1];
-			if (gameaction != ga_slideshow)
+			npc->Conversation = StrifeDialogues[next];
+
+			if (isNegative)
 			{
-				P_StartConversation (npc, player->mo, player->ConversationFaceTalker, false);
-				return;
-			}
-			else
-			{
-				S_StopSound (npc, CHAN_VOICE);
+				if (gameaction != ga_slideshow)
+				{
+					P_StartConversation (npc, player->mo, player->ConversationFaceTalker, false);
+					return;
+				}
+				else
+				{
+					S_StopSound (npc, CHAN_VOICE);
+				}
 			}
 		}
 		else
 		{
-			npc->Conversation = StrifeDialogues[rootnode + reply->NextNode - 1];
+			Printf ("Next node %u is invalid, no such dialog page\n", next);
 		}
 	}
 

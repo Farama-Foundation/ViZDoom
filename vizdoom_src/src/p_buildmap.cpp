@@ -443,6 +443,7 @@ static void LoadSectors (sectortype *bsec)
 		sec->movefactor = ORIG_FRICTION_FACTOR;
 		sec->ColorMap = map;
 		sec->ZoneNumber = 0xFFFF;
+		sec->terrainnum[sector_t::ceiling] = sec->terrainnum[sector_t::floor] = -1;
 
 		if (bsec->floorstat & 4)
 		{
@@ -707,6 +708,7 @@ static int LoadSprites (spritetype *sprites, Xsprite *xsprites, int numsprites,
 		mapthings[count].RenderStyle = STYLE_Count;
 		mapthings[count].alpha = -1;
 		mapthings[count].health = -1;
+		mapthings[count].FloatbobPhase = -1;
 
 		if (xsprites != NULL && sprites[i].lotag == 710)
 		{ // Blood ambient sound

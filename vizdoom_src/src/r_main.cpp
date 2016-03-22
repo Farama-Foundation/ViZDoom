@@ -255,7 +255,7 @@ void R_InitTextureMapping ()
 void R_SetVisibility (float vis)
 {
 	// Allow negative visibilities, just for novelty's sake
-	//vis = clamp (vis, -204.7f, 204.7f);
+	vis = clamp (vis, -204.7f, 204.7f);	// (205 and larger do not work in 5:4 aspect ratio)
 
 	CurrentVisibility = vis;
 
@@ -668,10 +668,10 @@ void R_EnterMirror (drawseg_t *ds, int depth)
 	ActiveWallMirror = ds->curline;
 
 	R_ClearPlanes (false);
-	R_ClearClipSegs (ds->x1, ds->x2 + 1);
+	R_ClearClipSegs (ds->x1, ds->x2);
 
-	memcpy (ceilingclip + ds->x1, openings + ds->sprtopclip, (ds->x2 - ds->x1 + 1)*sizeof(*ceilingclip));
-	memcpy (floorclip + ds->x1, openings + ds->sprbottomclip, (ds->x2 - ds->x1 + 1)*sizeof(*floorclip));
+	memcpy (ceilingclip + ds->x1, openings + ds->sprtopclip, (ds->x2 - ds->x1)*sizeof(*ceilingclip));
+	memcpy (floorclip + ds->x1, openings + ds->sprbottomclip, (ds->x2 - ds->x1)*sizeof(*floorclip));
 
 	WindowLeft = ds->x1;
 	WindowRight = ds->x2;
@@ -778,7 +778,7 @@ void R_RenderActorView (AActor *actor, bool dontmaplines)
 	}
 
 	WindowLeft = 0;
-	WindowRight = viewwidth - 1;
+	WindowRight = viewwidth;
 	MirrorFlags = 0;
 	ActiveWallMirror = NULL;
 
@@ -809,7 +809,7 @@ void R_RenderActorView (AActor *actor, bool dontmaplines)
 	if (viewactive)
 	{
 		PlaneCycles.Clock();
-		R_DrawPlanes ();//also skajboks
+		R_DrawPlanes ();
 		R_DrawSkyBoxes ();
 		PlaneCycles.Unclock();
 
@@ -823,7 +823,7 @@ void R_RenderActorView (AActor *actor, bool dontmaplines)
 		NetUpdate ();
 		
 		MaskedCycles.Clock();
-		R_DrawMasked ();//every sprite
+		R_DrawMasked ();
 		MaskedCycles.Unclock();
 
 		NetUpdate ();

@@ -40,13 +40,13 @@ const char *GetGitTime();
 const char *GetVersionString();
 
 /** Lots of different version numbers **/
-
-#define VERSIONSTR "1.0.0 (ZDOOM 2.8pre)"
+//VIZDOOM_CODE
+#define VERSIONSTR "1.0.0 (ZDOOM 2.8.1)"
 
 // The version as seen in the Windows resource
-#define RC_FILEVERSION 2,7,9999,0
-#define RC_PRODUCTVERSION 2,7,9999,0
-#define RC_PRODUCTVERSION2 "2.8pre"
+#define RC_FILEVERSION 2,8,1,0
+#define RC_PRODUCTVERSION 2,8,1,0
+#define RC_PRODUCTVERSION2 "2.8.1"
 
 // Version identifier for network games.
 // Bump it every time you do a release unless you're certain you
@@ -61,7 +61,7 @@ const char *GetVersionString();
 // Protocol version used in demos.
 // Bump it if you change existing DEM_ commands or add new ones.
 // Otherwise, it should be safe to leave it alone.
-#define DEMOGAMEVERSION 0x21C
+#define DEMOGAMEVERSION 0x21D
 
 // Minimum demo version we can play.
 // Bump it whenever you change or remove existing DEM_ commands.
@@ -76,7 +76,7 @@ const char *GetVersionString();
 
 // Use 4500 as the base git save version, since it's higher than the
 // SVN revision ever got.
-#define SAVEVER 4524
+#define SAVEVER 4531
 
 #define SAVEVERSTRINGIFY2(x) #x
 #define SAVEVERSTRINGIFY(x) SAVEVERSTRINGIFY2(x)

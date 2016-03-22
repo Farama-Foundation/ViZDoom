@@ -1015,7 +1015,7 @@ void rt_draw4cols (int sx)
 		}
 
 		// Draw the shared area.
-		hcolfunc_post4 (sx, maxtop, minbot);//TU
+		hcolfunc_post4 (sx, maxtop, minbot);
 
 		// For each column, if part of the span is past the shared area,
 		// set its top to just below the shared area. Otherwise, advance

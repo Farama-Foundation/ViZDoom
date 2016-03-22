@@ -102,8 +102,8 @@ char MIDI_CommonLengths[15] = { 0, 1, 2, 1, 0, 0, 0, 0,  0, 0, 0, 0, 0, 0, 0 };
 //
 //==========================================================================
 
-MIDISong2::MIDISong2 (FileReader &reader, EMidiDevice type)
-: MIDIStreamer(type), MusHeader(0), Tracks(0)
+MIDISong2::MIDISong2 (FileReader &reader, EMidiDevice type, const char *args)
+: MIDIStreamer(type, args), MusHeader(0), Tracks(0)
 {
 	int p;
 	int i;
@@ -322,7 +322,12 @@ DWORD *MIDISong2::MakeEvents(DWORD *events, DWORD *max_event_p, DWORD max_time)
 			// Play all events for this tick.
 			do
 			{
-				DWORD *new_events = SendCommand(events, TrackDue, time);
+				bool sysex_noroom = false;
+				DWORD *new_events = SendCommand(events, TrackDue, time, max_event_p - events, sysex_noroom);
+				if (sysex_noroom)
+				{
+					return events;
+				}
 				TrackDue = FindNextDue();
 				if (new_events != events)
 				{
@@ -366,15 +371,23 @@ void MIDISong2::AdvanceTracks(DWORD time)
 //
 //==========================================================================
 
-DWORD *MIDISong2::SendCommand (DWORD *events, TrackInfo *track, DWORD delay)
+DWORD *MIDISong2::SendCommand (DWORD *events, TrackInfo *track, DWORD delay, ptrdiff_t room, bool &sysex_noroom)
 {
 	DWORD len;
 	BYTE event, data1 = 0, data2 = 0;
 	int i;
 
+	sysex_noroom = false;
+	size_t start_p = track->TrackP;
+
 	CHECK_FINISHED
 	event = track->TrackBegin[track->TrackP++];
 	CHECK_FINISHED
+
+	// The actual event type will be filled in below.
+	events[0] = delay;
+	events[1] = 0;
+	events[2] = MEVT_NOP << 24;
 
 	if (event != MIDI_SYSEX && event != MIDI_META && event != MIDI_SYSEXEND)
 	{
@@ -574,27 +587,48 @@ DWORD *MIDISong2::SendCommand (DWORD *events, TrackInfo *track, DWORD delay)
 				break;
 			}
 		}
-		events[0] = delay;
-		events[1] = 0;
 		if (event != MIDI_META && (!track->Designated || (track->Designation & DesignationMask)))
 		{
 			events[2] = event | (data1<<8) | (data2<<16);
 		}
-		else
-		{
-			events[2] = MEVT_NOP << 24;
-		}
-		events += 3;
 	}
 	else
 	{
-		// Skip SysEx events just because I don't want to bother with them.
-		// The old MIDI player ignored them too, so this won't break
-		// anything that played before.
+		// SysEx events could potentially not have enough room in the buffer...
 		if (event == MIDI_SYSEX || event == MIDI_SYSEXEND)
 		{
-			len = track->ReadVarLen ();
-			track->TrackP += len;
+			len = track->ReadVarLen();
+			if (len >= (MAX_EVENTS-1)*3*4)
+			{ // This message will never fit. Throw it away.
+				track->TrackP += len;
+			}
+			else if (len + 12 >= (size_t)room * 4)
+			{ // Not enough room left in this buffer. Backup and wait for the next one.
+				track->TrackP = start_p;
+				sysex_noroom = true;
+				return events;
+			}
+			else
+			{
+				BYTE *msg = (BYTE *)&events[3];
+				if (event == MIDI_SYSEX)
+				{ // Need to add the SysEx marker to the message.
+					events[2] = (MEVT_LONGMSG << 24) | (len + 1);
+					*msg++ = MIDI_SYSEX;
+				}
+				else
+				{
+					events[2] = (MEVT_LONGMSG << 24) | len;
+				}
+				memcpy(msg, &track->TrackBegin[track->TrackP], len);
+				msg += len;
+				// Must pad with 0
+				while ((size_t)msg & 3)
+				{
+					*msg++ = 0;
+				}
+				track->TrackP += len;
+			}
 		}
 		else if (event == MIDI_META)
 		{
@@ -620,7 +654,6 @@ DWORD *MIDISong2::SendCommand (DWORD *events, TrackInfo *track, DWORD delay)
 					events[0] = delay;
 					events[1] = 0;
 					events[2] = (MEVT_TEMPO << 24) | Tempo;
-					events += 3;
 					break;
 				}
 				track->TrackP += len;
@@ -638,6 +671,18 @@ DWORD *MIDISong2::SendCommand (DWORD *events, TrackInfo *track, DWORD delay)
 	if (!track->Finished)
 	{
 		track->Delay = track->ReadVarLen();
+	}
+	// Advance events pointer unless this is a non-delaying NOP.
+	if (events[0] != 0 || MEVT_EVENTTYPE(events[2]) != MEVT_NOP)
+	{
+		if (MEVT_EVENTTYPE(events[2]) == MEVT_LONGMSG)
+		{
+			events += 3 + ((MEVT_EVENTPARM(events[2]) + 3) >> 2);
+		}
+		else
+		{
+			events += 3;
+		}
 	}
 	return events;
 }

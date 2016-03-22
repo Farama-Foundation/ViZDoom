@@ -55,8 +55,6 @@
 #include "d_main.h"
 #include "farchive.h"
 
-#include "vizdoom_input.h"
-
 // MACROS ------------------------------------------------------------------
 
 // TYPES -------------------------------------------------------------------
@@ -563,9 +561,6 @@ void C_DoCommand (const char *cmd, int keynum)
 	}
 
 	const size_t len = end - beg;
-
-	//VIZDOOM_CODE
-	if(!ViZDoom_CommmandFilter(cmd)) return;
 
 	if (ParsingKeyConf)
 	{

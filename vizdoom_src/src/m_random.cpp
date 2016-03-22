@@ -121,9 +121,7 @@ CCMD(rngseed)
 		else
 		{
 			staticrngseed = atoi(argv[2]);
-			//VIZDOOM_CODE
 			use_staticrng = true;
-			//use_staticrng = false;
 			Printf("Static rngseed %d will be set for next game\n", staticrngseed);
 		}
 	}
