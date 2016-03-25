@@ -9,6 +9,8 @@ int ViZDoom_AxisFilter(int button, int value);
 
 void ViZDoom_AddAxisBT(int button, int value);
 
+char* ViZDoom_AddStateToBTCommmand(char *& cmd, int state);
+
 char* ViZDoom_BTToCommand(int button);
 
 void ViZDoom_ResetDiscontinuousBT();

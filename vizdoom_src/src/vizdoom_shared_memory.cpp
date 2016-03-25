@@ -12,7 +12,9 @@ char * vizdoomSMName;
 
 void ViZDoom_SMInit(const char * id){
 
-    vizdoomSMName = strcat(strdup(VIZDOOM_SM_NAME_BASE), id);
+	vizdoomSMName = new char[strlen(VIZDOOM_SM_NAME_BASE) + strlen(id)];
+	strcpy(vizdoomSMName, VIZDOOM_SM_NAME_BASE);
+	strcat(vizdoomSMName, id);
 
     try {
         bip::shared_memory_object::remove(vizdoomSMName);
@@ -31,5 +33,5 @@ void ViZDoom_SMInit(const char * id){
 
 void ViZDoom_SMClose(){
     bip::shared_memory_object::remove(vizdoomSMName);
-    delete[](vizdoomSMName);
+	delete[]vizdoomSMName;
 }

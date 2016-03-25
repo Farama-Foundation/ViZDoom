@@ -31,7 +31,9 @@ bool operator==(const SubStr &s1, const SubStr &s2)
 }
 
 Str::Str(const SubStr& s)
-	: SubStr(strndup(s.str, s.len), s.len)
+	//VIZDOOM_CODE
+	//: SubStr(strndup(s.str, s.len), s.len)
+	: SubStr(strdup(s.str), s.len)
 {
 	;
 }

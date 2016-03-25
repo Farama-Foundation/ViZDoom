@@ -18,8 +18,13 @@ char * vizdoomMQDoomName;
 
 void ViZDoom_MQInit(const char * id){
 
-    vizdoomMQControllerName = strcat(strdup(VIZDOOM_MQ_NAME_CTR_BASE), id);
-    vizdoomMQDoomName = strcat(strdup(VIZDOOM_MQ_NAME_DOOM_BASE), id);
+	vizdoomMQControllerName = new char[strlen(VIZDOOM_MQ_NAME_CTR_BASE) + strlen(id)];
+	strcpy(vizdoomMQControllerName, VIZDOOM_MQ_NAME_CTR_BASE);
+	strcat(vizdoomMQControllerName, id);
+
+	vizdoomMQDoomName = new char[strlen(VIZDOOM_MQ_NAME_DOOM_BASE) + strlen(id)];
+	strcpy(vizdoomMQDoomName, VIZDOOM_MQ_NAME_DOOM_BASE);
+	strcat(vizdoomMQDoomName, id);
 
     try{
         vizdoomMQController = new bip::message_queue(bip::open_only, vizdoomMQControllerName);//, VIZDOOM_MQ_MAX_MSG_NUM, VIZDOOM_MQ_MAX_MSG_SIZE);
@@ -98,4 +103,6 @@ void ViZDoom_MQTic(){
 void ViZDoom_MQClose(){
     //bip::message_queue::remove(vizdoomMQControllerName);
     //bip::message_queue::remove(vizdoomMQDoomName);
+	delete[] vizdoomMQControllerName;
+	delete[] vizdoomMQDoomName;
 }

@@ -1025,7 +1025,7 @@ void D_DoomLoop ()
 					vizdoom_time = I_GetTime (true);
 					I_WaitForTic(vizdoom_time);
 					//I_WaitForTic(gametic + 1);
-					D_ProcessEvents ();
+					//D_ProcessEvents ();
 				}
 
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
