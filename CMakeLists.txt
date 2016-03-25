@@ -56,6 +56,7 @@ if( MSVC )
 	
 endif()
 
+set( VIZDOOM_OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin )
 
 # Targets
 add_subdirectory( vizdoom_src )
@@ -65,7 +66,7 @@ find_package(Threads REQUIRED)
 
 set( VIZDOOM_INCLUDE_DIR vizdoom_api_src )
 
-include_directories( ${VIZDOOM_IrmNCLUDE_DIR} ${Boost_INCLUDE_DIR} )
+include_directories( ${VIZDOOM_INCLUDE_DIR} ${Boost_INCLUDE_DIR} )
 
 set( VIZDOOM_LIBS
     ${Boost_LIBRARIES}  
@@ -90,11 +91,18 @@ target_link_libraries (vizdoomshared ${VIZDOOM_LIBS})
 
 set_target_properties( vizdoomstatic vizdoomshared
     PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin
-    LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin
-    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin
+    ARCHIVE_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}
+	ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}
+	ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}
+    LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}
+	LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}
+	LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}
+    RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}
+	RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}
+	RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}
     OUTPUT_NAME vizdoom )
 
+#Python binding	
 if(BUILD_PYTHON)
 
     #set(Boost_USE_DEBUG_PYTHON OFF)
@@ -108,7 +116,7 @@ if(BUILD_PYTHON)
 
     set( VIZDOOM_PYTHON_LIBS 
         ${VIZDOOM_LIBS}
-        ${Boost_PYTHON_LIBRARY}
+		${Boost_PYTHON_LIBRARY}
         ${PYTHON_LIBRARIES}
 		${NUMPY_LIBRARIES} )
         
@@ -130,15 +138,21 @@ if(BUILD_PYTHON)
 
     set_target_properties( vizdoompython
         PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/python
-        LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/python
-        RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/python
+        ARCHIVE_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/python
+		ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/python
+		ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/python
+		LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/python
+		LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/python
+		LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/python
+		RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/python
+		RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/python
+		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/python
         OUTPUT_NAME vizdoom )
     
     if(UNIX)
         ADD_CUSTOM_COMMAND( 
             TARGET vizdoompython
-            COMMAND ln -sf ${PROJECT_SOURCE_DIR}/bin/python/vizdoom.so ${PROJECT_SOURCE_DIR}/examples/python/vizdoom.so
+            COMMAND ln -sf ${VIZDOOM_OUTPUT_DIR}/python/vizdoom.so ${PROJECT_SOURCE_DIR}/examples/python/vizdoom.so
             COMMAND ln -sf ${PROJECT_SOURCE_DIR}/examples/config/bots.cfg ${PROJECT_SOURCE_DIR}/examples/python/bots.cfg
             COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/python."
         )
@@ -147,6 +161,7 @@ if(BUILD_PYTHON)
         
 endif()
 
+#Java binding
 if(BUILD_JAVA)
 
     if (NOT DEFINED ENV{JAVA_HOME})
@@ -160,8 +175,7 @@ if(BUILD_JAVA)
     set( VIZDOOM_JAVA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} vizdoom_api_bindings/java )
     
     set( VIZDOOM_JAVA_LIBS 
-        ${VIZDOOM_LIBS}
-        ${Boost_LIBRARIES}  
+        ${VIZDOOM_LIBS}  
         ${Java_LIBRARIES}
         ${JNI_LIBRARIES} )
 		
@@ -206,23 +220,31 @@ if(BUILD_JAVA)
 	    ./vizdoom_api_bindings/java/errors/SharedMemoryException.java
 	    ./vizdoom_api_bindings/java/GameState.java
         ./vizdoom_api_bindings/java/DoomGame.java 
-  	    OUTPUT_DIR ${PROJECT_SOURCE_DIR}/bin/java OUTPUT_NAME vizdoom)
+  	    OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/java 
+		OUTPUT_NAME vizdoom)
 
     set_target_properties( vizdoomjava
         PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/java
-        LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/java
-        RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/java
+        ARCHIVE_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/java
+		ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/java
+		ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/java
+		LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/java
+		LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/java
+		LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/java
+		RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/java
+		RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/java
+		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/java
         OUTPUT_NAME vizdoom )
         	
 endif()
 
-
-#message("-- Downloading Freedoom WADs")
-#message("-- Original Doom WADs can not be provided due to licences")
-
 if( WIN32 )
-    file( DOWNLOAD https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip ./scenarios/freedoom-0.10.1.zip SHOW_PROGRESS )
+	if(NOT EXISTS "${PROJECT_SOURCE_DIR}/scenarios/freedoom.zip")
+		message("-- Downloading Freedoom WADs")
+		message("-- Original Doom WADs can not be provided due to licences")
+	
+		file( DOWNLOAD https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip ${PROJECT_SOURCE_DIR}/scenarios/freedoom.zip SHOW_PROGRESS )
+	endif()
 endif()    
 
 if(UNIX)

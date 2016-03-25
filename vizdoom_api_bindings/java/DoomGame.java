@@ -5,7 +5,7 @@ import enums.*;
 
 public class DoomGame{
 	static {
-      		System.loadLibrary("vizdoom");
+      	System.loadLibrary("vizdoom");
    	}
 
 	public long internalPtr = 0; 
@@ -29,11 +29,11 @@ public class DoomGame{
 	public native boolean isRunning(); 
 	
 	public native void setAction(int[] actions);
-    	public native void advanceAction();
-    	public native void advanceAction(int tics);
-    	public native void advanceAction(int tics, boolean stateUpdate, boolean renderOnly);
-	public native double makeAction(int[] actions);
-    	public native double makeAction(int[] actions, int tics);
+    public native void advanceAction();
+    public native void advanceAction(int tics);
+    public native void advanceAction(int tics, boolean stateUpdate, boolean renderOnly);
+    public native double makeAction(int[] actions);
+    public native double makeAction(int[] actions, int tics);
 
 
 	public native GameState getState(); 
@@ -44,7 +44,7 @@ public class DoomGame{
 	public native boolean isEpisodeFinished();
 
 	public native boolean isPlayerDead(); 
-        public native void respawnPlayer(); 
+    public native void respawnPlayer();
 
 	public native void addAvailableButton(Button button); 
 	public native void addAvailableButton(Button button, int maxValue); 	
@@ -56,16 +56,17 @@ public class DoomGame{
 	public native void addAvailableGameVariable(GameVariable var);
 
 	public native void clearAvailableGameVariables();
-    	public native int getAvailableGameVariablesSize();
+    public native int getAvailableGameVariablesSize();
 
  	public native void addGameArgs(String arg);
-    	public native void clearGameArgs();
+    public native void clearGameArgs();
 
-    	public native void sendGameCommand(String cmd);
+    public native void sendGameCommand(String cmd);
 
 	public native int[] getGameScreen();
 	
-	private native int getMod(); 		
+	private native int getMod();
+
 	public Mode getMode(){
 		Mode ret=Mode.values()[getMod()];
 		return ret;
@@ -78,13 +79,13 @@ public class DoomGame{
 
 	public native int getGameVariable(GameVariable var);
 
-    	public native double getLivingReward();
-    	public native  void setLivingReward(double livingReward);
-    	public native double getDeathPenalty();
-    	public native void setDeathPenalty(double deathPenalty);
+    public native double getLivingReward();
+    public native  void setLivingReward(double livingReward);
+    public native double getDeathPenalty();
+    public native void setDeathPenalty(double deathPenalty);
 
-    	public native double getLastReward();
-    	public native double getSummaryReward();
+    public native double getLastReward();
+    public native double getSummaryReward();
 
 	public native void setViZDoomPath(String path);
 	public native void setDoomGamePath(String path);
@@ -93,18 +94,18 @@ public class DoomGame{
 	public native void setDoomSkill(int skill);
 	public native void setDoomConfigPath(String path);
 
-    	public native int getSeed();
-    	public native void setSeed(int seed);
+    public native int getSeed();
+    public native void setSeed(int seed);
 
-    	public native int getEpisodeStartTime();
-    	public native void setEpisodeStartTime(int tics);
+    public native int getEpisodeStartTime();
+    public native void setEpisodeStartTime(int tics);
 
-    	public native int getEpisodeTimeout();
-    	public native void setEpisodeTimeout(int tics);
+    public native int getEpisodeTimeout();
+    public native void setEpisodeTimeout(int tics);
 
 	public native int getEpisodeTime();
 
-    	public native void setScreenResolution(ScreenResolution resolution);
+    public native void setScreenResolution(ScreenResolution resolution);
     public native void setScreenFormat(ScreenFormat format);
     public native void setRenderHud(boolean hud);
     public native void setRenderWeapon(boolean weapon);

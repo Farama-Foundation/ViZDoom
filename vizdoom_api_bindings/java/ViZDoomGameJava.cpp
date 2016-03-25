@@ -494,7 +494,7 @@ JNIEXPORT jobject JNICALL Java_DoomGame_getState
 	}
 	env->ReleaseIntArrayElements(jbuffer, oarr, NULL);
 
-	uint8_t *pointer;
+	boost::uint8_t *pointer;
 	pointer=statec.imageBuffer;
 	jintArray jbuffer2 = env->NewIntArray(rozmiar);
 	oarr = env->GetIntArrayElements(jbuffer2, NULL);
@@ -876,7 +876,7 @@ JNIEXPORT jintArray JNICALL Java_DoomGame_getGameScreen
 	int rozmiar=game->getScreenSize();	
 	std::vector<int> ourvector;
 
-	uint8_t *pointer;
+	boost::uint8_t *pointer;
 	pointer=game->getGameScreen();
 	jintArray jbuffer = env->NewIntArray(rozmiar);
 	jint *oarr;

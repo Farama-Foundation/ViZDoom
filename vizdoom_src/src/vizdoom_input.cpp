@@ -24,7 +24,7 @@ int vizdoomLastInputUpdate[VIZDOOM_BT_SIZE];
 EXTERN_CVAR (Bool, vizdoom_allow_input);
 
 void ViZDoom_Command(char * cmd){
-    //printf("VIZIA CMD %d %s\n", gametic, cmd);
+    //Printf("VIZIA CMD %d %s\n", gametic, cmd);
     if(strlen(cmd) >= 1) AddCommandString(cmd);
 }
 
@@ -49,7 +49,10 @@ bool ViZDoom_CommmandFilter(const char *cmd){
     else beg = cmd;
 
     for(int i = 0; i<VIZDOOM_BT_CMD_BT_SIZE; ++i){
-        if(strcmp(beg, ViZDoom_BTToCommand(i)) == 0){
+
+		char * ckeckCmd = ViZDoom_BTToCommand(i);
+
+		if (strcmp(beg, ckeckCmd) == 0){
             if(!vizdoomInput->BT_AVAILABLE[i]) {
                 vizdoomInput->BT[i] = 0;
                 return false;
@@ -59,6 +62,8 @@ bool ViZDoom_CommmandFilter(const char *cmd){
                 vizdoomLastInputUpdate[i] = VIZDOOM_TIME;
             }
         }
+		
+		delete[] ckeckCmd;
     }
 
     //printf("%d %s\n",gametic, cmd);
@@ -114,8 +119,9 @@ void ViZDoom_AddAxisBT(int button, int value){
 }
 
 char* ViZDoom_BTToCommand(int button){
+
     switch(button){
-        case VIZDOOM_BT_ATTACK : return strdup("attack");
+		case VIZDOOM_BT_ATTACK: return strdup("attack");
         case VIZDOOM_BT_USE : return strdup("use");
         case VIZDOOM_BT_JUMP : return strdup("jump");
         case VIZDOOM_BT_CROUCH : return strdup("crouch");
@@ -127,8 +133,8 @@ char* ViZDoom_BTToCommand(int button){
         case VIZDOOM_BT_SPEED : return strdup("speed");
         case VIZDOOM_BT_STRAFE : return strdup("strafe");
 
-        case VIZDOOM_BT_MOVE_RIGHT : return strdup("moveright");
-        case VIZDOOM_BT_MOVE_LEFT : return strdup("moveleft");
+		case VIZDOOM_BT_MOVE_RIGHT: return strdup("moveright");
+		case VIZDOOM_BT_MOVE_LEFT: return strdup("moveleft");
         case VIZDOOM_BT_MOVE_BACK : return strdup("back");
         case VIZDOOM_BT_MOVE_FORWARD : return strdup("forward");
         case VIZDOOM_BT_TURN_RIGHT : return strdup("right");
@@ -176,7 +182,20 @@ void ViZDoom_ResetDiscontinuousBT(){
     }
 }
 
+char* ViZDoom_AddStateToBTCommmand(char *& cmd, int state){
+	char *stateCmd = new char[strlen(cmd)+1];
+	if (state) stateCmd[0] = '+';
+	else stateCmd[0] = '-';
+	strcpy(stateCmd + 1, cmd);
+	delete[] cmd;
+
+	cmd = stateCmd;
+	return stateCmd;
+}
+
 void ViZDoom_AddBTCommand(int button, int state){
+
+	char* buttonCmd = ViZDoom_BTToCommand(button);
 
     switch(button){
         case VIZDOOM_BT_ATTACK :
@@ -197,9 +216,9 @@ void ViZDoom_AddBTCommand(int button, int state){
         case VIZDOOM_BT_LOOK_UP :
         case VIZDOOM_BT_LOOK_DOWN :
         case VIZDOOM_BT_MOVE_UP :
-        case VIZDOOM_BT_MOVE_DOWN :
-            if(state) ViZDoom_Command(strcat(strdup("+"), ViZDoom_BTToCommand(button)));
-            else ViZDoom_Command(strcat(strdup("-"), ViZDoom_BTToCommand(button)));
+		case VIZDOOM_BT_MOVE_DOWN:
+			ViZDoom_AddStateToBTCommmand(buttonCmd, state);
+			ViZDoom_Command(buttonCmd);
             break;
 
         case VIZDOOM_BT_TURN180 :
@@ -221,7 +240,7 @@ void ViZDoom_AddBTCommand(int button, int state){
         case VIZDOOM_BT_SELECT_NEXT_ITEM :
         case VIZDOOM_BT_SELECT_PREV_ITEM :
         case VIZDOOM_BT_DROP_SELECTED_ITEM :
-            if(state) ViZDoom_Command(ViZDoom_BTToCommand(button));
+			if (state) ViZDoom_Command(buttonCmd);
             break;
 
         case VIZDOOM_BT_VIEW_PITCH :
@@ -232,6 +251,8 @@ void ViZDoom_AddBTCommand(int button, int state){
             if(state != 0) ViZDoom_AddAxisBT(button, state);
             break;
     }
+
+	delete[] buttonCmd;
 }
 
 void ViZDoom_InputInit() {
@@ -295,6 +316,6 @@ void ViZDoom_InputTic(){
 }
 
 void ViZDoom_InputClose(){
-    //delete(vizdoomLastInput);
-    delete(vizdoomInputSMRegion);
+    //delete vizdoomLastInput ;
+    delete vizdoomInputSMRegion ;
 }

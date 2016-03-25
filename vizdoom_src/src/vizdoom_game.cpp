@@ -110,6 +110,7 @@ void ViZDoom_GameVarsInit(){
 }
 
 void ViZDoom_GameVarsTic(){
+
     vizdoomGameVars->GAME_TIC = gametic;
     vizdoomGameVars->GAME_STATE = gamestate;
     vizdoomGameVars->GAME_ACTION = gameaction;
@@ -176,6 +177,7 @@ void ViZDoom_GameVarsTic(){
         vizdoomGameVars->PLAYER_AMMO[i] = ViZDoom_CheckSlotAmmo(i);
         vizdoomGameVars->PLAYER_WEAPON[i] = ViZDoom_CheckSlotWeapons(i);
     }
+
 }
 
 void ViZDoom_GameVarsClose(){
