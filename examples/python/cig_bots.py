@@ -4,7 +4,7 @@ from __future__ import print_function
 from vizdoom import *
 from random import choice
 
-game = Game()
+game = DoomGame()
 
 game.set_vizdoom_path("../../bin/vizdoom")
 
@@ -26,7 +26,7 @@ game.add_game_args("-host 1 -deathmatch +timelimit 10.0 "
 game.add_game_args("+name AI");
 
 # Multiplayer requires the use of asynchronous modes but
-game.set_mode(Mode.SPECTATOR)
+game.set_mode(Mode.PLAYER)
 
 # game.set_window_visible(false)
 
