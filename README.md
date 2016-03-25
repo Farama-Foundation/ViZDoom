@@ -45,8 +45,7 @@ Also, for Java binding JAVA_HOME environment variable must be set.
 
 ###Windows
 
->>> ViZDoom is now highly unstable on Windows - we are working to fix it. 
-In the future, we will provide compiled runtime binaries and development libraries for Windows.
+We are providing compiled runtime binaries and development libraries for Windows -> [here](https://github.com/Marqt/ViZDoom/releases/download/1.0.0-rc/ViZDoom-1.0.0-rc-Win-x86_64.zip)
 
 ####Dependencies
 * CMake 3.0+
