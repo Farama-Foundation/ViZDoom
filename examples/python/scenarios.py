@@ -82,5 +82,5 @@ for i in range(episodes):
 			sleep(sleep_time)
 
 	print("Episode finished!")
-	print("Summary reward:", game.get_summary_reward())
+	print("total reward:", game.get_total_reward())
 	print("************************")

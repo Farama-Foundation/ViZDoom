@@ -45,7 +45,7 @@ public class Shaping {
 	    int episodes = 10;
 
    	    // Use this to remember last shaping reward value.
-   	    double lastSummaryShapingReward = 0;
+   	    double lastTotalShapingReward = 0;
 	    for (int i = 0; i < episodes; ++i) {
 
 		System.out.println("Episode #" + (i + 1));
@@ -65,8 +65,8 @@ public class Shaping {
 		// Retrieve the shaping reward
 		    int _ssr = game.getGameVariable(GameVariable.USER1);  // Get value of scripted variable
 		    double ssr = game.DoomFixedToDouble(_ssr);                  // If value is in DoomFixed format project it to double
-		    double sr = ssr - lastSummaryShapingReward;
-		    lastSummaryShapingReward = ssr;
+		    double sr = ssr - lastTotalShapingReward;
+		    lastTotalShapingReward = ssr;
 
 		    System.out.println("State #" + s.number);
 		    System.out.println("Health: " + s.gameVariables[0]);
@@ -77,7 +77,7 @@ public class Shaping {
 		}
 
 		System.out.println( "Episode finished.");
-		System.out.println("Summary reward: " + game.getSummaryReward());
+		System.out.println("Total reward: " + game.getTotalReward());
 		System.out.println ("************************");
 
 	    }

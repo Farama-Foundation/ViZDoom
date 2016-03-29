@@ -334,7 +334,7 @@ namespace vizdoom {
     void DoomGame::setDeathPenalty(double deathPenalty) { this->deathPenalty = deathPenalty; }
 
     double DoomGame::getLastReward(){ return this->lastReward; }
-    double DoomGame::getSummaryReward() { return this->summaryReward; }
+    double DoomGame::getTotalReward() { return this->summaryReward; }
 
     void DoomGame::setScreenResolution(ScreenResolution resolution) {
         unsigned int width = 0, height = 0;

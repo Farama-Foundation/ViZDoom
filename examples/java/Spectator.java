@@ -69,7 +69,7 @@ public class Spectator {
 			}
 	
 			System.out.println("episode finished!");
-			System.out.println("summary reward:"+ game.getSummaryReward());
+			System.out.println("Total reward:"+ game.getTotalReward());
 			System.out.println("************************");
 			
 			try {

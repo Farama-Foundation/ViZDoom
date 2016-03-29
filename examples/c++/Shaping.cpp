@@ -37,7 +37,7 @@ int main(){
     int episodes = 10;
 
     // Use this to remember last shaping reward value.
-    double lastSummaryShapingReward = 0;
+    double lastTotalShapingReward = 0;
 
     for (int i = 0; i < episodes; ++i) {
 
@@ -58,8 +58,8 @@ int main(){
             // Retrieve the shaping reward
             int _ssr = game->getGameVariable(USER1);        // Get value of scripted variable
             double ssr = DoomFixedToDouble(_ssr);           // If value is in DoomFixed format project it to double
-            double sr = ssr - lastSummaryShapingReward;
-            lastSummaryShapingReward = ssr;
+            double sr = ssr - lastTotalShapingReward;
+            lastTotalShapingReward = ssr;
 
             std::cout << "State #" << s.number << "\n";
             std::cout << "Health: " << s.gameVariables[0] << "\n";
@@ -70,7 +70,7 @@ int main(){
         }
 
         std::cout << "Episode finished.\n";
-        std::cout << "Summary reward: " << game->getSummaryReward() << "\n";
+        std::cout << "Total reward: " << game->getTotalReward() << "\n";
         std::cout << "************************\n";
 
     }

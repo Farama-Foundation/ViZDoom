@@ -117,7 +117,7 @@ for i in range(episodes):
 
 	# Check how the episode went.
 	print("Episode finished.")
-	print("Summary reward:", game.get_summary_reward())
+	print("total reward:", game.get_total_reward())
 	print("************************")
 
 
