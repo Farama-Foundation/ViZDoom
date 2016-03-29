@@ -322,7 +322,7 @@ bp::register_exception_translator< n >(&translate ## n );
         .def("set_death_penalty", &DoomGamePython::setDeathPenalty)
         
         .def("get_last_reward", &DoomGamePython::getLastReward)
-        .def("get_summary_reward", &DoomGamePython::getSummaryReward)
+        .def("get_total_reward", &DoomGamePython::getTotalReward)
         
         .def("get_last_action", &DoomGamePython::getLastAction)
         

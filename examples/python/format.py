@@ -82,7 +82,7 @@ for i in range(episodes):
 
 
 	print("Episode finished!")
-	print("Summary reward:", game.get_summary_reward())
+	print("total reward:", game.get_total_reward())
 	print("************************")
 
 cv2.destroyAllWindows()

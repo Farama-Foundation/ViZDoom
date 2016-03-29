@@ -85,7 +85,7 @@ public class DoomGame{
     public native void setDeathPenalty(double deathPenalty);
 
     public native double getLastReward();
-    public native double getSummaryReward();
+    public native double getTotalReward();
 
 	public native void setViZDoomPath(String path);
 	public native void setDoomGamePath(String path);
