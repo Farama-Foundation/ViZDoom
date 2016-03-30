@@ -73,7 +73,7 @@ public class Seed {
 
 			}
 			System.out.println("Episode finished!");
-			System.out.println("Summary reward: " + game.getSummaryReward());
+			System.out.println("Total reward: " + game.getTotalReward());
 			System.out.println("************************");
 		}
  		// It will be done automatically in destructor but after close You can init it again with different settings.

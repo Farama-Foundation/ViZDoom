@@ -59,7 +59,7 @@ int main(){
     int episodes = 10;
 
     // Use this to remember last shaping reward value.
-    double lastSummaryShapingReward = 0;
+    double lastTotalShapingReward = 0;
 
     for (int i = 0; i < episodes; ++i) {
 

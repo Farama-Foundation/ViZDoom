@@ -70,7 +70,7 @@ int main(){
         }
 
         std::cout << "Episode finished.\n";
-        std::cout << "Summary reward: " << game->getSummaryReward() << "\n";
+        std::cout << "Total reward: " << game->getTotalReward() << "\n";
         std::cout << "************************\n";
     }
 
