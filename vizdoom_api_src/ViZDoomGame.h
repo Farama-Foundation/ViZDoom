@@ -75,7 +75,7 @@ namespace vizdoom {
         void setDeathPenalty(double deathPenalty);
 
         double getLastReward();
-        double getSummaryReward();
+        double getTotalReward();
 
         void setViZDoomPath(std::string path);
         void setDoomGamePath(std::string path);

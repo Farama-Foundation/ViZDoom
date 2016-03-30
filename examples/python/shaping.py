@@ -41,7 +41,7 @@ for perm in it.product([False, True], repeat=actions_num):
 
 episodes = 10
 sleep_time = 0.028
-last_summary_shaping_reward = 0
+last_total_shaping_reward = 0
 
 for i in range(episodes):
 
@@ -61,8 +61,8 @@ for i in range(episodes):
 		
 		# Retrieve the shaping reward 
 		sr = doom_fixed_to_double(game.get_game_variable(GameVariable.USER1))
-		sr = sr - last_summary_shaping_reward
-		last_summary_shaping_reward += sr
+		sr = sr - last_total_shaping_reward
+		last_total_shaping_reward += sr
 
 		print("State #" +str(s.number))
 		print("Health:", misc[0])
@@ -75,7 +75,7 @@ for i in range(episodes):
 			sleep(sleep_time)
 
 	print("Episode finished!")
-	print("Summary reward:", game.get_summary_reward())
+	print("total reward:", game.get_total_reward())
 	print("************************")
 
 

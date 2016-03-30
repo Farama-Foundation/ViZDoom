@@ -367,10 +367,10 @@ JNIEXPORT jdouble JNICALL Java_DoomGame_getLastReward
 
 /*
  * Class:     DoomGame
- * Method:    getSummaryReward
+ * Method:    getTotalReward
  * Signature: ()F
  */
-JNIEXPORT jdouble JNICALL Java_DoomGame_getSummaryReward
+JNIEXPORT jdouble JNICALL Java_DoomGame_getTotalReward
   (JNIEnv *, jobject);
 
 /*

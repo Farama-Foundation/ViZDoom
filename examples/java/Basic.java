@@ -102,7 +102,7 @@ public class Basic {
 		}
 
 		System.out.println( "Episode finished.");
-		System.out.println("Summary reward: " + game.getSummaryReward());
+		System.out.println("Total reward: " + game.getTotalReward());
 		System.out.println ("************************");
 
 	    }
