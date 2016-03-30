@@ -15,7 +15,6 @@
 #include "doomtype.h"
 
 bip::mapped_region *vizdoomInputSMRegion = NULL;
-//ViZDoomInputStruct *vizdoomLastInput = NULL;
 ViZDoomInputStruct *vizdoomInput = NULL;
 bool vizdoomInputInited = false;
 int vizdoomLastInputBT[VIZDOOM_BT_SIZE];
@@ -24,7 +23,6 @@ int vizdoomLastInputUpdate[VIZDOOM_BT_SIZE];
 EXTERN_CVAR (Bool, vizdoom_allow_input);
 
 void ViZDoom_Command(char * cmd){
-    //Printf("VIZIA CMD %d %s\n", gametic, cmd);
     if(strlen(cmd) >= 1) AddCommandString(cmd);
 }
 
@@ -291,8 +289,7 @@ void ViZDoom_InputTic(){
 
     if(!*vizdoom_allow_input) {
         for (int i = 0; i < VIZDOOM_BT_CMD_BT_SIZE; ++i) {
-
-            if (vizdoomInput->BT_AVAILABLE[i] && vizdoomInput->BT[i] != vizdoomLastInputBT[i]){ //vizdoomLastInput->BT[i]) {
+            if (vizdoomInput->BT_AVAILABLE[i] && vizdoomInput->BT[i] != vizdoomLastInputBT[i]){
                 ViZDoom_AddBTCommand(i, vizdoomInput->BT[i]);
             }
         }
@@ -311,11 +308,9 @@ void ViZDoom_InputTic(){
     for (int i = 0; i < VIZDOOM_BT_SIZE; ++i) {
         vizdoomLastInputBT[i] =  vizdoomInput->BT[i];
     }
-    //memcpy( vizdoomLastInput, vizdoomInput, sizeof(ViZDoomInputStruct) );
 
 }
 
 void ViZDoom_InputClose(){
-    //delete vizdoomLastInput ;
     delete vizdoomInputSMRegion ;
 }

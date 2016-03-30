@@ -33,5 +33,5 @@ void ViZDoom_SMInit(const char * id){
 
 void ViZDoom_SMClose(){
     bip::shared_memory_object::remove(vizdoomSMName);
-	delete[]vizdoomSMName;
+	delete[] vizdoomSMName;
 }
