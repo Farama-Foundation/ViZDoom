@@ -94,6 +94,8 @@ void ViZDoom_Tic(){
 
     if (*vizdoom_controlled && !ViZDoom_IsPaused()){
 
+        NetUpdate();
+
         if(vizdoomUpdate) {
             ViZDoom_Update();
         }

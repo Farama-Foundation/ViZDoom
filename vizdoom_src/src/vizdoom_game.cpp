@@ -181,7 +181,7 @@ void ViZDoom_GameVarsTic(){
 }
 
 void ViZDoom_GameVarsClose(){
-    delete(vizdoomGameVarsSMRegion);
+    delete vizdoomGameVarsSMRegion;
 }
 
 

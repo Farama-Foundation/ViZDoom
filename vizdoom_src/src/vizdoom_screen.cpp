@@ -205,6 +205,6 @@ void ViZDoom_ScreenUpdate(){
 }
 
 void ViZDoom_ScreenClose(){
-    delete(vizdoomScreenSMRegion);
+    delete vizdoomScreenSMRegion;
     delete depthMap;
 }
