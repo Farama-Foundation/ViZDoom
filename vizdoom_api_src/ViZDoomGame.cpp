@@ -2,18 +2,11 @@
 #include "ViZDoomUtilities.h"
 #include "ViZDoomExceptions.h"
 
-#include <cmath> //  floor, ceil
-#include <iostream> // cerr, cout
-#include <vector>
-#include <algorithm>
-#include <fstream> // ifstream
-#include <cstdlib> // atoi
-#include <stdexcept> // invalid_argument
+#include <fstream>
 #include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string.hpp> // to_lower
-#include <boost/algorithm/string/trim_all.hpp> // trim_all
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/trim_all.hpp>
 #include <boost/tokenizer.hpp>
-#include <exception>
 
 namespace vizdoom {
 
@@ -167,7 +160,7 @@ namespace vizdoom {
 
             double reward = 0;
             double mapReward = DoomFixedToDouble(this->doomController->getMapReward());
-            reward = (mapReward - this->lastMapReward);
+            reward = mapReward - this->lastMapReward;
             int liveTime = this->doomController->getMapLastTic() - this->lastMapTic;
             reward += (liveTime > 0 ? liveTime : 0) * this->livingReward;
             if (this->doomController->isPlayerDead()) reward -= this->deathPenalty;
@@ -341,80 +334,54 @@ namespace vizdoom {
 
         #define CASE_RES(w, h) case RES_##w##X##h : width = w; height = h; break;
         switch(resolution){
-            CASE_RES(40, 30)
-            CASE_RES(60, 45)
-            CASE_RES(80, 50)
-            CASE_RES(80, 60)
-            CASE_RES(100, 75)
-            CASE_RES(120, 75)
-            CASE_RES(120, 90)
-            CASE_RES(160, 100)
             CASE_RES(160, 120)
-            CASE_RES(200, 120)
+
+            CASE_RES(200, 125)
             CASE_RES(200, 150)
-            CASE_RES(240, 135)
-            CASE_RES(240, 150)
-            CASE_RES(240, 180)
+
             CASE_RES(256, 144)
             CASE_RES(256, 160)
             CASE_RES(256, 192)
+
+            CASE_RES(320, 180)
             CASE_RES(320, 200)
             CASE_RES(320, 240)
-            CASE_RES(400, 225)	
+            CASE_RES(320, 256)
+
+            CASE_RES(400, 225)
+            CASE_RES(400, 250)
             CASE_RES(400, 300)
-            CASE_RES(480, 270)	
-            CASE_RES(480, 360)
-            CASE_RES(512, 288)	
+
+            CASE_RES(512, 288)
+            CASE_RES(512, 320)
             CASE_RES(512, 384)
+
             CASE_RES(640, 360)	
             CASE_RES(640, 400)
             CASE_RES(640, 480)
-            CASE_RES(720, 480)	
-            CASE_RES(720, 540)
-            CASE_RES(800, 450)	
-            CASE_RES(800, 480)
+
+            CASE_RES(800, 450)
             CASE_RES(800, 500)	
             CASE_RES(800, 600)
-            CASE_RES(848, 480)	
-            CASE_RES(960, 600)	
-            CASE_RES(960, 720)
-            CASE_RES(1024, 576)	
-            CASE_RES(1024, 600)
+
+            CASE_RES(1024, 576)
             CASE_RES(1024, 640)	
             CASE_RES(1024, 768)
-            CASE_RES(1088, 612)	
-            CASE_RES(1152, 648)	
-            CASE_RES(1152, 720)	
-            CASE_RES(1152, 864)
-            CASE_RES(1280, 720)	
-            CASE_RES(1280, 854)
+
+            CASE_RES(1280, 720)
             CASE_RES(1280, 800)	
             CASE_RES(1280, 960)
             CASE_RES(1280, 1024)
-            CASE_RES(1360, 768)	
-            CASE_RES(1366, 768)
+
             CASE_RES(1400, 787)	
             CASE_RES(1400, 875)	
             CASE_RES(1400, 1050)
-            CASE_RES(1440, 900)
-            CASE_RES(1440, 960)
-            CASE_RES(1440, 1080)
+
             CASE_RES(1600, 900)	
             CASE_RES(1600, 1000)	
             CASE_RES(1600, 1200)
-            CASE_RES(1680, 1050)	
+
             CASE_RES(1920, 1080)
-            CASE_RES(1920, 1200)
-            CASE_RES(2048, 1536)
-            CASE_RES(2560, 1440)
-            CASE_RES(2560, 1600)
-            CASE_RES(2560, 2048)
-            CASE_RES(2880, 1800)
-            CASE_RES(3200, 1800)
-            CASE_RES(3840, 2160)
-            CASE_RES(3840, 2400)
-            CASE_RES(4096, 2160)
-            CASE_RES(5120, 2880)
         }
         this->doomController->setScreenResolution(width, height);
     }
@@ -457,80 +424,54 @@ namespace vizdoom {
     }
 
     ScreenResolution DoomGame::StringToResolution(std::string str){
-        if(str == "res_40x30")      return RES_40X30;
-        if(str == "res_60x45")      return RES_60X45;
-        if(str == "res_80x50")      return RES_80X50;
-        if(str == "res_80x60")      return RES_80X60;
-        if(str == "res_100x75")     return RES_100X75;
-        if(str == "res_120x75")     return RES_120X75;
-        if(str == "res_120x90")     return RES_120X90;
-        if(str == "res_160x100")    return RES_160X100;
         if(str == "res_160x120")    return RES_160X120;
-        if(str == "res_200x120")    return RES_200X120;
+
+        if(str == "res_200x125")    return RES_200X125;
         if(str == "res_200x150")    return RES_200X150;
-        if(str == "res_240x135")    return RES_240X135;
-        if(str == "res_240x150")    return RES_240X150;
-        if(str == "res_240x180")    return RES_240X180;
+
         if(str == "res_256x144")    return RES_256X144;
         if(str == "res_256x160")    return RES_256X160;
         if(str == "res_256x192")    return RES_256X192;
+
+        if(str == "res_320x240")    return RES_320X180;
         if(str == "res_320x200")    return RES_320X200;
         if(str == "res_320x240")    return RES_320X240;
+        if(str == "res_320x240")    return RES_320X256;
+
         if(str == "res_400x225")    return RES_400X225;
+        if(str == "res_400x250")    return RES_400X250;
         if(str == "res_400x300")    return RES_400X300;
-        if(str == "res_480x270")    return RES_480X270;
-        if(str == "res_480x360")    return RES_480X360;
+
         if(str == "res_512x288")    return RES_512X288;
+        if(str == "res_512x320")    return RES_512X320;
         if(str == "res_512x384")    return RES_512X384;
+
         if(str == "res_640x360")    return RES_640X400;
         if(str == "res_640x400")    return RES_640X400;
         if(str == "res_640x480")    return RES_640X480;
-        if(str == "res_720x480")    return RES_720X480;
-        if(str == "res_720x540")    return RES_720X540;
+
         if(str == "res_800x450")    return RES_800X450;
-        if(str == "res_800x480")    return RES_800X480;
         if(str == "res_800x500")    return RES_800X500;
         if(str == "res_800x600")    return RES_800X600;
-        if(str == "res_848x480")    return RES_848X480;
-        if(str == "res_960x600")    return RES_960X600;
-        if(str == "res_960x720")    return RES_960X720;
+
         if(str == "res_1024x576")   return RES_1024X576;
-        if(str == "res_1024x600")   return RES_1024X600;
         if(str == "res_1024x640")   return RES_1024X640;
         if(str == "res_1024x768")   return RES_1024X768;
-        if(str == "res_1088x612")   return RES_1088X612;
-        if(str == "res_1152x648")   return RES_1152X648;
-        if(str == "res_1152x720")   return RES_1152X720;
-        if(str == "res_1152x864")   return RES_1152X864;
+
         if(str == "res_1280x720")   return RES_1280X720;
-        if(str == "res_1280x854")   return RES_1280X854;
         if(str == "res_1280x800")   return RES_1280X800;
         if(str == "res_1280x960")   return RES_1280X960;
         if(str == "res_1280x1024")  return RES_1280X1024;
-        if(str == "res_1360x768")   return RES_1360X768;
-        if(str == "res_1366x768")   return RES_1366X768;
+
         if(str == "res_1400x787")   return RES_1400X787;
         if(str == "res_1400x875")   return RES_1400X875;
         if(str == "res_1400x1050")  return RES_1400X1050;
-        if(str == "res_1440x900")   return RES_1440X900;
-        if(str == "res_1440x960")   return RES_1440X960;
-        if(str == "res_1440x1080")  return RES_1440X1080;
+
         if(str == "res_1600x900")   return RES_1600X900;
         if(str == "res_1600x1000")  return RES_1600X1000;
         if(str == "res_1600x1200")  return RES_1600X1200;
-        if(str == "res_1680x1050")  return RES_1680X1050;
+
         if(str == "res_1920x1080")  return RES_1920X1080;
-        if(str == "res_1920x1200")  return RES_1920X1200;
-        if(str == "res_2048x1536")  return RES_2048X1536;
-        if(str == "res_2560x1440")  return RES_2560X1440;
-        if(str == "res_2560x1600")  return RES_2560X1600;
-        if(str == "res_2560x2048")  return RES_2560X2048;
-        if(str == "res_2880x1800")  return RES_2880X1800;
-        if(str == "res_3200x1800")  return RES_3200X1800;
-        if(str == "res_3840x2160")  return RES_3840X2160;
-        if(str == "res_3840x2400")  return RES_3840X2400;
-        if(str == "res_4096x2160")  return RES_4096X2160;
-        if(str == "res_5120x2880")  return RES_5120X2880;
 
         throw std::exception();
     }
@@ -701,7 +642,7 @@ namespace vizdoom {
             std::getline(input, newline);
             trim_all(newline);
             if(!newline.empty() && newline[0]!='#')
-                value += " " + newline;
+                value += std::string(" ") + newline;
         }
         if(value.empty() || value[value.size()-1] != '}') return false;
         

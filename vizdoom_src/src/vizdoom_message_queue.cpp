@@ -4,12 +4,7 @@
 #include "vizdoom_main.h"
 #include "vizdoom_defines.h"
 
-#include "doomtype.h"
-#include "c_cvars.h"
-
 EXTERN_CVAR (Bool, vizdoom_async)
-
-#include <string.h>
 
 bip::message_queue *vizdoomMQController;
 bip::message_queue *vizdoomMQDoom;

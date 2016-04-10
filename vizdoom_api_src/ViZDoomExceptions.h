@@ -7,15 +7,6 @@
 
 namespace vizdoom{
 
-    /* Warnings TO DO:
-     * When config after init
-     * When run time stuff before init
-     * When skill level > 5 < 1
-     * When value in action > MaxValue
-     * When action shorter or longer
-     * Wrong path
-     */
-
     class Exception : public std::exception {
     public:
         virtual const char* what() const throw(){ return "Unknown exception."; }

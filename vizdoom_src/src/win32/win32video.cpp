@@ -466,6 +466,7 @@ void Win32Video::AddD3DModes (UINT adapter, D3DFORMAT format)
 //
 //==========================================================================
 
+//VIZDOOM_CODE
 void Win32Video::AddLowResModes()
 {
 	ModeInfo *mode, *nextmode;
@@ -488,9 +489,9 @@ void Win32Video::AddLowResModes()
 		nextmode = mode->next;
 		if (mode->realheight == mode->height &&
 			mode->doubling == 0 &&
-			mode->height >= 200*4 &&
+			mode->height >= 100*4 &&
 			mode->height <= 480*4 &&
-			mode->width >= 320*4 &&
+			mode->width >= 160*4 &&
 			mode->width <= 640*4)
 		{
 			AddMode (mode->width / 4, mode->height / 4, mode->bits, mode->height / 4, 2);
@@ -499,6 +500,7 @@ void Win32Video::AddLowResModes()
 }
 
 // Add 16:9 and 16:10 resolutions you can use in a window or letterboxed
+//VIZDOOM_CODE
 void Win32Video::AddLetterboxModes ()
 {
 	ModeInfo *mode, *nextmode;
@@ -508,11 +510,11 @@ void Win32Video::AddLetterboxModes ()
 		nextmode = mode->next;
 		if (mode->realheight == mode->height && mode->height * 4/3 == mode->width)
 		{
-			if (mode->width >= 360)
+			if (mode->width >= 160)
 			{
 				AddMode (mode->width, mode->width * 9/16, mode->bits, mode->height, mode->doubling);
 			}
-			if (mode->width > 640)
+			if (mode->width > 160)
 			{
 				AddMode (mode->width, mode->width * 10/16, mode->bits, mode->height, mode->doubling);
 			}
@@ -520,14 +522,15 @@ void Win32Video::AddLetterboxModes ()
 	}
 }
 
+//VIZDOOM_CODE
 void Win32Video::AddMode (int x, int y, int bits, int y2, int doubling)
 {
 	// Reject modes that do not meet certain criteria.
 	if ((x & 1) != 0 ||
 		y > MAXHEIGHT ||
 		x > MAXWIDTH ||
-		y < 200 ||
-		x < 320)
+		y < 100 ||
+		x < 160)
 	{
 		return;
 	}
@@ -574,6 +577,7 @@ void Win32Video::FreeModes ()
 // For every mode, set its scaling factor. Modes that end up with too
 // small a display area are discarded.
 
+//VIZDOOM_CODE
 void Win32Video::ScaleModes (int doubling)
 {
 	ModeInfo *mode, **prev;
@@ -588,7 +592,7 @@ void Win32Video::ScaleModes (int doubling)
 		mode->height >>= doubling;
 		mode->realheight >>= doubling;
 		mode->doubling = doubling;
-		if ((mode->width & 7) != 0 || mode->width < 320 || mode->height < 200)
+		if ((mode->width & 7) != 0 || mode->width < 160 || mode->height < 100)
 		{ // Mode became too small. Delete it.
 			*prev = mode->next;
 			delete mode;

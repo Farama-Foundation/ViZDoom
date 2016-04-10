@@ -8,7 +8,6 @@
 #include <iostream>
 #include <vector>
 #include <Python.h>
-
 #include <boost/python.hpp>
 #include <boost/python/list.hpp>
 #include <boost/python/object.hpp>

@@ -7,17 +7,8 @@
 #include "d_netinf.h"
 #include "d_event.h"
 #include "g_game.h"
-#include "g_level.h"
-#include "g_shared/a_pickups.h"
-#include "g_shared/a_keys.h"
-#include "c_console.h"
 #include "c_dispatch.h"
 #include "p_acs.h"
-
-
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 EXTERN_CVAR (Int, vizdoom_screen_format)
 
@@ -177,7 +168,6 @@ void ViZDoom_GameVarsTic(){
         vizdoomGameVars->PLAYER_AMMO[i] = ViZDoom_CheckSlotAmmo(i);
         vizdoomGameVars->PLAYER_WEAPON[i] = ViZDoom_CheckSlotWeapons(i);
     }
-
 }
 
 void ViZDoom_GameVarsClose(){

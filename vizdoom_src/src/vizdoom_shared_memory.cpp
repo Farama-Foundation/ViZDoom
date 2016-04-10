@@ -2,7 +2,6 @@
 #include "vizdoom_message_queue.h"
 #include "vizdoom_defines.h"
 
-#include "doomdef.h"
 #include "doomstat.h"
 #include "v_video.h"
 

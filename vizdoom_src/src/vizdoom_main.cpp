@@ -1,6 +1,5 @@
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/thread.hpp>
-#include <boost/thread/thread.hpp>
 
 #include "vizdoom_main.h"
 #include "vizdoom_defines.h"
@@ -12,14 +11,6 @@
 
 #include "d_main.h"
 #include "d_net.h"
-#include "g_game.h"
-#include "doomdef.h"
-#include "doomstat.h"
-#include "doomtype.h"
-#include "c_console.h"
-
-#include "d_player.h"
-#include "d_event.h"
 
 namespace b = boost;
 namespace bt = boost::this_thread;
@@ -32,6 +23,7 @@ CVAR (Bool, vizdoom_no_console, false, CVAR_NOSET)
 CVAR (Bool, vizdoom_window_hidden, false, CVAR_NOSET)
 CVAR (Bool, vizdoom_no_x_server, false, CVAR_NOSET)
 CVAR (Bool, vizdoom_allow_input, false, CVAR_NOSET)
+CVAR (Bool, vizdoom_nocheat, false, CVAR_NOSET)
 
 int vizdoom_time = 0;
 bool vizdoomNextTic = false;
