@@ -12,7 +12,6 @@
 #include <boost/thread.hpp>
 #include <boost/asio.hpp>
 
-
 namespace vizdoom{
 
     namespace b         = boost;

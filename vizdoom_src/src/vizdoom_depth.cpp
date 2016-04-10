@@ -1,7 +1,3 @@
-//
-// Created by gregory on 22.12.15.
-//
-
 #include "vizdoom_depth.h"
 #include "v_video.h"
 

@@ -1,7 +1,6 @@
 #include "ViZDoomController.h"
 #include "ViZDoomExceptions.h"
 
-#include <iostream>
 #include <cstdlib>
 #include <cstdio>
 
@@ -9,7 +8,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 #include "boost/process.hpp"
-
 
 namespace vizdoom {
 
@@ -797,7 +795,14 @@ namespace vizdoom {
         this->doomArgs.clear();
 
         //exe
-        if(!bfs::exists(this->exePath)) throw PathDoesNotExistException(this->exePath);
+        if(!bfs::exists(this->exePath)){
+#ifdef WIN32
+            if(!bfs::exists(this->exePath + ".exe")) throw PathDoesNotExistException(this->exePath);
+            this->exePath += ".exe";
+#else
+            throw PathDoesNotExistException(this->exePath);
+#endif
+        }
         this->doomArgs.push_back(this->exePath);
 
         //main wad
@@ -832,15 +837,26 @@ namespace vizdoom {
         this->doomArgs.push_back("-skill");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->skill));
 
-        //resolution
+        //resolution and aspect ratio
 
         this->doomArgs.push_back("-width");
-        //this->doomArgs.push_back("+vid_defwidth");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenWidth));
+        //this->doomArgs.push_back("+vid_defwidth");
+        //this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenWidth));
 
         this->doomArgs.push_back("-height");
-        //this->doomArgs.push_back("+vid_defheight");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenHeight));
+        //this->doomArgs.push_back("+vid_defheight");
+        //this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenHeight));
+
+        float ratio = this->screenWidth/this->screenHeight;
+
+        this->doomArgs.push_back("+vid_aspect");
+        if(ratio == 16.0/9.0) this->doomArgs.push_back("1");
+        else if(ratio == 16.0/10.0) this->doomArgs.push_back("2");
+        else if(ratio == 4.0/3.0) this->doomArgs.push_back("3");
+        else if(ratio == 5.0/4.0) this->doomArgs.push_back("4");
+        else this->doomArgs.push_back("0");
 
         //hud
         this->doomArgs.push_back("+screenblocks");
@@ -870,6 +886,10 @@ namespace vizdoom {
         this->doomArgs.push_back("+r_particles");
         if (this->decals) this->doomArgs.push_back("1");
         else this->doomArgs.push_back("0");
+
+        //window mode
+        this->doomArgs.push_back("+fullscreen");
+        this->doomArgs.push_back("0");
 
         //weapon auto switch
         //this->doomArgs.push_back("+neverswitchonpickup");

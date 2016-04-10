@@ -4,15 +4,10 @@
 #include "vizdoom_shared_memory.h"
 
 #include "d_main.h"
-#include "d_net.h"
 #include "g_game.h"
 #include "d_player.h"
-#include "d_event.h"
-#include "c_bind.h"
-#include "c_console.h"
 #include "c_dispatch.h"
 #include "r_utility.h"
-#include "doomtype.h"
 
 bip::mapped_region *vizdoomInputSMRegion = NULL;
 ViZDoomInputStruct *vizdoomInput = NULL;

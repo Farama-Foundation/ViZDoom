@@ -4,15 +4,9 @@
 #include "vizdoom_message_queue.h"
 #include "vizdoom_depth.h"
 
-#include "basictypes.h"
 #include "d_main.h"
-#include "d_net.h"
-#include "g_game.h"
-#include "doomdef.h"
 #include "doomstat.h"
-
 #include "v_video.h"
-#include "r_renderer.h"
 
 unsigned int vizdoomScreenHeight;
 unsigned int vizdoomScreenWidth;

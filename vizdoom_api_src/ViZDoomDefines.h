@@ -41,80 +41,54 @@ namespace vizdoom{
     };
 
     enum ScreenResolution {
-        RES_40X30,      // 4:3
-        RES_60X45,      // 4:3
-        RES_80X50,      // 16:10
-        RES_80X60,      // 4:3
-        RES_100X75,     // 4:3
-        RES_120X75,     // 16:10
-        RES_120X90,     // 4:3
-        RES_160X100,    // 16:10
         RES_160X120,    // 4:3
-        RES_200X120,
+
+        RES_200X125,    // 16:10
         RES_200X150,    // 4:3
-        RES_240X135,
-        RES_240X150,
-        RES_240X180,
-        RES_256X144,
-        RES_256X160,
-        RES_256X192,
-        RES_320X200,
+
+        RES_256X144,    // 16:9
+        RES_256X160,    // 16:10
+        RES_256X192,    // 4:3
+
+        RES_320X180,    // 16:9
+        RES_320X200,    // 16:10
         RES_320X240,    // 4:3
+        RES_320X256,    // 5:4
+
         RES_400X225,	// 16:9
+        RES_400X250,	// 16:10
         RES_400X300,    // 4:3
-        RES_480X270,	// 16:9
-        RES_480X360,    // 4:3
+
         RES_512X288,	// 16:9
-        RES_512X384,
+        RES_512X320,    // 16:10
+        RES_512X384,    // 4:3
+
         RES_640X360,	// 16:9
-        RES_640X400,
+        RES_640X400,    // 16:10
         RES_640X480,    // 4:3
-        RES_720X480,	// 16:10
-        RES_720X540,
+
         RES_800X450,	// 16:9
-        RES_800X480,
         RES_800X500,	// 16:10
         RES_800X600,    // 4:3
-        RES_848X480,	// 16:9
-        RES_960X600,	// 16:10
-        RES_960X720,
+
         RES_1024X576,	// 16:9
-        RES_1024X600,	// 17:10
         RES_1024X640,	// 16:10
         RES_1024X768,   // 4:3
-        RES_1088X612,	// 16:9
-        RES_1152X648,	// 16:9
-        RES_1152X720,	// 16:10
-        RES_1152X864,
+
         RES_1280X720,	// 16:9
-        RES_1280X854,
         RES_1280X800,	// 16:10
-        RES_1280X960,
+        RES_1280X960,   // 4:3
         RES_1280X1024,	// 5:4
-        RES_1360X768,	// 16:9
-        RES_1366X768,
+
         RES_1400X787,	// 16:9
         RES_1400X875,	// 16:10
-        RES_1400X1050,
-        RES_1440X900,
-        RES_1440X960,
-        RES_1440X1080,
+        RES_1400X1050,  // 4:3
+
         RES_1600X900,	// 16:9
         RES_1600X1000,	// 16:10
         RES_1600X1200,  // 4:3
-        RES_1680X1050,	// 16:10
+
         RES_1920X1080,  // 16:9
-        RES_1920X1200,
-        RES_2048X1536,
-        RES_2560X1440,
-        RES_2560X1600,
-        RES_2560X2048,
-        RES_2880X1800,
-        RES_3200X1800,
-        RES_3840X2160,
-        RES_3840X2400,
-        RES_4096X2160,
-        RES_5120X2880,
     };
 
     enum GameVariable {
@@ -187,6 +161,7 @@ namespace vizdoom{
     static const int SlotsNumber = 10;
 
     enum Button {
+        /* Binary buttons */
         ATTACK = 0,
         USE = 1,
         JUMP = 2,
@@ -210,7 +185,6 @@ namespace vizdoom{
         MOVE_UP = 18,
         MOVE_DOWN = 19,
         LAND = 20,
-        //SHOWSCORES 20
 
         SELECT_WEAPON1 = 21,
         SELECT_WEAPON2 = 22,
@@ -232,6 +206,7 @@ namespace vizdoom{
         SELECT_PREV_ITEM = 36,
         DROP_SELECTED_ITEM = 37,
 
+        /* Delta buttons */
         LOOK_UP_DOWN_DELTA = 38,
         TURN_LEFT_RIGHT_DELTA = 39,
         MOVE_FORWARD_BACKWARD_DELTA = 40,
