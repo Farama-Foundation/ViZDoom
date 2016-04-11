@@ -1,3 +1,25 @@
+/*
+ Copyright (C) 2016 by Wojciech Jaśkowski, Michał Kempka, Grzegorz Runc, Jakub Toczek, Marek Wydmuch
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+*/
+
 #include "ViZDoomController.h"
 #include "ViZDoomExceptions.h"
 
@@ -795,26 +817,26 @@ namespace vizdoom {
         this->doomArgs.clear();
 
         //exe
-        if(!bfs::exists(this->exePath)){
+        if(!bfs::exists(this->exePath) || bfs::is_directory(this->exePath)){
 #ifdef WIN32
-            if(!bfs::exists(this->exePath + ".exe")) throw PathDoesNotExistException(this->exePath);
+            if(!bfs::exists(this->exePath + ".exe")) throw FileDoesNotExistException(this->exePath);
             this->exePath += ".exe";
 #else
-            throw PathDoesNotExistException(this->exePath);
+            throw FileDoesNotExistException(this->exePath);
 #endif
         }
         this->doomArgs.push_back(this->exePath);
 
         //main wad
         if(this->iwadPath.length() != 0){
-            if(!bfs::exists(this->iwadPath)) throw PathDoesNotExistException(this->iwadPath);
+            if(!bfs::exists(this->iwadPath) || bfs::is_directory(this->exePath)) throw FileDoesNotExistException(this->iwadPath);
             this->doomArgs.push_back("-iwad");
             this->doomArgs.push_back(this->iwadPath);
         }
 
         //wads
         if (this->filePath.length() != 0) {
-            if(!bfs::exists(this->filePath)) throw PathDoesNotExistException(this->filePath);
+            if(!bfs::exists(this->filePath) || bfs::is_directory(this->exePath)) throw FileDoesNotExistException(this->filePath);
             
             this->doomArgs.push_back("-file");
             this->doomArgs.push_back(this->filePath);

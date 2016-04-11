@@ -1,4 +1,5 @@
 #ViZDoom
+[http://vizdoom.cs.put.edu.pl](http://vizdoom.cs.put.edu.pl)
 
 ViZDoom allows developing AI **bots that play Doom using only the visual information** (the screen buffer). It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.
 
@@ -45,7 +46,7 @@ Also, for Java binding JAVA_HOME environment variable must be set.
 
 ###Windows
 
-We are providing compiled runtime binaries and development libraries for Windows -> [here](https://github.com/Marqt/ViZDoom/releases/download/1.0.0-rc/ViZDoom-1.0.0-rc-Win-x86_64.zip)
+We are providing compiled runtime binaries and development libraries for Windows [here](https://github.com/Marqt/ViZDoom/releases/download/1.0.0-rc/ViZDoom-1.0.0-rc-Win-x86_64.zip)
 
 ####Dependencies
 * CMake 3.0+
@@ -74,8 +75,20 @@ Let us know if You are using ViZDoom on OSX.
 ---
 ##Examples
 
-Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed it in the ``scenarios`` subdirectory (it should be done automatically by the building process).
+Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed it in the ``scenarios`` subdirectory (on Linux it should be done automatically by the building process).
 
-* [Python](https://github.com/Marqt/ViZDoom/tree/master/examples/python).
+* [Python](https://github.com/Marqt/ViZDoom/tree/master/examples/python)
 * [C++](https://github.com/Marqt/ViZDoom/tree/master/examples/c%2B%2B)
 * [Java](https://github.com/Marqt/ViZDoom/tree/master/examples/java)
+
+See also the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial).
+
+---
+##License
+
+Code original to ViZDoom is under MIT license. ZDoom uses code from several sources which varied licensing schemes, more informations [here](http://zdoom.org/wiki/license).
+
+
+
+
+
