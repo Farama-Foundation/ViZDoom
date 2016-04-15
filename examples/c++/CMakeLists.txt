@@ -5,25 +5,24 @@ if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
+add_library(vizdoom SHARED IMPORTED GLOBAL)
+set_property(TARGET vizdoom PROPERTY IMPORTED_LOCATION ../../bin/libvizdoom.so)
 
 find_package(Boost COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
 find_package(Threads REQUIRED)
 
-add_library(vizdoom SHARED IMPORTED)
-set_property(TARGET vizdoom PROPERTY IMPORTED_LOCATION ../../bin/libvizdoom.so)
+set( VIZDOOM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}../../vizdoom_api_src )
+include_directories( ${VIZDOOM_INCLUDE_DIR} ${Boost_INCLUDE_DIR} )
 
-set( VIZDOOM_INCLUDE_DIR ../../vizdoom_api_src )
-include_directories( ${VIZDOOM_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
+set( VIZDOOM_EXAMPLES_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}../../bin/examples )
 
-set( VIZDOOM_LIBS vizdoom     
-    ${Boost_LIBRARIES}  
-    ${CMAKE_THREAD_LIBS_INIT} )
-    
-    	
+set( VIZDOOM_LIBS vizdoom
+    ${Boost_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT})
+
 if( UNIX )
+    set( VIZDOOM_LIBS ${VIZDOOM_LIBS} rt)
 
-    set( VIZDOOM_LIBS ${VIZDOOM_LIBS} rt )
-	
 endif()	
 	
 add_executable( basic Basic.cpp )
@@ -58,7 +57,7 @@ target_link_libraries (spectator ${VIZDOOM_LIBS})
 
 set_target_properties( basic cig cigbots cighost deltabuttons multiplayer multiplayerhost seed shaping spectator
     PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin/examples
-    LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin/examples
-    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin/examples
+    RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_EXAMPLES_OUTPUT_DIR}
+	RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_EXAMPLES_OUTPUT_DIR}
+	RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_EXAMPLES_OUTPUT_DIR}
 )
