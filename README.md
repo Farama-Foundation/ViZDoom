@@ -48,8 +48,6 @@ Also, for Java binding JAVA_HOME environment variable must be set.
 
 We are providing compiled runtime binaries and development libraries for Windows [here](https://github.com/Marqt/ViZDoom/releases/download/1.0.0-rc/ViZDoom-1.0.0-rc-Win-x86_64.zip)
 
-See 
-
 ####Dependencies
 * CMake 3.0+
 * Visual Studio 2012+
@@ -83,6 +81,7 @@ Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should cont
 * ``bin/libvizdoom.so (vizdoom.dll)`` -  C++ ViZDoom dynamically linked library
 * ``bin/python/vizdoom.so (vizdoom.pyd)`` - ViZDoom Python module
 * ``bin/java/libvizdoom.so (vizdoom.dll)`` -  ViZDoom library for Java
+* ``bin/java/vizdoom.jar`` -  Contains ViZDoom Java classes
 
 ---
 ##Examples
