@@ -41,7 +41,7 @@ game.set_doom_game_path("../../scenarios/freedoom2.wad")
 # If not specified default doom2 maps will be used and it's pretty much useles... unless you want to play doom.
 game.set_doom_scenario_path("../../scenarios/basic.wad")
 
-# Set map to start (scenario .wad files can contain many maps).
+# Sets map to start (scenario .wad files can contain many maps).
 game.set_doom_map("map01")
 
 # Sets resolution. Default is 320X240
@@ -73,6 +73,10 @@ game.set_episode_start_time(10)
 
 # Makes the window appear (turned on by default)
 game.set_window_visible(True)
+
+
+# Sets the livin reward (for each move) to -1
+game.set_living_reward(-1)
 
 # Initialize the game. Further configuration won't take any effect from now on.
 game.init()
