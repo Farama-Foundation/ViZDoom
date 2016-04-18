@@ -17,7 +17,7 @@ public class Basic {
 	    DoomGame game = new DoomGame();
 
 	    // Sets path to vizdoom engine executive which will be spawned as a separate process. Default is "./vizdoom".
-	    game.setViZDoomPath("../../bin/vizdood");
+	    game.setViZDoomPath("../../bin/vizdoom");
 
 	    // Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".
 	    game.setDoomGamePath("../../scenarios/freedoom2.wad");

@@ -21,7 +21,7 @@ public class Spectator {
 	
 		DoomGame game= new DoomGame();
 		// Choose scenario config file you wish to watch.
-		// Don't load two configs cause the second will overrite the first one.
+		// Don't load two configs cause the second will overwrite the first one.
 		// Multiple config files are ok but combining these ones doesn't make much sense.
 
 		//game.loadConfig("../../examples/config/basic.cfg");
