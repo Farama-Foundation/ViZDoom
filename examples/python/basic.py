@@ -30,7 +30,7 @@ game = DoomGame()
 # If load_config is used in-code configuration will work. Note that the most recent changes will add to previous ones.
 #game.load_config("../../examples/config/basic.cfg")
 
-# Sets path to vizdoom engine executive which will be spawned as a separate process. Default is just the same.
+# Sets path to vizdoom engine executive which will be spawned as a separate process. Default is "./vizdoom".
 game.set_vizdoom_path("../../bin/vizdoom")
 
 # Sets path to doom2 iwad resource file which contains the actual doom game. Default is "./doom2.wad".
@@ -95,7 +95,7 @@ sleep_time = 0.028
 for i in range(episodes):
 	print("Episode #" + str(i+1))
 
-	# Starts a new episode. It is not neaded right after init() but it doesn't cost much. At least the loop is nicer.
+	# Starts a new episode. It is not needed right after init() but it doesn't cost much. At least the loop is nicer.
 	game.new_episode()
 
 	while not game.is_episode_finished():

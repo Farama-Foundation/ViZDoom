@@ -86,6 +86,13 @@
 
 #include "g_hub.h"
 
+//VIZDOOM_CODE
+#include "vizdoom_input.h"
+#include "vizdoom_defines.h"
+
+EXTERN_CVAR (Bool, vizdoom_controlled)
+EXTERN_CVAR (Bool, vizdoom_async)
+EXTERN_CVAR (Bool, vizdoom_allow_input)
 
 static FRandom pr_dmspawn ("DMSpawn");
 static FRandom pr_pspawn ("PlayerSpawn");
@@ -529,6 +536,8 @@ static inline int joyint(double val)
 // or reads it from the demo buffer.
 // If recording a demo, write it out
 //
+
+//VIZDOOM_CODE
 void G_BuildTiccmd (ticcmd_t *cmd)
 {
 	int 		strafe;
@@ -547,7 +556,12 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	strafe = Button_Strafe.bDown;
 	speed = Button_Speed.bDown ^ (int)cl_run;
 
-	forward = side = fly = 0;
+	//VIZDOOM_CODE
+	forward = LocalForward;
+	side = LocalSide;
+	fly = LocalFly;
+
+	LocalForward = LocalSide = LocalFly = 0;
 
 	// [RH] only use two stage accelerative turning on the keyboard
 	//		and not the joystick, since we treat the joystick as
@@ -681,23 +695,36 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	fly += joyint(joyaxes[JOYAXIS_Up] * 2048);
 
 	// Handle mice.
-	if (!Button_Mlook.bDown && !freelook)
-	{
-		forward += (int)((float)mousey * m_forward);
+	if (!Button_Mlook.bDown && !freelook) {
+		int value = (int) ((float) mousey * m_forward);
+		if(!*vizdoom_controlled) forward += value;
+		else{
+			if(*vizdoom_allow_input){
+				value = ViZDoom_AxisFilter(VIZDOOM_BT_FORWARD_BACKWARD, value);
+				forward += value;
+			}
+		}
 	}
+
+	if (strafe || lookstrafe) {
+		int value = (int) ((float) mousex * m_side);
+		if(!*vizdoom_controlled) side += value;
+		else{
+			if(*vizdoom_allow_input){
+				value = ViZDoom_AxisFilter(VIZDOOM_BT_LEFT_RIGHT, value);
+				side += value;
+			}
+		}
+	}
+
+	mousex = mousey = 0;
 
 	cmd->ucmd.pitch = LocalViewPitch >> 16;
 
-	if (SendLand)
-	{
+	if (SendLand) {
 		SendLand = false;
 		fly = -32768;
 	}
-
-	if (strafe || lookstrafe)
-		side += (int)((float)mousex * m_side);
-
-	mousex = mousey = 0;
 
 	// Build command.
 	if (forward > MAXPLMOVE)
@@ -737,19 +764,66 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	}
 	if (SendItemUse == (const AInventory *)1)
 	{
-		Net_WriteByte (DEM_INVUSEALL);
+		//VIZDOOM_CODE
+		if(*vizdoom_controlled && !*vizdoom_async){
+			{
+				AInventory *item = players[consoleplayer].mo->Inventory;
+
+				while (item != NULL)
+				{
+					AInventory *next = item->Inventory;
+					if (item->ItemFlags & IF_INVBAR && !(item->IsKindOf(RUNTIME_CLASS(APuzzleItem))))
+					{
+						players[consoleplayer].mo->UseInventory (item);
+					}
+					item = next;
+				}
+			}
+		}
+		else {
+			Net_WriteByte (DEM_INVUSEALL);
+		}
+//		Net_WriteByte (DEM_INVUSEALL);
 		SendItemUse = NULL;
 	}
 	else if (SendItemUse != NULL)
 	{
-		Net_WriteByte (DEM_INVUSE);
-		Net_WriteLong (SendItemUse->InventoryID);
+		//VIZDOOM_CODE
+		if(*vizdoom_controlled && !*vizdoom_async){
+			if (gamestate == GS_LEVEL && !paused && players[consoleplayer].playerstate != PST_DEAD) {
+				AInventory *item = players[consoleplayer].mo->Inventory;
+				while (item != NULL && item->InventoryID != SendItemUse->InventoryID) {
+					item = item->Inventory;
+				}
+				if (item != NULL) players[consoleplayer].mo->UseInventory (item);
+			}
+		}
+		else {
+			Net_WriteByte(DEM_INVUSE);
+			Net_WriteLong(SendItemUse->InventoryID);
+		}
+//		Net_WriteByte(DEM_INVUSE);
+//		Net_WriteLong(SendItemUse->InventoryID);
 		SendItemUse = NULL;
 	}
 	if (SendItemDrop != NULL)
 	{
-		Net_WriteByte (DEM_INVDROP);
-		Net_WriteLong (SendItemDrop->InventoryID);
+		//VIZDOOM_CODE
+		if(*vizdoom_controlled && !*vizdoom_async){
+			if (gamestate == GS_LEVEL && !paused && players[consoleplayer].playerstate != PST_DEAD) {
+				AInventory *item = players[consoleplayer].mo->Inventory;
+				while (item != NULL && item->InventoryID != SendItemUse->InventoryID){
+					item = item->Inventory;
+				}
+				if (item != NULL) players[consoleplayer].mo->DropInventory (item);
+			}
+		}
+		else {
+			Net_WriteByte (DEM_INVDROP);
+			Net_WriteLong (SendItemDrop->InventoryID);
+		}
+//		Net_WriteByte (DEM_INVDROP);
+//		Net_WriteLong (SendItemDrop->InventoryID);
 		SendItemDrop = NULL;
 	}
 
@@ -760,12 +834,14 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 //[Graf Zahl] This really helps if the mouse update rate can't be increased!
 CVAR (Bool,		smooth_mouse,	false,	CVAR_GLOBALCONFIG|CVAR_ARCHIVE)
 
+//VIZDOOM_CODE
 void G_AddViewPitch (int look)
 {
 	if (gamestate == GS_TITLELEVEL)
 	{
 		return;
 	}
+
 	look <<= 16;
 	if (players[consoleplayer].playerstate != PST_DEAD &&		// No adjustment while dead.
 		players[consoleplayer].ReadyWeapon != NULL &&			// No adjustment if no weapon.
@@ -813,14 +889,18 @@ void G_AddViewAngle (int yaw)
 	{
 		return;
 	}
+
 	yaw <<= 16;
+
 	if (players[consoleplayer].playerstate != PST_DEAD &&	// No adjustment while dead.
 		players[consoleplayer].ReadyWeapon != NULL &&		// No adjustment if no weapon.
 		players[consoleplayer].ReadyWeapon->FOVScale > 0)	// No adjustment if it is non-positive.
 	{
 		yaw = int(yaw * players[consoleplayer].ReadyWeapon->FOVScale);
 	}
+
 	LocalViewAngle -= yaw;
+
 	if (yaw != 0)
 	{
 		LocalKeyboardTurner = smooth_mouse;
@@ -951,6 +1031,8 @@ bool G_Responder (event_t *ev)
 				return C_DoKey (ev, &Bindings, &DoubleBindings);
 			}
 		}
+
+		//VIZDOOM_CODE
 		if (cmd && cmd[0] == '+')
 			return C_DoKey (ev, &Bindings, &DoubleBindings);
 

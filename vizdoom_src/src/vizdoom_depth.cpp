@@ -34,6 +34,7 @@ ViZDoomDepthBuffer::ViZDoomDepthBuffer(unsigned int width, unsigned int height) 
     for(unsigned int i=0;i<bufferSize;i++) {
         buffer[i] = 0;
     }
+    this->setDepthBoundries(120000000, 358000);
 #ifdef VIZDOOM_DEPTH_TEST
     for(int j = 0; j < 256; j++)
     {

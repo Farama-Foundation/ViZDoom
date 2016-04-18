@@ -26,8 +26,8 @@ public class DeltaButtons {
 	    game.setScreenResolution(ScreenResolution.RES_640X480);
 
 	    // Adds delta buttons that will be allowed and set the maximum allowed value (optional).
-	    game.addAvailableButton(Button.MOVE_FORWARD_BACKWARD_DELTA, 50);
-	    game.addAvailableButton(Button.MOVE_LEFT_RIGHT_DELTA, 20);
+	    game.addAvailableButton(Button.MOVE_FORWARD_BACKWARD_DELTA, 5);
+	    game.addAvailableButton(Button.MOVE_LEFT_RIGHT_DELTA, 2);
 	    game.addAvailableButton(Button.TURN_LEFT_RIGHT_DELTA);
 	    game.addAvailableButton(Button.LOOK_UP_DOWN_DELTA);
 
@@ -40,8 +40,8 @@ public class DeltaButtons {
 	    // For MOVE_FORWARD_BACKWARD_DELTA, MOVE_LEFT_RIGHT_DELTA, MOVE_UP_DOWN_DELTA (rarely used)
 	    // value is the speed of movement in a given direction (100 is close to the maximum speed).
 	    List<int[]> actions = new ArrayList<int[]>();
-	    actions.add(new int[] {100, 10, 10, 10});
-	    actions.add(new int[] {20, -30, -20, -15});
+	    actions.add(new int[] {10, 1, 1, 1});
+	    actions.add(new int[] {2, -3, -2, -1});
 
 
 	    // If button's absolute value > max button's value then value = max value with original value sign.

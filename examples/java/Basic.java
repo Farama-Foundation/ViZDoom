@@ -15,8 +15,9 @@ public class Basic {
 
 	    // Create DoomGame instance. It will run the game and communicate with you.
 	    DoomGame game = new DoomGame();
-	
-	    game.setViZDoomPath("../../bin/vizdoom");
+
+	    // Sets path to vizdoom engine executive which will be spawned as a separate process. Default is "./vizdoom".
+	    game.setViZDoomPath("../../bin/vizdood");
 
 	    // Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".
 	    game.setDoomGamePath("../../scenarios/freedoom2.wad");
@@ -31,7 +32,7 @@ public class Basic {
 	    game.setDoomMap("map01");
 
 	    // Sets resolution. Default is 320X240
-	    game.setScreenResolution(ScreenResolution.RES_320X240);
+	    game.setScreenResolution(ScreenResolution.RES_640X480);
 
 	    // Sets the screen buffer format. Not used here but now you can change it. Defalut is CRCGCB.
 	    game.setScreenFormat(ScreenFormat.RGB24);

@@ -44,8 +44,7 @@ namespace vizdoom {
             int x = this->getScreenWidth();
             int y = this->getScreenHeight();
             
-            switch(this->getScreenFormat())
-            {
+            switch(this->getScreenFormat()) {
                 case CRCGCB:
                 case CRCGCBDB:
                 case CBCGCR:
@@ -62,8 +61,6 @@ namespace vizdoom {
                     this->imageShape[1] = x;
                     this->imageShape[2] = channels;
             }
-                
-
         }
         return initSuccess;
     }
@@ -112,7 +109,6 @@ namespace vizdoom {
             return GameStatePython(state.number, numpyImage.copy());
         }
 
-
     }
 
     boost::python::list DoomGamePython::getLastAction() {
@@ -125,7 +121,6 @@ namespace vizdoom {
     }
 
     object DoomGamePython::getGameScreen(){
-        //TODO check if it works
         PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, this->doomController->getScreen());
         boost::python::handle<> numpyImageHandle = boost::python::handle<>(img);
         boost::python::numeric::array numpyImage = array(numpyImageHandle);

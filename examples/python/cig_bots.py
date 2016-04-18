@@ -25,7 +25,7 @@ game.add_game_args("-host 1 -deathmatch +timelimit 10.0 "
 # Name Your AI.
 game.add_game_args("+name AI");
 
-# Multiplayer requires the use of asynchronous modes but
+# Multiplayer requires the use of asynchronous modes, but when playing only with bots, synchronous modes can also be used.
 game.set_mode(Mode.PLAYER)
 
 # game.set_window_visible(false)
