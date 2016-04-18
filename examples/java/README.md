@@ -1,12 +1,15 @@
 Use CMake to generate Makefile or project or build it using:
 ```bash
 javac -classpath "../../bin/java/vizdoom.jar" Example.java
-jar cf ../../bin/examples/example.jar Example.java
+jar cf ../../bin/examples/example.jar Example.class
 ```
 
 Examples will be build in ``vizdoom_root_dir/bin/examples``.
 To run example use:
-``java -Djava.library.path="../java" -classpath "../java/vizdoom.jar:example.jar" Example``
+```bash
+java -Djava.library.path="../java" -classpath "../java/vizdoom.jar;example.jar" Example
+```
+
 
 To run the examples, [freedoom2.wad]( https://freedoom.github.io/download.html) should be placed in the  ``scenarios`` subdirectory.
 

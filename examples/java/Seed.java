@@ -17,8 +17,8 @@ public class Seed {
 		DoomGame game= new DoomGame();
 		
 		// Choose scenario config file you wish to be watched by agent.
-    		// Don't load two configs cause the second will overwrite the first one.
-    		// Multiple config files are ok but combining these ones doesn't make much sense.
+    	// Don't load two configs cause the second will overwrite the first one.
+    	// Multiple config files are ok but combining these ones doesn't make much sense.
 
 		//game.loadConfig("../../examples/config/deadly_corridor.cfg")
 		//game.loadConfig("../../examples/config/defend_the_center.cfg")
