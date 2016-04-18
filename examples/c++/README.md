@@ -16,7 +16,7 @@ Demonstrates how to configure and play multiplayer game for CIG 2016 competition
 Demonstrates how to play with bots to simulate multiplayer game. Helpful for developing AI agent for CIG 2016 competition.
 
 ###[DeltaButtons.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/c++/DeltaButtons.cpp)
-Shows how delta buttons (they may take values other than 0 and 1 and used for precise movement) works.
+Shows how delta buttons (they may take values other than 0 and 1 and be used for precise movement) works.
 
 ###[Multiplayer.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/c++/Multiplayer.cpp), [MultiplayerHost.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/c++/MultiplayerHost.cpp)
 Demonstrates how to configure and play multiplayer game.

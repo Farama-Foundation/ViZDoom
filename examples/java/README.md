@@ -23,7 +23,7 @@ Demonstrates how to configure and play multiplayer game for CIG 2016 competition
 Demonstrates how to play with bots to simulate multiplayer game. Helpful for developing AI agent for CIG 2016 competition.
 
 ###[DeltaButtons.java](https://github.com/Marqt/ViZDoom/blob/master/examples/java/DeltaButtons.java)
-Shows how delta buttons (they may take values other than 0 and 1 and used for precise movement) works.
+Shows how delta buttons (they may take values other than 0 and 1 and be used for precise movement) works.
 
 ###[Multiplayer.java](https://github.com/Marqt/ViZDoom/blob/master/examples/java/Multiplayer.java), [MultiplayerHost.java](https://github.com/Marqt/ViZDoom/blob/master/examples/java/MultiplayerHost.java)
 Demonstrates how to configure and play multiplayer game.

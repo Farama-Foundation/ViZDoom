@@ -39,6 +39,7 @@ int posMulti, rPos, gPos, bPos, aPos;
 bool alpha;
 
 EXTERN_CVAR (Int, vizdoom_screen_format)
+EXTERN_CVAR (Bool, vizdoom_nocheat)
 
 bip::mapped_region *vizdoomScreenSMRegion = NULL;
 BYTE *vizdoomScreen = NULL;
@@ -165,11 +166,10 @@ void ViZDoom_ScreenInit() {
         exit(1);
     }
 
-    if(*vizdoom_screen_format==VIZDOOM_SCREEN_CBCGCRDB
+    if((*vizdoom_screen_format==VIZDOOM_SCREEN_CBCGCRDB
        ||*vizdoom_screen_format==VIZDOOM_SCREEN_CRCGCBDB
-       ||*vizdoom_screen_format==VIZDOOM_SCREEN_DEPTH_BUFFER8) {
+       ||*vizdoom_screen_format==VIZDOOM_SCREEN_DEPTH_BUFFER8) && !*vizdoom_nocheat) {
         depthMap = new ViZDoomDepthBuffer(vizdoomScreenWidth, vizdoomScreenHeight);
-        depthMap->setDepthBoundries(120000000, 358000);//SHOULDN'T BE HERE!
     }
 }
 
@@ -196,7 +196,7 @@ void ViZDoom_ScreenUpdate(){
                     vizdoomScreen[i] = 0.21 * palette[buffer[i]].r + 0.72 * palette[buffer[i]].g + 0.07 *palette[buffer[i]].b;
                 }
             }
-            else if(*vizdoom_screen_format == VIZDOOM_SCREEN_DEPTH_BUFFER8){
+            else if(*vizdoom_screen_format == VIZDOOM_SCREEN_DEPTH_BUFFER8 && !*vizdoom_nocheat){
                 memcpy(vizdoomScreen, depthMap->getBuffer(), depthMap->getBufferSize());
             }
             else {
@@ -209,7 +209,7 @@ void ViZDoom_ScreenUpdate(){
                     //if(alpha) vizdoomScreen[pos + aPos] = palette[buffer[i]].a;
                 }
 
-                if(*vizdoom_screen_format == VIZDOOM_SCREEN_CRCGCBDB || *vizdoom_screen_format == VIZDOOM_SCREEN_CBCGCRDB){
+                if((*vizdoom_screen_format == VIZDOOM_SCREEN_CRCGCBDB || *vizdoom_screen_format == VIZDOOM_SCREEN_CBCGCRDB) && !*vizdoom_nocheat){
                     memcpy(vizdoomScreen+3*bufferSize, depthMap->getBuffer(), depthMap->getBufferSize());
                 }
             }

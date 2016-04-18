@@ -23,8 +23,8 @@ int main(){
     game->setScreenResolution(RES_640X480);
 
     // Adds delta buttons that will be allowed and set the maximum allowed value (optional).
-    game->addAvailableButton(MOVE_FORWARD_BACKWARD_DELTA, 50);
-    game->addAvailableButton(MOVE_LEFT_RIGHT_DELTA, 20);
+    game->addAvailableButton(MOVE_FORWARD_BACKWARD_DELTA, 5);
+    game->addAvailableButton(MOVE_LEFT_RIGHT_DELTA, 2);
     game->addAvailableButton(TURN_LEFT_RIGHT_DELTA);
     game->addAvailableButton(LOOK_UP_DOWN_DELTA);
 
@@ -37,10 +37,10 @@ int main(){
     // For MOVE_FORWARD_BACKWARD_DELTA, MOVE_LEFT_RIGHT_DELTA, MOVE_UP_DOWN_DELTA (rarely used)
     // value is the speed of movement in a given direction (100 is close to the maximum speed).
     std::vector<int> actions[2];
-    int action0[] = {100, 10, 10, 10};
+    int action0[] = {10, 1, 1, 1};
     actions[0] = std::vector<int>(action0, action0 + sizeof(action0) / sizeof(int));
 
-    int action1[] = {20, -30, -20, -15};
+    int action1[] = {2, -3, -2, 0};
     actions[1] = std::vector<int>(action1, action1 + sizeof(action1) / sizeof(int));
 
     // If button's absolute value > max button's value then value = max value with original value sign.
@@ -66,13 +66,15 @@ int main(){
         std::cout << "Episode #" << i + 1 << "\n";
         game->newEpisode();
 
+        game->getEpisodeTime();
+
         while (!game->isEpisodeFinished()) {
 
             // Get the state
             GameState s = game->getState();
 
             // Make random action and get reward
-            game->makeAction(actions[std::rand() % 3]);
+            game->makeAction(actions[std::rand() % 2]);
 
         }
     }
