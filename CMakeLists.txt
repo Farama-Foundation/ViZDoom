@@ -65,8 +65,10 @@ set(VIZDOOM_LIBS
     ${Boost_LIBRARIES}  
     ${CMAKE_THREAD_LIBS_INIT} )
 	
-if( UNIX )
+if( UNIX)
+  if (NOT (${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
     set(VIZDOOM_LIBS ${VIZDOOM_LIBS} rt)
+   endif()
 endif()	
     
 set(VIZDOOM_API_SOURCES
