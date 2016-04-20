@@ -13,7 +13,7 @@ Demonstrates how to configure and play multiplayer game for CIG 2016 competition
 ###[cig_bots.py](https://github.com/Marqt/ViZDoom/blob/master/examples/python/cig_bots.py)
 Demonstrates how to play with bots to simulate multiplayer game. Helpful for developing AI agent for CIG 2016 competition.
 
-###[delta_buttons.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/python/delta_buttons.cpp)
+###[delta_buttons.py](https://github.com/Marqt/ViZDoom/blob/master/examples/python/delta_buttons.py)
 Shows how delta buttons (they may take values other than 0 and 1 and be used for precise movement) works.
 
 ###[format.py](https://github.com/Marqt/ViZDoom/blob/master/examples/python/format.py)
