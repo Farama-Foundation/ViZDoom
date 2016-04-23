@@ -72,6 +72,15 @@ Use generated Visual Studio solution to build all ViZDoom's parts.
 Untested, code should be compatible, CMake may need minor adjustments.
 Let us know if You are using ViZDoom on OSX.
 
+####Compiling
+Users with brew-installed python may need to manually set the python library path for cmake:
+
+-DPYTHON_LIBRARY=/usr/local/Cellar/python/2.x.x/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib
+
+####Configuration
+The configuration variable `vizdoom_path` should be changed from
+`../../bin/vizdoom` to `../../bin/vizdoom.app/Contents/MacOS/vizdoom`
+
 ###Compilation output
 Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should contain following files (Windows names are in brackets):
 
@@ -98,8 +107,3 @@ See also the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial).
 ##License
 
 Code original to ViZDoom is under MIT license. ZDoom uses code from several sources which varied licensing schemes, more informations [here](http://zdoom.org/wiki/license).
-
-
-
-
-
