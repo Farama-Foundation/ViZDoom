@@ -1,6 +1,7 @@
+import vizdoom.*;
+import vizdoom.enums.*;
+import vizdoom.errors.*;
 
-import enums.*;
-import errors.*;
 import java.util.*;
 import java.lang.Integer;
 import java.lang.Boolean;

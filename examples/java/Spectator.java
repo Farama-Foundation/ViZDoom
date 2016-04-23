@@ -1,15 +1,7 @@
-/*
-#####################################################################
-# This java file presents SPECTATOR mode. In SPECTATOR mode you play and
-# your agent can learn from it.
-# configuration is loaded from "../../examples/config/<SCENARIO_NAME>.cfg" file.
-# 
-# To see the scenario description go to "../../scenarios/README"
-# 
-#####################################################################
-*/
-import enums.*;
-import errors.*;
+import vizdoom.*;
+import vizdoom.enums.*;
+import vizdoom.errors.*;
+
 import java.util.*;
 import java.lang.Integer;
 import java.lang.Boolean;

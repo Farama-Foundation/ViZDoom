@@ -1,4 +1,4 @@
-package enums;
+package vizdoom.enums;
 public enum ScreenResolution {
         RES_160X120,    // 4:3
 
