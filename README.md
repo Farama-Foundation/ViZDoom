@@ -78,8 +78,8 @@ Users with brew-installed python may need to manually set the python library pat
 -DPYTHON_LIBRARY=/usr/local/Cellar/python/2.x.x/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib
 
 ####Configuration
-The configuration variable `vizdoom_path` should be changed from
-`../../bin/vizdoom` to `../../bin/vizdoom.app/Contents/MacOS/vizdoom`
+Manually link the app executable:
+`rm bin/vizdoom && ln -s vizdoom.app/Contents/MacOS/vizdoom bin/vizdoom`
 
 ###Compilation output
 Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should contain following files (Windows names are in brackets):
