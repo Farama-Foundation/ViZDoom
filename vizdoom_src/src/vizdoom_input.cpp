@@ -63,6 +63,28 @@ bool ViZDoom_CommmandFilter(const char *cmd){
     if(action) beg = cmd+1;
     else beg = cmd;
 
+    if (strcmp(beg, "togglemap") == 0 ||
+        strcmp(beg, "toggleconsole") == 0 ||
+        strcmp(beg, "showscores") == 0 ||
+        strcmp(beg, "menu_main") == 0 ||
+        strcmp(beg, "menu_help") == 0 ||
+        strcmp(beg, "menu_save") == 0 ||
+        strcmp(beg, "menu_load") == 0 ||
+        strcmp(beg, "menu_options") == 0 ||
+        strcmp(beg, "menu_display") == 0 ||
+        strcmp(beg, "quicksave") == 0 ||
+        strcmp(beg, "menu_endgame") == 0 ||
+        strcmp(beg, "togglemessages") == 0 ||
+        strcmp(beg, "quickload") == 0 ||
+        strcmp(beg, "menu_quit") == 0 ||
+        strcmp(beg, "bumpgamma") == 0 ||
+        strcmp(beg, "spynext") == 0 ||
+        strcmp(beg, "screenshot") == 0 ||
+        strcmp(beg, "pause") == 0 ||
+        strcmp(beg, "centerview") == 0){
+        return false;
+    }
+
     for(int i = 0; i<VIZDOOM_BT_CMD_BT_SIZE; ++i){
 
 		char * ckeckCmd = ViZDoom_BTToCommand(i);
