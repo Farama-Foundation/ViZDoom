@@ -7,7 +7,7 @@ jar cf ../../bin/examples/example.jar Example.class
 Examples will be build in ``vizdoom_root_dir/bin/examples``.
 To run example use:
 ```bash
-java -Djava.library.path="../java" -classpath "../java/vizdoom.jar;example.jar" Example
+java -Djava.library.path="../java" -classpath "../java/vizdoom.jar:example.jar" Example
 ```
 
 
@@ -26,7 +26,7 @@ Demonstrates how to configure and play multiplayer game for CIG 2016 competition
 Demonstrates how to play with bots to simulate multiplayer game. Helpful for developing AI agent for CIG 2016 competition.
 
 ###[DeltaButtons.java](https://github.com/Marqt/ViZDoom/blob/master/examples/java/DeltaButtons.java)
-Shows how delta buttons work(they may take values other than 0 and 1 and can be used for precise movement).
+Shows how delta buttons work (they may take values other than 0 and 1 and can be used for precise movement).
 
 ###[Multiplayer.java](https://github.com/Marqt/ViZDoom/blob/master/examples/java/Multiplayer.java), [MultiplayerHost.java](https://github.com/Marqt/ViZDoom/blob/master/examples/java/MultiplayerHost.java)
 Demonstrates how to configure and play multiplayer game.

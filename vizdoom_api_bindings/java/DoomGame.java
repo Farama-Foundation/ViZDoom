@@ -1,7 +1,9 @@
+package vizdoom;
+
 import java.util.ArrayList;
 import java.util.List;
-import errors.*;
-import enums.*;
+import vizdoom.errors.*;
+import vizdoom.enums.*;
 
 public class DoomGame{
 	static {
@@ -74,8 +76,6 @@ public class DoomGame{
 	}
 	
 	public native void setMode(Mode mode);
-
-	//OPTIONS
 
 	public native int getGameVariable(GameVariable var);
 
