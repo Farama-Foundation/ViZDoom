@@ -216,8 +216,6 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isPlayerDead
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_respawnPlayer
   (JNIEnv *, jobject);
 
-
-
 /*
  * Class:     DoomGame
  * Method:    addAvailableButton

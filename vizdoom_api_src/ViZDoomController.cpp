@@ -853,7 +853,8 @@ namespace vizdoom {
 
         //map
         this->doomArgs.push_back("+map");
-        this->doomArgs.push_back(this->map);
+        if(this->map.length() > 0) this->doomArgs.push_back(this->map);
+        else this->doomArgs.push_back("map01");
 
         //skill
         this->doomArgs.push_back("-skill");
