@@ -6,7 +6,15 @@ if(COMMAND cmake_policy)
 endif(COMMAND cmake_policy)
 
 add_library(vizdoom SHARED IMPORTED GLOBAL)
-set_property(TARGET vizdoom PROPERTY IMPORTED_LOCATION ../../bin/libvizdoom.so)
+if (WIN32)
+    set_property(TARGET vizdoom PROPERTY IMPORTED_LOCATION ../../bin/libvizdoom.dll)
+endif()
+if (UNIX AND NOT APPLE)
+    set_property(TARGET vizdoom PROPERTY IMPORTED_LOCATION ../../bin/libvizdoom.so)
+endif()
+if (APPLE)
+    set_property(TARGET vizdoom PROPERTY IMPORTED_LOCATION ../../bin/libvizdoom.dylib)
+endif()
 
 find_package(Boost COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
 find_package(Threads REQUIRED)
@@ -14,15 +22,14 @@ find_package(Threads REQUIRED)
 set( VIZDOOM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../vizdoom_api_src )
 include_directories( ${VIZDOOM_INCLUDE_DIR} ${Boost_INCLUDE_DIR} )
 
-set( VIZDOOM_EXAMPLES_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../bin/examples )
+set( VIZDOOM_EXAMPLES_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin )
 
 set( VIZDOOM_LIBS vizdoom
     ${Boost_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT})
 
-if( UNIX )
+if( UNIX AND NOT APPLE)
     set( VIZDOOM_LIBS ${VIZDOOM_LIBS} rt)
-
 endif()	
 	
 add_executable( basic Basic.cpp )
