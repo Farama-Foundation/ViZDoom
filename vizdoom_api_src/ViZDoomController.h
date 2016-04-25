@@ -195,6 +195,7 @@ namespace vizdoom{
         unsigned int getMapLastTic();
 
         void setNoConsole(bool console);
+        void setNoSound(bool noSound);
 
         void addCustomArg(std::string arg);
         void clearCustomArgs();
@@ -352,6 +353,7 @@ namespace vizdoom{
         bool windowHidden, noXServer;
 
         bool noConsole;
+        bool noSound;
 
         std::string exePath;
         std::string iwadPath;

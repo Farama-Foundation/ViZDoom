@@ -359,6 +359,7 @@ bp::register_exception_translator< n >(&translate ## n );
 		.def("get_episode_time", &DoomGamePython::getEpisodeTime)
 		
         .def("set_console_enabled",&DoomGamePython::setConsoleEnabled)
+        .def("set_sound_enabled",&DoomGamePython::setSoundEnabled)
         
 		.def("set_screen_resolution", &DoomGamePython::setScreenResolution)
 		.def("set_screen_format", &DoomGamePython::setScreenFormat)

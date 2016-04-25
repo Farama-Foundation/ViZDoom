@@ -114,6 +114,7 @@ public class DoomGame{
     public native void setRenderParticles(boolean particles);
     public native void setWindowVisible(boolean visibility);
     public native void setConsoleEnabled(boolean console);
+    public native void setSoundEnabled(boolean sound);
 
 
     public native int getScreenWidth();
