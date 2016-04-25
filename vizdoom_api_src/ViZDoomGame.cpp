@@ -910,6 +910,10 @@ namespace vizdoom {
                     this->setConsoleEnabled(StringToBool(val));
                     continue;
                 }
+                if (key =="sound_enabled" || key =="soundenabled"){
+                    this->setSoundEnabled(StringToBool(val));
+                    continue;
+                }
                 if (key =="render_hud" || key =="renderhud"){
                     this->setRenderHud(StringToBool(val));
                     continue;
