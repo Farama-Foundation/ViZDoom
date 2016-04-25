@@ -33,12 +33,13 @@ using namespace vizdoom;
 DoomGame* GetObject(JNIEnv *env, jobject obj){
 	jclass thisClass = env->GetObjectClass(obj);
 	jfieldID fidNumber = env->GetFieldID(thisClass, "internalPtr", "J");
-	   if (NULL == fidNumber) return NULL;
+	if (NULL == fidNumber) return NULL;
 	jlong number = env->GetLongField(obj, fidNumber);
 	DoomGame *ret;
-	ret =(class DoomGame*)number;
+	ret = (class DoomGame*)number;
 	return ret;
 }
+
 /*
  * Class:     DoomGame
  * Method:    DoomTics2Ms
@@ -48,7 +49,7 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_DoomTicsToMs
   (JNIEnv *env, jobject obj, jint time){
 	int ret=DoomTicsToMs(time);
 	return ret;
-	}
+}
 
 /*
  * Class:     DoomGame
@@ -70,7 +71,7 @@ JNIEXPORT jdouble JNICALL Java_vizdoom_DoomGame_DoomFixedToDouble
   (JNIEnv * env, jobject obj, jint time){
 	double ret=DoomFixedToDouble(time);
 	return ret;
-	}
+}
 
 /*
  * Class:     DoomGame
@@ -80,19 +81,19 @@ JNIEXPORT jdouble JNICALL Java_vizdoom_DoomGame_DoomFixedToDouble
 JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isBinaryButton
   (JNIEnv *env, jobject obj, jobject enumVal){
 	jclass jclassEnum = env->FindClass("vizdoom/enums/Button");
-	if(jclassEnum != 0)
-    	{	
-        	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
+	if(jclassEnum != 0){
+		jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
 		if (ordinal_ID == 0){
 			return 0;
 		}
 		jint value = env->CallIntMethod(enumVal, ordinal_ID);
 		Button ret=static_cast<Button>(value);
 		bool retval = isBinaryButton(ret);
-	// Delete local references created		
-        	env->DeleteLocalRef(jclassEnum);
+		// Delete local references created
+		env->DeleteLocalRef(jclassEnum);
 		return retval;
-    	}
+	}
+	return 0;
 }
 
 /*
@@ -101,22 +102,21 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isBinaryButton
  * Signature: (Lvizdoom/enums/Button)Z
  */
 JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isDeltaButton
-    (JNIEnv *env, jobject obj, jobject enumVal){
+  (JNIEnv *env, jobject obj, jobject enumVal){
 	jclass jclassEnum = env->FindClass("vizdoom/enums/Button");
-	if(jclassEnum != 0)
-    	{	
-        	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
+	if(jclassEnum != 0){
+		jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
 		if (ordinal_ID == 0){
 			return 0;
 		}
 		jint value = env->CallIntMethod(enumVal, ordinal_ID);
 		Button ret=static_cast<Button>(value);
 		bool retval = isDeltaButton(ret);
-	// Delete local references created		
-        	env->DeleteLocalRef(jclassEnum);
+		// Delete local references created
+		env->DeleteLocalRef(jclassEnum);
 		return retval;
-    	}
-
+	}
+	return 0;
 }
 
 /*
@@ -128,11 +128,10 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_DoomGame
   (JNIEnv *env, jobject obj){
 	jclass thisClass = env->GetObjectClass(obj);
 	jfieldID fidNumber = env->GetFieldID(thisClass, "internalPtr", "J");
-	   if (NULL == fidNumber) return;
+	if (NULL == fidNumber) return;
 	DoomGame *game=new DoomGame();
 	env->SetLongField(obj,fidNumber, (jlong) game );
 }
-
 
 /*
  * Class:     DoomGame
@@ -144,16 +143,14 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_loadConfig
 	try{
 		DoomGame* game=GetObject(env,obj);
 	 	char * path2;
-	    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;	
+		path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;
 		bool ret = game->loadConfig(path2);
 		return (jboolean) ret;
 	}
-	catch (std::exception& e)
-  	{
-    		std::cout << "C++ unknown exception"<< '\n';
+	catch (std::exception& e){
+		std::cout << "C++ unknown exception"<< '\n';
 		return 0;
   	}
-
 }
 
 /*
@@ -164,68 +161,52 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_loadConfig
 JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_init
  (JNIEnv *env, jobject obj){
 	DoomGame* game=GetObject(env,obj);
-	try
-  	{
-	bool ret=game->init();
-	return (jboolean) ret;
-	
+	try{
+		bool ret=game->init();
+		return (jboolean) ret;
 	}
-	catch (ViZDoomMismatchedVersionException& e)
-	{
+	catch (ViZDoomMismatchedVersionException& e){
 		jclass ViZDoomMismatchedVersionException = env->FindClass("vizdoom/errors/ViZDoomMismatchedVersionException");
-			env->ThrowNew(ViZDoomMismatchedVersionException, e.what());
+		env->ThrowNew(ViZDoomMismatchedVersionException, e.what());
 		return 0;
 	}
-  	catch (ViZDoomUnexpectedExitException& e)
-  	{
+  	catch (ViZDoomUnexpectedExitException& e){
  		jclass ViZDoomUnexpectedExitException = env->FindClass("vizdoom/errors/ViZDoomUnexpectedExitException");
-        	env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
+		env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
 		return 0;
   	}
-	catch (FileDoesNotExistException& e)
-	{
+	catch (FileDoesNotExistException& e){
 		jclass FileDoesNotExistException = env->FindClass("vizdoom/errors/FileDoesNotExistException");
-			env->ThrowNew(FileDoesNotExistException, e.what());
+		env->ThrowNew(FileDoesNotExistException, e.what());
 		return 0;
 	}
-	catch (SharedMemoryException& e)
-  	{	
-
+	catch (SharedMemoryException& e){
  		jclass SharedMemoryException = env->FindClass("vizdoom/errors/SharedMemoryException");
         	env->ThrowNew(SharedMemoryException, e.what());
 		return 0;
   	}
-	catch (MessageQueueException& e)
-  	{	
-
+	catch (MessageQueueException& e){
  		jclass MessageQueueException = env->FindClass("vizdoom/errors/MessageQueueException");
-        	env->ThrowNew(MessageQueueException, e.what());
+		env->ThrowNew(MessageQueueException, e.what());
 		return 0;
   	}
-	catch (ViZDoomErrorException& e)
-  	{	
-
+	catch (ViZDoomErrorException& e){
  		jclass ViZDoomErrorException = env->FindClass("vizdoom/errors/ViZDoomErrorException");
-        	env->ThrowNew(ViZDoomErrorException, e.what());
+		env->ThrowNew(ViZDoomErrorException, e.what());
 		return 0;
   	}
-	catch (ViZDoomIsNotRunningException& e)
-  	{	
-
+	catch (ViZDoomIsNotRunningException& e){
  		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
+		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
 		return 0;
   	}
-	catch (Exception& e)
-  	{	
-
+	catch (Exception& e){
  		jclass Exception = env->FindClass("vizdoom/errors/Exception");
-        	env->ThrowNew(Exception, e.what());
+		env->ThrowNew(Exception, e.what());
 		return 0;
   	}
-	catch (std::exception& e)
-  	{
-    		std::cout << "C++ unknown exception"<< '\n';
+	catch (std::exception& e){
+		std::cout << "C++ unknown exception"<< '\n';
 		return 0;
   	}
 }
@@ -249,19 +230,15 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_close
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_newEpisode
     (JNIEnv *env, jobject obj){
 	try{
-	DoomGame* game=GetObject(env,obj);
-	game->newEpisode();
+		DoomGame* game=GetObject(env,obj);
+		game->newEpisode();
 	}
-	
-	catch (ViZDoomIsNotRunningException& e)
-  	{	
-
+	catch (ViZDoomIsNotRunningException& e){
  		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
+		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
   	}
-	catch (std::exception& e)
-  	{
-    		std::cout << "C++ unknown exception"<< '\n';
+	catch (std::exception& e){
+		std::cout << "C++ unknown exception"<< '\n';
   	}
 }
 
@@ -271,7 +248,7 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_newEpisode
  * Signature: ()Z
  */
 JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isRunning
-   (JNIEnv *env, jobject obj){
+  (JNIEnv *env, jobject obj){
 	DoomGame* game=GetObject(env,obj);
 	bool ret=game->isRunning();
 	return (jboolean)ret;
@@ -283,27 +260,23 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isRunning
  * Signature: (Ljava/util/ArrayList;)V
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setAction
-  (JNIEnv *env, jobject obj, jintArray ourarray)
-{
+  (JNIEnv *env, jobject obj, jintArray ourarray){
 	try {
-	DoomGame* game=GetObject(env,obj);
-	int NumElts = env->GetArrayLength(ourarray);
-	jint *oarr = env->GetIntArrayElements(ourarray, NULL);
-	std::vector<int> ourvector;
-	for (int i=0;i<NumElts;i++){
-		ourvector.push_back(oarr[i]);
+		DoomGame* game=GetObject(env,obj);
+		int NumElts = env->GetArrayLength(ourarray);
+		jint *oarr = env->GetIntArrayElements(ourarray, NULL);
+		std::vector<int> ourvector;
+		for (int i=0;i<NumElts;i++){
+			ourvector.push_back(oarr[i]);
+		}
+		game->setAction(ourvector);
 	}
-	game->setAction(ourvector);
-	}
-	catch (ViZDoomIsNotRunningException& e)
-  	{	
-
+	catch (ViZDoomIsNotRunningException& e){
  		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
         	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
   	}
-	catch (std::exception& e)
-  	{
-    		std::cout << "C++ unknown exception"<< '\n';
+	catch (std::exception& e){
+		std::cout << "C++ unknown exception"<< '\n';
   	}
 }
 
@@ -315,30 +288,23 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setAction
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_advanceAction__
   (JNIEnv *env, jobject obj){
 	try{	
-	DoomGame* game=GetObject(env,obj);
-	game->advanceAction();
+		DoomGame* game=GetObject(env,obj);
+		game->advanceAction();
 	}
-	catch (ViZDoomIsNotRunningException& e)
-	{
+	catch (ViZDoomIsNotRunningException& e){
  		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
+		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
   	}
-	catch (ViZDoomUnexpectedExitException& e)
-	{
+	catch (ViZDoomUnexpectedExitException& e){
 		jclass ViZDoomUnexpectedExitException = env->FindClass("vizdoom/errors/ViZDoomUnexpectedExitException");
-			env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
+		env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
 	}
-	catch (Exception& e)
-  	{	
-
+	catch (Exception& e){
  		jclass Exception = env->FindClass("vizdoom/errors/Exception");
-        	env->ThrowNew(Exception, e.what());
-
+		env->ThrowNew(Exception, e.what());
   	}
-	catch (std::exception& e)
-  	{
-    		std::cout << "C++ unknown exception"<< '\n';
-
+	catch (std::exception& e){
+		std::cout << "C++ unknown exception"<< '\n';
   	}
 }
 
@@ -350,31 +316,23 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_advanceAction__
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_advanceAction__I
   (JNIEnv *env, jobject obj, jint int1){
 	try{
-	DoomGame* game=GetObject(env,obj);
-	game->advanceAction(int1);
+		DoomGame* game=GetObject(env,obj);
+		game->advanceAction(int1);
 	}
-	catch (ViZDoomIsNotRunningException& e)
-  	{	
-
+	catch (ViZDoomIsNotRunningException& e){
  		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
+		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
   	}
-	catch (ViZDoomUnexpectedExitException& e)
-	{
+	catch (ViZDoomUnexpectedExitException& e){
 		jclass ViZDoomUnexpectedExitException = env->FindClass("vizdoom/errors/ViZDoomUnexpectedExitException");
-			env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
+		env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
 	}
-	catch (Exception& e)
-  	{	
-
+	catch (Exception& e){
  		jclass Exception = env->FindClass("vizdoom/errors/Exception");
-        	env->ThrowNew(Exception, e.what());
-
+		env->ThrowNew(Exception, e.what());
   	}
-	catch (std::exception& e)
-  	{
-    		std::cout << "C++ unknown exception"<< '\n';
-
+	catch (std::exception& e){
+		std::cout << "C++ unknown exception"<< '\n';
   	}
 }
 
@@ -386,31 +344,23 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_advanceAction__I
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_advanceAction__IZZ
   (JNIEnv *env, jobject obj, jint int1, jboolean bol1, jboolean bol2){
 	try{
-	DoomGame* game=GetObject(env,obj);
-	game->advanceAction(int1, bol1,bol2);
+		DoomGame* game=GetObject(env,obj);
+		game->advanceAction(int1, bol1,bol2);
 	}
-	catch (ViZDoomIsNotRunningException& e)
-  	{	
-
+	catch (ViZDoomIsNotRunningException& e){
  		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
+		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
   	}
-	catch (ViZDoomUnexpectedExitException& e)
-	{
+	catch (ViZDoomUnexpectedExitException& e){
 		jclass ViZDoomUnexpectedExitException = env->FindClass("vizdoom/errors/ViZDoomUnexpectedExitException");
-			env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
+		env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
 	}
-	catch (Exception& e)
-  	{	
-
+	catch (Exception& e){
  		jclass Exception = env->FindClass("vizdoom/errors/Exception");
-        	env->ThrowNew(Exception, e.what());
-
+		env->ThrowNew(Exception, e.what());
   	}
-	catch (std::exception& e)
-  	{
-    		std::cout << "C++ unknown exception"<< '\n';
-
+	catch (std::exception& e){
+		std::cout << "C++ unknown exception"<< '\n';
   	}
 }
 
@@ -421,39 +371,32 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_advanceAction__IZZ
  * Signature: ([I)F
  */
 JNIEXPORT jdouble JNICALL Java_vizdoom_DoomGame_makeAction___3I
-  (JNIEnv *env, jobject obj, jintArray ourarray)
-{
+  (JNIEnv *env, jobject obj, jintArray ourarray){
 	try {
-	DoomGame* game=GetObject(env,obj);
-	int NumElts = env->GetArrayLength(ourarray);
-	jint *oarr = env->GetIntArrayElements(ourarray, NULL);
-	std::vector<int> ourvector;
-	for (int i=0;i<NumElts;i++){
-		ourvector.push_back(oarr[i]);
+		DoomGame* game=GetObject(env,obj);
+		int NumElts = env->GetArrayLength(ourarray);
+		jint *oarr = env->GetIntArrayElements(ourarray, NULL);
+		std::vector<int> ourvector;
+		for (int i=0;i<NumElts;i++){
+			ourvector.push_back(oarr[i]);
+		}
+		double ret = game->makeAction(ourvector);
+		return ret;
 	}
-	double ret = game->makeAction(ourvector);
-	return ret;	
-	}
-	catch (ViZDoomIsNotRunningException& e)
-  	{	
-
+	catch (ViZDoomIsNotRunningException& e){
  		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
+		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
 		return 0;
   	}
-	catch (ViZDoomUnexpectedExitException& e)
-	{
+	catch (ViZDoomUnexpectedExitException& e){
 		jclass ViZDoomUnexpectedExitException = env->FindClass("vizdoom/errors/ViZDoomUnexpectedExitException");
-			env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
+		env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
 	}
-	catch (std::exception& e)
-  	{
-    		std::cout << "C++ unknown exception"<< '\n';
+	catch (std::exception& e){
+		std::cout << "C++ unknown exception"<< '\n';
 		return 0;
   	}
 }
-
-
 
 /*
  * Class:     DoomGame
@@ -461,34 +404,30 @@ JNIEXPORT jdouble JNICALL Java_vizdoom_DoomGame_makeAction___3I
  * Signature: ([II)F
  */
 JNIEXPORT jdouble JNICALL Java_vizdoom_DoomGame_makeAction___3II
-  (JNIEnv *env, jobject obj, jintArray ourarray, jint integ)
-{
+  (JNIEnv *env, jobject obj, jintArray ourarray, jint integ){
 	try {
-	DoomGame* game=GetObject(env,obj);
-	int NumElts = env->GetArrayLength(ourarray);
-	jint *oarr = env->GetIntArrayElements(ourarray, NULL);
-	std::vector<int> ourvector;
-	for (int i=0;i<NumElts;i++){
-		ourvector.push_back(oarr[i]);
+		DoomGame* game=GetObject(env,obj);
+		int NumElts = env->GetArrayLength(ourarray);
+		jint *oarr = env->GetIntArrayElements(ourarray, NULL);
+		std::vector<int> ourvector;
+		for (int i=0;i<NumElts;i++){
+			ourvector.push_back(oarr[i]);
+		}
+		double ret = game->makeAction(ourvector, integ);
+		return ret;
 	}
-	double ret = game->makeAction(ourvector, integ);
-	return ret;
-	}
-	catch (ViZDoomIsNotRunningException& e)
-  	{	
-
+	catch (ViZDoomIsNotRunningException& e){
  		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
+		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
 		return 0;
   	}
-	catch (ViZDoomUnexpectedExitException& e)
-	{
+	catch (ViZDoomUnexpectedExitException& e){
 		jclass ViZDoomUnexpectedExitException = env->FindClass("vizdoom/errors/ViZDoomUnexpectedExitException");
-			env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
+		env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
 	}
 	catch (std::exception& e)
   	{
-    		std::cout << "C++ unknown exception"<< '\n';
+		std::cout << "C++ unknown exception"<< '\n';
 		return 0;
   	}
 }
@@ -512,7 +451,6 @@ JNIEXPORT jobject JNICALL Java_vizdoom_DoomGame_getState
 	
 	for (int i=0;i<ourvector.size();i++){
 		oarr[i]=ourvector[i];
-		
 	}
 	env->ReleaseIntArrayElements(jbuffer, oarr, NULL);
 
@@ -523,15 +461,12 @@ JNIEXPORT jobject JNICALL Java_vizdoom_DoomGame_getState
 
 	for (int i=0;i<rozmiar;i++){
 		oarr[i]=(int)*(pointer+i);
-
 	}
 	env->ReleaseIntArrayElements(jbuffer2, oarr, NULL);	
 
 	jmethodID constructor = env->GetMethodID(state, "<init>", "(I[I[I)V");
 	jobject result = env->NewObject(state, constructor, statec.number,jbuffer, jbuffer2);
 	return result;
-
-
 }
 
 /*
@@ -546,12 +481,10 @@ JNIEXPORT jintArray JNICALL Java_vizdoom_DoomGame_getLastAction
 	jintArray bob=env->NewIntArray(ourvector.size());
 	jint *oarr = env->GetIntArrayElements(bob, NULL);
 	for (int i=0;i<ourvector.size();i++){
-	oarr[i]=ourvector.at(i);
+		oarr[i]=ourvector.at(i);
 	}
  	env->ReleaseIntArrayElements(bob, oarr, NULL);
 	return bob;
-	
-	
 }
 
 /*
@@ -566,23 +499,18 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isNewEpisode
 		bool ret=game->isNewEpisode();
 		return (jboolean)ret;
 	}
-	catch (ViZDoomIsNotRunningException& e)
-  	{	
-
+	catch (ViZDoomIsNotRunningException& e){
  		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
+		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
 		return 0;
   	}
-	catch (Exception& e)
-  	{	
-
- 		jclass Exception = env->FindClass("vizdoom/errors/Exception");
-        	env->ThrowNew(Exception, e.what());
+	catch (Exception& e){
+ 		jclass Exception = env->FindClass("vizdoom/errors/Exception");	
+		env->ThrowNew(Exception, e.what());
 		return 0;
   	}
-	catch (std::exception& e)
-  	{
-    		std::cout << "C++ unknown exception"<< '\n';
+	catch (std::exception& e){
+		std::cout << "C++ unknown exception"<< '\n';
 		return 0;
   	}
 }
@@ -599,22 +527,17 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isEpisodeFinished
 		bool ret=game->isEpisodeFinished();
 		return (jboolean)ret;
 	}
-	catch (ViZDoomIsNotRunningException& e)
-  	{	
-
+	catch (ViZDoomIsNotRunningException& e){
  		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
+		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
 		return 0;
   	}
-	catch (Exception& e)
-  	{	
-
+	catch (Exception& e){
  		jclass Exception = env->FindClass("vizdoom/errors/Exception");
-        	env->ThrowNew(Exception, e.what());
+		env->ThrowNew(Exception, e.what());
 		return 0;
   	}
-	catch (std::exception& e)
-  	{
+	catch (std::exception& e){
     		std::cout << "C++ unknown exception"<< '\n';
 		return 0;
   	}
@@ -632,23 +555,18 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isPlayerDead
 		bool ret=game->isPlayerDead();
 		return (jboolean)ret;
 	}
-	catch (ViZDoomIsNotRunningException& e)
-  	{	
-
+	catch (ViZDoomIsNotRunningException& e){
  		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
+		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
 		return 0;
   	}
-	catch (Exception& e)
-  	{	
-
+	catch (Exception& e){
  		jclass Exception = env->FindClass("vizdoom/errors/Exception");
-        	env->ThrowNew(Exception, e.what());
+		env->ThrowNew(Exception, e.what());
 		return 0;
   	}
-	catch (std::exception& e)
-  	{
-    		std::cout << "C++ unknown exception"<< '\n';
+	catch (std::exception& e){
+		std::cout << "C++ unknown exception"<< '\n';
 		return 0;
   	}
 }
@@ -660,9 +578,8 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isPlayerDead
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_respawnPlayer
   (JNIEnv *env, jobject obj){
-		DoomGame* game=GetObject(env,obj);
-		game->respawnPlayer();
-
+	DoomGame* game=GetObject(env,obj);
+	game->respawnPlayer();
 }
 /*
  * Class:     DoomGame
@@ -673,19 +590,16 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_addAvailableButton__Lvizdoom_enums_
   (JNIEnv *env, jobject obj, jobject enumVal){
 	DoomGame* game=GetObject(env,obj);
 	jclass jclassEnum = env->FindClass("vizdoom/enums/Button");
-	if(jclassEnum != 0)
-    	{	
-        	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
+	if(jclassEnum != 0){
+		jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
 		if (ordinal_ID == 0){
 			return;
 		}
 		jint value = env->CallIntMethod(enumVal, ordinal_ID);
 		Button ret=static_cast<Button>(value);
 		game->addAvailableButton(ret);
-	// Delete local references created		
-        	env->DeleteLocalRef(jclassEnum);
-    	}
-
+		env->DeleteLocalRef(jclassEnum);
+	}
 }
 
 /*
@@ -697,18 +611,16 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_addAvailableButton__Lvizdoom_enums_
   (JNIEnv *env, jobject obj, jobject enumVal, jint intval){
 	DoomGame* game=GetObject(env,obj);
 	jclass jclassEnum = env->FindClass("vizdoom/enums/Button");
-	if(jclassEnum != 0)
-    	{	
-        	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
+	if(jclassEnum != 0){	
+		jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
 		if (ordinal_ID == 0){
 			return;
 		}
 		jint value = env->CallIntMethod(enumVal, ordinal_ID);
 		Button ret=static_cast<Button>(value);
-		game->addAvailableButton(ret, intval);
-	// Delete local references created		
-        	env->DeleteLocalRef(jclassEnum);
-    	}
+		game->addAvailableButton(ret, intval);	
+		env->DeleteLocalRef(jclassEnum);
+	}
 }
 
 
@@ -744,18 +656,16 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setButtonMaxValue
   (JNIEnv *env, jobject obj, jobject enumVal, jint intval){
 	DoomGame* game=GetObject(env,obj);
 	jclass jclassEnum = env->FindClass("vizdoom/enums/Button");
-	if(jclassEnum != 0)
-    	{	
-        	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
+	if(jclassEnum != 0){	
+		jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
 		if (ordinal_ID == 0){
 			return;
 		}
 		jint value = env->CallIntMethod(enumVal, ordinal_ID);
 		Button ret=static_cast<Button>(value);
-		game->setButtonMaxValue(ret, intval);
-	// Delete local references created		
-        	env->DeleteLocalRef(jclassEnum);
-    	}
+		game->setButtonMaxValue(ret, intval);	
+		env->DeleteLocalRef(jclassEnum);
+	}
 }
 /*
  * Class:     DoomGame
@@ -764,23 +674,21 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setButtonMaxValue
  */
 JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getButtonMaxValue
   (JNIEnv *env, jobject obj, jobject enumVal){
-DoomGame* game=GetObject(env,obj);
+	DoomGame* game=GetObject(env,obj);
 	jclass jclassEnum = env->FindClass("vizdoom/enums/Button");
-	if(jclassEnum != 0)
-    	{	
-        	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
+	if(jclassEnum != 0){	
+		jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
 		if (ordinal_ID == 0){
 			return 0;
 		}
 		jint value = env->CallIntMethod(enumVal, ordinal_ID);
 		Button ret=static_cast<Button>(value);
-		int retval = game->getButtonMaxValue(ret);
-	// Delete local references created		
-        	env->DeleteLocalRef(jclassEnum);
+		int retval = game->getButtonMaxValue(ret);	
+		env->DeleteLocalRef(jclassEnum);
 		return retval;
-    	}
+	}
+	return 0;
 }
-
 
 /*
  * Class:     DoomGame
@@ -791,18 +699,16 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_addAvailableGameVariable
   (JNIEnv *env, jobject obj, jobject enumVal){
 	DoomGame* game=GetObject(env,obj);
 	jclass jclassEnum = env->FindClass("vizdoom/enums/GameVariable");
-	if(jclassEnum != 0)
-    	{	
-        	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
+	if(jclassEnum != 0){	
+		jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
 		if (ordinal_ID == 0){
 			return;
 		}
 		jint value = env->CallIntMethod(enumVal, ordinal_ID);
 		GameVariable ret=static_cast<GameVariable>(value);
-		game->addAvailableGameVariable(ret);
-	// Delete local references created		
-        	env->DeleteLocalRef(jclassEnum);
-    	}
+		game->addAvailableGameVariable(ret);	
+		env->DeleteLocalRef(jclassEnum);
+	}
 }
 
 /*
@@ -814,7 +720,6 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_clearAvailableGameVariables
   (JNIEnv *env, jobject obj){
 	DoomGame* game=GetObject(env,obj);
 	game->clearAvailableGameVariables();
-
 }
 
 /*
@@ -838,7 +743,7 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_addGameArgs
   (JNIEnv *env, jobject obj , jstring str){
 	DoomGame* game=GetObject(env,obj);
 	char * str2;
-    	str2 = const_cast<char*>(env->GetStringUTFChars(str , NULL )) ;
+	str2 = const_cast<char*>(env->GetStringUTFChars(str , NULL )) ;
 	game->addGameArgs(str2);
 }
 
@@ -863,25 +768,20 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_sendGameCommand //TODO wywala jvm
 	try{	
 		DoomGame* game=GetObject(env,obj);
 		char * str2;
-	    	str2 = const_cast<char*>(env->GetStringUTFChars(str , NULL )) ;	
+		str2 = const_cast<char*>(env->GetStringUTFChars(str , NULL )) ;	
 		game->sendGameCommand(str2);
-		
 	}
-	catch (ViZDoomIsNotRunningException& e)
-  	{	
+	catch (ViZDoomIsNotRunningException& e){	
  		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
+		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
 
   	}
-	catch (Exception& e)
-  	{	
+	catch (Exception& e){	
  		jclass Exception = env->FindClass("vizdoom/errors/Exception");
-        	env->ThrowNew(Exception, e.what());
-
+		env->ThrowNew(Exception, e.what());
   	}
-	catch (...)
-  	{
-    		std::cout << "C++ unknown exception"<<std::endl;
+	catch (...){
+		std::cout << "C++ unknown exception"<<std::endl;
   	}
 }
 
@@ -904,7 +804,6 @@ JNIEXPORT jintArray JNICALL Java_vizdoom_DoomGame_getGameScreen
 
 	for (int i=0;i<rozmiar;i++){
 		oarr[i]=(int)*(pointer+i);
-
 	}
 	env->ReleaseIntArrayElements(jbuffer, oarr, NULL);
 	return jbuffer;
@@ -932,18 +831,16 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setMode
 	DoomGame* game=GetObject(env,obj);
 	jclass jclassEnum = env->FindClass("vizdoom/enums/Mode");
 	
-	if(jclassEnum != 0)
-    	{	
-        	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
+	if(jclassEnum != 0){	
+		jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
 		if (ordinal_ID == 0){
 			return;
 		}
 		jint value = env->CallIntMethod(enumVal, ordinal_ID);
 		Mode ret=static_cast<Mode>(value);
-		game->setMode(ret);
-	// Delete local references created		
-        	env->DeleteLocalRef(jclassEnum);
-    	}
+		game->setMode(ret);	
+		env->DeleteLocalRef(jclassEnum);
+	}
 }
 
 /*
@@ -956,9 +853,8 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getGameVariable
 	DoomGame* game=GetObject(env,obj);
 	jclass jclassEnum = env->FindClass("vizdoom/enums/GameVariable");
 	
-	if(jclassEnum != 0)
-    	{	
-        	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
+	if(jclassEnum != 0){	
+		jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
 		if (ordinal_ID == 0){
 			return -1;
 		}
@@ -966,10 +862,9 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getGameVariable
 		GameVariable ret=static_cast<GameVariable>(value);
 		int retint=game->getGameVariable(ret);
 	// Delete local references created		
-        	env->DeleteLocalRef(jclassEnum);
+		env->DeleteLocalRef(jclassEnum);
 		return retint;
-    	}
-
+	}
 }
 
 /*
@@ -1029,7 +924,6 @@ JNIEXPORT jdouble JNICALL Java_vizdoom_DoomGame_getLastReward
 	DoomGame* game=GetObject(env,obj);
 	double ret=game->getLastReward();
 	return ret;
-
 }
 
 /*
@@ -1042,7 +936,6 @@ JNIEXPORT jdouble JNICALL Java_vizdoom_DoomGame_getTotalReward
 	DoomGame* game=GetObject(env,obj);
 	double ret=game->getTotalReward();
 	return ret;
-
 }
 
 /*
@@ -1055,13 +948,11 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setViZDoomPath
 	try{
 		DoomGame* game=GetObject(env,obj);
 	 	char * path2;
-	    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;	
+		path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;	
 		game->setViZDoomPath(path2);
 	}
-	catch (...)
-  	{
-    		std::cout << "C++ unknown exception"<<std::endl;
-
+	catch (...){
+		std::cout << "C++ unknown exception"<<std::endl;
   	}
 }
 /*
@@ -1074,13 +965,11 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setDoomGamePath
 	try{	
 		DoomGame* game=GetObject(env,obj);
 		char * path2;
-	    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;
+		path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;
 		game->setDoomGamePath(path2);
 	}
-	catch (...)
-  	{
-    		std::cout << "C++ unknown exception"<<std::endl;
-
+	catch (...){
+		std::cout << "C++ unknown exception"<<std::endl;
   	}
 }
 
@@ -1094,13 +983,11 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setDoomScenarioPath
 	try{
 		DoomGame* game=GetObject(env,obj);
 		char * path2;
-	    	path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;
+		path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;
 		game->setDoomScenarioPath(path2);
 	}
-	catch (...)
-  	{
-    		std::cout << "C++ unknown exception"<<std::endl;
-
+	catch (...){
+		std::cout << "C++ unknown exception"<<std::endl;
   	}
 }
 
@@ -1113,11 +1000,9 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setDoomMap
   (JNIEnv *env, jobject obj, jstring map){
 	DoomGame* game=GetObject(env,obj);
 	char * path;
-    	path = const_cast<char*>(env->GetStringUTFChars(map , NULL )) ;
+	path = const_cast<char*>(env->GetStringUTFChars(map , NULL )) ;
 	game->setDoomMap(path);
-
 }
-
 
 /*
  * Class:     DoomGame
@@ -1129,7 +1014,6 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setDoomSkill
 	DoomGame* game=GetObject(env,obj);
 	game->setDoomSkill(skill);
 }
-
 
 /*
  * Class:     DoomGame
@@ -1167,7 +1051,6 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setSeed
 	game->setSeed(seed);
 }
 
-
 /*
  * Class:     DoomGame
  * Method:    getEpisodeStartTime
@@ -1189,7 +1072,6 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setEpisodeStartTime
   (JNIEnv *env, jobject obj, jint tics){
 	DoomGame* game=GetObject(env,obj);
 	game->setEpisodeTimeout(tics);
-
 }
 
 /*
@@ -1203,6 +1085,7 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getEpisodeTimeout
 	int ret = game->getEpisodeTimeout();
 	return ret;
 }
+
 /*
  * Class:     DoomGame
  * Method:    setEpisodeTimeout
@@ -1212,7 +1095,6 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setEpisodeTimeout
   (JNIEnv *env, jobject obj, jint tics){
 	DoomGame* game=GetObject(env,obj);
 	game->setEpisodeTimeout(tics);
-
 }
 
 /*
@@ -1237,19 +1119,16 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setScreenResolution
 	DoomGame* game=GetObject(env,obj);
 	jclass jclassEnum = env->FindClass("vizdoom/enums/ScreenResolution");
 	
-	if(jclassEnum != 0)
-    	{	
-        	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
+	if(jclassEnum != 0){	
+		jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
 		if (ordinal_ID == 0){
 			return;
 		}
 		jint value = env->CallIntMethod(enumVal, ordinal_ID);
 		ScreenResolution ret=static_cast<ScreenResolution>(value);
-		game->setScreenResolution(ret);
-	// Delete local references created		
-        	env->DeleteLocalRef(jclassEnum);
-    	}
-
+		game->setScreenResolution(ret);	
+		env->DeleteLocalRef(jclassEnum);
+	}
 }
 	
 
@@ -1264,19 +1143,16 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setScreenFormat
 	DoomGame* game=GetObject(env,obj);
 	jclass jclassEnum = env->FindClass("vizdoom/enums/ScreenFormat");
 	
-	if(jclassEnum != 0)
-    	{	
-        	jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
+	if(jclassEnum != 0){
+		jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
 		if (ordinal_ID == 0){
 			return;
 		}
 		jint value = env->CallIntMethod(enumVal, ordinal_ID);
 		ScreenFormat ret=static_cast<ScreenFormat>(value);
 		game->setScreenFormat(ret);
-	// Delete local references created		
-        	env->DeleteLocalRef(jclassEnum);
-    	}
-
+		env->DeleteLocalRef(jclassEnum);
+	}
 }
 
 /*
@@ -1299,7 +1175,6 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setRenderWeapon
   (JNIEnv *env, jobject obj, jboolean bol){
 	DoomGame* game=GetObject(env,obj);
 	game->setRenderWeapon(bol);
-
 }
 
 /*
@@ -1333,7 +1208,6 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setRenderParticles
   (JNIEnv *env, jobject obj, jboolean bol){
 	DoomGame* game=GetObject(env,obj);
 	game->setRenderParticles(bol);
-
 }
 
 /*
@@ -1356,7 +1230,17 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setConsoleEnabled
   (JNIEnv *env, jobject obj, jboolean bol){
 	DoomGame* game=GetObject(env,obj);
 	game->setConsoleEnabled(bol);
+}
 
+/*
+ * Class:     DoomGame
+ * Method:    setSoundConsole
+ * Signature: (Z)V
+ */
+JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setSoundEnabled
+  (JNIEnv *env, jobject obj, jboolean bol){
+	DoomGame* game=GetObject(env,obj);
+	game->setSoundEnabled(bol);
 }
 
 /*
@@ -1395,7 +1279,6 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getScreenChannels
 	int ret;
 	ret=game->getScreenChannels();
 	return (jint)ret;
-
 }
 
 /*
@@ -1409,7 +1292,6 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getScreenPitch
 	int ret;
 	ret=game->getScreenPitch();
 	return (jint)ret;
-
 }
 
 /*
@@ -1423,8 +1305,6 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getScreenSize
 	int ret;
 	ret=game->getScreenSize();
 	return (jint)ret;
-
-
 }
 
 /*
@@ -1438,5 +1318,3 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getScreenForma
 	ScreenFormat ret = game->getScreenFormat();
 	return (jint) ret;
 }
-
-

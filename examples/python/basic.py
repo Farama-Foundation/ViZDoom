@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #####################################################################
-# This script presents how to usethe most basic features of the environment.
+# This script presents how to use the most basic features of the environment.
 # It configures the engine, and makes the agent perform random actions.
 # It also gets current state and reward earned with the action.
 # <episodes> number of episodes are played. 
@@ -11,6 +11,7 @@
 #####################################################################
 from __future__ import print_function
 from vizdoom import DoomGame
+from vizdoom import Mode
 from vizdoom import Button
 from vizdoom import GameVariable
 from vizdoom import ScreenFormat
@@ -74,9 +75,14 @@ game.set_episode_start_time(10)
 # Makes the window appear (turned on by default)
 game.set_window_visible(True)
 
+# Turns on the sound. (turned off by default)
+game.set_sound_enabled(True)
 
 # Sets the livin reward (for each move) to -1
 game.set_living_reward(-1)
+
+# Sets ViZDoom mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR, PLAYER mode is default)
+game.set_mode(Mode.PLAYER)
 
 # Initialize the game. Further configuration won't take any effect from now on.
 game.init()

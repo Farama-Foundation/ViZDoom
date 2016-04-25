@@ -117,6 +117,7 @@
 EXTERN_CVAR (Bool, vizdoom_controlled)
 EXTERN_CVAR (Bool, vizdoom_async)
 EXTERN_CVAR (Bool, vizdoom_allow_input)
+EXTERN_CVAR (Bool, vizdoom_no_sound)
 
 EXTERN_CVAR(Bool, hud_althud)
 void DrawHUD();
@@ -1033,6 +1034,9 @@ void D_DoomLoop ()
 				C_Ticker ();
 				M_Ticker ();
 
+				if(!*vizdoom_no_sound){
+					S_UpdateSounds (players[consoleplayer].camera);
+				}
 				if(!ViZDoom_IsPaused()){
 					G_Ticker ();
 					++gametic;
@@ -1064,8 +1068,8 @@ void D_DoomLoop ()
 			I_StartTic ();
 			if(!*vizdoom_controlled) {
 				D_Display();
-				S_UpdateMusic();    // OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
 			}
+			if(!*vizdoom_controlled || !*vizdoom_no_sound) S_UpdateMusic(); // OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
 			ViZDoom_Tic();
 		}
 		catch (CRecoverableError &error)

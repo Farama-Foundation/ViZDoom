@@ -570,6 +570,14 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setConsoleEnabled
 
 /*
  * Class:     DoomGame
+ * Method:    setSoundEnabled
+ * Signature: (Z)V
+ */
+JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setSoundEnabled
+  (JNIEnv *, jobject, jboolean);
+
+/*
+ * Class:     DoomGame
  * Method:    getScreenWidth
  * Signature: ()I
  */

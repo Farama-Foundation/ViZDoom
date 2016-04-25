@@ -7,7 +7,7 @@ endif(COMMAND cmake_policy)
 
 add_library(vizdoom SHARED IMPORTED GLOBAL)
 if (WIN32)
-    set_property(TARGET vizdoom PROPERTY IMPORTED_LOCATION ../../bin/libvizdoom.dll)
+    set_property(TARGET vizdoom PROPERTY IMPORTED_LOCATION ../../bin/vizdoom.dll)
 endif()
 if (UNIX AND NOT APPLE)
     set_property(TARGET vizdoom PROPERTY IMPORTED_LOCATION ../../bin/libvizdoom.so)
@@ -22,7 +22,7 @@ find_package(Threads REQUIRED)
 set( VIZDOOM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../vizdoom_api_src )
 include_directories( ${VIZDOOM_INCLUDE_DIR} ${Boost_INCLUDE_DIR} )
 
-set( VIZDOOM_EXAMPLES_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin )
+set( VIZDOOM_EXAMPLES_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../bin/examples )
 
 set( VIZDOOM_LIBS vizdoom
     ${Boost_LIBRARIES}

@@ -14,7 +14,7 @@ Demonstrates how to configure and play multiplayer game for CIG 2016 competition
 Demonstrates how to play with bots to simulate multiplayer game. Helpful for developing AI agent for CIG 2016 competition.
 
 ###[delta_buttons.py](https://github.com/Marqt/ViZDoom/blob/master/examples/python/delta_buttons.py)
-Shows how delta buttons work(they may take values other than 0 and 1 and can be used for precise movement)
+Shows how delta buttons work (they may take values other than 0 and 1 and can be used for precise movement).
 
 ###[format.py](https://github.com/Marqt/ViZDoom/blob/master/examples/python/format.py)
 Presents different formats of the screen buffer. [OpenCV](http://opencv.org/) is used to display the images.
