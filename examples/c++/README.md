@@ -1,5 +1,9 @@
-Use CMake to generate Makefile or project.
-Examples will be build in ``vizdoom_root_dir/bin/examples``.
+##Building
+```
+cmake . && make
+```
+
+Examples will be placed in ``<vizdoom_dir>/bin/examples``.
 
 To run the examples, [freedoom2.wad]( https://freedoom.github.io/download.html) should be placed in the ``scenarios`` subdirectory.
 
