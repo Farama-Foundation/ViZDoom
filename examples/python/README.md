@@ -1,6 +1,9 @@
 To run the examples, [freedoom2.wad]( https://freedoom.github.io/download.html) should be placed in the  ``scenarios`` subdirectory.
 Furthermore, you need to have ``vizdoom.so/vizdoom.pyd`` present (or symlinked) in the ``examples/python`` directory (on Linux it should be done automatically by the building process).
 
+##Troubleshooting
+ * `SystemError: dynamic module not initialized properly` may mean that you are trying the run an example using python3 instead of python2.
+
 ---
 ##Examples
 
