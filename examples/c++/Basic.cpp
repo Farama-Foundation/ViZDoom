@@ -62,7 +62,7 @@ int main() {
     game->setSoundEnabled(true);
 
     // Sets ViZDoom mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR, PLAYER mode is default)
-    game.setMode(PLAYER);
+    game->setMode(PLAYER);
 
     // Initialize the game. Further configuration won't take any effect from now on.
     game->init();
