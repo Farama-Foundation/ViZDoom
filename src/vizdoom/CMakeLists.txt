@@ -1,5 +1,4 @@
 cmake_minimum_required( VERSION 2.8 )
-project( ViZDoom )
 
 if( COMMAND cmake_policy )
 	if( POLICY CMP0011 )
@@ -33,7 +32,7 @@ if(CMAKE_CROSSCOMPILING)
 	include(${IMPORT_EXECUTABLES})
 endif(CMAKE_CROSSCOMPILING)
 
-set( ZDOOM_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../bin CACHE PATH "Directory where zdoom.pk3 and the executable will be created." )
+set( ZDOOM_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../bin CACHE PATH "Directory where zdoom.pk3 and the executable will be created." )
 set( ZDOOM_EXE_NAME "vizdoom" CACHE FILEPATH "Name of the executable to create." )
 
 # Simplify pk3 building, add_pk3(filename srcdirectory)

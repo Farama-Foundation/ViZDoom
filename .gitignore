@@ -1,5 +1,5 @@
 # CMake and building output
-/bin
+**/bin
 Makefile
 ImportExecutables.cmake
 **/link-make
