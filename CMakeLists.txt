@@ -5,7 +5,7 @@ option(BUILD_PYTHON "Build ViZDoom API Python binding." OFF)
 option(BUILD_JAVA "Build ViZDoom API Java binding." OFF)
 
 if(COMMAND cmake_policy)
-    cmake_policy(SET CMP0003 NEW)
+	cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
@@ -38,7 +38,7 @@ endif()
 
 # Compiler dependent settings     
 if(CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions("-fPIC")
+	add_definitions("-fPIC")
 endif()  
 
 if(MSVC)
@@ -63,13 +63,13 @@ set(VIZDOOM_LIB_SRC_DIR ${VIZDOOM_SRC_DIR}/lib)
 include_directories(${VIZDOOM_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
 
 set(VIZDOOM_LIBS
-    ${Boost_LIBRARIES}  
-    ${CMAKE_THREAD_LIBS_INIT} )
+	${Boost_LIBRARIES}
+	${CMAKE_THREAD_LIBS_INIT} )
 	
 if(UNIX AND NOT APPLE)
-    set(VIZDOOM_LIBS ${VIZDOOM_LIBS} rt)
+	set(VIZDOOM_LIBS ${VIZDOOM_LIBS} rt)
 endif()	
-    
+
 set(VIZDOOM_API_SOURCES
 	${VIZDOOM_LIB_SRC_DIR}/ViZDoomUtilities.cpp
 	${VIZDOOM_LIB_SRC_DIR}/ViZDoomController.cpp
@@ -82,8 +82,8 @@ add_library(libvizdoom_shared SHARED ${VIZDOOM_API_SOURCES})
 target_link_libraries (libvizdoom_shared ${VIZDOOM_LIBS})
 
 set_target_properties(libvizdoom_static libvizdoom_shared
-    PROPERTIES
-    LINKER_LANGUAGE CXX
+	PROPERTIES
+	LINKER_LANGUAGE CXX
 	ARCHIVE_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}
 	ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}
 	ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}
@@ -101,33 +101,33 @@ set_target_properties(libvizdoom_static libvizdoom_shared
 	RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}
 	OUTPUT_NAME vizdoom)
 
-    add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
+	add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
 
 #Python binding	
 if(BUILD_PYTHON)
 
-    #set(Boost_USE_DEBUG_PYTHON OFF)
-    
-    find_package(PythonInterp 2.7 REQUIRED)
-    find_package(PythonLibs 2.7 REQUIRED)
+	#set(Boost_USE_DEBUG_PYTHON OFF)
+
+	find_package(PythonInterp 2.7 REQUIRED)
+	find_package(PythonLibs 2.7 REQUIRED)
 	find_package(NumPy REQUIRED)
-    find_package(Boost COMPONENTS python REQUIRED)
+	find_package(Boost COMPONENTS python REQUIRED)
 
 	set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
-    set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
+	set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
 
-    set(VIZDOOM_PYTHON_LIBS 
-        ${VIZDOOM_LIBS}
+	set(VIZDOOM_PYTHON_LIBS
+		${VIZDOOM_LIBS}
 		${Boost_PYTHON_LIBRARY}
-        ${PYTHON_LIBRARIES}
+		${PYTHON_LIBRARIES}
 		${NUMPY_LIBRARIES})
-        
-    include_directories(${VIZDOOM_PYTHON_INCLUDE_DIR}
-                        ${Boost_INCLUDE_DIR} 
-                        ${PYTHON_INCLUDE_DIR}
+
+	include_directories(${VIZDOOM_PYTHON_INCLUDE_DIR}
+						${Boost_INCLUDE_DIR}
+						${PYTHON_INCLUDE_DIR}
 						${NUMPY_INCLUDES})  
 
-    set(VIZDOOM_PYTHON_SOURCES
+	set(VIZDOOM_PYTHON_SOURCES
 		${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomPythonBinding.cpp
 		${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.cpp)
 	
@@ -135,11 +135,11 @@ if(BUILD_PYTHON)
 		add_definitions(-DBOOST_PYTHON_STATIC_LIB)
 	endif()
 
-    python_add_module(libvizdoom_python ${VIZDOOM_PYTHON_SOURCES})
-    target_link_libraries (libvizdoom_python ${VIZDOOM_PYTHON_LIBS} libvizdoom_static)
+	python_add_module(libvizdoom_python ${VIZDOOM_PYTHON_SOURCES})
+	target_link_libraries (libvizdoom_python ${VIZDOOM_PYTHON_LIBS} libvizdoom_static)
 
-    set_target_properties(libvizdoom_python
-        PROPERTIES
+	set_target_properties(libvizdoom_python
+		PROPERTIES
 		LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/python
 		LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/python
 		LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/python
@@ -150,36 +150,36 @@ if(BUILD_PYTHON)
 		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/python
 		RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/python
 		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/python
-        OUTPUT_NAME vizdoom)
-    
-    if(UNIX)
-        ADD_CUSTOM_COMMAND( 
-            TARGET libvizdoom_python
-            COMMAND ln -sf ${VIZDOOM_OUTPUT_DIR}/python/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/vizdoom.so
-            COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/bots.cfg
-            COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/python.")
-    endif()
-        
+		OUTPUT_NAME vizdoom)
+
+	if(UNIX)
+		ADD_CUSTOM_COMMAND(
+			TARGET libvizdoom_python
+			COMMAND ln -sf ${VIZDOOM_OUTPUT_DIR}/python/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/vizdoom.so
+			COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/bots.cfg
+			COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/python.")
+	endif()
+
 endif()
 
 #Java binding
 if(BUILD_JAVA)
 
-    if (NOT DEFINED ENV{JAVA_HOME})
-        message(FATAL_ERROR "JAVA_HOME environment variable is not set.")
-    endif()
-        
-    find_package(Java REQUIRED)
-    find_package(JNI REQUIRED)
+	if (NOT DEFINED ENV{JAVA_HOME})
+		message(FATAL_ERROR "JAVA_HOME environment variable is not set.")
+	endif()
+
+	find_package(Java REQUIRED)
+	find_package(JNI REQUIRED)
 	
-    include(UseJava)
+	include(UseJava)
 	set(VIZDOOM_JAVA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_java)
-    set(VIZDOOM_JAVA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_JAVA_SRC_DIR})
-    
-    set(VIZDOOM_JAVA_LIBS 
-        ${VIZDOOM_LIBS}  
-        ${Java_LIBRARIES}
-        ${JNI_LIBRARIES})
+	set(VIZDOOM_JAVA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_JAVA_SRC_DIR})
+
+	set(VIZDOOM_JAVA_LIBS
+		${VIZDOOM_LIBS}
+		${Java_LIBRARIES}
+		${JNI_LIBRARIES})
 		
 	if( UNIX )
 		set(JNI_INCLUDE_DIR ${JNI_INCLUDE_DIR}
@@ -192,49 +192,49 @@ if(BUILD_JAVA)
 			${_JAVA_HOME}/include
 			${_JAVA_HOME}/include/win32 )
 	endif()	
-        
-    include_directories(${VIZDOOM_JAVA_INCLUDE_DIR} 
-                        ${Boost_INCLUDE_DIR}
-                        ${Java_INCLUDE_DIRS} 
-                        ${JNI_INCLUDE_DIR} )  
 
-    set(VIZDOOM_JAVA_SOURCES ${VIZDOOM_JAVA_SRC_DIR}/ViZDoomGameJava.cpp)
+	include_directories(${VIZDOOM_JAVA_INCLUDE_DIR}
+						${Boost_INCLUDE_DIR}
+						${Java_INCLUDE_DIRS}
+						${JNI_INCLUDE_DIR} )
 
-    add_library(libvizdoom_java SHARED ${VIZDOOM_JAVA_SOURCES})
-    target_link_libraries (libvizdoom_java ${VIZDOOM_JAVA_LIBS} libvizdoom_static)
+	set(VIZDOOM_JAVA_SOURCES ${VIZDOOM_JAVA_SRC_DIR}/ViZDoomGameJava.cpp)
+
+	add_library(libvizdoom_java SHARED ${VIZDOOM_JAVA_SOURCES})
+	target_link_libraries (libvizdoom_java ${VIZDOOM_JAVA_LIBS} libvizdoom_static)
 	
 	set_target_properties(libvizdoom_java
-	    PROPERTIES
-	    LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/java
-	    LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/java
-	    LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/java
-	    LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/java
-	    LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/java
-	    RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/java
-	    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/java
-	    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/java
-	    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/java
-	    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/java
-	    OUTPUT_NAME vizdoom)
-	
-    add_jar(libvizdoom_java_classes
-	    ${VIZDOOM_JAVA_SRC_DIR}/enums/Button.java
-	    ${VIZDOOM_JAVA_SRC_DIR}/enums/GameVariable.java
-	    ${VIZDOOM_JAVA_SRC_DIR}/enums/Mode.java
-	    ${VIZDOOM_JAVA_SRC_DIR}/enums/ScreenFormat.java
-	    ${VIZDOOM_JAVA_SRC_DIR}/enums/ScreenResolution.java
-	    ${VIZDOOM_JAVA_SRC_DIR}/errors/ViZDoomMismatchedVersionException.java
-	    ${VIZDOOM_JAVA_SRC_DIR}/errors/ViZDoomErrorException.java
-        ${VIZDOOM_JAVA_SRC_DIR}/errors/ViZDoomIsNotRunningException.java
-	    ${VIZDOOM_JAVA_SRC_DIR}/errors/ViZDoomUnexpectedExitException.java
-	    ${VIZDOOM_JAVA_SRC_DIR}/errors/MessageQueueException.java
-	    ${VIZDOOM_JAVA_SRC_DIR}/errors/FileDoesNotExistException.java
-	    ${VIZDOOM_JAVA_SRC_DIR}/errors/SharedMemoryException.java
-	    ${VIZDOOM_JAVA_SRC_DIR}/GameState.java
-        ${VIZDOOM_JAVA_SRC_DIR}/DoomGame.java
-  	    OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/java 
+		PROPERTIES
+		LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/java
+		LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/java
+		LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/java
+		LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/java
+		LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/java
+		RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/java
+		RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/java
+		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/java
+		RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/java
+		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/java
 		OUTPUT_NAME vizdoom)
-        	
+	
+	add_jar(libvizdoom_java_classes
+		${VIZDOOM_JAVA_SRC_DIR}/enums/Button.java
+		${VIZDOOM_JAVA_SRC_DIR}/enums/GameVariable.java
+		${VIZDOOM_JAVA_SRC_DIR}/enums/Mode.java
+		${VIZDOOM_JAVA_SRC_DIR}/enums/ScreenFormat.java
+		${VIZDOOM_JAVA_SRC_DIR}/enums/ScreenResolution.java
+		${VIZDOOM_JAVA_SRC_DIR}/errors/ViZDoomMismatchedVersionException.java
+		${VIZDOOM_JAVA_SRC_DIR}/errors/ViZDoomErrorException.java
+		${VIZDOOM_JAVA_SRC_DIR}/errors/ViZDoomIsNotRunningException.java
+		${VIZDOOM_JAVA_SRC_DIR}/errors/ViZDoomUnexpectedExitException.java
+		${VIZDOOM_JAVA_SRC_DIR}/errors/MessageQueueException.java
+		${VIZDOOM_JAVA_SRC_DIR}/errors/FileDoesNotExistException.java
+		${VIZDOOM_JAVA_SRC_DIR}/errors/SharedMemoryException.java
+		${VIZDOOM_JAVA_SRC_DIR}/GameState.java
+		${VIZDOOM_JAVA_SRC_DIR}/DoomGame.java
+		OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/java
+		OUTPUT_NAME vizdoom)
+
 endif()
 
 #if( WIN32 )
@@ -247,7 +247,7 @@ endif()
 #endif()
 
 if(UNIX)
-    add_custom_target( freedoom2 ALL
-        COMMAND ./download_freedoom.sh
-    )
+	add_custom_target( freedoom2 ALL
+		COMMAND ./download_freedoom.sh
+	)
 endif()

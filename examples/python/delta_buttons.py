@@ -12,13 +12,12 @@ game = DoomGame()
 
 game.set_vizdoom_path("../../bin/vizdoom")
 
-game.set_doom_game_path("../../scenarios/freedoom2.wad")
-game.set_doom_game_path("../../scenarios/doom2.wad")   # Not provided with environment due to licences.
+game.set_doom_game_path("../../examples/scenarios/freedoom2.wad")
+#game.set_doom_game_path("../../examples/scenarios/doom2.wad")  # Not provided with environment due to licences.
 
 game.set_doom_map("map01")
 
 game.set_screen_resolution(ScreenResolution.RES_640X480)
-
 
 # Adds delta buttons that will be allowed and set the maximum allowed value (optional).
 game.add_available_button(Button.MOVE_FORWARD_BACKWARD_DELTA, 10)
@@ -51,31 +50,31 @@ episodes = 10
 sleep_time = 0.028
 
 for i in range(episodes):
-	print("Episode #" + str(i+1))
+    print("Episode #" + str(i+1))
 
-	game.new_episode()
+    game.new_episode()
 
-	while not game.is_episode_finished():
+    while not game.is_episode_finished():
 
-		s = game.get_state()
-		r = game.make_action(action)
+        s = game.get_state()
+        r = game.make_action(action)
 
-		t = game.get_episode_time()
+        t = game.get_episode_time()
 
-		action[0] = t % 100 - 50
-		action[1] = t % 100 - 50
-		action[2] = t % 100 - 50
-		if not t % 25:
-		    action[3] = -action[3]
+        action[0] = t % 100 - 50
+        action[1] = t % 100 - 50
+        action[2] = t % 100 - 50
+        if not t % 25:
+            action[3] = -action[3]
 
-		print("State #" + str(s.number))
-		print("=====================")
+        print("State #" + str(s.number))
+        print("=====================")
 
-		if sleep_time>0:
-			sleep(sleep_time)
+        if sleep_time>0:
+            sleep(sleep_time)
 
-	print("Episode finished.")
-	print("************************")
+    print("Episode finished.")
+    print("************************")
 
 game.close()
 
