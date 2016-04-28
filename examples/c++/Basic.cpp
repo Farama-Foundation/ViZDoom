@@ -58,6 +58,12 @@ int main() {
     // Makes the window appear (turned on by default)
     game->setWindowVisible(true);
 
+    // Turns on the sound. (turned off by default)
+    game->setSoundEnabled(true);
+
+    // Sets ViZDoom mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR, PLAYER mode is default)
+    game->setMode(PLAYER);
+
     // Initialize the game. Further configuration won't take any effect from now on.
     game->init();
 

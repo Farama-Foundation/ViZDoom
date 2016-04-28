@@ -1,5 +1,9 @@
-Use CMake to generate Makefile or project.
-Examples will be build in ``vizdoom_root_dir/bin/examples``.
+##Building
+```
+cmake . && make
+```
+
+Examples will be placed in ``<vizdoom_dir>/bin/examples``.
 
 To run the examples, [freedoom2.wad]( https://freedoom.github.io/download.html) should be placed in the ``scenarios`` subdirectory.
 
@@ -16,7 +20,7 @@ Demonstrates how to configure and play multiplayer game for CIG 2016 competition
 Demonstrates how to play with bots to simulate multiplayer game. Helpful for developing AI agent for CIG 2016 competition.
 
 ###[DeltaButtons.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/c++/DeltaButtons.cpp)
-Shows how delta buttons work(they may take values other than 0 and 1 and can be used for precise movement)
+Shows how delta buttons work (they may take values other than 0 and 1 and can be used for precise movement).
 
 ###[Multiplayer.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/c++/Multiplayer.cpp), [MultiplayerHost.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/c++/MultiplayerHost.cpp)
 Demonstrates how to configure and play multiplayer game.

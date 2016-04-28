@@ -1,3 +1,4 @@
+# CMake and building output
 /bin
 Makefile
 ImportExecutables.cmake
@@ -8,69 +9,66 @@ ImportExecutables.cmake
 
 *~
 **.o
+**.a
 **.so
+**.lib
+**.dll
+**.exp
 **/build
 **/CMakeCache.txt
 **/CMakeFiles
 **/CMakeScripts
 **/cmake_install.cmake
 **/install_manifest.txt
-.idea
+
+# MSVC
+**.sln
+**.suo
+**.sdf
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
 
 # Python 
+**.pyd
 **.pyc
 
 # Java
+**.jar
 **.class
 
-# ZDoom
-# Copied from the original zdoom repository (and modified)
-/Debug
+# Copied from the original ZDoom repository (and modified)
+**/Debug
+**/Release
+**/debug
+**/release
 **.ncb
 **.suo
 **.pdb
 **.ilk
 **.aps
-/Release
-/wadsrc_wad
+**/wadsrc_wad
 **.user
-/debug
-/release
-**/debug
-**/release
-/release_gcc
-*/dumb/vc6/dumb_static/release
-*/dumb/vc6/dumb_static/debug
-*/dumb/vc6/dumb_static/x64
-*/DOOMSTATS.TXT
-*/src/sc_man_scanner.h
-*/src/xlat_parser.c
-*/src/xlat_parser.h
-*/src/xlat/xlat_parser.out
-/tools/*/debug
-/tools/*/release
-/tools/*/*.exe
-*/tools/lemon/lemon
-*/tools/re2c/re2c
-*/tools/updaterevision/
-*/tools/zipdir/x64
-/game-music-emu/x64/
-**/zdoom
-**/zdoom.pk3
+**/DOOMSTATS.TXT
+vizdoom_src/src/sc_man_scanner.h
+vizdoom_src/src/xlat_parser.c
+vizdoom_src/src/xlat_parser.h
+vizdoom_src/src/xlat/xlat_parser.out
+vizdoom_src/tools/*/debug
+vizdoom_src/tools/*/release
+vizdoom_src/tools/*/*.exe
+vizdoom_src/tools/lemon/lemon
+vizdoom_src/tools/re2c/re2c
+vizdoom_src/tools/updaterevision/
+vizdoom_src/tools/zipdir/x64
+vizdoom_src/game-music-emu/x64/
+vizdoom_src/dumb/libdumb.a
+vizdoom_src/gdtoa
+vizdoom_src/game-music-emu/gme/libgme.a
+vizdoom_src/lzma/liblzma.a
+vizdoom_src/tools/zipdir/zipdir
 
-# not sure if should be ignored:
-*/dumb/libdumb.a
-*/gdtoa
-*/game-music-emu/gme/libgme.a
-*/lzma/liblzma.a
-*/tools/zipdir/zipdir
-**/*.log
-**/example
-
-**/link-make
-**/mytester.py
-
-# Licensed wads, scenarios backups and personal configurations
+# Game wads, scenarios backups and personal configurations
 **.bak
 **/doom2.wad
 **/doom.wad
@@ -78,5 +76,5 @@ ImportExecutables.cmake
 **/freedoom2.wad
 **/freedoom1.wad
 **/freedm.wad
-
 **.bcp
+.idea

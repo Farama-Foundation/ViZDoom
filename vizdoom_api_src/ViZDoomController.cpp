@@ -80,6 +80,7 @@ namespace vizdoom {
         this->windowHidden = false;
         this->noXServer = false;
         this->noConsole = true;
+        this->noSound = true;
 
         /* Map time */
         this->mapStartTime = 1;
@@ -424,7 +425,11 @@ namespace vizdoom {
     }
 
     void DoomController::setNoConsole(bool console) {
-        if(!this->doomRunning) this->noConsole=console;
+        if(!this->doomRunning) this->noConsole = console;
+    }
+
+    void DoomController::setNoSound(bool sound) {
+        if(!this->doomRunning) this->noSound = sound;
     }
 
     void DoomController::setScreenResolution(unsigned int width, unsigned int height) {
@@ -853,7 +858,8 @@ namespace vizdoom {
 
         //map
         this->doomArgs.push_back("+map");
-        this->doomArgs.push_back(this->map);
+        if(this->map.length() > 0) this->doomArgs.push_back(this->map);
+        else this->doomArgs.push_back("map01");
 
         //skill
         this->doomArgs.push_back("-skill");
@@ -963,10 +969,16 @@ namespace vizdoom {
         this->doomArgs.push_back("+wipetype");
         this->doomArgs.push_back("0");
 
-        //no sound/idle/joy
+        //idle/joy
         this->doomArgs.push_back("-noidle");
         this->doomArgs.push_back("-nojoy");
-        this->doomArgs.push_back("-nosound");
+
+        //sound
+        if(this->noSound){
+            this->doomArgs.push_back("-nosound");
+            this->doomArgs.push_back("+vizdoom_no_sound");
+            this->doomArgs.push_back("1");
+        }
 
         //35 fps and no vsync
         this->doomArgs.push_back("+cl_capfps");

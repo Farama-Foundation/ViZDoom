@@ -418,9 +418,10 @@ namespace vizdoom {
         this->doomController->setNoXServer(!visibility);
         this->doomController->setWindowHidden(!visibility);
     }
-    void DoomGame::setConsoleEnabled(bool console) {
-        this->doomController->setNoConsole(!console);
-    }
+
+    void DoomGame::setConsoleEnabled(bool console) { this->doomController->setNoConsole(!console); }
+    void DoomGame::setSoundEnabled(bool sound) { this->doomController->setNoSound(!sound); }
+
     int DoomGame::getScreenWidth() { return this->doomController->getScreenWidth(); }
     int DoomGame::getScreenHeight() { return this->doomController->getScreenHeight(); }
     int DoomGame::getScreenChannels() { return this->doomController->getScreenChannels(); }
@@ -907,6 +908,10 @@ namespace vizdoom {
             try{
                 if (key =="console_enabled" || key =="consoleenabled"){
                     this->setConsoleEnabled(StringToBool(val));
+                    continue;
+                }
+                if (key =="sound_enabled" || key =="soundenabled"){
+                    this->setSoundEnabled(StringToBool(val));
                     continue;
                 }
                 if (key =="render_hud" || key =="renderhud"){
