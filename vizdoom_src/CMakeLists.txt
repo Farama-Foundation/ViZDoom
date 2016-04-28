@@ -1,5 +1,5 @@
-cmake_minimum_required( VERSION 2.4 )
-project(ViZDoom)
+cmake_minimum_required( VERSION 2.8 )
+project( ViZDoom )
 
 if( COMMAND cmake_policy )
 	if( POLICY CMP0011 )
@@ -33,6 +33,9 @@ if(CMAKE_CROSSCOMPILING)
 	include(${IMPORT_EXECUTABLES})
 endif(CMAKE_CROSSCOMPILING)
 
+set( ZDOOM_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../bin CACHE PATH "Directory where zdoom.pk3 and the executable will be created." )
+set( ZDOOM_EXE_NAME "vizdoom" CACHE FILEPATH "Name of the executable to create." )
+
 # Simplify pk3 building, add_pk3(filename srcdirectory)
 function( add_pk3 PK3_NAME PK3_DIR )
 	# Generate target name. Just use "pk3" for main pk3 target.
@@ -41,16 +44,16 @@ function( add_pk3 PK3_NAME PK3_DIR )
 		set( PK3_TARGET "pk3" )
 	endif( ${PK3_TARGET} STREQUAL "vizdoom_pk3" )
 
-	if( NOT NO_GENERATOR_EXPRESSIONS AND NOT ZDOOM_OUTPUT_OLDSTYLE )
+	if( NOT NO_GENERATOR_EXPRESSIONS )
 		add_custom_command( OUTPUT ${ZDOOM_OUTPUT_DIR}/${PK3_NAME}
 			COMMAND zipdir -udf ${ZDOOM_OUTPUT_DIR}/${PK3_NAME} ${PK3_DIR}
 			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ZDOOM_OUTPUT_DIR}/${PK3_NAME} $<TARGET_FILE_DIR:vizdoom>/${PK3_NAME}
 			DEPENDS zipdir )
-	else( NOT NO_GENERATOR_EXPRESSIONS AND NOT ZDOOM_OUTPUT_OLDSTYLE )
+	else( NOT NO_GENERATOR_EXPRESSIONS )
 		add_custom_command( OUTPUT ${ZDOOM_OUTPUT_DIR}/${PK3_NAME}
 			COMMAND zipdir -udf ${ZDOOM_OUTPUT_DIR}/${PK3_NAME} ${PK3_DIR}
 			DEPENDS zipdir )
-	endif( NOT NO_GENERATOR_EXPRESSIONS AND NOT ZDOOM_OUTPUT_OLDSTYLE )
+	endif( NOT NO_GENERATOR_EXPRESSIONS )
 
 	if( NOT NO_GENERATOR_EXPRESSIONS )
 		# Touch the zipdir executable here so that the pk3s are forced to
@@ -76,16 +79,6 @@ IF( NOT CMAKE_BUILD_TYPE )
 		"Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel."
 		FORCE )
 ENDIF( NOT CMAKE_BUILD_TYPE )
-
-set( ZDOOM_OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin CACHE PATH "Directory where zdoom.pk3 and the executable will be created." )
-set( ZDOOM_EXE_NAME "vizdoom" CACHE FILEPATH "Name of the executable to create." )
-if( MSVC )
-	# Allow the user to use ZDOOM_OUTPUT_DIR as a single release point.
-	# Use zdoom, zdoomd, zdoom64, and zdoomd64 for the binary names
-	option( ZDOOM_OUTPUT_OLDSTYLE "Don't use Release/Debug directories." OFF )
-else( MSVC )
-	set( ZDOOM_OUTPUT_OLDSTYLE OFF )
-endif( MSVC )
 
 # Replacement variables for a possible long list of C/C++ compilers compatible with GCC
 if( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_C_COMPILER_ID}" STREQUAL "Clang" )

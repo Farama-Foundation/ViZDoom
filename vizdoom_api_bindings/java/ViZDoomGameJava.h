@@ -216,8 +216,6 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isPlayerDead
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_respawnPlayer
   (JNIEnv *, jobject);
 
-
-
 /*
  * Class:     DoomGame
  * Method:    addAvailableButton
@@ -568,6 +566,14 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setWindowVisible
  * Signature: (Z)V
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setConsoleEnabled
+  (JNIEnv *, jobject, jboolean);
+
+/*
+ * Class:     DoomGame
+ * Method:    setSoundEnabled
+ * Signature: (Z)V
+ */
+JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setSoundEnabled
   (JNIEnv *, jobject, jboolean);
 
 /*

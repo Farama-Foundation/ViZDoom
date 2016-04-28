@@ -126,6 +126,7 @@ namespace vizdoom {
         void setRenderParticles(bool particles);
         void setWindowVisible(bool visibility);
         void setConsoleEnabled(bool console);
+        void setSoundEnabled(bool sound);
 
         int getScreenWidth();
         int getScreenHeight();

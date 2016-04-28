@@ -14,9 +14,15 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 * Access to the depth buffer (3D vision)
 * Off-screen rendering,
 * Lightweight (few MBs),
-* Supports Linux and Windows.
+* Multi-platform
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
+
+## Planned features (ready in June)
+* Lua bindings,
+* Multi-player working in sync mode,
+* Labeling game objects visible in the frame,
+* Time scaling in async mode.
 
 ---
 ## Building
@@ -29,7 +35,7 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 * GCC 4.6+
 * Boost libraires
 * Python 2.7+ with Numpy and Boost.Python for Python binding (optional)
-* JDK for Java binding (optional)
+* JDK for Java binding (JAVA_HOME must be set) (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
@@ -40,9 +46,7 @@ cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON
 make
 ```
 
-``-DBUILD_PYTHON=ON/OFF`` and ``-DBUILD_JAVA=ON/OFF`` CMake options for Python and Java bindings are optional (default OFF).
-
-Also, for Java binding JAVA_HOME environment variable must be set.
+``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` CMake options for Python and Java bindings are optional (default OFF).
 
 ###Windows
 
@@ -53,7 +57,7 @@ We are providing compiled runtime binaries and development libraries for Windows
 * Visual Studio 2012+
 * Boost libraires
 * Python 2.7+ with Numpy and Boost.Python for Python binding (optional)
-* JDK for Java binding (optional)
+* JDK for Java binding (JAVA_HOME must be set) (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Windows) are needed.
 
@@ -64,22 +68,36 @@ Run CMake GUI, select ViZDoom's root directory and set paths to:
 * BOOST_LIBRARYDIR
 * PYTHON_INCLUDE_DIR (optional)
 * PYTHON_LIBRARY (optional)
+* NUMPY_INCLUDES (optional)
 * ZDoom dependencies paths
+
+In configuration select BUILD_PYTHON and BUILD_JAVA options for Python and Java bindings (optional, default OFF).
 
 Use generated Visual Studio solution to build all ViZDoom's parts.
 
 ###OSX
-Untested, code should be compatible, CMake may need minor adjustments.
+Untested, code is compatible, CMake still may need minor adjustments.
 Let us know if You are using ViZDoom on OSX.
 
-####Compiling
-Users with brew-installed python may need to manually set the python library path for cmake:
+####Dependencies
+* CMake 3.0+
+* XCode 5+
+* Boost libraires
+* Python 2.7+ with Numpy and Boost.Python for Python binding (optional)
+* JDK for Java binding (JAVA_HOME must be set) (optional)
 
--DPYTHON_LIBRARY=/usr/local/Cellar/python/2.x.x/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib
+Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X) are needed.
+
+####Compiling
+Run CMake and use generated project.
+
+Users with brew-installed Python may need to manually set:
+``-DPYTHON_INCLUDE_DIR=/usr/local/Cellar/python/2.x.x/Frameworks/Python.framework/Versions/2.7/include`` and 
+``-DPYTHON_LIBRARY=/usr/local/Cellar/python/2.x.x/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib``
 
 ####Configuration
-Manually link the app executable:
-`rm bin/vizdoom && ln -s vizdoom.app/Contents/MacOS/vizdoom bin/vizdoom`
+Craeting symlink to the app executable may be need:
+``rm bin/vizdoom && ln -s vizdoom.app/Contents/MacOS/vizdoom bin/vizdoom``
 
 ###Compilation output
 Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should contain following files (Windows names are in brackets):
