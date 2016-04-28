@@ -8,7 +8,7 @@ if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 
 # System dependent settings    
 if(UNIX)
@@ -48,16 +48,17 @@ if(MSVC)
 	string(REPLACE "/MDd " "/MTd " CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
 endif()
 
-set(VIZDOOM_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 # Targets
-add_subdirectory(vizdoom_src)
 
 find_package(Boost COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
 find_package(Threads REQUIRED)
 
-set(VIZDOOM_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vizdoom_api_src)
-set(VIZDOOM_INCLUDE_DIR ${VIZDOOM_SRC_DIR})
+set(VIZDOOM_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+set(VIZDOOM_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(VIZDOOM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include ${VIZDOOM_SRC_DIR}/lib)
+
+set(VIZDOOM_LIB_SRC_DIR ${VIZDOOM_SRC_DIR}/lib)
 
 include_directories(${VIZDOOM_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
 
@@ -70,18 +71,19 @@ if(UNIX AND NOT APPLE)
 endif()	
     
 set(VIZDOOM_API_SOURCES
-	${VIZDOOM_SRC_DIR}/ViZDoomUtilities.cpp
-	${VIZDOOM_SRC_DIR}/ViZDoomController.cpp
-	${VIZDOOM_SRC_DIR}/ViZDoomGame.cpp)
+	${VIZDOOM_LIB_SRC_DIR}/ViZDoomUtilities.cpp
+	${VIZDOOM_LIB_SRC_DIR}/ViZDoomController.cpp
+	${VIZDOOM_LIB_SRC_DIR}/ViZDoomGame.cpp)
 
-add_library(vizdoomstatic STATIC ${VIZDOOM_API_SOURCES})
-target_link_libraries (vizdoomstatic ${VIZDOOM_LIBS})
+add_library(libvizdoom_static STATIC ${VIZDOOM_API_SOURCES})
+target_link_libraries (libvizdoom_static ${VIZDOOM_LIBS})
 
-add_library(vizdoomshared SHARED ${VIZDOOM_API_SOURCES})
-target_link_libraries (vizdoomshared ${VIZDOOM_LIBS})
+add_library(libvizdoom_shared SHARED ${VIZDOOM_API_SOURCES})
+target_link_libraries (libvizdoom_shared ${VIZDOOM_LIBS})
 
-set_target_properties(vizdoomstatic vizdoomshared
+set_target_properties(libvizdoom_static libvizdoom_shared
     PROPERTIES
+    LINKER_LANGUAGE CXX
 	ARCHIVE_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}
 	ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}
 	ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}
@@ -99,6 +101,8 @@ set_target_properties(vizdoomstatic vizdoomshared
 	RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}
 	OUTPUT_NAME vizdoom)
 
+    add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
+
 #Python binding	
 if(BUILD_PYTHON)
 
@@ -109,7 +113,7 @@ if(BUILD_PYTHON)
 	find_package(NumPy REQUIRED)
     find_package(Boost COMPONENTS python REQUIRED)
 
-	set(VIZDOOM_PYTHON_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vizdoom_api_bindings/python)
+	set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
     set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
 
     set(VIZDOOM_PYTHON_LIBS 
@@ -131,10 +135,10 @@ if(BUILD_PYTHON)
 		add_definitions(-DBOOST_PYTHON_STATIC_LIB)
 	endif()
 
-    python_add_module(vizdoompython ${VIZDOOM_PYTHON_SOURCES})
-    target_link_libraries (vizdoompython ${VIZDOOM_PYTHON_LIBS} vizdoomstatic)
+    python_add_module(libvizdoom_python ${VIZDOOM_PYTHON_SOURCES})
+    target_link_libraries (libvizdoom_python ${VIZDOOM_PYTHON_LIBS} libvizdoom_static)
 
-    set_target_properties(vizdoompython
+    set_target_properties(libvizdoom_python
         PROPERTIES
 		LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/python
 		LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/python
@@ -150,7 +154,7 @@ if(BUILD_PYTHON)
     
     if(UNIX)
         ADD_CUSTOM_COMMAND( 
-            TARGET vizdoompython
+            TARGET libvizdoom_python
             COMMAND ln -sf ${VIZDOOM_OUTPUT_DIR}/python/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/vizdoom.so
             COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/bots.cfg
             COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/python.")
@@ -169,7 +173,7 @@ if(BUILD_JAVA)
     find_package(JNI REQUIRED)
 	
     include(UseJava)
-	set(VIZDOOM_JAVA_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vizdoom_api_bindings/java)
+	set(VIZDOOM_JAVA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_java)
     set(VIZDOOM_JAVA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_JAVA_SRC_DIR})
     
     set(VIZDOOM_JAVA_LIBS 
@@ -196,10 +200,10 @@ if(BUILD_JAVA)
 
     set(VIZDOOM_JAVA_SOURCES ${VIZDOOM_JAVA_SRC_DIR}/ViZDoomGameJava.cpp)
 
-    add_library(vizdoomjava SHARED ${VIZDOOM_JAVA_SOURCES})
-    target_link_libraries (vizdoomjava ${VIZDOOM_JAVA_LIBS} vizdoomstatic)
+    add_library(libvizdoom_java SHARED ${VIZDOOM_JAVA_SOURCES})
+    target_link_libraries (libvizdoom_java ${VIZDOOM_JAVA_LIBS} libvizdoom_static)
 	
-	set_target_properties(vizdoomjava
+	set_target_properties(libvizdoom_java
 	    PROPERTIES
 	    LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/java
 	    LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/java
@@ -213,7 +217,7 @@ if(BUILD_JAVA)
 	    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/java
 	    OUTPUT_NAME vizdoom)
 	
-    add_jar(vizdoomjavajar
+    add_jar(libvizdoom_java_classes
 	    ${VIZDOOM_JAVA_SRC_DIR}/enums/Button.java
 	    ${VIZDOOM_JAVA_SRC_DIR}/enums/GameVariable.java
 	    ${VIZDOOM_JAVA_SRC_DIR}/enums/Mode.java
