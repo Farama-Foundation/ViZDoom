@@ -4,7 +4,7 @@
 # This script presents how to make use of game variables to implement
 # shaping using health_guided.wad scenario
 # Health_guided scenario is just like health_gathering 
-# (see "../../scenarios/README") but for each collected medkit global
+# (see "../../examples/scenarios/README") but for each collected medkit global
 # variable number 1 in acs script (coresponding to USER1) is increased
 # by 100.0. It is not considered a part of reward but will possibly
 # reduce learning time.
@@ -27,7 +27,7 @@ game = DoomGame()
 # Don't load two configs cause the second will overrite the first one.
 # Multiple config files are ok but combining these ones doesn't make much sense.
 
-game.load_config("../config/health_gathering.cfg")
+game.load_config("../../examples/config/health_gathering.cfg")
 #game.set_screen_resolution(ScreenResolution.RES_640X480)
 
 game.init()
@@ -45,39 +45,38 @@ last_total_shaping_reward = 0
 
 for i in range(episodes):
 
-	print("Episode #" + str(i+1))
-	# Not needed for the first episdoe but the loop is nicer.
-	game.new_episode()
-	while not game.is_episode_finished():
-		
+    print("Episode #" + str(i+1))
+    # Not needed for the first episdoe but the loop is nicer.
+    game.new_episode()
+    while not game.is_episode_finished():
 
-		# Gets the state and possibly to something with it
-		s = game.get_state()
-		img = s.image_buffer
-		misc = s.game_variables
 
-		# Makes a random action and save the reward.
-		r = game.make_action(choice(actions))
-		
-		# Retrieve the shaping reward 
-		sr = doom_fixed_to_double(game.get_game_variable(GameVariable.USER1))
-		sr = sr - last_total_shaping_reward
-		last_total_shaping_reward += sr
+        # Gets the state and possibly to something with it
+        s = game.get_state()
+        img = s.image_buffer
+        misc = s.game_variables
 
-		print("State #" +str(s.number))
-		print("Health:", misc[0])
-		print("Last Reward:", r)
-		print("Last Shaping Reward:", sr)
-		print("=====================")
+        # Makes a random action and save the reward.
+        r = game.make_action(choice(actions))
 
-		# Sleep some time because processing is too fast to watch.
-		if sleep_time>0:
-			sleep(sleep_time)
+        # Retrieve the shaping reward
+        sr = doom_fixed_to_double(game.get_game_variable(GameVariable.USER1))
+        sr = sr - last_total_shaping_reward
+        last_total_shaping_reward += sr
 
-	print("Episode finished!")
-	print("total reward:", game.get_total_reward())
-	print("************************")
+        print("State #" +str(s.number))
+        print("Health:", misc[0])
+        print("Last Reward:", r)
+        print("Last Shaping Reward:", sr)
+        print("=====================")
 
+        # Sleep some time because processing is too fast to watch.
+        if sleep_time>0:
+            sleep(sleep_time)
+
+    print("Episode finished!")
+    print("total reward:", game.get_total_reward())
+    print("************************")
 
 game.close()
 
