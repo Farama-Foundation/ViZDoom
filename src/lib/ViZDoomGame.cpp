@@ -21,6 +21,7 @@
 */
 
 #include "ViZDoomGame.h"
+#include "ViZDoomController.h"
 #include "ViZDoomUtilities.h"
 #include "ViZDoomExceptions.h"
 

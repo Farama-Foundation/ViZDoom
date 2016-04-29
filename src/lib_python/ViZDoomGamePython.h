@@ -27,7 +27,6 @@
 
 #include "ViZDoomGame.h"
 
-#include <iostream>
 #include <vector>
 #include <Python.h>
 #include <boost/python.hpp>
@@ -39,7 +38,6 @@
 
 namespace vizdoom {
     using boost::python::api::object;
-/* C++ code to expose C arrays as python objects */
 
     struct GameStatePython {
         unsigned int number;

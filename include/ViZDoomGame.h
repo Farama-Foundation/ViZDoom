@@ -24,13 +24,14 @@
 #define __VIZDOOM_GAME_H__
 
 #include "ViZDoomDefines.h"
-#include "ViZDoomController.h"
 
 #include <string>
 #include <vector>
 #include <list>
 
 namespace vizdoom {
+
+    class DoomController;
 
     class DoomGame {
 
