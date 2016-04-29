@@ -4,7 +4,7 @@
 # This script presents how to make use of game variables to implement
 # shaping using health_guided.wad scenario
 # Health_guided scenario is just like health_gathering 
-# (see "../../examples/scenarios/README") but for each collected medkit global
+# (see "../../scenarios/README.md") but for each collected medkit global
 # variable number 1 in acs script (coresponding to USER1) is increased
 # by 100.0. It is not considered a part of reward but will possibly
 # reduce learning time.
@@ -28,7 +28,7 @@ game = DoomGame()
 # Multiple config files are ok but combining these ones doesn't make much sense.
 
 game.load_config("../../examples/config/health_gathering.cfg")
-#game.set_screen_resolution(ScreenResolution.RES_640X480)
+game.set_screen_resolution(ScreenResolution.RES_640X480)
 
 game.init()
 

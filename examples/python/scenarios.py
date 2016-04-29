@@ -6,7 +6,7 @@
 # <episodes> number of episodes are played. 
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
-# To see the scenario description go to "../../examples/scenarios/README"
+# To see the scenario description go to "../../scenarios/README.md"
 # 
 #####################################################################
 from __future__ import print_function

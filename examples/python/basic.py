@@ -6,7 +6,7 @@
 # <episodes> number of episodes are played. 
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
-# To see the scenario description go to "../../examples/scenarios/README"
+# To see the scenario description go to "../../scenarios/README.md"
 # 
 #####################################################################
 from __future__ import print_function
@@ -35,12 +35,12 @@ game = DoomGame()
 game.set_vizdoom_path("../../bin/vizdoom")
 
 # Sets path to doom2 iwad resource file which contains the actual doom game. Default is "./doom2.wad".
-game.set_doom_game_path("../../examples/scenarios/freedoom2.wad")
-#game.set_doom_game_path("../../examples/scenarios/doom2.wad")  # Not provided with environment due to licences.
+game.set_doom_game_path("../../scenarios/freedoom2.wad")
+#game.set_doom_game_path("../../scenarios/doom2.wad")  # Not provided with environment due to licences.
 
 # Sets path to additional resources iwad file which is basically your scenario iwad.
 # If not specified default doom2 maps will be used and it's pretty much useles... unless you want to play doom.
-game.set_doom_scenario_path("../../examples/scenarios/basic.wad")
+game.set_doom_scenario_path("../../scenarios/basic.wad")
 
 # Sets map to start (scenario .wad files can contain many maps).
 game.set_doom_map("map01")

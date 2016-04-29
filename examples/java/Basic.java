@@ -21,12 +21,12 @@ public class Basic {
         game.setViZDoomPath("../../bin/vizdoom");
 
         // Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".
-        game.setDoomGamePath("../../examples/scenarios/freedoom2.wad");
-        //game.setDoomGamePath("../../examples/scenarios/doom2.wad");   // Not provided with environment due to licences.
+        game.setDoomGamePath("../../scenarios/freedoom2.wad");
+        //game.setDoomGamePath("../../scenarios/doom2.wad");   // Not provided with environment due to licences.
 
         // Sets path to additional resources iwad file which is basically your scenario iwad.
         // If not specified default doom2 maps will be used and it's pretty much useles... unless you want to play doom.
-        game.setDoomScenarioPath("../../examples/scenarios/basic.wad");
+        game.setDoomScenarioPath("../../scenarios/basic.wad");
 
         // Set map to start (scenario .wad files can contain many maps).
         game.setDoomMap("map01");

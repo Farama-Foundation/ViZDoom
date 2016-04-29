@@ -12,8 +12,8 @@ game = DoomGame()
 
 game.set_vizdoom_path("../../bin/vizdoom")
 
-game.set_doom_game_path("../../examples/scenarios/freedoom2.wad")
-#game.set_doom_game_path("../../examples/scenarios/doom2.wad")  # Not provided with environment due to licences.
+game.set_doom_game_path("../../scenarios/freedoom2.wad")
+#game.set_doom_game_path("../../scenarios/doom2.wad")  # Not provided with environment due to licences.
 
 game.set_doom_map("map01")
 

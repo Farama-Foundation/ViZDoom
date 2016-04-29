@@ -16,8 +16,8 @@ public class MultiplayerHost {
         game.loadConfig("../../examples/config/multi.cfg");
 
         // Select game and map You want to use.
-        game.setDoomGamePath("../../examples/scenarios/freedoom2.wad");
-        //game.setDoomGamePath("../../examples/scenarios/doom2.wad");   // Not provided with environment due to licences.
+        game.setDoomGamePath("../../scenarios/freedoom2.wad");
+        //game.setDoomGamePath("../../scenarios/doom2.wad");   // Not provided with environment due to licences.
 
         // Host game.
         game.addGameArgs("-host 2 -deathmatch +map map01");
