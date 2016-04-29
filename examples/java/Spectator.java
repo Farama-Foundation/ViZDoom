@@ -29,9 +29,9 @@ public class Spectator {
         game.setScreenResolution(ScreenResolution.RES_640X480);
 
         // Select game and map You want to use.
-        game.setDoomGamePath("../../examples/scenarios/freedoom2.wad");
+        game.setDoomGamePath("../../scenarios/freedoom2.wad");
 
-        //game.setDoomGamePath("../../examples/scenarios/doom2.wad");
+        //game.setDoomGamePath("../../scenarios/doom2.wad");
         game.setViZDoomPath("../../bin/vizdoom");
 
         //Adds mouse support:

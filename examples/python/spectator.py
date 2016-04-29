@@ -5,7 +5,7 @@
 # your agent can learn from it.
 # Configuration is loaded from "../../examples/config/<SCENARIO_NAME>.cfg" file.
 # 
-# To see the scenario description go to "../../examples/scenarios/README"
+# To see the scenario description go to "../../scenarios/README.md"
 # 
 #####################################################################
 from __future__ import print_function
@@ -13,7 +13,6 @@ from vizdoom import *
 from time import sleep
 
 game = DoomGame()
-
 
 # Choose scenario config file you wish to watch.
 # Don't load two configs cause the second will overrite the first one.

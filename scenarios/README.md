@@ -1,14 +1,9 @@
-To test these scenarios:
-1. Build vizdoom and python wrapper.
-2. Read README there and do what it says.
-3. Run spectator.py. Edit the script accordingly to use different scenarios (uncommenting some lines).
-
-Scenarios Description:
+#Scenarios Description:
 
 Scenarios contained in iwad files do not support  action constraints, death penalty and living rewards.
 Every mention of any settings that are not included in iwads will be specified with "(config)".
 
-######################## BASIC ########################
+##BASIC
 The purpose of the scenario is just to check if using this
 framework to train some AI i 3D environment is feasible.
 
@@ -29,7 +24,7 @@ Further configuration:
 * 3 available buttons: move left, move right, shoot (attack)
 * timeout = 300
 
-######################## DEADLY CORRIDOR ########################
+##DEADLY CORRIDOR
 The purpose of this scenario is to teach the agent to navigate towards
 his fundamental goal (the vest) and make sure he survives at the 
 same time.
@@ -53,7 +48,7 @@ Further configuration:
 * doom_skill = 5
 
 
-######################## DEFEND THE CENTER ########################
+##DEFEND THE CENTER
 The purpose of this scenario is to teach the agent that killing the 
 monsters is GOOD and when monsters kill you is BAD. In addition,
 wasting amunition is not very good either. Agent is rewarded only 
@@ -72,7 +67,7 @@ Further configuration:
 * 3 available buttons: turn left, turn right, shoot (attack)
 * death penalty = 1
 
-######################## DEFEND THE LINE ########################
+##DEFEND THE LINE
 The purpose of this scenario is to teach the agent that killing the 
 monsters is GOOD and when monsters kill you is BAD. In addition,
 wasting amunition is not very good either. Agent is rewarded only 
@@ -92,7 +87,7 @@ Further configuration:
 * 3 available buttons: turn left, turn right, shoot (attack)
 * death penalty = 1
 
-######################## HEALTH GATHERING ########################
+##HEALTH GATHERING
 The purpose of this scenario is to teach the agent how to survive
 without knowing what makes him survive. Agent know only that life 
 is precious and death is bad so he must learn what prolongs his 
@@ -112,7 +107,7 @@ Further configuration:
 * 1  available game variable: HEALTH
 * death penalty = 100
 
-######################## MY WAY HOME ########################
+##MY WAY HOME
 The purpose of this scenario is to teach the agent how to navigate
 in a labirynth-like surroundings and reach his ultimate goal 
 (and learn what it actually is).
@@ -131,7 +126,7 @@ Further configuration:
 * living reward = -0.0001
 * timeout = 2100
 
-######################## PREDICT POSITION ########################
+##PREDICT POSITION
 The purpose of the scenario is teach agent to synchronize 
 missle weapon shot (involving a signifficant delay between 
 shooting and hitting) with target movements. Agent should be 
@@ -152,7 +147,7 @@ Further configuration:
 * 3 available buttons: move left, move right, shoot (attack)
 * timeout = 300
 
-######################## TAKE COVER ########################
+##TAKE COVER
 The purpose of this scenario is to teach agent to link incomming 
 missles with his estimated lifespan. Agent should learn that 
 being hit means health decrease and this in turn will lead to

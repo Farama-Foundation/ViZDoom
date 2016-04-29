@@ -19,8 +19,8 @@ public class Multiplayer {
         game.loadConfig("../../examples/config/multi.cfg");
 
         // Select game and map You want to use.
-        game.setDoomGamePath("../../examples/scenarios/freedoom2.wad");
-        //game.setDoomGamePath("../../examples/scenarios/doom2.wad");   // Not provided with environment due to licences.
+        game.setDoomGamePath("../../scenarios/freedoom2.wad");
+        //game.setDoomGamePath("../../scenarios/doom2.wad");   // Not provided with environment due to licences.
 
         // Join existing game (see MultiplayerHost.cpp example)
         game.addGameArgs("-join 127.0.0.1");        // Connect to a host for a multiplayer game.
