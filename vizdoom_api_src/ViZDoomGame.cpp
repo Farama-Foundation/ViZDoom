@@ -447,6 +447,7 @@ namespace vizdoom {
     }
 
     ScreenResolution DoomGame::StringToResolution(std::string str){
+
         if(str == "res_160x120")    return RES_160X120;
 
         if(str == "res_200x125")    return RES_200X125;
@@ -456,7 +457,7 @@ namespace vizdoom {
         if(str == "res_256x160")    return RES_256X160;
         if(str == "res_256x192")    return RES_256X192;
 
-        if(str == "res_320x240")    return RES_320X180;
+        if(str == "res_320x240")    return RES_320X240;
         if(str == "res_320x200")    return RES_320X200;
         if(str == "res_320x240")    return RES_320X240;
         if(str == "res_320x240")    return RES_320X256;
