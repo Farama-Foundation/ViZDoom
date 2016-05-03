@@ -30,6 +30,51 @@
 
 using namespace vizdoom;
 
+void throwJavaException(JNIEnv *env)
+{
+	try {
+		throw;
+	}
+	catch(ViZDoomMismatchedVersionException& e){
+		jclass ex = env->FindClass("vizdoom/errors/ViZDoomMismatchedVersionException");
+		if(ex) env->ThrowNew(ex, e.what());
+	}
+	catch(ViZDoomUnexpectedExitException& e){
+		jclass ex = env->FindClass("vizdoom/errors/ViZDoomUnexpectedExitException");
+		if(ex) env->ThrowNew(ex, e.what());
+	}
+	catch(FileDoesNotExistException& e){
+		jclass ex = env->FindClass("vizdoom/errors/FileDoesNotExistException");
+		if(ex) env->ThrowNew(ex, e.what());
+	}
+	catch(SharedMemoryException& e){
+		jclass ex = env->FindClass("vizdoom/errors/SharedMemoryException");
+		if(ex) env->ThrowNew(ex, e.what());
+	}
+	catch(MessageQueueException& e){
+		jclass ex = env->FindClass("vizdoom/errors/MessageQueueException");
+		if(ex) env->ThrowNew(ex, e.what());
+	}
+	catch(ViZDoomErrorException& e){
+		jclass ex = env->FindClass("vizdoom/errors/ViZDoomErrorException");
+		if(ex) env->ThrowNew(ex, e.what());
+	}
+	catch(ViZDoomIsNotRunningException& e){
+		jclass ex = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
+		if(ex) env->ThrowNew(ex, e.what());
+	}
+	catch(const std::exception& e) {
+		/* unknown exception (may derive from std::exception) */
+		jclass jc = env->FindClass("java/lang/Error");
+		if(jc) env->ThrowNew (jc, e.what());
+	}
+	catch(...) {
+		/* Oops I missed identifying this exception! */
+		jclass jc = env->FindClass("java/lang/Error");
+		if(jc) env->ThrowNew (jc, "Unidentified exception");
+	}
+}
+
 DoomGame* GetObject(JNIEnv *env, jobject obj){
 	jclass thisClass = env->GetObjectClass(obj);
 	jfieldID fidNumber = env->GetFieldID(thisClass, "internalPtr", "J");
@@ -147,9 +192,8 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_loadConfig
 		bool ret = game->loadConfig(path2);
 		return (jboolean) ret;
 	}
-	catch (std::exception& e){
-		std::cout << "C++ unknown exception"<< '\n';
-		return 0;
+	catch(...){
+		throwJavaException(env);
   	}
 }
 
@@ -165,50 +209,9 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_init
 		bool ret=game->init();
 		return (jboolean) ret;
 	}
-	catch (ViZDoomMismatchedVersionException& e){
-		jclass ViZDoomMismatchedVersionException = env->FindClass("vizdoom/errors/ViZDoomMismatchedVersionException");
-		env->ThrowNew(ViZDoomMismatchedVersionException, e.what());
-		return 0;
+	catch(...){
+		throwJavaException(env);
 	}
-  	catch (ViZDoomUnexpectedExitException& e){
- 		jclass ViZDoomUnexpectedExitException = env->FindClass("vizdoom/errors/ViZDoomUnexpectedExitException");
-		env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
-		return 0;
-  	}
-	catch (FileDoesNotExistException& e){
-		jclass FileDoesNotExistException = env->FindClass("vizdoom/errors/FileDoesNotExistException");
-		env->ThrowNew(FileDoesNotExistException, e.what());
-		return 0;
-	}
-	catch (SharedMemoryException& e){
- 		jclass SharedMemoryException = env->FindClass("vizdoom/errors/SharedMemoryException");
-        	env->ThrowNew(SharedMemoryException, e.what());
-		return 0;
-  	}
-	catch (MessageQueueException& e){
- 		jclass MessageQueueException = env->FindClass("vizdoom/errors/MessageQueueException");
-		env->ThrowNew(MessageQueueException, e.what());
-		return 0;
-  	}
-	catch (ViZDoomErrorException& e){
- 		jclass ViZDoomErrorException = env->FindClass("vizdoom/errors/ViZDoomErrorException");
-		env->ThrowNew(ViZDoomErrorException, e.what());
-		return 0;
-  	}
-	catch (ViZDoomIsNotRunningException& e){
- 		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
-		return 0;
-  	}
-	catch (Exception& e){
- 		jclass Exception = env->FindClass("vizdoom/errors/Exception");
-		env->ThrowNew(Exception, e.what());
-		return 0;
-  	}
-	catch (std::exception& e){
-		std::cout << "C++ unknown exception"<< '\n';
-		return 0;
-  	}
 }
 
 /*
@@ -233,13 +236,9 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_newEpisode
 		DoomGame* game=GetObject(env,obj);
 		game->newEpisode();
 	}
-	catch (ViZDoomIsNotRunningException& e){
- 		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
-  	}
-	catch (std::exception& e){
-		std::cout << "C++ unknown exception"<< '\n';
-  	}
+	catch(...){
+		throwJavaException(env);
+	}
 }
 
 /*
@@ -271,13 +270,9 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setAction
 		}
 		game->setAction(ourvector);
 	}
-	catch (ViZDoomIsNotRunningException& e){
- 		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-        	env->ThrowNew(ViZDoomIsNotRunningException, e.what());
-  	}
-	catch (std::exception& e){
-		std::cout << "C++ unknown exception"<< '\n';
-  	}
+	catch(...){
+		throwJavaException(env);
+	}
 }
 
 /*
@@ -291,21 +286,9 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_advanceAction__
 		DoomGame* game=GetObject(env,obj);
 		game->advanceAction();
 	}
-	catch (ViZDoomIsNotRunningException& e){
- 		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
-  	}
-	catch (ViZDoomUnexpectedExitException& e){
-		jclass ViZDoomUnexpectedExitException = env->FindClass("vizdoom/errors/ViZDoomUnexpectedExitException");
-		env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
+	catch(...){
+		throwJavaException(env);
 	}
-	catch (Exception& e){
- 		jclass Exception = env->FindClass("vizdoom/errors/Exception");
-		env->ThrowNew(Exception, e.what());
-  	}
-	catch (std::exception& e){
-		std::cout << "C++ unknown exception"<< '\n';
-  	}
 }
 
 /*
@@ -319,21 +302,9 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_advanceAction__I
 		DoomGame* game=GetObject(env,obj);
 		game->advanceAction(int1);
 	}
-	catch (ViZDoomIsNotRunningException& e){
- 		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
-  	}
-	catch (ViZDoomUnexpectedExitException& e){
-		jclass ViZDoomUnexpectedExitException = env->FindClass("vizdoom/errors/ViZDoomUnexpectedExitException");
-		env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
+	catch(...){
+		throwJavaException(env);
 	}
-	catch (Exception& e){
- 		jclass Exception = env->FindClass("vizdoom/errors/Exception");
-		env->ThrowNew(Exception, e.what());
-  	}
-	catch (std::exception& e){
-		std::cout << "C++ unknown exception"<< '\n';
-  	}
 }
 
 /*
@@ -347,21 +318,9 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_advanceAction__IZZ
 		DoomGame* game=GetObject(env,obj);
 		game->advanceAction(int1, bol1,bol2);
 	}
-	catch (ViZDoomIsNotRunningException& e){
- 		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
-  	}
-	catch (ViZDoomUnexpectedExitException& e){
-		jclass ViZDoomUnexpectedExitException = env->FindClass("vizdoom/errors/ViZDoomUnexpectedExitException");
-		env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
+	catch(...){
+		throwJavaException(env);
 	}
-	catch (Exception& e){
- 		jclass Exception = env->FindClass("vizdoom/errors/Exception");
-		env->ThrowNew(Exception, e.what());
-  	}
-	catch (std::exception& e){
-		std::cout << "C++ unknown exception"<< '\n';
-  	}
 }
 
 
@@ -383,19 +342,9 @@ JNIEXPORT jdouble JNICALL Java_vizdoom_DoomGame_makeAction___3I
 		double ret = game->makeAction(ourvector);
 		return ret;
 	}
-	catch (ViZDoomIsNotRunningException& e){
- 		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
-		return 0;
-  	}
-	catch (ViZDoomUnexpectedExitException& e){
-		jclass ViZDoomUnexpectedExitException = env->FindClass("vizdoom/errors/ViZDoomUnexpectedExitException");
-		env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
+	catch(...){
+		throwJavaException(env);
 	}
-	catch (std::exception& e){
-		std::cout << "C++ unknown exception"<< '\n';
-		return 0;
-  	}
 }
 
 /*
@@ -416,20 +365,9 @@ JNIEXPORT jdouble JNICALL Java_vizdoom_DoomGame_makeAction___3II
 		double ret = game->makeAction(ourvector, integ);
 		return ret;
 	}
-	catch (ViZDoomIsNotRunningException& e){
- 		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
-		return 0;
-  	}
-	catch (ViZDoomUnexpectedExitException& e){
-		jclass ViZDoomUnexpectedExitException = env->FindClass("vizdoom/errors/ViZDoomUnexpectedExitException");
-		env->ThrowNew(ViZDoomUnexpectedExitException, e.what());
+	catch(...){
+		throwJavaException(env);
 	}
-	catch (std::exception& e)
-  	{
-		std::cout << "C++ unknown exception"<< '\n';
-		return 0;
-  	}
 }
 
 /*
@@ -454,7 +392,7 @@ JNIEXPORT jobject JNICALL Java_vizdoom_DoomGame_getState
 	}
 	env->ReleaseIntArrayElements(jbuffer, oarr, NULL);
 
-	boost::uint8_t *pointer;
+	uint8_t *pointer;
 	pointer=statec.imageBuffer;
 	jintArray jbuffer2 = env->NewIntArray(rozmiar);
 	oarr = env->GetIntArrayElements(jbuffer2, NULL);
@@ -499,20 +437,9 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isNewEpisode
 		bool ret=game->isNewEpisode();
 		return (jboolean)ret;
 	}
-	catch (ViZDoomIsNotRunningException& e){
- 		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
-		return 0;
-  	}
-	catch (Exception& e){
- 		jclass Exception = env->FindClass("vizdoom/errors/Exception");	
-		env->ThrowNew(Exception, e.what());
-		return 0;
-  	}
-	catch (std::exception& e){
-		std::cout << "C++ unknown exception"<< '\n';
-		return 0;
-  	}
+	catch(...){
+		throwJavaException(env);
+	}
 }
 
 /*
@@ -527,20 +454,9 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isEpisodeFinished
 		bool ret=game->isEpisodeFinished();
 		return (jboolean)ret;
 	}
-	catch (ViZDoomIsNotRunningException& e){
- 		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
-		return 0;
-  	}
-	catch (Exception& e){
- 		jclass Exception = env->FindClass("vizdoom/errors/Exception");
-		env->ThrowNew(Exception, e.what());
-		return 0;
-  	}
-	catch (std::exception& e){
-    		std::cout << "C++ unknown exception"<< '\n';
-		return 0;
-  	}
+	catch(...){
+		throwJavaException(env);
+	}
 }
 
 /*
@@ -555,20 +471,9 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isPlayerDead
 		bool ret=game->isPlayerDead();
 		return (jboolean)ret;
 	}
-	catch (ViZDoomIsNotRunningException& e){
- 		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
-		return 0;
-  	}
-	catch (Exception& e){
- 		jclass Exception = env->FindClass("vizdoom/errors/Exception");
-		env->ThrowNew(Exception, e.what());
-		return 0;
-  	}
-	catch (std::exception& e){
-		std::cout << "C++ unknown exception"<< '\n';
-		return 0;
-  	}
+	catch(...){
+		throwJavaException(env);
+	}
 }
 
 /*
@@ -771,18 +676,9 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_sendGameCommand //TODO wywala jvm
 		str2 = const_cast<char*>(env->GetStringUTFChars(str , NULL )) ;	
 		game->sendGameCommand(str2);
 	}
-	catch (ViZDoomIsNotRunningException& e){	
- 		jclass ViZDoomIsNotRunningException = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
-		env->ThrowNew(ViZDoomIsNotRunningException, e.what());
-
-  	}
-	catch (Exception& e){	
- 		jclass Exception = env->FindClass("vizdoom/errors/Exception");
-		env->ThrowNew(Exception, e.what());
-  	}
-	catch (...){
-		std::cout << "C++ unknown exception"<<std::endl;
-  	}
+	catch(...){
+		throwJavaException(env);
+	}
 }
 
 /*
@@ -796,7 +692,7 @@ JNIEXPORT jintArray JNICALL Java_vizdoom_DoomGame_getGameScreen
 	int rozmiar=game->getScreenSize();	
 	std::vector<int> ourvector;
 
-	boost::uint8_t *pointer;
+	uint8_t *pointer;
 	pointer=game->getGameScreen();
 	jintArray jbuffer = env->NewIntArray(rozmiar);
 	jint *oarr;
@@ -951,9 +847,9 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setViZDoomPath
 		path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;	
 		game->setViZDoomPath(path2);
 	}
-	catch (...){
-		std::cout << "C++ unknown exception"<<std::endl;
-  	}
+	catch(...){
+		throwJavaException(env);
+	}
 }
 /*
  * Class:     DoomGame
@@ -968,9 +864,9 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setDoomGamePath
 		path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;
 		game->setDoomGamePath(path2);
 	}
-	catch (...){
-		std::cout << "C++ unknown exception"<<std::endl;
-  	}
+	catch(...){
+		throwJavaException(env);
+	}
 }
 
 /*
@@ -986,9 +882,9 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setDoomScenarioPath
 		path2 = const_cast<char*>(env->GetStringUTFChars(path , NULL )) ;
 		game->setDoomScenarioPath(path2);
 	}
-	catch (...){
-		std::cout << "C++ unknown exception"<<std::endl;
-  	}
+	catch(...){
+		throwJavaException(env);
+	}
 }
 
 /*
