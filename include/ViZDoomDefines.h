@@ -27,10 +27,11 @@
 
 namespace vizdoom{
 
-#define VIZDOOM_API_VERSION_STR "1.0.0"
-#define VIZDOOM_API_VERSION_INT 100
+    #define VIZDOOM_LIB_VERSION 101
+    #define VIZDOOM_LIB_VERSION_STR "1.0.1"
 
     typedef unsigned char uint8_t;
+    #define BYTE uint8_t;
 
     struct GameState {
         unsigned int number;
@@ -76,37 +77,37 @@ namespace vizdoom{
         RES_320X240,    // 4:3
         RES_320X256,    // 5:4
 
-        RES_400X225,	// 16:9
-        RES_400X250,	// 16:10
+        RES_400X225,    // 16:9
+        RES_400X250,    // 16:10
         RES_400X300,    // 4:3
 
-        RES_512X288,	// 16:9
+        RES_512X288,    // 16:9
         RES_512X320,    // 16:10
         RES_512X384,    // 4:3
 
-        RES_640X360,	// 16:9
+        RES_640X360,    // 16:9
         RES_640X400,    // 16:10
         RES_640X480,    // 4:3
 
-        RES_800X450,	// 16:9
-        RES_800X500,	// 16:10
+        RES_800X450,    // 16:9
+        RES_800X500,    // 16:10
         RES_800X600,    // 4:3
 
-        RES_1024X576,	// 16:9
-        RES_1024X640,	// 16:10
+        RES_1024X576,   // 16:9
+        RES_1024X640,   // 16:10
         RES_1024X768,   // 4:3
 
-        RES_1280X720,	// 16:9
-        RES_1280X800,	// 16:10
+        RES_1280X720,   // 16:9
+        RES_1280X800,   // 16:10
         RES_1280X960,   // 4:3
-        RES_1280X1024,	// 5:4
+        RES_1280X1024,  // 5:4
 
-        RES_1400X787,	// 16:9
-        RES_1400X875,	// 16:10
+        RES_1400X787,   // 16:9
+        RES_1400X875,   // 16:10
         RES_1400X1050,  // 4:3
 
-        RES_1600X900,	// 16:9
-        RES_1600X1000,	// 16:10
+        RES_1600X900,   // 16:9
+        RES_1600X1000,  // 16:10
         RES_1600X1200,  // 4:3
 
         RES_1920X1080,  // 16:9
@@ -238,6 +239,8 @@ namespace vizdoom{
     static const int BinaryButtonsNumber = 38;
     static const int DeltaButtonsNumber = 5;
     static const int ButtonsNumber = 43;
+
+    static const int MaxNumberOfPlayers = 8;
 
 }
 #endif

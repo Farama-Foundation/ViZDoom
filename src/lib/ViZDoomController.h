@@ -25,14 +25,13 @@
 
 #include "ViZDoomDefines.h"
 
-#include <vector>
-#include <string>
-
-#include <boost/interprocess/ipc/message_queue.hpp>
-#include <boost/interprocess/shared_memory_object.hpp>
-#include <boost/interprocess/mapped_region.hpp>
-#include <boost/thread.hpp>
 #include <boost/asio.hpp>
+#include <boost/interprocess/ipc/message_queue.hpp>
+#include <boost/interprocess/mapped_region.hpp>
+#include <boost/interprocess/shared_memory_object.hpp>
+#include <boost/thread.hpp>
+#include <string>
+#include <vector>
 
 namespace vizdoom{
 
@@ -78,7 +77,8 @@ namespace vizdoom{
         };
 
         struct GameVariablesStruct {
-            unsigned int VIZDOOM_VERSION;
+            unsigned int VERSION;
+            char VERSION_STR[8];
 
             unsigned int GAME_TIC;
             int GAME_STATE;
@@ -109,10 +109,11 @@ namespace vizdoom{
             bool PLAYER_HAS_ACTOR;
             bool PLAYER_DEAD;
 
+            char PLAYER_NAME[16];
             int PLAYER_KILLCOUNT;
             int PLAYER_ITEMCOUNT;
             int PLAYER_SECRETCOUNT;
-            int PLAYER_FRAGCOUNT; //in multi
+            int PLAYER_FRAGCOUNT;
             int PLAYER_DEATHCOUNT;
 
             bool PLAYER_ON_GROUND;
@@ -128,6 +129,10 @@ namespace vizdoom{
 
             int PLAYER_AMMO[SlotsNumber];
             int PLAYER_WEAPON[SlotsNumber];
+
+            int PLAYERS_COUNT;
+            char PLAYERS_NAME[MaxNumberOfPlayers][16];
+            int PLAYERS_FRAGCOUNT[MaxNumberOfPlayers];
         };
 
         DoomController();

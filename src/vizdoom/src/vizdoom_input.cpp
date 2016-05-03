@@ -345,9 +345,8 @@ void ViZDoom_InputTic(){
     }
 
     for (int i = 0; i < VIZDOOM_BT_SIZE; ++i) {
-        vizdoomLastInputBT[i] =  vizdoomInput->BT[i];
+        vizdoomLastInputBT[i] = vizdoomInput->BT[i];
     }
-
 }
 
 void ViZDoom_InputClose(){

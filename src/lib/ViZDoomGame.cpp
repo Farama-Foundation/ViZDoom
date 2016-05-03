@@ -22,14 +22,14 @@
 
 #include "ViZDoomGame.h"
 #include "ViZDoomController.h"
-#include "ViZDoomUtilities.h"
 #include "ViZDoomExceptions.h"
+#include "ViZDoomUtilities.h"
 
-#include <fstream>
-#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim_all.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
+#include <fstream>
 
 namespace vizdoom {
 
@@ -89,7 +89,7 @@ namespace vizdoom {
                 this->summaryReward = 0;
 
             }
-            catch(const Exception &e){ throw; }
+            catch(...){ throw; }
 
             return running;
         }
@@ -159,7 +159,7 @@ namespace vizdoom {
         try {
             this->doomController->tics(tics, updateState || renderOnly);
         }
-        catch(const Exception &e){ throw; }
+        catch(...){ throw; }
 
         if(updateState) this->updateState();
     }

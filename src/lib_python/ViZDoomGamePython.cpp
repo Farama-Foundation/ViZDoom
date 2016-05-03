@@ -36,7 +36,6 @@ namespace vizdoom {
         import_array(); 
     }
 
-
     bool DoomGamePython::init() {
         bool initSuccess = DoomGame::init();
 
@@ -79,13 +78,11 @@ namespace vizdoom {
         DoomGame::setAction(DoomGamePython::pyListToIntVector(action));
     }
 
-    double DoomGamePython::makeAction(boost::python::list const &action)
-    {
+    double DoomGamePython::makeAction(boost::python::list const &action) {
         return DoomGame::makeAction(DoomGamePython::pyListToIntVector(action));
     }
 
-    double DoomGamePython::makeAction(boost::python::list const &action, unsigned int tics)
-    {
+    double DoomGamePython::makeAction(boost::python::list const &action, unsigned int tics) {
         return DoomGame::makeAction(DoomGamePython::pyListToIntVector(action), tics);   
     }
 

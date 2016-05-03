@@ -25,9 +25,9 @@
 
 #include "ViZDoomDefines.h"
 
+#include <list>
 #include <string>
 #include <vector>
-#include <list>
 
 namespace vizdoom {
 

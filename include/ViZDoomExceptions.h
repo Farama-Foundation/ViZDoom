@@ -25,56 +25,49 @@
 
 #include <exception>
 #include <string>
-#include <cstring>
 
 namespace vizdoom{
 
-    class Exception : public std::exception {
+    class SharedMemoryException : public std::exception {
     public:
-        virtual const char* what() const throw(){ return "Unknown exception."; }
+        const char* what() const throw();
     };
 
-    class SharedMemoryException : public Exception {
+    class MessageQueueException : public std::exception {
     public:
-        const char* what() const throw(){ return "Shared memory error."; }
+        const char* what() const throw();
     };
 
-    class MessageQueueException : public Exception {
+    class ViZDoomErrorException : public std::exception {
     public:
-        const char* what() const throw(){ return "Message queue error."; }
+        const char* what() const throw();
     };
 
-    class ViZDoomErrorException : public Exception {
+    class ViZDoomMismatchedVersionException : public std::exception {
     public:
-        const char* what() const throw(){ return "Controlled ViZDoom instance reported error."; }
+        ViZDoomMismatchedVersionException(std::string vizdoomVersion, std::string libVersion);
+        ~ViZDoomMismatchedVersionException() throw();
+        const char* what() const throw();
+    private:
+        std::string vizdoomVersion;
+        std::string libVersion;
     };
 
-    class ViZDoomMismatchedVersionException : public Exception {
+    class ViZDoomUnexpectedExitException : public std::exception {
     public:
-        const char* what() const throw(){ return "Controlled ViZDoom version does not match API version."; }
+        const char* what() const throw();
     };
 
-    class ViZDoomUnexpectedExitException : public Exception {
+    class ViZDoomIsNotRunningException : public std::exception {
     public:
-        const char* what() const throw(){ return "Controlled ViZDoom instance exited unexpectedly."; }
+        const char* what() const throw();
     };
 
-    class ViZDoomIsNotRunningException : public Exception {
+    class FileDoesNotExistException : public std::exception {
     public:
-        const char* what() const throw(){ return "Controlled ViZDoom instance is not running or not ready."; }
-    };
-
-    class FileDoesNotExistException : public Exception {
-    public:
-        FileDoesNotExistException(std::string path){
-            this->path = path;
-        }
-        ~FileDoesNotExistException() throw(){}
-        const char* what() const throw(){
-            std::string what = std::string("File \"") + this->path + "\" does not exist.";
-            return strdup(what.c_str());
-        }
-
+        FileDoesNotExistException(std::string path);
+        ~FileDoesNotExistException() throw();
+        const char* what() const throw();
     private:
         std::string path;
     };
