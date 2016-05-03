@@ -22,14 +22,13 @@
 
 #include "ViZDoomController.h"
 #include "ViZDoomExceptions.h"
+#include "boost/process.hpp"
 
-#include <cstdlib>
-#include <cstdio>
-
+#include <boost/algorithm/string.hpp>
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string.hpp>
-#include "boost/process.hpp"
+#include <cstdio>
+#include <cstdlib>
 
 namespace vizdoom {
 
@@ -133,8 +132,8 @@ namespace vizdoom {
                 this->SMInit();
                 this->waitForDoomMapStartTime();
 
-                if(this->gameVariables->VIZDOOM_VERSION != VIZDOOM_API_VERSION_INT){
-                    throw ViZDoomMismatchedVersionException();
+                if(this->gameVariables->VERSION != VIZDOOM_LIB_VERSION){
+                    throw ViZDoomMismatchedVersionException(std::string(this->gameVariables->VERSION_STR), VIZDOOM_LIB_VERSION_STR);
                 }
 
                 this->MQDoomSend(MSG_CODE_UPDATE);
@@ -144,7 +143,7 @@ namespace vizdoom {
 
                 this->mapLastTic = this->gameVariables->MAP_TIC;
             }
-            catch(const Exception &e){
+            catch(...){
                 this->doomRunning = false;
                 this->close();
                 throw;

@@ -29,8 +29,8 @@ extern bool vizdoomNextTic;
 extern bool vizdoomUpdate;
 extern unsigned int vizdoomLastUpdate;
 
-#define VIZDOOM_VERSION_STR "1.0.0"
-#define VIZDOOM_VERSION_INT 100
+#define VIZDOOM_VERSION 101
+#define VIZDOOM_VERSION_STR "1.0.1"
 
 #define VIZDOOM_TIME (level.starttime + level.maptime)
 
@@ -93,6 +93,9 @@ extern unsigned int vizdoomLastUpdate;
 
 #define VIZDOOM_GV_SLOTS_SIZE 10
 
+#define VIZDOOM_MAX_PLAYERS 8 //MAXPLAYERS //(8)
+#define VIZDOOM_MAX_PLAYER_NAME_LEN 16 //MAXPLAYERNAME+1 //(15 + 1 = 16)
+
 struct ViZDoomInputStruct{
     int BT[VIZDOOM_BT_SIZE];
     bool BT_AVAILABLE[VIZDOOM_BT_SIZE];
@@ -101,7 +104,8 @@ struct ViZDoomInputStruct{
 
 struct ViZDoomGameVarsStruct{
 
-    unsigned int VIZDOOM_VERSION;
+    unsigned int VERSION;
+    char VERSION_STR[8];
 
     unsigned int GAME_TIC;
     int GAME_STATE;
@@ -132,10 +136,11 @@ struct ViZDoomGameVarsStruct{
     bool PLAYER_HAS_ACTOR;
     bool PLAYER_DEAD;
 
+    char PLAYER_NAME[VIZDOOM_MAX_PLAYER_NAME_LEN];
     int PLAYER_KILLCOUNT;
     int PLAYER_ITEMCOUNT;
     int PLAYER_SECRETCOUNT;
-    int PLAYER_FRAGCOUNT; //in multi
+    int PLAYER_FRAGCOUNT;
     int PLAYER_DEATHCOUNT;
 
     bool PLAYER_ON_GROUND;
@@ -151,6 +156,11 @@ struct ViZDoomGameVarsStruct{
 
     int PLAYER_AMMO[VIZDOOM_GV_SLOTS_SIZE];
     int PLAYER_WEAPON[VIZDOOM_GV_SLOTS_SIZE];
+
+    int PLAYERS_COUNT;
+    char PLAYERS_NAME[VIZDOOM_MAX_PLAYERS][VIZDOOM_MAX_PLAYER_NAME_LEN];
+    int PLAYERS_FRAGCOUNT[VIZDOOM_MAX_PLAYERS];
+
 };
 
 #define VIZDOOM_SCREEN_CRCGCB 0

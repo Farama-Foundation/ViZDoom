@@ -178,7 +178,7 @@ void ViZDoom_ScreenUpdate(){
     screen->Lock(true);
 
     const BYTE *buffer = screen->GetBuffer();
-    const int bufferSize = screen->GetWidth() * screen->GetHeight();
+    const unsigned int bufferSize = screen->GetWidth() * screen->GetHeight();
 
     if (buffer != NULL) {
 

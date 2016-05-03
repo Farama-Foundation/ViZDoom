@@ -1,8 +1,8 @@
 cmake_minimum_required( VERSION 2.8 )
 project(ViZDoom)
 
-option(BUILD_PYTHON "Build ViZDoom API Python binding." OFF)
-option(BUILD_JAVA "Build ViZDoom API Java binding." OFF)
+option(BUILD_PYTHON "Build ViZDoom Python binding." OFF)
+option(BUILD_JAVA "Build ViZDoom Java binding." OFF)
 
 if(COMMAND cmake_policy)
 	cmake_policy(SET CMP0003 NEW)
@@ -72,6 +72,7 @@ endif()
 
 set(VIZDOOM_API_SOURCES
 	${VIZDOOM_LIB_SRC_DIR}/ViZDoomUtilities.cpp
+	${VIZDOOM_LIB_SRC_DIR}/ViZDoomExceptions.cpp
 	${VIZDOOM_LIB_SRC_DIR}/ViZDoomController.cpp
 	${VIZDOOM_LIB_SRC_DIR}/ViZDoomGame.cpp)
 
@@ -128,8 +129,8 @@ if(BUILD_PYTHON)
 						${NUMPY_INCLUDES})  
 
 	set(VIZDOOM_PYTHON_SOURCES
-		${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomPythonBinding.cpp
-		${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.cpp)
+	    ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.cpp
+		${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomPythonModule.cpp)
 	
 	if(WIN32)	
 		add_definitions(-DBOOST_PYTHON_STATIC_LIB)
