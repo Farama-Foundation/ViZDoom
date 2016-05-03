@@ -2,8 +2,7 @@ package vizdoom;
 
 import java.util.ArrayList;
 import java.util.List;
-import vizdoom.errors.*;
-import vizdoom.enums.*;
+import vizdoom.*;
 
 public class DoomGame{
     static {

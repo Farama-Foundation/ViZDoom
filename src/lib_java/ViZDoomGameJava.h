@@ -58,7 +58,7 @@ JNIEXPORT jdouble JNICALL Java_vizdoom_DoomGame_DoomFixedToDouble
 /*
  * Class:     DoomGame
  * Method:    isBinaryButton
- * Signature: (Lvizdoom/enums/Button)Z
+ * Signature: (Lvizdoom/Button)Z
  */
 JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isBinaryButton
   (JNIEnv *, jobject, jobject);
@@ -66,7 +66,7 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isBinaryButton
 /*
  * Class:     DoomGame
  * Method:    isDeltaButton
- * Signature: (Lvizdoom/enums/Button)Z
+ * Signature: (Lvizdoom/Button)Z
  */
 JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isDeltaButton
   (JNIEnv *, jobject, jobject);
@@ -219,17 +219,17 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_respawnPlayer
 /*
  * Class:     DoomGame
  * Method:    addAvailableButton
- * Signature: (Lvizdoom/enums/Button;)V
+ * Signature: (Lvizdoom/Button;)V
  */
-JNIEXPORT void JNICALL Java_vizdoom_DoomGame_addAvailableButton__Lvizdoom_enums_Button_2
+JNIEXPORT void JNICALL Java_vizdoom_DoomGame_addAvailableButton__Lvizdoom_Button_2
   (JNIEnv *, jobject, jobject);
 
 /*
  * Class:     DoomGame
  * Method:    addAvailableButton
- * Signature: (Lvizdoom/enums/Button;I)V
+ * Signature: (Lvizdoom/Button;I)V
  */
-JNIEXPORT void JNICALL Java_vizdoom_DoomGame_addAvailableButton__Lvizdoom_enums_Button_2I
+JNIEXPORT void JNICALL Java_vizdoom_DoomGame_addAvailableButton__Lvizdoom_Button_2I
   (JNIEnv *, jobject, jobject, jint);
 
 /*
@@ -251,7 +251,7 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getAvailableButtonsSize
 /*
  * Class:     DoomGame
  * Method:    setButtonMaxValue
- * Signature: (Lvizdoom/enums/Button;I)V
+ * Signature: (Lvizdoom/Button;I)V
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setButtonMaxValue
   (JNIEnv *, jobject, jobject, jint);
@@ -259,7 +259,7 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setButtonMaxValue
 /*
  * Class:     DoomGame
  * Method:    getButtonMaxValue
- * Signature: (Lvizdoom/enums/Button)V
+ * Signature: (Lvizdoom/Button)V
  */
 JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getButtonMaxValue
   (JNIEnv *, jobject, jobject);
@@ -267,7 +267,7 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getButtonMaxValue
 /*
  * Class:     DoomGame
  * Method:    addAvailableGameVariable
- * Signature: (Lvizdoom/enums/GameVariable;)V
+ * Signature: (Lvizdoom/GameVariable;)V
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_addAvailableGameVariable
   (JNIEnv *, jobject, jobject);
@@ -331,7 +331,7 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getMod
 /*
  * Class:     DoomGame
  * Method:    setMode
- * Signature: (Lvizdoom/enums/Mode;)V
+ * Signature: (Lvizdoom/Mode;)V
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setMode
   (JNIEnv *, jobject, jobject);
@@ -339,7 +339,7 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setMode
 /*
  * Class:     DoomGame
  * Method:    getGameVariable
- * Signature: (Lvizdoom/enums/GameVariable;)I
+ * Signature: (Lvizdoom/GameVariable;)I
  */
 JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getGameVariable
   (JNIEnv *, jobject, jobject);
@@ -499,7 +499,7 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getEpisodeTime
 /*
  * Class:     DoomGame
  * Method:    setScreenResolution
- * Signature: (Lvizdoom/enums/ScreenResolution;)V
+ * Signature: (Lvizdoom/ScreenResolution;)V
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setScreenResolution
   (JNIEnv *, jobject, jobject);
@@ -507,7 +507,7 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setScreenResolution
 /*
  * Class:     DoomGame
  * Method:    setScreenFormat
- * Signature: (Lvizdoom/enums/ScreenFormat;)V
+ * Signature: (Lvizdoom/ScreenFormat;)V
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setScreenFormat
   (JNIEnv *, jobject, jobject);

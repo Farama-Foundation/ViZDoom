@@ -175,6 +175,7 @@ if(BUILD_JAVA)
 	
 	include(UseJava)
 	set(VIZDOOM_JAVA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_java)
+	set(VIZDOOM_JAVA_CLASSES_DIR ${VIZDOOM_JAVA_SRC_DIR}/java_classes)
 	set(VIZDOOM_JAVA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_JAVA_SRC_DIR})
 
 	set(VIZDOOM_JAVA_LIBS
@@ -219,20 +220,20 @@ if(BUILD_JAVA)
 		OUTPUT_NAME vizdoom)
 	
 	add_jar(libvizdoom_java_classes
-		${VIZDOOM_JAVA_SRC_DIR}/enums/Button.java
-		${VIZDOOM_JAVA_SRC_DIR}/enums/GameVariable.java
-		${VIZDOOM_JAVA_SRC_DIR}/enums/Mode.java
-		${VIZDOOM_JAVA_SRC_DIR}/enums/ScreenFormat.java
-		${VIZDOOM_JAVA_SRC_DIR}/enums/ScreenResolution.java
-		${VIZDOOM_JAVA_SRC_DIR}/errors/ViZDoomMismatchedVersionException.java
-		${VIZDOOM_JAVA_SRC_DIR}/errors/ViZDoomErrorException.java
-		${VIZDOOM_JAVA_SRC_DIR}/errors/ViZDoomIsNotRunningException.java
-		${VIZDOOM_JAVA_SRC_DIR}/errors/ViZDoomUnexpectedExitException.java
-		${VIZDOOM_JAVA_SRC_DIR}/errors/MessageQueueException.java
-		${VIZDOOM_JAVA_SRC_DIR}/errors/FileDoesNotExistException.java
-		${VIZDOOM_JAVA_SRC_DIR}/errors/SharedMemoryException.java
-		${VIZDOOM_JAVA_SRC_DIR}/GameState.java
-		${VIZDOOM_JAVA_SRC_DIR}/DoomGame.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/enums/Button.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/enums/GameVariable.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/enums/Mode.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/enums/ScreenFormat.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/enums/ScreenResolution.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomMismatchedVersionException.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomErrorException.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomIsNotRunningException.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomUnexpectedExitException.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/MessageQueueException.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/FileDoesNotExistException.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/SharedMemoryException.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/GameState.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/DoomGame.java
 		OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/java
 		OUTPUT_NAME vizdoom)
 

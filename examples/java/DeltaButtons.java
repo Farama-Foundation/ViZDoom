@@ -1,13 +1,7 @@
 import vizdoom.*;
-import vizdoom.enums.*;
-import vizdoom.errors.*;
 
 import java.util.*;
-import java.lang.Integer;
-import java.lang.Boolean;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.lang.*;
 
 public class DeltaButtons {
 

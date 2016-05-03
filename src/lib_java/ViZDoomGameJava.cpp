@@ -36,31 +36,31 @@ void throwAsJavaException(JNIEnv *env)
         throw;
     }
     catch(ViZDoomMismatchedVersionException& e){
-        jclass ex = env->FindClass("vizdoom/errors/ViZDoomMismatchedVersionException");
+        jclass ex = env->FindClass("vizdoom/ViZDoomMismatchedVersionException");
         if(ex) env->ThrowNew(ex, e.what());
     }
     catch(ViZDoomUnexpectedExitException& e){
-        jclass ex = env->FindClass("vizdoom/errors/ViZDoomUnexpectedExitException");
+        jclass ex = env->FindClass("vizdoom/ViZDoomUnexpectedExitException");
         if(ex) env->ThrowNew(ex, e.what());
     }
     catch(FileDoesNotExistException& e){
-        jclass ex = env->FindClass("vizdoom/errors/FileDoesNotExistException");
+        jclass ex = env->FindClass("vizdoom/FileDoesNotExistException");
         if(ex) env->ThrowNew(ex, e.what());
     }
     catch(SharedMemoryException& e){
-        jclass ex = env->FindClass("vizdoom/errors/SharedMemoryException");
+        jclass ex = env->FindClass("vizdoom/SharedMemoryException");
         if(ex) env->ThrowNew(ex, e.what());
     }
     catch(MessageQueueException& e){
-        jclass ex = env->FindClass("vizdoom/errors/MessageQueueException");
+        jclass ex = env->FindClass("vizdoom/MessageQueueException");
         if(ex) env->ThrowNew(ex, e.what());
     }
     catch(ViZDoomErrorException& e){
-        jclass ex = env->FindClass("vizdoom/errors/ViZDoomErrorException");
+        jclass ex = env->FindClass("vizdoom/ViZDoomErrorException");
         if(ex) env->ThrowNew(ex, e.what());
     }
     catch(ViZDoomIsNotRunningException& e){
-        jclass ex = env->FindClass("vizdoom/errors/ViZDoomIsNotRunningException");
+        jclass ex = env->FindClass("vizdoom/ViZDoomIsNotRunningException");
         if(ex) env->ThrowNew(ex, e.what());
     }
     catch(const std::exception& e) {
@@ -125,7 +125,7 @@ JNIEXPORT jdouble JNICALL Java_vizdoom_DoomGame_DoomFixedToDouble
  */
 JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isBinaryButton
   (JNIEnv *env, jobject obj, jobject enumVal){
-    jclass jclassEnum = env->FindClass("vizdoom/enums/Button");
+    jclass jclassEnum = env->FindClass("vizdoom/Button");
     if(jclassEnum != 0){
         jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
         if (ordinal_ID == 0){
@@ -144,11 +144,11 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isBinaryButton
 /*
  * Class:     DoomGame
  * Method:    isDeltaButton
- * Signature: (Lvizdoom/enums/Button)Z
+ * Signature: (Lvizdoom/Button)Z
  */
 JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isDeltaButton
   (JNIEnv *env, jobject obj, jobject enumVal){
-    jclass jclassEnum = env->FindClass("vizdoom/enums/Button");
+    jclass jclassEnum = env->FindClass("vizdoom/Button");
     if(jclassEnum != 0){
         jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
         if (ordinal_ID == 0){
@@ -489,12 +489,12 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_respawnPlayer
 /*
  * Class:     DoomGame
  * Method:    addAvailableButton
- * Signature: (Lvizdoom/enums/Button;)V
+ * Signature: (Lvizdoom/Button;)V
  */
-JNIEXPORT void JNICALL Java_vizdoom_DoomGame_addAvailableButton__Lvizdoom_enums_Button_2
+JNIEXPORT void JNICALL Java_vizdoom_DoomGame_addAvailableButton__Lvizdoom_Button_2
   (JNIEnv *env, jobject obj, jobject enumVal){
     DoomGame* game=GetObject(env,obj);
-    jclass jclassEnum = env->FindClass("vizdoom/enums/Button");
+    jclass jclassEnum = env->FindClass("vizdoom/Button");
     if(jclassEnum != 0){
         jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
         if (ordinal_ID == 0){
@@ -510,12 +510,12 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_addAvailableButton__Lvizdoom_enums_
 /*
  * Class:     DoomGame
  * Method:    addAvailableButton
- * Signature: (Lvizdoom/enums/Button;I)V
+ * Signature: (Lvizdoom/Button;I)V
  */
-JNIEXPORT void JNICALL Java_vizdoom_DoomGame_addAvailableButton__Lvizdoom_enums_Button_2I
+JNIEXPORT void JNICALL Java_vizdoom_DoomGame_addAvailableButton__Lvizdoom_Button_2I
   (JNIEnv *env, jobject obj, jobject enumVal, jint intval){
     DoomGame* game=GetObject(env,obj);
-    jclass jclassEnum = env->FindClass("vizdoom/enums/Button");
+    jclass jclassEnum = env->FindClass("vizdoom/Button");
     if(jclassEnum != 0){
         jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
         if (ordinal_ID == 0){
@@ -555,12 +555,12 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getAvailableButtonsSize
 /*
  * Class:     DoomGame
  * Method:    setButtonMaxValue
- * Signature: (Lvizdoom/enums/Button;I)V
+ * Signature: (Lvizdoom/Button;I)V
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setButtonMaxValue
   (JNIEnv *env, jobject obj, jobject enumVal, jint intval){
     DoomGame* game=GetObject(env,obj);
-    jclass jclassEnum = env->FindClass("vizdoom/enums/Button");
+    jclass jclassEnum = env->FindClass("vizdoom/Button");
     if(jclassEnum != 0){
         jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
         if (ordinal_ID == 0){
@@ -575,12 +575,12 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setButtonMaxValue
 /*
  * Class:     DoomGame
  * Method:    getButtonMaxValue
- * Signature: (Lvizdoom/enums/Button)V
+ * Signature: (Lvizdoom/Button)V
  */
 JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getButtonMaxValue
   (JNIEnv *env, jobject obj, jobject enumVal){
     DoomGame* game=GetObject(env,obj);
-    jclass jclassEnum = env->FindClass("vizdoom/enums/Button");
+    jclass jclassEnum = env->FindClass("vizdoom/Button");
     if(jclassEnum != 0){
         jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
         if (ordinal_ID == 0){
@@ -598,12 +598,12 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getButtonMaxValue
 /*
  * Class:     DoomGame
  * Method:    addAvailableGameVariable
- * Signature: (Lvizdoom/enums/GameVariable;)V
+ * Signature: (Lvizdoom/GameVariable;)V
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_addAvailableGameVariable
   (JNIEnv *env, jobject obj, jobject enumVal){
     DoomGame* game=GetObject(env,obj);
-    jclass jclassEnum = env->FindClass("vizdoom/enums/GameVariable");
+    jclass jclassEnum = env->FindClass("vizdoom/GameVariable");
     if(jclassEnum != 0){
         jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
         if (ordinal_ID == 0){
@@ -708,7 +708,7 @@ JNIEXPORT jintArray JNICALL Java_vizdoom_DoomGame_getGameScreen
 /*
  * Class:     DoomGame
  * Method:    getMode
- * Signature: ()Lvizdoom/enums/Mode;
+ * Signature: ()Lvizdoom/Mode;
  */
 JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getMod
   (JNIEnv *env, jobject obj){
@@ -720,12 +720,12 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getMod
 /*
  * Class:     DoomGame
  * Method:    setGMode
- * Signature: (Lvizdoom/enums/Mode;)V
+ * Signature: (Lvizdoom/Mode;)V
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setMode
   (JNIEnv *env, jobject obj, jobject enumVal){
     DoomGame* game=GetObject(env,obj);
-    jclass jclassEnum = env->FindClass("vizdoom/enums/Mode");
+    jclass jclassEnum = env->FindClass("vizdoom/Mode");
 
     if(jclassEnum != 0){
         jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
@@ -742,12 +742,12 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setMode
 /*
  * Class:     DoomGame
  * Method:    getGameVariable
- * Signature: (Lvizdoom/enums/GameVariable;)I
+ * Signature: (Lvizdoom/GameVariable;)I
  */
 JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getGameVariable
   (JNIEnv *env, jobject obj, jobject enumVal){
     DoomGame* game=GetObject(env,obj);
-    jclass jclassEnum = env->FindClass("vizdoom/enums/GameVariable");
+    jclass jclassEnum = env->FindClass("vizdoom/GameVariable");
 
     if(jclassEnum != 0){
         jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
@@ -1013,7 +1013,7 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getEpisodeTime
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setScreenResolution
  (JNIEnv *env, jobject obj, jobject enumVal){
     DoomGame* game=GetObject(env,obj);
-    jclass jclassEnum = env->FindClass("vizdoom/enums/ScreenResolution");
+    jclass jclassEnum = env->FindClass("vizdoom/ScreenResolution");
 
     if(jclassEnum != 0){
         jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
@@ -1032,12 +1032,12 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setScreenResolution
 /*
  * Class:     DoomGame
  * Method:    setScreenFormat
- * Signature: (Lvizdoom/enums/ScreenFormat;)V
+ * Signature: (Lvizdoom/ScreenFormat;)V
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setScreenFormat
   (JNIEnv *env, jobject obj, jobject enumVal){
     DoomGame* game=GetObject(env,obj);
-    jclass jclassEnum = env->FindClass("vizdoom/enums/ScreenFormat");
+    jclass jclassEnum = env->FindClass("vizdoom/ScreenFormat");
 
     if(jclassEnum != 0){
         jmethodID ordinal_ID = env->GetMethodID(jclassEnum, "ordinal", "()I");
@@ -1206,7 +1206,7 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getScreenSize
 /*
  * Class:     DoomGame
  * Method:    getScreenFormat
- * Signature: ()Lvizdoom/enums/ScreenFormat;
+ * Signature: ()Lvizdoom/ScreenFormat;
  */
 JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getScreenForma
   (JNIEnv *env, jobject obj){

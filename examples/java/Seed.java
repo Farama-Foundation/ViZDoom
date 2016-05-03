@@ -1,16 +1,8 @@
 import vizdoom.*;
-import vizdoom.enums.*;
-import vizdoom.errors.*;
 
 import java.util.*;
-import java.lang.Integer;
-import java.lang.Boolean;
-import java.lang.Thread;
-import java.util.ArrayList;
-import java.util.List;
-import java.lang.InterruptedException;
-import java.util.Arrays;
-import java.lang.Math;
+import java.lang.*;
+
 public class Seed {
 
     public static void main (String[] args) {
@@ -30,7 +22,7 @@ public class Seed {
         //game.loadConfig("../../examples/config/predict_position.cfg")
 
         game.loadConfig("../../examples/config/basic.cfg");
-            game.setViZDoomPath("../../bin/vizdoom");
+        game.setViZDoomPath("../../bin/vizdoom");
 
         // Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".
         game.setDoomGamePath("../../scenarios/freedoom2.wad");
@@ -44,7 +36,7 @@ public class Seed {
         game.init();
 
         List<int[]> actions = new ArrayList<int[]>();
-            actions.add(new int[] {1, 0, 1});
+        actions.add(new int[] {1, 0, 1});
         actions.add(new int[] {0, 1, 1});
         actions.add(new int[] {0, 0, 1});
 

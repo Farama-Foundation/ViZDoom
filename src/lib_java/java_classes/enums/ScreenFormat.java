@@ -1,4 +1,4 @@
-package vizdoom.enums;
+package vizdoom;
 public enum ScreenFormat {
     CRCGCB,
     CRCGCBDB,
