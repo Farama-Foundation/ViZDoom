@@ -379,29 +379,29 @@ namespace vizdoom {
             CASE_RES(512, 320)
             CASE_RES(512, 384)
 
-            CASE_RES(640, 360)	
+            CASE_RES(640, 360)
             CASE_RES(640, 400)
             CASE_RES(640, 480)
 
             CASE_RES(800, 450)
-            CASE_RES(800, 500)	
+            CASE_RES(800, 500)
             CASE_RES(800, 600)
 
             CASE_RES(1024, 576)
-            CASE_RES(1024, 640)	
+            CASE_RES(1024, 640)
             CASE_RES(1024, 768)
 
             CASE_RES(1280, 720)
-            CASE_RES(1280, 800)	
+            CASE_RES(1280, 800)
             CASE_RES(1280, 960)
             CASE_RES(1280, 1024)
 
-            CASE_RES(1400, 787)	
-            CASE_RES(1400, 875)	
+            CASE_RES(1400, 787)
+            CASE_RES(1400, 875)
             CASE_RES(1400, 1050)
 
-            CASE_RES(1600, 900)	
-            CASE_RES(1600, 1000)	
+            CASE_RES(1600, 900)
+            CASE_RES(1600, 1000)
             CASE_RES(1600, 1200)
 
             CASE_RES(1920, 1080)

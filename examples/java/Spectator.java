@@ -1,12 +1,8 @@
 import vizdoom.*;
-import vizdoom.enums.*;
-import vizdoom.errors.*;
 
 import java.util.*;
-import java.lang.Integer;
-import java.lang.Boolean;
-import java.lang.InterruptedException;
-import java.util.Arrays;
+import java.lang.*;
+
 public class Spectator {
 
     public static void main (String[] args) {
