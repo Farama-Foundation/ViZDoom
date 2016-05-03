@@ -74,7 +74,7 @@ public class Basic {
         // MOVE_LEFT, MOVE_RIGHT, ATTACK
         // more combinations are naturally possible but only 3 are included for transparency when watching.
         List<int[]> actions = new ArrayList<int[]>();
-            actions.add(new int[] {1, 0, 1});
+        actions.add(new int[] {1, 0, 1});
         actions.add(new int[] {0, 1, 1});
         actions.add(new int[] {0, 0, 1});
 
@@ -108,9 +108,9 @@ public class Basic {
 
         }
 
-        System.out.println( "Episode finished.");
+        System.out.println("Episode finished.");
         System.out.println("Total reward: " + game.getTotalReward());
-        System.out.println ("************************");
+        System.out.println("************************");
 
         }
 

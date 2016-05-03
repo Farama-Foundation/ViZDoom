@@ -36,7 +36,6 @@ public class MultiplayerHost {
             }
 
             game.advanceAction();
-
         }
 
         game.close();
