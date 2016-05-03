@@ -70,7 +70,8 @@ public class Spectator {
 
             try {
                 Thread.sleep(2000);
-            } catch(InterruptedException ex) {
+            }
+            catch(InterruptedException ex){
                 Thread.currentThread().interrupt();
             }
         }

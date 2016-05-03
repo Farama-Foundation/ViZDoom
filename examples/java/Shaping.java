@@ -48,33 +48,33 @@ public class Shaping {
         double lastTotalShapingReward = 0;
         for (int i = 0; i < episodes; ++i) {
 
-        System.out.println("Episode #" + (i + 1));
+            System.out.println("Episode #" + (i + 1));
 
-        // Starts a new episode. It is not needed right after init() but it doesn't cost much and the loop is nicer.
-        game.newEpisode();
+            // Starts a new episode. It is not needed right after init() but it doesn't cost much and the loop is nicer.
+            game.newEpisode();
 
-        while (!game.isEpisodeFinished()) {
+            while (!game.isEpisodeFinished()) {
 
-            // Get the state
-            GameState s = game.getState();
+                // Get the state
+                GameState s = game.getState();
 
-            // Make random action and get reward
-            double r = game.makeAction(actions.get(ran.nextInt(3)));
+                // Make random action and get reward
+                double r = game.makeAction(actions.get(ran.nextInt(3)));
 
 
-            // Retrieve the shaping reward
-            int _ssr = game.getGameVariable(GameVariable.USER1);    // Get value of scripted variable
-            double ssr = game.DoomFixedToDouble(_ssr);              // If value is in DoomFixed format project it to double
-            double sr = ssr - lastTotalShapingReward;
-            lastTotalShapingReward = ssr;
+                // Retrieve the shaping reward
+                int _ssr = game.getGameVariable(GameVariable.USER1);    // Get value of scripted variable
+                double ssr = game.DoomFixedToDouble(_ssr);              // If value is in DoomFixed format project it to double
+                double sr = ssr - lastTotalShapingReward;
+                lastTotalShapingReward = ssr;
 
-            System.out.println("State #" + s.number);
-            System.out.println("Health: " + s.gameVariables[0]);
-            System.out.println("Action reward: " + r);
-            System.out.println("Action shaping reward: " + sr);
-            System.out.println("=====================");
+                System.out.println("State #" + s.number);
+                System.out.println("Health: " + s.gameVariables[0]);
+                System.out.println("Action reward: " + r);
+                System.out.println("Action shaping reward: " + sr);
+                System.out.println("=====================");
 
-        }
+            }
 
         System.out.println( "Episode finished.");
         System.out.println("Total reward: " + game.getTotalReward());
