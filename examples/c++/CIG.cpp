@@ -16,10 +16,10 @@ int main(){
 
     // Select game and map You want to use.
     game->setDoomGamePath("../../scenarios/freedoom2.wad");
-    // game->setDoomGamePath("../../scenarios/doom2.wad");     // Not provided with environment due to licences.
+    //game->setDoomGamePath("../../scenarios/doom2.wad");      // Not provided with environment due to licences.
 
     game->setDoomMap("map01");      // Limited deathmatch.
-    // game->setDoomMap("map02");   // Full deathmatch.
+    //game->setDoomMap("map02");      // Full deathmatch.
 
     // Join existing game.
     game->addGameArgs("-join 127.0.0.1");       // Connect to a host for a multiplayer game.
