@@ -27,6 +27,7 @@
 
 #include "ViZDoomGame.h"
 
+#include <iostream>
 #include <vector>
 #include <Python.h>
 #include <boost/python.hpp>
