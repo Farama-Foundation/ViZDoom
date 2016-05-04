@@ -16,10 +16,10 @@ int main(){
 
     // Select game and map You want to use.
     game->setDoomGamePath("../../scenarios/freedoom2.wad");
-    // game->setDoomGamePath("../../scenarios/doom2.wad");     // Not provided with environment due to licences.
+    //game->setDoomGamePath("../../scenarios/doom2.wad");      // Not provided with environment due to licences.
 
     game->setDoomMap("map01");      // Limited deathmatch.
-    // game->setDoomMap("map02");   // Full deathmatch.
+    //game->setDoomMap("map02");      // Full deathmatch.
 
     // Start multiplayer game only with Your AI (with options that will be used in the competition, details in CIGHost example).
     game->addGameArgs("-host 1 -deathmatch +timelimit 10.0 "

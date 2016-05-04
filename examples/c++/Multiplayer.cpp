@@ -16,12 +16,12 @@ int main(){
     game->loadConfig("../../examples/config/multi.cfg");
 
     game->setDoomGamePath("../../scenarios/freedoom2.wad");
-    // game->setDoomGamePath("../../scenarios/doom2.wad");     // Not provided with environment due to licences.
+    //game->setDoomGamePath("../../scenarios/doom2.wad");      // Not provided with environment due to licences.
 
     // Join existing game (see MultiplayerHost.cpp example)
-    game->addGameArgs("-join 127.0.0.1");       // Connect to a host for a multiplayer game.
+    game->addGameArgs("-join 127.0.0.1");   // Connect to a host for a multiplayer game.
 
-    game->setMode(ASYNC_PLAYER);                // Multiplayer requires the use of asynchronous modes.
+    game->setMode(ASYNC_PLAYER);            // Multiplayer requires the use of asynchronous modes.
     game->init();
 
 
@@ -37,14 +37,14 @@ int main(){
 
     std::srand(time(0));
 
-    while(!game->isEpisodeFinished()){          // Play until the game (episode) is over.
+    while(!game->isEpisodeFinished()){      // Play until the game (episode) is over.
 
-        if(game->isPlayerDead()){               // Check if player is dead
-            game->respawnPlayer();              // Use this to respawn immediately after death, new state will be available.
+        if(game->isPlayerDead()){           // Check if player is dead
+            game->respawnPlayer();          // Use this to respawn immediately after death, new state will be available.
 
             // Or observe the game until automatic respawn.
-            // game->advanceAction();
-            // continue;
+            //game->advanceAction();
+            //continue;
         }
 
         // Get the state
