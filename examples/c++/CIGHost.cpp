@@ -16,10 +16,10 @@ int main(){
 
     // Select game and map You want to use.
     game->setDoomGamePath("../../scenarios/freedoom2.wad");
-    // game->setDoomGamePath("../../scenarios/doom2.wad");     // Not provided with environment due to licences.
+    //game->setDoomGamePath("../../scenarios/doom2.wad");      // Not provided with environment due to licences.
 
     game->setDoomMap("map01");      // Limited deathmatch.
-    // game->setDoomMap("map02");   // Full deathmatch.
+    //game->setDoomMap("map02");      // Full deathmatch.
 
     // Host game with options that will be used in the competition.
     game->addGameArgs("-host 8 "                // This machine will function as a host for a multiplayer game with this many players (including this machine). It will wait for other machines to connect using the -join parameter and then start the game when everyone is connected.

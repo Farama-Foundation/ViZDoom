@@ -20,7 +20,7 @@ screen_format = ScreenFormat.DEPTH_BUFFER8
 iterations = 10000
 
 game = DoomGame()
-game.load_config("../config/basic.cfg")
+game.load_config("../../examples/config/basic.cfg")
 
 game.set_screen_resolution(resolution)
 game.set_screen_format(screen_format)
@@ -40,14 +40,14 @@ start = time()
 print("Checking FPS rating. It may take some time. Be patient.")
 
 for i in range(iterations):
-	
-	if game.is_episode_finished():		
-		game.new_episode()
 
-	# Copying happens here 
-	s = game.get_state() 
-	game.make_action(choice(actions))
-	
+    if game.is_episode_finished():
+        game.new_episode()
+
+    # Copying happens here
+    s = game.get_state()
+    game.make_action(choice(actions))
+
 end=time()
 t = end-start
 print("Results:")
