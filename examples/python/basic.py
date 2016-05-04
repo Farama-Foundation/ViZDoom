@@ -6,7 +6,7 @@
 # <episodes> number of episodes are played. 
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
-# To see the scenario description go to "../../scenarios/README"
+# To see the scenario description go to "../../scenarios/README.md"
 # 
 #####################################################################
 from __future__ import print_function
@@ -36,7 +36,7 @@ game.set_vizdoom_path("../../bin/vizdoom")
 
 # Sets path to doom2 iwad resource file which contains the actual doom game. Default is "./doom2.wad".
 game.set_doom_game_path("../../scenarios/freedoom2.wad")
-#game.set_doom_game_path("../../scenarios/doom2.wad")   # Not provided with environment due to licences.
+#game.set_doom_game_path("../../scenarios/doom2.wad")  # Not provided with environment due to licences.
 
 # Sets path to additional resources iwad file which is basically your scenario iwad.
 # If not specified default doom2 maps will be used and it's pretty much useles... unless you want to play doom.
@@ -103,36 +103,33 @@ episodes = 10
 sleep_time = 0.028
 
 for i in range(episodes):
-	print("Episode #" + str(i+1))
+    print("Episode #" + str(i+1))
 
-	# Starts a new episode. It is not needed right after init() but it doesn't cost much. At least the loop is nicer.
-	game.new_episode()
+    # Starts a new episode. It is not needed right after init() but it doesn't cost much. At least the loop is nicer.
+    game.new_episode()
 
-	while not game.is_episode_finished():
-		
-		# Gets the state
-		s = game.get_state()
+    while not game.is_episode_finished():
 
-		# Makes a random action and get remember reward.
-		r = game.make_action(choice(actions))
+        # Gets the state
+        s = game.get_state()
 
-		# Prints state's game variables. Printing the image is quite pointless.
-		print("State #" + str(s.number))
-		print("Game variables:", s.game_variables[0])
-		print("Reward:", r)
-		print("=====================")
+        # Makes a random action and get remember reward.
+        r = game.make_action(choice(actions))
 
-		if sleep_time>0:
-			sleep(sleep_time)
+        # Prints state's game variables. Printing the image is quite pointless.
+        print("State #" + str(s.number))
+        print("Game variables:", s.game_variables[0])
+        print("Reward:", r)
+        print("=====================")
 
-	# Check how the episode went.
-	print("Episode finished.")
-	print("total reward:", game.get_total_reward())
-	print("************************")
+        if sleep_time>0:
+            sleep(sleep_time)
+
+    # Check how the episode went.
+    print("Episode finished.")
+    print("total reward:", game.get_total_reward())
+    print("************************")
 
 
 # It will be done automatically anyway but sometimes you need to do it in the middle of the program...
 game.close()
-
-
-    
