@@ -16,7 +16,7 @@ int main(){
     game->setViZDoomPath("../../bin/vizdoom");
 
     game->setDoomGamePath("../../scenarios/freedoom2.wad");
-    // game->setDoomGamePath("../../scenarios/doom2.wad");   # Not provided with environment due to licences.
+    //game->setDoomGamePath("../../scenarios/doom2.wad");      // Not provided with environment due to licences.
 
     game->setDoomMap("map01");
 
@@ -47,8 +47,8 @@ int main(){
 
     // Delta buttons in spectator modes correspond to mouse movements.
     // Maximum allowed values also apply to spectator modes.
-    // game->addGameArgs("+freelook 1");    //Use this to enable looking around with the mouse.
-    // game->setMode(SPECTATOR);
+    //game->addGameArgs("+freelook 1");     //Use this to enable looking around with the mouse.
+    //game->setMode(SPECTATOR);
 
     game->setWindowVisible(true);
     game->init();

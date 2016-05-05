@@ -3,12 +3,12 @@
 # This script presents different formats of the screen buffer.
 # OpenCV is used here to display images, install it or remove any
 # references to cv2
-# Configuration is loaded from "../config/basic.cfg" file.
+# Configuration is loaded from "../../examples/config/basic.cfg" file.
 # <episodes> number of episodes are played. 
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
 
-# To see the scenario description go to "../../scenarios/README"
+# To see the scenario description go to "../../scenarios/README.md"
 # 
 #####################################################################
 from __future__ import print_function
@@ -21,7 +21,7 @@ import cv2
 game = DoomGame()
 
 # Use other config file if you wish.
-game.load_config("../config/basic.cfg")
+game.load_config("../../examples/config/basic.cfg")
 #game.set_window_visible(False)
 
 # Just umcomment desired format. The last uncommented will be applied.
@@ -53,36 +53,36 @@ episodes = 10
 sleep_time = 20
 
 for i in range(episodes):
-	print("Episode #" +str(i+1))
-	# Not needed for the first episdoe but the loop is nicer.
-	game.new_episode()
-	while not game.is_episode_finished():
+    print("Episode #" +str(i+1))
+    # Not needed for the first episdoe but the loop is nicer.
+    game.new_episode()
+    while not game.is_episode_finished():
 
 
-		# Gets the state and possibly to something with it
-		s = game.get_state()
-		img = s.image_buffer
-		misc = s.game_variables
+        # Gets the state and possibly to something with it
+        s = game.get_state()
+        img = s.image_buffer
+        misc = s.game_variables
 
-		# Gray8 shape is not cv2 compliant
-		if game.get_screen_format() in [ScreenFormat.GRAY8, ScreenFormat.DEPTH_BUFFER8]:
-			img = img.reshape(img.shape[1],img.shape[2],1)
+        # Gray8 shape is not cv2 compliant
+        if game.get_screen_format() in [ScreenFormat.GRAY8, ScreenFormat.DEPTH_BUFFER8]:
+            img = img.reshape(img.shape[1],img.shape[2],1)
 
-		# Display the image here!
-		cv2.imshow('Doom Buffer',img)
-		cv2.waitKey(sleep_time)
+        # Display the image here!
+        cv2.imshow('Doom Buffer',img)
+        cv2.waitKey(sleep_time)
 
-		# Makes a random action and save the reward.
-		r = game.make_action(choice(actions))
+        # Makes a random action and save the reward.
+        r = game.make_action(choice(actions))
 
-		print("State #" +str(s.number))
-		print("Game Variables:", misc)
-		print("Last Reward:",r)
-		print("=====================")
+        print("State #" +str(s.number))
+        print("Game Variables:", misc)
+        print("Last Reward:",r)
+        print("=====================")
 
 
-	print("Episode finished!")
-	print("total reward:", game.get_total_reward())
-	print("************************")
+    print("Episode finished!")
+    print("total reward:", game.get_total_reward())
+    print("************************")
 
 cv2.destroyAllWindows()
