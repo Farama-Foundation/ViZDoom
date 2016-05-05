@@ -32,6 +32,8 @@ ImportExecutables.cmake
 # Python 
 **.pyd
 **.pyc
+examples/python/*.cfg
+examples/python/*.ini
 
 # Java
 **.jar
@@ -42,37 +44,43 @@ ImportExecutables.cmake
 **/Release
 **/debug
 **/release
+**/release_gcc
+**/debug_gcc
 **.ncb
 **.suo
 **.pdb
 **.ilk
 **.aps
-**/wadsrc_wad
 **.user
 **/DOOMSTATS.TXT
-vizdoom_src/src/sc_man_scanner.h
-vizdoom_src/src/xlat_parser.c
-vizdoom_src/src/xlat_parser.h
-vizdoom_src/src/xlat/xlat_parser.out
-vizdoom_src/tools/*/debug
-vizdoom_src/tools/*/release
-vizdoom_src/tools/*/*.exe
-vizdoom_src/tools/lemon/lemon
-vizdoom_src/tools/re2c/re2c
-vizdoom_src/tools/updaterevision/
-vizdoom_src/tools/zipdir/x64
-vizdoom_src/game-music-emu/x64/
-vizdoom_src/dumb/libdumb.a
-vizdoom_src/gdtoa
-vizdoom_src/game-music-emu/gme/libgme.a
-vizdoom_src/lzma/liblzma.a
-vizdoom_src/tools/zipdir/zipdir
+src/vizdoom/bzip2/x64/
+src/vizdoom/dumb/libdumb.a
+src/vizdoom/game-music-emu/x64/
+src/vizdoom/game-music-emu/gme/libgme.a
+src/vizdoom/gdtoa/x64/
+src/vizdoom/jpeg-6b/x64/
+src/vizdoom/lzma/x64/
+src/vizdoom/lzma/liblzma.a
+src/vizdoom/src/sc_man_scanner.h
+src/vizdoom/src/xlat_parser.c
+src/vizdoom/src/xlat_parser.h
+src/vizdoom/src/xlat_parser.out
+src/vizdoom/src/xlat_parser.y
+src/vizdoom/tools/*/debug
+src/vizdoom/tools/*/release
+src/vizdoom/tools/*/*.exe
+src/vizdoom/tools/lemon/lemon
+src/vizdoom/tools/re2c/re2c
+src/vizdoom/tools/updaterevision/x64/
+src/vizdoom/tools/zipdir/x64
+src/vizdoom/tools/zipdir/zipdir
+src/vizdoom/wadsrc_wad
+src/vizdoom/zlib/x64/
 
 # Game wads, scenarios backups and personal configurations
 **.bak
 **/doom2.wad
 **/doom.wad
-**/vizdoom.ini
 **/freedoom2.wad
 **/freedoom1.wad
 **/freedm.wad

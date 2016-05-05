@@ -43,8 +43,8 @@ int main(){
             game->respawnPlayer();              // Use this to respawn immediately after death, new state will be available.
 
             // Or observe the game until automatic respawn.
-            // game->advanceAction();
-            // continue;
+            //game->advanceAction();
+            //continue;
         }
 
         GameState state = game->getState();

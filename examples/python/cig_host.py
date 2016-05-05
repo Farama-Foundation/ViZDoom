@@ -18,7 +18,7 @@ game.set_doom_map("map01")  # Limited deathmatch.
 
 # Host game with options that will be used in the competition.
 #
-game.add_game_args("-host 8 "               # This machine will function as a host for a multiplayer game with this many players (including this machine). It will wait for other machines to connect using the -join parameter and then start the game when everyone is connected.
+game.add_game_args("-host 2 "               # This machine will function as a host for a multiplayer game with this many players (including this machine). It will wait for other machines to connect using the -join parameter and then start the game when everyone is connected.
                    "-deathmatch "           # Deathmatch rules are used for the game.
                    "+timelimit 10.0 "       # The game (episode) will end after this many minutes have elapsed.
                    "+sv_forcerespawn 1 "    # Players will respawn automatically after they die.
@@ -47,9 +47,9 @@ while not game.is_episode_finished():
         # Use this to respawn immediately after death, new state will be available.
         game.respawn_player()
 
-    # Or observe the game until automatic respawn.
-    #game.advance_action();
-    #continue;
+        # Or observe the game until automatic respawn.
+        #game.advance_action();
+        #continue;
 
     s = game.get_state()
     # Analyze the state.
