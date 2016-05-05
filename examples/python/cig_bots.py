@@ -47,9 +47,9 @@ while not game.is_episode_finished():
         # Use this to respawn immediately after death, new state will be available.
         game.respawn_player()
 
-    # Or observe the game until automatic respawn.
-    #game.advance_action();
-    #continue;
+        # Or observe the game until automatic respawn.
+        #game.advance_action();
+        #continue;
 
     s = game.get_state()
     # Analyze the state.
