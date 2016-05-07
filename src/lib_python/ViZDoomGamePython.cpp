@@ -125,4 +125,56 @@ namespace vizdoom {
         return numpyImage.copy();
     }
 
+
+    // These functions are workaround for
+    // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
+    // on GCC < 5
+    bool DoomGamePython::loadConfig(boost::python::str const &pyPath){
+        const char* cPath = boost::python::extract<const char *>(pyPath);
+        std::string path(cPath);
+        DoomGame::loadConfig(path);
+    }
+
+    void DoomGamePython::setViZDoomPath(boost::python::str const &pyPath){
+        const char* cPath = boost::python::extract<const char *>(pyPath);
+        std::string path(cPath);
+        DoomGame::setViZDoomPath(path);
+    }
+
+    void DoomGamePython::setDoomGamePath(boost::python::str const &pyPath){
+        const char* cPath = boost::python::extract<const char *>(pyPath);
+        std::string path(cPath);
+        DoomGame::setDoomGamePath(path);
+    }
+
+    void DoomGamePython::setDoomScenarioPath(boost::python::str const &pyPath){
+        const char* cPath = boost::python::extract<const char *>(pyPath);
+        std::string path(cPath);
+        DoomGame::setDoomScenarioPath(path);
+    }
+
+    void DoomGamePython::setDoomMap(boost::python::str const &pyMap){
+        const char* cMap = boost::python::extract<const char *>(pyMap);
+        std::string map(cMap);
+        DoomGame::setDoomMap(map);
+    }
+
+    void DoomGamePython::setDoomConfigPath(boost::python::str const &pyPath){
+        const char* cPath = boost::python::extract<const char *>(pyPath);
+        std::string path(cPath);
+        DoomGame::setDoomConfigPath(path);
+    }
+
+    void DoomGamePython::addGameArgs(boost::python::str const &pyArgs){
+        const char* cArgs = boost::python::extract<const char *>(pyArgs);
+        std::string args(cArgs);
+        DoomGame::addGameArgs(args);
+    }
+
+    void DoomGamePython::sendGameCommand(boost::python::str const &pyCmd){
+        const char* cCmd = boost::python::extract<const char *>(pyCmd);
+        std::string cmd(cCmd);
+        DoomGame::sendGameCommand(cmd);
+    }
+
 }
