@@ -36,13 +36,13 @@ namespace bp = boost::python;
 
 PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_Exception) {
 
-    //std::string scopeName = bp::extract<std::string>(bp::scope().attr("__name__"));
     // Workaround for
     // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
     // on GCC < 5
-
     const char* cScopeName = bp::extract<const char*>(bp::scope().attr("__name__"));
     std::string scopeName(cScopeName);
+
+    //std::string scopeName = bp::extract<std::string>(bp::scope().attr("__name__"));
     std::string qualifiedName0 = scopeName + "." + name;
     char* qualifiedName1 = const_cast<char*>(qualifiedName0.c_str());
 
@@ -297,7 +297,7 @@ bp::register_exception_translator< n >(&translate ## n );
 
     class_<DoomGamePython>("DoomGame", init<>())
         .def("init", &DoomGamePython::init)
-        .def("load_config", &DoomGamePython::loadConfig, args("path"), "loads ViZDoom config")
+        .def("load_config", &DoomGamePython::loadConfig)
         .def("close", &DoomGamePython::close)
         .def("new_episode", &DoomGamePython::newEpisode)
         .def("is_episode_finished", &DoomGamePython::isEpisodeFinished)
