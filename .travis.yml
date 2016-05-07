@@ -12,7 +12,7 @@ compiler:
   - gcc
 
 install:
-  - if ["$TRAVIS_OS_NAME" == "linux"]; then sudo apt-get install -y cmake libboost-all-dev python python-numpy default-jdk zlib1g-dev libsdl2-dev libjpeg-dev nasm tar libbz2-dev libgtk2.0-dev cmake git libfluidsynth-dev libgme-dev libopenal-dev timidity; fi
+  - if [ $TRAVIS_OS_NAME  == "linux" ]; then sudo apt-get install -y cmake libboost-all-dev python python-numpy default-jdk zlib1g-dev libsdl2-dev libjpeg-dev nasm tar libbz2-dev libgtk2.0-dev libfluidsynth-dev libgme-dev libopenal-dev timidity; fi
   #- if ["$TRAVIS_OS_NAME" == "osx"]; then ...; fi
 
 script:
