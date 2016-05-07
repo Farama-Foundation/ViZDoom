@@ -14,7 +14,6 @@ from vizdoom import DoomGame, ScreenResolution
 from random import choice
 import itertools as it
 from time import sleep
-import cv2
 
 game = DoomGame()
 
