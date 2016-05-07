@@ -28,14 +28,11 @@
 #include "ViZDoomGame.h"
 
 #include <iostream>
-#include <vector>
 #include <Python.h>
 #include <boost/python.hpp>
-#include <boost/python/list.hpp>
-#include <boost/python/object.hpp>
-#include <boost/python/tuple.hpp>
 #include <numpy/ndarrayobject.h>
 #include <numpy/npy_math.h>
+#include <vector>
 
 namespace vizdoom {
     using boost::python::api::object;
@@ -62,8 +59,19 @@ namespace vizdoom {
         double makeAction(boost::python::list const &action);
         double makeAction(boost::python::list const &action, unsigned int tics);
 
-    private:
+        // These functions are workaround for
+        // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
+        // on GCC < 5
+        bool loadConfig(boost::python::str const &pyPath);
+        void setViZDoomPath(boost::python::str const &pyPath);
+        void setDoomGamePath(boost::python::str const &pyPath);
+        void setDoomScenarioPath(boost::python::str const &pyPath);
+        void setDoomMap(boost::python::str const &pyMap);
+        void setDoomConfigPath(boost::python::str const &pyPath);
+        void addGameArgs(boost::python::str const &pyArgs);
+        void sendGameCommand(boost::python::str const &pyCmd);
 
+    private:
         npy_intp imageShape[3];
         static std::vector<int> pyListToIntVector(boost::python::list const &action);
 
