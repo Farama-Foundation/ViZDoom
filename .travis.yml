@@ -1,4 +1,7 @@
-language: cpp
+language: mega
+
+sudo: required
+dist: trusty
 
 branches:
   only:
@@ -7,9 +10,6 @@ branches:
 os:
   - linux
   #- osx
-
-compiler:
-  - gcc
 
 install:
   - if [ $TRAVIS_OS_NAME  == "linux" ]; then sudo apt-get install -y cmake libboost-all-dev python python-numpy default-jdk zlib1g-dev libsdl2-dev libjpeg-dev nasm tar libbz2-dev libgtk2.0-dev libfluidsynth-dev libgme-dev libopenal-dev timidity; fi
