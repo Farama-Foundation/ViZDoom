@@ -132,7 +132,7 @@ namespace vizdoom {
     bool DoomGamePython::loadConfig(boost::python::str const &pyPath){
         const char* cPath = boost::python::extract<const char *>(pyPath);
         std::string path(cPath);
-        DoomGame::loadConfig(path);
+        return DoomGame::loadConfig(path);
     }
 
     void DoomGamePython::setViZDoomPath(boost::python::str const &pyPath){
