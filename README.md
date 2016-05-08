@@ -1,4 +1,4 @@
-#ViZDoom
+#ViZDoom [![Build Status](https://travis-ci.org/Marqt/ViZDoom.svg?branch=master)](https://travis-ci.org/Marqt/ViZDoom)
 [http://vizdoom.cs.put.edu.pl](http://vizdoom.cs.put.edu.pl)
 
 ViZDoom allows developing AI **bots that play Doom using only the visual information** (the screen buffer). It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.
@@ -50,7 +50,7 @@ make
 
 ###Windows
 
-We are providing compiled runtime binaries and development libraries for Windows [here](https://github.com/Marqt/ViZDoom/releases/download/1.0.0/ViZDoom-1.0.0-Win-x86_64.zip).
+We are providing compiled runtime binaries and development libraries for Windows [here](https://github.com/Marqt/ViZDoom/releases/download/1.0.1/ViZDoom-1.0.1-Win-x86_64.zip).
 
 ####Dependencies
 * CMake 3.0+
