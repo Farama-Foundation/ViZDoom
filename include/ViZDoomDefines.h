@@ -31,7 +31,6 @@ namespace vizdoom{
     #define VIZDOOM_LIB_VERSION_STR "1.0.1"
 
     typedef unsigned char uint8_t;
-    #define BYTE uint8_t;
 
     struct GameState {
         unsigned int number;
