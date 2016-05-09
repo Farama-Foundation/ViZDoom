@@ -21,7 +21,6 @@
 */
 
 #include "ViZDoomGamePython.h"
-#include "ViZDoomController.h"
 
 namespace vizdoom {
 
@@ -91,7 +90,7 @@ namespace vizdoom {
             return GameStatePython(this->state.number);
         }
 
-        PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, this->doomController->getScreen());
+        PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, DoomGame::getGameScreen());
         boost::python::handle<> numpyImageHandle = boost::python::handle<>(img);
         boost::python::numeric::array numpyImage = array(numpyImageHandle);
 
@@ -119,7 +118,7 @@ namespace vizdoom {
     }
 
     object DoomGamePython::getGameScreen(){
-        PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, this->doomController->getScreen());
+        PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, DoomGame::getGameScreen());
         boost::python::handle<> numpyImageHandle = boost::python::handle<>(img);
         boost::python::numeric::array numpyImage = array(numpyImageHandle);
         return numpyImage.copy();
