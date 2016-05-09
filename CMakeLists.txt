@@ -56,13 +56,14 @@ find_package(Threads REQUIRED)
 
 set(VIZDOOM_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 set(VIZDOOM_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(VIZDOOM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include ${VIZDOOM_SRC_DIR}/lib)
+set(VIZDOOM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(VIZDOOM_LIB_SRC_DIR ${VIZDOOM_SRC_DIR}/lib)
+set(VIZDOOM_LIB_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LIB_SRC_DIR})
 
-include_directories(${VIZDOOM_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
+include_directories(${VIZDOOM_LIB_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
 
-set(VIZDOOM_LIBS
+set(VIZDOOM_LIBS	
 	${Boost_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT} )
 	
@@ -70,16 +71,15 @@ if(UNIX AND NOT APPLE)
 	set(VIZDOOM_LIBS ${VIZDOOM_LIBS} rt)
 endif()	
 
-set(VIZDOOM_API_SOURCES
-	${VIZDOOM_LIB_SRC_DIR}/ViZDoomUtilities.cpp
-	${VIZDOOM_LIB_SRC_DIR}/ViZDoomExceptions.cpp
-	${VIZDOOM_LIB_SRC_DIR}/ViZDoomController.cpp
-	${VIZDOOM_LIB_SRC_DIR}/ViZDoomGame.cpp)
+file(GLOB VIZDOOM_LIB_SOURCES
+	${VIZDOOM_INCLUDE_DIR}/*.h
+	${VIZDOOM_LIB_SRC_DIR}/*.h
+	${VIZDOOM_LIB_SRC_DIR}/*.cpp)
 
-add_library(libvizdoom_static STATIC ${VIZDOOM_API_SOURCES})
+add_library(libvizdoom_static STATIC ${VIZDOOM_LIB_SOURCES})
 target_link_libraries (libvizdoom_static ${VIZDOOM_LIBS})
 
-add_library(libvizdoom_shared SHARED ${VIZDOOM_API_SOURCES})
+add_library(libvizdoom_shared SHARED ${VIZDOOM_LIB_SOURCES})
 target_link_libraries (libvizdoom_shared ${VIZDOOM_LIBS})
 
 set_target_properties(libvizdoom_static libvizdoom_shared
@@ -129,6 +129,7 @@ if(BUILD_PYTHON)
 						${NUMPY_INCLUDES})  
 
 	set(VIZDOOM_PYTHON_SOURCES
+		${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.h
 	    ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.cpp
 		${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomPythonModule.cpp)
 	
@@ -198,9 +199,11 @@ if(BUILD_JAVA)
 	include_directories(${VIZDOOM_JAVA_INCLUDE_DIR}
 						${Boost_INCLUDE_DIR}
 						${Java_INCLUDE_DIRS}
-						${JNI_INCLUDE_DIR} )
+						${JNI_INCLUDE_DIR})
 
-	set(VIZDOOM_JAVA_SOURCES ${VIZDOOM_JAVA_SRC_DIR}/ViZDoomGameJava.cpp)
+	set(VIZDOOM_JAVA_SOURCES 
+		${VIZDOOM_JAVA_SRC_DIR}/ViZDoomGameJava.h
+		${VIZDOOM_JAVA_SRC_DIR}/ViZDoomGameJava.cpp)
 
 	add_library(libvizdoom_java SHARED ${VIZDOOM_JAVA_SOURCES})
 	target_link_libraries (libvizdoom_java ${VIZDOOM_JAVA_LIBS} libvizdoom_static)
