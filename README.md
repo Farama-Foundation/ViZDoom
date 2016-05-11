@@ -18,11 +18,15 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
-## Planned features (ready in June)
+## Planned Features (June)
 * Lua bindings,
 * Multi-player working in sync mode,
 * Labeling game objects visible in the frame,
 * Time scaling in async mode.
+
+## Cite as
+
+>Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
 
 ---
 ## Building
