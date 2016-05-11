@@ -39,7 +39,7 @@ namespace vizdoom {
     namespace bal       = boost::algorithm;
 
 
-//PUBLIC FUNCTIONS
+    /* PUBLIC FUNCTIONS */
 
     void signalHandler(ba::signal_set& signal, DoomController* controller, const bs::error_code& error, int signal_number){
         controller->intSignal();
@@ -111,8 +111,7 @@ namespace vizdoom {
         delete _input;
     }
 
-//FLOW CONTROL
-
+    /* Flow Control */
     bool DoomController::init() {
 
         if (!this->doomRunning && this->iwadPath.length() != 0 && this->map.length() != 0) {
@@ -293,10 +292,7 @@ namespace vizdoom {
 
     bool DoomController::isDoomRunning() { return this->doomRunning; }
 
-//SETTINGS
-
-//GAME & MAP SETTINGS
-
+    /* Settings */
     std::string DoomController::getInstanceId() { return this->instanceId; }
     void DoomController::setInstanceId(std::string id) { if(!this->doomRunning) this->instanceId = id; }
 
@@ -568,8 +564,7 @@ namespace vizdoom {
         else return (size_t) this->screenChannels * this->screenWidth * this->screenHeight;
     }
 
-//SM SETTERS & GETTERS
-
+    /* SM setters & getters */
     uint8_t *const DoomController::getScreen() { return this->screen; }
 
     DoomController::InputStruct *const DoomController::getInput() { return this->input; }
@@ -723,7 +718,8 @@ namespace vizdoom {
         return slot < SlotsNumber ? this->gameVariables->PLAYER_WEAPON[slot] : 0;
     }
 
-//PRIVATE
+
+    /* PROTECTED && PRIVATE FUNCTIONS */
 
     void DoomController::generateStaticSeed(){
         srand(time(NULL));
@@ -993,10 +989,15 @@ namespace vizdoom {
     }
 
     void DoomController::launchDoom() {
-        //bpr::context ctx;
-        //ctx.stdout_behavior = bpr::silence_stream();
-        bpr::child doomProcess = bpr::execute(bpri::set_args(this->doomArgs), bpri::inherit_env());
-        bpr::wait_for_exit(doomProcess);
+        try{
+            //bpr::context ctx;
+            //ctx.stdout_behavior = bpr::silence_stream();
+            bpr::child doomProcess = bpr::execute(bpri::set_args(this->doomArgs), bpri::inherit_env());
+            bpr::wait_for_exit(doomProcess);
+        }
+        catch(...){
+            this->MQControllerSend(MSG_CODE_DOOM_PROCESS_EXIT);
+        }
         this->MQControllerSend(MSG_CODE_DOOM_PROCESS_EXIT);
     }
 
@@ -1007,7 +1008,7 @@ namespace vizdoom {
         this->ioService.run();
     }
 
-//SM FUNCTIONS 
+    /* Shared memory */
     void DoomController::SMInit() {
         this->SMName = std::string(SM_NAME_BASE) + instanceId;
         //bip::shared_memory_object::remove(this->SMName.c_str());
@@ -1034,7 +1035,7 @@ namespace vizdoom {
                                                           this->screenSize);
             this->screen = static_cast<uint8_t *>(this->ScreenSMRegion->get_address());
         }
-        catch (bip::interprocess_exception &ex) {
+        catch(...) { //bip::interprocess_exception &ex
             throw SharedMemoryException();
         }
     }
@@ -1049,7 +1050,8 @@ namespace vizdoom {
         bip::shared_memory_object::remove(this->SMName.c_str());
     }
 
-//MQ FUNCTIONS
+
+    /* Message queues */
     void DoomController::MQInit() {
 
         this->MQControllerName = std::string(MQ_NAME_CTR_BASE) + instanceId;
@@ -1062,7 +1064,7 @@ namespace vizdoom {
             this->MQController = new bip::message_queue(bip::open_or_create, this->MQControllerName.c_str(), MQ_MAX_MSG_NUM, MQ_MAX_MSG_SIZE);
             this->MQDoom = new bip::message_queue(bip::open_or_create, this->MQDoomName.c_str(), MQ_MAX_MSG_NUM, MQ_MAX_MSG_SIZE);
         }
-        catch (bip::interprocess_exception &ex) {
+        catch(...) { //bip::interprocess_exception &ex
             throw MessageQueueException();
         }
     }
@@ -1070,20 +1072,35 @@ namespace vizdoom {
     void DoomController::MQControllerSend(uint8_t code) {
         MessageSignalStruct msg;
         msg.code = code;
-        this->MQController->send(&msg, sizeof(MessageSignalStruct), 0);
+        try {
+            this->MQController->send(&msg, sizeof(MessageSignalStruct), 0);
+        }
+        catch(...){
+            throw MessageQueueException();
+        }
     }
 
     void DoomController::MQDoomSend(uint8_t code) {
         MessageSignalStruct msg;
         msg.code = code;
-        this->MQDoom->send(&msg, sizeof(MessageSignalStruct), 0);
+        try {
+            this->MQDoom->send(&msg, sizeof(MessageSignalStruct), 0);
+        }
+        catch(...){
+            throw MessageQueueException();
+        }
     }
 
     void DoomController::MQDoomSend(uint8_t code, const char *command) {
         MessageCommandStruct msg;
         msg.code = code;
         strncpy(msg.command, command, MQ_MAX_CMD_LEN);
-        this->MQDoom->send(&msg, sizeof(MessageCommandStruct), 0);
+        try{
+            this->MQDoom->send(&msg, sizeof(MessageCommandStruct), 0);
+        }
+        catch(...){
+            throw MessageQueueException();
+        }
     }
 
     void DoomController::MQControllerRecv(void *msg, size_t &size, unsigned int &priority) {
