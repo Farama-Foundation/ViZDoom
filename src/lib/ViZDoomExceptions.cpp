@@ -25,12 +25,31 @@
 
 namespace vizdoom{
 
-    const char* SharedMemoryException::what() const throw(){ return "ViZDoom shared memory error."; }
+    /* FileDoesNotExistException */
+    FileDoesNotExistException::FileDoesNotExistException(std::string path){
+        this->path = path;
+    }
 
+    FileDoesNotExistException::~FileDoesNotExistException() throw(){}
+
+    const char* FileDoesNotExistException::what() const throw(){
+        std::string what = std::string("File \"") + this->path + "\" does not exist.";
+        return strdup(what.c_str());
+    }
+
+    /* MessageQueueException */
     const char* MessageQueueException::what() const throw(){ return "ViZDoom message queue error."; }
 
+    /* SharedMemoryException */
+    const char* SharedMemoryException::what() const throw(){ return "ViZDoom shared memory error."; }
+
+    /* ViZDoomErrorException */
     const char* ViZDoomErrorException::what() const throw(){ return "Controlled ViZDoom instance reported error."; }
 
+    /* ViZDoomIsNotRunningException */
+    const char* ViZDoomIsNotRunningException::what() const throw(){ return "Controlled ViZDoom instance is not running or not ready."; }
+
+    /* ViZDoomMismatchedVersionException */
     ViZDoomMismatchedVersionException::ViZDoomMismatchedVersionException(std::string vizdoomVersion, std::string libVersion){
         this->vizdoomVersion = vizdoomVersion;
         this->libVersion = libVersion;
@@ -43,18 +62,7 @@ namespace vizdoom{
         return strdup(what.c_str());
     }
 
+    /* ViZDoomUnexpectedExitException */
     const char* ViZDoomUnexpectedExitException::what() const throw(){ return "Controlled ViZDoom instance exited unexpectedly."; }
 
-    const char* ViZDoomIsNotRunningException::what() const throw(){ return "Controlled ViZDoom instance is not running or not ready."; }
-
-    FileDoesNotExistException::FileDoesNotExistException(std::string path){
-        this->path = path;
-    }
-
-    FileDoesNotExistException::~FileDoesNotExistException() throw(){}
-
-    const char* FileDoesNotExistException::what() const throw(){
-        std::string what = std::string("File \"") + this->path + "\" does not exist.";
-        return strdup(what.c_str());
-    }
 }
