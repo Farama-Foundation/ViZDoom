@@ -28,9 +28,13 @@
 
 namespace vizdoom{
 
-    class SharedMemoryException : public std::exception {
+    class FileDoesNotExistException : public std::exception {
     public:
+        FileDoesNotExistException(std::string path);
+        ~FileDoesNotExistException() throw();
         const char* what() const throw();
+    private:
+        std::string path;
     };
 
     class MessageQueueException : public std::exception {
@@ -38,7 +42,17 @@ namespace vizdoom{
         const char* what() const throw();
     };
 
+    class SharedMemoryException : public std::exception {
+    public:
+        const char* what() const throw();
+    };
+
     class ViZDoomErrorException : public std::exception {
+    public:
+        const char* what() const throw();
+    };
+
+    class ViZDoomIsNotRunningException : public std::exception {
     public:
         const char* what() const throw();
     };
@@ -56,20 +70,6 @@ namespace vizdoom{
     class ViZDoomUnexpectedExitException : public std::exception {
     public:
         const char* what() const throw();
-    };
-
-    class ViZDoomIsNotRunningException : public std::exception {
-    public:
-        const char* what() const throw();
-    };
-
-    class FileDoesNotExistException : public std::exception {
-    public:
-        FileDoesNotExistException(std::string path);
-        ~FileDoesNotExistException() throw();
-        const char* what() const throw();
-    private:
-        std::string path;
     };
 }
 
