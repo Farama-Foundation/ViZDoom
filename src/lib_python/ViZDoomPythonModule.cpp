@@ -90,19 +90,25 @@ BOOST_PYTHON_MODULE(vizdoom)
     
     /* exceptions */
 
-#define EXCEPTION_TO_PYT(n, pytn) type ## n = createExceptionClass(#pytn); \
+#define EXCEPTION_TO_PYT(n) type ## n = createExceptionClass(#n); \
 bp::register_exception_translator< n >(&translate ## n );
     /* typeMyException = createExceptionClass("myException");
      * bp::register_exception_translator<myException>(&translate);
      */
+
+//#define EXCEPTION_TO_PYT(n, pytn) type ## n = createExceptionClass(#pytn); \
+//bp::register_exception_translator< n >(&translate ## n );
+    /* typeMyException = createExceptionClass("myException");
+     * bp::register_exception_translator<myException>(&translate);
+     */
         
-    EXCEPTION_TO_PYT(ViZDoomMismatchedVersionException, vizdoom_mismatched_version)
-    EXCEPTION_TO_PYT(ViZDoomUnexpectedExitException, doom_unexpected_exit_exception)
-    EXCEPTION_TO_PYT(ViZDoomIsNotRunningException, doom_is_not_running_exception)
-    EXCEPTION_TO_PYT(ViZDoomErrorException, doom_error_exception)
-    EXCEPTION_TO_PYT(SharedMemoryException, shared_memory_exception)
-    EXCEPTION_TO_PYT(MessageQueueException, message_queue_exception)
-    EXCEPTION_TO_PYT(FileDoesNotExistException, file_does_not_exist_exception)
+    EXCEPTION_TO_PYT(ViZDoomMismatchedVersionException)
+    EXCEPTION_TO_PYT(ViZDoomUnexpectedExitException)
+    EXCEPTION_TO_PYT(ViZDoomIsNotRunningException)
+    EXCEPTION_TO_PYT(ViZDoomErrorException)
+    EXCEPTION_TO_PYT(SharedMemoryException)
+    EXCEPTION_TO_PYT(MessageQueueException)
+    EXCEPTION_TO_PYT(FileDoesNotExistException)
 
 #define ENUM_VAL_2_PYT(v) .value( #v , v )
     /* .value("VALUE_IN_PYTHON", VALUE_IN_CPP) */

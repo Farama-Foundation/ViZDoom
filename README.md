@@ -18,11 +18,15 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
-## Planned features (ready in June)
+## Planned Features (June)
 * Lua bindings,
 * Multi-player working in sync mode,
 * Labeling game objects visible in the frame,
 * Time scaling in async mode.
+
+## Cite as
+
+>Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
 
 ---
 ## Building
@@ -33,7 +37,7 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 * CMake 3.0+
 * Make
 * GCC 4.6+
-* Boost libraires
+* Boost libraries
 * Python 2.7+ with Numpy and Boost.Python for Python binding (optional)
 * JDK for Java binding (JAVA_HOME must be set) (optional)
 
@@ -55,7 +59,7 @@ We are providing compiled runtime binaries and development libraries for Windows
 ####Dependencies
 * CMake 3.0+
 * Visual Studio 2012+
-* Boost libraires
+* Boost libraries
 * Python 2.7+ with Numpy and Boost.Python for Python binding (optional)
 * JDK for Java binding (JAVA_HOME must be set) (optional)
 
@@ -82,7 +86,7 @@ Let us know if You are using ViZDoom on OSX.
 ####Dependencies
 * CMake 3.0+
 * XCode 5+
-* Boost libraires
+* Boost libraries
 * Python 2.7+ with Numpy and Boost.Python for Python binding (optional)
 * JDK for Java binding (JAVA_HOME must be set) (optional)
 
