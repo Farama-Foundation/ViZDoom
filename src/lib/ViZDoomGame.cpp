@@ -943,8 +943,9 @@ namespace vizdoom {
             }
             catch( std::exception ){
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Boolean value expected insted of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
+                success = false;
                 continue;
-                success = false;            
+                            
             }
 
         /* Parse enum properties */
