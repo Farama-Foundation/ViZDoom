@@ -92,7 +92,7 @@ class ReplayMemory:
 
 # Creates the network:
 def create_network(available_actions_num):
-    # Create the input variables
+    # Creates the input variables
     s1 = tensor.tensor4("States")
     a = tensor.vector("Actions", dtype="int32")
     q2 = tensor.vector("Next State best Q-Value")
@@ -106,13 +106,16 @@ def create_network(available_actions_num):
     dqn = Conv2DLayer(dqn, num_filters=32, filter_size=[8, 8],
                       nonlinearity=rectify, W=GlorotUniform("relu"),
                       b=Constant(.1))
+    dqn = MaxPool2DLayer(dqn, pool_size=[2, 2])
     dqn = Conv2DLayer(dqn, num_filters=64, filter_size=[4, 4],
                       nonlinearity=rectify, W=GlorotUniform("relu"),
                       b=Constant(.1))
+
     dqn = MaxPool2DLayer(dqn, pool_size=[2, 2])
     dqn = Conv2DLayer(dqn, num_filters=64, filter_size=[3, 3],
                       nonlinearity=rectify, W=GlorotUniform("relu"),
                       b=Constant(.1))
+    dqn = MaxPool2DLayer(dqn, pool_size=[2, 2])
     # Adds a single fully connected layer.
     dqn = DenseLayer(dqn, num_units=512, nonlinearity=rectify, W=GlorotUniform("relu"),
                      b=Constant(.1))
