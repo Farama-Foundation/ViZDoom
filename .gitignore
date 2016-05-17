@@ -4,15 +4,13 @@ Makefile
 ImportExecutables.cmake
 **/link-make
 
-**/vizdoom
-**/vizdoom.pk3
-
 *~
 **.o
 **.a
 **.so
 **.lib
 **.dll
+**.pk3
 **.exp
 **/build
 **/CMakeCache.txt

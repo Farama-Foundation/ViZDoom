@@ -30,7 +30,7 @@ endif( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 option( DYN_FLUIDSYNTH "Dynamically load fluidsynth" ON )
 
 if( APPLE )
-    option( OSX_COCOA_BACKEND "Use native Cocoa backend instead of SDL" ON )
+    option( OSX_COCOA_BACKEND "Use native Cocoa backend instead of SDL" OFF )
 endif( APPLE )
 
 if( CMAKE_SIZEOF_VOID_P MATCHES "8" )
