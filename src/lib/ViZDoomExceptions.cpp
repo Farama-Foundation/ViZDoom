@@ -58,7 +58,7 @@ namespace vizdoom{
     ViZDoomMismatchedVersionException::~ViZDoomMismatchedVersionException() throw(){}
 
     const char* ViZDoomMismatchedVersionException::what() const throw(){
-        std::string what = "Controlled ViZDoom version (" + this->vizdoomVersion + ") does not match library version (" + this->vizdoomVersion + ").";
+        std::string what = "Controlled ViZDoom version (" + this->vizdoomVersion + ") does not match library version (" + this->libVersion + ").";
         return strdup(what.c_str());
     }
 

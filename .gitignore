@@ -4,15 +4,13 @@ Makefile
 ImportExecutables.cmake
 **/link-make
 
-**/vizdoom
-**/vizdoom.pk3
-
 *~
 **.o
 **.a
 **.so
 **.lib
 **.dll
+**.pk3
 **.exp
 **/build
 **/CMakeCache.txt
@@ -75,6 +73,7 @@ src/vizdoom/tools/updaterevision/x64/
 src/vizdoom/tools/zipdir/x64
 src/vizdoom/tools/zipdir/zipdir
 src/vizdoom/wadsrc_wad
+src/vizdoom/zdoom_docs
 src/vizdoom/zlib/x64/
 
 # Game wads, scenarios backups and personal configurations
