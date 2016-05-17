@@ -83,6 +83,9 @@ EXTERN_CVAR (Bool, fullscreen)
 EXTERN_CVAR (Float, Gamma)
 EXTERN_CVAR (Int, vid_refreshrate)
 
+//VIZDOOM_CODE
+EXTERN_CVAR(Bool, vizdoom_window_hidden)
+
 extern IDirectDraw2 *DDraw;
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
@@ -354,6 +357,19 @@ bool DDrawFB::CreateResources ()
 		LOG1 ("LockingSurf and BackSurf @ %p\n", BackSurf);
 		LOG ("Created backbuf\n");
 	}
+
+	//VIZDOOM_CODE
+	if (*vizdoom_window_hidden){
+		long WindowStyle = GetWindowLong(Window, GWL_STYLE);
+		WindowStyle &= ~(WS_VISIBLE);
+		WindowStyle |= WS_EX_TOOLWINDOW;
+		WindowStyle &= ~(WS_EX_APPWINDOW);
+
+		SetWindowLong(Window, GWL_STYLE, WindowStyle); // set the style
+		ShowWindow(Window, SW_SHOW); // show the window for the new style to come into effect
+		ShowWindow(Window, SW_HIDE); // hide the window
+	}
+
 	SetGamma (Gamma);
 	SetFlash (Flash, FlashAmount);
 	return true;

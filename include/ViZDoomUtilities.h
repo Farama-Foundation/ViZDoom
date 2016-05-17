@@ -26,15 +26,31 @@
 #include "ViZDoomDefines.h"
 
 namespace vizdoom {
-
+    /*
+     * Calculates how many tics will be made during given number of milliseconds
+     * (assuming 35 ticks per second --- designed Doom tic-rate).
+     */
     double DoomTicsToMs(double tics);
 
+    /*
+     * Calculates the number of milliseconds that will pass during specified number of tics
+     * (assuming 35 tics per second --- designed Doom tic-rate).
+     */
     double MsToDoomTics(double ms);
 
+    /*
+     * Converts Doom's fixed point numeral to a double value.
+     */
     double DoomFixedToDouble(int doomFixed);
 
+    /*
+     * Returns true if button is binary button.
+     */
     bool isBinaryButton(Button button);
 
+    /*
+     * Returns true if button is delta button.
+     */
     bool isDeltaButton(Button button);
 }
 

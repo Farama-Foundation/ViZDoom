@@ -65,10 +65,21 @@ namespace vizdoom{
 
 #define MSG_CODE_SIGNAL_INT_ABRT_TERM   30
 
-/* DoomController class */
+/* OSes */
+#ifdef __linux__
+    #define OS_LINUX
+#elif _WIN32
+    #define OS_WIN
+#elif __APPLE__
+    #define OS_OSX
+#endif
+
     class DoomController {
 
     public:
+
+        /* SM structs */
+        /*------------------------------------------------------------------------------------------------------------*/
 
         struct InputStruct {
             int BT[ButtonsNumber];
@@ -84,7 +95,7 @@ namespace vizdoom{
             int GAME_STATE;
             int GAME_ACTION;
             unsigned int GAME_SEED;
-            unsigned int GAME_STATIC_SEED;
+            unsigned int GAME_RNG_SEED;
             bool GAME_SETTINGS_CONTROLLER;
             bool NET_GAME;
 
@@ -138,15 +149,14 @@ namespace vizdoom{
         DoomController();
         ~DoomController();
 
-        //FLOW CONTROL
+        /* Flow control */
+        /*------------------------------------------------------------------------------------------------------------*/
 
         bool init();
         void close();
         void restart();
 
-        void intSignal();
-
-        /* Controll */
+        void intSignal();   //must be public
 
         bool isTicPossible();
         void tic();
@@ -158,14 +168,15 @@ namespace vizdoom{
         bool isDoomRunning();
         void sendCommand(std::string command);
 
-        /* Settings */
+        /* General game settings */
+        /*------------------------------------------------------------------------------------------------------------*/
 
-        /* Game settings */
         unsigned int getSeed();
-        unsigned int getStaticSeed();
-        void setStaticSeed(unsigned int seed);
-        void setUseStaticSeed(bool use);
-        bool isUseStaticSeed();
+        unsigned int getRngSeed();
+        void setRngSeed(unsigned int seed);
+        void clearRngSeed();
+        void setUseRngSeed(bool use);
+        bool isUseRngSeed();
 
         std::string getInstanceId();
         void setInstanceId(std::string id);
@@ -205,15 +216,12 @@ namespace vizdoom{
         void addCustomArg(std::string arg);
         void clearCustomArgs();
 
-        /* Rendering settings */
+
+        /* Rendering getters and setters */
+        /*------------------------------------------------------------------------------------------------------------*/
 
         void setWindowHidden(bool windowHidden);
         void setNoXServer(bool noXServer);
-
-        void setScreenResolution(unsigned int width, unsigned int height);
-        void setScreenWidth(unsigned int width);
-        void setScreenHeight(unsigned int height);
-        void setScreenFormat(ScreenFormat format);
 
         void setRenderHud(bool hud);
         void setRenderWeapon(bool weapon);
@@ -221,8 +229,12 @@ namespace vizdoom{
         void setRenderDecals(bool decals);
         void setRenderParticles(bool particles);
 
-        /* Getters */
+        void setScreenResolution(unsigned int width, unsigned int height);
+        void setScreenWidth(unsigned int width);
+        void setScreenHeight(unsigned int height);
+        void setScreenFormat(ScreenFormat format);
 
+        ScreenFormat getScreenFormat();
         unsigned int getScreenWidth();
         unsigned int getScreenHeight();
         unsigned int getScreenChannels();
@@ -230,9 +242,12 @@ namespace vizdoom{
         size_t getScreenPitch();
         size_t getScreenSize();
 
-        ScreenFormat getScreenFormat();
-
         uint8_t * const getScreen();
+
+
+        /* Buttons getters and setters */
+        /*------------------------------------------------------------------------------------------------------------*/
+
         InputStruct * const getInput();
         GameVariablesStruct * const getGameVariables();
 
@@ -253,8 +268,11 @@ namespace vizdoom{
         bool isRunDoomAsync();
         void setRunDoomAsync(bool set);
 
-        int getGameVariable(GameVariable var);
 
+        /* GameVariables getters */
+        /*------------------------------------------------------------------------------------------------------------*/
+
+        int getGameVariable(GameVariable var);
 
         int getGameTic();
         bool isNetGame();
@@ -288,20 +306,41 @@ namespace vizdoom{
 
     private:
 
-        void generateStaticSeed();
+        /* Flow */
+        /*------------------------------------------------------------------------------------------------------------*/
+
+        bool doomRunning;
+        bool doomWorking;
+
+        void waitForDoomStart();
+        void waitForDoomWork();
+        void waitForDoomMapStartTime();
+        void createDoomArgs();
+        void launchDoom();
+        void handleSignals();
+
+
+        /* Seed */
+        /*------------------------------------------------------------------------------------------------------------*/
+
         void generateInstanceId();
 
-        bool useStaticSeed;
-        int staticSeed;
+        bool useRngSeed;
+        int rngSeed;
         std::string instanceId;
+
+
+        /* Threads */
+        /*------------------------------------------------------------------------------------------------------------*/
 
         b::thread *doomThread;
         ba::io_service ioService;
         b::thread *signalThread;
         //bpr::child doomProcess;
-        bool doomRunning;
-        bool doomWorking;
 
+
+        /* Message queues */
+        /*------------------------------------------------------------------------------------------------------------*/
 
         struct MessageSignalStruct {
             uint8_t code;
@@ -325,6 +364,9 @@ namespace vizdoom{
         std::string MQDoomName;
 
 
+        /* Shared memory */
+        /*------------------------------------------------------------------------------------------------------------*/
+
         void SMInit();
         void SMClose();
 
@@ -341,13 +383,9 @@ namespace vizdoom{
         bip::mapped_region *ScreenSMRegion;
         uint8_t *screen;
 
-        void waitForDoomStart();
-        void waitForDoomWork();
-        void waitForDoomMapStartTime();
-        void createDoomArgs();
-        void launchDoom();
-        void handleSignals();
 
+        /* Settings */
+        /*------------------------------------------------------------------------------------------------------------*/
 
         unsigned int screenWidth, screenHeight, screenChannels, screenDepth;
         size_t screenPitch, screenSize;
