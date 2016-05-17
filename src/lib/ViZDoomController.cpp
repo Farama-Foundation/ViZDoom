@@ -38,30 +38,42 @@ namespace vizdoom {
     namespace bfs       = boost::filesystem;
     namespace bal       = boost::algorithm;
 
-
-    /* PUBLIC FUNCTIONS */
-
-    void signalHandler(ba::signal_set& signal, DoomController* controller, const bs::error_code& error, int signal_number){
-        controller->intSignal();
-    }
+    /* Public methods */
+    /*----------------------------------------------------------------------------------------------------------------*/
 
     DoomController::DoomController() {
 
+        /* Message queues */
         this->MQController = NULL;
         this->MQDoom = NULL;
 
+        /* Shared memory */
         this->InputSMRegion = NULL;
         this->GameVariablesSMRegion = NULL;
         this->ScreenSMRegion = NULL;
 
-        this->exePath = "vizdoom";
-        this->iwadPath = "doom2.wad";
+        /* Threads */
+        this->signalThread = NULL;
+        this->doomThread = NULL;
+
+        /* Flow control */
+        this->doomRunning = false;
+        this->doomWorking = false;
+
+        this->mapStartTime = 1;
+        this->mapTimeout = 0;
+        this->mapRestartCount = 0;
+        this->mapRestarting = false;
+        this->mapLastTic = 1;
+
+        /* Settings */
+        this->exePath = "./vizdoom";
+        this->iwadPath = "./doom2.wad";
         this->filePath = "";
         this->map = "map01";
         this->configPath = "";
         this->skill = 3;
 
-        /* Rendering */
         this->screenWidth = 320;
         this->screenHeight = 240;
         this->screenChannels = 3;
@@ -81,37 +93,30 @@ namespace vizdoom {
         this->noConsole = true;
         this->noSound = true;
 
-        /* Map time */
-        this->mapStartTime = 1;
-        this->mapTimeout = 0;
-        this->mapRestartCount = 0;
-        this->mapRestarting = false;
-        this->mapLastTic = 1;
-
         this->allowDoomInput = false;
         this->runDoomAsync = false;
 
-        /* Seed */
+        this->useRngSeed = false;
+        this->rngSeed = 0;
+
         this->generateInstanceId();
-        //this->generateStaticSeed();
-        this->useStaticSeed = false;
-        this->staticSeed = 0;
-        this->doomRunning = false;
-        this->doomWorking = false;
-
-        /* Threads */
-        this->signalThread = NULL;
-        this->doomThread = NULL;
-
         this->_input = new InputStruct();
+
     }
 
     DoomController::~DoomController() {
-        //this->close();
+        this->close();
         delete _input;
     }
 
     /* Flow Control */
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    /* Helper function for init */
+    void signalHandler(ba::signal_set& signal, DoomController* controller, const bs::error_code& error, int signal_number){
+        controller->intSignal();
+    }
+
     bool DoomController::init() {
 
         if (!this->doomRunning && this->iwadPath.length() != 0 && this->map.length() != 0) {
@@ -293,6 +298,8 @@ namespace vizdoom {
     bool DoomController::isDoomRunning() { return this->doomRunning; }
 
     /* Settings */
+    /*----------------------------------------------------------------------------------------------------------------*/
+
     std::string DoomController::getInstanceId() { return this->instanceId; }
     void DoomController::setInstanceId(std::string id) { if(!this->doomRunning) this->instanceId = id; }
 
@@ -369,30 +376,29 @@ namespace vizdoom {
         else return 0;
     }
 
-    unsigned int DoomController::getStaticSeed(){
-        if (this->doomRunning) return this->gameVariables->GAME_STATIC_SEED;
-        else return this->staticSeed;
+    unsigned int DoomController::getRngSeed(){
+        if (this->doomRunning) return this->gameVariables->GAME_RNG_SEED;
+        else return this->rngSeed;
     }
 
-    void DoomController::setStaticSeed(unsigned int seed){
-        if(seed == 0){
-            this->useStaticSeed = false;
-            this->staticSeed = 0;
-            if (this->doomRunning) {
-                this->sendCommand("rngseed clear");
-            }
-        }
-        else {
-            this->useStaticSeed = true;
-            this->staticSeed = seed;
-            if (this->doomRunning) {
-                this->sendCommand(std::string("rngseed set ") + b::lexical_cast<std::string>(this->staticSeed));
-            }
+    void DoomController::setRngSeed(unsigned int seed){
+        this->useRngSeed = true;
+        this->rngSeed = seed;
+        if (this->doomRunning) {
+            this->sendCommand(std::string("rngseed set ") + b::lexical_cast<std::string>(this->rngSeed));
         }
     }
 
-    void DoomController::setUseStaticSeed(bool set){ this->useStaticSeed = true; }
-    bool DoomController::isUseStaticSeed(){ return this->useStaticSeed; }
+    void DoomController::clearRngSeed(){
+        this->useRngSeed = false;
+        this->rngSeed = 0;
+        if (this->doomRunning) {
+            this->sendCommand("rngseed clear");
+        }
+    }
+
+    void DoomController::setUseRngSeed(bool set){ this->useRngSeed = true; }
+    bool DoomController::isUseRngSeed(){ return this->useRngSeed; }
 
     unsigned int DoomController::getMapStartTime() { return this->mapStartTime; }
     void DoomController::setMapStartTime(unsigned int tics) { this->mapStartTime = tics ? tics : 1; }
@@ -565,6 +571,8 @@ namespace vizdoom {
     }
 
     /* SM setters & getters */
+    /*----------------------------------------------------------------------------------------------------------------*/
+
     uint8_t *const DoomController::getScreen() { return this->screen; }
 
     DoomController::InputStruct *const DoomController::getInput() { return this->input; }
@@ -640,6 +648,9 @@ namespace vizdoom {
 
     bool DoomController::isRunDoomAsync(){ return this->runDoomAsync; }
     void DoomController::setRunDoomAsync(bool set){ if(!this->doomRunning) this->runDoomAsync = set; }
+
+    /* GameVariables getters */
+    /*----------------------------------------------------------------------------------------------------------------*/
 
     int DoomController::getGameVariable(GameVariable var) {
         switch (var) {
@@ -719,12 +730,8 @@ namespace vizdoom {
     }
 
 
-    /* PROTECTED && PRIVATE FUNCTIONS */
-
-    void DoomController::generateStaticSeed(){
-        srand(time(NULL));
-        this->staticSeed = rand();
-    }
+    /* Protected and private functions */
+    /*----------------------------------------------------------------------------------------------------------------*/
 
     void DoomController::generateInstanceId() {
         std::string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -735,6 +742,9 @@ namespace vizdoom {
             this->instanceId += chars[rand() % (chars.length() - 1)];
         }
     }
+
+    /* Flow */
+    /*----------------------------------------------------------------------------------------------------------------*/
 
     void DoomController::waitForDoomStart() {
 
@@ -753,11 +763,16 @@ namespace vizdoom {
 
             case MSG_CODE_DOOM_CLOSE :
             case MSG_CODE_DOOM_PROCESS_EXIT :
-                throw ViZDoomUnexpectedExitException();
+                if(this->doomRunning) {
+                    this->close();
+                    throw ViZDoomUnexpectedExitException();
+                }
 
             case MSG_CODE_DOOM_ERROR :
-                throw ViZDoomErrorException();
-
+                if(this->doomRunning) {
+                    this->close();
+                    throw ViZDoomErrorException();
+                }
             case MSG_CODE_SIGNAL_INT_ABRT_TERM :
                 this->close();
                 break;
@@ -789,10 +804,17 @@ namespace vizdoom {
                         break;
 
                     case MSG_CODE_DOOM_ERROR :
-                        throw ViZDoomErrorException();
+                        if(this->doomRunning) {
+                            this->close();
+                            throw ViZDoomErrorException();
+                        }
+                        break;
 
                     case MSG_CODE_DOOM_PROCESS_EXIT :
-                        if(this->doomRunning) throw ViZDoomUnexpectedExitException();
+                        if(this->doomRunning) {
+                            this->close();
+                            throw ViZDoomUnexpectedExitException();
+                        }
                         break;
 
                     case MSG_CODE_SIGNAL_INT_ABRT_TERM :
@@ -813,17 +835,20 @@ namespace vizdoom {
         }
     }
 
+    /* Init */
+    /*----------------------------------------------------------------------------------------------------------------*/
+
     void DoomController::createDoomArgs(){
         this->doomArgs.clear();
 
         //exe
         if(!bfs::exists(this->exePath) || bfs::is_directory(this->exePath)){
-#ifdef WIN32
+        #ifdef OS_WIN
             if(!bfs::exists(this->exePath + ".exe")) throw FileDoesNotExistException(this->exePath);
             this->exePath += ".exe";
-#else
+        #else
             throw FileDoesNotExistException(this->exePath);
-#endif
+        #endif
         }
         this->doomArgs.push_back(this->exePath);
 
@@ -846,9 +871,9 @@ namespace vizdoom {
         if (this->configPath.length() != 0) this->doomArgs.push_back(this->configPath);
         else this->doomArgs.push_back("vizdoom.ini");
 
-        if(this->useStaticSeed) {
+        if(this->useRngSeed) {
             this->doomArgs.push_back("-rngseed");
-            this->doomArgs.push_back(b::lexical_cast<std::string>(this->staticSeed));
+            this->doomArgs.push_back(b::lexical_cast<std::string>(this->rngSeed));
         }
 
         //map
@@ -937,6 +962,12 @@ namespace vizdoom {
             //allow mouse
             this->doomArgs.push_back("+use_mouse");
             this->doomArgs.push_back("1");
+
+            #ifdef OS_WIN
+                // Fix for problem with delta buttons' last values on Windows.
+                this->doomArgs.push_back("+in_mouse");
+                this->doomArgs.push_back("2");
+            #endif
         }
         else{
             //disable mouse
@@ -956,9 +987,11 @@ namespace vizdoom {
         if (this->windowHidden) this->doomArgs.push_back("1");
         else this->doomArgs.push_back("0");
 
-        this->doomArgs.push_back("+vizdoom_no_x_server");
-        if (this->noXServer) this->doomArgs.push_back("1");
-        else this->doomArgs.push_back("0");
+        #ifdef OS_LINUX
+            this->doomArgs.push_back("+vizdoom_no_x_server");
+            if (this->noXServer) this->doomArgs.push_back("1");
+            else this->doomArgs.push_back("0");
+        #endif
 
         //no wipe animation
         this->doomArgs.push_back("+wipetype");
@@ -990,13 +1023,11 @@ namespace vizdoom {
 
     void DoomController::launchDoom() {
         try{
-            //bpr::context ctx;
-            //ctx.stdout_behavior = bpr::silence_stream();
             bpr::child doomProcess = bpr::execute(bpri::set_args(this->doomArgs), bpri::inherit_env());
             bpr::wait_for_exit(doomProcess);
         }
         catch(...){
-            this->MQControllerSend(MSG_CODE_DOOM_PROCESS_EXIT);
+            this->MQControllerSend(MSG_CODE_DOOM_ERROR);
         }
         this->MQControllerSend(MSG_CODE_DOOM_PROCESS_EXIT);
     }
@@ -1009,6 +1040,8 @@ namespace vizdoom {
     }
 
     /* Shared memory */
+    /*----------------------------------------------------------------------------------------------------------------*/
+
     void DoomController::SMInit() {
         this->SMName = std::string(SM_NAME_BASE) + instanceId;
         //bip::shared_memory_object::remove(this->SMName.c_str());
@@ -1052,6 +1085,8 @@ namespace vizdoom {
 
 
     /* Message queues */
+    /*----------------------------------------------------------------------------------------------------------------*/
+
     void DoomController::MQInit() {
 
         this->MQControllerName = std::string(MQ_NAME_CTR_BASE) + instanceId;
