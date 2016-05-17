@@ -27,8 +27,8 @@
 
 namespace vizdoom{
 
-    #define VIZDOOM_LIB_VERSION 101
-    #define VIZDOOM_LIB_VERSION_STR "1.0.1"
+    #define VIZDOOM_LIB_VERSION 102
+    #define VIZDOOM_LIB_VERSION_STR "1.0.2"
 
     typedef unsigned char uint8_t;
 
