@@ -98,6 +98,8 @@ EXTERN_CVAR (Float, Gamma)
 EXTERN_CVAR (Int, vid_maxfps)
 EXTERN_CVAR (Bool, cl_capfps)
 EXTERN_CVAR (Bool, vid_vsync)
+
+//VIZDOOM_CODE
 EXTERN_CVAR (Bool, vizdoom_window_hidden)
 EXTERN_CVAR (Bool, vizdoom_no_x_server)
 
@@ -372,7 +374,7 @@ SDLFB::SDLFB (int width, int height, bool fullscreen, SDL_Window *oldwin)
 			Screen = SDL_CreateWindow (caption,
 			SDL_WINDOWPOS_UNDEFINED_DISPLAY(vid_adapter), SDL_WINDOWPOS_UNDEFINED_DISPLAY(vid_adapter),
 			width, height, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0) |
-										   (vizdoom_window_hidden ? SDL_WINDOW_HIDDEN : SDL_WINDOW_RESIZABLE));
+						   (*vizdoom_window_hidden ? SDL_WINDOW_HIDDEN : SDL_WINDOW_RESIZABLE));
 
 			if (Screen == NULL)
 				return;

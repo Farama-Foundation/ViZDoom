@@ -74,6 +74,9 @@
 #include "r_data/colormaps.h"
 #include "SkylineBinPack.h"
 
+//VIZDOOM_CODE
+EXTERN_CVAR(Bool, vizdoom_window_hidden)
+
 // MACROS ------------------------------------------------------------------
 
 // The number of points for the vertex buffer.
@@ -531,6 +534,19 @@ bool D3DFB::CreateResources()
 		I_RestoreWindowedPos();
 		VidResizing = false;
 	}
+
+	//VIZDOOM_CODE
+	if (*vizdoom_window_hidden){
+		long WindowStyle = GetWindowLong(Window, GWL_STYLE);
+		WindowStyle &= ~(WS_VISIBLE);
+		WindowStyle |= WS_EX_TOOLWINDOW;
+		WindowStyle &= ~(WS_EX_APPWINDOW);
+
+		SetWindowLong(Window, GWL_STYLE, WindowStyle); // set the style
+		ShowWindow(Window, SW_SHOW); // show the window for the new style to come into effect
+		ShowWindow(Window, SW_HIDE); // hide the window
+	}
+
 	if (!LoadShaders())
 	{
 		return false;
