@@ -35,20 +35,19 @@ reward_scale = 0.01
 # Some of the network's and learning settings:
 learning_rate = 0.00001
 batch_size = 32
-epochs = 100
+epochs = 20
 training_steps_per_epoch = 5000
 test_episodes_per_epoch = 100
 
 # Other parameters
-skiprate = 4
+skiprate = 7
 downsampled_x = 60
-downsampled_y = 45
+downsampled_y = int(2/3.0*downsampled_x)
 episodes_to_watch = 10
 
 # Where to save and load network's weights.
 params_savefile = "basic_params"
 params_loadfile = None
-
 
 # Function for converting images
 def convert(img):
@@ -269,12 +268,11 @@ print "Training finished! Time to watch!"
 
 game.close()
 game.set_window_visible(True)
+game.set_mode(Mode.ASYNC_PLAYER)
 game.init()
 
-# Sleeping time between episodes
+# Sleeping time between episodes, for convenience.
 episode_sleep = 0.5
-# Sleeping time between actions which results in about 35 fps.
-actions_sleep = 0.028
 
 for i in range(episodes_to_watch):
     game.new_episode()
@@ -284,7 +282,7 @@ for i in range(episodes_to_watch):
         game.set_action(actions[best_action_index])
         for i in range(skiprate+1):
             game.advance_action()
-            sleep(actions_sleep)
+
     sleep(episode_sleep)
     r = game.get_total_reward()
     print "Total reward: ", r
