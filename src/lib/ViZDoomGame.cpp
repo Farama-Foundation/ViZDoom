@@ -765,8 +765,8 @@ namespace vizdoom {
             if(key == "available_buttons" || key == "availablebuttons"){
                 std::vector<std::string> str_buttons;
                 int start_line = line_number;
-                bool success = DoomGame::ParseListProperty(line_number, val, file, str_buttons );
-                if(success){
+                bool parse_success = DoomGame::ParseListProperty(line_number, val, file, str_buttons );
+                if(parse_success){
                     unsigned int i = 0;
                     try{
                         std::vector<Button> buttons;
@@ -782,7 +782,7 @@ namespace vizdoom {
                     }
                     catch(std::exception){
                         std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Unsupported value in lines "<<start_line<<"-"<<line_number<<": "<<str_buttons[i]<<". Lines ignored.\n";
-
+                        success = false;
                     }
                 }
                 else{
@@ -796,8 +796,8 @@ namespace vizdoom {
             if(key == "available_game_variables" || key == "availablegamevariables"){
                 std::vector<std::string> str_variables;
                 int start_line = line_number;
-                bool success = DoomGame::ParseListProperty(line_number, val, file, str_variables );
-                if(success){
+                bool parse_success = DoomGame::ParseListProperty(line_number, val, file, str_variables );
+                if(parse_success){
                     unsigned int i = 0;
                     try{
                         std::vector<GameVariable> variables;
@@ -813,7 +813,7 @@ namespace vizdoom {
                     }
                     catch(std::exception){
                         std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Unsupported value in lines "<<start_line<<"-"<<line_number<<": "<<str_variables[i]<<". Lines ignored.\n";
-
+                        success = false;
                     }
                 }
                 else{
@@ -951,8 +951,9 @@ namespace vizdoom {
             }
             catch( std::exception ){
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Boolean value expected insted of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
+                success = false;
                 continue;
-                success = false;            
+                            
             }
 
         /* Parse enum properties */
