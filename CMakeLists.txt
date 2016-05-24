@@ -10,7 +10,7 @@ endif(COMMAND cmake_policy)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 
-# System dependent settings    
+# System dependent settings
 if(UNIX)
 	set(Boost_USE_STATIC_LIBS OFF)
 	set(Boost_USE_MULTITHREADED ON)
@@ -36,10 +36,10 @@ if(WIN32)
 	add_definitions(-D_WIN32_WINNT=${ver})
 endif()
 
-# Compiler dependent settings     
+# Compiler dependent settings
 if(CMAKE_COMPILER_IS_GNUCXX)
 	add_definitions("-fPIC")
-endif()  
+endif()
 
 if(MSVC)
 	string(REPLACE "/MD " "/MT " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
@@ -63,13 +63,13 @@ set(VIZDOOM_LIB_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LIB_SRC_DIR})
 
 include_directories(${VIZDOOM_LIB_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
 
-set(VIZDOOM_LIBS	
+set(VIZDOOM_LIBS
 	${Boost_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT} )
-	
+
 if(UNIX AND NOT APPLE)
 	set(VIZDOOM_LIBS ${VIZDOOM_LIBS} rt)
-endif()	
+endif()
 
 file(GLOB VIZDOOM_LIB_SOURCES
 	${VIZDOOM_INCLUDE_DIR}/*.h
@@ -104,36 +104,63 @@ set_target_properties(libvizdoom_static libvizdoom_shared
 
 	add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
 
-#Python binding	
 if(BUILD_PYTHON)
 
 	#set(Boost_USE_DEBUG_PYTHON OFF)
 
-	find_package(PythonInterp 2.7 REQUIRED)
-	find_package(PythonLibs 2.7 REQUIRED)
-	find_package(NumPy REQUIRED)
-	find_package(Boost COMPONENTS python REQUIRED)
+        find_package(PythonInterp 2.7 REQUIRED)
+	# Find the matching Python libs by starting with PYTHON_VERSION_STRING
+	# and stripping off the least significant digit (e.g. 3.4.3 -> 3.4)
+	STRING( REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" python_version ${PYTHON_VERSION_STRING} )
+        find_package(PythonLibs ${python_version} REQUIRED)
+
+	# Find the matching boost python implementation by starting with
+	# PYTHONLIBS_VERSION_STRING (e.g. 3.4.3), stripping off the last part of the
+	# version, and checking for a boost of that version
+	set(version ${PYTHONLIBS_VERSION_STRING})
+	STRING( REGEX REPLACE "[^0-9]" "" boost_py_version ${version} )
+	find_package(Boost COMPONENTS "python-py${boost_py_version}")
+	set(Boost_PYTHON_FOUND ${Boost_PYTHON-PY${boost_py_version}_FOUND})
+
+	while(NOT "${version}" STREQUAL "" AND NOT Boost_PYTHON_FOUND)
+	  STRING( REGEX REPLACE "([0-9.]+).[0-9]+" "\\1" version ${version} )
+
+	  STRING( REGEX REPLACE "[^0-9]" "" boost_py_version ${version} )
+	  find_package(Boost COMPONENTS "python-py${boost_py_version}")
+	  set(Boost_PYTHON_FOUND ${Boost_PYTHON-PY${boost_py_version}_FOUND})
+
+	  STRING( REGEX MATCHALL "([0-9.]+).[0-9]+" has_more_version ${version} )
+	  if("${has_more_version}" STREQUAL "")
+	    break()
+	  endif()
+	endwhile()
+	if(NOT Boost_PYTHON_FOUND)
+	  find_package(Boost COMPONENTS python REQUIRED)
+	endif()
+	set(found_boost_python_library ${Boost_LIBRARIES})
+
+        find_package(NumPy REQUIRED)
 
 	set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
 	set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
 
 	set(VIZDOOM_PYTHON_LIBS
 		${VIZDOOM_LIBS}
-		${Boost_PYTHON_LIBRARY}
+		${found_boost_python_library}
 		${PYTHON_LIBRARIES}
 		${NUMPY_LIBRARIES})
 
 	include_directories(${VIZDOOM_PYTHON_INCLUDE_DIR}
 						${Boost_INCLUDE_DIR}
-						${PYTHON_INCLUDE_DIR}
-						${NUMPY_INCLUDES})  
+						${PYTHON_INCLUDE_DIRS}
+						${NUMPY_INCLUDES})
 
 	set(VIZDOOM_PYTHON_SOURCES
 		${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.h
 	    ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.cpp
 		${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomPythonModule.cpp)
-	
-	if(WIN32)	
+
+	if(WIN32)
 		add_definitions(-DBOOST_PYTHON_STATIC_LIB)
 	endif()
 
@@ -173,7 +200,7 @@ if(BUILD_JAVA)
 
 	find_package(Java REQUIRED)
 	find_package(JNI REQUIRED)
-	
+
 	include(UseJava)
 	set(VIZDOOM_JAVA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_java)
 	set(VIZDOOM_JAVA_CLASSES_DIR ${VIZDOOM_JAVA_SRC_DIR}/java_classes)
@@ -183,10 +210,10 @@ if(BUILD_JAVA)
 		${VIZDOOM_LIBS}
 		${Java_LIBRARIES}
 		${JNI_LIBRARIES})
-		
+
 	if( UNIX )
 		set(JNI_INCLUDE_DIR ${JNI_INCLUDE_DIR}
-			${_JAVA_HOME}/include	
+			${_JAVA_HOME}/include
 			${_JAVA_HOME}/include/linux)
 	endif()
 
@@ -194,20 +221,20 @@ if(BUILD_JAVA)
 		set( JNI_INCLUDE_DIR ${JNI_INCLUDE_DIR}
 			${_JAVA_HOME}/include
 			${_JAVA_HOME}/include/win32 )
-	endif()	
+	endif()
 
 	include_directories(${VIZDOOM_JAVA_INCLUDE_DIR}
 						${Boost_INCLUDE_DIR}
 						${Java_INCLUDE_DIRS}
 						${JNI_INCLUDE_DIR})
 
-	set(VIZDOOM_JAVA_SOURCES 
+	set(VIZDOOM_JAVA_SOURCES
 		${VIZDOOM_JAVA_SRC_DIR}/ViZDoomGameJava.h
 		${VIZDOOM_JAVA_SRC_DIR}/ViZDoomGameJava.cpp)
 
 	add_library(libvizdoom_java SHARED ${VIZDOOM_JAVA_SOURCES})
 	target_link_libraries (libvizdoom_java ${VIZDOOM_JAVA_LIBS} libvizdoom_static)
-	
+
 	set_target_properties(libvizdoom_java
 		PROPERTIES
 		LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/java
@@ -221,7 +248,7 @@ if(BUILD_JAVA)
 		RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/java
 		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/java
 		OUTPUT_NAME vizdoom)
-	
+
 	add_jar(libvizdoom_java_classes
 		${VIZDOOM_JAVA_CLASSES_DIR}/enums/Button.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/enums/GameVariable.java
