@@ -80,14 +80,24 @@ void (DoomGamePython::*advanceAction3)(unsigned int, bool, bool) = &DoomGamePyth
 double (DoomGamePython::*makeAction1)(bp::list const &) = &DoomGamePython::makeAction;
 double (DoomGamePython::*makeAction2)(bp::list const &, unsigned int) = &DoomGamePython::makeAction;
 
+#if PY_MAJOR_VERSION >= 3
+int
+#else
+void
+#endif
+init_numpy()
+{
+    bp::numeric::array::set_module_and_type("numpy", "ndarray");
+    import_array();
+}
+
 BOOST_PYTHON_MODULE(vizdoom)
 {
     using namespace boost::python;
 
     Py_Initialize();
-    bp::numeric::array::set_module_and_type("numpy", "ndarray");
-    import_array();
-    
+    init_numpy();
+
     /* exceptions */
 
 #define EXCEPTION_TO_PYT(n) type ## n = createExceptionClass(#n); \
@@ -101,7 +111,7 @@ bp::register_exception_translator< n >(&translate ## n );
     /* typeMyException = createExceptionClass("myException");
      * bp::register_exception_translator<myException>(&translate);
      */
-        
+
     EXCEPTION_TO_PYT(ViZDoomMismatchedVersionException)
     EXCEPTION_TO_PYT(ViZDoomUnexpectedExitException)
     EXCEPTION_TO_PYT(ViZDoomIsNotRunningException)
@@ -316,23 +326,23 @@ bp::register_exception_translator< n >(&translate ## n );
         .def("advance_action", advanceAction1)
         .def("advance_action", advanceAction2)
         .def("advance_action", advanceAction3)
-        
+
         .def("get_state", &DoomGamePython::getState)
-    
+
         .def("get_game_variable", &DoomGamePython::getGameVariable)
         .def("get_game_screen", &DoomGamePython::getGameScreen)
 
         .def("get_living_reward", &DoomGamePython::getLivingReward)
         .def("set_living_reward", &DoomGamePython::setLivingReward)
-        
+
         .def("get_death_penalty", &DoomGamePython::getDeathPenalty)
         .def("set_death_penalty", &DoomGamePython::setDeathPenalty)
-        
+
         .def("get_last_reward", &DoomGamePython::getLastReward)
         .def("get_total_reward", &DoomGamePython::getTotalReward)
-        
+
         .def("get_last_action", &DoomGamePython::getLastAction)
-        
+
         .def("add_available_game_variable", &DoomGamePython::addAvailableGameVariable)
         .def("clear_available_game_variables", &DoomGamePython::clearAvailableGameVariables)
         .def("get_available_game_variables_size", &DoomGamePython::getAvailableGameVariablesSize)
@@ -371,7 +381,7 @@ bp::register_exception_translator< n >(&translate ## n );
 
         .def("set_console_enabled",&DoomGamePython::setConsoleEnabled)
         .def("set_sound_enabled",&DoomGamePython::setSoundEnabled)
-        
+
         .def("set_screen_resolution", &DoomGamePython::setScreenResolution)
         .def("set_screen_format", &DoomGamePython::setScreenFormat)
         .def("set_render_hud", &DoomGamePython::setRenderHud)
