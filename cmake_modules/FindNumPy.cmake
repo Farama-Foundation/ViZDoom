@@ -38,16 +38,16 @@ if (NOT NUMPY_FOUND)
         set (NUMPY_ROOT_DIR ${CMAKE_INSTALL_PREFIX})
     endif (NOT NUMPY_ROOT_DIR)
 
-    if (NOT PYTHON_FOUND)
+    if (NOT PYTHONINTERP_FOUND)
         find_package (PythonInterp)
-    endif (NOT PYTHON_FOUND)
+    endif (NOT PYTHONINTERP_FOUND)
 
     ##__________________________________________________________________________
     ## Check for the header files
 
     ## Use Python to determine the include directory
     execute_process (
-        COMMAND ${PYTHON_EXECUTABLE} -c import\ numpy\;\ print\ numpy.get_include\(\)\;
+        COMMAND ${PYTHON_EXECUTABLE} -c import\ numpy\;\ print\(numpy.get_include\(\)\)\;
         ERROR_VARIABLE NUMPY_FIND_ERROR
         RESULT_VARIABLE NUMPY_FIND_RESULT
         OUTPUT_VARIABLE NUMPY_FIND_OUTPUT
@@ -78,7 +78,7 @@ if (NOT NUMPY_FOUND)
 
     if (PYTHON_EXECUTABLE)
         execute_process (
-            COMMAND ${PYTHON_EXECUTABLE} -c import\ numpy\;\ print\ numpy.__version__;
+            COMMAND ${PYTHON_EXECUTABLE} -c import\ numpy\;\ print\(numpy.__version__\)\;
             ERROR_VARIABLE NUMPY_API_VERSION_ERROR
             RESULT_VARIABLE NUMPY_API_VERSION_RESULT
             OUTPUT_VARIABLE NUMPY_API_VERSION
