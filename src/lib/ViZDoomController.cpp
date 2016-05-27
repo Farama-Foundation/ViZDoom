@@ -26,17 +26,21 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/bind.hpp>
+#include <boost/chrono.hpp>
 #include <boost/lexical_cast.hpp>
+#include <climits>
 #include <cstdio>
 #include <cstdlib>
+#include <ctime>
 
 namespace vizdoom {
 
+    namespace bal       = boost::algorithm;
+    namespace bc        = boost::chrono;
+    namespace bfs       = boost::filesystem;
     namespace bpr       = boost::process;
     namespace bpri      = boost::process::initializers;
     namespace bs        = boost::system;
-    namespace bfs       = boost::filesystem;
-    namespace bal       = boost::algorithm;
 
     /* Public methods */
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -96,12 +100,17 @@ namespace vizdoom {
         this->allowDoomInput = false;
         this->runDoomAsync = false;
 
-        this->useRngSeed = false;
-        this->rngSeed = 0;
+        this->seedDoomRng = true;
+        this->doomRngSeed = 0;
 
+        this->instanceRng.seed((unsigned int)bc::high_resolution_clock::now().time_since_epoch().count());
         this->generateInstanceId();
-        this->_input = new InputStruct();
 
+        br::uniform_int_distribution<> rngSeedDist(0, UINT_MAX);
+        this->setInstanceRngSeed(rngSeedDist(this->instanceRng));
+        this->setDoomRngSeed(rngSeedDist(this->instanceRng));
+
+        this->_input = new InputStruct();
     }
 
     DoomController::~DoomController() {
@@ -109,13 +118,9 @@ namespace vizdoom {
         delete _input;
     }
 
+
     /* Flow Control */
     /*----------------------------------------------------------------------------------------------------------------*/
-
-    /* Helper function for init */
-    void signalHandler(ba::signal_set& signal, DoomController* controller, const bs::error_code& error, int signal_number){
-        controller->intSignal();
-    }
 
     bool DoomController::init() {
 
@@ -124,7 +129,6 @@ namespace vizdoom {
             try{
                 this->doomRunning = true;
 
-                if (this->instanceId.length() == 0) generateInstanceId();
                 this->MQInit();
 
                 this->signalThread = new b::thread(b::bind(&DoomController::handleSignals, this));
@@ -178,10 +182,6 @@ namespace vizdoom {
             this->SMClose();
             this->MQClose();
         }
-    }
-
-    void DoomController::intSignal(){
-        this->MQControllerSend(MSG_CODE_SIGNAL_INT_ABRT_TERM);
     }
 
     void DoomController::restart() {
@@ -320,6 +320,9 @@ namespace vizdoom {
         this->map = map;
         if (this->doomRunning && !this->mapRestarting) {
 
+            br::uniform_int_distribution<> mapSeedDist(0, UINT_MAX);
+            this->setDoomRngSeed(mapSeedDist(this->instanceRng));
+
             if(this->gameVariables->NET_GAME){
                 if(this->gameVariables->GAME_SETTINGS_CONTROLLER) this->sendCommand(std::string("changemap ") + this->map);
             }
@@ -371,34 +374,33 @@ namespace vizdoom {
         }
     }
 
-    unsigned int DoomController::getSeed(){
-        if (this->doomRunning) return this->gameVariables->GAME_SEED;
-        else return 0;
+    unsigned int DoomController::getDoomRngSeed(){
+        if (this->doomRunning) return this->gameVariables->GAME_STATIC_SEED;
+        else return this->doomRngSeed;
     }
 
-    unsigned int DoomController::getRngSeed(){
-        if (this->doomRunning) return this->gameVariables->GAME_RNG_SEED;
-        else return this->rngSeed;
-    }
-
-    void DoomController::setRngSeed(unsigned int seed){
-        this->useRngSeed = true;
-        this->rngSeed = seed;
+    void DoomController::setDoomRngSeed(unsigned int seed){
+        this->seedDoomRng = true;
+        this->doomRngSeed = seed;
         if (this->doomRunning) {
-            this->sendCommand(std::string("rngseed set ") + b::lexical_cast<std::string>(this->rngSeed));
+            this->sendCommand(std::string("rngseed set ") + b::lexical_cast<std::string>(this->doomRngSeed));
         }
     }
 
-    void DoomController::clearRngSeed(){
-        this->useRngSeed = false;
-        this->rngSeed = 0;
+    void DoomController::clearDoomRngSeed(){
+        this->seedDoomRng = false;
+        this->doomRngSeed = 0;
         if (this->doomRunning) {
             this->sendCommand("rngseed clear");
         }
     }
 
-    void DoomController::setUseRngSeed(bool set){ this->useRngSeed = true; }
-    bool DoomController::isUseRngSeed(){ return this->useRngSeed; }
+    void DoomController::setInstanceRngSeed(unsigned int seed){
+        this->instanceRngSeed = seed;
+        this->instanceRng.seed(seed);
+    }
+
+    unsigned int DoomController::getInstanceRngSeed(){ return this->instanceRngSeed; }
 
     unsigned int DoomController::getMapStartTime() { return this->mapStartTime; }
     void DoomController::setMapStartTime(unsigned int tics) { this->mapStartTime = tics ? tics : 1; }
@@ -733,14 +735,36 @@ namespace vizdoom {
     /* Protected and private functions */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    void DoomController::generateInstanceId() {
+    unsigned int DoomController::instanceCount = 0;
+
+    void DoomController::generateInstanceId(){
         std::string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         this->instanceId = "";
 
-        srand(time(NULL));
-        for (int i = 0; i < 10; ++i) {
-            this->instanceId += chars[rand() % (chars.length() - 1)];
+        br::uniform_int_distribution<> charDist(0, chars.length() - 1);
+
+        for (int i = 0; i < INSTANCE_ID_LENGHT; ++i) {
+            this->instanceId += chars[charDist(this->instanceRng)];
         }
+    }
+
+
+    /* Signals */
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    void DoomController::handleSignals(){
+        ba::signal_set signals(this->ioService, SIGINT, SIGABRT, SIGTERM);
+        signals.async_wait(b::bind(signalHandler, b::ref(signals), this, _1, _2));
+
+        this->ioService.run();
+    }
+
+    void DoomController::signalHandler(ba::signal_set& signal, DoomController* controller, const bs::error_code& error, int signal_number){
+        controller->intSignal();
+    }
+
+    void DoomController::intSignal(){
+        this->MQControllerSend(MSG_CODE_SIGNAL_INT_ABRT_TERM);
     }
 
     /* Flow */
@@ -871,9 +895,9 @@ namespace vizdoom {
         if (this->configPath.length() != 0) this->doomArgs.push_back(this->configPath);
         else this->doomArgs.push_back("vizdoom.ini");
 
-        if(this->useRngSeed) {
-            this->doomArgs.push_back("-rngseed");
-            this->doomArgs.push_back(b::lexical_cast<std::string>(this->rngSeed));
+        if(this->seedDoomRng) {
+            this->doomArgs.push_back("+rngseed");
+            this->doomArgs.push_back(b::lexical_cast<std::string>(this->doomRngSeed));
         }
 
         //map
@@ -1030,13 +1054,6 @@ namespace vizdoom {
             this->MQControllerSend(MSG_CODE_DOOM_ERROR);
         }
         this->MQControllerSend(MSG_CODE_DOOM_PROCESS_EXIT);
-    }
-
-    void DoomController::handleSignals(){
-        ba::signal_set signals(this->ioService, SIGINT, SIGABRT, SIGTERM);
-        signals.async_wait(b::bind(signalHandler, b::ref(signals), this, _1, _2));
-
-        this->ioService.run();
     }
 
     /* Shared memory */

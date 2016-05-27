@@ -45,9 +45,7 @@ namespace vizdoom {
         this->summaryReward = 0;
         this->lastMapTic = 0;
         this->nextStateNumber = 1;
-        this->seed = (unsigned int)(time(NULL) % UINT_MAX) ;
         this->mode = PLAYER;
-
 
         this->doomController = new DoomController();
     }
@@ -119,9 +117,7 @@ namespace vizdoom {
 
         if(!this->isRunning()) throw ViZDoomIsNotRunningException();
 
-        this->doomController->setRngSeed((unsigned int)(rand() % UINT_MAX));
         this->doomController->restartMap();
-        this->doomController->clearRngSeed();
 
         this->lastMapTic = 0;
         this->nextStateNumber = 1;
@@ -327,27 +323,17 @@ namespace vizdoom {
     void DoomGame::setDoomGamePath(std::string path) { this->doomController->setIwadPath(path); }
     void DoomGame::setDoomScenarioPath(std::string path) { this->doomController->setFilePath(path); }
     void DoomGame::setDoomMap(std::string map) { this->doomController->setMap(map); }
-    void DoomGame::setDoomSkill(int skill) {
-        this->doomController->setSkill(skill); 
-    }
+    void DoomGame::setDoomSkill(int skill) { this->doomController->setSkill(skill); }
     void DoomGame::setDoomConfigPath(std::string path) { this->doomController->setConfigPath(path); }
 
-    unsigned int DoomGame::getSeed(){ return this->seed; }
-
-    void DoomGame::setSeed(unsigned int seed){
-        this->seed = seed;
-        srand(this->seed);
-    }
+    unsigned int DoomGame::getSeed(){ return this->doomController->getInstanceRngSeed(); }
+    void DoomGame::setSeed(unsigned int seed){ this->doomController->setInstanceRngSeed(seed); }
 
     unsigned int DoomGame::getEpisodeStartTime(){ return this->doomController->getMapStartTime(); }
-    void DoomGame::setEpisodeStartTime(unsigned int tics){
-        this->doomController->setMapStartTime(tics);
-    }
+    void DoomGame::setEpisodeStartTime(unsigned int tics){ this->doomController->setMapStartTime(tics); }
 
     unsigned int DoomGame::getEpisodeTimeout(){ return this->doomController->getMapTimeout(); }
-    void DoomGame::setEpisodeTimeout(unsigned int tics) {
-        this->doomController->setMapTimeout(tics);
-    }
+    void DoomGame::setEpisodeTimeout(unsigned int tics) { this->doomController->setMapTimeout(tics); }
 
     unsigned int DoomGame::getEpisodeTime(){ return this->doomController->getMapTic(); }
 
