@@ -26,6 +26,7 @@
 #include "ViZDoomDefines.h"
 
 #include <boost/asio.hpp>
+#include <boost/random.hpp>
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
@@ -36,9 +37,12 @@
 namespace vizdoom{
 
     namespace b         = boost;
-    namespace bip       = boost::interprocess;
     namespace ba        = boost::asio;
+    namespace bip       = boost::interprocess;
+    namespace bs        = boost::system;
+    namespace br        = boost::random;
 
+#define INSTANCE_ID_LENGHT 10
 
 /* Shared memory's settings */
 #define SM_NAME_BASE        "ViZDoomSM"
@@ -65,9 +69,10 @@ namespace vizdoom{
 
 #define MSG_CODE_SIGNAL_INT_ABRT_TERM   30
 
+
 /* OSes */
 #ifdef __linux__
-    #define OS_LINUX
+#define OS_LINUX
 #elif _WIN32
     #define OS_WIN
 #elif __APPLE__
@@ -94,8 +99,7 @@ namespace vizdoom{
             unsigned int GAME_TIC;
             int GAME_STATE;
             int GAME_ACTION;
-            unsigned int GAME_SEED;
-            unsigned int GAME_RNG_SEED;
+            unsigned int GAME_STATIC_SEED;
             bool GAME_SETTINGS_CONTROLLER;
             bool NET_GAME;
 
@@ -149,14 +153,13 @@ namespace vizdoom{
         DoomController();
         ~DoomController();
 
+
         /* Flow control */
         /*------------------------------------------------------------------------------------------------------------*/
 
         bool init();
         void close();
         void restart();
-
-        void intSignal();   //must be public
 
         bool isTicPossible();
         void tic();
@@ -168,18 +171,19 @@ namespace vizdoom{
         bool isDoomRunning();
         void sendCommand(std::string command);
 
-        /* General game settings */
-        /*------------------------------------------------------------------------------------------------------------*/
+        unsigned int getDoomRngSeed();
+        void setDoomRngSeed(unsigned int seed);
+        void clearDoomRngSeed();
 
-        unsigned int getSeed();
-        unsigned int getRngSeed();
-        void setRngSeed(unsigned int seed);
-        void clearRngSeed();
-        void setUseRngSeed(bool use);
-        bool isUseRngSeed();
+        unsigned int getInstanceRngSeed();
+        void setInstanceRngSeed(unsigned int seed);
 
         std::string getInstanceId();
         void setInstanceId(std::string id);
+
+
+        /* General game settings */
+        /*------------------------------------------------------------------------------------------------------------*/
 
         std::string getExePath();
         void setExePath(std::string path);
@@ -317,25 +321,33 @@ namespace vizdoom{
         void waitForDoomMapStartTime();
         void createDoomArgs();
         void launchDoom();
-        void handleSignals();
-
 
         /* Seed */
         /*------------------------------------------------------------------------------------------------------------*/
 
         void generateInstanceId();
 
-        bool useRngSeed;
-        int rngSeed;
+        bool seedDoomRng;
+        unsigned int doomRngSeed;
+        unsigned int instanceRngSeed;
+
+        br::mt19937 instanceRng;
         std::string instanceId;
 
 
         /* Threads */
         /*------------------------------------------------------------------------------------------------------------*/
 
-        b::thread *doomThread;
+        static unsigned int instanceCount;
         ba::io_service ioService;
         b::thread *signalThread;
+
+        static void signalHandler(ba::signal_set& signal, DoomController* controller, const bs::error_code& error, int signal_number);
+
+        void handleSignals();
+        void intSignal();
+
+        b::thread *doomThread;
         //bpr::child doomProcess;
 
 

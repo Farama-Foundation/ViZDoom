@@ -334,12 +334,12 @@ namespace vizdoom {
         void setDoomConfigPath(std::string path);
 
         /*
-         * Return ViZDoom's game seed.
+         * Return ViZDoom's seed.
          */
         unsigned int getSeed();
 
         /*
-         * Sets the seed of the ViZDoom's randomizing engine.
+         * Sets the seed of the ViZDoom's RNG that generates seeds (initial state) for episodes.
          */
         void setSeed(unsigned int seed);
 
@@ -484,7 +484,6 @@ namespace vizdoom {
 
         unsigned int nextStateNumber;
         unsigned int lastMapTic;
-        unsigned int seed;
 
         /* Rewards */
         /*------------------------------------------------------------------------------------------------------------*/

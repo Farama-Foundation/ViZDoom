@@ -95,6 +95,7 @@ extern unsigned int vizdoomLastUpdate;
 
 #define VIZDOOM_MAX_PLAYERS 8 //MAXPLAYERS //(8)
 #define VIZDOOM_MAX_PLAYER_NAME_LEN 16 //MAXPLAYERNAME+1 //(15 + 1 = 16)
+#define VIZDOOM_MAX_LABELS 255
 
 struct ViZDoomInputStruct{
     int BT[VIZDOOM_BT_SIZE];
@@ -110,17 +111,18 @@ struct ViZDoomGameVarsStruct{
     unsigned int GAME_TIC;
     int GAME_STATE;
     int GAME_ACTION;
-    unsigned int GAME_SEED;
     unsigned int GAME_STATIC_SEED;
     bool GAME_SETTINGS_CONTROLLER;
     bool NET_GAME;
 
+    // SCREEN
     unsigned int SCREEN_WIDTH;
     unsigned int SCREEN_HEIGHT;
     size_t SCREEN_PITCH;
     size_t SCREEN_SIZE;
     int SCREEN_FORMAT;
 
+    // MAP
     unsigned int MAP_START_TIC;
     unsigned int MAP_TIC;
 
@@ -133,6 +135,8 @@ struct ViZDoomGameVarsStruct{
     int MAP_SECRETCOUNT;
     bool MAP_END;
 
+    // PLAYER
+    //int PLAYER_NUMBER;
     bool PLAYER_HAS_ACTOR;
     bool PLAYER_DEAD;
 
@@ -156,10 +160,19 @@ struct ViZDoomGameVarsStruct{
 
     int PLAYER_AMMO[VIZDOOM_GV_SLOTS_SIZE];
     int PLAYER_WEAPON[VIZDOOM_GV_SLOTS_SIZE];
+    //float PLAYER_POSITION[VIZDOOM_MAX_LABELS][3];
 
+    // OTHER PLAYERS
     int PLAYERS_COUNT;
     char PLAYERS_NAME[VIZDOOM_MAX_PLAYERS][VIZDOOM_MAX_PLAYER_NAME_LEN];
     int PLAYERS_FRAGCOUNT[VIZDOOM_MAX_PLAYERS];
+    //float PLAYERS_POSITION[VIZDOOM_MAX_LABELS][3];
+
+    // LABELS
+    //int LABELS_COUNT;
+    //int LABELS_COLOR[VIZDOOM_MAX_LABELS]
+    //char int LABELS_NAME[VIZDOOM_MAX_LABELS]
+    //float LABELS_POSITION[VIZDOOM_MAX_LABELS][3]
 
 };
 

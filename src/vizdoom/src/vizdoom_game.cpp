@@ -129,7 +129,7 @@ void ViZDoom_GameVarsTic(){
     vizdoomGameVars->GAME_TIC = gametic;
     vizdoomGameVars->GAME_STATE = gamestate;
     vizdoomGameVars->GAME_ACTION = gameaction;
-    vizdoomGameVars->GAME_SEED = rngseed;
+    //vizdoomGameVars->GAME_SEED = rngseed;
     vizdoomGameVars->GAME_STATIC_SEED = staticrngseed;
     vizdoomGameVars->GAME_SETTINGS_CONTROLLER = vizdoomPlayer->settings_controller;
     vizdoomGameVars->NET_GAME = netgame || multiplayer;
@@ -196,11 +196,12 @@ void ViZDoom_GameVarsTic(){
         vizdoomGameVars->PLAYER_WEAPON[i] = ViZDoom_CheckSlotWeapons(i);
     }
 
-    for(int i = 0; i < VIZDOOM_MAX_PLAYERS; ++i){
-        strncpy(vizdoomGameVars->PLAYERS_NAME[i], players[i].userinfo.GetName(), VIZDOOM_MAX_PLAYER_NAME_LEN);
-        vizdoomGameVars->PLAYERS_FRAGCOUNT[i] = players[i].fragcount;
+    if(vizdoomGameVars->NET_GAME) {
+        for (int i = 0; i < VIZDOOM_MAX_PLAYERS; ++i) {
+            strncpy(vizdoomGameVars->PLAYERS_NAME[i], players[i].userinfo.GetName(), VIZDOOM_MAX_PLAYER_NAME_LEN);
+            vizdoomGameVars->PLAYERS_FRAGCOUNT[i] = players[i].fragcount;
+        }
     }
-
 }
 
 void ViZDoom_GameVarsClose(){
