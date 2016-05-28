@@ -94,7 +94,6 @@ game.init()
 actions = [[True,False,False],[False,True,False],[False,False,True]]
 
 # Run this many episodes
-
 episodes = 10
 
 # Sets time that will pause the engine after each action.
@@ -112,11 +111,14 @@ for i in range(episodes):
 
         # Gets the state
         s = game.get_state()
+        # s.number
+        # s.game_variables
+        # s.image_buffer
 
         # Makes a random action and get remember reward.
         r = game.make_action(choice(actions))
 
-        # Prints state's game variables. Printing the image is quite pointless.
+        # Prints state's game variables.
         print("State #" + str(s.number))
         print("Game variables:", s.game_variables[0])
         print("Reward:", r)
