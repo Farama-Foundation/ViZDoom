@@ -33,10 +33,11 @@ game.load_config("../../examples/config/basic.cfg")
 #game.load_config("../../examples/config/my_way_home.cfg")
 #game.load_config("../../examples/config/predict_position.cfg")
 
+game.set_episode_timeout(50)
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 
-seed = 1234
-# Sets the seed. It could be after init as well.
+seed = 123456789
+# Sets the seed. It can be change after init.
 game.set_seed(seed)
 
 game.init()
@@ -53,8 +54,8 @@ sleep_time = 0.028
 for i in range(episodes):
     print("Episode #" + str(i+1))
 
-    # Seed can be changed anytime. It will affect next episodes.
-    # game.set_seed(seed)
+    # Seed can be changed anytime. It will take effect from next episodes.
+    #game.set_seed(seed)
     game.new_episode()
 
     while not game.is_episode_finished():
