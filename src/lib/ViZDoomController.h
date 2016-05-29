@@ -39,8 +39,8 @@ namespace vizdoom{
     namespace b         = boost;
     namespace ba        = boost::asio;
     namespace bip       = boost::interprocess;
-    namespace bs        = boost::system;
     namespace br        = boost::random;
+    namespace bs        = boost::system;
 
 #define INSTANCE_ID_LENGHT 10
 
@@ -171,6 +171,9 @@ namespace vizdoom{
         bool isDoomRunning();
         void sendCommand(std::string command);
 
+        void setTicrate(unsigned int ticrate);
+        unsigned int getTicrate();
+
         unsigned int getDoomRngSeed();
         void setDoomRngSeed(unsigned int seed);
         void clearDoomRngSeed();
@@ -186,22 +189,23 @@ namespace vizdoom{
         /*------------------------------------------------------------------------------------------------------------*/
 
         std::string getExePath();
-        void setExePath(std::string path);
+        void setExePath(std::string exePath);
 
         std::string getIwadPath();
-        void setIwadPath(std::string path);
+        void setIwadPath(std::string iwadPath);
 
         std::string getFilePath();
-        void setFilePath(std::string path);
+        void setFilePath(std::string filePath);
 
         std::string getMap();
+        void setMap(std::string map, std::string demoPath);
         void setMap(std::string map);
 
         int getSkill();
         void setSkill(int skill);
 
         std::string getConfigPath();
-        void setConfigPath(std::string path);
+        void setConfigPath(std::string configPath);
 
         unsigned int getMapStartTime();
         void setMapStartTime(unsigned int tics);
@@ -315,6 +319,7 @@ namespace vizdoom{
 
         bool doomRunning;
         bool doomWorking;
+        bool doomRecordingMap;
 
         void waitForDoomStart();
         void waitForDoomWork();
@@ -414,12 +419,14 @@ namespace vizdoom{
         std::string iwadPath;
         std::string filePath;
         std::string map;
+        std::string demoPath;
         std::string configPath;
         int skill;
 
         bool allowDoomInput;
         bool runDoomAsync;
 
+        unsigned int ticrate;
         unsigned int mapStartTime;
         unsigned int mapTimeout;
         unsigned int mapRestartCount;

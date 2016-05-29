@@ -29,8 +29,8 @@ extern bool vizdoomNextTic;
 extern bool vizdoomUpdate;
 extern unsigned int vizdoomLastUpdate;
 
-#define VIZDOOM_VERSION 103
-#define VIZDOOM_VERSION_STR "1.0.3"
+#define VIZDOOM_VERSION 109
+#define VIZDOOM_VERSION_STR "1.1.0pre"
 
 #define VIZDOOM_TIME (level.starttime + level.maptime)
 

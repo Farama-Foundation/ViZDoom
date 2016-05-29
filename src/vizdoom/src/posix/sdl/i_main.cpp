@@ -102,7 +102,7 @@ static int NumTerms;
 
 // CODE --------------------------------------------------------------------
 
-EXTERN_CVAR(Bool, vizdoom_no_console)
+EXTERN_CVAR(Bool, vizdoom_noconsole)
 
 void addterm (void (*func) (), const char *name)
 {
@@ -250,10 +250,10 @@ int main (int argc, char **argv)
 
 	//VIZDOOM_CODE
 	for(int i=0;i<argc;i++)
-		if(strcmp("+vizdoom_no_console", argv[i])==0)
+		if(strcmp("+vizdoom_noconsole", argv[i])==0)
 			if(i+1<argc&&strcmp(argv[i+1], "1")==0)
-				vizdoom_no_console=true;
-	if(!vizdoom_no_console)
+				vizdoom_noconsole=true;
+	if(!vizdoom_noconsole)
 	printf(GAMENAME" %s - SDL version\nCompiled on %s\n",
 		GetVersionString(), __DATE__);
 
@@ -281,7 +281,7 @@ int main (int argc, char **argv)
 		return -1;
 	}
 	atterm (SDL_Quit);
-	if(!vizdoom_no_console)
+	if(!vizdoom_noconsole)
 		printf("\n");
 	
     try

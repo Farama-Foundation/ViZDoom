@@ -68,7 +68,7 @@
 EXTERN_CVAR (Bool, vizdoom_controlled)
 EXTERN_CVAR (Bool, vizdoom_async)
 EXTERN_CVAR (Bool, vizdoom_allow_input)
-EXTERN_CVAR (Bool, vizdoom_no_sound)
+EXTERN_CVAR (Bool, vizdoom_nosound)
 
 EXTERN_CVAR (Int, disableautosave)
 EXTERN_CVAR (Int, autosavecount)
@@ -1962,7 +1962,7 @@ void TryRunTics (void)
 			NetUpdate ();	// check for new console commands
 		}
 		P_PredictPlayer(&players[consoleplayer]);
-		if(!*vizdoom_controlled || !*vizdoom_no_sound) S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
+		if(!*vizdoom_controlled || !*vizdoom_nosound) S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
 	}
 }
 

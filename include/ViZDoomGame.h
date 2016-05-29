@@ -65,9 +65,20 @@ namespace vizdoom {
         void newEpisode();
 
         /*
+         * Initializes a new episode and recording it to given file.
+         */
+        void newEpisode(std::string path);
+
+        /*
          * Checks if the ViZDoom game is running.
          */
         bool isRunning();
+
+        /*
+         * Processes a specified number of tics, updates state and calculates a new reward.
+         * Short for advanceAction(tics, true, false).
+         */
+        void advanceAction(unsigned int tics);
 
         /*
          * Sets the player's action for the next tics.
@@ -83,12 +94,6 @@ namespace vizdoom {
          * will be rendered after last processed tic. To get the new frame use getGameScreen.
          */
         void advanceAction(unsigned int tics, bool updateState, bool renderOnly);
-
-        /*
-         * Processes a specified number of tics, updates state and calculates a new reward.
-         * Short for advanceAction(tics, true, false).
-         */
-        void advanceAction(unsigned int tics);
 
         /*
          * Processes one tic, updates the state and calculates a new reward.
@@ -291,6 +296,10 @@ namespace vizdoom {
          * Sets mode (e.g. PLAYER, SPECTATOR) in which the game will be started.
          */
         void setMode(Mode mode);
+
+        unsigned int getTicrate();
+
+        void setTicrate(unsigned int ticrate);
 
         /*
          * Sets path to ViZDoom engine executable.

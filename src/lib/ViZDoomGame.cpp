@@ -36,6 +36,8 @@
 
 namespace vizdoom {
 
+    namespace b = boost;
+
     DoomGame::DoomGame() {
         this->running = false;
         this->lastReward = 0;
@@ -114,10 +116,15 @@ namespace vizdoom {
     }
 
     void DoomGame::newEpisode() {
+        this->newEpisode("");
+    }
+
+    void DoomGame::newEpisode(std::string path){
 
         if(!this->isRunning()) throw ViZDoomIsNotRunningException();
 
-        this->doomController->restartMap();
+        if(path.length()) this->doomController->setMap(this->doomController->getMap(), path);
+        else this->doomController->restartMap();
 
         this->lastMapTic = 0;
         this->nextStateNumber = 1;
@@ -219,13 +226,11 @@ namespace vizdoom {
 
     bool DoomGame::isNewEpisode() {
         if(!this->isRunning()) throw ViZDoomIsNotRunningException();
-
         return this->doomController->isMapFirstTic();
     }
 
     bool DoomGame::isEpisodeFinished() {
         if(!this->isRunning()) throw ViZDoomIsNotRunningException();
-
         return !this->doomController->isTicPossible();
     }
 
@@ -312,6 +317,9 @@ namespace vizdoom {
 
     Mode DoomGame::getMode(){ return this->mode; };
     void DoomGame::setMode(Mode mode){ if (!this->running) this->mode = mode; }
+
+    unsigned int DoomGame::getTicrate(){ return this->doomController->getTicrate(); }
+    void DoomGame::setTicrate(unsigned int ticrate){ this->doomController->setTicrate(ticrate); }
 
     int DoomGame::getGameVariable(GameVariable var){
         if(!this->isRunning()) throw ViZDoomIsNotRunningException();
@@ -436,8 +444,8 @@ namespace vizdoom {
 
     unsigned int DoomGame::StringToUint(std::string str)
     {
-        unsigned int value = boost::lexical_cast<unsigned int>(str);
-        if(str[0] == '-') throw boost::bad_lexical_cast();
+        unsigned int value = b::lexical_cast<unsigned int>(str);
+        if(str[0] == '-') throw b::bad_lexical_cast();
         return value;
     }
 
@@ -633,9 +641,9 @@ namespace vizdoom {
         throw std::exception();
     }
 
-    typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
+    typedef b::tokenizer<b::char_separator<char> > tokenizer;
     bool DoomGame::ParseListProperty(int& line_number, std::string& value, std::ifstream& input, std::vector<std::string>& output){
-        using namespace boost::algorithm;
+        using namespace b::algorithm;
         int start_line = line_number;
     /* Find '{' */
         while(value.empty()){
@@ -669,7 +677,7 @@ namespace vizdoom {
         trim_all(value);
         to_lower(value);
         
-        boost::char_separator<char> separator(" ");
+        b::char_separator<char> separator(" ");
         tokenizer tok(value, separator);
         for(tokenizer::iterator it = tok.begin(); it != tok.end(); ++it){
             output.push_back(*it);
@@ -694,7 +702,7 @@ namespace vizdoom {
         while(!file.eof())
         {
             ++line_number;
-            using namespace boost::algorithm;
+            using namespace b::algorithm;
 
             std::getline(file, line);
 
@@ -853,7 +861,7 @@ namespace vizdoom {
                     continue;
                 }
             }
-            catch(boost::bad_lexical_cast &){
+            catch(b::bad_lexical_cast &){
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Unsigned int value expected insted of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
                 success = false;
                 continue;
@@ -862,15 +870,15 @@ namespace vizdoom {
         /* Parse float properties */
             try{
                 if (key =="living_reward" || key =="livingreward"){
-                    this->setLivingReward(boost::lexical_cast<double>(val));
+                    this->setLivingReward(b::lexical_cast<double>(val));
                     continue;
                 }
                 if (key == "deathpenalty" || key == "death_penalty"){
-                    this->setDeathPenalty(boost::lexical_cast<double>(val));
+                    this->setDeathPenalty(b::lexical_cast<double>(val));
                     continue;
                 }
             }
-            catch(boost::bad_lexical_cast &){
+            catch(b::bad_lexical_cast &){
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Float value expected insted of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
                 success = false;
                 continue;
@@ -986,9 +994,9 @@ namespace vizdoom {
                         throw std::exception();
                     Button button = DoomGame::StringToButton(val.substr(0,space));
                     val = val.substr(space+1);
-                    unsigned int max_value = boost::lexical_cast<unsigned int>(val);
+                    unsigned int max_value = b::lexical_cast<unsigned int>(val);
                     if(val[0] == '-')
-                        throw boost::bad_lexical_cast();
+                        throw b::bad_lexical_cast();
                     this->setButtonMaxValue(button,max_value);
                     continue;
                 }

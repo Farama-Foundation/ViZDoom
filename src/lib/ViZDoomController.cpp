@@ -40,7 +40,6 @@ namespace vizdoom {
     namespace bfs       = boost::filesystem;
     namespace bpr       = boost::process;
     namespace bpri      = boost::process::initializers;
-    namespace bs        = boost::system;
 
     /* Public methods */
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -63,6 +62,7 @@ namespace vizdoom {
         /* Flow control */
         this->doomRunning = false;
         this->doomWorking = false;
+        this->doomRecordingMap = false;
 
         this->mapStartTime = 1;
         this->mapTimeout = 0;
@@ -71,10 +71,12 @@ namespace vizdoom {
         this->mapLastTic = 1;
 
         /* Settings */
+        this->ticrate = DefaultTicrate;
         this->exePath = "./vizdoom";
         this->iwadPath = "./doom2.wad";
         this->filePath = "";
         this->map = "map01";
+        this->demoPath = "";
         this->configPath = "";
         this->skill = 3;
 
@@ -152,7 +154,6 @@ namespace vizdoom {
                 this->mapLastTic = this->gameVariables->MAP_TIC;
             }
             catch(...){
-                this->doomRunning = false;
                 this->close();
                 throw;
             }
@@ -166,6 +167,9 @@ namespace vizdoom {
         if (this->doomRunning) {
 
             this->doomRunning = false;
+            this->doomWorking = false;
+            this->doomRecordingMap = false;
+
             if (this->signalThread && this->signalThread->joinable()) {
                 this->ioService.stop();
                 this->signalThread->interrupt();
@@ -300,24 +304,30 @@ namespace vizdoom {
     /* Settings */
     /*----------------------------------------------------------------------------------------------------------------*/
 
+    unsigned int DoomController::getTicrate(){ return this->ticrate; }
+    void DoomController::setTicrate(unsigned int ticrate){ this->ticrate = ticrate; }
+
     std::string DoomController::getInstanceId() { return this->instanceId; }
     void DoomController::setInstanceId(std::string id) { if(!this->doomRunning) this->instanceId = id; }
 
     std::string DoomController::getExePath() { return this->exePath; }
-    void DoomController::setExePath(std::string path) { if(!this->doomRunning) this->exePath = path; }
+    void DoomController::setExePath(std::string exePath) { if(!this->doomRunning) this->exePath = exePath; }
 
     std::string DoomController::getIwadPath() { return this->iwadPath; }
-    void DoomController::setIwadPath(std::string path) { if(!this->doomRunning) this->iwadPath = path; }
+    void DoomController::setIwadPath(std::string iwadPath) { if(!this->doomRunning) this->iwadPath = iwadPath; }
 
     std::string DoomController::getFilePath() { return this->filePath; }
-    void DoomController::setFilePath(std::string path) { if(!this->doomRunning) this->filePath = path; }
+    void DoomController::setFilePath(std::string filePath) { if(!this->doomRunning) this->filePath = filePath; }
 
     std::string DoomController::getConfigPath(){ return this->configPath; }
-    void DoomController::setConfigPath(std::string path) { if(!this->doomRunning) this->configPath = path; }
+    void DoomController::setConfigPath(std::string configPath) { if(!this->doomRunning) this->configPath = configPath; }
 
     std::string DoomController::getMap(){ return this->map; }
-    void DoomController::setMap(std::string map) {
+    void DoomController::setMap(std::string map) { this->setMap(map, ""); }
+    void DoomController::setMap(std::string map, std::string demoPath) {
         this->map = map;
+        this->demoPath = demoPath;
+
         if (this->doomRunning && !this->mapRestarting) {
 
             br::uniform_int_distribution<> mapSeedDist(0, UINT_MAX);
@@ -326,7 +336,14 @@ namespace vizdoom {
             if(this->gameVariables->NET_GAME){
                 if(this->gameVariables->GAME_SETTINGS_CONTROLLER) this->sendCommand(std::string("changemap ") + this->map);
             }
-            else this->sendCommand(std::string("map ") + this->map);
+            else if(this->demoPath.length()){
+                this->sendCommand(std::string("recordmap ") + this->demoPath + " " + this->map);
+                this->doomRecordingMap = true;
+            }
+            else {
+                this->sendCommand(std::string("map ") + this->map);
+                this->doomRecordingMap = false;
+            }
 
             if (map != this->map) this->mapRestartCount = 0;
             else ++this->mapRestartCount;
@@ -905,6 +922,16 @@ namespace vizdoom {
         if(this->map.length() > 0) this->doomArgs.push_back(this->map);
         else this->doomArgs.push_back("map01");
 
+        if (this->demoPath.length() != 0){
+            this->doomArgs.push_back("-record");
+            this->doomArgs.push_back(this->demoPath);
+            this->doomRecordingMap = true;
+        }
+        else this->doomRecordingMap = false;
+
+//        this->doomArgs.push_back("+vizdoom_loop_map");
+//        this->doomArgs.push_back("1");
+
         //skill
         this->doomArgs.push_back("-skill");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->skill));
@@ -975,7 +1002,7 @@ namespace vizdoom {
         this->doomArgs.push_back(this->instanceId);
 
         if(this->noConsole){
-            this->doomArgs.push_back("+vizdoom_no_console");
+            this->doomArgs.push_back("+vizdoom_noconsole");
             this->doomArgs.push_back("1");
         }
 
@@ -1012,7 +1039,7 @@ namespace vizdoom {
         else this->doomArgs.push_back("0");
 
         #ifdef OS_LINUX
-            this->doomArgs.push_back("+vizdoom_no_x_server");
+            this->doomArgs.push_back("+vizdoom_noxserver");
             if (this->noXServer) this->doomArgs.push_back("1");
             else this->doomArgs.push_back("0");
         #endif
@@ -1028,11 +1055,16 @@ namespace vizdoom {
         //sound
         if(this->noSound){
             this->doomArgs.push_back("-nosound");
-            this->doomArgs.push_back("+vizdoom_no_sound");
+            this->doomArgs.push_back("+vizdoom_nosound");
             this->doomArgs.push_back("1");
         }
 
-        //35 fps and no vsync
+        if(this->ticrate != DefaultTicrate){
+            this->doomArgs.push_back("-ticrate");
+            this->doomArgs.push_back(b::lexical_cast<std::string>(this->ticrate));
+        }
+
+        //fps = ticrate and no vsync
         this->doomArgs.push_back("+cl_capfps");
         this->doomArgs.push_back("1");
 

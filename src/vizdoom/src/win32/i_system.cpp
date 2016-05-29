@@ -248,19 +248,15 @@ static void I_SelectTimer()
 	NewTicArrived = CreateEvent(NULL, FALSE, FALSE, NULL);
 	if (NewTicArrived)
 	{
-		UINT delay;
-		const char *cmdDelay;
+		//VIZDOOM_CODE
+		UINT delay = 1000/TICRATE;
 
-		cmdDelay = Args->CheckValue("-timerdelay");
-		delay = 0;
-		if (cmdDelay != 0)
-		{
-			delay = atoi(cmdDelay);
+		const char *cmdDelay;
+		cmdDelay = Args->CheckValue("-ticrate");
+		if(cmdDelay != 0){
+			delay = 1000/atoi(cmdDelay);
 		}
-		if (delay == 0)
-		{
-			delay = 1000/TICRATE;
-		}
+
 		MillisecondsPerTic = delay;
 		TimerEventID = timeSetEvent(delay, 0, TimerTicked, 0, TIME_PERIODIC);
 	}
