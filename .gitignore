@@ -45,20 +45,20 @@ examples/python/*.ini
 **/release_gcc
 **/debug_gcc
 **.ncb
-**.suo
 **.pdb
 **.ilk
 **.aps
 **.user
 **/DOOMSTATS.TXT
 src/vizdoom/bzip2/x64/
-src/vizdoom/dumb/libdumb.a
 src/vizdoom/game-music-emu/x64/
-src/vizdoom/game-music-emu/gme/libgme.a
+src/vizdoom/gdtoa/arith.h
+src/vizdoom/gdtoa/arithchk
+src/vizdoom/gdtoa/gd_qnan.h
+src/vizdoom/gdtoa/qnan
 src/vizdoom/gdtoa/x64/
 src/vizdoom/jpeg-6b/x64/
 src/vizdoom/lzma/x64/
-src/vizdoom/lzma/liblzma.a
 src/vizdoom/src/sc_man_scanner.h
 src/vizdoom/src/xlat_parser.c
 src/vizdoom/src/xlat_parser.h
@@ -70,13 +70,14 @@ src/vizdoom/tools/*/*.exe
 src/vizdoom/tools/lemon/lemon
 src/vizdoom/tools/re2c/re2c
 src/vizdoom/tools/updaterevision/x64/
+src/vizdoom/tools/updaterevision/updaterevision
 src/vizdoom/tools/zipdir/x64
 src/vizdoom/tools/zipdir/zipdir
 src/vizdoom/wadsrc_wad
 src/vizdoom/zdoom_docs
 src/vizdoom/zlib/x64/
 
-# Game wads, scenarios backups and personal configurations
+# Game wads, scenarios backups, demos and personal configurations
 **.bak
 **/doom2.wad
 **/doom.wad
@@ -84,4 +85,8 @@ src/vizdoom/zlib/x64/
 **/freedoom1.wad
 **/freedm.wad
 **.bcp
-.idea
+**.lmp
+
+# CLion & PyCharm
+**.idea
+
