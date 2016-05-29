@@ -35,14 +35,17 @@
 #include <vector>
 
 namespace vizdoom {
-    using boost::python::api::object;
+
+    namespace bpy       = boost::python;
+    namespace bpya      = bpy::api;
+    namespace bpyn      = bpy::numeric;
 
     struct GameStatePython {
         unsigned int number;
-        object imageBuffer;
-        object gameVariables;
-        GameStatePython(int n, object buf, object v ):number(n),imageBuffer(buf),gameVariables(v){}
-        GameStatePython(int n, object buf):number(n),imageBuffer(buf){}
+        bpya::object imageBuffer;
+        bpya::object gameVariables;
+        GameStatePython(int n, bpya::object buf, bpya::object v ):number(n),imageBuffer(buf),gameVariables(v){}
+        GameStatePython(int n, bpya::object buf):number(n),imageBuffer(buf){}
         GameStatePython(int n):number(n){}
     };
 
@@ -53,27 +56,31 @@ namespace vizdoom {
         bool init();
         
         GameStatePython getState();
-        boost::python::list getLastAction();
-        object getGameScreen();
-        void setAction(boost::python::list const &action);
-        double makeAction(boost::python::list const &action);
-        double makeAction(boost::python::list const &action, unsigned int tics);
+        bpy::list getLastAction();
+        bpya::object getGameScreen();
+        void setAction(bpy::list const &action);
+        double makeAction(bpy::list const &action);
+        double makeAction(bpy::list const &action, unsigned int tics);
 
         // These functions are workaround for
         // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
         // on GCC < 5
-        bool loadConfig(boost::python::str const &pyPath);
-        void setViZDoomPath(boost::python::str const &pyPath);
-        void setDoomGamePath(boost::python::str const &pyPath);
-        void setDoomScenarioPath(boost::python::str const &pyPath);
-        void setDoomMap(boost::python::str const &pyMap);
-        void setDoomConfigPath(boost::python::str const &pyPath);
-        void addGameArgs(boost::python::str const &pyArgs);
-        void sendGameCommand(boost::python::str const &pyCmd);
+        bool loadConfig(bpy::str const &pyPath);
+
+        void newEpisode();
+        void newEpisode(bpy::str const &pyPath);
+
+        void setViZDoomPath(bpy::str const &pyPath);
+        void setDoomGamePath(bpy::str const &pyPath);
+        void setDoomScenarioPath(bpy::str const &pyPath);
+        void setDoomMap(bpy::str const &pyMap);
+        void setDoomConfigPath(bpy::str const &pyPath);
+        void addGameArgs(bpy::str const &pyArgs);
+        void sendGameCommand(bpy::str const &pyCmd);
 
     private:
         npy_intp imageShape[3];
-        static std::vector<int> pyListToIntVector(boost::python::list const &action);
+        static std::vector<int> pyListToIntVector(bpy::list const &action);
 
     };
 

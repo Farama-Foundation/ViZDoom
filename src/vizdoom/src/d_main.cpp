@@ -117,7 +117,7 @@
 EXTERN_CVAR (Bool, vizdoom_controlled)
 EXTERN_CVAR (Bool, vizdoom_async)
 EXTERN_CVAR (Bool, vizdoom_allow_input)
-EXTERN_CVAR (Bool, vizdoom_no_sound)
+EXTERN_CVAR (Bool, vizdoom_nosound)
 
 EXTERN_CVAR(Bool, hud_althud)
 void DrawHUD();
@@ -1023,22 +1023,23 @@ void D_DoomLoop ()
 			if(*vizdoom_controlled && !*vizdoom_async){
 
 				if(*vizdoom_allow_input) {
-					vizdoom_time = I_GetTime (true);
+					vizdoom_time = I_GetTime(true);
 					I_WaitForTic(vizdoom_time);
 					//I_WaitForTic(gametic + 1);
-					if(ViZDoom_IsPaused()) D_ProcessEvents ();
+					if(ViZDoom_IsPaused()) D_ProcessEvents();
 				}
 
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
+				if (advancedemo) D_DoAdvanceDemo();
 
-				C_Ticker ();
-				M_Ticker ();
+				C_Ticker();
+				M_Ticker();
 
-				if(!*vizdoom_no_sound){
-					S_UpdateSounds (players[consoleplayer].camera);
+				if(!*vizdoom_nosound){
+					S_UpdateSounds(players[consoleplayer].camera);
 				}
 				if(!ViZDoom_IsPaused()){
-					G_Ticker ();
+					G_Ticker();
 					++gametic;
 					++maketic;
 				}
@@ -1069,7 +1070,7 @@ void D_DoomLoop ()
 			if(!*vizdoom_controlled) {
 				D_Display();
 			}
-			if(!*vizdoom_controlled || !*vizdoom_no_sound) S_UpdateMusic(); // OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
+			if(!*vizdoom_controlled || !*vizdoom_nosound) S_UpdateMusic(); // OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
 			ViZDoom_Tic();
 		}
 		catch (CRecoverableError &error)

@@ -52,7 +52,7 @@
 EXTERN_CVAR (Bool, ticker)
 EXTERN_CVAR (Bool, fullscreen)
 EXTERN_CVAR (Float, vid_winscale)
-EXTERN_CVAR (Bool, vizdoom_no_x_server)
+EXTERN_CVAR (Bool, vizdoom_noxserver)
 
 IVideo *Video;
 
@@ -73,7 +73,7 @@ void I_ShutdownGraphics ()
 //VIZDOOM_CODE
 void I_InitGraphics ()
 {
-	if(!(*vizdoom_no_x_server))
+	if(!(*vizdoom_noxserver))
 	{
 		if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) {
 			I_FatalError("Could not initialize SDL video:\n%s\n", SDL_GetError());

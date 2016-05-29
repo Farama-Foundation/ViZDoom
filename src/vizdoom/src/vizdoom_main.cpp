@@ -41,12 +41,13 @@ CVAR (Bool, vizdoom_controlled, false, CVAR_NOSET)
 CVAR (Bool, vizdoom_async, false, CVAR_NOSET)
 CVAR (String, vizdoom_instance_id, "0", CVAR_NOSET)
 CVAR (Int, vizdoom_screen_format, 0, CVAR_NOSET)
-CVAR (Bool, vizdoom_no_console, false, CVAR_NOSET)
-CVAR (Bool, vizdoom_no_sound, false, CVAR_NOSET)
+CVAR (Bool, vizdoom_noconsole, false, CVAR_NOSET)
+CVAR (Bool, vizdoom_nosound, false, CVAR_NOSET)
 CVAR (Bool, vizdoom_window_hidden, false, CVAR_NOSET)
-CVAR (Bool, vizdoom_no_x_server, false, CVAR_NOSET)
+CVAR (Bool, vizdoom_noxserver, false, CVAR_NOSET)
 CVAR (Bool, vizdoom_allow_input, false, CVAR_NOSET)
 CVAR (Bool, vizdoom_nocheat, false, CVAR_NOSET)
+//CVAR (Bool, vizdoom_loop_map, false, CVAR_NOSET)
 
 int vizdoom_time = 0;
 bool vizdoomNextTic = false;

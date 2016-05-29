@@ -24,11 +24,7 @@
 
 namespace vizdoom {
 
-    using boost::python::tuple;
-    using boost::python::api::object;
-    using boost::python::numeric::array;
-
-    #define PY_NONE object()
+    #define PY_NONE bpya::object()
 
     #if PY_MAJOR_VERSION >= 3
     int
@@ -37,7 +33,7 @@ namespace vizdoom {
     #endif
     init_numpy()
     {
-        boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
+        bpyn::array::set_module_and_type("numpy", "ndarray");
         import_array();
     }
 
@@ -75,24 +71,24 @@ namespace vizdoom {
         return initSuccess;
     }
 
-    std::vector<int> DoomGamePython::pyListToIntVector(boost::python::list const &action)
+    std::vector<int> DoomGamePython::pyListToIntVector(bpy::list const &action)
     {
-        int listLength = boost::python::len(action);
+        int listLength = bpy::len(action);
         std::vector<int> properAction = std::vector<int>(listLength);
         for (int i = 0; i < listLength; i++) {
-            properAction[i] = boost::python::extract<int>(action[i]);
+            properAction[i] = bpy::extract<int>(action[i]);
         }
         return properAction;
     }
-    void DoomGamePython::setAction(boost::python::list const &action) {
+    void DoomGamePython::setAction(bpy::list const &action) {
         DoomGame::setAction(DoomGamePython::pyListToIntVector(action));
     }
 
-    double DoomGamePython::makeAction(boost::python::list const &action) {
+    double DoomGamePython::makeAction(bpy::list const &action) {
         return DoomGame::makeAction(DoomGamePython::pyListToIntVector(action));
     }
 
-    double DoomGamePython::makeAction(boost::python::list const &action, unsigned int tics) {
+    double DoomGamePython::makeAction(bpy::list const &action, unsigned int tics) {
         return DoomGame::makeAction(DoomGamePython::pyListToIntVector(action), tics);
     }
 
@@ -102,14 +98,14 @@ namespace vizdoom {
         }
 
         PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, DoomGame::getGameScreen());
-        boost::python::handle<> numpyImageHandle = boost::python::handle<>(img);
-        boost::python::numeric::array numpyImage = array(numpyImageHandle);
+        bpy::handle<> numpyImageHandle = bpy::handle<>(img);
+        bpyn::array numpyImage = bpyn::array(numpyImageHandle);
 
         if (this->state.gameVariables.size() > 0) {
             npy_intp varLen = this->state.gameVariables.size();
             PyObject *vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, this->state.gameVariables.data());
-            boost::python::handle<> numpyVarsHandle = boost::python::handle<>(vars);
-            boost::python::numeric::array numpyVars = array(numpyVarsHandle);
+            bpy::handle<> numpyVarsHandle = bpy::handle<>(vars);
+            bpyn::array numpyVars = bpyn::array(numpyVarsHandle);
 
             return GameStatePython(state.number, numpyImage.copy(), numpyVars.copy());
         }
@@ -119,19 +115,18 @@ namespace vizdoom {
 
     }
 
-    boost::python::list DoomGamePython::getLastAction() {
-        boost::python::list res;
-        for (std::vector<int>::iterator it = DoomGame::lastAction.begin(); it!=DoomGame::lastAction.end(); ++it)
-        {
+    bpy::list DoomGamePython::getLastAction() {
+        bpy::list res;
+        for (std::vector<int>::iterator it = DoomGame::lastAction.begin(); it!=DoomGame::lastAction.end(); ++it) {
             res.append(*it);
         }
         return res;
     }
 
-    object DoomGamePython::getGameScreen(){
+    bpya::object DoomGamePython::getGameScreen(){
         PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, DoomGame::getGameScreen());
-        boost::python::handle<> numpyImageHandle = boost::python::handle<>(img);
-        boost::python::numeric::array numpyImage = array(numpyImageHandle);
+        bpy::handle<> numpyImageHandle = bpy::handle<>(img);
+        bpyn::array numpyImage = bpyn::array(numpyImageHandle);
         return numpyImage.copy();
     }
 
@@ -139,50 +134,60 @@ namespace vizdoom {
     // These functions are workaround for
     // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
     // on GCC < 5
-    bool DoomGamePython::loadConfig(boost::python::str const &pyPath){
-        const char* cPath = boost::python::extract<const char *>(pyPath);
+    bool DoomGamePython::loadConfig(bpy::str const &pyPath){
+        const char* cPath = bpy::extract<const char *>(pyPath);
         std::string path(cPath);
         return DoomGame::loadConfig(path);
     }
 
-    void DoomGamePython::setViZDoomPath(boost::python::str const &pyPath){
-        const char* cPath = boost::python::extract<const char *>(pyPath);
+    void DoomGamePython::newEpisode(){
+        DoomGame::newEpisode();
+    }
+
+    void DoomGamePython::newEpisode(bpy::str const &pyPath){
+        const char* cPath = bpy::extract<const char *>(pyPath);
+        std::string path(cPath);
+        DoomGame::newEpisode(path);
+    }
+
+    void DoomGamePython::setViZDoomPath(bpy::str const &pyPath){
+        const char* cPath = bpy::extract<const char *>(pyPath);
         std::string path(cPath);
         DoomGame::setViZDoomPath(path);
     }
 
-    void DoomGamePython::setDoomGamePath(boost::python::str const &pyPath){
-        const char* cPath = boost::python::extract<const char *>(pyPath);
+    void DoomGamePython::setDoomGamePath(bpy::str const &pyPath){
+        const char* cPath = bpy::extract<const char *>(pyPath);
         std::string path(cPath);
         DoomGame::setDoomGamePath(path);
     }
 
-    void DoomGamePython::setDoomScenarioPath(boost::python::str const &pyPath){
-        const char* cPath = boost::python::extract<const char *>(pyPath);
+    void DoomGamePython::setDoomScenarioPath(bpy::str const &pyPath){
+        const char* cPath = bpy::extract<const char *>(pyPath);
         std::string path(cPath);
         DoomGame::setDoomScenarioPath(path);
     }
 
-    void DoomGamePython::setDoomMap(boost::python::str const &pyMap){
-        const char* cMap = boost::python::extract<const char *>(pyMap);
+    void DoomGamePython::setDoomMap(bpy::str const &pyMap){
+        const char* cMap = bpy::extract<const char *>(pyMap);
         std::string map(cMap);
         DoomGame::setDoomMap(map);
     }
 
-    void DoomGamePython::setDoomConfigPath(boost::python::str const &pyPath){
-        const char* cPath = boost::python::extract<const char *>(pyPath);
+    void DoomGamePython::setDoomConfigPath(bpy::str const &pyPath){
+        const char* cPath = bpy::extract<const char *>(pyPath);
         std::string path(cPath);
         DoomGame::setDoomConfigPath(path);
     }
 
-    void DoomGamePython::addGameArgs(boost::python::str const &pyArgs){
-        const char* cArgs = boost::python::extract<const char *>(pyArgs);
+    void DoomGamePython::addGameArgs(bpy::str const &pyArgs){
+        const char* cArgs = bpy::extract<const char *>(pyArgs);
         std::string args(cArgs);
         DoomGame::addGameArgs(args);
     }
 
-    void DoomGamePython::sendGameCommand(boost::python::str const &pyCmd){
-        const char* cCmd = boost::python::extract<const char *>(pyCmd);
+    void DoomGamePython::sendGameCommand(bpy::str const &pyCmd){
+        const char* cCmd = bpy::extract<const char *>(pyCmd);
         std::string cmd(cCmd);
         DoomGame::sendGameCommand(cmd);
     }

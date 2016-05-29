@@ -27,8 +27,8 @@
 
 namespace vizdoom{
 
-    #define VIZDOOM_LIB_VERSION 103
-    #define VIZDOOM_LIB_VERSION_STR "1.0.3"
+    #define VIZDOOM_LIB_VERSION 109
+    #define VIZDOOM_LIB_VERSION_STR "1.1.0pre"
 
     typedef unsigned char uint8_t;
 
@@ -239,6 +239,7 @@ namespace vizdoom{
     static const int DeltaButtonsNumber = 5;
     static const int ButtonsNumber = 43;
 
+    static const int DefaultTicrate = 35;
     static const int MaxNumberOfPlayers = 8;
 
 }

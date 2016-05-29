@@ -101,7 +101,7 @@ EXTERN_CVAR (Bool, vid_vsync)
 
 //VIZDOOM_CODE
 EXTERN_CVAR (Bool, vizdoom_window_hidden)
-EXTERN_CVAR (Bool, vizdoom_no_x_server)
+EXTERN_CVAR (Bool, vizdoom_noxserver)
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
@@ -265,7 +265,7 @@ DFrameBuffer *SDLVideo::CreateFrameBuffer (int width, int height, bool fullscree
 		if (fb->Width == width &&
 			fb->Height == height)
 		{
-			if(!(*vizdoom_no_x_server)) {
+			if(!(*vizdoom_noxserver)) {
 				bool fsnow = (SDL_GetWindowFlags (fb->Screen) & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0;
 
 				if (fsnow != fullscreen) {
@@ -369,7 +369,7 @@ SDLFB::SDLFB (int width, int height, bool fullscreen, SDL_Window *oldwin)
 		//VIZDOOM_CODE
 		caption.Format(GAMESIG " %s", GetVersionString());
 
-		if(!(*vizdoom_no_x_server))
+		if(!(*vizdoom_noxserver))
 		{
 			Screen = SDL_CreateWindow (caption,
 			SDL_WINDOWPOS_UNDEFINED_DISPLAY(vid_adapter), SDL_WINDOWPOS_UNDEFINED_DISPLAY(vid_adapter),
@@ -416,7 +416,7 @@ SDLFB::~SDLFB ()
 //VIZDOOM_CODE
 bool SDLFB::IsValid ()
 {
-	return *vizdoom_no_x_server==true ? true : (DFrameBuffer::IsValid() && Screen != NULL);
+	return *vizdoom_noxserver==true ? true : (DFrameBuffer::IsValid() && Screen != NULL);
 }
 
 int SDLFB::GetPageCount ()
@@ -478,7 +478,7 @@ void SDLFB::Update ()
 
 	void *pixels;
 	int pitch;
-	if(!(*vizdoom_no_x_server))
+	if(!(*vizdoom_noxserver))
 	{
 		if (UsingRenderer)
 		{
@@ -528,11 +528,11 @@ void SDLFB::Update ()
 	}
 	else
 	{
-		if(!(*vizdoom_no_x_server))
+		if(!(*vizdoom_noxserver))
 			SDL_UnlockSurface (Surface);
 
 		SDLFlipCycles.Clock();
-		if(!(*vizdoom_no_x_server))
+		if(!(*vizdoom_noxserver))
 			SDL_UpdateWindowSurface (Screen);
 		SDLFlipCycles.Unclock();
 	}
@@ -595,7 +595,7 @@ void SDLFB::UpdateColors ()
 				256, GammaTable[2][Flash.b], GammaTable[1][Flash.g], GammaTable[0][Flash.r],
 				FlashAmount);
 		}
-		if(!(*vizdoom_no_x_server))
+		if(!(*vizdoom_noxserver))
 			SDL_SetPaletteColors (Surface->format->palette, colors, 0, 256);
 	}
 }
@@ -658,7 +658,7 @@ void SDLFB::SetFullscreen (bool fullscreen)
 //VIZDOOM_CODE
 bool SDLFB::IsFullscreen ()
 {
-	return (*vizdoom_no_x_server)==true ? false : ((SDL_GetWindowFlags (Screen) & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0);
+	return (*vizdoom_noxserver)==true ? false : ((SDL_GetWindowFlags (Screen) & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0);
 }
 //VIZDOOM_CODE
 void SDLFB::ResetSDLRenderer ()
@@ -670,7 +670,7 @@ void SDLFB::ResetSDLRenderer ()
 		SDL_DestroyRenderer (Renderer);
 	}
 
-	UsingRenderer = (*vizdoom_no_x_server)==true ? false : !vid_forcesurface;
+	UsingRenderer = (*vizdoom_noxserver)==true ? false : !vid_forcesurface;
 	if (UsingRenderer)
 	{
 		Renderer = SDL_CreateRenderer (Screen, -1,SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE|
@@ -705,7 +705,7 @@ void SDLFB::ResetSDLRenderer ()
 	}
 	else
 	{
-		if(!(*vizdoom_no_x_server))
+		if(!(*vizdoom_noxserver))
 		{
 			Surface = SDL_GetWindowSurface (Screen);
 
@@ -756,7 +756,7 @@ void SDLFB::ScaleCoordsFromWindow(SWORD &x, SWORD &y)
 {
 	int w, h;
 
-	if(*vizdoom_no_x_server)
+	if(*vizdoom_noxserver)
 		return;
 
 	SDL_GetWindowSize (Screen, &w, &h);

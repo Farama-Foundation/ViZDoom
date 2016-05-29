@@ -33,6 +33,7 @@
 #include "p_acs.h"
 
 EXTERN_CVAR (Int, vizdoom_screen_format)
+EXTERN_CVAR (Bool, vizdoom_loop_map)
 
 #define VIZDOOM_PLAYER players[consoleplayer]
 
@@ -129,7 +130,6 @@ void ViZDoom_GameVarsTic(){
     vizdoomGameVars->GAME_TIC = gametic;
     vizdoomGameVars->GAME_STATE = gamestate;
     vizdoomGameVars->GAME_ACTION = gameaction;
-    //vizdoomGameVars->GAME_SEED = rngseed;
     vizdoomGameVars->GAME_STATIC_SEED = staticrngseed;
     vizdoomGameVars->GAME_SETTINGS_CONTROLLER = vizdoomPlayer->settings_controller;
     vizdoomGameVars->NET_GAME = netgame || multiplayer;
@@ -151,6 +151,10 @@ void ViZDoom_GameVarsTic(){
 
     vizdoomGameVars->MAP_END = gamestate != GS_LEVEL || gameaction == ga_completed;
     if(vizdoomGameVars->MAP_END) vizdoomGameVars->PLAYER_DEATHCOUNT = 0;
+//    if(*vizdoom_loop_map && !level.MapName.Compare(level.NextMap)){
+//        level.NextMap = level.MapName;
+//        level.NextSecretMap = level.MapName;
+//    }
 
     bool prevDead = vizdoomGameVars->PLAYER_DEAD;
 
@@ -186,7 +190,6 @@ void ViZDoom_GameVarsTic(){
     else vizdoomGameVars->PLAYER_HEALTH = vizdoomPlayer->health;
 
     vizdoomGameVars->PLAYER_ARMOR = ViZDoom_CheckItem(NAME_BasicArmor);
-    //TO DO? support for other types of armor
 
     vizdoomGameVars->PLAYER_SELECTED_WEAPON_AMMO = ViZDoom_CheckSelectedWeaponAmmo();
     vizdoomGameVars->PLAYER_SELECTED_WEAPON = ViZDoom_CheckSelectedWeapon();

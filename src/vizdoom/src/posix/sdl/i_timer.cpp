@@ -7,10 +7,12 @@
 
 #include <SDL.h>
 
+//VIZDOOM_CODE
 #include "basictypes.h"
 #include "basicinlines.h"
 #include "hardware.h"
 #include "i_system.h"
+#include "m_argv.h"
 #include "templates.h"
 
 
@@ -159,9 +161,16 @@ void I_SelectTimer()
 	sigaction(SIGALRM, &alrmaction, NULL);
 #endif
 
+	//VIZDOOM_CODE
 	struct itimerval itv;
 	itv.it_interval.tv_sec = itv.it_value.tv_sec = 0;
 	itv.it_interval.tv_usec = itv.it_value.tv_usec = 1000000/TICRATE;
+
+	const char *cmdDelay;
+	cmdDelay = Args->CheckValue("-ticrate");
+	if(cmdDelay != 0){
+		itv.it_interval.tv_usec = itv.it_value.tv_usec = 1000000/atoi(cmdDelay);
+	}
 
 	if (setitimer(ITIMER_REAL, &itv, NULL) != 0)
 	{
