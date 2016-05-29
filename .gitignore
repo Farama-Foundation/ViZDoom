@@ -77,7 +77,7 @@ src/vizdoom/wadsrc_wad
 src/vizdoom/zdoom_docs
 src/vizdoom/zlib/x64/
 
-# Game wads, scenarios backups, demos and personal configurations
+# Game wads, scenarios backups, logs, demos and personal configurations
 **.bak
 **/doom2.wad
 **/doom.wad
@@ -86,6 +86,7 @@ src/vizdoom/zlib/x64/
 **/freedm.wad
 **.bcp
 **.lmp
+**.log
 
 # CLion & PyCharm
 **.idea
