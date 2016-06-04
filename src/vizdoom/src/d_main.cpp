@@ -118,6 +118,7 @@ EXTERN_CVAR (Bool, vizdoom_controlled)
 EXTERN_CVAR (Bool, vizdoom_async)
 EXTERN_CVAR (Bool, vizdoom_allow_input)
 EXTERN_CVAR (Bool, vizdoom_nosound)
+EXTERN_CVAR (Bool, vizdoom_render_all)
 
 EXTERN_CVAR(Bool, hud_althud)
 void DrawHUD();
@@ -1067,7 +1068,7 @@ void D_DoomLoop ()
 
 			// Update display, next frame, with current state.
 			I_StartTic ();
-			if(!*vizdoom_controlled) {
+			if(!*vizdoom_controlled || *vizdoom_render_all) {
 				D_Display();
 			}
 			if(!*vizdoom_controlled || !*vizdoom_nosound) S_UpdateMusic(); // OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(

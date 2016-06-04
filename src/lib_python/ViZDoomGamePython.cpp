@@ -150,6 +150,12 @@ namespace vizdoom {
         DoomGame::newEpisode(path);
     }
 
+    void DoomGamePython::replayEpisode(bpy::str const &pyPath){
+        const char* cPath = bpy::extract<const char *>(pyPath);
+        std::string path(cPath);
+        DoomGame::replayEpisode(path);
+    }
+
     void DoomGamePython::setViZDoomPath(bpy::str const &pyPath){
         const char* cPath = bpy::extract<const char *>(pyPath);
         std::string path(cPath);
