@@ -299,29 +299,9 @@ namespace vizdoom {
 
     bool DoomController::isDoomRunning() { return this->doomRunning; }
 
-    /* Settings */
-    /*----------------------------------------------------------------------------------------------------------------*/
-
-    unsigned int DoomController::getTicrate(){ return this->ticrate; }
-    void DoomController::setTicrate(unsigned int ticrate){ this->ticrate = ticrate; }
-
-    std::string DoomController::getInstanceId() { return this->instanceId; }
-    void DoomController::setInstanceId(std::string id) { if(!this->doomRunning) this->instanceId = id; }
-
-    std::string DoomController::getExePath() { return this->exePath; }
-    void DoomController::setExePath(std::string exePath) { if(!this->doomRunning) this->exePath = exePath; }
-
-    std::string DoomController::getIwadPath() { return this->iwadPath; }
-    void DoomController::setIwadPath(std::string iwadPath) { if(!this->doomRunning) this->iwadPath = iwadPath; }
-
-    std::string DoomController::getFilePath() { return this->filePath; }
-    void DoomController::setFilePath(std::string filePath) { if(!this->doomRunning) this->filePath = filePath; }
-
-    std::string DoomController::getConfigPath(){ return this->configPath; }
-    void DoomController::setConfigPath(std::string configPath) { if(!this->doomRunning) this->configPath = configPath; }
-
     std::string DoomController::getMap(){ return this->map; }
     void DoomController::setMap(std::string map) { this->setMap(map, ""); }
+
     void DoomController::setMap(std::string map, std::string demoPath) {
         this->map = map;
         this->demoPath = demoPath;
@@ -330,6 +310,11 @@ namespace vizdoom {
 
             br::uniform_int_distribution<> mapSeedDist(0, UINT_MAX);
             this->setDoomRngSeed(mapSeedDist(this->instanceRng));
+
+            if(this->doomRecordingMap){
+                this->sendCommand("stop");
+                this->doomRecordingMap = false;
+            }
 
             if(this->gameVariables->NET_GAME){
                 if(this->gameVariables->GAME_SETTINGS_CONTROLLER) this->sendCommand(std::string("changemap ") + this->map);
@@ -340,7 +325,6 @@ namespace vizdoom {
             }
             else {
                 this->sendCommand(std::string("map ") + this->map);
-                this->doomRecordingMap = false;
             }
 
             if (map != this->map) this->mapRestartCount = 0;
@@ -388,6 +372,63 @@ namespace vizdoom {
             this->mapRestarting = false;
         }
     }
+
+    void DoomController::playDemo(std::string demoPath){
+        if (this->doomRunning && !this->mapRestarting) {
+
+            if(this->doomRecordingMap){
+                this->sendCommand("stop");
+                this->doomRecordingMap = false;
+            }
+
+            this->sendCommand(std::string("playdemo ") + demoPath);
+
+            this->mapRestarting = true;
+
+            this->resetButtons();
+            int restartTics = 0;
+
+            do {
+                ++restartTics;
+
+                this->MQDoomSend(MSG_CODE_TIC);
+                this->waitForDoomWork();
+                std::cout << this->gameVariables->MAP_END << this->gameVariables->PLAYER_DEAD << std::endl;
+
+            } while (this->gameVariables->MAP_END
+                     || this->gameVariables->PLAYER_DEAD
+                     || this->gameVariables->MAP_TIC > this->mapLastTic);
+
+            this->waitForDoomMapStartTime();
+            this->MQDoomSend(MSG_CODE_UPDATE);
+            this->waitForDoomWork();
+
+            this->mapLastTic = this->gameVariables->MAP_TIC;
+            this->mapRestarting = false;
+        }
+    }
+
+
+    /* Settings */
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    unsigned int DoomController::getTicrate(){ return this->ticrate; }
+    void DoomController::setTicrate(unsigned int ticrate){ this->ticrate = ticrate; }
+
+    std::string DoomController::getInstanceId() { return this->instanceId; }
+    void DoomController::setInstanceId(std::string id) { if(!this->doomRunning) this->instanceId = id; }
+
+    std::string DoomController::getExePath() { return this->exePath; }
+    void DoomController::setExePath(std::string exePath) { if(!this->doomRunning) this->exePath = exePath; }
+
+    std::string DoomController::getIwadPath() { return this->iwadPath; }
+    void DoomController::setIwadPath(std::string iwadPath) { if(!this->doomRunning) this->iwadPath = iwadPath; }
+
+    std::string DoomController::getFilePath() { return this->filePath; }
+    void DoomController::setFilePath(std::string filePath) { if(!this->doomRunning) this->filePath = filePath; }
+
+    std::string DoomController::getConfigPath(){ return this->configPath; }
+    void DoomController::setConfigPath(std::string configPath) { if(!this->doomRunning) this->configPath = configPath; }
 
     int DoomController::getSkill(){ return this->skill; }
     void DoomController::setSkill(int skill) {
@@ -931,12 +972,12 @@ namespace vizdoom {
         if(this->map.length() > 0) this->doomArgs.push_back(this->map);
         else this->doomArgs.push_back("map01");
 
-        if (this->demoPath.length() != 0){
-            this->doomArgs.push_back("-record");
-            this->doomArgs.push_back(this->demoPath);
-            this->doomRecordingMap = true;
-        }
-        else this->doomRecordingMap = false;
+//        if (this->demoPath.length() != 0){
+//            this->doomArgs.push_back("-record");
+//            this->doomArgs.push_back(this->demoPath);
+//            this->doomRecordingMap = true;
+//        }
+//        else this->doomRecordingMap = false;
 
 //        this->doomArgs.push_back("+vizdoom_loop_map");
 //        this->doomArgs.push_back("1");

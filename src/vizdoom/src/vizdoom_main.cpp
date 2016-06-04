@@ -47,7 +47,8 @@ CVAR (Bool, vizdoom_window_hidden, false, CVAR_NOSET)
 CVAR (Bool, vizdoom_noxserver, false, CVAR_NOSET)
 CVAR (Bool, vizdoom_allow_input, false, CVAR_NOSET)
 CVAR (Bool, vizdoom_nocheat, false, CVAR_NOSET)
-//CVAR (Bool, vizdoom_loop_map, false, CVAR_NOSET)
+CVAR (Bool, vizdoom_render_all, false, CVAR_NOSET)
+CVAR (Bool, vizdoom_loop_map, false, CVAR_NOSET)
 
 int vizdoom_time = 0;
 bool vizdoomNextTic = false;

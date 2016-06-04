@@ -184,6 +184,11 @@ namespace vizdoom{
         std::string getInstanceId();
         void setInstanceId(std::string id);
 
+        std::string getMap();
+        void setMap(std::string map, std::string demoPath);
+        void setMap(std::string map);
+        void playDemo(std::string demoPath);
+
 
         /* General game settings */
         /*------------------------------------------------------------------------------------------------------------*/
@@ -196,10 +201,6 @@ namespace vizdoom{
 
         std::string getFilePath();
         void setFilePath(std::string filePath);
-
-        std::string getMap();
-        void setMap(std::string map, std::string demoPath);
-        void setMap(std::string map);
 
         int getSkill();
         void setSkill(int skill);

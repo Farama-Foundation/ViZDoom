@@ -136,6 +136,20 @@ namespace vizdoom {
         this->summaryReward = 0;
     }
 
+    void DoomGame::replayEpisode(std::string path){
+
+        this->doomController->playDemo(path);
+
+        this->lastMapTic = 0;
+        this->nextStateNumber = 1;
+
+        this->updateState();
+
+        //this->lastMapReward = 0;
+        this->lastReward = 0;
+        this->summaryReward = 0;
+    }
+
     void DoomGame::setAction(std::vector<int> const &actions) {
 
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();

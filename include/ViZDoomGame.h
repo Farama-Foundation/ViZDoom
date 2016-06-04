@@ -69,6 +69,8 @@ namespace vizdoom {
          */
         void newEpisode(std::string path);
 
+        void replayEpisode(std::string path);
+
         /*
          * Checks if the ViZDoom game is running.
          */
