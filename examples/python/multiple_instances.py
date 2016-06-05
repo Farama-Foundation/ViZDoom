@@ -10,6 +10,9 @@ from multiprocessing import Process
 # For singleplayer games threads can also be used.
 #from threading import Thread
 
+# Run this many episodes
+episodes = 10
+
 def player1():
     game = DoomGame()
 
@@ -17,18 +20,28 @@ def player1():
     # or
     game.load_config('../config/multi_duel.cfg')
     game.add_game_args("-host 2 -deathmatch +timelimit 1.0 +sv_spawnfarthest 1")
-    game.add_game_args("+name Player1")
+    game.add_game_args("+name Player1 +colorset 0")
 
     game.init()
 
     actions = [[True,False,False],[False,True,False],[False,False,True]]
 
-    while not game.is_episode_finished():
-        if game.is_player_dead():
-            game.respawn_player()
+    for i in range(episodes):
 
-        game.make_action(choice(actions))
+        print("Episode #" + str(i+1))
+
+        while not game.is_episode_finished():
+            if game.is_player_dead():
+                game.respawn_player()
+
+            game.make_action(choice(actions))
+
+        print("Episode finished!")
         print("Player1 frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
+
+        # Starts a new episode. All players have to use new_episode() in multiplayer mode.
+        game.new_episode()
+
 
     game.close()
 
@@ -38,19 +51,23 @@ def player2():
     #game.load_config('../config/basic.cfg')
     # or
     game.load_config('../config/multi_duel.cfg')
-    game.add_game_args("-join 127.0.0.1")
-    game.add_game_args("+name Player2")
+    game.add_game_args("-join 127.0.0.1 +sv_corpsequeuesize 0")
+    game.add_game_args("+name Player2 +colorset 3")
 
     game.init()
 
     actions = [[True,False,False],[False,True,False],[False,False,True]]
 
-    while not game.is_episode_finished():
-        if game.is_player_dead():
-            game.respawn_player()
+    for i in range(episodes):
 
-        game.make_action(choice(actions))
+        while not game.is_episode_finished():
+            if game.is_player_dead():
+                game.respawn_player()
+
+            game.make_action(choice(actions))
+
         print("Player2 frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
+        game.new_episode()
 
     game.close()
 
