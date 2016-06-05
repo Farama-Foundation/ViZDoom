@@ -16,6 +16,7 @@ game = DoomGame()
 
 # Use other config file if you wish.
 game.load_config("../../examples/config/basic.cfg")
+game.set_episode_timeout(100)
 
 # Record episodes while playing in 320x240 resolution without HUD
 game.set_screen_resolution(ScreenResolution.RES_320X240)
@@ -40,7 +41,7 @@ for i in range(episodes):
     # new_episode can record the episode using Doom's demo recording functionality to given file.
     # Recorded episodes can be reconstructed with perfect accuracy using different rendering settings.
     # This can not be used to record episodes in multiplayer mode.
-    game.new_episode("episode" + str(i))
+    game.new_episode("episode" + str(i) + "_rec.lmp")
 
     while not game.is_episode_finished():
 
@@ -52,6 +53,10 @@ for i in range(episodes):
         print("Game variables:", s.game_variables[0])
         print("Reward:", r)
         print("=====================")
+
+    print("Episode finished.")
+    print("total reward:", game.get_total_reward())
+    print("************************\n")
 
 game.close()
 
@@ -65,13 +70,13 @@ game.set_mode(Mode.SPECTATOR)
 
 game.init()
 
-print("\nPLAYBACK OF EPISODE")
+print("\nREPLAY OF EPISODE")
 print("************************\n")
 
 for i in range(episodes):
 
     # Replays episodes stored in given file. Sending game command will interrupt playback.
-    game.replay_episode("episode" + str(i) + ".lmp")
+    game.replay_episode("episode" + str(i) + "_rec.lmp")
 
     while not game.is_episode_finished():
 
@@ -88,9 +93,13 @@ for i in range(episodes):
         print("Reward:", r)
         print("=====================")
 
+    print("Episode finished.")
+    print("total reward:", game.get_total_reward())
+    print("************************")
+
 game.close()
 
 
-# Delete recordings (*.lmp files)
+# Delete recordings (*.lmp files).
 for i in range(episodes):
-    os.remove("episode" + str(i) + ".lmp")
+    os.remove("episode" + str(i) + "_rec.lmp")
