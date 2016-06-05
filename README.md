@@ -37,8 +37,8 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 * CMake 3.0+
 * Make
 * GCC 4.6+
-* Boost libraries
-* Python 2.7+ with Numpy and Boost.Python for Python binding (optional)
+* Boost libraries (tested on 1.54, 1.58, 1.59, 1.61)
+* Python (tested on 2.7 and 3.4) with Numpy and Boost.Python for Python binding (optional)
 * JDK for Java binding (JAVA_HOME must be set) (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
@@ -50,7 +50,7 @@ cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON
 make
 ```
 
-``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` CMake options for Python and Java bindings are optional (default OFF).
+``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` CMake options for Python and Java bindings are optional (default OFF). To force building bindings for Python3 instead of first version found use ``-DBUILD_PYTHON3=ON`` (default OFF).
 
 ###Windows
 
@@ -111,6 +111,7 @@ Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should cont
 * ``bin/libvizdoom.a (vizdoom.lib)`` - C++ ViZDoom static library
 * ``bin/libvizdoom.so (vizdoom.dll)`` -  C++ ViZDoom dynamically linked library
 * ``bin/python/vizdoom.so (vizdoom.pyd)`` - ViZDoom Python module
+* ``bin/python3/vizdoom.so (vizdoom.pyd)`` - ViZDoom Python3 module
 * ``bin/java/libvizdoom.so (vizdoom.dll)`` -  ViZDoom library for Java
 * ``bin/java/vizdoom.jar`` -  Contains ViZDoom Java classes
 
