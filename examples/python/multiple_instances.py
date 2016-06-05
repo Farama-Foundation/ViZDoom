@@ -39,7 +39,7 @@ def player1():
         print("Episode finished!")
         print("Player1 frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
 
-        # Starts a new episode. All players have to use new_episode() in multiplayer mode.
+        # Starts a new episode. All players have to call new_episode() in multiplayer mode.
         game.new_episode()
 
 

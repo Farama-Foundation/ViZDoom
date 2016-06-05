@@ -31,7 +31,7 @@ game.add_game_args("+name AI +colorset 0")
 # Multiplayer requires the use of asynchronous modes, but when playing only with bots, synchronous modes can also be used.
 game.set_mode(Mode.ASYNC_PLAYER)
 
-# game.set_window_visible(false)
+# game.set_window_visible(False)
 
 game.init()
 
@@ -39,18 +39,20 @@ game.init()
 actions = [[1,0,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0]]
 
 # Play with this many bots
-bots_number = 7
+bots = 7
 
 # Run this many episodes
 episodes = 10
 
 for i in range(episodes):
 
-    # Add specific number bots
+    print("Episode #" + str(i+1))
+
+    # Add specific number of bots
     # (file examples/bots.cfg must be placed in the same directory as the Doom executable file,
     # edit this file to adjust bots).
     game.send_game_command("removebots")
-    for i in range(bots_number):
+    for i in range(bots):
         game.send_game_command("addbot")
 
     # Play until the game (episode) is over.
@@ -58,7 +60,6 @@ for i in range(episodes):
 
         if game.is_player_dead():
             # Use this to respawn immediately after death, new state will be available.
-            sleep(5.0)
             game.respawn_player()
 
             # Or observe the game until automatic respawn.
@@ -73,7 +74,10 @@ for i in range(episodes):
 
         print("Frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
 
-    # Starts a new episode. All players have to use new_episode() in multiplayer mode.
+    print("Episode finished.")
+    print("************************")
+
+    # Starts a new episode. All players have to call new_episode() in multiplayer mode.
     game.new_episode()
 
 
