@@ -29,6 +29,7 @@
 #include <boost/chrono.hpp>
 #include <boost/lexical_cast.hpp>
 #include <climits>
+#include <csignal>
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
@@ -106,10 +107,8 @@ namespace vizdoom {
         this->doomRngSeed = 0;
 
         this->instanceRng.seed((unsigned int)bc::high_resolution_clock::now().time_since_epoch().count());
-        this->generateInstanceId();
 
         br::uniform_int_distribution<> rngSeedDist(0, UINT_MAX);
-        this->setInstanceRngSeed(rngSeedDist(this->instanceRng));
         this->setDoomRngSeed(rngSeedDist(this->instanceRng));
 
         this->_input = new InputStruct();
@@ -126,11 +125,10 @@ namespace vizdoom {
 
     bool DoomController::init() {
 
-        if (!this->doomRunning && this->iwadPath.length() != 0 && this->map.length() != 0) {
+        if (!this->doomRunning) {
 
             try{
-                this->doomRunning = true;
-
+                this->generateInstanceId();
                 this->MQInit();
 
                 this->signalThread = new b::thread(b::bind(&DoomController::handleSignals, this));
@@ -170,22 +168,30 @@ namespace vizdoom {
             this->doomWorking = false;
             this->doomRecordingMap = false;
 
-            if (this->signalThread && this->signalThread->joinable()) {
-                this->ioService.stop();
-                this->signalThread->interrupt();
-                this->signalThread->join();
-            }
-
             this->MQDoomSend(MSG_CODE_CLOSE);
-
-            if (this->doomThread && this->doomThread->joinable()) {
-                this->doomThread->interrupt();
-                this->doomThread->join();
-            }
-
-            this->SMClose();
-            this->MQClose();
         }
+
+        if (this->signalThread && this->signalThread->joinable()) {
+            this->ioService->stop();
+
+            this->signalThread->interrupt();
+            this->signalThread->join();
+            delete this->signalThread;
+            this->signalThread = NULL;
+
+            delete this->ioService;
+            this->ioService = NULL;
+        }
+
+        if (this->doomThread && this->doomThread->joinable()) {
+            this->doomThread->interrupt();
+            this->doomThread->join();
+            delete this->doomThread;
+            this->doomThread = NULL;
+        }
+
+        this->SMClose();
+        this->MQClose();
     }
 
     void DoomController::restart() {
@@ -393,7 +399,6 @@ namespace vizdoom {
 
                 this->MQDoomSend(MSG_CODE_TIC);
                 this->waitForDoomWork();
-                std::cout << this->gameVariables->MAP_END << this->gameVariables->PLAYER_DEAD << std::endl;
 
             } while (this->gameVariables->MAP_END
                      || this->gameVariables->PLAYER_DEAD
@@ -414,9 +419,6 @@ namespace vizdoom {
 
     unsigned int DoomController::getTicrate(){ return this->ticrate; }
     void DoomController::setTicrate(unsigned int ticrate){ this->ticrate = ticrate; }
-
-    std::string DoomController::getInstanceId() { return this->instanceId; }
-    void DoomController::setInstanceId(std::string id) { if(!this->doomRunning) this->instanceId = id; }
 
     std::string DoomController::getExePath() { return this->exePath; }
     void DoomController::setExePath(std::string exePath) { if(!this->doomRunning) this->exePath = exePath; }
@@ -802,16 +804,16 @@ namespace vizdoom {
     /* Protected and private functions */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    unsigned int DoomController::instanceCount = 0;
-
     void DoomController::generateInstanceId(){
         std::string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         this->instanceId = "";
 
         br::uniform_int_distribution<> charDist(0, chars.length() - 1);
+        br::mt19937 rng;
+        rng.seed((unsigned int)bc::high_resolution_clock::now().time_since_epoch().count());
 
         for (int i = 0; i < INSTANCE_ID_LENGHT; ++i) {
-            this->instanceId += chars[charDist(this->instanceRng)];
+            this->instanceId += chars[charDist(rng)];
         }
     }
 
@@ -820,18 +822,20 @@ namespace vizdoom {
     /*----------------------------------------------------------------------------------------------------------------*/
 
     void DoomController::handleSignals(){
-        ba::signal_set signals(this->ioService, SIGINT, SIGABRT, SIGTERM);
+        this->ioService = new ba::io_service();
+        ba::signal_set signals(*this->ioService, SIGINT, SIGABRT, SIGTERM);
         signals.async_wait(b::bind(signalHandler, b::ref(signals), this, _1, _2));
 
-        this->ioService.run();
+        this->ioService->run();
     }
 
-    void DoomController::signalHandler(ba::signal_set& signal, DoomController* controller, const bs::error_code& error, int signal_number){
-        controller->intSignal();
+    void DoomController::signalHandler(ba::signal_set& signal, DoomController* controller, const bs::error_code& error, int sigNumber){
+        controller->intSignal(sigNumber);
     }
 
-    void DoomController::intSignal(){
-        this->MQControllerSend(MSG_CODE_SIGNAL_INT_ABRT_TERM);
+    void DoomController::intSignal(int sigNumber){
+        this->MQDoomSend(MSG_CODE_CLOSE);
+        this->MQControllerSend(MSG_CODE_SIG + sigNumber);
     }
 
     /* Flow */
@@ -854,19 +858,24 @@ namespace vizdoom {
 
             case MSG_CODE_DOOM_CLOSE :
             case MSG_CODE_DOOM_PROCESS_EXIT :
-                if(this->doomRunning) {
-                    this->close();
-                    throw ViZDoomUnexpectedExitException();
-                }
+                this->close();
+                throw ViZDoomUnexpectedExitException();
 
             case MSG_CODE_DOOM_ERROR :
-                if(this->doomRunning) {
-                    this->close();
-                    throw ViZDoomErrorException();
-                }
-            case MSG_CODE_SIGNAL_INT_ABRT_TERM :
                 this->close();
-                break;
+                throw ViZDoomErrorException();
+
+            case MSG_CODE_SIGINT :
+                this->close();
+                throw ViZDoomSignalException("SIGINT");
+
+            case MSG_CODE_SIGABRT :
+                this->close();
+                throw ViZDoomSignalException("SIGABRT");
+
+            case MSG_CODE_SIGTERM :
+                this->close();
+                throw ViZDoomSignalException("SIGTERM");
         }
 
         this->doomWorking = false;
@@ -891,26 +900,25 @@ namespace vizdoom {
                         break;
 
                     case MSG_CODE_DOOM_CLOSE :
+                    case MSG_CODE_DOOM_PROCESS_EXIT :
                         this->close();
-                        break;
+                        throw ViZDoomUnexpectedExitException();
 
                     case MSG_CODE_DOOM_ERROR :
-                        if(this->doomRunning) {
-                            this->close();
-                            throw ViZDoomErrorException();
-                        }
-                        break;
-
-                    case MSG_CODE_DOOM_PROCESS_EXIT :
-                        if(this->doomRunning) {
-                            this->close();
-                            throw ViZDoomUnexpectedExitException();
-                        }
-                        break;
-
-                    case MSG_CODE_SIGNAL_INT_ABRT_TERM :
                         this->close();
-                        exit(0);
+                        throw ViZDoomErrorException();
+
+                    case MSG_CODE_SIGINT :
+                        this->close();
+                        throw ViZDoomSignalException("SIGINT");
+
+                    case MSG_CODE_SIGABRT :
+                        this->close();
+                        throw ViZDoomSignalException("SIGABRT");
+
+                    case MSG_CODE_SIGTERM :
+                        this->close();
+                        throw ViZDoomSignalException("SIGTERM");
                 }
             } while (!done);
 
@@ -1173,13 +1181,20 @@ namespace vizdoom {
     }
 
     void DoomController::SMClose() {
-        delete this->InputSMRegion;
-        this->InputSMRegion = NULL;
-        delete this->GameVariablesSMRegion;
-        this->GameVariablesSMRegion = NULL;
-        delete this->ScreenSMRegion;
-        this->ScreenSMRegion = NULL;
         bip::shared_memory_object::remove(this->SMName.c_str());
+
+        if(this->InputSMRegion) {
+            delete this->InputSMRegion;
+            this->InputSMRegion = NULL;
+        }
+        if(this->GameVariablesSMRegion) {
+            delete this->GameVariablesSMRegion;
+            this->GameVariablesSMRegion = NULL;
+        }
+        if(this->ScreenSMRegion) {
+            delete this->ScreenSMRegion;
+            this->ScreenSMRegion = NULL;
+        }
     }
 
 
@@ -1243,11 +1258,15 @@ namespace vizdoom {
 
     void DoomController::MQClose() {
         bip::message_queue::remove(this->MQDoomName.c_str());
-        delete this->MQDoom;
-        this->MQDoom = NULL;
+        if(this->MQDoom) {
+            delete this->MQDoom;
+            this->MQDoom = NULL;
+        }
 
         bip::message_queue::remove(this->MQControllerName.c_str());
-        delete this->MQController;
-        this->MQController = NULL;
+        if(this->MQController) {
+            delete this->MQController;
+            this->MQController = NULL;
+        }
     }
 }
