@@ -62,6 +62,18 @@ namespace vizdoom{
         return strdup(what.c_str());
     }
 
+    /* ViZDoomSignalException */
+    ViZDoomSignalException::ViZDoomSignalException(std::string signal){
+        this->signal = signal;
+    }
+
+    ViZDoomSignalException::~ViZDoomSignalException() throw(){}
+
+    const char* ViZDoomSignalException::what() const throw(){
+        std::string what = "Signal " + this->signal + " received. ViZDoom instance has been closed.";
+        return strdup(what.c_str());
+    }
+
     /* ViZDoomUnexpectedExitException */
     const char* ViZDoomUnexpectedExitException::what() const throw(){ return "Controlled ViZDoom instance exited unexpectedly."; }
 

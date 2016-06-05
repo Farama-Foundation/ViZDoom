@@ -67,6 +67,15 @@ namespace vizdoom{
         std::string libVersion;
     };
 
+    class ViZDoomSignalException : public std::exception {
+    public:
+        ViZDoomSignalException(std::string signal);
+        ~ViZDoomSignalException() throw();
+        const char* what() const throw();
+    private:
+        std::string signal;
+    };
+
     class ViZDoomUnexpectedExitException : public std::exception {
     public:
         const char* what() const throw();

@@ -58,7 +58,7 @@ namespace vizdoom {
     }
 
     bool DoomGame::init() {
-        if (!this->running) {
+        if (!this->isRunning()) {
 
             this->lastAction.resize(this->availableButtons.size());
 
@@ -102,7 +102,7 @@ namespace vizdoom {
     }
 
     void DoomGame::close() {
-        if (this->running) {
+        if (this->isRunning()) {
             this->doomController->close();
             this->state.gameVariables.clear();
             this->lastAction.clear();
@@ -262,14 +262,14 @@ namespace vizdoom {
     }
 
     void DoomGame::addAvailableButton(Button button) {
-        if (!this->running && std::find(this->availableButtons.begin(), this->availableButtons.end(), button) ==
+        if (!this->isRunning() && std::find(this->availableButtons.begin(), this->availableButtons.end(), button) ==
             this->availableButtons.end()) {
             this->availableButtons.push_back(button);
         }
     }
 
     void DoomGame::addAvailableButton(Button button, int maxValue) {
-        if (!this->running && std::find(this->availableButtons.begin(), this->availableButtons.end(), button) ==
+        if (!this->isRunning() && std::find(this->availableButtons.begin(), this->availableButtons.end(), button) ==
                               this->availableButtons.end()) {
             this->availableButtons.push_back(button);
             this->doomController->setButtonMaxValue(button, maxValue);
@@ -277,7 +277,7 @@ namespace vizdoom {
     }
 
     void DoomGame::clearAvailableButtons(){
-        if(!this->running) this->availableButtons.clear();
+        if(!this->isRunning()) this->availableButtons.clear();
     }
 
     int DoomGame::getAvailableButtonsSize() {
@@ -293,14 +293,14 @@ namespace vizdoom {
     }
 
     void DoomGame::addAvailableGameVariable(GameVariable var) {
-        if (!this->running && std::find(this->availableGameVariables.begin(), this->availableGameVariables.end(), var) ==
+        if (!this->isRunning() && std::find(this->availableGameVariables.begin(), this->availableGameVariables.end(), var) ==
             this->availableGameVariables.end()) {
             this->availableGameVariables.push_back(var);
         }
     }
 
     void DoomGame::clearAvailableGameVariables() {
-        if(!this->running) this->availableGameVariables.clear();
+        if(!this->isRunning()) this->availableGameVariables.clear();
     }
 
     int DoomGame::getAvailableGameVariablesSize() {
@@ -330,7 +330,7 @@ namespace vizdoom {
     }
 
     Mode DoomGame::getMode(){ return this->mode; };
-    void DoomGame::setMode(Mode mode){ if (!this->running) this->mode = mode; }
+    void DoomGame::setMode(Mode mode){ if (!this->isRunning()) this->mode = mode; }
 
     unsigned int DoomGame::getTicrate(){ return this->doomController->getTicrate(); }
     void DoomGame::setTicrate(unsigned int ticrate){ this->doomController->setTicrate(ticrate); }

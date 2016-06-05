@@ -67,7 +67,10 @@ namespace vizdoom{
 #define MSG_CODE_CLOSE                  25
 #define MSG_CODE_ERROR                  26
 
-#define MSG_CODE_SIGNAL_INT_ABRT_TERM   30
+#define MSG_CODE_SIG                    30
+#define MSG_CODE_SIGINT                 30 + SIGINT
+#define MSG_CODE_SIGABRT                30 + SIGABRT
+#define MSG_CODE_SIGTERM                30 + SIGTERM
 
 
 /* OSes */
@@ -180,9 +183,6 @@ namespace vizdoom{
 
         unsigned int getInstanceRngSeed();
         void setInstanceRngSeed(unsigned int seed);
-
-        std::string getInstanceId();
-        void setInstanceId(std::string id);
 
         std::string getMap();
         void setMap(std::string map, std::string demoPath);
@@ -344,14 +344,12 @@ namespace vizdoom{
         /* Threads */
         /*------------------------------------------------------------------------------------------------------------*/
 
-        static unsigned int instanceCount;
-        ba::io_service ioService;
+        ba::io_service *ioService;
         b::thread *signalThread;
 
-        static void signalHandler(ba::signal_set& signal, DoomController* controller, const bs::error_code& error, int signal_number);
-
         void handleSignals();
-        void intSignal();
+        static void signalHandler(ba::signal_set& signal, DoomController* controller, const bs::error_code& error, int sigNumber);
+        void intSignal(int sigNumber);
 
         b::thread *doomThread;
         //bpr::child doomProcess;
