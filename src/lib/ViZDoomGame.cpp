@@ -27,6 +27,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim_all.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 #include <climits>
@@ -36,7 +37,8 @@
 
 namespace vizdoom {
 
-    namespace b = boost;
+    namespace b         = boost;
+    namespace bfs       = boost::filesystem;
 
     DoomGame::DoomGame() {
         this->running = false;
@@ -59,6 +61,9 @@ namespace vizdoom {
 
     bool DoomGame::init() {
         if (!this->isRunning()) {
+
+            std::string cfgOverrideFile = "_vizdoom.cfg";
+            if(bfs::exists(cfgOverrideFile) && !bfs::is_directory(cfgOverrideFile)) loadConfig(cfgOverrideFile);
 
             this->lastAction.resize(this->availableButtons.size());
 
@@ -686,7 +691,7 @@ namespace vizdoom {
         }
         if(value.empty() || value[value.size()-1] != '}') return false;
         
-    /* Fill the vector */
+        /* Fill the vector */
         value[value.size() -1] = ' ';
         trim_all(value);
         to_lower(value);
@@ -703,34 +708,29 @@ namespace vizdoom {
         bool success = true;
         std::ifstream file(filename.c_str());
         
-        if(!file.good() )
-        {
+        if(!file.good() ) {
             throw FileDoesNotExistException(filename);
-            //std::cerr<<"WARNING! Loading config from: \""<<filename<<"\" failed. Something's wrong with the file. Check your spelling and permissions.\n";
-            return false;
         }
         std::string line;
         int line_number = 0;
 
-    /* Process every line. */
-        while(!file.eof())
-        {
+        /* Process every line. */
+        while(!file.eof()) {
             ++line_number;
             using namespace b::algorithm;
 
             std::getline(file, line);
 
-        /* Ignore empty and comment lines */
+            /* Ignore empty and comment lines */
             trim_all(line);
 
             if(line.empty() || line[0] == '#'){
                 continue;
             }
 
+            bool append = false; //it looks for +=
 
-        bool append = false; //it looks for +=
-
-        /* Check if '=' is there */
+            /* Check if '=' is there */
             size_t equals_sign_pos = line.find_first_of('=');
             size_t append_sign_pos = line.find("+=");
 
@@ -746,29 +746,27 @@ namespace vizdoom {
                 key = line.substr(0, equals_sign_pos);
                 val = line.substr(equals_sign_pos + 1);
             }
-            else
-            {
+            else {
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Syntax erorr in line #"<<line_number<<". Line ignored.\n";
                 success = false;
                 continue;
             }
 
-            
+
             raw_val = val;
             trim_all(key);
             trim_all(val);
             std::string original_val = val;
             to_lower(val);
             to_lower(key);
-            if(key.empty())
-            {
+            if(key.empty()) {
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Empty key in line #"<<line_number<<". Line ignored.\n";
                 success = false;
                 continue;
             }
 
 
-        /* Parse enum list properties */
+            /* Parse enum list properties */
 
             if(key == "available_buttons" || key == "availablebuttons"){
                 std::vector<std::string> str_buttons;
@@ -832,23 +830,24 @@ namespace vizdoom {
                 continue;
             }           
 
-        /* Parse game args which ae string but enables "+=" */
+            /* Parse game args which are string but enables "+=" */
             if(key == "game_args" || key == "game_args"){
-            	if(!append){
-            		this->clearGameArgs();
-            	}
+                if(!append){
+                    this->clearGameArgs();
+                }
                 this->addGameArgs(original_val);
                 continue;
             }
-        /* Check if "+=" was not used for non-list property */
+
+            /* Check if "+=" was not used for non-list property */
             if(append){
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". \"+=\" is not supported for non-list properties. Line #"<<line_number<<" ignored.\n";
                 success = false;
                 continue;
             }
 
-           	
-        /* Check if value is not empty */
+
+            /* Check if value is not empty */
             if(val.empty())
             {
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Empty value in line #"<<line_number<<". Line ignored.\n";
@@ -856,7 +855,7 @@ namespace vizdoom {
                 continue;
             }
         
-        /* Parse int properties */
+            /* Parse int properties */
             try{
                 if (key =="seed" || key == "seed"){
                     this->setSeed(StringToUint(val));
@@ -881,7 +880,7 @@ namespace vizdoom {
                 continue;
             }
 
-        /* Parse float properties */
+            /* Parse float properties */
             try{
                 if (key =="living_reward" || key =="livingreward"){
                     this->setLivingReward(b::lexical_cast<double>(val));
@@ -898,7 +897,7 @@ namespace vizdoom {
                 continue;
             }
                         
-        /* Parse string properties */
+            /* Parse string properties */
             if(key == "doom_map" || key == "doommap"){
                 this->setDoomMap(val);
                 continue;
@@ -920,8 +919,8 @@ namespace vizdoom {
                 continue;
             }
 
-    
-        /* Parse bool properties */
+
+            /* Parse bool properties */
             try{
                 if (key =="console_enabled" || key =="consoleenabled"){
                     this->setConsoleEnabled(StringToBool(val));
@@ -955,7 +954,6 @@ namespace vizdoom {
                     this->setWindowVisible(StringToBool(val));
                     continue;
                 }
-               
             }
             catch( std::exception ){
                 std::cerr<<"WARNING! Loading config from: \""<<filename<<"\". Boolean value expected insted of: "<<raw_val<<" in line #"<<line_number<<". Line ignored.\n";
@@ -964,7 +962,7 @@ namespace vizdoom {
                             
             }
 
-        /* Parse enum properties */
+            /* Parse enum properties */
 
             if(key =="mode")
             {
