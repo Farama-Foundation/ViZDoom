@@ -176,7 +176,8 @@ FString M_GetCajunPath(const char *botfilename)
 {
 	FString path;
 
-	path << progdir << "zcajun/" << botfilename;
+	path = "./";
+	path << botfilename;
 	if (!FileExists(path))
 	{
 		path << progdir << botfilename;
@@ -388,8 +389,8 @@ FString M_GetCajunPath(const char *botfilename)
 {
 	FString path;
 
-	// Just copies the Windows code. Should this be more Mac-specific?
-	path << progdir << "zcajun/" << botfilename;
+	path = "./";
+	path << botfilename;
 	if (!FileExists(path))
 	{
 		path << progdir << botfilename;
@@ -581,19 +582,21 @@ FString M_GetCajunPath(const char *botfilename)
 {
 	FString path;
 
-	// Check first in ~/.config/zdoom/botfilename.
-	path = GetUserFile(botfilename);
-	if (!FileExists(path))
-	{
-		// Then check in SHARE_DIR/botfilename.
-		//path = SHARE_DIR;
+	// Then first run folder
+	path = "./";
+	path << botfilename;
+	if (!FileExists(path)) {
 
-		//Then check executable folder
-		path = "./";
+		// Then check executable folder
+		path = progdir;
 		path << botfilename;
-		if (!FileExists(path))
-		{
-			path = "";
+		if (!FileExists(path)) {
+
+			// Then check in ~/.config/zdoom/botfilename.
+			path = GetUserFile(botfilename);
+			if (!FileExists(path)) {
+				path = "";
+			}
 		}
 	}
 	return path;
