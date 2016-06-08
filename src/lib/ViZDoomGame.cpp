@@ -63,6 +63,7 @@ namespace vizdoom {
         if (!this->isRunning()) {
 
             std::string cfgOverrideFile = "_vizdoom.cfg";
+
             if(bfs::exists(cfgOverrideFile) && !bfs::is_directory(cfgOverrideFile)) loadConfig(cfgOverrideFile);
 
             this->lastAction.resize(this->availableButtons.size());
