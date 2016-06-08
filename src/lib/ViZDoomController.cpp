@@ -27,6 +27,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/bind.hpp>
 #include <boost/chrono.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 #include <climits>
 #include <csignal>
@@ -73,8 +74,8 @@ namespace vizdoom {
 
         /* Settings */
         this->ticrate = DefaultTicrate;
-        this->exePath = "./vizdoom";
-        this->iwadPath = "./doom2.wad";
+        this->exePath = "vizdoom";
+        this->iwadPath = "doom2.wad";
         this->filePath = "";
         this->map = "map01";
         this->demoPath = "";
@@ -968,7 +969,7 @@ namespace vizdoom {
 
         this->doomArgs.push_back("-config");
         if (this->configPath.length() != 0) this->doomArgs.push_back(this->configPath);
-        else this->doomArgs.push_back("vizdoom.ini");
+        else this->doomArgs.push_back("_vizdoom.ini");
 
         if(this->seedDoomRng) {
             this->doomArgs.push_back("+rngseed");
