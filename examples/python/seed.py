@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 #####################################################################
 # This script presents how to run deterministic episodes by setting

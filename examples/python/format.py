@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #####################################################################
 # This script presents different formats of the screen buffer.
 # OpenCV is used here to display images, install it or remove any
