@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #####################################################################
 # This script presents how to use the most basic features of the environment.
 # It configures the engine, and makes the agent perform random actions.

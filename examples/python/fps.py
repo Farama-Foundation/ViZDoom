@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 #####################################################################
 # This script tests performance in frames per second.

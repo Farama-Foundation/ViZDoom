@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 #####################################################################
 # This script presents SPECTATOR mode. In SPECTATOR mode you play and

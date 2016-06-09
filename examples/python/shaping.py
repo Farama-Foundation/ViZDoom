@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 #####################################################################
 # This script presents how to make use of game variables to implement

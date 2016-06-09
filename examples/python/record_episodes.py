@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #####################################################################
 # This script presents how to use Doom's native demo mechanism to
 # replay episodes with perfect accuracy.
