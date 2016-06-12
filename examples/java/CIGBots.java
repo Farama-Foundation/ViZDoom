@@ -11,7 +11,6 @@ public class CIGBots {
 
         System.out.println("\n\nCIG BOTS EXAMPLE\n");
 
-
         // Use CIG example config or Your own.
         game.loadConfig("../../examples/config/cig.cfg");
 
@@ -25,35 +24,52 @@ public class CIGBots {
         // Start multiplayer game only with Your AI (with options that will be used in the competition, details in CIGHost example).
         game.addGameArgs("-host 1 -deathmatch +timelimit 10.0 +sv_forcerespawn 1 +sv_noautoaim 1 +sv_respawnprotect 1 +sv_spawnfarthest 1");
 
-        // Name Your AI.
-        game.addGameArgs("+name AI");
+        // Name your agent and select color
+        // colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue
+        game.addGameArgs("+name AI +colorset 0");
 
-        game.setMode(Mode.ASYNC_PLAYER);                // Multiplayer requires the use of asynchronous modes.
+        game.setMode(Mode.ASYNC_PLAYER);        // Multiplayer requires the use of asynchronous modes.
         game.init();
 
-        for(int i=0; i < 7; ++i) {
-            game.sendGameCommand("addbot");
-        }
 
-        while(!game.isEpisodeFinished()){          // Play until the game (episode) is over.
+        int bots = 7;                           // Play with this many bots
+        int episodes = 10;                      // Run this many episodes
 
-            if(game.isPlayerDead()){               // Check if player is dead
-                game.respawnPlayer();              // Use this to respawn immediately after death, new state will be available.
+        for(int i = 0; i < episodes; ++i){
 
-                // Or observe the game until automatic respawn.
-                //game.advanceAction();
-                //continue;
+            System.out.println("Episode #" + (i + 1));
+
+            // Add specific number of bots
+            // (file examples/bots.cfg must be placed in the same directory as the Doom executable file,
+            // edit this file to adjust bots).
+            game.sendGameCommand("removebots");
+            for(int b = 0; b < bots; ++b) {
+                game.sendGameCommand("addbot");
             }
 
-            GameState state = game.getState();
-            // Analyze the state.
+            while(!game.isEpisodeFinished()){   // Play until the game (episode) is over.
 
-            int[] action= new int[game.getAvailableButtonsSize()];
-            // Set your action.
+                if(game.isPlayerDead()){        // Check if player is dead
+                    game.respawnPlayer();       // Use this to respawn immediately after death, new state will be available.
 
-            game.makeAction(action);
+                    // Or observe the game until automatic respawn.
+                    //game.advanceAction();
+                    //continue;
+                }
 
-            System.out.println(game.getEpisodeTime() + " Frags: " + game.getGameVariable(GameVariable.FRAGCOUNT));
+                GameState state = game.getState();
+                // Analyze the state.
+
+                int[] action= new int[game.getAvailableButtonsSize()];
+                // Set your action.
+
+                game.makeAction(action);
+
+                System.out.println(game.getEpisodeTime() + " Frags: " + game.getGameVariable(GameVariable.FRAGCOUNT));
+            }
+
+            System.out.println("Episode finished.");
+            System.out.println("************************");
         }
 
         game.close();

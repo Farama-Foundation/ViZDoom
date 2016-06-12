@@ -703,7 +703,7 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_clearGameArgs
  * Method:    sendGameCommand
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_vizdoom_DoomGame_sendCommand
+JNIEXPORT void JNICALL Java_vizdoom_DoomGame_sendGameCommand
   (JNIEnv *env, jobject obj, jstring jstr){
     try{
         DoomGame* game = GetObject(env,obj);
@@ -753,7 +753,7 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getMod
 
 /*
  * Class:     DoomGame
- * Method:    setGMode
+ * Method:    setMode
  * Signature: (Lvizdoom/Mode;)V
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setMode
@@ -1159,7 +1159,7 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setRenderParticles
 
 /*
  * Class:     DoomGame
- * Method:    setVisibleWindow
+ * Method:    setWindowVisible
  * Signature: (Z)V
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setWindowVisible
@@ -1170,7 +1170,7 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setWindowVisible
 
 /*
  * Class:     DoomGame
- * Method:    setDisabledConsole
+ * Method:    setConsoleEnabled
  * Signature: (Z)V
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setConsoleEnabled
@@ -1181,7 +1181,7 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setConsoleEnabled
 
 /*
  * Class:     DoomGame
- * Method:    setSoundConsole
+ * Method:    setSoundEnabled
  * Signature: (Z)V
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setSoundEnabled

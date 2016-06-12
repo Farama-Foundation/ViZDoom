@@ -323,7 +323,7 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_clearGameArgs
  * Method:    sendGameCommand
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_vizdoom_DoomGame_sendCommand
+JNIEXPORT void JNICALL Java_vizdoom_DoomGame_sendGameCommand
   (JNIEnv *, jobject, jstring);
 
 /*

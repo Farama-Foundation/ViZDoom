@@ -32,16 +32,17 @@ public class CIGHost {
                         +"+sv_spawnfarthest 1 "    // Players will be spawned as far as possible from any other players.
                         +"+vizdoom_nocheat 1");    // Disables depth buffer and the ability to use commands that could interfere with multiplayer game.
 
-        // Name Your AI.
-        game.addGameArgs("+name AI");
+        // Name your agent and select color
+        // colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue
+        game.addGameArgs("+name AI +colorset 0");
 
         game.setMode(Mode.ASYNC_PLAYER);        // Multiplayer requires the use of asynchronous modes.
         game.init();
 
         while(!game.isEpisodeFinished()){       // Play until the game (episode) is over.
 
-            if(game.isPlayerDead()){                // Check if player is dead
-                game.respawnPlayer();               // Use this to respawn immediately after death, new state will be available.
+            if(game.isPlayerDead()){            // Check if player is dead
+                game.respawnPlayer();           // Use this to respawn immediately after death, new state will be available.
 
                 // Or observe the game until automatic respawn.
                 //game.advanceAction();

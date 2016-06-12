@@ -293,13 +293,14 @@ if(BUILD_JAVA)
 		${VIZDOOM_JAVA_CLASSES_DIR}/enums/Mode.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/enums/ScreenFormat.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/enums/ScreenResolution.java
-		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomMismatchedVersionException.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/FileDoesNotExistException.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/MessageQueueException.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/SharedMemoryException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomErrorException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomIsNotRunningException.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomSignalException.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomMismatchedVersionException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomUnexpectedExitException.java
-		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/MessageQueueException.java
-		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/FileDoesNotExistException.java
-		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/SharedMemoryException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/GameState.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/DoomGame.java
 		OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/java

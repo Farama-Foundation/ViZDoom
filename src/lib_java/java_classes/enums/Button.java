@@ -23,7 +23,6 @@ public enum Button{
     MOVE_UP,
     MOVE_DOWN,
     LAND,
-    //SHOWSCORES 20
 
     SELECT_WEAPON1,
     SELECT_WEAPON2,

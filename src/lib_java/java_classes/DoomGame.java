@@ -65,7 +65,7 @@ public class DoomGame{
     public native void addGameArgs(String arg);
     public native void clearGameArgs();
 
-    public native void sendCommand(String cmd);
+    public native void sendGameCommand(String cmd);
 
     public native int[] getGameScreen();
 
@@ -127,7 +127,7 @@ public class DoomGame{
     public native int getScreenSize();
     private native int getScreenForma();
 
-    public  ScreenFormat getScreenFormat(){
+    public ScreenFormat getScreenFormat(){
         ScreenFormat ret=ScreenFormat.values()[getScreenForma()];
         return ret;
     }
