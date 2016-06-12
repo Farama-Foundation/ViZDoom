@@ -90,9 +90,9 @@ namespace vizdoom{
         /*------------------------------------------------------------------------------------------------------------*/
 
         struct InputStruct {
-            int BT[ButtonsNumber];
-            bool BT_AVAILABLE[ButtonsNumber];
-            int BT_MAX_VALUE[DeltaButtonsNumber];
+            int BT[ButtonCount];
+            bool BT_AVAILABLE[ButtonCount];
+            int BT_MAX_VALUE[DeltaButtonCount];
         };
 
         struct GameVariablesStruct {
@@ -117,12 +117,13 @@ namespace vizdoom{
 
             int MAP_REWARD;
 
-            int MAP_USER_VARS[UserVariablesNumber];
+            int MAP_USER_VARS[UserVariableCount];
 
             int MAP_KILLCOUNT;
             int MAP_ITEMCOUNT;
             int MAP_SECRETCOUNT;
             bool MAP_END;
+            bool PLAYDEMO;
 
             bool PLAYER_HAS_ACTOR;
             bool PLAYER_DEAD;
@@ -145,12 +146,13 @@ namespace vizdoom{
             int PLAYER_SELECTED_WEAPON;
             int PLAYER_SELECTED_WEAPON_AMMO;
 
-            int PLAYER_AMMO[SlotsNumber];
-            int PLAYER_WEAPON[SlotsNumber];
+            int PLAYER_AMMO[SlotCount];
+            int PLAYER_WEAPON[SlotCount];
 
-            int PLAYERS_COUNT;
-            char PLAYERS_NAME[MaxNumberOfPlayers][16];
-            int PLAYERS_FRAGCOUNT[MaxNumberOfPlayers];
+            unsigned int PLAYER_NUMBER;
+            unsigned int PLAYER_COUNT;
+            char PLAYERS_NAME[MaxPlayers][16];
+            int PLAYERS_FRAGCOUNT[MaxPlayers];
         };
 
         DoomController();
