@@ -31,8 +31,10 @@ int main(){
                       "+sv_spawnfarthest 1 "    // Players will be spawned as far as possible from any other players.
                       "+vizdoom_nocheat 1");    // Disables depth buffer and the ability to use commands that could interfere with multiplayer game.
 
-    // Name Your AI.
-    game->addGameArgs("+name AI");
+    // Name your agent and select color
+    // colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue
+    game->addGameArgs("+name AI +colorset 0");
+
 
     game->setMode(ASYNC_PLAYER);                // Multiplayer requires the use of asynchronous modes.
     game->init();
