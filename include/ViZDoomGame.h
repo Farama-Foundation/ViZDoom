@@ -295,7 +295,8 @@ namespace vizdoom {
         Mode getMode();
 
         /*
-         * Sets mode (e.g. PLAYER, SPECTATOR) in which the game will be started.
+         * Sets mode (PLAYER, SPECTATOR, ASYNC_PLAYER, ASYNC_SPECTATOR) in which the game will be started.
+         * Default value: PLAYER.
          */
         void setMode(Mode mode);
 
@@ -305,13 +306,13 @@ namespace vizdoom {
 
         /*
          * Sets path to ViZDoom engine executable.
-         * Default value: "./vizdoom"
+         * Default value: "vizdoom" / "vizdoom.exe"
          */
         void setViZDoomPath(std::string path);
 
         /*
          * Sets path to the Doom engine based game file (wad format).
-         * Default value: "./doom2.wad"
+         * Default value: "doom2.wad"
          */
         void setDoomGamePath(std::string path);
 

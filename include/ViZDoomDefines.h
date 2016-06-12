@@ -146,6 +146,7 @@ namespace vizdoom{
         WEAPON7,
         WEAPON8,
         WEAPON9,
+
         USER1,
         USER2,
         USER3,
@@ -176,10 +177,22 @@ namespace vizdoom{
         USER28,
         USER29,
         USER30,
+
+        PLAYER_NUMBER,
+        PLAYER_COUNT,
+        PLAYER1_FRAGCOUNT,
+        PLAYER2_FRAGCOUNT,
+        PLAYER3_FRAGCOUNT,
+        PLAYER4_FRAGCOUNT,
+        PLAYER5_FRAGCOUNT,
+        PLAYER6_FRAGCOUNT,
+        PLAYER7_FRAGCOUNT,
+        PLAYER8_FRAGCOUNT,
     };
 
-    static const int UserVariablesNumber = 30;
-    static const int SlotsNumber = 10;
+    static const int UserVariableCount = 30;
+    static const int SlotCount = 10;
+    static const int MaxPlayers = 8;
 
     enum Button {
         /* Binary buttons */
@@ -235,12 +248,11 @@ namespace vizdoom{
         MOVE_UP_DOWN_DELTA = 42,
     };
 
-    static const int BinaryButtonsNumber = 38;
-    static const int DeltaButtonsNumber = 5;
-    static const int ButtonsNumber = 43;
+    static const int BinaryButtonCount = 38;
+    static const int DeltaButtonCount = 5;
+    static const int ButtonCount = 43;
 
     static const int DefaultTicrate = 35;
-    static const int MaxNumberOfPlayers = 8;
 
 }
 #endif
