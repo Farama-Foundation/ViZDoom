@@ -14,8 +14,8 @@ public class DoomGame{
         DoomGame();
     }
 
-    public native int DoomTics2Ms(int tics);
-    public native int Ms2DoomTics(int ms);
+    public native int DoomTics2Ms(double tics, int ticrate);
+    public native int Ms2DoomTics(double ms, int ticrate);
     public native double DoomFixedToDouble(int doomFixed);
     public native boolean isBinaryButton(Button button);
     public native boolean isDeltaButton(Button button);
@@ -27,6 +27,9 @@ public class DoomGame{
     public native void close();
 
     public native void newEpisode();
+    public native void newEpisode(String file);
+    public native void replayEpisode(String file);
+
     public native boolean isRunning();
 
     public native void setAction(int[] actions);
@@ -62,7 +65,7 @@ public class DoomGame{
     public native void addGameArgs(String arg);
     public native void clearGameArgs();
 
-    public native void sendGameCommand(String cmd);
+    public native void sendCommand(String cmd);
 
     public native int[] getGameScreen();
 
@@ -71,10 +74,12 @@ public class DoomGame{
     public Mode getMode(){
         Mode ret=Mode.values()[getMod()];
         return ret;
-
     }
 
     public native void setMode(Mode mode);
+
+    public native int getTicrate();
+    public native void setTicrate(int ticrate);
 
     public native int getGameVariable(GameVariable var);
 

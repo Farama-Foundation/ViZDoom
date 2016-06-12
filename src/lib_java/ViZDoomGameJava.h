@@ -35,16 +35,16 @@ extern "C" {
  * Method:    DoomTics2Ms
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_DoomTics2Ms
-  (JNIEnv *, jobject, jint);
+JNIEXPORT jdouble JNICALL Java_vizdoom_DoomGame_DoomTics2Ms
+  (JNIEnv *, jobject, jdouble, jint);
 
 /*
  * Class:     DoomGame
  * Method:    Ms2DoomTics
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_Ms2DoomTics
-  (JNIEnv *, jobject, jint);
+JNIEXPORT jdouble JNICALL Java_vizdoom_DoomGame_Ms2DoomTics
+  (JNIEnv *, jobject, jdouble, jint);
 
 /*
  * Class:     DoomGame
@@ -53,7 +53,6 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_Ms2DoomTics
  */
 JNIEXPORT jdouble JNICALL Java_vizdoom_DoomGame_DoomFixedToDouble
   (JNIEnv *, jobject, jint);
-
 
 /*
  * Class:     DoomGame
@@ -66,7 +65,7 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isBinaryButton
 /*
  * Class:     DoomGame
  * Method:    isDeltaButton
- * Signature: (Lvizdoom/Button)Z
+ * Signature: (Lvizdoom/Button;)Z
  */
 JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isDeltaButton
   (JNIEnv *, jobject, jobject);
@@ -78,7 +77,6 @@ JNIEXPORT jboolean JNICALL Java_vizdoom_DoomGame_isDeltaButton
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_DoomGame
   (JNIEnv *, jobject);
-
 
 /*
  * Class:     DoomGame
@@ -109,8 +107,24 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_close
  * Method:    newEpisode
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_vizdoom_DoomGame_newEpisode
+JNIEXPORT void JNICALL Java_vizdoom_DoomGame_newEpisode__
   (JNIEnv *, jobject);
+
+/*
+ * Class:     DoomGame
+ * Method:    newEpisode
+ * Signature: (Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_vizdoom_DoomGame_newEpisode__Ljava_lang_String
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     DoomGame
+ * Method:    replayEpisode
+ * Signature: (Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_vizdoom_DoomGame_replayEpisode
+  (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     DoomGame
@@ -259,7 +273,7 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setButtonMaxValue
 /*
  * Class:     DoomGame
  * Method:    getButtonMaxValue
- * Signature: (Lvizdoom/Button)V
+ * Signature: (Lvizdoom/Button;)V
  */
 JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getButtonMaxValue
   (JNIEnv *, jobject, jobject);
@@ -309,7 +323,7 @@ JNIEXPORT void JNICALL Java_vizdoom_DoomGame_clearGameArgs
  * Method:    sendGameCommand
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_vizdoom_DoomGame_sendGameCommand
+JNIEXPORT void JNICALL Java_vizdoom_DoomGame_sendCommand
   (JNIEnv *, jobject, jstring);
 
 /*
@@ -335,6 +349,22 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getMod
  */
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setMode
   (JNIEnv *, jobject, jobject);
+
+/*
+ * Class:     DoomGame
+ * Method:    getTicrate
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getTicrate
+        (JNIEnv *, jobject);
+
+/*
+ * Class:     DoomGame
+ * Method:    setTicrate
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setTicrate
+(JNIEnv *, jobject, int);
 
 /*
  * Class:     DoomGame
