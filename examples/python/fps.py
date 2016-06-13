@@ -9,13 +9,14 @@
 # to exclude copying process.
 #####################################################################
 from __future__ import print_function
-from vizdoom import *
+
 from random import choice
-from vizdoom import ScreenResolution as res
 from time import time
+from vizdoom import *
+from vizdoom import ScreenResolution as res
 
 # Some options:
-resolution =res.RES_320X240
+resolution = res.RES_320X240
 screen_format = ScreenFormat.DEPTH_BUFFER8
 iterations = 10000
 
@@ -28,11 +29,11 @@ game.set_window_visible(False)
 
 game.init()
 
-actions = [[True,False,False],[False,True,False],[False,False,True]]
+actions = [[True, False, False], [False, True, False], [False, False, True]]
 left = actions[0]
 right = actions[1]
 shoot = actions[2]
-idle = [False,False,False]
+idle = [False, False, False]
 
 iterations = 10000
 start = time()
@@ -48,16 +49,12 @@ for i in range(iterations):
     s = game.get_state()
     game.make_action(choice(actions))
 
-end=time()
-t = end-start
+end = time()
+t = end - start
 print("Results:")
 print("Iterations:", iterations)
 print("Resolution:", resolution)
-print("time:",round(t,3))
-print("fps: ",round(iterations/t,2))
-
+print("time:", round(t, 3))
+print("fps: ", round(iterations / t, 2))
 
 game.close()
-
-
-    

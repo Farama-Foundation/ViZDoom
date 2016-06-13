@@ -8,16 +8,17 @@
 # <episodes> number of episodes are played. 
 # Random combination of buttons is chosen for every action.
 # 
-#Game variables from state and last reward are printed.
+# Game variables from state and last reward are printed.
 #
 # To see the scenario description go to "../../scenarios/README.md"
 # 
 #####################################################################
 from __future__ import print_function
-from vizdoom import *
-from random import choice
+
 import itertools as it
+from random import choice
 from time import sleep
+from vizdoom import *
 
 game = DoomGame()
 
@@ -26,12 +27,12 @@ game = DoomGame()
 # Multiple config files are ok but combining these ones doesn't make much sense.
 
 game.load_config("../../examples/config/basic.cfg")
-#game.load_config("../../examples/config/deadly_corridor.cfg")
-#game.load_config("../../examples/config/defend_the_center.cfg")
-#game.load_config("../../examples/config/defend_the_line.cfg")
-#game.load_config("../../examples/config/health_gathering.cfg")
-#game.load_config("../../examples/config/my_way_home.cfg")
-#game.load_config("../../examples/config/predict_position.cfg")
+# game.load_config("../../examples/config/deadly_corridor.cfg")
+# game.load_config("../../examples/config/defend_the_center.cfg")
+# game.load_config("../../examples/config/defend_the_line.cfg")
+# game.load_config("../../examples/config/health_gathering.cfg")
+# game.load_config("../../examples/config/my_way_home.cfg")
+# game.load_config("../../examples/config/predict_position.cfg")
 
 game.set_episode_timeout(50)
 game.set_screen_resolution(ScreenResolution.RES_640X480)
@@ -52,10 +53,10 @@ episodes = 10
 sleep_time = 0.028
 
 for i in range(episodes):
-    print("Episode #" + str(i+1))
+    print("Episode #" + str(i + 1))
 
     # Seed can be changed anytime. It will take effect from next episodes.
-    #game.set_seed(seed)
+    # game.set_seed(seed)
     game.new_episode()
 
     while not game.is_episode_finished():
@@ -67,7 +68,6 @@ for i in range(episodes):
         # Check which action you chose!
         r = game.make_action(choice(actions))
 
-
         print("State #" + str(s.number))
         print("Game Variables:", misc)
         print("Last Reward:", r)
@@ -75,12 +75,11 @@ for i in range(episodes):
         print("=====================")
 
         # Sleep some time because processing is too fast to watch.
-        if sleep_time>0:
+        if sleep_time > 0:
             sleep(sleep_time)
 
     print("Episode finished!")
     print("total reward:", game.get_total_reward())
     print("************************")
-
 
 game.close()
