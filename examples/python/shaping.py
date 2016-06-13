@@ -14,12 +14,11 @@
 # 
 #####################################################################
 from __future__ import print_function
-from vizdoom import *
-from random import choice
-import itertools as it
-from time import sleep
 
-import cv2
+import itertools as it
+from random import choice
+from time import sleep
+from vizdoom import *
 
 game = DoomGame()
 
@@ -38,18 +37,16 @@ actions = []
 for perm in it.product([False, True], repeat=actions_num):
     actions.append(list(perm))
 
-
 episodes = 10
 sleep_time = 0.028
 last_total_shaping_reward = 0
 
 for i in range(episodes):
 
-    print("Episode #" + str(i+1))
+    print("Episode #" + str(i + 1))
     # Not needed for the first episdoe but the loop is nicer.
     game.new_episode()
     while not game.is_episode_finished():
-
 
         # Gets the state and possibly to something with it
         s = game.get_state()
@@ -64,14 +61,14 @@ for i in range(episodes):
         sr = sr - last_total_shaping_reward
         last_total_shaping_reward += sr
 
-        print("State #" +str(s.number))
+        print("State #" + str(s.number))
         print("Health:", misc[0])
         print("Last Reward:", r)
         print("Last Shaping Reward:", sr)
         print("=====================")
 
         # Sleep some time because processing is too fast to watch.
-        if sleep_time>0:
+        if sleep_time > 0:
             sleep(sleep_time)
 
     print("Episode finished!")
@@ -79,4 +76,3 @@ for i in range(episodes):
     print("************************")
 
 game.close()
-

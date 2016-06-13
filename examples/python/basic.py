@@ -10,18 +10,17 @@
 # 
 #####################################################################
 from __future__ import print_function
-from vizdoom import DoomGame
-from vizdoom import Mode
+
 from vizdoom import Button
+from vizdoom import DoomGame
 from vizdoom import GameVariable
+from vizdoom import Mode
 from vizdoom import ScreenFormat
 from vizdoom import ScreenResolution
 # Or just use from vizdoom import *
 
 from random import choice
 from time import sleep
-from time import time
-
 
 # Create DoomGame instance. It will run the game and communicate with you.
 game = DoomGame()
@@ -29,14 +28,14 @@ game = DoomGame()
 # Now it's time for configuration!
 # load_config could be used to load configuration instead of doing it here with code.
 # If load_config is used in-code configuration will work. Note that the most recent changes will add to previous ones.
-#game.load_config("../../examples/config/basic.cfg")
+# game.load_config("../../examples/config/basic.cfg")
 
 # Sets path to vizdoom engine executive which will be spawned as a separate process. Default is "./vizdoom".
 game.set_vizdoom_path("../../bin/vizdoom")
 
 # Sets path to doom2 iwad resource file which contains the actual doom game. Default is "./doom2.wad".
 game.set_doom_game_path("../../scenarios/freedoom2.wad")
-#game.set_doom_game_path("../../scenarios/doom2.wad")  # Not provided with environment due to licences.
+# game.set_doom_game_path("../../scenarios/doom2.wad")  # Not provided with environment due to licences.
 
 # Sets path to additional resources iwad file which is basically your scenario iwad.
 # If not specified default doom2 maps will be used and it's pretty much useles... unless you want to play doom.
@@ -87,11 +86,10 @@ game.set_mode(Mode.PLAYER)
 # Initialize the game. Further configuration won't take any effect from now on.
 game.init()
 
-
 # Define some actions. Each list entry corresponds to declared buttons:
 # MOVE_LEFT, MOVE_RIGHT, ATTACK
 # 5 more combinations are naturally possible but only 3 are included for transparency when watching.	
-actions = [[True,False,False],[False,True,False],[False,False,True]]
+actions = [[True, False, False], [False, True, False], [False, False, True]]
 
 # Run this many episodes
 episodes = 10
@@ -102,7 +100,7 @@ episodes = 10
 sleep_time = 0.028
 
 for i in range(episodes):
-    print("Episode #" + str(i+1))
+    print("Episode #" + str(i + 1))
 
     # Starts a new episode. It is not needed right after init() but it doesn't cost much. At least the loop is nicer.
     game.new_episode()
@@ -124,14 +122,13 @@ for i in range(episodes):
         print("Reward:", r)
         print("=====================")
 
-        if sleep_time>0:
+        if sleep_time > 0:
             sleep(sleep_time)
 
     # Check how the episode went.
     print("Episode finished.")
     print("total reward:", game.get_total_reward())
     print("************************")
-
 
 # It will be done automatically anyway but sometimes you need to do it in the middle of the program...
 game.close()

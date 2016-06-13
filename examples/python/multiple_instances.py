@@ -1,22 +1,23 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-from vizdoom import *
-from random import choice
 
+from random import choice
+from vizdoom import *
 # For multiplayer game use process (ZDoom's multiplayer sync mechanism prevents threads to work as expected).
 from multiprocessing import Process
 
 # For singleplayer games threads can also be used.
-#from threading import Thread
+# from threading import Thread
 
 # Run this many episodes
 episodes = 10
 
+
 def player1():
     game = DoomGame()
 
-    #game.load_config('../config/basic.cfg')
+    # game.load_config('../config/basic.cfg')
     # or
     game.load_config('../config/multi_duel.cfg')
     game.add_game_args("-host 2 -deathmatch +timelimit 1.0 +sv_spawnfarthest 1")
@@ -24,11 +25,11 @@ def player1():
 
     game.init()
 
-    actions = [[True,False,False],[False,True,False],[False,False,True]]
+    actions = [[True, False, False], [False, True, False], [False, False, True]]
 
     for i in range(episodes):
 
-        print("Episode #" + str(i+1))
+        print("Episode #" + str(i + 1))
 
         while not game.is_episode_finished():
             if game.is_player_dead():
@@ -42,13 +43,13 @@ def player1():
         # Starts a new episode. All players have to call new_episode() in multiplayer mode.
         game.new_episode()
 
-
     game.close()
+
 
 def player2():
     game = DoomGame()
 
-    #game.load_config('../config/basic.cfg')
+    # game.load_config('../config/basic.cfg')
     # or
     game.load_config('../config/multi_duel.cfg')
     game.add_game_args("-join 127.0.0.1")
@@ -56,7 +57,7 @@ def player2():
 
     game.init()
 
-    actions = [[True,False,False],[False,True,False],[False,False,True]]
+    actions = [[True, False, False], [False, True, False], [False, False, True]]
 
     for i in range(episodes):
 
@@ -71,10 +72,11 @@ def player2():
 
     game.close()
 
-#p1 = Thread(target = player1)
-#p1.start()
 
-p1 = Process(target = player1)
+# p1 = Thread(target = player1)
+# p1.start()
+
+p1 = Process(target=player1)
 p1.start()
 
 player2()
