@@ -18,11 +18,12 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
-## Planned Features (June)
-* Lua bindings,
-* Multi-player working in sync mode,
-* Labeling game objects visible in the frame,
-* Time scaling in async mode.
+## Planned Features in 1.1.0 (end of June)
+- [ ] Lua bindings,
+- [ ] Multi-player working in sync mode,
+- [ ] Labeling game objects visible in the frame,
+- [x] Time scaling in async mode,
+- [x] Episodes recording.
 
 ## Cite as
 
@@ -38,7 +39,7 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 * Make
 * GCC 4.6+
 * Boost libraries (tested on 1.54, 1.58, 1.59, 1.61)
-* Python (tested on 2.7 and 3.4) with Numpy and Boost.Python for Python binding (optional)
+* Python 2.7+ or Python 3+ with Numpy and Boost.Python for Python binding (optional)
 * JDK for Java binding (JAVA_HOME must be set) (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
@@ -50,17 +51,18 @@ cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON
 make
 ```
 
-``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` CMake options for Python and Java bindings are optional (default OFF). To force building bindings for Python3 instead of first version found use ``-DBUILD_PYTHON3=ON`` (default OFF).
+``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` CMake options for Python and Java bindings are optional (default OFF). To force building bindings for Python3 instead of first version found use ``-DBUILD_PYTHON3=ON`` (needs Boost.Python builded with Python 3, default OFF).
 
 ###Windows
 
-We are providing compiled runtime binaries and development libraries for Windows [here](https://github.com/Marqt/ViZDoom/releases/download/1.0.3/ViZDoom-1.0.3-Win-x86_64.zip).
+We are providing compiled runtime binaries and development libraries for Windows:
+[1.0.3](https://github.com/Marqt/ViZDoom/releases/download/1.0.3/ViZDoom-1.0.3-Win-x86_64.zip) or [1.1.0pre](https://github.com/Marqt/ViZDoom/releases/download/1.1.0pre-CIG2016-warm-up/ViZDoom-1.1.0pre-CIG2016-warm-up-Win-x86_64.zip).
 
 ####Dependencies
 * CMake 3.0+
 * Visual Studio 2012+
 * Boost libraries
-* Python 2.7+ with Numpy and Boost.Python for Python binding (optional)
+* Python 2.7+ or Python 3.4+ with Numpy and Boost.Python for Python binding (optional)
 * JDK for Java binding (JAVA_HOME must be set) (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Windows) are needed.
@@ -75,7 +77,7 @@ Run CMake GUI, select ViZDoom's root directory and set paths to:
 * NUMPY_INCLUDES (optional)
 * ZDoom dependencies paths
 
-In configuration select BUILD_PYTHON and BUILD_JAVA options for Python and Java bindings (optional, default OFF).
+In configuration select BUILD_PYTHON, BUILD_PYTHON3 and BUILD_JAVA options for Python and Java bindings (optional, default OFF).
 
 Use generated Visual Studio solution to build all ViZDoom's parts.
 
@@ -87,7 +89,7 @@ Let us know if You are using ViZDoom on OSX.
 * CMake 3.0+
 * XCode 5+
 * Boost libraries
-* Python 2.7+ with Numpy and Boost.Python for Python binding (optional)
+* Python 2.7+ or Python 3+ with Numpy and Boost.Python for Python binding (optional)
 * JDK for Java binding (JAVA_HOME must be set) (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X) are needed.
