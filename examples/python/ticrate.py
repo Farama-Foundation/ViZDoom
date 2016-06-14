@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-from vizdoom import *
-from random import choice
+
 from multiprocessing import Process
+from random import choice
+from vizdoom import *
+
 
 def play(game):
     game.init()
 
-    actions = [[True,False,False],[False,True,False],[False,False,True]]
+    actions = [[True, False, False], [False, True, False], [False, False, True]]
     episodes = 10
 
     for i in range(episodes):
@@ -18,6 +20,7 @@ def play(game):
             game.make_action(choice(actions))
 
     game.close()
+
 
 def player1():
     game = DoomGame()
@@ -29,6 +32,7 @@ def player1():
     game.set_ticrate(70)
 
     play(game)
+
 
 def player2():
     game = DoomGame()
@@ -42,7 +46,7 @@ def player2():
     play(game)
 
 
-p1 = Process(target = player1)
+p1 = Process(target=player1)
 p1.start()
 
 player2()
