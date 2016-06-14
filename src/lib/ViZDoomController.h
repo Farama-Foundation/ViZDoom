@@ -124,7 +124,6 @@ namespace vizdoom{
             bool PLAYER_HAS_ACTOR;
             bool PLAYER_DEAD;
 
-            char PLAYER_NAME[16];
             int PLAYER_KILLCOUNT;
             int PLAYER_ITEMCOUNT;
             int PLAYER_SECRETCOUNT;
@@ -145,9 +144,6 @@ namespace vizdoom{
             int PLAYER_AMMO[SlotsNumber];
             int PLAYER_WEAPON[SlotsNumber];
 
-            int PLAYERS_COUNT;
-            char PLAYERS_NAME[MaxNumberOfPlayers][16];
-            int PLAYERS_FRAGCOUNT[MaxNumberOfPlayers];
         };
 
         DoomController();
@@ -177,9 +173,6 @@ namespace vizdoom{
 
         unsigned int getInstanceRngSeed();
         void setInstanceRngSeed(unsigned int seed);
-
-        std::string getInstanceId();
-        void setInstanceId(std::string id);
 
 
         /* General game settings */

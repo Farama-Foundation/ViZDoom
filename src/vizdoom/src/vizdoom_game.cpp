@@ -154,8 +154,6 @@ void ViZDoom_GameVarsTic(){
 
     bool prevDead = vizdoomGameVars->PLAYER_DEAD;
 
-    strncpy(vizdoomGameVars->PLAYER_NAME, vizdoomPlayer->userinfo.GetName(), 8);
-
     if(vizdoomPlayer->mo) {
         vizdoomGameVars->PLAYER_HAS_ACTOR = true;
         vizdoomGameVars->PLAYER_DEAD = vizdoomPlayer->playerstate == PST_DEAD || vizdoomPlayer->mo->health <= 0;
@@ -168,7 +166,6 @@ void ViZDoom_GameVarsTic(){
 
     if(vizdoomGameVars->PLAYER_DEAD && !prevDead) ++vizdoomGameVars->PLAYER_DEATHCOUNT;
 
-    strncpy(vizdoomGameVars->PLAYER_NAME, vizdoomPlayer->userinfo.GetName(), VIZDOOM_MAX_PLAYER_NAME_LEN);
     vizdoomGameVars->MAP_KILLCOUNT = level.killed_monsters;
     vizdoomGameVars->MAP_ITEMCOUNT = level.found_items;
     vizdoomGameVars->MAP_SECRETCOUNT = level.found_secrets;
@@ -186,7 +183,6 @@ void ViZDoom_GameVarsTic(){
     else vizdoomGameVars->PLAYER_HEALTH = vizdoomPlayer->health;
 
     vizdoomGameVars->PLAYER_ARMOR = ViZDoom_CheckItem(NAME_BasicArmor);
-    //TO DO? support for other types of armor
 
     vizdoomGameVars->PLAYER_SELECTED_WEAPON_AMMO = ViZDoom_CheckSelectedWeaponAmmo();
     vizdoomGameVars->PLAYER_SELECTED_WEAPON = ViZDoom_CheckSelectedWeapon();
@@ -194,13 +190,6 @@ void ViZDoom_GameVarsTic(){
     for (int i = 0; i < VIZDOOM_GV_SLOTS_SIZE; ++i) {
         vizdoomGameVars->PLAYER_AMMO[i] = ViZDoom_CheckSlotAmmo(i);
         vizdoomGameVars->PLAYER_WEAPON[i] = ViZDoom_CheckSlotWeapons(i);
-    }
-
-    if(vizdoomGameVars->NET_GAME) {
-        for (int i = 0; i < VIZDOOM_MAX_PLAYERS; ++i) {
-            strncpy(vizdoomGameVars->PLAYERS_NAME[i], players[i].userinfo.GetName(), VIZDOOM_MAX_PLAYER_NAME_LEN);
-            vizdoomGameVars->PLAYERS_FRAGCOUNT[i] = players[i].fragcount;
-        }
     }
 }
 

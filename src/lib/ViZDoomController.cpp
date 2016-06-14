@@ -71,7 +71,11 @@ namespace vizdoom {
         this->mapLastTic = 1;
 
         /* Settings */
-        this->exePath = "./vizdoom";
+        #ifdef OS_WIN
+            this->exePath = "vizdoom.exe";
+        #else
+            this->exePath = "vizdoom";
+        #endif
         this->iwadPath = "./doom2.wad";
         this->filePath = "";
         this->map = "map01";
@@ -104,10 +108,8 @@ namespace vizdoom {
         this->doomRngSeed = 0;
 
         this->instanceRng.seed((unsigned int)bc::high_resolution_clock::now().time_since_epoch().count());
-        this->generateInstanceId();
 
         br::uniform_int_distribution<> rngSeedDist(0, UINT_MAX);
-        this->setInstanceRngSeed(rngSeedDist(this->instanceRng));
         this->setDoomRngSeed(rngSeedDist(this->instanceRng));
 
         this->_input = new InputStruct();
@@ -127,7 +129,7 @@ namespace vizdoom {
         if (!this->doomRunning && this->iwadPath.length() != 0 && this->map.length() != 0) {
 
             try{
-                this->doomRunning = true;
+                this->generateInstanceId();
 
                 this->MQInit();
 
@@ -299,9 +301,6 @@ namespace vizdoom {
 
     /* Settings */
     /*----------------------------------------------------------------------------------------------------------------*/
-
-    std::string DoomController::getInstanceId() { return this->instanceId; }
-    void DoomController::setInstanceId(std::string id) { if(!this->doomRunning) this->instanceId = id; }
 
     std::string DoomController::getExePath() { return this->exePath; }
     void DoomController::setExePath(std::string path) { if(!this->doomRunning) this->exePath = path; }
@@ -742,9 +741,11 @@ namespace vizdoom {
         this->instanceId = "";
 
         br::uniform_int_distribution<> charDist(0, chars.length() - 1);
+        br::mt19937 rng;
+        rng.seed((unsigned int)bc::high_resolution_clock::now().time_since_epoch().count());
 
         for (int i = 0; i < INSTANCE_ID_LENGHT; ++i) {
-            this->instanceId += chars[charDist(this->instanceRng)];
+            this->instanceId += chars[charDist(rng)];
         }
     }
 
