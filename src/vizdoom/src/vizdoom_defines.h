@@ -29,8 +29,8 @@ extern bool vizdoomNextTic;
 extern bool vizdoomUpdate;
 extern unsigned int vizdoomLastUpdate;
 
-#define VIZDOOM_VERSION 103
-#define VIZDOOM_VERSION_STR "1.0.3"
+#define VIZDOOM_VERSION 104
+#define VIZDOOM_VERSION_STR "1.0.4"
 
 #define VIZDOOM_TIME (level.starttime + level.maptime)
 
@@ -57,7 +57,6 @@ extern unsigned int vizdoomLastUpdate;
 #define VIZDOOM_BT_MOVE_UP        18
 #define VIZDOOM_BT_MOVE_DOWN      19
 #define VIZDOOM_BT_LAND 20
-//#define VIZDOOM_BT_SHOWSCORES 20
 
 #define VIZDOOM_BT_SELECT_WEAPON1 21
 #define VIZDOOM_BT_SELECT_WEAPON2 22
@@ -132,7 +131,6 @@ struct ViZDoomGameVarsStruct{
     bool MAP_END;
 
     // PLAYER
-    //int PLAYER_NUMBER;
     bool PLAYER_HAS_ACTOR;
     bool PLAYER_DEAD;
 
