@@ -1,19 +1,16 @@
 #!/usr/bin/python
 
 from __future__ import print_function
-from vizdoom import *
 
-from random import choice
 from time import sleep
-from time import time
-
+from vizdoom import *
 
 game = DoomGame()
 
 game.set_vizdoom_path("../../bin/vizdoom")
 
 game.set_doom_game_path("../../scenarios/freedoom2.wad")
-#game.set_doom_game_path("../../scenarios/doom2.wad")  # Not provided with environment due to licences.
+# game.set_doom_game_path("../../scenarios/doom2.wad")  # Not provided with environment due to licences.
 
 game.set_doom_map("map01")
 
@@ -50,7 +47,7 @@ episodes = 10
 sleep_time = 0.028
 
 for i in range(episodes):
-    print("Episode #" + str(i+1))
+    print("Episode #" + str(i + 1))
 
     game.new_episode()
 
@@ -70,13 +67,10 @@ for i in range(episodes):
         print("State #" + str(s.number))
         print("=====================")
 
-        if sleep_time>0:
+        if sleep_time > 0:
             sleep(sleep_time)
 
     print("Episode finished.")
     print("************************")
 
 game.close()
-
-
-

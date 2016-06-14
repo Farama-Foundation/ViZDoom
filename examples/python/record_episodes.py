@@ -6,11 +6,10 @@
 #####################################################################
 
 from __future__ import print_function
-from vizdoom import *
-from time import sleep
-from time import time
-from random import choice
+
 import os
+from random import choice
+from vizdoom import *
 
 game = DoomGame()
 
@@ -27,7 +26,7 @@ game.set_mode(Mode.PLAYER)
 
 game.init()
 
-actions = [[True,False,False],[False,True,False],[False,False,True]]
+actions = [[True, False, False], [False, True, False], [False, False, True]]
 
 # Run and record this many episodes
 episodes = 2
@@ -44,7 +43,6 @@ for i in range(episodes):
     game.new_episode("episode" + str(i) + "_rec.lmp")
 
     while not game.is_episode_finished():
-
         s = game.get_state()
 
         r = game.make_action(choice(actions))
@@ -59,7 +57,6 @@ for i in range(episodes):
     print("************************\n")
 
 game.close()
-
 
 # New render settings for replay
 game.set_screen_resolution(ScreenResolution.RES_800X600)
@@ -79,7 +76,6 @@ for i in range(episodes):
     game.replay_episode("episode" + str(i) + "_rec.lmp")
 
     while not game.is_episode_finished():
-
         s = game.get_state()
 
         # Use advance_action instead of make_action.
@@ -98,7 +94,6 @@ for i in range(episodes):
     print("************************")
 
 game.close()
-
 
 # Delete recordings (*.lmp files).
 for i in range(episodes):
