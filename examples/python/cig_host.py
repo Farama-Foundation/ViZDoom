@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 from __future__ import print_function
 from vizdoom import *
@@ -6,10 +6,10 @@ from random import choice
 
 game = DoomGame()
 
-# Use CIG example config or Your own.
+# Use CIG example config or your own.
 game.load_config("../../examples/config/cig.cfg")
 
-# Select game and map You want to use.
+# Select game and map you want to use.
 game.set_doom_game_path("../../scenarios/freedoom2.wad")
 #game.set_doom_game_path("../../scenarios/doom2.wad")  # Not provided with environment due to licences
 
@@ -17,7 +17,6 @@ game.set_doom_map("map01")  # Limited deathmatch.
 #game.set_doom_map("map02")  # Full deathmatch.
 
 # Host game with options that will be used in the competition.
-#
 game.add_game_args("-host 2 "               # This machine will function as a host for a multiplayer game with this many players (including this machine). It will wait for other machines to connect using the -join parameter and then start the game when everyone is connected.
                    "-deathmatch "           # Deathmatch rules are used for the game.
                    "+timelimit 10.0 "       # The game (episode) will end after this many minutes have elapsed.
@@ -27,11 +26,12 @@ game.add_game_args("-host 2 "               # This machine will function as a ho
                    "+sv_spawnfarthest 1 "   # Players will be spawned as far as possible from any other players.
                    "+vizdoom_nocheat 1")    # Disables depth buffer and the ability to use commands that could interfere with multiplayer game.
 
-# Name Your AI.
-game.add_game_args("+name AI")
+# Name your agent and select color
+# colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue
+game.add_game_args("+name AI +colorset 0")
 
 # Multiplayer requires the use of asynchronous modes.
-game.set_mode(Mode.ASYNC_PLAYER)
+game.set_mode(Mode.ASYNC_SPECTATOR)
 
 # game.set_window_visible(false)
 

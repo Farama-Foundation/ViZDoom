@@ -264,7 +264,6 @@ namespace vizdoom {
                 this->input->BT_AVAILABLE[USE] = true;
 
                 do {
-
                     this->sendCommand(std::string("+use"));
 
                     this->MQDoomSend(MSG_CODE_TIC);
@@ -272,13 +271,12 @@ namespace vizdoom {
 
                 } while (!this->gameVariables->MAP_END && this->gameVariables->PLAYER_DEAD );
 
+                this->sendCommand(std::string("-use"));
                 this->MQDoomSend(MSG_CODE_UPDATE);
                 this->waitForDoomWork();
 
                 this->input->BT_AVAILABLE[USE] = useAvailable;
-
                 this->mapLastTic = this->gameVariables->MAP_TIC;
-
 
             }
             else this->restartMap();
@@ -334,26 +332,42 @@ namespace vizdoom {
 
             this->resetButtons();
 
-            int restartingTics = 0;
+            int restartTics = 0;
+
+            bool useAvailable;
+            if(this->gameVariables->NET_GAME){
+                useAvailable = this->input->BT_AVAILABLE[USE];
+                this->input->BT_AVAILABLE[USE] = true;
+
+                this->sendCommand(std::string("-use"));
+            }
 
             do {
-                ++restartingTics;
+                ++restartTics;
+
+                if(this->gameVariables->NET_GAME){
+                    if(restartTics % 2) this->sendCommand(std::string("+use"));
+                    else this->sendCommand(std::string("-use"));
+                }
+
                 this->MQDoomSend(MSG_CODE_TIC);
                 this->waitForDoomWork();
 
-                if(this->gameVariables->NET_GAME) this->sendCommand(std::string("+use"));
-
-                if (!this->gameVariables->NET_GAME && restartingTics > 3) {
+                if (!this->gameVariables->NET_GAME && restartTics > 3) {
                     this->sendCommand(std::string("map ") + this->map);
-                    restartingTics = 0;
+                    restartTics = 0;
                 }
 
             } while (this->gameVariables->MAP_END
                      || this->gameVariables->PLAYER_DEAD
                      || this->gameVariables->MAP_TIC > this->mapLastTic);
 
-            this->waitForDoomMapStartTime();
+            if(this->gameVariables->NET_GAME){
+                this->sendCommand(std::string("-use"));
+                this->input->BT_AVAILABLE[USE] = useAvailable;
+            }
 
+            this->waitForDoomMapStartTime();
             this->MQDoomSend(MSG_CODE_UPDATE);
             this->waitForDoomWork();
 
