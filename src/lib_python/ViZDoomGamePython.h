@@ -64,7 +64,7 @@ namespace vizdoom {
 
         // These functions are workaround for
         // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
-        // on GCC < 5
+        // on GCC versions lower then 5
         bool loadConfig(bpy::str const &pyPath);
 
         void newEpisode();
