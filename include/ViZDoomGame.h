@@ -174,7 +174,7 @@ namespace vizdoom {
          * Makes the specified input type available and sets the maximum allowed (absolute) value for it.
          * If the button has already been added the maximum value is overridden.
          */
-        void addAvailableButton(Button button, int maxValue);
+        void addAvailableButton(Button button, unsigned int maxValue);
 
         /*
          * Clears all available buttons added so far.
@@ -193,7 +193,7 @@ namespace vizdoom {
          * Setting maximum value equal to 0 results in no constraint at all (infinity).
          * This method makes sense only for delta buttons.
          */
-        void setButtonMaxValue(Button button, int maxValue);
+        void setButtonMaxValue(Button button, unsigned int maxValue);
 
         /*
          * Returns the maximum allowed (absolute) value for the specified button.
