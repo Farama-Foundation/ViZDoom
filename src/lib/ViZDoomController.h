@@ -269,7 +269,7 @@ namespace vizdoom{
         void setButtonAvailable(Button button, bool set);
         void resetButtons();
         void disableAllButtons();
-        void setButtonMaxValue(Button button, int value);
+        void setButtonMaxValue(Button button, unsigned int value);
         int getButtonMaxValue(Button button);
         void availableAllButtons();
 

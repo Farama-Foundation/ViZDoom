@@ -715,7 +715,7 @@ namespace vizdoom {
         }
     }
 
-    void DoomController::setButtonMaxValue(Button button, int value){
+    void DoomController::setButtonMaxValue(Button button, unsigned int value){
         if(button >= BinaryButtonCount){
             if (this->doomRunning) this->input->BT_MAX_VALUE[button - BinaryButtonCount] = value;
             this->_input->BT_MAX_VALUE[button - BinaryButtonCount] = value;

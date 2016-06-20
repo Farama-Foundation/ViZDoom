@@ -73,7 +73,7 @@ void (DoomGamePython::*newEpisode1)() = &DoomGamePython::newEpisode;
 void (DoomGamePython::*newEpisode2)(bpy::str const &) = &DoomGamePython::newEpisode;
 
 void (DoomGamePython::*addAvailableButton1)(Button) = &DoomGamePython::addAvailableButton;
-void (DoomGamePython::*addAvailableButton2)(Button, int) = &DoomGamePython::addAvailableButton;
+void (DoomGamePython::*addAvailableButton2)(Button, unsigned int) = &DoomGamePython::addAvailableButton;
 
 void (DoomGamePython::*advanceAction1)() = &DoomGamePython::advanceAction;
 void (DoomGamePython::*advanceAction2)(unsigned int) = &DoomGamePython::advanceAction;
