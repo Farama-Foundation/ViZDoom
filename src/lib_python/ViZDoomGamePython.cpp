@@ -80,6 +80,7 @@ namespace vizdoom {
         }
         return properAction;
     }
+
     void DoomGamePython::setAction(bpy::list const &action) {
         DoomGame::setAction(DoomGamePython::pyListToIntVector(action));
     }
@@ -93,7 +94,7 @@ namespace vizdoom {
     }
 
     GameStatePython DoomGamePython::getState() {
-        if (isEpisodeFinished()) {
+        if (this->isEpisodeFinished()) {
             return GameStatePython(this->state.number);
         }
 
@@ -116,11 +117,11 @@ namespace vizdoom {
     }
 
     bpy::list DoomGamePython::getLastAction() {
-        bpy::list res;
+        bpy::list action;
         for (std::vector<int>::iterator it = DoomGame::lastAction.begin(); it!=DoomGame::lastAction.end(); ++it) {
-            res.append(*it);
+            action.append(*it);
         }
-        return res;
+        return action;
     }
 
     bpya::object DoomGamePython::getGameScreen(){
@@ -133,7 +134,7 @@ namespace vizdoom {
 
     // These functions are workaround for
     // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
-    // on GCC < 5
+    //  on GCC versions lower then 5
     bool DoomGamePython::loadConfig(bpy::str const &pyPath){
         const char* cPath = bpy::extract<const char *>(pyPath);
         std::string path(cPath);
