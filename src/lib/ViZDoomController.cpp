@@ -329,7 +329,7 @@ namespace vizdoom {
             }
 
             if(this->gameVariables->NET_GAME){
-                if(this->gameVariables->GAME_SETTINGS_CONTROLLER) this->sendCommand(std::string("changemap ") + this->map);
+                if(this->gameVariables->GAME_SETTING_CONTROLLER) this->sendCommand(std::string("changemap ") + this->map);
             }
             else if(this->demoPath.length()){
                 this->sendCommand(std::string("recordmap ") + this->demoPath + " " + this->map);
@@ -345,7 +345,6 @@ namespace vizdoom {
             this->mapRestarting = true;
 
             this->resetButtons();
-
             int restartTics = 0;
 
             bool useAvailable;
@@ -360,12 +359,18 @@ namespace vizdoom {
                 ++restartTics;
 
                 if(this->gameVariables->NET_GAME){
-                    if(restartTics % 2) this->sendCommand(std::string("+use"));
+                    if (restartTics % 2) this->sendCommand(std::string("+use"));
                     else this->sendCommand(std::string("-use"));
                 }
 
                 this->MQDoomSend(MSG_CODE_TIC);
                 this->waitForDoomWork();
+
+                if(restartTics > 3 && !this->gameVariables->NET_GAME){
+                    if (this->demoPath.length()) this->sendCommand(std::string("recordmap ") + this->demoPath + " " + this->map);
+                    else this->sendCommand(std::string("map ") + this->map);
+                    restartTics = 0;
+                }
 
             } while (this->gameVariables->MAP_END
                      || this->gameVariables->PLAYER_DEAD
@@ -405,6 +410,11 @@ namespace vizdoom {
 
                 this->MQDoomSend(MSG_CODE_TIC);
                 this->waitForDoomWork();
+
+                if(restartTics > 3){
+                    this->sendCommand(std::string("playdemo ") + demoPath);
+                    restartTics = 0;
+                }
 
             } while (this->gameVariables->MAP_END
                      || this->gameVariables->PLAYER_DEAD
@@ -705,7 +715,7 @@ namespace vizdoom {
         }
     }
 
-    void DoomController::setButtonMaxValue(Button button, int value){
+    void DoomController::setButtonMaxValue(Button button, unsigned int value){
         if(button >= BinaryButtonCount){
             if (this->doomRunning) this->input->BT_MAX_VALUE[button - BinaryButtonCount] = value;
             this->_input->BT_MAX_VALUE[button - BinaryButtonCount] = value;

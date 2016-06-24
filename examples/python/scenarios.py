@@ -10,10 +10,11 @@
 # 
 #####################################################################
 from __future__ import print_function
-from vizdoom import DoomGame, ScreenResolution
-from random import choice
+
 import itertools as it
+from random import choice
 from time import sleep
+from vizdoom import DoomGame, ScreenResolution
 
 game = DoomGame()
 
@@ -22,14 +23,14 @@ game = DoomGame()
 # Multiple config files are ok but combining these ones doesn't make much sense.
 
 game.load_config("../../examples/config/basic.cfg")
-#game.load_config("../../examples/config/deadly_corridor.cfg")
-#game.load_config("../../examples/config/deathmatch.cfg")
-#game.load_config("../../examples/config/defend_the_center.cfg")
-#game.load_config("../../examples/config/defend_the_line.cfg")
-#game.load_config("../../examples/config/health_gathering.cfg")
-#game.load_config("../../examples/config/my_way_home.cfg")
-#game.load_config("../../examples/config/predict_position.cfg")
-#game.load_config("../../examples/config/take_cover.cfg")
+# game.load_config("../../examples/config/deadly_corridor.cfg")
+# game.load_config("../../examples/config/deathmatch.cfg")
+# game.load_config("../../examples/config/defend_the_center.cfg")
+# game.load_config("../../examples/config/defend_the_line.cfg")
+# game.load_config("../../examples/config/health_gathering.cfg")
+# game.load_config("../../examples/config/my_way_home.cfg")
+# game.load_config("../../examples/config/predict_position.cfg")
+# game.load_config("../../examples/config/take_cover.cfg")
 
 # Makes the screen bigger to see more details.
 game.set_screen_resolution(ScreenResolution.RES_640X480)
@@ -41,12 +42,11 @@ actions = []
 for perm in it.product([False, True], repeat=actions_num):
     actions.append(list(perm))
 
-
 episodes = 10
 sleep_time = 0.028
 
 for i in range(episodes):
-    print("Episode #" +str(i+1))
+    print("Episode #" + str(i + 1))
 
     # Not needed for the first episdoe but the loop is nicer.
     game.new_episode()
@@ -70,14 +70,14 @@ for i in range(episodes):
         # game.advance_action(skiprate)
         # r = game.get_last_reward()
 
-        print("State #" +str(s.number))
+        print("State #" + str(s.number))
         print("Game Variables:", misc)
-        print("Performed action:",game.get_last_action())
-        print("Last Reward:",r)
+        print("Performed action:", game.get_last_action())
+        print("Last Reward:", r)
         print("=====================")
 
         # Sleep some time because processing is too fast to watch.
-        if sleep_time>0:
+        if sleep_time > 0:
             sleep(sleep_time)
 
     print("Episode finished!")
