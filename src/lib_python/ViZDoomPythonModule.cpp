@@ -58,13 +58,14 @@ void translate ## n (std::exception const &e){ PyErr_SetString( type ## n  , e.w
  * void translate(std::exception const &e) { PyErr_SetString(typeMyException, e.what()); }
  */
 
-EXCEPTION_TRANSLATE_TO_PYT(ViZDoomMismatchedVersionException)
-EXCEPTION_TRANSLATE_TO_PYT(ViZDoomUnexpectedExitException)
+EXCEPTION_TRANSLATE_TO_PYT(FileDoesNotExistException)
+EXCEPTION_TRANSLATE_TO_PYT(MessageQueueException)
+EXCEPTION_TRANSLATE_TO_PYT(SharedMemoryException)
 EXCEPTION_TRANSLATE_TO_PYT(ViZDoomIsNotRunningException)
 EXCEPTION_TRANSLATE_TO_PYT(ViZDoomErrorException)
-EXCEPTION_TRANSLATE_TO_PYT(SharedMemoryException)
-EXCEPTION_TRANSLATE_TO_PYT(MessageQueueException)
-EXCEPTION_TRANSLATE_TO_PYT(FileDoesNotExistException)
+EXCEPTION_TRANSLATE_TO_PYT(ViZDoomMismatchedVersionException)
+EXCEPTION_TRANSLATE_TO_PYT(ViZDoomSignalException)
+EXCEPTION_TRANSLATE_TO_PYT(ViZDoomUnexpectedExitException)
 
 
 /* DoomGamePython methods overloading */
@@ -73,7 +74,7 @@ void (DoomGamePython::*newEpisode1)() = &DoomGamePython::newEpisode;
 void (DoomGamePython::*newEpisode2)(bpy::str const &) = &DoomGamePython::newEpisode;
 
 void (DoomGamePython::*addAvailableButton1)(Button) = &DoomGamePython::addAvailableButton;
-void (DoomGamePython::*addAvailableButton2)(Button, int) = &DoomGamePython::addAvailableButton;
+void (DoomGamePython::*addAvailableButton2)(Button, unsigned int) = &DoomGamePython::addAvailableButton;
 
 void (DoomGamePython::*advanceAction1)() = &DoomGamePython::advanceAction;
 void (DoomGamePython::*advanceAction2)(unsigned int) = &DoomGamePython::advanceAction;
@@ -115,13 +116,14 @@ BOOST_PYTHON_MODULE(vizdoom)
      * bpy::register_exception_translator<myException>(&translate);
      */
 
-    EXCEPTION_TO_PYT(ViZDoomMismatchedVersionException)
-    EXCEPTION_TO_PYT(ViZDoomUnexpectedExitException)
+    EXCEPTION_TO_PYT(FileDoesNotExistException)
+    EXCEPTION_TO_PYT(MessageQueueException)
+    EXCEPTION_TO_PYT(SharedMemoryException)
     EXCEPTION_TO_PYT(ViZDoomIsNotRunningException)
     EXCEPTION_TO_PYT(ViZDoomErrorException)
-    EXCEPTION_TO_PYT(SharedMemoryException)
-    EXCEPTION_TO_PYT(MessageQueueException)
-    EXCEPTION_TO_PYT(FileDoesNotExistException)
+    EXCEPTION_TO_PYT(ViZDoomMismatchedVersionException)
+    EXCEPTION_TO_PYT(ViZDoomSignalException)
+    EXCEPTION_TO_PYT(ViZDoomUnexpectedExitException)
 
 
     /* Enums */

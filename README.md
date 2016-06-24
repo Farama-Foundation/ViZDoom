@@ -56,7 +56,7 @@ make
 ###Windows
 
 We are providing compiled runtime binaries and development libraries for Windows:
-[1.0.3](https://github.com/Marqt/ViZDoom/releases/download/1.0.3/ViZDoom-1.0.3-Win-x86_64.zip) or [1.1.0pre](https://github.com/Marqt/ViZDoom/releases/download/1.1.0pre-CIG2016-warm-up/ViZDoom-1.1.0pre-CIG2016-warm-up-Win-x86_64.zip).
+[1.0.4](https://github.com/Marqt/ViZDoom/releases/download/1.0.4/ViZDoom-1.0.4-Win-x86_64.zip) or [1.1.0pre](https://github.com/Marqt/ViZDoom/releases/download/1.1.0pre-CIG2016-warm-up-fixed/ViZDoom-1.1.0pre-CIG2016-warm-up-Win-x86_64.zip).
 
 ####Dependencies
 * CMake 3.0+

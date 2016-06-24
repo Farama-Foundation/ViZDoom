@@ -273,7 +273,7 @@ namespace vizdoom {
         }
     }
 
-    void DoomGame::addAvailableButton(Button button, int maxValue) {
+    void DoomGame::addAvailableButton(Button button, unsigned int maxValue) {
         if (!this->isRunning() && std::find(this->availableButtons.begin(), this->availableButtons.end(), button) ==
                               this->availableButtons.end()) {
             this->availableButtons.push_back(button);
@@ -289,7 +289,7 @@ namespace vizdoom {
         return this->availableButtons.size();
     }
 
-    void DoomGame::setButtonMaxValue(Button button, int maxValue){
+    void DoomGame::setButtonMaxValue(Button button, unsigned int maxValue){
         this->doomController->setButtonMaxValue(button, maxValue);
     }
 

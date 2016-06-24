@@ -103,7 +103,7 @@ bool ViZDoom_CommmandFilter(const char *cmd){
 		delete[] ckeckCmd;
     }
 
-    //printf("%d %s\n",gametic, cmd);
+    //Printf("%d %s\n", gametic, cmd);
 
     return true;
 }
@@ -220,13 +220,18 @@ void ViZDoom_ResetDiscontinuousBT(){
 }
 
 char* ViZDoom_AddStateToBTCommmand(char *& cmd, int state){
-	char *stateCmd = new char[strlen(cmd)+1];
-	if (state) stateCmd[0] = '+';
+    size_t cmdLen = strlen(cmd);
+	char *stateCmd = new char[cmdLen + 2];
+	if (state != 0) stateCmd[0] = '+';
 	else stateCmd[0] = '-';
-	strcpy(stateCmd + 1, cmd);
-	delete[] cmd;
+	strncpy(stateCmd + 1, cmd, cmdLen);
+	stateCmd[cmdLen + 1] = '\0';
 
+	delete[] cmd;
 	cmd = stateCmd;
+
+	//Printf("%d %s\n", gametic, cmd);
+
 	return stateCmd;
 }
 

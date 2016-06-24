@@ -103,7 +103,7 @@ namespace vizdoom{
             int GAME_STATE;
             int GAME_ACTION;
             unsigned int GAME_STATIC_SEED;
-            bool GAME_SETTINGS_CONTROLLER;
+            bool GAME_SETTING_CONTROLLER;
             bool NET_GAME;
 
             unsigned int SCREEN_WIDTH;
@@ -269,7 +269,7 @@ namespace vizdoom{
         void setButtonAvailable(Button button, bool set);
         void resetButtons();
         void disableAllButtons();
-        void setButtonMaxValue(Button button, int value);
+        void setButtonMaxValue(Button button, unsigned int value);
         int getButtonMaxValue(Button button);
         void availableAllButtons();
 
