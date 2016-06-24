@@ -161,7 +161,7 @@ void ViZDoom_ScreenInit() {
         }
     }
     catch(bip::interprocess_exception &ex){
-        Printf("ViZDoom_ScreenInit: Error creating ViziaScreen SM");
+        Printf("ViZDoom_ScreenInit: Error creating ViZDoomScreen SM");
         ViZDoom_MQSend(VIZDOOM_MSG_CODE_DOOM_ERROR);
         exit(1);
     }
@@ -178,13 +178,18 @@ void ViZDoom_ScreenUpdate(){
     screen->Lock(true);
 
     const BYTE *buffer = screen->GetBuffer();
-    const unsigned int bufferSize = screen->GetWidth() * screen->GetHeight();
+    const unsigned int screenSize = screen->GetWidth() * screen->GetHeight();
+    const unsigned int bufferPitch = screen->GetPitch();
+    const unsigned int bufferWidth = screen->GetWidth();
+    const unsigned int bufferPitchWidthDiff = bufferPitch - bufferWidth;
 
     if (buffer != NULL) {
 
         if(*vizdoom_screen_format == VIZDOOM_SCREEN_DOOM_256_COLORS8){
-            for(unsigned int i = 0; i < bufferSize; ++i){
-                vizdoomScreen[i] = buffer[i];
+            for(unsigned int i = 0; i < screenSize; ++i){
+                //
+                unsigned int b = i + (i / bufferWidth) * bufferPitchWidthDiff;
+                vizdoomScreen[i] = buffer[b];
             }
         }
         else {
@@ -192,30 +197,30 @@ void ViZDoom_ScreenUpdate(){
             palette = screen->GetPalette();
 
             if(*vizdoom_screen_format == VIZDOOM_SCREEN_GRAY8){
-                for(unsigned int i = 0; i < bufferSize; ++i){
-                    vizdoomScreen[i] = 0.21 * palette[buffer[i]].r + 0.72 * palette[buffer[i]].g + 0.07 *palette[buffer[i]].b;
+                for(unsigned int i = 0; i < screenSize; ++i){
+                    unsigned int b = i + (i / bufferWidth) * bufferPitchWidthDiff;
+                    vizdoomScreen[i] = 0.21 * palette[buffer[b]].r + 0.72 * palette[buffer[b]].g + 0.07 *palette[buffer[b]].b;
                 }
             }
             else if(*vizdoom_screen_format == VIZDOOM_SCREEN_DEPTH_BUFFER8 && !*vizdoom_nocheat){
                 memcpy(vizdoomScreen, depthMap->getBuffer(), depthMap->getBufferSize());
             }
             else {
-                for (unsigned int i = 0; i < bufferSize; ++i) {
+                for (unsigned int i = 0; i < screenSize; ++i) {
                     unsigned int pos = i * posMulti;
-                    vizdoomScreen[pos + rPos] = palette[buffer[i]].r;
-                    vizdoomScreen[pos + gPos] = palette[buffer[i]].g;
-                    vizdoomScreen[pos + bPos] = palette[buffer[i]].b;
+                    unsigned int b = i + (i / bufferWidth) * bufferPitchWidthDiff;
+                    vizdoomScreen[pos + rPos] = palette[buffer[b]].r;
+                    vizdoomScreen[pos + gPos] = palette[buffer[b]].g;
+                    vizdoomScreen[pos + bPos] = palette[buffer[b]].b;
                     if (alpha) vizdoomScreen[pos + aPos] = 255;
-                    //if(alpha) vizdoomScreen[pos + aPos] = palette[buffer[i]].a;
                 }
 
                 if((*vizdoom_screen_format == VIZDOOM_SCREEN_CRCGCBDB || *vizdoom_screen_format == VIZDOOM_SCREEN_CBCGCRDB) && !*vizdoom_nocheat){
-                    memcpy(vizdoomScreen+3*bufferSize, depthMap->getBuffer(), depthMap->getBufferSize());
+                    memcpy(vizdoomScreen + 3*screenSize, depthMap->getBuffer(), depthMap->getBufferSize());
                 }
             }
         }
 
-        //memcpy( vizdoomScreen, screen->GetBuffer(), vizdoomScreenSize );
     }
     screen->Unlock();
 }
