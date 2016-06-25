@@ -23,10 +23,10 @@
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/thread.hpp>
 
-#include "vizdoom_main.h"
-#include "vizdoom_defines.h"
-#include "vizdoom_input.h"
-#include "vizdoom_game.h"
+#include "viz_main.h"
+#include "viz_defines.h"
+#include "viz_input.h"
+#include "viz_game.h"
 #include "vizdoom_screen.h"
 #include "vizdoom_shared_memory.h"
 #include "vizdoom_message_queue.h"
@@ -37,6 +37,7 @@
 namespace b = boost;
 namespace bt = boost::this_thread;
 
+CVAR (Bool, vizdoom_debug, false, CVAR_NOSET)
 CVAR (Bool, vizdoom_controlled, false, CVAR_NOSET)
 CVAR (Bool, vizdoom_async, false, CVAR_NOSET)
 CVAR (String, vizdoom_instance_id, "0", CVAR_NOSET)

@@ -20,8 +20,8 @@
  THE SOFTWARE.
 */
 
-#include "vizdoom_game.h"
-#include "vizdoom_defines.h"
+#include "viz_game.h"
+#include "viz_defines.h"
 #include "vizdoom_shared_memory.h"
 #include "vizdoom_message_queue.h"
 #include "vizdoom_screen.h"
@@ -32,6 +32,7 @@
 #include "c_dispatch.h"
 #include "p_acs.h"
 
+EXTERN_CVAR (Bool, vizdoom_debug)
 EXTERN_CVAR (Int, vizdoom_screen_format)
 EXTERN_CVAR (Bool, vizdoom_loop_map)
 
@@ -123,16 +124,24 @@ void ViZDoom_GameVarsInit(){
 
     vizdoomGameVars->VERSION = VIZDOOM_VERSION;
     strncpy(vizdoomGameVars->VERSION_STR, VIZDOOM_VERSION_STR, 8);
+    vizdoomGameVars->SM_SIZE = vizdoomSMSize;
+
 }
 
 void ViZDoom_GameVarsTic(){
+
+    VIZDOOM_DEBUG_PRINT("vizdoom_game.cpp: ViZDoom_GameVarsTic: tic %d, netgame: %d, multiplayer: %d, recording: %d, playback: %d, in_level: %d, map_tic: %d\n",
+                        gametic, netgame, multiplayer, demorecording, demoplayback, gamestate != GS_LEVEL, level.maptime);
 
     vizdoomGameVars->GAME_TIC = gametic;
     vizdoomGameVars->GAME_STATE = gamestate;
     vizdoomGameVars->GAME_ACTION = gameaction;
     vizdoomGameVars->GAME_STATIC_SEED = staticrngseed;
     vizdoomGameVars->GAME_SETTINGS_CONTROLLER = vizdoomPlayer->settings_controller;
-    vizdoomGameVars->NET_GAME = netgame || multiplayer;
+    vizdoomGameVars->GAME_NETGAME = netgame;
+    vizdoomGameVars->GAME_MULTIPLAYER = multiplayer;
+    vizdoomGameVars->DEMO_RECORDING = demorecording;
+    vizdoomGameVars->DEMO_PLAYBACK = demoplayback;
 
     vizdoomGameVars->SCREEN_WIDTH = vizdoomScreenWidth;
     vizdoomGameVars->SCREEN_HEIGHT = vizdoomScreenHeight;
@@ -143,21 +152,21 @@ void ViZDoom_GameVarsTic(){
     vizdoomGameVars->MAP_START_TIC = level.starttime;
     vizdoomGameVars->MAP_TIC = level.maptime;
 
-    vizdoomGameVars->MAP_REWARD = ACS_GlobalVars[0];
-
-    for(int i = 0; i < VIZDOOM_GV_USER_SIZE; ++i){
+    for(int i = 0; i < VIZDOOM_GV_USER_COUNT; ++i){
         vizdoomGameVars->MAP_USER_VARS[i] = ACS_GlobalVars[i+1];
     }
 
-    vizdoomGameVars->PLAYDEMO = gameaction == ga_playdemo;
-    vizdoomGameVars->MAP_END = gamestate != GS_LEVEL || gameaction == ga_completed;
+    vizdoomGameVars->MAP_END = gamestate != GS_LEVEL;
     if(vizdoomGameVars->MAP_END) vizdoomGameVars->PLAYER_DEATHCOUNT = 0;
 //    if(*vizdoom_loop_map && !level.MapName.Compare(level.NextMap)){
 //        level.NextMap = level.MapName;
 //        level.NextSecretMap = level.MapName;
 //    }
 
+    vizdoomGameVars->MAP_REWARD = ACS_GlobalVars[0];
+
     bool prevDead = vizdoomGameVars->PLAYER_DEAD;
+    vizdoomGameVars->PLAYER_READY_TO_RESPAWN = vizdoomPlayer->playerstate == PST_REBORN;
 
     if(vizdoomPlayer->mo != NULL) {
         vizdoomGameVars->PLAYER_HAS_ACTOR = true;
@@ -199,13 +208,25 @@ void ViZDoom_GameVarsTic(){
     }
 
     vizdoomGameVars->PLAYER_NUMBER = consoleplayer;
-    vizdoomGameVars->PLAYER_NUMBER = 1;
-    if(vizdoomGameVars->NET_GAME) {
-        vizdoomGameVars->PLAYER_NUMBER = 0;
+    vizdoomGameVars->PLAYER_COUNT = 1;
+    if(netgame || multiplayer) {
+
+        //VIZDOOM_DEBUG_PRINT("vizdoom_game.cpp: ViZDoom_GameVarsTic: tic %d, players: \n", gametic);
+
+        vizdoomGameVars->PLAYER_COUNT = 0;
         for (int i = 0; i < VIZDOOM_MAX_PLAYERS; ++i) {
-            strncpy(vizdoomGameVars->PLAYERS_NAME[i], players[i].userinfo.GetName(), VIZDOOM_MAX_PLAYER_NAME_LEN);
-            vizdoomGameVars->PLAYERS_FRAGCOUNT[i] = players[i].fragcount;
-            if(players[i].mo) ++vizdoomGameVars->PLAYER_NUMBER;
+            if(playeringame[i]){
+                ++vizdoomGameVars->PLAYER_COUNT;
+                vizdoomGameVars->PLAYERS_IN_GAME[i] = true;
+                strncpy(vizdoomGameVars->PLAYERS_NAME[i], players[i].userinfo.GetName(), VIZDOOM_MAX_PLAYER_NAME_LEN);
+                vizdoomGameVars->PLAYERS_FRAGCOUNT[i] = players[i].fragcount;
+
+                //VIZDOOM_DEBUG_PRINT("playernum: %d, name: %s\n", i, vizdoomGameVars->PLAYERS_NAME[i]);
+            }
+            else{
+                strncpy(vizdoomGameVars->PLAYERS_NAME[i], players[i].userinfo.GetName(), VIZDOOM_MAX_PLAYER_NAME_LEN);
+                vizdoomGameVars->PLAYERS_FRAGCOUNT[i] = 0;
+            }
         }
     }
 }

@@ -29,6 +29,7 @@
 namespace bip = boost::interprocess;
 
 extern bip::shared_memory_object vizdoomSM;
+extern size_t vizdoomSMSize;
 
 #define VIZDOOM_SM_NAME_BASE "ViZDoomSM"
 

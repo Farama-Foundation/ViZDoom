@@ -491,7 +491,7 @@ namespace vizdoom {
         if(str == "res_512x320")    return RES_512X320;
         if(str == "res_512x384")    return RES_512X384;
 
-        if(str == "res_640x360")    return RES_640X400;
+        if(str == "res_640x360")    return RES_640X360;
         if(str == "res_640x400")    return RES_640X400;
         if(str == "res_640x480")    return RES_640X480;
 
