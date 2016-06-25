@@ -20,25 +20,25 @@
  THE SOFTWARE.
 */
 
-#include "vizdoom_depth.h"
+#include "viz_depth.h"
 #include "v_video.h"
 
-#ifdef VIZDOOM_DEPTH_TEST
+#ifdef VIZ_DEPTH_TEST
 #include <SDL_events.h>
 #endif
     
-ViZDoomDepthBuffer* depthMap = NULL;
+VIZDepthBuffer* depthMap = NULL;
 
-ViZDoomDepthBuffer::ViZDoomDepthBuffer(unsigned int width, unsigned int height) : bufferSize(height*width), bufferWidth(width), bufferHeight(height) {
+VIZDepthBuffer::VIZDepthBuffer(unsigned int width, unsigned int height) : bufferSize(height*width), bufferWidth(width), bufferHeight(height) {
     buffer = new BYTE[bufferSize];
     for(unsigned int i=0;i<bufferSize;i++) {
         buffer[i] = 0;
     }
     this->setDepthBoundries(120000000, 358000);
-#ifdef VIZDOOM_DEPTH_TEST
+#ifdef VIZ_DEPTH_TEST
     for(int j = 0; j < 256; j++)
     {
-#ifndef VIZDOOM_DEPTH_COLORS
+#ifndef VIZ_DEPTH_COLORS
         colors[j].r = colors[j].g = colors[j].b = j;
 #else
         colors[j].r= j%3==0 ? 255 : 0;
@@ -57,44 +57,45 @@ ViZDoomDepthBuffer::ViZDoomDepthBuffer(unsigned int width, unsigned int height) 
     this->window = SDL_CreateWindow("Vizia Depth Buffer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width,
                                     height, SDL_WINDOW_SHOWN);
     this->surface =  SDL_GetWindowSurface( window );
-#endif //VIZDOOM_DEPTH_TEST
+#endif
 }
 
-ViZDoomDepthBuffer::~ViZDoomDepthBuffer() {
+VIZDepthBuffer::~VIZDepthBuffer() {
     delete[] buffer;
-#ifdef VIZDOOM_DEPTH_TEST
+#ifdef VIZ_DEPTH_TEST
     SDL_DestroyWindow( window );
     window = NULL;
     SDL_FreeSurface( surface);
     surface = NULL;
-#endif //VIZDOOM_DEPTH_TEST
+#endif
 }
-//get depth buffer pointer
-BYTE* ViZDoomDepthBuffer::getBuffer() { return buffer; }
 
-//get pointer for requested pixel (x, y coords)
-BYTE* ViZDoomDepthBuffer::getBufferPoint(unsigned int x, unsigned int y) {
+// Get depth buffer pointer
+BYTE* VIZDepthBuffer::getBuffer() { return buffer; }
+
+// Get pointer for requested pixel (x, y coords)
+BYTE* VIZDepthBuffer::getBufferPoint(unsigned int x, unsigned int y) {
     if( x < bufferWidth && y < bufferHeight )
         return buffer + x + y*bufferWidth;
     else
     return NULL;}
 
-//set point(x,y) value with depth stored in actualDepth
-void ViZDoomDepthBuffer::setPoint(unsigned int x, unsigned int y) {
+// Set point(x,y) value with depth stored in actualDepth
+void VIZDepthBuffer::setPoint(unsigned int x, unsigned int y) {
     BYTE *dpth = getBufferPoint(x, y);
     if(dpth!=NULL)
         *dpth = actualDepth;
 }
 
-//set point(x,y) value with requested depth
-void ViZDoomDepthBuffer::setPoint(unsigned int x, unsigned int y, BYTE depth) {
+// Set point(x,y) value with requested depth
+void VIZDepthBuffer::setPoint(unsigned int x, unsigned int y, BYTE depth) {
     BYTE *dpth = getBufferPoint(x, y);
     if(dpth!=NULL)
         *dpth = depth;
 }
 
-//store depth value for later usage
-void ViZDoomDepthBuffer::setActualDepth(BYTE depth) {
+// Store depth value for later usage
+void VIZDepthBuffer::setActualDepth(BYTE depth) {
     if(this->isLocked())
         return;
     if(this->bufferHeight==480)
@@ -108,8 +109,8 @@ void ViZDoomDepthBuffer::setActualDepth(BYTE depth) {
     }
 }
 
-//store depth value for later usage with automated conversion based on stored boundries
-void ViZDoomDepthBuffer::setActualDepthConv(int depth) {
+// Store depth value for later usage with automated conversion based on stored boundries
+void VIZDepthBuffer::setActualDepthConv(int depth) {
     if(this->isLocked())
         return;
     if(depth>maxDepth)
@@ -122,8 +123,8 @@ void ViZDoomDepthBuffer::setActualDepthConv(int depth) {
     }
 }
 
-//increase or decrease stored depth value by adsb
-void ViZDoomDepthBuffer::updateActualDepth(int adsb) {
+// Increase or decrease stored depth value by adsb
+void VIZDepthBuffer::updateActualDepth(int adsb) {
     int act = this->actualDepth;
     if(this->isLocked())
         return;
@@ -134,59 +135,59 @@ void ViZDoomDepthBuffer::updateActualDepth(int adsb) {
     else
         this->actualDepth+=adsb;
 }
-//store x value for later usage
-void ViZDoomDepthBuffer::storeX(int x) {this->tX=x; }
+// Store x value for later usage
+void VIZDepthBuffer::storeX(int x) {this->tX=x; }
 
-//store y value for later usage
-void ViZDoomDepthBuffer::storeY(int y) {this->tY=y; }
+// Store y value for later usage
+void VIZDepthBuffer::storeY(int y) {this->tY=y; }
 
-//get stored x value
-int ViZDoomDepthBuffer::getX(void) {return this->tX; }
+// Get stored x value
+int VIZDepthBuffer::getX(void) {return this->tX; }
 
-//get stored y value
-int ViZDoomDepthBuffer::getY(void) {return this->tY; }
+// Get stored y value
+int VIZDepthBuffer::getY(void) {return this->tY; }
 
-//get buffer size
-unsigned int ViZDoomDepthBuffer::getBufferSize(){
+// Get buffer size
+unsigned int VIZDepthBuffer::getBufferSize(){
     return this->bufferSize;
 }
 
-//set boundries for storing depth value with conversion
-void ViZDoomDepthBuffer::setDepthBoundries(int maxDepth, int minDepth) {
+// Set boundries for storing depth value with conversion
+void VIZDepthBuffer::setDepthBoundries(int maxDepth, int minDepth) {
     this->maxDepth=maxDepth;
     this->minDepth=minDepth;
     this->convSteps = (maxDepth-minDepth)/255;
 }
 
-//get buffer width
-unsigned int ViZDoomDepthBuffer::getBufferWidth(){
+// Get buffer width
+unsigned int VIZDepthBuffer::getBufferWidth(){
     return bufferWidth;
 }
 
-//get buffer height
-unsigned int ViZDoomDepthBuffer::getBufferHeight(){
+// Get buffer height
+unsigned int VIZDepthBuffer::getBufferHeight(){
     return bufferHeight;
 }
 
-//clear buffer - set every point to 0
-void ViZDoomDepthBuffer::clearBuffer() {
+// Clear buffer - set every point to 0
+void VIZDepthBuffer::clearBuffer() {
     for(unsigned int i=0;i<bufferSize;i++)
         buffer[i]=0;
 }
 
-//set every point to color value
-void ViZDoomDepthBuffer::clearBuffer(BYTE color) {
+// Set every point to color value
+void VIZDepthBuffer::clearBuffer(BYTE color) {
     for(unsigned int i=0;i<bufferSize;i++)
         buffer[i]=color;
 }
 
-void ViZDoomDepthBuffer::lock() {this->locked=true; }
+void VIZDepthBuffer::lock() {this->locked=true; }
 
-void ViZDoomDepthBuffer::unlock() {this->locked=false; }
+void VIZDepthBuffer::unlock() {this->locked=false; }
 
-bool ViZDoomDepthBuffer::isLocked() { return this->locked; }
+bool VIZDepthBuffer::isLocked() { return this->locked; }
 
-void ViZDoomDepthBuffer::sizeUpdate() {
+void VIZDepthBuffer::sizeUpdate() {
     if(this->bufferWidth!= (unsigned int)screen->GetWidth() || this->bufferHeight!=(unsigned int)screen->GetHeight())
     {
         delete[] this->buffer;
@@ -203,7 +204,7 @@ void ViZDoomDepthBuffer::sizeUpdate() {
 
 #ifdef VIZDOOM_DEPTH_TEST
 //update depth debug window
-void ViZDoomDepthBuffer::Update() {
+void VIZDepthBuffer::Update() {
     SDL_Surface* surf = SDL_CreateRGBSurfaceFrom(this->buffer, this->bufferWidth, this->bufferHeight, 8,
                                                  this->bufferWidth, 0, 0, 0, 0);
     SDL_SetPaletteColors(surf->format->palette, colors, 0, 256);

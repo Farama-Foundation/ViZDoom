@@ -20,8 +20,8 @@
  THE SOFTWARE.
 */
 
-#include "vizdoom_input.h"
-#include "vizdoom_defines.h"
+#include "viz_input.h"
+#include "viz_defines.h"
 #include "vizdoom_message_queue.h"
 #include "vizdoom_shared_memory.h"
 

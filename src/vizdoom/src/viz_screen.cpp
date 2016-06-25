@@ -20,11 +20,11 @@
  THE SOFTWARE.
 */
 
-#include "vizdoom_screen.h"
-#include "vizdoom_defines.h"
+#include "viz_screen.h"
+#include "viz_defines.h"
 #include "vizdoom_shared_memory.h"
-#include "vizdoom_message_queue.h"
-#include "vizdoom_depth.h"
+#include "viz_message_queue.h"
+#include "viz_depth.h"
 
 #include "d_main.h"
 #include "doomstat.h"
@@ -38,6 +38,7 @@ size_t vizdoomScreenSize;
 int posMulti, rPos, gPos, bPos, aPos;
 bool alpha;
 
+EXTERN_CVAR (Bool, vizdoom_debug)
 EXTERN_CVAR (Int, vizdoom_screen_format)
 EXTERN_CVAR (Bool, vizdoom_nocheat)
 
@@ -51,7 +52,6 @@ void ViZDoom_ScreenInit() {
     vizdoomScreenWidth = (unsigned int) screen->GetWidth();
     vizdoomScreenHeight = (unsigned int) screen->GetHeight();
     vizdoomScreenSize = sizeof(BYTE) * vizdoomScreenWidth * vizdoomScreenHeight;
-    //vizdoomScreenPitch = screen->GetPitch(); // returns 0 ??
     vizdoomScreenPitch = vizdoomScreenWidth;
 
     switch(*vizdoom_screen_format){

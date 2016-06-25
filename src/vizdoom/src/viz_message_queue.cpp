@@ -20,11 +20,11 @@
  THE SOFTWARE.
 */
 
-#include "vizdoom_message_queue.h"
-#include "vizdoom_input.h"
-#include "vizdoom_game.h"
-#include "vizdoom_main.h"
-#include "vizdoom_defines.h"
+#include "viz_message_queue.h"
+#include "viz_input.h"
+#include "viz_game.h"
+#include "viz_main.h"
+#include "viz_defines.h"
 
 EXTERN_CVAR (Bool, vizdoom_async)
 

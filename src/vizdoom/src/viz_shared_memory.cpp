@@ -20,42 +20,39 @@
  THE SOFTWARE.
 */
 
-#ifndef __VIZDOOM_GAME_H__
-#define __VIZDOOM_GAME_H__
+#include "viz_shared_memory.h"
+#include "viz_message_queue.h"
+#include "viz_defines.h"
 
-#include <string.h>
+#include "doomstat.h"
+#include "v_video.h"
 
-#include "dobject.h"
-#include "dobjtype.h"
-#include "doomtype.h"
-#include "name.h"
-#include "d_player.h"
-//#include "namedef.h"
-//#include "sc_man.h"
-//#include "sc_man_tokens.h"
+bip::shared_memory_object vizdoomSM;
+size_t vizdoomSMSize;
+char * vizdoomSMName;
 
-int ViZDoom_CheckItem(FName name);
+void ViZDoom_SMInit(const char * id){
 
-int ViZDoom_CheckItem(PClass *type);
+	vizdoomSMName = new char[strlen(VIZDOOM_SM_NAME_BASE) + strlen(id)];
+	strcpy(vizdoomSMName, VIZDOOM_SM_NAME_BASE);
+	strcat(vizdoomSMName, id);
 
-const char* ViZDoom_CheckItemType(PClass *type);
+    try {
+        bip::shared_memory_object::remove(vizdoomSMName);
+        vizdoomSM = bip::shared_memory_object(bip::open_or_create, vizdoomSMName, bip::read_write);
 
-bool ViZDoom_CheckSelectedWeaponState();
+        vizdoomSMSize = sizeof(ViZDoomInputStruct) + sizeof(ViZDoomGameVarsStruct) +
+                      (sizeof(BYTE) * screen->GetWidth() * screen->GetHeight() * 4);
+        vizdoomSM.truncate(vizdoomSMSize);
+    }
+    catch(bip::interprocess_exception &ex){
+        printf("ViZDoom_SMInit: Error creating shared memory");
+        ViZDoom_MQSend(VIZDOOM_MSG_CODE_DOOM_ERROR);
+        exit(1);
+    }
+}
 
-int ViZDoom_CheckSelectedWeapon();
-
-int ViZDoom_CheckWeaponAmmo(AWeapon* weapon);
-
-int ViZDoom_CheckSelectedWeaponAmmo();
-
-int ViZDoom_CheckSlotAmmo(int slot);
-
-int ViZDoom_CheckSlotWeapons(int slot);
-
-void ViZDoom_GameVarsInit();
-
-void ViZDoom_GameVarsTic();
-
-void ViZDoom_GameVarsClose();
-
-#endif
+void ViZDoom_SMClose(){
+    //bip::shared_memory_object::remove(vizdoomSMName);
+	delete[] vizdoomSMName;
+}

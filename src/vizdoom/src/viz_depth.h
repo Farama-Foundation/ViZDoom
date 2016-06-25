@@ -31,11 +31,11 @@
 
 #include "basictypes.h"
 
-#ifdef VIZDOOM_DEPTH_TEST
+#ifdef VIZ_DEPTH_TEST
 #include <SDL_video.h>
 #endif
 
-class ViZDoomDepthBuffer{
+class VIZDepthBuffer{
 public:
     BYTE *getBuffer();
     BYTE *getBufferPoint(unsigned int x, unsigned int y);
@@ -49,8 +49,8 @@ public:
     void storeY(int y);
     int getX(void);
     int getY(void);
-    ViZDoomDepthBuffer(unsigned int width, unsigned int height);
-    ~ViZDoomDepthBuffer();
+    VIZDepthBuffer(unsigned int width, unsigned int height);
+    ~VIZDepthBuffer();
     unsigned int getBufferSize();
     unsigned int getBufferWidth();
     unsigned int getBufferHeight();
@@ -75,12 +75,12 @@ private:
     int convSteps;
     int tX, tY;
     bool locked;
-#ifdef VIZDOOM_DEPTH_TEST
+#ifdef VIZ_DEPTH_TEST
     SDL_Window* window;
     SDL_Surface* surface;
     SDL_Color colors[256];
 #endif
 };
 
-extern ViZDoomDepthBuffer* depthMap;
+extern VIZDepthBuffer* depthMap;
 #endif
