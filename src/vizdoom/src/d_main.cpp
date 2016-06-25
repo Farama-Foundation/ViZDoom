@@ -109,16 +109,16 @@
 #include "p_local.h"
 
 //VIZDOOM_CODE
-#include "vizdoom_main.h"
-#include "vizdoom_depth.h"
-#include "vizdoom_input.h"
-#include "vizdoom_defines.h"
+#include "viz_main.h"
+#include "viz_depth.h"
+#include "viz_input.h"
+#include "viz_defines.h"
 
-EXTERN_CVAR (Bool, vizdoom_controlled)
-EXTERN_CVAR (Bool, vizdoom_async)
-EXTERN_CVAR (Bool, vizdoom_allow_input)
-EXTERN_CVAR (Bool, vizdoom_nosound)
-EXTERN_CVAR (Bool, vizdoom_render_all)
+EXTERN_CVAR (Bool, viz_controlled)
+EXTERN_CVAR (Bool, viz_async)
+EXTERN_CVAR (Bool, viz_allow_input)
+EXTERN_CVAR (Bool, viz_nosound)
+EXTERN_CVAR (Bool, viz_render_all)
 
 EXTERN_CVAR(Bool, hud_althud)
 void DrawHUD();
@@ -319,10 +319,10 @@ void D_PostEvent (const event_t *ev)
 			int look = int(ev->y * m_pitch * mouse_sensitivity * 16.0);
 			if (invertmouse)
 				look = -look;
-			if(!*vizdoom_controlled) G_AddViewPitch (look);
+			if(!*viz_controlled) G_AddViewPitch (look);
 			else{
-				if(*vizdoom_allow_input){
-					look = ViZDoom_AxisFilter(VIZDOOM_BT_VIEW_PITCH, look);
+				if(*viz_allow_input){
+					look = VIZ_AxisFilter(VIZ_BT_VIEW_PITCH_AXIS, look);
 					G_AddViewPitch (look);
 				}
 			}
@@ -331,10 +331,10 @@ void D_PostEvent (const event_t *ev)
 		if (!Button_Strafe.bDown && !lookstrafe)
 		{
 			int look = int(ev->x * m_yaw * mouse_sensitivity * 8.0);
-			if(!*vizdoom_controlled) G_AddViewAngle (look);
+			if(!*viz_controlled) G_AddViewAngle (look);
 			else{
-				if(*vizdoom_allow_input){
-					look = ViZDoom_AxisFilter(VIZDOOM_BT_VIEW_ANGLE, look);
+				if(*viz_allow_input){
+					look = VIZ_AxisFilter(VIZ_BT_VIEW_ANGLE_AXIS, look);
 					G_AddViewAngle (look);
 				}
 			}
@@ -869,7 +869,7 @@ void D_Display ()
 	}
 	//VIZDOOM_CODE
 	// draw pause pic
-	if ((paused || pauseext) && menuactive == MENU_Off && !*vizdoom_controlled)
+	if ((paused || pauseext) && menuactive == MENU_Off && !*viz_controlled)
 	{
 		FTexture *tex;
 		int x;
@@ -944,7 +944,7 @@ void D_Display ()
 			S_UpdateMusic();		// OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
 			C_DrawConsole (hw2d);	// console and
 			M_Drawer ();			// menu are drawn even on top of wipes
-			//ViZDoom_ScreenUpdate();
+			//VIZ_ScreenUpdate();
 			screen->Update ();		// page flip or blit buffer
 			NetUpdate ();			// [RH] not sure this is needed anymore
 		} while (!done);
@@ -1006,7 +1006,7 @@ void D_DoomLoop ()
 
 	vid_cursor.Callback();
 
-	ViZDoom_Init();
+	VIZ_Init();
 
 	for (;;)
 	{
@@ -1021,13 +1021,13 @@ void D_DoomLoop ()
 			}
 
 			//VIZDOOM_CODE
-			if(*vizdoom_controlled && !*vizdoom_async){
+			if(*viz_controlled && !*viz_async){
 
-				if(*vizdoom_allow_input) {
-					vizdoom_time = I_GetTime(true);
-					I_WaitForTic(vizdoom_time);
+				if(*viz_allow_input) {
+					vizTime = I_GetTime(true);
+					I_WaitForTic(vizTime);
 					//I_WaitForTic(gametic + 1);
-					if(ViZDoom_IsPaused()) D_ProcessEvents();
+					if(VIZ_IsPaused()) D_ProcessEvents();
 				}
 
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
@@ -1036,10 +1036,10 @@ void D_DoomLoop ()
 				C_Ticker();
 				M_Ticker();
 
-				if(!*vizdoom_nosound){
+				if(!*viz_nosound){
 					S_UpdateSounds(players[consoleplayer].camera);
 				}
-				if(!ViZDoom_IsPaused()){
+				if(!VIZ_IsPaused()){
 					G_Ticker();
 					++gametic;
 					++maketic;
@@ -1068,11 +1068,11 @@ void D_DoomLoop ()
 
 			// Update display, next frame, with current state.
 			I_StartTic ();
-			if(!*vizdoom_controlled || *vizdoom_render_all) {
+			if(!*viz_controlled || *viz_render_all) {
 				D_Display();
 			}
-			if(!*vizdoom_controlled || !*vizdoom_nosound) S_UpdateMusic(); // OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
-			ViZDoom_Tic();
+			if(!*viz_controlled || !*viz_nosound) S_UpdateMusic(); // OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
+			VIZ_Tic();
 		}
 		catch (CRecoverableError &error)
 		{
@@ -2597,7 +2597,7 @@ void D_DoomMain (void)
 		DThinker::RunThinkers ();
 		gamestate = GS_STARTUP;
 
-		//ViZDoom_Init();
+		//VIZ_Init();
 
 		if (!restart)
 		{
@@ -2622,7 +2622,7 @@ void D_DoomMain (void)
 			V_Init2();
 			UpdateJoystickMenu(NULL);
 
-#ifdef VIZDOOM_DEPTH_TEST
+#ifdef VIZ_DEPTH_TEST
 			depthMap = new depthBuffer(screen->GetWidth(), screen->GetHeight());
 			depthMap->setDepthBoundries(120000000,358000);//probabli gud, but SHOULDN'T BE HERE
 #endif
@@ -2702,7 +2702,7 @@ void D_DoomMain (void)
 			//S_StopMusic(true);
 			//S_StopAllChannels ();
 			delete depthMap;
-			ViZDoom_Close();
+			VIZ_Close();
 
 			M_ClearMenus();					// close menu if open
 			F_EndFinale();					// If an intermission is active, end it now

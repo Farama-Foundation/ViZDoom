@@ -127,7 +127,7 @@ static GameAtExit *ExitCmdList;
 #define SCROLLNO 0
 
 EXTERN_CVAR (Bool, show_messages)
-EXTERN_CVAR(Bool, vizdoom_noconsole)
+EXTERN_CVAR(Bool, viz_noconsole)
 
 static unsigned int TickerAt, TickerMax;
 static bool TickerPercent;
@@ -546,7 +546,7 @@ void AddToConsole (int printlevel, const char *text)
 /* Adds a string to the console and also to the notify buffer */
 int PrintString (int printlevel, const char *outline)
 {
-	if(*vizdoom_noconsole){
+	if(*viz_noconsole){
 		return 0;
 	}
 
@@ -1024,7 +1024,7 @@ void C_FullConsole ()
 
 void C_ToggleConsole ()
 {
-	if(*vizdoom_noconsole)
+	if(*viz_noconsole)
 		return;
 	if (gamestate == GS_DEMOSCREEN || demoplayback)
 	{

@@ -22,9 +22,9 @@
 
 #include "viz_game.h"
 #include "viz_defines.h"
-#include "vizdoom_shared_memory.h"
-#include "vizdoom_message_queue.h"
-#include "vizdoom_screen.h"
+#include "viz_shared_memory.h"
+#include "viz_message_queue.h"
+#include "viz_screen.h"
 
 #include "d_netinf.h"
 #include "d_event.h"
@@ -32,48 +32,46 @@
 #include "c_dispatch.h"
 #include "p_acs.h"
 
-EXTERN_CVAR (Bool, vizdoom_debug)
-EXTERN_CVAR (Int, vizdoom_screen_format)
-EXTERN_CVAR (Bool, vizdoom_loop_map)
+EXTERN_CVAR (Bool, viz_debug)
+EXTERN_CVAR (Int, viz_screen_format)
+EXTERN_CVAR (Bool, viz_loop_map)
 
-#define VIZDOOM_PLAYER players[consoleplayer]
+player_t *vizPlayer;
 
-player_t *vizdoomPlayer;
+bip::mapped_region *vizGameStateSMRegion = NULL;
+VIZGameState *vizGameState = NULL;
 
-bip::mapped_region *vizdoomGameVarsSMRegion = NULL;
-ViZDoomGameVarsStruct *vizdoomGameVars = NULL;
-
-int ViZDoom_CheckItem(FName name) {
-    if(vizdoomPlayer->mo != NULL) {
-        AInventory *item = vizdoomPlayer->mo->FindInventory(name);
+int VIZ_CheckItem(FName name) {
+    if(vizPlayer->mo != NULL) {
+        AInventory *item = vizPlayer->mo->FindInventory(name);
         if(item != NULL) return item->Amount;
     }
     return 0;
 }
 
-int ViZDoom_CheckItem(const PClass *type) {
-    if(vizdoomPlayer->mo != NULL) {
-        AInventory *item = vizdoomPlayer->mo->FindInventory(type);
+int VIZ_CheckItem(const PClass *type) {
+    if(vizPlayer->mo != NULL) {
+        AInventory *item = vizPlayer->mo->FindInventory(type);
         if (item != NULL) return item->Amount;
     }
     return 0;
 }
 
-int ViZDoom_CheckWeaponAmmo(AWeapon* weapon){
-    if(weapon != NULL) return ViZDoom_CheckItem(weapon->AmmoType1);
+int VIZ_CheckWeaponAmmo(AWeapon* weapon){
+    if(weapon != NULL) return VIZ_CheckItem(weapon->AmmoType1);
     return -1;
 }
 
-int ViZDoom_CheckSelectedWeapon(){
+int VIZ_CheckSelectedWeapon(){
 
-    if(vizdoomPlayer->ReadyWeapon == NULL) return -1;
+    if(vizPlayer->ReadyWeapon == NULL) return -1;
 
-    const PClass *type1 = vizdoomPlayer->ReadyWeapon->GetClass();
+    const PClass *type1 = vizPlayer->ReadyWeapon->GetClass();
     if(type1 == NULL) return -1;
 
-    for(int i=0; i< VIZDOOM_GV_SLOTS_SIZE; ++i){
-        for(int j = 0; j < vizdoomPlayer->weapons.Slots[i].Size(); ++j){
-            const PClass *type2 = vizdoomPlayer->weapons.Slots[i].GetWeapon(j);
+    for(int i=0; i< VIZ_GV_SLOTS_SIZE; ++i){
+        for(int j = 0; j < vizPlayer->weapons.Slots[i].Size(); ++j){
+            const PClass *type2 = vizPlayer->weapons.Slots[i].GetWeapon(j);
             //if(strcmp(type1->TypeName.GetChars(), type2->TypeName.GetChars()) == 0) return i;
             if(type1 == type2) return i;
         }
@@ -82,157 +80,157 @@ int ViZDoom_CheckSelectedWeapon(){
     return -1;
 }
 
-int ViZDoom_CheckSelectedWeaponAmmo(){
-    return ViZDoom_CheckWeaponAmmo(vizdoomPlayer->ReadyWeapon);
+int VIZ_CheckSelectedWeaponAmmo(){
+    return VIZ_CheckWeaponAmmo(vizPlayer->ReadyWeapon);
 }
 
-int ViZDoom_CheckSlotAmmo(int slot){
-    if(vizdoomPlayer->weapons.Slots[slot].Size() <= 0) return 0;
+int VIZ_CheckSlotAmmo(unsigned int slot){
+    if(vizPlayer->weapons.Slots[slot].Size() <= 0) return 0;
 
-    const PClass *typeWeapon = vizdoomPlayer->weapons.Slots[slot].GetWeapon(0);
+    const PClass *typeWeapon = vizPlayer->weapons.Slots[slot].GetWeapon(0);
     AWeapon *weapon = (AWeapon*) typeWeapon->CreateNew();
-    //AWeapon *weapon = (AWeapon*)vizdoomPlayer->mo->FindInventory(type);
+    //AWeapon *weapon = (AWeapon*)vizPlayer->mo->FindInventory(type);
     if (weapon != NULL){
         const PClass *typeAmmo = weapon->AmmoType1;
         weapon->Destroy();
-        return ViZDoom_CheckItem(typeAmmo);
+        return VIZ_CheckItem(typeAmmo);
     }
     else return 0;
 }
 
-int ViZDoom_CheckSlotWeapons(int slot){
+int VIZ_CheckSlotWeapons(unsigned int slot){
     int inSlot = 0;
-    for(int i = 0; i < vizdoomPlayer->weapons.Slots[slot].Size(); ++i){
-        const PClass *type = vizdoomPlayer->weapons.Slots[slot].GetWeapon(i);
-        inSlot += ViZDoom_CheckItem(type);
+    for(int i = 0; i < vizPlayer->weapons.Slots[slot].Size(); ++i){
+        const PClass *type = vizPlayer->weapons.Slots[slot].GetWeapon(i);
+        inSlot += VIZ_CheckItem(type);
     }
     return inSlot;
 }
 
-void ViZDoom_GameVarsInit(){
+void VIZ_GameStateInit(){
 
-    vizdoomPlayer = &players[consoleplayer];
+    vizPlayer = &players[consoleplayer];
     try {
-        vizdoomGameVarsSMRegion = new bip::mapped_region(vizdoomSM, bip::read_write, 0, sizeof(ViZDoomGameVarsStruct));
-        vizdoomGameVars = static_cast<ViZDoomGameVarsStruct *>(vizdoomGameVarsSMRegion->get_address());
+        vizGameStateSMRegion = new bip::mapped_region(vizSM, bip::read_write, vizSMGameStateAddress, sizeof(VIZGameState));
+        vizGameState = static_cast<VIZGameState *>(vizGameStateSMRegion->get_address());
     }
     catch(bip::interprocess_exception &ex){
-        Printf("ViZDoom_GameVarsInit: Error GameVars SM");
-        ViZDoom_MQSend(VIZDOOM_MSG_CODE_DOOM_ERROR);
+        Printf("VIZ_GameVarsInit: Error GameVars SM");
+        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR);
         exit(1);
     }
 
-    vizdoomGameVars->VERSION = VIZDOOM_VERSION;
-    strncpy(vizdoomGameVars->VERSION_STR, VIZDOOM_VERSION_STR, 8);
-    vizdoomGameVars->SM_SIZE = vizdoomSMSize;
+    vizGameState->VERSION = VIZ_VERSION;
+    strncpy(vizGameState->VERSION_STR, VIZ_VERSION_STR, 8);
+    vizGameState->SM_SIZE = vizSMSize;
 
 }
 
-void ViZDoom_GameVarsTic(){
+void VIZ_GameStateTic(){
 
-    VIZDOOM_DEBUG_PRINT("vizdoom_game.cpp: ViZDoom_GameVarsTic: tic %d, netgame: %d, multiplayer: %d, recording: %d, playback: %d, in_level: %d, map_tic: %d\n",
+    VIZ_DEBUG_PRINT("viz_game.cpp: VIZ_GameVarsTic: tic %d, netgame: %d, multiplayer: %d, recording: %d, playback: %d, in_level: %d, map_tic: %d\n",
                         gametic, netgame, multiplayer, demorecording, demoplayback, gamestate != GS_LEVEL, level.maptime);
 
-    vizdoomGameVars->GAME_TIC = gametic;
-    vizdoomGameVars->GAME_STATE = gamestate;
-    vizdoomGameVars->GAME_ACTION = gameaction;
-    vizdoomGameVars->GAME_STATIC_SEED = staticrngseed;
-    vizdoomGameVars->GAME_SETTINGS_CONTROLLER = vizdoomPlayer->settings_controller;
-    vizdoomGameVars->GAME_NETGAME = netgame;
-    vizdoomGameVars->GAME_MULTIPLAYER = multiplayer;
-    vizdoomGameVars->DEMO_RECORDING = demorecording;
-    vizdoomGameVars->DEMO_PLAYBACK = demoplayback;
+    vizGameState->GAME_TIC = (unsigned int)gametic;
+    vizGameState->GAME_STATE = gamestate;
+    vizGameState->GAME_ACTION = gameaction;
+    vizGameState->GAME_STATIC_SEED = staticrngseed;
+    vizGameState->GAME_SETTINGS_CONTROLLER = vizPlayer->settings_controller;
+    vizGameState->GAME_NETGAME = netgame;
+    vizGameState->GAME_MULTIPLAYER = multiplayer;
+    vizGameState->DEMO_RECORDING = demorecording;
+    vizGameState->DEMO_PLAYBACK = demoplayback;
 
-    vizdoomGameVars->SCREEN_WIDTH = vizdoomScreenWidth;
-    vizdoomGameVars->SCREEN_HEIGHT = vizdoomScreenHeight;
-    vizdoomGameVars->SCREEN_PITCH = vizdoomScreenPitch;
-    vizdoomGameVars->SCREEN_SIZE = vizdoomScreenSize;
-    vizdoomGameVars->SCREEN_FORMAT = *vizdoom_screen_format;
+    vizGameState->SCREEN_WIDTH = vizScreenWidth;
+    vizGameState->SCREEN_HEIGHT = vizScreenHeight;
+    vizGameState->SCREEN_PITCH = vizScreenPitch;
+    vizGameState->SCREEN_SIZE = vizScreenSize;
+    vizGameState->SCREEN_FORMAT = *viz_screen_format;
 
-    vizdoomGameVars->MAP_START_TIC = level.starttime;
-    vizdoomGameVars->MAP_TIC = level.maptime;
+    vizGameState->MAP_START_TIC = (unsigned int)level.starttime;
+    vizGameState->MAP_TIC = (unsigned int)level.maptime;
 
-    for(int i = 0; i < VIZDOOM_GV_USER_COUNT; ++i){
-        vizdoomGameVars->MAP_USER_VARS[i] = ACS_GlobalVars[i+1];
+    for(int i = 0; i < VIZ_GV_USER_COUNT; ++i){
+        vizGameState->MAP_USER_VARS[i] = ACS_GlobalVars[i+1];
     }
 
-    vizdoomGameVars->MAP_END = gamestate != GS_LEVEL;
-    if(vizdoomGameVars->MAP_END) vizdoomGameVars->PLAYER_DEATHCOUNT = 0;
-//    if(*vizdoom_loop_map && !level.MapName.Compare(level.NextMap)){
+    vizGameState->MAP_END = gamestate != GS_LEVEL;
+    if(vizGameState->MAP_END) vizGameState->PLAYER_DEATHCOUNT = 0;
+//    if(*viz_loop_map && !level.MapName.Compare(level.NextMap)){
 //        level.NextMap = level.MapName;
 //        level.NextSecretMap = level.MapName;
 //    }
 
-    vizdoomGameVars->MAP_REWARD = ACS_GlobalVars[0];
+    vizGameState->MAP_REWARD = ACS_GlobalVars[0];
 
-    bool prevDead = vizdoomGameVars->PLAYER_DEAD;
-    vizdoomGameVars->PLAYER_READY_TO_RESPAWN = vizdoomPlayer->playerstate == PST_REBORN;
+    bool prevDead = vizGameState->PLAYER_DEAD;
+    vizGameState->PLAYER_READY_TO_RESPAWN = vizPlayer->playerstate == PST_REBORN;
 
-    if(vizdoomPlayer->mo != NULL) {
-        vizdoomGameVars->PLAYER_HAS_ACTOR = true;
-        vizdoomGameVars->PLAYER_DEAD = vizdoomPlayer->playerstate == PST_DEAD || vizdoomPlayer->mo->health <= 0;
+    if(vizPlayer->mo != NULL) {
+        vizGameState->PLAYER_HAS_ACTOR = true;
+        vizGameState->PLAYER_DEAD = vizPlayer->playerstate == PST_DEAD || vizPlayer->mo->health <= 0;
     }
     else {
-        vizdoomGameVars->PLAYER_HAS_ACTOR = false;
-        vizdoomGameVars->PLAYER_DEAD = true;
+        vizGameState->PLAYER_HAS_ACTOR = false;
+        vizGameState->PLAYER_DEAD = true;
     }
 
-    if(vizdoomGameVars->PLAYER_DEAD && !prevDead) ++vizdoomGameVars->PLAYER_DEATHCOUNT;
+    if(vizGameState->PLAYER_DEAD && !prevDead) ++vizGameState->PLAYER_DEATHCOUNT;
 
-    strncpy(vizdoomGameVars->PLAYER_NAME, vizdoomPlayer->userinfo.GetName(), VIZDOOM_MAX_PLAYER_NAME_LEN);
+    strncpy(vizGameState->PLAYER_NAME, vizPlayer->userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
 
-    vizdoomGameVars->MAP_KILLCOUNT = level.killed_monsters;
-    vizdoomGameVars->MAP_ITEMCOUNT = level.found_items;
-    vizdoomGameVars->MAP_SECRETCOUNT = level.found_secrets;
+    vizGameState->MAP_KILLCOUNT = level.killed_monsters;
+    vizGameState->MAP_ITEMCOUNT = level.found_items;
+    vizGameState->MAP_SECRETCOUNT = level.found_secrets;
 
-    vizdoomGameVars->PLAYER_KILLCOUNT = vizdoomPlayer->killcount;
-    vizdoomGameVars->PLAYER_ITEMCOUNT = vizdoomPlayer->itemcount;
-    vizdoomGameVars->PLAYER_SECRETCOUNT = vizdoomPlayer->secretcount;
-    vizdoomGameVars->PLAYER_FRAGCOUNT = vizdoomPlayer->fragcount;
+    vizGameState->PLAYER_KILLCOUNT = vizPlayer->killcount;
+    vizGameState->PLAYER_ITEMCOUNT = vizPlayer->itemcount;
+    vizGameState->PLAYER_SECRETCOUNT = vizPlayer->secretcount;
+    vizGameState->PLAYER_FRAGCOUNT = vizPlayer->fragcount;
 
-    vizdoomGameVars->PLAYER_ATTACK_READY = (vizdoomPlayer->WeaponState & WF_WEAPONREADY);
-    vizdoomGameVars->PLAYER_ALTATTACK_READY = (vizdoomPlayer->WeaponState & WF_WEAPONREADYALT);
-    vizdoomGameVars->PLAYER_ON_GROUND = vizdoomPlayer->onground;
+    vizGameState->PLAYER_ATTACK_READY = (vizPlayer->WeaponState & WF_WEAPONREADY) != 0;
+    vizGameState->PLAYER_ALTATTACK_READY = (vizPlayer->WeaponState & WF_WEAPONREADYALT) != 0;
+    vizGameState->PLAYER_ON_GROUND = vizPlayer->onground;
 
-    if (vizdoomGameVars->PLAYER_HAS_ACTOR) vizdoomGameVars->PLAYER_HEALTH = vizdoomPlayer->mo->health;
-    else vizdoomGameVars->PLAYER_HEALTH = vizdoomPlayer->health;
+    if (vizGameState->PLAYER_HAS_ACTOR) vizGameState->PLAYER_HEALTH = vizPlayer->mo->health;
+    else vizGameState->PLAYER_HEALTH = vizPlayer->health;
 
-    vizdoomGameVars->PLAYER_ARMOR = ViZDoom_CheckItem(NAME_BasicArmor);
+    vizGameState->PLAYER_ARMOR = VIZ_CheckItem(NAME_BasicArmor);
 
-    vizdoomGameVars->PLAYER_SELECTED_WEAPON_AMMO = ViZDoom_CheckSelectedWeaponAmmo();
-    vizdoomGameVars->PLAYER_SELECTED_WEAPON = ViZDoom_CheckSelectedWeapon();
+    vizGameState->PLAYER_SELECTED_WEAPON_AMMO = VIZ_CheckSelectedWeaponAmmo();
+    vizGameState->PLAYER_SELECTED_WEAPON = VIZ_CheckSelectedWeapon();
 
-    for (int i = 0; i < VIZDOOM_GV_SLOTS_SIZE; ++i) {
-        vizdoomGameVars->PLAYER_AMMO[i] = ViZDoom_CheckSlotAmmo(i);
-        vizdoomGameVars->PLAYER_WEAPON[i] = ViZDoom_CheckSlotWeapons(i);
+    for (unsigned int i = 0; i < VIZ_GV_SLOTS_SIZE; ++i) {
+        vizGameState->PLAYER_AMMO[i] = VIZ_CheckSlotAmmo(i);
+        vizGameState->PLAYER_WEAPON[i] = VIZ_CheckSlotWeapons(i);
     }
 
-    vizdoomGameVars->PLAYER_NUMBER = consoleplayer;
-    vizdoomGameVars->PLAYER_COUNT = 1;
+    vizGameState->PLAYER_NUMBER = (unsigned int)consoleplayer;
+    vizGameState->PLAYER_COUNT = 1;
     if(netgame || multiplayer) {
 
-        //VIZDOOM_DEBUG_PRINT("vizdoom_game.cpp: ViZDoom_GameVarsTic: tic %d, players: \n", gametic);
+        //VIZ_DEBUG_PRINT("viz_game.cpp: VIZ_GameVarsTic: tic %d, players: \n", gametic);
 
-        vizdoomGameVars->PLAYER_COUNT = 0;
-        for (int i = 0; i < VIZDOOM_MAX_PLAYERS; ++i) {
+        vizGameState->PLAYER_COUNT = 0;
+        for (unsigned int i = 0; i < VIZ_MAX_PLAYERS; ++i) {
             if(playeringame[i]){
-                ++vizdoomGameVars->PLAYER_COUNT;
-                vizdoomGameVars->PLAYERS_IN_GAME[i] = true;
-                strncpy(vizdoomGameVars->PLAYERS_NAME[i], players[i].userinfo.GetName(), VIZDOOM_MAX_PLAYER_NAME_LEN);
-                vizdoomGameVars->PLAYERS_FRAGCOUNT[i] = players[i].fragcount;
+                ++vizGameState->PLAYER_COUNT;
+                vizGameState->PLAYERS_IN_GAME[i] = true;
+                strncpy(vizGameState->PLAYERS_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
+                vizGameState->PLAYERS_FRAGCOUNT[i] = players[i].fragcount;
 
-                //VIZDOOM_DEBUG_PRINT("playernum: %d, name: %s\n", i, vizdoomGameVars->PLAYERS_NAME[i]);
+                //VIZ_DEBUG_PRINT("playernum: %d, name: %s\n", i, vizGameState->PLAYERS_NAME[i]);
             }
             else{
-                strncpy(vizdoomGameVars->PLAYERS_NAME[i], players[i].userinfo.GetName(), VIZDOOM_MAX_PLAYER_NAME_LEN);
-                vizdoomGameVars->PLAYERS_FRAGCOUNT[i] = 0;
+                strncpy(vizGameState->PLAYERS_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
+                vizGameState->PLAYERS_FRAGCOUNT[i] = 0;
             }
         }
     }
 }
 
-void ViZDoom_GameVarsClose(){
-    delete vizdoomGameVarsSMRegion;
+void VIZ_GameStateClose(){
+    delete vizGameStateSMRegion;
 }
 
 

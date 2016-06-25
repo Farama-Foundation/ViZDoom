@@ -87,12 +87,13 @@
 #include "g_hub.h"
 
 //VIZDOOM_CODE
-#include "vizdoom_input.h"
-#include "vizdoom_defines.h"
+#include "viz_input.h"
+#include "viz_defines.h"
 
-EXTERN_CVAR (Bool, vizdoom_controlled)
-EXTERN_CVAR (Bool, vizdoom_async)
-EXTERN_CVAR (Bool, vizdoom_allow_input)
+EXTERN_CVAR (Bool, viz_debug)
+EXTERN_CVAR (Bool, viz_controlled)
+EXTERN_CVAR (Bool, viz_async)
+EXTERN_CVAR (Bool, viz_allow_input)
 
 static FRandom pr_dmspawn ("DMSpawn");
 static FRandom pr_pspawn ("PlayerSpawn");
@@ -697,10 +698,10 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	// Handle mice.
 	if (!Button_Mlook.bDown && !freelook) {
 		int value = (int) ((float) mousey * m_forward);
-		if(!*vizdoom_controlled) forward += value;
+		if(!*viz_controlled) forward += value;
 		else{
-			if(*vizdoom_allow_input){
-				value = ViZDoom_AxisFilter(VIZDOOM_BT_FORWARD_BACKWARD, value);
+			if(*viz_allow_input){
+				value = VIZ_AxisFilter(VIZ_BT_FORWARD_BACKWARD_AXIS, value);
 				forward += value;
 			}
 		}
@@ -708,10 +709,10 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 
 	if (strafe || lookstrafe) {
 		int value = (int) ((float) mousex * m_side);
-		if(!*vizdoom_controlled) side += value;
+		if(!*viz_controlled) side += value;
 		else{
-			if(*vizdoom_allow_input){
-				value = ViZDoom_AxisFilter(VIZDOOM_BT_LEFT_RIGHT, value);
+			if(*viz_allow_input){
+				value = VIZ_AxisFilter(VIZ_BT_LEFT_RIGHT_AXIS, value);
 				side += value;
 			}
 		}
@@ -765,7 +766,7 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	if (SendItemUse == (const AInventory *)1)
 	{
 		//VIZDOOM_CODE
-		if(*vizdoom_controlled && !*vizdoom_async){
+		if(*viz_controlled && !*viz_async){
 			{
 				AInventory *item = players[consoleplayer].mo->Inventory;
 
@@ -789,7 +790,7 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	else if (SendItemUse != NULL)
 	{
 		//VIZDOOM_CODE
-		if(*vizdoom_controlled && !*vizdoom_async){
+		if(*viz_controlled && !*viz_async){
 			if (gamestate == GS_LEVEL && !paused && players[consoleplayer].playerstate != PST_DEAD) {
 				AInventory *item = players[consoleplayer].mo->Inventory;
 				while (item != NULL && item->InventoryID != SendItemUse->InventoryID) {
@@ -809,7 +810,7 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	if (SendItemDrop != NULL)
 	{
 		//VIZDOOM_CODE
-		if(*vizdoom_controlled && !*vizdoom_async){
+		if(*viz_controlled && !*viz_async){
 			if (gamestate == GS_LEVEL && !paused && players[consoleplayer].playerstate != PST_DEAD) {
 				AInventory *item = players[consoleplayer].mo->Inventory;
 				while (item != NULL && item->InventoryID != SendItemUse->InventoryID){
@@ -1650,6 +1651,8 @@ void G_DeathMatchSpawnPlayer (int playernum)
 	}
 	AActor *mo = P_SpawnPlayer(spot, playernum);
 	if (mo != NULL) P_PlayerStartStomp(mo);
+
+	VIZ_DEBUG_PRINT("g_game.cpp: G_DeathMatchSpawnPlayer: tic: %d, playernum: %d (%s), spot: %d %d %d\n", gametic, playernum, players[playernum].userinfo.GetName(), spot->x, spot->y, spot->z);
 }
 
 //

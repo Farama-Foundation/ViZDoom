@@ -63,12 +63,12 @@
 #include "intermission/intermission.h"
 
 //VIZDOOM_CODE
-#include "vizdoom_main.h"
+#include "viz_main.h"
 
-EXTERN_CVAR (Bool, vizdoom_controlled)
-EXTERN_CVAR (Bool, vizdoom_async)
-EXTERN_CVAR (Bool, vizdoom_allow_input)
-EXTERN_CVAR (Bool, vizdoom_nosound)
+EXTERN_CVAR (Bool, viz_controlled)
+EXTERN_CVAR (Bool, viz_async)
+EXTERN_CVAR (Bool, viz_allow_input)
+EXTERN_CVAR (Bool, viz_nosound)
 
 EXTERN_CVAR (Int, disableautosave)
 EXTERN_CVAR (Int, autosavecount)
@@ -953,7 +953,7 @@ void NetUpdate (void)
 	GC::CheckGC();
 
 	//VIZDOOM_CODE
-	if(*vizdoom_controlled && !*vizdoom_async) nowtime = gametic;
+	if(*viz_controlled && !*viz_async) nowtime = gametic;
 	else{
 		if (ticdup == 0)
 		{
@@ -988,10 +988,10 @@ void NetUpdate (void)
 	{
 		I_StartTic ();
 		//VIZDOOM_CODE
-		if(!*vizdoom_controlled || (*vizdoom_async && *vizdoom_allow_input)) D_ProcessEvents ();
+		if(!*viz_controlled || (*viz_async && *viz_allow_input)) D_ProcessEvents ();
 		if ((maketic - gametic) / ticdup >= BACKUPTICS/2-1) break; // can't hold any more
 		//Printf ("mk:%i ",maketic);
-		if(!*vizdoom_controlled || *vizdoom_async){
+		if(!*viz_controlled || *viz_async){
 			G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
 			maketic++;
 		}
@@ -1829,7 +1829,7 @@ void TryRunTics (void)
 	if (pauseext) r_NoInterpolate = true;
 	bool doWait = cl_capfps || r_NoInterpolate /*|| netgame*/;
 
-	if(*vizdoom_controlled) doWait = true;
+	if(*viz_controlled) doWait = true;
 
 	// get real tics
 	if (doWait)
@@ -1936,7 +1936,7 @@ void TryRunTics (void)
 	lastglobalrecvtime = I_GetTime (false); //Update the last time the game tic'd over
 
 	//VIZDOOM_CODE
-	if(*vizdoom_controlled && *vizdoom_async) ViZDoom_AsyncStartTic();
+	if(*viz_controlled && *viz_async) VIZ_AsyncStartTic();
 
 	// run the count tics
 	if (counts > 0)
@@ -1962,7 +1962,7 @@ void TryRunTics (void)
 			NetUpdate ();	// check for new console commands
 		}
 		P_PredictPlayer(&players[consoleplayer]);
-		if(!*vizdoom_controlled || !*vizdoom_nosound) S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
+		if(!*viz_controlled || !*viz_nosound) S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
 	}
 }
 

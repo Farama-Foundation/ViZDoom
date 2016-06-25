@@ -75,7 +75,7 @@
 #include "SkylineBinPack.h"
 
 //VIZDOOM_CODE
-EXTERN_CVAR(Bool, vizdoom_window_hidden)
+EXTERN_CVAR(Bool, viz_window_hidden)
 
 // MACROS ------------------------------------------------------------------
 
@@ -536,7 +536,7 @@ bool D3DFB::CreateResources()
 	}
 
 	//VIZDOOM_CODE
-	if (*vizdoom_window_hidden){
+	if (*viz_window_hidden){
 		long WindowStyle = GetWindowLong(Window, GWL_STYLE);
 		WindowStyle &= ~(WS_VISIBLE);
 		WindowStyle |= WS_EX_TOOLWINDOW;

@@ -22,37 +22,45 @@
 
 #include "viz_shared_memory.h"
 #include "viz_message_queue.h"
-#include "viz_defines.h"
+#include "viz_game.h"
+#include "viz_input.h"
+#include "viz_screen.h"
 
 #include "doomstat.h"
 #include "v_video.h"
 
-bip::shared_memory_object vizdoomSM;
-size_t vizdoomSMSize;
-char * vizdoomSMName;
+bip::shared_memory_object vizSM;
+size_t vizSMSize;
+size_t vizSMGameStateAddress;
+size_t vizSMInputStateAddress;
+size_t vizSMScreenAddress;
+char * vizSMName;
 
-void ViZDoom_SMInit(const char * id){
+void VIZ_SMInit(const char * id){
 
-	vizdoomSMName = new char[strlen(VIZDOOM_SM_NAME_BASE) + strlen(id)];
-	strcpy(vizdoomSMName, VIZDOOM_SM_NAME_BASE);
-	strcat(vizdoomSMName, id);
+	vizSMName = new char[strlen(VIZ_SM_NAME_BASE) + strlen(id) + 1];
+	strcpy(vizSMName, VIZ_SM_NAME_BASE);
+	strcat(vizSMName, id);
 
     try {
-        bip::shared_memory_object::remove(vizdoomSMName);
-        vizdoomSM = bip::shared_memory_object(bip::open_or_create, vizdoomSMName, bip::read_write);
+        bip::shared_memory_object::remove(vizSMName);
+        vizSM = bip::shared_memory_object(bip::open_or_create, vizSMName, bip::read_write);
 
-        vizdoomSMSize = sizeof(ViZDoomInputStruct) + sizeof(ViZDoomGameVarsStruct) +
-                      (sizeof(BYTE) * screen->GetWidth() * screen->GetHeight() * 4);
-        vizdoomSM.truncate(vizdoomSMSize);
+        size_t vizSMGameStateAddress = 0;
+        size_t vizSMInputStateAddress = sizeof(VIZGameState);
+        size_t vizSMScreenAddress = sizeof(VIZGameState) + sizeof(VIZInputState);
+
+        vizSMSize = sizeof(VIZGameState) + sizeof(VIZInputState) + (sizeof(BYTE) * screen->GetWidth() * screen->GetHeight() * 4);
+        vizSM.truncate(vizSMSize);
     }
     catch(bip::interprocess_exception &ex){
-        printf("ViZDoom_SMInit: Error creating shared memory");
-        ViZDoom_MQSend(VIZDOOM_MSG_CODE_DOOM_ERROR);
+        printf("VIZ_SMInit: Error creating shared memory");
+        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR);
         exit(1);
     }
 }
 
-void ViZDoom_SMClose(){
-    //bip::shared_memory_object::remove(vizdoomSMName);
-	delete[] vizdoomSMName;
+void VIZ_SMClose(){
+    //bip::shared_memory_object::remove(vizSMName);
+	delete[] vizSMName;
 }

@@ -24,102 +24,101 @@
 #include "viz_input.h"
 #include "viz_game.h"
 #include "viz_main.h"
-#include "viz_defines.h"
 
-EXTERN_CVAR (Bool, vizdoom_async)
+EXTERN_CVAR (Bool, viz_async)
 
-bip::message_queue *vizdoomMQController;
-bip::message_queue *vizdoomMQDoom;
-char * vizdoomMQControllerName;
-char * vizdoomMQDoomName;
+bip::message_queue *vizMQController;
+bip::message_queue *vizMQDoom;
+char * vizMQControllerName;
+char * vizMQDoomName;
 
-void ViZDoom_MQInit(const char * id){
+void VIZ_MQInit(const char * id){
 
-	vizdoomMQControllerName = new char[strlen(VIZDOOM_MQ_NAME_CTR_BASE) + strlen(id)];
-	strcpy(vizdoomMQControllerName, VIZDOOM_MQ_NAME_CTR_BASE);
-	strcat(vizdoomMQControllerName, id);
+	vizMQControllerName = new char[strlen(VIZ_MQ_NAME_CTR_BASE) + strlen(id) + 1];
+	strcpy(vizMQControllerName, VIZ_MQ_NAME_CTR_BASE);
+	strcat(vizMQControllerName, id);
 
-	vizdoomMQDoomName = new char[strlen(VIZDOOM_MQ_NAME_DOOM_BASE) + strlen(id)];
-	strcpy(vizdoomMQDoomName, VIZDOOM_MQ_NAME_DOOM_BASE);
-	strcat(vizdoomMQDoomName, id);
+	vizMQDoomName = new char[strlen(VIZ_MQ_NAME_DOOM_BASE) + strlen(id) +1];
+	strcpy(vizMQDoomName, VIZ_MQ_NAME_DOOM_BASE);
+	strcat(vizMQDoomName, id);
 
     try{
-        vizdoomMQController = new bip::message_queue(bip::open_only, vizdoomMQControllerName);//, VIZDOOM_MQ_MAX_MSG_NUM, VIZDOOM_MQ_MAX_MSG_SIZE);
-        vizdoomMQDoom = new bip::message_queue(bip::open_only, vizdoomMQDoomName);//, VIZDOOM_MQ_MAX_MSG_NUM, VIZDOOM_MQ_MAX_MSG_SIZE);
+        vizMQController = new bip::message_queue(bip::open_only, vizMQControllerName);//, VIZ_MQ_MAX_MSG_NUM, VIZ_MQ_MAX_MSG_SIZE);
+        vizMQDoom = new bip::message_queue(bip::open_only, vizMQDoomName);//, VIZ_MQ_MAX_MSG_NUM, VIZ_MQ_MAX_MSG_SIZE);
     }
     catch(bip::interprocess_exception &ex){
-        Printf("ViZDoom_MQInit: Error creating message queues");
-        ViZDoom_MQSend(VIZDOOM_MSG_CODE_DOOM_ERROR);
+        Printf("VIZ_MQInit: Error creating message queues");
+        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR);
         exit(1);
     }
 }
 
-void ViZDoom_MQSend(uint8_t code){
-    ViziaMessageSignalStruct msg;
+void VIZ_MQSend(uint8_t code){
+    VIZMessageSignal msg;
     msg.code = code;
-    vizdoomMQController->send(&msg, sizeof(ViziaMessageSignalStruct), 0);
+    vizMQController->send(&msg, sizeof(VIZMessageSignal), 0);
 }
 
-void ViZDoom_MQSend(uint8_t code, const char * command){
-    ViziaMessageCommandStruct msg;
+void VIZ_MQSend(uint8_t code, const char * command){
+    VIZMessageCommand msg;
     msg.code = code;
-    strncpy(msg.command, command, VIZDOOM_MQ_MAX_CMD_LEN);
-    vizdoomMQController->send(&msg, sizeof(ViziaMessageCommandStruct), 0);
+    strncpy(msg.command, command, VIZ_MQ_MAX_CMD_LEN);
+    vizMQController->send(&msg, sizeof(VIZMessageCommand), 0);
 }
 
-void ViZDoom_MQRecv(void *msg, size_t &size, unsigned int &priority){
-    vizdoomMQDoom->receive(msg, sizeof(ViziaMessageCommandStruct), size, priority);
+void VIZ_MQRecv(void *msg, size_t &size, unsigned int &priority){
+    vizMQDoom->receive(msg, sizeof(VIZMessageCommand), size, priority);
 }
 
-bool ViZDoom_MQTryRecv(void *msg, size_t &size, unsigned int &priority){
-    return vizdoomMQDoom->try_receive(msg, sizeof(ViziaMessageCommandStruct), size, priority);
+bool VIZ_MQTryRecv(void *msg, size_t &size, unsigned int &priority){
+    return vizMQDoom->try_receive(msg, sizeof(VIZMessageCommand), size, priority);
 }
 
-void ViZDoom_MQTic(){
+void VIZ_MQTic(){
 
-    ViziaMessageCommandStruct msg;
+    VIZMessageCommand msg;
 
     unsigned int priority;
     bip::message_queue::size_type recv_size;
 
     do {
-        if(!*vizdoom_async) ViZDoom_MQRecv(&msg, recv_size, priority);
+        if(!*viz_async) VIZ_MQRecv(&msg, recv_size, priority);
         else{
-            bool isMsg = ViZDoom_MQTryRecv(&msg, recv_size, priority);
+            bool isMsg = VIZ_MQTryRecv(&msg, recv_size, priority);
             if(!isMsg) break;
         }
         switch(msg.code){
-            case VIZDOOM_MSG_CODE_TIC :
-                vizdoomNextTic = true;
+            case VIZ_MSG_CODE_TIC :
+                vizNextTic = true;
                 break;
 
-            case VIZDOOM_MSG_CODE_UPDATE:
-                ViZDoom_Update();
-                ViZDoom_GameVarsTic();
-                ViZDoom_MQSend(VIZDOOM_MSG_CODE_DOOM_DONE);
+            case VIZ_MSG_CODE_UPDATE:
+                VIZ_Update();
+                VIZ_GameStateTic();
+                VIZ_MQSend(VIZ_MSG_CODE_DOOM_DONE);
                 break;
 
-            case VIZDOOM_MSG_CODE_TIC_N_UPDATE:
-                vizdoomUpdate = true;
-                vizdoomNextTic = true;
+            case VIZ_MSG_CODE_TIC_N_UPDATE:
+                vizUpdate = true;
+                vizNextTic = true;
                 break;
 
-            case VIZDOOM_MSG_CODE_COMMAND :
-                ViZDoom_Command(strdup(msg.command));
+            case VIZ_MSG_CODE_COMMAND :
+                VIZ_Command(strdup(msg.command));
                 break;
 
-            case VIZDOOM_MSG_CODE_CLOSE :
-            case VIZDOOM_MSG_CODE_ERROR:
+            case VIZ_MSG_CODE_CLOSE :
+            case VIZ_MSG_CODE_ERROR:
                 exit(0);
 
             default : break;
         }
-    }while(!vizdoomNextTic);
+    }while(!vizNextTic);
 }
 
-void ViZDoom_MQClose(){
-    //bip::message_queue::remove(vizdoomMQControllerName);
-    //bip::message_queue::remove(vizdoomMQDoomName);
-	delete[] vizdoomMQControllerName;
-	delete[] vizdoomMQDoomName;
+void VIZ_MQClose(){
+    //bip::message_queue::remove(vizMQControllerName);
+    //bip::message_queue::remove(vizMQDoomName);
+	delete[] vizMQControllerName;
+	delete[] vizMQDoomName;
 }
