@@ -1652,7 +1652,7 @@ void G_DeathMatchSpawnPlayer (int playernum)
 	AActor *mo = P_SpawnPlayer(spot, playernum);
 	if (mo != NULL) P_PlayerStartStomp(mo);
 
-	VIZ_DEBUG_PRINT("g_game.cpp: G_DeathMatchSpawnPlayer: tic: %d, playernum: %d (%s), spot: %d %d %d\n", gametic, playernum, players[playernum].userinfo.GetName(), spot->x, spot->y, spot->z);
+	VIZ_DEBUG_PRINT("G_DeathMatchSpawnPlayer: tic: %d, playernum: %d (%s), spot: %d %d %d\n", gametic, playernum, players[playernum].userinfo.GetName(), spot->x, spot->y, spot->z);
 }
 
 //

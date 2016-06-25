@@ -36,8 +36,9 @@ bip::mapped_region *vizInputSMRegion = NULL;
 VIZInputState *vizInput = NULL;
 bool vizInputInited = false;
 int vizLastInputBT[VIZ_BT_COUNT];
-int vizLastInputUpdate[VIZ_BT_COUNT];
+unsigned int vizLastInputUpdate[VIZ_BT_COUNT];
 
+EXTERN_CVAR (Bool, viz_debug)
 EXTERN_CVAR (Bool, viz_allow_input)
 
 void VIZ_Command(char * cmd){
@@ -47,6 +48,8 @@ void VIZ_Command(char * cmd){
 bool VIZ_CommmandFilter(const char *cmd){
 
     if(!vizInputInited || !*viz_allow_input) return true;
+
+    VIZ_DEBUG_PRINT("VIZ_CommmandFilter: gametic: %d, cmd: %s\n", gametic, cmd);
 
     bool action = false;
     int state = 1;
@@ -103,8 +106,6 @@ bool VIZ_CommmandFilter(const char *cmd){
 		
 		delete[] ckeckCmd;
     }
-
-    //Printf("%d %s\n", gametic, cmd);
 
     return true;
 }
@@ -233,8 +234,6 @@ char* VIZ_AddStateToBTCommmand(char *& cmd, int state){
 	delete[] cmd;
 	cmd = stateCmd;
 
-	//Printf("%d %s\n", gametic, cmd);
-
 	return stateCmd;
 }
 
@@ -303,8 +302,10 @@ void VIZ_AddBTCommand(VIZButton button, int state){
 void VIZ_InputInit() {
 
     try {
-        vizInputSMRegion = new bip::mapped_region(vizSM, bip::read_write, vizSMInputStateAddress, sizeof(VIZInputState));
+        vizInputSMRegion = new bip::mapped_region(vizSM, bip::read_write, vizSMInputAddress, sizeof(VIZInputState));
         vizInput = static_cast<VIZInputState *>(vizInputSMRegion->get_address());
+
+        VIZ_DEBUG_PRINT("VIZ_InputInit: inputAddress: %zu, inputRealAddress: %p, inputSize: %zu\n", vizSMInputAddress, vizInput, sizeof(VIZInputState));
     }
     catch (bip::interprocess_exception &ex) {
         Printf("VIZ_InputInit: Error creating Input SM");

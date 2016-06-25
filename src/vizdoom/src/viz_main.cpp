@@ -60,10 +60,10 @@ void VIZ_Init(){
     Printf("VIZ_Init: Instance id: %s\n", *viz_instance_id);
 
     if(*viz_controlled) {
-        Printf("VIZ_Init: Init message queues\n");
+        Printf("VIZ_Init: Init message queues.\n");
         VIZ_MQInit(*viz_instance_id);
 
-        Printf("VIZ_Init: Init shared memory\n");
+        Printf("VIZ_Init: Init shared memory.\n");
         VIZ_SMInit(*viz_instance_id);
 
         VIZ_GameStateInit();

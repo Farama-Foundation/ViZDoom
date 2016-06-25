@@ -113,9 +113,11 @@ void VIZ_GameStateInit(){
     try {
         vizGameStateSMRegion = new bip::mapped_region(vizSM, bip::read_write, vizSMGameStateAddress, sizeof(VIZGameState));
         vizGameState = static_cast<VIZGameState *>(vizGameStateSMRegion->get_address());
+
+        VIZ_DEBUG_PRINT("VIZ_GameStateInit: gameStateAddress: %zu, gameStateRealAddress: %p, gameStateSize: %zu\n", vizSMGameStateAddress, vizGameState, sizeof(VIZGameState));
     }
     catch(bip::interprocess_exception &ex){
-        Printf("VIZ_GameVarsInit: Error GameVars SM");
+        Printf("VIZ_GameStateInit: Error GameState SM");
         VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR);
         exit(1);
     }
@@ -124,11 +126,12 @@ void VIZ_GameStateInit(){
     strncpy(vizGameState->VERSION_STR, VIZ_VERSION_STR, 8);
     vizGameState->SM_SIZE = vizSMSize;
 
+    VIZ_DEBUG_PRINT("VIZ_GameStateInit: VERSION %d, VERSION_STR: %s, SM_SIZE: %zu\n", vizGameState->VERSION, vizGameState->VERSION_STR, vizGameState->SM_SIZE);
 }
 
 void VIZ_GameStateTic(){
 
-    VIZ_DEBUG_PRINT("viz_game.cpp: VIZ_GameVarsTic: tic %d, netgame: %d, multiplayer: %d, recording: %d, playback: %d, in_level: %d, map_tic: %d\n",
+    VIZ_DEBUG_PRINT("VIZ_GameStateTic: tic %d, netgame: %d, multiplayer: %d, recording: %d, playback: %d, in_level: %d, map_tic: %d\n",
                         gametic, netgame, multiplayer, demorecording, demoplayback, gamestate != GS_LEVEL, level.maptime);
 
     vizGameState->GAME_TIC = (unsigned int)gametic;
@@ -209,7 +212,7 @@ void VIZ_GameStateTic(){
     vizGameState->PLAYER_COUNT = 1;
     if(netgame || multiplayer) {
 
-        //VIZ_DEBUG_PRINT("viz_game.cpp: VIZ_GameVarsTic: tic %d, players: \n", gametic);
+        //VIZ_DEBUG_PRINT("VIZ_GameStateTic: tic %d, players: \n", gametic);
 
         vizGameState->PLAYER_COUNT = 0;
         for (unsigned int i = 0; i < VIZ_MAX_PLAYERS; ++i) {

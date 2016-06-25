@@ -31,7 +31,7 @@ namespace bip = boost::interprocess;
 extern bip::shared_memory_object vizSM;
 extern size_t vizSMSize;
 extern size_t vizSMGameStateAddress;
-extern size_t vizSMInputStateAddress;
+extern size_t vizSMInputAddress;
 extern size_t vizSMScreenAddress;
 
 #define VIZ_SM_NAME_BASE "ViZDoomSM"
