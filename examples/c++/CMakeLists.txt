@@ -13,7 +13,7 @@ if (UNIX AND NOT APPLE)
 	set_property(TARGET libvizdoom PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../bin/libvizdoom.a)
 endif()
 if (APPLE)
-	set_property(TARGET libvizdoom PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../bin/libvizdoom.lib)
+	set_property(TARGET libvizdoom PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../bin/libvizdoom.dylib)
 endif()
 
 find_package(Boost COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
