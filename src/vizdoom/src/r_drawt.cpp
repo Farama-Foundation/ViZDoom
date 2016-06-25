@@ -46,7 +46,7 @@
 #include "r_main.h"
 #include "r_things.h"
 #include "v_video.h"
-#include "vizdoom_depth.h"
+#include "viz_depth.h"
 
 // I should have commented this stuff better.
 //

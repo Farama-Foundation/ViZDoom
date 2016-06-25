@@ -195,14 +195,14 @@ void VIZDepthBuffer::sizeUpdate() {
         this->bufferWidth= (unsigned)screen->GetWidth();
         this->bufferSize=this->bufferHeight*this->bufferWidth;
         this->buffer = new BYTE[this->bufferSize];
-#ifdef VIZDOOM_DEPTH_TEST
+#ifdef VIZ_DEPTH_TEST
         SDL_SetWindowSize(this->window, this->bufferWidth,this->bufferHeight);
         this->surface=SDL_GetWindowSurface(this->window);
 #endif
     }
 }
 
-#ifdef VIZDOOM_DEPTH_TEST
+#ifdef VIZ_DEPTH_TEST
 //update depth debug window
 void VIZDepthBuffer::Update() {
     SDL_Surface* surf = SDL_CreateRGBSurfaceFrom(this->buffer, this->bufferWidth, this->bufferHeight, 8,

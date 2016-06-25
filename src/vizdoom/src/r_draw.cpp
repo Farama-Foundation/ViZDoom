@@ -43,7 +43,7 @@
 #include "gi.h"
 #include "stats.h"
 #include "x86.h"
-#include "vizdoom_depth.h"
+#include "viz_depth.h"
 
 #undef RANGECHECK
 

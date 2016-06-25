@@ -20,14 +20,14 @@
  THE SOFTWARE.
 */
 
-#ifndef __VIZDOOM_DEPTH_H__
-#define __VIZDOOM_DEPTH_H__
+#ifndef __VIZ_DEPTH_H__
+#define __VIZ_DEPTH_H__
 
 //UNCOMMENT TO ENABLE DEPTH BUFFER DEBUG WINDOW
-//#define VIZDOOM_DEPTH_TEST 1
+//#define VIZ_DEPTH_TEST 1
 
 //UNCOMMENT TO ENABLE COLOR-BASED DEPTH TEST
-//#define VIZDOOM_DEPTH_COLORS 1
+//#define VIZ_DEPTH_COLORS 1
 
 #include "basictypes.h"
 
@@ -61,7 +61,7 @@ public:
     bool isLocked();
     void sizeUpdate();
     unsigned int helperBuffer[4];
-#ifdef VIZDOOM_DEPTH_TEST
+#ifdef VIZ_DEPTH_TEST
     void Update();
 #endif
 private:

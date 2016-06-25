@@ -20,21 +20,24 @@
  THE SOFTWARE.
 */
 
-#ifndef __VIZDOOM_MAIN_H__
-#define __VIZDOOM_MAIN_H__
+#ifndef __VIZ_MAIN_H__
+#define __VIZ_MAIN_H__
 
-extern int vizdoom_time;
+extern bool vizNextTic;
+extern bool vizUpdate;
+extern unsigned int vizLastUpdate;
+extern int vizTime;
 
-void ViZDoom_Init();
+void VIZ_Init();
 
-void ViZDoom_AsyncStartTic();
+void VIZ_AsyncStartTic();
 
-void ViZDoom_Tic();
+void VIZ_Tic();
 
-void ViZDoom_Update();
+void VIZ_Update();
 
-bool ViZDoom_IsPaused();
+bool VIZ_IsPaused();
 
-void ViZDoom_Close();
+void VIZ_Close();
 
 #endif

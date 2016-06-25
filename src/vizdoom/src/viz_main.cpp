@@ -27,9 +27,9 @@
 #include "viz_defines.h"
 #include "viz_input.h"
 #include "viz_game.h"
-#include "vizdoom_screen.h"
-#include "vizdoom_shared_memory.h"
-#include "vizdoom_message_queue.h"
+#include "viz_screen.h"
+#include "viz_shared_memory.h"
+#include "viz_message_queue.h"
 
 #include "d_main.h"
 #include "d_net.h"
@@ -37,57 +37,56 @@
 namespace b = boost;
 namespace bt = boost::this_thread;
 
-CVAR (Bool, vizdoom_debug, false, CVAR_NOSET)
-CVAR (Bool, vizdoom_controlled, false, CVAR_NOSET)
-CVAR (Bool, vizdoom_async, false, CVAR_NOSET)
-CVAR (String, vizdoom_instance_id, "0", CVAR_NOSET)
-CVAR (Int, vizdoom_screen_format, 0, CVAR_NOSET)
-CVAR (Bool, vizdoom_noconsole, false, CVAR_NOSET)
-CVAR (Bool, vizdoom_nosound, false, CVAR_NOSET)
-CVAR (Bool, vizdoom_window_hidden, false, CVAR_NOSET)
-CVAR (Bool, vizdoom_noxserver, false, CVAR_NOSET)
-CVAR (Bool, vizdoom_allow_input, false, CVAR_NOSET)
-CVAR (Bool, vizdoom_nocheat, false, CVAR_NOSET)
-CVAR (Bool, vizdoom_render_all, false, CVAR_NOSET)
-CVAR (Bool, vizdoom_loop_map, false, CVAR_NOSET)
+CVAR (Bool, viz_debug, false, CVAR_NOSET)
+CVAR (Bool, viz_controlled, false, CVAR_NOSET)
+CVAR (Bool, viz_async, false, CVAR_NOSET)
+CVAR (String, viz_instance_id, "0", CVAR_NOSET)
+CVAR (Int, viz_screen_format, 0, CVAR_NOSET)
+CVAR (Bool, viz_noconsole, false, CVAR_NOSET)
+CVAR (Bool, viz_nosound, false, CVAR_NOSET)
+CVAR (Bool, viz_window_hidden, false, CVAR_NOSET)
+CVAR (Bool, viz_noxserver, false, CVAR_NOSET)
+CVAR (Bool, viz_allow_input, false, CVAR_NOSET)
+CVAR (Bool, viz_nocheat, false, CVAR_NOSET)
+CVAR (Bool, viz_render_all, false, CVAR_NOSET)
+CVAR (Bool, viz_loop_map, false, CVAR_NOSET)
 
-int vizdoom_time = 0;
-bool vizdoomNextTic = false;
-bool vizdoomUpdate = false;
-unsigned int vizdoomLastUpdate = 0;
+int vizTime = 0;
+bool vizNextTic = false;
+bool vizUpdate = false;
+unsigned int vizLastUpdate = 0;
 
-void ViZDoom_Init(){
-    Printf("ViZDoom_Init: Instance id: %s\n", *vizdoom_instance_id);
+void VIZ_Init(){
+    Printf("VIZ_Init: Instance id: %s\n", *viz_instance_id);
 
-    if(*vizdoom_controlled) {
-        Printf("ViZDoom_Init: Init message queues\n");
-        ViZDoom_MQInit(*vizdoom_instance_id);
+    if(*viz_controlled) {
+        Printf("VIZ_Init: Init message queues\n");
+        VIZ_MQInit(*viz_instance_id);
 
-        Printf("ViZDoom_Init: Init shared memory\n");
-        ViZDoom_SMInit(*vizdoom_instance_id);
+        Printf("VIZ_Init: Init shared memory\n");
+        VIZ_SMInit(*viz_instance_id);
 
-        ViZDoom_InputInit();
-        ViZDoom_GameVarsInit();
+        VIZ_GameStateInit();
+        VIZ_InputInit();
+        VIZ_ScreenInit();
 
-        ViZDoom_ScreenInit();
-
-        vizdoomNextTic = true;
-        vizdoomUpdate = true;
+        vizNextTic = true;
+        vizUpdate = true;
     }
 }
 
-void ViZDoom_Close(){
-    if(*vizdoom_controlled) {
-        ViZDoom_InputClose();
-        ViZDoom_GameVarsClose();
-        ViZDoom_ScreenClose();
+void VIZ_Close(){
+    if(*viz_controlled) {
+        VIZ_InputClose();
+        VIZ_GameStateClose();
+        VIZ_ScreenClose();
 
-        ViZDoom_SMClose();
-        ViZDoom_MQClose();
+        VIZ_SMClose();
+        VIZ_MQClose();
     }
 }
 
-void ViZDoom_AsyncStartTic(){
+void VIZ_AsyncStartTic(){
     try{
         bt::interruption_point();
     }
@@ -95,13 +94,13 @@ void ViZDoom_AsyncStartTic(){
         exit(0);
     }
 
-    if (*vizdoom_controlled && !ViZDoom_IsPaused()){
-        ViZDoom_MQTic();
-        if(vizdoomNextTic) ViZDoom_InputTic();
+    if (*viz_controlled && !VIZ_IsPaused()){
+        VIZ_MQTic();
+        if(vizNextTic) VIZ_InputTic();
     }
 }
 
-void ViZDoom_Tic(){
+void VIZ_Tic(){
 
     try{
         bt::interruption_point();
@@ -110,34 +109,34 @@ void ViZDoom_Tic(){
         exit(0);
     }
 
-    if (*vizdoom_controlled && !ViZDoom_IsPaused()){
+    if (*viz_controlled && !VIZ_IsPaused()){
 
         NetUpdate();
 
-        if(vizdoomUpdate) {
-            ViZDoom_Update();
+        if(vizUpdate) {
+            VIZ_Update();
         }
-        if(vizdoomNextTic) {
-            ViZDoom_GameVarsTic();
-            ViZDoom_MQSend(VIZDOOM_MSG_CODE_DOOM_DONE);
-            vizdoomNextTic = false;
+        if(vizNextTic) {
+            VIZ_GameStateTic();
+            VIZ_MQSend(VIZ_MSG_CODE_DOOM_DONE);
+            vizNextTic = false;
         }
 
-        if(!*vizdoom_async){
-            ViZDoom_MQTic();
-            ViZDoom_InputTic();
+        if(!*viz_async){
+            VIZ_MQTic();
+            VIZ_InputTic();
         }
     }
 }
 
-void ViZDoom_Update(){
+void VIZ_Update(){
     D_Display();
-    ViZDoom_ScreenUpdate();
-    vizdoomLastUpdate = VIZDOOM_TIME;
-    vizdoomUpdate = false;
+    VIZ_ScreenUpdate();
+    vizLastUpdate = VIZ_TIME;
+    vizUpdate = false;
 }
 
-bool ViZDoom_IsPaused(){
+bool VIZ_IsPaused(){
     return menuactive != MENU_Off;
 
     //&& (gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)

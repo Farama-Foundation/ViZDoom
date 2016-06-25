@@ -62,7 +62,7 @@
 #include "r_data/colormaps.h"
 #include "r_data/voxels.h"
 #include "p_local.h"
-#include "vizdoom_depth.h"
+#include "viz_depth.h"
 
 // [RH] A c-buffer. Used for keeping track of offscreen voxel spans.
 

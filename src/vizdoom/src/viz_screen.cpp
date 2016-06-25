@@ -22,7 +22,7 @@
 
 #include "viz_screen.h"
 #include "viz_defines.h"
-#include "vizdoom_shared_memory.h"
+#include "viz_shared_memory.h"
 #include "viz_message_queue.h"
 #include "viz_depth.h"
 
@@ -30,102 +30,102 @@
 #include "doomstat.h"
 #include "v_video.h"
 
-unsigned int vizdoomScreenHeight;
-unsigned int vizdoomScreenWidth;
-size_t vizdoomScreenPitch;
-size_t vizdoomScreenSize;
+unsigned int vizScreenHeight;
+unsigned int vizScreenWidth;
+size_t vizScreenPitch;
+size_t vizScreenSize;
 
 int posMulti, rPos, gPos, bPos, aPos;
 bool alpha;
 
-EXTERN_CVAR (Bool, vizdoom_debug)
-EXTERN_CVAR (Int, vizdoom_screen_format)
-EXTERN_CVAR (Bool, vizdoom_nocheat)
+EXTERN_CVAR (Bool, viz_debug)
+EXTERN_CVAR (Int, viz_screen_format)
+EXTERN_CVAR (Bool, viz_nocheat)
 
-bip::mapped_region *vizdoomScreenSMRegion = NULL;
-BYTE *vizdoomScreen = NULL;
+bip::mapped_region *vizScreenSMRegion = NULL;
+BYTE *vizScreen = NULL;
 
-void ViZDoom_ScreenInit() {
+void VIZ_ScreenInit() {
 
-    vizdoomScreenSMRegion = NULL;
+    vizScreenSMRegion = NULL;
 
-    vizdoomScreenWidth = (unsigned int) screen->GetWidth();
-    vizdoomScreenHeight = (unsigned int) screen->GetHeight();
-    vizdoomScreenSize = sizeof(BYTE) * vizdoomScreenWidth * vizdoomScreenHeight;
-    vizdoomScreenPitch = vizdoomScreenWidth;
+    vizScreenWidth = (unsigned int) screen->GetWidth();
+    vizScreenHeight = (unsigned int) screen->GetHeight();
+    vizScreenSize = sizeof(BYTE) * vizScreenWidth * vizScreenHeight;
+    vizScreenPitch = vizScreenWidth;
 
-    switch(*vizdoom_screen_format){
-        case VIZDOOM_SCREEN_CRCGCB :
+    switch(*viz_screen_format){
+        case VIZ_SCREEN_CRCGCB :
             posMulti = 1;
-            rPos = 0; gPos = (int)vizdoomScreenSize; bPos = 2 * (int)vizdoomScreenSize;
+            rPos = 0; gPos = (int)vizScreenSize; bPos = 2 * (int)vizScreenSize;
             alpha = false;
-            vizdoomScreenSize *= 3;
+            vizScreenSize *= 3;
             break;
 
-        case VIZDOOM_SCREEN_CRCGCBDB :
+        case VIZ_SCREEN_CRCGCBDB :
             posMulti = 1;
-            rPos = 0; gPos = (int)vizdoomScreenSize; bPos = 2 * (int)vizdoomScreenSize;
+            rPos = 0; gPos = (int)vizScreenSize; bPos = 2 * (int)vizScreenSize;
             alpha = false;
-            vizdoomScreenSize *= 4;
+            vizScreenSize *= 4;
             break;
 
-        case VIZDOOM_SCREEN_RGB24 :
-            vizdoomScreenSize *= 3;
-            vizdoomScreenPitch *= 3;
+        case VIZ_SCREEN_RGB24 :
+            vizScreenSize *= 3;
+            vizScreenPitch *= 3;
             posMulti = 3;
             rPos = 2; gPos = 1; bPos = 0;
             alpha = false;
             break;
 
-        case VIZDOOM_SCREEN_RGBA32 :
-            vizdoomScreenSize *= 4;
-            vizdoomScreenPitch *= 4;
+        case VIZ_SCREEN_RGBA32 :
+            vizScreenSize *= 4;
+            vizScreenPitch *= 4;
             posMulti = 4;
             rPos = 3, gPos = 2, bPos = 1;
             alpha = true; aPos = 0;
             break;
 
-        case VIZDOOM_SCREEN_ARGB32 :
-            vizdoomScreenSize *= 4;
-            vizdoomScreenPitch *= 4;
+        case VIZ_SCREEN_ARGB32 :
+            vizScreenSize *= 4;
+            vizScreenPitch *= 4;
             posMulti = 4;
             rPos = 2, gPos = 1, bPos = 0;
             alpha = true; aPos = 3;
             break;
 
-        case VIZDOOM_SCREEN_CBCGCR :
+        case VIZ_SCREEN_CBCGCR :
             posMulti = 1;
-            rPos = 2 * (int)vizdoomScreenSize; gPos = (int)vizdoomScreenSize, bPos = 0;
+            rPos = 2 * (int)vizScreenSize; gPos = (int)vizScreenSize, bPos = 0;
             alpha = false;
-            vizdoomScreenSize *= 3;
+            vizScreenSize *= 3;
             break;
 
-        case VIZDOOM_SCREEN_CBCGCRDB :
+        case VIZ_SCREEN_CBCGCRDB :
             posMulti = 1;
-            rPos = 2 * (int)vizdoomScreenSize; gPos = (int)vizdoomScreenSize, bPos = 0;
+            rPos = 2 * (int)vizScreenSize; gPos = (int)vizScreenSize, bPos = 0;
             alpha = false;
-            vizdoomScreenSize *= 4;
+            vizScreenSize *= 4;
             break;
 
-        case VIZDOOM_SCREEN_BGR24 :
-            vizdoomScreenSize *= 3;
-            vizdoomScreenPitch *= 3;
+        case VIZ_SCREEN_BGR24 :
+            vizScreenSize *= 3;
+            vizScreenPitch *= 3;
             posMulti = 3;
             rPos = 0; gPos = 1; bPos = 2;
             alpha = false;
             break;
 
-        case VIZDOOM_SCREEN_BGRA32 :
-            vizdoomScreenSize *= 4;
-            vizdoomScreenPitch *= 4;
+        case VIZ_SCREEN_BGRA32 :
+            vizScreenSize *= 4;
+            vizScreenPitch *= 4;
             posMulti = 4;
             rPos = 1; gPos = 2; bPos = 3;
             alpha = true; aPos = 0;
             break;
 
-        case VIZDOOM_SCREEN_ABGR32 :
-            vizdoomScreenSize *= 4;
-            vizdoomScreenPitch *= 4;
+        case VIZ_SCREEN_ABGR32 :
+            vizScreenSize *= 4;
+            vizScreenPitch *= 4;
             posMulti = 4;
             rPos = 0; gPos = 1; bPos = 2;
             alpha = true; aPos = 3;
@@ -136,44 +136,43 @@ void ViZDoom_ScreenInit() {
     }
 
     try {
-        vizdoomScreenSMRegion = new bip::mapped_region(vizdoomSM, bip::read_write,
-            sizeof(ViZDoomGameVarsStruct) + sizeof(ViZDoomInputStruct), vizdoomScreenSize);
-        vizdoomScreen = static_cast<BYTE *>(vizdoomScreenSMRegion->get_address());
+        vizScreenSMRegion = new bip::mapped_region(vizSM, bip::read_write, vizSMScreenAddress, vizScreenSize);
+        vizScreen = static_cast<BYTE *>(vizScreenSMRegion->get_address());
 
-        Printf("ViZDoom_ScreenInit: width: %d, height: %d, pitch: %zu, format: ",
-               vizdoomScreenWidth, vizdoomScreenHeight, vizdoomScreenPitch);
+        Printf("VIZ_ScreenInit: width: %d, height: %d, pitch: %zu, format: ",
+               vizScreenWidth, vizScreenHeight, vizScreenPitch);
 
-        switch(*vizdoom_screen_format){
-            case VIZDOOM_SCREEN_CRCGCB: Printf("CRCGCB\n"); break;
-            case VIZDOOM_SCREEN_CRCGCBDB: Printf("CRCGCBDB\n"); break;
-            case VIZDOOM_SCREEN_RGB24: Printf("RGB24\n"); break;
-            case VIZDOOM_SCREEN_RGBA32: Printf("RGBA32\n"); break;
-            case VIZDOOM_SCREEN_ARGB32: Printf("ARGB32\n"); break;
-            case VIZDOOM_SCREEN_CBCGCR: Printf("CBCGCR\n"); break;
-            case VIZDOOM_SCREEN_CBCGCRDB: Printf("CBCGCRDB\n"); break;
-            case VIZDOOM_SCREEN_BGR24: Printf("BGR24\n"); break;
-            case VIZDOOM_SCREEN_BGRA32: Printf("BGRA32\n"); break;
-            case VIZDOOM_SCREEN_ABGR32: Printf("ABGR32\n"); break;
-            case VIZDOOM_SCREEN_GRAY8: Printf("GRAY8\n"); break;
-            case VIZDOOM_SCREEN_DEPTH_BUFFER8: Printf("DEPTH_BUFFER8\n"); break;
-            case VIZDOOM_SCREEN_DOOM_256_COLORS8: Printf("DOOM_256_COLORS\n"); break;
-            default: Printf("UNKNOWN\n");
+        switch(*viz_screen_format){
+            case VIZ_SCREEN_CRCGCB:             Printf("CRCGCB\n"); break;
+            case VIZ_SCREEN_CRCGCBDB:           Printf("CRCGCBDB\n"); break;
+            case VIZ_SCREEN_RGB24:              Printf("RGB24\n"); break;
+            case VIZ_SCREEN_RGBA32:             Printf("RGBA32\n"); break;
+            case VIZ_SCREEN_ARGB32:             Printf("ARGB32\n"); break;
+            case VIZ_SCREEN_CBCGCR:             Printf("CBCGCR\n"); break;
+            case VIZ_SCREEN_CBCGCRDB:           Printf("CBCGCRDB\n"); break;
+            case VIZ_SCREEN_BGR24:              Printf("BGR24\n"); break;
+            case VIZ_SCREEN_BGRA32:             Printf("BGRA32\n"); break;
+            case VIZ_SCREEN_ABGR32:             Printf("ABGR32\n"); break;
+            case VIZ_SCREEN_GRAY8:              Printf("GRAY8\n"); break;
+            case VIZ_SCREEN_DEPTH_BUFFER8:      Printf("DEPTH_BUFFER8\n"); break;
+            case VIZ_SCREEN_DOOM_256_COLORS8:   Printf("DOOM_256_COLORS\n"); break;
+            default:                            Printf("UNKNOWN\n");
         }
     }
     catch(bip::interprocess_exception &ex){
-        Printf("ViZDoom_ScreenInit: Error creating ViZDoomScreen SM");
-        ViZDoom_MQSend(VIZDOOM_MSG_CODE_DOOM_ERROR);
+        Printf("VIZ_ScreenInit: Error creating ViZDoomScreen SM");
+        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR);
         exit(1);
     }
 
-    if((*vizdoom_screen_format==VIZDOOM_SCREEN_CBCGCRDB
-       ||*vizdoom_screen_format==VIZDOOM_SCREEN_CRCGCBDB
-       ||*vizdoom_screen_format==VIZDOOM_SCREEN_DEPTH_BUFFER8) && !*vizdoom_nocheat) {
-        depthMap = new ViZDoomDepthBuffer(vizdoomScreenWidth, vizdoomScreenHeight);
+    if((*viz_screen_format==VIZ_SCREEN_CBCGCRDB
+       ||*viz_screen_format==VIZ_SCREEN_CRCGCBDB
+       ||*viz_screen_format==VIZ_SCREEN_DEPTH_BUFFER8) && !*viz_nocheat) {
+        depthMap = new VIZDepthBuffer(vizScreenWidth, vizScreenHeight);
     }
 }
 
-void ViZDoom_ScreenUpdate(){
+void VIZ_ScreenUpdate(){
 
     screen->Lock(true);
 
@@ -185,38 +184,38 @@ void ViZDoom_ScreenUpdate(){
 
     if (buffer != NULL) {
 
-        if(*vizdoom_screen_format == VIZDOOM_SCREEN_DOOM_256_COLORS8){
+        if(*viz_screen_format == VIZ_SCREEN_DOOM_256_COLORS8){
             for(unsigned int i = 0; i < screenSize; ++i){
                 //
                 unsigned int b = i + (i / bufferWidth) * bufferPitchWidthDiff;
-                vizdoomScreen[i] = buffer[b];
+                vizScreen[i] = buffer[b];
             }
         }
         else {
             PalEntry *palette;
             palette = screen->GetPalette();
 
-            if(*vizdoom_screen_format == VIZDOOM_SCREEN_GRAY8){
+            if(*viz_screen_format == VIZ_SCREEN_GRAY8){
                 for(unsigned int i = 0; i < screenSize; ++i){
                     unsigned int b = i + (i / bufferWidth) * bufferPitchWidthDiff;
-                    vizdoomScreen[i] = 0.21 * palette[buffer[b]].r + 0.72 * palette[buffer[b]].g + 0.07 *palette[buffer[b]].b;
+                    vizScreen[i] = 0.21 * palette[buffer[b]].r + 0.72 * palette[buffer[b]].g + 0.07 *palette[buffer[b]].b;
                 }
             }
-            else if(*vizdoom_screen_format == VIZDOOM_SCREEN_DEPTH_BUFFER8 && !*vizdoom_nocheat){
-                memcpy(vizdoomScreen, depthMap->getBuffer(), depthMap->getBufferSize());
+            else if(*viz_screen_format == VIZ_SCREEN_DEPTH_BUFFER8 && !*viz_nocheat){
+                memcpy(vizScreen, depthMap->getBuffer(), depthMap->getBufferSize());
             }
             else {
                 for (unsigned int i = 0; i < screenSize; ++i) {
                     unsigned int pos = i * posMulti;
                     unsigned int b = i + (i / bufferWidth) * bufferPitchWidthDiff;
-                    vizdoomScreen[pos + rPos] = palette[buffer[b]].r;
-                    vizdoomScreen[pos + gPos] = palette[buffer[b]].g;
-                    vizdoomScreen[pos + bPos] = palette[buffer[b]].b;
-                    if (alpha) vizdoomScreen[pos + aPos] = 255;
+                    vizScreen[pos + rPos] = palette[buffer[b]].r;
+                    vizScreen[pos + gPos] = palette[buffer[b]].g;
+                    vizScreen[pos + bPos] = palette[buffer[b]].b;
+                    if (alpha) vizScreen[pos + aPos] = 255;
                 }
 
-                if((*vizdoom_screen_format == VIZDOOM_SCREEN_CRCGCBDB || *vizdoom_screen_format == VIZDOOM_SCREEN_CBCGCRDB) && !*vizdoom_nocheat){
-                    memcpy(vizdoomScreen + 3*screenSize, depthMap->getBuffer(), depthMap->getBufferSize());
+                if((*viz_screen_format == VIZ_SCREEN_CRCGCBDB || *viz_screen_format == VIZ_SCREEN_CBCGCRDB) && !*viz_nocheat){
+                    memcpy(vizScreen + 3*screenSize, depthMap->getBuffer(), depthMap->getBufferSize());
                 }
             }
         }
@@ -225,7 +224,7 @@ void ViZDoom_ScreenUpdate(){
     screen->Unlock();
 }
 
-void ViZDoom_ScreenClose(){
-    delete vizdoomScreenSMRegion;
+void VIZ_ScreenClose(){
+    delete vizScreenSMRegion;
     delete depthMap;
 }

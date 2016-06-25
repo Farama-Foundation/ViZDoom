@@ -57,7 +57,7 @@
 #include "v_font.h"
 #include "r_data/colormaps.h"
 #include "farchive.h"
-#include "vizdoom_depth.h"
+#include "viz_depth.h"
 
 // MACROS ------------------------------------------------------------------
 
