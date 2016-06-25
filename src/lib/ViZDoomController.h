@@ -72,7 +72,6 @@ namespace vizdoom{
 #define MSG_CODE_SIGABRT                30 + SIGABRT
 #define MSG_CODE_SIGTERM                30 + SIGTERM
 
-
 /* OSes */
 #ifdef __linux__
 #define OS_LINUX
@@ -89,46 +88,45 @@ namespace vizdoom{
         /* SM structs */
         /*------------------------------------------------------------------------------------------------------------*/
 
-        struct InputStruct {
-            int BT[ButtonCount];
-            bool BT_AVAILABLE[ButtonCount];
-            int BT_MAX_VALUE[DeltaButtonCount];
-        };
-
-        struct GameVariablesStruct {
+        struct GameState {
             unsigned int VERSION;
             char VERSION_STR[8];
+            size_t SM_SIZE;
 
             unsigned int GAME_TIC;
             int GAME_STATE;
             int GAME_ACTION;
             unsigned int GAME_STATIC_SEED;
-            bool GAME_SETTING_CONTROLLER;
-            bool NET_GAME;
+            bool GAME_SETTINGS_CONTROLLER;
+            bool GAME_NETGAME;
+            bool GAME_MULTIPLAYER;
+            bool DEMO_RECORDING;
+            bool DEMO_PLAYBACK;
 
+            // SCREEN
             unsigned int SCREEN_WIDTH;
             unsigned int SCREEN_HEIGHT;
             size_t SCREEN_PITCH;
             size_t SCREEN_SIZE;
             int SCREEN_FORMAT;
 
+            // MAP
             unsigned int MAP_START_TIC;
             unsigned int MAP_TIC;
 
             int MAP_REWARD;
-
             int MAP_USER_VARS[UserVariableCount];
 
             int MAP_KILLCOUNT;
             int MAP_ITEMCOUNT;
             int MAP_SECRETCOUNT;
             bool MAP_END;
-            bool PLAYDEMO;
 
+            // PLAYER
             bool PLAYER_HAS_ACTOR;
             bool PLAYER_DEAD;
 
-            char PLAYER_NAME[16];
+            char PLAYER_NAME[MaxPlayerNameLength];
             int PLAYER_KILLCOUNT;
             int PLAYER_ITEMCOUNT;
             int PLAYER_SECRETCOUNT;
@@ -149,10 +147,20 @@ namespace vizdoom{
             int PLAYER_AMMO[SlotCount];
             int PLAYER_WEAPON[SlotCount];
 
+            bool PLAYER_READY_TO_RESPAWN;
             unsigned int PLAYER_NUMBER;
+
+            // OTHER PLAYERS
             unsigned int PLAYER_COUNT;
-            char PLAYERS_NAME[MaxPlayers][16];
+            bool PLAYERS_IN_GAME[MaxPlayers];
+            char PLAYERS_NAME[MaxPlayers][MaxPlayerNameLength];
             int PLAYERS_FRAGCOUNT[MaxPlayers];
+        };
+
+        struct InputState {
+            int BT[ButtonCount];
+            bool BT_AVAILABLE[ButtonCount];
+            int BT_MAX_VALUE[DeltaButtonCount];
         };
 
         DoomController();
@@ -259,8 +267,8 @@ namespace vizdoom{
         /* Buttons getters and setters */
         /*------------------------------------------------------------------------------------------------------------*/
 
-        InputStruct * const getInput();
-        GameVariablesStruct * const getGameVariables();
+        InputState * const getInput();
+        GameState * const getGameState();
 
         int getButtonState(Button button);
         void setButtonState(Button button, int state);
@@ -286,6 +294,7 @@ namespace vizdoom{
         int getGameVariable(GameVariable var);
 
         int getGameTic();
+        bool isMultiplayerGame();
         bool isNetGame();
 
         int getMapTic();
@@ -389,14 +398,15 @@ namespace vizdoom{
         void SMClose();
 
         bip::shared_memory_object SM;
+        bip::offset_t SMSize;
         std::string SMName;
 
         bip::mapped_region *InputSMRegion;
-        InputStruct *input;
-        InputStruct *_input;
+        InputState *input;
+        InputState *_input;
 
-        bip::mapped_region *GameVariablesSMRegion;
-        GameVariablesStruct *gameVariables;
+        bip::mapped_region *GameStateSMRegion;
+        GameState *gameState;
 
         bip::mapped_region *ScreenSMRegion;
         uint8_t *screen;

@@ -46,19 +46,19 @@ namespace vizdoom{
     };
 
     enum ScreenFormat {
-        CRCGCB = 0,         // 3 channels of 8-bit values in RGB order
-        CRCGCBDB = 1,       // 4 channels of 8-bit values in RGB + depth buffer order
-        RGB24 = 2,          // channel of RGB values stored in 24 bits, where R value is stored in the oldest 8 bits
-        RGBA32 = 3,         // channel of RGBA values stored in 32 bits, where R value is stored in the oldest 8 bits
-        ARGB32 = 4,         // channel of ARGB values stored in 32 bits, where A value is stored in the oldest 8 bits
-        CBCGCR = 5,         // 3 channels of 8-bit values in BGR order
-        CBCGCRDB = 6,       // 4 channels of 8-bit values in BGR + depth buffer order
-        BGR24 = 7,          // channel of BGR values stored in 24 bits, where B value is stored in the oldest 8 bits
-        BGRA32 = 8,         // channel of BGRA values stored in 32 bits, where B value is stored in the oldest 8 bits
-        ABGR32 = 9,         // channel of ABGR values stored in 32 bits, where A value is stored in the oldest 8 bits
-        GRAY8 = 10,         // 8-bit gray channel
-        DEPTH_BUFFER8 = 11, // 8-bit depth buffer channel
-        DOOM_256_COLORS8 = 12,  //8-bit channel with Doom palette values
+        CRCGCB              = 0, // 3 channels of 8-bit values in RGB order
+        CRCGCBDB            = 1, // 4 channels of 8-bit values in RGB + depth buffer order
+        RGB24               = 2, // channel of RGB values stored in 24 bits, where R value is stored in the oldest 8 bits
+        RGBA32              = 3, // channel of RGBA values stored in 32 bits, where R value is stored in the oldest 8 bits
+        ARGB32              = 4, // channel of ARGB values stored in 32 bits, where A value is stored in the oldest 8 bits
+        CBCGCR              = 5, // 3 channels of 8-bit values in BGR order
+        CBCGCRDB            = 6, // 4 channels of 8-bit values in BGR + depth buffer order
+        BGR24               = 7, // channel of BGR values stored in 24 bits, where B value is stored in the oldest 8 bits
+        BGRA32              = 8, // channel of BGRA values stored in 32 bits, where B value is stored in the oldest 8 bits
+        ABGR32              = 9, // channel of ABGR values stored in 32 bits, where A value is stored in the oldest 8 bits
+        GRAY8               = 10, // 8-bit gray channel
+        DEPTH_BUFFER8       = 11, // 8-bit depth buffer channel
+        DOOM_256_COLORS8    = 12, //8-bit channel with Doom palette values
     };
 
     enum ScreenResolution {
@@ -190,69 +190,70 @@ namespace vizdoom{
         PLAYER8_FRAGCOUNT,
     };
 
-    static const int UserVariableCount = 30;
-    static const int SlotCount = 10;
-    static const int MaxPlayers = 8;
+    static const unsigned int UserVariableCount     = 30;
+    static const unsigned int SlotCount             = 10;
+    static const unsigned int MaxPlayers            = 8;
+    static const unsigned int MaxPlayerNameLength   = 16;
 
     enum Button {
         /* Binary buttons */
-        ATTACK = 0,
-        USE = 1,
-        JUMP = 2,
-        CROUCH = 3,
-        TURN180 = 4,
-        ALTATTACK = 5,
-        RELOAD = 6,
-        ZOOM = 7,
+        ATTACK          = 0,
+        USE             = 1,
+        JUMP            = 2,
+        CROUCH          = 3,
+        TURN180         = 4,
+        ALTATTACK       = 5,
+        RELOAD          = 6,
+        ZOOM            = 7,
 
-        SPEED = 8,
-        STRAFE = 9,
+        SPEED           = 8,
+        STRAFE          = 9,
 
-        MOVE_RIGHT = 10,
-        MOVE_LEFT = 11,
-        MOVE_BACKWARD = 12,
-        MOVE_FORWARD = 13,
-        TURN_RIGHT = 14,
-        TURN_LEFT = 15,
-        LOOK_UP = 16,
-        LOOK_DOWN = 17,
-        MOVE_UP = 18,
-        MOVE_DOWN = 19,
-        LAND = 20,
+        MOVE_RIGHT      = 10,
+        MOVE_LEFT       = 11,
+        MOVE_BACKWARD   = 12,
+        MOVE_FORWARD    = 13,
+        TURN_RIGHT      = 14,
+        TURN_LEFT       = 15,
+        LOOK_UP         = 16,
+        LOOK_DOWN       = 17,
+        MOVE_UP         = 18,
+        MOVE_DOWN       = 19,
+        LAND            = 20,
 
-        SELECT_WEAPON1 = 21,
-        SELECT_WEAPON2 = 22,
-        SELECT_WEAPON3 = 23,
-        SELECT_WEAPON4 = 24,
-        SELECT_WEAPON5 = 25,
-        SELECT_WEAPON6 = 26,
-        SELECT_WEAPON7 = 27,
-        SELECT_WEAPON8 = 28,
-        SELECT_WEAPON9 = 29,
-        SELECT_WEAPON0 = 30,
+        SELECT_WEAPON1  = 21,
+        SELECT_WEAPON2  = 22,
+        SELECT_WEAPON3  = 23,
+        SELECT_WEAPON4  = 24,
+        SELECT_WEAPON5  = 25,
+        SELECT_WEAPON6  = 26,
+        SELECT_WEAPON7  = 27,
+        SELECT_WEAPON8  = 28,
+        SELECT_WEAPON9  = 29,
+        SELECT_WEAPON0  = 30,
 
-        SELECT_NEXT_WEAPON = 31,
-        SELECT_PREV_WEAPON = 32,
-        DROP_SELECTED_WEAPON = 33,
+        SELECT_NEXT_WEAPON          = 31,
+        SELECT_PREV_WEAPON          = 32,
+        DROP_SELECTED_WEAPON        = 33,
 
-        ACTIVATE_SELECTED_ITEM = 34,
-        SELECT_NEXT_ITEM = 35,
-        SELECT_PREV_ITEM = 36,
-        DROP_SELECTED_ITEM = 37,
+        ACTIVATE_SELECTED_ITEM      = 34,
+        SELECT_NEXT_ITEM            = 35,
+        SELECT_PREV_ITEM            = 36,
+        DROP_SELECTED_ITEM          = 37,
 
         /* Delta buttons */
-        LOOK_UP_DOWN_DELTA = 38,
-        TURN_LEFT_RIGHT_DELTA = 39,
+        LOOK_UP_DOWN_DELTA          = 38,
+        TURN_LEFT_RIGHT_DELTA       = 39,
         MOVE_FORWARD_BACKWARD_DELTA = 40,
-        MOVE_LEFT_RIGHT_DELTA = 41,
-        MOVE_UP_DOWN_DELTA = 42,
+        MOVE_LEFT_RIGHT_DELTA       = 41,
+        MOVE_UP_DOWN_DELTA          = 42,
     };
 
-    static const int BinaryButtonCount = 38;
-    static const int DeltaButtonCount = 5;
-    static const int ButtonCount = 43;
+    static const unsigned int BinaryButtonCount = 38;
+    static const unsigned int DeltaButtonCount  = 5;
+    static const unsigned int ButtonCount       = 43;
 
-    static const int DefaultTicrate = 35;
+    static const unsigned int DefaultTicrate    = 35;
 
 }
 #endif
