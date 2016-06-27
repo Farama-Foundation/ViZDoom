@@ -34,6 +34,8 @@ char * vizMQDoomName;
 
 void VIZ_MQInit(const char * id){
 
+    Printf("VIZ_MQInit: Init message queues.\n");
+
 	vizMQControllerName = new char[strlen(VIZ_MQ_NAME_CTR_BASE) + strlen(id) + 1];
 	strcpy(vizMQControllerName, VIZ_MQ_NAME_CTR_BASE);
 	strcat(vizMQControllerName, id);
@@ -46,9 +48,9 @@ void VIZ_MQInit(const char * id){
         vizMQController = new bip::message_queue(bip::open_only, vizMQControllerName);//, VIZ_MQ_MAX_MSG_NUM, VIZ_MQ_MAX_MSG_SIZE);
         vizMQDoom = new bip::message_queue(bip::open_only, vizMQDoomName);//, VIZ_MQ_MAX_MSG_NUM, VIZ_MQ_MAX_MSG_SIZE);
     }
-    catch(bip::interprocess_exception &ex){
-        Printf("VIZ_MQInit: Error creating message queues");
-        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR);
+    catch(...){ // bip::interprocess_exception
+        Printf("VIZ_MQInit: Failed to open message queues.");
+        if(vizMQController) VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, "Failed to open message queues.");
         exit(1);
     }
 }
@@ -98,7 +100,7 @@ void VIZ_MQTic(){
                 VIZ_MQSend(VIZ_MSG_CODE_DOOM_DONE);
                 break;
 
-            case VIZ_MSG_CODE_TIC_N_UPDATE:
+            case VIZ_MSG_CODE_TIC_AND_UPDATE:
                 vizUpdate = true;
                 vizNextTic = true;
                 break;

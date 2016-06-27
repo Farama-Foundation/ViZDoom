@@ -77,21 +77,19 @@ BYTE* VIZDepthBuffer::getBuffer() { return buffer; }
 BYTE* VIZDepthBuffer::getBufferPoint(unsigned int x, unsigned int y) {
     if( x < bufferWidth && y < bufferHeight )
         return buffer + x + y*bufferWidth;
-    else
-    return NULL;}
+    else return NULL;
+}
 
 // Set point(x,y) value with depth stored in actualDepth
 void VIZDepthBuffer::setPoint(unsigned int x, unsigned int y) {
     BYTE *dpth = getBufferPoint(x, y);
-    if(dpth!=NULL)
-        *dpth = actualDepth;
+    if(dpth!=NULL) *dpth = actualDepth;
 }
 
 // Set point(x,y) value with requested depth
 void VIZDepthBuffer::setPoint(unsigned int x, unsigned int y, BYTE depth) {
     BYTE *dpth = getBufferPoint(x, y);
-    if(dpth!=NULL)
-        *dpth = depth;
+    if(dpth!=NULL) *dpth = depth;
 }
 
 // Store depth value for later usage
@@ -188,8 +186,7 @@ void VIZDepthBuffer::unlock() {this->locked=false; }
 bool VIZDepthBuffer::isLocked() { return this->locked; }
 
 void VIZDepthBuffer::sizeUpdate() {
-    if(this->bufferWidth!= (unsigned int)screen->GetWidth() || this->bufferHeight!=(unsigned int)screen->GetHeight())
-    {
+    if(this->bufferWidth!= (unsigned int)screen->GetWidth() || this->bufferHeight!=(unsigned int)screen->GetHeight()) {
         delete[] this->buffer;
         this->bufferHeight=(unsigned)screen->GetHeight();
         this->bufferWidth= (unsigned)screen->GetWidth();
