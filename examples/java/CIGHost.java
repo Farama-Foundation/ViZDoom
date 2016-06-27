@@ -30,7 +30,7 @@ public class CIGHost {
                         +"+sv_noautoaim 1 "        // Autoaim is disabled for all players.
                         +"+sv_respawnprotect 1 "   // Players will be invulnerable for two second after spawning.
                         +"+sv_spawnfarthest 1 "    // Players will be spawned as far as possible from any other players.
-                        +"+vizdoom_nocheat 1");    // Disables depth buffer and the ability to use commands that could interfere with multiplayer game.
+                        +"+viz_nocheat 1");        // Disables depth buffer and the ability to use commands that could interfere with multiplayer game.
 
         // Name your agent and select color
         // colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue
