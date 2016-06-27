@@ -94,6 +94,10 @@ namespace vizdoom {
         this->screenSize = 0;
         this->screenDepth = 8;
         this->screenFormat = CRCGCB;
+        this->depthBuffer = false;
+        this->levelMap = false;
+        //this->levelMapMode = NORMAL;
+        this->labels = false;
 
         this->hud = true;
         this->weapon = true;
@@ -213,26 +217,18 @@ namespace vizdoom {
         else return true;
     }
 
-    void DoomController::tic() {
-        this->tic(true);
-    }
-
     void DoomController::tic(bool update) {
 
         if (this->doomRunning) {
 
             if (this->isTicPossible()) {
                 this->mapLastTic = this->gameState->MAP_TIC + 1;
-                if(update) this->MQDoomSend(MSG_CODE_TIC_N_UPDATE);
+                if(update) this->MQDoomSend(MSG_CODE_TIC_AND_UPDATE);
                 else this->MQDoomSend(MSG_CODE_TIC);
                 this->waitForDoomWork();
             }
         }
         else throw ViZDoomIsNotRunningException();
-    }
-
-    void DoomController::tics(unsigned int tics){
-        this->tics(tics, true);
     }
 
     void DoomController::tics(unsigned int tics, bool update){
@@ -313,7 +309,6 @@ namespace vizdoom {
     bool DoomController::isDoomRunning() { return this->doomRunning; }
 
     std::string DoomController::getMap(){ return this->map; }
-    void DoomController::setMap(std::string map) { this->setMap(map, ""); }
 
     void DoomController::setMap(std::string map, std::string demoPath) {
         this->map = map;
@@ -870,7 +865,7 @@ namespace vizdoom {
 
         this->doomWorking = true;
 
-        MessageCommandStruct msg;
+        Message msg;
 
         unsigned int priority;
         bip::message_queue::size_type recv_size;
@@ -888,7 +883,7 @@ namespace vizdoom {
 
             case MSG_CODE_DOOM_ERROR :
                 this->close();
-                throw ViZDoomErrorException();
+                throw ViZDoomErrorException(std::string(msg.command));
 
             case MSG_CODE_SIGINT :
                 this->close();
@@ -911,7 +906,7 @@ namespace vizdoom {
         if(doomRunning){
             this->doomWorking = true;
 
-            MessageCommandStruct msg;
+            Message msg;
 
             unsigned int priority;
             bip::message_queue::size_type recv_size;
@@ -931,7 +926,7 @@ namespace vizdoom {
 
                     case MSG_CODE_DOOM_ERROR :
                         this->close();
-                        throw ViZDoomErrorException();
+                        throw ViZDoomErrorException(std::string(msg.command));
 
                     case MSG_CODE_SIGINT :
                         this->close();
@@ -1005,15 +1000,15 @@ namespace vizdoom {
         if(this->map.length() > 0) this->doomArgs.push_back(this->map);
         else this->doomArgs.push_back("map01");
 
-//        if (this->demoPath.length() != 0){
-//            this->doomArgs.push_back("-record");
-//            this->doomArgs.push_back(this->demoPath);
-//            this->doomRecordingMap = true;
-//        }
-//        else this->doomRecordingMap = false;
+        //if (this->demoPath.length() != 0){
+        //    this->doomArgs.push_back("-record");
+        //    this->doomArgs.push_back(this->demoPath);
+        //    this->doomRecordingMap = true;
+        //}
+        //else this->doomRecordingMap = false;
 
-//        this->doomArgs.push_back("+viz_loop_map");
-//        this->doomArgs.push_back("1");
+        //this->doomArgs.push_back("+viz_loop_map");
+        //this->doomArgs.push_back("1");
 
         //skill
         this->doomArgs.push_back("-skill");
@@ -1166,7 +1161,7 @@ namespace vizdoom {
             bpr::wait_for_exit(doomProcess);
         }
         catch(...){
-            this->MQControllerSend(MSG_CODE_DOOM_ERROR);
+            this->MQControllerSend(MSG_CODE_DOOM_ERROR, "Unexpected ViZDoom instance crash.");
         }
         this->MQControllerSend(MSG_CODE_DOOM_PROCESS_EXIT);
     }
@@ -1199,9 +1194,12 @@ namespace vizdoom {
             this->ScreenSMRegion = new bip::mapped_region(this->SM, bip::read_only, SMScreenAddress, this->screenSize);
             this->screen = static_cast<uint8_t *>(this->ScreenSMRegion->get_address());
         }
-        catch(...) { //bip::interprocess_exception &ex
-            throw SharedMemoryException();
+        catch(...) { //bip::interprocess_exception
+            throw SharedMemoryException("Failed to open shared memory.");
         }
+
+        size_t SMExpectedSize = sizeof(DoomController::GameState) + sizeof(DoomController::InputState) + this->screenSize;
+        if(this->gameState->SM_SIZE != this->SMSize) throw SharedMemoryException("Memory size does not match the the expected size.");
     }
 
     void DoomController::SMClose() {
@@ -1227,8 +1225,8 @@ namespace vizdoom {
 
     void DoomController::MQInit() {
 
-        this->MQControllerName = std::string(MQ_NAME_CTR_BASE) + instanceId;
-        this->MQDoomName = std::string(MQ_NAME_DOOM_BASE) + instanceId;
+        this->MQControllerName = std::string(MQ_NAME_CTR_BASE) + this->instanceId;
+        this->MQDoomName = std::string(MQ_NAME_DOOM_BASE) + this->instanceId;
 
         try {
             bip::message_queue::remove(this->MQControllerName.c_str());
@@ -1237,47 +1235,42 @@ namespace vizdoom {
             this->MQController = new bip::message_queue(bip::open_or_create, this->MQControllerName.c_str(), MQ_MAX_MSG_NUM, MQ_MAX_MSG_SIZE);
             this->MQDoom = new bip::message_queue(bip::open_or_create, this->MQDoomName.c_str(), MQ_MAX_MSG_NUM, MQ_MAX_MSG_SIZE);
         }
-        catch(...) { //bip::interprocess_exception &ex
-            throw MessageQueueException();
+        catch(...) { // bip::interprocess_exception
+            throw MessageQueueException("Failed to create message queues.");
         }
     }
 
-    void DoomController::MQControllerSend(uint8_t code) {
-        MessageSignalStruct msg;
+    void DoomController::MQControllerSend(uint8_t code, const char *command) {
+        Message msg;
         msg.code = code;
+        if(command != NULL) strncpy(msg.command, command, MQ_MAX_CMD_LEN);
         try {
-            this->MQController->send(&msg, sizeof(MessageSignalStruct), 0);
+            this->MQController->send(&msg, sizeof(Message), 0);
         }
-        catch(...){
-            throw MessageQueueException();
-        }
-    }
-
-    void DoomController::MQDoomSend(uint8_t code) {
-        MessageSignalStruct msg;
-        msg.code = code;
-        try {
-            this->MQDoom->send(&msg, sizeof(MessageSignalStruct), 0);
-        }
-        catch(...){
-            throw MessageQueueException();
+        catch(...){ // bip::interprocess_exception
+            throw MessageQueueException("Failed to send message.");
         }
     }
 
     void DoomController::MQDoomSend(uint8_t code, const char *command) {
-        MessageCommandStruct msg;
+        Message msg;
         msg.code = code;
-        strncpy(msg.command, command, MQ_MAX_CMD_LEN);
+        if(command != NULL) strncpy(msg.command, command, MQ_MAX_CMD_LEN);
         try{
-            this->MQDoom->send(&msg, sizeof(MessageCommandStruct), 0);
+            this->MQDoom->send(&msg, sizeof(Message), 0);
         }
-        catch(...){
-            throw MessageQueueException();
+        catch(...){ // bip::interprocess_exception
+            throw MessageQueueException("Failed to send message.");
         }
     }
 
     void DoomController::MQControllerRecv(void *msg, size_t &size, unsigned int &priority) {
-        this->MQController->receive(msg, sizeof(MessageCommandStruct), size, priority);
+        try {
+            this->MQController->receive(msg, sizeof(Message), size, priority);
+        }
+        catch(...){ // bip::interprocess_exception
+            throw MessageQueueException("Failed to receive message.");
+        }
     }
 
     void DoomController::MQClose() {

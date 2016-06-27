@@ -26,55 +26,49 @@
 namespace vizdoom{
 
     /* FileDoesNotExistException */
-    FileDoesNotExistException::FileDoesNotExistException(std::string path){
-        this->path = path;
-    }
-
-    FileDoesNotExistException::~FileDoesNotExistException() throw(){}
-
     const char* FileDoesNotExistException::what() const throw(){
         std::string what = std::string("File \"") + this->path + "\" does not exist.";
         return strdup(what.c_str());
     }
 
     /* MessageQueueException */
-    const char* MessageQueueException::what() const throw(){ return "ViZDoom message queue error."; }
-
-    /* SharedMemoryException */
-    const char* SharedMemoryException::what() const throw(){ return "ViZDoom shared memory error."; }
-
-    /* ViZDoomErrorException */
-    const char* ViZDoomErrorException::what() const throw(){ return "Controlled ViZDoom instance reported error."; }
-
-    /* ViZDoomIsNotRunningException */
-    const char* ViZDoomIsNotRunningException::what() const throw(){ return "Controlled ViZDoom instance is not running or not ready."; }
-
-    /* ViZDoomMismatchedVersionException */
-    ViZDoomMismatchedVersionException::ViZDoomMismatchedVersionException(std::string vizdoomVersion, std::string libVersion){
-        this->vizdoomVersion = vizdoomVersion;
-        this->libVersion = libVersion;
+    const char* MessageQueueException::what() const throw(){
+        if(this->error.length()) return this->error.c_str();
+        else return "Unknown message queue error.";
     }
 
-    ViZDoomMismatchedVersionException::~ViZDoomMismatchedVersionException() throw(){}
+    /* SharedMemoryException */
+    const char* SharedMemoryException::what() const throw(){
+        if(this->error.length()) return this->error.c_str();
+        else return "Unknown shared memory error.";
+    }
 
+    /* ViZDoomErrorException */
+    const char* ViZDoomErrorException::what() const throw(){
+        if(this->error.length()) return this->error.c_str();
+        else return "Controlled ViZDoom instance unknown error.";
+    }
+
+    /* ViZDoomIsNotRunningException */
+    const char* ViZDoomIsNotRunningException::what() const throw(){
+        return "Controlled ViZDoom instance is not running or not ready.";
+    }
+
+    /* ViZDoomMismatchedVersionException */
     const char* ViZDoomMismatchedVersionException::what() const throw(){
         std::string what = "Controlled ViZDoom version (" + this->vizdoomVersion + ") does not match library version (" + this->libVersion + ").";
         return strdup(what.c_str());
     }
 
     /* ViZDoomSignalException */
-    ViZDoomSignalException::ViZDoomSignalException(std::string signal){
-        this->signal = signal;
-    }
-
-    ViZDoomSignalException::~ViZDoomSignalException() throw(){}
-
     const char* ViZDoomSignalException::what() const throw(){
         std::string what = "Signal " + this->signal + " received. ViZDoom instance has been closed.";
         return strdup(what.c_str());
     }
 
     /* ViZDoomUnexpectedExitException */
-    const char* ViZDoomUnexpectedExitException::what() const throw(){ return "Controlled ViZDoom instance exited unexpectedly."; }
+    const char* ViZDoomUnexpectedExitException::what() const throw(){
+        return "Controlled ViZDoom instance exited unexpectedly.";
+    }
 
 }

@@ -37,19 +37,25 @@
 namespace b = boost;
 namespace bt = boost::this_thread;
 
-CVAR (Bool, viz_debug, false, CVAR_NOSET)
+CVAR (Bool, viz_debug, true, CVAR_NOSET)
+
 CVAR (Bool, viz_controlled, false, CVAR_NOSET)
-CVAR (Bool, viz_async, false, CVAR_NOSET)
 CVAR (String, viz_instance_id, "0", CVAR_NOSET)
+CVAR (Bool, viz_async, false, CVAR_NOSET)
+CVAR (Bool, viz_allow_input, false, CVAR_NOSET)
+
 CVAR (Int, viz_screen_format, 0, CVAR_NOSET)
-CVAR (Bool, viz_noconsole, false, CVAR_NOSET)
-CVAR (Bool, viz_nosound, false, CVAR_NOSET)
+CVAR (Bool, viz_depth_buffer, false, CVAR_NOSET)
+CVAR (Bool, viz_map_buffer, false, CVAR_NOSET)
+CVAR (Bool, viz_labals, false, CVAR_NOSET)
+CVAR (Bool, viz_render_all, false, CVAR_NOSET)
 CVAR (Bool, viz_window_hidden, false, CVAR_NOSET)
 CVAR (Bool, viz_noxserver, false, CVAR_NOSET)
-CVAR (Bool, viz_allow_input, false, CVAR_NOSET)
-CVAR (Bool, viz_nocheat, false, CVAR_NOSET)
-CVAR (Bool, viz_render_all, false, CVAR_NOSET)
+CVAR (Bool, viz_noconsole, false, CVAR_NOSET)
+CVAR (Bool, viz_nosound, false, CVAR_NOSET)
+
 CVAR (Bool, viz_loop_map, false, CVAR_NOSET)
+CVAR (Bool, viz_nocheat, false, CVAR_NOSET)
 
 int vizTime = 0;
 bool vizNextTic = false;
@@ -60,10 +66,8 @@ void VIZ_Init(){
     Printf("VIZ_Init: Instance id: %s\n", *viz_instance_id);
 
     if(*viz_controlled) {
-        Printf("VIZ_Init: Init message queues.\n");
-        VIZ_MQInit(*viz_instance_id);
 
-        Printf("VIZ_Init: Init shared memory.\n");
+        VIZ_MQInit(*viz_instance_id);
         VIZ_SMInit(*viz_instance_id);
 
         VIZ_GameStateInit();

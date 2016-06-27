@@ -51,7 +51,7 @@ namespace vizdoom{
 #define MQ_NAME_CTR_BASE    "ViZDoomMQCtr"
 #define MQ_NAME_DOOM_BASE   "ViZDoomMQDoom"
 #define MQ_MAX_MSG_NUM      64
-#define MQ_MAX_MSG_SIZE     sizeof(DoomController::MessageCommandStruct)
+#define MQ_MAX_MSG_SIZE     sizeof(DoomController::Message)
 #define MQ_MAX_CMD_LEN      128
 
 /* Messages' codes */
@@ -62,7 +62,7 @@ namespace vizdoom{
 
 #define MSG_CODE_TIC                    21
 #define MSG_CODE_UPDATE                 22
-#define MSG_CODE_TIC_N_UPDATE           23
+#define MSG_CODE_TIC_AND_UPDATE         23
 #define MSG_CODE_COMMAND                24
 #define MSG_CODE_CLOSE                  25
 #define MSG_CODE_ERROR                  26
@@ -175,10 +175,8 @@ namespace vizdoom{
         void restart();
 
         bool isTicPossible();
-        void tic();
-        void tic(bool update);
-        void tics(unsigned int tics);
-        void tics(unsigned int tics, bool update);
+        void tic(bool update = true);
+        void tics(unsigned int tics, bool update = true);
         void restartMap();
         void respawnPlayer();
         bool isDoomRunning();
@@ -195,8 +193,7 @@ namespace vizdoom{
         void setInstanceRngSeed(unsigned int seed);
 
         std::string getMap();
-        void setMap(std::string map, std::string demoPath);
-        void setMap(std::string map);
+        void setMap(std::string map, std::string demoPath = "");
         void playDemo(std::string demoPath);
 
 
@@ -252,6 +249,16 @@ namespace vizdoom{
         void setScreenWidth(unsigned int width);
         void setScreenHeight(unsigned int height);
         void setScreenFormat(ScreenFormat format);
+
+        void setDepthBufferEnabled(bool depthBuffer);
+        bool isDepthBufferEnabled();
+
+        void setLevelMapEnabled(bool map);
+        //void setLevelMapMode(MapMode mode);
+        bool isLevelMapEnabled();
+
+        void setLabelsEnabled(bool labels);
+        bool isLabelsEnabled();
 
         ScreenFormat getScreenFormat();
         unsigned int getScreenWidth();
@@ -369,19 +376,14 @@ namespace vizdoom{
         /* Message queues */
         /*------------------------------------------------------------------------------------------------------------*/
 
-        struct MessageSignalStruct {
-            uint8_t code;
-        };
-
-        struct MessageCommandStruct {
+        struct Message {
             uint8_t code;
             char command[MQ_MAX_CMD_LEN];
         };
 
         void MQInit();
-        void MQControllerSend(uint8_t code);
-        void MQDoomSend(uint8_t code);
-        void MQDoomSend(uint8_t code, const char *command);
+        void MQControllerSend(uint8_t code, const char *command = NULL);
+        void MQDoomSend(uint8_t code, const char *command = NULL);
         void MQControllerRecv(void *msg, size_t &size, unsigned int &priority);
         void MQClose();
 
@@ -418,6 +420,10 @@ namespace vizdoom{
         unsigned int screenWidth, screenHeight, screenChannels, screenDepth;
         size_t screenPitch, screenSize;
         ScreenFormat screenFormat;
+        bool depthBuffer;
+        bool levelMap;
+        //MapMode levelMapMode;
+        bool labels;
 
         bool hud, weapon, crosshair, decals, particles;
 

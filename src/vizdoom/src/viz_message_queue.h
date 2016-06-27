@@ -42,7 +42,7 @@ extern bip::message_queue *vizMQRecv;
 
 #define VIZ_MSG_CODE_TIC 21
 #define VIZ_MSG_CODE_UPDATE 22
-#define VIZ_MSG_CODE_TIC_N_UPDATE 23
+#define VIZ_MSG_CODE_TIC_AND_UPDATE 23
 #define VIZ_MSG_CODE_COMMAND 24
 #define VIZ_MSG_CODE_CLOSE 25
 #define VIZ_MSG_CODE_ERROR 26

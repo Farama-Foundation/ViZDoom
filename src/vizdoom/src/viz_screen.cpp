@@ -160,8 +160,8 @@ void VIZ_ScreenInit() {
         }
     }
     catch(bip::interprocess_exception &ex){
-        Printf("VIZ_ScreenInit: Error creating ViZDoomScreen SM");
-        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR);
+        Printf("VIZ_ScreenInit: Failed to create screen buffer.");
+        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, "Failed to create screen buffer.");
         exit(1);
     }
 

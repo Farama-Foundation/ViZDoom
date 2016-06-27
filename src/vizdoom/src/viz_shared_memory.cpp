@@ -41,6 +41,8 @@ EXTERN_CVAR (Bool, viz_debug)
 
 void VIZ_SMInit(const char * id){
 
+    Printf("VIZ_SMInit: Init shared memory.\n");
+
     vizSMName = new char[strlen(VIZ_SM_NAME_BASE) + strlen(id) + 1];
     strcpy(vizSMName, VIZ_SM_NAME_BASE);
     strcat(vizSMName, id);
@@ -54,9 +56,9 @@ void VIZ_SMInit(const char * id){
 
         VIZ_DEBUG_PRINT("VIZ_SMInit: SMName: %s, SMSize: %zu\n", vizSMName, vizSMSize);
     }
-    catch(bip::interprocess_exception &ex){
-        Printf("VIZ_SMInit: Error creating shared memory");
-        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR);
+    catch(...){ // bip::interprocess_exception
+        Printf("VIZ_SMInit: Failed to create shared memory.");
+        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, "Failed to create shared memory.");
         exit(1);
     }
 }
