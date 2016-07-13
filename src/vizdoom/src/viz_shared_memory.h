@@ -37,6 +37,7 @@ extern size_t vizSMScreenAddress;
 #define VIZ_SM_NAME_BASE "ViZDoomSM"
 
 void VIZ_SMInit(const char * id);
+
 void VIZ_SMClose();
 
 #endif

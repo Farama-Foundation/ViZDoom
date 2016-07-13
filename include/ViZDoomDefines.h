@@ -31,11 +31,24 @@ namespace vizdoom{
     #define VIZDOOM_LIB_VERSION_STR "1.1.0pre"
 
     typedef unsigned char uint8_t;
+    typedef unsigned char BYTE;
 
     struct GameState {
         unsigned int number;
-        std::vector<int> gameVariables;
-        uint8_t * imageBuffer;
+        std::vector<double> gameVariables;
+
+        uint8_t * screenBuffer;
+        uint8_t * depthBuffer;
+        uint8_t * labelsBuffer;
+        uint8_t * mapBuffer;
+
+        GameState(){
+            this->number = 0;
+            this->screenBuffer  = nullptr;
+            this->depthBuffer   = nullptr;
+            this->labelsBuffer  = nullptr;
+            this->mapBuffer     = nullptr;
+        }
     };
 
     enum Mode {

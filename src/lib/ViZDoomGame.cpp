@@ -51,6 +51,7 @@ namespace vizdoom {
         this->nextStateNumber = 1;
         this->mode = PLAYER;
 
+        this->state = nullptr;
         this->doomController = new DoomController();
     }
 
@@ -80,6 +81,7 @@ namespace vizdoom {
             }
 
             try {
+                this->state = new GameState();
                 this->running = this->doomController->init();
 
                 this->doomController->disableAllButtons();
@@ -87,7 +89,7 @@ namespace vizdoom {
                     this->doomController->setButtonAvailable(this->availableButtons[i], true);
                 }
 
-                this->state.gameVariables.resize(this->availableGameVariables.size());
+                this->state->gameVariables.resize(this->availableGameVariables.size());
 
                 this->lastMapTic = 0;
                 this->nextStateNumber = 1;
@@ -109,8 +111,10 @@ namespace vizdoom {
     void DoomGame::close() {
         if (this->isRunning()) {
             this->doomController->close();
-            this->state.gameVariables.clear();
             this->lastAction.clear();
+
+            delete this->state;
+            this->state = nullptr;
 
             this->running = false;
         }
@@ -208,7 +212,7 @@ namespace vizdoom {
     void DoomGame::updateState(){
         try {
 
-            this->state.number = this->nextStateNumber++;
+            this->state->number = this->nextStateNumber++;
 
             double reward = 0;
             double mapReward = DoomFixedToDouble(this->doomController->getMapReward());
@@ -225,11 +229,27 @@ namespace vizdoom {
 
             /* Updates vars */
             for (unsigned int i = 0; i < this->availableGameVariables.size(); ++i) {
-                this->state.gameVariables[i] = this->doomController->getGameVariable(this->availableGameVariables[i]);
+                this->state->gameVariables[i] = this->doomController->getGameVariable(this->availableGameVariables[i]);
             }
 
-            /* Update float rgb image */
-            this->state.imageBuffer = this->doomController->getScreen();
+            /* Update buffers */
+            this->state->screenBuffer = nullptr;
+            this->state->depthBuffer = nullptr;
+            this->state->mapBuffer = nullptr;
+            this->state->labelsBuffer = nullptr;
+
+            if(!this->isEpisodeFinished()) {
+                this->state->screenBuffer = this->doomController->getScreenBuffer();
+
+                if (this->doomController->isDepthBufferEnabled())
+                     this->state->depthBuffer = this->doomController->getDepthBuffer();
+
+                if (this->doomController->isLabelsEnabled())
+                     this->state->labelsBuffer = this->doomController->getLabelsBuffer();
+
+                if (this->doomController->isLevelMapEnabled())
+                    this->state->mapBuffer = this->doomController->getLevelMapBuffer();
+            }
 
             //Update last action
             for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
@@ -239,7 +259,7 @@ namespace vizdoom {
         catch (...) { throw SharedMemoryException(); }
     }
 
-    GameState DoomGame::getState() { return this->state; }
+    GameState * DoomGame::getState() { return this->state; }
 
     std::vector<int> DoomGame::getLastAction() { return this->lastAction; }
 
@@ -328,10 +348,6 @@ namespace vizdoom {
 
     void DoomGame::sendGameCommand(std::string cmd){
         this->doomController->sendCommand(cmd);
-    }
-
-    uint8_t * const DoomGame::getGameScreen(){
-        return this->doomController->getScreen();
     }
 
     Mode DoomGame::getMode(){ return this->mode; };

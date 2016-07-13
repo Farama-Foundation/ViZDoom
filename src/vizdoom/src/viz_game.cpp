@@ -34,6 +34,9 @@
 
 EXTERN_CVAR (Bool, viz_debug)
 EXTERN_CVAR (Int, viz_screen_format)
+EXTERN_CVAR (Bool, viz_depth_buffer)
+EXTERN_CVAR (Bool, viz_labels)
+EXTERN_CVAR (Bool, viz_level_map)
 EXTERN_CVAR (Bool, viz_loop_map)
 
 player_t *vizPlayer;
@@ -132,7 +135,7 @@ void VIZ_GameStateInit(){
 void VIZ_GameStateTic(){
 
     VIZ_DEBUG_PRINT("VIZ_GameStateTic: tic %d, netgame: %d, multiplayer: %d, recording: %d, playback: %d, in_level: %d, map_tic: %d\n",
-                        gametic, netgame, multiplayer, demorecording, demoplayback, gamestate != GS_LEVEL, level.maptime);
+                    gametic, netgame, multiplayer, demorecording, demoplayback, gamestate != GS_LEVEL, level.maptime);
 
     vizGameState->GAME_TIC = (unsigned int)gametic;
     vizGameState->GAME_STATE = gamestate;
@@ -149,6 +152,21 @@ void VIZ_GameStateTic(){
     vizGameState->SCREEN_PITCH = vizScreenPitch;
     vizGameState->SCREEN_SIZE = vizScreenSize;
     vizGameState->SCREEN_FORMAT = *viz_screen_format;
+
+    vizGameState->SCREEN_BUFFER_ADDRESS = SCREEN_BUFFER_SM_ADDRESS * vizScreenChannelSize;
+    vizGameState->SCREEN_BUFFER_SIZE = SCREEN_BUFFER_SM_SIZE * vizScreenChannelSize;
+
+    vizGameState->DEPTH_BUFFER = *viz_depth_buffer;
+    vizGameState->DEPTH_BUFFER_ADDRESS = DEPTH_BUFFER_SM_ADDRESS * vizScreenChannelSize;
+    vizGameState->DEPTH_BUFFER_SIZE = DEPTH_BUFFER_SM_SIZE * vizScreenChannelSize;
+
+    vizGameState->LABELS = *viz_labels;
+    vizGameState->LABELS_BUFFER_ADDRESS = LABELS_BUFFER_SM_ADDRESS * vizScreenChannelSize;
+    vizGameState->LABELS_BUFFER_SIZE = LABELS_BUFFER_SM_SIZE * vizScreenChannelSize;
+
+    vizGameState->LEVEL_MAP = *viz_level_map;
+    vizGameState->LEVEL_MAP_BUFFER_ADDRESS = MAP_BUFFER_SM_ADDRESS * vizScreenChannelSize;
+    vizGameState->LEVEL_MAP_BUFFER_SIZE = MAP_BUFFER_SM_SIZE * vizScreenChannelSize;
 
     vizGameState->MAP_START_TIC = (unsigned int)level.starttime;
     vizGameState->MAP_TIC = (unsigned int)level.maptime;

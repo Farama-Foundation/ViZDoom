@@ -34,6 +34,7 @@
 //#include "sc_man.h"
 //#include "sc_man_tokens.h"
 
+#define VIZ_PLAYER                  players[consoleplayer]
 #define VIZ_GV_USER_COUNT           30
 #define VIZ_GV_SLOTS_SIZE           10
 #define VIZ_MAX_PLAYERS             MAXPLAYERS // 8
@@ -61,6 +62,21 @@ struct VIZGameState{
     size_t SCREEN_SIZE;
     int SCREEN_FORMAT;
 
+    size_t SCREEN_BUFFER_ADDRESS;
+    size_t SCREEN_BUFFER_SIZE;
+
+    bool DEPTH_BUFFER;
+    size_t DEPTH_BUFFER_ADDRESS;
+    size_t DEPTH_BUFFER_SIZE;
+
+    bool LABELS;
+    size_t LABELS_BUFFER_ADDRESS;
+    size_t LABELS_BUFFER_SIZE;
+
+    bool LEVEL_MAP;
+    size_t LEVEL_MAP_BUFFER_ADDRESS;
+    size_t LEVEL_MAP_BUFFER_SIZE;
+
     // MAP
     unsigned int MAP_START_TIC;
     unsigned int MAP_TIC;
@@ -72,7 +88,6 @@ struct VIZGameState{
     int MAP_ITEMCOUNT;
     int MAP_SECRETCOUNT;
     bool MAP_END;
-
 
     // PLAYER
     bool PLAYER_HAS_ACTOR;

@@ -110,6 +110,21 @@ namespace vizdoom{
             size_t SCREEN_SIZE;
             int SCREEN_FORMAT;
 
+            size_t SCREEN_BUFFER_ADDRESS;
+            size_t SCREEN_BUFFER_SIZE;
+
+            bool DEPTH_BUFFER;
+            size_t DEPTH_BUFFER_ADDRESS;
+            size_t DEPTH_BUFFER_SIZE;
+
+            bool LABELS;
+            size_t LABELS_BUFFER_ADDRESS;
+            size_t LABELS_BUFFER_SIZE;
+
+            bool LEVEL_MAP;
+            size_t LEVEL_MAP_BUFFER_ADDRESS;
+            size_t LEVEL_MAP_BUFFER_SIZE;
+
             // MAP
             unsigned int MAP_START_TIC;
             unsigned int MAP_TIC;
@@ -268,8 +283,10 @@ namespace vizdoom{
         size_t getScreenPitch();
         size_t getScreenSize();
 
-        uint8_t * const getScreen();
-
+        uint8_t * const getScreenBuffer();
+        uint8_t * const getDepthBuffer();
+        uint8_t * const getLevelMapBuffer();
+        uint8_t * const getLabelsBuffer();
 
         /* Buttons getters and setters */
         /*------------------------------------------------------------------------------------------------------------*/
@@ -412,6 +429,10 @@ namespace vizdoom{
 
         bip::mapped_region *ScreenSMRegion;
         uint8_t *screen;
+        uint8_t *screenBuffer;
+        uint8_t *depthBuffer;
+        uint8_t *levelMapBuffer;
+        uint8_t *labelsBuffer;
 
 
         /* Settings */
@@ -420,7 +441,7 @@ namespace vizdoom{
         unsigned int screenWidth, screenHeight, screenChannels, screenDepth;
         size_t screenPitch, screenSize;
         ScreenFormat screenFormat;
-        bool depthBuffer;
+        bool depth;
         bool levelMap;
         //MapMode levelMapMode;
         bool labels;

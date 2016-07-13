@@ -51,7 +51,7 @@ void VIZ_SMInit(const char * id){
         bip::shared_memory_object::remove(vizSMName);
         vizSM = bip::shared_memory_object(bip::open_or_create, vizSMName, bip::read_write);
 
-        vizSMSize = sizeof(VIZGameState) + sizeof(VIZInputState) + (sizeof(BYTE) * screen->GetWidth() * screen->GetHeight() * 4);
+        vizSMSize = sizeof(VIZGameState) + sizeof(VIZInputState) + (SCREEN_SM_SIZE);
         vizSM.truncate(vizSMSize);
 
         VIZ_DEBUG_PRINT("VIZ_SMInit: SMName: %s, SMSize: %zu\n", vizSMName, vizSMSize);

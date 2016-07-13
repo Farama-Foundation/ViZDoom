@@ -77,12 +77,6 @@ namespace vizdoom {
         bool isRunning();
 
         /*
-         * Processes a specified number of tics, updates state and calculates a new reward.
-         * Short for advanceAction(tics, true, false).
-         */
-        void advanceAction(unsigned int tics);
-
-        /*
          * Sets the player's action for the next tics.
          * Each vector's value corresponds to a button specified with addAvailableButton method
          * or in configuration file (in order of appearance).
@@ -96,6 +90,12 @@ namespace vizdoom {
          * will be rendered after last processed tic. To get the new frame use getGameScreen.
          */
         void advanceAction(unsigned int tics, bool updateState, bool renderOnly);
+
+        /*
+         * Processes a specified number of tics, updates state and calculates a new reward.
+         * Short for advanceAction(tics, true, false).
+         */
+        void advanceAction(unsigned int tics);
 
         /*
          * Processes one tic, updates the state and calculates a new reward.
@@ -149,7 +149,7 @@ namespace vizdoom {
         /*
          * Returns DoomGame::State structure with the current game state.
          */
-        GameState getState();
+        GameState * getState();
 
         /*
          * Returns a vector with the last action performed.
@@ -457,12 +457,12 @@ namespace vizdoom {
         int getScreenHeight();
 
         /*
-         * Returns number of channels in game's screen buffer.
+         * Returns number of channels in game's screen and map buffer.
          */
         int getScreenChannels();
 
         /*
-         * Returns size in bytes of one row in game's screen buffer.
+         * Returns size in bytes of one row in game's screen and map buffer.
          */
         size_t getScreenPitch();
 
@@ -471,10 +471,26 @@ namespace vizdoom {
          */
         size_t getScreenSize();
 
-        /*
-         * Returns a pointer to the raw screen buffer.
-         */
-        uint8_t * const getGameScreen();
+//        /*
+//         * Returns a pointer to the raw screen buffer.
+//         */
+//        uint8_t * const getScreenBuffer();
+//
+//        /*
+//         * Returns a pointer to the raw depth buffer.
+//         */
+//        uint8_t * const getDepthBuffer();
+//
+//        /*
+//         * Returns a pointer to the raw labels buffer.
+//         */
+//        uint8_t * const getLabelsBuffer();
+//
+//        /*
+//         * Returns a pointer to the raw map buffer.
+//         */
+//        uint8_t * const getMapBuffer();
+
 
     protected:
 
@@ -487,7 +503,7 @@ namespace vizdoom {
 
         Mode mode;
 
-        GameState state;
+        GameState *state;
         void updateState();
 
         std::vector <GameVariable> availableGameVariables;

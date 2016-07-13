@@ -37,7 +37,7 @@
 namespace b = boost;
 namespace bt = boost::this_thread;
 
-CVAR (Bool, viz_debug, true, CVAR_NOSET)
+CVAR (Bool, viz_debug, false, CVAR_NOSET)
 
 CVAR (Bool, viz_controlled, false, CVAR_NOSET)
 CVAR (String, viz_instance_id, "0", CVAR_NOSET)
@@ -46,8 +46,8 @@ CVAR (Bool, viz_allow_input, false, CVAR_NOSET)
 
 CVAR (Int, viz_screen_format, 0, CVAR_NOSET)
 CVAR (Bool, viz_depth_buffer, false, CVAR_NOSET)
-CVAR (Bool, viz_map_buffer, false, CVAR_NOSET)
-CVAR (Bool, viz_labals, false, CVAR_NOSET)
+CVAR (Bool, viz_labels, false, CVAR_NOSET)
+CVAR (Bool, viz_level_map, false, CVAR_NOSET)
 CVAR (Bool, viz_render_all, false, CVAR_NOSET)
 CVAR (Bool, viz_window_hidden, false, CVAR_NOSET)
 CVAR (Bool, viz_noxserver, false, CVAR_NOSET)
@@ -134,8 +134,17 @@ void VIZ_Tic(){
 }
 
 void VIZ_Update(){
-    D_Display();
+    VIZ_DEBUG_PRINT("VIZ_Update: tic: %d, viztic: %d, lastupdate: %d\n", gametic, VIZ_TIME, vizLastUpdate);
+
+    if(*viz_level_map){
+        VIZ_D_MapDisplay();
+        VIZ_LevelMapUpdate();
+    }
+    VIZ_D_ScreenDisplay();
     VIZ_ScreenUpdate();
+
+//    D_Display();
+//    VIZ_ScreenUpdate();
     vizLastUpdate = VIZ_TIME;
     vizUpdate = false;
 }
