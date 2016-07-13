@@ -63,31 +63,23 @@ void VIZ_ScreenInit() {
 
         switch(*viz_screen_format){
             case VIZ_SCREEN_CRCGCB:             Printf("CRCGCB\n"); break;
-            case VIZ_SCREEN_CRCGCBDB:           Printf("CRCGCBDB\n"); break;
             case VIZ_SCREEN_RGB24:              Printf("RGB24\n"); break;
             case VIZ_SCREEN_RGBA32:             Printf("RGBA32\n"); break;
             case VIZ_SCREEN_ARGB32:             Printf("ARGB32\n"); break;
             case VIZ_SCREEN_CBCGCR:             Printf("CBCGCR\n"); break;
-            case VIZ_SCREEN_CBCGCRDB:           Printf("CBCGCRDB\n"); break;
             case VIZ_SCREEN_BGR24:              Printf("BGR24\n"); break;
             case VIZ_SCREEN_BGRA32:             Printf("BGRA32\n"); break;
             case VIZ_SCREEN_ABGR32:             Printf("ABGR32\n"); break;
             case VIZ_SCREEN_GRAY8:              Printf("GRAY8\n"); break;
-            case VIZ_SCREEN_DEPTH_BUFFER8:      Printf("DEPTH_BUFFER8\n"); break;
             case VIZ_SCREEN_DOOM_256_COLORS8:   Printf("DOOM_256_COLORS\n"); break;
             default:                            Printf("UNKNOWN\n");
         }
+
+        if(*viz_screen_format > VIZ_SCREEN_DOOM_256_COLORS8)
+            VIZ_ReportError("VIZ_ScreenInit", "Unknown screen format.");
     }
     catch(bip::interprocess_exception &ex){
-        Printf("VIZ_ScreenInit: Failed to create screen buffer.");
-        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, "Failed to create screen buffer.");
-        exit(1);
-    }
-
-    if((*viz_screen_format==VIZ_SCREEN_CBCGCRDB
-       ||*viz_screen_format==VIZ_SCREEN_CRCGCBDB
-       ||*viz_screen_format==VIZ_SCREEN_DEPTH_BUFFER8) && !*viz_nocheat) {
-        depthMap = new VIZDepthBuffer(vizScreenWidth, vizScreenHeight);
+        VIZ_ReportError("VIZ_ScreenInit", "Failed to create buffers.");
     }
 }
 
@@ -105,13 +97,6 @@ void VIZ_ScreenFormatUpdate(){
             rPos = 0; gPos = (int)vizScreenSize; bPos = 2 * (int)vizScreenSize;
             alpha = false;
             vizScreenSize *= 3;
-            break;
-
-        case VIZ_SCREEN_CRCGCBDB :
-            posMulti = 1;
-            rPos = 0; gPos = (int)vizScreenSize; bPos = 2 * (int)vizScreenSize;
-            alpha = false;
-            vizScreenSize *= 4;
             break;
 
         case VIZ_SCREEN_RGB24 :
@@ -143,13 +128,6 @@ void VIZ_ScreenFormatUpdate(){
             rPos = 2 * (int)vizScreenSize; gPos = (int)vizScreenSize, bPos = 0;
             alpha = false;
             vizScreenSize *= 3;
-            break;
-
-        case VIZ_SCREEN_CBCGCRDB :
-            posMulti = 1;
-            rPos = 2 * (int)vizScreenSize; gPos = (int)vizScreenSize, bPos = 0;
-            alpha = false;
-            vizScreenSize *= 4;
             break;
 
         case VIZ_SCREEN_BGR24 :
@@ -207,11 +185,8 @@ void VIZ_CopyScreenBuffer(unsigned int startAddress){
     const unsigned int screenWidth = screen->GetWidth();
     const unsigned int bufferPitchWidthDiff = bufferPitch - screenWidth;
 
-    if(vizScreenChannelSize != screenSize || vizScreenWidth != screenWidth){
-        Printf("VIZ_CopyScreenBuffer: Buffers size mismatch.");
-        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, "Buffers size mismatch.");
-        exit(1);
-    }
+    if(vizScreenChannelSize != screenSize || vizScreenWidth != screenWidth)
+        VIZ_ReportError("VIZ_CopyScreenBuffer", "Buffers size mismatch.");
 
     if(*viz_screen_format == VIZ_SCREEN_DOOM_256_COLORS8){
         for(unsigned int i = 0; i < screenSize; ++i){

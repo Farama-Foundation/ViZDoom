@@ -557,16 +557,13 @@ namespace vizdoom {
                 case BGR24:
                     this->screenChannels = 3;
                     break;
-                case CRCGCBDB:
                 case RGBA32:
                 case ARGB32:
-                case CBCGCRDB:
                 case BGRA32:
                 case ABGR32:
                     this->screenChannels = 4;
                     break;
                 case GRAY8:
-                case DEPTH_BUFFER8:
                 case DOOM_256_COLORS8:
                     this->screenChannels = 1;
                     break;
@@ -587,10 +584,7 @@ namespace vizdoom {
                     break;
                 case CRCGCB:
                 case CBCGCR:
-                case CRCGCBDB:
-                case CBCGCRDB:
                 case GRAY8:
-                case DEPTH_BUFFER8:
                 case DOOM_256_COLORS8:
                     this->screenDepth = 8;
                     break;

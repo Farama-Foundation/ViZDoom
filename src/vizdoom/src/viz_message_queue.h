@@ -63,6 +63,8 @@ void VIZ_MQSend(uint8_t code, const char * command);
 void VIZ_MQRecv(void *msg, size_t &size, unsigned int &priority);
 bool VIZ_MQTryRecv(void *msg, size_t &size, unsigned int &priority);
 
+void VIZ_ReportError(const char * function, const char * error_message);
+
 void VIZ_MQTic();
 
 void VIZ_MQClose();

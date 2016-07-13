@@ -49,9 +49,7 @@ void VIZ_MQInit(const char * id){
         vizMQDoom = new bip::message_queue(bip::open_only, vizMQDoomName);//, VIZ_MQ_MAX_MSG_NUM, VIZ_MQ_MAX_MSG_SIZE);
     }
     catch(...){ // bip::interprocess_exception
-        Printf("VIZ_MQInit: Failed to open message queues.");
-        if(vizMQController) VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, "Failed to open message queues.");
-        exit(1);
+        VIZ_ReportError("VIZ_MQInit", "Failed to open message queues.");
     }
 }
 
@@ -116,6 +114,12 @@ void VIZ_MQTic(){
             default : break;
         }
     }while(!vizNextTic);
+}
+
+void VIZ_ReportError(const char * function, const char * error_message) {
+    Printf("%s: %s\n", function, error_message);
+    VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, error_message);
+    exit(1);
 }
 
 void VIZ_MQClose(){

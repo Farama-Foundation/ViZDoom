@@ -60,18 +60,15 @@ namespace vizdoom{
 
     enum ScreenFormat {
         CRCGCB              = 0, // 3 channels of 8-bit values in RGB order
-        CRCGCBDB            = 1, // 4 channels of 8-bit values in RGB + depth buffer order
-        RGB24               = 2, // channel of RGB values stored in 24 bits, where R value is stored in the oldest 8 bits
-        RGBA32              = 3, // channel of RGBA values stored in 32 bits, where R value is stored in the oldest 8 bits
-        ARGB32              = 4, // channel of ARGB values stored in 32 bits, where A value is stored in the oldest 8 bits
-        CBCGCR              = 5, // 3 channels of 8-bit values in BGR order
-        CBCGCRDB            = 6, // 4 channels of 8-bit values in BGR + depth buffer order
-        BGR24               = 7, // channel of BGR values stored in 24 bits, where B value is stored in the oldest 8 bits
-        BGRA32              = 8, // channel of BGRA values stored in 32 bits, where B value is stored in the oldest 8 bits
-        ABGR32              = 9, // channel of ABGR values stored in 32 bits, where A value is stored in the oldest 8 bits
-        GRAY8               = 10, // 8-bit gray channel
-        DEPTH_BUFFER8       = 11, // 8-bit depth buffer channel
-        DOOM_256_COLORS8    = 12, //8-bit channel with Doom palette values
+        RGB24               = 1, // channel of RGB values stored in 24 bits, where R value is stored in the oldest 8 bits
+        RGBA32              = 2, // channel of RGBA values stored in 32 bits, where R value is stored in the oldest 8 bits
+        ARGB32              = 3, // channel of ARGB values stored in 32 bits, where A value is stored in the oldest 8 bits
+        CBCGCR              = 4, // 3 channels of 8-bit values in BGR order
+        BGR24               = 5, // channel of BGR values stored in 24 bits, where B value is stored in the oldest 8 bits
+        BGRA32              = 6, // channel of BGRA values stored in 32 bits, where B value is stored in the oldest 8 bits
+        ABGR32              = 7, // channel of ABGR values stored in 32 bits, where A value is stored in the oldest 8 bits
+        GRAY8               = 8, // 8-bit gray channel
+        DOOM_256_COLORS8    = 9, //8-bit channel with Doom palette values
     };
 
     enum ScreenResolution {
