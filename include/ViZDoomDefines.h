@@ -35,7 +35,7 @@ namespace vizdoom{
 
     struct GameState {
         unsigned int number;
-        std::vector<double> gameVariables;
+        std::vector<int> gameVariables;
 
         uint8_t * screenBuffer;
         uint8_t * depthBuffer;
