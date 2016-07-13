@@ -143,17 +143,14 @@ BOOST_PYTHON_MODULE(vizdoom)
 
     enum_<ScreenFormat>("ScreenFormat")
         ENUM_VAL_2_PYT(CRCGCB)
-        ENUM_VAL_2_PYT(CRCGCBDB)
         ENUM_VAL_2_PYT(RGB24)
         ENUM_VAL_2_PYT(RGBA32)
         ENUM_VAL_2_PYT(ARGB32)
         ENUM_VAL_2_PYT(CBCGCR)
-        ENUM_VAL_2_PYT(CBCGCRDB)
         ENUM_VAL_2_PYT(BGR24)
         ENUM_VAL_2_PYT(BGRA32)
         ENUM_VAL_2_PYT(ABGR32)
         ENUM_VAL_2_PYT(GRAY8)
-        ENUM_VAL_2_PYT(DEPTH_BUFFER8)
         ENUM_VAL_2_PYT(DOOM_256_COLORS8);
 
     enum_<ScreenResolution>("ScreenResolution")

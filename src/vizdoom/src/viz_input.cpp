@@ -308,9 +308,7 @@ void VIZ_InputInit() {
         VIZ_DEBUG_PRINT("VIZ_InputInit: inputAddress: %zu, inputRealAddress: %p, inputSize: %zu\n", vizSMInputAddress, vizInput, sizeof(VIZInputState));
     }
     catch (bip::interprocess_exception &ex) {
-        Printf("VIZ_InputInit: Failed to create input.");
-        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, "Failed to create input.");
-        exit(1);
+        VIZ_ReportError("VIZ_InputInit", "Failed to create input.");
     }
 
     for (int i = 0; i < VIZ_BT_COUNT; ++i) {

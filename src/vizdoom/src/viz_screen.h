@@ -44,18 +44,15 @@ extern size_t vizScreenChannelSize;
 
 enum VIZScreenFormat {
     VIZ_SCREEN_CRCGCB           = 0,
-    VIZ_SCREEN_CRCGCBDB         = 1,
-    VIZ_SCREEN_RGB24            = 2,
-    VIZ_SCREEN_RGBA32           = 3,
-    VIZ_SCREEN_ARGB32           = 4,
-    VIZ_SCREEN_CBCGCR           = 5,
-    VIZ_SCREEN_CBCGCRDB         = 6,
-    VIZ_SCREEN_BGR24            = 7,
-    VIZ_SCREEN_BGRA32           = 8,
-    VIZ_SCREEN_ABGR32           = 9,
-    VIZ_SCREEN_GRAY8            = 10,
-    VIZ_SCREEN_DEPTH_BUFFER8    = 11,
-    VIZ_SCREEN_DOOM_256_COLORS8 = 12
+    VIZ_SCREEN_RGB24            = 1,
+    VIZ_SCREEN_RGBA32           = 2,
+    VIZ_SCREEN_ARGB32           = 3,
+    VIZ_SCREEN_CBCGCR           = 4,
+    VIZ_SCREEN_BGR24            = 5,
+    VIZ_SCREEN_BGRA32           = 6,
+    VIZ_SCREEN_ABGR32           = 7,
+    VIZ_SCREEN_GRAY8            = 8,
+    VIZ_SCREEN_DOOM_256_COLORS8 = 9
 };
 
 void VIZ_ScreenInit();

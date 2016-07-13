@@ -539,17 +539,14 @@ namespace vizdoom {
         
     ScreenFormat DoomGame::StringToFormat(std::string str){
         if(str == "crcgcb")             return CRCGCB;
-        if(str == "crcgcbzb")           return CRCGCBDB;
         if(str == "rgb24")              return RGB24;
         if(str == "rgba32")             return RGBA32;
         if(str == "argb32")             return ARGB32;
         if(str == "cbcgcr")             return CBCGCR;
-        if(str == "cbcgcrzb")           return CBCGCRDB;
         if(str == "bgr24")              return BGR24;
         if(str == "bgra32")             return BGRA32;
         if(str == "abgr32")             return ABGR32;
         if(str == "gray8")              return GRAY8;
-        if(str == "zbuffer8")           return DEPTH_BUFFER8;
         if(str == "doom_256_colors8")   return DOOM_256_COLORS8;
 
         throw std::exception();

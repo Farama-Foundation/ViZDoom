@@ -57,9 +57,7 @@ void VIZ_SMInit(const char * id){
         VIZ_DEBUG_PRINT("VIZ_SMInit: SMName: %s, SMSize: %zu\n", vizSMName, vizSMSize);
     }
     catch(...){ // bip::interprocess_exception
-        Printf("VIZ_SMInit: Failed to create shared memory.");
-        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, "Failed to create shared memory.");
-        exit(1);
+        VIZ_ReportError("VIZ_SMInit", "Failed to create shared memory.");
     }
 }
 

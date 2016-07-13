@@ -120,9 +120,7 @@ void VIZ_GameStateInit(){
         VIZ_DEBUG_PRINT("VIZ_GameStateInit: gameStateAddress: %zu, gameStateRealAddress: %p, gameStateSize: %zu\n", vizSMGameStateAddress, vizGameState, sizeof(VIZGameState));
     }
     catch(bip::interprocess_exception &ex){
-        Printf("VIZ_GameStateInit: Failed to create game state.");
-        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, "Failed to create game state.");
-        exit(1);
+        VIZ_ReportError("VIZ_GameStateInit", "Failed to create game state.");
     }
 
     vizGameState->VERSION = VIZ_VERSION;
