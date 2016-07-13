@@ -29,6 +29,18 @@ extern unsigned int vizScreenWidth;
 extern unsigned int vizScreenHeight;
 extern size_t vizScreenPitch;
 extern size_t vizScreenSize;
+extern size_t vizScreenChannelSize;
+
+#define SCREEN_SM_SIZE sizeof(BYTE) * screen->GetWidth() * screen->GetHeight() * 10
+
+#define SCREEN_BUFFER_SM_ADDRESS 0
+#define SCREEN_BUFFER_SM_SIZE 4
+#define DEPTH_BUFFER_SM_ADDRESS 4
+#define DEPTH_BUFFER_SM_SIZE 1
+#define LABELS_BUFFER_SM_ADDRESS 5
+#define LABELS_BUFFER_SM_SIZE 1
+#define MAP_BUFFER_SM_ADDRESS 6
+#define MAP_BUFFER_SM_SIZE 4
 
 enum VIZScreenFormat {
     VIZ_SCREEN_CRCGCB           = 0,
@@ -48,7 +60,15 @@ enum VIZScreenFormat {
 
 void VIZ_ScreenInit();
 
+void VIZ_ScreenFormatUpdate();
+
+void VIZ_SetScreenSize();
+
+void VIZ_CopyScreenBuffer(unsigned int startPosition);
+
 void VIZ_ScreenUpdate();
+
+void VIZ_LevelMapUpdate();
 
 void VIZ_ScreenClose();
 

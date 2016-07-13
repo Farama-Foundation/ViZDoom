@@ -42,11 +42,11 @@ namespace vizdoom {
 
     struct GameStatePython {
         unsigned int number;
-        bpya::object imageBuffer;
         bpya::object gameVariables;
-        GameStatePython(int n, bpya::object buf, bpya::object v ):number(n),imageBuffer(buf),gameVariables(v){}
-        GameStatePython(int n, bpya::object buf):number(n),imageBuffer(buf){}
-        GameStatePython(int n):number(n){}
+        bpya::object screenBuffer;
+        bpya::object depthBuffer;
+        bpya::object labelsBuffer;
+        bpya::object mapBuffer;
     };
 
     class DoomGamePython : public DoomGame {
@@ -57,7 +57,6 @@ namespace vizdoom {
         
         GameStatePython getState();
         bpy::list getLastAction();
-        bpya::object getGameScreen();
         void setAction(bpy::list const &action);
         double makeAction(bpy::list const &action);
         double makeAction(bpy::list const &action, unsigned int tics);
@@ -80,8 +79,13 @@ namespace vizdoom {
         void sendGameCommand(bpy::str const &pyCmd);
 
     private:
-        npy_intp imageShape[3];
+        npy_intp screenShape[3];
+        npy_intp mapShape[3];
+        npy_intp depthShape[3];
+        npy_intp labelsShape[3];
+
         static std::vector<int> pyListToIntVector(bpy::list const &action);
+        static bpyn::array imageBufferToPyArray(npy_intp * imageShape, unsigned int dimensions, uint8_t * imageBuffer);
 
     };
 

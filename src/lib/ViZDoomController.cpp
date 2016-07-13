@@ -49,17 +49,17 @@ namespace vizdoom {
     DoomController::DoomController() {
 
         /* Message queues */
-        this->MQController = NULL;
-        this->MQDoom = NULL;
+        this->MQController = nullptr;
+        this->MQDoom = nullptr;
 
         /* Shared memory */
-        this->InputSMRegion = NULL;
-        this->GameStateSMRegion = NULL;
-        this->ScreenSMRegion = NULL;
+        this->InputSMRegion = nullptr;
+        this->GameStateSMRegion = nullptr;
+        this->ScreenSMRegion = nullptr;
 
         /* Threads */
-        this->signalThread = NULL;
-        this->doomThread = NULL;
+        this->signalThread = nullptr;
+        this->doomThread = nullptr;
 
         /* Flow control */
         this->doomRunning = false;
@@ -94,10 +94,13 @@ namespace vizdoom {
         this->screenSize = 0;
         this->screenDepth = 8;
         this->screenFormat = CRCGCB;
-        this->depthBuffer = false;
-        this->levelMap = false;
+        this->depth = true;
+        this->depthBuffer = nullptr;
+        this->levelMap = true;
+        this->levelMapBuffer = nullptr;
         //this->levelMapMode = NORMAL;
-        this->labels = false;
+        this->labels = true;
+        this->labelsBuffer = nullptr;
 
         this->hud = true;
         this->weapon = true;
@@ -523,6 +526,25 @@ namespace vizdoom {
         }
     }
 
+    void DoomController::setDepthBufferEnabled(bool depthBuffer){ this->depth = depthBuffer; }
+    bool DoomController::isDepthBufferEnabled(){
+        if (this->doomRunning) return this->gameState->DEPTH_BUFFER;
+        else return depth;
+    }
+
+    void DoomController::setLevelMapEnabled(bool levelMap){ this->levelMap = levelMap; }
+    bool DoomController::isLevelMapEnabled(){
+        if (this->doomRunning) return this->gameState->LEVEL_MAP;
+        else return levelMap;
+    }
+
+    void DoomController::setLabelsEnabled(bool labels){ this->labels = labels; }
+    bool DoomController::isLabelsEnabled(){
+        if (this->doomRunning) return this->gameState->LABELS;
+        else return labels;
+    }
+
+
     void DoomController::setScreenWidth(unsigned int width) { if(!this->doomRunning) this->screenWidth = width; }
     void DoomController::setScreenHeight(unsigned int height) { if(!this->doomRunning) this->screenHeight = height; }
     void DoomController::setScreenFormat(ScreenFormat format) {
@@ -656,11 +678,14 @@ namespace vizdoom {
     /* SM setters & getters */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    uint8_t *const DoomController::getScreen() { return this->screen; }
+    uint8_t * const DoomController::getScreenBuffer(){ return this->screenBuffer; }
+    uint8_t * const DoomController::getDepthBuffer(){ return this->depthBuffer; }
+    uint8_t * const DoomController::getLabelsBuffer(){ return this->labelsBuffer; }
+    uint8_t * const DoomController::getLevelMapBuffer(){ return this->levelMapBuffer; }
 
-    DoomController::InputState *const DoomController::getInput() { return this->input; }
+    DoomController::InputState * const DoomController::getInput() { return this->input; }
 
-    DoomController::GameState *const DoomController::getGameState() { return this->gameState; }
+    DoomController::GameState * const DoomController::getGameState() { return this->gameState; }
 
     int DoomController::getButtonState(Button button){
         if(this->doomRunning) return this->input->BT[button];
@@ -670,13 +695,11 @@ namespace vizdoom {
     void DoomController::setButtonState(Button button, int state) {
         if (button < ButtonCount && button >= 0 && this->doomRunning)
             this->input->BT[button] = state;
-
     }
 
     void DoomController::toggleButtonState(Button button) {
         if (button < ButtonCount && button >= 0 && this->doomRunning)
             this->input->BT[button] = !this->input->BT[button];
-
     }
 
     bool DoomController::isButtonAvailable(Button button){
@@ -1068,6 +1091,24 @@ namespace vizdoom {
         this->doomArgs.push_back("+fullscreen");
         this->doomArgs.push_back("0");
 
+        //depth duffer
+        if(this->depth) {
+            this->doomArgs.push_back("+viz_depth_buffer");
+            this->doomArgs.push_back("1");
+        }
+
+        //labels
+        if(this->labels) {
+            this->doomArgs.push_back("+viz_labels");
+            this->doomArgs.push_back("1");
+        }
+
+        //level map buffer
+        if(this->levelMap) {
+            this->doomArgs.push_back("+viz_level_map");
+            this->doomArgs.push_back("1");
+        }
+
         //weapon auto switch
         //this->doomArgs.push_back("+neverswitchonpickup");
         //this->doomArgs.push_back("1");
@@ -1190,9 +1231,16 @@ namespace vizdoom {
             this->screenSize = this->gameState->SCREEN_SIZE;
             this->screenFormat = (ScreenFormat)this->gameState->SCREEN_FORMAT;
 
+            size_t _screenSize = sizeof(uint8_t) * this->gameState->SCREEN_WIDTH * this->gameState->SCREEN_HEIGHT * 10;
+
             size_t SMScreenAddress = sizeof(DoomController::GameState) + sizeof(DoomController::InputState);
-            this->ScreenSMRegion = new bip::mapped_region(this->SM, bip::read_only, SMScreenAddress, this->screenSize);
+            this->ScreenSMRegion = new bip::mapped_region(this->SM, bip::read_only, SMScreenAddress, _screenSize);
             this->screen = static_cast<uint8_t *>(this->ScreenSMRegion->get_address());
+
+            this->screenBuffer = this->screen + this->gameState->SCREEN_BUFFER_ADDRESS;
+            this->depthBuffer = this->screen + this->gameState->DEPTH_BUFFER_ADDRESS;
+            this->labelsBuffer = this->screen + this->gameState->LABELS_BUFFER_ADDRESS;
+            this->levelMapBuffer = this->screen + this->gameState->LEVEL_MAP_BUFFER_ADDRESS;
         }
         catch(...) { //bip::interprocess_exception
             throw SharedMemoryException("Failed to open shared memory.");

@@ -764,7 +764,6 @@ void D_Display ()
 
 	hw2d = false;
 
-
 	{
 		unsigned int nowtime = I_FPSTime();
 		TexMan.UpdateAnimations(nowtime);
@@ -825,8 +824,7 @@ void D_Display ()
 				StatusBar->Draw (HUD_AltHud);
 				StatusBar->DrawTopStuff (HUD_AltHud);
 			}
-			else 
-			if (viewheight == SCREENHEIGHT && viewactive && screenblocks > 10)
+			else if (viewheight == SCREENHEIGHT && viewactive && screenblocks > 10)
 			{
 				EHudState state = DrawFSHUD ? HUD_Fullscreen : HUD_None;
 				StatusBar->DrawBottomStuff (state);
@@ -956,6 +954,33 @@ void D_Display ()
 	cycles.Unclock();
 	FrameCycles = cycles;
 }
+
+//VIZDOOM_CODE
+void VIZ_D_MapDisplay(){
+	bool _automapactive = automapactive;
+	bool _viewactive = viewactive;
+	automapactive = true;
+	viewactive = false;
+
+	D_Display ();
+
+	automapactive = _automapactive;
+	viewactive = _viewactive;
+}
+
+//VIZDOOM_CODE
+void VIZ_D_ScreenDisplay(){
+	bool _automapactive = automapactive;
+	bool _viewactive = viewactive;
+	automapactive = false;
+	viewactive = true;
+
+	D_Display ();
+
+	automapactive = _automapactive;
+	viewactive = _viewactive;
+}
+
 
 //==========================================================================
 //
@@ -2623,7 +2648,7 @@ void D_DoomMain (void)
 			UpdateJoystickMenu(NULL);
 
 #ifdef VIZ_DEPTH_TEST
-			depthMap = new depthBuffer(screen->GetWidth(), screen->GetHeight());
+			depthMap = new depthMap(screen->GetWidth(), screen->GetHeight());
 			depthMap->setDepthBoundries(120000000,358000);//probabli gud, but SHOULDN'T BE HERE
 #endif
 			v = Args->CheckValue ("-loadgame");

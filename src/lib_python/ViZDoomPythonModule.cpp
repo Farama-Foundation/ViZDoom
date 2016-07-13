@@ -130,7 +130,10 @@ BOOST_PYTHON_MODULE(vizdoom)
     /*------------------------------------------------------------------------------------------------------------*/
 
     #define ENUM_VAL_2_PYT(v) .value( #v , v )
-    /* .value("VALUE_IN_PYTHON", VALUE_IN_CPP) */
+    /* .value("VALUE", VALUE) */
+
+    #define ENUM_CLASS_VAL_2_PYT(c, v) .value( #v , c ## :: ## v )
+    /* .value("VALUE", enumClass::VALUE) */
 
     enum_<Mode>("Mode")
         ENUM_VAL_2_PYT(PLAYER)
@@ -327,8 +330,11 @@ BOOST_PYTHON_MODULE(vizdoom)
 
     class_<GameStatePython>("GameState", no_init)
         .def_readonly("number", &GameStatePython::number)
-        .def_readonly("image_buffer", &GameStatePython::imageBuffer)
-        .def_readonly("game_variables", &GameStatePython::gameVariables);
+        .def_readonly("game_variables", &GameStatePython::gameVariables)
+        .def_readonly("screen_buffer", &GameStatePython::screenBuffer)
+        .def_readonly("depth_buffer", &GameStatePython::depthBuffer)
+        .def_readonly("map_buffer", &GameStatePython::mapBuffer)
+        .def_readonly("labels_buffer", &GameStatePython::labelsBuffer);
 
     class_<DoomGamePython>("DoomGame", init<>())
         .def("init", &DoomGamePython::init)
@@ -351,7 +357,6 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def("get_state", &DoomGamePython::getState)
 
         .def("get_game_variable", &DoomGamePython::getGameVariable)
-        .def("get_game_screen", &DoomGamePython::getGameScreen)
 
         .def("get_living_reward", &DoomGamePython::getLivingReward)
         .def("set_living_reward", &DoomGamePython::setLivingReward)

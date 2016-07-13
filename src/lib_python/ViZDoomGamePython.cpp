@@ -21,6 +21,7 @@
 */
 
 #include "ViZDoomGamePython.h"
+#include "ViZDoomController.h"
 
 namespace vizdoom {
 
@@ -37,7 +38,6 @@ namespace vizdoom {
         import_array();
     }
 
-
     DoomGamePython::DoomGamePython() {
         init_numpy();
     }
@@ -50,35 +50,36 @@ namespace vizdoom {
             int x = this->getScreenWidth();
             int y = this->getScreenHeight();
 
-            switch(this->getScreenFormat()) {
+            switch(this->getScreenFormat()){
                 case CRCGCB:
-                case CRCGCBDB:
                 case CBCGCR:
-                case CBCGCRDB:
                 case GRAY8:
-                case DEPTH_BUFFER8:
                 case DOOM_256_COLORS8:
-                    this->imageShape[0] = channels;
-                    this->imageShape[1] = y;
-                    this->imageShape[2] = x;
+                    this->screenShape[0] = channels;
+                    this->screenShape[1] = y;
+                    this->screenShape[2] = x;
+                    this->mapShape[0] = channels;
+                    this->mapShape[1] = y;
+                    this->mapShape[2] = x;
                     break;
+
                 default:
-                    this->imageShape[0] = y;
-                    this->imageShape[1] = x;
-                    this->imageShape[2] = channels;
+                    this->screenShape[0] = y;
+                    this->screenShape[1] = x;
+                    this->screenShape[2] = channels;
+                    this->mapShape[0] = y;
+                    this->mapShape[1] = x;
+                    this->mapShape[2] = channels;
             }
+
+            this->depthShape[0] = 1;
+            this->depthShape[1] = y;
+            this->depthShape[2] = x;
+            this->labelsShape[0] = 1;
+            this->labelsShape[1] = y;
+            this->labelsShape[2] = x;
         }
         return initSuccess;
-    }
-
-    std::vector<int> DoomGamePython::pyListToIntVector(bpy::list const &action)
-    {
-        int listLength = bpy::len(action);
-        std::vector<int> properAction = std::vector<int>(listLength);
-        for (int i = 0; i < listLength; i++) {
-            properAction[i] = bpy::extract<int>(action[i]);
-        }
-        return properAction;
     }
 
     void DoomGamePython::setAction(bpy::list const &action) {
@@ -94,43 +95,49 @@ namespace vizdoom {
     }
 
     GameStatePython DoomGamePython::getState() {
-        if (this->isEpisodeFinished()) {
-            return GameStatePython(this->state.number);
+
+        GameStatePython pyState;
+        pyState.number = this->state->number;
+
+        if (this->isEpisodeFinished()) return pyState;
+
+        if (this->state->screenBuffer != nullptr) {
+            pyState.screenBuffer =
+                    this->imageBufferToPyArray(this->screenShape, 3, this->doomController->getScreenBuffer()).copy();
+        }
+        if (this->state->depthBuffer != nullptr) {
+            pyState.depthBuffer =
+                    this->imageBufferToPyArray(this->depthShape, 3, this->doomController->getDepthBuffer()).copy();
+        }
+        if (this->state->labelsBuffer != nullptr) {
+            pyState.labelsBuffer =
+                    this->imageBufferToPyArray(this->labelsShape, 3, this->doomController->getLabelsBuffer()).copy();
+        }
+        if (this->state->mapBuffer != nullptr) {
+            pyState.mapBuffer =
+                    this->imageBufferToPyArray(this->mapShape, 3, this->doomController->getLevelMapBuffer()).copy();
         }
 
-        PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, DoomGame::getGameScreen());
-        bpy::handle<> numpyImageHandle = bpy::handle<>(img);
-        bpyn::array numpyImage = bpyn::array(numpyImageHandle);
-
-        if (this->state.gameVariables.size() > 0) {
-            npy_intp varLen = this->state.gameVariables.size();
-            PyObject *vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, this->state.gameVariables.data());
+        if (this->state->gameVariables.size() > 0) {
+            npy_intp varLen = this->state->gameVariables.size();
+            PyObject *vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, this->state->gameVariables.data());
             bpy::handle<> numpyVarsHandle = bpy::handle<>(vars);
             bpyn::array numpyVars = bpyn::array(numpyVarsHandle);
 
-            return GameStatePython(state.number, numpyImage.copy(), numpyVars.copy());
+            pyState.gameVariables = numpyVars.copy();
         }
-        else {
-            return GameStatePython(state.number, numpyImage.copy());
-        }
+
+        return pyState;
 
     }
 
     bpy::list DoomGamePython::getLastAction() {
-        bpy::list action;
+        bpy::list pyAction;
         for (std::vector<int>::iterator it = DoomGame::lastAction.begin(); it!=DoomGame::lastAction.end(); ++it) {
-            action.append(*it);
+            pyAction.append(*it);
         }
-        return action;
+        return pyAction;
     }
-
-    bpya::object DoomGamePython::getGameScreen(){
-        PyObject *img = PyArray_SimpleNewFromData(3, imageShape, NPY_UBYTE, DoomGame::getGameScreen());
-        bpy::handle<> numpyImageHandle = bpy::handle<>(img);
-        bpyn::array numpyImage = bpyn::array(numpyImageHandle);
-        return numpyImage.copy();
-    }
-
 
     // These functions are workaround for
     // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
@@ -197,6 +204,22 @@ namespace vizdoom {
         const char* cCmd = bpy::extract<const char *>(pyCmd);
         std::string cmd(cCmd);
         DoomGame::sendGameCommand(cmd);
+    }
+
+
+    std::vector<int> DoomGamePython::pyListToIntVector(bpy::list const &action) {
+        int listLength = bpy::len(action);
+        std::vector<int> properAction = std::vector<int>(listLength);
+        for (int i = 0; i < listLength; i++) properAction[i] = bpy::extract<int>(action[i]);
+        return properAction;
+    }
+
+    bpyn::array DoomGamePython::imageBufferToPyArray(npy_intp * imageShape, unsigned int dimensions, uint8_t * imageBuffer){
+        PyObject *image = PyArray_SimpleNewFromData(dimensions, imageShape, NPY_UBYTE, imageBuffer);
+        bpy::handle<> numpyImageHandle = bpy::handle<>(image);
+        bpyn::array numpyImage = bpyn::array(numpyImageHandle);
+
+        return numpyImage;
     }
 
 }
