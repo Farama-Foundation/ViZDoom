@@ -62,7 +62,10 @@
 #include "r_data/colormaps.h"
 #include "r_data/voxels.h"
 #include "p_local.h"
+
+//VIZDOOM_CODE
 #include "viz_depth.h"
+#include "viz_labels.h"
 
 // [RH] A c-buffer. Used for keeping track of offscreen voxel spans.
 
@@ -325,6 +328,8 @@ nextpost:
 //VIZDOOM_CODE
 void R_DrawVisSprite (vissprite_t *vis)
 {
+	if(vizLabels!=NULL) vizLabels->setLabel(vizLabels->getLabel(vis));
+
 	const BYTE *pixels;
 	const FTexture::Span *spans;
 	fixed_t 		frac;
@@ -403,15 +408,18 @@ void R_DrawVisSprite (vissprite_t *vis)
 					dc_x++;
 					frac += xiscale;
 				}
-				if(depthMap!=NULL) {
+
+				//VIZDOOM_CODE
+				if(vizDepthMap!=NULL) {
 					for(int pcf=0;pcf<4;pcf++) {
-						depthMap->helperBuffer[pcf]=((unsigned int)  ((dc_iscale - 500) * 255) / (320000 - 500));
+						vizDepthMap->helperBuffer[pcf]=((unsigned int)  ((dc_iscale - 500) * 255) / (320000 - 500));
 						if (dc_iscale > 320000)
-							depthMap->helperBuffer[pcf]=(255);
+							vizDepthMap->helperBuffer[pcf]=(255);
 						if (dc_iscale < 500)
-							depthMap->helperBuffer[pcf]=(0);
+							vizDepthMap->helperBuffer[pcf]=(0);
 					}
 				}
+
 				rt_draw4cols (dc_x - 4);
 			}
 
@@ -1063,6 +1071,8 @@ void R_ProjectSprite (AActor *thing, int fakeside, F3DFloor *fakefloor, F3DFloor
 			vis->Style.colormap = mybasecolormap->Maps + (vis->ColormapNum << COLORMAPSHIFT);
 		}
 	}
+
+	if(vizLabels!=NULL) vizLabels->addSprite(thing, vis);
 }
 
 static void R_ProjectWallSprite(AActor *thing, fixed_t fx, fixed_t fy, fixed_t fz, FTextureID picnum, fixed_t xscale, fixed_t yscale, int renderflags)
@@ -1183,7 +1193,8 @@ void R_AddSprites (sector_t *sec, int lightlevel, int fakeside)
 			{
 				if(rover->bottom.plane->Zat0() >= thing->Top()) fakeceiling = rover;
 			}
-		}	
+		}
+
 		R_ProjectSprite (thing, fakeside, fakefloor, fakeceiling);
 		fakeceiling = NULL;
 		fakefloor = NULL;
@@ -1425,16 +1436,21 @@ void R_DrawPSprite (pspdef_t* psp, int pspnum, AActor *owner, fixed_t sx, fixed_
 			return;
 		}
 	}
-	if(depthMap!=NULL)
-	{
-		depthMap->setActualDepth(0);
-		depthMap->lock();
+
+	//VIZDOOM_CODE
+	if(vizDepthMap!=NULL) {
+		vizDepthMap->setActualDepth(0);
+		vizDepthMap->lock();
 	}
+	if(vizLabels!=NULL){
+		vizLabels->lock();
+		vizLabels->addPSprite(owner, vis);
+	}
+
 	R_DrawVisSprite (vis);
-	if(depthMap!=NULL)
-	{
-		depthMap->unlock();
-	}
+
+	if(vizDepthMap!=NULL) vizDepthMap->unlock();
+	if(vizLabels!=NULL) vizLabels->unlock();
 }
 
 

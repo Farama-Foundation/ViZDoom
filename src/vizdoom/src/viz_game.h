@@ -23,6 +23,7 @@
 #ifndef __VIZ_GAME_H__
 #define __VIZ_GAME_H__
 
+#include <viz_labels.h>
 #include <string.h>
 
 #include "dobject.h"
@@ -122,6 +123,10 @@ struct VIZGameState{
     bool PLAYERS_IN_GAME[VIZ_MAX_PLAYERS];
     char PLAYERS_NAME[VIZ_MAX_PLAYERS][VIZ_MAX_PLAYER_NAME_LEN];
     int PLAYERS_FRAGCOUNT[VIZ_MAX_PLAYERS];
+
+    //LABLES
+    VIZLabel LABEL[VIZ_MAX_LABELS];
+
 };
 
 int VIZ_CheckItem(FName name);

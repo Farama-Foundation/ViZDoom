@@ -109,10 +109,12 @@
 #include "p_local.h"
 
 //VIZDOOM_CODE
-#include "viz_main.h"
+#include "viz_defines.h"
 #include "viz_depth.h"
 #include "viz_input.h"
-#include "viz_defines.h"
+#include "viz_labels.h"
+#include "viz_main.h"
+
 
 EXTERN_CVAR (Bool, viz_controlled)
 EXTERN_CVAR (Bool, viz_async)
@@ -708,8 +710,10 @@ void D_Display ()
 			vid_cursor.Callback();
 		}
 	}
-//VIZDOOM_CODE
-	if(depthMap!=NULL) depthMap->sizeUpdate();
+
+	//VIZDOOM_CODE
+	if(vizDepthMap!=NULL) vizDepthMap->sizeUpdate();
+	if(vizLabels!=NULL) vizLabels->sizeUpdate();
 
 	RenderTarget = screen;
 
@@ -2647,10 +2651,15 @@ void D_DoomMain (void)
 			V_Init2();
 			UpdateJoystickMenu(NULL);
 
-#ifdef VIZ_DEPTH_TEST
-			depthMap = new depthMap(screen->GetWidth(), screen->GetHeight());
-			depthMap->setDepthBoundries(120000000,358000);//probabli gud, but SHOULDN'T BE HERE
-#endif
+			#ifdef VIZ_DEPTH_TEST
+				vizDepthMap = new VIZDepthBuffer(screen->GetWidth(), screen->GetHeight());
+				vizDepthMap->setDepthBoundries(120000000,358000);//probabli gud, but SHOULDN'T BE HERE
+            #endif
+
+			#ifdef VIZ_LABELS_TEST
+				vizLabels = new VIZLabelsBuffer(screen->GetWidth(), screen->GetHeight());
+			#endif
+
 			v = Args->CheckValue ("-loadgame");
 			if (v)
 			{
@@ -2724,9 +2733,8 @@ void D_DoomMain (void)
 		catch (CRestartException &)
 		{
 			// Music and sound should be stopped first
-			//S_StopMusic(true);
-			//S_StopAllChannels ();
-			delete depthMap;
+			S_StopMusic(true);
+			S_StopAllChannels ();
 			VIZ_Close();
 
 			M_ClearMenus();					// close menu if open

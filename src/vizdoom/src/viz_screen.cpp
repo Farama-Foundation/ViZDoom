@@ -25,6 +25,7 @@
 #include "viz_shared_memory.h"
 #include "viz_message_queue.h"
 #include "viz_depth.h"
+#include "viz_labels.h"
 
 #include "d_main.h"
 #include "doomstat.h"
@@ -159,12 +160,13 @@ void VIZ_ScreenFormatUpdate(){
     }
 
     if(*viz_depth_buffer && !*viz_nocheat) {
-        if(depthMap) delete depthMap;
-        depthMap = new VIZDepthBuffer(vizScreenWidth, vizScreenHeight);
+        if(vizDepthMap!=NULL) delete vizDepthMap;
+        vizDepthMap = new VIZDepthBuffer(vizScreenWidth, vizScreenHeight);
     }
 
     if(*viz_labels && !*viz_nocheat) {
-        //labels = new VIZDepthBuffer(vizScreenWidth, vizScreenHeight);
+        if(vizLabels!=NULL) delete vizLabels;
+        vizLabels = new VIZLabelsBuffer(vizScreenWidth, vizScreenHeight);
     }
 }
 
@@ -224,14 +226,14 @@ void VIZ_ScreenUpdate(){
 
         if (*viz_depth_buffer) {
             if (!*viz_nocheat)
-                memcpy(vizScreen + DEPTH_BUFFER_SM_ADDRESS * vizScreenChannelSize, depthMap->getBuffer(), depthMap->getBufferSize());
+                memcpy(vizScreen + DEPTH_BUFFER_SM_ADDRESS * vizScreenChannelSize, vizDepthMap->getBuffer(), vizDepthMap->getBufferSize());
             else
                 memset(vizScreen + DEPTH_BUFFER_SM_ADDRESS * vizScreenChannelSize, 0, DEPTH_BUFFER_SM_SIZE * vizScreenChannelSize);
         }
 
         if (*viz_labels) {
-            //if(!*viz_nocheat) memcpy(vizScreen + LABELS_BUFFER_SM_ADDRESS * vizScreenSize, labels->getBuffer(), depthMap->getBufferSize());
-            //else memset(vizScreen + LABELS_BUFFER_SM_ADDRESS * vizScreenSize, 0, LABELS_BUFFER_SM_SIZE * vizScreenSize);
+            if(!*viz_nocheat) memcpy(vizScreen + LABELS_BUFFER_SM_ADDRESS * vizScreenChannelSize, vizLabels->getBuffer(), vizDepthMap->getBufferSize());
+            else memset(vizScreen + LABELS_BUFFER_SM_ADDRESS * vizScreenChannelSize, 0, LABELS_BUFFER_SM_SIZE * vizScreenChannelSize);
         }
 
         screen->Unlock();
@@ -247,5 +249,6 @@ void VIZ_LevelMapUpdate(){
 
 void VIZ_ScreenClose(){
     delete vizScreenSMRegion;
-    delete depthMap;
+    if(vizDepthMap) delete vizDepthMap;
+    if(vizLabels) delete vizLabels;
 }

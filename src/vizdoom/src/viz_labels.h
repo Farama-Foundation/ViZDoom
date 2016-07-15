@@ -20,39 +20,59 @@
  THE SOFTWARE.
 */
 
-#ifndef __VIZ_DEPTH_H__
-#define __VIZ_DEPTH_H__
+#ifndef __VIZ_LABELS_H__
+#define __VIZ_LABELS_H__
 
-//UNCOMMENT TO ENABLE DEPTH BUFFER DEBUG WINDOW
-//#define VIZ_DEPTH_TEST 1
+//UNCOMMENT TO ENABLE LABELS BUFFER DEBUG WINDOW
+//#define VIZ_LABELS_TEST 1
 
-//UNCOMMENT TO ENABLE COLOR-BASED DEPTH TEST
-//#define VIZ_DEPTH_COLORS 1
+//UNCOMMENT TO ENABLE COLOR-BASED LABELS TEST
+//#define VIZ_LABELS_COLORS 1
 
 #include "basictypes.h"
+#include "doomtype.h"
+#include "actor.h"
 
-#ifdef VIZ_DEPTH_TEST
+#include "r_main.h"
+#include "r_plane.h"
+#include "r_draw.h"
+#include "r_things.h"
+#include "r_3dfloors.h"
+#include "a_sharedglobal.h"
+#include "g_level.h"
+
+#include <vector>
+
+#ifdef VIZ_LABELS_TEST
 #include <SDL_video.h>
 #endif
 
-class VIZDepthBuffer{
+#define VIZ_MAX_LABELS 256
+#define VIZ_MAX_LABEL_NAME_LEN 128
+
+struct VIZToLabel{
+    AActor* actor;
+    bool psrpite;
+    vissprite_t* vissprite;
+    BYTE label;
+};
+
+struct VIZLabel{
+    int id;
+    char name[VIZ_MAX_LABEL_NAME_LEN];
+    BYTE label;
+};
+
+class VIZLabelsBuffer{
 public:
-    VIZDepthBuffer(unsigned int width, unsigned int height);
-    ~VIZDepthBuffer();
+
+    VIZLabelsBuffer(unsigned int width, unsigned int height);
+    ~VIZLabelsBuffer();
 
     BYTE *getBuffer();
     BYTE *getBufferPoint(unsigned int x, unsigned int y);
-    void setPoint(unsigned int x, unsigned int y, BYTE depth);
+    void setPoint(unsigned int x, unsigned int y, BYTE label);
     void setPoint(unsigned int x, unsigned int y);
-    void setActualDepth(BYTE depth);
-    void setActualDepthConv(int depth);
-    void setDepthBoundries(int maxDepth, int minDepth);
-    void updateActualDepth(int adsb);
-    void storeX(int x);
-    void storeY(int y);
-    int getX(void);
-    int getY(void);
-
     unsigned int getBufferSize();
     unsigned int getBufferWidth();
     unsigned int getBufferHeight();
@@ -62,30 +82,37 @@ public:
     void unlock();
     bool isLocked();
     void sizeUpdate();
-    unsigned int helperBuffer[4];
 
-    #ifdef VIZ_DEPTH_TEST
-    void testUpdate();
+    void addSprite(AActor *thing, vissprite_t* vis);
+    void addPSprite(AActor *thing, vissprite_t* vis);
+    BYTE getLabel(vissprite_t* vis);
+    void setLabel(BYTE label);
+
+    #ifdef VIZ_LABELS_TEST
+        void testUpdate();
     #endif
 
 private:
+
     BYTE *buffer;
     unsigned int bufferSize;
     unsigned int bufferWidth;
     unsigned int bufferHeight;
-    BYTE actualDepth;
-    int maxDepth;
-    int minDepth;
-    int convSteps;
+
     int tX, tY;
     bool locked;
 
-    #ifdef VIZ_DEPTH_TEST
-    SDL_Window* window;
-    SDL_Surface* surface;
-    SDL_Color colors[256];
+    BYTE labeled;
+    BYTE nextLabel;
+    BYTE currentLabel;
+    std::vector<VIZToLabel> toLabel;
+
+    #ifdef VIZ_LABELS_TEST
+        SDL_Window* window;
+        SDL_Surface* surface;
+        SDL_Color colors[256];
     #endif
 };
 
-extern VIZDepthBuffer* vizDepthMap;
+extern VIZLabelsBuffer* vizLabels;
 #endif

@@ -1176,13 +1176,14 @@ add_executable( vizdoom WIN32 MACOSX_BUNDLE
 		r_data/r_interpolate.cpp
 		r_data/r_translate.cpp
 		zzautozend.cpp
-		viz_input.cpp
+		viz_depth.cpp
 		viz_game.cpp
-		viz_screen.cpp
-		viz_shared_memory.cpp
-		viz_message_queue.cpp
+		viz_input.cpp
+		viz_labels.cpp
 		viz_main.cpp
-		viz_depth.cpp)
+		viz_message_queue.cpp
+		viz_screen.cpp
+		viz_shared_memory.cpp)
 
 set_source_files_properties( xlat/parse_xlat.cpp PROPERTIES OBJECT_DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/xlat_parser.c" )
 set_source_files_properties( sc_man.cpp PROPERTIES OBJECT_DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/sc_man_scanner.h" )
