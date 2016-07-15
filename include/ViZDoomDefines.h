@@ -23,6 +23,7 @@
 #ifndef __VIZDOOM_DEFINES_H__
 #define __VIZDOOM_DEFINES_H__
 
+#include <string>
 #include <vector>
 
 namespace vizdoom{
@@ -33,14 +34,23 @@ namespace vizdoom{
     typedef unsigned char uint8_t;
     typedef unsigned char BYTE;
 
+    struct Label{
+        int objectId;
+        std::string objectName;
+        uint8_t value;
+    };
+
     struct GameState {
         unsigned int number;
+
         std::vector<int> gameVariables;
 
         uint8_t * screenBuffer;
         uint8_t * depthBuffer;
         uint8_t * labelsBuffer;
         uint8_t * mapBuffer;
+
+        std::vector<Label> labels;
 
         GameState(){
             this->number = 0;

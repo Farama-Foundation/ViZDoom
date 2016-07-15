@@ -251,7 +251,17 @@ namespace vizdoom {
                     this->state->mapBuffer = this->doomController->getLevelMapBuffer();
             }
 
-            //Update last action
+            /* Update label */
+            this->state->labels.clear();
+            for (unsigned int i = 0; i < this->doomController->gameState->LABEL_COUNT; ++i){
+                Label label;
+                label.objectId = this->doomController->gameState->LABEL[i].objectId;
+                label.objectName = std::string(this->doomController->gameState->LABEL[i].objectName);
+                label.value = this->doomController->gameState->LABEL[i].value;
+                this->state->labels.push_back(label);
+            }
+
+            /* Update last action */
             for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
                 this->lastAction[i] = this->doomController->getButtonState(this->availableButtons[i]);
             }
@@ -447,6 +457,10 @@ namespace vizdoom {
     }
 
     void DoomGame::setScreenFormat(ScreenFormat format) { this->doomController->setScreenFormat(format); }
+    void DoomGame::setDepthBufferEnabled(bool enabled) { this->doomController->setDepthBufferEnabled(enabled); }
+    void DoomGame::setLabelsBufferEnabled(bool enabled) { this->doomController->setLabelsEnabled(enabled); }
+    void DoomGame::setMapBufferEnabled(bool enabled) { this->doomController->setLevelMapEnabled(enabled); }
+
     void DoomGame::setRenderHud(bool hud) { this->doomController->setRenderHud(hud); }
     void DoomGame::setRenderWeapon(bool weapon) { this->doomController->setRenderWeapon(weapon); }
     void DoomGame::setRenderCrosshair(bool crosshair) { this->doomController->setRenderCrosshair(crosshair); }

@@ -170,7 +170,7 @@ void VIZ_ScreenFormatUpdate(){
     }
 }
 
-void VIZ_CopyScreenBuffer(unsigned int startAddress){
+void VIZ_CopyBuffer(unsigned int startAddress){
 
     if(screen == NULL) return;
     screen->Lock(true);
@@ -180,12 +180,12 @@ void VIZ_CopyScreenBuffer(unsigned int startAddress){
 
     if(buffer == NULL || palette == NULL) return;
 
-    VIZ_DEBUG_PRINT("VIZ_CopyScreenBuffer: startAddress: %d\n", startAddress);
-
     const unsigned int screenSize = screen->GetWidth() * screen->GetHeight();
     const unsigned int bufferPitch = screen->GetPitch();
     const unsigned int screenWidth = screen->GetWidth();
     const unsigned int bufferPitchWidthDiff = bufferPitch - screenWidth;
+
+    VIZ_DEBUG_PRINT("VIZ_CopyScreenBuffer: startAddress: %d, size: %d\n", startAddress, screenSize);
 
     if(vizScreenChannelSize != screenSize || vizScreenWidth != screenWidth)
         VIZ_ReportError("VIZ_CopyScreenBuffer", "Buffers size mismatch.");
@@ -218,21 +218,21 @@ void VIZ_CopyScreenBuffer(unsigned int startAddress){
 
 void VIZ_ScreenUpdate(){
 
-    VIZ_CopyScreenBuffer(SCREEN_BUFFER_SM_ADDRESS * vizScreenChannelSize);
+    VIZ_CopyBuffer(SCREEN_BUFFER_SM_ADDRESS * vizScreenChannelSize);
 
     if(*viz_depth_buffer || *viz_labels) {
 
         screen->Lock(true);
 
         if (*viz_depth_buffer) {
-            if (!*viz_nocheat)
-                memcpy(vizScreen + DEPTH_BUFFER_SM_ADDRESS * vizScreenChannelSize, vizDepthMap->getBuffer(), vizDepthMap->getBufferSize());
+            if (!*viz_nocheat && vizDepthMap!=NULL){
+                memcpy(vizScreen + DEPTH_BUFFER_SM_ADDRESS * vizScreenChannelSize, vizDepthMap->getBuffer(), vizDepthMap->getBufferSize()); }
             else
                 memset(vizScreen + DEPTH_BUFFER_SM_ADDRESS * vizScreenChannelSize, 0, DEPTH_BUFFER_SM_SIZE * vizScreenChannelSize);
         }
 
         if (*viz_labels) {
-            if(!*viz_nocheat) memcpy(vizScreen + LABELS_BUFFER_SM_ADDRESS * vizScreenChannelSize, vizLabels->getBuffer(), vizDepthMap->getBufferSize());
+            if(!*viz_nocheat && vizLabels!=NULL) memcpy(vizScreen + LABELS_BUFFER_SM_ADDRESS * vizScreenChannelSize, vizLabels->getBuffer(), vizLabels->getBufferSize());
             else memset(vizScreen + LABELS_BUFFER_SM_ADDRESS * vizScreenChannelSize, 0, LABELS_BUFFER_SM_SIZE * vizScreenChannelSize);
         }
 
@@ -240,9 +240,9 @@ void VIZ_ScreenUpdate(){
     }
 }
 
-void VIZ_LevelMapUpdate(){
+void VIZ_ScreenLevelMapUpdate(){
     if(*viz_level_map){
-        if(!*viz_nocheat) VIZ_CopyScreenBuffer(MAP_BUFFER_SM_ADDRESS * vizScreenChannelSize);
+        if(!*viz_nocheat) VIZ_CopyBuffer(MAP_BUFFER_SM_ADDRESS * vizScreenChannelSize);
         else memset(vizScreen + MAP_BUFFER_SM_ADDRESS * vizScreenChannelSize, 0, MAP_BUFFER_SM_SIZE * vizScreenChannelSize);
     }
 }

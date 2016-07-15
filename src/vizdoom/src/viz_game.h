@@ -124,7 +124,8 @@ struct VIZGameState{
     char PLAYERS_NAME[VIZ_MAX_PLAYERS][VIZ_MAX_PLAYER_NAME_LEN];
     int PLAYERS_FRAGCOUNT[VIZ_MAX_PLAYERS];
 
-    //LABLES
+    //LABELS
+    unsigned int LABEL_COUNT;
     VIZLabel LABEL[VIZ_MAX_LABELS];
 
 };
@@ -150,6 +151,8 @@ int VIZ_CheckSlotWeapons(unsigned int slot);
 void VIZ_GameStateInit();
 
 void VIZ_GameStateTic();
+
+void VIZ_GameStateUpdateLabels();
 
 void VIZ_GameStateClose();
 

@@ -47,6 +47,9 @@ namespace vizdoom{
 /* Shared memory's settings */
 #define SM_NAME_BASE        "ViZDoomSM"
 
+#define MAX_LABELS 256
+#define MAX_LABEL_NAME_LEN 64
+
 /* Message queues' settings */
 #define MQ_NAME_CTR_BASE    "ViZDoomMQCtr"
 #define MQ_NAME_DOOM_BASE   "ViZDoomMQDoom"
@@ -72,6 +75,8 @@ namespace vizdoom{
 #define MSG_CODE_SIGABRT                30 + SIGABRT
 #define MSG_CODE_SIGTERM                30 + SIGTERM
 
+
+
 /* OSes */
 #ifdef __linux__
 #define OS_LINUX
@@ -87,6 +92,12 @@ namespace vizdoom{
 
         /* SM structs */
         /*------------------------------------------------------------------------------------------------------------*/
+
+        struct SMLabel{
+            int objectId;
+            char objectName[MAX_LABEL_NAME_LEN];
+            uint8_t value;
+        };
 
         struct GameState {
             unsigned int VERSION;
@@ -170,6 +181,10 @@ namespace vizdoom{
             bool PLAYERS_IN_GAME[MaxPlayers];
             char PLAYERS_NAME[MaxPlayers][MaxPlayerNameLength];
             int PLAYERS_FRAGCOUNT[MaxPlayers];
+
+            //LABELS
+            unsigned int LABEL_COUNT;
+            SMLabel LABEL[MAX_LABELS];
         };
 
         struct InputState {
@@ -348,6 +363,8 @@ namespace vizdoom{
         int getPlayerWeapon(unsigned int slot);
         int getUser(unsigned int slot);
 
+        GameState *gameState;
+
     private:
 
         /* Flow */
@@ -425,7 +442,6 @@ namespace vizdoom{
         InputState *_input;
 
         bip::mapped_region *GameStateSMRegion;
-        GameState *gameState;
 
         bip::mapped_region *ScreenSMRegion;
         uint8_t *screen;

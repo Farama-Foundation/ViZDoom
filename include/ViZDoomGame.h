@@ -405,6 +405,10 @@ namespace vizdoom {
          */
         void setScreenFormat(ScreenFormat format);
 
+        void setDepthBufferEnabled(bool enabled);
+        void setLabelsBufferEnabled(bool enabled);
+        void setMapBufferEnabled(bool enabled);
+
         /*
          * Determine if game's hud will be rendered in game.
          */
@@ -470,6 +474,8 @@ namespace vizdoom {
          * Returns size in bytes of game's screen buffer.
          */
         size_t getScreenSize();
+
+
 
 //        /*
 //         * Returns a pointer to the raw screen buffer.
