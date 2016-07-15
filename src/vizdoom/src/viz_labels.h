@@ -42,25 +42,36 @@
 #include "g_level.h"
 
 #include <vector>
+#include <map>
 
 #ifdef VIZ_LABELS_TEST
 #include <SDL_video.h>
 #endif
 
 #define VIZ_MAX_LABELS 256
-#define VIZ_MAX_LABEL_NAME_LEN 128
-
-struct VIZToLabel{
-    AActor* actor;
-    bool psrpite;
-    vissprite_t* vissprite;
-    BYTE label;
-};
+#define VIZ_MAX_LABEL_NAME_LEN 64
 
 struct VIZLabel{
-    int id;
-    char name[VIZ_MAX_LABEL_NAME_LEN];
+    unsigned int objectId;
+    char objectName[VIZ_MAX_LABEL_NAME_LEN];
+    BYTE value;
+};
+
+struct VIZSprite{
+    unsigned int actorId;
+    AActor* actor;
+    bool psprite;
+    vissprite_t* vissprite;
+    bool labeled;
     BYTE label;
+
+    VIZSprite(){
+        this->actor = NULL;
+        this->vissprite = NULL;
+        this->psprite = false;
+        this->labeled = false;
+        this->label = 0;
+    };
 };
 
 class VIZLabelsBuffer{
@@ -86,11 +97,16 @@ public:
     void addSprite(AActor *thing, vissprite_t* vis);
     void addPSprite(AActor *thing, vissprite_t* vis);
     BYTE getLabel(vissprite_t* vis);
+    unsigned int getActorId(AActor *actor);
     void setLabel(BYTE label);
+
+    std::vector<VIZSprite> getSprites();
 
     #ifdef VIZ_LABELS_TEST
         void testUpdate();
     #endif
+
+    std::vector<VIZSprite> sprites;
 
 private:
 
@@ -98,14 +114,12 @@ private:
     unsigned int bufferSize;
     unsigned int bufferWidth;
     unsigned int bufferHeight;
-
-    int tX, tY;
     bool locked;
 
     BYTE labeled;
-    BYTE nextLabel;
     BYTE currentLabel;
-    std::vector<VIZToLabel> toLabel;
+
+    std::map<AActor*, unsigned int> actors;
 
     #ifdef VIZ_LABELS_TEST
         SDL_Window* window;

@@ -94,15 +94,16 @@ namespace vizdoom {
         this->screenSize = 0;
         this->screenDepth = 8;
         this->screenFormat = CRCGCB;
-        this->depth = true;
+
+        this->depth = false;
         this->depthBuffer = nullptr;
         this->levelMap = false;
         this->levelMapBuffer = nullptr;
         //this->levelMapMode = NORMAL;
-        this->labels = true;
+        this->labels = false;
         this->labelsBuffer = nullptr;
 
-        this->hud = true;
+        this->hud = false;
         this->weapon = true;
         this->crosshair = false;
         this->decals = true;

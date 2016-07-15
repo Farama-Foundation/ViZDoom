@@ -34,11 +34,6 @@ VIZLabelsBuffer::VIZLabelsBuffer(unsigned int width, unsigned int height):
 
     buffer = new BYTE[bufferSize];
     memset(buffer, 0, bufferSize);
-//    for(unsigned int i=0; i<bufferSize; ++i) {
-//        buffer[i] = 0;
-//    }
-
-    this->nextLabel = 255;
 
     #ifdef VIZ_LABELS_TEST
         for(int j = 0; j < 256; j++)
@@ -82,8 +77,7 @@ BYTE* VIZLabelsBuffer::getBuffer() { return buffer; }
 BYTE* VIZLabelsBuffer::getBufferPoint(unsigned int x, unsigned int y) {
     if( x < bufferWidth && y < bufferHeight )
         return buffer + x + y*bufferWidth;
-    else
-    return NULL;
+    else return NULL;
 }
 
 // Set point(x,y) value with next label
@@ -121,7 +115,7 @@ void VIZLabelsBuffer::clearBuffer() {
 void VIZLabelsBuffer::clearBuffer(BYTE color) {
     memset(buffer, color, bufferSize);
 
-    this->toLabel.clear();
+    this->sprites.clear();
     this->labeled = 0;
 }
 
@@ -146,36 +140,54 @@ void VIZLabelsBuffer::sizeUpdate() {
     }
 }
 
-void VIZLabelsBuffer::addSprite(AActor *thing, vissprite_t* vis){
-    VIZToLabel newSprite;
-    newSprite.actor = thing;
-    newSprite.psrpite = false;
-    newSprite.vissprite = vis;
+void VIZLabelsBuffer::addSprite(AActor *actor, vissprite_t* vis){
+    VIZSprite sprite;
+    sprite.actor = actor;
+    sprite.actorId = this->getActorId(actor);
+    sprite.vissprite = vis;
 
-    this->toLabel.push_back(newSprite);
+    this->sprites.push_back(sprite);
 }
 
-void VIZLabelsBuffer::addPSprite(AActor *thing, vissprite_t* vis){
-    VIZToLabel newSprite;
-    newSprite.actor = thing;
-    newSprite.psrpite = true;
-    newSprite.vissprite = vis;
+void VIZLabelsBuffer::addPSprite(AActor *actor, vissprite_t* vis){
+    VIZSprite sprite;
+    sprite.actor = actor;
+    sprite.actorId = 0;
+    sprite.psprite = true;
+    sprite.vissprite = vis;
 
-    this->toLabel.push_back(newSprite);
+    this->sprites.push_back(sprite);
 }
 
 BYTE VIZLabelsBuffer::getLabel(vissprite_t* vis){
-    for(auto i = this->toLabel.begin(); i != this->toLabel.end(); ++i){
+    for(auto i = this->sprites.begin(); i != this->sprites.end(); ++i){
         if(i->vissprite == vis){
-            if(i->psrpite) i->label = VIZ_MAX_LABELS - 1;
+            if(i->psprite) i->label = VIZ_MAX_LABELS - 1;
             else{
                 ++labeled;
-                i->label = labeled * (VIZ_MAX_LABELS - 1) / (this->toLabel.size() + 1);
+                i->label = labeled * (VIZ_MAX_LABELS - 1) / (this->sprites.size() + 1);
             }
+            i->labeled = true;
             return i->label;
         }
     }
     return 0;
+}
+
+unsigned int VIZLabelsBuffer::getActorId(AActor *actor){
+    auto actorId = this->actors.find(actor);
+    if(actorId != this->actors.end()){
+        return actorId->second;
+    }
+    else{
+        unsigned int newId = this->actors.size() + 1;
+        this->actors.insert({actor, newId});
+        return newId;
+    }
+}
+
+std::vector<VIZSprite>  VIZLabelsBuffer::getSprites(){
+    return this->sprites;
 }
 
 void VIZLabelsBuffer::setLabel(BYTE label){

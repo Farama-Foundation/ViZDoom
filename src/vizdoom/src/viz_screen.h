@@ -59,13 +59,13 @@ void VIZ_ScreenInit();
 
 void VIZ_ScreenFormatUpdate();
 
-void VIZ_SetScreenSize();
+void VIZ_ScreenSetSize();
 
-void VIZ_CopyScreenBuffer(unsigned int startPosition);
+void VIZ_CopyBuffer(unsigned int startPosition);
 
 void VIZ_ScreenUpdate();
 
-void VIZ_LevelMapUpdate();
+void VIZ_ScreenLevelMapUpdate();
 
 void VIZ_ScreenClose();
 

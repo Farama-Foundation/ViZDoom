@@ -22,9 +22,10 @@
 
 #include "viz_game.h"
 #include "viz_defines.h"
-#include "viz_shared_memory.h"
+#include "viz_labels.h"
 #include "viz_message_queue.h"
 #include "viz_screen.h"
+#include "viz_shared_memory.h"
 
 #include "d_netinf.h"
 #include "d_event.h"
@@ -246,6 +247,35 @@ void VIZ_GameStateTic(){
             }
         }
     }
+}
+
+void VIZ_GameStateUpdateLabels(){
+
+    unsigned int labelCount = 0;
+    if(vizLabels!=NULL){
+
+        VIZ_DEBUG_PRINT("VIZ_GameStateUpdateLabels: tic: %d, number of sprites: %d\n",
+                        gametic, vizLabels->getSprites().size());
+
+        //TODO sort vizLabels->sprites
+
+        for(auto i = vizLabels->sprites.begin(); i != vizLabels->sprites.end(); ++i){
+            if(i->labeled){
+                vizGameState->LABEL[labelCount].objectId = i->actorId;
+                strncpy(vizGameState->LABEL[labelCount].objectName, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN);
+                vizGameState->LABEL[labelCount].value = i->label;
+
+                VIZ_DEBUG_PRINT("VIZ_GameStateUpdateLabels: labelCount: %d, objectId: %d, objectName: %s, value %d\n",
+                                labelCount+1, vizGameState->LABEL[labelCount].objectId,
+                                vizGameState->LABEL[labelCount].objectName, vizGameState->LABEL[labelCount].value);
+
+                ++labelCount;
+            }
+            if(i->label == VIZ_MAX_LABELS - 1 || labelCount >= VIZ_MAX_LABELS) break;
+        }
+    }
+
+    vizGameState->LABEL_COUNT = labelCount;
 }
 
 void VIZ_GameStateClose(){
