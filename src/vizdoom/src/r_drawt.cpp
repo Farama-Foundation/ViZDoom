@@ -46,7 +46,10 @@
 #include "r_main.h"
 #include "r_things.h"
 #include "v_video.h"
+
+//VIZDOOM_CODE
 #include "viz_depth.h"
+#include "viz_labels.h"
 
 // I should have commented this stuff better.
 //
@@ -178,10 +181,13 @@ void rt_map1col_c (int hx, int sx, int yl, int yh)
 		dest += pitch*2;
 	} while (--count);
 
-	if(depthMap!=NULL)
-	{
+	if(vizDepthMap!=NULL) {
 		for(int y=yl;y<=yh;y++)
-			depthMap->setPoint(sx, y);
+			vizDepthMap->setPoint(sx, y);
+	}
+	if(vizLabels!=NULL) {
+		for(int y=yl;y<=yh;y++)
+			vizLabels->setPoint(sx, y);
 	}
 }
 
@@ -211,13 +217,20 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 		dest[3] = colormap[source[3]];
 		source += 4;
 		dest += pitch;
-		if(depthMap!=NULL) {
+
+		//VIZDOOM_CODE
+		if(vizDepthMap!=NULL) {
 			for (int dx = 0; dx < 4; dx++) {
-				depthMap->setActualDepth(depthMap->helperBuffer[dx]);
-				depthMap->setPoint((unsigned int) sx + dx, (unsigned int) yl + y_mod);
+				vizDepthMap->setActualDepth(vizDepthMap->helperBuffer[dx]);
+				vizDepthMap->setPoint((unsigned int) sx + dx, (unsigned int) yl + y_mod);
 			}
-			y_mod+=1;
 		}
+		if(vizLabels!=NULL) {
+			for (int dx = 0; dx < 4; dx++) {
+				vizLabels->setPoint((unsigned int) sx + dx, (unsigned int) yl + y_mod);
+			}
+		}
+		y_mod+=1;
 	}
 	if (!(count >>= 1))
 		return;
@@ -233,14 +246,22 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 		dest[pitch+3] = colormap[source[7]];
 		source += 8;
 		dest += pitch*2;
-		if(depthMap!=NULL) {
+
+		//VIZDOOM_CODE
+		if(vizDepthMap!=NULL) {
 			for (int dx = 0; dx < 4; dx++) {
-				depthMap->setActualDepth(depthMap->helperBuffer[dx]);
+				vizDepthMap->setActualDepth(vizDepthMap->helperBuffer[dx]);
 				for (int dy = 0; dy < 2; dy++)
-					depthMap->setPoint((unsigned int) sx + dx, (unsigned int) yl + y_mod + dy);
+					vizDepthMap->setPoint((unsigned int) sx + dx, (unsigned int) yl + y_mod + dy);
 			}
-			y_mod += 2;
 		}
+		if(vizLabels!=NULL) {
+			for (int dx = 0; dx < 4; dx++) {
+				for (int dy = 0; dy < 2; dy++)
+					vizLabels->setPoint((unsigned int) sx + dx, (unsigned int) yl + y_mod + dy);
+			}
+		}
+		y_mod += 2;
 	} while (--count);
 }
 #endif
@@ -561,8 +582,11 @@ void rt_addclamp1col (int hx, int sx, int yl, int yh)
 		*dest = RGB32k.All[(a>>15) & a];
 		source += 4;
 		dest += pitch;
-		if(depthMap!=NULL) {
-			depthMap->setPoint((unsigned int) sx, (unsigned int) yh-count);
+		if(vizDepthMap!=NULL) {
+			vizDepthMap->setPoint((unsigned int) sx, (unsigned int) yh-count);
+		}
+		if(vizLabels!=NULL) {
+			vizLabels->setPoint((unsigned int) sx, (unsigned int) yh-count);
 		}
 	} while (--count);
 }
@@ -626,10 +650,15 @@ void STACK_ARGS rt_addclamp4cols_c (int sx, int yl, int yh)
 		b = b - (b >> 5);
 		a |= b;
 		dest[3] = RGB32k.All[(a>>15) & a];
-		if(depthMap!=NULL) {
+		if(vizDepthMap!=NULL) {
 			for (int dx = 0; dx < 4; dx++) {
-				depthMap->setActualDepth(depthMap->helperBuffer[dx]);
-				depthMap->setPoint((unsigned int) sx + dx, (unsigned int) yh-count);
+				vizDepthMap->setActualDepth(vizDepthMap->helperBuffer[dx]);
+				vizDepthMap->setPoint((unsigned int) sx + dx, (unsigned int) yh-count);
+			}
+		}
+		if(vizLabels!=NULL) {
+			for (int dx = 0; dx < 4; dx++) {
+				vizLabels->setPoint((unsigned int) sx + dx, (unsigned int) yh-count);
 			}
 		}
 		source += 4;
@@ -979,7 +1008,7 @@ void rt_draw4cols (int sx)
 			{
 				if (!(bad & 1))
 				{
-					if(depthMap!=NULL) depthMap->setActualDepth(depthMap->helperBuffer[x]);
+					if(vizDepthMap!=NULL) vizDepthMap->setActualDepth(vizDepthMap->helperBuffer[x]);
 					if (horizspan[x][1] < minnexttop)
 					{
 						hcolfunc_post1 (x, sx+x, horizspan[x][0], horizspan[x][1]);
@@ -1009,7 +1038,7 @@ void rt_draw4cols (int sx)
 		{
 			if (maxtop > horizspan[x][0])
 			{
-				if(depthMap!=NULL) depthMap->setActualDepth(depthMap->helperBuffer[x]);
+				if(vizDepthMap!=NULL) vizDepthMap->setActualDepth(vizDepthMap->helperBuffer[x]);
 				hcolfunc_post1 (x, sx+x, horizspan[x][0], maxtop-1);//TU
 			}
 		}

@@ -13,8 +13,11 @@
 #include "sdlvideo.h"
 #include "r_swrenderer.h"
 #include "version.h"
-#include "viz_depth.h"
 #include <SDL.h>
+
+//VIZDOOM_CODE
+#include "viz_depth.h"
+#include "viz_labels.h"
 
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
@@ -554,9 +557,15 @@ void SDLFB::Update ()
 		NeedPalUpdate = false;
 		UpdateColors ();
 	}
-#ifdef VIZ_DEPTH_TEST
-	depthMap->Update();
-#endif
+
+	//VIZDOOM_CODE
+	#ifdef VIZ_DEPTH_TEST
+		vizDepthMap->testUpdate();
+    #endif
+
+	#ifdef VIZ_LABELS_TEST
+		vizLabels->testUpdate();
+	#endif
 }
 //VIZDOOM_CODE
 void SDLFB::UpdateColors ()

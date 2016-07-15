@@ -96,7 +96,7 @@ namespace vizdoom {
         this->screenFormat = CRCGCB;
         this->depth = true;
         this->depthBuffer = nullptr;
-        this->levelMap = true;
+        this->levelMap = false;
         this->levelMapBuffer = nullptr;
         //this->levelMapMode = NORMAL;
         this->labels = true;

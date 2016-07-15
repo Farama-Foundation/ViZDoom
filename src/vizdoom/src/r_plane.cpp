@@ -235,7 +235,7 @@ void R_MapPlane (int y, int x1)
 		R_SetSpanColormap_ASM (ds_colormap);
 #endif
 
-	if(depthMap!=NULL) depthMap->setActualDepthConv(distance);
+	if(vizDepthMap!=NULL) vizDepthMap->setActualDepthConv(distance);
 	/*static long max, min;
 	if(min==0) min=max;
 	if(distance>max||distance<min)
@@ -930,6 +930,7 @@ static const BYTE *R_GetTwoSkyColumns (FTexture *fronttex, int x)
 	} while (++i, --count);
 	return composite;
 }
+
 //VIZDOOM_CODE
 static void R_DrawSky (visplane_t *pl)
 {
@@ -968,11 +969,12 @@ static void R_DrawSky (visplane_t *pl)
 	frontyScale = rw_pic->yScale;
 	dc_texturemid = MulScale16 (skymid, frontyScale);
 
-	if(depthMap!=NULL)
-	{
-		depthMap->setActualDepth(255);
-		depthMap->lock();
+	//VIZDOOM_CODE
+	if(vizDepthMap!=NULL) {
+		vizDepthMap->setActualDepth(255);
+		vizDepthMap->lock();
 	}
+
 	if (1 << frontskytex->HeightBits == frontskytex->GetHeight())
 	{ // The texture tiles nicely
 		for (x = 0; x < 4; ++x)
@@ -996,9 +998,10 @@ static void R_DrawSky (visplane_t *pl)
 		}
 		R_DrawSkyStriped (pl);
 	}
-	if(depthMap!=NULL)
-	{
-		depthMap->unlock();
+
+	//VIZDOOM_CODE
+	if(vizDepthMap!=NULL) {
+		vizDepthMap->unlock();
 	}
 }
 
