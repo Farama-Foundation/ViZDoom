@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 #####################################################################
 # This script presents how to use the most basic features of the environment.
 # It configures the engine, and makes the agent perform random actions.
@@ -7,8 +8,8 @@
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
 # To see the scenario description go to "../../scenarios/README.md"
-# 
 #####################################################################
+
 from __future__ import print_function
 
 from vizdoom import Button
@@ -49,6 +50,15 @@ game.set_screen_resolution(ScreenResolution.RES_640X480)
 
 # Sets the screen buffer format. Not used here but now you can change it. Defalut is CRCGCB.
 game.set_screen_format(ScreenFormat.RGB24)
+
+# Enables depth buffer.
+game.set_depth_buffer_enabled(True)
+
+# Enables labeling of in game objects labeling.
+game.set_labels_buffer_enabled(True)
+
+# Enables buffer with top down map of he current episode/level .
+game.set_map_buffer_enabled(True)
 
 # Sets other rendering options
 game.set_render_hud(False)
@@ -111,7 +121,11 @@ for i in range(episodes):
         s = game.get_state()
         # s.number
         # s.game_variables
-        # s.image_buffer
+        # s.screen_buffer
+        # s.depth_buffer
+        # s.labels_buffer
+        # s.map_buffer
+        # s.labels
 
         # Makes a random action and get remember reward.
         r = game.make_action(choice(actions))
