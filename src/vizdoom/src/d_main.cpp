@@ -121,6 +121,7 @@ EXTERN_CVAR (Bool, viz_async)
 EXTERN_CVAR (Bool, viz_allow_input)
 EXTERN_CVAR (Bool, viz_nosound)
 EXTERN_CVAR (Bool, viz_render_all)
+EXTERN_CVAR (Bool, viz_level_map)
 
 EXTERN_CVAR(Bool, hud_althud)
 void DrawHUD();
@@ -961,13 +962,238 @@ void D_Display ()
 
 //VIZDOOM_CODE
 void VIZ_D_MapDisplay(){
+
+	if(!*viz_level_map) return;
+
+	//enable automap
 	bool _automapactive = automapactive;
 	bool _viewactive = viewactive;
 	automapactive = true;
 	viewactive = false;
 
-	D_Display ();
+	//disable additional buffers
+	VIZDepthBuffer *_vizDepthMap = vizDepthMap;
+	VIZLabelsBuffer *_vizLabels = vizLabels;
 
+	bool wipe;
+	bool hw2d;
+
+	if (nodrawers || screen == NULL) return; // for comparative timing / profiling
+
+	cycle_t cycles;
+
+	cycles.Reset();
+	cycles.Clock();
+
+	if (players[consoleplayer].camera == NULL)
+	{
+		players[consoleplayer].camera = players[consoleplayer].mo;
+	}
+
+	if (viewactive)
+	{
+		R_SetFOV (players[consoleplayer].camera && players[consoleplayer].camera->player ?
+				  players[consoleplayer].camera->player->FOV : 90.f);
+	}
+
+	// [RH] change the screen mode if needed
+	if (setmodeneeded)
+	{
+		// Change screen mode.
+		if (Video->SetResolution (NewWidth, NewHeight, NewBits))
+		{
+			// Recalculate various view parameters.
+			setsizeneeded = true;
+			// Let the status bar know the screen size changed
+			if (StatusBar != NULL)
+			{
+				StatusBar->ScreenSizeChanged ();
+			}
+			// Refresh the console.
+			C_NewModeAdjust ();
+			// Reload crosshair if transitioned to a different size
+			ST_LoadCrosshair (true);
+			AM_NewResolution ();
+			// Reset the mouse cursor in case the bit depth changed
+			vid_cursor.Callback();
+		}
+	}
+
+	RenderTarget = screen;
+
+	// change the view size if needed
+	if (setsizeneeded && StatusBar != NULL)
+	{
+		R_ExecuteSetViewSize ();
+	}
+	setmodeneeded = false;
+
+	if (screen->Lock (false))
+	{
+		ST_SetNeedRefresh();
+		V_SetBorderNeedRefresh();
+	}
+
+	// [RH] Allow temporarily disabling wipes
+	if (NoWipe)
+	{
+		V_SetBorderNeedRefresh();
+		NoWipe--;
+		wipe = false;
+		wipegamestate = gamestate;
+	}
+	else if (gamestate != wipegamestate && gamestate != GS_FULLCONSOLE && gamestate != GS_TITLELEVEL)
+	{ // save the current screen if about to wipe
+		V_SetBorderNeedRefresh();
+		switch (wipegamestate)
+		{
+			default:
+				wipe = screen->WipeStartScreen (wipetype);
+				break;
+
+			case GS_FORCEWIPEFADE:
+				wipe = screen->WipeStartScreen (wipe_Fade);
+				break;
+
+			case GS_FORCEWIPEBURN:
+				wipe = screen->WipeStartScreen (wipe_Burn);
+				break;
+
+			case GS_FORCEWIPEMELT:
+				wipe = screen->WipeStartScreen (wipe_Melt);
+				break;
+		}
+		wipegamestate = gamestate;
+	}
+	else
+	{
+		wipe = false;
+	}
+
+	hw2d = false;
+
+	{
+		unsigned int nowtime = I_FPSTime();
+		TexMan.UpdateAnimations(nowtime);
+		R_UpdateSky(nowtime);
+		switch (gamestate)
+		{
+			case GS_FULLCONSOLE:
+				screen->SetBlendingRect(0,0,0,0);
+				hw2d = screen->Begin2D(false);
+				C_DrawConsole (false);
+				M_Drawer ();
+				screen->Update ();
+				return;
+
+			case GS_LEVEL:
+			case GS_TITLELEVEL:
+				if (!gametic)
+					break;
+
+				if (StatusBar != NULL)
+				{
+					float blend[4] = { 0, 0, 0, 0 };
+					StatusBar->BlendView (blend);
+				}
+				screen->SetBlendingRect(viewwindowx, viewwindowy,
+										viewwindowx + viewwidth, viewwindowy + viewheight);
+
+				Renderer->RenderView(&players[consoleplayer]);
+
+				if ((hw2d = screen->Begin2D(viewactive)))
+				{
+					// Redraw everything every frame when using 2D accel
+					ST_SetNeedRefresh();
+					V_SetBorderNeedRefresh();
+				}
+				Renderer->DrawRemainingPlayerSprites();
+
+				screen->DrawBlendingRect();
+				if (automapactive)
+				{
+					int saved_ST_Y = ST_Y;
+					if (hud_althud && viewheight == SCREENHEIGHT)
+					{
+						ST_Y = viewheight;
+					}
+					AM_Drawer ();
+					ST_Y = saved_ST_Y;
+				}
+				if (!automapactive || viewactive)
+				{
+					V_RefreshViewBorder ();
+				}
+
+				if (hud_althud && viewheight == SCREENHEIGHT && screenblocks > 10)
+				{
+					StatusBar->DrawBottomStuff (HUD_AltHud);
+					if (DrawFSHUD || automapactive) DrawHUD();
+					StatusBar->Draw (HUD_AltHud);
+					StatusBar->DrawTopStuff (HUD_AltHud);
+				}
+				else if (viewheight == SCREENHEIGHT && viewactive && screenblocks > 10)
+				{
+					EHudState state = DrawFSHUD ? HUD_Fullscreen : HUD_None;
+					StatusBar->DrawBottomStuff (state);
+					StatusBar->Draw (state);
+					StatusBar->DrawTopStuff (state);
+				}
+				else
+				{
+					StatusBar->DrawBottomStuff (HUD_StatusBar);
+					StatusBar->Draw (HUD_StatusBar);
+					StatusBar->DrawTopStuff (HUD_StatusBar);
+				}
+				CT_Drawer ();
+				break;
+
+			case GS_INTERMISSION:
+				screen->SetBlendingRect(0,0,0,0);
+				hw2d = screen->Begin2D(false);
+				WI_Drawer ();
+				CT_Drawer ();
+				break;
+
+			case GS_FINALE:
+				screen->SetBlendingRect(0,0,0,0);
+				hw2d = screen->Begin2D(false);
+				F_Drawer ();
+				CT_Drawer ();
+				break;
+
+			case GS_DEMOSCREEN:
+				screen->SetBlendingRect(0,0,0,0);
+				hw2d = screen->Begin2D(false);
+				D_PageDrawer ();
+				CT_Drawer ();
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	// [RH] Draw icon, if any
+	if (D_DrawIcon)
+	{
+		FTextureID picnum = TexMan.CheckForTexture (D_DrawIcon, FTexture::TEX_MiscPatch);
+
+		D_DrawIcon = NULL;
+		if (picnum.isValid())
+		{
+			FTexture *tex = TexMan[picnum];
+			screen->DrawTexture (tex, 160 - tex->GetScaledWidth()/2, 100 - tex->GetScaledHeight()/2,
+								 DTA_320x200, true, TAG_DONE);
+		}
+		NoWipe = 10;
+	}
+
+	cycles.Unclock();
+	//FrameCycles = cycles;
+
+	vizDepthMap = _vizDepthMap;
+	vizLabels = _vizLabels;
 	automapactive = _automapactive;
 	viewactive = _viewactive;
 }
@@ -980,6 +1206,7 @@ void VIZ_D_ScreenDisplay(){
 	viewactive = true;
 
 	D_Display ();
+	screen->Update ();
 
 	automapactive = _automapactive;
 	viewactive = _viewactive;
