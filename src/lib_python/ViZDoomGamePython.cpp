@@ -42,56 +42,16 @@ namespace vizdoom {
         init_numpy();
     }
 
-    bool DoomGamePython::init() {
-        bool initSuccess = DoomGame::init();
-
-        if (initSuccess) {
-            int channels = this->getScreenChannels();
-            int x = this->getScreenWidth();
-            int y = this->getScreenHeight();
-
-            switch(this->getScreenFormat()){
-                case CRCGCB:
-                case CBCGCR:
-                case GRAY8:
-                case DOOM_256_COLORS8:
-                    this->screenShape[0] = channels;
-                    this->screenShape[1] = y;
-                    this->screenShape[2] = x;
-                    this->mapShape[0] = channels;
-                    this->mapShape[1] = y;
-                    this->mapShape[2] = x;
-                    break;
-
-                default:
-                    this->screenShape[0] = y;
-                    this->screenShape[1] = x;
-                    this->screenShape[2] = channels;
-                    this->mapShape[0] = y;
-                    this->mapShape[1] = x;
-                    this->mapShape[2] = channels;
-            }
-
-            this->depthShape[0] = 1;
-            this->depthShape[1] = y;
-            this->depthShape[2] = x;
-            this->labelsShape[0] = 1;
-            this->labelsShape[1] = y;
-            this->labelsShape[2] = x;
-        }
-        return initSuccess;
-    }
-
     void DoomGamePython::setAction(bpy::list const &action) {
-        DoomGame::setAction(DoomGamePython::pyListToIntVector(action));
+        DoomGame::setAction(DoomGamePython::pyListToVector<int>(action));
     }
 
     double DoomGamePython::makeAction(bpy::list const &action) {
-        return DoomGame::makeAction(DoomGamePython::pyListToIntVector(action));
+        return DoomGame::makeAction(DoomGamePython::pyListToVector<int>(action));
     }
 
     double DoomGamePython::makeAction(bpy::list const &action, unsigned int tics) {
-        return DoomGame::makeAction(DoomGamePython::pyListToIntVector(action), tics);
+        return DoomGame::makeAction(DoomGamePython::pyListToVector<int>(action), tics);
     }
 
     GameStatePython DoomGamePython::getState() {
@@ -99,32 +59,51 @@ namespace vizdoom {
         GameStatePython pyState;
         pyState.number = this->state->number;
 
+        if(this->getScreenFormat() )
+
         if (this->isEpisodeFinished()) return pyState;
+
+        this->updateBuffersShapes();
+        int colorDims = 3;
+        if(this->getScreenChannels() == 1) colorDims = 2;
 
         if (this->state->screenBuffer != nullptr) {
             pyState.screenBuffer =
-                    this->imageBufferToPyArray(this->screenShape, 3, this->doomController->getScreenBuffer()).copy();
+                    this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->doomController->getScreenBuffer()).copy();
         }
         if (this->state->depthBuffer != nullptr) {
             pyState.depthBuffer =
-                    this->imageBufferToPyArray(this->depthShape, 3, this->doomController->getDepthBuffer()).copy();
+                    this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->doomController->getDepthBuffer()).copy();
         }
         if (this->state->labelsBuffer != nullptr) {
             pyState.labelsBuffer =
-                    this->imageBufferToPyArray(this->labelsShape, 3, this->doomController->getLabelsBuffer()).copy();
+                    this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->doomController->getLabelsBuffer()).copy();
         }
         if (this->state->mapBuffer != nullptr) {
             pyState.mapBuffer =
-                    this->imageBufferToPyArray(this->mapShape, 3, this->doomController->getLevelMapBuffer()).copy();
+                    this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->doomController->getLevelMapBuffer()).copy();
         }
 
         if (this->state->gameVariables.size() > 0) {
-            npy_intp varLen = this->state->gameVariables.size();
-            PyObject *vars = PyArray_SimpleNewFromData(1, &varLen, NPY_INT32, this->state->gameVariables.data());
-            bpy::handle<> numpyVarsHandle = bpy::handle<>(vars);
-            bpyn::array numpyVars = bpyn::array(numpyVarsHandle);
+            // Numpy array version
+            npy_intp shape = this->state->gameVariables.size();
+            pyState.gameVariables = dataToNumpyArray(1, &shape, NPY_INT32, this->state->gameVariables.data());
 
-            pyState.gameVariables = numpyVars.copy();
+            // Python list version
+            //pyState.gameVariables = DoomGamePython::vectorToPyList<int>(this->state->gameVariables);
+        }
+
+        if(this->state->labels.size() > 0){
+            bpy::list pyLabels;
+            for(auto i = this->state->labels.begin(); i != this->state->labels.end(); ++i){
+                LabelPython pyLabel;
+                pyLabel.objectId = i->objectId;
+                pyLabel.objectName = bpy::str(i->objectName.c_str());
+                pyLabel.value = i->value;
+                pyLabels.append(pyLabel);
+            }
+
+            pyState.labels = pyLabels;
         }
 
         return pyState;
@@ -141,7 +120,7 @@ namespace vizdoom {
 
     // These functions are workaround for
     // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
-    //  on GCC versions lower then 5
+    // on GCC versions lower then 5
     bool DoomGamePython::loadConfig(bpy::str const &pyPath){
         const char* cPath = bpy::extract<const char *>(pyPath);
         std::string path(cPath);
@@ -207,19 +186,50 @@ namespace vizdoom {
     }
 
 
-    std::vector<int> DoomGamePython::pyListToIntVector(bpy::list const &action) {
-        int listLength = bpy::len(action);
-        std::vector<int> properAction = std::vector<int>(listLength);
-        for (int i = 0; i < listLength; i++) properAction[i] = bpy::extract<int>(action[i]);
-        return properAction;
+    void DoomGamePython::updateBuffersShapes(){
+        int channels = this->getScreenChannels();
+        int width = this->getScreenWidth();
+        int height = this->getScreenHeight();
+
+        switch(this->getScreenFormat()){
+            case CRCGCB:
+            case CBCGCR:
+                this->colorShape[0] = channels;
+                this->colorShape[1] = height;
+                this->colorShape[2] = width;
+                break;
+
+            default:
+                this->colorShape[0] = height;
+                this->colorShape[1] = width;
+                this->colorShape[2] = channels;
+        }
+
+        this->grayShape[0] = height;
+        this->grayShape[1] = width;
     }
 
-    bpyn::array DoomGamePython::imageBufferToPyArray(npy_intp * imageShape, unsigned int dimensions, uint8_t * imageBuffer){
-        PyObject *image = PyArray_SimpleNewFromData(dimensions, imageShape, NPY_UBYTE, imageBuffer);
-        bpy::handle<> numpyImageHandle = bpy::handle<>(image);
-        bpyn::array numpyImage = bpyn::array(numpyImageHandle);
 
-        return numpyImage;
+    template<class T> bpy::list DoomGamePython::vectorToPyList(const std::vector<T>& vector){
+        bpy::list pyList;
+        for (auto i = vector.begin(); i!= vector.end(); ++i) {
+            pyList.append(*i);
+        }
+        return pyList;
     }
 
+    template<class T> std::vector<T> DoomGamePython::pyListToVector(bpy::list const &pyList){
+        size_t pyListLength = bpy::len(pyList);
+        std::vector<T> vector = std::vector<T>(pyListLength);
+        for (size_t i = 0; i < pyListLength; ++i) vector[i] = bpy::extract<T>(pyList[i]);
+        return vector;
+    }
+
+    bpyn::array DoomGamePython::dataToNumpyArray(int dims, npy_intp * shape, int type, void * data){
+        PyObject *pyArray = PyArray_SimpleNewFromData(dims, shape, type, data);
+        bpy::handle<> numpyHandle = bpy::handle<>(pyArray);
+        bpyn::array numpyArray = bpyn::array(numpyHandle);
+
+        return numpyArray;
+    }
 }

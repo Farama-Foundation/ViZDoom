@@ -37,7 +37,7 @@
 namespace b = boost;
 namespace bt = boost::this_thread;
 
-CVAR (Bool, viz_debug, true, CVAR_NOSET)
+CVAR (Bool, viz_debug, false, CVAR_NOSET)
 
 CVAR (Bool, viz_controlled, false, CVAR_NOSET)
 CVAR (String, viz_instance_id, "0", CVAR_NOSET)

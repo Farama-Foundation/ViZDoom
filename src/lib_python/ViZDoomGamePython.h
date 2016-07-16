@@ -40,21 +40,33 @@ namespace vizdoom {
     namespace bpya      = bpy::api;
     namespace bpyn      = bpy::numeric;
 
+    // For GCC versions lower then 5 compatibility
+    // Python version of Label struct with Python string instead C++ string type.
+    struct LabelPython{
+        unsigned int objectId;
+        bpy::str objectName;
+        uint8_t value;
+    };
+
     struct GameStatePython {
         unsigned int number;
+
         bpya::object gameVariables;
+        //bpy::list gameVariables;
+
         bpya::object screenBuffer;
         bpya::object depthBuffer;
         bpya::object labelsBuffer;
         bpya::object mapBuffer;
+
+        bpy::list labels;
     };
 
     class DoomGamePython : public DoomGame {
         
     public:        
         DoomGamePython();
-        bool init();
-        
+
         GameStatePython getState();
         bpy::list getLastAction();
         void setAction(bpy::list const &action);
@@ -79,13 +91,15 @@ namespace vizdoom {
         void sendGameCommand(bpy::str const &pyCmd);
 
     private:
-        npy_intp screenShape[3];
-        npy_intp mapShape[3];
-        npy_intp depthShape[3];
-        npy_intp labelsShape[3];
+        npy_intp colorShape[3];
+        npy_intp grayShape[2];
 
-        static std::vector<int> pyListToIntVector(bpy::list const &action);
-        static bpyn::array imageBufferToPyArray(npy_intp * imageShape, unsigned int dimensions, uint8_t * imageBuffer);
+        void updateBuffersShapes();
+
+        template<class T> static bpy::list vectorToPyList(const std::vector<T>& vector);
+        template<class T> static std::vector<T> pyListToVector(bpy::list const &pyList);
+
+        static bpyn::array dataToNumpyArray(int dims, npy_intp * shape, int type, void * data);
 
     };
 

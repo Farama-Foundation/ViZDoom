@@ -325,13 +325,19 @@ BOOST_PYTHON_MODULE(vizdoom)
     def("ms_to_doom_tics", MsToDoomTics);
     def("doom_fixed_to_double", DoomFixedToDouble);
 
+    class_<LabelPython>("Label", no_init)
+        .def_readonly("object_id", &LabelPython::objectId)
+        .def_readonly("object_name", &LabelPython::objectName)
+        .def_readonly("value", &LabelPython::value);
+
     class_<GameStatePython>("GameState", no_init)
         .def_readonly("number", &GameStatePython::number)
         .def_readonly("game_variables", &GameStatePython::gameVariables)
         .def_readonly("screen_buffer", &GameStatePython::screenBuffer)
         .def_readonly("depth_buffer", &GameStatePython::depthBuffer)
         .def_readonly("map_buffer", &GameStatePython::mapBuffer)
-        .def_readonly("labels_buffer", &GameStatePython::labelsBuffer);
+        .def_readonly("labels_buffer", &GameStatePython::labelsBuffer)
+        .def_readonly("labels", &GameStatePython::labels);
 
     class_<DoomGamePython>("DoomGame", init<>())
         .def("init", &DoomGamePython::init)
@@ -410,6 +416,11 @@ BOOST_PYTHON_MODULE(vizdoom)
 
         .def("set_screen_resolution", &DoomGamePython::setScreenResolution)
         .def("set_screen_format", &DoomGamePython::setScreenFormat)
+
+        .def("set_depth_buffer_enabled", &DoomGamePython::setDepthBufferEnabled)
+        .def("set_labels_buffer_enabled", &DoomGamePython::setLabelsBufferEnabled)
+        .def("set_map_buffer_enabled", &DoomGamePython::setMapBufferEnabled)
+
         .def("set_render_hud", &DoomGamePython::setRenderHud)
         .def("set_render_weapon", &DoomGamePython::setRenderWeapon)
         .def("set_render_crosshair", &DoomGamePython::setRenderCrosshair)
