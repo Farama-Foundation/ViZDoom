@@ -1,9 +1,10 @@
 cmake_minimum_required( VERSION 2.8 )
 project(ViZDoom)
 
+option(BUILD_JAVA "Build ViZDoom Java binding." OFF)
+option(BUILD_LUA "Build ViZDoom Lua binding." OFF)
 option(BUILD_PYTHON "Build ViZDoom Python binding." OFF)
 option(BUILD_PYTHON3 "Build ViZDoom Python3 binding instead of default Python2." OFF)
-option(BUILD_JAVA "Build ViZDoom Java binding." OFF)
 
 
 if(COMMAND cmake_policy)
@@ -13,6 +14,7 @@ endif(COMMAND cmake_policy)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 
 # System dependent settings
+#-----------------------------------------------------------------------------------------------------------------------
 if(UNIX)
 	set(Boost_USE_STATIC_LIBS OFF)
 	set(Boost_USE_MULTITHREADED ON)
@@ -39,6 +41,7 @@ if(WIN32)
 endif()
 
 # Compiler dependent settings
+#-----------------------------------------------------------------------------------------------------------------------
 if(CMAKE_COMPILER_IS_GNUCXX)
 	add_definitions("-fPIC")
 endif()
@@ -52,7 +55,7 @@ endif()
 
 
 # Targets
-
+#-----------------------------------------------------------------------------------------------------------------------
 find_package(Boost COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
 find_package(Threads REQUIRED)
 
@@ -106,16 +109,19 @@ set_target_properties(libvizdoom_static libvizdoom_shared
 
 	add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
 
+
+# Python binding
+#-----------------------------------------------------------------------------------------------------------------------
 if(BUILD_PYTHON AND (NOT BUILD_PYTHON3 ))
 
-    find_package(PythonInterp 2 REQUIRED)
+	find_package(PythonInterp 2 REQUIRED)
 
 	STRING( REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" python_version ${PYTHON_VERSION_STRING} )
-    find_package(PythonLibs ${python_version} REQUIRED)
+	find_package(PythonLibs ${python_version} REQUIRED)
 
-    find_package(Boost COMPONENTS python REQUIRED)
+	find_package(Boost COMPONENTS python REQUIRED)
 
-    find_package(NumPy REQUIRED)
+	find_package(NumPy REQUIRED)
 
 	set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
 	set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
@@ -169,14 +175,14 @@ endif()
 
 if( BUILD_PYTHON AND BUILD_PYTHON3 )
 
-    find_package(PythonInterp 3 REQUIRED)
+	find_package(PythonInterp 3 REQUIRED)
 
 	STRING( REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" python3_version ${PYTHON_VERSION_STRING} )
-    find_package(PythonLibs ${python3_version} REQUIRED)
+	find_package(PythonLibs ${python3_version} REQUIRED)
 
 	find_package(Boost COMPONENTS python3 REQUIRED)
 
-    find_package(NumPy REQUIRED)
+	find_package(NumPy REQUIRED)
 
 	set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
 	set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
@@ -194,7 +200,7 @@ if( BUILD_PYTHON AND BUILD_PYTHON3 )
 
 	set(VIZDOOM_PYTHON_SOURCES
 		${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.h
-	    ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.cpp
+		${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.cpp
 		${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomPythonModule.cpp)
 
 	if(WIN32)
@@ -229,7 +235,55 @@ if( BUILD_PYTHON AND BUILD_PYTHON3 )
 
 endif()
 
-#Java binding
+# Lua binding
+#-----------------------------------------------------------------------------------------------------------------------
+if( BUILD_LUA )
+
+	FIND_PACKAGE (Lua REQUIRED)
+	find_package(Luabind REQUIRED)
+
+	set(VIZDOOM_LUA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_lua)
+	set(VIZDOOM_LUA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LUA_SRC_DIR})
+
+	set(VIZDOOM_LUA_LIBS
+			${VIZDOOM_LIBS}
+			${Boost_LIBRARIES}
+			${LUA_LIBRARIES}
+			${LUABIND_LIBRARIES})
+
+	include_directories(${VIZDOOM_LUA_INCLUDE_DIR}
+			${Boost_INCLUDE_DIR}
+			${PYTHON_INCLUDE_DIRS}
+			${LUA_INCLUDE_DIR}
+			${LUABIND_INCLUDE_DIRS})
+
+	set(VIZDOOM_LUA_SOURCES
+			${VIZDOOM_LUA_SRC_DIR}/ViZDoomGameLua.h
+			${VIZDOOM_LUA_SRC_DIR}/ViZDoomGameLua.cpp
+			${VIZDOOM_LUA_SRC_DIR}/ViZDoomLuaModule.cpp)
+
+	add_executable(libvizdoom_lua ${VIZDOOM_LUA_SOURCES})
+	#add_library(libvizdoom_lua ${VIZDOOM_LUA_SOURCES})
+	target_link_libraries (libvizdoom_lua ${VIZDOOM_LUA_LIBS} libvizdoom_static)
+
+	set_target_properties(libvizdoom_lua
+			PROPERTIES
+			LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/lua
+			LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/lua
+			LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/lua
+			LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/lua
+			LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/lua
+			RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/lua
+			RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/lua
+			RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/lua
+			RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/lua
+			RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/lua
+			OUTPUT_NAME vizdoom)
+endif()
+
+
+# Java binding
+#-----------------------------------------------------------------------------------------------------------------------
 if(BUILD_JAVA)
 
 	if (NOT DEFINED ENV{JAVA_HOME})
@@ -307,6 +361,9 @@ if(BUILD_JAVA)
 		OUTPUT_NAME vizdoom)
 
 endif()
+
+# Freedoom 2 download
+#-----------------------------------------------------------------------------------------------------------------------
 
 #if( WIN32 )
 #	if(NOT EXISTS "${PROJECT_SOURCE_DIR}/scenarios/freedoom.zip")
