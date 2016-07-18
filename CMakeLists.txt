@@ -262,12 +262,12 @@ if( BUILD_LUA )
 			${VIZDOOM_LUA_SRC_DIR}/ViZDoomGameLua.cpp
 			${VIZDOOM_LUA_SRC_DIR}/ViZDoomLuaModule.cpp)
 
-	add_executable(libvizdoom_lua ${VIZDOOM_LUA_SOURCES})
-	#add_library(libvizdoom_lua ${VIZDOOM_LUA_SOURCES})
+	add_library(libvizdoom_lua SHARED ${VIZDOOM_LUA_SOURCES})
 	target_link_libraries (libvizdoom_lua ${VIZDOOM_LUA_LIBS} libvizdoom_static)
 
 	set_target_properties(libvizdoom_lua
 			PROPERTIES
+			PREFIX ""
 			LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/lua
 			LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/lua
 			LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/lua
@@ -279,6 +279,15 @@ if( BUILD_LUA )
 			RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/lua
 			RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/lua
 			OUTPUT_NAME vizdoom)
+
+	if(UNIX)
+		ADD_CUSTOM_COMMAND(
+				TARGET libvizdoom_lua
+				COMMAND ln -sf ${VIZDOOM_OUTPUT_DIR}/lua/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/lua/vizdoom.so
+				COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/lua/bots.cfg
+				COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/lua.")
+	endif()
+
 endif()
 
 
