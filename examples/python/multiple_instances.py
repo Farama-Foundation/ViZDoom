@@ -76,7 +76,8 @@ def player2():
 # p1 = Thread(target = player1)
 # p1.start()
 
-p1 = Process(target=player1)
-p1.start()
+if __name__ == '__main__':
+    p1 = Process(target=player1)
+    p1.start()
+    player2()
 
-player2()
