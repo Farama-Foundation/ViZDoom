@@ -20,7 +20,7 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
-For new features:
+For the new features:
 * Automatic labeling of game objects visible in the frame,
 * Access to the top down map buffer.
 
@@ -28,9 +28,25 @@ Check out [1.1-dev](https://github.com/Marqt/ViZDoom/tree/1.1-dev) branch.
 
 ## Cite as
 
->Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
+>Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, Proceedings of Computational Intelligence in Games Conference, Santorini, Greece, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
 
----
+--
+##Examples
+
+Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed it in the ``scenarios`` subdirectory (on Linux it should be done automatically by the building process):
+
+* [Python](examples/python) 
+* [C++](examples/c%2B%2B)
+* [Java](examples/java)
+
+Python examples are currently the richest, so we recommend to look at them, even if you plan to use C++ or Java.
+
+See also the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial).
+
+## Documentation
+Apart from the [examples](examples) and the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial), the most complete source of information about the ViZDoom API can be found in a [bachelor thesis](http://www.cs.put.poznan.pl/wjaskowski/pub/theses/ViZDoom_BScThesis.pdf), which describes the initial version of this project (note, however, that it is not entirely up-to-date).
+
+--
 ## Building
 
 ###Linux
@@ -126,19 +142,6 @@ Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should cont
 Note: third-party maintained
 
 ---
-##Examples
-
-Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed it in the ``scenarios`` subdirectory (on Linux it should be done automatically by the building process).
-
-* [Python](https://github.com/Marqt/ViZDoom/tree/master/examples/python) 
-* [C++](https://github.com/Marqt/ViZDoom/tree/master/examples/c%2B%2B)
-* [Java](https://github.com/Marqt/ViZDoom/tree/master/examples/java)
-
-Python exampels are currently the richest, so we recommend to look at them, even if you plan to use C++ or Java.
-
-See also the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial).
-
----
 ##License
 
-Code original to ViZDoom is under MIT license. ZDoom uses code from several sources which varied licensing schemes, more informations [here](http://zdoom.org/wiki/license).
+Code original to ViZDoom is under MIT license. ZDoom uses code from several sources which [varied licensing schemes](http://zdoom.org/wiki/license).
