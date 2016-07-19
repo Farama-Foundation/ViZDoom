@@ -6,6 +6,7 @@ ViZDoom allows developing AI **bots that play Doom using only the visual informa
 ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game mechanics.
 
 ## Features
+* Multi-platform,
 * API for C++, Python and Java,
 * Easy-to-create custom scenarios (examples available),
 * Single-player (sync and async) and multi-player (async) modes,
@@ -13,17 +14,17 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 * Customizable resolution and rendering parameters,
 * Access to the depth buffer (3D vision)
 * Off-screen rendering,
-* Lightweight (few MBs),
-* Multi-platform
+* Episodes recording,
+* Time scaling in async mode,
+* Lightweight (few MBs).
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
-## Planned Features in 1.1.0 (end of June)
-- [ ] Lua bindings,
-- [ ] Multi-player working in sync mode,
-- [ ] Labeling game objects visible in the frame,
-- [x] Time scaling in async mode,
-- [x] Episodes recording.
+For new features:
+* Automatic labeling of game objects visible in the frame,
+* Access to the top down map buffer.
+
+Check out [1.1-dev](https://github.com/Marqt/ViZDoom/tree/1.1-dev) branch.
 
 ## Cite as
 
@@ -129,9 +130,11 @@ Note: third-party maintained
 
 Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed it in the ``scenarios`` subdirectory (on Linux it should be done automatically by the building process).
 
-* [Python](https://github.com/Marqt/ViZDoom/tree/master/examples/python)
+* [Python](https://github.com/Marqt/ViZDoom/tree/master/examples/python) 
 * [C++](https://github.com/Marqt/ViZDoom/tree/master/examples/c%2B%2B)
 * [Java](https://github.com/Marqt/ViZDoom/tree/master/examples/java)
+
+Python exampels are currently the richest, so we recommend to look at them, even if you plan to use C++ or Java.
 
 See also the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial).
 
