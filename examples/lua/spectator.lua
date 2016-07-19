@@ -16,24 +16,24 @@ game = vizdoom.DoomGame()
 -- Don't load two configs cause the second will overrite the first one.
 -- Multiple config files are ok but combining these ones doesn't make much sense.
 
---game:load_config("../../examples/config/basic.cfg")
---game:load_config("../../examples/config/deadly_corridor.cfg")
-game:load_config("../../examples/config/deathmatch.cfg")
---game:load_config("../../examples/config/defend_the_center.cfg")
---game:load_config("../../examples/config/defend_the_line.cfg")
---game:load_config("../../examples/config/health_gathering.cfg")
---game:load_config("../../examples/config/my_way_home.cfg")
---game:load_config("../../examples/config/predict_position.cfg")
---game:load_config("../../examples/config/take_cover.cfg")
+--game:loadConfig("../../examples/config/basic.cfg")
+--game:loadConfig("../../examples/config/deadly_corridor.cfg")
+game:loadConfig("../../examples/config/deathmatch.cfg")
+--game:loadConfig("../../examples/config/defend_the_center.cfg")
+--game:loadConfig("../../examples/config/defend_the_line.cfg")
+--game:loadConfig("../../examples/config/health_gathering.cfg")
+--game:loadConfig("../../examples/config/my_way_home.cfg")
+--game:loadConfig("../../examples/config/predict_position.cfg")
+--game:loadConfig("../../examples/config/take_cover.cfg")
 
 -- Enables freelook in engine
-game:add_game_args("+freelook 1")
+game:addGameArgs("+freelook 1")
 
-game:set_screen_resolution(vizdoom.ScreenResolution.RES_640X480)
+game:setScreenResolution(vizdoom.ScreenResolution.RES_640X480)
 
 -- Enables spectator mode, so you can play. Sounds strange but it is agent who is supposed to watch not you.
-game:set_window_visible(true)
-game:set_mode(vizdoom.Mode.SPECTATOR)
+game:setWindowVisible(true)
+game:setMode(vizdoom.Mode.SPECTATOR)
 
 game:init()
 
@@ -43,27 +43,27 @@ for i = 1, episodes do
 
     print("Episode #" .. i)
 
-    game:new_episode()
+    game:newEpisode()
 
-    while not game:is_episode_finished() do
+    while not game:isEpisodeFinished() do
 
-        s = game:get_state()
+        state = game:getState()
 
-        game:advance_action()
-        a = game:get_last_action()
-        r = game:get_last_reward()
+        game:advanceAction()
+        action = game:getLastAction()
+        reward = game:getLastReward()
 
-        print("State # " .. s.number)
-        print("Reward: " .. r)
-        last_a = "Action:"
-        for k, i_a in pairs(a) do last_a = last_a .. " " .. i_a end
-        print(last_a)
+        print("State # " .. state.number)
+        print("Reward: " .. reward)
+        actionStr = "Action:"
+        for k, a in pairs(action) do actionStr = actionStr .. " " .. a end
+        print(actionStr)
         print("=====================")
 
     end
 
     print("Episode finished.")
-    print("total reward: " .. game:get_total_reward())
+    print("total reward: " .. game:getTotalReward())
     print("************************")
 
 end

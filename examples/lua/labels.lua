@@ -16,24 +16,24 @@ game = vizdoom.DoomGame()
 -- Don't load two configs cause the second will overrite the first one.
 -- Multiple config files are ok but combining these ones doesn't make much sense.
 
---game:load_config("../../examples/config/basic.cfg")
-game:load_config("../../examples/config/deadly_corridor.cfg")
---game:load_config("../../examples/config/deathmatch.cfg")
---game:load_config("../../examples/config/defend_the_center.cfg")
---game:load_config("../../examples/config/defend_the_line.cfg")
---game:load_config("../../examples/config/health_gathering.cfg")
---game:load_config("../../examples/config/my_way_home.cfg")
---game:load_config("../../examples/config/predict_position.cfg")
---game:load_config("../../examples/config/take_cover.cfg")
+--game:loadConfig("../../examples/config/basic.cfg")
+game:loadConfig("../../examples/config/deadly_corridor.cfg")
+--game:loadConfig("../../examples/config/deathmatch.cfg")
+--game:loadConfig("../../examples/config/defend_the_center.cfg")
+--game:loadConfig("../../examples/config/defend_the_line.cfg")
+--game:loadConfig("../../examples/config/health_gathering.cfg")
+--game:loadConfig("../../examples/config/my_way_home.cfg")
+--game:loadConfig("../../examples/config/predict_position.cfg")
+--game:loadConfig("../../examples/config/take_cover.cfg")
 
 -- Enables freelook in engine
-game:add_game_args("+freelook 1")
+game:addGameArgs("+freelook 1")
 
-game:set_screen_resolution(vizdoom.ScreenResolution.RES_640X480)
-game:set_window_visible(true)
+game:setScreenResolution(vizdoom.ScreenResolution.RES_640X480)
+game:setWindowVisible(true)
 
 -- Enables labeling of the in game objects.
-game:set_labels_buffer_enabled(true)
+game:setLabelsBufferEnabled(true)
 
 game:init()
 
@@ -43,19 +43,19 @@ for i = 1, episodes do
 
     print("Episode #" .. i)
 
-    game:new_episode()
+    game:newEpisode()
 
-    while not game:is_episode_finished() do
+    while not game:isEpisodeFinished() do
 
         -- Gets the state.
-        state = game:get_state()
+        state = game:getState()
 
         -- Get labels buffer and labels data.
-        labels_buf = state.labels_buffer
+        labelsBuf = state.labelsBuffer
         labels = state.labels
 
-        game:advance_action()
-        reward = game:get_last_reward()
+        game:advanceAction()
+        reward = game:getLastReward()
 
         print("State #" .. state.number)
 
@@ -66,7 +66,7 @@ for i = 1, episodes do
         -- object_name contains name of object.
         -- value tells which value represents object in labels_buffer.
         for k, l in pairs(labels) do
-            print("#" .. k .. ": object id: " .. l.object_id .. " object name: " .. l.object_name .. " label: " .. l.value)
+            print("#" .. k .. ": object id: " .. l.objectId .. " object name: " .. l.objectName .. " label: " .. l.value)
         end
 
         print("Reward: " .. reward)
@@ -75,7 +75,7 @@ for i = 1, episodes do
     end
 
     print("Episode finished.")
-    print("total reward: " .. game:get_total_reward())
+    print("total reward: " .. game:getTotalReward())
     print("************************")
 
 end

@@ -18,22 +18,22 @@ game = vizdoom.DoomGame()
 -- Don't load two configs cause the second will overrite the first one.
 -- Multiple config files are ok but combining these ones doesn't make much sense.
 
-game:load_config("../../examples/config/basic.cfg")
---game:load_config("../../examples/config/deadly_corridor.cfg")
---game:load_config("../../examples/config/deathmatch.cfg")
---game:load_config("../../examples/config/defend_the_center.cfg")
---game:load_config("../../examples/config/defend_the_line.cfg")
---game:load_config("../../examples/config/health_gathering.cfg")
---game:load_config("../../examples/config/my_way_home.cfg")
---game:load_config("../../examples/config/predict_position.cfg")
---game:load_config("../../examples/config/take_cover.cfg")
+game:loadConfig("../../examples/config/basic.cfg")
+--game:loadConfig("../../examples/config/deadly_corridor.cfg")
+--game:loadConfig("../../examples/config/deathmatch.cfg")
+--game:loadConfig("../../examples/config/defend_the_center.cfg")
+--game:loadConfig("../../examples/config/defend_the_line.cfg")
+--game:loadConfig("../../examples/config/health_gathering.cfg")
+--game:loadConfig("../../examples/config/my_way_home.cfg")
+--game:loadConfig("../../examples/config/predict_position.cfg")
+--game:loadConfig("../../examples/config/take_cover.cfg")
 
 -- Makes the screen bigger to see more details.
-game:set_screen_resolution(vizdoom.ScreenResolution.RES_640X480)
+game:setScreenResolution(vizdoom.ScreenResolution.RES_640X480)
 game:init()
 
 -- Creates all possible actions depending on how many buttons there are.
-actions_num = game:get_available_buttons_size()
+actions_num = game:getAvailableButtonsSize()
 actions = {}
 for i = 1, actions_num do
     actions[i] = {}
@@ -52,17 +52,21 @@ for i = 1, episodes do
     print("Episode #" .. i)
 
     -- Not needed for the first episode but the loop is nicer.
-    game:new_episode()
-    while not game:is_episode_finished() do
+    game:newEpisode()
+    while not game:isEpisodeFinished() do
 
         -- Gets the state and possibly to something with it
-        s = game:get_state()
+        state = game:getState()
+        vars = state.gameVariables
 
         -- Makes a random action and save the reward.
-        r = game:make_action(actions[math.random(1,actions_num)])
+        reward = game:makeAction(actions[math.random(1, actions_num)])
 
-        print("State # " .. s.number)
-        print("Reward: " .. r)
+        print("State # " .. state.number)
+        varsStr = "Game variables:"
+        for k, a in pairs(vars) do varsStr = varsStr .. " " .. a end
+        print(varsStr)
+        print("Reward: " .. reward)
         print("=====================")
 
         -- Sleep some time because processing is too fast to watch.
@@ -72,7 +76,7 @@ for i = 1, episodes do
     end
 
     print("Episode finished.")
-    print("total reward: " .. game:get_total_reward())
+    print("total reward: " .. game:getTotalReward())
     print("************************")
 
 end
