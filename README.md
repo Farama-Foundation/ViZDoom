@@ -1,4 +1,4 @@
-#ViZDoom [![Build Status](https://travis-ci.org/Marqt/ViZDoom.svg?branch=master)](https://travis-ci.org/Marqt/ViZDoom)
+#ViZDoom 1.1 (dev branch)
 [http://vizdoom.cs.put.edu.pl](http://vizdoom.cs.put.edu.pl)
 
 ViZDoom allows developing AI **bots that play Doom using only the visual information** (the screen buffer). It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.
@@ -18,12 +18,14 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
-## Planned Features in 1.1.0 (end of June)
-- [ ] Lua bindings,
-- [ ] Multi-player working in sync mode,
-- [ ] Labeling game objects visible in the frame,
+## Planned Features in 1.1:
+- [ ] Lua binding (work in progress),
+- [x] Access to top down map of the episode/level,
+- [x] Labeling game objects visible in the frame,
 - [x] Time scaling in async mode,
 - [x] Episodes recording.
+
+Java binding is out of date at the moment.
 
 ## Cite as
 
@@ -41,17 +43,18 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 * Boost libraries (tested on 1.54, 1.58, 1.59, 1.61)
 * Python 2.7+ or Python 3+ with Numpy and Boost.Python for Python binding (optional)
 * JDK for Java binding (JAVA_HOME must be set) (optional)
+* Luabind for Lua binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
 ####Compiling
 In ViZDoom's root directory:
 ```bash
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON
 make
 ```
 
-``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` CMake options for Python and Java bindings are optional (default OFF). To force building bindings for Python3 instead of first version found use ``-DBUILD_PYTHON3=ON`` (needs Boost.Python builded with Python 3, default OFF).
+``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` and ``-DBUILD_LUA=ON`` CMake options for Python, Java and Lua bindings are optional (default OFF). To force building bindings for Python3 instead of first version found use ``-DBUILD_PYTHON3=ON`` (needs Boost.Python builded with Python 3, default OFF).
 
 ###Windows
 
@@ -116,6 +119,7 @@ Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should cont
 * ``bin/python3/vizdoom.so (vizdoom.pyd)`` - ViZDoom Python3 module
 * ``bin/java/libvizdoom.so (vizdoom.dll)`` -  ViZDoom library for Java
 * ``bin/java/vizdoom.jar`` -  Contains ViZDoom Java classes
+* ``bin/lua/vizdoom.so (vizdoom.dll)`` - ViZDoom Lua module
 
 ## Docker
 

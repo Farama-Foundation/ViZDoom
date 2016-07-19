@@ -33,6 +33,10 @@ ImportExecutables.cmake
 examples/python/*.cfg
 examples/python/*.ini
 
+# Lua
+examples/lua/*.cfg
+examples/lua/*.ini
+
 # Java
 **.jar
 **.class
