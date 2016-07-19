@@ -107,32 +107,33 @@ for i = 1, episodes do
     while not game:is_episode_finished() do
 
         -- Gets the state
-        s = game:get_state()
+        state = game:get_state()
 
         -- Which consists of:
-        n           = s.number
-        v           = s.game_variables
-        screen_buf  = s.screen_buffer
-        depth_buf   = s.depth_buffer
-        labels_buf  = s.labels_buffer
-        map_buf     = s.map_buffer
-        labels      = s.labels
+        n           = state.number
+        vars        = state.game_variables
+        screen_buf  = state.screen_buffer
+        depth_buf   = state.depth_buffer
+        labels_buf  = state.labels_buffer
+        map_buf     = state.map_buffer
+        labels      = state.labels
 
         --Makes a random action and get remember reward.
-        r = game:make_action(actions[math.random(1,3)])
+        reward = game:make_action(actions[math.random(1,3)])
 
         --Makes a "prolonged" action and skip frames:
         --skiprate = 4
-        --r = game.make_action(choice(actions), skiprate)
+        --reward = game.make_action(choice(actions), skiprate)
 
         --The same could be achieved with:
         --game.set_action(choice(actions))
         --game.advance_action(skiprate)
-        --r = game.get_last_reward()
+        --reward = game.get_last_reward()
 
         -- Prints state's reward.
         print("State # " .. n)
-        print("Reward: " .. r)
+        print("Game variables: " .. vars[1])
+        print("Reward: " .. reward)
         print("=====================")
 
         if sleep_time > 0 then

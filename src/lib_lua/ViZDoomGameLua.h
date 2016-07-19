@@ -37,17 +37,10 @@ namespace vizdoom {
 
     namespace lb = luabind;
 
-    struct LabelLua{
-        unsigned int objectId;
-        std::string objectName;
-        uint8_t value;
-    };
-
     struct GameStateLua {
         unsigned int number;
 
         lb::object gameVariables;
-        //bpy::list gameVariables;
 
         lb::object screenBuffer;
         lb::object depthBuffer;
@@ -60,14 +53,15 @@ namespace vizdoom {
     class DoomGameLua : public DoomGame {
     public:
         void setAction(lb::object const& lAction);
-
         double makeAction(lb::object const& lAction);
         double makeAction(lb::object const& lAction, unsigned int tics);
 
-        GameStateLua getState();
+        GameStateLua getState(lua_State* luaState);
+        lb::object getLastAction(lua_State* luaState);
 
     private:
         template<class T> static std::vector<T> lTableToVector(lb::object const& lTable);
+        static lb::object dataToLTable(lua_State* luaState, int dims, int *shape, void * data);
 
     };
 }

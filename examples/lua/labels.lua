@@ -17,8 +17,8 @@ game = vizdoom.DoomGame()
 -- Multiple config files are ok but combining these ones doesn't make much sense.
 
 --game:load_config("../../examples/config/basic.cfg")
---game:load_config("../../examples/config/deadly_corridor.cfg")
-game:load_config("../../examples/config/deathmatch.cfg")
+game:load_config("../../examples/config/deadly_corridor.cfg")
+--game:load_config("../../examples/config/deathmatch.cfg")
 --game:load_config("../../examples/config/defend_the_center.cfg")
 --game:load_config("../../examples/config/defend_the_line.cfg")
 --game:load_config("../../examples/config/health_gathering.cfg")
@@ -30,10 +30,10 @@ game:load_config("../../examples/config/deathmatch.cfg")
 game:add_game_args("+freelook 1")
 
 game:set_screen_resolution(vizdoom.ScreenResolution.RES_640X480)
-
--- Enables spectator mode, so you can play. Sounds strange but it is agent who is supposed to watch not you.
 game:set_window_visible(true)
-game:set_mode(vizdoom.Mode.SPECTATOR)
+
+-- Enables labeling of the in game objects.
+game:set_labels_buffer_enabled(true)
 
 game:init()
 
@@ -47,17 +47,29 @@ for i = 1, episodes do
 
     while not game:is_episode_finished() do
 
-        s = game:get_state()
+        -- Gets the state.
+        state = game:get_state()
+
+        -- Get labels buffer and labels data.
+        labels_buf = state.labels_buffer
+        labels = state.labels
 
         game:advance_action()
-        a = game:get_last_action()
-        r = game:get_last_reward()
+        reward = game:get_last_reward()
 
-        print("State # " .. s.number)
-        print("Reward: " .. r)
-        last_a = "Action:"
-        for k, i_a in pairs(a) do last_a = last_a .. " " .. i_a end
-        print(last_a)
+        print("State #" .. state.number)
+
+        print("Labels:")
+
+        -- Print information about objects visible on the screen.
+        -- object_id identifies specific in game object.
+        -- object_name contains name of object.
+        -- value tells which value represents object in labels_buffer.
+        for k, l in pairs(labels) do
+            print("#" .. k .. ": object id: " .. l.object_id .. " object name: " .. l.object_name .. " label: " .. l.value)
+        end
+
+        print("Reward: " .. reward)
         print("=====================")
 
     end

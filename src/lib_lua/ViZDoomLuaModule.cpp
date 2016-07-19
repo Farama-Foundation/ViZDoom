@@ -370,12 +370,13 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             .def_readonly("screen_buffer", &GameStateLua::screenBuffer)
             .def_readonly("depth_buffer", &GameStateLua::depthBuffer)
             .def_readonly("map_buffer", &GameStateLua::mapBuffer)
-            .def_readonly("labels_buffer", &GameStateLua::labelsBuffer),
+            .def_readonly("labels_buffer", &GameStateLua::labelsBuffer)
+            .def_readonly("labels", &GameStateLua::labels),
 
-        class_<LabelLua>("Label")
-            .def_readonly("object_id", &LabelLua::objectId)
-            .def_readonly("object_name", &LabelLua::objectName)
-            .def_readonly("value", &LabelLua::value)
+        class_<Label>("Label")
+            .def_readonly("object_id", &Label::objectId)
+            .def_readonly("object_name", &Label::objectName)
+            .def_readonly("value", &Label::value)
     ];
 
     return 1;
