@@ -45,8 +45,8 @@ def player2():
 
     play(game)
 
+if __name__ == '__main__':
+    p1 = Process(target=player1)
+    p1.start()
+    player2()
 
-p1 = Process(target=player1)
-p1.start()
-
-player2()
