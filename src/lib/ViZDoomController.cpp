@@ -143,23 +143,31 @@ namespace vizdoom {
 
             try{
                 this->generateInstanceId();
-                this->MQInit();
 
+                // Create message queues
+                this->MQDoom = new MessageQueue(MQ_DOOM_NAME_BASE + this->instanceId);
+                this->MQController = new MessageQueue(MQ_CTR_NAME_BASE + this->instanceId);
+
+                // Signal handle thread
                 this->signalThread = new b::thread(b::bind(&DoomController::handleSignals, this));
 
+                // Doom thread
                 this->createDoomArgs();
                 this->doomThread = new b::thread(b::bind(&DoomController::launchDoom, this));
                 this->waitForDoomStart();
 
+                // Open shared memory
                 this->SMInit();
 
+                // Check version
                 if(this->gameState->VERSION != VIZDOOM_LIB_VERSION){
                     throw ViZDoomMismatchedVersionException(std::string(this->gameState->VERSION_STR), VIZDOOM_LIB_VERSION_STR);
                 }
 
                 this->waitForDoomMapStartTime();
 
-                this->MQDoomSend(MSG_CODE_UPDATE);
+                // Update state
+                this->MQDoom->send(MSG_CODE_UPDATE);
                 this->waitForDoomWork();
 
                 *this->input = *this->_input;
@@ -183,7 +191,7 @@ namespace vizdoom {
             this->doomWorking = false;
             this->doomRecordingMap = false;
 
-            this->MQDoomSend(MSG_CODE_CLOSE);
+            this->MQDoom->send(MSG_CODE_CLOSE);
         }
 
         if (this->signalThread && this->signalThread->joinable()) {
@@ -206,7 +214,15 @@ namespace vizdoom {
         }
 
         this->SMClose();
-        this->MQClose();
+
+        if (this->MQDoom) {
+            delete this->MQDoom;
+            this->MQDoom = nullptr;
+        }
+        if (this->MQController) {
+            delete this->MQController;
+            this->MQController = nullptr;
+        }
     }
 
     void DoomController::restart() {
@@ -227,8 +243,8 @@ namespace vizdoom {
 
             if (this->isTicPossible()) {
                 this->mapLastTic = this->gameState->MAP_TIC + 1;
-                if(update) this->MQDoomSend(MSG_CODE_TIC_AND_UPDATE);
-                else this->MQDoomSend(MSG_CODE_TIC);
+                if(update) this->MQDoom->send(MSG_CODE_TIC_AND_UPDATE);
+                else this->MQDoom->send(MSG_CODE_TIC);
                 this->waitForDoomWork();
             }
         }
@@ -252,7 +268,7 @@ namespace vizdoom {
             ++ticsMade;
 
             if(!this->isTicPossible() && i != tics - 1){
-                this->MQDoomSend(MSG_CODE_UPDATE);
+                this->MQDoom->send(MSG_CODE_UPDATE);
                 this->waitForDoomWork();
                 break;
             }
@@ -281,13 +297,13 @@ namespace vizdoom {
                 do {
                     this->sendCommand(std::string("+use"));
 
-                    this->MQDoomSend(MSG_CODE_TIC);
+                    this->MQDoom->send(MSG_CODE_TIC);
                     this->waitForDoomWork();
 
                 } while (!this->gameState->MAP_END && this->gameState->PLAYER_DEAD );
 
                 this->sendCommand(std::string("-use"));
-                this->MQDoomSend(MSG_CODE_UPDATE);
+                this->MQDoom->send(MSG_CODE_UPDATE);
                 this->waitForDoomWork();
 
                 this->input->BT_AVAILABLE[USE] = useAvailable;
@@ -299,7 +315,8 @@ namespace vizdoom {
     }
 
     void DoomController::sendCommand(std::string command) {
-        if(this->doomRunning && this->MQDoom && command.length() <= MQ_MAX_CMD_LEN) this->MQDoomSend(MSG_CODE_COMMAND, command.c_str());
+        if(this->doomRunning && this->MQDoom && command.length() <= MQ_MAX_CMD_LEN)
+            this->MQDoom->send(MSG_CODE_COMMAND, command.c_str());
     }
 
     void DoomController::addCustomArg(std::string arg){
@@ -363,7 +380,7 @@ namespace vizdoom {
                     else this->sendCommand(std::string("-use"));
                 }
 
-                this->MQDoomSend(MSG_CODE_TIC);
+                this->MQDoom->send(MSG_CODE_TIC);
                 this->waitForDoomWork();
 
                 if(restartTics > 3 && !this->gameState->GAME_MULTIPLAYER){
@@ -382,7 +399,7 @@ namespace vizdoom {
             }
 
             this->waitForDoomMapStartTime();
-            this->MQDoomSend(MSG_CODE_UPDATE);
+            this->MQDoom->send(MSG_CODE_UPDATE);
             this->waitForDoomWork();
 
             this->mapLastTic = this->gameState->MAP_TIC;
@@ -408,7 +425,7 @@ namespace vizdoom {
             do {
                 ++restartTics;
 
-                this->MQDoomSend(MSG_CODE_TIC);
+                this->MQDoom->send(MSG_CODE_TIC);
                 this->waitForDoomWork();
 
                 if(restartTics > 3){
@@ -421,7 +438,7 @@ namespace vizdoom {
                      || this->gameState->MAP_TIC > this->mapLastTic);
 
             this->waitForDoomMapStartTime();
-            this->MQDoomSend(MSG_CODE_UPDATE);
+            this->MQDoom->send(MSG_CODE_UPDATE);
             this->waitForDoomWork();
 
             this->mapLastTic = this->gameState->MAP_TIC;
@@ -872,8 +889,8 @@ namespace vizdoom {
     }
 
     void DoomController::intSignal(int sigNumber){
-        this->MQDoomSend(MSG_CODE_CLOSE);
-        this->MQControllerSend(MSG_CODE_SIG + sigNumber);
+        this->MQDoom->send(MSG_CODE_CLOSE);
+        this->MQController->send(MSG_CODE_SIG + sigNumber);
     }
 
     /* Flow */
@@ -883,12 +900,7 @@ namespace vizdoom {
 
         this->doomWorking = true;
 
-        Message msg;
-
-        unsigned int priority;
-        bip::message_queue::size_type recv_size;
-
-        this->MQControllerRecv(&msg, recv_size, priority);
+        Message msg = this->MQController->receive();
         switch (msg.code) {
             case MSG_CODE_DOOM_DONE :
                 this->doomRunning = true;
@@ -924,14 +936,9 @@ namespace vizdoom {
         if(doomRunning){
             this->doomWorking = true;
 
-            Message msg;
-
-            unsigned int priority;
-            bip::message_queue::size_type recv_size;
-
             bool done = false;
             do {
-                this->MQControllerRecv(&msg, recv_size, priority);
+                Message msg = this->MQController->receive();
                 switch (msg.code) {
                     case MSG_CODE_DOOM_DONE :
                         done = true;
@@ -967,7 +974,7 @@ namespace vizdoom {
 
     void DoomController::waitForDoomMapStartTime() {
         while(this->gameState->MAP_TIC < this->mapStartTime) {
-            this->MQDoomSend(MSG_CODE_TIC);
+            this->MQDoom->send(MSG_CODE_TIC);
             this->waitForDoomWork();
         }
     }
@@ -1197,9 +1204,9 @@ namespace vizdoom {
             bpr::wait_for_exit(doomProcess);
         }
         catch(...){
-            this->MQControllerSend(MSG_CODE_DOOM_ERROR, "Unexpected ViZDoom instance crash.");
+            this->MQController->send(MSG_CODE_DOOM_ERROR, "Unexpected ViZDoom instance crash.");
         }
-        this->MQControllerSend(MSG_CODE_DOOM_PROCESS_EXIT);
+        this->MQController->send(MSG_CODE_DOOM_PROCESS_EXIT);
     }
 
     /* Shared memory */
@@ -1259,74 +1266,6 @@ namespace vizdoom {
         if(this->ScreenSMRegion) {
             delete this->ScreenSMRegion;
             this->ScreenSMRegion = NULL;
-        }
-    }
-
-
-    /* Message queues */
-    /*----------------------------------------------------------------------------------------------------------------*/
-
-    void DoomController::MQInit() {
-
-        this->MQControllerName = std::string(MQ_NAME_CTR_BASE) + this->instanceId;
-        this->MQDoomName = std::string(MQ_NAME_DOOM_BASE) + this->instanceId;
-
-        try {
-            bip::message_queue::remove(this->MQControllerName.c_str());
-            bip::message_queue::remove(this->MQDoomName.c_str());
-
-            this->MQController = new bip::message_queue(bip::open_or_create, this->MQControllerName.c_str(), MQ_MAX_MSG_NUM, MQ_MAX_MSG_SIZE);
-            this->MQDoom = new bip::message_queue(bip::open_or_create, this->MQDoomName.c_str(), MQ_MAX_MSG_NUM, MQ_MAX_MSG_SIZE);
-        }
-        catch(...) { // bip::interprocess_exception
-            throw MessageQueueException("Failed to create message queues.");
-        }
-    }
-
-    void DoomController::MQControllerSend(uint8_t code, const char *command) {
-        Message msg;
-        msg.code = code;
-        if(command != NULL) strncpy(msg.command, command, MQ_MAX_CMD_LEN);
-        try {
-            this->MQController->send(&msg, sizeof(Message), 0);
-        }
-        catch(...){ // bip::interprocess_exception
-            throw MessageQueueException("Failed to send message.");
-        }
-    }
-
-    void DoomController::MQDoomSend(uint8_t code, const char *command) {
-        Message msg;
-        msg.code = code;
-        if(command != NULL) strncpy(msg.command, command, MQ_MAX_CMD_LEN);
-        try{
-            this->MQDoom->send(&msg, sizeof(Message), 0);
-        }
-        catch(...){ // bip::interprocess_exception
-            throw MessageQueueException("Failed to send message.");
-        }
-    }
-
-    void DoomController::MQControllerRecv(void *msg, size_t &size, unsigned int &priority) {
-        try {
-            this->MQController->receive(msg, sizeof(Message), size, priority);
-        }
-        catch(...){ // bip::interprocess_exception
-            throw MessageQueueException("Failed to receive message.");
-        }
-    }
-
-    void DoomController::MQClose() {
-        bip::message_queue::remove(this->MQDoomName.c_str());
-        if(this->MQDoom) {
-            delete this->MQDoom;
-            this->MQDoom = NULL;
-        }
-
-        bip::message_queue::remove(this->MQControllerName.c_str());
-        if(this->MQController) {
-            delete this->MQController;
-            this->MQController = NULL;
         }
     }
 }

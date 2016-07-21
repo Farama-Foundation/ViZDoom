@@ -24,6 +24,7 @@
 #define __VIZDOOM_CONTROLLER_H__
 
 #include "ViZDoomDefines.h"
+#include "ViZDoomMessageQueue.h"
 
 #include <boost/asio.hpp>
 #include <boost/random.hpp>
@@ -51,11 +52,8 @@ namespace vizdoom{
 #define MAX_LABEL_NAME_LEN 64
 
 /* Message queues' settings */
-#define MQ_NAME_CTR_BASE    "ViZDoomMQCtr"
-#define MQ_NAME_DOOM_BASE   "ViZDoomMQDoom"
-#define MQ_MAX_MSG_NUM      64
-#define MQ_MAX_MSG_SIZE     sizeof(DoomController::Message)
-#define MQ_MAX_CMD_LEN      128
+#define MQ_CTR_NAME_BASE    "ViZDoomMQCtr"
+#define MQ_DOOM_NAME_BASE   "ViZDoomMQDoom"
 
 /* Messages' codes */
 #define MSG_CODE_DOOM_DONE              11
@@ -68,14 +66,11 @@ namespace vizdoom{
 #define MSG_CODE_TIC_AND_UPDATE         23
 #define MSG_CODE_COMMAND                24
 #define MSG_CODE_CLOSE                  25
-#define MSG_CODE_ERROR                  26
 
 #define MSG_CODE_SIG                    30
 #define MSG_CODE_SIGINT                 30 + SIGINT
 #define MSG_CODE_SIGABRT                30 + SIGABRT
 #define MSG_CODE_SIGTERM                30 + SIGTERM
-
-
 
 /* OSes */
 #ifdef __linux__
@@ -284,6 +279,8 @@ namespace vizdoom{
         bool isDepthBufferEnabled();
 
         void setLevelMapEnabled(bool map);
+        void setLevelMapRotate(bool rotate);
+        void setLevelMapShowHowl(bool show);
         //void setLevelMapMode(MapMode mode);
         bool isLevelMapEnabled();
 
@@ -410,21 +407,8 @@ namespace vizdoom{
         /* Message queues */
         /*------------------------------------------------------------------------------------------------------------*/
 
-        struct Message {
-            uint8_t code;
-            char command[MQ_MAX_CMD_LEN];
-        };
-
-        void MQInit();
-        void MQControllerSend(uint8_t code, const char *command = NULL);
-        void MQDoomSend(uint8_t code, const char *command = NULL);
-        void MQControllerRecv(void *msg, size_t &size, unsigned int &priority);
-        void MQClose();
-
-        bip::message_queue *MQController;
-        bip::message_queue *MQDoom;
-        std::string MQControllerName;
-        std::string MQDoomName;
+        MessageQueue *MQDoom;
+        MessageQueue *MQController;
 
 
         /* Shared memory */

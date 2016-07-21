@@ -20,48 +20,50 @@
  THE SOFTWARE.
 */
 
-#ifndef __VIZ_MESSAGE_QUEUE_H__
-#define __VIZ_MESSAGE_QUEUE_H__
+#ifndef __VIZDOOM_MESSAGEQUEUE_H__
+#define __VIZDOOM_MESSAGEQUEUE_H__
+
+#include <cstdint>
 
 #include <boost/interprocess/ipc/message_queue.hpp>
+#include <boost/interprocess/mapped_region.hpp>
+#include <boost/interprocess/shared_memory_object.hpp>
 
-namespace bip = boost::interprocess;
+namespace vizdoom {
 
-extern bip::message_queue *vizMQSend;
-extern bip::message_queue *vizMQRecv;
+    namespace b         = boost;
+    namespace bip       = boost::interprocess;
 
-#define VIZ_MQ_NAME_CTR_BASE "ViZDoomMQCtr"
-#define VIZ_MQ_NAME_DOOM_BASE "ViZDoomMQDoom"
-#define VIZ_MQ_MAX_MSG_NUM 64
-#define VIZ_MQ_MAX_MSG_SIZE sizeof(VIZMessageCommand)
-#define VIZ_MQ_MAX_CMD_LEN 128
+    /* Message queues' settings */
+    #define MQ_MAX_MSG_NUM      64
+    #define MQ_MAX_MSG_SIZE     sizeof(Message)
+    #define MQ_MAX_CMD_LEN      128
 
-#define VIZ_MSG_CODE_DOOM_DONE 11
-#define VIZ_MSG_CODE_DOOM_CLOSE 12
-#define VIZ_MSG_CODE_DOOM_ERROR 13
+    /* Message struct */
+    struct Message {
+        uint8_t code;
+        char command[MQ_MAX_CMD_LEN];
+    };
 
-#define VIZ_MSG_CODE_TIC 21
-#define VIZ_MSG_CODE_UPDATE 22
-#define VIZ_MSG_CODE_TIC_AND_UPDATE 23
-#define VIZ_MSG_CODE_COMMAND 24
-#define VIZ_MSG_CODE_CLOSE 25
-#define VIZ_MSG_CODE_ERROR 26
+    class MessageQueue {
 
-struct VIZMessage{
-    uint8_t code;
-    char command[VIZ_MQ_MAX_CMD_LEN];
-};
+    public:
+        MessageQueue(std::string name);
+        ~MessageQueue();
 
-void VIZ_MQInit(const char * id);
+        void init();
+        void close();
 
-void VIZ_MQSend(uint8_t code, const char * command = nullptr);
-void VIZ_MQReceive(void *msg);
-bool VIZ_MQTryReceive(void *msg);
+        void send(uint8_t code, const char *command = nullptr);
+        Message receive();
 
-void VIZ_ReportError(const char * function, const char * error_message);
+        //void receive(Message  *msg);
+        //bool tryReceive(Message  *msg);
 
-void VIZ_MQTic();
-
-void VIZ_MQClose();
+    private:
+        bip::message_queue *mq;
+        std::string name;
+    };
+}
 
 #endif
