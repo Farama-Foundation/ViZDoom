@@ -29,8 +29,8 @@ EXTERN_CVAR (Bool, viz_async)
 
 bip::message_queue *vizMQController;
 bip::message_queue *vizMQDoom;
-char * vizMQControllerName;
-char * vizMQDoomName;
+char *vizMQControllerName;
+char *vizMQDoomName;
 
 void VIZ_MQInit(const char * id){
 
@@ -53,38 +53,37 @@ void VIZ_MQInit(const char * id){
     }
 }
 
-void VIZ_MQSend(uint8_t code){
-    VIZMessageSignal msg;
-    msg.code = code;
-    vizMQController->send(&msg, sizeof(VIZMessageSignal), 0);
-}
 
 void VIZ_MQSend(uint8_t code, const char * command){
-    VIZMessageCommand msg;
+    VIZMessage msg;
     msg.code = code;
-    strncpy(msg.command, command, VIZ_MQ_MAX_CMD_LEN);
-    vizMQController->send(&msg, sizeof(VIZMessageCommand), 0);
+    if(command) strncpy(msg.command, command, VIZ_MQ_MAX_CMD_LEN);
+
+    vizMQController->send(&msg, sizeof(VIZMessage), 0);
 }
 
-void VIZ_MQRecv(void *msg, size_t &size, unsigned int &priority){
-    vizMQDoom->receive(msg, sizeof(VIZMessageCommand), size, priority);
+void VIZ_MQReceive(void *msg){
+    size_t size;
+    unsigned int priority;
+
+    vizMQDoom->receive(msg, sizeof(VIZMessage), size, priority);
 }
 
-bool VIZ_MQTryRecv(void *msg, size_t &size, unsigned int &priority){
-    return vizMQDoom->try_receive(msg, sizeof(VIZMessageCommand), size, priority);
+bool VIZ_MQTryReceive(void *msg){
+    size_t size;
+    unsigned int priority;
+
+    return vizMQDoom->try_receive(msg, sizeof(VIZMessage), size, priority);
 }
 
 void VIZ_MQTic(){
 
-    VIZMessageCommand msg;
-
-    unsigned int priority;
-    bip::message_queue::size_type recv_size;
+    VIZMessage msg;
 
     do {
-        if(!*viz_async) VIZ_MQRecv(&msg, recv_size, priority);
+        if(!*viz_async) VIZ_MQReceive(&msg);
         else{
-            bool isMsg = VIZ_MQTryRecv(&msg, recv_size, priority);
+            bool isMsg = VIZ_MQTryReceive(&msg);
             if(!isMsg) break;
         }
         switch(msg.code){
@@ -118,13 +117,16 @@ void VIZ_MQTic(){
 
 void VIZ_ReportError(const char * function, const char * error_message) {
     Printf("%s: %s\n", function, error_message);
-    VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, error_message);
+    if(vizMQController) VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, error_message);
     exit(1);
 }
 
 void VIZ_MQClose(){
     //bip::message_queue::remove(vizMQControllerName);
     //bip::message_queue::remove(vizMQDoomName);
+    delete vizMQController;
+    delete vizMQDoom;
 	delete[] vizMQControllerName;
 	delete[] vizMQDoomName;
+
 }
