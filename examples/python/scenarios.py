@@ -22,9 +22,9 @@ game = DoomGame()
 # Don't load two configs cause the second will overrite the first one.
 # Multiple config files are ok but combining these ones doesn't make much sense.
 
-# game.load_config("../../examples/config/basic.cfg")
+game.load_config("../../examples/config/basic.cfg")
 # game.load_config("../../examples/config/simpler_basic.cfg")
-game.load_config("../../examples/config/rocket_basic.cfg")
+# game.load_config("../../examples/config/rocket_basic.cfg")
 # game.load_config("../../examples/config/deadly_corridor.cfg")
 # game.load_config("../../examples/config/deathmatch.cfg")
 # game.load_config("../../examples/config/defend_the_center.cfg")
