@@ -134,7 +134,7 @@ Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should cont
 * ``bin/java/libvizdoom.so (vizdoom.dll)`` -  ViZDoom library for Java
 * ``bin/java/vizdoom.jar`` -  Contains ViZDoom Java classes
 
-## Docker
+## Docker(outdated)
 
 * [Dockerfile](https://github.com/maciejjaskowski/ViZDoom-docker)
 * [Docker image](https://hub.docker.com/r/mjaskowski/vizdoom/)
