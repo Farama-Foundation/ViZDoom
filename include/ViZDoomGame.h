@@ -531,16 +531,7 @@ namespace vizdoom {
 
     private:
 
-        /* Load config helpers */
-        /*------------------------------------------------------------------------------------------------------------*/
 
-        static bool StringToBool(std::string boolString);
-        static ScreenResolution StringToResolution(std::string str);
-        static ScreenFormat StringToFormat(std::string str);
-        static Button StringToButton(std::string str);
-        static GameVariable StringToGameVariable(std::string str);
-        static unsigned int StringToUint(std::string str);
-        static bool ParseListProperty(int &line_number, std::string &value, std::ifstream& input, std::vector<std::string> &output);
 
     };
 }
