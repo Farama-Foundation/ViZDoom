@@ -38,8 +38,6 @@ resolution = (30, 45)
 
 # Configuration file path
 config_file_path = "../../examples/config/simpler_basic.cfg"
-
-
 # config_file_path = "../../examples/config/rocket_basic.cfg"
 # config_file_path = "../../examples/config/basic.cfg"
 
@@ -236,7 +234,7 @@ for epoch in range(epochs):
     print "\nTesting..."
     test_episode = []
     test_scores = []
-    for test_episode in range(test_episodes_per_epoch):
+    for test_episode in trange(test_episodes_per_epoch):
         game.new_episode()
         while not game.is_episode_finished():
             state = preprocess(game.get_state().image_buffer)
