@@ -22,6 +22,7 @@
 
 #include "ViZDoomController.h"
 #include "ViZDoomExceptions.h"
+#include "ViZDoomPathHelpers.h"
 #include "boost/process.hpp"
 
 #include <boost/algorithm/string.hpp>
@@ -74,12 +75,8 @@ namespace vizdoom {
 
         /* Settings */
         this->ticrate = DefaultTicrate;
-        #ifdef OS_WIN
-            this->exePath = "vizdoom.exe";
-        #else
-            this->exePath = "vizdoom";
-        #endif
 
+        this->exePath = "vizdoom";
         this->iwadPath = "doom2.wad";
         this->filePath = "";
         this->map = "map01";
@@ -349,7 +346,7 @@ namespace vizdoom {
                 if(this->gameState->GAME_SETTINGS_CONTROLLER) this->sendCommand(std::string("changemap ") + this->map);
             }
             else if(this->demoPath.length()){
-                this->sendCommand(std::string("recordmap ") + this->demoPath + " " + this->map);
+                this->sendCommand(std::string("recordmap ") + prepareFilePath(this->demoPath) + " " + this->map);
                 this->doomRecordingMap = true;
             }
             else {
@@ -415,7 +412,7 @@ namespace vizdoom {
                 this->doomRecordingMap = false;
             }
 
-            this->sendCommand(std::string("playdemo ") + demoPath);
+            this->sendCommand(std::string("playdemo ") + prepareLmpFilePath(demoPath));
 
             this->mapRestarting = true;
 
@@ -986,33 +983,20 @@ namespace vizdoom {
         this->doomArgs.clear();
 
         //exe
-        if(!bfs::exists(this->exePath) || bfs::is_directory(this->exePath)){
-        #ifdef OS_WIN
-            if(!bfs::exists(this->exePath + ".exe")) throw FileDoesNotExistException(this->exePath);
-            this->exePath += ".exe";
-        #else
-            throw FileDoesNotExistException(this->exePath);
-        #endif
-        }
-        this->doomArgs.push_back(this->exePath);
+        this->doomArgs.push_back(prepareExeFilePath(this->exePath));
 
         //main wad
-        if(this->iwadPath.length() != 0){
-            if(!bfs::exists(this->iwadPath) || bfs::is_directory(this->exePath)) throw FileDoesNotExistException(this->iwadPath);
-            this->doomArgs.push_back("-iwad");
-            this->doomArgs.push_back(this->iwadPath);
-        }
+        this->doomArgs.push_back("-iwad");
+        this->doomArgs.push_back(prepareWadFilePath(this->iwadPath));
 
         //wads
         if (this->filePath.length() != 0) {
-            if(!bfs::exists(this->filePath) || bfs::is_directory(this->exePath)) throw FileDoesNotExistException(this->filePath);
-            
             this->doomArgs.push_back("-file");
-            this->doomArgs.push_back(this->filePath);
+            this->doomArgs.push_back(prepareWadFilePath(this->filePath));
         }
 
         this->doomArgs.push_back("-config");
-        if (this->configPath.length() != 0) this->doomArgs.push_back(this->configPath);
+        if (this->configPath.length() != 0) this->doomArgs.push_back(prepareFilePath(this->configPath));
         else this->doomArgs.push_back("_vizdoom.ini");
 
         if(this->seedDoomRng) {

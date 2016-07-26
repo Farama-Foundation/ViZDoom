@@ -74,7 +74,7 @@ namespace vizdoom{
 
 /* OSes */
 #ifdef __linux__
-#define OS_LINUX
+    #define OS_LINUX
 #elif _WIN32
     #define OS_WIN
 #elif __APPLE__

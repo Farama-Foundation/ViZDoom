@@ -20,29 +20,35 @@
  THE SOFTWARE.
 */
 
-#include "ViZDoomUtilities.h"
+#ifndef __VIZDOOM_PATHHELPERS_H__
+#define __VIZDOOM_PATHHELPERS_H__
+
+#include <string>
+
+/* OSes */
+#ifdef __linux__
+    #define OS_LINUX
+#elif _WIN32
+    #define OS_WIN
+#elif __APPLE__
+    #define OS_OSX
+#endif
 
 namespace vizdoom {
 
-    double DoomTicsToMs(double tics, unsigned int ticrate) {
-        return static_cast<double>(1000) / ticrate * tics;
-    }
+    std::string fileExtension(std::string filePath);
 
-    double MsToDoomTics(double ms, unsigned int ticrate) {
-        return static_cast<double>(ticrate) / 1000 * ms;
-    }
+    bool hasExtension(std::string filePath);
 
-    double DoomFixedToDouble(int doomFixed) {
-        double res = static_cast<double>(doomFixed) / 65536.0;
-        return res;
-    }
+    bool fileExists(std::string filePath);
 
-    bool isBinaryButton(Button button){
-        return button < BinaryButtonCount;
-    }
+    std::string prepareFilePath(std::string filePath);
 
-    bool isDeltaButton(Button button){
-        // return button >= BinaryButtonCount && button < (BinaryButtonCount + DeltaButtonCount);
-        return button >= BinaryButtonCount && button < ButtonCount;
-    }
+    std::string prepareExeFilePath(std::string filePath);
+
+    std::string prepareWadFilePath(std::string filePath);
+
+    std::string prepareLmpFilePath(std::string filePath);
 }
+
+#endif
