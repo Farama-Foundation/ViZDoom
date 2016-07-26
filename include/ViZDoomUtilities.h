@@ -27,14 +27,14 @@
 
 namespace vizdoom {
     /*
-     * Calculates how many tics will be made during given number of milliseconds
+     * Calculates how many tics will be made during given number of milliseconds.
      */
-    double DoomTicsToMs(double tics, int ticrate);
+    double DoomTicsToMs(double tics, unsigned int ticrate = 35);
 
     /*
-     * Calculates the number of milliseconds that will pass during specified number of tics
+     * Calculates the number of milliseconds that will pass during specified number of tics.
      */
-    double MsToDoomTics(double ms, int ticrate);
+    double MsToDoomTics(double ms, unsigned int ticrate = 35);
 
     /*
      * Converts Doom's fixed point numeral to a double value.

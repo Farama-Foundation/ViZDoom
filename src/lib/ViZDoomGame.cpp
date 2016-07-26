@@ -25,16 +25,15 @@
 #include "ViZDoomConfigLoader.h"
 #include "ViZDoomController.h"
 #include "ViZDoomExceptions.h"
+#include "ViZDoomPathHelpers.h"
 #include "ViZDoomUtilities.h"
 
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/tokenizer.hpp>
 
 namespace vizdoom {
 
-    namespace b         = boost;
-    namespace bfs       = boost::filesystem;
+    namespace b = boost;
 
     DoomGame::DoomGame() {
         this->running = false;
@@ -60,7 +59,7 @@ namespace vizdoom {
         if (!this->isRunning()) {
 
             std::string cfgOverrideFile = "_vizdoom.cfg";
-            if(bfs::exists(cfgOverrideFile) && !bfs::is_directory(cfgOverrideFile)) loadConfig(cfgOverrideFile);
+            if(fileExists(cfgOverrideFile)) loadConfig(cfgOverrideFile);
 
             this->lastAction.resize(this->availableButtons.size());
 

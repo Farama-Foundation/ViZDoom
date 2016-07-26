@@ -30,7 +30,6 @@
 #include <fstream>
 #include <iostream>
 
-
 namespace vizdoom {
 
     namespace b = boost;
