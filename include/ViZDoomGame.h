@@ -26,6 +26,7 @@
 #include "ViZDoomDefines.h"
 
 #include <list>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -149,7 +150,7 @@ namespace vizdoom {
         /*
          * Returns DoomGame::State structure with the current game state.
          */
-        GameState * getState();
+        std::shared_ptr<GameState> getState();
 
         /*
          * Returns a vector with the last action performed.
@@ -509,7 +510,7 @@ namespace vizdoom {
 
         Mode mode;
 
-        GameState *state;
+        std::shared_ptr<GameState> state;
         void updateState();
 
         std::vector <GameVariable> availableGameVariables;

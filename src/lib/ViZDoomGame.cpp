@@ -76,15 +76,12 @@ namespace vizdoom {
             }
 
             try {
-                this->state = new GameState();
                 this->running = this->doomController->init();
 
                 this->doomController->disableAllButtons();
                 for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
                     this->doomController->setButtonAvailable(this->availableButtons[i], true);
                 }
-
-                this->state->gameVariables.resize(this->availableGameVariables.size());
 
                 this->lastMapTic = 0;
                 this->nextStateNumber = 1;
@@ -108,7 +105,6 @@ namespace vizdoom {
             this->doomController->close();
             this->lastAction.clear();
 
-            delete this->state;
             this->state = nullptr;
 
             this->running = false;
@@ -207,6 +203,8 @@ namespace vizdoom {
     void DoomGame::updateState(){
         try {
 
+            this->state = std::make_shared<GameState>();
+
             this->state->number = this->nextStateNumber++;
 
             double reward = 0;
@@ -221,6 +219,8 @@ namespace vizdoom {
             this->lastReward = reward;
 
             this->lastMapTic = this->doomController->getMapTic();
+
+            this->state->gameVariables.resize(this->availableGameVariables.size());
 
             /* Updates vars */
             for (unsigned int i = 0; i < this->availableGameVariables.size(); ++i) {
@@ -264,7 +264,7 @@ namespace vizdoom {
         catch (...) { throw SharedMemoryException(); }
     }
 
-    GameState * DoomGame::getState() { return this->state; }
+    std::shared_ptr<GameState> DoomGame::getState() { return this->state; }
 
     std::vector<int> DoomGame::getLastAction() { return this->lastAction; }
 

@@ -23,6 +23,9 @@
 #ifndef __VIZDOOM_DEFINES_H__
 #define __VIZDOOM_DEFINES_H__
 
+#include <array>
+#include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -31,11 +34,14 @@ namespace vizdoom{
     #define VIZDOOM_LIB_VERSION 109
     #define VIZDOOM_LIB_VERSION_STR "1.1.0pre"
 
-    typedef unsigned char uint8_t;
-    typedef unsigned char BYTE;
+    struct Buffer {
+        int width;
+        int height;
+        size_t size;
+    };
 
     struct Label{
-        int objectId;
+        unsigned int objectId;
         std::string objectName;
         uint8_t value;
     };
@@ -45,20 +51,20 @@ namespace vizdoom{
 
         std::vector<int> gameVariables;
 
-        uint8_t * screenBuffer;
-        uint8_t * depthBuffer;
-        uint8_t * labelsBuffer;
-        uint8_t * mapBuffer;
+//        std::shared_ptr<std::vector<uint8_t>> screenBuffer;
+//        std::shared_ptr<std::vector<uint8_t>> depthBuffer;
+//        std::shared_ptr<std::vector<uint8_t>> labelsBuffer;
+//        std::shared_ptr<std::vector<uint8_t>> mapBuffer;
+//
+//        std::shared_ptr<std::vector<Label>> labels;
+
+        uint8_t *screenBuffer;
+        uint8_t *depthBuffer;
+        uint8_t *labelsBuffer;
+        uint8_t *mapBuffer;
 
         std::vector<Label> labels;
 
-        GameState(){
-            this->number = 0;
-            this->screenBuffer  = nullptr;
-            this->depthBuffer   = nullptr;
-            this->labelsBuffer  = nullptr;
-            this->mapBuffer     = nullptr;
-        }
     };
 
     enum Mode {

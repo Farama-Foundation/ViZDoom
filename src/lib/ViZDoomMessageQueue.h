@@ -26,8 +26,6 @@
 #include <cstdint>
 
 #include <boost/interprocess/ipc/message_queue.hpp>
-#include <boost/interprocess/mapped_region.hpp>
-#include <boost/interprocess/shared_memory_object.hpp>
 
 namespace vizdoom {
 
