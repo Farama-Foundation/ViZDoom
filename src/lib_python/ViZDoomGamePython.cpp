@@ -32,8 +32,7 @@ namespace vizdoom {
     #else
     void
     #endif
-    init_numpy()
-    {
+    init_numpy() {
         bpyn::array::set_module_and_type("numpy", "ndarray");
         import_array();
     }
@@ -42,52 +41,53 @@ namespace vizdoom {
         init_numpy();
     }
 
-    void DoomGamePython::setAction(bpy::list const &action) {
-        DoomGame::setAction(DoomGamePython::pyListToVector<int>(action));
+    void DoomGamePython::setAction(bpy::list const &pyAction) {
+        DoomGame::setAction(DoomGamePython::pyListToVector<int>(pyAction));
     }
 
-    double DoomGamePython::makeAction(bpy::list const &action) {
-        return DoomGame::makeAction(DoomGamePython::pyListToVector<int>(action));
+    double DoomGamePython::makeAction(bpy::list const &pyAction) {
+        return DoomGame::makeAction(DoomGamePython::pyListToVector<int>(pyAction));
     }
 
-    double DoomGamePython::makeAction(bpy::list const &action, unsigned int tics) {
-        return DoomGame::makeAction(DoomGamePython::pyListToVector<int>(action), tics);
+    double DoomGamePython::makeAction(bpy::list const &pyAction, unsigned int tics) {
+        return DoomGame::makeAction(DoomGamePython::pyListToVector<int>(pyAction), tics);
     }
 
     GameStatePython DoomGamePython::getState() {
 
         GameStatePython pyState;
-        pyState.number = this->state->number;
 
-        if(this->getScreenFormat() )
+        if (this->state == nullptr) return pyState;
+
+        pyState.number = this->state->number;
 
         if (this->isEpisodeFinished()) return pyState;
 
         this->updateBuffersShapes();
         int colorDims = 3;
-        if(this->getScreenChannels() == 1) colorDims = 2;
+        if (this->getScreenChannels() == 1) colorDims = 2;
 
         if (this->state->screenBuffer != nullptr) {
-            pyState.screenBuffer =
-                    this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->doomController->getScreenBuffer()).copy();
+            pyState.screenBuffer = this->dataToNumpyArray(colorDims, this->colorShape,
+                                                          NPY_UBYTE, this->doomController->getScreenBuffer()).copy();
         }
         if (this->state->depthBuffer != nullptr) {
-            pyState.depthBuffer =
-                    this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->doomController->getDepthBuffer()).copy();
+            pyState.depthBuffer = this->dataToNumpyArray(2, this->grayShape,
+                                                         NPY_UBYTE, this->doomController->getDepthBuffer()).copy();
         }
         if (this->state->labelsBuffer != nullptr) {
-            pyState.labelsBuffer =
-                    this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->doomController->getLabelsBuffer()).copy();
+            pyState.labelsBuffer = this->dataToNumpyArray(2, this->grayShape,
+                                                          NPY_UBYTE, this->doomController->getLabelsBuffer()).copy();
         }
-        if (this->state->mapBuffer != nullptr) {
-            pyState.mapBuffer =
-                    this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->doomController->getLevelMapBuffer()).copy();
+        if (this->state->automapBuffer != nullptr) {
+            pyState.automapBuffer = this->dataToNumpyArray(colorDims, this->colorShape,
+                                                       NPY_UBYTE, this->doomController->getAutomapBuffer()).copy();
         }
 
         if (this->state->gameVariables.size() > 0) {
             // Numpy array version
             npy_intp shape = this->state->gameVariables.size();
-            pyState.gameVariables = dataToNumpyArray(1, &shape, NPY_INT32, this->state->gameVariables.data());
+            pyState.gameVariables = dataToNumpyArray(1, &shape, NPY_INT32, this->state->gameVariables.data()).copy();
 
             // Python list version
             //pyState.gameVariables = DoomGamePython::vectorToPyList<int>(this->state->gameVariables);
@@ -112,8 +112,8 @@ namespace vizdoom {
 
     bpy::list DoomGamePython::getLastAction() {
         bpy::list pyAction;
-        for (std::vector<int>::iterator it = DoomGame::lastAction.begin(); it!=DoomGame::lastAction.end(); ++it) {
-            pyAction.append(*it);
+        for (auto i = DoomGame::lastAction.begin(); i != DoomGame::lastAction.end(); ++i) {
+            pyAction.append(*i);
         }
         return pyAction;
     }

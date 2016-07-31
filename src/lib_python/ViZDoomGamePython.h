@@ -57,7 +57,7 @@ namespace vizdoom {
         bpya::object screenBuffer;
         bpya::object depthBuffer;
         bpya::object labelsBuffer;
-        bpya::object mapBuffer;
+        bpya::object automapBuffer;
 
         bpy::list labels;
     };
@@ -67,11 +67,12 @@ namespace vizdoom {
     public:        
         DoomGamePython();
 
+        void setAction(bpy::list const &pyAction);
+        double makeAction(bpy::list const &pyAction);
+        double makeAction(bpy::list const &pyAction, unsigned int tics);
+
         GameStatePython getState();
         bpy::list getLastAction();
-        void setAction(bpy::list const &action);
-        double makeAction(bpy::list const &action);
-        double makeAction(bpy::list const &action, unsigned int tics);
 
         // These functions are workaround for
         // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
