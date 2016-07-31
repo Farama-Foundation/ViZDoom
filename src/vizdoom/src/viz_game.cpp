@@ -22,6 +22,7 @@
 
 #include "viz_game.h"
 #include "viz_defines.h"
+#include "viz_depth.h"
 #include "viz_labels.h"
 #include "viz_message_queue.h"
 #include "viz_screen.h"
@@ -35,9 +36,9 @@
 
 EXTERN_CVAR (Bool, viz_debug)
 EXTERN_CVAR (Int, viz_screen_format)
-EXTERN_CVAR (Bool, viz_depth_buffer)
+EXTERN_CVAR (Bool, viz_depth)
 EXTERN_CVAR (Bool, viz_labels)
-EXTERN_CVAR (Bool, viz_level_map)
+EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_loop_map)
 
 player_t *vizPlayer;
@@ -155,17 +156,17 @@ void VIZ_GameStateTic(){
     vizGameState->SCREEN_BUFFER_ADDRESS = SCREEN_BUFFER_SM_ADDRESS * vizScreenChannelSize;
     vizGameState->SCREEN_BUFFER_SIZE = SCREEN_BUFFER_SM_SIZE * vizScreenChannelSize;
 
-    vizGameState->DEPTH_BUFFER = *viz_depth_buffer;
+    vizGameState->DEPTH_BUFFER = *viz_depth && vizDepthMap;
     vizGameState->DEPTH_BUFFER_ADDRESS = DEPTH_BUFFER_SM_ADDRESS * vizScreenChannelSize;
     vizGameState->DEPTH_BUFFER_SIZE = DEPTH_BUFFER_SM_SIZE * vizScreenChannelSize;
 
-    vizGameState->LABELS = *viz_labels;
+    vizGameState->LABELS = *viz_labels && vizLabels;
     vizGameState->LABELS_BUFFER_ADDRESS = LABELS_BUFFER_SM_ADDRESS * vizScreenChannelSize;
     vizGameState->LABELS_BUFFER_SIZE = LABELS_BUFFER_SM_SIZE * vizScreenChannelSize;
 
-    vizGameState->LEVEL_MAP = *viz_level_map;
-    vizGameState->LEVEL_MAP_BUFFER_ADDRESS = MAP_BUFFER_SM_ADDRESS * vizScreenChannelSize;
-    vizGameState->LEVEL_MAP_BUFFER_SIZE = MAP_BUFFER_SM_SIZE * vizScreenChannelSize;
+    vizGameState->AUTOMAP = *viz_automap;
+    vizGameState->AUTOMAP_BUFFER_ADDRESS = MAP_BUFFER_SM_ADDRESS * vizScreenChannelSize;
+    vizGameState->AUTOMAP_BUFFER_SIZE = MAP_BUFFER_SM_SIZE * vizScreenChannelSize;
 
     vizGameState->MAP_START_TIC = (unsigned int)level.starttime;
     vizGameState->MAP_TIC = (unsigned int)level.maptime;

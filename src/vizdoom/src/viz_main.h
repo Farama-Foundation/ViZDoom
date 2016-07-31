@@ -38,6 +38,8 @@ void VIZ_Update();
 
 bool VIZ_IsPaused();
 
+void VIZ_UpdateCVARs();
+
 void VIZ_Close();
 
 #endif

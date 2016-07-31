@@ -37,17 +37,43 @@
 namespace b = boost;
 namespace bt = boost::this_thread;
 
+//CVAR_ARCHIVE		= 1,	// set to cause it to be saved to config
+//CVAR_USERINFO		= 2,	// added to userinfo  when changed
+//CVAR_SERVERINFO	= 4,	// added to serverinfo when changed
+//CVAR_NOSET		= 8,	// don't allow change from console at all, but can be set from the command line
+//CVAR_LATCH		= 16,	// save changes until server restart
+//CVAR_UNSETTABLE	= 32,	// can unset this var from console
+//CVAR_DEMOSAVE		= 64,	// save the value of this cvar in a demo
+//CVAR_ISDEFAULT	= 128,	// is cvar unchanged since creation?
+//CVAR_AUTO			= 256,	// allocated; needs to be freed when destroyed
+//CVAR_NOINITCALL	= 512,	// don't call callback at game start
+//CVAR_GLOBALCONFIG	= 1024,	// cvar is saved to global config section
+//CVAR_VIDEOCONFIG	= 2048, // cvar is saved to video config section (not implemented)
+//CVAR_NOSAVE		= 4096, // when used with CVAR_SERVERINFO, do not save var to savegame
+//CVAR_MOD			= 8192,	// cvar was defined by a mod
+//CVAR_IGNORE		= 16384,// do not send cvar across the network/inaccesible from ACS (dummy mod cvar)
+
 CVAR (Bool, viz_debug, false, CVAR_NOSET)
 
 CVAR (Bool, viz_controlled, false, CVAR_NOSET)
 CVAR (String, viz_instance_id, "0", CVAR_NOSET)
+
+//modes
 CVAR (Bool, viz_async, false, CVAR_NOSET)
 CVAR (Bool, viz_allow_input, false, CVAR_NOSET)
 
-CVAR (Int, viz_screen_format, 0, CVAR_NOSET)
-CVAR (Bool, viz_depth_buffer, false, CVAR_NOSET)
-CVAR (Bool, viz_labels, false, CVAR_NOSET)
-CVAR (Bool, viz_level_map, false, CVAR_NOSET)
+//buffers
+CVAR (Int, viz_screen_format, 0, 0)
+CVAR (Bool, viz_depth, false, 0)
+CVAR (Bool, viz_labels, false, 0)
+CVAR (Bool, viz_automap, false, 0)
+//CVAR (Int, viz_buf_mode, 0, 0)
+
+//rendering options (bitset)
+CVAR (Int, viz_render_mode, 0, 0)
+CVAR (Int, viz_automap_mode, 0, 0)
+
+//window/sound/console/rendering all frames
 CVAR (Bool, viz_render_all, false, CVAR_NOSET)
 CVAR (Bool, viz_window_hidden, false, CVAR_NOSET)
 CVAR (Bool, viz_noxserver, false, CVAR_NOSET)
@@ -66,6 +92,8 @@ void VIZ_Init(){
     Printf("VIZ_Init: Instance id: %s\n", *viz_instance_id);
 
     if(*viz_controlled) {
+
+        VIZ_UpdateCVARs();
 
         VIZ_MQInit(*viz_instance_id);
         VIZ_SMInit(*viz_instance_id);
@@ -98,7 +126,7 @@ void VIZ_AsyncStartTic(){
         exit(0);
     }
 
-    if (*viz_controlled && !VIZ_IsPaused()){
+    if (*viz_controlled){
         VIZ_MQTic();
         if(vizNextTic) VIZ_InputTic();
     }
@@ -113,7 +141,7 @@ void VIZ_Tic(){
         exit(0);
     }
 
-    if (*viz_controlled && !VIZ_IsPaused()){
+    if (*viz_controlled){
 
         NetUpdate();
 
@@ -152,4 +180,103 @@ bool VIZ_IsPaused(){
     //&& (gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
     //&& !paused && !pauseext && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling
 }
+
+// other
+EXTERN_CVAR(Bool, vid_fps)
+
+// hud
+EXTERN_CVAR(Int, screenblocks)
+EXTERN_CVAR (Bool, st_scale)
+EXTERN_CVAR(Bool, hud_scale)
+EXTERN_CVAR(Bool, hud_althud)
+
+// player sprite
+EXTERN_CVAR(Bool, r_drawplayersprites)
+
+// crosshair
+EXTERN_CVAR (Int, crosshair);
+//EXTERN_CVAR (Bool, crosshairforce);
+//EXTERN_CVAR (Color, crosshaircolor);
+//EXTERN_CVAR (Bool, crosshairhealth);
+//EXTERN_CVAR (Bool, crosshairscale);
+//EXTERN_CVAR (Bool, crosshairgrow);
+
+// decals
+EXTERN_CVAR(Bool, cl_bloodsplats)
+EXTERN_CVAR(Int, cl_maxdecals)
+EXTERN_CVAR(Bool, cl_missiledecals)
+EXTERN_CVAR(Bool, cl_spreaddecals)
+
+//particles && effects sprites
+EXTERN_CVAR(Bool, r_particles)
+EXTERN_CVAR(Int, r_maxparticles)
+
+EXTERN_CVAR(Int, cl_bloodtype)
+EXTERN_CVAR(Int, cl_pufftype)
+EXTERN_CVAR(Int, cl_rockettrails)
+
+//automap
+EXTERN_CVAR(Int, am_cheat)
+EXTERN_CVAR(Bool, am_rotate)
+EXTERN_CVAR(Bool, am_textured)
+
+EXTERN_CVAR(Bool, am_showitems)
+EXTERN_CVAR(Bool, am_showmonsters)
+EXTERN_CVAR(Bool, am_showsecrets)
+EXTERN_CVAR(Bool, am_showtime)
+EXTERN_CVAR(Bool, am_showtotaltime)
+
+
+
+void VIZ_UpdateCVARs(){
+
+    // hud
+    bool hud = (*viz_render_mode & 1) != 0;
+    bool minHud = (*viz_render_mode & 2) != 0;
+
+    if (minHud && hud) screenblocks.CmdSet("11");
+    else if (hud) screenblocks.CmdSet("10");
+    else screenblocks.CmdSet("12");
+
+    st_scale.CmdSet("1");
+    hud_scale.CmdSet("1");
+    hud_althud.CmdSet("0");
+
+    //players sprite (weapon)
+    r_drawplayersprites.CmdSet((*viz_render_mode & 4) != 0 ? "1" : "0");
+
+    //crosshair
+    crosshair.CmdSet((*viz_render_mode & 8) != 0 ? "1" : "0");
+
+    // decals
+    bool decals = (*viz_render_mode & 16) != 0;
+    cl_bloodsplats.CmdSet(decals ? "1" : "0");
+    cl_maxdecals.CmdSet(decals ? "1024" : "0");
+    cl_missiledecals.CmdSet(decals ? "1" : "0");
+    cl_spreaddecals.CmdSet(decals ? "1" : "0");
+
+    // particles && effects sprites
+    bool particles = (*viz_render_mode & 32) != 0;
+    bool sprites = (*viz_render_mode & 64) != 0;
+
+    r_particles.CmdSet(particles ? "1" : "0");
+    r_maxparticles.CmdSet(particles ? "4092" : "0");
+
+    cl_bloodtype.CmdSet(sprites ? "1" : "2");
+    cl_pufftype.CmdSet(sprites ? "0" : "1");
+    cl_rockettrails.CmdSet(sprites ? "3" : "1");
+
+    // automap
+    am_cheat = *viz_nocheat ? 0 : *viz_automap_mode;
+
+    am_rotate.CmdSet((*viz_render_mode & 128) != 0 ? "1" : "0");
+    am_textured.CmdSet((*viz_render_mode & 256) != 0 ? "1" : "0");
+
+    am_showitems.CmdSet("0");
+    am_showmonsters.CmdSet("0");
+    am_showsecrets.CmdSet("0");
+    am_showtime.CmdSet("0");
+    am_showtotaltime.CmdSet("0");
+
+};
 

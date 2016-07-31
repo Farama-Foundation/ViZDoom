@@ -94,22 +94,28 @@ namespace vizdoom {
 
         this->depth = false;
         this->depthBuffer = nullptr;
-        this->levelMap = false;
-        this->levelMapBuffer = nullptr;
-        //this->levelMapMode = NORMAL;
+
         this->labels = false;
         this->labelsBuffer = nullptr;
 
+        this->automap = false;
+        this->automapBuffer = nullptr;
+        this->amMode = NORMAL;
+        this->amRotate = false;
+        this->amTextures = true;
+
         this->hud = false;
+        this->minHud = false;
         this->weapon = true;
         this->crosshair = false;
         this->decals = true;
         this->particles = true;
+        this->sprites = true;
 
         this->windowHidden = false;
         this->noXServer = false;
         this->noConsole = true;
-        this->noSound = true;
+        this->noSound = false;
 
         this->allowDoomInput = false;
         this->runDoomAsync = false;
@@ -541,24 +547,63 @@ namespace vizdoom {
         }
     }
 
-    void DoomController::setDepthBufferEnabled(bool depthBuffer){ this->depth = depthBuffer; }
+    /* Depth buffer */
     bool DoomController::isDepthBufferEnabled(){
         if (this->doomRunning) return this->gameState->DEPTH_BUFFER;
         else return depth;
     }
 
-    void DoomController::setLevelMapEnabled(bool levelMap){ this->levelMap = levelMap; }
-    bool DoomController::isLevelMapEnabled(){
-        if (this->doomRunning) return this->gameState->LEVEL_MAP;
-        else return levelMap;
+    void DoomController::setDepthBufferEnabled(bool depthBuffer){
+        this->depth = depthBuffer;
+        if (this->doomRunning) {
+            if (this->automap) this->sendCommand("viz_depth 1");
+            else this->sendCommand("viz_depth 0");
+        }
+        this->updateSettings = true;
     }
 
-    void DoomController::setLabelsEnabled(bool labels){ this->labels = labels; }
+    /* Labels */
     bool DoomController::isLabelsEnabled(){
         if (this->doomRunning) return this->gameState->LABELS;
         else return labels;
     }
 
+    void DoomController::setLabelsEnabled(bool labels){
+        this->labels = labels;
+        if (this->doomRunning) {
+            if (this->automap) this->sendCommand("viz_labels 1");
+            else this->sendCommand("viz_labels 0");
+        }
+    }
+
+    /* Automap */
+    bool DoomController::isAutomapEnabled(){
+        if (this->doomRunning) return this->gameState->AUTOMAP;
+        else return automap;
+    }
+
+    void DoomController::setAutomapEnabled(bool automap){
+        this->automap = automap;
+        if (this->doomRunning) {
+            if (this->automap) this->sendCommand("viz_automap 1");
+            else this->sendCommand("viz_automap 0");
+        }
+    }
+
+    void DoomController::setAutomapMode(AutomapMode mode) {
+        this->amMode = mode;
+        if (this->doomRunning) this->sendCommand("viz_automap_mode " + b::lexical_cast<std::string>(this->amMode));
+    }
+
+    void DoomController::setAutomapRotate(bool rotate){
+        this->amRotate = rotate;
+        if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
+    }
+
+    void DoomController::setAutomapRenderTextures(bool textures){
+        this->amTextures = textures;
+        if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
+    }
 
     void DoomController::setScreenWidth(unsigned int width) { if(!this->doomRunning) this->screenWidth = width; }
     void DoomController::setScreenHeight(unsigned int height) { if(!this->doomRunning) this->screenHeight = height; }
@@ -607,6 +652,9 @@ namespace vizdoom {
                     this->screenDepth = 0;
             }
         }
+        if (this->doomRunning) {
+            this->sendCommand("viz_screen_format " + b::lexical_cast<std::string>(this->screenFormat));
+        }
     }
 
     void DoomController::setWindowHidden(bool windowHidden){ if(!this->doomRunning) this->windowHidden = windowHidden; }
@@ -614,45 +662,37 @@ namespace vizdoom {
 
     void DoomController::setRenderHud(bool hud) {
         this->hud = hud;
-        if (this->doomRunning) {
-            if (this->hud) this->sendCommand("screenblocks 10");
-            else this->sendCommand("screenblocks 12");
-        }
+        if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
+    }
+
+    void DoomController::setRenderMinimalHud(bool minHud) {
+        this->minHud = minHud;
+        if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
     }
 
     void DoomController::setRenderWeapon(bool weapon) {
         this->weapon = weapon;
-        if (this->doomRunning) {
-            if (this->weapon) this->sendCommand("r_drawplayersprites 1");
-            else this->sendCommand("r_drawplayersprites 1");
-        }
+        if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
     }
 
     void DoomController::setRenderCrosshair(bool crosshair) {
         this->crosshair = crosshair;
-        if (this->doomRunning) {
-            if (this->crosshair) {
-                this->sendCommand("crosshairhealth false");
-                this->sendCommand("crosshair 1");
-            }
-            else this->sendCommand("crosshair 0");
-        }
+        if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
     }
 
     void DoomController::setRenderDecals(bool decals) {
         this->decals = decals;
-        if (this->doomRunning) {
-            if (this->decals) this->sendCommand("cl_maxdecals 1024");
-            else this->sendCommand("cl_maxdecals 0");
-        }
+        if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
     }
 
     void DoomController::setRenderParticles(bool particles) {
         this->particles = particles;
-        if (this->doomRunning) {
-            if (this->particles) this->sendCommand("r_particles 1");
-            else this->sendCommand("r_particles 0");
-        }
+        if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
+    }
+
+    void DoomController::setRenderEffectsSprites(bool sprites) {
+        this->sprites = sprites;
+        if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
     }
 
     unsigned int DoomController::getScreenWidth() {
@@ -684,13 +724,32 @@ namespace vizdoom {
         else return (size_t) this->screenChannels * this->screenWidth * this->screenHeight;
     }
 
+    int DoomController::getRenderModeValue(){
+        int renderMode = 0;
+        if(this->hud)           renderMode |= 1;
+        if(this->minHud)        renderMode |= 2;
+        if(this->weapon)        renderMode |= 4;
+        if(this->crosshair)     renderMode |= 8;
+        if(this->decals)        renderMode |= 16;
+        if(this->particles)     renderMode |= 32;
+        if(this->sprites)       renderMode |= 64;
+        if(this->amRotate)      renderMode |= 128;
+        if(this->amTextures)    renderMode |= 256;
+
+        return renderMode;
+    }
+
+    void DoomController::setRenderMode(int value){
+        this->sendCommand("viz_render_mode " + b::lexical_cast<std::string>(this->getRenderModeValue()));
+    }
+
     /* SM setters & getters */
     /*----------------------------------------------------------------------------------------------------------------*/
 
     uint8_t * const DoomController::getScreenBuffer(){ return this->screenBuffer; }
     uint8_t * const DoomController::getDepthBuffer(){ return this->depthBuffer; }
     uint8_t * const DoomController::getLabelsBuffer(){ return this->labelsBuffer; }
-    uint8_t * const DoomController::getLevelMapBuffer(){ return this->levelMapBuffer; }
+    uint8_t * const DoomController::getAutomapBuffer(){ return this->automapBuffer; }
 
     DoomController::InputState * const DoomController::getInput() { return this->input; }
 
@@ -1024,7 +1083,6 @@ namespace vizdoom {
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->skill));
 
         //resolution and aspect ratio
-
         this->doomArgs.push_back("-width");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenWidth));
         //this->doomArgs.push_back("+vid_defwidth");
@@ -1044,42 +1102,13 @@ namespace vizdoom {
         else if(ratio == 5.0/4.0) this->doomArgs.push_back("4");
         else this->doomArgs.push_back("0");
 
-        //hud
-        this->doomArgs.push_back("+screenblocks");
-        if (this->hud) this->doomArgs.push_back("10");
-        else this->doomArgs.push_back("12");
-
-        //weapon
-        this->doomArgs.push_back("+r_drawplayersprites");
-        if (this->weapon) this->doomArgs.push_back("1");
-        else this->doomArgs.push_back("0");
-
-        //crosshair
-        this->doomArgs.push_back("+crosshair");
-        if (this->crosshair) {
-            this->doomArgs.push_back("1");
-            this->doomArgs.push_back("+crosshairhealth");
-            this->doomArgs.push_back("0");
-        }
-        else this->doomArgs.push_back("0");
-
-        //decals
-        this->doomArgs.push_back("+cl_maxdecals");
-        if (this->decals) this->doomArgs.push_back("1024");
-        else this->doomArgs.push_back("0");
-
-        //particles
-        this->doomArgs.push_back("+r_particles");
-        if (this->decals) this->doomArgs.push_back("1");
-        else this->doomArgs.push_back("0");
-
         //window mode
         this->doomArgs.push_back("+fullscreen");
         this->doomArgs.push_back("0");
 
         //depth duffer
         if(this->depth) {
-            this->doomArgs.push_back("+viz_depth_buffer");
+            this->doomArgs.push_back("+viz_depth");
             this->doomArgs.push_back("1");
         }
 
@@ -1089,17 +1118,24 @@ namespace vizdoom {
             this->doomArgs.push_back("1");
         }
 
-        //level map buffer
-        if(this->levelMap) {
-            this->doomArgs.push_back("+viz_level_map");
+        //automap
+        if(this->automap) {
+            this->doomArgs.push_back("+viz_automap");
             this->doomArgs.push_back("1");
+
+            this->doomArgs.push_back("+viz_automap_mode");
+            this->doomArgs.push_back(b::lexical_cast<std::string>(this->amMode));
         }
+
+        //render mode
+        this->doomArgs.push_back("+viz_render_mode");
+        this->doomArgs.push_back(b::lexical_cast<std::string>(this->getRenderModeValue()));
 
         //weapon auto switch
         //this->doomArgs.push_back("+neverswitchonpickup");
         //this->doomArgs.push_back("1");
 
-        //vizdoom this->doomArgs
+        //vizdoom
         this->doomArgs.push_back("+viz_controlled");
         this->doomArgs.push_back("1");
 
@@ -1226,7 +1262,7 @@ namespace vizdoom {
             this->screenBuffer = this->screen + this->gameState->SCREEN_BUFFER_ADDRESS;
             this->depthBuffer = this->screen + this->gameState->DEPTH_BUFFER_ADDRESS;
             this->labelsBuffer = this->screen + this->gameState->LABELS_BUFFER_ADDRESS;
-            this->levelMapBuffer = this->screen + this->gameState->LEVEL_MAP_BUFFER_ADDRESS;
+            this->automapBuffer = this->screen + this->gameState->AUTOMAP_BUFFER_ADDRESS;
         }
         catch(...) { //bip::interprocess_exception
             throw SharedMemoryException("Failed to open shared memory.");

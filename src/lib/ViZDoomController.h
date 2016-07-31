@@ -127,9 +127,9 @@ namespace vizdoom{
             size_t LABELS_BUFFER_ADDRESS;
             size_t LABELS_BUFFER_SIZE;
 
-            bool LEVEL_MAP;
-            size_t LEVEL_MAP_BUFFER_ADDRESS;
-            size_t LEVEL_MAP_BUFFER_SIZE;
+            bool AUTOMAP;
+            size_t AUTOMAP_BUFFER_ADDRESS;
+            size_t AUTOMAP_BUFFER_SIZE;
 
             // MAP
             unsigned int MAP_START_TIC;
@@ -265,40 +265,49 @@ namespace vizdoom{
         void setNoXServer(bool noXServer);
 
         void setRenderHud(bool hud);
+        void setRenderMinimalHud(bool minHud);
         void setRenderWeapon(bool weapon);
         void setRenderCrosshair(bool crosshair);
         void setRenderDecals(bool decals);
         void setRenderParticles(bool particles);
+        void setRenderEffectsSprites(bool sprites);
 
         void setScreenResolution(unsigned int width, unsigned int height);
+
+        unsigned int getScreenWidth();
         void setScreenWidth(unsigned int width);
+
+        unsigned int getScreenHeight();
         void setScreenHeight(unsigned int height);
-        void setScreenFormat(ScreenFormat format);
-
-        void setDepthBufferEnabled(bool depthBuffer);
-        bool isDepthBufferEnabled();
-
-        void setLevelMapEnabled(bool map);
-        void setLevelMapRotate(bool rotate);
-        void setLevelMapShowHowl(bool show);
-        //void setLevelMapMode(MapMode mode);
-        bool isLevelMapEnabled();
-
-        void setLabelsEnabled(bool labels);
-        bool isLabelsEnabled();
 
         ScreenFormat getScreenFormat();
-        unsigned int getScreenWidth();
-        unsigned int getScreenHeight();
+        void setScreenFormat(ScreenFormat format);
+
         unsigned int getScreenChannels();
         unsigned int getScreenDepth();
         size_t getScreenPitch();
         size_t getScreenSize();
 
+        /* Depth buffer */
+        bool isDepthBufferEnabled();
+        void setDepthBufferEnabled(bool depthBuffer);
+
+        /* Labels */
+        bool isLabelsEnabled();
+        void setLabelsEnabled(bool labels);
+
+        /* Automap */
+        bool isAutomapEnabled();
+        void setAutomapEnabled(bool map);
+        void setAutomapMode(AutomapMode mode);
+        void setAutomapRotate(bool rotate);
+        void setAutomapRenderTextures(bool textures);
+
+        /* Buffers in SM */
         uint8_t * const getScreenBuffer();
         uint8_t * const getDepthBuffer();
-        uint8_t * const getLevelMapBuffer();
         uint8_t * const getLabelsBuffer();
+        uint8_t * const getAutomapBuffer();
 
         /* Buttons getters and setters */
         /*------------------------------------------------------------------------------------------------------------*/
@@ -306,15 +315,20 @@ namespace vizdoom{
         InputState * const getInput();
         GameState * const getGameState();
 
+        /* Buttons state */
         int getButtonState(Button button);
         void setButtonState(Button button, int state);
         void toggleButtonState(Button button);
+
+        /* Buttons availableity */
         bool isButtonAvailable(Button button);
         void setButtonAvailable(Button button, bool set);
         void resetButtons();
         void disableAllButtons();
-        void setButtonMaxValue(Button button, unsigned int value);
+
         int getButtonMaxValue(Button button);
+        void setButtonMaxValue(Button button, unsigned int value);
+
         void availableAllButtons();
 
         bool isAllowDoomInput();
@@ -324,7 +338,7 @@ namespace vizdoom{
         void setRunDoomAsync(bool set);
 
 
-        /* GameVariables getters */
+        /* GameState getters */
         /*------------------------------------------------------------------------------------------------------------*/
 
         int getGameVariable(GameVariable var);
@@ -431,7 +445,7 @@ namespace vizdoom{
         uint8_t *screen;
         uint8_t *screenBuffer;
         uint8_t *depthBuffer;
-        uint8_t *levelMapBuffer;
+        uint8_t *automapBuffer;
         uint8_t *labelsBuffer;
 
 
@@ -442,11 +456,18 @@ namespace vizdoom{
         size_t screenPitch, screenSize;
         ScreenFormat screenFormat;
         bool depth;
-        bool levelMap;
+        bool automap;
         //MapMode levelMapMode;
         bool labels;
 
-        bool hud, weapon, crosshair, decals, particles;
+        bool hud, minHud, weapon, crosshair, decals, particles, sprites;
+        AutomapMode amMode;
+        bool amRotate, amTextures;
+
+        bool updateSettings;
+
+        int getRenderModeValue();
+        void setRenderMode(int value);
 
         bool windowHidden, noXServer;
 
