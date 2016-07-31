@@ -20,10 +20,11 @@
  THE SOFTWARE.
 */
 
-#include "ViZDoomGamePython.h"
 #include "ViZDoomDefines.h"
 #include "ViZDoomExceptions.h"
 #include "ViZDoomUtilities.h"
+
+#include "ViZDoomGamePython.h"
 
 #include <boost/python.hpp>
 #include <vector>
@@ -54,8 +55,8 @@ PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_E
 #define EXCEPTION_TRANSLATE_TO_PYT(n) PyObject* type ## n = NULL; \
 void translate ## n (std::exception const &e){ PyErr_SetString( type ## n  , e.what()); }
 /*
- * PyObject* typeMyException = NULL;
- * void translate(std::exception const &e) { PyErr_SetString(typeMyException, e.what()); }
+ * PyObject* typeExceptionName = NULL;
+ * void translateExceptionName(std::exception const &e) { PyErr_SetString(typeExceptionName, e.what()); }
  */
 
 EXCEPTION_TRANSLATE_TO_PYT(FileDoesNotExistException)
@@ -69,6 +70,7 @@ EXCEPTION_TRANSLATE_TO_PYT(ViZDoomUnexpectedExitException)
 
 
 /* DoomGamePython methods overloading */
+/*------------------------------------------------------------------------------------------------------------*/
 
 void (DoomGamePython::*newEpisode1)() = &DoomGamePython::newEpisode;
 void (DoomGamePython::*newEpisode2)(bpy::str const &) = &DoomGamePython::newEpisode;
@@ -106,14 +108,9 @@ BOOST_PYTHON_MODULE(vizdoom)
 
     #define EXCEPTION_TO_PYT(n) type ## n = createExceptionClass(#n); \
     bpy::register_exception_translator< n >(&translate ## n );
-    /* typeMyException = createExceptionClass("myException");
-     * bpy::register_exception_translator<myException>(&translate);
-     */
-
-    //#define EXCEPTION_TO_PYT(n, pytn) type ## n = createExceptionClass(#pytn); \
-    //bpy::register_exception_translator< n >(&translate ## n );
-    /* typeMyException = createExceptionClass("myException");
-     * bpy::register_exception_translator<myException>(&translate);
+    /*
+     * typeExceptionName = createExceptionClass("ExceptionName");
+     * bpy::register_exception_translator<ExceptionName>(&translateExceptionName);
      */
 
     EXCEPTION_TO_PYT(FileDoesNotExistException)
@@ -126,14 +123,21 @@ BOOST_PYTHON_MODULE(vizdoom)
     EXCEPTION_TO_PYT(ViZDoomUnexpectedExitException)
 
 
-    /* Enums */
-    /*------------------------------------------------------------------------------------------------------------*/
-
     #define ENUM_VAL_2_PYT(v) .value( #v , v )
     /* .value("VALUE", VALUE) */
 
-    #define ENUM_CLASS_VAL_2_PYT(c, v) .value( #v , c ## :: ## v )
-    /* .value("VALUE", enumClass::VALUE) */
+    #define ENUM_CLASS_VAL_2_PYT(c, v) .value( #v , c::v )
+    /* .value("VALUE", class::VALUE) */
+
+    #define FUNC_2_PYT(f) def( #f , f )
+    /* def("function", function) */
+
+    #define CLASS_FUNC_2_PYT(c, f) .def( #f , &c::f )
+    /* .def("function", &class::function) */
+
+
+    /* Enums */
+    /*------------------------------------------------------------------------------------------------------------*/
 
     enum_<Mode>("Mode")
         ENUM_VAL_2_PYT(PLAYER)
@@ -202,6 +206,12 @@ BOOST_PYTHON_MODULE(vizdoom)
         ENUM_VAL_2_PYT(RES_1600X1200)
 
         ENUM_VAL_2_PYT(RES_1920X1080);
+
+    enum_<AutomapMode>("AutomapMode")
+        ENUM_VAL_2_PYT(NORMAL)
+        ENUM_VAL_2_PYT(FULL)
+        ENUM_VAL_2_PYT(OBJECTS)
+        ENUM_VAL_2_PYT(OBJECTS_WITH_SIZE);
 
     enum_<Button>("Button")
         ENUM_VAL_2_PYT(ATTACK)
@@ -333,10 +343,12 @@ BOOST_PYTHON_MODULE(vizdoom)
     class_<GameStatePython>("GameState", no_init)
         .def_readonly("number", &GameStatePython::number)
         .def_readonly("game_variables", &GameStatePython::gameVariables)
+
         .def_readonly("screen_buffer", &GameStatePython::screenBuffer)
         .def_readonly("depth_buffer", &GameStatePython::depthBuffer)
-        .def_readonly("map_buffer", &GameStatePython::mapBuffer)
         .def_readonly("labels_buffer", &GameStatePython::labelsBuffer)
+        .def_readonly("automap_buffer", &GameStatePython::automapBuffer)
+
         .def_readonly("labels", &GameStatePython::labels);
 
     class_<DoomGamePython>("DoomGame", init<>())
@@ -419,13 +431,18 @@ BOOST_PYTHON_MODULE(vizdoom)
 
         .def("set_depth_buffer_enabled", &DoomGamePython::setDepthBufferEnabled)
         .def("set_labels_buffer_enabled", &DoomGamePython::setLabelsBufferEnabled)
-        .def("set_map_buffer_enabled", &DoomGamePython::setMapBufferEnabled)
+        .def("set_automap_buffer_enabled", &DoomGamePython::setAutomapBufferEnabled)
+        .def("set_automap_mode", &DoomGamePython::setAutomapMode)
+        .def("set_automap_rotate", &DoomGamePython::setAutomapRotate)
+        .def("set_automap_render_textures", &DoomGamePython::setAutomapRenderTextures)
 
         .def("set_render_hud", &DoomGamePython::setRenderHud)
+        .def("set_render_minimal_hud", &DoomGamePython::setRenderMinimalHud)
         .def("set_render_weapon", &DoomGamePython::setRenderWeapon)
         .def("set_render_crosshair", &DoomGamePython::setRenderCrosshair)
         .def("set_render_decals", &DoomGamePython::setRenderDecals)
         .def("set_render_particles", &DoomGamePython::setRenderParticles)
+        .def("set_render_effects_sprites", &DoomGamePython::setRenderEffectsSprites)
         .def("get_screen_width", &DoomGamePython::getScreenWidth)
         .def("get_screen_height", &DoomGamePython::getScreenHeight)
         .def("get_screen_channels", &DoomGamePython::getScreenChannels)
