@@ -400,20 +400,34 @@ namespace vizdoom {
 
         /*
          * Sets the format of the screen buffer.
-         * Supported formats are defined in ScreenFormat enumeration type (e.g. CRCGCB, CRCGCBDB, RGB24, GRAY8).
+         * Supported formats are defined in ScreenFormat enumeration type (e.g. CRCGCB, RGB24, GRAY8).
          * The format change affects only the buffer so it will not have any effect on
          * the content of ViZDoom's display window.
          */
         void setScreenFormat(ScreenFormat format);
 
-        void setDepthBufferEnabled(bool enabled);
-        void setLabelsBufferEnabled(bool enabled);
-        void setMapBufferEnabled(bool enabled);
+        bool isDepthBufferEnabled();
+        void setDepthBufferEnabled(bool depthBuffer);
+
+        bool isLabelsBufferEnabled();
+        void setLabelsBufferEnabled(bool labelsBuffer);
+
+        bool isAutomapBufferEnabled();
+        void setAutomapBufferEnabled(bool automapBuffer);
+
+        void setAutomapMode(AutomapMode mode);
+        void setAutomapRotate(bool rotate);
+        void setAutomapRenderTextures(bool textures);
 
         /*
          * Determine if game's hud will be rendered in game.
          */
         void setRenderHud(bool hud);
+
+        /*
+         * Determine if minimalistic version of hud will be rendered instead of full hud.
+         */
+        void setRenderMinimalHud(bool minimal);
 
         /*
          * Determine if weapon held by player will be rendered in game.
@@ -426,7 +440,7 @@ namespace vizdoom {
         void setRenderCrosshair(bool crosshair);
 
         /*
-         * Determine if decals (marks on the walls) will be rendered in game.
+         * Determine if decals (marks on the walls, bullet holes, blood splats etc) will be rendered in game.
          */
         void setRenderDecals(bool decals);
 
@@ -434,6 +448,11 @@ namespace vizdoom {
          * Determine if particles will be rendered in game.
          */
         void setRenderParticles(bool particles);
+
+        /*
+         * Determine if some effects sprites will be rendered in game (gun pufs, blood splats etc.)
+         */
+        void setRenderEffectsSprites(bool sprites);
 
         /*
          * Determines if ViZDoom's window will be visible.

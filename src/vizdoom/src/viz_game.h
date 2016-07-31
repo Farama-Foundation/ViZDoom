@@ -63,6 +63,7 @@ struct VIZGameState{
     size_t SCREEN_SIZE;
     int SCREEN_FORMAT;
 
+    // SCREEN SM
     size_t SCREEN_BUFFER_ADDRESS;
     size_t SCREEN_BUFFER_SIZE;
 
@@ -74,9 +75,9 @@ struct VIZGameState{
     size_t LABELS_BUFFER_ADDRESS;
     size_t LABELS_BUFFER_SIZE;
 
-    bool LEVEL_MAP;
-    size_t LEVEL_MAP_BUFFER_ADDRESS;
-    size_t LEVEL_MAP_BUFFER_SIZE;
+    bool AUTOMAP;
+    size_t AUTOMAP_BUFFER_ADDRESS;
+    size_t AUTOMAP_BUFFER_SIZE;
 
     // MAP
     unsigned int MAP_START_TIC;

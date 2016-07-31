@@ -54,14 +54,14 @@ namespace vizdoom{
 //        std::shared_ptr<std::vector<uint8_t>> screenBuffer;
 //        std::shared_ptr<std::vector<uint8_t>> depthBuffer;
 //        std::shared_ptr<std::vector<uint8_t>> labelsBuffer;
-//        std::shared_ptr<std::vector<uint8_t>> mapBuffer;
+//        std::shared_ptr<std::vector<uint8_t>> automapBuffer;
 //
 //        std::shared_ptr<std::vector<Label>> labels;
 
         uint8_t *screenBuffer;
         uint8_t *depthBuffer;
         uint8_t *labelsBuffer;
-        uint8_t *mapBuffer;
+        uint8_t *automapBuffer;
 
         std::vector<Label> labels;
 
@@ -136,6 +136,14 @@ namespace vizdoom{
         RES_1600X1200,  // 4:3
 
         RES_1920X1080,  // 16:9
+    };
+
+    enum AutomapMode {
+        NORMAL,             // Only level architecture the player has seen is shown.
+        FULL,               // All architecture is shown, regardless of whether or not the player has seen it.
+        OBJECTS,            // In addition to the previous, shows all things in the map as arrows pointing in
+                            // the direction they are facing.
+        OBJECTS_WITH_SIZE   // In addition to the previous, all things are wrapped in a box showing their size.
     };
 
     enum GameVariable {

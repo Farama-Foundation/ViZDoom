@@ -104,6 +104,7 @@ void VIZ_MQTic(){
 
             case VIZ_MSG_CODE_COMMAND :
                 VIZ_Command(strdup(msg.command));
+                VIZ_UpdateCVARs();
                 break;
 
             case VIZ_MSG_CODE_CLOSE :

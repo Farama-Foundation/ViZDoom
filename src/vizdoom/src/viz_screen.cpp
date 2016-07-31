@@ -42,9 +42,9 @@ bool alpha;
 
 EXTERN_CVAR (Bool, viz_debug)
 EXTERN_CVAR (Int, viz_screen_format)
-EXTERN_CVAR (Bool, viz_depth_buffer)
+EXTERN_CVAR (Bool, viz_depth)
 EXTERN_CVAR (Bool, viz_labels)
-EXTERN_CVAR (Bool, viz_level_map)
+EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_nocheat)
 
 bip::mapped_region *vizScreenSMRegion = NULL;
@@ -159,7 +159,7 @@ void VIZ_ScreenFormatUpdate(){
             break;
     }
 
-    if(*viz_depth_buffer && !*viz_nocheat) {
+    if(*viz_depth && !*viz_nocheat) {
         if(vizDepthMap!=NULL) delete vizDepthMap;
         vizDepthMap = new VIZDepthBuffer(vizScreenWidth, vizScreenHeight);
     }
@@ -220,11 +220,11 @@ void VIZ_ScreenUpdate(){
 
     VIZ_CopyBuffer(SCREEN_BUFFER_SM_ADDRESS * vizScreenChannelSize);
 
-    if(*viz_depth_buffer || *viz_labels) {
+    if(*viz_depth || *viz_labels) {
 
         screen->Lock(true);
 
-        if (*viz_depth_buffer) {
+        if (*viz_depth) {
             if (!*viz_nocheat && vizDepthMap!=NULL){
                 memcpy(vizScreen + DEPTH_BUFFER_SM_ADDRESS * vizScreenChannelSize, vizDepthMap->getBuffer(), vizDepthMap->getBufferSize()); }
             else
@@ -241,7 +241,7 @@ void VIZ_ScreenUpdate(){
 }
 
 void VIZ_ScreenLevelMapUpdate(){
-    if(*viz_level_map){
+    if(*viz_automap){
         if(!*viz_nocheat) VIZ_CopyBuffer(MAP_BUFFER_SM_ADDRESS * vizScreenChannelSize);
         else memset(vizScreen + MAP_BUFFER_SM_ADDRESS * vizScreenChannelSize, 0, MAP_BUFFER_SM_SIZE * vizScreenChannelSize);
     }

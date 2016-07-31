@@ -115,13 +115,12 @@
 #include "viz_labels.h"
 #include "viz_main.h"
 
-
 EXTERN_CVAR (Bool, viz_controlled)
 EXTERN_CVAR (Bool, viz_async)
 EXTERN_CVAR (Bool, viz_allow_input)
+EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_nosound)
 EXTERN_CVAR (Bool, viz_render_all)
-EXTERN_CVAR (Bool, viz_level_map)
 
 EXTERN_CVAR(Bool, hud_althud)
 void DrawHUD();
@@ -963,7 +962,7 @@ void D_Display ()
 //VIZDOOM_CODE
 void VIZ_D_MapDisplay(){
 
-	if(!*viz_level_map) return;
+	if(!viz_automap) return;
 
 	//enable automap
 	bool _automapactive = automapactive;
@@ -974,6 +973,8 @@ void VIZ_D_MapDisplay(){
 	//disable additional buffers
 	VIZDepthBuffer *_vizDepthMap = vizDepthMap;
 	VIZLabelsBuffer *_vizLabels = vizLabels;
+	vizDepthMap = NULL;
+	vizLabels = NULL;
 
 	bool wipe;
 	bool hw2d;
@@ -1113,38 +1114,14 @@ void VIZ_D_MapDisplay(){
 				if (automapactive)
 				{
 					int saved_ST_Y = ST_Y;
-					if (hud_althud && viewheight == SCREENHEIGHT)
+					if (viewheight == SCREENHEIGHT)
 					{
 						ST_Y = viewheight;
 					}
 					AM_Drawer ();
 					ST_Y = saved_ST_Y;
 				}
-				if (!automapactive || viewactive)
-				{
-					V_RefreshViewBorder ();
-				}
 
-				if (hud_althud && viewheight == SCREENHEIGHT && screenblocks > 10)
-				{
-					StatusBar->DrawBottomStuff (HUD_AltHud);
-					if (DrawFSHUD || automapactive) DrawHUD();
-					StatusBar->Draw (HUD_AltHud);
-					StatusBar->DrawTopStuff (HUD_AltHud);
-				}
-				else if (viewheight == SCREENHEIGHT && viewactive && screenblocks > 10)
-				{
-					EHudState state = DrawFSHUD ? HUD_Fullscreen : HUD_None;
-					StatusBar->DrawBottomStuff (state);
-					StatusBar->Draw (state);
-					StatusBar->DrawTopStuff (state);
-				}
-				else
-				{
-					StatusBar->DrawBottomStuff (HUD_StatusBar);
-					StatusBar->Draw (HUD_StatusBar);
-					StatusBar->DrawTopStuff (HUD_StatusBar);
-				}
 				CT_Drawer ();
 				break;
 
@@ -1278,27 +1255,31 @@ void D_DoomLoop ()
 
 			//VIZDOOM_CODE
 			if(*viz_controlled && !*viz_async){
+				//ViZDoom main loop
 
 				if(*viz_allow_input) {
-					vizTime = I_GetTime(true);
+					vizTime = I_GetTime(false);
 					I_WaitForTic(vizTime);
-					//I_WaitForTic(gametic + 1);
-					if(VIZ_IsPaused()) D_ProcessEvents();
+					//if(VIZ_IsPaused()) D_ProcessEvents();
 				}
 
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				if (advancedemo) D_DoAdvanceDemo();
 
-				C_Ticker();
-				M_Ticker();
+				P_UnPredictPlayer();
+
+				C_Ticker ();
+				M_Ticker ();
+				//I_GetTime (true);
+				G_Ticker();
+				++gametic;
+				NetUpdate ();
+				//++maketic;
+
+				P_PredictPlayer(&players[consoleplayer]);
 
 				if(!*viz_nosound){
 					S_UpdateSounds(players[consoleplayer].camera);
-				}
-				if(!VIZ_IsPaused()){
-					G_Ticker();
-					++gametic;
-					++maketic;
 				}
 			}
 			// process one or more tics

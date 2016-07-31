@@ -230,8 +230,8 @@ namespace vizdoom {
             /* Update buffers */
             this->state->screenBuffer = nullptr;
             this->state->depthBuffer = nullptr;
-            this->state->mapBuffer = nullptr;
             this->state->labelsBuffer = nullptr;
+            this->state->automapBuffer = nullptr;
 
             if(!this->isEpisodeFinished()) {
                 this->state->screenBuffer = this->doomController->getScreenBuffer();
@@ -242,8 +242,8 @@ namespace vizdoom {
                 if (this->doomController->isLabelsEnabled())
                      this->state->labelsBuffer = this->doomController->getLabelsBuffer();
 
-                if (this->doomController->isLevelMapEnabled())
-                    this->state->mapBuffer = this->doomController->getLevelMapBuffer();
+                if (this->doomController->isAutomapEnabled())
+                    this->state->automapBuffer = this->doomController->getAutomapBuffer();
             }
 
             /* Update label */
@@ -452,15 +452,28 @@ namespace vizdoom {
     }
 
     void DoomGame::setScreenFormat(ScreenFormat format) { this->doomController->setScreenFormat(format); }
-    void DoomGame::setDepthBufferEnabled(bool enabled) { this->doomController->setDepthBufferEnabled(enabled); }
-    void DoomGame::setLabelsBufferEnabled(bool enabled) { this->doomController->setLabelsEnabled(enabled); }
-    void DoomGame::setMapBufferEnabled(bool enabled) { this->doomController->setLevelMapEnabled(enabled); }
+
+    bool DoomGame::isDepthBufferEnabled() { return this->doomController->isDepthBufferEnabled(); }
+    void DoomGame::setDepthBufferEnabled(bool depthBuffer) { this->doomController->setDepthBufferEnabled(depthBuffer); }
+
+    bool DoomGame::isLabelsBufferEnabled() { return this->doomController->isLabelsEnabled(); }
+    void DoomGame::setLabelsBufferEnabled(bool lebelsBuffer) { this->doomController->setLabelsEnabled(lebelsBuffer); }
+
+    bool DoomGame::isAutomapBufferEnabled() { return this->doomController->isAutomapEnabled(); }
+    void DoomGame::setAutomapBufferEnabled(bool automapBuffer) { this->doomController->setAutomapEnabled(automapBuffer); }
+
+    void DoomGame::setAutomapMode(AutomapMode mode){ this->doomController->setAutomapMode(mode); }
+    void DoomGame::setAutomapRotate(bool rotate){ this->doomController->setAutomapRotate(rotate); }
+    void DoomGame::setAutomapRenderTextures(bool textures) { this->doomController->setAutomapRenderTextures(textures); }
 
     void DoomGame::setRenderHud(bool hud) { this->doomController->setRenderHud(hud); }
+    void DoomGame::setRenderMinimalHud(bool minimalHud) { this->doomController->setRenderMinimalHud(minimalHud); }
     void DoomGame::setRenderWeapon(bool weapon) { this->doomController->setRenderWeapon(weapon); }
     void DoomGame::setRenderCrosshair(bool crosshair) { this->doomController->setRenderCrosshair(crosshair); }
     void DoomGame::setRenderDecals(bool decals) { this->doomController->setRenderDecals(decals); }
     void DoomGame::setRenderParticles(bool particles) { this->doomController->setRenderParticles(particles); }
+    void DoomGame::setRenderEffectsSprites(bool sprites) { this->doomController->setRenderEffectsSprites(sprites); }
+
     void DoomGame::setWindowVisible(bool visibility) {
         this->doomController->setNoXServer(!visibility);
         this->doomController->setWindowHidden(!visibility);
