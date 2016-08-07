@@ -45,10 +45,6 @@ namespace vizdoom {
         DoomGame::setAction(DoomGamePython::pyListToVector<int>(pyAction));
     }
 
-    double DoomGamePython::makeAction(bpy::list const &pyAction) {
-        return DoomGame::makeAction(DoomGamePython::pyListToVector<int>(pyAction));
-    }
-
     double DoomGamePython::makeAction(bpy::list const &pyAction, unsigned int tics) {
         return DoomGame::makeAction(DoomGamePython::pyListToVector<int>(pyAction), tics);
     }

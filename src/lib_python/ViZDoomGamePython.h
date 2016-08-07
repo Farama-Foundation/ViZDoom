@@ -68,8 +68,7 @@ namespace vizdoom {
         DoomGamePython();
 
         void setAction(bpy::list const &pyAction);
-        double makeAction(bpy::list const &pyAction);
-        double makeAction(bpy::list const &pyAction, unsigned int tics);
+        double makeAction(bpy::list const &pyAction, unsigned int tics = 1);
 
         GameStatePython getState();
         bpy::list getLastAction();

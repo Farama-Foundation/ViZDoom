@@ -62,13 +62,9 @@ namespace vizdoom {
         /*
          * Initializes a new episode. All rewards, gameVariables and map states are restarted.
          * After calling this method, first state from new episode will be available.
+         * If the file path is specified episode will be recorded to given file.
          */
-        void newEpisode();
-
-        /*
-         * Initializes a new episode and recording it to given file.
-         */
-        void newEpisode(std::string path);
+        void newEpisode(std::string filePath = "");
 
         void replayEpisode(std::string path);
 
@@ -90,34 +86,14 @@ namespace vizdoom {
          * If updateState is not set but renderOnly is turned on, the state will not be updated but a new frame
          * will be rendered after last processed tic. To get the new frame use getGameScreen.
          */
-        void advanceAction(unsigned int tics, bool updateState, bool renderOnly);
-
-        /*
-         * Processes a specified number of tics, updates state and calculates a new reward.
-         * Short for advanceAction(tics, true, false).
-         */
-        void advanceAction(unsigned int tics);
-
-        /*
-         * Processes one tic, updates the state and calculates a new reward.
-         * Short for advanceAction(1, true, false).
-         */
-        void advanceAction();
+        void advanceAction(unsigned int tics = 1, bool updateState = true, bool renderOnly = true);
 
         /*
          * Function combining usability of setAction, advanceAction and getLastReward.
          * Sets the player's action for the next tics, processes a specified number of tics,
          * updates the state and calculates a new reward, which is returned.
          */
-        double makeAction(std::vector<int> const &actions, unsigned int tics);
-
-        /*
-         * Function combining usability of setAction, advanceAction and getLastReward.
-         * Sets the player's action for the next tics, processes one tic, updates the state
-         * and calculates a new reward, which is returned.
-         * Short for makeAction(action, 1).
-         */
-        double makeAction(std::vector<int> const &actions);
+        double makeAction(std::vector<int> const &actions, unsigned int tics = 1);
 
         /*
          * Returns true if the current episode is in the initial state (no actions were performed yet).
