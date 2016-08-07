@@ -220,6 +220,7 @@ namespace vizdoom{
         std::string getMap();
         void setMap(std::string map, std::string demoPath = "");
         void playDemo(std::string demoPath);
+        //void playDemo(std::string demoPath, int player = -1);
 
 
         /* General game settings */

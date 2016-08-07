@@ -115,10 +115,6 @@ namespace vizdoom {
         return this->running && this->doomController->isDoomRunning();
     }
 
-    void DoomGame::newEpisode() {
-        this->newEpisode("");
-    }
-
     void DoomGame::newEpisode(std::string path){
 
         if(!this->isRunning()) throw ViZDoomIsNotRunningException();
@@ -168,14 +164,6 @@ namespace vizdoom {
         catch (...) { throw SharedMemoryException(); }
     }
 
-    void DoomGame::advanceAction() {
-        this->advanceAction(1, true, true);
-    }
-
-    void DoomGame::advanceAction(unsigned int tics) {
-        this->advanceAction(tics, true, true);
-    }
-
     void DoomGame::advanceAction(unsigned int tics, bool updateState, bool renderOnly) {
 
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
@@ -186,12 +174,6 @@ namespace vizdoom {
         catch(...){ throw; }
 
         if(updateState) this->updateState();
-    }
-
-    double DoomGame::makeAction(std::vector<int> const &actions){
-        this->setAction(actions);
-        this->advanceAction();
-        return this->getLastReward();
     }
 
     double DoomGame::makeAction(std::vector<int> const &actions, unsigned int tics){

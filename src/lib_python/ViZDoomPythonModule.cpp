@@ -72,18 +72,17 @@ EXCEPTION_TRANSLATE_TO_PYT(ViZDoomUnexpectedExitException)
 /* DoomGamePython methods overloading */
 /*------------------------------------------------------------------------------------------------------------*/
 
-void (DoomGamePython::*newEpisode1)() = &DoomGamePython::newEpisode;
-void (DoomGamePython::*newEpisode2)(bpy::str const &) = &DoomGamePython::newEpisode;
+void (DoomGamePython::*newEpisode)() = &DoomGamePython::newEpisode;
+void (DoomGamePython::*newEpisode_str)(bpy::str const &) = &DoomGamePython::newEpisode;
 
-void (DoomGamePython::*addAvailableButton1)(Button) = &DoomGamePython::addAvailableButton;
-void (DoomGamePython::*addAvailableButton2)(Button, unsigned int) = &DoomGamePython::addAvailableButton;
+void (DoomGamePython::*addAvailableButton_Button)(Button) = &DoomGamePython::addAvailableButton;
+void (DoomGamePython::*addAvailableButton_Button_int)(Button, unsigned int) = &DoomGamePython::addAvailableButton;
 
-void (DoomGamePython::*advanceAction1)() = &DoomGamePython::advanceAction;
-void (DoomGamePython::*advanceAction2)(unsigned int) = &DoomGamePython::advanceAction;
-void (DoomGamePython::*advanceAction3)(unsigned int, bool, bool) = &DoomGamePython::advanceAction;
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(advanceAction_overloads, DoomGamePython::advanceAction, 0, 3)
+void (DoomGamePython::*advanceAction_default)(unsigned int, bool, bool) = &DoomGamePython::advanceAction;
 
-double (DoomGamePython::*makeAction1)(bpy::list const &) = &DoomGamePython::makeAction;
-double (DoomGamePython::*makeAction2)(bpy::list const &, unsigned int) = &DoomGamePython::makeAction;
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(makeAction_overloads, DoomGamePython::makeAction, 1, 2)
+double (DoomGamePython::*makeAction_default)(bpy::list const &, unsigned int) = &DoomGamePython::makeAction;
 
 #if PY_MAJOR_VERSION >= 3
 int
@@ -355,19 +354,16 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def("init", &DoomGamePython::init)
         .def("load_config", &DoomGamePython::loadConfig)
         .def("close", &DoomGamePython::close)
-        .def("new_episode", newEpisode1)
-        .def("new_episode", newEpisode2)
+        .def("new_episode", newEpisode)
+        .def("new_episode", newEpisode_str)
         .def("replay_episode", &DoomGamePython::replayEpisode)
         .def("is_episode_finished", &DoomGamePython::isEpisodeFinished)
         .def("is_new_episode", &DoomGamePython::isNewEpisode)
         .def("is_player_dead", &DoomGamePython::isPlayerDead)
         .def("respawn_player", &DoomGamePython::respawnPlayer)
         .def("set_action", &DoomGamePython::setAction)
-        .def("make_action", makeAction1)
-        .def("make_action", makeAction2)
-        .def("advance_action", advanceAction1)
-        .def("advance_action", advanceAction2)
-        .def("advance_action", advanceAction3)
+        .def("make_action", makeAction_default, makeAction_overloads())
+        .def("advance_action", advanceAction_default, advanceAction_overloads())
 
         .def("get_state", &DoomGamePython::getState)
 
@@ -388,8 +384,8 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def("clear_available_game_variables", &DoomGamePython::clearAvailableGameVariables)
         .def("get_available_game_variables_size", &DoomGamePython::getAvailableGameVariablesSize)
 
-        .def("add_available_button", addAvailableButton1)
-        .def("add_available_button", addAvailableButton2)
+        .def("add_available_button", addAvailableButton_Button)
+        .def("add_available_button", addAvailableButton_Button_int)
 
         .def("clear_available_buttons", &DoomGamePython::clearAvailableButtons)
         .def("get_available_buttons_size", &DoomGamePython::getAvailableButtonsSize)
