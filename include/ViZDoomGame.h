@@ -464,10 +464,16 @@ namespace vizdoom {
         /*
          * Returns size in bytes of one row in game's screen and map buffer.
          */
+        size_t getScreenDepth();
+
+        /*
+         * Returns size in bytes of one row in game's screen and map buffer.
+         */
         size_t getScreenPitch();
 
         /*
          * Returns size in bytes of game's screen buffer.
+         * DEPRECIATED
          */
         size_t getScreenSize();
 
