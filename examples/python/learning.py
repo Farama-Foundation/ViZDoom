@@ -280,7 +280,7 @@ episode_sleep = 0.5
 for i in range(episodes_to_watch):
     game.new_episode()
     while not game.is_episode_finished():
-        state = convert(game.get_state().image_buffer).reshape([1, 1, downsampled_y, downsampled_x])
+        state = convert(game.get_state().screen_buffer).reshape([1, 1, downsampled_y, downsampled_x])
         best_action_index = get_best_action(state)
         game.set_action(actions[best_action_index])
         for i in range(skiprate+1):
