@@ -65,19 +65,19 @@ namespace vizdoom {
 
         if (this->state->screenBuffer != nullptr) {
             pyState.screenBuffer = this->dataToNumpyArray(colorDims, this->colorShape,
-                                                          NPY_UBYTE, this->doomController->getScreenBuffer()).copy();
+                                                          NPY_UBYTE, this->state->screenBuffer->data()).copy();
         }
         if (this->state->depthBuffer != nullptr) {
             pyState.depthBuffer = this->dataToNumpyArray(2, this->grayShape,
-                                                         NPY_UBYTE, this->doomController->getDepthBuffer()).copy();
+                                                         NPY_UBYTE, this->state->depthBuffer->data()).copy();
         }
         if (this->state->labelsBuffer != nullptr) {
             pyState.labelsBuffer = this->dataToNumpyArray(2, this->grayShape,
-                                                          NPY_UBYTE, this->doomController->getLabelsBuffer()).copy();
+                                                          NPY_UBYTE, this->state->labelsBuffer->data()).copy();
         }
         if (this->state->automapBuffer != nullptr) {
             pyState.automapBuffer = this->dataToNumpyArray(colorDims, this->colorShape,
-                                                       NPY_UBYTE, this->doomController->getAutomapBuffer()).copy();
+                                                       NPY_UBYTE, this->state->automapBuffer->data()).copy();
         }
 
         if (this->state->gameVariables.size() > 0) {
@@ -103,7 +103,6 @@ namespace vizdoom {
         }
 
         return pyState;
-
     }
 
     bpy::list DoomGamePython::getLastAction() {

@@ -216,16 +216,31 @@ namespace vizdoom {
             this->state->automapBuffer = nullptr;
 
             if(!this->isEpisodeFinished()) {
-                this->state->screenBuffer = this->doomController->getScreenBuffer();
 
-                if (this->doomController->isDepthBufferEnabled())
-                     this->state->depthBuffer = this->doomController->getDepthBuffer();
+                int channels = this->getScreenChannels();
+                int width = this->getScreenWidth();
+                int height = this->getScreenHeight();
 
-                if (this->doomController->isLabelsEnabled())
-                     this->state->labelsBuffer = this->doomController->getLabelsBuffer();
+                size_t graySize = width * height;
+                size_t colorSize = graySize * channels;
 
-                if (this->doomController->isAutomapEnabled())
-                    this->state->automapBuffer = this->doomController->getAutomapBuffer();
+                uint8_t *buf = this->doomController->getScreenBuffer();
+                this->state->screenBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
+
+                if (this->doomController->isDepthBufferEnabled()) {
+                    uint8_t *buf = this->doomController->getDepthBuffer();
+                    this->state->depthBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + graySize);
+                }
+
+                if (this->doomController->isLabelsEnabled()) {
+                    uint8_t *buf = this->doomController->getLabelsBuffer();
+                    this->state->labelsBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + graySize);
+                }
+
+                if (this->doomController->isAutomapEnabled()){
+                    uint8_t *buf = this->doomController->getAutomapBuffer();
+                    this->state->automapBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
+                }
             }
 
             /* Update label */

@@ -51,17 +51,17 @@ namespace vizdoom{
 
         std::vector<int> gameVariables;
 
-//        std::shared_ptr<std::vector<uint8_t>> screenBuffer;
-//        std::shared_ptr<std::vector<uint8_t>> depthBuffer;
-//        std::shared_ptr<std::vector<uint8_t>> labelsBuffer;
-//        std::shared_ptr<std::vector<uint8_t>> automapBuffer;
-//
+        std::shared_ptr<std::vector<uint8_t>> screenBuffer;
+        std::shared_ptr<std::vector<uint8_t>> depthBuffer;
+        std::shared_ptr<std::vector<uint8_t>> labelsBuffer;
+        std::shared_ptr<std::vector<uint8_t>> automapBuffer;
+
 //        std::shared_ptr<std::vector<Label>> labels;
 
-        uint8_t *screenBuffer;
-        uint8_t *depthBuffer;
-        uint8_t *labelsBuffer;
-        uint8_t *automapBuffer;
+//        uint8_t *screenBuffer;
+//        uint8_t *depthBuffer;
+//        uint8_t *labelsBuffer;
+//        uint8_t *automapBuffer;
 
         std::vector<Label> labels;
 
