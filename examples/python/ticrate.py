@@ -6,7 +6,6 @@ from multiprocessing import Process
 from random import choice
 from vizdoom import *
 
-
 def play(game):
     game.init()
 

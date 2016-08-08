@@ -47,9 +47,9 @@ for i in range(episodes):
     game.new_episode()
     while not game.is_episode_finished():
         # Gets the state and possibly to something with it
-        s = game.get_state()
+        state = game.get_state()
 
-        labels = s.labels_buffer
+        labels = state.labels_buffer
         if labels is not None:
             cv2.imshow('ViZDoom Labels Buffer', labels)
 
@@ -57,14 +57,14 @@ for i in range(episodes):
 
         game.make_action(choice(actions))
 
-        print("State #" + str(s.number))
+        print("State #" + str(state.number))
         print("Labels:")
 
         # Print information about objects visible on the screen.
         # object_id identifies specific in game object.
         # object_name contains name of object.
         # value tells which value represents object in labels_buffer.
-        for l in s.labels:
+        for l in state.labels:
             print("Object id: " + str(l.object_id) + " object name: " + l.object_name + " label: " + str(l.value))
 
         print("=====================")

@@ -6,8 +6,8 @@
 # Configuration is loaded from "../../examples/config/<SCENARIO_NAME>.cfg" file.
 # 
 # To see the scenario description go to "../../scenarios/README.md"
-# 
 #####################################################################
+
 from __future__ import print_function
 
 from time import sleep
@@ -48,21 +48,21 @@ for i in range(episodes):
     game.new_episode()
     while not game.is_episode_finished():
         s = game.get_state()
-        img = s.image_buffer
+        img = s.screen_buffer
         misc = s.game_variables
 
         game.advance_action()
         a = game.get_last_action()
         r = game.get_last_reward()
 
-        print("state #" + str(s.number))
-        print("game variables: ", misc)
-        print("action:", a)
-        print("reward:", r)
+        print("State #" + str(s.number))
+        print("Game variables: ", misc)
+        print("Action:", a)
+        print("Reward:", r)
         print("=====================")
 
-    print("episode finished!")
-    print("total reward:", game.get_total_reward())
+    print("Episode finished!")
+    print("Total reward:", game.get_total_reward())
     print("************************")
     sleep(2.0)
 
