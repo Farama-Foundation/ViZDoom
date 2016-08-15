@@ -111,6 +111,7 @@ namespace vizdoom {
         this->decals = true;
         this->particles = true;
         this->sprites = true;
+        this->messages = false;
 
         this->windowHidden = false;
         this->noXServer = false;
@@ -703,6 +704,11 @@ namespace vizdoom {
         if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
     }
 
+    void DoomController::setRenderMessages(bool messages){
+        this->messages = messages;
+        if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
+    }
+
     unsigned int DoomController::getScreenWidth() {
         if (this->doomRunning) return this->gameState->SCREEN_WIDTH;
         else return this->screenWidth;
@@ -741,8 +747,9 @@ namespace vizdoom {
         if(this->decals)        renderMode |= 16;
         if(this->particles)     renderMode |= 32;
         if(this->sprites)       renderMode |= 64;
-        if(this->amRotate)      renderMode |= 128;
-        if(this->amTextures)    renderMode |= 256;
+        if(this->messages)      renderMode |= 128;
+        if(this->amRotate)      renderMode |= 256;
+        if(this->amTextures)    renderMode |= 512;
 
         return renderMode;
     }

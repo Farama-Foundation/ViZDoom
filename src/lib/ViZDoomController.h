@@ -163,6 +163,7 @@ namespace vizdoom{
         void setRenderDecals(bool decals);
         void setRenderParticles(bool particles);
         void setRenderEffectsSprites(bool sprites);
+        void setRenderMessages(bool messages);
 
         void setScreenResolution(unsigned int width, unsigned int height);
 
@@ -275,10 +276,11 @@ namespace vizdoom{
         bool doomRunning;
         bool doomWorking;
 
+        bool receiveMQMsg();
         void waitForDoomStart();
         void waitForDoomWork();
         void waitForDoomMapStartTime();
-        bool receiveMQMsg();
+
         void createDoomArgs();
         void launchDoom();
 
@@ -342,7 +344,7 @@ namespace vizdoom{
         bool automap;
         bool labels;
 
-        bool hud, minHud, weapon, crosshair, decals, particles, sprites;
+        bool hud, minHud, weapon, crosshair, decals, particles, sprites, messages;
         AutomapMode amMode;
         bool amRotate, amTextures;
 
