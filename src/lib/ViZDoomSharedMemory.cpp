@@ -23,8 +23,6 @@
 #include "ViZDoomSharedMemory.h"
 #include "ViZDoomExceptions.h"
 
-#include <iostream>1
-
 namespace vizdoom {
 
     SharedMemory::SharedMemory(std::string name) : name(name) {
@@ -64,9 +62,6 @@ namespace vizdoom {
                           && regionPtr->size != this->getGameState()->SM_REGION_SIZE[i])) {
 
                     this->deleteRegion(regionPtr);
-
-                    std::cout << this->getGameState()->SM_REGION_OFFSET[i] << std::endl;
-                    std::cout << this->getGameState()->SM_REGION_SIZE[i] << std::endl;
 
                     regionPtr->offset = this->getGameState()->SM_REGION_OFFSET[i];
                     regionPtr->size = this->getGameState()->SM_REGION_SIZE[i];
