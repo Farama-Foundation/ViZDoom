@@ -40,23 +40,22 @@ EXTERN_CVAR (Bool, viz_depth)
 EXTERN_CVAR (Bool, viz_labels)
 EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_loop_map)
-
-player_t *vizPlayer;
+EXTERN_CVAR (Bool, viz_override_player)
 
 bip::mapped_region *vizGameStateSMRegion = NULL;
 VIZGameState *vizGameState = NULL;
 
 int VIZ_CheckItem(FName name) {
-    if(vizPlayer->mo != NULL) {
-        AInventory *item = vizPlayer->mo->FindInventory(name);
+    if(VIZ_PLAYER.mo != NULL) {
+        AInventory *item = VIZ_PLAYER.mo->FindInventory(name);
         if(item != NULL) return item->Amount;
     }
     return 0;
 }
 
 int VIZ_CheckItem(const PClass *type) {
-    if(vizPlayer->mo != NULL) {
-        AInventory *item = vizPlayer->mo->FindInventory(type);
+    if(VIZ_PLAYER.mo != NULL) {
+        AInventory *item = VIZ_PLAYER.mo->FindInventory(type);
         if (item != NULL) return item->Amount;
     }
     return 0;
@@ -69,14 +68,14 @@ int VIZ_CheckWeaponAmmo(AWeapon* weapon){
 
 int VIZ_CheckSelectedWeapon(){
 
-    if(vizPlayer->ReadyWeapon == NULL) return -1;
+    if(VIZ_PLAYER.ReadyWeapon == NULL) return -1;
 
-    const PClass *type1 = vizPlayer->ReadyWeapon->GetClass();
+    const PClass *type1 = VIZ_PLAYER.ReadyWeapon->GetClass();
     if(type1 == NULL) return -1;
 
     for(int i=0; i< VIZ_GV_SLOTS_SIZE; ++i){
-        for(int j = 0; j < vizPlayer->weapons.Slots[i].Size(); ++j){
-            const PClass *type2 = vizPlayer->weapons.Slots[i].GetWeapon(j);
+        for(int j = 0; j < VIZ_PLAYER.weapons.Slots[i].Size(); ++j){
+            const PClass *type2 = VIZ_PLAYER.weapons.Slots[i].GetWeapon(j);
             //if(strcmp(type1->TypeName.GetChars(), type2->TypeName.GetChars()) == 0) return i;
             if(type1 == type2) return i;
         }
@@ -86,15 +85,15 @@ int VIZ_CheckSelectedWeapon(){
 }
 
 int VIZ_CheckSelectedWeaponAmmo(){
-    return VIZ_CheckWeaponAmmo(vizPlayer->ReadyWeapon);
+    return VIZ_CheckWeaponAmmo(VIZ_PLAYER.ReadyWeapon);
 }
 
 int VIZ_CheckSlotAmmo(unsigned int slot){
-    if(vizPlayer->weapons.Slots[slot].Size() <= 0) return 0;
+    if(VIZ_PLAYER.weapons.Slots[slot].Size() <= 0) return 0;
 
-    const PClass *typeWeapon = vizPlayer->weapons.Slots[slot].GetWeapon(0);
+    const PClass *typeWeapon = VIZ_PLAYER.weapons.Slots[slot].GetWeapon(0);
     AWeapon *weapon = (AWeapon*) typeWeapon->CreateNew();
-    //AWeapon *weapon = (AWeapon*)vizPlayer->mo->FindInventory(type);
+    //AWeapon *weapon = (AWeapon*)VIZ_PLAYER.mo->FindInventory(type);
     if (weapon != NULL){
         const PClass *typeAmmo = weapon->AmmoType1;
         weapon->Destroy();
@@ -105,8 +104,8 @@ int VIZ_CheckSlotAmmo(unsigned int slot){
 
 int VIZ_CheckSlotWeapons(unsigned int slot){
     int inSlot = 0;
-    for(int i = 0; i < vizPlayer->weapons.Slots[slot].Size(); ++i){
-        const PClass *type = vizPlayer->weapons.Slots[slot].GetWeapon(i);
+    for(int i = 0; i < VIZ_PLAYER.weapons.Slots[slot].Size(); ++i){
+        const PClass *type = VIZ_PLAYER.weapons.Slots[slot].GetWeapon(i);
         inSlot += VIZ_CheckItem(type);
     }
     return inSlot;
@@ -114,7 +113,6 @@ int VIZ_CheckSlotWeapons(unsigned int slot){
 
 void VIZ_GameStateInit(){
 
-    vizPlayer = &players[consoleplayer];
     try {
         vizGameStateSMRegion = new bip::mapped_region(vizSM, bip::read_write, vizSMGameStateAddress, sizeof(VIZGameState));
         vizGameState = static_cast<VIZGameState *>(vizGameStateSMRegion->get_address());
@@ -141,7 +139,7 @@ void VIZ_GameStateTic(){
     vizGameState->GAME_STATE = gamestate;
     vizGameState->GAME_ACTION = gameaction;
     vizGameState->GAME_STATIC_SEED = staticrngseed;
-    vizGameState->GAME_SETTINGS_CONTROLLER = vizPlayer->settings_controller;
+    vizGameState->GAME_SETTINGS_CONTROLLER = VIZ_PLAYER.settings_controller;
     vizGameState->GAME_NETGAME = netgame;
     vizGameState->GAME_MULTIPLAYER = multiplayer;
     vizGameState->DEMO_RECORDING = demorecording;
@@ -185,11 +183,11 @@ void VIZ_GameStateTic(){
     vizGameState->MAP_REWARD = ACS_GlobalVars[0];
 
     bool prevDead = vizGameState->PLAYER_DEAD;
-    vizGameState->PLAYER_READY_TO_RESPAWN = vizPlayer->playerstate == PST_REBORN;
+    vizGameState->PLAYER_READY_TO_RESPAWN = VIZ_PLAYER.playerstate == PST_REBORN;
 
-    if(vizPlayer->mo != NULL) {
+    if(VIZ_PLAYER.mo != NULL) {
         vizGameState->PLAYER_HAS_ACTOR = true;
-        vizGameState->PLAYER_DEAD = vizPlayer->playerstate == PST_DEAD || vizPlayer->mo->health <= 0;
+        vizGameState->PLAYER_DEAD = VIZ_PLAYER.playerstate == PST_DEAD || VIZ_PLAYER.mo->health <= 0;
     }
     else {
         vizGameState->PLAYER_HAS_ACTOR = false;
@@ -198,23 +196,23 @@ void VIZ_GameStateTic(){
 
     if(vizGameState->PLAYER_DEAD && !prevDead) ++vizGameState->PLAYER_DEATHCOUNT;
 
-    strncpy(vizGameState->PLAYER_NAME, vizPlayer->userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
+    strncpy(vizGameState->PLAYER_NAME, VIZ_PLAYER.userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
 
     vizGameState->MAP_KILLCOUNT = level.killed_monsters;
     vizGameState->MAP_ITEMCOUNT = level.found_items;
     vizGameState->MAP_SECRETCOUNT = level.found_secrets;
 
-    vizGameState->PLAYER_KILLCOUNT = vizPlayer->killcount;
-    vizGameState->PLAYER_ITEMCOUNT = vizPlayer->itemcount;
-    vizGameState->PLAYER_SECRETCOUNT = vizPlayer->secretcount;
-    vizGameState->PLAYER_FRAGCOUNT = vizPlayer->fragcount;
+    vizGameState->PLAYER_KILLCOUNT = VIZ_PLAYER.killcount;
+    vizGameState->PLAYER_ITEMCOUNT = VIZ_PLAYER.itemcount;
+    vizGameState->PLAYER_SECRETCOUNT = VIZ_PLAYER.secretcount;
+    vizGameState->PLAYER_FRAGCOUNT = VIZ_PLAYER.fragcount;
 
-    vizGameState->PLAYER_ATTACK_READY = (vizPlayer->WeaponState & WF_WEAPONREADY) != 0;
-    vizGameState->PLAYER_ALTATTACK_READY = (vizPlayer->WeaponState & WF_WEAPONREADYALT) != 0;
-    vizGameState->PLAYER_ON_GROUND = vizPlayer->onground;
+    vizGameState->PLAYER_ATTACK_READY = (VIZ_PLAYER.WeaponState & WF_WEAPONREADY) != 0;
+    vizGameState->PLAYER_ALTATTACK_READY = (VIZ_PLAYER.WeaponState & WF_WEAPONREADYALT) != 0;
+    vizGameState->PLAYER_ON_GROUND = VIZ_PLAYER.onground;
 
-    if (vizGameState->PLAYER_HAS_ACTOR) vizGameState->PLAYER_HEALTH = vizPlayer->mo->health;
-    else vizGameState->PLAYER_HEALTH = vizPlayer->health;
+    if (vizGameState->PLAYER_HAS_ACTOR) vizGameState->PLAYER_HEALTH = VIZ_PLAYER.mo->health;
+    else vizGameState->PLAYER_HEALTH = VIZ_PLAYER.health;
 
     vizGameState->PLAYER_ARMOR = VIZ_CheckItem(NAME_BasicArmor);
 

@@ -84,6 +84,9 @@ void (DoomGamePython::*advanceAction_default)(unsigned int, bool, bool) = &DoomG
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(makeAction_overloads, DoomGamePython::makeAction, 1, 2)
 double (DoomGamePython::*makeAction_default)(bpy::list const &, unsigned int) = &DoomGamePython::makeAction;
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(replayEpisode_overloads, DoomGamePython::replayEpisode, 1, 2)
+void (DoomGamePython::*replayEpisode_default)(bpy::str const &, unsigned int) = &DoomGamePython::replayEpisode;
+
 #if PY_MAJOR_VERSION >= 3
 int
 #else
@@ -356,7 +359,7 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def("close", &DoomGamePython::close)
         .def("new_episode", newEpisode)
         .def("new_episode", newEpisode_str)
-        .def("replay_episode", &DoomGamePython::replayEpisode)
+        .def("replay_episode", replayEpisode_default, replayEpisode_overloads())
         .def("is_episode_finished", &DoomGamePython::isEpisodeFinished)
         .def("is_new_episode", &DoomGamePython::isNewEpisode)
         .def("is_player_dead", &DoomGamePython::isPlayerDead)

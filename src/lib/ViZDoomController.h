@@ -219,8 +219,7 @@ namespace vizdoom{
 
         std::string getMap();
         void setMap(std::string map, std::string demoPath = "");
-        void playDemo(std::string demoPath);
-        //void playDemo(std::string demoPath, int player = -1);
+        void playDemo(std::string demoPath, int player = 0);
 
 
         /* General game settings */
@@ -384,7 +383,6 @@ namespace vizdoom{
 
         bool doomRunning;
         bool doomWorking;
-        bool doomRecordingMap;
 
         void waitForDoomStart();
         void waitForDoomWork();
@@ -442,6 +440,7 @@ namespace vizdoom{
 
         bip::mapped_region *GameStateSMRegion;
 
+
         bip::mapped_region *ScreenSMRegion;
         uint8_t *screen;
         uint8_t *screenBuffer;
@@ -458,7 +457,6 @@ namespace vizdoom{
         ScreenFormat screenFormat;
         bool depth;
         bool automap;
-        //MapMode levelMapMode;
         bool labels;
 
         bool hud, minHud, weapon, crosshair, decals, particles, sprites;
