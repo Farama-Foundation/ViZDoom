@@ -416,7 +416,7 @@ namespace vizdoom {
         void setRenderCrosshair(bool crosshair);
 
         /*
-         * Determine if decals (marks on the walls, bullet holes, blood splats etc) will be rendered in game.
+         * Determine if decals (marks on the walls, bullet holes, blood splats etc.) will be rendered in game.
          */
         void setRenderDecals(bool decals);
 
@@ -426,9 +426,14 @@ namespace vizdoom {
         void setRenderParticles(bool particles);
 
         /*
-         * Determine if some effects sprites will be rendered in game (gun pufs, blood splats etc.)
+         * Determine if some effects sprites (gun pufs, blood splats etc.) will be rendered in game.
          */
         void setRenderEffectsSprites(bool sprites);
+
+        /*
+         * Determine if ingame messages (information about pickups, kills etc.) will be rendered in game.
+         */
+        void setRenderMessages(bool messages);
 
         /*
          * Determines if ViZDoom's window will be visible.

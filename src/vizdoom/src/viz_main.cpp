@@ -214,7 +214,7 @@ EXTERN_CVAR(Int, cl_maxdecals)
 EXTERN_CVAR(Bool, cl_missiledecals)
 EXTERN_CVAR(Bool, cl_spreaddecals)
 
-//particles && effects sprites
+// particles && effects sprites
 EXTERN_CVAR(Bool, r_particles)
 EXTERN_CVAR(Int, r_maxparticles)
 
@@ -222,7 +222,13 @@ EXTERN_CVAR(Int, cl_bloodtype)
 EXTERN_CVAR(Int, cl_pufftype)
 EXTERN_CVAR(Int, cl_rockettrails)
 
-//automap
+// messages
+EXTERN_CVAR(Float, con_midtime)
+EXTERN_CVAR(Float, con_notifytime)
+EXTERN_CVAR(Bool, cl_showmultikills)
+EXTERN_CVAR(Bool, cl_showsprees)
+
+// automap
 EXTERN_CVAR(Int, am_cheat)
 EXTERN_CVAR(Bool, am_rotate)
 EXTERN_CVAR(Bool, am_textured)
@@ -273,6 +279,10 @@ void VIZ_CVARsUpdate(){
 
     // messages
     bool messages = (*viz_render_mode & 128) != 0;
+    con_midtime.CmdSet(messages ? "3" : "0");
+    con_notifytime.CmdSet(messages ? "3" : "0");
+    cl_showmultikills.CmdSet(messages ? "1" : "0");
+    cl_showsprees.CmdSet(messages ? "1" : "0");
 
     // automap
     am_cheat = *viz_nocheat ? 0 : *viz_automap_mode;
