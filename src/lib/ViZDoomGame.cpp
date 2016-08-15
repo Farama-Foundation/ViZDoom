@@ -122,28 +122,15 @@ namespace vizdoom {
         if(path.length()) this->doomController->setMap(this->doomController->getMap(), path);
         else this->doomController->restartMap();
 
-        this->lastMapTic = 0;
-        this->nextStateNumber = 1;
-
-        this->updateState();
-
-        //this->lastMapReward = 0;
-        this->lastReward = 0;
-        this->summaryReward = 0;
+        this->resetState();
     }
 
-    void DoomGame::replayEpisode(std::string path){
+    void DoomGame::replayEpisode(std::string path, unsigned int player){
 
-        this->doomController->playDemo(path);
+        if(!this->isRunning()) throw ViZDoomIsNotRunningException();
 
-        this->lastMapTic = 0;
-        this->nextStateNumber = 1;
-
-        this->updateState();
-
-        //this->lastMapReward = 0;
-        this->lastReward = 0;
-        this->summaryReward = 0;
+        this->doomController->playDemo(path, player);
+        this->resetState();
     }
 
     void DoomGame::setAction(std::vector<int> const &actions) {
@@ -182,13 +169,20 @@ namespace vizdoom {
         return this->getLastReward();
     }
 
+    void DoomGame::resetState(){
+        this->lastMapTic = 0;
+        this->nextStateNumber = 1;
+
+        this->updateState();
+
+        //this->lastMapReward = 0;
+        this->lastReward = 0;
+        this->summaryReward = 0;
+    }
+
     void DoomGame::updateState(){
         try {
-
-            this->state = std::make_shared<GameState>();
-
-            this->state->number = this->nextStateNumber++;
-
+            /* Update reward */
             double reward = 0;
             double mapReward = DoomFixedToDouble(this->doomController->getMapReward());
             reward = mapReward - this->lastMapReward;
@@ -202,21 +196,20 @@ namespace vizdoom {
 
             this->lastMapTic = this->doomController->getMapTic();
 
-            this->state->gameVariables.resize(this->availableGameVariables.size());
-
-            /* Updates vars */
-            for (unsigned int i = 0; i < this->availableGameVariables.size(); ++i) {
-                this->state->gameVariables[i] = this->doomController->getGameVariable(this->availableGameVariables[i]);
-            }
-
-            /* Update buffers */
-            this->state->screenBuffer = nullptr;
-            this->state->depthBuffer = nullptr;
-            this->state->labelsBuffer = nullptr;
-            this->state->automapBuffer = nullptr;
-
+            /* Update state */
             if(!this->isEpisodeFinished()) {
+                this->state = std::make_shared<GameState>();
+                this->state->number = this->nextStateNumber++;
 
+                this->state->gameVariables.resize(this->availableGameVariables.size());
+
+                /* Updates vars */
+                for (unsigned int i = 0; i < this->availableGameVariables.size(); ++i) {
+                    this->state->gameVariables[i] = this->doomController->getGameVariable(
+                            this->availableGameVariables[i]);
+                }
+
+                /* Update buffers */
                 int channels = this->getScreenChannels();
                 int width = this->getScreenWidth();
                 int height = this->getScreenHeight();
@@ -231,27 +224,31 @@ namespace vizdoom {
                     uint8_t *buf = this->doomController->getDepthBuffer();
                     this->state->depthBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + graySize);
                 }
+                else this->state->depthBuffer = nullptr;
 
                 if (this->doomController->isLabelsEnabled()) {
                     uint8_t *buf = this->doomController->getLabelsBuffer();
                     this->state->labelsBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + graySize);
                 }
+                else this->state->labelsBuffer = nullptr;
 
-                if (this->doomController->isAutomapEnabled()){
+                if (this->doomController->isAutomapEnabled()) {
                     uint8_t *buf = this->doomController->getAutomapBuffer();
                     this->state->automapBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
                 }
-            }
+                else this->state->automapBuffer = nullptr;
 
-            /* Update label */
-            this->state->labels.clear();
-            for (unsigned int i = 0; i < this->doomController->gameState->LABEL_COUNT; ++i){
-                Label label;
-                label.objectId = this->doomController->gameState->LABEL[i].objectId;
-                label.objectName = std::string(this->doomController->gameState->LABEL[i].objectName);
-                label.value = this->doomController->gameState->LABEL[i].value;
-                this->state->labels.push_back(label);
+                /* Update labels */
+                this->state->labels.clear();
+                for (unsigned int i = 0; i < this->doomController->gameState->LABEL_COUNT; ++i) {
+                    Label label;
+                    label.objectId = this->doomController->gameState->LABEL[i].objectId;
+                    label.objectName = std::string(this->doomController->gameState->LABEL[i].objectName);
+                    label.value = this->doomController->gameState->LABEL[i].value;
+                    this->state->labels.push_back(label);
+                }
             }
+            else this->state = nullptr;
 
             /* Update last action */
             for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
@@ -367,7 +364,10 @@ namespace vizdoom {
     void DoomGame::setViZDoomPath(std::string path) { this->doomController->setExePath(path); }
     void DoomGame::setDoomGamePath(std::string path) { this->doomController->setIwadPath(path); }
     void DoomGame::setDoomScenarioPath(std::string path) { this->doomController->setFilePath(path); }
-    void DoomGame::setDoomMap(std::string map) { this->doomController->setMap(map); }
+    void DoomGame::setDoomMap(std::string map) {
+        this->doomController->setMap(map);
+        if(this->isRunning()) this->resetState();
+    }
     void DoomGame::setDoomSkill(int skill) { this->doomController->setSkill(skill); }
     void DoomGame::setDoomConfigPath(std::string path) { this->doomController->setConfigPath(path); }
 

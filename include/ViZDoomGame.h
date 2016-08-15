@@ -66,7 +66,7 @@ namespace vizdoom {
          */
         void newEpisode(std::string filePath = "");
 
-        void replayEpisode(std::string path);
+        void replayEpisode(std::string path, unsigned int player = 0);
 
         /*
          * Checks if the ViZDoom game is running.
@@ -124,9 +124,9 @@ namespace vizdoom {
         void sendGameCommand(std::string cmd);
 
         /*
-         * Returns DoomGame::State structure with the current game state.
+         * Returns shared pointer to DoomGame::State structure with the current game state.
          */
-        std::shared_ptr<GameState> getState();
+        GameStatePtr getState();
 
         /*
          * Returns a vector with the last action performed.
@@ -511,7 +511,9 @@ namespace vizdoom {
 
         Mode mode;
 
-        std::shared_ptr<GameState> state;
+        GameStatePtr state;
+
+        void resetState();
         void updateState();
 
         std::vector <GameVariable> availableGameVariables;

@@ -33,6 +33,8 @@
 
 #include "d_main.h"
 #include "d_net.h"
+#include "g_game.h"
+#include "sbar.h"
 
 namespace b = boost;
 namespace bt = boost::this_thread;
@@ -80,6 +82,7 @@ CVAR (Bool, viz_noxserver, false, CVAR_NOSET)
 CVAR (Bool, viz_noconsole, false, CVAR_NOSET)
 CVAR (Bool, viz_nosound, false, CVAR_NOSET)
 
+CVAR (Int, viz_override_player, 0, 0)
 CVAR (Bool, viz_loop_map, false, CVAR_NOSET)
 CVAR (Bool, viz_nocheat, false, CVAR_NOSET)
 
@@ -226,8 +229,6 @@ EXTERN_CVAR(Bool, am_showsecrets)
 EXTERN_CVAR(Bool, am_showtime)
 EXTERN_CVAR(Bool, am_showtotaltime)
 
-
-
 void VIZ_UpdateCVARs(){
 
     // hud
@@ -278,5 +279,17 @@ void VIZ_UpdateCVARs(){
     am_showtime.CmdSet("0");
     am_showtotaltime.CmdSet("0");
 
+    if(demoplayback && multiplayer && *viz_override_player){
+        if(*viz_override_player >= 1 && *viz_override_player <= 9 && playeringame[*viz_override_player-1]) {
+            consoleplayer = *viz_override_player - 1;
+            S_UpdateSounds(players[consoleplayer].camera);
+            StatusBar->AttachToPlayer(&players[consoleplayer]);
+        }
+        else {
+            char errorStr[VIZ_MQ_MAX_CMD_LEN];
+            sprintf(errorStr, "Player %d does not exist.", *viz_override_player);
+            VIZ_ReportError("VIZ_UpdateCVARs", errorStr);
+        }
+    }
 };
 

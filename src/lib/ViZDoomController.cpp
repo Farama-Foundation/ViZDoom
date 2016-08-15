@@ -65,7 +65,6 @@ namespace vizdoom {
         /* Flow control */
         this->doomRunning = false;
         this->doomWorking = false;
-        this->doomRecordingMap = false;
 
         this->mapStartTime = 1;
         this->mapTimeout = 0;
@@ -192,7 +191,6 @@ namespace vizdoom {
 
             this->doomRunning = false;
             this->doomWorking = false;
-            this->doomRecordingMap = false;
 
             this->MQDoom->send(MSG_CODE_CLOSE);
         }
@@ -343,17 +341,13 @@ namespace vizdoom {
             br::uniform_int_distribution<> mapSeedDist(0, UINT_MAX);
             this->setDoomRngSeed(mapSeedDist(this->instanceRng));
 
-            if(this->doomRecordingMap){
-                this->sendCommand("stop");
-                this->doomRecordingMap = false;
-            }
+            if(this->gameState->DEMO_RECORDING) this->sendCommand("stop");
 
             if(this->gameState->GAME_MULTIPLAYER){
                 if(this->gameState->GAME_SETTINGS_CONTROLLER) this->sendCommand(std::string("changemap ") + this->map);
             }
             else if(this->demoPath.length()){
                 this->sendCommand(std::string("recordmap ") + prepareFilePath(this->demoPath) + " " + this->map);
-                this->doomRecordingMap = true;
             }
             else {
                 this->sendCommand(std::string("map ") + this->map);
@@ -402,6 +396,9 @@ namespace vizdoom {
             }
 
             this->waitForDoomMapStartTime();
+
+            this->sendCommand("viz_override_player 0");
+
             this->MQDoom->send(MSG_CODE_UPDATE);
             this->waitForDoomWork();
 
@@ -410,13 +407,10 @@ namespace vizdoom {
         }
     }
 
-    void DoomController::playDemo(std::string demoPath){
+    void DoomController::playDemo(std::string demoPath, int player){
         if (this->doomRunning && !this->mapRestarting) {
 
-            if(this->doomRecordingMap){
-                this->sendCommand("stop");
-                this->doomRecordingMap = false;
-            }
+            if(this->gameState->DEMO_RECORDING) this->sendCommand("stop");
 
             this->sendCommand(std::string("playdemo ") + prepareLmpFilePath(demoPath));
 
@@ -441,6 +435,9 @@ namespace vizdoom {
                      || this->gameState->MAP_TIC > this->mapLastTic);
 
             this->waitForDoomMapStartTime();
+
+            this->sendCommand(std::string("viz_override_player ") + b::lexical_cast<std::string>(player));
+
             this->MQDoom->send(MSG_CODE_UPDATE);
             this->waitForDoomWork();
 

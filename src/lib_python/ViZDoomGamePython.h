@@ -80,7 +80,7 @@ namespace vizdoom {
 
         void newEpisode();
         void newEpisode(bpy::str const &pyPath);
-        void replayEpisode(bpy::str const &pyPath);
+        void replayEpisode(bpy::str const &pyPath, unsigned int player = 0);
 
         void setViZDoomPath(bpy::str const &pyPath);
         void setDoomGamePath(bpy::str const &pyPath);

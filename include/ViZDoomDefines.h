@@ -34,12 +34,9 @@ namespace vizdoom{
     #define VIZDOOM_LIB_VERSION 109
     #define VIZDOOM_LIB_VERSION_STR "1.1.0pre"
 
-    struct Buffer {
-        int width;
-        int height;
-        size_t size;
-    };
-
+    typedef std::vector<uint8_t> Buffer;
+    typedef std::shared_ptr<Buffer> BufferPtr;
+    
     struct Label{
         unsigned int objectId;
         std::string objectName;
@@ -51,21 +48,15 @@ namespace vizdoom{
 
         std::vector<int> gameVariables;
 
-        std::shared_ptr<std::vector<uint8_t>> screenBuffer;
-        std::shared_ptr<std::vector<uint8_t>> depthBuffer;
-        std::shared_ptr<std::vector<uint8_t>> labelsBuffer;
-        std::shared_ptr<std::vector<uint8_t>> automapBuffer;
-
-//        std::shared_ptr<std::vector<Label>> labels;
-
-//        uint8_t *screenBuffer;
-//        uint8_t *depthBuffer;
-//        uint8_t *labelsBuffer;
-//        uint8_t *automapBuffer;
+        BufferPtr screenBuffer;
+        BufferPtr depthBuffer;
+        BufferPtr labelsBuffer;
+        BufferPtr automapBuffer;
 
         std::vector<Label> labels;
-
     };
+
+    typedef std::shared_ptr<GameState> GameStatePtr;
 
     enum Mode {
         PLAYER,             // synchronous player mode
