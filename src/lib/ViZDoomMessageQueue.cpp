@@ -47,7 +47,7 @@ namespace vizdoom {
         bip::message_queue::remove(this->name.c_str());
         if (this->mq) {
             delete this->mq;
-            this->mq = NULL;
+            this->mq = nullptr;
         }
     }
 

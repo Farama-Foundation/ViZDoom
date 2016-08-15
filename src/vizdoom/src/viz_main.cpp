@@ -96,7 +96,7 @@ void VIZ_Init(){
 
     if(*viz_controlled) {
 
-        VIZ_UpdateCVARs();
+        VIZ_CVARsUpdate();
 
         VIZ_MQInit(*viz_instance_id);
         VIZ_SMInit(*viz_instance_id);
@@ -104,6 +104,8 @@ void VIZ_Init(){
         VIZ_GameStateInit();
         VIZ_InputInit();
         VIZ_ScreenInit();
+
+        VIZ_GameStateUpdate();
 
         vizNextTic = true;
         vizUpdate = true;
@@ -167,8 +169,10 @@ void VIZ_Tic(){
 void VIZ_Update(){
     VIZ_DEBUG_PRINT("VIZ_Update: tic: %d, viztic: %d, lastupdate: %d\n", gametic, VIZ_TIME, vizLastUpdate);
 
-    VIZ_D_MapDisplay();
-    VIZ_ScreenLevelMapUpdate();
+    if(!*viz_nocheat){
+        VIZ_D_MapDisplay();
+        VIZ_ScreenLevelMapUpdate();
+    }
     VIZ_D_ScreenDisplay();
     VIZ_ScreenUpdate();
     VIZ_GameStateUpdateLabels();
@@ -229,7 +233,7 @@ EXTERN_CVAR(Bool, am_showsecrets)
 EXTERN_CVAR(Bool, am_showtime)
 EXTERN_CVAR(Bool, am_showtotaltime)
 
-void VIZ_UpdateCVARs(){
+void VIZ_CVARsUpdate(){
 
     // hud
     bool hud = (*viz_render_mode & 1) != 0;
@@ -267,11 +271,14 @@ void VIZ_UpdateCVARs(){
     cl_pufftype.CmdSet(sprites ? "0" : "1");
     cl_rockettrails.CmdSet(sprites ? "3" : "1");
 
+    // messages
+    bool messages = (*viz_render_mode & 128) != 0;
+
     // automap
     am_cheat = *viz_nocheat ? 0 : *viz_automap_mode;
 
-    am_rotate.CmdSet((*viz_render_mode & 128) != 0 ? "1" : "0");
-    am_textured.CmdSet((*viz_render_mode & 256) != 0 ? "1" : "0");
+    am_rotate.CmdSet((*viz_render_mode & 256) != 0 ? "1" : "0");
+    am_textured.CmdSet((*viz_render_mode & 512) != 0 ? "1" : "0");
 
     am_showitems.CmdSet("0");
     am_showmonsters.CmdSet("0");
@@ -280,7 +287,7 @@ void VIZ_UpdateCVARs(){
     am_showtotaltime.CmdSet("0");
 
     if(demoplayback && multiplayer && *viz_override_player){
-        if(*viz_override_player >= 1 && *viz_override_player <= 9 && playeringame[*viz_override_player-1]) {
+        if(*viz_override_player >= 1 && *viz_override_player <= VIZ_MAX_PLAYERS && playeringame[*viz_override_player-1]) {
             consoleplayer = *viz_override_player - 1;
             S_UpdateSounds(players[consoleplayer].camera);
             StatusBar->AttachToPlayer(&players[consoleplayer]);

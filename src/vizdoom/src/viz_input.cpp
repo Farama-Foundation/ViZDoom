@@ -302,10 +302,11 @@ void VIZ_AddBTCommand(VIZButton button, int state){
 void VIZ_InputInit() {
 
     try {
-        vizInputSMRegion = new bip::mapped_region(vizSM, bip::read_write, vizSMInputAddress, sizeof(VIZInputState));
-        vizInput = static_cast<VIZInputState *>(vizInputSMRegion->get_address());
+        VIZSMRegion* inputRegion = &vizSMRegion[1];
+        VIZ_SMCreateRegion(inputRegion, true, VIZ_SMGetRegionOffset(inputRegion), sizeof(VIZInputState));
+        vizInput = static_cast<VIZInputState *>(inputRegion->address);
 
-        VIZ_DEBUG_PRINT("VIZ_InputInit: inputAddress: %zu, inputRealAddress: %p, inputSize: %zu\n", vizSMInputAddress, vizInput, sizeof(VIZInputState));
+        VIZ_DEBUG_PRINT("VIZ_InputInit: inputOffset: %zu, inputSize: %zu\n", inputRegion->offset, sizeof(VIZInputState));
     }
     catch (bip::interprocess_exception &ex) {
         VIZ_ReportError("VIZ_InputInit", "Failed to create input.");

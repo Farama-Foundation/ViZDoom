@@ -55,7 +55,7 @@ VIZLabelsBuffer::VIZLabelsBuffer(unsigned int width, unsigned int height):
             #endif
         }
         this->window = SDL_CreateWindow("ViZDoom Labels Buffer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
-        this->surface =  SDL_GetWindowSurface( window );
+        this->surface =  SDL_GetWindowSurface(window);
     #endif
 }
 
@@ -63,9 +63,9 @@ VIZLabelsBuffer::~VIZLabelsBuffer() {
     delete[] buffer;
 
     #ifdef VIZ_LABELS_TEST
-        SDL_DestroyWindow( window );
+        SDL_DestroyWindow(this->window);
         window = NULL;
-        SDL_FreeSurface( surface);
+        SDL_FreeSurface(this->surface);
         surface = NULL;
     #endif
 }

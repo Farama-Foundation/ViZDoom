@@ -32,10 +32,13 @@
 
 bip::shared_memory_object vizSM;
 size_t vizSMSize;
-size_t vizSMGameStateAddress = 0;
-size_t vizSMInputAddress = sizeof(VIZGameState);
-size_t vizSMScreenAddress = sizeof(VIZGameState) + sizeof(VIZInputState);
 char * vizSMName;
+
+VIZSMRegion vizSMRegion[VIZ_SM_REGION_COUNT];
+
+size_t vizSMGameStateOffset = 0;
+size_t vizSMInputOffset = sizeof(VIZGameState);
+size_t vizSMBuffersOffset = sizeof(VIZGameState) + sizeof(VIZInputState);
 
 EXTERN_CVAR (Bool, viz_debug)
 
@@ -51,7 +54,7 @@ void VIZ_SMInit(const char * id){
         bip::shared_memory_object::remove(vizSMName);
         vizSM = bip::shared_memory_object(bip::open_or_create, vizSMName, bip::read_write);
 
-        vizSMSize = sizeof(VIZGameState) + sizeof(VIZInputState) + (SCREEN_SM_SIZE);
+        vizSMSize = sizeof(VIZGameState) + sizeof(VIZInputState);
         vizSM.truncate(vizSMSize);
 
         VIZ_DEBUG_PRINT("VIZ_SMInit: SMName: %s, SMSize: %zu\n", vizSMName, vizSMSize);
@@ -61,7 +64,48 @@ void VIZ_SMInit(const char * id){
     }
 }
 
+void VIZ_SMUpdate(size_t buffersSize){
+    try {
+        vizSMSize = sizeof(VIZGameState) + sizeof(VIZInputState) + buffersSize;
+        vizSM.truncate(vizSMSize);
+
+        VIZ_DEBUG_PRINT("VIZ_SMUpdate: New SMSize: %zu\n", vizSMSize);
+    }
+    catch(...){ // bip::interprocess_exception
+        VIZ_ReportError("VIZ_SMUpdate", "Failed to truncate shared memory.");
+    }
+}
+
+void VIZ_SMCreateRegion(VIZSMRegion* regionPtr, bool writeable, size_t offset, size_t size){
+    regionPtr->offset = offset;
+    regionPtr->size = size;
+    regionPtr->writeable = writeable;
+    if(regionPtr->size) {
+        regionPtr->region = new bip::mapped_region(vizSM, bip::read_write, offset, size);
+        regionPtr->address = regionPtr->region->get_address();
+    }
+}
+
+void VIZ_SMDeleteRegion(VIZSMRegion* regionPtr) {
+    if(regionPtr->region){
+        delete regionPtr->region;
+        regionPtr->region = NULL;
+        regionPtr->address = NULL;
+        regionPtr->size = 0;
+        regionPtr->offset = 0;
+        regionPtr->writeable = false;
+    }
+}
+
+size_t VIZ_SMGetRegionOffset(VIZSMRegion* regionPtr){
+    size_t offset = 0;
+    for(auto i = &vizSMRegion[0]; i != regionPtr; ++i) offset += i->size;
+    return offset;
+}
+
 void VIZ_SMClose(){
+    for(int i = 0; i < VIZ_SM_REGION_COUNT; ++i) VIZ_SMDeleteRegion(&vizSMRegion[i]);
+
     //bip::shared_memory_object::remove(vizSMName);
 	delete[] vizSMName;
 }

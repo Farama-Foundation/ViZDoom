@@ -25,11 +25,15 @@
 
 #include <stdlib.h>
 
-#define VIZ_VERSION 109
-#define VIZ_VERSION_STR "1.1.0pre"
+#define VIZ_VERSION                 109
+#define VIZ_VERSION_STR             "1.1.0pre"
 
-#define VIZ_TIME ((unsigned int)level.starttime + (unsigned int)level.maptime)
+#define VIZ_TIME                    ((unsigned int)level.starttime + (unsigned int)level.maptime)
 
-#define VIZ_DEBUG_PRINT if(*viz_debug) Printf
+#define VIZ_PLAYER                  players[consoleplayer]
+#define VIZ_MAX_PLAYERS             MAXPLAYERS // 8
+#define VIZ_MAX_PLAYER_NAME_LEN     MAXPLAYERNAME + 1 //(15 + 1 = 16)
+
+#define VIZ_DEBUG_PRINT             if(*viz_debug) Printf
 
 #endif
