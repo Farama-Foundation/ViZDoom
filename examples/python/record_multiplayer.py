@@ -10,11 +10,10 @@ def player1():
     game = DoomGame()
 
     game.load_config('../config/multi_duel.cfg')
-    game.set_window_visible(False)
     game.add_game_args("-host 2 -deathmatch +timelimit 0.15 +sv_spawnfarthest 1 ")
     game.add_game_args("+name Player1 +colorset 0")
 
-    # Unfortunately multilpayer game cannot be recorded using new_episode() method, use this command instead.
+    # Unfortunately multiplayer game cannot be recorded using new_episode() method, use this command instead.
     game.add_game_args("-record multi_rec.lmp")
 
     game.init()
@@ -35,6 +34,7 @@ def player2():
     game = DoomGame()
 
     game.load_config('../config/multi_duel.cfg')
+    game.set_window_visible(False)
     game.add_game_args("-join 127.0.0.1")
     game.add_game_args("+name Player2 +colorset 3")
 
@@ -73,15 +73,17 @@ def replay_as_player2():
     # Delete multi_rec.lmp
     os.remove("multi_rec.lmp")
 
-print("\nRECORDING")
-print("************************\n")
 
-p1 = Process(target = player1)
-p1.start()
+if __name__ == '__main__':
+    print("\nRECORDING")
+    print("************************\n")
 
-player2()
+    p1 = Process(target = player1)
+    p1.start()
 
-print("\nREPLAY")
-print("************************\n")
+    player2()
 
-replay_as_player2()
+    print("\nREPLAY")
+    print("************************\n")
+
+    replay_as_player2()
