@@ -278,6 +278,7 @@ namespace vizdoom{
         void waitForDoomStart();
         void waitForDoomWork();
         void waitForDoomMapStartTime();
+        bool receiveMQMsg();
         void createDoomArgs();
         void launchDoom();
 

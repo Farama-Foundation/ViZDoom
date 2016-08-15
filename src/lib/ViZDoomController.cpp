@@ -960,14 +960,13 @@ namespace vizdoom {
     /* Flow */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    void DoomController::waitForDoomStart() {
-
-        this->doomWorking = true;
+    bool DoomController::receiveMQMsg(){
+        bool done = false;
 
         Message msg = this->MQController->receive();
         switch (msg.code) {
             case MSG_CODE_DOOM_DONE :
-                this->doomRunning = true;
+                done = true;
                 break;
 
             case MSG_CODE_DOOM_CLOSE :
@@ -992,43 +991,22 @@ namespace vizdoom {
                 throw ViZDoomSignalException("SIGTERM");
         }
 
+        return done;
+    }
+
+    void DoomController::waitForDoomStart() {
+        this->doomWorking = true;
+        this->doomRunning = receiveMQMsg();
         this->doomWorking = false;
     }
 
     void DoomController::waitForDoomWork() {
-
         if(doomRunning){
             this->doomWorking = true;
 
             bool done = false;
             do {
-                Message msg = this->MQController->receive();
-                switch (msg.code) {
-                    case MSG_CODE_DOOM_DONE :
-                        done = true;
-                        break;
-
-                    case MSG_CODE_DOOM_CLOSE :
-                    case MSG_CODE_DOOM_PROCESS_EXIT :
-                        this->close();
-                        throw ViZDoomUnexpectedExitException();
-
-                    case MSG_CODE_DOOM_ERROR :
-                        this->close();
-                        throw ViZDoomErrorException(std::string(msg.command));
-
-                    case MSG_CODE_SIGINT :
-                        this->close();
-                        throw ViZDoomSignalException("SIGINT");
-
-                    case MSG_CODE_SIGABRT :
-                        this->close();
-                        throw ViZDoomSignalException("SIGABRT");
-
-                    case MSG_CODE_SIGTERM :
-                        this->close();
-                        throw ViZDoomSignalException("SIGTERM");
-                }
+                done = receiveMQMsg();
             } while (!done);
 
             this->doomWorking = false;
