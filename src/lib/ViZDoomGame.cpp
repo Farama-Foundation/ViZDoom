@@ -240,11 +240,11 @@ namespace vizdoom {
 
                 /* Update labels */
                 this->state->labels.clear();
-                for (unsigned int i = 0; i < this->doomController->gameState->LABEL_COUNT; ++i) {
+                for (unsigned int i = 0; i < this->doomController->getGameState()->LABEL_COUNT; ++i) {
                     Label label;
-                    label.objectId = this->doomController->gameState->LABEL[i].objectId;
-                    label.objectName = std::string(this->doomController->gameState->LABEL[i].objectName);
-                    label.value = this->doomController->gameState->LABEL[i].value;
+                    label.objectId = this->doomController->getGameState()->LABEL[i].objectId;
+                    label.objectName = std::string(this->doomController->getGameState()->LABEL[i].objectName);
+                    label.value = this->doomController->getGameState()->LABEL[i].value;
                     this->state->labels.push_back(label);
                 }
             }

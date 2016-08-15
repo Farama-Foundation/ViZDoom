@@ -65,9 +65,9 @@ VIZDepthBuffer::~VIZDepthBuffer() {
     delete[] buffer;
 
     #ifdef VIZ_DEPTH_TEST
-        SDL_DestroyWindow( window );
+        SDL_DestroyWindow(this->window);
         window = NULL;
-        SDL_FreeSurface( surface);
+        SDL_FreeSurface(this->surface);
         surface = NULL;
     #endif
 }
@@ -78,7 +78,7 @@ BYTE* VIZDepthBuffer::getBuffer() { return buffer; }
 // Get pointer for requested pixel (x, y coords)
 BYTE* VIZDepthBuffer::getBufferPoint(unsigned int x, unsigned int y) {
     if( x < bufferWidth && y < bufferHeight )
-        return buffer + x + y*bufferWidth;
+        return buffer + x + y * bufferWidth;
     else return NULL;
 }
 

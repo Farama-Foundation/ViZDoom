@@ -25,12 +25,10 @@
 
 #include "ViZDoomDefines.h"
 #include "ViZDoomMessageQueue.h"
+#include "ViZDoomSharedMemory.h"
 
 #include <boost/asio.hpp>
 #include <boost/random.hpp>
-#include <boost/interprocess/ipc/message_queue.hpp>
-#include <boost/interprocess/mapped_region.hpp>
-#include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/thread.hpp>
 #include <string>
 #include <vector>
@@ -47,9 +45,6 @@ namespace vizdoom{
 
 /* Shared memory's settings */
 #define SM_NAME_BASE        "ViZDoomSM"
-
-#define MAX_LABELS 256
-#define MAX_LABEL_NAME_LEN 64
 
 /* Message queues' settings */
 #define MQ_CTR_NAME_BASE    "ViZDoomMQCtr"
@@ -84,109 +79,6 @@ namespace vizdoom{
     class DoomController {
 
     public:
-
-        /* SM structs */
-        /*------------------------------------------------------------------------------------------------------------*/
-
-        struct SMLabel{
-            int objectId;
-            char objectName[MAX_LABEL_NAME_LEN];
-            uint8_t value;
-        };
-
-        struct GameState {
-            unsigned int VERSION;
-            char VERSION_STR[8];
-            size_t SM_SIZE;
-
-            unsigned int GAME_TIC;
-            int GAME_STATE;
-            int GAME_ACTION;
-            unsigned int GAME_STATIC_SEED;
-            bool GAME_SETTINGS_CONTROLLER;
-            bool GAME_NETGAME;
-            bool GAME_MULTIPLAYER;
-            bool DEMO_RECORDING;
-            bool DEMO_PLAYBACK;
-
-            // SCREEN
-            unsigned int SCREEN_WIDTH;
-            unsigned int SCREEN_HEIGHT;
-            size_t SCREEN_PITCH;
-            size_t SCREEN_SIZE;
-            int SCREEN_FORMAT;
-
-            size_t SCREEN_BUFFER_ADDRESS;
-            size_t SCREEN_BUFFER_SIZE;
-
-            bool DEPTH_BUFFER;
-            size_t DEPTH_BUFFER_ADDRESS;
-            size_t DEPTH_BUFFER_SIZE;
-
-            bool LABELS;
-            size_t LABELS_BUFFER_ADDRESS;
-            size_t LABELS_BUFFER_SIZE;
-
-            bool AUTOMAP;
-            size_t AUTOMAP_BUFFER_ADDRESS;
-            size_t AUTOMAP_BUFFER_SIZE;
-
-            // MAP
-            unsigned int MAP_START_TIC;
-            unsigned int MAP_TIC;
-
-            int MAP_REWARD;
-            int MAP_USER_VARS[UserVariableCount];
-
-            int MAP_KILLCOUNT;
-            int MAP_ITEMCOUNT;
-            int MAP_SECRETCOUNT;
-            bool MAP_END;
-
-            // PLAYER
-            bool PLAYER_HAS_ACTOR;
-            bool PLAYER_DEAD;
-
-            char PLAYER_NAME[MaxPlayerNameLength];
-            int PLAYER_KILLCOUNT;
-            int PLAYER_ITEMCOUNT;
-            int PLAYER_SECRETCOUNT;
-            int PLAYER_FRAGCOUNT;
-            int PLAYER_DEATHCOUNT;
-
-            bool PLAYER_ON_GROUND;
-
-            int PLAYER_HEALTH;
-            int PLAYER_ARMOR;
-
-            bool PLAYER_ATTACK_READY;
-            bool PLAYER_ALTATTACK_READY;
-
-            int PLAYER_SELECTED_WEAPON;
-            int PLAYER_SELECTED_WEAPON_AMMO;
-
-            int PLAYER_AMMO[SlotCount];
-            int PLAYER_WEAPON[SlotCount];
-
-            bool PLAYER_READY_TO_RESPAWN;
-            unsigned int PLAYER_NUMBER;
-
-            // OTHER PLAYERS
-            unsigned int PLAYER_COUNT;
-            bool PLAYERS_IN_GAME[MaxPlayers];
-            char PLAYERS_NAME[MaxPlayers][MaxPlayerNameLength];
-            int PLAYERS_FRAGCOUNT[MaxPlayers];
-
-            //LABELS
-            unsigned int LABEL_COUNT;
-            SMLabel LABEL[MAX_LABELS];
-        };
-
-        struct InputState {
-            int BT[ButtonCount];
-            bool BT_AVAILABLE[ButtonCount];
-            int BT_MAX_VALUE[DeltaButtonCount];
-        };
 
         DoomController();
         ~DoomController();
@@ -312,8 +204,8 @@ namespace vizdoom{
         /* Buttons getters and setters */
         /*------------------------------------------------------------------------------------------------------------*/
 
-        InputState * const getInput();
-        GameState * const getGameState();
+        SMInputState * const getInput();
+        SMGameState * const getGameState();
 
         /* Buttons state */
         int getButtonState(Button button);
@@ -374,7 +266,6 @@ namespace vizdoom{
         int getPlayerWeapon(unsigned int slot);
         int getUser(unsigned int slot);
 
-        GameState *gameState;
 
     private:
 
@@ -427,22 +318,13 @@ namespace vizdoom{
         /* Shared memory */
         /*------------------------------------------------------------------------------------------------------------*/
 
-        void SMInit();
-        void SMClose();
+        SharedMemory *SM;
 
-        bip::shared_memory_object SM;
-        bip::offset_t SMSize;
-        std::string SMName;
+        SMGameState *gameState;
 
-        bip::mapped_region *InputSMRegion;
-        InputState *input;
-        InputState *_input;
+        SMInputState *input;
+        SMInputState *_input;
 
-        bip::mapped_region *GameStateSMRegion;
-
-
-        bip::mapped_region *ScreenSMRegion;
-        uint8_t *screen;
         uint8_t *screenBuffer;
         uint8_t *depthBuffer;
         uint8_t *automapBuffer;

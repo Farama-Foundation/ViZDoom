@@ -22,23 +22,17 @@
 
 #include "viz_screen.h"
 #include "viz_defines.h"
-#include "viz_shared_memory.h"
 #include "viz_message_queue.h"
 #include "viz_depth.h"
 #include "viz_labels.h"
 
-#include "d_main.h"
-#include "doomstat.h"
-#include "v_video.h"
-
-unsigned int vizScreenHeight;
-unsigned int vizScreenWidth;
-size_t vizScreenPitch;
-size_t vizScreenSize;
-size_t vizScreenChannelSize;
+unsigned int vizScreenWidth, vizScreenHeight;
+size_t vizScreenPitch, vizScreenSize, vizScreenChannelSize;
 
 int posMulti, rPos, gPos, bPos, aPos;
 bool alpha;
+
+BYTE *vizScreenSM = NULL, *vizDepthSM = NULL, *vizLabelsSM = NULL, *vizAutomapSM = NULL;
 
 EXTERN_CVAR (Bool, viz_debug)
 EXTERN_CVAR (Int, viz_screen_format)
@@ -47,40 +41,26 @@ EXTERN_CVAR (Bool, viz_labels)
 EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_nocheat)
 
-bip::mapped_region *vizScreenSMRegion = NULL;
-BYTE *vizScreen = NULL;
-
 void VIZ_ScreenInit() {
 
-    vizScreenSMRegion = NULL;
     VIZ_ScreenFormatUpdate();
+    VIZ_ScreenUpdateSM();
 
-    try {
-        vizScreenSMRegion = new bip::mapped_region(vizSM, bip::read_write, vizSMScreenAddress, 10 * vizScreenChannelSize);
-        vizScreen = static_cast<BYTE *>(vizScreenSMRegion->get_address());
+    Printf("VIZ_ScreenInit: width: %d, height: %d, pitch: %zu, format: ",
+           vizScreenWidth, vizScreenHeight, vizScreenPitch);
 
-        Printf("VIZ_ScreenInit: width: %d, height: %d, pitch: %zu, format: ",
-               vizScreenWidth, vizScreenHeight, vizScreenPitch);
-
-        switch(*viz_screen_format){
-            case VIZ_SCREEN_CRCGCB:             Printf("CRCGCB\n"); break;
-            case VIZ_SCREEN_RGB24:              Printf("RGB24\n"); break;
-            case VIZ_SCREEN_RGBA32:             Printf("RGBA32\n"); break;
-            case VIZ_SCREEN_ARGB32:             Printf("ARGB32\n"); break;
-            case VIZ_SCREEN_CBCGCR:             Printf("CBCGCR\n"); break;
-            case VIZ_SCREEN_BGR24:              Printf("BGR24\n"); break;
-            case VIZ_SCREEN_BGRA32:             Printf("BGRA32\n"); break;
-            case VIZ_SCREEN_ABGR32:             Printf("ABGR32\n"); break;
-            case VIZ_SCREEN_GRAY8:              Printf("GRAY8\n"); break;
-            case VIZ_SCREEN_DOOM_256_COLORS8:   Printf("DOOM_256_COLORS\n"); break;
-            default:                            Printf("UNKNOWN\n");
-        }
-
-        if(*viz_screen_format > VIZ_SCREEN_DOOM_256_COLORS8)
-            VIZ_ReportError("VIZ_ScreenInit", "Unknown screen format.");
-    }
-    catch(bip::interprocess_exception &ex){
-        VIZ_ReportError("VIZ_ScreenInit", "Failed to create buffers.");
+    switch(*viz_screen_format){
+        case VIZ_SCREEN_CRCGCB:             Printf("CRCGCB\n"); break;
+        case VIZ_SCREEN_RGB24:              Printf("RGB24\n"); break;
+        case VIZ_SCREEN_RGBA32:             Printf("RGBA32\n"); break;
+        case VIZ_SCREEN_ARGB32:             Printf("ARGB32\n"); break;
+        case VIZ_SCREEN_CBCGCR:             Printf("CBCGCR\n"); break;
+        case VIZ_SCREEN_BGR24:              Printf("BGR24\n"); break;
+        case VIZ_SCREEN_BGRA32:             Printf("BGRA32\n"); break;
+        case VIZ_SCREEN_ABGR32:             Printf("ABGR32\n"); break;
+        case VIZ_SCREEN_GRAY8:              Printf("GRAY8\n"); break;
+        case VIZ_SCREEN_DOOM_256_COLORS8:   Printf("DOOM_256_COLORS\n"); break;
+        default:                            Printf("UNKNOWN\n");
     }
 }
 
@@ -89,7 +69,7 @@ void VIZ_ScreenFormatUpdate(){
     vizScreenWidth = (unsigned int) screen->GetWidth();
     vizScreenHeight = (unsigned int) screen->GetHeight();
     vizScreenChannelSize = sizeof(BYTE) * vizScreenWidth * vizScreenHeight;
-    vizScreenSize = sizeof(BYTE) * vizScreenWidth * vizScreenHeight;
+    vizScreenSize = vizScreenChannelSize;
     vizScreenPitch = vizScreenWidth;
 
     switch(*viz_screen_format){
@@ -155,25 +135,76 @@ void VIZ_ScreenFormatUpdate(){
             alpha = true; aPos = 3;
             break;
 
-        default:
+        case VIZ_SCREEN_GRAY8:
             break;
+
+        case VIZ_SCREEN_DOOM_256_COLORS8:
+            break;
+
+        default:
+            VIZ_ReportError("VIZ_ScreenFormatUpdate", "Unknown screen format.");
     }
 
-    if(*viz_depth && !*viz_nocheat) {
-        if(vizDepthMap!=NULL) delete vizDepthMap;
-        vizDepthMap = new VIZDepthBuffer(vizScreenWidth, vizScreenHeight);
+    if (vizDepthMap != NULL){
+        delete vizDepthMap;
+        vizDepthMap = NULL;
+    }
+    if (vizLabels != NULL){
+        delete vizLabels;
+        vizLabels = NULL;
     }
 
-    if(*viz_labels && !*viz_nocheat) {
-        if(vizLabels!=NULL) delete vizLabels;
-        vizLabels = new VIZLabelsBuffer(vizScreenWidth, vizScreenHeight);
+    if(!*viz_nocheat) {
+        if (*viz_depth) vizDepthMap = new VIZDepthBuffer(vizScreenWidth, vizScreenHeight);
+        if (*viz_labels) vizLabels = new VIZLabelsBuffer(vizScreenWidth, vizScreenHeight);
     }
 }
 
-void VIZ_CopyBuffer(unsigned int startAddress){
+void VIZ_ScreenUpdateSM(){
+
+    size_t SMBufferSize[4] = {vizScreenSize, 0, 0, 0};
+    size_t SMBuffersSize = vizScreenSize;
+    if (*viz_depth){
+        SMBuffersSize += vizScreenChannelSize;
+        SMBufferSize[1] = vizScreenChannelSize;
+    }
+    if (*viz_labels){
+        SMBuffersSize += vizScreenChannelSize;
+        SMBufferSize[2] = vizScreenChannelSize;
+    }
+    if (*viz_automap){
+        SMBuffersSize += vizScreenSize;
+        SMBufferSize[3] = vizScreenSize;
+    }
+
+    VIZ_SMUpdate(SMBuffersSize);
+
+    try {
+        for (int i = 0; i != 4; ++i) {
+            VIZSMRegion *bufferRegion = &vizSMRegion[i + 2];
+            if (SMBufferSize[i]) {
+                VIZ_SMCreateRegion(bufferRegion, false, VIZ_SMGetRegionOffset(bufferRegion), SMBufferSize[i]);
+                memset(bufferRegion->address, 0, bufferRegion->size);
+            }
+            else VIZ_SMDeleteRegion(bufferRegion);
+
+            VIZ_DEBUG_PRINT("VIZ_ScreenUpdateSM: region: %d, offset %zu, size: %zu\n",
+                            i + 2, bufferRegion->offset, bufferRegion->size);
+        }
+    }
+    catch(...){ // bip::interprocess_exception
+        VIZ_ReportError("VIZ_ScreenUpdateSM", "Failed to map buffers.");
+    }
+
+    vizScreenSM = static_cast<BYTE *>(vizSMRegion[2].address);
+    vizDepthSM = static_cast<BYTE *>(vizSMRegion[3].address);
+    vizLabelsSM = static_cast<BYTE *>(vizSMRegion[4].address);
+    vizAutomapSM = static_cast<BYTE *>(vizSMRegion[5].address);
+}
+
+void VIZ_CopyBuffer(BYTE *vizBuffer){
 
     if(screen == NULL) return;
-    screen->Lock(true);
 
     const BYTE *buffer = screen->GetBuffer();
     PalEntry *palette = screen->GetPalette();
@@ -185,7 +216,7 @@ void VIZ_CopyBuffer(unsigned int startAddress){
     const unsigned int screenWidth = screen->GetWidth();
     const unsigned int bufferPitchWidthDiff = bufferPitch - screenWidth;
 
-    VIZ_DEBUG_PRINT("VIZ_CopyScreenBuffer: startAddress: %d, size: %d\n", startAddress, screenSize);
+    VIZ_DEBUG_PRINT("VIZ_CopyScreenBuffer: size: %d\n", screenSize);
 
     if(vizScreenChannelSize != screenSize || vizScreenWidth != screenWidth)
         VIZ_ReportError("VIZ_CopyScreenBuffer", "Buffers size mismatch.");
@@ -193,62 +224,52 @@ void VIZ_CopyBuffer(unsigned int startAddress){
     if(*viz_screen_format == VIZ_SCREEN_DOOM_256_COLORS8){
         for(unsigned int i = 0; i < screenSize; ++i){
             unsigned int b = i + (i / screenWidth) * bufferPitchWidthDiff;
-            vizScreen[startAddress + i] = buffer[b];
+            vizBuffer[i] = buffer[b];
         }
     }
     else if(*viz_screen_format == VIZ_SCREEN_GRAY8){
         for(unsigned int i = 0; i < screenSize; ++i){
             unsigned int b = i + (i / screenWidth) * bufferPitchWidthDiff;
-            vizScreen[startAddress + i] = 0.21 * palette[buffer[b]].r + 0.72 * palette[buffer[b]].g + 0.07 * palette[buffer[b]].b;
+            vizBuffer[i] = 0.21 * palette[buffer[b]].r + 0.72 * palette[buffer[b]].g + 0.07 * palette[buffer[b]].b;
         }
     }
     else {
         for (unsigned int i = 0; i < screenSize; ++i) {
-            unsigned int pos = startAddress + i * posMulti;
+            unsigned int pos = i * posMulti;
             unsigned int b = i + (i / screenWidth) * bufferPitchWidthDiff;
-            vizScreen[pos + rPos] = palette[buffer[b]].r;
-            vizScreen[pos + gPos] = palette[buffer[b]].g;
-            vizScreen[pos + bPos] = palette[buffer[b]].b;
-            if (alpha) vizScreen[pos + aPos] = 255;
+            vizBuffer[pos + rPos] = palette[buffer[b]].r;
+            vizBuffer[pos + gPos] = palette[buffer[b]].g;
+            vizBuffer[pos + bPos] = palette[buffer[b]].b;
+            if (alpha) vizBuffer[pos + aPos] = 255;
         }
     }
+
+
+}
+
+void VIZ_ScreenUpdate(){
+    screen->Lock(true);
+
+    VIZ_CopyBuffer(vizScreenSM);
+
+    if (*viz_depth && vizDepthMap != NULL)
+        memcpy(vizDepthSM, vizDepthMap->getBuffer(), vizDepthMap->getBufferSize());
+
+    VIZ_DEBUG_PRINT("VIZ_ScreenUpdate: depthBufferSize: %d\n", vizDepthMap->getBufferSize());
+
+    if (*viz_labels && vizLabels != NULL)
+        memcpy(vizLabelsSM, vizLabels->getBuffer(), vizLabels->getBufferSize());
 
     screen->Unlock();
 }
 
-void VIZ_ScreenUpdate(){
-
-    VIZ_CopyBuffer(SCREEN_BUFFER_SM_ADDRESS * vizScreenChannelSize);
-
-    if(*viz_depth || *viz_labels) {
-
-        screen->Lock(true);
-
-        if (*viz_depth) {
-            if (!*viz_nocheat && vizDepthMap!=NULL){
-                memcpy(vizScreen + DEPTH_BUFFER_SM_ADDRESS * vizScreenChannelSize, vizDepthMap->getBuffer(), vizDepthMap->getBufferSize()); }
-            else
-                memset(vizScreen + DEPTH_BUFFER_SM_ADDRESS * vizScreenChannelSize, 0, DEPTH_BUFFER_SM_SIZE * vizScreenChannelSize);
-        }
-
-        if (*viz_labels) {
-            if(!*viz_nocheat && vizLabels!=NULL) memcpy(vizScreen + LABELS_BUFFER_SM_ADDRESS * vizScreenChannelSize, vizLabels->getBuffer(), vizLabels->getBufferSize());
-            else memset(vizScreen + LABELS_BUFFER_SM_ADDRESS * vizScreenChannelSize, 0, LABELS_BUFFER_SM_SIZE * vizScreenChannelSize);
-        }
-
-        screen->Unlock();
-    }
-}
-
 void VIZ_ScreenLevelMapUpdate(){
-    if(*viz_automap){
-        if(!*viz_nocheat) VIZ_CopyBuffer(MAP_BUFFER_SM_ADDRESS * vizScreenChannelSize);
-        else memset(vizScreen + MAP_BUFFER_SM_ADDRESS * vizScreenChannelSize, 0, MAP_BUFFER_SM_SIZE * vizScreenChannelSize);
-    }
+    screen->Lock(true);
+    if(*viz_automap) VIZ_CopyBuffer(vizAutomapSM);
+    screen->Unlock();
 }
 
 void VIZ_ScreenClose(){
-    delete vizScreenSMRegion;
     if(vizDepthMap) delete vizDepthMap;
     if(vizLabels) delete vizLabels;
 }

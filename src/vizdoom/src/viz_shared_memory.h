@@ -26,17 +26,52 @@
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 
+#define VIZ_SM_NAME_BASE "ViZDoomSM"
+#define VIZ_SM_REGION_COUNT 6
+
+#define VIZ_SM_GAMESTATE    vizSMRegion[0]
+#define VIZ_SM_INPUTSTATE   vizSMRegion[1]
+#define VIZ_SM_SCREEN       vizSMRegion[2]
+#define VIZ_SM_DEPTH        vizSMRegion[3]
+#define VIZ_SM_LABELS       vizSMRegion[4]
+#define VIZ_SM_AUTOMAP      vizSMRegion[5]
+
 namespace bip = boost::interprocess;
 
 extern bip::shared_memory_object vizSM;
 extern size_t vizSMSize;
-extern size_t vizSMGameStateAddress;
-extern size_t vizSMInputAddress;
-extern size_t vizSMScreenAddress;
 
-#define VIZ_SM_NAME_BASE "ViZDoomSM"
+struct VIZSMRegion{
+    bip::mapped_region *region;
+    void *address;
+    size_t offset;
+    size_t size;
+    bool writeable;
+
+    VIZSMRegion(){
+        this->region = NULL;
+        this->address = NULL;
+        this->offset = 0;
+        this->size = 0;
+        this->writeable = false;
+    };
+};
+
+extern VIZSMRegion vizSMRegion[VIZ_SM_REGION_COUNT];
+
+extern size_t vizSMGameStateOffset;
+extern size_t vizSMInputOffset;
+extern size_t vizSMBuffersOffset;
 
 void VIZ_SMInit(const char * id);
+
+void VIZ_SMUpdate(size_t buffersSize);
+
+void VIZ_SMCreateRegion(VIZSMRegion* regionPtr, bool writeable, size_t offset, size_t size);
+
+void VIZ_SMDeleteRegion(VIZSMRegion* regionPtr);
+
+size_t VIZ_SMGetRegionOffset(VIZSMRegion* regionPtr);
 
 void VIZ_SMClose();
 

@@ -42,8 +42,7 @@ EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_loop_map)
 EXTERN_CVAR (Bool, viz_override_player)
 
-bip::mapped_region *vizGameStateSMRegion = NULL;
-VIZGameState *vizGameState = NULL;
+VIZGameState *vizGameStateSM = NULL;
 
 int VIZ_CheckItem(FName name) {
     if(VIZ_PLAYER.mo != NULL) {
@@ -114,20 +113,42 @@ int VIZ_CheckSlotWeapons(unsigned int slot){
 void VIZ_GameStateInit(){
 
     try {
-        vizGameStateSMRegion = new bip::mapped_region(vizSM, bip::read_write, vizSMGameStateAddress, sizeof(VIZGameState));
-        vizGameState = static_cast<VIZGameState *>(vizGameStateSMRegion->get_address());
+        VIZSMRegion* gameStateRegion = &vizSMRegion[0];
+        VIZ_SMCreateRegion(gameStateRegion, false, 0, sizeof(VIZGameState));
+        vizGameStateSM = static_cast<VIZGameState *>(gameStateRegion->address);
 
-        VIZ_DEBUG_PRINT("VIZ_GameStateInit: gameStateAddress: %zu, gameStateRealAddress: %p, gameStateSize: %zu\n", vizSMGameStateAddress, vizGameState, sizeof(VIZGameState));
+        VIZ_DEBUG_PRINT("VIZ_GameStateInit: gameStateOffset: %zu, gameStateSize: %zu\n",
+                        gameStateRegion->offset, sizeof(VIZGameState));
     }
     catch(bip::interprocess_exception &ex){
         VIZ_ReportError("VIZ_GameStateInit", "Failed to create game state.");
     }
 
-    vizGameState->VERSION = VIZ_VERSION;
-    strncpy(vizGameState->VERSION_STR, VIZ_VERSION_STR, 8);
-    vizGameState->SM_SIZE = vizSMSize;
+    vizGameStateSM->VERSION = VIZ_VERSION;
+    strncpy(vizGameStateSM->VERSION_STR, VIZ_VERSION_STR, 8);
+    vizGameStateSM->SM_SIZE = vizSMSize;
 
-    VIZ_DEBUG_PRINT("VIZ_GameStateInit: VERSION %d, VERSION_STR: %s, SM_SIZE: %zu\n", vizGameState->VERSION, vizGameState->VERSION_STR, vizGameState->SM_SIZE);
+    VIZ_DEBUG_PRINT("VIZ_GameStateInit: VERSION %d, VERSION_STR: %s, \n", vizGameStateSM->VERSION, vizGameStateSM->VERSION_STR);
+}
+
+void VIZ_GameStateUpdate(){
+    vizGameStateSM->SM_SIZE = vizSMSize;
+
+    vizGameStateSM->SCREEN_WIDTH = vizScreenWidth;
+    vizGameStateSM->SCREEN_HEIGHT = vizScreenHeight;
+    vizGameStateSM->SCREEN_PITCH = vizScreenPitch;
+    vizGameStateSM->SCREEN_SIZE = vizScreenSize;
+    vizGameStateSM->SCREEN_FORMAT = *viz_screen_format;
+
+    vizGameStateSM->DEPTH_BUFFER = *viz_depth && vizDepthMap;
+    vizGameStateSM->LABELS = *viz_labels && vizLabels;
+    vizGameStateSM->AUTOMAP = *viz_automap;
+
+    for(int i = 0; i < VIZ_SM_REGION_COUNT; ++i){
+        vizGameStateSM->SM_REGION_OFFSET[i] = vizSMRegion[i].offset;
+        vizGameStateSM->SM_REGION_SIZE[i] = vizSMRegion[i].size;
+        vizGameStateSM->SM_REGION_WRITEABLE[i] = vizSMRegion[i].writeable;
+    }
 }
 
 void VIZ_GameStateTic(){
@@ -135,114 +156,93 @@ void VIZ_GameStateTic(){
     VIZ_DEBUG_PRINT("VIZ_GameStateTic: tic %d, netgame: %d, multiplayer: %d, recording: %d, playback: %d, in_level: %d, map_tic: %d\n",
                     gametic, netgame, multiplayer, demorecording, demoplayback, gamestate != GS_LEVEL, level.maptime);
 
-    vizGameState->GAME_TIC = (unsigned int)gametic;
-    vizGameState->GAME_STATE = gamestate;
-    vizGameState->GAME_ACTION = gameaction;
-    vizGameState->GAME_STATIC_SEED = staticrngseed;
-    vizGameState->GAME_SETTINGS_CONTROLLER = VIZ_PLAYER.settings_controller;
-    vizGameState->GAME_NETGAME = netgame;
-    vizGameState->GAME_MULTIPLAYER = multiplayer;
-    vizGameState->DEMO_RECORDING = demorecording;
-    vizGameState->DEMO_PLAYBACK = demoplayback;
+    vizGameStateSM->GAME_TIC = (unsigned int)gametic;
+    vizGameStateSM->GAME_STATE = gamestate;
+    vizGameStateSM->GAME_ACTION = gameaction;
+    vizGameStateSM->GAME_STATIC_SEED = staticrngseed;
+    vizGameStateSM->GAME_SETTINGS_CONTROLLER = VIZ_PLAYER.settings_controller;
+    vizGameStateSM->GAME_NETGAME = netgame;
+    vizGameStateSM->GAME_MULTIPLAYER = multiplayer;
+    vizGameStateSM->DEMO_RECORDING = demorecording;
+    vizGameStateSM->DEMO_PLAYBACK = demoplayback;
 
-    vizGameState->SCREEN_WIDTH = vizScreenWidth;
-    vizGameState->SCREEN_HEIGHT = vizScreenHeight;
-    vizGameState->SCREEN_PITCH = vizScreenPitch;
-    vizGameState->SCREEN_SIZE = vizScreenSize;
-    vizGameState->SCREEN_FORMAT = *viz_screen_format;
-
-    vizGameState->SCREEN_BUFFER_ADDRESS = SCREEN_BUFFER_SM_ADDRESS * vizScreenChannelSize;
-    vizGameState->SCREEN_BUFFER_SIZE = SCREEN_BUFFER_SM_SIZE * vizScreenChannelSize;
-
-    vizGameState->DEPTH_BUFFER = *viz_depth && vizDepthMap;
-    vizGameState->DEPTH_BUFFER_ADDRESS = DEPTH_BUFFER_SM_ADDRESS * vizScreenChannelSize;
-    vizGameState->DEPTH_BUFFER_SIZE = DEPTH_BUFFER_SM_SIZE * vizScreenChannelSize;
-
-    vizGameState->LABELS = *viz_labels && vizLabels;
-    vizGameState->LABELS_BUFFER_ADDRESS = LABELS_BUFFER_SM_ADDRESS * vizScreenChannelSize;
-    vizGameState->LABELS_BUFFER_SIZE = LABELS_BUFFER_SM_SIZE * vizScreenChannelSize;
-
-    vizGameState->AUTOMAP = *viz_automap;
-    vizGameState->AUTOMAP_BUFFER_ADDRESS = MAP_BUFFER_SM_ADDRESS * vizScreenChannelSize;
-    vizGameState->AUTOMAP_BUFFER_SIZE = MAP_BUFFER_SM_SIZE * vizScreenChannelSize;
-
-    vizGameState->MAP_START_TIC = (unsigned int)level.starttime;
-    vizGameState->MAP_TIC = (unsigned int)level.maptime;
+    vizGameStateSM->MAP_START_TIC = (unsigned int)level.starttime;
+    vizGameStateSM->MAP_TIC = (unsigned int)level.maptime;
 
     for(int i = 0; i < VIZ_GV_USER_COUNT; ++i){
-        vizGameState->MAP_USER_VARS[i] = ACS_GlobalVars[i+1];
+        vizGameStateSM->MAP_USER_VARS[i] = ACS_GlobalVars[i+1];
     }
 
-    vizGameState->MAP_END = gamestate != GS_LEVEL;
-    if(vizGameState->MAP_END) vizGameState->PLAYER_DEATHCOUNT = 0;
+    vizGameStateSM->MAP_END = gamestate != GS_LEVEL;
+    if(vizGameStateSM->MAP_END) vizGameStateSM->PLAYER_DEATHCOUNT = 0;
 //    if(*viz_loop_map && !level.MapName.Compare(level.NextMap)){
 //        level.NextMap = level.MapName;
 //        level.NextSecretMap = level.MapName;
 //    }
 
-    vizGameState->MAP_REWARD = ACS_GlobalVars[0];
+    vizGameStateSM->MAP_REWARD = ACS_GlobalVars[0];
 
-    bool prevDead = vizGameState->PLAYER_DEAD;
-    vizGameState->PLAYER_READY_TO_RESPAWN = VIZ_PLAYER.playerstate == PST_REBORN;
+    bool prevDead = vizGameStateSM->PLAYER_DEAD;
+    vizGameStateSM->PLAYER_READY_TO_RESPAWN = VIZ_PLAYER.playerstate == PST_REBORN;
 
     if(VIZ_PLAYER.mo != NULL) {
-        vizGameState->PLAYER_HAS_ACTOR = true;
-        vizGameState->PLAYER_DEAD = VIZ_PLAYER.playerstate == PST_DEAD || VIZ_PLAYER.mo->health <= 0;
+        vizGameStateSM->PLAYER_HAS_ACTOR = true;
+        vizGameStateSM->PLAYER_DEAD = VIZ_PLAYER.playerstate == PST_DEAD || VIZ_PLAYER.mo->health <= 0;
     }
     else {
-        vizGameState->PLAYER_HAS_ACTOR = false;
-        vizGameState->PLAYER_DEAD = true;
+        vizGameStateSM->PLAYER_HAS_ACTOR = false;
+        vizGameStateSM->PLAYER_DEAD = true;
     }
 
-    if(vizGameState->PLAYER_DEAD && !prevDead) ++vizGameState->PLAYER_DEATHCOUNT;
+    if(vizGameStateSM->PLAYER_DEAD && !prevDead) ++vizGameStateSM->PLAYER_DEATHCOUNT;
 
-    strncpy(vizGameState->PLAYER_NAME, VIZ_PLAYER.userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
+    strncpy(vizGameStateSM->PLAYER_NAME, VIZ_PLAYER.userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
 
-    vizGameState->MAP_KILLCOUNT = level.killed_monsters;
-    vizGameState->MAP_ITEMCOUNT = level.found_items;
-    vizGameState->MAP_SECRETCOUNT = level.found_secrets;
+    vizGameStateSM->MAP_KILLCOUNT = level.killed_monsters;
+    vizGameStateSM->MAP_ITEMCOUNT = level.found_items;
+    vizGameStateSM->MAP_SECRETCOUNT = level.found_secrets;
 
-    vizGameState->PLAYER_KILLCOUNT = VIZ_PLAYER.killcount;
-    vizGameState->PLAYER_ITEMCOUNT = VIZ_PLAYER.itemcount;
-    vizGameState->PLAYER_SECRETCOUNT = VIZ_PLAYER.secretcount;
-    vizGameState->PLAYER_FRAGCOUNT = VIZ_PLAYER.fragcount;
+    vizGameStateSM->PLAYER_KILLCOUNT = VIZ_PLAYER.killcount;
+    vizGameStateSM->PLAYER_ITEMCOUNT = VIZ_PLAYER.itemcount;
+    vizGameStateSM->PLAYER_SECRETCOUNT = VIZ_PLAYER.secretcount;
+    vizGameStateSM->PLAYER_FRAGCOUNT = VIZ_PLAYER.fragcount;
 
-    vizGameState->PLAYER_ATTACK_READY = (VIZ_PLAYER.WeaponState & WF_WEAPONREADY) != 0;
-    vizGameState->PLAYER_ALTATTACK_READY = (VIZ_PLAYER.WeaponState & WF_WEAPONREADYALT) != 0;
-    vizGameState->PLAYER_ON_GROUND = VIZ_PLAYER.onground;
+    vizGameStateSM->PLAYER_ATTACK_READY = (VIZ_PLAYER.WeaponState & WF_WEAPONREADY) != 0;
+    vizGameStateSM->PLAYER_ALTATTACK_READY = (VIZ_PLAYER.WeaponState & WF_WEAPONREADYALT) != 0;
+    vizGameStateSM->PLAYER_ON_GROUND = VIZ_PLAYER.onground;
 
-    if (vizGameState->PLAYER_HAS_ACTOR) vizGameState->PLAYER_HEALTH = VIZ_PLAYER.mo->health;
-    else vizGameState->PLAYER_HEALTH = VIZ_PLAYER.health;
+    if (vizGameStateSM->PLAYER_HAS_ACTOR) vizGameStateSM->PLAYER_HEALTH = VIZ_PLAYER.mo->health;
+    else vizGameStateSM->PLAYER_HEALTH = VIZ_PLAYER.health;
 
-    vizGameState->PLAYER_ARMOR = VIZ_CheckItem(NAME_BasicArmor);
+    vizGameStateSM->PLAYER_ARMOR = VIZ_CheckItem(NAME_BasicArmor);
 
-    vizGameState->PLAYER_SELECTED_WEAPON_AMMO = VIZ_CheckSelectedWeaponAmmo();
-    vizGameState->PLAYER_SELECTED_WEAPON = VIZ_CheckSelectedWeapon();
+    vizGameStateSM->PLAYER_SELECTED_WEAPON_AMMO = VIZ_CheckSelectedWeaponAmmo();
+    vizGameStateSM->PLAYER_SELECTED_WEAPON = VIZ_CheckSelectedWeapon();
 
     for (unsigned int i = 0; i < VIZ_GV_SLOTS_SIZE; ++i) {
-        vizGameState->PLAYER_AMMO[i] = VIZ_CheckSlotAmmo(i);
-        vizGameState->PLAYER_WEAPON[i] = VIZ_CheckSlotWeapons(i);
+        vizGameStateSM->PLAYER_AMMO[i] = VIZ_CheckSlotAmmo(i);
+        vizGameStateSM->PLAYER_WEAPON[i] = VIZ_CheckSlotWeapons(i);
     }
 
-    vizGameState->PLAYER_NUMBER = (unsigned int)consoleplayer;
-    vizGameState->PLAYER_COUNT = 1;
+    vizGameStateSM->PLAYER_NUMBER = (unsigned int)consoleplayer;
+    vizGameStateSM->PLAYER_COUNT = 1;
     if(netgame || multiplayer) {
 
         //VIZ_DEBUG_PRINT("VIZ_GameStateTic: tic %d, players: \n", gametic);
 
-        vizGameState->PLAYER_COUNT = 0;
+        vizGameStateSM->PLAYER_COUNT = 0;
         for (unsigned int i = 0; i < VIZ_MAX_PLAYERS; ++i) {
             if(playeringame[i]){
-                ++vizGameState->PLAYER_COUNT;
-                vizGameState->PLAYERS_IN_GAME[i] = true;
-                strncpy(vizGameState->PLAYERS_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
-                vizGameState->PLAYERS_FRAGCOUNT[i] = players[i].fragcount;
+                ++vizGameStateSM->PLAYER_COUNT;
+                vizGameStateSM->PLAYER_N_IN_GAME[i] = true;
+                strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
+                vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = players[i].fragcount;
 
-                //VIZ_DEBUG_PRINT("playernum: %d, name: %s\n", i, vizGameState->PLAYERS_NAME[i]);
+                //VIZ_DEBUG_PRINT("playernum: %d, name: %s\n", i, vizGameStateSM->PLAYERS_NAME[i]);
             }
             else{
-                strncpy(vizGameState->PLAYERS_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
-                vizGameState->PLAYERS_FRAGCOUNT[i] = 0;
+                strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
+                vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = 0;
             }
         }
     }
@@ -260,13 +260,13 @@ void VIZ_GameStateUpdateLabels(){
 
         for(auto i = vizLabels->sprites.begin(); i != vizLabels->sprites.end(); ++i){
             if(i->labeled){
-                vizGameState->LABEL[labelCount].objectId = i->actorId;
-                strncpy(vizGameState->LABEL[labelCount].objectName, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN);
-                vizGameState->LABEL[labelCount].value = i->label;
+                vizGameStateSM->LABEL[labelCount].objectId = i->actorId;
+                strncpy(vizGameStateSM->LABEL[labelCount].objectName, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN);
+                vizGameStateSM->LABEL[labelCount].value = i->label;
 
                 VIZ_DEBUG_PRINT("VIZ_GameStateUpdateLabels: labelCount: %d, objectId: %d, objectName: %s, value %d\n",
-                                labelCount+1, vizGameState->LABEL[labelCount].objectId,
-                                vizGameState->LABEL[labelCount].objectName, vizGameState->LABEL[labelCount].value);
+                                labelCount+1, vizGameStateSM->LABEL[labelCount].objectId,
+                                vizGameStateSM->LABEL[labelCount].objectName, vizGameStateSM->LABEL[labelCount].value);
 
                 ++labelCount;
             }
@@ -274,11 +274,11 @@ void VIZ_GameStateUpdateLabels(){
         }
     }
 
-    vizGameState->LABEL_COUNT = labelCount;
+    vizGameStateSM->LABEL_COUNT = labelCount;
 }
 
 void VIZ_GameStateClose(){
-    delete vizGameStateSMRegion;
+    if(vizSMRegion[0].region) delete vizSMRegion[0].region;
 }
 
 

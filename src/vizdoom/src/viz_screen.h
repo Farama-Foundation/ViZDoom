@@ -24,23 +24,12 @@
 #define __VIZ_SCREEN_H__
 
 #include <stddef.h>
+#include "viz_shared_memory.h"
 
-extern unsigned int vizScreenWidth;
-extern unsigned int vizScreenHeight;
-extern size_t vizScreenPitch;
-extern size_t vizScreenSize;
-extern size_t vizScreenChannelSize;
+#include "v_video.h"
 
-#define SCREEN_SM_SIZE sizeof(BYTE) * screen->GetWidth() * screen->GetHeight() * 10
-
-#define SCREEN_BUFFER_SM_ADDRESS 0
-#define SCREEN_BUFFER_SM_SIZE 4
-#define DEPTH_BUFFER_SM_ADDRESS 4
-#define DEPTH_BUFFER_SM_SIZE 1
-#define LABELS_BUFFER_SM_ADDRESS 5
-#define LABELS_BUFFER_SM_SIZE 1
-#define MAP_BUFFER_SM_ADDRESS 6
-#define MAP_BUFFER_SM_SIZE 4
+extern unsigned int vizScreenWidth, vizScreenHeight;
+extern size_t vizScreenPitch, vizScreenSize, vizScreenChannelSize;
 
 enum VIZScreenFormat {
     VIZ_SCREEN_CRCGCB           = 0,
@@ -59,9 +48,11 @@ void VIZ_ScreenInit();
 
 void VIZ_ScreenFormatUpdate();
 
+void VIZ_ScreenUpdateSM();
+
 void VIZ_ScreenSetSize();
 
-void VIZ_CopyBuffer(unsigned int startPosition);
+void VIZ_CopyBuffer(BYTE* vizBuffer);
 
 void VIZ_ScreenUpdate();
 

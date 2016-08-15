@@ -118,7 +118,6 @@
 EXTERN_CVAR (Bool, viz_controlled)
 EXTERN_CVAR (Bool, viz_async)
 EXTERN_CVAR (Bool, viz_allow_input)
-EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_nosound)
 EXTERN_CVAR (Bool, viz_render_all)
 
@@ -961,16 +960,13 @@ void D_Display ()
 
 //VIZDOOM_CODE
 void VIZ_D_MapDisplay(){
-
-	if(!viz_automap) return;
-
 	//enable automap
 	bool _automapactive = automapactive;
 	bool _viewactive = viewactive;
 	automapactive = true;
 	viewactive = false;
 
-	//disable additional buffers
+	//disable additional buffers in this pass
 	VIZDepthBuffer *_vizDepthMap = vizDepthMap;
 	VIZLabelsBuffer *_vizLabels = vizLabels;
 	vizDepthMap = NULL;

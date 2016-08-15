@@ -54,9 +54,13 @@ namespace vizdoom {
         this->MQDoom = nullptr;
 
         /* Shared memory */
-        this->InputSMRegion = nullptr;
-        this->GameStateSMRegion = nullptr;
-        this->ScreenSMRegion = nullptr;
+        this->SM = nullptr;
+        this->gameState = nullptr;
+        this->input = nullptr;
+        this->screenBuffer = nullptr;
+        this->depthBuffer = nullptr;
+        this->labelsBuffer = nullptr;
+        this->automapBuffer = nullptr;
 
         /* Threads */
         this->signalThread = nullptr;
@@ -92,13 +96,10 @@ namespace vizdoom {
         this->screenFormat = CRCGCB;
 
         this->depth = false;
-        this->depthBuffer = nullptr;
 
         this->labels = false;
-        this->labelsBuffer = nullptr;
 
         this->automap = false;
-        this->automapBuffer = nullptr;
         this->amMode = NORMAL;
         this->amRotate = false;
         this->amTextures = true;
@@ -127,7 +128,7 @@ namespace vizdoom {
         br::uniform_int_distribution<> rngSeedDist(0, UINT_MAX);
         this->setDoomRngSeed(rngSeedDist(this->instanceRng));
 
-        this->_input = new InputState();
+        this->_input = new SMInputState();
     }
 
     DoomController::~DoomController() {
@@ -159,7 +160,14 @@ namespace vizdoom {
                 this->waitForDoomStart();
 
                 // Open shared memory
-                this->SMInit();
+                this->SM = new SharedMemory(SM_NAME_BASE + this->instanceId);
+
+                this->gameState = this->SM->getGameState();
+                this->input = this->SM->getInputState();
+                this->screenBuffer = this->SM->getScreenBuffer();
+                this->depthBuffer = this->SM->getDepthBuffer();
+                this->labelsBuffer = this->SM->getLabelsBuffer();
+                this->automapBuffer = this->SM->getAutomapBuffer();
 
                 // Check version
                 if(this->gameState->VERSION != VIZDOOM_LIB_VERSION){
@@ -214,7 +222,10 @@ namespace vizdoom {
             this->doomThread = NULL;
         }
 
-        this->SMClose();
+        if(this->SM){
+            delete this->SM;
+            this->SM = nullptr;
+        }
 
         if (this->MQDoom) {
             delete this->MQDoom;
@@ -748,9 +759,9 @@ namespace vizdoom {
     uint8_t * const DoomController::getLabelsBuffer(){ return this->labelsBuffer; }
     uint8_t * const DoomController::getAutomapBuffer(){ return this->automapBuffer; }
 
-    DoomController::InputState * const DoomController::getInput() { return this->input; }
+    SMInputState * const DoomController::getInput() { return this->input; }
 
-    DoomController::GameState * const DoomController::getGameState() { return this->gameState; }
+    SMGameState * const DoomController::getGameState() { return this->gameState; }
 
     int DoomController::getButtonState(Button button){
         if(this->doomRunning) return this->input->BT[button];
@@ -1224,65 +1235,5 @@ namespace vizdoom {
             this->MQController->send(MSG_CODE_DOOM_ERROR, "Unexpected ViZDoom instance crash.");
         }
         this->MQController->send(MSG_CODE_DOOM_PROCESS_EXIT);
-    }
-
-    /* Shared memory */
-    /*----------------------------------------------------------------------------------------------------------------*/
-
-    void DoomController::SMInit() {
-        this->SMName = std::string(SM_NAME_BASE) + instanceId;
-        //bip::shared_memory_object::remove(this->SMName.c_str());
-        try {
-            this->SM = bip::shared_memory_object(bip::open_only, this->SMName.c_str(), bip::read_write);
-            this->SM.get_size(this->SMSize);
-
-            size_t SMGameStateAddress = 0;
-            this->GameStateSMRegion = new bip::mapped_region(this->SM, bip::read_only, SMGameStateAddress, sizeof(DoomController::GameState));
-            this->gameState = static_cast<DoomController::GameState *>(this->GameStateSMRegion->get_address());
-
-            size_t SMInputAddress = sizeof(DoomController::GameState);
-            this->InputSMRegion = new bip::mapped_region(this->SM, bip::read_write, SMInputAddress, sizeof(DoomController::InputState));
-            this->input = static_cast<DoomController::InputState *>(this->InputSMRegion->get_address());
-            
-            this->screenWidth = this->gameState->SCREEN_WIDTH;
-            this->screenHeight = this->gameState->SCREEN_HEIGHT;
-            this->screenPitch = this->gameState->SCREEN_PITCH;
-            this->screenSize = this->gameState->SCREEN_SIZE;
-            this->screenFormat = (ScreenFormat)this->gameState->SCREEN_FORMAT;
-
-            size_t _screenSize = sizeof(uint8_t) * this->gameState->SCREEN_WIDTH * this->gameState->SCREEN_HEIGHT * 10;
-
-            size_t SMScreenAddress = sizeof(DoomController::GameState) + sizeof(DoomController::InputState);
-            this->ScreenSMRegion = new bip::mapped_region(this->SM, bip::read_only, SMScreenAddress, _screenSize);
-            this->screen = static_cast<uint8_t *>(this->ScreenSMRegion->get_address());
-
-            this->screenBuffer = this->screen + this->gameState->SCREEN_BUFFER_ADDRESS;
-            this->depthBuffer = this->screen + this->gameState->DEPTH_BUFFER_ADDRESS;
-            this->labelsBuffer = this->screen + this->gameState->LABELS_BUFFER_ADDRESS;
-            this->automapBuffer = this->screen + this->gameState->AUTOMAP_BUFFER_ADDRESS;
-        }
-        catch(...) { //bip::interprocess_exception
-            throw SharedMemoryException("Failed to open shared memory.");
-        }
-
-        size_t SMExpectedSize = sizeof(DoomController::GameState) + sizeof(DoomController::InputState) + this->screenSize;
-        if(this->gameState->SM_SIZE != this->SMSize) throw SharedMemoryException("Memory size does not match the the expected size.");
-    }
-
-    void DoomController::SMClose() {
-        bip::shared_memory_object::remove(this->SMName.c_str());
-
-        if(this->InputSMRegion) {
-            delete this->InputSMRegion;
-            this->InputSMRegion = NULL;
-        }
-        if(this->GameStateSMRegion) {
-            delete this->GameStateSMRegion;
-            this->GameStateSMRegion = NULL;
-        }
-        if(this->ScreenSMRegion) {
-            delete this->ScreenSMRegion;
-            this->ScreenSMRegion = NULL;
-        }
     }
 }
