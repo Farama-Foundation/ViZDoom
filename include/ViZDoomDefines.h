@@ -131,7 +131,7 @@ namespace vizdoom{
 
     enum AutomapMode {
         NORMAL,             // Only level architecture the player has seen is shown.
-        FULL,               // All architecture is shown, regardless of whether or not the player has seen it.
+        WHOLE,               // All architecture is shown, regardless of whether or not the player has seen it.
         OBJECTS,            // In addition to the previous, shows all things in the map as arrows pointing in
                             // the direction they are facing.
         OBJECTS_WITH_SIZE   // In addition to the previous, all things are wrapped in a box showing their size.

@@ -46,8 +46,12 @@ namespace vizdoom {
         return bfs::exists(path) && bfs::is_regular_file(path);
     }
 
-    std::string addToPath(std::string basePath, std::string additon){
-        //canonical(const path& p, const path& base = current_path());
+    std::string pathFromBase(std::string basePath, std::string relativePath){
+        bfs::path base(basePath);
+        base.remove_filename();
+        bfs::path relative(relativePath);
+        bfs::path out = bfs::canonical(relative, base);
+        return out.string();
     }
 
     std::string prepareFilePath(std::string filePath){

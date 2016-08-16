@@ -36,7 +36,7 @@ namespace vizdoom {
         ConfigLoader(DoomGame *game);
         ~ConfigLoader();
 
-        bool load(std::string filepath);
+        bool load(std::string filePath);
 
     protected:
 
@@ -56,6 +56,7 @@ namespace vizdoom {
 
     private:
         DoomGame *game;
+        std::string filePath;
     };
 }
 

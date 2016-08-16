@@ -211,7 +211,7 @@ BOOST_PYTHON_MODULE(vizdoom)
 
     enum_<AutomapMode>("AutomapMode")
         ENUM_VAL_2_PYT(NORMAL)
-        ENUM_VAL_2_PYT(FULL)
+        ENUM_VAL_2_PYT(WHOLE)
         ENUM_VAL_2_PYT(OBJECTS)
         ENUM_VAL_2_PYT(OBJECTS_WITH_SIZE);
 

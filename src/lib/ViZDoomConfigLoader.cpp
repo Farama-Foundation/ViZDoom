@@ -22,6 +22,7 @@
 
 #include "ViZDoomConfigLoader.h"
 #include "ViZDoomExceptions.h"
+#include "ViZDoomPathHelpers.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim_all.hpp>
@@ -296,19 +297,20 @@ namespace vizdoom {
         return true;
     }
 
-    bool ConfigLoader::load(std::string filename) {
+    bool ConfigLoader::load(std::string filePath) {
+        this->filePath = filePath;
         bool success = true;
-        std::ifstream file(filename.c_str());
+        std::ifstream file(filePath.c_str());
 
         if (!file.good()) {
-            throw FileDoesNotExistException(filename);
+            throw FileDoesNotExistException(filePath);
         }
         std::string line;
-        int line_number = 0;
+        int lineNumber = 0;
 
         /* Process every line. */
         while (!file.eof()) {
-            ++line_number;
+            ++lineNumber;
             using namespace b::algorithm;
 
             std::getline(file, line);
@@ -328,7 +330,7 @@ namespace vizdoom {
 
             std::string key;
             std::string val;
-            std::string raw_val;
+            std::string rawVal;
             if (append_sign_pos != std::string::npos) {
                 key = line.substr(0, append_sign_pos);
                 val = line.substr(append_sign_pos + 2);
@@ -339,23 +341,23 @@ namespace vizdoom {
                 val = line.substr(equals_sign_pos + 1);
             }
             else {
-                std::cerr << "WARNING! Loading config from: \"" << filename << "\". Syntax erorr in line #" <<
-                    line_number << ". Line ignored.\n";
+                std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Syntax erorr in line #" <<
+                    lineNumber << ". Line ignored.\n";
 
                 success = false;
                 continue;
             }
 
 
-            raw_val = val;
+            rawVal = val;
             trim_all(key);
             trim_all(val);
-            std::string original_val = val;
+            std::string originalVal = val;
             to_lower(val);
             to_lower(key);
             if (key.empty()) {
-                std::cerr << "WARNING! Loading config from: \"" << filename << "\". Empty key in line #" <<
-                    line_number << ". Line ignored.\n";
+                std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Empty key in line #" <<
+                    lineNumber << ". Line ignored.\n";
 
                 success = false;
                 continue;
@@ -365,15 +367,15 @@ namespace vizdoom {
             /* Parse enum list properties */
 
             if (key == "available_buttons" || key == "availablebuttons") {
-                std::vector<std::string> str_buttons;
-                int start_line = line_number;
-                bool parse_success = ConfigLoader::parseListProperty(line_number, val, file, str_buttons);
-                if (parse_success) {
+                std::vector<std::string> strButtons;
+                int start_line = lineNumber;
+                bool parseSuccess = ConfigLoader::parseListProperty(lineNumber, val, file, strButtons);
+                if (parseSuccess) {
                     unsigned int i = 0;
                     try {
                         std::vector<Button> buttons;
-                        for (i = 0; i < str_buttons.size(); ++i) {
-                            buttons.push_back(ConfigLoader::stringToButton(str_buttons[i]));
+                        for (i = 0; i < strButtons.size(); ++i) {
+                            buttons.push_back(ConfigLoader::stringToButton(strButtons[i]));
 
                         }
                         if (!append)
@@ -383,16 +385,16 @@ namespace vizdoom {
                         }
                     }
                     catch (std::exception) {
-                        std::cerr << "WARNING! Loading config from: \"" << filename <<
-                            "\". Unsupported value in lines " << start_line << "-" << line_number << ": " <<
-                            str_buttons[i] << ". Lines ignored.\n";
+                        std::cerr << "WARNING! Loading config from: \"" << filePath <<
+                            "\". Unsupported value in lines " << start_line << "-" << lineNumber << ": " <<
+                            strButtons[i] << ". Lines ignored.\n";
 
                         success = false;
                     }
                 }
                 else {
-                    std::cerr << "WARNING! Loading config from: \"" << filename << "\". Syntax error in lines " <<
-                        start_line << "-" << line_number << ". Lines ignored.\n";
+                    std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Syntax error in lines " <<
+                        start_line << "-" << lineNumber << ". Lines ignored.\n";
 
                     success = false;
                 }
@@ -402,9 +404,9 @@ namespace vizdoom {
 
             if (key == "available_game_variables" || key == "availablegamevariables") {
                 std::vector<std::string> str_variables;
-                int start_line = line_number;
-                bool parse_success = ConfigLoader::parseListProperty(line_number, val, file, str_variables);
-                if (parse_success) {
+                int start_line = lineNumber;
+                bool parseSuccess = ConfigLoader::parseListProperty(lineNumber, val, file, str_variables);
+                if (parseSuccess) {
                     unsigned int i = 0;
                     try {
                         std::vector<GameVariable> variables;
@@ -419,16 +421,17 @@ namespace vizdoom {
                         }
                     }
                     catch (std::exception) {
-                        std::cerr << "WARNING! Loading config from: \"" << filename <<
-                            "\". Unsupported value in lines " << start_line << "-" << line_number << ": " <<
+                        std::cerr << "WARNING! Loading config from: \"" << filePath <<
+                            "\". Unsupported value in lines " << start_line << "-" << lineNumber << ": " <<
                             str_variables[i] << ". Lines ignored.\n";
 
                         success = false;
                     }
                 }
                 else {
-                    std::cerr << "WARNING! Loading config from: \"" << filename << "\". Syntax error in lines " <<
-                    start_line << "-" << line_number << ". Lines ignored.\n";
+                    std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Syntax error in lines " <<
+                        start_line << "-" << lineNumber << ". Lines ignored.\n";
+
                     success = false;
                 }
 
@@ -440,14 +443,15 @@ namespace vizdoom {
                 if (!append) {
                     this->game->clearGameArgs();
                 }
-                this->game->addGameArgs(original_val);
+                this->game->addGameArgs(originalVal);
                 continue;
             }
 
             /* Check if "+=" was not used for non-list property */
             if (append) {
-                std::cerr << "WARNING! Loading config from: \"" << filename <<
-                "\". \"+=\" is not supported for non-list properties. Line #" << line_number << " ignored.\n";
+                std::cerr << "WARNING! Loading config from: \"" << filePath <<
+                    "\". \"+=\" is not supported for non-list properties. Line #" << lineNumber << " ignored.\n";
+
                 success = false;
                 continue;
             }
@@ -455,8 +459,9 @@ namespace vizdoom {
 
             /* Check if value is not empty */
             if (val.empty()) {
-                std::cerr << "WARNING! Loading config from: \"" << filename << "\". Empty value in line #" <<
-                line_number << ". Line ignored.\n";
+                std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Empty value in line #" <<
+                    lineNumber << ". Line ignored.\n";
+
                 success = false;
                 continue;
             }
@@ -481,8 +486,8 @@ namespace vizdoom {
                 }
             }
             catch (b::bad_lexical_cast &) {
-                std::cerr << "WARNING! Loading config from: \"" << filename <<
-                    "\". Unsigned int value expected insted of: " << raw_val << " in line #" << line_number <<
+                std::cerr << "WARNING! Loading config from: \"" << filePath <<
+                    "\". Unsigned int value expected insted of: " << rawVal << " in line #" << lineNumber <<
                     ". Line ignored.\n";
 
                 success = false;
@@ -501,8 +506,8 @@ namespace vizdoom {
                 }
             }
             catch (b::bad_lexical_cast &) {
-                std::cerr << "WARNING! Loading config from: \"" << filename << "\". Float value expected insted of: " <<
-                    raw_val << " in line #" << line_number << ". Line ignored.\n";
+                std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Float value expected insted of: " <<
+                    rawVal << " in line #" << lineNumber << ". Line ignored.\n";
 
                 success = false;
                 continue;
@@ -514,35 +519,50 @@ namespace vizdoom {
                 continue;
             }
             if (key == "vizdoom_path" || key == "vizdoompath") {
-                this->game->setViZDoomPath(original_val);
+                this->game->setViZDoomPath(pathFromBase(this->filePath, originalVal));
                 continue;
             }
             if (key == "doom_game_path" || key == "doomgamepath") {
-                this->game->setDoomGamePath(original_val);
+                this->game->setDoomGamePath(pathFromBase(this->filePath, originalVal));
                 continue;
             }
             if (key == "doom_scenario_path" || key == "doomscenariopath") {
-                this->game->setDoomScenarioPath(original_val);
+                this->game->setDoomScenarioPath(pathFromBase(this->filePath, originalVal));
                 continue;
             }
             if (key == "doom_config_path" || key == "doomconfigpath") {
-                this->game->setDoomConfigPath(original_val);
+                this->game->setDoomConfigPath(pathFromBase(this->filePath, originalVal));
                 continue;
             }
 
-
             /* Parse bool properties */
             try {
-                if (key == "console_enabled" || key == "consoleenabled") {
-                    this->game->setConsoleEnabled(stringToBool(val));
+                if (key == "depth_buffer_enabled" || key == "depthbufferenabled") {
+                    this->game->setDepthBufferEnabled(stringToBool(val));
                     continue;
                 }
-                if (key == "sound_enabled" || key == "soundenabled") {
-                    this->game->setSoundEnabled(stringToBool(val));
+                if (key == "labels_buffer_enabled" || key == "labelsbufferenabled") {
+                    this->game->setLabelsBufferEnabled(stringToBool(val));
+                    continue;
+                }
+                if (key == "automap_buffer_enabled" || key == "automapbufferenabled") {
+                    this->game->setAutomapBufferEnabled(stringToBool(val));
+                    continue;
+                }
+                if (key == "automap_rotate" || key == "automaprotate") {
+                    this->game->setAutomapBufferEnabled(stringToBool(val));
+                    continue;
+                }
+                if (key == "automap_render_textures" || key == "automaprendertextures") {
+                    this->game->setAutomapRenderTextures(stringToBool(val));
                     continue;
                 }
                 if (key == "render_hud" || key == "renderhud") {
                     this->game->setRenderHud(stringToBool(val));
+                    continue;
+                }
+                if (key == "render_minimal_hud" || key == "renderminimalhud") {
+                    this->game->setRenderMinimalHud(stringToBool(val));
                     continue;
                 }
                 if (key == "render_weapon" || key == "renderweapon") {
@@ -553,22 +573,38 @@ namespace vizdoom {
                     this->game->setRenderCrosshair(stringToBool(val));
                     continue;
                 }
+                if (key == "render_decals" || key == "renderdecals") {
+                    this->game->setRenderDecals(stringToBool(val));
+                    continue;
+                }
                 if (key == "render_particles" || key == "renderparticles") {
                     this->game->setRenderParticles(stringToBool(val));
                     continue;
                 }
-                if (key == "render_decals" || key == "renderdecals") {
-                    this->game->setRenderDecals(stringToBool(val));
+                if (key == "effects_sprites" || key == "effectssprites") {
+                    this->game->setRenderEffectsSprites(stringToBool(val));
+                    continue;
+                }
+                if (key == "render_messages" || key == "rendermessages") {
+                    this->game->setRenderMessages(stringToBool(val));
                     continue;
                 }
                 if (key == "window_visible" || key == "windowvisible") {
                     this->game->setWindowVisible(stringToBool(val));
                     continue;
                 }
+                if (key == "console_enabled" || key == "consoleenabled") {
+                    this->game->setConsoleEnabled(stringToBool(val));
+                    continue;
+                }
+                if (key == "sound_enabled" || key == "soundenabled") {
+                    this->game->setSoundEnabled(stringToBool(val));
+                    continue;
+                }
             }
             catch (std::exception) {
-                std::cerr << "WARNING! Loading config from: \"" << filename <<
-                    "\". Boolean value expected insted of: " << raw_val << " in line #" << line_number <<
+                std::cerr << "WARNING! Loading config from: \"" << filePath <<
+                    "\". Boolean value expected insted of: " << rawVal << " in line #" << lineNumber <<
                     ". Line ignored.\n";
 
                 success = false;
@@ -596,9 +632,35 @@ namespace vizdoom {
                     continue;
                 }
 
-                std::cerr << "WARNING! Loading config from: \"" << filename <<
-                    "\". (ASYNC_)SPECTATOR || PLAYER expected instead of: " << raw_val << " in line #" << line_number <<
+                std::cerr << "WARNING! Loading config from: \"" << filePath <<
+                    "\". (ASYNC_)SPECTATOR || PLAYER expected instead of: " << rawVal << " in line #" << lineNumber <<
                     ". Line ignored.\n";
+
+                success = false;
+                continue;
+            }
+
+            if (key == "automap_mode" || key == "automapmode") {
+                if (val == "normal") {
+                    this->game->setAutomapMode(NORMAL);
+                    continue;
+                }
+                if (val == "whole") {
+                    this->game->setAutomapMode(WHOLE);
+                    continue;
+                }
+                if (val == "objects") {
+                    this->game->setAutomapMode(OBJECTS);
+                    continue;
+                }
+                if (val == "objects_with_size") {
+                    this->game->setAutomapMode(OBJECTS_WITH_SIZE);
+                    continue;
+                }
+
+                std::cerr << "WARNING! Loading config from: \"" << filePath <<
+                    "\". NORMAL || WHOLE || OBJECTS || OBJECTS_WITH_SIZE expected instead of: " << rawVal <<
+                    " in line #" << lineNumber << ". Line ignored.\n";
 
                 success = false;
                 continue;
@@ -620,25 +682,26 @@ namespace vizdoom {
 
                     Button button = ConfigLoader::stringToButton(val.substr(0, space));
                     val = val.substr(space + 1);
-                    unsigned int max_value = b::lexical_cast<unsigned int>(val);
+                    unsigned int maxValue = b::lexical_cast<unsigned int>(val);
 
                     if (val[0] == '-') throw b::bad_lexical_cast();
 
-                    this->game->setButtonMaxValue(button, max_value);
+                    this->game->setButtonMaxValue(button, maxValue);
                     continue;
                 }
             }
             catch (std::exception &) {
-                std::cerr << "WARNING! Loading config from: \"" << filename << "\". Unsupported value: " << raw_val <<
-                " in line #" << line_number << ". Line ignored.\n";
+                std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Unsupported value: " << rawVal <<
+                    " in line #" << lineNumber << ". Line ignored.\n";
+
                 success = false;
                 continue;
             }
 
-            std::cerr << "WARNING! Loading config from: \"" << filename << "\". Unsupported key: " << key <<
-            " in line #" << line_number << ". Line ignored.\n";
-            success = false;
+            std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Unsupported key: " << key <<
+                " in line #" << lineNumber << ". Line ignored.\n";
 
+            success = false;
         }
 
         file.close();
