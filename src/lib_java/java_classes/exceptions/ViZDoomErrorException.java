@@ -1,5 +1,5 @@
 package vizdoom;
-public class ViZDoomErrorException extends Exception {
+public class ViZDoomErrorException extends java.lang.RuntimeException {
     public ViZDoomErrorException(String message) {
         super(message);
     }
