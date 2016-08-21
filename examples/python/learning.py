@@ -173,7 +173,7 @@ if params_loadfile is not None:
 # Makes an action according to epsilon greedy policy and performs a single backpropagation on the network.
 def perform_learning_step():
     # Checks the state and downsamples it.
-    s1 = convert(game.get_state().image_buffer)
+    s1 = convert(game.get_state().screen_buffer)
 
     # With probability epsilon makes a random action.
     if random() <= epsilon:
@@ -187,7 +187,7 @@ def perform_learning_step():
     if game.is_episode_finished():
         s2 = None
     else:
-        s2 = convert(game.get_state().image_buffer)
+        s2 = convert(game.get_state().screen_buffer)
     # Remember the transition that was just experienced.
     memory.add_transition(s1, a, s2, reward)
 
@@ -248,7 +248,7 @@ for epoch in range(epochs):
     for test_episode in tqdm(range(test_episodes_per_epoch)):
         game.new_episode()
         while not game.is_episode_finished():
-            state = convert(game.get_state().image_buffer).reshape([1, 1, downsampled_y, downsampled_x])
+            state = convert(game.get_state().screen_buffer).reshape([1, 1, downsampled_y, downsampled_x])
             best_action_index = get_best_action(state)
 
             game.make_action(actions[best_action_index], skiprate + 1)
