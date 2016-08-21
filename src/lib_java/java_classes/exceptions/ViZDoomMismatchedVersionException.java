@@ -1,5 +1,5 @@
 package vizdoom;
-public class ViZDoomMismatchedVersionException extends Exception {
+public class ViZDoomMismatchedVersionException extends java.lan.RuntimeException {
     public ViZDoomMismatchedVersionException(String message) {
         super(message);
     }
