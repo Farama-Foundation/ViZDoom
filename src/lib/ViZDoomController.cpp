@@ -443,7 +443,6 @@ namespace vizdoom {
                 }
 
             } while (this->gameState->MAP_END
-                     || this->gameState->PLAYER_DEAD
                      || this->gameState->MAP_TIC > this->mapLastTic);
 
             this->waitForDoomMapStartTime();

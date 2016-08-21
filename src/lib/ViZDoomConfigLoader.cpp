@@ -581,7 +581,7 @@ namespace vizdoom {
                     this->game->setRenderParticles(stringToBool(val));
                     continue;
                 }
-                if (key == "effects_sprites" || key == "effectssprites") {
+                if (key == "render_effects_sprites" || key == "rendereffectssprites") {
                     this->game->setRenderEffectsSprites(stringToBool(val));
                     continue;
                 }

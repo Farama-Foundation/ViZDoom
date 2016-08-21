@@ -47,9 +47,9 @@ void VIZ_Command(char * cmd){
 
 bool VIZ_CommmandFilter(const char *cmd){
 
-    if(!vizInputInited || !*viz_allow_input) return true;
-
     VIZ_DEBUG_PRINT("VIZ_CommmandFilter: gametic: %d, cmd: %s\n", gametic, cmd);
+
+    if(!vizInputInited || !*viz_allow_input) return true;
 
     bool action = false;
     int state = 1;
