@@ -1018,7 +1018,7 @@ JNIEXPORT jint JNICALL Java_vizdoom_DoomGame_getEpisodeStartTime
 JNIEXPORT void JNICALL Java_vizdoom_DoomGame_setEpisodeStartTime
   (JNIEnv *env, jobject obj, jint tics){
     DoomGame* game = GetObject(env,obj);
-    game->setEpisodeTimeout(tics);
+    game->setEpisodeStartTime(tics);
 }
 
 /*
