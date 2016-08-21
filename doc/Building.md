@@ -28,9 +28,6 @@ make
 
 ## Windows
 
-We are providing compiled runtime binaries and development libraries for Windows:
-[1.0.4](https://github.com/Marqt/ViZDoom/releases/download/1.0.4/ViZDoom-1.0.4-Win-x86_64.zip) or [1.1.0pre](https://github.com/Marqt/ViZDoom/releases/download/1.1.0pre-CIG2016-warm-up-fixed/ViZDoom-1.1.0pre-CIG2016-warm-up-Win-x86_64.zip).
-
 ### Dependencies
 * CMake 2.8+
 * Visual Studio 2012+
@@ -81,12 +78,12 @@ Craeting symlink to the app executable may be need:
 ## Compilation output
 Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should contain following files.
 
-* ``bin/vizdoom/vizdoom.exe`` - ViZDoom executable
+* ``bin/vizdoom / vizdoom.exe`` - ViZDoom executable
 * ``bin/vizdoom.pk3`` - resources file used by ViZDoom (needed by ViZDoom executable)
-* ``bin/libvizdoom.a/vizdoom.lib`` - C++ ViZDoom static library
-* ``bin/libvizdoom.so/vizdoom.dll`` -  C++ ViZDoom dynamically linked library
-* ``bin/python/vizdoom.so/vizdoom.pyd`` - ViZDoom Python module
-* ``bin/python3/vizdoom.so/vizdoom.pyd`` - ViZDoom Python3 module
-* ``bin/java/libvizdoom.so/vizdoom.dll`` -  ViZDoom library for Java
+* ``bin/libvizdoom.a / vizdoom.lib`` - C++ ViZDoom static library
+* ``bin/libvizdoom.so / vizdoom.dll`` -  C++ ViZDoom dynamically linked library
+* ``bin/python/vizdoom.so / vizdoom.pyd`` - ViZDoom Python module
+* ``bin/python3/vizdoom.so / vizdoom.pyd`` - ViZDoom Python3 module
+* ``bin/java/libvizdoom.so / vizdoom.dll`` -  ViZDoom library for Java
 * ``bin/java/vizdoom.jar`` -  Contains ViZDoom Java classes
-* ``bin/lua/vizdoom.so/vizdoom.dll`` - ViZDoom Lua module
+* ``bin/lua/vizdoom.so / vizdoom.dll`` - ViZDoom Lua module
