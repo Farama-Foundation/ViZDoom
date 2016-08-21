@@ -468,7 +468,7 @@ namespace vizdoom {
 
             /* Parse int properties */
             try {
-                if (key == "seed" || key == "seed") {
+                if (key == "seed") {
                     this->game->setSeed(stringToUint(val));
                     continue;
                 }
@@ -482,6 +482,10 @@ namespace vizdoom {
                 }
                 if (key == "doom_skill" || key == "doomskill") {
                     this->game->setDoomSkill(stringToUint(val));
+                    continue;
+                }
+                if (key == "ticrate") {
+                    this->game->setTicrate(stringToUint(val));
                     continue;
                 }
             }
@@ -500,7 +504,7 @@ namespace vizdoom {
                     this->game->setLivingReward(b::lexical_cast<double>(val));
                     continue;
                 }
-                if (key == "deathpenalty" || key == "death_penalty") {
+                if (key == "death_penalty" || key == "deathpenalty") {
                     this->game->setDeathPenalty(b::lexical_cast<double>(val));
                     continue;
                 }
