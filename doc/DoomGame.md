@@ -7,7 +7,7 @@ TODO:
 ## Flow control methods
 ---
 
-### init
+### `init`
 
 | C++ | `bool init()` |
 | :-- | :-- |
@@ -21,7 +21,7 @@ Some configuration options cannot be changed after calling method.
 Init returns true when the game was started properly and false otherwise.
 
 
-### close
+### `close`
 
 | C++ | `void close()` |
 | :-- | :-- |
@@ -34,7 +34,7 @@ It is automatically invoked by the destructor.
 Game can be initialized again after being closed.
 
 
-### newEpisode
+### `newEpisode`
 
 | C++ | `void newEpisode(std::string filePath = "")` |
 | :-- | :-- |
@@ -50,7 +50,7 @@ In multiplayer game, host can call this method to finish the game.
 Then the rest of the players must also call this method to start a new episode.
 
 
-### replayEpisode
+### `replayEpisode`
 
 | C++ | `void replayEpisode(std::string filePath)` |
 | :-- | :-- |
@@ -58,14 +58,14 @@ Then the rest of the players must also call this method to start a new episode.
 | Java | `void replayEpisode(String filePath)` |
 | Python | `void replay_episode(str filePath)` |
 
-Replays recorded episode from the given filePath.
+Replays recorded episode from the given file.
 After calling this method, first state from replay will be available.
 All rewards, variables and state are available during replaying episode.
 
 See also: record_episodes.py and record_multiplayer.py examples.
 
 
-### isRunning
+### `isRunning`
 
 | C++ | `bool isRunning()` |
 | :-- | :-- |
@@ -76,7 +76,7 @@ See also: record_episodes.py and record_multiplayer.py examples.
 Checks if the ViZDoom game instance is running.
 
 
-### setAction
+### `setAction`
 
 | C++ | `void setAction(std::vector<int> const &actions)` |
 | :-- | :-- |
@@ -85,11 +85,11 @@ Checks if the ViZDoom game instance is running.
 | Python | `void set_action(list actions)` |
 
 Sets the player's action for the next tics.
-Each value corresponds to a button specified with addAvailableButton method
+Each value corresponds to a button specified with `addAvailableButton` method
 or in configuration file (in order of appearance).
 
 
-### advanceAction
+### `advanceAction
 
 | C++ | `void advanceAction(unsigned int tics = 1, bool updateState = true, bool renderOnly = false)` |
 | :-- | :-- |
@@ -97,13 +97,13 @@ or in configuration file (in order of appearance).
 | Java | `void advanceAction(unsigned int tics = 1, boolean updateState = true, boolean renderOnly = false)` |
 | Python | `void advance_action(int tics = 1, bool updateState = True, bool renderOnly = False)` |
 
-Processes a specified number of tics. If updateState is set the state will be updated after last processed tic
-and a new reward will be calculated. To get new state use getState and to get the new reward use getLastReward.
-If updateState is not set but renderOnly is turned on, the state will not be updated but a new frame
+Processes a specified number of tics. If `updateState` is set the state will be updated after last processed tic
+and a new reward will be calculated. To get new state use `getState` and to get the new reward use `getLastReward`.
+If `updateState` is not set but `renderOnly` is turned on, the state will not be updated but a new frame
 will be rendered after last processed tic.
 
 
-### makeAction
+### `makeAction`
 
 | C++ | `double makeAction(std::vector<int> const &actions, unsigned int tics = 1)` |
 | :-- | :-- |
@@ -111,12 +111,12 @@ will be rendered after last processed tic.
 | Java | `double makeAction(int[] actions, unsigned int tics = 1);` |
 | Python | `double make_action(actions, tics = 1);` |
 
-Method combining usability of setAction, advanceAction and getLastReward.
+Method combining usability of `setAction`, `advanceAction` and `getLastReward`.
 Sets the player's action for the next tics, processes a specified number of tics,
 updates the state and calculates a new reward, which is returned.
 
 
-### isNewEpisode
+### `isNewEpisode`
 
 | C++ | `bool isNewEpisode()` |
 | :-- | :-- |
@@ -127,7 +127,7 @@ updates the state and calculates a new reward, which is returned.
 Returns true if the current episode is in the initial state - first state, no actions were performed yet.
 
 
-### isEpisodeFinished
+### `isEpisodeFinished`
 
 | C++ | `bool isEpisodeFinished()` |
 | :-- | :-- |
@@ -136,10 +136,10 @@ Returns true if the current episode is in the initial state - first state, no ac
 | Python | `bool is_episode_finished()` |
 
 Returns true if the current episode is in the terminal state (is finished).
-makeAction and advanceAction methods will take no effect after this point (unless newEpisode method is called).
+`makeAction` and `advanceAction` methods will take no effect after this point (unless newEpisode method is called).
 
 
-### isPlayerDead
+### `isPlayerDead`
 
 | C++ | `bool isPlayerDead()` |
 | :-- | :-- |
@@ -149,10 +149,10 @@ makeAction and advanceAction methods will take no effect after this point (unles
 
 Returns true if the player is dead state.
 In singleplayer player death is equivalent to the end of the episode.
-In multiplayer when player is dead respawnPlayer can be called.
+In multiplayer when player is dead `respawnPlayer` can be called.
 
 
-### respawnPlayer
+### `respawnPlayer`
 
 | C++ | `void respawnPlayer()` |
 | :-- | :-- |
@@ -164,7 +164,7 @@ This method respawns player after death in multiplayer mode.
 After calling this method, first state after respawn will be available.
 
 
-### sendGameCommand
+### `sendGameCommand`
 
 | C++ | `void sendGameCommand(std::string cmd)` |
 | :-- | :-- |
@@ -178,7 +178,7 @@ Some commands will be block in some modes.
 For more details consult ZDoom Wiki: http://zdoom.org/wiki/Console
 
 
-### getState
+### `getState`
 
 | C++ | `GameStatePtr (std::shared_ptr<GameState>) GameState getState()` |
 | :-- | :-- |
@@ -186,13 +186,13 @@ For more details consult ZDoom Wiki: http://zdoom.org/wiki/Console
 | Java | `GameState getState()` |
 | Python | `GameState get_state()` |
 
-Returns GameState object with the current game state.
+Returns `GameState` object with the current game state.
 If game is not running or episode is finished nullptr/null/None will be returned.
 
-See also: GameState.
+See also: `GameState`.
 
 
-### getLastAction
+### `getLastAction`
 
 | C++ | `std::vector<int> getLastAction()` |
 | :-- | :-- |
@@ -201,10 +201,10 @@ See also: GameState.
 | Python | `list get_last_action()` |
 
 Returns the last action performed.
-Each value corresponds to a button added with addAvailableButton (in order of appearance).
-Most useful in SPECTATOR mode.
+Each value corresponds to a button added with `addAvailableButton` (in order of appearance).
+Most useful in `SPECTATOR` mode.
 
-### getEpisodeTime
+### `getEpisodeTime`
 
 | C++ | `unsigned int getEpisodeTime()` |
 | :-- | :-- |
@@ -218,7 +218,7 @@ Returns number of current episode tic.
 ## Buttons settings methods
 ---
 
-### addAvailableButton(button);
+### `addAvailableButton`
 
 | C++ | `void addAvailableButton(Button button, unsigned int maxValue = 0)` |
 | :-- | :-- |
@@ -226,14 +226,14 @@ Returns number of current episode tic.
 | Java | `void addAvailableButton(Button button, unsigned int maxValue = 0)` |
 | Python | `void addAvailableButton(Button button, int max_value = 0)` |
 
-Add Button type (e.g. TURN_LEFT, MOVE_FORWARD) to Buttons available in action
+Add `Button` type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to `Buttons` available in action
 and sets the maximum allowed, absolute value for the specified button.
 If the given button has already been added, it will not be added again but the maximum value is overridden.
 
 See also: setButtonMaxValue.
 
 
-### clearAvailableButtons
+### `clearAvailableButtons`
 
 | C++ | `void clearAvailableButtons()` |
 | :-- | :-- |
@@ -241,10 +241,10 @@ See also: setButtonMaxValue.
 | Java | `void clearAvailableButtons()` |
 | Python | `void clear_available_buttons()` |
 
-Clears all available Buttons added so far.
+Clears all available `Buttons` added so far.
 
 
-### getAvailableButtonsSize
+### `getAvailableButtonsSize`
 
 | C++ | `int getAvailableButtonsSize()` |
 | :-- | :-- |
@@ -252,10 +252,10 @@ Clears all available Buttons added so far.
 | Java | `int getAvailableButtonsSize()` |
 | Python | `int get_available_buttons_size()` |
 
-Returns the number of available Buttons.
+Returns the number of available `Buttons`.
 
 
-### setButtonMaxValue
+### `setButtonMaxValue`
 
 | C++ | `void setButtonMaxValue(Button button, unsigned int maxValue = 0)` |
 | :-- | :-- |
@@ -269,7 +269,7 @@ This method makes sense only for delta buttons.
 Constraints limit applies in all Modes.
 
 
-### getButtonMaxValue
+### `getButtonMaxValue`
 
 | C++ | `unsigned int getButtonMaxValue(Button button)` |
 | :-- | :-- |
@@ -283,7 +283,7 @@ Returns the maximum allowed, absolute value for the specified button.
 ## GameVariables methods
 ---
 
-### addAvailableGameVariable
+### `addAvailableGameVariable`
 
 | C++ | `void addAvailableGameVariable(GameVariable variable)` |
 | :-- | :-- |
@@ -291,11 +291,11 @@ Returns the maximum allowed, absolute value for the specified button.
 | Java | `void addAvailableGameVariable(GameVariable variable)` |
 | Python | `void add_vailable_game_variable(GameVariable variable)` |
 
-Adds the specified GameVariable to the list of game variables (e.g. AMMO1, HEALTH, ATTACK\_READY)
-that are included in the GameState returned by getState method.
+Adds the specified `GameVariable` to the list of game variables (e.g. `HEALTH`, `AMMO1`, `ATTACK_READY`)
+that are included in the `GameState` returned by `getState` method.
 
 
-### clearAvailableGameVariables
+### `clearAvailableGameVariables`
 
 | C++ | `void clearAvailableGameVariables()` |
 | :-- | :-- |
@@ -303,10 +303,10 @@ that are included in the GameState returned by getState method.
 | Java | `void clearAvailableGameVariables()` |
 | Python | `void clear_available_game_variables()` |
 
-Clears the list of available GameVariables that are included in the GameState returned by getState method.
+Clears the list of available `GameVariables` that are included in the GameState returned by `getState` method.
 
 
-### getAvailableGameVariablesSize
+### `getAvailableGameVariablesSize`
 
 | C++ | `unsigned int getAvailableGameVariablesSize()` |
 | :-- | :-- |
@@ -317,7 +317,7 @@ Clears the list of available GameVariables that are included in the GameState re
 Returns the number of available GameVariables.
 
 
-### getGameVariable
+### `getGameVariable`
 
 | C++ | `int getGameVariable(GameVariable variable)` |
 | :-- | :-- |
@@ -325,15 +325,15 @@ Returns the number of available GameVariables.
 | Java | `int getGameVariable(GameVariable var)` |
 | Python | `int get_game_variable(GameVariable var)` |
 
-Returns the current value of the specified game variable (AMMO1, HEALTH etc.).
+Returns the current value of the specified game variable (`HEALTH`, `AMMO1` etc.).
 The specified game variable does not need to be among available game variables (included in the state).
-It could be used for e.g. shaping. Returns 0 in case of not finding given GameVariable.
+It could be used for e.g. shaping. Returns 0 in case of not finding given `GameVariable`.
 
 
 Game Arguments methods
 ---
 
-### addGameArgs
+### `addGameArgs`
 
 | C++ | `void addGameArgs(std::string args)` |
 | :-- | :-- |
@@ -348,7 +348,7 @@ http://zdoom.org/wiki/Command_line_parameters
 http://zdoom.org/wiki/CVARS
 
 
-### clearGameArgs
+### `clearGameArgs`
 
 | C++ | `void clearGameArgs()` |
 | :-- | :-- |
@@ -362,7 +362,7 @@ Clears all arguments previously added with addGameArgs method.
 ## Reward methods
 ---
          
-### getLivingReward
+### `getLivingReward`
 
 | C++ | `double getLivingReward()` |
 | :-- | :-- |
@@ -373,18 +373,18 @@ Clears all arguments previously added with addGameArgs method.
 Returns the reward granted to the player after every tic.
 
 
-### setLivingReward
+### `setLivingReward`
 
 | C++ | `void setLivingReward(double livingReward)` |
 | :-- | :-- |
-| Lua | `void setLivingReward(double livingReward)` |
+| Lua | `void setLivingReward(number livingReward)` |
 | Java | `void setLivingReward(double livingReward)` |
-| Python | `void set_living_reward(double livingReward)` |
+| Python | `void set_living_reward(float livingReward)` |
 
 Sets the reward granted to the player after every tic. A negative value is also allowed.
 
 
-### getDeathPenalty
+### `getDeathPenalty`
 
 | C++ | `double getDeathPenalty()` |
 | :-- | :-- |
@@ -395,35 +395,35 @@ Sets the reward granted to the player after every tic. A negative value is also 
 Returns the penalty for player's death.
 
 
-void setDeathPenalty(double deathPenalty);
+### `setDeathPenalty`
 
 | C++ | `void setDeathPenalty(double deathPenalty)` |
 | :-- | :-- |
-| Lua | `void setDeathPenalty(double deathPenalty)` |
+| Lua | `void setDeathPenalty(number deathPenalty)` |
 | Java | `void setDeathPenalty(double deathPenalty)` |
-| Python | `void set_death_penalty(double deathPenalty)` |
+| Python | `void set_death_penalty(float deathPenalty)` |
 
 Sets a penalty for player's death. Note that in case of a negative value, the player will be rewarded upon dying.
 
 
-### getLastReward
+### `getLastReward`
 
 | C++ | `double getLastReward()` |
 | :-- | :-- |
 | Lua | `number getLastReward()` |
 | Java | `double getLastReward()` |
-| Python | `double get_last_reward()` |
+| Python | `float get_last_reward()` |
 
-Returns a reward granted after last update of State.
+Returns a reward granted after last update of state.
 
 
-### getTotalReward
+### `getTotalReward`
 
-| C++ | `double getLastReward()` |
+| C++ | `double getTotalReward()` |
 | :-- | :-- |
-| Lua | `number getLastReward()` |
-| Java | `double getLastReward()` |
-| Python | `double get_last_reward()` |
+| Lua | `number getTotalReward()` |
+| Java | `double getTotalReward()` |
+| Python | `float get_total_reward()` |
 
 Returns the sum of all rewards gathered in the current episode.
 
@@ -431,7 +431,7 @@ Returns the sum of all rewards gathered in the current episode.
 ## General game setting methods
 ---
          
-### loadConfig
+### `loadConfig`
 
 | C++ | `bool loadConfig(std::string filePath)` |
 | :-- | :-- |
@@ -446,7 +446,7 @@ The method returns true if the whole configuration file was correctly read and a
 false if file was contained errors.
 
 
-### getMode
+### `getMode`
 
 | C++ | `Mode getMode()` |
 | :-- | :-- |
@@ -457,7 +457,7 @@ false if file was contained errors.
 Returns current mode.
 
 
-### setMode
+### `setMode`
 
 | C++ | `void setMode(Mode mode)` |
 | :-- | :-- |
@@ -465,12 +465,12 @@ Returns current mode.
 | Java | `void setMode(Mode mode)` |
 | Python | `void set_mode(Mode mode)` |
 
-Sets mode (PLAYER, SPECTATOR, ASYNC_PLAYER, ASYNC_SPECTATOR) in which the game will be started.
-Default value: PLAYER.
+Sets mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`) in which the game will be started.
+Default value: `PLAYER`.
 
 See: GameMode.
 
-### getTicrate
+### `getTicrate`
 
 | C++ | `unsigned int getTicrate()` |
 | :-- | :-- |
@@ -481,7 +481,7 @@ See: GameMode.
 Returns current ticrate.
 
 
-### setTicrate
+### `setTicrate`
 
 | C++ | `void setTicrate(unsigned int ticrate)` |
 | :-- | :-- |
@@ -494,7 +494,7 @@ Sets ticrate for ASNYC Modes - number of tics executed per second.
 See example: ticrate.py
 Default value: 35 (default Doom ticrate)
 
-### setViZDoomPath
+### `setViZDoomPath`
 
 | C++ | `void setViZDoomPath(std::string filePath)` |
 | :-- | :-- |
@@ -506,7 +506,7 @@ Sets path to ViZDoom engine executable.
 Default value: "vizdoom", "vizdoom.exe" on Windows.
 
 
-### setDoomGamePath
+### `setDoomGamePath`
 
 | C++ | `void setDoomGamePath(std::string filePath)` |
 | :-- | :-- |
@@ -518,7 +518,7 @@ Sets path to the Doom engine based game file (wad format).
 Default value: "doom2.wad"
 
 
-### setDoomScenarioPath
+### `setDoomScenarioPath`
 
 | C++ | `void setDoomScenarioPath(std::string filePath)` |
 | :-- | :-- |
@@ -530,7 +530,7 @@ Sets path to additional scenario file (wad format).
 Default value: ""
 
 
-### setDoomMap
+### `setDoomMap`
 
 | C++ | `void setDoomMap(std::string map)` |
 | :-- | :-- |
@@ -542,7 +542,7 @@ Sets the map name to be used.
 Default value: "map01", if set to empty "map01" will be used.
 
          
-### setDoomSkill
+### `setDoomSkill`
 
 | C++ | `void setDoomSkill(int skill)` |
 | :-- | :-- |
@@ -563,7 +563,7 @@ Default value: 3
 * 5 - VERY HARD, “Nightmare!” in Doom.
 
 
-### setDoomConfigPath
+### `setDoomConfigPath`
 
 | C++ | `void setDoomConfigPath(std::string filePath)` |
 | :-- | :-- |
@@ -578,7 +578,7 @@ This method is not needed for most of the tasks and is added for convenience of 
 Default value: "", if leave empty "_vizdoom.ini" will be used.
 
 
-### getSeed
+### `getSeed`
 
 | C++ | `unsigned int getSeed()` |
 | :-- | :-- |
@@ -589,7 +589,7 @@ Default value: "", if leave empty "_vizdoom.ini" will be used.
 Return ViZDoom's seed.
 
 
-### setSeed
+### `setSeed`
 
 | C++ | `void setSeed(unsigned int seed)` |
 | :-- | :-- |
@@ -600,7 +600,7 @@ Return ViZDoom's seed.
 Sets the seed of the ViZDoom's RNG that generates seeds (initial state) for episodes.
 
 
-### getEpisodeStartTime
+### `getEpisodeStartTime`
 
 | C++ | `unsigned int getEpisodeStartTime()` |
 | :-- | :-- |
@@ -611,7 +611,7 @@ Sets the seed of the ViZDoom's RNG that generates seeds (initial state) for epis
 Returns start delay of every episode in tics.
 
 
-### setEpisodeStartTime
+### `setEpisodeStartTime`
 
 | C++ | `void setEpisodeStartTime(unsigned int tics)` |
 | :-- | :-- |
@@ -623,7 +623,7 @@ Sets start delay of every episode in tics.
 Every episode will effectively start (from the user's perspective) after given number of tics.
 
 
-### getEpisodeTimeout
+### `getEpisodeTimeout`
 
 | C++ | `unsigned int getEpisodeTimeout()` |
 | :-- | :-- |
@@ -634,7 +634,7 @@ Every episode will effectively start (from the user's perspective) after given n
 Returns the number of tics after which the episode will be finished.
 
 
-### setEpisodeTimeout
+### `setEpisodeTimeout`
 
 | C++ | `void setEpisodeTimeout(unsigned int tics)` |
 | :-- | :-- |
@@ -648,7 +648,7 @@ Sets the number of tics after which the episode will be finished. 0 will result 
 ## Output/rendering setting methods
 ------------------------------------------------------------------------------------------------------------
 
-### setScreenResolution(ScreenResolution resolution);
+### `setScreenResolution`
 
 | C++ | `void setScreenResolution(ScreenResolution resolution)` |
 | :-- | :-- |
@@ -660,9 +660,9 @@ Sets the screen resolution.
 Supported resolutions are part of ScreenResolution enumeration (e.g. RES_320X240, RES_1920X1080).
 The buffers as well as content of ViZDoom's display window will be affected.
 
-See also: ScreenResolution
+See also: `ScreenResolution`.
 
-### getScreenFormat()
+### `getScreenFormat`
 
 | C++ | `ScreenFormat getScreenFormat()` |
 | :-- | :-- |
@@ -672,7 +672,7 @@ See also: ScreenResolution
 
 Returns the format of the screen buffer and automap buffer.
 
-### setScreenFormat(ScreenFormat format);
+### `setScreenFormat`
 
 | C++ | `void setScreenFormat(ScreenFormat format)` |
 | :-- | :-- |
@@ -687,12 +687,12 @@ The format change affects only the buffers so it will not have any effect on the
 See also: ScreenFormat
 
 
-### setDepthBufferEnabled(bool enabled);
+### `setDepthBufferEnabled`
 
 | C++ | `void setDepthBufferEnabled(bool enabled)` |
 | :-- | :-- |
-| Lua | `void setDepthBufferEnabled(bool enabled)` |
-| Java | `void setDepthBufferEnabled(bool enabled)` |
+| Lua | `void setDepthBufferEnabled(boolean enabled)` |
+| Java | `void setDepthBufferEnabled(boolean enabled)` |
 | Python | `void set_depth_buffer_enabled(bool enabled)` |
 
 TODO: expand
@@ -701,12 +701,12 @@ Enables rendering of depth buffer.
 See also: buffers.py example.
 
 
-### setLabelsBufferEnabled(bool enabled);
+### `setLabelsBufferEnabled`
 
 | C++ | `void setLabelsBufferEnabled(bool enabled)` |
 | :-- | :-- |
-| Lua | `void setLabelsBufferEnabled(bool enabled)` |
-| Java | `void setLabelsBufferEnabled(bool enabled)` |
+| Lua | `void setLabelsBufferEnabled(boolean enabled)` |
+| Java | `void setLabelsBufferEnabled(boolean enabled)` |
 | Python | `void set_labels_buffer_enabled(bool enabled)` |
 
 TODO: expand
@@ -715,12 +715,12 @@ Enables rendering of labels buffer.
 See also: buffers.py example.
 
 
-### setAutomapBufferEnabled(bool enabled);
+### `setAutomapBufferEnabled`
 
 | C++ | `void setAutomapBufferEnabled(bool enabled)` |
 | :-- | :-- |
-| Lua | `void setAutomapBufferEnabled(bool enabled)` |
-| Java | `void setAutomapBufferEnabled(bool enabled)` |
+| Lua | `void setAutomapBufferEnabled(boolean enabled)` |
+| Java | `void setAutomapBufferEnabled(boolean enabled)` |
 | Python | `void set_automap_buffer_enabled(bool enabled)` |
 
 TODO: expand
@@ -729,96 +729,104 @@ Enables rendering of automap buffer.
 See also: buffers.py example.
 
 
-### setRenderHud(bool hud);
+### `setRenderHud`
 
 | C++ | `void setRenderHud(bool hud)` |
 | :-- | :-- |
-| Lua | `void setRenderHud(bool hud)` |
-| Java | `void setRenderHud(bool hud)` |
+| Lua | `void setRenderHud(boolean hud)` |
+| Java | `void setRenderHud(boolean hud)` |
 | Python | `void set_render_hud(bool hud)` |
 
 Determine if game's hud will be rendered in game.
+Default: false
 
 
-### setRenderWeapon
+### `setRenderWeapon`
 
 | C++ | `void setRenderWeapon(bool weapon)` |
 | :-- | :-- |
-| Lua | `void setRenderWeapon(bool weapon)` |
-| Java | `void setRenderWeapon(bool weapon)` |
+| Lua | `void setRenderWeapon(boolean weapon)` |
+| Java | `void setRenderWeapon(boolean weapon)` |
 | Python | `void set_render_weapon(bool weapon)` |
 
 Determine if weapon held by player will be rendered in game.
+Default: true
 
 
-### setRenderCrosshair
+### `setRenderCrosshair`
 
 | C++ | `void setRenderCrosshair(bool crosshair)` |
 | :-- | :-- |
-| Lua | `void setRenderCrosshair(bool crosshair)` |
-| Java | `void setRenderCrosshair(bool crosshair)` |
+| Lua | `void setRenderCrosshair(boolean crosshair)` |
+| Java | `void setRenderCrosshair(boolean crosshair)` |
 | Python | `void set_render_crosshair(bool crosshair)` |
 
 Determine if crosshair will be rendered in game.
+Default: false
 
 
-### setRenderDecals
+### `setRenderDecals`
 
 | C++ | `void setRenderDecals(bool decals)` |
 | :-- | :-- |
-| Lua | `void setRenderDecals(bool decals)` |
-| Java | `void setRenderDecals(bool decals)` |
+| Lua | `void setRenderDecals(boolean decals)` |
+| Java | `void setRenderDecals(boolean decals)` |
 | Python | `void set_render_decals(bool decals)` |
 
 Determine if decals (marks on the walls) will be rendered in game.
+Default: true
 
 
-### setRenderParticles
+### `setRenderParticles`
 
 | C++ | `void setRenderParticles(bool particles)` |
 | :-- | :-- |
-| Lua | `void setRenderParticles(bool particles)` |
-| Java | `void setRenderParticles(bool particles)` |
+| Lua | `void setRenderParticles(boolean particles)` |
+| Java | `void setRenderParticles(boolean particles)` |
 | Python | `void set_render_particles(bool particles)` |
 
 Determine if particles will be rendered in game.
+Default: true
 
 
-### setWindowVisible
+### `setWindowVisible`
 
 | C++ | `void setWindowVisible(bool visibility)` |
 | :-- | :-- |
-| Lua | `void setWindowVisible(bool visibility)` |
-| Java | `void setWindowVisible(bool visibility)` |
+| Lua | `void setWindowVisible(boolean visibility)` |
+| Java | `void setWindowVisible(boolean visibility)` |
 | Python | `void set_window_visible(bool visibility)` |
 
 Determines if ViZDoom's window will be visible.
 ViZDoom with window disabled can be used on Linux system without X Server.
+Default: false
 
 
-### setConsoleEnabled
+### `setConsoleEnabled`
 
 | C++ | `void setConsoleEnabled(bool console)` |
 | :-- | :-- |
-| Lua | `void setConsoleEnabled(bool console)` |
-| Java | `void setConsoleEnabled(bool console)` |
+| Lua | `void setConsoleEnabled(boolean console)` |
+| Java | `void setConsoleEnabled(boolean console)` |
 | Python | `void set_console_enabled(bool console)` |
 
 Determines if ViZDoom's console output will be enabled.
+Default: false
 
 
-### setSoundEnabled
+### `setSoundEnabled`
 
 | C++ | `void setSoundEnabled(bool sound)` |
 | :-- | :-- |
-| Lua | `void setSoundEnabled(bool sound)` |
-| Java | `void setSoundEnabled(bool sound)` |
+| Lua | `void setSoundEnabled(boolean sound)` |
+| Java | `void setSoundEnabled(boolean sound)` |
 | Python | `void set_sound_enabled(bool sound)` |
 
 Determines if ViZDoom's sound will be played.
+Default: false
 
 
-### getScreenWidth
+### `getScreenWidth`
 
 | C++ | `int getScreenWidth()` |
 | :-- | :-- |
@@ -826,10 +834,10 @@ Determines if ViZDoom's sound will be played.
 | Java | `int getScreenWidth()` |
 | Python | `int get_screen_width()` |
 
-Returns game's screen width.
+Returns game's screen width - width of all buffers.
 
 
-### getScreenHeight
+### `getScreenHeight`
 
 | C++ | `int getScreenHeight()` |
 | :-- | :-- |
@@ -837,10 +845,10 @@ Returns game's screen width.
 | Java | `int getScreenHeight()` |
 | Python | `int get_screen_height()` |
 
-Returns game's screen height.
+Returns game's screen height - height of all buffers.
 
 
-### getScreenChannels
+### `getScreenChannels`
 
 | C++ | `int getScreenChannels()` |
 | :-- | :-- |
@@ -848,10 +856,10 @@ Returns game's screen height.
 | Java | `int getScreenChannels()` |
 | Python | `int get_screen_channels()` |
 
-Returns number of channels in game's screen and map buffer.
+Returns number of channels in screen buffer and map buffer (depth and labels buffer have always one channel).
 
-         
-### getScreenPitch
+
+### `getScreenPitch`
 
 | C++ | `size_t getScreenPitch()` |
 | :-- | :-- |
@@ -859,9 +867,10 @@ Returns number of channels in game's screen and map buffer.
 | Java | `size_t getScreenPitch()` |
 | Python | `size_t get_screen_pitch()` |
 
-Returns size in bytes of one row in game's screen and map buffer.
-         
-### getScreenSize
+Returns size in bytes of one row in screen buffer and map buffer.
+
+
+### `getScreenSize`
 
 | C++ | `size_t getScreenSize()` |
 | :-- | :-- |
@@ -869,4 +878,4 @@ Returns size in bytes of one row in game's screen and map buffer.
 | Java | `int getScreenSize()` |
 | Python | `int get_screen_size()` |
 
-Returns size in bytes of game's screen buffer.
+Returns size in bytes of screen buffer and map buffer.
