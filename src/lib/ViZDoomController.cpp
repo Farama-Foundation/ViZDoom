@@ -479,11 +479,11 @@ namespace vizdoom {
 
     int DoomController::getSkill(){ return this->skill; }
     void DoomController::setSkill(int skill) {
-        if(skill > 4) skill = 4;
-        else if(skill < 0) skill = 0;
+        if(skill > 5) skill = 5;
+        else if(skill < 1) skill = 1;
         this->skill = skill;
         if (this->doomRunning) {
-            this->sendCommand(std::string("skill set ") + b::lexical_cast<std::string>(this->skill));
+            this->sendCommand(std::string("skill set ") + b::lexical_cast<std::string>(this->skill - 1));
             //this->resetMap();
         }
     }
