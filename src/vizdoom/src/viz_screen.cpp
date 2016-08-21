@@ -255,8 +255,6 @@ void VIZ_ScreenUpdate(){
     if (*viz_depth && vizDepthMap != NULL)
         memcpy(vizDepthSM, vizDepthMap->getBuffer(), vizDepthMap->getBufferSize());
 
-    VIZ_DEBUG_PRINT("VIZ_ScreenUpdate: depthBufferSize: %d\n", vizDepthMap->getBufferSize());
-
     if (*viz_labels && vizLabels != NULL)
         memcpy(vizLabelsSM, vizLabels->getBuffer(), vizLabels->getBufferSize());
 
