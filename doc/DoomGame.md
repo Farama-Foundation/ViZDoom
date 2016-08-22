@@ -1,8 +1,8 @@
 # DoomGame
 
 ## Flow control methods
----
 
+---
 ### `init`
 
 | C++    | `bool init()`    |
@@ -17,6 +17,7 @@ Some configuration options cannot be changed after calling method.
 Init returns true when the game was started properly and false otherwise.
 
 
+---
 ### `close`
 
 | C++    | `void close()` |
@@ -30,6 +31,7 @@ It is automatically invoked by the destructor.
 Game can be initialized again after being closed.
 
 
+---
 ### `newEpisode`
 
 | C++    | `void newEpisode(std::string filePath = "")` |
@@ -48,6 +50,7 @@ In multiplayer game, host can call this method to finish the game.
 Then the rest of the players must also call this method to start a new episode.
 
 
+---
 ### `replayEpisode`
 
 | C++    | `void replayEpisode(std::string filePath, unsigned int player = 0)` |
@@ -65,10 +68,11 @@ After calling this method, first state from replay will be available.
 All rewards, variables and state are available during replaying episode.
 
 See also: 
-* examples/python/record_episodes.py,
-* examples/python/record_multiplayer.py.
+- examples/python/record_episodes.py,
+- examples/python/record_multiplayer.py.
 
 
+---
 ### `isRunning`
 
 | C++    | `bool isRunning()`    |
@@ -80,6 +84,7 @@ See also:
 Checks if the ViZDoom game instance is running.
 
 
+---
 ### `setAction`
 
 | C++    | `void setAction(std::vector<int> const &actions)` |
@@ -93,6 +98,7 @@ Each value corresponds to a button specified with `addAvailableButton` method
 or in configuration file (in order of appearance).
 
 
+---
 ### `advanceAction`
 
 | C++    | `void advanceAction(unsigned int tics = 1, bool updateState = true, bool renderOnly = false)`       |
@@ -107,6 +113,7 @@ If `updateState` is not set but `renderOnly` is turned on, the state will not be
 will be rendered after last processed tic.
 
 
+---
 ### `makeAction`
 
 | C++    | `double makeAction(std::vector<int> const &actions, unsigned int tics = 1)` |
@@ -120,6 +127,7 @@ Sets the player's action for the next tics, processes a specified number of tics
 updates the state and calculates a new reward, which is returned.
 
 
+---
 ### `isNewEpisode`
 
 | C++    | `bool isNewEpisode()`    |
@@ -131,6 +139,7 @@ updates the state and calculates a new reward, which is returned.
 Returns true if the current episode is in the initial state - first state, no actions were performed yet.
 
 
+---
 ### `isEpisodeFinished`
 
 | C++    | `bool isEpisodeFinished()`    |
@@ -143,6 +152,7 @@ Returns true if the current episode is in the terminal state (is finished).
 `makeAction` and `advanceAction` methods will take no effect after this point (unless `newEpisode` method is called).
 
 
+---
 ### `isPlayerDead`
 
 | C++    | `bool isPlayerDead()`    |
@@ -156,6 +166,7 @@ In singleplayer player death is equivalent to the end of the episode.
 In multiplayer when player is dead `respawnPlayer` can be called.
 
 
+---
 ### `respawnPlayer`
 
 | C++    | `void respawnPlayer()`  |
@@ -168,6 +179,7 @@ This method respawns player after death in multiplayer mode.
 After calling this method, first state after respawn will be available.
 
 
+---
 ### `sendGameCommand`
 
 | C++    | `void sendGameCommand(std::string cmd)` |
@@ -180,9 +192,10 @@ Sends the command to Doom console. Can be used for cheats, multiplayer etc.
 Some commands will be block in some modes.
 
 See also: 
-* ZDoom Wiki: http://zdoom.org/wiki/Console
+- ZDoom Wiki: http://zdoom.org/wiki/Console
 
 
+---
 ### `getState`
 
 | C++    | `GameStatePtr (std::shared_ptr<GameState>) GameState getState()` |
@@ -197,9 +210,10 @@ Returns `GameState` object with the current game state.
 If game is not running or episode is finished `nullptr/null/None` will be returned.
 
 See also: 
-* Types -> `GameState`
+- Types: `GameState`
 
 
+---
 ### `getLastAction`
 
 | C++    | `std::vector<int> getLastAction()` |
@@ -213,6 +227,7 @@ Each value corresponds to a button added with `addAvailableButton` (in order of 
 Most useful in `SPECTATOR` mode.
 
 
+---
 ### `getEpisodeTime`
 
 | C++    | `unsigned int getEpisodeTime()`   |
@@ -225,8 +240,8 @@ Returns number of current episode tic.
 
 
 ## Buttons settings methods
----
 
+---
 ### `addAvailableButton`
 
 | C++    | `void addAvailableButton(Button button, unsigned int maxValue = 0)` |
@@ -239,14 +254,15 @@ Add `Button` type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to `Buttons` available in a
 and sets the maximum allowed, absolute value for the specified button.
 If the given button has already been added, it will not be added again but the maximum value is overridden.
 
-Config key: availableButtons / available_buttons (list)
+Config key: `availableButtons/available_buttons` (list)
 
 See also:
-* Types -> `Button`
-* setButtonMaxValue
-* ConfigFile -> List
+- Types: `Button`
+- setButtonMaxValue
+- ConfigFile: List
 
 
+---
 ### `clearAvailableButtons`
 
 | C++    | `void clearAvailableButtons()`   |
@@ -258,6 +274,7 @@ See also:
 Clears all available `Buttons` added so far.
 
 
+---
 ### `getAvailableButtonsSize`
 
 | C++    | `int getAvailableButtonsSize()`    |
@@ -269,6 +286,7 @@ Clears all available `Buttons` added so far.
 Returns the number of available `Buttons`.
 
 
+---
 ### `setButtonMaxValue`
 
 | C++    | `void setButtonMaxValue(Button button, unsigned int maxValue = 0)` |
@@ -283,6 +301,7 @@ This method makes sense only for delta buttons.
 Constraints limit applies in all Modes.
 
 
+---
 ### `getButtonMaxValue`
 
 | C++    | `unsigned int getButtonMaxValue(Button button)` |
@@ -295,8 +314,9 @@ Returns the maximum allowed, absolute value for the specified button.
 
 
 ## GameVariables methods
----
 
+
+---
 ### `addAvailableGameVariable`
 
 | C++    | `void addAvailableGameVariable(GameVariable variable)`    |
@@ -308,12 +328,13 @@ Returns the maximum allowed, absolute value for the specified button.
 Adds the specified `GameVariable` to the list of game variables (e.g. `HEALTH`, `AMMO1`, `ATTACK_READY`)
 that are included in the `GameState` returned by `getState` method.
 
-Config key: availableGameVariables / available_game_variables (list)
+Config key: `availableGameVariables/available_game_variables` (list)
 
 See also: 
-* Types -> `GameVariable`
-* ConfigFile -> List
+- Types: `GameVariable`
+- ConfigFile: List
 
+---
 ### `clearAvailableGameVariables`
 
 | C++    | `void clearAvailableGameVariables()`    |
@@ -325,6 +346,7 @@ See also:
 Clears the list of available `GameVariables` that are included in the GameState returned by `getState` method.
 
 
+---
 ### `getAvailableGameVariablesSize`
 
 | C++    | `unsigned int getAvailableGameVariablesSize()`     |
@@ -336,25 +358,26 @@ Clears the list of available `GameVariables` that are included in the GameState 
 Returns the number of available `GameVariables`.
 
 
+---
 ### `getGameVariable`
 
-| C++    | `int getGameVariable(GameVariable variable)` |
-| :--    | :--                                          |
-| Lua    | `int getGameVariable(GameVariable var)`      |
-| Java   | `int getGameVariable(GameVariable var)`      |
-| Python | `int get_game_variable(GameVariable var)`    |
+| C++    | `int getGameVariable(GameVariable variable)`   |
+| :--    | :--                                            |
+| Lua    | `int getGameVariable(GameVariable variable)`   |
+| Java   | `int getGameVariable(GameVariable variable)`   |
+| Python | `int get_game_variable(GameVariable variable)` |
 
 Returns the current value of the specified game variable (`HEALTH`, `AMMO1` etc.).
 The specified game variable does not need to be among available game variables (included in the state).
 It could be used for e.g. shaping. Returns 0 in case of not finding given `GameVariable`.
 
 See also: 
-* Types -> `GameVariable`
+- Types: `GameVariable`
 
 
-Game Arguments methods
+## Game Arguments methods
+
 ---
-
 ### `addGameArgs`
 
 | C++    | `void addGameArgs(std::string args)` |
@@ -365,13 +388,14 @@ Game Arguments methods
 
 Adds a custom argument that will be passed to ViZDoom process during initialization.
 
-Config key: gameArgs / game_args
+Config key: `gameArgs/game_args`
 
 See also:
-* ZDoom Wiki: http://zdoom.org/wiki/Command_line_parameters
-* ZDoom Wiki: http://zdoom.org/wiki/CVARS
+- ZDoom Wiki: http://zdoom.org/wiki/Command_line_parameters
+- ZDoom Wiki: http://zdoom.org/wiki/CVARS
 
 
+---
 ### `clearGameArgs`
 
 | C++    | `void clearGameArgs()`   |
@@ -384,8 +408,8 @@ Clears all arguments previously added with addGameArgs method.
 
 
 ## Reward methods
+
 ---
-         
 ### `getLivingReward`
 
 | C++    | `double getLivingReward()`   |
@@ -397,6 +421,7 @@ Clears all arguments previously added with addGameArgs method.
 Returns the reward granted to the player after every tic.
 
 
+---
 ### `setLivingReward`
 
 | C++    | `void setLivingReward(double livingReward)`  |
@@ -409,9 +434,10 @@ Sets the reward granted to the player after every tic. A negative value is also 
 
 Default value: 0
 
-Config key: livingReward / living_reward
+Config key: `livingReward/living_reward`
 
 
+---
 ### `getDeathPenalty`
 
 | C++    | `double getDeathPenalty()`   |
@@ -423,6 +449,7 @@ Config key: livingReward / living_reward
 Returns the penalty for player's death.
 
 
+---
 ### `setDeathPenalty`
 
 | C++    | `void setDeathPenalty(double deathPenalty)`  |
@@ -435,9 +462,10 @@ Sets a penalty for player's death. Note that in case of a negative value, the pl
 
 Default value: 0
 
-Config key: deathPenalty / death_penalty
+Config key: `deathPenalty/death_penalty`
 
 
+---
 ### `getLastReward`
 
 | C++    | `double getLastReward()`  |
@@ -449,6 +477,7 @@ Config key: deathPenalty / death_penalty
 Returns a reward granted after last update of state.
 
 
+---
 ### `getTotalReward`
 
 | C++    | `double getTotalReward()`  |
@@ -461,8 +490,8 @@ Returns the sum of all rewards gathered in the current episode.
 
 
 ## General game setting methods
+
 ---
-         
 ### `loadConfig`
 
 | C++    | `bool loadConfig(std::string filePath)` |
@@ -478,6 +507,7 @@ The method returns true if the whole configuration file was correctly read and a
 false if file was contained errors.
 
 
+---
 ### `getMode`
 
 | C++    | `Mode getMode()`  |
@@ -489,6 +519,7 @@ false if file was contained errors.
 Returns current mode.
 
 
+---
 ### `setMode`
 
 | C++    | `void setMode(Mode mode)`  |
@@ -501,12 +532,13 @@ Sets mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`) in which th
 
 Default value: `PLAYER`.
 
-Config key: mode
+Config key: `mode`
 
 See also: 
-* Types -> `Mode`
+- Types: `Mode`
 
 
+---
 ### `getTicrate`
 
 | C++    | `unsigned int getTicrate()` |
@@ -520,6 +552,7 @@ Added in 1.1
 Returns current ticrate.
 
 
+---
 ### `setTicrate`
 
 | C++    | `void setTicrate(unsigned int ticrate)` |
@@ -534,12 +567,13 @@ Sets ticrate for ASNYC Modes - number of tics executed per second.
 
 Default value: 35 (default Doom ticrate).
 
-Config key: ticrate
+Config key: `ticrate`
 
 See also:
-* exmaples/python/ticrate.py
+- exmaples/python/ticrate.py
 
 
+---
 ### `setViZDoomPath`
 
 | C++    | `void setViZDoomPath(std::string filePath)` |
@@ -552,9 +586,10 @@ Sets path to ViZDoom engine executable.
 
 Default value: "vizdoom", "vizdoom.exe" on Windows.
 
-Config key: ViZDoomPath / vizdoom_path
+Config key: `ViZDoomPath/vizdoom_path`
 
 
+---
 ### `setDoomGamePath`
 
 | C++    | `void setDoomGamePath(std::string filePath)` |
@@ -567,9 +602,10 @@ Sets path to the Doom engine based game file (wad format).
 
 Default value: "doom2.wad"
 
-Config key: DoomGamePath / doom_game_path
+Config key: `DoomGamePath/doom_game_path`
 
 
+---
 ### `setDoomScenarioPath`
 
 | C++    | `void setDoomScenarioPath(std::string filePath)` |
@@ -582,9 +618,10 @@ Sets path to additional scenario file (wad format).
 
 Default value: ""
 
-Config key: DoomScenarioPath / set_doom_scenario_path
+Config key: `DoomScenarioPath/set_doom_scenario_path`
 
 
+---
 ### `setDoomMap`
 
 | C++    | `void setDoomMap(std::string map)` |
@@ -597,9 +634,10 @@ Sets the map name to be used.
 
 Default value: "map01", if set to empty "map01" will be used.
 
-Config key: DoomMap / doom_map
+Config key: `DoomMap/doom_map`
 
 
+---
 ### `setDoomSkill`
 
 | C++    | `void setDoomSkill(int skill)`    |
@@ -613,17 +651,18 @@ The higher is the skill the harder the game becomes.
 Skill level affects monsters' aggressiveness, monsters' speed, weapon damage, ammunition quantities etc.
 Takes effect from the next episode.
 
-* 1 - VERY EASY, “I'm Too Young to Die” in Doom.
-* 2 - EASY, “Hey, Not Too Rough" in Doom.
-* 3 - NORMAL, “Hurt Me Plenty” in Doom.
-* 4 - HARD, “Ultra-Violence” in Doom.
-* 5 - VERY HARD, “Nightmare!” in Doom.
+- 1 - VERY EASY, “I'm Too Young to Die” in Doom.
+- 2 - EASY, “Hey, Not Too Rough" in Doom.
+- 3 - NORMAL, “Hurt Me Plenty” in Doom.
+- 4 - HARD, “Ultra-Violence” in Doom.
+- 5 - VERY HARD, “Nightmare!” in Doom.
 
 Default value: 3
 
-Config key: skill
+Config key: `skill`
 
 
+---
 ### `setDoomConfigPath`
 
 | C++    | `void setDoomConfigPath(std::string filePath)` |
@@ -639,9 +678,10 @@ This method is not needed for most of the tasks and is added for convenience of 
 
 Default value: "", if leave empty "_vizdoom.ini" will be used.
 
-Config key: DoomConfigPath / doom_config_path
+Config key: `DoomConfigPath/doom_config_path`
 
 
+---
 ### `getSeed`
 
 | C++    | `unsigned int getSeed()` |
@@ -653,6 +693,7 @@ Config key: DoomConfigPath / doom_config_path
 Return ViZDoom's seed.
 
 
+---
 ### `setSeed`
 
 | C++    | `void setSeed(unsigned int seed)` |
@@ -665,12 +706,13 @@ Sets the seed of the ViZDoom's RNG that generates seeds (initial state) for epis
 
 Default value: randomized in constructor
 
-Config key: seed
+Config key: `seed`
 
 See also: 
-* examples/python/seed.py
+- examples/python/seed.py
 
 
+---
 ### `getEpisodeStartTime`
 
 | C++    | `unsigned int getEpisodeStartTime()` |
@@ -682,6 +724,7 @@ See also:
 Returns start delay of every episode in tics.
 
 
+---
 ### `setEpisodeStartTime`
 
 | C++    | `void setEpisodeStartTime(unsigned int tics)` |
@@ -693,11 +736,12 @@ Returns start delay of every episode in tics.
 Sets start delay of every episode in tics.
 Every episode will effectively start (from the user's perspective) after given number of tics.
 
-Default value: 0
+Default value: 1
 
-Config key: episodeStartTime / episode_start_time
+Config key: `episodeStartTime/episode_start_time`
 
 
+---
 ### `getEpisodeTimeout`
 
 | C++    | `unsigned int getEpisodeTimeout()` |
@@ -709,6 +753,7 @@ Config key: episodeStartTime / episode_start_time
 Returns the number of tics after which the episode will be finished.
 
 
+---
 ### `setEpisodeTimeout`
 
 | C++    | `void setEpisodeTimeout(unsigned int tics)` |
@@ -719,12 +764,13 @@ Returns the number of tics after which the episode will be finished.
 
 Sets the number of tics after which the episode will be finished. 0 will result in no timeout.
 
-Config key: episodeTimeout / episode_timeout
+Config key: `episodeTimeout/episode_timeout`
 
 
 ## Output/rendering setting methods
 ------------------------------------------------------------------------------------------------------------
 
+---
 ### `setScreenResolution`
 
 | C++    | `void setScreenResolution(ScreenResolution resolution)`   |
@@ -739,12 +785,13 @@ The buffers as well as content of ViZDoom's display window will be affected.
 
 Default value: `RES_320X240`
 
-Config key: screenResolution / screen_resolution
+Config key: `screenResolution/screen_resolution`
 
 See also: 
-* Types -> `ScreenResolution`
+- Types: `ScreenResolution`
 
 
+---
 ### `getScreenFormat`
 
 | C++    | `ScreenFormat getScreenFormat()`   |
@@ -756,6 +803,7 @@ See also:
 Returns the format of the screen buffer and the automap buffer.
 
 
+---
 ### `setScreenFormat`
 
 | C++    | `void setScreenFormat(ScreenFormat format)`   |
@@ -770,12 +818,13 @@ The format change affects only the buffers so it will not have any effect on the
 
 Default value: `CRCGCB`
 
-Config key: screenFormat / screen_format
+Config key: `screenFormat/screen_format`
 
 See also: 
-* Types -> `ScreenFormat`
+- Types: `ScreenFormat`
 
 
+---
 ### `isDepthBufferEnabled`
 
 | C++    | `bool isDepthBufferEnabled()`    |
@@ -789,6 +838,7 @@ Added in 1.1
 Returns true if the depth buffer is enabled.
 
 
+---
 ### `setDepthBufferEnabled`
 
 | C++    | `void setDepthBufferEnabled(bool depthBuffer)`    |
@@ -803,13 +853,14 @@ Enables rendering of the depth buffer, it will be available in state.
 
 Default value: false
 
-Config key: depthBufferEnabled / depth_buffer_enabled
+Config key: `depthBufferEnabled/depth_buffer_enabled`
 
 See also: 
-* Types -> `GameState`
-* examples/python/buffers.py
+- Types: `GameState`
+- examples/python/buffers.py
 
 
+---
 ### `isLabelsBufferEnabled`
 
 | C++    | `bool isLabelsBufferEnabled()`    |
@@ -823,6 +874,7 @@ Added in 1.1
 Returns true if the labels buffer is enabled.
 
 
+---
 ### `setLabelsBufferEnabled`
 
 | C++    | `void setLabelsBufferEnabled(bool labelsBuffer)`    |
@@ -837,15 +889,16 @@ Enables rendering of the labels buffer, it will be available in state with vecto
 
 Default value: false
 
-Config key: labelsBufferEnabled / labels_buffer_enabled
+Config key: `labelsBufferEnabled/labels_buffer_enabled`
 
 See also: 
-* Types -> `Label`
-* Types -> `GameState`
-* examples/python/labels.py
-* examples/python/buffers.py
+- Types: `Label`
+- Types: `GameState`
+- examples/python/labels.py
+- examples/python/buffers.py
 
 
+---
 ### `isAutomapBufferEnabled`
 
 | C++    | `bool isAutomapBufferEnabled()`    |
@@ -859,6 +912,7 @@ Added in 1.1
 Returns true if the automap buffer is enabled.
 
 
+---
 ### `setAutomapBufferEnabled`
 
 | C++    | `void setAutomapBufferEnabled(bool automapBuffer)`    |
@@ -873,13 +927,14 @@ Enables rendering of the automap buffer, it will be available in state.
 
 Default value: false
 
-Config key: automapBufferEnabled / automap_buffer_enabled
+Config key: `automapBufferEnabled/automap_buffer_enabled`
 
 See also: 
-* Types -> `GameState`
-* examples/python/buffers.py
+- Types: `GameState`
+- examples/python/buffers.py
 
 
+---
 ### `setAutomapMode`
 
 | C++    | `void setAutomapMode(AutomapMode mode)`   |
@@ -894,11 +949,13 @@ Sets the automap mode (`NORMAL`, `WHOLE`, `OBJECTS`, `OBJECTS_WITH_SIZE`) with d
 
 Default value: `NORMAL`
 
-Config key: automapMode / set_automap_mode
+Config key: `automapMode/set_automap_mode`
 
 See also:
-* Types -> `AutomapMode`
+- Types: `AutomapMode`
 
+
+---
 ### `setAutomapRotate`
 
 | C++    | `void setAutomapRotate(bool rotate)`    |
@@ -913,9 +970,10 @@ Determine if the automap will be rotating with player, if false, north always wi
 
 Default value: false
 
-Config key: automapRotate / render_hud
+Config key: `automapRotate/render_hud`
 
 
+---
 ### `setAutomapRenderTextures`
 
 | C++    | `setAutomapRenderTextures(bool textures)`    |
@@ -930,9 +988,10 @@ Determine if the automap will be textured, showing the floor textures.
 
 Default value: true
 
-Config key: automapRenderTextures / automap_render_textures
+Config key: `automapRenderTextures/automap_render_textures`
 
 
+---
 ### `setRenderHud`
 
 | C++    | `void setRenderHud(bool hud)`    |
@@ -945,9 +1004,10 @@ Determine if hud will be rendered in game.
 
 Default value: false
 
-Config key: renderHud / render_hud
+Config key: `renderHud/render_hud`
 
 
+---
 ### `setRenderMinimalHud`
 
 | C++    | `void setRenderMinimalHud(bool minHud)`    |
@@ -962,9 +1022,10 @@ Determine if minimalistic version of hud will be rendered instead of full hud.
 
 Default value: false
 
-Config key: renderMinimalHud / render_minimal_hud
+Config key: `renderMinimalHud/render_minimal_hud`
 
 
+---
 ### `setRenderWeapon`
 
 | C++    | `void setRenderWeapon(bool weapon)`    |
@@ -977,9 +1038,10 @@ Determine if weapon held by player will be rendered in game.
 
 Default value: true
 
-Config key: renderWeapon / render_weapon
+Config key: `renderWeapon/render_weapon`
 
 
+---
 ### `setRenderCrosshair`
 
 | C++    | `void setRenderCrosshair(bool crosshair)`    |
@@ -992,9 +1054,10 @@ Determine if crosshair will be rendered in game.
 
 Default value: false
 
-Config key: renderCrosshair / render_crosshair
+Config key: `renderCrosshair/render_crosshair`
 
 
+---
 ### `setRenderDecals`
 
 | C++    | `void setRenderDecals(bool decals)`    |
@@ -1007,9 +1070,10 @@ Determine if decals (marks on the walls) will be rendered in game.
 
 Default value: true
 
-Config key: renderDecals / render_decals
+Config key: `renderDecals/render_decals`
 
 
+---
 ### `setRenderParticles`
 
 | C++    | `void setRenderParticles(bool particles)`    |
@@ -1022,9 +1086,10 @@ Determine if particles will be rendered in game.
 
 Default value: true
 
-Config key: renderParticles / render_particles
+Config key: `renderParticles/render_particles`
 
 
+---
 ### `setRenderEffectsSprites`
 
 | C++    | `void setRenderEffectsSprites(bool sprites)`    |
@@ -1039,9 +1104,10 @@ Determine if some effects sprites (gun pufs, blood splats etc.) will be rendered
 
 Default value: true
 
-Config key: renderEffectsSprites / render_effects_sprites
+Config key: `renderEffectsSprites/render_effects_sprites`
 
 
+---
 ### `setRenderMessages`
 
 | C++    | `void setRenderMessages(bool messages)`    |
@@ -1056,9 +1122,10 @@ Determine if ingame messages (information about pickups, kills etc.) will be ren
 
 Default value: true
 
-Config key: renderMessages / render_messages
+Config key: `renderMessages/render_messages`
 
 
+---
 ### `setWindowVisible`
 
 | C++    | `void setWindowVisible(bool visibility)`    |
@@ -1072,9 +1139,10 @@ ViZDoom with window disabled can be used on Linux system without X Server.
 
 Default value: false
 
-Config key: windowVisible / window_visible
+Config key: `windowVisible/window_visible`
 
 
+---
 ### `setConsoleEnabled`
 
 | C++    | `void setConsoleEnabled(bool console)`    |
@@ -1087,9 +1155,10 @@ Determines if ViZDoom's console output will be enabled.
 
 Default value: false
 
-Config key: consoleEnabled / console_enabled
+Config key: `consoleEnabled/console_enabled`
 
 
+---
 ### `setSoundEnabled`
 
 | C++    | `void setSoundEnabled(bool sound)`    |
@@ -1102,9 +1171,10 @@ Determines if ViZDoom's sound will be played.
 
 Default value: false
 
-Config key: soundEnabled / sound_enabled
+Config key: `soundEnabled/sound_enabled`
 
 
+---
 ### `getScreenWidth`
 
 | C++    | `int getScreenWidth()`   |
@@ -1116,6 +1186,7 @@ Config key: soundEnabled / sound_enabled
 Returns game's screen width - width of all buffers.
 
 
+---
 ### `getScreenHeight`
 
 | C++    | `int getScreenHeight()`   |
@@ -1127,6 +1198,7 @@ Returns game's screen width - width of all buffers.
 Returns game's screen height - height of all buffers.
 
 
+---
 ### `getScreenChannels`
 
 | C++    | `int getScreenChannels()`   |
@@ -1138,6 +1210,7 @@ Returns game's screen height - height of all buffers.
 Returns number of channels in screen buffer and map buffer (depth and labels buffer have always one channel).
 
 
+---
 ### `getScreenPitch`
 
 | C++    | `size_t getScreenPitch()`   |
@@ -1149,6 +1222,7 @@ Returns number of channels in screen buffer and map buffer (depth and labels buf
 Returns size in bytes of one row in screen buffer and map buffer.
 
 
+---
 ### `getScreenSize`
 
 | C++    | `size_t getScreenSize()` |

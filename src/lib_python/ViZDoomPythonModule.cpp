@@ -72,8 +72,8 @@ EXCEPTION_TRANSLATE_TO_PYT(ViZDoomUnexpectedExitException)
 /* DoomGamePython methods overloading */
 /*------------------------------------------------------------------------------------------------------------*/
 
-double (*DoomFixedToDouble_int)(int) = &DoomFixedToDouble;
-double (*DoomFixedToDouble_double)(double) = &DoomFixedToDouble;
+double (*doomFixedToDouble_int)(int) = &doomFixedToDouble;
+double (*doomFixedToDouble_double)(double) = &doomFixedToDouble;
 
 void (DoomGamePython::*newEpisode)() = &DoomGamePython::newEpisode;
 void (DoomGamePython::*newEpisode_str)(bpy::str const &) = &DoomGamePython::newEpisode;
@@ -336,14 +336,14 @@ BOOST_PYTHON_MODULE(vizdoom)
         ENUM_VAL_2_PYT(PLAYER7_FRAGCOUNT)
         ENUM_VAL_2_PYT(PLAYER8_FRAGCOUNT);
 
-    def("doom_tics_to_ms", DoomTicsToMs);
+    def("doom_tics_to_ms", doomTicsToMs);
     def("ms_to_doom_tics", msToDoomTics);
-    def("doom_tics_to_sec", DoomTicsToSec);
+    def("doom_tics_to_sec", doomTicsToSec);
     def("sec_to_doom_tics", secToDoomTics);
-    def("doom_fixed_to_double", DoomFixedToDouble_int);
-    def("doom_fixed_to_double", DoomFixedToDouble_double);
-    def("doom_fixed_to_float", DoomFixedToDouble_int);
-    def("doom_fixed_to_float", DoomFixedToDouble_double);
+    def("doom_fixed_to_double", doomFixedToDouble_int);
+    def("doom_fixed_to_double", doomFixedToDouble_double);
+    def("doom_fixed_to_float", doomFixedToDouble_int);
+    def("doom_fixed_to_float", doomFixedToDouble_double);
     def("is_binary_button", isBinaryButton);
     def("is_delta_button", isDeltaButton);
 

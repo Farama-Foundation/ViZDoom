@@ -30,28 +30,28 @@ namespace vizdoom {
     /*
      * Calculates how many tics will be made during given number of milliseconds.
      */
-    double DoomTicsToMs(double tics, unsigned int ticrate = 35);
+    double doomTicsToMs(double tics, unsigned int ticrate = 35);
 
     /*
      * Calculates the number of milliseconds that will pass during specified number of tics.
      */
-    double MsToDoomTics(double ms, unsigned int ticrate = 35);
+    double msToDoomTics(double ms, unsigned int ticrate = 35);
 
     /*
      * Calculates how many tics will be made during given number of seconds.
      */
-    double DoomTicsToSec(double tics, unsigned int ticrate = 35);
+    double doomTicsToSec(double tics, unsigned int ticrate = 35);
 
     /*
      * Calculates the number of seconds that will pass during specified number of tics.
      */
-    double SecToDoomTics(double sec, unsigned int ticrate = 35);
+    double secToDoomTics(double sec, unsigned int ticrate = 35);
 
     /*
      * Converts Doom's fixed point numeral to a floating point value.
      */
-    double DoomFixedToDouble(int doomFixed);
-    double DoomFixedToDouble(double doomFixed);
+    double doomFixedToDouble(int doomFixed);
+    double doomFixedToDouble(double doomFixed);
 
     /*
      * Returns true if button is binary button.

@@ -24,7 +24,7 @@
 
 namespace vizdoom {
 
-    double DoomTicsToMs(double tics, unsigned int ticrate) {
+    double doomTicsToMs(double tics, unsigned int ticrate) {
         return 1000.0 / ticrate * tics;
     }
 
@@ -32,7 +32,7 @@ namespace vizdoom {
         return static_cast<double>(ticrate) / 1000.0 * ms;
     }
 
-    double DoomTicsToSec(double tics, unsigned int ticrate) {
+    double doomTicsToSec(double tics, unsigned int ticrate) {
         return 1.0 / ticrate * tics;
     }
 
@@ -40,11 +40,11 @@ namespace vizdoom {
         return static_cast<double>(ticrate) * sec;
     }
 
-    double DoomFixedToDouble(int doomFixed) {
+    double doomFixedToDouble(int doomFixed) {
         return static_cast<double>(doomFixed) / 65536.0;
     }
 
-    double DoomFixedToDouble(double doomFixed) {
+    double doomFixedToDouble(double doomFixed) {
         return doomFixed / 65536.0;
     }
 

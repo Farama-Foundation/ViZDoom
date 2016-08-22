@@ -110,6 +110,8 @@ struct VIZGameState{
     int PLAYER_AMMO[VIZ_GV_SLOTS_SIZE];
     int PLAYER_WEAPON[VIZ_GV_SLOTS_SIZE];
 
+    int PLAYER_POSITION[3];
+
     bool PLAYER_READY_TO_RESPAWN;
     unsigned int PLAYER_NUMBER;
 
