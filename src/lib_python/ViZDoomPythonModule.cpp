@@ -72,11 +72,14 @@ EXCEPTION_TRANSLATE_TO_PYT(ViZDoomUnexpectedExitException)
 /* DoomGamePython methods overloading */
 /*------------------------------------------------------------------------------------------------------------*/
 
+double (*DoomFixedToDouble_int)(int) = &DoomFixedToDouble;
+double (*DoomFixedToDouble_double)(double) = &DoomFixedToDouble;
+
 void (DoomGamePython::*newEpisode)() = &DoomGamePython::newEpisode;
 void (DoomGamePython::*newEpisode_str)(bpy::str const &) = &DoomGamePython::newEpisode;
 
-void (DoomGamePython::*addAvailableButton_Button)(Button) = &DoomGamePython::addAvailableButton;
-void (DoomGamePython::*addAvailableButton_Button_int)(Button, unsigned int) = &DoomGamePython::addAvailableButton;
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(addAvailableButton_overloads, DoomGamePython::addAvailableButton, 1, 2)
+void (DoomGamePython::*addAvailableButton_default)(Button, unsigned int) = &DoomGamePython::addAvailableButton;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(advanceAction_overloads, DoomGamePython::advanceAction, 0, 3)
 void (DoomGamePython::*advanceAction_default)(unsigned int, bool, bool) = &DoomGamePython::advanceAction;
@@ -334,8 +337,15 @@ BOOST_PYTHON_MODULE(vizdoom)
         ENUM_VAL_2_PYT(PLAYER8_FRAGCOUNT);
 
     def("doom_tics_to_ms", DoomTicsToMs);
-    def("ms_to_doom_tics", MsToDoomTics);
-    def("doom_fixed_to_double", DoomFixedToDouble);
+    def("ms_to_doom_tics", msToDoomTics);
+    def("doom_tics_to_sec", DoomTicsToSec);
+    def("sec_to_doom_tics", secToDoomTics);
+    def("doom_fixed_to_double", DoomFixedToDouble_int);
+    def("doom_fixed_to_double", DoomFixedToDouble_double);
+    def("doom_fixed_to_float", DoomFixedToDouble_int);
+    def("doom_fixed_to_float", DoomFixedToDouble_double);
+    def("is_binary_button", isBinaryButton);
+    def("is_delta_button", isDeltaButton);
 
     class_<LabelPython>("Label", no_init)
         .def_readonly("object_id", &LabelPython::objectId)
@@ -387,9 +397,7 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def("clear_available_game_variables", &DoomGamePython::clearAvailableGameVariables)
         .def("get_available_game_variables_size", &DoomGamePython::getAvailableGameVariablesSize)
 
-        .def("add_available_button", addAvailableButton_Button)
-        .def("add_available_button", addAvailableButton_Button_int)
-
+        .def("add_available_button", addAvailableButton_default, addAvailableButton_overloads())
         .def("clear_available_buttons", &DoomGamePython::clearAvailableButtons)
         .def("get_available_buttons_size", &DoomGamePython::getAvailableButtonsSize)
         .def("set_button_max_value", &DoomGamePython::setButtonMaxValue)
