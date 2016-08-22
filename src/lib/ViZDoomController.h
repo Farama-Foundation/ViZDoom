@@ -239,34 +239,9 @@ namespace vizdoom{
         int getGameTic();
         bool isMultiplayerGame();
         bool isNetGame();
-
         int getMapTic();
         int getMapReward();
-
-        int getMapKillCount();
-        int getMapItemCount();
-        int getMapSecretCount();
-
         bool isPlayerDead();
-
-        int getPlayerKillCount();
-        int getPlayerItemCount();
-        int getPlayerSecretCount();
-        int getPlayerFragCount();
-        int getPlayerDeathCount();
-
-        int getPlayerHealth();
-        int getPlayerArmor();
-        bool isPlayerOnGround();
-        bool isPlayerAttackReady();
-        bool isPlayerAltAttackReady();
-        int getPlayerSelectedWeaponAmmo();
-        int getPlayerSelectedWeapon();
-
-        int getPlayerAmmo(unsigned int slot);
-        int getPlayerWeapon(unsigned int slot);
-        int getUser(unsigned int slot);
-
 
     private:
 
@@ -373,7 +348,7 @@ namespace vizdoom{
         unsigned int mapStartTime;
         unsigned int mapTimeout;
         unsigned int mapRestartCount;
-        bool mapRestarting;
+        bool mapChanging;
         unsigned int mapLastTic;
 
         std::vector <std::string> customArgs;
