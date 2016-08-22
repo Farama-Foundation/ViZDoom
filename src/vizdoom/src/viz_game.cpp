@@ -224,6 +224,10 @@ void VIZ_GameStateTic(){
         vizGameStateSM->PLAYER_WEAPON[i] = VIZ_CheckSlotWeapons(i);
     }
 
+    vizGameStateSM->PLAYER_POSITION[0] = VIZ_PLAYER.mo->__pos.x;
+    vizGameStateSM->PLAYER_POSITION[1] = VIZ_PLAYER.mo->__pos.y;
+    vizGameStateSM->PLAYER_POSITION[2] = VIZ_PLAYER.mo->__pos.z;
+
     vizGameStateSM->PLAYER_NUMBER = (unsigned int)consoleplayer;
     vizGameStateSM->PLAYER_COUNT = 1;
     if(netgame || multiplayer) {
