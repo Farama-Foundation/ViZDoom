@@ -62,10 +62,10 @@ void translate ## n (std::exception const &e){ PyErr_SetString( type ## n  , e.w
 EXCEPTION_TRANSLATE_TO_PYT(FileDoesNotExistException)
 EXCEPTION_TRANSLATE_TO_PYT(MessageQueueException)
 EXCEPTION_TRANSLATE_TO_PYT(SharedMemoryException)
+EXCEPTION_TRANSLATE_TO_PYT(SignalException)
 EXCEPTION_TRANSLATE_TO_PYT(ViZDoomIsNotRunningException)
 EXCEPTION_TRANSLATE_TO_PYT(ViZDoomErrorException)
 EXCEPTION_TRANSLATE_TO_PYT(ViZDoomMismatchedVersionException)
-EXCEPTION_TRANSLATE_TO_PYT(ViZDoomSignalException)
 EXCEPTION_TRANSLATE_TO_PYT(ViZDoomUnexpectedExitException)
 
 
@@ -121,10 +121,10 @@ BOOST_PYTHON_MODULE(vizdoom)
     EXCEPTION_TO_PYT(FileDoesNotExistException)
     EXCEPTION_TO_PYT(MessageQueueException)
     EXCEPTION_TO_PYT(SharedMemoryException)
+    EXCEPTION_TO_PYT(SignalException)
     EXCEPTION_TO_PYT(ViZDoomIsNotRunningException)
     EXCEPTION_TO_PYT(ViZDoomErrorException)
     EXCEPTION_TO_PYT(ViZDoomMismatchedVersionException)
-    EXCEPTION_TO_PYT(ViZDoomSignalException)
     EXCEPTION_TO_PYT(ViZDoomUnexpectedExitException)
 
 
