@@ -23,12 +23,12 @@
 #ifndef __VIZDOOM_SHAREDMEMORY_H__
 #define __VIZDOOM_SHAREDMEMORY_H__
 
-#include <cstdint>
-
-#include "ViZDoomDefines.h"
+#include "ViZDoomConsts.h"
+#include "ViZDoomTypes.h"
 
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
+#include <cstdint>
 
 #define SM_REGION_COUNT 6
 
@@ -106,7 +106,7 @@ namespace vizdoom {
         unsigned int MAP_TIC;
 
         int MAP_REWARD;
-        int MAP_USER_VARS[UserVariableCount];
+        int MAP_USER_VARS[USER_VARIABLE_COUNT];
 
         int MAP_KILLCOUNT;
         int MAP_ITEMCOUNT;
@@ -117,7 +117,7 @@ namespace vizdoom {
         bool PLAYER_HAS_ACTOR;
         bool PLAYER_DEAD;
 
-        char PLAYER_NAME[MaxPlayerNameLength];
+        char PLAYER_NAME[MAX_PLAYER_NAME_LENGTH];
         int PLAYER_KILLCOUNT;
         int PLAYER_ITEMCOUNT;
         int PLAYER_SECRETCOUNT;
@@ -135,8 +135,8 @@ namespace vizdoom {
         int PLAYER_SELECTED_WEAPON;
         int PLAYER_SELECTED_WEAPON_AMMO;
 
-        int PLAYER_AMMO[SlotCount];
-        int PLAYER_WEAPON[SlotCount];
+        int PLAYER_AMMO[SLOT_COUNT];
+        int PLAYER_WEAPON[SLOT_COUNT];
 
         int PLAYER_POSITION[3];
 
@@ -145,9 +145,9 @@ namespace vizdoom {
 
         // OTHER PLAYERS
         unsigned int PLAYER_COUNT;
-        bool PLAYER_N_IN_GAME[MaxPlayers];
-        char PLAYER_N_NAME[MaxPlayers][MaxPlayerNameLength];
-        int PLAYER_N_FRAGCOUNT[MaxPlayers];
+        bool PLAYER_N_IN_GAME[MAX_PLAYERS];
+        char PLAYER_N_NAME[MAX_PLAYERS][MAX_PLAYER_NAME_LENGTH];
+        int PLAYER_N_FRAGCOUNT[MAX_PLAYERS];
 
         //LABELS
         unsigned int LABEL_COUNT;
@@ -155,9 +155,9 @@ namespace vizdoom {
     };
 
     struct SMInputState {
-        int BT[ButtonCount];
-        bool BT_AVAILABLE[ButtonCount];
-        int BT_MAX_VALUE[DeltaButtonCount];
+        int BT[BUTTON_COUNT];
+        bool BT_AVAILABLE[BUTTON_COUNT];
+        int BT_MAX_VALUE[DELTA_BUTTON_COUNT];
     };
 
     /* SM class */

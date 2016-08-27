@@ -20,19 +20,15 @@
  THE SOFTWARE.
 */
 
-#ifndef __VIZDOOM_DEFINES_H__
-#define __VIZDOOM_DEFINES_H__
+#ifndef __VIZDOOM_TYPES_H__
+#define __VIZDOOM_TYPES_H__
 
-#include <array>
 #include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
 
 namespace vizdoom{
-
-    #define VIZDOOM_LIB_VERSION 109
-    #define VIZDOOM_LIB_VERSION_STR "1.1.0pre"
 
     typedef std::vector<uint8_t> Buffer;
     typedef std::shared_ptr<Buffer> BufferPtr;
@@ -185,7 +181,7 @@ namespace vizdoom{
         PLAYER7_FRAGCOUNT,
         PLAYER8_FRAGCOUNT,
 
-        /* ACS variables */
+        /* User (ACS) variables */
         // USER0 is reserved for reward
         USER1,
         USER2,
@@ -218,11 +214,6 @@ namespace vizdoom{
         USER29,
         USER30,
     };
-
-    static const unsigned int UserVariableCount     = 30;
-    static const unsigned int SlotCount             = 10;
-    static const unsigned int MaxPlayers            = 8;
-    static const unsigned int MaxPlayerNameLength   = 16;
 
     enum Button {
 
@@ -278,11 +269,6 @@ namespace vizdoom{
         MOVE_LEFT_RIGHT_DELTA       = 41,
         MOVE_UP_DOWN_DELTA          = 42,
     };
-
-    static const unsigned int BinaryButtonCount = 38;
-    static const unsigned int DeltaButtonCount  = 5;
-    static const unsigned int ButtonCount       = 43;
-    static const unsigned int DefaultTicrate    = 35;
 
 }
 #endif

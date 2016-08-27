@@ -21,6 +21,7 @@
 */
 
 #include "ViZDoomController.h"
+#include "ViZDoomConsts.h"
 #include "ViZDoomExceptions.h"
 #include "ViZDoomPathHelpers.h"
 #include "ViZDoomUtilities.h"

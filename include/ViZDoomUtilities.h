@@ -23,7 +23,7 @@
 #ifndef __VIZDOOM_UTILITIES_H__
 #define __VIZDOOM_UTILITIES_H__
 
-#include "ViZDoomDefines.h"
+#include "ViZDoomTypes.h"
 
 namespace vizdoom {
 
