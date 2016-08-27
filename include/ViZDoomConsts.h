@@ -20,13 +20,23 @@
  THE SOFTWARE.
 */
 
-#ifndef __VIZDOOM_H__
-#define __VIZDOOM_H__
+#ifndef __VIZDOOM_DEFINES_H__
+#define __VIZDOOM_DEFINES_H__
 
-#include "ViZDoomConsts.h"
-#include "ViZDoomExceptions.h"
-#include "ViZDoomGame.h"
-#include "ViZDoomTypes.h"
-#include "ViZDoomUtilities.h"
+namespace vizdoom{
 
+    #define VIZDOOM_LIB_VERSION 109
+    #define VIZDOOM_LIB_VERSION_STR "1.1.0pre"
+
+    const unsigned int SLOT_COUNT = 10;
+    const unsigned int MAX_PLAYERS = 8;
+    const unsigned int MAX_PLAYER_NAME_LENGTH = 16;
+    const unsigned int USER_VARIABLE_COUNT = 30;
+    const unsigned int DEFAULT_TICRATE = 35;
+
+    const unsigned int BINARY_BUTTON_COUNT = 38;
+    const unsigned int DELTA_BUTTON_COUNT = 5;
+    const unsigned int BUTTON_COUNT = 43;
+
+}
 #endif

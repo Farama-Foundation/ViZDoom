@@ -23,7 +23,7 @@
 #ifndef __VIZDOOM_CONFIGLOADER_H__
 #define __VIZDOOM_CONFIGLOADER_H__
 
-#include "ViZDoomDefines.h"
+#include "ViZDoomTypes.h"
 #include "ViZDoomGame.h"
 
 #include <string>

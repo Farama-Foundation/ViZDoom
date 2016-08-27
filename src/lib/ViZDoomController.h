@@ -23,7 +23,7 @@
 #ifndef __VIZDOOM_CONTROLLER_H__
 #define __VIZDOOM_CONTROLLER_H__
 
-#include "ViZDoomDefines.h"
+#include "ViZDoomTypes.h"
 #include "ViZDoomMessageQueue.h"
 #include "ViZDoomSharedMemory.h"
 

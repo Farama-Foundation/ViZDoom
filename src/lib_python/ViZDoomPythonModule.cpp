@@ -20,10 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "ViZDoomDefines.h"
-#include "ViZDoomExceptions.h"
-#include "ViZDoomUtilities.h"
-
+#include "ViZDoom.h"
 #include "ViZDoomGamePython.h"
 
 #include <boost/python.hpp>
@@ -127,6 +124,8 @@ BOOST_PYTHON_MODULE(vizdoom)
     EXCEPTION_TO_PYT(ViZDoomMismatchedVersionException)
     EXCEPTION_TO_PYT(ViZDoomUnexpectedExitException)
 
+    #define CONST_2_PYT(c) scope().attr( #c ) = c
+    /* scope().attr("CONST") = CONST  */
 
     #define ENUM_VAL_2_PYT(v) .value( #v , v )
     /* .value("VALUE", VALUE) */
@@ -143,6 +142,16 @@ BOOST_PYTHON_MODULE(vizdoom)
 
     /* Enums */
     /*------------------------------------------------------------------------------------------------------------*/
+
+    CONST_2_PYT(SLOT_COUNT);
+    CONST_2_PYT(MAX_PLAYERS);
+    CONST_2_PYT(MAX_PLAYER_NAME_LENGTH);
+    CONST_2_PYT(USER_VARIABLE_COUNT);
+    CONST_2_PYT(DEFAULT_TICRATE);
+
+    CONST_2_PYT(BINARY_BUTTON_COUNT);
+    CONST_2_PYT(DELTA_BUTTON_COUNT);
+    CONST_2_PYT(BUTTON_COUNT);
 
     enum_<Mode>("Mode")
         ENUM_VAL_2_PYT(PLAYER)

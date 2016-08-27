@@ -21,6 +21,7 @@
 */
 
 #include "ViZDoomUtilities.h"
+#include "ViZDoomConsts.h"
 
 namespace vizdoom {
 
@@ -49,10 +50,10 @@ namespace vizdoom {
     }
 
     bool isBinaryButton(Button button){
-        return button < BinaryButtonCount;
+        return button < BINARY_BUTTON_COUNT;
     }
 
     bool isDeltaButton(Button button){
-        return button >= BinaryButtonCount && button < ButtonCount;
+        return button >= BINARY_BUTTON_COUNT && button < BUTTON_COUNT;
     }
 }
