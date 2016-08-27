@@ -232,6 +232,7 @@ EXTERN_CVAR(Bool, cl_showsprees)
 EXTERN_CVAR(Int, am_cheat)
 EXTERN_CVAR(Bool, am_rotate)
 EXTERN_CVAR(Bool, am_textured)
+EXTERN_CVAR(Bool, am_followplayer)
 
 EXTERN_CVAR(Bool, am_showitems)
 EXTERN_CVAR(Bool, am_showmonsters)
@@ -289,6 +290,7 @@ void VIZ_CVARsUpdate(){
 
     am_rotate.CmdSet((*viz_render_mode & 256) != 0 ? "1" : "0");
     am_textured.CmdSet((*viz_render_mode & 512) != 0 ? "1" : "0");
+    am_followplayer.CmdSet("1");
 
     am_showitems.CmdSet("0");
     am_showmonsters.CmdSet("0");

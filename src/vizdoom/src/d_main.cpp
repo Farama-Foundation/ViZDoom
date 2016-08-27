@@ -963,7 +963,9 @@ void VIZ_D_MapDisplay(){
 	//enable automap
 	bool _automapactive = automapactive;
 	bool _viewactive = viewactive;
-	automapactive = true;
+
+	automapactive = false;
+	AM_ToggleMap ();
 	viewactive = false;
 
 	//disable additional buffers in this pass
@@ -1167,6 +1169,8 @@ void VIZ_D_MapDisplay(){
 
 	vizDepthMap = _vizDepthMap;
 	vizLabels = _vizLabels;
+
+	AM_ToggleMap ();
 	automapactive = _automapactive;
 	viewactive = _viewactive;
 }
