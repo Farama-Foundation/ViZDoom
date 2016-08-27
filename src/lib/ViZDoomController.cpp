@@ -79,7 +79,7 @@ namespace vizdoom {
         this->mapLastTic = 1;
 
         /* Settings */
-        this->ticrate = DefaultTicrate;
+        this->ticrate = DEFAULT_TICRATE;
 
         this->exePath = "vizdoom";
         this->iwadPath = "doom2.wad";
@@ -268,7 +268,7 @@ namespace vizdoom {
     void DoomController::tics(unsigned int tics, bool update){
 
         if(this->allowDoomInput && !this->runDoomAsync){
-            for(int i = 0; i < DeltaButtonCount; ++i){
+            for(int i = 0; i < DELTA_BUTTON_COUNT; ++i){
                 this->input->BT_MAX_VALUE[i] = tics * this->_input->BT_MAX_VALUE[i];
             }
         }
@@ -289,8 +289,8 @@ namespace vizdoom {
         }
 
         if(this->allowDoomInput && !this->runDoomAsync){
-            for(int i = BinaryButtonCount; i < ButtonCount; ++i){
-                this->input->BT_MAX_VALUE[i - BinaryButtonCount] = this->_input->BT_MAX_VALUE[i - BinaryButtonCount];
+            for(int i = BINARY_BUTTON_COUNT; i < BUTTON_COUNT; ++i){
+                this->input->BT_MAX_VALUE[i - BINARY_BUTTON_COUNT] = this->_input->BT_MAX_VALUE[i - BINARY_BUTTON_COUNT];
                 this->input->BT[i] = this->input->BT[i]/ticsMade;
             }
         }
@@ -781,12 +781,12 @@ namespace vizdoom {
     }
 
     void DoomController::setButtonState(Button button, int state) {
-        if (button < ButtonCount && button >= 0 && this->doomRunning)
+        if (button < BUTTON_COUNT && button >= 0 && this->doomRunning)
             this->input->BT[button] = state;
     }
 
     void DoomController::toggleButtonState(Button button) {
-        if (button < ButtonCount && button >= 0 && this->doomRunning)
+        if (button < BUTTON_COUNT && button >= 0 && this->doomRunning)
             this->input->BT[button] = !this->input->BT[button];
     }
 
@@ -796,7 +796,7 @@ namespace vizdoom {
     }
 
     void DoomController::setButtonAvailable(Button button, bool allow) {
-        if (button < ButtonCount && button >= 0) {
+        if (button < BUTTON_COUNT && button >= 0) {
             if (this->doomRunning) this->input->BT_AVAILABLE[button] = allow;
             this->_input->BT_AVAILABLE[button] = allow;
         }
@@ -804,35 +804,35 @@ namespace vizdoom {
 
     void DoomController::resetButtons(){
         if (this->doomRunning)
-            for (int i = 0; i < ButtonCount; ++i)
+            for (int i = 0; i < BUTTON_COUNT; ++i)
                 this->input->BT[i] = 0;
     }
 
     void DoomController::disableAllButtons(){
-        for (int i = 0; i < ButtonCount; ++i){
+        for (int i = 0; i < BUTTON_COUNT; ++i){
             if (this->doomRunning) this->input->BT_AVAILABLE[i] = false;
             this->_input->BT_AVAILABLE[i] = false;
         }
     }
 
     void DoomController::availableAllButtons(){
-        for (int i = 0; i < ButtonCount; ++i){
+        for (int i = 0; i < BUTTON_COUNT; ++i){
             if (this->doomRunning) this->input->BT_AVAILABLE[i] = true;
             this->_input->BT_AVAILABLE[i] = true;
         }
     }
 
     void DoomController::setButtonMaxValue(Button button, unsigned int value){
-        if(button >= BinaryButtonCount){
-            if (this->doomRunning) this->input->BT_MAX_VALUE[button - BinaryButtonCount] = value;
-            this->_input->BT_MAX_VALUE[button - BinaryButtonCount] = value;
+        if(button >= BINARY_BUTTON_COUNT){
+            if (this->doomRunning) this->input->BT_MAX_VALUE[button - BINARY_BUTTON_COUNT] = value;
+            this->_input->BT_MAX_VALUE[button - BINARY_BUTTON_COUNT] = value;
         }
     }
 
     int DoomController::getButtonMaxValue(Button button){
-        if(button >= BinaryButtonCount){
-            if (this->doomRunning) return this->input->BT_MAX_VALUE[button - BinaryButtonCount];
-            else return this->_input->BT_MAX_VALUE[button - BinaryButtonCount];
+        if(button >= BINARY_BUTTON_COUNT){
+            if (this->doomRunning) return this->input->BT_MAX_VALUE[button - BINARY_BUTTON_COUNT];
+            else return this->_input->BT_MAX_VALUE[button - BINARY_BUTTON_COUNT];
         }
         else return 1;
     }
@@ -1174,7 +1174,7 @@ namespace vizdoom {
             this->doomArgs.push_back("1");
         }
 
-        if(this->ticrate != DefaultTicrate){
+        if(this->ticrate != DEFAULT_TICRATE){
             this->doomArgs.push_back("-ticrate");
             this->doomArgs.push_back(b::lexical_cast<std::string>(this->ticrate));
         }
