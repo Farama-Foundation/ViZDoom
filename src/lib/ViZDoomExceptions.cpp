@@ -43,6 +43,12 @@ namespace vizdoom{
         else return "Unknown shared memory error.";
     }
 
+    /* SignalException */
+    const char* SignalException::what() const throw(){
+        std::string what = "Signal " + this->signal + " received. ViZDoom instance has been closed.";
+        return strdup(what.c_str());
+    }
+
     /* ViZDoomErrorException */
     const char* ViZDoomErrorException::what() const throw(){
         if(this->error.length()) return this->error.c_str();
@@ -57,12 +63,6 @@ namespace vizdoom{
     /* ViZDoomMismatchedVersionException */
     const char* ViZDoomMismatchedVersionException::what() const throw(){
         std::string what = "Controlled ViZDoom version (" + this->vizdoomVersion + ") does not match library version (" + this->libVersion + ").";
-        return strdup(what.c_str());
-    }
-
-    /* ViZDoomSignalException */
-    const char* ViZDoomSignalException::what() const throw(){
-        std::string what = "Signal " + this->signal + " received. ViZDoom instance has been closed.";
         return strdup(what.c_str());
     }
 

@@ -63,7 +63,7 @@ namespace vizdoom {
     /*----------------------------------------------------------------------------------------------------------------*/
 
     struct SMLabel{
-        int objectId;
+        unsigned int objectId;
         char objectName[MAX_LABEL_NAME_LEN];
         uint8_t value;
     };
@@ -137,6 +137,8 @@ namespace vizdoom {
 
         int PLAYER_AMMO[SlotCount];
         int PLAYER_WEAPON[SlotCount];
+
+        int PLAYER_POSITION[3];
 
         bool PLAYER_READY_TO_RESPAWN;
         unsigned int PLAYER_NUMBER;

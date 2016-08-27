@@ -80,7 +80,7 @@ namespace vizdoom {
         if(this->getGameState()->SM_SIZE != this->size ||
             this->getGameState()->SM_REGION_SIZE[0] != sizeof(SMGameState) ||
             this->getGameState()->SM_REGION_SIZE[1] != sizeof(SMInputState))
-            throw SharedMemoryException("Memory size does not match the the expected size.");
+            throw SharedMemoryException("Memory size does not match the the expected size. Possible ViZDoom version mismatch.");
     }
 
     void SharedMemory::mapRegion(SMRegion *regionPtr) {

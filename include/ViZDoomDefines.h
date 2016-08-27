@@ -36,7 +36,7 @@ namespace vizdoom{
 
     typedef std::vector<uint8_t> Buffer;
     typedef std::shared_ptr<Buffer> BufferPtr;
-    
+
     struct Label{
         unsigned int objectId;
         std::string objectName;
@@ -138,6 +138,8 @@ namespace vizdoom{
     };
 
     enum GameVariable {
+
+        /* Defined variables */
         KILLCOUNT,
         ITEMCOUNT,
         SECRETCOUNT,
@@ -172,6 +174,19 @@ namespace vizdoom{
         WEAPON8,
         WEAPON9,
 
+        PLAYER_NUMBER,
+        PLAYER_COUNT,
+        PLAYER1_FRAGCOUNT,
+        PLAYER2_FRAGCOUNT,
+        PLAYER3_FRAGCOUNT,
+        PLAYER4_FRAGCOUNT,
+        PLAYER5_FRAGCOUNT,
+        PLAYER6_FRAGCOUNT,
+        PLAYER7_FRAGCOUNT,
+        PLAYER8_FRAGCOUNT,
+
+        /* ACS variables */
+        // USER0 is reserved for reward
         USER1,
         USER2,
         USER3,
@@ -202,17 +217,6 @@ namespace vizdoom{
         USER28,
         USER29,
         USER30,
-
-        PLAYER_NUMBER,
-        PLAYER_COUNT,
-        PLAYER1_FRAGCOUNT,
-        PLAYER2_FRAGCOUNT,
-        PLAYER3_FRAGCOUNT,
-        PLAYER4_FRAGCOUNT,
-        PLAYER5_FRAGCOUNT,
-        PLAYER6_FRAGCOUNT,
-        PLAYER7_FRAGCOUNT,
-        PLAYER8_FRAGCOUNT,
     };
 
     static const unsigned int UserVariableCount     = 30;
@@ -221,6 +225,7 @@ namespace vizdoom{
     static const unsigned int MaxPlayerNameLength   = 16;
 
     enum Button {
+
         /* Binary buttons */
         ATTACK          = 0,
         USE             = 1,
@@ -277,7 +282,6 @@ namespace vizdoom{
     static const unsigned int BinaryButtonCount = 38;
     static const unsigned int DeltaButtonCount  = 5;
     static const unsigned int ButtonCount       = 43;
-
     static const unsigned int DefaultTicrate    = 35;
 
 }

@@ -236,10 +236,10 @@ namespace vizdoom{
 
         int getGameVariable(GameVariable var);
 
-        int getGameTic();
+        unsigned int getGameTic();
         bool isMultiplayerGame();
         bool isNetGame();
-        int getMapTic();
+        unsigned int getMapTic();
         int getMapReward();
         bool isPlayerDead();
 

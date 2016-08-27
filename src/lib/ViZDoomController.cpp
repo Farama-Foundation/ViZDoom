@@ -23,6 +23,7 @@
 #include "ViZDoomController.h"
 #include "ViZDoomExceptions.h"
 #include "ViZDoomPathHelpers.h"
+#include "ViZDoomUtilities.h"
 #include "boost/process.hpp"
 
 #include <boost/algorithm/string.hpp>
@@ -862,22 +863,23 @@ namespace vizdoom {
             case ARMOR :
                 return this->gameState->PLAYER_ARMOR;
             case DEAD :
-                return this->gameState->PLAYER_DEAD;
+                return static_cast<int>(this->gameState->PLAYER_DEAD);
             case ON_GROUND :
-                return this->gameState->PLAYER_ON_GROUND;
+                return static_cast<int>(this->gameState->PLAYER_ON_GROUND);
             case ATTACK_READY :
-                return this->gameState->PLAYER_ATTACK_READY;
+                return static_cast<int>(this->gameState->PLAYER_ATTACK_READY);
             case ALTATTACK_READY :
-                return this->gameState->PLAYER_ALTATTACK_READY;
+                return static_cast<int>(this->gameState->PLAYER_ALTATTACK_READY);
             case SELECTED_WEAPON :
                 return this->gameState->PLAYER_SELECTED_WEAPON;
             case SELECTED_WEAPON_AMMO :
                 return this->gameState->PLAYER_SELECTED_WEAPON_AMMO;
             case PLAYER_NUMBER:
-                return this->gameState->PLAYER_NUMBER;
+                return static_cast<int>(this->gameState->PLAYER_NUMBER);
             case PLAYER_COUNT:
-                return this->gameState->PLAYER_COUNT;
+                return static_cast<int>(this->gameState->PLAYER_COUNT);
         }
+
         if(var >= AMMO0 && var <= AMMO9){
             return this->gameState->PLAYER_AMMO[var - AMMO0];
         }
@@ -890,13 +892,14 @@ namespace vizdoom {
         else if(var >= PLAYER1_FRAGCOUNT && var <= PLAYER8_FRAGCOUNT){
             return this->gameState->PLAYER_N_FRAGCOUNT[var - PLAYER1_FRAGCOUNT];
         }
-        else return 0;
+
+        return 0;
     }
 
-    int DoomController::getGameTic() { return this->gameState->GAME_TIC; }
+    unsigned int DoomController::getGameTic() { return this->gameState->GAME_TIC; }
     bool DoomController::isMultiplayerGame() { return this->gameState->GAME_MULTIPLAYER; }
     bool DoomController::isNetGame() { return this->gameState->GAME_NETGAME; }
-    int DoomController::getMapTic() { return this->gameState->MAP_TIC; }
+    unsigned int DoomController::getMapTic() { return this->gameState->MAP_TIC; }
     int DoomController::getMapReward() { return this->gameState->MAP_REWARD; }
     bool DoomController::isPlayerDead() { return this->gameState->PLAYER_DEAD; }
 
@@ -907,7 +910,7 @@ namespace vizdoom {
         std::string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         this->instanceId = "";
 
-        br::uniform_int_distribution<> charDist(0, chars.length() - 1);
+        br::uniform_int_distribution<> charDist(0, static_cast<int>(chars.length() - 1));
         br::mt19937 rng;
         rng.seed((unsigned int)bc::high_resolution_clock::now().time_since_epoch().count());
 
@@ -934,7 +937,7 @@ namespace vizdoom {
 
     void DoomController::intSignal(int sigNumber){
         this->MQDoom->send(MSG_CODE_CLOSE);
-        this->MQController->send(MSG_CODE_SIG + sigNumber);
+        this->MQController->send(static_cast<uint8_t >(MSG_CODE_SIG + sigNumber));
     }
 
     /* Flow */
@@ -960,15 +963,19 @@ namespace vizdoom {
 
             case MSG_CODE_SIGINT :
                 this->close();
-                throw ViZDoomSignalException("SIGINT");
+                throw SignalException("SIGINT");
 
             case MSG_CODE_SIGABRT :
                 this->close();
-                throw ViZDoomSignalException("SIGABRT");
+                throw SignalException("SIGABRT");
 
             case MSG_CODE_SIGTERM :
                 this->close();
-                throw ViZDoomSignalException("SIGTERM");
+                throw SignalException("SIGTERM");
+
+            default:
+                this->close();
+                throw MessageQueueException("Unknown message code. Possible ViZDoom version mismatch.");
         }
 
         return done;

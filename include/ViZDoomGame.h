@@ -66,7 +66,7 @@ namespace vizdoom {
          */
         void newEpisode(std::string filePath = "");
 
-        void replayEpisode(std::string path, unsigned int player = 0);
+        void replayEpisode(std::string filePath, unsigned int player = 0);
 
         /*
          * Checks if the ViZDoom game is running.
@@ -139,19 +139,7 @@ namespace vizdoom {
         /* Buttons settings */
         /*------------------------------------------------------------------------------------------------------------*/
 
-        /*
-         * Makes the specified input type (e.g. TURN_LEFT, MOVE_FORWARD ) available (possible to use).
-         * If the given button has already been added, the method has no effect.
-         * If the specified button supports non-boolean values, no maximum value constraint is set.
-         */
-        void addAvailableButton(Button button);
-
-        /*
-         * Combines functionalities of addAvailableButton and setButtonMaxValue in one method.
-         * Makes the specified input type available and sets the maximum allowed (absolute) value for it.
-         * If the button has already been added the maximum value is overridden.
-         */
-        void addAvailableButton(Button button, unsigned int maxValue);
+        void addAvailableButton(Button button, unsigned int maxValue = 0);
 
         /*
          * Clears all available buttons added so far.
@@ -161,7 +149,7 @@ namespace vizdoom {
         /*
          * Returns the number of available buttons.
          */
-        int getAvailableButtonsSize();
+        size_t getAvailableButtonsSize();
 
         /*
          * Sets the maximum allowed (absolute) value for the specified button.
@@ -195,14 +183,14 @@ namespace vizdoom {
         /*
          * Returns the number of available game variables.
          */
-        int getAvailableGameVariablesSize();
+        size_t getAvailableGameVariablesSize();
 
         /*
          * Returns the current value of the specified game variable (AMMO1, HEALTH etc.).
          * The specified game variable does not need to be among available game variables (included in the state).
          * It could be used for e.g. shaping. Returns 0 in case of not finding given GameVariable.
          */
-        int getGameVariable(GameVariable var);
+        int getGameVariable(GameVariable variable);
 
 
         /* GameArgs getters and setters */
@@ -264,7 +252,7 @@ namespace vizdoom {
          * The method returns true if the whole configuration file was correctly read and applied,
          * false if the file was inaccessible or contained errors.
          */
-        bool loadConfig(std::string filename);
+        bool loadConfig(std::string filePath);
 
         /*
          * Returns current mode.
@@ -285,19 +273,19 @@ namespace vizdoom {
          * Sets path to ViZDoom engine executable.
          * Default value: "vizdoom" / "vizdoom.exe"
          */
-        void setViZDoomPath(std::string path);
+        void setViZDoomPath(std::string filePath);
 
         /*
          * Sets path to the Doom engine based game file (wad format).
          * Default value: "doom2.wad"
          */
-        void setDoomGamePath(std::string path);
+        void setDoomGamePath(std::string filePath);
 
         /*
          * Sets path to additional scenario file (wad format).
          * Default value: ""
          */
-        void setDoomScenarioPath(std::string path);
+        void setDoomScenarioPath(std::string filePath);
 
         /*
          * Sets the map name to be used.
@@ -320,7 +308,7 @@ namespace vizdoom {
          * This method is not needed for most of the tasks and is added for convenience of users with hacking tendencies.
          * Default value: "", if leave empty "vizdoom.ini" will be used.
          */
-        void setDoomConfigPath(std::string path);
+        void setDoomConfigPath(std::string filePath);
 
         /*
          * Return ViZDoom's seed.
@@ -396,14 +384,14 @@ namespace vizdoom {
         void setAutomapRenderTextures(bool textures);
 
         /*
-         * Determine if game's hud will be rendered in game.
+         * Determine if hud will be rendered in game.
          */
         void setRenderHud(bool hud);
 
         /*
          * Determine if minimalistic version of hud will be rendered instead of full hud.
          */
-        void setRenderMinimalHud(bool minimal);
+        void setRenderMinimalHud(bool minHud);
 
         /*
          * Determine if weapon held by player will be rendered in game.
@@ -478,31 +466,8 @@ namespace vizdoom {
 
         /*
          * Returns size in bytes of game's screen buffer.
-         * DEPRECIATED
          */
         size_t getScreenSize();
-
-
-
-//        /*
-//         * Returns a pointer to the raw screen buffer.
-//         */
-//        uint8_t * const getScreenBuffer();
-//
-//        /*
-//         * Returns a pointer to the raw depth buffer.
-//         */
-//        uint8_t * const getDepthBuffer();
-//
-//        /*
-//         * Returns a pointer to the raw labels buffer.
-//         */
-//        uint8_t * const getLabelsBuffer();
-//
-//        /*
-//         * Returns a pointer to the raw map buffer.
-//         */
-//        uint8_t * const getMapBuffer();
 
 
     protected:
@@ -521,8 +486,8 @@ namespace vizdoom {
         void resetState();
         void updateState();
 
-        std::vector <GameVariable> availableGameVariables;
-        std::vector <Button> availableButtons;
+        std::vector<GameVariable> availableGameVariables;
+        std::vector<Button> availableButtons;
         std::vector<int> lastAction;
 
         unsigned int nextStateNumber;
