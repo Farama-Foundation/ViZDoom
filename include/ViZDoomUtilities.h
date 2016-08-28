@@ -23,6 +23,7 @@
 #ifndef __VIZDOOM_UTILITIES_H__
 #define __VIZDOOM_UTILITIES_H__
 
+#include "ViZDoomConsts.h"
 #include "ViZDoomTypes.h"
 
 namespace vizdoom {
@@ -30,22 +31,22 @@ namespace vizdoom {
     /*
      * Calculates how many tics will be made during given number of milliseconds.
      */
-    double doomTicsToMs(double tics, unsigned int ticrate = 35);
+    double doomTicsToMs(double tics, unsigned int ticrate = DEFAULT_TICRATE);
 
     /*
      * Calculates the number of milliseconds that will pass during specified number of tics.
      */
-    double msToDoomTics(double ms, unsigned int ticrate = 35);
+    double msToDoomTics(double ms, unsigned int ticrate = DEFAULT_TICRATE);
 
     /*
      * Calculates how many tics will be made during given number of seconds.
      */
-    double doomTicsToSec(double tics, unsigned int ticrate = 35);
+    double doomTicsToSec(double tics, unsigned int ticrate = DEFAULT_TICRATE);
 
     /*
      * Calculates the number of seconds that will pass during specified number of tics.
      */
-    double secToDoomTics(double sec, unsigned int ticrate = 35);
+    double secToDoomTics(double sec, unsigned int ticrate = DEFAULT_TICRATE);
 
     /*
      * Converts Doom's fixed point numeral to a floating point value.

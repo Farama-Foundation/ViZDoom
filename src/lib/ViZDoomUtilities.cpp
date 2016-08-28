@@ -21,7 +21,6 @@
 */
 
 #include "ViZDoomUtilities.h"
-#include "ViZDoomConsts.h"
 
 namespace vizdoom {
 
