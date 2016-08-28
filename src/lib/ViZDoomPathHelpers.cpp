@@ -25,6 +25,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
+#include <fstream>
 
 namespace vizdoom {
 
@@ -43,50 +44,75 @@ namespace vizdoom {
 
     bool fileExists(std::string filePath){
         bfs::path path(filePath);
-        return bfs::exists(path) && bfs::is_regular_file(path);
+        return bfs::is_regular_file(path);
+
+        //std::ifstream file(filePath);
+        //if (!file.good()) return false;
+        //file.close();
+        //return true;
     }
 
-    std::string pathFromBase(std::string basePath, std::string relativePath){
-        bfs::path base(basePath);
-        base.remove_filename();
-        bfs::path relative(relativePath);
-        bfs::path out = bfs::canonical(relative, base);
-        return out.string();
+    std::string relativePath(std::string relativePath, std::string basePath){
+        bfs::path outPath(basePath);
+        outPath.remove_filename();
+        outPath /= relativePath;
+
+        //return outPath.string();
+
+        bfs::path normalizedPath;
+        for(auto i = outPath.begin(); i != outPath.end(); ++i) {
+            if(*i == "..") {
+                // /a/b/.. is not necessarily /a if b is a symbolic link
+                // /a/b/../.. is not /a/b/.. under most circumstances
+                // We can end up with ..s in our result because of symbolic links
+                if(boost::filesystem::is_symlink(normalizedPath)) normalizedPath /= *i;
+
+                // Otherwise it should be safe to resolve the parent
+                if(normalizedPath.filename() == ".." || normalizedPath.filename() == "") normalizedPath /= *i;
+                else normalizedPath = normalizedPath.parent_path();
+            }
+            else if(*i != ".") normalizedPath /= *i;
+        }
+
+        return normalizedPath.string();
+    }
+
+    std::string checkFile(std::string filePath, std::string expectedExt){
+        if(!fileExists(filePath)){
+            if(!expectedExt.length() || hasExtension(filePath)) throw FileDoesNotExistException(filePath);
+            if(!fileExists(filePath + "." + expectedExt))
+                throw FileDoesNotExistException(filePath + "(." + expectedExt + ")");
+            filePath += "." + expectedExt;
+        }
+
+        return filePath;
     }
 
     std::string prepareFilePath(std::string filePath){
         b::trim_left_if(filePath, b::is_any_of(" \n\r\""));
         b::trim_right_if(filePath, b::is_any_of(" \n\r\""));
-        if(b::find_first(filePath, " ")) filePath = '\"' + filePath  + '\"';
+
         return filePath;
     }
 
     std::string prepareExeFilePath(std::string filePath){
-        if(!fileExists(filePath)){
-        #ifdef OS_WIN
-            if(hasExtension(filePath)) throw FileDoesNotExistException(filePath);
-            if(!fileExists(filePath + ".exe")) throw FileDoesNotExistException(filePath + "(.exe)");
-            filePath += ".exe";
-        #else
-            throw FileDoesNotExistException(filePath);
-        #endif
-        }
+        filePath = prepareFilePath(filePath);
 
-        return prepareFilePath(filePath);
+        #ifdef OS_WIN
+            return checkFile(filePath, "exe");
+        #else
+            return checkFile(filePath);
+        #endif
     }
 
     std::string prepareWadFilePath(std::string filePath){
-        return prepareFilePath(filePath);
+        filePath = prepareFilePath(filePath);
+        return checkFile(filePath, "wad");
     }
 
     std::string prepareLmpFilePath(std::string filePath){
-        if(!fileExists(filePath)){
-            if(hasExtension(filePath)) throw FileDoesNotExistException(filePath);
-            if(!fileExists(filePath + ".lmp")) throw FileDoesNotExistException(filePath + "(.lmp)");
-            filePath += ".lmp";
-        }
-
-        return prepareFilePath(filePath);
+        filePath = prepareFilePath(filePath);
+        return checkFile(filePath, "lmp");
     }
 
 }

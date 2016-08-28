@@ -20,8 +20,8 @@
  THE SOFTWARE.
 */
 
-#ifndef __VIZDOOM_DEFINES_H__
-#define __VIZDOOM_DEFINES_H__
+#ifndef __VIZDOOM_CONSTS_H__
+#define __VIZDOOM_CONSTS_H__
 
 namespace vizdoom{
 

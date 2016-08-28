@@ -42,7 +42,9 @@ namespace vizdoom {
 
     bool fileExists(std::string filePath);
 
-    std::string pathFromBase(std::string basePath, std::string relativePath);
+    std::string relativePath(std::string relativePath, std::string basePath = "");
+
+    std::string checkFile(std::string filePath, std::string expectedExt = "");
 
     std::string prepareFilePath(std::string filePath);
 

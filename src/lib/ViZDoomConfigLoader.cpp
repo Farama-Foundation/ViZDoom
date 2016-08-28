@@ -300,11 +300,12 @@ namespace vizdoom {
     bool ConfigLoader::load(std::string filePath) {
         this->filePath = filePath;
         bool success = true;
-        std::ifstream file(filePath.c_str());
+        std::ifstream file(filePath);
 
         if (!file.good()) {
             throw FileDoesNotExistException(filePath);
         }
+
         std::string line;
         int lineNumber = 0;
 
@@ -523,19 +524,19 @@ namespace vizdoom {
                 continue;
             }
             if (key == "vizdoom_path" || key == "vizdoompath") {
-                this->game->setViZDoomPath(pathFromBase(this->filePath, originalVal));
+                this->game->setViZDoomPath(relativePath(originalVal, this->filePath));
                 continue;
             }
             if (key == "doom_game_path" || key == "doomgamepath") {
-                this->game->setDoomGamePath(pathFromBase(this->filePath, originalVal));
+                this->game->setDoomGamePath(relativePath(originalVal, this->filePath));
                 continue;
             }
             if (key == "doom_scenario_path" || key == "doomscenariopath") {
-                this->game->setDoomScenarioPath(pathFromBase(this->filePath, originalVal));
+                this->game->setDoomScenarioPath(relativePath(originalVal, this->filePath));
                 continue;
             }
             if (key == "doom_config_path" || key == "doomconfigpath") {
-                this->game->setDoomConfigPath(pathFromBase(this->filePath, originalVal));
+                this->game->setDoomConfigPath(relativePath(originalVal, this->filePath));
                 continue;
             }
 
