@@ -269,7 +269,6 @@ game.set_window_visible(True)
 game.set_mode(Mode.ASYNC_PLAYER)
 game.init()
 
-
 for _ in range(episodes_to_watch):
     game.new_episode()
     while not game.is_episode_finished():
@@ -280,12 +279,6 @@ for _ in range(episodes_to_watch):
         game.set_action(actions[best_action_index])
         for _ in range(frame_repeat):
             game.advance_action()
-
-            # Workaround for issue #110
-            # TODO remove after resolving
-            if game.is_episode_finished():
-                break
-            ###########################
 
     # Sleep between episodes
     sleep(1.0)
