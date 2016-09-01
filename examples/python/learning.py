@@ -35,9 +35,12 @@ test_episodes_per_epoch = 100
 # Other parameters
 frame_repeat = 12
 resolution = (30, 45)
+episodes_to_watch = 10
 
 # Configuration file path
 config_file_path = "../../examples/config/simpler_basic.cfg"
+
+
 # config_file_path = "../../examples/config/rocket_basic.cfg"
 # config_file_path = "../../examples/config/basic.cfg"
 
@@ -246,7 +249,7 @@ for epoch in range(epochs):
 
     test_scores = np.array(test_scores)
     print "Results: mean: %.1f±%.1f," % (
-    test_scores.mean(), test_scores.std()), "min: %.1f" % test_scores.min(), "max: %.1f" % test_scores.max()
+        test_scores.mean(), test_scores.std()), "min: %.1f" % test_scores.min(), "max: %.1f" % test_scores.max()
 
     print "Saving the network weigths..."
     pickle.dump(get_all_param_values(net), open('weights.dump', "w"))
@@ -266,8 +269,8 @@ game.set_window_visible(True)
 game.set_mode(Mode.ASYNC_PLAYER)
 game.init()
 
-episodes_to_watch = 10
-for i in range(episodes_to_watch):
+
+for _ in range(episodes_to_watch):
     game.new_episode()
     while not game.is_episode_finished():
         state = preprocess(game.get_state().image_buffer)
@@ -275,8 +278,14 @@ for i in range(episodes_to_watch):
 
         # Instead of make_action(a, frame_repeat) in order to make the animation smooth
         game.set_action(actions[best_action_index])
-        for i in range(frame_repeat):
+        for _ in range(frame_repeat):
             game.advance_action()
+
+            # Workaround for issue #110
+            # TODO remove after resolving
+            if game.is_episode_finished():
+                break
+            ###########################
 
     # Sleep between episodes
     sleep(1.0)
