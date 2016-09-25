@@ -1,9 +1,14 @@
 # DoomGame
 
-## Flow control methods
+[Flow control methods](#flow)
+* [init](#init)
+* [close](#close)
+* [newEpisode](#newEpisode)
+
+## <a name="flow"></a> Flow control methods:
 
 ---
-### `init`
+### <a name="init"></a> `init`
 
 | C++    | `bool init()`    |
 | :--    | :--              |
@@ -18,7 +23,7 @@ Init returns true when the game was started properly and false otherwise.
 
 
 ---
-### `close`
+### <a name="close"></a>`close`
 
 | C++    | `void close()` |
 | :--    | :--            |
@@ -32,7 +37,7 @@ Game can be initialized again after being closed.
 
 
 ---
-### `newEpisode`
+### <a name="newEpisode"></a> `newEpisode`
 
 | C++    | `void newEpisode(std::string filePath = "")` |
 | :--    | :--                                          |
