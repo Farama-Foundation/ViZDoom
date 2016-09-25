@@ -4,6 +4,94 @@
 * [init](#init)
 * [close](#close)
 * [newEpisode](#newEpisode)
+* [replayEpisode](#replayEpisode)
+* [isRunning](#isRunning)
+* [setAction](#setAction)
+* [advanceAction](#advanceAction)
+* [makeAction](#makeAction)
+* [isNewEpisode](#isNewEpisode)
+* [isEpisodeFinished](#isEpisodeFinished)
+* [isPlayerDead](#isPlayerDead)
+* [respawnPlayer](#respawnPlayer)
+* [sendGameCommand](#sendGameCommand)
+* [getState](#getState)
+* [getLastAction](#getLastAction)
+* [getEpisodeTime](#getEpisodeTime)
+
+[Buttons settings methods](#buttons)
+* [addAvailableButton](#addAvailableButton)
+* [clearAvailableButtons](#clearAvailableButtons)
+* [getAvailableButtonsSize](#getAvailableButtonsSize)
+* [setButtonMaxValue](#setButtonMaxValue)
+* [getButtonMaxValue](#getButtonMaxValue)
+
+[GameVariables methods](#vars)
+* [addAvailableGameVariable](#addAvailableGameVariable)
+* [clearAvailableGameVariables](#clearAvailableGameVariables)
+* [getAvailableGameVariablesSize](#getAvailableGameVariablesSize)
+* [getGameVariable](#getGameVariable)
+
+[Game Arguments methods](#args)
+* [addGameArgs](#addGameArgs)
+* [clearGameArgs](#clearGameArgs)
+
+[Rewards methods](#rewards)
+* [getLivingReward](#getLivingReward)
+* [setLivingReward](#setLivingReward)
+* [getDeathPenalty](#getDeathPenalty)
+* [setDeathPenalty](#setDeathPenalty)
+* [getLastReward](#getLastReward)
+* [getTotalReward](#getTotalReward)
+
+[General game setting methods](#settings)
+* [loadConfig](#loadConfig)
+* [getMode](#getMode)
+* [setMode](#setMode)
+* [getTicrate](#getTicrate)
+* [setTicrate](#setTicrate)
+* [setViZDoomPath](#setViZDoomPath)
+* [setDoomGamePath](#setDoomGamePath)
+* [setDoomScenarioPath](#setDoomScenarioPath)
+* [setDoomMap](#setDoomMap)
+* [setDoomSkill](#setDoomSkill)
+* [setDoomConfigPath](#setDoomConfigPath)
+* [getSeed](#getSeed)
+* [setSeed](#setSeed)
+* [getEpisodeStartTime](#getEpisodeStartTime)
+* [setEpisodeStartTime](#setEpisodeStartTime)
+* [getEpisodeTimeout](#getEpisodeTimeout)
+* [setEpisodeTimeout](#setEpisodeTimeout)
+
+[Output/rendering setting methods](#rendering)
+* [setScreenResolution](#setScreenResolution)
+* [getScreenFormat](#getScreenFormat)
+* [setScreenFormat](#setScreenFormat)
+* [isDepthBufferEnabled](#isDepthBufferEnabled)
+* [setDepthBufferEnabled](#setDepthBufferEnabled)
+* [isLabelsBufferEnabled](#isLabelsBufferEnabled)
+* [setLabelsBufferEnabled](#setLabelsBufferEnabled)
+* [isAutomapBufferEnabled](#isAutomapBufferEnabled)
+* [setAutomapBufferEnabled](#setAutomapBufferEnabled)
+* [setAutomapMode](#setAutomapMode)
+* [setAutomapRotate](#setAutomapRotate)
+* [setAutomapRenderTextures](#setAutomapRenderTextures)
+* [setRenderHud](#setRenderHud)
+* [setRenderMinimalHud](#setRenderMinimalHud)
+* [setRenderWeapon](#setRenderWeapon)
+* [setRenderCrosshair](#setRenderCrosshair)
+* [setRenderDecals](#setRenderDecals)
+* [setRenderParticles](#setRenderParticles)
+* [setRenderEffectsSprites](#setRenderEffectsSprites)
+* [setRenderMessages](#setRenderMessages)
+* [setWindowVisible](#setWindowVisible)
+* [setConsoleEnabled](#setConsoleEnabled)
+* [setSoundEnabled](#setSoundEnabled)
+* [getScreenWidth](#getScreenWidth)
+* [getScreenHeight](#getScreenHeight)
+* [getScreenChannels](#getScreenChannels)
+* [getScreenPitch](#getScreenPitch)
+* [getScreenSize](#getScreenSize)
+
 
 ## <a name="flow"></a> Flow control methods:
 
@@ -23,7 +111,7 @@ Init returns true when the game was started properly and false otherwise.
 
 
 ---
-### <a name="close"></a>`close`
+### <a name="close"></a> `close`
 
 | C++    | `void close()` |
 | :--    | :--            |
@@ -56,7 +144,7 @@ Then the rest of the players must also call this method to start a new episode.
 
 
 ---
-### `replayEpisode`
+### <a name="replayEpisode"></a> `replayEpisode`
 
 | C++    | `void replayEpisode(std::string filePath, unsigned int player = 0)` |
 | :--    | :--                                                                 |
@@ -78,7 +166,7 @@ See also:
 
 
 ---
-### `isRunning`
+### <a name="isRunning"></a> `isRunning`
 
 | C++    | `bool isRunning()`    |
 | :--    | :--                   |
@@ -90,7 +178,7 @@ Checks if the ViZDoom game instance is running.
 
 
 ---
-### `setAction`
+### <a name="setAction"></a> `setAction`
 
 | C++    | `void setAction(std::vector<int> const &actions)` |
 | :--    | :--                                               |
@@ -104,7 +192,7 @@ or in configuration file (in order of appearance).
 
 
 ---
-### `advanceAction`
+### <a name="advanceAction"></a> `advanceAction`
 
 | C++    | `void advanceAction(unsigned int tics = 1, bool updateState = true, bool renderOnly = false)`       |
 | :--    | :--                                                                                                 |
@@ -119,7 +207,7 @@ will be rendered after last processed tic.
 
 
 ---
-### `makeAction`
+### <a name="makeAction"></a> `makeAction`
 
 | C++    | `double makeAction(std::vector<int> const &actions, unsigned int tics = 1)` |
 | :--    | :--                                                                         |
@@ -133,7 +221,7 @@ updates the state and calculates a new reward, which is returned.
 
 
 ---
-### `isNewEpisode`
+### <a name="isNewEpisode"></a> `isNewEpisode`
 
 | C++    | `bool isNewEpisode()`    |
 | :--    | :--                      |
@@ -145,7 +233,7 @@ Returns true if the current episode is in the initial state - first state, no ac
 
 
 ---
-### `isEpisodeFinished`
+### <a name="isEpisodeFinished"></a> `isEpisodeFinished`
 
 | C++    | `bool isEpisodeFinished()`    |
 | :--    | :--                           |
@@ -158,7 +246,7 @@ Returns true if the current episode is in the terminal state (is finished).
 
 
 ---
-### `isPlayerDead`
+### <a name="isPlayerDead"></a> `isPlayerDead`
 
 | C++    | `bool isPlayerDead()`    |
 | :--    | :--                      |
@@ -172,7 +260,7 @@ In multiplayer when player is dead `respawnPlayer` can be called.
 
 
 ---
-### `respawnPlayer`
+### <a name="respawnPlayer"></a> `respawnPlayer`
 
 | C++    | `void respawnPlayer()`  |
 | :--    | :--                     |
@@ -185,7 +273,7 @@ After calling this method, first state after respawn will be available.
 
 
 ---
-### `sendGameCommand`
+### <a name="sendGameCommand"></a> `sendGameCommand`
 
 | C++    | `void sendGameCommand(std::string cmd)` |
 | :--    | :--                                     |
@@ -201,7 +289,7 @@ See also:
 
 
 ---
-### `getState`
+### <a name="getState"></a> `getState`
 
 | C++    | `GameStatePtr (std::shared_ptr<GameState>) GameState getState()` |
 | :--    | :--                                                              |
@@ -219,7 +307,7 @@ See also:
 
 
 ---
-### `getLastAction`
+### <a name="getLastAction"></a> `getLastAction`
 
 | C++    | `std::vector<int> getLastAction()` |
 | :--    | :--                                |
@@ -233,7 +321,7 @@ Most useful in `SPECTATOR` mode.
 
 
 ---
-### `getEpisodeTime`
+### <a name="getEpisodeTime"></a> `getEpisodeTime`
 
 | C++    | `unsigned int getEpisodeTime()`   |
 | :--    | :--                               |
@@ -244,10 +332,10 @@ Most useful in `SPECTATOR` mode.
 Returns number of current episode tic.
 
 
-## Buttons settings methods
+## <a name="buttons"></a> Buttons settings methods
 
 ---
-### `addAvailableButton`
+### <a name="addAvailableButton"></a> `addAvailableButton`
 
 | C++    | `void addAvailableButton(Button button, unsigned int maxValue = 0)` |
 | :--    | :--                                                                 |
@@ -268,7 +356,7 @@ See also:
 
 
 ---
-### `clearAvailableButtons`
+### <a name="clearAvailableButtons"></a> `clearAvailableButtons`
 
 | C++    | `void clearAvailableButtons()`   |
 | :--    | :--                              |
@@ -280,7 +368,7 @@ Clears all available `Buttons` added so far.
 
 
 ---
-### `getAvailableButtonsSize`
+### <a name="getAvailableButtonsSize"></a> `getAvailableButtonsSize`
 
 | C++    | `int getAvailableButtonsSize()`    |
 | :--    | :--                                |
@@ -292,7 +380,7 @@ Returns the number of available `Buttons`.
 
 
 ---
-### `setButtonMaxValue`
+### <a name="setButtonMaxValue"></a> `setButtonMaxValue`
 
 | C++    | `void setButtonMaxValue(Button button, unsigned int maxValue = 0)` |
 | :--    | :--                                                                |
@@ -307,7 +395,7 @@ Constraints limit applies in all Modes.
 
 
 ---
-### `getButtonMaxValue`
+### <a name="getButtonMaxValue"></a> `getButtonMaxValue`
 
 | C++    | `unsigned int getButtonMaxValue(Button button)` |
 | :--    | :--                                             |
@@ -318,11 +406,11 @@ Constraints limit applies in all Modes.
 Returns the maximum allowed, absolute value for the specified button.
 
 
-## GameVariables methods
+## <a name="vars"></a> GameVariables methods
 
 
 ---
-### `addAvailableGameVariable`
+### <a name="addAvailableGameVariable"></a> `addAvailableGameVariable`
 
 | C++    | `void addAvailableGameVariable(GameVariable variable)`    |
 | :--    | :--                                                       |
@@ -340,7 +428,7 @@ See also:
 - ConfigFile: List
 
 ---
-### `clearAvailableGameVariables`
+### <a name="clearAvailableGameVariables"></a> `clearAvailableGameVariables`
 
 | C++    | `void clearAvailableGameVariables()`    |
 | :--    | :--                                     |
@@ -352,7 +440,7 @@ Clears the list of available `GameVariables` that are included in the GameState 
 
 
 ---
-### `getAvailableGameVariablesSize`
+### <a name="getAvailableGameVariablesSize"></a> `getAvailableGameVariablesSize`
 
 | C++    | `unsigned int getAvailableGameVariablesSize()`     |
 | :--    | :--                                                |
@@ -364,7 +452,7 @@ Returns the number of available `GameVariables`.
 
 
 ---
-### `getGameVariable`
+### <a name="getGameVariable"></a> `getGameVariable`
 
 | C++    | `int getGameVariable(GameVariable variable)`   |
 | :--    | :--                                            |
@@ -380,10 +468,10 @@ See also:
 - Types: `GameVariable`
 
 
-## Game Arguments methods
+## <a name="args"></a> Game Arguments methods
 
 ---
-### `addGameArgs`
+### <a name="addGameArgs"></a> `addGameArgs`
 
 | C++    | `void addGameArgs(std::string args)` |
 | :--    | :--                                  |
@@ -401,7 +489,7 @@ See also:
 
 
 ---
-### `clearGameArgs`
+### <a name="clearGameArgs"></a> `clearGameArgs`
 
 | C++    | `void clearGameArgs()`   |
 | :--    | :--                      |
@@ -412,10 +500,10 @@ See also:
 Clears all arguments previously added with addGameArgs method.
 
 
-## Reward methods
+## <a name="rewards"></a> Reward methods
 
 ---
-### `getLivingReward`
+### <a name="getLivingReward"></a> `getLivingReward`
 
 | C++    | `double getLivingReward()`   |
 | :--    | :--                          |
@@ -427,7 +515,7 @@ Returns the reward granted to the player after every tic.
 
 
 ---
-### `setLivingReward`
+### <a name="setLivingReward"></a> `setLivingReward`
 
 | C++    | `void setLivingReward(double livingReward)`  |
 | :--    | :--                                          |
@@ -443,7 +531,7 @@ Config key: `livingReward/living_reward`
 
 
 ---
-### `getDeathPenalty`
+### <a name="getDeathPenalty"></a> `getDeathPenalty`
 
 | C++    | `double getDeathPenalty()`   |
 | :--    | :--                          |
@@ -455,7 +543,7 @@ Returns the penalty for player's death.
 
 
 ---
-### `setDeathPenalty`
+### <a name="setDeathPenalty"></a> `setDeathPenalty`
 
 | C++    | `void setDeathPenalty(double deathPenalty)`  |
 | :--    | :--                                          |
@@ -471,7 +559,7 @@ Config key: `deathPenalty/death_penalty`
 
 
 ---
-### `getLastReward`
+### <a name="getLastReward"></a> `getLastReward`
 
 | C++    | `double getLastReward()`  |
 | :--    | :--                       |
@@ -483,7 +571,7 @@ Returns a reward granted after last update of state.
 
 
 ---
-### `getTotalReward`
+### <a name="getTotalReward"></a> `getTotalReward`
 
 | C++    | `double getTotalReward()`  |
 | :--    | :--                        |
@@ -494,10 +582,10 @@ Returns a reward granted after last update of state.
 Returns the sum of all rewards gathered in the current episode.
 
 
-## General game setting methods
+## <a name="settings"></a> General game setting methods
 
 ---
-### `loadConfig`
+### <a name="loadConfig"></a> `loadConfig`
 
 | C++    | `bool loadConfig(std::string filePath)` |
 | :--    | :--                                     |
@@ -513,7 +601,7 @@ false if file was contained errors.
 
 
 ---
-### `getMode`
+### <a name="getMode"></a> `getMode`
 
 | C++    | `Mode getMode()`  |
 | :--    | :--               |
@@ -525,7 +613,7 @@ Returns current mode.
 
 
 ---
-### `setMode`
+### <a name="setMode"></a> `setMode`
 
 | C++    | `void setMode(Mode mode)`  |
 | :--    | :--                        |
@@ -544,7 +632,7 @@ See also:
 
 
 ---
-### `getTicrate`
+### <a name="getTicrate"></a> `getTicrate`
 
 | C++    | `unsigned int getTicrate()` |
 | :--    | :--                         |
@@ -558,7 +646,7 @@ Returns current ticrate.
 
 
 ---
-### `setTicrate`
+### <a name="setTicrate"></a> `setTicrate`
 
 | C++    | `void setTicrate(unsigned int ticrate)` |
 | :--    | :--                                     |
@@ -579,7 +667,7 @@ See also:
 
 
 ---
-### `setViZDoomPath`
+### <a name="setViZDoomPath"></a> `setViZDoomPath`
 
 | C++    | `void setViZDoomPath(std::string filePath)` |
 | :--    | :--                                         |
@@ -595,7 +683,7 @@ Config key: `ViZDoomPath/vizdoom_path`
 
 
 ---
-### `setDoomGamePath`
+### <a name="setDoomGamePath"></a> `setDoomGamePath`
 
 | C++    | `void setDoomGamePath(std::string filePath)` |
 | :--    | :--                                          |
@@ -611,7 +699,7 @@ Config key: `DoomGamePath/doom_game_path`
 
 
 ---
-### `setDoomScenarioPath`
+### <a name="setDoomScenarioPath"></a> `setDoomScenarioPath`
 
 | C++    | `void setDoomScenarioPath(std::string filePath)` |
 | :--    | :--                                              |
@@ -627,7 +715,7 @@ Config key: `DoomScenarioPath/set_doom_scenario_path`
 
 
 ---
-### `setDoomMap`
+### <a name="setDoomMap"></a> `setDoomMap`
 
 | C++    | `void setDoomMap(std::string map)` |
 | :--    | :--                                |
@@ -643,7 +731,7 @@ Config key: `DoomMap/doom_map`
 
 
 ---
-### `setDoomSkill`
+### <a name="setDoomSkill"></a> `setDoomSkill`
 
 | C++    | `void setDoomSkill(int skill)`    |
 | :--    | :--                               |
@@ -668,7 +756,7 @@ Config key: `skill`
 
 
 ---
-### `setDoomConfigPath`
+### <a name="setDoomConfigPath"></a> `setDoomConfigPath`
 
 | C++    | `void setDoomConfigPath(std::string filePath)` |
 | :--    | :--                                            |
@@ -687,7 +775,7 @@ Config key: `DoomConfigPath/doom_config_path`
 
 
 ---
-### `getSeed`
+### <a name="getSeed"></a> `getSeed`
 
 | C++    | `unsigned int getSeed()` |
 | :--    | :--                      |
@@ -699,7 +787,7 @@ Return ViZDoom's seed.
 
 
 ---
-### `setSeed`
+### <a name="setSeed"></a> `setSeed`
 
 | C++    | `void setSeed(unsigned int seed)` |
 | :--    | :--                               |
@@ -718,7 +806,7 @@ See also:
 
 
 ---
-### `getEpisodeStartTime`
+### <a name="getEpisodeStartTime"></a> `getEpisodeStartTime`
 
 | C++    | `unsigned int getEpisodeStartTime()` |
 | :--    | :--                                  |
@@ -730,7 +818,7 @@ Returns start delay of every episode in tics.
 
 
 ---
-### `setEpisodeStartTime`
+### <a name="setEpisodeStartTime"></a> `setEpisodeStartTime`
 
 | C++    | `void setEpisodeStartTime(unsigned int tics)` |
 | :--    | :--                                           |
@@ -747,7 +835,7 @@ Config key: `episodeStartTime/episode_start_time`
 
 
 ---
-### `getEpisodeTimeout`
+### <a name="getEpisodeTimeout"></a> `getEpisodeTimeout`
 
 | C++    | `unsigned int getEpisodeTimeout()` |
 | :--    | :--                                |
@@ -759,7 +847,7 @@ Returns the number of tics after which the episode will be finished.
 
 
 ---
-### `setEpisodeTimeout`
+### <a name="setEpisodeTimeout"></a> `setEpisodeTimeout`
 
 | C++    | `void setEpisodeTimeout(unsigned int tics)` |
 | :--    | :--                                         |
@@ -772,11 +860,11 @@ Sets the number of tics after which the episode will be finished. 0 will result 
 Config key: `episodeTimeout/episode_timeout`
 
 
-## Output/rendering setting methods
+## <a name="rendering"></a> Output/rendering setting methods
 ------------------------------------------------------------------------------------------------------------
 
 ---
-### `setScreenResolution`
+### <a name="setScreenResolution"></a> `setScreenResolution`
 
 | C++    | `void setScreenResolution(ScreenResolution resolution)`   |
 | :--    | :--                                                       |
@@ -797,7 +885,7 @@ See also:
 
 
 ---
-### `getScreenFormat`
+### <a name="getScreenFormat"></a> `getScreenFormat`
 
 | C++    | `ScreenFormat getScreenFormat()`   |
 | :--    | :--                                |
@@ -809,7 +897,7 @@ Returns the format of the screen buffer and the automap buffer.
 
 
 ---
-### `setScreenFormat`
+### <a name="setScreenFormat"></a> `setScreenFormat`
 
 | C++    | `void setScreenFormat(ScreenFormat format)`   |
 | :--    | :--                                           |
@@ -830,7 +918,7 @@ See also:
 
 
 ---
-### `isDepthBufferEnabled`
+### <a name="isDepthBufferEnabled"></a> `isDepthBufferEnabled`
 
 | C++    | `bool isDepthBufferEnabled()`    |
 | :--    | :--                              |
@@ -844,7 +932,7 @@ Returns true if the depth buffer is enabled.
 
 
 ---
-### `setDepthBufferEnabled`
+### <a name="setDepthBufferEnabled"></a> `setDepthBufferEnabled`
 
 | C++    | `void setDepthBufferEnabled(bool depthBuffer)`    |
 | :--    | :--                                               |
@@ -866,7 +954,7 @@ See also:
 
 
 ---
-### `isLabelsBufferEnabled`
+### <a name="isLabelsBufferEnabled"></a> `isLabelsBufferEnabled`
 
 | C++    | `bool isLabelsBufferEnabled()`    |
 | :--    | :--                               |
@@ -880,7 +968,7 @@ Returns true if the labels buffer is enabled.
 
 
 ---
-### `setLabelsBufferEnabled`
+### <a name="setLabelsBufferEnabled"></a> `setLabelsBufferEnabled`
 
 | C++    | `void setLabelsBufferEnabled(bool labelsBuffer)`    |
 | :--    | :--                                                 |
@@ -904,7 +992,7 @@ See also:
 
 
 ---
-### `isAutomapBufferEnabled`
+### <a name="isAutomapBufferEnabled"></a> `isAutomapBufferEnabled`
 
 | C++    | `bool isAutomapBufferEnabled()`    |
 | :--    | :--                                |
@@ -918,7 +1006,7 @@ Returns true if the automap buffer is enabled.
 
 
 ---
-### `setAutomapBufferEnabled`
+### <a name="setAutomapBufferEnabled"></a> `setAutomapBufferEnabled`
 
 | C++    | `void setAutomapBufferEnabled(bool automapBuffer)`    |
 | :--    | :--                                                   |
@@ -940,7 +1028,7 @@ See also:
 
 
 ---
-### `setAutomapMode`
+### <a name="setAutomapMode"></a> `setAutomapMode`
 
 | C++    | `void setAutomapMode(AutomapMode mode)`   |
 | :--    | :--                                       |
@@ -961,7 +1049,7 @@ See also:
 
 
 ---
-### `setAutomapRotate`
+### <a name="setAutomapRotate"></a> `setAutomapRotate`
 
 | C++    | `void setAutomapRotate(bool rotate)`    |
 | :--    | :--                                     |
@@ -979,7 +1067,7 @@ Config key: `automapRotate/render_hud`
 
 
 ---
-### `setAutomapRenderTextures`
+### <a name="setAutomapRenderTextures"></a> `setAutomapRenderTextures`
 
 | C++    | `setAutomapRenderTextures(bool textures)`    |
 | :--    | :--                                          |
@@ -997,7 +1085,7 @@ Config key: `automapRenderTextures/automap_render_textures`
 
 
 ---
-### `setRenderHud`
+### <a name="setRenderHud"></a> `setRenderHud`
 
 | C++    | `void setRenderHud(bool hud)`    |
 | :--    | :--                              |
@@ -1013,7 +1101,7 @@ Config key: `renderHud/render_hud`
 
 
 ---
-### `setRenderMinimalHud`
+### <a name="setRenderMinimalHud"></a> `setRenderMinimalHud`
 
 | C++    | `void setRenderMinimalHud(bool minHud)`    |
 | :--    | :--                                        |
@@ -1031,7 +1119,7 @@ Config key: `renderMinimalHud/render_minimal_hud`
 
 
 ---
-### `setRenderWeapon`
+### <a name="setRenderWeapon"></a> `setRenderWeapon`
 
 | C++    | `void setRenderWeapon(bool weapon)`    |
 | :--    | :--                                    |
@@ -1047,7 +1135,7 @@ Config key: `renderWeapon/render_weapon`
 
 
 ---
-### `setRenderCrosshair`
+### <a name="setRenderCrosshair"></a> `setRenderCrosshair`
 
 | C++    | `void setRenderCrosshair(bool crosshair)`    |
 | :--    | :--                                          |
@@ -1063,7 +1151,7 @@ Config key: `renderCrosshair/render_crosshair`
 
 
 ---
-### `setRenderDecals`
+### <a name="setRenderDecals"></a> `setRenderDecals`
 
 | C++    | `void setRenderDecals(bool decals)`    |
 | :--    | :--                                    |
@@ -1079,7 +1167,7 @@ Config key: `renderDecals/render_decals`
 
 
 ---
-### `setRenderParticles`
+### <a name="setRenderParticles"></a> `setRenderParticles`
 
 | C++    | `void setRenderParticles(bool particles)`    |
 | :--    | :--                                          |
@@ -1095,7 +1183,7 @@ Config key: `renderParticles/render_particles`
 
 
 ---
-### `setRenderEffectsSprites`
+### <a name="setRenderEffectsSprites"></a> `setRenderEffectsSprites`
 
 | C++    | `void setRenderEffectsSprites(bool sprites)`    |
 | :--    | :--                                             |
@@ -1113,7 +1201,7 @@ Config key: `renderEffectsSprites/render_effects_sprites`
 
 
 ---
-### `setRenderMessages`
+### <a name="setRenderMessages"></a> `setRenderMessages`
 
 | C++    | `void setRenderMessages(bool messages)`    |
 | :--    | :--                                        |
@@ -1131,7 +1219,7 @@ Config key: `renderMessages/render_messages`
 
 
 ---
-### `setWindowVisible`
+### <a name="setWindowVisible"></a> `setWindowVisible`
 
 | C++    | `void setWindowVisible(bool visibility)`    |
 | :--    | :--                                         |
@@ -1148,7 +1236,7 @@ Config key: `windowVisible/window_visible`
 
 
 ---
-### `setConsoleEnabled`
+### <a name="setConsoleEnabled"></a> `setConsoleEnabled`
 
 | C++    | `void setConsoleEnabled(bool console)`    |
 | :--    | :--                                       |
@@ -1164,7 +1252,7 @@ Config key: `consoleEnabled/console_enabled`
 
 
 ---
-### `setSoundEnabled`
+### <a name="setSoundEnabled"></a> `setSoundEnabled`
 
 | C++    | `void setSoundEnabled(bool sound)`    |
 | :--    | :--                                   |
@@ -1180,7 +1268,7 @@ Config key: `soundEnabled/sound_enabled`
 
 
 ---
-### `getScreenWidth`
+### <a name="getScreenWidth"></a> `getScreenWidth`
 
 | C++    | `int getScreenWidth()`   |
 | :--    | :--                      |
@@ -1192,7 +1280,7 @@ Returns game's screen width - width of all buffers.
 
 
 ---
-### `getScreenHeight`
+### <a name="getScreenHeight"></a> `getScreenHeight`
 
 | C++    | `int getScreenHeight()`   |
 | :--    | :--                       |
@@ -1204,7 +1292,7 @@ Returns game's screen height - height of all buffers.
 
 
 ---
-### `getScreenChannels`
+### <a name="getScreenChannels"></a> `getScreenChannels`
 
 | C++    | `int getScreenChannels()`   |
 | :--    | :--                         |
@@ -1216,7 +1304,7 @@ Returns number of channels in screen buffer and map buffer (depth and labels buf
 
 
 ---
-### `getScreenPitch`
+### <a name="getScreenPitch"></a> `getScreenPitch`
 
 | C++    | `size_t getScreenPitch()`   |
 | :--    | :--                         |
@@ -1228,7 +1316,7 @@ Returns size in bytes of one row in screen buffer and map buffer.
 
 
 ---
-### `getScreenSize`
+### <a name="getScreenSize"></a> `getScreenSize`
 
 | C++    | `size_t getScreenSize()` |
 | :--    | :--                      |
