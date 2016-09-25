@@ -105,8 +105,8 @@
 | Python | `bool init()`    |
 
 Initializes ViZDoom game instance and starts newEpisode.
-After calling this method, first state from new episode will be available.
-Some configuration options cannot be changed after calling method.
+After calling this method, first state from a new episode will be available.
+Some configuration options cannot be changed after calling this method.
 Init returns true when the game was started properly and false otherwise.
 
 
@@ -127,17 +127,17 @@ Game can be initialized again after being closed.
 ---
 ### <a name="newEpisode"></a> `newEpisode`
 
-| C++    | `void newEpisode(std::string filePath = "")` |
+| C++    | `void newEpisode(std::string recordFilePath = "")` |
 | :--    | :--                                          |
-| Lua    | `void newEpisode(string filePath = "")`      |
-| Java   | `void newEpisode(String filePath = "")`      |
-| Python | `void new_episode(str filePath = "")`        |
+| Lua    | `void newEpisode(string recordFilePath = "")`      |
+| Java   | `void newEpisode(String recordFilePath = "")`      |
+| Python | `void new_episode(str recordFilePath = "")`        |
 
 Changed in 1.1
 
 Initializes a new episode. All rewards, variables and state are restarted.
 After calling this method, first state from new episode will be available.
-If the filePath is not empty, given episode will be recorded to this file.
+If the recordFilePath is not empty, given episode will be recorded to this file (as a Doom lump).
 
 In multiplayer game, host can call this method to finish the game.
 Then the rest of the players must also call this method to start a new episode.
@@ -160,7 +160,7 @@ of default player in record file.
 After calling this method, first state from replay will be available.
 All rewards, variables and state are available during replaying episode.
 
-See also: 
+See also:
 - examples/python/record_episodes.py,
 - examples/python/record_multiplayer.py.
 
@@ -229,7 +229,7 @@ updates the state and calculates a new reward, which is returned.
 | Java   | `boolean isNewEpisode()` |
 | Python | `bool is_new_episode()`  |
 
-Returns true if the current episode is in the initial state - first state, no actions were performed yet.
+Returns true if the current episode is in the initial state - the first state, no actions were performed yet.
 
 
 ---
@@ -254,7 +254,7 @@ Returns true if the current episode is in the terminal state (is finished).
 | Java   | `boolean isPlayerDead()` |
 | Python | `bool is_player_dead()`  |
 
-Returns true if the player is dead state.
+Returns true if the player is dead.
 In singleplayer player death is equivalent to the end of the episode.
 In multiplayer when player is dead `respawnPlayer` can be called.
 
@@ -282,10 +282,9 @@ After calling this method, first state after respawn will be available.
 | Python | `void send_game_command(cmd)`           |
 
 Sends the command to Doom console. Can be used for cheats, multiplayer etc.
-Some commands will be block in some modes.
+Some commands will be blocked in some modes.
 
-See also: 
-- ZDoom Wiki: http://zdoom.org/wiki/Console
+See also: [ZDoom Wiki](http://zdoom.org/wiki/Console)
 
 
 ---
@@ -303,6 +302,7 @@ Returns `GameState` object with the current game state.
 If game is not running or episode is finished `nullptr/null/None` will be returned.
 
 See also: 
+
 - Types: `GameState`
 
 
