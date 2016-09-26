@@ -107,7 +107,6 @@ void VIZ_Init(){
         VIZ_CVARsUpdate();
 
         VIZ_MQInit(*viz_instance_id);
-
         VIZ_SMInit(*viz_instance_id);
 
         VIZ_GameStateInit();

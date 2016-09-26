@@ -37,7 +37,7 @@
 //#include "sc_man.h"
 //#include "sc_man_tokens.h"
 
-#define VIZ_GV_USER_COUNT 30
+#define VIZ_GV_USER_COUNT 60
 #define VIZ_GV_SLOTS_SIZE 10
 
 struct VIZGameState{
@@ -110,7 +110,7 @@ struct VIZGameState{
     int PLAYER_AMMO[VIZ_GV_SLOTS_SIZE];
     int PLAYER_WEAPON[VIZ_GV_SLOTS_SIZE];
 
-    int PLAYER_POSITION[3];
+    //int PLAYER_POSITION[3];
 
     bool PLAYER_READY_TO_RESPAWN;
     unsigned int PLAYER_NUMBER;
@@ -126,26 +126,6 @@ struct VIZGameState{
     VIZLabel LABEL[VIZ_MAX_LABELS];
 
 };
-
-double VIZ_FixedToDouble(fixed_t fixed);
-
-int VIZ_CheckItem(FName name);
-
-int VIZ_CheckItem(PClass *type);
-
-const char* VIZ_CheckItemType(PClass *type);
-
-bool VIZ_CheckSelectedWeaponState();
-
-int VIZ_CheckSelectedWeapon();
-
-int VIZ_CheckWeaponAmmo(AWeapon* weapon);
-
-int VIZ_CheckSelectedWeaponAmmo();
-
-int VIZ_CheckSlotAmmo(unsigned int slot);
-
-int VIZ_CheckSlotWeapons(unsigned int slot);
 
 void VIZ_GameStateInit();
 

@@ -45,6 +45,9 @@ EXTERN_CVAR (Bool, viz_override_player)
 
 VIZGameState *vizGameStateSM = NULL;
 
+/* Helper functions */
+/*--------------------------------------------------------------------------------------------------------------------*/
+
 double VIZ_FixedToDouble(fixed_t fixed){
     return static_cast<double>(fixed) / 65536.0;
 }
@@ -114,6 +117,9 @@ int VIZ_CheckSlotWeapons(unsigned int slot){
     }
     return inSlot;
 }
+
+/* Main functions */
+/*--------------------------------------------------------------------------------------------------------------------*/
 
 void VIZ_GameStateInit(){
 

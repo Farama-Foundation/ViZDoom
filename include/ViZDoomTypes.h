@@ -127,10 +127,10 @@ namespace vizdoom{
 
     enum AutomapMode {
         NORMAL,             // Only level architecture the player has seen is shown.
-        WHOLE,               // All architecture is shown, regardless of whether or not the player has seen it.
+        WHOLE,              // All architecture is shown, regardless of whether or not the player has seen it.
         OBJECTS,            // In addition to the previous, shows all things in the map as arrows pointing in
                             // the direction they are facing.
-        OBJECTS_WITH_SIZE   // In addition to the previous, all things are wrapped in a box showing their size.
+        OBJECTS_WITH_SIZE,  // In addition to the previous, all things are wrapped in a box showing their size.
     };
 
     enum GameVariable {
@@ -213,6 +213,36 @@ namespace vizdoom{
         USER28,
         USER29,
         USER30,
+        USER31,
+        USER32,
+        USER33,
+        USER34,
+        USER35,
+        USER36,
+        USER37,
+        USER38,
+        USER39,
+        USER40,
+        USER41,
+        USER42,
+        USER43,
+        USER44,
+        USER45,
+        USER46,
+        USER47,
+        USER48,
+        USER49,
+        USER50,
+        USER51,
+        USER52,
+        USER53,
+        USER54,
+        USER55,
+        USER56,
+        USER57,
+        USER58,
+        USER59,
+        USER60,
     };
 
     enum Button {
