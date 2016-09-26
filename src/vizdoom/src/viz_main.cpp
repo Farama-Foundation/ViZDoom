@@ -55,8 +55,16 @@ namespace bt = boost::this_thread;
 //CVAR_MOD			= 8192,	// cvar was defined by a mod
 //CVAR_IGNORE		= 16384,// do not send cvar across the network/inaccesible from ACS (dummy mod cvar)
 
-CVAR (Bool, viz_debug, false, CVAR_NOSET)
+//debug
+CVAR (Int, viz_debug, 0, CVAR_NOSET)
 
+// 0 - no debug msg
+// 1 - init debug msg
+// 2 - tic basic debug msg
+// 3 - tic detailed debug msg
+// 4 - all
+
+//control
 CVAR (Bool, viz_controlled, false, CVAR_NOSET)
 CVAR (String, viz_instance_id, "0", CVAR_NOSET)
 
@@ -90,15 +98,16 @@ int vizTime = 0;
 bool vizNextTic = false;
 bool vizUpdate = false;
 unsigned int vizLastUpdate = 0;
+bool ignoreNextDoomError = false;
 
 void VIZ_Init(){
-    Printf("VIZ_Init: Instance id: %s\n", *viz_instance_id);
-
     if(*viz_controlled) {
+        Printf("VIZ_Init: instance id: %s, async: %d, input: %d\n", *viz_instance_id, *viz_async, *viz_allow_input);
 
         VIZ_CVARsUpdate();
 
         VIZ_MQInit(*viz_instance_id);
+
         VIZ_SMInit(*viz_instance_id);
 
         VIZ_GameStateInit();
@@ -139,6 +148,8 @@ void VIZ_AsyncStartTic(){
 
 void VIZ_Tic(){
 
+    VIZ_DebugMsg(2, VIZ_FUNC, "tic: %d, viztic: %d", gametic, VIZ_TIME);
+
     try{
         bt::interruption_point();
     }
@@ -167,7 +178,7 @@ void VIZ_Tic(){
 }
 
 void VIZ_Update(){
-    VIZ_DEBUG_PRINT("VIZ_Update: tic: %d, viztic: %d, lastupdate: %d\n", gametic, VIZ_TIME, vizLastUpdate);
+    VIZ_DebugMsg(2, VIZ_FUNC, "tic: %d, viztic: %d, lastupdate: %d", gametic, VIZ_TIME, vizLastUpdate);
 
     if(!*viz_nocheat){
         VIZ_D_MapDisplay();
@@ -242,6 +253,8 @@ EXTERN_CVAR(Bool, am_showtotaltime)
 
 void VIZ_CVARsUpdate(){
 
+    VIZ_DebugMsg(2, VIZ_FUNC, "mode: ", *viz_render_mode);
+
     // hud
     bool hud = (*viz_render_mode & 1) != 0;
     bool minHud = (*viz_render_mode & 2) != 0;
@@ -304,11 +317,59 @@ void VIZ_CVARsUpdate(){
             S_UpdateSounds(players[consoleplayer].camera);
             StatusBar->AttachToPlayer(&players[consoleplayer]);
         }
-        else {
-            char errorStr[VIZ_MQ_MAX_CMD_LEN];
-            sprintf(errorStr, "Player %d does not exist.", *viz_override_player);
-            VIZ_ReportError("VIZ_UpdateCVARs", errorStr);
-        }
+        else VIZ_Error(VIZ_FUNC, "Player %d does not exist.", *viz_override_player);
     }
-};
+}
 
+void VIZ_IgnoreNextDoomError(){
+    ignoreNextDoomError = true;
+}
+
+void VIZ_DoomError(const char *error){
+    if(ignoreNextDoomError){
+        ignoreNextDoomError = false;
+        return;
+    }
+
+    if(*viz_controlled){
+        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, error);
+        exit(1);
+    }
+}
+
+void VIZ_PrintFuncMsg(const char *func, const char *msg){
+    int s = 0;
+    while (func[s] != NULL && func[s] != ' ') ++s;
+    int e = s;
+    while (func[e] != NULL && func[e] != '(') ++e;
+
+    if(e > s) Printf("%.*s: %s\n", e - s - 1, &func[s + 1], msg);
+    else Printf("%s: %s\n", func, msg);
+}
+
+void VIZ_Error(const char *func, const char *error, ...){
+
+    va_list arg_ptr;
+    char error_msg[VIZ_MAX_ERROR_TEXT_LEN];
+
+    va_start(arg_ptr, error);
+    myvsnprintf(error_msg, VIZ_MAX_ERROR_TEXT_LEN, error, arg_ptr);
+    va_end(arg_ptr);
+
+    VIZ_PrintFuncMsg(func, error_msg);
+    VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, error_msg);
+    exit(1);
+}
+
+void VIZ_DebugMsg(int level, const char *func, const char *msg, ...){
+    if(*viz_debug < level) return;
+
+    va_list arg_ptr;
+    char debug_msg[VIZ_MAX_DEBUG_TEXT_LEN];
+
+    va_start(arg_ptr, msg);
+    myvsnprintf(debug_msg, VIZ_MAX_DEBUG_TEXT_LEN, msg, arg_ptr);
+    va_end(arg_ptr);
+
+    VIZ_PrintFuncMsg(func, debug_msg);
+}

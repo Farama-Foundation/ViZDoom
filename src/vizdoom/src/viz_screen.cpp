@@ -22,9 +22,9 @@
 
 #include "viz_screen.h"
 #include "viz_defines.h"
-#include "viz_message_queue.h"
 #include "viz_depth.h"
 #include "viz_labels.h"
+#include "viz_main.h"
 
 unsigned int vizScreenWidth, vizScreenHeight;
 size_t vizScreenPitch, vizScreenSize, vizScreenChannelSize;
@@ -142,7 +142,7 @@ void VIZ_ScreenFormatUpdate(){
             break;
 
         default:
-            VIZ_ReportError("VIZ_ScreenFormatUpdate", "Unknown screen format.");
+            VIZ_Error(VIZ_FUNC, "Unknown screen format.");
     }
 
     if (vizDepthMap != NULL){
@@ -188,12 +188,12 @@ void VIZ_ScreenUpdateSM(){
             }
             else VIZ_SMDeleteRegion(bufferRegion);
 
-            VIZ_DEBUG_PRINT("VIZ_ScreenUpdateSM: region: %d, offset %zu, size: %zu\n",
-                            i + 2, bufferRegion->offset, bufferRegion->size);
+            VIZ_DebugMsg(1, VIZ_FUNC, "region: %d, offset %zu, size: %zu", i + 2,
+                         bufferRegion->offset, bufferRegion->size);
         }
     }
     catch(...){ // bip::interprocess_exception
-        VIZ_ReportError("VIZ_ScreenUpdateSM", "Failed to map buffers.");
+        VIZ_Error(VIZ_FUNC, "Failed to map buffers.");
     }
 
     vizScreenSM = static_cast<BYTE *>(vizSMRegion[2].address);
@@ -216,10 +216,10 @@ void VIZ_CopyBuffer(BYTE *vizBuffer){
     const unsigned int screenWidth = screen->GetWidth();
     const unsigned int bufferPitchWidthDiff = bufferPitch - screenWidth;
 
-    VIZ_DEBUG_PRINT("VIZ_CopyScreenBuffer: size: %d\n", screenSize);
+    VIZ_DebugMsg(3, VIZ_FUNC, "size: %d", screenSize);
 
     if(vizScreenChannelSize != screenSize || vizScreenWidth != screenWidth)
-        VIZ_ReportError("VIZ_CopyScreenBuffer", "Buffers size mismatch.");
+        VIZ_Error(VIZ_FUNC, "Buffers size mismatch.");
 
     if(*viz_screen_format == VIZ_SCREEN_DOOM_256_COLORS8){
         for(unsigned int i = 0; i < screenSize; ++i){

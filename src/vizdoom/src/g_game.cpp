@@ -87,10 +87,10 @@
 #include "g_hub.h"
 
 //VIZDOOM_CODE
+#include "viz_main.h"
 #include "viz_input.h"
 #include "viz_defines.h"
 
-EXTERN_CVAR (Bool, viz_debug)
 EXTERN_CVAR (Bool, viz_controlled)
 EXTERN_CVAR (Bool, viz_async)
 EXTERN_CVAR (Bool, viz_allow_input)
@@ -1605,7 +1605,7 @@ void G_DeathMatchSpawnPlayer (int playernum)
 	AActor *mo = P_SpawnPlayer(spot, playernum);
 	if (mo != NULL) P_PlayerStartStomp(mo);
 
-	VIZ_DEBUG_PRINT("G_DeathMatchSpawnPlayer: tic: %d, playernum: %d (%s), spot: %d %d %d\n", gametic, playernum, players[playernum].userinfo.GetName(), spot->x, spot->y, spot->z);
+	VIZ_DebugMsg(4, VIZ_FUNC, "playernum: %d (%s), spot: %d %d %d", gametic, playernum, players[playernum].userinfo.GetName(), spot->x, spot->y, spot->z);
 }
 
 //

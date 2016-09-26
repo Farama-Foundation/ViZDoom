@@ -27,8 +27,8 @@
 
 namespace bip = boost::interprocess;
 
-extern bip::message_queue *vizMQSend;
-extern bip::message_queue *vizMQRecv;
+extern bip::message_queue *vizMQController;
+extern bip::message_queue *vizMQDoom;
 
 #define VIZ_MQ_NAME_CTR_BASE "ViZDoomMQCtr"
 #define VIZ_MQ_NAME_DOOM_BASE "ViZDoomMQDoom"
@@ -47,6 +47,7 @@ extern bip::message_queue *vizMQRecv;
 #define VIZ_MSG_CODE_CLOSE 25
 #define VIZ_MSG_CODE_ERROR 26
 
+
 struct VIZMessage{
     uint8_t code;
     char command[VIZ_MQ_MAX_CMD_LEN];
@@ -57,8 +58,6 @@ void VIZ_MQInit(const char * id);
 void VIZ_MQSend(uint8_t code, const char * command = nullptr);
 void VIZ_MQReceive(void *msg);
 bool VIZ_MQTryReceive(void *msg);
-
-void VIZ_ReportError(const char * function, const char * error_message);
 
 void VIZ_MQTic();
 

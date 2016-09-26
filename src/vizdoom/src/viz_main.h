@@ -30,6 +30,8 @@ extern int vizTime;
 
 void VIZ_Init();
 
+void VIZ_LoopInit();
+
 void VIZ_AsyncStartTic();
 
 void VIZ_Tic();
@@ -41,5 +43,13 @@ bool VIZ_IsPaused();
 void VIZ_CVARsUpdate();
 
 void VIZ_Close();
+
+void VIZ_IgnoreNextDoomError();
+
+void VIZ_DoomError(const char *error);
+
+void VIZ_Error(const char *func, const char *error, ...);
+
+void VIZ_DebugMsg(int level, const char *func, const char *msg, ...);
 
 #endif

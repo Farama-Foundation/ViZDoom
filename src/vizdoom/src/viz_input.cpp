@@ -42,12 +42,12 @@ EXTERN_CVAR (Bool, viz_debug)
 EXTERN_CVAR (Bool, viz_allow_input)
 
 void VIZ_Command(char * cmd){
-    if(strlen(cmd) >= 1) AddCommandString(cmd);
+    AddCommandString(cmd);
 }
 
 bool VIZ_CommmandFilter(const char *cmd){
 
-    VIZ_DEBUG_PRINT("VIZ_CommmandFilter: gametic: %d, cmd: %s\n", gametic, cmd);
+    VIZ_DebugMsg(2, VIZ_FUNC, "allow_input: %d, cmd: %s", gametic, *viz_allow_input, cmd);
 
     if(!vizInputInited || !*viz_allow_input) return true;
 
@@ -306,10 +306,10 @@ void VIZ_InputInit() {
         VIZ_SMCreateRegion(inputRegion, true, VIZ_SMGetRegionOffset(inputRegion), sizeof(VIZInputState));
         vizInput = static_cast<VIZInputState *>(inputRegion->address);
 
-        VIZ_DEBUG_PRINT("VIZ_InputInit: inputOffset: %zu, inputSize: %zu\n", inputRegion->offset, sizeof(VIZInputState));
+        VIZ_DebugMsg(1, VIZ_FUNC, "inputOffset: %zu, inputSize: %zu", inputRegion->offset, sizeof(VIZInputState));
     }
     catch (bip::interprocess_exception &ex) {
-        VIZ_ReportError("VIZ_InputInit", "Failed to create input.");
+        VIZ_Error(VIZ_FUNC, "Failed to create input.");
     }
 
     for (int i = 0; i < VIZ_BT_COUNT; ++i) {

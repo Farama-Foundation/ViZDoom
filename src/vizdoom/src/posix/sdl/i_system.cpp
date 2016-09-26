@@ -71,6 +71,8 @@
 #include "m_fixed.h"
 #include "g_level.h"
 
+#include "viz_main.h"
+
 #ifdef __APPLE__
 #include <ApplicationServices/ApplicationServices.h>
 #endif // __APPLE__
@@ -206,6 +208,9 @@ void STACK_ARGS I_FatalError (const char *error, ...)
 		}
 //		throw CFatalError (errortext);
 		fprintf (stderr, "%s\n", errortext);
+
+		VIZ_DoomError(errortext);
+
 		exit (-1);
     }
 
@@ -224,6 +229,8 @@ void STACK_ARGS I_Error (const char *error, ...)
     va_start (argptr, error);
     vsprintf (errortext, error, argptr);
     va_end (argptr);
+
+	VIZ_DoomError(errortext);
 
     throw CRecoverableError (errortext);
 }

@@ -2834,8 +2834,6 @@ void D_DoomMain (void)
 		DThinker::RunThinkers ();
 		gamestate = GS_STARTUP;
 
-		//VIZ_Init();
-
 		if (!restart)
 		{
 			// start the apropriate game based on parms
