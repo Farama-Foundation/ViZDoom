@@ -311,8 +311,8 @@ namespace vizdoom {
         }
     }
 
-    void DoomController::restartMap() {
-        this->setMap(this->map);
+    void DoomController::restartMap(std::string demoPath) {
+        this->setMap(this->map, demoPath);
     }
 
     void DoomController::respawnPlayer(){
@@ -375,7 +375,7 @@ namespace vizdoom {
                 if(this->gameState->GAME_SETTINGS_CONTROLLER) this->sendCommand(std::string("changemap ") + this->map);
             }
             else if(this->demoPath.length()){
-                this->sendCommand(std::string("recordmap ") + prepareFilePath(this->demoPath) + " " + this->map);
+                this->sendCommand(std::string("recordmap ") + prepareFilePathCmd(this->demoPath) + " " + this->map);
             }
             else {
                 this->sendCommand(std::string("map ") + this->map);
@@ -495,7 +495,7 @@ namespace vizdoom {
         this->skill = skill;
         if (this->doomRunning) {
             this->sendCommand(std::string("skill set ") + b::lexical_cast<std::string>(this->skill - 1));
-            //this->resetMap();
+            //this->resetMap(); // needs map restart to take effect
         }
     }
 
@@ -1044,7 +1044,7 @@ namespace vizdoom {
         }
 
         this->doomArgs.push_back("-config");
-        if (this->configPath.length() != 0) this->doomArgs.push_back(prepareFilePath(this->configPath));
+        if (this->configPath.length() != 0) this->doomArgs.push_back(prepareFilePathArg(this->configPath));
         else this->doomArgs.push_back("_vizdoom.ini");
 
         if(this->seedDoomRng) {
@@ -1064,9 +1064,6 @@ namespace vizdoom {
         //}
         //else this->doomRecordingMap = false;
 
-        //this->doomArgs.push_back("+viz_loop_map");
-        //this->doomArgs.push_back("1");
-
         //skill
         this->doomArgs.push_back("-skill");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->skill));
@@ -1074,13 +1071,9 @@ namespace vizdoom {
         //resolution and aspect ratio
         this->doomArgs.push_back("-width");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenWidth));
-        //this->doomArgs.push_back("+vid_defwidth");
-        //this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenWidth));
 
         this->doomArgs.push_back("-height");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenHeight));
-        //this->doomArgs.push_back("+vid_defheight");
-        //this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenHeight));
 
         float ratio = this->screenWidth/this->screenHeight;
 

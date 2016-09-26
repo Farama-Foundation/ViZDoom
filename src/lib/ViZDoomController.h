@@ -94,7 +94,7 @@ namespace vizdoom{
         bool isTicPossible();
         void tic(bool update = true);
         void tics(unsigned int tics, bool update = true);
-        void restartMap();
+        void restartMap(std::string demoPath = "");
         void respawnPlayer();
         bool isDoomRunning();
         void sendCommand(std::string command);

@@ -75,8 +75,6 @@ namespace vizdoom {
             throw SharedMemoryException("Failed to map shared memory regions.");
         }
 
-        size_t gameStateExpectedSize = sizeof(SMGameState);
-        size_t inputStateExpectedSize = sizeof(SMInputState);
         if(this->getGameState()->SM_SIZE != this->size ||
             this->getGameState()->SM_REGION_SIZE[0] != sizeof(SMGameState) ||
             this->getGameState()->SM_REGION_SIZE[1] != sizeof(SMInputState))

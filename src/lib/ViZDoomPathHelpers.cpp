@@ -26,6 +26,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <fstream>
+#include <iostream>
 
 namespace vizdoom {
 
@@ -88,15 +89,23 @@ namespace vizdoom {
         return filePath;
     }
 
-    std::string prepareFilePath(std::string filePath){
-        b::trim_left_if(filePath, b::is_any_of(" \n\r\""));
-        b::trim_right_if(filePath, b::is_any_of(" \n\r\""));
+    std::string prepareFilePathArg(std::string filePath){
+        b::erase_all(filePath, "\n");
+        b::erase_all(filePath, "\r");
+
+        return filePath;
+    }
+
+    std::string prepareFilePathCmd(std::string filePath){
+        filePath = prepareFilePathArg(filePath);
+        if(b::find_first(filePath, " ") && filePath[0] != '\"' && filePath[filePath.length() - 1] != '\"')
+            filePath = std::string("\"") + filePath  + "\"";
 
         return filePath;
     }
 
     std::string prepareExeFilePath(std::string filePath){
-        filePath = prepareFilePath(filePath);
+        filePath = prepareFilePathArg(filePath);
 
         #ifdef OS_WIN
             return checkFile(filePath, "exe");
@@ -106,13 +115,13 @@ namespace vizdoom {
     }
 
     std::string prepareWadFilePath(std::string filePath){
-        filePath = prepareFilePath(filePath);
+        filePath = prepareFilePathArg(filePath);
         return checkFile(filePath, "wad");
     }
 
     std::string prepareLmpFilePath(std::string filePath){
-        filePath = prepareFilePath(filePath);
-        return checkFile(filePath, "lmp");
+        filePath = checkFile(filePath, "lmp");
+        return prepareFilePathCmd(filePath);
     }
 
 }
