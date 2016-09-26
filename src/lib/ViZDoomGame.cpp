@@ -110,7 +110,7 @@ namespace vizdoom {
 
         if(!this->isRunning()) throw ViZDoomIsNotRunningException();
 
-        if(filePath.length()) this->doomController->setMap(this->doomController->getMap(), filePath);
+        if(filePath.length()) this->doomController->restartMap(filePath);
         else this->doomController->restartMap();
 
         this->resetState();

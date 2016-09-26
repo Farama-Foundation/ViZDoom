@@ -46,7 +46,9 @@ namespace vizdoom {
 
     std::string checkFile(std::string filePath, std::string expectedExt = "");
 
-    std::string prepareFilePath(std::string filePath);
+    std::string prepareFilePathArg(std::string filePath);
+
+    std::string prepareFilePathCmd(std::string filePath);
 
     std::string prepareExeFilePath(std::string filePath);
 
