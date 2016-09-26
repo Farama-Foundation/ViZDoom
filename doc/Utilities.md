@@ -1,5 +1,7 @@
 # Utilities
 
+In Java utilities functions are static methods in DoomGame class.
+
 ---
 ### `doomTicsToMs`
 
@@ -66,6 +68,9 @@ Calculates the number of seconds that will pass during specified number of tics.
 | Python | `float doom_fixed_to_double(int / float doomFixed)` |
 
 Converts Doom's fixed point numeral to a floating point value.
+
+See also: 
+- Types: `User variables` in `GameVariables`
 
 Aliases (added in 1.1):
 
