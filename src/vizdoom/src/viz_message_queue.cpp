@@ -25,10 +25,11 @@
 #include "viz_game.h"
 #include "viz_main.h"
 
+EXTERN_CVAR (Bool, viz_debug)
 EXTERN_CVAR (Bool, viz_async)
 
-bip::message_queue *vizMQController;
-bip::message_queue *vizMQDoom;
+bip::message_queue *vizMQController = nullptr;
+bip::message_queue *vizMQDoom = nullptr;
 char *vizMQControllerName;
 char *vizMQDoomName;
 
@@ -49,7 +50,7 @@ void VIZ_MQInit(const char * id){
         vizMQDoom = new bip::message_queue(bip::open_only, vizMQDoomName);//, VIZ_MQ_MAX_MSG_NUM, VIZ_MQ_MAX_MSG_SIZE);
     }
     catch(...){ // bip::interprocess_exception
-        VIZ_ReportError("VIZ_MQInit", "Failed to open message queues.");
+        VIZ_Error(VIZ_FUNC, "Failed to open message queues.");
     }
 }
 
@@ -59,14 +60,18 @@ void VIZ_MQSend(uint8_t code, const char * command){
     msg.code = code;
     if(command) strncpy(msg.command, command, VIZ_MQ_MAX_CMD_LEN);
 
-    vizMQController->send(&msg, sizeof(VIZMessage), 0);
+    if(vizMQController) vizMQController->send(&msg, sizeof(VIZMessage), 0);
+
+    VIZ_DebugMsg(4, VIZ_FUNC, "Sended msg: %d.", code);
 }
 
-void VIZ_MQReceive(void *msg){
+void VIZ_MQReceive(void *msg) {
     size_t size;
     unsigned int priority;
 
-    vizMQDoom->receive(msg, sizeof(VIZMessage), size, priority);
+    if(vizMQDoom) vizMQDoom->receive(msg, sizeof(VIZMessage), size, priority);
+
+    VIZ_DebugMsg(4, VIZ_FUNC, "Received msg: %d.", static_cast<VIZMessage *>(msg)->code);
 }
 
 bool VIZ_MQTryReceive(void *msg){
@@ -82,10 +87,8 @@ void VIZ_MQTic(){
 
     do {
         if(!*viz_async) VIZ_MQReceive(&msg);
-        else{
-            bool isMsg = VIZ_MQTryReceive(&msg);
-            if(!isMsg) break;
-        }
+        else if(!VIZ_MQTryReceive(&msg)) break;
+
         switch(msg.code){
             case VIZ_MSG_CODE_TIC :
                 vizNextTic = true;
@@ -113,13 +116,7 @@ void VIZ_MQTic(){
 
             default : break;
         }
-    }while(!vizNextTic);
-}
-
-void VIZ_ReportError(const char * function, const char * error_message) {
-    Printf("%s: %s\n", function, error_message);
-    if(vizMQController) VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, error_message);
-    exit(1);
+    } while(!vizNextTic);
 }
 
 void VIZ_MQClose(){

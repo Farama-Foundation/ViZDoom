@@ -1443,8 +1443,8 @@ void R_DrawPSprite (pspdef_t* psp, int pspnum, AActor *owner, fixed_t sx, fixed_
 		vizDepthMap->lock();
 	}
 	if(vizLabels!=NULL){
-		vizLabels->lock();
 		vizLabels->addPSprite(owner, vis);
+		vizLabels->lock();
 	}
 
 	R_DrawVisSprite (vis);

@@ -127,6 +127,8 @@ struct VIZGameState{
 
 };
 
+double VIZ_FixedToDouble(fixed_t fixed);
+
 int VIZ_CheckItem(FName name);
 
 int VIZ_CheckItem(PClass *type);

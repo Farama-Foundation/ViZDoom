@@ -21,10 +21,11 @@
 */
 
 #include "viz_game.h"
+
 #include "viz_defines.h"
 #include "viz_depth.h"
 #include "viz_labels.h"
-#include "viz_message_queue.h"
+#include "viz_main.h"
 #include "viz_screen.h"
 #include "viz_shared_memory.h"
 
@@ -43,6 +44,10 @@ EXTERN_CVAR (Bool, viz_loop_map)
 EXTERN_CVAR (Bool, viz_override_player)
 
 VIZGameState *vizGameStateSM = NULL;
+
+double VIZ_FixedToDouble(fixed_t fixed){
+    return static_cast<double>(fixed) / 65536.0;
+}
 
 int VIZ_CheckItem(FName name) {
     if(VIZ_PLAYER.mo != NULL) {
@@ -117,18 +122,16 @@ void VIZ_GameStateInit(){
         VIZ_SMCreateRegion(gameStateRegion, false, 0, sizeof(VIZGameState));
         vizGameStateSM = static_cast<VIZGameState *>(gameStateRegion->address);
 
-        VIZ_DEBUG_PRINT("VIZ_GameStateInit: gameStateOffset: %zu, gameStateSize: %zu\n",
-                        gameStateRegion->offset, sizeof(VIZGameState));
+        VIZ_DebugMsg(1, VIZ_FUNC, "gameStateOffset: %zu, gameStateSize: %zu", gameStateRegion->offset,
+                     sizeof(VIZGameState));
     }
     catch(bip::interprocess_exception &ex){
-        VIZ_ReportError("VIZ_GameStateInit", "Failed to create game state.");
+        VIZ_Error(VIZ_FUNC, "Failed to create game state.");
     }
 
     vizGameStateSM->VERSION = VIZ_VERSION;
     strncpy(vizGameStateSM->VERSION_STR, VIZ_VERSION_STR, 8);
     vizGameStateSM->SM_SIZE = vizSMSize;
-
-    VIZ_DEBUG_PRINT("VIZ_GameStateInit: VERSION %d, VERSION_STR: %s, \n", vizGameStateSM->VERSION, vizGameStateSM->VERSION_STR);
 }
 
 void VIZ_GameStateUpdate(){
@@ -153,8 +156,8 @@ void VIZ_GameStateUpdate(){
 
 void VIZ_GameStateTic(){
 
-    VIZ_DEBUG_PRINT("VIZ_GameStateTic: tic %d, netgame: %d, multiplayer: %d, recording: %d, playback: %d, in_level: %d, map_tic: %d\n",
-                    gametic, netgame, multiplayer, demorecording, demoplayback, gamestate != GS_LEVEL, level.maptime);
+    VIZ_DebugMsg(2, VIZ_FUNC, "netgame: %d, multiplayer: %d, recording: %d, playback: %d, in_level: %d, map_tic: %d",
+                    gametic, netgame, multiplayer, demorecording, demoplayback, gamestate == GS_LEVEL, level.maptime);
 
     vizGameStateSM->GAME_TIC = (unsigned int)gametic;
     vizGameStateSM->GAME_STATE = gamestate;
@@ -175,6 +178,8 @@ void VIZ_GameStateTic(){
 
     vizGameStateSM->MAP_END = gamestate != GS_LEVEL;
     if(vizGameStateSM->MAP_END) vizGameStateSM->PLAYER_DEATHCOUNT = 0;
+
+    //TODO move to g_level.cpp->G_ChangeLevel
 //    if(*viz_loop_map && !level.MapName.Compare(level.NextMap)){
 //        level.NextMap = level.MapName;
 //        level.NextSecretMap = level.MapName;
@@ -224,15 +229,13 @@ void VIZ_GameStateTic(){
         vizGameStateSM->PLAYER_WEAPON[i] = VIZ_CheckSlotWeapons(i);
     }
 
-//    vizGameStateSM->PLAYER_POSITION[0] = VIZ_PLAYER.mo->__pos.x;
-//    vizGameStateSM->PLAYER_POSITION[1] = VIZ_PLAYER.mo->__pos.y;
-//    vizGameStateSM->PLAYER_POSITION[2] = VIZ_PLAYER.mo->__pos.z;
+//    vizGameStateSM->PLAYER_POSITION[0] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.x);
+//    vizGameStateSM->PLAYER_POSITION[1] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.y);
+//    vizGameStateSM->PLAYER_POSITION[2] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.z);
 
     vizGameStateSM->PLAYER_NUMBER = (unsigned int)consoleplayer;
     vizGameStateSM->PLAYER_COUNT = 1;
     if(netgame || multiplayer) {
-
-        //VIZ_DEBUG_PRINT("VIZ_GameStateTic: tic %d, players: \n", gametic);
 
         vizGameStateSM->PLAYER_COUNT = 0;
         for (unsigned int i = 0; i < VIZ_MAX_PLAYERS; ++i) {
@@ -241,8 +244,6 @@ void VIZ_GameStateTic(){
                 vizGameStateSM->PLAYER_N_IN_GAME[i] = true;
                 strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = players[i].fragcount;
-
-                //VIZ_DEBUG_PRINT("playernum: %d, name: %s\n", i, vizGameStateSM->PLAYERS_NAME[i]);
             }
             else{
                 strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
@@ -257,8 +258,7 @@ void VIZ_GameStateUpdateLabels(){
     unsigned int labelCount = 0;
     if(vizLabels!=NULL){
 
-        VIZ_DEBUG_PRINT("VIZ_GameStateUpdateLabels: tic: %d, number of sprites: %d\n",
-                        gametic, vizLabels->getSprites().size());
+        VIZ_DebugMsg(4, VIZ_FUNC, "number of sprites: %d", gametic, vizLabels->getSprites().size());
 
         //TODO sort vizLabels->sprites
 
@@ -268,7 +268,7 @@ void VIZ_GameStateUpdateLabels(){
                 strncpy(vizGameStateSM->LABEL[labelCount].objectName, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN);
                 vizGameStateSM->LABEL[labelCount].value = i->label;
 
-                VIZ_DEBUG_PRINT("VIZ_GameStateUpdateLabels: labelCount: %d, objectId: %d, objectName: %s, value %d\n",
+                VIZ_DebugMsg(4, VIZ_FUNC, "labelCount: %d, objectId: %d, objectName: %s, value %d",
                                 labelCount+1, vizGameStateSM->LABEL[labelCount].objectId,
                                 vizGameStateSM->LABEL[labelCount].objectName, vizGameStateSM->LABEL[labelCount].value);
 
@@ -284,6 +284,3 @@ void VIZ_GameStateUpdateLabels(){
 void VIZ_GameStateClose(){
     if(vizSMRegion[0].region) delete vizSMRegion[0].region;
 }
-
-
-

@@ -49,6 +49,8 @@
 #include "v_text.h"
 #include "x86.h"
 
+#include "viz_main.h"
+
 
 EXTERN_CVAR(String, language)
 
@@ -155,6 +157,9 @@ void STACK_ARGS I_FatalError(const char* const error, ...)
 		}
 
 		fprintf(stderr, "%s\n", errortext);
+
+		VIZ_DoomError(errortext);
+
 		exit(-1);
     }
 
@@ -173,6 +178,8 @@ void STACK_ARGS I_Error(const char* const error, ...)
     va_start(argptr, error);
     vsnprintf(errortext, MAX_ERRORTEXT, error, argptr);
     va_end(argptr);
+
+	VIZ_DoomError(errortext);
 
     throw CRecoverableError(errortext);
 }

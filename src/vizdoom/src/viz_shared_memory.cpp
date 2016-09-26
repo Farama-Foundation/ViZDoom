@@ -21,11 +21,10 @@
 */
 
 #include "viz_shared_memory.h"
-#include "viz_message_queue.h"
 #include "viz_defines.h"
 #include "viz_game.h"
 #include "viz_input.h"
-#include "viz_screen.h"
+#include "viz_main.h"
 
 #include "doomstat.h"
 #include "v_video.h"
@@ -40,7 +39,6 @@ size_t vizSMGameStateOffset = 0;
 size_t vizSMInputOffset = sizeof(VIZGameState);
 size_t vizSMBuffersOffset = sizeof(VIZGameState) + sizeof(VIZInputState);
 
-EXTERN_CVAR (Bool, viz_debug)
 
 void VIZ_SMInit(const char * id){
 
@@ -57,10 +55,10 @@ void VIZ_SMInit(const char * id){
         vizSMSize = sizeof(VIZGameState) + sizeof(VIZInputState);
         vizSM.truncate(vizSMSize);
 
-        VIZ_DEBUG_PRINT("VIZ_SMInit: SMName: %s, SMSize: %zu\n", vizSMName, vizSMSize);
+        VIZ_DebugMsg(1, VIZ_FUNC, "SMName: %s, SMSize: %zu", vizSMName, vizSMSize);
     }
     catch(...){ // bip::interprocess_exception
-        VIZ_ReportError("VIZ_SMInit", "Failed to create shared memory.");
+        VIZ_Error(VIZ_FUNC, "Failed to create shared memory.");
     }
 }
 
@@ -69,10 +67,10 @@ void VIZ_SMUpdate(size_t buffersSize){
         vizSMSize = sizeof(VIZGameState) + sizeof(VIZInputState) + buffersSize;
         vizSM.truncate(vizSMSize);
 
-        VIZ_DEBUG_PRINT("VIZ_SMUpdate: New SMSize: %zu\n", vizSMSize);
+        VIZ_DebugMsg(3, VIZ_FUNC, "New SMSize: %zu", vizSMSize);
     }
     catch(...){ // bip::interprocess_exception
-        VIZ_ReportError("VIZ_SMUpdate", "Failed to truncate shared memory.");
+        VIZ_Error(VIZ_FUNC, "Failed to truncate shared memory.");
     }
 }
 
