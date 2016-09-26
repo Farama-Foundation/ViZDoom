@@ -779,8 +779,8 @@ Config key: `episodeTimeout/episode_timeout`
 | Java   | `void setScreenResolution(ScreenResolution resolution)`   |
 | Python | `void set_screen_resolution(ScreenResolution resolution)` |
 
-Sets the screen resolution.
-Supported resolutions are part of ScreenResolution enumeration (e.g. `RES_320X240`, `RES_640X480`, `RES_1920X1080`).
+Sets the screen resolution. ZDoom engine supports only specific resolutions, 
+supported resolutions are part of ScreenResolution enumeration (e.g. `RES_320X240`, `RES_640X480`, `RES_1920X1080`).
 The buffers as well as content of ViZDoom's display window will be affected.
 
 Default value: `RES_320X240`
@@ -1120,7 +1120,7 @@ Added in 1.1
 
 Determine if ingame messages (information about pickups, kills etc.) will be rendered in game.
 
-Default value: true
+Default value: false
 
 Config key: `renderMessages/render_messages`
 
@@ -1179,7 +1179,7 @@ Config key: `soundEnabled/sound_enabled`
 
 | C++    | `int getScreenWidth()`   |
 | :--    | :--                      |
-| Lua    | `int getScreenWidth()`   |
+| Lua    | `number getScreenWidth()`   |
 | Java   | `int getScreenWidth()`   |
 | Python | `int get_screen_width()` |
 
@@ -1191,7 +1191,7 @@ Returns game's screen width - width of all buffers.
 
 | C++    | `int getScreenHeight()`   |
 | :--    | :--                       |
-| Lua    | `int getScreenHeight()`   |
+| Lua    | `number getScreenHeight()`   |
 | Java   | `int getScreenHeight()`   |
 | Python | `int get_screen_height()` |
 
@@ -1203,7 +1203,7 @@ Returns game's screen height - height of all buffers.
 
 | C++    | `int getScreenChannels()`   |
 | :--    | :--                         |
-| Lua    | `int getScreenChannels()`   |
+| Lua    | `number getScreenChannels()`   |
 | Java   | `int getScreenChannels()`   |
 | Python | `int get_screen_channels()` |
 
@@ -1215,9 +1215,9 @@ Returns number of channels in screen buffer and map buffer (depth and labels buf
 
 | C++    | `size_t getScreenPitch()`   |
 | :--    | :--                         |
-| Lua    | `size_t getScreenPitch()`   |
-| Java   | `size_t getScreenPitch()`   |
-| Python | `size_t get_screen_pitch()` |
+| Lua    | `number getScreenPitch()`   |
+| Java   | `int getScreenPitch()`   |
+| Python | `int get_screen_pitch()` |
 
 Returns size in bytes of one row in screen buffer and map buffer.
 

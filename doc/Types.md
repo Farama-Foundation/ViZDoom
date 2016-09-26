@@ -35,6 +35,7 @@
 
 ---
 ### `Mode`
+
 - **PLAYER** - synchronous player mode
 - **SPECTATOR** - synchronous spectator mode
 - **ASYNC_PLAYER** - asynchronous player mode
@@ -43,20 +44,22 @@
 
 ---
 ### `ScreenFormat`
-- **CRCGCB** - 3 channels of 8-bit values in RGB order
-- **RGB24** - channel of RGB values stored in 24 bits, where R value is stored in the oldest 8 bits
-- **RGBA32** - channel of RGBA values stored in 32 bits, where R value is stored in the oldest 8 bits
-- **ARGB32** - channel of ARGB values stored in 32 bits, where A value is stored in the oldest 8 bits
-- **CBCGCR** - 3 channels of 8-bit values in BGR order
-- **BGR24** - channel of BGR values stored in 24 bits, where B value is stored in the oldest 8 bits
-- **BGRA32** - channel of BGRA values stored in 32 bits, where B value is stored in the oldest 8 bits
-- **ABGR32** - channel of ABGR values stored in 32 bits, where A value is stored in the oldest 8 bits
-- **GRAY8** - 8-bit gray channel
+
+- **CRCGCB**    - 3 channels of 8-bit values in RGB order
+- **RGB24**     - channel of RGB values stored in 24 bits, where R value is stored in the oldest 8 bits
+- **RGBA32**    - channel of RGBA values stored in 32 bits, where R value is stored in the oldest 8 bits
+- **ARGB32**    - channel of ARGB values stored in 32 bits, where A value is stored in the oldest 8 bits
+- **CBCGCR**    - 3 channels of 8-bit values in BGR order
+- **BGR24**     - channel of BGR values stored in 24 bits, where B value is stored in the oldest 8 bits
+- **BGRA32**    - channel of BGRA values stored in 32 bits, where B value is stored in the oldest 8 bits
+- **ABGR32**    - channel of ABGR values stored in 32 bits, where A value is stored in the oldest 8 bits
+- **GRAY8**     - 8-bit gray channel
 - **DOOM_256_COLORS8** - 8-bit channel with Doom palette values
 
 
 ---
 ### `ScreenResolution`
+
 - **RES_160X120** (4:3)
 - **RES_200X125** (16:10)
 - **RES_200X150** (4:3)
@@ -97,9 +100,9 @@
 
 ---
 ### `AutomapMode`
-- **NORMAL** - Only level architecture the player has seen is shown.
-- **WHOLE** - All architecture is shown, regardless of whether or not the player has seen it.
-- **OBJECTS** - In addition to the previous, shows all things in the map as arrows pointing in the direction they are facing.
+- **NORMAL**    - Only level architecture the player has seen is shown.
+- **WHOLE**     - All architecture is shown, regardless of whether or not the player has seen it.
+- **OBJECTS**   - In addition to the previous, shows all things in the map as arrows pointing in the direction they are facing.
 - **OBJECTS_WITH_SIZE** - In addition to the previous, all things are wrapped in a box showing their size.
 
 
@@ -112,82 +115,38 @@
 - **SECRETCOUNT**
 - **FRAGCOUNT**
 - **DEATHCOUNT**
-- **HEALTH**
-- **ARMOR**
-- **DEAD**
-- **ON_GROUND**
-- **ATTACK_READY**
-- **ALTATTACK_READY**
-- **SELECTED_WEAPON**
-- **SELECTED_WEAPON_AMMO**
-- **AMMO0**
-- **AMMO1**
-- **AMMO2**
-- **AMMO3**
-- **AMMO4**
-- **AMMO5**
-- **AMMO6**
-- **AMMO7**
-- **AMMO8**
-- **AMMO9**
-- **WEAPON0**
-- **WEAPON1**
-- **WEAPON2**
-- **WEAPON3**
-- **WEAPON4**
-- **WEAPON5**
-- **WEAPON6**
-- **WEAPON7**
-- **WEAPON8**
-- **WEAPON9**
-- **PLAYER_NUMBER**
-- **PLAYER_COUNT**
-- **PLAYER1_FRAGCOUNT**
-- **PLAYER2_FRAGCOUNT**
-- **PLAYER3_FRAGCOUNT**
-- **PLAYER4_FRAGCOUNT**
-- **PLAYER5_FRAGCOUNT**
-- **PLAYER6_FRAGCOUNT**
-- **PLAYER7_FRAGCOUNT**
-- **PLAYER8_FRAGCOUNT**
+- **HEALTH**        - Can be higher then 100!
+- **ARMOR**         - Can be higher then 100!
+- **DEAD**          - True if player is dead.
+- **ON_GROUND**     - True if player is on the ground (not in the air).
+- **ATTACK_READY**  - True if attack can be performed.
+- **ALTATTACK_READY**       - True if altattack can be performed.
+- **SELECTED_WEAPON**       - Selected weapon's number.
+- **SELECTED_WEAPON_AMMO**  - Ammo for selected weapon.
+- **AMMO0** - **AMMO9**     - Number of ammo for weapon in N slot.
+- **WEAPON0** - **WEAPON9** - Number of weapons in N slot.
+- **PLAYER_NUMBER**         - Player's number in multiplayer game.
+- **PLAYER_COUNT**          - Number of players in multiplayer game.
+- **PLAYER1_FRAGCOUNT** - **PLAYER8_FRAGCOUNT** - Number of N player's frags
 
-#### ACS variables  
-- **USER1**
-- **USER2**
-- **USER3**
-- **USER4**
-- **USER5**
-- **USER6**
-- **USER7**
-- **USER8**
-- **USER9**
-- **USER10**
-- **USER11**
-- **USER12**
-- **USER13**
-- **USER14**
-- **USER15**
-- **USER16**
-- **USER17**
-- **USER18**
-- **USER19**
-- **USER20**
-- **USER21**
-- **USER22**
-- **USER23**
-- **USER24**
-- **USER25**
-- **USER26**
-- **USER27**
-- **USER28**
-- **USER29**
-- **USER30**
+#### User (ACS) variables  
+- **USER1** - **USER60**
 
+ACS global int variables can be accessed as USER GameVariables. 
+global int 0 is reserved for reward and is always threaded as Doom's fixed point numeral.
+Other from 1 to 60 (global int 1-60) can be access as USER1 - USER60 GameVariables.
+
+See also:
+- ZDoom Wiki: http://zdoom.org/wiki/ACS
+- Types: `doomFixedToDouble`
 
 ---
 ### `Button`
 
 #### Binary buttons
+
+Binary buttons have only 2 states "not pressed" if value 0 and "pressed" if value greater then 0.
+
 - **ATTACK**
 - **USE**
 - **JUMP**
@@ -228,6 +187,11 @@
 - **DROP_SELECTED_ITEM**
 
 #### Delta buttons
+
+Buttons whose value defines the speed of movement. 
+A positive value indicates movement in the first specified direction and a negative value in the second direction. 
+For example: value 10 for MOVE_LEFT_RIGHT_DELTA means slow movement to the right and -100 means fast movement to the left.
+
 - **LOOK_UP_DOWN_DELTA**
 - **TURN_LEFT_RIGHT_DELTA**
 - **MOVE_FORWARD_BACKWARD_DELTA**
