@@ -81,16 +81,6 @@ namespace vizdoom{
         const char* what() const throw();
     };
 
-    class ViZDoomMismatchedVersionException : public std::exception {
-    public:
-        ViZDoomMismatchedVersionException(std::string vizdoomVersion, std::string libVersion): vizdoomVersion(vizdoomVersion), libVersion(libVersion){}
-        ~ViZDoomMismatchedVersionException() throw(){}
-        const char* what() const throw();
-    private:
-        std::string vizdoomVersion;
-        std::string libVersion;
-    };
-
     class ViZDoomUnexpectedExitException : public std::exception {
     public:
         const char* what() const throw();

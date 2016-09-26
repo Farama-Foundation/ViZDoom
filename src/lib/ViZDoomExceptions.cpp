@@ -60,12 +60,6 @@ namespace vizdoom{
         return "Controlled ViZDoom instance is not running or not ready.";
     }
 
-    /* ViZDoomMismatchedVersionException */
-    const char* ViZDoomMismatchedVersionException::what() const throw(){
-        std::string what = "Controlled ViZDoom version (" + this->vizdoomVersion + ") does not match library version (" + this->libVersion + ").";
-        return strdup(what.c_str());
-    }
-
     /* ViZDoomUnexpectedExitException */
     const char* ViZDoomUnexpectedExitException::what() const throw(){
         return "Controlled ViZDoom instance exited unexpectedly.";

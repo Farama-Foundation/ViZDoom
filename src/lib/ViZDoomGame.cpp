@@ -127,19 +127,17 @@ namespace vizdoom {
     void DoomGame::setAction(std::vector<int> const &actions) {
 
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
-        try {
-            for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
-                if(i < actions.size()){
-                    this->lastAction[i] = actions[i];
 
-                }
-                else{
-                    this->lastAction[i] = 0;
-                }
-                this->doomController->setButtonState(this->availableButtons[i], this->lastAction[i]);
+        for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
+            if(i < actions.size()){
+                this->lastAction[i] = actions[i];
+
             }
+            else{
+                this->lastAction[i] = 0;
+            }
+            this->doomController->setButtonState(this->availableButtons[i], this->lastAction[i]);
         }
-        catch (...) { throw SharedMemoryException(); }
     }
 
     void DoomGame::advanceAction(unsigned int tics, bool updateState, bool renderOnly) {
@@ -172,81 +170,79 @@ namespace vizdoom {
     }
 
     void DoomGame::updateState(){
-        try {
-            /* Update reward */
-            double reward = 0;
-            double mapReward = doomFixedToDouble(this->doomController->getMapReward());
-            reward = mapReward - this->lastMapReward;
-            int liveTime = this->doomController->getMapLastTic() - this->lastMapTic;
-            reward += (liveTime > 0 ? liveTime : 0) * this->livingReward;
-            if (this->doomController->isPlayerDead()) reward -= this->deathPenalty;
 
-            this->lastMapReward = mapReward;
-            this->summaryReward += reward;
-            this->lastReward = reward;
+        /* Update reward */
+        double reward = 0;
+        double mapReward = doomFixedToDouble(this->doomController->getMapReward());
+        reward = mapReward - this->lastMapReward;
+        int liveTime = this->doomController->getMapLastTic() - this->lastMapTic;
+        reward += (liveTime > 0 ? liveTime : 0) * this->livingReward;
+        if (this->doomController->isPlayerDead()) reward -= this->deathPenalty;
 
-            this->lastMapTic = this->doomController->getMapTic();
+        this->lastMapReward = mapReward;
+        this->summaryReward += reward;
+        this->lastReward = reward;
 
-            /* Update state */
-            if(!this->isEpisodeFinished()) {
-                this->state = std::make_shared<GameState>();
-                this->state->number = this->nextStateNumber++;
+        this->lastMapTic = this->doomController->getMapTic();
 
-                this->state->gameVariables.resize(this->availableGameVariables.size());
+        /* Update state */
+        if(!this->isEpisodeFinished()) {
+            this->state = std::make_shared<GameState>();
+            this->state->number = this->nextStateNumber++;
 
-                /* Updates vars */
-                for (unsigned int i = 0; i < this->availableGameVariables.size(); ++i) {
-                    this->state->gameVariables[i] =
-                            this->doomController->getGameVariable(this->availableGameVariables[i]);
-                }
+            this->state->gameVariables.resize(this->availableGameVariables.size());
 
-                /* Update buffers */
-                int channels = this->getScreenChannels();
-                int width = this->getScreenWidth();
-                int height = this->getScreenHeight();
-
-                size_t graySize = static_cast<size_t>(width * height);
-                size_t colorSize = graySize * channels;
-
-                uint8_t *buf = this->doomController->getScreenBuffer();
-                this->state->screenBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
-
-                if (this->doomController->isDepthBufferEnabled()) {
-                    buf = this->doomController->getDepthBuffer();
-                    this->state->depthBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + graySize);
-                }
-                else this->state->depthBuffer = nullptr;
-
-                if (this->doomController->isLabelsEnabled()) {
-                    buf = this->doomController->getLabelsBuffer();
-                    this->state->labelsBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + graySize);
-                }
-                else this->state->labelsBuffer = nullptr;
-
-                if (this->doomController->isAutomapEnabled()) {
-                    buf = this->doomController->getAutomapBuffer();
-                    this->state->automapBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
-                }
-                else this->state->automapBuffer = nullptr;
-
-                /* Update labels */
-                this->state->labels.clear();
-                for (unsigned int i = 0; i < this->doomController->getGameState()->LABEL_COUNT; ++i) {
-                    Label label;
-                    label.objectId = this->doomController->getGameState()->LABEL[i].objectId;
-                    label.objectName = std::string(this->doomController->getGameState()->LABEL[i].objectName);
-                    label.value = this->doomController->getGameState()->LABEL[i].value;
-                    this->state->labels.push_back(label);
-                }
+            /* Updates vars */
+            for (unsigned int i = 0; i < this->availableGameVariables.size(); ++i) {
+                this->state->gameVariables[i] =
+                        this->doomController->getGameVariable(this->availableGameVariables[i]);
             }
-            else this->state = nullptr;
 
-            /* Update last action */
-            for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
-                this->lastAction[i] = this->doomController->getButtonState(this->availableButtons[i]);
+            /* Update buffers */
+            int channels = this->getScreenChannels();
+            int width = this->getScreenWidth();
+            int height = this->getScreenHeight();
+
+            size_t graySize = static_cast<size_t>(width * height);
+            size_t colorSize = graySize * channels;
+
+            uint8_t *buf = this->doomController->getScreenBuffer();
+            this->state->screenBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
+
+            if (this->doomController->isDepthBufferEnabled()) {
+                buf = this->doomController->getDepthBuffer();
+                this->state->depthBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + graySize);
+            }
+            else this->state->depthBuffer = nullptr;
+
+            if (this->doomController->isLabelsEnabled()) {
+                buf = this->doomController->getLabelsBuffer();
+                this->state->labelsBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + graySize);
+            }
+            else this->state->labelsBuffer = nullptr;
+
+            if (this->doomController->isAutomapEnabled()) {
+                buf = this->doomController->getAutomapBuffer();
+                this->state->automapBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
+            }
+            else this->state->automapBuffer = nullptr;
+
+            /* Update labels */
+            this->state->labels.clear();
+            for (unsigned int i = 0; i < this->doomController->getGameState()->LABEL_COUNT; ++i) {
+                Label label;
+                label.objectId = this->doomController->getGameState()->LABEL[i].objectId;
+                label.objectName = std::string(this->doomController->getGameState()->LABEL[i].objectName);
+                label.value = this->doomController->getGameState()->LABEL[i].value;
+                this->state->labels.push_back(label);
             }
         }
-        catch (...) { throw SharedMemoryException(); }
+        else this->state = nullptr;
+
+        /* Update last action */
+        for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
+            this->lastAction[i] = this->doomController->getButtonState(this->availableButtons[i]);
+        }
     }
 
     std::shared_ptr<GameState> DoomGame::getState() { return this->state; }
