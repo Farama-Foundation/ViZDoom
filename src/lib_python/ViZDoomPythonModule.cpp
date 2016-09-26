@@ -62,7 +62,6 @@ EXCEPTION_TRANSLATE_TO_PYT(SharedMemoryException)
 EXCEPTION_TRANSLATE_TO_PYT(SignalException)
 EXCEPTION_TRANSLATE_TO_PYT(ViZDoomIsNotRunningException)
 EXCEPTION_TRANSLATE_TO_PYT(ViZDoomErrorException)
-EXCEPTION_TRANSLATE_TO_PYT(ViZDoomMismatchedVersionException)
 EXCEPTION_TRANSLATE_TO_PYT(ViZDoomUnexpectedExitException)
 
 
@@ -121,7 +120,6 @@ BOOST_PYTHON_MODULE(vizdoom)
     EXCEPTION_TO_PYT(SignalException)
     EXCEPTION_TO_PYT(ViZDoomIsNotRunningException)
     EXCEPTION_TO_PYT(ViZDoomErrorException)
-    EXCEPTION_TO_PYT(ViZDoomMismatchedVersionException)
     EXCEPTION_TO_PYT(ViZDoomUnexpectedExitException)
 
     #define CONST_2_PYT(c) scope().attr( #c ) = c

@@ -37,6 +37,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
 
 namespace vizdoom {
 
@@ -160,6 +161,9 @@ namespace vizdoom {
                 // Doom thread
                 this->createDoomArgs();
                 this->doomThread = new b::thread(b::bind(&DoomController::launchDoom, this));
+                this->doomRunning = true;
+
+                // Wait for first message from Doom
                 this->waitForDoomStart();
 
                 // Open shared memory
@@ -173,9 +177,8 @@ namespace vizdoom {
                 this->automapBuffer = this->SM->getAutomapBuffer();
 
                 // Check version
-                if(this->gameState->VERSION != VIZDOOM_LIB_VERSION){
-                    throw ViZDoomMismatchedVersionException(std::string(this->gameState->VERSION_STR), VIZDOOM_LIB_VERSION_STR);
-                }
+                if(this->gameState->VERSION != VIZDOOM_LIB_VERSION)
+                    throw ViZDoomErrorException(std::string("Controlled ViZDoom version (") + this->gameState->VERSION_STR + ") does not match library version (" + VIZDOOM_LIB_VERSION_STR + ").");
 
                 this->waitForDoomMapStartTime();
 
@@ -186,6 +189,11 @@ namespace vizdoom {
                 *this->input = *this->_input;
 
                 this->mapLastTic = this->gameState->MAP_TIC;
+
+                // Check net game && mode
+                if(this->gameState->GAME_NETGAME && !this->runDoomAsync)
+                    throw ViZDoomErrorException("Net game can not be used with synchronous mode.");
+
             }
             catch(...){
                 this->close();
@@ -212,17 +220,17 @@ namespace vizdoom {
             this->signalThread->interrupt();
             this->signalThread->join();
             delete this->signalThread;
-            this->signalThread = NULL;
+            this->signalThread = nullptr;
 
             delete this->ioService;
-            this->ioService = NULL;
+            this->ioService = nullptr;
         }
 
         if (this->doomThread && this->doomThread->joinable()) {
             this->doomThread->interrupt();
             this->doomThread->join();
             delete this->doomThread;
-            this->doomThread = NULL;
+            this->doomThread = nullptr;
         }
 
         if(this->SM){
@@ -238,6 +246,13 @@ namespace vizdoom {
             delete this->MQController;
             this->MQController = nullptr;
         }
+
+        this->gameState = nullptr;
+        this->input = nullptr;
+        this->screenBuffer = nullptr;
+        this->depthBuffer = nullptr;
+        this->labelsBuffer = nullptr;
+        this->automapBuffer = nullptr;
     }
 
     void DoomController::restart() {
@@ -984,7 +999,7 @@ namespace vizdoom {
 
     void DoomController::waitForDoomStart() {
         this->doomWorking = true;
-        this->doomRunning = receiveMQMsg();
+        this->doomRunning = this->receiveMQMsg();
         this->doomWorking = false;
     }
 
@@ -994,7 +1009,7 @@ namespace vizdoom {
 
             bool done;
             do {
-                done = receiveMQMsg();
+                done = this->receiveMQMsg();
             } while (!done);
 
             this->doomWorking = false;
@@ -1104,10 +1119,6 @@ namespace vizdoom {
         //render mode
         this->doomArgs.push_back("+viz_render_mode");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->getRenderModeValue()));
-
-        //weapon auto switch
-        //this->doomArgs.push_back("+neverswitchonpickup");
-        //this->doomArgs.push_back("1");
 
         //vizdoom
         this->doomArgs.push_back("+viz_controlled");
