@@ -31,15 +31,10 @@ namespace vizdoom {
         DoomGame::setAction(DoomGameLua::lTableToVector<int>(lAction));
     }
 
-    double DoomGameLua::makeAction(lb::object const& lAction) {
-        return DoomGame::makeAction(DoomGameLua::lTableToVector<int>(lAction));
-    }
-
     double DoomGameLua::makeAction(lb::object const& lAction, unsigned int tics) {
         return DoomGame::makeAction(DoomGameLua::lTableToVector<int>(lAction), tics);
     }
 
-    //GameStateLua DoomGameLua::getState() {
     GameStateLua DoomGameLua::getState(lua_State* luaState) {
 
         GameStateLua lState;
@@ -63,11 +58,11 @@ namespace vizdoom {
             lua_pop(luaState, 1);
             lState.labelsBuffer = buffer;
         }
-        if (this->state->mapBuffer != nullptr) {
-            lua_pushlightuserdata(luaState, this->doomController->getLevelMapBuffer());
+        if (this->state->automapBuffer != nullptr) {
+            lua_pushlightuserdata(luaState, this->doomController->getAutomapBuffer());
             lb::object buffer(lb::from_stack(luaState, -1));
             lua_pop(luaState, 1);
-            lState.mapBuffer = buffer;
+            lState.automapBuffer = buffer;
         }
 
         if (this->state->gameVariables.size() > 0) {
@@ -85,6 +80,7 @@ namespace vizdoom {
                 lState.labels[i+1] = this->state->labels[i];
             }
         }
+
         return lState;
 
     }

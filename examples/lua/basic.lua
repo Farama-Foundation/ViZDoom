@@ -48,7 +48,7 @@ game:setDepthBufferEnabled(true)
 game:setLabelsBufferEnabled(true)
 
 -- Enables buffer with top down map of he current episode/level .
-game:setMapBufferEnabled(true)
+game:setAutomapBufferEnabled(true)
 
 -- Sets other rendering options
 game:setRenderHud(false)
@@ -56,6 +56,7 @@ game:setRenderCrosshair(false)
 game:setRenderWeapon(true)
 game:setRenderDecals(false)
 game:setRenderParticles(false)
+game:setRenderEffectsSprites(false)
 
 -- Adds buttons that will be allowed.
 game:addAvailableButton(vizdoom.Button.MOVE_LEFT)
@@ -83,6 +84,9 @@ game:setLivingReward(-1)
 -- Sets ViZDoom mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR, PLAYER mode is default)
 game:setMode(vizdoom.Mode.PLAYER)
 
+game:addGameArgs("viz_debug 4")
+game:setConsoleEnabled(true)
+
 -- Initialize the game. Further configuration won't take any effect from now on.
 game:init()
 
@@ -104,6 +108,7 @@ for i = 1, episodes do
 
     -- Starts a new episode. It is not needed right after init() but it doesn't cost much. At least the loop is nicer.
     game:newEpisode()
+
     while not game:isEpisodeFinished() do
 
         -- Gets the state
@@ -112,20 +117,20 @@ for i = 1, episodes do
         -- Which consists of:
         n           = state.number
         vars        = state.gameVariables
-        screenBuf  = state.screenBuffer
-        depthBuf   = state.depthBuffer
-        labelsBuf  = state.labelsBuffer
-        mapBuf     = state.mapBuffer
+        screenBuf   = state.screenBuffer
+        depthBuf    = state.depthBuffer
+        labelsBuf   = state.labelsBuffer
+        automapBuf  = state.automapBuffer
         labels      = state.labels
 
-        --Makes a random action and get remember reward.
+        -- Makes a random action and get remember reward.
         reward = game:makeAction(actions[math.random(1,3)])
 
-        --Makes a "prolonged" action and skip frames:
+        -- Makes a "prolonged" action and skip frames.
         --skiprate = 4
         --reward = game.makeAction(choice(actions), skiprate)
 
-        --The same could be achieved with:
+        -- The same could be achieved with:
         --game.setAction(choice(actions))
         --game.advanceAction(skiprate)
         --reward = game.getLastReward()

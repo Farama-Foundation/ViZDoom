@@ -1,8 +1,9 @@
 cmake_minimum_required( VERSION 2.8 )
 project(ViZDoom)
 
-option(BUILD_JAVA "Build ViZDoom Java binding." OFF)
 option(BUILD_LUA "Build ViZDoom Lua binding." OFF)
+option(BUILD_LUA "Build ViZDoom Lua binding." OFF)
+option(BUILD_LUA52 "Build ViZDoom Lua52 binding instead of default Lua51/LuaJIT." OFF)
 option(BUILD_PYTHON "Build ViZDoom Python binding." OFF)
 option(BUILD_PYTHON3 "Build ViZDoom Python3 binding instead of default Python2." OFF)
 
@@ -107,12 +108,12 @@ set_target_properties(libvizdoom_static libvizdoom_shared
 	RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}
 	OUTPUT_NAME vizdoom)
 
-	add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
+add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
 
 
 # Python binding
 #-----------------------------------------------------------------------------------------------------------------------
-if(BUILD_PYTHON AND (NOT BUILD_PYTHON3 ))
+if(BUILD_PYTHON AND (NOT BUILD_PYTHON3))
 
 	find_package(PythonInterp 2 REQUIRED)
 
@@ -161,7 +162,8 @@ if(BUILD_PYTHON AND (NOT BUILD_PYTHON3 ))
 		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/python
 		RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/python
 		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/python
-		OUTPUT_NAME vizdoom)
+		OUTPUT_NAME vizdoom
+		PROJECT_LABEL "Python 2 ViZDoom binding")
 
 	if(UNIX)
 		ADD_CUSTOM_COMMAND(
@@ -173,7 +175,7 @@ if(BUILD_PYTHON AND (NOT BUILD_PYTHON3 ))
 
 endif()
 
-if( BUILD_PYTHON AND BUILD_PYTHON3 )
+if( BUILD_PYTHON3 )
 
 	find_package(PythonInterp 3 REQUIRED)
 
@@ -223,7 +225,8 @@ if( BUILD_PYTHON AND BUILD_PYTHON3 )
 		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/python3
 		RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/python3
 		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/python3
-		OUTPUT_NAME vizdoom)
+		OUTPUT_NAME vizdoom
+		PROJECT_LABEL "Python 3 ViZDoom binding")
 
 	if(UNIX)
 		ADD_CUSTOM_COMMAND(
@@ -235,12 +238,16 @@ if( BUILD_PYTHON AND BUILD_PYTHON3 )
 
 endif()
 
+
 # Lua binding
 #-----------------------------------------------------------------------------------------------------------------------
-if( BUILD_LUA )
+if(BUILD_LUA AND (NOT BUILD_LUA52))
 
-	FIND_PACKAGE (Lua REQUIRED)
-	find_package(Luabind REQUIRED)
+	#use vizdoom's verions of luabind
+	add_subdirectory(${VIZDOOM_SRC_DIR}/lib_lua/luabind)
+
+	FIND_PACKAGE (Lua51 REQUIRED)
+	#find_package(Luabind REQUIRED)
 
 	set(VIZDOOM_LUA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_lua)
 	set(VIZDOOM_LUA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LUA_SRC_DIR})
@@ -249,13 +256,15 @@ if( BUILD_LUA )
 			${VIZDOOM_LIBS}
 			${Boost_LIBRARIES}
 			${LUA_LIBRARIES}
-			${LUABIND_LIBRARIES})
+			#${LUABIND_LIBRARIES}
+			${VIZDOOM_SRC_DIR}/lib_lua/luabind/src/libluabind.a)
 
 	include_directories(${VIZDOOM_LUA_INCLUDE_DIR}
 			${Boost_INCLUDE_DIR}
 			${PYTHON_INCLUDE_DIRS}
 			${LUA_INCLUDE_DIR}
-			${LUABIND_INCLUDE_DIRS})
+			#${LUABIND_INCLUDE_DIRS}
+			${VIZDOOM_SRC_DIR}/lib_lua/luabind/luabind)
 
 	set(VIZDOOM_LUA_SOURCES
 			${VIZDOOM_LUA_SRC_DIR}/ViZDoomGameLua.h
@@ -278,7 +287,8 @@ if( BUILD_LUA )
 			RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/lua
 			RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/lua
 			RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/lua
-			OUTPUT_NAME vizdoom)
+			OUTPUT_NAME vizdoom
+			PROJECT_LABEL "Lua ViZDoom binding")
 
 	if(UNIX)
 		ADD_CUSTOM_COMMAND(
@@ -288,6 +298,10 @@ if( BUILD_LUA )
 				COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/lua.")
 	endif()
 
+endif()
+
+if(BUILD_LUA52)
+	#TODO
 endif()
 
 
@@ -348,7 +362,8 @@ if(BUILD_JAVA)
 		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/java
 		RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/java
 		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/java
-		OUTPUT_NAME vizdoom)
+		OUTPUT_NAME vizdoom
+		PROJECT_LABEL "Java ViZDoom binding")
 
 	add_jar(libvizdoom_java_classes
 		${VIZDOOM_JAVA_CLASSES_DIR}/enums/Button.java
@@ -367,7 +382,8 @@ if(BUILD_JAVA)
 		${VIZDOOM_JAVA_CLASSES_DIR}/GameState.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/DoomGame.java
 		OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/java
-		OUTPUT_NAME vizdoom)
+		OUTPUT_NAME vizdoom
+		PROJECT_LABEL "ViZDoom Java classes")
 
 endif()
 

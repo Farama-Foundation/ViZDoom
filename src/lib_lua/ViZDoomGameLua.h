@@ -45,19 +45,36 @@ namespace vizdoom {
         lb::object screenBuffer;
         lb::object depthBuffer;
         lb::object labelsBuffer;
-        lb::object mapBuffer;
+        lb::object automapBuffer;
 
         lb::object labels;
     };
 
     class DoomGameLua : public DoomGame {
     public:
+
         void setAction(lb::object const& lAction);
-        double makeAction(lb::object const& lAction);
-        double makeAction(lb::object const& lAction, unsigned int tics);
+        double makeAction(lb::object const& lAction, unsigned int tics = 1);
 
         GameStateLua getState(lua_State* luaState);
         lb::object getLastAction(lua_State* luaState);
+
+
+        // Luabind doesn't support C++ 11 default arguments
+
+        void newEpisode_() { this->newEpisode(); };
+        void newEpisode_str(std::string _str) { this->newEpisode(_str); };
+
+        double makeAction_obj(lb::object const& _obj){ return this->makeAction(_obj); }
+        double makeAction_obj_int(lb::object const& _obj, unsigned int _int){ return this->makeAction(_obj, _int); }
+
+        void advanceAction_() { this->advanceAction(); }
+        void advanceAction_int(unsigned int _int) { this->advanceAction(_int); }
+        void advanceAction_int_bool(unsigned int _int, bool _bool) { this->advanceAction(_int, _bool); }
+        void advanceAction_int_bool_bool(unsigned int _int, bool _bool1, bool _bool2) { this->advanceAction(_int, _bool1, _bool2); }
+
+        void addAvailableButton_btn(Button _btn) { this->addAvailableButton(_btn); }
+        void addAvailableButton_btn_int(Button _btn, unsigned int _int) { this->addAvailableButton(_btn, _int); }
 
     private:
         template<class T> static std::vector<T> lTableToVector(lb::object const& lTable);
