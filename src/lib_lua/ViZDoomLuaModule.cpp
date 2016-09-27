@@ -20,9 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "ViZDoomDefines.h"
-#include "ViZDoomExceptions.h"
-
+#include "ViZDoom.h"
 #include "ViZDoomGameLua.h"
 
 #include <iostream>
@@ -43,23 +41,24 @@ extern "C" {
 using namespace vizdoom;
 using namespace luabind;
 
-void (DoomGameLua::*newEpisode1)() = &DoomGameLua::newEpisode;
-void (DoomGameLua::*newEpisode2)(std::string) = &DoomGameLua::newEpisode;
 
-void (DoomGameLua::*addAvailableButton1)(Button) = &DoomGameLua::addAvailableButton;
-void (DoomGameLua::*addAvailableButton2)(Button, unsigned int) = &DoomGameLua::addAvailableButton;
+/* Overloaded functions */
+/*--------------------------------------------------------------------------------------------------------------------*/
 
-void (DoomGameLua::*advanceAction1)() = &DoomGameLua::advanceAction;
-void (DoomGameLua::*advanceAction2)(unsigned int) = &DoomGameLua::advanceAction;
-void (DoomGameLua::*advanceAction3)(unsigned int, bool, bool) = &DoomGameLua::advanceAction;
+double (*doomFixedToDouble_int)(int) = &doomFixedToDouble;
+double (*doomFixedToDouble_double)(double) = &doomFixedToDouble;
 
-double (DoomGameLua::*makeAction1)(object const&) = &DoomGameLua::makeAction;
-double (DoomGameLua::*makeAction2)(object const&, unsigned int) = &DoomGameLua::makeAction;
 
 #define ENUM_VAL_2_LUA(v) value( #v , v )
 /* value("VALUE", VALUE) */
 
-#define FUNC_2_LUA(c, f) .def( #f , &c::f )
+#define ENUM_CLASS_VAL_2_LUA(c, v) value( #v , c::v )
+/* value("VALUE", (int)class::VALUE) */
+
+#define FUNC_2_LUA(f) def( #f , f )
+/* def("function", function) */
+
+#define CLASS_FUNC_2_LUA(c, f) .def( #f , &c::f )
 /* .def("function", &class::function) */
 
 
@@ -72,8 +71,9 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
     open(luaState);
 
     module(luaState, "vizdoom")[
-    //module(luaState)[
-        def("sleep", sleepLua),
+
+        /* Enums */
+        /*------------------------------------------------------------------------------------------------------------*/
 
         class_<int>("Mode")
             .enum_("Mode")[
@@ -147,6 +147,14 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
                 ENUM_VAL_2_LUA(RES_1600X1200),
 
                 ENUM_VAL_2_LUA(RES_1920X1080)
+            ],
+
+        class_<int>("AutomapMode")
+            .enum_("AutomapMode")[
+                ENUM_VAL_2_LUA(NORMAL),
+                ENUM_VAL_2_LUA(WHOLE),
+                ENUM_VAL_2_LUA(OBJECTS),
+                ENUM_VAL_2_LUA(OBJECTS_WITH_SIZE)
             ],
 
         class_<int>("Button")
@@ -271,115 +279,147 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
                 ENUM_VAL_2_LUA(PLAYER8_FRAGCOUNT)
             ],
 
-        class_<DoomGameLua>("DoomGame")
-            .def(constructor<>())
-            FUNC_2_LUA(DoomGameLua, init)
-            FUNC_2_LUA(DoomGameLua, loadConfig)
-            FUNC_2_LUA(DoomGameLua, close)
-            .def("newEpisode", newEpisode1)
-            .def("newEpisode", newEpisode2)
-            FUNC_2_LUA(DoomGameLua, replayEpisode)
-            FUNC_2_LUA(DoomGameLua, isEpisodeFinished)
-            FUNC_2_LUA(DoomGameLua, isNewEpisode)
-            FUNC_2_LUA(DoomGameLua, isPlayerDead)
-            FUNC_2_LUA(DoomGameLua, respawnPlayer)
-            FUNC_2_LUA(DoomGameLua, setAction)
-            .def("makeAction", makeAction1)
-            .def("makeAction", makeAction2)
-            .def("advanceAction", advanceAction1)
-            .def("advanceAction", advanceAction2)
-            .def("advanceAction", advanceAction3)
 
-            FUNC_2_LUA(DoomGameLua, getState)
-
-            FUNC_2_LUA(DoomGameLua, getGameVariable)
-
-            FUNC_2_LUA(DoomGameLua, getLivingReward)
-            FUNC_2_LUA(DoomGameLua, setLivingReward)
-
-            FUNC_2_LUA(DoomGameLua, getDeathPenalty)
-            FUNC_2_LUA(DoomGameLua, setDeathPenalty)
-
-            FUNC_2_LUA(DoomGameLua, getLastReward)
-            FUNC_2_LUA(DoomGameLua, getTotalReward)
-
-            FUNC_2_LUA(DoomGameLua, getLastAction)
-
-            FUNC_2_LUA(DoomGameLua, addAvailableGameVariable)
-            FUNC_2_LUA(DoomGameLua, clearAvailableGameVariables)
-            FUNC_2_LUA(DoomGameLua, getAvailableGameVariablesSize)
-
-            .def("addAvailableButton", addAvailableButton1)
-            .def("addAvailableButton", addAvailableButton2)
-
-            FUNC_2_LUA(DoomGameLua, clearAvailableButtons)
-            FUNC_2_LUA(DoomGameLua, getAvailableButtonsSize)
-            FUNC_2_LUA(DoomGameLua, setButtonMaxValue)
-            FUNC_2_LUA(DoomGameLua, getButtonMaxValue)
-
-            FUNC_2_LUA(DoomGameLua, addGameArgs)
-            FUNC_2_LUA(DoomGameLua, clearGameArgs)
-
-            FUNC_2_LUA(DoomGameLua, sendGameCommand)
-
-            FUNC_2_LUA(DoomGameLua, getMode)
-            FUNC_2_LUA(DoomGameLua, setMode)
-
-            FUNC_2_LUA(DoomGameLua, getTicrate)
-            FUNC_2_LUA(DoomGameLua, setTicrate)
-
-            FUNC_2_LUA(DoomGameLua, setViZDoomPath)
-            FUNC_2_LUA(DoomGameLua, setDoomGamePath)
-            FUNC_2_LUA(DoomGameLua, setDoomScenarioPath)
-            FUNC_2_LUA(DoomGameLua, setDoomMap)
-            FUNC_2_LUA(DoomGameLua, setDoomSkill)
-            FUNC_2_LUA(DoomGameLua, setDoomConfigPath)
-
-            FUNC_2_LUA(DoomGameLua, getSeed)
-            FUNC_2_LUA(DoomGameLua, setSeed)
-
-            FUNC_2_LUA(DoomGameLua, getEpisodeStartTime)
-            FUNC_2_LUA(DoomGameLua, setEpisodeStartTime)
-            FUNC_2_LUA(DoomGameLua, getEpisodeTimeout)
-            FUNC_2_LUA(DoomGameLua, setEpisodeTimeout)
-            FUNC_2_LUA(DoomGameLua, getEpisodeTime)
-
-            FUNC_2_LUA(DoomGameLua, setConsoleEnabled)
-            FUNC_2_LUA(DoomGameLua, setSoundEnabled)
-
-            FUNC_2_LUA(DoomGameLua, setScreenResolution)
-            FUNC_2_LUA(DoomGameLua, setScreenFormat)
-
-            FUNC_2_LUA(DoomGameLua, setDepthBufferEnabled)
-            FUNC_2_LUA(DoomGameLua, setLabelsBufferEnabled)
-            FUNC_2_LUA(DoomGameLua, setMapBufferEnabled)
-
-            FUNC_2_LUA(DoomGameLua, setRenderHud)
-            FUNC_2_LUA(DoomGameLua, setRenderWeapon)
-            FUNC_2_LUA(DoomGameLua, setRenderCrosshair)
-            FUNC_2_LUA(DoomGameLua, setRenderDecals)
-            FUNC_2_LUA(DoomGameLua, setRenderParticles)
-            FUNC_2_LUA(DoomGameLua, getScreenWidth)
-            FUNC_2_LUA(DoomGameLua, getScreenHeight)
-            FUNC_2_LUA(DoomGameLua, getScreenChannels)
-            FUNC_2_LUA(DoomGameLua, getScreenSize)
-            FUNC_2_LUA(DoomGameLua, getScreenPitch)
-            FUNC_2_LUA(DoomGameLua, getScreenFormat)
-            FUNC_2_LUA(DoomGameLua, setWindowVisible),
+        /* Structs */
+        /*------------------------------------------------------------------------------------------------------------*/
 
         class_<GameStateLua>("GameState")
             .def_readonly("number", &GameStateLua::number)
             .def_readonly("gameVariables", &GameStateLua::gameVariables)
             .def_readonly("screenBuffer", &GameStateLua::screenBuffer)
             .def_readonly("depthBuffer", &GameStateLua::depthBuffer)
-            .def_readonly("mapBuffer", &GameStateLua::mapBuffer)
             .def_readonly("labelsBuffer", &GameStateLua::labelsBuffer)
+            .def_readonly("automapBuffer", &GameStateLua::automapBuffer)
             .def_readonly("labels", &GameStateLua::labels),
 
         class_<Label>("Label")
             .def_readonly("objectId", &Label::objectId)
             .def_readonly("objectName", &Label::objectName)
-            .def_readonly("value", &Label::value)
+            .def_readonly("value", &Label::value),
+
+
+        /* DoomGame */
+        /*------------------------------------------------------------------------------------------------------------*/
+
+        class_<DoomGameLua>("DoomGame")
+            .def(constructor<>())
+            CLASS_FUNC_2_LUA(DoomGameLua, init)
+            CLASS_FUNC_2_LUA(DoomGameLua, loadConfig)
+            CLASS_FUNC_2_LUA(DoomGameLua, close)
+            .def("newEpisode", &DoomGameLua::newEpisode_)
+            .def("newEpisode", &DoomGameLua::newEpisode_str)
+            CLASS_FUNC_2_LUA(DoomGameLua, replayEpisode)
+            CLASS_FUNC_2_LUA(DoomGameLua, isEpisodeFinished)
+            CLASS_FUNC_2_LUA(DoomGameLua, isNewEpisode)
+            CLASS_FUNC_2_LUA(DoomGameLua, isPlayerDead)
+            CLASS_FUNC_2_LUA(DoomGameLua, respawnPlayer)
+            CLASS_FUNC_2_LUA(DoomGameLua, setAction)
+            .def("makeAction", &DoomGameLua::makeAction_obj)
+            .def("makeAction", &DoomGameLua::makeAction_obj_int)
+            .def("advanceAction", &DoomGameLua::advanceAction_)
+            .def("advanceAction", &DoomGameLua::advanceAction_int)
+            .def("advanceAction", &DoomGameLua::advanceAction_int_bool)
+            .def("advanceAction", &DoomGameLua::advanceAction_int_bool_bool)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, getState)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, getGameVariable)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, getLivingReward)
+            CLASS_FUNC_2_LUA(DoomGameLua, setLivingReward)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, getDeathPenalty)
+            CLASS_FUNC_2_LUA(DoomGameLua, setDeathPenalty)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, getLastReward)
+            CLASS_FUNC_2_LUA(DoomGameLua, getTotalReward)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, getLastAction)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, addAvailableGameVariable)
+            CLASS_FUNC_2_LUA(DoomGameLua, clearAvailableGameVariables)
+            CLASS_FUNC_2_LUA(DoomGameLua, getAvailableGameVariablesSize)
+
+            .def("addAvailableButton", &DoomGameLua::addAvailableButton_btn)
+            .def("addAvailableButton", &DoomGameLua::addAvailableButton_btn_int)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, clearAvailableButtons)
+            CLASS_FUNC_2_LUA(DoomGameLua, getAvailableButtonsSize)
+            CLASS_FUNC_2_LUA(DoomGameLua, setButtonMaxValue)
+            CLASS_FUNC_2_LUA(DoomGameLua, getButtonMaxValue)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, addGameArgs)
+            CLASS_FUNC_2_LUA(DoomGameLua, clearGameArgs)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, sendGameCommand)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, getMode)
+            CLASS_FUNC_2_LUA(DoomGameLua, setMode)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, getTicrate)
+            CLASS_FUNC_2_LUA(DoomGameLua, setTicrate)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, setViZDoomPath)
+            CLASS_FUNC_2_LUA(DoomGameLua, setDoomGamePath)
+            CLASS_FUNC_2_LUA(DoomGameLua, setDoomScenarioPath)
+            CLASS_FUNC_2_LUA(DoomGameLua, setDoomMap)
+            CLASS_FUNC_2_LUA(DoomGameLua, setDoomSkill)
+            CLASS_FUNC_2_LUA(DoomGameLua, setDoomConfigPath)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, getSeed)
+            CLASS_FUNC_2_LUA(DoomGameLua, setSeed)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, getEpisodeStartTime)
+            CLASS_FUNC_2_LUA(DoomGameLua, setEpisodeStartTime)
+            CLASS_FUNC_2_LUA(DoomGameLua, getEpisodeTimeout)
+            CLASS_FUNC_2_LUA(DoomGameLua, setEpisodeTimeout)
+            CLASS_FUNC_2_LUA(DoomGameLua, getEpisodeTime)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, setConsoleEnabled)
+            CLASS_FUNC_2_LUA(DoomGameLua, setSoundEnabled)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, setScreenResolution)
+            CLASS_FUNC_2_LUA(DoomGameLua, setScreenFormat)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, setDepthBufferEnabled)
+            CLASS_FUNC_2_LUA(DoomGameLua, setLabelsBufferEnabled)
+            CLASS_FUNC_2_LUA(DoomGameLua, setAutomapBufferEnabled)
+            CLASS_FUNC_2_LUA(DoomGameLua, setAutomapMode)
+            CLASS_FUNC_2_LUA(DoomGameLua, setAutomapRotate)
+            CLASS_FUNC_2_LUA(DoomGameLua, setAutomapRenderTextures)
+
+            CLASS_FUNC_2_LUA(DoomGameLua, setRenderHud)
+            CLASS_FUNC_2_LUA(DoomGameLua, setRenderMinimalHud)
+            CLASS_FUNC_2_LUA(DoomGameLua, setRenderWeapon)
+            CLASS_FUNC_2_LUA(DoomGameLua, setRenderCrosshair)
+            CLASS_FUNC_2_LUA(DoomGameLua, setRenderDecals)
+            CLASS_FUNC_2_LUA(DoomGameLua, setRenderParticles)
+            CLASS_FUNC_2_LUA(DoomGameLua, setRenderEffectsSprites)
+            CLASS_FUNC_2_LUA(DoomGameLua, setRenderMessages)
+            CLASS_FUNC_2_LUA(DoomGameLua, getScreenWidth)
+            CLASS_FUNC_2_LUA(DoomGameLua, getScreenHeight)
+            CLASS_FUNC_2_LUA(DoomGameLua, getScreenChannels)
+            CLASS_FUNC_2_LUA(DoomGameLua, getScreenSize)
+            CLASS_FUNC_2_LUA(DoomGameLua, getScreenPitch)
+            CLASS_FUNC_2_LUA(DoomGameLua, getScreenFormat)
+            CLASS_FUNC_2_LUA(DoomGameLua, setWindowVisible),
+
+
+        /* Utilities */
+        /*------------------------------------------------------------------------------------------------------------*/
+
+        def("sleep", sleepLua),
+        FUNC_2_LUA(doomTicsToMs),
+        FUNC_2_LUA(msToDoomTics),
+        FUNC_2_LUA(doomTicsToSec),
+        FUNC_2_LUA(secToDoomTics),
+        def("doomFixedToDouble", doomFixedToDouble_int),
+        def("doomFixedToDouble", doomFixedToDouble_double),
+        def("doomFixedToNumber", doomFixedToDouble_int),
+        def("doomFixedToNumber", doomFixedToDouble_double),
+        FUNC_2_LUA(isBinaryButton),
+        FUNC_2_LUA(isDeltaButton)
+
     ];
 
     return 1;
