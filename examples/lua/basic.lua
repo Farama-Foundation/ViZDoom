@@ -84,9 +84,6 @@ game:setLivingReward(-1)
 -- Sets ViZDoom mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR, PLAYER mode is default)
 game:setMode(vizdoom.Mode.PLAYER)
 
-game:addGameArgs("viz_debug 4")
-game:setConsoleEnabled(true)
-
 -- Initialize the game. Further configuration won't take any effect from now on.
 game:init()
 

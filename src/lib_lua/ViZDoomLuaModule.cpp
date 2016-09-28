@@ -36,10 +36,33 @@ extern "C" {
     #include "lauxlib.h"
 }
 
-#include <luabind/luabind.hpp>
+#include "luabind.hpp"
+#include "exception_handler.hpp"
 
 using namespace vizdoom;
 using namespace luabind;
+
+/* C++ code to expose ViZDoom library via Lua */
+
+
+/* Exceptions translation */
+/*--------------------------------------------------------------------------------------------------------------------*/
+
+
+#define EXCEPTION_TRANSLATE_TO_LUA(n) void translate ## n (lua_State* L, n const &e) \
+{ std::string error = std::string( #n ) + std::string(": ") + std::string(e.what()); \
+lua_pushstring(L, error.c_str()); }
+/*
+ * void translateExceptionName(lua_State* L, exceptionName const &e) { lua_pushstring(L, std::#n e.what()); }
+ */
+
+EXCEPTION_TRANSLATE_TO_LUA(FileDoesNotExistException)
+EXCEPTION_TRANSLATE_TO_LUA(MessageQueueException)
+EXCEPTION_TRANSLATE_TO_LUA(SharedMemoryException)
+EXCEPTION_TRANSLATE_TO_LUA(SignalException)
+EXCEPTION_TRANSLATE_TO_LUA(ViZDoomIsNotRunningException)
+EXCEPTION_TRANSLATE_TO_LUA(ViZDoomErrorException)
+EXCEPTION_TRANSLATE_TO_LUA(ViZDoomUnexpectedExitException)
 
 
 /* Overloaded functions */
@@ -69,6 +92,24 @@ void sleepLua(unsigned int time){
 extern "C" int luaopen_vizdoom(lua_State *luaState){
 
     open(luaState);
+
+
+    /* Exceptions */
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    #define EXCEPTION_LUA_HANDLER(n) register_exception_handler< n >(&translate ## n);
+    /*
+     * register_exception_handler< ExceptionName >(&translateExceptionName);
+     */
+
+    EXCEPTION_LUA_HANDLER(FileDoesNotExistException)
+    EXCEPTION_LUA_HANDLER(MessageQueueException)
+    EXCEPTION_LUA_HANDLER(SharedMemoryException)
+    EXCEPTION_LUA_HANDLER(SignalException)
+    EXCEPTION_LUA_HANDLER(ViZDoomIsNotRunningException)
+    EXCEPTION_LUA_HANDLER(ViZDoomErrorException)
+    EXCEPTION_LUA_HANDLER(ViZDoomUnexpectedExitException)
+            
 
     module(luaState, "vizdoom")[
 
