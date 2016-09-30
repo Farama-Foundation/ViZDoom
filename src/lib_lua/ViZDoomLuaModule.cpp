@@ -48,12 +48,13 @@ using namespace luabind;
 /* Exceptions translation */
 /*--------------------------------------------------------------------------------------------------------------------*/
 
-
-#define EXCEPTION_TRANSLATE_TO_LUA(n) void translate ## n (lua_State* L, n const &e) \
-{ std::string error = std::string( #n ) + std::string(": ") + std::string(e.what()); \
+#define EXCEPTION_TRANSLATE_TO_LUA(n) void translate ## n (lua_State* L, n const &e) { \
+std::string error = std::string( #n ) + std::string(": ") + std::string(e.what()); \
 lua_pushstring(L, error.c_str()); }
 /*
- * void translateExceptionName(lua_State* L, exceptionName const &e) { lua_pushstring(L, std::#n e.what()); }
+ * void translateExceptionName(lua_State* L, exceptionName const &e) {
+ * std::string error = std::string("exceptionName") + std::string(": ") + std::string(e.what());
+ * lua_pushstring(L, error.c_str()); }
  */
 
 EXCEPTION_TRANSLATE_TO_LUA(FileDoesNotExistException)
@@ -71,23 +72,13 @@ EXCEPTION_TRANSLATE_TO_LUA(ViZDoomUnexpectedExitException)
 double (*doomFixedToDouble_int)(int) = &doomFixedToDouble;
 double (*doomFixedToDouble_double)(double) = &doomFixedToDouble;
 
-
-#define ENUM_VAL_2_LUA(v) value( #v , v )
-/* value("VALUE", VALUE) */
-
-#define ENUM_CLASS_VAL_2_LUA(c, v) value( #v , c::v )
-/* value("VALUE", (int)class::VALUE) */
-
-#define FUNC_2_LUA(f) def( #f , f )
-/* def("function", function) */
-
-#define CLASS_FUNC_2_LUA(c, f) .def( #f , &c::f )
-/* .def("function", &class::function) */
-
-
 void sleepLua(unsigned int time){
     std::this_thread::sleep_for(std::chrono::milliseconds(time));
 }
+
+
+/* Module definition */
+/*--------------------------------------------------------------------------------------------------------------------*/
 
 extern "C" int luaopen_vizdoom(lua_State *luaState){
 
@@ -109,6 +100,19 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
     EXCEPTION_LUA_HANDLER(ViZDoomIsNotRunningException)
     EXCEPTION_LUA_HANDLER(ViZDoomErrorException)
     EXCEPTION_LUA_HANDLER(ViZDoomUnexpectedExitException)
+
+
+    #define ENUM_VAL_2_LUA(v) value( #v , v )
+    /* value("VALUE", VALUE) */
+
+    #define ENUM_CLASS_VAL_2_LUA(c, v) value( #v , c::v )
+    /* value("VALUE", (int)class::VALUE) */
+
+    #define FUNC_2_LUA(f) def( #f , f )
+    /* def("function", function) */
+
+    #define CLASS_FUNC_2_LUA(c, f) .def( #f , &c::f )
+    /* .def("function", &class::function) */
             
 
     module(luaState, "vizdoom")[
@@ -349,7 +353,8 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             CLASS_FUNC_2_LUA(DoomGameLua, close)
             .def("newEpisode", &DoomGameLua::newEpisode_)
             .def("newEpisode", &DoomGameLua::newEpisode_str)
-            CLASS_FUNC_2_LUA(DoomGameLua, replayEpisode)
+            .def("replayEpisode", &DoomGameLua::replayEpisode_str)
+            .def("replayEpisode", &DoomGameLua::replayEpisode_str_int)
             CLASS_FUNC_2_LUA(DoomGameLua, isEpisodeFinished)
             CLASS_FUNC_2_LUA(DoomGameLua, isNewEpisode)
             CLASS_FUNC_2_LUA(DoomGameLua, isPlayerDead)

@@ -76,6 +76,9 @@ namespace vizdoom {
         void addAvailableButton_btn(Button _btn) { this->addAvailableButton(_btn); }
         void addAvailableButton_btn_int(Button _btn, unsigned int _int) { this->addAvailableButton(_btn, _int); }
 
+        void replayEpisode_str(std::string _str) { this->replayEpisode(_str); }
+        void replayEpisode_str_int(std::string _str, unsigned int _int) { this->replayEpisode(_str, _int); }
+
     private:
         template<class T> static std::vector<T> lTableToVector(lb::object const& lTable);
         static lb::object dataToLTable(lua_State* luaState, int dims, int *shape, void * data);
