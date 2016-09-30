@@ -1,5 +1,5 @@
 package vizdoom;
-public class SharedMemoryException extends java.lan.RuntimeException {
+public class SharedMemoryException extends java.lang.RuntimeException {
     public SharedMemoryException(String message) {
         super(message);
     }
