@@ -183,60 +183,90 @@ R callObjMethod(JNIEnv *jEnv, jobject jObj, R(O::*func)(A1...), A2... args){
 
 // It feels so bad to use so many macros...
 
-// Functions declaration
+// JNI function name macros
 #define _JNI_FUNC_NAME(jrt, p, c, s) JNIEXPORT jrt JNICALL Java_ ## p ## _ ## c ## _ ## s
 #define JNI_FUNC_NAME(jrt, p, c, s) _JNI_FUNC_NAME(jrt, p, c, s)
 
-#define JNI_EXPORT_0_ARG(jrt, s) \
+// Select macros
+#define _CAT( a, b ) a ## b
+#define _SELECT( name, num ) _CAT( name ## _, num )
+
+#define _GET_COUNT( _1, _2, _3, _4, _5, _6, count, ... ) count
+#define _VA_SIZE( ... ) _GET_COUNT( __VA_ARGS__, 6, 5, 4, 3, 2, 1 )
+
+#define _VA_SELECT( name, ... ) _SELECT( name, _VA_SIZE(__VA_ARGS__) )(__VA_ARGS__)
+
+
+/* JNI_EXPORT(...) macro - generates declaration of JNI function */
+/*--------------------------------------------------------------------------------------------------------------------*/
+
+#define JNI_EXPORT(...) _VA_SELECT(JNI_EXPORT, __VA_ARGS__)
+
+#define JNI_EXPORT_2(jrt, s) \
 JNI_FUNC_NAME(jrt, JAVA_PACKAGE, JAVA_CLASS, s) (JNIEnv *jEnv, jobject jObj)
 
-#define JNI_EXPORT_1_ARG(jrt, s, ja1t) \
+#define JNI_EXPORT_3(jrt, s, ja1t) \
 JNI_FUNC_NAME(jrt, JAVA_PACKAGE, JAVA_CLASS, s) (JNIEnv *jEnv, jobject jObj, ja1t jarg1)
 
-#define JNI_EXPORT_2_ARG(jrt, s, ja1t, ja2t) \
+#define JNI_EXPORT_4(jrt, s, ja1t, ja2t) \
 JNI_FUNC_NAME(jrt, JAVA_PACKAGE, JAVA_CLASS, s) (JNIEnv *jEnv, jobject jObj, ja1t jarg1, ja2t jarg2)
 
-#define JNI_EXPORT_3_ARG(jrt, s, ja1t, ja2t, ja3t) \
+#define JNI_EXPORT_5(jrt, s, ja1t, ja2t, ja3t) \
 JNI_FUNC_NAME(jrt, JAVA_PACKAGE, JAVA_CLASS, s) (JNIEnv *jEnv, jobject jObj, ja1t jarg1, ja2t jarg2, ja3t jarg3)
 
-// Full functions
-#define JNI_METHOD_VOID_0_ARG(jrt, s, f) \
-JNI_EXPORT_0_ARG(jrt, s) { callObjMethod(jEnv, jObj, &CPP_CLASS::f); }
 
-#define JNI_METHOD_RETT_0_ARG(jrt, s, f) \
-JNI_EXPORT_0_ARG(jrt, s) { return castTo ## jrt(jEnv, callObjMethod(jEnv, jObj, &CPP_CLASS::f)); }
+/* JNI_METHOD(...) macro - generates definition of JNI function that call object method */
+/*--------------------------------------------------------------------------------------------------------------------*/
 
-#define JNI_METHOD_VOID_1_ARG(jrt, s, f, ja1t) \
-JNI_EXPORT_1_ARG(jrt, s, ja1t) { \
+#define JNI_METHOD(jrt, ...) JNI_METHOD_ ## jrt (jrt, __VA_ARGS__)
+#define JNI_METHOD_void(...) JNI_METHOD_VOID(__VA_ARGS__)
+#define JNI_METHOD_jboolean(...) JNI_METHOD_RETT(__VA_ARGS__)
+#define JNI_METHOD_jint(...) JNI_METHOD_RETT(__VA_ARGS__)
+#define JNI_METHOD_jdouble(...) JNI_METHOD_RETT(__VA_ARGS__)
+#define JNI_METHOD_jstring(...) JNI_METHOD_RETT(__VA_ARGS__)
+#define JNI_METHOD_jintArray(...) JNI_METHOD_RETT(__VA_ARGS__)
+#define JNI_METHOD_jobject(...) JNI_METHOD_RETT(__VA_ARGS__)
+
+#define JNI_METHOD_VOID(...) _VA_SELECT(JNI_METHOD_VOID, __VA_ARGS__)
+#define JNI_METHOD_RETT(...) _VA_SELECT(JNI_METHOD_RETT, __VA_ARGS__)
+
+#define JNI_METHOD_VOID_3(jrt, s, f) \
+JNI_EXPORT_2(jrt, s) { callObjMethod(jEnv, jObj, &CPP_CLASS::f); }
+
+#define JNI_METHOD_RETT_3(jrt, s, f) \
+JNI_EXPORT_2(jrt, s) { return castTo ## jrt(jEnv, callObjMethod(jEnv, jObj, &CPP_CLASS::f)); }
+
+#define JNI_METHOD_VOID_4(jrt, s, f, ja1t) \
+JNI_EXPORT_3(jrt, s, ja1t) { \
     auto arg1 = ja1t ## Cast(jEnv, jarg1); \
     callObjMethod(jEnv, jObj, &CPP_CLASS::f, arg1); }
 
-#define JNI_METHOD_RETT_1_ARG(jrt, s, f, ja1t) \
-JNI_EXPORT_1_ARG(jrt, s, ja1t) { \
+#define JNI_METHOD_RETT_4(jrt, s, f, ja1t) \
+JNI_EXPORT_3(jrt, s, ja1t) { \
     auto arg1 = ja1t ## Cast(jEnv, jarg1); \
     return castTo ## jrt(jEnv, callObjMethod(jEnv, jObj, &CPP_CLASS::f, arg1)); }
 
-#define JNI_METHOD_VOID_2_ARG(jrt, s, f, ja1t, ja2t) \
-JNI_EXPORT_2_ARG(jrt, s, ja1t, ja2t) { \
+#define JNI_METHOD_VOID_5(jrt, s, f, ja1t, ja2t) \
+JNI_EXPORT_4(jrt, s, ja1t, ja2t) { \
     auto arg1 = ja1t ## Cast(jEnv, jarg1); \
     auto arg2 = ja2t ## Cast(jEnv, jarg2); \
     callObjMethod(jEnv, jObj, &CPP_CLASS::f, arg1, arg2); }
 
-#define JNI_METHOD_RETT_2_ARG(jrt, s, f, ja1t, ja2t) \
-JNI_EXPORT_2_ARG(jrt, s, ja1t, ja2t) { \
+#define JNI_METHOD_RETT_5(jrt, s, f, ja1t, ja2t) \
+JNI_EXPORT_4(jrt, s, ja1t, ja2t) { \
     auto arg1 = ja1t ## Cast(jEnv, jarg1); \
     auto arg2 = ja2t ## Cast(jEnv, jarg2); \
     return castTo ## jrt(jEnv, callObjMethod(jEnv, jObj, &CPP_CLASS::f, arg1, arg2)); }
 
-#define JNI_METHOD_VOID_3_ARG(jrt, s, f, ja1t, ja2t, ja3t) \
-JNI_EXPORT_3_ARG(jrt, s, ja1t, ja2t, ja3t) { \
+#define JNI_METHOD_VOID_6(jrt, s, f, ja1t, ja2t, ja3t) \
+JNI_EXPORT_5(jrt, s, ja1t, ja2t, ja3t) { \
     auto arg1 = ja1t ## Cast(jEnv, jarg1); \
     auto arg2 = ja2t ## Cast(jEnv, jarg2); \
     auto arg3 = ja3t ## Cast(jEnv, jarg3); \
     callObjMethod(jEnv, jObj, &CPP_CLASS::f, arg1, arg2, arg3); }
 
-#define JNI_METHOD_RETT_3_ARG(jrt, s, f, ja1t, ja2t, ja3t) \
-JNI_EXPORT_3_ARG(jrt, s, ja1t, ja2t, ja3t) { \
+#define JNI_METHOD_RETT_6(jrt, s, f, ja1t, ja2t, ja3t) \
+JNI_EXPORT_5(jrt, s, ja1t, ja2t, ja3t) { \
     auto arg1 = ja1t ## Cast(jEnv, jarg1); \
     auto arg2 = ja2t ## Cast(jEnv, jarg2); \
     auto arg3 = ja3t ## Cast(jEnv, jarg3); \
