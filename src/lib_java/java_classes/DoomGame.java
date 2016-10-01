@@ -11,7 +11,7 @@ public class DoomGame{
 
     public long internalPtr = 0;
     public DoomGame(){
-        _DoomGame();
+        this.DoomGameNative();
     }
 
     public native int doomTics2Ms(double tics, int ticrate);
@@ -22,7 +22,7 @@ public class DoomGame{
     public native boolean isBinaryButton(Button button);
     public native boolean isDeltaButton(Button button);
 
-    private native void _DoomGame();
+    private native void DoomGameNative();
     public native boolean loadConfig(String file);
 
     public native boolean init();
@@ -70,10 +70,10 @@ public class DoomGame{
 
     public native void sendGameCommand(String cmd);
 
-    private native int _getMode();
+    private native int getModeNative();
 
     public Mode getMode(){
-        return Mode.values()[_getMode()];
+        return Mode.values()[this.getModeNative()];
     }
 
     public native void setMode(Mode mode);
@@ -112,6 +112,7 @@ public class DoomGame{
     public native void setScreenResolution(ScreenResolution resolution);
     public native void setScreenFormat(ScreenFormat format);
     public native void setRenderHud(boolean hud);
+    public native void setRenderMinimalHud(boolean minimalHud);
     public native void setRenderWeapon(boolean weapon);
     public native void setRenderCrosshair(boolean crosshair);
     public native void setRenderDecals(boolean decals);
@@ -127,10 +128,10 @@ public class DoomGame{
     public native int getScreenChannels();
     public native int getScreenPitch();
     public native int getScreenSize();
-    private native int _getScreenFormat();
+    private native int getScreenFormatNative();
 
     public ScreenFormat getScreenFormat(){
-        return ScreenFormat.values()[_getScreenFormat()];
+        return ScreenFormat.values()[this.getScreenFormatNative()];
     }
 
 }
