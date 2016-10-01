@@ -344,6 +344,7 @@ if(BUILD_JAVA)
 						${JNI_INCLUDE_DIR})
 
 	set(VIZDOOM_JAVA_SOURCES
+		${VIZDOOM_JAVA_SRC_DIR}/ViZDoomJava.h
 		${VIZDOOM_JAVA_SRC_DIR}/ViZDoomGameJava.h
 		${VIZDOOM_JAVA_SRC_DIR}/ViZDoomGameJava.cpp)
 
@@ -366,6 +367,7 @@ if(BUILD_JAVA)
 		PROJECT_LABEL "Java ViZDoom binding")
 
 	add_jar(libvizdoom_java_classes
+		${VIZDOOM_JAVA_CLASSES_DIR}/enums/AutomapMode.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/enums/Button.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/enums/GameVariable.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/enums/Mode.java
@@ -374,12 +376,12 @@ if(BUILD_JAVA)
 		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/FileDoesNotExistException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/MessageQueueException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/SharedMemoryException.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/SignalException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomErrorException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomIsNotRunningException.java
-		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomSignalException.java
-		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomMismatchedVersionException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomUnexpectedExitException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/GameState.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/Label.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/DoomGame.java
 		OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/java
 		OUTPUT_NAME vizdoom
