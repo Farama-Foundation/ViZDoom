@@ -1,3 +1,8 @@
 # Exceptions
-
-TODO
+* FileDoesNotExistException
+* MessageQueueException
+* SharedMemoryException
+* SignalException
+* ViZDoomErrorException
+* ViZDoomIsNotRunningException
+* ViZDoomUnexpectedExitException
