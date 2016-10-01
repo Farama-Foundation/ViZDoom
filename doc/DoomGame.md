@@ -1,6 +1,6 @@
 # DoomGame
 
-[Flow control methods](#flow)
+##[Flow control methods](#flow)
 * [init](#init)
 * [close](#close)
 * [newEpisode](#newEpisode)
@@ -18,24 +18,24 @@
 * [getLastAction](#getLastAction)
 * [getEpisodeTime](#getEpisodeTime)
 
-[Buttons settings methods](#buttons)
+##[Buttons settings methods](#buttons)
 * [addAvailableButton](#addAvailableButton)
 * [clearAvailableButtons](#clearAvailableButtons)
 * [getAvailableButtonsSize](#getAvailableButtonsSize)
 * [setButtonMaxValue](#setButtonMaxValue)
 * [getButtonMaxValue](#getButtonMaxValue)
 
-[GameVariables methods](#vars)
+##[GameVariables methods](#vars)
 * [addAvailableGameVariable](#addAvailableGameVariable)
 * [clearAvailableGameVariables](#clearAvailableGameVariables)
 * [getAvailableGameVariablesSize](#getAvailableGameVariablesSize)
 * [getGameVariable](#getGameVariable)
 
-[Game Arguments methods](#args)
+##[Game Arguments methods](#args)
 * [addGameArgs](#addGameArgs)
 * [clearGameArgs](#clearGameArgs)
 
-[Rewards methods](#rewards)
+##[Rewards methods](#rewards)
 * [getLivingReward](#getLivingReward)
 * [setLivingReward](#setLivingReward)
 * [getDeathPenalty](#getDeathPenalty)
@@ -43,7 +43,7 @@
 * [getLastReward](#getLastReward)
 * [getTotalReward](#getTotalReward)
 
-[General game setting methods](#settings)
+##[General game setting methods](#settings)
 * [loadConfig](#loadConfig)
 * [getMode](#getMode)
 * [setMode](#setMode)
@@ -62,7 +62,7 @@
 * [getEpisodeTimeout](#getEpisodeTimeout)
 * [setEpisodeTimeout](#setEpisodeTimeout)
 
-[Output/rendering setting methods](#rendering)
+##[Output/rendering setting methods](#rendering)
 * [setScreenResolution](#setScreenResolution)
 * [getScreenFormat](#getScreenFormat)
 * [setScreenFormat](#setScreenFormat)
@@ -161,9 +161,8 @@ After calling this method, first state from replay will be available.
 All rewards, variables and state are available during replaying episode.
 
 See also:
-- examples/python/record_episodes.py,
-- examples/python/record_multiplayer.py.
-
+- [examples/python/record_episodes.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/record_episodes.py),
+- [examples/python/record_multiplayer.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/record_multiplayer.py).
 
 ---
 ### <a name="isRunning"></a> `isRunning`
@@ -187,7 +186,7 @@ Checks if the ViZDoom game instance is running.
 | Python | `void set_action(list actions)`                   |
 
 Sets the player's action for the next tics.
-Each value corresponds to a button specified with `addAvailableButton` method
+Each value corresponds to a button specified with [`addAvailableButton`](#addAvailableButton) method
 or in configuration file (in order of appearance).
 
 
@@ -215,7 +214,7 @@ will be rendered after last processed tic.
 | Java   | `double makeAction(int[] actions, unsigned int tics = 1);`                  |
 | Python | `double make_action(actions, tics = 1);`                                    |
 
-Method combining usability of `setAction`, `advanceAction` and `getLastReward`.
+Method combining usability of [`setAction`](#setAction), [`advanceAction`](#advanceAction) and [`getLastReward`](#getLastReward).
 Sets the player's action for the next tics, processes a specified number of tics,
 updates the state and calculates a new reward, which is returned.
 
@@ -242,7 +241,7 @@ Returns true if the current episode is in the initial state - the first state, n
 | Python | `bool is_episode_finished()`  |
 
 Returns true if the current episode is in the terminal state (is finished).
-`makeAction` and `advanceAction` methods will take no effect after this point (unless `newEpisode` method is called).
+[`makeAction`](#makeAction) and [`advanceAction`](#advanceAction) methods will take no effect after this point (unless [`newEpisode`](#newEpisode) method is called).
 
 
 ---
@@ -256,7 +255,7 @@ Returns true if the current episode is in the terminal state (is finished).
 
 Returns true if the player is dead.
 In singleplayer player death is equivalent to the end of the episode.
-In multiplayer when player is dead `respawnPlayer` can be called.
+In multiplayer when player is dead [`respawnPlayer`](#respawnPlayer) can be called.
 
 
 ---
@@ -298,12 +297,11 @@ See also: [ZDoom Wiki](http://zdoom.org/wiki/Console)
 
 Changed in 1.1
 
-Returns `GameState` object with the current game state.
+Returns [`GameState`](Types.md#gamestate) object with the current game state.
 If game is not running or episode is finished `nullptr/null/None` will be returned.
 
 See also: 
-
-- Types: `GameState`
+- [`Types: GameState`](Types.md#gamestate)
 
 
 ---
@@ -316,7 +314,7 @@ See also:
 | Python | `list get_last_action()`           |
 
 Returns the last action performed.
-Each value corresponds to a button added with `addAvailableButton` (in order of appearance).
+Each value corresponds to a button added with `[addAvailableButton](#addAvailableButton)` (in order of appearance).
 Most useful in `SPECTATOR` mode.
 
 
@@ -350,9 +348,9 @@ If the given button has already been added, it will not be added again but the m
 Config key: `availableButtons/available_buttons` (list)
 
 See also:
-- Types: `Button`
-- setButtonMaxValue
-- ConfigFile: List
+- [`Types: Button`](Types.md#button)
+- [`setButtonMaxValue`](#setButtonMaxValue)
+- [`ConfigFile: List`](ConfigFile.md#list)
 
 
 ---
@@ -366,6 +364,8 @@ See also:
 
 Clears all available `Buttons` added so far.
 
+See also:
+- [`Types: Button`](Types.md#button)
 
 ---
 ### <a name="getAvailableButtonsSize"></a> `getAvailableButtonsSize`
@@ -378,6 +378,8 @@ Clears all available `Buttons` added so far.
 
 Returns the number of available `Buttons`.
 
+See also:
+- [`Types: Button`](Types.md#button)
 
 ---
 ### <a name="setButtonMaxValue"></a> `setButtonMaxValue`
@@ -393,6 +395,8 @@ Setting maximum value equal to 0 results in no constraint at all (infinity).
 This method makes sense only for delta buttons.
 Constraints limit applies in all Modes.
 
+See also:
+- [`Types: Button`](Types.md#button)
 
 ---
 ### <a name="getButtonMaxValue"></a> `getButtonMaxValue`
@@ -404,6 +408,9 @@ Constraints limit applies in all Modes.
 | Python | `int get_button_max_value(Button button)`       |
 
 Returns the maximum allowed, absolute value for the specified button.
+
+See also:
+- [`Types: Button`](Types.md#button)
 
 
 ## <a name="vars"></a> GameVariables methods
@@ -418,14 +425,14 @@ Returns the maximum allowed, absolute value for the specified button.
 | Java   | `void addAvailableGameVariable(GameVariable variable)`    |
 | Python | `void add_available_game_variable(GameVariable variable)` |
 
-Adds the specified `GameVariable` to the list of game variables (e.g. `HEALTH`, `AMMO1`, `ATTACK_READY`)
-that are included in the `GameState` returned by `getState` method.
+Adds the specified [`GameVariable`](Types.md#gamevariable) to the list of game variables (e.g. `HEALTH`, `AMMO1`, `ATTACK_READY`)
+that are included in the [`GameState`](Types.md#gamestate) returned by `getState` method.
 
 Config key: `availableGameVariables/available_game_variables` (list)
 
-See also: 
-- Types: `GameVariable`
-- ConfigFile: List
+See also:
+- [`Types: GameVariable`](Types.md#gamevariable)
+- [`ConfigFile: List`](ConfigFile.md#list)
 
 ---
 ### <a name="clearAvailableGameVariables"></a> `clearAvailableGameVariables`
@@ -436,8 +443,11 @@ See also:
 | Java   | `void clearAvailableGameVariables()`    |
 | Python | `void clear_available_game_variables()` |
 
-Clears the list of available `GameVariables` that are included in the GameState returned by `getState` method.
+Clears the list of available `GameVariables` that are included in the GameState returned by [`getState`](#getState) method.
 
+See also:
+- [`Types: GameVariable`](Types.md#gamevariable)
+- [`ConfigFile: List`](ConfigFile.md#list)
 
 ---
 ### <a name="getAvailableGameVariablesSize"></a> `getAvailableGameVariablesSize`
@@ -450,6 +460,9 @@ Clears the list of available `GameVariables` that are included in the GameState 
 
 Returns the number of available `GameVariables`.
 
+See also:
+- [`Types: GameVariable`](Types.md#gamevariable)
+- [`ConfigFile: List`](ConfigFile.md#list)
 
 ---
 ### <a name="getGameVariable"></a> `getGameVariable`
@@ -464,8 +477,8 @@ Returns the current value of the specified game variable (`HEALTH`, `AMMO1` etc.
 The specified game variable does not need to be among available game variables (included in the state).
 It could be used for e.g. shaping. Returns 0 in case of not finding given `GameVariable`.
 
-See also: 
-- Types: `GameVariable`
+See also:
+- [`Types: GameVariable`](Types.md#gamevariable)
 
 
 ## <a name="args"></a> Game Arguments methods
@@ -484,8 +497,8 @@ Adds a custom argument that will be passed to ViZDoom process during initializat
 Config key: `gameArgs/game_args`
 
 See also:
-- ZDoom Wiki: http://zdoom.org/wiki/Command_line_parameters
-- ZDoom Wiki: http://zdoom.org/wiki/CVARS
+- [ZDoom Wiki on command line parameters](http://zdoom.org/wiki/Command_line_parameters)
+- [ZDoom Wiki on CVARS](http://zdoom.org/wiki/CVARS)
 
 
 ---
@@ -599,6 +612,8 @@ Overwriting does not involve resetting to default values, thus only overlapping 
 The method returns true if the whole configuration file was correctly read and applied,
 false if file was contained errors.
 
+See also:
+- [ConfigFile](ConfigFile.md)
 
 ---
 ### <a name="getMode"></a> `getMode`
@@ -627,8 +642,8 @@ Default value: `PLAYER`.
 
 Config key: `mode`
 
-See also: 
-- Types: `Mode`
+See also:
+- [`Types: Mode`](Types.md#mode)
 
 
 ---
@@ -663,7 +678,7 @@ Default value: 35 (default Doom ticrate).
 Config key: `ticrate`
 
 See also:
-- exmaples/python/ticrate.py
+- [exmaples/python/ticrate.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/ticrate.py)
 
 
 ---
@@ -769,7 +784,7 @@ The file is responsible for configuration of Doom engine itself.
 If it doesn't exist, it will be created after vizdoom executable is run.
 This method is not needed for most of the tasks and is added for convenience of users with hacking tendencies.
 
-Default value: "", if leave empty "_vizdoom.ini" will be used.
+Default value: "", if left empty "_vizdoom.ini" will be used.
 
 Config key: `DoomConfigPath/doom_config_path`
 
@@ -801,8 +816,9 @@ Default value: randomized in constructor
 
 Config key: `seed`
 
-See also: 
-- examples/python/seed.py
+See also:
+- [examples/python/seed.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/seed.py)
+
 
 
 ---
@@ -880,8 +896,9 @@ Default value: `RES_320X240`
 
 Config key: `screenResolution/screen_resolution`
 
-See also: 
-- Types: `ScreenResolution`
+
+See also:
+- [`Types: ScreenResolution`](Types.md#screenresolution)
 
 
 ---
@@ -914,7 +931,7 @@ Default value: `CRCGCB`
 Config key: `screenFormat/screen_format`
 
 See also: 
-- Types: `ScreenFormat`
+- [`Types: ScreenFormat`](Types.md#screenformat)
 
 
 ---
@@ -949,9 +966,8 @@ Default value: false
 Config key: `depthBufferEnabled/depth_buffer_enabled`
 
 See also: 
-- Types: `GameState`
-- examples/python/buffers.py
-
+- [`Types: GameState`](Types.md#gamestate)
+- [examples/python/buffers.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/buffers.py),
 
 ---
 ### <a name="isLabelsBufferEnabled"></a> `isLabelsBufferEnabled`
@@ -985,10 +1001,11 @@ Default value: false
 Config key: `labelsBufferEnabled/labels_buffer_enabled`
 
 See also: 
-- Types: `Label`
-- Types: `GameState`
-- examples/python/labels.py
-- examples/python/buffers.py
+- [`Types: Label`](Types.md#label)
+- [`Types: GameState`](Types.md#gamestate)
+- [examples/python/labels.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/labels.py),
+- [examples/python/buffers.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/buffers.py),
+
 
 
 ---
@@ -1023,8 +1040,8 @@ Default value: false
 Config key: `automapBufferEnabled/automap_buffer_enabled`
 
 See also: 
-- Types: `GameState`
-- examples/python/buffers.py
+- [`Types: GameState`](Types.md#gamestate)
+- [examples/python/buffers.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/buffers.py),
 
 
 ---
@@ -1045,7 +1062,7 @@ Default value: `NORMAL`
 Config key: `automapMode/set_automap_mode`
 
 See also:
-- Types: `AutomapMode`
+- [`Types: AutomapMode`](Types.md#automapmode)
 
 
 ---
@@ -1063,7 +1080,7 @@ Determine if the automap will be rotating with player, if false, north always wi
 
 Default value: false
 
-Config key: `automapRotate/render_hud`
+Config key: `automapRotate/automap_rotate`
 
 
 ---

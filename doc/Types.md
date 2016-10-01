@@ -1,5 +1,18 @@
 # Types
 
+* [Label](#label)
+* [GameState](#gamestate)
+* [Enums](#enums)
+	* [Mode](#mode)
+	* [ScreenFormat](#screenformat)
+ 	* [ScreenResolution](#screenresolution)
+ 	* [AutomapMode](#automapmode)
+ 	* [GameVariable](#gamevariable)
+ 	* [Button](#button)
+ 		* [binary buttons](#binarybuttons)
+ 		* [delta buttons](#deltabuttons)
+
+
 ## C++ only
 
 - `Buffer (std::vector<uint8_t>)`
@@ -10,7 +23,7 @@
 ## Structures
 
 ---
-### `Label`
+### <a name="label"></a> `Label`
 (`C++ type / Lua type / Java type / Python type` **name**)
 
 - `unsigned int / number / unsigned int / int` **objectId / object_id**
@@ -19,7 +32,7 @@
 
 
 ---
-### `GameState`
+### <a name="gamestate"></a> `GameState`
 (`C++ type / Lua type / Java type / Python type` **name**)
 
 - `unsigned int / number / unsigned int / int` **number**
@@ -31,10 +44,10 @@
 - `std::vector<Label> / table / Label[] / list` **labels**
 
 
-## Enums
+## <a name="enums"></a> Enums
 
 ---
-### `Mode`
+### <a name="mode"></a> `Mode`
 
 - **PLAYER** - synchronous player mode
 - **SPECTATOR** - synchronous spectator mode
@@ -43,7 +56,7 @@
 
 
 ---
-### `ScreenFormat`
+### <a name="screenformat"></a>`ScreenFormat`
 
 - **CRCGCB**    - 3 channels of 8-bit values in RGB order
 - **RGB24**     - channel of RGB values stored in 24 bits, where R value is stored in the oldest 8 bits
@@ -58,7 +71,7 @@
 
 
 ---
-### `ScreenResolution`
+### <a name="screenresolution"></a>screenresolution `ScreenResolution`
 
 - **RES_160X120** (4:3)
 - **RES_200X125** (16:10)
@@ -99,7 +112,7 @@
 
 
 ---
-### `AutomapMode`
+### <a name="automapmode"></a> `AutomapMode`
 - **NORMAL**    - Only level architecture the player has seen is shown.
 - **WHOLE**     - All architecture is shown, regardless of whether or not the player has seen it.
 - **OBJECTS**   - In addition to the previous, shows all things in the map as arrows pointing in the direction they are facing.
@@ -107,7 +120,7 @@
 
 
 ---
-### `GameVariable`
+### <a name="gamevariable"></a> `GameVariable`
 
 #### Defined variables
 - **KILLCOUNT**
@@ -137,13 +150,13 @@ global int 0 is reserved for reward and is always threaded as Doom's fixed point
 Other from 1 to 60 (global int 1-60) can be access as USER1 - USER60 GameVariables.
 
 See also:
-- ZDoom Wiki: http://zdoom.org/wiki/ACS
-- Types: `doomFixedToDouble`
+- [ZDoom Wiki](http://zdoom.org/wiki/ACS)
+- [`Utilities: doomFixedToDouble`](Utilities.md#doomFixedToDouble)
 
 ---
-### `Button`
+### <a name="button"></a> `Button`
 
-#### Binary buttons
+#### <a name="binarybuttons"></a> Binary buttons
 
 Binary buttons have only 2 states "not pressed" if value 0 and "pressed" if value greater then 0.
 
@@ -186,7 +199,7 @@ Binary buttons have only 2 states "not pressed" if value 0 and "pressed" if valu
 - **SELECT_PREV_ITEM**
 - **DROP_SELECTED_ITEM**
 
-#### Delta buttons
+#### <a name="deltabuttons"></a> Delta buttons
 
 Buttons whose value defines the speed of movement. 
 A positive value indicates movement in the first specified direction and a negative value in the second direction. 
