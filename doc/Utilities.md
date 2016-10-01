@@ -2,8 +2,16 @@
 
 In Java utilities functions are static methods in DoomGame class.
 
+* [doomTicsToMs](#doomTicsToMs)
+* [msToDoomTics](#msToDoomTics)
+* [doomTicsToSec](#doomTicsToSec)
+* [secToDoomTics](#secToDoomTics)
+* [doomFixedToDouble](#doomFixedToDouble)
+* [isBinaryButton](#isBinaryButton)
+* [isDeltaButton](#isDeltaButton)
+
 ---
-### `doomTicsToMs`
+### <a name="doomTicsToMs"></a> `doomTicsToMs`
 
 | C++    | `double doomTicsToMs(double tics, unsigned int ticrate = 35)` |
 | :--    | :--                                                           |
@@ -17,7 +25,7 @@ Calculates how many tics will be made during given number of milliseconds.
 
 
 ---
-### `msToDoomTics`
+### <a name="msToDoomTics"></a>`msToDoomTics`
 
 | C++    | `double msToDoomTics(double ms, unsigned int ticrate = 35)` |
 | :--    | :--                                                         |
@@ -31,7 +39,7 @@ Calculates the number of milliseconds that will pass during specified number of 
 
 
 ---
-### `doomTicsToSec`
+### <a name="doomTicsToSec"></a>`doomTicsToSec`
 
 | C++    | `double doomTicsToSec(double tics, unsigned int ticrate = 35)` |
 | :--    | :--                                                            |
@@ -45,7 +53,7 @@ Calculates how many tics will be made during given number of seconds.
 
 
 ---
-### `secToDoomTics`
+### <a name="secToDoomTics"></a>`secToDoomTics`
 
 | C++    | `double secToDoomTics(double sec, unsigned int ticrate = 35)` |
 | :--    | :--                                                           |
@@ -59,7 +67,7 @@ Calculates the number of seconds that will pass during specified number of tics.
 
 
 ---
-### `doomFixedToDouble`
+### <a name="doomFixedToDouble"></a>`doomFixedToDouble`
 
 | C++    | `double doomFixedToDouble(int / double doomFixed)`  |
 | :--    | :--                                                 |
@@ -80,7 +88,7 @@ Aliases (added in 1.1):
 
 
 ---
-### `isBinaryButton`
+### <a name="isBinaryButton"></a>`isBinaryButton`
 
 | C++    | `bool isBinaryButton(Button button)`    |
 | :--    | :--                                     |
@@ -92,7 +100,7 @@ Returns true if button is binary button.
 
 
 ---
-### `isDeltaButton`
+### <a name="isDeltaButton"></a>`isDeltaButton`
 
 | C++    | `bool isDeltaButton(Button button)`    |
 | :--    | :--                                    |
