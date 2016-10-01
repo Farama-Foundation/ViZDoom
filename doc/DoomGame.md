@@ -1,6 +1,6 @@
 # DoomGame
 
-[Flow control methods](#flow)
+##[Flow control methods](#flow)
 * [init](#init)
 * [close](#close)
 * [newEpisode](#newEpisode)
@@ -18,24 +18,24 @@
 * [getLastAction](#getLastAction)
 * [getEpisodeTime](#getEpisodeTime)
 
-[Buttons settings methods](#buttons)
+##[Buttons settings methods](#buttons)
 * [addAvailableButton](#addAvailableButton)
 * [clearAvailableButtons](#clearAvailableButtons)
 * [getAvailableButtonsSize](#getAvailableButtonsSize)
 * [setButtonMaxValue](#setButtonMaxValue)
 * [getButtonMaxValue](#getButtonMaxValue)
 
-[GameVariables methods](#vars)
+##[GameVariables methods](#vars)
 * [addAvailableGameVariable](#addAvailableGameVariable)
 * [clearAvailableGameVariables](#clearAvailableGameVariables)
 * [getAvailableGameVariablesSize](#getAvailableGameVariablesSize)
 * [getGameVariable](#getGameVariable)
 
-[Game Arguments methods](#args)
+##[Game Arguments methods](#args)
 * [addGameArgs](#addGameArgs)
 * [clearGameArgs](#clearGameArgs)
 
-[Rewards methods](#rewards)
+##[Rewards methods](#rewards)
 * [getLivingReward](#getLivingReward)
 * [setLivingReward](#setLivingReward)
 * [getDeathPenalty](#getDeathPenalty)
@@ -43,7 +43,7 @@
 * [getLastReward](#getLastReward)
 * [getTotalReward](#getTotalReward)
 
-[General game setting methods](#settings)
+##[General game setting methods](#settings)
 * [loadConfig](#loadConfig)
 * [getMode](#getMode)
 * [setMode](#setMode)
@@ -62,7 +62,7 @@
 * [getEpisodeTimeout](#getEpisodeTimeout)
 * [setEpisodeTimeout](#setEpisodeTimeout)
 
-[Output/rendering setting methods](#rendering)
+##[Output/rendering setting methods](#rendering)
 * [setScreenResolution](#setScreenResolution)
 * [getScreenFormat](#getScreenFormat)
 * [setScreenFormat](#setScreenFormat)
