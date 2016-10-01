@@ -151,7 +151,7 @@ Other from 1 to 60 (global int 1-60) can be access as USER1 - USER60 GameVariabl
 
 See also:
 - [ZDoom Wiki](http://zdoom.org/wiki/ACS)
-- see: `doomFixedToDouble`
+- [`Utilities: doomFixedToDouble`](Utilities.md#doomFixedToDouble)
 
 ---
 ### <a name="button"></a> `Button`
