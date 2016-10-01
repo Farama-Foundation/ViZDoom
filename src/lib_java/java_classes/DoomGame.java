@@ -109,6 +109,19 @@ public class DoomGame{
 
     public native int getEpisodeTime();
 
+    public native boolean isDepthBufferEnabled();
+    public native void setDepthBufferEnabled(boolean depthBuffer);
+
+    public native boolean isLabelsBufferEnabled();
+    public native void setLabelsBufferEnabled(boolean labelsBuffer);
+
+    public native boolean isAutomapBufferEnabled();
+    public native void setAutomapBufferEnabled(boolean automapBuffer);
+
+    public native void setAutomapMode(AutomapMode mode);
+    public native void setAutomapRotate(boolean rotate);
+    public native void setAutomapRenderTextures(boolean textures);
+
     public native void setScreenResolution(ScreenResolution resolution);
     public native void setScreenFormat(ScreenFormat format);
     public native void setRenderHud(boolean hud);
