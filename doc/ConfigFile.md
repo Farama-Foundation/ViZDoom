@@ -2,8 +2,6 @@
 
 TODO
 
-## Format
-
-### Appending values
-
-### List of values
+## <a name="format"></a> Format
+### <a name="append"></a> Appending values
+### <a name="list"></a> List of values
