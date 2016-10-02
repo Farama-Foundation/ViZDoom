@@ -25,7 +25,7 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 - [x] Time scaling in async mode,
 - [x] Episodes recording.
 
-Java binding is out of date at the moment.
+#### **Python and Java bindings are up to date.**
 
 ## Cite as
 
