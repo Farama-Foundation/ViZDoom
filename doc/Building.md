@@ -1,7 +1,6 @@
 # Building
 
 TODO:
-- add apt-get command to get all dependencies
 - commands for Python 3, Lua JIT, Lua 5.2
 
 ## Linux
@@ -17,6 +16,21 @@ TODO:
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
+To get all dependencies (except JDK and Luabind) on Ubuntu execute the following commands in the shell (requires root access):
+```bash
+# ZDoom dependencies
+apt-get install build-essential zlib1g-dev libsdl2-dev libjpeg-dev \
+nasm tar libbz2-dev libgtk2.0-dev cmake git libfluidsynth-dev libgme-dev \
+libopenal-dev timidity libwildmidi-dev 
+
+# Boost libraries
+apt-get install libboost-dev-all 
+
+# python2 and python3 bindings dependencies
+apt-get install python-pip python3-pip 
+pip install numpy #just for python2 binding
+pip3 install numpy #just for python3 binding
+```
 ### Compiling
 In ViZDoom's root directory:
 ```bash
