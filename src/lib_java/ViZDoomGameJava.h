@@ -20,10 +20,10 @@
  THE SOFTWARE.
 */
 
-#include "ViZDoomJava.h"
-
 #ifndef __VIZDOOM_GAME_JAVA_H__
 #define __VIZDOOM_GAME_JAVA_H__
+
+#include "ViZDoomJava.h"
 
 namespace vizdoom {
 
