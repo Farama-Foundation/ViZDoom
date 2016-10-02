@@ -128,7 +128,7 @@ Game can be initialized again after being closed.
 ### <a name="newEpisode"></a> `newEpisode`
 
 | C++    | `void newEpisode(std::string recordFilePath = "")` |
-| :--    | :--                                          |
+| :--    | :--                                                |
 | Lua    | `void newEpisode(string recordFilePath = "")`      |
 | Java   | `void newEpisode(String recordFilePath = "")`      |
 | Python | `void new_episode(str recordFilePath = "")`        |
@@ -149,7 +149,7 @@ Then the rest of the players must also call this method to start a new episode.
 | C++    | `void replayEpisode(std::string filePath, unsigned int player = 0)` |
 | :--    | :--                                                                 |
 | Lua    | `void replayEpisode(string filePath, number player = 0)`            |
-| Java   | `void replayEpisode(String filePath, unsigned int player = 0)`      |
+| Java   | `void replayEpisode(String filePath, int player = 0)`               |
 | Python | `void replay_episode(str filePath, int player = 0)`                 |
 
 Added in 1.1
@@ -196,7 +196,7 @@ or in configuration file (in order of appearance).
 | C++    | `void advanceAction(unsigned int tics = 1, bool updateState = true, bool renderOnly = false)`       |
 | :--    | :--                                                                                                 |
 | Lua    | `void advanceAction(number tics = 1, boolean updateState = true, boolean renderOnly = false)`       |
-| Java   | `void advanceAction(unsigned int tics = 1, boolean updateState = true, boolean renderOnly = false)` |
+| Java   | `void advanceAction(int tics = 1, boolean updateState = true, boolean renderOnly = false)`          |
 | Python | `void advance_action(int tics = 1, bool updateState = True, bool renderOnly = False)`               |
 
 Processes a specified number of tics. If `updateState` is set the state will be updated after last processed tic
@@ -211,8 +211,8 @@ will be rendered after last processed tic.
 | C++    | `double makeAction(std::vector<int> const &actions, unsigned int tics = 1)` |
 | :--    | :--                                                                         |
 | Lua    | `number makeAction(table actions, number tics = 1);`                        |
-| Java   | `double makeAction(int[] actions, unsigned int tics = 1);`                  |
-| Python | `double make_action(actions, tics = 1);`                                    |
+| Java   | `double makeAction(int[] actions, int tics = 1);`                           |
+| Python | `float make_action(list actions, int tics = 1);`                            |
 
 Method combining usability of [`setAction`](#setAction), [`advanceAction`](#advanceAction) and [`getLastReward`](#getLastReward).
 Sets the player's action for the next tics, processes a specified number of tics,
@@ -278,7 +278,7 @@ After calling this method, first state after respawn will be available.
 | :--    | :--                                     |
 | Lua    | `void sendGameCommand(string cmd)`      |
 | Java   | `void sendGameCommand(String cmd)`      |
-| Python | `void send_game_command(cmd)`           |
+| Python | `void send_game_command(str cmd)`       |
 
 Sends the command to Doom console. Can be used for cheats, multiplayer etc.
 Some commands will be blocked in some modes.
@@ -323,9 +323,9 @@ Most useful in `SPECTATOR` mode.
 
 | C++    | `unsigned int getEpisodeTime()`   |
 | :--    | :--                               |
-| Lua    | `unsigned int getEpisodeTime()`   |
-| Java   | `unsigned int getEpisodeTime()`   |
-| Python | `unsigned int get_episode_time()` |
+| Lua    | `number getEpisodeTime()`         |
+| Java   | `int getEpisodeTime()`            |
+| Python | `int get_episode_time()`          |
 
 Returns number of current episode tic.
 
@@ -338,7 +338,7 @@ Returns number of current episode tic.
 | C++    | `void addAvailableButton(Button button, unsigned int maxValue = 0)` |
 | :--    | :--                                                                 |
 | Lua    | `void addAvailableButton(Button button, number maxValue  = 0)`      |
-| Java   | `void addAvailableButton(Button button, unsigned int maxValue = 0)` |
+| Java   | `void addAvailableButton(Button button, int maxValue = 0)`          |
 | Python | `void add_available_button(Button button, int maxValue = 0)`        |
 
 Add `Button` type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to `Buttons` available in action
@@ -387,7 +387,7 @@ See also:
 | C++    | `void setButtonMaxValue(Button button, unsigned int maxValue = 0)` |
 | :--    | :--                                                                |
 | Lua    | `void setButtonMaxValue(Button button, number maxValue = 0)`       |
-| Java   | `void setButtonMaxValue(Button button, unsigned int maxValue = 0)` |
+| Java   | `void setButtonMaxValue(Button button, int maxValue = 0)`          |
 | Python | `void set_button_max_value(Button button, int maxValue = 0)`       |
 
 Sets the maximum allowed, absolute value for the specified button.
@@ -455,8 +455,8 @@ See also:
 | C++    | `unsigned int getAvailableGameVariablesSize()`     |
 | :--    | :--                                                |
 | Lua    | `number getAvailableGameVariablesSize()`           |
-| Java   | `unsigned int getAvailableGameVariablesSize()`     |
-| Python | `unsigned int get_available_game_variables_size()` |
+| Java   | `int getAvailableGameVariablesSize()`              |
+| Python | `int get_available_game_variables_size()`          |
 
 Returns the number of available `GameVariables`.
 
@@ -490,7 +490,7 @@ See also:
 | :--    | :--                                  |
 | Lua    | `void addGameArgs(string args)`      |
 | Java   | `void addGameArgs(String args)`      |
-| Python | `void add_game_args(args)`           |
+| Python | `void add_game_args(str args)`       |
 
 Adds a custom argument that will be passed to ViZDoom process during initialization.
 
@@ -652,7 +652,7 @@ See also:
 | C++    | `unsigned int getTicrate()` |
 | :--    | :--                         |
 | Lua    | `number getTicrate()`       |
-| Java   | `unsigned int getTicrate()` |
+| Java   | `int getTicrate()`          |
 | Python | `int get_ticrate()`         |
 
 Added in 1.1
@@ -666,7 +666,7 @@ Returns current ticrate.
 | C++    | `void setTicrate(unsigned int ticrate)` |
 | :--    | :--                                     |
 | Lua    | `void setTicrate(number ticrate)`       |
-| Java   | `void setTicrate(unsigned int ticrate)` |
+| Java   | `void setTicrate(int ticrate)`          |
 | Python | `void set_ticrate(int ticrate)`         |
 
 Added in 1.1
@@ -795,7 +795,7 @@ Config key: `DoomConfigPath/doom_config_path`
 | C++    | `unsigned int getSeed()` |
 | :--    | :--                      |
 | Lua    | `number getSeed()`       |
-| Java   | `unsigned int getSeed()` |
+| Java   | `int getSeed()`          |
 | Python | `int getSeed()`          |
 
 Return ViZDoom's seed.
@@ -807,7 +807,7 @@ Return ViZDoom's seed.
 | C++    | `void setSeed(unsigned int seed)` |
 | :--    | :--                               |
 | Lua    | `void setSeed(number seed)`       |
-| Java   | `void setSeed(unsigned int seed)` |
+| Java   | `void setSeed(int seed)`          |
 | Python | `void set_seed(int seed)`         |
 
 Sets the seed of the ViZDoom's RNG that generates seeds (initial state) for episodes.
@@ -827,7 +827,7 @@ See also:
 | C++    | `unsigned int getEpisodeStartTime()` |
 | :--    | :--                                  |
 | Lua    | `number getEpisodeStartTime()`       |
-| Java   | `unsigned int getEpisodeStartTime()` |
+| Java   | `int getEpisodeStartTime()`          |
 | Python | `int get_episode_start_time()`       |
 
 Returns start delay of every episode in tics.
@@ -839,7 +839,7 @@ Returns start delay of every episode in tics.
 | C++    | `void setEpisodeStartTime(unsigned int tics)` |
 | :--    | :--                                           |
 | Lua    | `void setEpisodeStartTime(number tics)`       |
-| Java   | `setEpisodeStartTime(unsigned int tics)`      |
+| Java   | `void setEpisodeStartTime(int tics)`          |
 | Python | `void set_episode_start_time(int tics)`       |
 
 Sets start delay of every episode in tics.
@@ -856,7 +856,7 @@ Config key: `episodeStartTime/episode_start_time`
 | C++    | `unsigned int getEpisodeTimeout()` |
 | :--    | :--                                |
 | Lua    | `number getEpisodeTimeout()`       |
-| Java   | `unsigned int getEpisodeTimeout()` |
+| Java   | `int getEpisodeTimeout()` |
 | Python | `int get_episode_timeout()`        |
 
 Returns the number of tics after which the episode will be finished.
@@ -868,7 +868,7 @@ Returns the number of tics after which the episode will be finished.
 | C++    | `void setEpisodeTimeout(unsigned int tics)` |
 | :--    | :--                                         |
 | Lua    | `void setEpisodeTimeout(number tics)`       |
-| Java   | `void setEpisodeTimeout(unsigned int tics)` |
+| Java   | `void setEpisodeTimeout(int tics)` |
 | Python | `void set_episode_timeout(int tics)`        |
 
 Sets the number of tics after which the episode will be finished. 0 will result in no timeout.
@@ -1086,11 +1086,11 @@ Config key: `automapRotate/automap_rotate`
 ---
 ### <a name="setAutomapRenderTextures"></a> `setAutomapRenderTextures`
 
-| C++    | `setAutomapRenderTextures(bool textures)`    |
+| C++    | `void setAutomapRenderTextures(bool textures)`    |
 | :--    | :--                                          |
-| Lua    | `setAutomapRenderTextures(boolean textures)` |
-| Java   | `setAutomapRenderTextures(boolean textures)` |
-| Python | `set_automap_render_textures(bool textures)` |
+| Lua    | `void setAutomapRenderTextures(boolean textures)` |
+| Java   | `void setAutomapRenderTextures(boolean textures)` |
+| Python | `void set_automap_render_textures(bool textures)` |
 
 Added in 1.1
 
