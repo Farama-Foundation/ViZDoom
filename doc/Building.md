@@ -1,7 +1,7 @@
 # Building
 
 TODO:
-- commands for Python 3, Lua JIT, Lua 5.2
+- commands for Lua JIT, Lua 5.2
 
 ## Linux
 
@@ -39,6 +39,9 @@ make
 ```
 
 ``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` and ``-DBUILD_LUA=ON`` CMake options for Python, Java and Lua bindings are optional (default OFF). To force building bindings for Python3 instead of first version found use ``-DBUILD_PYTHON3=ON`` (needs Boost.Python builded with Python 3, default OFF).
+
+#### python3 binding
+Running ViZDoom with python3 instead of python2 requires some additional work, [this short descritpion](Python3.md) might be helpful.
 
 ## Windows
 
