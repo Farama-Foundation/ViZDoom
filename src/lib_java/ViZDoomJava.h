@@ -27,6 +27,8 @@
 
 #include <jni.h>
 
+#include <cstdlib>
+#include <cstring>
 #include <functional>
 #include <type_traits>
 
@@ -112,10 +114,21 @@ jstring castTojstring(JNIEnv *jEnv, std::string val){
 }
 
 template<class T>
+jbyteArray castTojbyteArray(JNIEnv *jEnv, std::vector<T>& val) {
+    jbyteArray jVal = jEnv->NewByteArray(val.size());
+    jbyte *jValArr = jEnv->GetByteArrayElements(jVal, NULL);
+    if(sizeof(jbyte) == sizeof(T)) std::memcpy(jValArr, val.data(), val.size());
+    else for (int i = 0; i < val.size(); ++i) jValArr[i] = (jint)val[i];
+    jEnv->ReleaseByteArrayElements(jVal, jValArr, NULL);
+    return jVal;
+}
+
+template<class T>
 jintArray castTojintArray(JNIEnv *jEnv, std::vector<T>& val) {
     jintArray jVal = jEnv->NewIntArray(val.size());
     jint *jValArr = jEnv->GetIntArrayElements(jVal, NULL);
-    for (int i=0; i < val.size(); ++i) jValArr[i] = (jint)val[i];
+    if(sizeof(jint) == sizeof(T)) std::memcpy(jValArr, val.data(), val.size());
+    else for (int i = 0; i < val.size(); ++i) jValArr[i] = (jint)val[i];
     jEnv->ReleaseIntArrayElements(jVal, jValArr, NULL);
     return jVal;
 }

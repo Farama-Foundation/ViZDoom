@@ -22,6 +22,8 @@
 
 #include "ViZDoomGameJava.h"
 
+#include <iostream>
+
 JNI_EXPORT(void, DoomGameNative) {
     constructJavaObject<DoomGameJava>(jEnv, jObj);
 }
@@ -50,27 +52,27 @@ JNI_EXPORT(jobject, getState){
     if (jStateClass == 0) return NULL;
 
     jintArray jGameVariables = castTojintArray(jEnv, state->gameVariables);
-    jintArray jScreenBuffer = state->screenBuffer != nullptr ? castTojintArray(jEnv, *state->screenBuffer) : 0;
-    jintArray jDepthBuffer = state->depthBuffer != nullptr ? castTojintArray(jEnv, *state->depthBuffer) : 0;
-    jintArray jLabelsBuffer = state->labelsBuffer != nullptr ? castTojintArray(jEnv, *state->labelsBuffer) : 0;
-    jintArray jAutomapBuffer = state->automapBuffer != nullptr ? castTojintArray(jEnv, *state->automapBuffer) : 0;
+    jbyteArray jScreenBuffer = state->screenBuffer != nullptr ? castTojbyteArray(jEnv, *state->screenBuffer) : NULL;
+    jbyteArray jDepthBuffer = state->depthBuffer != nullptr ? castTojbyteArray(jEnv, *state->depthBuffer) : NULL;
+    jbyteArray jLabelsBuffer = state->labelsBuffer != nullptr ? castTojbyteArray(jEnv, *state->labelsBuffer) : NULL;
+    jbyteArray jAutomapBuffer = state->automapBuffer != nullptr ? castTojbyteArray(jEnv, *state->automapBuffer) : NULL;
 
     jclass jLabelClass = jEnv->FindClass("vizdoom/Label");
     if (jLabelClass == 0) return NULL;
     jobjectArray jLabels = jEnv->NewObjectArray(state->labels.size(), jLabelClass, NULL);
-    jmethodID jLabelConstructor = jEnv->GetMethodID(jLabelClass, "<init>", "(ILjava/lang/StringI)V");
+    jmethodID jLabelConstructor = jEnv->GetMethodID(jLabelClass, "<init>", "(ILjava/lang/String;B)V");
     if (jLabelConstructor == 0) return NULL;
 
     for(size_t i = 0; i < state->labels.size(); ++i){
         jobject jLabel = jEnv->NewObject(jLabelClass, jLabelConstructor, (jint)state->labels[i].objectId,
-                                         castTojstring(jEnv, state->labels[i].objectName), (jint)state->labels[i].value);
+                                 castTojstring(jEnv, state->labels[i].objectName), (jint)state->labels[i].value);
         jEnv->SetObjectArrayElement(jLabels, i, jLabel);
     }
 
-    jmethodID jStateConstructor = jEnv->GetMethodID(jStateClass, "<init>", "(I[I[I[I[I[I[Lvizdoom/Label)V");
+    jmethodID jStateConstructor = jEnv->GetMethodID(jStateClass, "<init>", "(I[I[B[B[B[B[Lvizdoom/Label;)V");
     if (jStateConstructor == 0) return NULL;
     jobject jState = jEnv->NewObject(jStateClass, jStateConstructor, (jint)state->number,
-        jGameVariables, jScreenBuffer, jDepthBuffer, jLabelsBuffer, jAutomapBuffer, jLabels);
+                                jGameVariables, jScreenBuffer, jDepthBuffer, jLabelsBuffer, jAutomapBuffer, jLabels);
 
     return jState;
 }
@@ -149,7 +151,7 @@ JNI_METHOD(void, setDoomConfigPath, setDoomConfigPath, jstring)
 JNI_METHOD(jint, getSeed, getSeed)
 JNI_METHOD(void, setSeed, setSeed, jint)
 JNI_METHOD(jint, getEpisodeStartTime, getEpisodeStartTime)
-JNI_METHOD(void, setEpisodeStartTime, setEpisodeTimeout, jint)
+JNI_METHOD(void, setEpisodeStartTime, setEpisodeStartTime, jint)
 JNI_METHOD(jint, getEpisodeTimeout, getEpisodeTimeout)
 JNI_METHOD(void, setEpisodeTimeout, setEpisodeTimeout, jint)
 JNI_METHOD(jint, getEpisodeTime, getEpisodeTime)
