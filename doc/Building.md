@@ -24,7 +24,7 @@ nasm tar libbz2-dev libgtk2.0-dev cmake git libfluidsynth-dev libgme-dev \
 libopenal-dev timidity libwildmidi-dev 
 
 # Boost libraries
-apt-get install libboost-dev-all 
+apt-get install libboost-all-dev
 
 # python2 and python3 bindings dependencies
 apt-get install python-pip python3-pip 
