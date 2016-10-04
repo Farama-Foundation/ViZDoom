@@ -119,11 +119,11 @@ Users with brew-installed Python may need to manually set:
 ``-DPYTHON_LIBRARY=/usr/local/Cellar/python/2.x.x/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib``
 
 ####Configuration
-Craeting symlink to the app executable may be need:
-``rm bin/vizdoom && ln -s vizdoom.app/Contents/MacOS/vizdoom bin/vizdoom``
+Craeting symlink to the app executable may be needed:
+``ln -sf vizdoom.app/Contents/MacOS/vizdoom bin/vizdoom``
 
-###Compilation output
-Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should contain following files (Windows names are in brackets):
+##Compilation output
+Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should contain the following files (Windows names in brackets):
 
 * ``bin/vizdoom (vizdoom.exe)`` - ViZDoom executable
 * ``bin/vizdoom.pk3`` - resources file used by ViZDoom (needed by ViZDoom executable)
@@ -134,14 +134,7 @@ Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should cont
 * ``bin/java/libvizdoom.so (vizdoom.dll)`` -  ViZDoom library for Java
 * ``bin/java/vizdoom.jar`` -  Contains ViZDoom Java classes
 
-## Docker(outdated)
-
-* [Dockerfile](https://github.com/maciejjaskowski/ViZDoom-docker)
-* [Docker image](https://hub.docker.com/r/mjaskowski/vizdoom/)
-
-Note: third-party maintained
-
 ---
 ##License
 
-Code original to ViZDoom is under MIT license. ZDoom uses code from several sources which [varied licensing schemes](http://zdoom.org/wiki/license).
+Code original to ViZDoom is under MIT license. ZDoom uses code from several sources with [varying licensing schemes](http://zdoom.org/wiki/license).
