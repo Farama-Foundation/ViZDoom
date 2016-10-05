@@ -26,5 +26,7 @@ To build python3 bindings set BUILD_PYTHON and BUILD_PYTHON3 flags to true. Sinc
 
 ## python2 and python3 at the same time
 
-TODO Coming soon
+You can compile libboost-python against python2 and python3 and have them coexist in your system but before compiling the second version run `./b2 clean`. Boost will compile anyway but resulting binaries will be messed up.
+
+Similarily you can have ViZDoom for python2 and 3 at the same time but compiling both versions in one run is currently not supported. When changing versions, clear cmake's cache (remove CMakeCache.txt) as not doing so will result in some dependency issues.
 
