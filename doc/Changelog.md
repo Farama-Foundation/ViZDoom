@@ -41,11 +41,12 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 - ZDoom engine updated to 2.8.1
 - Improved performance.
 - Improved exceptions messages.
-- Paths in config files are now relative to config file.
+- **Paths in config files are now relative to config file.**
 - Aliases for `DoomFixedToDouble` - `DoomFixedToNumber` in Lua and `doom_fixed_to_float` in Python added.
 - Java exceptions handling fixed.
 - Bugs associated with paths handling fixed.
 - Many minor bugs fixed.
+- Python bindings output changed to bin/python2 and bin/python3. 
 
 
 #### C++ specific
