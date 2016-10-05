@@ -54,3 +54,25 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 - `getState()` now returns `GameStatePtr (std::shared_ptr<GameState>)` instead of `GameState`.
 - Buffers are now copied.
 - GameState's buffer has now `BufferPtr (std::shared_ptr<Buffer>)` type - `Buffer (std::vector<uint8_t>)`.
+
+
+#### Lua specific
+
+- Lua binding added
+
+
+#### Java specific
+
+- GameState buffers type changed to byte[]
+- Performance improved
+
+
+#### Python specific
+
+- Consts added to Python
+
+
+
+
+ 
+
