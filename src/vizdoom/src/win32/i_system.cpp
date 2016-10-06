@@ -822,7 +822,7 @@ void STACK_ARGS I_FatalError(const char *error, ...)
 //
 // Throw an error that will send us to the console if we are far enough
 // along in the startup process.
-//F
+//
 //==========================================================================
 
 void STACK_ARGS I_Error(const char *error, ...)

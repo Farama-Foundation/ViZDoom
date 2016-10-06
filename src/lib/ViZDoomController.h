@@ -102,12 +102,12 @@ namespace vizdoom{
         void setTicrate(unsigned int ticrate);
         unsigned int getTicrate();
 
-        unsigned int getDoomRngSeed();
-        void setDoomRngSeed(unsigned int seed);
-        void clearDoomRngSeed();
+        unsigned int getDoomSeed();
+        void setDoomSeed(unsigned int seed);
+        void clearDoomSeed();
 
-        unsigned int getInstanceRngSeed();
-        void setInstanceRngSeed(unsigned int seed);
+        unsigned int getInstanceSeed();
+        void setInstanceSeed(unsigned int seed);
 
         std::string getMap();
         void setMap(std::string map, std::string demoPath = "");
@@ -264,9 +264,12 @@ namespace vizdoom{
 
         void generateInstanceId();
 
-        bool seedDoomRng;
-        unsigned int doomRngSeed;
-        unsigned int instanceRngSeed;
+        unsigned int getNextDoomSeed();
+        void forceDoomSeed(unsigned int seed);
+
+        bool doomStaticSeed;
+        unsigned int doomSeed;
+        unsigned int instanceSeed;
 
         br::mt19937 instanceRng;
         std::string instanceId;

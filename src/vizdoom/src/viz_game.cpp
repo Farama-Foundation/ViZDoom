@@ -163,7 +163,7 @@ void VIZ_GameStateUpdate(){
 void VIZ_GameStateTic(){
 
     VIZ_DebugMsg(2, VIZ_FUNC, "netgame: %d, multiplayer: %d, recording: %d, playback: %d, in_level: %d, map_tic: %d",
-                    gametic, netgame, multiplayer, demorecording, demoplayback, gamestate == GS_LEVEL, level.maptime);
+                    netgame, multiplayer, demorecording, demoplayback, gamestate == GS_LEVEL, level.maptime);
 
     vizGameStateSM->GAME_TIC = (unsigned int)gametic;
     vizGameStateSM->GAME_STATE = gamestate;
