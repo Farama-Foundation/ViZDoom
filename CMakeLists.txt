@@ -247,11 +247,11 @@ endif()
 #-----------------------------------------------------------------------------------------------------------------------
 if(BUILD_LUA AND (NOT BUILD_LUA52))
 
-	#use vizdoom's verions of luabind
+	# Use ViZDoom's custom version of luabind
+	#find_package(Luabind REQUIRED)
 	add_subdirectory(${VIZDOOM_SRC_DIR}/lib_lua/luabind)
 
-	FIND_PACKAGE (Lua51 REQUIRED)
-	#find_package(Luabind REQUIRED)
+	find_package(Lua51 REQUIRED)
 
 	set(VIZDOOM_LUA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_lua)
 	set(VIZDOOM_LUA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LUA_SRC_DIR})
@@ -268,7 +268,7 @@ if(BUILD_LUA AND (NOT BUILD_LUA52))
 			${PYTHON_INCLUDE_DIRS}
 			${LUA_INCLUDE_DIR}
 			#${LUABIND_INCLUDE_DIRS}
-			${VIZDOOM_SRC_DIR}/lib_lua/luabind/luabind)
+			${VIZDOOM_SRC_DIR}/lib_lua/luabind)
 
 	set(VIZDOOM_LUA_SOURCES
 			${VIZDOOM_LUA_SRC_DIR}/ViZDoomGameLua.h
