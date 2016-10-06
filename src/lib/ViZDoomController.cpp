@@ -119,18 +119,15 @@ namespace vizdoom {
         this->windowHidden = false;
         this->noXServer = false;
         this->noConsole = true;
-        this->noSound = false;
+        this->noSound = true;
 
         this->allowDoomInput = false;
         this->runDoomAsync = false;
 
-        this->seedDoomRng = true;
-        this->doomRngSeed = 0;
+        this->doomStaticSeed = true;
+        this->doomSeed = 0;
 
-        this->instanceRng.seed((unsigned int)bc::high_resolution_clock::now().time_since_epoch().count());
-
-        br::uniform_int_distribution<> rngSeedDist(0, UINT_MAX);
-        this->setDoomRngSeed(static_cast<unsigned int>(rngSeedDist(this->instanceRng)));
+        this->instanceRng.seed(static_cast<unsigned int>(bc::high_resolution_clock::now().time_since_epoch().count()));
 
         this->_input = new SMInputState();
     }
@@ -368,8 +365,7 @@ namespace vizdoom {
 
             if(this->gameState->DEMO_RECORDING) this->sendCommand("stop");
 
-            br::uniform_int_distribution<> mapSeedDist(0, UINT_MAX);
-            this->setDoomRngSeed(static_cast<unsigned int>(mapSeedDist(this->instanceRng)));
+            this->forceDoomSeed(this->getNextDoomSeed());
 
             if(this->gameState->GAME_MULTIPLAYER){
                 if(this->gameState->GAME_SETTINGS_CONTROLLER) this->sendCommand(std::string("changemap ") + this->map);
@@ -499,33 +495,33 @@ namespace vizdoom {
         }
     }
 
-    unsigned int DoomController::getDoomRngSeed(){
+    unsigned int DoomController::getDoomSeed(){
         if (this->doomRunning) return this->gameState->GAME_STATIC_SEED;
-        else return this->doomRngSeed;
+        else return this->doomSeed;
     }
 
-    void DoomController::setDoomRngSeed(unsigned int seed){
-        this->seedDoomRng = true;
-        this->doomRngSeed = seed;
+    void DoomController::setDoomSeed(unsigned int seed){
+        this->doomStaticSeed = true;
+        this->doomSeed = seed;
         if (this->doomRunning) {
-            this->sendCommand(std::string("rngseed set ") + b::lexical_cast<std::string>(this->doomRngSeed));
+            this->sendCommand(std::string("rngseed set ") + b::lexical_cast<std::string>(this->doomSeed));
         }
     }
 
-    void DoomController::clearDoomRngSeed(){
-        this->seedDoomRng = false;
-        this->doomRngSeed = 0;
+    void DoomController::clearDoomSeed(){
+        this->doomStaticSeed = false;
+        this->doomSeed = 0;
         if (this->doomRunning) {
             this->sendCommand("rngseed clear");
         }
     }
 
-    void DoomController::setInstanceRngSeed(unsigned int seed){
-        this->instanceRngSeed = seed;
+    void DoomController::setInstanceSeed(unsigned int seed){
+        this->instanceSeed = seed;
         this->instanceRng.seed(seed);
     }
 
-    unsigned int DoomController::getInstanceRngSeed(){ return this->instanceRngSeed; }
+    unsigned int DoomController::getInstanceSeed(){ return this->instanceSeed; }
 
     unsigned int DoomController::getMapStartTime() { return this->mapStartTime; }
     void DoomController::setMapStartTime(unsigned int tics) { this->mapStartTime = tics ? tics : 1; }
@@ -935,6 +931,18 @@ namespace vizdoom {
         }
     }
 
+    unsigned int DoomController::getNextDoomSeed(){
+        br::uniform_int_distribution<> mapSeedDist(0, UINT_MAX);
+        return static_cast<unsigned int>(mapSeedDist(this->instanceRng));
+    }
+
+    void DoomController::forceDoomSeed(unsigned int seed){
+        this->doomStaticSeed = true;
+        this->doomSeed = seed;
+        if (this->doomRunning) {
+            this->sendCommand(std::string("viz_set_seed ") + b::lexical_cast<std::string>(this->doomSeed));
+        }
+    }
 
     /* Signals */
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -1030,33 +1038,30 @@ namespace vizdoom {
     void DoomController::createDoomArgs(){
         this->doomArgs.clear();
 
-        //exe
+        // exe
         this->doomArgs.push_back(prepareExeFilePath(this->exePath));
 
-        //main wad
+        // main wad
         this->doomArgs.push_back("-iwad");
         this->doomArgs.push_back(prepareWadFilePath(this->iwadPath));
 
-        //wads
+        // scenario wad
         if (this->filePath.length() != 0) {
             this->doomArgs.push_back("-file");
             this->doomArgs.push_back(prepareWadFilePath(this->filePath));
         }
 
+        // config
         this->doomArgs.push_back("-config");
         if (this->configPath.length() != 0) this->doomArgs.push_back(prepareFilePathArg(this->configPath));
         else this->doomArgs.push_back("_vizdoom.ini");
 
-        if(this->seedDoomRng) {
-            this->doomArgs.push_back("+rngseed");
-            this->doomArgs.push_back(b::lexical_cast<std::string>(this->doomRngSeed));
-        }
-
-        //map
+        // map
         this->doomArgs.push_back("+map");
         if(this->map.length() > 0) this->doomArgs.push_back(this->map);
         else this->doomArgs.push_back("map01");
 
+        // demo recording
         //if (this->demoPath.length() != 0){
         //    this->doomArgs.push_back("-record");
         //    this->doomArgs.push_back(this->demoPath);
@@ -1064,11 +1069,11 @@ namespace vizdoom {
         //}
         //else this->doomRecordingMap = false;
 
-        //skill
+        // skill
         this->doomArgs.push_back("-skill");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->skill));
 
-        //resolution and aspect ratio
+        // resolution and aspect ratio
         this->doomArgs.push_back("-width");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenWidth));
 
@@ -1084,44 +1089,20 @@ namespace vizdoom {
         else if(ratio == 5.0/4.0) this->doomArgs.push_back("4");
         else this->doomArgs.push_back("0");
 
-        //window mode
+        // window mode
         this->doomArgs.push_back("+fullscreen");
         this->doomArgs.push_back("0");
 
-        //depth duffer
-        if(this->depth) {
-            this->doomArgs.push_back("+viz_depth");
-            this->doomArgs.push_back("1");
-        }
-
-        //labels
-        if(this->labels) {
-            this->doomArgs.push_back("+viz_labels");
-            this->doomArgs.push_back("1");
-        }
-
-        //automap
-        if(this->automap) {
-            this->doomArgs.push_back("+viz_automap");
-            this->doomArgs.push_back("1");
-
-            this->doomArgs.push_back("+viz_automap_mode");
-            this->doomArgs.push_back(b::lexical_cast<std::string>(this->amMode));
-        }
-
-        //render mode
-        this->doomArgs.push_back("+viz_render_mode");
-        this->doomArgs.push_back(b::lexical_cast<std::string>(this->getRenderModeValue()));
-
-        //vizdoom
+        // vizdoom
         this->doomArgs.push_back("+viz_controlled");
         this->doomArgs.push_back("1");
 
         this->doomArgs.push_back("+viz_instance_id");
         this->doomArgs.push_back(this->instanceId);
 
-        if(this->noConsole){
-            this->doomArgs.push_back("+viz_noconsole");
+        // mode
+        if(this->runDoomAsync){
+            this->doomArgs.push_back("+viz_async");
             this->doomArgs.push_back("1");
         }
 
@@ -1134,7 +1115,7 @@ namespace vizdoom {
             this->doomArgs.push_back("1");
 
             #ifdef OS_WIN
-                // Fix for problem with delta buttons' last values on Windows.
+            // Fix for problem with delta buttons' last values on Windows.
                 this->doomArgs.push_back("+in_mouse");
                 this->doomArgs.push_back("2");
             #endif
@@ -1145,8 +1126,41 @@ namespace vizdoom {
             this->doomArgs.push_back("0");
         }
 
-        if(this->runDoomAsync){
-            this->doomArgs.push_back("+viz_async");
+        // seed
+        if(this->doomStaticSeed) {
+            this->forceDoomSeed(this->getNextDoomSeed());
+            this->doomArgs.push_back("+viz_seed");
+            this->doomArgs.push_back(b::lexical_cast<std::string>(this->doomSeed));
+        }
+
+        // depth duffer
+        if(this->depth) {
+            this->doomArgs.push_back("+viz_depth");
+            this->doomArgs.push_back("1");
+        }
+
+        // labels
+        if(this->labels) {
+            this->doomArgs.push_back("+viz_labels");
+            this->doomArgs.push_back("1");
+        }
+
+        // automap
+        if(this->automap) {
+            this->doomArgs.push_back("+viz_automap");
+            this->doomArgs.push_back("1");
+
+            this->doomArgs.push_back("+viz_automap_mode");
+            this->doomArgs.push_back(b::lexical_cast<std::string>(this->amMode));
+        }
+
+        // render mode
+        this->doomArgs.push_back("+viz_render_mode");
+        this->doomArgs.push_back(b::lexical_cast<std::string>(this->getRenderModeValue()));
+
+
+        if(this->noConsole){
+            this->doomArgs.push_back("+viz_noconsole");
             this->doomArgs.push_back("1");
         }
 
@@ -1163,15 +1177,17 @@ namespace vizdoom {
             else this->doomArgs.push_back("0");
         #endif
 
-        //no wipe animation
+        // TODO some of these could be set in viz_main.cpp -> UpdateCVARs
+
+        // no wipe animation
         this->doomArgs.push_back("+wipetype");
         this->doomArgs.push_back("0");
 
-        //idle/joy
+        // idle/joy
         this->doomArgs.push_back("-noidle");
         this->doomArgs.push_back("-nojoy");
 
-        //sound
+        // sound
         if(this->noSound){
             this->doomArgs.push_back("-nosound");
             this->doomArgs.push_back("+viz_nosound");
@@ -1183,7 +1199,7 @@ namespace vizdoom {
             this->doomArgs.push_back(b::lexical_cast<std::string>(this->ticrate));
         }
 
-        //fps = ticrate and no vsync
+        // fps = ticrate and no vsync
         this->doomArgs.push_back("+cl_capfps");
         this->doomArgs.push_back("1");
 

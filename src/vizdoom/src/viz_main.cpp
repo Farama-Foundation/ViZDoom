@@ -35,9 +35,13 @@
 #include "d_net.h"
 #include "g_game.h"
 #include "sbar.h"
+#include "c_dispatch.h"
 
 namespace b = boost;
 namespace bt = boost::this_thread;
+
+/* CVARs and CCMDs */
+/*--------------------------------------------------------------------------------------------------------------------*/
 
 //CVAR_ARCHIVE		= 1,	// set to cause it to be saved to config
 //CVAR_USERINFO		= 2,	// added to userinfo  when changed
@@ -55,7 +59,7 @@ namespace bt = boost::this_thread;
 //CVAR_MOD			= 8192,	// cvar was defined by a mod
 //CVAR_IGNORE		= 16384,// do not send cvar across the network/inaccesible from ACS (dummy mod cvar)
 
-//debug
+// debug
 CVAR (Int, viz_debug, 0, CVAR_NOSET)
 
 // 0 - no debug msg
@@ -64,26 +68,26 @@ CVAR (Int, viz_debug, 0, CVAR_NOSET)
 // 3 - tic detailed debug msg
 // 4 - all
 
-//control
+// control
 CVAR (Bool, viz_controlled, false, CVAR_NOSET)
 CVAR (String, viz_instance_id, "0", CVAR_NOSET)
+CVAR (Int, viz_seed, 0, CVAR_NOSET)
 
-//modes
+// modes
 CVAR (Bool, viz_async, false, CVAR_NOSET)
 CVAR (Bool, viz_allow_input, false, CVAR_NOSET)
 
-//buffers
+// buffers
 CVAR (Int, viz_screen_format, 0, 0)
 CVAR (Bool, viz_depth, false, 0)
 CVAR (Bool, viz_labels, false, 0)
 CVAR (Bool, viz_automap, false, 0)
-//CVAR (Int, viz_buf_mode, 0, 0)
 
-//rendering options (bitset)
+// rendering options (bitset)
 CVAR (Int, viz_render_mode, 0, 0)
 CVAR (Int, viz_automap_mode, 0, 0)
 
-//window/sound/console/rendering all frames
+// window/sound/console/rendering all frames
 CVAR (Bool, viz_render_all, false, CVAR_NOSET)
 CVAR (Bool, viz_window_hidden, false, CVAR_NOSET)
 CVAR (Bool, viz_noxserver, false, CVAR_NOSET)
@@ -94,11 +98,21 @@ CVAR (Int, viz_override_player, 0, 0)
 CVAR (Bool, viz_loop_map, false, CVAR_NOSET)
 CVAR (Bool, viz_nocheat, false, CVAR_NOSET)
 
+CCMD(viz_set_seed){
+    viz_seed.CmdSet(argv[1]);
+    rngseed = atoi(argv[1]);
+    staticrngseed = rngseed;
+    use_staticrng = true;
+    VIZ_DebugMsg(2, VIZ_FUNC, "viz_seed changed to: %d.", rngseed);
+}
+
+/* Flow */
+/*--------------------------------------------------------------------------------------------------------------------*/
+
 int vizTime = 0;
 bool vizNextTic = false;
 bool vizUpdate = false;
 unsigned int vizLastUpdate = 0;
-bool ignoreNextDoomError = false;
 
 void VIZ_Init(){
     if(*viz_controlled) {
@@ -117,6 +131,11 @@ void VIZ_Init(){
 
         vizNextTic = true;
         vizUpdate = true;
+
+        // starting seed
+        use_staticrng = true;
+        staticrngseed = *viz_seed;
+        rngseed = *viz_seed;
     }
 }
 
@@ -148,6 +167,8 @@ void VIZ_AsyncStartTic(){
 void VIZ_Tic(){
 
     VIZ_DebugMsg(2, VIZ_FUNC, "tic: %d, viztic: %d", gametic, VIZ_TIME);
+    VIZ_DebugMsg(4, VIZ_FUNC, "rngseed: %d, use_staticrng: %d, staticrngseed: %d", rngseed, use_staticrng, staticrngseed);
+
 
     try{
         bt::interruption_point();
@@ -197,6 +218,9 @@ bool VIZ_IsPaused(){
     //&& (gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
     //&& !paused && !pauseext && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling
 }
+
+/* CVARs settings */
+/*--------------------------------------------------------------------------------------------------------------------*/
 
 // other
 EXTERN_CVAR(Bool, vid_fps)
@@ -266,10 +290,10 @@ void VIZ_CVARsUpdate(){
     hud_scale.CmdSet("1");
     hud_althud.CmdSet("0");
 
-    //players sprite (weapon)
+    // players sprite (weapon)
     r_drawplayersprites.CmdSet((*viz_render_mode & 4) != 0 ? "1" : "0");
 
-    //crosshair
+    // crosshair
     crosshair.CmdSet((*viz_render_mode & 8) != 0 ? "1" : "0");
 
     // decals
@@ -320,13 +344,19 @@ void VIZ_CVARsUpdate(){
     }
 }
 
+
+/* Error and debug handling */
+/*--------------------------------------------------------------------------------------------------------------------*/
+
+bool vizIgnoreNextError = false;
+
 void VIZ_IgnoreNextDoomError(){
-    ignoreNextDoomError = true;
+    vizIgnoreNextError = true;
 }
 
 void VIZ_DoomError(const char *error){
-    if(ignoreNextDoomError){
-        ignoreNextDoomError = false;
+    if(vizIgnoreNextError){
+        vizIgnoreNextError = false;
         return;
     }
 

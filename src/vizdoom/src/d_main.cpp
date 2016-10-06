@@ -1239,7 +1239,7 @@ void D_DoomLoop ()
 
 	vid_cursor.Callback();
 
-	VIZ_Init();
+	//VIZ_Init();
 
 	for (;;)
 	{
@@ -2836,6 +2836,8 @@ void D_DoomMain (void)
 
 		if (!restart)
 		{
+			VIZ_Init();
+
 			// start the apropriate game based on parms
 			v = Args->CheckValue ("-record");
 

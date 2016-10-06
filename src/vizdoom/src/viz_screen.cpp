@@ -216,7 +216,7 @@ void VIZ_CopyBuffer(BYTE *vizBuffer){
     const unsigned int screenWidth = screen->GetWidth();
     const unsigned int bufferPitchWidthDiff = bufferPitch - screenWidth;
 
-    VIZ_DebugMsg(3, VIZ_FUNC, "size: %d", screenSize);
+    VIZ_DebugMsg(3, VIZ_FUNC, "bufferSize: %d, screenSize: %d", vizScreenSize, screenSize);
 
     if(vizScreenChannelSize != screenSize || vizScreenWidth != screenWidth)
         VIZ_Error(VIZ_FUNC, "Buffers size mismatch.");

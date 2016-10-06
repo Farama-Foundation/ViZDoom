@@ -350,8 +350,8 @@ namespace vizdoom {
     void DoomGame::setDoomSkill(int skill) { this->doomController->setSkill(skill); }
     void DoomGame::setDoomConfigPath(std::string filePath) { this->doomController->setConfigPath(filePath); }
 
-    unsigned int DoomGame::getSeed(){ return this->doomController->getInstanceRngSeed(); }
-    void DoomGame::setSeed(unsigned int seed){ this->doomController->setInstanceRngSeed(seed); }
+    unsigned int DoomGame::getSeed(){ return this->doomController->getInstanceSeed(); }
+    void DoomGame::setSeed(unsigned int seed){ this->doomController->setInstanceSeed(seed); }
 
     unsigned int DoomGame::getEpisodeStartTime(){ return this->doomController->getMapStartTime(); }
     void DoomGame::setEpisodeStartTime(unsigned int tics){ this->doomController->setMapStartTime(tics); }
