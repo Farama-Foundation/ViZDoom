@@ -36,8 +36,8 @@ extern "C" {
     #include "lauxlib.h"
 }
 
-#include "luabind.hpp"
-#include "exception_handler.hpp"
+#include "luabind/luabind.hpp"
+#include "luabind/exception_handler.hpp"
 
 using namespace vizdoom;
 using namespace luabind;
