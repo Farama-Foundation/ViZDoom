@@ -959,8 +959,8 @@ void NetUpdate (void)
 	}
 
 	//check time
-	//if(*viz_controlled && !*viz_async) nowtime = gametic;
-	nowtime = I_GetTime (false);
+	if(*viz_controlled && !*viz_async) nowtime = gametic;
+	else nowtime = I_GetTime (false);
 
 	newtics = nowtime - gametime;
 	gametime = nowtime;
@@ -991,7 +991,7 @@ void NetUpdate (void)
 		if ((maketic - gametic) / ticdup >= BACKUPTICS/2-1) break; // can't hold any more
 		//Printf ("mk:%i ",maketic);
 		G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
-		maketic++;
+		++maketic;
 
 		if(!*viz_controlled || *viz_async){
 

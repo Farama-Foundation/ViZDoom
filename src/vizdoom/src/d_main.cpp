@@ -1258,9 +1258,9 @@ void D_DoomLoop ()
 				//ViZDoom main loop
 
 				if(*viz_allow_input) {
-					vizTime = I_GetTime(false);
+					vizTime = I_GetTime(true);
 					I_WaitForTic(vizTime);
-					//if(VIZ_IsPaused()) D_ProcessEvents();
+					//D_ProcessEvents();
 				}
 
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
