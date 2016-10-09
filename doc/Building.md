@@ -1,6 +1,11 @@
 # Building
 
-## Linux
+- [Linux](#linux)
+- [Windows](#windows)
+- [OSX](#osx)
+
+
+## <a name="linux"></a> Linux
 
 ### Dependencies
 * CMake 2.8+
@@ -9,10 +14,11 @@
 * Boost libraries (tested on 1.54, 1.58, 1.59, 1.61)
 * Python 2.7+ or Python 3+ with Numpy and Boost.Python for Python binding (optional)
 * JDK for Java binding (JAVA_HOME must be set) (optional)
+* LUA 5.1 for Lua binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
-To get all dependencies (except JDK and Luabind) on Ubuntu execute the following commands in the shell (requires root access):
+To get all dependencies (except JDK) on Ubuntu execute the following commands in the shell (requires root access):
 ```bash
 # ZDoom dependencies
 apt-get install build-essential zlib1g-dev libsdl2-dev libjpeg-dev \
@@ -41,7 +47,7 @@ make
 Running ViZDoom with Python 3 instead of Python 2 may requires some additional work, [this short descritpion](Python3.md) might be helpful.
 
 
-## Windows
+## <a name="windows"></a>Windows
 
 ### Dependencies
 * CMake 2.8+
@@ -67,7 +73,7 @@ In configuration select BUILD_PYTHON, BUILD_PYTHON3 and BUILD_JAVA options for P
 Use generated Visual Studio solution to build all ViZDoom's parts.
 
 
-## OSX
+## <a name="osx"></a>OSX
 Untested, code is compatible, CMake still may need minor adjustments.
 Let us know if You are using ViZDoom on OSX.
 
