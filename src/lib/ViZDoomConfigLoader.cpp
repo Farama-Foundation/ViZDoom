@@ -492,7 +492,7 @@ namespace vizdoom {
             }
             catch (b::bad_lexical_cast &) {
                 std::cerr << "WARNING! Loading config from: \"" << filePath <<
-                    "\". Unsigned int value expected insted of: " << rawVal << " in line #" << lineNumber <<
+                    "\". Unsigned int value expected instead of: " << rawVal << " in line #" << lineNumber <<
                     ". Line ignored.\n";
 
                 success = false;
