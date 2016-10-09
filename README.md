@@ -7,12 +7,13 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 
 ## Features
 * Multi-platform,
-* API for C++, Python and Java,
+* API for C++, Lua, Java and Python,
 * Easy-to-create custom scenarios (examples available),
 * Single-player (sync and async) and multi-player (async) modes,
 * Fast (up to 7000 fps in sync mode, single threaded),
 * Customizable resolution and rendering parameters,
 * Access to the depth buffer (3D vision)
+* Automatic labeling game objects visible in the frame
 * Off-screen rendering,
 * Episodes recording,
 * Time scaling in async mode,
@@ -20,23 +21,19 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
-For the new features:
-* Automatic labeling of game objects visible in the frame,
-* Access to the top down map buffer.
-
-Check out [1.1-dev](https://github.com/Marqt/ViZDoom/tree/1.1-dev) branch.
-
 ## Cite as
 
->Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, Proceedings of Computational Intelligence in Games Conference, Santorini, Greece, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
+>Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
 
 --
 ##Examples
 
 Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed it in the ``scenarios`` subdirectory (on Linux it should be done automatically by the building process):
 
-* [Python](examples/python) 
+* [Python](examples/python)
+ 
 * [C++](examples/c%2B%2B)
+* [Lua](examples/lua)
 * [Java](examples/java)
 
 Python examples are currently the richest, so we recommend to look at them, even if you plan to use C++ or Java.
@@ -64,11 +61,11 @@ Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux)
 ####Compiling
 In ViZDoom's root directory:
 ```bash
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON
 make
 ```
 
-``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` CMake options for Python and Java bindings are optional (default OFF). To force building bindings for Python3 instead of first version found use ``-DBUILD_PYTHON3=ON`` (needs Boost.Python builded with Python 3, default OFF).
+``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` and ``-DBUILD_LUA=ON`` CMake options for Python, Java and Lua bindings are optional (default OFF). To force building bindings for Python3 instead of first version found use ``-DBUILD_PYTHON3=ON`` (needs Boost.Python builded with Python 3, default OFF).
 
 ###Windows
 
@@ -133,6 +130,7 @@ Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should cont
 * ``bin/python3/vizdoom.so (vizdoom.pyd)`` - ViZDoom Python3 module
 * ``bin/java/libvizdoom.so (vizdoom.dll)`` -  ViZDoom library for Java
 * ``bin/java/vizdoom.jar`` -  Contains ViZDoom Java classes
+* ``bin/lua/vizdoom.so (vizdoom.dll)`` - ViZDoom Lua module
 
 ---
 ##License

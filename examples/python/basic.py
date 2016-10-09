@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 #####################################################################
 # This script presents how to use the most basic features of the environment.
 # It configures the engine, and makes the agent perform random actions.
@@ -6,13 +7,14 @@
 # <episodes> number of episodes are played. 
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
+#
 # To see the scenario description go to "../../scenarios/README.md"
-# 
 #####################################################################
+
 from __future__ import print_function
 
-from vizdoom import Button
 from vizdoom import DoomGame
+from vizdoom import Button
 from vizdoom import GameVariable
 from vizdoom import Mode
 from vizdoom import ScreenFormat
@@ -30,15 +32,15 @@ game = DoomGame()
 # If load_config is used in-code configuration will work. Note that the most recent changes will add to previous ones.
 # game.load_config("../../examples/config/basic.cfg")
 
-# Sets path to vizdoom engine executive which will be spawned as a separate process. Default is "./vizdoom".
+# Sets path to ViZDoom engine executive which will be spawned as a separate process. Default is "./vizdoom".
 game.set_vizdoom_path("../../bin/vizdoom")
 
-# Sets path to doom2 iwad resource file which contains the actual doom game. Default is "./doom2.wad".
+# Sets path to iwad resource file which contains the actual doom game. Default is "./doom2.wad".
 game.set_doom_game_path("../../scenarios/freedoom2.wad")
 # game.set_doom_game_path("../../scenarios/doom2.wad")  # Not provided with environment due to licences.
 
-# Sets path to additional resources iwad file which is basically your scenario iwad.
-# If not specified default doom2 maps will be used and it's pretty much useles... unless you want to play doom.
+# Sets path to additional resources wad file which is basically your scenario wad.
+# If not specified default maps will be used and it's pretty much useless... unless you want to play good old Doom.
 game.set_doom_scenario_path("../../scenarios/basic.wad")
 
 # Sets map to start (scenario .wad files can contain many maps).
@@ -50,12 +52,23 @@ game.set_screen_resolution(ScreenResolution.RES_640X480)
 # Sets the screen buffer format. Not used here but now you can change it. Defalut is CRCGCB.
 game.set_screen_format(ScreenFormat.RGB24)
 
+# Enables depth buffer.
+game.set_depth_buffer_enabled(True)
+
+# Enables labeling of in game objects labeling.
+game.set_labels_buffer_enabled(True)
+
+# Enables buffer with top down map of the current episode/level.
+game.set_automap_buffer_enabled(True)
+
 # Sets other rendering options
 game.set_render_hud(False)
+game.set_render_minimal_hud(False)
 game.set_render_crosshair(False)
 game.set_render_weapon(True)
 game.set_render_decals(False)
 game.set_render_particles(False)
+game.set_render_effects_sprites(False)
 
 # Adds buttons that will be allowed. 
 game.add_available_button(Button.MOVE_LEFT)
@@ -84,11 +97,12 @@ game.set_living_reward(-1)
 game.set_mode(Mode.PLAYER)
 
 # Initialize the game. Further configuration won't take any effect from now on.
+#game.set_console_enabled(True)
 game.init()
 
 # Define some actions. Each list entry corresponds to declared buttons:
 # MOVE_LEFT, MOVE_RIGHT, ATTACK
-# 5 more combinations are naturally possible but only 3 are included for transparency when watching.	
+# 5 more combinations are naturally possible but only 3 are included for transparency when watching.
 actions = [[True, False, False], [False, True, False], [False, False, True]]
 
 # Run this many episodes
@@ -108,17 +122,32 @@ for i in range(episodes):
     while not game.is_episode_finished():
 
         # Gets the state
-        s = game.get_state()
-        # s.number
-        # s.game_variables
-        # s.image_buffer
+        state = game.get_state()
+
+        # Which consists of:
+        n           = state.number
+        vars        = state.game_variables
+        screen_buf  = state.screen_buffer
+        depth_buf   = state.depth_buffer
+        labels_buf  = state.labels_buffer
+        automap_buf = state.automap_buffer
+        labels      = state.labels
 
         # Makes a random action and get remember reward.
         r = game.make_action(choice(actions))
 
-        # Prints state's game variables.
-        print("State #" + str(s.number))
-        print("Game variables:", s.game_variables[0])
+        # Makes a "prolonged" action and skip frames:
+        # skiprate = 4
+        # r = game.make_action(choice(actions), skiprate)
+
+        # The same could be achieved with:
+        # game.set_action(choice(actions))
+        # game.advance_action(skiprate)
+        # r = game.get_last_reward()
+
+        # Prints state's game variables and reward.
+        print("State #" + str(n))
+        print("Game variables:", vars)
         print("Reward:", r)
         print("=====================")
 
@@ -127,7 +156,7 @@ for i in range(episodes):
 
     # Check how the episode went.
     print("Episode finished.")
-    print("total reward:", game.get_total_reward())
+    print("Total reward:", game.get_total_reward())
     print("************************")
 
 # It will be done automatically anyway but sometimes you need to do it in the middle of the program...

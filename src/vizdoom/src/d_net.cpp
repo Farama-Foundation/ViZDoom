@@ -953,16 +953,15 @@ void NetUpdate (void)
 	GC::CheckGC();
 
 	//VIZDOOM_CODE
-	if(*viz_controlled && !*viz_async) nowtime = gametic;
-	else{
-		if (ticdup == 0)
-		{
-			return;
-		}
 
-	 	//check time
-		nowtime = I_GetTime (false);
+	if (ticdup == 0) {
+		return;
 	}
+
+	//check time
+	//if(*viz_controlled && !*viz_async) nowtime = gametic;
+	nowtime = I_GetTime (false);
+
 	newtics = nowtime - gametime;
 	gametime = nowtime;
 
@@ -991,9 +990,11 @@ void NetUpdate (void)
 		if(!*viz_controlled || (*viz_async && *viz_allow_input)) D_ProcessEvents ();
 		if ((maketic - gametic) / ticdup >= BACKUPTICS/2-1) break; // can't hold any more
 		//Printf ("mk:%i ",maketic);
+		G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
+		maketic++;
+
 		if(!*viz_controlled || *viz_async){
-			G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
-			maketic++;
+
 		}
 
 		if (ticdup == 1 || maketic == 0)

@@ -40,27 +40,38 @@ namespace vizdoom {
     namespace bpya      = bpy::api;
     namespace bpyn      = bpy::numeric;
 
+    // For GCC versions lower then 5 compatibility
+    // Python version of Label struct with Python string instead C++ string type.
+    struct LabelPython{
+        unsigned int objectId;
+        bpy::str objectName;
+        uint8_t value;
+    };
+
     struct GameStatePython {
         unsigned int number;
-        bpya::object imageBuffer;
+
         bpya::object gameVariables;
-        GameStatePython(int n, bpya::object buf, bpya::object v ):number(n),imageBuffer(buf),gameVariables(v){}
-        GameStatePython(int n, bpya::object buf):number(n),imageBuffer(buf){}
-        GameStatePython(int n):number(n){}
+        //bpy::list gameVariables;
+
+        bpya::object screenBuffer;
+        bpya::object depthBuffer;
+        bpya::object labelsBuffer;
+        bpya::object automapBuffer;
+
+        bpy::list labels;
     };
 
     class DoomGamePython : public DoomGame {
         
     public:        
         DoomGamePython();
-        bool init();
-        
+
+        void setAction(bpy::list const &pyAction);
+        double makeAction(bpy::list const &pyAction, unsigned int tics = 1);
+
         GameStatePython getState();
         bpy::list getLastAction();
-        bpya::object getGameScreen();
-        void setAction(bpy::list const &action);
-        double makeAction(bpy::list const &action);
-        double makeAction(bpy::list const &action, unsigned int tics);
 
         // These functions are workaround for
         // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
@@ -69,7 +80,7 @@ namespace vizdoom {
 
         void newEpisode();
         void newEpisode(bpy::str const &pyPath);
-        void replayEpisode(bpy::str const &pyPath);
+        void replayEpisode(bpy::str const &pyPath, unsigned int player = 0);
 
         void setViZDoomPath(bpy::str const &pyPath);
         void setDoomGamePath(bpy::str const &pyPath);
@@ -80,8 +91,15 @@ namespace vizdoom {
         void sendGameCommand(bpy::str const &pyCmd);
 
     private:
-        npy_intp imageShape[3];
-        static std::vector<int> pyListToIntVector(bpy::list const &action);
+        npy_intp colorShape[3];
+        npy_intp grayShape[2];
+
+        void updateBuffersShapes();
+
+        template<class T> static bpy::list vectorToPyList(const std::vector<T>& vector);
+        template<class T> static std::vector<T> pyListToVector(bpy::list const &pyList);
+
+        static bpyn::array dataToNumpyArray(int dims, npy_intp * shape, int type, void * data);
 
     };
 

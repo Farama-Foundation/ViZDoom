@@ -40,7 +40,7 @@ for i in range(episodes):
     # new_episode can record the episode using Doom's demo recording functionality to given file.
     # Recorded episodes can be reconstructed with perfect accuracy using different rendering settings.
     # This can not be used to record episodes in multiplayer mode.
-    game.new_episode("episode" + str(i) + "_rec.lmp")
+    game.new_episode("episode" + str(i) + " _rec.lmp")
 
     while not game.is_episode_finished():
         s = game.get_state()
@@ -73,7 +73,7 @@ print("************************\n")
 for i in range(episodes):
 
     # Replays episodes stored in given file. Sending game command will interrupt playback.
-    game.replay_episode("episode" + str(i) + "_rec.lmp")
+    game.replay_episode("episode" + str(i) + " _rec.lmp")
 
     while not game.is_episode_finished():
         s = game.get_state()

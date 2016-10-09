@@ -3,15 +3,15 @@
 #####################################################################
 # This script presents how to make use of game variables to implement
 # shaping using health_guided.wad scenario
-# Health_guided scenario is just like health_gathering 
+# Health_guided scenario is just like health_gathering
 # (see "../../scenarios/README.md") but for each collected medkit global
 # variable number 1 in acs script (coresponding to USER1) is increased
 # by 100.0. It is not considered a part of reward but will possibly
 # reduce learning time.
-# <episodes> number of episodes are played. 
+# <episodes> number of episodes are played.
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
-# 
+#
 #####################################################################
 from __future__ import print_function
 
@@ -50,7 +50,7 @@ for i in range(episodes):
 
         # Gets the state and possibly to something with it
         s = game.get_state()
-        img = s.image_buffer
+        img = s.screen_buffer
         misc = s.game_variables
 
         # Makes a random action and save the reward.
@@ -72,7 +72,7 @@ for i in range(episodes):
             sleep(sleep_time)
 
     print("Episode finished!")
-    print("total reward:", game.get_total_reward())
+    print("Total reward:", game.get_total_reward())
     print("************************")
 
 game.close()

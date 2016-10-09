@@ -1,12 +1,13 @@
 cmake_minimum_required( VERSION 2.8 )
 project(ViZDoom)
 
+option(BUILD_LUA "Build ViZDoom Lua binding." OFF)
+option(BUILD_LUA52 "Build ViZDoom Lua52 binding instead of default Lua51/LuaJIT." OFF)
 option(BUILD_PYTHON "Build ViZDoom Python binding." OFF)
 option(BUILD_PYTHON3 "Build ViZDoom Python3 binding instead of default Python2." OFF)
 option(BUILD_JAVA "Build ViZDoom Java binding." OFF)
-option(BUILD_LUA "Build ViZDoom Lua binding." OFF)
 
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 if(COMMAND cmake_policy)
 	cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
@@ -14,6 +15,7 @@ endif(COMMAND cmake_policy)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 
 # System dependent settings
+#-----------------------------------------------------------------------------------------------------------------------
 if(UNIX)
 	set(Boost_USE_STATIC_LIBS OFF)
 	set(Boost_USE_MULTITHREADED ON)
@@ -40,6 +42,7 @@ if(WIN32)
 endif()
 
 # Compiler dependent settings
+#-----------------------------------------------------------------------------------------------------------------------
 if(CMAKE_COMPILER_IS_GNUCXX)
 	add_definitions("-fPIC")
 endif()
@@ -53,13 +56,17 @@ endif()
 
 
 # Targets
-
+#-----------------------------------------------------------------------------------------------------------------------
 find_package(Boost COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
 find_package(Threads REQUIRED)
 
 set(VIZDOOM_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 set(VIZDOOM_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(VIZDOOM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(VIZDOOM_PYTHON_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python2)
+set(VIZDOOM_PYTHON3_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python3)
+set(VIZDOOM_LUA_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/lua)
+
 
 set(VIZDOOM_LIB_SRC_DIR ${VIZDOOM_SRC_DIR}/lib)
 set(VIZDOOM_LIB_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LIB_SRC_DIR})
@@ -105,18 +112,21 @@ set_target_properties(libvizdoom_static libvizdoom_shared
 	RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}
 	OUTPUT_NAME vizdoom)
 
-	add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
+add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
 
-if(BUILD_PYTHON AND (NOT BUILD_PYTHON3 ))
 
-    find_package(PythonInterp 2 REQUIRED)
+# Python binding
+#-----------------------------------------------------------------------------------------------------------------------
+if(BUILD_PYTHON AND (NOT BUILD_PYTHON3))
+
+	find_package(PythonInterp 2 REQUIRED)
 
 	STRING( REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" python_version ${PYTHON_VERSION_STRING} )
-    find_package(PythonLibs ${python_version} REQUIRED)
+	find_package(PythonLibs ${python_version} REQUIRED)
 
-    find_package(Boost COMPONENTS python REQUIRED)
+	find_package(Boost COMPONENTS python REQUIRED)
 
-    find_package(NumPy REQUIRED)
+	find_package(NumPy REQUIRED)
 
 	set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
 	set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
@@ -146,38 +156,39 @@ if(BUILD_PYTHON AND (NOT BUILD_PYTHON3 ))
 
 	set_target_properties(libvizdoom_python
 		PROPERTIES
-		LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/python
-		LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/python
-		LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/python
-		LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/python
-		LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/python
-		RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/python
-		RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/python
-		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/python
-		RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/python
-		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/python
-		OUTPUT_NAME vizdoom)
+		LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_PYTHON_OUTPUT_DIR}
+		LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_PYTHON_OUTPUT_DIR}
+		LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_PYTHON_OUTPUT_DIR}
+		LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_PYTHON_OUTPUT_DIR}
+		LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON_OUTPUT_DIR}
+		RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_PYTHON_OUTPUT_DIR}
+		RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_PYTHON_OUTPUT_DIR}
+		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_PYTHON_OUTPUT_DIR}
+		RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_PYTHON_OUTPUT_DIR}
+		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON_OUTPUT_DIR}
+		OUTPUT_NAME vizdoom
+		PROJECT_LABEL "Python 2 ViZDoom binding")
 
 	if(UNIX)
 		ADD_CUSTOM_COMMAND(
 			TARGET libvizdoom_python
-			COMMAND ln -sf ${VIZDOOM_OUTPUT_DIR}/python/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/vizdoom.so
+			COMMAND ln -sf ${VIZDOOM_PYTHON2_OUTPUT_DIR}/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/vizdoom.so
 			COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/bots.cfg
 			COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/python.")
 	endif()
 
 endif()
 
-if( BUILD_PYTHON AND BUILD_PYTHON3 )
+if( BUILD_PYTHON3 )
 
-    find_package(PythonInterp 3 REQUIRED)
+	find_package(PythonInterp 3 REQUIRED)
 
 	STRING( REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" python3_version ${PYTHON_VERSION_STRING} )
-    find_package(PythonLibs ${python3_version} REQUIRED)
+	find_package(PythonLibs ${python3_version} REQUIRED)
 
 	find_package(Boost COMPONENTS python3 REQUIRED)
 
-    find_package(NumPy REQUIRED)
+	find_package(NumPy REQUIRED)
 
 	set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
 	set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
@@ -195,7 +206,7 @@ if( BUILD_PYTHON AND BUILD_PYTHON3 )
 
 	set(VIZDOOM_PYTHON_SOURCES
 		${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.h
-	    ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.cpp
+		${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.cpp
 		${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomPythonModule.cpp)
 
 	if(WIN32)
@@ -208,29 +219,98 @@ if( BUILD_PYTHON AND BUILD_PYTHON3 )
 
 	set_target_properties(libvizdoom_python3
 		PROPERTIES
-		LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/python3
-		LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/python3
-		LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/python3
-		LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/python3
-		LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/python3
-		RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/python3
-		RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/python3
-		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/python3
-		RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/python3
-		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/python3
-		OUTPUT_NAME vizdoom)
+		LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_PYTHON3_OUTPUT_DIR}
+		LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_PYTHON3_OUTPUT_DIR}
+		LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_PYTHON3_OUTPUT_DIR}
+		LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_PYTHON3_OUTPUT_DIR}
+		LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON3_OUTPUT_DIR}
+		RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_PYTHON3_OUTPUT_DIR}
+		RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_PYTHON3_OUTPUT_DIR}
+		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_PYTHON3_OUTPUT_DIR}
+		RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_PYTHON3_OUTPUT_DIR}
+		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON3_OUTPUT_DIR}
+		OUTPUT_NAME vizdoom
+		PROJECT_LABEL "Python 3 ViZDoom binding")
 
 	if(UNIX)
 		ADD_CUSTOM_COMMAND(
 			TARGET libvizdoom_python3
-			COMMAND ln -sf ${VIZDOOM_OUTPUT_DIR}/python3/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/vizdoom.so
+			COMMAND ln -sf ${VIZDOOM_PYTHON3_OUTPUT_DIR}/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/vizdoom.so
 			COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/bots.cfg
 			COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/python.")
 	endif()
 
 endif()
 
-#Java binding
+
+# Lua binding
+#-----------------------------------------------------------------------------------------------------------------------
+if(BUILD_LUA AND (NOT BUILD_LUA52))
+
+	# Use ViZDoom's custom version of luabind
+	#find_package(Luabind REQUIRED)
+	add_subdirectory(${VIZDOOM_SRC_DIR}/lib_lua/luabind)
+
+	find_package(Lua51 REQUIRED)
+
+	set(VIZDOOM_LUA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_lua)
+	set(VIZDOOM_LUA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LUA_SRC_DIR})
+
+	set(VIZDOOM_LUA_LIBS
+			${VIZDOOM_LIBS}
+			${Boost_LIBRARIES}
+			${LUA_LIBRARIES}
+			#${LUABIND_LIBRARIES}
+			${VIZDOOM_SRC_DIR}/lib_lua/luabind/src/libluabind.a)
+
+	include_directories(${VIZDOOM_LUA_INCLUDE_DIR}
+			${Boost_INCLUDE_DIR}
+			${PYTHON_INCLUDE_DIRS}
+			${LUA_INCLUDE_DIR}
+			#${LUABIND_INCLUDE_DIRS}
+			${VIZDOOM_SRC_DIR}/lib_lua/luabind)
+
+	set(VIZDOOM_LUA_SOURCES
+			${VIZDOOM_LUA_SRC_DIR}/ViZDoomGameLua.h
+			${VIZDOOM_LUA_SRC_DIR}/ViZDoomGameLua.cpp
+			${VIZDOOM_LUA_SRC_DIR}/ViZDoomLuaModule.cpp)
+
+	add_library(libvizdoom_lua SHARED ${VIZDOOM_LUA_SOURCES})
+	target_link_libraries (libvizdoom_lua ${VIZDOOM_LUA_LIBS} libvizdoom_static)
+
+	set_target_properties(libvizdoom_lua
+			PROPERTIES
+			PREFIX ""
+			LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_LUA_OUTPUT_DIR}
+			LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_LUA_OUTPUT_DIR}
+			LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_LUA_OUTPUT_DIR}
+			LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_LUA_OUTPUT_DIR}
+			LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_LUA_OUTPUT_DIR}
+			RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_LUA_OUTPUT_DIR}
+			RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_LUA_OUTPUT_DIR}
+			RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_LUA_OUTPUT_DIR}
+			RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_LUA_OUTPUT_DIR}
+			RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_LUA_OUTPUT_DIR}
+			OUTPUT_NAME vizdoom
+			PROJECT_LABEL "Lua ViZDoom binding")
+
+	if(UNIX)
+		ADD_CUSTOM_COMMAND(
+				TARGET libvizdoom_lua
+				COMMAND ln -sf ../../vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/lua/vizdoom.so
+				COMMAND ln -sf ..//examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/lua/bots.cfg
+				COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/lua.")
+	endif()
+
+endif()
+
+if(BUILD_LUA52)
+	#TODO
+endif()
+
+
+# Java binding
+#-----------------------------------------------------------------------------------------------------------------------
 if(BUILD_JAVA)
 
 	if (NOT DEFINED ENV{JAVA_HOME})
@@ -268,6 +348,7 @@ if(BUILD_JAVA)
 						${JNI_INCLUDE_DIR})
 
 	set(VIZDOOM_JAVA_SOURCES
+		${VIZDOOM_JAVA_SRC_DIR}/ViZDoomJava.h
 		${VIZDOOM_JAVA_SRC_DIR}/ViZDoomGameJava.h
 		${VIZDOOM_JAVA_SRC_DIR}/ViZDoomGameJava.cpp)
 
@@ -286,9 +367,11 @@ if(BUILD_JAVA)
 		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/java
 		RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/java
 		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/java
-		OUTPUT_NAME vizdoom)
+		OUTPUT_NAME vizdoom
+		PROJECT_LABEL "Java ViZDoom binding")
 
 	add_jar(libvizdoom_java_classes
+		${VIZDOOM_JAVA_CLASSES_DIR}/enums/AutomapMode.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/enums/Button.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/enums/GameVariable.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/enums/Mode.java
@@ -297,63 +380,22 @@ if(BUILD_JAVA)
 		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/FileDoesNotExistException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/MessageQueueException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/SharedMemoryException.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/SignalException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomErrorException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomIsNotRunningException.java
-		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomSignalException.java
-		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomMismatchedVersionException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/exceptions/ViZDoomUnexpectedExitException.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/GameState.java
+		${VIZDOOM_JAVA_CLASSES_DIR}/Label.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/DoomGame.java
 		OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/java
-		OUTPUT_NAME vizdoom)
+		OUTPUT_NAME vizdoom
+		PROJECT_LABEL "ViZDoom Java classes")
 
 endif()
 
-if(BUILD_LUA)
 
-  find_package(Torch REQUIRED)
-
-  set(VIZDOOM_LUA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_lua)
-  set(VIZDOOM_LUA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LUA_SRC_DIR})
-
-  set(VIZDOOM_LUA_LIBS
-    ${VIZDOOM_LIBS}
-    ${Boost_LIBRARIES}
-    )
-
-  include_directories(${VIZDOOM_LUA_INCLUDE_DIR}
-    ${Boost_INCLUDE_DIR}
-    ${LUA_INCLUDE_DIRS}
-    ${Torch_INSTALL_INCLUDE}/TH
-    )
-
-  set(VIZDOOM_LUA_SOURCES
-    ${VIZDOOM_LUA_SRC_DIR}/ViZDoomGame_lua.h
-    ${VIZDOOM_LUA_SRC_DIR}/ViZDoomGame_lua.cpp
-    )
-
-  LINK_DIRECTORIES("${Torch_INSTALL_LIB}")
-
-  add_library(libvizdoom_lua SHARED ${VIZDOOM_LUA_SOURCES})
-  target_link_libraries (libvizdoom_lua ${VIZDOOM_LUA_LIBS} libvizdoom_static)
-
-  set_target_properties(libvizdoom_lua
-    PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/lua
-    LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/lua
-    LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/lua
-    LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/lua
-    LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/lua
-    RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/lua
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/lua
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/lua
-    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/lua
-    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/lua
-    OUTPUT_NAME vizdoom
-    )
-
-endif()
-
+# Freedoom 2 download
+#-----------------------------------------------------------------------------------------------------------------------
 
 #if( WIN32 )
 #	if(NOT EXISTS "${PROJECT_SOURCE_DIR}/scenarios/freedoom.zip")

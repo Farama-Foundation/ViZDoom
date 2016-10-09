@@ -43,6 +43,8 @@
 #include "gi.h"
 #include "stats.h"
 #include "x86.h"
+
+//VIZDOOM_CODE
 #include "viz_depth.h"
 
 #undef RANGECHECK
@@ -201,12 +203,12 @@ void R_DrawColumnP_C (void)
 	fracstep = dc_iscale; 
 	frac = dc_texturefrac;
 
-	if(depthMap!=NULL) {
-		depthMap->setActualDepth((unsigned int)((dc_iscale - 500) * 255) / (320000 - 500));
+	if(vizDepthMap!=NULL) {
+		vizDepthMap->setActualDepth((unsigned int)((dc_iscale - 500) * 255) / (320000 - 500));
 		if (dc_iscale > 320000)
-			depthMap->setActualDepth(255);
+			vizDepthMap->setActualDepth(255);
 		if (dc_iscale < 500)
-			depthMap->setActualDepth(0);
+			vizDepthMap->setActualDepth(0);
 	}
 
 	/*static long max, min;
@@ -237,7 +239,7 @@ void R_DrawColumnP_C (void)
 
 			dest += pitch;
 			frac += fracstep;
-			if(depthMap!=NULL) depthMap->setPoint(dc_x, dc_yl+dc_count-count);
+			if(vizDepthMap!=NULL) vizDepthMap->setPoint(dc_x, dc_yl+dc_count-count);
 
 		} while (--count);
 	}
@@ -1120,7 +1122,7 @@ void R_DrawSpanP_C (void)
 			// Lookup pixel from flat texture tile,
 			//  re-index using light/colormap.
 			*dest++ = colormap[source[spot]];
-			if(depthMap!=NULL) depthMap->setPoint(ds_x2-count+1,ds_y);
+			if(vizDepthMap!=NULL) vizDepthMap->setPoint(ds_x2-count+1,ds_y);
 			// Next step in u,v.
 			xfrac += xstep;
 			yfrac += ystep;
@@ -1140,7 +1142,7 @@ void R_DrawSpanP_C (void)
 			// Lookup pixel from flat texture tile,
 			//  re-index using light/colormap.
 			*dest++ = colormap[source[spot]];
-			if(depthMap!=NULL) depthMap->setPoint(ds_x2-count+1,ds_y);
+			if(vizDepthMap!=NULL) vizDepthMap->setPoint(ds_x2-count+1,ds_y);
 			// Next step in u,v.
 			xfrac += xstep;
 			yfrac += ystep;
@@ -1697,7 +1699,7 @@ DWORD STACK_ARGS vlinec1 ()
 		*dest = colormap[source[frac>>bits]];
 		frac += fracstep;
 		dest += pitch;
-		if(depthMap!=NULL) depthMap->setPoint((unsigned int)depthMap->getX(),(unsigned int)depthMap->getY()+dc_count-count);
+		if(vizDepthMap!=NULL) vizDepthMap->setPoint((unsigned int)vizDepthMap->getX(),(unsigned int)vizDepthMap->getY()+dc_count-count);
 	} while (--count);
 
 	return frac;

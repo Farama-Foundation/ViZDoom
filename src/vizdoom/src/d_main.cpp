@@ -109,10 +109,11 @@
 #include "p_local.h"
 
 //VIZDOOM_CODE
-#include "viz_main.h"
+#include "viz_defines.h"
 #include "viz_depth.h"
 #include "viz_input.h"
-#include "viz_defines.h"
+#include "viz_labels.h"
+#include "viz_main.h"
 
 EXTERN_CVAR (Bool, viz_controlled)
 EXTERN_CVAR (Bool, viz_async)
@@ -708,8 +709,10 @@ void D_Display ()
 			vid_cursor.Callback();
 		}
 	}
-//VIZDOOM_CODE
-	if(depthMap!=NULL) depthMap->sizeUpdate();
+
+	//VIZDOOM_CODE
+	if(vizDepthMap!=NULL) vizDepthMap->sizeUpdate();
+	if(vizLabels!=NULL) vizLabels->sizeUpdate();
 
 	RenderTarget = screen;
 
@@ -763,7 +766,6 @@ void D_Display ()
 	}
 
 	hw2d = false;
-
 
 	{
 		unsigned int nowtime = I_FPSTime();
@@ -825,8 +827,7 @@ void D_Display ()
 				StatusBar->Draw (HUD_AltHud);
 				StatusBar->DrawTopStuff (HUD_AltHud);
 			}
-			else 
-			if (viewheight == SCREENHEIGHT && viewactive && screenblocks > 10)
+			else if (viewheight == SCREENHEIGHT && viewactive && screenblocks > 10)
 			{
 				EHudState state = DrawFSHUD ? HUD_Fullscreen : HUD_None;
 				StatusBar->DrawBottomStuff (state);
@@ -957,6 +958,238 @@ void D_Display ()
 	FrameCycles = cycles;
 }
 
+//VIZDOOM_CODE
+void VIZ_D_MapDisplay(){
+	//enable automap
+	bool _automapactive = automapactive;
+	bool _viewactive = viewactive;
+
+	automapactive = false;
+	AM_ToggleMap ();
+	viewactive = false;
+
+	//disable additional buffers in this pass
+	VIZDepthBuffer *_vizDepthMap = vizDepthMap;
+	VIZLabelsBuffer *_vizLabels = vizLabels;
+	vizDepthMap = NULL;
+	vizLabels = NULL;
+
+	bool wipe;
+	bool hw2d;
+
+	if (nodrawers || screen == NULL) return; // for comparative timing / profiling
+
+	cycle_t cycles;
+
+	cycles.Reset();
+	cycles.Clock();
+
+	if (players[consoleplayer].camera == NULL)
+	{
+		players[consoleplayer].camera = players[consoleplayer].mo;
+	}
+
+	if (viewactive)
+	{
+		R_SetFOV (players[consoleplayer].camera && players[consoleplayer].camera->player ?
+				  players[consoleplayer].camera->player->FOV : 90.f);
+	}
+
+	// [RH] change the screen mode if needed
+	if (setmodeneeded)
+	{
+		// Change screen mode.
+		if (Video->SetResolution (NewWidth, NewHeight, NewBits))
+		{
+			// Recalculate various view parameters.
+			setsizeneeded = true;
+			// Let the status bar know the screen size changed
+			if (StatusBar != NULL)
+			{
+				StatusBar->ScreenSizeChanged ();
+			}
+			// Refresh the console.
+			C_NewModeAdjust ();
+			// Reload crosshair if transitioned to a different size
+			ST_LoadCrosshair (true);
+			AM_NewResolution ();
+			// Reset the mouse cursor in case the bit depth changed
+			vid_cursor.Callback();
+		}
+	}
+
+	RenderTarget = screen;
+
+	// change the view size if needed
+	if (setsizeneeded && StatusBar != NULL)
+	{
+		R_ExecuteSetViewSize ();
+	}
+	setmodeneeded = false;
+
+	if (screen->Lock (false))
+	{
+		ST_SetNeedRefresh();
+		V_SetBorderNeedRefresh();
+	}
+
+	// [RH] Allow temporarily disabling wipes
+	if (NoWipe)
+	{
+		V_SetBorderNeedRefresh();
+		NoWipe--;
+		wipe = false;
+		wipegamestate = gamestate;
+	}
+	else if (gamestate != wipegamestate && gamestate != GS_FULLCONSOLE && gamestate != GS_TITLELEVEL)
+	{ // save the current screen if about to wipe
+		V_SetBorderNeedRefresh();
+		switch (wipegamestate)
+		{
+			default:
+				wipe = screen->WipeStartScreen (wipetype);
+				break;
+
+			case GS_FORCEWIPEFADE:
+				wipe = screen->WipeStartScreen (wipe_Fade);
+				break;
+
+			case GS_FORCEWIPEBURN:
+				wipe = screen->WipeStartScreen (wipe_Burn);
+				break;
+
+			case GS_FORCEWIPEMELT:
+				wipe = screen->WipeStartScreen (wipe_Melt);
+				break;
+		}
+		wipegamestate = gamestate;
+	}
+	else
+	{
+		wipe = false;
+	}
+
+	hw2d = false;
+
+	{
+		unsigned int nowtime = I_FPSTime();
+		TexMan.UpdateAnimations(nowtime);
+		R_UpdateSky(nowtime);
+		switch (gamestate)
+		{
+			case GS_FULLCONSOLE:
+				screen->SetBlendingRect(0,0,0,0);
+				hw2d = screen->Begin2D(false);
+				C_DrawConsole (false);
+				M_Drawer ();
+				screen->Update ();
+				return;
+
+			case GS_LEVEL:
+			case GS_TITLELEVEL:
+				if (!gametic)
+					break;
+
+				if (StatusBar != NULL)
+				{
+					float blend[4] = { 0, 0, 0, 0 };
+					StatusBar->BlendView (blend);
+				}
+				screen->SetBlendingRect(viewwindowx, viewwindowy,
+										viewwindowx + viewwidth, viewwindowy + viewheight);
+
+				Renderer->RenderView(&players[consoleplayer]);
+
+				if ((hw2d = screen->Begin2D(viewactive)))
+				{
+					// Redraw everything every frame when using 2D accel
+					ST_SetNeedRefresh();
+					V_SetBorderNeedRefresh();
+				}
+				Renderer->DrawRemainingPlayerSprites();
+
+				screen->DrawBlendingRect();
+				if (automapactive)
+				{
+					int saved_ST_Y = ST_Y;
+					if (viewheight == SCREENHEIGHT)
+					{
+						ST_Y = viewheight;
+					}
+					AM_Drawer ();
+					ST_Y = saved_ST_Y;
+				}
+
+				CT_Drawer ();
+				break;
+
+			case GS_INTERMISSION:
+				screen->SetBlendingRect(0,0,0,0);
+				hw2d = screen->Begin2D(false);
+				WI_Drawer ();
+				CT_Drawer ();
+				break;
+
+			case GS_FINALE:
+				screen->SetBlendingRect(0,0,0,0);
+				hw2d = screen->Begin2D(false);
+				F_Drawer ();
+				CT_Drawer ();
+				break;
+
+			case GS_DEMOSCREEN:
+				screen->SetBlendingRect(0,0,0,0);
+				hw2d = screen->Begin2D(false);
+				D_PageDrawer ();
+				CT_Drawer ();
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	// [RH] Draw icon, if any
+	if (D_DrawIcon)
+	{
+		FTextureID picnum = TexMan.CheckForTexture (D_DrawIcon, FTexture::TEX_MiscPatch);
+
+		D_DrawIcon = NULL;
+		if (picnum.isValid())
+		{
+			FTexture *tex = TexMan[picnum];
+			screen->DrawTexture (tex, 160 - tex->GetScaledWidth()/2, 100 - tex->GetScaledHeight()/2,
+								 DTA_320x200, true, TAG_DONE);
+		}
+		NoWipe = 10;
+	}
+
+	cycles.Unclock();
+	//FrameCycles = cycles;
+
+	vizDepthMap = _vizDepthMap;
+	vizLabels = _vizLabels;
+
+	AM_ToggleMap ();
+	automapactive = _automapactive;
+	viewactive = _viewactive;
+}
+
+//VIZDOOM_CODE
+void VIZ_D_ScreenDisplay(){
+	bool _automapactive = automapactive;
+	bool _viewactive = viewactive;
+	automapactive = false;
+	viewactive = true;
+
+	D_Display ();
+	screen->Update ();
+
+	automapactive = _automapactive;
+	viewactive = _viewactive;
+}
+
+
 //==========================================================================
 //
 // D_ErrorCleanup ()
@@ -1006,7 +1239,7 @@ void D_DoomLoop ()
 
 	vid_cursor.Callback();
 
-	VIZ_Init();
+	//VIZ_Init();
 
 	for (;;)
 	{
@@ -1022,27 +1255,31 @@ void D_DoomLoop ()
 
 			//VIZDOOM_CODE
 			if(*viz_controlled && !*viz_async){
+				//ViZDoom main loop
 
 				if(*viz_allow_input) {
-					vizTime = I_GetTime(true);
+					vizTime = I_GetTime(false);
 					I_WaitForTic(vizTime);
-					//I_WaitForTic(gametic + 1);
-					if(VIZ_IsPaused()) D_ProcessEvents();
+					//if(VIZ_IsPaused()) D_ProcessEvents();
 				}
 
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				if (advancedemo) D_DoAdvanceDemo();
 
-				C_Ticker();
-				M_Ticker();
+				P_UnPredictPlayer();
+
+				C_Ticker ();
+				M_Ticker ();
+				//I_GetTime (true);
+				G_Ticker();
+				++gametic;
+				NetUpdate ();
+				//++maketic;
+
+				P_PredictPlayer(&players[consoleplayer]);
 
 				if(!*viz_nosound){
 					S_UpdateSounds(players[consoleplayer].camera);
-				}
-				if(!VIZ_IsPaused()){
-					G_Ticker();
-					++gametic;
-					++maketic;
 				}
 			}
 			// process one or more tics
@@ -2597,10 +2834,10 @@ void D_DoomMain (void)
 		DThinker::RunThinkers ();
 		gamestate = GS_STARTUP;
 
-		//VIZ_Init();
-
 		if (!restart)
 		{
+			VIZ_Init();
+
 			// start the apropriate game based on parms
 			v = Args->CheckValue ("-record");
 
@@ -2622,10 +2859,15 @@ void D_DoomMain (void)
 			V_Init2();
 			UpdateJoystickMenu(NULL);
 
-#ifdef VIZ_DEPTH_TEST
-			depthMap = new depthBuffer(screen->GetWidth(), screen->GetHeight());
-			depthMap->setDepthBoundries(120000000,358000);//probabli gud, but SHOULDN'T BE HERE
-#endif
+			#ifdef VIZ_DEPTH_TEST
+				vizDepthMap = new VIZDepthBuffer(screen->GetWidth(), screen->GetHeight());
+				vizDepthMap->setDepthBoundries(120000000,358000);//probabli gud, but SHOULDN'T BE HERE
+            #endif
+
+			#ifdef VIZ_LABELS_TEST
+				vizLabels = new VIZLabelsBuffer(screen->GetWidth(), screen->GetHeight());
+			#endif
+
 			v = Args->CheckValue ("-loadgame");
 			if (v)
 			{
@@ -2699,9 +2941,8 @@ void D_DoomMain (void)
 		catch (CRestartException &)
 		{
 			// Music and sound should be stopped first
-			//S_StopMusic(true);
-			//S_StopAllChannels ();
-			delete depthMap;
+			S_StopMusic(true);
+			S_StopAllChannels ();
 			VIZ_Close();
 
 			M_ClearMenus();					// close menu if open
