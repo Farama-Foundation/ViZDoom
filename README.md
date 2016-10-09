@@ -43,7 +43,10 @@ Python examples are currently the richest, so we recommend to look at them, even
 
 ## Building
 
-[Building instructions](doc/Building.md) for all platforms
+- [Linux](doc/Building.md#linux)
+- [Windows](doc/Building.md#windows)
+- [OSX](doc/Building.md#osx)
+
 
 For Windows we are providing compiled runtime binaries and development libraries for Windows:
 - 1.1.0 soon
