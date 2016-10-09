@@ -46,7 +46,6 @@ config_file_path = "../../examples/config/simpler_basic.cfg"
 
 # Converts and downsamples the input image
 def preprocess(img):
-    img = img[0]
     img = skimage.transform.resize(img, resolution)
     img = img.astype(np.float32)
     return img
@@ -133,16 +132,14 @@ def create_network(available_actions_count):
     return dqn, function_learn, function_get_q_values, simple_get_best_action
 
 
-def learn_from_transition(s1, a, s2, s2_isterminal, r):
+def learn_from_memory():
     """ Learns from a single transition (making use of replay memory).
     s2 is ignored if s2_isterminal """
-
-    # Remember the transition that was just experienced.
-    memory.add_transition(s1, a, s2, s2_isterminal, r)
 
     # Get a random minibatch from the replay memory and learns from it.
     if memory.size > batch_size:
         s1, a, s2, isterminal, r = memory.get_sample(batch_size)
+
         q2 = np.max(get_q_values(s2), axis=1)
         # the value of q2 is ignored in learn if s2 is terminal
         learn(s1, q2, a, r, isterminal)
@@ -182,7 +179,10 @@ def perform_learning_step(epoch):
     isterminal = game.is_episode_finished()
     s2 = preprocess(game.get_state().screen_buffer) if not isterminal else None
 
-    learn_from_transition(s1, a, s2, isterminal, reward)
+    # Remember the transition that was just experienced.
+    memory.add_transition(s1, a, s2, isterminal, reward)
+
+    learn_from_memory()
 
 
 # Creates and initializes ViZDoom environment.
@@ -192,6 +192,8 @@ def initialize_vizdoom(config_file_path):
     game.load_config(config_file_path)
     game.set_window_visible(False)
     game.set_mode(Mode.PLAYER)
+    game.set_screen_format(ScreenFormat.GRAY8)
+    game.set_screen_resolution(ScreenResolution.RES_640X480)
     game.init()
     print "Doom initialized."
     return game
