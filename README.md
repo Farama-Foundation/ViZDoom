@@ -60,7 +60,7 @@ Detailed description of all types and methods:
 
 - **[DoomGame](doc/DoomGame.md)**
 - **[Types](doc/Types.md)**
-- [Configuration files](doc/ConfigFile.md)(soon)
+- [Configuration files](doc/ConfigFile.md)
 - [Exceptions](doc/Exceptions.md)(soon)
 - [Utilities](doc/Utilities.md)
 
