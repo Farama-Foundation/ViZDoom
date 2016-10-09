@@ -71,7 +71,7 @@
 
 
 ---
-### <a name="screenresolution"></a>screenresolution `ScreenResolution`
+### <a name="screenresolution"></a>`ScreenResolution`
 
 - **RES_160X120** (4:3)
 - **RES_200X125** (16:10)

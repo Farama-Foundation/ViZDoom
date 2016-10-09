@@ -767,7 +767,7 @@ Takes effect from the next episode.
 
 Default value: 3
 
-Config key: `skill`
+Config key: `DoomSkill/doom_skill`
 
 
 ---
