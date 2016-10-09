@@ -4,6 +4,7 @@ project(ViZDoom)
 option(BUILD_PYTHON "Build ViZDoom Python binding." OFF)
 option(BUILD_PYTHON3 "Build ViZDoom Python3 binding instead of default Python2." OFF)
 option(BUILD_JAVA "Build ViZDoom Java binding." OFF)
+option(BUILD_LUA "Build ViZDoom Lua binding." OFF)
 
 
 if(COMMAND cmake_policy)
@@ -307,6 +308,52 @@ if(BUILD_JAVA)
 		OUTPUT_NAME vizdoom)
 
 endif()
+
+if(BUILD_LUA)
+
+  find_package(Torch REQUIRED)
+
+  set(VIZDOOM_LUA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_lua)
+  set(VIZDOOM_LUA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LUA_SRC_DIR})
+
+  set(VIZDOOM_LUA_LIBS
+    ${VIZDOOM_LIBS}
+    ${Boost_LIBRARIES}
+    )
+
+  include_directories(${VIZDOOM_LUA_INCLUDE_DIR}
+    ${Boost_INCLUDE_DIR}
+    ${LUA_INCLUDE_DIRS}
+    ${Torch_INSTALL_INCLUDE}/TH
+    )
+
+  set(VIZDOOM_LUA_SOURCES
+    ${VIZDOOM_LUA_SRC_DIR}/ViZDoomGame_lua.h
+    ${VIZDOOM_LUA_SRC_DIR}/ViZDoomGame_lua.cpp
+    )
+
+  LINK_DIRECTORIES("${Torch_INSTALL_LIB}")
+
+  add_library(libvizdoom_lua SHARED ${VIZDOOM_LUA_SOURCES})
+  target_link_libraries (libvizdoom_lua ${VIZDOOM_LUA_LIBS} libvizdoom_static)
+
+  set_target_properties(libvizdoom_lua
+    PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/lua
+    LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/lua
+    LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/lua
+    LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/lua
+    LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/lua
+    RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/lua
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/lua
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/lua
+    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/lua
+    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/lua
+    OUTPUT_NAME vizdoom
+    )
+
+endif()
+
 
 #if( WIN32 )
 #	if(NOT EXISTS "${PROJECT_SOURCE_DIR}/scenarios/freedoom.zip")
