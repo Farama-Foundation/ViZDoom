@@ -1,8 +1,5 @@
 # Building
 
-TODO:
-- commands for Lua JIT, Lua 5.2
-
 ## Linux
 
 ### Dependencies
@@ -12,7 +9,6 @@ TODO:
 * Boost libraries (tested on 1.54, 1.58, 1.59, 1.61)
 * Python 2.7+ or Python 3+ with Numpy and Boost.Python for Python binding (optional)
 * JDK for Java binding (JAVA_HOME must be set) (optional)
-* Luabind for Lua binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
@@ -26,11 +22,12 @@ libopenal-dev timidity libwildmidi-dev
 # Boost libraries
 apt-get install libboost-all-dev
 
-# python2 and python3 bindings dependencies
+# Python 2 and Python 3 bindings dependencies
 apt-get install python-pip python3-pip 
 pip install numpy #just for python2 binding
 pip3 install numpy #just for python3 binding
 ```
+
 ### Compiling
 In ViZDoom's root directory:
 ```bash
@@ -40,8 +37,9 @@ make
 
 ``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` and ``-DBUILD_LUA=ON`` CMake options for Python, Java and Lua bindings are optional (default OFF). To force building bindings for Python3 instead of first version found use ``-DBUILD_PYTHON3=ON`` (needs Boost.Python builded with Python 3, default OFF).
 
-#### python3 binding
-Running ViZDoom with python3 instead of python2 requires some additional work, [this short descritpion](Python3.md) might be helpful.
+#### Python 3 binding
+Running ViZDoom with Python 3 instead of Python 2 may requires some additional work, [this short descritpion](Python3.md) might be helpful.
+
 
 ## Windows
 
@@ -68,6 +66,7 @@ In configuration select BUILD_PYTHON, BUILD_PYTHON3 and BUILD_JAVA options for P
 
 Use generated Visual Studio solution to build all ViZDoom's parts.
 
+
 ## OSX
 Untested, code is compatible, CMake still may need minor adjustments.
 Let us know if You are using ViZDoom on OSX.
@@ -88,9 +87,9 @@ Users with brew-installed Python may need to manually set:
 ``-DPYTHON_INCLUDE_DIR=/usr/local/Cellar/python/2.x.x/Frameworks/Python.framework/Versions/2.7/include/python2.7`` and 
 ``-DPYTHON_LIBRARY=/usr/local/Cellar/python/2.x.x/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib``
 
-### Configuration
-Craeting symlink to the app executable may be need:
-``rm bin/vizdoom && ln -s vizdoom.app/Contents/MacOS/vizdoom bin/vizdoom``
+####Configuration
+Craeting symlink to the app executable may be needed:
+``ln -sf vizdoom.app/Contents/MacOS/vizdoom bin/vizdoom``
 
 ## Compilation output
 Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should contain following files.
