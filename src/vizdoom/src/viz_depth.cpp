@@ -27,47 +27,49 @@
 #include <SDL_events.h>
 #endif
     
-VIZDepthBuffer* depthMap = NULL;
+VIZDepthBuffer* vizDepthMap = NULL;
 
-VIZDepthBuffer::VIZDepthBuffer(unsigned int width, unsigned int height) : bufferSize(height*width), bufferWidth(width), bufferHeight(height) {
+VIZDepthBuffer::VIZDepthBuffer(unsigned int width, unsigned int height):
+        bufferSize(height*width), bufferWidth(width), bufferHeight(height) {
+
     buffer = new BYTE[bufferSize];
-    for(unsigned int i=0;i<bufferSize;i++) {
-        buffer[i] = 0;
-    }
-    this->setDepthBoundries(120000000, 358000);
-#ifdef VIZ_DEPTH_TEST
-    for(int j = 0; j < 256; j++)
-    {
-#ifndef VIZ_DEPTH_COLORS
-        colors[j].r = colors[j].g = colors[j].b = j;
-#else
-        colors[j].r= j%3==0 ? 255 : 0;
-        colors[j].g= j%3==1 ? 255 : 0;
-        colors[j].b= j%3==2 ? 255 : 0;
-        if(j%2==0)
-            colors[j].r=colors[j].g=colors[j].b = j;
-        if(j%7==0) {
-            colors[j].r = 100;
-            colors[j].g = 200;
-            colors[j].b = 255;
+    memset(buffer, 0, bufferSize);
 
+    this->setDepthBoundries(120000000, 358000);
+
+    #ifdef VIZ_DEPTH_TEST
+        for(int j = 0; j < 256; j++){
+
+            #ifndef VIZ_DEPTH_COLORS
+                colors[j].r = colors[j].g = colors[j].b = j;
+            #else
+                colors[j].r= j%3==0 ? 255 : 0;
+                colors[j].g= j%3==1 ? 255 : 0;
+                colors[j].b= j%3==2 ? 255 : 0;
+                if(j%2==0)
+                    colors[j].r=colors[j].g=colors[j].b = j;
+                if(j%7==0){
+                    colors[j].r = 100;
+                    colors[j].g = 200;
+                    colors[j].b = 255;
+
+                }
+            #endif
         }
-#endif
-    }
-    this->window = SDL_CreateWindow("Vizia Depth Buffer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width,
-                                    height, SDL_WINDOW_SHOWN);
-    this->surface =  SDL_GetWindowSurface( window );
-#endif
+        this->window = SDL_CreateWindow("ViZDoom Depth Buffer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
+        this->surface =  SDL_GetWindowSurface( window );
+    #endif
 }
 
 VIZDepthBuffer::~VIZDepthBuffer() {
     delete[] buffer;
-#ifdef VIZ_DEPTH_TEST
-    SDL_DestroyWindow( window );
-    window = NULL;
-    SDL_FreeSurface( surface);
-    surface = NULL;
-#endif
+
+    #ifdef VIZ_DEPTH_TEST
+        SDL_DestroyWindow(this->window);
+        window = NULL;
+        SDL_FreeSurface(this->surface);
+        surface = NULL;
+    #endif
 }
 
 // Get depth buffer pointer
@@ -76,14 +78,13 @@ BYTE* VIZDepthBuffer::getBuffer() { return buffer; }
 // Get pointer for requested pixel (x, y coords)
 BYTE* VIZDepthBuffer::getBufferPoint(unsigned int x, unsigned int y) {
     if( x < bufferWidth && y < bufferHeight )
-        return buffer + x + y*bufferWidth;
+        return buffer + x + y * bufferWidth;
     else return NULL;
 }
 
 // Set point(x,y) value with depth stored in actualDepth
 void VIZDepthBuffer::setPoint(unsigned int x, unsigned int y) {
-    BYTE *dpth = getBufferPoint(x, y);
-    if(dpth!=NULL) *dpth = actualDepth;
+    this->setPoint(x, y, this->actualDepth);
 }
 
 // Set point(x,y) value with requested depth
@@ -192,16 +193,17 @@ void VIZDepthBuffer::sizeUpdate() {
         this->bufferWidth= (unsigned)screen->GetWidth();
         this->bufferSize=this->bufferHeight*this->bufferWidth;
         this->buffer = new BYTE[this->bufferSize];
-#ifdef VIZ_DEPTH_TEST
-        SDL_SetWindowSize(this->window, this->bufferWidth,this->bufferHeight);
-        this->surface=SDL_GetWindowSurface(this->window);
-#endif
+
+        #ifdef VIZ_DEPTH_TEST
+            SDL_SetWindowSize(this->window, this->bufferWidth,this->bufferHeight);
+            this->surface=SDL_GetWindowSurface(this->window);
+        #endif
     }
 }
 
 #ifdef VIZ_DEPTH_TEST
-//update depth debug window
-void VIZDepthBuffer::Update() {
+// Update depth debug window
+void VIZDepthBuffer::testUpdate() {
     SDL_Surface* surf = SDL_CreateRGBSurfaceFrom(this->buffer, this->bufferWidth, this->bufferHeight, 8,
                                                  this->bufferWidth, 0, 0, 0, 0);
     SDL_SetPaletteColors(surf->format->palette, colors, 0, 256);

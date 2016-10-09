@@ -42,6 +42,7 @@
 #include "i_system.h"
 #include "templates.h"
 #include "m_misc.h"
+#include "viz_main.h"
 
 
 //==========================================================================
@@ -68,6 +69,7 @@ FileReader::FileReader (const char *filename)
 {
 	if (!Open(filename))
 	{
+		VIZ_IgnoreNextDoomError();
 		I_Error ("Could not open %s", filename);
 	}
 }

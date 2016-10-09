@@ -546,9 +546,6 @@ void AddToConsole (int printlevel, const char *text)
 /* Adds a string to the console and also to the notify buffer */
 int PrintString (int printlevel, const char *outline)
 {
-	if(*viz_noconsole){
-		return 0;
-	}
 
 	if (printlevel < msglevel || *outline == '\0')
 	{
@@ -557,7 +554,8 @@ int PrintString (int printlevel, const char *outline)
 
 	if (printlevel != PRINT_LOG)
 	{
-		I_PrintStr (outline);
+		//VIZDOOM_CODE
+		if(!*viz_noconsole) I_PrintStr (outline);
 
 		AddToConsole (printlevel, outline);
 		if (vidactive && screen && SmallFont)
@@ -1024,8 +1022,6 @@ void C_FullConsole ()
 
 void C_ToggleConsole ()
 {
-	if(*viz_noconsole)
-		return;
 	if (gamestate == GS_DEMOSCREEN || demoplayback)
 	{
 		gameaction = ga_fullconsole;

@@ -5,13 +5,21 @@ ImportExecutables.cmake
 **/link-make
 
 *~
-**.o
-**.a
-**.so
-**.lib
-**.dll
-**.pk3
-**.exp
+*.o
+*.obj
+*.lo
+*.slo
+*.a
+*.so
+*.lib
+*.dll
+*.dylib
+*.la
+*.lai
+*.pk3
+*.exp
+*.out
+*.app
 **/build
 **/CMakeCache.txt
 **/CMakeFiles
@@ -20,35 +28,39 @@ ImportExecutables.cmake
 **/install_manifest.txt
 
 # MSVC
-**.sln
-**.suo
-**.sdf
-**.vcxproj
-**.vcxproj.filters
-**.vcxproj.user
+*.sln
+*.suo
+*.sdf
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
 
 # Python 
-**.pyd
-**.pyc
+*.pyd
+*.pyc
 examples/python/*.cfg
 examples/python/*.ini
 
+# Lua
+examples/lua/*.cfg
+examples/lua/*.ini
+
 # Java
-**.jar
-**.class
+*.jar
+*.class
 
 # Copied from the original ZDoom repository (and modified)
+*.ncb
+*.pdb
+*.ilk
+*.aps
+*.user
 **/Debug
 **/Release
 **/debug
 **/release
 **/release_gcc
 **/debug_gcc
-**.ncb
-**.pdb
-**.ilk
-**.aps
-**.user
 **/DOOMSTATS.TXT
 src/vizdoom/bzip2/x64/
 src/vizdoom/game-music-emu/x64/
@@ -78,16 +90,16 @@ src/vizdoom/zdoom_docs
 src/vizdoom/zlib/x64/
 
 # Game wads, scenarios backups, logs, demos and personal configurations
-**.bak
+*.bak
+*.bcp
+*.lmp
+*.log
 **/doom2.wad
 **/doom.wad
 **/freedoom2.wad
 **/freedoom1.wad
 **/freedm.wad
-**.bcp
-**.lmp
-**.log
 
 # CLion & PyCharm
-**.idea
+**/.idea
 

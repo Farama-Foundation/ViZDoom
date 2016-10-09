@@ -57,7 +57,10 @@
 #include "v_font.h"
 #include "r_data/colormaps.h"
 #include "farchive.h"
+
+//VIZDOOM_CODE
 #include "viz_depth.h"
+#include "viz_labels.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -756,7 +759,8 @@ void R_RenderActorView (AActor *actor, bool dontmaplines)
 	R_ClearDrawSegs ();
 	R_ClearPlanes (true);
 	R_ClearSprites ();
-	if(depthMap!=NULL) depthMap->clearBuffer();
+	if(vizDepthMap!=NULL) vizDepthMap->clearBuffer();
+	if(vizLabels!=NULL) vizLabels->clearBuffer();
 	NetUpdate ();
 
 	// [RH] Show off segs if r_drawflat is 1

@@ -57,6 +57,15 @@ namespace vizdoom{
         std::string error;
     };
 
+    class SignalException : public std::exception {
+    public:
+        SignalException(std::string signal): signal(signal){}
+        ~SignalException() throw(){}
+        const char* what() const throw();
+    private:
+        std::string signal;
+    };
+
     class ViZDoomErrorException : public std::exception {
     public:
         ViZDoomErrorException(){}
@@ -70,25 +79,6 @@ namespace vizdoom{
     class ViZDoomIsNotRunningException : public std::exception {
     public:
         const char* what() const throw();
-    };
-
-    class ViZDoomMismatchedVersionException : public std::exception {
-    public:
-        ViZDoomMismatchedVersionException(std::string vizdoomVersion, std::string libVersion): vizdoomVersion(vizdoomVersion), libVersion(libVersion){}
-        ~ViZDoomMismatchedVersionException() throw(){}
-        const char* what() const throw();
-    private:
-        std::string vizdoomVersion;
-        std::string libVersion;
-    };
-
-    class ViZDoomSignalException : public std::exception {
-    public:
-        ViZDoomSignalException(std::string signal): signal(signal){}
-        ~ViZDoomSignalException() throw(){}
-        const char* what() const throw();
-    private:
-        std::string signal;
     };
 
     class ViZDoomUnexpectedExitException : public std::exception {

@@ -33,29 +33,81 @@
 
 #include "d_main.h"
 #include "d_net.h"
+#include "g_game.h"
+#include "sbar.h"
+#include "c_dispatch.h"
 
 namespace b = boost;
 namespace bt = boost::this_thread;
 
-CVAR (Bool, viz_debug, true, CVAR_NOSET)
+/* CVARs and CCMDs */
+/*--------------------------------------------------------------------------------------------------------------------*/
 
+//CVAR_ARCHIVE		= 1,	// set to cause it to be saved to config
+//CVAR_USERINFO		= 2,	// added to userinfo  when changed
+//CVAR_SERVERINFO	= 4,	// added to serverinfo when changed
+//CVAR_NOSET		= 8,	// don't allow change from console at all, but can be set from the command line
+//CVAR_LATCH		= 16,	// save changes until server restart
+//CVAR_UNSETTABLE	= 32,	// can unset this var from console
+//CVAR_DEMOSAVE		= 64,	// save the value of this cvar in a demo
+//CVAR_ISDEFAULT	= 128,	// is cvar unchanged since creation?
+//CVAR_AUTO			= 256,	// allocated; needs to be freed when destroyed
+//CVAR_NOINITCALL	= 512,	// don't call callback at game start
+//CVAR_GLOBALCONFIG	= 1024,	// cvar is saved to global config section
+//CVAR_VIDEOCONFIG	= 2048, // cvar is saved to video config section (not implemented)
+//CVAR_NOSAVE		= 4096, // when used with CVAR_SERVERINFO, do not save var to savegame
+//CVAR_MOD			= 8192,	// cvar was defined by a mod
+//CVAR_IGNORE		= 16384,// do not send cvar across the network/inaccesible from ACS (dummy mod cvar)
+
+// debug
+CVAR (Int, viz_debug, 0, CVAR_NOSET)
+
+// 0 - no debug msg
+// 1 - init debug msg
+// 2 - tic basic debug msg
+// 3 - tic detailed debug msg
+// 4 - all
+
+// control
 CVAR (Bool, viz_controlled, false, CVAR_NOSET)
 CVAR (String, viz_instance_id, "0", CVAR_NOSET)
+CVAR (Int, viz_seed, 0, CVAR_NOSET)
+
+// modes
 CVAR (Bool, viz_async, false, CVAR_NOSET)
 CVAR (Bool, viz_allow_input, false, CVAR_NOSET)
 
-CVAR (Int, viz_screen_format, 0, CVAR_NOSET)
-CVAR (Bool, viz_depth_buffer, false, CVAR_NOSET)
-CVAR (Bool, viz_map_buffer, false, CVAR_NOSET)
-CVAR (Bool, viz_labals, false, CVAR_NOSET)
+// buffers
+CVAR (Int, viz_screen_format, 0, 0)
+CVAR (Bool, viz_depth, false, 0)
+CVAR (Bool, viz_labels, false, 0)
+CVAR (Bool, viz_automap, false, 0)
+
+// rendering options (bitset)
+CVAR (Int, viz_render_mode, 0, 0)
+CVAR (Int, viz_automap_mode, 0, 0)
+
+// window/sound/console/rendering all frames
 CVAR (Bool, viz_render_all, false, CVAR_NOSET)
 CVAR (Bool, viz_window_hidden, false, CVAR_NOSET)
 CVAR (Bool, viz_noxserver, false, CVAR_NOSET)
 CVAR (Bool, viz_noconsole, false, CVAR_NOSET)
 CVAR (Bool, viz_nosound, false, CVAR_NOSET)
 
+CVAR (Int, viz_override_player, 0, 0)
 CVAR (Bool, viz_loop_map, false, CVAR_NOSET)
 CVAR (Bool, viz_nocheat, false, CVAR_NOSET)
+
+CCMD(viz_set_seed){
+    viz_seed.CmdSet(argv[1]);
+    rngseed = atoi(argv[1]);
+    staticrngseed = rngseed;
+    use_staticrng = true;
+    VIZ_DebugMsg(2, VIZ_FUNC, "viz_seed changed to: %d.", rngseed);
+}
+
+/* Flow */
+/*--------------------------------------------------------------------------------------------------------------------*/
 
 int vizTime = 0;
 bool vizNextTic = false;
@@ -63,9 +115,10 @@ bool vizUpdate = false;
 unsigned int vizLastUpdate = 0;
 
 void VIZ_Init(){
-    Printf("VIZ_Init: Instance id: %s\n", *viz_instance_id);
-
     if(*viz_controlled) {
+        Printf("VIZ_Init: instance id: %s, async: %d, input: %d\n", *viz_instance_id, *viz_async, *viz_allow_input);
+
+        VIZ_CVARsUpdate();
 
         VIZ_MQInit(*viz_instance_id);
         VIZ_SMInit(*viz_instance_id);
@@ -74,8 +127,15 @@ void VIZ_Init(){
         VIZ_InputInit();
         VIZ_ScreenInit();
 
+        VIZ_GameStateUpdate();
+
         vizNextTic = true;
         vizUpdate = true;
+
+        // starting seed
+        use_staticrng = true;
+        staticrngseed = *viz_seed;
+        rngseed = *viz_seed;
     }
 }
 
@@ -98,13 +158,17 @@ void VIZ_AsyncStartTic(){
         exit(0);
     }
 
-    if (*viz_controlled && !VIZ_IsPaused()){
+    if (*viz_controlled){
         VIZ_MQTic();
         if(vizNextTic) VIZ_InputTic();
     }
 }
 
 void VIZ_Tic(){
+
+    VIZ_DebugMsg(2, VIZ_FUNC, "tic: %d, viztic: %d", gametic, VIZ_TIME);
+    VIZ_DebugMsg(4, VIZ_FUNC, "rngseed: %d, use_staticrng: %d, staticrngseed: %d", rngseed, use_staticrng, staticrngseed);
+
 
     try{
         bt::interruption_point();
@@ -113,7 +177,7 @@ void VIZ_Tic(){
         exit(0);
     }
 
-    if (*viz_controlled && !VIZ_IsPaused()){
+    if (*viz_controlled){
 
         NetUpdate();
 
@@ -134,8 +198,16 @@ void VIZ_Tic(){
 }
 
 void VIZ_Update(){
-    D_Display();
+    VIZ_DebugMsg(2, VIZ_FUNC, "tic: %d, viztic: %d, lastupdate: %d", gametic, VIZ_TIME, vizLastUpdate);
+
+    if(!*viz_nocheat){
+        VIZ_D_MapDisplay();
+        VIZ_ScreenLevelMapUpdate();
+    }
+    VIZ_D_ScreenDisplay();
     VIZ_ScreenUpdate();
+    VIZ_GameStateUpdateLabels();
+
     vizLastUpdate = VIZ_TIME;
     vizUpdate = false;
 }
@@ -147,3 +219,186 @@ bool VIZ_IsPaused(){
     //&& !paused && !pauseext && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling
 }
 
+/* CVARs settings */
+/*--------------------------------------------------------------------------------------------------------------------*/
+
+// other
+EXTERN_CVAR(Bool, vid_fps)
+
+// hud
+EXTERN_CVAR(Int, screenblocks)
+EXTERN_CVAR (Bool, st_scale)
+EXTERN_CVAR(Bool, hud_scale)
+EXTERN_CVAR(Bool, hud_althud)
+
+// player sprite
+EXTERN_CVAR(Bool, r_drawplayersprites)
+
+// crosshair
+EXTERN_CVAR (Int, crosshair);
+//EXTERN_CVAR (Bool, crosshairforce);
+//EXTERN_CVAR (Color, crosshaircolor);
+//EXTERN_CVAR (Bool, crosshairhealth);
+//EXTERN_CVAR (Bool, crosshairscale);
+//EXTERN_CVAR (Bool, crosshairgrow);
+
+// decals
+EXTERN_CVAR(Bool, cl_bloodsplats)
+EXTERN_CVAR(Int, cl_maxdecals)
+EXTERN_CVAR(Bool, cl_missiledecals)
+EXTERN_CVAR(Bool, cl_spreaddecals)
+
+// particles && effects sprites
+EXTERN_CVAR(Bool, r_particles)
+EXTERN_CVAR(Int, r_maxparticles)
+
+EXTERN_CVAR(Int, cl_bloodtype)
+EXTERN_CVAR(Int, cl_pufftype)
+EXTERN_CVAR(Int, cl_rockettrails)
+
+// messages
+EXTERN_CVAR(Float, con_midtime)
+EXTERN_CVAR(Float, con_notifytime)
+EXTERN_CVAR(Bool, cl_showmultikills)
+EXTERN_CVAR(Bool, cl_showsprees)
+
+// automap
+EXTERN_CVAR(Int, am_cheat)
+EXTERN_CVAR(Bool, am_rotate)
+EXTERN_CVAR(Bool, am_textured)
+EXTERN_CVAR(Bool, am_followplayer)
+
+EXTERN_CVAR(Bool, am_showitems)
+EXTERN_CVAR(Bool, am_showmonsters)
+EXTERN_CVAR(Bool, am_showsecrets)
+EXTERN_CVAR(Bool, am_showtime)
+EXTERN_CVAR(Bool, am_showtotaltime)
+
+void VIZ_CVARsUpdate(){
+
+    VIZ_DebugMsg(2, VIZ_FUNC, "mode: ", *viz_render_mode);
+
+    // hud
+    bool hud = (*viz_render_mode & 1) != 0;
+    bool minHud = (*viz_render_mode & 2) != 0;
+
+    if (minHud && hud) screenblocks.CmdSet("11");
+    else if (hud) screenblocks.CmdSet("10");
+    else screenblocks.CmdSet("12");
+
+    st_scale.CmdSet("1");
+    hud_scale.CmdSet("1");
+    hud_althud.CmdSet("0");
+
+    // players sprite (weapon)
+    r_drawplayersprites.CmdSet((*viz_render_mode & 4) != 0 ? "1" : "0");
+
+    // crosshair
+    crosshair.CmdSet((*viz_render_mode & 8) != 0 ? "1" : "0");
+
+    // decals
+    bool decals = (*viz_render_mode & 16) != 0;
+    cl_bloodsplats.CmdSet(decals ? "1" : "0");
+    cl_maxdecals.CmdSet(decals ? "1024" : "0");
+    cl_missiledecals.CmdSet(decals ? "1" : "0");
+    cl_spreaddecals.CmdSet(decals ? "1" : "0");
+
+    // particles && effects sprites
+    bool particles = (*viz_render_mode & 32) != 0;
+    bool sprites = (*viz_render_mode & 64) != 0;
+
+    r_particles.CmdSet(particles ? "1" : "0");
+    r_maxparticles.CmdSet(particles ? "4092" : "0");
+
+    cl_bloodtype.CmdSet(sprites ? "1" : "2");
+    cl_pufftype.CmdSet(sprites ? "0" : "1");
+    cl_rockettrails.CmdSet(sprites ? "3" : "1");
+
+    // messages
+    bool messages = (*viz_render_mode & 128) != 0;
+    con_midtime.CmdSet(messages ? "3" : "0");
+    con_notifytime.CmdSet(messages ? "3" : "0");
+    cl_showmultikills.CmdSet(messages ? "1" : "0");
+    cl_showsprees.CmdSet(messages ? "1" : "0");
+
+    // automap
+    am_cheat = *viz_nocheat ? 0 : *viz_automap_mode;
+
+    am_rotate.CmdSet((*viz_render_mode & 256) != 0 ? "1" : "0");
+    am_textured.CmdSet((*viz_render_mode & 512) != 0 ? "1" : "0");
+    am_followplayer.CmdSet("1");
+
+    am_showitems.CmdSet("0");
+    am_showmonsters.CmdSet("0");
+    am_showsecrets.CmdSet("0");
+    am_showtime.CmdSet("0");
+    am_showtotaltime.CmdSet("0");
+
+    if(demoplayback && multiplayer && *viz_override_player){
+        if(*viz_override_player >= 1 && *viz_override_player <= VIZ_MAX_PLAYERS && playeringame[*viz_override_player-1]) {
+            consoleplayer = *viz_override_player - 1;
+            S_UpdateSounds(players[consoleplayer].camera);
+            StatusBar->AttachToPlayer(&players[consoleplayer]);
+        }
+        else VIZ_Error(VIZ_FUNC, "Player %d does not exist.", *viz_override_player);
+    }
+}
+
+
+/* Error and debug handling */
+/*--------------------------------------------------------------------------------------------------------------------*/
+
+bool vizIgnoreNextError = false;
+
+void VIZ_IgnoreNextDoomError(){
+    vizIgnoreNextError = true;
+}
+
+void VIZ_DoomError(const char *error){
+    if(vizIgnoreNextError){
+        vizIgnoreNextError = false;
+        return;
+    }
+
+    if(*viz_controlled){
+        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, error);
+        exit(1);
+    }
+}
+
+void VIZ_PrintFuncMsg(const char *func, const char *msg){
+    int s = 0;
+    while (func[s] != NULL && func[s] != ' ') ++s;
+    int e = s;
+    while (func[e] != NULL && func[e] != '(') ++e;
+
+    if(e > s) Printf("%.*s: %s\n", e - s - 1, &func[s + 1], msg);
+    else Printf("%s: %s\n", func, msg);
+}
+
+void VIZ_Error(const char *func, const char *error, ...){
+
+    va_list arg_ptr;
+    char error_msg[VIZ_MAX_ERROR_TEXT_LEN];
+
+    va_start(arg_ptr, error);
+    myvsnprintf(error_msg, VIZ_MAX_ERROR_TEXT_LEN, error, arg_ptr);
+    va_end(arg_ptr);
+
+    VIZ_PrintFuncMsg(func, error_msg);
+    VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, error_msg);
+    exit(1);
+}
+
+void VIZ_DebugMsg(int level, const char *func, const char *msg, ...){
+    if(*viz_debug < level) return;
+
+    va_list arg_ptr;
+    char debug_msg[VIZ_MAX_DEBUG_TEXT_LEN];
+
+    va_start(arg_ptr, msg);
+    myvsnprintf(debug_msg, VIZ_MAX_DEBUG_TEXT_LEN, msg, arg_ptr);
+    va_end(arg_ptr);
+
+    VIZ_PrintFuncMsg(func, debug_msg);
+}

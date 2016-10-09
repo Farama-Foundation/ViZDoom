@@ -24,25 +24,35 @@
 
 namespace vizdoom {
 
-    double DoomTicsToMs(double tics, int ticrate) {
-        return static_cast<double>(1000) / ticrate * tics;
+    double doomTicsToMs(double tics, unsigned int ticrate) {
+        return 1000.0 / ticrate * tics;
     }
 
-    double MsToDoomTics(double ms, int ticrate) {
-        return static_cast<double>(ticrate) / 1000 * ms;
+    double msToDoomTics(double ms, unsigned int ticrate) {
+        return static_cast<double>(ticrate) / 1000.0 * ms;
     }
 
-    double DoomFixedToDouble(int doomFixed) {
-        double res = static_cast<double>(doomFixed) / 65536.0;
-        return res;
+    double doomTicsToSec(double tics, unsigned int ticrate) {
+        return 1.0 / ticrate * tics;
+    }
+
+    double secToDoomTics(double sec, unsigned int ticrate) {
+        return static_cast<double>(ticrate) * sec;
+    }
+
+    double doomFixedToDouble(int doomFixed) {
+        return static_cast<double>(doomFixed) / 65536.0;
+    }
+
+    double doomFixedToDouble(double doomFixed) {
+        return doomFixed / 65536.0;
     }
 
     bool isBinaryButton(Button button){
-        return button < BinaryButtonCount;
+        return button < BINARY_BUTTON_COUNT;
     }
 
     bool isDeltaButton(Button button){
-        // return button >= BinaryButtonCount && button < (BinaryButtonCount + DeltaButtonCount);
-        return button >= BinaryButtonCount && button < ButtonCount;
+        return button >= BINARY_BUTTON_COUNT && button < BUTTON_COUNT;
     }
 }

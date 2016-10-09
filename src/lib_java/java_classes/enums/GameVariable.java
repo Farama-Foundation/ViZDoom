@@ -63,6 +63,7 @@ public enum GameVariable {
     USER28,
     USER29,
     USER30,
+
     PLAYER_NUMBER,
     PLAYER_COUNT,
     PLAYER1_FRAGCOUNT,

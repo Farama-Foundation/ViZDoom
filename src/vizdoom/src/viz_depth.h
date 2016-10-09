@@ -37,6 +37,9 @@
 
 class VIZDepthBuffer{
 public:
+    VIZDepthBuffer(unsigned int width, unsigned int height);
+    ~VIZDepthBuffer();
+
     BYTE *getBuffer();
     BYTE *getBufferPoint(unsigned int x, unsigned int y);
     void setPoint(unsigned int x, unsigned int y, BYTE depth);
@@ -49,8 +52,7 @@ public:
     void storeY(int y);
     int getX(void);
     int getY(void);
-    VIZDepthBuffer(unsigned int width, unsigned int height);
-    ~VIZDepthBuffer();
+
     unsigned int getBufferSize();
     unsigned int getBufferWidth();
     unsigned int getBufferHeight();
@@ -61,9 +63,11 @@ public:
     bool isLocked();
     void sizeUpdate();
     unsigned int helperBuffer[4];
-#ifdef VIZ_DEPTH_TEST
-    void Update();
-#endif
+
+    #ifdef VIZ_DEPTH_TEST
+    void testUpdate();
+    #endif
+
 private:
     BYTE *buffer;
     unsigned int bufferSize;
@@ -75,12 +79,13 @@ private:
     int convSteps;
     int tX, tY;
     bool locked;
-#ifdef VIZ_DEPTH_TEST
+
+    #ifdef VIZ_DEPTH_TEST
     SDL_Window* window;
     SDL_Surface* surface;
     SDL_Color colors[256];
-#endif
+    #endif
 };
 
-extern VIZDepthBuffer* depthMap;
+extern VIZDepthBuffer* vizDepthMap;
 #endif

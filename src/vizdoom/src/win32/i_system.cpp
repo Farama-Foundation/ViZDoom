@@ -86,6 +86,8 @@
 #include "textures/bitmap.h"
 #include "textures/textures.h"
 
+#include "viz_main.h"
+
 // MACROS ------------------------------------------------------------------
 
 #ifdef _MSC_VER
@@ -802,6 +804,8 @@ void STACK_ARGS I_FatalError(const char *error, ...)
 			fflush(Logfile);
 		}
 
+		VIZ_DoomError(errortext);
+
 		throw CFatalError(errortext);
 	}
 
@@ -829,6 +833,8 @@ void STACK_ARGS I_Error(const char *error, ...)
 	va_start(argptr, error);
 	myvsnprintf(errortext, MAX_ERRORTEXT, error, argptr);
 	va_end(argptr);
+
+	VIZ_DoomError(errortext);
 
 	throw CRecoverableError(errortext);
 }

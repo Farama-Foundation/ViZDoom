@@ -20,23 +20,39 @@
  THE SOFTWARE.
 */
 
-#ifndef __VIZDOOM_DEFINES_H__
-#define __VIZDOOM_DEFINES_H__
+#ifndef __VIZDOOM_TYPES_H__
+#define __VIZDOOM_TYPES_H__
 
+#include <cstdint>
+#include <memory>
+#include <string>
 #include <vector>
 
 namespace vizdoom{
 
-    #define VIZDOOM_LIB_VERSION 109
-    #define VIZDOOM_LIB_VERSION_STR "1.1.0pre"
+    typedef std::vector<uint8_t> Buffer;
+    typedef std::shared_ptr<Buffer> BufferPtr;
 
-    typedef unsigned char uint8_t;
+    struct Label{
+        unsigned int objectId;
+        std::string objectName;
+        uint8_t value;
+    };
 
     struct GameState {
         unsigned int number;
+
         std::vector<int> gameVariables;
-        uint8_t * imageBuffer;
+
+        BufferPtr screenBuffer;
+        BufferPtr depthBuffer;
+        BufferPtr labelsBuffer;
+        BufferPtr automapBuffer;
+
+        std::vector<Label> labels;
     };
+
+    typedef std::shared_ptr<GameState> GameStatePtr;
 
     enum Mode {
         PLAYER,             // synchronous player mode
@@ -47,18 +63,15 @@ namespace vizdoom{
 
     enum ScreenFormat {
         CRCGCB              = 0, // 3 channels of 8-bit values in RGB order
-        CRCGCBDB            = 1, // 4 channels of 8-bit values in RGB + depth buffer order
-        RGB24               = 2, // channel of RGB values stored in 24 bits, where R value is stored in the oldest 8 bits
-        RGBA32              = 3, // channel of RGBA values stored in 32 bits, where R value is stored in the oldest 8 bits
-        ARGB32              = 4, // channel of ARGB values stored in 32 bits, where A value is stored in the oldest 8 bits
-        CBCGCR              = 5, // 3 channels of 8-bit values in BGR order
-        CBCGCRDB            = 6, // 4 channels of 8-bit values in BGR + depth buffer order
-        BGR24               = 7, // channel of BGR values stored in 24 bits, where B value is stored in the oldest 8 bits
-        BGRA32              = 8, // channel of BGRA values stored in 32 bits, where B value is stored in the oldest 8 bits
-        ABGR32              = 9, // channel of ABGR values stored in 32 bits, where A value is stored in the oldest 8 bits
-        GRAY8               = 10, // 8-bit gray channel
-        DEPTH_BUFFER8       = 11, // 8-bit depth buffer channel
-        DOOM_256_COLORS8    = 12, //8-bit channel with Doom palette values
+        RGB24               = 1, // channel of RGB values stored in 24 bits, where R value is stored in the oldest 8 bits
+        RGBA32              = 2, // channel of RGBA values stored in 32 bits, where R value is stored in the oldest 8 bits
+        ARGB32              = 3, // channel of ARGB values stored in 32 bits, where A value is stored in the oldest 8 bits
+        CBCGCR              = 4, // 3 channels of 8-bit values in BGR order
+        BGR24               = 5, // channel of BGR values stored in 24 bits, where B value is stored in the oldest 8 bits
+        BGRA32              = 6, // channel of BGRA values stored in 32 bits, where B value is stored in the oldest 8 bits
+        ABGR32              = 7, // channel of ABGR values stored in 32 bits, where A value is stored in the oldest 8 bits
+        GRAY8               = 8, // 8-bit gray channel
+        DOOM_256_COLORS8    = 9, // 8-bit channel with Doom palette values
     };
 
     enum ScreenResolution {
@@ -112,7 +125,17 @@ namespace vizdoom{
         RES_1920X1080,  // 16:9
     };
 
+    enum AutomapMode {
+        NORMAL,             // Only level architecture the player has seen is shown.
+        WHOLE,              // All architecture is shown, regardless of whether or not the player has seen it.
+        OBJECTS,            // In addition to the previous, shows all things in the map as arrows pointing in
+                            // the direction they are facing.
+        OBJECTS_WITH_SIZE,  // In addition to the previous, all things are wrapped in a box showing their size.
+    };
+
     enum GameVariable {
+
+        /* Defined variables */
         KILLCOUNT,
         ITEMCOUNT,
         SECRETCOUNT,
@@ -147,6 +170,19 @@ namespace vizdoom{
         WEAPON8,
         WEAPON9,
 
+        PLAYER_NUMBER,
+        PLAYER_COUNT,
+        PLAYER1_FRAGCOUNT,
+        PLAYER2_FRAGCOUNT,
+        PLAYER3_FRAGCOUNT,
+        PLAYER4_FRAGCOUNT,
+        PLAYER5_FRAGCOUNT,
+        PLAYER6_FRAGCOUNT,
+        PLAYER7_FRAGCOUNT,
+        PLAYER8_FRAGCOUNT,
+
+        /* User (ACS) variables */
+        // USER0 is reserved for reward
         USER1,
         USER2,
         USER3,
@@ -177,25 +213,40 @@ namespace vizdoom{
         USER28,
         USER29,
         USER30,
-
-        PLAYER_NUMBER,
-        PLAYER_COUNT,
-        PLAYER1_FRAGCOUNT,
-        PLAYER2_FRAGCOUNT,
-        PLAYER3_FRAGCOUNT,
-        PLAYER4_FRAGCOUNT,
-        PLAYER5_FRAGCOUNT,
-        PLAYER6_FRAGCOUNT,
-        PLAYER7_FRAGCOUNT,
-        PLAYER8_FRAGCOUNT,
+        USER31,
+        USER32,
+        USER33,
+        USER34,
+        USER35,
+        USER36,
+        USER37,
+        USER38,
+        USER39,
+        USER40,
+        USER41,
+        USER42,
+        USER43,
+        USER44,
+        USER45,
+        USER46,
+        USER47,
+        USER48,
+        USER49,
+        USER50,
+        USER51,
+        USER52,
+        USER53,
+        USER54,
+        USER55,
+        USER56,
+        USER57,
+        USER58,
+        USER59,
+        USER60,
     };
 
-    static const unsigned int UserVariableCount     = 30;
-    static const unsigned int SlotCount             = 10;
-    static const unsigned int MaxPlayers            = 8;
-    static const unsigned int MaxPlayerNameLength   = 16;
-
     enum Button {
+
         /* Binary buttons */
         ATTACK          = 0,
         USE             = 1,
@@ -248,12 +299,6 @@ namespace vizdoom{
         MOVE_LEFT_RIGHT_DELTA       = 41,
         MOVE_UP_DOWN_DELTA          = 42,
     };
-
-    static const unsigned int BinaryButtonCount = 38;
-    static const unsigned int DeltaButtonCount  = 5;
-    static const unsigned int ButtonCount       = 43;
-
-    static const unsigned int DefaultTicrate    = 35;
 
 }
 #endif

@@ -23,6 +23,9 @@
 #ifndef __VIZ_GAME_H__
 #define __VIZ_GAME_H__
 
+#include <viz_defines.h>
+#include <viz_labels.h>
+#include <viz_shared_memory.h>
 #include <string.h>
 
 #include "dobject.h"
@@ -34,16 +37,21 @@
 //#include "sc_man.h"
 //#include "sc_man_tokens.h"
 
-#define VIZ_GV_USER_COUNT           30
-#define VIZ_GV_SLOTS_SIZE           10
-#define VIZ_MAX_PLAYERS             MAXPLAYERS // 8
-#define VIZ_MAX_PLAYER_NAME_LEN     MAXPLAYERNAME + 1 //(15 + 1 = 16)
+#define VIZ_GV_USER_COUNT 60
+#define VIZ_GV_SLOTS_SIZE 10
 
 struct VIZGameState{
+    // VERSION
     unsigned int VERSION;
     char VERSION_STR[8];
-    size_t SM_SIZE;
 
+    // SM
+    size_t SM_SIZE;
+    size_t SM_REGION_OFFSET[VIZ_SM_REGION_COUNT];
+    size_t SM_REGION_SIZE[VIZ_SM_REGION_COUNT];
+    bool SM_REGION_WRITEABLE[VIZ_SM_REGION_COUNT];
+
+    // GAME
     unsigned int GAME_TIC;
     int GAME_STATE;
     int GAME_ACTION;
@@ -61,6 +69,10 @@ struct VIZGameState{
     size_t SCREEN_SIZE;
     int SCREEN_FORMAT;
 
+    bool DEPTH_BUFFER;
+    bool LABELS;
+    bool AUTOMAP;
+
     // MAP
     unsigned int MAP_START_TIC;
     unsigned int MAP_TIC;
@@ -72,7 +84,6 @@ struct VIZGameState{
     int MAP_ITEMCOUNT;
     int MAP_SECRETCOUNT;
     bool MAP_END;
-
 
     // PLAYER
     bool PLAYER_HAS_ACTOR;
@@ -99,37 +110,30 @@ struct VIZGameState{
     int PLAYER_AMMO[VIZ_GV_SLOTS_SIZE];
     int PLAYER_WEAPON[VIZ_GV_SLOTS_SIZE];
 
+    //int PLAYER_POSITION[3];
+
     bool PLAYER_READY_TO_RESPAWN;
     unsigned int PLAYER_NUMBER;
 
     // OTHER PLAYERS
     unsigned int PLAYER_COUNT;
-    bool PLAYERS_IN_GAME[VIZ_MAX_PLAYERS];
-    char PLAYERS_NAME[VIZ_MAX_PLAYERS][VIZ_MAX_PLAYER_NAME_LEN];
-    int PLAYERS_FRAGCOUNT[VIZ_MAX_PLAYERS];
+    bool PLAYER_N_IN_GAME[VIZ_MAX_PLAYERS];
+    char PLAYER_N_NAME[VIZ_MAX_PLAYERS][VIZ_MAX_PLAYER_NAME_LEN];
+    int PLAYER_N_FRAGCOUNT[VIZ_MAX_PLAYERS];
+
+    //LABELS
+    unsigned int LABEL_COUNT;
+    VIZLabel LABEL[VIZ_MAX_LABELS];
+
 };
-
-int VIZ_CheckItem(FName name);
-
-int VIZ_CheckItem(PClass *type);
-
-const char* VIZ_CheckItemType(PClass *type);
-
-bool VIZ_CheckSelectedWeaponState();
-
-int VIZ_CheckSelectedWeapon();
-
-int VIZ_CheckWeaponAmmo(AWeapon* weapon);
-
-int VIZ_CheckSelectedWeaponAmmo();
-
-int VIZ_CheckSlotAmmo(unsigned int slot);
-
-int VIZ_CheckSlotWeapons(unsigned int slot);
 
 void VIZ_GameStateInit();
 
 void VIZ_GameStateTic();
+
+void VIZ_GameStateUpdate();
+
+void VIZ_GameStateUpdateLabels();
 
 void VIZ_GameStateClose();
 

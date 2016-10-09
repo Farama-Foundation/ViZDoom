@@ -87,10 +87,10 @@
 #include "g_hub.h"
 
 //VIZDOOM_CODE
+#include "viz_main.h"
 #include "viz_input.h"
 #include "viz_defines.h"
 
-EXTERN_CVAR (Bool, viz_debug)
 EXTERN_CVAR (Bool, viz_controlled)
 EXTERN_CVAR (Bool, viz_async)
 EXTERN_CVAR (Bool, viz_allow_input)
@@ -765,66 +765,19 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	}
 	if (SendItemUse == (const AInventory *)1)
 	{
-		//VIZDOOM_CODE
-		if(*viz_controlled && !*viz_async){
-			{
-				AInventory *item = players[consoleplayer].mo->Inventory;
-
-				while (item != NULL)
-				{
-					AInventory *next = item->Inventory;
-					if (item->ItemFlags & IF_INVBAR && !(item->IsKindOf(RUNTIME_CLASS(APuzzleItem))))
-					{
-						players[consoleplayer].mo->UseInventory (item);
-					}
-					item = next;
-				}
-			}
-		}
-		else {
-			Net_WriteByte (DEM_INVUSEALL);
-		}
-//		Net_WriteByte (DEM_INVUSEALL);
+		Net_WriteByte (DEM_INVUSEALL);
 		SendItemUse = NULL;
 	}
 	else if (SendItemUse != NULL)
 	{
-		//VIZDOOM_CODE
-		if(*viz_controlled && !*viz_async){
-			if (gamestate == GS_LEVEL && !paused && players[consoleplayer].playerstate != PST_DEAD) {
-				AInventory *item = players[consoleplayer].mo->Inventory;
-				while (item != NULL && item->InventoryID != SendItemUse->InventoryID) {
-					item = item->Inventory;
-				}
-				if (item != NULL) players[consoleplayer].mo->UseInventory (item);
-			}
-		}
-		else {
-			Net_WriteByte(DEM_INVUSE);
-			Net_WriteLong(SendItemUse->InventoryID);
-		}
-//		Net_WriteByte(DEM_INVUSE);
-//		Net_WriteLong(SendItemUse->InventoryID);
+		Net_WriteByte(DEM_INVUSE);
+		Net_WriteLong(SendItemUse->InventoryID);
 		SendItemUse = NULL;
 	}
 	if (SendItemDrop != NULL)
 	{
-		//VIZDOOM_CODE
-		if(*viz_controlled && !*viz_async){
-			if (gamestate == GS_LEVEL && !paused && players[consoleplayer].playerstate != PST_DEAD) {
-				AInventory *item = players[consoleplayer].mo->Inventory;
-				while (item != NULL && item->InventoryID != SendItemUse->InventoryID){
-					item = item->Inventory;
-				}
-				if (item != NULL) players[consoleplayer].mo->DropInventory (item);
-			}
-		}
-		else {
-			Net_WriteByte (DEM_INVDROP);
-			Net_WriteLong (SendItemDrop->InventoryID);
-		}
-//		Net_WriteByte (DEM_INVDROP);
-//		Net_WriteLong (SendItemDrop->InventoryID);
+		Net_WriteByte (DEM_INVDROP);
+		Net_WriteLong (SendItemDrop->InventoryID);
 		SendItemDrop = NULL;
 	}
 
@@ -1652,7 +1605,7 @@ void G_DeathMatchSpawnPlayer (int playernum)
 	AActor *mo = P_SpawnPlayer(spot, playernum);
 	if (mo != NULL) P_PlayerStartStomp(mo);
 
-	VIZ_DEBUG_PRINT("G_DeathMatchSpawnPlayer: tic: %d, playernum: %d (%s), spot: %d %d %d\n", gametic, playernum, players[playernum].userinfo.GetName(), spot->x, spot->y, spot->z);
+	VIZ_DebugMsg(4, VIZ_FUNC, "playernum: %d (%s), spot: %d %d %d", gametic, playernum, players[playernum].userinfo.GetName(), spot->x, spot->y, spot->z);
 }
 
 //

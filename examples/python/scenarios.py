@@ -6,9 +6,10 @@
 # <episodes> number of episodes are played. 
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
+#
 # To see the scenario description go to "../../scenarios/README.md"
-# 
 #####################################################################
+
 from __future__ import print_function
 
 import itertools as it
@@ -51,32 +52,20 @@ sleep_time = 0.028
 for i in range(episodes):
     print("Episode #" + str(i + 1))
 
-    # Not needed for the first episdoe but the loop is nicer.
+    # Not needed for the first episode but the loop is nicer.
     game.new_episode()
     while not game.is_episode_finished():
 
         # Gets the state and possibly to something with it
-        s = game.get_state()
-        img = s.image_buffer
-        misc = s.game_variables
+        state = game.get_state()
 
         # Makes a random action and save the reward.
-        r = game.make_action(choice(actions))
+        reward = game.make_action(choice(actions))
 
-        # Makes a "prolonged" action and skip frames:
-        # skiprate = 3
-        # r = game.make_action(choice(actions), skiprate)
-
-        # The same could be achieved with:
-        # game.set_action(choice(actions))
-        # skiprate = 3
-        # game.advance_action(skiprate)
-        # r = game.get_last_reward()
-
-        print("State #" + str(s.number))
-        print("Game Variables:", misc)
+        print("State #" + str(state.number))
+        print("Game Variables:", state.game_variables)
         print("Performed action:", game.get_last_action())
-        print("Last Reward:", r)
+        print("Last Reward:", reward)
         print("=====================")
 
         # Sleep some time because processing is too fast to watch.

@@ -21,23 +21,24 @@
 */
 
 #include "viz_shared_memory.h"
-#include "viz_message_queue.h"
 #include "viz_defines.h"
 #include "viz_game.h"
 #include "viz_input.h"
-#include "viz_screen.h"
+#include "viz_main.h"
 
 #include "doomstat.h"
 #include "v_video.h"
 
 bip::shared_memory_object vizSM;
 size_t vizSMSize;
-size_t vizSMGameStateAddress = 0;
-size_t vizSMInputAddress = sizeof(VIZGameState);
-size_t vizSMScreenAddress = sizeof(VIZGameState) + sizeof(VIZInputState);
 char * vizSMName;
 
-EXTERN_CVAR (Bool, viz_debug)
+VIZSMRegion vizSMRegion[VIZ_SM_REGION_COUNT];
+
+size_t vizSMGameStateOffset = 0;
+size_t vizSMInputOffset = sizeof(VIZGameState);
+size_t vizSMBuffersOffset = sizeof(VIZGameState) + sizeof(VIZInputState);
+
 
 void VIZ_SMInit(const char * id){
 
@@ -51,19 +52,58 @@ void VIZ_SMInit(const char * id){
         bip::shared_memory_object::remove(vizSMName);
         vizSM = bip::shared_memory_object(bip::open_or_create, vizSMName, bip::read_write);
 
-        vizSMSize = sizeof(VIZGameState) + sizeof(VIZInputState) + (sizeof(BYTE) * screen->GetWidth() * screen->GetHeight() * 4);
+        vizSMSize = sizeof(VIZGameState) + sizeof(VIZInputState);
         vizSM.truncate(vizSMSize);
 
-        VIZ_DEBUG_PRINT("VIZ_SMInit: SMName: %s, SMSize: %zu\n", vizSMName, vizSMSize);
+        VIZ_DebugMsg(1, VIZ_FUNC, "SMName: %s, SMSize: %zu", vizSMName, vizSMSize);
     }
     catch(...){ // bip::interprocess_exception
-        Printf("VIZ_SMInit: Failed to create shared memory.");
-        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, "Failed to create shared memory.");
-        exit(1);
+        VIZ_Error(VIZ_FUNC, "Failed to create shared memory.");
     }
 }
 
+void VIZ_SMUpdate(size_t buffersSize){
+    try {
+        vizSMSize = sizeof(VIZGameState) + sizeof(VIZInputState) + buffersSize;
+        vizSM.truncate(vizSMSize);
+
+        VIZ_DebugMsg(3, VIZ_FUNC, "New SMSize: %zu", vizSMSize);
+    }
+    catch(...){ // bip::interprocess_exception
+        VIZ_Error(VIZ_FUNC, "Failed to truncate shared memory.");
+    }
+}
+
+void VIZ_SMCreateRegion(VIZSMRegion* regionPtr, bool writeable, size_t offset, size_t size){
+    regionPtr->offset = offset;
+    regionPtr->size = size;
+    regionPtr->writeable = writeable;
+    if(regionPtr->size) {
+        regionPtr->region = new bip::mapped_region(vizSM, bip::read_write, offset, size);
+        regionPtr->address = regionPtr->region->get_address();
+    }
+}
+
+void VIZ_SMDeleteRegion(VIZSMRegion* regionPtr) {
+    if(regionPtr->region){
+        delete regionPtr->region;
+        regionPtr->region = NULL;
+        regionPtr->address = NULL;
+        regionPtr->size = 0;
+        regionPtr->offset = 0;
+        regionPtr->writeable = false;
+    }
+}
+
+size_t VIZ_SMGetRegionOffset(VIZSMRegion* regionPtr){
+    size_t offset = 0;
+    for(auto i = &vizSMRegion[0]; i != regionPtr; ++i) offset += i->size;
+    return offset;
+}
+
 void VIZ_SMClose(){
+    for(int i = 0; i < VIZ_SM_REGION_COUNT; ++i) VIZ_SMDeleteRegion(&vizSMRegion[i]);
+
     //bip::shared_memory_object::remove(vizSMName);
 	delete[] vizSMName;
 }

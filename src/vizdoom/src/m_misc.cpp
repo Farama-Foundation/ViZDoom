@@ -75,6 +75,8 @@
 
 #include "gameconfigfile.h"
 
+#include "viz_main.h"
+
 FGameConfigFile *GameConfig;
 
 CVAR(Bool, screenshot_quiet, false, CVAR_ARCHIVE|CVAR_GLOBALCONFIG);
@@ -121,17 +123,23 @@ int M_ReadFile (char const *name, BYTE **buffer)
 	BYTE *buf;
 
 	handle = open (name, O_RDONLY | O_BINARY, 0666);
-	if (handle == -1)
-		I_Error ("Couldn't read file %s", name);
-	if (fstat (handle,&fileinfo) == -1)
-		I_Error ("Couldn't read file %s", name);
+	if (handle == -1) {
+		VIZ_IgnoreNextDoomError();
+		I_Error("Couldn't read file %s", name);
+	}
+	if (fstat (handle,&fileinfo) == -1) {
+		VIZ_IgnoreNextDoomError();
+		I_Error("Couldn't read file %s", name);
+	}
 	length = fileinfo.st_size;
 	buf = new BYTE[length];
 	count = read (handle, buf, length);
 	close (handle);
 
-	if (count < length)
-		I_Error ("Couldn't read file %s", name);
+	if (count < length) {
+		VIZ_IgnoreNextDoomError();
+		I_Error("Couldn't read file %s", name);
+	}
 
 	*buffer = buf;
 	return length;
@@ -147,17 +155,23 @@ int M_ReadFileMalloc (char const *name, BYTE **buffer)
 	BYTE *buf;
 
 	handle = open (name, O_RDONLY | O_BINARY, 0666);
-	if (handle == -1)
-		I_Error ("Couldn't read file %s", name);
-	if (fstat (handle,&fileinfo) == -1)
-		I_Error ("Couldn't read file %s", name);
+	if (handle == -1) {
+		VIZ_IgnoreNextDoomError();
+		I_Error("Couldn't read file %s", name);
+	}
+	if (fstat (handle,&fileinfo) == -1) {
+		VIZ_IgnoreNextDoomError();
+		I_Error("Couldn't read file %s", name);
+	}
 	length = fileinfo.st_size;
 	buf = (BYTE*)M_Malloc(length);
 	count = read (handle, buf, length);
 	close (handle);
 
-	if (count < length)
-		I_Error ("Couldn't read file %s", name);
+	if (count < length) {
+		VIZ_IgnoreNextDoomError();
+		I_Error("Couldn't read file %s", name);
+	}
 
 	*buffer = buf;
 	return length;

@@ -2,16 +2,16 @@
 
 #####################################################################
 # This script presents how to run deterministic episodes by setting
-# seed. After setting the seed every episode will look the same (if 
+# seed. After setting the seed every episode will look the same (if
 # agent will behave deterministicly of course).
 # Configuration is loaded from "../../examples/config/<SCENARIO_NAME>.cfg" file.
-# <episodes> number of episodes are played. 
+# <episodes> number of episodes are played.
 # Random combination of buttons is chosen for every action.
-# 
+#
 # Game variables from state and last reward are printed.
 #
 # To see the scenario description go to "../../scenarios/README.md"
-# 
+#
 #####################################################################
 from __future__ import print_function
 
@@ -62,7 +62,7 @@ for i in range(episodes):
     while not game.is_episode_finished():
         # Gets the state and possibly to something with it
         s = game.get_state()
-        img = s.image_buffer
+        img = s.screen_buffer
         misc = s.game_variables
 
         # Check which action you chose!
@@ -79,7 +79,7 @@ for i in range(episodes):
             sleep(sleep_time)
 
     print("Episode finished!")
-    print("total reward:", game.get_total_reward())
+    print("Total reward:", game.get_total_reward())
     print("************************")
 
 game.close()

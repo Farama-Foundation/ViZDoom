@@ -42,14 +42,14 @@ EXTERN_CVAR (Bool, viz_debug)
 EXTERN_CVAR (Bool, viz_allow_input)
 
 void VIZ_Command(char * cmd){
-    if(strlen(cmd) >= 1) AddCommandString(cmd);
+    AddCommandString(cmd);
 }
 
 bool VIZ_CommmandFilter(const char *cmd){
 
-    if(!vizInputInited || !*viz_allow_input) return true;
+    VIZ_DebugMsg(2, VIZ_FUNC, "allow_input: %d, cmd: %s", *viz_allow_input, cmd);
 
-    VIZ_DEBUG_PRINT("VIZ_CommmandFilter: gametic: %d, cmd: %s\n", gametic, cmd);
+    if(!vizInputInited || !*viz_allow_input) return true;
 
     bool action = false;
     int state = 1;
@@ -302,15 +302,14 @@ void VIZ_AddBTCommand(VIZButton button, int state){
 void VIZ_InputInit() {
 
     try {
-        vizInputSMRegion = new bip::mapped_region(vizSM, bip::read_write, vizSMInputAddress, sizeof(VIZInputState));
-        vizInput = static_cast<VIZInputState *>(vizInputSMRegion->get_address());
+        VIZSMRegion* inputRegion = &vizSMRegion[1];
+        VIZ_SMCreateRegion(inputRegion, true, VIZ_SMGetRegionOffset(inputRegion), sizeof(VIZInputState));
+        vizInput = static_cast<VIZInputState *>(inputRegion->address);
 
-        VIZ_DEBUG_PRINT("VIZ_InputInit: inputAddress: %zu, inputRealAddress: %p, inputSize: %zu\n", vizSMInputAddress, vizInput, sizeof(VIZInputState));
+        VIZ_DebugMsg(1, VIZ_FUNC, "inputOffset: %zu, inputSize: %zu", inputRegion->offset, sizeof(VIZInputState));
     }
     catch (bip::interprocess_exception &ex) {
-        Printf("VIZ_InputInit: Failed to create input.");
-        VIZ_MQSend(VIZ_MSG_CODE_DOOM_ERROR, "Failed to create input.");
-        exit(1);
+        VIZ_Error(VIZ_FUNC, "Failed to create input.");
     }
 
     for (int i = 0; i < VIZ_BT_COUNT; ++i) {
