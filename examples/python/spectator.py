@@ -34,7 +34,7 @@ game.add_game_args("+freelook 1")
 
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 
-# Enables spectator mode, so you can play. Sounds strange but it is agent who is supposed to watch not you.
+# Enables spectator mode, so you can play. Sounds strange but it is the agent who is supposed to watch not you.
 game.set_window_visible(True)
 game.set_mode(Mode.SPECTATOR)
 

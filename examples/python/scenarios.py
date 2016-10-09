@@ -24,6 +24,8 @@ game = DoomGame()
 # Multiple config files are ok but combining these ones doesn't make much sense.
 
 game.load_config("../../examples/config/basic.cfg")
+# game.load_config("../../examples/config/simpler_basic.cfg")
+# game.load_config("../../examples/config/rocket_basic.cfg")
 # game.load_config("../../examples/config/deadly_corridor.cfg")
 # game.load_config("../../examples/config/deathmatch.cfg")
 # game.load_config("../../examples/config/defend_the_center.cfg")
@@ -35,6 +37,7 @@ game.load_config("../../examples/config/basic.cfg")
 
 # Makes the screen bigger to see more details.
 game.set_screen_resolution(ScreenResolution.RES_640X480)
+game.set_window_visible(True)
 game.init()
 
 # Creates all possible actions depending on how many buttons there are.

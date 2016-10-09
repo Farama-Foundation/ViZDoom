@@ -141,15 +141,17 @@ namespace vizdoom {
     }
 
     void DoomGame::advanceAction(unsigned int tics, bool updateState, bool renderOnly) {
-
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
+        // TODO maybe set lastReward to 0 if finished?
+        if (this->doomController->isTicPossible())
+        {
+            try {
+                this->doomController->tics(tics, updateState || renderOnly);
+            }
+            catch(...){ throw; }
 
-        try {
-            this->doomController->tics(tics, updateState || renderOnly);
+            if(updateState) this->updateState();
         }
-        catch(...){ throw; }
-
-        if(updateState) this->updateState();
     }
 
     double DoomGame::makeAction(std::vector<int> const &actions, unsigned int tics){

@@ -5,6 +5,7 @@ option(BUILD_LUA "Build ViZDoom Lua binding." OFF)
 option(BUILD_LUA52 "Build ViZDoom Lua52 binding instead of default Lua51/LuaJIT." OFF)
 option(BUILD_PYTHON "Build ViZDoom Python binding." OFF)
 option(BUILD_PYTHON3 "Build ViZDoom Python3 binding instead of default Python2." OFF)
+option(BUILD_JAVA "Build ViZDoom Java binding." OFF)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 if(COMMAND cmake_policy)
@@ -153,7 +154,6 @@ if(BUILD_PYTHON AND (NOT BUILD_PYTHON3))
 	python_add_module(libvizdoom_python ${VIZDOOM_PYTHON_SOURCES})
 	target_link_libraries (libvizdoom_python ${VIZDOOM_PYTHON_LIBS} libvizdoom_static)
 
-
 	set_target_properties(libvizdoom_python
 		PROPERTIES
 		LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_PYTHON_OUTPUT_DIR}
@@ -172,8 +172,8 @@ if(BUILD_PYTHON AND (NOT BUILD_PYTHON3))
 	if(UNIX)
 		ADD_CUSTOM_COMMAND(
 			TARGET libvizdoom_python
-			COMMAND ln -sf ../../bin/python2/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/vizdoom.so
-			COMMAND ln -sf ../config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/bots.cfg
+			COMMAND ln -sf ${VIZDOOM_PYTHON2_OUTPUT_DIR}/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/vizdoom.so
+			COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/bots.cfg
 			COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/python.")
 	endif()
 
@@ -235,8 +235,8 @@ if( BUILD_PYTHON3 )
 	if(UNIX)
 		ADD_CUSTOM_COMMAND(
 			TARGET libvizdoom_python3
-			COMMAND ln -sf ../../bin/python3/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/vizdoom.so
-			COMMAND ln -sf ../config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/bots.cfg
+			COMMAND ln -sf ${VIZDOOM_PYTHON3_OUTPUT_DIR}/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/vizdoom.so
+			COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/bots.cfg
 			COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/python.")
 	endif()
 
@@ -392,6 +392,7 @@ if(BUILD_JAVA)
 		PROJECT_LABEL "ViZDoom Java classes")
 
 endif()
+
 
 # Freedoom 2 download
 #-----------------------------------------------------------------------------------------------------------------------

@@ -501,7 +501,7 @@ void CreatePath(const char *fn)
 {
 	char c = fn[strlen(fn)-1];
 
-	if (c != '\\' && c != '/') 
+	if (c != '\\' && c != '/')
 	{
 		FString name(fn);
 		name += '/';
@@ -516,7 +516,7 @@ void CreatePath(const char *fn)
 void CreatePath(const char *fn)
 {
 	char *copy, *p;
- 
+
 	if (fn[0] == '/' && fn[1] == '\0')
 	{
 		return;
@@ -865,29 +865,30 @@ FString NicePath(const char *path)
 		return ExpandEnvVars(path);
 	}
 
-	passwd *pwstruct;
 	const char *slash;
+	FString where;
 
 	if (path[1] == '/' || path[1] == '\0')
-	{ // Get my home directory
-		pwstruct = getpwuid(getuid());
+	{ // Get my home directory from environment var
+		where = getenv("HOME");
 		slash = path + 1;
 	}
 	else
-	{ // Get somebody else's home directory
+	{ // Get somebody else's home directory, from getpwnam
 		slash = strchr(path, '/');
 		if (slash == NULL)
 		{
 			slash = path + strlen(path);
 		}
 		FString who(path, slash - path);
-		pwstruct = getpwnam(who);
+		passwd *pwstruct = getpwnam(who);
+
+		if (pwstruct == NULL)
+		{
+			return ExpandEnvVars(path);
+		}
+		where = pwstruct->pw_dir;
 	}
-	if (pwstruct == NULL)
-	{
-		return ExpandEnvVars(path);
-	}
-	FString where(pwstruct->pw_dir);
 	if (*slash != '\0')
 	{
 		where += ExpandEnvVars(slash);
@@ -951,7 +952,7 @@ void ScanDirectory(TArray<FFileList> &list, const char *dirpath)
 				fl->Filename << dirpath << fileinfo.name;
 				fl->isDirectory = false;
 			}
-		} 
+		}
 		while (_findnext(handle, &fileinfo) == 0);
 		_findclose(handle);
 	}
