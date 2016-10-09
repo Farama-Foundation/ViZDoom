@@ -1,8 +1,8 @@
 # Building ViZDoom for python3
 
 ## Python interpreter
-Make sure that you have python3 intepreter with Numpy installed
-````bash
+Make sure that you have Python3 intepreter with Numpy installed
+```bash
 $ apt-get install python3 python3-pip
 $ pip3 install numpy
 ```
