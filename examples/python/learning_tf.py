@@ -82,9 +82,7 @@ def create_network(available_actions_count):
     # Create the input variables
     s1_ = tf.placeholder(tf.float32, [None] + list(resolution) + [1], name="State")
     a_ = tf.placeholder(tf.int32, [None], name="Action")
-    q2_ = tf.placeholder(tf.float32, [None, available_actions_count], name="Q2")
-    r_ = tf.placeholder(tf.float32, [None, available_actions_count], name="Reward")
-    isterminal_ = tf.placeholder(tf.float32, [None, available_actions_count])
+    target_q_ = tf.placeholder(tf.float32, [None, available_actions_count], name="TargetQ")
 
     # Add 2 convolutional layers with ReLu activation
     conv1 = tf.contrib.layers.convolution2d(s1_, num_outputs=8, kernel_size=[6, 6], stride=[3, 3],
@@ -104,27 +102,23 @@ def create_network(available_actions_count):
                                           weights_initializer=tf.contrib.layers.xavier_initializer(),
                                           biases_initializer=tf.constant_initializer(0.1))
     best_a = tf.argmax(q, 1)
-    # target differs from q only for the selected action. The following means:
-    # target_Q(s,a) = r + gamma * max Q(s2,_) if isterminal else r
-    sub_indices = tf.pack([tf.range(tf.shape(a_)[0]), a_], axis=1)
-    sub_q = tf.gather_nd(q, sub_indices)
-    target_q = r_ + discount_factor * (1 - isterminal_) * q2_
-    target_sub_q = tf.gather_nd(target_q, sub_indices)
 
-    loss = tf.contrib.losses.mean_squared_error(sub_q, target_sub_q)
+    sub_indices = tf.pack([tf.range(tf.shape(a_)[0]), a_], axis=1)
+
+    loss = tf.contrib.losses.mean_squared_error(q, target_q_)
 
     optimizer = tf.train.RMSPropOptimizer(learning_rate)
     # Update the parameters according to the computed gradient using RMSProp.
-    # train_step = optimizer.minimize(loss)
+    train_step = optimizer.minimize(loss)
 
     session = tf.Session()
     init = tf.initialize_all_variables()
     session.run(init)
 
-    def function_learn(s1, q2, a, r, isterminal):
-        feed_dict = {s1_: s1, q2_: q2, a_: a, r_: r, isterminal_: isterminal}
-        # l, _ = session.run([loss, train_step], feed_dict=feed_dict)
-        # return l
+    def function_learn(s1, target_q):
+        feed_dict = {s1_: s1, target_q_: target_q}
+        l, _ = session.run([loss, train_step], feed_dict=feed_dict)
+        return l
 
     def function_get_q_values(state):
         return session.run(q, feed_dict={s1_: state})
@@ -149,8 +143,11 @@ def learn_from_memory():
         s1, a, s2, isterminal, r = memory.get_sample(batch_size)
 
         q2 = np.max(get_q_values(s2), axis=1)
-        # the value of q2 is ignored in learn if s2 is terminal
-        learn(s1, q2, a, r, isterminal)
+        target_q = get_q_values(s1)
+        # target differs from q only for the selected action. The following means:
+        # target_Q(s,a) = r + gamma * max Q(s2,_) if isterminal else r
+        target_q[np.arange(target_q.shape[0]), a] = r + discount_factor * (1 - isterminal) * q2
+        learn(s1, target_q)
 
 
 def perform_learning_step(epoch):
