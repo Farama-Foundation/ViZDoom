@@ -119,11 +119,11 @@ def create_network(available_actions_count):
     updates = rmsprop(loss, params, learning_rate)
 
     # Compile the theano functions
-    print "Compiling the network ..."
+    print("Compiling the network ...")
     function_learn = theano.function([s1, q2, a, r, isterminal], loss, updates=updates, name="learn_fn")
     function_get_q_values = theano.function([s1], q, name="eval_fn")
     function_get_best_action = theano.function([s1], tensor.argmax(q), name="test_fn")
-    print "Network compiled."
+    print("Network compiled.")
 
     def simple_get_best_action(state):
         return function_get_best_action(state.reshape([1, 1, resolution[0], resolution[1]]))
@@ -187,7 +187,7 @@ def perform_learning_step(epoch):
 
 # Creates and initializes ViZDoom environment.
 def initialize_vizdoom(config_file_path):
-    print "Initializing doom..."
+    print("Initializing doom...")
     game = DoomGame()
     game.load_config(config_file_path)
     game.set_window_visible(False)
@@ -195,7 +195,7 @@ def initialize_vizdoom(config_file_path):
     game.set_screen_format(ScreenFormat.GRAY8)
     game.set_screen_resolution(ScreenResolution.RES_640X480)
     game.init()
-    print "Doom initialized."
+    print("Doom initialized.")
     return game
 
 
@@ -211,15 +211,15 @@ memory = ReplayMemory(capacity=replay_memory_size)
 
 net, learn, get_q_values, get_best_action = create_network(len(actions))
 
-print "Starting the training!"
+print("Starting the training!")
 
 time_start = time()
 for epoch in range(epochs):
-    print "\nEpoch %d\n-------" % (epoch + 1)
+    print("\nEpoch %d\n-------" % (epoch + 1))
     train_episodes_finished = 0
     train_scores = []
 
-    print "Training..."
+    print("Training...")
     game.new_episode()
     for learning_step in trange(learning_steps_per_epoch):
         perform_learning_step(epoch)
@@ -229,14 +229,14 @@ for epoch in range(epochs):
             game.new_episode()
             train_episodes_finished += 1
 
-    print "%d training episodes played." % train_episodes_finished
+    print("%d training episodes played." % train_episodes_finished)
 
     train_scores = np.array(train_scores)
 
-    print "Results: mean: %.1f±%.1f," % (train_scores.mean(), train_scores.std()), \
-        "min: %.1f," % train_scores.min(), "max: %.1f," % train_scores.max()
+    print("Results: mean: %.1f±%.1f," % (train_scores.mean(), train_scores.std()), \
+        "min: %.1f," % train_scores.min(), "max: %.1f," % train_scores.max())
 
-    print "\nTesting..."
+    print("\nTesting...")
     test_episode = []
     test_scores = []
     for test_episode in trange(test_episodes_per_epoch):
@@ -250,20 +250,20 @@ for epoch in range(epochs):
         test_scores.append(r)
 
     test_scores = np.array(test_scores)
-    print "Results: mean: %.1f±%.1f," % (
-        test_scores.mean(), test_scores.std()), "min: %.1f" % test_scores.min(), "max: %.1f" % test_scores.max()
+    print("Results: mean: %.1f±%.1f," % (
+        test_scores.mean(), test_scores.std()), "min: %.1f" % test_scores.min(), "max: %.1f" % test_scores.max())
 
-    print "Saving the network weigths..."
-    pickle.dump(get_all_param_values(net), open('weights.dump', "w"))
+    print("Saving the network weigths...")
+    pickle.dump(get_all_param_values(net), open('weights.dump', "wb"))
 
-    print "Total elapsed time: %.2f minutes" % ((time() - time_start) / 60.0)
+    print("Total elapsed time: %.2f minutes" % ((time() - time_start) / 60.0))
 
 game.close()
-print "======================================"
-print "Training finished. It's time to watch!"
+print("======================================")
+print("Training finished. It's time to watch!")
 
 # Load the network's parameters from a file
-params = pickle.load(open('weights.dump', "r"))
+params = pickle.load(open('weights.dump', "rb"))
 set_all_param_values(net, params)
 
 # Reinitialize the game with window visible
@@ -285,4 +285,4 @@ for _ in range(episodes_to_watch):
     # Sleep between episodes
     sleep(1.0)
     score = game.get_total_reward()
-    print "Total score: ", score
+    print("Total score: ", score)
