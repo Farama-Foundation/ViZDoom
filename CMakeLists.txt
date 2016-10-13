@@ -183,11 +183,19 @@ if( BUILD_PYTHON3 )
 
 	find_package(PythonInterp 3 REQUIRED)
 
+    # 3.5.2 => 3.5
 	STRING( REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" python3_version ${PYTHON_VERSION_STRING} )
 	find_package(PythonLibs ${python3_version} REQUIRED)
 
-	find_package(Boost COMPONENTS python3 REQUIRED)
-
+    find_package(Boost QUIET COMPONENTS python3)
+    if ( NOT Boost_python3_FOUND )
+        # 3.5 => 35 (at least on Ubuntu 16.04 the library is called libboost_python-py35.so)
+        STRING( REGEX REPLACE "\\." "" python3_version ${python3_version} )
+        find_package(Boost COMPONENTS python-py${python3_version} REQUIRED)
+    else()
+        MESSAGE("-- Cound not find Boost_python3 nor Boost_python-py${python3_version}.")
+    endif()
+     
 	find_package(NumPy REQUIRED)
 
 	set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
@@ -223,6 +231,7 @@ if( BUILD_PYTHON3 )
 		LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_PYTHON3_OUTPUT_DIR}
 		LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_PYTHON3_OUTPUT_DIR}
 		LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_PYTHON3_OUTPUT_DIR}
+
 		LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON3_OUTPUT_DIR}
 		RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_PYTHON3_OUTPUT_DIR}
 		RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_PYTHON3_OUTPUT_DIR}
