@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import division
+from __future__ import print_function
 from vizdoom import *
 import itertools as it
 import pickle
@@ -82,10 +83,10 @@ class ReplayMemory:
 
 def create_network(available_actions_count):
     # Create the input variables
-    s1 = tensor.tensor4("States")
-    a = tensor.vector("Actions", dtype="int32")
-    q2 = tensor.vector("Next State's best Q-Value")
-    r = tensor.vector("Rewards")
+    s1 = tensor.tensor4("State")
+    a = tensor.vector("Action", dtype="int32")
+    q2 = tensor.vector("Q2")
+    r = tensor.vector("Reward")
     isterminal = tensor.vector("IsTerminal", dtype="int8")
 
     # Create the input layer of the network.
