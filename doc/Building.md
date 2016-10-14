@@ -21,17 +21,17 @@ Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux)
 To get all dependencies (except JDK) on Ubuntu execute the following commands in the shell (requires root access):
 ```bash
 # ZDoom dependencies
-apt-get install build-essential zlib1g-dev libsdl2-dev libjpeg-dev \
+sudo apt-get install build-essential zlib1g-dev libsdl2-dev libjpeg-dev \
 nasm tar libbz2-dev libgtk2.0-dev cmake git libfluidsynth-dev libgme-dev \
 libopenal-dev timidity libwildmidi-dev 
 
-# Boost libraries
-apt-get install libboost-all-dev
-
 # Python 2 and Python 3 bindings dependencies
-apt-get install python-pip python3-pip 
+sudo apt-get install python-pip python3-pip 
 pip install numpy #just for python2 binding
 pip3 install numpy #just for python3 binding
+
+# Boost libraries
+sudo apt-get install libboost-all-dev
 ```
 
 ### Compiling
@@ -42,9 +42,6 @@ make
 ```
 
 ``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` and ``-DBUILD_LUA=ON`` CMake options for Python, Java and Lua bindings are optional (default OFF). To force building bindings for Python3 instead of first version found use ``-DBUILD_PYTHON3=ON`` (needs Boost.Python builded with Python 3, default OFF).
-
-#### Python 3 binding
-Running ViZDoom with Python 3 instead of Python 2 may requires some additional work, [this short descritpion](Python3.md) might be helpful.
 
 
 ## <a name="windows"></a>Windows
