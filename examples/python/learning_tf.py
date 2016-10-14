@@ -258,9 +258,10 @@ if __name__ == '__main__':
 
             test_scores = np.array(test_scores)
             print("Results: mean: %.1f±%.1f," % (
-                test_scores.mean(), test_scores.std()), "min: %.1f" % test_scores.min(), "max: %.1f" % test_scores.max())
+                test_scores.mean(), test_scores.std()), "min: %.1f" % test_scores.min(),
+                  "max: %.1f" % test_scores.max())
 
-            print("Saving the network weigths...")
+            print("Saving the network weigths to:", model_savefile)
             saver.save(session, model_savefile)
             # pickle.dump(get_all_param_values(net), open('weights.dump', "wb"))
 
