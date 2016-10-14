@@ -38,6 +38,7 @@ frame_repeat = 12
 resolution = (30, 45)
 episodes_to_watch = 10
 
+model_savefile = "/tmp/weights.dump"
 # Configuration file path
 config_file_path = "../../examples/config/simpler_basic.cfg"
 
@@ -235,7 +236,7 @@ for epoch in range(epochs):
     train_scores = np.array(train_scores)
 
     print("Results: mean: %.1f±%.1f," % (train_scores.mean(), train_scores.std()), \
-        "min: %.1f," % train_scores.min(), "max: %.1f," % train_scores.max())
+          "min: %.1f," % train_scores.min(), "max: %.1f," % train_scores.max())
 
     print("\nTesting...")
     test_episode = []
@@ -254,17 +255,19 @@ for epoch in range(epochs):
     print("Results: mean: %.1f±%.1f," % (
         test_scores.mean(), test_scores.std()), "min: %.1f" % test_scores.min(), "max: %.1f" % test_scores.max())
 
-    print("Saving the network weigths...")
-    pickle.dump(get_all_param_values(net), open('weights.dump', "wb"))
+    print("Saving the network weigths to:", model_savefile)
+    pickle.dump(get_all_param_values(net), open(model_savefile, "wb"))
 
     print("Total elapsed time: %.2f minutes" % ((time() - time_start) / 60.0))
 
 game.close()
 print("======================================")
+print("Loading the network weigths from:", model_savefile)
 print("Training finished. It's time to watch!")
 
 # Load the network's parameters from a file
-params = pickle.load(open('weights.dump', "rb"))
+
+params = pickle.load(open(model_savefile, "rb"))
 set_all_param_values(net, params)
 
 # Reinitialize the game with window visible
