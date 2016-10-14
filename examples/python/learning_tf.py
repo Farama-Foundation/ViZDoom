@@ -12,9 +12,6 @@ import skimage.color, skimage.transform
 import tensorflow as tf
 from tqdm import trange
 
-# TODO figure out why this doesn't work as expected (logs appear after this line anyway)
-tf.logging.set_verbosity(tf.logging.WARN)
-
 # Q-learning settings
 learning_rate = 0.00025
 # learning_rate = 0.0001
@@ -34,6 +31,10 @@ frame_repeat = 12
 resolution = (30, 45)
 episodes_to_watch = 10
 
+model_savefile = "/tmp/model.ckpt"
+save_model = True
+load_model = False
+skip_learning = False
 # Configuration file path
 config_file_path = "../../examples/config/simpler_basic.cfg"
 
@@ -41,7 +42,7 @@ config_file_path = "../../examples/config/simpler_basic.cfg"
 # config_file_path = "../../examples/config/rocket_basic.cfg"
 # config_file_path = "../../examples/config/basic.cfg"
 
-# Converts and downsamples the input image
+# Converts and down-samples the input image
 def preprocess(img):
     img = skimage.transform.resize(img, resolution)
     img = img.astype(np.float32)
@@ -78,7 +79,7 @@ class ReplayMemory:
         return self.s1[i], self.a[i], self.s2[i], self.isterminal[i], self.r[i]
 
 
-def create_network(available_actions_count):
+def create_network(session, available_actions_count):
     # Create the input variables
     s1_ = tf.placeholder(tf.float32, [None] + list(resolution) + [1], name="State")
     a_ = tf.placeholder(tf.int32, [None], name="Action")
@@ -103,17 +104,11 @@ def create_network(available_actions_count):
                                           biases_initializer=tf.constant_initializer(0.1))
     best_a = tf.argmax(q, 1)
 
-    sub_indices = tf.pack([tf.range(tf.shape(a_)[0]), a_], axis=1)
-
     loss = tf.contrib.losses.mean_squared_error(q, target_q_)
 
     optimizer = tf.train.RMSPropOptimizer(learning_rate)
     # Update the parameters according to the computed gradient using RMSProp.
     train_step = optimizer.minimize(loss)
-
-    session = tf.Session()
-    init = tf.initialize_all_variables()
-    session.run(init)
 
     def function_learn(s1, target_q):
         feed_dict = {s1_: s1, target_q_: target_q}
@@ -129,9 +124,7 @@ def create_network(available_actions_count):
     def function_simple_get_best_action(state):
         return function_get_best_action(state.reshape([1, resolution[0], resolution[1], 1]))[0]
 
-    net = None
-    # Returns Theano objects for the net and functions.
-    return net, function_learn, function_get_q_values, function_simple_get_best_action
+    return function_learn, function_get_q_values, function_simple_get_best_action
 
 
 def learn_from_memory():
@@ -215,62 +208,67 @@ if __name__ == '__main__':
     # Create replay memory which will store the transitions
     memory = ReplayMemory(capacity=replay_memory_size)
 
-    net, learn, get_q_values, get_best_action = create_network(len(actions))
-
+    session = tf.Session()
+    learn, get_q_values, get_best_action = create_network(session, len(actions))
+    saver = tf.train.Saver()
+    if load_model:
+        print("Loading model from: ", model_savefile)
+        saver.restore(session, model_savefile)
+    else:
+        init = tf.initialize_all_variables()
+        session.run(init)
     print("Starting the training!")
 
     time_start = time()
-    for epoch in range(epochs):
-        print("\nEpoch %d\n-------" % (epoch + 1))
-        train_episodes_finished = 0
-        train_scores = []
+    if not skip_learning:
+        for epoch in range(epochs):
+            print("\nEpoch %d\n-------" % (epoch + 1))
+            train_episodes_finished = 0
+            train_scores = []
 
-        print("Training...")
-        game.new_episode()
-        for learning_step in trange(learning_steps_per_epoch):
-            perform_learning_step(epoch)
-            if game.is_episode_finished():
-                score = game.get_total_reward()
-                train_scores.append(score)
-                game.new_episode()
-                train_episodes_finished += 1
-
-        print("%d training episodes played." % train_episodes_finished)
-
-        train_scores = np.array(train_scores)
-
-        print("Results: mean: %.1f±%.1f," % (train_scores.mean(), train_scores.std()), \
-              "min: %.1f," % train_scores.min(), "max: %.1f," % train_scores.max())
-
-        print("\nTesting...")
-        test_episode = []
-        test_scores = []
-        for test_episode in trange(test_episodes_per_epoch):
+            print("Training...")
             game.new_episode()
-            while not game.is_episode_finished():
-                state = preprocess(game.get_state().screen_buffer)
-                best_action_index = get_best_action(state)
+            for learning_step in trange(learning_steps_per_epoch):
+                perform_learning_step(epoch)
+                if game.is_episode_finished():
+                    score = game.get_total_reward()
+                    train_scores.append(score)
+                    game.new_episode()
+                    train_episodes_finished += 1
 
-                game.make_action(actions[best_action_index], frame_repeat)
-            r = game.get_total_reward()
-            test_scores.append(r)
+            print("%d training episodes played." % train_episodes_finished)
 
-        test_scores = np.array(test_scores)
-        print("Results: mean: %.1f±%.1f," % (
-            test_scores.mean(), test_scores.std()), "min: %.1f" % test_scores.min(), "max: %.1f" % test_scores.max())
+            train_scores = np.array(train_scores)
 
-        # print("Saving the network weigths...")
-        # pickle.dump(get_all_param_values(net), open('weights.dump', "wb"))
+            print("Results: mean: %.1f±%.1f," % (train_scores.mean(), train_scores.std()), \
+                  "min: %.1f," % train_scores.min(), "max: %.1f," % train_scores.max())
 
-        print("Total elapsed time: %.2f minutes" % ((time() - time_start) / 60.0))
+            print("\nTesting...")
+            test_episode = []
+            test_scores = []
+            for test_episode in trange(test_episodes_per_epoch):
+                game.new_episode()
+                while not game.is_episode_finished():
+                    state = preprocess(game.get_state().screen_buffer)
+                    best_action_index = get_best_action(state)
+
+                    game.make_action(actions[best_action_index], frame_repeat)
+                r = game.get_total_reward()
+                test_scores.append(r)
+
+            test_scores = np.array(test_scores)
+            print("Results: mean: %.1f±%.1f," % (
+                test_scores.mean(), test_scores.std()), "min: %.1f" % test_scores.min(), "max: %.1f" % test_scores.max())
+
+            print("Saving the network weigths...")
+            saver.save(session, model_savefile)
+            # pickle.dump(get_all_param_values(net), open('weights.dump', "wb"))
+
+            print("Total elapsed time: %.2f minutes" % ((time() - time_start) / 60.0))
 
     game.close()
     print("======================================")
     print("Training finished. It's time to watch!")
-
-    # Load the network's parameters from a file
-    params = pickle.load(open('weights.dump', "rb"))
-    # set_all_param_values(net, params)
 
     # Reinitialize the game with window visible
     game.set_window_visible(True)
