@@ -23,7 +23,7 @@ import cv2
 game = DoomGame()
 
 # Use other config file if you wish.
-game.load_config("../../examples/config/deadly_corridor.cfg")
+game.load_config("../../scenarios/deadly_corridor.cfg")
 game.set_render_hud(False)
 
 game.set_screen_resolution(ScreenResolution.RES_640X480)

@@ -27,7 +27,7 @@ iterations = 10000
 #####################################################################
 
 game = DoomGame()
-game.load_config("../../examples/config/basic.cfg")
+game.load_config("../../scenarios/basic.cfg")
 
 game.set_screen_resolution(resolution)
 game.set_screen_format(screen_format)

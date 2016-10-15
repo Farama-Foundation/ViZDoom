@@ -26,7 +26,7 @@ game = DoomGame()
 # Don't load two configs cause the second will overrite the first one.
 # Multiple config files are ok but combining these ones doesn't make much sense.
 
-game.load_config("../../examples/config/health_gathering.cfg")
+game.load_config("../../scenarios/health_gathering.cfg")
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 
 game.init()
