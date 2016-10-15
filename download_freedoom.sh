@@ -1,14 +1,16 @@
 #!/bin/sh
-# Checks if scenarios/freedoom2.wad is in place and downloads and extracts it if not.
 
-FREEDOM_LINK="https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip"
+# Checks if bin/freedoom2.wad is in place if not, the zip is downloaded(if not yet present) and freedoom2.wad is extracted to bin directory.
 
-if [ ! -e  "./scenarios/freedoom2.wad" ]
+FREEDOOM_LINK="https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip"
+
+FREEDOOM_DOWNLOAD_PATH="/tmp"
+if [ ! -e  "./bin/freedoom2.wad" ]
 then 
-	if [ ! -e "./bin/freedoom-0.10.1.zip" ]
+	if [ ! -e "${FREEDOOM_DOWNLOAD_PATH}/freedoom-0.10.1.zip" ]
 	then
-		wget $FREEDOM_LINK -P ./bin
+		wget $FREEDOOM_LINK -P ${FREEDOOM_DOWNLOAD_PATH}
 	fi
-	unzip -j -d ./scenarios ./bin/freedoom-0.10.1.zip freedoom-0.10.1/freedoom2.wad
+	unzip -j -d bin ${FREEDOOM_DOWNLOAD_PATH}/freedoom-0.10.1.zip freedoom-0.10.1/freedoom2.wad
 fi
 
