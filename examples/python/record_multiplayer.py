@@ -6,10 +6,11 @@ from random import choice
 import os
 from multiprocessing import Process
 
+
 def player1():
     game = DoomGame()
 
-    game.load_config('../config/multi_duel.cfg')
+    game.load_config('../../scenarios/multi_duel.cfg')
     game.add_game_args("-host 2 -deathmatch +timelimit 0.15 +sv_spawnfarthest 1 ")
     game.add_game_args("+name Player1 +colorset 0")
 
@@ -18,7 +19,7 @@ def player1():
 
     game.init()
 
-    actions = [[True,False,False],[False,True,False],[False,False,True]]
+    actions = [[True, False, False], [False, True, False], [False, False, True]]
 
     while not game.is_episode_finished():
         if game.is_player_dead():
@@ -30,17 +31,18 @@ def player1():
     print("Player1 frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
     game.close()
 
+
 def player2():
     game = DoomGame()
 
-    game.load_config('../config/multi_duel.cfg')
+    game.load_config('../../scenarios/multi_duel.cfg')
     game.set_window_visible(False)
     game.add_game_args("-join 127.0.0.1")
     game.add_game_args("+name Player2 +colorset 3")
 
     game.init()
 
-    actions = [[True,False,False],[False,True,False],[False,False,True]]
+    actions = [[True, False, False], [False, True, False], [False, False, True]]
 
     while not game.is_episode_finished():
         if game.is_player_dead():
@@ -50,6 +52,7 @@ def player2():
 
     print("Player2 frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
     game.close()
+
 
 def replay_as_player2():
     game = DoomGame()
@@ -78,7 +81,7 @@ if __name__ == '__main__':
     print("\nRECORDING")
     print("************************\n")
 
-    p1 = Process(target = player1)
+    p1 = Process(target=player1)
     p1.start()
 
     player2()

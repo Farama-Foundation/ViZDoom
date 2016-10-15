@@ -7,14 +7,6 @@ from vizdoom import *
 
 game = DoomGame()
 
-game.set_vizdoom_path("../../bin/vizdoom")
-
-game.set_doom_game_path("../../scenarios/freedoom2.wad")
-# game.set_doom_game_path("../../scenarios/doom2.wad")  # Not provided with environment due to licences.
-
-game.set_doom_map("map01")
-
-game.set_screen_resolution(ScreenResolution.RES_640X480)
 
 # Adds delta buttons that will be allowed and set the maximum allowed value (optional).
 game.add_available_button(Button.MOVE_FORWARD_BACKWARD_DELTA, 10)

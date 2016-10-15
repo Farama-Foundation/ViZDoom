@@ -21,7 +21,7 @@ import cv2
 game = DoomGame()
 
 # Use other config file if you wish.
-game.load_config("../../examples/config/deadly_corridor.cfg")
+game.load_config("../../scenarios/deadly_corridor.cfg")
 
 # game.set_console_enabled(True)
 # game.set_window_visible(False)

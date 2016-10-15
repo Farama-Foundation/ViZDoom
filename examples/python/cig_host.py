@@ -7,11 +7,7 @@ from random import choice
 game = DoomGame()
 
 # Use CIG example config or your own.
-game.load_config("../../examples/config/cig.cfg")
-
-# Select game and map you want to use.
-game.set_doom_game_path("../../scenarios/freedoom2.wad")
-#game.set_doom_game_path("../../scenarios/doom2.wad")  # Not provided with environment due to licences
+game.load_config("../../scenarios/cig.cfg")
 
 game.set_doom_map("map01")  # Limited deathmatch.
 #game.set_doom_map("map02")  # Full deathmatch.
