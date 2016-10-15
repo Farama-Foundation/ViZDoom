@@ -1,5 +1,7 @@
 # CMake and building output
 **/bin
+ViZDoomVersion.h
+viz_version.h
 Makefile
 ImportExecutables.cmake
 **/link-make

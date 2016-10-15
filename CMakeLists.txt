@@ -1,18 +1,34 @@
 cmake_minimum_required( VERSION 2.8 )
 project(ViZDoom)
 
-option(BUILD_LUA "Build ViZDoom Lua binding." OFF)
-option(BUILD_LUA52 "Build ViZDoom Lua52 binding instead of default Lua51/LuaJIT." OFF)
+# Project version
+#-----------------------------------------------------------------------------------------------------------------------
+set(ViZDoom_MAJOR_VERSION 1)
+set(ViZDoom_MINOR_VERSION 1)
+set(ViZDoom_PATCH_VERSION 0)
+set(ViZDoom_VERSION ${ViZDoom_MAJOR_VERSION}.${ViZDoom_MINOR_VERSION}.${ViZDoom_PATCH_VERSION})
+set(ViZDoom_VERSION_STR ${ViZDoom_VERSION})
+set(ViZDoom_VERSION_ID ${ViZDoom_MAJOR_VERSION}${ViZDoom_MINOR_VERSION}${ViZDoom_PATCH_VERSION})
+
+
+# Building options
+#-----------------------------------------------------------------------------------------------------------------------
 option(BUILD_PYTHON "Build ViZDoom Python binding." OFF)
 option(BUILD_PYTHON3 "Build ViZDoom Python3 binding instead of default Python2." OFF)
+option(BUILD_LUA "Build ViZDoom Lua binding." OFF)
+option(BUILD_LUA52 "Build ViZDoom Lua52 binding instead of default Lua51/LuaJIT." OFF) # TODO
 option(BUILD_JAVA "Build ViZDoom Java binding." OFF)
 
+
+# CMake options
+#-----------------------------------------------------------------------------------------------------------------------
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 if(COMMAND cmake_policy)
 	cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
+
 
 # System dependent settings
 #-----------------------------------------------------------------------------------------------------------------------
@@ -41,6 +57,11 @@ if(WIN32)
 	add_definitions(-D_WIN32_WINNT=${ver})
 endif()
 
+if(APPLE)
+	set(CMAKE_MACOSX_RPATH ON)
+endif(APPLE)
+
+
 # Compiler dependent settings
 #-----------------------------------------------------------------------------------------------------------------------
 if(CMAKE_COMPILER_IS_GNUCXX)
@@ -63,11 +84,6 @@ find_package(Threads REQUIRED)
 set(VIZDOOM_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 set(VIZDOOM_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(VIZDOOM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-set(VIZDOOM_PYTHON2_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python2)
-set(VIZDOOM_PYTHON3_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python3)
-set(VIZDOOM_LUA_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/lua)
-
-
 set(VIZDOOM_LIB_SRC_DIR ${VIZDOOM_SRC_DIR}/lib)
 set(VIZDOOM_LIB_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LIB_SRC_DIR})
 
@@ -80,6 +96,16 @@ set(VIZDOOM_LIBS
 if(UNIX AND NOT APPLE)
 	set(VIZDOOM_LIBS ${VIZDOOM_LIBS} rt)
 endif()
+
+configure_file (
+	"${VIZDOOM_LIB_SRC_DIR}/ViZDoomVersion.h.in"
+	"${VIZDOOM_LIB_SRC_DIR}/ViZDoomVersion.h"
+)
+
+configure_file (
+	"${VIZDOOM_SRC_DIR}/vizdoom/src/viz_version.h.in"
+	"${VIZDOOM_SRC_DIR}/vizdoom/src/viz_version.h"
+)
 
 file(GLOB VIZDOOM_LIB_SOURCES
 	${VIZDOOM_INCLUDE_DIR}/*.h
@@ -128,6 +154,7 @@ if(BUILD_PYTHON AND (NOT BUILD_PYTHON3))
 
 	find_package(NumPy REQUIRED)
 
+	set(VIZDOOM_PYTHON2_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python2)
 	set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
 	set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
 
@@ -198,6 +225,7 @@ if( BUILD_PYTHON3 )
      
 	find_package(NumPy REQUIRED)
 
+	set(VIZDOOM_PYTHON3_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python3)
 	set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
 	set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
 
@@ -262,6 +290,7 @@ if(BUILD_LUA AND (NOT BUILD_LUA52))
 
 	find_package(Lua51 REQUIRED)
 
+	set(VIZDOOM_LUA_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/lua)
 	set(VIZDOOM_LUA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_lua)
 	set(VIZDOOM_LUA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LUA_SRC_DIR})
 
@@ -330,6 +359,8 @@ if(BUILD_JAVA)
 	find_package(JNI REQUIRED)
 
 	include(UseJava)
+
+	set(VIZDOOM_JAVA_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/java)
 	set(VIZDOOM_JAVA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_java)
 	set(VIZDOOM_JAVA_CLASSES_DIR ${VIZDOOM_JAVA_SRC_DIR}/java_classes)
 	set(VIZDOOM_JAVA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_JAVA_SRC_DIR})
@@ -366,16 +397,16 @@ if(BUILD_JAVA)
 
 	set_target_properties(libvizdoom_java
 		PROPERTIES
-		LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/java
-		LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/java
-		LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/java
-		LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/java
-		LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/java
-		RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}/java
-		RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}/java
-		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}/java
-		RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}/java
-		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}/java
+		LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_JAVA_OUTPUT_DIR}
+		LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_JAVA_OUTPUT_DIR}
+		LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_JAVA_OUTPUT_DIR}
+		LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_JAVA_OUTPUT_DIR}
+		LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_JAVA_OUTPUT_DIR}
+		RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_JAVA_OUTPUT_DIR}
+		RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_JAVA_OUTPUT_DIR}
+		RUNTIME_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_JAVA_OUTPUT_DIR}
+		RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_JAVA_OUTPUT_DIR}
+		RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_JAVA_OUTPUT_DIR}
 		OUTPUT_NAME vizdoom
 		PROJECT_LABEL "Java ViZDoom binding")
 
@@ -396,7 +427,7 @@ if(BUILD_JAVA)
 		${VIZDOOM_JAVA_CLASSES_DIR}/GameState.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/Label.java
 		${VIZDOOM_JAVA_CLASSES_DIR}/DoomGame.java
-		OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/java
+		OUTPUT_DIR ${VIZDOOM_JAVA_OUTPUT_DIR}
 		OUTPUT_NAME vizdoom
 		PROJECT_LABEL "ViZDoom Java classes")
 

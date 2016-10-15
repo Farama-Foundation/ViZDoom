@@ -20,20 +20,10 @@
  THE SOFTWARE.
 */
 
-#ifndef __VIZDOOM_CONSTS_H__
-#define __VIZDOOM_CONSTS_H__
+#ifndef __VIZ_VERSION_H__
+#define __VIZ_VERSION_H__
 
-namespace vizdoom{
+#define VIZ_VERSION                 @ViZDoom_VERSION_ID@
+#define VIZ_VERSION_STR             "@ViZDoom_VERSION_STR@"
 
-    const unsigned int SLOT_COUNT = 10;
-    const unsigned int MAX_PLAYERS = 8;
-    const unsigned int MAX_PLAYER_NAME_LENGTH = 16;
-    const unsigned int USER_VARIABLE_COUNT = 60;
-    const unsigned int DEFAULT_TICRATE = 35;
-
-    const unsigned int BINARY_BUTTON_COUNT = 38;
-    const unsigned int DELTA_BUTTON_COUNT = 5;
-    const unsigned int BUTTON_COUNT = 43;
-
-}
 #endif
