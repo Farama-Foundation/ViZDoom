@@ -131,6 +131,7 @@ namespace vizdoom {
     }
 
     const int sharedObjectMarker = 0;
+
     std::string initializeThisSharedObjectPath() {
 #ifdef __unix__
         Dl_info dl_info;

@@ -21,24 +21,14 @@
 */
 
 #include "ViZDoomController.h"
-#include "ViZDoomConsts.h"
 #include "ViZDoomExceptions.h"
 #include "ViZDoomPathHelpers.h"
-#include "ViZDoomUtilities.h"
 #include "boost/process.hpp"
 
 #include <boost/algorithm/string.hpp>
-#include <boost/bind.hpp>
 #include <boost/chrono.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
-#include <climits>
-#include <csignal>
-#include <cstdio>
-#include <cstdlib>
-#include <ctime>
-#include <iostream>
-#include "ViZDoomPathHelpers.h"
+
 
 namespace vizdoom {
 
