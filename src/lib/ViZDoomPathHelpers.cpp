@@ -28,22 +28,29 @@
 #include <fstream>
 #include <iostream>
 
+
+#ifdef __unix__
+
+#include <dlfcn.h> // for getting current shared object path
+
+#endif
+
 namespace vizdoom {
 
     namespace b     = boost;
     namespace bfs   = boost::filesystem;
 
-    std::string fileExtension(std::string filePath){
+    std::string fileExtension(std::string filePath) {
         bfs::path path(filePath);
         return path.extension().string();
     }
 
-    bool hasExtension(std::string filePath){
+    bool hasExtension(std::string filePath) {
         bfs::path path(filePath);
         return path.has_extension();
     }
 
-    bool fileExists(std::string filePath){
+    bool fileExists(std::string filePath) {
         bfs::path path(filePath);
         return bfs::is_regular_file(path);
 
@@ -53,7 +60,7 @@ namespace vizdoom {
         //return true;
     }
 
-    std::string relativePath(std::string relativePath, std::string basePath){
+    std::string relativePath(std::string relativePath, std::string basePath) {
         bfs::path outPath(basePath);
         outPath.remove_filename();
         outPath /= relativePath;
@@ -61,27 +68,26 @@ namespace vizdoom {
         //return outPath.string();
 
         bfs::path normalizedPath;
-        for(auto i = outPath.begin(); i != outPath.end(); ++i) {
-            if(*i == "..") {
+        for (auto i = outPath.begin(); i != outPath.end(); ++i) {
+            if (*i == "..") {
                 // /a/b/.. is not necessarily /a if b is a symbolic link
                 // /a/b/../.. is not /a/b/.. under most circumstances
                 // We can end up with ..s in our result because of symbolic links
-                if(boost::filesystem::is_symlink(normalizedPath)) normalizedPath /= *i;
+                if (boost::filesystem::is_symlink(normalizedPath)) normalizedPath /= *i;
 
                 // Otherwise it should be safe to resolve the parent
-                if(normalizedPath.filename() == ".." || normalizedPath.filename() == "") normalizedPath /= *i;
+                if (normalizedPath.filename() == ".." || normalizedPath.filename() == "") normalizedPath /= *i;
                 else normalizedPath = normalizedPath.parent_path();
-            }
-            else if(*i != ".") normalizedPath /= *i;
+            } else if (*i != ".") normalizedPath /= *i;
         }
 
         return normalizedPath.string();
     }
 
-    std::string checkFile(std::string filePath, std::string expectedExt){
-        if(!fileExists(filePath)){
-            if(!expectedExt.length() || hasExtension(filePath)) throw FileDoesNotExistException(filePath);
-            if(!fileExists(filePath + "." + expectedExt))
+    std::string checkFile(std::string filePath, std::string expectedExt) {
+        if (!fileExists(filePath)) {
+            if (!expectedExt.length() || hasExtension(filePath)) throw FileDoesNotExistException(filePath);
+            if (!fileExists(filePath + "." + expectedExt))
                 throw FileDoesNotExistException(filePath + "(." + expectedExt + ")");
             filePath += "." + expectedExt;
         }
@@ -89,39 +95,61 @@ namespace vizdoom {
         return filePath;
     }
 
-    std::string prepareFilePathArg(std::string filePath){
+    std::string prepareFilePathArg(std::string filePath) {
         b::erase_all(filePath, "\n");
         b::erase_all(filePath, "\r");
 
         return filePath;
     }
 
-    std::string prepareFilePathCmd(std::string filePath){
+    std::string prepareFilePathCmd(std::string filePath) {
         filePath = prepareFilePathArg(filePath);
-        if(b::find_first(filePath, " ") && filePath[0] != '\"' && filePath[filePath.length() - 1] != '\"')
-            filePath = std::string("\"") + filePath  + "\"";
+        if (b::find_first(filePath, " ") && filePath[0] != '\"' && filePath[filePath.length() - 1] != '\"')
+            filePath = std::string("\"") + filePath + "\"";
 
         return filePath;
     }
 
-    std::string prepareExeFilePath(std::string filePath){
+    std::string prepareExeFilePath(std::string filePath) {
         filePath = prepareFilePathArg(filePath);
 
-        #ifdef OS_WIN
-            return checkFile(filePath, "exe");
-        #else
-            return checkFile(filePath);
-        #endif
+#ifdef OS_WIN
+        return checkFile(filePath, "exe");
+#else
+        return checkFile(filePath);
+#endif
     }
 
-    std::string prepareWadFilePath(std::string filePath){
+    std::string prepareWadFilePath(std::string filePath) {
         filePath = prepareFilePathArg(filePath);
         return checkFile(filePath, "wad");
     }
 
-    std::string prepareLmpFilePath(std::string filePath){
+    std::string prepareLmpFilePath(std::string filePath) {
         filePath = checkFile(filePath, "lmp");
         return prepareFilePathCmd(filePath);
+    }
+
+    const int sharedObjectMarker = 0;
+    std::string initializeThisSharedObjectPath() {
+#ifdef __unix__
+        Dl_info dl_info;
+        dladdr(&sharedObjectMarker, &dl_info);
+        std::string this_shared_object_path = boost::filesystem::absolute(
+                dl_info.dli_fname).parent_path().generic_string();
+
+#else
+        std::string this_shared_object_path =".";
+#endif
+        return this_shared_object_path;
+    }
+
+
+    std::string THIS_SHARED_OBJECT_PATH = initializeThisSharedObjectPath();
+
+    std::string getThisSharedObjectPath() {
+        return THIS_SHARED_OBJECT_PATH;
+
     }
 
 }
