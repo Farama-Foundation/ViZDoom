@@ -55,6 +55,8 @@ namespace vizdoom {
     std::string prepareWadFilePath(std::string filePath);
 
     std::string prepareLmpFilePath(std::string filePath);
+
+    std::string getThisSharedObjectPath();
 }
 
 #endif
