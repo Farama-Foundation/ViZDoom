@@ -172,9 +172,8 @@ if(BUILD_PYTHON AND (NOT BUILD_PYTHON3))
 	if(UNIX)
 		ADD_CUSTOM_COMMAND(
 			TARGET libvizdoom_python
-			COMMAND ln -sf ${VIZDOOM_PYTHON2_OUTPUT_DIR}/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/vizdoom.so
-			COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/bots.cfg
-			COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/python.")
+			COMMAND scripts/assemble_python_wrapper.sh 2)
+
 	endif()
 
 endif()
@@ -244,9 +243,8 @@ if( BUILD_PYTHON3 )
 	if(UNIX)
 		ADD_CUSTOM_COMMAND(
 			TARGET libvizdoom_python3
-			COMMAND ln -sf ${VIZDOOM_PYTHON3_OUTPUT_DIR}/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/vizdoom.so
-			COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/bots.cfg
-			COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/python.")
+				COMMAND scripts/assemble_python_wrapper.sh 3
+		)
 	endif()
 
 endif()
