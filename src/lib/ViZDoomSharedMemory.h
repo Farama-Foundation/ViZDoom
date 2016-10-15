@@ -43,14 +43,14 @@ namespace vizdoom {
     /* SM region */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    struct SMRegion{
+    struct SMRegion {
         bip::mapped_region *region;
         void *address;
         size_t offset;
         size_t size;
         bool writeable;
 
-        SMRegion(){
+        SMRegion() {
             this->region = nullptr;
             this->address = nullptr;
             this->offset = 0;
@@ -62,7 +62,7 @@ namespace vizdoom {
     /* SM structs */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    struct SMLabel{
+    struct SMLabel {
         unsigned int objectId;
         char objectName[MAX_LABEL_NAME_LEN];
         uint8_t value;
@@ -167,18 +167,26 @@ namespace vizdoom {
 
     public:
         SharedMemory(std::string name);
+
         ~SharedMemory();
 
         void init();
+
         void update();
+
         void close();
 
-        SMGameState * getGameState();
-        SMInputState * getInputState();
-        uint8_t * getScreenBuffer();
-        uint8_t * getDepthBuffer();
-        uint8_t * getLabelsBuffer();
-        uint8_t * getAutomapBuffer();
+        SMGameState *getGameState();
+
+        SMInputState *getInputState();
+
+        uint8_t *getScreenBuffer();
+
+        uint8_t *getDepthBuffer();
+
+        uint8_t *getLabelsBuffer();
+
+        uint8_t *getAutomapBuffer();
 
     private:
         bip::shared_memory_object sm;
@@ -186,6 +194,7 @@ namespace vizdoom {
         std::string name;
 
         void mapRegion(SMRegion *regionPtr);
+
         void deleteRegion(SMRegion *regionPtr);
 
         //0 - GameState, 1 - InputState, 2 - ScreenBuffer, 3 - DepthBuffer, 4 - LabelsBuffer, 5 - AutomapBuffer

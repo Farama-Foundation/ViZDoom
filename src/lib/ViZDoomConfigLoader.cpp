@@ -35,11 +35,11 @@ namespace vizdoom {
 
     namespace b = boost;
 
-    ConfigLoader::ConfigLoader(DoomGame *game) : game(game){
+    ConfigLoader::ConfigLoader(DoomGame *game) : game(game) {
 
     }
 
-    ConfigLoader::~ConfigLoader(){
+    ConfigLoader::~ConfigLoader() {
 
     }
 
@@ -56,7 +56,8 @@ namespace vizdoom {
     }
 
     unsigned int ConfigLoader::stringToUint(std::string str) {
-        unsigned int value = b::lexical_cast <unsigned int> (str);
+        unsigned int value = b::lexical_cast < unsigned
+        int > (str);
         if (str[0] == '-') throw b::bad_lexical_cast();
         return value;
     }
@@ -254,7 +255,7 @@ namespace vizdoom {
     typedef b::tokenizer<b::char_separator<char> > tokenizer;
 
     bool ConfigLoader::parseListProperty(int &line_number, std::string &value, std::ifstream &input,
-                                     std::vector<std::string> &output) {
+                                         std::vector<std::string> &output) {
         using namespace b::algorithm;
         int start_line = line_number;
         /* Find '{' */
@@ -265,8 +266,7 @@ namespace vizdoom {
                 trim_all(value);
                 if (!value.empty() && value[0] == '#')
                     value = "";
-            }
-            else
+            } else
                 break;
         }
         if (value.empty() || value[0] != '{') return false;
@@ -336,14 +336,12 @@ namespace vizdoom {
                 key = line.substr(0, append_sign_pos);
                 val = line.substr(append_sign_pos + 2);
                 append = true;
-            }
-            else if (equals_sign_pos != std::string::npos) {
+            } else if (equals_sign_pos != std::string::npos) {
                 key = line.substr(0, equals_sign_pos);
                 val = line.substr(equals_sign_pos + 1);
-            }
-            else {
+            } else {
                 std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Syntax erorr in line #" <<
-                    lineNumber << ". Line ignored.\n";
+                          lineNumber << ". Line ignored.\n";
 
                 success = false;
                 continue;
@@ -358,7 +356,7 @@ namespace vizdoom {
             to_lower(key);
             if (key.empty()) {
                 std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Empty key in line #" <<
-                    lineNumber << ". Line ignored.\n";
+                          lineNumber << ". Line ignored.\n";
 
                 success = false;
                 continue;
@@ -387,15 +385,14 @@ namespace vizdoom {
                     }
                     catch (std::exception) {
                         std::cerr << "WARNING! Loading config from: \"" << filePath <<
-                            "\". Unsupported value in lines " << start_line << "-" << lineNumber << ": " <<
-                            strButtons[i] << ". Lines ignored.\n";
+                                  "\". Unsupported value in lines " << start_line << "-" << lineNumber << ": " <<
+                                  strButtons[i] << ". Lines ignored.\n";
 
                         success = false;
                     }
-                }
-                else {
+                } else {
                     std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Syntax error in lines " <<
-                        start_line << "-" << lineNumber << ". Lines ignored.\n";
+                              start_line << "-" << lineNumber << ". Lines ignored.\n";
 
                     success = false;
                 }
@@ -423,15 +420,14 @@ namespace vizdoom {
                     }
                     catch (std::exception) {
                         std::cerr << "WARNING! Loading config from: \"" << filePath <<
-                            "\". Unsupported value in lines " << start_line << "-" << lineNumber << ": " <<
-                            str_variables[i] << ". Lines ignored.\n";
+                                  "\". Unsupported value in lines " << start_line << "-" << lineNumber << ": " <<
+                                  str_variables[i] << ". Lines ignored.\n";
 
                         success = false;
                     }
-                }
-                else {
+                } else {
                     std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Syntax error in lines " <<
-                        start_line << "-" << lineNumber << ". Lines ignored.\n";
+                              start_line << "-" << lineNumber << ". Lines ignored.\n";
 
                     success = false;
                 }
@@ -451,7 +447,7 @@ namespace vizdoom {
             /* Check if "+=" was not used for non-list property */
             if (append) {
                 std::cerr << "WARNING! Loading config from: \"" << filePath <<
-                    "\". \"+=\" is not supported for non-list properties. Line #" << lineNumber << " ignored.\n";
+                          "\". \"+=\" is not supported for non-list properties. Line #" << lineNumber << " ignored.\n";
 
                 success = false;
                 continue;
@@ -461,7 +457,7 @@ namespace vizdoom {
             /* Check if value is not empty */
             if (val.empty()) {
                 std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Empty value in line #" <<
-                    lineNumber << ". Line ignored.\n";
+                          lineNumber << ". Line ignored.\n";
 
                 success = false;
                 continue;
@@ -492,8 +488,8 @@ namespace vizdoom {
             }
             catch (b::bad_lexical_cast &) {
                 std::cerr << "WARNING! Loading config from: \"" << filePath <<
-                    "\". Unsigned int value expected instead of: " << rawVal << " in line #" << lineNumber <<
-                    ". Line ignored.\n";
+                          "\". Unsigned int value expected instead of: " << rawVal << " in line #" << lineNumber <<
+                          ". Line ignored.\n";
 
                 success = false;
                 continue;
@@ -512,7 +508,7 @@ namespace vizdoom {
             }
             catch (b::bad_lexical_cast &) {
                 std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Float value expected insted of: " <<
-                    rawVal << " in line #" << lineNumber << ". Line ignored.\n";
+                          rawVal << " in line #" << lineNumber << ". Line ignored.\n";
 
                 success = false;
                 continue;
@@ -609,8 +605,8 @@ namespace vizdoom {
             }
             catch (std::exception) {
                 std::cerr << "WARNING! Loading config from: \"" << filePath <<
-                    "\". Boolean value expected insted of: " << rawVal << " in line #" << lineNumber <<
-                    ". Line ignored.\n";
+                          "\". Boolean value expected insted of: " << rawVal << " in line #" << lineNumber <<
+                          ". Line ignored.\n";
 
                 success = false;
                 continue;
@@ -638,8 +634,9 @@ namespace vizdoom {
                 }
 
                 std::cerr << "WARNING! Loading config from: \"" << filePath <<
-                    "\". (ASYNC_)SPECTATOR || PLAYER expected instead of: " << rawVal << " in line #" << lineNumber <<
-                    ". Line ignored.\n";
+                          "\". (ASYNC_)SPECTATOR || PLAYER expected instead of: " << rawVal << " in line #"
+                          << lineNumber <<
+                          ". Line ignored.\n";
 
                 success = false;
                 continue;
@@ -664,8 +661,8 @@ namespace vizdoom {
                 }
 
                 std::cerr << "WARNING! Loading config from: \"" << filePath <<
-                    "\". NORMAL || WHOLE || OBJECTS || OBJECTS_WITH_SIZE expected instead of: " << rawVal <<
-                    " in line #" << lineNumber << ". Line ignored.\n";
+                          "\". NORMAL || WHOLE || OBJECTS || OBJECTS_WITH_SIZE expected instead of: " << rawVal <<
+                          " in line #" << lineNumber << ". Line ignored.\n";
 
                 success = false;
                 continue;
@@ -687,7 +684,8 @@ namespace vizdoom {
 
                     Button button = ConfigLoader::stringToButton(val.substr(0, space));
                     val = val.substr(space + 1);
-                    unsigned int maxValue = b::lexical_cast<unsigned int>(val);
+                    unsigned int maxValue = b::lexical_cast < unsigned
+                    int > (val);
 
                     if (val[0] == '-') throw b::bad_lexical_cast();
 
@@ -697,14 +695,14 @@ namespace vizdoom {
             }
             catch (std::exception &) {
                 std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Unsupported value: " << rawVal <<
-                    " in line #" << lineNumber << ". Line ignored.\n";
+                          " in line #" << lineNumber << ". Line ignored.\n";
 
                 success = false;
                 continue;
             }
 
             std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Unsupported key: " << key <<
-                " in line #" << lineNumber << ". Line ignored.\n";
+                      " in line #" << lineNumber << ". Line ignored.\n";
 
             success = false;
         }

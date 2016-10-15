@@ -48,11 +48,11 @@ namespace vizdoom {
         return doomFixed / 65536.0;
     }
 
-    bool isBinaryButton(Button button){
+    bool isBinaryButton(Button button) {
         return button < BINARY_BUTTON_COUNT;
     }
 
-    bool isDeltaButton(Button button){
+    bool isDeltaButton(Button button) {
         return button >= BINARY_BUTTON_COUNT && button < BUTTON_COUNT;
     }
 }

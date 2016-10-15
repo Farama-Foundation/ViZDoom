@@ -34,6 +34,7 @@ namespace vizdoom {
     public:
 
         ConfigLoader(DoomGame *game);
+
         ~ConfigLoader();
 
         bool load(std::string filePath);
@@ -44,15 +45,21 @@ namespace vizdoom {
         /*------------------------------------------------------------------------------------------------------------*/
 
         static bool stringToBool(std::string boolString);
+
         static int stringToInt(std::string str);
+
         static unsigned int stringToUint(std::string str);
 
         static ScreenResolution stringToResolution(std::string str);
+
         static ScreenFormat stringToFormat(std::string str);
+
         static Button stringToButton(std::string str);
+
         static GameVariable stringToGameVariable(std::string str);
 
-        static bool parseListProperty(int &line_number, std::string &value, std::ifstream& input, std::vector<std::string> &output);
+        static bool
+        parseListProperty(int &line_number, std::string &value, std::ifstream &input, std::vector<std::string> &output);
 
     private:
         DoomGame *game;
