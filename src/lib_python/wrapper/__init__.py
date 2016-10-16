@@ -1,1 +1,1 @@
-from vizdoom import *
+from .vizdoom import *
