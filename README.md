@@ -50,7 +50,7 @@ Python examples are currently the richest, so we recommend to look at them, even
 
 For Windows we are providing compiled runtime binaries and development libraries for Windows:
 - 1.1.0 soon
-- [1.1.0pre](https://github.com/Marqt/ViZDoom/releases/download/1.1.0pre-CIG2016-warm-up-fixed/ViZDoom-1.1.0pre-CIG2016-warm-up-Win-x86_64.zip) (see 1.0 branch for compatible examples)
+- [1.1.0pre](https://github.com/Marqt/ViZDoom/releases/download/1.1.0pre-CIG2016-warm-up-fixed/ViZDoom-1.1.0pre-CIG2016-Win-x86_64.zip) (see 1.0 branch for compatible examples)
 - [1.0.4](https://github.com/Marqt/ViZDoom/releases/download/1.0.4/ViZDoom-1.0.4-Win-x86_64.zip) (see 1.0 branch for compatible examples)
 
 
