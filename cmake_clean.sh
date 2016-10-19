@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm CMakeCache.txt
+rm -f CMakeCache.txt
 
 for NAME in Makefile CMakeCache.txt CMakeFiles cmake_install.cmake
 do
