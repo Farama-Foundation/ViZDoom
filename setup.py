@@ -7,7 +7,7 @@ from distutils.command.build import build
 from setuptools import setup, find_packages
 
 python_version = str(sys.version_info[0])
-package_path = 'bin/python' + python_version + '/vizdoom'
+package_path = 'bin/python' + python_version + '/pip_package'
 
 
 def build_task(cmake_arg_list=None):
@@ -63,7 +63,7 @@ setup(
     install_requires=['numpy'],
     setup_requires=['numpy'],
     packages=['vizdoom'],
-    package_dir={package_path},
+    package_dir={'vizdoom': package_path},
     package_data={'vizdoom': ['freedoom2.wad', 'vizdoom', 'vizdoom.pk3', 'vizdoom.so', 'bots.cfg']},
     cmdclass={'build': BuildDoom},
 
