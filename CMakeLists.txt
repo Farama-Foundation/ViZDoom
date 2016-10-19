@@ -153,7 +153,6 @@ if(BUILD_PYTHON AND (NOT BUILD_PYTHON3))
 
 	python_add_module(libvizdoom_python ${VIZDOOM_PYTHON_SOURCES})
 	target_link_libraries (libvizdoom_python ${VIZDOOM_PYTHON_LIBS} libvizdoom_static)
-	add_dependencies(libvizdoom_python vizdoom)
 
 	set_target_properties(libvizdoom_python
 		PROPERTIES
@@ -170,12 +169,6 @@ if(BUILD_PYTHON AND (NOT BUILD_PYTHON3))
 		OUTPUT_NAME vizdoom
 		PROJECT_LABEL "Python 2 ViZDoom binding")
 
-	if(UNIX)
-		ADD_CUSTOM_COMMAND(
-			TARGET libvizdoom_python
-			COMMAND scripts/assemble_python_wrapper.sh 2)
-
-	endif()
 
 endif()
 
@@ -222,7 +215,6 @@ if( BUILD_PYTHON3 )
 	endif()
 
 	python_add_module(libvizdoom_python3 ${VIZDOOM_PYTHON_SOURCES})
-	add_dependencies(libvizdoom_python3 vizdoom)
 	target_link_libraries (libvizdoom_python3 ${VIZDOOM_PYTHON3_LIBS} libvizdoom_static)
 
 
@@ -242,12 +234,6 @@ if( BUILD_PYTHON3 )
 		OUTPUT_NAME vizdoom
 		PROJECT_LABEL "Python 3 ViZDoom binding")
 
-	if(UNIX)
-		ADD_CUSTOM_COMMAND(
-			TARGET libvizdoom_python3
-				COMMAND scripts/assemble_python_wrapper.sh 3
-		)
-	endif()
 
 endif()
 

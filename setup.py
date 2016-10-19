@@ -8,6 +8,7 @@ from setuptools import setup, find_packages
 
 python_version = str(sys.version_info[0])
 package_path = 'bin/python' + python_version + '/pip_package'
+package_assembly_script = 'scripts/assemble_pip_package.sh'
 
 
 def build_task(cmake_arg_list=None):
@@ -26,6 +27,7 @@ def build_task(cmake_arg_list=None):
     subprocess.check_call(['rm', '-f', 'CMakeCache.txt'])
     subprocess.check_call(['cmake'] + cmake_arg_list)
     subprocess.check_call(['make', '-j', str(cpu_cores)])
+    subprocess.check_call([package_assembly_script, python_version])
 
 
 if sys.platform.startswith("darwin"):
@@ -52,7 +54,7 @@ class BuildDoom(build):
 
 setup(
     name='vizdoom',
-    version='1.2.0-dev',
+    version='1.2.0.dev0',
     description='ViZDoom Environment',
     long_description="ViZDoom: Doom Reinforcement Learning Research Platform",
     url='http://vizdoom.cs.put.edu.pl/',
