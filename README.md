@@ -25,7 +25,21 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 ## Cite as
 
 >Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
-
+### Bibtex:
+```
+@inproceedings{Kempka2016ViZDoom,
+  author    = {Micha{\l} Kempka and Marek Wydmuch and Grzegorz Runc and Jakub Toczek and Wojciech Ja\'skowski},
+  title     = {{ViZDoom}: A {D}oom-based {AI} Research Platform for Visual Reinforcement Learning},
+  booktitle = {IEEE Conference on Computational Intelligence and Games},  
+  year      = {2016},
+  url       = {http://arxiv.org/abs/1605.02097},
+  address   = {Santorini, Greece},
+  Month     = {Sep},
+  Pages     = {20--23},
+  Publisher = {IEEE},
+  Note      = {The best paper award}
+}
+```
 
 ##Examples
 
@@ -50,7 +64,7 @@ Python examples are currently the richest, so we recommend to look at them, even
 
 For Windows we are providing compiled runtime binaries and development libraries for Windows:
 - 1.1.0 soon
-- [1.1.0pre](https://github.com/Marqt/ViZDoom/releases/download/1.1.0pre-CIG2016-warm-up-fixed/ViZDoom-1.1.0pre-CIG2016-warm-up-Win-x86_64.zip) (see 1.0 branch for compatible examples)
+- [1.1.0pre](https://github.com/Marqt/ViZDoom/releases/download/1.1.0pre-CIG2016-warm-up-fixed/ViZDoom-1.1.0pre-CIG2016-Win-x86_64.zip) (see 1.0 branch for compatible examples)
 - [1.0.4](https://github.com/Marqt/ViZDoom/releases/download/1.0.4/ViZDoom-1.0.4-Win-x86_64.zip) (see 1.0 branch for compatible examples)
 
 
