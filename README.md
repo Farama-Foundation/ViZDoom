@@ -30,7 +30,7 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 @inproceedings{Kempka2016ViZDoom,
   author    = {Micha{\l} Kempka and Marek Wydmuch and Grzegorz Runc and Jakub Toczek and Wojciech Ja\'skowski},
   title     = {{ViZDoom}: A {D}oom-based {AI} Research Platform for Visual Reinforcement Learning},
-  booktitle = {IEEE Conference on Computational Intelligence and Games)  
+  booktitle = {IEEE Conference on Computational Intelligence and Games},  
   year      = {2016},
   url       = {http://arxiv.org/abs/1605.02097},
   address   = {Santorini, Greece},
