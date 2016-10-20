@@ -1,10 +1,8 @@
 import multiprocessing
-import os
 import sys
 import subprocess
-from distutils import sysconfig
 from distutils.command.build import build
-from setuptools import setup, find_packages
+from setuptools import setup
 
 python_version = str(sys.version_info[0])
 package_path = 'bin/python' + python_version + '/pip_package'
@@ -12,7 +10,7 @@ package_assembly_script = 'scripts/assemble_pip_package.sh'
 
 
 def build_task(cmake_arg_list=None):
-    # TODO overrice pythonlibs and python interpreter
+    # TODO overrtce pythonlibs and python interpreter
 
     cpu_cores = max(1, multiprocessing.cpu_count() - 1)
 
@@ -39,8 +37,11 @@ elif sys.platform.startswith("win"):
 else:
     raise RuntimeError("Unrecognized platform: {}".format(sys.platform))
 
+# TODO: make it run only when install/build is issued
+subprocess.check_call(['mkdir', '-p', package_path])
 
-class BuildDoom(build):
+
+class BuildCommand(build):
     def run(self):
         try:
             build_func()
@@ -67,7 +68,7 @@ setup(
     packages=['vizdoom'],
     package_dir={'vizdoom': package_path},
     package_data={'vizdoom': ['freedoom2.wad', 'vizdoom', 'vizdoom.pk3', 'vizdoom.so', 'bots.cfg']},
-    cmdclass={'build': BuildDoom},
+    cmdclass={'build': BuildCommand},
 
     classifiers=[
         # Development Status :: 1 - Planning
