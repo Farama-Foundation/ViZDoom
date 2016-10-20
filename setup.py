@@ -7,6 +7,7 @@ from setuptools import setup
 python_version = str(sys.version_info[0])
 package_path = 'bin/python' + python_version + '/pip_package'
 package_assembly_script = 'scripts/assemble_pip_package.sh'
+supported_platforms = ["Linux", "Mac OS-X"]
 
 
 def build_task(cmake_arg_list=None):
@@ -69,7 +70,7 @@ setup(
     package_dir={'vizdoom': package_path},
     package_data={'vizdoom': ['freedoom2.wad', 'vizdoom', 'vizdoom.pk3', 'vizdoom.so', 'bots.cfg']},
     cmdclass={'build': BuildCommand},
-
+    platforms=[supported_platforms],
     classifiers=[
         # Development Status :: 1 - Planning
         # Development Status :: 2 - Pre-Alpha
