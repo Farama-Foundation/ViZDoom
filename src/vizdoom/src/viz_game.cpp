@@ -28,6 +28,7 @@
 #include "viz_main.h"
 #include "viz_screen.h"
 #include "viz_shared_memory.h"
+#include "viz_version.h"
 
 #include "d_netinf.h"
 #include "d_event.h"

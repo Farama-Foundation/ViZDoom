@@ -34,7 +34,7 @@
 #ifndef __VERSION_H__
 #define __VERSION_H__
 
-#include "viz_defines.h"
+#include "viz_version.h"
 
 const char *GetGitDescription();
 const char *GetGitHash();
