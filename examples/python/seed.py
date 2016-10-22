@@ -34,10 +34,12 @@ game.load_config("../../examples/config/basic.cfg")
 # game.load_config("../../examples/config/my_way_home.cfg")
 # game.load_config("../../examples/config/predict_position.cfg")
 
-game.set_episode_timeout(50)
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 
-seed = 123456789
+# Lets make episode shorter and observe starting position of Cacodemon.
+game.set_episode_timeout(50)
+
+seed = 666
 # Sets the seed. It can be change after init.
 game.set_seed(seed)
 

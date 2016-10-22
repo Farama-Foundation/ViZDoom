@@ -13,13 +13,7 @@
 
 from __future__ import print_function
 
-from vizdoom import DoomGame
-from vizdoom import Button
-from vizdoom import GameVariable
-from vizdoom import Mode
-from vizdoom import ScreenFormat
-from vizdoom import ScreenResolution
-# Or just use from vizdoom import *
+from vizdoom import *
 
 from random import choice
 from time import sleep
@@ -63,7 +57,7 @@ game.set_automap_buffer_enabled(True)
 
 # Sets other rendering options
 game.set_render_hud(False)
-game.set_render_minimal_hud(False)
+game.set_render_minimal_hud(False) # If hud is enabled
 game.set_render_crosshair(False)
 game.set_render_weapon(True)
 game.set_render_decals(False)
@@ -108,10 +102,9 @@ actions = [[True, False, False], [False, True, False], [False, False, True]]
 # Run this many episodes
 episodes = 10
 
-# Sets time that will pause the engine after each action.
+# Sets time that will pause the engine after each action (in seconds)
 # Without this everything would go too fast for you to keep track of what's happening.
-# 0.05 is quite arbitrary, nice to watch with my hardware setup. 
-sleep_time = 0.028
+sleep_time = 1 / DEFAULT_TICRATE # = 0.028
 
 for i in range(episodes):
     print("Episode #" + str(i + 1))

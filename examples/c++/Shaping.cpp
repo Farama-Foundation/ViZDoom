@@ -3,6 +3,12 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
+#include <thread>
+
+void sleep(unsigned int time){
+    std::this_thread::sleep_for(std::chrono::milliseconds(time));
+}
 
 using namespace vizdoom;
 
@@ -20,21 +26,16 @@ int main(){
 
     game->init();
 
-
+    // Define some actions.
     std::vector<int> actions[3];
-    int action0[] = {1, 0, 0};
-    actions[0] = std::vector<int>(action0, action0 + sizeof(action0) / sizeof(int));
-
-    int action1[] = {0, 1, 0};
-    actions[1] = std::vector<int>(action1, action1 + sizeof(action1) / sizeof(int));
-
-    int action2[] = {0, 0, 1};
-    actions[2] = std::vector<int>(action2, action2 + sizeof(action2) / sizeof(int));
+    actions[0] = {1, 0, 0};
+    actions[1] = {0, 1, 0};
+    actions[2] = {0, 0, 1};
 
     std::srand(time(0));
 
-    // Run this many episodes.
     int episodes = 10;
+    unsigned int sleepTime = 28;
 
     // Use this to remember last shaping reward value.
     double lastTotalShapingReward = 0;
@@ -47,25 +48,29 @@ int main(){
         // game->setSeed(seed);
         game->newEpisode();
 
+        lastTotalShapingReward = 0;
+
         while (!game->isEpisodeFinished()) {
 
             // Get the state
-            GameState s = game->getState();
+            GameStatePtr state = game->getState();
 
             // Make random action and get reward
-            double r = game->makeAction(actions[std::rand() % 3]);
+            double reward = game->makeAction(actions[std::rand() % 3]);
 
             // Retrieve the shaping reward
-            int _ssr = game->getGameVariable(USER1);        // Get value of scripted variable
-            double ssr = DoomFixedToDouble(_ssr);           // If value is in DoomFixed format project it to double
-            double sr = ssr - lastTotalShapingReward;
-            lastTotalShapingReward = ssr;
+            int fixedShapingReward = game->getGameVariable(USER1);     // Get value of scripted variable
+            double shapingReward = doomFixedToDouble(shapingReward);   // If value is in DoomFixed format project it to double
+            shapingReward = shapingReward - lastTotalShapingReward;
+            lastTotalShapingReward += shapingReward;
 
-            std::cout << "State #" << s.number << "\n";
-            std::cout << "Health: " << s.gameVariables[0] << "\n";
-            std::cout << "Action reward: " << r << "\n";
-            std::cout << "Action shaping reward: " << sr << "\n";
+            std::cout << "State #" << state->number << "\n";
+            std::cout << "Health: " << state->gameVariables[0] << "\n";
+            std::cout << "Action reward: " << reward << "\n";
+            std::cout << "Action shaping reward: " << shapingReward << "\n";
             std::cout << "=====================\n";
+
+            if(sleepTime) sleep(sleepTime);
 
         }
 

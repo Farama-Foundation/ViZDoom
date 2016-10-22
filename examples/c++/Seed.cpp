@@ -3,6 +3,12 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
+#include <thread>
+
+void sleep(unsigned int time){
+    std::this_thread::sleep_for(std::chrono::milliseconds(time));
+}
 
 using namespace vizdoom;
 
@@ -29,27 +35,25 @@ int main(){
 
     game->setScreenResolution(RES_640X480);
 
-    unsigned int seed = 1234;
+    // Lets make episode shorter and observe starting position of Cacodemon.
+    game->setEpisodeTimeout(50);
+
+    unsigned int seed = 666;
     // Sets the seed. It could be after init as well.
     game->setSeed(seed);
 
     game->init();
 
-
+    // Define some actions.
     std::vector<int> actions[3];
-    int action0[] = {1, 0, 0};
-    actions[0] = std::vector<int>(action0, action0 + sizeof(action0) / sizeof(int));
-
-    int action1[] = {0, 1, 0};
-    actions[1] = std::vector<int>(action1, action1 + sizeof(action1) / sizeof(int));
-
-    int action2[] = {0, 0, 1};
-    actions[2] = std::vector<int>(action2, action2 + sizeof(action2) / sizeof(int));
+    actions[0] = {1, 0, 0};
+    actions[1] = {0, 1, 0};
+    actions[2] = {0, 0, 1};
 
     std::srand(time(0));
 
-    // Run this many episodes
     int episodes = 10;
+    unsigned int sleepTime = 28;
 
     for (int i = 0; i < episodes; ++i) {
 
@@ -62,15 +66,17 @@ int main(){
         while (!game->isEpisodeFinished()) {
 
             // Get the state
-            GameState s = game->getState();
+            GameStatePtr state = game->getState();
 
             // Make random action and get reward
-            double r = game->makeAction(actions[std::rand() % 3]);
+            double reward = game->makeAction(actions[std::rand() % 3]);
 
-            std::cout << "State #" << s.number << "\n";
-            std::cout << "Action reward: " << r << "\n";
+            std::cout << "State #" << state->number << "\n";
+            std::cout << "Action reward: " << reward << "\n";
             std::cout << "Seed: " << game->getSeed() << "\n";
             std::cout << "=====================\n";
+
+            if(sleepTime) sleep(sleepTime);
 
         }
 

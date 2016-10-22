@@ -22,9 +22,6 @@ Demonstrates how to play with bots to simulate multiplayer game. Helpful for dev
 ###[DeltaButtons.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/c++/DeltaButtons.cpp)
 Shows how delta buttons work (they may take values other than 0 and 1 and can be used for precise movement).
 
-###[Multiplayer.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/c++/Multiplayer.cpp), [MultiplayerHost.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/c++/MultiplayerHost.cpp)
-Demonstrates how to configure and play multiplayer game.
-
 ###[Seed.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/c++/Seed.cpp)
 Shows how to run deterministic episodes by setting the seed. After setting the seed every episode will look the same (if the agent behaves deterministically).
 
