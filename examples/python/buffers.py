@@ -103,7 +103,7 @@ for i in range(episodes):
         if automap is not None:
             cv2.imshow('ViZDoom Map Buffer', automap)
 
-        cv2.waitKey(sleep_time)
+        cv2.waitKey(int(sleep_time * 1000))
 
         game.make_action(choice(actions))
 
