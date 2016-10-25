@@ -65,25 +65,25 @@ namespace vizdoom {
 
         if (this->state->screenBuffer != nullptr) {
             pyState.screenBuffer = this->dataToNumpyArray(colorDims, this->colorShape,
-                                                          NPY_UBYTE, this->state->screenBuffer->data()).copy();
+                                                          NPY_UBYTE, this->state->screenBuffer->data());
         }
         if (this->state->depthBuffer != nullptr) {
             pyState.depthBuffer = this->dataToNumpyArray(2, this->grayShape,
-                                                         NPY_UBYTE, this->state->depthBuffer->data()).copy();
+                                                         NPY_UBYTE, this->state->depthBuffer->data());
         }
         if (this->state->labelsBuffer != nullptr) {
             pyState.labelsBuffer = this->dataToNumpyArray(2, this->grayShape,
-                                                          NPY_UBYTE, this->state->labelsBuffer->data()).copy();
+                                                          NPY_UBYTE, this->state->labelsBuffer->data());
         }
         if (this->state->automapBuffer != nullptr) {
             pyState.automapBuffer = this->dataToNumpyArray(colorDims, this->colorShape,
-                                                       NPY_UBYTE, this->state->automapBuffer->data()).copy();
+                                                       NPY_UBYTE, this->state->automapBuffer->data());
         }
 
         if (this->state->gameVariables.size() > 0) {
             // Numpy array version
             npy_intp shape = this->state->gameVariables.size();
-            pyState.gameVariables = dataToNumpyArray(1, &shape, NPY_INT32, this->state->gameVariables.data()).copy();
+            pyState.gameVariables = dataToNumpyArray(1, &shape, NPY_INT32, this->state->gameVariables.data());
 
             // Python list version
             //pyState.gameVariables = DoomGamePython::vectorToPyList<int>(this->state->gameVariables);
@@ -220,10 +220,15 @@ namespace vizdoom {
         return vector;
     }
 
-    bpyn::array DoomGamePython::dataToNumpyArray(int dims, npy_intp * shape, int type, void * data){
+    bpy::object DoomGamePython::dataToNumpyArray(int dims, npy_intp * shape, int type, void * data){
         PyObject *pyArray = PyArray_SimpleNewFromData(dims, shape, type, data);
+        /* This line makes a copy: */
+        pyArray = PyArray_FROM_OTF(pyArray, type, NPY_ARRAY_ENSURECOPY | NPY_ARRAY_ENSUREARRAY);
         bpy::handle<> numpyHandle = bpy::handle<>(pyArray);
-        bpyn::array numpyArray = bpyn::array(numpyHandle);
+        bpy::object numpyArray = bpy::object(numpyHandle);
+
+        /* This line caused occasional segfaults in python3 */
+        //bpyn::array numpyArray = bpyn::array(numpyHandle);
 
         return numpyArray;
     }
