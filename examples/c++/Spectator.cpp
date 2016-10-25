@@ -46,7 +46,7 @@ int main(){
         while (!game->isEpisodeFinished()) {
 
             // Get the state.
-            GameState s = game->getState();
+            GameStatePtr state = game->getState();
 
             // Advances action - lets You play next game tic.
             game->advanceAction();
@@ -55,16 +55,16 @@ int main(){
             // game->advanceAction(4);
 
             // Get the last action performed by You.
-            std::vector<int> a = game->getLastAction();
+            std::vector<int> lastAction = game->getLastAction();
 
             // And reward You get.
-            double r = game->getLastReward();
+            double reward = game->getLastReward();
 
-            std::cout << "State #" << s.number << "\n";
-            std::cout << "Action made: ";
-            for(int i = 0; i < a.size(); ++i) std::cout << " " << a[i];
-            std::cout <<"\n";
-            std::cout << "Action reward: " << r <<"\n";
+            std::cout << "State #" << state->number << "\n";
+            std::cout << "Action made:";
+            for(auto a: lastAction) std::cout << " " << a;
+            std::cout << "\n";
+            std::cout << "Action reward: " << reward <<"\n";
             std::cout << "=====================\n";
 
         }

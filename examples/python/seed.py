@@ -37,10 +37,13 @@ game.load_config("../../scenarios/simpler_basic.cfg")
 # game.load_config("../../scenarios/my_way_home.cfg")
 # game.load_config("../../scenarios/predict_position.cfg")
 # game.load_config("../../scenarios/take_cover.cfg")
-game.set_episode_timeout(50)
+
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 
-seed = 123456789
+# Lets make episode shorter and observe starting position of Cacodemon.
+game.set_episode_timeout(50)
+
+seed = 666
 # Sets the seed. It can be change after init.
 game.set_seed(seed)
 

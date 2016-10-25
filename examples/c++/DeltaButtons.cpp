@@ -3,6 +3,12 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
+#include <thread>
+
+void sleep(unsigned int time){
+    std::this_thread::sleep_for(std::chrono::milliseconds(time));
+}
 
 using namespace vizdoom;
 
@@ -23,9 +29,9 @@ int main(){
     game->setScreenResolution(RES_640X480);
 
     // Adds delta buttons that will be allowed and set the maximum allowed value (optional).
-    game->addAvailableButton(MOVE_FORWARD_BACKWARD_DELTA, 5);
-    game->addAvailableButton(MOVE_LEFT_RIGHT_DELTA, 2);
-    game->addAvailableButton(TURN_LEFT_RIGHT_DELTA);
+    game->addAvailableButton(MOVE_FORWARD_BACKWARD_DELTA, 10);
+    game->addAvailableButton(MOVE_LEFT_RIGHT_DELTA, 5);
+    game->addAvailableButton(TURN_LEFT_RIGHT_DELTA, 5);
     game->addAvailableButton(LOOK_UP_DOWN_DELTA);
 
     // For normal buttons (binary) all values other than 0 are interpreted as pushed.
@@ -36,12 +42,7 @@ int main(){
     //
     // For MOVE_FORWARD_BACKWARD_DELTA, MOVE_LEFT_RIGHT_DELTA, MOVE_UP_DOWN_DELTA (rarely used)
     // value is the speed of movement in a given direction (100 is close to the maximum speed).
-    std::vector<int> actions[2];
-    int action0[] = {10, 1, 1, 1};
-    actions[0] = std::vector<int>(action0, action0 + sizeof(action0) / sizeof(int));
-
-    int action1[] = {2, -3, -2, 0};
-    actions[1] = std::vector<int>(action1, action1 + sizeof(action1) / sizeof(int));
+    std::vector<int> action = {100, 10, 10, 1};
 
     // If button's absolute value > max button's value then value = max value with original value sign.
 
@@ -55,8 +56,8 @@ int main(){
 
     std::srand(time(0));
 
-    // Run this many episodes.
     int episodes = 10;
+    unsigned int sleepTime = 28;
 
     // Use this to remember last shaping reward value.
     double lastTotalShapingReward = 0;
@@ -66,15 +67,26 @@ int main(){
         std::cout << "Episode #" << i + 1 << "\n";
         game->newEpisode();
 
-        game->getEpisodeTime();
-
         while (!game->isEpisodeFinished()) {
 
-            // Get the state
-            GameState s = game->getState();
+            GameStatePtr state = game->getState();
+            game->makeAction(action);
 
-            // Make random action and get reward
-            game->makeAction(actions[std::rand() % 2]);
+            unsigned int time = game->getEpisodeTime();
+
+            action[0] = time % 100 - 50;
+            action[1] = time % 100 - 50;
+            action[2] = time % 100 - 50;
+
+            if(!time % 50) action[3] = -action[3];
+
+            std::cout << "State #" << state->number << "\n";
+            std::cout << "Action made:";
+            for(auto a: action) std::cout << " " << a;
+            std::cout << "\n";
+            std::cout << "=====================\n";
+
+            if(sleepTime) sleep(sleepTime);
 
         }
     }

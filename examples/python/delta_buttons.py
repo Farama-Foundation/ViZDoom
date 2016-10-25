@@ -45,18 +45,19 @@ for i in range(episodes):
 
     while not game.is_episode_finished():
 
-        s = game.get_state()
-        r = game.make_action(action)
+        state = game.get_state()
+        reward = game.make_action(action)
 
-        t = game.get_episode_time()
+        time = game.get_episode_time()
 
-        action[0] = t % 100 - 50
-        action[1] = t % 100 - 50
-        action[2] = t % 100 - 50
-        if not t % 25:
+        action[0] = time % 100 - 50
+        action[1] = time % 100 - 50
+        action[2] = time % 100 - 50
+        if not time % 50:
             action[3] = -action[3]
 
-        print("State #" + str(s.number))
+        print("State #" + str(state.number))
+        print("Action made: ", action)
         print("=====================")
 
         if sleep_time > 0:
