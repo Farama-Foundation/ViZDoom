@@ -5,6 +5,8 @@ if(COMMAND cmake_policy)
 	cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
 add_library(libvizdoom SHARED IMPORTED GLOBAL)
 if (WIN32)
 	set_property(TARGET libvizdoom PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../bin/vizdoom.lib)
@@ -47,12 +49,6 @@ target_link_libraries (cighost ${VIZDOOM_LIBS})
 add_executable( deltabuttons DeltaButtons.cpp )
 target_link_libraries (deltabuttons ${VIZDOOM_LIBS})
 
-add_executable( multiplayer Multiplayer.cpp )
-target_link_libraries (multiplayer ${VIZDOOM_LIBS})
-
-add_executable( multiplayerhost MultiplayerHost.cpp )
-target_link_libraries (multiplayerhost ${VIZDOOM_LIBS})
-
 add_executable( seed Seed.cpp )
 target_link_libraries (seed ${VIZDOOM_LIBS})
 
@@ -62,7 +58,7 @@ target_link_libraries (shaping ${VIZDOOM_LIBS})
 add_executable( spectator Spectator.cpp )
 target_link_libraries (spectator ${VIZDOOM_LIBS})
 
-set_target_properties( basic cig cigbots cighost deltabuttons multiplayer multiplayerhost seed shaping spectator
+set_target_properties( basic cig cigbots cighost deltabuttons seed shaping spectator
 	PROPERTIES
 	RUNTIME_OUTPUT_DIRECTORY ${VIZDOOM_EXAMPLES_OUTPUT_DIR}
 	RUNTIME_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_EXAMPLES_OUTPUT_DIR}

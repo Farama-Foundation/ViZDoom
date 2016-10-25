@@ -44,24 +44,22 @@ game.set_mode(Mode.SPECTATOR)
 game.init()
 
 episodes = 10
-print("")
+
 for i in range(episodes):
     print("Episode #" + str(i + 1))
 
     game.new_episode()
     while not game.is_episode_finished():
-        s = game.get_state()
-        img = s.screen_buffer
-        misc = s.game_variables
+        state = game.get_state()
 
         game.advance_action()
-        a = game.get_last_action()
-        r = game.get_last_reward()
+        last_action = game.get_last_action()
+        reward = game.get_last_reward()
 
-        print("State #" + str(s.number))
-        print("Game variables: ", misc)
-        print("Action:", a)
-        print("Reward:", r)
+        print("State #" + str(state.number))
+        print("Game variables: ", state.game_variables)
+        print("Action:", last_action)
+        print("Reward:", reward)
         print("=====================")
 
     print("Episode finished!")

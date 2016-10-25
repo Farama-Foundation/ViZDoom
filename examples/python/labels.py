@@ -37,7 +37,7 @@ actions = [[True, False, False], [False, True, False], [False, False, True]]
 
 episodes = 10
 
-# sleep time in ms
+# Sleep time between actions in ms
 sleep_time = 28
 
 for i in range(episodes):

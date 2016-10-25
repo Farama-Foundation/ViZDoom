@@ -39,32 +39,34 @@ for perm in it.product([False, True], repeat=actions_num):
 
 episodes = 10
 sleep_time = 0.028
-last_total_shaping_reward = 0
 
 for i in range(episodes):
 
     print("Episode #" + str(i + 1))
-    # Not needed for the first episdoe but the loop is nicer.
+    # Not needed for the first episode but the loop is nicer.
     game.new_episode()
+
+    # Use this to remember last shaping reward value.
+    last_total_shaping_reward = 0
+
     while not game.is_episode_finished():
 
         # Gets the state and possibly to something with it
-        s = game.get_state()
-        img = s.screen_buffer
-        misc = s.game_variables
+        state = game.get_state()
 
         # Makes a random action and save the reward.
-        r = game.make_action(choice(actions))
+        reward = game.make_action(choice(actions))
 
         # Retrieve the shaping reward
-        sr = doom_fixed_to_double(game.get_game_variable(GameVariable.USER1))
-        sr = sr - last_total_shaping_reward
-        last_total_shaping_reward += sr
+        fixed_shaping_reward = game.get_game_variable(GameVariable.USER1)   # Get value of scripted variable
+        shaping_reward = doom_fixed_to_double(fixed_shaping_reward)         # If value is in DoomFixed format project it to double
+        shaping_reward = shaping_reward - last_total_shaping_reward
+        last_total_shaping_reward += shaping_reward
 
-        print("State #" + str(s.number))
-        print("Health:", misc[0])
-        print("Last Reward:", r)
-        print("Last Shaping Reward:", sr)
+        print("State #" + str(state.number))
+        print("Health: ", state.game_variables[0])
+        print("Last Reward:", reward)
+        print("Last Shaping Reward:", shaping_reward)
         print("=====================")
 
         # Sleep some time because processing is too fast to watch.

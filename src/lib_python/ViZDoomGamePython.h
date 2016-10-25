@@ -99,7 +99,7 @@ namespace vizdoom {
         template<class T> static bpy::list vectorToPyList(const std::vector<T>& vector);
         template<class T> static std::vector<T> pyListToVector(bpy::list const &pyList);
 
-        static bpyn::array dataToNumpyArray(int dims, npy_intp * shape, int type, void * data);
+        static bpy::object dataToNumpyArray(int dims, npy_intp * shape, int type, void * data);
 
     };
 

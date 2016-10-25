@@ -67,8 +67,7 @@ game.init()
 actions = [[True, False, False], [False, True, False], [False, False, True]]
 
 episodes = 10
-# sleep time in ms
-sleep_time = 28
+sleep_time = 0.028
 
 for i in range(episodes):
     print("Episode #" + str(i + 1))
@@ -104,7 +103,7 @@ for i in range(episodes):
         if automap is not None:
             cv2.imshow('ViZDoom Map Buffer', automap)
 
-        cv2.waitKey(sleep_time)
+        cv2.waitKey(int(sleep_time * 1000))
 
         game.make_action(choice(actions))
 
