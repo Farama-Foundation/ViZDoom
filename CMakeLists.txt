@@ -5,7 +5,7 @@ project(ViZDoom)
 #-----------------------------------------------------------------------------------------------------------------------
 set(ViZDoom_MAJOR_VERSION 1)
 set(ViZDoom_MINOR_VERSION 1)
-set(ViZDoom_PATCH_VERSION 0)
+set(ViZDoom_PATCH_VERSION 1)
 set(ViZDoom_VERSION ${ViZDoom_MAJOR_VERSION}.${ViZDoom_MINOR_VERSION}.${ViZDoom_PATCH_VERSION})
 set(ViZDoom_VERSION_STR ${ViZDoom_VERSION})
 set(ViZDoom_VERSION_ID ${ViZDoom_MAJOR_VERSION}${ViZDoom_MINOR_VERSION}${ViZDoom_PATCH_VERSION})
