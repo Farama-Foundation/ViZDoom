@@ -1605,7 +1605,8 @@ void G_DeathMatchSpawnPlayer (int playernum)
 	AActor *mo = P_SpawnPlayer(spot, playernum);
 	if (mo != NULL) P_PlayerStartStomp(mo);
 
-	VIZ_DebugMsg(4, VIZ_FUNC, "playernum: %d (%s), spot: %d %d %d", gametic, playernum, players[playernum].userinfo.GetName(), spot->x, spot->y, spot->z);
+	// TODO: Causes crash - fix
+	//VIZ_DebugMsg(4, VIZ_FUNC, "playernum: %d (%s), spot: %d %d %d", gametic, playernum, players[playernum].userinfo.GetName(), spot->x, spot->y, spot->z);
 }
 
 //

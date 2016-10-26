@@ -1239,8 +1239,6 @@ void D_DoomLoop ()
 
 	vid_cursor.Callback();
 
-	//VIZ_Init();
-
 	for (;;)
 	{
 		try
@@ -2280,13 +2278,12 @@ static void D_DoomInit()
 
 	SetLanguageIDs ();
 
+    //VIZDOOM_CODE
 	const char *v = Args->CheckValue("-rngseed");
 	if (v)
 	{
 		rngseed = staticrngseed = atoi(v);
-		//VIZDOOM_CODE
 		use_staticrng = true;
-		//use_staticrng = false;
 		Printf("D_DoomInit: Static RNGseed %d set.\n", rngseed);
 	}
 	else

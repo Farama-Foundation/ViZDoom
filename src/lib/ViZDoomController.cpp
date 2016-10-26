@@ -366,15 +366,16 @@ namespace vizdoom {
 
             if(this->gameState->DEMO_RECORDING) this->sendCommand("stop");
 
-            this->forceDoomSeed(this->getNextDoomSeed());
-
             if(this->gameState->GAME_MULTIPLAYER){
+                this->setDoomSeed(this->getNextDoomSeed());
                 if(this->gameState->GAME_SETTINGS_CONTROLLER) this->sendCommand(std::string("changemap ") + this->map);
             }
             else if(this->demoPath.length()){
+                this->forceDoomSeed(this->getNextDoomSeed());
                 this->sendCommand(std::string("recordmap ") + prepareFilePathCmd(this->demoPath) + " " + this->map);
             }
             else {
+                this->forceDoomSeed(this->getNextDoomSeed());
                 this->sendCommand(std::string("map ") + this->map);
             }
 
@@ -1130,7 +1131,7 @@ namespace vizdoom {
         // seed
         if(this->doomStaticSeed) {
             this->forceDoomSeed(this->getNextDoomSeed());
-            this->doomArgs.push_back("+viz_seed");
+            this->doomArgs.push_back("-rngseed");
             this->doomArgs.push_back(b::lexical_cast<std::string>(this->doomSeed));
         }
 
