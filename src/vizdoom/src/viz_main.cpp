@@ -131,11 +131,6 @@ void VIZ_Init(){
 
         vizNextTic = true;
         vizUpdate = true;
-
-        // starting seed
-        use_staticrng = true;
-        staticrngseed = *viz_seed;
-        rngseed = *viz_seed;
     }
 }
 
