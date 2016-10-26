@@ -61,12 +61,14 @@ namespace bt = boost::this_thread;
 
 // debug
 CVAR (Int, viz_debug, 0, CVAR_NOSET)
-
 // 0 - no debug msg
 // 1 - init debug msg
 // 2 - tic basic debug msg
 // 3 - tic detailed debug msg
 // 4 - all
+
+CVAR (Bool, viz_debug_instances, 0, CVAR_NOSET) // prints instance id with every message
+
 
 // control
 CVAR (Bool, viz_controlled, false, CVAR_NOSET)
@@ -367,6 +369,7 @@ void VIZ_PrintFuncMsg(const char *func, const char *msg){
     int e = s;
     while (func[e] != NULL && func[e] != '(') ++e;
 
+    if(*viz_debug_instances) Printf("%s: ", *viz_instance_id);
     if(e > s) Printf("%.*s: %s\n", e - s - 1, &func[s + 1], msg);
     else Printf("%s: %s\n", func, msg);
 }
