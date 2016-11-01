@@ -993,10 +993,6 @@ void NetUpdate (void)
 		G_BuildTiccmd (&localcmds[maketic % LOCALCMDTICS]);
 		++maketic;
 
-		if(!*viz_controlled || *viz_async){
-
-		}
-
 		if (ticdup == 1 || maketic == 0)
 		{
 			Net_NewMakeTic ();
