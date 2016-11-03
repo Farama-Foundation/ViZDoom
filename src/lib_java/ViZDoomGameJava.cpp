@@ -40,7 +40,6 @@ JNI_METHOD(void, setAction, setAction, jintArray)
 JNI_METHOD(void, advanceAction__, advanceAction_)
 JNI_METHOD(void, advanceAction__I, advanceAction_int, jint)
 JNI_METHOD(void, advanceAction__IZ, advanceAction_int_bool, jint, jboolean)
-JNI_METHOD(void, advanceAction__IZZ, advanceAction_int_bool_bool, jint, jboolean, jboolean)
 JNI_METHOD(jdouble, makeAction___3I, makeAction_vec, jintArray)
 JNI_METHOD(jdouble, makeAction___3II, makeAction_vec_int, jintArray, jint)
 
