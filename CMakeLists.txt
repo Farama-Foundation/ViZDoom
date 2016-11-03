@@ -293,7 +293,7 @@ if(BUILD_LUA AND (NOT BUILD_LUA52))
 
 	find_package(Lua51 REQUIRED)
 
-	set(VIZDOOM_LUA_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/lua)
+	set(VIZDOOM_LUA_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/lua/vizdoom)
 	set(VIZDOOM_LUA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_lua)
 	set(VIZDOOM_LUA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LUA_SRC_DIR})
 
@@ -338,9 +338,10 @@ if(BUILD_LUA AND (NOT BUILD_LUA52))
 	if(UNIX)
 		ADD_CUSTOM_COMMAND(
 				TARGET libvizdoom_lua
-				COMMAND ln -sf ../../vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/lua/vizdoom.so
-				COMMAND ln -sf ..//examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/lua/bots.cfg
-				COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/lua.")
+				COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/src/lib_lua/init.lua ${VIZDOOM_LUA_OUTPUT_DIR}/init.lua
+				COMMAND ln -sf ${VIZDOOM_LUA_OUTPUT_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/examples/lua
+				COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/lua
+				COMMENT "Adding symlinks to vizdoom and bots.cfg in examples/lua.")
 	endif()
 
 endif()
