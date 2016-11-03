@@ -140,13 +140,13 @@ namespace vizdoom {
         }
     }
 
-    void DoomGame::advanceAction(unsigned int tics, bool updateState, bool renderOnly) {
+    void DoomGame::advanceAction(unsigned int tics, bool updateState) {
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         // TODO maybe set lastReward to 0 if finished?
         if (this->doomController->isTicPossible())
         {
             try {
-                this->doomController->tics(tics, updateState || renderOnly);
+                this->doomController->tics(tics, updateState);
             }
             catch(...){ throw; }
 

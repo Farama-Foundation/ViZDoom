@@ -77,8 +77,8 @@ void (DoomGamePython::*newEpisode_str)(bpy::str const &) = &DoomGamePython::newE
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(addAvailableButton_overloads, DoomGamePython::addAvailableButton, 1, 2)
 void (DoomGamePython::*addAvailableButton_default)(Button, unsigned int) = &DoomGamePython::addAvailableButton;
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(advanceAction_overloads, DoomGamePython::advanceAction, 0, 3)
-void (DoomGamePython::*advanceAction_default)(unsigned int, bool, bool) = &DoomGamePython::advanceAction;
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(advanceAction_overloads, DoomGamePython::advanceAction, 0, 2)
+void (DoomGamePython::*advanceAction_default)(unsigned int, bool) = &DoomGamePython::advanceAction;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(makeAction_overloads, DoomGamePython::makeAction, 1, 2)
 double (DoomGamePython::*makeAction_default)(bpy::list const &, unsigned int) = &DoomGamePython::makeAction;
