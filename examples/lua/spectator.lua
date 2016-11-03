@@ -56,8 +56,9 @@ for i = 1, episodes do
 
         print("State # " .. state.number)
         print("Reward: " .. reward)
+        local actionSize = game:getAvailableButtonsSize()
         local actionStr = "Action:"
-        for k, a in pairs(action) do actionStr = actionStr .. " " .. a end
+        for k = 1, actionSize do actionStr = actionStr .. " " .. action[k] end
         print(actionStr)
         print("=====================")
 
