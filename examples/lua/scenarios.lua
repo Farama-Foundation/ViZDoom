@@ -10,9 +10,10 @@
 -- To see the scenario description go to "../../scenarios/README.md"
 ----------------------------------------------------------------------
 
-require("vizdoom")
+package.path = package.path .. ";./vizdoom/?.lua"
+require "vizdoom.init"
 
-game = vizdoom.DoomGame()
+local game = vizdoom.DoomGame()
 
 -- Choose scenario config file you wish to watch.
 -- Don't load two configs cause the second will overrite the first one.
@@ -33,19 +34,19 @@ game:setScreenResolution(vizdoom.ScreenResolution.RES_640X480)
 game:init()
 
 -- Creates all possible actions depending on how many buttons there are.
-actions_num = game:getAvailableButtonsSize()
-actions = {}
-for i = 1, actions_num do
+local actionsNum = game:getAvailableButtonsSize()
+local actions = {}
+for i = 1, actionsNum do
     actions[i] = {}
-    for j = 1, actions_num do
+    for j = 1, actionsNum do
         actions[i][j] = 0
         if i == j then actions[i][j] = 1 end
     end
 end
 
 
-episodes = 10
-sleep_time = 28
+local episodes = 10
+local sleepTime = 0.028
 
 for i = 1, episodes do
 
@@ -56,22 +57,22 @@ for i = 1, episodes do
     while not game:isEpisodeFinished() do
 
         -- Gets the state and possibly to something with it
-        state = game:getState()
-        vars = state.gameVariables
+        local state = game:getState()
+        local vars = state.gameVariables
 
         -- Makes a random action and save the reward.
-        reward = game:makeAction(actions[math.random(1, actions_num)])
+        local reward = game:makeAction(actions[math.random(1, actions_num)])
 
         print("State # " .. state.number)
-        varsStr = "Game variables:"
+        local varsStr = "Game variables:"
         for k, a in pairs(vars) do varsStr = varsStr .. " " .. a end
         print(varsStr)
         print("Reward: " .. reward)
         print("=====================")
 
         -- Sleep some time because processing is too fast to watch.
-        if sleep_time > 0 then
-            vizdoom.sleep(sleep_time)
+        if sleepTime > 0 then
+            sys.sleep(sleepTime)
         end
     end
 
