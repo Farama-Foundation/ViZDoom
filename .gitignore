@@ -46,6 +46,7 @@ examples/python/*.ini
 # Lua
 examples/lua/*.cfg
 examples/lua/*.ini
+examples/lua/vizdoom
 
 # Java
 *.jar

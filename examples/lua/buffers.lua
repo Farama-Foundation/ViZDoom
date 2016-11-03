@@ -8,18 +8,17 @@
 -- To see the scenario description go to "../../scenarios/README.md"
 ----------------------------------------------------------------------
 
-package.path = package.path .. ";./vizdoom/?.lua"
-require "vizdoom.init"
+vizdoom = require("./vizdoom/init.lua")
 
-local game = vizdoom.DoomGame()
+game = vizdoom.DoomGame()
 
 -- Choose scenario config file you wish to watch.
 -- Don't load two configs cause the second will overrite the first one.
 -- Multiple config files are ok but combining these ones doesn't make much sense.
 
 --game:loadConfig("../../examples/config/basic.cfg")
---game:loadConfig("../../examples/config/deadly_corridor.cfg")
-game:loadConfig("../../examples/config/deathmatch.cfg")
+game:loadConfig("../../examples/config/deadly_corridor.cfg")
+--game:loadConfig("../../examples/config/deathmatch.cfg")
 --game:loadConfig("../../examples/config/defend_the_center.cfg")
 --game:loadConfig("../../examples/config/defend_the_line.cfg")
 --game:loadConfig("../../examples/config/health_gathering.cfg")
@@ -31,14 +30,14 @@ game:loadConfig("../../examples/config/deathmatch.cfg")
 game:addGameArgs("+freelook 1")
 
 game:setScreenResolution(vizdoom.ScreenResolution.RES_640X480)
-
--- Enables spectator mode, so you can play. Sounds strange but it is agent who is supposed to watch not you.
 game:setWindowVisible(true)
-game:setMode(vizdoom.Mode.SPECTATOR)
+
+-- Enables labeling of the in game objects.
+game:setLabelsBufferEnabled(true)
 
 game:init()
 
-local episodes = 10
+episodes = 10
 
 for i = 1, episodes do
 
@@ -48,17 +47,29 @@ for i = 1, episodes do
 
     while not game:isEpisodeFinished() do
 
-        local state = game:getState()
+        -- Gets the state.
+        state = game:getState()
+
+        -- Get labels buffer and labels data.
+        labelsBuf = state.labelsBuffer
+        labels = state.labels
 
         game:advanceAction()
-        local action = game:getLastAction()
-        local reward = game:getLastReward()
+        reward = game:getLastReward()
 
-        print("State # " .. state.number)
+        print("State #" .. state.number)
+
+        print("Labels:")
+
+        -- Print information about objects visible on the screen.
+        -- object_id identifies specific in game object.
+        -- object_name contains name of object.
+        -- value tells which value represents object in labels_buffer.
+        for k, l in pairs(labels) do
+            print("#" .. k .. ": object id: " .. l.objectId .. " object name: " .. l.objectName .. " label: " .. l.value)
+        end
+
         print("Reward: " .. reward)
-        local actionStr = "Action:"
-        for k, a in pairs(action) do actionStr = actionStr .. " " .. a end
-        print(actionStr)
         print("=====================")
 
     end

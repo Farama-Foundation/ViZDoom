@@ -11,10 +11,14 @@
 -- To see the scenario description go to "../../scenarios/README.md"
 ----------------------------------------------------------------------
 
-require("vizdoom")
+package.path = package.path .. ";./vizdoom/?.lua"
+require "vizdoom.init"
+
+require "torch"
+require "sys"
 
 -- Create DoomGame instance. It will run the game and communicate with you.
-game = vizdoom.DoomGame()
+local game = vizdoom.DoomGame()
 
 -- Now it's time for configuration!
 -- loadConfig could be used to load configuration instead of doing it here with code.
@@ -52,6 +56,7 @@ game:setAutomapBufferEnabled(true)
 
 -- Sets other rendering options
 game:setRenderHud(false)
+game:setRenderMinimalHud(false) -- If hud is enabled
 game:setRenderCrosshair(false)
 game:setRenderWeapon(true)
 game:setRenderDecals(false)
@@ -90,14 +95,21 @@ game:init()
 -- Define some actions. Each list entry corresponds to declared buttons:
 -- MOVE_LEFT, MOVE_RIGHT, ATTACK
 -- 5 more combinations are naturally possible but only 3 are included for transparency when watching.
-actions = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
+
+local actions = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
+-- or (action can be table or tensor)
+local actions = {
+    [1] = torch.IntTensor({1,0,0}),
+    [2] = torch.IntTensor({0,1,0}),
+    [3] = torch.IntTensor({0,0,1})
+}
 
 -- Run this many episodes
-episodes = 10
+local episodes = 10
 
 -- Sets time that will pause the engine after each action.
 -- Without this everything would go too fast for you to keep track of what's happening.
-sleepTime = 28
+local sleepTime = 0.028
 
 for i = 1, episodes do
 
@@ -109,28 +121,30 @@ for i = 1, episodes do
     while not game:isEpisodeFinished() do
 
         -- Gets the state
-        state = game:getState()
+        local state = game:getState()
 
         -- Which consists of:
-        n           = state.number
-        vars        = state.gameVariables
-        screenBuf   = state.screenBuffer
-        depthBuf    = state.depthBuffer
-        labelsBuf   = state.labelsBuffer
-        automapBuf  = state.automapBuffer
-        labels      = state.labels
+        local n           = state.number
+        local vars        = state.gameVariables
+        local screenBuf   = state.screenBuffer
+        local depthBuf    = state.depthBuffer
+        local labelsBuf   = state.labelsBuffer
+        local automapBuf  = state.automapBuffer
+        local labels      = state.labels
 
         -- Makes a random action and get remember reward.
-        reward = game:makeAction(actions[math.random(1,3)])
+        --reward = game:makeAction(actions[math.random(1,3)])
+        local action = actions[torch.random(#actions)]
+        local reward = game:makeAction(action)
 
         -- Makes a "prolonged" action and skip frames.
         --skiprate = 4
-        --reward = game.makeAction(choice(actions), skiprate)
+        --reward = game:makeAction(choice(actions), skiprate)
 
         -- The same could be achieved with:
-        --game.setAction(choice(actions))
-        --game.advanceAction(skiprate)
-        --reward = game.getLastReward()
+        --game:setAction(choice(actions))
+        --game:advanceAction(skiprate)
+        --reward = game:getLastReward()
 
         -- Prints state's reward.
         print("State # " .. n)
@@ -139,7 +153,7 @@ for i = 1, episodes do
         print("=====================")
 
         if sleepTime > 0 then
-            vizdoom.sleep(sleepTime)
+            sys.sleep(sleepTime)
         end
     end
 
