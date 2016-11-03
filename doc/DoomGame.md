@@ -181,7 +181,7 @@ Checks if the ViZDoom game instance is running.
 
 | C++    | `void setAction(std::vector<int> const &actions)` |
 | :--    | :--                                               |
-| Lua    | `void setAction(table actions)`                   |
+| Lua    | `void setAction(IntTensor/table actions)`         |
 | Java   | `void setAction(int[] actions)`                   |
 | Python | `void set_action(list actions)`                   |
 
@@ -193,16 +193,15 @@ or in configuration file (in order of appearance).
 ---
 ### <a name="advanceAction"></a> `advanceAction`
 
-| C++    | `void advanceAction(unsigned int tics = 1, bool updateState = true, bool renderOnly = false)`       |
-| :--    | :--                                                                                                 |
-| Lua    | `void advanceAction(number tics = 1, boolean updateState = true, boolean renderOnly = false)`       |
-| Java   | `void advanceAction(int tics = 1, boolean updateState = true, boolean renderOnly = false)`          |
-| Python | `void advance_action(int tics = 1, bool updateState = True, bool renderOnly = False)`               |
+| C++    | `void advanceAction(unsigned int tics = 1, bool updateState = true)` |
+| :--    | :--                                                                  |
+| Lua    | `void advanceAction(number tics = 1, boolean updateState = true)`    |
+| Java   | `void advanceAction(int tics = 1, boolean updateState = true)`       |
+| Python | `void advance_action(int tics = 1, bool updateState = True)`         |
 
 Processes a specified number of tics. If `updateState` is set the state will be updated after last processed tic
 and a new reward will be calculated. To get new state use `getState` and to get the new reward use `getLastReward`.
-If `updateState` is not set but `renderOnly` is turned on, the state will not be updated but a new frame
-will be rendered after last processed tic.
+If `updateState` is not set the state will not be updated.
 
 
 ---
@@ -210,7 +209,7 @@ will be rendered after last processed tic.
 
 | C++    | `double makeAction(std::vector<int> const &actions, unsigned int tics = 1)` |
 | :--    | :--                                                                         |
-| Lua    | `number makeAction(table actions, number tics = 1);`                        |
+| Lua    | `number makeAction(IntTensor/table actions, number tics = 1);`              |
 | Java   | `double makeAction(int[] actions, int tics = 1);`                           |
 | Python | `float make_action(list actions, int tics = 1);`                            |
 
@@ -309,7 +308,7 @@ See also:
 
 | C++    | `std::vector<int> getLastAction()` |
 | :--    | :--                                |
-| Lua    | `table getLastAction()`            |
+| Lua    | `IntTensor getLastAction()`        |
 | Java   | `int[] getLastAction()`            |
 | Python | `list get_last_action()`           |
 
@@ -856,7 +855,7 @@ Config key: `episodeStartTime/episode_start_time`
 | C++    | `unsigned int getEpisodeTimeout()` |
 | :--    | :--                                |
 | Lua    | `number getEpisodeTimeout()`       |
-| Java   | `int getEpisodeTimeout()` |
+| Java   | `int getEpisodeTimeout()`          |
 | Python | `int get_episode_timeout()`        |
 
 Returns the number of tics after which the episode will be finished.
@@ -868,7 +867,7 @@ Returns the number of tics after which the episode will be finished.
 | C++    | `void setEpisodeTimeout(unsigned int tics)` |
 | :--    | :--                                         |
 | Lua    | `void setEpisodeTimeout(number tics)`       |
-| Java   | `void setEpisodeTimeout(int tics)` |
+| Java   | `void setEpisodeTimeout(int tics)`          |
 | Python | `void set_episode_timeout(int tics)`        |
 
 Sets the number of tics after which the episode will be finished. 0 will result in no timeout.
@@ -1087,7 +1086,7 @@ Config key: `automapRotate/automap_rotate`
 ### <a name="setAutomapRenderTextures"></a> `setAutomapRenderTextures`
 
 | C++    | `void setAutomapRenderTextures(bool textures)`    |
-| :--    | :--                                          |
+| :--    | :--                                               |
 | Lua    | `void setAutomapRenderTextures(boolean textures)` |
 | Java   | `void setAutomapRenderTextures(boolean textures)` |
 | Python | `void set_automap_render_textures(bool textures)` |
@@ -1287,11 +1286,11 @@ Config key: `soundEnabled/sound_enabled`
 ---
 ### <a name="getScreenWidth"></a> `getScreenWidth`
 
-| C++    | `int getScreenWidth()`   |
-| :--    | :--                      |
-| Lua    | `number getScreenWidth()`   |
-| Java   | `int getScreenWidth()`   |
-| Python | `int get_screen_width()` |
+| C++    | `int getScreenWidth()`    |
+| :--    | :--                       |
+| Lua    | `number getScreenWidth()` |
+| Java   | `int getScreenWidth()`    |
+| Python | `int get_screen_width()`  |
 
 Returns game's screen width - width of all buffers.
 
@@ -1299,11 +1298,11 @@ Returns game's screen width - width of all buffers.
 ---
 ### <a name="getScreenHeight"></a> `getScreenHeight`
 
-| C++    | `int getScreenHeight()`   |
-| :--    | :--                       |
-| Lua    | `number getScreenHeight()`   |
-| Java   | `int getScreenHeight()`   |
-| Python | `int get_screen_height()` |
+| C++    | `int getScreenHeight()`    |
+| :--    | :--                        |
+| Lua    | `number getScreenHeight()` |
+| Java   | `int getScreenHeight()`    |
+| Python | `int get_screen_height()`  |
 
 Returns game's screen height - height of all buffers.
 
@@ -1311,11 +1310,11 @@ Returns game's screen height - height of all buffers.
 ---
 ### <a name="getScreenChannels"></a> `getScreenChannels`
 
-| C++    | `int getScreenChannels()`   |
-| :--    | :--                         |
-| Lua    | `number getScreenChannels()`   |
-| Java   | `int getScreenChannels()`   |
-| Python | `int get_screen_channels()` |
+| C++    | `int getScreenChannels()`    |
+| :--    | :--                          |
+| Lua    | `number getScreenChannels()` |
+| Java   | `int getScreenChannels()`    |
+| Python | `int get_screen_channels()`  |
 
 Returns number of channels in screen buffer and map buffer (depth and labels buffer have always one channel).
 
@@ -1323,11 +1322,11 @@ Returns number of channels in screen buffer and map buffer (depth and labels buf
 ---
 ### <a name="getScreenPitch"></a> `getScreenPitch`
 
-| C++    | `size_t getScreenPitch()`   |
-| :--    | :--                         |
-| Lua    | `number getScreenPitch()`   |
-| Java   | `int getScreenPitch()`   |
-| Python | `int get_screen_pitch()` |
+| C++    | `size_t getScreenPitch()` |
+| :--    | :--                       |
+| Lua    | `number getScreenPitch()` |
+| Java   | `int getScreenPitch()`    |
+| Python | `int get_screen_pitch()`  |
 
 Returns size in bytes of one row in screen buffer and map buffer.
 
