@@ -26,7 +26,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
 #include <chrono>
 #include <thread>
 
@@ -359,15 +358,16 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             CLASS_FUNC_2_LUA(DoomGameLua, isNewEpisode)
             CLASS_FUNC_2_LUA(DoomGameLua, isPlayerDead)
             CLASS_FUNC_2_LUA(DoomGameLua, respawnPlayer)
-            CLASS_FUNC_2_LUA(DoomGameLua, setAction)
+            .def("setAction", &DoomGameLua::setAction)
+            .def("_setAction", &DoomGameLua::setAction)
             .def("makeAction", &DoomGameLua::makeAction_obj)
-            .def("makeAction", &DoomGameLua::makeAction_obj_int)
+            .def("_makeAction", &DoomGameLua::makeAction_obj_int)
             .def("advanceAction", &DoomGameLua::advanceAction_)
             .def("advanceAction", &DoomGameLua::advanceAction_int)
             .def("advanceAction", &DoomGameLua::advanceAction_int_bool)
-            .def("advanceAction", &DoomGameLua::advanceAction_int_bool_bool)
 
-            CLASS_FUNC_2_LUA(DoomGameLua, getState)
+            .def("_getState", &DoomGameLua::getState)
+            .def("getState", &DoomGameLua::getState)
 
             CLASS_FUNC_2_LUA(DoomGameLua, getGameVariable)
 
@@ -469,4 +469,8 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
     ];
 
     return 1;
+}
+
+extern "C" int luaopen_vizdoom_vizdoom(lua_State *luaState) {
+    return luaopen_vizdoom(luaState);
 }
