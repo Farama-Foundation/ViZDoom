@@ -366,8 +366,8 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             .def("advanceAction", &DoomGameLua::advanceAction_int)
             .def("advanceAction", &DoomGameLua::advanceAction_int_bool)
 
-            .def("_getState", &DoomGameLua::getState)
             .def("getState", &DoomGameLua::getState)
+            .def("_getState", &DoomGameLua::getState)
 
             CLASS_FUNC_2_LUA(DoomGameLua, getGameVariable)
 
@@ -380,7 +380,8 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             CLASS_FUNC_2_LUA(DoomGameLua, getLastReward)
             CLASS_FUNC_2_LUA(DoomGameLua, getTotalReward)
 
-            CLASS_FUNC_2_LUA(DoomGameLua, getLastAction)
+            .def("getLastAction", &DoomGameLua::getLastAction)
+            .def("_getLastAction", &DoomGameLua::getLastAction)
 
             CLASS_FUNC_2_LUA(DoomGameLua, addAvailableGameVariable)
             CLASS_FUNC_2_LUA(DoomGameLua, clearAvailableGameVariables)
