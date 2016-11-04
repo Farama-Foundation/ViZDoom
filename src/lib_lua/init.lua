@@ -10,10 +10,22 @@ function vizdoom.DoomGame:getState()
     local height = self:getScreenHeight();
     local channels = self:getScreenChannels();
     local size = channels * height * width;
+    local shape = {}
+    local format = self:getScreenFormat();
+
+    if format == vizdoom.ScreenFormat.CRCGCB or format == vizdoom.ScreenFormat.CBCGCR then
+        shape[1] = channels
+        shape[2] = height
+        shape[3] = width
+    else
+        shape[1] = height
+        shape[2] = width
+        shape[3] = channels
+    end
 
     local state = {
         ["number"] = _state.number,
-        ["game_variables"] = _state.number,
+        ["game_variables"] = nil,
 
         ["screenBuffer"] = nil,
         ["depthBuffer"] = nil,
@@ -23,28 +35,34 @@ function vizdoom.DoomGame:getState()
         ["labels"] = _state.labels
     }
 
-    state.gameVariables = torch.IntTensor(_state.gameVariables)
+    if _state.gameVariables then
+        state.gameVariables = torch.IntTensor(_state.gameVariables)
+    end
 
-    local buffer = torch.ByteTensor(channels, height, width)
-    ffi.copy(buffer:data(), _state.screenBuffer, size)
-    state.screenBuffer = buffer;
+    if channels > 1 then
+        state.screenBuffer = torch.ByteTensor(shape[1], shape[2], shape[3])
+    else
+        state.screenBuffer = torch.ByteTensor(shape[1], shape[2])
+    end
+    ffi.copy(state.screenBuffer:data(), _state.screenBuffer, size)
 
     if _state.depthBuffer then
-        local buffer = torch.ByteTensor(height, width)
-        ffi.copy(buffer:data(), _state.depthBuffer, height * width)
-        state.depthBuffer = buffer;
+        state.depthBuffer = torch.ByteTensor(height, width)
+        ffi.copy(state.depthBuffer:data(), _state.depthBuffer, height * width)
     end
 
     if _state.labelsBuffer then
-        local buffer = torch.ByteTensor(height, width)
-        ffi.copy(buffer:data(), _state.labelsBuffer, height * width)
-        state.labelsBuffer = buffer;
+        state.labelsBuffer = torch.ByteTensor(height, width)
+        ffi.copy(state.labelsBuffer:data(), _state.labelsBuffer, height * width)
     end
 
     if _state.automapBuffer then
-        local buffer = torch.ByteTensor(channels, height, width)
-        ffi.copy(buffer:data(), _state.automapBuffer, size)
-        state.automapBuffer = buffer;
+        if channels > 1 then
+            state.automapBuffer = torch.ByteTensor(shape[1], shape[2], shape[3])
+        else
+            state.automapBuffer = torch.ByteTensor(shape[1], shape[2])
+        end
+        ffi.copy(state.automapBuffer:data(), _state.automapBuffer, size)
     end
 
     return state
