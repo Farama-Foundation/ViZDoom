@@ -1,4 +1,4 @@
-#!/usr/bin/env lua
+#!/usr/bin/env th
 
 ----------------------------------------------------------------------
 -- This script presents SPECTATOR mode. In SPECTATOR mode you play and
@@ -8,7 +8,12 @@
 -- To see the scenario description go to "../../scenarios/README.md"
 ----------------------------------------------------------------------
 
-vizdoom = require("./vizdoom/init.lua")
+package.path = package.path .. ";./vizdoom/?.lua"
+require "vizdoom.init"
+
+require "torch"
+require "image"
+require "sys"
 
 game = vizdoom.DoomGame()
 
@@ -35,9 +40,31 @@ game:setWindowVisible(true)
 -- Enables labeling of the in game objects.
 game:setLabelsBufferEnabled(true)
 
+-- Enables depth buffer.
+game:setDepthBufferEnabled(true)
+
+-- Enables labeling of in game objects labeling.
+game:setLabelsBufferEnabled(true)
+
+-- Enables buffer with top down map of he current episode/level .
+game:setAutomapBufferEnabled(true)
+game:setAutomapMode(vizdoom.AutomapMode.OBJECTS)
+game:setAutomapRotate(false)
+game:setAutomapRenderTextures(false)
+
+game:setRenderHud(true)
+game:setRenderMinimalHud(false)
+
 game:init()
 
-episodes = 10
+local actions = {
+    [1] = torch.IntTensor({1,0,0}),
+    [2] = torch.IntTensor({0,1,0}),
+    [3] = torch.IntTensor({0,0,1})
+}
+
+local episodes = 10
+local sleepTime = 0.028
 
 for i = 1, episodes do
 
@@ -48,29 +75,42 @@ for i = 1, episodes do
     while not game:isEpisodeFinished() do
 
         -- Gets the state.
-        state = game:getState()
+        local state = game:getState()
 
-        -- Get labels buffer and labels data.
-        labelsBuf = state.labelsBuffer
-        labels = state.labels
+        local screen = state.screenBuffer
+        screenWin = image.display{image=screen, legend="ViZDoom Screen Buffer", offscreen=false, win=screenWin}
 
-        game:advanceAction()
-        reward = game:getLastReward()
-
-        print("State #" .. state.number)
-
-        print("Labels:")
-
-        -- Print information about objects visible on the screen.
-        -- object_id identifies specific in game object.
-        -- object_name contains name of object.
-        -- value tells which value represents object in labels_buffer.
-        for k, l in pairs(labels) do
-            print("#" .. k .. ": object id: " .. l.objectId .. " object name: " .. l.objectName .. " label: " .. l.value)
+        -- Depth buffer, always in 8-bit gray channel format.
+        -- This is most fun. It looks best if you inverse colors.
+        local depth = state.depthBuffer
+        if depth then
+            depthWin = image.display{image=depth, legend="ViZDoom Depth Buffer", offscreen=false, win=depthWin}
         end
 
-        print("Reward: " .. reward)
+        -- Labels buffer, always in 8-bit gray channel format.
+        -- Shows only visible game objects (enemies, pickups, exploding barrels etc.), each with unique label.
+        -- Labels data are available in state.labels, also see labels.py example.
+        local labels = state.labelsBuffer
+        if labels then
+            labelsWin = image.display{image=labels, legend="ViZDoom Labels Buffer", offscreen=false, win=labelsWin}
+        end
+
+        -- Map buffer, in the same format as screen buffer.
+        -- Shows top down map of the current episode/level.
+        local automap = state.automapBuffer
+        if automap then
+            automapWin = image.display{image=automap, legend="ViZDoom Automap Buffer", offscreen=false, win=automapWin}
+        end
+
+        local action = actions[torch.random(#actions)]
+        local reward = game:makeAction(action)
+
+        print("State #" .. state.number)
         print("=====================")
+
+        if sleepTime > 0 then
+            sys.sleep(sleepTime)
+        end
 
     end
 
