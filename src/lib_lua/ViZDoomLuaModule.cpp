@@ -461,9 +461,9 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
         FUNC_2_LUA(doomTicsToSec),
         FUNC_2_LUA(secToDoomTics),
         def("doomFixedToDouble", doomFixedToDouble_int),
-        def("doomFixedToDouble", doomFixedToDouble_double),
+        // def("doomFixedToDouble", doomFixedToDouble_double),
         def("doomFixedToNumber", doomFixedToDouble_int),
-        def("doomFixedToNumber", doomFixedToDouble_double),
+        // def("doomFixedToNumber", doomFixedToDouble_double),
         FUNC_2_LUA(isBinaryButton),
         FUNC_2_LUA(isDeltaButton)
 
