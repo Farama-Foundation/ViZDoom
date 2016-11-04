@@ -1,4 +1,4 @@
-#!/usr/bin/env lua
+#!/usr/bin/env th
 
 ----------------------------------------------------------------------
 -- This script presents how to use the most basic features of the environment.
@@ -13,6 +13,14 @@
 
 package.path = package.path .. ";./vizdoom/?.lua"
 require "vizdoom.init"
+-- local vizdoom = require "vizdoom.init" is possible
+
+-- you may want to do this for convenience
+local Button = vizdoom.Button
+local Mode = vizdoom.Mode
+local GameVariable = vizdoom.GameVariable
+local ScreenFormat = vizdoom.ScreenFormat
+local ScreenResolution = vizdoom.ScreenResolution
 
 require "torch"
 require "sys"
@@ -97,7 +105,7 @@ game:init()
 -- 5 more combinations are naturally possible but only 3 are included for transparency when watching.
 
 local actions = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
--- or (action can be table or tensor)
+-- action can be table or IntTensor
 local actions = {
     [1] = torch.IntTensor({1,0,0}),
     [2] = torch.IntTensor({0,1,0}),
@@ -125,8 +133,8 @@ for i = 1, episodes do
 
         -- Which consists of:
         local n           = state.number
-        local vars        = state.gameVariables
-        local screenBuf   = state.screenBuffer
+        local vars        = state.gameVariables -- IntTensor
+        local screenBuf   = state.screenBuffer -- ByteTensor
         local depthBuf    = state.depthBuffer
         local labelsBuf   = state.labelsBuffer
         local automapBuf  = state.automapBuffer

@@ -1,15 +1,12 @@
-require 'sys'
+#!/usr/bin/env th
 
-local vizdoom = require("../../src/lib_lua/init.lua")
+package.path = package.path .. ";./vizdoom/?.lua"
+require "vizdoom.init"
 
-local Button = vizdoom.Button
-local Mode = vizdoom.Mode
-local GameVariable = vizdoom.GameVariable
-local ScreenFormat = vizdoom.ScreenFormat
-local ScreenResolution = vizdoom.ScreenResolution
+require "torch"
 
 -- Create DoomGame instance. It will run the game and communicate with you.
-local game = vizdoom.ViZDoomLua()
+local game = vizdoom.DoomGame()
 
 -- Use CIG example config or your own.
 game:loadConfig("../../examples/config/cig.cfg")
@@ -38,33 +35,30 @@ game:init();
 
 -- Three example sample actions
 local actions = {
-   [1] = torch.IntTensor({1,0,0,0,0,0,0,0,0}),
-   [2] = torch.IntTensor({0,1,0,0,0,0,0,0,0}),
-   [3] = torch.IntTensor({0,0,1,0,0,0,0,0,0})
+    [1] = torch.IntTensor({1,0,0,0,0,0,0,0,0}),
+    [2] = torch.IntTensor({0,1,0,0,0,0,0,0,0}),
+    [3] = torch.IntTensor({0,0,1,0,0,0,0,0,0})
 }
 
 -- To be used by the main game loop
-local s, reward
-
---------------------------------------------------------------------------------
--- Main game loop
+local state, reward
 
 -- Play until the game (episode) is over.
 while not game:isEpisodeFinished() do
 
-   if game:isPlayerDead() then
-      -- Respawn immediately after death, new state will be available.
-      game:respawnPlayer()
-   end
+    if game:isPlayerDead() then
+        -- Respawn immediately after death, new state will be available.
+        game:respawnPlayer()
+    end
 
-   -- Analyze the state
-   s = game:getState()
+    -- Analyze the state
+    state = game:getState()
 
-   -- Make a random action
-   local action = actions[torch.random(#actions)]
-   reward = game:makeAction(action)
+    -- Make a random action
+    local action = actions[torch.random(#actions)]
+    local reward = game:makeAction(action)
 
-    print("Frags:", game:getGameVariable(GameVariable.FRAGCOUNT))
+    print("Frags:", game:getGameVariable(vizdoom.GameVariable.FRAGCOUNT))
 end
 
 game:close()
