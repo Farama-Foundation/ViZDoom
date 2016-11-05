@@ -5,7 +5,7 @@ project(ViZDoom)
 #-----------------------------------------------------------------------------------------------------------------------
 set(ViZDoom_MAJOR_VERSION 1)
 set(ViZDoom_MINOR_VERSION 1)
-set(ViZDoom_PATCH_VERSION 1)
+set(ViZDoom_PATCH_VERSION 0)
 set(ViZDoom_VERSION ${ViZDoom_MAJOR_VERSION}.${ViZDoom_MINOR_VERSION}.${ViZDoom_PATCH_VERSION})
 set(ViZDoom_VERSION_STR ${ViZDoom_VERSION})
 set(ViZDoom_VERSION_ID ${ViZDoom_MAJOR_VERSION}${ViZDoom_MINOR_VERSION}${ViZDoom_PATCH_VERSION})
@@ -22,13 +22,21 @@ option(BUILD_JAVA "Build ViZDoom Java binding." OFF)
 
 # CMake options
 #-----------------------------------------------------------------------------------------------------------------------
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 if(COMMAND cmake_policy)
 	cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
+# Add cmake_modules to module
+set(CMAKE_MODULE_PATH
+	${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}"
+	"${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 
+# Set the release mode if not specified
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE Release)
+endif()
 
 # System dependent settings
 #-----------------------------------------------------------------------------------------------------------------------
@@ -279,7 +287,7 @@ if(BUILD_LUA AND (NOT BUILD_LUA52))
 
 	find_package(Lua51 REQUIRED)
 
-	set(VIZDOOM_LUA_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/lua)
+	set(VIZDOOM_LUA_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/lua/vizdoom)
 	set(VIZDOOM_LUA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_lua)
 	set(VIZDOOM_LUA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LUA_SRC_DIR})
 
@@ -288,7 +296,8 @@ if(BUILD_LUA AND (NOT BUILD_LUA52))
 			${Boost_LIBRARIES}
 			${LUA_LIBRARIES}
 			#${LUABIND_LIBRARIES}
-			${VIZDOOM_SRC_DIR}/lib_lua/luabind/src/libluabind.a)
+			#${VIZDOOM_SRC_DIR}/lib_lua/luabind/src/libluabind.a
+			luabind)
 
 	include_directories(${VIZDOOM_LUA_INCLUDE_DIR}
 			${Boost_INCLUDE_DIR}
@@ -324,9 +333,10 @@ if(BUILD_LUA AND (NOT BUILD_LUA52))
 	if(UNIX)
 		ADD_CUSTOM_COMMAND(
 				TARGET libvizdoom_lua
-				COMMAND ln -sf ../../vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/lua/vizdoom.so
-				COMMAND ln -sf ..//examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/lua/bots.cfg
-				COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/lua.")
+				COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/src/lib_lua/init.lua ${VIZDOOM_LUA_OUTPUT_DIR}/init.lua
+				COMMAND ln -sf ${VIZDOOM_LUA_OUTPUT_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/examples/lua
+				COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/lua
+				COMMENT "Adding symlinks to vizdoom and bots.cfg in examples/lua.")
 	endif()
 
 endif()

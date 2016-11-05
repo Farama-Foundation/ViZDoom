@@ -8,9 +8,10 @@
 -- To see the scenario description go to "../../scenarios/README.md"
 ----------------------------------------------------------------------
 
-require("vizdoom")
+package.path = package.path .. ";./vizdoom/?.lua"
+require "vizdoom.init"
 
-game = vizdoom.DoomGame()
+local game = vizdoom.DoomGame()
 
 -- Choose scenario config file you wish to watch.
 -- Don't load two configs cause the second will overrite the first one.
@@ -37,7 +38,7 @@ game:setMode(vizdoom.Mode.SPECTATOR)
 
 game:init()
 
-episodes = 10
+local episodes = 10
 
 for i = 1, episodes do
 
@@ -47,16 +48,17 @@ for i = 1, episodes do
 
     while not game:isEpisodeFinished() do
 
-        state = game:getState()
+        local state = game:getState()
 
         game:advanceAction()
-        action = game:getLastAction()
-        reward = game:getLastReward()
+        local action = game:getLastAction()
+        local reward = game:getLastReward()
 
         print("State # " .. state.number)
         print("Reward: " .. reward)
-        actionStr = "Action:"
-        for k, a in pairs(action) do actionStr = actionStr .. " " .. a end
+        local actionSize = game:getAvailableButtonsSize()
+        local actionStr = "Action:"
+        for k = 1, actionSize do actionStr = actionStr .. " " .. action[k] end
         print(actionStr)
         print("=====================")
 

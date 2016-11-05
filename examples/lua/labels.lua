@@ -8,9 +8,13 @@
 -- To see the scenario description go to "../../scenarios/README.md"
 ----------------------------------------------------------------------
 
-require("vizdoom")
+package.path = package.path .. ";./vizdoom/?.lua"
+require "vizdoom.init"
 
-game = vizdoom.DoomGame()
+require "torch"
+require "image"
+
+local game = vizdoom.DoomGame()
 
 -- Choose scenario config file you wish to watch.
 -- Don't load two configs cause the second will overrite the first one.
@@ -37,7 +41,7 @@ game:setLabelsBufferEnabled(true)
 
 game:init()
 
-episodes = 10
+local episodes = 10
 
 for i = 1, episodes do
 
@@ -48,11 +52,13 @@ for i = 1, episodes do
     while not game:isEpisodeFinished() do
 
         -- Gets the state.
-        state = game:getState()
+        local state = game:getState()
 
         -- Get labels buffer and labels data.
-        labelsBuf = state.labelsBuffer
-        labels = state.labels
+        local labelsBuf = state.labelsBuffer
+        local labels = state.labels
+
+        --image.display(labelsBuf)
 
         game:advanceAction()
         reward = game:getLastReward()

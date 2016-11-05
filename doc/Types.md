@@ -36,11 +36,11 @@
 (`C++ type / Lua type / Java type / Python type` **name**)
 
 - `unsigned int / number / unsigned int / int` **number**
-- `std::vector<double> / table / int[] / numpy.int32[]` **gameVariables / game_variables**
-- `BufferPtr / ? / byte[] / numpy.uint8[]` **screenBuffer / screen_buffer**
-- `BufferPtr / ? / byte[] / numpy.uint8[]` **depthBuffer / depth_buffer**
-- `BufferPtr / ? / byte[] / numpy.uint8[]` **labelsBuffer / labels_buffer**
-- `BufferPtr / ? / byte[] / numpy.uint8[]` **automapBuffer / automap_buffer**
+- `std::vector<double> / IntTensor / int[] / numpy.int32[]` **gameVariables / game_variables**
+- `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **screenBuffer / screen_buffer**
+- `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **depthBuffer / depth_buffer**
+- `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **labelsBuffer / labels_buffer**
+- `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **automapBuffer / automap_buffer**
 - `std::vector<Label> / table / Label[] / list` **labels**
 
 
