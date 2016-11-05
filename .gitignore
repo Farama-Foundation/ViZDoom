@@ -105,4 +105,4 @@ src/vizdoom/zlib/x64/
 
 # CLion & PyCharm
 **/.idea
-
+**_vizdoom.ini

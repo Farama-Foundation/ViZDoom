@@ -1,5 +1,6 @@
 import multiprocessing
 import sys
+import os
 import subprocess
 from distutils.command.build import build
 from setuptools import setup
@@ -60,15 +61,16 @@ setup(
     description='ViZDoom Environment',
     long_description="ViZDoom: Doom Reinforcement Learning Research Platform",
     url='http://vizdoom.cs.put.edu.pl/',
-    author='TODO',
-    author_email='TODO',
+    author='ViZDoom Team',
+    author_email='vizdoom@googlegroups.com',
     license='MIT',
 
     install_requires=['numpy'],
     setup_requires=['numpy'],
     packages=['vizdoom'],
     package_dir={'vizdoom': package_path},
-    package_data={'vizdoom': ['freedoom2.wad', 'vizdoom', 'vizdoom.pk3', 'vizdoom.so', 'bots.cfg']},
+    package_data={'vizdoom': ['freedoom2.wad', 'vizdoom', 'vizdoom.pk3', 'vizdoom.so', 'bots.cfg', 'scenarios/*']},
+    include_package_data=True,
     cmdclass={'build': BuildCommand},
     platforms=[supported_platforms],
     classifiers=[
@@ -87,6 +89,6 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ],
-    keywords='doom ai deep_learning reinforcement_learning research'
+    keywords='vizdoom doom ai deep_learning reinforcement_learning research'
 
 )
