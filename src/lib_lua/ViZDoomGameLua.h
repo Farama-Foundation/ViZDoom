@@ -71,7 +71,6 @@ namespace vizdoom {
         void advanceAction_() { this->advanceAction(); }
         void advanceAction_int(unsigned int _int) { this->advanceAction(_int); }
         void advanceAction_int_bool(unsigned int _int, bool _bool) { this->advanceAction(_int, _bool); }
-        void advanceAction_int_bool_bool(unsigned int _int, bool _bool1, bool _bool2) { this->advanceAction(_int, _bool1, _bool2); }
 
         void addAvailableButton_btn(Button _btn) { this->addAvailableButton(_btn); }
         void addAvailableButton_btn_int(Button _btn, unsigned int _int) { this->addAvailableButton(_btn, _int); }

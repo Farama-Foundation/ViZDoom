@@ -39,7 +39,6 @@ public class DoomGame{
     public native void advanceAction();
     public native void advanceAction(int tics);
     public native void advanceAction(int tics, boolean stateUpdate);
-    public native void advanceAction(int tics, boolean stateUpdate, boolean renderOnly);
     public native double makeAction(int[] actions);
     public native double makeAction(int[] actions, int tics);
 

@@ -495,6 +495,14 @@ namespace vizdoom {
 
     std::string DoomController::getFilePath() { return this->filePath; }
 
+    void DoomController::setFilePath(std::string filePath) {
+        this->filePath = filePath;
+        if (this->doomRunning) {
+            this->map = "file:" + prepareWadFilePath(this->filePath);
+        }
+    }
+
+
     void DoomController::setFilePath(std::string filePath) { if (!this->doomRunning) this->filePath = filePath; }
 
     std::string DoomController::getConfigPath() { return this->configPath; }

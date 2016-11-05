@@ -52,7 +52,7 @@ namespace vizdoom {
         bool isRunning();
 
         void setAction(std::vector<int> const &actions);
-        void advanceAction(unsigned int tics = 1, bool updateState = true, bool renderOnly = true);
+        void advanceAction(unsigned int tics = 1, bool updateState = true);
         double makeAction(std::vector<int> const &actions, unsigned int tics = 1);
 
         bool isNewEpisode();
