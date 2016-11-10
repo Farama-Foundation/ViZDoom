@@ -28,8 +28,7 @@
 #include <fstream>
 #include <iostream>
 
-
-#ifdef __unix__
+#if defined (__unix__) || defined (__APPLE__)
 
 #include <dlfcn.h> // for getting current shared object path
 
@@ -133,7 +132,7 @@ namespace vizdoom {
     const int sharedObjectMarker = 0;
 
     std::string initializeThisSharedObjectPath() {
-#ifdef __unix__
+#if defined (__unix__) || defined (__APPLE__)
         Dl_info dl_info;
         dladdr(&sharedObjectMarker, &dl_info);
         std::string this_shared_object_path = boost::filesystem::absolute(
