@@ -24,7 +24,7 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 
 ## Cite as
 
->Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
+>Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, IEEE Conference on Computational Intelligence and Games, pp. 341-348, Santorini, Greece, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
 ### Bibtex:
 ```
 @inproceedings{Kempka2016ViZDoom,
@@ -35,7 +35,7 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
   url       = {http://arxiv.org/abs/1605.02097},
   address   = {Santorini, Greece},
   Month     = {Sep},
-  Pages     = {20--23},
+  Pages     = {341--348},
   Publisher = {IEEE},
   Note      = {The best paper award}
 }
