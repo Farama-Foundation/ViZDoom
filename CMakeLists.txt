@@ -216,7 +216,7 @@ if( BUILD_PYTHON3 )
 	find_package(PythonLibs ${python3_version} REQUIRED)
 
     find_package(Boost QUIET COMPONENTS python3-mt)  # The name under OSX (macports)
-    if ( NOT Boost_python3-mt_FOUND )
+    if ( NOT ${Boost_python3-mt_FOUND} )
         find_package(Boost QUIET COMPONENTS python3)
         if ( NOT Boost_python3_FOUND )
             # 3.5 => 35 (at least on Ubuntu 16.04 the library is called libboost_python-py35.so)
