@@ -66,10 +66,10 @@ namespace vizdoom {
                 // /a/b/.. is not necessarily /a if b is a symbolic link
                 // /a/b/../.. is not /a/b/.. under most circumstances
                 // We can end up with ..s in our result because of symbolic links
-                if(boost::filesystem::is_symlink(normalizedPath)) normalizedPath /= *i;
+                if (boost::filesystem::is_symlink(normalizedPath)) normalizedPath /= *i;
 
-                // Otherwise it should be safe to resolve the parent
-                if(normalizedPath.filename() == ".." || normalizedPath.filename() == "") normalizedPath /= *i;
+                    // Otherwise it should be safe to resolve the parent
+                else if (normalizedPath.filename() == ".." || normalizedPath.filename() == "") normalizedPath /= *i;
                 else normalizedPath = normalizedPath.parent_path();
             }
             else if(*i != ".") normalizedPath /= *i;
