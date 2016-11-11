@@ -82,7 +82,7 @@ namespace vizdoom {
         void addAvailableGameVariable(GameVariable var);
         void clearAvailableGameVariables();
         size_t getAvailableGameVariablesSize();
-        int getGameVariable(GameVariable variable);
+        double getGameVariable(GameVariable variable);
 
 
         /* GameArgs getters and setters */

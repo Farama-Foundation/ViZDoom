@@ -37,12 +37,15 @@ namespace vizdoom{
         unsigned int objectId;
         std::string objectName;
         uint8_t value;
+        double objectPositionX;
+        double objectPositionY;
+        double objectPositionZ;
     };
 
     struct GameState {
         unsigned int number;
 
-        std::vector<int> gameVariables;
+        std::vector<double> gameVariables;
 
         BufferPtr screenBuffer;
         BufferPtr depthBuffer;
@@ -169,6 +172,10 @@ namespace vizdoom{
         WEAPON7,
         WEAPON8,
         WEAPON9,
+
+        POSITION_X,
+        POSITION_Y,
+        POSITION_Z,
 
         PLAYER_NUMBER,
         PLAYER_COUNT,

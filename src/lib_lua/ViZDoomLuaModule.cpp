@@ -281,6 +281,9 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
                 ENUM_VAL_2_LUA(WEAPON8),
                 ENUM_VAL_2_LUA(WEAPON9),
                 ENUM_VAL_2_LUA(WEAPON0),
+                ENUM_VAL_2_LUA(POSITION_X),
+                ENUM_VAL_2_LUA(POSITION_Y),
+                ENUM_VAL_2_LUA(POSITION_Z),
                 ENUM_VAL_2_LUA(USER1),
                 ENUM_VAL_2_LUA(USER2),
                 ENUM_VAL_2_LUA(USER3),
@@ -339,7 +342,10 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
         class_<Label>("Label")
             .def_readonly("objectId", &Label::objectId)
             .def_readonly("objectName", &Label::objectName)
-            .def_readonly("value", &Label::value),
+            .def_readonly("value", &Label::value)
+            .def_readonly("objectPositionX", &Label::objectPositionX)
+            .def_readonly("objectPositionY", &Label::objectPositionY)
+            .def_readonly("objectPositionZ", &Label::objectPositionZ),
 
 
         /* DoomGame */

@@ -155,6 +155,7 @@ void VIZLabelsBuffer::addPSprite(AActor *actor, vissprite_t* vis){
     sprite.actorId = 0;
     sprite.psprite = true;
     sprite.vissprite = vis;
+    sprite.position = actor->__pos;
 
     this->sprites.push_back(sprite);
 }
@@ -165,7 +166,7 @@ BYTE VIZLabelsBuffer::getLabel(vissprite_t* vis){
             if(i->psprite) i->label = VIZ_MAX_LABELS - 1;
             else{
                 ++labeled;
-                i->label = labeled * (VIZ_MAX_LABELS - 1) / (this->sprites.size() + 1);
+                i->label = static_cast<BYTE>(labeled * (VIZ_MAX_LABELS - 1) / (this->sprites.size() + 1));
             }
             i->labeled = true;
             return i->label;
@@ -186,7 +187,11 @@ unsigned int VIZLabelsBuffer::getActorId(AActor *actor){
     }
 }
 
-std::vector<VIZSprite>  VIZLabelsBuffer::getSprites(){
+void VIZLabelsBuffer::clearActors(){
+    this->actors.clear();
+}
+
+std::vector<VIZSprite> VIZLabelsBuffer::getSprites(){
     return this->sprites;
 }
 

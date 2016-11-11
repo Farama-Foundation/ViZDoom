@@ -46,6 +46,9 @@ namespace vizdoom {
         unsigned int objectId;
         bpy::str objectName;
         uint8_t value;
+        double objectPositionX;
+        double objectPositionY;
+        double objectPositionZ;
     };
 
     struct GameStatePython {

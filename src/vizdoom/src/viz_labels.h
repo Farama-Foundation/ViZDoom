@@ -55,6 +55,7 @@ struct VIZLabel{
     unsigned int objectId;
     char objectName[VIZ_MAX_LABEL_NAME_LEN];
     BYTE value;
+    double objectPosition[3];
 };
 
 struct VIZSprite{
@@ -64,6 +65,8 @@ struct VIZSprite{
     vissprite_t* vissprite;
     bool labeled;
     BYTE label;
+    fixedvec3 position;
+
 
     VIZSprite(){
         this->actor = NULL;
@@ -98,6 +101,7 @@ public:
     void addPSprite(AActor *thing, vissprite_t* vis);
     BYTE getLabel(vissprite_t* vis);
     unsigned int getActorId(AActor *actor);
+    void clearActors();
     void setLabel(BYTE label);
 
     std::vector<VIZSprite> getSprites();
