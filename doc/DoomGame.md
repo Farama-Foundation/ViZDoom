@@ -466,11 +466,11 @@ See also:
 ---
 ### <a name="getGameVariable"></a> `getGameVariable`
 
-| C++    | `int getGameVariable(GameVariable variable)`   |
-| :--    | :--                                            |
-| Lua    | `int getGameVariable(GameVariable variable)`   |
-| Java   | `int getGameVariable(GameVariable variable)`   |
-| Python | `int get_game_variable(GameVariable variable)` |
+| C++    | `double getGameVariable(GameVariable variable)`  |
+| :--    | :--                                              |
+| Lua    | `number getGameVariable(GameVariable variable)`  |
+| Java   | `double getGameVariable(GameVariable variable)`  |
+| Python | `float get_game_variable(GameVariable variable)` |
 
 Returns the current value of the specified game variable (`HEALTH`, `AMMO1` etc.).
 The specified game variable does not need to be among available game variables (included in the state).

@@ -20,18 +20,7 @@ local game = vizdoom.DoomGame()
 -- Don't load two configs cause the second will overrite the first one.
 -- Multiple config files are ok but combining these ones doesn't make much sense.
 
---game:loadConfig("../../examples/config/basic.cfg")
 game:loadConfig("../../examples/config/deadly_corridor.cfg")
---game:loadConfig("../../examples/config/deathmatch.cfg")
---game:loadConfig("../../examples/config/defend_the_center.cfg")
---game:loadConfig("../../examples/config/defend_the_line.cfg")
---game:loadConfig("../../examples/config/health_gathering.cfg")
---game:loadConfig("../../examples/config/my_way_home.cfg")
---game:loadConfig("../../examples/config/predict_position.cfg")
---game:loadConfig("../../examples/config/take_cover.cfg")
-
--- Enables freelook in engine
-game:addGameArgs("+freelook 1")
 
 game:setScreenResolution(vizdoom.ScreenResolution.RES_640X480)
 game:setWindowVisible(true)
@@ -39,9 +28,21 @@ game:setWindowVisible(true)
 -- Enables labeling of the in game objects.
 game:setLabelsBufferEnabled(true)
 
+game:clearAvailableGameVariables()
+game:addAvailableGameVariable(vizdoom.GameVariable.POSITION_X)
+game:addAvailableGameVariable(vizdoom.GameVariable.POSITION_Y)
+game:addAvailableGameVariable(vizdoom.GameVariable.POSITION_Z)
+
 game:init()
 
+local actions = {
+    [1] = torch.IntTensor({1,0,0}),
+    [2] = torch.IntTensor({0,1,0}),
+    [3] = torch.IntTensor({0,0,1})
+}
+
 local episodes = 10
+local sleepTime = 0.028
 
 for i = 1, episodes do
 
@@ -60,11 +61,10 @@ for i = 1, episodes do
 
         --image.display(labelsBuf)
 
-        game:advanceAction()
-        reward = game:getLastReward()
+        game:makeAction(actions[torch.random(#actions)])
 
         print("State #" .. state.number)
-
+        print("Player position X: " .. state.gameVariables[1] .. " Y: " .. state.gameVariables[2] .. " Z: " .. state.gameVariables[3])
         print("Labels:")
 
         -- Print information about objects visible on the screen.
@@ -72,11 +72,15 @@ for i = 1, episodes do
         -- object_name contains name of object.
         -- value tells which value represents object in labels_buffer.
         for k, l in pairs(labels) do
-            print("#" .. k .. ": object id: " .. l.objectId .. " object name: " .. l.objectName .. " label: " .. l.value)
+            print("Object id: " .. l.objectId .. " object name: " .. l.objectName .. " label: " .. l.value)
+            print("Object position X: " .. l.objectPositionX .. " Y: " .. l.objectPositionY .. " Z: " .. l.objectPositionZ)
         end
 
-        print("Reward: " .. reward)
         print("=====================")
+
+        if sleepTime > 0 then
+            sys.sleep(sleepTime)
+        end
 
     end
 
