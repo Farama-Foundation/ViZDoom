@@ -68,16 +68,16 @@ namespace vizdoom {
         if (this->state->gameVariables.size() > 0) {
             lState.gameVariables = lb::newtable(luaState);
 
-            for(int i = 0; i < this->state->gameVariables.size(); ++i){
-                lState.gameVariables[i+1] = this->state->gameVariables[i];
+            for(size_t i = 0; i < this->state->gameVariables.size(); ++i){
+                lState.gameVariables[i + 1] = this->state->gameVariables[i];
             }
         }
 
         if(this->state->labels.size() > 0){
             lState.labels = lb::newtable(luaState);
 
-            for(int i = 0; i < this->state->labels.size(); ++i){
-                lState.labels[i+1] = this->state->labels[i];
+            for(size_t i = 0; i < this->state->labels.size(); ++i){
+                lState.labels[i + 1] = this->state->labels[i];
             }
         }
 
@@ -87,8 +87,8 @@ namespace vizdoom {
 
     lb::object DoomGameLua::getLastAction(lua_State* luaState){
         lb::object lAction = lb::newtable(luaState);
-        for(int i = 0; i < DoomGame::lastAction.size(); ++i){
-            lAction[i+1] = DoomGame::lastAction[i];
+        for(size_t i = 0; i < DoomGame::lastAction.size(); ++i){
+            lAction[i + 1] = DoomGame::lastAction[i];
         }
         return lAction;
     }

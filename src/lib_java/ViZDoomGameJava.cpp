@@ -118,9 +118,9 @@ JNI_EXPORT(void, addAvailableGameVariable, jobject){
     callObjMethod(jEnv, jObj, &DoomGameJava::addAvailableGameVariable, arg1);
 }
 
-JNI_EXPORT(jint, getGameVariable, jobject){
+JNI_EXPORT(jdouble, getGameVariable, jobject){
     auto arg1 = jobjectCastToEnum<GameVariable>(jEnv, "vizdoom/GameVariable", jarg1);
-    callObjMethod(jEnv, jObj, &DoomGameJava::getGameVariable, arg1);
+    return castTojdouble(callObjMethod(jEnv, jObj, &DoomGameJava::getGameVariable, arg1));
 }
 
 JNI_METHOD(void, clearAvailableGameVariables, clearAvailableGameVariables)
