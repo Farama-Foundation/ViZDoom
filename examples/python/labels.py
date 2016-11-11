@@ -31,6 +31,11 @@ game.set_screen_resolution(ScreenResolution.RES_640X480)
 # Enables labeling of the in game objects.
 game.set_labels_buffer_enabled(True)
 
+game.clear_available_game_variables()
+game.add_available_game_variable(GameVariable.POSITION_X)
+game.add_available_game_variable(GameVariable.POSITION_Y)
+game.add_available_game_variable(GameVariable.POSITION_Z)
+
 game.init()
 
 actions = [[True, False, False], [False, True, False], [False, False, True]]
@@ -58,6 +63,7 @@ for i in range(episodes):
         game.make_action(choice(actions))
 
         print("State #" + str(state.number))
+        print("Player position X:", state.game_variables[0], "Y:", state.game_variables[1], "Z:", state.game_variables[2])
         print("Labels:")
 
         # Print information about objects visible on the screen.
@@ -65,7 +71,8 @@ for i in range(episodes):
         # object_name contains name of object.
         # value tells which value represents object in labels_buffer.
         for l in state.labels:
-            print("Object id: " + str(l.object_id) + " object name: " + l.object_name + " label: " + str(l.value))
+            print("Object id:", l.object_id, "object name:", l.object_name, "label:", l.value)
+            print("Object position X:", l.object_position_x, "Y:", l.object_position_y, "Z:", l.object_position_z)
 
         print("=====================")
 
