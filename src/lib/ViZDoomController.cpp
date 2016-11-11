@@ -116,6 +116,8 @@ namespace vizdoom {
         this->particles = true;
         this->sprites = true;
         this->messages = false;
+        this->corpses = true;
+
 
         this->windowHidden = false;
         this->noXServer = false;
@@ -732,6 +734,16 @@ namespace vizdoom {
         if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
     }
 
+    void DoomController::setRenderCorpses(bool corpses){
+        this->corpses = corpses;
+        if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
+    }
+
+    void DoomController::setRenderScreenFlashes(bool flashes){
+        this->flashes = flashes;
+        if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
+    }
+
     unsigned int DoomController::getScreenWidth() {
         if (this->doomRunning) return this->gameState->SCREEN_WIDTH;
         else return this->screenWidth;
@@ -773,6 +785,8 @@ namespace vizdoom {
         if(this->messages)      renderMode |= 128;
         if(this->amRotate)      renderMode |= 256;
         if(this->amTextures)    renderMode |= 512;
+        if(this->corpses)       renderMode |= 1024;
+        if(this->flashes)       renderMode |= 2048;
 
         return renderMode;
     }

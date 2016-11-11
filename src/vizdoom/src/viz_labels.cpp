@@ -145,6 +145,7 @@ void VIZLabelsBuffer::addSprite(AActor *actor, vissprite_t* vis){
     sprite.actor = actor;
     sprite.actorId = this->getActorId(actor);
     sprite.vissprite = vis;
+    sprite.position = actor->__pos;
 
     this->sprites.push_back(sprite);
 }
