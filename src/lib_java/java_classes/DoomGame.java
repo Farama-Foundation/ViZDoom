@@ -80,10 +80,10 @@ public class DoomGame{
     public native int getTicrate();
     public native void setTicrate(int ticrate);
 
-    public native int getGameVariable(GameVariable var);
+    public native double getGameVariable(GameVariable var);
 
     public native double getLivingReward();
-    public native  void setLivingReward(double livingReward);
+    public native void setLivingReward(double livingReward);
     public native double getDeathPenalty();
     public native void setDeathPenalty(double deathPenalty);
 

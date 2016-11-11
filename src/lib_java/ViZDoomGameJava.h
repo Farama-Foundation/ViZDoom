@@ -97,7 +97,7 @@ JNI_EXPORT(jint, getModeNative);
 JNI_EXPORT(void, setMode, jobject);
 JNI_EXPORT(jint, getTicrate);
 JNI_EXPORT(void, setTicrate, jint);
-JNI_EXPORT(jint, getGameVariable, jobject);
+JNI_EXPORT(jdouble, getGameVariable, jobject);
 JNI_EXPORT(jdouble, getLivingReward);
 JNI_EXPORT(void, setLivingReward, jdouble);
 JNI_EXPORT(jdouble, getDeathPenalty);

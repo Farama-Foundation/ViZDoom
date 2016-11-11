@@ -36,7 +36,7 @@ function vizdoom.DoomGame:getState()
     }
 
     if _state.gameVariables then
-        state.gameVariables = torch.IntTensor(_state.gameVariables)
+        state.gameVariables = torch.DoubleTensor(_state.gameVariables)
     end
 
     if channels > 1 then
