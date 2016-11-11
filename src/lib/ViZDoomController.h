@@ -234,7 +234,7 @@ namespace vizdoom{
         /* GameState getters */
         /*------------------------------------------------------------------------------------------------------------*/
 
-        int getGameVariable(GameVariable var);
+        double getGameVariable(GameVariable var);
 
         unsigned int getGameTic();
         bool isMultiplayerGame();

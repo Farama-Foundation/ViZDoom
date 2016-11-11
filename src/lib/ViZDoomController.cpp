@@ -864,7 +864,7 @@ namespace vizdoom {
     /* GameVariables getters */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    int DoomController::getGameVariable(GameVariable var){
+    double DoomController::getGameVariable(GameVariable var){
 
         switch (var) {
             case KILLCOUNT :
@@ -882,21 +882,21 @@ namespace vizdoom {
             case ARMOR :
                 return this->gameState->PLAYER_ARMOR;
             case DEAD :
-                return static_cast<int>(this->gameState->PLAYER_DEAD);
+                return this->gameState->PLAYER_DEAD;
             case ON_GROUND :
-                return static_cast<int>(this->gameState->PLAYER_ON_GROUND);
+                return static_cast<double>(this->gameState->PLAYER_ON_GROUND);
             case ATTACK_READY :
-                return static_cast<int>(this->gameState->PLAYER_ATTACK_READY);
+                return static_cast<double>(this->gameState->PLAYER_ATTACK_READY);
             case ALTATTACK_READY :
-                return static_cast<int>(this->gameState->PLAYER_ALTATTACK_READY);
+                return static_cast<double>(this->gameState->PLAYER_ALTATTACK_READY);
             case SELECTED_WEAPON :
                 return this->gameState->PLAYER_SELECTED_WEAPON;
             case SELECTED_WEAPON_AMMO :
                 return this->gameState->PLAYER_SELECTED_WEAPON_AMMO;
             case PLAYER_NUMBER:
-                return static_cast<int>(this->gameState->PLAYER_NUMBER);
+                return static_cast<double>(this->gameState->PLAYER_NUMBER);
             case PLAYER_COUNT:
-                return static_cast<int>(this->gameState->PLAYER_COUNT);
+                return static_cast<double>(this->gameState->PLAYER_COUNT);
         }
 
         if(var >= AMMO0 && var <= AMMO9){
@@ -904,6 +904,9 @@ namespace vizdoom {
         }
         else if(var >= WEAPON0 && var <= WEAPON9){
             return this->gameState->PLAYER_WEAPON[var - WEAPON0];
+        }
+        else if(var >= POSITION_X && var <= POSITION_Z){
+            return this->gameState->PLAYER_POSITION[var - POSITION_X];
         }
         else if(var >= USER1 && var <= USER30){
             return this->gameState->MAP_USER_VARS[var - USER1];

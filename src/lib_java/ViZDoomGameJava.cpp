@@ -50,7 +50,7 @@ JNI_EXPORT(jobject, getState){
     jclass jStateClass = jEnv->FindClass("vizdoom/GameState");
     if (jStateClass == 0) return NULL;
 
-    jintArray jGameVariables = castTojintArray(jEnv, state->gameVariables);
+    jdoubleArray jGameVariables = castTojdoubleArray(jEnv, state->gameVariables);
     jbyteArray jScreenBuffer = state->screenBuffer != nullptr ? castTojbyteArray(jEnv, *state->screenBuffer) : NULL;
     jbyteArray jDepthBuffer = state->depthBuffer != nullptr ? castTojbyteArray(jEnv, *state->depthBuffer) : NULL;
     jbyteArray jLabelsBuffer = state->labelsBuffer != nullptr ? castTojbyteArray(jEnv, *state->labelsBuffer) : NULL;
@@ -59,12 +59,14 @@ JNI_EXPORT(jobject, getState){
     jclass jLabelClass = jEnv->FindClass("vizdoom/Label");
     if (jLabelClass == 0) return NULL;
     jobjectArray jLabels = jEnv->NewObjectArray(state->labels.size(), jLabelClass, NULL);
-    jmethodID jLabelConstructor = jEnv->GetMethodID(jLabelClass, "<init>", "(ILjava/lang/String;B)V");
+    jmethodID jLabelConstructor = jEnv->GetMethodID(jLabelClass, "<init>", "(ILjava/lang/String;BDDD)V");
     if (jLabelConstructor == 0) return NULL;
 
     for(size_t i = 0; i < state->labels.size(); ++i){
-        jobject jLabel = jEnv->NewObject(jLabelClass, jLabelConstructor, (jint)state->labels[i].objectId,
-                                 castTojstring(jEnv, state->labels[i].objectName), (jint)state->labels[i].value);
+        jobject jLabel = jEnv->NewObject(jLabelClass, jLabelConstructor,
+                                        (jint)state->labels[i].objectId, castTojstring(jEnv, state->labels[i].objectName),
+                                        (jint)state->labels[i].value, (jdouble)state->labels[i].objectPositionX,
+                                        (jdouble)state->labels[i].objectPositionY, (jdouble)state->labels[i].objectPositionZ);
         jEnv->SetObjectArrayElement(jLabels, i, jLabel);
     }
 

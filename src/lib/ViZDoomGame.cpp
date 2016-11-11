@@ -236,6 +236,9 @@ namespace vizdoom {
                 label.objectId = this->doomController->getGameState()->LABEL[i].objectId;
                 label.objectName = std::string(this->doomController->getGameState()->LABEL[i].objectName);
                 label.value = this->doomController->getGameState()->LABEL[i].value;
+                label.objectPositionX = this->doomController->getGameState()->LABEL[i].objectPosition[0];
+                label.objectPositionY = this->doomController->getGameState()->LABEL[i].objectPosition[1];
+                label.objectPositionZ = this->doomController->getGameState()->LABEL[i].objectPosition[2];
                 this->state->labels.push_back(label);
             }
         }
@@ -337,7 +340,7 @@ namespace vizdoom {
     unsigned int DoomGame::getTicrate(){ return this->doomController->getTicrate(); }
     void DoomGame::setTicrate(unsigned int ticrate){ this->doomController->setTicrate(ticrate); }
 
-    int DoomGame::getGameVariable(GameVariable variable){
+    double DoomGame::getGameVariable(GameVariable variable){
         if(!this->isRunning()) throw ViZDoomIsNotRunningException();
         return this->doomController->getGameVariable(variable);
     }
