@@ -820,6 +820,11 @@ void D_Display ()
 				V_RefreshViewBorder ();
 			}
 
+			if(vizDepthMap!=NULL) {
+				vizDepthMap->setActualDepth(0);
+				vizDepthMap->lock();
+			}
+
 			if (hud_althud && viewheight == SCREENHEIGHT && screenblocks > 10)
 			{
 				StatusBar->DrawBottomStuff (HUD_AltHud);
@@ -840,6 +845,9 @@ void D_Display ()
 				StatusBar->Draw (HUD_StatusBar);
 				StatusBar->DrawTopStuff (HUD_StatusBar);
 			}
+
+			if(vizDepthMap!=NULL) vizDepthMap->unlock();
+
 			CT_Drawer ();
 			break;
 
