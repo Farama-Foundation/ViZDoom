@@ -158,6 +158,7 @@ namespace vizdoom {
         void setRenderParticles(bool particles);
         void setRenderEffectsSprites(bool sprites);
         void setRenderMessages(bool messages);
+        void setRenderCorpses(bool bodies);
         void setWindowVisible(bool visibility);
         void setConsoleEnabled(bool console);
         void setSoundEnabled(bool sound);

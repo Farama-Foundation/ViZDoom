@@ -85,9 +85,10 @@ CVAR (Bool, viz_depth, false, 0)
 CVAR (Bool, viz_labels, false, 0)
 CVAR (Bool, viz_automap, false, 0)
 
-// rendering options (bitset)
+// rendering options (bitsets)
 CVAR (Int, viz_render_mode, 0, 0)
 CVAR (Int, viz_automap_mode, 0, 0)
+CVAR (Bool, viz_render_corpses, true, 0)
 
 // window/sound/console/rendering all frames
 CVAR (Bool, viz_render_all, false, CVAR_NOSET)
@@ -339,6 +340,12 @@ void VIZ_CVARsUpdate(){
         }
         else VIZ_Error(VIZ_FUNC, "Player %d does not exist.", *viz_override_player);
     }
+
+    // bodies
+    viz_render_corpses.CmdSet((*viz_render_mode & 1024) != 0 ? "1" : "0");
+
+    // flashes
+    //TODO
 }
 
 

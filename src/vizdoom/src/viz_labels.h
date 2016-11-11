@@ -42,7 +42,7 @@
 #include "g_level.h"
 
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 #ifdef VIZ_LABELS_TEST
 #include <SDL_video.h>
@@ -123,7 +123,7 @@ private:
     BYTE labeled;
     BYTE currentLabel;
 
-    std::map<AActor*, unsigned int> actors;
+    std::unordered_map<AActor*, unsigned int> actors;
 
     #ifdef VIZ_LABELS_TEST
         SDL_Window* window;

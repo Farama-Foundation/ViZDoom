@@ -456,6 +456,7 @@ namespace vizdoom {
     void DoomGame::setRenderParticles(bool particles) { this->doomController->setRenderParticles(particles); }
     void DoomGame::setRenderEffectsSprites(bool sprites) { this->doomController->setRenderEffectsSprites(sprites); }
     void DoomGame::setRenderMessages(bool messages) { this->doomController->setRenderMessages(messages); }
+    void DoomGame::setRenderCorpses(bool corpses) { this->doomController->setRenderCorpses(corpses); }
 
     void DoomGame::setWindowVisible(bool visibility) {
         this->doomController->setNoXServer(!visibility);
