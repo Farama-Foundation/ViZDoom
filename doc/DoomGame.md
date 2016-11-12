@@ -83,6 +83,7 @@
 * [setRenderParticles](#setRenderParticles)
 * [setRenderEffectsSprites](#setRenderEffectsSprites)
 * [setRenderMessages](#setRenderMessages)
+* [setRenderCorpses](#setRenderCorpses)
 * [setWindowVisible](#setWindowVisible)
 * [setConsoleEnabled](#setConsoleEnabled)
 * [setSoundEnabled](#setSoundEnabled)
@@ -1223,7 +1224,7 @@ Config key: `renderEffectsSprites/render_effects_sprites`
 | :--    | :--                                        |
 | Lua    | `void setRenderMessages(boolean messages)` |
 | Java   | `void setRenderMessages(boolean messages)` |
-| Python | `void set_render_messages(bool messages`   |
+| Python | `void set_render_messages(bool messages)`  |
 
 Added in 1.1
 
@@ -1232,6 +1233,24 @@ Determine if ingame messages (information about pickups, kills etc.) will be ren
 Default value: false
 
 Config key: `renderMessages/render_messages`
+
+
+---
+### <a name="setRenderCorpsess"></a> `setRenderCorpses`
+
+| C++    | `void setRenderCorpsess(bool corpses)`    |
+| :--    | :--                                       |
+| Lua    | `void setRenderCorpses(boolean corpses)`  |
+| Java   | `void setRenderCorpsess(boolean corpses)` |
+| Python | `void set_render_corpsess(bool corpses)`  |
+
+Added in 1.1
+
+Determine if actors' corpses will be rendered in game.
+
+Default value: true
+
+Config key: `renderCorpses/render_corpses`
 
 
 ---

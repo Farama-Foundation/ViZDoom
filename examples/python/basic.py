@@ -63,6 +63,8 @@ game.set_render_weapon(True)
 game.set_render_decals(False)
 game.set_render_particles(False)
 game.set_render_effects_sprites(False)
+game.set_render_messages(False)
+game.set_render_corpses(False)
 
 # Adds buttons that will be allowed. 
 game.add_available_button(Button.MOVE_LEFT)

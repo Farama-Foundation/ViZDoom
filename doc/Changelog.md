@@ -21,6 +21,7 @@
 - The option to use minimal hud instead of default full hud - `setRenderMinimalHud` added.
 - The option to enable/disable effects that use sprites - `setRenderEffectsSprites` added.
 - The option to enable/disable ingame messages independently of the console output - `setRenderMessages` added.
+- The option to enable/disable corpses - `setRenderCorpses` added.
 
 
 #### Episode recording and replaying
@@ -29,11 +30,12 @@
 recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 - The option to replay demo from other player perspective.
 
+
 #### Ticrate
 
 - The option to set number of tics executed per second in ASNYC Modes.
-- New `ticrate` optional argument in `DoomTicsToMs`, `MsToDoomTics`.
-- `DoomTicsToSec` and `SecToDoomTics` added.
+- New `ticrate` optional argument in `doomTicsToMs`, `msToDoomTics`.
+- `doomTicsToSec` and `secToDoomTics` added.
 
 
 #### Others
@@ -47,6 +49,7 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 - Many minor bugs fixed.
 - Python bindings output changed to bin/python2 and bin/python3. 
 - Possibility to change scenario wad during runtime (limited functionality)
+
 
 #### C++ specific
 
