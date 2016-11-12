@@ -38,6 +38,9 @@ public class Basic {
         game.setRenderWeapon(true);
         game.setRenderDecals(false);
         game.setRenderParticles(false);
+        game.setRenderEffectsSprites(false);
+        game.setRenderMessages(false);
+        game.setRenderCorpses(false);
 
         // Adds buttons that will be allowed.
         game.addAvailableButton(Button.MOVE_LEFT);

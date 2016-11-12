@@ -11,6 +11,7 @@ In Java utilities functions are static methods in DoomGame class.
 * [isDeltaButton](#isDeltaButton)
 * [sleep](#sleep)
 
+
 ---
 ### <a name="doomTicsToMs"></a> `doomTicsToMs`
 
