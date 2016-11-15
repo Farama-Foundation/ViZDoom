@@ -1236,13 +1236,13 @@ Config key: `renderMessages/render_messages`
 
 
 ---
-### <a name="setRenderCorpsess"></a> `setRenderCorpses`
+### <a name="setRenderCorpses"></a> `setRenderCorpses`
 
-| C++    | `void setRenderCorpsess(bool corpses)`    |
-| :--    | :--                                       |
-| Lua    | `void setRenderCorpses(boolean corpses)`  |
-| Java   | `void setRenderCorpsess(boolean corpses)` |
-| Python | `void set_render_corpsess(bool corpses)`  |
+| C++    | `void setRenderCorpses(bool corpses)`    |
+| :--    | :--                                      |
+| Lua    | `void setRenderCorpses(boolean corpses)` |
+| Java   | `void setRenderCorpses(boolean corpses)` |
+| Python | `void set_render_corpsess(bool corpses)` |
 
 Added in 1.1
 

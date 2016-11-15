@@ -9,7 +9,6 @@ In Java utilities functions are static methods in DoomGame class.
 * [doomFixedToDouble](#doomFixedToDouble)
 * [isBinaryButton](#isBinaryButton)
 * [isDeltaButton](#isDeltaButton)
-* [sleep](#sleep)
 
 
 ---
@@ -112,12 +111,3 @@ Returns true if button is binary button.
 
 Returns true if button is delta button.
 
-
----
-### <a name="sleep"></a> `sleep`
-
-| Lua    | `void sleep(number sleepTime)` |
-| :--    | :--                            |
-
-Pause thread for specified number of milliseconds (without busy waiting). 
-Added because of the absence in stock Lua.

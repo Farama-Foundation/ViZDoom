@@ -71,10 +71,6 @@ EXCEPTION_TRANSLATE_TO_LUA(ViZDoomUnexpectedExitException)
 double (*doomFixedToDouble_int)(int) = &doomFixedToDouble;
 double (*doomFixedToDouble_double)(double) = &doomFixedToDouble;
 
-void sleepLua(unsigned int time){
-    std::this_thread::sleep_for(std::chrono::milliseconds(time));
-}
-
 
 /* Module definition */
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -462,15 +458,14 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
         /* Utilities */
         /*------------------------------------------------------------------------------------------------------------*/
 
-        def("sleep", sleepLua),
         FUNC_2_LUA(doomTicsToMs),
         FUNC_2_LUA(msToDoomTics),
         FUNC_2_LUA(doomTicsToSec),
         FUNC_2_LUA(secToDoomTics),
-        def("doomFixedToDouble", doomFixedToDouble_int),
-        // def("doomFixedToDouble", doomFixedToDouble_double),
-        def("doomFixedToNumber", doomFixedToDouble_int),
-        // def("doomFixedToNumber", doomFixedToDouble_double),
+        //def("doomFixedToDouble", doomFixedToDouble_int),
+        def("doomFixedToDouble", doomFixedToDouble_double),
+        //def("doomFixedToNumber", doomFixedToDouble_int),
+        def("doomFixedToNumber", doomFixedToDouble_double),
         FUNC_2_LUA(isBinaryButton),
         FUNC_2_LUA(isDeltaButton)
 
