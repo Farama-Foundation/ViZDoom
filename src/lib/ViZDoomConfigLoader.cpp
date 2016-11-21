@@ -594,6 +594,10 @@ namespace vizdoom {
                     this->game->setRenderMessages(stringToBool(val));
                     continue;
                 }
+                if (key == "render_corpses" || key == "rendercorpses") {
+                    this->game->setRenderCorpses(stringToBool(val));
+                    continue;
+                }
                 if (key == "window_visible" || key == "windowvisible") {
                     this->game->setWindowVisible(stringToBool(val));
                     continue;
