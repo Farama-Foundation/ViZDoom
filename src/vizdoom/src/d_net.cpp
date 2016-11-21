@@ -1825,8 +1825,6 @@ void TryRunTics (void)
 	if (pauseext) r_NoInterpolate = true;
 	bool doWait = cl_capfps || r_NoInterpolate /*|| netgame*/;
 
-	//if(*viz_controlled && !*viz_async) doWait = false;
-	//else if(*viz_controlled && *viz_async) doWait = true;
 	if(*viz_controlled) doWait = true;
 
 	// get real tics

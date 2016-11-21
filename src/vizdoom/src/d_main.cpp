@@ -1264,7 +1264,6 @@ void D_DoomLoop ()
 				D_ProcessEvents ();
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				if (advancedemo) D_DoAdvanceDemo ();
-				NetUpdate();
 				C_Ticker ();
 				M_Ticker ();
 				G_Ticker ();
@@ -1281,11 +1280,10 @@ void D_DoomLoop ()
 
 			// Update display, next frame, with current state.
 			I_StartTic ();
-			if(!*viz_controlled || *viz_render_all) {
-				D_Display();
-			}
+			if(!*viz_controlled || *viz_render_all) D_Display();
 			if(!*viz_controlled || !*viz_nosound) S_UpdateMusic(); // OpenAL needs this to keep the music running, thanks to a complete lack of a sane streaming implementation using callbacks. :(
-			VIZ_Tic();
+
+            VIZ_Tic();
 		}
 		catch (CRecoverableError &error)
 		{
