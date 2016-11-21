@@ -10,33 +10,10 @@ package_path = 'bin/python' + python_version + '/pip_package'
 package_assembly_script = 'scripts/assemble_pip_package.sh'
 supported_platforms = ["Linux", "Mac OS-X"]
 
-
-def build_task(cmake_arg_list=None):
-    # TODO overrtce pythonlibs and python interpreter
-
-    cpu_cores = max(1, multiprocessing.cpu_count() - 1)
-
-    cmake_arg_list = cmake_arg_list if cmake_arg_list is not None else []
-    cmake_arg_list.append("-DCMAKE_BUILD_TYPE=Release")
-    cmake_arg_list.append("-DBUILD_PYTHON=ON")
-    if python_version == "3":
-        cmake_arg_list.append("-DBUILD_PYTHON3=ON")
-    else:
-        cmake_arg_list.append("-DBUILD_PYTHON3=OFF")
-
-    subprocess.check_call(['rm', '-f', 'CMakeCache.txt'])
-    subprocess.check_call(['cmake'] + cmake_arg_list)
-    subprocess.check_call(['make', '-j', str(cpu_cores)])
-    subprocess.check_call([package_assembly_script, python_version])
-
-
-if sys.platform.startswith("darwin"):
-    build_func = build_task
-elif sys.platform.startswith("linux"):
-    build_func = build_task
-elif sys.platform.startswith("win"):
+if sys.platform.startswith("win"):
+    supported_platforms = ["Linux", "Mac OS-X"]
     raise RuntimeError("Building pip package on Windows is not currently available ...")
-else:
+elif not sys.platform.startswith("darwin") and not sys.platform.startswith("linux"):
     raise RuntimeError("Unrecognized platform: {}".format(sys.platform))
 
 # TODO: make it run only when install/build is issued
@@ -46,10 +23,25 @@ subprocess.check_call(['mkdir', '-p', package_path])
 class BuildCommand(build):
     def run(self):
         try:
-            build_func()
-        except subprocess.CalledProcessError as e:
+            cpu_cores = max(1, multiprocessing.cpu_count() - 1)
+
+            cmake_arg_list = list()
+            cmake_arg_list.append("-DCMAKE_BUILD_TYPE=Release")
+            cmake_arg_list.append("-DBUILD_PYTHON=ON")
+            if python_version == "3":
+                cmake_arg_list.append("-DBUILD_PYTHON3=ON")
+            else:
+                cmake_arg_list.append("-DBUILD_PYTHON3=OFF")
+
+            subprocess.check_call(['rm', '-f', 'CMakeCache.txt'])
+            subprocess.check_call(['cmake'] + cmake_arg_list)
+            subprocess.check_call(['make', '-j', str(cpu_cores)])
+            subprocess.check_call([package_assembly_script, python_version])
+        except subprocess.CalledProcessError:
             sys.stderr.write(
-                "\033[1m" + "\nTODO installation failed, see our page ...\n\n"
+                "\033[1m" + "\nInstallation failed, you may be missing some dependencies. "
+                            "\nPlease check https://github.com/Marqt/ViZDoom/blob/master/doc/Building.md "
+                            "for details\n\n"
                 + "\033[0m")
             raise
         build.run(self)
