@@ -82,7 +82,7 @@ namespace vizdoom {
         void addAvailableGameVariable(GameVariable var);
         void clearAvailableGameVariables();
         size_t getAvailableGameVariablesSize();
-        int getGameVariable(GameVariable variable);
+        double getGameVariable(GameVariable variable);
 
 
         /* GameArgs getters and setters */
@@ -158,6 +158,7 @@ namespace vizdoom {
         void setRenderParticles(bool particles);
         void setRenderEffectsSprites(bool sprites);
         void setRenderMessages(bool messages);
+        void setRenderCorpses(bool bodies);
         void setWindowVisible(bool visibility);
         void setConsoleEnabled(bool console);
         void setSoundEnabled(bool sound);

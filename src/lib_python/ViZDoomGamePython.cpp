@@ -63,27 +63,19 @@ namespace vizdoom {
         int colorDims = 3;
         if (this->getScreenChannels() == 1) colorDims = 2;
 
-        if (this->state->screenBuffer != nullptr) {
-            pyState.screenBuffer = this->dataToNumpyArray(colorDims, this->colorShape,
-                                                          NPY_UBYTE, this->state->screenBuffer->data());
-        }
-        if (this->state->depthBuffer != nullptr) {
-            pyState.depthBuffer = this->dataToNumpyArray(2, this->grayShape,
-                                                         NPY_UBYTE, this->state->depthBuffer->data());
-        }
-        if (this->state->labelsBuffer != nullptr) {
-            pyState.labelsBuffer = this->dataToNumpyArray(2, this->grayShape,
-                                                          NPY_UBYTE, this->state->labelsBuffer->data());
-        }
-        if (this->state->automapBuffer != nullptr) {
-            pyState.automapBuffer = this->dataToNumpyArray(colorDims, this->colorShape,
-                                                       NPY_UBYTE, this->state->automapBuffer->data());
-        }
+        if (this->state->screenBuffer != nullptr)
+            pyState.screenBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->screenBuffer->data());
+        if (this->state->depthBuffer != nullptr)
+            pyState.depthBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->depthBuffer->data());
+        if (this->state->labelsBuffer != nullptr)
+            pyState.labelsBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->labelsBuffer->data());
+        if (this->state->automapBuffer != nullptr)
+            pyState.automapBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->automapBuffer->data());
 
         if (this->state->gameVariables.size() > 0) {
             // Numpy array version
             npy_intp shape = this->state->gameVariables.size();
-            pyState.gameVariables = dataToNumpyArray(1, &shape, NPY_INT32, this->state->gameVariables.data());
+            pyState.gameVariables = dataToNumpyArray(1, &shape, NPY_DOUBLE, this->state->gameVariables.data());
 
             // Python list version
             //pyState.gameVariables = DoomGamePython::vectorToPyList<int>(this->state->gameVariables);
@@ -96,6 +88,9 @@ namespace vizdoom {
                 pyLabel.objectId = i->objectId;
                 pyLabel.objectName = bpy::str(i->objectName.c_str());
                 pyLabel.value = i->value;
+                pyLabel.objectPositionX = i->objectPositionX;
+                pyLabel.objectPositionY = i->objectPositionY;
+                pyLabel.objectPositionZ = i->objectPositionZ;
                 pyLabels.append(pyLabel);
             }
 

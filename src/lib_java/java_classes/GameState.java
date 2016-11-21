@@ -6,7 +6,7 @@ import vizdoom.*;
 
 public class GameState{
     public int number;
-    public int[] gameVariables;
+    public double[] gameVariables;
 
     public byte[] screenBuffer;
     public byte[] depthBuffer;
@@ -16,7 +16,7 @@ public class GameState{
     public Label[] labels;
 
     GameState(int number,
-        int[] gameVariables,
+        double[] gameVariables,
         byte[] screenBuffer,
         byte[] depthBuffer,
         byte[] labelsBuffer,

@@ -199,6 +199,8 @@ namespace vizdoom {
         void setRenderEffectsSprites(bool sprites);
 
         void setRenderMessages(bool messages);
+        void setRenderCorpses(bool corpses);
+        void setRenderScreenFlashes(bool flashes);
 
         void setScreenResolution(unsigned int width, unsigned int height);
 
@@ -293,7 +295,7 @@ namespace vizdoom {
         /* GameState getters */
         /*------------------------------------------------------------------------------------------------------------*/
 
-        int getGameVariable(GameVariable var);
+        double getGameVariable(GameVariable var);
 
         unsigned int getGameTic();
 
@@ -394,7 +396,7 @@ namespace vizdoom {
         bool automap;
         bool labels;
 
-        bool hud, minHud, weapon, crosshair, decals, particles, sprites, messages;
+        bool hud, minHud, weapon, crosshair, decals, particles, sprites, messages, corpses, flashes;
         AutomapMode amMode;
         bool amRotate, amTextures;
 

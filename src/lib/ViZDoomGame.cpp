@@ -230,6 +230,9 @@ namespace vizdoom {
                 label.objectId = this->doomController->getGameState()->LABEL[i].objectId;
                 label.objectName = std::string(this->doomController->getGameState()->LABEL[i].objectName);
                 label.value = this->doomController->getGameState()->LABEL[i].value;
+                label.objectPositionX = this->doomController->getGameState()->LABEL[i].objectPosition[0];
+                label.objectPositionY = this->doomController->getGameState()->LABEL[i].objectPosition[1];
+                label.objectPositionZ = this->doomController->getGameState()->LABEL[i].objectPosition[2];
                 this->state->labels.push_back(label);
             }
         } else this->state = nullptr;
@@ -333,8 +336,8 @@ namespace vizdoom {
 
     void DoomGame::setTicrate(unsigned int ticrate) { this->doomController->setTicrate(ticrate); }
 
-    int DoomGame::getGameVariable(GameVariable variable) {
-        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
+    double DoomGame::getGameVariable(GameVariable variable){
+        if(!this->isRunning()) throw ViZDoomIsNotRunningException();
         return this->doomController->getGameVariable(variable);
     }
 
@@ -474,6 +477,7 @@ namespace vizdoom {
     void DoomGame::setRenderEffectsSprites(bool sprites) { this->doomController->setRenderEffectsSprites(sprites); }
 
     void DoomGame::setRenderMessages(bool messages) { this->doomController->setRenderMessages(messages); }
+    void DoomGame::setRenderCorpses(bool corpses) { this->doomController->setRenderCorpses(corpses); }
 
     void DoomGame::setWindowVisible(bool visibility) {
         this->doomController->setNoXServer(!visibility);

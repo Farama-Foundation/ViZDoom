@@ -21,6 +21,7 @@
 - The option to use minimal hud instead of default full hud - `setRenderMinimalHud` added.
 - The option to enable/disable effects that use sprites - `setRenderEffectsSprites` added.
 - The option to enable/disable ingame messages independently of the console output - `setRenderMessages` added.
+- The option to enable/disable corpses - `setRenderCorpses` added.
 
 
 #### Episode recording and replaying
@@ -29,11 +30,12 @@
 recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 - The option to replay demo from other player perspective.
 
+
 #### Ticrate
 
 - The option to set number of tics executed per second in ASNYC Modes.
-- New `ticrate` optional argument in `DoomTicsToMs`, `MsToDoomTics`.
-- `DoomTicsToSec` and `SecToDoomTics` added.
+- New `ticrate` optional argument in `doomTicsToMs`, `msToDoomTics`.
+- `doomTicsToSec` and `secToDoomTics` added.
 
 
 #### Others
@@ -43,10 +45,10 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 - Improved exceptions messages.
 - **Paths in config files are now relative to config file.**
 - Aliases for `DoomFixedToDouble` - `DoomFixedToNumber` in Lua and `doom_fixed_to_float` in Python added.
-- Java exceptions handling fixed.
 - Bugs associated with paths handling fixed.
 - Many minor bugs fixed.
 - Python bindings output changed to bin/python2 and bin/python3. 
+- Possibility to change scenario wad during runtime (limited functionality)
 
 
 #### C++ specific
@@ -55,22 +57,25 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 - `getState()` now returns `GameStatePtr (std::shared_ptr<GameState>)` instead of `GameState`.
 - Buffers are now copied.
 - GameState's buffer has now `BufferPtr (std::shared_ptr<Buffer>)` type - `Buffer (std::vector<uint8_t>)`.
+- GameState's gameVariables are now vector of doubles instead of ints.
 
 
 #### Lua specific
 
-- Lua binding added
+- Lua binding added.
 
 
 #### Java specific
 
-- GameState buffers type changed to byte[]
-- Performance improved
+- GameState buffers type changed to byte[].
+- Performance improved.
+- Java exceptions handling fixed.
+- Few functions fixed.
 
 
 #### Python specific
 
-- Consts added to Python
+- Consts added to Python.
 
 
 

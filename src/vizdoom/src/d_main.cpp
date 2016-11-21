@@ -1251,7 +1251,6 @@ void D_DoomLoop ()
 	{
 		try
 		{
-
 			// frame syncronous IO operations
 			if (gametic > lasttic)
 			{
@@ -1259,42 +1258,13 @@ void D_DoomLoop ()
 				I_StartFrame ();
 			}
 
-			//VIZDOOM_CODE
-			if(*viz_controlled && !*viz_async){
-				//ViZDoom main loop
-
-				if(*viz_allow_input) {
-					vizTime = I_GetTime(true);
-					I_WaitForTic(vizTime);
-					//D_ProcessEvents();
-				}
-
-				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
-				if (advancedemo) D_DoAdvanceDemo();
-
-				P_UnPredictPlayer();
-
-				C_Ticker ();
-				M_Ticker ();
-				//I_GetTime (true);
-				G_Ticker();
-				++gametic;
-				NetUpdate ();
-				//++maketic;
-
-				P_PredictPlayer(&players[consoleplayer]);
-
-				if(!*viz_nosound){
-					S_UpdateSounds(players[consoleplayer].camera);
-				}
-			}
 			// process one or more tics
-			else if (singletics) {
+			if (singletics) {
 				I_StartTic ();
 				D_ProcessEvents ();
 				G_BuildTiccmd (&netcmds[consoleplayer][maketic%BACKUPTICS]);
 				if (advancedemo) D_DoAdvanceDemo ();
-
+				NetUpdate();
 				C_Ticker ();
 				M_Ticker ();
 				G_Ticker ();

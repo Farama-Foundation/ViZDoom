@@ -67,6 +67,8 @@
 #include "viz_depth.h"
 #include "viz_labels.h"
 
+EXTERN_CVAR (Bool, viz_render_corpses)
+
 // [RH] A c-buffer. Used for keeping track of offscreen voxel spans.
 
 struct FCoverageBuffer
@@ -698,6 +700,10 @@ void R_ProjectSprite (AActor *thing, int fakeside, F3DFloor *fakefloor, F3DFloor
 	{
 		return;
 	}
+
+	//VIZDOOM_CODE
+	if (!*viz_render_corpses && (thing->flags & MF_CORPSE) && thing->health <= 0) return;
+    //if (!*viz_render_corpses && (thing->flags3 & MF3_ISMONSTER)  && thing->health <= 0) return;
 
 	// [RH] Interpolate the sprite's position to make it look smooth
 	fixedvec3 pos = thing->InterpolatedPosition(r_TicFrac);

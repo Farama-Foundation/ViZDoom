@@ -29,6 +29,12 @@
 - `unsigned int / number / unsigned int / int` **objectId / object_id**
 - `std::string / string / String / str` **objectName / object_name**
 - `uint8_t / number / byte / int` **value**
+- `double / number / double / float` **objectPositionX / object_position_x**
+- `double / number / double / float` **objectPositionX / object_position_y**
+- `double / number / double / float` **objectPositionX / object_position_z**
+
+**objectId / object_id** - unique object instance ID - assigned when object is seen for the first time 
+(so object with lower id was seen before object with higher).
 
 
 ---
@@ -36,7 +42,7 @@
 (`C++ type / Lua type / Java type / Python type` **name**)
 
 - `unsigned int / number / unsigned int / int` **number**
-- `std::vector<double> / IntTensor / int[] / numpy.int32[]` **gameVariables / game_variables**
+- `std::vector<float> / DoubleTensor / double[] / numpy.double[]` **gameVariables / game_variables**
 - `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **screenBuffer / screen_buffer**
 - `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **depthBuffer / depth_buffer**
 - `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **labelsBuffer / labels_buffer**
@@ -138,6 +144,9 @@
 - **SELECTED_WEAPON_AMMO**  - Ammo for selected weapon.
 - **AMMO0** - **AMMO9**     - Number of ammo for weapon in N slot.
 - **WEAPON0** - **WEAPON9** - Number of weapons in N slot.
+- **POSITION_X**            - Position of player
+- **POSITION_Y**
+- **POSITION_Z**
 - **PLAYER_NUMBER**         - Player's number in multiplayer game.
 - **PLAYER_COUNT**          - Number of players in multiplayer game.
 - **PLAYER1_FRAGCOUNT** - **PLAYER8_FRAGCOUNT** - Number of N player's frags

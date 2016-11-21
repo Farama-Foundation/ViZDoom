@@ -66,6 +66,7 @@ namespace vizdoom {
         unsigned int objectId;
         char objectName[MAX_LABEL_NAME_LEN];
         uint8_t value;
+        double objectPosition[3];
     };
 
     struct SMGameState {
@@ -138,7 +139,7 @@ namespace vizdoom {
         int PLAYER_AMMO[SLOT_COUNT];
         int PLAYER_WEAPON[SLOT_COUNT];
 
-        //int PLAYER_POSITION[3];
+        double PLAYER_POSITION[3];
 
         bool PLAYER_READY_TO_RESPAWN;
         unsigned int PLAYER_NUMBER;
