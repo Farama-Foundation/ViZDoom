@@ -191,8 +191,8 @@ namespace vizdoom {
                 this->mapLastTic = this->gameState->MAP_TIC;
 
                 // Check net game && mode
-                if(this->gameState->GAME_NETGAME && !this->runDoomAsync)
-                    throw ViZDoomErrorException("Net game can not be used with synchronous mode.");
+                //if(this->gameState->GAME_NETGAME && !this->runDoomAsync)
+                //    throw ViZDoomErrorException("Net game can not be used with synchronous mode.");
 
             }
             catch(...){
