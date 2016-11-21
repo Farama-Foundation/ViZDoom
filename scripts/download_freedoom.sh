@@ -4,13 +4,15 @@
 
 FREEDOOM_LINK="https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip"
 
-FREEDOOM_DOWNLOAD_PATH="bin"
-if [ ! -e  "./bin/freedoom2.wad" ]
+FREEDOOM_DOWNLOAD_PATH="./bin"
+FREEDOOM_DESTINATION_PATH="."
+
+if [ ! -e  "${FREEDOOM_DESTINATION_PATH}/freedoom2.wad" ]
 then 
 	if [ ! -e "${FREEDOOM_DOWNLOAD_PATH}/freedoom-0.10.1.zip" ]
 	then
-		wget $FREEDOOM_LINK -P ${FREEDOOM_DOWNLOAD_PATH}
+		wget ${FREEDOOM_LINK} -P ${FREEDOOM_DOWNLOAD_PATH}
 	fi
-	unzip -j -d bin ${FREEDOOM_DOWNLOAD_PATH}/freedoom-0.10.1.zip freedoom-0.10.1/freedoom2.wad
+	unzip -j -d ${FREEDOOM_DESTINATION_PATH} ${FREEDOOM_DOWNLOAD_PATH}/freedoom-0.10.1.zip freedoom-0.10.1/freedoom2.wad
 fi
 

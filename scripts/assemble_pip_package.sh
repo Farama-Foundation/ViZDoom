@@ -17,7 +17,7 @@ PACKAGE_SOURCE="./src/lib_python/pip_package"
 VIZDOOM_PATH="./bin/vizdoom"
 PK3_PATH="./bin/vizdoom.pk3"
 PYTHON_BIN_PATH="${PACKAGE_DESTINATION_DIRECTORY}/vizdoom.so"
-FREEDOOM_PATH="./bin/freedoom2.wad"
+FREEDOOM_PATH="./freedoom2.wad"
 SCENARIOS_DEST_DIR="${PACKAGE_DESTINATION_PATH}/scenarios"
 SCENARIOS_PATH="./scenarios"
 
@@ -30,3 +30,4 @@ cp ${PK3_PATH} ${PACKAGE_DESTINATION_PATH}
 mkdir -p ${SCENARIOS_DEST_DIR}
 cp ${SCENARIOS_PATH}/*.wad  ${SCENARIOS_DEST_DIR}
 cp ${SCENARIOS_PATH}/*.cfg  ${SCENARIOS_DEST_DIR}
+mv ${SCENARIOS_DEST_DIR}/bots.cfg ${PACKAGE_DESTINATION_PATH}
