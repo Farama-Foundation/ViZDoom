@@ -36,6 +36,7 @@
 #include "g_game.h"
 #include "sbar.h"
 #include "c_dispatch.h"
+#include "i_system.h"
 
 namespace b = boost;
 namespace bt = boost::this_thread;
@@ -113,9 +114,33 @@ CCMD(viz_set_seed){
 /*--------------------------------------------------------------------------------------------------------------------*/
 
 int vizTime = 0;
+int vizSavedTime = 0;
+bool vizFreeze = false;
+int (*_I_GetTime)(bool);
+int (*_I_WaitForTic)(int);
+void (*_I_FreezeTime)(bool);
+
 bool vizNextTic = false;
 bool vizUpdate = false;
 unsigned int vizLastUpdate = 0;
+
+int VIZ_GetTime(bool saveMS){
+    if(saveMS) vizSavedTime = vizTime;
+    return vizTime;
+}
+
+int VIZ_WaitForTic(int tic){
+//    while(vizTime < tic){
+//        VIZ_Tic();
+//    }
+    if(*viz_allow_input) _I_WaitForTic(tic);
+    if(tic > vizTime) vizTime = tic;
+    return VIZ_GetTime(false);
+}
+
+void VIZ_FreezeTime (bool frozen){
+    vizFreeze = frozen;
+}
 
 void VIZ_Init(){
     if(*viz_controlled) {
@@ -134,6 +159,16 @@ void VIZ_Init(){
 
         vizNextTic = true;
         vizUpdate = true;
+
+        if(!*viz_async) {
+            vizTime = gametic + 1;
+            _I_GetTime = I_GetTime;
+            _I_WaitForTic = I_WaitForTic;
+            _I_FreezeTime = I_FreezeTime;
+            I_GetTime = &VIZ_GetTime;
+            I_WaitForTic = &VIZ_WaitForTic;
+            I_FreezeTime = &VIZ_FreezeTime;
+        }
     }
 }
 
@@ -167,7 +202,6 @@ void VIZ_Tic(){
     VIZ_DebugMsg(2, VIZ_FUNC, "tic: %d, viztic: %d", gametic, VIZ_TIME);
     VIZ_DebugMsg(4, VIZ_FUNC, "rngseed: %d, use_staticrng: %d, staticrngseed: %d", rngseed, use_staticrng, staticrngseed);
 
-
     try{
         bt::interruption_point();
     }
@@ -191,6 +225,9 @@ void VIZ_Tic(){
         if(!*viz_async){
             VIZ_MQTic();
             VIZ_InputTic();
+
+            if(*viz_allow_input) VIZ_WaitForTic(vizTime);
+            ++vizTime;
         }
     }
 }
