@@ -123,6 +123,8 @@ namespace vizdoom {
         this->particles = true;
         this->sprites = true;
         this->messages = false;
+        this->corpses = true;
+
 
         this->windowHidden = false;
         this->noXServer = false;
@@ -198,8 +200,9 @@ namespace vizdoom {
                 this->mapLastTic = this->gameState->MAP_TIC;
 
                 // Check net game && mode
-                if (this->gameState->GAME_NETGAME && !this->runDoomAsync)
-                    throw ViZDoomErrorException("Net game can not be used with synchronous mode.");
+
+                //if(this->gameState->GAME_NETGAME && !this->runDoomAsync)
+                //    throw ViZDoomErrorException("Net game can not be used with synchronous mode.");
 
             }
             catch (...) {
@@ -751,6 +754,16 @@ namespace vizdoom {
         if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
     }
 
+    void DoomController::setRenderCorpses(bool corpses){
+        this->corpses = corpses;
+        if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
+    }
+
+    void DoomController::setRenderScreenFlashes(bool flashes){
+        this->flashes = flashes;
+        if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
+    }
+
     unsigned int DoomController::getScreenWidth() {
         if (this->doomRunning) return this->gameState->SCREEN_WIDTH;
         else return this->screenWidth;
@@ -782,6 +795,7 @@ namespace vizdoom {
 
     int DoomController::getRenderModeValue() {
         int renderMode = 0;
+<<<<<<< HEAD
         if (this->hud) renderMode |= 1;
         if (this->minHud) renderMode |= 2;
         if (this->weapon) renderMode |= 4;
@@ -792,6 +806,20 @@ namespace vizdoom {
         if (this->messages) renderMode |= 128;
         if (this->amRotate) renderMode |= 256;
         if (this->amTextures) renderMode |= 512;
+=======
+        if(this->hud)           renderMode |= 1;
+        if(this->minHud)        renderMode |= 2;
+        if(this->weapon)        renderMode |= 4;
+        if(this->crosshair)     renderMode |= 8;
+        if(this->decals)        renderMode |= 16;
+        if(this->particles)     renderMode |= 32;
+        if(this->sprites)       renderMode |= 64;
+        if(this->messages)      renderMode |= 128;
+        if(this->amRotate)      renderMode |= 256;
+        if(this->amTextures)    renderMode |= 512;
+        if(this->corpses)       renderMode |= 1024;
+        if(this->flashes)       renderMode |= 2048;
+>>>>>>> master
 
         return renderMode;
     }
@@ -887,7 +915,11 @@ namespace vizdoom {
     /* GameVariables getters */
     /*----------------------------------------------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
     int DoomController::getGameVariable(GameVariable var) {
+=======
+    double DoomController::getGameVariable(GameVariable var){
+>>>>>>> master
 
         switch (var) {
             case KILLCOUNT :
@@ -905,28 +937,36 @@ namespace vizdoom {
             case ARMOR :
                 return this->gameState->PLAYER_ARMOR;
             case DEAD :
-                return static_cast<int>(this->gameState->PLAYER_DEAD);
+                return this->gameState->PLAYER_DEAD;
             case ON_GROUND :
-                return static_cast<int>(this->gameState->PLAYER_ON_GROUND);
+                return static_cast<double>(this->gameState->PLAYER_ON_GROUND);
             case ATTACK_READY :
-                return static_cast<int>(this->gameState->PLAYER_ATTACK_READY);
+                return static_cast<double>(this->gameState->PLAYER_ATTACK_READY);
             case ALTATTACK_READY :
-                return static_cast<int>(this->gameState->PLAYER_ALTATTACK_READY);
+                return static_cast<double>(this->gameState->PLAYER_ALTATTACK_READY);
             case SELECTED_WEAPON :
                 return this->gameState->PLAYER_SELECTED_WEAPON;
             case SELECTED_WEAPON_AMMO :
                 return this->gameState->PLAYER_SELECTED_WEAPON_AMMO;
             case PLAYER_NUMBER:
-                return static_cast<int>(this->gameState->PLAYER_NUMBER);
+                return static_cast<double>(this->gameState->PLAYER_NUMBER);
             case PLAYER_COUNT:
-                return static_cast<int>(this->gameState->PLAYER_COUNT);
+                return static_cast<double>(this->gameState->PLAYER_COUNT);
         }
 
         if (var >= AMMO0 && var <= AMMO9) {
             return this->gameState->PLAYER_AMMO[var - AMMO0];
         } else if (var >= WEAPON0 && var <= WEAPON9) {
             return this->gameState->PLAYER_WEAPON[var - WEAPON0];
+<<<<<<< HEAD
         } else if (var >= USER1 && var <= USER30) {
+=======
+        }
+        else if(var >= POSITION_X && var <= POSITION_Z){
+            return this->gameState->PLAYER_POSITION[var - POSITION_X];
+        }
+        else if(var >= USER1 && var <= USER30){
+>>>>>>> master
             return this->gameState->MAP_USER_VARS[var - USER1];
         } else if (var >= PLAYER1_FRAGCOUNT && var <= PLAYER8_FRAGCOUNT) {
             return this->gameState->PLAYER_N_FRAGCOUNT[var - PLAYER1_FRAGCOUNT];

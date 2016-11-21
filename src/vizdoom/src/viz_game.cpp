@@ -37,6 +37,7 @@
 #include "p_acs.h"
 
 EXTERN_CVAR (Bool, viz_debug)
+EXTERN_CVAR (Bool, viz_nocheat)
 EXTERN_CVAR (Int, viz_screen_format)
 EXTERN_CVAR (Bool, viz_depth)
 EXTERN_CVAR (Bool, viz_labels)
@@ -49,7 +50,7 @@ VIZGameState *vizGameStateSM = NULL;
 /* Helper functions */
 /*--------------------------------------------------------------------------------------------------------------------*/
 
-double VIZ_FixedToDouble(fixed_t fixed){
+inline double VIZ_FixedToDouble(fixed_t fixed){
     return static_cast<double>(fixed) / 65536.0;
 }
 
@@ -139,6 +140,10 @@ void VIZ_GameStateInit(){
     vizGameStateSM->VERSION = VIZ_VERSION;
     strncpy(vizGameStateSM->VERSION_STR, VIZ_VERSION_STR, 8);
     vizGameStateSM->SM_SIZE = vizSMSize;
+
+    vizGameStateSM->PLAYER_POSITION[0] = 0;
+    vizGameStateSM->PLAYER_POSITION[1] = 0;
+    vizGameStateSM->PLAYER_POSITION[2] = 0;
 }
 
 void VIZ_GameStateUpdate(){
@@ -176,37 +181,32 @@ void VIZ_GameStateTic(){
     vizGameStateSM->DEMO_RECORDING = demorecording;
     vizGameStateSM->DEMO_PLAYBACK = demoplayback;
 
+    vizGameStateSM->MAP_END = gamestate != GS_LEVEL;
     vizGameStateSM->MAP_START_TIC = (unsigned int)level.starttime;
     vizGameStateSM->MAP_TIC = (unsigned int)level.maptime;
 
-    for(int i = 0; i < VIZ_GV_USER_COUNT; ++i){
-        vizGameStateSM->MAP_USER_VARS[i] = ACS_GlobalVars[i+1];
-    }
-
-    vizGameStateSM->MAP_END = gamestate != GS_LEVEL;
-    if(vizGameStateSM->MAP_END) vizGameStateSM->PLAYER_DEATHCOUNT = 0;
-
-    //TODO move to g_level.cpp->G_ChangeLevel
-//    if(*viz_loop_map && !level.MapName.Compare(level.NextMap)){
-//        level.NextMap = level.MapName;
-//        level.NextSecretMap = level.MapName;
-//    }
-
+    for(int i = 0; i < VIZ_GV_USER_COUNT; ++i) vizGameStateSM->MAP_USER_VARS[i] = ACS_GlobalVars[i+1];
     vizGameStateSM->MAP_REWARD = ACS_GlobalVars[0];
-
-    bool prevDead = vizGameStateSM->PLAYER_DEAD;
-    vizGameStateSM->PLAYER_READY_TO_RESPAWN = VIZ_PLAYER.playerstate == PST_REBORN;
 
     if(VIZ_PLAYER.mo != NULL) {
         vizGameStateSM->PLAYER_HAS_ACTOR = true;
         vizGameStateSM->PLAYER_DEAD = VIZ_PLAYER.playerstate == PST_DEAD || VIZ_PLAYER.mo->health <= 0;
+
+        if(!*viz_nocheat) {
+            vizGameStateSM->PLAYER_POSITION[0] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.x);
+            vizGameStateSM->PLAYER_POSITION[1] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.y);
+            vizGameStateSM->PLAYER_POSITION[2] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.z);
+        }
     }
     else {
         vizGameStateSM->PLAYER_HAS_ACTOR = false;
         vizGameStateSM->PLAYER_DEAD = true;
     }
 
+    bool prevDead = vizGameStateSM->PLAYER_DEAD;
     if(vizGameStateSM->PLAYER_DEAD && !prevDead) ++vizGameStateSM->PLAYER_DEATHCOUNT;
+
+    vizGameStateSM->PLAYER_READY_TO_RESPAWN = VIZ_PLAYER.playerstate == PST_REBORN;
 
     strncpy(vizGameStateSM->PLAYER_NAME, VIZ_PLAYER.userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
 
@@ -236,16 +236,12 @@ void VIZ_GameStateTic(){
         vizGameStateSM->PLAYER_WEAPON[i] = VIZ_CheckSlotWeapons(i);
     }
 
-//    vizGameStateSM->PLAYER_POSITION[0] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.x);
-//    vizGameStateSM->PLAYER_POSITION[1] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.y);
-//    vizGameStateSM->PLAYER_POSITION[2] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.z);
-
     vizGameStateSM->PLAYER_NUMBER = (unsigned int)consoleplayer;
     vizGameStateSM->PLAYER_COUNT = 1;
     if(netgame || multiplayer) {
 
         vizGameStateSM->PLAYER_COUNT = 0;
-        for (unsigned int i = 0; i < VIZ_MAX_PLAYERS; ++i) {
+        for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
             if(playeringame[i]){
                 ++vizGameStateSM->PLAYER_COUNT;
                 vizGameStateSM->PLAYER_N_IN_GAME[i] = true;
@@ -263,7 +259,7 @@ void VIZ_GameStateTic(){
 void VIZ_GameStateUpdateLabels(){
 
     unsigned int labelCount = 0;
-    if(vizLabels!=NULL){
+    if(!*viz_nocheat && vizLabels != NULL){
 
         VIZ_DebugMsg(4, VIZ_FUNC, "number of sprites: %d", gametic, vizLabels->getSprites().size());
 
@@ -274,6 +270,9 @@ void VIZ_GameStateUpdateLabels(){
                 vizGameStateSM->LABEL[labelCount].objectId = i->actorId;
                 strncpy(vizGameStateSM->LABEL[labelCount].objectName, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN);
                 vizGameStateSM->LABEL[labelCount].value = i->label;
+                vizGameStateSM->LABEL[labelCount].objectPosition[0] = VIZ_FixedToDouble(i->position.x);
+                vizGameStateSM->LABEL[labelCount].objectPosition[1] = VIZ_FixedToDouble(i->position.y);
+                vizGameStateSM->LABEL[labelCount].objectPosition[2] = VIZ_FixedToDouble(i->position.z);
 
                 VIZ_DebugMsg(4, VIZ_FUNC, "labelCount: %d, objectId: %d, objectName: %s, value %d",
                                 labelCount+1, vizGameStateSM->LABEL[labelCount].objectId,
@@ -286,6 +285,17 @@ void VIZ_GameStateUpdateLabels(){
     }
 
     vizGameStateSM->LABEL_COUNT = labelCount;
+}
+
+void VIZ_GameStateNewMap(){
+    vizGameStateSM->PLAYER_DEATHCOUNT = 0;
+
+    if(*viz_loop_map && !level.MapName.Compare(level.NextMap)){
+        level.NextMap = level.MapName;
+        level.NextSecretMap = level.MapName;
+    }
+
+    if(vizLabels != NULL) vizLabels->clearActors();
 }
 
 void VIZ_GameStateClose(){

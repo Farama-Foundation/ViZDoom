@@ -71,10 +71,6 @@ EXCEPTION_TRANSLATE_TO_LUA(ViZDoomUnexpectedExitException)
 double (*doomFixedToDouble_int)(int) = &doomFixedToDouble;
 double (*doomFixedToDouble_double)(double) = &doomFixedToDouble;
 
-void sleepLua(unsigned int time){
-    std::this_thread::sleep_for(std::chrono::milliseconds(time));
-}
-
 
 /* Module definition */
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -281,6 +277,9 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
                 ENUM_VAL_2_LUA(WEAPON8),
                 ENUM_VAL_2_LUA(WEAPON9),
                 ENUM_VAL_2_LUA(WEAPON0),
+                ENUM_VAL_2_LUA(POSITION_X),
+                ENUM_VAL_2_LUA(POSITION_Y),
+                ENUM_VAL_2_LUA(POSITION_Z),
                 ENUM_VAL_2_LUA(USER1),
                 ENUM_VAL_2_LUA(USER2),
                 ENUM_VAL_2_LUA(USER3),
@@ -339,7 +338,10 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
         class_<Label>("Label")
             .def_readonly("objectId", &Label::objectId)
             .def_readonly("objectName", &Label::objectName)
-            .def_readonly("value", &Label::value),
+            .def_readonly("value", &Label::value)
+            .def_readonly("objectPositionX", &Label::objectPositionX)
+            .def_readonly("objectPositionY", &Label::objectPositionY)
+            .def_readonly("objectPositionZ", &Label::objectPositionZ),
 
 
         /* DoomGame */
@@ -443,6 +445,7 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             CLASS_FUNC_2_LUA(DoomGameLua, setRenderParticles)
             CLASS_FUNC_2_LUA(DoomGameLua, setRenderEffectsSprites)
             CLASS_FUNC_2_LUA(DoomGameLua, setRenderMessages)
+            CLASS_FUNC_2_LUA(DoomGameLua, setRenderCorpses)
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenWidth)
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenHeight)
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenChannels)
@@ -455,15 +458,14 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
         /* Utilities */
         /*------------------------------------------------------------------------------------------------------------*/
 
-        def("sleep", sleepLua),
         FUNC_2_LUA(doomTicsToMs),
         FUNC_2_LUA(msToDoomTics),
         FUNC_2_LUA(doomTicsToSec),
         FUNC_2_LUA(secToDoomTics),
-        def("doomFixedToDouble", doomFixedToDouble_int),
-        // def("doomFixedToDouble", doomFixedToDouble_double),
-        def("doomFixedToNumber", doomFixedToDouble_int),
-        // def("doomFixedToNumber", doomFixedToDouble_double),
+        //def("doomFixedToDouble", doomFixedToDouble_int),
+        def("doomFixedToDouble", doomFixedToDouble_double),
+        //def("doomFixedToNumber", doomFixedToDouble_int),
+        def("doomFixedToNumber", doomFixedToDouble_double),
         FUNC_2_LUA(isBinaryButton),
         FUNC_2_LUA(isDeltaButton)
 

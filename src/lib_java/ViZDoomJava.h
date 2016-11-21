@@ -133,6 +133,16 @@ jintArray castTojintArray(JNIEnv *jEnv, std::vector<T>& val) {
     return jVal;
 }
 
+template<class T>
+jdoubleArray castTojdoubleArray(JNIEnv *jEnv, std::vector<T>& val) {
+    jdoubleArray jVal = jEnv->NewDoubleArray(val.size());
+    jdouble *jValArr = jEnv->GetDoubleArrayElements(jVal, NULL);
+    if(sizeof(jint) == sizeof(T)) std::memcpy(jValArr, val.data(), val.size());
+    else for (int i = 0; i < val.size(); ++i) jValArr[i] = (jdouble)val[i];
+    jEnv->ReleaseDoubleArrayElements(jVal, jValArr, NULL);
+    return jVal;
+}
+
 // From Java to C++
 bool jbooleanCast(jint jVal){ return (bool)jVal; }
 bool jbooleanCast(JNIEnv *jEnv, jint jVal){ return (bool)jVal; }

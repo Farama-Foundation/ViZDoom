@@ -83,6 +83,7 @@
 * [setRenderParticles](#setRenderParticles)
 * [setRenderEffectsSprites](#setRenderEffectsSprites)
 * [setRenderMessages](#setRenderMessages)
+* [setRenderCorpses](#setRenderCorpses)
 * [setWindowVisible](#setWindowVisible)
 * [setConsoleEnabled](#setConsoleEnabled)
 * [setSoundEnabled](#setSoundEnabled)
@@ -466,11 +467,11 @@ See also:
 ---
 ### <a name="getGameVariable"></a> `getGameVariable`
 
-| C++    | `int getGameVariable(GameVariable variable)`   |
-| :--    | :--                                            |
-| Lua    | `int getGameVariable(GameVariable variable)`   |
-| Java   | `int getGameVariable(GameVariable variable)`   |
-| Python | `int get_game_variable(GameVariable variable)` |
+| C++    | `double getGameVariable(GameVariable variable)`  |
+| :--    | :--                                              |
+| Lua    | `number getGameVariable(GameVariable variable)`  |
+| Java   | `double getGameVariable(GameVariable variable)`  |
+| Python | `float get_game_variable(GameVariable variable)` |
 
 Returns the current value of the specified game variable (`HEALTH`, `AMMO1` etc.).
 The specified game variable does not need to be among available game variables (included in the state).
@@ -1223,7 +1224,7 @@ Config key: `renderEffectsSprites/render_effects_sprites`
 | :--    | :--                                        |
 | Lua    | `void setRenderMessages(boolean messages)` |
 | Java   | `void setRenderMessages(boolean messages)` |
-| Python | `void set_render_messages(bool messages`   |
+| Python | `void set_render_messages(bool messages)`  |
 
 Added in 1.1
 
@@ -1232,6 +1233,24 @@ Determine if ingame messages (information about pickups, kills etc.) will be ren
 Default value: false
 
 Config key: `renderMessages/render_messages`
+
+
+---
+### <a name="setRenderCorpses"></a> `setRenderCorpses`
+
+| C++    | `void setRenderCorpses(bool corpses)`    |
+| :--    | :--                                      |
+| Lua    | `void setRenderCorpses(boolean corpses)` |
+| Java   | `void setRenderCorpses(boolean corpses)` |
+| Python | `void set_render_corpsess(bool corpses)` |
+
+Added in 1.1
+
+Determine if actors' corpses will be rendered in game.
+
+Default value: true
+
+Config key: `renderCorpses/render_corpses`
 
 
 ---

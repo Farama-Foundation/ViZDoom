@@ -1,4 +1,4 @@
-#!/usr/bin/env lua
+#!/usr/bin/env th
 
 ----------------------------------------------------------------------
 -- This script presents how to run some scenarios.
