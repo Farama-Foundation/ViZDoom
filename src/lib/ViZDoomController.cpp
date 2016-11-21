@@ -795,18 +795,7 @@ namespace vizdoom {
 
     int DoomController::getRenderModeValue() {
         int renderMode = 0;
-<<<<<<< HEAD
-        if (this->hud) renderMode |= 1;
-        if (this->minHud) renderMode |= 2;
-        if (this->weapon) renderMode |= 4;
-        if (this->crosshair) renderMode |= 8;
-        if (this->decals) renderMode |= 16;
-        if (this->particles) renderMode |= 32;
-        if (this->sprites) renderMode |= 64;
-        if (this->messages) renderMode |= 128;
-        if (this->amRotate) renderMode |= 256;
-        if (this->amTextures) renderMode |= 512;
-=======
+
         if(this->hud)           renderMode |= 1;
         if(this->minHud)        renderMode |= 2;
         if(this->weapon)        renderMode |= 4;
@@ -819,7 +808,6 @@ namespace vizdoom {
         if(this->amTextures)    renderMode |= 512;
         if(this->corpses)       renderMode |= 1024;
         if(this->flashes)       renderMode |= 2048;
->>>>>>> master
 
         return renderMode;
     }
@@ -915,11 +903,8 @@ namespace vizdoom {
     /* GameVariables getters */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-<<<<<<< HEAD
-    int DoomController::getGameVariable(GameVariable var) {
-=======
+
     double DoomController::getGameVariable(GameVariable var){
->>>>>>> master
 
         switch (var) {
             case KILLCOUNT :
@@ -958,15 +943,12 @@ namespace vizdoom {
             return this->gameState->PLAYER_AMMO[var - AMMO0];
         } else if (var >= WEAPON0 && var <= WEAPON9) {
             return this->gameState->PLAYER_WEAPON[var - WEAPON0];
-<<<<<<< HEAD
-        } else if (var >= USER1 && var <= USER30) {
-=======
         }
         else if(var >= POSITION_X && var <= POSITION_Z){
             return this->gameState->PLAYER_POSITION[var - POSITION_X];
         }
         else if(var >= USER1 && var <= USER30){
->>>>>>> master
+
             return this->gameState->MAP_USER_VARS[var - USER1];
         } else if (var >= PLAYER1_FRAGCOUNT && var <= PLAYER8_FRAGCOUNT) {
             return this->gameState->PLAYER_N_FRAGCOUNT[var - PLAYER1_FRAGCOUNT];
