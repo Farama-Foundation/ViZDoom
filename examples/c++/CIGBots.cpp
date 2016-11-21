@@ -29,7 +29,6 @@ int main(){
     // colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue
     game->addGameArgs("+name AI +colorset 0");
 
-    // Multiplayer requires the use of asynchronous modes, but when playing only with bots, synchronous modes can also be used.
     game->setMode(ASYNC_PLAYER);
     game->init();
 

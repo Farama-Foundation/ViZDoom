@@ -30,7 +30,6 @@ game.add_game_args("-host 2 "               # This machine will function as a ho
 # colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue
 game.add_game_args("+name AI +colorset 0")
 
-# Multiplayer requires the use of asynchronous modes.
 game.set_mode(Mode.ASYNC_PLAYER)
 
 # game.set_window_visible(false)
