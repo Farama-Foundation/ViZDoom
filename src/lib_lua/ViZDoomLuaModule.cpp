@@ -217,6 +217,8 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
                 ENUM_VAL_2_LUA(TURN_LEFT),
                 ENUM_VAL_2_LUA(LOOK_UP),
                 ENUM_VAL_2_LUA(LOOK_DOWN),
+                ENUM_VAL_2_LUA(MOVE_UP),
+                ENUM_VAL_2_LUA(MOVE_DOWN),
                 ENUM_VAL_2_LUA(LAND),
                 ENUM_VAL_2_LUA(SELECT_WEAPON1),
                 ENUM_VAL_2_LUA(SELECT_WEAPON2),
