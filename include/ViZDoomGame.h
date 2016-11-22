@@ -68,7 +68,10 @@ namespace vizdoom {
         /* Buttons settings */
         /*------------------------------------------------------------------------------------------------------------*/
 
-        void addAvailableButton(Button button, unsigned int maxValue = 0);
+        std::vector<Button> getAvailableButtons();
+        void setAvailableButtons(std::vector<Button> buttons);
+
+        void addAvailableButton(Button button, unsigned int maxValue = -1);
         void clearAvailableButtons();
         size_t getAvailableButtonsSize();
 
@@ -78,6 +81,9 @@ namespace vizdoom {
 
         /* GameVariables getters and setters */
         /*------------------------------------------------------------------------------------------------------------*/
+
+        std::vector<GameVariable> getAvailableGameVariables();
+        void setAvailableGameVariables(std::vector<GameVariable> gameVariables);
 
         void addAvailableGameVariable(GameVariable var);
         void clearAvailableGameVariables();

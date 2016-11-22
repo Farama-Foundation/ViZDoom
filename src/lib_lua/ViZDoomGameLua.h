@@ -59,6 +59,12 @@ namespace vizdoom {
         GameStateLua getState(lua_State* luaState);
         lb::object getLastAction(lua_State* luaState);
 
+        lb::object getAvailableButtons(lua_State* luaState);
+        void setAvailableButtons(lb::object const& lButtons);
+
+        lb::object getAvailableGameVariables(lua_State* luaState);
+        void setAvailableGameVariables(lb::object const& lGameVariables);
+
 
         // Luabind doesn't support C++ 11 default arguments
 
@@ -80,7 +86,7 @@ namespace vizdoom {
 
     private:
         template<class T> static std::vector<T> lTableToVector(lb::object const& lTable);
-        static lb::object dataToLTable(lua_State* luaState, int dims, int *shape, void * data);
+        template<class T> static lb::object vectorToLTable(lua_State* luaState, const std::vector<T>& vector);
 
     };
 }

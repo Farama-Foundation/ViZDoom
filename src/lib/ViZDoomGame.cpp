@@ -277,12 +277,21 @@ namespace vizdoom {
         this->lastReward = 0;
     }
 
+    std::vector<Button> DoomGame::getAvailableButtons() {
+        return this->availableButtons;
+    }
+
+    void DoomGame::setAvailableButtons(std::vector<Button> buttons) {
+        this->clearAvailableButtons();
+        for(auto i : buttons) this->addAvailableButton(i);
+    }
+
     void DoomGame::addAvailableButton(Button button, unsigned int maxValue) {
         if (!this->isRunning() && std::find(this->availableButtons.begin(),
                                             this->availableButtons.end(), button) == this->availableButtons.end()) {
             this->availableButtons.push_back(button);
         }
-        this->doomController->setButtonMaxValue(button, maxValue);
+        if(maxValue != -1) this->doomController->setButtonMaxValue(button, maxValue);
     }
 
     void DoomGame::clearAvailableButtons(){
@@ -299,6 +308,15 @@ namespace vizdoom {
 
     int DoomGame::getButtonMaxValue(Button button){
         return this->doomController->getButtonMaxValue(button);
+    }
+
+    std::vector<GameVariable> DoomGame::getAvailableGameVariables(){
+        return this->availableGameVariables;
+    }
+
+    void DoomGame::setAvailableGameVariables(std::vector<GameVariable> gameVariables){
+        this->clearAvailableGameVariables();
+        for(auto i : gameVariables) this->addAvailableGameVariable(i);
     }
 
     void DoomGame::addAvailableGameVariable(GameVariable var) {
