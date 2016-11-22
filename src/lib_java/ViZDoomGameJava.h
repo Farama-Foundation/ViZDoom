@@ -81,7 +81,7 @@ JNI_EXPORT(jboolean, isEpisodeFinished);
 JNI_EXPORT(jboolean, isPlayerDead);
 JNI_EXPORT(void, respawnPlayer);
 JNI_EXPORT(void, addAvailableButton__Lvizdoom_Button_2, jobject);
-JNI_EXPORT(void, addAvailableButton__Lvizdoom_Button_2I, jobject, jint);
+JNI_EXPORT(void, addAvailableButton__Lvizdoom_Button_2I, jobject, jint)
 JNI_EXPORT(void, clearAvailableButtons);
 JNI_EXPORT(jint, getAvailableButtonsSize);
 JNI_EXPORT(void, setButtonMaxValue, jobject, jint);

@@ -385,13 +385,16 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             .def("getLastAction", &DoomGameLua::getLastAction)
             .def("_getLastAction", &DoomGameLua::getLastAction)
 
+            CLASS_FUNC_2_LUA(DoomGameLua, getAvailableGameVariables)
+            CLASS_FUNC_2_LUA(DoomGameLua, setAvailableGameVariables)
             CLASS_FUNC_2_LUA(DoomGameLua, addAvailableGameVariable)
             CLASS_FUNC_2_LUA(DoomGameLua, clearAvailableGameVariables)
             CLASS_FUNC_2_LUA(DoomGameLua, getAvailableGameVariablesSize)
 
+            CLASS_FUNC_2_LUA(DoomGameLua, getAvailableButtons)
+            CLASS_FUNC_2_LUA(DoomGameLua, setAvailableButtons)
             .def("addAvailableButton", &DoomGameLua::addAvailableButton_btn)
             .def("addAvailableButton", &DoomGameLua::addAvailableButton_btn_int)
-
             CLASS_FUNC_2_LUA(DoomGameLua, clearAvailableButtons)
             CLASS_FUNC_2_LUA(DoomGameLua, getAvailableButtonsSize)
             CLASS_FUNC_2_LUA(DoomGameLua, setButtonMaxValue)
