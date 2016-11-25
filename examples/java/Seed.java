@@ -30,7 +30,7 @@ public class Seed {
 
         game.setScreenResolution(ScreenResolution.RES_640X480);
 
-        int seed = 1234;
+        int seed = 666;
         // Sets the seed. It could be after init as well.
         game.setSeed(seed);
         game.init();
@@ -44,23 +44,19 @@ public class Seed {
 
         int episodes = 10;
 
-        for (int i=0;i<episodes;i++){
+        for(int i = 0; i < episodes; i++){
 
-            System.out.println("Episode #" + (i+1));
+            System.out.println("Episode #" + (i + 1));
             game.newEpisode();
 
-            while ( !game.isEpisodeFinished()){
+            while(!game.isEpisodeFinished()){
                 // Gets the state and possibly to something with it
-                GameState s = game.getState();
-                int[] img = s.imageBuffer;
-                int[] gameVariables = s.gameVariables;
-
+                GameState state = game.getState();
 
                 // Make random action and get reward
                 double reward = game.makeAction(actions.get(ran.nextInt(3)));
 
-
-                System.out.println("State #" + s.number);
+                System.out.println("State #" + state.number);
                 System.out.println("Action Reward: " + reward);
                 System.out.println("Seed: " + game.getSeed());
                 System.out.println("=====================");
