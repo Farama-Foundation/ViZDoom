@@ -36,7 +36,7 @@ int main(){
     game->addGameArgs("+name AI +colorset 0");
 
 
-    game->setMode(ASYNC_PLAYER);                // Multiplayer requires the use of asynchronous modes.
+    game->setMode(ASYNC_PLAYER);
     game->init();
 
     while(!game->isEpisodeFinished()){          // Play until the game (episode) is over.

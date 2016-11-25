@@ -28,41 +28,35 @@
 
 namespace vizdoom {
 
-    /*
-     * Calculates how many tics will be made during given number of milliseconds.
-     */
+
+    /* Time helpers */
+    /*----------------------------------------------------------------------------------------------------------------*/
+
     double doomTicsToMs(double tics, unsigned int ticrate = DEFAULT_TICRATE);
-
-    /*
-     * Calculates the number of milliseconds that will pass during specified number of tics.
-     */
     double msToDoomTics(double ms, unsigned int ticrate = DEFAULT_TICRATE);
-
-    /*
-     * Calculates how many tics will be made during given number of seconds.
-     */
     double doomTicsToSec(double tics, unsigned int ticrate = DEFAULT_TICRATE);
-
-    /*
-     * Calculates the number of seconds that will pass during specified number of tics.
-     */
     double secToDoomTics(double sec, unsigned int ticrate = DEFAULT_TICRATE);
 
-    /*
-     * Converts Doom's fixed point numeral to a floating point value.
-     */
+
+    /* DoomFixed helpers */
+    /*----------------------------------------------------------------------------------------------------------------*/
+
     double doomFixedToDouble(int doomFixed);
     double doomFixedToDouble(double doomFixed);
 
-    /*
-     * Returns true if button is binary button.
-     */
-    bool isBinaryButton(Button button);
 
-    /*
-     * Returns true if button is delta button.
-     */
+    /* Types helpers */
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    std::string modeToString(Mode mode);
+    std::string screenToString(ScreenFormat screenFormat);
+    std::string automapModeToString(AutomapMode mode);
+    std::string gameVariableToString(GameVariable gameVariable);
+    std::string buttonToString(Button button);
+
+    bool isBinaryButton(Button button);
     bool isDeltaButton(Button button);
+
 }
 
 #endif

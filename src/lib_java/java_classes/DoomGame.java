@@ -18,7 +18,7 @@ public class DoomGame{
     public native int ms2DoomTics(double ms, int ticrate);
     public native int doomTics2Sec(double tics, int ticrate);
     public native int sec2DoomTics(double sec, int ticrate);
-    public native double doomFixedToDouble(int doomFixed);
+    public native double doomFixedToDouble(double doomFixed);
     public native boolean isBinaryButton(Button button);
     public native boolean isDeltaButton(Button button);
 
@@ -52,15 +52,19 @@ public class DoomGame{
     public native boolean isPlayerDead();
     public native void respawnPlayer();
 
+    public native Button[] getAvailableButtons();
+    public native void setAvailableButtons(Button[] buttons);
     public native void addAvailableButton(Button button);
     public native void addAvailableButton(Button button, int maxValue);
     public native void clearAvailableButtons();
     public native int getAvailableButtonsSize();
+
     public native void setButtonMaxValue(Button button, int maxValue);
     public native int getButtonMaxValue(Button button);
 
+    public native GameVariable[] getAvailableGameVariables();
+    public native void setAvailableGameVariables(GameVariable[] gameVariables);
     public native void addAvailableGameVariable(GameVariable var);
-
     public native void clearAvailableGameVariables();
     public native int getAvailableGameVariablesSize();
 
@@ -116,7 +120,6 @@ public class DoomGame{
 
     public native boolean isAutomapBufferEnabled();
     public native void setAutomapBufferEnabled(boolean automapBuffer);
-
     public native void setAutomapMode(AutomapMode mode);
     public native void setAutomapRotate(boolean rotate);
     public native void setAutomapRenderTextures(boolean textures);

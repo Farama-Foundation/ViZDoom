@@ -86,23 +86,41 @@ namespace vizdoom {
     }
 
     lb::object DoomGameLua::getLastAction(lua_State* luaState){
-        lb::object lAction = lb::newtable(luaState);
-        for(size_t i = 0; i < DoomGame::lastAction.size(); ++i){
-            lAction[i + 1] = DoomGame::lastAction[i];
-        }
-        return lAction;
+        return DoomGameLua::vectorToLTable(luaState, this->lastAction);
+    }
+
+    lb::object DoomGameLua::getAvailableButtons(lua_State* luaState){
+        return DoomGameLua::vectorToLTable(luaState, this->availableButtons);
+    }
+
+    void DoomGameLua::setAvailableButtons(lb::object const& lButtons){
+        DoomGame::setAvailableButtons(DoomGameLua::lTableToVector<Button>(lButtons));
+    }
+
+    lb::object DoomGameLua::getAvailableGameVariables(lua_State* luaState){
+        return DoomGameLua::vectorToLTable(luaState, this->availableGameVariables);
+    }
+
+    void DoomGameLua::setAvailableGameVariables(lb::object const& lGameVariables){
+        DoomGame::setAvailableGameVariables(DoomGameLua::lTableToVector<GameVariable>(lGameVariables));
     }
 
 
     template<class T> std::vector<T> DoomGameLua::lTableToVector(lb::object const& lTable){
         std::vector<T> vector;
-
         for (lb::iterator i(lTable), end; i != end; ++i ) {
             T val = object_cast<T>(*i);
             vector.push_back(val);
         }
-
         return vector;
+    }
+
+    template<class T> lb::object DoomGameLua::vectorToLTable(lua_State* luaState, const std::vector<T>& vector){
+        lb::object lTable = lb::newtable(luaState);
+        for(size_t i = 0; i < vector.size(); ++i){
+            lTable[i + 1] = vector[i];
+        }
+        return lTable;
     }
 
 }

@@ -70,7 +70,7 @@ JNI_EXPORT(jobject, getState){
         jEnv->SetObjectArrayElement(jLabels, i, jLabel);
     }
 
-    jmethodID jStateConstructor = jEnv->GetMethodID(jStateClass, "<init>", "(I[I[B[B[B[B[Lvizdoom/Label;)V");
+    jmethodID jStateConstructor = jEnv->GetMethodID(jStateClass, "<init>", "(I[D[B[B[B[B[Lvizdoom/Label;)V");
     if (jStateConstructor == 0) return NULL;
     jobject jState = jEnv->NewObject(jStateClass, jStateConstructor, (jint)state->number,
                                 jGameVariables, jScreenBuffer, jDepthBuffer, jLabelsBuffer, jAutomapBuffer, jLabels);
@@ -87,6 +87,31 @@ JNI_METHOD(jboolean, isNewEpisode, isNewEpisode)
 JNI_METHOD(jboolean, isEpisodeFinished, isEpisodeFinished)
 JNI_METHOD(jboolean, isPlayerDead, isPlayerDead)
 JNI_METHOD(void, respawnPlayer, respawnPlayer)
+
+JNI_EXPORT(jobjectArray, getAvailableButtons){
+    auto enums = callObjMethod(jEnv, jObj, &DoomGameJava::getAvailableButtons);
+    jclass jEnumClass = jEnv->FindClass("vizdoom/Button");
+    if (jEnumClass == 0) return NULL;
+    jobjectArray jEnums = jEnv->NewObjectArray(enums.size(), jEnumClass, NULL);
+    for(size_t i = 0; i < enums.size(); ++i){
+        std::string enumName = buttonToString(enums[i]);
+        jfieldID jEnumID = jEnv->GetStaticFieldID(jEnumClass, enumName.c_str(), "Lvizdoom/Button;");
+        jobject jEnum = jEnv->GetStaticObjectField(jEnumClass, jEnumID);
+        jEnv->SetObjectArrayElement(jEnums, i, jEnum);
+    }
+
+    return jEnums;
+}
+
+JNI_EXPORT(void, setAvailableButtons, jobjectArray){
+    std::vector<Button> arg1;
+    int jarg1Len = jEnv->GetArrayLength(jarg1);
+    for(int i = 0; i < jarg1Len; ++i){
+        jobject jEnum = (jobject)jEnv->GetObjectArrayElement(jarg1, i);
+        arg1.push_back(jobjectCastToEnum<Button>(jEnv, "vizdoom/Button", jEnum));
+    }
+    callObjMethod(jEnv, jObj, &DoomGameJava::setAvailableButtons, arg1);
+}
 
 JNI_EXPORT(void, addAvailableButton__Lvizdoom_Button_2, jobject){
     auto arg1 = jobjectCastToEnum<Button>(jEnv, "vizdoom/Button", jarg1);
@@ -111,6 +136,31 @@ JNI_EXPORT(void, setButtonMaxValue, jobject, jint){
 JNI_EXPORT(jint, getButtonMaxValue, jobject){
     auto arg1 = jobjectCastToEnum<Button>(jEnv, "vizdoom/Button", jarg1);
     return castTojint(callObjMethod(jEnv, jObj, &DoomGameJava::getButtonMaxValue, arg1));
+}
+
+JNI_EXPORT(jobjectArray, getAvailableGameVariables){
+    auto enums = callObjMethod(jEnv, jObj, &DoomGameJava::getAvailableGameVariables);
+    jclass jEnumClass = jEnv->FindClass("vizdoom/GameVariable");
+    if (jEnumClass == 0) return NULL;
+    jobjectArray jEnums = jEnv->NewObjectArray(enums.size(), jEnumClass, NULL);
+    for(size_t i = 0; i < enums.size(); ++i){
+        std::string enumName = gameVariableToString(enums[i]);
+        jfieldID jEnumID = jEnv->GetStaticFieldID(jEnumClass, enumName.c_str(), "Lvizdoom/GameVariable;");
+        jobject jEnum = jEnv->GetStaticObjectField(jEnumClass, jEnumID);
+        jEnv->SetObjectArrayElement(jEnums, i, jEnum);
+    }
+
+    return jEnums;
+}
+
+JNI_EXPORT(void, setAvailableGameVariables, jobjectArray){
+    std::vector<GameVariable> arg1;
+    int jarg1Len = jEnv->GetArrayLength(jarg1);
+    for(int i = 0; i < jarg1Len; ++i){
+        jobject jEnum = (jobject)jEnv->GetObjectArrayElement(jarg1, i);
+        arg1.push_back(jobjectCastToEnum<GameVariable>(jEnv, "vizdoom/GameVariable", jEnum));
+    }
+    callObjMethod(jEnv, jObj, &DoomGameJava::setAvailableGameVariables, arg1);
 }
 
 JNI_EXPORT(void, addAvailableGameVariable, jobject){

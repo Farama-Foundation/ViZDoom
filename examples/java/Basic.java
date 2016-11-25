@@ -43,18 +43,27 @@ public class Basic {
         game.setRenderCorpses(false);
 
         // Adds buttons that will be allowed.
-        game.addAvailableButton(Button.MOVE_LEFT);
-        game.addAvailableButton(Button.MOVE_RIGHT);
-        game.addAvailableButton(Button.ATTACK);
+        Button[] availableButtons = new Button [] {Button.MOVE_LEFT, Button.MOVE_RIGHT, Button.ATTACK};
+        game.setAvailableButtons(availableButtons);
+        // game.addAvailableButton(Button.MOVE_LEFT); // Appends to available buttons.
+        // game.addAvailableButton(Button.MOVE_RIGHT);
+        // game.addAvailableButton(Button.ATTACK);
+
+        // Returns table of available Buttons.
+        // Button[] availableButtons = game.getAvailableButtons();
 
         // Adds game variables that will be included in state.
         game.addAvailableGameVariable(GameVariable.AMMO2);
+        // game.setAvailableGameVariables is also available.
+
+        // Returns table of available GameVariables.
+        // GameVariable[] availableGameVariables = game.getAvailableGameVariables();
 
         // Causes episodes to finish after 200 tics (actions)
         game.setEpisodeTimeout(200);
 
         // Makes episodes start after 10 tics (~after raising the weapon)
-        //game.setEpisodeStartTime(10);
+        game.setEpisodeStartTime(10);
 
         // Makes the window appear (turned on by default)
         game.setWindowVisible(true);
@@ -83,32 +92,40 @@ public class Basic {
 
         for (int i = 0; i < episodes; ++i) {
 
-        System.out.println("Episode #" + (i + 1));
+            System.out.println("Episode #" + (i + 1));
 
-        // Starts a new episode. It is not needed right after init() but it doesn't cost much and the loop is nicer.
-        game.newEpisode();
+            // Starts a new episode. It is not needed right after init() but it doesn't cost much and the loop is nicer.
+            game.newEpisode();
 
-        while (!game.isEpisodeFinished()) {
+            while (!game.isEpisodeFinished()) {
 
-            // Get the state
-            GameState s = game.getState();
+                // Get the state
+                GameState state = game.getState();
 
-            // Make random action and get reward
-            double r = game.makeAction(actions.get(ran.nextInt(3)));
+                int n               = state.number;
+                double[] vars       = state.gameVariables;
+                byte[] screenBuf    = state.screenBuffer;
+                byte[] depthBuf     = state.depthBuffer;
+                byte[] labelsBuf    = state.labelsBuffer;
+                byte[] automapBuf   = state.automapBuffer;
+                Label[] labels      = state.labels;
 
-            // You can also get last reward by using this function
-            // double r = game.getLastReward();
+                // Make random action and get reward
+                double r = game.makeAction(actions.get(ran.nextInt(3)));
 
-            System.out.println("State #" + s.number);
-            System.out.println("Game variables: " + s.gameVariables[0]);
-            System.out.println("Action reward: " + r);
-            System.out.println("=====================");
+                // You can also get last reward by using this function
+                // double r = game.getLastReward();
 
-        }
+                System.out.println("State #" + n);
+                System.out.println("Game variables: " + Arrays.toString(vars));
+                System.out.println("Action reward: " + r);
+                System.out.println("=====================");
 
-        System.out.println("Episode finished.");
-        System.out.println("Total reward: " + game.getTotalReward());
-        System.out.println("************************");
+            }
+
+            System.out.println("Episode finished.");
+            System.out.println("Total reward: " + game.getTotalReward());
+            System.out.println("************************");
 
         }
 

@@ -51,21 +51,20 @@ public class Shaping {
             while (!game.isEpisodeFinished()) {
 
                 // Get the state
-                GameState s = game.getState();
+                GameState state = game.getState();
 
                 // Make random action and get reward
-                double r = game.makeAction(actions.get(ran.nextInt(3)));
-
+                double reward = game.makeAction(actions.get(ran.nextInt(3)));
 
                 // Retrieve the shaping reward
-                int _ssr = game.getGameVariable(GameVariable.USER1);    // Get value of scripted variable
-                double ssr = game.DoomFixedToDouble(_ssr);              // If value is in DoomFixed format project it to double
+                double _ssr = game.getGameVariable(GameVariable.USER1); // Get value of scripted variable
+                double ssr = game.doomFixedToDouble(_ssr);              // If value is in DoomFixed format project it to double
                 double sr = ssr - lastTotalShapingReward;
                 lastTotalShapingReward = ssr;
 
-                System.out.println("State #" + s.number);
-                System.out.println("Health: " + s.gameVariables[0]);
-                System.out.println("Action reward: " + r);
+                System.out.println("State #" + state.number);
+                System.out.println("Health: " + Arrays.toString(state.gameVariables));
+                System.out.println("Action reward: " + reward);
                 System.out.println("Action shaping reward: " + sr);
                 System.out.println("=====================");
 

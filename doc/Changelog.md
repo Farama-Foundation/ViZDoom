@@ -41,9 +41,10 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 #### Others
 
 - ZDoom engine updated to 2.8.1
+- **Basic support for multiplayer in PLAYER and SPECTATOR Modes.**
+- **Paths in config files are now relative to config file.**
 - Improved performance.
 - Improved exceptions messages.
-- **Paths in config files are now relative to config file.**
 - Aliases for `DoomFixedToDouble` - `DoomFixedToNumber` in Lua and `doom_fixed_to_float` in Python added.
 - Bugs associated with paths handling fixed.
 - Many minor bugs fixed.

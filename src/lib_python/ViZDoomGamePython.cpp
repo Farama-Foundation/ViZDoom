@@ -101,12 +101,25 @@ namespace vizdoom {
     }
 
     bpy::list DoomGamePython::getLastAction() {
-        bpy::list pyAction;
-        for (auto i = DoomGame::lastAction.begin(); i != DoomGame::lastAction.end(); ++i) {
-            pyAction.append(*i);
-        }
-        return pyAction;
+        return DoomGamePython::vectorToPyList(this->lastAction);
     }
+
+    bpy::list DoomGamePython::getAvailableButtons(){
+        return DoomGamePython::vectorToPyList(this->availableButtons);
+    }
+
+    void DoomGamePython::setAvailableButtons(bpy::list const &pyButtons){
+        DoomGame::setAvailableButtons(DoomGamePython::pyListToVector<Button>(pyButtons));
+    }
+
+    bpy::list DoomGamePython::getAvailableGameVariables(){
+        return DoomGamePython::vectorToPyList(this->availableGameVariables);
+    }
+
+    void DoomGamePython::setAvailableGameVariables(bpy::list const &pyGameVariables){
+        DoomGame::setAvailableGameVariables(DoomGamePython::pyListToVector<GameVariable>(pyGameVariables));
+    }
+
 
     // These functions are workaround for
     // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
@@ -202,9 +215,7 @@ namespace vizdoom {
 
     template<class T> bpy::list DoomGamePython::vectorToPyList(const std::vector<T>& vector){
         bpy::list pyList;
-        for (auto i = vector.begin(); i!= vector.end(); ++i) {
-            pyList.append(*i);
-        }
+        for (auto i : vector) pyList.append(i);
         return pyList;
     }
 
