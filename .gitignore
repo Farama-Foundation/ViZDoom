@@ -106,3 +106,5 @@ src/vizdoom/zlib/x64/
 # CLion & PyCharm
 **/.idea
 **_vizdoom.ini
+dist/
+vizdoom.egg-info/
