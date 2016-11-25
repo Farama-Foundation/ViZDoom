@@ -249,6 +249,7 @@ JNI_FUNC_NAME(jrt, JAVA_PACKAGE, JAVA_CLASS, s) (JNIEnv *jEnv, jobject jObj, ja1
 #define JNI_METHOD_jstring(...) JNI_METHOD_RETT(__VA_ARGS__)
 #define JNI_METHOD_jintArray(...) JNI_METHOD_RETT(__VA_ARGS__)
 #define JNI_METHOD_jobject(...) JNI_METHOD_RETT(__VA_ARGS__)
+#define JNI_METHOD_jobjectArray(...) JNI_METHOD_RETT(__VA_ARGS__)
 
 #define JNI_METHOD_VOID(...) _VA_SELECT(JNI_METHOD_VOID, __VA_ARGS__)
 #define JNI_METHOD_RETT(...) _VA_SELECT(JNI_METHOD_RETT, __VA_ARGS__)

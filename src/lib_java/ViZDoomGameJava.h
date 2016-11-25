@@ -80,19 +80,25 @@ JNI_EXPORT(jboolean, isNewEpisode);
 JNI_EXPORT(jboolean, isEpisodeFinished);
 JNI_EXPORT(jboolean, isPlayerDead);
 JNI_EXPORT(void, respawnPlayer);
+
+JNI_EXPORT(jobjectArray, getAvailableButtons);
+JNI_EXPORT(void, setAvailableButtons, jobjectArray);
 JNI_EXPORT(void, addAvailableButton__Lvizdoom_Button_2, jobject);
 JNI_EXPORT(void, addAvailableButton__Lvizdoom_Button_2I, jobject, jint);
 JNI_EXPORT(void, clearAvailableButtons);
 JNI_EXPORT(jint, getAvailableButtonsSize);
 JNI_EXPORT(void, setButtonMaxValue, jobject, jint);
 JNI_EXPORT(jint, getButtonMaxValue, jobject);
+
+JNI_EXPORT(jobjectArray, getAvailableGameVariables);
+JNI_EXPORT(void, setAvailableGameVariables, jobjectArray);
 JNI_EXPORT(void, addAvailableGameVariable, jobject);
 JNI_EXPORT(void, clearAvailableGameVariables);
 JNI_EXPORT(jint, getAvailableGameVariablesSize);
+
 JNI_EXPORT(void, addGameArgs, jstring);
 JNI_EXPORT(void, clearGameArgs);
 JNI_EXPORT(void, sendGameCommand, jstring);
-JNI_EXPORT(jintArray, getGameScreen);
 JNI_EXPORT(jint, getModeNative);
 JNI_EXPORT(void, setMode, jobject);
 JNI_EXPORT(jint, getTicrate);
@@ -104,6 +110,7 @@ JNI_EXPORT(jdouble, getDeathPenalty);
 JNI_EXPORT(void, setDeathPenalty, jdouble);
 JNI_EXPORT(jdouble, getLastReward);
 JNI_EXPORT(jdouble, getTotalReward);
+
 JNI_EXPORT(void, setViZDoomPath, jstring);
 JNI_EXPORT(void, setDoomGamePath, jstring);
 JNI_EXPORT(void, setDoomScenarioPath, jstring);
@@ -156,7 +163,7 @@ JNI_EXPORT(jdouble, doomTics2Ms, jdouble, jint);
 JNI_EXPORT(jdouble, ms2DoomTics, jdouble, jint);
 JNI_EXPORT(jdouble, doomTics2Sec, jdouble, jint);
 JNI_EXPORT(jdouble, sec2DoomTics, jdouble, jint);
-JNI_EXPORT(jdouble, doomFixedToDouble, jint);
+JNI_EXPORT(jdouble, doomFixedToDouble, jdouble);
 JNI_EXPORT(jboolean, isBinaryButton, jobject);
 JNI_EXPORT(jboolean, isDeltaButton, jobject);
 
