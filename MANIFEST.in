@@ -1,1 +1,6 @@
-recursive-include . *
+recursive-include src *
+recursive-include include *.h
+recursive-include cmake_modules *cmake *.in
+recursive-include scripts *.sh
+recursive-include scenarios *wad *cfg
+include CMakeLists.txt
