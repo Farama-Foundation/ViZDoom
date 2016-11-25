@@ -64,7 +64,7 @@ public class DeltaButtons {
             while (!game.isEpisodeFinished()) {
 
                 // Get the state
-                GameState s = game.getState();
+                GameState state = game.getState();
 
                 // Make random action and get reward
                 game.makeAction(actions.get(ran.nextInt(2)));

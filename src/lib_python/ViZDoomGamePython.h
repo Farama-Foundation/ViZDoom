@@ -76,6 +76,13 @@ namespace vizdoom {
         GameStatePython getState();
         bpy::list getLastAction();
 
+        bpy::list getAvailableButtons();
+        void setAvailableButtons(bpy::list const &pyButtons);
+
+        bpy::list getAvailableGameVariables();
+        void setAvailableGameVariables(bpy::list const &pyGameVariables);
+
+
         // These functions are workaround for
         // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
         // on GCC versions lower then 5

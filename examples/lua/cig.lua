@@ -26,7 +26,6 @@ game:addGameArgs("-join 127.0.0.1") -- Connect to a host for a multiplayer game.
 -- colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue
 game:addGameArgs("+name AI +colorset 0")
 
--- Multiplayer requires the use of asynchronous modes.
 game:setMode(Mode.ASYNC_PLAYER);
 
 --game:setWindowVisible(false)
