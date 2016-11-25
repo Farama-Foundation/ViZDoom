@@ -18,7 +18,7 @@ public class DoomGame{
     public native int ms2DoomTics(double ms, int ticrate);
     public native int doomTics2Sec(double tics, int ticrate);
     public native int sec2DoomTics(double sec, int ticrate);
-    public native double doomFixedToDouble(int doomFixed);
+    public native double doomFixedToDouble(double doomFixed);
     public native boolean isBinaryButton(Button button);
     public native boolean isDeltaButton(Button button);
 
