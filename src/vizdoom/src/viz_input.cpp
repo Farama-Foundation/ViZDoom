@@ -47,7 +47,7 @@ void VIZ_Command(char * cmd){
 
 bool VIZ_CommmandFilter(const char *cmd){
 
-    VIZ_DebugMsg(2, VIZ_FUNC, "allow_input: %d, cmd: %s", *viz_allow_input, cmd);
+    VIZ_DebugMsg(3, VIZ_FUNC, "allow_input: %d, cmd: %s", *viz_allow_input, cmd);
 
     if(!vizInputInited || !*viz_allow_input) return true;
 

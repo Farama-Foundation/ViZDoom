@@ -64,6 +64,7 @@
 
 //VIZDOOM_CODE
 #include "viz_main.h"
+#include "viz_defines.h"
 
 EXTERN_CVAR (Bool, viz_controlled)
 EXTERN_CVAR (Bool, viz_async)
@@ -778,6 +779,9 @@ void GetPackets (void)
 		netnode = doomcom.remotenode;
 		netconsole = playerfornode[netnode] & ~PL_DRONE;
 
+		//VIZDOOM_CODE
+		vizNodesInSync[netconsole] = 1;
+
 		// [RH] Get "ping" times - totally useless, since it's bound to the frequency
 		// packets go out at.
 		lastrecvtime[netconsole] = currrecvtime[netconsole];
@@ -941,6 +945,7 @@ int gametime;
 void NetUpdate (void)
 {
 	//VIZDOOM_CODE
+	VIZ_InterruptionPoint();
 
 	int		lowtic;
 	int 	nowtime;
@@ -951,8 +956,6 @@ void NetUpdate (void)
 	bool	resendOnly;
 
 	GC::CheckGC();
-
-	//VIZDOOM_CODE
 
 	if (ticdup == 0) {
 		return;
@@ -1825,6 +1828,7 @@ void TryRunTics (void)
 	if (pauseext) r_NoInterpolate = true;
 	bool doWait = cl_capfps || r_NoInterpolate /*|| netgame*/;
 
+	//VIZDOOM_CODE
 	if(*viz_controlled) doWait = true;
 
 	// get real tics
@@ -1840,36 +1844,43 @@ void TryRunTics (void)
 	oldentertics = entertic;
 
 	// get available tics
-	NetUpdate ();
+	NetUpdate();
 
+	int netticsSum = 0;
 	lowtic = INT_MAX;
 	numplaying = 0;
-	for (i = 0; i < doomcom.numnodes; i++)
-	{
-		if (nodeingame[i])
-		{
+	for (i = 0; i < doomcom.numnodes; i++) {
+		if (nodeingame[i]) {
 			numplaying++;
-			if (nettics[i] < lowtic)
+			netticsSum += nettics[i];
+			if (nettics[i] < lowtic) {
 				lowtic = nettics[i];
+			}
 		}
 	}
 
-	if (ticdup == 1)
-	{
+	if (ticdup == 1) {
 		availabletics = lowtic - gametic;
 	}
-	else
-	{
+	else {
 		availabletics = lowtic - gametic / ticdup;
 	}
 
 	// decide how many tics to run
-	if (realtics < availabletics-1)
-		counts = realtics+1;
+	if (realtics < availabletics - 1)
+		counts = realtics + 1;
 	else if (realtics < availabletics)
 		counts = realtics;
 	else
 		counts = availabletics;
+
+//	for (i = 0; i < doomcom.numnodes; i++) {
+//		if (nodeingame[i]) {
+//			VIZ_DebugMsg(1, VIZ_FUNC, "nettics[%d]: %d", i, nettics[i]);
+//		}
+//	}
+
+	VIZ_DebugMsg(2, VIZ_FUNC, "gametic: %d, lowtic %d, availabletics: %d, realtics: %d, counts: %d", gametic, lowtic, availabletics, realtics, counts);
 	
 	// Uncapped framerate needs seprate checks
 	if (counts == 0 && !doWait)
@@ -1895,9 +1906,25 @@ void TryRunTics (void)
 				 "=======real: %i  avail: %i  game: %i\n",
 				 realtics, availabletics, counts);
 
+	//VIZDOOM_CODE	
+	vizNetticsSum = netticsSum;
+	if(*viz_controlled && !*viz_async){
+		int syncCount;
+		do {
+			syncCount = 0;
+			NetUpdate();
+			for (i = 0; i < numplaying; ++i)
+				syncCount += vizNodesInSync[i];
+		} while(syncCount!= numplaying);
+
+		for (i = 0; i < MAXPLAYERS; i++)
+			vizNodesInSync[i] = 0;
+	}
+
 	// wait for new tics if needed
 	while (lowtic < gametic + counts)
 	{
+
 		NetUpdate ();
 		lowtic = INT_MAX;
 
@@ -1932,7 +1959,8 @@ void TryRunTics (void)
 	lastglobalrecvtime = I_GetTime (false); //Update the last time the game tic'd over
 
 	//VIZDOOM_CODE
-	if(*viz_controlled && *viz_async) VIZ_AsyncStartTic();
+	//if(*viz_controlled && *viz_async) VIZ_AsyncStartTic();
+	//vizMakeNetUpdate = false;
 
 	// run the count tics
 	if (counts > 0)
@@ -1956,10 +1984,16 @@ void TryRunTics (void)
 			gametic++;
 
 			NetUpdate ();	// check for new console commands
+
+//			if(!*viz_async && counts > 0) {
+//				VIZ_Tic();
+//			}
 		}
 		P_PredictPlayer(&players[consoleplayer]);
 		if(!*viz_controlled || !*viz_nosound) S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
 	}
+
+//	vizMakeNetUpdate = true;
 }
 
 void Net_CheckLastReceived (int counts)

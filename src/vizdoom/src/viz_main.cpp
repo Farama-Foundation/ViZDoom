@@ -113,19 +113,25 @@ CCMD(viz_set_seed){
 /* Flow */
 /*--------------------------------------------------------------------------------------------------------------------*/
 
-int vizTime = 0;
+int vizNetticsSum = -1;
+int vizNodesInSync[VIZ_MAX_PLAYERS];
+
 int vizSavedTime = 0;
 bool vizFreeze = false;
+int lastGameTic = 0;
+bool vizBlockNetUpdate = false;
 int (*_I_GetTime)(bool);
 int (*_I_WaitForTic)(int);
 void (*_I_FreezeTime)(bool);
 
+int vizTime = 0;
 bool vizNextTic = false;
 bool vizUpdate = false;
+bool vizMakeNetUpdate = true;
 unsigned int vizLastUpdate = 0;
 
 int VIZ_GetTime(bool saveMS){
-    if(saveMS) vizSavedTime = vizTime;
+    //if(saveMS) vizSavedTime = vizTime;
     return vizTime;
 }
 
@@ -134,7 +140,7 @@ int VIZ_WaitForTic(int tic){
 //        VIZ_Tic();
 //    }
     if(*viz_allow_input) _I_WaitForTic(tic);
-    if(tic > vizTime) vizTime = tic;
+    //if(tic > vizTime) vizTime = tic;
     return VIZ_GetTime(false);
 }
 
@@ -161,6 +167,7 @@ void VIZ_Init(){
         vizUpdate = true;
 
         if(!*viz_async) {
+            lastGameTic = gametic;
             vizTime = gametic + 1;
             _I_GetTime = I_GetTime;
             _I_WaitForTic = I_WaitForTic;
@@ -184,35 +191,27 @@ void VIZ_Close(){
 }
 
 void VIZ_AsyncStartTic(){
-    try{
-        bt::interruption_point();
-    }
-    catch(b::thread_interrupted &ex ){
-        exit(0);
-    }
+    VIZ_InterruptionPoint();
 
     if (*viz_controlled){
         VIZ_MQTic();
         if(vizNextTic) VIZ_InputTic();
+        ++vizTime;
     }
 }
 
 void VIZ_Tic(){
 
-    VIZ_DebugMsg(2, VIZ_FUNC, "tic: %d, viztic: %d", gametic, VIZ_TIME);
+    VIZ_DebugMsg(2, VIZ_FUNC, "tic: %d, vizTime: %d", gametic, vizTime);
     VIZ_DebugMsg(4, VIZ_FUNC, "rngseed: %d, use_staticrng: %d, staticrngseed: %d", rngseed, use_staticrng, staticrngseed);
 
-    try{
-        bt::interruption_point();
-    }
-    catch(b::thread_interrupted &ex ){
-        exit(0);
+    VIZ_InterruptionPoint();
+    if(!vizMakeNetUpdate){
+        vizMakeNetUpdate = true;
+        return;
     }
 
     if (*viz_controlled){
-
-        NetUpdate();
-
         if(vizUpdate) {
             VIZ_Update();
         }
@@ -225,7 +224,6 @@ void VIZ_Tic(){
         if(!*viz_async){
             VIZ_MQTic();
             VIZ_InputTic();
-
             if(*viz_allow_input) VIZ_WaitForTic(vizTime);
             ++vizTime;
         }
@@ -233,7 +231,7 @@ void VIZ_Tic(){
 }
 
 void VIZ_Update(){
-    VIZ_DebugMsg(2, VIZ_FUNC, "tic: %d, viztic: %d, lastupdate: %d", gametic, VIZ_TIME, vizLastUpdate);
+    VIZ_DebugMsg(3, VIZ_FUNC, "tic: %d, vizTime: %d, lastupdate: %d", gametic, vizTime, vizLastUpdate);
 
     if(!*viz_nocheat){
         VIZ_D_MapDisplay();
@@ -243,7 +241,7 @@ void VIZ_Update(){
     VIZ_ScreenUpdate();
     VIZ_GameStateUpdateLabels();
 
-    vizLastUpdate = VIZ_TIME;
+    vizLastUpdate = vizTime;
     vizUpdate = false;
 }
 
@@ -311,7 +309,7 @@ EXTERN_CVAR(Bool, am_showtotaltime)
 
 void VIZ_CVARsUpdate(){
 
-    VIZ_DebugMsg(2, VIZ_FUNC, "mode: ", *viz_render_mode);
+    VIZ_DebugMsg(3, VIZ_FUNC, "mode: %d", *viz_render_mode);
 
     // hud
     bool hud = (*viz_render_mode & 1) != 0;
@@ -443,4 +441,13 @@ void VIZ_DebugMsg(int level, const char *func, const char *msg, ...){
     va_end(arg_ptr);
 
     VIZ_PrintFuncMsg(func, debug_msg);
+}
+
+void VIZ_InterruptionPoint(){
+    try{
+        bt::interruption_point();
+    }
+    catch(b::thread_interrupted &ex ){
+        exit(0);
+    }
 }
