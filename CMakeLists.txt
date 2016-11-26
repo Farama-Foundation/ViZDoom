@@ -215,7 +215,9 @@ if( BUILD_PYTHON3 )
 	STRING( REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" python3_version ${PYTHON_VERSION_STRING} )
 	find_package(PythonLibs ${python3_version} REQUIRED)
 
+	set(Boost_python3-mt_FOUND false)
     find_package(Boost QUIET COMPONENTS python3-mt)  # The name under OSX (macports)
+
     if ( NOT ${Boost_python3-mt_FOUND} )
         find_package(Boost QUIET COMPONENTS python3)
         if ( NOT Boost_python3_FOUND )
