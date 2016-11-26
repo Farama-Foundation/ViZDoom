@@ -26,12 +26,10 @@
 #include "viz_defines.h"
 
 extern int vizTime;
-extern int vizNetticsSum;
-extern int vizNodesInSync[VIZ_MAX_PLAYERS];
-extern int vizNodesLastSync[VIZ_MAX_PLAYERS];
 extern bool vizNextTic;
 extern bool vizUpdate;
-extern unsigned int vizLastUpdate;
+extern int vizLastUpdate;
+extern int vizNodesRecv[VIZ_MAX_PLAYERS];
 
 void VIZ_Init();
 
