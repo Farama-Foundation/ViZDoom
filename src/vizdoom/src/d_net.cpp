@@ -1906,9 +1906,9 @@ void TryRunTics (void)
 				 "=======real: %i  avail: %i  game: %i\n",
 				 realtics, availabletics, counts);
 
-	//VIZDOOM_CODE	
+	//VIZDOOM_CODE
 	vizNetticsSum = netticsSum;
-	if(*viz_controlled && !*viz_async){
+	if(*viz_controlled && !*viz_async && netgame){
 		int syncCount;
 		do {
 			syncCount = 0;
@@ -1959,8 +1959,7 @@ void TryRunTics (void)
 	lastglobalrecvtime = I_GetTime (false); //Update the last time the game tic'd over
 
 	//VIZDOOM_CODE
-	//if(*viz_controlled && *viz_async) VIZ_AsyncStartTic();
-	//vizMakeNetUpdate = false;
+	if(*viz_controlled && *viz_async) VIZ_AsyncStartTic();
 
 	// run the count tics
 	if (counts > 0)
@@ -1984,16 +1983,10 @@ void TryRunTics (void)
 			gametic++;
 
 			NetUpdate ();	// check for new console commands
-
-//			if(!*viz_async && counts > 0) {
-//				VIZ_Tic();
-//			}
 		}
 		P_PredictPlayer(&players[consoleplayer]);
 		if(!*viz_controlled || !*viz_nosound) S_UpdateSounds (players[consoleplayer].camera);	// move positional sounds
 	}
-
-//	vizMakeNetUpdate = true;
 }
 
 void Net_CheckLastReceived (int counts)

@@ -115,11 +115,10 @@ CCMD(viz_set_seed){
 
 int vizNetticsSum = -1;
 int vizNodesInSync[VIZ_MAX_PLAYERS];
+int vizNodesLastSync[VIZ_MAX_PLAYERS];
 
 int vizSavedTime = 0;
 bool vizFreeze = false;
-int lastGameTic = 0;
-bool vizBlockNetUpdate = false;
 int (*_I_GetTime)(bool);
 int (*_I_WaitForTic)(int);
 void (*_I_FreezeTime)(bool);
@@ -127,20 +126,16 @@ void (*_I_FreezeTime)(bool);
 int vizTime = 0;
 bool vizNextTic = false;
 bool vizUpdate = false;
-bool vizMakeNetUpdate = true;
 unsigned int vizLastUpdate = 0;
 
 int VIZ_GetTime(bool saveMS){
-    //if(saveMS) vizSavedTime = vizTime;
+    if(saveMS) vizSavedTime = vizTime;
     return vizTime;
 }
 
 int VIZ_WaitForTic(int tic){
-//    while(vizTime < tic){
-//        VIZ_Tic();
-//    }
     if(*viz_allow_input) _I_WaitForTic(tic);
-    //if(tic > vizTime) vizTime = tic;
+    if(tic > vizTime) vizTime = tic;
     return VIZ_GetTime(false);
 }
 
@@ -167,7 +162,6 @@ void VIZ_Init(){
         vizUpdate = true;
 
         if(!*viz_async) {
-            lastGameTic = gametic;
             vizTime = gametic + 1;
             _I_GetTime = I_GetTime;
             _I_WaitForTic = I_WaitForTic;
@@ -206,10 +200,6 @@ void VIZ_Tic(){
     VIZ_DebugMsg(4, VIZ_FUNC, "rngseed: %d, use_staticrng: %d, staticrngseed: %d", rngseed, use_staticrng, staticrngseed);
 
     VIZ_InterruptionPoint();
-    if(!vizMakeNetUpdate){
-        vizMakeNetUpdate = true;
-        return;
-    }
 
     if (*viz_controlled){
         if(vizUpdate) {
