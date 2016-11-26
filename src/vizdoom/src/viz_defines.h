@@ -25,6 +25,7 @@
 
 #include <stdlib.h>
 #include <boost/current_function.hpp>
+#include "doomdef.h"
 
 #define VIZ_TIME                    ((unsigned int)level.starttime + (unsigned int)level.maptime)
 

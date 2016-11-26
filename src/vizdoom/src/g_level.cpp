@@ -88,6 +88,9 @@
 
 #include "g_hub.h"
 
+//VIZDOOM_CODE
+#include "viz_game.h"
+
 void STAT_StartNewGame(const char *lev);
 void STAT_ChangeLevel(const char *newl);
 
@@ -141,6 +144,8 @@ static int d_skill=-1;
 
 void G_DeferedInitNew (const char *mapname, int newskill)
 {
+	//VIZDOOM_CODE
+	VIZ_GameStateInitNew();
 	d_mapname = mapname;
 	d_skill = newskill;
 	CheckWarpTransMap (d_mapname, true);
@@ -149,6 +154,8 @@ void G_DeferedInitNew (const char *mapname, int newskill)
 
 void G_DeferedInitNew (FGameStartup *gs)
 {
+	//VIZDOOM_CODE
+	VIZ_GameStateInitNew();
 	if (gs->PlayerClass != NULL) playerclass = gs->PlayerClass;
 	d_mapname = AllEpisodes[gs->Episode].mEpisodeMap;
 	d_skill = gs->Skill;

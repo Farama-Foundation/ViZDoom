@@ -147,6 +147,8 @@ void VIZ_GameStateInit(){
 }
 
 void VIZ_GameStateUpdate(){
+    if(!vizGameStateSM) return;
+
     vizGameStateSM->SM_SIZE = vizSMSize;
 
     vizGameStateSM->SCREEN_WIDTH = vizScreenWidth;
@@ -167,6 +169,7 @@ void VIZ_GameStateUpdate(){
 }
 
 void VIZ_GameStateTic(){
+    if(!vizGameStateSM) return;
 
     VIZ_DebugMsg(2, VIZ_FUNC, "netgame: %d, multiplayer: %d, recording: %d, playback: %d, in_level: %d, map_tic: %d",
                     netgame, multiplayer, demorecording, demoplayback, gamestate == GS_LEVEL, level.maptime);
@@ -257,6 +260,7 @@ void VIZ_GameStateTic(){
 }
 
 void VIZ_GameStateUpdateLabels(){
+    if(!vizGameStateSM) return;
 
     unsigned int labelCount = 0;
     if(!*viz_nocheat && vizLabels != NULL){
@@ -287,8 +291,8 @@ void VIZ_GameStateUpdateLabels(){
     vizGameStateSM->LABEL_COUNT = labelCount;
 }
 
-void VIZ_GameStateNewMap(){
-    vizGameStateSM->PLAYER_DEATHCOUNT = 0;
+void VIZ_GameStateInitNew(){
+    if(!vizGameStateSM) return;
 
     if(*viz_loop_map && !level.MapName.Compare(level.NextMap)){
         level.NextMap = level.MapName;
