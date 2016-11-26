@@ -70,7 +70,6 @@ CVAR (Int, viz_debug, 0, CVAR_NOSET)
 
 CVAR (Bool, viz_debug_instances, 0, CVAR_NOSET) // prints instance id with every message
 
-
 // control
 CVAR (Bool, viz_controlled, false, CVAR_NOSET)
 CVAR (String, viz_instance_id, "0", CVAR_NOSET)
@@ -79,6 +78,7 @@ CVAR (Int, viz_seed, 0, CVAR_NOSET)
 // modes
 CVAR (Bool, viz_async, false, CVAR_NOSET)
 CVAR (Bool, viz_allow_input, false, CVAR_NOSET)
+CVAR (Int, viz_sync_timeout, 3500, CVAR_NOSET)
 
 // buffers
 CVAR (Int, viz_screen_format, 0, 0)
@@ -113,20 +113,17 @@ CCMD(viz_set_seed){
 /* Flow */
 /*--------------------------------------------------------------------------------------------------------------------*/
 
-int vizNetticsSum = -1;
-int vizNodesInSync[VIZ_MAX_PLAYERS];
-int vizNodesLastSync[VIZ_MAX_PLAYERS];
+int vizTime = 0;
+bool vizNextTic = false;
+bool vizUpdate = false;
+int vizLastUpdate = 0;
+int vizNodesRecv[VIZ_MAX_PLAYERS];
 
 int vizSavedTime = 0;
 bool vizFreeze = false;
 int (*_I_GetTime)(bool);
 int (*_I_WaitForTic)(int);
 void (*_I_FreezeTime)(bool);
-
-int vizTime = 0;
-bool vizNextTic = false;
-bool vizUpdate = false;
-unsigned int vizLastUpdate = 0;
 
 int VIZ_GetTime(bool saveMS){
     if(saveMS) vizSavedTime = vizTime;
@@ -170,6 +167,8 @@ void VIZ_Init(){
             I_WaitForTic = &VIZ_WaitForTic;
             I_FreezeTime = &VIZ_FreezeTime;
         }
+
+        //for(size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) vizNodesRecv[i] = 0;
     }
 }
 
@@ -221,7 +220,7 @@ void VIZ_Tic(){
 }
 
 void VIZ_Update(){
-    VIZ_DebugMsg(3, VIZ_FUNC, "tic: %d, vizTime: %d, lastupdate: %d", gametic, vizTime, vizLastUpdate);
+    VIZ_DebugMsg(3, VIZ_FUNC, "tic: %d, vizTime: %d, lastupdate: %d", gametic, VIZ_TIME, vizLastUpdate);
 
     if(!*viz_nocheat){
         VIZ_D_MapDisplay();
@@ -231,7 +230,7 @@ void VIZ_Update(){
     VIZ_ScreenUpdate();
     VIZ_GameStateUpdateLabels();
 
-    vizLastUpdate = vizTime;
+    vizLastUpdate = VIZ_TIME;
     vizUpdate = false;
 }
 
@@ -437,7 +436,7 @@ void VIZ_InterruptionPoint(){
     try{
         bt::interruption_point();
     }
-    catch(b::thread_interrupted &ex ){
+    catch(b::thread_interrupted &ex){
         exit(0);
     }
 }
