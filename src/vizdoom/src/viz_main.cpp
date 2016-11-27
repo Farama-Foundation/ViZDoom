@@ -222,7 +222,7 @@ void VIZ_Tic(){
 void VIZ_Update(){
     VIZ_DebugMsg(3, VIZ_FUNC, "tic: %d, vizTime: %d, lastupdate: %d", gametic, VIZ_TIME, vizLastUpdate);
 
-    if(!*viz_nocheat){
+    if(!*viz_nocheat && *viz_automap){
         VIZ_D_MapDisplay();
         VIZ_ScreenLevelMapUpdate();
     }
@@ -286,7 +286,7 @@ EXTERN_CVAR(Bool, cl_showsprees)
 
 // automap
 EXTERN_CVAR(Int, am_cheat)
-EXTERN_CVAR(Bool, am_rotate)
+EXTERN_CVAR(Int, am_rotate)
 EXTERN_CVAR(Bool, am_textured)
 EXTERN_CVAR(Bool, am_followplayer)
 
