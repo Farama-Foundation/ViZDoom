@@ -41,7 +41,18 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 }
 ```
 
-##Examples
+## Windows build
+For Windows we are providing compiled runtime binaries and development libraries for Windows:
+
+### 1.1.0rc:
+- [Python 2.7 (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0rca/ViZDoom-1.1.0rc-Win-Python27-x86_64.zip)
+- [Python 3.4 (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0rca/ViZDoom-1.1.0rc-Win-Python34-x86_64.zip)
+- [Python 3.5 (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0rca/ViZDoom-1.1.0rc-Win-Python35-x86_64.zip)
+- [Lua51 & LuaJIT (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0rca/ViZDoom-1.1.0rc-Win-Lua51-LuaJIT-x86_64.zip)
+- [Java (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0rca/ViZDoom-1.1.0rc-Win-Java-x86_64.zip)
+
+
+## Examples
 
 Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed it in the ``scenarios`` subdirectory (on Linux it should be done automatically by the building process):
 
@@ -60,12 +71,6 @@ Python examples are currently the richest, so we recommend to look at them, even
 - [Linux](doc/Building.md#linux)
 - [Windows](doc/Building.md#windows)
 - [OSX](doc/Building.md#osx)
-
-
-For Windows we are providing compiled runtime binaries and development libraries for Windows:
-- 1.1.0 soon
-- [1.1.0pre](https://github.com/Marqt/ViZDoom/releases/download/1.1.0pre-CIG2016-warm-up-fixed/ViZDoom-1.1.0pre-CIG2016-Win-x86_64.zip) (see 1.0 branch for compatible examples)
-- [1.0.4](https://github.com/Marqt/ViZDoom/releases/download/1.0.4/ViZDoom-1.0.4-Win-x86_64.zip) (see 1.0 branch for compatible examples)
 
 
 ## Documentation
