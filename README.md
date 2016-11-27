@@ -9,7 +9,7 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 - Multi-platform,
 - API for C++, Lua, Java and Python,
 - Easy-to-create custom scenarios (examples available),
-- Single-player (sync and async) and multi-player (async) modes,
+- Async and sync single-player and multi-player modes,
 - Fast (up to 7000 fps in sync mode, single threaded),
 - Customizable resolution and rendering parameters,
 - Access to the depth buffer (3D vision)
@@ -41,7 +41,18 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 }
 ```
 
-##Examples
+## Windows build
+For Windows we are providing compiled runtime binaries and development libraries:
+
+### [1.1.0rc](https://github.com/Marqt/ViZDoom/releases/tag/1.1.0rc) (2016-11-26):
+- [Python 2.7 (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0rc/ViZDoom-1.1.0rc-Win-Python27-x86_64.zip)
+- [Python 3.4 (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0rc/ViZDoom-1.1.0rc-Win-Python34-x86_64.zip)
+- [Python 3.5 (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0rc/ViZDoom-1.1.0rc-Win-Python35-x86_64.zip)
+- [Lua 5.1 & LuaJIT (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0rc/ViZDoom-1.1.0rc-Win-Lua51-LuaJIT-x86_64.zip)
+- [Java (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0rc/ViZDoom-1.1.0rc-Win-Java-x86_64.zip)
+
+
+## Examples
 
 Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed it in the ``scenarios`` subdirectory (on Linux it should be done automatically by the building process):
 
@@ -60,12 +71,6 @@ Python examples are currently the richest, so we recommend to look at them, even
 - [Linux](doc/Building.md#linux)
 - [Windows](doc/Building.md#windows)
 - [OSX](doc/Building.md#osx)
-
-
-For Windows we are providing compiled runtime binaries and development libraries for Windows:
-- 1.1.0 soon
-- [1.1.0pre](https://github.com/Marqt/ViZDoom/releases/download/1.1.0pre-CIG2016-warm-up-fixed/ViZDoom-1.1.0pre-CIG2016-Win-x86_64.zip) (see 1.0 branch for compatible examples)
-- [1.0.4](https://github.com/Marqt/ViZDoom/releases/download/1.0.4/ViZDoom-1.0.4-Win-x86_64.zip) (see 1.0 branch for compatible examples)
 
 
 ## Documentation

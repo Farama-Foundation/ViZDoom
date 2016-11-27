@@ -70,7 +70,6 @@ CVAR (Int, viz_debug, 0, CVAR_NOSET)
 
 CVAR (Bool, viz_debug_instances, 0, CVAR_NOSET) // prints instance id with every message
 
-
 // control
 CVAR (Bool, viz_controlled, false, CVAR_NOSET)
 CVAR (String, viz_instance_id, "0", CVAR_NOSET)
@@ -79,6 +78,7 @@ CVAR (Int, viz_seed, 0, CVAR_NOSET)
 // modes
 CVAR (Bool, viz_async, false, CVAR_NOSET)
 CVAR (Bool, viz_allow_input, false, CVAR_NOSET)
+CVAR (Int, viz_sync_timeout, 3500, CVAR_NOSET)
 
 // buffers
 CVAR (Int, viz_screen_format, 0, 0)
@@ -114,15 +114,16 @@ CCMD(viz_set_seed){
 /*--------------------------------------------------------------------------------------------------------------------*/
 
 int vizTime = 0;
+bool vizNextTic = false;
+bool vizUpdate = false;
+int vizLastUpdate = 0;
+int vizNodesRecv[VIZ_MAX_PLAYERS];
+
 int vizSavedTime = 0;
 bool vizFreeze = false;
 int (*_I_GetTime)(bool);
 int (*_I_WaitForTic)(int);
 void (*_I_FreezeTime)(bool);
-
-bool vizNextTic = false;
-bool vizUpdate = false;
-unsigned int vizLastUpdate = 0;
 
 int VIZ_GetTime(bool saveMS){
     if(saveMS) vizSavedTime = vizTime;
@@ -130,9 +131,6 @@ int VIZ_GetTime(bool saveMS){
 }
 
 int VIZ_WaitForTic(int tic){
-//    while(vizTime < tic){
-//        VIZ_Tic();
-//    }
     if(*viz_allow_input) _I_WaitForTic(tic);
     if(tic > vizTime) vizTime = tic;
     return VIZ_GetTime(false);
@@ -169,6 +167,8 @@ void VIZ_Init(){
             I_WaitForTic = &VIZ_WaitForTic;
             I_FreezeTime = &VIZ_FreezeTime;
         }
+
+        //for(size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) vizNodesRecv[i] = 0;
     }
 }
 
@@ -184,35 +184,23 @@ void VIZ_Close(){
 }
 
 void VIZ_AsyncStartTic(){
-    try{
-        bt::interruption_point();
-    }
-    catch(b::thread_interrupted &ex ){
-        exit(0);
-    }
+    VIZ_InterruptionPoint();
 
     if (*viz_controlled){
         VIZ_MQTic();
         if(vizNextTic) VIZ_InputTic();
+        ++vizTime;
     }
 }
 
 void VIZ_Tic(){
 
-    VIZ_DebugMsg(2, VIZ_FUNC, "tic: %d, viztic: %d", gametic, VIZ_TIME);
+    VIZ_DebugMsg(2, VIZ_FUNC, "tic: %d, vizTime: %d", gametic, vizTime);
     VIZ_DebugMsg(4, VIZ_FUNC, "rngseed: %d, use_staticrng: %d, staticrngseed: %d", rngseed, use_staticrng, staticrngseed);
 
-    try{
-        bt::interruption_point();
-    }
-    catch(b::thread_interrupted &ex ){
-        exit(0);
-    }
+    VIZ_InterruptionPoint();
 
     if (*viz_controlled){
-
-        NetUpdate();
-
         if(vizUpdate) {
             VIZ_Update();
         }
@@ -225,7 +213,6 @@ void VIZ_Tic(){
         if(!*viz_async){
             VIZ_MQTic();
             VIZ_InputTic();
-
             if(*viz_allow_input) VIZ_WaitForTic(vizTime);
             ++vizTime;
         }
@@ -233,9 +220,9 @@ void VIZ_Tic(){
 }
 
 void VIZ_Update(){
-    VIZ_DebugMsg(2, VIZ_FUNC, "tic: %d, viztic: %d, lastupdate: %d", gametic, VIZ_TIME, vizLastUpdate);
+    VIZ_DebugMsg(3, VIZ_FUNC, "tic: %d, vizTime: %d, lastupdate: %d", gametic, VIZ_TIME, vizLastUpdate);
 
-    if(!*viz_nocheat){
+    if(!*viz_nocheat && *viz_automap){
         VIZ_D_MapDisplay();
         VIZ_ScreenLevelMapUpdate();
     }
@@ -259,6 +246,9 @@ bool VIZ_IsPaused(){
 
 // other
 EXTERN_CVAR(Bool, vid_fps)
+EXTERN_CVAR(Bool, cl_capfps)
+EXTERN_CVAR(Bool, vid_vsync)
+EXTERN_CVAR(Int, wipetype)
 
 // hud
 EXTERN_CVAR(Int, screenblocks)
@@ -299,7 +289,7 @@ EXTERN_CVAR(Bool, cl_showsprees)
 
 // automap
 EXTERN_CVAR(Int, am_cheat)
-EXTERN_CVAR(Bool, am_rotate)
+EXTERN_CVAR(Int, am_rotate)
 EXTERN_CVAR(Bool, am_textured)
 EXTERN_CVAR(Bool, am_followplayer)
 
@@ -309,9 +299,21 @@ EXTERN_CVAR(Bool, am_showsecrets)
 EXTERN_CVAR(Bool, am_showtime)
 EXTERN_CVAR(Bool, am_showtotaltime)
 
+#ifdef VIZ_OS_WIN
+    EXTERN_CVAR(Bool, vid_forceddraw);
+#endif
+
 void VIZ_CVARsUpdate(){
 
-    VIZ_DebugMsg(2, VIZ_FUNC, "mode: ", *viz_render_mode);
+    VIZ_DebugMsg(3, VIZ_FUNC, "mode: %d", *viz_render_mode);
+
+    cl_capfps.CmdSet("1");
+    vid_vsync.CmdSet("0");
+    wipetype.CmdSet("0");
+
+    #ifdef VIZ_OS_WIN
+        vid_forceddraw.CmdSet("1");
+    #endif
 
     // hud
     bool hud = (*viz_render_mode & 1) != 0;
@@ -443,4 +445,13 @@ void VIZ_DebugMsg(int level, const char *func, const char *msg, ...){
     va_end(arg_ptr);
 
     VIZ_PrintFuncMsg(func, debug_msg);
+}
+
+void VIZ_InterruptionPoint(){
+    try{
+        bt::interruption_point();
+    }
+    catch(b::thread_interrupted &ex){
+        exit(0);
+    }
 }

@@ -135,6 +135,8 @@ void VIZ_GameStateUpdate();
 
 void VIZ_GameStateUpdateLabels();
 
+void VIZ_GameStateInitNew();
+
 void VIZ_GameStateClose();
 
 #endif

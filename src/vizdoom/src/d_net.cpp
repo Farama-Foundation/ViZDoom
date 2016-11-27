@@ -64,10 +64,12 @@
 
 //VIZDOOM_CODE
 #include "viz_main.h"
+#include "viz_defines.h"
 
 EXTERN_CVAR (Bool, viz_controlled)
 EXTERN_CVAR (Bool, viz_async)
 EXTERN_CVAR (Bool, viz_allow_input)
+EXTERN_CVAR (Int, viz_sync_timeout)
 EXTERN_CVAR (Bool, viz_nosound)
 
 EXTERN_CVAR (Int, disableautosave)
@@ -95,7 +97,7 @@ BYTE NetMode = NET_PeerToPeer;
 //
 // gametic is the tic about to (or currently being) run
 // maketic is the tick that hasn't had control made for it yet
-// nettics[] has the maketics for all players 
+// nettics[] has the maketics for all players
 //
 // a gametic cannot be run until nettics[] > gametic for all players
 //
@@ -127,8 +129,8 @@ int 			maketic;
 int 			skiptics;
 int 			ticdup;
 
-void D_ProcessEvents (void); 
-void G_BuildTiccmd (ticcmd_t *cmd); 
+void D_ProcessEvents (void);
+void G_BuildTiccmd (ticcmd_t *cmd);
 void D_DoAdvanceDemo (void);
 
 static void SendSetup (DWORD playersdetected[MAXNETNODES], BYTE gotsetup[MAXNETNODES], int len);
@@ -421,14 +423,14 @@ int ExpandTics (int low)
 	int mt = maketic / ticdup;
 
 	delta = low - (mt&0xff);
-		
+
 	if (delta >= -64 && delta <= 64)
 		return (mt&~0xff) + low;
 	if (delta > 64)
 		return (mt&~0xff) - 256 + low;
 	if (delta < -64)
 		return (mt&~0xff) + 256 + low;
-				
+
 	I_Error ("ExpandTics: strange value %i at maketic %i", low, maketic);
 	return 0;
 }
@@ -480,7 +482,7 @@ void HSendPacket (int node, int len)
 					node,
 					ExpandTics(netbuffer[1]),
 					numtics, realretrans, len);
-			
+
 			for (i = 0; i < len; i++)
 				fprintf (debugfile, "%c%2x", i==k?'|':' ', ((BYTE *)netbuffer)[i]);
 		}
@@ -583,7 +585,7 @@ bool HGetPacket (void)
 		InBuffer.Push(store);
 		doomcom.remotenode = -1;
 	}
-	
+
 	if (doomcom.remotenode == -1)
 	{
 		bool gotmessage = false;
@@ -606,7 +608,7 @@ bool HGetPacket (void)
 		return false;
 	}
 #endif
-		
+
 	if (debugfile)
 	{
 		int i, k, realretrans;
@@ -648,7 +650,7 @@ bool HGetPacket (void)
 					doomcom.remotenode,
 					ExpandTics(netbuffer[1]),
 					numtics, realretrans, doomcom.datalength);
-			
+
 			for (i = 0; i < doomcom.datalength; i++)
 				fprintf (debugfile, "%c%2x", i==k?'|':' ', ((BYTE *)netbuffer)[i]);
 			if (numtics)
@@ -670,7 +672,7 @@ bool HGetPacket (void)
 		return false;
 	}
 
-	return true;		
+	return true;
 }
 
 void PlayerIsGone (int netnode, int netconsole)
@@ -761,7 +763,7 @@ void GetPackets (void)
 	int k;
 	BYTE playerbytes[MAXNETNODES];
 	int numplayers;
-								 
+
 	while ( HGetPacket() )
 	{
 		if (netbuffer[0] & NCMD_SETUP)
@@ -774,9 +776,13 @@ void GetPackets (void)
 			}
 			continue;			// extra setup packet
 		}
-						
+
 		netnode = doomcom.remotenode;
 		netconsole = playerfornode[netnode] & ~PL_DRONE;
+
+		//VIZDOOM_CODE
+		vizNodesRecv[netconsole] += 1;
+		VIZ_InterruptionPoint();
 
 		// [RH] Get "ping" times - totally useless, since it's bound to the frequency
 		// packets go out at.
@@ -869,9 +875,9 @@ void GetPackets (void)
 		// Figure out what the rest of the bytes are
 		realstart = ExpandTics (netbuffer[1]);
 		realend = (realstart + numtics);
-		
+
 		nodeforplayer[netconsole] = netnode;
-		
+
 		// check for retransmit request
 		if (resendcount[netnode] <= 0 && (netbuffer[0] & NCMD_RETRANSMIT))
 		{
@@ -884,11 +890,11 @@ void GetPackets (void)
 		{
 			resendcount[netnode]--;
 		}
-		
-		// check for out of order / duplicated packet			
+
+		// check for out of order / duplicated packet
 		if (realend == nettics[netnode])
 			continue;
-						
+
 		if (realend < nettics[netnode])
 		{
 			if (debugfile)
@@ -896,7 +902,7 @@ void GetPackets (void)
 						 realstart, numtics);
 			continue;
 		}
-		
+
 		// check for a missed packet
 		if (realstart > nettics[netnode])
 		{
@@ -941,6 +947,7 @@ int gametime;
 void NetUpdate (void)
 {
 	//VIZDOOM_CODE
+	VIZ_InterruptionPoint();
 
 	int		lowtic;
 	int 	nowtime;
@@ -951,8 +958,6 @@ void NetUpdate (void)
 	bool	resendOnly;
 
 	GC::CheckGC();
-
-	//VIZDOOM_CODE
 
 	if (ticdup == 0) {
 		return;
@@ -1174,7 +1179,7 @@ void NetUpdate (void)
 		switch (net_extratic)
 		{
 		case 0:
-		default: 
+		default:
 			resendto[i] = lowtic; break;
 		case 1: resendto[i] = MAX(0, lowtic - 1); break;
 		case 2: resendto[i] = nettics[i]; break;
@@ -1349,7 +1354,7 @@ void NetUpdate (void)
 						totalavg = lastaverage;
 					}
 				}
-					
+
 				mastertics = nettics[nodeforplayer[Net_Arbitrator]] + totalavg;
 			}
 			if (nettics[0] <= mastertics)
@@ -1825,6 +1830,7 @@ void TryRunTics (void)
 	if (pauseext) r_NoInterpolate = true;
 	bool doWait = cl_capfps || r_NoInterpolate /*|| netgame*/;
 
+	//VIZDOOM_CODE
 	if(*viz_controlled) doWait = true;
 
 	// get real tics
@@ -1840,37 +1846,44 @@ void TryRunTics (void)
 	oldentertics = entertic;
 
 	// get available tics
-	NetUpdate ();
+	NetUpdate();
 
+	int netticsSum = 0;
 	lowtic = INT_MAX;
 	numplaying = 0;
-	for (i = 0; i < doomcom.numnodes; i++)
-	{
-		if (nodeingame[i])
-		{
+	for (i = 0; i < doomcom.numnodes; i++) {
+		if (nodeingame[i]) {
 			numplaying++;
-			if (nettics[i] < lowtic)
+			netticsSum += nettics[i];
+			if (nettics[i] < lowtic) {
 				lowtic = nettics[i];
+			}
 		}
 	}
 
-	if (ticdup == 1)
-	{
+	if (ticdup == 1) {
 		availabletics = lowtic - gametic;
 	}
-	else
-	{
+	else {
 		availabletics = lowtic - gametic / ticdup;
 	}
 
 	// decide how many tics to run
-	if (realtics < availabletics-1)
-		counts = realtics+1;
+	if (realtics < availabletics - 1)
+		counts = realtics + 1;
 	else if (realtics < availabletics)
 		counts = realtics;
 	else
 		counts = availabletics;
-	
+
+//	for (i = 0; i < doomcom.numnodes; i++) {
+//		if (nodeingame[i]) {
+//			VIZ_DebugMsg(1, VIZ_FUNC, "nettics[%d]: %d", i, nettics[i]);
+//		}
+//	}
+
+	VIZ_DebugMsg(2, VIZ_FUNC, "gametic: %d, lowtic %d, availabletics: %d, realtics: %d, counts: %d", gametic, lowtic, availabletics, realtics, counts);
+
 	// Uncapped framerate needs seprate checks
 	if (counts == 0 && !doWait)
 	{
@@ -1895,9 +1908,24 @@ void TryRunTics (void)
 				 "=======real: %i  avail: %i  game: %i\n",
 				 realtics, availabletics, counts);
 
+	//VIZDOOM_CODE
+	if(*viz_controlled && !*viz_async && netgame){
+		int lowRecv;
+		unsigned int enterTime = I_MSTime ();
+		do {
+			NetUpdate();
+			lowRecv = INT_MAX;
+
+			for (i = 1; i < numplaying; i++) {
+				if (lowRecv > vizNodesRecv[i]) lowRecv = vizNodesRecv[i];
+			}
+		} while(lowRecv == lowtic && *viz_sync_timeout * numplaying > I_MSTime() - enterTime);
+	}
+
 	// wait for new tics if needed
 	while (lowtic < gametic + counts)
 	{
+
 		NetUpdate ();
 		lowtic = INT_MAX;
 
@@ -2070,7 +2098,7 @@ void FDynamicBuffer::SetData (const BYTE *data, int len)
 		m_Len = len;
 		memcpy (m_Data, data, len);
 	}
-	else 
+	else
 	{
 		m_Len = 0;
 	}
@@ -2117,7 +2145,7 @@ static int RemoveClass(const PClass *cls)
 				player = true;
 				continue;
 			}
-			removecount++; 
+			removecount++;
 			actor->ClearCounters();
 			actor->Destroy();
 		}
@@ -2339,7 +2367,7 @@ void Net_DoCommand (int type, BYTE **stream, int player)
 						{
 							if (type == DEM_SUMMONFRIEND || type == DEM_SUMMONFRIEND2 || type == DEM_SUMMONMBF)
 							{
-								if (spawned->CountsAsKill()) 
+								if (spawned->CountsAsKill())
 								{
 									level.total_monsters--;
 								}
@@ -2536,7 +2564,7 @@ void Net_DoCommand (int type, BYTE **stream, int player)
 		break;
 
 	case DEM_CROUCH:
-		if (gamestate == GS_LEVEL && players[player].mo != NULL && 
+		if (gamestate == GS_LEVEL && players[player].mo != NULL &&
 			players[player].health > 0 && !(players[player].oldbuttons & BT_JUMP) &&
 			!P_IsPlayerTotallyFrozen(&players[player]))
 		{
@@ -2700,7 +2728,7 @@ static void RunScript(BYTE **stream, APlayerPawn *pawn, int snum, int argn, int 
 {
 	int arg[4] = { 0, 0, 0, 0 };
 	int i;
-	
+
 	for (i = 0; i < argn; ++i)
 	{
 		int argval = ReadLong(stream);
