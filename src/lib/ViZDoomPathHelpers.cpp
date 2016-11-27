@@ -28,10 +28,12 @@
 #include <fstream>
 #include <iostream>
 
-#if defined (__unix__) || defined (__APPLE__)
+#if defined (OS_LINUX) || defined (OS_OSX)
 
 #include <dlfcn.h> // for getting current shared object path
 
+#elif defined(OS_WIN)
+//TODO -add windows' equivalent of <dlfcn.h>
 #endif
 
 namespace vizdoom {
@@ -131,14 +133,16 @@ namespace vizdoom {
     const int sharedObjectMarker = 0;
 
     std::string initializeThisSharedObjectPath() {
-#if defined (__unix__) || defined (__APPLE__)
+#if defined (OS_LINUX) || defined (OS_OSX)
         Dl_info dl_info;
         dladdr(&sharedObjectMarker, &dl_info);
         std::string this_shared_object_path = boost::filesystem::absolute(
                 dl_info.dli_fname).parent_path().generic_string();
-
-#else
+#elif defined(OS_WIN)
+        //TODO
         std::string this_shared_object_path =".";
+#else
+        std::string this_shared_object_path = ".";
 #endif
         return this_shared_object_path;
     }
