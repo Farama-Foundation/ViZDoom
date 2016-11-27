@@ -38,4 +38,12 @@
 #define VIZ_MAX_ERROR_TEXT_LEN      128
 #define VIZ_MAX_DEBUG_TEXT_LEN      1024
 
+#ifdef __linux__
+    #define VIZ_OS_LINUX
+#elif _WIN32
+    #define VIZ_OS_WIN
+#elif __APPLE__
+    #define VIZ_OS_OSX
+#endif
+
 #endif
