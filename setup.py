@@ -48,7 +48,7 @@ class BuildCommand(build):
 
 setup(
     name='vizdoom',
-    version='1.1.0.dev0',
+    version='1.1.0.rc0',
     description='Reinforcement learning platform based on Doom',
     long_description="ViZDoom: Doom Reinforcement Learning Research Platform",
     url='http://vizdoom.cs.put.edu.pl/',
