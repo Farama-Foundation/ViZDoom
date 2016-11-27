@@ -40,6 +40,7 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
   Note      = {The best paper award}
 }
 ```
+
 ## Installation/Building instructions
 
 - [Linux](doc/Building.md#linux)
