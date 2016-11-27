@@ -246,6 +246,9 @@ bool VIZ_IsPaused(){
 
 // other
 EXTERN_CVAR(Bool, vid_fps)
+EXTERN_CVAR(Bool, cl_capfps)
+EXTERN_CVAR(Bool, vid_vsync)
+EXTERN_CVAR(Int, wipetype)
 
 // hud
 EXTERN_CVAR(Int, screenblocks)
@@ -296,9 +299,21 @@ EXTERN_CVAR(Bool, am_showsecrets)
 EXTERN_CVAR(Bool, am_showtime)
 EXTERN_CVAR(Bool, am_showtotaltime)
 
+#ifdef VIZ_OS_WIN
+    EXTERN_CVAR(Bool, vid_forceddraw);
+#endif
+
 void VIZ_CVARsUpdate(){
 
     VIZ_DebugMsg(3, VIZ_FUNC, "mode: %d", *viz_render_mode);
+
+    cl_capfps.CmdSet("1");
+    vid_vsync.CmdSet("0");
+    wipetype.CmdSet("0");
+
+    #ifdef VIZ_OS_WIN
+        vid_forceddraw.CmdSet("1");
+    #endif
 
     // hud
     bool hud = (*viz_render_mode & 1) != 0;
