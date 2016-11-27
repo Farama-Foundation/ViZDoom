@@ -1230,12 +1230,6 @@ namespace vizdoom {
         else this->doomArgs.push_back("0");
 #endif
 
-        // TODO some of these could be set in viz_main.cpp -> UpdateCVARs
-
-        // no wipe animation
-        this->doomArgs.push_back("+wipetype");
-        this->doomArgs.push_back("0");
-
         // idle/joy
         this->doomArgs.push_back("-noidle");
         this->doomArgs.push_back("-nojoy");
@@ -1251,13 +1245,6 @@ namespace vizdoom {
             this->doomArgs.push_back("-ticrate");
             this->doomArgs.push_back(b::lexical_cast<std::string>(this->ticrate));
         }
-
-        // fps = ticrate and no vsync
-        this->doomArgs.push_back("+cl_capfps");
-        this->doomArgs.push_back("1");
-
-        this->doomArgs.push_back("+vid_vsync");
-        this->doomArgs.push_back("0");
 
         //custom args
         for (int i = 0; i < this->customArgs.size(); ++i) {
