@@ -1201,6 +1201,12 @@ namespace vizdoom {
             else this->doomArgs.push_back("0");
         #endif
 
+        #ifdef OS_WIN
+        // Fixes flickering when the automap is rendered.
+            this->doomArgs.push_back("+vid_forceddraw");
+            this->doomArgs.push_back("1");
+        #endif
+
         // TODO some of these could be set in viz_main.cpp -> UpdateCVARs
 
         // no wipe animation
