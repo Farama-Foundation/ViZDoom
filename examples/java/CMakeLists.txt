@@ -33,14 +33,6 @@ add_jar(deltabuttons DeltaButtons.java
         ENTRY_POINT DeltaButtons 
         OUTPUT_DIR ${VIZDOOM_JAVA_EXAMPLES_OUTPUT_DIR})
 
-add_jar(multiplayer Multiplayer.java 
-        ENTRY_POINT Multiplayer
-        OUTPUT_DIR ${VIZDOOM_JAVA_EXAMPLES_OUTPUT_DIR})
-
-add_jar(multiplayerhost MultiplayerHost.java 
-        ENTRY_POINT MultiplayerHost
-        OUTPUT_DIR ${VIZDOOM_JAVA_EXAMPLES_OUTPUT_DIR})
-
 add_jar(seed Seed.java
         ENTRY_POINT Seed
         OUTPUT_DIR ${VIZDOOM_JAVA_EXAMPLES_OUTPUT_DIR})

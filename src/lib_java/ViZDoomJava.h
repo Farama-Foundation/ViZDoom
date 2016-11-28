@@ -211,13 +211,14 @@ R callObjMethod(JNIEnv *jEnv, jobject jObj, R(O::*func)(A1...), A2... args){
 #define JNI_FUNC_NAME(jrt, p, c, s) _JNI_FUNC_NAME(jrt, p, c, s)
 
 // Select macros
+#define _EXPAND( a ) a
 #define _CAT( a, b ) a ## b
 #define _SELECT( name, num ) _CAT( name ## _, num )
 
 #define _GET_COUNT( _1, _2, _3, _4, _5, _6, count, ... ) count
-#define _VA_SIZE( ... ) _GET_COUNT( __VA_ARGS__, 6, 5, 4, 3, 2, 1 )
+#define _VA_SIZE( ... ) _EXPAND( _GET_COUNT( __VA_ARGS__, 6, 5, 4, 3, 2, 1 ) )
 
-#define _VA_SELECT( name, ... ) _SELECT( name, _VA_SIZE(__VA_ARGS__) )(__VA_ARGS__)
+#define _VA_SELECT( name, ... ) _EXPAND( _SELECT( name, _VA_SIZE(__VA_ARGS__) )(__VA_ARGS__) )
 
 
 /* JNI_EXPORT(...) macro - generates declaration of JNI function */
@@ -249,6 +250,7 @@ JNI_FUNC_NAME(jrt, JAVA_PACKAGE, JAVA_CLASS, s) (JNIEnv *jEnv, jobject jObj, ja1
 #define JNI_METHOD_jstring(...) JNI_METHOD_RETT(__VA_ARGS__)
 #define JNI_METHOD_jintArray(...) JNI_METHOD_RETT(__VA_ARGS__)
 #define JNI_METHOD_jobject(...) JNI_METHOD_RETT(__VA_ARGS__)
+#define JNI_METHOD_jobjectArray(...) JNI_METHOD_RETT(__VA_ARGS__)
 
 #define JNI_METHOD_VOID(...) _VA_SELECT(JNI_METHOD_VOID, __VA_ARGS__)
 #define JNI_METHOD_RETT(...) _VA_SELECT(JNI_METHOD_RETT, __VA_ARGS__)

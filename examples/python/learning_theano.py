@@ -40,11 +40,11 @@ episodes_to_watch = 10
 
 model_savefile = "/tmp/weights.dump"
 # Configuration file path
-config_file_path = "../../examples/config/simpler_basic.cfg"
+config_file_path = "../../scenarios/simpler_basic.cfg"
 
 
-# config_file_path = "../../examples/config/rocket_basic.cfg"
-# config_file_path = "../../examples/config/basic.cfg"
+# config_file_path = "../../scenarios/rocket_basic.cfg"
+# config_file_path = "../../scenarios/basic.cfg"
 
 # Converts and downsamples the input image
 def preprocess(img):

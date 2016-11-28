@@ -33,9 +33,9 @@ namespace vizdoom {
     namespace bip       = boost::interprocess;
 
     /* Message queues' settings */
-    #define MQ_MAX_MSG_NUM      64
-    #define MQ_MAX_MSG_SIZE     sizeof(Message)
-    #define MQ_MAX_CMD_LEN      128
+#define MQ_MAX_MSG_NUM      64
+#define MQ_MAX_MSG_SIZE     sizeof(Message)
+#define MQ_MAX_CMD_LEN      128
 
     /* Message struct */
     struct Message {
@@ -47,12 +47,15 @@ namespace vizdoom {
 
     public:
         MessageQueue(std::string name);
+
         ~MessageQueue();
 
         void init();
+
         void close();
 
         void send(uint8_t code, const char *command = nullptr);
+
         Message receive();
 
         //void receive(Message  *msg);
