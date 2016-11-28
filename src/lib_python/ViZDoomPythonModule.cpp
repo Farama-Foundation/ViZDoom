@@ -22,6 +22,7 @@
 
 #include "ViZDoom.h"
 #include "ViZDoomGamePython.h"
+#include "ViZDoomVersion.h"
 
 #include <boost/python.hpp>
 #include <vector>
@@ -100,6 +101,7 @@ init_numpy()
 BOOST_PYTHON_MODULE(vizdoom)
 {
     using namespace boost::python;
+    bpy::scope().attr("__version__") = bpy::str(VIZDOOM_LIB_VERSION_STR);
 
     Py_Initialize();
     init_numpy();

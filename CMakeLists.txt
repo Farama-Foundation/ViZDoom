@@ -204,13 +204,6 @@ if(BUILD_PYTHON AND (NOT BUILD_PYTHON3))
 		OUTPUT_NAME vizdoom
 		PROJECT_LABEL "Python 2 ViZDoom binding")
 
-	if(UNIX)
-		ADD_CUSTOM_COMMAND(
-			TARGET libvizdoom_python
-			COMMAND ln -sf ${VIZDOOM_PYTHON2_OUTPUT_DIR}/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/vizdoom.so
-			COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/bots.cfg
-			COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/python.")
-	endif()
 
 endif()
 
@@ -222,7 +215,9 @@ if( BUILD_PYTHON3 )
 	STRING( REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" python3_version ${PYTHON_VERSION_STRING} )
 	find_package(PythonLibs ${python3_version} REQUIRED)
 
+	set(Boost_python3-mt_FOUND false)
     find_package(Boost QUIET COMPONENTS python3-mt)  # The name under OSX (macports)
+
     if ( NOT ${Boost_python3-mt_FOUND} )
         find_package(Boost QUIET COMPONENTS python3)
         if ( NOT Boost_python3_FOUND )
@@ -280,13 +275,6 @@ if( BUILD_PYTHON3 )
 		OUTPUT_NAME vizdoom
 		PROJECT_LABEL "Python 3 ViZDoom binding")
 
-	if(UNIX)
-		ADD_CUSTOM_COMMAND(
-			TARGET libvizdoom_python3
-			COMMAND ln -sf ${VIZDOOM_PYTHON3_OUTPUT_DIR}/vizdoom.so ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/vizdoom.so
-			COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/examples/config/bots.cfg ${CMAKE_CURRENT_SOURCE_DIR}/examples/python/bots.cfg
-			COMMENT "Adding symlinks to vizdoom.so and bots.cfg in examples/python.")
-	endif()
 
 endif()
 
@@ -461,6 +449,6 @@ endif()
 
 if(UNIX)
 	add_custom_target( freedoom2 ALL
-		COMMAND ./download_freedoom.sh
+		COMMAND ./scripts/download_freedoom.sh
 	)
 endif()

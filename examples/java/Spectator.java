@@ -39,24 +39,22 @@ public class Spectator {
         game.init();
 
         int episodes = 10;
-        for (int i=0;i<episodes;i++){
+        for (int i = 0; i < episodes; i++){
 
-            System.out.println("Episode #" +(i+1));
+            System.out.println("Episode #" + (i + 1));
 
             game.newEpisode();
             while (! game.isEpisodeFinished()){
-                GameState s = game.getState();
-                int[] img = s.imageBuffer;
-                int[] misc = s.gameVariables;
+                GameState state = game.getState();
 
                 game.advanceAction();
-                boolean[] a = game.getLastAction();
-                double r = game.getLastReward();
+                int[] action = game.getLastAction();
+                double reward = game.getLastReward();
 
-                System.out.println("State #"+s.number);
-                System.out.println("Game Variables: "+Arrays.toString(misc));
-                System.out.println("Action: "+ Arrays.toString(a));
-                System.out.println("Reward: "+r);
+                System.out.println("State #" + state.number);
+                System.out.println("Game Variables: " + Arrays.toString(state.gameVariables));
+                System.out.println("Action: " + Arrays.toString(action));
+                System.out.println("Reward: " + reward);
                 System.out.println("=====================");
             }
 
