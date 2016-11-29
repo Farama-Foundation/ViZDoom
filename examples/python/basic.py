@@ -100,7 +100,7 @@ episodes = 10
 
 # Sets time that will pause the engine after each action (in seconds)
 # Without this everything would go too fast for you to keep track of what's happening.
-sleep_time = 1 / DEFAULT_TICRATE  # = 0.028
+sleep_time = 1.0 / DEFAULT_TICRATE # = 0.028
 
 for i in range(episodes):
     print("Episode #" + str(i + 1))
