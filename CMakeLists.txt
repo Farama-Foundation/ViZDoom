@@ -215,20 +215,27 @@ if( BUILD_PYTHON3 )
 	STRING( REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" python3_version ${PYTHON_VERSION_STRING} )
 	find_package(PythonLibs ${python3_version} REQUIRED)
 
-	set(Boost_python3-mt_FOUND false)
     find_package(Boost QUIET COMPONENTS python3-mt)  # The name under OSX (macports)
 
-    if ( NOT ${Boost_python3-mt_FOUND} )
-        find_package(Boost QUIET COMPONENTS python3)
-        if ( NOT Boost_python3_FOUND )
+    if ( ${Boost_python3-mt_FOUND} )
+		MESSAGE("--Found the following Boost libraries: \n--   python3-mt")
+	else()
+        find_package(Boost QUIET  COMPONENTS python3)
+        if ( ${Boost_python3_FOUND} )
+			MESSAGE("-- Found boost python3")
+		else()
             # 3.5 => 35 (at least on Ubuntu 16.04 the library is called libboost_python-py35.so)
             STRING( REGEX REPLACE "\\." "" python3_version ${python3_version} )
             find_package(Boost COMPONENTS python-py${python3_version} REQUIRED)
-        else()
-            MESSAGE("-- Cound not find Boost_python3-mt, Boost_python3 nor Boost_python-py${python3_version}.")
+
+			if( NOT ${boost_python-py${python3_version}_FOUND} )
+				MESSAGE(FATAL_ERROR "-- Could not find boost python3")
+			endif()
+
         endif()
+
     endif()
-     
+
 	find_package(NumPy REQUIRED)
 
 	set(VIZDOOM_PYTHON3_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python3)
