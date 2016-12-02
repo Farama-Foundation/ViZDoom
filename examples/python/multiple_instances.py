@@ -19,7 +19,7 @@ def player1():
 
     # game.load_config('../config/basic.cfg')
     # or
-    game.load_config('../config/multi_duel.cfg')
+    game.load_config('../../scenarios/multi_duel.cfg')
     game.add_game_args("-host 2 -deathmatch +timelimit 1.0 +sv_spawnfarthest 1")
     game.add_game_args("+name Player1 +colorset 0")
 
@@ -51,7 +51,7 @@ def player2():
 
     # game.load_config('../config/basic.cfg')
     # or
-    game.load_config('../config/multi_duel.cfg')
+    game.load_config('../../scenarios/multi_duel.cfg')
     game.add_game_args("-join 127.0.0.1")
     game.add_game_args("+name Player2 +colorset 3")
 

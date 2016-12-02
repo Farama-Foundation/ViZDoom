@@ -56,10 +56,9 @@ namespace vizdoom {
                     regionPtr->size = sizeof(SMGameState);
                     regionPtr->writeable = false;
                     this->mapRegion(regionPtr);
-                }
-                else if (!regionPtr->address ||
-                         (regionPtr->offset != this->getGameState()->SM_REGION_OFFSET[i]
-                          && regionPtr->size != this->getGameState()->SM_REGION_SIZE[i])) {
+                } else if (!regionPtr->address ||
+                           (regionPtr->offset != this->getGameState()->SM_REGION_OFFSET[i]
+                            && regionPtr->size != this->getGameState()->SM_REGION_SIZE[i])) {
 
                     this->deleteRegion(regionPtr);
 
@@ -75,16 +74,18 @@ namespace vizdoom {
             throw SharedMemoryException("Failed to map shared memory regions.");
         }
 
-        if(this->getGameState()->SM_SIZE != this->size ||
+        if (this->getGameState()->SM_SIZE != this->size ||
             this->getGameState()->SM_REGION_SIZE[0] != sizeof(SMGameState) ||
             this->getGameState()->SM_REGION_SIZE[1] != sizeof(SMInputState))
-            throw SharedMemoryException("Memory size does not match the the expected size. Possible ViZDoom version mismatch.");
+            throw SharedMemoryException(
+                    "Memory size does not match the the expected size. Possible ViZDoom version mismatch.");
     }
 
     void SharedMemory::mapRegion(SMRegion *regionPtr) {
         if (regionPtr->size) {
             regionPtr->region = new bip::mapped_region(this->sm,
-               regionPtr->writeable ? bip::read_write : bip::read_only, regionPtr->offset, regionPtr->size);
+                                                       regionPtr->writeable ? bip::read_write : bip::read_only,
+                                                       regionPtr->offset, regionPtr->size);
 
             regionPtr->address = regionPtr->region->get_address();
         }
@@ -104,27 +105,27 @@ namespace vizdoom {
         bip::shared_memory_object::remove(this->name.c_str());
     }
 
-    SMGameState * SharedMemory::getGameState() {
+    SMGameState *SharedMemory::getGameState() {
         return static_cast<SMGameState *>(this->region[0].address);
     }
 
-    SMInputState * SharedMemory::getInputState() {
+    SMInputState *SharedMemory::getInputState() {
         return static_cast<SMInputState *>(this->region[1].address);
     }
 
-    uint8_t * SharedMemory::getScreenBuffer() {
+    uint8_t *SharedMemory::getScreenBuffer() {
         return static_cast<uint8_t *>(this->region[2].address);
     }
 
-    uint8_t * SharedMemory::getDepthBuffer() {
+    uint8_t *SharedMemory::getDepthBuffer() {
         return static_cast<uint8_t *>(this->region[3].address);
     }
 
-    uint8_t * SharedMemory::getLabelsBuffer() {
+    uint8_t *SharedMemory::getLabelsBuffer() {
         return static_cast<uint8_t *>(this->region[4].address);
     }
 
-    uint8_t * SharedMemory::getAutomapBuffer() {
+    uint8_t *SharedMemory::getAutomapBuffer() {
         return static_cast<uint8_t *>(this->region[5].address);
     }
 }

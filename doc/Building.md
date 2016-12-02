@@ -1,13 +1,32 @@
+# Installation from pip (recommended for python users)
+
+ViZDoom for python can be installed via **pip** on Linux and Mac and it is strongly recommended. However you will still need to install the  **[dependencies](#linux_deps)**.
+
+>>> Pip installation will be supported on Windows soon.
+
+To install the most stable oficial release from [PyPi](https://pypi.python.org/pypi):
+```bash
+sudo pip install vizdoom
+```
+To install newest version from the repository:
+```bash
+git clone https://github.com/Marqt/ViZDoom
+cd ViZDoom
+sudo pip install .
+```
+Or without cloning yourself:
+```bash
+sudo  pip install git+https://github.com/Marqt/ViZDoom
+```
 # Building
 
 - [Linux](#linux)
 - [Windows](#windows)
 - [OSX](#osx)
 
-
 ## <a name="linux"></a> Linux
 
-### Dependencies
+### <a name="linux_deps"></a>Dependencies
 * CMake 2.8+
 * Make
 * GCC 4.6+
@@ -46,6 +65,8 @@ make
 
 ## <a name="windows"></a>Windows
 
+>>> Setting up the compilation on Windows is really tedious so using the precompiled binaries is recommended.
+
 ### Dependencies
 * CMake 2.8+
 * Visual Studio 2012+
@@ -71,8 +92,6 @@ Use generated Visual Studio solution to build all ViZDoom's parts.
 
 
 ## <a name="osx"></a>OSX
-Untested, code is compatible, CMake still may need minor adjustments.
-Let us know if You are using ViZDoom on OSX.
 
 ### Dependencies
 * CMake 2.8+
