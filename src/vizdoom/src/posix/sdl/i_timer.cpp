@@ -5,7 +5,7 @@
 #include <signal.h>
 #include <sys/time.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 //VIZDOOM_CODE
 #include "basictypes.h"

@@ -32,7 +32,7 @@
 **
 */
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <signal.h>
 #include <time.h>
 

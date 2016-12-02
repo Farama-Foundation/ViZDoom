@@ -34,7 +34,7 @@
 
 // HEADER FILES ------------------------------------------------------------
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
