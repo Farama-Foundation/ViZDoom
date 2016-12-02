@@ -16,7 +16,7 @@ PACKAGE_DESTINATION_PATH="${PACKAGE_DESTINATION_DIRECTORY}/pip_package"
 PACKAGE_SOURCE="./src/lib_python/pip_package"
 if [ "$(uname)" == "Darwin" ]
 then
-    VIZDOOM_EXEC_PATH="./bin/vizdoom.app/Contents/vizdoom"
+    VIZDOOM_EXEC_PATH="./bin/vizdoom.app/Contents/MacOS/vizdoom"
 else
     VIZDOOM_EXEC_PATH="./bin/vizdoom"
 fi
