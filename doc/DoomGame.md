@@ -19,6 +19,8 @@
 * [getEpisodeTime](#getEpisodeTime)
 
 ##[Buttons settings methods](#buttons)
+* [getAvailableButtons](#getAvailableButtons)
+* [setAvailableButtons](#setAvailableButtons)
 * [addAvailableButton](#addAvailableButton)
 * [clearAvailableButtons](#clearAvailableButtons)
 * [getAvailableButtonsSize](#getAvailableButtonsSize)
@@ -26,6 +28,8 @@
 * [getButtonMaxValue](#getButtonMaxValue)
 
 ##[GameVariables methods](#vars)
+* [getAvailableGameVariables](#getAvailableGameVariables)
+* [setAvailableGameVariables](#setAvailableGameVariables)
 * [addAvailableGameVariable](#addAvailableGameVariable)
 * [clearAvailableGameVariables](#clearAvailableGameVariables)
 * [getAvailableGameVariablesSize](#getAvailableGameVariablesSize)
@@ -333,6 +337,40 @@ Returns number of current episode tic.
 ## <a name="buttons"></a> Buttons settings methods
 
 ---
+### <a name="getAvailableButtons"></a> `getAvailableButtons`
+
+| C++    | `std::vector<Button> getAvailableButtons()` |
+| :--    | :--                                         |
+| Lua    | `table getAvailableButtons()`               |
+| Java   | `Button[] getAvailableButtons()`            |
+| Python | `list get_available_buttons()`              |
+
+TODO
+
+See also:
+- [`Types: Button`](Types.md#button)
+- [`ConfigFile: List`](ConfigFile.md#list)
+
+
+---
+### <a name="setAvailableButtons"></a> `setAvailableButtons`
+
+| C++    | `void setAvailableButtons(std::vector<Button> buttons)` |
+| :--    | :--                                                     |
+| Lua    | `void addAvailableButton(table)`                        |
+| Java   | `void addAvailableButton(Button[] buttons)`             |
+| Python | `void add_available_button(list)`                       |
+
+TODO
+
+Config key: `availableButtons/available_buttons` (list)
+
+See also:
+- [`Types: Button`](Types.md#button)
+- [`ConfigFile: List`](ConfigFile.md#list)
+
+
+---
 ### <a name="addAvailableButton"></a> `addAvailableButton`
 
 | C++    | `void addAvailableButton(Button button, unsigned int maxValue = 0)` |
@@ -414,6 +452,38 @@ See also:
 
 
 ## <a name="vars"></a> GameVariables methods
+
+---
+### <a name="addAvailableGameVariable"></a> `addAvailableGameVariable`
+
+| C++    | `std::vector<GameVariable> getAvailableGameVariables()` |
+| :--    | :--                                                    |
+| Lua    | `table getAvailableGameVariables()`                     |
+| Java   | `GameVariable[] getAvailableGameVariables()`            |
+| Python | `list get_available_game_variables()`                   |
+
+TODO
+
+See also:
+- [`Types: GameVariable`](Types.md#gamevariable)
+
+
+---
+### <a name="addAvailableGameVariable"></a> `addAvailableGameVariable`
+
+| C++    | `void setAvailableGameVariables(td::vector<GameVariable> variables)` |
+| :--    | :--                                                                  |
+| Lua    | `void setAvailableGameVariables(table variables)`                    |
+| Java   | `void setAvailableGameVariables(GameVariable[] variables)`           |
+| Python | `void set_available_game_variables(list variables)`                  |
+
+TODO
+
+Config key: `availableGameVariables/available_game_variables` (list)
+
+See also:
+- [`Types: GameVariable`](Types.md#gamevariable)
+- [`ConfigFile: List`](ConfigFile.md#list)
 
 
 ---
