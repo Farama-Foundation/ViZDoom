@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #include "bitmap.h"
 #include "v_palette.h"
