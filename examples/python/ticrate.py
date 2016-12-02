@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-
 from multiprocessing import Process
 from random import choice
 from vizdoom import *
+
 
 def play(game):
     game.init()
@@ -24,7 +24,7 @@ def play(game):
 def player1():
     game = DoomGame()
 
-    game.load_config('../config/basic.cfg')
+    game.load_config('../../scenarios/basic.cfg')
     game.set_mode(Mode.ASYNC_PLAYER)
 
     # Default Doom's ticrate is 35 per second, so this one will work 2 times faster.
@@ -36,7 +36,7 @@ def player1():
 def player2():
     game = DoomGame()
 
-    game.load_config('../config/basic.cfg')
+    game.load_config('../../scenarios/basic.cfg')
     game.set_mode(Mode.ASYNC_PLAYER)
 
     # And this one will work 2 times slower.
@@ -44,8 +44,8 @@ def player2():
 
     play(game)
 
+
 if __name__ == '__main__':
     p1 = Process(target=player1)
     p1.start()
     player2()
-

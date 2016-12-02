@@ -47,7 +47,7 @@
 * [getLastReward](#getLastReward)
 * [getTotalReward](#getTotalReward)
 
-##[General game setting methods](#settings)
+##[General game configuration methods](#settings)
 * [loadConfig](#loadConfig)
 * [getMode](#getMode)
 * [setMode](#setMode)
@@ -762,7 +762,7 @@ See also:
 
 Sets path to ViZDoom engine executable.
 
-Default value: "vizdoom", "vizdoom.exe" on Windows.
+Default value: "$VIZDOOM.SO_LOCATION/vizdoom", "vizdoom.exe" on Windows.
 
 Config key: `ViZDoomPath/vizdoom_path`
 
@@ -776,9 +776,9 @@ Config key: `ViZDoomPath/vizdoom_path`
 | Java   | `void setDoomGamePath(String filePath)`      |
 | Python | `void set_doom_game_path(str filePath)`      |
 
-Sets path to the Doom engine based game file (wad format).
+Sets path to the Doom engine based game file (wad format). If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom.so is).
 
-Default value: "doom2.wad"
+Default value: "$VIZDOOM.SO_LOCATION/{doom2.wad or freedoom2.wad}"
 
 Config key: `DoomGamePath/doom_game_path`
 

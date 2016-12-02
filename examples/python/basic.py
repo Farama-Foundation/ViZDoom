@@ -12,8 +12,8 @@
 #####################################################################
 
 from __future__ import print_function
-
 from vizdoom import *
+
 
 from random import choice
 from time import sleep
@@ -23,15 +23,9 @@ game = DoomGame()
 
 # Now it's time for configuration!
 # load_config could be used to load configuration instead of doing it here with code.
-# If load_config is used in-code configuration will work. Note that the most recent changes will add to previous ones.
-# game.load_config("../../examples/config/basic.cfg")
+# If load_config is used in-code configuration will also work - most recent changes will add to previous ones.
+# game.load_config("../../scenarios/basic.cfg")
 
-# Sets path to ViZDoom engine executive which will be spawned as a separate process. Default is "./vizdoom".
-game.set_vizdoom_path("../../bin/vizdoom")
-
-# Sets path to iwad resource file which contains the actual doom game. Default is "./doom2.wad".
-game.set_doom_game_path("../../scenarios/freedoom2.wad")
-# game.set_doom_game_path("../../scenarios/doom2.wad")  # Not provided with environment due to licences.
 
 # Sets path to additional resources wad file which is basically your scenario wad.
 # If not specified default maps will be used and it's pretty much useless... unless you want to play good old Doom.
@@ -57,7 +51,7 @@ game.set_automap_buffer_enabled(True)
 
 # Sets other rendering options
 game.set_render_hud(False)
-game.set_render_minimal_hud(False) # If hud is enabled
+game.set_render_minimal_hud(False)  # If hud is enabled
 game.set_render_crosshair(False)
 game.set_render_weapon(True)
 game.set_render_decals(False)
@@ -93,7 +87,7 @@ game.set_living_reward(-1)
 game.set_mode(Mode.PLAYER)
 
 # Initialize the game. Further configuration won't take any effect from now on.
-#game.set_console_enabled(True)
+# game.set_console_enabled(True)
 game.init()
 
 # Define some actions. Each list entry corresponds to declared buttons:
@@ -106,7 +100,7 @@ episodes = 10
 
 # Sets time that will pause the engine after each action (in seconds)
 # Without this everything would go too fast for you to keep track of what's happening.
-sleep_time = 1 / DEFAULT_TICRATE # = 0.028
+sleep_time = 1.0 / DEFAULT_TICRATE # = 0.028
 
 for i in range(episodes):
     print("Episode #" + str(i + 1))
@@ -120,13 +114,13 @@ for i in range(episodes):
         state = game.get_state()
 
         # Which consists of:
-        n           = state.number
-        vars        = state.game_variables
-        screen_buf  = state.screen_buffer
-        depth_buf   = state.depth_buffer
-        labels_buf  = state.labels_buffer
+        n = state.number
+        vars = state.game_variables
+        screen_buf = state.screen_buffer
+        depth_buf = state.depth_buffer
+        labels_buf = state.labels_buffer
         automap_buf = state.automap_buffer
-        labels      = state.labels
+        labels = state.labels
 
         # Makes a random action and get remember reward.
         r = game.make_action(choice(actions))

@@ -41,6 +41,12 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 }
 ```
 
+## Installation/Building instructions
+
+- [Linux](doc/Building.md#linux)
+- [Windows](doc/Building.md#windows)
+- [OSX](doc/Building.md#osx)
+
 ## Windows build
 For Windows we are providing compiled runtime binaries and development libraries:
 
@@ -65,14 +71,6 @@ Python examples are currently the richest, so we recommend to look at them, even
 
 **See also the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial).**
 
-
-## Building
-
-- [Linux](doc/Building.md#linux)
-- [Windows](doc/Building.md#windows)
-- [OSX](doc/Building.md#osx)
-
-
 ## Documentation
 
 Detailed description of all types and methods:
@@ -80,7 +78,7 @@ Detailed description of all types and methods:
 - **[DoomGame](doc/DoomGame.md)**
 - **[Types](doc/Types.md)**
 - [Configuration files](doc/ConfigFile.md)
-- [Exceptions](doc/Exceptions.md)(soon)
+- [Exceptions](doc/Exceptions.md)
 - [Utilities](doc/Utilities.md)
 
 [Changelog](doc/Changelog.md) for 1.1.0 version.

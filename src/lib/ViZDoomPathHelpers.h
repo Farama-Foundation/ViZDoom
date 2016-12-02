@@ -27,11 +27,11 @@
 
 /* OSes */
 #ifdef __linux__
-    #define OS_LINUX
+#define OS_LINUX
 #elif _WIN32
-    #define OS_WIN
+#define OS_WIN
 #elif __APPLE__
-    #define OS_OSX
+#define OS_OSX
 #endif
 
 namespace vizdoom {
@@ -55,6 +55,8 @@ namespace vizdoom {
     std::string prepareWadFilePath(std::string filePath);
 
     std::string prepareLmpFilePath(std::string filePath);
+
+    std::string getThisSharedObjectPath();
 }
 
 #endif

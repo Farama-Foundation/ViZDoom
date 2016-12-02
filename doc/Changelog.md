@@ -37,12 +37,16 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 - New `ticrate` optional argument in `doomTicsToMs`, `msToDoomTics`.
 - `doomTicsToSec` and `secToDoomTics` added.
 
+#### Paths
+
+- **Paths in config files are now relative to config file.**
+- setting **vizdoom_path** and **doom_game_path** is no longer needed - they default to location(installation) of vizdoom.so.
+
 
 #### Others
 
 - ZDoom engine updated to 2.8.1
 - **Basic support for multiplayer in PLAYER and SPECTATOR Modes.**
-- **Paths in config files are now relative to config file.**
 - Improved exceptions messages.
 - Bugs associated with paths handling fixed.
 - Many minor bugs fixed.
@@ -62,7 +66,7 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 #### Lua specific
 
 - Lua binding added.
-- Aliases for `doomFixedToDouble` - `doomFixedToNumber` added.
+
 
 #### Java specific
 
@@ -76,7 +80,7 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 
 - Consts added to Python.
 - Aliases for `doom_fixed_to_double` - `doom_fixed_to_float` added.
-
+- Support for pip installation for Linux and Windows.
 
 
 
