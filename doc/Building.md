@@ -4,19 +4,22 @@ ViZDoom for python can be installed via **pip** on Linux and Mac and it is stron
 
 >>> Pip installation will be supported on Windows soon.
 
-To install the most stable oficial release from [PyPi](https://pypi.python.org/pypi):
+To install the most stable official release from [PyPi](https://pypi.python.org/pypi):
 ```bash
+# use pip3 for python3
 sudo pip install vizdoom
 ```
 To install newest version from the repository:
 ```bash
 git clone https://github.com/Marqt/ViZDoom
 cd ViZDoom
+# use pip3 for python3
 sudo pip install .
 ```
 Or without cloning yourself:
 ```bash
-sudo  pip install git+https://github.com/Marqt/ViZDoom
+# use pip3 for python3
+sudo pip install git+https://github.com/Marqt/ViZDoom
 ```
 # Building
 
