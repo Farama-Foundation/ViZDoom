@@ -5,7 +5,7 @@
 #ifndef CRITSEC_H
 #define CRITSEC_H
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 #include "SDL_thread.h"
 #include "i_system.h"
 
