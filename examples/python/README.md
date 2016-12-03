@@ -1,4 +1,4 @@
-> For the examples to work properly you need to install ViZDoom system-wide with pip or set doom_game_path and vizdoom_path manually or in config files.
+> For the examples to work properly you need to install ViZDoom [system-wide with pip](https://github.com/Marqt/ViZDoom/blob/master/doc/Building.md) or set doom_game_path and vizdoom_path manually or in config files.
 
 TODO: Update this.
 
