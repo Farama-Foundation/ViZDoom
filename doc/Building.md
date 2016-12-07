@@ -56,6 +56,10 @@ pip3 install numpy #just for python3 binding
 sudo apt-get install libboost-all-dev
 ```
 
+# Lua bindings
+
+```sudo apt-get install liblua5.1-dev```
+
 ### Compiling
 In ViZDoom's root directory:
 ```bash
