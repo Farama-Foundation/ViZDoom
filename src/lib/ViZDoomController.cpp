@@ -76,22 +76,8 @@ namespace vizdoom {
         /* Settings */
         this->ticrate = DEFAULT_TICRATE;
 
-        std::string defaulExePath = getThisSharedObjectPath() + "/vizdoom";
-        std::string defaultIwadPath = getThisSharedObjectPath() + "/doom2.wad";
-        std::string altIwadPath = getThisSharedObjectPath() + "/freedoom2.wad";
-        if (fileExists(defaulExePath)) {
-            this->exePath = defaulExePath;
-        } else {
-            this->exePath = "vizdoom";
-        }
-        if (fileExists(defaultIwadPath)) {
-            this->iwadPath = defaultIwadPath;
-        } else if (fileExists(altIwadPath)) {
-            this->iwadPath = altIwadPath;
-        } else {
-            this->iwadPath = "doom2.wad";
-        }
-
+        this->exePath = "";
+        this->iwadPath = "";
         this->filePath = "";
         this->map = "map01";
         this->demoPath = "";
@@ -125,7 +111,6 @@ namespace vizdoom {
         this->messages = false;
         this->corpses = true;
 
-
         this->windowHidden = false;
         this->noXServer = false;
         this->noConsole = true;
@@ -158,6 +143,9 @@ namespace vizdoom {
             try {
                 this->generateInstanceId();
 
+                // Generate Doom process's arguments
+                this->createDoomArgs();
+
                 // Create message queues
                 this->MQDoom = new MessageQueue(MQ_DOOM_NAME_BASE + this->instanceId);
                 this->MQController = new MessageQueue(MQ_CTR_NAME_BASE + this->instanceId);
@@ -166,7 +154,6 @@ namespace vizdoom {
                 this->signalThread = new b::thread(b::bind(&DoomController::handleSignals, this));
 
                 // Doom thread
-                this->createDoomArgs();
                 this->doomThread = new b::thread(b::bind(&DoomController::launchDoom, this));
                 this->doomRunning = true;
 
@@ -198,11 +185,6 @@ namespace vizdoom {
                 *this->input = *this->_input;
 
                 this->mapLastTic = this->gameState->MAP_TIC;
-
-                // Check net game && mode
-
-                //if(this->gameState->GAME_NETGAME && !this->runDoomAsync)
-                //    throw ViZDoomErrorException("Net game can not be used with synchronous mode.");
 
             }
             catch (...) {
@@ -1093,9 +1075,39 @@ namespace vizdoom {
         this->doomArgs.clear();
 
         // exe
+        if (this->exePath.length() == 0){
+            std::string workingExePath = "./vizdoom";
+            std::string sharedExePath = getThisSharedObjectPath() + "/vizdoom";
+
+            #ifdef OS_WIN
+                workingExePath += ".exe";
+                sharedExePath += ".exe";
+            #endif
+
+            if (fileExists(workingExePath)) this->exePath = workingExePath;
+            else if (fileExists(sharedExePath)) this->exePath = sharedExePath;
+            else throw FileDoesNotExistException(workingExePath + " | " + sharedExePath);
+        }
+
         this->doomArgs.push_back(prepareExeFilePath(this->exePath));
 
         // main wad
+        if (this->iwadPath.length() == 0) {
+            std::string workingDoom2Path = "./doom2.wad";
+            std::string workingFreedoom2Path = "./freedoom2.wad";
+            std::string sharedDoom2Path = getThisSharedObjectPath() + "/doom2.wad";
+            std::string sharedFreedoom2Path = getThisSharedObjectPath() + "/freedoom2.wad";
+
+            if (fileExists(workingDoom2Path)) this->iwadPath = workingDoom2Path;
+            else if (fileExists(sharedDoom2Path)) this->iwadPath = sharedDoom2Path;
+            else if (fileExists(workingFreedoom2Path)) this->iwadPath = workingFreedoom2Path;
+            else if (fileExists(sharedFreedoom2Path)) this->iwadPath = sharedFreedoom2Path;
+            else throw FileDoesNotExistException(workingDoom2Path
+                                                 + " | " + workingFreedoom2Path
+                                                 + " | " + sharedDoom2Path
+                                                 + " | " + sharedFreedoom2Path);
+        }
+
         this->doomArgs.push_back("-iwad");
         this->doomArgs.push_back(prepareWadFilePath(this->iwadPath));
 
@@ -1168,11 +1180,12 @@ namespace vizdoom {
             this->doomArgs.push_back("+use_mouse");
             this->doomArgs.push_back("1");
 
-#ifdef OS_WIN
-            // Fix for problem with delta buttons' last values on Windows.
+            #ifdef OS_WIN
+                // Fix for problem with delta buttons' last values on Windows.
                 this->doomArgs.push_back("+in_mouse");
                 this->doomArgs.push_back("2");
-#endif
+            #endif
+
         } else {
             //disable mouse
             this->doomArgs.push_back("+use_mouse");
@@ -1211,7 +1224,6 @@ namespace vizdoom {
         this->doomArgs.push_back("+viz_render_mode");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->getRenderModeValue()));
 
-
         if (this->noConsole) {
             this->doomArgs.push_back("+viz_noconsole");
             this->doomArgs.push_back("1");
@@ -1224,11 +1236,11 @@ namespace vizdoom {
         if (this->windowHidden) this->doomArgs.push_back("1");
         else this->doomArgs.push_back("0");
 
-#ifdef OS_LINUX
-        this->doomArgs.push_back("+viz_noxserver");
-        if (this->noXServer) this->doomArgs.push_back("1");
-        else this->doomArgs.push_back("0");
-#endif
+        #ifdef OS_LINUX
+            this->doomArgs.push_back("+viz_noxserver");
+            if (this->noXServer) this->doomArgs.push_back("1");
+            else this->doomArgs.push_back("0");
+        #endif
 
         // idle/joy
         this->doomArgs.push_back("-noidle");
