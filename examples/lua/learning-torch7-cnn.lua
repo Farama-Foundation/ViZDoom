@@ -110,7 +110,6 @@ local function ReplayMemory(capacity)
     end
 
     function memory.getSample(sampleSize)
-        -- i = sample(range(0, memory.size), sampleSize) -- in python this is compact!
         for i=1,sampleSize do
             local ri = torch.random(1, memory.size)
             memory.bs1[i] = memory.s1[ri]
@@ -189,7 +188,6 @@ function learnFromMemory()
 
         -- target differs from q only for the selected action. The following means:
         -- target_Q(s,a) = r + gamma * max Q(s2,_) if isterminal else r
-        -- target_q[np.arange(target_q.shape[0]), a] = r + discount_factor * (1 - isterminal) * q2
         for i=1,opt.batchSize do
             if a[i]>0  then 
                 target_q[i][a[i]] = r[i] + opt.discount * (1 - isterminal[i]) * q2[i] 
@@ -204,7 +202,7 @@ function performLearningStep(epoch)
     -- (next state, reward) and learns from the transition
 
     function explorationRate(epoch)
-        --  Define exploration rate change over time
+        --  Define exploration rate change over time:
         local start_eps = opt.epsilon
         local end_eps = opt.epsilonMinimumValue
         local const_eps_epochs = 0.1 * opt.epochs  -- 10% of learning time
@@ -213,7 +211,7 @@ function performLearningStep(epoch)
         if epoch < const_eps_epochs then
             return start_eps
         elseif epoch < eps_decay_epochs then
-            -- Linear decay
+            -- Linear decay:
             return start_eps - (epoch - const_eps_epochs) /
                                (eps_decay_epochs - const_eps_epochs) * (start_eps - end_eps)
         else
@@ -244,8 +242,8 @@ function performLearningStep(epoch)
     return eps
 end
 
--- Creates and initializes ViZDoom environment.
-function initialize_vizdoom(config_file_path)
+-- Creates and initializes ViZDoom environment:
+function initializeViZdoom(config_file_path)
     print("Initializing doom...")
     game = vizdoom.DoomGame()
     game:setViZDoomPath(base_path.."bin/vizdoom")
@@ -261,32 +259,24 @@ function initialize_vizdoom(config_file_path)
 end
 
 function main()
-    -- Create Doom instance
-    local game = initialize_vizdoom(config_file_path)
+    -- Create Doom instance:
+    local game = initializeViZdoom(config_file_path)
 
-    -- Action = which buttons are pressed
+    -- Action = which buttons are pressed:
     local n = game:getAvailableButtonsSize()
-    -- actions = [list(a) for a in it.product([0, 1], repeat=n)]
-
-    -- Create replay memory which will store the 
+    
+    -- Create replay memory which will store the play data:
     ReplayMemory(opt.maxMemory)
 
     learn, getQValues, getBestAction = createNetwork(#actions) -- note: global functions!
     
-    if load_model then
-        print("Loading model from: ", model_savefile)
-        saver.restore(session, model_savefile)
-    else
-        -- init = tf.initialize_all_variables()
-        -- session.run(init)
-    end
     print("Starting the training!")
 
     local time_start = sys.tic()
     if not skip_learning then
         local epsilon
         for epoch = 1, opt.epochs do
-            print(string.format("\nEpoch %d\n-------", epoch))
+            print(string.format(colors.green.."\nEpoch %d\n-------", epoch))
             train_episodes_finished = 0
             train_scores = {}
 
@@ -309,7 +299,7 @@ function main()
 
             print(string.format("Results: mean: %.1f, std: %.1f, min: %.1f, max: %.1f", 
                 train_scores:mean(), train_scores:std(), train_scores:min(), train_scores:max()))
-            print('Epsilon value', epsilon)
+            -- print('Epsilon value', epsilon)
 
             print(colors.red.."\nTesting...")
             local test_episode = {}
@@ -331,7 +321,7 @@ function main()
             print(string.format("Results: mean: %.1f, std: %.1f, min: %.1f, max: %.1f",
                 test_scores:mean(), test_scores:std(), test_scores:min(), test_scores:max()))
 
-            print(colors.green.."Saving the network weigths to:", model_savefile)
+            print("Saving the network weigths to:", model_savefile)
             torch.save(opt.saveDir..'/model-'..epoch..'.net', model:float():clearState())
             
             print(string.format(colors.cyan.."Total elapsed time: %.2f minutes", sys.toc()/60.0))
@@ -342,7 +332,7 @@ function main()
     print("======================================")
     print("Training finished. It's time to watch!")
 
-    -- Reinitialize the game with window visible
+    -- Reinitialize the game with window visible:
     game:setWindowVisible(true)
     game:setMode(vizdoom.Mode.ASYNC_PLAYER)
     game:init()
@@ -353,7 +343,6 @@ function main()
             local state = preprocess(game:getState().screenBuffer:float():div(255))
             local best_action_index = getBestAction(state)
 
-            -- Instead of make_action(a, frame_repeat) in order to make the animation smooth
             game:makeAction(actions[best_action_index])
             for j = 1, opt.frameRepeat do
                 game:advanceAction()
