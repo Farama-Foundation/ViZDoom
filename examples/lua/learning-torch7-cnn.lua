@@ -2,6 +2,10 @@
 
 -- E. Culurciello, December 2016
 -- based on https://github.com/Marqt/ViZDoom/blob/master/examples/python/learning_tensorflow.py
+-- use CNN and DQN to train simple Doom scenarios
+
+-- "th learning-torch7-cnn.lua" to train a neural network from scratch, and test it
+-- "th learning-torch7-cnn.lua --skipLearning" to only test a pre-trained neural network
 
 local base_path="/Users/eugenioculurciello/Desktop/ViZDoom/"
 package.path = package.path .. ";"..base_path.."lua/vizdoom/?.lua"
@@ -18,11 +22,13 @@ lapp = require 'pl.lapp'
 opt = lapp [[
 
   Game options:
+  --gridSize            (default 30)         default screen resized for neural net input
   --discount            (default 0.99)       discount factor in learning
   --epsilon             (default 1)          initial value of ϵ-greedy action selection
   --epsilonMinimumValue (default 0.1)        final value of ϵ-greedy action selection
   
   Training parameters:
+  --skipLearning                             skip learning and just test
   --threads               (default 8)        number of threads used by BLAS routines
   --seed                  (default 1)        initial random seed
   -r,--learningRate       (default 0.00025)  learning rate
@@ -42,6 +48,7 @@ opt = lapp [[
   Display and save parameters:
   --display                                  display stuff
   --saveDir          (default './results')   subdirectory to save experiments in
+  --load                  (default '')       load neural network to test
 ]]
 
 torch.setnumthreads(opt.threads)
@@ -49,13 +56,8 @@ torch.setdefaulttensortype('torch.FloatTensor')
 torch.manualSeed(opt.seed)
 os.execute('mkdir '..opt.saveDir)
 
--- Other parameters
-local resolution = {30, 45} -- Y, X sizes of rescaled state / game screen
-
-local model_savefile = "results/model.net"
-local save_model = true
-local load_model = false
-local skip_learning = false
+-- Other parameters:
+local resolution = {opt.gridSize, opt.gridSize*1.5} -- Y, X sizes of rescaled state / game screen
 local colors = sys.COLORS
 
 -- Configuration file path
@@ -63,14 +65,16 @@ local config_file_path = base_path.."scenarios/simpler_basic.cfg"
 -- local config_file_path = base_path.."scenarios/rocket_basic.cfg"
 -- local config_file_path = base_path.."scenarios/basic.cfg"
 
+-- Doom basic scenario actions:
 local actions = {
     [1] = torch.Tensor({1,0,0}),
     [2] = torch.Tensor({0,1,0}),
     [3] = torch.Tensor({0,0,1})
 }
 
--- Converts and down-samples the input image
+-- Converts and down-samples the input image:
 local function preprocess(inImage)
+    inImage = inImage:float():div(255)
   return image.scale(inImage, unpack(resolution))
 end
 
@@ -142,7 +146,7 @@ function createNetwork(available_actions_count)
 
     criterion = nn.MSECriterion()
 
-    function functionLearn(s1, target_q)
+    local function functionLearn(s1, target_q)
 
         local params, gradParams = model:getParameters()
         
@@ -159,11 +163,11 @@ function createNetwork(available_actions_count)
         return fs[1] -- loss
     end
 
-    function functionGetQValues(state)
+    local function functionGetQValues(state)
         return model:forward(state)
     end
 
-    function functionGetBestAction(state)
+    local function functionGetBestAction(state)
         local q = functionGetQValues(state:float():reshape(1, 1, resolution[1], resolution[2]))
         local max, index = torch.max(q, 1)
         local action = index[1]
@@ -201,7 +205,7 @@ function performLearningStep(epoch)
     -- Makes an action according to eps-greedy policy, observes the result
     -- (next state, reward) and learns from the transition
 
-    function explorationRate(epoch)
+    local function explorationRate(epoch)
         --  Define exploration rate change over time:
         local start_eps = opt.epsilon
         local end_eps = opt.epsilonMinimumValue
@@ -219,10 +223,11 @@ function performLearningStep(epoch)
         end
     end
 
-    local s1 = preprocess(game:getState().screenBuffer):float():div(255)
+    local s1 = preprocess(game:getState().screenBuffer)
 
     -- With probability eps make a random action:
     local eps = explorationRate(epoch)
+    local a, s2
     if torch.uniform() <= eps then
         a = torch.random(1, #actions)
     else
@@ -232,7 +237,7 @@ function performLearningStep(epoch)
     local reward = game:makeAction(actions[a], opt.frameRepeat)
 
     local isterminal = game:isEpisodeFinished()
-    if not isterminal then s2 = preprocess(game:getState().screenBuffer):float():div(255) else s2 = nil end
+    if not isterminal then s2 = preprocess(game:getState().screenBuffer) else s2 = nil end
 
     -- Remember the transition that was just experienced:
     memory.addTransition(s1, a, s2, isterminal, reward)
@@ -272,13 +277,13 @@ function main()
     
     print("Starting the training!")
 
-    local time_start = sys.tic()
-    if not skip_learning then
+    local timeStart = sys.tic()
+    if not opt.skipLearning then
         local epsilon
         for epoch = 1, opt.epochs do
             print(string.format(colors.green.."\nEpoch %d\n-------", epoch))
-            train_episodes_finished = 0
-            train_scores = {}
+            local trainEpisodesFinished = 0
+            local trainScores = {}
 
             print(colors.red.."Training...")
             game:newEpisode()
@@ -286,46 +291,49 @@ function main()
                 xlua.progress(learning_step, opt.learningStepsEpoch)
                 epsilon = performLearningStep(epoch)
                 if game:isEpisodeFinished() then
-                    score = game:getTotalReward()
-                    table.insert(train_scores, score)
+                    local score = game:getTotalReward()
+                    table.insert(trainScores, score)
                     game:newEpisode()
-                    train_episodes_finished = train_episodes_finished + 1
+                    trainEpisodesFinished = trainEpisodesFinished + 1
                 end
             end
 
-            print(string.format("%d training episodes played.", train_episodes_finished))
+            print(string.format("%d training episodes played.", trainEpisodesFinished))
 
-            train_scores = torch.Tensor(train_scores)
+            trainScores = torch.Tensor(trainScores)
 
             print(string.format("Results: mean: %.1f, std: %.1f, min: %.1f, max: %.1f", 
-                train_scores:mean(), train_scores:std(), train_scores:min(), train_scores:max()))
+                trainScores:mean(), trainScores:std(), trainScores:min(), trainScores:max()))
             -- print('Epsilon value', epsilon)
 
             print(colors.red.."\nTesting...")
-            local test_episode = {}
-            local test_scores = {}
-            for test_episode=1, opt.testEpisodesEpoch do
-                xlua.progress(test_episode, opt.testEpisodesEpoch)
+            local testEpisode = {}
+            local testScores = {}
+            for testEpisode=1, opt.testEpisodesEpoch do
+                xlua.progress(testEpisode, opt.testEpisodesEpoch)
                 game:newEpisode()
                 while not game:isEpisodeFinished() do
-                    state = preprocess(game:getState().screenBuffer:float():div(255))
-                    best_action_index = getBestAction(state)
+                    local state = preprocess(game:getState().screenBuffer)
+                    local bestActionIndex = getBestAction(state)
                     
-                    game:makeAction(actions[best_action_index], opt.frameRepeat)
+                    game:makeAction(actions[bestActionIndex], opt.frameRepeat)
                 end
-                r = game:getTotalReward()
-                table.insert(test_scores, r)
+                local r = game:getTotalReward()
+                table.insert(testScores, r)
             end
 
-            test_scores = torch.Tensor(test_scores)
+            testScores = torch.Tensor(testScores)
             print(string.format("Results: mean: %.1f, std: %.1f, min: %.1f, max: %.1f",
-                test_scores:mean(), test_scores:std(), test_scores:min(), test_scores:max()))
+                testScores:mean(), testScores:std(), testScores:min(), testScores:max()))
 
             print("Saving the network weigths to:", model_savefile)
-            torch.save(opt.saveDir..'/model-'..epoch..'.net', model:float():clearState())
+            torch.save(opt.saveDir..'/model-cnn-dqn-'..epoch..'.net', model:float():clearState())
             
             print(string.format(colors.cyan.."Total elapsed time: %.2f minutes", sys.toc()/60.0))
         end
+    else
+        if opt.load == '' then print('Missing neural net file to load!') os.exit() end
+        model = torch.load(opt.load) -- otherwise load network to test!
     end
     
     game:close()
@@ -340,10 +348,10 @@ function main()
     for i = 1, opt.episodesWatch do
         game:newEpisode()
         while not game:isEpisodeFinished() do
-            local state = preprocess(game:getState().screenBuffer:float():div(255))
-            local best_action_index = getBestAction(state)
+            local state = preprocess(game:getState().screenBuffer)
+            local bestActionIndex = getBestAction(state)
 
-            game:makeAction(actions[best_action_index])
+            game:makeAction(actions[bestActionIndex])
             for j = 1, opt.frameRepeat do
                 game:advanceAction()
             end
