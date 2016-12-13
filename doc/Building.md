@@ -117,25 +117,15 @@ Users with brew-installed Python may need to manually set:
 ``-DPYTHON_LIBRARY=/usr/local/Cellar/python/2.x.x/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib``
 
 ####Configuration
-Creating symlink to the app executable may be needed:
+Create a symlink to the app executable:
 ``ln -sf vizdoom.app/Contents/MacOS/vizdoom bin/vizdoom``
 
 #### Torch7 lua bindings
 If you want to build against luajit installed locally by torch (as in http://torch.ch/docs/getting-started.html#_), please do:
 ```
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=OFF -DBUILD_LUA=ON -DLUA_EXECUTABLE=/Users/eugenioculurciello/torch/bin/luajit -DLUA_LIBRARIES=/Users/eugenioculurciello/torch/install/lib/libluajit.dylib -DLUA_INCLUDE_DIR=/Users/eugenioculurciello/torch/install/include/
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=OFF -DBUILD_LUA=ON -DLUA_EXECUTABLE=/Users/yourname/torch/bin/luajit -DLUA_LIBRARIES=/Users/yourname/torch/install/lib/libluajit.dylib -DLUA_INCLUDE_DIR=/Users/yourname/torch/install/include/
 ```
-Then manually copied folder: 
-
-/Users/eugenioculurciello/Desktop/ViZDoom/bin/lua/vizdoom
-
-to:
-
-/Users/eugenioculurciello/torch/install/lib/
-
-and
-
-/Users/eugenioculurciello/torch/install/share/lua/5.1 
+Then manually copied folder: `/Users/yourname/Desktop/ViZDoom/bin/lua/vizdoom` to: `/Users/yourname/torch/install/lib/` and `/Users/yourname/torch/install/share/lua/5.1`, provided Torch7 was installed in `~/torch` as by default.
 
 
 ## Compilation output
