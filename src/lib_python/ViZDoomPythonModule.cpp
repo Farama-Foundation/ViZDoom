@@ -67,7 +67,7 @@ EXCEPTION_TRANSLATE_TO_PYT(ViZDoomUnexpectedExitException)
 
 
 /* DoomGamePython methods with default parameters and methods overloads */
-/*------------------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------*/
 
 double (*doomFixedToDouble_int)(int) = &doomFixedToDouble;
 double (*doomFixedToDouble_double)(double) = &doomFixedToDouble;
@@ -104,6 +104,7 @@ BOOST_PYTHON_MODULE(vizdoom)
     bpy::scope().attr("__version__") = bpy::str(VIZDOOM_LIB_VERSION_STR);
 
     Py_Initialize();
+    //PyEval_InitThreads();
     init_numpy();
 
     /* Exceptions */
@@ -140,8 +141,8 @@ BOOST_PYTHON_MODULE(vizdoom)
     /* .def("function", &class::function) */
 
 
-    /* Enums */
-    /*------------------------------------------------------------------------------------------------------------*/
+    /* Consts */
+    /*----------------------------------------------------------------------------------------------------------------*/
 
     CONST_2_PYT(SLOT_COUNT);
     CONST_2_PYT(MAX_PLAYERS);
@@ -152,6 +153,10 @@ BOOST_PYTHON_MODULE(vizdoom)
     CONST_2_PYT(BINARY_BUTTON_COUNT);
     CONST_2_PYT(DELTA_BUTTON_COUNT);
     CONST_2_PYT(BUTTON_COUNT);
+
+
+    /* Enums */
+    /*----------------------------------------------------------------------------------------------------------------*/
 
     enum_<Mode>("Mode")
         ENUM_VAL_2_PYT(PLAYER)
@@ -380,16 +385,9 @@ BOOST_PYTHON_MODULE(vizdoom)
         ENUM_VAL_2_PYT(PLAYER7_FRAGCOUNT)
         ENUM_VAL_2_PYT(PLAYER8_FRAGCOUNT);
 
-    def("doom_tics_to_ms", doomTicsToMs);
-    def("ms_to_doom_tics", msToDoomTics);
-    def("doom_tics_to_sec", doomTicsToSec);
-    def("sec_to_doom_tics", secToDoomTics);
-    def("doom_fixed_to_double", doomFixedToDouble_int);
-    def("doom_fixed_to_double", doomFixedToDouble_double);
-    def("doom_fixed_to_float", doomFixedToDouble_int);
-    def("doom_fixed_to_float", doomFixedToDouble_double);
-    def("is_binary_button", isBinaryButton);
-    def("is_delta_button", isDeltaButton);
+
+    /* Structs */
+    /*----------------------------------------------------------------------------------------------------------------*/
 
     class_<LabelPython>("Label", no_init)
         .def_readonly("object_id", &LabelPython::objectId)
@@ -409,6 +407,10 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def_readonly("automap_buffer", &GameStatePython::automapBuffer)
 
         .def_readonly("labels", &GameStatePython::labels);
+
+
+    /* DoomGame */
+    /*----------------------------------------------------------------------------------------------------------------*/
 
     class_<DoomGamePython>("DoomGame", init<>())
         .def("init", &DoomGamePython::init)
@@ -510,5 +512,20 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def("get_screen_pitch", &DoomGamePython::getScreenPitch)
         .def("get_screen_format", &DoomGamePython::getScreenFormat)
         .def("set_window_visible", &DoomGamePython::setWindowVisible);
+
+
+    /* Utilities */
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    def("doom_tics_to_ms", doomTicsToMs);
+    def("ms_to_doom_tics", msToDoomTics);
+    def("doom_tics_to_sec", doomTicsToSec);
+    def("sec_to_doom_tics", secToDoomTics);
+    def("doom_fixed_to_double", doomFixedToDouble_int);
+    def("doom_fixed_to_double", doomFixedToDouble_double);
+    def("doom_fixed_to_float", doomFixedToDouble_int);
+    def("doom_fixed_to_float", doomFixedToDouble_double);
+    def("is_binary_button", isBinaryButton);
+    def("is_delta_button", isDeltaButton);
 
 }
