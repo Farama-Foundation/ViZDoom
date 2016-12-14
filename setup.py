@@ -50,11 +50,11 @@ setup(
     name='vizdoom',
     version='1.1.0rc1',
     description='Reinforcement learning platform based on Doom',
-    long_description="ViZDoom: Doom Reinforcement Learning Research Platform",
+    long_description="ViZDoom allows developing AI bots that play Doom using only the visual information (the screen buffer). " \
+                     "It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.",
     url='http://vizdoom.cs.put.edu.pl/',
     author='ViZDoom Team',
     author_email='vizdoom@googlegroups.com',
-    license='MIT',
 
     install_requires=['numpy'],
     setup_requires=['numpy'],
@@ -80,6 +80,6 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ],
-    keywords=['vizdoom ', 'doom', 'ai', 'deep learning', 'reinforcement learning', 'research']
+    keywords=['vizdoom', 'doom', 'ai', 'deep learning', 'reinforcement learning', 'research']
 
 )
