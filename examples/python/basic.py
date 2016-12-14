@@ -14,7 +14,6 @@
 from __future__ import print_function
 from vizdoom import *
 
-
 from random import choice
 from time import sleep
 
@@ -25,7 +24,6 @@ game = DoomGame()
 # load_config could be used to load configuration instead of doing it here with code.
 # If load_config is used in-code configuration will also work - most recent changes will add to previous ones.
 # game.load_config("../../scenarios/basic.cfg")
-
 
 # Sets path to additional resources wad file which is basically your scenario wad.
 # If not specified default maps will be used and it's pretty much useless... unless you want to play good old Doom.

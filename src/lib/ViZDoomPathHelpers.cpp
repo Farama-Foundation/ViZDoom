@@ -56,9 +56,9 @@ namespace vizdoom {
         return bfs::is_regular_file(path);
 
         //std::ifstream file(filePath);
-        //if (!file.good()) return false;
+        //bool exist = file.good();
         //file.close();
-        //return true;
+        //return exist;
     }
 
     std::string relativePath(std::string relativePath, std::string basePath) {
@@ -113,9 +113,10 @@ namespace vizdoom {
     std::string prepareExeFilePath(std::string filePath) {
         filePath = prepareFilePathArg(filePath);
 
-#ifdef OS_WIN
-        return checkFile(filePath, "exe");
-#else
+        #ifdef OS_WIN
+            return checkFile(filePath, "exe");
+        #else
+
         return checkFile(filePath);
 #endif
     }
@@ -133,17 +134,17 @@ namespace vizdoom {
     const int sharedObjectMarker = 0;
 
     std::string initializeThisSharedObjectPath() {
-#if defined (OS_LINUX) || defined (OS_OSX)
-        Dl_info dl_info;
-        dladdr(&sharedObjectMarker, &dl_info);
-        std::string this_shared_object_path = boost::filesystem::absolute(
-                dl_info.dli_fname).parent_path().generic_string();
-#elif defined(OS_WIN)
+        #if defined (OS_LINUX) || defined (OS_OSX)
+            Dl_info dl_info;
+            dladdr(&sharedObjectMarker, &dl_info);
+            std::string this_shared_object_path = boost::filesystem::absolute(
+                    dl_info.dli_fname).parent_path().generic_string();
+        #elif defined(OS_WIN)
         //TODO
-        std::string this_shared_object_path =".";
-#else
-        std::string this_shared_object_path = ".";
-#endif
+            std::string this_shared_object_path =".";
+        #else
+            std::string this_shared_object_path = ".";
+        #endif
         return this_shared_object_path;
     }
 

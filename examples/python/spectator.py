@@ -3,7 +3,7 @@
 #####################################################################
 # This script presents SPECTATOR mode. In SPECTATOR mode you play and
 # your agent can learn from it.
-# Configuration is loaded from "../../examples/config/<SCENARIO_NAME>.cfg" file.
+# Configuration is loaded from "../../scenarios/<SCENARIO_NAME>.cfg" file.
 # 
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################

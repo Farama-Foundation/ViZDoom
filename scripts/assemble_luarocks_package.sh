@@ -1,19 +1,8 @@
 #!/usr/bin/env bash
 
-PYTHON_VERSION=$1
-
-if [ $# -ne 1 ];then
-    echo "Exactly one argument required: python version = {2,3}. Aborting."
-    exit 1
-fi
-if [ $1 -ne 2 ] && [ $1 -ne 3 ];then
-    echo "Python version should be '2' or '3'. Aborting."
-    exit 2
-fi
-
-PACKAGE_DESTINATION_DIRECTORY="./bin/python${PYTHON_VERSION}"
-PACKAGE_DESTINATION_PATH="${PACKAGE_DESTINATION_DIRECTORY}/pip_package"
-PACKAGE_SOURCE="./src/lib_python/src_python"
+PACKAGE_DESTINATION_DIRECTORY="./bin/lua"
+PACKAGE_DESTINATION_PATH="${PACKAGE_DESTINATION_DIRECTORY}/luarocks_package"
+PACKAGE_SOURCE="./src/lib_lua/src_lua"
 if [ "$(uname)" == "Darwin" ]
 then
     VIZDOOM_EXEC_PATH="./bin/vizdoom.app/Contents/MacOS/vizdoom"
@@ -22,7 +11,7 @@ else
 fi
 
 PK3_PATH="./bin/vizdoom.pk3"
-PYTHON_BIN_PATH="${PACKAGE_DESTINATION_DIRECTORY}/vizdoom.so"
+PYTHON_BIN_PATH="${PACKAGE_DESTINATION_DIRECTORY}/vizdoom/vizdoom.so"
 FREEDOOM_PATH="./freedoom2.wad"
 SCENARIOS_DEST_DIR="${PACKAGE_DESTINATION_PATH}/scenarios"
 SCENARIOS_PATH="./scenarios"

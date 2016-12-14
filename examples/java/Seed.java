@@ -14,14 +14,14 @@ public class Seed {
         // Don't load two configs cause the second will overwrite the first one.
         // Multiple config files are ok but combining these ones doesn't make much sense.
 
-        //game.loadConfig("../../examples/config/deadly_corridor.cfg")
-        //game.loadConfig("../../examples/config/defend_the_center.cfg")
-        //game.loadConfig("../../examples/config/defend_the_line.cfg")
-        //game.loadConfig("../../examples/config/health_gathering.cfg")
-        //game.loadConfig("../../examples/config/my_way_home.cfg")
-        //game.loadConfig("../../examples/config/predict_position.cfg")
+        //game.loadConfig("../../scenarios/deadly_corridor.cfg")
+        //game.loadConfig("../../scenarios/defend_the_center.cfg")
+        //game.loadConfig("../../scenarios/defend_the_line.cfg")
+        //game.loadConfig("../../scenarios/health_gathering.cfg")
+        //game.loadConfig("../../scenarios/my_way_home.cfg")
+        //game.loadConfig("../../scenarios/predict_position.cfg")
 
-        game.loadConfig("../../examples/config/basic.cfg");
+        game.loadConfig("../../scenarios/basic.cfg");
         game.setViZDoomPath("../../bin/vizdoom");
 
         // Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".

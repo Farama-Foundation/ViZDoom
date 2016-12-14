@@ -14,8 +14,7 @@ local pool = threads.Threads(
     function()
         -- for some reason 'require' has an unexpected behavior when called
         -- from 'threads' to execute a module outside this director.
-        package.path = package.path .. ";./vizdoom/?.lua"
-        vizdoom = require "vizdoom.init"
+        require "vizdoom"
 
         actions = {
             [1] = torch.IntTensor({1,0,0}),
