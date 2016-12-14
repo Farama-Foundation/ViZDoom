@@ -28,6 +28,8 @@ iterations = 10000
 
 game = DoomGame()
 game.load_config("../../scenarios/basic.cfg")
+#game.add_game_args("-file ../../bin/textures.pk3 ../../scenarios/basic.wad")
+#game.add_game_args("-file ../../bin/textures.pk3 ../../scenarios/basic.wad")
 
 game.set_screen_resolution(resolution)
 game.set_screen_format(screen_format)

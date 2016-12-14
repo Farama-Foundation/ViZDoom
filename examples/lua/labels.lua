@@ -8,9 +8,7 @@
 -- To see the scenario description go to "../../scenarios/README.md"
 ----------------------------------------------------------------------
 
-package.path = package.path .. ";./vizdoom/?.lua"
-require "vizdoom.init"
-
+require "vizdoom"
 require "torch"
 require "image"
 

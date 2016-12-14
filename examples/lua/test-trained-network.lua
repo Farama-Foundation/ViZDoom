@@ -2,9 +2,9 @@
 -- December 2016
 -- test a trained deep Q learning neural network 
 
-local base_path="/Users/eugenioculurciello/Desktop/ViZDoom/"
-package.path = package.path .. ";"..base_path.."lua/vizdoom/?.lua"
-require 'vizdoom.init'
+local base_path = "../../" -- path to ViZDoom's root dir
+
+require "vizdoom"
 require 'nn'
 require 'image'
 

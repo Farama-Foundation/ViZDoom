@@ -11,9 +11,8 @@
 -- To see the scenario description go to "../../scenarios/README.md"
 ----------------------------------------------------------------------
 
-package.path = package.path .. ";./vizdoom/?.lua"
-require "vizdoom.init"
--- local vizdoom = require "vizdoom.init" is possible
+require "vizdoom"
+-- local vizdoom = require "vizdoom" is possible
 
 -- you may want to do this for convenience
 local Button = vizdoom.Button
@@ -31,10 +30,11 @@ local game = vizdoom.DoomGame()
 -- Now it's time for configuration!
 -- loadConfig could be used to load configuration instead of doing it here with code.
 -- If loadConfig is used in-code configuration will work. Note that the most recent changes will add to previous ones.
--- game.loadConfig("../../examples/config/basic.cfg")
+-- game.loadConfig("../../scenarios/basic.cfg")
 
 -- Sets path to ViZDoom engine executive which will be spawned as a separate process. Default is "./vizdoom".
-game:setViZDoomPath("../../bin/vizdoom")
+--game:setViZDoomPath("../../bin/vizdoom")
+game:setConsoleEnabled(true)
 
 -- Sets path to iwad resource file which contains the actual doom game. Default is "./doom2.wad".
 game:setDoomGamePath("../../scenarios/freedoom2.wad")

@@ -1,8 +1,6 @@
 #!/usr/bin/env th
 
-package.path = package.path .. ";./vizdoom/?.lua"
-require "vizdoom.init"
-
+require "vizdoom"
 require "torch"
 require "sys"
 
@@ -10,7 +8,7 @@ require "sys"
 local game = vizdoom.DoomGame()
 
 -- Use CIG example config or your own.
-game:loadConfig("../../examples/config/cig.cfg")
+game:loadConfig("../../scenarios/cig.cfg")
 
 -- Select game and map you want to use.
 game:setDoomGamePath("../../scenarios/freedoom2.wad")

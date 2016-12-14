@@ -14,8 +14,7 @@ local pool = threads.Threads(
     function()
         -- for some reason 'require' has an unexpected behavior when called
         -- from 'threads' to execute a module outside this director.
-        package.path = package.path .. ";./vizdoom/?.lua"
-        vizdoom = require "vizdoom.init"
+        require "vizdoom"
 
         actions = {
             [1] = torch.IntTensor({1,0,0}),
@@ -32,8 +31,7 @@ local pool = threads.Threads(
 
             -- Config
             game:loadConfig("../config/multi_duel.cfg")
-            game:addGameArgs("-host 2 -deathmatch "..
-                          "+timelimit 1.0 +sv_spawnfarthest 1")
+            game:addGameArgs("-host 2 -deathmatch +timelimit 1.0 +sv_spawnfarthest 1")
             game:addGameArgs("+name Player1 +colorset 0")
             game:init()
 
@@ -78,7 +76,7 @@ local pool = threads.Threads(
                      local reward = game:makeAction(action)
                  end
 
-                 print("Player1 frags:", game:getGameVariable(vizdoom.GameVariable.FRAGCOUNT))
+                 print("Player2 frags:", game:getGameVariable(vizdoom.GameVariable.FRAGCOUNT))
                  game:newEpisode()
             end
             game:close()
@@ -88,14 +86,12 @@ local pool = threads.Threads(
 
 pool:specific(true)
 
-pool:addjob(
-    1,
+pool:addjob(1,
     function()
         player1()
     end
 )
-pool:addjob(
-    2,
+pool:addjob(2,
     function()
         player2()
     end
@@ -103,4 +99,5 @@ pool:addjob(
 
 pool:synchronize()
 pool:terminate()
+
 print("Done")
