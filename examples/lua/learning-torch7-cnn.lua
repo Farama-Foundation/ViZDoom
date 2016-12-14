@@ -84,7 +84,7 @@ local function ReplayMemory(capacity)
     local channels = 1
     memory.s1 = torch.zeros(capacity, channels, resolution[1], resolution[2])
     memory.s2 = torch.zeros(capacity, channels, resolution[1], resolution[2])
-    memory.a = torch.zeros(capacity)
+    memory.a = torch.ones(capacity)
     memory.r = torch.zeros(capacity)
     memory.isterminal = torch.zeros(capacity)
 
@@ -95,11 +95,12 @@ local function ReplayMemory(capacity)
     -- batch buffers:
     memory.bs1 = torch.zeros(opt.batchSize, channels, resolution[1], resolution[2])
     memory.bs2 = torch.zeros(opt.batchSize, channels, resolution[1], resolution[2])
-    memory.ba = torch.zeros(opt.batchSize)
+    memory.ba = torch.ones(opt.batchSize)
     memory.br = torch.zeros(opt.batchSize)
     memory.bisterminal = torch.zeros(opt.batchSize)
 
     function memory.addTransition(s1, action, s2, isterminal, reward)
+        if memory.pos == 0 then memory.pos = 1 end -- tensors do not have 0 index items!
         memory.s1[{memory.pos, 1, {}, {}}] = s1
         memory.a[memory.pos] = action
         if not isterminal then
@@ -109,13 +110,12 @@ local function ReplayMemory(capacity)
         memory.r[memory.pos] = reward
 
         memory.pos = (memory.pos + 1) % memory.capacity
-        if memory.pos == 0 then memory.pos = 1 end -- to prevent issues!
         memory.size = math.min(memory.size + 1, memory.capacity)
     end
 
     function memory.getSample(sampleSize)
         for i=1,sampleSize do
-            local ri = torch.random(1, memory.size)
+            local ri = torch.random(1, memory.size-1)
             memory.bs1[i] = memory.s1[ri]
             memory.bs2[i] = memory.s2[ri]
             memory.ba[i] = memory.a[ri]
@@ -132,7 +132,7 @@ local sgdParams = {
 }
 
 local model, criterion
-function createNetwork(available_actions_count)
+local function createNetwork(nAvailableActions)
     -- create CNN model:
     model = nn.Sequential()
     model:add(nn.SpatialConvolution(1,8,6,6,3,3))
@@ -142,66 +142,61 @@ function createNetwork(available_actions_count)
     model:add(nn.View(8*4*6))
     model:add(nn.Linear(8*4*6, 128))
     model:add(nn.ReLU())
-    model:add(nn.Linear(128, available_actions_count))
+    model:add(nn.Linear(128, nAvailableActions))
 
     criterion = nn.MSECriterion()
-
-    local function functionLearn(s1, target_q)
-
-        local params, gradParams = model:getParameters()
-        
-        local function feval(x_new)
-            gradParams:zero()
-            local predictions = model:forward(s1)
-            local loss = criterion:forward(predictions, target_q)
-            local gradOutput = criterion:backward(predictions, target_q)
-            model:backward(s1, gradOutput)
-            return loss, gradParams
-        end
-
-        local _, fs = optim.rmsprop(feval, params, sgdParams)
-        return fs[1] -- loss
-    end
-
-    local function functionGetQValues(state)
-        return model:forward(state)
-    end
-
-    local function functionGetBestAction(state)
-        local q = functionGetQValues(state:float():reshape(1, 1, resolution[1], resolution[2]))
-        local max, index = torch.max(q, 1)
-        local action = index[1]
-        return action, q
-    end
-
-    return functionLearn, functionGetQValues, functionGetBestAction
 end
 
-function learnFromMemory()
+local function learnBatch(s1, target_q)
+
+    local params, gradParams = model:getParameters()
+    
+    local function feval(x_new)
+        gradParams:zero()
+        local predictions = model:forward(s1)
+        local loss = criterion:forward(predictions, target_q)
+        local gradOutput = criterion:backward(predictions, target_q)
+        model:backward(s1, gradOutput)
+        return loss, gradParams
+    end
+
+    local _, fs = optim.rmsprop(feval, params, sgdParams)
+    return fs[1] -- loss
+end
+
+local function getQValues(state)
+    return model:forward(state)
+end
+
+local function getBestAction(state)
+    local q = getQValues(state:float():reshape(1, 1, resolution[1], resolution[2]))
+    local max, index = torch.max(q, 1)
+    local action = index[1]
+    return action, q
+end
+
+local function learnFromMemory()
     -- Learns from a single transition (making use of replay memory)
     -- s2 is ignored if s2_isterminal
 
     -- Get a random minibatch from the replay memory and learns from it
     if memory.size > opt.batchSize then
         local s1, a, s2, isterminal, r = memory.getSample(opt.batchSize)
-        r = r:clamp(-1,1) -- NOTE: clamping of reward!
+        if opt.clampReward then r = r:clamp(-1,1)  end -- clamping of reward!
 
         local q2 = torch.max(getQValues(s2), 2) -- get max q for each sample of batch
         local target_q = getQValues(s1):clone()
-        local targetq0 = target_q:clone()
-
+     
         -- target differs from q only for the selected action. The following means:
         -- target_Q(s,a) = r + gamma * max Q(s2,_) if isterminal else r
         for i=1,opt.batchSize do
-            if a[i]>0  then 
-                target_q[i][a[i]] = r[i] + opt.discount * (1 - isterminal[i]) * q2[i] 
-            end
+            target_q[i][a[i]] = r[i] + opt.discount * (1 - isterminal[i]) * q2[i]
         end
-        learn(s1, target_q)
+        learnBatch(s1, target_q)
     end
 end
 
-function performLearningStep(epoch)
+local function performLearningStep(epoch)
     -- Makes an action according to eps-greedy policy, observes the result
     -- (next state, reward) and learns from the transition
 
@@ -248,7 +243,7 @@ function performLearningStep(epoch)
 end
 
 -- Creates and initializes ViZDoom environment:
-function initializeViZdoom(config_file_path)
+local function initializeViZdoom(config_file_path)
     print("Initializing doom...")
     game = vizdoom.DoomGame()
     game:setViZDoomPath(base_path.."bin/vizdoom")
@@ -263,7 +258,7 @@ function initializeViZdoom(config_file_path)
     return game
 end
 
-function main()
+local function main()
     -- Create Doom instance:
     local game = initializeViZdoom(config_file_path)
 
@@ -273,7 +268,7 @@ function main()
     -- Create replay memory which will store the play data:
     ReplayMemory(opt.maxMemory)
 
-    learn, getQValues, getBestAction = createNetwork(#actions) -- note: global functions!
+    createNetwork(#actions)
     
     print("Starting the training!")
 
@@ -326,7 +321,7 @@ function main()
             print(string.format("Results: mean: %.1f, std: %.1f, min: %.1f, max: %.1f",
                 testScores:mean(), testScores:std(), testScores:min(), testScores:max()))
 
-            print("Saving the network weigths to:", model_savefile)
+            print("Saving the network weigths to:", opt.saveDir)
             torch.save(opt.saveDir..'/model-cnn-dqn-'..epoch..'.net', model:float():clearState())
             
             print(string.format(colors.cyan.."Total elapsed time: %.2f minutes", sys.toc()/60.0))
