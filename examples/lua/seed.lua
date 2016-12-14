@@ -5,7 +5,7 @@
 -- This script presents how to run deterministic episodes by setting
 -- seed. After setting the seed every episode will look the same (if
 -- agent will behave deterministicly of course).
--- Config is loaded from "../../examples/config/<SCENARIO_NAME>.cfg" file.
+-- Config is loaded from "../../scenarios/<SCENARIO_NAME>.cfg" file.
 -- <episodes> number of episodes are played.
 -- Random combination of buttons is chosen for every action.
 
@@ -13,20 +13,18 @@
 -- To see the scenario description go to "../../scenarios/README.md"
 --------------------------------------------------------------------------------
 
-package.path = package.path .. ";./vizdoom/?.lua"
-require "vizdoom.init"
-
+require "vizdoom"
 require "torch"
 
 local game = vizdoom.DoomGame()
 
-game:loadConfig("../../examples/config/basic.cfg")
--- game:loadConfig("../../examples/config/deadly_corridor.cfg")
--- game:loadConfig("../../examples/config/defend_the_center.cfg")
--- game:loadConfig("../../examples/config/defend_the_line.cfg")
--- game:loadConfig("../../examples/config/health_gathering.cfg")
--- game:loadConfig("../../examples/config/my_way_home.cfg")
--- game:loadConfig("../../examples/config/predict_position.cfg")
+game:loadConfig("../../scenarios/basic.cfg")
+-- game:loadConfig("../../scenarios/deadly_corridor.cfg")
+-- game:loadConfig("../../scenarios/defend_the_center.cfg")
+-- game:loadConfig("../../scenarios/defend_the_line.cfg")
+-- game:loadConfig("../../scenarios/health_gathering.cfg")
+-- game:loadConfig("../../scenarios/my_way_home.cfg")
+-- game:loadConfig("../../scenarios/predict_position.cfg")
 
 -- Lets make episode shorter and observe starting position of Cacodemon.
 game:setEpisodeTimeout(50)

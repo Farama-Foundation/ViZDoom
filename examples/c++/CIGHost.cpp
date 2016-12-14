@@ -12,7 +12,7 @@ int main(){
     DoomGame* game = new DoomGame();
 
     // Use CIG example config or Your own.
-    game->loadConfig("../../examples/config/cig.cfg");
+    game->loadConfig("../../scenarios/cig.cfg");
 
     // Select game and map You want to use.
     game->setDoomGamePath("../../scenarios/freedoom2.wad");
