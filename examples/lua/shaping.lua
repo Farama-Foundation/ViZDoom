@@ -1,14 +1,12 @@
 #!/usr/bin/env th
 
-package.path = package.path .. ";./vizdoom/?.lua"
-require "vizdoom.init"
-
+require "vizdoom"
 require "torch"
 
 -- Create DoomGame instance. It will run the game and communicate with you.
 local game = vizdoom.DoomGame()
 
-game:loadConfig("../../examples/config/health_gathering.cfg")
+game:loadConfig("../../scenarios/health_gathering.cfg")
 game:setViZDoomPath("../../bin/vizdoom")
 
 game:setScreenResolution(vizdoom.ScreenResolution.RES_640X480)

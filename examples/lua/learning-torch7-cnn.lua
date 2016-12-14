@@ -7,9 +7,9 @@
 -- "th learning-torch7-cnn.lua" to train a neural network from scratch, and test it
 -- "th learning-torch7-cnn.lua --skipLearning" to only test a pre-trained neural network
 
-local base_path="/Users/eugenioculurciello/Desktop/ViZDoom/"
-package.path = package.path .. ";"..base_path.."lua/vizdoom/?.lua"
-require 'vizdoom.init'
+local base_path = "../../" -- path to ViZDoom's root dir
+
+require "vizdoom"
 require 'nn'
 require 'torch'
 require 'sys'

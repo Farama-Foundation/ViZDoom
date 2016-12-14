@@ -2,7 +2,7 @@
 
 ----------------------------------------------------------------------
 -- This script presents how to run some scenarios.
--- Configuration is loaded from "../../examples/config/<SCENARIO_NAME>.cfg" file.
+-- Configuration is loaded from "../../scenarios/<SCENARIO_NAME>.cfg" file.
 -- <episodes> number of episodes are played.
 -- Random combination of buttons is chosen for every action.
 -- Game variables from state and last reward are printed.
@@ -10,8 +10,7 @@
 -- To see the scenario description go to "../../scenarios/README.md"
 ----------------------------------------------------------------------
 
-package.path = package.path .. ";./vizdoom/?.lua"
-require "vizdoom.init"
+require "vizdoom"
 
 local game = vizdoom.DoomGame()
 
@@ -19,15 +18,15 @@ local game = vizdoom.DoomGame()
 -- Don't load two configs cause the second will overrite the first one.
 -- Multiple config files are ok but combining these ones doesn't make much sense.
 
-game:loadConfig("../../examples/config/basic.cfg")
---game:loadConfig("../../examples/config/deadly_corridor.cfg")
---game:loadConfig("../../examples/config/deathmatch.cfg")
---game:loadConfig("../../examples/config/defend_the_center.cfg")
---game:loadConfig("../../examples/config/defend_the_line.cfg")
---game:loadConfig("../../examples/config/health_gathering.cfg")
---game:loadConfig("../../examples/config/my_way_home.cfg")
---game:loadConfig("../../examples/config/predict_position.cfg")
---game:loadConfig("../../examples/config/take_cover.cfg")
+game:loadConfig("../../scenarios/basic.cfg")
+--game:loadConfig("../../scenarios/deadly_corridor.cfg")
+--game:loadConfig("../../scenarios/deathmatch.cfg")
+--game:loadConfig("../../scenarios/defend_the_center.cfg")
+--game:loadConfig("../../scenarios/defend_the_line.cfg")
+--game:loadConfig("../../scenarios/health_gathering.cfg")
+--game:loadConfig("../../scenarios/my_way_home.cfg")
+--game:loadConfig("../../scenarios/predict_position.cfg")
+--game:loadConfig("../../scenarios/take_cover.cfg")
 
 -- Makes the screen bigger to see more details.
 game:setScreenResolution(vizdoom.ScreenResolution.RES_640X480)

@@ -20,7 +20,7 @@ int main(){
     DoomGame *game = new DoomGame();
 
     // Health gathering scenario has scripted shaping reward.
-    game->loadConfig("../../examples/config/health_gathering.cfg");
+    game->loadConfig("../../scenarios/health_gathering.cfg");
 
     game->setScreenResolution(RES_640X480);
 

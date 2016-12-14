@@ -4,7 +4,7 @@
 # This script presents different buffers and formats.
 # OpenCV is used here to display images, install it or remove any
 # references to cv2
-# Configuration is loaded from "../../examples/config/basic.cfg" file.
+# Configuration is loaded from "../../scenarios/basic.cfg" file.
 # <episodes> number of episodes are played.
 # Random combination of buttons is chosen for every action.
 #
