@@ -117,8 +117,6 @@ Users with brew-installed Python may need to manually set:
 ``-DPYTHON_LIBRARY=/usr/local/Cellar/python/2.x.x/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib``
 
 ####Configuration
-Create a symlink to the app executable:
-``ln -sf vizdoom.app/Contents/MacOS/vizdoom bin/vizdoom``
 
 #### Torch7 lua bindings
 If you want to build against luajit installed locally by torch (as in http://torch.ch/docs/getting-started.html#_), please do:
@@ -135,7 +133,7 @@ Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should cont
 * ``bin/vizdoom.pk3`` - resources file used by ViZDoom (needed by ViZDoom executable)
 * ``bin/libvizdoom.a / vizdoom.lib`` - C++ ViZDoom static library
 * ``bin/libvizdoom.so / vizdoom.dll`` -  C++ ViZDoom dynamically linked library
-* ``bin/python/vizdoom.so / vizdoom.pyd`` - ViZDoom Python module
+* ``bin/python2/vizdoom.so / vizdoom.pyd`` - ViZDoom Python module
 * ``bin/python3/vizdoom.so / vizdoom.pyd`` - ViZDoom Python3 module
 * ``bin/java/libvizdoom.so / vizdoom.dll`` -  ViZDoom library for Java
 * ``bin/java/vizdoom.jar`` -  Contains ViZDoom Java classes
