@@ -11,7 +11,7 @@ if [ ! -e  "${FREEDOOM_DESTINATION_PATH}/freedoom2.wad" ]
 then 
 	if [ ! -e "${FREEDOOM_DOWNLOAD_PATH}/freedoom-0.10.1.zip" ]
 	then
-		wget ${FREEDOOM_LINK} -P ${FREEDOOM_DOWNLOAD_PATH}
+		wget --no-check-certificate ${FREEDOOM_LINK} -P ${FREEDOOM_DOWNLOAD_PATH}
 	fi
 	unzip -j -d ${FREEDOOM_DESTINATION_PATH} ${FREEDOOM_DOWNLOAD_PATH}/freedoom-0.10.1.zip freedoom-0.10.1/freedoom2.wad
 fi
