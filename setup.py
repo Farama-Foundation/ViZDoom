@@ -3,6 +3,8 @@ import sys
 import subprocess
 from distutils.command.build import build
 from setuptools import setup
+import os
+from distutils import sysconfig
 
 python_version = str(sys.version_info[0])
 package_path = 'bin/python' + python_version + '/pip_package'
@@ -10,9 +12,12 @@ package_assembly_script = 'scripts/assemble_pip_package.sh'
 supported_platforms = ["Linux", "Mac OS-X"]
 
 if sys.platform.startswith("win"):
-    supported_platforms = ["Linux", "Mac OS-X"]
     raise RuntimeError("Building pip package on Windows is not currently available ...")
-elif not sys.platform.startswith("darwin") and not sys.platform.startswith("linux"):
+elif sys.platform.startswith("darwin"):
+    dynamic_library_extension = "dylib"
+elif sys.platform.startswith("linux"):
+    dynamic_library_extension = "so"
+else:
     raise RuntimeError("Unrecognized platform: {}".format(sys.platform))
 
 # TODO: make it run only when install/build is issued
@@ -23,10 +28,15 @@ class BuildCommand(build):
     def run(self):
         try:
             cpu_cores = max(1, multiprocessing.cpu_count() - 1)
-
+            python_library = os.path.join(sysconfig.get_config_var('LIBPL'),
+                                          'libpython{}.{}'.format(sysconfig.get_python_version(),
+                                                                  dynamic_library_extension))
+            python_include_dir = sysconfig.get_python_inc()
             cmake_arg_list = list()
             cmake_arg_list.append("-DCMAKE_BUILD_TYPE=Release")
             cmake_arg_list.append("-DBUILD_PYTHON=ON")
+            cmake_arg_list.append('-DPYTHON_LIBRARY={}'.format(python_library))
+            cmake_arg_list.append('-DPYTHON_INCLUDE_DIR={}'.format(python_include_dir))
             if python_version == "3":
                 cmake_arg_list.append("-DBUILD_PYTHON3=ON")
             else:
@@ -48,7 +58,7 @@ class BuildCommand(build):
 
 setup(
     name='vizdoom',
-    version='1.1.0rc1',
+    version='1.1.0rc4',
     description='Reinforcement learning platform based on Doom',
     long_description="ViZDoom allows developing AI bots that play Doom using only the visual information (the screen buffer). " \
                      "It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.",
