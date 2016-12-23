@@ -76,7 +76,7 @@ namespace vizdoom {
                 // We can end up with ..s in our result because of symbolic links
                 if (boost::filesystem::is_symlink(normalizedPath)) normalizedPath /= *i;
                 
-				// Otherwise it should be safe to resolve the parent
+                // Otherwise it should be safe to resolve the parent
                 else if (normalizedPath.filename() == ".." || normalizedPath.filename() == "") normalizedPath /= *i;
                 else normalizedPath = normalizedPath.parent_path();
             } else if (*i != ".") normalizedPath /= *i;
@@ -152,8 +152,8 @@ namespace vizdoom {
 			std::string thisObjectPath = ".";
         #endif
 
-		thisObjectPath = boost::filesystem::absolute(thisObjectPath).parent_path().generic_string();
-		return thisObjectPath;
+        thisObjectPath = boost::filesystem::absolute(thisObjectPath).parent_path().generic_string();
+        return thisObjectPath;
     }
 
     std::string THIS_SHARED_OBJECT_PATH = initializeThisSharedObjectPath();

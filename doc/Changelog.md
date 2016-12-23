@@ -20,7 +20,7 @@
 
 - The option to use minimal hud instead of default full hud - `setRenderMinimalHud` added.
 - The option to enable/disable effects that use sprites - `setRenderEffectsSprites` added.
-- The option to enable/disable ingame messages independently of the console output - `setRenderMessages` added.
+- The option to enable/disable in game messages independently of the console output - `setRenderMessages` added.
 - The option to enable/disable corpses - `setRenderCorpses` added.
 
 
@@ -37,6 +37,7 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 - New `ticrate` optional argument in `doomTicsToMs`, `msToDoomTics`.
 - `doomTicsToSec` and `secToDoomTics` added.
 
+
 #### Paths
 
 - **Paths in config files are now relative to config file.**
@@ -45,13 +46,12 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 
 #### Others
 
-- ZDoom engine updated to 2.8.1
+- ZDoom engine updated to 2.8.1.
 - **Basic support for multiplayer in PLAYER and SPECTATOR Modes.**
 - Improved exceptions messages.
 - Bugs associated with paths handling fixed.
 - Many minor bugs fixed.
-- Python bindings output changed to bin/python2 and bin/python3. 
-- Possibility to change scenario wad during runtime (limited functionality)
+- Possibility to change scenario wad during runtime (only first map from WAD file).
 
 
 #### C++ specific
@@ -80,7 +80,7 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 
 - Consts added to Python.
 - Aliases for `doom_fixed_to_double` - `doom_fixed_to_float` added.
-- Support for pip installation for Linux and Windows.
+- Support for pip installation for Linux, MacOS.
 
 
 
