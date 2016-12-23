@@ -126,7 +126,8 @@ int (*_I_WaitForTic)(int);
 void (*_I_FreezeTime)(bool);
 
 int VIZ_GetTime(bool saveMS){
-    if(saveMS) vizSavedTime = vizTime;
+    //if (*viz_allow_input) _I_GetTim(saveMS);
+    //if(saveMS) vizSavedTime = vizTime;
     return vizTime;
 }
 
@@ -137,6 +138,7 @@ int VIZ_WaitForTic(int tic){
 }
 
 void VIZ_FreezeTime (bool frozen){
+    //if (*viz_allow_input) _I_FreezeTime(frozen);
     vizFreeze = frozen;
 }
 
@@ -167,8 +169,6 @@ void VIZ_Init(){
             I_WaitForTic = &VIZ_WaitForTic;
             I_FreezeTime = &VIZ_FreezeTime;
         }
-
-        //for(size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) vizNodesRecv[i] = 0;
     }
 }
 
@@ -213,7 +213,6 @@ void VIZ_Tic(){
         if(!*viz_async){
             VIZ_MQTic();
             VIZ_InputTic();
-            if(*viz_allow_input) VIZ_WaitForTic(vizTime);
             ++vizTime;
         }
     }
