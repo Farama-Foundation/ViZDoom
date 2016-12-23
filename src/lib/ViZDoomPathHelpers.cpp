@@ -29,11 +29,11 @@
 #include <iostream>
 
 #if defined (OS_LINUX) || defined (OS_OSX)
-
-#include <dlfcn.h> // for getting current shared object path
-
+	#include <dlfcn.h>
+	const int objectMarker = 0;
 #elif defined(OS_WIN)
-//TODO -add windows' equivalent of <dlfcn.h>
+    #include <Windows.h>
+    EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 #endif
 
 namespace vizdoom {
@@ -75,7 +75,8 @@ namespace vizdoom {
                 // /a/b/../.. is not /a/b/.. under most circumstances
                 // We can end up with ..s in our result because of symbolic links
                 if (boost::filesystem::is_symlink(normalizedPath)) normalizedPath /= *i;
-                    // Otherwise it should be safe to resolve the parent
+                
+				// Otherwise it should be safe to resolve the parent
                 else if (normalizedPath.filename() == ".." || normalizedPath.filename() == "") normalizedPath /= *i;
                 else normalizedPath = normalizedPath.parent_path();
             } else if (*i != ".") normalizedPath /= *i;
@@ -131,29 +132,34 @@ namespace vizdoom {
         return prepareFilePathCmd(filePath);
     }
 
-    const int sharedObjectMarker = 0;
-
     std::string initializeThisSharedObjectPath() {
         #if defined (OS_LINUX) || defined (OS_OSX)
-            Dl_info dl_info;
-            dladdr(&sharedObjectMarker, &dl_info);
-            std::string this_shared_object_path = boost::filesystem::absolute(
-                    dl_info.dli_fname).parent_path().generic_string();
+            Dl_info dlInfo;
+            dladdr(&objectMarker, &dlInfo);
+            std::string thisObjectPath = std::string(dlInfo.dli_fname);
         #elif defined(OS_WIN)
-        //TODO
-            std::string this_shared_object_path =".";
-        #else
-            std::string this_shared_object_path = ".";
-        #endif
-        return this_shared_object_path;
-    }
+            char path[MAX_PATH];
+            HMODULE hm = NULL;
 
+            if (!GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, 
+                (LPCSTR)&initializeThisSharedObjectPath, &hm)){
+                HMODULE hm = (HINSTANCE)&__ImageBase;
+            }
+
+            GetModuleFileNameA(hm, path, sizeof(path));
+            std::string thisObjectPath = std::string(path);
+        #else
+			std::string thisObjectPath = ".";
+        #endif
+
+		thisObjectPath = boost::filesystem::absolute(thisObjectPath).parent_path().generic_string();
+		return thisObjectPath;
+    }
 
     std::string THIS_SHARED_OBJECT_PATH = initializeThisSharedObjectPath();
 
     std::string getThisSharedObjectPath() {
         return THIS_SHARED_OBJECT_PATH;
-
     }
 
 }
