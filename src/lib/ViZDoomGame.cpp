@@ -58,7 +58,7 @@ namespace vizdoom {
     bool DoomGame::init() {
         if (!this->isRunning()) {
 
-            std::string cfgOverrideFile = "_vizdoom.cfg";
+            std::string cfgOverrideFile = "./_vizdoom.cfg";
             if (fileExists(cfgOverrideFile)) loadConfig(cfgOverrideFile);
 
             this->lastAction.resize(this->availableButtons.size());
