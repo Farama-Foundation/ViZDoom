@@ -168,25 +168,17 @@ namespace vizdoom {
 
     public:
         SharedMemory(std::string name);
-
         ~SharedMemory();
 
         void init();
-
         void update();
-
         void close();
 
         SMGameState *getGameState();
-
         SMInputState *getInputState();
-
         uint8_t *getScreenBuffer();
-
         uint8_t *getDepthBuffer();
-
         uint8_t *getLabelsBuffer();
-
         uint8_t *getAutomapBuffer();
 
     private:

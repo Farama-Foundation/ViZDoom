@@ -113,17 +113,19 @@ Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS
 Run CMake and use generated project.
 
 Users with brew-installed Python may need to manually set:
-``-DPYTHON_INCLUDE_DIR=/usr/local/Cellar/python/2.x.x/Frameworks/Python.framework/Versions/2.7/include/python2.7`` and 
-``-DPYTHON_LIBRARY=/usr/local/Cellar/python/2.x.x/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib``
+``-DPYTHON_INCLUDE_DIR=/usr/local/Cellar/python/x.x.x/Frameworks/Python.framework/Versions/x.x/include/pythonx.x`` and 
+``-DPYTHON_LIBRARY=/usr/local/Cellar/python/x.x.x/Frameworks/Python.framework/Versions/x.x/lib/libpythonx.x.dylib``
 
 ####Configuration
 
 #### Torch7 lua bindings
-If you want to build against luajit installed locally by torch (as in http://torch.ch/docs/getting-started.html#_), please do:
+If you want to build against luajit installed locally by torch (as in http://torch.ch/docs/getting-started.html#_):
 ```
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=OFF -DBUILD_LUA=ON -DLUA_EXECUTABLE=/Users/yourname/torch/bin/luajit -DLUA_LIBRARIES=/Users/yourname/torch/install/lib/libluajit.dylib -DLUA_INCLUDE_DIR=/Users/yourname/torch/install/include/
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=OFF -DBUILD_LUA=ON -DLUA_EXECUTABLE=torch_root_dir/bin/luajit -DLUA_LIBRARIES=torch_root_dir/install/lib/libluajit.so/dylib -DLUA_INCLUDE_DIR=torch_root_dir/install/include/
 ```
-Then manually copied folder: `/Users/yourname/Desktop/ViZDoom/bin/lua/vizdoom` to: `/Users/yourname/torch/install/lib/` and `/Users/yourname/torch/install/share/lua/5.1`, provided Torch7 was installed in `~/torch` as by default.
+
+Manual instalation: 
+Copy folder: `vizdoom_root_dir/bin/lua/vizdoom` to: `torch_root_dir/install/lib/` and `torch_root_dir/install/share/lua/5.1`.
 
 
 ## Compilation output
@@ -132,9 +134,9 @@ Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should cont
 * ``bin/vizdoom / vizdoom.exe`` - ViZDoom executable
 * ``bin/vizdoom.pk3`` - resources file used by ViZDoom (needed by ViZDoom executable)
 * ``bin/libvizdoom.a / vizdoom.lib`` - C++ ViZDoom static library
-* ``bin/libvizdoom.so / vizdoom.dll`` -  C++ ViZDoom dynamically linked library
-* ``bin/python2/vizdoom.so / vizdoom.pyd`` - ViZDoom Python module
-* ``bin/python3/vizdoom.so / vizdoom.pyd`` - ViZDoom Python3 module
-* ``bin/java/libvizdoom.so / vizdoom.dll`` -  ViZDoom library for Java
+* ``bin/libvizdoom.so / libvizdoom.dylib / vizdoom.dll`` -  C++ ViZDoom dynamically linked library
+* ``bin/python2/vizdoom.so / vizdoom.dylib / vizdoom.pyd`` - ViZDoom Python module
+* ``bin/python3/vizdoom.so / vizdoom.dylib /  vizdoom.pyd`` - ViZDoom Python3 module
+* ``bin/java/libvizdoom.so / libvizdoom.dylib / vizdoom.dll`` -  ViZDoom library for Java
 * ``bin/java/vizdoom.jar`` -  Contains ViZDoom Java classes
-* ``bin/lua/vizdoom.so / vizdoom.dll`` - ViZDoom Lua module
+* ``bin/lua/vizdoom`` - ViZDoom Lua module
