@@ -84,8 +84,10 @@ game.set_living_reward(-1)
 # Sets ViZDoom mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR, PLAYER mode is default)
 game.set_mode(Mode.PLAYER)
 
+# Enables engine output to console.
+#game.set_console_enabled(True)
+
 # Initialize the game. Further configuration won't take any effect from now on.
-# game.set_console_enabled(True)
 game.init()
 
 # Define some actions. Each list entry corresponds to declared buttons:
