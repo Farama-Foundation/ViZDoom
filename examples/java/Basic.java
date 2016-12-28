@@ -74,6 +74,9 @@ public class Basic {
         // Sets ViZDoom mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR, PLAYER mode is default)
         game.setMode(Mode.PLAYER);
 
+        // Enables engine output to console.
+        //game.setConsoleEnabled(true);
+
         // Initialize the game. Further configuration won't take any effect from now on.
         game.init();
 
