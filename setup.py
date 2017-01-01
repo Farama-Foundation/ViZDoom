@@ -45,7 +45,6 @@ class BuildCommand(build):
             subprocess.check_call(['rm', '-f', 'CMakeCache.txt'])
             subprocess.check_call(['cmake'] + cmake_arg_list)
             subprocess.check_call(['make', '-j', str(cpu_cores)])
-            subprocess.check_call([package_assembly_script, python_version])
         except subprocess.CalledProcessError:
             sys.stderr.write(
                 "\033[1m" + "\nInstallation failed, you may be missing some dependencies. "
