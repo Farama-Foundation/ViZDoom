@@ -43,6 +43,8 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 
 ## Installation/Building instructions
 
+- [PyPI (pip)](doc/Building.md#pypi)
+- [LuaRocks](doc/Building.md#luarocks)
 - [Linux](doc/Building.md#linux)
 - [Windows](doc/Building.md#windows)
 - [OSX](doc/Building.md#osx)

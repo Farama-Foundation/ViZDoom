@@ -1,10 +1,10 @@
-# Installation from pip (recommended for python users)
+## <a name="pypi"></a> Installation from PyPI (recommended for Python users)
 
-ViZDoom for python can be installed via **pip** on Linux and Mac and it is strongly recommended. However you will still need to install the  **[dependencies](#linux_deps)**. Without pip installation you need to have vizdoom.so in the execution directory and specify paths to vizdoom and freedoom2.wad manually which is quite annoying.
+ViZDoom for Python can be installed via **pip** on Linux and MacOS and it is strongly recommended. However you will still need to install the  **[dependencies](#linux_deps)**. Without pip installation you need to have vizdoom.so in the execution directory and specify paths to vizdoom and freedoom2.wad manually which is quite annoying.
 
 >>> Pip installation is not supported on Windows at the moment but soon it will.
 
-To install the most stable official release from [PyPi](https://pypi.python.org/pypi):
+To install the most stable official release from [PyPI](https://pypi.python.org/pypi):
 ```bash
 # use pip3 for python3
 sudo pip install vizdoom
@@ -21,6 +21,22 @@ Or without cloning yourself:
 # use pip3 for python3
 sudo pip install git+https://github.com/Marqt/ViZDoom
 ```
+
+## <a name="luarocks"></a> Installation from LuaRocks (recommended for Torch7 users)
+
+ViZDoom for Python can be installed via **luarocks** on Linux and MacOS and it is strongly recommended. However you will still need to install the  **[dependencies](#linux_deps)**.
+
+To install the most stable official release from [LuaRocks](https://pypi.python.org/pypi):
+```bash
+luarocks install vizdoom
+```
+To install newest version from the repository:
+```bash
+git clone https://github.com/Marqt/ViZDoom
+cd ViZDoom
+luarocks make
+```
+
 # Building
 
 - [Linux](#linux)
@@ -118,14 +134,15 @@ Users with brew-installed Python may need to manually set:
 
 ####Configuration
 
-#### Torch7 lua bindings
-If you want to build against luajit installed locally by torch (as in http://torch.ch/docs/getting-started.html#_):
+#### Torch7 Lua bindings
+If you want to build against LuaJIT installed locally by Torch (as in http://torch.ch/docs/getting-started.html#_):
 ```
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=OFF -DBUILD_LUA=ON -DLUA_EXECUTABLE=torch_root_dir/bin/luajit -DLUA_LIBRARIES=torch_root_dir/install/lib/libluajit.so/dylib -DLUA_INCLUDE_DIR=torch_root_dir/install/include/
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=OFF -DBUILD_LUA=ON -DLUA_LIBRARIES=torch_root_dir/install/lib/libluajit.so/dylib -DLUA_INCLUDE_DIR=torch_root_dir/install/include/
 ```
 
-Manual instalation: 
-Copy folder: `vizdoom_root_dir/bin/lua/vizdoom` to: `torch_root_dir/install/lib/` and `torch_root_dir/install/share/lua/5.1`.
+Manual installation: 
+Copy `vizdoom_root_dir/bin/lua/luarocks_package` contents to `torch_root_dir/install/lib/lua/5.1/vizdoom` 
+and `vizdoom_root_dir/bin/lua/luarocks_shared_package` contents to `torch_root_dir/install/share/lua/5.1/vizdoom`.
 
 
 ## Compilation output
