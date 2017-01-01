@@ -3,7 +3,7 @@ version = "1.1.0-0"
 
 source = {
     url = "git://github.com/Marqt/ViZDoom",
-    tag = "1.1.0"
+    tag = "1.1.0-luarocks"
 }
 
 description = {
