@@ -208,7 +208,7 @@ if (BUILD_PYTHON AND (NOT BUILD_PYTHON3))
     if (UNIX)
         add_custom_command(TARGET libvizdoom_python
                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh 2
-                COMMENT "Assembling pip package in bin/lua")
+                COMMENT "Assembling pip package in ${VIZDOOM_PYTHON2_OUTPUT_DIR}/pip_package")
     endif ()
 
 endif ()
@@ -283,7 +283,7 @@ if (BUILD_PYTHON3)
     if (UNIX)
         add_custom_command(TARGET libvizdoom_python3
                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh 3
-                COMMENT "Assembling pip package in bin/lua")
+                COMMENT "Assembling pip package in ${VIZDOOM_PYTHON3_OUTPUT_DIR}/pip_package")
     endif ()
 
 
