@@ -47,6 +47,7 @@ examples/python/*.ini
 examples/lua/*.cfg
 examples/lua/*.ini
 examples/lua/vizdoom
+vizdoom-1.1.0-1.src.rock
 
 # Java
 *.jar
