@@ -57,7 +57,7 @@ class BuildCommand(build):
 
 setup(
     name='vizdoom',
-    version='1.1.0rc4',
+    version='1.1.0',
     description='Reinforcement learning platform based on Doom',
     long_description="ViZDoom allows developing AI bots that play Doom using only the visual information (the screen buffer). " \
                      "It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.",
@@ -78,10 +78,10 @@ setup(
         # Development Status :: 2 - Pre-Alpha
         # Development Status :: 3 - Alpha
         # Development Status :: 4 - Beta
-        # Development Status :: 5 - Production/Stable
+        'Development Status :: 5 - Production/Stable',
         # Development Status :: 6 - Mature
         # Development Status :: 7 - Inactive
-        'Development Status :: 4 - Beta',
+        # 'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'License :: OSI Approved :: MIT License',
