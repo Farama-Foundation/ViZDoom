@@ -1,4 +1,4 @@
-#ViZDoom [![Build Status](https://travis-ci.org/Marqt/ViZDoom.svg?branch=master)](https://travis-ci.org/Marqt/ViZDoom)
+#ViZDoom
 [http://vizdoom.cs.put.edu.pl](http://vizdoom.cs.put.edu.pl)
 
 ViZDoom allows developing AI **bots that play Doom using only the visual information** (the screen buffer). It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.
@@ -41,40 +41,6 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 }
 ```
 
-## Installation/Building instructions
-
-- [PyPI (pip)](doc/Building.md#pypi)
-- [LuaRocks](doc/Building.md#luarocks)
-- [Linux](doc/Building.md#linux)
-- [Windows](doc/Building.md#windows)
-- [MacOS/OSX](doc/Building.md#osx)
-
-
-## Windows build
-For Windows we are providing compiled runtime binaries and development libraries:
-
-### [1.1.0](https://github.com/Marqt/ViZDoom/releases/tag/1.1.0) (2016-12-23):
-- [Python 2.7 (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Python27-x86_64.zip)
-- [Python 3.4 (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Python34-x86_64.zip)
-- [Python 3.5 (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Python35-x86_64.zip)
-- [Lua 5.1 & LuaJIT (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Lua51-LuaJIT-x86_64.zip)
-- [Java (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Java-x86_64.zip)
-
-
-## Examples
-
-Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed it in the ``scenarios`` subdirectory (on Linux it should be done automatically by the building process):
-
-- [Python](examples/python)
-- [C++](examples/c%2B%2B)
-- [Lua](examples/lua)
-- [Java](examples/java)
-
-Python examples are currently the richest, so we recommend to look at them, even if you plan to use other language.
-
-**See also the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial).**
-
-
 ## Documentation
 
 Detailed description of all types and methods:
@@ -86,8 +52,3 @@ Detailed description of all types and methods:
 - [Utilities](doc/Utilities.md)
 
 [Changelog](doc/Changelog.md) for 1.1.0 version.
-
-
-## License
-
-Code original to ViZDoom is under MIT license. ZDoom uses code from several sources with [varying licensing schemes](http://zdoom.org/wiki/license).
