@@ -63,18 +63,18 @@ for i = 1, episodes do
     -- Play until the game (episode) is over.
     while not game:isEpisodeFinished() do
 
-        if game:isPlayerDead() then
-            -- Respawn immediately after death, new state will be available.
-            sys.sleep(4)
-            game:respawnPlayer()
-        end
-
         -- Analyze the state
         state = game:getState()
 
         -- Make a random action
         local action = actions[torch.random(#actions)]
         reward = game:makeAction(action)
+
+        -- Check if player is dead
+        if game:isPlayerDead() then
+            -- Respawn immediately after death, new state will be available.
+            game:respawnPlayer()
+        end
 
         print("Frags:", game:getGameVariable(vizdoom.GameVariable.FRAGCOUNT))
     end

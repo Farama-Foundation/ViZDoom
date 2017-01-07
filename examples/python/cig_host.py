@@ -38,19 +38,16 @@ actions = [[1,0,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0]]
 # Play until the game (episode) is over.
 while not game.is_episode_finished():
 
-    if game.is_player_dead():
-        # Use this to respawn immediately after death, new state will be available.
-        game.respawn_player()
-
-        # Or observe the game until automatic respawn.
-        #game.advance_action();
-        #continue;
-
     s = game.get_state()
     # Analyze the state.
 
     game.make_action(choice(actions))
     # Make your action.
+
+    # Check if player is dead
+    if game.is_player_dead():
+        # Use this to respawn immediately after death, new state will be available.
+        game.respawn_player()
 
     print("Frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
 
