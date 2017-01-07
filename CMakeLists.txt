@@ -21,7 +21,6 @@ option(BUILD_JAVA "Build ViZDoom Java binding." OFF)
 
 # CMake options
 #-----------------------------------------------------------------------------------------------------------------------
-
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 if (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
@@ -36,6 +35,7 @@ set(CMAKE_MODULE_PATH
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif ()
+
 
 # System dependent settings
 #-----------------------------------------------------------------------------------------------------------------------
@@ -202,13 +202,17 @@ if (BUILD_PYTHON AND (NOT BUILD_PYTHON3))
             OUTPUT_NAME vizdoom
             PROJECT_LABEL "Python 2 binding")
 
+    # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
+    add_dependencies(libvizdoom_python vizdoom pk3 freedoom2)
+
     if (UNIX)
         add_custom_command(TARGET libvizdoom_python
                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh 2
-                COMMENT "Assembling pip package in bin/lua")
+                COMMENT "Assembling pip package in ${VIZDOOM_PYTHON2_OUTPUT_DIR}/pip_package")
     endif ()
 
 endif ()
+
 
 if (BUILD_PYTHON3)
 
@@ -263,7 +267,6 @@ if (BUILD_PYTHON3)
     python_add_module(libvizdoom_python3 ${VIZDOOM_PYTHON_SOURCES})
     target_link_libraries(libvizdoom_python3 ${VIZDOOM_PYTHON3_LIBS} libvizdoom_static)
 
-
     set_target_properties(libvizdoom_python3
             PROPERTIES
             LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_PYTHON3_OUTPUT_DIR}
@@ -274,10 +277,13 @@ if (BUILD_PYTHON3)
             OUTPUT_NAME vizdoom
             PROJECT_LABEL "Python 3 binding")
 
+    # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
+    add_dependencies(libvizdoom_python3 vizdoom pk3 freedoom2)
+
     if (UNIX)
         add_custom_command(TARGET libvizdoom_python3
                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh 3
-                COMMENT "Assembling pip package in bin/lua")
+                COMMENT "Assembling pip package in ${VIZDOOM_PYTHON3_OUTPUT_DIR}/pip_package")
     endif ()
 
 
@@ -332,6 +338,9 @@ if (BUILD_LUA AND (NOT BUILD_LUA52))
             LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_LUA_OUTPUT_DIR}
             OUTPUT_NAME vizdoom
             PROJECT_LABEL "Lua binding")
+
+    # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
+    add_dependencies(libvizdoom_lua vizdoom pk3 freedoom2)
 
     if (UNIX)
         add_custom_command(TARGET libvizdoom_lua
@@ -431,15 +440,6 @@ endif ()
 
 # Freedoom 2 download
 #-----------------------------------------------------------------------------------------------------------------------
-
-#if( WIN32 )
-#	if(NOT EXISTS "${PROJECT_SOURCE_DIR}/scenarios/freedoom.zip")
-#		message("-- Downloading Freedoom WADs")
-#		message("-- Original Doom WADs can not be provided due to licences")
-#
-#		file( DOWNLOAD https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip ${PROJECT_SOURCE_DIR}/scenarios/freedoom.zip SHOW_PROGRESS )
-#	endif()
-#endif()
 
 if (UNIX)
     add_custom_target(freedoom2 ALL
