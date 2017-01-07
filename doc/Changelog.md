@@ -66,6 +66,7 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 #### Lua specific
 
 - Lua binding added.
+- Support for LuaRocks installation for Linux and MacOS.
 
 
 #### Java specific
