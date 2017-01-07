@@ -39,15 +39,7 @@ int main(){
     game->setMode(ASYNC_PLAYER);
     game->init();
 
-    while(!game->isEpisodeFinished()){          // Play until the game (episode) is over.
-
-        if(game->isPlayerDead()){
-            game->respawnPlayer();              // Use this to respawn immediately after death, new state will be available.
-
-            // Or observe the game until automatic respawn.
-            //game->advanceAction();
-            //continue;
-        }
+    while(!game->isEpisodeFinished()){      // Play until the game (episode) is over.
 
         GameStatePtr state = game->getState();
         // Analyze the state.
@@ -56,6 +48,10 @@ int main(){
         // Set your action.
 
         game->makeAction(action);
+
+        if(game->isPlayerDead()){           // Check if player is dead
+            game->respawnPlayer();          // Use this to respawn immediately after death, new state will be available.
+        }
 
         std::cout << game->getEpisodeTime() << " Frags: " << game->getGameVariable(FRAGCOUNT) << std::endl;
     }

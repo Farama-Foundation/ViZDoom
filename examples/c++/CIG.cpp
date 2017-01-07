@@ -22,7 +22,7 @@ int main(){
     //game->setDoomMap("map02");      // Full deathmatch.
 
     // Join existing game.
-    game->addGameArgs("-join 127.0.0.1");       // Connect to a host for a multiplayer game.
+    game->addGameArgs("-join 127.0.0.1");   // Connect to a host for a multiplayer game.
 
     // Name your agent and select color
     // colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue
@@ -31,15 +31,7 @@ int main(){
     game->setMode(ASYNC_PLAYER);
     game->init();
 
-    while(!game->isEpisodeFinished()){          // Play until the game (episode) is over.
-
-        if(game->isPlayerDead()){               // Check if player is dead
-            game->respawnPlayer();              // Use this to respawn immediately after death, new state will be available.
-
-            // Or observe the game until automatic respawn.
-            //game->advanceAction();
-            //continue;
-        }
+    while(!game->isEpisodeFinished()){      // Play until the game (episode) is over.
 
         GameStatePtr state = game->getState();
         // Analyze the state.
@@ -48,6 +40,10 @@ int main(){
         // Set your action.
 
         game->makeAction(action);
+
+        if(game->isPlayerDead()){           // Check if player is dead
+            game->respawnPlayer();          // Use this to respawn immediately after death, new state will be available.
+        }
 
         std::cout << game->getEpisodeTime() << " Frags: " << game->getGameVariable(FRAGCOUNT) << std::endl;
     }

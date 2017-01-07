@@ -49,14 +49,6 @@ public class CIGBots {
 
             while(!game.isEpisodeFinished()){   // Play until the game (episode) is over.
 
-                if(game.isPlayerDead()){        // Check if player is dead
-                    game.respawnPlayer();       // Use this to respawn immediately after death, new state will be available.
-
-                    // Or observe the game until automatic respawn.
-                    //game.advanceAction();
-                    //continue;
-                }
-
                 GameState state = game.getState();
                 // Analyze the state.
 
@@ -64,6 +56,10 @@ public class CIGBots {
                 // Set your action.
 
                 game.makeAction(action);
+
+                if(game.isPlayerDead()){        // Check if player is dead
+                    game.respawnPlayer();       // Use this to respawn immediately after death, new state will be available.
+                }
 
                 System.out.println(game.getEpisodeTime() + " Frags: " + game.getGameVariable(GameVariable.FRAGCOUNT));
             }
