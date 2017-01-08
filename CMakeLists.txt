@@ -15,7 +15,7 @@ set(ViZDoom_VERSION_ID ${ViZDoom_MAJOR_VERSION}${ViZDoom_MINOR_VERSION}${ViZDoom
 #-----------------------------------------------------------------------------------------------------------------------
 option(BUILD_PYTHON "Build ViZDoom Python binding." OFF)
 option(BUILD_PYTHON3 "Build ViZDoom Python3 binding instead of default Python2." OFF)
-option(BUILD_LUA "Build ViZDoom Lua binding." OFF) # only for LuaJIT
+option(BUILD_LUA "Build ViZDoom Lua binding." OFF) # only for Lua 5.1 and LuaJIT
 option(BUILD_JAVA "Build ViZDoom Java binding." OFF)
 
 
@@ -345,7 +345,7 @@ if (BUILD_LUA AND (NOT BUILD_LUA52))
     if (UNIX)
         add_custom_command(TARGET libvizdoom_lua
                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_luarocks_package.sh
-                COMMENT "Assembling luarocks package in bin/lua")
+                COMMENT "Assembling luarocks package in ${VIZDOOM_LUA_OUTPUT_DIR}/luarocks_package")
     endif ()
 
 endif ()

@@ -37,8 +37,6 @@ extern "C" {
 
 #include "luabind/luabind.hpp"
 #include "luabind/adopt_policy.hpp"
-#include "luabind/copy_policy.hpp"
-#include "luabind/dependency_policy.hpp"
 #include "luabind/exception_handler.hpp"
 
 using namespace vizdoom;
