@@ -36,6 +36,9 @@ extern "C" {
 }
 
 #include "luabind/luabind.hpp"
+#include "luabind/adopt_policy.hpp"
+#include "luabind/copy_policy.hpp"
+#include "luabind/dependency_policy.hpp"
 #include "luabind/exception_handler.hpp"
 
 using namespace vizdoom;
@@ -370,8 +373,8 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             .def("advanceAction", &DoomGameLua::advanceAction_int)
             .def("advanceAction", &DoomGameLua::advanceAction_int_bool)
 
-            .def("getState", &DoomGameLua::getState)
-            .def("_getState", &DoomGameLua::getState)
+            .def("getState", &DoomGameLua::getState, adopt_policy<0>())
+            .def("_getState", &DoomGameLua::getState, adopt_policy<0>())
 
             CLASS_FUNC_2_LUA(DoomGameLua, getGameVariable)
 

@@ -427,7 +427,7 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def("make_action", makeAction_default, makeAction_overloads())
         .def("advance_action", advanceAction_default, advanceAction_overloads())
 
-        .def("get_state", &DoomGamePython::getState)
+        .def("get_state", &DoomGamePython::getState, return_value_policy<manage_new_object>())
 
         .def("get_game_variable", &DoomGamePython::getGameVariable)
 

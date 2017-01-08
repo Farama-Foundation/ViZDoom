@@ -37,15 +37,17 @@
 
 using namespace luabind::detail;
 
-namespace luabind { namespace detail
-{
-	LUABIND_API int property_tag(lua_State* L)
+namespace luabind {
+	namespace detail
 	{
-		lua_pushstring(L, "luabind: property_tag function can't be called");
-		lua_error(L);
-		return 0;
+		LUABIND_API int property_tag(lua_State* L)
+		{
+			lua_pushstring(L, "luabind: property_tag function can't be called");
+			lua_error(L);
+			return 0;
+		}
 	}
-}}
+}
 
 luabind::detail::class_rep::class_rep(type_id const& type
 	, const char* name
@@ -79,15 +81,15 @@ void luabind::detail::class_rep::shared_init(lua_State * L) {
 
 	m_instance_metatable = (m_class_type == cpp_class) ? r->cpp_instance() : r->lua_instance();
 
-    lua_pushstring(L, "__luabind_cast_graph");
-    lua_gettable(L, LUA_REGISTRYINDEX);
-    m_casts = static_cast<cast_graph*>(lua_touserdata(L, -1));
-    lua_pop(L, 1);
+	lua_pushstring(L, "__luabind_cast_graph");
+	lua_gettable(L, LUA_REGISTRYINDEX);
+	m_casts = static_cast<cast_graph*>(lua_touserdata(L, -1));
+	lua_pop(L, 1);
 
-    lua_pushstring(L, "__luabind_class_id_map");
-    lua_gettable(L, LUA_REGISTRYINDEX);
-    m_classes = static_cast<class_id_map*>(lua_touserdata(L, -1));
-    lua_pop(L, 1);
+	lua_pushstring(L, "__luabind_class_id_map");
+	lua_gettable(L, LUA_REGISTRYINDEX);
+	m_classes = static_cast<class_id_map*>(lua_touserdata(L, -1));
+	lua_pop(L, 1);
 
 }
 
@@ -105,61 +107,61 @@ luabind::detail::class_rep::~class_rep()
 }
 
 // leaves object on lua stack
-std::pair<void*,void*> 
+std::pair<void*, void*>
 luabind::detail::class_rep::allocate(lua_State* L) const
 {
 	const int size = sizeof(object_rep);
 	char* mem = static_cast<char*>(lua_newuserdata(L, size));
-	return std::pair<void*,void*>(mem, (void*)0);
+	return std::pair<void*, void*>(mem, (void*)0);
 }
 
 namespace
 {
 
-  bool super_deprecation_disabled = false;
+	bool super_deprecation_disabled = false;
 
 } // namespace unnamed
 
 // this is called as metamethod __call on the class_rep.
 int luabind::detail::class_rep::constructor_dispatcher(lua_State* L)
 {
-    class_rep* cls = static_cast<class_rep*>(lua_touserdata(L, 1));
+	class_rep* cls = static_cast<class_rep*>(lua_touserdata(L, 1));
 
-    int args = lua_gettop(L);
+	int args = lua_gettop(L);
 
-    push_new_instance(L, cls);
+	push_new_instance(L, cls);
 
-    if (super_deprecation_disabled
-        && cls->get_class_type() == class_rep::lua_class
-        && !cls->bases().empty())
-    {
-        lua_pushvalue(L, 1);
-        lua_pushvalue(L, -2);
-        lua_pushcclosure(L, super_callback, 2);
-        lua_setglobal(L, "super");
-    }
+	if(super_deprecation_disabled
+		&& cls->get_class_type() == class_rep::lua_class
+		&& !cls->bases().empty())
+	{
+		lua_pushvalue(L, 1);
+		lua_pushvalue(L, -2);
+		lua_pushcclosure(L, super_callback, 2);
+		lua_setglobal(L, "super");
+	}
 
-    lua_pushvalue(L, -1);
-    lua_replace(L, 1);
+	lua_pushvalue(L, -1);
+	lua_replace(L, 1);
 
-    cls->get_table(L);
-    lua_pushliteral(L, "__init");
-    lua_gettable(L, -2);
+	cls->get_table(L);
+	lua_pushliteral(L, "__init");
+	lua_gettable(L, -2);
 
-    lua_insert(L, 1);
+	lua_insert(L, 1);
 
-    lua_pop(L, 1);
-    lua_insert(L, 1);
+	lua_pop(L, 1);
+	lua_insert(L, 1);
 
-    lua_call(L, args, 0);
+	lua_call(L, args, 0);
 
-    if (super_deprecation_disabled)
-    {
-        lua_pushnil(L);
-        lua_setglobal(L, "super");
-    }
+	if(super_deprecation_disabled)
+	{
+		lua_pushnil(L);
+		lua_setglobal(L, "super");
+	}
 
-    return 1;
+	return 1;
 }
 
 void luabind::detail::class_rep::add_base_class(const luabind::detail::class_rep::base_info& binfo)
@@ -174,11 +176,9 @@ void luabind::detail::class_rep::add_base_class(const luabind::detail::class_rep
 	class_rep* bcrep = binfo.base;
 
 	// import all static constants
-	for (std::map<const char*, int, ltstr>::const_iterator i = bcrep->m_static_constants.begin(); 
-			i != bcrep->m_static_constants.end(); ++i)
-	{
-		int& v = m_static_constants[i->first];
-		v = i->second;
+	for(const auto& scon : bcrep->m_static_constants) {
+		int& v = m_static_constants[scon.first];
+		v = scon.second;
 	}
 
 	// also, save the baseclass info to be used for typecasts
@@ -187,17 +187,17 @@ void luabind::detail::class_rep::add_base_class(const luabind::detail::class_rep
 
 LUABIND_API void luabind::disable_super_deprecation()
 {
-    super_deprecation_disabled = true;
+	super_deprecation_disabled = true;
 }
 
 int luabind::detail::class_rep::super_callback(lua_State* L)
 {
 	int args = lua_gettop(L);
-		
+
 	class_rep* crep = static_cast<class_rep*>(lua_touserdata(L, lua_upvalueindex(1)));
 	class_rep* base = crep->bases()[0].base;
 
-	if (base->bases().empty())
+	if(base->bases().empty())
 	{
 		lua_pushnil(L);
 		lua_setglobal(L, "super");
@@ -252,7 +252,7 @@ int luabind::detail::class_rep::lua_settable_dispatcher(lua_State* L)
 	lua_rawset(L, -3);
 
 	crep->m_operator_cache = 0; // invalidate cache
-	
+
 	return 0;
 }
 
@@ -269,12 +269,12 @@ int luabind::detail::class_rep::static_class_gettable(lua_State* L)
 	crep->get_default_table(L);
 	lua_pushvalue(L, 2);
 	lua_gettable(L, -2);
-	if (!lua_isnil(L, -1)) return 1;
+	if(!lua_isnil(L, -1)) return 1;
 	else lua_pop(L, 2);
 
 	const char* key = lua_tostring(L, 2);
 
-	if (std::strlen(key) != lua_rawlen(L, 2))
+	if(std::strlen(key) != lua_rawlen(L, 2))
 	{
 		lua_pushnil(L);
 		return 1;
@@ -282,7 +282,7 @@ int luabind::detail::class_rep::static_class_gettable(lua_State* L)
 
 	std::map<const char*, int, ltstr>::const_iterator j = crep->m_static_constants.find(key);
 
-	if (j != crep->m_static_constants.end())
+	if(j != crep->m_static_constants.end())
 	{
 		lua_pushnumber(L, j->second);
 		return 1;
@@ -300,13 +300,13 @@ int luabind::detail::class_rep::static_class_gettable(lua_State* L)
 	return 1;
 }
 
-bool luabind::detail::is_class_rep(lua_State* L, int index)
+LUABIND_API bool luabind::detail::is_class_rep(lua_State* L, int index)
 {
-	if (lua_getmetatable(L, index) == 0) return false;
+	if(lua_getmetatable(L, index) == 0) return false;
 
 	lua_pushstring(L, "__luabind_classrep");
 	lua_gettable(L, -2);
-	if (lua_toboolean(L, -1))
+	if(lua_toboolean(L, -1))
 	{
 		lua_pop(L, 2);
 		return true;
@@ -318,15 +318,15 @@ bool luabind::detail::is_class_rep(lua_State* L, int index)
 
 void luabind::detail::finalize(lua_State* L, class_rep* crep)
 {
-	if (crep->get_class_type() != class_rep::lua_class) return;
+	if(crep->get_class_type() != class_rep::lua_class) return;
 
-//	lua_pushvalue(L, -1); // copy the object ref
+	//	lua_pushvalue(L, -1); // copy the object ref
 	crep->get_table(L);
-    lua_pushliteral(L, "__finalize");
+	lua_pushliteral(L, "__finalize");
 	lua_gettable(L, -2);
 	lua_remove(L, -2);
 
-	if (lua_isnil(L, -1))
+	if(lua_isnil(L, -1))
 	{
 		lua_pop(L, 1);
 	}
@@ -336,10 +336,8 @@ void luabind::detail::finalize(lua_State* L, class_rep* crep)
 		lua_call(L, 1, 0);
 	}
 
-	for (std::vector<class_rep::base_info>::const_iterator 
-			i = crep->bases().begin(); i != crep->bases().end(); ++i)
-	{
-		if (i->base) finalize(L, i->base);
+	for(const auto& baseinfo : crep->bases()) { 
+		if(baseinfo.base) finalize(L, baseinfo.base);
 	}
 }
 
@@ -347,13 +345,13 @@ void luabind::detail::class_rep::cache_operators(lua_State* L)
 {
 	m_operator_cache = 0x1;
 
-	for (int i = 0; i < number_of_operators; ++i)
+	for(int i = 0; i < number_of_operators; ++i)
 	{
 		get_table(L);
 		lua_pushstring(L, get_operator_name(i));
 		lua_rawget(L, -2);
 
-		if (lua_isfunction(L, -1)) m_operator_cache |= 1 << (i + 1);
+		if(lua_isfunction(L, -1)) m_operator_cache |= 1 << (i + 1);
 
 		lua_pop(L, 2);
 	}
@@ -361,10 +359,11 @@ void luabind::detail::class_rep::cache_operators(lua_State* L)
 
 bool luabind::detail::class_rep::has_operator_in_lua(lua_State* L, int id)
 {
-	if ((m_operator_cache & 0x1) == 0)
+	if((m_operator_cache & 0x1) == 0)
 		cache_operators(L);
 
 	const int mask = 1 << (id + 1);
 
 	return (m_operator_cache & mask) != 0;
 }
+

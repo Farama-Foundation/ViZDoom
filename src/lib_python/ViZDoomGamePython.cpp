@@ -49,36 +49,34 @@ namespace vizdoom {
         return DoomGame::makeAction(DoomGamePython::pyListToVector<int>(pyAction), tics);
     }
 
-    GameStatePython DoomGamePython::getState() {
+    GameStatePython* DoomGamePython::getState() {
 
-        GameStatePython pyState;
+        if (this->state == nullptr) return nullptr;
 
-        if (this->state == nullptr) return pyState;
+        this->pyState = new GameStatePython();
 
-        pyState.number = this->state->number;
-
-        if (this->isEpisodeFinished()) return pyState;
+        this->pyState->number = this->state->number;
 
         this->updateBuffersShapes();
         int colorDims = 3;
         if (this->getScreenChannels() == 1) colorDims = 2;
 
         if (this->state->screenBuffer != nullptr)
-            pyState.screenBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->screenBuffer->data());
+            this->pyState->screenBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->screenBuffer->data());
         if (this->state->depthBuffer != nullptr)
-            pyState.depthBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->depthBuffer->data());
+            this->pyState->depthBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->depthBuffer->data());
         if (this->state->labelsBuffer != nullptr)
-            pyState.labelsBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->labelsBuffer->data());
+            this->pyState->labelsBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->labelsBuffer->data());
         if (this->state->automapBuffer != nullptr)
-            pyState.automapBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->automapBuffer->data());
+            this->pyState->automapBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->automapBuffer->data());
 
         if (this->state->gameVariables.size() > 0) {
             // Numpy array version
             npy_intp shape = this->state->gameVariables.size();
-            pyState.gameVariables = dataToNumpyArray(1, &shape, NPY_DOUBLE, this->state->gameVariables.data());
+            this->pyState->gameVariables = dataToNumpyArray(1, &shape, NPY_DOUBLE, this->state->gameVariables.data());
 
             // Python list version
-            //pyState.gameVariables = DoomGamePython::vectorToPyList<int>(this->state->gameVariables);
+            //this->pyState->gameVariables = DoomGamePython::vectorToPyList<int>(this->state->gameVariables);
         }
 
         if(this->state->labels.size() > 0){
@@ -94,10 +92,10 @@ namespace vizdoom {
                 pyLabels.append(pyLabel);
             }
 
-            pyState.labels = pyLabels;
+            this->pyState->labels = pyLabels;
         }
 
-        return pyState;
+        return this->pyState;
     }
 
     bpy::list DoomGamePython::getLastAction() {

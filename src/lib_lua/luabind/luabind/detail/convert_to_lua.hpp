@@ -26,67 +26,45 @@
 
 #include <luabind/config.hpp>
 #include <luabind/detail/policy.hpp>
-#include <boost/ref.hpp>
 
-#include <boost/mpl/apply_wrap.hpp>
+namespace luabind {
 
-namespace luabind { namespace detail
-{
-	template<bool IsReferenceWrapper = false>
-	struct unwrap_ref
-	{
-		template<class T>
-		static const T& get(const T& r) { return r; }
+	namespace detail {
 
-		template<class T>
-		struct apply
-		{
-			typedef T type;
+		template< typename T >
+		struct unwrapped {
+			static const bool is_wrapped_ref = false;
+			using type = T;
+
+			static const T& get(const T& t) {
+				return t;
+			}
 		};
-	};
 
-	template<>
-	struct unwrap_ref<true>
-	{
-		template<class T>
-		static T& get(const boost::reference_wrapper<T>& r) { return r.get(); }
-
-		template<class T>
-		struct apply
+		template< typename T >
+		struct unwrapped< std::reference_wrapper< T > >
 		{
-			typedef typename T::type& type;
+			static const bool is_wrapped_ref = true;
+			using type = T&;
+
+			static T& get(const std::reference_wrapper<T>& refwrap)
+			{
+				return refwrap.get();
+			}
 		};
-	};
 
-	namespace mpl = boost::mpl;
-	
-	template<class T>
-	void convert_to_lua(lua_State* L, const T& v)
-	{
-		typedef typename mpl::apply_wrap1<
-			unwrap_ref<boost::is_reference_wrapper<T>::value>
-		  , T
-		>::type value_type;
+		template<unsigned int PolicyIndex = 1, typename Policies = no_policies, typename T>
+		void push_to_lua(lua_State* L, const T& v)
+		{
+			using value_type = typename unwrapped< T >::type;
 
-		typename mpl::apply_wrap2<default_policy,value_type,cpp_to_lua>::type converter;
+			specialized_converter_policy_n<PolicyIndex, Policies, value_type, cpp_to_lua>()
+				.to_lua(L, unwrapped<T>::get(v));
+		}
 
-		converter.apply(L, unwrap_ref<boost::is_reference_wrapper<T>::value>::get(v));
 	}
 
-	template<int Index, class T, class Policies>
-	void convert_to_lua_p(lua_State* L, const T& v, const Policies&)
-	{
-		typedef typename mpl::apply_wrap1<
-			unwrap_ref<boost::is_reference_wrapper<T>::value>
-		  , T
-		>::type value_type;
-
-		typedef typename find_conversion_policy<Index, Policies>::type converter_policy;
-		typename mpl::apply_wrap2<converter_policy,value_type,cpp_to_lua>::type converter;
-
-		converter.apply(L, unwrap_ref<boost::is_reference_wrapper<T>::value>::get(v));
-	}
-}}
+}
 
 #endif
 

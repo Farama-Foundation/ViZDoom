@@ -6,6 +6,10 @@ local ffi = require("ffi")
 function vizdoom.DoomGame:getState()
     local _state = self:_getState()
 
+    if _state == nil then
+        return nil
+    end
+
     local width = self:getScreenWidth();
     local height = self:getScreenHeight();
     local channels = self:getScreenChannels();

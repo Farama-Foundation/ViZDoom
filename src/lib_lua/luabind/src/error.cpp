@@ -23,11 +23,32 @@
 #define LUABIND_BUILDING
 
 #include <luabind/error.hpp>
+#ifndef LUA_INCLUDE_HPP_INCLUDED
+#include <luabind/lua_include.hpp>
+#endif
 
 
-namespace luabind
-{
+namespace luabind {
 
+#ifndef LUABIND_NO_EXCEPTIONS	
+	error::error(lua_State* L)
+	{
+		const char* message = lua_tostring(L, -1);
+
+		if(message)
+		{
+			m_message = message;
+		}
+
+		lua_pop(L, 1);
+	}
+
+
+	const char* error::what() const throw()
+	{
+		return m_message.c_str();
+	}
+#endif
 	namespace
 	{
 		pcall_callback_fun pcall_callback = 0;
@@ -73,3 +94,4 @@ namespace luabind
 	}
 
 }
+
