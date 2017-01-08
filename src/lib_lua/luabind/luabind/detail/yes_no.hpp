@@ -23,12 +23,15 @@
 #ifndef YES_NO_040211_HPP
 #define YES_NO_040211_HPP
 
-namespace luabind { namespace detail {
+namespace luabind {
+	namespace detail {
 
-    typedef char(&yes_t)[1];
-    typedef char(&no_t)[2];
+		///@TODO: check if removable
+		typedef char(&yes_t)[1];
+		typedef char(&no_t)[2];
 
-}} // namespace luabind::detail
+	} // namespace detail
+} // namespace luabind
 
 #endif // YES_NO_040211_HPP
 

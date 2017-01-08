@@ -35,54 +35,56 @@ namespace vizdoom {
         return DoomGame::makeAction(DoomGameLua::lTableToVector<int>(lAction), tics);
     }
 
-    GameStateLua DoomGameLua::getState(lua_State* luaState) {
+    GameStateLua* DoomGameLua::getState(lua_State* luaState) {
 
-        GameStateLua lState;
-        lState.number = this->state->number;
+        if (this->state == nullptr) return nullptr;
+
+        GameStateLua* lState = new GameStateLua();
+
+        lState->number = this->state->number;
 
         if (this->state->screenBuffer != nullptr) {
             lua_pushlightuserdata(luaState, this->doomController->getScreenBuffer());
             lb::object buffer(lb::from_stack(luaState, -1));
             lua_pop(luaState, 1);
-            lState.screenBuffer = buffer;
+            lState->screenBuffer = buffer;
         }
         if (this->state->depthBuffer != nullptr) {
             lua_pushlightuserdata(luaState, this->doomController->getDepthBuffer());
             lb::object buffer(lb::from_stack(luaState, -1));
             lua_pop(luaState, 1);
-            lState.depthBuffer = buffer;
+            lState->depthBuffer = buffer;
         }
         if (this->state->labelsBuffer != nullptr) {
             lua_pushlightuserdata(luaState, this->doomController->getLabelsBuffer());
             lb::object buffer(lb::from_stack(luaState, -1));
             lua_pop(luaState, 1);
-            lState.labelsBuffer = buffer;
+            lState->labelsBuffer = buffer;
         }
         if (this->state->automapBuffer != nullptr) {
             lua_pushlightuserdata(luaState, this->doomController->getAutomapBuffer());
             lb::object buffer(lb::from_stack(luaState, -1));
             lua_pop(luaState, 1);
-            lState.automapBuffer = buffer;
+            lState->automapBuffer = buffer;
         }
 
         if (this->state->gameVariables.size() > 0) {
-            lState.gameVariables = lb::newtable(luaState);
+            lState->gameVariables = lb::newtable(luaState);
 
             for(size_t i = 0; i < this->state->gameVariables.size(); ++i){
-                lState.gameVariables[i + 1] = this->state->gameVariables[i];
+                lState->gameVariables[i + 1] = this->state->gameVariables[i];
             }
         }
 
         if(this->state->labels.size() > 0){
-            lState.labels = lb::newtable(luaState);
+            lState->labels = lb::newtable(luaState);
 
             for(size_t i = 0; i < this->state->labels.size(); ++i){
-                lState.labels[i + 1] = this->state->labels[i];
+                lState->labels[i + 1] = this->state->labels[i];
             }
         }
 
         return lState;
-
     }
 
     lb::object DoomGameLua::getLastAction(lua_State* luaState){

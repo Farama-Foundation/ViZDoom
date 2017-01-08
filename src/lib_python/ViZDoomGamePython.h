@@ -73,7 +73,7 @@ namespace vizdoom {
         void setAction(bpy::list const &pyAction);
         double makeAction(bpy::list const &pyAction, unsigned int tics = 1);
 
-        GameStatePython getState();
+        GameStatePython* getState();
         bpy::list getLastAction();
 
         bpy::list getAvailableButtons();
@@ -101,6 +101,8 @@ namespace vizdoom {
         void sendGameCommand(bpy::str const &pyCmd);
 
     private:
+        GameStatePython* pyState;
+
         npy_intp colorShape[3];
         npy_intp grayShape[2];
 

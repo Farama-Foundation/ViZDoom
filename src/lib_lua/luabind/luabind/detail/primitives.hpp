@@ -24,62 +24,65 @@
 #ifndef LUABIND_PRIMITIVES_HPP_INCLUDED
 #define LUABIND_PRIMITIVES_HPP_INCLUDED
 
-#include <algorithm>
+#include <functional>	// std::reference_wrapper...
+#include <type_traits>  // std::true_type...
 #include <cstring>
 
-#include <luabind/config.hpp>
-#include <luabind/detail/yes_no.hpp>
+namespace luabind {
+	namespace detail {
 
-namespace luabind { namespace detail
-{
-	template<class T>
-	struct identity
-	{
-		typedef T type;
-	};
+		template< typename T > struct is_reference_wrapper : public std::false_type { enum { value = false }; };
+		template< typename T > struct is_reference_wrapper< std::reference_wrapper<T> > : public std::true_type { enum { value = true }; };
 
-	template<class T>
-    struct type_ {};
+		template< typename T > struct apply_reference_wrapper { using type = T; };
+		template< typename T > struct apply_reference_wrapper< std::reference_wrapper<T> > { using type = T&; };
 
-	struct null_type {};
+		template< typename T   > struct identity { using type = T; };
+		template< typename Dst > Dst implicit_cast(typename identity<Dst>::type t) { return t; }
 
-/*	typedef char yes_t;
-	typedef double no_t;*/
+		template<class T>
+		struct type_ {};
 
-	struct lua_to_cpp {};
-	struct cpp_to_lua {};
+		struct null_type {};
 
-	template<class T> struct by_value {};
-	template<class T> struct by_reference {};
-	template<class T> struct by_const_reference {};
-	template<class T> struct by_pointer {};
-	template<class T> struct by_const_pointer {};
+		template< typename T > struct is_null_type : public std::false_type {};
+		template< >            struct is_null_type< null_type > : public std::true_type {};
 
-	struct converter_policy_tag {};
+		struct lua_to_cpp {};
+		struct cpp_to_lua {};
 
-	struct ltstr
-	{
-		bool operator()(const char* s1, const char* s2) const { return std::strcmp(s1, s2) < 0; }
-	};
+		template<class T> struct by_value {};
+		template<class T> struct by_const_reference {};
+		template<class T> struct by_reference {};
+		template<class T> struct by_rvalue_reference {};
+		template<class T> struct by_pointer {};
+		template<class T> struct by_const_pointer {};
 
-	template<int N>
-	struct aligned 
-	{
-		char storage[N];
-	};
+		struct ltstr
+		{
+			bool operator()(const char* s1, const char* s2) const { return std::strcmp(s1, s2) < 0; }
+		};
 
-	// returns the offset added to a Derived* when cast to a Base*
-	// TODO: return ptrdiff
-	template<class Derived, class Base>
-	int ptr_offset(type_<Derived>, type_<Base>)
-	{
-		aligned<sizeof(Derived)> obj;
-		Derived* ptr = reinterpret_cast<Derived*>(&obj);
+		template<int N>
+		struct aligned
+		{
+			char storage[N];
+		};
 
-		return int(static_cast<char*>(static_cast<void*>(static_cast<Base*>(ptr)))
-		- static_cast<char*>(static_cast<void*>(ptr)));
+		// returns the offset added to a Derived* when cast to a Base*
+		// TODO: return ptrdiff
+		template<class Derived, class Base>
+		int ptr_offset(type_<Derived>, type_<Base>)
+		{
+			aligned<sizeof(Derived)> obj;
+			Derived* ptr = reinterpret_cast<Derived*>(&obj);
+
+			return int(static_cast<char*>(static_cast<void*>(static_cast<Base*>(ptr)))
+				- static_cast<char*>(static_cast<void*>(ptr)));
+		}
+
 	}
-
-}}
+}
 
 #endif // LUABIND_PRIMITIVES_HPP_INCLUDED
+

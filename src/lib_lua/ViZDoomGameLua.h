@@ -56,7 +56,7 @@ namespace vizdoom {
         void setAction(lb::object const& lAction);
         double makeAction(lb::object const& lAction, unsigned int tics = 1);
 
-        GameStateLua getState(lua_State* luaState);
+        GameStateLua* getState(lua_State* luaState);
         lb::object getLastAction(lua_State* luaState);
 
         lb::object getAvailableButtons(lua_State* luaState);
@@ -85,6 +85,7 @@ namespace vizdoom {
         void replayEpisode_str_int(std::string _str, unsigned int _int) { this->replayEpisode(_str, _int); }
 
     private:
+
         template<class T> static std::vector<T> lTableToVector(lb::object const& lTable);
         template<class T> static lb::object vectorToLTable(lua_State* luaState, const std::vector<T>& vector);
 

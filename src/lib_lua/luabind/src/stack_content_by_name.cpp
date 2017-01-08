@@ -35,27 +35,27 @@ std::string luabind::detail::stack_content_by_name(lua_State* L, int start_index
 {
 	std::string ret;
 	int top = lua_gettop(L);
-	for (int i = start_index; i <= top; ++i)
+	for(int i = start_index; i <= top; ++i)
 	{
 		object_rep* obj = get_instance(L, i);
-		class_rep* crep = is_class_rep(L, i)?(class_rep*)lua_touserdata(L, i):0;
-		if (obj == 0 && crep == 0)
+		class_rep* crep = is_class_rep(L, i) ? (class_rep*)lua_touserdata(L, i) : 0;
+		if(obj == 0 && crep == 0)
 		{
 			int type = lua_type(L, i);
 			ret += lua_typename(L, type);
 		}
-		else if (obj)
+		else if(obj)
 		{
-			if (obj->is_const()) ret += "const ";
+			if(obj->is_const()) ret += "const ";
 			ret += obj->crep()->name();
 		}
-		else if (crep)
+		else if(crep)
 		{
 			ret += "<";
 			ret += crep->name();
 			ret += ">";
 		}
-		if (i < top) ret += ", ";
+		if(i < top) ret += ", ";
 	}
 	return ret;
 }

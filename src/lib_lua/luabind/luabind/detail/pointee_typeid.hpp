@@ -26,15 +26,17 @@
 #include <luabind/config.hpp>
 #include <luabind/typeid.hpp>
 
-namespace luabind { namespace detail {
+namespace luabind {
+	namespace detail {
 
-    template<class T>
-    type_id pointee_typeid(T*)
-    {
-        return typeid(T);
-    }
+		template<class T>
+		type_id pointee_typeid(T*)
+		{
+			return typeid(T);
+		}
 
-}} // namespace luabind::detail
+	} // namespace detail
+} // namespace luabind
 
 #endif // POINTEE_TYPEID_040211_HPP
 

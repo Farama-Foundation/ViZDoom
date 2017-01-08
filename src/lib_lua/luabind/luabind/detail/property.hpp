@@ -5,29 +5,31 @@
 #ifndef LUABIND_PROPERTY_081020_HPP
 # define LUABIND_PROPERTY_081020_HPP
 
-namespace luabind { namespace detail {
+namespace luabind {
+	namespace detail {
 
-template <class Class, class T, class Result = T>
-struct access_member_ptr
-{
-    access_member_ptr(T Class::* mem_ptr)
-      : mem_ptr(mem_ptr)
-    {}
+		template <class Class, class T, class Result = T>
+		struct access_member_ptr
+		{
+			access_member_ptr(T Class::* mem_ptr)
+				: mem_ptr(mem_ptr)
+			{}
 
-    Result operator()(Class const& x) const
-    {
-        return const_cast<Class&>(x).*mem_ptr;
-    }
+			Result operator()(Class const& x) const
+			{
+				return const_cast<Class&>(x).*mem_ptr;
+			}
 
-    void operator()(Class& x, T const& value) const
-    {
-        x.*mem_ptr = value;
-    }
+			void operator()(Class& x, T const& value) const
+			{
+				x.*mem_ptr = value;
+			}
 
-    T Class::* mem_ptr;
-};
+			T Class::* mem_ptr;
+		};
 
-}} // namespace luabind::detail
+	} // namespace detail
+} // namespace luabind
 
 #endif // LUABIND_PROPERTY_081020_HPP
 
