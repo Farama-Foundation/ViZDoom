@@ -1,9 +1,9 @@
-#!/usr/bin/env lua
+#!/usr/bin/env th
 
 ----------------------------------------------------------------------
 -- This script presents SPECTATOR mode. In SPECTATOR mode you play and
 -- your agent can learn from it.
--- Configuration is loaded from "../../examples/config/<SCENARIO_NAME>.cfg" file.
+-- Configuration is loaded from "../../scenarios/<SCENARIO_NAME>.cfg" file.
 --
 -- To see the scenario description go to "../../scenarios/README.md"
 ----------------------------------------------------------------------
@@ -18,7 +18,7 @@ local game = vizdoom.DoomGame()
 -- Don't load two configs cause the second will overrite the first one.
 -- Multiple config files are ok but combining these ones doesn't make much sense.
 
-game:loadConfig("../../examples/config/deadly_corridor.cfg")
+game:loadConfig("../../scenarios/deadly_corridor.cfg")
 
 game:setScreenResolution(vizdoom.ScreenResolution.RES_640X480)
 game:setWindowVisible(true)
