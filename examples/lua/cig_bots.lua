@@ -19,8 +19,8 @@ game:setDoomMap("map01") -- Limited deathmatch.
 --game:setDoomMap("map02") -- Full deathmatch.
 
 -- Start multiplayer game only with your AI (with options that will be used in the competition, details in cig_host example).
-game:addGameArgs("-host 1 -deathmatch +timelimit 0.2 "..
-                 "+sv_forcerespawn 1 +sv_noautoaim 1 "..
+game:addGameArgs("-host 1 -deathmatch +timelimit 1 " ..
+                 "+sv_forcerespawn 1 +sv_noautoaim 1 " ..
                  "+sv_respawnprotect 1 +sv_spawnfarthest 1")
 
 -- Name your agent and select color

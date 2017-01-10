@@ -14,7 +14,7 @@ game.set_doom_map("map01")  # Limited deathmatch.
 # game.set_doom_map("map02")  # Full deathmatch.
 
 # Start multiplayer game only with your AI (with options that will be used in the competition, details in cig_host example).
-game.add_game_args("-host 1 -deathmatch +timelimit 2.0 "
+game.add_game_args("-host 1 -deathmatch +timelimit 1.0 "
                    "+sv_forcerespawn 1 +sv_noautoaim 1 +sv_respawnprotect 1 +sv_spawnfarthest 1")
 
 # Name your agent and select color

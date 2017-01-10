@@ -30,7 +30,7 @@ local pool = threads.Threads(
             local game = vizdoom.DoomGame()
 
             -- Config
-            game:loadConfig("../config/multi_duel.cfg")
+            game:loadConfig("../../scenarios/multi_duel.cfg")
             game:addGameArgs("-host 2 -deathmatch +timelimit 1.0 +sv_spawnfarthest 1")
             game:addGameArgs("+name Player1 +colorset 0")
             game:init()
@@ -59,7 +59,7 @@ local pool = threads.Threads(
             local game = vizdoom.DoomGame()
 
             -- Config
-            game:loadConfig("../config/multi_duel.cfg")
+            game:loadConfig("../../scenarios/multi_duel.cfg")
             game:addGameArgs("-join 127.0.0.1")
             game:addGameArgs("+name Player2 +colorset 3")
             game:init()
