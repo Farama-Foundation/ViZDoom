@@ -22,7 +22,7 @@ int main(){
     //game->setDoomMap("map02");      // Full deathmatch.
 
     // Start multiplayer game only with Your AI (with options that will be used in the competition, details in CIGHost example).
-    game->addGameArgs("-host 1 -deathmatch +timelimit 10.0 "
+    game->addGameArgs("-host 1 -deathmatch +timelimit 1.0 "
                       "+sv_forcerespawn 1 +sv_noautoaim 1 +sv_respawnprotect 1 +sv_spawnfarthest 1");
 
     // Name your agent and select color
