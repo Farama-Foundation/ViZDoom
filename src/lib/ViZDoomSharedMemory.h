@@ -88,6 +88,7 @@ namespace vizdoom {
         bool GAME_SETTINGS_CONTROLLER;
         bool GAME_NETGAME;
         bool GAME_MULTIPLAYER;
+        bool GAME_DEATHMATCH;
         bool DEMO_RECORDING;
         bool DEMO_PLAYBACK;
 
@@ -105,6 +106,7 @@ namespace vizdoom {
         // MAP
         unsigned int MAP_START_TIC;
         unsigned int MAP_TIC;
+        unsigned int MAP_TICLIMIT;
 
         int MAP_REWARD;
         int MAP_USER_VARS[USER_VARIABLE_COUNT];

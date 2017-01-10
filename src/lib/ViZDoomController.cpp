@@ -254,7 +254,8 @@ namespace vizdoom {
 
     bool DoomController::isTicPossible() {
         return !((!this->gameState->GAME_MULTIPLAYER && this->gameState->PLAYER_DEAD)
-                 || (this->mapTimeout > 0 && this->gameState->MAP_TIC >= this->mapTimeout + this->mapStartTime)
+                 || (this->mapTimeout > 0 && this->mapTimeout + this->mapStartTime <= this->gameState->MAP_TIC)
+                 || (this->gameState->MAP_TICLIMIT > 0 && this->gameState->MAP_TICLIMIT <= this->gameState->MAP_TIC)
                  || (this->gameState->MAP_END));
     }
 
@@ -309,8 +310,8 @@ namespace vizdoom {
 
     void DoomController::respawnPlayer() {
 
-        if (this->doomRunning && !this->mapChanging && !this->gameState->MAP_END && this->gameState->PLAYER_DEAD) {
-            if (this->gameState->GAME_MULTIPLAYER) {
+        if (this->doomRunning && !this->mapChanging) {
+            if (this->gameState->GAME_MULTIPLAYER && this->gameState->PLAYER_DEAD && isTicPossible()) {
 
                 bool useAvailable = this->input->BT_AVAILABLE[USE];
                 this->input->BT_AVAILABLE[USE] = true;
@@ -321,7 +322,8 @@ namespace vizdoom {
                     this->MQDoom->send(MSG_CODE_TIC);
                     this->waitForDoomWork();
 
-                } while (!this->gameState->MAP_END && this->gameState->PLAYER_DEAD);
+                    if(!isTicPossible()) return;
+                } while (this->gameState->PLAYER_DEAD);
 
                 this->sendCommand(std::string("-use"));
                 this->MQDoom->send(MSG_CODE_UPDATE);
