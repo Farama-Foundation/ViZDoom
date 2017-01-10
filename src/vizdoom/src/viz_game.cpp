@@ -45,6 +45,8 @@ EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_loop_map)
 EXTERN_CVAR (Bool, viz_override_player)
 
+EXTERN_CVAR (Float, timelimit)
+
 VIZGameState *vizGameStateSM = NULL;
 
 /* Helper functions */
@@ -171,8 +173,8 @@ void VIZ_GameStateUpdate(){
 void VIZ_GameStateTic(){
     if(!vizGameStateSM) return;
 
-    VIZ_DebugMsg(2, VIZ_FUNC, "netgame: %d, multiplayer: %d, recording: %d, playback: %d, in_level: %d, map_tic: %d",
-                    netgame, multiplayer, demorecording, demoplayback, gamestate == GS_LEVEL, level.maptime);
+    VIZ_DebugMsg(2, VIZ_FUNC, "netgame: %d, multiplayer: %d, recording: %d, playback: %d, in_level: %d, map_tic: %d, map_ticlimit: %d",
+                    netgame, multiplayer, demorecording, demoplayback, gamestate == GS_LEVEL, level.maptime, timelimit * TICRATE * 60);
 
     vizGameStateSM->GAME_TIC = (unsigned int)gametic;
     vizGameStateSM->GAME_STATE = gamestate;
@@ -181,12 +183,14 @@ void VIZ_GameStateTic(){
     vizGameStateSM->GAME_SETTINGS_CONTROLLER = VIZ_PLAYER.settings_controller;
     vizGameStateSM->GAME_NETGAME = netgame;
     vizGameStateSM->GAME_MULTIPLAYER = multiplayer;
+    vizGameStateSM->GAME_DEATHMATCH = (bool)deathmatch;
     vizGameStateSM->DEMO_RECORDING = demorecording;
     vizGameStateSM->DEMO_PLAYBACK = demoplayback;
 
     vizGameStateSM->MAP_END = gamestate != GS_LEVEL;
     vizGameStateSM->MAP_START_TIC = (unsigned int)level.starttime;
     vizGameStateSM->MAP_TIC = (unsigned int)level.maptime;
+    vizGameStateSM->MAP_TICLIMIT = (unsigned int)(timelimit * TICRATE * 60);
 
     for(int i = 0; i < VIZ_GV_USER_COUNT; ++i) vizGameStateSM->MAP_USER_VARS[i] = ACS_GlobalVars[i+1];
     vizGameStateSM->MAP_REWARD = ACS_GlobalVars[0];
