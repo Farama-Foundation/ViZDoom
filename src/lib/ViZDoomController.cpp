@@ -1148,13 +1148,13 @@ namespace vizdoom {
         this->doomArgs.push_back("-height");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenHeight));
 
-        float ratio = this->screenWidth / this->screenHeight;
+        float ratio = static_cast<float>(this->screenWidth) / this->screenHeight;
 
         this->doomArgs.push_back("+vid_aspect");
-        if (ratio == 16.0 / 9.0) this->doomArgs.push_back("1");
-        else if (ratio == 16.0 / 10.0) this->doomArgs.push_back("2");
-        else if (ratio == 4.0 / 3.0) this->doomArgs.push_back("3");
-        else if (ratio == 5.0 / 4.0) this->doomArgs.push_back("4");
+        if (ratio == 16.0f / 9.0f) this->doomArgs.push_back("1");
+        else if (ratio == 16.0f / 10.0f) this->doomArgs.push_back("2");
+        else if (ratio == 4.0f / 3.0f) this->doomArgs.push_back("3");
+        else if (ratio == 5.0f / 4.0f) this->doomArgs.push_back("4");
         else this->doomArgs.push_back("0");
 
         // window mode

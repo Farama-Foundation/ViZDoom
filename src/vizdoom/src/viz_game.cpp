@@ -195,6 +195,8 @@ void VIZ_GameStateTic(){
     for(int i = 0; i < VIZ_GV_USER_COUNT; ++i) vizGameStateSM->MAP_USER_VARS[i] = ACS_GlobalVars[i+1];
     vizGameStateSM->MAP_REWARD = ACS_GlobalVars[0];
 
+    bool prevDead = vizGameStateSM->PLAYER_DEAD;
+
     if(VIZ_PLAYER.mo != NULL) {
         vizGameStateSM->PLAYER_HAS_ACTOR = true;
         vizGameStateSM->PLAYER_DEAD = VIZ_PLAYER.playerstate == PST_DEAD || VIZ_PLAYER.mo->health <= 0;
@@ -210,7 +212,6 @@ void VIZ_GameStateTic(){
         vizGameStateSM->PLAYER_DEAD = true;
     }
 
-    bool prevDead = vizGameStateSM->PLAYER_DEAD;
     if(vizGameStateSM->PLAYER_DEAD && !prevDead) ++vizGameStateSM->PLAYER_DEATHCOUNT;
 
     vizGameStateSM->PLAYER_READY_TO_RESPAWN = VIZ_PLAYER.playerstate == PST_REBORN;
