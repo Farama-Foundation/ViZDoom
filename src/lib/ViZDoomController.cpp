@@ -969,8 +969,8 @@ namespace vizdoom {
         }
     }
 
-    unsigned int DoomController::getNextDoomSeed() {
-        br::uniform_int_distribution<> mapSeedDist(0, UINT_MAX);
+    unsigned int DoomController::getNextDoomSeed(){
+        br::uniform_int_distribution<unsigned int> mapSeedDist(0, UINT_MAX);
         return static_cast<unsigned int>(mapSeedDist(this->instanceRng));
     }
 
