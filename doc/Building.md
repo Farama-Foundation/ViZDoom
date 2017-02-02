@@ -21,7 +21,7 @@ sudo pip install vizdoom
 ```
 To install newest version from the repository:
 ```bash
-git clone https://github.com/Marqt/ViZDoom
+git clone https://github.com/mwydmuch/ViZDoom
 cd ViZDoom
 # use pip3 for python3
 sudo pip install .
@@ -29,7 +29,7 @@ sudo pip install .
 Or without cloning yourself:
 ```bash
 # use pip3 for python3
-sudo pip install git+https://github.com/Marqt/ViZDoom
+sudo pip install git+https://github.com/mwydmuch/ViZDoom
 ```
 
 ## <a name="luarocks"></a> Installation via LuaRocks (recommended for Torch7 users)
@@ -42,7 +42,7 @@ luarocks install vizdoom
 ```
 To install newest version from the repository:
 ```bash
-git clone https://github.com/Marqt/ViZDoom
+git clone https://github.com/mwydmuch/ViZDoom
 cd ViZDoom
 luarocks make
 ```
