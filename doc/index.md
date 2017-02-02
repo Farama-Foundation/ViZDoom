@@ -45,10 +45,10 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 
 Detailed description of all types and methods:
 
-- **[DoomGame](doc/DoomGame.md)**
-- **[Types](doc/Types.md)**
-- [Configuration files](doc/ConfigFile.md)
-- [Exceptions](doc/Exceptions.md)
-- [Utilities](doc/Utilities.md)
+- **[DoomGame](DoomGame.md)**
+- **[Types](Types.md)**
+- [Configuration files](ConfigFile.md)
+- [Exceptions](Exceptions.md)
+- [Utilities](Utilities.md)
 
-[Changelog](doc/Changelog.md) for 1.1.0 version.
+[Changelog](Changelog.md) for 1.1.0 version.
