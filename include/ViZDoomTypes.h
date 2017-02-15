@@ -43,7 +43,7 @@ namespace vizdoom{
     };
 
     struct GameState {
-        unsigned int number;
+        unsigned int id;
 
         std::vector<double> gameVariables;
 

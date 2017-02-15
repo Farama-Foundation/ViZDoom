@@ -114,16 +114,16 @@ for i in range(episodes):
         state = game.get_state()
 
         # Which consists of:
-        n = state.number
-        vars = state.game_variables
-        screen_buf = state.screen_buffer
-        depth_buf = state.depth_buffer
-        labels_buf = state.labels_buffer
-        automap_buf = state.automap_buffer
-        labels = state.labels
+        id              = state.id
+        vars            = state.game_variables
+        screen_buf      = state.screen_buffer
+        depth_buf       = state.depth_buffer
+        labels_buf      = state.labels_buffer
+        automap_buf     = state.automap_buffer
+        labels          = state.labels
 
         # Makes a random action and get remember reward.
-        r = game.make_action(choice(actions))
+        reward = game.make_action(choice(actions))
 
         # Makes a "prolonged" action and skip frames:
         # skiprate = 4
@@ -135,9 +135,9 @@ for i in range(episodes):
         # r = game.get_last_reward()
 
         # Prints state's game variables and reward.
-        print("State #" + str(n))
+        print("State #" + str(id))
         print("Game variables:", vars)
-        print("Reward:", r)
+        print("Reward:", reward)
         print("=====================")
 
         if sleep_time > 0:

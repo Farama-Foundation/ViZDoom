@@ -64,7 +64,7 @@ int main(){
             shapingReward = shapingReward - lastTotalShapingReward;
             lastTotalShapingReward += shapingReward;
 
-            std::cout << "State #" << state->number << "\n";
+            std::cout << "State #" << state->id << "\n";
             std::cout << "Health: " << state->gameVariables[0] << "\n";
             std::cout << "Action reward: " << reward << "\n";
             std::cout << "Action shaping reward: " << shapingReward << "\n";

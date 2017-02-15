@@ -62,7 +62,7 @@ for i = 1, episodes do
         -- Makes a random action and save the reward.
         local reward = game:makeAction(actions[math.random(1, actions_num)])
 
-        print("State # " .. state.number)
+        print("State #" .. state.id)
         local varsStr = "Game variables:"
         for k, a in pairs(vars) do varsStr = varsStr .. " " .. a end
         print(varsStr)

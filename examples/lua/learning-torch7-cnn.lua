@@ -1,7 +1,7 @@
 #!/usr/bin/env th
 
 -- E. Culurciello, December 2016
--- based on https://github.com/Marqt/ViZDoom/blob/master/examples/python/learning_tensorflow.py
+-- based on https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/learning_tensorflow.py
 -- use CNN and DQN to train simple Doom scenarios
 
 -- "th learning-torch7-cnn.lua" to train a neural network from scratch, and test it

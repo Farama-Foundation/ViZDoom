@@ -63,7 +63,7 @@ for i in range(episodes):
         shaping_reward = shaping_reward - last_total_shaping_reward
         last_total_shaping_reward += shaping_reward
 
-        print("State #" + str(state.number))
+        print("State #" + str(state.id))
         print("Health: ", state.game_variables[0])
         print("Last Reward:", reward)
         print("Last Shaping Reward:", shaping_reward)

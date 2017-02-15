@@ -42,7 +42,7 @@ for i = 1, 10 do
       local sr = ssr - lastTotalShapingReward
       lastTotalShapingReward = ssr;
 
-      print("State #" .. state.number)
+      print("State #" .. state.id)
 
       print("Healt: ", state.gameVariables[1])
       print("Action reward: ", reward);

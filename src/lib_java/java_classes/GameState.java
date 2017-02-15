@@ -5,7 +5,7 @@ import java.util.List;
 import vizdoom.*;
 
 public class GameState{
-    public int number;
+    public int id;
     public double[] gameVariables;
 
     public byte[] screenBuffer;
@@ -15,7 +15,7 @@ public class GameState{
 
     public Label[] labels;
 
-    GameState(int number,
+    GameState(int id,
         double[] gameVariables,
         byte[] screenBuffer,
         byte[] depthBuffer,
@@ -23,7 +23,7 @@ public class GameState{
         byte[] automapBuffer,
         Label[] labels){
 
-        this.number = number;
+        this.id = id;
         this.gameVariables = gameVariables;
         this.screenBuffer = screenBuffer;
         this.depthBuffer = depthBuffer;

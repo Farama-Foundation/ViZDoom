@@ -47,7 +47,7 @@ for i in range(episodes):
 
         r = game.make_action(choice(actions))
 
-        print("State #" + str(s.number))
+        print("State #" + str(s.id))
         print("Game variables:", s.game_variables[0])
         print("Reward:", r)
         print("=====================")
@@ -76,17 +76,17 @@ for i in range(episodes):
     game.replay_episode("episode" + str(i) + "_rec.lmp")
 
     while not game.is_episode_finished():
-        s = game.get_state()
+        state = game.get_state()
 
         # Use advance_action instead of make_action.
         game.advance_action()
 
-        r = game.get_last_reward()
+        reward = game.get_last_reward()
         # game.get_last_action is not supported and don't work for replay at the moment.
 
-        print("State #" + str(s.number))
-        print("Game variables:", s.game_variables[0])
-        print("Reward:", r)
+        print("State #" + str(state.id))
+        print("Game variables:", state.game_variables[0])
+        print("Reward:", reward)
         print("=====================")
 
     print("Episode finished.")
