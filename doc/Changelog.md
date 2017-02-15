@@ -1,6 +1,16 @@
 # Changelog
 
-## Changes in 1.1
+## Changes in 1.1.1
+
+#### GameState
+- `number` renamed to `id` for clearness.
+- `GameVariable.DEATHCOUNT` fixed.
+
+#### Lua specific
+- Fixed crash when calling `getState` in terminal state.
+
+
+## Changes in 1.1.0
 
 #### Buffers
 

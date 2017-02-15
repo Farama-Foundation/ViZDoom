@@ -30,8 +30,8 @@
 - `std::string / string / String / str` **objectName / object_name**
 - `uint8_t / number / byte / int` **value**
 - `double / number / double / float` **objectPositionX / object_position_x**
-- `double / number / double / float` **objectPositionX / object_position_y**
-- `double / number / double / float` **objectPositionX / object_position_z**
+- `double / number / double / float` **objectPositionY / object_position_y**
+- `double / number / double / float` **objectPositionZ / object_position_z**
 
 **objectId / object_id** - unique object instance ID - assigned when object is seen for the first time 
 (so object with lower id was seen before object with higher).
@@ -41,7 +41,7 @@
 ### <a name="gamestate"></a> `GameState`
 (`C++ type / Lua type / Java type / Python type` **name**)
 
-- `unsigned int / number / unsigned int / int` **number**
+- `unsigned int / number / unsigned int / int` **id**
 - `std::vector<float> / DoubleTensor / double[] / numpy.double[]` **gameVariables / game_variables**
 - `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **screenBuffer / screen_buffer**
 - `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **depthBuffer / depth_buffer**

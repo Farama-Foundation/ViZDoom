@@ -1,5 +1,5 @@
 site_name: ViZDoom
-repo_url : https://github.com/Marqt/ViZDoom
+repo_url : https://github.com/mwydmuch/ViZDoom
 docs_dir : doc
 pages:
 - ViZDoom: index.md

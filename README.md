@@ -1,4 +1,4 @@
-#ViZDoom [![Build Status](https://travis-ci.org/Marqt/ViZDoom.svg?branch=master)](https://travis-ci.org/Marqt/ViZDoom)
+#ViZDoom [![Build Status](https://travis-ci.org/mwydmuch/ViZDoom.svg?branch=master)](https://travis-ci.org/mwydmuch/ViZDoom)
 [http://vizdoom.cs.put.edu.pl](http://vizdoom.cs.put.edu.pl)
 
 ViZDoom allows developing AI **bots that play Doom using only the visual information** (the screen buffer). It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.
@@ -53,17 +53,17 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 ## Windows build
 For Windows we are providing compiled runtime binaries and development libraries:
 
-### [1.1.0](https://github.com/Marqt/ViZDoom/releases/tag/1.1.0) (2016-12-23):
-- [Python 2.7 (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Python27-x86_64.zip)
-- [Python 3.4 (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Python34-x86_64.zip)
-- [Python 3.5 (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Python35-x86_64.zip)
-- [Lua 5.1 & LuaJIT (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Lua51-LuaJIT-x86_64.zip)
-- [Java (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Java-x86_64.zip)
+### [1.1.0](https://github.com/mwydmuch/ViZDoom/releases/tag/1.1.0) (2016-12-23):
+- [Python 2.7 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Python27-x86_64.zip)
+- [Python 3.4 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Python34-x86_64.zip)
+- [Python 3.5 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Python35-x86_64.zip)
+- [Lua 5.1 & LuaJIT (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Lua51-LuaJIT-x86_64.zip)
+- [Java (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Java-x86_64.zip)
 
 
 ## Examples
 
-Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed it in the ``scenarios`` subdirectory (on Linux it should be done automatically by the building process):
+Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed in the same directory as the ViZDoom executable (on Linux it should be done automatically by the building process):
 
 - [Python](examples/python)
 - [C++](examples/c%2B%2B)

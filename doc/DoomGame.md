@@ -166,8 +166,8 @@ After calling this method, first state from replay will be available.
 All rewards, variables and state are available during replaying episode.
 
 See also:
-- [examples/python/record_episodes.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/record_episodes.py),
-- [examples/python/record_multiplayer.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/record_multiplayer.py).
+- [examples/python/record_episodes.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/record_episodes.py),
+- [examples/python/record_multiplayer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/record_multiplayer.py).
 
 ---
 ### <a name="isRunning"></a> `isRunning`
@@ -748,7 +748,7 @@ Default value: 35 (default Doom ticrate).
 Config key: `ticrate`
 
 See also:
-- [exmaples/python/ticrate.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/ticrate.py)
+- [exmaples/python/ticrate.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/ticrate.py)
 
 
 ---
@@ -887,7 +887,7 @@ Default value: randomized in constructor
 Config key: `seed`
 
 See also:
-- [examples/python/seed.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/seed.py)
+- [examples/python/seed.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/seed.py)
 
 
 
@@ -1037,7 +1037,7 @@ Config key: `depthBufferEnabled/depth_buffer_enabled`
 
 See also: 
 - [`Types: GameState`](Types.md#gamestate)
-- [examples/python/buffers.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/buffers.py),
+- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py),
 
 ---
 ### <a name="isLabelsBufferEnabled"></a> `isLabelsBufferEnabled`
@@ -1073,8 +1073,8 @@ Config key: `labelsBufferEnabled/labels_buffer_enabled`
 See also: 
 - [`Types: Label`](Types.md#label)
 - [`Types: GameState`](Types.md#gamestate)
-- [examples/python/labels.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/labels.py),
-- [examples/python/buffers.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/buffers.py),
+- [examples/python/labels.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/labels.py),
+- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py),
 
 
 
@@ -1111,7 +1111,7 @@ Config key: `automapBufferEnabled/automap_buffer_enabled`
 
 See also: 
 - [`Types: GameState`](Types.md#gamestate)
-- [examples/python/buffers.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/buffers.py),
+- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py),
 
 
 ---
