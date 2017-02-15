@@ -61,7 +61,7 @@ for i = 1, episodes do
 
         game:makeAction(actions[torch.random(#actions)])
 
-        print("State #" .. state.number)
+        print("State #" .. state.id)
         print("Player position X: " .. state.gameVariables[1] .. " Y: " .. state.gameVariables[2] .. " Z: " .. state.gameVariables[3])
         print("Labels:")
 

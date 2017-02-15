@@ -41,7 +41,7 @@ namespace vizdoom {
 
         GameStateLua* lState = new GameStateLua();
 
-        lState->number = this->state->number;
+        lState->id = this->state->id;
 
         if (this->state->screenBuffer != nullptr) {
             lua_pushlightuserdata(luaState, this->doomController->getScreenBuffer());

@@ -107,7 +107,7 @@ for i in range(episodes):
 
         game.make_action(choice(actions))
 
-        print("State #" + str(state.number))
+        print("State #" + str(state.id))
         print("=====================")
 
     print("Episode finished!")

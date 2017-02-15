@@ -29,11 +29,11 @@ console = True
 config = "../config/cig.cfg"
 
 
-def player_host(p):
+def player_host(player_count):
     game = DoomGame()
 
     game.load_config(config)
-    game.add_game_args("-host " + str(p) + " -deathmatch +timelimit " + str(timelimit) + " +sv_spawnfarthest 1")
+    game.add_game_args("-host " + str(player_count) + " -deathmatch +timelimit " + str(timelimit) + " +sv_spawnfarthest 1")
     game.add_game_args("+name Player0 +colorset 0")
     game.set_mode(mode)
     game.add_game_args(args)
@@ -60,11 +60,11 @@ def player_host(p):
             if random_sleep:
                 sleep(random()/10)
 
-            print("Player0:", state.number, action_count, game.get_episode_time())
+            print("Player0:", state.id, action_count, game.get_episode_time())
 
         print("Player0 frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
         print("Episode finished!")
-        for i in range(p):
+        for i in range(player_count):
             if i == 0:
                 print("Host: Player" + str(i) + " frags:", game.get_game_variable(GameVariable.PLAYER1_FRAGCOUNT))
             if i == 1:
@@ -88,7 +88,7 @@ def player_host(p):
     game.close()
 
 
-def player_join(p):
+def player_join(player_number):
     game = DoomGame()
 
     game.load_config(config)
@@ -103,7 +103,7 @@ def player_join(p):
 
     actions = [[True, False, False], [False, True, False], [False, False, True]]
     action_count = 0
-    sleep_time = 0.01 * p
+    sleep_time = 0.01 * player_number
 
     for i in range(episodes):
 
@@ -115,14 +115,14 @@ def player_join(p):
 
             game.make_action(choice(actions), skip)
             action_count += 1
-            print("Player" + str(p) + ":", state.number, action_count, game.get_episode_time())
+            print("Player" + str(player_number) + ":", state.id, action_count, game.get_episode_time())
 
             if random_sleep:
                 sleep(random()/10)
             elif sleep_time > 0:
                 sleep(sleep_time)
 
-        print("Player" + str(p) + " frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
+        print("Player" + str(player_number) + " frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
         game.new_episode()
 
     game.close()

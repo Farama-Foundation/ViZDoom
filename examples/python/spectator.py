@@ -56,7 +56,7 @@ for i in range(episodes):
         last_action = game.get_last_action()
         reward = game.get_last_reward()
 
-        print("State #" + str(state.number))
+        print("State #" + str(state.id))
         print("Game variables: ", state.game_variables)
         print("Action:", last_action)
         print("Reward:", reward)

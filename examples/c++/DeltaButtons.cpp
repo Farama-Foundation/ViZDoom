@@ -80,7 +80,7 @@ int main(){
 
             if(!time % 50) action[3] = -action[3];
 
-            std::cout << "State #" << state->number << "\n";
+            std::cout << "State #" << state->id << "\n";
             std::cout << "Action made:";
             for(auto a: action) std::cout << " " << a;
             std::cout << "\n";

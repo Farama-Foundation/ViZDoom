@@ -67,16 +67,16 @@ for i in range(episodes):
 
     while not game.is_episode_finished():
         # Gets the state and possibly to something with it
-        s = game.get_state()
-        img = s.screen_buffer
-        misc = s.game_variables
+        state = game.get_state()
+        img = state.screen_buffer
+        misc = state.game_variables
 
         # Check which action you chose!
-        r = game.make_action(choice(actions))
+        reward = game.make_action(choice(actions))
 
-        print("State #" + str(s.number))
+        print("State #" + str(state.id))
         print("Game Variables:", misc)
-        print("Last Reward:", r)
+        print("Last Reward:", reward)
         print("Seed:", game.get_seed())
         print("=====================")
 
