@@ -3,6 +3,14 @@
 require "vizdoom"
 require "torch"
 
+-- Check arguments for a host's ip.
+local ip = "127.0.0.1"
+for a = 1, #arg do
+    if arg[a] == "-ip" and type(arg[a + 1]) == "string" then
+        ip = arg[a + 1]
+    end
+end
+
 -- Create DoomGame instance. It will run the game and communicate with you.
 local game = vizdoom.DoomGame()
 
@@ -10,22 +18,17 @@ local game = vizdoom.DoomGame()
 game:loadConfig("../../scenarios/cig.cfg")
 
 -- Select game and map you want to use.
-game:setDoomGamePath("../../scenarios/freedoom2.wad")
--- Not provided with environment due to licences
--- game:setDoomGamePath("../../scenarios/doom2.wad")
-
 game:setDoomMap("map01") -- Limited deathmatch.
 --game:setDoomMap("map02") -- Full deathmatch.
 
 -- Join existing game.
-game:addGameArgs("-join 127.0.0.1") -- Connect to a host for a multiplayer game.
+game:addGameArgs("-join " .. ip) -- Connect to a host for a multiplayer game.
 
 -- Name your agent and select color
 -- colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue
 game:addGameArgs("+name AI +colorset 0")
 
-game:setMode(Mode.ASYNC_PLAYER);
-
+game:setMode(vizdoom.Mode.ASYNC_PLAYER) -- During the competition, async mode will be forced for all agents.
 --game:setWindowVisible(false)
 
 game:init();
