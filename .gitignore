@@ -98,6 +98,7 @@ src/vizdoom/zlib/x64/
 *.bcp
 *.lmp
 *.log
+*.zip
 **/doom2.wad
 **/doom.wad
 **/freedoom2.wad

@@ -4,8 +4,8 @@
 
 FREEDOOM_LINK="https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip"
 
-FREEDOOM_DOWNLOAD_PATH="./bin"
-FREEDOOM_DESTINATION_PATH="."
+FREEDOOM_DOWNLOAD_PATH="."
+FREEDOOM_DESTINATION_PATH="./bin"
 
 if [ ! -e  "${FREEDOOM_DESTINATION_PATH}/freedoom2.wad" ]
 then 

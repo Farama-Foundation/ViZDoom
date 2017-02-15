@@ -13,7 +13,7 @@ fi
 
 PK3_PATH="./bin/vizdoom.pk3"
 LUA_BIN_PATH="${PACKAGE_DEST_DIRECTORY}/vizdoom.so"
-FREEDOOM_PATH="./freedoom2.wad"
+FREEDOOM_PATH="./bin/freedoom2.wad"
 SCENARIOS_DEST_DIR="${PACKAGE_DEST_PATH}/scenarios"
 SCENARIOS_PATH="./scenarios"
 

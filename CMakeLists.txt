@@ -315,7 +315,6 @@ if (BUILD_LUA AND (NOT BUILD_LUA52))
 
     include_directories(${VIZDOOM_LUA_INCLUDE_DIR}
             ${Boost_INCLUDE_DIR}
-            ${PYTHON_INCLUDE_DIRS}
             ${LUA_INCLUDE_DIR}
             #${LUABIND_INCLUDE_DIRS}
             ${VIZDOOM_SRC_DIR}/lib_lua/luabind)
