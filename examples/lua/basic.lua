@@ -129,7 +129,7 @@ for i = 1, episodes do
         local state = game:getState()
 
         -- Which consists of:
-        local id          = state.id
+        local n           = state.number
         local vars        = state.gameVariables -- IntTensor
         local screenBuf   = state.screenBuffer -- ByteTensor
         local depthBuf    = state.depthBuffer
@@ -152,7 +152,7 @@ for i = 1, episodes do
         --reward = game:getLastReward()
 
         -- Prints state's reward.
-        print("State #" .. id)
+        print("State # " .. n)
         print("Game variables: " .. vars[1])
         print("Reward: " .. reward)
         print("=====================")

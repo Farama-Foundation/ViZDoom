@@ -398,7 +398,7 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def_readonly("object_position_z", &LabelPython::objectPositionZ);
 
     class_<GameStatePython>("GameState", no_init)
-        .def_readonly("id", &GameStatePython::id)
+        .def_readonly("number", &GameStatePython::number)
         .def_readonly("game_variables", &GameStatePython::gameVariables)
 
         .def_readonly("screen_buffer", &GameStatePython::screenBuffer)

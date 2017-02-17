@@ -62,7 +62,7 @@ for i in range(episodes):
 
         game.make_action(choice(actions))
 
-        print("State #" + str(state.id))
+        print("State #" + str(state.number))
         print("Player position X:", state.game_variables[0], "Y:", state.game_variables[1], "Z:", state.game_variables[2])
         print("Labels:")
 

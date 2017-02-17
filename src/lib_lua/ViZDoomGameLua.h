@@ -38,7 +38,7 @@ namespace vizdoom {
     namespace lb = luabind;
 
     struct GameStateLua {
-        unsigned int id;
+        unsigned int number;
 
         lb::object gameVariables;
 

@@ -56,7 +56,7 @@ public class Seed {
                 // Make random action and get reward
                 double reward = game.makeAction(actions.get(ran.nextInt(3)));
 
-                System.out.println("State #" + state.id);
+                System.out.println("State #" + state.number);
                 System.out.println("Action Reward: " + reward);
                 System.out.println("Seed: " + game.getSeed());
                 System.out.println("=====================");

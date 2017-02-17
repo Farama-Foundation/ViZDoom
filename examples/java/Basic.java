@@ -105,7 +105,7 @@ public class Basic {
                 // Get the state
                 GameState state = game.getState();
 
-                int id              = state.id;
+                int n               = state.number;
                 double[] vars       = state.gameVariables;
                 byte[] screenBuf    = state.screenBuffer;
                 byte[] depthBuf     = state.depthBuffer;
@@ -119,7 +119,7 @@ public class Basic {
                 // You can also get last reward by using this function
                 // double r = game.getLastReward();
 
-                System.out.println("State #" + id);
+                System.out.println("State #" + n);
                 System.out.println("Game variables: " + Arrays.toString(vars));
                 System.out.println("Action reward: " + r);
                 System.out.println("=====================");

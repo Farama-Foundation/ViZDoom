@@ -62,7 +62,7 @@ public class Shaping {
                 double sr = ssr - lastTotalShapingReward;
                 lastTotalShapingReward = ssr;
 
-                System.out.println("State #" + state.id);
+                System.out.println("State #" + state.number);
                 System.out.println("Health: " + Arrays.toString(state.gameVariables));
                 System.out.println("Action reward: " + reward);
                 System.out.println("Action shaping reward: " + sr);

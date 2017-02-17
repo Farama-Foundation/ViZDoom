@@ -330,7 +330,7 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
         /*------------------------------------------------------------------------------------------------------------*/
 
         class_<GameStateLua>("GameState")
-            .def_readonly("id", &GameStateLua::id)
+            .def_readonly("number", &GameStateLua::number)
             .def_readonly("gameVariables", &GameStateLua::gameVariables)
             .def_readonly("screenBuffer", &GameStateLua::screenBuffer)
             .def_readonly("depthBuffer", &GameStateLua::depthBuffer)

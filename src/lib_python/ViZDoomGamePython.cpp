@@ -55,7 +55,7 @@ namespace vizdoom {
 
         this->pyState = new GameStatePython();
 
-        this->pyState->id = this->state->id;
+        this->pyState->number = this->state->number;
 
         this->updateBuffersShapes();
         int colorDims = 3;

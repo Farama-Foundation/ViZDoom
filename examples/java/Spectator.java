@@ -51,7 +51,7 @@ public class Spectator {
                 int[] action = game.getLastAction();
                 double reward = game.getLastReward();
 
-                System.out.println("State #" + state.id);
+                System.out.println("State #" + state.number);
                 System.out.println("Game Variables: " + Arrays.toString(state.gameVariables));
                 System.out.println("Action: " + Arrays.toString(action));
                 System.out.println("Reward: " + reward);
