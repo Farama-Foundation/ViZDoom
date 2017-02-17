@@ -103,7 +103,7 @@ for i = 1, episodes do
         local action = actions[torch.random(#actions)]
         local reward = game:makeAction(action)
 
-        print("State #" .. state.id)
+        print("State #" .. state.number)
         print("=====================")
 
         if sleepTime > 0 then

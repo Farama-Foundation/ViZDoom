@@ -52,7 +52,7 @@ namespace vizdoom {
     };
 
     struct GameStatePython {
-        unsigned int id;
+        unsigned int number;
 
         bpya::object gameVariables;
         //bpy::list gameVariables;

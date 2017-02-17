@@ -71,7 +71,7 @@ int main(){
             // Make random action and get reward
             double reward = game->makeAction(actions[std::rand() % 3]);
 
-            std::cout << "State #" << state->id << "\n";
+            std::cout << "State #" << state->number << "\n";
             std::cout << "Action reward: " << reward << "\n";
             std::cout << "Seed: " << game->getSeed() << "\n";
             std::cout << "=====================\n";

@@ -53,7 +53,7 @@ for i = 1, episodes do
         local action = game:getLastAction()
         local reward = game:getLastReward()
 
-        print("State #" .. state.id)
+        print("State # " .. state.number)
         print("Reward: " .. reward)
         local actionSize = game:getAvailableButtonsSize()
         local actionStr = "Action:"

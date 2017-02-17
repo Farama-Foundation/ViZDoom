@@ -62,7 +62,7 @@ for i in range(episodes):
         # Makes a random action and save the reward.
         reward = game.make_action(choice(actions))
 
-        print("State #" + str(state.id))
+        print("State #" + str(state.number))
         print("Game Variables:", state.game_variables)
         print("Performed action:", game.get_last_action())
         print("Last Reward:", reward)

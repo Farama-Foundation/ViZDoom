@@ -56,7 +56,7 @@ for i in range(episodes):
         if not time % 50:
             action[3] = -action[3]
 
-        print("State #" + str(state.id))
+        print("State #" + str(state.number))
         print("Action made: ", action)
         print("=====================")
 

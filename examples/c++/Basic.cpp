@@ -111,7 +111,7 @@ int main() {
             GameStatePtr state = game->getState(); // GameStatePtr is std::shared_ptr<GameState>
 
             // Which consists of:
-            unsigned int id             = state->id;
+            unsigned int n              = state->number;
             std::vector<int> vars       = state->gameVariables;
             BufferPtr screenBuf         = state->screenBuffer;
             BufferPtr depthBuf          = state->depthBuffer;
@@ -135,7 +135,7 @@ int main() {
             //game.advanceAction(skiprate)
             //reward = game.getLastReward()
 
-            std::cout << "State #" << id << "\n";
+            std::cout << "State #" << n << "\n";
             std::cout << "Game variables: " << vars[0] << "\n";
             std::cout << "Action reward: " << reward << "\n";
             std::cout << "=====================\n";

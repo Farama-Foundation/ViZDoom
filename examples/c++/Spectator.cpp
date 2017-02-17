@@ -60,7 +60,7 @@ int main(){
             // And reward You get.
             double reward = game->getLastReward();
 
-            std::cout << "State #" << state->id << "\n";
+            std::cout << "State #" << state->number << "\n";
             std::cout << "Action made:";
             for(auto a: lastAction) std::cout << " " << a;
             std::cout << "\n";

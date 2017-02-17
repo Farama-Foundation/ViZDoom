@@ -187,7 +187,7 @@ namespace vizdoom {
         /* Update state */
         if (!this->isEpisodeFinished()) {
             this->state = std::make_shared<GameState>();
-            this->state->id = this->nextStateNumber++;
+            this->state->number = this->nextStateNumber++;
 
             this->state->gameVariables.resize(this->availableGameVariables.size());
 
