@@ -70,9 +70,9 @@ JNI_EXPORT(jobject, getState){
         jEnv->SetObjectArrayElement(jLabels, i, jLabel);
     }
 
-    jmethodID jStateConstructor = jEnv->GetMethodID(jStateClass, "<init>", "(I[D[B[B[B[B[Lvizdoom/Label;)V");
+    jmethodID jStateConstructor = jEnv->GetMethodID(jStateClass, "<init>", "(II[D[B[B[B[B[Lvizdoom/Label;)V");
     if (jStateConstructor == 0) return NULL;
-    jobject jState = jEnv->NewObject(jStateClass, jStateConstructor, (jint)state->number,
+    jobject jState = jEnv->NewObject(jStateClass, jStateConstructor, (jint)state->number, (jint)state->tic,
                                 jGameVariables, jScreenBuffer, jDepthBuffer, jLabelsBuffer, jAutomapBuffer, jLabels);
 
     return jState;
