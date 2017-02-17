@@ -29,6 +29,7 @@ function vizdoom.DoomGame:getState()
 
     local state = {
         ["number"] = _state.number,
+        ["tic"] = _state.tic,
         ["game_variables"] = nil,
 
         ["screenBuffer"] = nil,

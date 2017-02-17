@@ -39,6 +39,7 @@ namespace vizdoom {
 
     struct GameStateLua {
         unsigned int number;
+        unsigned int tic;
 
         lb::object gameVariables;
 

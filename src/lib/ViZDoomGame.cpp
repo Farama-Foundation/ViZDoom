@@ -188,6 +188,7 @@ namespace vizdoom {
         if (!this->isEpisodeFinished()) {
             this->state = std::make_shared<GameState>();
             this->state->number = this->nextStateNumber++;
+            this->state->tic = this->doomController->getMapTic();
 
             this->state->gameVariables.resize(this->availableGameVariables.size());
 

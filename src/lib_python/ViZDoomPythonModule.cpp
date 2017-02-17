@@ -399,6 +399,7 @@ BOOST_PYTHON_MODULE(vizdoom)
 
     class_<GameStatePython>("GameState", no_init)
         .def_readonly("number", &GameStatePython::number)
+        .def_readonly("tic", &GameStatePython::tic)
         .def_readonly("game_variables", &GameStatePython::gameVariables)
 
         .def_readonly("screen_buffer", &GameStatePython::screenBuffer)
