@@ -55,6 +55,10 @@
 #include "farchive.h"
 #include "r_renderer.h"
 
+//VIZDOOM_CODE
+#include "viz_main.h"
+EXTERN_CVAR (Int, viz_spectator)
+
 static FRandom pr_skullpop ("SkullPop");
 
 // [RH] # of ticks to complete a turn180
@@ -2135,7 +2139,9 @@ void P_DeathThink (player_t *player)
 	if ((player->cmd.ucmd.buttons & BT_USE ||
 		((multiplayer || alwaysapplydmflags) && (dmflags & DF_FORCE_RESPAWN))) && !(dmflags2 & DF2_NO_RESPAWN))
 	{
-		if (level.time >= player->respawn_time || ((player->cmd.ucmd.buttons & BT_USE) && player->Bot == NULL))
+        //VIZDOOM_CODE
+        if (level.time >= player->respawn_time && ((player->cmd.ucmd.buttons & BT_USE) && player->Bot == NULL))
+		//if (level.time >= player->respawn_time || ((player->cmd.ucmd.buttons & BT_USE) && player->Bot == NULL))
 		{
 			player->cls = NULL;		// Force a new class if the player is using a random class
 			player->playerstate = (multiplayer || (level.flags2 & LEVEL2_ALLOWRESPAWN)) ? PST_REBORN : PST_ENTER;
