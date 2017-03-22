@@ -37,7 +37,7 @@
 //
 
 #define DOOMCOM_ID		0x12345678l
-#define MAXNETNODES		8	// max computers in a game
+#define MAXNETNODES		16	// max computers in a game
 #define BACKUPTICS		36	// number of tics to remember
 #define MAXTICDUP		5
 #define LOCALCMDTICS	(BACKUPTICS*MAXTICDUP)
