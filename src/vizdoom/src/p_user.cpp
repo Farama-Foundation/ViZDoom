@@ -57,7 +57,6 @@
 
 //VIZDOOM_CODE
 #include "viz_main.h"
-EXTERN_CVAR (Int, viz_spectator)
 
 static FRandom pr_skullpop ("SkullPop");
 
@@ -2203,7 +2202,7 @@ void P_PlayerThink (player_t *player)
 
 	if (player->mo == NULL)
 	{
-		I_Error ("No player %td start\n", player - players + 1);
+        I_Error ("No player %td start\n", player - players + 1);
 	}
 
 	if (debugfile && !(player->cheats & CF_PREDICTING))
