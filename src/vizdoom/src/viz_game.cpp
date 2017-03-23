@@ -251,20 +251,13 @@ void VIZ_GameStateTic(){
         vizGameStateSM->PLAYER_COUNT = 0;
         for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
             if(playeringame[i]){
-                if(players[i].userinfo.GetSpectator() && players[i].mo != NULL) {
-                    //players[i].mo->UnlinkFromWorld ();
-                    players[i].mo->flags = MF_NOCLIP|MF_NOGRAVITY|MF_FRIENDLY;
-                    players[i].mo->flags2 |= MF2_FLY;
-                    players[i].mo->renderflags |= RF_INVISIBLE;
-                }
-
                 ++vizGameStateSM->PLAYER_COUNT;
                 vizGameStateSM->PLAYER_N_IN_GAME[i] = true;
                 strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = players[i].fragcount;
             }
             else{
-                strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
+                //strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = 0;
             }
         }
