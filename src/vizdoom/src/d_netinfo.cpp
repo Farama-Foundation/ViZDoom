@@ -72,6 +72,10 @@ CVAR (Float,	movebob,				0.25f,		CVAR_USERINFO | CVAR_ARCHIVE);
 CVAR (Float,	stillbob,				0.f,		CVAR_USERINFO | CVAR_ARCHIVE);
 CVAR (String,	playerclass,			"Fighter",	CVAR_USERINFO | CVAR_ARCHIVE);
 
+//VIZDOOM_CODE
+#include "viz_main.h"
+EXTERN_CVAR(Bool, viz_spectator)
+
 enum
 {
 	INFO_Name,
@@ -85,6 +89,9 @@ enum
 	INFO_StillBob,
 	INFO_PlayerClass,
 	INFO_ColorSet,
+
+	//VIZDOOM_CODE
+	INFO_Viz_Spectator
 };
 
 const char *GenderNames[3] = { "male", "female", "other" };
@@ -883,14 +890,14 @@ void ReadCompatibleUserInfo(FArchive &arc, userinfo_t &info)
 	char netname[MAXPLAYERNAME + 1];
 	BYTE team;
 	int aimdist, color, colorset, skin, gender;
-	bool neverswitch;
+	bool neverswitch, spectator;
 	//fixed_t movebob, stillbob;	These were never serialized!
 	//int playerclass;				"
 
 	info.Reset();
 
 	arc.Read(&netname, sizeof(netname));
-	arc << team << aimdist << color << skin << gender << neverswitch << colorset;
+	arc << team << aimdist << color << skin << gender << neverswitch << colorset << spectator;
 
 	*static_cast<FStringCVar *>(info[NAME_Name]) = netname;
 	*static_cast<FIntCVar *>(info[NAME_Team]) = team;
@@ -899,6 +906,9 @@ void ReadCompatibleUserInfo(FArchive &arc, userinfo_t &info)
 	*static_cast<FIntCVar *>(info[NAME_Gender]) = gender;
 	*static_cast<FBoolCVar *>(info[NAME_NeverSwitchOnPickup]) = neverswitch;
 	*static_cast<FIntCVar *>(info[NAME_ColorSet]) = colorset;
+
+	//VIZDOOM_CODE
+	*static_cast<FBoolCVar *>(info[NAME_VIZ_Spectator]) = spectator;
 
 	UCVarValue val;
 	val.Int = color;

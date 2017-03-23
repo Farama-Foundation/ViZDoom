@@ -1570,6 +1570,12 @@ void G_DeathMatchSpawnPlayer (int playernum)
 	unsigned int selections;
 	FPlayerStart *spot;
 
+//	VIZ_DebugMsg(0, VIZ_FUNC, "player %d, spectator: %d", playernum, players[playernum].userinfo.GetSpectator());
+//    if(!players[playernum].userinfo.GetSpectator()) {
+//        players[playernum].playerstate = PST_DEAD;
+//        return;
+//    }
+
 	selections = deathmatchstarts.Size ();
 	// [RH] We can get by with just 1 deathmatch start
 	if (selections < 1)

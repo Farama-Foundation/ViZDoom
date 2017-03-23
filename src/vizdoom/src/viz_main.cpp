@@ -101,9 +101,9 @@ CVAR (Bool, viz_nosound, false, CVAR_NOSET)
 // multiplayer/recordings
 CVAR (Int, viz_override_player, 0, 0)
 CVAR (Bool, viz_loop_map, false, CVAR_NOSET)
-CVAR (Bool, viz_spectator, false, CVAR_NOSET)
-CVAR (Bool, viz_nocheat, false, CVAR_NOSET|CVAR_SERVERINFO)
-CVAR (Int, viz_respawn_delay, 1, CVAR_DEMOSAVE|CVAR_SERVERINFO)
+CVAR (Bool, viz_nocheat, false, CVAR_NOSET | CVAR_SERVERINFO)
+CVAR (Int, viz_respawn_delay, 1, CVAR_DEMOSAVE | CVAR_SERVERINFO)
+CVAR (Bool, viz_spectator, false, CVAR_USERINFO)
 
 CCMD(viz_set_seed){
     viz_seed.CmdSet(argv[1]);
@@ -144,7 +144,7 @@ void VIZ_FreezeTime (bool frozen){
     //if (*viz_allow_input) _I_FreezeTime(frozen);
     vizFreeze = frozen;
 }
-
+//players[playernum].userinfo.GetSpectator()
 void VIZ_Init(){
     if(*viz_controlled) {
         Printf("VIZ_Init: instance id: %s, async: %d, input: %d\n", *viz_instance_id, *viz_async, *viz_allow_input);
@@ -173,6 +173,8 @@ void VIZ_Init(){
             I_FreezeTime = &VIZ_FreezeTime;
         }
     }
+
+    Printf("VIZ_Init: specatator name: %s\n", viz_spectator.GetName());
 }
 
 void VIZ_Close(){
@@ -206,13 +208,13 @@ void VIZ_Tic(){
             + "viz_controlled: %d, viz_instance_id: %d, viz_seed: %d, viz_async: %d, viz_allow_input: %d, viz_sync_timeout: %d"
             + ", viz_screen_format: %d, viz_depth: %d, viz_labels: %d, viz_automap: %d, viz_render_mode: %d, viz_automap_mode: %d"
             + ", viz_render_corpses: %d, viz_render_all: %d, viz_window_hidden: %d, viz_noxserver: %d, viz_noconsole: %d, viz_nosound: %d"
-            + ", viz_override_player: %d, viz_loop_map: %d, viz_spectator: %d, viz_nocheat: %d, viz_respawn_delay: %d";
+            + ", viz_override_player: %d, viz_loop_map: %d, viz_nocheat: %d, viz_respawn_delay: %d";
 
         VIZ_DebugMsg(5, VIZ_FUNC, vizCvarsStateMsg.c_str(),
                      *viz_controlled, *viz_instance_id, *viz_seed, *viz_async, *viz_allow_input, *viz_sync_timeout,
                      *viz_screen_format, *viz_depth, *viz_labels, *viz_automap, *viz_render_mode, *viz_automap_mode,
                      *viz_render_corpses, *viz_render_all, *viz_window_hidden, *viz_noxserver, *viz_noconsole, *viz_nosound,
-                     *viz_override_player, *viz_loop_map, *viz_spectator, *viz_nocheat, *viz_respawn_delay);
+                     *viz_override_player, *viz_loop_map, *viz_nocheat, *viz_respawn_delay);
     }
 
     VIZ_InterruptionPoint();
@@ -268,7 +270,7 @@ EXTERN_CVAR(Int, wipetype)
 
 // hud
 EXTERN_CVAR(Int, screenblocks)
-EXTERN_CVAR (Bool, st_scale)
+EXTERN_CVAR(Bool, st_scale)
 EXTERN_CVAR(Bool, hud_scale)
 EXTERN_CVAR(Bool, hud_althud)
 
