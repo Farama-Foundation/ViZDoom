@@ -59,7 +59,7 @@ while not game:isEpisodeFinished() do
         game:respawnPlayer()
     end
 
-    print("Frags:", game:getGameVariable(vizdoom.GameVariable.FRAGCOUNT))
+    --print("Frags:", game:getGameVariable(vizdoom.GameVariable.FRAGCOUNT))
 end
 
 game:close()

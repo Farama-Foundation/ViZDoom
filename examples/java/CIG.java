@@ -7,10 +7,10 @@ public class CIG {
 
     public static void main (String[] args) {
 
-        DoomGame game = new DoomGame();
-
         System.out.println("\n\nCIG EXAMPLE\n");
 
+
+        DoomGame game = new DoomGame();
 
         // Use CIG example config or Your own.
         game.loadConfig("../../scenarios/cig.cfg");
