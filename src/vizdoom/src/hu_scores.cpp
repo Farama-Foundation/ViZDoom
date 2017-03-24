@@ -268,7 +268,9 @@ static void HU_DoDrawScores (player_t *player, player_t *sortedplayers[MAXPLAYER
 
 		for (i = 0; i < MAXPLAYERS; ++i)
 		{
-			if (playeringame[sortedplayers[i]-players] && TeamLibrary.IsValidTeam (sortedplayers[i]->userinfo.GetTeam()))
+			//VIZDOOM_CODE
+			if (playeringame[sortedplayers[i]-players] && TeamLibrary.IsValidTeam (sortedplayers[i]->userinfo.GetTeam())
+					&& !sortedplayers[i]->userinfo.GetSpectator())
 			{
 				if (Teams[sortedplayers[i]->userinfo.GetTeam()].m_iPlayerCount++ == 0)
 				{
@@ -339,7 +341,8 @@ static void HU_DoDrawScores (player_t *player, player_t *sortedplayers[MAXPLAYER
 
 	for (i = 0; i < MAXPLAYERS && y <= bottom; i++)
 	{
-		if (playeringame[sortedplayers[i] - players])
+        //VIZDOOM_CODE
+		if (playeringame[sortedplayers[i] - players] && !sortedplayers[i]->userinfo.GetSpectator())
 		{
 			HU_DrawPlayer(sortedplayers[i], player == sortedplayers[i], x, col2, col3, col4, col5, maxnamewidth, y, ypadding, lineheight);
 			y += lineheight + CleanYfac;

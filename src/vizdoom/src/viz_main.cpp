@@ -74,6 +74,7 @@ CVAR (Bool, viz_debug_instances, 0, CVAR_NOSET) // prints instance id with every
 CVAR (Bool, viz_controlled, false, CVAR_NOSET)
 CVAR (String, viz_instance_id, "0", CVAR_NOSET)
 CVAR (Int, viz_seed, 0, CVAR_NOSET)
+CVAR (Bool, viz_cmd_filter, true, CVAR_NOSET)
 
 // modes
 CVAR (Bool, viz_async, false, CVAR_NOSET)
@@ -98,9 +99,12 @@ CVAR (Bool, viz_noxserver, false, CVAR_NOSET)
 CVAR (Bool, viz_noconsole, false, CVAR_NOSET)
 CVAR (Bool, viz_nosound, false, CVAR_NOSET)
 
+// multiplayer/recordings
 CVAR (Int, viz_override_player, 0, 0)
-CVAR (Bool, viz_loop_map, false, CVAR_NOSET)
-CVAR (Bool, viz_nocheat, false, CVAR_NOSET)
+CVAR (Bool, viz_loop_map, false, CVAR_NOSET | CVAR_SERVERINFO)
+CVAR (Bool, viz_nocheat, false, CVAR_NOSET | CVAR_SERVERINFO)
+CVAR (Int, viz_respawn_delay, 1, CVAR_DEMOSAVE | CVAR_SERVERINFO)
+CVAR (Bool, viz_spectator, false, CVAR_USERINFO)
 
 CCMD(viz_set_seed){
     viz_seed.CmdSet(argv[1]);
@@ -141,7 +145,7 @@ void VIZ_FreezeTime (bool frozen){
     //if (*viz_allow_input) _I_FreezeTime(frozen);
     vizFreeze = frozen;
 }
-
+//players[playernum].userinfo.GetSpectator()
 void VIZ_Init(){
     if(*viz_controlled) {
         Printf("VIZ_Init: instance id: %s, async: %d, input: %d\n", *viz_instance_id, *viz_async, *viz_allow_input);
@@ -170,6 +174,8 @@ void VIZ_Init(){
             I_FreezeTime = &VIZ_FreezeTime;
         }
     }
+
+    VIZ_CVARsInit();
 }
 
 void VIZ_Close(){
@@ -197,6 +203,20 @@ void VIZ_Tic(){
 
     VIZ_DebugMsg(2, VIZ_FUNC, "tic: %d, vizTime: %d", gametic, vizTime);
     VIZ_DebugMsg(4, VIZ_FUNC, "rngseed: %d, use_staticrng: %d, staticrngseed: %d", rngseed, use_staticrng, staticrngseed);
+
+    if(*viz_debug >= 5){
+        std::string vizCvarsStateMsg = std::string("viz_cvars: ")
+            + "viz_controlled: %d, viz_instance_id: %d, viz_seed: %d, viz_async: %d, viz_allow_input: %d, viz_sync_timeout: %d"
+            + ", viz_screen_format: %d, viz_depth: %d, viz_labels: %d, viz_automap: %d, viz_render_mode: %d, viz_automap_mode: %d"
+            + ", viz_render_corpses: %d, viz_render_all: %d, viz_window_hidden: %d, viz_noxserver: %d, viz_noconsole: %d, viz_nosound: %d"
+            + ", viz_override_player: %d, viz_loop_map: %d, viz_nocheat: %d, viz_respawn_delay: %d";
+
+        VIZ_DebugMsg(5, VIZ_FUNC, vizCvarsStateMsg.c_str(),
+                     *viz_controlled, *viz_instance_id, *viz_seed, *viz_async, *viz_allow_input, *viz_sync_timeout,
+                     *viz_screen_format, *viz_depth, *viz_labels, *viz_automap, *viz_render_mode, *viz_automap_mode,
+                     *viz_render_corpses, *viz_render_all, *viz_window_hidden, *viz_noxserver, *viz_noconsole, *viz_nosound,
+                     *viz_override_player, *viz_loop_map, *viz_nocheat, *viz_respawn_delay);
+    }
 
     VIZ_InterruptionPoint();
 
@@ -251,7 +271,7 @@ EXTERN_CVAR(Int, wipetype)
 
 // hud
 EXTERN_CVAR(Int, screenblocks)
-EXTERN_CVAR (Bool, st_scale)
+EXTERN_CVAR(Bool, st_scale)
 EXTERN_CVAR(Bool, hud_scale)
 EXTERN_CVAR(Bool, hud_althud)
 
@@ -301,6 +321,14 @@ EXTERN_CVAR(Bool, am_showtotaltime)
 #ifdef VIZ_OS_WIN
     EXTERN_CVAR(Bool, vid_forceddraw);
 #endif
+
+void VIZ_CVARsInit(){
+    if(*viz_spectator){
+        screenblocks.CmdSet("12");
+        crosshair.CmdSet("0");
+        r_drawplayersprites.CmdSet("0");
+    }
+}
 
 void VIZ_CVARsUpdate(){
 
@@ -384,6 +412,8 @@ void VIZ_CVARsUpdate(){
 
     // flashes
     //TODO
+
+    VIZ_CVARsInit();
 }
 
 

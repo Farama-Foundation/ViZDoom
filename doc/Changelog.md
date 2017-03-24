@@ -1,8 +1,17 @@
 # Changelog
 
+## Changes in 1.1.2
+
+#### Multiplayer
+- Added `viz_respawn_delay` CVAR, which allows to control delay between respawns in multiplayer game.
+- Added `viz_spectator` CVAR which allows to connect to multiplayer game as a spectator.
+- Maximum number of connected players raised to 16.
+
+
 ## Changes in 1.1.1
 
 #### GameState
+- Added `tic` field.
 - `GameVariable.DEATHCOUNT` fixed.
 
 #### Lua specific
@@ -65,6 +74,7 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 - Bugs associated with paths handling fixed.
 - Many minor bugs fixed.
 - Possibility to change scenario wad during runtime (only first map from WAD file).
+- Added `viz_debug` CVAR to control some diagnostic massages.
 
 
 #### C++ specific

@@ -23,7 +23,8 @@ int main(){
 
     // Start multiplayer game only with Your AI (with options that will be used in the competition, details in CIGHost example).
     game->addGameArgs("-host 1 -deathmatch +timelimit 1.0 "
-                      "+sv_forcerespawn 1 +sv_noautoaim 1 +sv_respawnprotect 1 +sv_spawnfarthest 1");
+                      "+sv_forcerespawn 1 +sv_noautoaim 1 +sv_respawnprotect 1 +sv_spawnfarthest 1 +sv_nocrouch 1 "
+                      "+viz_respawn_delay 10 +viz_nocheat 1");
 
     // Name your agent and select color
     // colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue

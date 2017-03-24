@@ -44,7 +44,7 @@ EXTERN_CVAR (Bool, viz_labels)
 EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_loop_map)
 EXTERN_CVAR (Bool, viz_override_player)
-
+EXTERN_CVAR (Bool, viz_spectator)
 EXTERN_CVAR (Float, timelimit)
 
 VIZGameState *vizGameStateSM = NULL;
@@ -257,7 +257,7 @@ void VIZ_GameStateTic(){
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = players[i].fragcount;
             }
             else{
-                strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
+                //strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = 0;
             }
         }

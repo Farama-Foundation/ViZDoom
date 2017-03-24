@@ -29,6 +29,8 @@ int main(){
                       "+sv_noautoaim 1 "        // Autoaim is disabled for all players.
                       "+sv_respawnprotect 1 "   // Players will be invulnerable for two second after spawning.
                       "+sv_spawnfarthest 1 "    // Players will be spawned as far as possible from any other players.
+                      "+sv_nocrouch 1 "         // Disables crouching.
+                      "+viz_respawn_delay 10 "  // Sets delay between respanws (in seconds).
                       "+viz_nocheat 1");        // Disables depth and labels buffer and the ability to use commands that could interfere with multiplayer game.
 
     // Name your agent and select color

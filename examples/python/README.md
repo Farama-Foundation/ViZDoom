@@ -14,10 +14,10 @@ Demonstrates how to use the most basic features of the environment. It configure
 ###[buffers.py](https://github.com/Marqt/ViZDoom/blob/master/examples/python/buffers.py)
 
 ###[cig.py](https://github.com/Marqt/ViZDoom/blob/master/examples/python/cig.py), [cig_host.py](https://github.com/Marqt/ViZDoom/blob/master/examples/python/cig_host.py)
-Demonstrates how to configure and play multiplayer game for CIG 2016 competition.
+Demonstrates how to configure and play multiplayer game for CIG competition.
 
 ###[cig_bots.py](https://github.com/Marqt/ViZDoom/blob/master/examples/python/cig_bots.py)
-Demonstrates how to play with bots to simulate multiplayer game. Helpful for developing AI agent for CIG 2016 competition.
+Demonstrates how to play with bots to simulate multiplayer game. Helpful for developing AI agent for CIG competition.
 
 ###[delta_buttons.py](https://github.com/Marqt/ViZDoom/blob/master/examples/python/delta_buttons.py)
 Shows how delta buttons work (they may take values other than 0 and 1 and can be used for precise movement).
