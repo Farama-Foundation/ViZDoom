@@ -4,7 +4,6 @@ from __future__ import division
 from __future__ import print_function
 from vizdoom import *
 import itertools as it
-import pickle
 from random import sample, randint, random
 from time import time, sleep
 import numpy as np
@@ -215,7 +214,7 @@ if __name__ == '__main__':
         print("Loading model from: ", model_savefile)
         saver.restore(session, model_savefile)
     else:
-        init = tf.initialize_all_variables()
+        init = tf.global_variables_initializer()
         session.run(init)
     print("Starting the training!")
 
@@ -228,7 +227,7 @@ if __name__ == '__main__':
 
             print("Training...")
             game.new_episode()
-            for learning_step in trange(learning_steps_per_epoch):
+            for learning_step in trange(learning_steps_per_epoch, leave=False):
                 perform_learning_step(epoch)
                 if game.is_episode_finished():
                     score = game.get_total_reward()
@@ -246,7 +245,7 @@ if __name__ == '__main__':
             print("\nTesting...")
             test_episode = []
             test_scores = []
-            for test_episode in trange(test_episodes_per_epoch):
+            for test_episode in trange(test_episodes_per_epoch, leave=False):
                 game.new_episode()
                 while not game.is_episode_finished():
                     state = preprocess(game.get_state().screen_buffer)
@@ -263,7 +262,6 @@ if __name__ == '__main__':
 
             print("Saving the network weigths to:", model_savefile)
             saver.save(session, model_savefile)
-            # pickle.dump(get_all_param_values(net), open('weights.dump', "wb"))
 
             print("Total elapsed time: %.2f minutes" % ((time() - time_start) / 60.0))
 
