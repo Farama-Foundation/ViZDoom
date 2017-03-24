@@ -40,6 +40,9 @@ unsigned int vizLastInputUpdate[VIZ_BT_COUNT];
 
 EXTERN_CVAR (Bool, viz_debug)
 EXTERN_CVAR (Bool, viz_allow_input)
+EXTERN_CVAR (Bool, viz_nocheat)
+EXTERN_CVAR (Bool, viz_cmd_filter)
+EXTERN_CVAR (Bool, viz_spectator)
 
 void VIZ_Command(char * cmd){
     AddCommandString(cmd);
@@ -49,7 +52,8 @@ bool VIZ_CommmandFilter(const char *cmd){
 
     VIZ_DebugMsg(3, VIZ_FUNC, "allow_input: %d, cmd: %s", *viz_allow_input, cmd);
 
-    if(!vizInputInited || !*viz_allow_input) return true;
+    if(*viz_spectator && (strcmp(cmd, "+attack") == 0 || strcmp(cmd, "+altattack") == 0)) return false;
+    if(!vizInputInited || !*viz_allow_input || (!*viz_cmd_filter && (!*viz_nocheat || *viz_spectator))) return true;
 
     bool action = false;
     int state = 1;
@@ -89,7 +93,7 @@ bool VIZ_CommmandFilter(const char *cmd){
         return false;
     }
 
-    for(int i = 0; i<VIZ_BT_CMD_BT_COUNT; ++i){
+    for(int i = 0; i < VIZ_BT_CMD_BT_COUNT; ++i){
 
 		char * ckeckCmd = VIZ_BTToCommand((VIZButton)i);
 

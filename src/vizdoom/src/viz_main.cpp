@@ -74,6 +74,7 @@ CVAR (Bool, viz_debug_instances, 0, CVAR_NOSET) // prints instance id with every
 CVAR (Bool, viz_controlled, false, CVAR_NOSET)
 CVAR (String, viz_instance_id, "0", CVAR_NOSET)
 CVAR (Int, viz_seed, 0, CVAR_NOSET)
+CVAR (Bool, viz_cmd_filter, true, CVAR_NOSET)
 
 // modes
 CVAR (Bool, viz_async, false, CVAR_NOSET)
@@ -100,7 +101,7 @@ CVAR (Bool, viz_nosound, false, CVAR_NOSET)
 
 // multiplayer/recordings
 CVAR (Int, viz_override_player, 0, 0)
-CVAR (Bool, viz_loop_map, false, CVAR_NOSET)
+CVAR (Bool, viz_loop_map, false, CVAR_NOSET | CVAR_SERVERINFO)
 CVAR (Bool, viz_nocheat, false, CVAR_NOSET | CVAR_SERVERINFO)
 CVAR (Int, viz_respawn_delay, 1, CVAR_DEMOSAVE | CVAR_SERVERINFO)
 CVAR (Bool, viz_spectator, false, CVAR_USERINFO)
@@ -174,7 +175,7 @@ void VIZ_Init(){
         }
     }
 
-    Printf("VIZ_Init: specatator name: %s\n", viz_spectator.GetName());
+    VIZ_CVARsInit();
 }
 
 void VIZ_Close(){
@@ -321,6 +322,14 @@ EXTERN_CVAR(Bool, am_showtotaltime)
     EXTERN_CVAR(Bool, vid_forceddraw);
 #endif
 
+void VIZ_CVARsInit(){
+    if(*viz_spectator){
+        screenblocks.CmdSet("12");
+        crosshair.CmdSet("0");
+        r_drawplayersprites.CmdSet("0");
+    }
+}
+
 void VIZ_CVARsUpdate(){
 
     VIZ_DebugMsg(3, VIZ_FUNC, "mode: %d", *viz_render_mode);
@@ -403,6 +412,8 @@ void VIZ_CVARsUpdate(){
 
     // flashes
     //TODO
+
+    VIZ_CVARsInit();
 }
 
 
