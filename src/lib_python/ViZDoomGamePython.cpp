@@ -225,16 +225,18 @@ namespace vizdoom {
         return vector;
     }
 
-    bpy::object DoomGamePython::dataToNumpyArray(int dims, npy_intp * shape, int type, void * data){
+    bpy::object DoomGamePython::dataToNumpyArray(int dims, npy_intp *shape, int type, void *data) {
         PyObject *pyArray = PyArray_SimpleNewFromData(dims, shape, type, data);
         /* This line makes a copy: */
-        pyArray = PyArray_FROM_OTF(pyArray, type, NPY_ARRAY_ENSURECOPY | NPY_ARRAY_ENSUREARRAY);
-        bpy::handle<> numpyHandle = bpy::handle<>(pyArray);
-        bpy::object numpyArray = bpy::object(numpyHandle);
+        PyObject *pyArrayCopied = PyArray_FROM_OTF(pyArray, type, NPY_ARRAY_ENSURECOPY | NPY_ARRAY_ENSUREARRAY);
+        /* And this line gets rid of the old object which caused a memory leak: */
+        Py_DECREF(pyArray);
 
+        bpy::handle<> numpyArrayBoostHandle = bpy::handle<>(pyArrayCopied);
+        bpy::object boostNumpyArray = bpy::object(numpyArrayBoostHandle);
         /* This line caused occasional segfaults in python3 */
         //bpyn::array numpyArray = bpyn::array(numpyHandle);
 
-        return numpyArray;
+        return boostNumpyArray;
     }
 }

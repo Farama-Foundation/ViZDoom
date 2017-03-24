@@ -17,6 +17,10 @@
 #### Lua specific
 - Fixed crash when calling `getState` in terminal state.
 
+#### Python specific
+- Fixed minor memory leak
+- Fixed crash when calling `getState` in terminal state.
+
 
 ## Changes in 1.1.0
 
