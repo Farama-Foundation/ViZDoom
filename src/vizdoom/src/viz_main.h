@@ -39,6 +39,8 @@ void VIZ_Tic();
 
 void VIZ_Update();
 
+void VIZ_CVARsInit();
+
 void VIZ_CVARsUpdate();
 
 void VIZ_Close();

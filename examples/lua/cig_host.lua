@@ -21,7 +21,12 @@ game:addGameArgs("-host 2 " ..              -- This machine will function as a h
                  "+sv_noautoaim 1 " ..      -- Autoaim is disabled for all players.
                  "+sv_respawnprotect 1 " .. -- Players will be invulnerable for two second after spawning.
                  "+sv_spawnfarthest 1 " ..  -- Players will be spawned as far as possible from any other players.
+                 "+sv_nocrouch 1" ..        -- Disables crouching.
+                 "+viz_respawn_delay 10 " ..-- Sets delay between respanws (in seconds).
                  "+viz_nocheat 1")          -- Disables depth and labels buffer and the ability to use commands that could interfere with multiplayer game.
+
+-- This can be used to host game without taking part in it (can be simply added as argument of vizdoom executable).
+--game:add_game_args("viz_spectator 1")
 
 -- Name your agent and select color
 -- colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue
@@ -58,7 +63,7 @@ while not game:isEpisodeFinished() do
         game:respawnPlayer()
     end
 
-    print("Frags:", game:getGameVariable(vizdoom.GameVariable.FRAGCOUNT))
+    --print("Frags:", game:getGameVariable(vizdoom.GameVariable.FRAGCOUNT))
 end
 
 game:close()

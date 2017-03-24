@@ -20,10 +20,10 @@ To run the examples, [freedoom2.wad]( https://freedoom.github.io/download.html) 
 Demonstrates how to use the most basic features of the environment. It configures the engine, and makes the agent perform random actions. It also prints the current state and the reward earned with every action.
 
 ###[CIG.java](https://github.com/Marqt/ViZDoom/blob/master/examples/java/CIG.java), [CIGHost.java](https://github.com/Marqt/ViZDoom/blob/master/examples/java/CIGHost.java)
-Demonstrates how to configure and play multiplayer game for CIG 2016 competition.
+Demonstrates how to configure and play multiplayer game for CIG competition.
 
 ###[CIGBots.java](https://github.com/Marqt/ViZDoom/blob/master/examples/java/CIGBots.java)
-Demonstrates how to play with bots to simulate multiplayer game. Helpful for developing AI agent for CIG 2016 competition.
+Demonstrates how to play with bots to simulate multiplayer game. Helpful for developing AI agent for CIG competition.
 
 ###[DeltaButtons.java](https://github.com/Marqt/ViZDoom/blob/master/examples/java/DeltaButtons.java)
 Shows how delta buttons work (they may take values other than 0 and 1 and can be used for precise movement).
