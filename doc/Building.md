@@ -12,7 +12,7 @@
 
 ViZDoom for Python can be installed via **pip** on Linux and MacOS and it is strongly recommended. However you will still need to install the  **[dependencies](#linux_deps)**. Without pip installation you need to have vizdoom.so in the execution directory and specify paths to vizdoom and freedoom2.wad manually which is quite annoying.
 
-> Pip installation is not supported on Windows at the moment but soon it will.
+> Pip installation is not supported on Windows at the moment but we hope some day it will.
 
 To install the most stable official release from [PyPI](https://pypi.python.org/pypi):
 ```bash
