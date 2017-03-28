@@ -1,7 +1,5 @@
 FROM ubuntu:16.04
 
-FROM nvidia/cuda:8.0-cudnn5-devel
-
 # ViZdoom dependencies
 RUN apt-get update
 RUN apt-get install -y \
@@ -58,11 +56,9 @@ RUN export uid=${HOST_UID} gid=${HOST_GID} && \
 
 RUN git clone https://github.com/mwydmuch/ViZDoom ${HOME_DIR}/vizdoom
 RUN pip3 install ${HOME_DIR}/vizdoom
-RUN pip3 install tensorflow-gpu
-RUN pip3 install matplotlib scipy scikit-image tqdm
 
 USER ${USER_NAME}
 WORKDIR ${HOME_DIR}
 
 
-CMD cd vizdoom/examples/python; python3 learning_tensorflow.py
+CMD cd vizdoom/examples/python; python3 basic.py
