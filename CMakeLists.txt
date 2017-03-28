@@ -202,13 +202,13 @@ if (BUILD_PYTHON AND (NOT BUILD_PYTHON3))
             OUTPUT_NAME vizdoom
             PROJECT_LABEL "Python 2 binding")
 
-    # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
-    add_dependencies(libvizdoom_python vizdoom pk3 freedoom2)
-
     if (UNIX)
-        add_custom_command(TARGET libvizdoom_python
+        add_custom_target(python_pip_package ALL
                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh 2
                 COMMENT "Assembling pip package in ${VIZDOOM_PYTHON2_OUTPUT_DIR}/pip_package")
+
+        # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
+        add_dependencies(python_pip_package libvizdoom_python vizdoom pk3 freedoom2)
     endif ()
 
 endif ()
@@ -277,13 +277,16 @@ if (BUILD_PYTHON3)
             OUTPUT_NAME vizdoom
             PROJECT_LABEL "Python 3 binding")
 
-    # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
+
     add_dependencies(libvizdoom_python3 vizdoom pk3 freedoom2)
 
     if (UNIX)
-        add_custom_command(TARGET libvizdoom_python3
+        add_custom_target(python3_pip_package ALL
                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh 3
                 COMMENT "Assembling pip package in ${VIZDOOM_PYTHON3_OUTPUT_DIR}/pip_package")
+
+        # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
+        add_dependencies(python3_pip_package libvizdoom_python3 vizdoom pk3 freedoom2)
     endif ()
 
 
@@ -338,13 +341,13 @@ if (BUILD_LUA AND (NOT BUILD_LUA52))
             OUTPUT_NAME vizdoom
             PROJECT_LABEL "Lua binding")
 
-    # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
-    add_dependencies(libvizdoom_lua vizdoom pk3 freedoom2)
-
     if (UNIX)
-        add_custom_command(TARGET libvizdoom_lua
+        add_custom_target(luarocks_package ALL
                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_luarocks_package.sh
                 COMMENT "Assembling luarocks package in ${VIZDOOM_LUA_OUTPUT_DIR}/luarocks_package")
+
+        # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
+        add_dependencies(luarocks_package libvizdoom_lua vizdoom pk3 freedoom2)
     endif ()
 
 endif ()
@@ -442,5 +445,6 @@ endif ()
 
 if (UNIX)
     add_custom_target(freedoom2 ALL
-            COMMAND ./scripts/download_freedoom.sh)
+            COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/download_freedoom.sh
+            COMMENT "Downloading freedoom2.wad")
 endif ()
