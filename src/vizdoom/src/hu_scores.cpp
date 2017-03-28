@@ -350,6 +350,7 @@ static void HU_DoDrawScores (player_t *player, player_t *sortedplayers[MAXPLAYER
 	}
 }
 
+//VIZDOOM_CODE
 //==========================================================================
 //
 // HU_DrawTimeRemaining
@@ -358,29 +359,58 @@ static void HU_DoDrawScores (player_t *player, player_t *sortedplayers[MAXPLAYER
 
 static void HU_DrawTimeRemaining (int y)
 {
-	if (deathmatch && timelimit && gamestate == GS_LEVEL)
-	{
-		char str[80];
-		int timeleft = (int)(timelimit * TICRATE * 60) - level.maptime;
-		int hours, minutes, seconds;
+    if(deathmatch && gamestate == GS_LEVEL){
 
-		if (timeleft < 0)
-			timeleft = 0;
+        int hours = 0, minutes = 0, seconds = 0;
+        int minutesToRespawn = 0, secondsToRespawn = 0;
+        char str[80];
+        bool draw = false;
 
-		hours = timeleft / (TICRATE * 3600);
-		timeleft -= hours * TICRATE * 3600;
-		minutes = timeleft / (TICRATE * 60);
-		timeleft -= minutes * TICRATE * 60;
-		seconds = timeleft / TICRATE;
+        if(players[consoleplayer].playerstate == PST_DEAD) {
+            int timeleftToRespawn = players[consoleplayer].respawn_time - level.time;
 
-		if (hours)
-			mysnprintf (str, countof(str), "Level ends in %d:%02d:%02d", hours, minutes, seconds);
-		else
-			mysnprintf (str, countof(str), "Level ends in %d:%02d", minutes, seconds);
-		
-		screen->DrawText (SmallFont, CR_GREY, SCREENWIDTH/2 - SmallFont->StringWidth (str)/2*CleanXfac,
-			y, str, DTA_CleanNoMove, true, TAG_DONE);
-	}
+            if (timeleftToRespawn < 0)
+                timeleftToRespawn = 0;
+
+            minutesToRespawn = timeleftToRespawn / (TICRATE * 60);
+            timeleftToRespawn -= minutesToRespawn * TICRATE * 60;
+            secondsToRespawn = timeleftToRespawn / TICRATE;
+            draw = true;
+        }
+
+        if(timelimit){
+            int timeleft = (int)(timelimit * TICRATE * 60) - level.maptime;
+
+            if (timeleft < 0)
+                timeleft = 0;
+
+            hours = timeleft / (TICRATE * 3600);
+            timeleft -= hours * TICRATE * 3600;
+            minutes = timeleft / (TICRATE * 60);
+            timeleft -= minutes * TICRATE * 60;
+            seconds = timeleft / TICRATE;
+            draw = true;
+        }
+
+        if (players[consoleplayer].playerstate == PST_DEAD && timelimit){
+            if(hours)
+                mysnprintf (str, countof(str), "Level ends in %d:%02d:%02d, respawn in %d:%02d", hours, minutes, seconds, minutesToRespawn, secondsToRespawn);
+            else
+                mysnprintf (str, countof(str), "Level ends in %d:%02d, respawn in %d:%02d", minutes, seconds, minutesToRespawn, secondsToRespawn);
+        }
+        else if(timelimit){
+            if (hours)
+                mysnprintf (str, countof(str), "Level ends in %d:%02d:%02d", hours, minutes, seconds);
+            else
+                mysnprintf (str, countof(str), "Level ends in %d:%02d", minutes, seconds);
+        }
+        else if(players[consoleplayer].playerstate == PST_DEAD){
+            mysnprintf (str, countof(str), "Respawn in %d:%02d", minutesToRespawn, secondsToRespawn);
+        }
+
+        if(draw)
+            screen->DrawText (SmallFont, CR_GREY, SCREENWIDTH/2 - SmallFont->StringWidth (str)/2*CleanXfac, y, str, DTA_CleanNoMove, true, TAG_DONE);
+    }
 }
 
 //==========================================================================
