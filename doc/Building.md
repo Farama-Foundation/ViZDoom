@@ -6,7 +6,8 @@
 * [Building on Windows](#windows)
 * [Building on MacOS/OSX](#osx)
 * [Compilation output](#output)
-
+* [Building against Anaconda](#anaconda)
+* [Building against Torch's LuaJIT](#torchluajit)
 
 ## <a name="pypi"></a> Installation via PyPI (recommended for Python users)
 
@@ -152,7 +153,27 @@ Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should cont
 * ``bin/lua/vizdoom`` - ViZDoom Lua module
 
 
-## Torch7 Lua bindings (Linux and MacOS)
+## <a name="anaconda"></a> Anaconda bindings
+If you want to build against Anaconda, you may need to manually set:
+
+```
+cmake -DCMAKE_BUILD_TYPE=Release \
+-DBUILD_PYTHON=ON \ (or -DBUILD_PYTHON3=ON for Anaconda with Python 3)
+-DPYTHON_INCLUDE_DIR=/path_to_anaconda_root_dir/include/pythonx.x \
+-DPYTHON_LIBRARY=/path_to_anaconda_root_dir/lib/libpythonx.x.so (or dll/dylib) \
+-DPYTHON_EXECUTABLE=/path_to_anaconda_root_dir/bin/pythonx \
+-DBOOST_PYTHON_LIBRARY=/path_to_boost_lib_dir/libboost_python-pyxx.so (or dll/dylib) \ (or -DBOOST_PYTHON3_LIBRARY=... for Anaconda with Python 3)
+-DNUMPY_INCLUDES=/path_to_anaconda_root_dir/lib/pythonx.x/site-packages/numpy/core/include
+```
+
+Manual installation:
+Copy `vizdoom_root_dir/bin/python2/pip_package` or `vizdoom_root_dir/bin/python3/pip_package` to `anaconda_root_dir/lib/pythonx.x/site-packages/vizdoom`.
+
+
+## <a name="torchluajit"></a> Torch7 Lua bindings (Linux and MacOS)
+
+> If you don't have any special reason then use [LuaRocks way](#luarocks).
+
 If you want to build against LuaJIT installed locally by Torch (as in http://torch.ch/docs/getting-started.html#_):
 ```
 cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=OFF -DBUILD_LUA=ON -DLUA_LIBRARIES=torch_root_dir/install/lib/libluajit.so/dylib -DLUA_INCLUDE_DIR=torch_root_dir/install/include/
