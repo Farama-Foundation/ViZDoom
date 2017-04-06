@@ -17,10 +17,10 @@ episodes = 10
 def player1():
     game = DoomGame()
 
-    # game.load_config('../config/basic.cfg')
+    # game.load_config('../../scenarios/basic.cfg')
     # or
     game.load_config('../../scenarios/multi_duel.cfg')
-    game.add_game_args("-host 2 -deathmatch +timelimit 1.0 +sv_spawnfarthest 1")
+    game.add_game_args("-host 2 -deathmatch +timelimit 0.10 +sv_spawnfarthest 1")
     game.add_game_args("+name Player1 +colorset 0")
 
     game.init()
