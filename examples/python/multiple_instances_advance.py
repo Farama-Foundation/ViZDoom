@@ -18,16 +18,11 @@ players = 2     # number of players
 skip = 1
 mode = Mode.PLAYER
 random_sleep = False
-window = False
+window = True
 
 args =""
 console = False
-args = "+viz_debug 1 +viz_debug_instances 1"
-console = True
-
-#config = "../config/multi_duel.cfg"
-config = "../config/cig.cfg"
-
+config = "../../scenarios/multi_duel.cfg"
 
 def player_host(p):
     game = DoomGame()
