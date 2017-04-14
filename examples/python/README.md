@@ -31,9 +31,9 @@ Tests the performance of the environment in frames per second. It should give yo
 Contains an example of how to implement basic Q-learning on the interface within Theano
 
 ## [learning_tensorflow.py](https://github.com/Marqt/ViZDoom/blob/master/examples/python/learning_tensorflow.py)
-Contains an example of how to implement basic Q-learning on the interface within Theano
+Contains an example of how to implement basic Q-learning on the interface within Tensorflow
 
-## [multiple_instances.py](https://github.com/Marqt/ViZDoom/blob/master/examples/python/multiple_instances.py)
+## [multiple_instances.py](https://github.com/Marqt/ViZDoom/blob/master/examples/python/multiple_instances.py) and [multiple_instances_advance.py](https://github.com/Marqt/ViZDoom/blob/master/examples/python/multiple_instances_advance.py)
 Contains an example of how to create a "server" and have multiple agents playing on the server at once. Combine with bots.py and learning_x.py to train agents against some AI
 
 ## [record_episodes.py](https://github.com/Marqt/ViZDoom/blob/master/examples/python/record_episodes.py)
