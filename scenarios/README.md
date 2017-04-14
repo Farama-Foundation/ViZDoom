@@ -1,9 +1,9 @@
-#Scenarios Description:
+# Scenarios  Decription:
 
-Scenarios contained in iwad files do not support  action constraints, death penalty and living rewards.
+Scenarios contained in iwad files do not support action constraints, death penalty and living rewards.
 Every mention of any settings that are not included in iwads will be specified with "(config)".
 
-##BASIC
+## BASIC
 The purpose of the scenario is just to check if using this
 framework to train some AI i 3D environment is feasible.
 
@@ -14,7 +14,7 @@ the opposite wall. Player can only (config) go left/right
 and shoot. 1 hit is enough to kill the monster. Episode 
 finishes when monster is killed or on timeout.
 
-REWARDS:
+__REWARDS:__
 +101 for killing the monster
 -5 for missing
 Episode ends after killing the monster or on timeout.
@@ -24,7 +24,7 @@ Further configuration:
 * 3 available buttons: move left, move right, shoot (attack)
 * timeout = 300
 
-##DEADLY CORRIDOR
+## DEADLY CORRIDOR
 The purpose of this scenario is to teach the agent to navigate towards
 his fundamental goal (the vest) and make sure he survives at the 
 same time.
@@ -37,7 +37,7 @@ on the sides and runs straight for the vest he will be killed somewhere
 along the way. To ensure this behavior doom_skill = 5 (config) is 
 needed.
 
-REWARDS:
+__REWARDS:__
 +dX for getting closer to the vest.
 -dX for getting further from the vest.
 
@@ -48,7 +48,7 @@ Further configuration:
 * doom_skill = 5
 
 
-##DEFEND THE CENTER
+## DEFEND THE CENTER
 The purpose of this scenario is to teach the agent that killing the 
 monsters is GOOD and when monsters kill you is BAD. In addition,
 wasting amunition is not very good either. Agent is rewarded only 
@@ -60,14 +60,14 @@ killed after a single shot. After dying each monster is respawned
 after some time. Episode ends when the player dies (it's inevitable 
 becuse of limitted ammo).
 
-REWARDS:
+__REWARDS:__
 +1 for killing a monster
 
 Further configuration:
 * 3 available buttons: turn left, turn right, shoot (attack)
 * death penalty = 1
 
-##DEFEND THE LINE
+## DEFEND THE LINE
 The purpose of this scenario is to teach the agent that killing the 
 monsters is GOOD and when monsters kill you is BAD. In addition,
 wasting amunition is not very good either. Agent is rewarded only 
@@ -80,14 +80,14 @@ After dying each monster is respawned after some time and can endure
 more damage. Episode ends when the player dies (it's inevitable 
 becuse of limitted ammo).
 
-REWARDS:
+__REWARDS:__
 +1 for killing a monster
 
 Further configuration:
 * 3 available buttons: turn left, turn right, shoot (attack)
 * death penalty = 1
 
-##HEALTH GATHERING
+## HEALTH GATHERING
 The purpose of this scenario is to teach the agent how to survive
 without knowing what makes him survive. Agent know only that life 
 is precious and death is bad so he must learn what prolongs his 
@@ -107,7 +107,7 @@ Further configuration:
 * 1  available game variable: HEALTH
 * death penalty = 100
 
-##MY WAY HOME
+## MY WAY HOME
 The purpose of this scenario is to teach the agent how to navigate
 in a labirynth-like surroundings and reach his ultimate goal 
 (and learn what it actually is).
@@ -118,7 +118,7 @@ green vest in one of the rooms (the same room every time).
 Player is spawned in randomly choosen room facing a random 
 direction. Episode ends when vest is reached or on timeout/
 
-REWARDS:
+__REWARDS:__
 +1 for reaching the vest
 
 Further configuration:
@@ -126,7 +126,7 @@ Further configuration:
 * living reward = -0.0001
 * timeout = 2100
 
-##PREDICT POSITION
+## PREDICT POSITION
 The purpose of the scenario is teach agent to synchronize 
 missle weapon shot (involving a signifficant delay between 
 shooting and hitting) with target movements. Agent should be 
@@ -139,7 +139,7 @@ along the wall. Player is equipped with a rocket launcher and
 a single rocket. Episode ends when missle hits a wall/the monster 
 or on timeout.
 
-REWARDS:
+__REWARDS:__
 +1 for killing the monster
 
 Further configuration:
@@ -147,7 +147,7 @@ Further configuration:
 * 3 available buttons: move left, move right, shoot (attack)
 * timeout = 300
 
-##TAKE COVER
+## TAKE COVER
 The purpose of this scenario is to teach agent to link incomming 
 missles with his estimated lifespan. Agent should learn that 
 being hit means health decrease and this in turn will lead to
@@ -161,7 +161,7 @@ the player with fireballs. The player can only (config) move
 left/right. More monsters appear with time. Episode ends when 
 player dies.
 
-REWARDS:
+__REWARDS:__
 +1 for each tic of life
 
 Further configuration:
