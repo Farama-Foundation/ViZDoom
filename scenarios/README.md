@@ -3,6 +3,8 @@
 Scenarios contained in iwad files do not support action constraints, death penalty and living rewards.
 Every mention of any settings that are not included in iwads will be specified with "(config)".
 
+Note: Vizdoom does not support setting certain rewards (such as killing oponents) in .cfg files. These must be set in the .wad files instead
+
 ## BASIC
 The purpose of the scenario is just to check if using this
 framework to train some AI i 3D environment is feasible.
@@ -15,6 +17,7 @@ and shoot. 1 hit is enough to kill the monster. Episode
 finishes when monster is killed or on timeout.
 
 __REWARDS:__
+
 +101 for killing the monster
 -5 for missing
 Episode ends after killing the monster or on timeout.
@@ -38,6 +41,7 @@ along the way. To ensure this behavior doom_skill = 5 (config) is
 needed.
 
 __REWARDS:__
+
 +dX for getting closer to the vest.
 -dX for getting further from the vest.
 
