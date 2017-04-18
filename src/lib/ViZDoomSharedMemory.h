@@ -158,9 +158,9 @@ namespace vizdoom {
     };
 
     struct SMInputState {
-        int BT[BUTTON_COUNT];
+        double BT[BUTTON_COUNT];
         bool BT_AVAILABLE[BUTTON_COUNT];
-        int BT_MAX_VALUE[DELTA_BUTTON_COUNT];
+        double BT_MAX_VALUE[DELTA_BUTTON_COUNT];
     };
 
     /* SM class */

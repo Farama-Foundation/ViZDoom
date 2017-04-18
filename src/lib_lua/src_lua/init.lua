@@ -93,7 +93,7 @@ function vizdoom.DoomGame:makeAction(action, tics)
 end
 
 function vizdoom.DoomGame:getLastAction()
-    return torch.IntTensor(self:_getLastAction())
+    return torch.DoubleTensor(self:_getLastAction())
 end
 
 return module

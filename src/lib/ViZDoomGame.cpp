@@ -123,7 +123,7 @@ namespace vizdoom {
         this->resetState();
     }
 
-    void DoomGame::setAction(std::vector<int> const &actions) {
+    void DoomGame::setAction(std::vector<double> const &actions) {
 
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
 
@@ -151,7 +151,7 @@ namespace vizdoom {
         }
     }
 
-    double DoomGame::makeAction(std::vector<int> const &actions, unsigned int tics) {
+    double DoomGame::makeAction(std::vector<double> const &actions, unsigned int tics) {
         this->setAction(actions);
         this->advanceAction(tics);
         return this->getLastReward();
@@ -246,7 +246,7 @@ namespace vizdoom {
 
     std::shared_ptr<GameState> DoomGame::getState() { return this->state; }
 
-    std::vector<int> DoomGame::getLastAction() { return this->lastAction; }
+    std::vector<double> DoomGame::getLastAction() { return this->lastAction; }
 
     bool DoomGame::isNewEpisode() {
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
@@ -280,7 +280,7 @@ namespace vizdoom {
         for(auto i : buttons) this->addAvailableButton(i);
     }
 
-    void DoomGame::addAvailableButton(Button button, unsigned int maxValue) {
+    void DoomGame::addAvailableButton(Button button, double maxValue) {
         if (!this->isRunning() && std::find(this->availableButtons.begin(),
                                             this->availableButtons.end(), button) == this->availableButtons.end()) {
             this->availableButtons.push_back(button);
@@ -296,11 +296,11 @@ namespace vizdoom {
         return this->availableButtons.size();
     }
 
-    void DoomGame::setButtonMaxValue(Button button, unsigned int maxValue) {
+    void DoomGame::setButtonMaxValue(Button button, double maxValue) {
         this->doomController->setButtonMaxValue(button, maxValue);
     }
 
-    int DoomGame::getButtonMaxValue(Button button) {
+    double DoomGame::getButtonMaxValue(Button button) {
         return this->doomController->getButtonMaxValue(button);
     }
 
