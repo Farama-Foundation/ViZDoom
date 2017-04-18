@@ -42,11 +42,11 @@ namespace vizdoom {
     }
 
     void DoomGamePython::setAction(bpy::list const &pyAction) {
-        DoomGame::setAction(DoomGamePython::pyListToVector<int>(pyAction));
+        DoomGame::setAction(DoomGamePython::pyListToVector<double>(pyAction));
     }
 
     double DoomGamePython::makeAction(bpy::list const &pyAction, unsigned int tics) {
-        return DoomGame::makeAction(DoomGamePython::pyListToVector<int>(pyAction), tics);
+        return DoomGame::makeAction(DoomGamePython::pyListToVector<double>(pyAction), tics);
     }
 
     GameStatePython* DoomGamePython::getState() {

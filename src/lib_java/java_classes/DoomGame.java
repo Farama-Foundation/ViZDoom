@@ -14,10 +14,10 @@ public class DoomGame{
         this.DoomGameNative();
     }
 
-    public native int doomTics2Ms(double tics, int ticrate);
-    public native int ms2DoomTics(double ms, int ticrate);
-    public native int doomTics2Sec(double tics, int ticrate);
-    public native int sec2DoomTics(double sec, int ticrate);
+    public native double doomTics2Ms(double tics, int ticrate);
+    public native double ms2DoomTics(double ms, int ticrate);
+    public native double doomTics2Sec(double tics, int ticrate);
+    public native double sec2DoomTics(double sec, int ticrate);
     public native double doomFixedToDouble(double doomFixed);
     public native boolean isBinaryButton(Button button);
     public native boolean isDeltaButton(Button button);
@@ -35,16 +35,16 @@ public class DoomGame{
 
     public native boolean isRunning();
 
-    public native void setAction(int[] actions);
+    public native void setAction(double[] actions);
     public native void advanceAction();
     public native void advanceAction(int tics);
     public native void advanceAction(int tics, boolean stateUpdate);
-    public native double makeAction(int[] actions);
-    public native double makeAction(int[] actions, int tics);
+    public native double makeAction(double[] actions);
+    public native double makeAction(double[] actions, int tics);
 
     public native GameState getState();
 
-    public native int[] getLastAction();
+    public native double[] getLastAction();
 
     public native boolean isNewEpisode();
     public native boolean isEpisodeFinished();
@@ -55,12 +55,12 @@ public class DoomGame{
     public native Button[] getAvailableButtons();
     public native void setAvailableButtons(Button[] buttons);
     public native void addAvailableButton(Button button);
-    public native void addAvailableButton(Button button, int maxValue);
+    public native void addAvailableButton(Button button, double maxValue);
     public native void clearAvailableButtons();
     public native int getAvailableButtonsSize();
 
-    public native void setButtonMaxValue(Button button, int maxValue);
-    public native int getButtonMaxValue(Button button);
+    public native void setButtonMaxValue(Button button, double maxValue);
+    public native double getButtonMaxValue(Button button);
 
     public native GameVariable[] getAvailableGameVariables();
     public native void setAvailableGameVariables(GameVariable[] gameVariables);

@@ -815,12 +815,12 @@ namespace vizdoom {
 
     SMGameState *const DoomController::getGameState() { return this->gameState; }
 
-    int DoomController::getButtonState(Button button) {
+    double DoomController::getButtonState(Button button) {
         if (this->doomRunning) return this->input->BT[button];
         else return 0;
     }
 
-    void DoomController::setButtonState(Button button, int state) {
+    void DoomController::setButtonState(Button button, double state) {
         if (button < BUTTON_COUNT && button >= 0 && this->doomRunning)
             this->input->BT[button] = state;
     }
@@ -862,14 +862,14 @@ namespace vizdoom {
         }
     }
 
-    void DoomController::setButtonMaxValue(Button button, unsigned int value) {
+    void DoomController::setButtonMaxValue(Button button, double value) {
         if (button >= BINARY_BUTTON_COUNT) {
             if (this->doomRunning) this->input->BT_MAX_VALUE[button - BINARY_BUTTON_COUNT] = value;
             this->_input->BT_MAX_VALUE[button - BINARY_BUTTON_COUNT] = value;
         }
     }
 
-    int DoomController::getButtonMaxValue(Button button) {
+    double DoomController::getButtonMaxValue(Button button) {
         if (button >= BINARY_BUTTON_COUNT) {
             if (this->doomRunning) return this->input->BT_MAX_VALUE[button - BINARY_BUTTON_COUNT];
             else return this->_input->BT_MAX_VALUE[button - BINARY_BUTTON_COUNT];

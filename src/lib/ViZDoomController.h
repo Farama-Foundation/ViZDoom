@@ -81,7 +81,6 @@ namespace vizdoom {
     public:
 
         DoomController();
-
         ~DoomController();
 
 
@@ -206,8 +205,8 @@ namespace vizdoom {
         SMGameState *const getGameState();
 
         /* Buttons state */
-        int getButtonState(Button button);
-        void setButtonState(Button button, int state);
+        double getButtonState(Button button);
+        void setButtonState(Button button, double state);
         void toggleButtonState(Button button);
 
         /* Buttons availableity */
@@ -216,8 +215,8 @@ namespace vizdoom {
         void resetButtons();
         void disableAllButtons();
 
-        int getButtonMaxValue(Button button);
-        void setButtonMaxValue(Button button, unsigned int value);
+        double getButtonMaxValue(Button button);
+        void setButtonMaxValue(Button button, double value);
         void availableAllButtons();
         bool isAllowDoomInput();
         void setAllowDoomInput(bool set);

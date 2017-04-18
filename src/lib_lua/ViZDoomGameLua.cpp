@@ -28,11 +28,11 @@ using namespace luabind;
 namespace vizdoom {
 
     void DoomGameLua::setAction(lb::object const& lAction) {
-        DoomGame::setAction(DoomGameLua::lTableToVector<int>(lAction));
+        DoomGame::setAction(DoomGameLua::lTableToVector<double>(lAction));
     }
 
     double DoomGameLua::makeAction(lb::object const& lAction, unsigned int tics) {
-        return DoomGame::makeAction(DoomGameLua::lTableToVector<int>(lAction), tics);
+        return DoomGame::makeAction(DoomGameLua::lTableToVector<double>(lAction), tics);
     }
 
     GameStateLua* DoomGameLua::getState(lua_State* luaState) {
@@ -44,32 +44,32 @@ namespace vizdoom {
         lState->number = this->state->number;
         lState->tic = this->state->tic;
 
-        if (this->state->screenBuffer != nullptr) {
+        if (this->state->screenBuffer != nullptr){
             lua_pushlightuserdata(luaState, this->doomController->getScreenBuffer());
             lb::object buffer(lb::from_stack(luaState, -1));
             lua_pop(luaState, 1);
             lState->screenBuffer = buffer;
         }
-        if (this->state->depthBuffer != nullptr) {
+        if (this->state->depthBuffer != nullptr){
             lua_pushlightuserdata(luaState, this->doomController->getDepthBuffer());
             lb::object buffer(lb::from_stack(luaState, -1));
             lua_pop(luaState, 1);
             lState->depthBuffer = buffer;
         }
-        if (this->state->labelsBuffer != nullptr) {
+        if (this->state->labelsBuffer != nullptr){
             lua_pushlightuserdata(luaState, this->doomController->getLabelsBuffer());
             lb::object buffer(lb::from_stack(luaState, -1));
             lua_pop(luaState, 1);
             lState->labelsBuffer = buffer;
         }
-        if (this->state->automapBuffer != nullptr) {
+        if (this->state->automapBuffer != nullptr){
             lua_pushlightuserdata(luaState, this->doomController->getAutomapBuffer());
             lb::object buffer(lb::from_stack(luaState, -1));
             lua_pop(luaState, 1);
             lState->automapBuffer = buffer;
         }
 
-        if (this->state->gameVariables.size() > 0) {
+        if (this->state->gameVariables.size() > 0){
             lState->gameVariables = lb::newtable(luaState);
 
             for(size_t i = 0; i < this->state->gameVariables.size(); ++i){
@@ -77,7 +77,7 @@ namespace vizdoom {
             }
         }
 
-        if(this->state->labels.size() > 0){
+        if(this->state->labels.size() > 0) {
             lState->labels = lb::newtable(luaState);
 
             for(size_t i = 0; i < this->state->labels.size(); ++i){
@@ -111,7 +111,7 @@ namespace vizdoom {
 
     template<class T> std::vector<T> DoomGameLua::lTableToVector(lb::object const& lTable){
         std::vector<T> vector;
-        for (lb::iterator i(lTable), end; i != end; ++i ) {
+        for (lb::iterator i(lTable), end; i != end; ++i){
             T val = object_cast<T>(*i);
             vector.push_back(val);
         }
