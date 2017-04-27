@@ -137,6 +137,54 @@ Users with brew-installed Python may need to manually set:
 ``-DPYTHON_INCLUDE_DIR=/usr/local/Cellar/python/x.x.x/Frameworks/Python.framework/Versions/x.x/include/pythonx.x`` and 
 ``-DPYTHON_LIBRARY=/usr/local/Cellar/python/x.x.x/Frameworks/Python.framework/Versions/x.x/lib/libpythonx.x.dylib``
 
+### Quickstart
+
+Install [homebrew](https://brew.sh/), and [Anaconda3](https://www.continuum.io/downloads) (Python 3.6+).
+
+1. Install depedencies dependencies
+
+```sh
+brew install \
+    cmake \
+    boost \
+    boost-python --with-python3
+```
+
+2. Clone the repository
+
+```sh
+git clone https://github.com/mwydmuch/ViZDoom
+cd ViZDoom
+```
+
+3. Run cmake against anaconda and native boost libraries. 
+
+*nota bene* library version numbers will change over time (e.g. `python3.6m`, `boost-python/1.64.0`) and may need to be updated. 
+
+```sh
+cmake -DCMAKE_BUILD_TYPE=Release \
+-DBUILD_PYTHON3=ON \
+-DPYTHON_INCLUDE_DIR=$HOME/anaconda3/include/python3.6m \ 
+-DPYTHON_LIBRARY=$HOME/anaconda3/lib/libpython3.6m.dylib \
+-DPYTHON_EXECUTABLE=$HOME/anaconda3/bin/python3 \
+-DBOOST_PYTHON3_LIBRARY=/usr/local/Cellar/boost-python/1.64.0/lib/libboost_python3.dylib \
+-DNUMPY_INCLUDES=$HOME/anaconda3/lib/python3.6/site-packages/numpy/core/include
+```
+
+4. Build it!
+
+```sh
+make
+```
+
+5. Move the output to anaconda's `site-packages` directory, or your local virtual environments `site-packages` directory. 
+
+```sh
+mv -r bin/python3/pip_package/ $HOME/anaconda3/lib/python3.6/site-packages/vizdoom
+```
+
+Test the install works.
+
 
 ## <a name="output"></a> Compilation output
 Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should contain following files.
