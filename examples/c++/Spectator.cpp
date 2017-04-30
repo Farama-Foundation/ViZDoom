@@ -15,9 +15,9 @@ int main(){
     // Don't load two configs cause the second will overwrite the first one.
     // Multiple config files are ok but combining these ones doesn't make much sense.
 
-    //game->loadConfig("../../scenarios/basic.cfg");
+    game->loadConfig("../../scenarios/basic.cfg");
     //game->loadConfig("../../scenarios/deadly_corridor.cfg");
-    game->loadConfig("../../scenarios/deathmatch.cfg");
+    //game->loadConfig("../../scenarios/deathmatch.cfg");
     //game->loadConfig("../../scenarios/defend_the_center.cfg");
     //game->loadConfig("../../scenarios/defend_the_line.cfg");
     //game->loadConfig("../../scenarios/health_gathering.cfg");
@@ -55,7 +55,7 @@ int main(){
             // game->advanceAction(4);
 
             // Get the last action performed by You.
-            std::vector<int> lastAction = game->getLastAction();
+            std::vector<double> lastAction = game->getLastAction();
 
             // And reward You get.
             double reward = game->getLastReward();

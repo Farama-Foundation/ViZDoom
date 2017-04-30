@@ -42,7 +42,7 @@ int main(){
     //
     // For MOVE_FORWARD_BACKWARD_DELTA, MOVE_LEFT_RIGHT_DELTA, MOVE_UP_DOWN_DELTA (rarely used)
     // value is the speed of movement in a given direction (100 is close to the maximum speed).
-    std::vector<int> action = {100, 10, 10, 1};
+    std::vector<double> action = {100, 10, 10, 1};
 
     // If button's absolute value > max button's value then value = max value with original value sign.
 
