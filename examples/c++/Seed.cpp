@@ -45,7 +45,7 @@ int main(){
     game->init();
 
     // Define some actions.
-    std::vector<int> actions[3];
+    std::vector<double> actions[3];
     actions[0] = {1, 0, 0};
     actions[1] = {0, 1, 0};
     actions[2] = {0, 0, 1};
