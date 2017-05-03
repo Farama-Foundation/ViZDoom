@@ -54,7 +54,7 @@ int main(){
             GameStatePtr state = game->getState();
             // Analyze the state.
 
-            std::vector<int> action(game->getAvailableButtonsSize());
+            std::vector<double> action(game->getAvailableButtonsSize());
             // Set your action.
 
             game->makeAction(action);
