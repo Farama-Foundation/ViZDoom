@@ -5,7 +5,7 @@ ViZDoom allows developing AI **bots that play Doom using only the visual informa
 
 ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game mechanics.
 
-> ####ViZDoom is the platform for [Visual Doom Competition @ CIG 2017](http://vizdoom.cs.put.edu.pl/competition-cig-2017). :goberserk:
+**ViZDoom is the platform for [Visual Doom Competition @ CIG 2017](http://vizdoom.cs.put.edu.pl/competition-cig-2017).** :goberserk:
 
 ## Features
 - Multi-platform,
