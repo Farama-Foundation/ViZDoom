@@ -42,6 +42,7 @@
 (`C++ type / Lua type / Java type / Python type` **name**)
 
 - `unsigned int / number / unsigned int / int` **id**
+- `unsigned int / number / unsigned int / int` **tic**
 - `std::vector<float> / DoubleTensor / double[] / numpy.double[]` **gameVariables / game_variables**
 - `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **screenBuffer / screen_buffer**
 - `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **depthBuffer / depth_buffer**
@@ -49,20 +50,45 @@
 - `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **automapBuffer / automap_buffer**
 - `std::vector<Label> / table / Label[] / list` **labels**
 
+See also:
+- [`DoomGame: getState`](DoomGame.md#getState),
+- [examples/python/basic.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/basic.py),
+- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py).
+
 
 ## <a name="enums"></a> Enums
 
 ---
 ### <a name="mode"></a> `Mode`
 
+Enum type that defines all supported modes.
+
 - **PLAYER** - synchronous player mode
 - **SPECTATOR** - synchronous spectator mode
 - **ASYNC_PLAYER** - asynchronous player mode
 - **ASYNC_SPECTATOR** - asynchronous spectator mode
 
+In **PLAYER** and **ASYNC_PLAYER** modes the agent controls ingame character.
+
+In **SPECTATOR** and **ASYNC_SPECTATOR** modes ingame character should be controlled by the human and the agent gets information about human action.
+
+In **PLAYER** and **SPECTATOR** modes the game waits for agent action or permission to continue.
+
+In **ASYNC** modes the game progress with constant speed (default 35 tics per second, this can be set).
+
+All modes can be used in singleplayer and multiplayer.
+
+See also:
+- [`DoomGame: getMode`](DoomGame.md#getMode),
+- [`DoomGame: setMode`](DoomGame.md#setMode),
+- [`DoomGame: getTicrate`](DoomGame.md#getTicrate),
+- [`DoomGame: setTicrate`](DoomGame.md#setTicrate).
+
 
 ---
 ### <a name="screenformat"></a>`ScreenFormat`
+
+Enum type that defines all supported **screenBuffer** and **automapBuffer** formats. 
 
 - **CRCGCB**    - 3 channels of 8-bit values in RGB order
 - **RGB24**     - channel of RGB values stored in 24 bits, where R value is stored in the oldest 8 bits
@@ -76,8 +102,26 @@
 - **DOOM_256_COLORS8** - 8-bit channel with Doom palette values
 
 
+In **CRCGCB** and **CBCGCR** format **screenBuffer** and **automapBuffer** store all red 8 bit values then all green values and then all blue values, each channel is considered separately. As matrices they have shapes [3, y, x].
+
+In **RGB24** and **BGR24** format **screenBuffer** and **automapBuffer** store 24 bit RGB triples. As matrices they have shapes [y, x, 3].
+
+In **RGBA32**, **ARGB32**, **BGRA32** and **ABGR32** format **screenBuffer** and **automapBuffer** store 32 bit sets of RBG + alpha values. As matrices they have shapes [y, x, 4].
+
+In **GRAY8** and **DOOM_256_COLORS8** format **screenBuffer** and **automapBuffer** store single 8 bit values. As matrices they have shapes [y, x].
+
+**depthBuffer** and **lablesBuffer** always store single 8 bit values, so they always have shapes [y, x]. 
+
+See also:
+- [`DoomGame: getScreenFormat`](DoomGame.md#getScreenFormat),
+- [`DoomGame: setScreenFormat`](DoomGame.md#setScreenFormat),
+- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py).
+
+
 ---
 ### <a name="screenresolution"></a>`ScreenResolution`
+
+Enum type that defines all supported resolutions - shapes of **screenBuffer**, **depthBuffer**, **labelsBuffer** and **automapBuffer** in **State**. 
 
 - **RES_160X120** (4:3)
 - **RES_200X125** (16:10)
@@ -116,17 +160,31 @@
 - **RES_1600X1200** (4:3)
 - **RES_1920X1080** (16:9)
 
+See also:
+- [`DoomGame: setScreenResolution`](DoomGame.md#setScreenResolution),
+- [`DoomGame: getScreenWidth`](DoomGame.md#getScreenWidth),
+- [`DoomGame: getScreenHeight`](DoomGame.md#getScreenHeight).
+
 
 ---
 ### <a name="automapmode"></a> `AutomapMode`
+
+Enum type that defines all **automapBuffer** modes. 
+
 - **NORMAL**    - Only level architecture the player has seen is shown.
 - **WHOLE**     - All architecture is shown, regardless of whether or not the player has seen it.
 - **OBJECTS**   - In addition to the previous, shows all things in the map as arrows pointing in the direction they are facing.
 - **OBJECTS_WITH_SIZE** - In addition to the previous, all things are wrapped in a box showing their size.
 
+See also:
+- [`DoomGame: setAutomapMode`](DoomGame.md#setAutomapMode),
+- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py).
+
 
 ---
 ### <a name="gamevariable"></a> `GameVariable`
+
+Enum type that defines all variables that can be obtained from the game. 
 
 #### Defined variables
 - **KILLCOUNT**
@@ -151,6 +209,7 @@
 - **PLAYER_COUNT**          - Number of players in multiplayer game.
 - **PLAYER1_FRAGCOUNT** - **PLAYER8_FRAGCOUNT** - Number of N player's frags
 
+
 #### User (ACS) variables  
 - **USER1** - **USER60**
 
@@ -159,15 +218,24 @@ global int 0 is reserved for reward and is always threaded as Doom's fixed point
 Other from 1 to 60 (global int 1-60) can be access as USER1 - USER60 GameVariables.
 
 See also:
-- [ZDoom Wiki](http://zdoom.org/wiki/ACS)
-- [`Utilities: doomFixedToDouble`](Utilities.md#doomFixedToDouble)
+- [ZDoom Wiki: ACS](http://zdoom.org/wiki/ACS),
+- [`DoomGame: getAvailableGameVariables`](DoomGame.md#getAvailableGameVariables),
+- [`DoomGame: setAvailableGameVariables`](DoomGame.md#setAvailableGameVariables),
+- [`DoomGame: addAvailableGameVariable`](DoomGame.md#addAvailableGameVariable),
+- [`DoomGame: getGameVariable`](DoomGame.md#getGameVariable),
+- [`Utilities: doomFixedToDouble`](Utilities.md#doomFixedToDouble),
+- [examples/python/basic.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/basic.py),
+- [examples/python/shaping.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/shaping.py).
+
 
 ---
 ### <a name="button"></a> `Button`
 
+Enum type that defines all buttons that can be "pressed" by agent.
+
 #### <a name="binarybuttons"></a> Binary buttons
 
-Binary buttons have only 2 states "not pressed" if value 0 and "pressed" if value greater then 0.
+Binary buttons have only 2 states "not pressed" if value 0 and "pressed" if value other then 0.
 
 - **ATTACK**
 - **USE**
@@ -208,6 +276,7 @@ Binary buttons have only 2 states "not pressed" if value 0 and "pressed" if valu
 - **SELECT_PREV_ITEM**
 - **DROP_SELECTED_ITEM**
 
+
 #### <a name="deltabuttons"></a> Delta buttons
 
 Buttons whose value defines the speed of movement. 
@@ -219,3 +288,17 @@ For example: value 10 for MOVE_LEFT_RIGHT_DELTA means slow movement to the right
 - **MOVE_FORWARD_BACKWARD_DELTA**
 - **MOVE_LEFT_RIGHT_DELTA**
 - **MOVE_UP_DOWN_DELTA**
+
+In case of **TURN_LEFT_RIGHT_DELTA** and **LOOK_UP_DOWN_DELTA** values correspond to degrees.
+In case of **MOVE_FORWARD_BACKWARD_DELTA**, **MOVE_LEFT_RIGHT_DELTA**, **MOVE_UP_DOWN_DELTA** values correspond to Doom Map unit (see Doom Wiki if you want to know how it translates into real life units). 
+
+See also:
+- [Doom Wiki: Map unit](https://doomwiki.org/wiki/Map_unit),
+- [`DoomGame: getAvailableButtons`](DoomGame.md#getAvailableButtons),
+- [`DoomGame: setAvailableButtons`](DoomGame.md#setAvailableButtons),
+- [`DoomGame: addAvailableButton`](DoomGame.md#addAvailableButton),
+- [`DoomGame: setButtonMaxValue`](DoomGame.md#setButtonMaxValue),
+- [`DoomGame: getButtonMaxValue`](DoomGame.md#getButtonMaxValue),
+- [examples/python/basic.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/basic.py),
+- [examples/python/delta_buttons.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/delta_buttons.py),
+- [GitHub issue: Angle changes by executing certain commands](https://github.com/mwydmuch/ViZDoom/issues/182).
