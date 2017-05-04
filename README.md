@@ -5,6 +5,8 @@ ViZDoom allows developing AI **bots that play Doom using only the visual informa
 
 ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game mechanics.
 
+> ####ViZDoom is the platform for [Visual Doom Competition @ CIG 2017](http://vizdoom.cs.put.edu.pl/competition-cig-2017). :goberserk:
+
 ## Features
 - Multi-platform,
 - API for C++, Lua, Java and Python,
@@ -25,6 +27,7 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 ## Cite as
 
 >Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, IEEE Conference on Computational Intelligence and Games, pp. 341-348, Santorini, Greece, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
+
 ### Bibtex:
 ```
 @inproceedings{Kempka2016ViZDoom,
@@ -63,14 +66,14 @@ For Windows we are providing compiled runtime binaries and development libraries
 
 ## Examples
 
-Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed in the same directory as the ViZDoom executable (on Linux it should be done automatically by the building process):
+Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed in the same directory as the ViZDoom executable (on Linux and MacOS/OSX it should be done automatically by the building process):
 
-- [Python](examples/python)
+- [Python](examples/python) (contain learning examples implemented in Theano and TensorFlow)
 - [C++](examples/c%2B%2B)
-- [Lua](examples/lua)
+- [Lua](examples/lua) (contain learning example implemented in Torch)
 - [Java](examples/java)
 
-Python examples are currently the richest, so we recommend to look at them, even if you plan to use other language.
+Python examples are currently the richest, so we recommend to look at them, even if you plan to use other language. API is almost identical for all languages.
 
 **See also the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial).**
 
@@ -86,6 +89,11 @@ Detailed description of all types and methods:
 - [Utilities](doc/Utilities.md)
 
 [Changelog](doc/Changelog.md) for 1.1.0 version.
+
+
+## Contributions
+
+This project is maintained and developed in our free time. All bug fixes, new examples and scenarios are welcome! We are also open to features ideas and design suggestions.
 
 
 ## License

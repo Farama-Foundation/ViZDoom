@@ -36,12 +36,16 @@
 **objectId / object_id** - unique object instance ID - assigned when object is seen for the first time 
 (so object with lower id was seen before object with higher).
 
+**objectId / object_id** - ingame object name, many different object can have the same name (e.g. Medikit, Clip, Zombie).
+
+**value** - value that represents this particular object in **labelsBuffer**.
+
 
 ---
 ### <a name="gamestate"></a> `GameState`
 (`C++ type / Lua type / Java type / Python type` **name**)
 
-- `unsigned int / number / unsigned int / int` **id**
+- `unsigned int / number / unsigned int / int` **number**
 - `unsigned int / number / unsigned int / int` **tic**
 - `std::vector<float> / DoubleTensor / double[] / numpy.double[]` **gameVariables / game_variables**
 - `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **screenBuffer / screen_buffer**
@@ -49,6 +53,10 @@
 - `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **labelsBuffer / labels_buffer**
 - `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **automapBuffer / automap_buffer**
 - `std::vector<Label> / table / Label[] / list` **labels**
+
+**number** - number of the state in the episode.
+**tic** - ingame time, 1 tic is 1/35 of second in the game world.
+
 
 See also:
 - [`DoomGame: getState`](DoomGame.md#getState),
@@ -70,11 +78,11 @@ Enum type that defines all supported modes.
 
 In **PLAYER** and **ASYNC_PLAYER** modes the agent controls ingame character.
 
-In **SPECTATOR** and **ASYNC_SPECTATOR** modes ingame character should be controlled by the human and the agent gets information about human action.
+In **SPECTATOR** and **ASYNC_SPECTATOR** modes ingame character should be controlled by the human and the agent gets information about the human action.
 
 In **PLAYER** and **SPECTATOR** modes the game waits for agent action or permission to continue.
 
-In **ASYNC** modes the game progress with constant speed (default 35 tics per second, this can be set).
+In **ASYNC** modes the game progress with constant speed (default 35 tics per second, this can be set) without waiting for the agent actions.
 
 All modes can be used in singleplayer and multiplayer.
 
@@ -102,15 +110,15 @@ Enum type that defines all supported **screenBuffer** and **automapBuffer** form
 - **DOOM_256_COLORS8** - 8-bit channel with Doom palette values
 
 
-In **CRCGCB** and **CBCGCR** format **screenBuffer** and **automapBuffer** store all red 8 bit values then all green values and then all blue values, each channel is considered separately. As matrices they have shapes [3, y, x].
+In **CRCGCB** and **CBCGCR** format **screenBuffer** and **automapBuffer** store all red 8 bit values then all green values and then all blue values, each channel is considered separately. As matrices they have [3, y, x] shape.
 
-In **RGB24** and **BGR24** format **screenBuffer** and **automapBuffer** store 24 bit RGB triples. As matrices they have shapes [y, x, 3].
+In **RGB24** and **BGR24** format **screenBuffer** and **automapBuffer** store 24 bit RGB triples. As matrices they have [y, x, 3] shape.
 
-In **RGBA32**, **ARGB32**, **BGRA32** and **ABGR32** format **screenBuffer** and **automapBuffer** store 32 bit sets of RBG + alpha values. As matrices they have shapes [y, x, 4].
+In **RGBA32**, **ARGB32**, **BGRA32** and **ABGR32** format **screenBuffer** and **automapBuffer** store 32 bit sets of RBG + alpha values. As matrices they have [y, x, 4] shape.
 
-In **GRAY8** and **DOOM_256_COLORS8** format **screenBuffer** and **automapBuffer** store single 8 bit values. As matrices they have shapes [y, x].
+In **GRAY8** and **DOOM_256_COLORS8** format **screenBuffer** and **automapBuffer** store single 8 bit values. As matrices they have [y, x] shape.
 
-**depthBuffer** and **lablesBuffer** always store single 8 bit values, so they always have shapes [y, x]. 
+**depthBuffer** and **lablesBuffer** always store single 8 bit values, so they always have [y, x] shape. 
 
 See also:
 - [`DoomGame: getScreenFormat`](DoomGame.md#getScreenFormat),

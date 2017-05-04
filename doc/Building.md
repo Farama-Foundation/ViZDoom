@@ -9,9 +9,10 @@
 * [Building against Anaconda](#anaconda)
 * [Building against Torch's LuaJIT](#torchluajit)
 
+
 ## <a name="pypi"></a> Installation via PyPI (recommended for Python users)
 
-ViZDoom for Python can be installed via **pip** on Linux and MacOS and it is strongly recommended. However you will still need to install the  **[dependencies](#linux_deps)**. Without pip installation you need to have vizdoom.so in the execution directory and specify paths to vizdoom and freedoom2.wad manually which is quite annoying.
+ViZDoom for Python can be installed via **pip** on Linux and MacOS and it is strongly recommended. However you will still need to install the  **[dependencies](#linux_deps)**. 
 
 > Pip installation is not supported on Windows at the moment but we hope some day it will.
 
@@ -20,6 +21,7 @@ To install the most stable official release from [PyPI](https://pypi.python.org/
 # use pip3 for python3
 sudo pip install vizdoom
 ```
+
 To install newest version from the repository:
 ```bash
 git clone https://github.com/mwydmuch/ViZDoom
@@ -27,11 +29,13 @@ cd ViZDoom
 # use pip3 for python3
 sudo pip install .
 ```
+
 Or without cloning yourself:
 ```bash
 # use pip3 for python3
 sudo pip install git+https://github.com/mwydmuch/ViZDoom
 ```
+
 
 ## <a name="luarocks"></a> Installation via LuaRocks (recommended for Torch7 users)
 
@@ -41,6 +45,7 @@ To install the most stable official release from [LuaRocks](https://pypi.python.
 ```bash
 luarocks install vizdoom
 ```
+
 To install newest version from the repository:
 ```bash
 git clone https://github.com/mwydmuch/ViZDoom
@@ -58,7 +63,7 @@ luarocks make
 * Boost libraries (tested on 1.54, 1.58, 1.59, 1.61)
 * Python 2.7+ or Python 3+ with Numpy and Boost.Python for Python binding (optional)
 * JDK for Java binding (JAVA_HOME must be set) (optional)
-* LUA 5.1 for Lua binding (optional)
+* Torch7 or LUA 5.1 for Lua binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
@@ -69,17 +74,22 @@ sudo apt-get install build-essential zlib1g-dev libsdl2-dev libjpeg-dev \
 nasm tar libbz2-dev libgtk2.0-dev cmake git libfluidsynth-dev libgme-dev \
 libopenal-dev timidity libwildmidi-dev 
 
-# Python 2 and Python 3 bindings dependencies
-sudo apt-get install python-pip python3-pip 
-pip install numpy #just for python2 binding
-pip3 install numpy #just for python3 binding
-
 # Boost libraries
 sudo apt-get install libboost-all-dev
 
+# Python 2 dependencies
+sudo apt-get install python-pip
+pip install numpy
+
+# Python 3 dependencies
+sudo apt-get install python3-pip 
+pip3 install numpy
+
 # Lua binding dependencies
-sudo apt-get install liblua5.1-dev
+sudo apt-get install liblua5.1-dev # Lua shiped with Torch can be used instead, so it isn't needed if installing via LuaRocks
 ```
+
+To get Torch see: [Getting started with Torch](http://torch.ch/docs/getting-started.html).
 
 ### Compiling
 In ViZDoom's root directory:
@@ -93,7 +103,11 @@ make
 
 ## <a name="windows"></a> Windows
 
-> Setting up the compilation on Windows is really tedious so using the precompiled binaries is recommended.
+Setting up the compilation on Windows is really tedious so using the precompiled binaries is recommended.
+
+`vizdoom` directory from Python builds contains complete Python package for Windows.
+You can copy it to your project directory or copy it into `python_dir/lib/site-packages/vizdoom` to install it globally in your system. 
+
 
 ### Dependencies
 * CMake 2.8+
@@ -101,22 +115,26 @@ make
 * Boost libraries
 * Python 2.7+ or Python 3.4+ with Numpy and Boost.Python for Python binding (optional)
 * JDK for Java binding (JAVA_HOME must be set) (optional)
+* Torch7 or LUA 5.1 for Lua binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Windows) are needed.
+Most of them are gathered in this repository: [ViZDoomWinDepBin](https://github.com/mwydmuch/ViZDoomWinDepBin).
 
 ### Compiling
-Run CMake GUI, select ViZDoom's root directory and set paths to:
+Run CMake GUI, select ViZDoom root directory and set paths to:
 * BOOST_ROOT
 * BOOST_INCLUDEDIR
 * BOOST_LIBRARYDIR
-* PYTHON_INCLUDE_DIR (optional)
-* PYTHON_LIBRARY (optional)
-* NUMPY_INCLUDES (optional)
+* PYTHON_INCLUDE_DIR (optional, for Python/Anaconda bindings)
+* PYTHON_LIBRARY (optional, for Python/Anaconda bindings)
+* NUMPY_INCLUDES (optional, for Python/Anaconda bindings)
+* LUA_LIBRARIES (optional, for Lua/Torch bindings)
+* LUA_INCLUDE_DIR (optional, for Lua/Torch bindings)
 * ZDoom dependencies paths
 
 In configuration select BUILD_PYTHON, BUILD_PYTHON3 and BUILD_JAVA options for Python and Java bindings (optional, default OFF).
 
-Use generated Visual Studio solution to build all ViZDoom's parts.
+Use generated Visual Studio solution to build all parts of ViZDoom environment.
 
 
 ## <a name="osx"></a>OSX
@@ -127,6 +145,7 @@ Use generated Visual Studio solution to build all ViZDoom's parts.
 * Boost libraries
 * Python 2.7+ or Python 3+ with Numpy and Boost.Python for Python binding (optional)
 * JDK for Java binding (JAVA_HOME must be set) (optional)
+* Torch7 or LUA 5.1 for Lua binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X) are needed.
 
@@ -193,15 +212,17 @@ Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should cont
 * ``bin/vizdoom.pk3`` - resources file used by ViZDoom (needed by ViZDoom executable)
 * ``bin/libvizdoom.a / vizdoom.lib`` - C++ ViZDoom static library
 * ``bin/libvizdoom.so / vizdoom.dll / libvizdoom.dylib`` -  C++ ViZDoom dynamically linked library
-* ``bin/python2/vizdoom.so / vizdoom.pyd / vizdoom.dylib`` - ViZDoom Python module
-* ``bin/python3/vizdoom.so / vizdoom.pyd / vizdoom.dylib`` - ViZDoom Python3 module
+* ``bin/python2/vizdoom.so / vizdoom.pyd / vizdoom.dylib`` - ViZDoom Python 2 module
+* ``bin/python3/vizdoom.so / vizdoom.pyd / vizdoom.dylib`` - ViZDoom Python 3 module
+* ``bin/python2/pip_package`` - complete ViZDoom Python 2 package
+* ``bin/python3/pip_package`` - complete ViZDoom Python 3 package
 * ``bin/lua/vizdoom.so / vizdoom.so / vizdoom.dylib`` - ViZDoom Lua C module
+* ``bin/lua/luarocks_package`` - complete ViZDoom Torch package
 * ``bin/java/libvizdoom.so / vizdoom.dll / libvizdoom.dylib`` -  ViZDoom library for Java
 * ``bin/java/vizdoom.jar`` -  Contains ViZDoom Java classes
-* ``bin/lua/vizdoom`` - ViZDoom Lua module
 
 
-## <a name="anaconda"></a> Anaconda bindings
+## <a name="anaconda"></a> Building Anaconda bindings (Linux and MacOS)
 If you want to build against Anaconda, you may need to manually set:
 
 ```
@@ -218,7 +239,7 @@ Manual installation:
 Copy `vizdoom_root_dir/bin/python2/pip_package` or `vizdoom_root_dir/bin/python3/pip_package` to `anaconda_root_dir/lib/pythonx.x/site-packages/vizdoom`.
 
 
-## <a name="torchluajit"></a> Torch7 Lua bindings (Linux and MacOS)
+## <a name="torchluajit"></a> Building Torch7 Lua bindings (Linux and MacOS)
 
 > If you don't have any special reason then use [LuaRocks way](#luarocks).
 
@@ -228,5 +249,4 @@ cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=OFF -DBUILD_LUA=ON -DLUA_LIBRARI
 ```
 
 Manual installation: 
-Copy `vizdoom_root_dir/bin/lua/luarocks_package` contents to `torch_root_dir/install/lib/lua/5.1/vizdoom` 
-and `vizdoom_root_dir/bin/lua/luarocks_shared_package` contents to `torch_root_dir/install/share/lua/5.1/vizdoom`.
+Copy `vizdoom_root_dir/bin/lua/luarocks_package` contents to `torch_root_dir/install/lib/lua/5.1/vizdoom` and `vizdoom_root_dir/bin/lua/luarocks_shared_package` contents to `torch_root_dir/install/share/lua/5.1/vizdoom`.
