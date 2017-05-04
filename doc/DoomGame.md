@@ -184,10 +184,10 @@ Checks if the ViZDoom game instance is running.
 ---
 ### <a name="setAction"></a> `setAction`
 
-| C++    | `void setAction(std::vector<int> const &actions)` |
+| C++    | `void setAction(std::vector<float> const &actions)` |
 | :--    | :--                                               |
-| Lua    | `void setAction(IntTensor/table actions)`         |
-| Java   | `void setAction(int[] actions)`                   |
+| Lua    | `void setAction(DoubleTensor/table actions)`         |
+| Java   | `void setAction(double[] actions)`                   |
 | Python | `void set_action(list actions)`                   |
 
 Sets the player's action for the next tics.
@@ -212,10 +212,10 @@ If `updateState` is not set the state will not be updated.
 ---
 ### <a name="makeAction"></a> `makeAction`
 
-| C++    | `double makeAction(std::vector<int> const &actions, unsigned int tics = 1)` |
+| C++    | `double makeAction(std::vector<double> const &actions, unsigned int tics = 1)` |
 | :--    | :--                                                                         |
-| Lua    | `number makeAction(IntTensor/table actions, number tics = 1);`              |
-| Java   | `double makeAction(int[] actions, int tics = 1);`                           |
+| Lua    | `number makeAction(DoubleTensor/table actions, number tics = 1);`              |
+| Java   | `double makeAction(double[] actions, int tics = 1);`                           |
 | Python | `float make_action(list actions, int tics = 1);`                            |
 
 Method combining usability of [`setAction`](#setAction), [`advanceAction`](#advanceAction) and [`getLastReward`](#getLastReward).
@@ -311,10 +311,10 @@ See also:
 ---
 ### <a name="getLastAction"></a> `getLastAction`
 
-| C++    | `std::vector<int> getLastAction()` |
+| C++    | `std::vector<double> getLastAction()` |
 | :--    | :--                                |
-| Lua    | `IntTensor getLastAction()`        |
-| Java   | `int[] getLastAction()`            |
+| Lua    | `DoubleTensor getLastAction()`        |
+| Java   | `double[] getLastAction()`            |
 | Python | `list get_last_action()`           |
 
 Returns the last action performed.
@@ -373,11 +373,11 @@ See also:
 ---
 ### <a name="addAvailableButton"></a> `addAvailableButton`
 
-| C++    | `void addAvailableButton(Button button, unsigned int maxValue = 0)` |
+| C++    | `void addAvailableButton(Button button, double maxValue = 0)` |
 | :--    | :--                                                                 |
 | Lua    | `void addAvailableButton(Button button, number maxValue  = 0)`      |
-| Java   | `void addAvailableButton(Button button, int maxValue = 0)`          |
-| Python | `void add_available_button(Button button, int maxValue = 0)`        |
+| Java   | `void addAvailableButton(Button button, double maxValue = 0)`          |
+| Python | `void add_available_button(Button button, float maxValue = 0)`        |
 
 Add `Button` type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to `Buttons` available in action
 and sets the maximum allowed, absolute value for the specified button.
@@ -422,11 +422,11 @@ See also:
 ---
 ### <a name="setButtonMaxValue"></a> `setButtonMaxValue`
 
-| C++    | `void setButtonMaxValue(Button button, unsigned int maxValue = 0)` |
+| C++    | `void setButtonMaxValue(Button button, double maxValue = 0)` |
 | :--    | :--                                                                |
 | Lua    | `void setButtonMaxValue(Button button, number maxValue = 0)`       |
-| Java   | `void setButtonMaxValue(Button button, int maxValue = 0)`          |
-| Python | `void set_button_max_value(Button button, int maxValue = 0)`       |
+| Java   | `void setButtonMaxValue(Button button, double maxValue = 0)`          |
+| Python | `void set_button_max_value(Button button, float maxValue = 0)`       |
 
 Sets the maximum allowed, absolute value for the specified button.
 Setting maximum value equal to 0 results in no constraint at all (infinity).
@@ -471,7 +471,7 @@ See also:
 ---
 ### <a name="addAvailableGameVariable"></a> `addAvailableGameVariable`
 
-| C++    | `void setAvailableGameVariables(td::vector<GameVariable> variables)` |
+| C++    | `void setAvailableGameVariables(std::vector<GameVariable> variables)` |
 | :--    | :--                                                                  |
 | Lua    | `void setAvailableGameVariables(table variables)`                    |
 | Java   | `void setAvailableGameVariables(GameVariable[] variables)`           |
