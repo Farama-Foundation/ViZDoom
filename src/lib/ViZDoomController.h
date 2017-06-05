@@ -41,7 +41,7 @@ namespace vizdoom {
     namespace br        = boost::random;
     namespace bs        = boost::system;
 
-#define INSTANCE_ID_LENGHT 10
+#define INSTANCE_ID_LENGTH 10
 
 /* Shared memory's settings */
 #define SM_NAME_BASE        "ViZDoomSM"

@@ -923,20 +923,16 @@ namespace vizdoom {
                 return static_cast<double>(this->gameState->PLAYER_COUNT);
         }
 
-        if (var >= AMMO0 && var <= AMMO9) {
+        if (var >= AMMO0 && var <= AMMO9)
             return this->gameState->PLAYER_AMMO[var - AMMO0];
-        } else if (var >= WEAPON0 && var <= WEAPON9) {
+        else if (var >= WEAPON0 && var <= WEAPON9)
             return this->gameState->PLAYER_WEAPON[var - WEAPON0];
-        }
-        else if(var >= POSITION_X && var <= POSITION_Z){
+        else if(var >= POSITION_X && var <= POSITION_Z)
             return this->gameState->PLAYER_POSITION[var - POSITION_X];
-        }
-        else if(var >= USER1 && var <= USER30){
-
+        else if(var >= USER1 && var <= USER60)
             return this->gameState->MAP_USER_VARS[var - USER1];
-        } else if (var >= PLAYER1_FRAGCOUNT && var <= PLAYER8_FRAGCOUNT) {
+        else if (var >= PLAYER1_FRAGCOUNT && var <= PLAYER16_FRAGCOUNT)
             return this->gameState->PLAYER_N_FRAGCOUNT[var - PLAYER1_FRAGCOUNT];
-        }
 
         return 0;
     }
@@ -960,18 +956,18 @@ namespace vizdoom {
         std::string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         this->instanceId = "";
 
-        br::uniform_int_distribution<> charDist(0, static_cast<int>(chars.length() - 1));
+        br::uniform_int_distribution<size_t> charDist(0, static_cast<size_t>(chars.length() - 1));
         br::mt19937 rng;
         rng.seed((unsigned int) bc::high_resolution_clock::now().time_since_epoch().count());
 
-        for (int i = 0; i < INSTANCE_ID_LENGHT; ++i) {
+        for (int i = 0; i < INSTANCE_ID_LENGTH; ++i) {
             this->instanceId += chars[charDist(rng)];
         }
     }
 
     unsigned int DoomController::getNextDoomSeed(){
         br::uniform_int_distribution<unsigned int> mapSeedDist(0, UINT_MAX);
-        return static_cast<unsigned int>(mapSeedDist(this->instanceRng));
+        return mapSeedDist(this->instanceRng);
     }
 
     void DoomController::forceDoomSeed(unsigned int seed) {
