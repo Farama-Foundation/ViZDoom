@@ -215,7 +215,7 @@ Enum type that defines all variables that can be obtained from the game.
 - **POSITION_Z**
 - **PLAYER_NUMBER**         - Player's number in multiplayer game.
 - **PLAYER_COUNT**          - Number of players in multiplayer game.
-- **PLAYER1_FRAGCOUNT** - **PLAYER8_FRAGCOUNT** - Number of N player's frags
+- **PLAYER1_FRAGCOUNT** - **PLAYER16_FRAGCOUNT** - Number of N player's frags
 
 
 #### User (ACS) variables  
