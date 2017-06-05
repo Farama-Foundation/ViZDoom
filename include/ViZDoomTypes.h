@@ -188,6 +188,14 @@ namespace vizdoom{
         PLAYER6_FRAGCOUNT,
         PLAYER7_FRAGCOUNT,
         PLAYER8_FRAGCOUNT,
+        PLAYER9_FRAGCOUNT,
+        PLAYER10_FRAGCOUNT,
+        PLAYER11_FRAGCOUNT,
+        PLAYER12_FRAGCOUNT,
+        PLAYER13_FRAGCOUNT,
+        PLAYER14_FRAGCOUNT,
+        PLAYER15_FRAGCOUNT,
+        PLAYER16_FRAGCOUNT,
 
         /* User (ACS) variables */
         // USER0 is reserved for reward

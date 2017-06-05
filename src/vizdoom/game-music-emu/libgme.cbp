@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="libgme"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\src\;CMake Files\src\lib\;CMake Files\src\vizdoom\;CMake Files\src\vizdoom\src\;CMake Files\src\vizdoom\bzip2\;CMake Files\src\vizdoom\game-music-emu\;CMake Files\src\vizdoom\game-music-emu\gme\;CMake Files\src\vizdoom\lzma\;CMake Files\src\vizdoom\tools\;CMake Files\src\vizdoom\tools\lemon\;CMake Files\src\vizdoom\tools\re2c\;CMake Files\src\vizdoom\tools\updaterevision\;CMake Files\src\vizdoom\tools\zipdir\;CMake Files\src\vizdoom\dumb\;CMake Files\src\vizdoom\gdtoa\;CMake Files\src\vizdoom\wadsrc\;CMake Files\src\vizdoom\output_sdl\;CMake Files\cmake_modules\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gme">
+				<Option output="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/libgme.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLIBGME_VISIBILITY"/>
+					<Add directory="/home/marek/Workspace/ViZDoom/include"/>
+					<Add directory="/home/marek/Workspace/ViZDoom/src/lib"/>
+					<Add directory="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Makefile&quot;  VERBOSE=1 gme"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gme/fast">
+				<Option output="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/libgme.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DLIBGME_VISIBILITY"/>
+					<Add directory="/home/marek/Workspace/ViZDoom/include"/>
+					<Add directory="/home/marek/Workspace/ViZDoom/src/lib"/>
+					<Add directory="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Makefile&quot;  VERBOSE=1 gme/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Ay_Apu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Ay_Apu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Ay_Cpu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Ay_Cpu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Ay_Emu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Ay_Emu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Blip_Buffer.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Blip_Buffer.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Classic_Emu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Classic_Emu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Data_Reader.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Data_Reader.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Dual_Resampler.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Dual_Resampler.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Effects_Buffer.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Effects_Buffer.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Fir_Resampler.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Fir_Resampler.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Gb_Apu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Gb_Apu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Gb_Cpu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Gb_Cpu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Gb_Oscs.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Gb_Oscs.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Gbs_Emu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Gbs_Emu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Gme_File.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Gme_File.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Gym_Emu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Gym_Emu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Hes_Apu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Hes_Apu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Hes_Cpu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Hes_Cpu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Hes_Emu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Hes_Emu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Kss_Cpu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Kss_Cpu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Kss_Emu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Kss_Emu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Kss_Scc_Apu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Kss_Scc_Apu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/M3u_Playlist.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/M3u_Playlist.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Multi_Buffer.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Multi_Buffer.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Music_Emu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Music_Emu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nes_Apu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nes_Apu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nes_Cpu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nes_Cpu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nes_Fme7_Apu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nes_Fme7_Apu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nes_Namco_Apu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nes_Namco_Apu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nes_Oscs.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nes_Oscs.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nes_Vrc6_Apu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nes_Vrc6_Apu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nsf_Emu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nsf_Emu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nsfe_Emu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Nsfe_Emu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Sap_Apu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Sap_Apu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Sap_Cpu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Sap_Cpu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Sap_Emu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Sap_Emu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Sms_Apu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Sms_Apu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Snes_Spc.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Snes_Spc.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Spc_Cpu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Spc_Cpu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Spc_Dsp.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Spc_Dsp.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Spc_Emu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Spc_Emu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Spc_Filter.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Spc_Filter.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Vgm_Emu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Vgm_Emu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Vgm_Emu_Impl.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Vgm_Emu_Impl.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Ym2413_Emu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Ym2413_Emu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Ym2612_Emu.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Ym2612_Emu.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/gme.cpp">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/gme.h">
+			<Option target="gme"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/lib/ViZDoomVersion.h.in">
+			<Option virtualFolder="CMake Files\src\lib\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/src/viz_version.h.in">
+			<Option virtualFolder="CMake Files\src\vizdoom\src\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\src\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/bzip2/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\bzip2\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\game-music-emu\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\game-music-emu\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\game-music-emu\gme\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/gme_types.h.in">
+			<Option virtualFolder="CMake Files\src\vizdoom\game-music-emu\gme\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\game-music-emu\gme\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/gme_types.h.in">
+			<Option virtualFolder="CMake Files\src\vizdoom\game-music-emu\gme\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/lzma/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\lzma\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/tools/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\tools\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/tools/lemon/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\tools\lemon\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/tools/re2c/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\tools\re2c\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/tools/re2c/config.h.in">
+			<Option virtualFolder="CMake Files\src\vizdoom\tools\re2c\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/tools/updaterevision/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\tools\updaterevision\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/tools/zipdir/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\tools\zipdir\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/dumb/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\dumb\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/gdtoa/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\gdtoa\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/wadsrc/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\wadsrc\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/output_sdl/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\vizdoom\output_sdl\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/cmake_modules/CreateLaunchers.cmake">
+			<Option virtualFolder="CMake Files\cmake_modules\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/cmake_modules/CleanDirectoryList.cmake">
+			<Option virtualFolder="CMake Files\cmake_modules\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/cmake_modules/FindSDL2.cmake">
+			<Option virtualFolder="CMake Files\cmake_modules\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/cmake_modules/FindFluidSynth.cmake">
+			<Option virtualFolder="CMake Files\cmake_modules\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
