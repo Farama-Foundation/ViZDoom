@@ -105,6 +105,10 @@ namespace vizdoom {
         return this->running && this->doomController->isDoomRunning();
     }
 
+    bool DoomGame::isMultiplayerGame() {
+        return this->running && this->doomController->isMultiplayerGame();
+    }
+
     void DoomGame::newEpisode(std::string filePath) {
 
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();

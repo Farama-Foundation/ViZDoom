@@ -6,6 +6,7 @@
 * [newEpisode](#newEpisode)
 * [replayEpisode](#replayEpisode)
 * [isRunning](#isRunning)
+* [isMultiplayerGame](#isMultiplayerGame)
 * [setAction](#setAction)
 * [advanceAction](#advanceAction)
 * [makeAction](#makeAction)
@@ -138,7 +139,7 @@ Game can be initialized again after being closed.
 | Java   | `void newEpisode(String recordFilePath = "")`      |
 | Python | `void new_episode(str recordFilePath = "")`        |
 
-Changed in 1.1
+Changed in 1.1.0
 
 Initializes a new episode. All rewards, variables and state are restarted.
 After calling this method, first state from new episode will be available.
@@ -157,7 +158,7 @@ Then the rest of the players must also call this method to start a new episode.
 | Java   | `void replayEpisode(String filePath, int player = 0)`               |
 | Python | `void replay_episode(str filePath, int player = 0)`                 |
 
-Added in 1.1
+Added in 1.1.0
 
 Replays recorded episode from the given file and using perspective of the specified player.
 Players are numered from 1, `player` equal to 0 results in replaying demo using perspective 
@@ -169,6 +170,7 @@ See also:
 - [examples/python/record_episodes.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/record_episodes.py),
 - [examples/python/record_multiplayer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/record_multiplayer.py).
 
+
 ---
 ### <a name="isRunning"></a> `isRunning`
 
@@ -179,6 +181,20 @@ See also:
 | Python | `bool is_running()`   |
 
 Checks if the ViZDoom game instance is running.
+
+
+---
+### <a name="isMultiplayerGame"></a> `isMultiplayerGame`
+
+| C++    | `bool isMultiplayerGame()`    |
+| :--    | :--                           |
+| Lua    | `boolean isMultiplayerGame()` |
+| Java   | `boolean isMultiplayerGame()` |
+| Python | `bool is_multiplayer_game()`  |
+
+Added in 1.1.2
+
+Checks if the game is in multiplayer mode.
 
 
 ---
@@ -274,6 +290,9 @@ In multiplayer when player is dead [`respawnPlayer`](#respawnPlayer) can be call
 This method respawns player after death in multiplayer mode.
 After calling this method, first state after respawn will be available.
 
+See also:
+- [`isMultiplayerGame`](#isMultiplayerGame)
+
 
 ---
 ### <a name="sendGameCommand"></a> `sendGameCommand`
@@ -299,7 +318,7 @@ See also: [ZDoom Wiki](http://zdoom.org/wiki/Console)
 | Java   | `GameState getState()`                                           |
 | Python | `GameState get_state()`                                          |
 
-Changed in 1.1
+Changed in 1.1.0
 
 Returns [`GameState`](Types.md#gamestate) object with the current game state.
 If game is not running or episode is finished `nullptr/null/None` will be returned.
@@ -405,6 +424,7 @@ Clears all available `Buttons` added so far.
 See also:
 - [`Types: Button`](Types.md#button)
 
+
 ---
 ### <a name="getAvailableButtonsSize"></a> `getAvailableButtonsSize`
 
@@ -418,6 +438,7 @@ Returns the number of available `Buttons`.
 
 See also:
 - [`Types: Button`](Types.md#button)
+
 
 ---
 ### <a name="setButtonMaxValue"></a> `setButtonMaxValue`
@@ -435,6 +456,7 @@ Constraints limit applies in all Modes.
 
 See also:
 - [`Types: Button`](Types.md#button)
+
 
 ---
 ### <a name="getButtonMaxValue"></a> `getButtonMaxValue`
@@ -504,6 +526,7 @@ See also:
 - [`Types: GameVariable`](Types.md#gamevariable)
 - [`ConfigFile: List`](ConfigFile.md#list)
 
+
 ---
 ### <a name="clearAvailableGameVariables"></a> `clearAvailableGameVariables`
 
@@ -519,6 +542,7 @@ See also:
 - [`Types: GameVariable`](Types.md#gamevariable)
 - [`ConfigFile: List`](ConfigFile.md#list)
 
+
 ---
 ### <a name="getAvailableGameVariablesSize"></a> `getAvailableGameVariablesSize`
 
@@ -533,6 +557,7 @@ Returns the number of available `GameVariables`.
 See also:
 - [`Types: GameVariable`](Types.md#gamevariable)
 - [`ConfigFile: List`](ConfigFile.md#list)
+
 
 ---
 ### <a name="getGameVariable"></a> `getGameVariable`
@@ -685,6 +710,7 @@ false if file was contained errors.
 See also:
 - [ConfigFile](ConfigFile.md)
 
+
 ---
 ### <a name="getMode"></a> `getMode`
 
@@ -725,7 +751,7 @@ See also:
 | Java   | `int getTicrate()`          |
 | Python | `int get_ticrate()`         |
 
-Added in 1.1
+Added in 1.1.0
 
 Returns current ticrate.
 
@@ -739,7 +765,7 @@ Returns current ticrate.
 | Java   | `void setTicrate(int ticrate)`          |
 | Python | `void set_ticrate(int ticrate)`         |
 
-Added in 1.1
+Added in 1.1.0
 
 Sets ticrate for ASNYC Modes - number of tics executed per second.
 
@@ -1013,7 +1039,7 @@ See also:
 | Java   | `boolean isDepthBufferEnabled()` |
 | Python | `bool isDepthBufferEnabled()`    |
 
-Added in 1.1
+Added in 1.1.0
 
 Returns true if the depth buffer is enabled.
 
@@ -1027,7 +1053,7 @@ Returns true if the depth buffer is enabled.
 | Java   | `void setDepthBufferEnabled(boolean depthBuffer)` |
 | Python | `void set_depth_buffer_enabled(bool depthBuffer)` |
 
-Added in 1.1
+Added in 1.1.0
 
 Enables rendering of the depth buffer, it will be available in state.
 
@@ -1039,6 +1065,7 @@ See also:
 - [`Types: GameState`](Types.md#gamestate)
 - [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py),
 
+
 ---
 ### <a name="isLabelsBufferEnabled"></a> `isLabelsBufferEnabled`
 
@@ -1048,7 +1075,7 @@ See also:
 | Java   | `boolean isLabelsBufferEnabled()` |
 | Python | `bool isLabelsBufferEnabled()`    |
 
-Added in 1.1
+Added in 1.1.0
 
 Returns true if the labels buffer is enabled.
 
@@ -1062,7 +1089,7 @@ Returns true if the labels buffer is enabled.
 | Java   | `void setLabelsBufferEnabled(boolean labelsBuffer)` |
 | Python | `void set_labels_buffer_enabled(bool labelsBuffer)` |
 
-Added in 1.1
+Added in 1.1.0
 
 Enables rendering of the labels buffer, it will be available in state with vector of `Label`s.
 
@@ -1077,7 +1104,6 @@ See also:
 - [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py),
 
 
-
 ---
 ### <a name="isAutomapBufferEnabled"></a> `isAutomapBufferEnabled`
 
@@ -1087,7 +1113,7 @@ See also:
 | Java   | `boolean isAutomapBufferEnabled()` |
 | Python | `bool isAutomapBufferEnabled()`    |
 
-Added in 1.1
+Added in 1.1.0
 
 Returns true if the automap buffer is enabled.
 
@@ -1101,7 +1127,7 @@ Returns true if the automap buffer is enabled.
 | Java   | `void setAutomapBufferEnabled(boolean automapBuffer)` |
 | Python | `void set_automap_buffer_enabled(bool automapBuffer)` |
 
-Added in 1.1
+Added in 1.1.0
 
 Enables rendering of the automap buffer, it will be available in state.
 
@@ -1123,7 +1149,7 @@ See also:
 | Java   | `void setAutomapMode(AutomapMode mode)`   |
 | Python | `void set_automap_mode(AutomapMode mode)` |
 
-Added in 1.1
+Added in 1.1.0
 
 Sets the automap mode (`NORMAL`, `WHOLE`, `OBJECTS`, `OBJECTS_WITH_SIZE`) with determine what will be visible on it.
 
@@ -1144,7 +1170,7 @@ See also:
 | Java   | `void setAutomapRotate(boolean rotate)` |
 | Python | `void set_automap_rotate(bool rotate)`  |
 
-Added in 1.1
+Added in 1.1.0
 
 Determine if the automap will be rotating with player, if false, north always will be at the top of the buffer.
 
@@ -1162,7 +1188,7 @@ Config key: `automapRotate/automap_rotate`
 | Java   | `void setAutomapRenderTextures(boolean textures)` |
 | Python | `void set_automap_render_textures(bool textures)` |
 
-Added in 1.1
+Added in 1.1.0
 
 Determine if the automap will be textured, showing the floor textures.
 
@@ -1196,7 +1222,7 @@ Config key: `renderHud/render_hud`
 | Java   | `void setRenderMinimalHud(boolean minHud)` |
 | Python | `void set_render_minimal_hud(bool minHud)` |
 
-Added in 1.1
+Added in 1.1.0
 
 Determine if minimalistic version of hud will be rendered instead of full hud.
 
@@ -1278,7 +1304,7 @@ Config key: `renderParticles/render_particles`
 | Java   | `void setRenderEffectsSprites(boolean sprites)` |
 | Python | `void set_render_effects_sprites(bool sprites)` |
 
-Added in 1.1
+Added in 1.1.0
 
 Determine if some effects sprites (gun pufs, blood splats etc.) will be rendered in game.
 
@@ -1296,7 +1322,7 @@ Config key: `renderEffectsSprites/render_effects_sprites`
 | Java   | `void setRenderMessages(boolean messages)` |
 | Python | `void set_render_messages(bool messages)`  |
 
-Added in 1.1
+Added in 1.1.0
 
 Determine if ingame messages (information about pickups, kills etc.) will be rendered in game.
 
@@ -1314,7 +1340,7 @@ Config key: `renderMessages/render_messages`
 | Java   | `void setRenderCorpses(boolean corpses)` |
 | Python | `void set_render_corpsess(bool corpses)` |
 
-Added in 1.1
+Added in 1.1.0
 
 Determine if actors' corpses will be rendered in game.
 

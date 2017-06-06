@@ -55,7 +55,7 @@
 - `std::vector<Label> / table / Label[] / list` **labels**
 
 **number** - number of the state in the episode.
-**tic** - ingame time, 1 tic is 1/35 of second in the game world.
+**tic** - ingame time, 1 tic is 1/35 of second in the game world. Added in 1.1.1.
 
 
 See also:
