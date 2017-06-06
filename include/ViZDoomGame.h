@@ -50,6 +50,7 @@ namespace vizdoom {
         void newEpisode(std::string filePath = "");
         void replayEpisode(std::string filePath, unsigned int player = 0);
         bool isRunning();
+        bool isMultiplayerGame();
 
         void setAction(std::vector<double> const &actions);
         void advanceAction(unsigned int tics = 1, bool updateState = true);

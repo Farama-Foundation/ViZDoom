@@ -3,9 +3,13 @@
 ## Changes in 1.1.2
 
 #### Multiplayer
+- Added `isMultiplayerGame` method.
 - Added `viz_respawn_delay` CVAR, which allows to control delay between respawns in multiplayer game.
 - Added `viz_spectator` CVAR which allows to connect to multiplayer game as a spectator.
 - Maximum number of connected players raised to 16.
+
+#### Missing methods
+- Added `isRunning`, `isDepthBufferEnabled`, `isLabelsBufferEnabled` and `isAutomapBufferEnabled` missing methods to Python and Lua bindings.
 
 
 ## Changes in 1.1.1
