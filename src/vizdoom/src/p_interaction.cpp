@@ -616,7 +616,7 @@ void AActor::Die (AActor *source, AActor *inflictor, int dmgflags)
 		if (bglobal.botnum && !demoplayback)
 		{
 			if (player->Bot != NULL)
-				player->Bot->t_respawn = (pr_botrespawn()%15)+((bglobal.botnum-1)*2)+TICRATE+1;
+				player->Bot->t_respawn = (pr_botrespawn()%15)+((bglobal.botnum-1)*2) + *viz_respawn_delay * TICRATE + 1;
 
 			//Added by MC: Discard enemies.
 			for (int i = 0; i < MAXPLAYERS; i++)
