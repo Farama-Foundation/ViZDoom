@@ -104,7 +104,7 @@ CVAR (Int, viz_override_player, 0, 0)
 CVAR (Bool, viz_loop_map, false, CVAR_NOSET | CVAR_SERVERINFO)
 CVAR (Bool, viz_nocheat, false, CVAR_NOSET | CVAR_SERVERINFO)
 CVAR (Int, viz_respawn_delay, 1, CVAR_DEMOSAVE | CVAR_SERVERINFO)
-CVAR (Bool, viz_spectator, false, CVAR_USERINFO)
+CVAR (Bool, viz_spectator, false, CVAR_DEMOSAVE | CVAR_USERINFO)
 
 CCMD(viz_set_seed){
     viz_seed.CmdSet(argv[1]);
