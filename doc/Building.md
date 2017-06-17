@@ -1,71 +1,36 @@
 # Installation/Building
 
-* [Installation via PyPI(pip)](#pypi)
+* [Dependencies](#deps)
+  * [Linux](#linux_deps)
+  * [MacOS/OSX](#osx_deps)
+  * [Windows](#windows_deps)
+* [Installation via PyPI(pip/conda)](#pypi)
 * [Installation via LuaRocks](#luarocks)
-* [Building on Linux](#linux)
-* [Building on Windows](#windows)
-* [Building on MacOS/OSX](#osx)
-* [Compilation output](#output)
-* [Building against Anaconda](#anaconda)
-* [Building against Torch's LuaJIT](#torchluajit)
+* [Building](#build)
+  * [Linux](#linux_build)
+  * [MacOS/OSX](#osx_build)
+  * [Windows](#windows_build)
+  * [Compilation output](#output)
+  * [Building against Anaconda](#anaconda)
+  * [Building against Torch's LuaJIT](#torchluajit)
 
 
-## <a name="pypi"></a> Installation via PyPI (recommended for Python users)
+## <a name="deps"></a> Dependencies
 
-ViZDoom for Python can be installed via **pip** on Linux and MacOS and it is strongly recommended. However you will still need to install the  **[dependencies](#linux_deps)**. 
-
-> Pip installation is not supported on Windows at the moment but we hope some day it will.
-
-To install the most stable official release from [PyPI](https://pypi.python.org/pypi):
-```bash
-# use pip3 for python3
-sudo pip install vizdoom
-```
-
-To install newest version from the repository:
-```bash
-git clone https://github.com/mwydmuch/ViZDoom
-cd ViZDoom
-# use pip3 for python3
-sudo pip install .
-```
-
-Or without cloning yourself:
-```bash
-# use pip3 for python3
-sudo pip install git+https://github.com/mwydmuch/ViZDoom
-```
+Even if you plan to install ViZDoom via PyPI or LuaRocks you need to install some dependencies in your system first.
 
 
-## <a name="luarocks"></a> Installation via LuaRocks (recommended for Torch7 users)
-
-ViZDoom for Python can be installed via **luarocks** on Linux and MacOS and it is strongly recommended. However you will still need to install the  **[dependencies](#linux_deps)**.
-
-To install the most stable official release from [LuaRocks](https://pypi.python.org/pypi):
-```bash
-luarocks install vizdoom
-```
-
-To install newest version from the repository:
-```bash
-git clone https://github.com/mwydmuch/ViZDoom
-cd ViZDoom
-luarocks make
-```
-
-
-## <a name="linux"></a> Linux
-
-### <a name="linux_deps"></a>Dependencies
+### <a name="linux_deps"></a> Linux
 * CMake 2.8+
 * Make
 * GCC 4.6+
-* Boost libraries (tested on 1.54, 1.58, 1.59, 1.61)
+* Boost libraries 1.54+
 * Python 2.7+ or Python 3+ with Numpy and Boost.Python for Python binding (optional)
 * JDK for Java binding (JAVA_HOME must be set) (optional)
-* Torch7 or LUA 5.1 for Lua binding (optional)
+* Torch7 for Lua binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
+
 
 To get all dependencies (except JDK) on Ubuntu execute the following commands in the shell (requires root access):
 ```bash
@@ -80,36 +45,50 @@ sudo apt-get install libboost-all-dev
 # Python 2 dependencies
 sudo apt-get install python-pip
 pip install numpy
+# or install Anaconda 2 and add it to PATH
 
 # Python 3 dependencies
 sudo apt-get install python3-pip 
 pip3 install numpy
+# or install Anaconda 3 and add it to PATH
 
 # Lua binding dependencies
-sudo apt-get install liblua5.1-dev # Lua shiped with Torch can be used instead, so it isn't needed if installing via LuaRocks
+sudo apt-get install liblua5.1-dev 
+# Lua shipped with Torch can be used instead, so it isn't needed if installing via LuaRocks
 ```
 
 To get Torch see: [Getting started with Torch](http://torch.ch/docs/getting-started.html).
 
-### Compiling
-In ViZDoom's root directory:
-```bash
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON
-make
+
+### <a name="osx_deps"></a> MacOS/OSX
+* CMake 2.8+
+* XCode 5+
+* Boost libraries
+* Python 2.7+ or Python 3+ with Numpy and Boost.Python for Python binding (optional)
+* JDK for Java binding (JAVA_HOME must be set) (optional)
+* Torch7 for Lua binding (optional)
+
+Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X) are needed.
+
+To get dependencies install [homebrew](https://brew.sh/)
+
+```sh
+# ZDoom dependencies and Boost libraries
+brew install cmake boost sdl2
+
+# Python 2 dependecies
+brew install boost-python
+pip install numpy
+
+# Python 3 dependecies
+brew install boost-python --with-python3
+pip install numpy
 ```
 
-``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` and ``-DBUILD_LUA=ON`` CMake options for Python, Java and Lua bindings are optional (default OFF). To force building bindings for Python3 instead of first version found use ``-DBUILD_PYTHON3=ON`` (needs Boost.Python builded with Python 3, default OFF).
+To get Torch see: [Getting started with Torch](http://torch.ch/docs/getting-started.html).
 
 
-## <a name="windows"></a> Windows
-
-Setting up the compilation on Windows is really tedious so using the precompiled binaries is recommended.
-
-`vizdoom` directory from Python builds contains complete Python package for Windows.
-You can copy it to your project directory or copy it into `python_dir/lib/site-packages/vizdoom` to install it globally in your system. 
-
-
-### Dependencies
+### <a name="windows_deps"></a> Windows
 * CMake 2.8+
 * Visual Studio 2012+
 * Boost libraries
@@ -120,7 +99,118 @@ You can copy it to your project directory or copy it into `python_dir/lib/site-p
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Windows) are needed.
 Most of them are gathered in this repository: [ViZDoomWinDepBin](https://github.com/mwydmuch/ViZDoomWinDepBin).
 
-### Compiling
+
+## <a name="pypi"></a> Installation via PyPI (recommended for Python users)
+
+ViZDoom for Python can be installed via **pip/conda** on Linux and MacOS and it is strongly recommended. 
+However you will still need to install **[Linux](#linux_deps)/[MacOS](#osx_deps) dependencies**. 
+
+> Pip installation is not supported on Windows at the moment but we hope some day it will.
+
+To install the most stable official release from [PyPI](https://pypi.python.org/pypi):
+```bash
+# use pip3 for Python3 or conda for Anaconda version added to PATH
+sudo pip install vizdoom
+```
+
+To install newest version from the repository:
+```bash
+git clone https://github.com/mwydmuch/ViZDoom
+cd ViZDoom
+# use pip3 for Python3 or conda for Anaconda version added to PATH
+sudo pip install .
+```
+
+Or without cloning yourself:
+```bash
+# use pip3 for Python3 or conda for Anaconda version added to PATH
+sudo pip install git+https://github.com/mwydmuch/ViZDoom
+```
+
+If you have a problem with missing Boost.Python **(new Anaconda with Python 3.6)** instead of building it on your own, clone local_boost_python branch to install ViZDoom with it's own version of library
+```bash
+git clone https://github.com/mwydmuch/ViZDoom -b local_boost_python
+cd ViZDoom
+# use pip3 for Python3 or conda for Anaconda version added to PATH
+sudo pip install .
+```
+
+
+## <a name="luarocks"></a> Installation via LuaRocks (recommended for Torch7 users)
+
+ViZDoom for Torch7 can be installed via **luarocks** on Linux and MacOS and it is strongly recommended. 
+However you will still need to install **[Linux](#linux_deps)/[MacOS](#osx_deps) dependencies**. 
+
+To install the most stable official release from [LuaRocks](https://pypi.python.org/pypi):
+```bash
+luarocks install vizdoom
+```
+
+To install newest version from the repository:
+```bash
+git clone https://github.com/mwydmuch/ViZDoom
+cd ViZDoom
+luarocks make
+```
+
+
+## <a name="build"></a> Building
+
+### <a name="linux"></a> Linux
+
+In ViZDoom's root directory:
+```bash
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON
+make
+```
+
+``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` and ``-DBUILD_LUA=ON`` CMake options for Python, Java and Lua bindings are optional (default OFF). To force building bindings for Python3 instead of first version found use ``-DBUILD_PYTHON3=ON`` (needs Boost.Python builded with Python 3, default OFF).
+
+
+### <a name="osx"></a>OSX
+
+Run CMake and use generated project.
+
+```sh
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON
+make
+```
+
+``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` and ``-DBUILD_LUA=ON`` CMake options for Python, Java and Lua bindings are optional (default OFF). To force building bindings for Python3 instead of first version found use ``-DBUILD_PYTHON3=ON`` (needs Boost.Python builded with Python 3, default OFF).
+
+Users with brew-installed Python/Anaconda may need to manually set PYTHON_EXECUTABLE, PYTHON_INCLUDE_DIR, PYTHON_LIBRARY:
+
+It should look like this for brew-installed Python:
+
+```
+cmake -DCMAKE_BUILD_TYPE=Release \
+-DBUILD_PYTHON=ON \ (or -DBUILD_PYTHON3=ON for Python 3)
+-DPYTHON_EXECUTABLE=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/bin/pythonx
+-DPYTHON_INCLUDE_DIR=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/include/pythonx.x
+-DPYTHON_LIBRARY=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/lib/libpythonx.x.dylib
+-DNUMPY_INCLUDES=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/lib/pythonX.X/site-packages/numpy/core/include
+```
+
+Or for Anaconda:
+
+```
+cmake -DCMAKE_BUILD_TYPE=Release \
+-DBUILD_PYTHON=ON \ (or -DBUILD_PYTHON3=ON for Python 3)
+-DPYTHON_INCLUDE_DIR=$HOME/anacondaX/include/pythonX \ 
+-DPYTHON_LIBRARY=$HOME/anacondaX/lib/libpythonX.dylib \
+-DPYTHON_EXECUTABLE=$HOME/anacondaX/bin/pythonX \
+-DNUMPY_INCLUDES=$HOME/anacondaX/lib/pythonX.X/site-packages/numpy/core/include
+```
+
+
+### <a name="windows"></a> Windows
+
+Setting up the compilation on Windows is really tedious so using the precompiled binaries is recommended.
+
+`vizdoom` directory from Python builds contains complete Python package for Windows.
+You can copy it to your project directory or copy it into `python_dir/lib/site-packages/vizdoom` to install it globally in your system. 
+
+
 Run CMake GUI, select ViZDoom root directory and set paths to:
 * BOOST_ROOT
 * BOOST_INCLUDEDIR
@@ -137,75 +227,7 @@ In configuration select BUILD_PYTHON, BUILD_PYTHON3 and BUILD_JAVA options for P
 Use generated Visual Studio solution to build all parts of ViZDoom environment.
 
 
-## <a name="osx"></a>OSX
-
-### Dependencies
-* CMake 2.8+
-* XCode 5+
-* Boost libraries
-* Python 2.7+ or Python 3+ with Numpy and Boost.Python for Python binding (optional)
-* JDK for Java binding (JAVA_HOME must be set) (optional)
-* Torch7 or LUA 5.1 for Lua binding (optional)
-
-Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X) are needed.
-
-### Compiling
-Run CMake and use generated project.
-
-Users with brew-installed Python may need to manually set:
-``-DPYTHON_INCLUDE_DIR=/usr/local/Cellar/python/x.x.x/Frameworks/Python.framework/Versions/x.x/include/pythonx.x`` and 
-``-DPYTHON_LIBRARY=/usr/local/Cellar/python/x.x.x/Frameworks/Python.framework/Versions/x.x/lib/libpythonx.x.dylib``
-
-### Quickstart
-
-Install [homebrew](https://brew.sh/), and [Anaconda3](https://www.continuum.io/downloads) (Python 3.6+).
-
-1. Install depedencies dependencies
-
-```sh
-brew install \
-    cmake \
-    boost \
-    boost-python --with-python3
-```
-
-2. Clone the repository
-
-```sh
-git clone https://github.com/mwydmuch/ViZDoom
-cd ViZDoom
-```
-
-3. Run cmake against anaconda and native boost libraries. 
-
-*nota bene* library version numbers will change over time (e.g. `python3.6m`, `boost-python/1.64.0`) and may need to be updated. 
-
-```sh
-cmake -DCMAKE_BUILD_TYPE=Release \
--DBUILD_PYTHON3=ON \
--DPYTHON_INCLUDE_DIR=$HOME/anaconda3/include/python3.6m \ 
--DPYTHON_LIBRARY=$HOME/anaconda3/lib/libpython3.6m.dylib \
--DPYTHON_EXECUTABLE=$HOME/anaconda3/bin/python3 \
--DBOOST_PYTHON3_LIBRARY=/usr/local/Cellar/boost-python/1.64.0/lib/libboost_python3.dylib \
--DNUMPY_INCLUDES=$HOME/anaconda3/lib/python3.6/site-packages/numpy/core/include
-```
-
-4. Build it!
-
-```sh
-make
-```
-
-5. Move the output to anaconda's `site-packages` directory, or your local virtual environments `site-packages` directory. 
-
-```sh
-mv -r bin/python3/pip_package/ $HOME/anaconda3/lib/python3.6/site-packages/vizdoom
-```
-
-Test the install works.
-
-
-## <a name="output"></a> Compilation output
+### <a name="output"></a> Compilation output
 Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should contain following files.
 
 * ``bin/vizdoom / vizdoom.exe`` - ViZDoom executable
@@ -222,12 +244,22 @@ Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should cont
 * ``bin/java/vizdoom.jar`` -  Contains ViZDoom Java classes
 
 
-## <a name="anaconda"></a> Building Anaconda bindings (Linux and MacOS)
+### <a name="manual-install"></a> Manual installation
+
+To manually install Python package copy `vizdoom_root_dir/bin/pythonX/pip_package` contents to `pyhton_root_dir/lib/pythonx.x/site-packages/site-packages/vizdoom`.
+
+To manually install Torch package copy `vizdoom_root_dir/bin/lua/luarocks_package` contents to `torch_root_dir/install/lib/lua/5.1/vizdoom` and `vizdoom_root_dir/bin/lua/luarocks_shared_package` contents to `torch_root_dir/install/share/lua/5.1/vizdoom`.
+
+
+### <a name="anaconda"></a> Building Anaconda bindings (Linux and MacOS)
+
+> If you don't have any special reason then use [PyPI way](#pypi).
+
 If you want to build against Anaconda, you may need to manually set:
 
 ```
 cmake -DCMAKE_BUILD_TYPE=Release \
--DBUILD_PYTHON=ON \ (or -DBUILD_PYTHON3=ON for Anaconda with Python 3)
+-DBUILD_PYTHON=ON \ (or -DBUILD_PYTHON3=ON for Python 3)
 -DPYTHON_INCLUDE_DIR=/path_to_anaconda_root_dir/include/pythonx.x \
 -DPYTHON_LIBRARY=/path_to_anaconda_root_dir/lib/libpythonx.x.so (or dll/dylib) \
 -DPYTHON_EXECUTABLE=/path_to_anaconda_root_dir/bin/pythonx \
@@ -239,7 +271,7 @@ Manual installation:
 Copy `vizdoom_root_dir/bin/python2/pip_package` or `vizdoom_root_dir/bin/python3/pip_package` to `anaconda_root_dir/lib/pythonx.x/site-packages/vizdoom`.
 
 
-## <a name="torchluajit"></a> Building Torch7 Lua bindings (Linux and MacOS)
+### <a name="torchluajit"></a> Building Torch7 Lua bindings (Linux and MacOS)
 
 > If you don't have any special reason then use [LuaRocks way](#luarocks).
 

@@ -46,11 +46,12 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 
 ## Installation/Building instructions
 
-- [PyPI (pip)](doc/Building.md#pypi)
+- [PyPI (pip/conda)](doc/Building.md#pypi)
 - [LuaRocks](doc/Building.md#luarocks)
-- [Linux](doc/Building.md#linux)
-- [Windows](doc/Building.md#windows)
-- [MacOS/OSX](doc/Building.md#osx)
+
+- [Linux](doc/Building.md#linux_build)
+- [MacOS/OSX](doc/Building.md#osx_build)
+- [Windows](doc/Building.md#windows_build)
 
 
 ## Windows build
@@ -88,7 +89,7 @@ Detailed description of all types and methods:
 - [Exceptions](doc/Exceptions.md)
 - [Utilities](doc/Utilities.md)
 
-[Changelog](doc/Changelog.md) for 1.1.0 version.
+[Changelog](doc/Changelog.md) for 1.1.X version.
 
 
 ## Contributions
