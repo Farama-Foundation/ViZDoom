@@ -323,7 +323,7 @@ EXTERN_CVAR(Bool, am_showtotaltime)
 #endif
 
 void VIZ_CVARsInit(){
-    if(*viz_spectator){
+    if(*viz_spectator && !*viz_override_player){
         screenblocks.CmdSet("12");
         crosshair.CmdSet("0");
         r_drawplayersprites.CmdSet("0");
