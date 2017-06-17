@@ -29,7 +29,12 @@ build = {
     type = "command",
     build_command = [[
         rm -f CMakeCache.txt
-        cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_LUA=ON -DLUA_LIBRARIES="$(LUA_LIBDIR)/libluajit.so" -DLUA_INCLUDE_DIR="$(LUA_INCDIR)" && $(MAKE) -j 4
+        if [ -e "$(LUA_LIBDIR)/libluajit.so" ]; then
+            cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_LUA=ON -DLUA_LIBRARIES="$(LUA_LIBDIR)/libluajit.so" -DLUA_INCLUDE_DIR="$(LUA_INCDIR)"
+        elif [ -e "$(LUA_LIBDIR)/libluajit.dylib" ]; then
+            cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_LUA=ON -DLUA_LIBRARIES="$(LUA_LIBDIR)/libluajit.dylib" -DLUA_INCLUDE_DIR="$(LUA_INCDIR)"
+        fi
+        $(MAKE) -j 4
     ]],
     install_command = [[
         mkdir -p $(LUA_LIBDIR)/lua/5.1/vizdoom
