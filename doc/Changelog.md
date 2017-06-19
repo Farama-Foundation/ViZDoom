@@ -1,5 +1,12 @@
 # Changelog
 
+## Changes in 1.1.3
+
+#### Rendering options
+- Added `setRenderScreenFlashes` and `setRenderAllFrames` methods.
+- Added `viz_ignore_render_mode` CVAR which disables overriding rendering settings.
+
+
 ## Changes in 1.1.2
 
 #### Multiplayer

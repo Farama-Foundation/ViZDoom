@@ -162,6 +162,7 @@ namespace vizdoom {
         void setRenderMessages(bool messages);
         void setRenderCorpses(bool corpses);
         void setRenderScreenFlashes(bool flashes);
+        void setRenderAllFrames(bool allFrames);
 
         void setScreenResolution(unsigned int width, unsigned int height);
         unsigned int getScreenWidth();
@@ -318,7 +319,7 @@ namespace vizdoom {
         bool automap;
         bool labels;
 
-        bool hud, minHud, weapon, crosshair, decals, particles, sprites, messages, corpses, flashes;
+        bool hud, minHud, weapon, crosshair, decals, particles, sprites, messages, corpses, flashes, renderAll;
         AutomapMode amMode;
         bool amRotate, amTextures;
 

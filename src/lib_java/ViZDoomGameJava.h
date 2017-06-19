@@ -149,6 +149,8 @@ JNI_EXPORT(void, setRenderParticles, jboolean);
 JNI_EXPORT(void, setRenderEffectsSprites, jboolean);
 JNI_EXPORT(void, setRenderMessages, jboolean);
 JNI_EXPORT(void, setRenderCorpses, jboolean);
+JNI_EXPORT(void, setRenderScreenFlashes, jboolean);
+JNI_EXPORT(void, setRenderAllFrames, jboolean);
 JNI_EXPORT(void, setWindowVisible, jboolean);
 JNI_EXPORT(void, setConsoleEnabled, jboolean);
 JNI_EXPORT(void, setSoundEnabled, jboolean);

@@ -166,6 +166,8 @@ namespace vizdoom {
         void setRenderEffectsSprites(bool sprites);
         void setRenderMessages(bool messages);
         void setRenderCorpses(bool bodies);
+        void setRenderScreenFlashes(bool flashes);
+        void setRenderAllFrames(bool allFrames);
         void setWindowVisible(bool visibility);
         void setConsoleEnabled(bool console);
         void setSoundEnabled(bool sound);

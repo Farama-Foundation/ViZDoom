@@ -496,13 +496,16 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             CLASS_FUNC_2_LUA(DoomGameLua, setRenderEffectsSprites)
             CLASS_FUNC_2_LUA(DoomGameLua, setRenderMessages)
             CLASS_FUNC_2_LUA(DoomGameLua, setRenderCorpses)
+            CLASS_FUNC_2_LUA(DoomGameLua, setRenderScreenFlashes)
+            CLASS_FUNC_2_LUA(DoomGameLua, setRenderAllFrames)
+            CLASS_FUNC_2_LUA(DoomGameLua, setWindowVisible)
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenWidth)
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenHeight)
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenChannels)
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenSize)
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenPitch)
-            CLASS_FUNC_2_LUA(DoomGameLua, getScreenFormat)
-            CLASS_FUNC_2_LUA(DoomGameLua, setWindowVisible),
+            CLASS_FUNC_2_LUA(DoomGameLua, getScreenFormat),
+
 
 
         /* Utilities */

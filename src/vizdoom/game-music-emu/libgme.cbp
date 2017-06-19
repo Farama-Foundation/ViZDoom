@@ -5,7 +5,7 @@
 		<Option title="libgme"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;CMake Files\src\;CMake Files\src\lib\;CMake Files\src\vizdoom\;CMake Files\src\vizdoom\src\;CMake Files\src\vizdoom\bzip2\;CMake Files\src\vizdoom\game-music-emu\;CMake Files\src\vizdoom\game-music-emu\gme\;CMake Files\src\vizdoom\lzma\;CMake Files\src\vizdoom\tools\;CMake Files\src\vizdoom\tools\lemon\;CMake Files\src\vizdoom\tools\re2c\;CMake Files\src\vizdoom\tools\updaterevision\;CMake Files\src\vizdoom\tools\zipdir\;CMake Files\src\vizdoom\dumb\;CMake Files\src\vizdoom\gdtoa\;CMake Files\src\vizdoom\wadsrc\;CMake Files\src\vizdoom\output_sdl\;CMake Files\cmake_modules\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\src\;CMake Files\src\lib\;CMake Files\src\vizdoom\;CMake Files\src\vizdoom\src\;CMake Files\src\vizdoom\game-music-emu\;CMake Files\src\vizdoom\game-music-emu\gme\;CMake Files\src\vizdoom\lzma\;CMake Files\src\vizdoom\tools\;CMake Files\src\vizdoom\tools\lemon\;CMake Files\src\vizdoom\tools\re2c\;CMake Files\src\vizdoom\tools\updaterevision\;CMake Files\src\vizdoom\tools\zipdir\;CMake Files\src\vizdoom\dumb\;CMake Files\src\vizdoom\gdtoa\;CMake Files\src\vizdoom\wadsrc\;CMake Files\src\vizdoom\output_sdl\;CMake Files\cmake_modules\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu"/>
@@ -28,16 +28,14 @@
 					<Add directory="/home/marek/Workspace/ViZDoom/include"/>
 					<Add directory="/home/marek/Workspace/ViZDoom/src/lib"/>
 					<Add directory="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme"/>
-					<Add directory="/usr/include/c++/7"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
-					<Add directory="/usr/include/c++/7/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
 					<Add directory="/usr/include/x86_64-linux-gnu"/>
 					<Add directory="/usr/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
 				</Compiler>
 				<MakeCommands>
 					<Build command="/usr/bin/make -j12 -f &quot;/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Makefile&quot;  VERBOSE=1 gme"/>
@@ -57,16 +55,14 @@
 					<Add directory="/home/marek/Workspace/ViZDoom/include"/>
 					<Add directory="/home/marek/Workspace/ViZDoom/src/lib"/>
 					<Add directory="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme"/>
-					<Add directory="/usr/include/c++/7"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
-					<Add directory="/usr/include/c++/7/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
 					<Add directory="/usr/include/x86_64-linux-gnu"/>
 					<Add directory="/usr/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
 				</Compiler>
 				<MakeCommands>
 					<Build command="/usr/bin/make -j12 -f &quot;/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/gme/Makefile&quot;  VERBOSE=1 gme/fast"/>
@@ -367,9 +363,6 @@
 		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/src/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\src\vizdoom\src\"/>
 		</Unit>
-		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/bzip2/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\src\vizdoom\bzip2\"/>
-		</Unit>
 		<Unit filename="/home/marek/Workspace/ViZDoom/src/vizdoom/game-music-emu/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\src\vizdoom\game-music-emu\"/>
 		</Unit>
@@ -428,6 +421,12 @@
 			<Option virtualFolder="CMake Files\cmake_modules\"/>
 		</Unit>
 		<Unit filename="/home/marek/Workspace/ViZDoom/cmake_modules/FindSDL2.cmake">
+			<Option virtualFolder="CMake Files\cmake_modules\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/cmake_modules/FindSndFile.cmake">
+			<Option virtualFolder="CMake Files\cmake_modules\"/>
+		</Unit>
+		<Unit filename="/home/marek/Workspace/ViZDoom/cmake_modules/FindMPG123.cmake">
 			<Option virtualFolder="CMake Files\cmake_modules\"/>
 		</Unit>
 		<Unit filename="/home/marek/Workspace/ViZDoom/cmake_modules/FindFluidSynth.cmake">

@@ -87,10 +87,12 @@ CVAR (Bool, viz_depth, false, 0)
 CVAR (Bool, viz_labels, false, 0)
 CVAR (Bool, viz_automap, false, 0)
 
-// rendering options (bitsets)
+// rendering options (bitset)
 CVAR (Int, viz_render_mode, 0, 0)
 CVAR (Int, viz_automap_mode, 0, 0)
 CVAR (Bool, viz_render_corpses, true, 0)
+CVAR (Bool, viz_render_flashes, true, 0)
+CVAR (Bool, viz_ignore_render_mode, false, 0)
 
 // window/sound/console/rendering all frames
 CVAR (Bool, viz_render_all, false, CVAR_NOSET)
@@ -104,7 +106,7 @@ CVAR (Int, viz_override_player, 0, 0)
 CVAR (Bool, viz_loop_map, false, CVAR_NOSET | CVAR_SERVERINFO)
 CVAR (Bool, viz_nocheat, false, CVAR_NOSET | CVAR_SERVERINFO)
 CVAR (Int, viz_respawn_delay, 1, CVAR_DEMOSAVE | CVAR_SERVERINFO)
-CVAR (Bool, viz_spectator, false, CVAR_DEMOSAVE | CVAR_USERINFO)
+CVAR (Bool, viz_spectator, false, CVAR_DEMOSAVE | CVAR_USERINFO) // players[playernum].userinfo.GetSpectator()
 
 CCMD(viz_set_seed){
     viz_seed.CmdSet(argv[1]);
@@ -145,7 +147,7 @@ void VIZ_FreezeTime (bool frozen){
     //if (*viz_allow_input) _I_FreezeTime(frozen);
     vizFreeze = frozen;
 }
-//players[playernum].userinfo.GetSpectator()
+
 void VIZ_Init(){
     if(*viz_controlled) {
         Printf("VIZ_Init: instance id: %s, async: %d, input: %d\n", *viz_instance_id, *viz_async, *viz_allow_input);
@@ -300,6 +302,10 @@ EXTERN_CVAR(Int, cl_bloodtype)
 EXTERN_CVAR(Int, cl_pufftype)
 EXTERN_CVAR(Int, cl_rockettrails)
 
+// flashes -> removed or GZDoom only?
+//EXTERN_CVAR(Float, blood_fade_scalar)
+//EXTERN_CVAR(Float, pickup_fade_scalar)
+
 // messages
 EXTERN_CVAR(Float, con_midtime)
 EXTERN_CVAR(Float, con_notifytime)
@@ -342,61 +348,71 @@ void VIZ_CVARsUpdate(){
         vid_forceddraw.CmdSet("1");
     #endif
 
-    // hud
-    bool hud = (*viz_render_mode & 1) != 0;
-    bool minHud = (*viz_render_mode & 2) != 0;
+    if(!*viz_ignore_render_mode) {
+        // hud
+        bool hud = (*viz_render_mode & 1) != 0;
+        bool minHud = (*viz_render_mode & 2) != 0;
 
-    if (minHud && hud) screenblocks.CmdSet("11");
-    else if (hud) screenblocks.CmdSet("10");
-    else screenblocks.CmdSet("12");
+        if (minHud && hud) screenblocks.CmdSet("11");
+        else if (hud) screenblocks.CmdSet("10");
+        else screenblocks.CmdSet("12");
 
-    st_scale.CmdSet("1");
-    hud_scale.CmdSet("1");
-    hud_althud.CmdSet("0");
+        st_scale.CmdSet("1");
+        hud_scale.CmdSet("1");
+        hud_althud.CmdSet("0");
 
-    // players sprite (weapon)
-    r_drawplayersprites.CmdSet((*viz_render_mode & 4) != 0 ? "1" : "0");
+        // players sprite (weapon)
+        r_drawplayersprites.CmdSet((*viz_render_mode & 4) != 0 ? "1" : "0");
 
-    // crosshair
-    crosshair.CmdSet((*viz_render_mode & 8) != 0 ? "1" : "0");
+        // crosshair
+        crosshair.CmdSet((*viz_render_mode & 8) != 0 ? "1" : "0");
 
-    // decals
-    bool decals = (*viz_render_mode & 16) != 0;
-    cl_bloodsplats.CmdSet(decals ? "1" : "0");
-    cl_maxdecals.CmdSet(decals ? "1024" : "0");
-    cl_missiledecals.CmdSet(decals ? "1" : "0");
-    cl_spreaddecals.CmdSet(decals ? "1" : "0");
+        // decals
+        bool decals = (*viz_render_mode & 16) != 0;
+        cl_bloodsplats.CmdSet(decals ? "1" : "0");
+        cl_maxdecals.CmdSet(decals ? "1024" : "0");
+        cl_missiledecals.CmdSet(decals ? "1" : "0");
+        cl_spreaddecals.CmdSet(decals ? "1" : "0");
 
-    // particles && effects sprites
-    bool particles = (*viz_render_mode & 32) != 0;
-    bool sprites = (*viz_render_mode & 64) != 0;
+        // particles && effects sprites
+        bool particles = (*viz_render_mode & 32) != 0;
+        bool sprites = (*viz_render_mode & 64) != 0;
 
-    r_particles.CmdSet(particles ? "1" : "0");
-    r_maxparticles.CmdSet(particles ? "4092" : "0");
+        r_particles.CmdSet(particles ? "1" : "0");
+        r_maxparticles.CmdSet(particles ? "4092" : "0");
 
-    cl_bloodtype.CmdSet(sprites ? "1" : "2");
-    cl_pufftype.CmdSet(sprites ? "0" : "1");
-    cl_rockettrails.CmdSet(sprites ? "3" : "1");
+        cl_bloodtype.CmdSet(sprites ? "1" : "2");
+        cl_pufftype.CmdSet(sprites ? "0" : "1");
+        cl_rockettrails.CmdSet(sprites ? "3" : "1");
 
-    // messages
-    bool messages = (*viz_render_mode & 128) != 0;
-    con_midtime.CmdSet(messages ? "3" : "0");
-    con_notifytime.CmdSet(messages ? "3" : "0");
-    cl_showmultikills.CmdSet(messages ? "1" : "0");
-    cl_showsprees.CmdSet(messages ? "1" : "0");
+        // messages
+        bool messages = (*viz_render_mode & 128) != 0;
+        con_midtime.CmdSet(messages ? "3" : "0");
+        con_notifytime.CmdSet(messages ? "3" : "0");
+        cl_showmultikills.CmdSet(messages ? "1" : "0");
+        cl_showsprees.CmdSet(messages ? "1" : "0");
 
-    // automap
+        // automap
+        am_rotate.CmdSet((*viz_render_mode & 256) != 0 ? "1" : "0");
+        am_textured.CmdSet((*viz_render_mode & 512) != 0 ? "1" : "0");
+        am_followplayer.CmdSet("1");
+
+        am_showitems.CmdSet("0");
+        am_showmonsters.CmdSet("0");
+        am_showsecrets.CmdSet("0");
+        am_showtime.CmdSet("0");
+        am_showtotaltime.CmdSet("0");
+
+        // bodies
+        viz_render_corpses.CmdSet((*viz_render_mode & 1024) != 0 ? "1" : "0");
+
+        // flashes
+        viz_render_flashes.CmdSet((*viz_render_mode & 2048) != 0 ? "1" : "0");
+        //blood_fade_scalar.CmdSet((*viz_render_mode & 2048) != 0 ? "1" : "0");
+        //pickup_fade_scalar.CmdSet((*viz_render_mode & 2048) != 0 ? "1" : "0");
+    }
+
     am_cheat = *viz_nocheat ? 0 : *viz_automap_mode;
-
-    am_rotate.CmdSet((*viz_render_mode & 256) != 0 ? "1" : "0");
-    am_textured.CmdSet((*viz_render_mode & 512) != 0 ? "1" : "0");
-    am_followplayer.CmdSet("1");
-
-    am_showitems.CmdSet("0");
-    am_showmonsters.CmdSet("0");
-    am_showsecrets.CmdSet("0");
-    am_showtime.CmdSet("0");
-    am_showtotaltime.CmdSet("0");
 
     if(demoplayback && multiplayer && *viz_override_player){
         if(*viz_override_player >= 1 && *viz_override_player <= VIZ_MAX_PLAYERS && playeringame[*viz_override_player-1]) {
@@ -406,12 +422,6 @@ void VIZ_CVARsUpdate(){
         }
         else VIZ_Error(VIZ_FUNC, "Player %d does not exist.", *viz_override_player);
     }
-
-    // bodies
-    viz_render_corpses.CmdSet((*viz_render_mode & 1024) != 0 ? "1" : "0");
-
-    // flashes
-    //TODO
 
     VIZ_CVARsInit();
 }

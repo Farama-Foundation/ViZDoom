@@ -519,13 +519,16 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def("set_render_effects_sprites", &DoomGamePython::setRenderEffectsSprites)
         .def("set_render_messages", &DoomGamePython::setRenderMessages)
         .def("set_render_corpses", &DoomGamePython::setRenderCorpses)
+        .def("set_render_screen_flashes", &DoomGamePython::setRenderScreenFlashes)
+        .def("set_render_all_frames", &DoomGamePython::setRenderAllFrames)
+        .def("set_window_visible", &DoomGamePython::setWindowVisible)
         .def("get_screen_width", &DoomGamePython::getScreenWidth)
         .def("get_screen_height", &DoomGamePython::getScreenHeight)
         .def("get_screen_channels", &DoomGamePython::getScreenChannels)
         .def("get_screen_size", &DoomGamePython::getScreenSize)
         .def("get_screen_pitch", &DoomGamePython::getScreenPitch)
-        .def("get_screen_format", &DoomGamePython::getScreenFormat)
-        .def("set_window_visible", &DoomGamePython::setWindowVisible);
+        .def("get_screen_format", &DoomGamePython::getScreenFormat);
+
 
 
     /* Utilities */

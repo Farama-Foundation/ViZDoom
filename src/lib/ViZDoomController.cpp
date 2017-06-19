@@ -110,6 +110,7 @@ namespace vizdoom {
         this->sprites = true;
         this->messages = false;
         this->corpses = true;
+        this->renderAll = false;
 
         this->windowHidden = false;
         this->noXServer = false;
@@ -748,6 +749,10 @@ namespace vizdoom {
         if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
     }
 
+    void DoomController::setRenderAllFrames(bool allFrames){
+        this->renderAll = allFrames;
+    }
+
     unsigned int DoomController::getScreenWidth() {
         if (this->doomRunning) return this->gameState->SCREEN_WIDTH;
         else return this->screenWidth;
@@ -1230,15 +1235,24 @@ namespace vizdoom {
         this->doomArgs.push_back("+viz_screen_format");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenFormat));
 
-        this->doomArgs.push_back("+viz_window_hidden");
-        if (this->windowHidden) this->doomArgs.push_back("1");
-        else this->doomArgs.push_back("0");
 
-        #ifdef OS_LINUX
-            this->doomArgs.push_back("+viz_noxserver");
-            if (this->noXServer) this->doomArgs.push_back("1");
-            else this->doomArgs.push_back("0");
-        #endif
+        if (this->windowHidden){
+            this->doomArgs.push_back("+viz_window_hidden");
+            this->doomArgs.push_back("1");
+
+            #ifdef OS_LINUX
+                if (this->noXServer){
+                    this->doomArgs.push_back("+viz_noxserver");
+                    this->doomArgs.push_back("1");
+                }
+            #endif
+        }
+        else{
+            if(this->renderAll){
+                this->doomArgs.push_back("+viz_render_all");
+                this->doomArgs.push_back("1");
+            }
+        }
 
         // idle/joy
         this->doomArgs.push_back("-noidle");
