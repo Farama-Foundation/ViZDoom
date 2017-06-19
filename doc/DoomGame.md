@@ -89,6 +89,8 @@
 * [setRenderEffectsSprites](#setRenderEffectsSprites)
 * [setRenderMessages](#setRenderMessages)
 * [setRenderCorpses](#setRenderCorpses)
+* [setRenderScreenFlashes](#setRenderScreenFlashes)
+* [setRenderAllFrames](#setRenderAllFrames)
 * [setWindowVisible](#setWindowVisible)
 * [setConsoleEnabled](#setConsoleEnabled)
 * [setSoundEnabled](#setSoundEnabled)
@@ -1206,7 +1208,7 @@ Config key: `automapRenderTextures/automap_render_textures`
 | Java   | `void setRenderHud(boolean hud)` |
 | Python | `void set_render_hud(bool hud)`  |
 
-Determine if hud will be rendered in game.
+Determine if the hud will be rendered in game.
 
 Default value: false
 
@@ -1224,7 +1226,7 @@ Config key: `renderHud/render_hud`
 
 Added in 1.1.0
 
-Determine if minimalistic version of hud will be rendered instead of full hud.
+Determine if minimalistic version of the hud will be rendered instead of full hud.
 
 Default value: false
 
@@ -1240,7 +1242,7 @@ Config key: `renderMinimalHud/render_minimal_hud`
 | Java   | `void setRenderWeapon(boolean weapon)` |
 | Python | `void set_render_weapon(bool weapon)`  |
 
-Determine if weapon held by player will be rendered in game.
+Determine if the weapon held by player will be rendered in game.
 
 Default value: true
 
@@ -1256,7 +1258,7 @@ Config key: `renderWeapon/render_weapon`
 | Java   | `void setRenderCrosshair(boolean crosshair)` |
 | Python | `void set_render_crosshair(bool crosshair)`  |
 
-Determine if crosshair will be rendered in game.
+Determine if the crosshair will be rendered in game.
 
 Default value: false
 
@@ -1272,7 +1274,7 @@ Config key: `renderCrosshair/render_crosshair`
 | Java   | `void setRenderDecals(boolean decals)` |
 | Python | `void set_render_decals(bool decals)`  |
 
-Determine if decals (marks on the walls) will be rendered in game.
+Determine if the decals (marks on the walls) will be rendered in game.
 
 Default value: true
 
@@ -1288,7 +1290,7 @@ Config key: `renderDecals/render_decals`
 | Java   | `void setRenderParticles(boolean particles)` |
 | Python | `void set_render_particles(bool particles)`  |
 
-Determine if particles will be rendered in game.
+Determine if the particles will be rendered in game.
 
 Default value: true
 
@@ -1347,6 +1349,47 @@ Determine if actors' corpses will be rendered in game.
 Default value: true
 
 Config key: `renderCorpses/render_corpses`
+
+
+---
+### <a name=setRenderScreenFlashes"></a> `setRenderScreenFlashes`
+
+| C++    | `void setRenderScreenFlashes(bool flashes)`    |
+| :--    | :--                                            |
+| Lua    | `void setRenderScreenFlashes(boolean flashes)` |
+| Java   | `void setRenderScreenFlashes(boolean flashes)` |
+| Python | `void set_render_screen_flashes(bool flashes)` |
+
+Added in 1.1.3
+
+Determine if the screen flash effect upon taking damage or picking up items will be rendered in game.
+
+Default value: true
+
+Config key: `renderScreenFlashes/render_screen_flashes`
+
+
+---
+### <a name="setRenderAllFrames"></a> `setRenderAllFrames`
+
+| C++    | `void setRenderAllFrames(bool allFrames)`     |
+| :--    | :--                                           |
+| Lua    | `void setRenderAllFrames(boolean allFrames)`  |
+| Java   | `void setRenderAllFrames(boolean allFrames)`  |
+| Python | `void set_render_all_frames(bool all_frames)` |
+
+Added in 1.1.3
+
+Determine if all frames between states will be rendered (when skip greater then 1 is used).
+Allows smooth preview, but can reduce performance.
+It only makes sense to use it if the window is visible.
+
+Default value: false
+
+Config key: `renderAllFrames/render_all_frames`
+
+See also:
+- [`setWindowVisible`](#setWindowVisible)
 
 
 ---

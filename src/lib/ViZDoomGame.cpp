@@ -500,7 +500,12 @@ namespace vizdoom {
     void DoomGame::setRenderEffectsSprites(bool sprites) { this->doomController->setRenderEffectsSprites(sprites); }
 
     void DoomGame::setRenderMessages(bool messages) { this->doomController->setRenderMessages(messages); }
+
     void DoomGame::setRenderCorpses(bool corpses) { this->doomController->setRenderCorpses(corpses); }
+
+    void DoomGame::setRenderScreenFlashes(bool flashes) { this->doomController->setRenderScreenFlashes(flashes); }
+
+    void DoomGame::setRenderAllFrames(bool allFrames) { this->doomController->setRenderAllFrames(allFrames); }
 
     void DoomGame::setWindowVisible(bool visibility) {
         this->doomController->setNoXServer(!visibility);

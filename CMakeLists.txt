@@ -5,7 +5,7 @@ project(ViZDoom)
 #-----------------------------------------------------------------------------------------------------------------------
 set(ViZDoom_MAJOR_VERSION 1)
 set(ViZDoom_MINOR_VERSION 1)
-set(ViZDoom_PATCH_VERSION 2)
+set(ViZDoom_PATCH_VERSION 3)
 set(ViZDoom_VERSION ${ViZDoom_MAJOR_VERSION}.${ViZDoom_MINOR_VERSION}.${ViZDoom_PATCH_VERSION})
 set(ViZDoom_VERSION_STR ${ViZDoom_VERSION})
 set(ViZDoom_VERSION_ID ${ViZDoom_MAJOR_VERSION}${ViZDoom_MINOR_VERSION}${ViZDoom_PATCH_VERSION})
@@ -218,11 +218,11 @@ if (BUILD_PYTHON3)
 
     find_package(PythonInterp 3 REQUIRED)
 
-    # 3.5.2 => 3.5
+    # 3.X.X => 3.X
     STRING(REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" python3_version ${PYTHON_VERSION_STRING})
     find_package(PythonLibs ${python3_version} REQUIRED)
 
-    # 3.5 => 35 (at least on Ubuntu 16.04 the library is called libboost_python-py35.so)
+    # 3.X => 3X (at least on Ubuntu 16.04 the library is called libboost_python-py3X.so)
     STRING(REGEX REPLACE "\\." "" python3_version ${python3_version})
     find_package(Boost QUIET COMPONENTS python-py${python3_version})
     if (${Boost_PYTHON-PY${python3_version}_FOUND})

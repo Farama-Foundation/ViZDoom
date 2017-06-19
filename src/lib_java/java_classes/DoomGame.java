@@ -136,6 +136,8 @@ public class DoomGame{
     public native void setRenderEffectsSprites(boolean sprites);
     public native void setRenderMessages(boolean messages);
     public native void setRenderCorpses(boolean corpses);
+    public native void setRenderScreenFlashes(boolean flashes);
+    public native void setRenderAllFrames(boolean allFrames);
     public native void setWindowVisible(boolean visibility);
     public native void setConsoleEnabled(boolean console);
     public native void setSoundEnabled(boolean sound);
