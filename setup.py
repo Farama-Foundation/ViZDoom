@@ -11,6 +11,25 @@ package_path = 'bin/python' + python_version + '/pip_package'
 package_assembly_script = 'scripts/assemble_pip_package.sh'
 supported_platforms = ["Linux", "Mac OS-X"]
 
+
+def get_version():
+    try:
+        import re
+        with open("CMakeLists.txt") as cmake_file:
+            lines = "".join(cmake_file.readlines())
+            major_version = re.search('set\(ViZDoom_MAJOR_VERSION\s+([0-9])\)\s+', lines).group(1)
+            minor_version = re.search('set\(ViZDoom_MINOR_VERSION\s+([1-9]?[0-9])\)\s+', lines).group(1)
+            patch_version = re.search('set\(ViZDoom_PATCH_VERSION\s+([1-9]?[0-9]+)\)\s+', lines).group(1)
+
+            version = "{}.{}.{}".format(major_version, minor_version, patch_version)
+            return version
+
+    except Exception:
+        raise RuntimeError("Package version retrieval failed. "
+                           "Most probably something is wrong with this code and"
+                           "you should create an issue at https://github.com/mwydmuch/ViZDoom/")
+
+
 if sys.platform.startswith("win"):
     raise RuntimeError("Building pip package on Windows is not currently available ...")
 elif sys.platform.startswith("darwin"):
@@ -57,7 +76,7 @@ class BuildCommand(build):
 
 setup(
     name='vizdoom',
-    version='1.1.2',
+    version=get_version(),
     description='Reinforcement learning platform based on Doom',
     long_description="ViZDoom allows developing AI bots that play Doom using only the visual information (the screen buffer). " \
                      "It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.",
