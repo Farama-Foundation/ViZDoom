@@ -6,6 +6,9 @@
 - Added `setRenderScreenFlashes` and `setRenderAllFrames` methods.
 - Added `viz_ignore_render_mode` CVAR which disables overriding rendering settings.
 
+#### Missing config keys
+- Added support for `USER31` - `USER60`,`PLAYER_NUMBER`, `PLAYER_COUNT`, `PLAYER1_FRAGCOUNT` - `PLAYER16_FRAGCOUNT`, `POSITION_X/Y/Z` GameVariables in the config file.
+
 
 ## Changes in 1.1.2
 
@@ -13,7 +16,7 @@
 - Added `isMultiplayerGame` method.
 - Added `viz_respawn_delay` CVAR, which allows to control delay between respawns in multiplayer game.
 - Added `viz_spectator` CVAR which allows to connect to multiplayer game as a spectator.
-- Maximum number of connected players raised to 16.
+- Maximum number of connected players raised to 16, `PLAYER9_FRAGCOUNT` - `PLAYER16_FRAGCOUNT` GameVariables added.
 
 #### Missing methods
 - Added `isRunning`, `isDepthBufferEnabled`, `isLabelsBufferEnabled` and `isAutomapBufferEnabled` missing methods to Python and Lua bindings.
