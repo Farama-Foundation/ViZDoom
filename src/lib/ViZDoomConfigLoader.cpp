@@ -31,6 +31,8 @@
 #include <fstream>
 #include <iostream>
 
+// Why there aren't any beautiful macros here...
+
 namespace vizdoom {
 
     namespace b = boost;
@@ -248,6 +250,59 @@ namespace vizdoom {
         if (str == "user28") return USER28;
         if (str == "user29") return USER29;
         if (str == "user30") return USER30;
+        if (str == "user31") return USER31;
+        if (str == "user32") return USER32;
+        if (str == "user33") return USER33;
+        if (str == "user34") return USER34;
+        if (str == "user35") return USER35;
+        if (str == "user36") return USER36;
+        if (str == "user37") return USER37;
+        if (str == "user38") return USER38;
+        if (str == "user39") return USER39;
+        if (str == "user40") return USER40;
+        if (str == "user41") return USER41;
+        if (str == "user42") return USER42;
+        if (str == "user43") return USER43;
+        if (str == "user44") return USER44;
+        if (str == "user45") return USER45;
+        if (str == "user46") return USER46;
+        if (str == "user47") return USER47;
+        if (str == "user48") return USER48;
+        if (str == "user49") return USER49;
+        if (str == "user50") return USER50;
+        if (str == "user51") return USER51;
+        if (str == "user52") return USER52;
+        if (str == "user53") return USER53;
+        if (str == "user54") return USER54;
+        if (str == "user55") return USER55;
+        if (str == "user56") return USER56;
+        if (str == "user57") return USER57;
+        if (str == "user58") return USER58;
+        if (str == "user59") return USER59;
+        if (str == "user60") return USER60;
+
+        if (str == "position_x") return POSITION_X;
+        if (str == "position_y") return POSITION_Y;
+        if (str == "position_z") return POSITION_Z;
+        if (str == "player_number") return PLAYER_NUMBER;
+        if (str == "player_count") return PLAYER_COUNT;
+
+        if (str == "player1_fragcount") return PLAYER1_FRAGCOUNT;
+        if (str == "player2_fragcount") return PLAYER2_FRAGCOUNT;
+        if (str == "player3_fragcount") return PLAYER3_FRAGCOUNT;
+        if (str == "player4_fragcount") return PLAYER4_FRAGCOUNT;
+        if (str == "player5_fragcount") return PLAYER5_FRAGCOUNT;
+        if (str == "player6_fragcount") return PLAYER6_FRAGCOUNT;
+        if (str == "player7_fragcount") return PLAYER7_FRAGCOUNT;
+        if (str == "player8_fragcount") return PLAYER8_FRAGCOUNT;
+        if (str == "player9_fragcount") return PLAYER9_FRAGCOUNT;
+        if (str == "player10_fragcount") return PLAYER10_FRAGCOUNT;
+        if (str == "player11_fragcount") return PLAYER11_FRAGCOUNT;
+        if (str == "player12_fragcount") return PLAYER12_FRAGCOUNT;
+        if (str == "player13_fragcount") return PLAYER13_FRAGCOUNT;
+        if (str == "player14_fragcount") return PLAYER14_FRAGCOUNT;
+        if (str == "player15_fragcount") return PLAYER15_FRAGCOUNT;
+        if (str == "player16_fragcount") return PLAYER16_FRAGCOUNT;
 
         throw std::exception();
     }
@@ -592,6 +647,14 @@ namespace vizdoom {
                 }
                 if (key == "render_corpses" || key == "rendercorpses") {
                     this->game->setRenderCorpses(stringToBool(val));
+                    continue;
+                }
+                if (key == "render_screen_flashes" || key == "renderscreenflashes") {
+                    this->game->setRenderScreenFlashes(stringToBool(val));
+                    continue;
+                }
+                if (key == "render_all_frames" || key == "renderallframes") {
+                    this->game->setRenderAllFrames(stringToBool(val));
                     continue;
                 }
                 if (key == "window_visible" || key == "windowvisible") {

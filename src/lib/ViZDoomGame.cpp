@@ -475,9 +475,7 @@ namespace vizdoom {
 
     bool DoomGame::isAutomapBufferEnabled() { return this->doomController->isAutomapEnabled(); }
 
-    void DoomGame::setAutomapBufferEnabled(bool automapBuffer) {
-        this->doomController->setAutomapEnabled(automapBuffer);
-    }
+    void DoomGame::setAutomapBufferEnabled(bool automapBuffer) { this->doomController->setAutomapEnabled(automapBuffer); }
 
     void DoomGame::setAutomapMode(AutomapMode mode) { this->doomController->setAutomapMode(mode); }
 
