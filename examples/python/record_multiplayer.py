@@ -1,5 +1,14 @@
 #!/usr/bin/python
 
+#####################################################################
+# This script presents how to use Doom's native demo mechanism to
+# record multiplayer game and replay it with perfect accuracy.
+#####################################################################
+
+# WARNING:
+# Due to the bug in build-in bots recording game with bots will result in the desynchronization of the recording.
+
+
 from __future__ import print_function
 from vizdoom import *
 from random import choice
@@ -11,7 +20,7 @@ def player1():
     game = DoomGame()
 
     game.load_config('../../scenarios/multi_duel.cfg')
-    game.add_game_args("-host 2 -deathmatch +timelimit 0.15 +sv_spawnfarthest 1 ")
+    game.add_game_args("-host 2 -deathmatch +timelimit 1 +sv_spawnfarthest 1 ")
     game.add_game_args("+name Player1 +colorset 0")
 
     # Unfortunately multiplayer game cannot be recorded using new_episode() method, use this command instead.

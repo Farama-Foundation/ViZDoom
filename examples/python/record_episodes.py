@@ -1,8 +1,8 @@
 #!/usr/bin/env python
+
 #####################################################################
 # This script presents how to use Doom's native demo mechanism to
 # replay episodes with perfect accuracy.
-#
 #####################################################################
 
 from __future__ import print_function

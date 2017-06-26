@@ -22,7 +22,7 @@ game.add_available_button(Button.LOOK_UP_DOWN_DELTA)
 #
 # For MOVE_FORWARD_BACKWARD_DELTA, MOVE_LEFT_RIGHT_DELTA, MOVE_UP_DOWN_DELTA (rarely used)
 # value is the speed of movement in a given direction (100 is close to the maximum speed).
-action = [100, 10, 10, 1]
+action = [100, 10, 10, 1]  # floating point values can be used
 
 # If button's absolute value > max button's value then value = max value with original value sign.
 

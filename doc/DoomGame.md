@@ -1352,7 +1352,7 @@ Config key: `renderCorpses/render_corpses`
 
 
 ---
-### <a name=setRenderScreenFlashes"></a> `setRenderScreenFlashes`
+### <a name="setRenderScreenFlashes"></a> `setRenderScreenFlashes`
 
 | C++    | `void setRenderScreenFlashes(bool flashes)`    |
 | :--    | :--                                            |
