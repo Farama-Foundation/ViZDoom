@@ -42,17 +42,21 @@ namespace vizdoom {
     }
 
     void DoomGamePython::setAction(bpy::list const &pyAction) {
-        DoomGame::setAction(DoomGamePython::pyListToVector<double>(pyAction));
+        auto action = DoomGamePython::pyListToVector<double>(pyAction);
+        ReleaseGIL gil = ReleaseGIL();
+        DoomGame::setAction(action);
     }
 
     double DoomGamePython::makeAction(bpy::list const &pyAction, unsigned int tics) {
-        return DoomGame::makeAction(DoomGamePython::pyListToVector<double>(pyAction), tics);
+        auto action = DoomGamePython::pyListToVector<double>(pyAction);
+        ReleaseGIL gil = ReleaseGIL();
+        return DoomGame::makeAction(action, tics);
     }
 
     GameStatePython* DoomGamePython::getState() {
-
         if (this->state == nullptr) return nullptr;
 
+        ReleaseGIL gil = ReleaseGIL();
         this->pyState = new GameStatePython();
 
         this->pyState->number = this->state->number;
@@ -119,6 +123,22 @@ namespace vizdoom {
         DoomGame::setAvailableGameVariables(DoomGamePython::pyListToVector<GameVariable>(pyGameVariables));
     }
 
+    // These functions are wrapped for manual GIL management
+    void DoomGamePython::init(){
+        ReleaseGIL gil = ReleaseGIL();
+        DoomGame::init();
+    }
+
+    void DoomGamePython::advanceAction(unsigned int tics, bool updateState){
+        ReleaseGIL gil = ReleaseGIL();
+        DoomGame::advanceAction(tics, updateState);
+    }
+
+    void DoomGamePython::respawnPlayer(){
+        ReleaseGIL gil = ReleaseGIL();
+        DoomGame::respawnPlayer();
+    }
+
 
     // These functions are workaround for
     // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
@@ -126,22 +146,26 @@ namespace vizdoom {
     bool DoomGamePython::loadConfig(bpy::str const &pyPath){
         const char* cPath = bpy::extract<const char *>(pyPath);
         std::string path(cPath);
+        ReleaseGIL gil = ReleaseGIL();
         return DoomGame::loadConfig(path);
     }
 
     void DoomGamePython::newEpisode(){
+        ReleaseGIL gil = ReleaseGIL();
         DoomGame::newEpisode();
     }
 
     void DoomGamePython::newEpisode(bpy::str const &pyPath){
         const char* cPath = bpy::extract<const char *>(pyPath);
         std::string path(cPath);
+        ReleaseGIL gil = ReleaseGIL();
         DoomGame::newEpisode(path);
     }
 
     void DoomGamePython::replayEpisode(bpy::str const &pyPath, unsigned int player){
         const char* cPath = bpy::extract<const char *>(pyPath);
         std::string path(cPath);
+        ReleaseGIL gil = ReleaseGIL();
         DoomGame::replayEpisode(path, player);
     }
 

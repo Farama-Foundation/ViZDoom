@@ -104,7 +104,7 @@ BOOST_PYTHON_MODULE(vizdoom)
     bpy::scope().attr("__version__") = bpy::str(VIZDOOM_LIB_VERSION_STR);
 
     Py_Initialize();
-    //PyEval_InitThreads();
+    PyEval_InitThreads();
     init_numpy();
 
     /* Exceptions */
