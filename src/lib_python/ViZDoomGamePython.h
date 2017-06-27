@@ -40,6 +40,32 @@ namespace vizdoom {
     namespace bpya      = bpy::api;
     namespace bpyn      = bpy::numeric;
 
+    class ReleaseGIL {
+    public:
+        inline ReleaseGIL(){
+            state = PyEval_SaveThread();
+        }
+
+        inline ~ReleaseGIL(){
+            PyEval_RestoreThread(state);
+        }
+    private:
+        PyThreadState *state;
+    };
+
+    class AcquireGIL {
+    public:
+        inline AcquireGIL(){
+            state = PyGILState_Ensure();
+        }
+
+        inline ~AcquireGIL(){
+            PyGILState_Release(state);
+        }
+    private:
+        PyGILState_STATE state;
+    };
+
     // For GCC versions lower then 5 compatibility
     // Python version of Label struct with Python string instead C++ string type.
     struct LabelPython{
@@ -83,6 +109,10 @@ namespace vizdoom {
         bpy::list getAvailableGameVariables();
         void setAvailableGameVariables(bpy::list const &pyGameVariables);
 
+        // These functions are wrapped for manual GIL management
+        void init();
+        void advanceAction(unsigned int tics = 1, bool updateState = true);
+        void respawnPlayer();
 
         // These functions are workaround for
         // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
