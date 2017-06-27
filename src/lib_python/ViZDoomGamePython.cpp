@@ -55,8 +55,10 @@ namespace vizdoom {
 
     GameStatePython* DoomGamePython::getState() {
         if (this->state == nullptr) return nullptr;
-
-        ReleaseGIL gil = ReleaseGIL();
+//
+//        TODO: the following line causes:
+//        Fatal Python error: PyEval_SaveThread: NULL tstate
+//        ReleaseGIL gil = ReleaseGIL();
         this->pyState = new GameStatePython();
 
         this->pyState->number = this->state->number;
