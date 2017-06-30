@@ -7,7 +7,14 @@
 - Added `viz_ignore_render_mode` CVAR which disables overriding rendering settings.
 
 #### Missing config keys
-- Added support for `USER31` - `USER60`,`PLAYER_NUMBER`, `PLAYER_COUNT`, `PLAYER1_FRAGCOUNT` - `PLAYER16_FRAGCOUNT`, `POSITION_X/Y/Z` GameVariables in the config file.
+- Added support for `DEATHCOUNT`, `USER31` - `USER60`, `PLAYER_NUMBER`, `PLAYER_COUNT`, `PLAYER1_FRAGCOUNT` - `PLAYER16_FRAGCOUNT`, `POSITION_X/Y/Z` GameVariables in the config file.
+- Added support for `ALTATTACK` Button in the config file.
+
+#### Java specific
+- Fixed `makeAction`.
+
+#### Python specific
+- Added manual GIL management for better performance when used with Python threads.
 
 
 ## Changes in 1.1.2
