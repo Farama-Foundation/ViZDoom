@@ -41,8 +41,8 @@ JNI_METHOD(void, setAction, setAction, jdoubleArray)
 JNI_METHOD(void, advanceAction__, advanceAction_)
 JNI_METHOD(void, advanceAction__I, advanceAction_int, jint)
 JNI_METHOD(void, advanceAction__IZ, advanceAction_int_bool, jint, jboolean)
-JNI_METHOD(jdouble, makeAction___3I, makeAction_vec, jdoubleArray)
-JNI_METHOD(jdouble, makeAction___3II, makeAction_vec_int, jdoubleArray, jint)
+JNI_METHOD(jdouble, makeAction___3D, makeAction_vec, jdoubleArray)
+JNI_METHOD(jdouble, makeAction___3DI, makeAction_vec_int, jdoubleArray, jint)
 
 JNI_EXPORT(jobject, getState){
     auto state = callObjMethod(jEnv, jObj, &DoomGameJava::getState);
