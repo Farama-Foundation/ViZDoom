@@ -139,7 +139,7 @@ namespace vizdoom {
         if (str == "jump") return JUMP;
         if (str == "crouch") return CROUCH;
         if (str == "turn180") return TURN180;
-        if (str == "alattack") return ALTATTACK;
+        if (str == "altattack") return ALTATTACK;
         if (str == "reload") return RELOAD;
         if (str == "zoom") return ZOOM;
         if (str == "speed") return SPEED;
@@ -189,6 +189,7 @@ namespace vizdoom {
         if (str == "itemcount") return ITEMCOUNT;
         if (str == "secretcount") return SECRETCOUNT;
         if (str == "fragcount") return FRAGCOUNT;
+        if (str == "deathcount") return DEATHCOUNT;
         if (str == "health") return HEALTH;
         if (str == "armor") return ARMOR;
         if (str == "dead") return DEAD;
