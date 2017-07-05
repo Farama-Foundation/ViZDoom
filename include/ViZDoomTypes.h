@@ -177,6 +177,12 @@ namespace vizdoom{
         POSITION_X,
         POSITION_Y,
         POSITION_Z,
+        ANGLE,
+        PITCH,
+        ROLL,
+        VELOCITY_X,
+        VELOCITY_Y,
+        VELOCITY_Z,
 
         PLAYER_NUMBER,
         PLAYER_COUNT,

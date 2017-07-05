@@ -56,6 +56,10 @@ inline double VIZ_FixedToDouble(fixed_t fixed){
     return static_cast<double>(fixed) / 65536.0;
 }
 
+inline double VIZ_AngleToDouble(angle_t angle) {
+    return static_cast<double>(angle) / ANGLE_MAX * 360;
+}
+
 int VIZ_CheckItem(FName name) {
     if(VIZ_PLAYER.mo != NULL) {
         AInventory *item = VIZ_PLAYER.mo->FindInventory(name);
@@ -143,9 +147,9 @@ void VIZ_GameStateInit(){
     strncpy(vizGameStateSM->VERSION_STR, VIZ_VERSION_STR, 8);
     vizGameStateSM->SM_SIZE = vizSMSize;
 
-    vizGameStateSM->PLAYER_POSITION[0] = 0;
-    vizGameStateSM->PLAYER_POSITION[1] = 0;
-    vizGameStateSM->PLAYER_POSITION[2] = 0;
+    for(int i = 0; i < 9; ++i){
+        vizGameStateSM->PLAYER_MOVEMENT[i] = 0;
+    }
 }
 
 void VIZ_GameStateUpdate(){
@@ -202,9 +206,15 @@ void VIZ_GameStateTic(){
         vizGameStateSM->PLAYER_DEAD = VIZ_PLAYER.playerstate == PST_DEAD || VIZ_PLAYER.mo->health <= 0;
 
         if(!*viz_nocheat) {
-            vizGameStateSM->PLAYER_POSITION[0] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.x);
-            vizGameStateSM->PLAYER_POSITION[1] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.y);
-            vizGameStateSM->PLAYER_POSITION[2] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.z);
+            vizGameStateSM->PLAYER_MOVEMENT[0] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.x);
+            vizGameStateSM->PLAYER_MOVEMENT[1] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.y);
+            vizGameStateSM->PLAYER_MOVEMENT[2] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.z);
+            vizGameStateSM->PLAYER_MOVEMENT[3] = VIZ_AngleToDouble(VIZ_PLAYER.mo->angle);
+            vizGameStateSM->PLAYER_MOVEMENT[4] = static_cast<double>(VIZ_PLAYER.mo->pitch) / 32768.0 * 180 / 65536.0;
+            vizGameStateSM->PLAYER_MOVEMENT[5] = VIZ_AngleToDouble(VIZ_PLAYER.mo->roll);
+            vizGameStateSM->PLAYER_MOVEMENT[6] = VIZ_FixedToDouble(VIZ_PLAYER.mo->velx);
+            vizGameStateSM->PLAYER_MOVEMENT[7] = VIZ_FixedToDouble(VIZ_PLAYER.mo->vely);
+            vizGameStateSM->PLAYER_MOVEMENT[8] = VIZ_FixedToDouble(VIZ_PLAYER.mo->velz);
         }
     }
     else {
