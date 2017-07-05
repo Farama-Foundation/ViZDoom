@@ -932,8 +932,8 @@ namespace vizdoom {
             return this->gameState->PLAYER_AMMO[var - AMMO0];
         else if (var >= WEAPON0 && var <= WEAPON9)
             return this->gameState->PLAYER_WEAPON[var - WEAPON0];
-        else if(var >= POSITION_X && var <= POSITION_Z)
-            return this->gameState->PLAYER_POSITION[var - POSITION_X];
+        else if(var >= POSITION_X && var <= VELOCITY_Z)
+            return this->gameState->PLAYER_MOVEMENT[var - POSITION_X];
         else if(var >= USER1 && var <= USER60)
             return this->gameState->MAP_USER_VARS[var - USER1];
         else if (var >= PLAYER1_FRAGCOUNT && var <= PLAYER16_FRAGCOUNT)

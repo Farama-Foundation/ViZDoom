@@ -141,7 +141,7 @@ namespace vizdoom {
         int PLAYER_AMMO[SLOT_COUNT];
         int PLAYER_WEAPON[SLOT_COUNT];
 
-        double PLAYER_POSITION[3];
+        double PLAYER_MOVEMENT[9];
 
         bool PLAYER_READY_TO_RESPAWN;
         unsigned int PLAYER_NUMBER;

@@ -202,17 +202,23 @@ Enum type that defines all variables that can be obtained from the game.
 - **DEATHCOUNT**
 - **HEALTH**        - Can be higher then 100!
 - **ARMOR**         - Can be higher then 100!
-- **DEAD**          - True if player is dead.
-- **ON_GROUND**     - True if player is on the ground (not in the air).
-- **ATTACK_READY**  - True if attack can be performed.
-- **ALTATTACK_READY**       - True if altattack can be performed.
+- **DEAD**          - True if the player is dead.
+- **ON_GROUND**     - True if the player is on the ground (not in the air).
+- **ATTACK_READY**  - True if the attack can be performed.
+- **ALTATTACK_READY**       - True if the altattack can be performed.
 - **SELECTED_WEAPON**       - Selected weapon's number.
 - **SELECTED_WEAPON_AMMO**  - Ammo for selected weapon.
 - **AMMO0** - **AMMO9**     - Number of ammo for weapon in N slot.
 - **WEAPON0** - **WEAPON9** - Number of weapons in N slot.
-- **POSITION_X**            - Position of player
+- **POSITION_X**            - Position of the player, not available if `viz_nocheat` is enabled.
 - **POSITION_Y**
 - **POSITION_Z**
+- **ANGLE**                 - Position of the player, not available if `viz_nocheat` is enabled.
+- **PITCH**                 
+- **ROLL**
+- **VELOCITY_X**            - Velocity of the player, not available if `viz_nocheat` is enabled.
+- **VELOCITY_Y**
+- **VELOCITY_Z**
 - **PLAYER_NUMBER**         - Player's number in multiplayer game.
 - **PLAYER_COUNT**          - Number of players in multiplayer game.
 - **PLAYER1_FRAGCOUNT** - **PLAYER16_FRAGCOUNT** - Number of N player's frags
