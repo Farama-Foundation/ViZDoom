@@ -21,7 +21,9 @@
 */
 
 #include <boost/interprocess/ipc/message_queue.hpp>
-#include <boost/thread.hpp>
+#ifndef VIZ_OS_WIN
+    #include <boost/thread.hpp>
+#endif
 
 #include "viz_main.h"
 #include "viz_defines.h"
@@ -39,7 +41,9 @@
 #include "i_system.h"
 
 namespace b = boost;
-namespace bt = boost::this_thread;
+#ifndef VIZ_OS_WIN
+    namespace bt = boost::this_thread;
+#endif
 
 /* CVARs and CCMDs */
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -487,10 +491,12 @@ void VIZ_DebugMsg(int level, const char *func, const char *msg, ...){
 }
 
 void VIZ_InterruptionPoint(){
-    try{
-        bt::interruption_point();
-    }
-    catch(b::thread_interrupted &ex){
-        exit(0);
-    }
+    #ifndef VIZ_OS_WIN
+        try{
+            bt::interruption_point();
+        }
+        catch(b::thread_interrupted &ex){
+            exit(0);
+        }
+    #endif
 }

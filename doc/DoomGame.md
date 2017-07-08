@@ -590,6 +590,7 @@ See also:
 | Python | `void add_game_args(str args)`       |
 
 Adds a custom argument that will be passed to ViZDoom process during initialization.
+Useful for changing additional game settings.
 
 Config key: `gameArgs/game_args`
 
@@ -1058,6 +1059,7 @@ Returns true if the depth buffer is enabled.
 Added in 1.1.0
 
 Enables rendering of the depth buffer, it will be available in state.
+Depth buffer will contain noise if `viz_nocheat` is enabled.
 
 Default value: false
 
@@ -1094,6 +1096,7 @@ Returns true if the labels buffer is enabled.
 Added in 1.1.0
 
 Enables rendering of the labels buffer, it will be available in state with vector of `Label`s.
+LabelsBuffer will contain noise if `viz_nocheat` is enabled.
 
 Default value: false
 

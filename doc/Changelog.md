@@ -20,6 +20,9 @@
 #### Python specific
 - Added manual GIL management for better performance when used with Python threads.
 
+#### Windows specific
+- Fixed building for Windows 10.
+
 
 ## Changes in 1.1.2
 
