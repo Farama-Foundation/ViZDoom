@@ -203,7 +203,7 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 ```
 
 
-### <a name="windows"></a> Windows
+### <a name="windows_build"></a> Windows
 
 Setting up the compilation on Windows is really tedious so using the precompiled binaries is recommended.
 
