@@ -246,7 +246,7 @@ Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should cont
 
 ### <a name="manual-install"></a> Manual installation
 
-To manually install Python package copy `vizdoom_root_dir/bin/pythonX/pip_package` contents to `pyhton_root_dir/lib/pythonx.x/site-packages/site-packages/vizdoom`.
+To manually install Python package copy `vizdoom_root_dir/bin/pythonX/pip_package` contents to `python_root_dir/lib/pythonx.x/site-packages/site-packages/vizdoom`.
 
 To manually install Torch package copy `vizdoom_root_dir/bin/lua/luarocks_package` contents to `torch_root_dir/install/lib/lua/5.1/vizdoom` and `vizdoom_root_dir/bin/lua/luarocks_shared_package` contents to `torch_root_dir/install/share/lua/5.1/vizdoom`.
 
