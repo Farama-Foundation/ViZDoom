@@ -810,7 +810,6 @@ void AM_minOutWindowScale ();
 
 CVAR(Bool, am_followplayer, true, CVAR_ARCHIVE)
 
-
 CCMD(am_togglefollow)
 {
 	am_followplayer = !am_followplayer;
@@ -1558,6 +1557,29 @@ CCMD(am_zoom)
 	{
 		am_zoomdir = (float)atof(argv[1]);
 	}
+}
+
+// VIZDOOM_CODE
+CCMD(am_scale)
+{
+	if (argv.argc() >= 2)
+	{
+		scale_mtof = int(atof(argv[1]) * INITSCALEMTOF);
+		scale_ftom = MapDiv(MAPUNIT, scale_mtof);
+
+		if (scale_mtof < min_scale_mtof)
+			AM_minOutWindowScale();
+		else if (scale_mtof > max_scale_mtof)
+			AM_maxOutWindowScale();
+	}
+}
+
+CCMD(am_grid)
+{
+    if (argv.argc() >= 2) {
+        grid = bool(atoi(argv[1]));
+        Printf("%s\n", GStrings(grid ? "AMSTR_GRIDON" : "AMSTR_GRIDOFF"));
+    }
 }
 
 //=============================================================================
