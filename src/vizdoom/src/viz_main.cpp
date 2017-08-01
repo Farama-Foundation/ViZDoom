@@ -25,6 +25,12 @@
     #include <boost/thread.hpp>
 #endif
 
+#ifdef VIZ_OS_WIN
+    #include <Windows.h>
+#else
+    #include <unistd.h>
+#endif
+
 #include "viz_main.h"
 #include "viz_defines.h"
 #include "viz_input.h"
@@ -83,7 +89,7 @@ CVAR (Bool, viz_cmd_filter, true, CVAR_NOSET)
 // modes
 CVAR (Bool, viz_async, false, CVAR_NOSET)
 CVAR (Bool, viz_allow_input, false, CVAR_NOSET)
-CVAR (Int, viz_sync_timeout, 3500, CVAR_NOSET)
+CVAR (Int, viz_sync_timeout, 1000, CVAR_NOSET)
 
 // buffers
 CVAR (Int, viz_screen_format, 0, 0)
@@ -498,5 +504,13 @@ void VIZ_InterruptionPoint(){
         catch(b::thread_interrupted &ex){
             exit(0);
         }
+    #endif
+}
+
+void VIZ_Sleep(unsigned int ms){
+    #ifdef VIZ_OS_WIN
+        Sleep(ms);
+    #else
+        usleep(ms);
     #endif
 }

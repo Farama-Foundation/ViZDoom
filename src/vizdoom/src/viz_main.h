@@ -55,4 +55,6 @@ void VIZ_DebugMsg(int level, const char *func, const char *msg, ...);
 
 void VIZ_InterruptionPoint();
 
+void VIZ_Sleep(unsigned int ms);
+
 #endif
