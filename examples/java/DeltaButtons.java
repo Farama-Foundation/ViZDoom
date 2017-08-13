@@ -12,8 +12,8 @@ public class DeltaButtons {
         System.out.println("\n\nDELTA BUTTONS EXAMPLE\n");
         game.setViZDoomPath("../../bin/vizdoom");
 
-        game.setDoomGamePath("../../scenarios/freedoom2.wad");
-        //game.setDoomGamePath("../../scenarios/doom2.wad");   //Not provided with environment due to licences.
+        game.setDoomGamePath("../../bin/freedoom2.wad");
+        //game.setDoomGamePath("../../bin/doom2.wad");   // Not provided with environment due to licences.
 
         game.setDoomMap("map01");
 
@@ -33,9 +33,9 @@ public class DeltaButtons {
         //
         // For MOVE_FORWARD_BACKWARD_DELTA, MOVE_LEFT_RIGHT_DELTA, MOVE_UP_DOWN_DELTA (rarely used)
         // value is the speed of movement in a given direction (100 is close to the maximum speed).
-        List<int[]> actions = new ArrayList<int[]>();
-        actions.add(new int[] {10, 1, 1, 1});
-        actions.add(new int[] {2, -3, -2, -1});
+        List<double[]> actions = new ArrayList<double[]>();
+        actions.add(new double[] {10, 1, 1, 1});
+        actions.add(new double[] {2, -3, -2, -1});
 
 
         // If button's absolute value > max button's value then value = max value with original value sign.

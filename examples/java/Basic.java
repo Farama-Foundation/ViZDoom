@@ -16,8 +16,8 @@ public class Basic {
         game.setViZDoomPath("../../bin/vizdoom");
 
         // Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".
-        game.setDoomGamePath("../../scenarios/freedoom2.wad");
-        //game.setDoomGamePath("../../scenarios/doom2.wad");   // Not provided with environment due to licences.
+        game.setDoomGamePath("../../bin/freedoom2.wad");
+        //game.setDoomGamePath("../../bin/doom2.wad");   // Not provided with environment due to licences.
 
         // Sets path to additional resources iwad file which is basically your scenario iwad.
         // If not specified default doom2 maps will be used and it's pretty much useles... unless you want to play doom.
@@ -83,10 +83,10 @@ public class Basic {
         // Define some actions. Each list entry corresponds to declared buttons:
         // MOVE_LEFT, MOVE_RIGHT, ATTACK
         // more combinations are naturally possible but only 3 are included for transparency when watching.
-        List<int[]> actions = new ArrayList<int[]>();
-        actions.add(new int[] {1, 0, 1});
-        actions.add(new int[] {0, 1, 1});
-        actions.add(new int[] {0, 0, 1});
+        List<double[]> actions = new ArrayList<double[]>();
+        actions.add(new double[] {1, 0, 1});
+        actions.add(new double[] {0, 1, 1});
+        actions.add(new double[] {0, 0, 1});
 
         Random ran = new Random();
 
