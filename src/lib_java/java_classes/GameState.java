@@ -6,6 +6,8 @@ import vizdoom.*;
 
 public class GameState{
     public int number;
+    public int tic;
+
     public double[] gameVariables;
 
     public byte[] screenBuffer;
@@ -16,6 +18,7 @@ public class GameState{
     public Label[] labels;
 
     GameState(int number,
+        int tic,
         double[] gameVariables,
         byte[] screenBuffer,
         byte[] depthBuffer,
@@ -24,6 +27,7 @@ public class GameState{
         Label[] labels){
 
         this.number = number;
+        this.tic = tic;
         this.gameVariables = gameVariables;
         this.screenBuffer = screenBuffer;
         this.depthBuffer = depthBuffer;

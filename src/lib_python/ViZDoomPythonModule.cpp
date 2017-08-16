@@ -76,7 +76,7 @@ void (DoomGamePython::*newEpisode)() = &DoomGamePython::newEpisode;
 void (DoomGamePython::*newEpisode_str)(bpy::str const &) = &DoomGamePython::newEpisode;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(addAvailableButton_overloads, DoomGamePython::addAvailableButton, 1, 2)
-void (DoomGamePython::*addAvailableButton_default)(Button, unsigned int) = &DoomGamePython::addAvailableButton;
+void (DoomGamePython::*addAvailableButton_default)(Button, double) = &DoomGamePython::addAvailableButton;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(advanceAction_overloads, DoomGamePython::advanceAction, 0, 2)
 void (DoomGamePython::*advanceAction_default)(unsigned int, bool) = &DoomGamePython::advanceAction;
@@ -104,7 +104,7 @@ BOOST_PYTHON_MODULE(vizdoom)
     bpy::scope().attr("__version__") = bpy::str(VIZDOOM_LIB_VERSION_STR);
 
     Py_Initialize();
-    //PyEval_InitThreads();
+    PyEval_InitThreads();
     init_numpy();
 
     /* Exceptions */
@@ -314,6 +314,12 @@ BOOST_PYTHON_MODULE(vizdoom)
         ENUM_VAL_2_PYT(POSITION_X)
         ENUM_VAL_2_PYT(POSITION_Y)
         ENUM_VAL_2_PYT(POSITION_Z)
+        ENUM_VAL_2_PYT(ANGLE)
+        ENUM_VAL_2_PYT(PITCH)
+        ENUM_VAL_2_PYT(ROLL)
+        ENUM_VAL_2_PYT(VELOCITY_X)
+        ENUM_VAL_2_PYT(VELOCITY_Y)
+        ENUM_VAL_2_PYT(VELOCITY_Z)
         ENUM_VAL_2_PYT(USER1)
         ENUM_VAL_2_PYT(USER2)
         ENUM_VAL_2_PYT(USER3)
@@ -383,7 +389,15 @@ BOOST_PYTHON_MODULE(vizdoom)
         ENUM_VAL_2_PYT(PLAYER5_FRAGCOUNT)
         ENUM_VAL_2_PYT(PLAYER6_FRAGCOUNT)
         ENUM_VAL_2_PYT(PLAYER7_FRAGCOUNT)
-        ENUM_VAL_2_PYT(PLAYER8_FRAGCOUNT);
+        ENUM_VAL_2_PYT(PLAYER8_FRAGCOUNT)
+        ENUM_VAL_2_PYT(PLAYER9_FRAGCOUNT)
+        ENUM_VAL_2_PYT(PLAYER10_FRAGCOUNT)
+        ENUM_VAL_2_PYT(PLAYER11_FRAGCOUNT)
+        ENUM_VAL_2_PYT(PLAYER12_FRAGCOUNT)
+        ENUM_VAL_2_PYT(PLAYER13_FRAGCOUNT)
+        ENUM_VAL_2_PYT(PLAYER14_FRAGCOUNT)
+        ENUM_VAL_2_PYT(PLAYER15_FRAGCOUNT)
+        ENUM_VAL_2_PYT(PLAYER16_FRAGCOUNT);
 
 
     /* Structs */
@@ -399,6 +413,7 @@ BOOST_PYTHON_MODULE(vizdoom)
 
     class_<GameStatePython>("GameState", no_init)
         .def_readonly("number", &GameStatePython::number)
+        .def_readonly("tic", &GameStatePython::tic)
         .def_readonly("game_variables", &GameStatePython::gameVariables)
 
         .def_readonly("screen_buffer", &GameStatePython::screenBuffer)
@@ -416,6 +431,8 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def("init", &DoomGamePython::init)
         .def("load_config", &DoomGamePython::loadConfig)
         .def("close", &DoomGamePython::close)
+        .def("is_running", &DoomGamePython::isRunning)
+        .def("is_multiplayer_game", &DoomGamePython::isMultiplayerGame)
         .def("new_episode", newEpisode)
         .def("new_episode", newEpisode_str)
         .def("replay_episode", replayEpisode_default, replayEpisode_overloads())
@@ -427,7 +444,7 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def("make_action", makeAction_default, makeAction_overloads())
         .def("advance_action", advanceAction_default, advanceAction_overloads())
 
-        .def("get_state", &DoomGamePython::getState)
+        .def("get_state", &DoomGamePython::getState, return_value_policy<manage_new_object>())
 
         .def("get_game_variable", &DoomGamePython::getGameVariable)
 
@@ -489,8 +506,11 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def("set_screen_resolution", &DoomGamePython::setScreenResolution)
         .def("set_screen_format", &DoomGamePython::setScreenFormat)
 
+        .def("is_depth_buffer_enabled", &DoomGamePython::isDepthBufferEnabled)
         .def("set_depth_buffer_enabled", &DoomGamePython::setDepthBufferEnabled)
+        .def("is_labels_buffer_enabled", &DoomGamePython::isLabelsBufferEnabled)
         .def("set_labels_buffer_enabled", &DoomGamePython::setLabelsBufferEnabled)
+        .def("is_automap_buffer_enabled", &DoomGamePython::isAutomapBufferEnabled)
         .def("set_automap_buffer_enabled", &DoomGamePython::setAutomapBufferEnabled)
         .def("set_automap_mode", &DoomGamePython::setAutomapMode)
         .def("set_automap_rotate", &DoomGamePython::setAutomapRotate)
@@ -505,13 +525,16 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def("set_render_effects_sprites", &DoomGamePython::setRenderEffectsSprites)
         .def("set_render_messages", &DoomGamePython::setRenderMessages)
         .def("set_render_corpses", &DoomGamePython::setRenderCorpses)
+        .def("set_render_screen_flashes", &DoomGamePython::setRenderScreenFlashes)
+        .def("set_render_all_frames", &DoomGamePython::setRenderAllFrames)
+        .def("set_window_visible", &DoomGamePython::setWindowVisible)
         .def("get_screen_width", &DoomGamePython::getScreenWidth)
         .def("get_screen_height", &DoomGamePython::getScreenHeight)
         .def("get_screen_channels", &DoomGamePython::getScreenChannels)
         .def("get_screen_size", &DoomGamePython::getScreenSize)
         .def("get_screen_pitch", &DoomGamePython::getScreenPitch)
-        .def("get_screen_format", &DoomGamePython::getScreenFormat)
-        .def("set_window_visible", &DoomGamePython::setWindowVisible);
+        .def("get_screen_format", &DoomGamePython::getScreenFormat);
+
 
 
     /* Utilities */

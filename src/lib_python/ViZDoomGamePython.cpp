@@ -42,43 +42,48 @@ namespace vizdoom {
     }
 
     void DoomGamePython::setAction(bpy::list const &pyAction) {
-        DoomGame::setAction(DoomGamePython::pyListToVector<int>(pyAction));
+        auto action = DoomGamePython::pyListToVector<double>(pyAction);
+        ReleaseGIL gil = ReleaseGIL();
+        DoomGame::setAction(action);
     }
 
     double DoomGamePython::makeAction(bpy::list const &pyAction, unsigned int tics) {
-        return DoomGame::makeAction(DoomGamePython::pyListToVector<int>(pyAction), tics);
+        auto action = DoomGamePython::pyListToVector<double>(pyAction);
+        ReleaseGIL gil = ReleaseGIL();
+        return DoomGame::makeAction(action, tics);
     }
 
-    GameStatePython DoomGamePython::getState() {
+    GameStatePython* DoomGamePython::getState() {
+        if (this->state == nullptr) return nullptr;
+//
+//        TODO: the following line causes:
+//        Fatal Python error: PyEval_SaveThread: NULL tstate
+//        ReleaseGIL gil = ReleaseGIL();
+        this->pyState = new GameStatePython();
 
-        GameStatePython pyState;
-
-        if (this->state == nullptr) return pyState;
-
-        pyState.number = this->state->number;
-
-        if (this->isEpisodeFinished()) return pyState;
+        this->pyState->number = this->state->number;
+        this->pyState->tic = this->state->tic;
 
         this->updateBuffersShapes();
         int colorDims = 3;
         if (this->getScreenChannels() == 1) colorDims = 2;
 
         if (this->state->screenBuffer != nullptr)
-            pyState.screenBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->screenBuffer->data());
+            this->pyState->screenBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->screenBuffer->data());
         if (this->state->depthBuffer != nullptr)
-            pyState.depthBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->depthBuffer->data());
+            this->pyState->depthBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->depthBuffer->data());
         if (this->state->labelsBuffer != nullptr)
-            pyState.labelsBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->labelsBuffer->data());
+            this->pyState->labelsBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->labelsBuffer->data());
         if (this->state->automapBuffer != nullptr)
-            pyState.automapBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->automapBuffer->data());
+            this->pyState->automapBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->automapBuffer->data());
 
         if (this->state->gameVariables.size() > 0) {
             // Numpy array version
             npy_intp shape = this->state->gameVariables.size();
-            pyState.gameVariables = dataToNumpyArray(1, &shape, NPY_DOUBLE, this->state->gameVariables.data());
+            this->pyState->gameVariables = dataToNumpyArray(1, &shape, NPY_DOUBLE, this->state->gameVariables.data());
 
             // Python list version
-            //pyState.gameVariables = DoomGamePython::vectorToPyList<int>(this->state->gameVariables);
+            //this->pyState->gameVariables = DoomGamePython::vectorToPyList<int>(this->state->gameVariables);
         }
 
         if(this->state->labels.size() > 0){
@@ -94,10 +99,10 @@ namespace vizdoom {
                 pyLabels.append(pyLabel);
             }
 
-            pyState.labels = pyLabels;
+            this->pyState->labels = pyLabels;
         }
 
-        return pyState;
+        return this->pyState;
     }
 
     bpy::list DoomGamePython::getLastAction() {
@@ -120,6 +125,22 @@ namespace vizdoom {
         DoomGame::setAvailableGameVariables(DoomGamePython::pyListToVector<GameVariable>(pyGameVariables));
     }
 
+    // These functions are wrapped for manual GIL management
+    void DoomGamePython::init(){
+        ReleaseGIL gil = ReleaseGIL();
+        DoomGame::init();
+    }
+
+    void DoomGamePython::advanceAction(unsigned int tics, bool updateState){
+        ReleaseGIL gil = ReleaseGIL();
+        DoomGame::advanceAction(tics, updateState);
+    }
+
+    void DoomGamePython::respawnPlayer(){
+        ReleaseGIL gil = ReleaseGIL();
+        DoomGame::respawnPlayer();
+    }
+
 
     // These functions are workaround for
     // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
@@ -127,22 +148,26 @@ namespace vizdoom {
     bool DoomGamePython::loadConfig(bpy::str const &pyPath){
         const char* cPath = bpy::extract<const char *>(pyPath);
         std::string path(cPath);
+        ReleaseGIL gil = ReleaseGIL();
         return DoomGame::loadConfig(path);
     }
 
     void DoomGamePython::newEpisode(){
+        ReleaseGIL gil = ReleaseGIL();
         DoomGame::newEpisode();
     }
 
     void DoomGamePython::newEpisode(bpy::str const &pyPath){
         const char* cPath = bpy::extract<const char *>(pyPath);
         std::string path(cPath);
+        ReleaseGIL gil = ReleaseGIL();
         DoomGame::newEpisode(path);
     }
 
     void DoomGamePython::replayEpisode(bpy::str const &pyPath, unsigned int player){
         const char* cPath = bpy::extract<const char *>(pyPath);
         std::string path(cPath);
+        ReleaseGIL gil = ReleaseGIL();
         DoomGame::replayEpisode(path, player);
     }
 
@@ -226,16 +251,18 @@ namespace vizdoom {
         return vector;
     }
 
-    bpy::object DoomGamePython::dataToNumpyArray(int dims, npy_intp * shape, int type, void * data){
+    bpy::object DoomGamePython::dataToNumpyArray(int dims, npy_intp *shape, int type, void *data) {
         PyObject *pyArray = PyArray_SimpleNewFromData(dims, shape, type, data);
         /* This line makes a copy: */
-        pyArray = PyArray_FROM_OTF(pyArray, type, NPY_ARRAY_ENSURECOPY | NPY_ARRAY_ENSUREARRAY);
-        bpy::handle<> numpyHandle = bpy::handle<>(pyArray);
-        bpy::object numpyArray = bpy::object(numpyHandle);
+        PyObject *pyArrayCopied = PyArray_FROM_OTF(pyArray, type, NPY_ARRAY_ENSURECOPY | NPY_ARRAY_ENSUREARRAY);
+        /* And this line gets rid of the old object which caused a memory leak: */
+        Py_DECREF(pyArray);
 
+        bpy::handle<> numpyArrayBoostHandle = bpy::handle<>(pyArrayCopied);
+        bpy::object boostNumpyArray = bpy::object(numpyArrayBoostHandle);
         /* This line caused occasional segfaults in python3 */
         //bpyn::array numpyArray = bpyn::array(numpyHandle);
 
-        return numpyArray;
+        return boostNumpyArray;
     }
 }

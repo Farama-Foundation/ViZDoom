@@ -110,6 +110,7 @@ namespace vizdoom {
         this->sprites = true;
         this->messages = false;
         this->corpses = true;
+        this->renderAll = false;
 
         this->windowHidden = false;
         this->noXServer = false;
@@ -254,7 +255,8 @@ namespace vizdoom {
 
     bool DoomController::isTicPossible() {
         return !((!this->gameState->GAME_MULTIPLAYER && this->gameState->PLAYER_DEAD)
-                 || (this->mapTimeout > 0 && this->gameState->MAP_TIC >= this->mapTimeout + this->mapStartTime)
+                 || (this->mapTimeout > 0 && this->mapTimeout + this->mapStartTime <= this->gameState->MAP_TIC)
+                 || (this->gameState->MAP_TICLIMIT > 0 && this->gameState->MAP_TICLIMIT <= this->gameState->MAP_TIC)
                  || (this->gameState->MAP_END));
     }
 
@@ -309,8 +311,8 @@ namespace vizdoom {
 
     void DoomController::respawnPlayer() {
 
-        if (this->doomRunning && !this->mapChanging && !this->gameState->MAP_END && this->gameState->PLAYER_DEAD) {
-            if (this->gameState->GAME_MULTIPLAYER) {
+        if (this->doomRunning && !this->mapChanging) {
+            if (this->gameState->GAME_MULTIPLAYER && this->gameState->PLAYER_DEAD && isTicPossible()) {
 
                 bool useAvailable = this->input->BT_AVAILABLE[USE];
                 this->input->BT_AVAILABLE[USE] = true;
@@ -321,7 +323,8 @@ namespace vizdoom {
                     this->MQDoom->send(MSG_CODE_TIC);
                     this->waitForDoomWork();
 
-                } while (!this->gameState->MAP_END && this->gameState->PLAYER_DEAD);
+                    if(!isTicPossible()) return;
+                } while (this->gameState->PLAYER_DEAD);
 
                 this->sendCommand(std::string("-use"));
                 this->MQDoom->send(MSG_CODE_UPDATE);
@@ -746,6 +749,10 @@ namespace vizdoom {
         if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
     }
 
+    void DoomController::setRenderAllFrames(bool allFrames){
+        this->renderAll = allFrames;
+    }
+
     unsigned int DoomController::getScreenWidth() {
         if (this->doomRunning) return this->gameState->SCREEN_WIDTH;
         else return this->screenWidth;
@@ -813,12 +820,12 @@ namespace vizdoom {
 
     SMGameState *const DoomController::getGameState() { return this->gameState; }
 
-    int DoomController::getButtonState(Button button) {
+    double DoomController::getButtonState(Button button) {
         if (this->doomRunning) return this->input->BT[button];
         else return 0;
     }
 
-    void DoomController::setButtonState(Button button, int state) {
+    void DoomController::setButtonState(Button button, double state) {
         if (button < BUTTON_COUNT && button >= 0 && this->doomRunning)
             this->input->BT[button] = state;
     }
@@ -860,14 +867,14 @@ namespace vizdoom {
         }
     }
 
-    void DoomController::setButtonMaxValue(Button button, unsigned int value) {
+    void DoomController::setButtonMaxValue(Button button, double value) {
         if (button >= BINARY_BUTTON_COUNT) {
             if (this->doomRunning) this->input->BT_MAX_VALUE[button - BINARY_BUTTON_COUNT] = value;
             this->_input->BT_MAX_VALUE[button - BINARY_BUTTON_COUNT] = value;
         }
     }
 
-    int DoomController::getButtonMaxValue(Button button) {
+    double DoomController::getButtonMaxValue(Button button) {
         if (button >= BINARY_BUTTON_COUNT) {
             if (this->doomRunning) return this->input->BT_MAX_VALUE[button - BINARY_BUTTON_COUNT];
             else return this->_input->BT_MAX_VALUE[button - BINARY_BUTTON_COUNT];
@@ -921,20 +928,16 @@ namespace vizdoom {
                 return static_cast<double>(this->gameState->PLAYER_COUNT);
         }
 
-        if (var >= AMMO0 && var <= AMMO9) {
+        if (var >= AMMO0 && var <= AMMO9)
             return this->gameState->PLAYER_AMMO[var - AMMO0];
-        } else if (var >= WEAPON0 && var <= WEAPON9) {
+        else if (var >= WEAPON0 && var <= WEAPON9)
             return this->gameState->PLAYER_WEAPON[var - WEAPON0];
-        }
-        else if(var >= POSITION_X && var <= POSITION_Z){
-            return this->gameState->PLAYER_POSITION[var - POSITION_X];
-        }
-        else if(var >= USER1 && var <= USER30){
-
+        else if(var >= POSITION_X && var <= VELOCITY_Z)
+            return this->gameState->PLAYER_MOVEMENT[var - POSITION_X];
+        else if(var >= USER1 && var <= USER60)
             return this->gameState->MAP_USER_VARS[var - USER1];
-        } else if (var >= PLAYER1_FRAGCOUNT && var <= PLAYER8_FRAGCOUNT) {
+        else if (var >= PLAYER1_FRAGCOUNT && var <= PLAYER16_FRAGCOUNT)
             return this->gameState->PLAYER_N_FRAGCOUNT[var - PLAYER1_FRAGCOUNT];
-        }
 
         return 0;
     }
@@ -958,18 +961,18 @@ namespace vizdoom {
         std::string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         this->instanceId = "";
 
-        br::uniform_int_distribution<> charDist(0, static_cast<int>(chars.length() - 1));
+        br::uniform_int_distribution<size_t> charDist(0, static_cast<size_t>(chars.length() - 1));
         br::mt19937 rng;
         rng.seed((unsigned int) bc::high_resolution_clock::now().time_since_epoch().count());
 
-        for (int i = 0; i < INSTANCE_ID_LENGHT; ++i) {
+        for (int i = 0; i < INSTANCE_ID_LENGTH; ++i) {
             this->instanceId += chars[charDist(rng)];
         }
     }
 
-    unsigned int DoomController::getNextDoomSeed() {
-        br::uniform_int_distribution<> mapSeedDist(0, UINT_MAX);
-        return static_cast<unsigned int>(mapSeedDist(this->instanceRng));
+    unsigned int DoomController::getNextDoomSeed(){
+        br::uniform_int_distribution<unsigned int> mapSeedDist(0, UINT_MAX);
+        return mapSeedDist(this->instanceRng);
     }
 
     void DoomController::forceDoomSeed(unsigned int seed) {
@@ -1146,13 +1149,13 @@ namespace vizdoom {
         this->doomArgs.push_back("-height");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenHeight));
 
-        float ratio = this->screenWidth / this->screenHeight;
+        float ratio = static_cast<float>(this->screenWidth) / this->screenHeight;
 
         this->doomArgs.push_back("+vid_aspect");
-        if (ratio == 16.0 / 9.0) this->doomArgs.push_back("1");
-        else if (ratio == 16.0 / 10.0) this->doomArgs.push_back("2");
-        else if (ratio == 4.0 / 3.0) this->doomArgs.push_back("3");
-        else if (ratio == 5.0 / 4.0) this->doomArgs.push_back("4");
+        if (ratio == 16.0f / 9.0f) this->doomArgs.push_back("1");
+        else if (ratio == 16.0f / 10.0f) this->doomArgs.push_back("2");
+        else if (ratio == 4.0f / 3.0f) this->doomArgs.push_back("3");
+        else if (ratio == 5.0f / 4.0f) this->doomArgs.push_back("4");
         else this->doomArgs.push_back("0");
 
         // window mode
@@ -1232,15 +1235,24 @@ namespace vizdoom {
         this->doomArgs.push_back("+viz_screen_format");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenFormat));
 
-        this->doomArgs.push_back("+viz_window_hidden");
-        if (this->windowHidden) this->doomArgs.push_back("1");
-        else this->doomArgs.push_back("0");
 
-        #ifdef OS_LINUX
-            this->doomArgs.push_back("+viz_noxserver");
-            if (this->noXServer) this->doomArgs.push_back("1");
-            else this->doomArgs.push_back("0");
-        #endif
+        if (this->windowHidden){
+            this->doomArgs.push_back("+viz_window_hidden");
+            this->doomArgs.push_back("1");
+
+            #ifdef OS_LINUX
+                if (this->noXServer){
+                    this->doomArgs.push_back("+viz_noxserver");
+                    this->doomArgs.push_back("1");
+                }
+            #endif
+        }
+        else{
+            if(this->renderAll){
+                this->doomArgs.push_back("+viz_render_all");
+                this->doomArgs.push_back("1");
+            }
+        }
 
         // idle/joy
         this->doomArgs.push_back("-noidle");

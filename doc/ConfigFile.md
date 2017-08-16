@@ -100,4 +100,4 @@ doom_skill = 5
 
 ```
 
-Other examples can be found [here](https://github.com/Marqt/ViZDoom/tree/master/examples/config)
+Other examples can be found [here](https://github.com/mwydmuch/ViZDoom/tree/master/examples/config)

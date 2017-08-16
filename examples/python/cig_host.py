@@ -20,12 +20,18 @@ game.add_game_args("-host 2 "               # This machine will function as a ho
                    "+sv_noautoaim 1 "       # Autoaim is disabled for all players.
                    "+sv_respawnprotect 1 "  # Players will be invulnerable for two second after spawning.
                    "+sv_spawnfarthest 1 "   # Players will be spawned as far as possible from any other players.
-                   "+viz_nocheat 1")        # Disables depth buffer and the ability to use commands that could interfere with multiplayer game.
+                   "+sv_nocrouch 1 "        # Disables crouching.
+                   "+viz_respawn_delay 10 " # Sets delay between respanws (in seconds).
+                   "+viz_nocheat 1")        # Disables depth and labels buffer and the ability to use commands that could interfere with multiplayer game.
+
+# This can be used to host game without taking part in it (can be simply added as argument of vizdoom executable).
+#game.add_game_args("viz_spectator 1")
 
 # Name your agent and select color
 # colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue
 game.add_game_args("+name AI +colorset 0")
 
+# During the competition, async mode will be forced for all agents.
 game.set_mode(Mode.ASYNC_PLAYER)
 
 # game.set_window_visible(false)
@@ -38,20 +44,17 @@ actions = [[1,0,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0]]
 # Play until the game (episode) is over.
 while not game.is_episode_finished():
 
-    if game.is_player_dead():
-        # Use this to respawn immediately after death, new state will be available.
-        game.respawn_player()
-
-        # Or observe the game until automatic respawn.
-        #game.advance_action();
-        #continue;
-
     s = game.get_state()
     # Analyze the state.
 
     game.make_action(choice(actions))
     # Make your action.
 
-    print("Frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
+    # Check if player is dead
+    if game.is_player_dead():
+        # Use this to respawn immediately after death, new state will be available.
+        game.respawn_player()
+
+    #print("Frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
 
 game.close()

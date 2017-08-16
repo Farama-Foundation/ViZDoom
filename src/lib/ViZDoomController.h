@@ -41,7 +41,7 @@ namespace vizdoom {
     namespace br        = boost::random;
     namespace bs        = boost::system;
 
-#define INSTANCE_ID_LENGHT 10
+#define INSTANCE_ID_LENGTH 10
 
 /* Shared memory's settings */
 #define SM_NAME_BASE        "ViZDoomSM"
@@ -69,11 +69,11 @@ namespace vizdoom {
 
 /* OSes */
 #ifdef __linux__
-#define OS_LINUX
+    #define OS_LINUX
 #elif _WIN32
-#define OS_WIN
+    #define OS_WIN
 #elif __APPLE__
-#define OS_OSX
+    #define OS_OSX
 #endif
 
     class DoomController {
@@ -81,7 +81,6 @@ namespace vizdoom {
     public:
 
         DoomController();
-
         ~DoomController();
 
 
@@ -89,43 +88,28 @@ namespace vizdoom {
         /*------------------------------------------------------------------------------------------------------------*/
 
         bool init();
-
         void close();
-
         void restart();
-
         bool isTicPossible();
-
         void tic(bool update = true);
-
         void tics(unsigned int tics, bool update = true);
-
         void restartMap(std::string demoPath = "");
-
         void respawnPlayer();
-
         bool isDoomRunning();
-
         void sendCommand(std::string command);
 
         void setTicrate(unsigned int ticrate);
-
         unsigned int getTicrate();
 
         unsigned int getDoomSeed();
-
         void setDoomSeed(unsigned int seed);
-
         void clearDoomSeed();
 
         unsigned int getInstanceSeed();
-
         void setInstanceSeed(unsigned int seed);
 
         std::string getMap();
-
         void setMap(std::string map, std::string demoPath = "");
-
         void playDemo(std::string demoPath, int player = 0);
 
 
@@ -133,47 +117,33 @@ namespace vizdoom {
         /*------------------------------------------------------------------------------------------------------------*/
 
         std::string getExePath();
-
         void setExePath(std::string exePath);
 
         std::string getIwadPath();
-
         void setIwadPath(std::string iwadPath);
 
         std::string getFilePath();
-
         void setFilePath(std::string filePath);
 
         int getSkill();
-
         void setSkill(int skill);
 
         std::string getConfigPath();
-
         void setConfigPath(std::string configPath);
 
         unsigned int getMapStartTime();
-
         void setMapStartTime(unsigned int tics);
-
         unsigned int getMapTimeout();
-
         void setMapTimeout(unsigned int tics);
-
         bool isMapLastTic();
-
         bool isMapFirstTic();
-
         bool isMapEnded();
-
         unsigned int getMapLastTic();
 
         void setNoConsole(bool console);
-
         void setNoSound(bool noSound);
 
         void addCustomArg(std::string arg);
-
         void clearCustomArgs();
 
 
@@ -181,77 +151,51 @@ namespace vizdoom {
         /*------------------------------------------------------------------------------------------------------------*/
 
         void setWindowHidden(bool windowHidden);
-
         void setNoXServer(bool noXServer);
-
         void setRenderHud(bool hud);
-
         void setRenderMinimalHud(bool minHud);
-
         void setRenderWeapon(bool weapon);
-
         void setRenderCrosshair(bool crosshair);
-
         void setRenderDecals(bool decals);
-
         void setRenderParticles(bool particles);
-
         void setRenderEffectsSprites(bool sprites);
-
         void setRenderMessages(bool messages);
         void setRenderCorpses(bool corpses);
         void setRenderScreenFlashes(bool flashes);
+        void setRenderAllFrames(bool allFrames);
 
         void setScreenResolution(unsigned int width, unsigned int height);
-
         unsigned int getScreenWidth();
-
         void setScreenWidth(unsigned int width);
-
         unsigned int getScreenHeight();
-
         void setScreenHeight(unsigned int height);
-
         ScreenFormat getScreenFormat();
 
         void setScreenFormat(ScreenFormat format);
-
         unsigned int getScreenChannels();
-
         unsigned int getScreenDepth();
-
         size_t getScreenPitch();
-
         size_t getScreenSize();
 
         /* Depth buffer */
         bool isDepthBufferEnabled();
-
         void setDepthBufferEnabled(bool depthBuffer);
 
         /* Labels */
         bool isLabelsEnabled();
-
         void setLabelsEnabled(bool labels);
 
         /* Automap */
         bool isAutomapEnabled();
-
         void setAutomapEnabled(bool map);
-
         void setAutomapMode(AutomapMode mode);
-
         void setAutomapRotate(bool rotate);
-
         void setAutomapRenderTextures(bool textures);
 
         /* Buffers in SM */
         uint8_t *const getScreenBuffer();
-
         uint8_t *const getDepthBuffer();
-
         uint8_t *const getLabelsBuffer();
-
         uint8_t *const getAutomapBuffer();
 
         /* Buttons getters and setters */
@@ -262,33 +206,22 @@ namespace vizdoom {
         SMGameState *const getGameState();
 
         /* Buttons state */
-        int getButtonState(Button button);
-
-        void setButtonState(Button button, int state);
-
+        double getButtonState(Button button);
+        void setButtonState(Button button, double state);
         void toggleButtonState(Button button);
 
         /* Buttons availableity */
         bool isButtonAvailable(Button button);
-
         void setButtonAvailable(Button button, bool set);
-
         void resetButtons();
-
         void disableAllButtons();
 
-        int getButtonMaxValue(Button button);
-
-        void setButtonMaxValue(Button button, unsigned int value);
-
+        double getButtonMaxValue(Button button);
+        void setButtonMaxValue(Button button, double value);
         void availableAllButtons();
-
         bool isAllowDoomInput();
-
         void setAllowDoomInput(bool set);
-
         bool isRunDoomAsync();
-
         void setRunDoomAsync(bool set);
 
 
@@ -296,18 +229,13 @@ namespace vizdoom {
         /*------------------------------------------------------------------------------------------------------------*/
 
         double getGameVariable(GameVariable var);
-
         unsigned int getGameTic();
-
         bool isMultiplayerGame();
-
         bool isNetGame();
-
         unsigned int getMapTic();
-
         int getMapReward();
-
         bool isPlayerDead();
+
 
     private:
 
@@ -318,15 +246,10 @@ namespace vizdoom {
         bool doomWorking;
 
         bool receiveMQMsg();
-
         void waitForDoomStart();
-
         void waitForDoomWork();
-
         void waitForDoomMapStartTime();
-
         void createDoomArgs();
-
         void launchDoom();
 
         /* Seed */
@@ -354,8 +277,8 @@ namespace vizdoom {
 
         void handleSignals();
 
-        static void
-        signalHandler(ba::signal_set &signal, DoomController *controller, const bs::error_code &error, int sigNumber);
+        static void signalHandler(ba::signal_set &signal, DoomController *controller,
+                                  const bs::error_code &error, int sigNumber);
 
         void intSignal(int sigNumber);
 
@@ -396,7 +319,7 @@ namespace vizdoom {
         bool automap;
         bool labels;
 
-        bool hud, minHud, weapon, crosshair, decals, particles, sprites, messages, corpses, flashes;
+        bool hud, minHud, weapon, crosshair, decals, particles, sprites, messages, corpses, flashes, renderAll;
         AutomapMode amMode;
         bool amRotate, amTextures;
 

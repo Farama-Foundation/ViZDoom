@@ -58,7 +58,7 @@ namespace vizdoom {
     bool DoomGame::init() {
         if (!this->isRunning()) {
 
-            std::string cfgOverrideFile = "_vizdoom.cfg";
+            std::string cfgOverrideFile = "./_vizdoom.cfg";
             if (fileExists(cfgOverrideFile)) loadConfig(cfgOverrideFile);
 
             this->lastAction.resize(this->availableButtons.size());
@@ -105,6 +105,10 @@ namespace vizdoom {
         return this->running && this->doomController->isDoomRunning();
     }
 
+    bool DoomGame::isMultiplayerGame() {
+        return this->running && this->doomController->isMultiplayerGame();
+    }
+
     void DoomGame::newEpisode(std::string filePath) {
 
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
@@ -123,7 +127,7 @@ namespace vizdoom {
         this->resetState();
     }
 
-    void DoomGame::setAction(std::vector<int> const &actions) {
+    void DoomGame::setAction(std::vector<double> const &actions) {
 
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
 
@@ -151,7 +155,7 @@ namespace vizdoom {
         }
     }
 
-    double DoomGame::makeAction(std::vector<int> const &actions, unsigned int tics) {
+    double DoomGame::makeAction(std::vector<double> const &actions, unsigned int tics) {
         this->setAction(actions);
         this->advanceAction(tics);
         return this->getLastReward();
@@ -188,6 +192,7 @@ namespace vizdoom {
         if (!this->isEpisodeFinished()) {
             this->state = std::make_shared<GameState>();
             this->state->number = this->nextStateNumber++;
+            this->state->tic = this->doomController->getMapTic();
 
             this->state->gameVariables.resize(this->availableGameVariables.size());
 
@@ -245,7 +250,7 @@ namespace vizdoom {
 
     std::shared_ptr<GameState> DoomGame::getState() { return this->state; }
 
-    std::vector<int> DoomGame::getLastAction() { return this->lastAction; }
+    std::vector<double> DoomGame::getLastAction() { return this->lastAction; }
 
     bool DoomGame::isNewEpisode() {
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
@@ -279,7 +284,7 @@ namespace vizdoom {
         for(auto i : buttons) this->addAvailableButton(i);
     }
 
-    void DoomGame::addAvailableButton(Button button, unsigned int maxValue) {
+    void DoomGame::addAvailableButton(Button button, double maxValue) {
         if (!this->isRunning() && std::find(this->availableButtons.begin(),
                                             this->availableButtons.end(), button) == this->availableButtons.end()) {
             this->availableButtons.push_back(button);
@@ -295,11 +300,11 @@ namespace vizdoom {
         return this->availableButtons.size();
     }
 
-    void DoomGame::setButtonMaxValue(Button button, unsigned int maxValue) {
+    void DoomGame::setButtonMaxValue(Button button, double maxValue) {
         this->doomController->setButtonMaxValue(button, maxValue);
     }
 
-    int DoomGame::getButtonMaxValue(Button button) {
+    double DoomGame::getButtonMaxValue(Button button) {
         return this->doomController->getButtonMaxValue(button);
     }
 
@@ -470,9 +475,7 @@ namespace vizdoom {
 
     bool DoomGame::isAutomapBufferEnabled() { return this->doomController->isAutomapEnabled(); }
 
-    void DoomGame::setAutomapBufferEnabled(bool automapBuffer) {
-        this->doomController->setAutomapEnabled(automapBuffer);
-    }
+    void DoomGame::setAutomapBufferEnabled(bool automapBuffer) { this->doomController->setAutomapEnabled(automapBuffer); }
 
     void DoomGame::setAutomapMode(AutomapMode mode) { this->doomController->setAutomapMode(mode); }
 
@@ -495,7 +498,12 @@ namespace vizdoom {
     void DoomGame::setRenderEffectsSprites(bool sprites) { this->doomController->setRenderEffectsSprites(sprites); }
 
     void DoomGame::setRenderMessages(bool messages) { this->doomController->setRenderMessages(messages); }
+
     void DoomGame::setRenderCorpses(bool corpses) { this->doomController->setRenderCorpses(corpses); }
+
+    void DoomGame::setRenderScreenFlashes(bool flashes) { this->doomController->setRenderScreenFlashes(flashes); }
+
+    void DoomGame::setRenderAllFrames(bool allFrames) { this->doomController->setRenderAllFrames(allFrames); }
 
     void DoomGame::setWindowVisible(bool visibility) {
         this->doomController->setNoXServer(!visibility);

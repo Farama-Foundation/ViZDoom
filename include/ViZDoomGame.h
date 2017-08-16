@@ -50,10 +50,11 @@ namespace vizdoom {
         void newEpisode(std::string filePath = "");
         void replayEpisode(std::string filePath, unsigned int player = 0);
         bool isRunning();
+        bool isMultiplayerGame();
 
-        void setAction(std::vector<int> const &actions);
+        void setAction(std::vector<double> const &actions);
         void advanceAction(unsigned int tics = 1, bool updateState = true);
-        double makeAction(std::vector<int> const &actions, unsigned int tics = 1);
+        double makeAction(std::vector<double> const &actions, unsigned int tics = 1);
 
         bool isNewEpisode();
         bool isEpisodeFinished();
@@ -62,7 +63,7 @@ namespace vizdoom {
         void sendGameCommand(std::string cmd);
 
         GameStatePtr getState();
-        std::vector<int> getLastAction();
+        std::vector<double> getLastAction();
 
 
         /* Buttons settings */
@@ -71,12 +72,12 @@ namespace vizdoom {
         std::vector<Button> getAvailableButtons();
         void setAvailableButtons(std::vector<Button> buttons);
 
-        void addAvailableButton(Button button, unsigned int maxValue = -1);
+        void addAvailableButton(Button button, double maxValue = -1);
         void clearAvailableButtons();
         size_t getAvailableButtonsSize();
 
-        void setButtonMaxValue(Button button, unsigned int maxValue);
-        int getButtonMaxValue(Button button);
+        void setButtonMaxValue(Button button, double maxValue);
+        double getButtonMaxValue(Button button);
 
 
         /* GameVariables getters and setters */
@@ -165,6 +166,8 @@ namespace vizdoom {
         void setRenderEffectsSprites(bool sprites);
         void setRenderMessages(bool messages);
         void setRenderCorpses(bool bodies);
+        void setRenderScreenFlashes(bool flashes);
+        void setRenderAllFrames(bool allFrames);
         void setWindowVisible(bool visibility);
         void setConsoleEnabled(bool console);
         void setSoundEnabled(bool sound);
@@ -195,7 +198,7 @@ namespace vizdoom {
 
         std::vector<GameVariable> availableGameVariables;
         std::vector<Button> availableButtons;
-        std::vector<int> lastAction;
+        std::vector<double> lastAction;
 
         unsigned int nextStateNumber;
         unsigned int lastMapTic;

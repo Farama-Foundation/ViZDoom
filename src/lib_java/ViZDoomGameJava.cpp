@@ -36,12 +36,13 @@ JNI_METHOD(void, newEpisode__Ljava_lang_String, newEpisode_str, jstring)
 JNI_METHOD(void, replayEpisode__Ljava_lang_String_2, replayEpisode_str, jstring)
 JNI_METHOD(void, replayEpisode__Ljava_lang_String_2I, replayEpisode_str_int, jstring, jint)
 JNI_METHOD(jboolean, isRunning, isRunning)
-JNI_METHOD(void, setAction, setAction, jintArray)
+JNI_METHOD(jboolean, isMultiplayerGame, isMultiplayerGame)
+JNI_METHOD(void, setAction, setAction, jdoubleArray)
 JNI_METHOD(void, advanceAction__, advanceAction_)
 JNI_METHOD(void, advanceAction__I, advanceAction_int, jint)
 JNI_METHOD(void, advanceAction__IZ, advanceAction_int_bool, jint, jboolean)
-JNI_METHOD(jdouble, makeAction___3I, makeAction_vec, jintArray)
-JNI_METHOD(jdouble, makeAction___3II, makeAction_vec_int, jintArray, jint)
+JNI_METHOD(jdouble, makeAction___3D, makeAction_vec, jdoubleArray)
+JNI_METHOD(jdouble, makeAction___3DI, makeAction_vec_int, jdoubleArray, jint)
 
 JNI_EXPORT(jobject, getState){
     auto state = callObjMethod(jEnv, jObj, &DoomGameJava::getState);
@@ -70,17 +71,17 @@ JNI_EXPORT(jobject, getState){
         jEnv->SetObjectArrayElement(jLabels, i, jLabel);
     }
 
-    jmethodID jStateConstructor = jEnv->GetMethodID(jStateClass, "<init>", "(I[D[B[B[B[B[Lvizdoom/Label;)V");
+    jmethodID jStateConstructor = jEnv->GetMethodID(jStateClass, "<init>", "(II[D[B[B[B[B[Lvizdoom/Label;)V");
     if (jStateConstructor == 0) return NULL;
-    jobject jState = jEnv->NewObject(jStateClass, jStateConstructor, (jint)state->number,
+    jobject jState = jEnv->NewObject(jStateClass, jStateConstructor, (jint)state->number, (jint)state->tic,
                                 jGameVariables, jScreenBuffer, jDepthBuffer, jLabelsBuffer, jAutomapBuffer, jLabels);
 
     return jState;
 }
 
-JNI_EXPORT(jintArray, getLastAction){
+JNI_EXPORT(jdoubleArray, getLastAction){
     auto lastAction = callObjMethod(jEnv, jObj, &DoomGameJava::getLastAction);
-    return castTojintArray(jEnv, lastAction);
+    return castTojdoubleArray(jEnv, lastAction);
 }
 
 JNI_METHOD(jboolean, isNewEpisode, isNewEpisode)
@@ -118,24 +119,24 @@ JNI_EXPORT(void, addAvailableButton__Lvizdoom_Button_2, jobject){
     callObjMethod(jEnv, jObj, &DoomGameJava::addAvailableButton_btn, arg1);
 }
 
-JNI_EXPORT(void, addAvailableButton__Lvizdoom_Button_2I, jobject, jint){
+JNI_EXPORT(void, addAvailableButton__Lvizdoom_Button_2I, jobject, jdouble){
     auto arg1 = jobjectCastToEnum<Button>(jEnv, "vizdoom/Button", jarg1);
-    auto arg2 = jintCast(jarg2);
+    auto arg2 = jdoubleCast(jarg2);
     callObjMethod(jEnv, jObj, &DoomGameJava::addAvailableButton_btn_int, arg1, arg2);
 }
 
 JNI_METHOD(void, clearAvailableButtons, clearAvailableButtons)
 JNI_METHOD(jint, getAvailableButtonsSize, getAvailableButtonsSize)
 
-JNI_EXPORT(void, setButtonMaxValue, jobject, jint){
+JNI_EXPORT(void, setButtonMaxValue, jobject, jdouble){
     auto arg1 = jobjectCastToEnum<Button>(jEnv, "vizdoom/Button", jarg1);
-    auto arg2 = jintCast(jarg2);
+    auto arg2 = jdoubleCast(jarg2);
     callObjMethod(jEnv, jObj, &DoomGameJava::setButtonMaxValue, arg1, arg2);
 }
 
-JNI_EXPORT(jint, getButtonMaxValue, jobject){
+JNI_EXPORT(jdouble, getButtonMaxValue, jobject){
     auto arg1 = jobjectCastToEnum<Button>(jEnv, "vizdoom/Button", jarg1);
-    return castTojint(callObjMethod(jEnv, jObj, &DoomGameJava::getButtonMaxValue, arg1));
+    return castTojdouble(callObjMethod(jEnv, jObj, &DoomGameJava::getButtonMaxValue, arg1));
 }
 
 JNI_EXPORT(jobjectArray, getAvailableGameVariables){
@@ -243,6 +244,8 @@ JNI_METHOD(void, setRenderParticles, setRenderParticles, jboolean)
 JNI_METHOD(void, setRenderEffectsSprites, setRenderEffectsSprites, jboolean)
 JNI_METHOD(void, setRenderMessages, setRenderMessages, jboolean)
 JNI_METHOD(void, setRenderCorpses, setRenderCorpses, jboolean)
+JNI_METHOD(void, setRenderScreenFlashes, setRenderScreenFlashes, jboolean)
+JNI_METHOD(void, setRenderAllFrames, setRenderAllFrames, jboolean)
 JNI_METHOD(void, setWindowVisible, setWindowVisible, jboolean)
 JNI_METHOD(void, setConsoleEnabled, setConsoleEnabled, jboolean)
 JNI_METHOD(void, setSoundEnabled, setSoundEnabled, jboolean)

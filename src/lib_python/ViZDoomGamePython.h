@@ -40,6 +40,32 @@ namespace vizdoom {
     namespace bpya      = bpy::api;
     namespace bpyn      = bpy::numeric;
 
+    class ReleaseGIL {
+    public:
+        inline ReleaseGIL(){
+            state = PyEval_SaveThread();
+        }
+
+        inline ~ReleaseGIL(){
+            PyEval_RestoreThread(state);
+        }
+    private:
+        PyThreadState *state;
+    };
+
+    class AcquireGIL {
+    public:
+        inline AcquireGIL(){
+            state = PyGILState_Ensure();
+        }
+
+        inline ~AcquireGIL(){
+            PyGILState_Release(state);
+        }
+    private:
+        PyGILState_STATE state;
+    };
+
     // For GCC versions lower then 5 compatibility
     // Python version of Label struct with Python string instead C++ string type.
     struct LabelPython{
@@ -53,6 +79,7 @@ namespace vizdoom {
 
     struct GameStatePython {
         unsigned int number;
+        unsigned int tic;
 
         bpya::object gameVariables;
         //bpy::list gameVariables;
@@ -73,7 +100,7 @@ namespace vizdoom {
         void setAction(bpy::list const &pyAction);
         double makeAction(bpy::list const &pyAction, unsigned int tics = 1);
 
-        GameStatePython getState();
+        GameStatePython* getState();
         bpy::list getLastAction();
 
         bpy::list getAvailableButtons();
@@ -82,6 +109,10 @@ namespace vizdoom {
         bpy::list getAvailableGameVariables();
         void setAvailableGameVariables(bpy::list const &pyGameVariables);
 
+        // These functions are wrapped for manual GIL management
+        void init();
+        void advanceAction(unsigned int tics = 1, bool updateState = true);
+        void respawnPlayer();
 
         // These functions are workaround for
         // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
@@ -101,6 +132,8 @@ namespace vizdoom {
         void sendGameCommand(bpy::str const &pyCmd);
 
     private:
+        GameStatePython* pyState;
+
         npy_intp colorShape[3];
         npy_intp grayShape[2];
 

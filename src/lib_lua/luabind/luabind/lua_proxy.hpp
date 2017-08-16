@@ -20,33 +20,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
-#if !BOOST_PP_IS_ITERATING
-# error Do not include object_call.hpp directly!
-#endif
+#ifndef LUABIND_VALUE_WRAPPER_050419_HPP
+#define LUABIND_VALUE_WRAPPER_050419_HPP
 
-#include <boost/preprocessor/repetition/enum_params.hpp>
-#include <boost/preprocessor/repetition/enum_binary_params.hpp>
-#include <boost/preprocessor/facilities/intercept.hpp>
+#include <type_traits>
 
-#define N BOOST_PP_ITERATION()
+namespace luabind {
 
-template<BOOST_PP_ENUM_PARAMS(N, class A)>
-call_proxy<
-    Derived
-  , boost::tuples::tuple<
-        BOOST_PP_ENUM_BINARY_PARAMS(N, A, const* BOOST_PP_INTERCEPT)
-    >
-> operator()(BOOST_PP_ENUM_BINARY_PARAMS(N, A, const& a))
-{
-    typedef boost::tuples::tuple<
-        BOOST_PP_ENUM_BINARY_PARAMS(N, A, const* BOOST_PP_INTERCEPT)
-    > arguments;
+	//
+	// Concept "lua_proxy"
+	//
 
-    return call_proxy<Derived, arguments>(
-        derived()
-      , arguments(BOOST_PP_ENUM_PARAMS(N, &a))
-    );
-}
+	template<class T>
+	struct lua_proxy_traits
+	{
+		using is_specialized = std::false_type;
+	};
 
-#undef N
+	template<class T>
+	struct is_lua_proxy_type
+		: lua_proxy_traits<T>::is_specialized
+	{};
+
+	template< class T >
+	struct is_lua_proxy_arg
+		: std::conditional<is_lua_proxy_type<typename std::remove_const<typename std::remove_reference<T>::type>::type>::value, std::true_type, std::false_type >::type
+	{};
+
+} // namespace luabind
+
+#endif // LUABIND_VALUE_WRAPPER_050419_HPP
 

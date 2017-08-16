@@ -32,14 +32,6 @@ local game = vizdoom.DoomGame()
 -- If loadConfig is used in-code configuration will work. Note that the most recent changes will add to previous ones.
 -- game.loadConfig("../../scenarios/basic.cfg")
 
--- Sets path to ViZDoom engine executive which will be spawned as a separate process. Default is "./vizdoom".
---game:setViZDoomPath("../../bin/vizdoom")
-game:setConsoleEnabled(true)
-
--- Sets path to iwad resource file which contains the actual doom game. Default is "./doom2.wad".
-game:setDoomGamePath("../../scenarios/freedoom2.wad")
---game.setDoomGame_path("../../scenarios/doom2.wad") -- Not provided with environment due to licences.
-
 -- Sets path to additional resources wad file which is basically your scenario wad.
 -- If not specified default maps will be used and it's pretty much useless... unless you want to play good old Doom.
 game:setDoomScenarioPath("../../scenarios/basic.wad")
@@ -98,6 +90,9 @@ game:setLivingReward(-1)
 
 -- Sets ViZDoom mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR, PLAYER mode is default)
 game:setMode(vizdoom.Mode.PLAYER)
+
+-- Enables engine output to console.
+--game:setConsoleEnabled(true)
 
 -- Initialize the game. Further configuration won't take any effect from now on.
 game:init()

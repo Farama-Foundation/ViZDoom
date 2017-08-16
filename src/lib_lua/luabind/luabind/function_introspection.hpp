@@ -32,7 +32,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
-#pragma once
 #ifndef INCLUDED_function_introspection_hpp_GUID_b55783e7_e6da_4816_925e_9256245c1065
 #define INCLUDED_function_introspection_hpp_GUID_b55783e7_e6da_4816_925e_9256245c1065
 
@@ -54,3 +53,4 @@ namespace luabind {
 } // end of namespace luabind
 
 #endif // INCLUDED_function_introspection_hpp_GUID_b55783e7_e6da_4816_925e_9256245c1065
+

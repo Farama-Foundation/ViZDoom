@@ -10,25 +10,20 @@ local game = vizdoom.DoomGame()
 -- Use CIG example config or your own.
 game:loadConfig("../../scenarios/cig.cfg")
 
--- Select game and map you want to use.
-game:setDoomGamePath("../../scenarios/freedoom2.wad")
--- Not provided with environment due to licences
--- game:setDoomGamePath("../../scenarios/doom2.wad")
-
+-- Select map you want to use.
 game:setDoomMap("map01") -- Limited deathmatch.
 --game:setDoomMap("map02") -- Full deathmatch.
 
 -- Start multiplayer game only with your AI (with options that will be used in the competition, details in cig_host example).
-game:addGameArgs("-host 1 -deathmatch +timelimit 0.2 "..
-                 "+sv_forcerespawn 1 +sv_noautoaim 1 "..
-                 "+sv_respawnprotect 1 +sv_spawnfarthest 1")
+game:addGameArgs("-host 1 -deathmatch +timelimit 1 " ..
+                 "+sv_forcerespawn 1 +sv_noautoaim 1 +sv_respawnprotect 1 +sv_spawnfarthest 1 +sv_nocrouch 1 " ..
+                 "+viz_respawn_delay 10 +viz_nocheat 1")
 
 -- Name your agent and select color
 -- colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue
 game:addGameArgs("+name AI +colorset 0")
 
-game:setMode(vizdoom.Mode.PLAYER);
-
+game:setMode(vizdoom.Mode.SPECTATOR)
 --game:setWindowVisible(false)
 
 game:init();
@@ -63,12 +58,6 @@ for i = 1, episodes do
     -- Play until the game (episode) is over.
     while not game:isEpisodeFinished() do
 
-        if game:isPlayerDead() then
-            -- Respawn immediately after death, new state will be available.
-            sys.sleep(4)
-            game:respawnPlayer()
-        end
-
         -- Analyze the state
         state = game:getState()
 
@@ -76,7 +65,13 @@ for i = 1, episodes do
         local action = actions[torch.random(#actions)]
         reward = game:makeAction(action)
 
-        print("Frags:", game:getGameVariable(vizdoom.GameVariable.FRAGCOUNT))
+        -- Check if player is dead
+        if game:isPlayerDead() then
+            -- Respawn immediately after death, new state will be available.
+            game:respawnPlayer()
+        end
+
+        --print("Frags:", game:getGameVariable(vizdoom.GameVariable.FRAGCOUNT))
     end
 
     print("Episode finished.")

@@ -1,0 +1,12 @@
+site_name: ViZDoom
+repo_url : https://github.com/mwydmuch/ViZDoom
+docs_dir : doc
+pages:
+- ViZDoom: index.md
+- Installation/Building: Building.md
+- Changelog: Changelog.md
+- Configuration Files: ConfigFile.md
+- DoomGame: DoomGame.md
+- Exceptions: Exceptions.md
+- Types: Types.md
+- Utilities: Utilities.md

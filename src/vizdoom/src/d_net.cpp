@@ -780,10 +780,6 @@ void GetPackets (void)
 		netnode = doomcom.remotenode;
 		netconsole = playerfornode[netnode] & ~PL_DRONE;
 
-		//VIZDOOM_CODE
-		vizNodesRecv[netconsole] += 1;
-		VIZ_InterruptionPoint();
-
 		// [RH] Get "ping" times - totally useless, since it's bound to the frequency
 		// packets go out at.
 		lastrecvtime[netconsole] = currrecvtime[netconsole];
@@ -933,6 +929,10 @@ void GetPackets (void)
 				nettics[nodeforplayer[playerbytes[i]]] = realend;
 			}
 		}
+
+		//VIZDOOM_CODE
+        vizNodesRecv[netconsole] += nettics[netnode];
+		VIZ_InterruptionPoint();
 	}
 }
 
@@ -1910,16 +1910,22 @@ void TryRunTics (void)
 
 	//VIZDOOM_CODE
 	if(*viz_controlled && !*viz_async && netgame){
-		int lowRecv;
-		unsigned int enterTime = I_MSTime ();
-		do {
+		int lowRecv = INT_MAX;
+
+        for (i = 1; i < numplaying; i++) {
+            if (lowRecv > vizNodesRecv[i]) lowRecv = vizNodesRecv[i];
+        }
+
+        unsigned int enterTime = I_MSTime ();
+        while(lowRecv == lowtic && *viz_sync_timeout > I_MSTime() - enterTime) {
+            //VIZ_Sleep(1);
 			NetUpdate();
-			lowRecv = INT_MAX;
+            lowRecv = INT_MAX;
 
 			for (i = 1; i < numplaying; i++) {
 				if (lowRecv > vizNodesRecv[i]) lowRecv = vizNodesRecv[i];
 			}
-		} while(lowRecv == lowtic && *viz_sync_timeout * numplaying > I_MSTime() - enterTime);
+		}
 	}
 
 	// wait for new tics if needed

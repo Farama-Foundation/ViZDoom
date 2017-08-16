@@ -55,6 +55,9 @@
 #include "farchive.h"
 #include "r_renderer.h"
 
+//VIZDOOM_CODE
+#include "viz_main.h"
+
 static FRandom pr_skullpop ("SkullPop");
 
 // [RH] # of ticks to complete a turn180
@@ -2130,20 +2133,18 @@ void P_DeathThink (player_t *player)
 		{
 			player->poisoncount--;
 		}
-	}		
+	}
 
-	if ((player->cmd.ucmd.buttons & BT_USE ||
+    //VIZDOOM_CODE
+	if (level.time >= player->respawn_time && (player->cmd.ucmd.buttons & BT_USE ||
 		((multiplayer || alwaysapplydmflags) && (dmflags & DF_FORCE_RESPAWN))) && !(dmflags2 & DF2_NO_RESPAWN))
 	{
-		if (level.time >= player->respawn_time || ((player->cmd.ucmd.buttons & BT_USE) && player->Bot == NULL))
-		{
-			player->cls = NULL;		// Force a new class if the player is using a random class
-			player->playerstate = (multiplayer || (level.flags2 & LEVEL2_ALLOWRESPAWN)) ? PST_REBORN : PST_ENTER;
-			if (player->mo->special1 > 2)
-			{
-				player->mo->special1 = 0;
-			}
-		}
+        player->cls = NULL;		// Force a new class if the player is using a random class
+        player->playerstate = (multiplayer || (level.flags2 & LEVEL2_ALLOWRESPAWN)) ? PST_REBORN : PST_ENTER;
+        if (player->mo->special1 > 2)
+        {
+            player->mo->special1 = 0;
+        }
 	}
 }
 
@@ -2197,7 +2198,7 @@ void P_PlayerThink (player_t *player)
 
 	if (player->mo == NULL)
 	{
-		I_Error ("No player %td start\n", player - players + 1);
+        I_Error ("No player %td start\n", player - players + 1);
 	}
 
 	if (debugfile && !(player->cheats & CF_PREDICTING))

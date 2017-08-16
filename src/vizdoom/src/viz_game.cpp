@@ -44,6 +44,8 @@ EXTERN_CVAR (Bool, viz_labels)
 EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_loop_map)
 EXTERN_CVAR (Bool, viz_override_player)
+EXTERN_CVAR (Bool, viz_spectator)
+EXTERN_CVAR (Float, timelimit)
 
 VIZGameState *vizGameStateSM = NULL;
 
@@ -52,6 +54,10 @@ VIZGameState *vizGameStateSM = NULL;
 
 inline double VIZ_FixedToDouble(fixed_t fixed){
     return static_cast<double>(fixed) / 65536.0;
+}
+
+inline double VIZ_AngleToDouble(angle_t angle) {
+    return static_cast<double>(angle) / ANGLE_MAX * 360;
 }
 
 int VIZ_CheckItem(FName name) {
@@ -141,9 +147,9 @@ void VIZ_GameStateInit(){
     strncpy(vizGameStateSM->VERSION_STR, VIZ_VERSION_STR, 8);
     vizGameStateSM->SM_SIZE = vizSMSize;
 
-    vizGameStateSM->PLAYER_POSITION[0] = 0;
-    vizGameStateSM->PLAYER_POSITION[1] = 0;
-    vizGameStateSM->PLAYER_POSITION[2] = 0;
+    for(int i = 0; i < 9; ++i){
+        vizGameStateSM->PLAYER_MOVEMENT[i] = 0;
+    }
 }
 
 void VIZ_GameStateUpdate(){
@@ -171,8 +177,8 @@ void VIZ_GameStateUpdate(){
 void VIZ_GameStateTic(){
     if(!vizGameStateSM) return;
 
-    VIZ_DebugMsg(2, VIZ_FUNC, "netgame: %d, multiplayer: %d, recording: %d, playback: %d, in_level: %d, map_tic: %d",
-                    netgame, multiplayer, demorecording, demoplayback, gamestate == GS_LEVEL, level.maptime);
+    VIZ_DebugMsg(2, VIZ_FUNC, "netgame: %d, multiplayer: %d, recording: %d, playback: %d, in_level: %d, map_tic: %d, map_ticlimit: %d",
+                    netgame, multiplayer, demorecording, demoplayback, gamestate == GS_LEVEL, level.maptime, timelimit * TICRATE * 60);
 
     vizGameStateSM->GAME_TIC = (unsigned int)gametic;
     vizGameStateSM->GAME_STATE = gamestate;
@@ -181,24 +187,34 @@ void VIZ_GameStateTic(){
     vizGameStateSM->GAME_SETTINGS_CONTROLLER = VIZ_PLAYER.settings_controller;
     vizGameStateSM->GAME_NETGAME = netgame;
     vizGameStateSM->GAME_MULTIPLAYER = multiplayer;
+    vizGameStateSM->GAME_DEATHMATCH = (bool)deathmatch;
     vizGameStateSM->DEMO_RECORDING = demorecording;
     vizGameStateSM->DEMO_PLAYBACK = demoplayback;
 
     vizGameStateSM->MAP_END = gamestate != GS_LEVEL;
     vizGameStateSM->MAP_START_TIC = (unsigned int)level.starttime;
     vizGameStateSM->MAP_TIC = (unsigned int)level.maptime;
+    vizGameStateSM->MAP_TICLIMIT = (unsigned int)(timelimit * TICRATE * 60);
 
     for(int i = 0; i < VIZ_GV_USER_COUNT; ++i) vizGameStateSM->MAP_USER_VARS[i] = ACS_GlobalVars[i+1];
     vizGameStateSM->MAP_REWARD = ACS_GlobalVars[0];
+
+    bool prevDead = vizGameStateSM->PLAYER_DEAD;
 
     if(VIZ_PLAYER.mo != NULL) {
         vizGameStateSM->PLAYER_HAS_ACTOR = true;
         vizGameStateSM->PLAYER_DEAD = VIZ_PLAYER.playerstate == PST_DEAD || VIZ_PLAYER.mo->health <= 0;
 
         if(!*viz_nocheat) {
-            vizGameStateSM->PLAYER_POSITION[0] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.x);
-            vizGameStateSM->PLAYER_POSITION[1] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.y);
-            vizGameStateSM->PLAYER_POSITION[2] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.z);
+            vizGameStateSM->PLAYER_MOVEMENT[0] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.x);
+            vizGameStateSM->PLAYER_MOVEMENT[1] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.y);
+            vizGameStateSM->PLAYER_MOVEMENT[2] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.z);
+            vizGameStateSM->PLAYER_MOVEMENT[3] = VIZ_AngleToDouble(VIZ_PLAYER.mo->angle);
+            vizGameStateSM->PLAYER_MOVEMENT[4] = static_cast<double>(VIZ_PLAYER.mo->pitch) / 32768.0 * 180 / 65536.0;
+            vizGameStateSM->PLAYER_MOVEMENT[5] = VIZ_AngleToDouble(VIZ_PLAYER.mo->roll);
+            vizGameStateSM->PLAYER_MOVEMENT[6] = VIZ_FixedToDouble(VIZ_PLAYER.mo->velx);
+            vizGameStateSM->PLAYER_MOVEMENT[7] = VIZ_FixedToDouble(VIZ_PLAYER.mo->vely);
+            vizGameStateSM->PLAYER_MOVEMENT[8] = VIZ_FixedToDouble(VIZ_PLAYER.mo->velz);
         }
     }
     else {
@@ -206,7 +222,6 @@ void VIZ_GameStateTic(){
         vizGameStateSM->PLAYER_DEAD = true;
     }
 
-    bool prevDead = vizGameStateSM->PLAYER_DEAD;
     if(vizGameStateSM->PLAYER_DEAD && !prevDead) ++vizGameStateSM->PLAYER_DEATHCOUNT;
 
     vizGameStateSM->PLAYER_READY_TO_RESPAWN = VIZ_PLAYER.playerstate == PST_REBORN;
@@ -252,7 +267,7 @@ void VIZ_GameStateTic(){
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = players[i].fragcount;
             }
             else{
-                strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
+                //strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = 0;
             }
         }

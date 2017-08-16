@@ -18,10 +18,8 @@ public class Shaping {
         game.setViZDoomPath("../../bin/vizdoom");
 
         // Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".
-        game.setDoomGamePath("../../scenarios/freedoom2.wad");
-        //game.setDoomGamePath("../../scenarios/doom2.wad");   // Not provided with environment due to licences.
-
-
+        game.setDoomGamePath("../../bin/freedoom2.wad");
+        //game.setDoomGamePath("../../bin/doom2.wad");   // Not provided with environment due to licences.
 
         // Sets resolution. Default is 320X240
         game.setScreenResolution(ScreenResolution.RES_320X240);
@@ -29,10 +27,10 @@ public class Shaping {
         // Initialize the game. Further configuration won't take any effect from now on.
         game.init();
 
-        List<int[]> actions = new ArrayList<int[]>();
-        actions.add(new int[] {1, 0, 1});
-        actions.add(new int[] {0, 1, 1});
-        actions.add(new int[] {0, 0, 1});
+        List<double[]> actions = new ArrayList<double[]>();
+        actions.add(new double[] {1, 0, 1});
+        actions.add(new double[] {0, 1, 1});
+        actions.add(new double[] {0, 0, 1});
 
         Random ran = new Random();
 

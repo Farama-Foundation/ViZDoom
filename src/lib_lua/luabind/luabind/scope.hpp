@@ -28,74 +28,76 @@
 #include <luabind/lua_state_fwd.hpp>
 #include <memory>
 
-namespace luabind { 
-    
-    struct scope; 
+namespace luabind {
+
+	struct scope;
 
 } // namespace luabind
 
-namespace luabind { namespace detail {
+namespace luabind {
+	namespace detail {
 
-    struct LUABIND_API registration
-    {
-        registration();
-        virtual ~registration();
+		struct LUABIND_API registration
+		{
+			registration();
+			virtual ~registration();
 
-    protected:
-        virtual void register_(lua_State*) const = 0;
+		protected:
+			virtual void register_(lua_State*) const = 0;
 
-    private:
-        friend struct ::luabind::scope;
-        registration* m_next;
-    };
+		private:
+			friend struct ::luabind::scope;
+			registration* m_next;
+		};
 
-}} // namespace luabind::detail
+	}
+} // namespace luabind::detail
 
 namespace luabind {
 
-    struct LUABIND_API scope
-    {
-        scope();
-        explicit scope(std::auto_ptr<detail::registration> reg);
-        scope(scope const& other_);
-        ~scope();
+	struct LUABIND_API scope
+	{
+		scope();
+		explicit scope(std::unique_ptr<detail::registration> reg);
+		scope(scope const& other_);
+		~scope();
 
-        scope& operator=(scope const& other_);
+		scope& operator=(scope const& other_);
 
-        scope& operator,(scope s);
+		scope& operator,(scope s);
 
-        void register_(lua_State* L) const;
+		void register_(lua_State* L) const;
 
-    private:
-        detail::registration* m_chain;
-    };
+	private:
+		detail::registration* m_chain;
+	};
 
-    class LUABIND_API namespace_ : public scope
-    {
-    public:
-        explicit namespace_(char const* name);
-        namespace_& operator[](scope s);
+	class LUABIND_API namespace_ : public scope
+	{
+	public:
+		explicit namespace_(char const* name);
+		namespace_& operator[](scope s);
 
-    private:
-        struct registration_;
-        registration_* m_registration;
-    };
+	private:
+		struct registration_;
+		registration_* m_registration;
+	};
 
-    class LUABIND_API module_
-    {
-    public:
-        module_(lua_State* L_, char const* name);
-        void operator[](scope s);
+	class LUABIND_API module_
+	{
+	public:
+		module_(lua_State* L_, char const* name);
+		void operator[](scope s);
 
-    private:
-        lua_State* m_state;
-        char const* m_name;
-    };
+	private:
+		lua_State* m_state;
+		char const* m_name;
+	};
 
-    inline module_ module(lua_State* L, char const* name = 0)
-    {
-        return module_(L, name);
-    }
+	inline module_ module(lua_State* L, char const* name = 0)
+	{
+		return module_(L, name);
+	}
 
 } // namespace luabind
 

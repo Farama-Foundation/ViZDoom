@@ -59,6 +59,7 @@ struct VIZGameState{
     bool GAME_SETTINGS_CONTROLLER;
     bool GAME_NETGAME;
     bool GAME_MULTIPLAYER;
+    bool GAME_DEATHMATCH;
     bool DEMO_RECORDING;
     bool DEMO_PLAYBACK;
 
@@ -76,6 +77,7 @@ struct VIZGameState{
     // MAP
     unsigned int MAP_START_TIC;
     unsigned int MAP_TIC;
+    unsigned int MAP_TICLIMIT;
 
     int MAP_REWARD;
     int MAP_USER_VARS[VIZ_GV_USER_COUNT];
@@ -110,7 +112,7 @@ struct VIZGameState{
     int PLAYER_AMMO[VIZ_GV_SLOTS_SIZE];
     int PLAYER_WEAPON[VIZ_GV_SLOTS_SIZE];
 
-    double PLAYER_POSITION[3];
+    double PLAYER_MOVEMENT[9];
 
     bool PLAYER_READY_TO_RESPAWN;
     unsigned int PLAYER_NUMBER;

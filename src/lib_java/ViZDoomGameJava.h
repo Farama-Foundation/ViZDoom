@@ -35,8 +35,8 @@ namespace vizdoom {
         void newEpisode_() { this->newEpisode(); };
         void newEpisode_str(std::string _str) { this->newEpisode(_str); };
 
-        double makeAction_vec(std::vector<int>& _vec){ return this->makeAction(_vec); }
-        double makeAction_vec_int(std::vector<int>& _vec, unsigned int _int){ return this->makeAction(_vec, _int); }
+        double makeAction_vec(std::vector<double>& _vec){ return this->makeAction(_vec); }
+        double makeAction_vec_int(std::vector<double>& _vec, unsigned int _int){ return this->makeAction(_vec, _int); }
 
         void advanceAction_() { this->advanceAction(); }
         void advanceAction_int(unsigned int _int) { this->advanceAction(_int); }
@@ -68,14 +68,15 @@ JNI_EXPORT(void, newEpisode__Ljava_lang_String, jstring);
 JNI_EXPORT(void, replayEpisode__Ljava_lang_String_2, jstring);
 JNI_EXPORT(void, replayEpisode__Ljava_lang_String_2I, jstring, jint);
 JNI_EXPORT(jboolean, isRunning);
-JNI_EXPORT(void, setAction, jintArray);
+JNI_EXPORT(jboolean, isMultiplayerGame);
+JNI_EXPORT(void, setAction, jdoubleArray);
 JNI_EXPORT(void, advanceAction__);
 JNI_EXPORT(void, advanceAction__I, jint);
 JNI_EXPORT(void, advanceAction__IZ, jint, jboolean);
-JNI_EXPORT(jdouble, makeAction___3I, jintArray);
-JNI_EXPORT(jdouble, makeAction___3II, jintArray, jint);
+JNI_EXPORT(jdouble, makeAction___3D, jdoubleArray);
+JNI_EXPORT(jdouble, makeAction___3DI, jdoubleArray, jint);
 JNI_EXPORT(jobject, getState);
-JNI_EXPORT(jintArray, getLastAction);
+JNI_EXPORT(jdoubleArray, getLastAction);
 JNI_EXPORT(jboolean, isNewEpisode);
 JNI_EXPORT(jboolean, isEpisodeFinished);
 JNI_EXPORT(jboolean, isPlayerDead);
@@ -84,11 +85,11 @@ JNI_EXPORT(void, respawnPlayer);
 JNI_EXPORT(jobjectArray, getAvailableButtons);
 JNI_EXPORT(void, setAvailableButtons, jobjectArray);
 JNI_EXPORT(void, addAvailableButton__Lvizdoom_Button_2, jobject);
-JNI_EXPORT(void, addAvailableButton__Lvizdoom_Button_2I, jobject, jint);
+JNI_EXPORT(void, addAvailableButton__Lvizdoom_Button_2I, jobject, jdouble);
 JNI_EXPORT(void, clearAvailableButtons);
 JNI_EXPORT(jint, getAvailableButtonsSize);
-JNI_EXPORT(void, setButtonMaxValue, jobject, jint);
-JNI_EXPORT(jint, getButtonMaxValue, jobject);
+JNI_EXPORT(void, setButtonMaxValue, jobject, jdouble);
+JNI_EXPORT(jdouble, getButtonMaxValue, jobject);
 
 JNI_EXPORT(jobjectArray, getAvailableGameVariables);
 JNI_EXPORT(void, setAvailableGameVariables, jobjectArray);
@@ -148,6 +149,8 @@ JNI_EXPORT(void, setRenderParticles, jboolean);
 JNI_EXPORT(void, setRenderEffectsSprites, jboolean);
 JNI_EXPORT(void, setRenderMessages, jboolean);
 JNI_EXPORT(void, setRenderCorpses, jboolean);
+JNI_EXPORT(void, setRenderScreenFlashes, jboolean);
+JNI_EXPORT(void, setRenderAllFrames, jboolean);
 JNI_EXPORT(void, setWindowVisible, jboolean);
 JNI_EXPORT(void, setConsoleEnabled, jboolean);
 JNI_EXPORT(void, setSoundEnabled, jboolean);
