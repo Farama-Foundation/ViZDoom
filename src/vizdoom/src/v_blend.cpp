@@ -54,7 +54,8 @@
 #include "farchive.h"
 #include "a_hexenglobal.h"
 
-
+// VIZDOOM_CODE
+EXTERN_CVAR(Bool, viz_render_flashes)
 
 // [RH] Amount of red flash for up to 114 damage points. Calculated by hand
 //		using a logarithmic scale and my trusty HP48G.
@@ -101,6 +102,8 @@ void V_AddBlend (float r, float g, float b, float a, float v_blend[4])
 void V_AddPlayerBlend (player_t *CPlayer, float blend[4], float maxinvalpha, int maxpainblend)
 {
 	int cnt;
+
+	if(!*viz_render_flashes) return;
 
 	// [RH] All powerups can affect the screen blending now
 	for (AInventory *item = CPlayer->mo->Inventory; item != NULL; item = item->Inventory)

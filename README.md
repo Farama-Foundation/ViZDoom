@@ -1,9 +1,11 @@
-#ViZDoom [![Build Status](https://travis-ci.org/Marqt/ViZDoom.svg?branch=master)](https://travis-ci.org/Marqt/ViZDoom)
+# ViZDoom [![Build Status](https://travis-ci.org/mwydmuch/ViZDoom.svg?branch=master)](https://travis-ci.org/mwydmuch/ViZDoom)
 [http://vizdoom.cs.put.edu.pl](http://vizdoom.cs.put.edu.pl)
 
 ViZDoom allows developing AI **bots that play Doom using only the visual information** (the screen buffer). It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.
 
 ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game mechanics.
+
+**ViZDoom is the platform for [Visual Doom Competition @ CIG 2017](http://vizdoom.cs.put.edu.pl/competition-cig-2017).** :goberserk:
 
 ## Features
 - Multi-platform,
@@ -25,6 +27,7 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 ## Cite as
 
 >Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, IEEE Conference on Computational Intelligence and Games, pp. 341-348, Santorini, Greece, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
+
 ### Bibtex:
 ```
 @inproceedings{Kempka2016ViZDoom,
@@ -43,33 +46,38 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 
 ## Installation/Building instructions
 
-- [Linux](doc/Building.md#linux)
-- [Windows](doc/Building.md#windows)
-- [OSX](doc/Building.md#osx)
+- [PyPI (pip/conda)](doc/Building.md#pypi)
+- [LuaRocks](doc/Building.md#luarocks)
+
+- [Linux](doc/Building.md#linux_build)
+- [MacOS/OSX](doc/Building.md#osx_build)
+- [Windows](doc/Building.md#windows_build)
+
 
 ## Windows build
 For Windows we are providing compiled runtime binaries and development libraries:
 
-### [1.1.0rc](https://github.com/Marqt/ViZDoom/releases/tag/1.1.0rc) (2016-11-26):
-- [Python 2.7 (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0rc/ViZDoom-1.1.0rc-Win-Python27-x86_64.zip)
-- [Python 3.4 (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0rc/ViZDoom-1.1.0rc-Win-Python34-x86_64.zip)
-- [Python 3.5 (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0rc/ViZDoom-1.1.0rc-Win-Python35-x86_64.zip)
-- [Lua 5.1 & LuaJIT (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0rc/ViZDoom-1.1.0rc-Win-Lua51-LuaJIT-x86_64.zip)
-- [Java (64-bit)](https://github.com/Marqt/ViZDoom/releases/download/1.1.0rc/ViZDoom-1.1.0rc-Win-Java-x86_64.zip)
+### [1.1.0](https://github.com/mwydmuch/ViZDoom/releases/tag/1.1.0) (2016-12-23):
+- [Python 2.7 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Python27-x86_64.zip)
+- [Python 3.4 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Python34-x86_64.zip)
+- [Python 3.5 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Python35-x86_64.zip)
+- [Lua 5.1 & LuaJIT (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Lua51-LuaJIT-x86_64.zip)
+- [Java (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Java-x86_64.zip)
 
 
 ## Examples
 
-Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed it in the ``scenarios`` subdirectory (on Linux it should be done automatically by the building process):
+Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed in the same directory as the ViZDoom executable (on Linux and MacOS/OSX it should be done automatically by the building process):
 
-- [Python](examples/python)
+- [Python](examples/python) (contain learning examples implemented in Theano and TensorFlow)
 - [C++](examples/c%2B%2B)
-- [Lua](examples/lua)
+- [Lua](examples/lua) (contain learning example implemented in Torch)
 - [Java](examples/java)
 
-Python examples are currently the richest, so we recommend to look at them, even if you plan to use other language.
+Python examples are currently the richest, so we recommend to look at them, even if you plan to use other language. API is almost identical for all languages.
 
 **See also the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial).**
+
 
 ## Documentation
 
@@ -81,7 +89,12 @@ Detailed description of all types and methods:
 - [Exceptions](doc/Exceptions.md)
 - [Utilities](doc/Utilities.md)
 
-[Changelog](doc/Changelog.md) for 1.1.0 version.
+[Changelog](doc/Changelog.md) for 1.1.X version.
+
+
+## Contributions
+
+This project is maintained and developed in our free time. All bug fixes, new examples and scenarios are welcome! We are also open to features ideas and design suggestions.
 
 
 ## License

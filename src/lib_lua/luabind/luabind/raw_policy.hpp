@@ -27,57 +27,39 @@
 #include <luabind/config.hpp>
 #include <luabind/detail/policy.hpp>
 
-namespace luabind { namespace detail  {
-
-	struct raw_converter
-	{
-        int consumed_args(...) const
-        {
-            return 0;
-        }
-
-        lua_State* apply(lua_State* L, by_pointer<lua_State>, int)
-		{
-			return L;
-		}
-
-		static int match(...)
-		{
-			return 0;
-		}
-
-		void converter_postcall(lua_State*, by_pointer<lua_State>, int) {}
-	};
-
-	template<int N>
-	struct raw_policy : conversion_policy<N, false>
-	{
-		static void precall(lua_State*, const index_map&) {}
-		static void postcall(lua_State*, const index_map&) {}
-
-		template<class T, class Direction>
-		struct apply
-		{
-			typedef raw_converter type;
-		};
-	};
-
-}} // namespace luabind::detail
-
 namespace luabind {
+	namespace detail {
 
-	template<int N>
-	detail::policy_cons<
-		detail::raw_policy<N>
-	  , detail::null_type
-	>
-	inline raw(LUABIND_PLACEHOLDER_ARG(N))
-	{ 
-		return detail::policy_cons<
-			detail::raw_policy<N>
-		  , detail::null_type
-		>(); 
+		struct raw_converter
+		{
+			enum { consumed_args = 0 };
+
+			lua_State* to_cpp(lua_State* L, by_pointer<lua_State>, int)
+			{
+				return L;
+			}
+
+			static int match(...)
+			{
+				return 0;
+			}
+
+			void converter_postcall(lua_State*, by_pointer<lua_State>, int) {}
+		};
+
+		struct raw_policy
+		{
+			template<class T, class Direction>
+			struct specialize
+			{
+				using type = raw_converter;
+			};
+		};
+
 	}
+
+	template<unsigned int N>
+	using raw_policy = meta::type_list< converter_policy_injector< N, detail::raw_policy > >();
 
 } // namespace luabind
 

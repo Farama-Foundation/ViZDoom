@@ -7,17 +7,17 @@ public class CIG {
 
     public static void main (String[] args) {
 
-        DoomGame game = new DoomGame();
-
         System.out.println("\n\nCIG EXAMPLE\n");
 
+
+        DoomGame game = new DoomGame();
 
         // Use CIG example config or Your own.
         game.loadConfig("../../scenarios/cig.cfg");
 
         // Select game and map You want to use.
-        game.setDoomGamePath("../../scenarios/freedoom2.wad");
-        //game.setDoomGamePath("../../scenarios/doom2.wad");   // Not provided with environment due to licences.
+        game.setDoomGamePath("../../bin/freedoom2.wad");
+        //game.setDoomGamePath("../../bin/doom2.wad");   // Not provided with environment due to licences.
 
         game.setDoomMap("map01");   // Limited deathmatch.
         //game.setDoomMap("map02");   // Full deathmatch.
@@ -34,21 +34,17 @@ public class CIG {
 
         while(!game.isEpisodeFinished()){       // Play until the game (episode) is over.
 
-            if(game.isPlayerDead()){            // Check if player is dead
-                game.respawnPlayer();           // Use this to respawn immediately after death, new state will be available.
-
-                // Or observe the game until automatic respawn.
-                //game.advanceAction();
-                //continue;
-            }
-
             GameState state = game.getState();
             // Analyze the state.
 
-            int[] action= new int[game.getAvailableButtonsSize()];
+            double[] action = new double[game.getAvailableButtonsSize()];
             // Set your action.
 
             game.makeAction(action);
+
+            if(game.isPlayerDead()){            // Check if player is dead
+                game.respawnPlayer();           // Use this to respawn immediately after death, new state will be available.
+            }
 
             System.out.println(game.getEpisodeTime() + " Frags: " + game.getGameVariable(GameVariable.FRAGCOUNT));
         }

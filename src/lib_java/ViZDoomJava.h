@@ -167,6 +167,15 @@ std::vector<int> jintArrayCast(JNIEnv *jEnv, jintArray jVal){
     return val;
 }
 
+std::vector<double> jdoubleArrayCast(JNIEnv *jEnv, jdoubleArray jVal){
+    int jValLen = jEnv->GetArrayLength(jVal);
+    jdouble *jValArr = jEnv->GetDoubleArrayElements(jVal, NULL);
+    std::vector<double> val;
+    for (int i=0; i<jValLen; ++i) val.push_back((int)jValArr[i]);
+    jEnv->ReleaseDoubleArrayElements(jVal, jValArr, NULL);
+    return val;
+}
+
 template<class T>
 T jobjectCastToEnum(JNIEnv *jEnv, const char* jClassName, jobject jEnum) {
     jclass jClass = jEnv->FindClass(jClassName);

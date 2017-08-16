@@ -5,7 +5,7 @@ project(ViZDoom)
 #-----------------------------------------------------------------------------------------------------------------------
 set(ViZDoom_MAJOR_VERSION 1)
 set(ViZDoom_MINOR_VERSION 1)
-set(ViZDoom_PATCH_VERSION 0)
+set(ViZDoom_PATCH_VERSION 3)
 set(ViZDoom_VERSION ${ViZDoom_MAJOR_VERSION}.${ViZDoom_MINOR_VERSION}.${ViZDoom_PATCH_VERSION})
 set(ViZDoom_VERSION_STR ${ViZDoom_VERSION})
 set(ViZDoom_VERSION_ID ${ViZDoom_MAJOR_VERSION}${ViZDoom_MINOR_VERSION}${ViZDoom_PATCH_VERSION})
@@ -15,14 +15,12 @@ set(ViZDoom_VERSION_ID ${ViZDoom_MAJOR_VERSION}${ViZDoom_MINOR_VERSION}${ViZDoom
 #-----------------------------------------------------------------------------------------------------------------------
 option(BUILD_PYTHON "Build ViZDoom Python binding." OFF)
 option(BUILD_PYTHON3 "Build ViZDoom Python3 binding instead of default Python2." OFF)
-option(BUILD_LUA "Build ViZDoom Lua binding." OFF)
-option(BUILD_LUA52 "Build ViZDoom Lua52 binding instead of default Lua51/LuaJIT." OFF) # TODO
+option(BUILD_LUA "Build ViZDoom Lua binding." OFF) # only for Lua 5.1 and LuaJIT
 option(BUILD_JAVA "Build ViZDoom Java binding." OFF)
 
 
 # CMake options
 #-----------------------------------------------------------------------------------------------------------------------
-
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 if (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
@@ -37,6 +35,7 @@ set(CMAKE_MODULE_PATH
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif ()
+
 
 # System dependent settings
 #-----------------------------------------------------------------------------------------------------------------------
@@ -54,9 +53,11 @@ if (WIN32)
     macro(get_WIN32_WINNT version)
         if (WIN32 AND CMAKE_SYSTEM_VERSION)
             set(ver ${CMAKE_SYSTEM_VERSION})
+            string(REPLACE "10" "A" ver ${ver})
             string(REPLACE "." "" ver ${ver})
-            string(REGEX REPLACE "([0-9])" "0\\1" ver ${ver})
-
+            string(REGEX REPLACE "([A-F0-9])" "0\\1" ver ${ver})
+            string(SUBSTRING ${ver} 0 4 ver)
+            
             set(${version} "0x${ver}")
         endif ()
     endmacro()
@@ -203,35 +204,40 @@ if (BUILD_PYTHON AND (NOT BUILD_PYTHON3))
             OUTPUT_NAME vizdoom
             PROJECT_LABEL "Python 2 binding")
 
+    if (UNIX)
+        add_custom_target(python_pip_package ALL
+                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh 2
+                COMMENT "Assembling pip package in ${VIZDOOM_PYTHON2_OUTPUT_DIR}/pip_package")
+
+        # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
+        add_dependencies(python_pip_package libvizdoom_python vizdoom pk3 freedoom2)
+    endif ()
+
 endif ()
+
 
 if (BUILD_PYTHON3)
 
     find_package(PythonInterp 3 REQUIRED)
 
-    # 3.5.2 => 3.5
+    # 3.X.X => 3.X
     STRING(REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" python3_version ${PYTHON_VERSION_STRING})
     find_package(PythonLibs ${python3_version} REQUIRED)
 
-    find_package(Boost QUIET COMPONENTS python3-mt)  # The name under OSX (macports)
-
-    if (${Boost_python3-mt_FOUND})
-        MESSAGE("--Found the following Boost libraries: \n--   python3-mt")
+    # 3.X => 3X (at least on Ubuntu 16.04 the library is called libboost_python-py3X.so)
+    STRING(REGEX REPLACE "\\." "" python3_version ${python3_version})
+    find_package(Boost QUIET COMPONENTS python-py${python3_version})
+    if (${Boost_PYTHON-PY${python3_version}_FOUND})
+        MESSAGE(STATUS "Found Boost python3:")
+        MESSAGE(STATUS "   ${Boost_PYTHON-PY${python3_version}_LIBRARY}")
     else ()
-        find_package(Boost QUIET COMPONENTS python3)
-        if (${Boost_python3_FOUND})
-            MESSAGE("-- Found boost python3")
+        find_package(Boost QUIET COMPONENTS python3)  # The name under OSX (macports)
+        if (${Boost_PYTHON3_FOUND})
+            MESSAGE(STATUS "Found Boost python3:")
+            Message(STATUS "  ${Boost_PYTHON3_LIBRARY}")
         else ()
-            # 3.5 => 35 (at least on Ubuntu 16.04 the library is called libboost_python-py35.so)
-            STRING(REGEX REPLACE "\\." "" python3_version ${python3_version})
-            find_package(Boost COMPONENTS python-py${python3_version} REQUIRED)
-
-            if (NOT ${boost_python-py${python3_version}_FOUND})
-                MESSAGE(FATAL_ERROR "-- Could not find boost python3")
-            endif ()
-
+            MESSAGE(FATAL_ERROR "Could not find boost python3")
         endif ()
-
     endif ()
 
     find_package(NumPy REQUIRED)
@@ -263,7 +269,6 @@ if (BUILD_PYTHON3)
     python_add_module(libvizdoom_python3 ${VIZDOOM_PYTHON_SOURCES})
     target_link_libraries(libvizdoom_python3 ${VIZDOOM_PYTHON3_LIBS} libvizdoom_static)
 
-
     set_target_properties(libvizdoom_python3
             PROPERTIES
             LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_PYTHON3_OUTPUT_DIR}
@@ -273,6 +278,18 @@ if (BUILD_PYTHON3)
             LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON3_OUTPUT_DIR}
             OUTPUT_NAME vizdoom
             PROJECT_LABEL "Python 3 binding")
+
+
+    add_dependencies(libvizdoom_python3 vizdoom pk3 freedoom2)
+
+    if (UNIX)
+        add_custom_target(python3_pip_package ALL
+                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh 3
+                COMMENT "Assembling pip package in ${VIZDOOM_PYTHON3_OUTPUT_DIR}/pip_package")
+
+        # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
+        add_dependencies(python3_pip_package libvizdoom_python3 vizdoom pk3 freedoom2)
+    endif ()
 
 
 endif ()
@@ -287,8 +304,9 @@ if (BUILD_LUA AND (NOT BUILD_LUA52))
     add_subdirectory(${VIZDOOM_SRC_DIR}/lib_lua/luabind)
 
     find_package(Lua51 REQUIRED)
+    #find_package(Torch REQUIRED)
 
-    set(VIZDOOM_LUA_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/lua/vizdoom)
+    set(VIZDOOM_LUA_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/lua)
     set(VIZDOOM_LUA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_lua)
     set(VIZDOOM_LUA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LUA_SRC_DIR})
 
@@ -302,7 +320,6 @@ if (BUILD_LUA AND (NOT BUILD_LUA52))
 
     include_directories(${VIZDOOM_LUA_INCLUDE_DIR}
             ${Boost_INCLUDE_DIR}
-            ${PYTHON_INCLUDE_DIRS}
             ${LUA_INCLUDE_DIR}
             #${LUABIND_INCLUDE_DIRS}
             ${VIZDOOM_SRC_DIR}/lib_lua/luabind)
@@ -327,21 +344,14 @@ if (BUILD_LUA AND (NOT BUILD_LUA52))
             PROJECT_LABEL "Lua binding")
 
     if (UNIX)
-        ADD_CUSTOM_COMMAND(
-                TARGET libvizdoom_lua
-                COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/src/lib_lua/src_lua/* ${VIZDOOM_LUA_OUTPUT_DIR}
-                COMMAND ln -sf ${VIZDOOM_LUA_OUTPUT_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/examples/lua
-                COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/scenarios/bots.cfg ${VIZDOOM_LUA_OUTPUT_DIR}
-                COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/scenarios/freedoom2.wad ${VIZDOOM_LUA_OUTPUT_DIR}
-                COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/bin/vizdoom ${VIZDOOM_LUA_OUTPUT_DIR}
-                COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/bin/vizdoom.pk3 ${VIZDOOM_LUA_OUTPUT_DIR}
-                COMMENT "Adding symlinks to vizdoom and bots.cfg in examples/lua.")
+        add_custom_target(luarocks_package ALL
+                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_luarocks_package.sh
+                COMMENT "Assembling luarocks package in ${VIZDOOM_LUA_OUTPUT_DIR}/luarocks_package")
+
+        # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
+        add_dependencies(luarocks_package libvizdoom_lua vizdoom pk3 freedoom2)
     endif ()
 
-endif ()
-
-if (BUILD_LUA52)
-    #TODO
 endif ()
 
 
@@ -435,17 +445,8 @@ endif ()
 # Freedoom 2 download
 #-----------------------------------------------------------------------------------------------------------------------
 
-#if( WIN32 )
-#	if(NOT EXISTS "${PROJECT_SOURCE_DIR}/scenarios/freedoom.zip")
-#		message("-- Downloading Freedoom WADs")
-#		message("-- Original Doom WADs can not be provided due to licences")
-#
-#		file( DOWNLOAD https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip ${PROJECT_SOURCE_DIR}/scenarios/freedoom.zip SHOW_PROGRESS )
-#	endif()
-#endif()
-
 if (UNIX)
     add_custom_target(freedoom2 ALL
-            COMMAND ./scripts/download_freedoom.sh
-            )
+            COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/download_freedoom.sh
+            COMMENT "Downloading freedoom2.wad")
 endif ()

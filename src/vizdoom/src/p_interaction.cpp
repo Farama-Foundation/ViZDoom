@@ -72,6 +72,10 @@ CVAR (Bool, cl_showsprees, true, CVAR_ARCHIVE)
 CVAR (Bool, cl_showmultikills, true, CVAR_ARCHIVE)
 EXTERN_CVAR (Bool, show_obituaries)
 
+//VIZDOOM_CODE
+#include "viz_main.h"
+EXTERN_CVAR (Int, viz_respawn_delay)
+
 
 FName MeansOfDeath;
 
@@ -604,13 +608,15 @@ void AActor::Die (AActor *source, AActor *inflictor, int dmgflags)
 		FBehavior::StaticStartTypedScripts (SCRIPT_Death, this, true);
 
 		// [RH] Force a delay between death and respawn
-		player->respawn_time = level.time + TICRATE;
+		//VIZDOOM_CODE
+		player->respawn_time = level.time + *viz_respawn_delay * TICRATE;
+		//VIZ_DebugMsg(2, VIZ_FUNC, "level.time: %d, viz_respawn_delay: %d, player->respawn_time: %d", level.time, *viz_respawn_delay, player->respawn_time);
 
 		//Added by MC: Respawn bots
 		if (bglobal.botnum && !demoplayback)
 		{
 			if (player->Bot != NULL)
-				player->Bot->t_respawn = (pr_botrespawn()%15)+((bglobal.botnum-1)*2)+TICRATE+1;
+				player->Bot->t_respawn = (pr_botrespawn()%15)+((bglobal.botnum-1)*2) + *viz_respawn_delay * TICRATE + 1;
 
 			//Added by MC: Discard enemies.
 			for (int i = 0; i < MAXPLAYERS; i++)

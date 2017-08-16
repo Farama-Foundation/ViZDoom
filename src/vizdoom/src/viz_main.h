@@ -39,6 +39,8 @@ void VIZ_Tic();
 
 void VIZ_Update();
 
+void VIZ_CVARsInit();
+
 void VIZ_CVARsUpdate();
 
 void VIZ_Close();
@@ -52,5 +54,7 @@ void VIZ_Error(const char *func, const char *error, ...);
 void VIZ_DebugMsg(int level, const char *func, const char *msg, ...);
 
 void VIZ_InterruptionPoint();
+
+void VIZ_Sleep(unsigned int ms);
 
 #endif

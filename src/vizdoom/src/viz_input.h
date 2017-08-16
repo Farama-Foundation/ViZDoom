@@ -81,26 +81,26 @@ enum VIZButton{
 #define VIZ_BT_COUNT                43
 
 struct VIZInputState{
-    int BT[VIZ_BT_COUNT];
+    double BT[VIZ_BT_COUNT];
     bool BT_AVAILABLE[VIZ_BT_COUNT];
-    int BT_MAX_VALUE[VIZ_BT_AXIS_BT_COUNT];
+    double BT_MAX_VALUE[VIZ_BT_AXIS_BT_COUNT];
 };
 
-void VIZ_Command(char * cmd);
+void VIZ_Command(char *cmd);
 
 bool VIZ_CommmandFilter(const char *cmd);
 
-int VIZ_AxisFilter(VIZButton button, int value);
+int VIZ_AxisFilter(VIZButton button, double value);
 
-void VIZ_AddAxisBT(VIZButton button, int value);
+void VIZ_AddAxisBT(VIZButton button, double value);
 
-char* VIZ_AddStateToBTCommmand(char *& cmd, int state);
+char* VIZ_AddStateToBTCommmand(char *&cmd, double state);
 
 char* VIZ_BTToCommand(VIZButton button);
 
 void VIZ_ResetDiscontinuousBT();
 
-void VIZ_AddBTCommand(VIZButton button, int state);
+void VIZ_AddBTCommand(VIZButton button, double state);
 
 void VIZ_InputInit();
 

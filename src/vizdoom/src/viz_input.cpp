@@ -35,11 +35,14 @@
 bip::mapped_region *vizInputSMRegion = NULL;
 VIZInputState *vizInput = NULL;
 bool vizInputInited = false;
-int vizLastInputBT[VIZ_BT_COUNT];
+float vizLastInputBT[VIZ_BT_COUNT];
 unsigned int vizLastInputUpdate[VIZ_BT_COUNT];
 
 EXTERN_CVAR (Bool, viz_debug)
 EXTERN_CVAR (Bool, viz_allow_input)
+EXTERN_CVAR (Bool, viz_nocheat)
+EXTERN_CVAR (Bool, viz_cmd_filter)
+EXTERN_CVAR (Bool, viz_spectator)
 
 void VIZ_Command(char * cmd){
     AddCommandString(cmd);
@@ -49,7 +52,8 @@ bool VIZ_CommmandFilter(const char *cmd){
 
     VIZ_DebugMsg(3, VIZ_FUNC, "allow_input: %d, cmd: %s", *viz_allow_input, cmd);
 
-    if(!vizInputInited || !*viz_allow_input) return true;
+    if(*viz_spectator && (strcmp(cmd, "+attack") == 0 || strcmp(cmd, "+altattack") == 0)) return false;
+    if(!vizInputInited || !*viz_allow_input || (!*viz_cmd_filter && (!*viz_nocheat || *viz_spectator))) return true;
 
     bool action = false;
     int state = 1;
@@ -89,11 +93,11 @@ bool VIZ_CommmandFilter(const char *cmd){
         return false;
     }
 
-    for(int i = 0; i<VIZ_BT_CMD_BT_COUNT; ++i){
+    for(int i = 0; i < VIZ_BT_CMD_BT_COUNT; ++i){
 
-		char * ckeckCmd = VIZ_BTToCommand((VIZButton)i);
+        char * ckeckCmd = VIZ_BTToCommand((VIZButton)i);
 
-		if (strcmp(beg, ckeckCmd) == 0){
+        if (strcmp(beg, ckeckCmd) == 0){
             if(!vizInput->BT_AVAILABLE[i]) {
                 vizInput->BT[i] = 0;
                 return false;
@@ -103,56 +107,56 @@ bool VIZ_CommmandFilter(const char *cmd){
                 vizLastInputUpdate[i] = VIZ_TIME;
             }
         }
-		
-		delete[] ckeckCmd;
+
+        delete[] ckeckCmd;
     }
 
     return true;
 }
 
-int VIZ_AxisFilter(VIZButton button, int value){
+int VIZ_AxisFilter(VIZButton button, double value){
     if(value != 0 && button >= VIZ_BT_CMD_BT_COUNT && button < VIZ_BT_COUNT){
 
         if(!vizInput->BT_AVAILABLE[button]) return 0;
-        int axis = button - VIZ_BT_CMD_BT_COUNT;
+        size_t axis = button - VIZ_BT_CMD_BT_COUNT;
         if(vizInput->BT_MAX_VALUE[axis] != 0){
-            int maxValue;
+            double maxValue;
             if(button == VIZ_BT_VIEW_ANGLE_AXIS || button == VIZ_BT_VIEW_PITCH_AXIS)
-                maxValue = (int)((float)vizInput->BT_MAX_VALUE[axis]/180 * 32768);
+                maxValue = vizInput->BT_MAX_VALUE[axis]/180 * 32768;
             else maxValue = vizInput->BT_MAX_VALUE[axis];
 
-            if((int)labs(value) > (int)labs(maxValue))
-                value = value/(int)labs(value) * (int)(labs(maxValue) + 1);
+            if(labs(value) > labs(maxValue))
+                value = value/labs(value) * labs(maxValue) + 1;
         }
         if(button == VIZ_BT_VIEW_ANGLE_AXIS || button == VIZ_BT_VIEW_PITCH_AXIS)
-            vizInput->BT[button] = (int)((float)value/32768 * 180);
+            vizInput->BT[button] = value/32768 * 180;
         else vizInput->BT[button] = value;
         vizLastInputUpdate[button] = VIZ_TIME;
     }
-    return value;
+    return static_cast<int>(floor(value));
 }
 
-void VIZ_AddAxisBT(VIZButton button, int value){
+void VIZ_AddAxisBT(VIZButton button, double value){
     if(button == VIZ_BT_VIEW_ANGLE_AXIS || button == VIZ_BT_VIEW_PITCH_AXIS)
-        value = (int)((float)value/180 * 32768);
-    value = VIZ_AxisFilter(button, value);
+        value = value/180 * 32768;
+    int filtredValue = VIZ_AxisFilter(button, value);
     switch(button){
         case VIZ_BT_VIEW_PITCH_AXIS :
-            G_AddViewPitch(value);
-            //LocalViewPitch = value;
+            G_AddViewPitch(filtredValue);
+            //LocalViewPitch = filtredValue;
             break;
         case VIZ_BT_VIEW_ANGLE_AXIS :
-            G_AddViewAngle(value);
-            //LocalViewAngle = value;
+            G_AddViewAngle(filtredValue);
+            //LocalViewAngle = filtredValue;
             break;
         case VIZ_BT_FORWARD_BACKWARD_AXIS :
-            LocalForward = value;
+            LocalForward = filtredValue;
             break;
         case VIZ_BT_LEFT_RIGHT_AXIS :
-            LocalSide = value;
+            LocalSide = filtredValue;
             break;
         case VIZ_BT_UP_DOWN_AXIS :
-            LocalFly = value;
+            LocalFly = filtredValue;
             break;
         default:
             break;
@@ -162,7 +166,7 @@ void VIZ_AddAxisBT(VIZButton button, int value){
 char* VIZ_BTToCommand(VIZButton button){
 
     switch(button){
-		case VIZ_BT_ATTACK: return strdup("attack");
+        case VIZ_BT_ATTACK: return strdup("attack");
         case VIZ_BT_USE : return strdup("use");
         case VIZ_BT_JUMP : return strdup("jump");
         case VIZ_BT_CROUCH : return strdup("crouch");
@@ -170,12 +174,10 @@ char* VIZ_BTToCommand(VIZButton button){
         case VIZ_BT_ALTATTACK : return strdup("altattack");
         case VIZ_BT_RELOAD : return strdup("reload");
         case VIZ_BT_ZOOM : return strdup("zoom");
-
         case VIZ_BT_SPEED : return strdup("speed");
         case VIZ_BT_STRAFE : return strdup("strafe");
-
-		case VIZ_BT_MOVE_RIGHT: return strdup("moveright");
-		case VIZ_BT_MOVE_LEFT: return strdup("moveleft");
+        case VIZ_BT_MOVE_RIGHT: return strdup("moveright");
+        case VIZ_BT_MOVE_LEFT: return strdup("moveleft");
         case VIZ_BT_MOVE_BACK : return strdup("back");
         case VIZ_BT_MOVE_FORWARD : return strdup("forward");
         case VIZ_BT_TURN_RIGHT : return strdup("right");
@@ -218,28 +220,28 @@ char* VIZ_BTToCommand(VIZButton button){
 void VIZ_ResetDiscontinuousBT(){
 
     if(vizLastInputUpdate[VIZ_BT_TURN180] < VIZ_TIME) vizInput->BT[VIZ_BT_TURN180] = 0;
-    for(int i = VIZ_BT_LAND; i < VIZ_BT_COUNT; ++i){
+    for(size_t i = VIZ_BT_LAND; i < VIZ_BT_COUNT; ++i){
         if(vizLastInputUpdate[i] < VIZ_TIME) vizInput->BT[i] = 0;
     }
 }
 
-char* VIZ_AddStateToBTCommmand(char *& cmd, int state){
+char* VIZ_AddStateToBTCommmand(char *& cmd, double state){
     size_t cmdLen = strlen(cmd);
-	char *stateCmd = new char[cmdLen + 2];
-	if (state != 0) stateCmd[0] = '+';
-	else stateCmd[0] = '-';
-	strncpy(stateCmd + 1, cmd, cmdLen);
-	stateCmd[cmdLen + 1] = '\0';
+    char *stateCmd = new char[cmdLen + 2];
+    if (state != 0) stateCmd[0] = '+';
+    else stateCmd[0] = '-';
+    strncpy(stateCmd + 1, cmd, cmdLen);
+    stateCmd[cmdLen + 1] = '\0';
 
-	delete[] cmd;
-	cmd = stateCmd;
+    delete[] cmd;
+    cmd = stateCmd;
 
-	return stateCmd;
+    return stateCmd;
 }
 
-void VIZ_AddBTCommand(VIZButton button, int state){
+void VIZ_AddBTCommand(VIZButton button, double state){
 
-	char* buttonCmd = VIZ_BTToCommand(button);
+    char* buttonCmd = VIZ_BTToCommand(button);
 
     switch(button){
         case VIZ_BT_ATTACK :
@@ -260,9 +262,9 @@ void VIZ_AddBTCommand(VIZButton button, int state){
         case VIZ_BT_LOOK_UP :
         case VIZ_BT_LOOK_DOWN :
         case VIZ_BT_MOVE_UP :
-		case VIZ_BT_MOVE_DOWN:
-			VIZ_AddStateToBTCommmand(buttonCmd, state);
-			VIZ_Command(buttonCmd);
+        case VIZ_BT_MOVE_DOWN:
+            VIZ_AddStateToBTCommmand(buttonCmd, state);
+            VIZ_Command(buttonCmd);
             break;
 
         case VIZ_BT_TURN180 :
@@ -284,7 +286,7 @@ void VIZ_AddBTCommand(VIZButton button, int state){
         case VIZ_BT_SELECT_NEXT_ITEM :
         case VIZ_BT_SELECT_PREV_ITEM :
         case VIZ_BT_DROP_SELECTED_ITEM :
-			if (state) VIZ_Command(buttonCmd);
+            if (state) VIZ_Command(buttonCmd);
             break;
 
         case VIZ_BT_VIEW_PITCH_AXIS :
@@ -296,7 +298,7 @@ void VIZ_AddBTCommand(VIZButton button, int state){
             break;
     }
 
-	delete[] buttonCmd;
+    delete[] buttonCmd;
 }
 
 void VIZ_InputInit() {
@@ -312,14 +314,14 @@ void VIZ_InputInit() {
         VIZ_Error(VIZ_FUNC, "Failed to create input.");
     }
 
-    for (int i = 0; i < VIZ_BT_COUNT; ++i) {
+    for (size_t i = 0; i < VIZ_BT_COUNT; ++i) {
         vizInput->BT[i] = 0;
         vizInput->BT_AVAILABLE[i] = true;
         vizLastInputBT[i] = 0;
         vizLastInputUpdate[i] = 0;
     }
 
-    for(int i = 0; i < VIZ_BT_AXIS_BT_COUNT; ++i){
+    for(size_t i = 0; i < VIZ_BT_AXIS_BT_COUNT; ++i){
         vizInput->BT_MAX_VALUE[i] = 0;
     }
 
@@ -335,13 +337,13 @@ void VIZ_InputInit() {
 void VIZ_InputTic(){
 
     if(!*viz_allow_input) {
-        for (unsigned int i = 0; i < VIZ_BT_CMD_BT_COUNT; ++i) {
+        for (size_t i = 0; i < VIZ_BT_CMD_BT_COUNT; ++i) {
             if (vizInput->BT_AVAILABLE[i] && vizInput->BT[i] != vizLastInputBT[i]){
                 VIZ_AddBTCommand((VIZButton)i, vizInput->BT[i]);
             }
         }
 
-        for (unsigned int i = VIZ_BT_CMD_BT_COUNT; i < VIZ_BT_COUNT; ++i) {
+        for (size_t i = VIZ_BT_CMD_BT_COUNT; i < VIZ_BT_COUNT; ++i) {
             if (vizInput->BT_AVAILABLE[i]) {
                 VIZ_AddBTCommand((VIZButton)i, vizInput->BT[i]);
             }
@@ -352,11 +354,11 @@ void VIZ_InputTic(){
         D_ProcessEvents ();
     }
 
-    for (int i = 0; i < VIZ_BT_COUNT; ++i) {
+    for (size_t i = 0; i < VIZ_BT_COUNT; ++i) {
         vizLastInputBT[i] = vizInput->BT[i];
     }
 }
 
 void VIZ_InputClose(){
-    delete vizInputSMRegion ;
+    delete vizInputSMRegion;
 }

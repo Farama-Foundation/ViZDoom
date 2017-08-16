@@ -14,10 +14,10 @@ To run the examples, [freedoom2.wad]( https://freedoom.github.io/download.html) 
 Demonstrates how to use the most basic features of the environment. It configures the engine, and makes the agent perform random actions. It also prints the current state and the reward earned with every action.
 
 ###[CIG.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/c++/CIG.cpp), [CIGHost.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/c++/CIGHost.cpp)
-Demonstrates how to configure and play multiplayer game for CIG 2016 competition.
+Demonstrates how to configure and play multiplayer game for CIG competition.
 
 ###[CIGBots.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/c++/CIGBots.cpp)
-Demonstrates how to play with bots to simulate multiplayer game. Helpful for developing AI agent for CIG 2016 competition.
+Demonstrates how to play with bots to simulate multiplayer game. Helpful for developing AI agent for CIG competition.
 
 ###[DeltaButtons.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/c++/DeltaButtons.cpp)
 Shows how delta buttons work (they may take values other than 0 and 1 and can be used for precise movement).

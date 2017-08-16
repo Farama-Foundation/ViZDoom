@@ -74,6 +74,9 @@ int main() {
     // Sets ViZDoom mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR, PLAYER mode is default)
     game->setMode(PLAYER);
 
+    // Enables engine output to console.
+    //game->setConsoleEnabled(true);
+
     // Initialize the game. Further configuration won't take any effect from now on.
     game->init();
 
@@ -81,7 +84,7 @@ int main() {
     // Define some actions. Each list entry corresponds to declared buttons:
     // MOVE_LEFT, MOVE_RIGHT, ATTACK
     // more combinations are naturally possible but only 3 are included for transparency when watching.
-    std::vector<int> actions[3];
+    std::vector<double> actions[3];
     actions[0] = {1, 0, 0};
     actions[1] = {0, 1, 0};
     actions[2] = {0, 0, 1};
@@ -109,7 +112,7 @@ int main() {
 
             // Which consists of:
             unsigned int n              = state->number;
-            std::vector<int> vars       = state->gameVariables;
+            std::vector<double> vars       = state->gameVariables;
             BufferPtr screenBuf         = state->screenBuffer;
             BufferPtr depthBuf          = state->depthBuffer;
             BufferPtr labelsBuf         = state->labelsBuffer;

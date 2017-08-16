@@ -24,11 +24,9 @@ public class Spectator {
 
         game.setScreenResolution(ScreenResolution.RES_640X480);
 
-        // Select game and map You want to use.
-        game.setDoomGamePath("../../scenarios/freedoom2.wad");
-
-        //game.setDoomGamePath("../../scenarios/doom2.wad");
         game.setViZDoomPath("../../bin/vizdoom");
+        game.setDoomGamePath("../../bin/freedoom2.wad");
+        //game.setDoomGamePath("../../bin/doom2.wad");   // Not provided with environment due to licences.
 
         //Adds mouse support:
         game.addAvailableButton(Button.TURN_LEFT_RIGHT_DELTA);
@@ -48,7 +46,7 @@ public class Spectator {
                 GameState state = game.getState();
 
                 game.advanceAction();
-                int[] action = game.getLastAction();
+                double[] action = game.getLastAction();
                 double reward = game.getLastReward();
 
                 System.out.println("State #" + state.number);

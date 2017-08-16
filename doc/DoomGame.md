@@ -1,11 +1,12 @@
 # DoomGame
 
-##[Flow control methods](#flow)
+## [Flow control methods](#flow)
 * [init](#init)
 * [close](#close)
 * [newEpisode](#newEpisode)
 * [replayEpisode](#replayEpisode)
 * [isRunning](#isRunning)
+* [isMultiplayerGame](#isMultiplayerGame)
 * [setAction](#setAction)
 * [advanceAction](#advanceAction)
 * [makeAction](#makeAction)
@@ -18,7 +19,7 @@
 * [getLastAction](#getLastAction)
 * [getEpisodeTime](#getEpisodeTime)
 
-##[Buttons settings methods](#buttons)
+## [Buttons settings methods](#buttons)
 * [getAvailableButtons](#getAvailableButtons)
 * [setAvailableButtons](#setAvailableButtons)
 * [addAvailableButton](#addAvailableButton)
@@ -27,7 +28,7 @@
 * [setButtonMaxValue](#setButtonMaxValue)
 * [getButtonMaxValue](#getButtonMaxValue)
 
-##[GameVariables methods](#vars)
+## [GameVariables methods](#vars)
 * [getAvailableGameVariables](#getAvailableGameVariables)
 * [setAvailableGameVariables](#setAvailableGameVariables)
 * [addAvailableGameVariable](#addAvailableGameVariable)
@@ -35,11 +36,11 @@
 * [getAvailableGameVariablesSize](#getAvailableGameVariablesSize)
 * [getGameVariable](#getGameVariable)
 
-##[Game Arguments methods](#args)
+## [Game Arguments methods](#args)
 * [addGameArgs](#addGameArgs)
 * [clearGameArgs](#clearGameArgs)
 
-##[Rewards methods](#rewards)
+## [Rewards methods](#rewards)
 * [getLivingReward](#getLivingReward)
 * [setLivingReward](#setLivingReward)
 * [getDeathPenalty](#getDeathPenalty)
@@ -47,7 +48,7 @@
 * [getLastReward](#getLastReward)
 * [getTotalReward](#getTotalReward)
 
-##[General game configuration methods](#settings)
+## [General game configuration methods](#settings)
 * [loadConfig](#loadConfig)
 * [getMode](#getMode)
 * [setMode](#setMode)
@@ -66,7 +67,7 @@
 * [getEpisodeTimeout](#getEpisodeTimeout)
 * [setEpisodeTimeout](#setEpisodeTimeout)
 
-##[Output/rendering setting methods](#rendering)
+## [Output/rendering setting methods](#rendering)
 * [setScreenResolution](#setScreenResolution)
 * [getScreenFormat](#getScreenFormat)
 * [setScreenFormat](#setScreenFormat)
@@ -88,6 +89,8 @@
 * [setRenderEffectsSprites](#setRenderEffectsSprites)
 * [setRenderMessages](#setRenderMessages)
 * [setRenderCorpses](#setRenderCorpses)
+* [setRenderScreenFlashes](#setRenderScreenFlashes)
+* [setRenderAllFrames](#setRenderAllFrames)
 * [setWindowVisible](#setWindowVisible)
 * [setConsoleEnabled](#setConsoleEnabled)
 * [setSoundEnabled](#setSoundEnabled)
@@ -138,7 +141,7 @@ Game can be initialized again after being closed.
 | Java   | `void newEpisode(String recordFilePath = "")`      |
 | Python | `void new_episode(str recordFilePath = "")`        |
 
-Changed in 1.1
+Changed in 1.1.0
 
 Initializes a new episode. All rewards, variables and state are restarted.
 After calling this method, first state from new episode will be available.
@@ -157,7 +160,7 @@ Then the rest of the players must also call this method to start a new episode.
 | Java   | `void replayEpisode(String filePath, int player = 0)`               |
 | Python | `void replay_episode(str filePath, int player = 0)`                 |
 
-Added in 1.1
+Added in 1.1.0
 
 Replays recorded episode from the given file and using perspective of the specified player.
 Players are numered from 1, `player` equal to 0 results in replaying demo using perspective 
@@ -166,8 +169,9 @@ After calling this method, first state from replay will be available.
 All rewards, variables and state are available during replaying episode.
 
 See also:
-- [examples/python/record_episodes.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/record_episodes.py),
-- [examples/python/record_multiplayer.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/record_multiplayer.py).
+- [examples/python/record_episodes.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/record_episodes.py),
+- [examples/python/record_multiplayer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/record_multiplayer.py).
+
 
 ---
 ### <a name="isRunning"></a> `isRunning`
@@ -182,12 +186,26 @@ Checks if the ViZDoom game instance is running.
 
 
 ---
+### <a name="isMultiplayerGame"></a> `isMultiplayerGame`
+
+| C++    | `bool isMultiplayerGame()`    |
+| :--    | :--                           |
+| Lua    | `boolean isMultiplayerGame()` |
+| Java   | `boolean isMultiplayerGame()` |
+| Python | `bool is_multiplayer_game()`  |
+
+Added in 1.1.2
+
+Checks if the game is in multiplayer mode.
+
+
+---
 ### <a name="setAction"></a> `setAction`
 
-| C++    | `void setAction(std::vector<int> const &actions)` |
+| C++    | `void setAction(std::vector<float> const &actions)` |
 | :--    | :--                                               |
-| Lua    | `void setAction(IntTensor/table actions)`         |
-| Java   | `void setAction(int[] actions)`                   |
+| Lua    | `void setAction(DoubleTensor/table actions)`         |
+| Java   | `void setAction(double[] actions)`                   |
 | Python | `void set_action(list actions)`                   |
 
 Sets the player's action for the next tics.
@@ -212,10 +230,10 @@ If `updateState` is not set the state will not be updated.
 ---
 ### <a name="makeAction"></a> `makeAction`
 
-| C++    | `double makeAction(std::vector<int> const &actions, unsigned int tics = 1)` |
+| C++    | `double makeAction(std::vector<double> const &actions, unsigned int tics = 1)` |
 | :--    | :--                                                                         |
-| Lua    | `number makeAction(IntTensor/table actions, number tics = 1);`              |
-| Java   | `double makeAction(int[] actions, int tics = 1);`                           |
+| Lua    | `number makeAction(DoubleTensor/table actions, number tics = 1);`              |
+| Java   | `double makeAction(double[] actions, int tics = 1);`                           |
 | Python | `float make_action(list actions, int tics = 1);`                            |
 
 Method combining usability of [`setAction`](#setAction), [`advanceAction`](#advanceAction) and [`getLastReward`](#getLastReward).
@@ -274,6 +292,9 @@ In multiplayer when player is dead [`respawnPlayer`](#respawnPlayer) can be call
 This method respawns player after death in multiplayer mode.
 After calling this method, first state after respawn will be available.
 
+See also:
+- [`isMultiplayerGame`](#isMultiplayerGame)
+
 
 ---
 ### <a name="sendGameCommand"></a> `sendGameCommand`
@@ -299,7 +320,7 @@ See also: [ZDoom Wiki](http://zdoom.org/wiki/Console)
 | Java   | `GameState getState()`                                           |
 | Python | `GameState get_state()`                                          |
 
-Changed in 1.1
+Changed in 1.1.0
 
 Returns [`GameState`](Types.md#gamestate) object with the current game state.
 If game is not running or episode is finished `nullptr/null/None` will be returned.
@@ -311,10 +332,10 @@ See also:
 ---
 ### <a name="getLastAction"></a> `getLastAction`
 
-| C++    | `std::vector<int> getLastAction()` |
+| C++    | `std::vector<double> getLastAction()` |
 | :--    | :--                                |
-| Lua    | `IntTensor getLastAction()`        |
-| Java   | `int[] getLastAction()`            |
+| Lua    | `DoubleTensor getLastAction()`        |
+| Java   | `double[] getLastAction()`            |
 | Python | `list get_last_action()`           |
 
 Returns the last action performed.
@@ -373,11 +394,11 @@ See also:
 ---
 ### <a name="addAvailableButton"></a> `addAvailableButton`
 
-| C++    | `void addAvailableButton(Button button, unsigned int maxValue = 0)` |
+| C++    | `void addAvailableButton(Button button, double maxValue = 0)` |
 | :--    | :--                                                                 |
 | Lua    | `void addAvailableButton(Button button, number maxValue  = 0)`      |
-| Java   | `void addAvailableButton(Button button, int maxValue = 0)`          |
-| Python | `void add_available_button(Button button, int maxValue = 0)`        |
+| Java   | `void addAvailableButton(Button button, double maxValue = 0)`          |
+| Python | `void add_available_button(Button button, float maxValue = 0)`        |
 
 Add `Button` type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to `Buttons` available in action
 and sets the maximum allowed, absolute value for the specified button.
@@ -405,6 +426,7 @@ Clears all available `Buttons` added so far.
 See also:
 - [`Types: Button`](Types.md#button)
 
+
 ---
 ### <a name="getAvailableButtonsSize"></a> `getAvailableButtonsSize`
 
@@ -419,14 +441,15 @@ Returns the number of available `Buttons`.
 See also:
 - [`Types: Button`](Types.md#button)
 
+
 ---
 ### <a name="setButtonMaxValue"></a> `setButtonMaxValue`
 
-| C++    | `void setButtonMaxValue(Button button, unsigned int maxValue = 0)` |
+| C++    | `void setButtonMaxValue(Button button, double maxValue = 0)` |
 | :--    | :--                                                                |
 | Lua    | `void setButtonMaxValue(Button button, number maxValue = 0)`       |
-| Java   | `void setButtonMaxValue(Button button, int maxValue = 0)`          |
-| Python | `void set_button_max_value(Button button, int maxValue = 0)`       |
+| Java   | `void setButtonMaxValue(Button button, double maxValue = 0)`          |
+| Python | `void set_button_max_value(Button button, float maxValue = 0)`       |
 
 Sets the maximum allowed, absolute value for the specified button.
 Setting maximum value equal to 0 results in no constraint at all (infinity).
@@ -435,6 +458,7 @@ Constraints limit applies in all Modes.
 
 See also:
 - [`Types: Button`](Types.md#button)
+
 
 ---
 ### <a name="getButtonMaxValue"></a> `getButtonMaxValue`
@@ -471,7 +495,7 @@ See also:
 ---
 ### <a name="addAvailableGameVariable"></a> `addAvailableGameVariable`
 
-| C++    | `void setAvailableGameVariables(td::vector<GameVariable> variables)` |
+| C++    | `void setAvailableGameVariables(std::vector<GameVariable> variables)` |
 | :--    | :--                                                                  |
 | Lua    | `void setAvailableGameVariables(table variables)`                    |
 | Java   | `void setAvailableGameVariables(GameVariable[] variables)`           |
@@ -504,6 +528,7 @@ See also:
 - [`Types: GameVariable`](Types.md#gamevariable)
 - [`ConfigFile: List`](ConfigFile.md#list)
 
+
 ---
 ### <a name="clearAvailableGameVariables"></a> `clearAvailableGameVariables`
 
@@ -519,6 +544,7 @@ See also:
 - [`Types: GameVariable`](Types.md#gamevariable)
 - [`ConfigFile: List`](ConfigFile.md#list)
 
+
 ---
 ### <a name="getAvailableGameVariablesSize"></a> `getAvailableGameVariablesSize`
 
@@ -533,6 +559,7 @@ Returns the number of available `GameVariables`.
 See also:
 - [`Types: GameVariable`](Types.md#gamevariable)
 - [`ConfigFile: List`](ConfigFile.md#list)
+
 
 ---
 ### <a name="getGameVariable"></a> `getGameVariable`
@@ -563,6 +590,7 @@ See also:
 | Python | `void add_game_args(str args)`       |
 
 Adds a custom argument that will be passed to ViZDoom process during initialization.
+Useful for changing additional game settings.
 
 Config key: `gameArgs/game_args`
 
@@ -685,6 +713,7 @@ false if file was contained errors.
 See also:
 - [ConfigFile](ConfigFile.md)
 
+
 ---
 ### <a name="getMode"></a> `getMode`
 
@@ -725,7 +754,7 @@ See also:
 | Java   | `int getTicrate()`          |
 | Python | `int get_ticrate()`         |
 
-Added in 1.1
+Added in 1.1.0
 
 Returns current ticrate.
 
@@ -739,7 +768,7 @@ Returns current ticrate.
 | Java   | `void setTicrate(int ticrate)`          |
 | Python | `void set_ticrate(int ticrate)`         |
 
-Added in 1.1
+Added in 1.1.0
 
 Sets ticrate for ASNYC Modes - number of tics executed per second.
 
@@ -748,7 +777,7 @@ Default value: 35 (default Doom ticrate).
 Config key: `ticrate`
 
 See also:
-- [exmaples/python/ticrate.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/ticrate.py)
+- [exmaples/python/ticrate.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/ticrate.py)
 
 
 ---
@@ -887,7 +916,7 @@ Default value: randomized in constructor
 Config key: `seed`
 
 See also:
-- [examples/python/seed.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/seed.py)
+- [examples/python/seed.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/seed.py)
 
 
 
@@ -1013,7 +1042,7 @@ See also:
 | Java   | `boolean isDepthBufferEnabled()` |
 | Python | `bool isDepthBufferEnabled()`    |
 
-Added in 1.1
+Added in 1.1.0
 
 Returns true if the depth buffer is enabled.
 
@@ -1027,9 +1056,10 @@ Returns true if the depth buffer is enabled.
 | Java   | `void setDepthBufferEnabled(boolean depthBuffer)` |
 | Python | `void set_depth_buffer_enabled(bool depthBuffer)` |
 
-Added in 1.1
+Added in 1.1.0
 
 Enables rendering of the depth buffer, it will be available in state.
+Depth buffer will contain noise if `viz_nocheat` is enabled.
 
 Default value: false
 
@@ -1037,7 +1067,8 @@ Config key: `depthBufferEnabled/depth_buffer_enabled`
 
 See also: 
 - [`Types: GameState`](Types.md#gamestate)
-- [examples/python/buffers.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/buffers.py),
+- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py),
+
 
 ---
 ### <a name="isLabelsBufferEnabled"></a> `isLabelsBufferEnabled`
@@ -1048,7 +1079,7 @@ See also:
 | Java   | `boolean isLabelsBufferEnabled()` |
 | Python | `bool isLabelsBufferEnabled()`    |
 
-Added in 1.1
+Added in 1.1.0
 
 Returns true if the labels buffer is enabled.
 
@@ -1062,9 +1093,10 @@ Returns true if the labels buffer is enabled.
 | Java   | `void setLabelsBufferEnabled(boolean labelsBuffer)` |
 | Python | `void set_labels_buffer_enabled(bool labelsBuffer)` |
 
-Added in 1.1
+Added in 1.1.0
 
 Enables rendering of the labels buffer, it will be available in state with vector of `Label`s.
+LabelsBuffer will contain noise if `viz_nocheat` is enabled.
 
 Default value: false
 
@@ -1073,9 +1105,8 @@ Config key: `labelsBufferEnabled/labels_buffer_enabled`
 See also: 
 - [`Types: Label`](Types.md#label)
 - [`Types: GameState`](Types.md#gamestate)
-- [examples/python/labels.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/labels.py),
-- [examples/python/buffers.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/buffers.py),
-
+- [examples/python/labels.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/labels.py),
+- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py),
 
 
 ---
@@ -1087,7 +1118,7 @@ See also:
 | Java   | `boolean isAutomapBufferEnabled()` |
 | Python | `bool isAutomapBufferEnabled()`    |
 
-Added in 1.1
+Added in 1.1.0
 
 Returns true if the automap buffer is enabled.
 
@@ -1101,7 +1132,7 @@ Returns true if the automap buffer is enabled.
 | Java   | `void setAutomapBufferEnabled(boolean automapBuffer)` |
 | Python | `void set_automap_buffer_enabled(bool automapBuffer)` |
 
-Added in 1.1
+Added in 1.1.0
 
 Enables rendering of the automap buffer, it will be available in state.
 
@@ -1111,7 +1142,7 @@ Config key: `automapBufferEnabled/automap_buffer_enabled`
 
 See also: 
 - [`Types: GameState`](Types.md#gamestate)
-- [examples/python/buffers.py](https://github.com/Marqt/ViZDoom/tree/master/examples/python/buffers.py),
+- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py),
 
 
 ---
@@ -1123,7 +1154,7 @@ See also:
 | Java   | `void setAutomapMode(AutomapMode mode)`   |
 | Python | `void set_automap_mode(AutomapMode mode)` |
 
-Added in 1.1
+Added in 1.1.0
 
 Sets the automap mode (`NORMAL`, `WHOLE`, `OBJECTS`, `OBJECTS_WITH_SIZE`) with determine what will be visible on it.
 
@@ -1144,7 +1175,7 @@ See also:
 | Java   | `void setAutomapRotate(boolean rotate)` |
 | Python | `void set_automap_rotate(bool rotate)`  |
 
-Added in 1.1
+Added in 1.1.0
 
 Determine if the automap will be rotating with player, if false, north always will be at the top of the buffer.
 
@@ -1162,7 +1193,7 @@ Config key: `automapRotate/automap_rotate`
 | Java   | `void setAutomapRenderTextures(boolean textures)` |
 | Python | `void set_automap_render_textures(bool textures)` |
 
-Added in 1.1
+Added in 1.1.0
 
 Determine if the automap will be textured, showing the floor textures.
 
@@ -1180,7 +1211,7 @@ Config key: `automapRenderTextures/automap_render_textures`
 | Java   | `void setRenderHud(boolean hud)` |
 | Python | `void set_render_hud(bool hud)`  |
 
-Determine if hud will be rendered in game.
+Determine if the hud will be rendered in game.
 
 Default value: false
 
@@ -1196,9 +1227,9 @@ Config key: `renderHud/render_hud`
 | Java   | `void setRenderMinimalHud(boolean minHud)` |
 | Python | `void set_render_minimal_hud(bool minHud)` |
 
-Added in 1.1
+Added in 1.1.0
 
-Determine if minimalistic version of hud will be rendered instead of full hud.
+Determine if minimalistic version of the hud will be rendered instead of full hud.
 
 Default value: false
 
@@ -1214,7 +1245,7 @@ Config key: `renderMinimalHud/render_minimal_hud`
 | Java   | `void setRenderWeapon(boolean weapon)` |
 | Python | `void set_render_weapon(bool weapon)`  |
 
-Determine if weapon held by player will be rendered in game.
+Determine if the weapon held by player will be rendered in game.
 
 Default value: true
 
@@ -1230,7 +1261,7 @@ Config key: `renderWeapon/render_weapon`
 | Java   | `void setRenderCrosshair(boolean crosshair)` |
 | Python | `void set_render_crosshair(bool crosshair)`  |
 
-Determine if crosshair will be rendered in game.
+Determine if the crosshair will be rendered in game.
 
 Default value: false
 
@@ -1246,7 +1277,7 @@ Config key: `renderCrosshair/render_crosshair`
 | Java   | `void setRenderDecals(boolean decals)` |
 | Python | `void set_render_decals(bool decals)`  |
 
-Determine if decals (marks on the walls) will be rendered in game.
+Determine if the decals (marks on the walls) will be rendered in game.
 
 Default value: true
 
@@ -1262,7 +1293,7 @@ Config key: `renderDecals/render_decals`
 | Java   | `void setRenderParticles(boolean particles)` |
 | Python | `void set_render_particles(bool particles)`  |
 
-Determine if particles will be rendered in game.
+Determine if the particles will be rendered in game.
 
 Default value: true
 
@@ -1278,7 +1309,7 @@ Config key: `renderParticles/render_particles`
 | Java   | `void setRenderEffectsSprites(boolean sprites)` |
 | Python | `void set_render_effects_sprites(bool sprites)` |
 
-Added in 1.1
+Added in 1.1.0
 
 Determine if some effects sprites (gun pufs, blood splats etc.) will be rendered in game.
 
@@ -1296,7 +1327,7 @@ Config key: `renderEffectsSprites/render_effects_sprites`
 | Java   | `void setRenderMessages(boolean messages)` |
 | Python | `void set_render_messages(bool messages)`  |
 
-Added in 1.1
+Added in 1.1.0
 
 Determine if ingame messages (information about pickups, kills etc.) will be rendered in game.
 
@@ -1314,13 +1345,54 @@ Config key: `renderMessages/render_messages`
 | Java   | `void setRenderCorpses(boolean corpses)` |
 | Python | `void set_render_corpsess(bool corpses)` |
 
-Added in 1.1
+Added in 1.1.0
 
 Determine if actors' corpses will be rendered in game.
 
 Default value: true
 
 Config key: `renderCorpses/render_corpses`
+
+
+---
+### <a name="setRenderScreenFlashes"></a> `setRenderScreenFlashes`
+
+| C++    | `void setRenderScreenFlashes(bool flashes)`    |
+| :--    | :--                                            |
+| Lua    | `void setRenderScreenFlashes(boolean flashes)` |
+| Java   | `void setRenderScreenFlashes(boolean flashes)` |
+| Python | `void set_render_screen_flashes(bool flashes)` |
+
+Added in 1.1.3
+
+Determine if the screen flash effect upon taking damage or picking up items will be rendered in game.
+
+Default value: true
+
+Config key: `renderScreenFlashes/render_screen_flashes`
+
+
+---
+### <a name="setRenderAllFrames"></a> `setRenderAllFrames`
+
+| C++    | `void setRenderAllFrames(bool allFrames)`     |
+| :--    | :--                                           |
+| Lua    | `void setRenderAllFrames(boolean allFrames)`  |
+| Java   | `void setRenderAllFrames(boolean allFrames)`  |
+| Python | `void set_render_all_frames(bool all_frames)` |
+
+Added in 1.1.3
+
+Determine if all frames between states will be rendered (when skip greater then 1 is used).
+Allows smooth preview, but can reduce performance.
+It only makes sense to use it if the window is visible.
+
+Default value: false
+
+Config key: `renderAllFrames/render_all_frames`
+
+See also:
+- [`setWindowVisible`](#setWindowVisible)
 
 
 ---

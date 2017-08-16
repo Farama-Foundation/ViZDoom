@@ -36,6 +36,7 @@ extern "C" {
 }
 
 #include "luabind/luabind.hpp"
+#include "luabind/adopt_policy.hpp"
 #include "luabind/exception_handler.hpp"
 
 using namespace vizdoom;
@@ -282,6 +283,12 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
                 ENUM_VAL_2_LUA(POSITION_X),
                 ENUM_VAL_2_LUA(POSITION_Y),
                 ENUM_VAL_2_LUA(POSITION_Z),
+                ENUM_VAL_2_LUA(ANGLE),
+                ENUM_VAL_2_LUA(PITCH),
+                ENUM_VAL_2_LUA(ROLL),
+                ENUM_VAL_2_LUA(VELOCITY_X),
+                ENUM_VAL_2_LUA(VELOCITY_Y),
+                ENUM_VAL_2_LUA(VELOCITY_Z),
                 ENUM_VAL_2_LUA(USER1),
                 ENUM_VAL_2_LUA(USER2),
                 ENUM_VAL_2_LUA(USER3),
@@ -312,6 +319,36 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
                 ENUM_VAL_2_LUA(USER28),
                 ENUM_VAL_2_LUA(USER29),
                 ENUM_VAL_2_LUA(USER30),
+                ENUM_VAL_2_LUA(USER31),
+                ENUM_VAL_2_LUA(USER32),
+                ENUM_VAL_2_LUA(USER33),
+                ENUM_VAL_2_LUA(USER34),
+                ENUM_VAL_2_LUA(USER35),
+                ENUM_VAL_2_LUA(USER36),
+                ENUM_VAL_2_LUA(USER37),
+                ENUM_VAL_2_LUA(USER38),
+                ENUM_VAL_2_LUA(USER39),
+                ENUM_VAL_2_LUA(USER40),
+                ENUM_VAL_2_LUA(USER41),
+                ENUM_VAL_2_LUA(USER42),
+                ENUM_VAL_2_LUA(USER43),
+                ENUM_VAL_2_LUA(USER44),
+                ENUM_VAL_2_LUA(USER45),
+                ENUM_VAL_2_LUA(USER46),
+                ENUM_VAL_2_LUA(USER47),
+                ENUM_VAL_2_LUA(USER48),
+                ENUM_VAL_2_LUA(USER49),
+                ENUM_VAL_2_LUA(USER50),
+                ENUM_VAL_2_LUA(USER51),
+                ENUM_VAL_2_LUA(USER52),
+                ENUM_VAL_2_LUA(USER53),
+                ENUM_VAL_2_LUA(USER54),
+                ENUM_VAL_2_LUA(USER55),
+                ENUM_VAL_2_LUA(USER56),
+                ENUM_VAL_2_LUA(USER57),
+                ENUM_VAL_2_LUA(USER58),
+                ENUM_VAL_2_LUA(USER59),
+                ENUM_VAL_2_LUA(USER60),
                 ENUM_VAL_2_LUA(PLAYER_NUMBER),
                 ENUM_VAL_2_LUA(PLAYER_COUNT),
                 ENUM_VAL_2_LUA(PLAYER1_FRAGCOUNT),
@@ -321,7 +358,15 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
                 ENUM_VAL_2_LUA(PLAYER5_FRAGCOUNT),
                 ENUM_VAL_2_LUA(PLAYER6_FRAGCOUNT),
                 ENUM_VAL_2_LUA(PLAYER7_FRAGCOUNT),
-                ENUM_VAL_2_LUA(PLAYER8_FRAGCOUNT)
+                ENUM_VAL_2_LUA(PLAYER8_FRAGCOUNT),
+                ENUM_VAL_2_LUA(PLAYER9_FRAGCOUNT),
+                ENUM_VAL_2_LUA(PLAYER10_FRAGCOUNT),
+                ENUM_VAL_2_LUA(PLAYER11_FRAGCOUNT),
+                ENUM_VAL_2_LUA(PLAYER12_FRAGCOUNT),
+                ENUM_VAL_2_LUA(PLAYER13_FRAGCOUNT),
+                ENUM_VAL_2_LUA(PLAYER14_FRAGCOUNT),
+                ENUM_VAL_2_LUA(PLAYER15_FRAGCOUNT),
+                ENUM_VAL_2_LUA(PLAYER16_FRAGCOUNT)
             ],
 
 
@@ -330,6 +375,7 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
 
         class_<GameStateLua>("GameState")
             .def_readonly("number", &GameStateLua::number)
+            .def_readonly("tic", &GameStateLua::tic)
             .def_readonly("gameVariables", &GameStateLua::gameVariables)
             .def_readonly("screenBuffer", &GameStateLua::screenBuffer)
             .def_readonly("depthBuffer", &GameStateLua::depthBuffer)
@@ -354,6 +400,8 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             CLASS_FUNC_2_LUA(DoomGameLua, init)
             CLASS_FUNC_2_LUA(DoomGameLua, loadConfig)
             CLASS_FUNC_2_LUA(DoomGameLua, close)
+            CLASS_FUNC_2_LUA(DoomGameLua, isRunning)
+            CLASS_FUNC_2_LUA(DoomGameLua, isMultiplayerGame)
             .def("newEpisode", &DoomGameLua::newEpisode_)
             .def("newEpisode", &DoomGameLua::newEpisode_str)
             .def("replayEpisode", &DoomGameLua::replayEpisode_str)
@@ -370,8 +418,8 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             .def("advanceAction", &DoomGameLua::advanceAction_int)
             .def("advanceAction", &DoomGameLua::advanceAction_int_bool)
 
-            .def("getState", &DoomGameLua::getState)
-            .def("_getState", &DoomGameLua::getState)
+            .def("getState", &DoomGameLua::getState, adopt_policy<0>())
+            .def("_getState", &DoomGameLua::getState, adopt_policy<0>())
 
             CLASS_FUNC_2_LUA(DoomGameLua, getGameVariable)
 
@@ -435,8 +483,11 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             CLASS_FUNC_2_LUA(DoomGameLua, setScreenResolution)
             CLASS_FUNC_2_LUA(DoomGameLua, setScreenFormat)
 
+            CLASS_FUNC_2_LUA(DoomGameLua, isDepthBufferEnabled)
             CLASS_FUNC_2_LUA(DoomGameLua, setDepthBufferEnabled)
+            CLASS_FUNC_2_LUA(DoomGameLua, isLabelsBufferEnabled)
             CLASS_FUNC_2_LUA(DoomGameLua, setLabelsBufferEnabled)
+            CLASS_FUNC_2_LUA(DoomGameLua, isAutomapBufferEnabled)
             CLASS_FUNC_2_LUA(DoomGameLua, setAutomapBufferEnabled)
             CLASS_FUNC_2_LUA(DoomGameLua, setAutomapMode)
             CLASS_FUNC_2_LUA(DoomGameLua, setAutomapRotate)
@@ -451,13 +502,16 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             CLASS_FUNC_2_LUA(DoomGameLua, setRenderEffectsSprites)
             CLASS_FUNC_2_LUA(DoomGameLua, setRenderMessages)
             CLASS_FUNC_2_LUA(DoomGameLua, setRenderCorpses)
+            CLASS_FUNC_2_LUA(DoomGameLua, setRenderScreenFlashes)
+            CLASS_FUNC_2_LUA(DoomGameLua, setRenderAllFrames)
+            CLASS_FUNC_2_LUA(DoomGameLua, setWindowVisible)
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenWidth)
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenHeight)
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenChannels)
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenSize)
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenPitch)
-            CLASS_FUNC_2_LUA(DoomGameLua, getScreenFormat)
-            CLASS_FUNC_2_LUA(DoomGameLua, setWindowVisible),
+            CLASS_FUNC_2_LUA(DoomGameLua, getScreenFormat),
+
 
 
         /* Utilities */

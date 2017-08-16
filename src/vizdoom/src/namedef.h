@@ -616,3 +616,6 @@ xx(MoveBob)
 xx(StillBob)
 xx(PlayerClass)
 xx(Wi_NoAutostartMap)
+
+//VIZDOOM_CODE
+xx(VIZ_Spectator)

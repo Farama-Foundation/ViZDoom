@@ -25,8 +25,8 @@ public class Seed {
         game.setViZDoomPath("../../bin/vizdoom");
 
         // Sets path to doom2 iwad resource file which contains the actual doom game-> Default is "./doom2.wad".
-        game.setDoomGamePath("../../scenarios/freedoom2.wad");
-        //game.setDoomGamePath("../../scenarios/doom2.wad");   // Not provided with environment due to licences.
+        game.setDoomGamePath("../../bin/freedoom2.wad");
+        //game.setDoomGamePath("../../bin/doom2.wad");   // Not provided with environment due to licences.
 
         game.setScreenResolution(ScreenResolution.RES_640X480);
 
@@ -35,10 +35,10 @@ public class Seed {
         game.setSeed(seed);
         game.init();
 
-        List<int[]> actions = new ArrayList<int[]>();
-        actions.add(new int[] {1, 0, 1});
-        actions.add(new int[] {0, 1, 1});
-        actions.add(new int[] {0, 0, 1});
+        List<double[]> actions = new ArrayList<double[]>();
+        actions.add(new double[] {1, 0, 1});
+        actions.add(new double[] {0, 1, 1});
+        actions.add(new double[] {0, 0, 1});
 
             Random ran = new Random();
 

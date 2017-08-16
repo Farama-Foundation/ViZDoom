@@ -336,6 +336,12 @@ struct userinfo_t : TMap<FName,FBaseCVar *>
 		return *static_cast<FBoolCVar *>(*CheckKey(NAME_Wi_NoAutostartMap));
 	}
 
+	//VIZDOOM_CODE
+	bool GetSpectator() const
+	{
+		return *static_cast<FBoolCVar *>(*CheckKey(NAME_VIZ_Spectator));
+	}
+
 	void Reset();
 	int TeamChanged(int team);
 	int SkinChanged(const char *skinname, int playerclass);

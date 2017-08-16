@@ -88,6 +88,7 @@ namespace vizdoom {
         bool GAME_SETTINGS_CONTROLLER;
         bool GAME_NETGAME;
         bool GAME_MULTIPLAYER;
+        bool GAME_DEATHMATCH;
         bool DEMO_RECORDING;
         bool DEMO_PLAYBACK;
 
@@ -105,6 +106,7 @@ namespace vizdoom {
         // MAP
         unsigned int MAP_START_TIC;
         unsigned int MAP_TIC;
+        unsigned int MAP_TICLIMIT;
 
         int MAP_REWARD;
         int MAP_USER_VARS[USER_VARIABLE_COUNT];
@@ -139,7 +141,7 @@ namespace vizdoom {
         int PLAYER_AMMO[SLOT_COUNT];
         int PLAYER_WEAPON[SLOT_COUNT];
 
-        double PLAYER_POSITION[3];
+        double PLAYER_MOVEMENT[9];
 
         bool PLAYER_READY_TO_RESPAWN;
         unsigned int PLAYER_NUMBER;
@@ -156,9 +158,9 @@ namespace vizdoom {
     };
 
     struct SMInputState {
-        int BT[BUTTON_COUNT];
+        double BT[BUTTON_COUNT];
         bool BT_AVAILABLE[BUTTON_COUNT];
-        int BT_MAX_VALUE[DELTA_BUTTON_COUNT];
+        double BT_MAX_VALUE[DELTA_BUTTON_COUNT];
     };
 
     /* SM class */
@@ -168,25 +170,17 @@ namespace vizdoom {
 
     public:
         SharedMemory(std::string name);
-
         ~SharedMemory();
 
         void init();
-
         void update();
-
         void close();
 
         SMGameState *getGameState();
-
         SMInputState *getInputState();
-
         uint8_t *getScreenBuffer();
-
         uint8_t *getDepthBuffer();
-
         uint8_t *getLabelsBuffer();
-
         uint8_t *getAutomapBuffer();
 
     private:

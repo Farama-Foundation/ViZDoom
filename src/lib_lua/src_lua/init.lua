@@ -6,6 +6,10 @@ local ffi = require("ffi")
 function vizdoom.DoomGame:getState()
     local _state = self:_getState()
 
+    if _state == nil then
+        return nil
+    end
+
     local width = self:getScreenWidth();
     local height = self:getScreenHeight();
     local channels = self:getScreenChannels();
@@ -25,6 +29,7 @@ function vizdoom.DoomGame:getState()
 
     local state = {
         ["number"] = _state.number,
+        ["tic"] = _state.tic,
         ["game_variables"] = nil,
 
         ["screenBuffer"] = nil,
@@ -88,7 +93,7 @@ function vizdoom.DoomGame:makeAction(action, tics)
 end
 
 function vizdoom.DoomGame:getLastAction()
-    return torch.IntTensor(self:_getLastAction())
+    return torch.DoubleTensor(self:_getLastAction())
 end
 
 return module
