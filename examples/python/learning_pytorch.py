@@ -12,7 +12,6 @@ from random import sample, randint, random
 from time import time, sleep
 import numpy as np
 import skimage.color, skimage.transform
-# import tensorflow as tf
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -23,7 +22,6 @@ from tqdm import trange
 
 # Q-learning settings
 learning_rate = 0.00025
-# learning_rate = 0.0001
 discount_factor = 0.99
 epochs = 20
 learning_steps_per_epoch = 2000
@@ -44,10 +42,9 @@ model_savefile = "./model-doom.pth"
 save_model = True
 load_model = False
 skip_learning = False
+
 # Configuration file path
 config_file_path = "../../scenarios/simpler_basic.cfg"
-
-
 # config_file_path = "../../scenarios/rocket_basic.cfg"
 # config_file_path = "../../scenarios/basic.cfg"
 
@@ -105,40 +102,8 @@ class Net(nn.Module):
 
 criterion = nn.MSELoss()
 
-# def create_network(session, available_actions_count):
-    # Create the input variables
-    # s1_ = tf.placeholder(tf.float32, [None] + list(resolution) + [1], name="State")
-    # a_ = tf.placeholder(tf.int32, [None], name="Action")
-    # target_q_ = tf.placeholder(tf.float32, [None, available_actions_count], name="TargetQ")
-
-    # Add 2 convolutional layers with ReLu activation
-    # conv1 = tf.contrib.layers.convolution2d(s1_, num_outputs=8, kernel_size=[6, 6], stride=[3, 3],
-    #                                         activation_fn=tf.nn.relu,
-    #                                         weights_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-    #                                         biases_initializer=tf.constant_initializer(0.1))
-    # conv2 = tf.contrib.layers.convolution2d(conv1, num_outputs=8, kernel_size=[3, 3], stride=[2, 2],
-    #                                         activation_fn=tf.nn.relu,
-    #                                         weights_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-    #                                         biases_initializer=tf.constant_initializer(0.1))
-    # conv2_flat = tf.contrib.layers.flatten(conv2)
-    # fc1 = tf.contrib.layers.fully_connected(conv2_flat, num_outputs=128, activation_fn=tf.nn.relu,
-    #                                         weights_initializer=tf.contrib.layers.xavier_initializer(),
-    #                                         biases_initializer=tf.constant_initializer(0.1))
-
-    # q = tf.contrib.layers.fully_connected(fc1, num_outputs=available_actions_count, activation_fn=None,
-                                          # weights_initializer=tf.contrib.layers.xavier_initializer(),
-                                          # biases_initializer=tf.constant_initializer(0.1))
-    # best_a = tf.argmax(q, 1)
-
-    # loss = tf.losses.mean_squared_error(q, target_q_)
-
-    # optimizer = tf.train.RMSPropOptimizer(learning_rate)
-    # Update the parameters according to the computed gradient using RMSProp.
-    # train_step = optimizer.minimize(loss)
 
 def learn(s1, target_q):
-    # feed_dict = {s1_: s1, target_q_: target_q}
-    # l, _ = session.run([loss, train_step], feed_dict=feed_dict)
     s1 = torch.from_numpy(s1)
     target_q = torch.from_numpy(target_q)
     s1, target_q = Variable(s1), Variable(target_q)
@@ -160,11 +125,6 @@ def get_best_action(state):
     m, index = torch.max(q, 1)
     action = index.data.numpy()[0]
     return action
-    # return session.run(best_a, feed_dict={s1_: state})
-
-# def simple_get_best_action(state):
-    # return get_best_action(state.reshape([1, 1, resolution[0], resolution[1]]))[0]
-    # return function_learn, function_get_q_values, function_simple_get_best_action
 
 
 def learn_from_memory():
@@ -250,16 +210,11 @@ if __name__ == '__main__':
     # Create replay memory which will store the transitions
     memory = ReplayMemory(capacity=replay_memory_size)
 
-    # session = tf.Session()
-    # learn, get_q_values, get_best_action = create_network(session, len(actions))
-    # saver = tf.train.Saver()
     if load_model:
         print("Loading model from: ", model_savefile)
         model = torch.load(model_savefile)
     else:
         model = Net(len(actions))
-        # init = tf.global_variables_initializer()
-        # session.run(init)
     
     optimizer = torch.optim.SGD(model.parameters(), learning_rate)
 
