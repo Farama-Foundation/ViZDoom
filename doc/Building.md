@@ -82,7 +82,7 @@ pip install numpy
 
 # Python 3 dependecies
 brew install boost-python --with-python3
-pip install numpy
+pip3 install numpy
 ```
 
 To get Torch see: [Getting started with Torch](http://torch.ch/docs/getting-started.html).
