@@ -78,7 +78,7 @@ render_decals = false
 render_particles = false
 window_visible = true
 
-# make episodes start after 20 tics (after unholstering the gun)
+# make episodes start after 14 tics (after unholstering the gun)
 episode_start_time = 14
 
 # make episodes finish after 300 actions (tics)
@@ -95,9 +95,12 @@ available_buttons =
 # Game variables that will be in the state
 available_game_variables = { AMMO2}
 
+# Default mode - game is controlled from the code
 mode = PLAYER
+
+# Difficulty of gameplay ranging from 1 (baby) to 5 (nightmare)
 doom_skill = 5
 
 ```
 
-Other examples can be found [here](../scenarios)
+Other examples of configuration files can be found [here](../scenarios)
