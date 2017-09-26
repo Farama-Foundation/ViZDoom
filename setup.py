@@ -1,12 +1,11 @@
-import multiprocessing
-import sys
-import subprocess
-from distutils.command.build import build
-from setuptools import setup
-import os
+import sys, os, subprocess, sysconfig
 from distutils import sysconfig
+from distutils.command.build import build
+from multiprocessing import cpu_count
+from setuptools import setup
 
-python_version = str(sys.version_info[0])
+
+python_version = sysconfig.get_python_version()
 package_path = 'bin/python' + python_version + '/pip_package'
 package_assembly_script = 'scripts/assemble_pip_package.sh'
 supported_platforms = ["Linux", "Mac OS-X"]
@@ -26,16 +25,16 @@ def get_version():
 
     except Exception:
         raise RuntimeError("Package version retrieval failed. "
-                           "Most probably something is wrong with this code and"
+                           "Most probably something is wrong with this code and "
                            "you should create an issue at https://github.com/mwydmuch/ViZDoom/")
 
 
 if sys.platform.startswith("win"):
     raise RuntimeError("Building pip package on Windows is not currently available ...")
 elif sys.platform.startswith("darwin"):
-    dynamic_library_extension = "dylib"
+    library_extension = "dylib"
 elif sys.platform.startswith("linux"):
-    dynamic_library_extension = "so"
+    library_extension = "so"
 else:
     raise RuntimeError("Unrecognized platform: {}".format(sys.platform))
 
@@ -46,16 +45,21 @@ subprocess.check_call(['mkdir', '-p', package_path])
 class BuildCommand(build):
     def run(self):
         try:
-            cpu_cores = max(1, multiprocessing.cpu_count() - 1)
-            python_library = os.path.join(sysconfig.get_config_var('LIBPL'),
-                                          'libpython{}.{}'.format(sysconfig.get_python_version(),
-                                                                  dynamic_library_extension))
+            cpu_cores = max(1, cpu_count() - 1)
+            python_executable = os.path.realpath(sys.executable)
+            python_lib_dir = sysconfig.get_python_lib(standard_lib=True)
+            python_site_packages = sysconfig.get_python_lib(standard_lib=False)
+            python_library = os.path.join(os.path.dirname(python_lib_dir),
+                                          'libpython{}.{}'.format(python_version, library_extension))
             python_include_dir = sysconfig.get_python_inc()
+            numpy_include_dir = os.path.join(python_site_packages, "numpy/core/include")
             cmake_arg_list = list()
             cmake_arg_list.append("-DCMAKE_BUILD_TYPE=Release")
             cmake_arg_list.append("-DBUILD_PYTHON=ON")
-            cmake_arg_list.append('-DPYTHON_LIBRARY={}'.format(python_library))
-            cmake_arg_list.append('-DPYTHON_INCLUDE_DIR={}'.format(python_include_dir))
+            cmake_arg_list.append("-DPYTHON_EXECUTABLE={}".format(python_executable))
+            cmake_arg_list.append("-DPYTHON_LIBRARY={}".format(python_library))
+            cmake_arg_list.append("-DPYTHON_INCLUDE_DIR={}".format(python_include_dir))
+            cmake_arg_list.append("-DNUMPY_INCLUDES={}".format(numpy_include_dir))
             if python_version == "3":
                 cmake_arg_list.append("-DBUILD_PYTHON3=ON")
             else:
@@ -66,10 +70,9 @@ class BuildCommand(build):
             subprocess.check_call(['make', '-j', str(cpu_cores)])
         except subprocess.CalledProcessError:
             sys.stderr.write(
-                "\033[1m" + "\nInstallation failed, you may be missing some dependencies. "
+                "\033[1m\nInstallation failed, you may be missing some dependencies. "
                             "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md "
-                            "for details\n\n"
-                + "\033[0m")
+                            "for details\n\n\033[0m")
             raise
         build.run(self)
 
@@ -107,6 +110,7 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
     keywords=['vizdoom', 'doom', 'ai', 'deep learning', 'reinforcement learning', 'research']
 
