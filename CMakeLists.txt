@@ -5,7 +5,7 @@ project(ViZDoom)
 #-----------------------------------------------------------------------------------------------------------------------
 set(ViZDoom_MAJOR_VERSION 1)
 set(ViZDoom_MINOR_VERSION 1)
-set(ViZDoom_PATCH_VERSION 3)
+set(ViZDoom_PATCH_VERSION 4)
 set(ViZDoom_VERSION ${ViZDoom_MAJOR_VERSION}.${ViZDoom_MINOR_VERSION}.${ViZDoom_PATCH_VERSION})
 set(ViZDoom_VERSION_STR ${ViZDoom_VERSION})
 set(ViZDoom_VERSION_ID ${ViZDoom_MAJOR_VERSION}${ViZDoom_MINOR_VERSION}${ViZDoom_PATCH_VERSION})
@@ -21,7 +21,7 @@ option(BUILD_JAVA "Build ViZDoom Java binding." OFF)
 
 # CMake options
 #-----------------------------------------------------------------------------------------------------------------------
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fvisibility=hidden -fvisibility-inlines-hidden")
 if (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 endif (COMMAND cmake_policy)
@@ -57,7 +57,7 @@ if (WIN32)
             string(REPLACE "." "" ver ${ver})
             string(REGEX REPLACE "([A-F0-9])" "0\\1" ver ${ver})
             string(SUBSTRING ${ver} 0 4 ver)
-            
+
             set(${version} "0x${ver}")
         endif ()
     endmacro()
@@ -162,14 +162,12 @@ if (BUILD_PYTHON AND (NOT BUILD_PYTHON3))
 
     STRING(REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" python_version ${PYTHON_VERSION_STRING})
     find_package(PythonLibs ${python_version} REQUIRED)
-
-    find_package(Boost COMPONENTS python REQUIRED)
-
     find_package(NumPy REQUIRED)
 
     set(VIZDOOM_PYTHON2_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python2)
     set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
     set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
+    add_subdirectory(${VIZDOOM_PYTHON_SRC_DIR}/pybind11)
 
     set(VIZDOOM_PYTHON_LIBS
             ${VIZDOOM_LIBS}
@@ -191,7 +189,7 @@ if (BUILD_PYTHON AND (NOT BUILD_PYTHON3))
         add_definitions(-DBOOST_PYTHON_STATIC_LIB)
     endif ()
 
-    python_add_module(libvizdoom_python ${VIZDOOM_PYTHON_SOURCES})
+    pybind11_add_module(libvizdoom_python ${VIZDOOM_PYTHON_SOURCES})
     target_link_libraries(libvizdoom_python ${VIZDOOM_PYTHON_LIBS} libvizdoom_static)
 
     set_target_properties(libvizdoom_python
@@ -266,7 +264,7 @@ if (BUILD_PYTHON3)
         add_definitions(-DBOOST_PYTHON_STATIC_LIB)
     endif ()
 
-    python_add_module(libvizdoom_python3 ${VIZDOOM_PYTHON_SOURCES})
+    pybind11_add_module(libvizdoom_python3 ${VIZDOOM_PYTHON_SOURCES})
     target_link_libraries(libvizdoom_python3 ${VIZDOOM_PYTHON3_LIBS} libvizdoom_static)
 
     set_target_properties(libvizdoom_python3
@@ -301,7 +299,6 @@ if (BUILD_LUA AND (NOT BUILD_LUA52))
 
     # Use ViZDoom's custom version of luabind
     #find_package(Luabind REQUIRED)
-    add_subdirectory(${VIZDOOM_SRC_DIR}/lib_lua/luabind)
 
     find_package(Lua51 REQUIRED)
     #find_package(Torch REQUIRED)
@@ -309,6 +306,7 @@ if (BUILD_LUA AND (NOT BUILD_LUA52))
     set(VIZDOOM_LUA_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/lua)
     set(VIZDOOM_LUA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_lua)
     set(VIZDOOM_LUA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LUA_SRC_DIR})
+    add_subdirectory(${VIZDOOM_LUA_SRC_DIR}/luabind)
 
     set(VIZDOOM_LUA_LIBS
             ${VIZDOOM_LIBS}

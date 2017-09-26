@@ -29,16 +29,16 @@
 
 #include <iostream>
 #include <Python.h>
-#include <boost/python.hpp>
+#include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
+#include <pybind11/stl.h>
 #include <numpy/ndarrayobject.h>
 #include <numpy/npy_math.h>
 #include <vector>
 
 namespace vizdoom {
 
-    namespace bpy       = boost::python;
-    namespace bpya      = bpy::api;
-    namespace bpyn      = bpy::numeric;
+    namespace pyb = pybind11;
 
     class ReleaseGIL {
     public:
@@ -70,7 +70,7 @@ namespace vizdoom {
     // Python version of Label struct with Python string instead C++ string type.
     struct LabelPython{
         unsigned int objectId;
-        bpy::str objectName;
+        pyb::str objectName;
         uint8_t value;
         double objectPositionX;
         double objectPositionY;
@@ -81,55 +81,56 @@ namespace vizdoom {
         unsigned int number;
         unsigned int tic;
 
-        bpya::object gameVariables;
-        //bpy::list gameVariables;
+        pyb::object gameVariables;
+        //pyb::list gameVariables;
 
-        bpya::object screenBuffer;
-        bpya::object depthBuffer;
-        bpya::object labelsBuffer;
-        bpya::object automapBuffer;
+        pyb::object screenBuffer;
+        pyb::object depthBuffer;
+        pyb::object labelsBuffer;
+        pyb::object automapBuffer;
 
-        bpy::list labels;
+        pyb::list labels;
     };
 
     class DoomGamePython : public DoomGame {
-        
-    public:        
+
+    public:
         DoomGamePython();
 
-        void setAction(bpy::list const &pyAction);
-        double makeAction(bpy::list const &pyAction, unsigned int tics = 1);
+        void setAction(pyb::list const &pyAction);
+        double makeAction(pyb::list const &pyAction, unsigned int tics = 1);
 
         GameStatePython* getState();
-        bpy::list getLastAction();
+        pyb::list getLastAction();
 
-        bpy::list getAvailableButtons();
-        void setAvailableButtons(bpy::list const &pyButtons);
+        pyb::list getAvailableButtons();
+        void setAvailableButtons(pyb::list const &pyButtons);
 
-        bpy::list getAvailableGameVariables();
-        void setAvailableGameVariables(bpy::list const &pyGameVariables);
+        pyb::list getAvailableGameVariables();
+        void setAvailableGameVariables(pyb::list const &pyGameVariables);
 
         // These functions are wrapped for manual GIL management
         void init();
         void advanceAction(unsigned int tics = 1, bool updateState = true);
         void respawnPlayer();
 
-        // These functions are workaround for
-        // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
-        // on GCC versions lower then 5
-        bool loadConfig(bpy::str const &pyPath);
+        // Overloaded functions instead of default arguments for pybind11
 
-        void newEpisode();
-        void newEpisode(bpy::str const &pyPath);
-        void replayEpisode(bpy::str const &pyPath, unsigned int player = 0);
+        void newEpisode_() { this->newEpisode(); };
+        void newEpisode_str(std::string _str) { this->newEpisode(_str); };
 
-        void setViZDoomPath(bpy::str const &pyPath);
-        void setDoomGamePath(bpy::str const &pyPath);
-        void setDoomScenarioPath(bpy::str const &pyPath);
-        void setDoomMap(bpy::str const &pyMap);
-        void setDoomConfigPath(bpy::str const &pyPath);
-        void addGameArgs(bpy::str const &pyArgs);
-        void sendGameCommand(bpy::str const &pyCmd);
+        double makeAction_list(pyb::list const &_list){ return this->makeAction(_list); }
+        double makeAction_list_int(pyb::list const &_list, unsigned int _int){ return this->makeAction(_list, _int); }
+
+        void advanceAction_() { this->advanceAction(); }
+        void advanceAction_int(unsigned int _int) { this->advanceAction(_int); }
+        void advanceAction_int_bool(unsigned int _int, bool _bool) { this->advanceAction(_int, _bool); }
+
+        void addAvailableButton_btn(Button _btn) { this->addAvailableButton(_btn); }
+        void addAvailableButton_btn_int(Button _btn, double _double) { this->addAvailableButton(_btn, _double); }
+
+        void replayEpisode_str(std::string _str) { this->replayEpisode(_str); }
+        void replayEpisode_str_int(std::string _str, unsigned int _int) { this->replayEpisode(_str, _int); }
 
     private:
         GameStatePython* pyState;
@@ -139,10 +140,10 @@ namespace vizdoom {
 
         void updateBuffersShapes();
 
-        template<class T> static bpy::list vectorToPyList(const std::vector<T>& vector);
-        template<class T> static std::vector<T> pyListToVector(bpy::list const &pyList);
+        template<class T> static pyb::list vectorToPyList(const std::vector<T>& vector);
+        template<class T> static std::vector<T> pyListToVector(pyb::list const &pyList);
 
-        static bpy::object dataToNumpyArray(int dims, npy_intp * shape, int type, void * data);
+        pyb::object dataToNumpyArray(int dims, npy_intp *shape, int type, void *data);
 
     };
 
