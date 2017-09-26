@@ -24,98 +24,49 @@
 #include "ViZDoomGamePython.h"
 #include "ViZDoomVersion.h"
 
-#include <boost/python.hpp>
+#include <pybind11/pybind11.h>
 #include <vector>
 
+namespace pyb = pybind11;
 
 using namespace vizdoom;
 
-/* C++ code to expose DoomGamePython via python */
-
-PyObject* createExceptionClass(const char* name, PyObject* baseTypeObj = PyExc_Exception) {
-
-    // Workaround for
-    // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
-    // on GCC < 5
-    const char* cScopeName = bpy::extract<const char*>(bpy::scope().attr("__name__"));
-    std::string scopeName(cScopeName);
-
-    //std::string scopeName = bpy::extract<std::string>(bpy::scope().attr("__name__"));
-    std::string qualifiedName0 = scopeName + "." + name;
-    char* qualifiedName1 = const_cast<char*>(qualifiedName0.c_str());
-
-    PyObject* typeObj = PyErr_NewException(qualifiedName1, baseTypeObj, 0);
-    if(!typeObj) bpy::throw_error_already_set();
-    bpy::scope().attr(name) = bpy::handle<>(bpy::borrowed(typeObj));
-    return typeObj;
-}
-
-#define EXCEPTION_TRANSLATE_TO_PYT(n) PyObject* type ## n = NULL; \
-void translate ## n (std::exception const &e){ PyErr_SetString( type ## n  , e.what()); }
-/*
- * PyObject* typeExceptionName = NULL;
- * void translateExceptionName(std::exception const &e) { PyErr_SetString(typeExceptionName, e.what()); }
- */
-
-EXCEPTION_TRANSLATE_TO_PYT(FileDoesNotExistException)
-EXCEPTION_TRANSLATE_TO_PYT(MessageQueueException)
-EXCEPTION_TRANSLATE_TO_PYT(SharedMemoryException)
-EXCEPTION_TRANSLATE_TO_PYT(SignalException)
-EXCEPTION_TRANSLATE_TO_PYT(ViZDoomIsNotRunningException)
-EXCEPTION_TRANSLATE_TO_PYT(ViZDoomErrorException)
-EXCEPTION_TRANSLATE_TO_PYT(ViZDoomUnexpectedExitException)
+/* C++ code to expose DoomGame library via Python */
 
 
-/* DoomGamePython methods with default parameters and methods overloads */
+/* Overloaded functions */
 /*--------------------------------------------------------------------------------------------------------------------*/
 
 double (*doomFixedToDouble_int)(int) = &doomFixedToDouble;
 double (*doomFixedToDouble_double)(double) = &doomFixedToDouble;
 
-void (DoomGamePython::*newEpisode)() = &DoomGamePython::newEpisode;
-void (DoomGamePython::*newEpisode_str)(bpy::str const &) = &DoomGamePython::newEpisode;
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(addAvailableButton_overloads, DoomGamePython::addAvailableButton, 1, 2)
-void (DoomGamePython::*addAvailableButton_default)(Button, double) = &DoomGamePython::addAvailableButton;
-
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(advanceAction_overloads, DoomGamePython::advanceAction, 0, 2)
-void (DoomGamePython::*advanceAction_default)(unsigned int, bool) = &DoomGamePython::advanceAction;
-
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(makeAction_overloads, DoomGamePython::makeAction, 1, 2)
-double (DoomGamePython::*makeAction_default)(bpy::list const &, unsigned int) = &DoomGamePython::makeAction;
-
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(replayEpisode_overloads, DoomGamePython::replayEpisode, 1, 2)
-void (DoomGamePython::*replayEpisode_default)(bpy::str const &, unsigned int) = &DoomGamePython::replayEpisode;
+/* Module definition */
+/*--------------------------------------------------------------------------------------------------------------------*/
 
 #if PY_MAJOR_VERSION >= 3
 int
 #else
 void
 #endif
-init_numpy()
-{
-    bpy::numeric::array::set_module_and_type("numpy", "ndarray");
+init_numpy(){
     import_array();
 }
 
-BOOST_PYTHON_MODULE(vizdoom)
-{
-    using namespace boost::python;
-    bpy::scope().attr("__version__") = bpy::str(VIZDOOM_LIB_VERSION_STR);
+PYBIND11_MODULE(vizdoom, vz){
+
+    using namespace pybind11;
+    vz.attr("__version__") = pyb::str(VIZDOOM_LIB_VERSION_STR);
 
     Py_Initialize();
     PyEval_InitThreads();
     init_numpy();
 
     /* Exceptions */
-    /*------------------------------------------------------------------------------------------------------------*/
+    /*----------------------------------------------------------------------------------------------------------------*/
 
-    #define EXCEPTION_TO_PYT(n) type ## n = createExceptionClass(#n); \
-    bpy::register_exception_translator< n >(&translate ## n );
-    /*
-     * typeExceptionName = createExceptionClass("ExceptionName");
-     * bpy::register_exception_translator<ExceptionName>(&translateExceptionName);
-     */
+    #define EXCEPTION_TO_PYT(n) register_exception< n >(vz, #n);
+    /* register_exception< ExceptionName >(vz, "ExceptionName"); */
 
     EXCEPTION_TO_PYT(FileDoesNotExistException)
     EXCEPTION_TO_PYT(MessageQueueException)
@@ -125,8 +76,12 @@ BOOST_PYTHON_MODULE(vizdoom)
     EXCEPTION_TO_PYT(ViZDoomErrorException)
     EXCEPTION_TO_PYT(ViZDoomUnexpectedExitException)
 
-    #define CONST_2_PYT(c) scope().attr( #c ) = c
-    /* scope().attr("CONST") = CONST  */
+
+    /* Helpers */
+    /*----------------------------------------------------------------------------------------------------------------*/
+
+    #define CONST_2_PYT(c) vz.attr( #c ) = c
+    /* vz.attr("CONST") = CONST */
 
     #define ENUM_VAL_2_PYT(v) .value( #v , v )
     /* .value("VALUE", VALUE) */
@@ -134,8 +89,8 @@ BOOST_PYTHON_MODULE(vizdoom)
     #define ENUM_CLASS_VAL_2_PYT(c, v) .value( #v , c::v )
     /* .value("VALUE", class::VALUE) */
 
-    #define FUNC_2_PYT(f) def( #f , f )
-    /* def("function", function) */
+    #define FUNC_2_PYT(f) vz.def( #f , f )
+    /* vz.def("function", function) */
 
     #define CLASS_FUNC_2_PYT(c, f) .def( #f , &c::f )
     /* .def("function", &class::function) */
@@ -158,13 +113,13 @@ BOOST_PYTHON_MODULE(vizdoom)
     /* Enums */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    enum_<Mode>("Mode")
+    enum_<Mode>(vz, "Mode")
         ENUM_VAL_2_PYT(PLAYER)
         ENUM_VAL_2_PYT(SPECTATOR)
         ENUM_VAL_2_PYT(ASYNC_PLAYER)
         ENUM_VAL_2_PYT(ASYNC_SPECTATOR);
 
-    enum_<ScreenFormat>("ScreenFormat")
+    enum_<ScreenFormat>(vz, "ScreenFormat")
         ENUM_VAL_2_PYT(CRCGCB)
         ENUM_VAL_2_PYT(RGB24)
         ENUM_VAL_2_PYT(RGBA32)
@@ -176,7 +131,7 @@ BOOST_PYTHON_MODULE(vizdoom)
         ENUM_VAL_2_PYT(GRAY8)
         ENUM_VAL_2_PYT(DOOM_256_COLORS8);
 
-    enum_<ScreenResolution>("ScreenResolution")
+    enum_<ScreenResolution>(vz, "ScreenResolution")
         ENUM_VAL_2_PYT(RES_160X120)
 
         ENUM_VAL_2_PYT(RES_200X125)
@@ -224,15 +179,17 @@ BOOST_PYTHON_MODULE(vizdoom)
         ENUM_VAL_2_PYT(RES_1600X1000)
         ENUM_VAL_2_PYT(RES_1600X1200)
 
-        ENUM_VAL_2_PYT(RES_1920X1080);
+        ENUM_VAL_2_PYT(RES_1920X1080)
+        .export_values();
 
-    enum_<AutomapMode>("AutomapMode")
+    enum_<AutomapMode>(vz, "AutomapMode")
         ENUM_VAL_2_PYT(NORMAL)
         ENUM_VAL_2_PYT(WHOLE)
         ENUM_VAL_2_PYT(OBJECTS)
-        ENUM_VAL_2_PYT(OBJECTS_WITH_SIZE);
+        ENUM_VAL_2_PYT(OBJECTS_WITH_SIZE)
+        .export_values();
 
-    enum_<Button>("Button")
+    enum_<Button>(vz, "Button")
         ENUM_VAL_2_PYT(ATTACK)
         ENUM_VAL_2_PYT(USE)
         ENUM_VAL_2_PYT(JUMP)
@@ -275,9 +232,10 @@ BOOST_PYTHON_MODULE(vizdoom)
         ENUM_VAL_2_PYT(TURN_LEFT_RIGHT_DELTA)
         ENUM_VAL_2_PYT(MOVE_FORWARD_BACKWARD_DELTA)
         ENUM_VAL_2_PYT(MOVE_LEFT_RIGHT_DELTA)
-        ENUM_VAL_2_PYT(MOVE_UP_DOWN_DELTA);
+        ENUM_VAL_2_PYT(MOVE_UP_DOWN_DELTA)
+        .export_values();
 
-    enum_<GameVariable>("GameVariable")
+    enum_<GameVariable>(vz, "GameVariable")
         ENUM_VAL_2_PYT(KILLCOUNT)
         ENUM_VAL_2_PYT(ITEMCOUNT)
         ENUM_VAL_2_PYT(SECRETCOUNT)
@@ -397,13 +355,14 @@ BOOST_PYTHON_MODULE(vizdoom)
         ENUM_VAL_2_PYT(PLAYER13_FRAGCOUNT)
         ENUM_VAL_2_PYT(PLAYER14_FRAGCOUNT)
         ENUM_VAL_2_PYT(PLAYER15_FRAGCOUNT)
-        ENUM_VAL_2_PYT(PLAYER16_FRAGCOUNT);
+        ENUM_VAL_2_PYT(PLAYER16_FRAGCOUNT)
+        .export_values();
 
 
     /* Structs */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    class_<LabelPython>("Label", no_init)
+    class_<LabelPython>(vz, "Label")
         .def_readonly("object_id", &LabelPython::objectId)
         .def_readonly("object_name", &LabelPython::objectName)
         .def_readonly("value", &LabelPython::value)
@@ -411,7 +370,7 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def_readonly("object_position_y", &LabelPython::objectPositionY)
         .def_readonly("object_position_z", &LabelPython::objectPositionZ);
 
-    class_<GameStatePython>("GameState", no_init)
+    class_<GameStatePython>(vz, "GameState")
         .def_readonly("number", &GameStatePython::number)
         .def_readonly("tic", &GameStatePython::tic)
         .def_readonly("game_variables", &GameStatePython::gameVariables)
@@ -427,24 +386,29 @@ BOOST_PYTHON_MODULE(vizdoom)
     /* DoomGame */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    class_<DoomGamePython>("DoomGame", init<>())
+    class_<DoomGamePython>(vz, "DoomGame")
+        .def(init<>())
         .def("init", &DoomGamePython::init)
         .def("load_config", &DoomGamePython::loadConfig)
         .def("close", &DoomGamePython::close)
         .def("is_running", &DoomGamePython::isRunning)
         .def("is_multiplayer_game", &DoomGamePython::isMultiplayerGame)
-        .def("new_episode", newEpisode)
-        .def("new_episode", newEpisode_str)
-        .def("replay_episode", replayEpisode_default, replayEpisode_overloads())
+        .def("new_episode", &DoomGamePython::newEpisode_)
+        .def("new_episode", &DoomGamePython::newEpisode_str)
+        .def("replay_episode", &DoomGamePython::replayEpisode_str)
+        .def("replay_episode", &DoomGamePython::replayEpisode_str_int)
         .def("is_episode_finished", &DoomGamePython::isEpisodeFinished)
         .def("is_new_episode", &DoomGamePython::isNewEpisode)
         .def("is_player_dead", &DoomGamePython::isPlayerDead)
         .def("respawn_player", &DoomGamePython::respawnPlayer)
         .def("set_action", &DoomGamePython::setAction)
-        .def("make_action", makeAction_default, makeAction_overloads())
-        .def("advance_action", advanceAction_default, advanceAction_overloads())
+        .def("make_action", &DoomGamePython::makeAction_list)
+        .def("make_action", &DoomGamePython::makeAction_list_int)
+        .def("advance_action", &DoomGamePython::advanceAction_)
+        .def("advance_action", &DoomGamePython::advanceAction_int)
+        .def("advance_action", &DoomGamePython::advanceAction_int_bool)
 
-        .def("get_state", &DoomGamePython::getState, return_value_policy<manage_new_object>())
+        .def("get_state", &DoomGamePython::getState, return_value_policy::take_ownership)
 
         .def("get_game_variable", &DoomGamePython::getGameVariable)
 
@@ -467,7 +431,8 @@ BOOST_PYTHON_MODULE(vizdoom)
 
         .def("get_available_buttons", &DoomGamePython::getAvailableButtons)
         .def("set_available_buttons", &DoomGamePython::setAvailableButtons)
-        .def("add_available_button", addAvailableButton_default, addAvailableButton_overloads())
+        .def("add_available_button", &DoomGamePython::addAvailableButton_btn)
+        .def("add_available_button", &DoomGamePython::addAvailableButton_btn_int)
         .def("clear_available_buttons", &DoomGamePython::clearAvailableButtons)
         .def("get_available_buttons_size", &DoomGamePython::getAvailableButtonsSize)
         .def("set_button_max_value", &DoomGamePython::setButtonMaxValue)
@@ -536,19 +501,18 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def("get_screen_format", &DoomGamePython::getScreenFormat);
 
 
-
     /* Utilities */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    def("doom_tics_to_ms", doomTicsToMs);
-    def("ms_to_doom_tics", msToDoomTics);
-    def("doom_tics_to_sec", doomTicsToSec);
-    def("sec_to_doom_tics", secToDoomTics);
-    def("doom_fixed_to_double", doomFixedToDouble_int);
-    def("doom_fixed_to_double", doomFixedToDouble_double);
-    def("doom_fixed_to_float", doomFixedToDouble_int);
-    def("doom_fixed_to_float", doomFixedToDouble_double);
-    def("is_binary_button", isBinaryButton);
-    def("is_delta_button", isDeltaButton);
+    vz.def("doom_tics_to_ms", doomTicsToMs);
+    vz.def("ms_to_doom_tics", msToDoomTics);
+    vz.def("doom_tics_to_sec", doomTicsToSec);
+    vz.def("sec_to_doom_tics", secToDoomTics);
+    vz.def("doom_fixed_to_double", doomFixedToDouble_int);
+    vz.def("doom_fixed_to_double", doomFixedToDouble_double);
+    vz.def("doom_fixed_to_float", doomFixedToDouble_int);
+    vz.def("doom_fixed_to_float", doomFixedToDouble_double);
+    vz.def("is_binary_button", isBinaryButton);
+    vz.def("is_delta_button", isDeltaButton);
 
 }

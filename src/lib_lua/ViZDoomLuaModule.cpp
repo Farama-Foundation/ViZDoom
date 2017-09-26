@@ -85,9 +85,7 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
     /*----------------------------------------------------------------------------------------------------------------*/
 
     #define EXCEPTION_LUA_HANDLER(n) register_exception_handler< n >(&translate ## n);
-    /*
-     * register_exception_handler< ExceptionName >(&translateExceptionName);
-     */
+    /* register_exception_handler< ExceptionName >(&translateExceptionName); */
 
     EXCEPTION_LUA_HANDLER(FileDoesNotExistException)
     EXCEPTION_LUA_HANDLER(MessageQueueException)
@@ -109,7 +107,7 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
 
     #define CLASS_FUNC_2_LUA(c, f) .def( #f , &c::f )
     /* .def("function", &class::function) */
-            
+
 
     module(luaState, "vizdoom")[
 
@@ -511,7 +509,6 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenSize)
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenPitch)
             CLASS_FUNC_2_LUA(DoomGameLua, getScreenFormat),
-
 
 
         /* Utilities */
