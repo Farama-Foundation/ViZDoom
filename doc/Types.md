@@ -3,14 +3,14 @@
 * [Label](#label)
 * [GameState](#gamestate)
 * [Enums](#enums)
-	* [Mode](#mode)
-	* [ScreenFormat](#screenformat)
- 	* [ScreenResolution](#screenresolution)
- 	* [AutomapMode](#automapmode)
- 	* [GameVariable](#gamevariable)
- 	* [Button](#button)
- 		* [binary buttons](#binarybuttons)
- 		* [delta buttons](#deltabuttons)
+    * [Mode](#mode)
+    * [ScreenFormat](#screenformat)
+     * [ScreenResolution](#screenresolution)
+     * [AutomapMode](#automapmode)
+     * [GameVariable](#gamevariable)
+     * [Button](#button)
+         * [binary buttons](#binary-buttons)
+         * [delta buttons](#delta-buttons)
 
 
 ## C++ only
@@ -33,10 +33,10 @@
 - `double / number / double / float` **objectPositionY / object_position_y**
 - `double / number / double / float` **objectPositionZ / object_position_z**
 
-**objectId / object_id** - unique object instance ID - assigned when object is seen for the first time 
+**objectId / object_id** - unique object instance ID - assigned when object is seen for the first time
 (so object with lower id was seen before object with higher).
 
-**objectId / object_id** - ingame object name, many different object can have the same name (e.g. Medikit, Clip, Zombie).
+**objectId / object_id** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
 
 **value** - value that represents this particular object in **labelsBuffer**.
 
@@ -76,11 +76,11 @@ Enum type that defines all supported modes.
 - **ASYNC_PLAYER** - asynchronous player mode
 - **ASYNC_SPECTATOR** - asynchronous spectator mode
 
-In **PLAYER** and **ASYNC_PLAYER** modes the agent controls ingame character.
+In **PLAYER** and **ASYNC_PLAYER** modes, the agent controls ingame character.
 
-In **SPECTATOR** and **ASYNC_SPECTATOR** modes ingame character should be controlled by the human and the agent gets information about the human action.
+In **SPECTATOR** and **ASYNC_SPECTATOR** modes, ingame character should be controlled by the human and the agent gets information about the human action.
 
-In **PLAYER** and **SPECTATOR** modes the game waits for agent action or permission to continue.
+In **PLAYER** and **SPECTATOR** modes, the game waits for agent action or permission to continue.
 
 In **ASYNC** modes the game progress with constant speed (default 35 tics per second, this can be set) without waiting for the agent actions.
 
@@ -94,9 +94,9 @@ See also:
 
 
 ---
-### <a name="screenformat"></a>`ScreenFormat`
+### <a name="screenformat"></a> `ScreenFormat`
 
-Enum type that defines all supported **screenBuffer** and **automapBuffer** formats. 
+Enum type that defines all supported **screenBuffer** and **automapBuffer** formats.
 
 - **CRCGCB**    - 3 channels of 8-bit values in RGB order
 - **RGB24**     - channel of RGB values stored in 24 bits, where R value is stored in the oldest 8 bits
@@ -110,7 +110,7 @@ Enum type that defines all supported **screenBuffer** and **automapBuffer** form
 - **DOOM_256_COLORS8** - 8-bit channel with Doom palette values
 
 
-In **CRCGCB** and **CBCGCR** format **screenBuffer** and **automapBuffer** store all red 8 bit values then all green values and then all blue values, each channel is considered separately. As matrices they have [3, y, x] shape.
+In **CRCGCB** and **CBCGCR** format **screenBuffer** and **automapBuffer** store all red 8-bit values then all green values and then all blue values, each channel is considered separately. As matrices they have [3, y, x] shape.
 
 In **RGB24** and **BGR24** format **screenBuffer** and **automapBuffer** store 24 bit RGB triples. As matrices they have [y, x, 3] shape.
 
@@ -118,7 +118,7 @@ In **RGBA32**, **ARGB32**, **BGRA32** and **ABGR32** format **screenBuffer** and
 
 In **GRAY8** and **DOOM_256_COLORS8** format **screenBuffer** and **automapBuffer** store single 8 bit values. As matrices they have [y, x] shape.
 
-**depthBuffer** and **lablesBuffer** always store single 8 bit values, so they always have [y, x] shape. 
+**depthBuffer** and **lablesBuffer** always store single 8-bit values, so they always have [y, x] shape.
 
 See also:
 - [`DoomGame: getScreenFormat`](DoomGame.md#getScreenFormat),
@@ -127,9 +127,9 @@ See also:
 
 
 ---
-### <a name="screenresolution"></a>`ScreenResolution`
+### <a name="screenresolution"></a> `ScreenResolution`
 
-Enum type that defines all supported resolutions - shapes of **screenBuffer**, **depthBuffer**, **labelsBuffer** and **automapBuffer** in **State**. 
+Enum type that defines all supported resolutions - shapes of **screenBuffer**, **depthBuffer**, **labelsBuffer** and **automapBuffer** in **State**.
 
 - **RES_160X120** (4:3)
 - **RES_200X125** (16:10)
@@ -177,7 +177,7 @@ See also:
 ---
 ### <a name="automapmode"></a> `AutomapMode`
 
-Enum type that defines all **automapBuffer** modes. 
+Enum type that defines all **automapBuffer** modes.
 
 - **NORMAL**    - Only level architecture the player has seen is shown.
 - **WHOLE**     - All architecture is shown, regardless of whether or not the player has seen it.
@@ -192,7 +192,7 @@ See also:
 ---
 ### <a name="gamevariable"></a> `GameVariable`
 
-Enum type that defines all variables that can be obtained from the game. 
+Enum type that defines all variables that can be obtained from the game.
 
 #### Defined variables
 - **KILLCOUNT**
@@ -227,9 +227,9 @@ Enum type that defines all variables that can be obtained from the game.
 #### User (ACS) variables  
 - **USER1** - **USER60**
 
-ACS global int variables can be accessed as USER GameVariables. 
+ACS global int variables can be accessed as USER GameVariables.
 global int 0 is reserved for reward and is always threaded as Doom's fixed point numeral.
-Other from 1 to 60 (global int 1-60) can be access as USER1 - USER60 GameVariables.
+Other from 1 to 60 (global int 1-60) can be accessed as USER1 - USER60 GameVariables.
 
 See also:
 - [ZDoom Wiki: ACS](http://zdoom.org/wiki/ACS),
@@ -245,9 +245,9 @@ See also:
 ---
 ### <a name="button"></a> `Button`
 
-Enum type that defines all buttons that can be "pressed" by agent.
+Enum type that defines all buttons that can be "pressed" by the agent.
 
-#### <a name="binarybuttons"></a> Binary buttons
+#### <a name="binary-buttons"></a> Binary buttons
 
 Binary buttons have only 2 states "not pressed" if value 0 and "pressed" if value other then 0.
 
@@ -291,10 +291,10 @@ Binary buttons have only 2 states "not pressed" if value 0 and "pressed" if valu
 - **DROP_SELECTED_ITEM**
 
 
-#### <a name="deltabuttons"></a> Delta buttons
+#### <a name="delta-buttons"></a> Delta buttons
 
-Buttons whose value defines the speed of movement. 
-A positive value indicates movement in the first specified direction and a negative value in the second direction. 
+Buttons whose value defines the speed of movement.
+A positive value indicates movement in the first specified direction and a negative value in the second direction.
 For example: value 10 for MOVE_LEFT_RIGHT_DELTA means slow movement to the right and -100 means fast movement to the left.
 
 - **LOOK_UP_DOWN_DELTA**
@@ -304,7 +304,7 @@ For example: value 10 for MOVE_LEFT_RIGHT_DELTA means slow movement to the right
 - **MOVE_UP_DOWN_DELTA**
 
 In case of **TURN_LEFT_RIGHT_DELTA** and **LOOK_UP_DOWN_DELTA** values correspond to degrees.
-In case of **MOVE_FORWARD_BACKWARD_DELTA**, **MOVE_LEFT_RIGHT_DELTA**, **MOVE_UP_DOWN_DELTA** values correspond to Doom Map unit (see Doom Wiki if you want to know how it translates into real life units). 
+In case of **MOVE_FORWARD_BACKWARD_DELTA**, **MOVE_LEFT_RIGHT_DELTA**, **MOVE_UP_DOWN_DELTA** values correspond to Doom Map unit (see Doom Wiki if you want to know how it translates into real life units).
 
 See also:
 - [Doom Wiki: Map unit](https://doomwiki.org/wiki/Map_unit),
