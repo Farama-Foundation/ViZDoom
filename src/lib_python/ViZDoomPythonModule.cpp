@@ -27,8 +27,6 @@
 #include <pybind11/pybind11.h>
 #include <vector>
 
-namespace pyb = pybind11;
-
 using namespace vizdoom;
 
 /* C++ code to expose DoomGame library via Python */

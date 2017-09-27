@@ -24,6 +24,7 @@ option(BUILD_JAVA "Build ViZDoom Java binding." OFF)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fvisibility=hidden -fvisibility-inlines-hidden")
 if (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
+    cmake_policy(SET CMP0023 NEW)
 endif (COMMAND cmake_policy)
 
 # Add cmake_modules to module
@@ -191,7 +192,7 @@ if (BUILD_PYTHON OR BUILD_PYTHON3)
             ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomPythonModule.cpp)
 
     pybind11_add_module(libvizdoom_python ${VIZDOOM_PYTHON_SOURCES})
-    target_link_libraries(libvizdoom_python ${VIZDOOM_PYTHON_LIBS} libvizdoom_static)
+    target_link_libraries(libvizdoom_python PRIVATE ${VIZDOOM_PYTHON_LIBS} libvizdoom_static)
     set_target_properties(libvizdoom_python
             PROPERTIES
             LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_PYTHON_OUTPUT_DIR}
@@ -206,7 +207,7 @@ if (BUILD_PYTHON OR BUILD_PYTHON3)
     if (UNIX)
         add_custom_target(python_pip_package ALL
                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh ${_PYTHON_VERSION}
-                COMMENT "Assembling pip package in ${VIZDOOM_PYTHON2_OUTPUT_DIR}/pip_package")
+                COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
 
         # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
         add_dependencies(python_pip_package libvizdoom_python vizdoom pk3 freedoom2)
@@ -250,7 +251,7 @@ if (BUILD_LUA)
             ${VIZDOOM_LUA_SRC_DIR}/ViZDoomLuaModule.cpp)
 
     add_library(libvizdoom_lua SHARED ${VIZDOOM_LUA_SOURCES})
-    target_link_libraries(libvizdoom_lua ${VIZDOOM_LUA_LIBS} libvizdoom_static)
+    target_link_libraries(libvizdoom_lua PRIVATE ${VIZDOOM_LUA_LIBS} libvizdoom_static)
     set_target_properties(libvizdoom_lua
             PROPERTIES
             PREFIX ""
@@ -320,7 +321,7 @@ if (BUILD_JAVA)
             ${VIZDOOM_JAVA_SRC_DIR}/ViZDoomGameJava.cpp)
 
     add_library(libvizdoom_java SHARED ${VIZDOOM_JAVA_SOURCES})
-    target_link_libraries(libvizdoom_java ${VIZDOOM_JAVA_LIBS} libvizdoom_static)
+    target_link_libraries(libvizdoom_java PRIVATE ${VIZDOOM_JAVA_LIBS} libvizdoom_static)
 
     set_target_properties(libvizdoom_java
             PROPERTIES
