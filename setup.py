@@ -5,13 +5,24 @@ from multiprocessing import cpu_count
 from setuptools import setup
 
 
+platform = sys.platform
 python_version = sysconfig.get_python_version()
 package_path = 'bin/python' + python_version + '/pip_package'
-package_assembly_script = 'scripts/assemble_pip_package.sh'
 supported_platforms = ["Linux", "Mac OS-X"]
 
+if platform.startswith("win"):
+    raise RuntimeError("Building pip package on Windows is not currently available ...")
+elif platform.startswith("darwin"):
+    library_extension = "dylib"
+elif platform.startswith("linux"):
+    library_extension = "so"
+else:
+    raise RuntimeError("Unrecognized platform: {}".format(sys.platform))
 
-def get_version():
+subprocess.check_call(['mkdir', '-p', package_path])
+
+
+def get_vizdoom_version():
     try:
         import re
         with open("CMakeLists.txt") as cmake_file:
@@ -29,48 +40,25 @@ def get_version():
                            "you should create an issue at https://github.com/mwydmuch/ViZDoom/")
 
 
-if sys.platform.startswith("win"):
-    raise RuntimeError("Building pip package on Windows is not currently available ...")
-elif sys.platform.startswith("darwin"):
-    library_extension = "dylib"
-elif sys.platform.startswith("linux"):
-    library_extension = "so"
-else:
-    raise RuntimeError("Unrecognized platform: {}".format(sys.platform))
-
-# TODO: make it run only when install/build is issued
-subprocess.check_call(['mkdir', '-p', package_path])
-
-
 class BuildCommand(build):
     def run(self):
         try:
             cpu_cores = max(1, cpu_count() - 1)
             python_executable = os.path.realpath(sys.executable)
-            python_lib_dir = sysconfig.get_python_lib(standard_lib=True)
-            python_site_packages = sysconfig.get_python_lib(standard_lib=False)
-            python_library = os.path.join(os.path.dirname(python_lib_dir),
-                                          'libpython{}.{}'.format(python_version, library_extension))
-            python_include_dir = sysconfig.get_python_inc()
-            numpy_include_dir = os.path.join(python_site_packages, "numpy/core/include")
+
             cmake_arg_list = list()
             cmake_arg_list.append("-DCMAKE_BUILD_TYPE=Release")
             cmake_arg_list.append("-DBUILD_PYTHON=ON")
             cmake_arg_list.append("-DPYTHON_EXECUTABLE={}".format(python_executable))
-            #cmake_arg_list.append("-DPYTHON_LIBRARY={}".format(python_library))
-            #cmake_arg_list.append("-DPYTHON_INCLUDE_DIR={}".format(python_include_dir))
-            #cmake_arg_list.append("-DNUMPY_INCLUDES={}".format(numpy_include_dir))
-            if python_version == "3":
+
+            if python_version[0] == "3":
                 cmake_arg_list.append("-DBUILD_PYTHON3=ON")
-            else:
-                cmake_arg_list.append("-DBUILD_PYTHON3=OFF")
 
             subprocess.check_call(['rm', '-f', 'CMakeCache.txt'])
             subprocess.check_call(['cmake'] + cmake_arg_list)
             subprocess.check_call(['make', '-j', str(cpu_cores)])
         except subprocess.CalledProcessError:
-            sys.stderr.write(
-                "\033[1m\nInstallation failed, you may be missing some dependencies. "
+            sys.stderr.write("\033[1m\nInstallation failed, you may be missing some dependencies. "
                             "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md "
                             "for details\n\n\033[0m")
             raise
@@ -79,7 +67,7 @@ class BuildCommand(build):
 
 setup(
     name='vizdoom',
-    version=get_version(),
+    version=get_vizdoom_version(),
     description='Reinforcement learning platform based on Doom',
     long_description="ViZDoom allows developing AI bots that play Doom using only the visual information (the screen buffer). " \
                      "It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.",
@@ -96,14 +84,7 @@ setup(
     cmdclass={'build': BuildCommand},
     platforms=supported_platforms,
     classifiers=[
-        # Development Status :: 1 - Planning
-        # Development Status :: 2 - Pre-Alpha
-        # Development Status :: 3 - Alpha
-        # Development Status :: 4 - Beta
         'Development Status :: 5 - Production/Stable',
-        # Development Status :: 6 - Mature
-        # Development Status :: 7 - Inactive
-        # 'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'License :: OSI Approved :: MIT License',
@@ -113,5 +94,4 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     keywords=['vizdoom', 'doom', 'ai', 'deep learning', 'reinforcement learning', 'research']
-
 )

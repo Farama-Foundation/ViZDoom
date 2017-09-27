@@ -1,5 +1,18 @@
 # Changelog
 
+## Changes in 1.1.4
+
+#### Automap
+- Added `am_scale` CCMD.
+
+#### Scenarios
+- Fixed `KILLCOUNT` GameVariable for ChainsawMarine in `defend_the_center` and `deathmatch` scenarios.
+
+#### Python specific
+- **Ported Python binding to pybind11 as a replacement for Boost.Python.**
+- Fixed problems with `pip install` detecting Python interpreter, includes and libraries from different Python versions.
+
+
 ## Changes in 1.1.3
 
 #### Rendering options
@@ -7,7 +20,7 @@
 - Added `viz_ignore_render_mode` CVAR which disables overriding rendering settings.
 
 #### GameVariables
-- Added `ANGLE`, `PITCH`, `ROLL`, `VELOCITY_X/Y/Z` GameVariables.
+- **Added `ANGLE`, `PITCH`, `ROLL`, `VELOCITY_X/Y/Z` GameVariables.**
 
 #### Missing config keys
 - Added support for `DEATHCOUNT`, `USER31` - `USER60`, `PLAYER_NUMBER`, `PLAYER_COUNT`, `PLAYER1_FRAGCOUNT` - `PLAYER16_FRAGCOUNT`, `POSITION_X/Y/Z` GameVariables in the config file.
@@ -15,7 +28,7 @@
 
 #### Java specific
 - Fixed `makeAction`.
-- Added missing 'POSITION_X/Y/Z' Game Variables.
+- Added missing `POSITION_X/Y/Z` Game Variables.
 
 #### Python specific
 - Added manual GIL management for better performance when used with Python threads.
@@ -28,9 +41,9 @@
 
 #### Multiplayer
 - Added `isMultiplayerGame` method.
-- Added `viz_respawn_delay` CVAR, which allows to control delay between respawns in multiplayer game.
-- Added `viz_spectator` CVAR which allows to connect to multiplayer game as a spectator.
-- Maximum number of connected players raised to 16, `PLAYER9_FRAGCOUNT` - `PLAYER16_FRAGCOUNT` GameVariables added.
+- Added `viz_respawn_delay` CVAR, which allows controlling the delay between respawns in multiplayer game.
+- Added `viz_spectator` CVAR which allows connecting to multiplayer game as a spectator.
+- **Maximum number of connected players raised to 16, `PLAYER9_FRAGCOUNT` - `PLAYER16_FRAGCOUNT` GameVariables added.**
 
 #### Missing methods
 - Added `isRunning`, `isDepthBufferEnabled`, `isLabelsBufferEnabled` and `isAutomapBufferEnabled` missing methods to Python and Lua bindings.
@@ -43,11 +56,11 @@
 - `GameVariable.DEATHCOUNT` fixed.
 
 #### Lua specific
-- Fixed crash when calling `getState` in terminal state.
+- Fixed crash when calling `getState` in a terminal state.
 
 #### Python specific
 - Fixed minor memory leak
-- Fixed crash when calling `getState` in terminal state.
+- Fixed crash when calling `getState` in a terminal state.
 
 
 ## Changes in 1.1.0
@@ -76,9 +89,9 @@
 
 #### Episode recording and replaying
 
-- The option to record and replaying episodes, based on adapted ZDoom's demo mechanism - 
+- The option to record and replaying episodes, based on adapted ZDoom's demo mechanism -
 recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
-- The option to replay demo from other player perspective.
+- The option to replay demo from other players' perspective.
 
 
 #### Ticrate
@@ -102,7 +115,7 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 - Bugs associated with paths handling fixed.
 - Many minor bugs fixed.
 - Possibility to change scenario wad during runtime (only first map from WAD file).
-- Added `viz_debug` CVAR to control some diagnostic massages.
+- Added `viz_debug` CVAR to control some diagnostic messages.
 
 
 #### C++ specific
@@ -132,9 +145,4 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 
 - Consts added to Python.
 - Aliases for `doom_fixed_to_double` - `doom_fixed_to_float` added.
-- Support for pip installation for Linux, MacOS.
-
-
-
- 
-
+- Support for pip installation for Linux and MacOS.
