@@ -57,9 +57,9 @@ class BuildCommand(build):
             cmake_arg_list.append("-DCMAKE_BUILD_TYPE=Release")
             cmake_arg_list.append("-DBUILD_PYTHON=ON")
             cmake_arg_list.append("-DPYTHON_EXECUTABLE={}".format(python_executable))
-            cmake_arg_list.append("-DPYTHON_LIBRARY={}".format(python_library))
-            cmake_arg_list.append("-DPYTHON_INCLUDE_DIR={}".format(python_include_dir))
-            cmake_arg_list.append("-DNUMPY_INCLUDES={}".format(numpy_include_dir))
+            #cmake_arg_list.append("-DPYTHON_LIBRARY={}".format(python_library))
+            #cmake_arg_list.append("-DPYTHON_INCLUDE_DIR={}".format(python_include_dir))
+            #cmake_arg_list.append("-DNUMPY_INCLUDES={}".format(numpy_include_dir))
             if python_version == "3":
                 cmake_arg_list.append("-DBUILD_PYTHON3=ON")
             else:

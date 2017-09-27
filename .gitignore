@@ -28,6 +28,7 @@ ImportExecutables.cmake
 **/CMakeScripts
 **/cmake_install.cmake
 **/install_manifest.txt
+*.cbp
 
 # MSVC
 *.sln
