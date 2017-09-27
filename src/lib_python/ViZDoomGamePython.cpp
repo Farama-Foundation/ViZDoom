@@ -69,12 +69,16 @@ namespace vizdoom {
 
         if (this->state->screenBuffer != nullptr)
             this->pyState->screenBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->screenBuffer->data());
+        else this->pyState->screenBuffer = pyb::none();
         if (this->state->depthBuffer != nullptr)
             this->pyState->depthBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->depthBuffer->data());
+        else this->pyState->depthBuffer = pyb::none();
         if (this->state->labelsBuffer != nullptr)
             this->pyState->labelsBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->labelsBuffer->data());
+        else this->pyState->labelsBuffer = pyb::none();
         if (this->state->automapBuffer != nullptr)
             this->pyState->automapBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->automapBuffer->data());
+        else this->pyState->automapBuffer = pyb::none();
 
         if (this->state->gameVariables.size() > 0) {
             // Numpy array version
@@ -84,6 +88,7 @@ namespace vizdoom {
             // Python list version
             //this->pyState->gameVariables = DoomGamePython::vectorToPyList<int>(this->state->gameVariables);
         }
+        else this->pyState->gameVariables = pyb::none();
 
         if(this->state->labels.size() > 0){
             pyb::list pyLabels;
