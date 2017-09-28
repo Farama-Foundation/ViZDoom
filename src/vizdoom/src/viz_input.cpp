@@ -31,6 +31,7 @@
 #include "d_player.h"
 #include "c_dispatch.h"
 #include "r_utility.h"
+#include <cmath>
 
 bip::mapped_region *vizInputSMRegion = NULL;
 VIZInputState *vizInput = NULL;
@@ -125,8 +126,8 @@ int VIZ_AxisFilter(VIZButton button, double value){
                 maxValue = vizInput->BT_MAX_VALUE[axis]/180 * 32768;
             else maxValue = vizInput->BT_MAX_VALUE[axis];
 
-            if(labs(value) > labs(maxValue))
-                value = value/labs(value) * labs(maxValue) + 1;
+            if(std::abs(value) > std::abs(maxValue))
+                value = value/std::abs(value) * std::abs(maxValue) + 1;
         }
         if(button == VIZ_BT_VIEW_ANGLE_AXIS || button == VIZ_BT_VIEW_PITCH_AXIS)
             vizInput->BT[button] = value/32768 * 180;

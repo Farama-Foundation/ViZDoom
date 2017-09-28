@@ -113,7 +113,7 @@
 | Python | `bool init()`    |
 
 Initializes ViZDoom game instance and starts newEpisode.
-After calling this method, first state from a new episode will be available.
+After calling this method, the first state from a new episode will be available.
 Some configuration options cannot be changed after calling this method.
 Init returns true when the game was started properly and false otherwise.
 
@@ -126,10 +126,10 @@ Init returns true when the game was started properly and false otherwise.
 | Lua    | `void close()` |
 | Java   | `void close()` |
 | Python | `void close()` |
-        
+
 Closes ViZDoom game instance.
 It is automatically invoked by the destructor.
-Game can be initialized again after being closed.
+The game can be initialized again after being closed.
 
 
 ---
@@ -144,10 +144,10 @@ Game can be initialized again after being closed.
 Changed in 1.1.0
 
 Initializes a new episode. All rewards, variables and state are restarted.
-After calling this method, first state from new episode will be available.
+After calling this method, the first state from the new episode will be available.
 If the recordFilePath is not empty, given episode will be recorded to this file (as a Doom lump).
 
-In multiplayer game, host can call this method to finish the game.
+In multiplayer game, the host can call this method to finish the game.
 Then the rest of the players must also call this method to start a new episode.
 
 
@@ -162,10 +162,10 @@ Then the rest of the players must also call this method to start a new episode.
 
 Added in 1.1.0
 
-Replays recorded episode from the given file and using perspective of the specified player.
-Players are numered from 1, `player` equal to 0 results in replaying demo using perspective 
-of default player in record file.
-After calling this method, first state from replay will be available.
+Replays recorded episode from the given file and using the perspective of the specified player.
+Players are numbered from 1, `player` equal to 0 results in replaying demo using perspective
+of default player in the recording file.
+After calling this method, the first state from replay will be available.
 All rewards, variables and state are available during replaying episode.
 
 See also:
@@ -202,15 +202,15 @@ Checks if the game is in multiplayer mode.
 ---
 ### <a name="setAction"></a> `setAction`
 
-| C++    | `void setAction(std::vector<float> const &actions)` |
-| :--    | :--                                               |
-| Lua    | `void setAction(DoubleTensor/table actions)`         |
-| Java   | `void setAction(double[] actions)`                   |
-| Python | `void set_action(list actions)`                   |
+| C++    | `void setAction(std::vector<double> const &actions)` |
+| :--    | :--                                                 |
+| Lua    | `void setAction(DoubleTensor/table actions)`        |
+| Java   | `void setAction(double[] actions)`                  |
+| Python | `void set_action(list actions)`                     |
 
 Sets the player's action for the next tics.
 Each value corresponds to a button specified with [`addAvailableButton`](#addAvailableButton) method
-or in configuration file (in order of appearance).
+or in the configuration file (in order of appearance).
 
 
 ---
@@ -277,7 +277,7 @@ Returns true if the current episode is in the terminal state (is finished).
 
 Returns true if the player is dead.
 In singleplayer player death is equivalent to the end of the episode.
-In multiplayer when player is dead [`respawnPlayer`](#respawnPlayer) can be called.
+In multiplayer when the player is dead [`respawnPlayer`](#respawnPlayer) can be called.
 
 
 ---
@@ -290,7 +290,7 @@ In multiplayer when player is dead [`respawnPlayer`](#respawnPlayer) can be call
 | Python | `void respawn_player()` |
 
 This method respawns player after death in multiplayer mode.
-After calling this method, first state after respawn will be available.
+After calling this method, the first state after respawn will be available.
 
 See also:
 - [`isMultiplayerGame`](#isMultiplayerGame)
@@ -323,9 +323,9 @@ See also: [ZDoom Wiki](http://zdoom.org/wiki/Console)
 Changed in 1.1.0
 
 Returns [`GameState`](Types.md#gamestate) object with the current game state.
-If game is not running or episode is finished `nullptr/null/None` will be returned.
+If the game is not running or the current episode is finished `nullptr/null/None` will be returned.
 
-See also: 
+See also:
 - [`Types: GameState`](Types.md#gamestate)
 
 
@@ -394,15 +394,15 @@ See also:
 ---
 ### <a name="addAvailableButton"></a> `addAvailableButton`
 
-| C++    | `void addAvailableButton(Button button, double maxValue = 0)` |
-| :--    | :--                                                                 |
-| Lua    | `void addAvailableButton(Button button, number maxValue  = 0)`      |
-| Java   | `void addAvailableButton(Button button, double maxValue = 0)`          |
-| Python | `void add_available_button(Button button, float maxValue = 0)`        |
+| C++    | `void addAvailableButton(Button button, double maxValue = 0)`  |
+| :--    | :--                                                            |
+| Lua    | `void addAvailableButton(Button button, number maxValue  = 0)` |
+| Java   | `void addAvailableButton(Button button, double maxValue = 0)`  |
+| Python | `void add_available_button(Button button, float maxValue = 0)` |
 
 Add `Button` type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to `Buttons` available in action
 and sets the maximum allowed, absolute value for the specified button.
-If the given button has already been added, it will not be added again but the maximum value is overridden.
+If the given button has already been added, it will not be added again, but the maximum value is overridden.
 
 Config key: `availableButtons/available_buttons` (list)
 
@@ -445,11 +445,11 @@ See also:
 ---
 ### <a name="setButtonMaxValue"></a> `setButtonMaxValue`
 
-| C++    | `void setButtonMaxValue(Button button, double maxValue = 0)` |
-| :--    | :--                                                                |
-| Lua    | `void setButtonMaxValue(Button button, number maxValue = 0)`       |
-| Java   | `void setButtonMaxValue(Button button, double maxValue = 0)`          |
-| Python | `void set_button_max_value(Button button, float maxValue = 0)`       |
+| C++    | `void setButtonMaxValue(Button button, double maxValue = 0)`   |
+| :--    | :--                                                            |
+| Lua    | `void setButtonMaxValue(Button button, number maxValue = 0)`   |
+| Java   | `void setButtonMaxValue(Button button, double maxValue = 0)`   |
+| Python | `void set_button_max_value(Button button, float maxValue = 0)` |
 
 Sets the maximum allowed, absolute value for the specified button.
 Setting maximum value equal to 0 results in no constraint at all (infinity).
@@ -481,7 +481,7 @@ See also:
 ### <a name="addAvailableGameVariable"></a> `addAvailableGameVariable`
 
 | C++    | `std::vector<GameVariable> getAvailableGameVariables()` |
-| :--    | :--                                                    |
+| :--    | :--                                                     |
 | Lua    | `table getAvailableGameVariables()`                     |
 | Java   | `GameVariable[] getAvailableGameVariables()`            |
 | Python | `list get_available_game_variables()`                   |
@@ -496,10 +496,10 @@ See also:
 ### <a name="addAvailableGameVariable"></a> `addAvailableGameVariable`
 
 | C++    | `void setAvailableGameVariables(std::vector<GameVariable> variables)` |
-| :--    | :--                                                                  |
-| Lua    | `void setAvailableGameVariables(table variables)`                    |
-| Java   | `void setAvailableGameVariables(GameVariable[] variables)`           |
-| Python | `void set_available_game_variables(list variables)`                  |
+| :--    | :--                                                                   |
+| Lua    | `void setAvailableGameVariables(table variables)`                     |
+| Java   | `void setAvailableGameVariables(GameVariable[] variables)`            |
+| Python | `void set_available_game_variables(list variables)`                   |
 
 TODO
 
@@ -608,7 +608,7 @@ See also:
 | Java   | `void clearGameArgs()`   |
 | Python | `void clear_game_args()` |
 
-Clears all arguments previously added with addGameArgs method.
+Clears all arguments previously added with [`addGameArgs`](#addGameArgs) method.
 
 
 ## <a name="rewards"></a> Reward methods
@@ -678,7 +678,7 @@ Config key: `deathPenalty/death_penalty`
 | Java   | `double getLastReward()`  |
 | Python | `float get_last_reward()` |
 
-Returns a reward granted after last update of state.
+Returns a reward granted after the last update of state.
 
 
 ---
@@ -706,9 +706,9 @@ Returns the sum of all rewards gathered in the current episode.
 
 Loads configuration (resolution, available buttons, game variables etc.) from a configuration file.
 In case of multiple invocations, older configurations will be overwritten by the recent ones.
-Overwriting does not involve resetting to default values, thus only overlapping parameters will be changed.
+Overwriting does not involve resetting to default values. Thus only overlapping parameters will be changed.
 The method returns true if the whole configuration file was correctly read and applied,
-false if file was contained errors.
+false if the file contained errors.
 
 See also:
 - [ConfigFile](ConfigFile.md)
@@ -854,7 +854,7 @@ Config key: `DoomMap/doom_map`
 | Python | `void setDoomSkill(int skill)`    |
 
 Sets Doom game difficulty level which is called skill in Doom.
-The higher is the skill the harder the game becomes.
+The higher is the skill, the harder the game becomes.
 Skill level affects monsters' aggressiveness, monsters' speed, weapon damage, ammunition quantities etc.
 Takes effect from the next episode.
 
@@ -880,7 +880,7 @@ Config key: `DoomSkill/doom_skill`
 
 Sets path for ViZDoom engine configuration file.
 The file is responsible for configuration of Doom engine itself.
-If it doesn't exist, it will be created after vizdoom executable is run.
+If it does not exist, it will be created after vizdoom executable is run.
 This method is not needed for most of the tasks and is added for convenience of users with hacking tendencies.
 
 Default value: "", if left empty "_vizdoom.ini" will be used.
@@ -987,9 +987,9 @@ Config key: `episodeTimeout/episode_timeout`
 | Java   | `void setScreenResolution(ScreenResolution resolution)`   |
 | Python | `void set_screen_resolution(ScreenResolution resolution)` |
 
-Sets the screen resolution. ZDoom engine supports only specific resolutions, 
+Sets the screen resolution. ZDoom engine supports only specific resolutions,
 supported resolutions are part of ScreenResolution enumeration (e.g. `RES_320X240`, `RES_640X480`, `RES_1920X1080`).
-The buffers as well as content of ViZDoom's display window will be affected.
+The buffers as well as the content of ViZDoom's display window will be affected.
 
 Default value: `RES_320X240`
 
@@ -1022,14 +1022,14 @@ Returns the format of the screen buffer and the automap buffer.
 | Python | `void set_screen_format(ScreenFormat format)` |
 
 Sets the format of the screen buffer and the automap buffer.
-Supported formats are defined in ScreenFormat enumeration type (e.g. `CRCGCB`, `RGB24`, `GRAY8`).
+Supported formats are defined in `ScreenFormat` enumeration type (e.g. `CRCGCB`, `RGB24`, `GRAY8`).
 The format change affects only the buffers so it will not have any effect on the content of ViZDoom's display window.
 
 Default value: `CRCGCB`
 
 Config key: `screenFormat/screen_format`
 
-See also: 
+See also:
 - [`Types: ScreenFormat`](Types.md#screenformat)
 
 
@@ -1058,14 +1058,14 @@ Returns true if the depth buffer is enabled.
 
 Added in 1.1.0
 
-Enables rendering of the depth buffer, it will be available in state.
+Enables rendering of the depth buffer, it will be available in the state.
 Depth buffer will contain noise if `viz_nocheat` is enabled.
 
 Default value: false
 
 Config key: `depthBufferEnabled/depth_buffer_enabled`
 
-See also: 
+See also:
 - [`Types: GameState`](Types.md#gamestate)
 - [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py),
 
@@ -1095,14 +1095,14 @@ Returns true if the labels buffer is enabled.
 
 Added in 1.1.0
 
-Enables rendering of the labels buffer, it will be available in state with vector of `Label`s.
+Enables rendering of the labels buffer, it will be available in the state with the vector of `Label`s.
 LabelsBuffer will contain noise if `viz_nocheat` is enabled.
 
 Default value: false
 
 Config key: `labelsBufferEnabled/labels_buffer_enabled`
 
-See also: 
+See also:
 - [`Types: Label`](Types.md#label)
 - [`Types: GameState`](Types.md#gamestate)
 - [examples/python/labels.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/labels.py),
@@ -1134,13 +1134,13 @@ Returns true if the automap buffer is enabled.
 
 Added in 1.1.0
 
-Enables rendering of the automap buffer, it will be available in state.
+Enables rendering of the automap buffer, it will be available in the state.
 
 Default value: false
 
 Config key: `automapBufferEnabled/automap_buffer_enabled`
 
-See also: 
+See also:
 - [`Types: GameState`](Types.md#gamestate)
 - [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py),
 
@@ -1177,7 +1177,7 @@ See also:
 
 Added in 1.1.0
 
-Determine if the automap will be rotating with player, if false, north always will be at the top of the buffer.
+Determine if the automap will be rotating with the player. If false, north always will be at the top of the buffer.
 
 Default value: false
 
@@ -1229,7 +1229,7 @@ Config key: `renderHud/render_hud`
 
 Added in 1.1.0
 
-Determine if minimalistic version of the hud will be rendered instead of full hud.
+Determine if the minimalistic version of the hud will be rendered instead of the full hud.
 
 Default value: false
 
@@ -1245,7 +1245,7 @@ Config key: `renderMinimalHud/render_minimal_hud`
 | Java   | `void setRenderWeapon(boolean weapon)` |
 | Python | `void set_render_weapon(bool weapon)`  |
 
-Determine if the weapon held by player will be rendered in game.
+Determine if the weapon held by the player will be rendered in game.
 
 Default value: true
 
@@ -1311,7 +1311,7 @@ Config key: `renderParticles/render_particles`
 
 Added in 1.1.0
 
-Determine if some effects sprites (gun pufs, blood splats etc.) will be rendered in game.
+Determine if some effects sprites (gun puffs, blood splats etc.) will be rendered in game.
 
 Default value: true
 
@@ -1477,7 +1477,7 @@ Returns game's screen height - height of all buffers.
 | Java   | `int getScreenChannels()`    |
 | Python | `int get_screen_channels()`  |
 
-Returns number of channels in screen buffer and map buffer (depth and labels buffer have always one channel).
+Returns number of channels in screen buffer and map buffer (depth and labels buffer always have one channel).
 
 
 ---

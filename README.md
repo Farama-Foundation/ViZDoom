@@ -44,13 +44,13 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 }
 ```
 
+
 ## Installation/Building instructions
 
-- [PyPI (pip/conda)](doc/Building.md#pypi)
-- [LuaRocks](doc/Building.md#luarocks)
-
+- **[PyPI (pip)](doc/Building.md#pypi)**
+- **[LuaRocks](doc/Building.md#luarocks)**
 - [Linux](doc/Building.md#linux_build)
-- [MacOS/OSX](doc/Building.md#osx_build)
+- [MacOS](doc/Building.md#macos_build)
 - [Windows](doc/Building.md#windows_build)
 
 
@@ -67,9 +67,9 @@ For Windows we are providing compiled runtime binaries and development libraries
 
 ## Examples
 
-Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed in the same directory as the ViZDoom executable (on Linux and MacOS/OSX it should be done automatically by the building process):
+Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed in the same directory as the ViZDoom executable (on Linux and macOS it should be done automatically by the building process):
 
-- [Python](examples/python) (contain learning examples implemented in Theano and TensorFlow)
+- [Python](examples/python) (contain learning examples implemented in PyTorch, TensorFlow and Theano)
 - [C++](examples/c%2B%2B)
 - [Lua](examples/lua) (contain learning example implemented in Torch)
 - [Java](examples/java)

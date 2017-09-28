@@ -5,7 +5,7 @@ project(ViZDoom)
 #-----------------------------------------------------------------------------------------------------------------------
 set(ViZDoom_MAJOR_VERSION 1)
 set(ViZDoom_MINOR_VERSION 1)
-set(ViZDoom_PATCH_VERSION 3)
+set(ViZDoom_PATCH_VERSION 4)
 set(ViZDoom_VERSION ${ViZDoom_MAJOR_VERSION}.${ViZDoom_MINOR_VERSION}.${ViZDoom_PATCH_VERSION})
 set(ViZDoom_VERSION_STR ${ViZDoom_VERSION})
 set(ViZDoom_VERSION_ID ${ViZDoom_MAJOR_VERSION}${ViZDoom_MINOR_VERSION}${ViZDoom_PATCH_VERSION})
@@ -57,7 +57,7 @@ if (WIN32)
             string(REPLACE "." "" ver ${ver})
             string(REGEX REPLACE "([A-F0-9])" "0\\1" ver ${ver})
             string(SUBSTRING ${ver} 0 4 ver)
-            
+
             set(${version} "0x${ver}")
         endif ()
     endmacro()
@@ -68,6 +68,7 @@ endif ()
 
 if (APPLE)
     set(CMAKE_MACOSX_RPATH ON)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
 endif (APPLE)
 
 
@@ -131,16 +132,17 @@ target_link_libraries(libvizdoom_shared ${VIZDOOM_LIBS})
 set_target_properties(libvizdoom_static libvizdoom_shared
         PROPERTIES
         LINKER_LANGUAGE CXX
-        LIBRARY_OUTPUT_NAME ${VIZDOOM_OUTPUT_NAME}
         LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}
-        LIBRARY_OUTPUT_NAME_RELEASE ${VIZDOOM_OUTPUT_NAME}
         LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}
-        LIBRARY_OUTPUT_NAME_DEBUG ${VIZDOOM_OUTPUT_NAME}-d
         LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}
-        LIBRARY_OUTPUT_NAME_MINSIZEREL ${VIZDOOM_OUTPUT_NAME}-msr
         LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}
-        LIBRARY_OUTPUT_NAME_RELWITHDEBINFO ${VIZDOOM_OUTPUT_NAME}-rd
-        LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR})
+        LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}
+        ARCHIVE_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}
+        ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}
+        ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}
+        ARCHIVE_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}
+        ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}
+        OUTPUT_NAME ${VIZDOOM_OUTPUT_NAME})
 
 set_target_properties(libvizdoom_static
         PROPERTIES
@@ -156,20 +158,22 @@ add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
 
 # Python binding
 #-----------------------------------------------------------------------------------------------------------------------
-if (BUILD_PYTHON AND (NOT BUILD_PYTHON3))
+if (BUILD_PYTHON OR BUILD_PYTHON3)
 
-    find_package(PythonInterp 2 REQUIRED)
+    if (BUILD_PYTHON3)
+        find_package(PythonInterp 3 REQUIRED)
+    else ()
+        find_package(PythonInterp 2 REQUIRED)
+    endif ()
 
-    STRING(REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" python_version ${PYTHON_VERSION_STRING})
-    find_package(PythonLibs ${python_version} REQUIRED)
-
-    find_package(Boost COMPONENTS python REQUIRED)
-
+    STRING(REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" _PYTHON_VERSION ${PYTHON_VERSION_STRING})
+    find_package(PythonLibs ${_PYTHON_VERSION} REQUIRED)
     find_package(NumPy REQUIRED)
 
-    set(VIZDOOM_PYTHON2_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python2)
+    set(VIZDOOM_PYTHON_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python${_PYTHON_VERSION})
     set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
     set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
+    add_subdirectory(${VIZDOOM_PYTHON_SRC_DIR}/pybind11)
 
     set(VIZDOOM_PYTHON_LIBS
             ${VIZDOOM_LIBS}
@@ -187,27 +191,23 @@ if (BUILD_PYTHON AND (NOT BUILD_PYTHON3))
             ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.cpp
             ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomPythonModule.cpp)
 
-    if (WIN32)
-        add_definitions(-DBOOST_PYTHON_STATIC_LIB)
-    endif ()
-
-    python_add_module(libvizdoom_python ${VIZDOOM_PYTHON_SOURCES})
-    target_link_libraries(libvizdoom_python ${VIZDOOM_PYTHON_LIBS} libvizdoom_static)
-
+    pybind11_add_module(libvizdoom_python ${VIZDOOM_PYTHON_SOURCES})
+    target_link_libraries(libvizdoom_python PRIVATE ${VIZDOOM_PYTHON_LIBS} libvizdoom_static)
     set_target_properties(libvizdoom_python
             PROPERTIES
-            LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_PYTHON2_OUTPUT_DIR}
-            LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_PYTHON2_OUTPUT_DIR}
-            LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_PYTHON2_OUTPUT_DIR}
-            LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_PYTHON2_OUTPUT_DIR}
-            LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON2_OUTPUT_DIR}
+            LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_PYTHON_OUTPUT_DIR}
+            LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_PYTHON_OUTPUT_DIR}
+            LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_PYTHON_OUTPUT_DIR}
+            LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_PYTHON_OUTPUT_DIR}
+            LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON_OUTPUT_DIR}
             OUTPUT_NAME vizdoom
-            PROJECT_LABEL "Python 2 binding")
+            PROJECT_LABEL "Python binding")
+    add_dependencies(libvizdoom_python vizdoom pk3 freedoom2 pybind11)
 
     if (UNIX)
         add_custom_target(python_pip_package ALL
-                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh 2
-                COMMENT "Assembling pip package in ${VIZDOOM_PYTHON2_OUTPUT_DIR}/pip_package")
+                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh ${_PYTHON_VERSION}
+                COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
 
         # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
         add_dependencies(python_pip_package libvizdoom_python vizdoom pk3 freedoom2)
@@ -216,92 +216,12 @@ if (BUILD_PYTHON AND (NOT BUILD_PYTHON3))
 endif ()
 
 
-if (BUILD_PYTHON3)
-
-    find_package(PythonInterp 3 REQUIRED)
-
-    # 3.X.X => 3.X
-    STRING(REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" python3_version ${PYTHON_VERSION_STRING})
-    find_package(PythonLibs ${python3_version} REQUIRED)
-
-    # 3.X => 3X (at least on Ubuntu 16.04 the library is called libboost_python-py3X.so)
-    STRING(REGEX REPLACE "\\." "" python3_version ${python3_version})
-    find_package(Boost QUIET COMPONENTS python-py${python3_version})
-    if (${Boost_PYTHON-PY${python3_version}_FOUND})
-        MESSAGE(STATUS "Found Boost python3:")
-        MESSAGE(STATUS "   ${Boost_PYTHON-PY${python3_version}_LIBRARY}")
-    else ()
-        find_package(Boost QUIET COMPONENTS python3)  # The name under OSX (macports)
-        if (${Boost_PYTHON3_FOUND})
-            MESSAGE(STATUS "Found Boost python3:")
-            Message(STATUS "  ${Boost_PYTHON3_LIBRARY}")
-        else ()
-            MESSAGE(FATAL_ERROR "Could not find boost python3")
-        endif ()
-    endif ()
-
-    find_package(NumPy REQUIRED)
-
-    set(VIZDOOM_PYTHON3_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python3)
-    set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
-    set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
-
-    set(VIZDOOM_PYTHON3_LIBS
-            ${VIZDOOM_LIBS}
-            ${Boost_LIBRARIES}
-            ${PYTHON_LIBRARIES}
-            ${NUMPY_LIBRARIES})
-
-    include_directories(${VIZDOOM_PYTHON_INCLUDE_DIR}
-            ${Boost_INCLUDE_DIR}
-            ${PYTHON_INCLUDE_DIRS}
-            ${NUMPY_INCLUDES})
-
-    set(VIZDOOM_PYTHON_SOURCES
-            ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.h
-            ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.cpp
-            ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomPythonModule.cpp)
-
-    if (WIN32)
-        add_definitions(-DBOOST_PYTHON_STATIC_LIB)
-    endif ()
-
-    python_add_module(libvizdoom_python3 ${VIZDOOM_PYTHON_SOURCES})
-    target_link_libraries(libvizdoom_python3 ${VIZDOOM_PYTHON3_LIBS} libvizdoom_static)
-
-    set_target_properties(libvizdoom_python3
-            PROPERTIES
-            LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_PYTHON3_OUTPUT_DIR}
-            LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_PYTHON3_OUTPUT_DIR}
-            LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_PYTHON3_OUTPUT_DIR}
-            LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_PYTHON3_OUTPUT_DIR}
-            LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON3_OUTPUT_DIR}
-            OUTPUT_NAME vizdoom
-            PROJECT_LABEL "Python 3 binding")
-
-
-    add_dependencies(libvizdoom_python3 vizdoom pk3 freedoom2)
-
-    if (UNIX)
-        add_custom_target(python3_pip_package ALL
-                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh 3
-                COMMENT "Assembling pip package in ${VIZDOOM_PYTHON3_OUTPUT_DIR}/pip_package")
-
-        # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
-        add_dependencies(python3_pip_package libvizdoom_python3 vizdoom pk3 freedoom2)
-    endif ()
-
-
-endif ()
-
-
 # Lua binding
 #-----------------------------------------------------------------------------------------------------------------------
-if (BUILD_LUA AND (NOT BUILD_LUA52))
+if (BUILD_LUA)
 
     # Use ViZDoom's custom version of luabind
     #find_package(Luabind REQUIRED)
-    add_subdirectory(${VIZDOOM_SRC_DIR}/lib_lua/luabind)
 
     find_package(Lua51 REQUIRED)
     #find_package(Torch REQUIRED)
@@ -309,6 +229,7 @@ if (BUILD_LUA AND (NOT BUILD_LUA52))
     set(VIZDOOM_LUA_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/lua)
     set(VIZDOOM_LUA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_lua)
     set(VIZDOOM_LUA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LUA_SRC_DIR})
+    add_subdirectory(${VIZDOOM_LUA_SRC_DIR}/luabind)
 
     set(VIZDOOM_LUA_LIBS
             ${VIZDOOM_LIBS}
@@ -330,8 +251,7 @@ if (BUILD_LUA AND (NOT BUILD_LUA52))
             ${VIZDOOM_LUA_SRC_DIR}/ViZDoomLuaModule.cpp)
 
     add_library(libvizdoom_lua SHARED ${VIZDOOM_LUA_SOURCES})
-    target_link_libraries(libvizdoom_lua ${VIZDOOM_LUA_LIBS} libvizdoom_static)
-
+    target_link_libraries(libvizdoom_lua PRIVATE ${VIZDOOM_LUA_LIBS} libvizdoom_static)
     set_target_properties(libvizdoom_lua
             PROPERTIES
             PREFIX ""
@@ -401,7 +321,7 @@ if (BUILD_JAVA)
             ${VIZDOOM_JAVA_SRC_DIR}/ViZDoomGameJava.cpp)
 
     add_library(libvizdoom_java SHARED ${VIZDOOM_JAVA_SOURCES})
-    target_link_libraries(libvizdoom_java ${VIZDOOM_JAVA_LIBS} libvizdoom_static)
+    target_link_libraries(libvizdoom_java PRIVATE ${VIZDOOM_JAVA_LIBS} libvizdoom_static)
 
     set_target_properties(libvizdoom_java
             PROPERTIES
