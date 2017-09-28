@@ -25,16 +25,16 @@
 
 namespace vizdoom {
 
-    #define PY_NONE pyb::object()
-
     #if PY_MAJOR_VERSION >= 3
-    int
+        int init_numpy() {
+            import_array();
+            return 0;
+        }
     #else
-    void
+        void init_numpy() {
+            import_array();
+        }
     #endif
-    init_numpy() {
-        import_array();
-    }
 
     DoomGamePython::DoomGamePython() {
         init_numpy();

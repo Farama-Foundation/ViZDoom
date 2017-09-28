@@ -1,4 +1,4 @@
-// Emacs style mode select	 -*- C++ -*- 
+// Emacs style mode select	 -*- C++ -*-
 //-----------------------------------------------------------------------------
 //
 // $Id:$
@@ -1917,7 +1917,7 @@ void TryRunTics (void)
         }
 
         unsigned int enterTime = I_MSTime ();
-        while(lowRecv == lowtic && *viz_sync_timeout > I_MSTime() - enterTime) {
+        while(lowRecv == lowtic && (unsigned int)*viz_sync_timeout > I_MSTime() - enterTime) {
             //VIZ_Sleep(1);
 			NetUpdate();
             lowRecv = INT_MAX;
