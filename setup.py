@@ -40,6 +40,17 @@ def get_vizdoom_version():
                            "you should create an issue at https://github.com/mwydmuch/ViZDoom/")
 
 
+def get_python_library(python_lib_dir):
+    if python_version[0] == 2:
+        python_lib_name = 'libpython{}.{}'
+    else:
+        python_lib_name = 'libpython{}m.{}'
+
+    python_lib_name.format(python_version, library_extension)
+    python_library = os.path.join(python_lib_dir, python_lib_name)
+    return python_library
+
+
 class BuildCommand(build):
     def run(self):
         try:
@@ -50,6 +61,18 @@ class BuildCommand(build):
             cmake_arg_list.append("-DCMAKE_BUILD_TYPE=Release")
             cmake_arg_list.append("-DBUILD_PYTHON=ON")
             cmake_arg_list.append("-DPYTHON_EXECUTABLE={}".format(python_executable))
+
+            python_standard_lib = sysconfig.get_python_lib(standard_lib=True)
+            python_site_packages = sysconfig.get_python_lib(standard_lib=False)
+            python_lib_dir = os.path.dirname(python_standard_lib)
+            python_library = get_python_library(python_lib_dir)
+            python_include_dir = sysconfig.get_python_inc()
+            numpy_include_dir = os.path.join(python_site_packages, "numpy/core/include")
+
+            if os.path.exists(python_library) and os.path.exists(python_include_dir) and os.path.exists(numpy_include_dir):
+                cmake_arg_list.append("-DPYTHON_LIBRARY={}".format(python_library))
+                cmake_arg_list.append("-DPYTHON_INCLUDE_DIR={}".format(python_include_dir))
+                cmake_arg_list.append("-DNUMPY_INCLUDES={}".format(numpy_include_dir))
 
             if python_version[0] == "3":
                 cmake_arg_list.append("-DBUILD_PYTHON3=ON")

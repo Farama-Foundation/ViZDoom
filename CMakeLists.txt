@@ -3,6 +3,7 @@ project(ViZDoom)
 
 # Project version
 #-----------------------------------------------------------------------------------------------------------------------
+
 set(ViZDoom_MAJOR_VERSION 1)
 set(ViZDoom_MINOR_VERSION 1)
 set(ViZDoom_PATCH_VERSION 4)
@@ -13,15 +14,20 @@ set(ViZDoom_VERSION_ID ${ViZDoom_MAJOR_VERSION}${ViZDoom_MINOR_VERSION}${ViZDoom
 
 # Building options
 #-----------------------------------------------------------------------------------------------------------------------
+
 option(BUILD_PYTHON "Build ViZDoom Python binding." OFF)
 option(BUILD_PYTHON3 "Build ViZDoom Python3 binding instead of default Python2." OFF)
 option(BUILD_LUA "Build ViZDoom Lua binding." OFF) # only for Lua 5.1 and LuaJIT
 option(BUILD_JAVA "Build ViZDoom Java binding." OFF)
+option(BUILD_ENGINE "Build ViZDoom game engine." ON)
+option(DOWNLOAD_FREEDOOM "Download freedoom2.wad." ON)
 
 
 # CMake options
 #-----------------------------------------------------------------------------------------------------------------------
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_LINK)
 if (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 endif (COMMAND cmake_policy)
@@ -39,6 +45,7 @@ endif ()
 
 # System dependent settings
 #-----------------------------------------------------------------------------------------------------------------------
+
 if (UNIX)
     set(Boost_USE_STATIC_LIBS OFF)
     set(Boost_USE_MULTITHREADED ON)
@@ -74,6 +81,7 @@ endif (APPLE)
 
 # Compiler dependent settings
 #-----------------------------------------------------------------------------------------------------------------------
+
 if (CMAKE_COMPILER_IS_GNUCXX)
     add_definitions("-fPIC")
 endif ()
@@ -88,6 +96,7 @@ endif ()
 
 # Targets
 #-----------------------------------------------------------------------------------------------------------------------
+
 find_package(Boost COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
 find_package(Threads REQUIRED)
 
@@ -124,10 +133,10 @@ file(GLOB VIZDOOM_LIB_SOURCES
         ${VIZDOOM_LIB_SRC_DIR}/*.cpp)
 
 add_library(libvizdoom_static STATIC ${VIZDOOM_LIB_SOURCES})
-target_link_libraries(libvizdoom_static ${VIZDOOM_LIBS})
+target_link_libraries(libvizdoom_static PRIVATE ${VIZDOOM_LIBS})
 
 add_library(libvizdoom_shared SHARED ${VIZDOOM_LIB_SOURCES})
-target_link_libraries(libvizdoom_shared ${VIZDOOM_LIBS})
+target_link_libraries(libvizdoom_shared PRIVATE ${VIZDOOM_LIBS})
 
 set_target_properties(libvizdoom_static libvizdoom_shared
         PROPERTIES
@@ -152,12 +161,14 @@ set_target_properties(libvizdoom_shared
         PROPERTIES
         PROJECT_LABEL "Shared library")
 
+if (BUILD_ENGINE)
+    add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
+endif ()
 
-add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
 
-
-# Python binding
+# Python bindingcd
 #-----------------------------------------------------------------------------------------------------------------------
+
 if (BUILD_PYTHON OR BUILD_PYTHON3)
 
     if (BUILD_PYTHON3)
@@ -173,6 +184,8 @@ if (BUILD_PYTHON OR BUILD_PYTHON3)
     set(VIZDOOM_PYTHON_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python${_PYTHON_VERSION})
     set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
     set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
+
+    # Use included pybind11
     add_subdirectory(${VIZDOOM_PYTHON_SRC_DIR}/pybind11)
 
     set(VIZDOOM_PYTHON_LIBS
@@ -202,9 +215,9 @@ if (BUILD_PYTHON OR BUILD_PYTHON3)
             LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON_OUTPUT_DIR}
             OUTPUT_NAME vizdoom
             PROJECT_LABEL "Python binding")
-    add_dependencies(libvizdoom_python vizdoom pk3 freedoom2 pybind11)
+    add_dependencies(libvizdoom_python pybind11)
 
-    if (UNIX)
+    if (UNIX AND BUILD_ENGINE AND DOWNLOAD_FREEDOOM)
         add_custom_target(python_pip_package ALL
                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh ${_PYTHON_VERSION}
                 COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
@@ -218,31 +231,26 @@ endif ()
 
 # Lua binding
 #-----------------------------------------------------------------------------------------------------------------------
+
 if (BUILD_LUA)
-
-    # Use ViZDoom's custom version of luabind
-    #find_package(Luabind REQUIRED)
-
-    find_package(Lua51 REQUIRED)
-    #find_package(Torch REQUIRED)
 
     set(VIZDOOM_LUA_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/lua)
     set(VIZDOOM_LUA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_lua)
     set(VIZDOOM_LUA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LUA_SRC_DIR})
+
+    # Use ViZDoom's custom version of luabind
     add_subdirectory(${VIZDOOM_LUA_SRC_DIR}/luabind)
+    find_package(Lua51 REQUIRED)
 
     set(VIZDOOM_LUA_LIBS
             ${VIZDOOM_LIBS}
             ${Boost_LIBRARIES}
             ${LUA_LIBRARIES}
-            #${LUABIND_LIBRARIES}
-            #${VIZDOOM_SRC_DIR}/lib_lua/luabind/src/libluabind.a
             luabind)
 
     include_directories(${VIZDOOM_LUA_INCLUDE_DIR}
             ${Boost_INCLUDE_DIR}
             ${LUA_INCLUDE_DIR}
-            #${LUABIND_INCLUDE_DIRS}
             ${VIZDOOM_SRC_DIR}/lib_lua/luabind)
 
     set(VIZDOOM_LUA_SOURCES
@@ -262,8 +270,9 @@ if (BUILD_LUA)
             LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_LUA_OUTPUT_DIR}
             OUTPUT_NAME vizdoom
             PROJECT_LABEL "Lua binding")
+    add_dependencies(libvizdoom_python luabind)
 
-    if (UNIX)
+    if (UNIX AND BUILD_ENGINE AND DOWNLOAD_FREEDOOM)
         add_custom_target(luarocks_package ALL
                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_luarocks_package.sh
                 COMMENT "Assembling luarocks package in ${VIZDOOM_LUA_OUTPUT_DIR}/luarocks_package")
@@ -277,31 +286,37 @@ endif ()
 
 # Java binding
 #-----------------------------------------------------------------------------------------------------------------------
+
 if (BUILD_JAVA)
 
     if (NOT DEFINED ENV{JAVA_HOME})
         message(FATAL_ERROR "JAVA_HOME environment variable is not set.")
     endif ()
 
-    find_package(Java REQUIRED)
-    find_package(JNI REQUIRED)
-
-    include(UseJava)
-
     set(VIZDOOM_JAVA_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/java)
     set(VIZDOOM_JAVA_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_java)
     set(VIZDOOM_JAVA_CLASSES_DIR ${VIZDOOM_JAVA_SRC_DIR}/java_classes)
     set(VIZDOOM_JAVA_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_JAVA_SRC_DIR})
+
+    find_package(Java REQUIRED)
+    find_package(JNI REQUIRED)
+    include(UseJava)
 
     set(VIZDOOM_JAVA_LIBS
             ${VIZDOOM_LIBS}
             ${Java_LIBRARIES}
             ${JNI_LIBRARIES})
 
-    if (UNIX)
+    if (UNIX AND NOT APPLE)
         set(JNI_INCLUDE_DIR ${JNI_INCLUDE_DIR}
                 ${_JAVA_HOME}/include
                 ${_JAVA_HOME}/include/linux)
+    endif ()
+
+    if (APPLE)
+        set(JNI_INCLUDE_DIR ${JNI_INCLUDE_DIR}
+                ${_JAVA_HOME}/include
+                ${_JAVA_HOME}/include/darwin)
     endif ()
 
     if (WIN32)
@@ -365,7 +380,7 @@ endif ()
 # Freedoom 2 download
 #-----------------------------------------------------------------------------------------------------------------------
 
-if (UNIX)
+if (UNIX AND DOWNLOAD_FREEDOOM)
     add_custom_target(freedoom2 ALL
             COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/download_freedoom.sh
             COMMENT "Downloading freedoom2.wad")
