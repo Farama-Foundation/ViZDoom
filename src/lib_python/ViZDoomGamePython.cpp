@@ -25,29 +25,28 @@
 
 namespace vizdoom {
 
-    #define PY_NONE bpya::object()
-
     #if PY_MAJOR_VERSION >= 3
-    int
+        int init_numpy() {
+            import_array();
+            return 0;
+        }
     #else
-    void
+        void init_numpy() {
+            import_array();
+        }
     #endif
-    init_numpy() {
-        bpyn::array::set_module_and_type("numpy", "ndarray");
-        import_array();
-    }
 
     DoomGamePython::DoomGamePython() {
         init_numpy();
     }
 
-    void DoomGamePython::setAction(bpy::list const &pyAction) {
+    void DoomGamePython::setAction(pyb::list const &pyAction) {
         auto action = DoomGamePython::pyListToVector<double>(pyAction);
         ReleaseGIL gil = ReleaseGIL();
         DoomGame::setAction(action);
     }
 
-    double DoomGamePython::makeAction(bpy::list const &pyAction, unsigned int tics) {
+    double DoomGamePython::makeAction(pyb::list const &pyAction, unsigned int tics) {
         auto action = DoomGamePython::pyListToVector<double>(pyAction);
         ReleaseGIL gil = ReleaseGIL();
         return DoomGame::makeAction(action, tics);
@@ -70,12 +69,16 @@ namespace vizdoom {
 
         if (this->state->screenBuffer != nullptr)
             this->pyState->screenBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->screenBuffer->data());
+        else this->pyState->screenBuffer = pyb::none();
         if (this->state->depthBuffer != nullptr)
             this->pyState->depthBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->depthBuffer->data());
+        else this->pyState->depthBuffer = pyb::none();
         if (this->state->labelsBuffer != nullptr)
             this->pyState->labelsBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->labelsBuffer->data());
+        else this->pyState->labelsBuffer = pyb::none();
         if (this->state->automapBuffer != nullptr)
             this->pyState->automapBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->automapBuffer->data());
+        else this->pyState->automapBuffer = pyb::none();
 
         if (this->state->gameVariables.size() > 0) {
             // Numpy array version
@@ -85,13 +88,14 @@ namespace vizdoom {
             // Python list version
             //this->pyState->gameVariables = DoomGamePython::vectorToPyList<int>(this->state->gameVariables);
         }
+        else this->pyState->gameVariables = pyb::none();
 
         if(this->state->labels.size() > 0){
-            bpy::list pyLabels;
+            pyb::list pyLabels;
             for(auto i = this->state->labels.begin(); i != this->state->labels.end(); ++i){
                 LabelPython pyLabel;
                 pyLabel.objectId = i->objectId;
-                pyLabel.objectName = bpy::str(i->objectName.c_str());
+                pyLabel.objectName = pyb::str(i->objectName.c_str());
                 pyLabel.value = i->value;
                 pyLabel.objectPositionX = i->objectPositionX;
                 pyLabel.objectPositionY = i->objectPositionY;
@@ -105,23 +109,23 @@ namespace vizdoom {
         return this->pyState;
     }
 
-    bpy::list DoomGamePython::getLastAction() {
+    pyb::list DoomGamePython::getLastAction() {
         return DoomGamePython::vectorToPyList(this->lastAction);
     }
 
-    bpy::list DoomGamePython::getAvailableButtons(){
+    pyb::list DoomGamePython::getAvailableButtons(){
         return DoomGamePython::vectorToPyList(this->availableButtons);
     }
 
-    void DoomGamePython::setAvailableButtons(bpy::list const &pyButtons){
+    void DoomGamePython::setAvailableButtons(pyb::list const &pyButtons){
         DoomGame::setAvailableButtons(DoomGamePython::pyListToVector<Button>(pyButtons));
     }
 
-    bpy::list DoomGamePython::getAvailableGameVariables(){
+    pyb::list DoomGamePython::getAvailableGameVariables(){
         return DoomGamePython::vectorToPyList(this->availableGameVariables);
     }
 
-    void DoomGamePython::setAvailableGameVariables(bpy::list const &pyGameVariables){
+    void DoomGamePython::setAvailableGameVariables(pyb::list const &pyGameVariables){
         DoomGame::setAvailableGameVariables(DoomGamePython::pyListToVector<GameVariable>(pyGameVariables));
     }
 
@@ -139,78 +143,6 @@ namespace vizdoom {
     void DoomGamePython::respawnPlayer(){
         ReleaseGIL gil = ReleaseGIL();
         DoomGame::respawnPlayer();
-    }
-
-
-    // These functions are workaround for
-    // "TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str"
-    // on GCC versions lower then 5
-    bool DoomGamePython::loadConfig(bpy::str const &pyPath){
-        const char* cPath = bpy::extract<const char *>(pyPath);
-        std::string path(cPath);
-        ReleaseGIL gil = ReleaseGIL();
-        return DoomGame::loadConfig(path);
-    }
-
-    void DoomGamePython::newEpisode(){
-        ReleaseGIL gil = ReleaseGIL();
-        DoomGame::newEpisode();
-    }
-
-    void DoomGamePython::newEpisode(bpy::str const &pyPath){
-        const char* cPath = bpy::extract<const char *>(pyPath);
-        std::string path(cPath);
-        ReleaseGIL gil = ReleaseGIL();
-        DoomGame::newEpisode(path);
-    }
-
-    void DoomGamePython::replayEpisode(bpy::str const &pyPath, unsigned int player){
-        const char* cPath = bpy::extract<const char *>(pyPath);
-        std::string path(cPath);
-        ReleaseGIL gil = ReleaseGIL();
-        DoomGame::replayEpisode(path, player);
-    }
-
-    void DoomGamePython::setViZDoomPath(bpy::str const &pyPath){
-        const char* cPath = bpy::extract<const char *>(pyPath);
-        std::string path(cPath);
-        DoomGame::setViZDoomPath(path);
-    }
-
-    void DoomGamePython::setDoomGamePath(bpy::str const &pyPath){
-        const char* cPath = bpy::extract<const char *>(pyPath);
-        std::string path(cPath);
-        DoomGame::setDoomGamePath(path);
-    }
-
-    void DoomGamePython::setDoomScenarioPath(bpy::str const &pyPath){
-        const char* cPath = bpy::extract<const char *>(pyPath);
-        std::string path(cPath);
-        DoomGame::setDoomScenarioPath(path);
-    }
-
-    void DoomGamePython::setDoomMap(bpy::str const &pyMap){
-        const char* cMap = bpy::extract<const char *>(pyMap);
-        std::string map(cMap);
-        DoomGame::setDoomMap(map);
-    }
-
-    void DoomGamePython::setDoomConfigPath(bpy::str const &pyPath){
-        const char* cPath = bpy::extract<const char *>(pyPath);
-        std::string path(cPath);
-        DoomGame::setDoomConfigPath(path);
-    }
-
-    void DoomGamePython::addGameArgs(bpy::str const &pyArgs){
-        const char* cArgs = bpy::extract<const char *>(pyArgs);
-        std::string args(cArgs);
-        DoomGame::addGameArgs(args);
-    }
-
-    void DoomGamePython::sendGameCommand(bpy::str const &pyCmd){
-        const char* cCmd = bpy::extract<const char *>(pyCmd);
-        std::string cmd(cCmd);
-        DoomGame::sendGameCommand(cmd);
     }
 
 
@@ -238,31 +170,29 @@ namespace vizdoom {
     }
 
 
-    template<class T> bpy::list DoomGamePython::vectorToPyList(const std::vector<T>& vector){
-        bpy::list pyList;
+    template<class T> pyb::list DoomGamePython::vectorToPyList(const std::vector<T>& vector){
+        pyb::list pyList;
         for (auto i : vector) pyList.append(i);
         return pyList;
     }
 
-    template<class T> std::vector<T> DoomGamePython::pyListToVector(bpy::list const &pyList){
-        size_t pyListLength = bpy::len(pyList);
+    template<class T> std::vector<T> DoomGamePython::pyListToVector(pyb::list const &pyList){
+        size_t pyListLength = pyb::len(pyList);
         std::vector<T> vector = std::vector<T>(pyListLength);
-        for (size_t i = 0; i < pyListLength; ++i) vector[i] = bpy::extract<T>(pyList[i]);
+        for (size_t i = 0; i < pyListLength; ++i) vector[i] = pyb::cast<T>(pyList[i]);
         return vector;
     }
 
-    bpy::object DoomGamePython::dataToNumpyArray(int dims, npy_intp *shape, int type, void *data) {
+    pyb::object DoomGamePython::dataToNumpyArray(int dims, npy_intp *shape, int type, void *data) {
         PyObject *pyArray = PyArray_SimpleNewFromData(dims, shape, type, data);
         /* This line makes a copy: */
         PyObject *pyArrayCopied = PyArray_FROM_OTF(pyArray, type, NPY_ARRAY_ENSURECOPY | NPY_ARRAY_ENSUREARRAY);
         /* And this line gets rid of the old object which caused a memory leak: */
         Py_DECREF(pyArray);
 
-        bpy::handle<> numpyArrayBoostHandle = bpy::handle<>(pyArrayCopied);
-        bpy::object boostNumpyArray = bpy::object(numpyArrayBoostHandle);
-        /* This line caused occasional segfaults in python3 */
-        //bpyn::array numpyArray = bpyn::array(numpyHandle);
+        pyb::handle numpyArrayHandle = pyb::handle(pyArrayCopied);
+        pyb::object numpyArray = pyb::reinterpret_steal<pyb::object>(numpyArrayHandle);
 
-        return boostNumpyArray;
+        return numpyArray;
     }
 }

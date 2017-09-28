@@ -21,29 +21,39 @@ game.add_game_args("-join 127.0.0.1") # Connect to a host for a multiplayer game
 game.add_game_args("+name AI +colorset 0")
 
 # During the competition, async mode will be forced for all agents.
+#game.set_mode(Mode.PLAYER)
 game.set_mode(Mode.ASYNC_PLAYER)
 
-#game.set_window_visible(false)
+#game.set_window_visible(False)
 
 game.init()
 
 # Three example sample actions
 actions = [[1,0,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0]]
 
+# Get player's number
+player_number = int(game.get_game_variable(GameVariable.PLAYER_NUMBER))
+last_frags = 0
+
 # Play until the game (episode) is over.
 while not game.is_episode_finished():
 
+    # Get the state.
     s = game.get_state()
+
     # Analyze the state.
 
-    game.make_action(choice(actions))
     # Make your action.
+    game.make_action(choice(actions))
+    frags = game.get_game_variable(GameVariable.FRAGCOUNT)
+    if frags != last_frags:
+        last_frags = frags
+        print("Player " + str(player_number) + " has " + str(frags) + " frags.")
 
     # Check if player is dead
     if game.is_player_dead():
+        print("Player " + str(player_number) + " died.")
         # Use this to respawn immediately after death, new state will be available.
         game.respawn_player()
-
-    #print("Frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
 
 game.close()

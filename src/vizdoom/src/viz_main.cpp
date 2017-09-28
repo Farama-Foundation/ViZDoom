@@ -132,7 +132,7 @@ CCMD(viz_set_seed){
 int vizTime = 0;
 bool vizNextTic = false;
 bool vizUpdate = false;
-int vizLastUpdate = 0;
+unsigned int vizLastUpdate = 0;
 int vizNodesRecv[VIZ_MAX_PLAYERS];
 
 int vizSavedTime = 0;

@@ -26,8 +26,8 @@ game = DoomGame()
 # Don't load two configs cause the second will overrite the first one.
 # Multiple config files are ok but combining these ones doesn't make much sense.
 
-# game.load_config("../../scenarios/basic.cfg")
-game.load_config("../../scenarios/simpler_basic.cfg")
+game.load_config("../../scenarios/basic.cfg")
+# game.load_config("../../scenarios/simpler_basic.cfg")
 # game.load_config("../../scenarios/rocket_basic.cfg")
 # game.load_config("../../scenarios/deadly_corridor.cfg")
 # game.load_config("../../scenarios/deathmatch.cfg")
@@ -67,16 +67,16 @@ for i in range(episodes):
 
     while not game.is_episode_finished():
         # Gets the state and possibly to something with it
-        s = game.get_state()
-        img = s.screen_buffer
-        misc = s.game_variables
+        state = game.get_state()
+        screen_buf = state.screen_buffer
+        vars = state.game_variables
 
         # Check which action you chose!
-        r = game.make_action(choice(actions))
+        reward = game.make_action(choice(actions))
 
-        print("State #" + str(s.number))
-        print("Game Variables:", misc)
-        print("Last Reward:", r)
+        print("State #" + str(state.number))
+        print("Game Variables:", vars)
+        print("Last Reward:", reward)
         print("Seed:", game.get_seed())
         print("=====================")
 

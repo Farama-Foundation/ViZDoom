@@ -13,7 +13,7 @@ game.set_doom_map("map01")  # Limited deathmatch.
 #game.set_doom_map("map02")  # Full deathmatch.
 
 # Host game with options that will be used in the competition.
-game.add_game_args("-host 2 "               # This machine will function as a host for a multiplayer game with this many players (including this machine). It will wait for other machines to connect using the -join parameter and then start the game when everyone is connected.
+game.add_game_args("-host 7 "               # This machine will function as a host for a multiplayer game with this many players (including this machine). It will wait for other machines to connect using the -join parameter and then start the game when everyone is connected.
                    "-deathmatch "           # Deathmatch rules are used for the game.
                    "+timelimit 10.0 "       # The game (episode) will end after this many minutes have elapsed.
                    "+sv_forcerespawn 1 "    # Players will respawn automatically after they die.
@@ -32,9 +32,10 @@ game.add_game_args("-host 2 "               # This machine will function as a ho
 game.add_game_args("+name AI +colorset 0")
 
 # During the competition, async mode will be forced for all agents.
+#game.set_mode(Mode.PLAYER)
 game.set_mode(Mode.ASYNC_PLAYER)
 
-# game.set_window_visible(false)
+#game.set_window_visible(False)
 
 game.init()
 
@@ -44,17 +45,17 @@ actions = [[1,0,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0]]
 # Play until the game (episode) is over.
 while not game.is_episode_finished():
 
+    # Get the state.
     s = game.get_state()
+
     # Analyze the state.
 
-    game.make_action(choice(actions))
     # Make your action.
+    game.make_action(choice(actions))
 
     # Check if player is dead
     if game.is_player_dead():
         # Use this to respawn immediately after death, new state will be available.
         game.respawn_player()
-
-    #print("Frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
 
 game.close()

@@ -24,12 +24,13 @@ game.add_game_args("+name AI +colorset 0")
 
 game.set_mode(Mode.PLAYER)
 
-# game.set_window_visible(False)
+#game.set_window_visible(False)
 
 game.init()
 
 # Three example sample actions
 actions = [[1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0]]
+last_frags = 0
 
 # Play with this many bots
 bots = 7
@@ -51,18 +52,23 @@ for i in range(episodes):
     # Play until the game (episode) is over.
     while not game.is_episode_finished():
 
+        # Get the state.
         s = game.get_state()
+
         # Analyze the state.
 
-        game.make_action(choice(actions))
         # Make your action.
+        game.make_action(choice(actions))
+        frags = game.get_game_variable(GameVariable.FRAGCOUNT)
+        if frags != last_frags:
+            last_frags = frags
+            print("Player has " + str(frags) + " frags.")
 
         # Check if player is dead
         if game.is_player_dead():
-        # Use this to respawn immediately after death, new state will be available.
+            print("Player died.")
+            # Use this to respawn immediately after death, new state will be available.
             game.respawn_player()
-
-        print("Frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
 
     print("Episode finished.")
     print("************************")
