@@ -43,13 +43,15 @@ double (*doomFixedToDouble_double)(double) = &doomFixedToDouble;
 /*--------------------------------------------------------------------------------------------------------------------*/
 
 #if PY_MAJOR_VERSION >= 3
-int
+    int init_numpy() {
+        import_array();
+        return 0;
+    }
 #else
-void
+    void init_numpy() {
+        import_array();
+    }
 #endif
-init_numpy(){
-    import_array();
-}
 
 PYBIND11_MODULE(vizdoom, vz){
 
