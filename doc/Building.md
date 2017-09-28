@@ -171,25 +171,25 @@ make
 
 Users with brew-installed Python/Anaconda may need to manually set PYTHON_EXECUTABLE, PYTHON_INCLUDE_DIR, PYTHON_LIBRARY:
 
-It should look like this for brew-installed Python (use `-DBUILD_PYTHON3=ON` and `libpythonX.Xm.dylib` for Python 3):
+It should look like this for brew-installed Python (use `-DBUILD_PYTHON3=ON`, `include/pythonX.Xm` and `lib/libpythonX.Xm.dylib` for Python 3):
 
 ```sh
 cmake -DCMAKE_BUILD_TYPE=Release \
 -DBUILD_PYTHON=ON \
--DPYTHON_EXECUTABLE=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/bin/pythonX.X \
+-DPYTHON_EXECUTABLE=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/bin/pythonX \
 -DPYTHON_INCLUDE_DIR=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/include/pythonX.X \
 -DPYTHON_LIBRARY=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/lib/libpythonX.X.dylib \
 -DNUMPY_INCLUDES=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/lib/pythonX.X/site-packages/numpy/core/include
 ```
 
-Or for Anaconda (use `-DBUILD_PYTHON3=ON` and `libpythonX.Xm.dylib` for Python 3):
+Or for Anaconda (use `-DBUILD_PYTHON3=ON`, `include/pythonX.Xm` and `lib/libpythonX.Xm.dylib` for Python 3):
 
 ```sh
 cmake -DCMAKE_BUILD_TYPE=Release \
 -DBUILD_PYTHON=ON \
--DPYTHON_INCLUDE_DIR=~/anacondaX/include/pythonX \
+-DPYTHON_EXECUTABLE=~/anacondaX/bin/pythonX \
+-DPYTHON_INCLUDE_DIR=~/anacondaX/include/pythonX.X \
 -DPYTHON_LIBRARY=~/anacondaX/lib/libpythonX.X.dylib \
--DPYTHON_EXECUTABLE=~/anacondaX/bin/pythonX.X \
 -DNUMPY_INCLUDES=~/anacondaX/lib/pythonX.X/site-packages/numpy/core/include
 ```
 

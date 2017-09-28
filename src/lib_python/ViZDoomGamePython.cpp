@@ -26,9 +26,9 @@
 namespace vizdoom {
 
     #if PY_MAJOR_VERSION >= 3
-        int init_numpy() {
+        void* init_numpy() {
             import_array();
-            return 0;
+            return NULL;
         }
     #else
         void init_numpy() {
