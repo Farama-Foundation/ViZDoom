@@ -42,6 +42,8 @@ env:
     - BINDING=python3
 
 before_install:
+  - uname -a
+
   # Linux specific
   #- if [ $TRAVIS_OS_NAME == "linux" ]; then sudo apt-get install -y cmake libboost-all-dev zlib1g-dev libsdl2-dev libjpeg-dev nasm tar libbz2-dev libgtk2.0-dev libfluidsynth-dev libgme-dev libopenal-dev timidity; fi
   - if [ $TRAVIS_OS_NAME == "linux" ] && [ $BINDING == "java" ]; then sudo apt-get install -y default-jdk; fi
@@ -52,22 +54,20 @@ before_install:
 
   # OSX specific
   - if [ $TRAVIS_OS_NAME == "osx" ]; then brew reinstall wget cmake boost sdl2; fi
-  - if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "java" ]; then ...; fi
-  - if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "lua" ]; then ...; fi
-  - if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "torch" ]; then ...; fi
+  #- if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "java" ]; then ...; fi
+  #- if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "lua" ]; then ...; fi
+  #- if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "torch" ]; then ...; fi
   - if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "python2" ]; then brew install python; fi
   - if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "python3" ]; then brew install python3; fi
 
   # Anaconda/Miniconda
   - if [ $BINDING == "anaconda2" ]; then
-    #wget https://repo.continuum.io/archive/Anaconda2-5.0.0-Linux-x86_64.sh -O anaconda.sh;
     wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O anaconda.sh;
     bash anaconda.sh -b -p $HOME/anaconda;
     export PATH="$HOME/anaconda/bin:$PATH";
     hash -r;
     fi
   - if [ $BINDING == "anaconda3" ]; then
-    #wget https://repo.continuum.io/archive/Anaconda3-5.0.0-Linux-x86_64.sh -O anaconda.sh;
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O anaconda.sh;
     bash anaconda.sh -b -p $HOME/anaconda;
     export PATH="$HOME/anaconda/bin:$PATH";
