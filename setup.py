@@ -46,7 +46,7 @@ def get_python_library(python_lib_dir):
     else:
         python_lib_name = 'libpython{}m.{}'
 
-    python_lib_name.format(python_version, library_extension)
+    python_lib_name = python_lib_name.format(python_version, library_extension)
     python_library = os.path.join(python_lib_dir, python_lib_name)
     return python_library
 
@@ -82,8 +82,8 @@ class BuildCommand(build):
             subprocess.check_call(['make', '-j', str(cpu_cores)])
         except subprocess.CalledProcessError:
             sys.stderr.write("\033[1m\nInstallation failed, you may be missing some dependencies. "
-                            "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md "
-                            "for details\n\n\033[0m")
+                             "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md "
+                             "for details\n\n\033[0m")
             raise
         build.run(self)
 

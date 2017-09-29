@@ -1,7 +1,27 @@
-language: mega
-
 sudo: required
 dist: trusty
+language: cpp
+
+addons:
+  apt:
+    packages:
+      - cmake
+      - libboost-all-dev
+      - libsdl2-dev
+      - libfreetype6-dev
+      - libgl1-mesa-dev
+      - libglu1-mesa-dev
+      - libpng-dev
+      - libjpeg-dev
+      - libbz2-dev
+      - libfluidsynth-dev
+      - libgme-dev
+      - libopenal-dev
+      - zlib1g-dev
+      - timidity
+      - tar
+      - nasm
+      - wget
 
 branches:
   only:
@@ -11,10 +31,67 @@ os:
   - linux
   #- osx
 
-install:
-  - if [ $TRAVIS_OS_NAME  == "linux" ]; then sudo apt-get install -y cmake libboost-all-dev python python-numpy liblua5.1-dev default-jdk zlib1g-dev libsdl2-dev libjpeg-dev nasm tar libbz2-dev libgtk2.0-dev libfluidsynth-dev libgme-dev libopenal-dev timidity; fi
-  #- if ["$TRAVIS_OS_NAME" == "osx"]; then ...; fi
+env:
+  matrix:
+    - BINDING=anaconda2
+    - BINDING=anaconda3
+    - BINDING=java
+    #- BINDING=lua
+    #- BINDING=torch
+    - BINDING=python2
+    - BINDING=python3
+
+before_install:
+  # Linux specific
+  #- if [ $TRAVIS_OS_NAME == "linux" ]; then sudo apt-get install -y cmake libboost-all-dev zlib1g-dev libsdl2-dev libjpeg-dev nasm tar libbz2-dev libgtk2.0-dev libfluidsynth-dev libgme-dev libopenal-dev timidity; fi
+  - if [ $TRAVIS_OS_NAME == "linux" ] && [ $BINDING == "java" ]; then sudo apt-get install -y default-jdk; fi
+  #- if [ $TRAVIS_OS_NAME == "linux" ] && [ $BINDING == "lua" ]; then sudo apt-get install -y liblua5.1.0-dev; fi
+  #- if [ $TRAVIS_OS_NAME == "linux" ] && [ $BINDING == "torch" ]; then ...; fi
+  - if [ $TRAVIS_OS_NAME == "linux" ] && [ $BINDING == "python2" ]; then sudo apt-get install -y python-dev python-numpy python-pip; fi
+  - if [ $TRAVIS_OS_NAME == "linux" ] && [ $BINDING == "python3" ]; then sudo apt-get install -y python3-dev python3-numpy python3-pip; fi
+
+  # OSX specific
+  - if [ $TRAVIS_OS_NAME == "osx" ]; then brew reinstall wget cmake boost sdl2; fi
+  - if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "java" ]; then ...; fi
+  - if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "lua" ]; then ...; fi
+  - if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "torch" ]; then ...; fi
+  - if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "python2" ]; then brew install python; fi
+  - if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "python3" ]; then brew install python3; fi
+
+  # Anaconda/Miniconda
+  - if [ $BINDING == "anaconda2" ]; then
+    #wget https://repo.continuum.io/archive/Anaconda2-5.0.0-Linux-x86_64.sh -O anaconda.sh;
+    wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O anaconda.sh;
+    bash anaconda.sh -b -p $HOME/anaconda;
+    export PATH="$HOME/anaconda/bin:$PATH";
+    hash -r;
+    fi
+  - if [ $BINDING == "anaconda3" ]; then
+    #wget https://repo.continuum.io/archive/Anaconda3-5.0.0-Linux-x86_64.sh -O anaconda.sh;
+    wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O anaconda.sh;
+    bash anaconda.sh -b -p $HOME/anaconda;
+    export PATH="$HOME/anaconda/bin:$PATH";
+    hash -r;
+    fi
 
 script:
-  - cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_LUA=ON -DBUILD_JAVA=ON
-  - make
+  - if [ $BINDING == "java" ]; then cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_JAVA=ON; make; fi
+  - if [ $BINDING == "lua" ]; then cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_LUA=ON; make; fi
+  - if [ $BINDING == "torch" ]; then luarocks make; fi
+
+  # Python install via pip
+  - if [ $BINDING == "anaconda2" ] || [ $BINDING == "anaconda3" ]; then python --version; python -m pip -v install .; fi
+  - if [ $BINDING == "python2" ]; then python --version; sudo pip -v install .; fi
+  - if [ $BINDING == "python3" ]; then python3 --version; sudo pip3 -v install .; fi
+
+  # Python manual build
+  #- if [ $BINDING == "anaconda2" ]; then
+  #  cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DPYTHON_INCLUDE_DIR=$HOME/anaconda/include/python2.7 -DPYTHON_LIBRARY=$HOME/anaconda/lib/libpython2.7.so -DPYTHON_EXECUTABLE=$HOME/anaconda/bin/python2.7 -DNUMPY_INCLUDES=$HOME/anaconda/lib/python2.7/site-packages/numpy/core/include;
+  #  make;
+  #  fi
+  #- if [ $BINDING == "anaconda3" ]; then
+  #  cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON3=ON -DPYTHON_INCLUDE_DIR=$HOME/anaconda/include/python3.6m -DPYTHON_LIBRARY=$HOME/anaconda/lib/libpython3.6m.so -DPYTHON_EXECUTABLE=$HOME/anaconda/bin/python3 -DNUMPY_INCLUDES=$HOME/anaconda/lib/python3.6/site-packages/numpy/core/include;
+  #  make;
+  #  fi
+  #- if [ $BINDING == "python2" ]; then cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON; make; fi
+  #- if [ $BINDING == "python3" ]; then cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON3=ON; make; fi
