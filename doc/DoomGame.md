@@ -851,7 +851,7 @@ Config key: `DoomMap/doom_map`
 | :--    | :--                               |
 | Lua    | `void setDoomSkill(number skill)` |
 | Java   | `void setDoomSkill(int skill)`    |
-| Python | `void setDoomSkill(int skill)`    |
+| Python | `void set_doom_skill(int skill)`  |
 
 Sets Doom game difficulty level which is called skill in Doom.
 The higher is the skill, the harder the game becomes.
