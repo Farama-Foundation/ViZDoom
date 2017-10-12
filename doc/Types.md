@@ -213,7 +213,7 @@ Enum type that defines all variables that can be obtained from the game.
 - **POSITION_X**            - Position of the player, not available if `viz_nocheat` is enabled.
 - **POSITION_Y**
 - **POSITION_Z**
-- **ANGLE**                 - Position of the player, not available if `viz_nocheat` is enabled.
+- **ANGLE**                 - Orientation of the player, not available if `viz_nocheat` is enabled.
 - **PITCH**                 
 - **ROLL**
 - **VELOCITY_X**            - Velocity of the player, not available if `viz_nocheat` is enabled.
