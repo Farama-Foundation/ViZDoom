@@ -805,6 +805,7 @@ namespace vizdoom {
         this->sendCommand("viz_render_mode " + b::lexical_cast<std::string>(this->getRenderModeValue()));
     }
 
+
     /* SM setters & getters */
     /*----------------------------------------------------------------------------------------------------------------*/
 
@@ -889,9 +890,9 @@ namespace vizdoom {
 
     void DoomController::setRunDoomAsync(bool set) { if (!this->doomRunning) this->runDoomAsync = set; }
 
+
     /* GameVariables getters */
     /*----------------------------------------------------------------------------------------------------------------*/
-
 
     double DoomController::getGameVariable(GameVariable var){
 
@@ -954,6 +955,7 @@ namespace vizdoom {
 
     bool DoomController::isPlayerDead() { return this->gameState->PLAYER_DEAD; }
 
+
     /* Protected and private functions */
     /*----------------------------------------------------------------------------------------------------------------*/
 
@@ -983,6 +985,7 @@ namespace vizdoom {
         }
     }
 
+
     /* Signals */
     /*----------------------------------------------------------------------------------------------------------------*/
 
@@ -1003,6 +1006,7 @@ namespace vizdoom {
         this->MQDoom->send(MSG_CODE_CLOSE);
         this->MQController->send(static_cast<uint8_t >(MSG_CODE_SIG + sigNumber));
     }
+
 
     /* Flow */
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -1161,6 +1165,11 @@ namespace vizdoom {
         // window mode
         this->doomArgs.push_back("+fullscreen");
         this->doomArgs.push_back("0");
+
+        #ifdef OS_WIN
+            // Output to stdout on Windows
+            this->doomArgs.push_back("-stdout");
+        #endif
 
         // vizdoom
         this->doomArgs.push_back("+viz_controlled");
