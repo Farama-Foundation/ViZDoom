@@ -49,6 +49,7 @@ EXTERN_CVAR (Float, timelimit)
 
 VIZGameState *vizGameStateSM = NULL;
 
+
 /* Helper functions */
 /*--------------------------------------------------------------------------------------------------------------------*/
 
@@ -125,6 +126,7 @@ int VIZ_CheckSlotWeapons(unsigned int slot){
     }
     return inSlot;
 }
+
 
 /* Main functions */
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -287,7 +289,12 @@ void VIZ_GameStateUpdateLabels(){
         for(auto i = vizLabels->sprites.begin(); i != vizLabels->sprites.end(); ++i){
             if(i->labeled){
                 vizGameStateSM->LABEL[labelCount].objectId = i->actorId;
-                strncpy(vizGameStateSM->LABEL[labelCount].objectName, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN);
+                //if(i->actor->health <= 0 || (i->actor->flags & MF_CORPSE) || (i->actor->flags6 & MF6_KILLED)) {
+                if((i->actor->flags & MF_CORPSE) || (i->actor->flags6 & MF6_KILLED)) {
+                    strncpy(vizGameStateSM->LABEL[labelCount].objectName, "Dead", VIZ_MAX_LABEL_NAME_LEN);
+                    strncpy(vizGameStateSM->LABEL[labelCount].objectName + 4, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN - 4);
+                }
+                else strncpy(vizGameStateSM->LABEL[labelCount].objectName, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN);
                 vizGameStateSM->LABEL[labelCount].value = i->label;
                 vizGameStateSM->LABEL[labelCount].objectPosition[0] = VIZ_FixedToDouble(i->position.x);
                 vizGameStateSM->LABEL[labelCount].objectPosition[1] = VIZ_FixedToDouble(i->position.y);

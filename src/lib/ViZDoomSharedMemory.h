@@ -33,7 +33,7 @@
 #define SM_REGION_COUNT 6
 
 #define MAX_LABELS 256
-#define MAX_LABEL_NAME_LEN 64
+#define MAX_LABEL_NAME_LEN 128
 
 namespace vizdoom {
 
