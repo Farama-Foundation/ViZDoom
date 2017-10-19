@@ -1,9 +1,9 @@
 package = "vizdoom"
-version = "1.1.4-0"
+version = "1.1.5-0"
 
 source = {
     url = "git://github.com/mwydmuch/ViZDoom",
-    tag = "1.1.4"
+    tag = "1.1.5"
 }
 
 description = {
