@@ -71,6 +71,7 @@
 #include "m_fixed.h"
 #include "g_level.h"
 
+//VIZDOOM_CODE
 #include "viz_main.h"
 
 #ifdef __APPLE__

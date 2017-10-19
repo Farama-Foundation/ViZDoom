@@ -49,6 +49,7 @@
 #include "v_text.h"
 #include "x86.h"
 
+//VIZDOOM_CODE
 #include "viz_main.h"
 
 

@@ -20,37 +20,43 @@
  THE SOFTWARE.
 */
 
-#ifndef __VIZ_MAIN_H__
-#define __VIZ_MAIN_H__
-
+#include "viz_system.h"
 #include "viz_defines.h"
 
-extern int vizTime;
-extern bool vizNextTic;
-extern bool vizUpdate;
-extern unsigned int vizLastUpdate;
-extern int vizNodesRecv[VIZ_MAX_PLAYERS];
-
-void VIZ_Init();
-
-void VIZ_AsyncStartTic();
-
-void VIZ_Tic();
-
-void VIZ_Update();
-
-void VIZ_CVARsInit();
-
-void VIZ_CVARsUpdate();
-
-void VIZ_Close();
-
-void VIZ_IgnoreNextDoomError();
-
-void VIZ_DoomError(const char *error);
-
-void VIZ_Error(const char *func, const char *error, ...);
-
-void VIZ_DebugMsg(int level, const char *func, const char *msg, ...);
-
+#ifdef VIZ_OS_WIN
+    #define USE_WINDOWS_DWORD
+    #include <Windows.h>
+#else
+    #include <unistd.h>
 #endif
+
+#include <boost/chrono.hpp>
+#include <boost/thread.hpp>
+
+namespace b = boost;
+namespace bt = boost::this_thread;
+namespace bc = boost::chrono;
+
+
+/* Sleep and interruptions handling */
+/*--------------------------------------------------------------------------------------------------------------------*/
+
+void VIZ_InterruptionPoint(){
+    #ifndef VIZ_OS_WIN
+        try{
+            bt::interruption_point();
+        }
+        catch(b::thread_interrupted &ex){
+            exit(0);
+        }
+    #endif
+}
+
+void VIZ_Sleep(unsigned int ms){
+    //bt::sleep_for(bc::milliseconds(ms));
+    #ifdef VIZ_OS_WIN
+        Sleep(ms);
+    #else
+        usleep(ms);
+    #endif
+}

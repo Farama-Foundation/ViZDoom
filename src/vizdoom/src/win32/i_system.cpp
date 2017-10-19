@@ -86,6 +86,7 @@
 #include "textures/bitmap.h"
 #include "textures/textures.h"
 
+//VIZDOOM_CODE
 #include "viz_main.h"
 
 // MACROS ------------------------------------------------------------------

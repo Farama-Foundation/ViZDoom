@@ -64,7 +64,7 @@
 
 //VIZDOOM_CODE
 #include "viz_main.h"
-#include "viz_defines.h"
+#include "viz_system.h"
 
 EXTERN_CVAR (Bool, viz_controlled)
 EXTERN_CVAR (Bool, viz_async)
