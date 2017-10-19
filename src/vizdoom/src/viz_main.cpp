@@ -20,36 +20,19 @@
  THE SOFTWARE.
 */
 
-#include <boost/interprocess/ipc/message_queue.hpp>
-#ifndef VIZ_OS_WIN
-    #include <boost/thread.hpp>
-#endif
-
-#ifdef VIZ_OS_WIN
-    #include <Windows.h>
-#else
-    #include <unistd.h>
-#endif
-
 #include "viz_main.h"
-#include "viz_defines.h"
+#include "viz_system.h"
 #include "viz_input.h"
 #include "viz_game.h"
 #include "viz_screen.h"
-#include "viz_shared_memory.h"
 #include "viz_message_queue.h"
 
 #include "d_main.h"
-#include "d_net.h"
 #include "g_game.h"
 #include "sbar.h"
 #include "c_dispatch.h"
 #include "i_system.h"
 
-namespace b = boost;
-#ifndef VIZ_OS_WIN
-    namespace bt = boost::this_thread;
-#endif
 
 /* CVARs and CCMDs */
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -125,6 +108,7 @@ CCMD(viz_set_seed){
     use_staticrng = true;
     VIZ_DebugMsg(2, VIZ_FUNC, "viz_seed changed to: %d.", rngseed);
 }
+
 
 /* Flow */
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -271,6 +255,7 @@ bool VIZ_IsPaused(){
     //&& (gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL || gamestate == GS_INTERMISSION || gamestate == GS_FINALE)
     //&& !paused && !pauseext && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling
 }
+
 
 /* CVARs settings */
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -494,23 +479,4 @@ void VIZ_DebugMsg(int level, const char *func, const char *msg, ...){
     va_end(arg_ptr);
 
     VIZ_PrintFuncMsg(func, debug_msg);
-}
-
-void VIZ_InterruptionPoint(){
-    #ifndef VIZ_OS_WIN
-        try{
-            bt::interruption_point();
-        }
-        catch(b::thread_interrupted &ex){
-            exit(0);
-        }
-    #endif
-}
-
-void VIZ_Sleep(unsigned int ms){
-    #ifdef VIZ_OS_WIN
-        Sleep(ms);
-    #else
-        usleep(ms);
-    #endif
 }

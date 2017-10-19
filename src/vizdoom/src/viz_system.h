@@ -20,37 +20,11 @@
  THE SOFTWARE.
 */
 
-#ifndef __VIZ_MAIN_H__
-#define __VIZ_MAIN_H__
+#ifndef __VIZ_SYSTEM_H__
+#define __VIZ_SYSTEM_H__
 
-#include "viz_defines.h"
+void VIZ_InterruptionPoint();
 
-extern int vizTime;
-extern bool vizNextTic;
-extern bool vizUpdate;
-extern unsigned int vizLastUpdate;
-extern int vizNodesRecv[VIZ_MAX_PLAYERS];
-
-void VIZ_Init();
-
-void VIZ_AsyncStartTic();
-
-void VIZ_Tic();
-
-void VIZ_Update();
-
-void VIZ_CVARsInit();
-
-void VIZ_CVARsUpdate();
-
-void VIZ_Close();
-
-void VIZ_IgnoreNextDoomError();
-
-void VIZ_DoomError(const char *error);
-
-void VIZ_Error(const char *func, const char *error, ...);
-
-void VIZ_DebugMsg(int level, const char *func, const char *msg, ...);
+void VIZ_Sleep(unsigned int ms);
 
 #endif
