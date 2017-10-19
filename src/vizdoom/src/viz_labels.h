@@ -49,7 +49,7 @@
 #endif
 
 #define VIZ_MAX_LABELS 256
-#define VIZ_MAX_LABEL_NAME_LEN 64
+#define VIZ_MAX_LABEL_NAME_LEN 128
 
 struct VIZLabel{
     unsigned int objectId;
