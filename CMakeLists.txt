@@ -155,11 +155,11 @@ set_target_properties(libvizdoom_static libvizdoom_shared
 
 set_target_properties(libvizdoom_static
         PROPERTIES
-        PROJECT_LABEL "Static library")
+        PROJECT_LABEL "static library")
 
 set_target_properties(libvizdoom_shared
         PROPERTIES
-        PROJECT_LABEL "Shared library")
+        PROJECT_LABEL "shared library")
 
 if (BUILD_ENGINE)
     add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
@@ -170,7 +170,7 @@ endif ()
 #-----------------------------------------------------------------------------------------------------------------------
 
 if (BUILD_PYTHON OR BUILD_PYTHON3)
-
+    
     if (BUILD_PYTHON3)
         find_package(PythonInterp 3 REQUIRED)
     else ()
@@ -214,17 +214,27 @@ if (BUILD_PYTHON OR BUILD_PYTHON3)
             LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_PYTHON_OUTPUT_DIR}
             LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON_OUTPUT_DIR}
             OUTPUT_NAME vizdoom
-            PROJECT_LABEL "Python binding")
+            PROJECT_LABEL "python${_PYTHON_VERSION} binding")
     add_dependencies(libvizdoom_python pybind11)
 
     if (UNIX AND BUILD_ENGINE AND DOWNLOAD_FREEDOOM)
         add_custom_target(python_pip_package ALL
                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh ${_PYTHON_VERSION}
                 COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
-
-        # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
-        add_dependencies(python_pip_package libvizdoom_python vizdoom pk3 freedoom2)
     endif ()
+    
+    if (WIN32 AND DOWNLOAD_FREEDOOM)
+        add_custom_target(python_pip_package ALL
+                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.bat ${_PYTHON_VERSION}
+                COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
+    endif ()
+    
+    set_target_properties(python_pip_package
+            PROPERTIES
+            PROJECT_LABEL "pip package")
+    
+    # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
+    add_dependencies(python_pip_package libvizdoom_python vizdoom pk3 freedoom2)
 
 endif ()
 
@@ -270,12 +280,13 @@ if (BUILD_LUA)
             LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_LUA_OUTPUT_DIR}
             OUTPUT_NAME vizdoom
             PROJECT_LABEL "Lua binding")
-    add_dependencies(libvizdoom_python luabind)
+    add_dependencies(libvizdoom_lua luabind)
 
     if (UNIX AND BUILD_ENGINE AND DOWNLOAD_FREEDOOM)
         add_custom_target(luarocks_package ALL
                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_luarocks_package.sh
-                COMMENT "Assembling luarocks package in ${VIZDOOM_LUA_OUTPUT_DIR}/luarocks_package")
+                COMMENT "Assembling luarocks package in ${VIZDOOM_LUA_OUTPUT_DIR}/luarocks_package"
+                PROJECT_LABEL "Luarocks package")
 
         # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
         add_dependencies(luarocks_package libvizdoom_lua vizdoom pk3 freedoom2)
@@ -351,7 +362,7 @@ if (BUILD_JAVA)
             RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_JAVA_OUTPUT_DIR}
             RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_JAVA_OUTPUT_DIR}
             OUTPUT_NAME vizdoom
-            PROJECT_LABEL "Java binding")
+            PROJECT_LABEL "java binding")
 
     add_jar(libvizdoom_java_classes
             ${VIZDOOM_JAVA_CLASSES_DIR}/enums/AutomapMode.java
@@ -372,7 +383,7 @@ if (BUILD_JAVA)
             ${VIZDOOM_JAVA_CLASSES_DIR}/DoomGame.java
             OUTPUT_DIR ${VIZDOOM_JAVA_OUTPUT_DIR}
             OUTPUT_NAME vizdoom
-            PROJECT_LABEL "ViZDoom Java classes")
+            PROJECT_LABEL "java classes")
 
 endif ()
 
@@ -383,5 +394,11 @@ endif ()
 if (UNIX AND DOWNLOAD_FREEDOOM)
     add_custom_target(freedoom2 ALL
             COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/download_freedoom.sh
+            COMMENT "Downloading freedoom2.wad")
+endif ()
+
+if (WIN32 AND DOWNLOAD_FREEDOOM)
+    add_custom_target(freedoom2 ALL
+            COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/download_freedoom.bat
             COMMENT "Downloading freedoom2.wad")
 endif ()
