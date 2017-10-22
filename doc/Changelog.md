@@ -1,5 +1,15 @@
 # Changelog
 
+## Changes in 1.1.5
+
+#### Labels
+- Added appending "Dead" prefix to label's name when actor is a corpse.
+
+#### Windows specific
+- Fixed problem with building on Windows 8.1 and 10.
+- Added scripts for downloading freedoom2.wad and assembling Python packages.
+
+
 ## Changes in 1.1.4
 
 #### Automap
