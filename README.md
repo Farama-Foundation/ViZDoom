@@ -57,12 +57,12 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 ## Windows build
 For Windows we are providing compiled runtime binaries and development libraries:
 
-### [1.1.0](https://github.com/mwydmuch/ViZDoom/releases/tag/1.1.0) (2016-12-23):
-- [Python 2.7 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Python27-x86_64.zip)
-- [Python 3.4 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Python34-x86_64.zip)
-- [Python 3.5 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Python35-x86_64.zip)
-- [Lua 5.1 & LuaJIT (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Lua51-LuaJIT-x86_64.zip)
-- [Java (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.0/ViZDoom-1.1.0-Win-Java-x86_64.zip)
+### [1.1.5pre](https://github.com/mwydmuch/ViZDoom/releases/tag/1.1.5pre) (2017-10-22):
+- [Python 2.7 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.5pre/ViZDoom-1.1.5pre-Win-Python27-x86_64.zip)
+- [Python 3.5 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.5pre/ViZDoom-1.1.5pre-Win-Python35-x86_64.zip)
+- [Python 3.6 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.5pre/ViZDoom-1.1.5pre-Win-Python36-x86_64.zip)
+- [Lua 5.1 & LuaJIT (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.5pre/ViZDoom-1.1.5pre-Win-Lua51-LuaJIT-x86_64.zip)
+- [Java (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.5pre/ViZDoom-1.1.5pre-Win-Java-x86_64.zip)
 
 
 ## Examples
