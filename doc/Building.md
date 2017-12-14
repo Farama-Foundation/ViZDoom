@@ -36,7 +36,7 @@ To get all dependencies (except JDK) on Ubuntu execute the following commands in
 # ZDoom dependencies
 sudo apt-get install build-essential zlib1g-dev libsdl2-dev libjpeg-dev \
 nasm tar libbz2-dev libgtk2.0-dev cmake git libfluidsynth-dev libgme-dev \
-libopenal-dev timidity libwildmidi-dev
+libopenal-dev timidity libwildmidi-dev unzip
 
 # Boost libraries
 sudo apt-get install libboost-all-dev
