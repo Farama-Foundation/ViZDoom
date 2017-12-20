@@ -194,12 +194,18 @@ See also:
 
 Enum type that defines all variables that can be obtained from the game.
 
+
+    FRAGCOUNT is mostly for multiplayer, e.g. against other players or bots. Does not update from killing NPC(?)
+    KILLCOUNT reads "level.killed_monsters", so I would guess it updates on killing monsters. However as you pointed out, this does not seem to be the case.
+    SECRETCOUNT seems to count the number of "secret objects" collected (level.found_secrets), possibly for some "locate and collect" task for collecting certain type of pickups.
+
+
 #### Defined variables
-- **KILLCOUNT**
-- **ITEMCOUNT**
-- **SECRETCOUNT**
-- **FRAGCOUNT**
-- **DEATHCOUNT**
+- **KILLCOUNT**.    - Counts the number of monsters killed during the current episode. Killing other players/bots do not count towards this.
+- **ITEMCOUNT**.    - Counts the number of picked up items during the current episode.
+- **SECRETCOUNT**.  - Counts the number of secret location/objects discovered during the current episode.
+- **FRAGCOUNT**     - Useful only in multiplayer Counts the number of players/bots killed, minus the number of committed suicides. 
+- **DEATHCOUNT**.   - Counts the number of players deaths.
 - **HEALTH**        - Can be higher then 100!
 - **ARMOR**         - Can be higher then 100!
 - **DEAD**          - True if the player is dead.
