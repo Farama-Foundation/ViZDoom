@@ -201,11 +201,11 @@ Enum type that defines all variables that can be obtained from the game.
 
 
 #### Defined variables
-- **KILLCOUNT**.    - Counts the number of monsters killed during the current episode. Killing other players/bots do not count towards this.
-- **ITEMCOUNT**.    - Counts the number of picked up items during the current episode.
-- **SECRETCOUNT**.  - Counts the number of secret location/objects discovered during the current episode.
-- **FRAGCOUNT**     - Useful only in multiplayer Counts the number of players/bots killed, minus the number of committed suicides. 
-- **DEATHCOUNT**.   - Counts the number of players deaths.
+- **KILLCOUNT**     - Counts the number of monsters killed during the current episode. Killing other players/bots do not count towards this.
+- **ITEMCOUNT**     - Counts the number of picked up items during the current episode.
+- **SECRETCOUNT**   - Counts the number of secret location/objects discovered during the current episode.
+- **FRAGCOUNT**     - Useful only in multiplayer mode. Counts the number of players/bots killed, minus the number of committed suicides. 
+- **DEATHCOUNT**    - Counts the number of players deaths.
 - **HEALTH**        - Can be higher then 100!
 - **ARMOR**         - Can be higher then 100!
 - **DEAD**          - True if the player is dead.
