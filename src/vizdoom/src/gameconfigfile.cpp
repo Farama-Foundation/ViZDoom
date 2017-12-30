@@ -102,6 +102,7 @@ FGameConfigFile::FGameConfigFile ()
 		SetValueForKey ("Path", ".", true);
 		SetValueForKey ("Path", "$DOOMWADDIR", true);
 #ifdef __APPLE__
+        //VIZDOOM_CODE
 		char cpath[PATH_MAX];
 		FSRef folder;
 		
@@ -113,7 +114,8 @@ FGameConfigFile::FGameConfigFile ()
 		}
 		else
 		{
-			SetValueForKey("Path", "~/" GAME_DIR, true);
+			//SetValueForKey("Path", "~/" GAME_DIR, true);
+			SetValueForKey("Path", "./" GAME_DIR, true);
 		}
 		if (noErr == FSFindFolder(kUserDomain, kApplicationSupportFolderType, kCreateFolder, &folder) &&
 			noErr == FSRefMakePath(&folder, (UInt8*)cpath, PATH_MAX))
@@ -129,10 +131,13 @@ FGameConfigFile::FGameConfigFile ()
 			SetValueForKey("Path", local_app_support, true);
 		}
 #elif !defined(__unix__)
-		SetValueForKey ("Path", "$HOME", true);
+        //VIZDOOM_CODE
+		//SetValueForKey ("Path", "$HOME", true);
 		SetValueForKey ("Path", "$PROGDIR", true);
 #else
-		SetValueForKey ("Path", "~/" GAME_DIR, true);
+		//VIZDOOM_CODE
+		//SetValueForKey ("Path", "~/" GAME_DIR, true);
+        SetValueForKey ("Path", "./" GAME_DIR, true);
 		// Arch Linux likes them in /usr/share/doom
 		// Debian likes them in /usr/share/games/doom
 		// I assume other distributions don't do anything radically different
@@ -148,14 +153,17 @@ FGameConfigFile::FGameConfigFile ()
 	{
 		SetSection ("FileSearch.Directories", true);
 #ifdef __APPLE__
-		SetValueForKey ("Path", user_docs, true);
-		SetValueForKey ("Path", user_app_support, true);
+        //VIZDOOM_CODE
+		//SetValueForKey ("Path", user_docs, true);
+		//SetValueForKey ("Path", user_app_support, true);
 		SetValueForKey ("Path", "$PROGDIR", true);
 		SetValueForKey ("Path", local_app_support, true);
 #elif !defined(__unix__)
 		SetValueForKey ("Path", "$PROGDIR", true);
 #else
-		SetValueForKey ("Path", "~/" GAME_DIR, true);
+        //VIZDOOM_CODE
+		//SetValueForKey ("Path", "~/" GAME_DIR, true);
+        SetValueForKey ("Path", "./" GAME_DIR, true);
 		SetValueForKey ("Path", SHARE_DIR, true);
 #endif
 		SetValueForKey ("Path", "$DOOMWADDIR", true);
