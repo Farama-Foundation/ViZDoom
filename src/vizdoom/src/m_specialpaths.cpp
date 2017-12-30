@@ -449,7 +449,9 @@ FString M_GetScreenshotsPath()
 	}
 	else
 	{
-		path = "~/";
+		//VIZDOOM_CODE
+		//path = "~/";
+		path = "./";
 	}
 	return path;
 }
@@ -484,12 +486,16 @@ FString GetUserFile (const char *file)
 	FString path;
 	struct stat info;
 
-	path = NicePath("~/" GAME_DIR "/");
+	//VIZDOOM_CODE
+	//path = NicePath("~/" GAME_DIR "/");
+	path = NicePath("./" GAME_DIR "/");
 
 	if (stat (path, &info) == -1)
 	{
 		struct stat extrainfo;
 
+		//VIZDOOM_CODE
+		/* This is no longer needed
 		// Sanity check for ~/.config
 		FString configPath = NicePath("~/.config/");
 		if (stat (configPath, &extrainfo) == -1)
@@ -503,6 +509,7 @@ FString GetUserFile (const char *file)
 		{
 			I_FatalError ("~/.config must be a directory");
 		}
+
 
 		// This can be removed after a release or two
 		// Transfer the old zdoom directory to the new location
@@ -518,8 +525,10 @@ FString GetUserFile (const char *file)
 			else
 				moved = true;
 		}
+		*/
 
-		if (!moved && mkdir (path, S_IRUSR | S_IWUSR | S_IXUSR) == -1)
+		//if (!moved && mkdir (path, S_IRUSR | S_IWUSR | S_IXUSR) == -1)
+		if (mkdir (path, S_IRUSR | S_IWUSR | S_IXUSR) == -1)
 		{
 			I_FatalError ("Failed to create %s directory:\n%s",
 				path.GetChars(), strerror (errno));
@@ -546,9 +555,12 @@ FString GetUserFile (const char *file)
 
 FString M_GetCachePath(bool create)
 {
+	//VIZDOOM_CODE
+
 	// Don't use GAME_DIR and such so that ZDoom and its child ports can
 	// share the node cache.
-	FString path = NicePath("~/.config/zdoom/cache");
+	//FString path = NicePath("~/.config/zdoom/cache");
+	FString path = NicePath("./_vizdoom");
 	if (create)
 	{
 		CreatePath(path);
@@ -592,7 +604,9 @@ FString M_GetCajunPath(const char *botfilename)
 		path << botfilename;
 		if (!FileExists(path)) {
 
+			//VIZDOOM_CODE
 			// Then check in ~/.config/zdoom/botfilename.
+			// ViZDoom checks in ./_vizdoom
 			path = GetUserFile(botfilename);
 			if (!FileExists(path)) {
 				path = "";
@@ -627,7 +641,9 @@ FString M_GetConfigPath(bool for_reading)
 
 FString M_GetScreenshotsPath()
 {
-	return NicePath("~/" GAME_DIR "/screenshots/");
+	//VIZDOOM_CODE
+	//return NicePath("~/" GAME_DIR "/screenshots/");
+	return NicePath("./" GAME_DIR "/screenshots/");
 }
 
 //===========================================================================
@@ -640,7 +656,9 @@ FString M_GetScreenshotsPath()
 
 FString M_GetSavegamesPath()
 {
-	return NicePath("~/" GAME_DIR);
+	//VIZDOOM_CODE
+	//return NicePath("~/" GAME_DIR);
+	return NicePath("./" GAME_DIR);
 }
 
 #endif

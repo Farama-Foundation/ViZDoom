@@ -2307,7 +2307,9 @@ static void AddAutoloadFiles(const char *autoname)
 		D_AddDirectory (allwads, file);
 
 #ifdef __unix__
-		file = NicePath("~/" GAME_DIR "/skins");
+		//VIZDOOM_CODE
+		//file = NicePath("~/" GAME_DIR "/skins");
+		file = NicePath("./" GAME_DIR "/skins");
 		D_AddDirectory (allwads, file);
 #endif	
 

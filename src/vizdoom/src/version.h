@@ -93,15 +93,16 @@ const char *GetVersionString();
 // More stuff that needs to be different for derivatives.
 #define GAMENAME "ViZDoom"
 #define GAMENAMELOWERCASE "vizdoom"
-#define FORUM_URL "http://forum.zdoom.org"
-#define BUGS_FORUM_URL	"http://forum.zdoom.org/index.php?c=3"
+#define FORUM_URL "https://groups.google.com/forum/#!forum/vizdoom"
+#define BUGS_FORUM_URL	"https://github.com/mwydmuch/ViZDoom/issues"
 
-#if defined(__APPLE__) || defined(_WIN32)
-#define GAME_DIR GAMENAME
-#else
-#define GAME_DIR ".config/" GAMENAMELOWERCASE
-#endif
-
+//VIZDOOM_CODE
+//#if defined(__APPLE__) || defined(_WIN32)
+//#define GAME_DIR GAMENAME
+//#else
+//#define GAME_DIR ".config/" GAMENAMELOWERCASE
+//#endif
+#define GAME_DIR "_" GAMENAMELOWERCASE
 
 // The maximum length of one save game description for the menus.
 #define SAVESTRINGSIZE		24
