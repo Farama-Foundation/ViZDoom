@@ -23,6 +23,9 @@
 #ifndef __VIZ_INPUT_H__
 #define __VIZ_INPUT_H__
 
+#include <cstdint>
+#include "d_ticcmd.h"
+
 enum VIZButton{
 
     VIZ_BT_ATTACK           = 0,
@@ -84,11 +87,14 @@ struct VIZInputState{
     double BT[VIZ_BT_COUNT];
     bool BT_AVAILABLE[VIZ_BT_COUNT];
     double BT_MAX_VALUE[VIZ_BT_AXIS_BT_COUNT];
+    double CMD_BT[VIZ_BT_COUNT]; // Parsed cmd->ucmd.buttons
 };
 
 void VIZ_Command(char *cmd);
 
 bool VIZ_CommmandFilter(const char *cmd);
+
+void VIZ_ParseCmdState(ticcmd_t *cmd);
 
 int VIZ_AxisFilter(VIZButton button, double value);
 
@@ -107,5 +113,7 @@ void VIZ_InputInit();
 void VIZ_InputTic();
 
 void VIZ_InputClose();
+
+void VIZ_LogInput();
 
 #endif

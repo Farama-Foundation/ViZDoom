@@ -37,9 +37,21 @@ namespace vizdoom{
         unsigned int objectId;
         std::string objectName;
         uint8_t value;
+
+        //bool isHostile;
+        //bool isUsable;
+
         double objectPositionX;
         double objectPositionY;
         double objectPositionZ;
+
+        double objectAngle;
+        double objectPitch;
+        double objectRoll;
+
+        double objectVelocityX;
+        double objectVelocityY;
+        double objectVelocityZ;
     };
 
     struct GameState {
@@ -145,6 +157,10 @@ namespace vizdoom{
         SECRETCOUNT,
         FRAGCOUNT,
         DEATHCOUNT,
+        HITCOUNT,
+        HITS_TAKEN,
+        DAMAGECOUNT,
+        DAMAGE_TAKEN,
         HEALTH,
         ARMOR,
         DEAD,

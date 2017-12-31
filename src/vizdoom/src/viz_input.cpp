@@ -29,9 +29,9 @@
 #include "d_main.h"
 #include "g_game.h"
 #include "d_player.h"
+#include "d_event.h"
 #include "c_dispatch.h"
 #include "r_utility.h"
-#include <cmath>
 
 bip::mapped_region *vizInputSMRegion = NULL;
 VIZInputState *vizInput = NULL;
@@ -113,6 +113,14 @@ bool VIZ_CommmandFilter(const char *cmd){
     }
 
     return true;
+}
+
+void VIZ_ParseCmdState(ticcmd_t *cmd){
+    return;
+    for(size_t i = 0; i < 20; ++i){
+        int bt = 1 << i; // ViZDoom's buttons map to the same values as the engine's buttons enum
+        vizInput->CMD_BT[i] = cmd->ucmd.buttons |= bt;
+    }
 }
 
 int VIZ_AxisFilter(VIZButton button, double value){
@@ -363,3 +371,14 @@ void VIZ_InputTic(){
 void VIZ_InputClose(){
     delete vizInputSMRegion;
 }
+
+void VIZ_LogInput() {
+    printf("input state: tic %d: buttons: (input/cmd)\n", gametic);
+    for (size_t i = 0; i < VIZ_BT_CMD_BT_COUNT; ++i) {
+        if (vizInput->BT_AVAILABLE[i]) {
+            printf("%f/%f ", vizInput->BT[i], vizInput->CMD_BT[i]);
+        }
+    }
+    printf("\n");
+}
+
