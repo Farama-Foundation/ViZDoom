@@ -60,8 +60,8 @@ CVAR (Int, viz_debug, 0, CVAR_NOSET)
 // 2 - tic basic debug msg
 // 3 - tic detailed debug msg
 // 4 - all
-
 CVAR (Bool, viz_debug_instances, 0, CVAR_NOSET) // prints instance id with every message
+CVAR (Int, viz_log, 0, CVAR_NOSET)
 
 // control
 CVAR (Bool, viz_controlled, false, CVAR_NOSET)
@@ -231,6 +231,11 @@ void VIZ_Tic(){
             VIZ_InputTic();
             ++vizTime;
         }
+    }
+
+    if(*viz_log) {
+        VIZ_LogPlayers();
+        VIZ_LogInput();
     }
 }
 

@@ -696,6 +696,7 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	fly += joyint(joyaxes[JOYAXIS_Up] * 2048);
 
 	// Handle mice.
+	//VIZDOOM_CODE
 	if (!Button_Mlook.bDown && !freelook) {
 		int value = (int) ((float) mousey * m_forward);
 		if(!*viz_controlled) forward += value;
@@ -783,6 +784,9 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 
 	cmd->ucmd.forwardmove <<= 8;
 	cmd->ucmd.sidemove <<= 8;
+
+	//VIZDOOM_CODE
+	if(*viz_controlled) VIZ_ParseCmdState(cmd);
 }
 
 //[Graf Zahl] This really helps if the mouse update rate can't be increased!

@@ -167,6 +167,7 @@ namespace vizdoom {
         double BT[BUTTON_COUNT];
         bool BT_AVAILABLE[BUTTON_COUNT];
         double BT_MAX_VALUE[DELTA_BUTTON_COUNT];
+        double CMD_BT[BUTTON_COUNT];
     };
 
     /* SM class */
