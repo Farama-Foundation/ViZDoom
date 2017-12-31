@@ -48,6 +48,26 @@ EXTERN_CVAR (Bool, viz_spectator)
 EXTERN_CVAR (Float, timelimit)
 
 VIZGameState *vizGameStateSM = NULL;
+VIZPlayerLogger vizPlayerLogger[VIZ_MAX_PLAYERS];
+
+/* Logger functions */
+/*--------------------------------------------------------------------------------------------------------------------*/
+
+void VIZ_LogDmg(AActor *target, AActor *inflictor, AActor *source, int amount){
+    //if(amount < 0) return;
+
+    for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
+        if(vizPlayerLogger[i].actor == target){
+            vizPlayerLogger[i].dmgTaken += amount;
+            ++vizPlayerLogger[i].hitsTaken;
+        }
+
+        if(vizPlayerLogger[i].actor == source || vizPlayerLogger[i].actor == inflictor){
+            vizPlayerLogger[i].dmgCount += amount;
+            ++vizPlayerLogger[i].hitCount;
+        }
+    }
+}
 
 
 /* Helper functions */
@@ -58,7 +78,11 @@ inline double VIZ_FixedToDouble(fixed_t fixed){
 }
 
 inline double VIZ_AngleToDouble(angle_t angle) {
-    return static_cast<double>(angle) / ANGLE_MAX * 360;
+    return static_cast<double>(angle) / ANGLE_MAX * 360.0;
+}
+
+inline double VIZ_PitchToDouble(fixed_t pitch) {
+    return static_cast<double>(pitch) / 32768.0 * 180.0 / 65536.0;
 }
 
 int VIZ_CheckItem(FName name) {
@@ -149,6 +173,11 @@ void VIZ_GameStateInit(){
     strncpy(vizGameStateSM->VERSION_STR, VIZ_VERSION_STR, 8);
     vizGameStateSM->SM_SIZE = vizSMSize;
 
+    vizGameStateSM->GAME_TIC = 0;
+    vizGameStateSM->PLAYER_HEALTH = 0;
+    vizGameStateSM->PLAYER_HAS_ACTOR = false;
+    vizGameStateSM->PLAYER_DEAD = true;
+
     for(int i = 0; i < 9; ++i){
         vizGameStateSM->PLAYER_MOVEMENT[i] = 0;
     }
@@ -212,7 +241,7 @@ void VIZ_GameStateTic(){
             vizGameStateSM->PLAYER_MOVEMENT[1] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.y);
             vizGameStateSM->PLAYER_MOVEMENT[2] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.z);
             vizGameStateSM->PLAYER_MOVEMENT[3] = VIZ_AngleToDouble(VIZ_PLAYER.mo->angle);
-            vizGameStateSM->PLAYER_MOVEMENT[4] = static_cast<double>(VIZ_PLAYER.mo->pitch) / 32768.0 * 180 / 65536.0;
+            vizGameStateSM->PLAYER_MOVEMENT[4] = VIZ_PitchToDouble(VIZ_PLAYER.mo->pitch);
             vizGameStateSM->PLAYER_MOVEMENT[5] = VIZ_AngleToDouble(VIZ_PLAYER.mo->roll);
             vizGameStateSM->PLAYER_MOVEMENT[6] = VIZ_FixedToDouble(VIZ_PLAYER.mo->velx);
             vizGameStateSM->PLAYER_MOVEMENT[7] = VIZ_FixedToDouble(VIZ_PLAYER.mo->vely);
@@ -244,7 +273,8 @@ void VIZ_GameStateTic(){
     vizGameStateSM->PLAYER_ON_GROUND = VIZ_PLAYER.onground;
 
     if (vizGameStateSM->PLAYER_HAS_ACTOR) vizGameStateSM->PLAYER_HEALTH = VIZ_PLAYER.mo->health;
-    else vizGameStateSM->PLAYER_HEALTH = VIZ_PLAYER.health;
+    //else vizGameStateSM->PLAYER_HEALTH = VIZ_PLAYER.health;
+    else vizGameStateSM->PLAYER_HEALTH = 0;
 
     vizGameStateSM->PLAYER_ARMOR = VIZ_CheckItem(NAME_BasicArmor);
 
@@ -256,8 +286,15 @@ void VIZ_GameStateTic(){
         vizGameStateSM->PLAYER_WEAPON[i] = VIZ_CheckSlotWeapons(i);
     }
 
+    vizPlayerLogger[VIZ_PLAYER_NUM].actor = (AActor*)VIZ_PLAYER.mo;
+    vizGameStateSM->PLAYER_HITCOUNT = vizPlayerLogger[VIZ_PLAYER_NUM].hitCount;
+    vizGameStateSM->PLAYER_HITS_TAKEN = vizPlayerLogger[VIZ_PLAYER_NUM].hitsTaken;
+    vizGameStateSM->PLAYER_DAMAGECOUNT = vizPlayerLogger[VIZ_PLAYER_NUM].dmgCount;
+    vizGameStateSM->PLAYER_DAMAGE_TAKEN = vizPlayerLogger[VIZ_PLAYER_NUM].dmgTaken;
+
     vizGameStateSM->PLAYER_NUMBER = (unsigned int)consoleplayer;
     vizGameStateSM->PLAYER_COUNT = 1;
+
     if(netgame || multiplayer) {
 
         vizGameStateSM->PLAYER_COUNT = 0;
@@ -267,10 +304,15 @@ void VIZ_GameStateTic(){
                 vizGameStateSM->PLAYER_N_IN_GAME[i] = true;
                 strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = players[i].fragcount;
+
+                vizPlayerLogger[i].actor = (AActor*)players[i].mo;
             }
             else{
                 //strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
+                vizGameStateSM->PLAYER_N_IN_GAME[i] = false;
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = 0;
+
+                vizPlayerLogger[i].actor = nullptr;
             }
         }
     }
@@ -288,21 +330,28 @@ void VIZ_GameStateUpdateLabels(){
 
         for(auto i = vizLabels->sprites.begin(); i != vizLabels->sprites.end(); ++i){
             if(i->labeled){
-                vizGameStateSM->LABEL[labelCount].objectId = i->actorId;
+                VIZLabel *label = &vizGameStateSM->LABEL[labelCount];
+                label->objectId = i->actorId;
                 //if(i->actor->health <= 0 || (i->actor->flags & MF_CORPSE) || (i->actor->flags6 & MF6_KILLED)) {
                 if((i->actor->flags & MF_CORPSE) || (i->actor->flags6 & MF6_KILLED)) {
-                    strncpy(vizGameStateSM->LABEL[labelCount].objectName, "Dead", VIZ_MAX_LABEL_NAME_LEN);
-                    strncpy(vizGameStateSM->LABEL[labelCount].objectName + 4, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN - 4);
+                    strncpy(label->objectName, "Dead", VIZ_MAX_LABEL_NAME_LEN);
+                    strncpy(label->objectName + 4, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN - 4);
                 }
-                else strncpy(vizGameStateSM->LABEL[labelCount].objectName, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN);
-                vizGameStateSM->LABEL[labelCount].value = i->label;
-                vizGameStateSM->LABEL[labelCount].objectPosition[0] = VIZ_FixedToDouble(i->position.x);
-                vizGameStateSM->LABEL[labelCount].objectPosition[1] = VIZ_FixedToDouble(i->position.y);
-                vizGameStateSM->LABEL[labelCount].objectPosition[2] = VIZ_FixedToDouble(i->position.z);
+                else strncpy(label->objectName, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN);
+
+                label->value = i->label;
+                label->objectPosition[0] = VIZ_FixedToDouble(i->actor->__pos.x);
+                label->objectPosition[1] = VIZ_FixedToDouble(i->actor->__pos.y);
+                label->objectPosition[2] = VIZ_FixedToDouble(i->actor->__pos.z);
+                label->objectPosition[3] = VIZ_AngleToDouble(i->actor->angle);
+                label->objectPosition[4] = VIZ_PitchToDouble(i->actor->pitch);
+                label->objectPosition[5] = VIZ_AngleToDouble(i->actor->roll);
+                label->objectPosition[6] = VIZ_FixedToDouble(i->actor->velx);
+                label->objectPosition[7] = VIZ_FixedToDouble(i->actor->vely);
+                label->objectPosition[8] = VIZ_FixedToDouble(i->actor->velz);
 
                 VIZ_DebugMsg(4, VIZ_FUNC, "labelCount: %d, objectId: %d, objectName: %s, value %d",
-                                labelCount+1, vizGameStateSM->LABEL[labelCount].objectId,
-                                vizGameStateSM->LABEL[labelCount].objectName, vizGameStateSM->LABEL[labelCount].value);
+                                labelCount + 1, label->objectId, label->objectName, label->value);
 
                 ++labelCount;
             }
@@ -326,4 +375,20 @@ void VIZ_GameStateInitNew(){
 
 void VIZ_GameStateClose(){
     if(vizSMRegion[0].region) delete vizSMRegion[0].region;
+}
+
+void VIZ_LogPlayers(){
+
+    printf("players state: tic %d: player_count: %d, players:\n", gametic, vizGameStateSM->PLAYER_COUNT);
+    for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
+        if(playeringame[i]){
+            APlayerPawn* player = players[i].mo;
+            printf("no: %d, name: %s, pos: %f %f %f, rot: %f %f %f, vel: %f %f %f\n", i + 1, players[i].userinfo.GetName(),
+                   VIZ_FixedToDouble(player->__pos.x), VIZ_FixedToDouble(player->__pos.y), VIZ_FixedToDouble(player->__pos.z),
+                   VIZ_AngleToDouble(player->angle), VIZ_PitchToDouble(player->pitch), VIZ_AngleToDouble(player->roll),
+                   VIZ_FixedToDouble(player->velx), VIZ_FixedToDouble(player->vely), VIZ_FixedToDouble(player->velz));
+            printf("no: %d, name: %s, dmgCount: %d, hitCount: %d\n", i + 1, players[i].userinfo.GetName(),
+                   vizPlayerLogger[i].dmgCount, vizPlayerLogger[i].hitCount);
+        }
+    }
 }

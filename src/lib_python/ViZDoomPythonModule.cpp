@@ -241,6 +241,10 @@ PYBIND11_MODULE(vizdoom, vz){
         ENUM_VAL_2_PYT(SECRETCOUNT)
         ENUM_VAL_2_PYT(FRAGCOUNT)
         ENUM_VAL_2_PYT(DEATHCOUNT)
+        ENUM_VAL_2_PYT(HITCOUNT)
+        ENUM_VAL_2_PYT(HITS_TAKEN)
+        ENUM_VAL_2_PYT(DAMAGECOUNT)
+        ENUM_VAL_2_PYT(DAMAGE_TAKEN)
         ENUM_VAL_2_PYT(HEALTH)
         ENUM_VAL_2_PYT(ARMOR)
         ENUM_VAL_2_PYT(DEAD)
@@ -368,7 +372,13 @@ PYBIND11_MODULE(vizdoom, vz){
         .def_readonly("value", &LabelPython::value)
         .def_readonly("object_position_x", &LabelPython::objectPositionX)
         .def_readonly("object_position_y", &LabelPython::objectPositionY)
-        .def_readonly("object_position_z", &LabelPython::objectPositionZ);
+        .def_readonly("object_position_z", &LabelPython::objectPositionZ)
+        .def_readonly("object_angle", &LabelPython::objectAngle)
+        .def_readonly("object_pitch", &LabelPython::objectPitch)
+        .def_readonly("object_roll", &LabelPython::objectRoll)
+        .def_readonly("object_velocity_x", &LabelPython::objectVelocityX)
+        .def_readonly("object_velocity_y", &LabelPython::objectVelocityY)
+        .def_readonly("object_velocity_z", &LabelPython::objectVelocityZ);
 
     class_<GameStatePython>(vz, "GameState")
         .def_readonly("number", &GameStatePython::number)

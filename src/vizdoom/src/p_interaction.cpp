@@ -59,6 +59,11 @@
 #include "d_net.h"
 #include "d_netinf.h"
 
+//VIZDOOM_CODE
+#include "viz_main.h"
+#include "viz_game.h"
+EXTERN_CVAR (Int, viz_respawn_delay)
+
 static FRandom pr_obituary ("Obituary");
 static FRandom pr_botrespawn ("BotRespawn");
 static FRandom pr_killmobj ("ActorDie");
@@ -71,11 +76,6 @@ static FRandom pr_kickbackdir ("KickbackDir");
 CVAR (Bool, cl_showsprees, true, CVAR_ARCHIVE)
 CVAR (Bool, cl_showmultikills, true, CVAR_ARCHIVE)
 EXTERN_CVAR (Bool, show_obituaries)
-
-//VIZDOOM_CODE
-#include "viz_main.h"
-EXTERN_CVAR (Int, viz_respawn_delay)
-
 
 FName MeansOfDeath;
 
@@ -1322,6 +1322,9 @@ int P_DamageMobj (AActor *target, AActor *inflictor, AActor *source, int damage,
 			}
 		}
 
+        //VIZDOOM_CODE
+        VIZ_LogDmg(target, inflictor, source, damage);
+
 		player->health -= damage;		// mirror mobj health here for Dave
 		// [RH] Make voodoo dolls and real players record the same health
 		target->health = player->mo->health -= damage;
@@ -1377,7 +1380,10 @@ int P_DamageMobj (AActor *target, AActor *inflictor, AActor *source, int damage,
 					return damage;
 			}
 		}
-	
+
+        //VIZDOOM_CODE
+        VIZ_LogDmg(target, inflictor, source, damage);
+
 		target->health -= damage;	
 	}
 
@@ -1559,6 +1565,7 @@ dopain:
 	{
 		return -1; //NOW we return -1!
 	}
+
 	return damage;
 }
 
@@ -1766,6 +1773,10 @@ void P_PoisonDamage (player_t *player, AActor *source, int damage,
 	//
 	// do the damage
 	//
+
+    //VIZDOOM_CODE
+    VIZ_LogDmg(target, source, source, damage);
+
 	target->health -= damage;
 	if (target->health <= 0)
 	{ // Death

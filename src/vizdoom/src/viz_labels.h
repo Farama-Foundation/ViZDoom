@@ -55,7 +55,7 @@ struct VIZLabel{
     unsigned int objectId;
     char objectName[VIZ_MAX_LABEL_NAME_LEN];
     BYTE value;
-    double objectPosition[3];
+    double objectPosition[9];
 };
 
 struct VIZSprite{
@@ -65,8 +65,6 @@ struct VIZSprite{
     vissprite_t* vissprite;
     bool labeled;
     BYTE label;
-    fixedvec3 position;
-
 
     VIZSprite(){
         this->actor = NULL;

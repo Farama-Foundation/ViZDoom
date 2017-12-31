@@ -40,6 +40,29 @@
 #define VIZ_GV_USER_COUNT 60
 #define VIZ_GV_SLOTS_SIZE 10
 
+struct VIZPlayerLogger{
+    AActor* actor;
+    int dmgCount;
+    int dmgTaken;
+    int hitCount;
+    int hitsTaken;
+    int attackCount;
+
+    VIZPlayerLogger(){
+        this->actor = NULL;
+        this->dmgCount = 0;
+        this->dmgTaken = 0;
+        this->hitCount = 0;
+        this->hitsTaken = 0;
+        this->attackCount = 0;
+    };
+};
+
+extern VIZPlayerLogger vizPlayerLogger[VIZ_MAX_PLAYERS];
+
+void VIZ_LogDmg(AActor *target, AActor *inflictor, AActor *source, int damage);
+
+
 struct VIZGameState{
     // VERSION
     unsigned int VERSION;
@@ -123,10 +146,15 @@ struct VIZGameState{
     char PLAYER_N_NAME[VIZ_MAX_PLAYERS][VIZ_MAX_PLAYER_NAME_LEN];
     int PLAYER_N_FRAGCOUNT[VIZ_MAX_PLAYERS];
 
-    //LABELS
+    // LABELS
     unsigned int LABEL_COUNT;
     VIZLabel LABEL[VIZ_MAX_LABELS];
 
+    // LOGGED
+    int PLAYER_HITCOUNT;
+    int PLAYER_HITS_TAKEN;
+    int PLAYER_DAMAGECOUNT;
+    int PLAYER_DAMAGE_TAKEN;
 };
 
 void VIZ_GameStateInit();
@@ -140,5 +168,7 @@ void VIZ_GameStateUpdateLabels();
 void VIZ_GameStateInitNew();
 
 void VIZ_GameStateClose();
+
+void VIZ_LogPlayers();
 
 #endif
