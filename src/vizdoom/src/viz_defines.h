@@ -29,6 +29,7 @@
 
 #define VIZ_TIME                    ((unsigned int)level.starttime + (unsigned int)level.maptime)
 
+#define VIZ_PLAYER_NUM              consoleplayer
 #define VIZ_PLAYER                  players[consoleplayer]
 #define VIZ_MAX_PLAYERS             MAXPLAYERS // 16
 #define VIZ_MAX_PLAYER_NAME_LEN     MAXPLAYERNAME + 1 //(15 + 1 = 16)

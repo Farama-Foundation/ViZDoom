@@ -72,9 +72,18 @@ namespace vizdoom {
         unsigned int objectId;
         pyb::str objectName;
         uint8_t value;
+
         double objectPositionX;
         double objectPositionY;
         double objectPositionZ;
+
+        double objectAngle;
+        double objectPitch;
+        double objectRoll;
+
+        double objectVelocityX;
+        double objectVelocityY;
+        double objectVelocityZ;
     };
 
     struct GameStatePython {

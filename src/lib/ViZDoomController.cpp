@@ -907,6 +907,14 @@ namespace vizdoom {
                 return this->gameState->PLAYER_FRAGCOUNT;
             case DEATHCOUNT:
                 return this->gameState->PLAYER_DEATHCOUNT;
+            case HITCOUNT:
+                return this->gameState->PLAYER_HITCOUNT;
+            case HITS_TAKEN:
+                return this->gameState->PLAYER_HITS_TAKEN;
+            case DAMAGECOUNT:
+                return this->gameState->PLAYER_DAMAGECOUNT;
+            case DAMAGE_TAKEN:
+                return this->gameState->PLAYER_DAMAGE_TAKEN;
             case HEALTH :
                 return this->gameState->PLAYER_HEALTH;
             case ARMOR :

@@ -66,7 +66,7 @@ namespace vizdoom {
         unsigned int objectId;
         char objectName[MAX_LABEL_NAME_LEN];
         uint8_t value;
-        double objectPosition[3];
+        double objectPosition[9];
     };
 
     struct SMGameState {
@@ -155,6 +155,12 @@ namespace vizdoom {
         //LABELS
         unsigned int LABEL_COUNT;
         SMLabel LABEL[MAX_LABELS];
+
+        // LOGGED
+        int PLAYER_HITCOUNT;
+        int PLAYER_HITS_TAKEN;
+        int PLAYER_DAMAGECOUNT;
+        int PLAYER_DAMAGE_TAKEN;
     };
 
     struct SMInputState {
