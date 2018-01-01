@@ -15,8 +15,8 @@ int main(){
     game->loadConfig("../../scenarios/cig.cfg");
 
     // Select game and map You want to use.
-    game->setDoomGamePath("../../scenarios/freedoom2.wad");
-    //game->setDoomGamePath("../../scenarios/doom2.wad");      // Not provided with environment due to licences.
+    game->setDoomGamePath("../../bin/freedoom2.wad");
+    //game->setDoomGamePath("../../bin/doom2.wad");      // Not provided with environment due to licences.
 
     game->setDoomMap("map01");      // Limited deathmatch.
     //game->setDoomMap("map02");      // Full deathmatch.

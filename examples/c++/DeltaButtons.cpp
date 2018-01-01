@@ -21,8 +21,8 @@ int main(){
 
     game->setViZDoomPath("../../bin/vizdoom");
 
-    game->setDoomGamePath("../../scenarios/freedoom2.wad");
-    //game->setDoomGamePath("../../scenarios/doom2.wad");      // Not provided with environment due to licences.
+    game->setDoomGamePath("../../bin/freedoom2.wad");
+    //game->setDoomGamePath("../../bin/doom2.wad");      // Not provided with environment due to licences.
 
     game->setDoomMap("map01");
 
