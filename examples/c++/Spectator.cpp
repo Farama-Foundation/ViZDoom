@@ -25,6 +25,9 @@ int main(){
     //game->loadConfig("../../scenarios/predict_position.cfg");
     //game->loadConfig("../../scenarios/take_cover.cfg");
 
+    game->setDoomGamePath("../../bin/freedoom2.wad");
+    //game->setDoomGamePath("../../bin/doom2.wad");      // Not provided with environment due to licences.
+
     game->setScreenResolution(RES_640X480);
 
     // Enables spectator mode, so You can play and agent watch your actions.
