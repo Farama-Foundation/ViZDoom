@@ -121,10 +121,12 @@ void VIZ_ReadUserCmdState(usercmd_t *ucmd, int player){
         for (size_t i = 0; i < 20; ++i) {
             int bt = 1 << i; // ViZDoom's buttons map to the same values as the engine's buttons enum
             vizInput->CMD_BT[i] = (ucmd->buttons & bt) != 0 ? 1.0 : 0.0;
-            printf("%d: %d, %f ", bt, ucmd->buttons & bt, vizInput->CMD_BT[i]);
         }
-        printf("\n");
-        printf("%d\n", ucmd->buttons);
+        vizInput->CMD_BT[VIZ_BT_VIEW_ANGLE_AXIS] = static_cast<double>(ucmd->yaw)/32768 * 180;
+        vizInput->CMD_BT[VIZ_BT_VIEW_PITCH_AXIS] = static_cast<double>(ucmd->pitch)/32768 * 180;
+        vizInput->CMD_BT[VIZ_BT_FORWARD_BACKWARD_AXIS] = static_cast<double>(ucmd->forwardmove);
+        vizInput->CMD_BT[VIZ_BT_LEFT_RIGHT_AXIS] = static_cast<double>(ucmd->sidemove);
+        vizInput->CMD_BT[VIZ_BT_UP_DOWN_AXIS] = static_cast<double>(ucmd->upmove);
     }
 }
 
@@ -136,14 +138,14 @@ int VIZ_AxisFilter(VIZButton button, double value){
         if(vizInput->BT_MAX_VALUE[axis] != 0){
             double maxValue;
             if(button == VIZ_BT_VIEW_ANGLE_AXIS || button == VIZ_BT_VIEW_PITCH_AXIS)
-                maxValue = vizInput->BT_MAX_VALUE[axis]/180 * 32768;
+                maxValue = vizInput->BT_MAX_VALUE[axis]/180.0 * 32768.0;
             else maxValue = vizInput->BT_MAX_VALUE[axis];
 
             if(std::abs(value) > std::abs(maxValue))
                 value = value/std::abs(value) * std::abs(maxValue) + 1;
         }
         if(button == VIZ_BT_VIEW_ANGLE_AXIS || button == VIZ_BT_VIEW_PITCH_AXIS)
-            vizInput->BT[button] = value/32768 * 180;
+            vizInput->BT[button] = value/32768.0 * 180.0;
         else vizInput->BT[button] = value;
         vizLastInputUpdate[button] = VIZ_TIME;
     }
@@ -152,7 +154,7 @@ int VIZ_AxisFilter(VIZButton button, double value){
 
 void VIZ_AddAxisBT(VIZButton button, double value){
     if(button == VIZ_BT_VIEW_ANGLE_AXIS || button == VIZ_BT_VIEW_PITCH_AXIS)
-        value = value/180 * 32768;
+        value = value/180.0 * 32768.0;
     int filtredValue = VIZ_AxisFilter(button, value);
     switch(button){
         case VIZ_BT_VIEW_PITCH_AXIS :

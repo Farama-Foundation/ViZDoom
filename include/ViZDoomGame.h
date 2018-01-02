@@ -80,6 +80,7 @@ namespace vizdoom {
 
         void setButtonMaxValue(Button button, double maxValue);
         double getButtonMaxValue(Button button);
+        double getButton(Button button);
 
 
         /* GameVariables getters and setters */

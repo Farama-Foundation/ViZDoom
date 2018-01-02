@@ -331,6 +331,11 @@ namespace vizdoom {
         return this->doomController->getButtonMaxValue(button);
     }
 
+    double DoomGame::getButton(Button button){
+        if(!this->isRunning()) throw ViZDoomIsNotRunningException();
+        return this->doomController->getButtonState(button);
+    }
+
     std::vector<GameVariable> DoomGame::getAvailableGameVariables(){
         return this->availableGameVariables;
     }
