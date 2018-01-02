@@ -62,6 +62,7 @@ namespace vizdoom {
             if (fileExists(cfgOverrideFile)) loadConfig(cfgOverrideFile);
 
             this->lastAction.resize(this->availableButtons.size());
+            this->nextAction.resize(this->availableButtons.size());
 
             this->doomController->setAllowDoomInput(this->mode == SPECTATOR || this->mode == ASYNC_SPECTATOR);
             this->doomController->setRunDoomAsync(this->mode == ASYNC_PLAYER || this->mode == ASYNC_SPECTATOR);
@@ -94,6 +95,7 @@ namespace vizdoom {
         if (this->isRunning()) {
             this->doomController->close();
             this->lastAction.clear();
+            this->nextAction.clear();
 
             this->state = nullptr;
 
@@ -107,6 +109,14 @@ namespace vizdoom {
 
     bool DoomGame::isMultiplayerGame() {
         return this->running && this->doomController->isMultiplayerGame();
+    }
+
+    bool DoomGame::isRecordingEpisode(){
+        return this->running && this->doomController->isRecording();
+    }
+
+    bool DoomGame::isReplayingEpisode(){
+        return this->running && this->doomController->isReplaying();
     }
 
     void DoomGame::newEpisode(std::string filePath) {
@@ -123,6 +133,7 @@ namespace vizdoom {
 
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
 
+        //this->doomController->restartMap(); // Workaround for some problems
         this->doomController->playDemo(filePath, player);
         this->resetState();
     }
@@ -133,12 +144,11 @@ namespace vizdoom {
 
         for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
             if (i < actions.size()) {
-                this->lastAction[i] = actions[i];
-
+                this->nextAction[i] = actions[i];
             } else {
-                this->lastAction[i] = 0;
+                this->nextAction[i] = 0;
             }
-            this->doomController->setButtonState(this->availableButtons[i], this->lastAction[i]);
+            this->doomController->setButtonState(this->availableButtons[i], this->nextAction[i]);
         }
     }
 
@@ -173,6 +183,18 @@ namespace vizdoom {
     }
 
     void DoomGame::updateState() {
+
+        /* Update last action */
+        if(this->doomController->isAllowDoomInput() || this->doomController->isReplaying()) {
+            for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
+                this->lastAction[i] = this->doomController->getButtonState(this->availableButtons[i]);
+            }
+        }
+        else{
+            for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
+                this->lastAction[i] = this->nextAction[i];
+            }
+        }
 
         /* Update reward */
         double reward = 0;
@@ -241,16 +263,17 @@ namespace vizdoom {
                 this->state->labels.push_back(label);
             }
         } else this->state = nullptr;
-
-        /* Update last action */
-        for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
-            this->lastAction[i] = this->doomController->getButtonState(this->availableButtons[i]);
-        }
     }
 
-    std::shared_ptr<GameState> DoomGame::getState() { return this->state; }
+    std::shared_ptr<GameState> DoomGame::getState() {
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
+        return this->state;
+    }
 
-    std::vector<double> DoomGame::getLastAction() { return this->lastAction; }
+    std::vector<double> DoomGame::getLastAction() {
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
+        return this->lastAction;
+    }
 
     bool DoomGame::isNewEpisode() {
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
@@ -348,6 +371,7 @@ namespace vizdoom {
     }
 
     void DoomGame::sendGameCommand(std::string cmd) {
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         this->doomController->sendCommand(cmd);
     }
 
@@ -401,9 +425,15 @@ namespace vizdoom {
 
     void DoomGame::setDeathPenalty(double deathPenalty) { this->deathPenalty = deathPenalty; }
 
-    double DoomGame::getLastReward() { return this->lastReward; }
+    double DoomGame::getLastReward() {
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
+        return this->lastReward;
+    }
 
-    double DoomGame::getTotalReward() { return this->summaryReward; }
+    double DoomGame::getTotalReward() {
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
+        return this->summaryReward;
+    }
 
     void DoomGame::setScreenResolution(ScreenResolution resolution) {
         unsigned int width = 0, height = 0;

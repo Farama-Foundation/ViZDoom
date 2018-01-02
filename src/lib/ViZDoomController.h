@@ -232,6 +232,8 @@ namespace vizdoom {
         unsigned int getGameTic();
         bool isMultiplayerGame();
         bool isNetGame();
+        bool isRecording();
+        bool isReplaying();
         unsigned int getMapTic();
         int getMapReward();
         bool isPlayerDead();

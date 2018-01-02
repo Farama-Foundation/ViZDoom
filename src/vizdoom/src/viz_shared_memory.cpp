@@ -35,11 +35,6 @@ char * vizSMName;
 
 VIZSMRegion vizSMRegion[VIZ_SM_REGION_COUNT];
 
-size_t vizSMGameStateOffset = 0;
-size_t vizSMInputOffset = sizeof(VIZGameState);
-size_t vizSMBuffersOffset = sizeof(VIZGameState) + sizeof(VIZInputState);
-
-
 void VIZ_SMInit(const char * id){
 
     Printf("VIZ_SMInit: Init shared memory.\n");
@@ -103,7 +98,5 @@ size_t VIZ_SMGetRegionOffset(VIZSMRegion* regionPtr){
 
 void VIZ_SMClose(){
     for(int i = 0; i < VIZ_SM_REGION_COUNT; ++i) VIZ_SMDeleteRegion(&vizSMRegion[i]);
-
-    //bip::shared_memory_object::remove(vizSMName);
 	delete[] vizSMName;
 }

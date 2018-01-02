@@ -51,6 +51,8 @@ namespace vizdoom {
         void replayEpisode(std::string filePath, unsigned int player = 0);
         bool isRunning();
         bool isMultiplayerGame();
+        bool isRecordingEpisode();
+        bool isReplayingEpisode();
 
         void setAction(std::vector<double> const &actions);
         void advanceAction(unsigned int tics = 1, bool updateState = true);
@@ -199,6 +201,7 @@ namespace vizdoom {
         std::vector<GameVariable> availableGameVariables;
         std::vector<Button> availableButtons;
         std::vector<double> lastAction;
+        std::vector<double> nextAction;
 
         unsigned int nextStateNumber;
         unsigned int lastMapTic;

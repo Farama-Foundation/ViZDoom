@@ -54,18 +54,24 @@ VIZPlayerLogger vizPlayerLogger[VIZ_MAX_PLAYERS];
 /*--------------------------------------------------------------------------------------------------------------------*/
 
 void VIZ_LogDmg(AActor *target, AActor *inflictor, AActor *source, int amount){
-    //if(amount < 0) return;
+    if(amount < 0) return;
 
     for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
         if(vizPlayerLogger[i].actor == target){
             vizPlayerLogger[i].dmgTaken += amount;
             ++vizPlayerLogger[i].hitsTaken;
+
+            if(target == source || target == inflictor){
+                vizPlayerLogger[i].selfInflictedDamege += amount;
+                ++vizPlayerLogger[i].selfHitCount;
+            }
         }
 
         if(vizPlayerLogger[i].actor == source || vizPlayerLogger[i].actor == inflictor){
             vizPlayerLogger[i].dmgCount += amount;
             ++vizPlayerLogger[i].hitCount;
         }
+
     }
 }
 
@@ -158,7 +164,7 @@ int VIZ_CheckSlotWeapons(unsigned int slot){
 void VIZ_GameStateInit(){
 
     try {
-        VIZSMRegion* gameStateRegion = &vizSMRegion[0];
+        VIZSMRegion* gameStateRegion = &VIZ_SM_GAMESTATE;
         VIZ_SMCreateRegion(gameStateRegion, false, 0, sizeof(VIZGameState));
         vizGameStateSM = static_cast<VIZGameState *>(gameStateRegion->address);
 
@@ -374,7 +380,7 @@ void VIZ_GameStateInitNew(){
 }
 
 void VIZ_GameStateClose(){
-    if(vizSMRegion[0].region) delete vizSMRegion[0].region;
+    VIZ_SMDeleteRegion(&VIZ_SM_GAMESTATE);
 }
 
 void VIZ_LogPlayers(){

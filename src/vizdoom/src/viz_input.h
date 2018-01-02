@@ -94,7 +94,7 @@ void VIZ_Command(char *cmd);
 
 bool VIZ_CommmandFilter(const char *cmd);
 
-void VIZ_ParseCmdState(ticcmd_t *cmd);
+void VIZ_ReadUserCmdState(usercmd_t *ucmd, int player);
 
 int VIZ_AxisFilter(VIZButton button, double value);
 
