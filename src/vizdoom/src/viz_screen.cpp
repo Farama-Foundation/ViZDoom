@@ -181,14 +181,14 @@ void VIZ_ScreenUpdateSM(){
 
     try {
         for (int i = 0; i != 4; ++i) {
-            VIZSMRegion *bufferRegion = &vizSMRegion[i + 2];
+            VIZSMRegion *bufferRegion = &vizSMRegion[VIZ_SM_SCREEN_NUM + i];
             if (SMBufferSize[i]) {
                 VIZ_SMCreateRegion(bufferRegion, false, VIZ_SMGetRegionOffset(bufferRegion), SMBufferSize[i]);
                 memset(bufferRegion->address, 0, bufferRegion->size);
             }
             else VIZ_SMDeleteRegion(bufferRegion);
 
-            VIZ_DebugMsg(1, VIZ_FUNC, "region: %d, offset %zu, size: %zu", i + 2,
+            VIZ_DebugMsg(1, VIZ_FUNC, "region: %d, offset %zu, size: %zu", VIZ_SM_SCREEN_NUM + i,
                          bufferRegion->offset, bufferRegion->size);
         }
     }
@@ -196,10 +196,10 @@ void VIZ_ScreenUpdateSM(){
         VIZ_Error(VIZ_FUNC, "Failed to map buffers.");
     }
 
-    vizScreenSM = static_cast<BYTE *>(vizSMRegion[2].address);
-    vizDepthSM = static_cast<BYTE *>(vizSMRegion[3].address);
-    vizLabelsSM = static_cast<BYTE *>(vizSMRegion[4].address);
-    vizAutomapSM = static_cast<BYTE *>(vizSMRegion[5].address);
+    vizScreenSM = static_cast<BYTE *>(VIZ_SM_SCREEN.address);
+    vizDepthSM = static_cast<BYTE *>(VIZ_SM_DEPTH.address);
+    vizLabelsSM = static_cast<BYTE *>(VIZ_SM_LABELS.address);
+    vizAutomapSM = static_cast<BYTE *>(VIZ_SM_AUTOMAP.address);
 }
 
 void VIZ_CopyBuffer(BYTE *vizBuffer){

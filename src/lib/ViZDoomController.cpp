@@ -362,7 +362,6 @@ namespace vizdoom {
 
             if (this->gameState->DEMO_RECORDING) this->sendCommand("stop");
 
-
             if(this->gameState->GAME_MULTIPLAYER){
                 this->setDoomSeed(this->getNextDoomSeed());
                 if(this->gameState->GAME_SETTINGS_CONTROLLER) this->sendCommand(std::string("changemap ") + this->map);
@@ -432,6 +431,10 @@ namespace vizdoom {
         if (this->doomRunning && !this->mapChanging) {
 
             if (this->gameState->DEMO_RECORDING) this->sendCommand("stop");
+
+            // Workaround for some problems
+            this->sendCommand(std::string("map ") + this->map);
+            this->MQDoom->send(MSG_CODE_TIC);
 
             this->sendCommand(std::string("playdemo ") + prepareLmpFilePath(demoPath));
 
@@ -822,7 +825,10 @@ namespace vizdoom {
     SMGameState *const DoomController::getGameState() { return this->gameState; }
 
     double DoomController::getButtonState(Button button) {
-        if (this->doomRunning) return this->input->BT[button];
+        if (this->doomRunning){
+            if(this->isReplaying()) return this->input->CMD_BT[button];
+            else return this->input->BT[button];
+        }
         else return 0;
     }
 
@@ -956,6 +962,10 @@ namespace vizdoom {
     bool DoomController::isMultiplayerGame() { return this->gameState->GAME_MULTIPLAYER; }
 
     bool DoomController::isNetGame() { return this->gameState->GAME_NETGAME; }
+
+    bool DoomController::isRecording() { return this->gameState->DEMO_RECORDING; }
+
+    bool DoomController::isReplaying() { return this->gameState->DEMO_PLAYBACK; }
 
     unsigned int DoomController::getMapTic() { return this->gameState->MAP_TIC; }
 

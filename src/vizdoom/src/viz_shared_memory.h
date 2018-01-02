@@ -29,12 +29,19 @@
 #define VIZ_SM_NAME_BASE "ViZDoomSM"
 #define VIZ_SM_REGION_COUNT 6
 
-#define VIZ_SM_GAMESTATE    vizSMRegion[0]
-#define VIZ_SM_INPUTSTATE   vizSMRegion[1]
-#define VIZ_SM_SCREEN       vizSMRegion[2]
-#define VIZ_SM_DEPTH        vizSMRegion[3]
-#define VIZ_SM_LABELS       vizSMRegion[4]
-#define VIZ_SM_AUTOMAP      vizSMRegion[5]
+#define VIZ_SM_GAMESTATE_NUM    0
+#define VIZ_SM_INPUTSTATE_NUM   1
+#define VIZ_SM_SCREEN_NUM       2
+#define VIZ_SM_DEPTH_NUM        3
+#define VIZ_SM_LABELS_NUM       4
+#define VIZ_SM_AUTOMAP_NUM      5
+
+#define VIZ_SM_GAMESTATE    vizSMRegion[VIZ_SM_GAMESTATE_NUM]
+#define VIZ_SM_INPUTSTATE   vizSMRegion[VIZ_SM_INPUTSTATE_NUM]
+#define VIZ_SM_SCREEN       vizSMRegion[VIZ_SM_SCREEN_NUM]
+#define VIZ_SM_DEPTH        vizSMRegion[VIZ_SM_DEPTH_NUM]
+#define VIZ_SM_LABELS       vizSMRegion[VIZ_SM_LABELS_NUM]
+#define VIZ_SM_AUTOMAP      vizSMRegion[VIZ_SM_AUTOMAP_NUM]
 
 namespace bip = boost::interprocess;
 
@@ -58,10 +65,6 @@ struct VIZSMRegion{
 };
 
 extern VIZSMRegion vizSMRegion[VIZ_SM_REGION_COUNT];
-
-extern size_t vizSMGameStateOffset;
-extern size_t vizSMInputOffset;
-extern size_t vizSMBuffersOffset;
 
 void VIZ_SMInit(const char * id);
 

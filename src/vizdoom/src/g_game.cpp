@@ -786,7 +786,7 @@ void G_BuildTiccmd (ticcmd_t *cmd)
 	cmd->ucmd.sidemove <<= 8;
 
 	//VIZDOOM_CODE
-	if(*viz_controlled) VIZ_ParseCmdState(cmd);
+	//if(*viz_controlled) VIZ_ReadCmdState(cmd);
 }
 
 //[Graf Zahl] This really helps if the mouse update rate can't be increased!
@@ -2379,6 +2379,7 @@ void G_ReadDemoTiccmd (ticcmd_t *cmd, int player)
 			break;
 		}
 	}
+    VIZ_ReadUserCmdState(&cmd->ucmd, player);
 } 
 
 bool stoprecording;

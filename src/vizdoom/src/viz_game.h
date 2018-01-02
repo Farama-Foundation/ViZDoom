@@ -47,6 +47,8 @@ struct VIZPlayerLogger{
     int hitCount;
     int hitsTaken;
     int attackCount;
+    int selfInflictedDamege;
+    int selfHitCount;
 
     VIZPlayerLogger(){
         this->actor = NULL;
@@ -55,6 +57,8 @@ struct VIZPlayerLogger{
         this->hitCount = 0;
         this->hitsTaken = 0;
         this->attackCount = 0;
+        this->selfInflictedDamege = 0;
+        this->selfHitCount = 0;
     };
 };
 

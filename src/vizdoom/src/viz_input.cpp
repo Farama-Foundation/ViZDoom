@@ -28,12 +28,12 @@
 
 #include "d_main.h"
 #include "g_game.h"
+#include "d_net.h"
 #include "d_player.h"
 #include "d_event.h"
 #include "c_dispatch.h"
 #include "r_utility.h"
 
-bip::mapped_region *vizInputSMRegion = NULL;
 VIZInputState *vizInput = NULL;
 bool vizInputInited = false;
 float vizLastInputBT[VIZ_BT_COUNT];
@@ -107,6 +107,7 @@ bool VIZ_CommmandFilter(const char *cmd){
                 vizInput->BT[i] = state;
                 vizLastInputUpdate[i] = VIZ_TIME;
             }
+            //vizInput->CMD_BT[i] = state;
         }
 
         delete[] ckeckCmd;
@@ -115,16 +116,20 @@ bool VIZ_CommmandFilter(const char *cmd){
     return true;
 }
 
-void VIZ_ParseCmdState(ticcmd_t *cmd){
-    return;
-    for(size_t i = 0; i < 20; ++i){
-        int bt = 1 << i; // ViZDoom's buttons map to the same values as the engine's buttons enum
-        vizInput->CMD_BT[i] = cmd->ucmd.buttons |= bt;
+void VIZ_ReadUserCmdState(usercmd_t *ucmd, int player){
+    if(vizInputInited && player == consoleplayer) {
+        for (size_t i = 0; i < 20; ++i) {
+            int bt = 1 << i; // ViZDoom's buttons map to the same values as the engine's buttons enum
+            vizInput->CMD_BT[i] = (ucmd->buttons & bt) != 0 ? 1.0 : 0.0;
+            printf("%d: %d, %f ", bt, ucmd->buttons & bt, vizInput->CMD_BT[i]);
+        }
+        printf("\n");
+        printf("%d\n", ucmd->buttons);
     }
 }
 
 int VIZ_AxisFilter(VIZButton button, double value){
-    if(value != 0 && button >= VIZ_BT_CMD_BT_COUNT && button < VIZ_BT_COUNT){
+    if(vizInputInited && value != 0 && button >= VIZ_BT_CMD_BT_COUNT && button < VIZ_BT_COUNT){
 
         if(!vizInput->BT_AVAILABLE[button]) return 0;
         size_t axis = button - VIZ_BT_CMD_BT_COUNT;
@@ -313,7 +318,7 @@ void VIZ_AddBTCommand(VIZButton button, double state){
 void VIZ_InputInit() {
 
     try {
-        VIZSMRegion* inputRegion = &vizSMRegion[1];
+        VIZSMRegion* inputRegion = &VIZ_SM_INPUTSTATE;
         VIZ_SMCreateRegion(inputRegion, true, VIZ_SMGetRegionOffset(inputRegion), sizeof(VIZInputState));
         vizInput = static_cast<VIZInputState *>(inputRegion->address);
 
@@ -369,7 +374,7 @@ void VIZ_InputTic(){
 }
 
 void VIZ_InputClose(){
-    delete vizInputSMRegion;
+    VIZ_SMDeleteRegion(&VIZ_SM_INPUTSTATE);
 }
 
 void VIZ_LogInput() {
