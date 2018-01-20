@@ -102,6 +102,9 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
     #define ENUM_CLASS_VAL_2_LUA(c, v) value( #v , c::v )
     /* value("VALUE", (int)class::VALUE) */
 
+    #define CLASS_VAL_2_LUA(c, f) .def_readonly( #f , &c::f )
+    /* .def_readonly("function", &class::function) */
+
     #define FUNC_2_LUA(f) def( #f , f )
     /* def("function", function) */
 
@@ -372,22 +375,28 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
         /*------------------------------------------------------------------------------------------------------------*/
 
         class_<GameStateLua>("GameState")
-            .def_readonly("number", &GameStateLua::number)
-            .def_readonly("tic", &GameStateLua::tic)
-            .def_readonly("gameVariables", &GameStateLua::gameVariables)
-            .def_readonly("screenBuffer", &GameStateLua::screenBuffer)
-            .def_readonly("depthBuffer", &GameStateLua::depthBuffer)
-            .def_readonly("labelsBuffer", &GameStateLua::labelsBuffer)
-            .def_readonly("automapBuffer", &GameStateLua::automapBuffer)
-            .def_readonly("labels", &GameStateLua::labels),
+            CLASS_VAL_2_LUA(GameStateLua, number)
+            CLASS_VAL_2_LUA(GameStateLua, tic)
+            CLASS_VAL_2_LUA(GameStateLua, gameVariables)
+            CLASS_VAL_2_LUA(GameStateLua, screenBuffer)
+            CLASS_VAL_2_LUA(GameStateLua, depthBuffer)
+            CLASS_VAL_2_LUA(GameStateLua, labelsBuffer)
+            CLASS_VAL_2_LUA(GameStateLua, automapBuffer)
+            CLASS_VAL_2_LUA(GameStateLua, labels),
 
         class_<Label>("Label")
-            .def_readonly("objectId", &Label::objectId)
-            .def_readonly("objectName", &Label::objectName)
-            .def_readonly("value", &Label::value)
-            .def_readonly("objectPositionX", &Label::objectPositionX)
-            .def_readonly("objectPositionY", &Label::objectPositionY)
-            .def_readonly("objectPositionZ", &Label::objectPositionZ),
+            CLASS_VAL_2_LUA(Label, objectId)
+            CLASS_VAL_2_LUA(Label, objectName)
+            CLASS_VAL_2_LUA(Label, value)
+            CLASS_VAL_2_LUA(Label, objectPositionX)
+            CLASS_VAL_2_LUA(Label, objectPositionY)
+            CLASS_VAL_2_LUA(Label, objectPositionZ)
+            CLASS_VAL_2_LUA(Label, objectAngle)
+            CLASS_VAL_2_LUA(Label, objectPitch)
+            CLASS_VAL_2_LUA(Label, objectRoll)
+            CLASS_VAL_2_LUA(Label, objectVelocityX)
+            CLASS_VAL_2_LUA(Label, objectVelocityY)
+            CLASS_VAL_2_LUA(Label, objectVelocityZ),
 
 
         /* DoomGame */
@@ -400,6 +409,8 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             CLASS_FUNC_2_LUA(DoomGameLua, close)
             CLASS_FUNC_2_LUA(DoomGameLua, isRunning)
             CLASS_FUNC_2_LUA(DoomGameLua, isMultiplayerGame)
+            CLASS_FUNC_2_LUA(DoomGameLua, isRecordingEpisode)
+            CLASS_FUNC_2_LUA(DoomGameLua, isReplayingEpisode)
             .def("newEpisode", &DoomGameLua::newEpisode_)
             .def("newEpisode", &DoomGameLua::newEpisode_str)
             .def("replayEpisode", &DoomGameLua::replayEpisode_str)
