@@ -23,6 +23,9 @@
 #include "ViZDoomGamePython.h"
 #include "ViZDoomController.h"
 
+#include <cstddef>
+#include <cstring>
+
 namespace vizdoom {
 
     #if PY_MAJOR_VERSION >= 3
@@ -63,6 +66,7 @@ namespace vizdoom {
         this->pyState->number = this->state->number;
         this->pyState->tic = this->state->tic;
 
+        /* Update buffers */
         this->updateBuffersShapes();
         int colorDims = 3;
         if (this->getScreenChannels() == 1) colorDims = 2;
@@ -80,6 +84,7 @@ namespace vizdoom {
             this->pyState->automapBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->automapBuffer->data());
         else this->pyState->automapBuffer = pyb::none();
 
+        /* Updates vars */
         if (this->state->gameVariables.size() > 0) {
             // Numpy array version
             npy_intp shape = this->state->gameVariables.size();
@@ -90,16 +95,33 @@ namespace vizdoom {
         }
         else this->pyState->gameVariables = pyb::none();
 
+        /* Update labels */
+        size_t objectPositionSize = offsetof(struct Label, objectVelocityZ) - offsetof(struct Label, objectPositionX);
+
         if(this->state->labels.size() > 0){
             pyb::list pyLabels;
             for(auto i = this->state->labels.begin(); i != this->state->labels.end(); ++i){
                 LabelPython pyLabel;
+
+                pyLabel.value = i->value;
+
                 pyLabel.objectId = i->objectId;
                 pyLabel.objectName = pyb::str(i->objectName.c_str());
-                pyLabel.value = i->value;
-                pyLabel.objectPositionX = i->objectPositionX;
-                pyLabel.objectPositionY = i->objectPositionY;
-                pyLabel.objectPositionZ = i->objectPositionZ;
+
+                std::memcpy(&pyLabel.objectPositionX, &i->objectPositionX, objectPositionSize);
+
+//                pyLabel.objectPositionX = i->objectPositionX;
+//                pyLabel.objectPositionY = i->objectPositionY;
+//                pyLabel.objectPositionZ = i->objectPositionZ;
+//
+//                pyLabel.objectAngle = i->objectAngle;
+//                pyLabel.objectPitch = i->objectPitch;
+//                pyLabel.objectRoll = i->objectRoll;
+//
+//                pyLabel.objectVelocityX = i->objectVelocityX;
+//                pyLabel.objectVelocityY = i->objectVelocityY;
+//                pyLabel.objectVelocityZ = i->objectVelocityZ;
+
                 pyLabels.append(pyLabel);
             }
 
