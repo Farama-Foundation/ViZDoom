@@ -63,10 +63,13 @@ namespace vizdoom {
     /*----------------------------------------------------------------------------------------------------------------*/
 
     struct SMLabel {
-        unsigned int objectId;
-        char objectName[MAX_LABEL_NAME_LEN];
         uint8_t value;
+        unsigned int position[2];
+        unsigned int size[2];
+
+        unsigned int objectId;
         double objectPosition[9];
+        char objectName[MAX_LABEL_NAME_LEN];
     };
 
     struct SMGameState {

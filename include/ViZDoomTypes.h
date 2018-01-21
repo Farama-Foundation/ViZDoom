@@ -34,12 +34,20 @@ namespace vizdoom{
     typedef std::shared_ptr<Buffer> BufferPtr;
 
     struct Label{
-        unsigned int objectId;
-        std::string objectName;
-        uint8_t value;
 
-        //bool isHostile;
-        //bool isUsable;
+        // Label properties
+        uint8_t value;
+        unsigned int x;
+        unsigned int y;
+        unsigned int width;
+        unsigned int height;
+
+        //bool isObjectHostile;
+        //bool isObjectPickable;
+        //bool isObjectUsable;
+
+        // Actor properties
+        unsigned int objectId;
 
         double objectPositionX;
         double objectPositionY;
@@ -52,6 +60,8 @@ namespace vizdoom{
         double objectVelocityX;
         double objectVelocityY;
         double objectVelocityZ;
+
+        std::string objectName;
     };
 
     struct GameState {

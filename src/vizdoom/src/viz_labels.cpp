@@ -35,6 +35,10 @@ VIZLabelsBuffer::VIZLabelsBuffer(unsigned int width, unsigned int height):
     buffer = new BYTE[bufferSize];
     memset(buffer, 0, bufferSize);
 
+    this->currentLabel = 0;
+    this->currentSprite = nullptr;
+
+    // SDL debug stuff
     #ifdef VIZ_LABELS_TEST
         for(int j = 0; j < 256; j++)
         {
@@ -89,6 +93,7 @@ void VIZLabelsBuffer::setPoint(unsigned int x, unsigned int y) {
 void VIZLabelsBuffer::setPoint(unsigned int x, unsigned int y, BYTE label) {
     BYTE *map = getBufferPoint(x, y);
     if(map != NULL) *map = label;
+    this->updateBoundingBox(x, y);
 }
 
 // Get buffer size
@@ -140,6 +145,17 @@ void VIZLabelsBuffer::sizeUpdate() {
     }
 }
 
+void VIZLabelsBuffer::updateBoundingBox(unsigned int x, unsigned int y){
+    if(!this->currentSprite)
+        return;
+
+    if(x < this->currentSprite->minX) this->currentSprite->minX = x;
+    if (x > this->currentSprite->maxX) this->currentSprite->maxX = x;
+    if(y < this->currentSprite->minY) this->currentSprite->minY = y;
+    if (y > this->currentSprite->maxY) this->currentSprite->maxY = y;
+    ++this->currentSprite->pointCount;
+}
+
 void VIZLabelsBuffer::addSprite(AActor *actor, vissprite_t* vis){
     VIZSprite sprite;
     sprite.actor = actor;
@@ -159,16 +175,24 @@ void VIZLabelsBuffer::addPSprite(AActor *actor, vissprite_t* vis){
     this->sprites.push_back(sprite);
 }
 
+BYTE VIZLabelsBuffer::getLabel(VIZSprite* sprite){
+    if(sprite->label > 0 && sprite->labeled)
+        return sprite->label;
+
+    if(sprite->psprite) sprite->label = VIZ_MAX_LABELS - 1;
+    else{
+        ++labeled;
+        sprite->label = static_cast<BYTE>(labeled * (VIZ_MAX_LABELS - 1) / (this->sprites.size() + 1));
+    }
+    sprite->labeled = true;
+    return sprite->label;
+}
+
+
 BYTE VIZLabelsBuffer::getLabel(vissprite_t* vis){
     for(auto i = this->sprites.begin(); i != this->sprites.end(); ++i){
         if(i->vissprite == vis){
-            if(i->psprite) i->label = VIZ_MAX_LABELS - 1;
-            else{
-                ++labeled;
-                i->label = static_cast<BYTE>(labeled * (VIZ_MAX_LABELS - 1) / (this->sprites.size() + 1));
-            }
-            i->labeled = true;
-            return i->label;
+            return this->getLabel(&(*i));
         }
     }
     return 0;
@@ -197,6 +221,26 @@ std::vector<VIZSprite> VIZLabelsBuffer::getSprites(){
 void VIZLabelsBuffer::setLabel(BYTE label){
     this->currentLabel = label;
 }
+
+void VIZLabelsBuffer::setSprite(vissprite_t* vis){
+    for(auto i = this->sprites.begin(); i != this->sprites.end(); ++i){
+        if(i->vissprite == vis){
+            this->currentLabel = this->getLabel(&(*i));
+            this->currentSprite = &(*i);
+            return;
+        }
+    }
+    this->currentLabel = 0;
+    this->currentSprite = nullptr;
+}
+
+void VIZLabelsBuffer::unsetSprite(vissprite_t* vis){
+    this->currentLabel = 0;
+    this->currentSprite = nullptr;
+}
+
+
+
 
 #ifdef VIZ_LABELS_TEST
 // Update labels debug window

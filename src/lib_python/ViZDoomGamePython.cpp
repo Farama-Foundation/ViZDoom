@@ -96,32 +96,16 @@ namespace vizdoom {
         else this->pyState->gameVariables = pyb::none();
 
         /* Update labels */
-        size_t objectPositionSize = offsetof(struct Label, objectVelocityZ) - offsetof(struct Label, objectPositionX);
+        size_t labelPartSize = offsetof(struct Label, objectId) - offsetof(struct Label, value);
+        size_t objectPartSize = offsetof(struct Label, objectName) - offsetof(struct Label, objectId);
 
         if(this->state->labels.size() > 0){
             pyb::list pyLabels;
             for(auto i = this->state->labels.begin(); i != this->state->labels.end(); ++i){
                 LabelPython pyLabel;
-
-                pyLabel.value = i->value;
-
-                pyLabel.objectId = i->objectId;
+                std::memcpy(&pyLabel.value, &i->value, labelPartSize);
+                std::memcpy(&pyLabel.objectId, &i->objectId, objectPartSize);
                 pyLabel.objectName = pyb::str(i->objectName.c_str());
-
-                std::memcpy(&pyLabel.objectPositionX, &i->objectPositionX, objectPositionSize);
-
-//                pyLabel.objectPositionX = i->objectPositionX;
-//                pyLabel.objectPositionY = i->objectPositionY;
-//                pyLabel.objectPositionZ = i->objectPositionZ;
-//
-//                pyLabel.objectAngle = i->objectAngle;
-//                pyLabel.objectPitch = i->objectPitch;
-//                pyLabel.objectRoll = i->objectRoll;
-//
-//                pyLabel.objectVelocityX = i->objectVelocityX;
-//                pyLabel.objectVelocityY = i->objectVelocityY;
-//                pyLabel.objectVelocityZ = i->objectVelocityZ;
-
                 pyLabels.append(pyLabel);
             }
 
