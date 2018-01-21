@@ -80,12 +80,13 @@ BYTE* VIZLabelsBuffer::getBuffer() { return buffer; }
 // Get pointer for requested pixel (x, y coords)
 BYTE* VIZLabelsBuffer::getBufferPoint(unsigned int x, unsigned int y) {
     if( x < bufferWidth && y < bufferHeight )
-        return buffer + x + y*bufferWidth;
+        return buffer + x + y * bufferWidth;
     else return NULL;
 }
 
 // Set point(x,y) value with next label
 void VIZLabelsBuffer::setPoint(unsigned int x, unsigned int y) {
+    this->updateBoundingBox(x, y);
     this->setPoint(x, y, this->currentLabel);
 }
 
@@ -93,7 +94,7 @@ void VIZLabelsBuffer::setPoint(unsigned int x, unsigned int y) {
 void VIZLabelsBuffer::setPoint(unsigned int x, unsigned int y, BYTE label) {
     BYTE *map = getBufferPoint(x, y);
     if(map != NULL) *map = label;
-    this->updateBoundingBox(x, y);
+
 }
 
 // Get buffer size
@@ -122,6 +123,7 @@ void VIZLabelsBuffer::clearBuffer(BYTE color) {
 
     this->sprites.clear();
     this->labeled = 0;
+    this->unsetSprite();
 }
 
 void VIZLabelsBuffer::lock() {this->locked=true; }
@@ -150,9 +152,9 @@ void VIZLabelsBuffer::updateBoundingBox(unsigned int x, unsigned int y){
         return;
 
     if(x < this->currentSprite->minX) this->currentSprite->minX = x;
-    if (x > this->currentSprite->maxX) this->currentSprite->maxX = x;
+    if(x > this->currentSprite->maxX) this->currentSprite->maxX = x;
     if(y < this->currentSprite->minY) this->currentSprite->minY = y;
-    if (y > this->currentSprite->maxY) this->currentSprite->maxY = y;
+    if(y > this->currentSprite->maxY) this->currentSprite->maxY = y;
     ++this->currentSprite->pointCount;
 }
 
@@ -173,6 +175,7 @@ void VIZLabelsBuffer::addPSprite(AActor *actor, vissprite_t* vis){
     sprite.vissprite = vis;
 
     this->sprites.push_back(sprite);
+    //this->pSprite = &this->sprites[this->sprites.size() - 1];
 }
 
 BYTE VIZLabelsBuffer::getLabel(VIZSprite* sprite){
@@ -231,15 +234,14 @@ void VIZLabelsBuffer::setSprite(vissprite_t* vis){
         }
     }
     this->currentLabel = 0;
-    this->currentSprite = nullptr;
+    this->currentSprite = NULL;
 }
 
-void VIZLabelsBuffer::unsetSprite(vissprite_t* vis){
+void VIZLabelsBuffer::unsetSprite(){
     this->currentLabel = 0;
-    this->currentSprite = nullptr;
+    this->currentSprite = NULL;
+    this->pSprite = NULL;
 }
-
-
 
 
 #ifdef VIZ_LABELS_TEST

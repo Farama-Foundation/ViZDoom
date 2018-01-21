@@ -113,6 +113,16 @@ void rt_copy1col_c (int hx, int sx, int yl, int yh)
 		source += 16;
 		dest += pitch*4;
 	} while (--count);
+
+	if(vizDepthMap!=NULL) {
+		for(int y = yl; y <= yh; ++y)
+			vizDepthMap->setPoint(sx, y);
+	}
+
+	if(vizLabels!=NULL) {
+		for(int y = yl; y <= yh; ++y)
+			vizLabels->setPoint(sx, y);
+	}
 }
 
 // Copies all four spans to the screen starting at sx.
@@ -145,6 +155,14 @@ void STACK_ARGS rt_copy4cols_c (int sx, int yl, int yh)
 		dest[pitch] = source[4/sizeof(int)];
 		source += 8/sizeof(int);
 		dest += pitch*2;
+
+        if(vizDepthMap!=NULL) {
+            vizDepthMap->setPoint((unsigned int) sx, (unsigned int) yh - count);
+        }
+
+        if(vizLabels!=NULL) {
+            vizLabels->setPoint((unsigned int) sx, (unsigned int) yh - count);
+        }
 	} while (--count);
 }
 
@@ -182,11 +200,12 @@ void rt_map1col_c (int hx, int sx, int yl, int yh)
 	} while (--count);
 
 	if(vizDepthMap!=NULL) {
-		for(int y=yl;y<=yh;y++)
+		for(int y = yl; y <= yh; ++y)
 			vizDepthMap->setPoint(sx, y);
 	}
+
 	if(vizLabels!=NULL) {
-		for(int y=yl;y<=yh;y++)
+		for(int y = yl; y <= yh; ++y)
 			vizLabels->setPoint(sx, y);
 	}
 }
@@ -248,19 +267,21 @@ void STACK_ARGS rt_map4cols_c (int sx, int yl, int yh)
 		dest += pitch*2;
 
 		//VIZDOOM_CODE
-		if(vizDepthMap!=NULL) {
+		if(vizDepthMap != NULL) {
 			for (int dx = 0; dx < 4; dx++) {
 				vizDepthMap->setActualDepth(vizDepthMap->helperBuffer[dx]);
 				for (int dy = 0; dy < 2; dy++)
 					vizDepthMap->setPoint((unsigned int) sx + dx, (unsigned int) yl + y_mod + dy);
 			}
 		}
-		if(vizLabels!=NULL) {
+
+		if(vizLabels != NULL) {
 			for (int dx = 0; dx < 4; dx++) {
 				for (int dy = 0; dy < 2; dy++)
 					vizLabels->setPoint((unsigned int) sx + dx, (unsigned int) yl + y_mod + dy);
 			}
 		}
+
 		y_mod += 2;
 	} while (--count);
 }
@@ -400,6 +421,16 @@ void rt_add1col (int hx, int sx, int yl, int yh)
 		source += 4;
 		dest += pitch;
 	} while (--count);
+
+    if(vizDepthMap!=NULL) {
+        for(int y = yl; y <= yh; ++y)
+            vizDepthMap->setPoint(sx, y);
+    }
+
+    if(vizLabels!=NULL) {
+        for(int y = yl; y <= yh; ++y)
+            vizLabels->setPoint(sx, y);
+    }
 }
 
 // Adds all four spans to the screen starting at sx without clamping.
@@ -455,6 +486,14 @@ void STACK_ARGS rt_add4cols_c (int sx, int yl, int yh)
 
 		source += 4;
 		dest += pitch;
+
+        if(vizDepthMap!=NULL) {
+            vizDepthMap->setPoint((unsigned int) sx, (unsigned int) yh - count);
+        }
+
+        if(vizLabels!=NULL) {
+            vizLabels->setPoint((unsigned int) sx, (unsigned int) yh - count);
+        }
 	} while (--count);
 }
 
@@ -500,6 +539,14 @@ void rt_shaded1col (int hx, int sx, int yl, int yh)
 		*dest = RGB32k.All[val & (val>>15)];
 		source += 4;
 		dest += pitch;
+
+        if(vizDepthMap!=NULL) {
+            vizDepthMap->setPoint((unsigned int) sx, (unsigned int) yh - count);
+        }
+
+        if(vizLabels!=NULL) {
+            vizLabels->setPoint((unsigned int) sx, (unsigned int) yh - count);
+        }
 	} while (--count);
 }
 
@@ -545,6 +592,14 @@ void STACK_ARGS rt_shaded4cols_c (int sx, int yl, int yh)
 
 		source += 4;
 		dest += pitch;
+
+		if(vizDepthMap!=NULL) {
+			vizDepthMap->setPoint((unsigned int) sx, (unsigned int) yh - count);
+		}
+
+		if(vizLabels!=NULL) {
+			vizLabels->setPoint((unsigned int) sx, (unsigned int) yh - count);
+		}
 	} while (--count);
 }
 
@@ -582,13 +637,15 @@ void rt_addclamp1col (int hx, int sx, int yl, int yh)
 		*dest = RGB32k.All[(a>>15) & a];
 		source += 4;
 		dest += pitch;
-		if(vizDepthMap!=NULL) {
-			vizDepthMap->setPoint((unsigned int) sx, (unsigned int) yh-count);
-		}
-		if(vizLabels!=NULL) {
-			vizLabels->setPoint((unsigned int) sx, (unsigned int) yh-count);
-		}
 	} while (--count);
+
+    if(vizDepthMap!=NULL) {
+        for(int y = yl; y <= yh; ++y) vizDepthMap->setPoint(sx, y);
+    }
+
+    if(vizLabels!=NULL) {
+        for(int y = yl; y <= yh; ++y) vizLabels->setPoint(sx, y);
+    }
 }
 
 //VIZDOOM_CODE
@@ -650,19 +707,21 @@ void STACK_ARGS rt_addclamp4cols_c (int sx, int yl, int yh)
 		b = b - (b >> 5);
 		a |= b;
 		dest[3] = RGB32k.All[(a>>15) & a];
+		source += 4;
+		dest += pitch;
+
 		if(vizDepthMap!=NULL) {
 			for (int dx = 0; dx < 4; dx++) {
 				vizDepthMap->setActualDepth(vizDepthMap->helperBuffer[dx]);
 				vizDepthMap->setPoint((unsigned int) sx + dx, (unsigned int) yh-count);
 			}
 		}
+
 		if(vizLabels!=NULL) {
 			for (int dx = 0; dx < 4; dx++) {
 				vizLabels->setPoint((unsigned int) sx + dx, (unsigned int) yh-count);
 			}
 		}
-		source += 4;
-		dest += pitch;
 	} while (--count);
 }
 
@@ -713,6 +772,14 @@ void rt_subclamp1col (int hx, int sx, int yl, int yh)
 		source += 4;
 		dest += pitch;
 	} while (--count);
+
+    if(vizDepthMap!=NULL) {
+        for(int y = yl; y <= yh; ++y) vizDepthMap->setPoint(sx, y);
+    }
+
+    if(vizLabels!=NULL) {
+        for(int y = yl; y <= yh; ++y) vizLabels->setPoint(sx, y);
+    }
 }
 
 // Subtracts all four spans to the screen starting at sx with clamping.
@@ -772,6 +839,19 @@ void STACK_ARGS rt_subclamp4cols (int sx, int yl, int yh)
 
 		source += 4;
 		dest += pitch;
+
+		if(vizDepthMap!=NULL) {
+			for (int dx = 0; dx < 4; dx++) {
+				vizDepthMap->setActualDepth(vizDepthMap->helperBuffer[dx]);
+				vizDepthMap->setPoint((unsigned int) sx + dx, (unsigned int) yh-count);
+			}
+		}
+
+		if(vizLabels!=NULL) {
+			for (int dx = 0; dx < 4; dx++) {
+				vizLabels->setPoint((unsigned int) sx + dx, (unsigned int) yh-count);
+			}
+		}
 	} while (--count);
 }
 
@@ -822,6 +902,14 @@ void rt_revsubclamp1col (int hx, int sx, int yl, int yh)
 		source += 4;
 		dest += pitch;
 	} while (--count);
+
+    if(vizDepthMap!=NULL) {
+        for(int y = yl; y <= yh; ++y) vizDepthMap->setPoint(sx, y);
+    }
+
+    if(vizLabels!=NULL) {
+        for(int y = yl; y <= yh; ++y) vizLabels->setPoint(sx, y);
+    }
 }
 
 // Subtracts all four spans from the screen starting at sx with clamping.
@@ -881,6 +969,19 @@ void STACK_ARGS rt_revsubclamp4cols (int sx, int yl, int yh)
 
 		source += 4;
 		dest += pitch;
+
+        if(vizDepthMap!=NULL) {
+            for (int dx = 0; dx < 4; dx++) {
+                vizDepthMap->setActualDepth(vizDepthMap->helperBuffer[dx]);
+                vizDepthMap->setPoint((unsigned int) sx + dx, (unsigned int) yh-count);
+            }
+        }
+
+        if(vizLabels!=NULL) {
+            for (int dx = 0; dx < 4; dx++) {
+                vizLabels->setPoint((unsigned int) sx + dx, (unsigned int) yh-count);
+            }
+        }
 	} while (--count);
 }
 
@@ -1247,14 +1348,7 @@ void R_DrawMaskedColumnHoriz (const BYTE *column, const FTexture::Span *span)
 			dc_count = dc_yh - dc_yl + 1;
 			hcolfunc_pre ();
 
-            //VIZDOOM_CODE
-            if(vizDepthMap!=NULL) {
-                for(int y = 0; y < dc_count; ++y) vizDepthMap->setPoint(dc_x, dc_yl + y);
-            }
 
-            if(vizLabels!=NULL) {
-                for(int y = 0; y < dc_count; ++y) vizLabels->setPoint(dc_x, dc_yl + y);
-            }
 		}
 nextpost:
 		span++;
