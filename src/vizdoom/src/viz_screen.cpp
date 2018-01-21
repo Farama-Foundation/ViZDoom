@@ -84,7 +84,7 @@ void VIZ_ScreenFormatUpdate(){
             vizScreenSize *= 3;
             vizScreenPitch *= 3;
             posMulti = 3;
-            rPos = 2; gPos = 1; bPos = 0;
+            rPos = 0; gPos = 1; bPos = 2;
             alpha = false;
             break;
 
@@ -92,16 +92,16 @@ void VIZ_ScreenFormatUpdate(){
             vizScreenSize *= 4;
             vizScreenPitch *= 4;
             posMulti = 4;
-            rPos = 3, gPos = 2, bPos = 1;
-            alpha = true; aPos = 0;
+            rPos = 0, gPos = 1, bPos = 2;
+            alpha = true; aPos = 3;
             break;
 
         case VIZ_SCREEN_ARGB32 :
             vizScreenSize *= 4;
             vizScreenPitch *= 4;
             posMulti = 4;
-            rPos = 2, gPos = 1, bPos = 0;
-            alpha = true; aPos = 3;
+            rPos = 1, gPos = 2, bPos = 3;
+            alpha = true; aPos = 0;
             break;
 
         case VIZ_SCREEN_CBCGCR :
@@ -115,7 +115,7 @@ void VIZ_ScreenFormatUpdate(){
             vizScreenSize *= 3;
             vizScreenPitch *= 3;
             posMulti = 3;
-            rPos = 0; gPos = 1; bPos = 2;
+            rPos = 2; gPos = 1; bPos = 0;
             alpha = false;
             break;
 
@@ -123,16 +123,16 @@ void VIZ_ScreenFormatUpdate(){
             vizScreenSize *= 4;
             vizScreenPitch *= 4;
             posMulti = 4;
-            rPos = 1; gPos = 2; bPos = 3;
-            alpha = true; aPos = 0;
+            rPos = 2; gPos = 1; bPos = 0;
+            alpha = true; aPos = 3;
             break;
 
         case VIZ_SCREEN_ABGR32 :
             vizScreenSize *= 4;
             vizScreenPitch *= 4;
             posMulti = 4;
-            rPos = 0; gPos = 1; bPos = 2;
-            alpha = true; aPos = 3;
+            rPos = 3; gPos = 2; bPos = 1;
+            alpha = true; aPos = 0;
             break;
 
         case VIZ_SCREEN_GRAY8:
