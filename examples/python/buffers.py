@@ -28,17 +28,18 @@ game.load_config("../../scenarios/deadly_corridor.cfg")
 
 # Just umcomment desired format for screen buffer (and map buffer).
 # The last uncommented will be applied.
-# Formats with C (CRCGCB and CBCGCR) were ommited cause they are not cv2 friendly.
+# Formats with C (CRCGCB and CBCGCR) were omitted cause they are not cv2 friendly.
 # Default format is ScreenFormat.CRCGCB.
 
-game.set_screen_format(ScreenFormat.RGB24)
-# game.set_screen_format(ScreenFormat.ARGB32)
-# game.set_screen_format(ScreenFormat.GRAY8)
+# OpenCV uses a BGR colorspace by default.
+game.set_screen_format(ScreenFormat.BGR24)
 
-# game.set_screen_format(ScreenFormat.BGR24)
+# game.set_screen_format(ScreenFormat.RGB24)
 # game.set_screen_format(ScreenFormat.RGBA32)
+# game.set_screen_format(ScreenFormat.ARGB32)
 # game.set_screen_format(ScreenFormat.BGRA32)
 # game.set_screen_format(ScreenFormat.ABGR32)
+# game.set_screen_format(ScreenFormat.GRAY8)
 
 # Raw Doom buffer with palette's values. This one makes no sense in particular
 # game.set_screen_format(ScreenFormat.DOOM_256_COLORS)
@@ -75,7 +76,7 @@ for i in range(episodes):
     # Not needed for the first episode but the loop is nicer.
     game.new_episode()
     while not game.is_episode_finished():
-        # Gets the state and possibly to something with it
+        # Gets the state and possibly do something with it
         state = game.get_state()
 
         # Display all the buffers here!
