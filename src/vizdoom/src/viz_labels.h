@@ -52,10 +52,13 @@
 #define VIZ_MAX_LABEL_NAME_LEN 128
 
 struct VIZLabel{
-    unsigned int objectId;
-    char objectName[VIZ_MAX_LABEL_NAME_LEN];
     BYTE value;
+    unsigned int position[2];
+    unsigned int size[2];
+
+    unsigned int objectId;
     double objectPosition[9];
+    char objectName[VIZ_MAX_LABEL_NAME_LEN];
 };
 
 struct VIZSprite{
@@ -65,6 +68,11 @@ struct VIZSprite{
     vissprite_t* vissprite;
     bool labeled;
     BYTE label;
+    unsigned int minX;
+    unsigned int maxX;
+    unsigned int minY;
+    unsigned int maxY;
+    unsigned int pointCount;
 
     VIZSprite(){
         this->actor = NULL;
@@ -72,6 +80,11 @@ struct VIZSprite{
         this->psprite = false;
         this->labeled = false;
         this->label = 0;
+        this->minX = (unsigned int)-1;
+        this->minY = (unsigned int)-1;
+        this->maxX = 0;
+        this->maxY = 0;
+        this->pointCount = 0;
     };
 };
 
@@ -95,12 +108,17 @@ public:
     bool isLocked();
     void sizeUpdate();
 
+    void updateBoundingBox(unsigned int x, unsigned int y);
+
     void addSprite(AActor *thing, vissprite_t* vis);
     void addPSprite(AActor *thing, vissprite_t* vis);
+    BYTE getLabel(VIZSprite* sprite);
     BYTE getLabel(vissprite_t* vis);
     unsigned int getActorId(AActor *actor);
     void clearActors();
     void setLabel(BYTE label);
+    void setSprite(vissprite_t* vis);
+    void unsetSprite(vissprite_t* vis);
 
     std::vector<VIZSprite> getSprites();
 
@@ -120,6 +138,7 @@ private:
 
     BYTE labeled;
     BYTE currentLabel;
+    VIZSprite *currentSprite;
 
     std::unordered_map<AActor*, unsigned int> actors;
 

@@ -254,31 +254,15 @@ namespace vizdoom {
             } else this->state->automapBuffer = nullptr;
 
             /* Update labels */
-            size_t objectPositionSize = offsetof(struct Label, objectVelocityZ) - offsetof(struct Label, objectPositionX);
+            size_t labelPartSize = offsetof(struct Label, objectId) - offsetof(struct Label, value);
+            size_t objectPartSize = offsetof(struct Label, objectName) - offsetof(struct Label, objectId);
 
             this->state->labels.clear();
             for (unsigned int i = 0; i < this->doomController->getGameState()->LABEL_COUNT; ++i) {
                 Label label;
-
-                label.value = this->doomController->getGameState()->LABEL[i].value;
-
-                label.objectId = this->doomController->getGameState()->LABEL[i].objectId;
+                std::memcpy(&label.value, &this->doomController->getGameState()->LABEL[i].value, labelPartSize);
+                std::memcpy(&label.objectId, &this->doomController->getGameState()->LABEL[i].objectId, objectPartSize);
                 label.objectName = std::string(this->doomController->getGameState()->LABEL[i].objectName);
-
-                std::memcpy(&label.objectPositionX,
-                            &this->doomController->getGameState()->LABEL[i].objectPosition[0], objectPositionSize);
-
-//                label.objectPositionX = this->doomController->getGameState()->LABEL[i].objectPosition[0];
-//                label.objectPositionY = this->doomController->getGameState()->LABEL[i].objectPosition[1];
-//                label.objectPositionZ = this->doomController->getGameState()->LABEL[i].objectPosition[2];
-//
-//                label.objectAngle = this->doomController->getGameState()->LABEL[i].objectPosition[3];
-//                label.objectPitch = this->doomController->getGameState()->LABEL[i].objectPosition[4];
-//                label.objectRoll = this->doomController->getGameState()->LABEL[i].objectPosition[5];
-//
-//                label.objectVelocityX = this->doomController->getGameState()->LABEL[i].objectPosition[6];
-//                label.objectVelocityY = this->doomController->getGameState()->LABEL[i].objectPosition[7];
-//                label.objectVelocityZ = this->doomController->getGameState()->LABEL[i].objectPosition[8];
                 this->state->labels.push_back(label);
             }
         } else this->state = nullptr;

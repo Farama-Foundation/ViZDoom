@@ -335,7 +335,7 @@ void VIZ_GameStateUpdateLabels(){
         //TODO sort vizLabels->sprites
 
         for(auto i = vizLabels->sprites.begin(); i != vizLabels->sprites.end(); ++i){
-            if(i->labeled){
+            if(i->labeled && i->pointCount > 0){
                 VIZLabel *label = &vizGameStateSM->LABEL[labelCount];
                 label->objectId = i->actorId;
                 //if(i->actor->health <= 0 || (i->actor->flags & MF_CORPSE) || (i->actor->flags6 & MF6_KILLED)) {
@@ -346,6 +346,11 @@ void VIZ_GameStateUpdateLabels(){
                 else strncpy(label->objectName, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN);
 
                 label->value = i->label;
+                label->position[0] = i->minX;
+                label->position[1] = i->minY;
+                label->size[0] = i->maxX - i->minX;
+                label->size[1] = i->maxY - i->minY;
+
                 label->objectPosition[0] = VIZ_FixedToDouble(i->actor->__pos.x);
                 label->objectPosition[1] = VIZ_FixedToDouble(i->actor->__pos.y);
                 label->objectPosition[2] = VIZ_FixedToDouble(i->actor->__pos.z);
