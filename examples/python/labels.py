@@ -28,6 +28,9 @@ game.set_render_hud(False)
 
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 
+# Set cv2 friendly format.
+game.set_screen_format(ScreenFormat.BGR24)
+
 # Enables labeling of the in game objects.
 game.set_labels_buffer_enabled(True)
 
@@ -45,18 +48,49 @@ episodes = 10
 # Sleep time between actions in ms
 sleep_time = 28
 
+
+# Prepare some drawing function
+doom_red_color = [0, 0, 203] # In BGR
+doom_blue_color = [203, 0, 0]
+
+def drawBoundingBox(buffer, x, y, width, height, color):
+    for i in range(width):
+        buffer[y, x + i, :] = color
+        buffer[y + height, x + i, :] = color
+
+    for i in range(height):
+        buffer[y + i, x, :] = color
+        buffer[y + i, x + width, :] = color
+
+
 for i in range(episodes):
     print("Episode #" + str(i + 1))
+    seen_in_this_episode = set()
 
     # Not needed for the first episode but the loop is nicer.
     game.new_episode()
     while not game.is_episode_finished():
-        # Gets the state and possibly to something with it
+
+        # Gets the state
         state = game.get_state()
 
+        # Labels buffer, always in 8-bit gray channel format.
+        # Shows only visible game objects (enemies, pickups, exploding barrels etc.), each with unique label.
+        # Labels data are available in state.labels.
         labels = state.labels_buffer
         if labels is not None:
             cv2.imshow('ViZDoom Labels Buffer', labels)
+
+        # Screen buffer, given in selected format. This buffer is always available.
+        # Using information from state.labels draw bounding boxes.
+        screen = state.screen_buffer
+        for l in state.labels:
+            if l.object_name in ["Medkit", "GreenArmor"]:
+                drawBoundingBox(screen, l.x, l.y, l.width, l.height, doom_blue_color)
+            else:
+                drawBoundingBox(screen, l.x, l.y, l.width, l.height, doom_red_color)
+
+        cv2.imshow('ViZDoom Screen Buffer', screen)
 
         cv2.waitKey(sleep_time)
 
@@ -71,12 +105,26 @@ for i in range(episodes):
         # object_name contains name of object.
         # value tells which value represents object in labels_buffer.
         for l in state.labels:
-            print("Object id:", l.object_id, "object name:", l.object_name, "label:", l.value)
-            print("Object position X:", l.object_position_x, "Y:", l.object_position_y, "Z:", l.object_position_z)
+            seen_in_this_episode.add(l.object_name)
+            # print("---------------------")
+            print("Label:", l.value, "object id:", l.object_id, "object name:", l.object_name)
+            print("Object position x:", l.object_position_x, "y:", l.object_position_y, "z:", l.object_position_z)
+
+            # Other available fields:
+            #print("Object rotation angle", l.object_angle, "pitch:", l.object_pitch, "roll:", l.object_roll)
+            #print("Object velocity x:", l.object_velocity_x, "y:", l.object_velocity_y, "z:", l.object_velocity_z)
+            #print("Bounding box: x:", l.x, "y:", l.y, "width:", l.width, "height:", l.height)
 
         print("=====================")
 
     print("Episode finished!")
+
+    print("=====================")
+
+    print("Seen in this episode:")
+    for l in seen_in_this_episode:
+        print(l)
+
     print("************************")
 
 cv2.destroyAllWindows()
