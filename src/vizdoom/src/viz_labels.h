@@ -118,7 +118,7 @@ public:
     void clearActors();
     void setLabel(BYTE label);
     void setSprite(vissprite_t* vis);
-    void unsetSprite(vissprite_t* vis);
+    void unsetSprite();
 
     std::vector<VIZSprite> getSprites();
 
@@ -139,6 +139,7 @@ private:
     BYTE labeled;
     BYTE currentLabel;
     VIZSprite *currentSprite;
+    VIZSprite *pSprite;
 
     std::unordered_map<AActor*, unsigned int> actors;
 

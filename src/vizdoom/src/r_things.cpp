@@ -317,6 +317,15 @@ void R_DrawMaskedColumn (const BYTE *column, const FTexture::Span *span)
 			dc_dest = ylookup[dc_yl] + dc_x + dc_destorg;
 			dc_count = dc_yh - dc_yl + 1;
 			colfunc ();
+
+			//VIZDOOM_CODE
+			if(vizDepthMap!=NULL) {
+				for(int y = 0; y < dc_count; ++y) vizDepthMap->setPoint(dc_x, dc_yl + y);
+			}
+
+			if(vizLabels!=NULL) {
+				for(int y = 0; y < dc_count; ++y) vizLabels->setPoint(dc_x, dc_yl + y);
+			}
 		}
 nextpost:
 		span++;
@@ -330,7 +339,7 @@ nextpost:
 //VIZDOOM_CODE
 void R_DrawVisSprite (vissprite_t *vis)
 {
-	if(vizLabels!=NULL) vizLabels->setLabel(vizLabels->getLabel(vis));
+	if(vizLabels!=NULL) vizLabels->setSprite(vis);
 
 	const BYTE *pixels;
 	const FTexture::Span *spans;
@@ -413,7 +422,7 @@ void R_DrawVisSprite (vissprite_t *vis)
 
 				//VIZDOOM_CODE
 				if(vizDepthMap!=NULL) {
-					for(int pcf=0;pcf<4;pcf++) {
+					for(int pcf = 0; pcf < 4; ++pcf) {
 						vizDepthMap->helperBuffer[pcf]=((unsigned int)  ((dc_iscale - 500) * 255) / (320000 - 500));
 						if (dc_iscale > 320000)
 							vizDepthMap->helperBuffer[pcf]=(255);
@@ -438,6 +447,8 @@ void R_DrawVisSprite (vissprite_t *vis)
 	R_FinishSetPatchStyle ();
 
 	NetUpdate ();
+
+    if(vizLabels!=NULL) vizLabels->unsetSprite();
 }
 
 void R_DrawWallSprite(vissprite_t *spr)
@@ -590,6 +601,7 @@ void R_WallSpriteColumn (void (*drawfunc)(const BYTE *column, const FTexture::Sp
 
 void R_DrawVisVoxel(vissprite_t *spr, int minslabz, int maxslabz, short *cliptop, short *clipbot)
 {
+
 	ESPSResult mode;
 	int flags = 0;
 

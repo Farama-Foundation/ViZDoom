@@ -49,11 +49,12 @@ episodes = 10
 sleep_time = 28
 
 
-# Prepare some drawing function
-doom_red_color = [0, 0, 203] # In BGR
+# Prepare some colors and drawing function
+# Colors in in BGR order
+doom_red_color = [0, 0, 203]
 doom_blue_color = [203, 0, 0]
 
-def drawBoundingBox(buffer, x, y, width, height, color):
+def draw_bounding_box(buffer, x, y, width, height, color):
     for i in range(width):
         buffer[y, x + i, :] = color
         buffer[y + height, x + i, :] = color
@@ -86,10 +87,9 @@ for i in range(episodes):
         screen = state.screen_buffer
         for l in state.labels:
             if l.object_name in ["Medkit", "GreenArmor"]:
-                drawBoundingBox(screen, l.x, l.y, l.width, l.height, doom_blue_color)
+                draw_bounding_box(screen, l.x, l.y, l.width, l.height, doom_blue_color)
             else:
-                drawBoundingBox(screen, l.x, l.y, l.width, l.height, doom_red_color)
-
+                draw_bounding_box(screen, l.x, l.y, l.width, l.height, doom_red_color)
         cv2.imshow('ViZDoom Screen Buffer', screen)
 
         cv2.waitKey(sleep_time)
@@ -113,7 +113,7 @@ for i in range(episodes):
             # Other available fields:
             #print("Object rotation angle", l.object_angle, "pitch:", l.object_pitch, "roll:", l.object_roll)
             #print("Object velocity x:", l.object_velocity_x, "y:", l.object_velocity_y, "z:", l.object_velocity_z)
-            #print("Bounding box: x:", l.x, "y:", l.y, "width:", l.width, "height:", l.height)
+            print("Bounding box: x:", l.x, "y:", l.y, "width:", l.width, "height:", l.height)
 
         print("=====================")
 
