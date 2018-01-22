@@ -6,7 +6,7 @@
   * [Windows](#windows_deps)
 * [Installation via PyPI(pip/conda)](#pypi)
 * [Installation via LuaRocks](#luarocks)
-* [Building](#build)
+* [Building (not recommended)](#build)
   * [Linux](#linux_build)
   * [MacOS](#macos_build)
   * [Windows](#windows_build)
@@ -149,6 +149,8 @@ luarocks make
 
 ### <a name="linux_build"></a> Linux
 
+>>> Using [pip/conda](#pypi) is the recommended way to install ViZDoom, please try it first unless you are sure you want to compile the package by hand.
+
 In ViZDoom's root directory:
 ```bash
 cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON
@@ -159,6 +161,8 @@ make
 
 
 ### <a name="macos_build"></a> MacOS
+
+>>> Using [pip/conda](#pypi) is the recommended way to install ViZDoom, please try it first unless you are sure you want to compile the package by hand.
 
 Run CMake and use generated the project.
 
