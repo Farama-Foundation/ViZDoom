@@ -9,6 +9,7 @@ from random import randint
 from collections import defaultdict
 import os
 import cv2
+from tqdm import tqdm
 
 transform_map = defaultdict(lambda: [128, 128, 128])
 transform_map[0] = [0, 0, 0]
@@ -65,16 +66,21 @@ def transform_labels(labels, buffer, disco=False, colorful=False, bounding_boxes
     if not (disco or colorful or bounding_boxes):
         return rgb_buffer
     for l in labels:
+
         if disco:
-            color = np.random.randint(0, 255, 3)
+            color = np.random.randint(0, 255, 3, dtype=np.int32)
         elif colorful:
             name = l.object_name
             color = transform_map[name]
         else:
-            color = l.value
+            color = [l.value] * 3
+
         rgb_buffer[buffer == l.value, :] = color
+
         if bounding_boxes:
             draw_bounding_box(rgb_buffer, l.x, l.y, l.width, l.height, color)
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            cv2.putText(rgb_buffer, l.object_name, (l.x, l.y - 3), font, 0.3, [int(c) for c in color], 1, cv2.LINE_AA)
 
     return rgb_buffer
 
@@ -89,6 +95,7 @@ if __name__ == "__main__":
     parser.add_argument("--timeout", "-t", type=float, default=10, help="Set timeout in seconds.")
     parser.add_argument("--bounding-boxes", "-bb", action="store_true", default=False,
                         help="Add bounding boxes to labels buffer.")
+    parser.add_argument("--dump-images", "-di", action="store_true", help="Dumps all frames to images directory.")
     coloring_group = parser.add_mutually_exclusive_group()
     coloring_group.add_argument("--disco", action="store_true", default=False, help="Stayin alive!")
     coloring_group.add_argument("--color-labels", "-cl", action="store_true", default=False,
@@ -146,6 +153,16 @@ if __name__ == "__main__":
 
         game.advance_action()
         images.append(picture)
+
+    game.close()
+
+    if args.dump_images:
+        img_dir = "images"
+        if not os.path.exists(img_dir):
+            print("Creating directory: {}".format(img_dir))
+            os.makedirs(img_dir)
+        for i, img in tqdm(enumerate(images), desc="Dumping images", leave=False, total=len(images)):
+            cv2.imwrite("{}/{}_frame_{}.png".format(img_dir, args.scenario, i), img[:, :, [2, 1, 0]])
 
     images = np.array(images)[::DROP_EVERY_N_FRAMES]
 
