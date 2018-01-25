@@ -86,15 +86,14 @@ BYTE* VIZLabelsBuffer::getBufferPoint(unsigned int x, unsigned int y) {
 
 // Set point(x,y) value with next label
 void VIZLabelsBuffer::setPoint(unsigned int x, unsigned int y) {
-    this->updateBoundingBox(x, y);
     this->setPoint(x, y, this->currentLabel);
+    this->updateBoundingBox(x, y);
 }
 
 // Set point(x,y) value with requested label
-void VIZLabelsBuffer::setPoint(unsigned int x, unsigned int y, BYTE label) {
+inline void VIZLabelsBuffer::setPoint(unsigned int x, unsigned int y, BYTE label) {
     BYTE *map = getBufferPoint(x, y);
     if(map != NULL) *map = label;
-
 }
 
 // Get buffer size
@@ -123,6 +122,7 @@ void VIZLabelsBuffer::clearBuffer(BYTE color) {
 
     this->sprites.clear();
     this->labeled = 0;
+    this->pSprite = NULL;
     this->unsetSprite();
 }
 
@@ -168,14 +168,19 @@ void VIZLabelsBuffer::addSprite(AActor *actor, vissprite_t* vis){
 }
 
 void VIZLabelsBuffer::addPSprite(AActor *actor, vissprite_t* vis){
-    VIZSprite sprite;
-    sprite.actor = actor;
-    sprite.actorId = 0;
-    sprite.psprite = true;
-    sprite.vissprite = vis;
+    if(this->pSprite != NULL){
+        this->pSprite->vissprite = vis;
+    }
+    else {
+        VIZSprite sprite;
+        sprite.actor = actor;
+        sprite.actorId = 0;
+        sprite.psprite = true;
+        sprite.vissprite = vis;
 
-    this->sprites.push_back(sprite);
-    //this->pSprite = &this->sprites[this->sprites.size() - 1];
+        this->sprites.push_back(sprite);
+        this->pSprite = &this->sprites[this->sprites.size() - 1];
+    }
 }
 
 BYTE VIZLabelsBuffer::getLabel(VIZSprite* sprite){
@@ -240,7 +245,6 @@ void VIZLabelsBuffer::setSprite(vissprite_t* vis){
 void VIZLabelsBuffer::unsetSprite(){
     this->currentLabel = 0;
     this->currentSprite = NULL;
-    this->pSprite = NULL;
 }
 
 
