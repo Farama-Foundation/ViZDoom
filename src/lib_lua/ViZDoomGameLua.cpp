@@ -44,6 +44,7 @@ namespace vizdoom {
         lState->number = this->state->number;
         lState->tic = this->state->tic;
 
+        /* Update buffers */
         if (this->state->screenBuffer != nullptr){
             lua_pushlightuserdata(luaState, this->doomController->getScreenBuffer());
             lb::object buffer(lb::from_stack(luaState, -1));
@@ -69,6 +70,7 @@ namespace vizdoom {
             lState->automapBuffer = buffer;
         }
 
+        /* Updates vars */
         if (this->state->gameVariables.size() > 0){
             lState->gameVariables = lb::newtable(luaState);
 
@@ -77,6 +79,7 @@ namespace vizdoom {
             }
         }
 
+        /* Update labels */
         if(this->state->labels.size() > 0) {
             lState->labels = lb::newtable(luaState);
 
