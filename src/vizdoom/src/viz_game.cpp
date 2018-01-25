@@ -346,6 +346,12 @@ void VIZ_GameStateUpdateLabels(){
                 else strncpy(label->objectName, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN);
 
                 label->value = i->label;
+
+                if(i->minX >= vizGameStateSM->SCREEN_WIDTH) i->minX = vizGameStateSM->SCREEN_WIDTH - 1;
+                if(i->minY >= vizGameStateSM->SCREEN_HEIGHT) i->minY = vizGameStateSM->SCREEN_HEIGHT - 1;
+                if(i->maxX >= vizGameStateSM->SCREEN_WIDTH) i->maxX = vizGameStateSM->SCREEN_WIDTH - 1;
+                if(i->maxY >= vizGameStateSM->SCREEN_HEIGHT) i->maxY = vizGameStateSM->SCREEN_HEIGHT - 1;
+
                 label->position[0] = i->minX;
                 label->position[1] = i->minY;
                 label->size[0] = i->maxX - i->minX;

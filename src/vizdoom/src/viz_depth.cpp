@@ -88,7 +88,7 @@ void VIZDepthBuffer::setPoint(unsigned int x, unsigned int y) {
 }
 
 // Set point(x,y) value with requested depth
-void VIZDepthBuffer::setPoint(unsigned int x, unsigned int y, BYTE depth) {
+inline void VIZDepthBuffer::setPoint(unsigned int x, unsigned int y, BYTE depth) {
     BYTE *dpth = getBufferPoint(x, y);
     if(dpth!=NULL) *dpth = depth;
 }
