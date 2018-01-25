@@ -29,17 +29,28 @@
 - `unsigned int / number / unsigned int / int` **objectId / object_id**
 - `std::string / string / String / str` **objectName / object_name**
 - `uint8_t / number / byte / int` **value**
+- `unsigned int / number / unsigned int / int` **x**
+- `unsigned int / number / unsigned int / int` **y**
+- `unsigned int / number / unsigned int / int` **width**
+- `unsigned int / number / unsigned int / int` **height**
 - `double / number / double / float` **objectPositionX / object_position_x**
 - `double / number / double / float` **objectPositionY / object_position_y**
 - `double / number / double / float` **objectPositionZ / object_position_z**
+- `double / number / double / float` **objectAngle / object_angle**
+- `double / number / double / float` **objectPitch / object_pitch**
+- `double / number / double / float` **objectRoll / object_roll**
+- `double / number / double / float` **objectVelocityX / object_velocity_x**
+- `double / number / double / float` **objectVelocityY / object_velocity_y**
+- `double / number / double / float` **objectVelocityZ / object_velocity_z**
 
 **objectId / object_id** - unique object instance ID - assigned when object is seen for the first time
 (so object with lower id was seen before object with higher).
 
-**objectId / object_id** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
+**objectName / object_name** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
 
 **value** - value that represents this particular object in **labelsBuffer**.
 
+**x**, **y**, **width**, **height** - describes bounding box of this particular object in **labelsBuffer**.
 
 ---
 ### <a name="gamestate"></a> `GameState`

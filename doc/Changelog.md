@@ -2,8 +2,19 @@
 
 ## Changes in 1.1.5
 
+#### Buttons and actions
+- Added `getButton` method.
+
+#### Episode recording and replaying
+- Added `isRecordingEpisode` and `isReplayingEpisode` methods.
+
+#### GameVariables
+- `KILLCOUNT` counts all kills, including multilayer kills.
+
 #### Labels
 - Added appending "Dead" prefix to label's name when actor is a corpse.
+- **Added bounding box information to Label object in `x`, `y`, `width` and `height` fields.**
+- **Added `objectAngle`, `objectPitch`, `objectRoll`, `objectVelocityX/Y/Z` fields to Label object.**
 
 #### Windows specific
 - Fixed problem with building on Windows 8.1 and 10.
