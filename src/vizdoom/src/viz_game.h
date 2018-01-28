@@ -41,7 +41,6 @@
 #define VIZ_GV_SLOTS_SIZE 10
 
 struct VIZPlayerLogger{
-    AActor* actor;
     int dmgCount;
     int dmgTaken;
     int hitCount;
@@ -51,7 +50,10 @@ struct VIZPlayerLogger{
     int selfHitCount;
 
     VIZPlayerLogger(){
-        this->actor = NULL;
+        this->reset();
+    };
+
+    void reset(){
         this->dmgCount = 0;
         this->dmgTaken = 0;
         this->hitCount = 0;
@@ -59,7 +61,7 @@ struct VIZPlayerLogger{
         this->attackCount = 0;
         this->selfInflictedDamege = 0;
         this->selfHitCount = 0;
-    };
+    }
 };
 
 extern VIZPlayerLogger vizPlayerLogger[VIZ_MAX_PLAYERS];
@@ -163,6 +165,8 @@ struct VIZGameState{
 
 void VIZ_GameStateInit();
 
+void VIZ_GameStateSMUpdate();
+
 void VIZ_GameStateTic();
 
 void VIZ_GameStateUpdate();
@@ -173,6 +177,6 @@ void VIZ_GameStateInitNew();
 
 void VIZ_GameStateClose();
 
-void VIZ_LogPlayers();
+void VIZ_PrintPlayers();
 
 #endif

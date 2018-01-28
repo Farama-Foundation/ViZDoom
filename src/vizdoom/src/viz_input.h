@@ -114,6 +114,6 @@ void VIZ_InputTic();
 
 void VIZ_InputClose();
 
-void VIZ_LogInput();
+void VIZ_PrintInput();
 
 #endif
