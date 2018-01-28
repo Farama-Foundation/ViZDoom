@@ -155,7 +155,7 @@ void VIZ_Init(){
         VIZ_InputInit();
         VIZ_ScreenInit();
 
-        VIZ_GameStateUpdate();
+        VIZ_GameStateSMUpdate();
 
         vizNextTic = true;
         vizUpdate = true;
@@ -217,11 +217,11 @@ void VIZ_Tic(){
     VIZ_InterruptionPoint();
 
     if (*viz_controlled){
-        if(vizUpdate) {
-            VIZ_Update();
-        }
         if(vizNextTic) {
             VIZ_GameStateTic();
+            if(vizUpdate) {
+                VIZ_Update();
+            }
             VIZ_MQSend(VIZ_MSG_CODE_DOOM_DONE);
             vizNextTic = false;
         }
@@ -234,8 +234,8 @@ void VIZ_Tic(){
     }
 
     if(*viz_log) {
-        VIZ_LogPlayers();
-        VIZ_LogInput();
+        VIZ_PrintPlayers();
+        VIZ_PrintInput();
     }
 }
 
@@ -248,6 +248,7 @@ void VIZ_Update(){
     }
     VIZ_D_ScreenDisplay();
     VIZ_ScreenUpdate();
+    VIZ_GameStateUpdate();
     VIZ_GameStateUpdateLabels();
 
     vizLastUpdate = VIZ_TIME;

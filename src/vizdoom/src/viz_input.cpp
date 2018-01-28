@@ -379,7 +379,7 @@ void VIZ_InputClose(){
     VIZ_SMDeleteRegion(&VIZ_SM_INPUTSTATE);
 }
 
-void VIZ_LogInput() {
+void VIZ_PrintInput() {
     printf("input state: tic %d: buttons: (input/cmd)\n", gametic);
     for (size_t i = 0; i < VIZ_BT_CMD_BT_COUNT; ++i) {
         if (vizInput->BT_AVAILABLE[i]) {

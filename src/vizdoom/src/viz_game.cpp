@@ -55,23 +55,45 @@ VIZPlayerLogger vizPlayerLogger[VIZ_MAX_PLAYERS];
 
 void VIZ_LogDmg(AActor *target, AActor *inflictor, AActor *source, int amount){
     if(amount < 0) return;
+    if(amount > 1000) return; // ignore things like telefrags
 
-    for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
-        if(vizPlayerLogger[i].actor == target){
-            vizPlayerLogger[i].dmgTaken += amount;
-            ++vizPlayerLogger[i].hitsTaken;
+    //printf("%s - %d -> %s (%d)\n", source->GetClass()->TypeName.GetChars(), amount, target->GetClass()->TypeName.GetChars(), target->health);
 
-            if(target == source || target == inflictor){
-                vizPlayerLogger[i].selfInflictedDamege += amount;
-                ++vizPlayerLogger[i].selfHitCount;
+    if(netgame || multiplayer) {
+        for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
+            if (players[i].mo == target) {
+                vizPlayerLogger[i].dmgTaken += amount;
+                ++vizPlayerLogger[i].hitsTaken;
+
+                if (target == source) { // || target == inflictor){
+                    vizPlayerLogger[i].selfInflictedDamege += amount;
+                    ++vizPlayerLogger[i].selfHitCount;
+                }
+            } else if (players[i].mo == source) { //vizPlayerLogger[i].actor == inflictor){
+                vizPlayerLogger[i].dmgCount += amount;
+                ++vizPlayerLogger[i].hitCount;
             }
         }
+    }
+    else{
+        if(VIZ_PLAYER.mo == target){
+            vizPlayerLogger[VIZ_PLAYER_NUM].dmgTaken += amount;
+            ++vizPlayerLogger[VIZ_PLAYER_NUM].hitsTaken;
 
-        if(vizPlayerLogger[i].actor == source || vizPlayerLogger[i].actor == inflictor){
-            vizPlayerLogger[i].dmgCount += amount;
-            ++vizPlayerLogger[i].hitCount;
+            if(target == source){ // || target == inflictor){
+                vizPlayerLogger[VIZ_PLAYER_NUM].selfInflictedDamege += amount;
+                ++vizPlayerLogger[VIZ_PLAYER_NUM].selfHitCount;
+            }
+
+            //printf("dt: %d, ht: %d, dc: %d, hc: %d\n", vizPlayerLogger[VIZ_PLAYER_NUM].dmgTaken, vizPlayerLogger[VIZ_PLAYER_NUM].hitsTaken, vizPlayerLogger[VIZ_PLAYER_NUM].dmgCount, vizPlayerLogger[VIZ_PLAYER_NUM].hitCount);
         }
 
+        else if(VIZ_PLAYER.mo == source){
+            vizPlayerLogger[VIZ_PLAYER_NUM].dmgCount += amount;
+            ++vizPlayerLogger[VIZ_PLAYER_NUM].hitCount;
+
+            //printf("dt: %d, ht: %d, dc: %d, hc: %d\n", vizPlayerLogger[VIZ_PLAYER_NUM].dmgTaken, vizPlayerLogger[VIZ_PLAYER_NUM].hitsTaken, vizPlayerLogger[VIZ_PLAYER_NUM].dmgCount, vizPlayerLogger[VIZ_PLAYER_NUM].hitCount);
+        }
     }
 }
 
@@ -189,7 +211,7 @@ void VIZ_GameStateInit(){
     }
 }
 
-void VIZ_GameStateUpdate(){
+void VIZ_GameStateSMUpdate(){
     if(!vizGameStateSM) return;
 
     vizGameStateSM->SM_SIZE = vizSMSize;
@@ -233,26 +255,11 @@ void VIZ_GameStateTic(){
     vizGameStateSM->MAP_TIC = (unsigned int)level.maptime;
     vizGameStateSM->MAP_TICLIMIT = (unsigned int)(timelimit * TICRATE * 60);
 
-    for(int i = 0; i < VIZ_GV_USER_COUNT; ++i) vizGameStateSM->MAP_USER_VARS[i] = ACS_GlobalVars[i+1];
-    vizGameStateSM->MAP_REWARD = ACS_GlobalVars[0];
-
     bool prevDead = vizGameStateSM->PLAYER_DEAD;
 
     if(VIZ_PLAYER.mo != NULL) {
         vizGameStateSM->PLAYER_HAS_ACTOR = true;
         vizGameStateSM->PLAYER_DEAD = VIZ_PLAYER.playerstate == PST_DEAD || VIZ_PLAYER.mo->health <= 0;
-
-        if(!*viz_nocheat) {
-            vizGameStateSM->PLAYER_MOVEMENT[0] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.x);
-            vizGameStateSM->PLAYER_MOVEMENT[1] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.y);
-            vizGameStateSM->PLAYER_MOVEMENT[2] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.z);
-            vizGameStateSM->PLAYER_MOVEMENT[3] = VIZ_AngleToDouble(VIZ_PLAYER.mo->angle);
-            vizGameStateSM->PLAYER_MOVEMENT[4] = VIZ_PitchToDouble(VIZ_PLAYER.mo->pitch);
-            vizGameStateSM->PLAYER_MOVEMENT[5] = VIZ_AngleToDouble(VIZ_PLAYER.mo->roll);
-            vizGameStateSM->PLAYER_MOVEMENT[6] = VIZ_FixedToDouble(VIZ_PLAYER.mo->velx);
-            vizGameStateSM->PLAYER_MOVEMENT[7] = VIZ_FixedToDouble(VIZ_PLAYER.mo->vely);
-            vizGameStateSM->PLAYER_MOVEMENT[8] = VIZ_FixedToDouble(VIZ_PLAYER.mo->velz);
-        }
     }
     else {
         vizGameStateSM->PLAYER_HAS_ACTOR = false;
@@ -262,14 +269,39 @@ void VIZ_GameStateTic(){
     if(vizGameStateSM->PLAYER_DEAD && !prevDead) ++vizGameStateSM->PLAYER_DEATHCOUNT;
 
     vizGameStateSM->PLAYER_READY_TO_RESPAWN = VIZ_PLAYER.playerstate == PST_REBORN;
+}
+
+void VIZ_GameStateUpdate(){
+
+    // Reward and ACS vars
+    for(int i = 0; i < VIZ_GV_USER_COUNT; ++i) vizGameStateSM->MAP_USER_VARS[i] = ACS_GlobalVars[i+1];
+    vizGameStateSM->MAP_REWARD = ACS_GlobalVars[0];
+
+    // Player position GameVariables
+    if(VIZ_PLAYER.mo != NULL && !*viz_nocheat) {
+        vizGameStateSM->PLAYER_MOVEMENT[0] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.x);
+        vizGameStateSM->PLAYER_MOVEMENT[1] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.y);
+        vizGameStateSM->PLAYER_MOVEMENT[2] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.z);
+        vizGameStateSM->PLAYER_MOVEMENT[3] = VIZ_AngleToDouble(VIZ_PLAYER.mo->angle);
+        vizGameStateSM->PLAYER_MOVEMENT[4] = VIZ_PitchToDouble(VIZ_PLAYER.mo->pitch);
+        vizGameStateSM->PLAYER_MOVEMENT[5] = VIZ_AngleToDouble(VIZ_PLAYER.mo->roll);
+        vizGameStateSM->PLAYER_MOVEMENT[6] = VIZ_FixedToDouble(VIZ_PLAYER.mo->velx);
+        vizGameStateSM->PLAYER_MOVEMENT[7] = VIZ_FixedToDouble(VIZ_PLAYER.mo->vely);
+        vizGameStateSM->PLAYER_MOVEMENT[8] = VIZ_FixedToDouble(VIZ_PLAYER.mo->velz);
+    }
 
     strncpy(vizGameStateSM->PLAYER_NAME, VIZ_PLAYER.userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
 
+    // Other
+    int killed_players = 0;
+    for (int i = 0; i < VIZ_MAX_PLAYERS; ++i){
+        if (i != VIZ_PLAYER_NUM) killed_players += VIZ_PLAYER.frags[i];
+    }
     vizGameStateSM->MAP_KILLCOUNT = level.killed_monsters;
     vizGameStateSM->MAP_ITEMCOUNT = level.found_items;
     vizGameStateSM->MAP_SECRETCOUNT = level.found_secrets;
 
-    vizGameStateSM->PLAYER_KILLCOUNT = VIZ_PLAYER.killcount;
+    vizGameStateSM->PLAYER_KILLCOUNT = VIZ_PLAYER.killcount + killed_players;
     vizGameStateSM->PLAYER_ITEMCOUNT = VIZ_PLAYER.itemcount;
     vizGameStateSM->PLAYER_SECRETCOUNT = VIZ_PLAYER.secretcount;
     vizGameStateSM->PLAYER_FRAGCOUNT = VIZ_PLAYER.fragcount;
@@ -279,7 +311,7 @@ void VIZ_GameStateTic(){
     vizGameStateSM->PLAYER_ON_GROUND = VIZ_PLAYER.onground;
 
     if (vizGameStateSM->PLAYER_HAS_ACTOR) vizGameStateSM->PLAYER_HEALTH = VIZ_PLAYER.mo->health;
-    //else vizGameStateSM->PLAYER_HEALTH = VIZ_PLAYER.health;
+        //else vizGameStateSM->PLAYER_HEALTH = VIZ_PLAYER.health;
     else vizGameStateSM->PLAYER_HEALTH = 0;
 
     vizGameStateSM->PLAYER_ARMOR = VIZ_CheckItem(NAME_BasicArmor);
@@ -292,13 +324,14 @@ void VIZ_GameStateTic(){
         vizGameStateSM->PLAYER_WEAPON[i] = VIZ_CheckSlotWeapons(i);
     }
 
-    vizPlayerLogger[VIZ_PLAYER_NUM].actor = (AActor*)VIZ_PLAYER.mo;
+    // Player logger
     vizGameStateSM->PLAYER_HITCOUNT = vizPlayerLogger[VIZ_PLAYER_NUM].hitCount;
     vizGameStateSM->PLAYER_HITS_TAKEN = vizPlayerLogger[VIZ_PLAYER_NUM].hitsTaken;
     vizGameStateSM->PLAYER_DAMAGECOUNT = vizPlayerLogger[VIZ_PLAYER_NUM].dmgCount;
     vizGameStateSM->PLAYER_DAMAGE_TAKEN = vizPlayerLogger[VIZ_PLAYER_NUM].dmgTaken;
 
-    vizGameStateSM->PLAYER_NUMBER = (unsigned int)consoleplayer;
+    // Multiplayer
+    vizGameStateSM->PLAYER_NUMBER = (unsigned int)VIZ_PLAYER_NUM;
     vizGameStateSM->PLAYER_COUNT = 1;
 
     if(netgame || multiplayer) {
@@ -310,15 +343,11 @@ void VIZ_GameStateTic(){
                 vizGameStateSM->PLAYER_N_IN_GAME[i] = true;
                 strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = players[i].fragcount;
-
-                vizPlayerLogger[i].actor = (AActor*)players[i].mo;
             }
             else{
                 //strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
                 vizGameStateSM->PLAYER_N_IN_GAME[i] = false;
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = 0;
-
-                vizPlayerLogger[i].actor = nullptr;
             }
         }
     }
@@ -328,7 +357,7 @@ void VIZ_GameStateUpdateLabels(){
     if(!vizGameStateSM) return;
 
     unsigned int labelCount = 0;
-    if(!*viz_nocheat && vizLabels != NULL){
+    if(!*viz_nocheat && vizLabels != NULL && !vizGameStateSM->MAP_END){
 
         VIZ_DebugMsg(4, VIZ_FUNC, "number of sprites: %d", gametic, vizLabels->getSprites().size());
 
@@ -388,13 +417,17 @@ void VIZ_GameStateInitNew(){
     }
 
     if(vizLabels != NULL) vizLabels->clearActors();
+
+    for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
+        vizPlayerLogger[i].reset();
+    }
 }
 
 void VIZ_GameStateClose(){
     VIZ_SMDeleteRegion(&VIZ_SM_GAMESTATE);
 }
 
-void VIZ_LogPlayers(){
+void VIZ_PrintPlayers(){
 
     printf("players state: tic %d: player_count: %d, players:\n", gametic, vizGameStateSM->PLAYER_COUNT);
     for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
