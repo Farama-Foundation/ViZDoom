@@ -93,7 +93,7 @@
 
 #define PYBIND11_VERSION_MAJOR 2
 #define PYBIND11_VERSION_MINOR 2
-#define PYBIND11_VERSION_PATCH 1
+#define PYBIND11_VERSION_PATCH 2
 
 /// Include Python header, disable linking to pythonX_d.lib on Windows in debug mode
 #if defined(_MSC_VER)
@@ -377,16 +377,18 @@ constexpr size_t instance_simple_holder_in_ptrs() {
 struct type_info;
 struct value_and_holder;
 
+struct nonsimple_values_and_holders {
+    void **values_and_holders;
+    uint8_t *status;
+};
+
 /// The 'instance' type which needs to be standard layout (need to be able to use 'offsetof')
 struct instance {
     PyObject_HEAD
     /// Storage for pointers and holder; see simple_layout, below, for a description
     union {
         void *simple_value_holder[1 + instance_simple_holder_in_ptrs()];
-        struct {
-            void **values_and_holders;
-            uint8_t *status;
-        } nonsimple;
+        nonsimple_values_and_holders nonsimple;
     };
     /// Weak references (needed for keep alive):
     PyObject *weakrefs;
@@ -471,7 +473,7 @@ template <size_t... IPrev, size_t I, bool B, bool... Bs> struct select_indices_i
     : select_indices_impl<conditional_t<B, index_sequence<IPrev..., I>, index_sequence<IPrev...>>, I + 1, Bs...> {};
 template <bool... Bs> using select_indices = typename select_indices_impl<index_sequence<>, 0, Bs...>::type;
 
-/// Backports of std::bool_constant and std::negation to accomodate older compilers
+/// Backports of std::bool_constant and std::negation to accommodate older compilers
 template <bool B> using bool_constant = std::integral_constant<bool, B>;
 template <typename T> struct negation : bool_constant<!T::value> { };
 
