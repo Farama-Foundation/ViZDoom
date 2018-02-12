@@ -55,6 +55,7 @@ vizdoom-1.1.0-1.src.rock
 *.class
 
 # Copied from the original ZDoom repository (and modified)
+*.cbp
 *.ncb
 *.pdb
 *.ilk
@@ -112,3 +113,6 @@ src/vizdoom/zlib/x64/
 cmake-build-debug/
 dist/
 vizdoom.egg-info/
+
+# MacOS
+.DS_Store

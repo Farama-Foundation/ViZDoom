@@ -191,12 +191,10 @@ if (BUILD_PYTHON OR BUILD_PYTHON3)
     set(VIZDOOM_PYTHON_LIBS
             ${VIZDOOM_LIBS}
             ${Boost_LIBRARIES}
-            ${PYTHON_LIBRARIES}
             ${NUMPY_LIBRARIES})
 
     include_directories(${VIZDOOM_PYTHON_INCLUDE_DIR}
             ${Boost_INCLUDE_DIR}
-            ${PYTHON_INCLUDE_DIRS}
             ${NUMPY_INCLUDES})
 
     set(VIZDOOM_PYTHON_SOURCES
