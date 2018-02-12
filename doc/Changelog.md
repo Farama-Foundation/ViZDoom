@@ -10,15 +10,21 @@
 
 #### GameVariables
 - `KILLCOUNT` counts all kills, including multilayer kills.
+- `HITCOUNT`, `HITS_TAKEN`, `DAMAGECOUNT`, `DAMAGE_TAKEN` game variables added.
 
 #### Labels
 - Added appending "Dead" prefix to label's name when actor is a corpse.
 - **Added bounding box information to Label object in `x`, `y`, `width` and `height` fields.**
 - **Added `objectAngle`, `objectPitch`, `objectRoll`, `objectVelocityX/Y/Z` fields to Label object.**
 
+
 #### Windows specific
 - Fixed problem with building on Windows 8.1 and 10.
 - Added scripts for downloading freedoom2.wad and assembling Python packages.
+
+#### Rendering
+- Fixed minor rendering issue in depth and labels buffer.
+- Fixed order of color values in `RGB/BGR` modes of `ScreenFormat`.
 
 
 ## Changes in 1.1.4
