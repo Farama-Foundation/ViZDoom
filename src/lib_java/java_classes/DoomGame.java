@@ -34,6 +34,8 @@ public class DoomGame{
     public native void replayEpisode(String file, int player);
 
     public native boolean isRunning();
+    public native boolean isRecordingEpisode();
+    public native boolean isReplayingEpisode();
     public native boolean isMultiplayerGame();
 
     public native void setAction(double[] actions);

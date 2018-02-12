@@ -253,6 +253,10 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
                 ENUM_VAL_2_LUA(SECRETCOUNT),
                 ENUM_VAL_2_LUA(FRAGCOUNT),
                 ENUM_VAL_2_LUA(DEATHCOUNT),
+                ENUM_VAL_2_LUA(HITCOUNT),
+                ENUM_VAL_2_LUA(HITS_TAKEN),
+                ENUM_VAL_2_LUA(DAMAGECOUNT),
+                ENUM_VAL_2_LUA(DAMAGE_TAKEN),
                 ENUM_VAL_2_LUA(HEALTH),
                 ENUM_VAL_2_LUA(ARMOR),
                 ENUM_VAL_2_LUA(DEAD),
@@ -435,6 +439,7 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             .def("_getState", &DoomGameLua::getState, adopt_policy<0>())
 
             CLASS_FUNC_2_LUA(DoomGameLua, getGameVariable)
+            CLASS_FUNC_2_LUA(DoomGameLua, getButton)
 
             CLASS_FUNC_2_LUA(DoomGameLua, getLivingReward)
             CLASS_FUNC_2_LUA(DoomGameLua, setLivingReward)

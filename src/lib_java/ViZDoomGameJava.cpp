@@ -36,6 +36,8 @@ JNI_METHOD(void, newEpisode__Ljava_lang_String, newEpisode_str, jstring)
 JNI_METHOD(void, replayEpisode__Ljava_lang_String_2, replayEpisode_str, jstring)
 JNI_METHOD(void, replayEpisode__Ljava_lang_String_2I, replayEpisode_str_int, jstring, jint)
 JNI_METHOD(jboolean, isRunning, isRunning)
+JNI_METHOD(jboolean, isRecordingEpisode, isRecordingEpisode)
+JNI_METHOD(jboolean, isReplayingEpisode, isReplayingEpisode)
 JNI_METHOD(jboolean, isMultiplayerGame, isMultiplayerGame)
 JNI_METHOD(void, setAction, setAction, jdoubleArray)
 JNI_METHOD(void, advanceAction__, advanceAction_)
@@ -60,14 +62,16 @@ JNI_EXPORT(jobject, getState){
     jclass jLabelClass = jEnv->FindClass("vizdoom/Label");
     if (jLabelClass == 0) return NULL;
     jobjectArray jLabels = jEnv->NewObjectArray(state->labels.size(), jLabelClass, NULL);
-    jmethodID jLabelConstructor = jEnv->GetMethodID(jLabelClass, "<init>", "(ILjava/lang/String;BDDD)V");
+    jmethodID jLabelConstructor = jEnv->GetMethodID(jLabelClass, "<init>", "(ILjava/lang/String;BIIIIDDDDDDDDD)V");
     if (jLabelConstructor == 0) return NULL;
 
     for(size_t i = 0; i < state->labels.size(); ++i){
         jobject jLabel = jEnv->NewObject(jLabelClass, jLabelConstructor,
-                                        (jint)state->labels[i].objectId, castTojstring(jEnv, state->labels[i].objectName),
-                                        (jint)state->labels[i].value, (jdouble)state->labels[i].objectPositionX,
-                                        (jdouble)state->labels[i].objectPositionY, (jdouble)state->labels[i].objectPositionZ);
+            (jint)state->labels[i].objectId, castTojstring(jEnv, state->labels[i].objectName), (jint)state->labels[i].value,
+            (jint)state->labels[i].x, (jint)state->labels[i].y, (jint)state->labels[i].width, (jint)state->labels[i].height,
+            (jdouble)state->labels[i].objectPositionX, (jdouble)state->labels[i].objectPositionY, (jdouble)state->labels[i].objectPositionZ,
+            (jdouble)state->labels[i].objectAngle, (jdouble)state->labels[i].objectPitch, (jdouble)state->labels[i].objectRoll,
+            (jdouble)state->labels[i].objectVelocityX, (jdouble)state->labels[i].objectVelocityY, (jdouble)state->labels[i].objectVelocityZ);
         jEnv->SetObjectArrayElement(jLabels, i, jLabel);
     }
 
@@ -172,6 +176,11 @@ JNI_EXPORT(void, addAvailableGameVariable, jobject){
 JNI_EXPORT(jdouble, getGameVariable, jobject){
     auto arg1 = jobjectCastToEnum<GameVariable>(jEnv, "vizdoom/GameVariable", jarg1);
     return castTojdouble(callObjMethod(jEnv, jObj, &DoomGameJava::getGameVariable, arg1));
+}
+
+JNI_EXPORT(jdouble, getButton, jobject){
+    auto arg1 = jobjectCastToEnum<Button>(jEnv, "vizdoom/Button", jarg1);
+    return castTojdouble(callObjMethod(jEnv, jObj, &DoomGameJava::getButton, arg1));
 }
 
 JNI_METHOD(void, clearAvailableGameVariables, clearAvailableGameVariables)
