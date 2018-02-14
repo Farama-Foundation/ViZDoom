@@ -20,42 +20,58 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
+
 #ifndef LUABIND_DISCARD_RESULT_POLICY_HPP_INCLUDED
 #define LUABIND_DISCARD_RESULT_POLICY_HPP_INCLUDED
 
 #include <luabind/config.hpp>
 #include <luabind/detail/policy.hpp>    // for index_map, etc
 #include <luabind/detail/primitives.hpp>  // for null_type, etc
+
+#include <boost/mpl/if.hpp>             // for if_
+#include <boost/type_traits/is_same.hpp>  // for is_same
+
 #include <luabind/lua_include.hpp>
 
-namespace luabind {
-	namespace detail {
+namespace luabind { namespace detail
+{
+    struct discard_converter
+    {
+        template<class T>
+        void apply(lua_State*, T) {}
+    };
 
-		struct discard_converter
-		{
-			template<class T>
-			void to_lua(lua_State*, T) {}
-		};
+    struct discard_result_policy : conversion_policy<0>
+    {
+        static void precall(lua_State*, const index_map&) {}
+        static void postcall(lua_State*, const index_map&) {}
 
-		struct discard_result_policy
-		{
-			struct can_only_convert_from_cpp_to_lua {};
+        struct can_only_convert_from_cpp_to_lua {};
 
-			template<class T, class Direction>
-			struct specialize
-			{
-				static_assert(std::is_same< Direction, cpp_to_lua >::value, "Can only convert from cpp to lua");
-				using type = discard_converter;
-			};
-		};
+        template<class T, class Direction>
+        struct apply
+        {
+            typedef typename boost::mpl::if_<boost::is_same<Direction, cpp_to_lua>
+                , discard_converter
+                , can_only_convert_from_cpp_to_lua
+            >::type type;
+        };
+    };
 
-	}
-}
+}}
 
 namespace luabind
 {
-	using discard_result = meta::type_list<converter_policy_injector<0, detail::discard_result_policy>>;
+  detail::policy_cons<
+      detail::discard_result_policy, detail::null_type> const discard_result = {};
+
+  namespace detail
+  {
+    inline void ignore_unused_discard_result()
+    {
+        (void)discard_result;
+    }
+  }
 }
 
 #endif // LUABIND_DISCARD_RESULT_POLICY_HPP_INCLUDED
-

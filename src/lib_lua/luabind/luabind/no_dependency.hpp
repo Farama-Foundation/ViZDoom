@@ -9,20 +9,35 @@
 
 namespace luabind {
 
-	namespace detail
-	{
+namespace detail
+{
 
-		struct no_dependency_policy
-		{
-			static void postcall(lua_State*, int /*results*/, meta::index_list_tag)
-			{}
-		};
+  struct no_dependency_policy
+  {
+      static void precall(lua_State*, index_map const&)
+      {}
 
-	} // namespace detail
+      static void postcall(lua_State*, index_map const&)
+      {}
+  };
 
-	using no_dependency = policy_list<call_policy_injector<detail::no_dependency_policy>>;
+  typedef policy_cons<no_dependency_policy, null_type>
+      no_dependency_node;
+
+} // namespace detail
+
+detail::no_dependency_node const no_dependency = {};
+
+namespace detail
+{
+
+  inline void ignore_unused_no_dependency()
+  {
+      (void)no_dependency;
+  }
+
+} // namespace detail
 
 } // namespace luabind
 
 #endif // LUABIND_NO_DEPENDENCY_100324_HPP
-

@@ -27,14 +27,13 @@
 
 namespace luabind
 {
-	namespace detail
-	{
-		struct nil_type {};
-	}
+   namespace detail
+   {
+      struct nil_type {};
+   }
 
-	// defined in class.cpp
-	extern LUABIND_API detail::nil_type nil;
+   // defined in class.cpp
+   LUABIND_API extern detail::nil_type nil;
 }
 
 #endif
-

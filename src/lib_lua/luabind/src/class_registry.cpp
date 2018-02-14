@@ -22,121 +22,124 @@
 
 #define LUABIND_BUILDING
 
-#include <luabind/lua_include.hpp>      // for lua_pushstring, lua_rawset, etc
-
 #include <luabind/config.hpp>           // for LUABIND_API
-#include <luabind/typeid.hpp>           // for type_id
 #include <luabind/detail/class_registry.hpp>  // for class_registry
 #include <luabind/detail/class_rep.hpp>  // for class_rep
 #include <luabind/detail/garbage_collector.hpp>  // for garbage_collector
+#include <luabind/detail/object_rep.hpp> // for push_instance_metatable
+#include <luabind/typeid.hpp>           // for type_id
 
+#include <luabind/lua_include.hpp>      // for lua_pushstring, lua_rawset, etc
 
 #include <cassert>                      // for assert
 #include <map>                          // for map, etc
 #include <utility>                      // for pair
 
-namespace luabind {
-	namespace detail {
+namespace luabind { namespace detail {
 
-		LUABIND_API void push_instance_metatable(lua_State* L);
+    char classes_tag = 0;
 
-		namespace {
+    namespace {
 
-			/// @todo is this redundant with the following function? All that differs is the __gc closure
-			int create_cpp_class_metatable(lua_State* L)
-			{
-				lua_newtable(L);
+        int create_cpp_class_metatable(lua_State* L)
+        {
+            lua_createtable(L, 0, 7);
 
-				// mark the table with our (hopefully) unique tag
-				// that says that the user data that has this
-				// metatable is a class_rep
-				lua_pushstring(L, "__luabind_classrep");
-				lua_pushboolean(L, 1);
-				lua_rawset(L, -3);
+            // mark the table with our unique tag
+            // that says that the user data that has this
+            // metatable is a class_rep
+            lua_pushboolean(L, true);
+            lua_rawsetp(L, -2, &classrep_tag);
 
-				lua_pushstring(L, "__gc");
-				lua_pushcclosure(L, &garbage_collector<class_rep>, 0);
+            lua_pushliteral(L, "__gc");
+            lua_pushcfunction(L, &garbage_collector<class_rep>);
+            lua_rawset(L, -3);
 
-				lua_rawset(L, -3);
+            lua_pushliteral(L, "__call");
+            lua_pushcfunction(L, &class_rep::constructor_dispatcher);
+            lua_rawset(L, -3);
 
-				lua_pushstring(L, "__call");
-				lua_pushcclosure(L, &class_rep::constructor_dispatcher, 0);
-				lua_rawset(L, -3);
+            lua_pushliteral(L, "__index");
+            lua_pushcfunction(L, &class_rep::static_class_gettable);
+            lua_rawset(L, -3);
 
-				lua_pushstring(L, "__index");
-				lua_pushcclosure(L, &class_rep::static_class_gettable, 0);
-				lua_rawset(L, -3);
+            lua_pushliteral(L, "__newindex");
+            lua_pushcfunction(L, &class_rep::lua_settable_dispatcher);
+            lua_rawset(L, -3);
 
-				lua_pushstring(L, "__newindex");
-				lua_pushcclosure(L, &class_rep::lua_settable_dispatcher, 0);
-				lua_rawset(L, -3);
+            lua_pushliteral(L, "__tostring");
+            lua_pushcfunction(L, &class_rep::tostring);
+            lua_rawset(L, -3);
 
-				return luaL_ref(L, LUA_REGISTRYINDEX);
-			}
+            // Direct calls to metamethods cannot be allowed, because the
+            // callee trusts the caller to pass arguments of the right type.
+            lua_pushliteral(L, "__metatable");
+            lua_pushboolean(L, true);
+            lua_rawset(L, -3);
 
-			int create_lua_class_metatable(lua_State* L)
-			{
-				return create_cpp_class_metatable(L);
-			}
+            return luaL_ref(L, LUA_REGISTRYINDEX);
+        }
 
-		} // namespace unnamed
+        int create_lua_class_metatable(lua_State* L)
+        {
+            return create_cpp_class_metatable(L);
+        }
 
-		class class_rep;
+    } // namespace unnamed
 
-		class_registry::class_registry(lua_State* L)
-			: m_cpp_class_metatable(create_cpp_class_metatable(L))
-			, m_lua_class_metatable(create_lua_class_metatable(L))
-		{
-			push_instance_metatable(L);
-			m_instance_metatable = luaL_ref(L, LUA_REGISTRYINDEX);
-		}
+    class class_rep;
 
-		class_registry* class_registry::get_registry(lua_State* L)
-		{
+    class_registry::class_registry(lua_State* L)
+        : m_cpp_class_metatable(create_cpp_class_metatable(L))
+        , m_lua_class_metatable(create_lua_class_metatable(L))
+    {
+        push_instance_metatable(L);
+        m_instance_metatable = luaL_ref(L, LUA_REGISTRYINDEX);
+    }
 
-#ifdef LUABIND_NOT_THREADSAFE
-
-			// if we don't have to be thread safe, we can keep a
-			// chache of the class_registry pointer without the
-			// need of a mutex
-			static lua_State* cache_key = 0;
-			static class_registry* registry_cache = 0;
-			if(cache_key == L) return registry_cache;
-
-#endif
-
-			lua_pushstring(L, "__luabind_classes");
-			lua_gettable(L, LUA_REGISTRYINDEX);
-			class_registry* p = static_cast<class_registry*>(lua_touserdata(L, -1));
-			lua_pop(L, 1);
+    class_registry* class_registry::get_registry(lua_State* L)
+    {
 
 #ifdef LUABIND_NOT_THREADSAFE
 
-			cache_key = L;
-			registry_cache = p;
+        // if we don't have to be thread safe, we can keep a
+        // chache of the class_registry pointer without the
+        // need of a mutex
+        static lua_State* cache_key = 0;
+        static class_registry* registry_cache = 0;
+        if (cache_key == L) return registry_cache;
 
 #endif
 
-			return p;
-		}
+        lua_rawgetp(L, LUA_REGISTRYINDEX, &classes_tag);
+        class_registry* p = static_cast<class_registry*>(lua_touserdata(L, -1));
+        lua_pop(L, 1);
 
-		void class_registry::add_class(type_id const& info, class_rep* crep)
-		{
-			// class is already registered
-			assert((m_classes.find(info) == m_classes.end())
-				&& "you are trying to register a class twice");
-			m_classes[info] = crep;
-		}
+#ifdef LUABIND_NOT_THREADSAFE
 
-		class_rep* class_registry::find_class(type_id const& info) const
-		{
-			std::map<type_id, class_rep*>::const_iterator i(
-				m_classes.find(info));
+        cache_key = L;
+        registry_cache = p;
 
-			if(i == m_classes.end()) return 0; // the type is not registered
-			return i->second;
-		}
+#endif
 
-	} // namespace detail
-} // namespace luabind
+        return p;
+    }
 
+    void class_registry::add_class(type_id const& info, class_rep* crep)
+    {
+        // class is already registered
+        assert((m_classes.find(info) == m_classes.end())
+            && "you are trying to register a class twice");
+        m_classes[info] = crep;
+    }
+
+    class_rep* class_registry::find_class(type_id const& info) const
+    {
+        std::map<type_id, class_rep*>::const_iterator i(
+            m_classes.find(info));
+
+        if (i == m_classes.end()) return 0; // the type is not registered
+        return i->second;
+    }
+
+}} // namespace luabind::detail

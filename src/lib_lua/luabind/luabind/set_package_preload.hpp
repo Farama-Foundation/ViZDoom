@@ -1,14 +1,14 @@
 /** @file
-	@brief Header
+    @brief Header
 
-	@date 2012
+    @date 2012
 
-	@author
-	Ryan Pavlik
-	<rpavlik@iastate.edu> and <abiryan@ryand.net>
-	http://academic.cleardefinition.com/
-	Iowa State University Virtual Reality Applications Center
-	Human-Computer Interaction Graduate Program
+    @author
+    Ryan Pavlik
+    <rpavlik@iastate.edu> and <abiryan@ryand.net>
+    http://academic.cleardefinition.com/
+    Iowa State University Virtual Reality Applications Center
+    Human-Computer Interaction Graduate Program
 */
 
 //          Copyright Iowa State University 2012.
@@ -32,23 +32,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
+#pragma once
 #ifndef INCLUDED_set_package_preload_hpp_GUID_563c882e_86f7_4ea7_8603_4594ea41737e
 #define INCLUDED_set_package_preload_hpp_GUID_563c882e_86f7_4ea7_8603_4594ea41737e
 
 // Internal Includes
 #include <luabind/config.hpp>
-#include <luabind/lua_state_fwd.hpp>
+#include <luabind/make_function.hpp>
+#include <luabind/object_fwd.hpp>
 
 // Library/third-party includes
-// - none
+#include <luabind/lua_state_fwd.hpp>
 
 // Standard includes
 // - none
 
 
 namespace luabind {
+    LUABIND_API void set_package_preload(
+        lua_State* L,
+        char const* modulename,
+        object const& loader);
 
-	LUABIND_API void set_package_preload(lua_State * L, const char * modulename, int(*loader) (lua_State *));
+    template <typename F>
+    void set_package_preload(
+        lua_State* L,
+        char const* modulename,
+        F loader)
+    {
+        object f = make_function(L, loader);
+        // Call add_overload to correctly set the name of f. Inefficiency
+        // should not matter here.
+        detail::add_overload(luabind::newtable(L), modulename, f);
+        set_package_preload(L, modulename, f);
+    }
 }
 #endif // INCLUDED_set_package_preload_hpp_GUID_563c882e_86f7_4ea7_8603_4594ea41737e
-

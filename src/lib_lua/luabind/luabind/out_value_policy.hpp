@@ -25,248 +25,318 @@
 #define LUABIND_OUT_VALUE_POLICY_HPP_INCLUDED
 
 #include <luabind/config.hpp>
+#include <luabind/detail/decorate_type.hpp>  // for LUABIND_DECORATE_TYPE
 #include <luabind/detail/policy.hpp>    // for find_conversion_policy, etc
-#include <luabind/detail/decorate_type.hpp>  // for decorated_type
 #include <luabind/detail/primitives.hpp>  // for by_pointer, by_reference, etc
 #include <luabind/detail/typetraits.hpp>  // for is_nonconst_pointer, is_nonconst_reference, etc
+
+#include <boost/mpl/apply_wrap.hpp>     // for apply_wrap2
+#include <boost/mpl/identity.hpp>
+#include <boost/mpl/if.hpp>             // for if_
+#include <boost/mpl/or.hpp>             // for or_
+#include <boost/type_traits/is_same.hpp>  // for is_same
+
 #include <new>                          // for operator new
 
-namespace luabind {
-	namespace detail {
+namespace luabind { namespace detail
+{
+    namespace mpl = boost::mpl;
 
-		template<int N>
-		struct char_array
-		{
-			char storage[N];
-		};
+    template<int N>
+    struct char_array
+    {
+        char storage[N];
+    };
 
-		template<class U>
-		char_array<sizeof(typename identity<U>::type)> indirect_sizeof_test(by_reference<U>);
+#if defined(__GNUC__) && ( __GNUC__ == 3 && __GNUC_MINOR__ == 1 )
 
-		template<class U>
-		char_array<sizeof(typename identity<U>::type)> indirect_sizeof_test(by_const_reference<U>);
+    template<class U>
+    char_array<sizeof(U)> indirect_sizeof_test(by_reference<U>);
 
-		template<class U>
-		char_array<sizeof(typename identity<U>::type)> indirect_sizeof_test(by_pointer<U>);
+    template<class U>
+    char_array<sizeof(U)> indirect_sizeof_test(by_const_reference<U>);
 
-		template<class U>
-		char_array<sizeof(typename identity<U>::type)> indirect_sizeof_test(by_const_pointer<U>);
+    template<class U>
+    char_array<sizeof(U)> indirect_sizeof_test(by_pointer<U>);
 
-		template<class U>
-		char_array<sizeof(typename identity<U>::type)> indirect_sizeof_test(by_value<U>);
+    template<class U>
+    char_array<sizeof(U)> indirect_sizeof_test(by_const_pointer<U>);
 
-		template<class T>
-		struct indirect_sizeof
-		{
-			static const int value = sizeof(indirect_sizeof_test(decorated_type<T>()));
-		};
+    template<class U>
+    char_array<sizeof(U)> indirect_sizeof_test(by_value<U>);
 
-		namespace out_value_detail {
+#else
 
-			template< int Size >
-			struct temporary_storage_size {
+    template<class U>
+    char_array<sizeof(typename mpl::identity<U>::type)>
+    indirect_sizeof_test(by_reference<U>);
 
-				template< typename T, typename... Args >
-				void construct(Args&&... args)
-				{
-					new (&m_storage) T(std::forward<Args>(args)...);
-				}
+    template<class U>
+    char_array<sizeof(typename mpl::identity<U>::type)>
+    indirect_sizeof_test(by_const_reference<U>);
 
-				template<typename T>
-				T& get() {
-					return *reinterpret_cast<T*>(&m_storage);
-				}
+    template<class U>
+    char_array<sizeof(typename mpl::identity<U>::type)>
+    indirect_sizeof_test(by_pointer<U>);
 
-				template<typename T>
-				const T& get() const {
-					return *reinterpret_cast<T*>(&m_storage);
-				}
+    template<class U>
+    char_array<sizeof(typename mpl::identity<U>::type)>
+    indirect_sizeof_test(by_const_pointer<U>);
 
-				template<typename T>
-				void destroy()
-				{
-					get<T>().~T();
-				}
+    template<class U>
+    char_array<sizeof(typename mpl::identity<U>::type)>
+    indirect_sizeof_test(by_value<U>);
 
-				typename std::aligned_storage<Size>::type m_storage;
+#endif
 
-			};
+    template<class T>
+    struct indirect_sizeof
+    {
+        BOOST_STATIC_CONSTANT(int, value = sizeof(indirect_sizeof_test(LUABIND_DECORATE_TYPE(T))));
+    };
 
-			template< typename T >
-			struct temporary_storage_type {
+    template<int Size, class Policies = detail::null_type>
+    struct out_value_converter
+    {
+        int consumed_args() const
+        {
+            return 1;
+        }
 
-				template< typename... Args >
-				void construct(Args&&... args)
-				{
-					new (&m_storage) T(std::forward<Args>(args)...);
-				}
+        template<class T>
+        T& apply(lua_State* L, by_reference<T>, int index)
+        {
+            typedef typename find_conversion_policy<1, Policies>::type converter_policy;
+            typename mpl::apply_wrap2<converter_policy,T,lua_to_cpp>::type converter;
+#if defined(__GNUC__) && __GNUC__ >= 4
+            T* storage = reinterpret_cast<T*>(m_storage);
+            new (storage) T(converter.apply(L, LUABIND_DECORATE_TYPE(T), index));
+            return *storage;
+#else
+            new (m_storage) T(converter.apply(L, LUABIND_DECORATE_TYPE(T), index));
+            return *reinterpret_cast<T*>(m_storage);
+#endif
+        }
 
-				T& get() {
-					return *reinterpret_cast<T*>(&m_storage);
-				}
+        template<class T>
+        static int match(lua_State* L, by_reference<T>, int index)
+        {
+            typedef typename find_conversion_policy<1, Policies>::type converter_policy;
+            typedef typename mpl::apply_wrap2<converter_policy,T,lua_to_cpp>::type converter;
+            return converter::match(L, LUABIND_DECORATE_TYPE(T), index);
+        }
 
-				const T& get() const {
-					return *reinterpret_cast<T*>(&m_storage);
-				}
+        template<class T>
+        void converter_postcall(lua_State* L, by_reference<T>, int)
+        {
+            typedef typename find_conversion_policy<2, Policies>::type converter_policy;
+            typename mpl::apply_wrap2<converter_policy,T,cpp_to_lua>::type converter;
+#if defined(__GNUC__) && __GNUC__ >= 4
+            T* storage = reinterpret_cast<T*>(m_storage);
+            converter.apply(L, *storage);
+            storage->~T();
+#else
+            converter.apply(L, *reinterpret_cast<T*>(m_storage));
+            reinterpret_cast<T*>(m_storage)->~T();
+#endif
+        }
 
-				void destroy()
-				{
-					get().~T();
-				}
+        template<class T>
+        T* apply(lua_State* L, by_pointer<T>, int index)
+        {
+            typedef typename find_conversion_policy<1, Policies>::type converter_policy;
+            typename mpl::apply_wrap2<converter_policy,T,lua_to_cpp>::type converter;
+#if defined(__GNUC__) && __GNUC__ >= 4
+            T* storage = reinterpret_cast<T*>(m_storage);
+            new (storage) T(converter.apply(L, LUABIND_DECORATE_TYPE(T), index));
+            return storage;
+#else
+            new (m_storage) T(converter.apply(L, LUABIND_DECORATE_TYPE(T), index));
+            return reinterpret_cast<T*>(m_storage);
+#endif
+        }
 
-				typename std::aligned_storage<sizeof(T), alignof(T)>::type m_storage;
+        template<class T>
+        static int match(lua_State* L, by_pointer<T>, int index)
+        {
+            typedef typename find_conversion_policy<1, Policies>::type converter_policy;
+            typedef typename mpl::apply_wrap2<converter_policy,T,lua_to_cpp>::type converter;
+            return converter::match(L, LUABIND_DECORATE_TYPE(T), index);
+        }
 
-			};
+        template<class T>
+        void converter_postcall(lua_State* L, by_pointer<T>, int)
+        {
+            typedef typename find_conversion_policy<2, Policies>::type converter_policy;
+            typename mpl::apply_wrap2<converter_policy,T,cpp_to_lua>::type converter;
+#if defined(__GNUC__) && __GNUC__ >= 4
+            T* storage = reinterpret_cast<T*>(m_storage);
+            converter.apply(L, *storage);
+            storage->~T();
+#else
+            converter.apply(L, *reinterpret_cast<T*>(m_storage));
+            reinterpret_cast<T*>(m_storage)->~T();
+#endif
+        }
 
-		}
+        char m_storage[Size];
+    };
 
-		// See note in out_value_policy about why we're not templating
-		// for the parameter type.
-		template<typename T, class Policies = no_policies>
-		struct out_value_converter
-		{
-			enum { consumed_args = 1 };
+    template<int N, class Policies = detail::null_type>
+    struct out_value_policy : conversion_policy<N>
+    {
+        static void precall(lua_State*, const index_map&) {}
+        static void postcall(lua_State*, const index_map&) {}
 
-			T& to_cpp(lua_State* L, by_reference<T>, int index)
-			{
-				//specialized_converter_policy_n<1, Policies, T, lua_to_cpp> converter;
-				storage_.construct(converter_.to_cpp(L, decorated_type<T>(), index));
-				return storage_.get();
-			}
+        struct only_accepts_nonconst_references_or_pointers {};
+        struct can_only_convert_from_lua_to_cpp {};
 
-			int match(lua_State* L, by_reference<T>, int index)
-			{
-				return converter_.match(L, decorated_type<T>(), index);
-			}
+        template<class T, class Direction>
+        struct apply
+        {
+            typedef typename boost::mpl::if_<boost::is_same<lua_to_cpp, Direction>
+                , typename boost::mpl::if_<boost::mpl::or_<is_nonconst_reference<T>, is_nonconst_pointer<T> >
+                    , out_value_converter<indirect_sizeof<T>::value, Policies>
+                    , only_accepts_nonconst_references_or_pointers
+                    >::type
+                , can_only_convert_from_lua_to_cpp
+            >::type type;
+        };
+    };
 
-			void converter_postcall(lua_State* L, by_reference<T>, int)
-			{
-				//specialized_converter_policy_n<2,Policies,T,cpp_to_lua> converter;
-				converter_.to_lua(L, storage_.get());
-				storage_.destroy();
-			}
+    template<int Size, class Policies = detail::null_type>
+    struct pure_out_value_converter
+    {
+        int consumed_args() const
+        {
+            return 0;
+        }
 
-			T* to_cpp(lua_State* L, by_pointer<T>, int index)
-			{
-				storage_.construct(converter_.to_cpp(L, decorated_type<T>(), index));
-				return &storage_.get();
-			}
+        template<class T>
+        T& apply(lua_State*, by_reference<T>, int)
+        {
+#if defined(__GNUC__) && __GNUC__ >= 4
+            T* storage = reinterpret_cast<T*>(m_storage);
+            new (storage) T();
+            return *storage;
+#else
+            new (m_storage) T();
+            return *reinterpret_cast<T*>(m_storage);
+#endif
+        }
 
-			int match(lua_State* L, by_pointer<T>, int index)
-			{
-				return converter_.match(L, decorated_type<T>(), index);
-			}
+        template<class T>
+        static int match(lua_State*, by_reference<T>, int)
+        {
+            return 0;
+        }
 
-			void converter_postcall(lua_State* L, by_pointer<T>, int)
-			{
-				//specialized_converter_policy_n<2, Policies, T, cpp_to_lua> converter;
-				converter_.to_lua(L, storage_.get());
-				storage_.destroy();
-			}
+        template<class T>
+        void converter_postcall(lua_State* L, by_reference<T>, int)
+        {
+            typedef typename find_conversion_policy<1, Policies>::type converter_policy;
+            typename mpl::apply_wrap2<converter_policy,T,cpp_to_lua>::type converter;
+#if defined(__GNUC__) && __GNUC__ >= 4
+            T* storage = reinterpret_cast<T*>(m_storage);
+            converter.apply(L, *storage);
+            storage->~T();
+#else
+            converter.apply(L, *reinterpret_cast<T*>(m_storage));
+            reinterpret_cast<T*>(m_storage)->~T();
+#endif
+        }
 
-		private:
-			specialized_converter_policy_n<1, Policies, T, lua_to_cpp > converter_;
-			out_value_detail::temporary_storage_type<T> storage_;
-		};
+        template<class T>
+        T* apply(lua_State*, by_pointer<T>, int)
+        {
+#if defined(__GNUC__) && __GNUC__ >= 4
+            T* storage = reinterpret_cast<T*>(m_storage);
+            new (storage) T();
+            return storage;
+#else
+            new (m_storage) T();
+            return reinterpret_cast<T*>(m_storage);
+#endif
+        }
 
-		template<class Policies = no_policies>
-		struct out_value_policy
-		{
-			struct only_accepts_nonconst_references_or_pointers {};
-			struct can_only_convert_from_lua_to_cpp {};
+        template<class T>
+        static int match(lua_State*, by_pointer<T>, int)
+        {
+            return 0;
+        }
 
-			template<class T, class Direction>
-			struct specialize
-			{
-				static_assert(std::is_same< Direction, lua_to_cpp >::value, "Out value policy can only convert from lua to cpp");
-				static_assert(meta::or_< is_nonconst_reference<T>, is_nonconst_pointer<T> >::value, "Out value policy only accepts non const references or pointers");
+        template<class T>
+        void converter_postcall(lua_State* L, by_pointer<T>, int)
+        {
+            typedef typename find_conversion_policy<1, Policies>::type converter_policy;
+            typename mpl::apply_wrap2<converter_policy,T,cpp_to_lua>::type converter;
+#if defined(__GNUC__) && __GNUC__ >= 4
+            T* storage = reinterpret_cast<T*>(m_storage);
+            converter.apply(L, *storage);
+            storage->~T();
+#else
+            converter.apply(L, *reinterpret_cast<T*>(m_storage));
+            reinterpret_cast<T*>(m_storage)->~T();
+#endif
+        }
 
-				// Note to myself:
-				// Using the size and template members instead of a policy templated for the type seems
-				// to be done to tame template bloat. Need to check if this is worth is.
-				using base_type = typename std::remove_pointer< typename std::remove_reference< T >::type >::type;
-				using type = out_value_converter<base_type, Policies>;
-			};
-		};
 
-		template<int Size, class Policies = no_policies>
-		struct pure_out_value_converter
-		{
-			enum { consumed_args = 0 };
+        char m_storage[Size];
+    };
 
-			template<class T>
-			T& to_cpp(lua_State*, by_reference<T>, int)
-			{
-				storage_.template construct<T>();
-				return storage_.template get<T>();
-			}
+    template<int N, class Policies = detail::null_type>
+    struct pure_out_value_policy : conversion_policy<N, false>
+    {
+        static void precall(lua_State*, const index_map&) {}
+        static void postcall(lua_State*, const index_map&) {}
 
-			template<class T>
-			static int match(lua_State*, by_reference<T>, int)
-			{
-				return 0;
-			}
+        struct only_accepts_nonconst_references_or_pointers {};
+        struct can_only_convert_from_lua_to_cpp {};
 
-			template<class T>
-			void converter_postcall(lua_State* L, by_reference<T>, int)
-			{
-				specialized_converter_policy_n<1, Policies, T, cpp_to_lua> converter;
-				converter.to_lua(L, storage_.template get<T>());
-				storage_.template destroy<T>();
-			}
+        template<class T, class Direction>
+        struct apply
+        {
+            typedef typename boost::mpl::if_<boost::is_same<lua_to_cpp, Direction>
+                , typename boost::mpl::if_<boost::mpl::or_<is_nonconst_reference<T>, is_nonconst_pointer<T> >
+                    , pure_out_value_converter<indirect_sizeof<T>::value, Policies>
+                    , only_accepts_nonconst_references_or_pointers
+                    >::type
+                , can_only_convert_from_lua_to_cpp
+            >::type type;
+        };
+    };
 
-			template<class T>
-			T* to_cpp(lua_State*, by_pointer<T>, int)
-			{
-				storage_.template construct<T>();
-				return &storage_.template get<T>();
-			}
-
-			template<class T>
-			static int match(lua_State*, by_pointer<T>, int)
-			{
-				return 0;
-			}
-
-			template<class T>
-			void converter_postcall(lua_State* L, by_pointer<T>, int)
-			{
-				specialized_converter_policy_n<1, Policies, T, cpp_to_lua> converter;
-				converter.to_lua(L, storage_.template get<T>());
-				storage_.template destroy<T>();
-			}
-
-		private:
-			out_value_detail::temporary_storage_size<Size> storage_;
-		};
-
-		template<class Policies = no_policies>
-		struct pure_out_value_policy
-		{
-			struct only_accepts_nonconst_references_or_pointers {};
-			struct can_only_convert_from_lua_to_cpp {};
-
-			template<class T, class Direction>
-			struct specialize
-			{
-				static_assert(std::is_same< Direction, lua_to_cpp >::value, "Pure out value policy can only convert from lua to cpp");
-				static_assert(meta::or_< is_nonconst_reference<T>, is_nonconst_pointer<T> >::value, "Pure out value policy only accepts non const references or pointers");
-
-				using type = pure_out_value_converter<indirect_sizeof<T>::value, Policies>;
-			};
-		};
-
-	}
-}
+}}
 
 namespace luabind
 {
-	template<unsigned int N, class Policies = no_policies >
-	using out_value = meta::type_list<converter_policy_injector<N, detail::out_value_policy<Policies>>>;
+    template<int N>
+    detail::policy_cons<detail::out_value_policy<N>, detail::null_type>
+    out_value(LUABIND_PLACEHOLDER_ARG(N))
+    {
+        return detail::policy_cons<detail::out_value_policy<N>, detail::null_type>();
+    }
 
-	template<unsigned int N, class Policies = no_policies >
-	using pure_out_value = meta::type_list<converter_policy_injector<N, detail::pure_out_value_policy<Policies>>>;
+    template<int N, class Policies>
+    detail::policy_cons<detail::out_value_policy<N, Policies>, detail::null_type>
+    out_value(LUABIND_PLACEHOLDER_ARG(N), const Policies&)
+    {
+        return detail::policy_cons<detail::out_value_policy<N, Policies>, detail::null_type>();
+    }
+
+    template<int N>
+    detail::policy_cons<detail::pure_out_value_policy<N>, detail::null_type>
+    pure_out_value(LUABIND_PLACEHOLDER_ARG(N))
+    {
+        return detail::policy_cons<detail::pure_out_value_policy<N>, detail::null_type>();
+    }
+
+    template<int N, class Policies>
+    detail::policy_cons<detail::pure_out_value_policy<N, Policies>, detail::null_type>
+    pure_out_value(LUABIND_PLACEHOLDER_ARG(N), const Policies&)
+    {
+        return detail::policy_cons<detail::pure_out_value_policy<N, Policies>, detail::null_type>();
+    }
 }
 
 #endif // LUABIND_OUT_VALUE_POLICY_HPP_INCLUDED
-

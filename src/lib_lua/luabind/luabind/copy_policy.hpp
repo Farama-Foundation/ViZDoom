@@ -8,43 +8,53 @@
 # include <luabind/detail/policy.hpp>
 
 namespace luabind {
-	namespace detail {
 
-		struct copy_converter
-		{
-			template <class T>
-			void to_lua(lua_State* L, T const& x)
-			{
-				value_converter().to_lua(L, x);
-			}
+namespace detail
+{
 
-			template <class T>
-			void to_lua(lua_State* L, T* x)
-			{
-				if(!x)
-					lua_pushnil(L);
-				else
-					to_lua(L, *x);
-			}
-		};
+  struct copy_converter
+  {
+      template <class T>
+      void apply(lua_State* L, T const& x)
+      {
+          value_converter().apply(L, x);
+      }
 
-		struct copy_policy
-		{
-			template <class T, class Direction>
-			struct specialize
-			{
-				static_assert(std::is_same<Direction, cpp_to_lua>::value, "Copy policy only supports cpp -> lua");
-				using type = copy_converter;
-			};
-		};
+      template <class T>
+      void apply(lua_State* L, T* x)
+      {
+          if (!x)
+              lua_pushnil(L);
+          else
+              apply(L, *x);
+      }
+  };
 
-	} // namespace detail
+  template <int N>
+  struct copy_policy : conversion_policy<N>
+  {
+      static void precall(lua_State*, index_map const&)
+      {}
 
-		// Caution: If we use the aliased type "policy_list" here, MSVC crashes.
-	template< unsigned int N >
-	using copy_policy = meta::type_list< converter_policy_injector< N, detail::copy_policy > >;
+      static void postcall(lua_State*, index_map const&)
+      {}
+
+      template <class T, class Direction>
+      struct apply
+      {
+          typedef copy_converter type;
+      };
+  };
+
+} // namespace detail
+
+template <int N>
+detail::policy_cons<detail::copy_policy<N>, detail::null_type>
+copy(LUABIND_PLACEHOLDER_ARG(N))
+{
+    return detail::policy_cons<detail::copy_policy<N>, detail::null_type>();
+}
 
 } // namespace luabind
 
 #endif // LUABIND_COPY_POLICY_081021_HPP
-

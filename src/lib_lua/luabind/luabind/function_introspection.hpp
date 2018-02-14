@@ -1,14 +1,14 @@
 /** @file
-	@brief Header
+    @brief Header
 
-	@date 2012
+    @date 2012
 
-	@author
-	Ryan Pavlik
-	<rpavlik@iastate.edu> and <abiryan@ryand.net>
-	http://academic.cleardefinition.com/
-	Iowa State University Virtual Reality Applications Center
-	Human-Computer Interaction Graduate Program
+    @author
+    Ryan Pavlik
+    <rpavlik@iastate.edu> and <abiryan@ryand.net>
+    http://academic.cleardefinition.com/
+    Iowa State University Virtual Reality Applications Center
+    Human-Computer Interaction Graduate Program
 */
 
 //          Copyright Iowa State University 2012.
@@ -32,15 +32,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
+#pragma once
 #ifndef INCLUDED_function_introspection_hpp_GUID_b55783e7_e6da_4816_925e_9256245c1065
 #define INCLUDED_function_introspection_hpp_GUID_b55783e7_e6da_4816_925e_9256245c1065
 
 // Internal Includes
 #include <luabind/config.hpp>
-#include <luabind/lua_state_fwd.hpp>
 
 // Library/third-party includes
-// - none
+#include <luabind/lua_state_fwd.hpp>
 
 // Standard includes
 // - none
@@ -48,9 +48,8 @@
 
 namespace luabind {
 
-	LUABIND_API int bind_function_introspection(lua_State * L);
+    LUABIND_API int bind_function_introspection(lua_State * L);
 
 } // end of namespace luabind
 
 #endif // INCLUDED_function_introspection_hpp_GUID_b55783e7_e6da_4816_925e_9256245c1065
-

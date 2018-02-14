@@ -6,160 +6,121 @@
 # define LUABIND_INSTANCE_HOLDER_081024_HPP
 
 # include <luabind/detail/inheritance.hpp>
-# include <luabind/pointer_traits.hpp>
+# include <luabind/get_pointer.hpp>
 # include <luabind/typeid.hpp>
+
+# include <boost/type_traits/is_polymorphic.hpp>
+
 # include <stdexcept>
 
-namespace luabind {
-	namespace detail {
+namespace luabind { namespace detail {
 
-		class instance_holder
-		{
-		public:
-			instance_holder(bool pointee_const)
-				: m_pointee_const(pointee_const)
-			{}
+class instance_holder
+{
+public:
+    instance_holder(bool is_pointee_const)
+      : m_pointee_const(is_pointee_const)
+    {}
 
-			virtual ~instance_holder()
-			{}
+    virtual ~instance_holder()
+    {}
 
-			virtual std::pair<void*, int> get(cast_graph const& casts, class_id target) const = 0;
-			virtual void release() = 0;
+    virtual std::pair<void*, int> get(
+        cast_graph const& casts, class_id target) const = 0;
 
-			bool pointee_const() const
-			{
-				return m_pointee_const;
-			}
+    virtual void release() = 0;
 
-		private:
-			bool m_pointee_const;
-		};
+    bool pointee_const() const
+    {
+        return m_pointee_const;
+    }
 
-		template <class P, class Pointee = void const>
-		class pointer_holder : public instance_holder
-		{
-		public:
-			pointer_holder(P p, class_id dynamic_id, void* dynamic_ptr) :
-				instance_holder(detail::is_pointer_to_const<P>()),
-				p(std::move(p)), weak(0), dynamic_id(dynamic_id), dynamic_ptr(dynamic_ptr)
-			{
-			}
+private:
+    bool m_pointee_const;
+};
 
-			std::pair<void*, int> get(cast_graph const& casts, class_id target) const
-			{
-				// if somebody wants the smart-ptr, he can get a reference to it
-				if(target == registered_class<P>::id) return std::pair<void*, int>(&this->p, 0);
+namespace mpl = boost::mpl;
 
-				void* naked_ptr = const_cast<void*>(static_cast<void const*>(weak ? weak : get_pointer(p)));
-				if(!naked_ptr) return std::pair<void*, int>(nullptr, 0);
+inline mpl::false_ check_const_pointer(void*)
+{
+    return mpl::false_();
+}
 
-				using pointee_type = typename std::remove_cv<typename std::remove_reference<decltype(*get_pointer(p))>::type>::type;
+inline mpl::true_ check_const_pointer(void const*)
+{
+    return mpl::true_();
+}
 
-				return casts.cast(naked_ptr,
-					registered_class< pointee_type >::id,
-					target, dynamic_id, dynamic_ptr);
-			}
+template <class T>
+void release_ownership(std::auto_ptr<T>& p)
+{
+    p.release();
+}
 
-			explicit operator bool() const
-			{
-				return p ? true : false;
-			}
+template <class P>
+void release_ownership(P const&)
+{
+    throw std::runtime_error(
+        "luabind: smart pointer does not allow ownership transfer");
+}
 
-			void release()
-			{
-				weak = const_cast<void*>(static_cast<void const*>(get_pointer(p)));
-				release_ownership(p);
-			}
+template <class T>
+class_id static_class_id(T*)
+{
+    return registered_class<T>::id;
+}
 
-		private:
-			mutable P p;
-			// weak will hold a possibly stale pointer to the object owned
-			// by p once p has released it's owership. This is a workaround
-			// to make adopt() work with virtual function wrapper classes.
-			void* weak;
-			class_id dynamic_id;
-			void* dynamic_ptr;
-		};
+template <class P, class Pointee = void const>
+class pointer_holder : public instance_holder
+{
+public:
+    pointer_holder(
+        P p, class_id dynamic_id, void* dynamic_ptr
+    )
+      : instance_holder(check_const_pointer(false ? get_pointer(p) : 0))
+      , m_p(p)
+      , m_weak(0)
+      , m_dynamic_id(dynamic_id)
+      , m_dynamic_ptr(dynamic_ptr)
+    {}
 
-		template <class ValueType>
-		class value_holder :
-			public instance_holder
-		{
-		public:
-			// No need for dynamic_id / dynamic_ptr, since we always get the most derived type
-			value_holder(lua_State* /*L*/, ValueType val)
-				: instance_holder(false), val_(std::move(val))
-			{}
+    std::pair<void*, int> get(cast_graph const& casts, class_id target) const
+    {
+        if (target == registered_class<P>::id)
+            return std::pair<void*, int>(&this->m_p, 0);
 
-			explicit operator bool() const
-			{
-				return true;
-			}
+        void* naked_ptr = const_cast<void*>(static_cast<void const*>(
+            m_weak ? m_weak : get_pointer(m_p)));
 
-			std::pair<void*, int> get(cast_graph const& casts, class_id target) const
-			{
-				const auto this_id = registered_class<ValueType>::id;
-				void* const naked_ptr = const_cast<void*>((const void*)&val_);
-				if(target == this_id) return std::pair<void*, int>(naked_ptr, 0);
-				return casts.cast(naked_ptr, this_id, target, this_id, naked_ptr);
-			}
+        if (!naked_ptr)
+            return std::pair<void*, int>(static_cast<void*>(0), 0);
 
-			void release() override
-			{}
+        return casts.cast(
+            naked_ptr
+          , static_class_id(false ? get_pointer(m_p) : 0)
+          , target
+          , m_dynamic_id
+          , m_dynamic_ptr
+        );
+    }
 
-		private:
-			ValueType val_;
-		};
+    void release()
+    {
+        m_weak = const_cast<void*>(static_cast<void const*>(
+            get_pointer(m_p)));
+        release_ownership(m_p);
+    }
 
-		/*
-			Pointer types should automatically convert to reference types
-		*/
-		template <class ValueType>
-		class pointer_like_holder :
-			public instance_holder
-		{
-		public:
-			// No need for dynamic_id / dynamic_ptr, since we always get the most derived type
-			pointer_like_holder(lua_State* /*L*/, ValueType val, class_id dynamic_id, void* dynamic_ptr)
-				:
-				instance_holder(std::is_const< decltype(*get_pointer(val)) >::value),
-				val_(std::move(val)),
-				dynamic_id_(dynamic_id),
-				dynamic_ptr_(dynamic_ptr)
-			{
-			}
+private:
+    mutable P m_p;
+    // weak will hold a possibly stale pointer to the object owned
+    // by p once p has released it's owership. This is a workaround
+    // to make adopt() work with virtual function wrapper classes.
+    void* m_weak;
+    class_id m_dynamic_id;
+    void* m_dynamic_ptr;
+};
 
-			explicit operator bool() const
-			{
-				return val_ ? true : false;
-			}
-
-			std::pair<void*, int> get(cast_graph const& casts, class_id target) const
-			{
-				const auto value_id = registered_class<ValueType>::id;
-				void* const naked_value_ptr = const_cast<void*>((const void*)&val_);
-				if(target == value_id) return std::pair<void*, int>(naked_value_ptr, 0);
-				// If we were to support automatic pointer conversion, this would be the place
-
-				using pointee_type = typename std::remove_cv<typename std::remove_reference<decltype(*get_pointer(val_))>::type >::type;
-				const auto pointee_id = registered_class< pointee_type >::id;
-				void* const naked_pointee_ptr = const_cast<void*>((const void*)get_pointer(val_));
-				return casts.cast(naked_pointee_ptr, pointee_id, target, dynamic_id_, dynamic_ptr_);
-			}
-
-			void release() override
-			{}
-
-		private:
-			ValueType val_;
-			class_id dynamic_id_;
-			void* dynamic_ptr_;
-			// weak? must understand what the comment up there really means
-		};
-
-	}
-
-} // namespace luabind::detail
+}} // namespace luabind::detail
 
 #endif // LUABIND_INSTANCE_HOLDER_081024_HPP
-

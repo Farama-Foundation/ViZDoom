@@ -5,51 +5,55 @@
 #ifndef LUABIND_FUNCTION2_081014_HPP
 # define LUABIND_FUNCTION2_081014_HPP
 
+# include <luabind/detail/call_function.hpp>
 # include <luabind/make_function.hpp>
 # include <luabind/scope.hpp>
-# include <luabind/detail/call_function.hpp>
 
 namespace luabind {
 
-	namespace detail
-	{
+namespace detail
+{
 
-		template <class F, class PolicyInjectors>
-		struct function_registration : registration
-		{
-			function_registration(char const* name, F f)
-				: name(name)
-				, f(f)
-			{}
+  template <class F, class Policies>
+  struct function_registration : registration
+  {
+      function_registration(char const* name_, F f_, Policies const& policies_)
+        : name(name_)
+        , f(f_)
+        , policies(policies_)
+      {}
 
-			void register_(lua_State* L) const
-			{
-				object fn = make_function(L, f, PolicyInjectors());
-				add_overload(object(from_stack(L, -1)), name, fn);
-			}
+      void register_(lua_State* L) const
+      {
+          object fn = make_function(L, f, deduce_signature(f), policies);
 
-			char const* name;
-			F f;
-		};
+          add_overload(
+              object(from_stack(L, -1))
+            , name
+            , fn
+          );
+      }
 
-		LUABIND_API bool is_luabind_function(lua_State* L, int index);
+      char const* name;
+      F f;
+      Policies policies;
+  };
 
-	} // namespace detail
+} // namespace detail
 
-	template <class F, typename... PolicyInjectors>
-	scope def(char const* name, F f, policy_list<PolicyInjectors...> const&)
-	{
-		return scope(std::unique_ptr<detail::registration>(
-			new detail::function_registration<F, policy_list<PolicyInjectors...>>(name, f)));
-	}
+template <class F, class Policies>
+scope def(char const* name, F f, Policies const& policies)
+{
+    return scope(std::auto_ptr<detail::registration>(
+        new detail::function_registration<F, Policies>(name, f, policies)));
+}
 
-	template <class F>
-	scope def(char const* name, F f)
-	{
-		return def(name, f, no_policies());
-	}
+template <class F>
+scope def(char const* name, F f)
+{
+    return def(name, f, detail::null_type());
+}
 
 } // namespace luabind
 
 #endif // LUABIND_FUNCTION2_081014_HPP
-

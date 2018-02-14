@@ -435,8 +435,11 @@ extern "C" int luaopen_vizdoom(lua_State *luaState){
             .def("advanceAction", &DoomGameLua::advanceAction_int)
             .def("advanceAction", &DoomGameLua::advanceAction_int_bool)
 
-            .def("getState", &DoomGameLua::getState, adopt_policy<0>())
-            .def("_getState", &DoomGameLua::getState, adopt_policy<0>())
+            //.def("getState", &DoomGameLua::getState, adopt_policy)
+            //.def("_getState", &DoomGameLua::getState, adopt_policy)
+
+            .def("getState", &DoomGameLua::getState, adopt(return_value))
+            .def("_getState", &DoomGameLua::getState, adopt(return_value))
 
             CLASS_FUNC_2_LUA(DoomGameLua, getGameVariable)
             CLASS_FUNC_2_LUA(DoomGameLua, getButton)

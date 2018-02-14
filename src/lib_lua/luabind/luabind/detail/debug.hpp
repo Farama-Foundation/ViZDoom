@@ -23,37 +23,49 @@
 #ifndef LUABIND_DEBUG_HPP_INCLUDED
 #define LUABIND_DEBUG_HPP_INCLUDED
 
-#ifndef NDEBUG
+#include <luabind/config.hpp>
 
 #include <luabind/lua_include.hpp>
+
+#include <string>
+
+namespace luabind { namespace detail {
+    // prints the types of the values on the stack, in the
+    // range [start_index, lua_gettop()]
+    LUABIND_API std::string stack_content_by_name(lua_State* L, int start_index);
+}}
+
+#ifndef NDEBUG
+
+#include <boost/preprocessor/cat.hpp>
+
 #include <cassert>
 
-namespace luabind {
-	namespace detail {
+namespace luabind { namespace detail
+{
+    struct stack_checker_type
+    {
+        stack_checker_type(lua_State* L)
+            : m_L(L)
+            , m_stack(lua_gettop(m_L))
+        {}
 
-		struct stack_checker_type
-		{
-			stack_checker_type(lua_State* L)
-				: m_L(L)
-				, m_stack(lua_gettop(m_L))
-			{}
+        ~stack_checker_type()
+        {
+            assert(m_stack == lua_gettop(m_L));
+        }
 
-			~stack_checker_type()
-			{
-				assert(m_stack == lua_gettop(m_L));
-			}
+        lua_State* m_L;
+        int m_stack;
+    };
 
-			lua_State* m_L;
-			int m_stack;
-		};
-
-	}
-}
-
-#define LUABIND_CHECK_STACK(L) luabind::detail::stack_checker_type stack_checker_object(L)
+}}
+#define LUABIND_CHECK_STACK(L) BOOST_PP_CAT( \
+    luabind::detail::stack_checker_type stack_checker_object, __LINE__)(L)
 #else
-#define LUABIND_CHECK_STACK(L) do {} while (0)
+// (void)0,0: avoid warning about conditional expression being constant and comma operator
+// without side effect.
+#define LUABIND_CHECK_STACK(L) do {} while ((void)0,0)
 #endif
 
 #endif // LUABIND_DEBUG_HPP_INCLUDED
-

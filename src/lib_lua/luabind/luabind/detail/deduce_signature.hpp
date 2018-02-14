@@ -3,58 +3,67 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 # ifndef LUABIND_DEDUCE_SIGNATURE_080911_HPP
-# define LUABIND_DEDUCE_SIGNATURE_080911_HPP
+#  define LUABIND_DEDUCE_SIGNATURE_080911_HPP
 
-#include <luabind/detail/meta.hpp>
-#include <luabind/detail/most_derived.hpp>
+#  include <luabind/detail/most_derived.hpp>
 
-namespace luabind {
-	namespace detail {
+#  include <boost/function_types/components.hpp>
+#  include <boost/function_types/is_callable_builtin.hpp>
+#  include <boost/function_types/is_member_function_pointer.hpp>
+#  include <boost/type_traits/add_reference.hpp>
+#  include <boost/utility/enable_if.hpp>
 
-		template< typename, typename > struct tagged_function;
+namespace luabind { namespace detail {
 
-		template< typename T, typename WrappedType = detail::null_type >
-		struct call_types;
+namespace mpl = boost::mpl;
+namespace fty = boost::function_types;
 
-		template< typename R, typename... Args, typename WrappedType >
-		struct call_types < R(*)(Args...), WrappedType >
-		{
-			using signature_type = meta::type_list< R, Args... >;
-		};
+template <class F, class Enable=void>
+struct signature_aux
+{
+    typedef F type;
+};
 
-		template< typename R, typename Class, typename... Args >
-		struct call_types < R(Class::*)(Args...), detail::null_type >
-		{
-			using signature_type = meta::type_list< R, Class&, Args... >;
-		};
+// Handle boost::function and std::function:
+template <template<class> class F, class S>
+struct signature_aux<
+    F<S>,
+    typename mpl::apply< // Enable only if F<S>::result_type exists.
+        mpl::always<void>, typename F<S>::result_type>::type >
+{
+    typedef S type;
+};
 
-		template< typename R, typename Class, typename... Args >
-		struct call_types < R(Class::*)(Args...) const, detail::null_type >
-		{
-			using signature_type = meta::type_list< R, Class const&, Args... >;
-		};
+template <class F>
+struct signature_aux<const F>: signature_aux<F> {};
 
-		template< typename R, typename Class, typename... Args, class WrappedType >
-		struct call_types < R(Class::*)(Args...), WrappedType >
-		{
-			using signature_type = meta::type_list< R, typename most_derived<Class, WrappedType>::type&, Args... >;
-		};
+template <typename F>
+struct is_function:
+    fty::is_callable_builtin<typename signature_aux<F>::type>
+{};
 
-		template< typename R, typename Class, typename... Args, class WrappedType >
-		struct call_types < R(Class::*)(Args...) const, WrappedType >
-		{
-			using signature_type = meta::type_list< R, typename most_derived<Class, WrappedType>::type const&, Args... >;
-		};
+template <class F>
+typename boost::enable_if<
+    is_function<F>,
+    fty::components<typename signature_aux<F>::type> >::type
+deduce_signature(F const&, ...)
+{
+    return fty::components<typename signature_aux<F>::type>();
+}
 
-		template< typename Signature, typename F, class WrappedType >
-		struct call_types< tagged_function< Signature, F >, WrappedType >
-		{
-			using signature_type = Signature;
-		};
+template <class F, class Wrapped>
+typename boost::enable_if<
+    fty::is_member_function_pointer<typename signature_aux<F>::type>,
+    fty::components<
+        typename signature_aux<F>::type,
+        boost::add_reference<most_derived<mpl::_1, Wrapped> > > >::type
+deduce_signature(F, Wrapped*)
+{
+    return fty::components<
+        typename signature_aux<F>::type,
+        boost::add_reference<most_derived<mpl::_1, Wrapped> > >();
+}
 
-	}	// namespace detail
+} } // namespace luabind::detail
 
-} // namespace luabind
-
-# endif // LUABIND_DEDUCE_SIGNATURE_080911_HPP
-
+#endif  // LUABIND_DEDUCE_SIGNATURE_080911_HPP

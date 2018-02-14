@@ -20,20 +20,68 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
-#ifndef LUA_INCLUDE_HPP_INCLUDED
-#define LUA_INCLUDE_HPP_INCLUDED
+#ifndef LUABIND_LUA_INCLUDE_HPP_INCLUDED
+#define LUABIND_LUA_INCLUDE_HPP_INCLUDED
+
+#include <luabind/config.hpp>
 
 #ifndef LUABIND_CPLUSPLUS_LUA
 extern "C"
 {
 #endif
 
-#include "lua.h"
-#include "lauxlib.h"
+    #include "lua.h"
+    #include "lauxlib.h"
 
 #ifndef LUABIND_CPLUSPLUS_LUA
 }
 #endif
 
+#if LUA_VERSION_NUM < 502
+
+# define lua_compare(L, index1, index2, fn) fn(L, index1, index2)
+# define LUA_OPEQ lua_equal
+# define LUA_OPLT lua_lessthan
+# define lua_rawlen lua_objlen
+# define lua_pushglobaltable(L) lua_pushvalue(L, LUA_GLOBALSINDEX)
+# define lua_getuservalue lua_getfenv
+# define lua_setuservalue lua_setfenv
+# define LUA_OK 0
+
+namespace luabind { namespace detail {
+
+inline bool is_relative_index(int idx)
+{
+    return idx < 0 && idx > LUA_REGISTRYINDEX;
+}
+
+} } // namespace apollo::detail
+
+LUABIND_API char const* luaL_tolstring(lua_State* L, int idx, size_t* len);
+
+inline int lua_absindex(lua_State* L, int idx)
+{
+    return luabind::detail::is_relative_index(idx) ?
+        lua_gettop(L) + idx + 1 : idx;
+}
+
+inline void lua_rawsetp(lua_State* L, int t, void const* k)
+{
+    lua_pushlightuserdata(L, const_cast<void*>(k));
+    lua_insert(L, -2); // Move key beneath value.
+    if (luabind::detail::is_relative_index(t))
+        t -= 1; // Adjust for pushed k.
+    lua_rawset(L, t);
+}
+
+inline void lua_rawgetp(lua_State* L, int t, void const* k)
+{
+    lua_pushlightuserdata(L, const_cast<void*>(k));
+    if (luabind::detail::is_relative_index(t))
+        t -= 1; // Adjust for pushed k.
+    lua_rawget(L, t);
+}
+
 #endif
 
+#endif // LUABIND_LUA_INCLUDE_HPP_INCLUDED

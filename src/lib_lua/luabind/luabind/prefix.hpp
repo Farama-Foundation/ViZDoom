@@ -28,4 +28,3 @@
 #endif
 
 #endif // PREFIX_040218_HPP
-
