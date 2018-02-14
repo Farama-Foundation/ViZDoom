@@ -6,12 +6,13 @@ SHARED_PACKAGE_DEST_PATH="${PACKAGE_DEST_DIRECTORY}/luarocks_shared_package"
 PACKAGE_SOURCE="./src/lib_lua/src_lua"
 if [ "$(uname)" == "Darwin" ]; then
     VIZDOOM_EXEC_PATH="./bin/vizdoom.app/Contents/MacOS/vizdoom"
+    LUA_BIN_PATH="${PACKAGE_DEST_DIRECTORY}/vizdoom.dylib"
 else
     VIZDOOM_EXEC_PATH="./bin/vizdoom"
+    LUA_BIN_PATH="${PACKAGE_DEST_DIRECTORY}/vizdoom.so"
 fi
 
 VIZDOOM_PK3_PATH="./bin/vizdoom.pk3"
-LUA_BIN_PATH="${PACKAGE_DEST_DIRECTORY}/vizdoom.so"
 FREEDOOM_PATH="./bin/freedoom2.wad"
 SCENARIOS_DEST_DIR="${PACKAGE_DEST_PATH}/scenarios"
 SCENARIOS_PATH="./scenarios"

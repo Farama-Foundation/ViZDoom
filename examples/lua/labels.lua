@@ -71,7 +71,13 @@ for i = 1, episodes do
         -- value tells which value represents object in labels_buffer.
         for k, l in pairs(labels) do
             print("Object id: " .. l.objectId .. " object name: " .. l.objectName .. " label: " .. l.value)
-            print("Object position X: " .. l.objectPositionX .. " Y: " .. l.objectPositionY .. " Z: " .. l.objectPositionZ)
+
+            print("Object position x: " .. l.objectPositionX .. " y: " .. l.objectPositionY .. " z: " .. l.objectPositionZ)
+
+            -- Other available fields:
+            --print("Object rotation angle " ..  l.object_angle .. " pitch: " ..  l.object_pitch .. " roll: " ..  l.object_roll)
+            --print("Object velocity x: " ..  l.object_velocity_x .. " y: " ..  l.object_velocity_y .. " z: " ..  l.object_velocity_z)
+            --print("Bounding box: x: " .. l.x .. " y: " .. l.y .. " width: " .. l.width .. " height: " .. l.height)
         end
 
         print("=====================")
