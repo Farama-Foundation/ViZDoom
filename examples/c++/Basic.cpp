@@ -83,6 +83,7 @@ int main() {
 
     // Define some actions. Each list entry corresponds to declared buttons:
     // MOVE_LEFT, MOVE_RIGHT, ATTACK
+    // game.getAvailableButtonsSize() can be used to check the number of available buttons.
     // more combinations are naturally possible but only 3 are included for transparency when watching.
     std::vector<double> actions[3];
     actions[0] = {1, 0, 0};

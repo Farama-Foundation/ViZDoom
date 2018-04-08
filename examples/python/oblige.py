@@ -13,7 +13,8 @@ from vizdoom import *
 from oblige import *
 
 game = DoomGame()
-# Use you config
+
+# Use your config
 game.load_config("../../scenarios/oblige.cfg")
 game.set_doom_map("map01")
 
@@ -22,7 +23,7 @@ generator = DoomLevelGenerator()
 generator.set_seed(666)
 
 # Set generator configs, specified keys will be overwritten.
-generator.set_config({"size": "micro", "health": "more", "weapons": "more"})
+generator.set_config({"size": "micro", "health": "more", "weapons": "sooner"})
 
 # There are few predefined sets of settings already defined in Oblige package, like test_wad and childs_play_wad
 generator.set_config(test_wad)

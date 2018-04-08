@@ -82,6 +82,7 @@ public class Basic {
 
         // Define some actions. Each list entry corresponds to declared buttons:
         // MOVE_LEFT, MOVE_RIGHT, ATTACK
+        // game.getAvailableButtonsSize() can be used to check the number of available buttons.
         // more combinations are naturally possible but only 3 are included for transparency when watching.
         List<double[]> actions = new ArrayList<double[]>();
         actions.add(new double[] {1, 0, 1});

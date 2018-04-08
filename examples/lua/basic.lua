@@ -99,6 +99,7 @@ game:init()
 
 -- Define some actions. Each list entry corresponds to declared buttons:
 -- MOVE_LEFT, MOVE_RIGHT, ATTACK
+-- game:getAvailableButtonsSize() can be used to check the number of available buttons.
 -- 5 more combinations are naturally possible but only 3 are included for transparency when watching.
 
 local actions = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
