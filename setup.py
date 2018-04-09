@@ -95,7 +95,7 @@ setup(
     long_description="ViZDoom allows developing AI bots that play Doom using only the visual information (the screen buffer). " \
                      "It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.",
     url='http://vizdoom.cs.put.edu.pl/',
-    author='ViZDoom Team',
+    author='Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, Grzegorz Runc, Jakub Toczek',
     author_email='vizdoom@googlegroups.com',
 
     install_requires=['numpy'],
