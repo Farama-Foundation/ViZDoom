@@ -6,49 +6,13 @@ import numpy as np
 import imageio
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 from random import randint
-from collections import defaultdict
 import os
 import cv2
 from tqdm import tqdm
 
-transform_map = defaultdict(lambda: [128, 128, 128])
-transform_map[0] = [0, 0, 0]
 
-ammo_color = [0, 0, 255]
-weapon_color = [0, 0, 128]
-medikit_color = [0, 255, 0]
-armor_color = [0, 128, 0]
-fog_color = (255, 255, 255)
-
-random_monster_color = lambda: [randint(100, 255), 0, randint(0, 40)]
-
-transform_map['DoomPlayer'] = [128, 128, 128]
-transform_map['ClipBox'] = ammo_color
-transform_map['RocketBox'] = ammo_color
-transform_map['CellPack'] = ammo_color
-transform_map['RocketLauncher'] = weapon_color
-transform_map['Stimpack'] = medikit_color
-transform_map['Medikit'] = medikit_color
-transform_map['HealthBonus'] = medikit_color
-transform_map['ArmorBonus'] = armor_color
-transform_map['GreenArmor'] = armor_color
-transform_map['BlueArmor'] = armor_color
-transform_map['Chainsaw'] = weapon_color
-transform_map['PlasmaRifle'] = weapon_color
-transform_map['Chaingun'] = weapon_color
-transform_map['ShellBox'] = ammo_color
-transform_map['SuperShotgun'] = weapon_color
-transform_map['TeleportFog'] = fog_color
-transform_map['Zombieman'] = random_monster_color()
-transform_map['ShotgunGuy'] = random_monster_color()
-transform_map['HellKnight'] = random_monster_color()
-transform_map['MarineChainsawVzd'] = random_monster_color()
-transform_map['BaronBall'] = random_monster_color()
-transform_map['Demon'] = random_monster_color()
-transform_map['ChaingunGuy'] = random_monster_color()
-transform_map['Blood'] = [0, 0, 0]
-transform_map['Clip'] = ammo_color
-transform_map['Shotgun'] = weapon_color
+def get_random_color():
+    return np.random.randint(0, 255, 3, dtype=np.int32)
 
 
 def draw_bounding_box(buffer, x, y, width, height, color):
@@ -61,17 +25,71 @@ def draw_bounding_box(buffer, x, y, width, height, color):
         buffer[y + i, x + width, :] = color
 
 
-def transform_labels(labels, buffer, disco=False, colorful=False, bounding_boxes=False):
+name_to_color_map = dict({0: [0, 0, 0]})
+id_to_color_map = dict({0: [128, 128, 128]})
+
+ammo_color = [0, 0, 255]
+weapon_color = [0, 0, 128]
+medikit_color = [0, 255, 0]
+armor_color = [0, 128, 0]
+fog_color = (255, 255, 255)
+
+random_monster_color = lambda: [randint(100, 255), 0, randint(0, 40)]
+
+name_to_color_map['DoomPlayer'] = [128, 128, 128]
+name_to_color_map['ClipBox'] = ammo_color
+name_to_color_map['RocketBox'] = ammo_color
+name_to_color_map['CellPack'] = ammo_color
+name_to_color_map['RocketLauncher'] = weapon_color
+name_to_color_map['Stimpack'] = medikit_color
+name_to_color_map['Medikit'] = medikit_color
+name_to_color_map['HealthBonus'] = medikit_color
+name_to_color_map['ArmorBonus'] = armor_color
+name_to_color_map['GreenArmor'] = armor_color
+name_to_color_map['BlueArmor'] = armor_color
+name_to_color_map['Chainsaw'] = weapon_color
+name_to_color_map['PlasmaRifle'] = weapon_color
+name_to_color_map['Chaingun'] = weapon_color
+name_to_color_map['ShellBox'] = ammo_color
+name_to_color_map['SuperShotgun'] = weapon_color
+name_to_color_map['TeleportFog'] = fog_color
+name_to_color_map['Zombieman'] = random_monster_color()
+name_to_color_map['ShotgunGuy'] = random_monster_color()
+name_to_color_map['HellKnight'] = random_monster_color()
+name_to_color_map['MarineChainsawVzd'] = random_monster_color()
+name_to_color_map['BaronBall'] = random_monster_color()
+name_to_color_map['Demon'] = random_monster_color()
+name_to_color_map['ChaingunGuy'] = random_monster_color()
+name_to_color_map['Blood'] = [0, 0, 0]
+name_to_color_map['Clip'] = ammo_color
+name_to_color_map['Shotgun'] = weapon_color
+
+
+def transform_labels(labels,
+                     buffer,
+                     disco=False,
+                     colorful_name=False,
+                     colorful_object=False,
+                     bounding_boxes=False):
     rgb_buffer = np.stack([buffer] * 3, axis=2)
-    if not (disco or colorful or bounding_boxes):
+    if not (disco or colorful_name or colorful_object or bounding_boxes):
         return rgb_buffer
     for l in labels:
 
         if disco:
-            color = np.random.randint(0, 255, 3, dtype=np.int32)
-        elif colorful:
+            color = get_random_color()
+        elif colorful_name:
             name = l.object_name
-            color = transform_map[name]
+            if name not in name_to_color_map:
+                name_to_color_map[name] = get_random_color()
+            color = name_to_color_map[name]
+        elif colorful_object:
+            if l.object_name =="DoomPlayer":
+                color = name_to_color_map[l.object_name]
+            else:
+                if l.object_id not in id_to_color_map:
+                    id_to_color_map[l.object_id] = get_random_color()
+                color = id_to_color_map[l.object_id]
         else:
             color = [l.value] * 3
 
@@ -92,18 +110,21 @@ if __name__ == "__main__":
     parser.add_argument("--output_dir", "-o", default="gifs")
     parser.add_argument("--scenario", "-s", default="deadly_corridor", choices=available_scenarios)
     parser.add_argument("--fps", "-fps", type=float, default=35)
+    parser.add_argument("--drop", "-d", type=int, default=4, help="Drop every n frames")
+    parser.add_argument("--speedup", type=float, default=1, help="Speedup compared to gameplay fps.")
     parser.add_argument("--timeout", "-t", type=float, default=10, help="Set timeout in seconds.")
     parser.add_argument("--bounding-boxes", "-bb", action="store_true", default=False,
                         help="Add bounding boxes to labels buffer.")
     parser.add_argument("--dump-images", "-di", action="store_true", help="Dumps all frames to images directory.")
     coloring_group = parser.add_mutually_exclusive_group()
     coloring_group.add_argument("--disco", action="store_true", default=False, help="Stayin alive!")
-    coloring_group.add_argument("--color-labels", "-cl", action="store_true", default=False,
-                                help="Use colors for labels.")
+    coloring_group.add_argument("--color-labels-name", "-cln", action="store_true", default=False,
+                                help="Use colors for labels (by name).")
+    coloring_group.add_argument("--color-labels-object", "-clo", action="store_true", default=False,
+                                help="Use colors for labels (by object.id).")
     args = parser.parse_args()
 
     images = []
-    DROP_EVERY_N_FRAMES = 2
 
     game = DoomGame()
     CONC_AXIS = 1
@@ -138,7 +159,8 @@ if __name__ == "__main__":
                 state.labels,
                 labels_buffer,
                 disco=args.disco,
-                colorful=args.color_labels,
+                colorful_name=args.color_labels_name,
+                colorful_object=args.color_labels_object,
                 bounding_boxes=args.bounding_boxes)
             picture = np.concatenate([picture, labels_buffer], axis=CONC_AXIS)
 
@@ -164,11 +186,11 @@ if __name__ == "__main__":
         for i, img in tqdm(enumerate(images), desc="Dumping images", leave=False, total=len(images)):
             cv2.imwrite("{}/{}_frame_{}.png".format(img_dir, args.scenario, i), img[:, :, [2, 1, 0]])
 
-    images = np.array(images)[::DROP_EVERY_N_FRAMES]
+    images = np.array(images)[::args.drop]
 
     if not os.path.exists(args.output_dir):
         print("Creating directory: {}".format(args.output_dir))
         os.makedirs(args.output_dir)
     print("Saving the gif ...")
     imageio.mimsave('{}/{}_{}fps.gif'.format(args.output_dir, args.scenario, args.fps), images,
-                    duration=1 / args.fps * DROP_EVERY_N_FRAMES)
+                    duration=1 / args.fps * args.drop / args.speedup)
