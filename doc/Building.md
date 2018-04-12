@@ -6,6 +6,7 @@
   * [Windows](#windows_deps)
 * [Installation via PyPI(pip/conda)](#pypi)
 * [Installation via LuaRocks](#luarocks)
+* [Installation of build Windows binaries](#windows_bin)
 * [Building (not recommended)](#build)
   * [Linux](#linux_build)
   * [MacOS](#macos_build)
@@ -145,6 +146,16 @@ luarocks make
 ```
 
 
+## <a name="windows_bin"></a> Installation of Windows binaries
+
+For Windows we are providing a compiled environment that can be download from [releases](https://github.com/mwydmuch/ViZDoom/releases) page.
+To install it for Python, copy files to `site-packages` folder.
+
+Location of `site-packages` depends on Python distribution:
+- Python: `python_root\Lib\site-packges`
+- Anaconda: `anaconda_root\lib\pythonX.X\site-packages`
+
+
 ## <a name="build"></a> Building
 
 ### <a name="linux_build"></a> Linux
@@ -200,7 +211,7 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 
 ### <a name="windows_build"></a> Windows
 
-Setting up the compilation on Windows is really tedious so using the precompiled binaries is recommended.
+Setting up the compilation on Windows is really tedious so using the [precompiled binaries](#windows_bin) is recommended.
 
 `vizdoom` directory from Python builds contains complete Python package for Windows.
 You can copy it to your project directory or copy it into `python_dir/lib/site-packages/vizdoom` to install it globally in your system.

@@ -1,5 +1,7 @@
 # Quickstart
 
+> This guide can be a little bit outdated.
+
 * [Quickstart for MacOS with Anaconda3](#quickstart_macos_anaconda)
 
 TODO:

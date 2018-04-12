@@ -27,6 +27,7 @@
 * [getAvailableButtonsSize](#getAvailableButtonsSize)
 * [setButtonMaxValue](#setButtonMaxValue)
 * [getButtonMaxValue](#getButtonMaxValue)
+* [getButton](#getButton)
 
 ## [GameVariables methods](#vars)
 * [getAvailableGameVariables](#getAvailableGameVariables)
@@ -470,6 +471,21 @@ See also:
 | Python | `int get_button_max_value(Button button)`       |
 
 Returns the maximum allowed, absolute value for the specified button.
+
+See also:
+- [`Types: Button`](Types.md#button)
+
+
+---
+### <a name="getButton"></a> `getButton`
+
+| C++    | `double getButton(Button button)` |
+| :--    | :--                               |
+| Lua    | `number getButton(Button button)` |
+| Java   | `double getButton(Button button)` |
+| Python | `float get_button(Button button)` |
+
+Returns the current state of the specified button (`ATTACK`, `USE` etc.).
 
 See also:
 - [`Types: Button`](Types.md#button)

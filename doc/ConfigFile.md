@@ -1,5 +1,5 @@
 # Configuration files
-Instead of configuring the ViZDoom in code, you can load it from configuration file(s). Each file is read sequentially, so multiple entries with the same key will overwrite previous entries.
+Instead of configuring the ViZDoom in code, you can load it from the configuration file(s). Each file is read sequentially, so multiple entries with the same key will overwrite previous entries.
 
 ## <a name="format"></a> Format
 Each entry in a configraution file is a pair of **key** and **value** separated by an equal sign (**"="**). The file format should also abide the following rules:
@@ -10,7 +10,7 @@ Each entry in a configraution file is a pair of **key** and **value** separated 
 * underscores in **keys** are ignored (*episode_timeout* is equivalent to *episodetimeout*),
 * string values should **not** be surrounded with apostrophes or quotation marks.
 
-A violation of any of these rules will result in ignoring **only** the line with the error and sending a warning message to stderr (""WARNING! Loading config from: ...").
+A violation of any of these rules will result in ignoring **only** the line with the error and sending a warning message to stderr ("WARNING! Loading config from: ...").
 
 ### <a name="list"></a> List of values
 **available_buttons** and **available_game_variables** are special parameters, which use multiple values and instead of a single value they expect a list of values separated by whitespaces and enclosed within braces ("{" and "}"). The list can stretch throughout multiple lines as long as all values are separated from each other by whitespaces.
@@ -55,6 +55,8 @@ Each list assignment (**KEY = { VALUES }**)clears values specified for this key 
 * `ViZDoomPath/vizdoom_path`
 * `windowVisible/window_visible`
 
+See also: [`DoomGame`](DoomGame.md) for config keys and functions related to them.
+
 
 ### <a name="sample_config"></a>Sample configuration file content:
 
@@ -86,16 +88,16 @@ episode_timeout = 300
 
 # Available buttons
 available_buttons = 
-	{ 
-		MOVE_LEFT 
-		MOVE_RIGHT 
-		ATTACK 
-	}
+    { 
+        MOVE_LEFT 
+        MOVE_RIGHT 
+        ATTACK 
+    }
 
 # Game variables that will be in the state
 available_game_variables = { AMMO2}
 
-# Default mode - game is controlled from the code
+# Default mode - the game is controlled from the code
 mode = PLAYER
 
 # Difficulty of gameplay ranging from 1 (baby) to 5 (nightmare)

@@ -5,10 +5,9 @@ ViZDoom allows developing AI **bots that play Doom using only the visual informa
 
 ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game mechanics.
 
-**ViZDoom is the platform for [Visual Doom Competition @ CIG 2017](http://vizdoom.cs.put.edu.pl/competition-cig-2017).** :goberserk:
+**ViZDoom is the platform for [Visual Doom Competition @ CIG 2018](http://vizdoom.cs.put.edu.pl/competition-cig-2018).** :goberserk:
 
 ![vizdoom_deadly_corridor](https://github.com/mwydmuch/ViZDoom/blob/master/gifs/vizdoom_corridor.gif)
-![vizdoom_deathmatch](https://github.com/mwydmuch/ViZDoom/blob/master/gifs/vizdoom_deathmatch.gif)
 
 ## Features
 - Multi-platform,
@@ -29,7 +28,7 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 
 ## Cite as
 
->Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, IEEE Conference on Computational Intelligence and Games, pp. 341-348, Santorini, Greece, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
+> Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, IEEE Conference on Computational Intelligence and Games, pp. 341-348, Santorini, Greece, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
 
 ### Bibtex:
 ```
@@ -67,6 +66,8 @@ For Windows we are providing compiled runtime binaries and development libraries
 - [Lua 5.1 & LuaJIT (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.5pre/ViZDoom-1.1.5pre-Win-Lua51-LuaJIT-x86_64.zip)
 - [Java (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.5pre/ViZDoom-1.1.5pre-Win-Java-x86_64.zip)
 
+See **[Installation of Windows binaries](doc/Building.md#windows_bin)**
+
 
 ## Examples
 
@@ -82,6 +83,9 @@ Python examples are currently the richest, so we recommend to look at them, even
 **See also the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial).**
 
 
+## Tutorials
+
+
 ## Documentation
 
 Detailed description of all types and methods:
@@ -92,7 +96,26 @@ Detailed description of all types and methods:
 - [Exceptions](doc/Exceptions.md)
 - [Utilities](doc/Utilities.md)
 
-[Changelog](doc/Changelog.md) for 1.1.X version.
+Additional documents:
+
+- **[FAQ](doc/FAQ.md)**
+- [Changelog](doc/Changelog.md) for 1.1.X version.
+
+Also full documentation of engine and ACS scripting language can be found on 
+[ZDoom Wiki](https://zdoom.org/wiki/).
+
+Useful parts:
+
+- [ACS](https://zdoom.org/wiki/ACS)
+- [CVARs](https://zdoom.org/wiki/CVARs) (Console Variables)
+- [CCMDs](https://zdoom.org/wiki/CCMDs) (Console Commands)
+
+
+## Awesome Doom tools
+
+- [SLADE3](http://slade.mancubus.net/) - Doom map (scenario) editor for Linux, MacOS and Windows.
+- [Doom Builder 2](http://www.doombuilder.com/) - another Doom map editor for Windows.
+- [OBLIGE](http://oblige.sourceforge.net/) - Doom random map generator and [PyOblige](https://github.com/mwydmuch/PyOblige) is a simple Python wrapper for it. 
 
 
 ## Contributions

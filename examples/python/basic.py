@@ -124,6 +124,9 @@ for i in range(episodes):
         automap_buf = state.automap_buffer
         labels = state.labels
 
+        # Games variables can be also accessed via:
+        #game.get_game_variable(GameVariable.AMMO2)
+
         # Makes a random action and get remember reward.
         r = game.make_action(choice(actions))
 
