@@ -87,6 +87,9 @@ CVAR (Bool, viz_render_corpses, true, 0)
 CVAR (Bool, viz_render_flashes, true, 0)
 CVAR (Bool, viz_ignore_render_mode, false, 0)
 
+CVAR (Float, viz_am_scale, -1, 0)
+CVAR (Bool, viz_am_center, false, 0)
+
 // window/sound/console/rendering all frames
 CVAR (Bool, viz_render_all, false, CVAR_NOSET)
 CVAR (Bool, viz_window_hidden, false, CVAR_NOSET)
@@ -318,6 +321,8 @@ EXTERN_CVAR(Int, am_cheat)
 EXTERN_CVAR(Int, am_rotate)
 EXTERN_CVAR(Bool, am_textured)
 EXTERN_CVAR(Bool, am_followplayer)
+EXTERN_CVAR(Bool, am_drawmapback)
+EXTERN_CVAR(Int, am_showtriggerlines)
 
 EXTERN_CVAR(Bool, am_showitems)
 EXTERN_CVAR(Bool, am_showmonsters)
@@ -396,7 +401,10 @@ void VIZ_CVARsUpdate(){
         // automap
         am_rotate.CmdSet((*viz_render_mode & 256) != 0 ? "1" : "0");
         am_textured.CmdSet((*viz_render_mode & 512) != 0 ? "1" : "0");
-        am_followplayer.CmdSet("1");
+        am_showtriggerlines.CmdSet("2");
+        am_drawmapback.CmdSet("0");
+        if(!*viz_am_center)
+            am_followplayer.CmdSet("1");
 
         am_showitems.CmdSet("0");
         am_showmonsters.CmdSet("0");

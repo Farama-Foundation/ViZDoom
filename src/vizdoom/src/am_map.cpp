@@ -998,7 +998,7 @@ void AM_restoreScaleAndLoc ()
 	else
 	{
 		m_x = (players[consoleplayer].camera->X() >> FRACTOMAPBITS) - m_w/2;
-		m_y = (players[consoleplayer].camera->Y() >> FRACTOMAPBITS)- m_h/2;
+		m_y = (players[consoleplayer].camera->Y() >> FRACTOMAPBITS) - m_h/2;
     }
 	m_x2 = m_x + m_w;
 	m_y2 = m_y + m_h;
@@ -1179,6 +1179,30 @@ static void AM_ScrollParchment (fixed_t dmapx, fixed_t dmapy)
 
 //=============================================================================
 //
+// set the window scale to the maximum size
+//
+//=============================================================================
+
+void AM_minOutWindowScale ()
+{
+	scale_mtof = min_scale_mtof;
+	scale_ftom = MapDiv(MAPUNIT, scale_mtof);
+}
+
+//=============================================================================
+//
+// set the window scale to the minimum size
+//
+//=============================================================================
+
+void AM_maxOutWindowScale ()
+{
+	scale_mtof = max_scale_mtof;
+	scale_ftom = MapDiv(MAPUNIT, scale_mtof);
+}
+
+//=============================================================================
+//
 //
 //
 //=============================================================================
@@ -1218,6 +1242,11 @@ void AM_changeWindowLoc ()
 //
 //=============================================================================
 
+// VIZDOOM_CODE
+EXTERN_CVAR (Float, viz_am_scale)
+EXTERN_CVAR (Bool, viz_am_center)
+
+// VIZDOOM_CODE
 void AM_initVariables ()
 {
 	int pnum;
@@ -1244,19 +1273,38 @@ void AM_initVariables ()
 
 	// find player to center on initially
 	if (!playeringame[pnum = consoleplayer])
-		for (pnum=0;pnum<MAXPLAYERS;pnum++)
-			if (playeringame[pnum])
-				break;
+        for (pnum = 0; pnum < MAXPLAYERS; pnum++)
+            if (playeringame[pnum])
+                break;
 	assert(pnum >= 0 && pnum < MAXPLAYERS);
-	m_x = (players[pnum].camera->X() >> FRACTOMAPBITS) - m_w/2;
-	m_y = (players[pnum].camera->Y() >> FRACTOMAPBITS) - m_h/2;
-	AM_changeWindowLoc();
+	m_x = (players[pnum].camera->X() >> FRACTOMAPBITS) - m_w / 2;
+	m_y = (players[pnum].camera->Y() >> FRACTOMAPBITS) - m_h / 2;
+
+	// scale
+	if(*viz_am_scale != -1) {
+		scale_mtof = int(*viz_am_scale * INITSCALEMTOF);
+		scale_ftom = MapDiv(MAPUNIT, scale_mtof);
+
+		if (scale_mtof < min_scale_mtof)
+			AM_minOutWindowScale();
+		else if (scale_mtof > max_scale_mtof)
+			AM_maxOutWindowScale();
+	}
+
+	// center
+	if(*viz_am_center){
+		AM_minOutWindowScale();
+		m_x = min_x + max_w/2 - m_w/2;
+		m_y = min_y + max_h/2 - m_h/2;
+	}
 
 	// for saving & restoring
 	old_m_x = m_x;
 	old_m_y = m_y;
 	old_m_w = m_w;
 	old_m_h = m_h;
+
+	AM_changeWindowLoc();
 }
 
 //=============================================================================
@@ -1376,31 +1424,6 @@ void AM_Start ()
 	AM_initVariables();
 }
 
-
-
-//=============================================================================
-//
-// set the window scale to the maximum size
-//
-//=============================================================================
-
-void AM_minOutWindowScale ()
-{
-	scale_mtof = min_scale_mtof;
-	scale_ftom = MapDiv(MAPUNIT, scale_mtof);
-}
-
-//=============================================================================
-//
-// set the window scale to the minimum size
-//
-//=============================================================================
-
-void AM_maxOutWindowScale ()
-{
-	scale_mtof = max_scale_mtof;
-	scale_ftom = MapDiv(MAPUNIT, scale_mtof);
-}
 
 //=============================================================================
 //
@@ -1574,6 +1597,14 @@ CCMD(am_scale)
 	}
 }
 
+CCMD(am_center_map)
+{
+	AM_minOutWindowScale();
+    m_x = min_x + max_w/2 - m_w/2;
+    m_y = min_y + max_h/2 - m_h/2;
+    AM_changeWindowLoc();
+}
+
 CCMD(am_grid)
 {
     if (argv.argc() >= 2) {
@@ -1627,7 +1658,6 @@ void AM_Ticker ()
 		return;
 
 	amclock++;
-
 	if (am_followplayer)
 	{
 		AM_doFollowPlayer();

@@ -2,18 +2,22 @@
 
 ## Changes in 1.1.5
 
+#### Automap
+- Added `viz_am_scale` CVAR (CVAR version of `am_scale` CCMD)
+- Added `viz_am_center` CVAR (and `am_center` CCMD)
+
 #### Buttons and actions
-- Added `getButton` method.
+- **Added `getButton` method.**
 
 #### Episode recording and replaying
 - Added `isRecordingEpisode` and `isReplayingEpisode` methods.
 
 #### GameVariables
-- `KILLCOUNT` counts all kills, including multilayer kills.
-- `HITCOUNT`, `HITS_TAKEN`, `DAMAGECOUNT`, `DAMAGE_TAKEN` game variables added.
+- **`KILLCOUNT` counts all kills, including multilayer kills.**
+- **`HITCOUNT`, `HITS_TAKEN`, `DAMAGECOUNT`, `DAMAGE_TAKEN` game variables added.**
 
 #### Labels
-- Added appending "Dead" prefix to label's name when actor is a corpse.
+- **Added appending "Dead" prefix to label's name when actor is a corpse.**
 - **Added bounding box information to Label object in `x`, `y`, `width` and `height` fields.**
 - **Added `objectAngle`, `objectPitch`, `objectRoll`, `objectVelocityX/Y/Z` fields to Label object.**
 

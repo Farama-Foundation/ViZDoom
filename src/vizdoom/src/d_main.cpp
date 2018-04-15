@@ -972,7 +972,8 @@ void VIZ_D_MapDisplay(){
 	bool _automapactive = automapactive;
 	bool _viewactive = viewactive;
 
-	automapactive = false;
+	//automapactive = true;
+    automapactive = false;
 	AM_ToggleMap ();
 	viewactive = false;
 
@@ -995,12 +996,6 @@ void VIZ_D_MapDisplay(){
 	if (players[consoleplayer].camera == NULL)
 	{
 		players[consoleplayer].camera = players[consoleplayer].mo;
-	}
-
-	if (viewactive)
-	{
-		R_SetFOV (players[consoleplayer].camera && players[consoleplayer].camera->player ?
-				  players[consoleplayer].camera->player->FOV : 90.f);
 	}
 
 	// [RH] change the screen mode if needed
