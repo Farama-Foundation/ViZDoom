@@ -57,10 +57,10 @@ namespace vizdoom {
 
     GameStatePython* DoomGamePython::getState() {
         if (this->state == nullptr) return nullptr;
-//
-//        TODO: the following line causes:
-//        Fatal Python error: PyEval_SaveThread: NULL tstate
-//        ReleaseGIL gil = ReleaseGIL();
+
+        // TODO: the following line causes:
+        // Fatal Python error: PyEval_SaveThread: NULL tstate
+        //ReleaseGIL gil = ReleaseGIL();
         this->pyState = new GameStatePython();
 
         this->pyState->number = this->state->number;
@@ -113,6 +113,23 @@ namespace vizdoom {
         }
 
         return this->pyState;
+    }
+
+    ServerStatePython* DoomGamePython::getServerState() {
+        ServerStatePython* pyServerState = new ServerStatePython();
+
+        pyServerState->playerCount = this->doomController->getPlayerCount();
+        pyb::list pyPlayersInGame, pyPlayersNames, pyPlayersFrags;
+        for(int i = 0; i < MAX_PLAYERS; ++i) {
+            pyPlayersInGame.append(this->doomController->isPlayerInGame(i));
+            pyPlayersNames.append(pyb::str(this->doomController->getPlayerName(i).c_str()));
+            pyPlayersFrags.append(this->doomController->getPlayerFrags(i));
+        }
+        pyServerState->playersInGame = pyPlayersInGame;
+        pyServerState->playersNames = pyPlayersNames;
+        pyServerState->playersFrags = pyPlayersFrags;
+
+        return pyServerState;
     }
 
     pyb::list DoomGamePython::getLastAction() {

@@ -28,29 +28,29 @@ game.set_screen_resolution(ScreenResolution.RES_640X480)
 # Set cv2 friendly format.
 game.set_screen_format(ScreenFormat.BGR24)
 
-# Enables automap rendering
+# Enables rendering of automap.
 game.set_automap_buffer_enabled(True)
 
-# All map geometry and objects will be displayed
+# All map's geometry and objects will be displayed.
 game.set_automap_mode(AutomapMode.OBJECTS_WITH_SIZE)
 
 game.add_available_game_variable(GameVariable.POSITION_X)
 game.add_available_game_variable(GameVariable.POSITION_Y)
 game.add_available_game_variable(GameVariable.POSITION_Z)
 
-# We just want to see a automap
+# Disables game window (FPP view), we just want to see the automap.
 game.set_window_visible(False)
 
-# This CVAR can be used to make a map follow a player
+# This CVAR can be used to make a map follow a player.
 game.add_game_args("+am_followplayer 1")
 
-# This CVAR controls scale of rendered map (higher valuer means bigger zoom)
+# This CVAR controls scale of rendered map (higher valuer means bigger zoom).
 game.add_game_args("+viz_am_scale 10")
 
-# This CVAR shows whole map centered (overrides am_followplayer and viz_am_scale)
+# This CVAR shows the whole map centered (overrides am_followplayer and viz_am_scale).
 game.add_game_args("+viz_am_center 1")
 
-# Map's colors can be changed using CVARs, full list available here: https://zdoom.org/wiki/CVARs:Automap#am_backcolor
+# Map's colors can be changed using CVARs, full list is available here: https://zdoom.org/wiki/CVARs:Automap#am_backcolor
 game.add_game_args("+am_backcolor 000000")
 game.init()
 

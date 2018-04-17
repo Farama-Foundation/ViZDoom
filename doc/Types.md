@@ -52,6 +52,7 @@
 
 **x**, **y**, **width**, **height** - describes bounding box of this particular object in **labelsBuffer**.
 
+
 ---
 ### <a name="gamestate"></a> `GameState`
 (`C++ type / Lua type / Java type / Python type` **name**)
@@ -68,11 +69,20 @@
 **number** - number of the state in the episode.
 **tic** - ingame time, 1 tic is 1/35 of second in the game world. Added in 1.1.1.
 
-
 See also:
 - [`DoomGame: getState`](DoomGame.md#getState),
 - [examples/python/basic.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/basic.py),
 - [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py).
+
+
+---
+#### <a name="delta-buttons"></a> ServerInfo
+(`C++ type / Lua type / Java type / Python type` **name**)
+
+- `unsigned int / number / unsigned int / int` **playerCount / player_count**
+- `bool[] / table / boolean[] / list` **playersInGame / players_in_game**
+- `int[] / table / int[] / list` **playersFrags / players_frags**
+- `std::string[] / table / String[] / list` **playersNames / players_names**
 
 
 ## <a name="enums"></a> Enums
@@ -204,12 +214,6 @@ See also:
 ### <a name="gamevariable"></a> `GameVariable`
 
 Enum type that defines all variables that can be obtained from the game.
-
-
-    FRAGCOUNT is mostly for multiplayer, e.g. against other players or bots. Does not update from killing NPC(?)
-    KILLCOUNT reads "level.killed_monsters", so I would guess it updates on killing monsters. However as you pointed out, this does not seem to be the case.
-    SECRETCOUNT seems to count the number of "secret objects" collected (level.found_secrets), possibly for some "locate and collect" task for collecting certain type of pickups.
-
 
 #### Defined variables
 - **KILLCOUNT**     - Counts the number of monsters killed during the current episode. ~Killing other players/bots do not count towards this.~ From 1.1.5 killing other players/bots counts towards this.

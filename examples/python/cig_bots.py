@@ -11,7 +11,7 @@ game = DoomGame()
 game.load_config("../../scenarios/cig.cfg")
 
 game.set_doom_map("map01")  # Limited deathmatch.
-# game.set_doom_map("map02")  # Full deathmatch.
+#game.set_doom_map("map02")  # Full deathmatch.
 
 # Start multiplayer game only with your AI (with options that will be used in the competition, details in cig_host example).
 game.add_game_args("-host 1 -deathmatch +timelimit 1.0 "
@@ -53,7 +53,7 @@ for i in range(episodes):
     while not game.is_episode_finished():
 
         # Get the state.
-        s = game.get_state()
+        state = game.get_state()
 
         # Analyze the state.
 
@@ -71,6 +71,13 @@ for i in range(episodes):
             game.respawn_player()
 
     print("Episode finished.")
+    print("************************")
+
+    print("Results:")
+    server_state = game.get_server_state()
+    for i in range(len(server_state.players_in_game)):
+        if server_state.players_in_game[i]:
+            print(server_state.players_names[i] + ": " + str(server_state.players_frags[i]))
     print("************************")
 
     # Starts a new episode. All players have to call new_episode() in multiplayer mode.

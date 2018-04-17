@@ -67,6 +67,8 @@ namespace vizdoom {
         GameStatePtr getState();
         std::vector<double> getLastAction();
 
+        ServerStatePtr getServerState();
+
 
         /* Buttons settings */
         /*------------------------------------------------------------------------------------------------------------*/

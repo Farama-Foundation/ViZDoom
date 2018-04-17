@@ -108,6 +108,13 @@ namespace vizdoom {
         pyb::list labels;
     };
 
+    struct ServerStatePython {
+        unsigned int playerCount;
+        pyb::list playersInGame;
+        pyb::list playersFrags;
+        pyb::list playersNames;
+    };
+
     class DoomGamePython : public DoomGame {
 
     public:
@@ -117,6 +124,7 @@ namespace vizdoom {
         double makeAction(pyb::list const &pyAction, unsigned int tics = 1);
 
         GameStatePython* getState();
+        ServerStatePython* getServerState();
         pyb::list getLastAction();
 
         pyb::list getAvailableButtons();

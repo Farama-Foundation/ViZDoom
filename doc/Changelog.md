@@ -21,7 +21,6 @@
 - **Added bounding box information to Label object in `x`, `y`, `width` and `height` fields.**
 - **Added `objectAngle`, `objectPitch`, `objectRoll`, `objectVelocityX/Y/Z` fields to Label object.**
 
-
 #### Windows specific
 - Fixed problem with building on Windows 8.1 and 10.
 - Added scripts for downloading freedoom2.wad and assembling Python packages.
@@ -30,6 +29,8 @@
 - Fixed minor rendering issue in depth and labels buffer.
 - Fixed order of color values in `RGB/BGR` modes of `ScreenFormat`.
 
+#### Other
+- Added `getServerState` method.
 
 ## Changes in 1.1.4
 

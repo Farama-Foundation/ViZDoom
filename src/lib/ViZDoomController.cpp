@@ -973,6 +973,20 @@ namespace vizdoom {
 
     bool DoomController::isPlayerDead() { return this->gameState->PLAYER_DEAD; }
 
+    int DoomController::getPlayerCount() { return this->gameState->PLAYER_COUNT; }
+
+    bool DoomController::isPlayerInGame(unsigned int playerNumber){
+        return playerNumber < MAX_PLAYERS ? this->gameState->PLAYER_N_IN_GAME[playerNumber] : false;
+    }
+
+    int DoomController::getPlayerFrags(unsigned int playerNumber){
+        return playerNumber < MAX_PLAYERS ? this->gameState->PLAYER_N_FRAGCOUNT[playerNumber] : 0;
+    }
+
+    std::string DoomController::getPlayerName(unsigned int playerNumber){
+        return playerNumber < MAX_PLAYERS ? std::string(this->gameState->PLAYER_N_NAME[playerNumber]) : "";
+    }
+
 
     /* Protected and private functions */
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -1119,9 +1133,13 @@ namespace vizdoom {
         // main wad
         if (this->iwadPath.length() == 0) {
             std::string workingDoom2Path = "./doom2.wad";
+            std::string workingDoomPath = "./doom.wad";
             std::string workingFreedoom2Path = "./freedoom2.wad";
+            std::string workingFreedoomPath = "./freedoom.wad";
             std::string sharedDoom2Path = getThisSharedObjectPath() + "/doom2.wad";
+            std::string sharedDoomPath = getThisSharedObjectPath() + "/doom.wad";
             std::string sharedFreedoom2Path = getThisSharedObjectPath() + "/freedoom2.wad";
+            std::string sharedFreedoomPath = getThisSharedObjectPath() + "/freedoom.wad";
 
             if (fileExists(workingDoom2Path)) this->iwadPath = workingDoom2Path;
             else if (fileExists(sharedDoom2Path)) this->iwadPath = sharedDoom2Path;

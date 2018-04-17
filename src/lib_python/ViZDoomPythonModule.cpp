@@ -396,6 +396,12 @@ PYBIND11_MODULE(vizdoom, vz){
 
         .def_readonly("labels", &GameStatePython::labels);
 
+    class_<ServerStatePython>(vz, "ServerState")
+        .def_readonly("player_count", &ServerStatePython::playerCount)
+        .def_readonly("players_in_game", &ServerStatePython::playersInGame)
+        .def_readonly("players_names", &ServerStatePython::playersNames)
+        .def_readonly("players_frags", &ServerStatePython::playersFrags);
+
 
     /* DoomGame */
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -424,6 +430,7 @@ PYBIND11_MODULE(vizdoom, vz){
         .def("advance_action", &DoomGamePython::advanceAction_int_bool)
 
         .def("get_state", &DoomGamePython::getState, return_value_policy::take_ownership)
+        .def("get_server_state", &DoomGamePython::getServerState, return_value_policy::take_ownership)
 
         .def("get_game_variable", &DoomGamePython::getGameVariable)
         .def("get_button", &DoomGamePython::getButton)

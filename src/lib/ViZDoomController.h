@@ -238,6 +238,11 @@ namespace vizdoom {
         int getMapReward();
         bool isPlayerDead();
 
+        int getPlayerCount();
+        bool isPlayerInGame(unsigned int playerNumber);
+        int getPlayerFrags(unsigned int playerNumber);
+        std::string getPlayerName(unsigned int playerNumber);
+
 
     private:
 

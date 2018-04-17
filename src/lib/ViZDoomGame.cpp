@@ -50,6 +50,7 @@ namespace vizdoom {
         this->mode = PLAYER;
 
         this->state = nullptr;
+
         this->doomController = new DoomController();
     }
 
@@ -265,12 +266,25 @@ namespace vizdoom {
                 label.objectName = std::string(this->doomController->getGameState()->LABEL[i].objectName);
                 this->state->labels.push_back(label);
             }
+
         } else this->state = nullptr;
     }
 
-    std::shared_ptr<GameState> DoomGame::getState() {
+    GameStatePtr DoomGame::getState() {
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         return this->state;
+    }
+
+    ServerStatePtr DoomGame::getServerState(){
+        ServerStatePtr serverState = std::make_shared<ServerState>();
+        serverState->playerCount = this->doomController->getPlayerCount();
+        for(int i = 0; i < MAX_PLAYERS; ++i){
+            serverState->playersInGame[i] = this->doomController->isPlayerInGame(i);
+            serverState->playersNames[i] = this->doomController->getPlayerName(i);
+            serverState->playersFrags[i] = this->doomController->getPlayerFrags(i);
+        }
+
+        return serverState;
     }
 
     std::vector<double> DoomGame::getLastAction() {

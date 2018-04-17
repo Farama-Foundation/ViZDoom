@@ -23,6 +23,8 @@
 #ifndef __VIZDOOM_TYPES_H__
 #define __VIZDOOM_TYPES_H__
 
+#include "ViZDoomConsts.h"
+
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -79,6 +81,15 @@ namespace vizdoom{
     };
 
     typedef std::shared_ptr<GameState> GameStatePtr;
+
+    struct ServerState {
+        unsigned int playerCount;
+        bool playersInGame[MAX_PLAYERS];
+        int playersFrags[MAX_PLAYERS];
+        std::string playersNames[MAX_PLAYERS];
+    };
+
+    typedef std::shared_ptr<ServerState> ServerStatePtr;
 
     enum Mode {
         PLAYER,             // synchronous player mode
