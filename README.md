@@ -7,7 +7,7 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 
 **ViZDoom is the platform for [Visual Doom Competition @ CIG 2018](http://vizdoom.cs.put.edu.pl/competition-cig-2018).** :goberserk:
 
-![vizdoom_deadly_corridor](https://github.com/mwydmuch/ViZDoom/blob/master/gifs/vizdoom_corridor.gif)
+![vizdoom_deadly_corridor](http://www.cs.put.poznan.pl/mkempka/misc/vizdoom_gifs/vizdoom_corridor.gif)
 
 ## Features
 - Multi-platform,
