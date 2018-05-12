@@ -6,6 +6,8 @@ ViZDoom allows developing AI **bots that play Doom using only the visual informa
 ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game mechanics.
 
 **ViZDoom is the platform for [Visual Doom Competition @ CIG 2018](http://vizdoom.cs.put.edu.pl/competition-cig-2018).** :goberserk:
+See [Track 1](https://www.crowdai.org/challenges/visual-doom-ai-competition-2018-track-1) [Track 2](https://www.crowdai.org/challenges/visual-doom-ai-competition-2018-track-2) on [crowdAI](https://www.crowdai.org)
+
 
 ![vizdoom_deadly_corridor](https://github.com/mwydmuch/ViZDoom/blob/master/gifs/vizdoom_corridor.gif)
 
@@ -101,7 +103,7 @@ Additional documents:
 - **[FAQ](doc/FAQ.md)**
 - [Changelog](doc/Changelog.md) for 1.1.X version.
 
-Also full documentation of engine and ACS scripting language can be found on 
+Also full documentation of engine and ACS scripting language can be found on
 [ZDoom Wiki](https://zdoom.org/wiki/).
 
 Useful parts:
@@ -115,7 +117,9 @@ Useful parts:
 
 - [SLADE3](http://slade.mancubus.net/) - Doom map (scenario) editor for Linux, MacOS and Windows.
 - [Doom Builder 2](http://www.doombuilder.com/) - another Doom map editor for Windows.
-- [OBLIGE](http://oblige.sourceforge.net/) - Doom random map generator and [PyOblige](https://github.com/mwydmuch/PyOblige) is a simple Python wrapper for it. 
+- [OBLIGE](http://oblige.sourceforge.net/) - Doom random map generator and [PyOblige](https://github.com/mwydmuch/PyOblige) is a simple Python wrapper for it.
+- [Omgifol](https://github.com/devinacker/omgifol) - Python library for manipulating Doom maps.
+- [NavDoom](https://github.com/agiantwhale/navdoom) - Maze navigation generator for ViZDoom.
 
 
 ## Contributions

@@ -1,6 +1,8 @@
 @echo off
 setlocal enabledelayedexpansion
 
+:: %%% Configuration, set this variables to match your environment.
+
 :: %%% Set build config
 set PYTHON=ON
 set LUA=OFF
@@ -17,7 +19,7 @@ set BOOST_INCLUDEDIR=%BOOST_ROOT%
 set BOOST_LIBRARYDIR=%BOOST_ROOT%\libs
 
 :: Python
-:: %%% Set Python version (27, 34, 35, 36) or change paths for other distribusions
+:: %%% Set Python version (27, 34, 35, 36) or change paths for other distributions
 set PYTHON_VERSION=36
 set PYTHON_BIG_VERSION=%PYTHON_VERSION:~0,1%
 set PYTHON_EXECUTABLE=C:\Python%PYTHON_VERSION%\python.exe
@@ -25,6 +27,7 @@ set PYTHON_INCLUDE_DIR=C:\Python%PYTHON_VERSION%\include
 set PYTHON_LIBRARY=C:\Python%PYTHON_VERSION%\libs\python%PYTHON_VERSION%.lib
 set NUMPY_INCLUDES=C:\Python%PYTHON_VERSION%\Lib\site-packages\numpy\core\include
 
+:: TODO: Add default Anaconda paths
 
 :: Rest of the script
 ::--------------------------------------------------------------------------------------------------------------------
