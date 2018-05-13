@@ -9,7 +9,7 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 See [Track 1](https://www.crowdai.org/challenges/visual-doom-ai-competition-2018-track-1) [Track 2](https://www.crowdai.org/challenges/visual-doom-ai-competition-2018-track-2) on [crowdAI](https://www.crowdai.org)
 
 
-![vizdoom_deadly_corridor](https://github.com/mwydmuch/ViZDoom/blob/master/gifs/vizdoom_corridor.gif)
+![vizdoom_deadly_corridor](http://www.cs.put.poznan.pl/mkempka/misc/vizdoom_gifs/vizdoom_corridor.gif)
 
 ## Features
 - Multi-platform,
