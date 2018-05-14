@@ -9,7 +9,8 @@ fi
 
 PACKAGE_DEST_DIRECTORY="./bin/python${PYTHON_VERSION}"
 PACKAGE_DEST_PATH="${PACKAGE_DEST_DIRECTORY}/pip_package"
-PACKAGE_SOURCE="./src/lib_python/src_python"
+PACKAGE_INIT_FILE_SRC="./src/lib_python/__init__.py"
+
 if [ "$(uname)" == "Darwin" ]; then
     VIZDOOM_EXEC_PATH="./bin/vizdoom.app/Contents/MacOS/vizdoom"
 else
@@ -38,7 +39,7 @@ fi
 rm -rf ${PACKAGE_DEST_PATH}
 mkdir -p ${PACKAGE_DEST_PATH}
 
-cp -r ${PACKAGE_SOURCE}/* ${PACKAGE_DEST_PATH}
+cp ${PACKAGE_INIT_FILE_SRC} ${PACKAGE_DEST_PATH}
 cp ${PYTHON_BIN_PATH} ${PYTHON_BIN_DEST_PATH}
 cp ${VIZDOOM_EXEC_PATH} ${PACKAGE_DEST_PATH}
 cp ${VIZDOOM_PK3_PATH} ${PACKAGE_DEST_PATH}

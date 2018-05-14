@@ -11,7 +11,6 @@ set(ViZDoom_VERSION ${ViZDoom_MAJOR_VERSION}.${ViZDoom_MINOR_VERSION}.${ViZDoom_
 set(ViZDoom_VERSION_STR ${ViZDoom_VERSION})
 set(ViZDoom_VERSION_ID ${ViZDoom_MAJOR_VERSION}${ViZDoom_MINOR_VERSION}${ViZDoom_PATCH_VERSION})
 
-
 # Building options
 #-----------------------------------------------------------------------------------------------------------------------
 
@@ -185,6 +184,7 @@ if (BUILD_PYTHON OR BUILD_PYTHON3)
     set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
     set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
 
+
     # Use included pybind11
     add_subdirectory(${VIZDOOM_PYTHON_SRC_DIR}/pybind11)
 
@@ -196,6 +196,14 @@ if (BUILD_PYTHON OR BUILD_PYTHON3)
     include_directories(${VIZDOOM_PYTHON_INCLUDE_DIR}
             ${Boost_INCLUDE_DIR}
             ${NUMPY_INCLUDES})
+
+    set(ViZDoom_PYTHON_INLCUDE_DIR ${VIZDOOM_PYTHON_INCLUDE_DIR})
+    set(ViZDoom_PYTHON_VERSION_STR ${PYTHON_VERSION_STRING})
+
+    configure_file(
+        "${VIZDOOM_PYTHON_SRC_DIR}/__init__.py.in"
+        "${VIZDOOM_PYTHON_SRC_DIR}/__init__.py"
+    )
 
     set(VIZDOOM_PYTHON_SOURCES
             ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.h
