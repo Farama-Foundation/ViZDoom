@@ -6,7 +6,7 @@ set PYTHON_VERSION=%1
 set BIN_PATH=.\bin
 set PACKAGE_DEST_DIRECTORY=%BIN_PATH%\python%PYTHON_VERSION%
 set PACKAGE_DEST_PATH=%PACKAGE_DEST_DIRECTORY%\pip_package
-set PACAKGE_INIT_FILE_SRC=.\src\lib_python\__init.py__
+set PACAKGE_INIT_FILE_SRC=.\src\lib_python\__init__.py
 
 set VIZDOOM_EXEC_PATH=%BIN_PATH%\vizdoom.exe
 set VIZDOOM_PK3_PATH=%BIN_PATH%\vizdoom.pk3
