@@ -74,7 +74,7 @@ To get dependencies install [homebrew](https://brew.sh/)
 
 ```sh
 # ZDoom dependencies and Boost libraries
-brew install cmake boost sdl2
+brew install cmake boost sdl2 wget
 
 # Python 2 dependencies
 brew install python
