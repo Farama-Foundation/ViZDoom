@@ -337,6 +337,7 @@ mod.add_type<DoomGame>("DoomGame")
     .method("init", &DoomGame::init)
     .method("close", &DoomGame::close)
     .method("new_episode", &DoomGame::newEpisode)
+    .method("new_episode", [](DoomGame& dg) {dg.newEpisode();})
     .method("load_config", &DoomGame::loadConfig)
     .method("is_running", &DoomGame::isRunning)
     .method("is_recording_episode", &DoomGame::isRecordingEpisode)
@@ -353,7 +354,12 @@ mod.add_type<DoomGame>("DoomGame")
         std::vector<double> data(actions.begin(), actions.end());
         return dg.makeAction(data);
     })
+    .method("make_action", [](DoomGame &dg, jlcxx::ArrayRef<double, 1> actions, unsigned int tics) {
+        std::vector<double> data(actions.begin(), actions.end());
+        return dg.makeAction(data, tics);
+    })
     .method("advance_action", &DoomGame::advanceAction)
+    .method("advance_action", [](DoomGame& dg){dg.advanceAction();})
     .method("get_state", &DoomGame::getState)
     .method("get_server_state", &DoomGame::getServerState)
     .method("get_game_variable", &DoomGame::getGameVariable)
@@ -379,6 +385,7 @@ mod.add_type<DoomGame>("DoomGame")
         dg.setAvailableButtons(data);
     })
     .method("add_available_button", &DoomGame::addAvailableButton)
+    .method("add_available_button", [](DoomGame& dg, Button bt){dg.addAvailableButton(bt);})
     .method("clear_available_buttons", &DoomGame::clearAvailableButtons)
     .method("get_available_buttons_size", &DoomGame::getAvailableButtonsSize)
     .method("set_button_max_value", &DoomGame::setButtonMaxValue)
