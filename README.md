@@ -13,7 +13,7 @@ See [Track 1](https://www.crowdai.org/challenges/visual-doom-ai-competition-2018
 
 ## Features
 - Multi-platform,
-- API for C++, Lua, Java and Python,
+- API for C++, Lua, Java, Python and Julia (thanks to [Jun Tian](https://github.com/findmyway))
 - Easy-to-create custom scenarios (examples available),
 - Async and sync single-player and multi-player modes,
 - Fast (up to 7000 fps in sync mode, single threaded),
@@ -79,6 +79,7 @@ Before running the provided examples, make sure that [freedoom2.wad](https://fre
 - [C++](examples/c%2B%2B)
 - [Lua](examples/lua) (contain learning example implemented in Torch)
 - [Java](examples/java)
+- [Julia](examples/julia)
 
 Python examples are currently the richest, so we recommend to look at them, even if you plan to use other language. API is almost identical for all languages.
 
@@ -124,7 +125,7 @@ Useful parts:
 
 ## Contributions
 
-This project is maintained and developed in our free time. All bug fixes, new examples and scenarios are welcome! We are also open to features ideas and design suggestions.
+This project is maintained and developed in our free time. All bug fixes, new examples, scenarios and other contributions are welcome! We are also open to features ideas and design suggestions.
 
 
 ## License

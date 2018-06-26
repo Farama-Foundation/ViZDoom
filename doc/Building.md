@@ -55,6 +55,11 @@ pip3 install numpy
 # Lua binding dependencies
 sudo apt-get install liblua5.1-dev
 # Lua shipped with Torch can be used instead, so it isn't needed if installing via LuaRocks
+
+# Julia dependencies
+sudo apt-get install julia
+julia
+julia> Pkg.add("CxxWrap")
 ```
 
 To get Torch see: [Getting started with Torch](http://torch.ch/docs/getting-started.html).
@@ -83,6 +88,12 @@ pip install numpy
 # Python 3 dependencies
 brew install python3
 pip3 install numpy
+# or install
+
+# Julia dependencies
+brew cask install julia
+julia
+julia> Pkg.add("CxxWrap")
 ```
 
 To get Torch see: [Getting started with Torch](http://torch.ch/docs/getting-started.html).
@@ -164,27 +175,35 @@ Location of `site-packages` depends on Python distribution:
 
 In ViZDoom's root directory:
 ```bash
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON -DBUILD_JULIA=ON
 make
 ```
 
-`-DBUILD_PYTHON=ON` and `-DBUILD_JAVA=ON` and `-DBUILD_LUA=ON` CMake options for Python, Java and Lua bindings are optional (default OFF). To force building bindings for Python 3 instead of the first version found use `-DBUILD_PYTHON3=ON`.
+where `-DBUILD_PYTHON=ON`, `-DBUILD_JAVA=ON`, `-DBUILD_LUA=ON` and `-DBUILD_JULIA=ON` CMake options for Python, Java, Lua and Julia bindings are optional (default OFF). To force building bindings for Python3 instead of the first version found use `-DBUILD_PYTHON3=ON`.
+
+To build Julia binding you first need to install CxxWrap package by running `julia` and using `Pkg.add("CxxWrap")` command (see [Linux dependencies](#linux_deps)). Then you need to manually set `JlCxx_DIR` variable:
+
+```sh
+cmake -DCMAKE_BUILD_TYPE=Release \
+-DBUILD_JULIA=ON \
+-DJlCxx_DIR=~/.julia/vX.X/CxxWrap/deps/usr/lib/cmake/JlCxx/
+```
 
 
 ### <a name="macos_build"></a> MacOS
 
 >>> Using [pip/conda](#pypi) is the recommended way to install ViZDoom, please try it first unless you are sure you want to compile the package by hand.
 
-Run CMake and use generated the project.
+Run CMake and build generated Makefile.
 
 ```sh
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON -DBUILD_JULIA=ON
 make
 ```
 
-`-DBUILD_PYTHON=ON` and `-DBUILD_JAVA=ON` and `-DBUILD_LUA=ON` CMake options for Python, Java and Lua bindings are optional (default OFF). To force building bindings for Python3 instead of the first version found use `-DBUILD_PYTHON3=ON`.
+where `-DBUILD_PYTHON=ON`, `-DBUILD_JAVA=ON`, `-DBUILD_LUA=ON` and `-DBUILD_JULIA=ON` CMake options for Python, Java, Lua and Julia bindings are optional (default OFF). To force building bindings for Python3 instead of the first version found use `-DBUILD_PYTHON3=ON`.
 
-Users with brew-installed Python/Anaconda may need to manually set PYTHON_EXECUTABLE, PYTHON_INCLUDE_DIR, PYTHON_LIBRARY:
+Users with brew-installed Python/Anaconda **may** need to manually set `PYTHON_EXECUTABLE`, `PYTHON_INCLUDE_DIR`, `PYTHON_LIBRARY` variables:
 
 It should look like this for brew-installed Python (use `-DBUILD_PYTHON3=ON`, `include/pythonX.Xm` and `lib/libpythonX.Xm.dylib` for Python 3):
 
@@ -208,6 +227,13 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 -DNUMPY_INCLUDES=~/anacondaX/lib/pythonX.X/site-packages/numpy/core/include
 ```
 
+To build Julia binding, you first need to install CxxWrap package by running `julia` and using `Pkg.add("CxxWrap")` command (see [MacOS dependencies](#macos_deps)). Then you need to manually set `JlCxx_DIR` variable:
+
+```sh
+cmake -DCMAKE_BUILD_TYPE=Release \
+-DBUILD_JULIA=ON \
+-DJlCxx_DIR=~/.julia/vX.X/CxxWrap/deps/usr/lib/cmake/JlCxx/
+```
 
 ### <a name="windows_build"></a> Windows
 
