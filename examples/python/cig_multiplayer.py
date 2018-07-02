@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+#####################################################################
+# This script presents how to join and play a deathmatch game,
+# that can be hosted using cig_multiplayer_host.py script.
+#####################################################################
+
 from __future__ import print_function
 from vizdoom import *
 from random import choice
@@ -23,6 +28,7 @@ game.add_game_args("+name AI +colorset 0")
 # During the competition, async mode will be forced for all agents.
 #game.set_mode(Mode.PLAYER)
 game.set_mode(Mode.ASYNC_PLAYER)
+game.set_mode(Mode.ASYNC_SPECTATOR)
 
 #game.set_window_visible(False)
 

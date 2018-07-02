@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
+#####################################################################
+# This script presents how to play a deathmatch game with build-in bots.
+#####################################################################
 
+from __future__ import print_function
 from random import choice
 from vizdoom import *
 
@@ -13,8 +16,9 @@ game.load_config("../../scenarios/cig.cfg")
 game.set_doom_map("map01")  # Limited deathmatch.
 #game.set_doom_map("map02")  # Full deathmatch.
 
-# Start multiplayer game only with your AI (with options that will be used in the competition, details in cig_host example).
-game.add_game_args("-host 1 -deathmatch +timelimit 1.0 "
+# Start multiplayer game only with your AI
+# (with options that will be used in the competition, details in cig_mutliplayer_host.py example).
+game.add_game_args("-host 1 -deathmatch +timelimit 10.0 "
                    "+sv_forcerespawn 1 +sv_noautoaim 1 +sv_respawnprotect 1 +sv_spawnfarthest 1 +sv_nocrouch 1 "
                    "+viz_respawn_delay 10 +viz_nocheat 1")
 
