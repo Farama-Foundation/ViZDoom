@@ -8,6 +8,7 @@
 from __future__ import print_function
 from random import choice
 from time import sleep
+import os
 
 from vizdoom import *
 from oblige import *
@@ -17,8 +18,8 @@ game = DoomGame()
 # Use your config
 game.load_config("../../scenarios/cig.cfg")
 game.set_doom_map("map01")
-
-game.set_doom_scenario_path("cig_singleplayer.wad")
+wad_path = "cig_singleplayer.wad"
+game.set_doom_scenario_path(wad_path)
 
 # Join existing game.
 game.add_game_args("-join 127.0.0.1") # Connect to a host for a multiplayer game.
@@ -29,10 +30,16 @@ game.add_game_args("+name AI +colorset 0")
 
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 game.set_window_visible(True)
-game.set_mode(Mode.ASYNC_SPECTATOR)
+#game.set_mode(Mode.PLAYER)
+game.set_mode(Mode.ASYNC_PLAYER)
+
+# Wait for wad generator
+sleep(1)
+while not os.path.exists(wad_path):
+    sleep(1)
 
 game.init()
-i = 0
+i = 1
 # Play until the game is over.
 while True:
     print("Map {}".format(i))
@@ -59,5 +66,6 @@ while True:
     sleep(2.0)
 
     game.new_episode()
+    i += 1
 
 game.close()

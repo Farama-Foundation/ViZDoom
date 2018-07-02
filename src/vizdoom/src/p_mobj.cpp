@@ -67,6 +67,10 @@
 #include "r_data/colormaps.h"
 #include "r_renderer.h"
 
+//VIZDOOM_CODE
+#include "viz_main.h"
+#include "viz_defines.h"
+
 // MACROS ------------------------------------------------------------------
 
 #define WATER_SINK_FACTOR		3
@@ -4640,6 +4644,16 @@ APlayerPawn *P_SpawnPlayer (FPlayerStart *mthing, int playernum, int flags)
 			FBehavior::StaticStartTypedScripts (SCRIPT_Respawn, p->mo, true);
 		}
 	}
+
+	//VIZDOOM_CODE
+	//VIZ_DebugMsg(2, VIZ_FUNC, "player %d, spectator: %d", playernum, players[playernum].userinfo.GetSpectator());
+	if(players[playernum].userinfo.GetSpectator() && mobj != NULL) {
+		//players[playernum].mo->UnlinkFromWorld ();
+		mobj->flags = MF_NOCLIP|MF_NOGRAVITY|MF_FRIENDLY;
+		mobj->flags2 |= MF2_FLY;
+		mobj->renderflags |= RF_INVISIBLE;
+	}
+
 	return mobj;
 }
 

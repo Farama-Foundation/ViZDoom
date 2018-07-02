@@ -1609,15 +1609,6 @@ void G_DeathMatchSpawnPlayer (int playernum)
 	AActor *mo = P_SpawnPlayer(spot, playernum);
 	if (mo != NULL) P_PlayerStartStomp(mo);
 
-    //VIZDOOM_CODE
-    //VIZ_DebugMsg(0, VIZ_FUNC, "player %d, spectator: %d", playernum, players[playernum].userinfo.GetSpectator());
-    if(players[playernum].userinfo.GetSpectator() && players[playernum].mo != NULL) {
-        //players[playernum].mo->UnlinkFromWorld ();
-        players[playernum].mo->flags = MF_NOCLIP|MF_NOGRAVITY|MF_FRIENDLY;
-        players[playernum].mo->flags2 |= MF2_FLY;
-        players[playernum].mo->renderflags |= RF_INVISIBLE;
-    }
-
 	// TODO: Causes crash - fix
 	//VIZ_DebugMsg(4, VIZ_FUNC, "playernum: %d (%s), spot: %d %d %d", gametic, playernum, players[playernum].userinfo.GetName(), spot->x, spot->y, spot->z);
 }

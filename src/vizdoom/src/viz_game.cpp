@@ -428,7 +428,6 @@ void VIZ_GameStateClose(){
 }
 
 void VIZ_PrintPlayers(){
-
     printf("players state: tic %d: player_count: %d, players:\n", gametic, vizGameStateSM->PLAYER_COUNT);
     for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
         if(playeringame[i]){

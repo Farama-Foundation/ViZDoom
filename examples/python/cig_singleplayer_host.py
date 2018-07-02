@@ -22,15 +22,14 @@ game.set_doom_skill(3)
 
 # Create Doom Level Generator instance and set optional seed.
 generator = DoomLevelGenerator()
-generator.set_seed(666)
 
 # There are few predefined sets of settings already defined in Oblige package for CIG competition
 generator.set_config(cig2018_test)
-generator.set_config(cig2018_difficulty_1)
-#generator.set_config(cig2018_difficulty_2)
-#generator.set_config(cig2018_difficulty_3)
-#generator.set_config(cig2018_difficulty_4)
-#generator.set_config(cig2018_difficulty_5)
+generator.set_config(cig2018_difficulty_1)  # aka childs_play_wad
+#generator.set_config(cig2018_difficulty_2)  # aka painless_wad
+#generator.set_config(cig2018_difficulty_3)  # aka too_young_to_die_wad
+#generator.set_config(cig2018_difficulty_4)  # aka no_sweat_wad
+#generator.set_config(cig2018_difficulty_5)  # aka easy_wad
 
 # Tell generator to generate few maps (options for "length": "single", "few", "episode", "game").
 generator.set_config({"length": "few"})
@@ -43,11 +42,13 @@ maps = generator.generate(wad_path)
 game.set_doom_scenario_path(wad_path)
 
 game.add_game_args("-host 2 "
-                   "-skill 3 "
-                   "+timelimit 10.0 "
-                   "+sv_forcerespawn 1 "
-                   "+sv_noautoaim 1 "
-                   "+sv_nocrouch 1 ")
+                   # This machine will function as a host for a singleplayer game with host as spectator and player. 
+                   # It will wait for player's machine to connect using the -join parameter and then start the game.
+                   "-skill 3 "  # The game will run on normal difficulty setting
+                   "+timelimit 10.0 "  # The game (episode) will end after this many minutes have elapsed.
+                   "+sv_forcerespawn 1 "  # Players will respawn automatically after they die.
+                   "+sv_noautoaim 1 "  # Autoaim is disabled for all players.
+                   "+sv_nocrouch 1 ")  # Disables crouching.
 
 game.add_game_args("+name Host")
 
@@ -58,6 +59,7 @@ game.add_game_args("+viz_spectator 1")
 game.add_game_args("+freelook 1")
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 game.set_window_visible(True)
+#game.set_mode(Mode.SPECTATOR)
 game.set_mode(Mode.ASYNC_SPECTATOR)
 
 game.init()

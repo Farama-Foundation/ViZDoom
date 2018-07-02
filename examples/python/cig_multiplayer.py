@@ -28,7 +28,6 @@ game.add_game_args("+name AI +colorset 0")
 # During the competition, async mode will be forced for all agents.
 #game.set_mode(Mode.PLAYER)
 game.set_mode(Mode.ASYNC_PLAYER)
-game.set_mode(Mode.ASYNC_SPECTATOR)
 
 #game.set_window_visible(False)
 
