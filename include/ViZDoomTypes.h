@@ -83,6 +83,7 @@ namespace vizdoom{
     typedef std::shared_ptr<GameState> GameStatePtr;
 
     struct ServerState {
+        unsigned int tic;
         unsigned int playerCount;
         bool playersInGame[MAX_PLAYERS];
         int playersFrags[MAX_PLAYERS];

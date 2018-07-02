@@ -118,6 +118,7 @@ namespace vizdoom {
     ServerStatePython* DoomGamePython::getServerState() {
         ServerStatePython* pyServerState = new ServerStatePython();
 
+        pyServerState->tic = this->doomController->getMapTic();
         pyServerState->playerCount = this->doomController->getPlayerCount();
         pyb::list pyPlayersInGame, pyPlayersNames, pyPlayersFrags;
         for(int i = 0; i < MAX_PLAYERS; ++i) {

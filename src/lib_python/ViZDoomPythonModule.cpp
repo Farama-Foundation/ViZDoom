@@ -397,6 +397,7 @@ PYBIND11_MODULE(vizdoom, vz){
         .def_readonly("labels", &GameStatePython::labels);
 
     class_<ServerStatePython>(vz, "ServerState")
+        .def_readonly("tic", &ServerStatePython::tic)
         .def_readonly("player_count", &ServerStatePython::playerCount)
         .def_readonly("players_in_game", &ServerStatePython::playersInGame)
         .def_readonly("players_names", &ServerStatePython::playersNames)

@@ -109,6 +109,7 @@ namespace vizdoom {
     };
 
     struct ServerStatePython {
+        unsigned int tic;
         unsigned int playerCount;
         pyb::list playersInGame;
         pyb::list playersFrags;
