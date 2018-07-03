@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 #####################################################################
 # This script presents how to use Doom's native demo mechanism to
