@@ -129,7 +129,7 @@ namespace vizdoom {
             pyPlayersFrags.append(this->doomController->getPlayerFrags(i));
             pyPlayersAfk.append(this->doomController->isPlayerAfk(i));
             pyPlayersLastActionTic.append(this->doomController->getPlayerLastActionTic(i));
-            pyPlayersFrags.append(this->doomController->getPlayerLastKillTic(i));
+            pyPlayersLastKillTic.append(this->doomController->getPlayerLastKillTic(i));
         }
 
         pyServerState->playersInGame = pyPlayersInGame;
