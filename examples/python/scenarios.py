@@ -15,63 +15,65 @@ from __future__ import print_function
 import itertools as it
 from random import choice
 from time import sleep
-from vizdoom import DoomGame, ScreenResolution
+import vizdoom as vzd
+from argparse import ArgumentParser
 
-game = DoomGame()
+DEFAULT_CONFIG = "../../scenarios/rocket_basic.cfg"
+if __name__ == "__main__":
 
-# Choose scenario config file you wish to watch.
-# Don't load two configs cause the second will overrite the first one.
-# Multiple config files are ok but combining these ones doesn't make much sense.
+    parser = ArgumentParser("ViZDoom scenarios example.")
+    parser.add_argument(dest="config",
+                        default=DEFAULT_CONFIG,
+                        nargs="?",
+                        help="Path to the configuration file of the scenario."
+                             " Please see "
+                             "../../scenarios/*cfg for more scenarios.")
 
-# game.load_config("../../scenarios/basic.cfg")
-# game.load_config("../../scenarios/simpler_basic.cfg")
-game.load_config("../../scenarios/rocket_basic.cfg")
-# game.load_config("../../scenarios/deadly_corridor.cfg")
-# game.load_config("../../scenarios/deathmatch.cfg")
-# game.load_config("../../scenarios/defend_the_center.cfg")
-# game.load_config("../../scenarios/defend_the_line.cfg")
-# game.load_config("../../scenarios/health_gathering.cfg")
-# game.load_config("../../scenarios/my_way_home.cfg")
-# game.load_config("../../scenarios/predict_position.cfg")
-# game.load_config("../../scenarios/take_cover.cfg")
+    args = parser.parse_args()
+    game = vzd.DoomGame()
 
-# Makes the screen bigger to see more details.
-game.set_screen_resolution(ScreenResolution.RES_640X480)
-game.set_window_visible(True)
-game.init()
+    # Choose scenario config file you wish to watch.
+    # Don't load two configs cause the second will overwrite the first one.
+    # Multiple config files are ok but combining these ones doesn't make much sense.
+    game.load_config(args.config)
 
-# Creates all possible actions depending on how many buttons there are.
-actions_num = game.get_available_buttons_size()
-actions = []
-for perm in it.product([False, True], repeat=actions_num):
-    actions.append(list(perm))
+    # Makes the screen bigger to see more details.
+    game.set_screen_resolution(vzd.ScreenResolution.RES_640X480)
+    game.set_window_visible(True)
+    game.init()
 
-episodes = 10
-sleep_time = 0.028
+    # Creates all possible actions depending on how many buttons there are.
+    actions_num = game.get_available_buttons_size()
+    actions = []
+    for perm in it.product([False, True], repeat=actions_num):
+        actions.append(list(perm))
 
-for i in range(episodes):
-    print("Episode #" + str(i + 1))
+    episodes = 10
+    sleep_time = 0.028
 
-    # Not needed for the first episode but the loop is nicer.
-    game.new_episode()
-    while not game.is_episode_finished():
+    for i in range(episodes):
+        print("Episode #" + str(i + 1))
 
-        # Gets the state and possibly to something with it
-        state = game.get_state()
+        # Not needed for the first episode but the loop is nicer.
+        game.new_episode()
+        while not game.is_episode_finished():
 
-        # Makes a random action and save the reward.
-        reward = game.make_action(choice(actions))
+            # Gets the state and possibly to something with it
+            state = game.get_state()
 
-        print("State #" + str(state.number))
-        print("Game Variables:", state.game_variables)
-        print("Performed action:", game.get_last_action())
-        print("Last Reward:", reward)
-        print("=====================")
+            # Makes a random action and save the reward.
+            reward = game.make_action(choice(actions))
 
-        # Sleep some time because processing is too fast to watch.
-        if sleep_time > 0:
-            sleep(sleep_time)
+            print("State #" + str(state.number))
+            print("Game Variables:", state.game_variables)
+            print("Performed action:", game.get_last_action())
+            print("Last Reward:", reward)
+            print("=====================")
 
-    print("Episode finished!")
-    print("total reward:", game.get_total_reward())
-    print("************************")
+            # Sleep some time because processing is too fast to watch.
+            if sleep_time > 0:
+                sleep(sleep_time)
+
+        print("Episode finished!")
+        print("total reward:", game.get_total_reward())
+        print("************************")

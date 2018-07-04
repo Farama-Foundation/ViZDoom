@@ -10,36 +10,70 @@ from time import sleep
 import os
 
 import vizdoom as vzd
+from argparse import ArgumentParser
 import oblige
 
+DEFAULT_CONFIG = "../../scenarios/oblige.cfg"
+DEFAULT_SEED = 666
+DEFAULT_OUTPUT_FILE = "test.wad"
 
 if __name__ == "__main__":
-    game = vzd.DoomGame()
+    parser = ArgumentParser("An example showing how to generate maps with PyOblige.")
+    parser.add_argument(dest="config",
+                        default=DEFAULT_CONFIG,
+                        nargs="?",
+                        help="Path to the configuration file of the scenario."
+                             " Please see "
+                             "../../scenarios/*cfg for more scenarios.")
+    parser.add_argument("-s", "--seed",
+                        default=DEFAULT_SEED,
+                        type=int,
+                        help="Number of iterations(actions) to run")
+    parser.add_argument("-v", "--verbose",
+                        action="store_true",
+                        help="Use verbose mode during map generation.")
+    parser.add_argument("-o", "--output_file",
+                        default=DEFAULT_OUTPUT_FILE,
+                        help="Where the wad file will be created.")
+    parser.add_argument("-x", "--exit",
+                        action="store_true",
+                        help="Do not test the wad, just leave after generation.")
 
+    args = parser.parse_args()
+
+    game = vzd.DoomGame()
     # Use your config
-    game.load_config("../../scenarios/oblige.cfg")
+    game.load_config(args.config)
     game.set_doom_map("map01")
     game.set_doom_skill(3)
 
     # Create Doom Level Generator instance and set optional seed.
     generator = oblige.DoomLevelGenerator()
-    generator.set_seed(666)
+    generator.set_seed(args.seed)
 
     # Set generator configs, specified keys will be overwritten.
-    generator.set_config({"size": "micro", "health": "more", "weapons": "sooner"})
+    generator.set_config({
+        "size": "micro",
+        "health": "more",
+        "weapons": "sooner"})
 
     # There are few predefined sets of settings already defined in Oblige package, like test_wad and childs_play_wad
-    generator.set_config(oblige.test_wad)
+    generator.set_config(oblige.childs_play_wad)
 
     # Tell generator to generate few maps (options for "length": "single", "few", "episode", "game").
     generator.set_config({"length": "few"})
 
     # Generate method will return number of maps inside wad file.
-    wad_path = "test.wad"
-    maps = generator.generate(wad_path)
+    wad_path = args.output_file
+    print("Generating {} ...".format(wad_path))
+    num_maps = generator.generate(wad_path, verbose=args.verbose)
+    print("Generated {} maps.".format(num_maps))
+
+    if args.exit:
+        exit(0)
 
     # Set Scenario to the new generated WAD
-    game.set_doom_scenario_path(wad_path)
+    game.set_doom_scenario_path(args.output_file)
 
     # Sets up game for spectator (you)
     game.add_game_args("+freelook 1")
@@ -50,7 +84,7 @@ if __name__ == "__main__":
     game.init()
 
     # Play as many episodes as maps in the new generated WAD file.
-    episodes = maps
+    episodes = num_maps
 
     # Play until the game (episode) is over.
     for i in range(1, episodes + 1):

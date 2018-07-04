@@ -18,74 +18,84 @@ from __future__ import print_function
 import itertools as it
 from random import choice
 from time import sleep
-from vizdoom import *
+from argparse import ArgumentParser
+import vizdoom as vzd
 
-game = DoomGame()
+DEFAULT_CONFIG = "../../scenarios/basic.cfg"
 
-# Choose the scenario config file you wish to watch.
-# Don't load two configs cause the second will overrite the first one.
-# Multiple config files are ok but combining these ones doesn't make much sense.
+if __name__ == "__main__":
+    parser = ArgumentParser("ViZDoom example showing how to set seed to have deterministic episodes.")
+    parser.add_argument(dest="config",
+                        default=DEFAULT_CONFIG,
+                        nargs="?",
+                        help="Path to the configuration file of the scenario."
+                             " Please see "
+                             "../../scenarios/*cfg for more scenarios.")
+    parser.add_argument("-s", "--seed",
+                        default=666,
+                        type=int,
+                        help="Seed for the random generator in DoomGame.")
+    parser.add_argument("-e", "--per_episode",
+                        action="store_true",
+                        help="Set seed for every episode.")
+    args = parser.parse_args()
 
-game.load_config("../../scenarios/basic.cfg")
-# game.load_config("../../scenarios/simpler_basic.cfg")
-# game.load_config("../../scenarios/rocket_basic.cfg")
-# game.load_config("../../scenarios/deadly_corridor.cfg")
-# game.load_config("../../scenarios/deathmatch.cfg")
-# game.load_config("../../scenarios/defend_the_center.cfg")
-# game.load_config("../../scenarios/defend_the_line.cfg")
-# game.load_config("../../scenarios/health_gathering.cfg")
-# game.load_config("../../scenarios/my_way_home.cfg")
-# game.load_config("../../scenarios/predict_position.cfg")
-# game.load_config("../../scenarios/take_cover.cfg")
+    game = vzd.DoomGame()
 
-game.set_screen_resolution(ScreenResolution.RES_640X480)
+    # Choose the scenario config file you wish to watch.
+    # Don't load two configs cause the second will overrite the first one.
+    # Multiple config files are ok but combining these ones doesn't make much sense.
 
-# Lets make episode shorter and observe starting position of Cacodemon.
-game.set_episode_timeout(50)
+    game.load_config(args.config)
 
-seed = 666
-# Sets the seed. It can be change after init.
-game.set_seed(seed)
+    game.set_screen_resolution(vzd.ScreenResolution.RES_640X480)
 
-game.init()
+    # Lets make episode shorter and observe starting position of Cacodemon.
+    game.set_episode_timeout(50)
 
-# Creates all possible actions depending on how many buttons there are.
-actions_num = game.get_available_buttons_size()
-actions = []
-for perm in it.product([False, True], repeat=actions_num):
-    actions.append(list(perm))
+    if args.seed is not None:
+        # Sets the seed. It can be change after init.
+        game.set_seed(args.seed)
 
-episodes = 10
-sleep_time = 0.028
+    game.init()
 
-for i in range(episodes):
-    print("Episode #" + str(i + 1))
+    # Creates all possible actions depending on how many buttons there are.
+    actions_num = game.get_available_buttons_size()
+    actions = []
+    for perm in it.product([False, True], repeat=actions_num):
+        actions.append(list(perm))
 
-    # Seed can be changed anytime. It will take effect from next episodes.
-    # game.set_seed(seed)
-    game.new_episode()
+    episodes = 10
+    sleep_time = 0.028
 
-    while not game.is_episode_finished():
-        # Gets the state and possibly to something with it
-        state = game.get_state()
-        screen_buf = state.screen_buffer
-        vars = state.game_variables
+    for i in range(episodes):
+        print("Episode #" + str(i + 1))
 
-        # Check which action you chose!
-        reward = game.make_action(choice(actions))
+        # Seed can be changed anytime. It will take effect from next episodes.
+        # game.set_seed(seed)
+        if args.seed is not None and args.per_episode:
+            game.set_seed(args.seed)
+        game.new_episode()
 
-        print("State #" + str(state.number))
-        print("Game Variables:", vars)
-        print("Last Reward:", reward)
-        print("Seed:", game.get_seed())
-        print("=====================")
+        while not game.is_episode_finished():
+            # Gets the state and possibly to something with it
+            state = game.get_state()
+            screen_buf = state.screen_buffer
+            vars = state.game_variables
 
-        # Sleep some time because processing is too fast to watch.
-        if sleep_time > 0:
-            sleep(sleep_time)
+            # Check which action you chose!
+            reward = game.make_action(choice(actions))
 
-    print("Episode finished!")
-    print("Total reward:", game.get_total_reward())
-    print("************************")
+            print("State #" + str(state.number))
+            print("Game Variables:", vars)
+            print("Last Reward:", reward)
+            print("Seed:", game.get_seed())
+            print("=====================")
 
-game.close()
+            # Sleep some time because processing is too fast to watch.
+            if sleep_time > 0:
+                sleep(sleep_time)
+
+        print("Episode finished!")
+        print("Total reward:", game.get_total_reward())
+        print("************************")

@@ -18,63 +18,76 @@ from __future__ import print_function
 import itertools as it
 from random import choice
 from time import sleep
-from vizdoom import *
+from argparse import ArgumentParser
+import vizdoom as vzd
 
-game = DoomGame()
+DEFAULT_CONFIG = "../../scenarios/health_gathering.cfg"
 
-# Choose scenario config file you wish to watch.
-# Don't load two configs cause the second will overrite the first one.
-# Multiple config files are ok but combining these ones doesn't make much sense.
+if __name__ == "__main__":
+    parser = ArgumentParser("ViZDoom example showing how to use shaping for health gathering scenario.")
+    parser.add_argument(dest="config",
+                        default=DEFAULT_CONFIG,
+                        nargs="?",
+                        help="Path to the configuration file of the scenario."
+                             " Please see "
+                             "../../scenarios/*cfg for more scenarios.")
 
-game.load_config("../../scenarios/health_gathering.cfg")
-game.set_screen_resolution(ScreenResolution.RES_640X480)
+    args = parser.parse_args()
 
-game.init()
+    game = vzd.DoomGame()
 
-# Creates all possible actions.
-actions_num = game.get_available_buttons_size()
-actions = []
-for perm in it.product([False, True], repeat=actions_num):
-    actions.append(list(perm))
+    # Choose scenario config file you wish to watch.
+    # Don't load two configs cause the second will overrite the first one.
+    # Multiple config files are ok but combining these ones doesn't make much sense.
 
-episodes = 10
-sleep_time = 0.028
+    game.load_config(args.config)
+    game.set_screen_resolution(vzd.ScreenResolution.RES_640X480)
 
-for i in range(episodes):
+    game.init()
 
-    print("Episode #" + str(i + 1))
-    # Not needed for the first episode but the loop is nicer.
-    game.new_episode()
+    # Creates all possible actions.
+    actions_num = game.get_available_buttons_size()
+    actions = []
+    for perm in it.product([False, True], repeat=actions_num):
+        actions.append(list(perm))
 
-    # Use this to remember last shaping reward value.
-    last_total_shaping_reward = 0
+    episodes = 10
+    sleep_time = 0.028
 
-    while not game.is_episode_finished():
+    for i in range(episodes):
 
-        # Gets the state and possibly to something with it
-        state = game.get_state()
+        print("Episode #" + str(i + 1))
+        # Not needed for the first episode but the loop is nicer.
+        game.new_episode()
 
-        # Makes a random action and save the reward.
-        reward = game.make_action(choice(actions))
+        # Use this to remember last shaping reward value.
+        last_total_shaping_reward = 0
 
-        # Retrieve the shaping reward
-        fixed_shaping_reward = game.get_game_variable(GameVariable.USER1)   # Get value of scripted variable
-        shaping_reward = doom_fixed_to_double(fixed_shaping_reward)         # If value is in DoomFixed format project it to double
-        shaping_reward = shaping_reward - last_total_shaping_reward
-        last_total_shaping_reward += shaping_reward
+        while not game.is_episode_finished():
 
-        print("State #" + str(state.number))
-        print("Health: ", state.game_variables[0])
-        print("Last Reward:", reward)
-        print("Last Shaping Reward:", shaping_reward)
-        print("=====================")
+            # Gets the state and possibly to something with it
+            state = game.get_state()
 
-        # Sleep some time because processing is too fast to watch.
-        if sleep_time > 0:
-            sleep(sleep_time)
+            # Makes a random action and save the reward.
+            reward = game.make_action(choice(actions))
 
-    print("Episode finished!")
-    print("Total reward:", game.get_total_reward())
-    print("************************")
+            # Retrieve the shaping reward
+            fixed_shaping_reward = game.get_game_variable(vzd.GameVariable.USER1)  # Get value of scripted variable
+            shaping_reward = vzd.doom_fixed_to_double(
+                fixed_shaping_reward)  # If value is in DoomFixed format project it to double
+            shaping_reward = shaping_reward - last_total_shaping_reward
+            last_total_shaping_reward += shaping_reward
 
-game.close()
+            print("State #" + str(state.number))
+            print("Health: ", state.game_variables[0])
+            print("Last Reward:", reward)
+            print("Last Shaping Reward:", shaping_reward)
+            print("=====================")
+
+            # Sleep some time because processing is too fast to watch.
+            if sleep_time > 0:
+                sleep(sleep_time)
+
+        print("Episode finished!")
+        print("Total reward:", game.get_total_reward())
+        print("************************")

@@ -3,13 +3,25 @@
 from __future__ import print_function
 from multiprocessing import Process
 from random import choice
-from vizdoom import *
+import vizdoom as vzd
+from argparse import ArgumentParser
+
+DEFAULT_CONFIG = "../../scenarios/basic.cfg"
 
 
-def play(game):
+def play(config_file, ticrate=35):
+    game = vzd.DoomGame()
+
+    game.load_config(config_file)
+    game.set_mode(vzd.Mode.ASYNC_PLAYER)
+
+    game.set_ticrate(ticrate)
+
     game.init()
 
-    actions = [[True, False, False], [False, True, False], [False, False, True]]
+    actions = [[True, False, False],
+               [False, True, False],
+               [False, False, True]]
     episodes = 10
 
     for i in range(episodes):
@@ -21,31 +33,26 @@ def play(game):
     game.close()
 
 
-def player1():
-    game = DoomGame()
-
-    game.load_config('../../scenarios/basic.cfg')
-    game.set_mode(Mode.ASYNC_PLAYER)
-
-    # Default Doom's ticrate is 35 per second, so this one will work 2 times faster.
-    game.set_ticrate(70)
-
-    play(game)
-
-
-def player2():
-    game = DoomGame()
-
-    game.load_config('../../scenarios/basic.cfg')
-    game.set_mode(Mode.ASYNC_PLAYER)
-
-    # And this one will work 2 times slower.
-    game.set_ticrate(17)
-
-    play(game)
-
-
 if __name__ == '__main__':
-    p1 = Process(target=player1)
-    p1.start()
-    player2()
+    if __name__ == "__main__":
+        parser = ArgumentParser("ViZDoom example showing how to change the ticrate for asynchronous mode.")
+        parser.add_argument(dest="config",
+                            default=DEFAULT_CONFIG,
+                            nargs="?",
+                            help="Path to the configuration file of the scenario."
+                                 " Please see "
+                                 "../../scenarios/*cfg for more scenarios.")
+        parser.add_argument("-t", "--ticrates",
+                            default=[17,35,70],
+                            nargs="+",
+                            help="List of ticrates to show.")
+        args = parser.parse_args()
+
+        processes= []
+        for ticrate in args.ticrates:
+            p = Process(target=play, args=[args.config, ticrate])
+            p.start()
+            processes.append(p)
+
+        for p in processes:
+            p.join()

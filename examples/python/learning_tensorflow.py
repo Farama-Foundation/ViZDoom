@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 from __future__ import print_function
-from vizdoom import *
 import itertools as it
 from random import sample, randint, random
 from time import time, sleep
@@ -10,6 +9,8 @@ import numpy as np
 import skimage.color, skimage.transform
 import tensorflow as tf
 from tqdm import trange
+import vizdoom as vzd
+from argparse import ArgumentParser
 
 # Q-learning settings
 learning_rate = 0.00025
@@ -30,12 +31,15 @@ frame_repeat = 12
 resolution = (30, 45)
 episodes_to_watch = 10
 
-model_savefile = "/tmp/model.ckpt"
+
+# TODO move to argparser
 save_model = True
 load_model = False
 skip_learning = False
+
 # Configuration file path
-config_file_path = "../../scenarios/simpler_basic.cfg"
+DEFAULT_MODEL_SAVEFILE = "/tmp/model"
+DEFAULT_CONFIG = "../../scenarios/simpler_basic.cfg"
 
 
 # config_file_path = "../../scenarios/rocket_basic.cfg"
@@ -185,20 +189,30 @@ def perform_learning_step(epoch):
 # Creates and initializes ViZDoom environment.
 def initialize_vizdoom(config_file_path):
     print("Initializing doom...")
-    game = DoomGame()
+    game = vzd.DoomGame()
     game.load_config(config_file_path)
     game.set_window_visible(False)
-    game.set_mode(Mode.PLAYER)
-    game.set_screen_format(ScreenFormat.GRAY8)
-    game.set_screen_resolution(ScreenResolution.RES_640X480)
+    game.set_mode(vzd.Mode.PLAYER)
+    game.set_screen_format(vzd.ScreenFormat.GRAY8)
+    game.set_screen_resolution(vzd.ScreenResolution.RES_640X480)
     game.init()
     print("Doom initialized.")
     return game
 
 
 if __name__ == '__main__':
+    parser = ArgumentParser("ViZDoom example showing how to train a simple agent using simplified DQN.")
+    parser.add_argument(dest="config",
+                        default=DEFAULT_CONFIG,
+                        nargs="?",
+                        help="Path to the configuration file of the scenario."
+                             " Please see "
+                             "../../scenarios/*cfg for more scenarios.")
+
+    args = parser.parse_args()
+
     # Create Doom instance
-    game = initialize_vizdoom(config_file_path)
+    game = initialize_vizdoom(args.config)
 
     # Action = which buttons are pressed
     n = game.get_available_buttons_size()
@@ -211,8 +225,8 @@ if __name__ == '__main__':
     learn, get_q_values, get_best_action = create_network(session, len(actions))
     saver = tf.train.Saver()
     if load_model:
-        print("Loading model from: ", model_savefile)
-        saver.restore(session, model_savefile)
+        print("Loading model from: ", DEFAULT_MODEL_SAVEFILE)
+        saver.restore(session, DEFAULT_MODEL_SAVEFILE)
     else:
         init = tf.global_variables_initializer()
         session.run(init)
@@ -260,8 +274,8 @@ if __name__ == '__main__':
                 test_scores.mean(), test_scores.std()), "min: %.1f" % test_scores.min(),
                   "max: %.1f" % test_scores.max())
 
-            print("Saving the network weigths to:", model_savefile)
-            saver.save(session, model_savefile)
+            print("Saving the network weigths to:", DEFAULT_MODEL_SAVEFILE)
+            saver.save(session, DEFAULT_MODEL_SAVEFILE)
 
             print("Total elapsed time: %.2f minutes" % ((time() - time_start) / 60.0))
 
@@ -271,7 +285,7 @@ if __name__ == '__main__':
 
     # Reinitialize the game with window visible
     game.set_window_visible(True)
-    game.set_mode(Mode.ASYNC_PLAYER)
+    game.set_mode(vzd.Mode.ASYNC_PLAYER)
     game.init()
 
     for _ in range(episodes_to_watch):
