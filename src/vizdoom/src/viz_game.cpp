@@ -335,10 +335,10 @@ void VIZ_GameStateUpdate(){
     vizGameStateSM->PLAYER_NUMBER = (unsigned int)VIZ_PLAYER_NUM;
     vizGameStateSM->PLAYER_COUNT = 1;
 
-    if(netgame || multiplayer) {
-
+    if(netgame || multiplayer){
         vizGameStateSM->PLAYER_COUNT = 0;
-        for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
+
+        for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i){
             if(playeringame[i]){
                 ++vizGameStateSM->PLAYER_COUNT;
                 vizGameStateSM->PLAYER_N_IN_GAME[i] = true;
@@ -346,11 +346,14 @@ void VIZ_GameStateUpdate(){
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = players[i].fragcount;
                 if(players[i].cmd.ucmd.buttons != 0)
                     vizGameStateSM->PLAYER_N_LAST_ACTION_TIC[i] = (unsigned int)gametic;
-                vizGameStateSM->PLAYER_N_AFK[i] = vizGameStateSM->PLAYER_N_LAST_ACTION_TIC[i] < ((unsigned int)gametic - *viz_afk_delay);
+                if(level.maptime >= viz_afk_delay
+                   && vizGameStateSM->PLAYER_N_LAST_ACTION_TIC[i] < (unsigned int)(level.maptime - *viz_afk_delay)
+                   && !players[i].userinfo.GetSpectator())
+                    vizGameStateSM->PLAYER_N_AFK[i] = true;
+                else vizGameStateSM->PLAYER_N_AFK[i] = false;
                 vizGameStateSM->PLAYER_N_LAST_KILL_TIC[i] = players[i].lastkilltime;
             }
             else{
-                //strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
                 vizGameStateSM->PLAYER_N_IN_GAME[i] = false;
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = 0;
                 vizGameStateSM->PLAYER_N_AFK[i] = false;
