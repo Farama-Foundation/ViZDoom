@@ -88,6 +88,9 @@ namespace vizdoom{
         bool playersInGame[MAX_PLAYERS];
         int playersFrags[MAX_PLAYERS];
         std::string playersNames[MAX_PLAYERS];
+        bool playersAfk[MAX_PLAYERS];
+        unsigned int playersLastActionTic[MAX_PLAYERS];
+        unsigned int playersLastKillTic[MAX_PLAYERS];
     };
 
     typedef std::shared_ptr<ServerState> ServerStatePtr;

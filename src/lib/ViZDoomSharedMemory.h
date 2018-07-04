@@ -154,6 +154,9 @@ namespace vizdoom {
         bool PLAYER_N_IN_GAME[MAX_PLAYERS];
         char PLAYER_N_NAME[MAX_PLAYERS][MAX_PLAYER_NAME_LENGTH];
         int PLAYER_N_FRAGCOUNT[MAX_PLAYERS];
+        bool PLAYER_N_AFK[MAX_PLAYERS];
+        unsigned int PLAYER_N_LAST_ACTION_TIC[MAX_PLAYERS];
+        unsigned int PLAYER_N_LAST_KILL_TIC[MAX_PLAYERS];
 
         //LABELS
         unsigned int LABEL_COUNT;

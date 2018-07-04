@@ -120,15 +120,24 @@ namespace vizdoom {
 
         pyServerState->tic = this->doomController->getMapTic();
         pyServerState->playerCount = this->doomController->getPlayerCount();
-        pyb::list pyPlayersInGame, pyPlayersNames, pyPlayersFrags;
+
+        pyb::list pyPlayersInGame, pyPlayersNames, pyPlayersFrags,
+                pyPlayersAfk, pyPlayersLastActionTic, pyPlayersLastKillTic;
         for(int i = 0; i < MAX_PLAYERS; ++i) {
             pyPlayersInGame.append(this->doomController->isPlayerInGame(i));
             pyPlayersNames.append(pyb::str(this->doomController->getPlayerName(i).c_str()));
             pyPlayersFrags.append(this->doomController->getPlayerFrags(i));
+            pyPlayersAfk.append(this->doomController->isPlayerAfk(i));
+            pyPlayersLastActionTic.append(this->doomController->getPlayerLastActionTic(i));
+            pyPlayersFrags.append(this->doomController->getPlayerLastKillTic(i));
         }
+
         pyServerState->playersInGame = pyPlayersInGame;
         pyServerState->playersNames = pyPlayersNames;
         pyServerState->playersFrags = pyPlayersFrags;
+        pyServerState->playersAfk = pyPlayersAfk;
+        pyServerState->playersLastActionTic = pyPlayersLastActionTic;
+        pyServerState->playersLastKillTic = pyPlayersLastKillTic;
 
         return pyServerState;
     }

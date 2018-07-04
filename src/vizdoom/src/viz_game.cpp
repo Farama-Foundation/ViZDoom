@@ -45,6 +45,7 @@ EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_loop_map)
 EXTERN_CVAR (Bool, viz_override_player)
 EXTERN_CVAR (Bool, viz_spectator)
+EXTERN_CVAR (Int, viz_afk_delay)
 EXTERN_CVAR (Float, timelimit)
 
 VIZGameState *vizGameStateSM = NULL;
@@ -343,11 +344,18 @@ void VIZ_GameStateUpdate(){
                 vizGameStateSM->PLAYER_N_IN_GAME[i] = true;
                 strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = players[i].fragcount;
+                if(players[i].cmd.ucmd.buttons != 0)
+                    vizGameStateSM->PLAYER_N_LAST_ACTION_TIC[i] = (unsigned int)gametic;
+                vizGameStateSM->PLAYER_N_AFK[i] = vizGameStateSM->PLAYER_N_LAST_ACTION_TIC[i] < ((unsigned int)gametic - *viz_afk_delay);
+                vizGameStateSM->PLAYER_N_LAST_KILL_TIC[i] = players[i].lastkilltime;
             }
             else{
                 //strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
                 vizGameStateSM->PLAYER_N_IN_GAME[i] = false;
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = 0;
+                vizGameStateSM->PLAYER_N_AFK[i] = false;
+                vizGameStateSM->PLAYER_N_LAST_ACTION_TIC[i] = 0;
+                vizGameStateSM->PLAYER_N_LAST_KILL_TIC[i] = 0;
             }
         }
     }

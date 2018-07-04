@@ -401,7 +401,10 @@ PYBIND11_MODULE(vizdoom, vz){
         .def_readonly("player_count", &ServerStatePython::playerCount)
         .def_readonly("players_in_game", &ServerStatePython::playersInGame)
         .def_readonly("players_names", &ServerStatePython::playersNames)
-        .def_readonly("players_frags", &ServerStatePython::playersFrags);
+        .def_readonly("players_frags", &ServerStatePython::playersFrags)
+        .def_readonly("players_afk", &ServerStatePython::playersAfk)
+        .def_readonly("players_last_action_tic", &ServerStatePython::playersLastActionTic)
+        .def_readonly("players_last_kill_tic", &ServerStatePython::playersLastKillTic);
 
 
     /* DoomGame */

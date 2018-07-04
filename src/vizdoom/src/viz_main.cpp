@@ -103,6 +103,7 @@ CVAR (Bool, viz_loop_map, false, CVAR_NOSET | CVAR_SERVERINFO)
 CVAR (Bool, viz_nocheat, false, CVAR_NOSET | CVAR_SERVERINFO)
 CVAR (Int, viz_respawn_delay, 1, CVAR_DEMOSAVE | CVAR_SERVERINFO)
 CVAR (Bool, viz_spectator, false, CVAR_DEMOSAVE | CVAR_USERINFO) // players[playernum].userinfo.GetSpectator()
+CVAR (Int, viz_afk_delay, 2100, CVAR_DEMOSAVE | CVAR_SERVERINFO)
 
 CCMD(viz_set_seed){
     viz_seed.CmdSet(argv[1]);

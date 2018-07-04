@@ -114,6 +114,9 @@ namespace vizdoom {
         pyb::list playersInGame;
         pyb::list playersFrags;
         pyb::list playersNames;
+        pyb::list playersAfk;
+        pyb::list playersLastActionTic;
+        pyb::list playersLastKillTic;
     };
 
     class DoomGamePython : public DoomGame {

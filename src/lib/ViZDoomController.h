@@ -242,7 +242,9 @@ namespace vizdoom {
         bool isPlayerInGame(unsigned int playerNumber);
         int getPlayerFrags(unsigned int playerNumber);
         std::string getPlayerName(unsigned int playerNumber);
-
+        bool isPlayerAfk(unsigned int playerNumber);
+        unsigned int getPlayerLastActionTic(unsigned int playerNumber);
+        unsigned int getPlayerLastKillTic(unsigned int playerNumber);
 
     private:
 

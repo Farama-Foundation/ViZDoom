@@ -987,6 +987,18 @@ namespace vizdoom {
         return playerNumber < MAX_PLAYERS ? std::string(this->gameState->PLAYER_N_NAME[playerNumber]) : "";
     }
 
+    bool DoomController::isPlayerAfk(unsigned int playerNumber){
+        return playerNumber < MAX_PLAYERS ? this->gameState->PLAYER_N_AFK[playerNumber] : false;
+    }
+
+    unsigned int DoomController::getPlayerLastActionTic(unsigned int playerNumber){
+        return playerNumber < MAX_PLAYERS ? this->gameState->PLAYER_N_LAST_ACTION_TIC[playerNumber] : 0;
+    }
+
+    unsigned int DoomController::getPlayerLastKillTic(unsigned int playerNumber){
+        return playerNumber < MAX_PLAYERS ? this->gameState->PLAYER_N_LAST_KILL_TIC[playerNumber] : 0;
+    }
+
 
     /* Protected and private functions */
     /*----------------------------------------------------------------------------------------------------------------*/
