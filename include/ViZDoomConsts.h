@@ -27,7 +27,7 @@ namespace vizdoom{
 
     const unsigned int SLOT_COUNT = 10;
     const unsigned int MAX_PLAYERS = 16;
-    const unsigned int MAX_PLAYER_NAME_LENGTH = 16;
+    const unsigned int MAX_PLAYER_NAME_LENGTH = 128;
     const unsigned int USER_VARIABLE_COUNT = 60;
     const unsigned int DEFAULT_TICRATE = 35;
 

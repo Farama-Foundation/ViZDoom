@@ -342,7 +342,8 @@ void VIZ_GameStateUpdate(){
             if(playeringame[i]){
                 ++vizGameStateSM->PLAYER_COUNT;
                 vizGameStateSM->PLAYER_N_IN_GAME[i] = true;
-                strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
+                strncpy(vizGameStateSM->PLAYER_N_NAME[i], players[i].userinfo.GetName(), MAXPLAYERNAME);
+                vizGameStateSM->PLAYER_N_NAME[i][MAXPLAYERNAME] = NULL;
                 vizGameStateSM->PLAYER_N_FRAGCOUNT[i] = players[i].fragcount;
                 if(players[i].cmd.ucmd.buttons != 0)
                     vizGameStateSM->PLAYER_N_LAST_ACTION_TIC[i] = (unsigned int)gametic;

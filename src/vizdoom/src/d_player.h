@@ -233,8 +233,9 @@ enum
 
 #define WP_NOCHANGE ((AWeapon*)~0)
 
-
-#define MAXPLAYERNAME	15
+//VIZDOOM_CODE
+//#define MAXPLAYERNAME	15 // Original value
+#define MAXPLAYERNAME 127
 
 // [GRB] Custom player classes
 enum
