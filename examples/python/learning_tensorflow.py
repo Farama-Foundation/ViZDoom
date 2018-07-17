@@ -141,7 +141,7 @@ def learn_from_memory():
         q2 = np.max(get_q_values(s2), axis=1)
         target_q = get_q_values(s1)
         # target differs from q only for the selected action. The following means:
-        # target_Q(s,a) = r + gamma * max Q(s2,_) if isterminal else r
+        # target_Q(s,a) = r + gamma * max Q(s2,_) if not isterminal else r
         target_q[np.arange(target_q.shape[0]), a] = r + discount_factor * (1 - isterminal) * q2
         learn(s1, target_q)
 
