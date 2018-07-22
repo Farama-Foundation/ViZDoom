@@ -54,7 +54,7 @@
 #include "farchive.h"
 #include "a_hexenglobal.h"
 
-// VIZDOOM_CODE
+//VIZDOOM_CODE
 EXTERN_CVAR(Bool, viz_render_flashes)
 
 // [RH] Amount of red flash for up to 114 damage points. Calculated by hand

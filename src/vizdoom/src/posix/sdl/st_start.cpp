@@ -44,6 +44,11 @@
 #include "i_system.h"
 #include "c_cvars.h"
 
+//VIZDOOM_CODE
+#include "viz_main.h"
+EXTERN_CVAR(Int, viz_connect_timeout)
+
+
 // MACROS ------------------------------------------------------------------
 
 // TYPES -------------------------------------------------------------------
@@ -312,6 +317,8 @@ bool FTTYStartupScreen::NetLoop(bool (*timer_callback)(void *), void *userdata)
 	int retval;
 	char k;
 
+	unsigned int loopEnterTime = I_MSTime();
+
 	for (;;)
 	{
 		// Don't flood the network with packets on startup.
@@ -327,6 +334,10 @@ bool FTTYStartupScreen::NetLoop(bool (*timer_callback)(void *), void *userdata)
 		{
 			// Error
 		}
+        else if((unsigned int)*viz_connect_timeout * 1000 < I_MSTime() - loopEnterTime) {
+            fprintf (stderr, "\nTimeout, network game synchronization aborted.");
+            return false;
+        }
 		else if (retval == 0)
 		{
 			if (timer_callback (userdata))

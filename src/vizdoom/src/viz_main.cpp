@@ -72,7 +72,7 @@ CVAR (Bool, viz_cmd_filter, true, CVAR_NOSET)
 // modes
 CVAR (Bool, viz_async, false, CVAR_NOSET)
 CVAR (Bool, viz_allow_input, false, CVAR_NOSET)
-CVAR (Int, viz_sync_timeout, 1000, CVAR_NOSET)
+CVAR (Int, viz_sync_timeout, 1000, CVAR_NOSET | CVAR_SERVERINFO) // In milliseconds
 
 // buffers
 CVAR (Int, viz_screen_format, 0, 0)
@@ -103,7 +103,8 @@ CVAR (Bool, viz_loop_map, false, CVAR_NOSET | CVAR_SERVERINFO)
 CVAR (Bool, viz_nocheat, false, CVAR_NOSET | CVAR_SERVERINFO)
 CVAR (Int, viz_respawn_delay, 1, CVAR_DEMOSAVE | CVAR_SERVERINFO)
 CVAR (Bool, viz_spectator, false, CVAR_DEMOSAVE | CVAR_USERINFO) // players[playernum].userinfo.GetSpectator()
-CVAR (Int, viz_afk_delay, 2100, CVAR_DEMOSAVE | CVAR_SERVERINFO)
+CVAR (Int, viz_afk_timeout, 60, CVAR_DEMOSAVE | CVAR_SERVERINFO) // In seconds
+CVAR (Int, viz_connect_timeout, 60, CVAR_NOSET) // In seconds
 
 CCMD(viz_set_seed){
     viz_seed.CmdSet(argv[1]);
