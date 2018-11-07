@@ -57,7 +57,7 @@ RUN export uid=${HOST_UID} gid=${HOST_GID} && \
 
 
 RUN git clone https://github.com/mwydmuch/ViZDoom ${HOME_DIR}/vizdoom
-RUN pip3 install ${HOME_DIR}/vizdoom
+RUN pip3 install --no-cache-dir ${HOME_DIR}/vizdoom
 RUN pip3 install tensorflow-gpu
 RUN pip3 install matplotlib scipy scikit-image tqdm
 
