@@ -221,9 +221,18 @@ namespace vizdoom{
         ANGLE,
         PITCH,
         ROLL,
+        VIEW_HEIGHT,
         VELOCITY_X,
         VELOCITY_Y,
         VELOCITY_Z,
+
+        CAMERA_POSITION_X,
+        CAMERA_POSITION_Y,
+        CAMERA_POSITION_Z,
+        CAMERA_ANGLE,
+        CAMERA_PITCH,
+        CAMERA_ROLL,
+        CAMERA_FOV,
 
         PLAYER_NUMBER,
         PLAYER_COUNT,

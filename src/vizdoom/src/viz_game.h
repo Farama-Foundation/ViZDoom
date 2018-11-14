@@ -141,7 +141,8 @@ struct VIZGameState{
     int PLAYER_AMMO[VIZ_GV_SLOTS_SIZE];
     int PLAYER_WEAPON[VIZ_GV_SLOTS_SIZE];
 
-    double PLAYER_MOVEMENT[9];
+    double PLAYER_MOVEMENT[10];
+    double CAMERA[7];
 
     bool PLAYER_READY_TO_RESPAWN;
     unsigned int PLAYER_NUMBER;

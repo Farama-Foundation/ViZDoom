@@ -280,15 +280,26 @@ void VIZ_GameStateUpdate(){
 
     // Player position GameVariables
     if(VIZ_PLAYER.mo != NULL && !*viz_nocheat) {
-        vizGameStateSM->PLAYER_MOVEMENT[0] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.x);
-        vizGameStateSM->PLAYER_MOVEMENT[1] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.y);
-        vizGameStateSM->PLAYER_MOVEMENT[2] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.z);
+        vizGameStateSM->PLAYER_MOVEMENT[0] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.x); //X()
+        vizGameStateSM->PLAYER_MOVEMENT[1] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.y); //Y()
+        vizGameStateSM->PLAYER_MOVEMENT[2] = VIZ_FixedToDouble(VIZ_PLAYER.mo->__pos.z); //Z()
         vizGameStateSM->PLAYER_MOVEMENT[3] = VIZ_AngleToDouble(VIZ_PLAYER.mo->angle);
         vizGameStateSM->PLAYER_MOVEMENT[4] = VIZ_PitchToDouble(VIZ_PLAYER.mo->pitch);
         vizGameStateSM->PLAYER_MOVEMENT[5] = VIZ_AngleToDouble(VIZ_PLAYER.mo->roll);
-        vizGameStateSM->PLAYER_MOVEMENT[6] = VIZ_FixedToDouble(VIZ_PLAYER.mo->velx);
-        vizGameStateSM->PLAYER_MOVEMENT[7] = VIZ_FixedToDouble(VIZ_PLAYER.mo->vely);
-        vizGameStateSM->PLAYER_MOVEMENT[8] = VIZ_FixedToDouble(VIZ_PLAYER.mo->velz);
+        vizGameStateSM->PLAYER_MOVEMENT[6] = VIZ_FixedToDouble(VIZ_PLAYER.viewz) - vizGameStateSM->PLAYER_MOVEMENT[2];
+        vizGameStateSM->PLAYER_MOVEMENT[7] = VIZ_FixedToDouble(VIZ_PLAYER.mo->velx);
+        vizGameStateSM->PLAYER_MOVEMENT[8] = VIZ_FixedToDouble(VIZ_PLAYER.mo->vely);
+        vizGameStateSM->PLAYER_MOVEMENT[9] = VIZ_FixedToDouble(VIZ_PLAYER.mo->velz);
+    }
+
+    if(VIZ_PLAYER.camera != NULL && !*viz_nocheat) {
+        vizGameStateSM->CAMERA[0] = VIZ_FixedToDouble(VIZ_PLAYER.camera->__pos.x); //X()
+        vizGameStateSM->CAMERA[1] = VIZ_FixedToDouble(VIZ_PLAYER.camera->__pos.y); //Y()
+        vizGameStateSM->CAMERA[2] = VIZ_FixedToDouble(VIZ_PLAYER.viewz); //VIZ_FixedToDouble(VIZ_PLAYER.camera->__pos.z); //Z()
+        vizGameStateSM->CAMERA[3] = VIZ_AngleToDouble(VIZ_PLAYER.camera->angle);
+        vizGameStateSM->CAMERA[4] = VIZ_PitchToDouble(VIZ_PLAYER.camera->pitch);
+        vizGameStateSM->CAMERA[5] = VIZ_AngleToDouble(VIZ_PLAYER.camera->roll);
+        vizGameStateSM->CAMERA[6] = VIZ_PLAYER.FOV;
     }
 
     strncpy(vizGameStateSM->PLAYER_NAME, VIZ_PLAYER.userinfo.GetName(), VIZ_MAX_PLAYER_NAME_LEN);
@@ -444,11 +455,11 @@ void VIZ_PrintPlayers(){
     for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
         if(playeringame[i]){
             APlayerPawn* player = players[i].mo;
-            printf("no: %d, name: %s, pos: %f %f %f, rot: %f %f %f, vel: %f %f %f\n", i + 1, players[i].userinfo.GetName(),
+            printf("no: %lu, name: %s, pos: %f %f %f, rot: %f %f %f, vel: %f %f %f\n", i + 1, players[i].userinfo.GetName(),
                    VIZ_FixedToDouble(player->__pos.x), VIZ_FixedToDouble(player->__pos.y), VIZ_FixedToDouble(player->__pos.z),
                    VIZ_AngleToDouble(player->angle), VIZ_PitchToDouble(player->pitch), VIZ_AngleToDouble(player->roll),
                    VIZ_FixedToDouble(player->velx), VIZ_FixedToDouble(player->vely), VIZ_FixedToDouble(player->velz));
-            printf("no: %d, name: %s, dmgCount: %d, hitCount: %d\n", i + 1, players[i].userinfo.GetName(),
+            printf("no: %lu, name: %s, dmgCount: %d, hitCount: %d\n", i + 1, players[i].userinfo.GetName(),
                    vizPlayerLogger[i].dmgCount, vizPlayerLogger[i].hitCount);
         }
     }
