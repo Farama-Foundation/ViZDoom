@@ -122,11 +122,11 @@ void VIZ_ReadUserCmdState(usercmd_t *ucmd, int player){
             int bt = 1 << i; // ViZDoom's buttons map to the same values as the engine's buttons enum
             vizInput->CMD_BT[i] = (ucmd->buttons & bt) != 0 ? 1.0 : 0.0;
         }
-        vizInput->CMD_BT[VIZ_BT_VIEW_ANGLE_AXIS] = static_cast<double>(ucmd->yaw)/32768 * 180;
+        vizInput->CMD_BT[VIZ_BT_VIEW_ANGLE_AXIS] = -static_cast<double>(ucmd->yaw)/32768 * 180;
         vizInput->CMD_BT[VIZ_BT_VIEW_PITCH_AXIS] = static_cast<double>(ucmd->pitch)/32768 * 180;
-        vizInput->CMD_BT[VIZ_BT_FORWARD_BACKWARD_AXIS] = static_cast<double>(ucmd->forwardmove);
-        vizInput->CMD_BT[VIZ_BT_LEFT_RIGHT_AXIS] = static_cast<double>(ucmd->sidemove);
-        vizInput->CMD_BT[VIZ_BT_UP_DOWN_AXIS] = static_cast<double>(ucmd->upmove);
+        vizInput->CMD_BT[VIZ_BT_FORWARD_BACKWARD_AXIS] = static_cast<double>(ucmd->forwardmove)/256;
+        vizInput->CMD_BT[VIZ_BT_LEFT_RIGHT_AXIS] = static_cast<double>(ucmd->sidemove)/256;
+        vizInput->CMD_BT[VIZ_BT_UP_DOWN_AXIS] = static_cast<double>(ucmd->upmove)/256;
     }
 }
 
