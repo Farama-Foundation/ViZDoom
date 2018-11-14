@@ -2,6 +2,7 @@
 
 * [Label](#label)
 * [GameState](#gamestate)
+* [ServerState](#serverstate)
 * [Enums](#enums)
     * [Mode](#mode)
     * [ScreenFormat](#screenformat)
@@ -76,14 +77,20 @@ See also:
 
 
 ---
-#### <a name="delta-buttons"></a> ServerInfo
+#### <a name="serverstate"></a> `ServerState`
 (`C++ type / Lua type / Java type / Python type` **name**)
 
+- `unsigned int / number / unsigned int / int` **tic**
 - `unsigned int / number / unsigned int / int` **playerCount / player_count**
 - `bool[] / table / boolean[] / list` **playersInGame / players_in_game**
 - `int[] / table / int[] / list` **playersFrags / players_frags**
 - `std::string[] / table / String[] / list` **playersNames / players_names**
+- `bool[] / table / boolean[] / list` **playersAfk / players_afk**
+- `unsigned int[] / table / unsigned int[] / list` **playersLastActionTic / players_last_action_tic **
+- `unsigned int[] / table / unsigned int[] / list` **playersLastKillTic / players_last_kill_tic **
 
+Right now `ServerInfo` is only available to C++ and Python.
+Added in 1.1.6.
 
 ## <a name="enums"></a> Enums
 
@@ -241,9 +248,17 @@ Enum type that defines all variables that can be obtained from the game.
 - **ANGLE**                 - Orientation of the player, not available if `viz_nocheat` is enabled.
 - **PITCH**                 
 - **ROLL**
+- **VIEW_HEIGHT**           - View high of the player, not available if `viz_nocheat` is enabled. Position of the camera in Z axis is equal to **POSITION_Z** + **VIEW_HEIGHT**.
 - **VELOCITY_X**            - Velocity of the player, not available if `viz_nocheat` is enabled.
 - **VELOCITY_Y**
 - **VELOCITY_Z**
+- **CAMERA_POSITION_X**     - Position of the camera, not available if `viz_nocheat` is enabled.
+- **CAMERA_POSITION_Y**
+- **CAMERA_POSITION_Z**
+- **CAMERA_ANGLE**          - Orientation of the camera, not available if `viz_nocheat` is enabled.
+- **CAMERA_PITCH**
+- **CAMERA_ROLL**
+- **CAMERA_FOV**            - Field of view in degrees, not available if `viz_nocheat` is enabled.
 - **PLAYER_NUMBER**         - Player's number in multiplayer game.
 - **PLAYER_COUNT**          - Number of players in multiplayer game.
 - **PLAYER1_FRAGCOUNT** - **PLAYER16_FRAGCOUNT** - Number of N player's frags

@@ -1,4 +1,4 @@
-> For the examples to work properly you need to install ViZDoom [system-wide with pip](https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md) or set doom_game_path and vizdoom_path manually or in config files.
+> For the examples to work properly you need to install ViZDoom [system-wide with pip](https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md) or create a link to dir with ViZDoom pip_package or set doom_game_path and vizdoom_path manually or in config files.
 
 # Troubleshooting
  * `SystemError: dynamic module not initialized properly` may mean that you are trying the run an example using python3 instead of python2.

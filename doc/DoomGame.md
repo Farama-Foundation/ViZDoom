@@ -7,6 +7,8 @@
 * [replayEpisode](#replayEpisode)
 * [isRunning](#isRunning)
 * [isMultiplayerGame](#isMultiplayerGame)
+* [isRecordingEpisode](#isRecordingEpisode)
+* [isReplayingEpisode](#isReplayingEpisode)
 * [setAction](#setAction)
 * [advanceAction](#advanceAction)
 * [makeAction](#makeAction)
@@ -16,6 +18,7 @@
 * [respawnPlayer](#respawnPlayer)
 * [sendGameCommand](#sendGameCommand)
 * [getState](#getState)
+* [getServerState](#getServerState)
 * [getLastAction](#getLastAction)
 * [getEpisodeTime](#getEpisodeTime)
 
@@ -201,6 +204,34 @@ Checks if the game is in multiplayer mode.
 
 
 ---
+### <a name="isRecordingEpisode"></a> `isRecordingEpisode`
+
+| C++    | `bool isRecordingEpisode()`    |
+| :--    | :--                           |
+| Lua    | `boolean isRecordingEpisode()` |
+| Java   | `boolean isRecordingEpisode()` |
+| Python | `bool is_recording_episode()`  |
+
+Added in 1.1.5
+
+Checks if the game is in recording mode.
+
+
+---
+### <a name="isReplayingEpisode"></a> `isReplayingEpisode`
+
+| C++    | `bool isReplayingEpisode()`    |
+| :--    | :--                           |
+| Lua    | `boolean isReplayingEpisode()` |
+| Java   | `boolean isReplayingEpisode()` |
+| Python | `bool is_replaying_episode()`  |
+
+Added in 1.1.5
+
+Checks if the game is in replaying mode.
+
+
+---
 ### <a name="setAction"></a> `setAction`
 
 | C++    | `void setAction(std::vector<double> const &actions)` |
@@ -324,10 +355,27 @@ See also: [ZDoom Wiki](http://zdoom.org/wiki/Console)
 Changed in 1.1.0
 
 Returns [`GameState`](Types.md#gamestate) object with the current game state.
-If the game is not running or the current episode is finished `nullptr/null/None` will be returned.
+If the current episode is finished `nullptr/null/None` will be returned.
 
 See also:
 - [`Types: GameState`](Types.md#gamestate)
+
+
+---
+### <a name="getServerState"></a> `getServerState`
+
+| C++    | `ServerStatePtr (std::shared_ptr<ServerState>) ServerState getServerState()` |
+| :--    | :--                                                              |
+| Lua    | `ServerState getServerState()`                                           |
+| Java   | `ServerState getServerState()`                                           |
+| Python | `ServerState get_state_state()`                                          |
+
+Added in 1.1.6
+
+Returns [`ServerState`](Types.md#serverstate) object with the current server state. 
+
+See also:
+- [`Types: ServerState`](Types.md#serverstate)
 
 
 ---

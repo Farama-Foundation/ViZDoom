@@ -64,5 +64,4 @@ while not game.is_episode_finished():
         # Use this to respawn immediately after death, new state will be available.
         game.respawn_player()
 
-game.get_game
 game.close()

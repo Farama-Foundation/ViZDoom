@@ -1,10 +1,35 @@
 # Changelog
 
+## Changes in 1.1.7
+
+#### Python & Julia
+- Added missing `is_multiplayer_game` method to Python and Julia binding.
+
+#### CVARS
+- Added `VIEW_HEIGHT`, `CAMERA_POSITION_X`/`Y`/`Z`, `CAMERA_ANGLE`, `CAMERA_PITCH`, `CAMERA_ROLL` and `CAMERA_FOV` GameVariables.
+
+
+## Changes in 1.1.6
+
+#### Julia specific
+- Julia binding added.
+
+#### Server state
+- Added `getServerState` method that returns `ServerState` object.
+
+#### Mutliplayer
+- Added timeout for network game synchronization controlled by `viz_connect_timeout` CVAR.
+- Fixed `viz_spectator` CVAR.
+
+#### Python specific
+- Added Python interpreter version check.
+
+
 ## Changes in 1.1.5
 
 #### Automap
-- Added `viz_am_scale` CVAR (CVAR version of `am_scale` CCMD)
-- Added `viz_am_center` CVAR (and `am_center` CCMD)
+- Added `viz_am_scale` CVAR (CVAR version of `am_scale` CCMD).
+- Added `viz_am_center` CVAR (and `am_center` CCMD).
 
 #### Buttons and actions
 - **Added `getButton` method.**
@@ -29,8 +54,6 @@
 - Fixed minor rendering issue in depth and labels buffer.
 - Fixed order of color values in `RGB/BGR` modes of `ScreenFormat`.
 
-#### Other
-- Added `getServerState` method.
 
 ## Changes in 1.1.4
 
@@ -52,15 +75,15 @@
 - Added `viz_ignore_render_mode` CVAR which disables overriding rendering settings.
 
 #### GameVariables
-- **Added `ANGLE`, `PITCH`, `ROLL`, `VELOCITY_X/Y/Z` GameVariables.**
+- **Added `ANGLE`, `PITCH`, `ROLL`, `VELOCITY_X`/`Y`/`Z` GameVariables.**
 
 #### Missing config keys
-- Added support for `DEATHCOUNT`, `USER31` - `USER60`, `PLAYER_NUMBER`, `PLAYER_COUNT`, `PLAYER1_FRAGCOUNT` - `PLAYER16_FRAGCOUNT`, `POSITION_X/Y/Z` GameVariables in the config file.
+- Added support for `DEATHCOUNT`, `USER31` - `USER60`, `PLAYER_NUMBER`, `PLAYER_COUNT`, `PLAYER1_FRAGCOUNT` - `PLAYER16_FRAGCOUNT`, `POSITION_X`/`Y`/`Z` GameVariables in the config file.
 - Added support for `ALTATTACK` Button in the config file.
 
 #### Java specific
 - Fixed `makeAction`.
-- Added missing `POSITION_X/Y/Z` Game Variables.
+- Added missing `POSITION_X`/`Y`/`Z` Game Variables.
 
 #### Python specific
 - Added manual GIL management for better performance when used with Python threads.
