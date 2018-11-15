@@ -10,11 +10,14 @@ Demonstrates how to use the most basic features of the environment. It configure
 
 ## [buffers.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/buffers.py)
 
-## [cig.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/cig.py), [cig_host.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/cig_host.py)
+## [cig_multiplayer.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/cig_multiplayer.py), [cig_multiplayer_host.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/cig_multiplayer_host.py)
 Demonstrates how to configure and play multiplayer game for CIG competition.
 
-## [cig_bots.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/cig_bots.py)
+## [cig_multiplayer_bots.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/cig_multiplayer_bots.py)
 Demonstrates how to play with bots to simulate multiplayer game. Helpful for developing AI agent for CIG competition.
+
+## [cig_singleplayer.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/cig_singleplayer.py), [cig_multiplayer_host.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/cig_singleplayer_host.py)
+Demonstrates how to configure and play singleplayer game for CIG competition.
 
 ## [delta_buttons.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/delta_buttons.py)
 Shows how delta buttons work (they may take values other than 0 and 1 and can be used for precise movement).
@@ -27,7 +30,7 @@ Tests the performance of the environment in frames per second. It should give yo
 
 ## [labels.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/labels.py)
 
-## [learning_pytorch.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/learning_pytorch.py)
+## [learning_pytorch.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/learning_pytorch.py), [learning_pytorch_test.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/learning_pytorch_test.py)
 Contains an example of how to implement basic Q-learning on the interface within PyTorch
 
 ## [learning_theano.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/learning_theano.py)
@@ -36,7 +39,7 @@ Contains an example of how to implement basic Q-learning on the interface within
 ## [learning_tensorflow.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/learning_tensorflow.py)
 Contains an example of how to implement basic Q-learning on the interface within Tensorflow
 
-## [multiple_instances.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/multiple_instances.py) and [multiple_instances_advance.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/multiple_instances_advance.py)
+## [multiple_instances.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/multiple_instances.py), [multiple_instances_advance.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/multiple_instances_advance.py)
 Contains an example of how to create a "server" and have multiple agents playing on the server at once. Combine with bots.py and learning_x.py to train agents against some AI
 
 ## [oblige.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/multiple_instances.py) (level generator)
