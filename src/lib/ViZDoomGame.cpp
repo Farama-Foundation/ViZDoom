@@ -97,7 +97,11 @@ namespace vizdoom {
 
     void DoomGame::close() {
         if (this->isRunning()) {
-            this->doomController->close();
+            try {
+                this->doomController->close();
+            }
+            catch (...) { throw; }
+
             this->lastAction.clear();
             this->nextAction.clear();
 
@@ -162,10 +166,9 @@ namespace vizdoom {
         if (this->doomController->isTicPossible()) {
             try {
                 this->doomController->tics(tics, updateState);
+                if (updateState) this->updateState();
             }
             catch (...) { throw; }
-
-            if (updateState) this->updateState();
         }
     }
 

@@ -26,6 +26,7 @@
 #include "ViZDoomTypes.h"
 #include "ViZDoomMessageQueue.h"
 #include "ViZDoomSharedMemory.h"
+#include "boost/process.hpp"
 
 #include <boost/asio.hpp>
 #include <boost/random.hpp>
@@ -40,6 +41,9 @@ namespace vizdoom {
     namespace bip       = boost::interprocess;
     namespace br        = boost::random;
     namespace bs        = boost::system;
+    namespace bpr       = boost::process;
+    namespace bpri      = boost::process::initializers;
+
 
 #define INSTANCE_ID_LENGTH 10
 
@@ -70,6 +74,8 @@ namespace vizdoom {
 /* OSes */
 #ifdef __linux__
     #define OS_LINUX
+    #include <sys/types.h>
+    #include <signal.h>
 #elif _WIN32
     #define OS_WIN
 #elif __APPLE__
@@ -292,8 +298,10 @@ namespace vizdoom {
         void intSignal(int sigNumber);
 
         b::thread *doomThread;
-        //bpr::child doomProcess;
 
+        #ifdef OS_LINUX
+            pid_t doomProcessPid;
+        #endif
 
         /* Message queues */
         /*------------------------------------------------------------------------------------------------------------*/

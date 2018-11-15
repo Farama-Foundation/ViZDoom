@@ -216,11 +216,13 @@ static void crash_catcher(int signum, siginfo_t *siginfo, void *context)
 	crash_info.has_siginfo = !!siginfo;
 	if(siginfo)
 		crash_info.siginfo = *siginfo;
-	if(cc_user_info)
-		cc_user_info(crash_info.buf, crash_info.buf+sizeof(crash_info.buf));
+
+	//VIZDOOM_CODE
+//	if(cc_user_info)
+//		cc_user_info(crash_info.buf, crash_info.buf+sizeof(crash_info.buf));
 
 	/* Fork off to start a crash handler */
-	switch((dbg_pid=fork()))
+    switch((dbg_pid=fork()))
 	{
 		/* Error */
 		case -1:

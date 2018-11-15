@@ -25,7 +25,6 @@
 #include "ViZDoomPathHelpers.h"
 #include "ViZDoomUtilities.h"
 #include "ViZDoomVersion.h"
-#include "boost/process.hpp"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/chrono.hpp>
@@ -37,8 +36,6 @@ namespace vizdoom {
     namespace bal       = boost::algorithm;
     namespace bc        = boost::chrono;
     namespace bfs       = boost::filesystem;
-    namespace bpr       = boost::process;
-    namespace bpri      = boost::process::initializers;
 
 
     /* Public methods */
@@ -198,47 +195,55 @@ namespace vizdoom {
     }
 
     void DoomController::close() {
+        try{
+            if (this->doomRunning) {
+                this->doomRunning = false;
+                this->doomWorking = false;
 
-        if (this->doomRunning) {
+                this->MQDoom->send(MSG_CODE_CLOSE);
 
-            this->doomRunning = false;
-            this->doomWorking = false;
+                #ifdef OS_LINUX
+                    if(0 == kill(this->doomProcessPid, 0)){
+                        bpr::child doomProcess(this->doomProcessPid);
+                        bpr::terminate(doomProcess);
+                    }
+                #endif
+            }
 
-            this->MQDoom->send(MSG_CODE_CLOSE);
+            if (this->signalThread && this->signalThread->joinable()) {
+                this->ioService->stop();
+
+                this->signalThread->interrupt();
+                this->signalThread->join();
+                delete this->signalThread;
+                this->signalThread = nullptr;
+
+                delete this->ioService;
+                this->ioService = nullptr;
+            }
+
+            if (this->doomThread && this->doomThread->joinable()) {
+                this->doomThread->interrupt();
+                this->doomThread->join();
+                delete this->doomThread;
+                this->doomThread = nullptr;
+            }
+
+            if (this->SM) {
+                delete this->SM;
+                this->SM = nullptr;
+            }
+
+            if (this->MQDoom) {
+                delete this->MQDoom;
+                this->MQDoom = nullptr;
+            }
+            if (this->MQController) {
+                delete this->MQController;
+                this->MQController = nullptr;
+            }
         }
-
-        if (this->signalThread && this->signalThread->joinable()) {
-            this->ioService->stop();
-
-            this->signalThread->interrupt();
-            this->signalThread->join();
-            delete this->signalThread;
-            this->signalThread = nullptr;
-
-            delete this->ioService;
-            this->ioService = nullptr;
-        }
-
-        if (this->doomThread && this->doomThread->joinable()) {
-            this->doomThread->interrupt();
-            this->doomThread->join();
-            delete this->doomThread;
-            this->doomThread = nullptr;
-        }
-
-        if (this->SM) {
-            delete this->SM;
-            this->SM = nullptr;
-        }
-
-        if (this->MQDoom) {
-            delete this->MQDoom;
-            this->MQDoom = nullptr;
-        }
-        if (this->MQController) {
-            delete this->MQController;
-            this->MQController = nullptr;
-        }
+        catch (...) { throw; }
 
         this->gameState = nullptr;
         this->input = nullptr;
@@ -246,6 +251,7 @@ namespace vizdoom {
         this->depthBuffer = nullptr;
         this->labelsBuffer = nullptr;
         this->automapBuffer = nullptr;
+
     }
 
     void DoomController::restart() {
@@ -1338,6 +1344,9 @@ namespace vizdoom {
     void DoomController::launchDoom() {
         try {
             bpr::child doomProcess = bpr::execute(bpri::set_args(this->doomArgs), bpri::inherit_env());
+            #ifdef OS_LINUX
+                this->doomProcessPid = doomProcess.pid;
+            #endif
             bpr::wait_for_exit(doomProcess);
         }
         catch (...) {
