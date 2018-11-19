@@ -148,7 +148,7 @@ __REWARDS:__
 
 Further configuration:
 * living reward = -0.0001,
-* 3 available buttons: move left, move right, shoot (attack)
+* 3 available buttons: turn left, turn right, shoot (attack)
 * timeout = 300
 
 ## TAKE COVER
