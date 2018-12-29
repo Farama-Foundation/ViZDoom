@@ -289,7 +289,7 @@ namespace vizdoom {
 
         int ticsMade = 0;
 
-        for (int i = 0; i < tics; ++i) {
+        for (unsigned int i = 0; i < tics; ++i) {
             if (i == tics - 1) this->tic(update);
             else this->tic(false);
 

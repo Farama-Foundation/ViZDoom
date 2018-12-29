@@ -23,6 +23,10 @@
 #ifndef __VIZDOOM_CONTROLLER_H__
 #define __VIZDOOM_CONTROLLER_H__
 
+#if _WIN32
+    #include <winsock2.h>
+#endif
+
 #include "ViZDoomTypes.h"
 #include "ViZDoomMessageQueue.h"
 #include "ViZDoomSharedMemory.h"

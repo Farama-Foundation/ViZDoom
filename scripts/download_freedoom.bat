@@ -16,7 +16,7 @@ set FREEDOOM_DESTINATION_FILE="%FREEDOOM_DESTINATION_PATH%\freedoom2.wad"
 if not exist "%FREEDOOM_DESTINATION_FILE%" (
 	if not exist "%FREEDOOM_DESTINATION_PATH%" md "%FREEDOOM_DESTINATION_PATH%"
     if not exist "%FREEDOOM_OUTFILE%" (
-        powershell -command "Invoke-WebRequest '%FREEDOOM_LINK%' -OutFile '%FREEDOOM_OUTFILE%'"
+        powershell -command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest '%FREEDOOM_LINK%' -OutFile '%FREEDOOM_OUTFILE%'"
 	)
     powershell -command "Expand-Archive '%FREEDOOM_OUTFILE%' -DestinationPath '%FREEDOOM_DESTINATION_PATH%'"
     copy "%FREEDOOM_DESTINATION_PATH%\%FREEDOOM_ARCHIVE:~0,-4%\freedoom2.wad" "%FREEDOOM_DESTINATION_FILE%"

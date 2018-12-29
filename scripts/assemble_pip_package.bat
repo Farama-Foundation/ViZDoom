@@ -10,7 +10,7 @@ set PACAKGE_INIT_FILE_SRC=.\src\lib_python\__init__.py
 
 set VIZDOOM_EXEC_PATH=%BIN_PATH%\vizdoom.exe
 set VIZDOOM_PK3_PATH=%BIN_PATH%\vizdoom.pk3
-dir dir .\bin\python3.6\vizdoom*.pyd /b /s > %PACKAGE_DEST_DIRECTORY%\tmp.txt
+dir dir .\bin\python%PYTHON_VERSION%\vizdoom*.pyd /b /s > %PACKAGE_DEST_DIRECTORY%\tmp.txt
 set /p PYTHON_BIN_PATH=<%PACKAGE_DEST_DIRECTORY%\tmp.txt
 del %PACKAGE_DEST_DIRECTORY%\tmp.txt
 set PYTHON_BIN_DEST_PATH=%PACKAGE_DEST_PATH%\vizdoom.pyd
@@ -43,7 +43,7 @@ copy "%PACAKGE_INIT_FILE_SRC%" "%PACKAGE_DEST_PATH%"
 copy "%PYTHON_BIN_PATH%" "%PYTHON_BIN_DEST_PATH%"
 copy "%VIZDOOM_EXEC_PATH%" "%PACKAGE_DEST_PATH%"
 copy "%VIZDOOM_PK3_PATH%" "%PACKAGE_DEST_PATH%"
-copy "%BIN_PATH%\*.dll" "%PACKAGE_DEST_PATH%"
+copy "%BIN_PATH%\*.pyd" "%PACKAGE_DEST_PATH%"
 copy "%FREEDOOM_PATH%" "%PACKAGE_DEST_PATH%"
 copy "%FREEDOOM_PATH%" "%PACKAGE_DEST_PATH%"
 md "%SCENARIOS_DEST_DIR%
