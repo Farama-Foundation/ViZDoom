@@ -11,28 +11,28 @@ See [Track 1](https://www.crowdai.org/challenges/visual-doom-ai-competition-2018
 
 ![vizdoom_deadly_corridor](http://www.cs.put.poznan.pl/mkempka/misc/vizdoom_gifs/vizdoom_corridor.gif)
 
+
 ## Features
 - Multi-platform,
-- API for C++, Lua, Java, Python and Julia (thanks to [Jun Tian](https://github.com/findmyway))
-- Easy-to-create custom scenarios (examples available),
+- API for C++, Lua, Java, Python and Julia (thanks to [Jun Tian](https://github.com/findmyway)),
+- Easy-to-create custom scenarios (visual editors, scripting language and examples available),
 - Async and sync single-player and multi-player modes,
 - Fast (up to 7000 fps in sync mode, single threaded),
+- Lightweight (few MBs),
 - Customizable resolution and rendering parameters,
 - Access to the depth buffer (3D vision)
 - Automatic labeling game objects visible in the frame
 - Off-screen rendering,
 - Episodes recording,
-- Time scaling in async mode,
-- Lightweight (few MBs).
+- Time scaling in async mode.
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
 
-## Cite as
+## References
 
 > Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, IEEE Conference on Computational Intelligence and Games, pp. 341-348, Santorini, Greece, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
 
-### Bibtex:
 ```
 @inproceedings{Kempka2016ViZDoom,
   author    = {Micha{\l} Kempka and Marek Wydmuch and Grzegorz Runc and Jakub Toczek and Wojciech Ja\'skowski},
@@ -61,12 +61,11 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 ## Windows build
 For Windows we are providing compiled runtime binaries and development libraries:
 
-### [1.1.5pre](https://github.com/mwydmuch/ViZDoom/releases/tag/1.1.5pre) (2017-10-22):
-- [Python 2.7 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.5pre/ViZDoom-1.1.5pre-Win-Python27-x86_64.zip)
-- [Python 3.5 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.5pre/ViZDoom-1.1.5pre-Win-Python35-x86_64.zip)
-- [Python 3.6 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.5pre/ViZDoom-1.1.5pre-Win-Python36-x86_64.zip)
-- [Lua 5.1 & LuaJIT (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.5pre/ViZDoom-1.1.5pre-Win-Lua51-LuaJIT-x86_64.zip)
-- [Java (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.5pre/ViZDoom-1.1.5pre-Win-Java-x86_64.zip)
+### [1.1.7](https://github.com/mwydmuch/ViZDoom/releases/tag/1.1.7) (2018-12-29):
+- [Python 2.7 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.7/ViZDoom-1.1.7-Win-Python27-x86_64.zip)
+- [Python 3.5 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.7/ViZDoom-1.1.7-Win-Python35-x86_64.zip)
+- [Python 3.6 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.7/ViZDoom-1.1.7-Win-Python36-x86_64.zip)
+- [Python 3.7 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.7/ViZDoom-1.1.7-Win-Python37-x86_64.zip)
 
 See **[Installation of Windows binaries](doc/Building.md#windows_bin)**
 
@@ -84,9 +83,6 @@ Before running the provided examples, make sure that [freedoom2.wad](https://fre
 Python examples are currently the richest, so we recommend to look at them, even if you plan to use other language. API is almost identical for all languages.
 
 **See also the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial).**
-
-
-## Tutorials
 
 
 ## Documentation
@@ -109,9 +105,9 @@ Also full documentation of engine and ACS scripting language can be found on
 
 Useful parts:
 
-- [ACS](https://zdoom.org/wiki/ACS)
-- [CVARs](https://zdoom.org/wiki/CVARs) (Console Variables)
-- [CCMDs](https://zdoom.org/wiki/CCMDs) (Console Commands)
+- [ZDoom Wiki: ACS (scripting language)](https://zdoom.org/wiki/ACS)
+- [ZDoom Wiki: CVARs (console variables)](https://zdoom.org/wiki/CVARs) 
+- [ZDoom Wiki: CCMD (console commands)](https://zdoom.org/wiki/CCMDs) 
 
 
 ## Awesome Doom tools
