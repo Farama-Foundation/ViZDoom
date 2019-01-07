@@ -337,10 +337,13 @@ See also:
 | Java   | `void sendGameCommand(String cmd)`      |
 | Python | `void send_game_command(str cmd)`       |
 
-Sends the command to Doom console. Can be used for cheats, multiplayer etc.
+Sends the command to Doom console. Can be used for controling game, changing settings, cheats etc.
 Some commands will be blocked in some modes.
 
-See also: [ZDoom Wiki](http://zdoom.org/wiki/Console)
+See also: 
+- [ZDoom Wiki: Console](http://zdoom.org/wiki/Console)
+- [ZDoom Wiki: CVARs (console variables)](https://zdoom.org/wiki/CVARs) 
+- [ZDoom Wiki: CCMD (console commands)](https://zdoom.org/wiki/CCMDs) 
 
 
 ---
@@ -659,8 +662,8 @@ Useful for changing additional game settings.
 Config key: `gameArgs/game_args`
 
 See also:
-- [ZDoom Wiki on command line parameters](http://zdoom.org/wiki/Command_line_parameters)
-- [ZDoom Wiki on CVARS](http://zdoom.org/wiki/CVARS)
+- [ZDoom Wiki: Command line parameters](http://zdoom.org/wiki/Command_line_parameters)
+- [ZDoom Wiki: CVARs (Console Variables)](http://zdoom.org/wiki/CVARS)
 
 
 ---

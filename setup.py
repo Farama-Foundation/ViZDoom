@@ -102,7 +102,7 @@ setup(
     setup_requires=['numpy'],
     packages=['vizdoom'],
     package_dir={'vizdoom': package_path},
-    package_data={'vizdoom': ['freedoom2.wad', 'vizdoom', 'vizdoom.pk3', 'vizdoom.so', 'bots.cfg', 'scenarios/*']},
+    package_data={'vizdoom': ['__init__.py', 'bots.cfg', 'freedoom2.wad', 'vizdoom', 'vizdoom.pk3', 'vizdoom.so', 'scenarios/*']},
     include_package_data=True,
     cmdclass={'build': BuildCommand},
     platforms=supported_platforms,

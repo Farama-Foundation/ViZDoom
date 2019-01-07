@@ -21,10 +21,8 @@ https://github.com/mwydmuch/ViZDoom/issues/190
 
 We cannot provide original Doom's assets due to licensing issues.
 ViZDoom uses [freedoom2.wad](https://freedoom.github.io) as default assets.
-However, you can use original Doom's assets by placing doom.wad or doom2.wad.
-You can just place it in you working directory,
-specify path to it by using [`DoomGame: setDoomGamePath`](DoomGame.md#setDoomGamePath)
-or place it in the same directory as vizdoom(.exe).
+However, you can use original Doom's assets by placing doom.wad or doom2.wad in you working directory, specify path to it by using [`DoomGame: setDoomGamePath`](DoomGame.md#setDoomGamePath) or place it in the same directory as vizdoom(.exe). 
+On Unix you can also set `DOOMWADDIR` environment variable to directory with your wads files.
 
 
 ### How to create/modify scenarios?
