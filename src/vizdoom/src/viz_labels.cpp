@@ -21,6 +21,7 @@
 */
 
 #include "viz_labels.h"
+#include "viz_defines.h"
 #include "v_video.h"
 
 #ifdef VIZ_LABELS_TEST

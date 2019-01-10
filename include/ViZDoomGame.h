@@ -69,6 +69,9 @@ namespace vizdoom {
 
         ServerStatePtr getServerState();
 
+        void saveState(std::string filePath);
+        void loadState(std::string filePath);
+
 
         /* Buttons settings */
         /*------------------------------------------------------------------------------------------------------------*/
@@ -149,19 +152,28 @@ namespace vizdoom {
         ScreenFormat getScreenFormat();
         void setScreenFormat(ScreenFormat format);
 
+        /* Depth buffer */
         bool isDepthBufferEnabled();
         void setDepthBufferEnabled(bool depthBuffer);
 
+        /* Labels buffer */
         bool isLabelsBufferEnabled();
         void setLabelsBufferEnabled(bool labelsBuffer);
 
+        /* Automap buffer */
         bool isAutomapBufferEnabled();
         void setAutomapBufferEnabled(bool automapBuffer);
-
         void setAutomapMode(AutomapMode mode);
         void setAutomapRotate(bool rotate);
         void setAutomapRenderTextures(bool textures);
 
+        /* Objects and map information */
+        bool isObjectsInfoEnabled();
+        void setObjectsInfoEnabled(bool objectsInfo);
+        bool isMapInfoEnabled();
+        void setMapInfoEnabled(bool mapInfo);
+
+        /* Render options */
         void setRenderHud(bool hud);
         void setRenderMinimalHud(bool minHud);
         void setRenderWeapon(bool weapon);

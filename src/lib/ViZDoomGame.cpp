@@ -247,9 +247,19 @@ namespace vizdoom {
                 this->state->depthBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + graySize);
             } else this->state->depthBuffer = nullptr;
 
+            this->state->labels.clear();
             if (this->doomController->isLabelsEnabled()) {
                 buf = this->doomController->getLabelsBuffer();
                 this->state->labelsBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + graySize);
+
+                /* Update labels */
+                size_t labelPartSize = offsetof(struct Label, objectName) - offsetof(struct Label, value);
+                for (unsigned int i = 0; i < this->doomController->getGameState()->LABEL_COUNT; ++i) {
+                    Label label;
+                    std::memcpy(&label.value, &this->doomController->getGameState()->LABEL[i].value, labelPartSize);
+                    label.objectName = std::string(this->doomController->getGameState()->LABEL[i].objectName);
+                    this->state->labels.push_back(label);
+                }
             } else this->state->labelsBuffer = nullptr;
 
             if (this->doomController->isAutomapEnabled()) {
@@ -257,17 +267,18 @@ namespace vizdoom {
                 this->state->automapBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
             } else this->state->automapBuffer = nullptr;
 
-            /* Update labels */
-            size_t labelPartSize = offsetof(struct Label, objectId) - offsetof(struct Label, value);
-            size_t objectPartSize = offsetof(struct Label, objectName) - offsetof(struct Label, objectId);
-
-            this->state->labels.clear();
-            for (unsigned int i = 0; i < this->doomController->getGameState()->LABEL_COUNT; ++i) {
-                Label label;
-                std::memcpy(&label.value, &this->doomController->getGameState()->LABEL[i].value, labelPartSize);
-                std::memcpy(&label.objectId, &this->doomController->getGameState()->LABEL[i].objectId, objectPartSize);
-                label.objectName = std::string(this->doomController->getGameState()->LABEL[i].objectName);
-                this->state->labels.push_back(label);
+            /* Update objects */
+            this->state->objects.clear();
+            if (this->doomController->isObjectsStateEnabled()) {
+                //size_t objectPartSize = offsetof(struct Object, objectName) - offsetof(struct Object, objectId);
+                size_t objectPartSize = offsetof(struct Object, name) - offsetof(struct Object, positionX);
+                for (unsigned int i = 0; i < this->doomController->getGameState()->OBJECT_COUNT; ++i) {
+                    Object object;
+                    //std::memcpy(&object.objectId, &this->doomController->getGameState()->OBJECT[i].objectId, objectPartSize);
+                    std::memcpy(&object.positionX, &this->doomController->getGameState()->OBJECT[i].position[0], objectPartSize);
+                    object.name = std::string(this->doomController->getGameState()->OBJECT[i].name);
+                    this->state->objects.push_back(object);
+                }
             }
 
         } else this->state = nullptr;
@@ -543,6 +554,14 @@ namespace vizdoom {
 
     void DoomGame::setAutomapRenderTextures(bool textures) { this->doomController->setAutomapRenderTextures(textures); }
 
+    bool DoomGame::isObjectsInfoEnabled() { return this->doomController->isObjectsStateEnabled(); }
+
+    void DoomGame::setObjectsInfoEnabled(bool objectsInfo) { return this->doomController->setObjectsStateEnabled(objectsInfo); }
+
+    bool DoomGame::isMapInfoEnabled() { return this->doomController->isMapStateEnabled(); }
+
+    void DoomGame::setMapInfoEnabled(bool mapInfo) { return this->doomController->setMapStateEnabled(mapInfo); }
+
     void DoomGame::setRenderHud(bool hud) { this->doomController->setRenderHud(hud); }
 
     void DoomGame::setRenderMinimalHud(bool minimalHud) { this->doomController->setRenderMinimalHud(minimalHud); }
@@ -591,6 +610,13 @@ namespace vizdoom {
         return configLoader.load(filePath);
     }
 
+    void DoomGame::saveState(std::string filePath){
+        this->doomController->saveGame(filePath);
+    }
+
+    void DoomGame::loadState(std::string filePath){
+        this->doomController->loadGame(filePath);
+    }
 }
 
 

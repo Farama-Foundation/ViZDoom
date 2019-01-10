@@ -98,6 +98,9 @@ namespace vizdoom {
         this->amRotate = false;
         this->amTextures = true;
 
+        this->objectsState = false;
+        this->mapState = false;
+
         this->hud = false;
         this->minHud = false;
         this->weapon = true;
@@ -474,6 +477,24 @@ namespace vizdoom {
         }
     }
 
+    void DoomController::saveGame(std::string filePath){
+        if (this->doomRunning && !this->mapChanging) {
+            this->sendCommand(std::string("save ") + filePath);
+            //this->MQDoom->send(MSG_CODE_SAVE);
+        }
+    }
+
+    void DoomController::loadGame(std::string filePath){
+        if (this->doomRunning && !this->mapChanging) {
+            this->sendCommand(std::string("load ") + filePath);
+
+            //this->MQDoom->send(MSG_CODE_LOAD);
+            this->MQDoom->send(MSG_CODE_UPDATE);
+            this->waitForDoomWork();
+
+            this->mapLastTic = this->gameState->MAP_TIC;
+        }
+    }
 
     /* Settings */
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -599,7 +620,7 @@ namespace vizdoom {
         this->updateSettings = true;
     }
 
-    /* Labels */
+    /* Labels buffer */
     bool DoomController::isLabelsEnabled() {
         if (this->doomRunning) return this->gameState->LABELS;
         else return labels;
@@ -613,7 +634,7 @@ namespace vizdoom {
         }
     }
 
-    /* Automap */
+    /* Automap buffer */
     bool DoomController::isAutomapEnabled() {
         if (this->doomRunning) return this->gameState->AUTOMAP;
         else return automap;
@@ -640,6 +661,33 @@ namespace vizdoom {
     void DoomController::setAutomapRenderTextures(bool textures) {
         this->amTextures = textures;
         if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
+    }
+
+    /* Objects (actors) and map state */
+    bool DoomController::isObjectsStateEnabled() {
+        if (this->doomRunning) return this->gameState->OBJECTS;
+        else return objectsState;
+    }
+
+    void DoomController::setObjectsStateEnabled(bool objectsState) {
+        this->objectsState = objectsState;
+        if (this->doomRunning) {
+            if (this->objectsState) this->sendCommand("viz_objects 1");
+            else this->sendCommand("viz_objects 0");
+        }
+    }
+
+    bool DoomController::isMapStateEnabled() {
+        if (this->doomRunning) return this->gameState->MAP;
+        else return mapState;
+    }
+
+    void DoomController::setMapStateEnabled(bool mapState) {
+        this->mapState = mapState;
+        if (this->doomRunning) {
+            if (this->mapState) this->sendCommand("viz_map 1");
+            else this->sendCommand("viz_map 0");
+        }
     }
 
     void DoomController::setScreenWidth(unsigned int width) {
@@ -1273,19 +1321,30 @@ namespace vizdoom {
             this->doomArgs.push_back("1");
         }
 
-        // labels
+        // labels buffer
         if (this->labels) {
             this->doomArgs.push_back("+viz_labels");
             this->doomArgs.push_back("1");
         }
 
-        // automap
+        // automap buffer
         if (this->automap) {
             this->doomArgs.push_back("+viz_automap");
             this->doomArgs.push_back("1");
 
             this->doomArgs.push_back("+viz_automap_mode");
             this->doomArgs.push_back(b::lexical_cast<std::string>(this->amMode));
+        }
+
+        // objects (actors) and map state
+        if (this->objectsState) {
+            this->doomArgs.push_back("+viz_objects");
+            this->doomArgs.push_back("1");
+        }
+
+        if (this->mapState) {
+            this->doomArgs.push_back("+viz_map");
+            this->doomArgs.push_back("1");
         }
 
         // render mode

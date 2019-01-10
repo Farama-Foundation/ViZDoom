@@ -33,11 +33,15 @@
 #define VIZ_PLAYER                  players[consoleplayer]
 #define VIZ_MAX_PLAYERS             MAXPLAYERS // 16
 #define VIZ_MAX_PLAYER_NAME_LEN     MAXPLAYERNAME + 1 // (127 + 1 = 128, old: 15 + 1 = 16)
+#define VIZ_MAX_NAME_LEN            VIZ_MAX_PLAYER_NAME_LEN
 
 #define VIZ_FUNC                    BOOST_CURRENT_FUNCTION
 
 #define VIZ_MAX_ERROR_TEXT_LEN      128
 #define VIZ_MAX_DEBUG_TEXT_LEN      1024
+
+#define VIZ_MAX_LABELS              256
+#define VIZ_MAX_OBJECTS             2048
 
 #ifdef __linux__
     #define VIZ_OS_LINUX

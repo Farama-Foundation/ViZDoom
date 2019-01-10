@@ -79,6 +79,8 @@ CVAR (Int, viz_screen_format, 0, 0)
 CVAR (Bool, viz_depth, false, 0)
 CVAR (Bool, viz_labels, false, 0)
 CVAR (Bool, viz_automap, false, 0)
+CVAR (Bool, viz_objects, false, 0)
+CVAR (Bool, viz_map, false, 0)
 
 // rendering options (bitset)
 CVAR (Int, viz_render_mode, 0, 0)
@@ -255,6 +257,8 @@ void VIZ_Update(){
     VIZ_ScreenUpdate();
     VIZ_GameStateUpdate();
     VIZ_GameStateUpdateLabels();
+    VIZ_GameStateUpdateObjects();
+    VIZ_GameStateUpdateMap();
 
     vizLastUpdate = VIZ_TIME;
     vizUpdate = false;

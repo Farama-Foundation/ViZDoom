@@ -35,6 +35,7 @@
 #include "g_game.h"
 #include "c_dispatch.h"
 #include "p_acs.h"
+#include "p_setup.h"
 
 EXTERN_CVAR (Bool, viz_debug)
 EXTERN_CVAR (Bool, viz_nocheat)
@@ -42,6 +43,8 @@ EXTERN_CVAR (Int, viz_screen_format)
 EXTERN_CVAR (Bool, viz_depth)
 EXTERN_CVAR (Bool, viz_labels)
 EXTERN_CVAR (Bool, viz_automap)
+EXTERN_CVAR (Bool, viz_objects)
+EXTERN_CVAR (Bool, viz_map)
 EXTERN_CVAR (Bool, viz_loop_map)
 EXTERN_CVAR (Bool, viz_override_player)
 EXTERN_CVAR (Bool, viz_spectator)
@@ -226,6 +229,8 @@ void VIZ_GameStateSMUpdate(){
     vizGameStateSM->DEPTH_BUFFER = *viz_depth && vizDepthMap;
     vizGameStateSM->LABELS = *viz_labels && vizLabels;
     vizGameStateSM->AUTOMAP = *viz_automap;
+    vizGameStateSM->OBJECTS = *viz_objects;
+    vizGameStateSM->MAP = *viz_map;
 
     for(int i = 0; i < VIZ_SM_REGION_COUNT; ++i){
         vizGameStateSM->SM_REGION_OFFSET[i] = vizSMRegion[i].offset;
@@ -392,10 +397,10 @@ void VIZ_GameStateUpdateLabels(){
                 label->objectId = i->actorId;
                 //if(i->actor->health <= 0 || (i->actor->flags & MF_CORPSE) || (i->actor->flags6 & MF6_KILLED)) {
                 if((i->actor->flags & MF_CORPSE) || (i->actor->flags6 & MF6_KILLED)) {
-                    strncpy(label->objectName, "Dead", VIZ_MAX_LABEL_NAME_LEN);
-                    strncpy(label->objectName + 4, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN - 4);
+                    strncpy(label->objectName, "Dead", VIZ_MAX_NAME_LEN);
+                    strncpy(label->objectName + 4, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_NAME_LEN - 4);
                 }
-                else strncpy(label->objectName, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_LABEL_NAME_LEN);
+                else strncpy(label->objectName, i->actor->GetClass()->TypeName.GetChars(), VIZ_MAX_NAME_LEN);
 
                 label->value = i->label;
 
@@ -429,6 +434,54 @@ void VIZ_GameStateUpdateLabels(){
     }
 
     vizGameStateSM->LABEL_COUNT = labelCount;
+}
+
+void VIZ_GameStateUpdateObjects(){
+    if(!vizGameStateSM) return;
+
+    unsigned int objectCount = 0;
+    if(!*viz_nocheat && !vizGameStateSM->MAP_END) {
+
+        // Iterate over sectors
+        for (int i = 0; i < numsectors; ++i) {
+            sector_t *sec = &sectors[i];
+
+            // Handle all things in sector
+            for (AActor *thing = sec->thinglist; thing != NULL; thing = thing->snext) {
+                VIZObject *object = &vizGameStateSM->OBJECT[objectCount];
+
+                //if(thing->health <= 0 || (thing->flags & MF_CORPSE) || (thing->flags6 & MF6_KILLED)) {
+                if ((thing->flags & MF_CORPSE) || (thing->flags6 & MF6_KILLED)) {
+                    strncpy(object->objectName, "Dead", VIZ_MAX_NAME_LEN);
+                    strncpy(object->objectName + 4, thing->GetClass()->TypeName.GetChars(), VIZ_MAX_NAME_LEN - 4);
+                } else strncpy(object->objectName, thing->GetClass()->TypeName.GetChars(), VIZ_MAX_NAME_LEN);
+
+                object->objectPosition[0] = VIZ_FixedToDouble(thing->__pos.x);
+                object->objectPosition[1] = VIZ_FixedToDouble(thing->__pos.y);
+                object->objectPosition[2] = VIZ_FixedToDouble(thing->__pos.z);
+                object->objectPosition[3] = VIZ_AngleToDouble(thing->angle);
+                object->objectPosition[4] = VIZ_PitchToDouble(thing->pitch);
+                object->objectPosition[5] = VIZ_AngleToDouble(thing->roll);
+                object->objectPosition[6] = VIZ_FixedToDouble(thing->velx);
+                object->objectPosition[7] = VIZ_FixedToDouble(thing->vely);
+                object->objectPosition[8] = VIZ_FixedToDouble(thing->velz);
+
+                VIZ_DebugMsg(4, VIZ_FUNC, "objectCount: %d, objectId: %d, objectName: %s");
+
+                ++objectCount;
+                if(objectCount >= VIZ_MAX_OBJECTS) break;
+            }
+        }
+    }
+
+    vizGameStateSM->OBJECT_COUNT = objectCount;
+}
+
+// TODO
+void VIZ_GameStateUpdateMap(){
+    for(int i = 0; i < numsectors; ++i){
+        sector_t *sec = &sectors[i];
+    }
 }
 
 void VIZ_GameStateInitNew(){

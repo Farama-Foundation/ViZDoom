@@ -122,6 +122,9 @@ namespace vizdoom {
         void setMap(std::string map, std::string demoPath = "");
         void playDemo(std::string demoPath, int player = 0);
 
+        void saveGame(std::string filePath);
+        void loadGame(std::string filePath);
+
 
         /* General game settings */
         /*------------------------------------------------------------------------------------------------------------*/
@@ -191,16 +194,22 @@ namespace vizdoom {
         bool isDepthBufferEnabled();
         void setDepthBufferEnabled(bool depthBuffer);
 
-        /* Labels */
+        /* Labels buffer */
         bool isLabelsEnabled();
         void setLabelsEnabled(bool labels);
 
-        /* Automap */
+        /* Automap buffer */
         bool isAutomapEnabled();
         void setAutomapEnabled(bool map);
         void setAutomapMode(AutomapMode mode);
         void setAutomapRotate(bool rotate);
         void setAutomapRenderTextures(bool textures);
+
+        /* Objects (actors) and map state */
+        bool isObjectsStateEnabled();
+        void setObjectsStateEnabled(bool objectsState);
+        bool isMapStateEnabled();
+        void setMapStateEnabled(bool mapState);
 
         /* Buffers in SM */
         uint8_t *const getScreenBuffer();
@@ -220,7 +229,7 @@ namespace vizdoom {
         void setButtonState(Button button, double state);
         void toggleButtonState(Button button);
 
-        /* Buttons availableity */
+        /* Buttons availability */
         bool isButtonAvailable(Button button);
         void setButtonAvailable(Button button, bool set);
         void resetButtons();
@@ -339,6 +348,8 @@ namespace vizdoom {
         bool depth;
         bool automap;
         bool labels;
+        bool objectsState;
+        bool mapState;
 
         bool hud, minHud, weapon, crosshair, decals, particles, sprites, messages, corpses, flashes, renderAll;
         AutomapMode amMode;

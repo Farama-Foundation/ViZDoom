@@ -105,12 +105,12 @@ void VIZ_MQTic(){
                 vizNextTic = true;
                 break;
 
-            case VIZ_MSG_CODE_COMMAND :
+            case VIZ_MSG_CODE_COMMAND:
                 VIZ_Command(strdup(msg.command));
                 VIZ_CVARsUpdate();
                 break;
 
-            case VIZ_MSG_CODE_CLOSE :
+            case VIZ_MSG_CODE_CLOSE:
             case VIZ_MSG_CODE_ERROR:
                 exit(0);
 
@@ -126,5 +126,4 @@ void VIZ_MQClose(){
     delete vizMQDoom;
 	delete[] vizMQControllerName;
 	delete[] vizMQDoomName;
-
 }
