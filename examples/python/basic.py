@@ -36,7 +36,7 @@ if __name__ == "__main__":
     # Sets resolution. Default is 320X240
     game.set_screen_resolution(vzd.ScreenResolution.RES_640X480)
 
-    # Sets the screen buffer format. Not used here but now you can change it. Defalut is CRCGCB.
+    # Sets the screen buffer format. Not used here but now you can change it. Default is CRCGCB.
     game.set_screen_format(vzd.ScreenFormat.RGB24)
 
     # Enables depth buffer.
@@ -47,6 +47,9 @@ if __name__ == "__main__":
 
     # Enables buffer with top down map of the current episode/level.
     game.set_automap_buffer_enabled(True)
+
+    # Enables information about all objects present in current episode/level.
+    game.set_objects_info_enabled(True)
 
     # Sets other rendering options (all of these options except crosshair are enabled (set to True) by default)
     game.set_render_hud(False)
@@ -103,7 +106,7 @@ if __name__ == "__main__":
 
     # Sets time that will pause the engine after each action (in seconds)
     # Without this everything would go too fast for you to keep track of what's happening.
-    sleep_time = 1.0 / vzd.DEFAULT_TICRATE # = 0.028
+    sleep_time = 1.0 / vzd.DEFAULT_TICRATE  # = 0.028
 
     for i in range(episodes):
         print("Episode #" + str(i + 1))
@@ -124,6 +127,7 @@ if __name__ == "__main__":
             labels_buf = state.labels_buffer
             automap_buf = state.automap_buffer
             labels = state.labels
+            objects = state.objects
 
             # Games variables can be also accessed via:
             #game.get_game_variable(GameVariable.AMMO2)

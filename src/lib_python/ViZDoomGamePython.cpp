@@ -74,12 +74,19 @@ namespace vizdoom {
         if (this->state->screenBuffer != nullptr)
             this->pyState->screenBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->screenBuffer->data());
         else this->pyState->screenBuffer = pyb::none();
+
         if (this->state->depthBuffer != nullptr)
             this->pyState->depthBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->depthBuffer->data());
         else this->pyState->depthBuffer = pyb::none();
-        if (this->state->labelsBuffer != nullptr)
+
+        if (this->state->labelsBuffer != nullptr) {
             this->pyState->labelsBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->labelsBuffer->data());
-        else this->pyState->labelsBuffer = pyb::none();
+            this->pyState->labels = DoomGamePython::vectorToPyList<Label>(this->state->labels);
+        }  else {
+            this->pyState->labelsBuffer = pyb::none();
+            this->pyState->labels = pyb::list();
+        }
+
         if (this->state->automapBuffer != nullptr)
             this->pyState->automapBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->automapBuffer->data());
         else this->pyState->automapBuffer = pyb::none();
@@ -96,21 +103,24 @@ namespace vizdoom {
         else this->pyState->gameVariables = pyb::none();
 
         /* Update labels */
-        size_t labelPartSize = offsetof(struct Label, objectId) - offsetof(struct Label, value);
-        size_t objectPartSize = offsetof(struct Label, objectName) - offsetof(struct Label, objectId);
+//        if (this->state->objects.size() > 0) {
+//            size_t labelPartSize = offsetof(struct Label, objectId) - offsetof(struct Label, value);
+//            size_t objectPartSize = offsetof(struct Label, objectName) - offsetof(struct Label, objectId);
+//            pyb::list pyLabels;
+//            for(auto i = this->state->labels.begin(); i != this->state->labels.end(); ++i){
+//                LabelPython pyLabel;
+//                std::memcpy(&pyLabel.value, &i->value, labelPartSize);
+//                std::memcpy(&pyLabel.objectId, &i->objectId, objectPartSize);
+//                pyLabel.objectName = pyb::str(i->objectName.c_str());
+//                pyLabels.append(pyLabel);
+//            }
+//            this->pyState->labels = pyLabels;
+//        }
 
-        if(this->state->labels.size() > 0){
-            pyb::list pyLabels;
-            for(auto i = this->state->labels.begin(); i != this->state->labels.end(); ++i){
-                LabelPython pyLabel;
-                std::memcpy(&pyLabel.value, &i->value, labelPartSize);
-                std::memcpy(&pyLabel.objectId, &i->objectId, objectPartSize);
-                pyLabel.objectName = pyb::str(i->objectName.c_str());
-                pyLabels.append(pyLabel);
-            }
-
-            this->pyState->labels = pyLabels;
-        }
+        /* Update objects */
+        if (this->isObjectsInfoEnabled()) {
+            this->pyState->objects = DoomGamePython::vectorToPyList<Object>(this->state->objects);
+        } else this->pyState->objects = pyb::list();
 
         return this->pyState;
     }
@@ -205,7 +215,7 @@ namespace vizdoom {
 
     template<class T> pyb::list DoomGamePython::vectorToPyList(const std::vector<T>& vector){
         pyb::list pyList;
-        for (auto i : vector) pyList.append(i);
+        for (auto& i : vector) pyList.append(i);
         return pyList;
     }
 
