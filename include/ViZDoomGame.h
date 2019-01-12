@@ -167,11 +167,11 @@ namespace vizdoom {
         void setAutomapRotate(bool rotate);
         void setAutomapRenderTextures(bool textures);
 
-        /* Objects and map information */
+        /* Objects and sectors information */
         bool isObjectsInfoEnabled();
         void setObjectsInfoEnabled(bool objectsInfo);
-        bool isMapInfoEnabled();
-        void setMapInfoEnabled(bool mapInfo);
+        bool isSectorsInfoEnabled();
+        void setSectorsInfoEnabled(bool sectorsInfo);
 
         /* Render options */
         void setRenderHud(bool hud);

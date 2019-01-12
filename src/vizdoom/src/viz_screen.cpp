@@ -149,6 +149,7 @@ void VIZ_ScreenFormatUpdate(){
         delete vizDepthMap;
         vizDepthMap = NULL;
     }
+
     if (vizLabels != NULL){
         delete vizLabels;
         vizLabels = NULL;

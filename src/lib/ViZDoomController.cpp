@@ -98,8 +98,8 @@ namespace vizdoom {
         this->amRotate = false;
         this->amTextures = true;
 
-        this->objectsState = false;
-        this->mapState = false;
+        this->objects = false;
+        this->sectors = false;
 
         this->hud = false;
         this->minHud = false;
@@ -664,29 +664,29 @@ namespace vizdoom {
     }
 
     /* Objects (actors) and map state */
-    bool DoomController::isObjectsStateEnabled() {
+    bool DoomController::isObjectsEnabled() {
         if (this->doomRunning) return this->gameState->OBJECTS;
-        else return objectsState;
+        else return objects;
     }
 
-    void DoomController::setObjectsStateEnabled(bool objectsState) {
-        this->objectsState = objectsState;
+    void DoomController::setObjectsEnabled(bool objects) {
+        this->objects = objects;
         if (this->doomRunning) {
-            if (this->objectsState) this->sendCommand("viz_objects 1");
+            if (this->objects) this->sendCommand("viz_objects 1");
             else this->sendCommand("viz_objects 0");
         }
     }
 
-    bool DoomController::isMapStateEnabled() {
-        if (this->doomRunning) return this->gameState->MAP;
-        else return mapState;
+    bool DoomController::isSectorsEnabled() {
+        if (this->doomRunning) return this->gameState->SECTORS;
+        else return sectors;
     }
 
-    void DoomController::setMapStateEnabled(bool mapState) {
-        this->mapState = mapState;
+    void DoomController::setSectorsEnabled(bool sectors) {
+        this->sectors = sectors;
         if (this->doomRunning) {
-            if (this->mapState) this->sendCommand("viz_map 1");
-            else this->sendCommand("viz_map 0");
+            if (this->sectors) this->sendCommand("viz_sectors 1");
+            else this->sendCommand("viz_sectors 0");
         }
     }
 
@@ -1337,13 +1337,13 @@ namespace vizdoom {
         }
 
         // objects (actors) and map state
-        if (this->objectsState) {
+        if (this->objects) {
             this->doomArgs.push_back("+viz_objects");
             this->doomArgs.push_back("1");
         }
 
-        if (this->mapState) {
-            this->doomArgs.push_back("+viz_map");
+        if (this->sectors) {
+            this->doomArgs.push_back("+viz_sectors");
             this->doomArgs.push_back("1");
         }
 

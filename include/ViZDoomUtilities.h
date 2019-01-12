@@ -41,6 +41,16 @@ namespace vizdoom {
     /* DoomFixed helpers */
     /*----------------------------------------------------------------------------------------------------------------*/
 
+    template<typename T>
+    inline T doomFixedToReal(int fixed){
+        return static_cast<T>(fixed) / 65536.0;
+    }
+    template<typename T, typename U>
+    inline T doomFixedToReal(U fixed){
+        return static_cast<T>(fixed) / 65536.0;
+    }
+    float doomFixedToFloat(int doomFixed);
+    float doomFixedToFloat(float doomFixed);
     double doomFixedToDouble(int doomFixed);
     double doomFixedToDouble(double doomFixed);
 

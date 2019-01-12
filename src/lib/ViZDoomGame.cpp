@@ -222,6 +222,7 @@ namespace vizdoom {
             this->state = std::make_shared<GameState>();
             this->state->number = this->nextStateNumber++;
             this->state->tic = this->doomController->getMapTic();
+            SMGameState *smState = this->doomController->getGameState();
 
             this->state->gameVariables.resize(this->availableGameVariables.size());
 
@@ -237,7 +238,7 @@ namespace vizdoom {
             int height = this->getScreenHeight();
 
             size_t graySize = static_cast<size_t>(width * height);
-            size_t colorSize = graySize * channels;
+            size_t colorSize = graySize *channels;
 
             uint8_t *buf = this->doomController->getScreenBuffer();
             this->state->screenBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
@@ -254,11 +255,17 @@ namespace vizdoom {
 
                 /* Update labels */
                 size_t labelPartSize = offsetof(struct Label, objectName) - offsetof(struct Label, value);
-                for (unsigned int i = 0; i < this->doomController->getGameState()->LABEL_COUNT; ++i) {
+                for (unsigned int i = 0; i < smState->LABEL_COUNT; ++i) {
+                    this->state->labels.emplace_back();
+                    std::memcpy(&this->state->labels.back().value, &smState->LABEL[i].value, labelPartSize);
+                    this->state->labels.back().objectName = std::string(smState->LABEL[i].objectName);
+
+                    /*
                     Label label;
-                    std::memcpy(&label.value, &this->doomController->getGameState()->LABEL[i].value, labelPartSize);
-                    label.objectName = std::string(this->doomController->getGameState()->LABEL[i].objectName);
+                    std::memcpy(&label.value, &smState->LABEL[i].value, labelPartSize);
+                    label.objectName = std::string(smState->LABEL[i].objectName);
                     this->state->labels.push_back(label);
+                     */
                 }
             } else this->state->labelsBuffer = nullptr;
 
@@ -269,15 +276,36 @@ namespace vizdoom {
 
             /* Update objects */
             this->state->objects.clear();
-            if (this->doomController->isObjectsStateEnabled()) {
+            if (this->doomController->isObjectsEnabled()) {
                 //size_t objectPartSize = offsetof(struct Object, objectName) - offsetof(struct Object, objectId);
                 size_t objectPartSize = offsetof(struct Object, name) - offsetof(struct Object, positionX);
-                for (unsigned int i = 0; i < this->doomController->getGameState()->OBJECT_COUNT; ++i) {
+                for (unsigned int i = 0; i < smState->OBJECT_COUNT; ++i) {
+                    this->state->objects.emplace_back();
+                    std::memcpy(&this->state->objects.back().positionX, &smState->OBJECT[i].position[0], objectPartSize);
+                    this->state->objects.back().name = std::string(smState->OBJECT[i].name);
+
+                    /*
                     Object object;
-                    //std::memcpy(&object.objectId, &this->doomController->getGameState()->OBJECT[i].objectId, objectPartSize);
-                    std::memcpy(&object.positionX, &this->doomController->getGameState()->OBJECT[i].position[0], objectPartSize);
-                    object.name = std::string(this->doomController->getGameState()->OBJECT[i].name);
+                    //std::memcpy(&object.objectId, &smState->OBJECT[i].objectId, objectPartSize);
+                    std::memcpy(&object.positionX, &smState->OBJECT[i].position[0], objectPartSize);
+                    object.name = std::string(smState->OBJECT[i].name);
                     this->state->objects.push_back(object);
+                     */
+                }
+            }
+            
+            /* Update sectors */
+            this->state->sectors.clear();
+            if(this->doomController->isSectorsEnabled()){
+                for (unsigned int i = 0; i < smState->SECTOR_COUNT; ++i) {
+                    this->state->sectors.emplace_back();
+                    this->state->sectors.back().ceilingHeight = smState->SECTOR[i].ceilingHeight;
+                    this->state->sectors.back().floorHeight = smState->SECTOR[i].floorHeight;
+                    for (unsigned int j = 0; j < smState->SECTOR[i].lineCount; ++j) {
+                        unsigned int l = smState->SECTOR[i].lines[j];
+                        this->state->sectors.back().lines.emplace_back();
+                        std::memcpy(&this->state->sectors.back().lines.back().x1, &smState->LINE[l].position[0], sizeof(Line));
+                    }
                 }
             }
 
@@ -554,13 +582,13 @@ namespace vizdoom {
 
     void DoomGame::setAutomapRenderTextures(bool textures) { this->doomController->setAutomapRenderTextures(textures); }
 
-    bool DoomGame::isObjectsInfoEnabled() { return this->doomController->isObjectsStateEnabled(); }
+    bool DoomGame::isObjectsInfoEnabled() { return this->doomController->isObjectsEnabled(); }
 
-    void DoomGame::setObjectsInfoEnabled(bool objectsInfo) { return this->doomController->setObjectsStateEnabled(objectsInfo); }
+    void DoomGame::setObjectsInfoEnabled(bool objectsInfo) { return this->doomController->setObjectsEnabled(objectsInfo); }
 
-    bool DoomGame::isMapInfoEnabled() { return this->doomController->isMapStateEnabled(); }
+    bool DoomGame::isSectorsInfoEnabled() { return this->doomController->isSectorsEnabled(); }
 
-    void DoomGame::setMapInfoEnabled(bool mapInfo) { return this->doomController->setMapStateEnabled(mapInfo); }
+    void DoomGame::setSectorsInfoEnabled(bool sectorsInfo) { return this->doomController->setSectorsEnabled(sectorsInfo); }
 
     void DoomGame::setRenderHud(bool hud) { this->doomController->setRenderHud(hud); }
 

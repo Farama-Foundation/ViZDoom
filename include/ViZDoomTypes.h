@@ -84,6 +84,20 @@ namespace vizdoom{
         std::string name;
     };
 
+    struct Line{
+        double x1;
+        double y1;
+        double x2;
+        double y2;
+        bool isBlocking;
+    };
+
+    struct Sector{
+        double floorHeight;
+        double ceilingHeight;
+        std::vector<Line> lines;
+    };
+
     struct GameState {
         unsigned int number;
         unsigned int tic;
@@ -98,6 +112,8 @@ namespace vizdoom{
         std::vector<Label> labels;
 
         std::vector<Object> objects;
+
+        std::vector<Sector> sectors;
     };
 
     typedef std::shared_ptr<GameState> GameStatePtr;

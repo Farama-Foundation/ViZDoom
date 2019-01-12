@@ -34,6 +34,8 @@
 
 #define MAX_LABELS 256
 #define MAX_OBJECTS 2048
+#define MAX_SECTORS 512
+#define MAX_LINES 2048
 
 namespace vizdoom {
 
@@ -78,12 +80,16 @@ namespace vizdoom {
         char name[MAX_NAME_LENGTH];
     };
 
-    struct SMLine {
-
+    struct SMSector{
+        double floorHeight;
+        double ceilingHeight;
+        unsigned int lineCount;
+        unsigned int lines[128];
     };
 
-    struct SMSector {
-
+    struct SMLine{
+        double position[4];
+        bool isBlocking;
     };
 
     struct SMGameState {
@@ -120,7 +126,7 @@ namespace vizdoom {
         bool LABELS;
         bool AUTOMAP;
         bool OBJECTS;
-        bool MAP;
+        bool SECTORS;
 
         // MAP
         unsigned int MAP_START_TIC;
@@ -182,6 +188,14 @@ namespace vizdoom {
         // OBJECTS
         unsigned int OBJECT_COUNT;
         SMObject OBJECT[MAX_OBJECTS];
+
+        // SECTORS
+        unsigned int SECTOR_COUNT;
+        SMSector SECTOR[MAX_SECTORS];
+
+        // LINES
+        unsigned int LINE_COUNT;
+        SMLine LINE[MAX_LINES];
 
         // LOGGED
         int PLAYER_HITCOUNT;

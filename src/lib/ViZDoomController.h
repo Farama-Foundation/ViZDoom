@@ -205,11 +205,11 @@ namespace vizdoom {
         void setAutomapRotate(bool rotate);
         void setAutomapRenderTextures(bool textures);
 
-        /* Objects (actors) and map state */
-        bool isObjectsStateEnabled();
-        void setObjectsStateEnabled(bool objectsState);
-        bool isMapStateEnabled();
-        void setMapStateEnabled(bool mapState);
+        /* Objects (actors) and sectors state */
+        bool isObjectsEnabled();
+        void setObjectsEnabled(bool objects);
+        bool isSectorsEnabled();
+        void setSectorsEnabled(bool sectors);
 
         /* Buffers in SM */
         uint8_t *const getScreenBuffer();
@@ -348,8 +348,8 @@ namespace vizdoom {
         bool depth;
         bool automap;
         bool labels;
-        bool objectsState;
-        bool mapState;
+        bool objects;
+        bool sectors;
 
         bool hud, minHud, weapon, crosshair, decals, particles, sprites, messages, corpses, flashes, renderAll;
         AutomapMode amMode;

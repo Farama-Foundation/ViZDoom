@@ -80,17 +80,22 @@ struct VIZLabel{
 };
 
 struct VIZObject{
-    unsigned int objectId;
-    double objectPosition[9];
-    char objectName[VIZ_MAX_NAME_LEN];
-};
-
-struct VIZLine{
-    double vertexes[4];
+    unsigned int id;
+    double position[9];
+    char name[VIZ_MAX_NAME_LEN];
 };
 
 struct VIZSector{
+    double floorHeight;
+    double ceilingHeight;
+    unsigned int lineCount;
+    unsigned int lines[128];
+};
 
+struct VIZLine{
+    double position[4];
+    //int frontSector, backSector;
+    bool isBlocking;
 };
 
 struct VIZGameState{
@@ -127,7 +132,7 @@ struct VIZGameState{
     bool LABELS;
     bool AUTOMAP;
     bool OBJECTS;
-    bool MAP;
+    bool SECTORS;
 
     // MAP
     unsigned int MAP_START_TIC;
@@ -190,7 +195,13 @@ struct VIZGameState{
     unsigned int OBJECT_COUNT;
     VIZObject OBJECT[VIZ_MAX_OBJECTS];
 
-    // TODO: LINEDEFS & SECTORS
+    // SECTORS
+    unsigned int SECTOR_COUNT;
+    VIZSector SECTOR[VIZ_MAX_SECTORS];
+
+    // LINES
+    unsigned int LINE_COUNT;
+    VIZLine LINE[VIZ_MAX_LINES];
 
     // LOGGED
     int PLAYER_HITCOUNT;
@@ -208,11 +219,13 @@ void VIZ_GameStateTic();
 
 void VIZ_GameStateUpdate();
 
+void VIZ_GameStateUpdateVariables();
+
 void VIZ_GameStateUpdateLabels();
 
 void VIZ_GameStateUpdateObjects();
 
-void VIZ_GameStateUpdateMap();
+void VIZ_GameStateUpdateSectors();
 
 void VIZ_GameStateInitNew();
 
