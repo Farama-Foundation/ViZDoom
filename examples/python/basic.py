@@ -51,6 +51,9 @@ if __name__ == "__main__":
     # Enables information about all objects present in current episode/level.
     game.set_objects_info_enabled(True)
 
+    # Enables information about all sectors (map layout).
+    game.set_sectors_info_enabled(True)
+
     # Sets other rendering options (all of these options except crosshair are enabled (set to True) by default)
     game.set_render_hud(False)
     game.set_render_minimal_hud(False)  # If hud is enabled
@@ -128,6 +131,7 @@ if __name__ == "__main__":
             automap_buf = state.automap_buffer
             labels = state.labels
             objects = state.objects
+            sectors = state.sectors
 
             # Games variables can be also accessed via:
             #game.get_game_variable(GameVariable.AMMO2)

@@ -81,6 +81,8 @@ namespace vizdoom {
 
         if (this->state->labelsBuffer != nullptr) {
             this->pyState->labelsBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->labelsBuffer->data());
+
+            /* Update labels */
             this->pyState->labels = DoomGamePython::vectorToPyList<Label>(this->state->labels);
         }  else {
             this->pyState->labelsBuffer = pyb::none();
@@ -98,28 +100,27 @@ namespace vizdoom {
             this->pyState->gameVariables = dataToNumpyArray(1, &shape, NPY_DOUBLE, this->state->gameVariables.data());
 
             // Python list version
-            //this->pyState->gameVariables = DoomGamePython::vectorToPyList<int>(this->state->gameVariables);
+            //this->pyState->gameVariables = DoomGamePython::vectorToPyList<double>(this->state->gameVariables);
         }
         else this->pyState->gameVariables = pyb::none();
-
-        /* Update labels */
-//        if (this->state->objects.size() > 0) {
-//            size_t labelPartSize = offsetof(struct Label, objectId) - offsetof(struct Label, value);
-//            size_t objectPartSize = offsetof(struct Label, objectName) - offsetof(struct Label, objectId);
-//            pyb::list pyLabels;
-//            for(auto i = this->state->labels.begin(); i != this->state->labels.end(); ++i){
-//                LabelPython pyLabel;
-//                std::memcpy(&pyLabel.value, &i->value, labelPartSize);
-//                std::memcpy(&pyLabel.objectId, &i->objectId, objectPartSize);
-//                pyLabel.objectName = pyb::str(i->objectName.c_str());
-//                pyLabels.append(pyLabel);
-//            }
-//            this->pyState->labels = pyLabels;
-//        }
 
         /* Update objects */
         if (this->isObjectsInfoEnabled()) {
             this->pyState->objects = DoomGamePython::vectorToPyList<Object>(this->state->objects);
+        } else this->pyState->objects = pyb::list();
+
+        /* Update sectors */
+        if (this->isSectorsInfoEnabled()) {
+            pyb::list pySectors;
+            for (auto& sector : this->state->sectors){
+                SectorPython pySector;
+                pySector.floorHeight = sector.floorHeight;
+                pySector.ceilingHeight = sector.ceilingHeight;
+                pySector.lines = DoomGamePython::vectorToPyList<Line>(sector.lines);
+                pySectors.append(pySector);
+            }
+            this->pyState->sectors = pySectors;
+            //this->pyState->sectors = DoomGamePython::vectorToPyList<Sectors>(this->state->objects);
         } else this->pyState->objects = pyb::list();
 
         return this->pyState;

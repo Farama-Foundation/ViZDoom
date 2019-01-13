@@ -110,7 +110,21 @@ namespace vizdoom {
 
         pyb::str name;
     };
+
+    struct LinePython {
+        double x1;
+        double y1;
+        double x2;
+        double y2;
+        bool isBlocking;
+    };
     */
+
+    struct SectorPython {
+        double floorHeight;
+        double ceilingHeight;
+        pyb::list lines;
+    };
 
     struct GameStatePython {
         unsigned int number;
@@ -126,6 +140,7 @@ namespace vizdoom {
 
         pyb::list labels;
         pyb::list objects;
+        pyb::list sectors;
     };
 
     struct ServerStatePython {

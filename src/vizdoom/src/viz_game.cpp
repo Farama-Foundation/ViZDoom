@@ -509,30 +509,6 @@ void VIZ_GameStateUpdateSectors(){
     //std::unordered_map<sector_t *, int> sectorIds(numsectors);
     std::unordered_map<line_t *, int> lineIds(numlines);
 
-    unsigned int sectorCount = 0;
-    for(int i = 0; i < numsectors; ++i){
-        sector_t *sector = &sectors[i];
-        VIZSector *vizSector = &vizGameStateSM->SECTOR[sectorCount++];
-
-        vizSector->ceilingHeight = VIZ_FixedToDouble(sector->ceilingplane.d);
-        vizSector->floorHeight = VIZ_FixedToDouble(sector->floorplane.d);
-
-        unsigned int lineCount = 0;
-        for(int l = 0; l < sector->linecount; ++l){
-            line_t *line = sector->lines[l];
-            auto lineId = lineIds.find(line);
-            if(lineId != lineIds.end()) vizSector->lines[lineCount++] = lineId->second;
-            else vizSector->lines[lineCount++] = lineIds.insert({line, lineIds.size()}).second;
-        }
-        vizSector->lineCount = lineCount;
-        assert(lineCount == sector->linecount);
-
-        //sectorIds.insert({sector, sectorIds.size()});
-        if(sectorCount >= VIZ_MAX_SECTORS) break;
-    }
-    vizGameStateSM->SECTOR_COUNT = sectorCount;
-    assert(objectCount == numsectors);
-
     unsigned int lineCount = 0;
     for(int i = 0; i < numlines; ++i){
         line_t *line = &lines[i];
@@ -546,9 +522,35 @@ void VIZ_GameStateUpdateSectors(){
         //vizLine->frontSector = sectorIds[line->frontsector];
         //vizLine->backSector = sectorIds[line->backsector];
 
+        lineIds.insert({line, i});
         vizLine->isBlocking = (line->flags & (ML_BLOCKING|ML_BLOCKEVERYTHING|ML_BLOCK_PLAYERS));
         if(lineCount >= VIZ_MAX_LINES) break;
     }
+
+    unsigned int sectorCount = 0;
+    for(int i = 0; i < numsectors; ++i){
+        sector_t *sector = &sectors[i];
+        VIZSector *vizSector = &vizGameStateSM->SECTOR[sectorCount++];
+
+        vizSector->ceilingHeight = VIZ_FixedToDouble(sector->ceilingplane.d);
+        vizSector->floorHeight = VIZ_FixedToDouble(sector->floorplane.d);
+
+        unsigned int lineCount = 0;
+        for(int l = 0; l < sector->linecount; ++l){
+            line_t *line = sector->lines[l];
+            vizSector->lines[lineCount++] = lineIds[line];
+            //auto lineId = lineIds.find(line);
+            //if(lineId != lineIds.end()) vizSector->lines[lineCount++] = lineId->second;
+            //else  = lineIds.insert({line, lineIds.size()}).second;
+        }
+        vizSector->lineCount = lineCount;
+        assert(lineCount == sector->linecount);
+
+        //sectorIds.insert({sector, sectorIds.size()});
+        if(sectorCount >= VIZ_MAX_SECTORS) break;
+    }
+    vizGameStateSM->SECTOR_COUNT = sectorCount;
+    assert(objectCount == numsectors);
 
     vizGameStateSM->LINE_COUNT = lineCount;
     assert(lineCount == numlines);

@@ -395,7 +395,7 @@ PYBIND11_MODULE(vizdoom, vz){
         .def_readonly("object_velocity_z", &LABEL_CLASS::objectVelocityZ);
 
     #define OBJECT_CLASS Object
-    class_<Object>(vz, "Object")
+    class_<OBJECT_CLASS>(vz, "Object")
     //class_<ObjectPython>(vz, "Object")
         //.def_readonly("id", &OBJECT_CLASS::objectId)
         .def_readonly("name", &OBJECT_CLASS::name)
@@ -409,6 +409,20 @@ PYBIND11_MODULE(vizdoom, vz){
         .def_readonly("velocity_y", &OBJECT_CLASS::velocityY)
         .def_readonly("velocity_z", &OBJECT_CLASS::velocityZ);
 
+    #define LINE_CLASS Line
+    class_<LINE_CLASS>(vz, "Line")
+        .def_readonly("x1", &LINE_CLASS::x1)
+        .def_readonly("y1", &LINE_CLASS::y2)
+        .def_readonly("x2", &LINE_CLASS::x2)
+        .def_readonly("y2", &LINE_CLASS::y2)
+        .def_readonly("is_blocking", &LINE_CLASS::isBlocking);
+
+    #define SECTOR_CLASS SectorPython
+    class_<SECTOR_CLASS>(vz, "Sector")
+        .def_readonly("floor_height", &SECTOR_CLASS::floorHeight)
+        .def_readonly("ceiling_height", &SECTOR_CLASS::ceilingHeight)
+        .def_readonly("lines", &SECTOR_CLASS::lines);
+
     class_<GameStatePython>(vz, "GameState")
         .def_readonly("number", &GameStatePython::number)
         .def_readonly("tic", &GameStatePython::tic)
@@ -420,8 +434,8 @@ PYBIND11_MODULE(vizdoom, vz){
         .def_readonly("automap_buffer", &GameStatePython::automapBuffer)
 
         .def_readonly("labels", &GameStatePython::labels)
-
-        .def_readonly("objects", &GameStatePython::objects);
+        .def_readonly("objects", &GameStatePython::objects)
+        .def_readonly("sectors", &GameStatePython::sectors);
 
     class_<ServerStatePython>(vz, "ServerState")
         .def_readonly("tic", &ServerStatePython::tic)
@@ -539,8 +553,8 @@ PYBIND11_MODULE(vizdoom, vz){
         .def("set_automap_render_textures", &DoomGamePython::setAutomapRenderTextures)
         .def("is_objects_info_enabled", &DoomGamePython::isObjectsInfoEnabled)
         .def("set_objects_info_enabled", &DoomGamePython::setObjectsInfoEnabled)
-        .def("is_map_info_enabled", &DoomGamePython::isMapInfoEnabled)
-        .def("set_map_info_enabled", &DoomGamePython::setMapInfoEnabled)
+        .def("is_sectors_info_enabled", &DoomGamePython::isSectorsInfoEnabled)
+        .def("set_sectors_info_enabled", &DoomGamePython::setSectorsInfoEnabled)
 
         .def("set_render_hud", &DoomGamePython::setRenderHud)
         .def("set_render_minimal_hud", &DoomGamePython::setRenderMinimalHud)
