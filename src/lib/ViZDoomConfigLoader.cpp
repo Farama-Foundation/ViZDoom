@@ -292,6 +292,14 @@ namespace vizdoom {
         if (str == "velocity_y") return VELOCITY_Y;
         if (str == "velocity_z") return VELOCITY_Z;
 
+        if (str == "camera_position_x") return CAMERA_POSITION_X;
+        if (str == "camera_position_y") return CAMERA_POSITION_Y;
+        if (str == "camera_position_z") return CAMERA_POSITION_Z;
+        if (str == "camera_angle") return CAMERA_ANGLE;
+        if (str == "camera_pitch") return CAMERA_PITCH;
+        if (str == "camera_roll") return CAMERA_ROLL;
+        if (str == "camera_fov") return CAMERA_FOV;
+
         if (str == "player_number") return PLAYER_NUMBER;
         if (str == "player_count") return PLAYER_COUNT;
 
@@ -619,6 +627,14 @@ namespace vizdoom {
                 }
                 if (key == "automap_render_textures" || key == "automaprendertextures") {
                     this->game->setAutomapRenderTextures(stringToBool(val));
+                    continue;
+                }
+                if (key == "objects_info_enabled" || key == "objectsinfoenabled") {
+                    this->game->setObjectsInfoEnabled(stringToBool(val));
+                    continue;
+                }
+                if (key == "sectors_info_enabled" || key == "sectorsinfoenabled") {
+                    this->game->setSectorsInfoEnabled(stringToBool(val));
                     continue;
                 }
                 if (key == "render_hud" || key == "renderhud") {

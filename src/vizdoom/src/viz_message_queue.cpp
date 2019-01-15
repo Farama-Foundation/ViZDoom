@@ -62,7 +62,7 @@ void VIZ_MQSend(uint8_t code, const char * command){
 
     if(vizMQController) vizMQController->send(&msg, sizeof(VIZMessage), 0);
 
-    VIZ_DebugMsg(4, VIZ_FUNC, "Sended msg: %d.", code);
+    VIZ_DebugMsg(4, VIZ_FUNC, "Sent msg: %d.", code);
 }
 
 void VIZ_MQReceive(void *msg) {
@@ -106,7 +106,7 @@ void VIZ_MQTic(){
                 break;
 
             case VIZ_MSG_CODE_COMMAND:
-                VIZ_Command(strdup(msg.command));
+                if(msg.command[0] != '\0') VIZ_Command(strdup(msg.command));
                 VIZ_CVARsUpdate();
                 break;
 
