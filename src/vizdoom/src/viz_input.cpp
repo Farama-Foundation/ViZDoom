@@ -39,7 +39,7 @@ bool vizInputInited = false;
 float vizLastInputBT[VIZ_BT_COUNT];
 unsigned int vizLastInputUpdate[VIZ_BT_COUNT];
 
-EXTERN_CVAR (Bool, viz_debug)
+EXTERN_CVAR (Int, viz_debug)
 EXTERN_CVAR (Bool, viz_allow_input)
 EXTERN_CVAR (Bool, viz_nocheat)
 EXTERN_CVAR (Bool, viz_cmd_filter)

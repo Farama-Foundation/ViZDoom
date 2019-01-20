@@ -102,7 +102,9 @@ static int NumTerms;
 
 // CODE --------------------------------------------------------------------
 
+//VIZDOOM_CODE
 EXTERN_CVAR(Bool, viz_noconsole)
+EXTERN_CVAR(Bool, viz_noxserver)
 
 void addterm (void (*func) (), const char *name)
 {
@@ -249,10 +251,15 @@ int main (int argc, char **argv)
 	//I'm not proud of this solution. Shame on me.
 
 	//VIZDOOM_CODE
-	for(int i=0;i<argc;i++)
-		if(strcmp("+viz_noconsole", argv[i])==0)
-			if(i+1<argc&&strcmp(argv[i+1], "1")==0)
-				viz_noconsole=true;
+	for(int i = 0; i < argc; ++i){
+		if(strcmp("+viz_noconsole", argv[i]) == 0) {
+			if(i + 1 < argc && strcmp(argv[i+1], "1") == 0)
+				viz_noconsole = true;
+        } else if(strcmp("+viz_noxserver", argv[i]) == 0) {
+            if(i + 1 < argc && strcmp(argv[i+1], "1") == 0)
+                viz_noxserver = true;
+        }
+    }
 	if(!viz_noconsole)
 	printf(GAMENAME" %s - SDL version\nCompiled on %s\n",
 		GetVersionString(), __DATE__);
@@ -270,7 +277,7 @@ int main (int argc, char **argv)
 	setenv ("LC_NUMERIC", "C", 1);
 
 #ifndef NO_GTK
-	GtkAvailable = gtk_init_check (&argc, &argv);
+	if(!viz_noxserver) GtkAvailable = gtk_init_check (&argc, &argv);
 #endif
 	
 	setlocale (LC_ALL, "C");
@@ -281,8 +288,7 @@ int main (int argc, char **argv)
 		return -1;
 	}
 	atterm (SDL_Quit);
-	if(!viz_noconsole)
-		printf("\n");
+	if(!viz_noconsole) printf("\n");
 	
     try
     {

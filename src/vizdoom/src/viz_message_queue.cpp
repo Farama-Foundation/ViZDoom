@@ -25,7 +25,7 @@
 #include "viz_game.h"
 #include "viz_main.h"
 
-EXTERN_CVAR (Bool, viz_debug)
+EXTERN_CVAR (Int, viz_debug)
 EXTERN_CVAR (Bool, viz_async)
 
 bip::message_queue *vizMQController = nullptr;

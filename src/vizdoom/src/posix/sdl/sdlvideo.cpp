@@ -419,7 +419,7 @@ SDLFB::~SDLFB ()
 //VIZDOOM_CODE
 bool SDLFB::IsValid ()
 {
-	return *viz_noxserver==true ? true : (DFrameBuffer::IsValid() && Screen != NULL);
+	return *viz_noxserver == true ? true : (DFrameBuffer::IsValid() && Screen != NULL);
 }
 
 int SDLFB::GetPageCount ()
@@ -667,7 +667,7 @@ void SDLFB::SetFullscreen (bool fullscreen)
 //VIZDOOM_CODE
 bool SDLFB::IsFullscreen ()
 {
-	return (*viz_noxserver)==true ? false : ((SDL_GetWindowFlags (Screen) & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0);
+	return (*viz_noxserver) == true ? false : ((SDL_GetWindowFlags (Screen) & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0);
 }
 //VIZDOOM_CODE
 void SDLFB::ResetSDLRenderer ()
@@ -679,7 +679,7 @@ void SDLFB::ResetSDLRenderer ()
 		SDL_DestroyRenderer (Renderer);
 	}
 
-	UsingRenderer = (*viz_noxserver)==true ? false : !vid_forcesurface;
+	UsingRenderer = (*viz_noxserver) == true ? false : !vid_forcesurface;
 	if (UsingRenderer)
 	{
 		Renderer = SDL_CreateRenderer (Screen, -1,SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE|

@@ -34,7 +34,7 @@ bool alpha;
 
 BYTE *vizScreenSM = NULL, *vizDepthSM = NULL, *vizLabelsSM = NULL, *vizAutomapSM = NULL;
 
-EXTERN_CVAR (Bool, viz_debug)
+EXTERN_CVAR (Int, viz_debug)
 EXTERN_CVAR (Int, viz_screen_format)
 EXTERN_CVAR (Bool, viz_depth)
 EXTERN_CVAR (Bool, viz_labels)
