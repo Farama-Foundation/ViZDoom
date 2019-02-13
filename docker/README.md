@@ -1,3 +1,5 @@
+>>> Files in this directory might be outdated. However official vizdoom docker images are available on [dockerhub](https://hub.docker.com/r/vizdoom/vizdoom) and in [git repo](https://github.com/mihahauke/vizdoom_docker)
+
 # ViZDoom Dockerfiles
 
 Provided dockerfiles (all images use Ubuntu 16.04):
