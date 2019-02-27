@@ -29,10 +29,21 @@ See [Track 1](https://www.crowdai.org/challenges/visual-doom-ai-competition-2018
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
 
-## References
+## Cite as
+> M Wydmuch, M Kempka & W Jaśkowski, ViZDoom Competitions: Playing Doom from Pixels, IEEE Transactions on Games, in print,
+[arXiv:1809.03470](https://arxiv.org/abs/1809.03470)
+```
+@article{wydmuch2018vizdoom,
+  title={ViZDoom Competitions: Playing Doom from Pixels},
+  author={Wydmuch, Marek and Kempka, Micha{\l} and Ja{\'s}kowski, Wojciech},
+  journal={IEEE Transactions on Games},
+  year={2018},
+  publisher={IEEE}
+}
+```
+or
 
-> Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, IEEE Conference on Computational Intelligence and Games, pp. 341-348, Santorini, Greece, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
-
+> M. Kempka, M. Wydmuch, G. Runc, J. Toczek & W. Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, IEEE Conference on Computational Intelligence and Games, pp. 341-348, Santorini, Greece, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
 ```
 @inproceedings{Kempka2016ViZDoom,
   author    = {Micha{\l} Kempka and Marek Wydmuch and Grzegorz Runc and Jakub Toczek and Wojciech Ja\'skowski},
@@ -47,7 +58,6 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
   Note      = {The best paper award}
 }
 ```
-
 
 ## Installation/Building instructions
 
