@@ -412,7 +412,7 @@ PYBIND11_MODULE(vizdoom, vz){
     #define LINE_CLASS Line
     class_<LINE_CLASS>(vz, "Line")
         .def_readonly("x1", &LINE_CLASS::x1)
-        .def_readonly("y1", &LINE_CLASS::y2)
+        .def_readonly("y1", &LINE_CLASS::y1)
         .def_readonly("x2", &LINE_CLASS::x2)
         .def_readonly("y2", &LINE_CLASS::y2)
         .def_readonly("is_blocking", &LINE_CLASS::isBlocking);

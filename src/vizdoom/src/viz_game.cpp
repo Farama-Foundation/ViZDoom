@@ -524,8 +524,17 @@ void VIZ_GameStateUpdateSectors(){
 
         lineIds.insert({line, i});
         vizLine->isBlocking = (line->flags & (ML_BLOCKING|ML_BLOCKEVERYTHING|ML_BLOCK_PLAYERS));
+
+        VIZ_DebugMsg(4, VIZ_FUNC, "line: %d, position: (%f, %f), (%f, %f), isBlocking: %d",
+                i, vizLine->position[0], vizLine->position[1], vizLine->position[2], vizLine->position[3], vizLine->isBlocking);
+
         if(lineCount >= VIZ_MAX_LINES) break;
     }
+
+    VIZ_DebugMsg(4, VIZ_FUNC, "lineCount: %d, numlines: %d", lineCount, numlines);
+
+    vizGameStateSM->LINE_COUNT = lineCount;
+    assert(lineCount == numlines);
 
     unsigned int sectorCount = 0;
     for(int i = 0; i < numsectors; ++i){
@@ -535,25 +544,25 @@ void VIZ_GameStateUpdateSectors(){
         vizSector->ceilingHeight = VIZ_FixedToDouble(sector->ceilingplane.d);
         vizSector->floorHeight = VIZ_FixedToDouble(sector->floorplane.d);
 
-        unsigned int lineCount = 0;
+        unsigned int sectorLineCount = 0;
         for(int l = 0; l < sector->linecount; ++l){
             line_t *line = sector->lines[l];
-            vizSector->lines[lineCount++] = lineIds[line];
+            vizSector->lines[sectorLineCount++] = lineIds[line];
             //auto lineId = lineIds.find(line);
             //if(lineId != lineIds.end()) vizSector->lines[lineCount++] = lineId->second;
             //else  = lineIds.insert({line, lineIds.size()}).second;
         }
-        vizSector->lineCount = lineCount;
-        assert(lineCount == sector->linecount);
+        vizSector->lineCount = sectorLineCount;
+        assert(sectorLineCount == sector->linecount);
 
         //sectorIds.insert({sector, sectorIds.size()});
         if(sectorCount >= VIZ_MAX_SECTORS) break;
     }
-    vizGameStateSM->SECTOR_COUNT = sectorCount;
-    assert(objectCount == numsectors);
 
-    vizGameStateSM->LINE_COUNT = lineCount;
-    assert(lineCount == numlines);
+    VIZ_DebugMsg(4, VIZ_FUNC, "sectorCount: %d, numsectors: %d", sectorCount, numsectors);
+
+    vizGameStateSM->SECTOR_COUNT = sectorCount;
+    assert(sectorCount == numsectors);
 }
 
 void VIZ_GameStateInitNew(){

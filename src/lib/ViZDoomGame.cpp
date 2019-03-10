@@ -295,6 +295,7 @@ namespace vizdoom {
             }
             
             /* Update sectors */
+            static_assert(sizeof(Line) == sizeof(SMLine));
             this->state->sectors.clear();
             if(this->doomController->isSectorsEnabled()){
                 for (unsigned int i = 0; i < smState->SECTOR_COUNT; ++i) {
