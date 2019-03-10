@@ -5,8 +5,7 @@ from __future__ import print_function
 from random import choice
 import vizdoom as vzd
 from argparse import ArgumentParser
-
-import cv2
+import matplotlib.pyplot as plt
 
 DEFAULT_CONFIG = "../../scenarios/my_way_home.cfg"
 if __name__ =="__main__":
@@ -64,10 +63,16 @@ if __name__ =="__main__":
             for o in state.objects:
                 print("Object name:", o.name)
                 print("Object position x:", o.position_x, "y:", o.position_y, "z:", o.position_z)
-    
+
                 # Other available fields:
                 #print("Object rotation angle", o.angle, "pitch:", o.pitch, "roll:", o.roll)
                 #print("Object velocity x:", o.velocity_x, "y:", o.velocity_y, "z:", o.velocity_z)
+
+                # Plot object on map
+                if o.name == "DoomPlayer":
+                    plt.plot(o.position_x, o.position_y, color='green', marker='o')
+                else:
+                    plt.plot(o.position_x, o.position_y, color='red', marker='o')
     
             print("=====================")
 
@@ -77,7 +82,15 @@ if __name__ =="__main__":
             for s in state.sectors:
                 print("Sector floor height:", s.floor_height, "ceiling height:", s.ceiling_height)
                 print("Sector lines:", [(l.x1, l.y1, l.x2, l.y2, l.is_blocking) for l in s.lines])
-    
+
+                # Plot sector on map
+                for l in s.lines:
+                    if l.is_blocking:
+                        plt.plot([l.x1, l.x2], [l.y1, l.y2], color='black', linewidth=2)
+
+            # Show map
+            plt.show()
+
         print("Episode finished!")
 
     # It will be done automatically anyway but sometimes you need to do it in the middle of the program...
