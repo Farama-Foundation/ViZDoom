@@ -73,6 +73,10 @@ void I_ShutdownGraphics ()
 //VIZDOOM_CODE
 void I_InitGraphics ()
 {
+#ifdef __APPLE__
+    SDL_SetHint(SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES, "0");
+#endif // __APPLE__
+
 	if(!(*viz_noxserver))
 	{
 		if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) {

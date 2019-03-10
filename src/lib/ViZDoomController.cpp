@@ -1253,9 +1253,13 @@ namespace vizdoom {
         // resolution and aspect ratio
         this->doomArgs.push_back("-width");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenWidth));
-
         this->doomArgs.push_back("-height");
         this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenHeight));
+
+        //this->doomArgs.push_back("+vid_defwidth");
+        //this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenWidth));
+        //this->doomArgs.push_back("+vid_defheight");
+        //this->doomArgs.push_back(b::lexical_cast<std::string>(this->screenHeight));
 
         float ratio = static_cast<float>(this->screenWidth) / this->screenHeight;
 

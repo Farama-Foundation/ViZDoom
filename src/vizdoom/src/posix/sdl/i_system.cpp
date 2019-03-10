@@ -509,7 +509,9 @@ int I_PickIWad (WadStuff *wads, int numwads, bool showwin, int defaultiwad)
 	{
 		return I_PickIWad_Gtk (wads, numwads, showwin, defaultiwad);
 	}
-#elif defined(__APPLE__)
+#endif
+
+#ifdef __APPLE__
 	return I_PickIWad_Cocoa (wads, numwads, showwin, defaultiwad);
 #endif
 	

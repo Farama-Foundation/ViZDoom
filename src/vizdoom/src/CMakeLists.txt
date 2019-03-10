@@ -29,10 +29,6 @@ endif( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 
 option( DYN_FLUIDSYNTH "Dynamically load fluidsynth" ON )
 
-if( APPLE )
-    option( OSX_COCOA_BACKEND "Use native Cocoa backend instead of SDL" OFF )
-endif( APPLE )
-
 if( CMAKE_SIZEOF_VOID_P MATCHES "8" )
 	set( X64 64 )
 endif( CMAKE_SIZEOF_VOID_P MATCHES "8" )
@@ -202,11 +198,11 @@ else( WIN32 )
 	endif( NO_GTK )
 	
 	# Non-Windows version also needs SDL except native OS X backend
-	if( NOT APPLE OR NOT OSX_COCOA_BACKEND )
+	if( NOT WIN32 )
 		find_package( SDL2 REQUIRED )
 		include_directories( "${SDL2_INCLUDE_DIR}" )
 		set( ZDOOM_LIBS ${ZDOOM_LIBS} "${SDL2_LIBRARY}" )
-	endif( NOT APPLE OR NOT OSX_COCOA_BACKEND )
+	endif( NOT WIN32 )
 
 	find_path( FPU_CONTROL_DIR fpu_control.h )
 	if( FPU_CONTROL_DIR )
@@ -618,16 +614,6 @@ set( PLAT_SDL_SOURCES
 set( PLAT_OSX_SOURCES
 	posix/osx/iwadpicker_cocoa.mm
 	posix/osx/zdoom.icns )
-set( PLAT_COCOA_SOURCES
-	posix/cocoa/critsec.cpp
-	posix/cocoa/i_input.mm
-	posix/cocoa/i_joystick.cpp
-	posix/cocoa/i_main.mm
-	posix/cocoa/i_system.mm
-	posix/cocoa/i_timer.cpp
-	posix/cocoa/i_video.mm
-	posix/cocoa/st_console.mm
-	posix/cocoa/st_start.mm )
 
 if( WIN32 )
 	set( SYSTEM_SOURCES_DIR win32 )
@@ -644,16 +630,10 @@ if( WIN32 )
 		set( SYSTEM_SOURCES ${SYSTEM_SOURCES} win32/zdoom.rc )
 	endif( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 elseif( APPLE )
-	if( OSX_COCOA_BACKEND )
-		set( SYSTEM_SOURCES_DIR posix posix/cocoa )
-		set( SYSTEM_SOURCES ${PLAT_COCOA_SOURCES} )
-		set( OTHER_SYSTEM_SOURCES ${PLAT_WIN32_SOURCES} ${PLAT_SDL_SOURCES} )
-	else( OSX_COCOA_BACKEND )
-		set( SYSTEM_SOURCES_DIR posix posix/sdl )
-		set( SYSTEM_SOURCES ${PLAT_SDL_SOURCES} )
-		set( PLAT_OSX_SOURCES ${PLAT_OSX_SOURCES} posix/sdl/i_system.mm )
-		set( OTHER_SYSTEM_SOURCES ${PLAT_WIN32_SOURCES} ${PLAT_COCOA_SOURCES} )
-	endif( OSX_COCOA_BACKEND )
+	set( SYSTEM_SOURCES_DIR posix posix/sdl )
+	set( SYSTEM_SOURCES ${PLAT_SDL_SOURCES} )
+	set( PLAT_OSX_SOURCES ${PLAT_OSX_SOURCES} posix/sdl/i_system.mm )
+	set( OTHER_SYSTEM_SOURCES ${PLAT_WIN32_SOURCES} ${PLAT_COCOA_SOURCES} )
 
 	set( SYSTEM_SOURCES ${SYSTEM_SOURCES} ${PLAT_POSIX_SOURCES} ${PLAT_OSX_SOURCES} "${FMOD_LIBRARY}" )
 
@@ -723,12 +703,6 @@ endif( DYN_FLUIDSYNTH )
 # there's generally a new cpp for every header so this file will get changed
 if( WIN32 )
 	set( EXTRA_HEADER_DIRS win32/*.h )
-elseif( APPLE )
-	if( OSX_COCOA_BACKEND )
-		set( EXTRA_HEADER_DIRS posix/*.h posix/cocoa/*.h )
-	else( OSX_COCOA_BACKEND )
-		set( EXTRA_HEADER_DIRS posix/*.h posix/sdl/*.h )
-	endif( OSX_COCOA_BACKEND )
 else( WIN32 )
 	set( EXTRA_HEADER_DIRS posix/*.h posix/sdl/*.h )
 endif( WIN32 )
@@ -746,7 +720,6 @@ file( GLOB HEADER_FILES
 	oplsynth/*.h
 	oplsynth/dosbox/*.h
 	posix/*.h
-	posix/cocoa/*.h
 	posix/sdl/*.h
 	r_data/*.h
 	resourcefiles/*.h
@@ -1316,7 +1289,6 @@ source_group("Render Data\\Textures" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE
 source_group("Render Interface" FILES r_defs.h r_renderer.h r_sky.cpp r_sky.h r_state.h r_utility.cpp r_utility.h)
 source_group("Resource Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/resourcefiles/.+")
 source_group("POSIX Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/posix/.+")
-source_group("Cocoa Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/posix/cocoa/.+")
 source_group("OS X Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/posix/osx/.+")
 source_group("SDL Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/posix/sdl/.+")
 source_group("SFMT" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/sfmt/.+")
