@@ -46,6 +46,7 @@
 
 //VIZDOOM_CODE
 #include "viz_depth.h"
+#include "viz_labels.h"
 
 #undef RANGECHECK
 
@@ -1123,6 +1124,11 @@ void R_DrawSpanP_C (void)
 			//  re-index using light/colormap.
 			*dest++ = colormap[source[spot]];
 			if(vizDepthMap!=NULL) vizDepthMap->setPoint(ds_x2-count+1,ds_y);
+            if(vizLabels!=NULL) {
+                vizLabels->setLabel(1);
+                vizLabels->setPoint(ds_x2-count+1,ds_y);
+                vizLabels->setLabel(0);
+            }
 			// Next step in u,v.
 			xfrac += xstep;
 			yfrac += ystep;
