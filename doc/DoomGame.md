@@ -103,7 +103,10 @@
 * [getScreenChannels](#getScreenChannels)
 * [getScreenPitch](#getScreenPitch)
 * [getScreenSize](#getScreenSize)
-
+* [isObjectsInfoEnabled](#isObjectsInfoEnabled)
+* [setObjectsInfoEnabled](#setObjectsInfoEnabled)
+* [isSectorsInfoEnabled](#isSectorsInfoEnabled)
+* [setSectorsInfoEnabled](#setSectorsInfoEnabled)
 
 ## <a name="flow"></a> Flow control methods:
 
@@ -173,8 +176,8 @@ After calling this method, the first state from replay will be available.
 All rewards, variables and state are available during replaying episode.
 
 See also:
-- [examples/python/record_episodes.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/record_episodes.py),
-- [examples/python/record_multiplayer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/record_multiplayer.py).
+- [examples/python/record_episodes.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/record_episodes.py)
+- [examples/python/record_multiplayer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/record_multiplayer.py)
 
 
 ---
@@ -418,11 +421,12 @@ Returns number of current episode tic.
 | Java   | `Button[] getAvailableButtons()`            |
 | Python | `list get_available_buttons()`              |
 
-TODO
+Returns the list of available `Buttons`.
 
 See also:
 - [`Types: Button`](Types.md#button)
-- [`ConfigFile: List`](ConfigFile.md#list)
+- [`addAvailableButton`](#addAvailableButton)
+- [`setAvailableButtons`](#addAvailableButtons)
 
 
 ---
@@ -434,13 +438,14 @@ See also:
 | Java   | `void addAvailableButton(Button[] buttons)`             |
 | Python | `void add_available_button(list)`                       |
 
-TODO
+Set given list of `Button`s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available `Buttons`,
 
 Config key: `availableButtons/available_buttons` (list)
 
 See also:
 - [`Types: Button`](Types.md#button)
 - [`ConfigFile: List`](ConfigFile.md#list)
+- [`addAvailableButton`](#addAvailableButton)
 
 
 ---
@@ -452,16 +457,16 @@ See also:
 | Java   | `void addAvailableButton(Button button, double maxValue = 0)`  |
 | Python | `void add_available_button(Button button, float maxValue = 0)` |
 
-Add `Button` type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to `Buttons` available in action
-and sets the maximum allowed, absolute value for the specified button.
+Add [`Button`](Types.md#button) type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to available `Buttons` and sets the maximum allowed, absolute value for the specified button.
 If the given button has already been added, it will not be added again, but the maximum value is overridden.
 
 Config key: `availableButtons/available_buttons` (list)
 
 See also:
 - [`Types: Button`](Types.md#button)
-- [`setButtonMaxValue`](#setButtonMaxValue)
 - [`ConfigFile: List`](ConfigFile.md#list)
+- [`setAvailableButtons`](#addAvailableButtons)
+- [`setButtonMaxValue`](#setButtonMaxValue)
 
 
 ---
@@ -545,7 +550,7 @@ See also:
 ## <a name="vars"></a> GameVariables methods
 
 ---
-### <a name="addAvailableGameVariable"></a> `addAvailableGameVariable`
+### <a name="getAvailableGameVariable"></a> `getAvailableGameVariable`
 
 | C++    | `std::vector<GameVariable> getAvailableGameVariables()` |
 | :--    | :--                                                     |
@@ -553,14 +558,16 @@ See also:
 | Java   | `GameVariable[] getAvailableGameVariables()`            |
 | Python | `list get_available_game_variables()`                   |
 
-TODO
+Returns the list of available `GameVariables`.
 
 See also:
 - [`Types: GameVariable`](Types.md#gamevariable)
+- [`addAvailableGameVariable`](#addAvailableGameVariable)
+- [`setAvailableGameVariables`](#setAvailableGameVariables)
 
 
 ---
-### <a name="addAvailableGameVariable"></a> `addAvailableGameVariable`
+### <a name="setAvailableGameVariables"></a> `setAvailableGameVariables`
 
 | C++    | `void setAvailableGameVariables(std::vector<GameVariable> variables)` |
 | :--    | :--                                                                   |
@@ -568,13 +575,14 @@ See also:
 | Java   | `void setAvailableGameVariables(GameVariable[] variables)`            |
 | Python | `void set_available_game_variables(list variables)`                   |
 
-TODO
+Set list of [`GameVariable`](Types.md#gamevariable) as available `GameVariables` in the [`GameState`](Types.md#gamestate) returned by `getState` method.
 
 Config key: `availableGameVariables/available_game_variables` (list)
 
 See also:
 - [`Types: GameVariable`](Types.md#gamevariable)
 - [`ConfigFile: List`](ConfigFile.md#list)
+- [`addAvailableGameVariable`](#addAvailableGameVariable)
 
 
 ---
@@ -586,14 +594,14 @@ See also:
 | Java   | `void addAvailableGameVariable(GameVariable variable)`    |
 | Python | `void add_available_game_variable(GameVariable variable)` |
 
-Adds the specified [`GameVariable`](Types.md#gamevariable) to the list of game variables (e.g. `HEALTH`, `AMMO1`, `ATTACK_READY`)
-that are included in the [`GameState`](Types.md#gamestate) returned by `getState` method.
+Adds the specified [`GameVariable`](Types.md#gamevariable) to the list of available game variables (e.g. `HEALTH`, `AMMO1`, `ATTACK_READY`) in the [`GameState`](Types.md#gamestate) returned by `getState` method.
 
 Config key: `availableGameVariables/available_game_variables` (list)
 
 See also:
 - [`Types: GameVariable`](Types.md#gamevariable)
 - [`ConfigFile: List`](ConfigFile.md#list)
+- [`setAvailableGameVariables`](#setAvailableGameVariables)
 
 
 ---
@@ -1134,7 +1142,7 @@ Config key: `depthBufferEnabled/depth_buffer_enabled`
 
 See also:
 - [`Types: GameState`](Types.md#gamestate)
-- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py),
+- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py)
 
 
 ---
@@ -1172,8 +1180,8 @@ Config key: `labelsBufferEnabled/labels_buffer_enabled`
 See also:
 - [`Types: Label`](Types.md#label)
 - [`Types: GameState`](Types.md#gamestate)
-- [examples/python/labels.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/labels.py),
-- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py),
+- [examples/python/labels.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/labels.py)
+- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py)
 
 
 ---
@@ -1569,3 +1577,80 @@ Returns size in bytes of one row in screen buffer and map buffer.
 | Python | `int get_screen_size()`  |
 
 Returns size in bytes of screen buffer and map buffer.
+
+
+---
+### <a name="isObjectsInfoEnabled"></a> `isObjectsInfoEnabled`
+
+| C++    | `bool isAutomapBufferEnabled()`    |
+| :--    | :--                                |
+| Lua    | `boolean isAutomapBufferEnabled()` |
+| Java   | `boolean isAutomapBufferEnabled()` |
+| Python | `bool isAutomapBufferEnabled()`    |
+
+Added in 1.1.8
+
+Returns true if the objects information is enabled.
+
+
+---
+### <a name="setObjectsInfoEnabled"></a> `setObjectsInfoEnabled`
+
+| C++    | `void setObjectsInfoEnabled(bool objectsInfo)`    |
+| :--    | :--                                                   |
+| Lua    | `void setObjectsInfoEnabled(boolean objectsInfo)` |
+| Java   | `void setObjectsInfoEnabled(boolean objectsInfo)` |
+| Python | `void set_objects_info_enabled(bool objectsInfo)` |
+
+Added in 1.1.8
+
+Enables information about all objects present in current episode/level, it will be available in the state.
+
+Default value: false
+
+Config key: `objectsInfoEnabled/objects_info_enabled`
+
+See also:
+- [`Types: GameState`](Types.md#gamestate)
+- [`Types: Object`](Types.md#object)
+- [examples/python/objects_and_sectors.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/objects_and_sectors.py),
+
+
+---
+### <a name="isAutomapBufferEnabled"></a> `isAutomapBufferEnabled`
+
+| C++    | `bool isAutomapBufferEnabled()`    |
+| :--    | :--                                |
+| Lua    | `boolean isAutomapBufferEnabled()` |
+| Java   | `boolean isAutomapBufferEnabled()` |
+| Python | `bool isAutomapBufferEnabled()`    |
+
+Added in 1.1.8
+
+Returns true if the automap buffer is enabled.
+
+
+---
+### <a name="setSectorsInfoEnabled"></a> `setSectorsInfoEnabled`
+
+| C++    | `void setSectorsInfoEnabled(bool sectorsInfo)`    |
+| :--    | :--                                                   |
+| Lua    | `void setSectorsInfoEnabled(boolean sectorsInfo)` |
+| Java   | `void setSectorsInfoEnabled(boolean sectorsInfo)` |
+| Python | `void set_sectors_info_enabled(bool sectorsInfo)` |
+
+Added in 1.1.8
+
+Enables information about all sectors (map layout) present in current episode/level, it will be available in the state.
+
+Default value: false
+
+Config key: `sectorsInfoEnabled/sectors_info_enabled`
+
+See also:
+- [`Types: GameState`](Types.md#gamestate)
+- [`Types: Sector`](Types.md#sector)
+- [examples/python/objects_and_sectors.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/objects_and_sectors.py)
+
+
+---

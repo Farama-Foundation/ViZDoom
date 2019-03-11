@@ -26,7 +26,7 @@ if __name__ =="__main__":
     game.set_render_hud(False)
     game.set_screen_resolution(vzd.ScreenResolution.RES_640X480)
 
-    # Enables information about all objects present in current episode/level.
+    # Enables information about all objects present in the current episode/level.
     game.set_objects_info_enabled(True)
 
     # Enables information about all sectors (map layout).

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Checks if bin/freedoom2.wad is in place if not, the zip is downloaded (if not yet present) and freedoom2.wad is extracted to bin directory.
 
@@ -17,4 +17,3 @@ if [ ! -e  "${FREEDOOM_DESTINATION_PATH}/freedoom2.wad" ]; then
 	fi
 	unzip -j -d ${FREEDOOM_DESTINATION_PATH} ${FREEDOOM_DOWNLOAD_PATH}/${FREEDOOM_ARCHIVE} ${FREEDOOM_ARCHIVE_BASENAME}/freedoom2.wad
 fi
-

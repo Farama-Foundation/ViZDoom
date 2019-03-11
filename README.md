@@ -5,16 +5,12 @@ ViZDoom allows developing AI **bots that play Doom using only the visual informa
 
 ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game mechanics.
 
-**ViZDoom is the platform for [Visual Doom Competition @ CIG 2018](http://vizdoom.cs.put.edu.pl/competition-cig-2018). :goberserk:
-See [Track 1](https://www.crowdai.org/challenges/visual-doom-ai-competition-2018-track-1) and [Track 2](https://www.crowdai.org/challenges/visual-doom-ai-competition-2018-track-2) on [crowdAI](https://www.crowdai.org)**
-
-
 ![vizdoom_deadly_corridor](http://www.cs.put.poznan.pl/mkempka/misc/vizdoom_gifs/vizdoom_corridor.gif)
 
 
 ## Features
 - Multi-platform,
-- API for C++, Lua, Java, Python and Julia (thanks to [Jun Tian](https://github.com/findmyway)),
+- API for Python, C++, Lua, Java and Julia (thanks to [Jun Tian](https://github.com/findmyway)),
 - Easy-to-create custom scenarios (visual editors, scripting language and examples available),
 - Async and sync single-player and multi-player modes,
 - Fast (up to 7000 fps in sync mode, single threaded),
@@ -126,7 +122,7 @@ Useful parts:
 - [Doom Builder 2](http://www.doombuilder.com/) - another great Doom map editor for Windows.
 - [OBLIGE](http://oblige.sourceforge.net/) - Doom random map generator and [PyOblige](https://github.com/mwydmuch/PyOblige) is a simple Python wrapper for it.
 - [Omgifol](https://github.com/devinacker/omgifol) - nice Python library for manipulating Doom maps.
-- [NavDoom](https://github.com/agiantwhale/navdoom) - Maze navigation generator for ViZDoom (in development).
+- [NavDoom](https://github.com/agiantwhale/navdoom) - Maze navigation generator for ViZDoom (similar to DeepMind Lab).
 
 
 ## Contributions

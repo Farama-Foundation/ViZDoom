@@ -1,5 +1,16 @@
 # Changelog
 
+## Changes in 1.1.8
+
+#### Objects and sectors
+- Added `is/setObjectsInfoEnabled`, `is/setSectorsInfoEnabled` methods to Python and C++ than enable information about all objects or/and sectors (map layout) present in the current episode/level.
+- Added `objects` and `sectors` fields to `GameState` in Python and C++.
+
+#### Config files
+- Added missing GameVariables introduced in 1.1.7 to Config parser.
+- Added `objectsInfoEnabled/objects_info_enabled`
+
+
 ## Changes in 1.1.7
 
 #### Python & Julia

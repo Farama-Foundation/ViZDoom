@@ -36,8 +36,3 @@ for gcc in ${GCCS[*]}; do
         rm ${logfile}
     done
 done
-
-
-
-
-

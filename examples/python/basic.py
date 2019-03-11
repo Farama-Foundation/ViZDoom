@@ -48,7 +48,7 @@ if __name__ == "__main__":
     # Enables buffer with top down map of the current episode/level.
     game.set_automap_buffer_enabled(True)
 
-    # Enables information about all objects present in current episode/level.
+    # Enables information about all objects present in the current episode/level.
     game.set_objects_info_enabled(True)
 
     # Enables information about all sectors (map layout).
