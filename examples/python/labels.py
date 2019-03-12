@@ -17,6 +17,7 @@ from __future__ import print_function
 
 from random import choice
 import vizdoom as vzd
+import numpy as np
 from argparse import ArgumentParser
 
 import cv2
@@ -76,6 +77,16 @@ if __name__ =="__main__":
             buffer[y + i, x, :] = color
             buffer[y + i, x + width, :] = color
 
+    def color_labels(labels):
+        """
+        Walls are blue, floor/ceiling are red (OpenCV uses BGR).
+        """
+        tmp = np.stack([labels] * 3, -1)
+        tmp[labels == 0] = [255, 0, 0]
+        tmp[labels == 1] = [0, 0, 255]
+
+        return tmp
+
 
     for i in range(episodes):
         print("Episode #" + str(i + 1))
@@ -93,7 +104,7 @@ if __name__ =="__main__":
             # Labels data are available in state.labels.
             labels = state.labels_buffer
             if labels is not None:
-                cv2.imshow('ViZDoom Labels Buffer', labels)
+                cv2.imshow('ViZDoom Labels Buffer', color_labels(labels))
 
             # Screen buffer, given in selected format. This buffer is always available.
             # Using information from state.labels draw bounding boxes.
