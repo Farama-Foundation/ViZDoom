@@ -1,8 +1,8 @@
 # FAQ
 
 This file contains a list of questions that ViZDoom users may ask at some point.
-You can find more questions and answers by search in issues page with "question" tag
-[is:issue label:question](https://github.com/mwydmuch/ViZDoom/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3Aquestion)
+You can find more questions and answers by searching for issues with "question" tag
+([is:issue label:question](https://github.com/mwydmuch/ViZDoom/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3Aquestion)).
 
 Did not find answer for your question? Post an [issue](https://github.com/mwydmuch/ViZDoom/issues)
 
@@ -39,6 +39,19 @@ that supports the widest range of features.
 https://github.com/mwydmuch/ViZDoom/issues/319
 
 
++### How to create/modify scenarios?
+
+You can create or modify existing scenarios using many available Doom map editors.
+We recommend using one of these two editors:
+- [SLADE3](http://slade.mancubus.net/) - great Doom map (scenario) editor for Linux, MacOS and Windows.
+- [Doom Builder 2](http://www.doombuilder.com/) - another great Doom map editor for Windows.
+
+You should select ZDoom as your Doom engine version and UDMF map format (Universal Doom Map Format), that supports the widest range of features.
+
+**Original issue and answer:**
+https://github.com/mwydmuch/ViZDoom/issues/319
+
+
 ### How to stack frames?
 
 ViZDoom does not automatically stacks frames for you.
@@ -50,7 +63,7 @@ https://github.com/mwydmuch/ViZDoom/issues/296
 
 ### How to change keyboard binding for Spectator Mode?
 
-When you launch an instance of vizdoom, it will create _vizdoom.ini in your working directory (if it does not exist yet).
+When you launch an instance of vizdoom, it will create `_vizdoom.ini` in your working directory (if it does not exist yet).
 This file contains all the additional engine settings, including key bindings, that you can edit freely.
 
 You can also load .ini file from different location using [`DoomGame: setDoomConfigPath`](DoomGame.md#setDoomConfigPath).
