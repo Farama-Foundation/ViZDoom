@@ -16,8 +16,8 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 - Fast (up to 7000 fps in sync mode, single threaded),
 - Lightweight (few MBs),
 - Customizable resolution and rendering parameters,
-- Access to the depth buffer (3D vision)
-- Automatic labeling game objects visible in the frame
+- Access to the depth buffer (3D vision),
+- Automatic labeling game objects visible in the frame,
 - Off-screen rendering,
 - Episodes recording,
 - Time scaling in async mode.

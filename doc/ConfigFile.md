@@ -39,9 +39,13 @@ Each list assignment (**KEY = { VALUES }**)clears values specified for this key 
 * `labelsBufferEnabled/labels_buffer_enabled`
 * `livingReward/living_reward`
 * `mode`
+* `objectsInfoEnabled/objects_info_enabled`
+* `renderAllFrames/render_all_frames`
+* `renderCorpses/render_corpses`
 * `renderCrosshair/render_crosshair`
 * `renderDecals/render_decals`
 * `renderEffectsSprites/render_effects_sprites`
+* `renderScreenFlashes/render_screen_flashes`
 * `renderHud/render_hud`
 * `renderMessages/render_messages`
 * `renderMinimalHud/render_minimal_hud`
@@ -49,6 +53,7 @@ Each list assignment (**KEY = { VALUES }**)clears values specified for this key 
 * `renderWeapon/render_weapon`
 * `screenFormat/screen_format`
 * `screenResolution/screen_resolution`
+* `sectorsInfoEnabled/sectors_info_enabled`
 * `seed`
 * `soundEnabled/sound_enabled`
 * `ticrate`

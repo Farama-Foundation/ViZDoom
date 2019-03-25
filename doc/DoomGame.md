@@ -210,7 +210,7 @@ Checks if the game is in multiplayer mode.
 ### <a name="isRecordingEpisode"></a> `isRecordingEpisode`
 
 | C++    | `bool isRecordingEpisode()`    |
-| :--    | :--                           |
+| :--    | :--                            |
 | Lua    | `boolean isRecordingEpisode()` |
 | Java   | `boolean isRecordingEpisode()` |
 | Python | `bool is_recording_episode()`  |
@@ -224,7 +224,7 @@ Checks if the game is in recording mode.
 ### <a name="isReplayingEpisode"></a> `isReplayingEpisode`
 
 | C++    | `bool isReplayingEpisode()`    |
-| :--    | :--                           |
+| :--    | :--                            |
 | Lua    | `boolean isReplayingEpisode()` |
 | Java   | `boolean isReplayingEpisode()` |
 | Python | `bool is_replaying_episode()`  |
@@ -238,10 +238,10 @@ Checks if the game is in replaying mode.
 ### <a name="setAction"></a> `setAction`
 
 | C++    | `void setAction(std::vector<double> const &actions)` |
-| :--    | :--                                                 |
-| Lua    | `void setAction(DoubleTensor/table actions)`        |
-| Java   | `void setAction(double[] actions)`                  |
-| Python | `void set_action(list actions)`                     |
+| :--    | :--                                                  |
+| Lua    | `void setAction(DoubleTensor/table actions)`         |
+| Java   | `void setAction(double[] actions)`                   |
+| Python | `void set_action(list actions)`                      |
 
 Sets the player's action for the next tics.
 Each value corresponds to a button specified with [`addAvailableButton`](#addAvailableButton) method
@@ -266,10 +266,10 @@ If `updateState` is not set the state will not be updated.
 ### <a name="makeAction"></a> `makeAction`
 
 | C++    | `double makeAction(std::vector<double> const &actions, unsigned int tics = 1)` |
-| :--    | :--                                                                         |
+| :--    | :--                                                                            |
 | Lua    | `number makeAction(DoubleTensor/table actions, number tics = 1);`              |
 | Java   | `double makeAction(double[] actions, int tics = 1);`                           |
-| Python | `float make_action(list actions, int tics = 1);`                            |
+| Python | `float make_action(list actions, int tics = 1);`                               |
 
 Method combining usability of [`setAction`](#setAction), [`advanceAction`](#advanceAction) and [`getLastReward`](#getLastReward).
 Sets the player's action for the next tics, processes a specified number of tics,
@@ -371,10 +371,10 @@ See also:
 ### <a name="getServerState"></a> `getServerState`
 
 | C++    | `ServerStatePtr (std::shared_ptr<ServerState>) ServerState getServerState()` |
-| :--    | :--                                                              |
-| Lua    | `ServerState getServerState()`                                           |
-| Java   | `ServerState getServerState()`                                           |
-| Python | `ServerState get_state_state()`                                          |
+| :--    | :--                                                                          |
+| Lua    | `ServerState getServerState()`                                               |
+| Java   | `ServerState getServerState()`                                               |
+| Python | `ServerState get_state_state()`                                              |
 
 Added in 1.1.6
 
@@ -388,10 +388,10 @@ See also:
 ### <a name="getLastAction"></a> `getLastAction`
 
 | C++    | `std::vector<double> getLastAction()` |
-| :--    | :--                                |
+| :--    | :--                                   |
 | Lua    | `DoubleTensor getLastAction()`        |
 | Java   | `double[] getLastAction()`            |
-| Python | `list get_last_action()`           |
+| Python | `list get_last_action()`              |
 
 Returns the last action performed.
 Each value corresponds to a button added with `[addAvailableButton](#addAvailableButton)` (in order of appearance).
@@ -401,11 +401,11 @@ Most useful in `SPECTATOR` mode.
 ---
 ### <a name="getEpisodeTime"></a> `getEpisodeTime`
 
-| C++    | `unsigned int getEpisodeTime()`   |
-| :--    | :--                               |
-| Lua    | `number getEpisodeTime()`         |
-| Java   | `int getEpisodeTime()`            |
-| Python | `int get_episode_time()`          |
+| C++    | `unsigned int getEpisodeTime()` |
+| :--    | :--                             |
+| Lua    | `number getEpisodeTime()`       |
+| Java   | `int getEpisodeTime()`          |
+| Python | `int get_episode_time()`        |
 
 Returns number of current episode tic.
 
@@ -1191,7 +1191,7 @@ See also:
 | :--    | :--                                |
 | Lua    | `boolean isAutomapBufferEnabled()` |
 | Java   | `boolean isAutomapBufferEnabled()` |
-| Python | `bool isAutomapBufferEnabled()`    |
+| Python | `bool is_automap_buffer_enabled()` |
 
 Added in 1.1.0
 
@@ -1597,9 +1597,7 @@ Returns true if the objects information is enabled.
 ### <a name="setObjectsInfoEnabled"></a> `setObjectsInfoEnabled`
 
 | C++    | `void setObjectsInfoEnabled(bool objectsInfo)`    |
-| :--    | :--                                                   |
-| Lua    | `void setObjectsInfoEnabled(boolean objectsInfo)` |
-| Java   | `void setObjectsInfoEnabled(boolean objectsInfo)` |
+| :--    | :--                                               |
 | Python | `void set_objects_info_enabled(bool objectsInfo)` |
 
 Added in 1.1.8
@@ -1617,26 +1615,22 @@ See also:
 
 
 ---
-### <a name="isAutomapBufferEnabled"></a> `isAutomapBufferEnabled`
+### <a name="isSectorsInfoEnabled"></a> `isSectorsInfoEnabled`
 
-| C++    | `bool isAutomapBufferEnabled()`    |
-| :--    | :--                                |
-| Lua    | `boolean isAutomapBufferEnabled()` |
-| Java   | `boolean isAutomapBufferEnabled()` |
-| Python | `bool isAutomapBufferEnabled()`    |
+| C++    | `bool isSectorsInfoEnabled()`    |
+| :--    | :--                              |
+| Python | `bool is_sectors_info_enabled()` |
 
 Added in 1.1.8
 
-Returns true if the automap buffer is enabled.
+Returns true if the sectors information is enabled.
 
 
 ---
 ### <a name="setSectorsInfoEnabled"></a> `setSectorsInfoEnabled`
 
 | C++    | `void setSectorsInfoEnabled(bool sectorsInfo)`    |
-| :--    | :--                                                   |
-| Lua    | `void setSectorsInfoEnabled(boolean sectorsInfo)` |
-| Java   | `void setSectorsInfoEnabled(boolean sectorsInfo)` |
+| :--    | :--                                               |
 | Python | `void set_sectors_info_enabled(bool sectorsInfo)` |
 
 Added in 1.1.8
