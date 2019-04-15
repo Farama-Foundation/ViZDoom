@@ -190,6 +190,10 @@ namespace vizdoom {
         if (str == "secretcount") return SECRETCOUNT;
         if (str == "fragcount") return FRAGCOUNT;
         if (str == "deathcount") return DEATHCOUNT;
+        if (str == "hitcount") return HITCOUNT;
+        if (str == "hits_taken") return HITS_TAKEN;
+        if (str == "damagecount") return DAMAGECOUNT;
+        if (str == "damage_taken") return DAMAGE_TAKEN;
         if (str == "health") return HEALTH;
         if (str == "armor") return ARMOR;
         if (str == "dead") return DEAD;

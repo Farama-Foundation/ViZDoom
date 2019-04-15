@@ -7,6 +7,7 @@
 - Added `objects` and `sectors` fields to `GameState` in Python and C++.
 
 #### Config files
+- Added missing GameVariables introduced in 1.1.5 to Config parser.
 - Added missing GameVariables introduced in 1.1.7 to Config parser.
 - Added `objectsInfoEnabled/objects_info_enabled`
 
