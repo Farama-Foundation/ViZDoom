@@ -59,6 +59,7 @@ sudo apt-get install liblua5.1-dev
 # Julia dependencies
 sudo apt-get install julia
 julia
+julia> using Pkg
 julia> Pkg.add("CxxWrap")
 ```
 
