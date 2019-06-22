@@ -31,8 +31,7 @@ struct IsBits<GameVariable> : std::true_type
 };
 } // namespace jlcxx
 
-JULIA_CPP_MODULE_BEGIN(registry)
-jlcxx::Module &mod = registry.create_module("ViZDoomWrapper");
+JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
 
 /* Consts */
 /*----------------------------------------------------------------------------------------------------------------*/
@@ -65,7 +64,7 @@ mod.set_const("BGRA32", BGRA32);
 mod.set_const("ABGR32", ABGR32);
 mod.set_const("GRAY8", GRAY8);
 mod.set_const("DOOM_256_COLORS8", DOOM_256_COLORS8);
-
+ 
 mod.add_bits<ScreenResolution>("ScreenResolution");
 mod.set_const("RES_160X120", RES_160X120);
 
@@ -458,4 +457,5 @@ mod.method("sec_to_doom_tics", secToDoomTics);
 mod.method("doom_fixed_to_double", [](double x) { return doomFixedToDouble(x); });
 mod.method("is_binary_button", isBinaryButton);
 mod.method("is_delta_button", isDeltaButton);
-JULIA_CPP_MODULE_END
+
+}

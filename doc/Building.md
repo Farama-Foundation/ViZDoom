@@ -186,7 +186,7 @@ To build Julia binding you first need to install CxxWrap package by running `jul
 ```sh
 cmake -DCMAKE_BUILD_TYPE=Release \
 -DBUILD_JULIA=ON \
--DJlCxx_DIR=~/.julia/vX.X/CxxWrap/deps/usr/lib/cmake/JlCxx/
+-DJlCxx_DIR=~/.julia/packages/CxxWrap/<hash>/deps/usr/lib/cmake/JlCxx/
 ```
 
 

@@ -1,20 +1,27 @@
-using CxxWrap
+module ViZDoom
+  using CxxWrap
+  @wrapmodule("../../bin/libvizdoomjl")
 
-wrap_modules("../../bin/libvizdoomjl")
+  function __init__()
+    @initcxx
+  end
+end
 
-const vz = ViZDoomWrapper
+const vz = ViZDoom
 
 game = vz.DoomGame()
 
+vz.load_config(game, "../../scenarios/basic.cfg")
 vz.set_doom_scenario_path(game, "../../scenarios/basic.wad")
 
 vz.set_doom_map(game, "map01")
 
+# config function need enums are not working.
 # Sets resolution. Default is 320X240
-vz.set_screen_resolution(game, vz.RES_640X480)
+#vz.set_screen_resolution(game, vz.RES_640X480)
 
 # Sets the screen buffer format. Not used here but now you can change it. Defalut is CRCGCB.
-vz.set_screen_format(game, vz.RGB24)
+#vz.set_screen_format(game, vz.RGB24)
 
 # Enables depth buffer.
 vz.set_depth_buffer_enabled(game, true)
@@ -40,12 +47,12 @@ vz.set_render_screen_flashes(game, true)  # Effect upon taking damage or picking
 
 
 # Adds buttons that will be allowed. 
-vz.add_available_button(game, vz.MOVE_LEFT)
-vz.add_available_button(game, vz.MOVE_RIGHT)
-vz.add_available_button(game, vz.ATTACK)
+#vz.add_available_button(game, vz.MOVE_LEFT)
+#vz.add_available_button(game, vz.MOVE_RIGHT)
+#vz.add_available_button(game, vz.ATTACK)
 
 # Adds vz variables that will be included in state.
-vz.add_available_game_variable(game, vz.AMMO2)
+#vz.add_available_game_variable(game, vz.AMMO2)
 
 # Causes episodes to finish after 200 tics (actions)
 vz.set_episode_timeout(game, 200)
@@ -63,7 +70,7 @@ vz.set_sound_enabled(game, true)
 vz.set_living_reward(game, -1)
 
 # Sets ViZDoom mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR, PLAYER mode is default)
-vz.set_mode(game, vz.PLAYER)
+#vz.set_mode(game, vz.PLAYER)
 
 vz.init(game)
 
