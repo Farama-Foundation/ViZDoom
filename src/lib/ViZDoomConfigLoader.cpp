@@ -292,6 +292,7 @@ namespace vizdoom {
         if (str == "angle") return ANGLE;
         if (str == "pitch") return PITCH;
         if (str == "roll") return ROLL;
+        if(str == "view_height") return VIEW_HEIGHT;
         if (str == "velocity_x") return VELOCITY_X;
         if (str == "velocity_y") return VELOCITY_Y;
         if (str == "velocity_z") return VELOCITY_Z;
