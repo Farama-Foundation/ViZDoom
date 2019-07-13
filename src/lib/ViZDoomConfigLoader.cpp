@@ -626,7 +626,7 @@ namespace vizdoom {
                     continue;
                 }
                 if (key == "automap_rotate" || key == "automaprotate") {
-                    this->game->setAutomapBufferEnabled(stringToBool(val));
+                    this->game->setAutomapRotate(stringToBool(val));
                     continue;
                 }
                 if (key == "automap_render_textures" || key == "automaprendertextures") {
