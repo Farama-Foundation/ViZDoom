@@ -123,7 +123,7 @@ Useful parts:
 - [OBLIGE](http://oblige.sourceforge.net/) - Doom random map generator and [PyOblige](https://github.com/mwydmuch/PyOblige) is a simple Python wrapper for it.
 - [Omgifol](https://github.com/devinacker/omgifol) - nice Python library for manipulating Doom maps.
 - [NavDoom](https://github.com/agiantwhale/navdoom) - Maze navigation generator for ViZDoom (similar to DeepMind Lab).
-
+- [MazeExplorer](https://github.com/microsoft/MazeExplorer) - More sophisticated maze navigation generator for ViZDoom. 
 
 ## Contributions
 
