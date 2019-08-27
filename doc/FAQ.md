@@ -39,7 +39,7 @@ that supports the widest range of features.
 https://github.com/mwydmuch/ViZDoom/issues/319
 
 
-+### How to create/modify scenarios?
+### How to create/modify scenarios?
 
 You can create or modify existing scenarios using many available Doom map editors.
 We recommend using one of these two editors:
@@ -124,3 +124,12 @@ https://github.com/mwydmuch/ViZDoom/issues/187
 
 See also:
 - List of CVARs: [https://zdoom.org/wiki/CVARs:Configuration](https://zdoom.org/wiki/CVARs:Configuration)
+
+### I am getting `Buffers size mismatch.` error 
+
+Make sure you can run ZDoom binary inside the ViZDoom package.
+
+If the game works, go to `Options -> Set Video Mode` and see the list of available resolutions there. Try one of these resolutions viz ViZDoom.
+
+**Original issue and answer:**
+https://github.com/mwydmuch/ViZDoom/issues/404
