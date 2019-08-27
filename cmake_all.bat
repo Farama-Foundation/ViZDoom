@@ -22,7 +22,7 @@ set BOOST_INCLUDEDIR=%BOOST_ROOT%
 set BOOST_LIBRARYDIR=%BOOST_ROOT%\libs
 
 :: Python
-:: %%% Set Python version (27, 34, 35, 36, 37) or change paths for other distributions
+:: %%% Set Python version (27, 35, 36, 37) or change paths for other distributions
 :: %%% Python for Windows can be downloaded from https://www.python.org/downloads/windows/
 set PYTHON_LOCATION=C:
 set PYTHON_VERSION=37
@@ -32,8 +32,9 @@ set PYTHON_INCLUDE_DIR=%PYTHON_LOCATION%\Python%PYTHON_VERSION%\include
 set PYTHON_LIBRARY=%PYTHON_LOCATION%\Python%PYTHON_VERSION%\libs\python%PYTHON_VERSION%.lib
 set NUMPY_INCLUDES=%PYTHON_LOCATION%\Python%PYTHON_VERSION%\Lib\site-packages\numpy\core\include
 
-:: %%% Install/upgrade numpy
-%PYTHON_LOCATION%\Python%PYTHON_VERSION%\python.exe -m pip install numpy --upgrade
+:: %%% Install/upgrade pip & numpy
+%PYTHON_LOCATION%\Python%PYTHON_VERSION%\python.exe -m pip install --upgrade pip
+%PYTHON_LOCATION%\Python%PYTHON_VERSION%\python.exe -m pip install --upgrade numpy
 
 :: TODO: Add default Anaconda paths
 :: TODO: Add Julia support
