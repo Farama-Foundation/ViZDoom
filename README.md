@@ -67,11 +67,11 @@ or
 ## Windows build
 For Windows we are providing compiled runtime binaries and development libraries:
 
-### [1.1.7](https://github.com/mwydmuch/ViZDoom/releases/tag/1.1.7) (2018-12-29):
-- [Python 2.7 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.7/ViZDoom-1.1.7-Win-Python27-x86_64.zip)
-- [Python 3.5 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.7/ViZDoom-1.1.7-Win-Python35-x86_64.zip)
-- [Python 3.6 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.7/ViZDoom-1.1.7-Win-Python36-x86_64.zip)
-- [Python 3.7 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.7/ViZDoom-1.1.7-Win-Python37-x86_64.zip)
+### [1.1.8pre](https://github.com/mwydmuch/ViZDoom/releases/tag/1.1.8pre) (2019-08-28):
+- [Python 2.7 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.8pre/ViZDoom-1.1.8pre-Win-Python27-x86_64.zip)
+- [Python 3.5 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.8pre/ViZDoom-1.1.8pre-Win-Python35-x86_64.zip)
+- [Python 3.6 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.8pre/ViZDoom-1.1.8pre-Win-Python36-x86_64.zip)
+- [Python 3.7 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.8pre/ViZDoom-1.1.8pre-Win-Python37-x86_64.zip)
 
 See **[Installation of Windows binaries](doc/Building.md#windows_bin)**
 
