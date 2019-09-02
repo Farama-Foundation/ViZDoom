@@ -60,7 +60,7 @@ https://github.com/mwydmuch/ViZDoom/issues/253
 
 ### Is it possible to generate maze navigation scenario from a text file (like in DeepMind Lab)?
 
-Try [NavDoom](https://github.com/agiantwhale/navdoom).
+Try [NavDoom](https://github.com/agiantwhale/navdoom) or [MazeExplorer](https://github.com/microsoft/MazeExplorer).
 
 **Original issue and answer:**
 https://github.com/mwydmuch/ViZDoom/issues/308
