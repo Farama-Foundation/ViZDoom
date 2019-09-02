@@ -38,20 +38,6 @@ that supports the widest range of features.
 **Original issue and answer:**
 https://github.com/mwydmuch/ViZDoom/issues/319
 
-
-### How to create/modify scenarios?
-
-You can create or modify existing scenarios using many available Doom map editors.
-We recommend using one of these two editors:
-- [SLADE3](http://slade.mancubus.net/) - great Doom map (scenario) editor for Linux, MacOS and Windows.
-- [Doom Builder 2](http://www.doombuilder.com/) - another great Doom map editor for Windows.
-
-You should select ZDoom as your Doom engine version and UDMF map format (Universal Doom Map Format), that supports the widest range of features.
-
-**Original issue and answer:**
-https://github.com/mwydmuch/ViZDoom/issues/319
-
-
 ### How to stack frames?
 
 ViZDoom does not automatically stacks frames for you.
