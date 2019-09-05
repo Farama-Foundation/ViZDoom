@@ -119,3 +119,10 @@ If the game works, go to `Options -> Set Video Mode` and see the list of availab
 
 **Original issue and answer:**
 https://github.com/mwydmuch/ViZDoom/issues/404
+
+### Issues getting ViZDoom instances communicating between each-other in Kubernetes
+
+Try setting `tty=True` in all containers running ViZDoom.
+
+**Original issue:**
+https://github.com/mwydmuch/ViZDoom/issues/329
