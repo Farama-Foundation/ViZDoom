@@ -126,3 +126,13 @@ Try setting `tty=True` in all containers running ViZDoom.
 
 **Original issue:**
 https://github.com/mwydmuch/ViZDoom/issues/329
+
+
+### Reading replays (invalid actions, wrong rewards)
+
+Replay files are known to have wonky issues at times: Even when they are opened correctly,
+the read variables may be different from what they were during recording. There are tricks
+to fix this:
+
+- Try adding a small amount of sleep between proceeding actions (Original issue: https://github.com/mwydmuch/ViZDoom/issues/354)
+- Use `GameMode.SPECTATOR` for reading replays (Original issue: https://github.com/mwydmuch/ViZDoom/issues/412)
