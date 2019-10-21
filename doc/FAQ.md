@@ -135,4 +135,4 @@ the read variables may be different from what they were during recording. There 
 to fix this:
 
 - Try adding a small amount of sleep between proceeding actions (Original issue: https://github.com/mwydmuch/ViZDoom/issues/354)
-- Use `GameMode.SPECTATOR` for reading replays (Original issue: https://github.com/mwydmuch/ViZDoom/issues/412)
+- Try using `GameMode.SPECTATOR` mode for reading replays. **Note** that processing of individual steps must be done fast, otherwise multiple steps get bundled up into one. (Original issue: https://github.com/mwydmuch/ViZDoom/issues/412)
