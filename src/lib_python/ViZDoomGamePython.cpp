@@ -121,7 +121,7 @@ namespace vizdoom {
             }
             this->pyState->sectors = pySectors;
             //this->pyState->sectors = DoomGamePython::vectorToPyList<Sectors>(this->state->objects);
-        } else this->pyState->objects = pyb::list();
+        } else this->pyState->sectors = pyb::list();
 
         return this->pyState;
     }
