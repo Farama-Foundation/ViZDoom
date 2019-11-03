@@ -215,7 +215,8 @@ namespace vizdoom {
         this->summaryReward += reward;
         this->lastReward = reward;
 
-        this->lastMapTic = this->doomController->getMapTic();
+        if (this->doomController->isRunDoomAsync()) this->lastMapTic = this->doomController->getMapTic();
+        else this->lastMapTic = this->doomController->getMapLastTic();
 
         /* Update state */
         if (!this->isEpisodeFinished()) {

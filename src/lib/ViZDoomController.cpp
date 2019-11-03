@@ -444,6 +444,7 @@ namespace vizdoom {
             // Workaround for some problems
             this->sendCommand(std::string("map ") + this->map);
             this->MQDoom->send(MSG_CODE_TIC);
+            this->waitForDoomWork();
 
             this->sendCommand(std::string("playdemo ") + prepareLmpFilePath(demoPath));
 
