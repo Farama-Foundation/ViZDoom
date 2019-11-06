@@ -136,3 +136,14 @@ to fix this:
 
 - Try adding a small amount of sleep between proceeding actions (Original issue: https://github.com/mwydmuch/ViZDoom/issues/354)
 - Try using `GameMode.SPECTATOR` mode for reading replays. **Note** that processing of individual steps must be done fast, otherwise multiple steps get bundled up into one. (Original issue: https://github.com/mwydmuch/ViZDoom/issues/412)
+
+### Having multiple agents in one game / multiplayer issues
+
+You can use ZDoom's multiplayer to have multiple agents in same game (see examples for how to do this). However
+if you use `PLAYER` Mode, you can not use frameskip of the `make_actions` (each agent has to make one step before
+server proceeds by one frame). See discussion in Issues below for more information.
+
+**Original issues:**
+* https://github.com/mwydmuch/ViZDoom/issues/228
+* https://github.com/mwydmuch/ViZDoom/issues/391
+* https://github.com/mwydmuch/ViZDoom/issues/417
