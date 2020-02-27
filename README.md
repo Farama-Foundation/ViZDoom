@@ -5,7 +5,7 @@ ViZDoom allows developing AI **bots that play Doom using only the visual informa
 
 ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game mechanics.
 
-![vizdoom_deadly_corridor](http://www.cs.put.poznan.pl/mkempka/misc/vizdoom_gifs/vizdoom_corridor.gif)
+![vizdoom_deadly_corridor](http://www.cs.put.poznan.pl/mkempka/misc/vizdoom_gifs/vizdoom_corridor_segmentation.gif)
 
 
 ## Features
