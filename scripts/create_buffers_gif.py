@@ -64,6 +64,11 @@ name_to_color_map['Blood'] = [0, 0, 0]
 name_to_color_map['Clip'] = ammo_color
 name_to_color_map['Shotgun'] = weapon_color
 
+wall_id = 0
+floor_id = 1
+
+wall_color = [128, 40, 40]
+floor_color = [40, 40, 128]
 
 def transform_labels(labels,
                      buffer,
@@ -72,10 +77,18 @@ def transform_labels(labels,
                      colorful_object=False,
                      bounding_boxes=False):
     rgb_buffer = np.stack([buffer] * 3, axis=2)
+
+    # Walls and floor
+    if disco:
+        rgb_buffer[buffer == wall_id] = get_random_color()
+        rgb_buffer[buffer == floor_id] = get_random_color()
+    else:
+        rgb_buffer[buffer == wall_id] = wall_color
+        rgb_buffer[buffer == floor_id] = floor_color
+
     if not (disco or colorful_name or colorful_object or bounding_boxes):
         return rgb_buffer
     for l in labels:
-
         if disco:
             color = get_random_color()
         elif colorful_name:
@@ -84,7 +97,7 @@ def transform_labels(labels,
                 name_to_color_map[name] = get_random_color()
             color = name_to_color_map[name]
         elif colorful_object:
-            if l.object_name =="DoomPlayer":
+            if l.object_name == "DoomPlayer":
                 color = name_to_color_map[l.object_name]
             else:
                 if l.object_id not in id_to_color_map:
@@ -99,6 +112,8 @@ def transform_labels(labels,
             draw_bounding_box(rgb_buffer, l.x, l.y, l.width, l.height, color)
             font = cv2.FONT_HERSHEY_SIMPLEX
             cv2.putText(rgb_buffer, l.object_name, (l.x, l.y - 3), font, 0.3, [int(c) for c in color], 1, cv2.LINE_AA)
+
+
 
     return rgb_buffer
 
