@@ -58,5 +58,6 @@ mv -r bin/python3/pip_package/ $HOME/anaconda3/lib/python3.6/site-packages/vizdo
 6. Test if it works.
 
 ```sh
-./examples/python/basic.py
+cd examples/python
+./basic.py
 ```
