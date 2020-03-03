@@ -29,6 +29,10 @@ Even if you plan to install ViZDoom via PyPI or LuaRocks, you need to install so
 * JDK for Java binding (JAVA_HOME must be set) (optional)
 * Torch7 for Lua binding (optional)
 
+If you're using Ubuntu, the script `linux_install/install_doom.sh` can be run to make all of these installations below for you.  (Tested and validated on Ubuntu 16.04.)  Please note that you'll have to add the `vizdoom` Python package to pip.  To run, please run as:
+
+`bash install_doom.sh USERNAME` (where USERNAME is your Ubuntu username)
+
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
 
