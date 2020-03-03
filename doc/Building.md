@@ -33,6 +33,8 @@ If you're using Ubuntu, the script `linux_install/install_doom.sh` can be run to
 
 `bash install_doom.sh USERNAME` (where USERNAME is your Ubuntu username)
 
+**NOTE**: The last section of the installation script requires `conda` to create a conda environment with Python 3.5, but this can also be done manually by the user.
+
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
 
