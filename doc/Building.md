@@ -31,8 +31,7 @@ Even if you plan to install ViZDoom via PyPI or LuaRocks, you need to install so
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
-
-To get all dependencies (except JDK) on Ubuntu execute the following commands in the shell (requires root access):
+To get all dependencies (except JDK) on Ubuntu execute the following commands in the shell (requires root access). `scripts/linux_check_dependencies.sh` installs these for Python3:
 ```bash
 # ZDoom dependencies
 sudo apt-get install build-essential zlib1g-dev libsdl2-dev libjpeg-dev \
