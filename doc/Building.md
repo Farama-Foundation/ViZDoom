@@ -29,15 +29,9 @@ Even if you plan to install ViZDoom via PyPI or LuaRocks, you need to install so
 * JDK for Java binding (JAVA_HOME must be set) (optional)
 * Torch7 for Lua binding (optional)
 
-If you're using Ubuntu, the bash script `scripts/linux_check_dependencies.sh` can be run to install ZDoom and Boost dependencies along with Python 3 (tested on Ubuntu 16.04).  Please run as:
-
-`bash linux_check_dependencies.sh USERNAME` (where USERNAME is your Ubuntu username)
-
-
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
-
-To get all dependencies (except JDK) on Ubuntu execute the following commands in the shell (requires root access):
+To get all dependencies (except JDK) on Ubuntu execute the following commands in the shell (requires root access). `scripts/linux_check_dependencies.sh` installs these for Python3:
 ```bash
 # ZDoom dependencies
 sudo apt-get install build-essential zlib1g-dev libsdl2-dev libjpeg-dev \
