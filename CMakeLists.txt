@@ -100,7 +100,8 @@ endif ()
 find_package(Boost COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
 find_package(Threads REQUIRED)
 
-set(VIZDOOM_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(VIZDOOM_OUTPUT_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 set(VIZDOOM_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(VIZDOOM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(VIZDOOM_LIB_SRC_DIR ${VIZDOOM_SRC_DIR}/lib)
@@ -226,13 +227,13 @@ if (BUILD_PYTHON OR BUILD_PYTHON3)
 
     if (UNIX AND BUILD_ENGINE AND DOWNLOAD_FREEDOOM)
         add_custom_target(python_pip_package ALL
-                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh ${_PYTHON_VERSION}
+                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh ${_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
                 COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
     endif ()
     
     if (WIN32 AND DOWNLOAD_FREEDOOM)
         add_custom_target(python_pip_package ALL
-                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.bat ${_PYTHON_VERSION}
+                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.bat ${_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
                 COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
     endif ()
     
@@ -291,7 +292,7 @@ if (BUILD_LUA)
 
     if (UNIX AND BUILD_ENGINE AND DOWNLOAD_FREEDOOM)
         add_custom_target(luarocks_package ALL
-                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_luarocks_package.sh
+                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_luarocks_package.sh ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
                 COMMENT "Assembling luarocks package in ${VIZDOOM_LUA_OUTPUT_DIR}/luarocks_package"
                 PROJECT_LABEL "Luarocks package")
 
@@ -403,12 +404,12 @@ endif ()
 
 if (UNIX AND DOWNLOAD_FREEDOOM)
     add_custom_target(freedoom2 ALL
-            COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/download_freedoom.sh
+            COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/download_freedoom.sh ${VIZDOOM_OUTPUT_DIR}
             COMMENT "Downloading freedoom2.wad")
 endif ()
 
 if (WIN32 AND DOWNLOAD_FREEDOOM)
     add_custom_target(freedoom2 ALL
-            COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/download_freedoom.bat
+            COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/download_freedoom.bat ${VIZDOOM_OUTPUT_DIR}
             COMMENT "Downloading freedoom2.wad")
 endif ()

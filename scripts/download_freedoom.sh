@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+FREEDOOM_DESTINATION_PATH=$1
+
 # Checks if bin/freedoom2.wad is in place if not, the zip is downloaded (if not yet present) and freedoom2.wad is extracted to bin directory.
 
 # Older version of freedoom
@@ -9,7 +11,6 @@ FREEDOOM_ARCHIVE=$(echo ${FREEDOOM_LINK} | cut -d '/' -f9)
 FREEDOOM_ARCHIVE_BASENAME=$(basename ${FREEDOOM_ARCHIVE} .zip)
 
 FREEDOOM_DOWNLOAD_PATH="."
-FREEDOOM_DESTINATION_PATH="./bin"
 
 if [ ! -e  "${FREEDOOM_DESTINATION_PATH}/freedoom2.wad" ]; then
 	if [ ! -e "${FREEDOOM_DOWNLOAD_PATH}/${FREEDOOM_ARCHIVE}" ]; then

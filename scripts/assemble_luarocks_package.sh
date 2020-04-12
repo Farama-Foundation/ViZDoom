@@ -1,21 +1,22 @@
 #!/usr/bin/env bash
-
-PACKAGE_DEST_DIRECTORY="./bin/lua"
+BIN_PATH=$1
+SRC_PATH=$2
+PACKAGE_DEST_DIRECTORY="${BIN_PATH}/lua"
 PACKAGE_DEST_PATH="${PACKAGE_DEST_DIRECTORY}/luarocks_package"
 SHARED_PACKAGE_DEST_PATH="${PACKAGE_DEST_DIRECTORY}/luarocks_shared_package"
-PACKAGE_SOURCE="./src/lib_lua/src_lua"
+PACKAGE_SOURCE="${SRC_PATH}/src/lib_lua/src_lua"
 if [ "$(uname)" == "Darwin" ]; then
-    VIZDOOM_EXEC_PATH="./bin/vizdoom.app/Contents/MacOS/vizdoom"
+    VIZDOOM_EXEC_PATH="${BIN_PATH}/vizdoom.app/Contents/MacOS/vizdoom"
     LUA_BIN_PATH="${PACKAGE_DEST_DIRECTORY}/vizdoom.dylib"
 else
-    VIZDOOM_EXEC_PATH="./bin/vizdoom"
+    VIZDOOM_EXEC_PATH="${BIN_PATH}/vizdoom"
     LUA_BIN_PATH="${PACKAGE_DEST_DIRECTORY}/vizdoom.so"
 fi
 
-VIZDOOM_PK3_PATH="./bin/vizdoom.pk3"
-FREEDOOM_PATH="./bin/freedoom2.wad"
+VIZDOOM_PK3_PATH="${BIN_PATH}/vizdoom.pk3"
+FREEDOOM_PATH="${BIN_PATH}/freedoom2.wad"
 SCENARIOS_DEST_DIR="${PACKAGE_DEST_PATH}/scenarios"
-SCENARIOS_PATH="./scenarios"
+SCENARIOS_PATH="${SRC_PATH}/scenarios"
 
 if [ ! -e ${LUA_BIN_PATH} ]; then
     echo "Library for Lua does not exist. Aborting."
