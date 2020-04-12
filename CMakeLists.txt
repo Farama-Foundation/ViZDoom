@@ -133,10 +133,10 @@ file(GLOB VIZDOOM_LIB_SOURCES
         ${VIZDOOM_LIB_SRC_DIR}/*.cpp)
 
 add_library(libvizdoom_static STATIC ${VIZDOOM_LIB_SOURCES})
-target_link_libraries(libvizdoom_static PRIVATE ${VIZDOOM_LIBS} gdtoa)
+target_link_libraries(libvizdoom_static PRIVATE ${VIZDOOM_LIBS})
 
 add_library(libvizdoom_shared SHARED ${VIZDOOM_LIB_SOURCES})
-target_link_libraries(libvizdoom_shared PRIVATE ${VIZDOOM_LIBS} gdtoa)
+target_link_libraries(libvizdoom_shared PRIVATE ${VIZDOOM_LIBS})
 
 set_target_properties(libvizdoom_static libvizdoom_shared
         PROPERTIES
