@@ -116,3 +116,4 @@ vizdoom.egg-info/
 
 # MacOS
 .DS_Store
+/build/
