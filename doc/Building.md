@@ -175,7 +175,9 @@ Location of `site-packages` depends on Python distribution:
 
 In ViZDoom's root directory:
 ```bash
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON -DBUILD_JULIA=ON
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON -DBUILD_JULIA=ON
 make
 ```
 
@@ -184,7 +186,9 @@ where `-DBUILD_PYTHON=ON`, `-DBUILD_JAVA=ON`, `-DBUILD_LUA=ON` and `-DBUILD_JULI
 To build Julia binding you first need to install CxxWrap package by running `julia` and using `Pkg.add("CxxWrap")` command (see [Linux dependencies](#linux_deps)). Then you need to manually set `JlCxx_DIR` variable:
 
 ```sh
-cmake -DCMAKE_BUILD_TYPE=Release \
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release \
 -DBUILD_JULIA=ON \
 -DJlCxx_DIR=~/.julia/vX.X/CxxWrap/deps/usr/lib/cmake/JlCxx/
 ```
@@ -197,7 +201,9 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 Run CMake and build generated Makefile.
 
 ```sh
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON -DBUILD_JULIA=ON
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON -DBUILD_JULIA=ON
 make
 ```
 
@@ -208,7 +214,9 @@ Users with brew-installed Python/Anaconda **may** need to manually set `PYTHON_E
 It should look like this for brew-installed Python (use `-DBUILD_PYTHON3=ON`, `include/pythonX.Xm` and `lib/libpythonX.Xm.dylib` for Python 3):
 
 ```sh
-cmake -DCMAKE_BUILD_TYPE=Release \
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release \
 -DBUILD_PYTHON=ON \
 -DPYTHON_EXECUTABLE=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/bin/pythonX \
 -DPYTHON_INCLUDE_DIR=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/include/pythonX.X \
@@ -219,7 +227,9 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 Or for Anaconda (use `-DBUILD_PYTHON3=ON`, `include/pythonX.Xm` and `lib/libpythonX.Xm.dylib` for Python 3):
 
 ```sh
-cmake -DCMAKE_BUILD_TYPE=Release \
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release \
 -DBUILD_PYTHON=ON \
 -DPYTHON_EXECUTABLE=~/anacondaX/bin/pythonX \
 -DPYTHON_INCLUDE_DIR=~/anacondaX/include/pythonX.X \
@@ -230,7 +240,9 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 To build Julia binding, you first need to install CxxWrap package by running `julia` and using `Pkg.add("CxxWrap")` command (see [MacOS dependencies](#macos_deps)). Then you need to manually set `JlCxx_DIR` variable:
 
 ```sh
-cmake -DCMAKE_BUILD_TYPE=Release \
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release \
 -DBUILD_JULIA=ON \
 -DJlCxx_DIR=~/.julia/vX.X/CxxWrap/deps/usr/lib/cmake/JlCxx/
 ```
@@ -260,7 +272,7 @@ Use generated Visual Studio solution to build all parts of ViZDoom environment.
 
 
 ### <a name="output"></a> Compilation output
-Compilation output will be placed in `vizdoom_root_dir/bin` and it should contain following files.
+Compilation output will be placed in `build/bin` and it should contain following files.
 
 * `bin/vizdoom / vizdoom.exe` - ViZDoom executable
 * `bin/vizdoom.pk3` - resources file used by ViZDoom (needed by ViZDoom executable)
@@ -277,6 +289,6 @@ Compilation output will be placed in `vizdoom_root_dir/bin` and it should contai
 
 ### <a name="manual-install"></a> Manual installation
 
-To manually install Python package copy `vizdoom_root_dir/bin/pythonX.X/pip_package` contents to `python_root_dir/lib/pythonX.X/site-packages/site-packages/vizdoom`.
+To manually install Python package copy `vizdoom_root_dir/build/bin/pythonX.X/pip_package` contents to `python_root_dir/lib/pythonX.X/site-packages/site-packages/vizdoom`.
 
-To manually install Torch package copy `vizdoom_root_dir/bin/lua/luarocks_package` contents to `torch_root_dir/install/lib/lua/5.1/vizdoom` and `vizdoom_root_dir/bin/lua/luarocks_shared_package` contents to `torch_root_dir/install/share/lua/5.1/vizdoom`.
+To manually install Torch package copy `vizdoom_root_dir/build/bin/lua/luarocks_package` contents to `torch_root_dir/install/lib/lua/5.1/vizdoom` and `vizdoom_root_dir/build/bin/lua/luarocks_shared_package` contents to `torch_root_dir/install/share/lua/5.1/vizdoom`.
