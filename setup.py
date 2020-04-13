@@ -7,7 +7,8 @@ from setuptools import setup
 
 platform = sys.platform
 python_version = sysconfig.get_python_version()
-package_path = 'bin/python' + python_version + '/pip_package'
+build_dir = 'build'
+package_path = build_dir + '/bin/python' + python_version + '/pip_package'
 supported_platforms = ["Linux", "Mac OS-X"]
 
 if platform.startswith("win"):
@@ -54,10 +55,14 @@ def get_python_library(python_lib_dir):
 class BuildCommand(build):
     def run(self):
         try:
+            build_temp = pathlib.Path(build_dir)
+            build_temp.mkdir(parents=True, exist_ok=True)
+
             cpu_cores = max(1, cpu_count() - 1)
             python_executable = os.path.realpath(sys.executable)
 
             cmake_arg_list = list()
+            cmake_arg_list.append("-H{src_dir} -B{build_dir}".format(src_dir='.', build_dir=build_temp))
             cmake_arg_list.append("-DCMAKE_BUILD_TYPE=Release")
             cmake_arg_list.append("-DBUILD_PYTHON=ON")
             cmake_arg_list.append("-DPYTHON_EXECUTABLE={}".format(python_executable))
@@ -78,6 +83,7 @@ class BuildCommand(build):
                 cmake_arg_list.append("-DBUILD_PYTHON3=ON")
 
             subprocess.check_call(['rm', '-f', 'CMakeCache.txt'])
+
             subprocess.check_call(['cmake'] + cmake_arg_list)
             subprocess.check_call(['make', '-j', str(cpu_cores)])
         except subprocess.CalledProcessError:
