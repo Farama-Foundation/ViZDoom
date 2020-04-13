@@ -105,7 +105,6 @@ class CMakeBuild(build_ext):
                              "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md "
                              "for details\n\n\033[0m")
             raise
-        build_ext.run(self)
 
 
 setup(
