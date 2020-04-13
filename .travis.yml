@@ -33,7 +33,6 @@ os:
 
 env:
   matrix:
-    - BINDING=anaconda3
     - BINDING=java
     #- BINDING=lua
     #- BINDING=torch
@@ -55,31 +54,8 @@ before_install:
   #- if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "torch" ]; then ...; fi
   - if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "python3" ]; then brew install python3; fi
 
-  # Anaconda/Miniconda
-  - if [ $BINDING == "anaconda2" ]; then
-    wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O anaconda.sh;
-    bash anaconda.sh -b -p $HOME/anaconda;
-    export PATH="$HOME/anaconda/bin:$PATH";
-    hash -r;
-    fi
-  - if [ $BINDING == "anaconda3" ]; then
-    wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O anaconda.sh;
-    bash anaconda.sh -b -p $HOME/anaconda;
-    export PATH="$HOME/anaconda/bin:$PATH";
-    hash -r;
-    fi
-
 script:
   - if [ $BINDING == "java" ]; then cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_JAVA=ON; make; fi
   - if [ $BINDING == "lua" ]; then cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_LUA=ON; make; fi
   - if [ $BINDING == "torch" ]; then luarocks make; fi
-
-  # Python install via pip
   - if [ $BINDING == "python3" ]; then python3 --version; sudo pip3 -v install .; fi
-
-  # Python manual build
-  #- if [ $BINDING == "anaconda3" ]; then
-  #  cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON3=ON -DPYTHON_INCLUDE_DIR=$HOME/anaconda/include/python3.6m -DPYTHON_LIBRARY=$HOME/anaconda/lib/libpython3.6m.so -DPYTHON_EXECUTABLE=$HOME/anaconda/bin/python3 -DNUMPY_INCLUDES=$HOME/anaconda/lib/python3.6/site-packages/numpy/core/include;
-  #  make;
-  #  fi
-  #- if [ $BINDING == "python3" ]; then cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON3=ON; make; fi
