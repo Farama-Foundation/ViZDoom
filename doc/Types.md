@@ -47,8 +47,7 @@
 - `double / number / double / float` **objectVelocityY / object_velocity_y**
 - `double / number / double / float` **objectVelocityZ / object_velocity_z**
 
-**objectId / object_id** - unique object instance ID - assigned when object is seen for the first time
-(so object with lower id was seen before object with higher).
+**objectId / object_id** - unique object ID, if both Labels and Objects information is enabled, this will be the same as **id** in corresponding**Object**.
 
 **objectName / object_name** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
 
@@ -61,7 +60,7 @@
 ### <a name="object"></a> `Object`
 (`C++ type / Python type` **name**)
 
-- `unsigned int / int` **id **
+- `unsigned int / int` **id**
 - `std::string / str` **name**
 - `double / float` **positionX / position_x**
 - `double / float` **positionY / position_y**
@@ -72,6 +71,8 @@
 - `double / float` **velocityX / velocity_x**
 - `double / float` **velocityY / velocity_y**
 - `double / float` **velocityZ / velocity_z**
+
+**id** - unique object ID.
 
 **name** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
 

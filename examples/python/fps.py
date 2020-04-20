@@ -54,6 +54,8 @@ if __name__ == "__main__":
     game.set_depth_buffer_enabled(depth_buffer)
     game.set_labels_buffer_enabled(labels_buffer)
     game.set_automap_buffer_enabled(automap_buffer)
+    game.set_objects_info_enabled(True)
+    game.set_sectors_info_enabled(True)
 
     game.set_window_visible(False)
 
@@ -67,7 +69,7 @@ if __name__ == "__main__":
 
     start = time()
 
-    print("Checking FPS rating. It may take some time. Be patient.")
+    print("Checking FPS rating with all features enabled. It may take some time. Be patient.")
 
     for i in tqdm.trange(args.iterations, leave=False):
 

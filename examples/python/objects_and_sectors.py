@@ -56,13 +56,13 @@ if __name__ =="__main__":
             game.make_action(choice(actions))
     
             print("State #" + str(state.number))
-            print("Player position X:", state.game_variables[0], "Y:", state.game_variables[1], "Z:", state.game_variables[2])
+            print("Player position: x:", state.game_variables[0], ", y:", state.game_variables[1], ", z:", state.game_variables[2])
             print("Objects:")
     
             # Print information about objects present in the episode.
             for o in state.objects:
-                print("Object name:", o.name)
-                print("Object position x:", o.position_x, "y:", o.position_y, "z:", o.position_z)
+                print("Object id:", o.id, "object name:", o.name)
+                print("Object position: x:", o.position_x, ", y:", o.position_y, ", z:", o.position_z)
 
                 # Other available fields:
                 #print("Object rotation angle", o.angle, "pitch:", o.pitch, "roll:", o.roll)
@@ -80,7 +80,7 @@ if __name__ =="__main__":
 
             # Print information about sectors.
             for s in state.sectors:
-                print("Sector floor height:", s.floor_height, "ceiling height:", s.ceiling_height)
+                print("Sector floor height:", s.floor_height, ", ceiling height:", s.ceiling_height)
                 print("Sector lines:", [(l.x1, l.y1, l.x2, l.y2, l.is_blocking) for l in s.lines])
 
                 # Plot sector on map

@@ -121,7 +121,7 @@ if __name__ =="__main__":
             game.make_action(choice(actions))
 
             print("State #" + str(state.number))
-            print("Player position X:", state.game_variables[0], "Y:", state.game_variables[1], "Z:", state.game_variables[2])
+            print("Player position: x:", state.game_variables[0], ", y:", state.game_variables[1], ", z:", state.game_variables[2])
             print("Labels:")
 
             # Print information about objects visible on the screen.
@@ -131,13 +131,13 @@ if __name__ =="__main__":
             for l in state.labels:
                 seen_in_this_episode.add(l.object_name)
                 # print("---------------------")
-                print("Label:", l.value, "object id:", l.object_id, "object name:", l.object_name)
-                print("Object position x:", l.object_position_x, "y:", l.object_position_y, "z:", l.object_position_z)
+                print("Label:", l.value, ", object id:", l.object_id, ", object name:", l.object_name)
+                print("Object position: x:", l.object_position_x, ", y:", l.object_position_y, ", z:", l.object_position_z)
 
                 # Other available fields:
                 #print("Object rotation angle", l.object_angle, "pitch:", l.object_pitch, "roll:", l.object_roll)
                 #print("Object velocity x:", l.object_velocity_x, "y:", l.object_velocity_y, "z:", l.object_velocity_z)
-                print("Bounding box: x:", l.x, "y:", l.y, "width:", l.width, "height:", l.height)
+                print("Bounding box: x:", l.x, ", y:", l.y, ", width:", l.width, ", height:", l.height)
 
             print("=====================")
 

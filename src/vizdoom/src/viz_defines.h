@@ -41,9 +41,9 @@
 #define VIZ_MAX_DEBUG_TEXT_LEN      1024
 
 #define VIZ_MAX_LABELS              256
-#define VIZ_MAX_OBJECTS             2048
-#define VIZ_MAX_SECTORS             512
-#define VIZ_MAX_LINES               2048
+#define VIZ_MAX_OBJECTS             4096
+#define VIZ_MAX_SECTORS             2048
+#define VIZ_MAX_LINES               8192
 
 #ifdef __linux__
     #define VIZ_OS_LINUX

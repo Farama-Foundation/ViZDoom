@@ -33,9 +33,9 @@
 #define SM_REGION_COUNT 6
 
 #define MAX_LABELS 256
-#define MAX_OBJECTS 2048
-#define MAX_SECTORS 512
-#define MAX_LINES 2048
+#define MAX_OBJECTS 4096
+#define MAX_SECTORS 2048
+#define MAX_LINES 8192
 
 namespace vizdoom {
 
