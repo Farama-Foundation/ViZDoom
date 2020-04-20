@@ -376,7 +376,6 @@ PYBIND11_MODULE(vizdoom, vz){
 
     #define LABEL_CLASS Label
     class_<LABEL_CLASS>(vz, "Label")
-    //class_<LabelPython>(vz, "Label")
         .def_readonly("object_id", &LABEL_CLASS::objectId)
         .def_readonly("object_name", &LABEL_CLASS::objectName)
         .def_readonly("value", &LABEL_CLASS::value)
@@ -396,8 +395,7 @@ PYBIND11_MODULE(vizdoom, vz){
 
     #define OBJECT_CLASS Object
     class_<OBJECT_CLASS>(vz, "Object")
-    //class_<ObjectPython>(vz, "Object")
-        //.def_readonly("id", &OBJECT_CLASS::objectId)
+        .def_readonly("id", &OBJECT_CLASS::id)
         .def_readonly("name", &OBJECT_CLASS::name)
         .def_readonly("position_x", &OBJECT_CLASS::positionX)
         .def_readonly("position_y", &OBJECT_CLASS::positionY)

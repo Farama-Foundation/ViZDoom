@@ -162,7 +162,6 @@ void VIZLabelsBuffer::updateBoundingBox(unsigned int x, unsigned int y){
 void VIZLabelsBuffer::addSprite(AActor *actor, vissprite_t* vis){
     VIZSprite sprite;
     sprite.actor = actor;
-    sprite.actorId = this->getActorId(actor);
     sprite.vissprite = vis;
 
     this->sprites.push_back(sprite);
@@ -175,7 +174,6 @@ void VIZLabelsBuffer::addPSprite(AActor *actor, vissprite_t* vis){
     else {
         VIZSprite sprite;
         sprite.actor = actor;
-        sprite.actorId = 0;
         sprite.psprite = true;
         sprite.vissprite = vis;
 
@@ -205,22 +203,6 @@ BYTE VIZLabelsBuffer::getLabel(vissprite_t* vis){
         }
     }
     return 0;
-}
-
-unsigned int VIZLabelsBuffer::getActorId(AActor *actor){
-    auto actorId = this->actors.find(actor);
-    if(actorId != this->actors.end()){
-        return actorId->second;
-    }
-    else{
-        unsigned int newId = this->actors.size() + 1;
-        this->actors.insert({actor, newId});
-        return newId;
-    }
-}
-
-void VIZLabelsBuffer::clearActors(){
-    this->actors.clear();
 }
 
 std::vector<VIZSprite> VIZLabelsBuffer::getSprites(){

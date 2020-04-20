@@ -43,7 +43,7 @@ namespace vizdoom{
         unsigned int width;
         unsigned int height;
 
-        //bool isObjectHostile; // Right know we do not provide this information
+        //bool isObjectHostile; // Right now we do not provide this information
         //bool isObjectPickable;
         //bool isObjectUsable;
 
@@ -67,7 +67,7 @@ namespace vizdoom{
 
     struct Object {
         // Actor properties
-        //unsigned int id; // Right know we do not assign uniq ids to objects
+        unsigned int id;
 
         double positionX;
         double positionY;

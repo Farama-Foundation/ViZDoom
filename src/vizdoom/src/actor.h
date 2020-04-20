@@ -1171,6 +1171,9 @@ public:
 	void AddToHash ();
 	void RemoveFromHash ();
 
+	//VIZDOOM_CODE
+	int viz_id;
+
 private:
 	static AActor *TIDHash[128];
 	static inline int TIDHASH (int key) { return key & 127; }

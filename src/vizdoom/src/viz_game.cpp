@@ -53,6 +53,7 @@ EXTERN_CVAR (Float, timelimit)
 
 VIZGameState *vizGameStateSM = NULL;
 VIZPlayerLogger vizPlayerLogger[VIZ_MAX_PLAYERS];
+unsigned int vizUniqueObjectsCount = 0;
 
 /* Logger functions */
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -216,6 +217,13 @@ void VIZ_CopyActorName(AActor* actor, char* name) {
         strncpy(name, "Dead", VIZ_MAX_NAME_LEN);
         strncpy(name + 4, actor->GetClass()->TypeName.GetChars(), VIZ_MAX_NAME_LEN - 4);
     } else strncpy(name, actor->GetClass()->TypeName.GetChars(), VIZ_MAX_NAME_LEN);
+}
+
+inline unsigned int VIZ_GetActorId(AActor* actor){
+    if(actor->viz_id == -1) {
+        actor->viz_id = vizUniqueObjectsCount++;
+    }
+    return actor->viz_id;
 }
 
 
@@ -441,7 +449,7 @@ void VIZ_GameStateUpdateLabels(){
             if(sprite.labeled && sprite.pointCount > 0){
                 VIZLabel *vizLabel = &vizGameStateSM->LABEL[labelCount++];
 
-                vizLabel->objectId = sprite.actorId;
+                vizLabel->objectId = VIZ_GetActorId(sprite.actor);
                 vizLabel->value = sprite.label;
                 VIZ_CopyActorName(sprite.actor, vizLabel->objectName);
 
@@ -485,8 +493,8 @@ void VIZ_GameStateUpdateObjects(){
         for (AActor *actor = sector->thinglist; actor != NULL; actor = actor->snext) {
             VIZObject *vizObject = &vizGameStateSM->OBJECT[objectCount++];
 
+            vizObject->id = VIZ_GetActorId(actor);
             VIZ_CopyActorName(actor, vizObject->name);
-
             vizObject->position[0] = VIZ_FixedToDouble(actor->__pos.x);
             vizObject->position[1] = VIZ_FixedToDouble(actor->__pos.y);
             vizObject->position[2] = VIZ_FixedToDouble(actor->__pos.z);
@@ -573,11 +581,11 @@ void VIZ_GameStateInitNew(){
         level.NextSecretMap = level.MapName;
     }
 
-    if(vizLabels != NULL) vizLabels->clearActors();
-
     for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
         vizPlayerLogger[i].reset();
     }
+
+    vizUniqueObjectsCount = 0;
 }
 
 void VIZ_GameStateClose(){

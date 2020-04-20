@@ -64,6 +64,7 @@ struct VIZPlayerLogger{
     }
 };
 
+extern unsigned int vizUniqueObjectsCount;
 extern VIZPlayerLogger vizPlayerLogger[VIZ_MAX_PLAYERS];
 
 void VIZ_LogDmg(AActor *target, AActor *inflictor, AActor *source, int damage);

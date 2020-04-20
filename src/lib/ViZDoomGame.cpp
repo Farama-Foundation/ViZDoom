@@ -260,13 +260,6 @@ namespace vizdoom {
                     this->state->labels.emplace_back();
                     std::memcpy(&this->state->labels.back().value, &smState->LABEL[i].value, labelPartSize);
                     this->state->labels.back().objectName = std::string(smState->LABEL[i].objectName);
-
-                    /*
-                    Label label;
-                    std::memcpy(&label.value, &smState->LABEL[i].value, labelPartSize);
-                    label.objectName = std::string(smState->LABEL[i].objectName);
-                    this->state->labels.push_back(label);
-                     */
                 }
             } else this->state->labelsBuffer = nullptr;
 
@@ -278,20 +271,11 @@ namespace vizdoom {
             /* Update objects */
             this->state->objects.clear();
             if (this->doomController->isObjectsEnabled()) {
-                //size_t objectPartSize = offsetof(struct Object, objectName) - offsetof(struct Object, objectId);
-                size_t objectPartSize = offsetof(struct Object, name) - offsetof(struct Object, positionX);
+                size_t objectPartSize = offsetof(struct Object, name) - offsetof(struct Object, id);
                 for (unsigned int i = 0; i < smState->OBJECT_COUNT; ++i) {
                     this->state->objects.emplace_back();
-                    std::memcpy(&this->state->objects.back().positionX, &smState->OBJECT[i].position[0], objectPartSize);
+                    std::memcpy(&this->state->objects.back().id, &smState->OBJECT[i].id, objectPartSize);
                     this->state->objects.back().name = std::string(smState->OBJECT[i].name);
-
-                    /*
-                    Object object;
-                    //std::memcpy(&object.objectId, &smState->OBJECT[i].objectId, objectPartSize);
-                    std::memcpy(&object.positionX, &smState->OBJECT[i].position[0], objectPartSize);
-                    object.name = std::string(smState->OBJECT[i].name);
-                    this->state->objects.push_back(object);
-                     */
                 }
             }
             

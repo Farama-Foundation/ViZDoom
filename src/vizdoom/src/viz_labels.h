@@ -49,7 +49,6 @@
 #endif
 
 struct VIZSprite{
-    unsigned int actorId;
     AActor* actor;
     bool psprite;
     vissprite_t* vissprite;
@@ -101,8 +100,6 @@ public:
     void addPSprite(AActor *thing, vissprite_t* vis);
     BYTE getLabel(VIZSprite* sprite);
     BYTE getLabel(vissprite_t* vis);
-    unsigned int getActorId(AActor *actor);
-    void clearActors();
     void setLabel(BYTE label);
     void setSprite(vissprite_t* vis);
     void unsetSprite();
@@ -127,8 +124,6 @@ private:
     BYTE currentLabel;
     VIZSprite *currentSprite;
     VIZSprite *pSprite;
-
-    std::unordered_map<AActor*, unsigned int> actors;
 
     #ifdef VIZ_LABELS_TEST
         SDL_Window* window;

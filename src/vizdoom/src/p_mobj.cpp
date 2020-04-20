@@ -395,16 +395,24 @@ void AActor::Serialize (FArchive &arc)
 
 AActor::AActor () throw()
 {
+    //VIZDOOM_CODE
+    this->viz_id = -1;
 }
 
 AActor::AActor (const AActor &other) throw()
 	: DThinker()
 {
+    //VIZDOOM_CODE
+    this->viz_id = -1;
+
 	memcpy (&snext, &other.snext, (BYTE *)&this[1] - (BYTE *)&snext);
 }
 
 AActor &AActor::operator= (const AActor &other)
 {
+    //VIZDOOM_CODE
+    this->viz_id = -1;
+
 	memcpy (&snext, &other.snext, (BYTE *)&this[1] - (BYTE *)&snext);
 	return *this;
 }
