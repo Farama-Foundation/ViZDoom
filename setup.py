@@ -94,6 +94,7 @@ class CMakeBuild(build_ext):
 
             if python_version[0] == "3":
                 cmake_arg_list.append("-DBUILD_PYTHON3=ON")
+            cmake_arg_list.append(".")
 
             subprocess.check_call(['rm', '-f', 'CMakeCache.txt'])
 
@@ -130,6 +131,7 @@ setup(
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
