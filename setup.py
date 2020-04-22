@@ -75,8 +75,7 @@ class CMakeBuild(build_ext):
             cpu_cores = max(1, cpu_count() - 1)
             python_executable = os.path.realpath(sys.executable)
 
-            cmake_arg_list = list()
-            cmake_arg_list.append("-S {src_dir} -B {build_dir}".format(src_dir='.', build_dir=build_temp))
+            cmake_arg_list = ["-S", ".", "-B", build_dir]
             cmake_arg_list.append("-DCMAKE_BUILD_TYPE=Release")
             cmake_arg_list.append("-DBUILD_PYTHON=ON")
             cmake_arg_list.append("-DPYTHON_EXECUTABLE={}".format(python_executable))
@@ -99,7 +98,7 @@ class CMakeBuild(build_ext):
             subprocess.check_call(['rm', '-f', 'CMakeCache.txt'])
 
             subprocess.check_call(['cmake'] + cmake_arg_list)
-            subprocess.check_call(['make', '-j', str(cpu_cores)])
+            subprocess.check_call(['make', '-j', str(cpu_cores), '-C', build_dir])
         except subprocess.CalledProcessError:
             sys.stderr.write("\033[1m\nInstallation failed, you may be missing some dependencies. "
                              "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md "
@@ -131,10 +130,9 @@ setup(
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
     keywords=['vizdoom', 'doom', 'ai', 'deep learning', 'reinforcement learning', 'research']
 )
