@@ -8,7 +8,7 @@ from setuptools import setup, Extension
 
 platform = sys.platform
 python_version = sysconfig.get_python_version()
-build_dir = 'build'
+build_dir = '.'
 package_path = build_dir + '/bin/python' + python_version + '/pip_package'
 supported_platforms = ["Linux", "Mac OS-X"]
 
@@ -99,7 +99,7 @@ class CMakeBuild(build_ext):
             subprocess.check_call(['rm', '-f', 'CMakeCache.txt'])
 
             subprocess.check_call(['cmake'] + cmake_arg_list)
-            subprocess.check_call(['make', '-j', str(cpu_cores), '-C', build_dir])
+            subprocess.check_call(['make', '-j', str(cpu_cores)])
         except subprocess.CalledProcessError:
             sys.stderr.write("\033[1m\nInstallation failed, you may be missing some dependencies. "
                              "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md "
