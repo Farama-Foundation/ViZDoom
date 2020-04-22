@@ -1,6 +1,8 @@
 @echo off
 setlocal enabledelayedexpansion
 
+set FREEDOOM_DESTINATION_PATH=%1
+
 :: Checks if bin/freedoom2.wad is in place if not, the zip is downloaded (if not yet present) and freedoom2.wad is extracted to bin directory.
 
 :: Older version of freedoom
@@ -10,7 +12,6 @@ set FREEDOOM_ARCHIVE=%FREEDOOM_LINK:~0,-1%
 for %%F in (%FREEDOOM_LINK%) do set FREEDOOM_ARCHIVE=%%~nxF
 
 set FREEDOOM_OUTFILE=".\%FREEDOOM_ARCHIVE%"
-set FREEDOOM_DESTINATION_PATH=".\bin"
 set FREEDOOM_DESTINATION_FILE="%FREEDOOM_DESTINATION_PATH%\freedoom2.wad"
 
 if not exist "%FREEDOOM_DESTINATION_FILE%" (

@@ -1,30 +1,32 @@
 #!/usr/bin/env bash
 
 PYTHON_VERSION=$1
+BIN_PATH=$2
+SRC_PATH=$3
 
-if [ $# -ne 1 ];then
-    echo "Exactly one argument required. Aborting."
+if [ $# -ne 3 ];then
+    echo "Exactly three arguments required. Aborting."
     exit 1
 fi
 
-PACKAGE_DEST_DIRECTORY="./bin/python${PYTHON_VERSION}"
+PACKAGE_DEST_DIRECTORY="${BIN_PATH}/python${PYTHON_VERSION}"
 PACKAGE_DEST_PATH="${PACKAGE_DEST_DIRECTORY}/pip_package"
-PACKAGE_INIT_FILE_SRC="./src/lib_python/__init__.py"
+PACKAGE_INIT_FILE_SRC="${SRC_PATH}/src/lib_python/__init__.py"
 
 if [ "$(uname)" == "Darwin" ]; then
-    VIZDOOM_EXEC_PATH="./bin/vizdoom.app/Contents/MacOS/vizdoom"
+    VIZDOOM_EXEC_PATH="${BIN_PATH}/vizdoom.app/Contents/MacOS/vizdoom"
 else
-    VIZDOOM_EXEC_PATH="./bin/vizdoom"
+    VIZDOOM_EXEC_PATH="${BIN_PATH}/vizdoom"
 fi
 
-VIZDOOM_PK3_PATH="./bin/vizdoom.pk3"
+VIZDOOM_PK3_PATH="${BIN_PATH}/vizdoom.pk3"
 PYTHON_BIN_PATH="$(ls ${PACKAGE_DEST_DIRECTORY}/vizdoom*)"
 PYTHON_BIN_EXT="${PYTHON_BIN_PATH##*.}"
 PYTHON_BIN_DEST_PATH="${PACKAGE_DEST_PATH}/vizdoom.${PYTHON_BIN_EXT}"
 
-FREEDOOM_PATH="./bin/freedoom2.wad"
+FREEDOOM_PATH="${BIN_PATH}/freedoom2.wad"
 SCENARIOS_DEST_DIR="${PACKAGE_DEST_PATH}/scenarios"
-SCENARIOS_PATH="./scenarios"
+SCENARIOS_PATH="${SRC_PATH}/scenarios"
 
 if [ ! -e ${PYTHON_BIN_PATH} ]; then
     echo "Library for specified Python version does not exist. Aborting."

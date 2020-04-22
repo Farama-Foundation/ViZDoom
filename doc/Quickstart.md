@@ -34,7 +34,9 @@ cd ViZDoom
 The library version numbers will change over time (e.g. `python3.6m`, `boost-python/1.64.0`) and may need to be updated. 
 
 ```sh
-cmake -DCMAKE_BUILD_TYPE=Release \
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release \
 -DBUILD_PYTHON3=ON \
 -DPYTHON_INCLUDE_DIR=$HOME/anaconda3/include/python3.6m \ 
 -DPYTHON_LIBRARY=$HOME/anaconda3/lib/libpython3.6m.dylib \
@@ -52,7 +54,7 @@ make
 5. Move the output to anaconda's `site-packages` directory, or your local virtual environments `site-packages` directory. 
 
 ```sh
-mv -r bin/python3/pip_package/ $HOME/anaconda3/lib/python3.6/site-packages/vizdoom
+mv -r build/bin/python3/pip_package/ $HOME/anaconda3/lib/python3.6/site-packages/vizdoom
 ```
 
 6. Test if it works.

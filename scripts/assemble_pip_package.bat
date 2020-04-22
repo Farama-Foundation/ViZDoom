@@ -2,24 +2,25 @@
 setlocal enabledelayedexpansion
 
 set PYTHON_VERSION=%1
+set BIN_PATH=%2
+set SRC_PATH=%3
 
-set BIN_PATH=.\bin
 set PACKAGE_DEST_DIRECTORY=%BIN_PATH%\python%PYTHON_VERSION%
 set PACKAGE_DEST_PATH=%PACKAGE_DEST_DIRECTORY%\pip_package
-set PACAKGE_INIT_FILE_SRC=.\src\lib_python\__init__.py
+set PACAKGE_INIT_FILE_SRC=%SRC_PATH%\src\lib_python\__init__.py
 
 set VIZDOOM_EXEC_PATH=%BIN_PATH%\vizdoom.exe
 set VIZDOOM_PK3_PATH=%BIN_PATH%\vizdoom.pk3
-dir dir .\bin\python%PYTHON_VERSION%\vizdoom*.pyd /b /s > %PACKAGE_DEST_DIRECTORY%\tmp.txt
+dir dir %BIN_PATH%\python%PYTHON_VERSION%\vizdoom*.pyd /b /s > %PACKAGE_DEST_DIRECTORY%\tmp.txt
 set /p PYTHON_BIN_PATH=<%PACKAGE_DEST_DIRECTORY%\tmp.txt
 del %PACKAGE_DEST_DIRECTORY%\tmp.txt
 set PYTHON_BIN_DEST_PATH=%PACKAGE_DEST_PATH%\vizdoom.pyd
 
 set FREEDOOM_PATH=%BIN_PATH%\freedoom2.wad
 set SCENARIOS_DEST_DIR=%PACKAGE_DEST_PATH%\scenarios
-set SCENARIOS_PATH=.\scenarios
+set SCENARIOS_PATH=%SRC_PATH%\scenarios
 set EXAMPLES_DEST_DIR=%PACKAGE_DEST_PATH%\examples
-set EXAMPLES_PATH=".\examples\python"
+set EXAMPLES_PATH=%SRC_PATH%\examples\python
 
 if not exist "%PYTHON_BIN_PATH%" (
     echo "Library for specified Python version does not exist. Aborting."
