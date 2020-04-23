@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(ViZDoom)
 
+
 # Project version
 #-----------------------------------------------------------------------------------------------------------------------
 
@@ -11,14 +12,15 @@ set(ViZDoom_VERSION ${ViZDoom_MAJOR_VERSION}.${ViZDoom_MINOR_VERSION}.${ViZDoom_
 set(ViZDoom_VERSION_STR ${ViZDoom_VERSION})
 set(ViZDoom_VERSION_ID ${ViZDoom_MAJOR_VERSION}${ViZDoom_MINOR_VERSION}${ViZDoom_PATCH_VERSION})
 
+
 # Building options
 #-----------------------------------------------------------------------------------------------------------------------
 
-option(BUILD_PYTHON "Build ViZDoom Python binding." OFF)
-option(BUILD_PYTHON3 "Build ViZDoom Python3 binding instead of default Python2." OFF)
-option(BUILD_JULIA "Build ViZDoom Julia binding." OFF)
-option(BUILD_ENGINE "Build ViZDoom game engine." ON)
 option(DOWNLOAD_FREEDOOM "Download freedoom2.wad." ON)
+option(BUILD_PYTHON3 "Build ViZDoom Python 3 binding." OFF)
+option(BUILD_PYTHON "Build ViZDoom Python (3 by default) binding." OFF)
+option(BUILD_PYTHON2 "Build ViZDoom Python2 binding instead of default Python3." OFF)
+option(BUILD_JULIA "Build ViZDoom Julia binding." OFF)
 
 
 # CMake options
@@ -32,8 +34,8 @@ endif (COMMAND cmake_policy)
 
 # Add cmake_modules to module
 set(CMAKE_MODULE_PATH
-        ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}"
-        "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
+    ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 
 # Set the release mode if not specified
 if (NOT CMAKE_BUILD_TYPE)
@@ -92,44 +94,45 @@ if (MSVC)
 endif ()
 
 
-# Targets
+# Main library and engine
 #-----------------------------------------------------------------------------------------------------------------------
-
-find_package(Boost COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
-find_package(Threads REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(VIZDOOM_OUTPUT_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+set(VIZDOOM_SCRIPTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/scripts)
 set(VIZDOOM_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(VIZDOOM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(VIZDOOM_LIB_SRC_DIR ${VIZDOOM_SRC_DIR}/lib)
 set(VIZDOOM_LIB_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LIB_SRC_DIR})
 set(VIZDOOM_OUTPUT_NAME vizdoom)
 
+find_package(Boost COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
+find_package(Threads REQUIRED)
+
 include_directories(${VIZDOOM_LIB_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
 
 set(VIZDOOM_LIBS
-        ${Boost_LIBRARIES}
-        ${CMAKE_THREAD_LIBS_INIT})
+    ${Boost_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT})
 
 if (UNIX AND NOT APPLE)
     set(VIZDOOM_LIBS ${VIZDOOM_LIBS} rt)
 endif ()
 
 configure_file(
-        "${VIZDOOM_LIB_SRC_DIR}/ViZDoomVersion.h.in"
-        "${VIZDOOM_LIB_SRC_DIR}/ViZDoomVersion.h"
+    "${VIZDOOM_LIB_SRC_DIR}/ViZDoomVersion.h.in"
+    "${VIZDOOM_LIB_SRC_DIR}/ViZDoomVersion.h"
 )
 
 configure_file(
-        "${VIZDOOM_SRC_DIR}/vizdoom/src/viz_version.h.in"
-        "${VIZDOOM_SRC_DIR}/vizdoom/src/viz_version.h"
+    "${VIZDOOM_SRC_DIR}/vizdoom/src/viz_version.h.in"
+    "${VIZDOOM_SRC_DIR}/vizdoom/src/viz_version.h"
 )
 
 file(GLOB VIZDOOM_LIB_SOURCES
-        ${VIZDOOM_INCLUDE_DIR}/*.h
-        ${VIZDOOM_LIB_SRC_DIR}/*.h
-        ${VIZDOOM_LIB_SRC_DIR}/*.cpp)
+    ${VIZDOOM_INCLUDE_DIR}/*.h
+    ${VIZDOOM_LIB_SRC_DIR}/*.h
+    ${VIZDOOM_LIB_SRC_DIR}/*.cpp)
 
 add_library(libvizdoom_static STATIC ${VIZDOOM_LIB_SOURCES})
 target_link_libraries(libvizdoom_static PRIVATE ${VIZDOOM_LIBS})
@@ -138,127 +141,54 @@ add_library(libvizdoom_shared SHARED ${VIZDOOM_LIB_SOURCES})
 target_link_libraries(libvizdoom_shared PRIVATE ${VIZDOOM_LIBS})
 
 set_target_properties(libvizdoom_static libvizdoom_shared
-        PROPERTIES
-        LINKER_LANGUAGE CXX
-        LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}
-        ARCHIVE_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}
-        ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}
-        ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}
-        ARCHIVE_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}
-        ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}
-        OUTPUT_NAME ${VIZDOOM_OUTPUT_NAME})
+    PROPERTIES
+    LINKER_LANGUAGE CXX
+    LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}
+    LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}
+    LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}
+    LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}
+    LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}
+    ARCHIVE_OUTPUT_DIRECTORY ${VIZDOOM_OUTPUT_DIR}
+    ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_OUTPUT_DIR}
+    ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_OUTPUT_DIR}
+    ARCHIVE_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_OUTPUT_DIR}
+    ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_OUTPUT_DIR}
+    OUTPUT_NAME ${VIZDOOM_OUTPUT_NAME})
 
 set_target_properties(libvizdoom_static
-        PROPERTIES
-        PROJECT_LABEL "static library")
+    PROPERTIES
+    PROJECT_LABEL "static library")
 
 set_target_properties(libvizdoom_shared
-        PROPERTIES
-        PROJECT_LABEL "shared library")
+    PROPERTIES
+    PROJECT_LABEL "shared library")
 
-if (BUILD_ENGINE)
-    add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
-endif ()
+add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
 
 
-# Python bindingcd
+# Python and Julia
 #-----------------------------------------------------------------------------------------------------------------------
 
-if (BUILD_PYTHON OR BUILD_PYTHON3)
-    
-    if (BUILD_PYTHON3)
-        find_package(PythonInterp 3 REQUIRED)
-    else ()
-        find_package(PythonInterp 2 REQUIRED)
-    endif ()
-
-    STRING(REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" _PYTHON_VERSION ${PYTHON_VERSION_STRING})
-    find_package(PythonLibs ${_PYTHON_VERSION} REQUIRED)
-    find_package(NumPy REQUIRED)
-
-    set(VIZDOOM_PYTHON_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python${_PYTHON_VERSION})
-    set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
-    set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
-
-
-    # Use included pybind11
-    add_subdirectory(${VIZDOOM_PYTHON_SRC_DIR}/pybind11)
-
-    set(VIZDOOM_PYTHON_LIBS
-            ${VIZDOOM_LIBS}
-            ${Boost_LIBRARIES}
-            ${NUMPY_LIBRARIES})
-
-    include_directories(${VIZDOOM_PYTHON_INCLUDE_DIR}
-            ${Boost_INCLUDE_DIR}
-            ${NUMPY_INCLUDES})
-
-    set(ViZDoom_PYTHON_INLCUDE_DIR ${VIZDOOM_PYTHON_INCLUDE_DIR})
-    set(ViZDoom_PYTHON_VERSION_STR ${PYTHON_VERSION_STRING})
-
-    configure_file(
-        "${VIZDOOM_PYTHON_SRC_DIR}/__init__.py.in"
-        "${VIZDOOM_PYTHON_SRC_DIR}/__init__.py"
-    )
-
-    set(VIZDOOM_PYTHON_SOURCES
-            ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.h
-            ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.cpp
-            ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomPythonModule.cpp)
-
-    pybind11_add_module(libvizdoom_python ${VIZDOOM_PYTHON_SOURCES})
-    target_link_libraries(libvizdoom_python PRIVATE ${VIZDOOM_PYTHON_LIBS} libvizdoom_static)
-    set_target_properties(libvizdoom_python
-            PROPERTIES
-            LIBRARY_OUTPUT_DIRECTORY ${VIZDOOM_PYTHON_OUTPUT_DIR}
-            LIBRARY_OUTPUT_DIRECTORY_DEBUG ${VIZDOOM_PYTHON_OUTPUT_DIR}
-            LIBRARY_OUTPUT_DIRECTORY_RELEASE ${VIZDOOM_PYTHON_OUTPUT_DIR}
-            LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_PYTHON_OUTPUT_DIR}
-            LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON_OUTPUT_DIR}
-            OUTPUT_NAME vizdoom
-            PROJECT_LABEL "python${_PYTHON_VERSION} binding")
-    add_dependencies(libvizdoom_python pybind11)
-
-    if (UNIX AND BUILD_ENGINE AND DOWNLOAD_FREEDOOM)
-        add_custom_target(python_pip_package ALL
-                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.sh ${_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
-                COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
-    endif ()
-    
-    if (WIN32 AND DOWNLOAD_FREEDOOM)
-        add_custom_target(python_pip_package ALL
-                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/assemble_pip_package.bat ${_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
-                COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
-    endif ()
-    
-    set_target_properties(python_pip_package
-            PROPERTIES
-            PROJECT_LABEL "pip package")
-    
-    # vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
-    add_dependencies(python_pip_package libvizdoom_python vizdoom pk3 freedoom2)
-
+if (BUILD_PYTHON OR BUILD_PYTHON3 OR BUILD_PYTHON2)
+    add_subdirectory(${VIZDOOM_SRC_DIR}/lib_python)
 endif ()
 
 if (BUILD_JULIA)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/lib_julia)
+    add_subdirectory(${VIZDOOM_SRC_DIR}/lib_julia)
 endif ()
+
 
 # Freedoom 2 download
 #-----------------------------------------------------------------------------------------------------------------------
 
 if (UNIX AND DOWNLOAD_FREEDOOM)
     add_custom_target(freedoom2 ALL
-            COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/download_freedoom.sh ${VIZDOOM_OUTPUT_DIR}
-            COMMENT "Downloading freedoom2.wad")
+        COMMAND ${VIZDOOM_SCRIPTS_DIR}/download_freedoom.sh ${VIZDOOM_OUTPUT_DIR}
+        COMMENT "Downloading freedoom2.wad")
 endif ()
 
 if (WIN32 AND DOWNLOAD_FREEDOOM)
     add_custom_target(freedoom2 ALL
-            COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/download_freedoom.bat ${VIZDOOM_OUTPUT_DIR}
-            COMMENT "Downloading freedoom2.wad")
+        COMMAND ${VIZDOOM_SCRIPTS_DIR}/download_freedoom.bat ${VIZDOOM_OUTPUT_DIR}
+        COMMENT "Downloading freedoom2.wad")
 endif ()

@@ -92,8 +92,8 @@ class CMakeBuild(build_ext):
                 cmake_arg_list.append("-DPYTHON_INCLUDE_DIR={}".format(python_include_dir))
                 cmake_arg_list.append("-DNUMPY_INCLUDES={}".format(numpy_include_dir))
 
-            if python_version[0] == "3":
-                cmake_arg_list.append("-DBUILD_PYTHON3=ON")
+            if python_version[0] == "2":
+                cmake_arg_list.append("-DBUILD_PYTHON2=ON")
             cmake_arg_list.append(".")
 
             subprocess.check_call(['rm', '-f', 'CMakeCache.txt'])
@@ -135,6 +135,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
     keywords=['vizdoom', 'doom', 'ai', 'deep learning', 'reinforcement learning', 'research']
 )
