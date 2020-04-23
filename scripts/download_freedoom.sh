@@ -6,7 +6,9 @@ FREEDOOM_DESTINATION_PATH=$1
 
 # Older version of freedoom
 #FREEDOOM_LINK="https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip"
-FREEDOOM_LINK="https://github.com/freedoom/freedoom/releases/download/v0.11.3/freedoom-0.11.3.zip"
+#FREEDOOM_LINK="https://github.com/freedoom/freedoom/releases/download/v0.11.3/freedoom-0.11.3.zip"
+
+FREEDOOM_LINK="https://github.com/freedoom/freedoom/releases/download/v0.12.1/freedoom-0.12.1.zip"
 FREEDOOM_ARCHIVE=$(echo ${FREEDOOM_LINK} | cut -d '/' -f9)
 FREEDOOM_ARCHIVE_BASENAME=$(basename ${FREEDOOM_ARCHIVE} .zip)
 

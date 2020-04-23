@@ -7,7 +7,9 @@ set FREEDOOM_DESTINATION_PATH=%1
 
 :: Older version of freedoom
 ::set FREEDOOM_LINK="https://github.com/freedoom/freedoom/releases/download/v0.10.1/freedoom-0.10.1.zip"
-set FREEDOOM_LINK="https://github.com/freedoom/freedoom/releases/download/v0.11.3/freedoom-0.11.3.zip"
+::set FREEDOOM_LINK="https://github.com/freedoom/freedoom/releases/download/v0.11.3/freedoom-0.11.3.zip"
+
+set FREEDOOM_LINK="https://github.com/freedoom/freedoom/releases/download/v0.12.1/freedoom-0.12.1.zip"
 set FREEDOOM_ARCHIVE=%FREEDOOM_LINK:~0,-1%
 for %%F in (%FREEDOOM_LINK%) do set FREEDOOM_ARCHIVE=%%~nxF
 
