@@ -1,61 +1,76 @@
-sudo: required
-dist: bionic
 language: cpp
-
-addons:
-  apt:
-    packages:
-      - cmake
-      - libboost-all-dev
-      - libsdl2-dev
-      - libfreetype6-dev
-      - libgl1-mesa-dev
-      - libglu1-mesa-dev
-      - libpng-dev
-      - libjpeg-dev
-      - libbz2-dev
-      - libfluidsynth-dev
-      - libgme-dev
-      - libopenal-dev
-      - zlib1g-dev
-      - timidity
-      - tar
-      - nasm
-      - wget
-
-branches:
-  only:
-    - master
-
-os:
-  - linux
-  #- osx
-
-env:
-  matrix:
-    - BINDING=java
-    #- BINDING=lua
-    #- BINDING=torch
-    - BINDING=python3
-
-before_install:
-  - uname -a
-
-  # Linux specific
-  - if [ $TRAVIS_OS_NAME == "linux" ] && [ $BINDING == "java" ]; then sudo apt-get install -y default-jdk; fi
-  #- if [ $TRAVIS_OS_NAME == "linux" ] && [ $BINDING == "lua" ]; then sudo apt-get install -y liblua5.1.0-dev; fi
-  #- if [ $TRAVIS_OS_NAME == "linux" ] && [ $BINDING == "torch" ]; then ...; fi
-  - if [ $TRAVIS_OS_NAME == "linux" ] && [ $BINDING == "python3" ]; then sudo apt-get install -y python3-dev python3-numpy python3-pip python3-setuptools; fi
-
-  # OSX specific
-  - if [ $TRAVIS_OS_NAME == "osx" ]; then brew reinstall wget cmake boost sdl2; fi
-  #- if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "java" ]; then ...; fi
-  #- if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "lua" ]; then ...; fi
-  #- if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "torch" ]; then ...; fi
-  - if [ $TRAVIS_OS_NAME == "osx" ] && [ $BINDING == "python3" ]; then brew install python3; fi
-
-script:
-  - if [ $BINDING == "java" ]; then cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_JAVA=ON; make; fi
-  - if [ $BINDING == "lua" ]; then cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_LUA=ON; make; fi
-  - if [ $BINDING == "torch" ]; then luarocks make; fi
-  - if [ $BINDING == "python3" ]; then python3 --version; sudo pip3 -v install .; fi
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+      name: Xenial, Python 3 build
+      addons:
+        apt:
+          packages:
+            - cmake
+            - libboost-all-dev
+            - libsdl2-dev
+            - libfreetype6-dev
+            - libgl1-mesa-dev
+            - libglu1-mesa-dev
+            - libpng-dev
+            - libjpeg-dev
+            - libbz2-dev
+            - libfluidsynth-dev
+            - libgme-dev
+            - libopenal-dev
+            - zlib1g-dev
+            - timidity
+            - tar
+            - nasm
+            - wget
+            - python3-dev
+            - python3-numpy
+            - python3-pip
+      script:
+        - |
+          cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON3=ON
+          make
+    - os: linux
+      dist: bionic
+      name: Bionic, Python 3 build
+      addons:
+        apt:
+          packages:
+            - cmake
+            - libboost-all-dev
+            - libsdl2-dev
+            - libfreetype6-dev
+            - libgl1-mesa-dev
+            - libglu1-mesa-dev
+            - libpng-dev
+            - libjpeg-dev
+            - libbz2-dev
+            - libfluidsynth-dev
+            - libgme-dev
+            - libopenal-dev
+            - zlib1g-dev
+            - timidity
+            - tar
+            - nasm
+            - wget
+            - python3-dev
+            - python3-numpy
+            - python3-pip
+      script:
+        - |
+          cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON3=ON
+          make
+    - os: osx
+      name: MacOS, Python 3 build
+      addons:
+        homebrew:
+          packages:
+            - cmake
+            - boost
+            - sdl2
+            - wget
+      script:
+        - |
+          cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON3=ON
+          make
