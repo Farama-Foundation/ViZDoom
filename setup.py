@@ -7,8 +7,7 @@ from setuptools import setup
 
 platform = sys.platform
 python_version = sysconfig.get_python_version()
-build_dir = '.'
-package_path = build_dir + '/bin/python' + python_version + '/pip_package'
+package_path = 'bin/python' + python_version + '/pip_package'
 supported_platforms = ["Linux", "Mac OS-X"]
 
 if platform.startswith("win"):
@@ -58,7 +57,7 @@ class BuildCommand(build):
             cpu_cores = max(1, cpu_count() - 1)
             python_executable = os.path.realpath(sys.executable)
 
-            cmake_arg_list = ["cmake", "-B", build_dir, "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_PYTHON=ON",
+            cmake_arg_list = ["cmake", "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_PYTHON=ON",
                               "-DPYTHON_EXECUTABLE={}".format(python_executable)]
 
             python_standard_lib = sysconfig.get_python_lib(standard_lib=True)
@@ -98,7 +97,7 @@ setup(
     author_email='vizdoom@googlegroups.com',
 
     install_requires=['numpy'],
-    setup_requires=['cython', 'numpy', 'wheel'],
+    setup_requires=['cython', 'numpy'],
     packages=['vizdoom'],
     package_dir={'vizdoom': package_path},
     package_data={'vizdoom': ['__init__.py', 'bots.cfg', 'freedoom2.wad', 'vizdoom', 'vizdoom.pk3', 'vizdoom.so', 'scenarios/*']},
