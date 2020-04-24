@@ -1,10 +1,9 @@
-import pathlib
 import sys, os, subprocess
-import sysconfig
-from distutils.sysconfig import get_python_lib, get_python_inc
-from setuptools.command.build_ext import build_ext
+from distutils import sysconfig
+from distutils.command.build import build
 from multiprocessing import cpu_count
-from setuptools import setup, Extension
+from setuptools import setup
+
 
 platform = sys.platform
 python_version = sysconfig.get_python_version()
@@ -53,38 +52,20 @@ def get_python_library(python_lib_dir):
     return python_library
 
 
-class CMakeExtension(Extension):
-    def __init__(self, name, cmake_lists_dir='.', sources=[], **kwa):
-        Extension.__init__(self, name, sources=sources, **kwa)
-        self.cmake_lists_dir = os.path.abspath(cmake_lists_dir)
-
-
-class CMakeBuild(build_ext):
-    """
-    Builds using cmake instead of the python setuptools implicit build
-    """
-    def build_extensions(self):
-        """
-        The steps required to build the extension
-        """
-
+class BuildCommand(build):
+    def run(self):
         try:
-            build_temp = pathlib.Path(build_dir)
-            build_temp.mkdir(parents=True, exist_ok=True)
-
             cpu_cores = max(1, cpu_count() - 1)
             python_executable = os.path.realpath(sys.executable)
 
-            cmake_arg_list = ["-S", ".", "-B", build_dir]
-            cmake_arg_list.append("-DCMAKE_BUILD_TYPE=Release")
-            cmake_arg_list.append("-DBUILD_PYTHON=ON")
-            cmake_arg_list.append("-DPYTHON_EXECUTABLE={}".format(python_executable))
+            cmake_arg_list = ["cmake", "-B", build_dir, "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_PYTHON=ON",
+                              "-DPYTHON_EXECUTABLE={}".format(python_executable)]
 
-            python_standard_lib = get_python_lib(standard_lib=True)
-            python_site_packages = get_python_lib(standard_lib=False)
+            python_standard_lib = sysconfig.get_python_lib(standard_lib=True)
+            python_site_packages = sysconfig.get_python_lib(standard_lib=False)
             python_lib_dir = os.path.dirname(python_standard_lib)
             python_library = get_python_library(python_lib_dir)
-            python_include_dir = get_python_inc()
+            python_include_dir = sysconfig.get_python_inc()
             numpy_include_dir = os.path.join(python_site_packages, "numpy/core/include")
 
             if os.path.exists(python_library) and os.path.exists(python_include_dir) and os.path.exists(numpy_include_dir):
@@ -94,17 +75,16 @@ class CMakeBuild(build_ext):
 
             if python_version[0] == "2":
                 cmake_arg_list.append("-DBUILD_PYTHON2=ON")
-            cmake_arg_list.append(".")
 
             subprocess.check_call(['rm', '-f', 'CMakeCache.txt'])
-
-            subprocess.check_call(['cmake'] + cmake_arg_list)
+            subprocess.check_call(cmake_arg_list)
             subprocess.check_call(['make', '-j', str(cpu_cores)])
         except subprocess.CalledProcessError:
             sys.stderr.write("\033[1m\nInstallation failed, you may be missing some dependencies. "
                              "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md "
                              "for details\n\n\033[0m")
             raise
+        build.run(self)
 
 
 setup(
@@ -118,13 +98,12 @@ setup(
     author_email='vizdoom@googlegroups.com',
 
     install_requires=['numpy'],
-    setup_requires=['numpy'],
+    setup_requires=['cython', 'numpy', 'wheel'],
     packages=['vizdoom'],
     package_dir={'vizdoom': package_path},
     package_data={'vizdoom': ['__init__.py', 'bots.cfg', 'freedoom2.wad', 'vizdoom', 'vizdoom.pk3', 'vizdoom.so', 'scenarios/*']},
     include_package_data=True,
-    ext_modules=[CMakeExtension('vizdoom')],
-    cmdclass={'build_ext': CMakeBuild},
+    cmdclass={'build': BuildCommand},
     platforms=supported_platforms,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
