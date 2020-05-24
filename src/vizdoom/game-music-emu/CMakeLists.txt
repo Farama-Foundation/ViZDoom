@@ -87,7 +87,7 @@ if (CMAKE_COMPILER_IS_GNUCXX)
       string (REGEX MATCH "[3-9]\\.[0-9]\\.[0-9]" _gcc_version "${_gcc_version_info}")
 
       # gcc <4.1 had poor support for symbol visibility
-      if ((${_gcc_version} VERSION_GREATER "4.1") OR (${_gcc_version} VERSION_EQUAL "4.1"))
+      if (("${_gcc_version}" VERSION_GREATER "4.1") OR ("${_gcc_version}" VERSION_EQUAL "4.1"))
          set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
          set (ENABLE_VISIBILITY ON)
          add_definitions (-DLIBGME_VISIBILITY)
