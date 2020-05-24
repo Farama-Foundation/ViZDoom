@@ -124,6 +124,7 @@ Useful parts:
 - [Omgifol](https://github.com/devinacker/omgifol) - nice Python library for manipulating Doom maps.
 - [NavDoom](https://github.com/agiantwhale/navdoom) - Maze navigation generator for ViZDoom (similar to DeepMind Lab).
 - [MazeExplorer](https://github.com/microsoft/MazeExplorer) - More sophisticated maze navigation generator for ViZDoom. 
+- [ViZDoomGym](https://github.com/shakenes/vizdoomgym) OpenAI Gym Wrapper for ViZDoom. 
 
 ## Contributions
 
