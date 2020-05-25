@@ -64,7 +64,7 @@ matrix:
       script:
         - |
           python3 -m venv ./venv
-          ./venv/bin/pip3 install cython
+          ./venv/bin/pip3 install cython numpy
           ./venv/bin/pip3 install .
           ./venv/bin/python3 -c "import vizdoom"
 
