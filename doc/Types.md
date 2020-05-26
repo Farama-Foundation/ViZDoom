@@ -28,24 +28,24 @@
 
 ---
 ### <a name="label"></a> `Label`
-(`C++ type / Lua type / Java type / Python type` **name**)
+(`C++ type / Python type` **name**)
 
-- `unsigned int / number / unsigned int / int` **objectId / object_id**
-- `std::string / string / String / str` **objectName / object_name**
-- `uint8_t / number / byte / int` **value**
-- `unsigned int / number / unsigned int / int` **x**
-- `unsigned int / number / unsigned int / int` **y**
-- `unsigned int / number / unsigned int / int` **width**
-- `unsigned int / number / unsigned int / int` **height**
-- `double / number / double / float` **objectPositionX / object_position_x**
-- `double / number / double / float` **objectPositionY / object_position_y**
-- `double / number / double / float` **objectPositionZ / object_position_z**
-- `double / number / double / float` **objectAngle / object_angle**
-- `double / number / double / float` **objectPitch / object_pitch**
-- `double / number / double / float` **objectRoll / object_roll**
-- `double / number / double / float` **objectVelocityX / object_velocity_x**
-- `double / number / double / float` **objectVelocityY / object_velocity_y**
-- `double / number / double / float` **objectVelocityZ / object_velocity_z**
+- `unsigned int / int` **objectId / object_id**
+- `std::string / str` **objectName / object_name**
+- `uint8_t / int` **value**
+- `unsigned int / int` **x**
+- `unsigned int / int` **y**
+- `unsigned int / int` **width**
+- `unsigned int / int` **height**
+- `double / float` **objectPositionX / object_position_x**
+- `double / float` **objectPositionY / object_position_y**
+- `double / float` **objectPositionZ / object_position_z**
+- `double / float` **objectAngle / object_angle**
+- `double / float` **objectPitch / object_pitch**
+- `double / float` **objectRoll / object_roll**
+- `double / float` **objectVelocityX / object_velocity_x**
+- `double / float` **objectVelocityY / object_velocity_y**
+- `double / float` **objectVelocityZ / object_velocity_z**
 
 **objectId / object_id** - unique object ID, if both Labels and Objects information is enabled, this will be the same as **id** in corresponding**Object**.
 
@@ -131,16 +131,16 @@ See also:
 
 ---
 ### <a name="gamestate"></a> `GameState`
-(`C++ type / Lua type / Java type / Python type` **name**)
+(`C++ type / Python type` **name**)
 
-- `unsigned int / number / unsigned int / int` **number**
-- `unsigned int / number / unsigned int / int` **tic**
-- `std::vector<float> / DoubleTensor / double[] / numpy.double[]` **gameVariables / game_variables**
-- `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **screenBuffer / screen_buffer**
-- `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **depthBuffer / depth_buffer**
-- `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **labelsBuffer / labels_buffer**
-- `BufferPtr / ByteTensor / byte[] / numpy.uint8[]` **automapBuffer / automap_buffer**
-- `std::vector<Label> / table / Label[] / list` **labels**
+- `unsigned int / int` **number**
+- `unsigned int / int` **tic**
+- `std::vector<float> / numpy.double[]` **gameVariables / game_variables**
+- `BufferPtr / numpy.uint8[]` **screenBuffer / screen_buffer**
+- `BufferPtr / numpy.uint8[]` **depthBuffer / depth_buffer**
+- `BufferPtr / numpy.uint8[]` **labelsBuffer / labels_buffer**
+- `BufferPtr / numpy.uint8[]` **automapBuffer / automap_buffer**
+- `std::vector<Label> / list` **labels**
 
 **number** - number of the state in the episode.
 **tic** - ingame time, 1 tic is 1/35 of second in the game world. Added in 1.1.1.

@@ -115,8 +115,6 @@
 
 | C++    | `bool init()`    |
 | :--    | :--              |
-| Lua    | `boolean init()` |
-| Java   | `boolean init()` |
 | Python | `bool init()`    |
 
 Initializes ViZDoom game instance and starts newEpisode.
@@ -130,8 +128,6 @@ Init returns true when the game was started properly and false otherwise.
 
 | C++    | `void close()` |
 | :--    | :--            |
-| Lua    | `void close()` |
-| Java   | `void close()` |
 | Python | `void close()` |
 
 Closes ViZDoom game instance.
@@ -144,8 +140,6 @@ The game can be initialized again after being closed.
 
 | C++    | `void newEpisode(std::string recordFilePath = "")` |
 | :--    | :--                                                |
-| Lua    | `void newEpisode(string recordFilePath = "")`      |
-| Java   | `void newEpisode(String recordFilePath = "")`      |
 | Python | `void new_episode(str recordFilePath = "")`        |
 
 Changed in 1.1.0
@@ -163,8 +157,6 @@ Then the rest of the players must also call this method to start a new episode.
 
 | C++    | `void replayEpisode(std::string filePath, unsigned int player = 0)` |
 | :--    | :--                                                                 |
-| Lua    | `void replayEpisode(string filePath, number player = 0)`            |
-| Java   | `void replayEpisode(String filePath, int player = 0)`               |
 | Python | `void replay_episode(str filePath, int player = 0)`                 |
 
 Added in 1.1.0
@@ -185,8 +177,6 @@ See also:
 
 | C++    | `bool isRunning()`    |
 | :--    | :--                   |
-| Lua    | `boolean isRunning()` |
-| Java   | `boolean isRunning()` |
 | Python | `bool is_running()`   |
 
 Checks if the ViZDoom game instance is running.
@@ -197,8 +187,6 @@ Checks if the ViZDoom game instance is running.
 
 | C++    | `bool isMultiplayerGame()`    |
 | :--    | :--                           |
-| Lua    | `boolean isMultiplayerGame()` |
-| Java   | `boolean isMultiplayerGame()` |
 | Python | `bool is_multiplayer_game()`  |
 
 Added in 1.1.2
@@ -211,8 +199,6 @@ Checks if the game is in multiplayer mode.
 
 | C++    | `bool isRecordingEpisode()`    |
 | :--    | :--                            |
-| Lua    | `boolean isRecordingEpisode()` |
-| Java   | `boolean isRecordingEpisode()` |
 | Python | `bool is_recording_episode()`  |
 
 Added in 1.1.5
@@ -225,8 +211,6 @@ Checks if the game is in recording mode.
 
 | C++    | `bool isReplayingEpisode()`    |
 | :--    | :--                            |
-| Lua    | `boolean isReplayingEpisode()` |
-| Java   | `boolean isReplayingEpisode()` |
 | Python | `bool is_replaying_episode()`  |
 
 Added in 1.1.5
@@ -239,8 +223,6 @@ Checks if the game is in replaying mode.
 
 | C++    | `void setAction(std::vector<double> const &actions)` |
 | :--    | :--                                                  |
-| Lua    | `void setAction(DoubleTensor/table actions)`         |
-| Java   | `void setAction(double[] actions)`                   |
 | Python | `void set_action(list actions)`                      |
 
 Sets the player's action for the next tics.
@@ -253,8 +235,6 @@ or in the configuration file (in order of appearance).
 
 | C++    | `void advanceAction(unsigned int tics = 1, bool updateState = true)` |
 | :--    | :--                                                                  |
-| Lua    | `void advanceAction(number tics = 1, boolean updateState = true)`    |
-| Java   | `void advanceAction(int tics = 1, boolean updateState = true)`       |
 | Python | `void advance_action(int tics = 1, bool updateState = True)`         |
 
 Processes a specified number of tics. If `updateState` is set the state will be updated after last processed tic
@@ -267,9 +247,7 @@ If `updateState` is not set the state will not be updated.
 
 | C++    | `double makeAction(std::vector<double> const &actions, unsigned int tics = 1)` |
 | :--    | :--                                                                            |
-| Lua    | `number makeAction(DoubleTensor/table actions, number tics = 1);`              |
-| Java   | `double makeAction(double[] actions, int tics = 1);`                           |
-| Python | `float make_action(list actions, int tics = 1);`                               |
+| Python | `float make_action(list actions, int tics = 1)`                               |
 
 Method combining usability of [`setAction`](#setAction), [`advanceAction`](#advanceAction) and [`getLastReward`](#getLastReward).
 Sets the player's action for the next tics, processes a specified number of tics,
@@ -281,8 +259,6 @@ updates the state and calculates a new reward, which is returned.
 
 | C++    | `bool isNewEpisode()`    |
 | :--    | :--                      |
-| Lua    | `boolean isNewEpisode()` |
-| Java   | `boolean isNewEpisode()` |
 | Python | `bool is_new_episode()`  |
 
 Returns true if the current episode is in the initial state - the first state, no actions were performed yet.
@@ -293,8 +269,6 @@ Returns true if the current episode is in the initial state - the first state, n
 
 | C++    | `bool isEpisodeFinished()`    |
 | :--    | :--                           |
-| Lua    | `boolean isEpisodeFinished()` |
-| Java   | `boolean isEpisodeFinished()` |
 | Python | `bool is_episode_finished()`  |
 
 Returns true if the current episode is in the terminal state (is finished).
@@ -306,8 +280,6 @@ Returns true if the current episode is in the terminal state (is finished).
 
 | C++    | `bool isPlayerDead()`    |
 | :--    | :--                      |
-| Lua    | `boolean isPlayerDead()` |
-| Java   | `boolean isPlayerDead()` |
 | Python | `bool is_player_dead()`  |
 
 Returns true if the player is dead.
@@ -320,8 +292,6 @@ In multiplayer when the player is dead [`respawnPlayer`](#respawnPlayer) can be 
 
 | C++    | `void respawnPlayer()`  |
 | :--    | :--                     |
-| Lua    | `void respawnPlayer()`  |
-| Java   | `void respawnPlayer()`  |
 | Python | `void respawn_player()` |
 
 This method respawns player after death in multiplayer mode.
@@ -336,8 +306,6 @@ See also:
 
 | C++    | `void sendGameCommand(std::string cmd)` |
 | :--    | :--                                     |
-| Lua    | `void sendGameCommand(string cmd)`      |
-| Java   | `void sendGameCommand(String cmd)`      |
 | Python | `void send_game_command(str cmd)`       |
 
 Sends the command to Doom console. Can be used for controling game, changing settings, cheats etc.
@@ -354,8 +322,6 @@ See also:
 
 | C++    | `GameStatePtr (std::shared_ptr<GameState>) GameState getState()` |
 | :--    | :--                                                              |
-| Lua    | `GameState getState()`                                           |
-| Java   | `GameState getState()`                                           |
 | Python | `GameState get_state()`                                          |
 
 Changed in 1.1.0
@@ -372,8 +338,6 @@ See also:
 
 | C++    | `ServerStatePtr (std::shared_ptr<ServerState>) ServerState getServerState()` |
 | :--    | :--                                                                          |
-| Lua    | `ServerState getServerState()`                                               |
-| Java   | `ServerState getServerState()`                                               |
 | Python | `ServerState get_state_state()`                                              |
 
 Added in 1.1.6
@@ -389,8 +353,6 @@ See also:
 
 | C++    | `std::vector<double> getLastAction()` |
 | :--    | :--                                   |
-| Lua    | `DoubleTensor getLastAction()`        |
-| Java   | `double[] getLastAction()`            |
 | Python | `list get_last_action()`              |
 
 Returns the last action performed.
@@ -403,8 +365,6 @@ Most useful in `SPECTATOR` mode.
 
 | C++    | `unsigned int getEpisodeTime()` |
 | :--    | :--                             |
-| Lua    | `number getEpisodeTime()`       |
-| Java   | `int getEpisodeTime()`          |
 | Python | `int get_episode_time()`        |
 
 Returns number of current episode tic.
@@ -417,8 +377,6 @@ Returns number of current episode tic.
 
 | C++    | `std::vector<Button> getAvailableButtons()` |
 | :--    | :--                                         |
-| Lua    | `table getAvailableButtons()`               |
-| Java   | `Button[] getAvailableButtons()`            |
 | Python | `list get_available_buttons()`              |
 
 Returns the list of available `Buttons`.
@@ -434,8 +392,6 @@ See also:
 
 | C++    | `void setAvailableButtons(std::vector<Button> buttons)` |
 | :--    | :--                                                     |
-| Lua    | `void addAvailableButton(table)`                        |
-| Java   | `void addAvailableButton(Button[] buttons)`             |
 | Python | `void add_available_button(list)`                       |
 
 Set given list of `Button`s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available `Buttons`,
@@ -453,8 +409,6 @@ See also:
 
 | C++    | `void addAvailableButton(Button button, double maxValue = 0)`  |
 | :--    | :--                                                            |
-| Lua    | `void addAvailableButton(Button button, number maxValue  = 0)` |
-| Java   | `void addAvailableButton(Button button, double maxValue = 0)`  |
 | Python | `void add_available_button(Button button, float maxValue = 0)` |
 
 Add [`Button`](Types.md#button) type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to available `Buttons` and sets the maximum allowed, absolute value for the specified button.
@@ -474,8 +428,6 @@ See also:
 
 | C++    | `void clearAvailableButtons()`   |
 | :--    | :--                              |
-| Lua    | `void clearAvailableButtons()`   |
-| Java   | `void clearAvailableButtons()`   |
 | Python | `void clear_available_buttons()` |
 
 Clears all available `Buttons` added so far.
@@ -489,8 +441,6 @@ See also:
 
 | C++    | `int getAvailableButtonsSize()`    |
 | :--    | :--                                |
-| Lua    | `number getAvailableButtonsSize()` |
-| Java   | `int getAvailableButtonsSize()`    |
 | Python | `int get_available_buttons_size()` |
 
 Returns the number of available `Buttons`.
@@ -504,8 +454,6 @@ See also:
 
 | C++    | `void setButtonMaxValue(Button button, double maxValue = 0)`   |
 | :--    | :--                                                            |
-| Lua    | `void setButtonMaxValue(Button button, number maxValue = 0)`   |
-| Java   | `void setButtonMaxValue(Button button, double maxValue = 0)`   |
 | Python | `void set_button_max_value(Button button, float maxValue = 0)` |
 
 Sets the maximum allowed, absolute value for the specified button.
@@ -522,8 +470,6 @@ See also:
 
 | C++    | `unsigned int getButtonMaxValue(Button button)` |
 | :--    | :--                                             |
-| Lua    | `number getButtonMaxValue(Button button)`       |
-| Java   | `int getButtonMaxValue(Button button)`          |
 | Python | `int get_button_max_value(Button button)`       |
 
 Returns the maximum allowed, absolute value for the specified button.
@@ -537,8 +483,6 @@ See also:
 
 | C++    | `double getButton(Button button)` |
 | :--    | :--                               |
-| Lua    | `number getButton(Button button)` |
-| Java   | `double getButton(Button button)` |
 | Python | `float get_button(Button button)` |
 
 Returns the current state of the specified button (`ATTACK`, `USE` etc.).
@@ -554,8 +498,6 @@ See also:
 
 | C++    | `std::vector<GameVariable> getAvailableGameVariables()` |
 | :--    | :--                                                     |
-| Lua    | `table getAvailableGameVariables()`                     |
-| Java   | `GameVariable[] getAvailableGameVariables()`            |
 | Python | `list get_available_game_variables()`                   |
 
 Returns the list of available `GameVariables`.
@@ -571,8 +513,6 @@ See also:
 
 | C++    | `void setAvailableGameVariables(std::vector<GameVariable> variables)` |
 | :--    | :--                                                                   |
-| Lua    | `void setAvailableGameVariables(table variables)`                     |
-| Java   | `void setAvailableGameVariables(GameVariable[] variables)`            |
 | Python | `void set_available_game_variables(list variables)`                   |
 
 Set list of [`GameVariable`](Types.md#gamevariable) as available `GameVariables` in the [`GameState`](Types.md#gamestate) returned by `getState` method.
@@ -590,8 +530,6 @@ See also:
 
 | C++    | `void addAvailableGameVariable(GameVariable variable)`    |
 | :--    | :--                                                       |
-| Lua    | `void addAvailableGameVariable(GameVariable variable)`    |
-| Java   | `void addAvailableGameVariable(GameVariable variable)`    |
 | Python | `void add_available_game_variable(GameVariable variable)` |
 
 Adds the specified [`GameVariable`](Types.md#gamevariable) to the list of available game variables (e.g. `HEALTH`, `AMMO1`, `ATTACK_READY`) in the [`GameState`](Types.md#gamestate) returned by `getState` method.
@@ -609,8 +547,6 @@ See also:
 
 | C++    | `void clearAvailableGameVariables()`    |
 | :--    | :--                                     |
-| Lua    | `void clearAvailableGameVariables()`    |
-| Java   | `void clearAvailableGameVariables()`    |
 | Python | `void clear_available_game_variables()` |
 
 Clears the list of available `GameVariables` that are included in the GameState returned by [`getState`](#getState) method.
@@ -625,8 +561,6 @@ See also:
 
 | C++    | `unsigned int getAvailableGameVariablesSize()`     |
 | :--    | :--                                                |
-| Lua    | `number getAvailableGameVariablesSize()`           |
-| Java   | `int getAvailableGameVariablesSize()`              |
 | Python | `int get_available_game_variables_size()`          |
 
 Returns the number of available `GameVariables`.
@@ -641,8 +575,6 @@ See also:
 
 | C++    | `double getGameVariable(GameVariable variable)`  |
 | :--    | :--                                              |
-| Lua    | `number getGameVariable(GameVariable variable)`  |
-| Java   | `double getGameVariable(GameVariable variable)`  |
 | Python | `float get_game_variable(GameVariable variable)` |
 
 Returns the current value of the specified game variable (`HEALTH`, `AMMO1` etc.).
@@ -660,8 +592,6 @@ See also:
 
 | C++    | `void addGameArgs(std::string args)` |
 | :--    | :--                                  |
-| Lua    | `void addGameArgs(string args)`      |
-| Java   | `void addGameArgs(String args)`      |
 | Python | `void add_game_args(str args)`       |
 
 Adds a custom argument that will be passed to ViZDoom process during initialization.
@@ -679,8 +609,6 @@ See also:
 
 | C++    | `void clearGameArgs()`   |
 | :--    | :--                      |
-| Lua    | `void clearGameArgs()`   |
-| Java   | `void clearGameArgs()`   |
 | Python | `void clear_game_args()` |
 
 Clears all arguments previously added with [`addGameArgs`](#addGameArgs) method.
@@ -693,8 +621,6 @@ Clears all arguments previously added with [`addGameArgs`](#addGameArgs) method.
 
 | C++    | `double getLivingReward()`   |
 | :--    | :--                          |
-| Lua    | `number getLivingReward()`   |
-| Java   | `double getLivingReward()`   |
 | Python | `double get_living_reward()` |
 
 Returns the reward granted to the player after every tic.
@@ -705,8 +631,6 @@ Returns the reward granted to the player after every tic.
 
 | C++    | `void setLivingReward(double livingReward)`  |
 | :--    | :--                                          |
-| Lua    | `void setLivingReward(number livingReward)`  |
-| Java   | `void setLivingReward(double livingReward)`  |
 | Python | `void set_living_reward(float livingReward)` |
 
 Sets the reward granted to the player after every tic. A negative value is also allowed.
@@ -721,8 +645,6 @@ Config key: `livingReward/living_reward`
 
 | C++    | `double getDeathPenalty()`   |
 | :--    | :--                          |
-| Lua    | `double getDeathPenalty()`   |
-| Java   | `double getDeathPenalty()`   |
 | Python | `double get_death_penalty()` |
 
 Returns the penalty for player's death.
@@ -733,8 +655,6 @@ Returns the penalty for player's death.
 
 | C++    | `void setDeathPenalty(double deathPenalty)`  |
 | :--    | :--                                          |
-| Lua    | `void setDeathPenalty(number deathPenalty)`  |
-| Java   | `void setDeathPenalty(double deathPenalty)`  |
 | Python | `void set_death_penalty(float deathPenalty)` |
 
 Sets a penalty for player's death. Note that in case of a negative value, the player will be rewarded upon dying.
@@ -749,8 +669,6 @@ Config key: `deathPenalty/death_penalty`
 
 | C++    | `double getLastReward()`  |
 | :--    | :--                       |
-| Lua    | `number getLastReward()`  |
-| Java   | `double getLastReward()`  |
 | Python | `float get_last_reward()` |
 
 Returns a reward granted after the last update of state.
@@ -761,8 +679,6 @@ Returns a reward granted after the last update of state.
 
 | C++    | `double getTotalReward()`  |
 | :--    | :--                        |
-| Lua    | `number getTotalReward()`  |
-| Java   | `double getTotalReward()`  |
 | Python | `float get_total_reward()` |
 
 Returns the sum of all rewards gathered in the current episode.
@@ -775,8 +691,6 @@ Returns the sum of all rewards gathered in the current episode.
 
 | C++    | `bool loadConfig(std::string filePath)` |
 | :--    | :--                                     |
-| Lua    | `boolean loadConfig(string filePath)`   |
-| Java   | `boolean loadConfig(String filePath)`   |
 | Python | `bool load_config(str filePath)`        |
 
 Loads configuration (resolution, available buttons, game variables etc.) from a configuration file.
@@ -794,8 +708,6 @@ See also:
 
 | C++    | `Mode getMode()`  |
 | :--    | :--               |
-| Lua    | `Mode getMode()`  |
-| Java   | `Mode getMode()`  |
 | Python | `Mode get_mode()` |
 
 Returns current mode.
@@ -806,8 +718,6 @@ Returns current mode.
 
 | C++    | `void setMode(Mode mode)`  |
 | :--    | :--                        |
-| Lua    | `void setMode(Mode mode)`  |
-| Java   | `void setMode(Mode mode)`  |
 | Python | `void set_mode(Mode mode)` |
 
 Sets mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`) in which the game will be running.
@@ -825,8 +735,6 @@ See also:
 
 | C++    | `unsigned int getTicrate()` |
 | :--    | :--                         |
-| Lua    | `number getTicrate()`       |
-| Java   | `int getTicrate()`          |
 | Python | `int get_ticrate()`         |
 
 Added in 1.1.0
@@ -839,8 +747,6 @@ Returns current ticrate.
 
 | C++    | `void setTicrate(unsigned int ticrate)` |
 | :--    | :--                                     |
-| Lua    | `void setTicrate(number ticrate)`       |
-| Java   | `void setTicrate(int ticrate)`          |
 | Python | `void set_ticrate(int ticrate)`         |
 
 Added in 1.1.0
@@ -860,8 +766,6 @@ See also:
 
 | C++    | `void setViZDoomPath(std::string filePath)` |
 | :--    | :--                                         |
-| Lua    | `void setViZDoomPath(string filePath)`      |
-| Java   | `void setViZDoomPath(String filePath)`      |
 | Python | `void set_vizdoom_path(str filePath)`       |
 
 Sets path to ViZDoom engine executable.
@@ -876,8 +780,6 @@ Config key: `ViZDoomPath/vizdoom_path`
 
 | C++    | `void setDoomGamePath(std::string filePath)` |
 | :--    | :--                                          |
-| Lua    | `void setDoomGamePath(string filePath)`      |
-| Java   | `void setDoomGamePath(String filePath)`      |
 | Python | `void set_doom_game_path(str filePath)`      |
 
 Sets path to the Doom engine based game file (wad format). If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom.so is).
@@ -892,8 +794,6 @@ Config key: `DoomGamePath/doom_game_path`
 
 | C++    | `void setDoomScenarioPath(std::string filePath)` |
 | :--    | :--                                              |
-| Lua    | `void setDoomScenarioPath(string filePath)`      |
-| Java   | `void setDoomScenarioPath(String filePath)`      |
 | Python | `void set_doom_scenario_path(str filePath)`      |
 
 Sets path to additional scenario file (wad format).
@@ -908,8 +808,6 @@ Config key: `DoomScenarioPath/set_doom_scenario_path`
 
 | C++    | `void setDoomMap(std::string map)` |
 | :--    | :--                                |
-| Lua    | `void setDoomMap(string map)`      |
-| Java   | `void setDoomMap(String map)`      |
 | Python | `void set_doom_map(str map)`       |
 
 Sets the map name to be used.
@@ -924,8 +822,6 @@ Config key: `DoomMap/doom_map`
 
 | C++    | `void setDoomSkill(int skill)`    |
 | :--    | :--                               |
-| Lua    | `void setDoomSkill(number skill)` |
-| Java   | `void setDoomSkill(int skill)`    |
 | Python | `void set_doom_skill(int skill)`  |
 
 Sets Doom game difficulty level which is called skill in Doom.
@@ -949,8 +845,6 @@ Config key: `DoomSkill/doom_skill`
 
 | C++    | `void setDoomConfigPath(std::string filePath)` |
 | :--    | :--                                            |
-| Lua    | `void setDoomConfigPath(string filePath)`      |
-| Java   | `void setDoomConfigPath(String filePath)`      |
 | Python | `void set_doom_config_path(str filePath)`      |
 
 Sets path for ViZDoom engine configuration file.
@@ -968,8 +862,6 @@ Config key: `DoomConfigPath/doom_config_path`
 
 | C++    | `unsigned int getSeed()` |
 | :--    | :--                      |
-| Lua    | `number getSeed()`       |
-| Java   | `int getSeed()`          |
 | Python | `int getSeed()`          |
 
 Return ViZDoom's seed.
@@ -980,8 +872,6 @@ Return ViZDoom's seed.
 
 | C++    | `void setSeed(unsigned int seed)` |
 | :--    | :--                               |
-| Lua    | `void setSeed(number seed)`       |
-| Java   | `void setSeed(int seed)`          |
 | Python | `void set_seed(int seed)`         |
 
 Sets the seed of the ViZDoom's RNG that generates seeds (initial state) for episodes.
@@ -1000,8 +890,6 @@ See also:
 
 | C++    | `unsigned int getEpisodeStartTime()` |
 | :--    | :--                                  |
-| Lua    | `number getEpisodeStartTime()`       |
-| Java   | `int getEpisodeStartTime()`          |
 | Python | `int get_episode_start_time()`       |
 
 Returns start delay of every episode in tics.
@@ -1012,8 +900,6 @@ Returns start delay of every episode in tics.
 
 | C++    | `void setEpisodeStartTime(unsigned int tics)` |
 | :--    | :--                                           |
-| Lua    | `void setEpisodeStartTime(number tics)`       |
-| Java   | `void setEpisodeStartTime(int tics)`          |
 | Python | `void set_episode_start_time(int tics)`       |
 
 Sets start delay of every episode in tics.
@@ -1029,8 +915,6 @@ Config key: `episodeStartTime/episode_start_time`
 
 | C++    | `unsigned int getEpisodeTimeout()` |
 | :--    | :--                                |
-| Lua    | `number getEpisodeTimeout()`       |
-| Java   | `int getEpisodeTimeout()`          |
 | Python | `int get_episode_timeout()`        |
 
 Returns the number of tics after which the episode will be finished.
@@ -1041,8 +925,6 @@ Returns the number of tics after which the episode will be finished.
 
 | C++    | `void setEpisodeTimeout(unsigned int tics)` |
 | :--    | :--                                         |
-| Lua    | `void setEpisodeTimeout(number tics)`       |
-| Java   | `void setEpisodeTimeout(int tics)`          |
 | Python | `void set_episode_timeout(int tics)`        |
 
 Sets the number of tics after which the episode will be finished. 0 will result in no timeout.
@@ -1058,8 +940,6 @@ Config key: `episodeTimeout/episode_timeout`
 
 | C++    | `void setScreenResolution(ScreenResolution resolution)`   |
 | :--    | :--                                                       |
-| Lua    | `void setScreenResolution(ScreenResolution resolution)`   |
-| Java   | `void setScreenResolution(ScreenResolution resolution)`   |
 | Python | `void set_screen_resolution(ScreenResolution resolution)` |
 
 Sets the screen resolution. ZDoom engine supports only specific resolutions,
@@ -1080,8 +960,6 @@ See also:
 
 | C++    | `ScreenFormat getScreenFormat()`   |
 | :--    | :--                                |
-| Lua    | `ScreenFormat getScreenFormat()`   |
-| Java   | `ScreenFormat getScreenFormat()`   |
 | Python | `ScreenFormat get_screen_format()` |
 
 Returns the format of the screen buffer and the automap buffer.
@@ -1092,8 +970,6 @@ Returns the format of the screen buffer and the automap buffer.
 
 | C++    | `void setScreenFormat(ScreenFormat format)`   |
 | :--    | :--                                           |
-| Lua    | `void setScreenFormat(ScreenFormat format)`   |
-| Java   | `void setScreenFormat(ScreenFormat format)`   |
 | Python | `void set_screen_format(ScreenFormat format)` |
 
 Sets the format of the screen buffer and the automap buffer.
@@ -1113,8 +989,6 @@ See also:
 
 | C++    | `bool isDepthBufferEnabled()`    |
 | :--    | :--                              |
-| Lua    | `boolean isDepthBufferEnabled()` |
-| Java   | `boolean isDepthBufferEnabled()` |
 | Python | `bool isDepthBufferEnabled()`    |
 
 Added in 1.1.0
@@ -1127,8 +1001,6 @@ Returns true if the depth buffer is enabled.
 
 | C++    | `void setDepthBufferEnabled(bool depthBuffer)`    |
 | :--    | :--                                               |
-| Lua    | `void setDepthBufferEnabled(boolean depthBuffer)` |
-| Java   | `void setDepthBufferEnabled(boolean depthBuffer)` |
 | Python | `void set_depth_buffer_enabled(bool depthBuffer)` |
 
 Added in 1.1.0
@@ -1150,8 +1022,6 @@ See also:
 
 | C++    | `bool isLabelsBufferEnabled()`    |
 | :--    | :--                               |
-| Lua    | `boolean isLabelsBufferEnabled()` |
-| Java   | `boolean isLabelsBufferEnabled()` |
 | Python | `bool isLabelsBufferEnabled()`    |
 
 Added in 1.1.0
@@ -1164,8 +1034,6 @@ Returns true if the labels buffer is enabled.
 
 | C++    | `void setLabelsBufferEnabled(bool labelsBuffer)`    |
 | :--    | :--                                                 |
-| Lua    | `void setLabelsBufferEnabled(boolean labelsBuffer)` |
-| Java   | `void setLabelsBufferEnabled(boolean labelsBuffer)` |
 | Python | `void set_labels_buffer_enabled(bool labelsBuffer)` |
 
 Added in 1.1.0
@@ -1189,8 +1057,6 @@ See also:
 
 | C++    | `bool isAutomapBufferEnabled()`    |
 | :--    | :--                                |
-| Lua    | `boolean isAutomapBufferEnabled()` |
-| Java   | `boolean isAutomapBufferEnabled()` |
 | Python | `bool is_automap_buffer_enabled()` |
 
 Added in 1.1.0
@@ -1203,8 +1069,6 @@ Returns true if the automap buffer is enabled.
 
 | C++    | `void setAutomapBufferEnabled(bool automapBuffer)`    |
 | :--    | :--                                                   |
-| Lua    | `void setAutomapBufferEnabled(boolean automapBuffer)` |
-| Java   | `void setAutomapBufferEnabled(boolean automapBuffer)` |
 | Python | `void set_automap_buffer_enabled(bool automapBuffer)` |
 
 Added in 1.1.0
@@ -1225,8 +1089,6 @@ See also:
 
 | C++    | `void setAutomapMode(AutomapMode mode)`   |
 | :--    | :--                                       |
-| Lua    | `void setAutomapMode(AutomapMode mode)`   |
-| Java   | `void setAutomapMode(AutomapMode mode)`   |
 | Python | `void set_automap_mode(AutomapMode mode)` |
 
 Added in 1.1.0
@@ -1246,8 +1108,6 @@ See also:
 
 | C++    | `void setAutomapRotate(bool rotate)`    |
 | :--    | :--                                     |
-| Lua    | `void setAutomapRotate(boolean rotate)` |
-| Java   | `void setAutomapRotate(boolean rotate)` |
 | Python | `void set_automap_rotate(bool rotate)`  |
 
 Added in 1.1.0
@@ -1264,8 +1124,6 @@ Config key: `automapRotate/automap_rotate`
 
 | C++    | `void setAutomapRenderTextures(bool textures)`    |
 | :--    | :--                                               |
-| Lua    | `void setAutomapRenderTextures(boolean textures)` |
-| Java   | `void setAutomapRenderTextures(boolean textures)` |
 | Python | `void set_automap_render_textures(bool textures)` |
 
 Added in 1.1.0
@@ -1282,8 +1140,6 @@ Config key: `automapRenderTextures/automap_render_textures`
 
 | C++    | `void setRenderHud(bool hud)`    |
 | :--    | :--                              |
-| Lua    | `void setRenderHud(boolean hud)` |
-| Java   | `void setRenderHud(boolean hud)` |
 | Python | `void set_render_hud(bool hud)`  |
 
 Determine if the hud will be rendered in game.
@@ -1298,8 +1154,6 @@ Config key: `renderHud/render_hud`
 
 | C++    | `void setRenderMinimalHud(bool minHud)`    |
 | :--    | :--                                        |
-| Lua    | `void setRenderMinimalHud(boolean minHud)` |
-| Java   | `void setRenderMinimalHud(boolean minHud)` |
 | Python | `void set_render_minimal_hud(bool minHud)` |
 
 Added in 1.1.0
@@ -1316,8 +1170,6 @@ Config key: `renderMinimalHud/render_minimal_hud`
 
 | C++    | `void setRenderWeapon(bool weapon)`    |
 | :--    | :--                                    |
-| Lua    | `void setRenderWeapon(boolean weapon)` |
-| Java   | `void setRenderWeapon(boolean weapon)` |
 | Python | `void set_render_weapon(bool weapon)`  |
 
 Determine if the weapon held by the player will be rendered in game.
@@ -1332,8 +1184,6 @@ Config key: `renderWeapon/render_weapon`
 
 | C++    | `void setRenderCrosshair(bool crosshair)`    |
 | :--    | :--                                          |
-| Lua    | `void setRenderCrosshair(boolean crosshair)` |
-| Java   | `void setRenderCrosshair(boolean crosshair)` |
 | Python | `void set_render_crosshair(bool crosshair)`  |
 
 Determine if the crosshair will be rendered in game.
@@ -1348,8 +1198,6 @@ Config key: `renderCrosshair/render_crosshair`
 
 | C++    | `void setRenderDecals(bool decals)`    |
 | :--    | :--                                    |
-| Lua    | `void setRenderDecals(boolean decals)` |
-| Java   | `void setRenderDecals(boolean decals)` |
 | Python | `void set_render_decals(bool decals)`  |
 
 Determine if the decals (marks on the walls) will be rendered in game.
@@ -1364,8 +1212,6 @@ Config key: `renderDecals/render_decals`
 
 | C++    | `void setRenderParticles(bool particles)`    |
 | :--    | :--                                          |
-| Lua    | `void setRenderParticles(boolean particles)` |
-| Java   | `void setRenderParticles(boolean particles)` |
 | Python | `void set_render_particles(bool particles)`  |
 
 Determine if the particles will be rendered in game.
@@ -1380,8 +1226,6 @@ Config key: `renderParticles/render_particles`
 
 | C++    | `void setRenderEffectsSprites(bool sprites)`    |
 | :--    | :--                                             |
-| Lua    | `void setRenderEffectsSprites(boolean sprites)` |
-| Java   | `void setRenderEffectsSprites(boolean sprites)` |
 | Python | `void set_render_effects_sprites(bool sprites)` |
 
 Added in 1.1.0
@@ -1398,8 +1242,6 @@ Config key: `renderEffectsSprites/render_effects_sprites`
 
 | C++    | `void setRenderMessages(bool messages)`    |
 | :--    | :--                                        |
-| Lua    | `void setRenderMessages(boolean messages)` |
-| Java   | `void setRenderMessages(boolean messages)` |
 | Python | `void set_render_messages(bool messages)`  |
 
 Added in 1.1.0
@@ -1416,8 +1258,6 @@ Config key: `renderMessages/render_messages`
 
 | C++    | `void setRenderCorpses(bool corpses)`    |
 | :--    | :--                                      |
-| Lua    | `void setRenderCorpses(boolean corpses)` |
-| Java   | `void setRenderCorpses(boolean corpses)` |
 | Python | `void set_render_corpsess(bool corpses)` |
 
 Added in 1.1.0
@@ -1434,8 +1274,6 @@ Config key: `renderCorpses/render_corpses`
 
 | C++    | `void setRenderScreenFlashes(bool flashes)`    |
 | :--    | :--                                            |
-| Lua    | `void setRenderScreenFlashes(boolean flashes)` |
-| Java   | `void setRenderScreenFlashes(boolean flashes)` |
 | Python | `void set_render_screen_flashes(bool flashes)` |
 
 Added in 1.1.3
@@ -1452,8 +1290,6 @@ Config key: `renderScreenFlashes/render_screen_flashes`
 
 | C++    | `void setRenderAllFrames(bool allFrames)`     |
 | :--    | :--                                           |
-| Lua    | `void setRenderAllFrames(boolean allFrames)`  |
-| Java   | `void setRenderAllFrames(boolean allFrames)`  |
 | Python | `void set_render_all_frames(bool all_frames)` |
 
 Added in 1.1.3
@@ -1475,8 +1311,6 @@ See also:
 
 | C++    | `void setWindowVisible(bool visibility)`    |
 | :--    | :--                                         |
-| Lua    | `void setWindowVisible(boolean visibility)` |
-| Java   | `void setWindowVisible(boolean visibility)` |
 | Python | `void set_window_visible(bool visibility)`  |
 
 Determines if ViZDoom's window will be visible.
@@ -1492,8 +1326,6 @@ Config key: `windowVisible/window_visible`
 
 | C++    | `void setConsoleEnabled(bool console)`    |
 | :--    | :--                                       |
-| Lua    | `void setConsoleEnabled(boolean console)` |
-| Java   | `void setConsoleEnabled(boolean console)` |
 | Python | `void set_console_enabled(bool console)`  |
 
 Determines if ViZDoom's console output will be enabled.
@@ -1508,8 +1340,6 @@ Config key: `consoleEnabled/console_enabled`
 
 | C++    | `void setSoundEnabled(bool sound)`    |
 | :--    | :--                                   |
-| Lua    | `void setSoundEnabled(boolean sound)` |
-| Java   | `void setSoundEnabled(boolean sound)` |
 | Python | `void set_sound_enabled(bool sound)`  |
 
 Determines if ViZDoom's sound will be played.
@@ -1524,8 +1354,6 @@ Config key: `soundEnabled/sound_enabled`
 
 | C++    | `int getScreenWidth()`    |
 | :--    | :--                       |
-| Lua    | `number getScreenWidth()` |
-| Java   | `int getScreenWidth()`    |
 | Python | `int get_screen_width()`  |
 
 Returns game's screen width - width of all buffers.
@@ -1536,8 +1364,6 @@ Returns game's screen width - width of all buffers.
 
 | C++    | `int getScreenHeight()`    |
 | :--    | :--                        |
-| Lua    | `number getScreenHeight()` |
-| Java   | `int getScreenHeight()`    |
 | Python | `int get_screen_height()`  |
 
 Returns game's screen height - height of all buffers.
@@ -1548,8 +1374,6 @@ Returns game's screen height - height of all buffers.
 
 | C++    | `int getScreenChannels()`    |
 | :--    | :--                          |
-| Lua    | `number getScreenChannels()` |
-| Java   | `int getScreenChannels()`    |
 | Python | `int get_screen_channels()`  |
 
 Returns number of channels in screen buffer and map buffer (depth and labels buffer always have one channel).
@@ -1560,8 +1384,6 @@ Returns number of channels in screen buffer and map buffer (depth and labels buf
 
 | C++    | `size_t getScreenPitch()` |
 | :--    | :--                       |
-| Lua    | `number getScreenPitch()` |
-| Java   | `int getScreenPitch()`    |
 | Python | `int get_screen_pitch()`  |
 
 Returns size in bytes of one row in screen buffer and map buffer.
@@ -1572,8 +1394,6 @@ Returns size in bytes of one row in screen buffer and map buffer.
 
 | C++    | `size_t getScreenSize()` |
 | :--    | :--                      |
-| Lua    | `number getScreenSize()` |
-| Java   | `int getScreenSize()`    |
 | Python | `int get_screen_size()`  |
 
 Returns size in bytes of screen buffer and map buffer.
@@ -1584,8 +1404,6 @@ Returns size in bytes of screen buffer and map buffer.
 
 | C++    | `bool isAutomapBufferEnabled()`    |
 | :--    | :--                                |
-| Lua    | `boolean isAutomapBufferEnabled()` |
-| Java   | `boolean isAutomapBufferEnabled()` |
 | Python | `bool isAutomapBufferEnabled()`    |
 
 Added in 1.1.8

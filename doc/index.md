@@ -7,7 +7,7 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 
 ## Features
 - Multi-platform,
-- API for Python, C++, Lua, Java and Julia,
+- API for Python, C++ and Julia
 - Easy-to-create custom scenarios (visual editors, scripting language and examples available),
 - Async and sync single-player and multi-player modes,
 - Fast (up to 7000 fps in sync mode, single threaded),
