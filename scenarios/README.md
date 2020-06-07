@@ -3,11 +3,11 @@
 Scenarios contained in iwad files do not support action constraints, death penalty and living rewards.
 Every mention of any settings that are not included in iwads will be specified with "(config)".
 
-Note: Vizdoom does not support setting certain rewards (such as killing oponents) in .cfg files. These must be set in the .wad files instead
+Note: ViZDoom does not support setting certain rewards (such as killing opponents) in .cfg files. These must be set in the .wad files instead
 
 ## BASIC
 The purpose of the scenario is just to check if using this
-framework to train some AI i 3D environment is feasible.
+framework to train some AI in a 3D environment is feasible.
 
 Map is a rectangle with gray walls, ceiling and floor.
 Player is spawned along the longer wall, in the center.
