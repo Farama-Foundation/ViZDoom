@@ -86,7 +86,7 @@ if __name__ == "__main__":
     # Turns on the sound. (turned off by default)
     game.set_sound_enabled(True)
 
-    # Sets the livin reward (for each move) to -1
+    # Sets the living reward (for each move) to -1
     game.set_living_reward(-1)
 
     # Sets ViZDoom mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR, PLAYER mode is default)
