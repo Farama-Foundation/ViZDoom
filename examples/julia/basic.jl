@@ -59,7 +59,7 @@ vz.set_window_visible(game, true)
 # Turns on the sound. (turned off by default)
 vz.set_sound_enabled(game, true)
 
-# Sets the livin reward (for each move) to -1
+# Sets the living reward (for each move) to -1
 vz.set_living_reward(game, -1)
 
 # Sets ViZDoom mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR, PLAYER mode is default)
