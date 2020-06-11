@@ -93,6 +93,7 @@ pip3 install numpy
 # Julia dependencies
 brew cask install julia
 julia
+julia> using Pkg
 julia> Pkg.add("CxxWrap")
 ```
 
