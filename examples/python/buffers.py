@@ -41,7 +41,7 @@ if __name__ == "__main__":
     # game.set_console_enabled(True)
     # game.set_window_visible(False)
 
-    # Just umcomment desired format for screen buffer (and map buffer).
+    # Just uncomment desired format for screen buffer (and map buffer).
     # The last uncommented will be applied.
     # Formats with C (CRCGCB and CBCGCR) were omitted cause they are not cv2 friendly.
     # Default format is ScreenFormat.CRCGCB.
