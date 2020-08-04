@@ -26,12 +26,8 @@ def get_vizdoom_version():
     try:
         import re
         with open("CMakeLists.txt") as cmake_file:
-            lines = "".join(cmake_file.readlines())
-            major_version = re.search('set\(ViZDoom_MAJOR_VERSION\s+([0-9])\)\s+', lines).group(1)
-            minor_version = re.search('set\(ViZDoom_MINOR_VERSION\s+([1-9]?[0-9])\)\s+', lines).group(1)
-            patch_version = re.search('set\(ViZDoom_PATCH_VERSION\s+([1-9]?[0-9]+)\)\s+', lines).group(1)
-
-            version = "{}.{}.{}".format(major_version, minor_version, patch_version)
+            lines = cmake_file.read()
+            version = re.search("VERSION\s+([0-9].[0-9].[0-9]+)", lines).group(1)
             return version
 
     except Exception:
@@ -109,7 +105,6 @@ setup(
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',

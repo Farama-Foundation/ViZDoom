@@ -55,10 +55,26 @@ or
 }
 ```
 
-## Installation/Building instructions
+
+## Python quick start
+
+### Ubuntu
+```
+sudo apt install cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar nasm wget
+pip install vizdoom
+```
+
+### MacOS
+
+```
+brew install cmake boost sdl2 wget
+pip install vizdoom
+```
+
+
+## Building instructions
 
 - **[PyPI (pip)](doc/Building.md#pypi)**
-- **[LuaRocks](doc/Building.md#luarocks)**
 - [Linux](doc/Building.md#linux_build)
 - [MacOS](doc/Building.md#macos_build)
 - [Windows](doc/Building.md#windows_build)
@@ -82,8 +98,6 @@ Before running the provided examples, make sure that [freedoom2.wad](https://fre
 
 - [Python](examples/python) (contain learning examples implemented in PyTorch, TensorFlow and Theano)
 - [C++](examples/c%2B%2B)
-- [Lua](examples/lua) (contain learning example implemented in Torch)
-- [Java](examples/java)
 - [Julia](examples/julia)
 
 Python examples are currently the richest, so we recommend to look at them, even if you plan to use other language. API is almost identical for all languages.
