@@ -1,13 +1,9 @@
 cmake_minimum_required(VERSION 3.1)
 
-# Project version
+# Project + versions
 #-----------------------------------------------------------------------------------------------------------------------
 
-project(ViZDoom VERSION 1.1.8
-        DESCRIPTION "Doom-based AI Research Platform for Reinforcement Learning from Raw Visual Information."
-        HOMEPAGE_URL http://vizdoom.cs.put.edu.pl/
-        LANGUAGES C CXX)
-
+project(ViZDoom VERSION 1.1.8)
 set(ViZDoom_VERSION_STR ${ViZDoom_VERSION_MAJOR}.${ViZDoom_VERSION_MINOR}.${ViZDoom_VERSION_PATCH})
 set(ViZDoom_VERSION_ID ${ViZDoom_VERSION_MAJOR}${ViZDoom_VERSION_MINOR}${ViZDoom_VERSION_PATCH})
 
