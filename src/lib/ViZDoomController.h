@@ -41,6 +41,7 @@
 namespace vizdoom {
 
     namespace b         = boost;
+    namespace bpl       = boost::placeholders;
     namespace ba        = boost::asio;
     namespace bip       = boost::interprocess;
     namespace br        = boost::random;

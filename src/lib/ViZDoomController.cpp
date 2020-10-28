@@ -1093,7 +1093,7 @@ namespace vizdoom {
     void DoomController::handleSignals() {
         this->ioService = new ba::io_service();
         ba::signal_set signals(*this->ioService, SIGINT, SIGABRT, SIGTERM);
-        signals.async_wait(b::bind(signalHandler, b::ref(signals), this, _1, _2));
+        signals.async_wait(b::bind(signalHandler, b::ref(signals), this, bpl::_1, bpl::_2));
 
         this->ioService->run();
     }
