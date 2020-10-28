@@ -2,6 +2,39 @@ language: cpp
 matrix:
   include:
     - os: linux
+      dist: focal
+      name: Focal, Python 3 build
+      install:
+        - sudo apt-get install cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar nasm wget python3-dev python3-numpy
+      script:
+        - |
+          mkdir build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON3=ON ..
+          make
+
+    - os: linux
+      dist: focal
+      name: Focal, Python 3 pip install
+      install:
+        - sudo apt-get install cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar nasm wget python3-dev python3-numpy python3-pip python3-setuptools
+      script:
+        - |
+          pip3 install .
+          python3 -c "import vizdoom"
+
+    - os: linux
+      dist: focal
+      name: Focal, Python 3 venv pip install
+      install:
+        - sudo apt-get install cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar nasm wget python3-dev python3-numpy python3-pip python3-setuptools python3-venv
+      script:
+        - |
+          python3 -m venv ./venv
+          ./venv/bin/pip3 install .
+          ./venv/bin/python3 -c "import vizdoom"
+
+    - os: linux
       dist: bionic
       name: Bionic, Python 3 build
       install:
