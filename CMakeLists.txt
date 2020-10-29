@@ -177,7 +177,7 @@ endif ()
 # Freedoom 2 download
 #-----------------------------------------------------------------------------------------------------------------------
 
-set(FREEDOOM_URL https://github.com/mwydmuch/ViZDoomWADs/raw/master/freedoom-${FREEDOOM_VERSION}.wad)
+set(FREEDOOM_URL https://github.com/mwydmuch/ViZDoomWADs/raw/master/freedoom-${FREEDOOM_VERSION}/freedoom2.wad)
 set(FREEDOOM_WAD ${VIZDOOM_SRC_DIR}/freedoom2.wad)
 if(NOT EXISTS ${FREEDOOM_WAD})
     file(DOWNLOAD ${FREEDOOM_URL} ${FREEDOOM_WAD} SHOW_PROGRESS)
