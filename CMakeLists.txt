@@ -11,11 +11,12 @@ set(ViZDoom_VERSION_ID ${ViZDoom_VERSION_MAJOR}${ViZDoom_VERSION_MINOR}${ViZDoom
 # Building options
 #-----------------------------------------------------------------------------------------------------------------------
 
-option(DOWNLOAD_FREEDOOM "Download freedoom2.wad." ON)
 option(BUILD_PYTHON3 "Build ViZDoom Python 3 binding." OFF)
 option(BUILD_PYTHON "Build ViZDoom Python (3 by default) binding." OFF)
 option(BUILD_PYTHON2 "Build ViZDoom Python2 binding instead of default Python3." OFF)
 option(BUILD_JULIA "Build ViZDoom Julia binding." OFF)
+set(PYBIND11_VERSION "v2.6.0" CACHE STRING "Pybind11 version to use")
+set(FREEDOOM_VERSION "0.12.1" CACHE STRING "Freedoom version to use")
 
 
 # CMake options
@@ -176,14 +177,8 @@ endif ()
 # Freedoom 2 download
 #-----------------------------------------------------------------------------------------------------------------------
 
-if (UNIX AND DOWNLOAD_FREEDOOM)
-    add_custom_target(freedoom2 ALL
-        COMMAND ${VIZDOOM_SCRIPTS_DIR}/download_freedoom.sh ${VIZDOOM_OUTPUT_DIR}
-        COMMENT "Downloading freedoom2.wad")
-endif ()
-
-if (WIN32 AND DOWNLOAD_FREEDOOM)
-    add_custom_target(freedoom2 ALL
-        COMMAND ${VIZDOOM_SCRIPTS_DIR}/download_freedoom.bat ${VIZDOOM_OUTPUT_DIR}
-        COMMENT "Downloading freedoom2.wad")
-endif ()
+set(FREEDOOM_URL https://github.com/mwydmuch/ViZDoomWADs/raw/master/freedoom-${FREEDOOM_VERSION}.wad)
+set(FREEDOOM_WAD ${VIZDOOM_SRC_DIR}/freedoom2.wad)
+if(NOT EXISTS ${FREEDOOM_WAD})
+    file(DOWNLOAD ${FREEDOOM_URL} ${FREEDOOM_WAD} SHOW_PROGRESS)
+endif()

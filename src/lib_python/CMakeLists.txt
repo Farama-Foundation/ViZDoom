@@ -12,8 +12,13 @@ set(VIZDOOM_PYTHON_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python${_PYTHON_VERSION})
 set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
 set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
 
-
-# Use included pybind11
+# Get pybind11
+include(GitUtils)
+git_clone(PROJECT_NAME pybind11
+        GIT_URL https://github.com/pybind/pybind11.git
+        #GIT_BRANCH master # To use master version
+        GIT_TAG ${PYBIND11_VERSION}
+        DIRECTORY ${VIZDOOM_PYTHON_SRC_DIR})
 add_subdirectory(${VIZDOOM_PYTHON_SRC_DIR}/pybind11)
 
 set(VIZDOOM_PYTHON_LIBS
@@ -49,15 +54,12 @@ set_target_properties(libvizdoom_python
     LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON_OUTPUT_DIR}
     OUTPUT_NAME vizdoom
     PROJECT_LABEL "python${_PYTHON_VERSION} binding")
-add_dependencies(libvizdoom_python pybind11)
 
-if (UNIX AND DOWNLOAD_FREEDOOM)
+if (UNIX)
     add_custom_target(python_pip_package ALL
         COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.sh ${_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
         COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
-endif ()
-
-if (WIN32 AND DOWNLOAD_FREEDOOM)
+elseif (WIN32)
     add_custom_target(python_pip_package ALL
         COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.bat ${_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
         COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
@@ -67,5 +69,5 @@ set_target_properties(python_pip_package
     PROPERTIES
     PROJECT_LABEL "pip package")
 
-# vizdoom, vizdoom.pk3 and freedoom2.wad are needed to assemble the package
-add_dependencies(python_pip_package libvizdoom_python vizdoom pk3 freedoom2)
+# vizdoom, vizdoom.pk3 are needed to assemble the package
+add_dependencies(python_pip_package libvizdoom_python vizdoom pk3)
