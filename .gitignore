@@ -6,6 +6,9 @@ Makefile
 ImportExecutables.cmake
 **/link-make
 
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
 *~
 *.o
 *.obj
