@@ -20,12 +20,12 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 def preprocess(img, resolution=(30, 45)):
     img = skimage.transform.resize(img, resolution)
     img = img.astype(np.float32)
-#    img = np.expand_dims(img, axis=0)
+    img = np.expand_dims(img, axis=0)
     return img
 
 def create_simple_game():
   game = vzd.DoomGame()
-  game.load_config("ViZDoom/scenarios/simpler_basic.cfg")
+  game.load_config("../../scenarios/simpler_basic.cfg")
   game.set_window_visible(False)
   game.set_mode(vzd.Mode.PLAYER)
   game.init()
