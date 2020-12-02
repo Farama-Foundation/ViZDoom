@@ -20,7 +20,7 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 def preprocess(img, resolution=(30, 45)):
     img = skimage.transform.resize(img, resolution)
     img = img.astype(np.float32)
-    img = np.expand_dims(img, axis=0)
+#    img = np.expand_dims(img, axis=0)
     return img
 
 def create_simple_game():
@@ -43,7 +43,7 @@ def run(game, agent, actions, episodes, verbose=True,
         done = False
         print("Episode #" + str(episode + 1))
         print("Epsilon " + str(agent.epsilon))
-        
+
         for _ in trange(steps_per_episode):
             state = preprocess(game.get_state().screen_buffer)
             action = agent.get_action(state)
@@ -51,15 +51,15 @@ def run(game, agent, actions, episodes, verbose=True,
             done = game.is_episode_finished()
 
             if not done:
-              next_state = preprocess(game.get_state().screen_buffer) 
+              next_state = preprocess(game.get_state().screen_buffer)
             else:
               next_state = np.zeros((1, 30, 45)).astype(np.float32)
 
             agent.append_memory(state, action, reward, next_state, done)
-            
+
             if global_step > agent.batch_size:
                 agent.train()
-            
+
             if done:
               scores.append(game.get_total_reward())
               train_scores.append(game.get_total_reward())
@@ -98,7 +98,7 @@ class TestNet(nn.Module):
          return self.fc2(x)
 
 class DQNAgent:
-    def __init__(self, action_size, epsilon=1, memory_size=10000, 
+    def __init__(self, action_size, epsilon=1, memory_size=10000,
                  batch_size=64, discount_factor=0.99, lr=25e-5, epsilon_decay=0.9995,
                  epsilon_min=0.1):
         self.action_size = action_size
@@ -112,7 +112,7 @@ class DQNAgent:
         self.memory = deque(maxlen=memory_size)
         self.opt = optim.SGD(self.q_net.parameters(), lr=self.lr)
         self.criterion = nn.MSELoss()
-    
+
     def get_action(self, state):
         if np.random.uniform() < self.epsilon:
             return random.choice(range(self.action_size))
@@ -120,46 +120,38 @@ class DQNAgent:
             state = np.expand_dims(state, axis=0)
             action = torch.argmax(self.q_net(state)).item()
             return action
-        
+
     def append_memory(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
 
     def train(self):
         batch = random.sample(self.memory, self.batch_size)
         batch = np.array(batch, dtype=object)
-        states, actions, rewards, next_states, dones = [], [], [], [], []
-        
-        for sample in batch:
-            states.append(sample[0])
-            actions.append(sample[1])
-            rewards.append(sample[2])
-            next_states.append(sample[3])
-            dones.append(sample[4])
-        
+
         states = np.stack(batch[:,0]).astype(float)
         actions = batch[:,1].astype(int)
         rewards = batch[:,2].astype(float)
         next_states = np.stack(batch[:,3]).astype(float)
-        dones = batch[:,3].astype(int)
+        dones = batch[:,4].astype(bool)
         not_dones = ~dones
-        
-     #   state_values = self.q_net(torch.from_numpy(states).float())[to_categorical(actions, 3)]
-     #   next_state_values = torch.max(self.q_net(torch.from_numpy(next_states).float()), 1).values
-     #   next_state_values = next_state_values[not_dones.squeeze()]
-        
-     #   Y = torch.from_numpy(rewards).float()
-     #   Y[not_dones] += self.discount * next_state_values
+
+        #state_values = self.q_net(states) #[to_categorical(actions, 3)]
+        #next_state_values = torch.max(self.q_net(next_states), 1).values
+        #next_state_values = next_state_values[not_dones.squeeze()]
+
+        #Y = torch.from_numpy(rewards).float()
+        #Y[not_dones] += self.discount * next_state_values
 
         q = self.q_net(next_states).data.numpy()
         q2 = np.max(q, 1)
         target_q = self.q_net(states).data.numpy()
-        target_q[np.arange(target_q.shape[0]), actions] = rewards + self.discount * (1 - dones) * q2
+        target_q[np.arange(target_q.shape[0]), actions] = rewards + self.discount * (1 - dones.astype(int)) * q2
 
         output = self.q_net(states)
         target_q = torch.from_numpy(target_q)
 
         self.opt.zero_grad()
-        #loss = self.criterion(Y, state_values)
+ #       loss = self.criterion(Y, state_values)
         loss = self.criterion(output, target_q)
         loss.backward()
         self.opt.step()
@@ -171,5 +163,9 @@ class DQNAgent:
 if __name__=='__main__':
     actions = [[True, False, False], [False, True, False], [False, False, True]]
     game = create_simple_game()
-    agent = DQNAgent(3)
+    # Action = which buttons are pressed
+    n = game.get_available_buttons_size()
+    print(n)
+    actions = [list(a) for a in it.product([0, 1], repeat=n)]
+    agent = DQNAgent(len(actions))
     scores = run(game, agent, actions, 5, steps_per_episode=2000, sleep_time=0, verbose=False)
