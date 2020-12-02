@@ -34,7 +34,7 @@ def create_simple_game():
   return game
 
 def run(game, agent, actions, episodes, verbose=True,
-        steps_per_episode=2000, sleep_time=0.028):
+        steps_per_episode=2000, sleep_time=0.028, frame_rep=12):
     scores = []
 
     for episode in range(episodes):
@@ -48,7 +48,7 @@ def run(game, agent, actions, episodes, verbose=True,
         for _ in trange(steps_per_episode):
             state = preprocess(game.get_state().screen_buffer)
             action = agent.get_action(state)
-            reward = game.make_action(actions[action])
+            reward = game.make_action(actions[action], frame_rep)
             done = game.is_episode_finished()
 
             if not done:
@@ -164,9 +164,5 @@ class DQNAgent:
 if __name__=='__main__':
     actions = [[True, False, False], [False, True, False], [False, False, True]]
     game = create_simple_game()
-    # Action = which buttons are pressed
-    n = game.get_available_buttons_size()
-    print(n)
-    actions = [list(a) for a in it.product([0, 1], repeat=n)]
     agent = DQNAgent(len(actions))
     scores = run(game, agent, actions, 5, steps_per_episode=2000, sleep_time=0, verbose=False)
