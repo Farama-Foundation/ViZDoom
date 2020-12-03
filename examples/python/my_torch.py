@@ -7,16 +7,21 @@ import torch.nn.functional as F
 import numpy as np
 import random
 import itertools as it
-
 import skimage.transform
+
 from vizdoom import GameVariable
 from time import sleep
 from matplotlib import pyplot as plt
 from collections import deque
 from tqdm import trange
 
-torch.backends.cudnn.benchmark = True
-DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+# Uses GPU if available
+if torch.cuda.is_available():
+    DEVICE = torch.device('cuda')
+    torch.backends.cudnn.benchmark = True
+else:
+    DEVICE = torch.device('cpu')
+
 
 def preprocess(img, resolution=(30, 45)):
     img = skimage.transform.resize(img, resolution)
@@ -144,6 +149,7 @@ class DQNAgent:
         Y[not_dones] += self.discount * next_state_values
         Y = torch.from_numpy(Y).float()
 
+        # this selects only the q values of the actions taken
         state_values = self.q_net(states)[np.arange(self.batch_size), actions].float()
 
         self.opt.zero_grad()
