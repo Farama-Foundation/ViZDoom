@@ -33,11 +33,11 @@ def create_simple_game():
 
   return game
 
-def run(game, agent, actions, episodes, verbose=True,
+def run(game, agent, actions, num_episodes, verbose=True,
         steps_per_episode=2000, sleep_time=0.028, frame_rep=12):
     scores = []
 
-    for episode in range(episodes):
+    for episode in range(num_episodes):
         game.new_episode()
         train_scores = []
         global_step = 0
@@ -135,25 +135,19 @@ class DQNAgent:
         next_states = np.stack(batch[:,3]).astype(float)
         dones = batch[:,4].astype(bool)
         not_dones = ~dones
+        
+        # value of the next states
+        next_state_values = np.max(self.q_net(next_states).data.numpy(), 1)
+        next_state_values = next_state_values[not_dones]
 
-        #state_values = self.q_net(states) #[to_categorical(actions, 3)]
-        #next_state_values = torch.max(self.q_net(next_states), 1).values
-        #next_state_values = next_state_values[not_dones.squeeze()]
+        Y = rewards.copy()
+        Y[not_dones] += self.discount * next_state_values
+        Y = torch.from_numpy(Y).float()
 
-        #Y = torch.from_numpy(rewards).float()
-        #Y[not_dones] += self.discount * next_state_values
-
-        q = self.q_net(next_states).data.numpy()
-        q2 = np.max(q, 1)
-        target_q = self.q_net(states).data.numpy()
-        target_q[np.arange(target_q.shape[0]), actions] = rewards + self.discount * (1 - dones.astype(int)) * q2
-
-        output = self.q_net(states)
-        target_q = torch.from_numpy(target_q)
+        state_values = self.q_net(states)[np.arange(self.batch_size), actions].float()
 
         self.opt.zero_grad()
- #       loss = self.criterion(Y, state_values)
-        loss = self.criterion(output, target_q)
+        loss = self.criterion(Y, state_values)
         loss.backward()
         self.opt.step()
 
@@ -167,4 +161,4 @@ if __name__=='__main__':
     actions = [[True, False, False], [False, True, False], [False, False, True]]
     game = create_simple_game()
     agent = DQNAgent(len(actions))
-    scores = run(game, agent, actions, 5, steps_per_episode=2000, sleep_time=0, verbose=False)
+    scores = run(game, agent, actions, num_episodes=5, steps_per_episode=2000, sleep_time=0, verbose=False)
