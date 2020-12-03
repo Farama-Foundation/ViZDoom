@@ -163,7 +163,10 @@ if __name__=='__main__':
     lr = 0.00025
     frame_repeat = 12
 
-    actions = [[True, False, False], [False, True, False], [False, False, True]]
+    # Action = which buttons are pressed
+    n = game.get_available_buttons_size()
+    actions = [list(a) for a in it.product([0, 1], repeat=n)]
+    #actions = [[True, False, False], [False, True, False], [False, False, True]]
     game = create_simple_game()
     agent = DQNAgent(len(actions))
     agent, game = run(game, agent, actions, num_episodes=train_episodes, frame_repeat=frame_repeat)
