@@ -9,7 +9,7 @@ import random
 import itertools as it
 import skimage.transform
 
-from vizdoom import GameVariable
+from vizdoom import GameVariable, Mode
 from time import sleep
 from matplotlib import pyplot as plt
 from collections import deque
@@ -33,13 +33,13 @@ def create_simple_game():
   game = vzd.DoomGame()
   game.load_config("../../scenarios/simpler_basic.cfg")
   game.set_window_visible(False)
-  game.set_mode(vzd.Mode.PLAYER)
+  game.set_mode(Mode.PLAYER)
   game.init()
 
   return game
 
-def run(game, agent, actions, num_episodes, verbose=True,
-        steps_per_episode=2000, sleep_time=0.028, frame_rep=12):
+def run(game, agent, actions, num_episodes, frame_repeat
+        steps_per_episode=2000):
     scores = []
 
     for episode in range(num_episodes):
@@ -53,7 +53,7 @@ def run(game, agent, actions, num_episodes, verbose=True,
         for _ in trange(steps_per_episode, leave=False):
             state = preprocess(game.get_state().screen_buffer)
             action = agent.get_action(state)
-            reward = game.make_action(actions[action], frame_rep)
+            reward = game.make_action(actions[action], frame_repeat)
             done = game.is_episode_finished()
 
             if not done:
@@ -71,21 +71,15 @@ def run(game, agent, actions, num_episodes, verbose=True,
               train_scores.append(game.get_total_reward())
               game.new_episode()
 
-            if sleep_time > 0:
-                sleep(sleep_time)
             global_step += 1
 
         train_scores = np.array(train_scores)
 
         print("Results: mean: %.1f +/- %.1f," % (train_scores.mean(), train_scores.std()), \
               "min: %.1f," % train_scores.min(), "max: %.1f," % train_scores.max())
-        if verbose:
-            print("Episode finished.")
-            print("Total reward:", game.get_total_reward())
-            print("************************")
 
     game.close()
-    return scores
+    return agent, game
 
 class TestNet(nn.Module):
      def __init__(self, available_actions_count):
@@ -164,7 +158,37 @@ class DQNAgent:
           self.epsilon = self.epsilon_min
 
 if __name__=='__main__':
+    train_episodes = 5
+    episodes_to_watch = 10
+    lr = 0.00025
+    frame_repeat = 12
+
     actions = [[True, False, False], [False, True, False], [False, False, True]]
     game = create_simple_game()
     agent = DQNAgent(len(actions))
-    scores = run(game, agent, actions, num_episodes=5, steps_per_episode=2000, sleep_time=0, verbose=False)
+    agent, game = run(game, agent, actions, num_episodes=train_episodes, frame_repeat=frame_repeat)
+
+    print("======================================")
+    print("Training finished. It's time to watch!")
+
+    # Reinitialize the game with window visible
+    game.close()
+    game.set_window_visible(True)
+    game.set_mode(Mode.ASYNC_PLAYER)
+    game.init()
+
+    for _ in range(episodes_to_watch):
+        game.new_episode()
+        while not game.is_episode_finished():
+            state = preprocess(game.get_state().screen_buffer)
+            best_action_index = agent.get_action(state)
+
+            # Instead of make_action(a, frame_repeat) in order to make the animation smooth
+            game.set_action(actions[best_action_index])
+            for _ in range(frame_repeat):
+                game.advance_action()
+
+        # Sleep between episodes
+        sleep(1.0)
+        score = game.get_total_reward()
+        print("Total score: ", score)
