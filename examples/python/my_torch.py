@@ -33,11 +33,11 @@ def create_simple_game():
 
   return game
 
-def run(game, agent, actions, episodes, verbose=True,
+def run(game, agent, actions, num_episodes, verbose=True,
         steps_per_episode=2000, sleep_time=0.028, frame_rep=12):
     scores = []
 
-    for episode in range(episodes):
+    for episode in range(num_episodes):
         game.new_episode()
         train_scores = []
         global_step = 0
@@ -167,4 +167,4 @@ if __name__=='__main__':
     actions = [[True, False, False], [False, True, False], [False, False, True]]
     game = create_simple_game()
     agent = DQNAgent(len(actions))
-    scores = run(game, agent, actions, 5, steps_per_episode=2000, sleep_time=0, verbose=False)
+    scores = run(game, agent, actions, num_episodes=5, steps_per_episode=2000, sleep_time=0, verbose=False)
