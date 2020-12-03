@@ -45,7 +45,7 @@ def run(game, agent, actions, episodes, verbose=True,
         print("Episode #" + str(episode + 1))
         print("Epsilon " + str(agent.epsilon))
 
-        for _ in trange(steps_per_episode):
+        for _ in trange(steps_per_episode, leave=False):
             state = preprocess(game.get_state().screen_buffer)
             action = agent.get_action(state)
             reward = game.make_action(actions[action], frame_rep)
