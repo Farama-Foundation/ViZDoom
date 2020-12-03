@@ -38,7 +38,7 @@ def create_simple_game():
 
   return game
 
-def run(game, agent, actions, num_episodes, frame_repeat
+def run(game, agent, actions, num_episodes, frame_repeat,
         steps_per_episode=2000):
     scores = []
 
