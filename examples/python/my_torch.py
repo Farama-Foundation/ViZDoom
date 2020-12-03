@@ -133,29 +133,21 @@ class DQNAgent:
         actions = batch[:,1].astype(int)
         rewards = batch[:,2].astype(float)
         next_states = np.stack(batch[:,3]).astype(float)
-        dones = batch[:,4].astype(int)
-        not_dones = 1 - dones
+        dones = batch[:,4].astype(bool)
+        not_dones = ~dones
+        
+        # value of the next states
+        next_state_values = np.max(self.q_net(next_states).data.numpy(), 1)
+        next_state_values = next_state_values[not_dones]
 
-        next_state_values = torch.max(self.q_net(next_states), 1).values.numpy()
-        next_state_values = next_state_values[not_dones.squeeze()]
+        Y = rewards.copy()
+        Y[not_dones] += self.discount * next_state_values
+        Y = torch.from_numpy(Y).float()
 
-        Y = rewards + self.discount * not_dones * next_state_values
-        #Y[not_dones] += self.discount * next_state_values
-
-#        q = self.q_net(next_states).data.numpy()
-#        q2 = np.max(q, 1)
-#        target_q = self.q_net(states).data.numpy()
-#        target_q[np.arange(target_q.shape[0]), actions] = rewards + self.discount * (1 - dones.astype(int)) * q2
-
-#        output = self.q_net(states)
-#        target_q = torch.from_numpy(target_q)
-
-        Y = torch.from_numpy(Y)
-        state_values = self.q_net(states)[np.arange(self.batch_size), action]
+        state_values = self.q_net(states)[np.arange(self.batch_size), actions].float()
 
         self.opt.zero_grad()
         loss = self.criterion(Y, state_values)
-#        loss = self.criterion(output, target_q)
         loss.backward()
         self.opt.step()
 
