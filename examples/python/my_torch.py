@@ -100,7 +100,7 @@ class TestNet(nn.Module):
 
 class DQNAgent:
     def __init__(self, action_size, epsilon=1, memory_size=10000,
-                 batch_size=64, discount_factor=0.99, lr=25e-5, epsilon_decay=0.9995,
+                 batch_size=64, discount_factor=0.99, lr=25e-5, epsilon_decay=0.9996,
                  epsilon_min=0.1):
         self.action_size = action_size
         self.q_net = TestNet(action_size).to(DEVICE)
@@ -160,6 +160,8 @@ class DQNAgent:
         if self.epsilon > self.epsilon_min:
           self.epsilon *= self.epsilon_decay
 
+        else:
+          self.epsilon = self.epsilon_min
 
 if __name__=='__main__':
     actions = [[True, False, False], [False, True, False], [False, False, True]]
