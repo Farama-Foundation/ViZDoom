@@ -37,7 +37,7 @@ frame_repeat = 12
 resolution = (30, 45)
 episodes_to_watch = 10
 
-model_savefile = "./model-doom.pth"
+model_savefile = "./saved_models/model-doom.pth"
 save_model = True
 load_model = False
 skip_learning = False
