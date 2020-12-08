@@ -102,7 +102,7 @@ def run(game, agent, actions, num_epochs, frame_repeat, steps_per_epoch=2000):
     Run num epochs of training episodes.
     Skip frame_repeat number of frames after each action.
     """
-    scores = []
+
     start_time = time()
 
     for epoch in range(num_epochs):
@@ -128,7 +128,6 @@ def run(game, agent, actions, num_epochs, frame_repeat, steps_per_epoch=2000):
                 agent.train()
 
             if done:
-                scores.append(game.get_total_reward())
                 train_scores.append(game.get_total_reward())
                 game.new_episode()
 
@@ -142,7 +141,7 @@ def run(game, agent, actions, num_epochs, frame_repeat, steps_per_epoch=2000):
 
         test(game, agent)
         if save_model:
-            print("Saving the network weigths to:", model_savefile)
+            print("Saving the network weights to:", model_savefile)
             torch.save(agent.q_net, model_savefile)
         print("Total elapsed time: %.2f minutes" % ((time() - start_time) / 60.0))
 
@@ -155,6 +154,7 @@ class DuelQNet(nn.Module):
     This is Duel DQN architecture.
     see https://arxiv.org/abs/1511.06581 for more information.
     """
+
     def __init__(self, available_actions_count):
         super(DuelQNet, self).__init__()
         self.conv1 = nn.Sequential(
@@ -211,6 +211,7 @@ class DQNAgent:
             print("Loading model from: ", model_savefile)
             self.q_net = torch.load(model_savefile)
             self.target_net = torch.load(model_savefile)
+            self.epsilon = self.epsilon_min
 
         else:
             print("Initializing new model")
