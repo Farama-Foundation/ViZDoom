@@ -14,7 +14,7 @@ import random
 import itertools as it
 import skimage.transform
 
-from vizdoom import GameVariable, Mode
+from vizdoom import Mode
 from time import sleep, time
 from collections import deque
 from tqdm import trange
@@ -37,7 +37,7 @@ frame_repeat = 12
 resolution = (30, 45)
 episodes_to_watch = 10
 
-model_savefile = "./saved_models/model-doom.pth"
+model_savefile = "./model-doom.pth"
 save_model = True
 load_model = False
 skip_learning = False
@@ -109,7 +109,7 @@ def run(game, agent, actions, num_epochs, frame_repeat, steps_per_epoch=2000):
         game.new_episode()
         train_scores = []
         global_step = 0
-        print("\nEpisode #" + str(epoch + 1))
+        print("\nEpoch #" + str(epoch + 1))
 
         for _ in trange(steps_per_epoch, leave=False):
             state = preprocess(game.get_state().screen_buffer)
@@ -151,6 +151,10 @@ def run(game, agent, actions, num_epochs, frame_repeat, steps_per_epoch=2000):
 
 
 class DuelQNet(nn.Module):
+    """
+    This is Duel DQN architecture.
+    see https://arxiv.org/abs/1511.06581 for more information.
+    """
     def __init__(self, available_actions_count):
         super(DuelQNet, self).__init__()
         self.conv1 = nn.Sequential(
@@ -177,7 +181,6 @@ class DuelQNet(nn.Module):
         )
 
     def forward(self, x):
-        x = torch.from_numpy(x).float().to(DEVICE)
         x = self.conv1(x)
         x = self.conv2(x)
         x = x.view(-1, 192)
@@ -221,6 +224,7 @@ class DQNAgent:
             return random.choice(range(self.action_size))
         else:
             state = np.expand_dims(state, axis=0)
+            state = torch.from_numpy(state).float().to(DEVICE)
             action = torch.argmax(self.q_net(state)).item()
             return action
 
@@ -244,7 +248,9 @@ class DQNAgent:
         row_idx = np.arange(self.batch_size)  # used for indexing the batch
 
         # value of the next states with double q learning
+        # see https://arxiv.org/abs/1509.06461 for more information on double q learning
         with torch.no_grad():
+            next_states = torch.from_numpy(next_states).float().to(DEVICE)
             idx = row_idx, np.argmax(self.q_net(next_states).cpu().data.numpy(), 1)
             next_state_values = self.target_net(next_states).cpu().data.numpy()[idx]
             next_state_values = next_state_values[not_dones]
@@ -252,10 +258,11 @@ class DQNAgent:
         # this defines y = r + discount * max_a q(s', a)
         q_targets = rewards.copy()
         q_targets[not_dones] += self.discount * next_state_values
-        q_targets = torch.from_numpy(q_targets).float()
+        q_targets = torch.from_numpy(q_targets).float().to(DEVICE)
 
         # this selects only the q values of the actions taken
         idx = row_idx, actions
+        states = torch.from_numpy(states).float().to(DEVICE)
         action_values = self.q_net(states)[idx].float().to(DEVICE)
 
         self.opt.zero_grad()
@@ -265,7 +272,6 @@ class DQNAgent:
 
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
-
         else:
             self.epsilon = self.epsilon_min
 
