@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# E. Culurciello, Lars Mueller
+# E. Culurciello, L. Mueller, Z. Boztoprak
 # December 2020
 
 from __future__ import print_function
@@ -158,13 +158,26 @@ class DuelQNet(nn.Module):
     def __init__(self, available_actions_count):
         super(DuelQNet, self).__init__()
         self.conv1 = nn.Sequential(
-            nn.Conv2d(1, 8, kernel_size=6, stride=3, bias=False),
+            nn.Conv2d(1, 8, kernel_size=3, stride=2, bias=False),
             nn.BatchNorm2d(8),
             nn.ReLU()
         )
+
         self.conv2 = nn.Sequential(
             nn.Conv2d(8, 8, kernel_size=3, stride=2, bias=False),
             nn.BatchNorm2d(8),
+            nn.ReLU()
+        )
+
+        self.conv3 = nn.Sequential(
+            nn.Conv2d(8, 8, kernel_size=3, stride=1, bias=False),
+            nn.BatchNorm2d(8),
+            nn.ReLU()
+        )
+
+        self.conv4 = nn.Sequential(
+            nn.Conv2d(8, 16, kernel_size=3, stride=1, bias=False),
+            nn.BatchNorm2d(16),
             nn.ReLU()
         )
 
@@ -183,6 +196,8 @@ class DuelQNet(nn.Module):
     def forward(self, x):
         x = self.conv1(x)
         x = self.conv2(x)
+        x = self.conv3(x)
+        x = self.conv4(x)
         x = x.view(-1, 192)
         x1 = x[:, :96]  # input for the net to calculate the state value
         x2 = x[:, 96:]  # relative advantage of actions in the state
@@ -192,11 +207,9 @@ class DuelQNet(nn.Module):
 
         return x
 
-
 class DQNAgent:
-    def __init__(self, action_size, epsilon=1, memory_size=10000,
-                 batch_size=64, discount_factor=0.99, lr=25e-5, epsilon_decay=0.9996,
-                 epsilon_min=0.1, load_model=False):
+    def __init__(self, action_size, memory_size, batch_size, discount_factor, 
+                 lr, load_model, epsilon=1, epsilon_decay=0.9996, epsilon_min=0.1):
         self.action_size = action_size
         self.epsilon = epsilon
         self.epsilon_decay = epsilon_decay
