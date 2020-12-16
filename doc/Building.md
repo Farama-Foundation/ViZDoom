@@ -21,17 +21,15 @@ Even if you plan to install ViZDoom via PyPI or LuaRocks, you need to install so
 
 
 ### <a name="linux_deps"></a> Linux
-* CMake 2.8+
+* CMake 3.1+
 * Make
-* GCC 4.9+
-* Boost libraries 1.54+
-* Python 2.7+ or Python 3+ with Numpy for Python binding (optional)
-* JDK for Java binding (JAVA_HOME must be set) (optional)
-* Torch7 for Lua binding (optional)
+* GCC 6.0+
+* Boost libraries 1.67.0+
+* Python 3.5+ with Numpy for Python binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
-To get all dependencies (except JDK) on Ubuntu execute the following commands in the shell (requires root access). `scripts/linux_check_dependencies.sh` installs these for Python3:
+To get all dependencies on Ubuntu (we recommend using Ubuntu 18.04+) execute the following commands in the shell (requires root access). `scripts/linux_check_dependencies.sh` installs these for Python3:
 ```bash
 # ZDoom dependencies
 sudo apt-get install build-essential zlib1g-dev libsdl2-dev libjpeg-dev \
@@ -40,11 +38,6 @@ libopenal-dev timidity libwildmidi-dev unzip
 
 # Boost libraries
 sudo apt-get install libboost-all-dev
-
-# Python 2 dependencies
-sudo apt-get install python-dev python-pip
-pip install numpy
-# or install Anaconda 2 and add it to PATH
 
 # Python 3 dependencies
 sudo apt-get install python3-dev python3-pip
@@ -62,16 +55,12 @@ julia> using Pkg
 julia> Pkg.add("CxxWrap")
 ```
 
-To get Torch see: [Getting started with Torch](http://torch.ch/docs/getting-started.html).
-
 
 ### <a name="macos_deps"></a> MacOS
-* CMake 2.8+
-* Clang 3.4+
-* Boost libraries
-* Python 2.7+ or Python 3+ with Numpy for Python binding (optional)
-* JDK for Java binding (JAVA_HOME must be set) (optional)
-* Torch7 for Lua binding (optional)
+* CMake 3.1+
+* Clang 5.0+
+* Boost libraries 1.67.0+
+* Python 3.5+ with Numpy for Python binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X) are needed.
 
@@ -81,14 +70,10 @@ To get dependencies install [homebrew](https://brew.sh/)
 # ZDoom dependencies and Boost libraries
 brew install cmake boost sdl2 wget
 
-# Python 2 dependencies
-brew install python
-pip install numpy
-
 # Python 3 dependencies
 brew install python3
 pip3 install numpy
-# or install
+# or install Anaconda 3 and add it to PATH
 
 # Julia dependencies
 brew cask install julia
@@ -97,16 +82,12 @@ julia> using Pkg
 julia> Pkg.add("CxxWrap")
 ```
 
-To get Torch see: [Getting started with Torch](http://torch.ch/docs/getting-started.html).
-
 
 ### <a name="windows_deps"></a> Windows
-* CMake 2.8+
+* CMake 3.1+
 * Visual Studio 2012+
-* Boost libraries
-* Python 2.7+ or Python 3.4+ with Numpy for Python binding (optional)
-* JDK for Java binding (JAVA_HOME must be set) (optional)
-* Torch7 or LUA 5.1 for Lua binding (optional)
+* Boost 1.67+
+* Python 3.5+ with Numpy for Python binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Windows) are needed.
 Most of them are gathered in this repository: [ViZDoomWinDepBin](https://github.com/mwydmuch/ViZDoomWinDepBin).
@@ -121,40 +102,12 @@ However you will still need to install **[Linux](#linux_deps)/[MacOS](#macos_dep
 
 To install the most stable official release from [PyPI](https://pypi.python.org/pypi):
 ```bash
-# use pip3 for Python3
-sudo pip install vizdoom
+pip install vizdoom
 ```
 
 To install the newest version from the repository:
 ```bash
-git clone https://github.com/mwydmuch/ViZDoom
-cd ViZDoom
-# use pip3 for Python3
-sudo pip install .
-```
-
-Or without cloning it yourself:
-```bash
-# use pip3 for Python3
-sudo pip install git+https://github.com/mwydmuch/ViZDoom
-```
-
-
-## <a name="luarocks"></a> Installation via LuaRocks (recommended for Torch7 users)
-
-ViZDoom for Torch7 can be installed via **luarocks** on Linux and MacOS, and it is strongly recommended.
-However you will still need to install **[Linux](#linux_deps)/[MacOS](#macos_deps) dependencies**.
-
-To install the most stable official release from [LuaRocks](https://pypi.python.org/pypi):
-```bash
-luarocks install vizdoom
-```
-
-To install the newest version from the repository:
-```bash
-git clone https://github.com/mwydmuch/ViZDoom
-cd ViZDoom
-luarocks make
+pip install git+https://github.com/mwydmuch/ViZDoom.git
 ```
 
 
@@ -182,7 +135,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LU
 make
 ```
 
-where `-DBUILD_PYTHON=ON`, `-DBUILD_JAVA=ON`, `-DBUILD_LUA=ON` and `-DBUILD_JULIA=ON` CMake options for Python, Java, Lua and Julia bindings are optional (default OFF). To force building bindings for Python3 instead of the first version found use `-DBUILD_PYTHON3=ON`.
+where `-DBUILD_PYTHON=ON` and `-DBUILD_JULIA=ON` CMake options for Python and Julia bindings are optional (default OFF). To force building bindings for Python3 instead of the first version found use `-DBUILD_PYTHON3=ON`.
 
 To build Julia binding you first need to install CxxWrap package by running `julia` and using `Pkg.add("CxxWrap")` command (see [Linux dependencies](#linux_deps)). Then you need to manually set `JlCxx_DIR` variable:
 
@@ -204,11 +157,11 @@ Run CMake and build generated Makefile.
 ```sh
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON -DBUILD_JULIA=ON
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JULIA=ON
 make
 ```
 
-where `-DBUILD_PYTHON=ON`, `-DBUILD_JAVA=ON`, `-DBUILD_LUA=ON` and `-DBUILD_JULIA=ON` CMake options for Python, Java, Lua and Julia bindings are optional (default OFF). To force building bindings for Python3 instead of the first version found use `-DBUILD_PYTHON3=ON`.
+where `-DBUILD_PYTHON=ON` and `-DBUILD_JULIA=ON` CMake options for Python and Julia bindings are optional (default OFF). To force building bindings for Python3 instead of the first version found use `-DBUILD_PYTHON3=ON`.
 
 Users with brew-installed Python/Anaconda **may** need to manually set `PYTHON_EXECUTABLE`, `PYTHON_INCLUDE_DIR`, `PYTHON_LIBRARY` variables:
 
@@ -248,6 +201,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release \
 -DJlCxx_DIR=~/.julia/vX.X/CxxWrap/deps/usr/lib/cmake/JlCxx/
 ```
 
+
 ### <a name="windows_build"></a> Windows
 
 Setting up the compilation on Windows is really tedious so using the [precompiled binaries](#windows_bin) is recommended.
@@ -263,8 +217,6 @@ Run CMake GUI, select ViZDoom root directory and set paths to:
 * PYTHON_INCLUDE_DIR (optional, for Python/Anaconda bindings)
 * PYTHON_LIBRARY (optional, for Python/Anaconda bindings)
 * NUMPY_INCLUDES (optional, for Python/Anaconda bindings)
-* LUA_LIBRARIES (optional, for Lua/Torch bindings)
-* LUA_INCLUDE_DIR (optional, for Lua/Torch bindings)
 * ZDoom dependencies paths
 
 In configuration select BUILD_PYTHON, BUILD_PYTHON3 and BUILD_JAVA options for Python and Java bindings (optional, default OFF).
@@ -282,14 +234,8 @@ Compilation output will be placed in `build/bin` and it should contain following
 * `bin/python2/vizdoom.so / vizdoom.pyd / vizdoom.dylib` - ViZDoom Python 2 module
 * `bin/pythonX.X/vizdoom.so / vizdoom.pyd ` - ViZDoom Python X.X module
 * `bin/pythonX.X/pip_package` - complete ViZDoom Python X.X package
-* `bin/lua/vizdoom.so / vizdoom.so / vizdoom.dylib` - ViZDoom Lua C module
-* `bin/lua/luarocks_package` - complete ViZDoom Torch package
-* `bin/java/libvizdoom.so / vizdoom.dll / libvizdoom.dylib` -  ViZDoom library for Java
-* `bin/java/vizdoom.jar` -  Contains ViZDoom Java classes
 
 
 ### <a name="manual-install"></a> Manual installation
 
 To manually install Python package copy `vizdoom_root_dir/build/bin/pythonX.X/pip_package` contents to `python_root_dir/lib/pythonX.X/site-packages/site-packages/vizdoom`.
-
-To manually install Torch package copy `vizdoom_root_dir/build/bin/lua/luarocks_package` contents to `torch_root_dir/install/lib/lua/5.1/vizdoom` and `vizdoom_root_dir/build/bin/lua/luarocks_shared_package` contents to `torch_root_dir/install/share/lua/5.1/vizdoom`.

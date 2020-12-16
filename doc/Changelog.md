@@ -11,6 +11,11 @@
 - Added missing GameVariables introduced in 1.1.7 to Config parser.
 - Added `objectsInfoEnabled/objects_info_enabled`
 
+#### Python, Java, Lua
+- Dropped support for Python 2.7
+- Dropped support for Java bindings
+- Dropped support for Lua/Torch bindings
+
 
 ## Changes in 1.1.7
 
