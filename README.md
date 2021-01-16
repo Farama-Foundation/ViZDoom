@@ -1,5 +1,4 @@
-# ViZDoom [![PyPI version](https://badge.fury.io/py/vizdoom.svg)](https://badge.fury.io/py/vizdoom) [![Build Status](https://travis-ci.org/mwydmuch/ViZDoom.svg?branch=master)](https://travis-ci.org/mwydmuch/ViZDoom)
-[http://vizdoom.cs.put.edu.pl](http://vizdoom.cs.put.edu.pl)
+# ViZDoom [![PyPI version](https://badge.fury.io/py/vizdoom.svg)](https://badge.fury.io/py/vizdoom) ![Build](https://github.com/mwydmuch/ViZDoom/workflows/Build/badge.svg)
 
 ViZDoom allows developing AI **bots that play Doom using only the visual information** (the screen buffer). It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.
 
@@ -9,7 +8,7 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 
 
 ## Features
-- Multi-platform,
+- Multi-platform (Linux, macOS, Windows),
 - API for Python, C++, Lua, Java and Julia (thanks to [Jun Tian](https://github.com/findmyway)),
 - Easy-to-create custom scenarios (visual editors, scripting language and examples available),
 - Async and sync single-player and multi-player modes,
@@ -60,24 +59,17 @@ or
 
 ### Ubuntu
 ```
-sudo apt install cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar nasm wget
+sudo apt install cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar nasm
 pip install vizdoom
 ```
+(we recommend using at least Ubuntu 18.04+ with Python 3.7+)
 
-### MacOS
-
+### macOS
 ```
-brew install cmake boost sdl2 wget
+brew install cmake boost sdl2
 pip install vizdoom
 ```
-
-
-## Building instructions
-
-- **[PyPI (pip)](doc/Building.md#pypi)**
-- [Linux](doc/Building.md#linux_build)
-- [MacOS](doc/Building.md#macos_build)
-- [Windows](doc/Building.md#windows_build)
+(we recommend using at least macOS High Sierra 10.13+ with Python 3.7+)
 
 
 ## Windows build
@@ -90,6 +82,14 @@ For Windows we are providing compiled runtime binaries and development libraries
 - [Python 3.7 (64-bit)](https://github.com/mwydmuch/ViZDoom/releases/download/1.1.8pre/ViZDoom-1.1.8pre-Win-Python37-x86_64.zip)
 
 See **[Installation of Windows binaries](doc/Building.md#windows_bin)**
+
+
+## Building instructions
+
+- **[PyPI (pip)](doc/Building.md#pypi)**
+- [Linux](doc/Building.md#linux_build)
+- [MacOS](doc/Building.md#macos_build)
+- [Windows](doc/Building.md#windows_build)
 
 
 ## Examples
@@ -126,8 +126,8 @@ Also full documentation of engine and ACS scripting language can be found on
 Useful parts:
 
 - [ZDoom Wiki: ACS (scripting language)](https://zdoom.org/wiki/ACS)
-- [ZDoom Wiki: CVARs (console variables)](https://zdoom.org/wiki/CVARs) 
-- [ZDoom Wiki: CCMD (console commands)](https://zdoom.org/wiki/CCMDs) 
+- [ZDoom Wiki: CVARs (console variables)](https://zdoom.org/wiki/CVARs)
+- [ZDoom Wiki: CCMD (console commands)](https://zdoom.org/wiki/CCMDs)
 
 
 ## Awesome Doom tools
@@ -137,8 +137,8 @@ Useful parts:
 - [OBLIGE](http://oblige.sourceforge.net/) - Doom random map generator and [PyOblige](https://github.com/mwydmuch/PyOblige) is a simple Python wrapper for it.
 - [Omgifol](https://github.com/devinacker/omgifol) - nice Python library for manipulating Doom maps.
 - [NavDoom](https://github.com/agiantwhale/navdoom) - Maze navigation generator for ViZDoom (similar to DeepMind Lab).
-- [MazeExplorer](https://github.com/microsoft/MazeExplorer) - More sophisticated maze navigation generator for ViZDoom. 
-- [ViZDoomGym](https://github.com/shakenes/vizdoomgym) OpenAI Gym Wrapper for ViZDoom. 
+- [MazeExplorer](https://github.com/microsoft/MazeExplorer) - More sophisticated maze navigation generator for ViZDoom.
+- [ViZDoomGym](https://github.com/shakenes/vizdoomgym) OpenAI Gym Wrapper for ViZDoom.
 
 ## Contributions
 

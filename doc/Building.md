@@ -5,7 +5,6 @@
   * [MacOS](#macos_deps)
   * [Windows](#windows_deps)
 * [Installation via PyPI(pip/conda)](#pypi)
-* [Installation via LuaRocks](#luarocks)
 * [Installation of build Windows binaries](#windows_bin)
 * [Building (not recommended)](#build)
   * [Linux](#linux_build)
@@ -24,7 +23,7 @@ Even if you plan to install ViZDoom via PyPI or LuaRocks, you need to install so
 * CMake 3.1+
 * Make
 * GCC 6.0+
-* Boost libraries 1.67.0+
+* Boost libraries 1.65.0+
 * Python 3.5+ with Numpy for Python binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
@@ -44,10 +43,6 @@ sudo apt-get install python3-dev python3-pip
 pip3 install numpy
 # or install Anaconda 3 and add it to PATH
 
-# Lua binding dependencies
-sudo apt-get install liblua5.1-dev
-# Lua shipped with Torch can be used instead, so it isn't needed if installing via LuaRocks
-
 # Julia dependencies
 sudo apt-get install julia
 julia
@@ -59,7 +54,7 @@ julia> Pkg.add("CxxWrap")
 ### <a name="macos_deps"></a> MacOS
 * CMake 3.1+
 * Clang 5.0+
-* Boost libraries 1.67.0+
+* Boost libraries 1.65.0+
 * Python 3.5+ with Numpy for Python binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X) are needed.
@@ -68,7 +63,7 @@ To get dependencies install [homebrew](https://brew.sh/)
 
 ```sh
 # ZDoom dependencies and Boost libraries
-brew install cmake boost sdl2 wget
+brew install cmake boost sdl2
 
 # Python 3 dependencies
 brew install python3
@@ -86,7 +81,7 @@ julia> Pkg.add("CxxWrap")
 ### <a name="windows_deps"></a> Windows
 * CMake 3.1+
 * Visual Studio 2012+
-* Boost 1.67+
+* Boost 1.65+
 * Python 3.5+ with Numpy for Python binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Windows) are needed.
@@ -231,8 +226,7 @@ Compilation output will be placed in `build/bin` and it should contain following
 * `bin/vizdoom.pk3` - resources file used by ViZDoom (needed by ViZDoom executable)
 * `bin/libvizdoom.a / vizdoom.lib` - C++ ViZDoom static library
 * `bin/libvizdoom.so / vizdoom.dll / libvizdoom.dylib` -  C++ ViZDoom dynamically linked library
-* `bin/python2/vizdoom.so / vizdoom.pyd / vizdoom.dylib` - ViZDoom Python 2 module
-* `bin/pythonX.X/vizdoom.so / vizdoom.pyd ` - ViZDoom Python X.X module
+* `bin/pythonX.X/vizdoom.so / vizdoom.pyd / vizdoom.dylib ` - ViZDoom Python X.X module
 * `bin/pythonX.X/pip_package` - complete ViZDoom Python X.X package
 
 
