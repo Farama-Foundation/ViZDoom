@@ -1,0 +1,44 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+env:
+  HOMEBREW_NO_AUTO_UPDATE: 1
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, ubuntu-18.04, macos-11.0, macos-10.15]
+        python-version: [3.7, 3.8, 3.9]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install dependencies on Ubuntu
+      if: runner.os == 'Linux'
+      run: sudo apt install -y cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar nasm
+
+    - name: Install dependencies on MacOS
+      if: runner.os == 'macOS'
+      run: brew install cmake boost sdl2
+
+    - name: Set up Python ${{ matrix.python-version }} environment
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Python environment report
+      run: python -c "import sys; print(sys.version)"
+
+    - name: Pip install
+      run: pip install .
