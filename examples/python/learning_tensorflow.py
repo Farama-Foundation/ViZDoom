@@ -1,193 +1,72 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-from __future__ import division
-from __future__ import print_function
-import itertools as it
-from random import sample, randint, random
-from time import time, sleep
+# -*- coding: utf-8 -*-import operator
+
+# M. Kempka, T.Sternal, M.Wydmuch, Z.Boztoprak
+# Januar 2021
+
 import numpy as np
-import skimage.color, skimage.transform
-import tensorflow as tf
-from tqdm import trange
 import vizdoom as vzd
-from argparse import ArgumentParser
+import itertools as it
+import tensorflow as tf
+import skimage.color, skimage.transform
+
+from tqdm import trange
+from random import sample
+from time import time, sleep
+from collections import deque
+from tensorflow.keras import Model, Sequential, Input, losses, metrics
+from tensorflow.keras.models import load_model
+from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.layers import Conv2D, BatchNormalization, Flatten, Dense, ReLU
+
+tf.compat.v1.enable_eager_execution()
+tf.executing_eagerly()
 
 # Q-learning settings
 learning_rate = 0.00025
-# learning_rate = 0.0001
 discount_factor = 0.99
-epochs = 20
-learning_steps_per_epoch = 2000
 replay_memory_size = 10000
+num_train_epochs = 5
+learning_steps_per_epoch = 2000
+target_net_update_steps = 1000
 
 # NN learning settings
 batch_size = 64
 
-# Training regime
+# Training regime 
 test_episodes_per_epoch = 100
 
 # Other parameters
-frame_repeat = 12
+frames_per_action = 12
 resolution = (30, 45)
-episodes_to_watch = 10
+episodes_to_watch = 20
 
-
-# TODO move to argparser
 save_model = True
-load_model = False
+load = False
 skip_learning = False
+watch = True
 
 # Configuration file path
-DEFAULT_MODEL_SAVEFILE = "/tmp/model"
-DEFAULT_CONFIG = "../../scenarios/simpler_basic.cfg"
+config_file_path = "../../scenarios/simpler_basic.cfg"
+model_savefolder = "./model"
+
+if len(tf.config.experimental.list_physical_devices('GPU')) > 0:
+    print("GPU available")
+    DEVICE = "/gpu:0"
+else:
+    print("No GPU available")
+    DEVICE = "/cpu:0"
 
 
-# config_file_path = "../../scenarios/rocket_basic.cfg"
-# config_file_path = "../../scenarios/basic.cfg"
-
-# Converts and down-samples the input image
 def preprocess(img):
     img = skimage.transform.resize(img, resolution)
     img = img.astype(np.float32)
-    return img
+    img = np.expand_dims(img, axis=-1)
+   
+    return tf.stack(img)
 
 
-class ReplayMemory:
-    def __init__(self, capacity):
-        channels = 1
-        state_shape = (capacity, resolution[0], resolution[1], channels)
-        self.s1 = np.zeros(state_shape, dtype=np.float32)
-        self.s2 = np.zeros(state_shape, dtype=np.float32)
-        self.a = np.zeros(capacity, dtype=np.int32)
-        self.r = np.zeros(capacity, dtype=np.float32)
-        self.isterminal = np.zeros(capacity, dtype=np.float32)
-
-        self.capacity = capacity
-        self.size = 0
-        self.pos = 0
-
-    def add_transition(self, s1, action, s2, isterminal, reward):
-        self.s1[self.pos, :, :, 0] = s1
-        self.a[self.pos] = action
-        if not isterminal:
-            self.s2[self.pos, :, :, 0] = s2
-        self.isterminal[self.pos] = isterminal
-        self.r[self.pos] = reward
-
-        self.pos = (self.pos + 1) % self.capacity
-        self.size = min(self.size + 1, self.capacity)
-
-    def get_sample(self, sample_size):
-        i = sample(range(0, self.size), sample_size)
-        return self.s1[i], self.a[i], self.s2[i], self.isterminal[i], self.r[i]
-
-
-def create_network(session, available_actions_count):
-    # Create the input variables
-    s1_ = tf.placeholder(tf.float32, [None] + list(resolution) + [1], name="State")
-    a_ = tf.placeholder(tf.int32, [None], name="Action")
-    target_q_ = tf.placeholder(tf.float32, [None, available_actions_count], name="TargetQ")
-
-    # Add 2 convolutional layers with ReLu activation
-    conv1 = tf.contrib.layers.convolution2d(s1_, num_outputs=8, kernel_size=[6, 6], stride=[3, 3],
-                                            activation_fn=tf.nn.relu,
-                                            weights_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-                                            biases_initializer=tf.constant_initializer(0.1))
-    conv2 = tf.contrib.layers.convolution2d(conv1, num_outputs=8, kernel_size=[3, 3], stride=[2, 2],
-                                            activation_fn=tf.nn.relu,
-                                            weights_initializer=tf.contrib.layers.xavier_initializer_conv2d(),
-                                            biases_initializer=tf.constant_initializer(0.1))
-    conv2_flat = tf.contrib.layers.flatten(conv2)
-    fc1 = tf.contrib.layers.fully_connected(conv2_flat, num_outputs=128, activation_fn=tf.nn.relu,
-                                            weights_initializer=tf.contrib.layers.xavier_initializer(),
-                                            biases_initializer=tf.constant_initializer(0.1))
-
-    q = tf.contrib.layers.fully_connected(fc1, num_outputs=available_actions_count, activation_fn=None,
-                                          weights_initializer=tf.contrib.layers.xavier_initializer(),
-                                          biases_initializer=tf.constant_initializer(0.1))
-    best_a = tf.argmax(q, 1)
-
-    loss = tf.losses.mean_squared_error(q, target_q_)
-
-    optimizer = tf.train.RMSPropOptimizer(learning_rate)
-    # Update the parameters according to the computed gradient using RMSProp.
-    train_step = optimizer.minimize(loss)
-
-    def function_learn(s1, target_q):
-        feed_dict = {s1_: s1, target_q_: target_q}
-        l, _ = session.run([loss, train_step], feed_dict=feed_dict)
-        return l
-
-    def function_get_q_values(state):
-        return session.run(q, feed_dict={s1_: state})
-
-    def function_get_best_action(state):
-        return session.run(best_a, feed_dict={s1_: state})
-
-    def function_simple_get_best_action(state):
-        return function_get_best_action(state.reshape([1, resolution[0], resolution[1], 1]))[0]
-
-    return function_learn, function_get_q_values, function_simple_get_best_action
-
-
-def learn_from_memory():
-    """ Learns from a single transition (making use of replay memory).
-    s2 is ignored if s2_isterminal """
-
-    # Get a random minibatch from the replay memory and learns from it.
-    if memory.size > batch_size:
-        s1, a, s2, isterminal, r = memory.get_sample(batch_size)
-
-        q2 = np.max(get_q_values(s2), axis=1)
-        target_q = get_q_values(s1)
-        # target differs from q only for the selected action. The following means:
-        # target_Q(s,a) = r + gamma * max Q(s2,_) if not isterminal else r
-        target_q[np.arange(target_q.shape[0]), a] = r + discount_factor * (1 - isterminal) * q2
-        learn(s1, target_q)
-
-
-def perform_learning_step(epoch):
-    """ Makes an action according to eps-greedy policy, observes the result
-    (next state, reward) and learns from the transition"""
-
-    def exploration_rate(epoch):
-        """# Define exploration rate change over time"""
-        start_eps = 1.0
-        end_eps = 0.1
-        const_eps_epochs = 0.1 * epochs  # 10% of learning time
-        eps_decay_epochs = 0.6 * epochs  # 60% of learning time
-
-        if epoch < const_eps_epochs:
-            return start_eps
-        elif epoch < eps_decay_epochs:
-            # Linear decay
-            return start_eps - (epoch - const_eps_epochs) / \
-                               (eps_decay_epochs - const_eps_epochs) * (start_eps - end_eps)
-        else:
-            return end_eps
-
-    s1 = preprocess(game.get_state().screen_buffer)
-
-    # With probability eps make a random action.
-    eps = exploration_rate(epoch)
-    if random() <= eps:
-        a = randint(0, len(actions) - 1)
-    else:
-        # Choose the best action according to the network.
-        a = get_best_action(s1)
-    reward = game.make_action(actions[a], frame_repeat)
-
-    isterminal = game.is_episode_finished()
-    s2 = preprocess(game.get_state().screen_buffer) if not isterminal else None
-
-    # Remember the transition that was just experienced.
-    memory.add_transition(s1, a, s2, isterminal, reward)
-
-    learn_from_memory()
-
-
-# Creates and initializes ViZDoom environment.
-def initialize_vizdoom(config_file_path):
+def initialize_game():
     print("Initializing doom...")
     game = vzd.DoomGame()
     game.load_config(config_file_path)
@@ -197,109 +76,233 @@ def initialize_vizdoom(config_file_path):
     game.set_screen_resolution(vzd.ScreenResolution.RES_640X480)
     game.init()
     print("Doom initialized.")
+
     return game
 
 
-if __name__ == '__main__':
-    parser = ArgumentParser("ViZDoom example showing how to train a simple agent using simplified DQN.")
-    parser.add_argument(dest="config",
-                        default=DEFAULT_CONFIG,
-                        nargs="?",
-                        help="Path to the configuration file of the scenario."
-                             " Please see "
-                             "../../scenarios/*cfg for more scenarios.")
+class DQNAgent:
+    def __init__(self, num_actions=8, epsilon=1, epsilon_min=0.1, epsilon_decay=0.9995, load=load):
+        self.epsilon = epsilon
+        self.epsilon_min = epsilon_min
+        self.epsilon_decay = epsilon_decay
+        self.discount_factor = discount_factor
+        self.num_actions = num_actions
+        self.optimizer = SGD(learning_rate)
 
-    args = parser.parse_args()
+        if load:
+            print("Loading model from: ", model_savefolder) 
+            self.dqn = tf.keras.models.load_model(model_savefolder)
+        else:
+            self.dqn = DQN(self.num_actions)
+            self.target_net = DQN(self.num_actions)
 
-    # Create Doom instance
-    game = initialize_vizdoom(args.config)
+    def update_target_net(self):
+        self.target_net.set_weights(self.dqn.get_weights())
+ 
+    def choose_action(self, state):
+        if self.epsilon < np.random.uniform(0,1):
+            action = int(tf.argmax(self.dqn(tf.reshape(state, (1,30,45,1))), axis=1))
+        else:
+            action = np.random.choice(range(self.num_actions), 1)[0]
 
-    # Action = which buttons are pressed
-    n = game.get_available_buttons_size()
-    actions = [list(a) for a in it.product([0, 1], repeat=n)]
+        return action
 
-    # Create replay memory which will store the transitions
-    memory = ReplayMemory(capacity=replay_memory_size)
+    def train_dqn(self, samples):
+        screen_buf, actions, rewards, next_screen_buf, dones = split_tuple(samples)
 
-    session = tf.Session()
-    learn, get_q_values, get_best_action = create_network(session, len(actions))
-    saver = tf.train.Saver()
-    if load_model:
-        print("Loading model from: ", DEFAULT_MODEL_SAVEFILE)
-        saver.restore(session, DEFAULT_MODEL_SAVEFILE)
+        row_ids = list(range(screen_buf.shape[0]))
+
+        ids = extractDigits(row_ids, actions)
+        done_ids = extractDigits(np.where(dones)[0])
+
+        with tf.GradientTape() as tape:
+            tape.watch(self.dqn.trainable_variables)
+
+            Q_prev = tf.gather_nd(self.dqn(screen_buf), ids)
+            
+            Q_next = self.target_net(next_screen_buf)
+            Q_next = tf.gather_nd(Q_next, extractDigits(row_ids, tf.argmax(agent.dqn(next_screen_buf), axis=1)))
+            
+            q_target = rewards + self.discount_factor * Q_next
+
+            if len(done_ids)>0:
+                done_rewards = tf.gather_nd(rewards, done_ids)
+                q_target = tf.tensor_scatter_nd_update(tensor=q_target, indices=done_ids, updates=done_rewards)
+
+            td_error = tf.keras.losses.MSE(q_target, Q_prev)
+
+        gradients = tape.gradient(td_error, self.dqn.trainable_variables)
+        self.optimizer.apply_gradients(zip(gradients, self.dqn.trainable_variables))
+
+        if self.epsilon > self.epsilon_min:
+            self.epsilon *= self.epsilon_decay
+        else:
+            self.epsilon = self.epsilon_min
+
+   
+ 
+def split_tuple(samples):
+    samples = np.array(samples, dtype=object)
+    screen_buf = tf.stack(samples[:,0])
+    actions = samples[:,1]
+    rewards = tf.stack(samples[:,2])
+    next_screen_buf = tf.stack(samples[:,3])
+    dones = tf.stack(samples[:,4])  
+    return screen_buf, actions, rewards, next_screen_buf, dones 
+
+
+def extractDigits(*argv):
+    if len(argv)==1:
+        return list(map(lambda x: [x], argv[0]))
+
+    return list(map(lambda x,y: [x,y], argv[0], argv[1]))
+
+
+def get_samples(memory):
+    if len(memory) < batch_size:
+        sample_size = len(memory)
     else:
-        init = tf.global_variables_initializer()
-        session.run(init)
-    print("Starting the training!")
+        sample_size = batch_size
 
+    return sample(memory, sample_size)
+
+
+def run(agent, game, replay_memory):
     time_start = time()
-    if not skip_learning:
-        for epoch in range(epochs):
-            print("\nEpoch %d\n-------" % (epoch + 1))
-            train_episodes_finished = 0
-            train_scores = []
 
-            print("Training...")
-            game.new_episode()
-            for learning_step in trange(learning_steps_per_epoch, leave=False):
-                perform_learning_step(epoch)
-                if game.is_episode_finished():
-                    score = game.get_total_reward()
-                    train_scores.append(score)
-                    game.new_episode()
-                    train_episodes_finished += 1
+    for episode in range(num_train_epochs):
+        train_scores = []
+        print("\nEpoch %d\n-------" % (episode + 1))
 
-            print("%d training episodes played." % train_episodes_finished)
+        game.new_episode()
 
-            train_scores = np.array(train_scores)
+        for i in trange(learning_steps_per_epoch, leave=False):
+            state = game.get_state()
+            screen_buf = preprocess(state.screen_buffer)
+            action = agent.choose_action(screen_buf)
+            reward = game.make_action(actions[action], frames_per_action)
+            done = game.is_episode_finished()
 
-            print("Results: mean: %.1f±%.1f," % (train_scores.mean(), train_scores.std()), \
+            if not done:
+                next_screen_buf = preprocess(game.get_state().screen_buffer)
+            else:
+                next_screen_buf = tf.zeros(shape=screen_buf.shape)
+
+            if done:
+                train_scores.append(game.get_total_reward())
+
+                game.new_episode()
+
+            replay_memory.append((screen_buf, action, reward, next_screen_buf, done))
+
+            if i >= batch_size:
+                agent.train_dqn(get_samples(replay_memory))
+       
+            if ((i % target_net_update_steps) == 0):
+                agent.update_target_net()
+
+        train_scores = np.array(train_scores)
+        print("Results: mean: %.1f±%.1f," % (train_scores.mean(), train_scores.std()), \
                   "min: %.1f," % train_scores.min(), "max: %.1f," % train_scores.max())
 
-            print("\nTesting...")
-            test_episode = []
-            test_scores = []
-            for test_episode in trange(test_episodes_per_epoch, leave=False):
-                game.new_episode()
-                while not game.is_episode_finished():
-                    state = preprocess(game.get_state().screen_buffer)
-                    best_action_index = get_best_action(state)
+        test(test_episodes_per_epoch, game, agent)
+        print("Total elapsed time: %.2f minutes" % ((time() - time_start) / 60.0))
 
-                    game.make_action(actions[best_action_index], frame_repeat)
-                r = game.get_total_reward()
-                test_scores.append(r)
 
-            test_scores = np.array(test_scores)
-            print("Results: mean: %.1f±%.1f," % (
-                test_scores.mean(), test_scores.std()), "min: %.1f" % test_scores.min(),
-                  "max: %.1f" % test_scores.max())
+def test(test_episodes_per_epoch, game, agent):
+    test_scores = []
 
-            print("Saving the network weigths to:", DEFAULT_MODEL_SAVEFILE)
-            saver.save(session, DEFAULT_MODEL_SAVEFILE)
-
-            print("Total elapsed time: %.2f minutes" % ((time() - time_start) / 60.0))
-
-    game.close()
-    print("======================================")
-    print("Training finished. It's time to watch!")
-
-    # Reinitialize the game with window visible
-    game.set_window_visible(True)
-    game.set_mode(vzd.Mode.ASYNC_PLAYER)
-    game.init()
-
-    for _ in range(episodes_to_watch):
+    print("\nTesting...")
+    for test_episode in trange(test_episodes_per_epoch, leave=False):
         game.new_episode()
         while not game.is_episode_finished():
             state = preprocess(game.get_state().screen_buffer)
-            best_action_index = get_best_action(state)
+            best_action_index = agent.choose_action(state)
+            game.make_action(actions[best_action_index], frames_per_action)
 
-            # Instead of make_action(a, frame_repeat) in order to make the animation smooth
-            game.set_action(actions[best_action_index])
-            for _ in range(frame_repeat):
-                game.advance_action()
+        r = game.get_total_reward()
+        test_scores.append(r)
 
-        # Sleep between episodes
-        sleep(1.0)
-        score = game.get_total_reward()
-        print("Total score: ", score)
+    test_scores = np.array(test_scores)
+    print("Results: mean: %.1f±%.1f," % (
+        test_scores.mean(), test_scores.std()), "min: %.1f" % test_scores.min(),
+          "max: %.1f" % test_scores.max())
+
+
+class DQN(Model):
+    def __init__(self, num_actions):
+        super(DQN,self).__init__()
+        self.conv1 = Sequential([
+                                Conv2D(8, kernel_size=6, strides=3, input_shape=(30,45,1)),
+                                BatchNormalization(),
+                                ReLU()
+                                ])
+
+        self.conv2 = Sequential([
+                                Conv2D(8, kernel_size=3, strides=2, input_shape=(9, 14, 8)),
+                                BatchNormalization(),
+                                ReLU()
+                                ])
+        
+        self.flatten = Flatten()
+       
+        self.state_value = Dense(1) 
+        self.advantage = Dense(num_actions)
+
+    def call(self, x):
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = self.flatten(x)
+        x1 = x[:, :96]
+        x2 = x[:, 96:]
+        x1 = self.state_value(x1)
+        x2 = self.advantage(x2) 
+        
+        x = x1 + (x2 - tf.reshape(tf.math.reduce_mean(x2, axis=1), shape=(-1,1)))
+        return x
+
+
+if __name__ == '__main__':
+    agent = DQNAgent()
+    game = initialize_game()
+    replay_memory = deque(maxlen=replay_memory_size)
+
+    n = game.get_available_buttons_size()
+    actions = [list(a) for a in it.product([0, 1], repeat=n)]
+    
+    with tf.device(DEVICE):
+
+        if not skip_learning:
+            print("Starting the training!")
+
+            run(agent, game, replay_memory)
+
+            game.close()
+            print("======================================")
+            print("Training is finished.")
+
+            if save_model:
+                agent.dqn.save(model_savefolder)
+
+        game.close()
+
+        if watch:
+            game.set_window_visible(True)
+            game.set_mode(vzd.Mode.ASYNC_PLAYER)
+            game.init()
+
+            for _ in range(episodes_to_watch):
+                game.new_episode()
+                while not game.is_episode_finished():
+                    state = preprocess(game.get_state().screen_buffer)
+                    best_action_index = agent.choose_action(state)
+
+                    # Instead of make_action(a, frame_repeat) in order to make the animation smooth
+                    game.set_action(actions[best_action_index])
+                    for _ in range(frames_per_action):
+                        game.advance_action()
+
+                # Sleep between episodes
+                sleep(1.0)
+                score = game.get_total_reward()
+                print("Total score: ", score)
