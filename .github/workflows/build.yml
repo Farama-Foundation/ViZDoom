@@ -26,7 +26,9 @@ jobs:
 
     - name: Install dependencies on Ubuntu
       if: runner.os == 'Linux'
-      run: sudo apt install -y cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar nasm
+      run: |
+           sudo apt update
+           sudo apt install -y cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar nasm
 
     - name: Install dependencies on MacOS
       if: runner.os == 'macOS'
