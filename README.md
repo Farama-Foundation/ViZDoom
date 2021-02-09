@@ -130,7 +130,7 @@ Useful parts:
 - [ZDoom Wiki: CCMD (console commands)](https://zdoom.org/wiki/CCMDs)
 
 
-## Awesome Doom tools
+## Awesome Doom tools/projects
 
 - [SLADE3](http://slade.mancubus.net/) - great Doom map (scenario) editor for Linux, MacOS and Windows.
 - [Doom Builder 2](http://www.doombuilder.com/) - another great Doom map editor for Windows.
@@ -138,7 +138,8 @@ Useful parts:
 - [Omgifol](https://github.com/devinacker/omgifol) - nice Python library for manipulating Doom maps.
 - [NavDoom](https://github.com/agiantwhale/navdoom) - Maze navigation generator for ViZDoom (similar to DeepMind Lab).
 - [MazeExplorer](https://github.com/microsoft/MazeExplorer) - More sophisticated maze navigation generator for ViZDoom.
-- [ViZDoomGym](https://github.com/shakenes/vizdoomgym) OpenAI Gym Wrapper for ViZDoom.
+- [ViZDoomGym](https://github.com/shakenes/vizdoomgym) - OpenAI Gym Wrapper for ViZDoom.
+- [Sample Factory](https://github.com/alex-petrenko/sample-factory) - A high performance reinforcement learning framework for ViZDoom.
 
 ## Contributions
 
