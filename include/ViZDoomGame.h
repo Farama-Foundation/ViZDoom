@@ -48,6 +48,7 @@ namespace vizdoom {
         bool init();
         void close();
         void newEpisode(std::string filePath = "");
+        //void newEpisode(std::string recordingFilePath = "", std::string saveFilePath = ""); // TODO: save support for newEpisode
         void replayEpisode(std::string filePath, unsigned int player = 0);
         bool isRunning();
         bool isMultiplayerGame();
@@ -69,9 +70,8 @@ namespace vizdoom {
 
         ServerStatePtr getServerState();
 
-        void saveState(std::string filePath);
-        void loadState(std::string filePath);
-
+        void save(std::string filePath);
+        void load(std::string filePath);
 
         /* Buttons settings */
         /*------------------------------------------------------------------------------------------------------------*/

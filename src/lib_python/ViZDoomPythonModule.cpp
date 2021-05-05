@@ -472,8 +472,8 @@ PYBIND11_MODULE(vizdoom, vz){
         .def("advance_action", &DoomGamePython::advanceAction_)
         .def("advance_action", &DoomGamePython::advanceAction_int)
         .def("advance_action", &DoomGamePython::advanceAction_int_bool)
-        //.def("save_state", &DoomGamePython::saveState)
-        //.def("load_state", &DoomGamePython::loadState)
+        .def("save", &DoomGamePython::save)
+        .def("load", &DoomGamePython::load)
 
         .def("get_state", &DoomGamePython::getState, return_value_policy::take_ownership)
         .def("get_server_state", &DoomGamePython::getServerState, return_value_policy::take_ownership)

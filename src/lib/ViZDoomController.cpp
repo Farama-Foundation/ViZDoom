@@ -481,19 +481,14 @@ namespace vizdoom {
     void DoomController::saveGame(std::string filePath){
         if (this->doomRunning && !this->mapChanging) {
             this->sendCommand(std::string("save ") + filePath);
-            //this->MQDoom->send(MSG_CODE_SAVE);
+            this->tics(2, false); // Saving takes 2 tics
         }
     }
 
     void DoomController::loadGame(std::string filePath){
         if (this->doomRunning && !this->mapChanging) {
             this->sendCommand(std::string("load ") + filePath);
-
-            //this->MQDoom->send(MSG_CODE_LOAD);
-            this->MQDoom->send(MSG_CODE_UPDATE);
-            this->waitForDoomWork();
-
-            this->mapLastTic = this->gameState->MAP_TIC;
+            this->tic(true); // Loading takes 1 tic and needs update
         }
     }
 

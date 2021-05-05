@@ -131,9 +131,7 @@ namespace vizdoom {
 
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
 
-        if (filePath.length()) this->doomController->restartMap(filePath);
-        else this->doomController->restartMap();
-
+        this->doomController->restartMap(filePath);
         this->resetState();
     }
 
@@ -161,8 +159,10 @@ namespace vizdoom {
     }
 
     void DoomGame::advanceAction(unsigned int tics, bool updateState) {
+
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         // TODO maybe set lastReward to 0 if finished?
+
         if (this->doomController->isTicPossible()) {
             try {
                 this->doomController->tics(tics, updateState);
@@ -624,12 +624,14 @@ namespace vizdoom {
         return configLoader.load(filePath);
     }
 
-    void DoomGame::saveState(std::string filePath){
+    void DoomGame::save(std::string filePath){
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         this->doomController->saveGame(filePath);
     }
 
-    void DoomGame::loadState(std::string filePath){
+    void DoomGame::load(std::string filePath){
         this->doomController->loadGame(filePath);
+        updateState();
     }
 }
 
