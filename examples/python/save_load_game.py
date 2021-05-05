@@ -59,8 +59,11 @@ if __name__ == "__main__":
 
     print("Starting second episode from saved game...")
     # It's not necessary, but we recommend calling new_episode before load.
+    # Loading the game state does not reset the current episode state,
+    # tic counter/time and total reward state keep their values.
     game.new_episode()
     game.load("save.png")
+    # A new state is available after loading.
     state = game.get_state()
 
     print("\nGame loaded!")

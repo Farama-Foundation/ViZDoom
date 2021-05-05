@@ -21,6 +21,8 @@
 * [getServerState](#getServerState)
 * [getLastAction](#getLastAction)
 * [getEpisodeTime](#getEpisodeTime)
+* [save](#save)
+* [load](#load)
 
 ## [Buttons settings methods](#buttons)
 * [getAvailableButtons](#getAvailableButtons)
@@ -368,6 +370,33 @@ Most useful in `SPECTATOR` mode.
 | Python | `int get_episode_time()`        |
 
 Returns number of current episode tic.
+
+
+---
+### <a name="save"></a> `save`
+
+| C++    | `void save(std::string filePath)` |
+| :--    | :--                               |
+| Python | `void save(str filePath)`         |
+
+Added in 1.1.9
+
+Saves current game state to the file.
+
+
+---
+### <a name="load"></a> `load`
+
+| C++    | `void load(std::string filePath)` |
+| :--    | :--                               |
+| Python | `void load(str filePath)`         |
+
+Added in 1.1.9
+
+Loads game state from the file.
+A new state is available after loading.
+Loading the game state does not reset the current episode state,
+tic counter/time and total reward state keep their values.
 
 
 ## <a name="buttons"></a> Buttons settings methods
