@@ -22,7 +22,7 @@ set(FREEDOOM_VERSION "0.12.1" CACHE STRING "Freedoom version to use")
 # CMake options
 #-----------------------------------------------------------------------------------------------------------------------
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_LINK)
 if (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)

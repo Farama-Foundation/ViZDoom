@@ -97,15 +97,13 @@ if( WIN32 )
 	set( FMOD_SEARCH_PATHS
 		"C:/Program Files/FMOD SoundSystem/FMOD Programmers API ${WIN_TYPE}/api"
 		"C:/Program Files (x86)/FMOD SoundSystem/FMOD Programmers API ${WIN_TYPE}/api"
-		# This next one is for Randy.
-		"E:/Software/Dev/FMOD/${WIN_TYPE}/api" 
-		# .. and this one for Graf Zahl
-		"D:/portable/FMOD SoundSystem 4.26/FMOD Programmers API WIN32/api"
 		)
 	set( FMOD_INC_PATH_SUFFIXES PATH_SUFFIXES inc )
 	set( FMOD_LIB_PATH_SUFFIXES PATH_SUFFIXES lib )
 	set( NASM_NAMES nasmw nasm )
-	
+
+	message( "Could not find xinput.h. XInput will be disabled." )
+
 	find_path( D3D_INCLUDE_DIR d3d9.h
 		PATHS ENV DXSDK_DIR
 		PATH_SUFFIXES Include )
