@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
 #####################################################################
-# This script presents how to use the environment with PyOblige.
+# This script demonstrates how to use the environment with PyOblige.
 # https://github.com/mwydmuch/PyOblige
 #####################################################################
 
-from __future__ import print_function
 from time import sleep
 import os
 

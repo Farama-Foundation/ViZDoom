@@ -11,9 +11,7 @@
 # Game variables from state and last reward are printed.
 #
 # To see the scenario description go to "../../scenarios/README.md"
-#
 #####################################################################
-from __future__ import print_function
 
 import itertools as it
 from random import choice

@@ -5,7 +5,6 @@
 # that can be hosted using cig_multiplayer_host.py script.
 #####################################################################
 
-from __future__ import print_function
 from vizdoom import *
 from random import choice
 import sys

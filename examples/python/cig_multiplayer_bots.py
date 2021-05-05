@@ -4,7 +4,6 @@
 # This script presents how to play a deathmatch game with build-in bots.
 #####################################################################
 
-from __future__ import print_function
 from random import choice
 from vizdoom import *
 

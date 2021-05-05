@@ -4,8 +4,6 @@
 # E. Culurciello
 # August 2017
 
-from __future__ import division
-from __future__ import print_function
 from vizdoom import *
 import itertools as it
 from random import sample, randint, random

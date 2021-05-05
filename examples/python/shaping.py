@@ -11,9 +11,7 @@
 # <episodes> number of episodes are played.
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
-#
 #####################################################################
-from __future__ import print_function
 
 import itertools as it
 from random import choice

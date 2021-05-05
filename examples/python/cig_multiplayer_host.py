@@ -4,7 +4,6 @@
 # This script presents how to host a deathmatch game.
 #####################################################################
 
-from __future__ import print_function
 from vizdoom import *
 from random import choice
 

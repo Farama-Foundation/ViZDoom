@@ -11,8 +11,6 @@
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
-from __future__ import print_function
-
 from random import choice
 import vizdoom as vzd
 from argparse import ArgumentParser

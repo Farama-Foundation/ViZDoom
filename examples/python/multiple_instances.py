@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-from __future__ import print_function
-
 from random import choice
 from vizdoom import *
 # For multiplayer game use process (ZDoom's multiplayer sync mechanism prevents threads to work as expected).

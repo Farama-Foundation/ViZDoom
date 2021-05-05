@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from __future__ import print_function
 from multiprocessing import Process
 from random import choice
 import vizdoom as vzd

@@ -1,6 +1,4 @@
-#!/usr/bin/python3
-
-from __future__ import print_function
+#!/usr/bin/env python3
 
 from time import sleep
 import vizdoom as vzd

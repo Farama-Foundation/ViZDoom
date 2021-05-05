@@ -8,8 +8,6 @@
 # WARNING:
 # Due to the bug in build-in bots recording game with bots will result in the desynchronization of the recording.
 
-
-from __future__ import print_function
 from vizdoom import *
 from random import choice
 import os

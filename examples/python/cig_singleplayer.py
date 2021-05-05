@@ -5,7 +5,6 @@
 # that can be hosted using ci_singleplayer_host.py script.
 #####################################################################
 
-from __future__ import print_function
 from random import choice
 from time import sleep
 import os

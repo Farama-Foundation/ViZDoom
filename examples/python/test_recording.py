@@ -4,8 +4,6 @@
 # This script test recording functionality
 #####################################################################
 
-
-from __future__ import print_function
 import vizdoom as vzd
 from random import random
 from time import sleep

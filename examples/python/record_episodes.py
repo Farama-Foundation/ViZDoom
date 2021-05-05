@@ -5,8 +5,6 @@
 # replay episodes with perfect accuracy.
 #####################################################################
 
-from __future__ import print_function
-
 import os
 from random import choice
 from vizdoom import *

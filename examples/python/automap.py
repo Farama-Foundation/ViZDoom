@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-from __future__ import print_function
-
 from random import choice
 import vizdoom as vzd
 from argparse import ArgumentParser

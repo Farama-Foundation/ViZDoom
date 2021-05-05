@@ -6,7 +6,6 @@
 # https://github.com/mwydmuch/PyOblige
 #####################################################################
 
-from __future__ import print_function
 from random import choice
 from time import sleep
 

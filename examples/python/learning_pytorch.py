@@ -4,7 +4,6 @@
 # E. Culurciello, L. Mueller, Z. Boztoprak
 # December 2020
 
-from __future__ import print_function
 import vizdoom as vzd
 import torch
 import torch.nn as nn
