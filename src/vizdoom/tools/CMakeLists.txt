@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 2.4 )
+cmake_minimum_required(VERSION 3.4)
 
 add_subdirectory( lemon )
 add_subdirectory( re2c )

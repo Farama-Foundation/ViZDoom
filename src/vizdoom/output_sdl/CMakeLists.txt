@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 2.4 )
+cmake_minimum_required(VERSION 3.4)
 if( NOT NO_FMOD AND FMOD_INCLUDE_DIR )
 	add_library( output_sdl MODULE output_sdl.c )
 	include_directories( ${FMOD_INCLUDE_DIR} ${SDL2_INCLUDE_DIR} )

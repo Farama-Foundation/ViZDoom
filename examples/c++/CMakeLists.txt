@@ -1,11 +1,11 @@
-cmake_minimum_required( VERSION 2.4 )
+cmake_minimum_required(VERSION 3.4)
 project(ViZDoomC++Examples)
 
 if(COMMAND cmake_policy)
 	cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_STANDARD 17)
 
 add_library(libvizdoom SHARED IMPORTED GLOBAL)
 if (WIN32)

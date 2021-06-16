@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.4)
 
 # Project + versions
 #-----------------------------------------------------------------------------------------------------------------------
@@ -15,7 +15,7 @@ option(BUILD_PYTHON3 "Build ViZDoom Python 3 binding." OFF)
 option(BUILD_PYTHON "Build ViZDoom Python (3 by default) binding." OFF)
 option(BUILD_PYTHON2 "Build ViZDoom Python2 binding instead of default Python3." OFF)
 option(BUILD_JULIA "Build ViZDoom Julia binding." OFF)
-set(PYBIND11_VERSION "v2.6.0" CACHE STRING "Pybind11 version to use")
+set(PYBIND11_VERSION "v2.6.2" CACHE STRING "Pybind11 version to use")
 set(FREEDOOM_VERSION "0.12.1" CACHE STRING "Freedoom version to use")
 
 

@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 2.4 )
+cmake_minimum_required(VERSION 3.4)
 
 if( WIN32 )
 	if( ZD_CMAKE_COMPILER_IS_GNUC_COMPATIBLE OR ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
