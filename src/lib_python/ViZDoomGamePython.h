@@ -83,6 +83,7 @@ namespace vizdoom {
         pyb::object depthBuffer;
         pyb::object labelsBuffer;
         pyb::object automapBuffer;
+        pyb::object audioBuffer;
 
         pyb::list labels;
         pyb::list objects;
@@ -146,6 +147,7 @@ namespace vizdoom {
 
         npy_intp colorShape[3];
         npy_intp grayShape[2];
+        npy_intp audioShape[2];
 
         void updateBuffersShapes();
 

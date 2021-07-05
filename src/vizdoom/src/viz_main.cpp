@@ -26,6 +26,7 @@
 #include "viz_game.h"
 #include "viz_screen.h"
 #include "viz_message_queue.h"
+#include "viz_sound.h"
 
 #include "d_main.h"
 #include "g_game.h"
@@ -107,6 +108,10 @@ CVAR (Int, viz_respawn_delay, 1, CVAR_DEMOSAVE | CVAR_SERVERINFO)
 CVAR (Bool, viz_spectator, false, CVAR_DEMOSAVE | CVAR_USERINFO) // players[playernum].userinfo.GetSpectator()
 CVAR (Int, viz_afk_timeout, 60, CVAR_DEMOSAVE | CVAR_SERVERINFO) // In seconds
 CVAR (Int, viz_connect_timeout, 60, CVAR_NOSET) // In seconds
+
+// sound related
+CVAR (Int, samp_fre, 44100, 0)
+CVAR (Bool, soft_sound, 0, 0)
 
 CCMD(viz_set_seed){
     viz_seed.CmdSet(argv[1]);
@@ -229,6 +234,11 @@ void VIZ_Tic(){
             if(vizUpdate) {
                 VIZ_Update();
             }
+
+            // Sound buffer will always be updated irrespective of update signal
+            if (*soft_sound)
+                VIZ_CopySoundBuffer();
+
             VIZ_MQSend(VIZ_MSG_CODE_DOOM_DONE);
             vizNextTic = false;
         }

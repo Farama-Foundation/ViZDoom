@@ -167,6 +167,7 @@ namespace vizdoom {
                 this->gameState = this->SM->getGameState();
                 this->input = this->SM->getInputState();
                 this->screenBuffer = this->SM->getScreenBuffer();
+                this->audioBuffer = this->SM->getAudioBuffer();
                 this->depthBuffer = this->SM->getDepthBuffer();
                 this->labelsBuffer = this->SM->getLabelsBuffer();
                 this->automapBuffer = this->SM->getAutomapBuffer();
@@ -594,6 +595,14 @@ namespace vizdoom {
         if (!this->doomRunning) this->noSound = sound;
     }
 
+//    void DoomController::setEnableSoundObservations(bool sound) {
+//        if (!this->doomRunning) this->enableSoundObservations = sound;
+//    }
+
+    bool DoomController::getNoSound() const {
+        return this->noSound;
+    }
+
     void DoomController::setScreenResolution(unsigned int width, unsigned int height) {
         if (!this->doomRunning) {
             this->screenWidth = width;
@@ -816,6 +825,10 @@ namespace vizdoom {
         else return this->screenHeight;
     }
 
+    int DoomController::getAudioSamplesPerTic() {
+        return this->audioSamplesPerTic;
+    }
+
     unsigned int DoomController::getScreenChannels() { return this->screenChannels; }
 
     unsigned int DoomController::getScreenDepth() { return this->screenDepth; }
@@ -863,6 +876,8 @@ namespace vizdoom {
     /*----------------------------------------------------------------------------------------------------------------*/
 
     uint8_t *const DoomController::getScreenBuffer() { return this->screenBuffer; }
+
+    uint16_t *const DoomController::getAudioBuffer() { return this->audioBuffer; }
 
     uint8_t *const DoomController::getDepthBuffer() { return this->depthBuffer; }
 
@@ -1394,6 +1409,9 @@ namespace vizdoom {
             this->doomArgs.push_back(b::lexical_cast<std::string>(this->ticrate));
         }
 
+        this->addCustomArg("+samp_fre " + std::to_string(this->sampling_fre));
+
+
         //custom args
         for (int i = 0; i < this->customArgs.size(); ++i) {
             this->doomArgs.push_back(customArgs[i]);
@@ -1412,5 +1430,22 @@ namespace vizdoom {
             this->MQController->send(MSG_CODE_DOOM_ERROR, "Unexpected ViZDoom instance crash.");
         }
         this->MQController->send(MSG_CODE_DOOM_PROCESS_EXIT);
+    }
+
+    void DoomController::setSoundSamplingFreq(int freq) {
+        this->sampling_fre = freq;
+        this->audioSamplesPerTic = this->sampling_fre / int(DEFAULT_TICRATE);
+    }
+
+    int DoomController::getSoundSamplingFreq() const {
+        return this->sampling_fre;
+    }
+
+    void DoomController::setSoundObservationNumFrames(int numFrames) {
+        this->soundObservationNumFrames = numFrames;
+    }
+
+    int DoomController::getSoundObservationNumFrames() const {
+        return this->soundObservationNumFrames;
     }
 }

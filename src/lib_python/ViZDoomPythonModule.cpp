@@ -370,6 +370,11 @@ PYBIND11_MODULE(vizdoom, vz){
         ENUM_VAL_2_PYT(PLAYER16_FRAGCOUNT)
         .export_values();
 
+    enum_<SamplingRate>(vz, "SamplingRate")
+        ENUM_VAL_2_PYT(SR_11025)
+        ENUM_VAL_2_PYT(SR_22050)
+        ENUM_VAL_2_PYT(SR_44100)
+        .export_values();
 
     /* Structs */
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -427,6 +432,7 @@ PYBIND11_MODULE(vizdoom, vz){
         .def_readonly("game_variables", &GameStatePython::gameVariables)
 
         .def_readonly("screen_buffer", &GameStatePython::screenBuffer)
+        .def_readonly("audio_buffer", &GameStatePython::audioBuffer)
         .def_readonly("depth_buffer", &GameStatePython::depthBuffer)
         .def_readonly("labels_buffer", &GameStatePython::labelsBuffer)
         .def_readonly("automap_buffer", &GameStatePython::automapBuffer)
@@ -536,6 +542,12 @@ PYBIND11_MODULE(vizdoom, vz){
 
         .def("set_console_enabled",&DoomGamePython::setConsoleEnabled)
         .def("set_sound_enabled",&DoomGamePython::setSoundEnabled)
+        .def("set_soft_sound_enabled",&DoomGamePython::setSoftSoundEnabled)
+
+        .def("set_sound_sampling_freq",&DoomGamePython::setSoundSamplingFreq)
+        .def("get_sound_sampling_freq",&DoomGamePython::getSoundSamplingFreq)
+        .def("set_sound_observation_num_frames",&DoomGamePython::setSoundObservationNumFrames)
+        .def("get_sound_observation_num_frames",&DoomGamePython::getSoundObservationNumFrames)
 
         .def("set_screen_resolution", &DoomGamePython::setScreenResolution)
         .def("set_screen_format", &DoomGamePython::setScreenFormat)

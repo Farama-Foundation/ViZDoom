@@ -681,21 +681,51 @@ ALCdevice *OpenALSoundRenderer::InitDevice()
 	return device;
 }
 
+ALCdevice *OpenALSoundRenderer::InitSoftDevice()
+{
+    if(!alcIsExtensionPresent(NULL, "ALC_SOFT_loopback"))
+    {
+        Printf("Loopback not supported\n");
+        abort();
+    }
+    if(!alcIsExtensionPresent(NULL, "ALC_EXT_thread_local_context"))
+    {
+        Printf("ALC_EXT_thread_local_context not supported\n");
+        abort();
+    }
+    ALCdevice *device = alcLoopbackOpenDeviceSOFT(NULL);
+    return device;
+}
+void OpenALSoundRenderer::getrenderbuffer(void *targetBuffer, int numSamples)
+{
+    alcRenderSamplesSOFT(Device, targetBuffer, numSamples);
+}
+
 
 template<typename T>
 static void LoadALFunc(const char *name, T *x)
 { *x = reinterpret_cast<T>(alGetProcAddress(name)); }
 
 #define LOAD_FUNC(x)  (LoadALFunc(#x, &x))
-OpenALSoundRenderer::OpenALSoundRenderer()
+OpenALSoundRenderer::OpenALSoundRenderer(unsigned int sampling_freq)
     : Device(NULL), Context(NULL), SFXPaused(0), PrevEnvironment(NULL), EnvSlot(0)
 {
     EnvFilters[0] = EnvFilters[1] = 0;
 
+    if (sampling_freq > 0) {
+        alcRenderSamplesSOFT = (LPALCRENDERSAMPLESSOFT) alcGetProcAddress(NULL, "alcRenderSamplesSOFT");
+        alcSetThreadContext = (PFNALCSETTHREADCONTEXTPROC) alcGetProcAddress(NULL, "alcSetThreadContext");
+        alcLoopbackOpenDeviceSOFT = (LPALCLOOPBACKOPENDEVICESOFT) alcGetProcAddress(NULL, "alcLoopbackOpenDeviceSOFT");
+    }
     Printf("I_InitSound: Initializing OpenAL\n");
 
-	Device = InitDevice();
-	if (Device == NULL) return;
+    if (sampling_freq > 0) {
+        Device = InitSoftDevice();
+    } else {
+        Device = InitDevice();
+    }
+
+    if (Device == NULL) return;
 
     const ALCchar *current = NULL;
     if(alcIsExtensionPresent(Device, "ALC_ENUMERATE_ALL_EXT"))
@@ -725,7 +755,22 @@ OpenALSoundRenderer::OpenALSoundRenderer()
     // Other attribs..?
     attribs.Push(0);
 
-    Context = alcCreateContext(Device, &attribs[0]);
+    if (sampling_freq > 0) {
+        ALCint attrs[] = {
+                /* Standard 16-bit stereo 44.1khz. Can change as desired. */
+                ALC_FORMAT_TYPE_SOFT, ALC_SHORT_SOFT,
+                ALC_FORMAT_CHANNELS_SOFT, ALC_STEREO_SOFT,
+                ALC_FREQUENCY, static_cast<ALCint>(sampling_freq),
+//            ALC_FREQUENCY, 22050,
+                /* end-of-list */
+                0
+        };
+        Context = alcCreateContext(Device, attrs);
+        alcSetThreadContext(Context);
+    } else {
+        Context = alcCreateContext(Device, &attribs[0]);
+    }
+
     if(!Context || alcMakeContextCurrent(Context) == ALC_FALSE)
     {
         Printf(TEXTCOLOR_RED"  Failed to setup context: %s\n", alcGetString(Device, alcGetError(Device)));
@@ -735,6 +780,10 @@ OpenALSoundRenderer::OpenALSoundRenderer()
         alcCloseDevice(Device);
         Device = NULL;
         return;
+    }
+    if (sampling_freq > 0) {
+        ALuint buffer = 0;
+        alGenBuffers(1, &buffer);
     }
     attribs.Clear();
 

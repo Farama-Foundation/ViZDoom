@@ -1894,6 +1894,20 @@ void S_RestoreEvictedChannels()
 
 //==========================================================================
 //
+// S_Get_render
+//
+// Add music & sounds to input buffer
+// numSamples - number of sound samples to query (both channels).
+// THIS IS NOT THE SIZE OF DATA IN BYTES!
+//==========================================================================
+
+void S_Get_render (void *targetBuffer, int numSamples)
+{
+    GSnd->getrenderbuffer(targetBuffer, numSamples);
+}
+
+//==========================================================================
+//
 // S_UpdateSounds
 //
 // Updates music & sounds

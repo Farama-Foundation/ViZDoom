@@ -59,6 +59,7 @@
 #endif
 
 #include "efx.h"
+#include "alext.h"
 
 
 class OpenALSoundStream;
@@ -66,7 +67,7 @@ class OpenALSoundStream;
 class OpenALSoundRenderer : public SoundRenderer
 {
 public:
-	OpenALSoundRenderer();
+	OpenALSoundRenderer(unsigned int sampling_freq);
 	virtual ~OpenALSoundRenderer();
 
 	virtual void SetSfxVolume(float volume);
@@ -179,7 +180,9 @@ private:
 	static FSoundChan *FindLowestChannel();
 
 	ALCdevice *Device;
-	ALCcontext *Context;
+    ALCdevice *SoftDevice;
+    ALCcontext *Context;
+    ALCcontext *SoftContext;
 
 	TArray<ALuint> Sources;
 
@@ -206,6 +209,11 @@ private:
     friend class OpenALSoundStream;
 
 	ALCdevice *InitDevice();
+    ALCdevice *InitSoftDevice();
+    void getrenderbuffer(void *targetBuffer, int numSamples);
+    LPALCRENDERSAMPLESSOFT alcRenderSamplesSOFT;
+    PFNALCSETTHREADCONTEXTPROC alcSetThreadContext;
+    LPALCLOOPBACKOPENDEVICESOFT alcLoopbackOpenDeviceSOFT;
 };
 
 #endif // NO_OPENAL

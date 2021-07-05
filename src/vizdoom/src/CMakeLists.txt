@@ -1154,6 +1154,7 @@ add_executable( vizdoom WIN32 MACOSX_BUNDLE
 		viz_main.cpp
 		viz_message_queue.cpp
 		viz_screen.cpp
+		viz_sound.cpp
 		viz_shared_memory.cpp
 		viz_system.cpp)
 
