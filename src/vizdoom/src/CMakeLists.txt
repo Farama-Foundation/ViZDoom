@@ -211,7 +211,7 @@ endif( WIN32 )
 
 
 if( NOT NO_OPENAL )
-    find_package( OpenAL )
+    find_package( OpenAL-Soft )
 	mark_as_advanced(CLEAR OPENAL_INCLUDE_DIR)
     if( OPENAL_INCLUDE_DIR )
         include_directories( ${OPENAL_INCLUDE_DIR} )
