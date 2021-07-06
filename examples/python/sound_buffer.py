@@ -9,7 +9,6 @@
 import vizdoom as vzd
 
 from random import choice
-from time import sleep
 import numpy as np
 from scipy.io import wavfile
 
@@ -24,7 +23,6 @@ if __name__ == "__main__":
 
     # Makes episodes start after 10 tics (~after raising the weapon)
     game.set_episode_start_time(10)
-
 
     # Turns on the sound. (turned off by default)
     game.set_sound_enabled(True)
@@ -63,7 +61,6 @@ if __name__ == "__main__":
 
             audio_buffer = state.audio_buffer
             audio_slices.append(audio_buffer.copy())
-
 
             # Makes a random action and get remember reward.
             r = game.make_action(choice(actions), frameskip)
