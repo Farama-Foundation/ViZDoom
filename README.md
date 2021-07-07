@@ -66,7 +66,7 @@ pip install vizdoom
 
 ### macOS
 ```
-brew install cmake boost sdl2
+brew install cmake boost openal-soft sdl2
 pip install vizdoom
 ```
 (we recommend using at least macOS High Sierra 10.13+ with Python 3.7+)
