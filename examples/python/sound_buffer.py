@@ -15,6 +15,9 @@ from scipy.io import wavfile
 if __name__ == "__main__":
     game = vzd.DoomGame()
     game.set_doom_scenario_path("../../scenarios/basic.wad")
+    game.add_available_button(vzd.Button.MOVE_LEFT)
+    game.add_available_button(vzd.Button.MOVE_RIGHT)
+    game.add_available_button(vzd.Button.ATTACK)
     game.set_doom_map("map01")
     game.set_mode(vzd.Mode.PLAYER)
 
