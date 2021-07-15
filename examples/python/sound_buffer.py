@@ -11,6 +11,7 @@ import vizdoom as vzd
 from random import choice
 import numpy as np
 from scipy.io import wavfile
+from time import sleep
 
 if __name__ == "__main__":
     game = vzd.DoomGame()
@@ -32,7 +33,8 @@ if __name__ == "__main__":
     # Turns on the sound in the observation space. (turned off by default)
     # NOTE: cant be positive when game.set_sound_enabled(False)
     # If this is switched on, the audio will stop playing on device
-    game.set_soft_sound_enabled(True)
+    SOFT_SOUND_ENABLED = False
+    game.set_soft_sound_enabled(SOFT_SOUND_ENABLED)
 
     # Set the sampling rate used in the observation window. Has to be one from:
     # - vzd.SamplingRate.SR_44100 (default)
@@ -51,6 +53,7 @@ if __name__ == "__main__":
     game.init()
 
     actions = [[True, False, False], [False, True, False], [False, False, True]]
+    sleep_time = 1.0 / vzd.DEFAULT_TICRATE  # = 0.028
 
     episodes = 3
     audio_slices = []
@@ -67,6 +70,9 @@ if __name__ == "__main__":
 
             # Makes a random action and get remember reward.
             r = game.make_action(choice(actions), frameskip)
+
+            if not SOFT_SOUND_ENABLED:
+                sleep(sleep_time * frameskip)            
     game.close()
 
     # Save audio file
