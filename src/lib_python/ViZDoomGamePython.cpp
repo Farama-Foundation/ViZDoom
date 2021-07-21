@@ -183,6 +183,12 @@ namespace vizdoom {
         DoomGame::init();
     }
 
+    void DoomGamePython::newEpisode(std::string filePath) {
+
+        ReleaseGIL gil = ReleaseGIL();  // this prevents the deadlock during the start of multiplayer game, if different Doom instances are started from different Python threads
+        DoomGame::newEpisode(filePath);
+    }
+
     void DoomGamePython::advanceAction(unsigned int tics, bool updateState){
         ReleaseGIL gil = ReleaseGIL();
         DoomGame::advanceAction(tics, updateState);
