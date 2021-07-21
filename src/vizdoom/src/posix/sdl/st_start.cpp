@@ -46,6 +46,7 @@
 
 //VIZDOOM_CODE
 #include "viz_main.h"
+#include "viz_system.h"
 EXTERN_CVAR(Int, viz_connect_timeout)
 
 
@@ -321,39 +322,17 @@ bool FTTYStartupScreen::NetLoop(bool (*timer_callback)(void *), void *userdata)
 
 	for (;;)
 	{
-		// Don't flood the network with packets on startup.
-		tv.tv_sec = 0;
-		tv.tv_usec = 500000;
+        usleep(100 * 1000);
+        VIZ_InterruptionPoint();
 
-		FD_ZERO (&rfds);
-		FD_SET (STDIN_FILENO, &rfds);
-
-		retval = select (1, &rfds, NULL, NULL, &tv);
-
-		if (retval == -1)
-		{
-			// Error
-		}
-        else if((unsigned int)*viz_connect_timeout * 1000 < I_MSTime() - loopEnterTime) {
+        if((unsigned int)*viz_connect_timeout * 1000 < I_MSTime() - loopEnterTime) {
             fprintf (stderr, "\nTimeout, network game synchronization aborted.");
             return false;
         }
-		else if (retval == 0)
-		{
-			if (timer_callback (userdata))
-			{
-				fputc ('\n', stderr);
-				return true;
-			}
-		}
-		else if (read (STDIN_FILENO, &k, 1) == 1)
-		{
-			// Check input on stdin
-			if (k == 'q' || k == 'Q')
-			{
-				fprintf (stderr, "\nNetwork game synchronization aborted.");
-				return false;
-			}
+
+        if (timer_callback (userdata))		{
+            fputc ('Timer callback...\n', stderr);
+            return true;
 		}
 	}
 }
