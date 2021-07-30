@@ -156,7 +156,6 @@ namespace vizdoom {
 
         void setNoConsole(bool console);
         void setNoSound(bool noSound);
-//        void setEnableSoundObservations(bool noSound);
         bool getNoSound() const;
 
         void addCustomArg(std::string arg);
@@ -186,7 +185,6 @@ namespace vizdoom {
         unsigned int getScreenHeight();
         void setScreenHeight(unsigned int height);
         ScreenFormat getScreenFormat();
-        int getAudioSamplesPerTic();
 
         void setScreenFormat(ScreenFormat format);
         unsigned int getScreenChannels();
@@ -214,6 +212,15 @@ namespace vizdoom {
         void setObjectsEnabled(bool objects);
         bool isSectorsEnabled();
         void setSectorsEnabled(bool sectors);
+
+        /* Audio buffer */
+        bool isAudioBufferEnabled() const;
+        void setAudioBufferEnabled(bool audioBuffer);
+        int getAudioSamplingFreq() const;
+        void setAudioSamplingFreq(int freq);
+        int getAudioSamplesPerTic();
+        int getAudioBufferSize() const;
+        void setAudioBufferSize(int size);
 
         /* Buffers in SM */
         uint8_t *const getScreenBuffer();
@@ -270,13 +277,6 @@ namespace vizdoom {
         unsigned int getPlayerLastActionTic(unsigned int playerNumber);
         unsigned int getPlayerLastKillTic(unsigned int playerNumber);
 
-        void setSoundSamplingFreq(int freq);
-        int getSoundSamplingFreq() const;
-
-        void setSoundObservationNumFrames(int numFrames);
-        int getSoundObservationNumFrames() const;
-
-        int soundObservationNumFrames = 4;
     private:
 
         /* Flow */
@@ -355,7 +355,6 @@ namespace vizdoom {
         /*------------------------------------------------------------------------------------------------------------*/
 
         unsigned int screenWidth, screenHeight, screenChannels, screenDepth;
-        int audioSamplesPerTic = 44100/35;
         size_t screenPitch, screenSize;
         ScreenFormat screenFormat;
         bool depth;
@@ -363,6 +362,11 @@ namespace vizdoom {
         bool labels;
         bool objects;
         bool sectors;
+
+        bool softSoundAudio;
+        int audioSamplesPerTic;
+        int audioSamplingFreq;
+        int audioBufferSizeInTics;
 
         bool hud, minHud, weapon, crosshair, decals, particles, sprites, messages, corpses, flashes, renderAll;
         AutomapMode amMode;
@@ -378,7 +382,6 @@ namespace vizdoom {
 
         bool noConsole;
         bool noSound;
-        bool enableSoundObservations;
 
         std::string exePath;
         std::string iwadPath;
@@ -400,8 +403,6 @@ namespace vizdoom {
 
         std::vector<std::string> customArgs;
         std::vector<std::string> doomArgs;
-
-        int sampling_fre = 44100;
     };
 
 }

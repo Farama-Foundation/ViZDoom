@@ -109,9 +109,9 @@ CVAR (Bool, viz_spectator, false, CVAR_DEMOSAVE | CVAR_USERINFO) // players[play
 CVAR (Int, viz_afk_timeout, 60, CVAR_DEMOSAVE | CVAR_SERVERINFO) // In seconds
 CVAR (Int, viz_connect_timeout, 60, CVAR_NOSET) // In seconds
 
-// sound related
-CVAR (Int, samp_fre, 44100, 0)
-CVAR (Bool, soft_sound, 0, 0)
+// audio buffer related
+CVAR (Bool, viz_soft_sound, false, 0)
+CVAR (Int, viz_samp_freq, 44100, 0)
 
 CCMD(viz_set_seed){
     viz_seed.CmdSet(argv[1]);
@@ -236,8 +236,9 @@ void VIZ_Tic(){
             }
 
             // Sound buffer will always be updated irrespective of update signal
-            if (*soft_sound)
-                VIZ_CopySoundBuffer();
+            if (*viz_soft_sound) {
+                VIZ_UpdateAudioBuffer();
+            }
 
             VIZ_MQSend(VIZ_MSG_CODE_DOOM_DONE);
             vizNextTic = false;

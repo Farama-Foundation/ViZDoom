@@ -69,7 +69,7 @@ namespace vizdoom {
         this->mapChanging = false;
         this->mapLastTic = 1;
 
-        // TODO move default settings to separate file (ViZDoomConsts.h perhaps?
+        // TODO move default settings to separate file (ViZDoomConsts.h perhaps?)
         /* Settings */
         this->ticrate = DEFAULT_TICRATE;
 
@@ -90,7 +90,6 @@ namespace vizdoom {
         this->screenFormat = CRCGCB;
 
         this->depth = false;
-
         this->labels = false;
 
         this->automap = false;
@@ -100,6 +99,12 @@ namespace vizdoom {
 
         this->objects = false;
         this->sectors = false;
+
+        this->softSoundAudio = false;
+        this->audioSamplingFreq = 44100;
+        this->audioSamplesPerTic = this->audioSamplingFreq / int(DEFAULT_TICRATE);
+        this->audioBufferSizeInTics = 4;
+
 
         this->hud = false;
         this->minHud = false;
@@ -595,10 +600,6 @@ namespace vizdoom {
         if (!this->doomRunning) this->noSound = sound;
     }
 
-//    void DoomController::setEnableSoundObservations(bool sound) {
-//        if (!this->doomRunning) this->enableSoundObservations = sound;
-//    }
-
     bool DoomController::getNoSound() const {
         return this->noSound;
     }
@@ -619,7 +620,7 @@ namespace vizdoom {
     void DoomController::setDepthBufferEnabled(bool depthBuffer) {
         this->depth = depthBuffer;
         if (this->doomRunning) {
-            if (this->automap) this->sendCommand("viz_depth 1");
+            if (this->depth) this->sendCommand("viz_depth 1");
             else this->sendCommand("viz_depth 0");
         }
         this->updateSettings = true;
@@ -634,7 +635,7 @@ namespace vizdoom {
     void DoomController::setLabelsEnabled(bool labels) {
         this->labels = labels;
         if (this->doomRunning) {
-            if (this->automap) this->sendCommand("viz_labels 1");
+            if (this->labels) this->sendCommand("viz_labels 1");
             else this->sendCommand("viz_labels 0");
         }
     }
@@ -825,10 +826,6 @@ namespace vizdoom {
         else return this->screenHeight;
     }
 
-    int DoomController::getAudioSamplesPerTic() {
-        return this->audioSamplesPerTic;
-    }
-
     unsigned int DoomController::getScreenChannels() { return this->screenChannels; }
 
     unsigned int DoomController::getScreenDepth() { return this->screenDepth; }
@@ -869,6 +866,35 @@ namespace vizdoom {
 
     void DoomController::setRenderMode(int value) {
         this->sendCommand("viz_render_mode " + b::lexical_cast<std::string>(this->getRenderModeValue()));
+    }
+
+    bool DoomController::isAudioBufferEnabled() const{
+        return softSoundAudio;
+    }
+
+    void DoomController::setAudioBufferEnabled(bool audioBuffer){
+        if (!this->doomRunning) this->softSoundAudio = audioBuffer;
+    }
+
+    int DoomController::getAudioSamplingFreq() const {
+        return this->audioSamplingFreq;
+    }
+
+    void DoomController::setAudioSamplingFreq(int freq) {
+        this->audioSamplingFreq = freq;
+        this->audioSamplesPerTic = freq / int(DEFAULT_TICRATE);
+    }
+
+    int DoomController::getAudioSamplesPerTic() {
+        return this->audioSamplesPerTic;
+    }
+
+    int DoomController::getAudioBufferSize() const {
+        return this->audioBufferSizeInTics;
+    }
+
+    void DoomController::setAudioBufferSize(int size) {
+        this->audioBufferSizeInTics = size;
     }
 
 
@@ -1397,22 +1423,26 @@ namespace vizdoom {
         this->doomArgs.push_back("-noidle");
         this->doomArgs.push_back("-nojoy");
 
-        // sound
-        if (this->noSound) {
+        // audio buffer + sound
+        if (this->softSoundAudio) {
+            this->doomArgs.push_back("+viz_soft_sound");
+            this->doomArgs.push_back("1");
+
+            this->doomArgs.push_back("+viz_samp_freq");
+            this->doomArgs.push_back(std::to_string(this->audioSamplingFreq));
+        } else if (this->noSound) {
             this->doomArgs.push_back("-nosound");
             this->doomArgs.push_back("+viz_nosound");
             this->doomArgs.push_back("1");
         }
 
+        // ticrate
         if (this->ticrate != DEFAULT_TICRATE) {
             this->doomArgs.push_back("-ticrate");
             this->doomArgs.push_back(b::lexical_cast<std::string>(this->ticrate));
         }
 
-        this->addCustomArg("+samp_fre " + std::to_string(this->sampling_fre));
-
-
-        //custom args
+        // custom args
         for (int i = 0; i < this->customArgs.size(); ++i) {
             this->doomArgs.push_back(customArgs[i]);
         }
@@ -1430,22 +1460,5 @@ namespace vizdoom {
             this->MQController->send(MSG_CODE_DOOM_ERROR, "Unexpected ViZDoom instance crash.");
         }
         this->MQController->send(MSG_CODE_DOOM_PROCESS_EXIT);
-    }
-
-    void DoomController::setSoundSamplingFreq(int freq) {
-        this->sampling_fre = freq;
-        this->audioSamplesPerTic = this->sampling_fre / int(DEFAULT_TICRATE);
-    }
-
-    int DoomController::getSoundSamplingFreq() const {
-        return this->sampling_fre;
-    }
-
-    void DoomController::setSoundObservationNumFrames(int numFrames) {
-        this->soundObservationNumFrames = numFrames;
-    }
-
-    int DoomController::getSoundObservationNumFrames() const {
-        return this->soundObservationNumFrames;
     }
 }

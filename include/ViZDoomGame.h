@@ -188,21 +188,22 @@ namespace vizdoom {
         void setWindowVisible(bool visibility);
         void setConsoleEnabled(bool console);
         void setSoundEnabled(bool sound);
-        void setSoftSoundEnabled(bool sound);
 
         int getScreenWidth();
         int getScreenHeight();
         int getScreenChannels();
-        int getAudioSamplesPerTic();
         size_t getScreenDepth();
         size_t getScreenPitch();
         size_t getScreenSize();
 
-        void setSoundSamplingFreq(SamplingRate samplingRate);
-        int getSoundSamplingFreq();
-
-        void setSoundObservationNumFrames(int frames);
-        int getSoundObservationNumFrames();
+        /* Audio buffer */
+        bool isAudioBufferEnabled();
+        void setAudioBufferEnabled(bool audioBuffer);
+        int getAudioSamplingFreq();
+        void setAudioSamplingFreq(SamplingRate samplingRate);
+        int getAudioSamplesPerTic();
+        int getAudioBufferSize();
+        void setAudioBufferSize(int size);
 
     protected:
 

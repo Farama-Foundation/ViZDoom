@@ -3,18 +3,17 @@
 #include "viz_sound.h"
 #include "viz_labels.h"
 
+EXTERN_CVAR (Int, viz_samp_freq)
 
-EXTERN_CVAR (Int, samp_fre)
-
-
-int VIZ_SoundSamplesPerTic() {
-    return *samp_fre / TICRATE;
+int VIZ_AudioSamplesPerTic() {
+    return *viz_samp_freq / TICRATE;
 }
 
-int VIZ_SoundSizePerTicBytes() {
-    return SOUND_NUM_CHANNELS * sizeof(short) * VIZ_SoundSamplesPerTic();
+int VIZ_AudioSizePerTicBytes() {
+    return SOUND_NUM_CHANNELS * sizeof(short) * VIZ_AudioSamplesPerTic();
 }
 
-int VIZ_SoundBufferSizeBytes() {
-    return VIZ_SoundSizePerTicBytes() * MAX_SOUND_FRAMES_TO_STORE;
+int VIZ_AudioBufferSizeBytes() {
+    return VIZ_AudioSizePerTicBytes() * MAX_SOUND_FRAMES_TO_STORE;
 }
+

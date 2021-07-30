@@ -215,9 +215,9 @@ namespace vizdoom{
     };
 
     enum SamplingRate {
-        SR_11025,             // Low sampling rate
-        SR_22050,              // medium sampling rate.
-        SR_44100,            // High sampling rate
+        SR_11025,           // Low sampling rate
+        SR_22050,           // Medium sampling rate.
+        SR_44100,           // High sampling rate
     };
 
     enum GameVariable {

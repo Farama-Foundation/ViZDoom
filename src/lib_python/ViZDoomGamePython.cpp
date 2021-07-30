@@ -199,12 +199,10 @@ namespace vizdoom {
         DoomGame::respawnPlayer();
     }
 
-
     void DoomGamePython::updateBuffersShapes(){
         int channels = this->getScreenChannels();
         int width = this->getScreenWidth();
         int height = this->getScreenHeight();
-        int audioSamplesPerTic = this->getAudioSamplesPerTic();
 
         switch(this->getScreenFormat()){
             case CRCGCB:
@@ -223,7 +221,7 @@ namespace vizdoom {
         this->grayShape[0] = height;
         this->grayShape[1] = width;
 
-        this->audioShape[0] = audioSamplesPerTic * this->doomController->soundObservationNumFrames;
+        this->audioShape[0] = this->getAudioSamplesPerTic() * this->getAudioBufferSize();
         this->audioShape[1] = 2;
     }
 

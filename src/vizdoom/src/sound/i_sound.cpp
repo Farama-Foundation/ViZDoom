@@ -79,8 +79,10 @@ extern HINSTANCE g_hInst;
 #include "doomdef.h"
 
 EXTERN_CVAR (Float, snd_sfxvolume)
-EXTERN_CVAR (Int, samp_fre)
-EXTERN_CVAR (Bool, soft_sound)
+
+// VIZDOOM_CODE
+EXTERN_CVAR (Bool, viz_soft_sound)
+EXTERN_CVAR (Int, viz_samp_freq)
 
 CVAR (Int, snd_samplerate, 0, CVAR_ARCHIVE|CVAR_GLOBALCONFIG)
 CVAR (Int, snd_buffersize, 0, CVAR_ARCHIVE|CVAR_GLOBALCONFIG)
@@ -298,8 +300,8 @@ void I_InitSound ()
 		#ifndef NO_OPENAL
 			if (IsOpenALPresent())
 			{
-                if (soft_sound){
-                    GSnd = new OpenALSoundRenderer( samp_fre);
+                if (*viz_soft_sound){
+                    GSnd = new OpenALSoundRenderer(*viz_samp_freq);
                 } else {
                     GSnd = new OpenALSoundRenderer(0);
                 }

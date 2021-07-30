@@ -12,8 +12,10 @@
 // increase this is you want frameskip > 4
 #define MAX_SOUND_FRAMES_TO_STORE   4
 
-int VIZ_SoundSamplesPerTic();
-int VIZ_SoundSizePerTicBytes();
-int VIZ_SoundBufferSizeBytes();
+int VIZ_AudioSamplesPerTic();
+
+int VIZ_AudioSizePerTicBytes();
+
+int VIZ_AudioBufferSizeBytes();
 
 #endif //VIZDOOM_VIZ_SOUND_H

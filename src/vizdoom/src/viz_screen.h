@@ -58,7 +58,7 @@ void VIZ_ScreenUpdate();
 
 void VIZ_ScreenLevelMapUpdate();
 
-void VIZ_CopySoundBuffer();
+void VIZ_UpdateAudioBuffer();
 
 void VIZ_ScreenClose();
 

@@ -542,12 +542,13 @@ PYBIND11_MODULE(vizdoom, vz){
 
         .def("set_console_enabled",&DoomGamePython::setConsoleEnabled)
         .def("set_sound_enabled",&DoomGamePython::setSoundEnabled)
-        .def("set_soft_sound_enabled",&DoomGamePython::setSoftSoundEnabled)
 
-        .def("set_sound_sampling_freq",&DoomGamePython::setSoundSamplingFreq)
-        .def("get_sound_sampling_freq",&DoomGamePython::getSoundSamplingFreq)
-        .def("set_sound_observation_num_frames",&DoomGamePython::setSoundObservationNumFrames)
-        .def("get_sound_observation_num_frames",&DoomGamePython::getSoundObservationNumFrames)
+        .def("is_audio_buffer_enabled",&DoomGamePython::isAudioBufferEnabled)
+        .def("set_audio_buffer_enabled",&DoomGamePython::setAudioBufferEnabled)
+        .def("get_audio_sampling_freq",&DoomGamePython::getAudioSamplingFreq)
+        .def("set_audio_sampling_freq",&DoomGamePython::setAudioSamplingFreq)
+        .def("get_audio_buffer_size",&DoomGamePython::getAudioBufferSize)
+        .def("set_audio_buffer_size",&DoomGamePython::setAudioBufferSize)
 
         .def("set_screen_resolution", &DoomGamePython::setScreenResolution)
         .def("set_screen_format", &DoomGamePython::setScreenFormat)

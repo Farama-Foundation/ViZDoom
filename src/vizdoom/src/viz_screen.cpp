@@ -42,7 +42,8 @@ EXTERN_CVAR (Bool, viz_labels)
 EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_nocheat)
 EXTERN_CVAR (Bool, viz_nosound)
-EXTERN_CVAR (Int, samp_fre)
+EXTERN_CVAR (Bool, viz_soft_sound)
+EXTERN_CVAR (Int, viz_samp_freq)
 
 void VIZ_ScreenInit() {
 
@@ -180,10 +181,10 @@ void VIZ_ScreenUpdateSM(){
         SMBuffersSize += vizScreenSize;
         SMBufferSize[3] = vizScreenSize;
     }
-    if (!*viz_nosound) {
-        const int soundBufferSize = VIZ_SoundBufferSizeBytes();
-        SMBuffersSize += soundBufferSize;
-        SMBufferSize[4] = soundBufferSize;
+    if (*viz_soft_sound) {
+        const int audioBufferSize = VIZ_AudioBufferSizeBytes();
+        SMBuffersSize += audioBufferSize;
+        SMBufferSize[4] = audioBufferSize;
     }
 
     VIZ_SMUpdate(SMBuffersSize);
@@ -253,8 +254,6 @@ void VIZ_CopyBuffer(BYTE *vizBuffer){
             if (alpha) vizBuffer[pos + aPos] = 255;
         }
     }
-
-
 }
 
 void VIZ_ScreenUpdate(){
@@ -282,16 +281,15 @@ void VIZ_ScreenClose(){
     if(vizLabels) delete vizLabels;
 }
 
-// perhaps would be better in its own file, since this is not a part of the "screen", but less code this way
-void VIZ_CopySoundBuffer() {
+void VIZ_UpdateAudioBuffer() {
     // Append the latest audio frame to the sound buffer.
     // Here we move everything in the buffer to the left by the size of one frame (thus erasing the oldest frame in
     // the buffer), and then we copy the latest audio frame to the right side of the buffer.
     // This can be done more efficiently with a circular buffer to avoid the memmove, but this complicates the IPC
     // logic a bit. The current implementation should be fast enough.
-    const int sizePerTic = VIZ_SoundSizePerTicBytes(),
-            bufferSize = VIZ_SoundBufferSizeBytes();
+    const int sizePerTic = VIZ_AudioSizePerTicBytes(),
+            bufferSize = VIZ_AudioBufferSizeBytes();
 
     memmove(vizAudioSM, vizAudioSM + sizePerTic, bufferSize - sizePerTic);
-    S_Get_render(vizAudioSM + bufferSize - sizePerTic, VIZ_SoundSamplesPerTic());
+    S_Get_render(vizAudioSM + bufferSize - sizePerTic, VIZ_AudioSamplesPerTic());
 }
