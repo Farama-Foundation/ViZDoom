@@ -40,6 +40,7 @@ if __name__ == "__main__":
     # - vzd.SamplingRate.SR_44100 (default)
     # - vzd.SamplingRate.SR_22050
     # - vzd.SamplingRate.SR_11025
+    # Remember to also set audio saving code at the bottom to use same sampling rate!
     game.set_audio_sampling_freq(vzd.SamplingRate.SR_22050)
 
     # When using frameskip (`tics` parameter of the `make_actions` function),
@@ -48,7 +49,9 @@ if __name__ == "__main__":
     # so you can get all audio that happened during the frameskip
     frameskip = 4
     game.set_audio_buffer_size(frameskip)
-    game.add_game_args("+snd_efx 0")
+
+    # This could fix "no audio in buffer" bug on Ubuntu 20.04.
+    #game.add_game_args("+snd_efx 0")
 
     # Initialize the game. Further configuration won't take any effect from now on.
     game.init()
@@ -76,5 +79,17 @@ if __name__ == "__main__":
                 sleep(sleep_time * frameskip)            
     game.close()
 
-    # Save audio file
-    wavfile.write("basic_sounds.wav", 22050, np.concatenate(audio_slices, axis=0))
+    if AUDIO_BUFFER_ENABLED:
+        # Check that we have audio (having no audio is a common bug, see
+        # https://github.com/mwydmuch/ViZDoom/pull/486
+        audio_data = np.concatenate(audio_slices, axis=0)
+        if audio_data.max() == 0:
+            print(
+                "[WARNING] Audio buffers were full of silence. This is a common bug on e.g. Ubuntu 20.04\n"
+                "See https://github.com/mwydmuch/ViZDoom/pull/486\n"
+                "Two possible fixes:\n"
+                "    1) Try setting game.add_game_args('+snd_efx 0'). This my disable some audio effects\n"
+                "    2) Try installing a newer version of OpenAL Soft library, see https://github.com/mwydmuch/ViZDoom/pull/486#issuecomment-889389185"
+            )
+        # Save audio file
+        wavfile.write("basic_sounds.wav", 22050, np.concatenate(audio_slices, axis=0))
