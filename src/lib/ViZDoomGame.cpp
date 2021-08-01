@@ -234,33 +234,21 @@ namespace vizdoom {
             }
 
             /* Update buffers */
-            int channels = this->getScreenChannels();
-            int width = this->getScreenWidth();
-            int height = this->getScreenHeight();
+            const int channels = this->getScreenChannels();
+            const int width = this->getScreenWidth();
+            const int height = this->getScreenHeight();
 
-            size_t graySize = static_cast<size_t>(width * height);
-            size_t colorSize = graySize * channels;
+            const size_t graySize = width * height;
+            const size_t colorSize = graySize * channels;
 
             uint8_t *buf = this->doomController->getScreenBuffer();
             this->state->screenBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
 
-            // This buffer contains all the sound that happened between tics
+            /* Audio */
             if (this->doomController->isAudioBufferEnabled()) {
                 const uint16_t *audioBuf = this->doomController->getAudioBuffer();
-                const int sizePerTic = SOUND_NUM_CHANNELS * this->getAudioSamplesPerTic();
-                const int totalBufferSize = sizePerTic * MAX_SOUND_FRAMES_TO_STORE;
-                const int audioObsSize = sizePerTic * this->getAudioBufferSize();
-                const int audioOffset = totalBufferSize - audioObsSize;
-
-                // It is not apparent why this should be a shared pointer and not just vector,
-                // but this follows the same logic as any other buffer here (i.e. see screenBuffer).
-
-                // Audio buffer on Doom side contains MAX_SOUND_FRAMES_TO_STORE of tics of sound, and we want
-                // getAudioBufferSize() tics of sound. So we just copy the last tics from the right
-                // side of the buffer.
-                this->state->audioBuffer = std::make_shared<std::vector<uint16_t>>(audioBuf + audioOffset,
-                                                                                   audioBuf + audioOffset +
-                                                                                   audioObsSize);
+                const size_t audioSize = SOUND_NUM_CHANNELS * this->getAudioSamplesPerTic() * this->getAudioBufferSize();
+                this->state->audioBuffer = std::make_shared<std::vector<uint16_t>>(audioBuf, audioBuf + audioSize);
             }
 
             if (this->doomController->isDepthBufferEnabled()) {

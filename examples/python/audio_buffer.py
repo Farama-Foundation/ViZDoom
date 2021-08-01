@@ -15,24 +15,13 @@ from time import sleep
 
 if __name__ == "__main__":
     game = vzd.DoomGame()
-    game.set_doom_scenario_path("../../scenarios/basic.wad")
-    game.add_available_button(vzd.Button.MOVE_LEFT)
-    game.add_available_button(vzd.Button.MOVE_RIGHT)
-    game.add_available_button(vzd.Button.ATTACK)
-    game.set_doom_map("map01")
-    game.set_mode(vzd.Mode.PLAYER)
 
-    # Causes episodes to finish after 200 tics (actions)
-    game.set_episode_timeout(200)
+    # Load config of the basic scenario
+    game.load_config('../../scenarios/basic.cfg')
 
-    # Makes episodes start after 10 tics (~after raising the weapon)
-    game.set_episode_start_time(10)
-
-    # Turns on the sound. (turned off by default)
-    game.set_sound_enabled(True)
-    # Turns on the sound in the observation space. (turned off by default)
-    # NOTE: cant be positive when game.set_sound_enabled(False)
-    # If this is switched on, the audio will stop playing on device
+    # Turns on the audio buffer. (turned off by default)
+    # If this is switched on, the audio will stop playing on device, even with game.set_sound_enabled(True)
+    # Setting game.set_sound_enabled(True) is not required for audio buffer to work.
     AUDIO_BUFFER_ENABLED = True
     game.set_audio_buffer_enabled(AUDIO_BUFFER_ENABLED)
 
@@ -48,7 +37,6 @@ if __name__ == "__main__":
     # so you can get all audio that happened during the frameskip
     frameskip = 4
     game.set_audio_buffer_size(frameskip)
-    game.add_game_args("+snd_efx 0")
 
     # Initialize the game. Further configuration won't take any effect from now on.
     game.init()
@@ -77,4 +65,5 @@ if __name__ == "__main__":
     game.close()
 
     # Save audio file
-    wavfile.write("basic_sounds.wav", 22050, np.concatenate(audio_slices, axis=0))
+    if AUDIO_BUFFER_ENABLED:
+        wavfile.write("audio_buffer.wav", 22050, np.concatenate(audio_slices, axis=0))

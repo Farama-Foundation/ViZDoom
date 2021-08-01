@@ -24,9 +24,8 @@
 #include "viz_system.h"
 #include "viz_input.h"
 #include "viz_game.h"
-#include "viz_screen.h"
+#include "viz_buffers.h"
 #include "viz_message_queue.h"
-#include "viz_sound.h"
 
 #include "d_main.h"
 #include "g_game.h"
@@ -110,8 +109,9 @@ CVAR (Int, viz_afk_timeout, 60, CVAR_DEMOSAVE | CVAR_SERVERINFO) // In seconds
 CVAR (Int, viz_connect_timeout, 60, CVAR_NOSET) // In seconds
 
 // audio buffer related
-CVAR (Bool, viz_soft_sound, false, 0)
+CVAR (Bool, viz_soft_audio, false, 0)
 CVAR (Int, viz_samp_freq, 44100, 0)
+CVAR (Int, viz_audio_tics, 4, 0)
 
 CCMD(viz_set_seed){
     viz_seed.CmdSet(argv[1]);
@@ -165,7 +165,7 @@ void VIZ_Init(){
 
         VIZ_GameStateInit();
         VIZ_InputInit();
-        VIZ_ScreenInit();
+        VIZ_BuffersInit();
 
         VIZ_GameStateSMUpdate();
 
@@ -236,8 +236,8 @@ void VIZ_Tic(){
             }
 
             // Sound buffer will always be updated irrespective of update signal
-            if (*viz_soft_sound) {
-                VIZ_UpdateAudioBuffer();
+            if (*viz_soft_audio) {
+                VIZ_AudioUpdate();
             }
 
             VIZ_MQSend(VIZ_MSG_CODE_DOOM_DONE);

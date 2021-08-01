@@ -81,7 +81,7 @@ extern HINSTANCE g_hInst;
 EXTERN_CVAR (Float, snd_sfxvolume)
 
 // VIZDOOM_CODE
-EXTERN_CVAR (Bool, viz_soft_sound)
+EXTERN_CVAR (Bool, viz_soft_audio)
 EXTERN_CVAR (Int, viz_samp_freq)
 
 CVAR (Int, snd_samplerate, 0, CVAR_ARCHIVE|CVAR_GLOBALCONFIG)
@@ -300,7 +300,7 @@ void I_InitSound ()
 		#ifndef NO_OPENAL
 			if (IsOpenALPresent())
 			{
-                if (*viz_soft_sound){
+                if (*viz_soft_audio){
                     GSnd = new OpenALSoundRenderer(*viz_samp_freq);
                 } else {
                     GSnd = new OpenALSoundRenderer(0);

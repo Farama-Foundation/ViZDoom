@@ -1425,11 +1425,14 @@ namespace vizdoom {
 
         // audio buffer + sound
         if (this->softSoundAudio) {
-            this->doomArgs.push_back("+viz_soft_sound");
+            this->doomArgs.push_back("+viz_soft_audio");
             this->doomArgs.push_back("1");
 
             this->doomArgs.push_back("+viz_samp_freq");
             this->doomArgs.push_back(std::to_string(this->audioSamplingFreq));
+
+            this->doomArgs.push_back("+viz_audio_tics");
+            this->doomArgs.push_back(std::to_string(this->audioBufferSizeInTics));
         } else if (this->noSound) {
             this->doomArgs.push_back("-nosound");
             this->doomArgs.push_back("+viz_nosound");
