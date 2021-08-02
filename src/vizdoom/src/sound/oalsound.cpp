@@ -61,20 +61,28 @@
 CVAR (String, snd_aldevice, "Default", CVAR_ARCHIVE|CVAR_GLOBALCONFIG)
 CVAR (Bool, snd_efx, true, CVAR_ARCHIVE|CVAR_GLOBALCONFIG)
 
+
 #ifdef _WIN32
 static HMODULE hmodOpenAL;
 #define OPENALLIB "openal32.dll"
 #else
 static void* hmodOpenAL;
-#ifdef __APPLE__
-#define OPENALLIB "OpenAL.framework/OpenAL"
-#else
-#define OPENALLIB "libopenal.so"
-#endif
+#define OPENALLIB "libopenal.so.1"
 #define LoadLibrary(x) dlopen((x), RTLD_LAZY)
 #define GetProcAddress(a,b) dlsym((a),(b))
 #define FreeLibrary(x) dlclose((x))
 #endif
+
+#ifdef __APPLE__
+// User's library (like OpenAL Soft installed manually or via Homebrew) has precedence
+// over Apple's OpenAL framework which lacks several important features
+#define OPENALLIB1 "libopenal.1.dylib"
+#define OPENALLIB2 "OpenAL.framework/OpenAL"
+#else // !__APPLE__
+#define OPENALLIB1 NicePath("$PROGDIR/" OPENALLIB)
+#define OPENALLIB2 OPENALLIB
+#endif
+
 
 bool IsOpenALPresent()
 {
@@ -89,10 +97,10 @@ bool IsOpenALPresent()
 		done = true;
 		if (hmodOpenAL == NULL)
 		{
-			hmodOpenAL = LoadLibrary(NicePath("$PROGDIR/" OPENALLIB));
+			hmodOpenAL = LoadLibrary(OPENALLIB1);
 			if (hmodOpenAL == NULL)
 			{
-				hmodOpenAL = LoadLibrary(OPENALLIB);
+				hmodOpenAL = LoadLibrary(OPENALLIB2);
 				if (hmodOpenAL == NULL)
 				{
 					return false;
@@ -681,22 +689,25 @@ ALCdevice *OpenALSoundRenderer::InitDevice()
 	return device;
 }
 
+// VIZDOOM_CODE
 ALCdevice *OpenALSoundRenderer::InitSoftDevice()
 {
+    ALCdevice *device = NULL;
     if(!alcIsExtensionPresent(NULL, "ALC_SOFT_loopback"))
     {
-        Printf("Loopback not supported\n");
-        abort();
+        Printf(TEXTCOLOR_ORANGE"ALC_SOFT_loopback extensions not supported\n");
     }
-    if(!alcIsExtensionPresent(NULL, "ALC_EXT_thread_local_context"))
+    else if(!alcIsExtensionPresent(NULL, "ALC_EXT_thread_local_context"))
     {
-        Printf("ALC_EXT_thread_local_context not supported\n");
-        abort();
+        Printf(TEXTCOLOR_ORANGE"ALC_EXT_thread_local_context not supported\n");
     }
-    ALCdevice *device = alcLoopbackOpenDeviceSOFT(NULL);
+    else {
+        device = alcLoopbackOpenDeviceSOFT(NULL);
+    }
     return device;
 }
-void OpenALSoundRenderer::getrenderbuffer(void *targetBuffer, int numSamples)
+
+void OpenALSoundRenderer::GetRenderBuffer(void *targetBuffer, int numSamples)
 {
     alcRenderSamplesSOFT(Device, targetBuffer, numSamples);
 }
@@ -719,6 +730,7 @@ OpenALSoundRenderer::OpenALSoundRenderer(unsigned int sampling_freq)
     }
     Printf("I_InitSound: Initializing OpenAL\n");
 
+    // VIZDOOM_CODE
     if (sampling_freq > 0) {
         Device = InitSoftDevice();
     } else {

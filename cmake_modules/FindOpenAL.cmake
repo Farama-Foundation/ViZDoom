@@ -47,9 +47,7 @@ This module defines the following variables:
 # For Windows, Creative Labs seems to have added a registry key for their
 # OpenAL 1.1 installer. I have added that key to the list of search paths,
 # however, the key looks like it could be a little fragile depending on
-# if they decide to change the 1.00.0000 number for bug fix releases.
-# Also, they seem to have laid down groundwork for multiple library platforms
-# which puts the library in an extra subdirectory. Currently there is only
+# if they decide to change the 1.00.0000 nuctory. Currently there is only
 # Win32 and I have hardcoded that here. This may need to be adjusted as
 # platforms are introduced.
 # The OpenAL 1.0 installer doesn't seem to have a useful key I can use.

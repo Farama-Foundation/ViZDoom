@@ -210,7 +210,7 @@ private:
 
 	ALCdevice *InitDevice();
     ALCdevice *InitSoftDevice();
-    void getrenderbuffer(void *targetBuffer, int numSamples);
+    void GetRenderBuffer(void *targetBuffer, int numSamples);
     LPALCRENDERSAMPLESSOFT alcRenderSamplesSOFT;
     PFNALCSETTHREADCONTEXTPROC alcSetThreadContext;
     LPALCLOOPBACKOPENDEVICESOFT alcLoopbackOpenDeviceSOFT;

@@ -31,6 +31,7 @@
 #include "g_game.h"
 #include "sbar.h"
 #include "c_dispatch.h"
+#include "i_sound.h"
 #include "i_system.h"
 
 
@@ -188,6 +189,8 @@ void VIZ_Init(){
 
 void VIZ_Close(){
     if(*viz_controlled) {
+        Printf("VIZ_Close: instance id: %s\n", *viz_instance_id);
+
         VIZ_InputClose();
         VIZ_GameStateClose();
         VIZ_ScreenClose();

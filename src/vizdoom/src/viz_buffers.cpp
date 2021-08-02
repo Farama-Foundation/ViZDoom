@@ -301,5 +301,5 @@ void VIZ_AudioUpdate() {
 
     const size_t lastTicOffset = vizAudioSize - vizAudioSizePerTic;
     memmove(vizAudioSM, vizAudioSM + vizAudioSizePerTic, lastTicOffset);
-    S_Get_render(vizAudioSM + lastTicOffset, vizAudioSamplesPerTic);
+    S_GetRender(vizAudioSM + lastTicOffset, vizAudioSamplesPerTic);
 }

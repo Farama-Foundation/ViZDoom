@@ -49,7 +49,7 @@ void D_ProcessEvents (void);
 void D_Display ();
 void VIZ_D_MapDisplay();
 void VIZ_D_ScreenDisplay();
-
+void D_ClearAll();
 
 //
 // BASE LEVEL
