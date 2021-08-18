@@ -234,15 +234,22 @@ namespace vizdoom {
             }
 
             /* Update buffers */
-            int channels = this->getScreenChannels();
-            int width = this->getScreenWidth();
-            int height = this->getScreenHeight();
+            const int channels = this->getScreenChannels();
+            const int width = this->getScreenWidth();
+            const int height = this->getScreenHeight();
 
-            size_t graySize = static_cast<size_t>(width * height);
-            size_t colorSize = graySize *channels;
+            const size_t graySize = width * height;
+            const size_t colorSize = graySize * channels;
 
             uint8_t *buf = this->doomController->getScreenBuffer();
             this->state->screenBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
+
+            /* Audio */
+            if (this->doomController->isAudioBufferEnabled()) {
+                const uint16_t *audioBuf = this->doomController->getAudioBuffer();
+                const size_t audioSize = SOUND_NUM_CHANNELS * this->getAudioSamplesPerTic() * this->getAudioBufferSize();
+                this->state->audioBuffer = std::make_shared<std::vector<uint16_t>>(audioBuf, audioBuf + audioSize);
+            }
 
             if (this->doomController->isDepthBufferEnabled()) {
                 buf = this->doomController->getDepthBuffer();
@@ -606,6 +613,31 @@ namespace vizdoom {
     void DoomGame::setConsoleEnabled(bool console) { this->doomController->setNoConsole(!console); }
 
     void DoomGame::setSoundEnabled(bool sound) { this->doomController->setNoSound(!sound); }
+
+    bool DoomGame::isAudioBufferEnabled() { return this->doomController->isAudioBufferEnabled(); }
+
+    void DoomGame::setAudioBufferEnabled(bool audioBuffer) { this->doomController->setAudioBufferEnabled(audioBuffer); }
+
+    int DoomGame::getAudioSamplingRate() { return this->doomController->getAudioSamplingFreq(); }
+
+    void DoomGame::setAudioSamplingRate(SamplingRate samplingRate) {
+        int samp_freq = 0;
+
+#define CASE_SF(f) case SR_##f : samp_freq = f; break;
+
+        switch (samplingRate) {
+            CASE_SF(11025)
+            CASE_SF(22050)
+            CASE_SF(44100)
+        }
+        this->doomController->setAudioSamplingFreq(samp_freq);
+    }
+
+    int DoomGame::getAudioSamplesPerTic() { return this->doomController->getAudioSamplesPerTic(); }
+
+    int DoomGame::getAudioBufferSize() { return this->doomController->getAudioBufferSize(); }
+
+    void DoomGame::setAudioBufferSize(int size) { this->doomController->setAudioBufferSize(size); }
 
     int DoomGame::getScreenWidth() { return this->doomController->getScreenWidth(); }
 

@@ -2910,37 +2910,44 @@ void D_DoomMain (void)
 		}
 		catch (CRestartException &)
 		{
-			// Music and sound should be stopped first
-			S_StopMusic(true);
-			S_StopAllChannels ();
-			VIZ_Close();
-
-			M_ClearMenus();					// close menu if open
-			F_EndFinale();					// If an intermission is active, end it now
-
-			// clean up game state
-			ST_Clear();
-			D_ErrorCleanup ();
-			P_FreeLevelData();
-			P_FreeExtraLevelData();
-
-			M_SaveDefaults(NULL);			// save config before the restart
-
-			// delete all data that cannot be left until reinitialization
-			V_ClearFonts();					// must clear global font pointers
-			R_DeinitTranslationTables();	// some tables are initialized from outside the translation code.
-			gameinfo.~gameinfo_t();
-			new (&gameinfo) gameinfo_t;		// Reset gameinfo
-			S_Shutdown();					// free all channels and delete playlist
-			C_ClearAliases();				// CCMDs won't be reinitialized so these need to be deleted here
-			DestroyCVarsFlagged(CVAR_MOD);	// Delete any cvar left by mods
-
-			GC::FullGC();					// perform one final garbage collection before deleting the class data
-			PClass::ClearRuntimeData();		// clear all runtime generated class data
+            D_ClearAll();
 			restart++;
 		}
 	}
 	while (1);
+}
+
+void D_ClearAll(){
+    // Music and sound should be stopped first
+    S_StopMusic(true);
+    S_StopAllChannels ();
+
+    M_ClearMenus();					// close menu if open
+    F_EndFinale();					// If an intermission is active, end it now
+
+    // clean up game state
+    ST_Clear();
+    D_ErrorCleanup ();
+    P_FreeLevelData();
+    P_FreeExtraLevelData();
+
+    M_SaveDefaults(NULL);			// save config before the restart
+
+    // delete all data that cannot be left until reinitialization
+    V_ClearFonts();					// must clear global font pointers
+    R_DeinitTranslationTables();	// some tables are initialized from outside the translation code.
+    gameinfo.~gameinfo_t();
+    new (&gameinfo) gameinfo_t;		// Reset gameinfo
+    S_Shutdown();					// free all channels and delete playlist
+    C_ClearAliases();				// CCMDs won't be reinitialized so these need to be deleted here
+    DestroyCVarsFlagged(CVAR_MOD);	// Delete any cvar left by mods
+
+    GC::FullGC();					// perform one final garbage collection before deleting the class data
+    PClass::ClearRuntimeData();		// clear all runtime generated class data
+
+    // Close ViZDoom stuff
+    VIZ_Close();
+    I_ShutdownSound();
 }
 
 //==========================================================================

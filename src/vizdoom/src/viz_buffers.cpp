@@ -20,19 +20,21 @@
  THE SOFTWARE.
 */
 
-#include "viz_screen.h"
+#include "viz_buffers.h"
 #include "viz_defines.h"
 #include "viz_depth.h"
 #include "viz_labels.h"
 #include "viz_main.h"
 
+
 unsigned int vizScreenWidth, vizScreenHeight;
 size_t vizScreenPitch, vizScreenSize, vizScreenChannelSize;
+size_t vizAudioSamplesPerTic, vizAudioSizePerTic, vizAudioSize;
 
 int posMulti, rPos, gPos, bPos, aPos;
 bool alpha;
 
-BYTE *vizScreenSM = NULL, *vizDepthSM = NULL, *vizLabelsSM = NULL, *vizAutomapSM = NULL;
+BYTE *vizScreenSM = NULL, *vizDepthSM = NULL, *vizLabelsSM = NULL, *vizAutomapSM = NULL, *vizAudioSM = NULL;
 
 EXTERN_CVAR (Int, viz_debug)
 EXTERN_CVAR (Int, viz_screen_format)
@@ -40,13 +42,17 @@ EXTERN_CVAR (Bool, viz_depth)
 EXTERN_CVAR (Bool, viz_labels)
 EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_nocheat)
+EXTERN_CVAR (Bool, viz_nosound)
+EXTERN_CVAR (Bool, viz_soft_audio)
+EXTERN_CVAR (Int, viz_samp_freq)
+EXTERN_CVAR (Int, viz_audio_tics)
 
-void VIZ_ScreenInit() {
+void VIZ_BuffersInit() {
 
-    VIZ_ScreenFormatUpdate();
-    VIZ_ScreenUpdateSM();
+    VIZ_BuffersFormatUpdate();
+    VIZ_BuffersUpdateSM();
 
-    Printf("VIZ_ScreenInit: width: %d, height: %d, pitch: %zu, format: ",
+    Printf("VIZ_BuffersInit:\n  Screen: width: %d, height: %d, pitch: %zu, format: ",
            vizScreenWidth, vizScreenHeight, vizScreenPitch);
 
     switch(*viz_screen_format){
@@ -62,10 +68,15 @@ void VIZ_ScreenInit() {
         case VIZ_SCREEN_DOOM_256_COLORS8:   Printf("DOOM_256_COLORS\n"); break;
         default:                            Printf("UNKNOWN\n");
     }
+
+    if(*viz_soft_audio) {
+        Printf("  Audio: samp. freq.: %d, tics: %d\n", *viz_samp_freq, *viz_audio_tics);
+    }
 }
 
-void VIZ_ScreenFormatUpdate(){
+void VIZ_BuffersFormatUpdate(){
 
+    // screen
     vizScreenWidth = (unsigned int) screen->GetWidth();
     vizScreenHeight = (unsigned int) screen->GetHeight();
     vizScreenChannelSize = sizeof(BYTE) * vizScreenWidth * vizScreenHeight;
@@ -159,11 +170,16 @@ void VIZ_ScreenFormatUpdate(){
         if (*viz_depth) vizDepthMap = new VIZDepthBuffer(vizScreenWidth, vizScreenHeight);
         if (*viz_labels) vizLabels = new VIZLabelsBuffer(vizScreenWidth, vizScreenHeight);
     }
+
+    // audio
+    vizAudioSamplesPerTic = *viz_samp_freq / TICRATE;
+    vizAudioSizePerTic = SOUND_NUM_CHANNELS * sizeof(short) * vizAudioSamplesPerTic;
+    vizAudioSize = vizAudioSizePerTic * *viz_audio_tics;
 }
 
-void VIZ_ScreenUpdateSM(){
-
-    size_t SMBufferSize[4] = {vizScreenSize, 0, 0, 0};
+void VIZ_BuffersUpdateSM(){
+    const int numBuffers = 5;
+    size_t SMBufferSize[numBuffers] = {vizScreenSize, 0, 0, 0, 0};
     size_t SMBuffersSize = vizScreenSize;
     if (*viz_depth){
         SMBuffersSize += vizScreenChannelSize;
@@ -177,11 +193,15 @@ void VIZ_ScreenUpdateSM(){
         SMBuffersSize += vizScreenSize;
         SMBufferSize[3] = vizScreenSize;
     }
+    if (*viz_soft_audio) {
+        SMBuffersSize += vizAudioSize;
+        SMBufferSize[4] = vizAudioSize;
+    }
 
     VIZ_SMUpdate(SMBuffersSize);
 
     try {
-        for (int i = 0; i != 4; ++i) {
+        for (int i = 0; i != numBuffers; ++i) {
             VIZSMRegion *bufferRegion = &vizSMRegion[VIZ_SM_SCREEN_NUM + i];
             if (SMBufferSize[i]) {
                 VIZ_SMCreateRegion(bufferRegion, false, VIZ_SMGetRegionOffset(bufferRegion), SMBufferSize[i]);
@@ -201,6 +221,7 @@ void VIZ_ScreenUpdateSM(){
     vizDepthSM = static_cast<BYTE *>(VIZ_SM_DEPTH.address);
     vizLabelsSM = static_cast<BYTE *>(VIZ_SM_LABELS.address);
     vizAutomapSM = static_cast<BYTE *>(VIZ_SM_AUTOMAP.address);
+    vizAudioSM = static_cast<BYTE *>(VIZ_SM_AUDIO.address);
 }
 
 void VIZ_CopyBuffer(BYTE *vizBuffer){
@@ -244,8 +265,6 @@ void VIZ_CopyBuffer(BYTE *vizBuffer){
             if (alpha) vizBuffer[pos + aPos] = 255;
         }
     }
-
-
 }
 
 void VIZ_ScreenUpdate(){
@@ -271,4 +290,16 @@ void VIZ_ScreenLevelMapUpdate(){
 void VIZ_ScreenClose(){
     if(vizDepthMap) delete vizDepthMap;
     if(vizLabels) delete vizLabels;
+}
+
+void VIZ_AudioUpdate() {
+    // Append the latest audio frame to the sound buffer.
+    // Here we move everything in the buffer to the left by the size of one frame (thus erasing the oldest frame in
+    // the buffer), and then we copy the latest audio frame to the right side of the buffer.
+    // This can be done more efficiently with a circular buffer to avoid the memmove, but this complicates the IPC
+    // logic a bit. The current implementation should be fast enough.
+
+    const size_t lastTicOffset = vizAudioSize - vizAudioSizePerTic;
+    memmove(vizAudioSM, vizAudioSM + vizAudioSizePerTic, lastTicOffset);
+    S_GetRender(vizAudioSM + lastTicOffset, vizAudioSamplesPerTic);
 }

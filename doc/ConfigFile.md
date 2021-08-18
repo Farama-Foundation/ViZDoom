@@ -19,8 +19,11 @@ A violation of any of these rules will result in ignoring **only** the line with
 Each list assignment (**KEY = { VALUES }**)clears values specified for this key before (in other configuration files or in the code). That is why the **append operator(*KEY += { VALUES })** is available. This way you can more easily combine multiple configuration files and tinker in code.
 
 ### <a name="config_keys"></a> Supported configuration keys:
+* `audioBufferEnabled/audio_buffer_enabled`
+* `audioBufferSize/audio_buffer_size`
+* `audioSamplingRate/audio_samping_rate`
 * `automapBufferEnabled/automap_buffer_enabled`
-* `automapMode/set_automap_mode`
+* `automapMode/automap_mode`
 * `automapRenderTextures/automap_render_textures`
 * `automapRotate/automap_rotate`
 * `availableButtons/available_buttons` (list)
@@ -59,6 +62,7 @@ Each list assignment (**KEY = { VALUES }**)clears values specified for this key 
 * `ticrate`
 * `ViZDoomPath/vizdoom_path`
 * `windowVisible/window_visible`
+
 
 See also: [`DoomGame`](DoomGame.md) for config keys and functions related to them.
 

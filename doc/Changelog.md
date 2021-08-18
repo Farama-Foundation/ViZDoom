@@ -1,5 +1,19 @@
 # Changelog
 
+
+## Changes in 1.1.9
+
+#### Audio buffer
+- Added `audio_buffer` to `State` and related methods `is/setAudioBufferEnabled`, `get/setAudioSamplingRate`, `get/setAudioBufferSize`.
+
+#### Save/load methods
+- Added `save` and `load` methods that allow to save/load game to/from a file.
+
+#### Misc
+- Added `viz_bots_path` CVAR that allows specifying path to custom bots configuration.
+
+---
+
 ## Changes in 1.1.8
 
 #### Objects and sectors
@@ -16,6 +30,7 @@
 - Dropped support for Java bindings
 - Dropped support for Lua/Torch bindings
 
+---
 
 ## Changes in 1.1.7
 
@@ -25,6 +40,7 @@
 #### CVARS
 - Added `VIEW_HEIGHT`, `CAMERA_POSITION_X`/`Y`/`Z`, `CAMERA_ANGLE`, `CAMERA_PITCH`, `CAMERA_ROLL` and `CAMERA_FOV` GameVariables.
 
+---
 
 ## Changes in 1.1.6
 
@@ -41,6 +57,7 @@
 #### Python specific
 - Added Python interpreter version check.
 
+---
 
 ## Changes in 1.1.5
 
@@ -71,6 +88,7 @@
 - Fixed minor rendering issue in depth and labels buffer.
 - Fixed order of color values in `RGB/BGR` modes of `ScreenFormat`.
 
+---
 
 ## Changes in 1.1.4
 
@@ -84,6 +102,7 @@
 - **Ported Python binding to pybind11 as a replacement for Boost.Python.**
 - Fixed problems with `pip install` detecting Python interpreter, includes and libraries from different Python versions.
 
+---
 
 ## Changes in 1.1.3
 
@@ -108,6 +127,7 @@
 #### Windows specific
 - Fixed building for Windows 10.
 
+---
 
 ## Changes in 1.1.2
 
@@ -120,6 +140,7 @@
 #### Missing methods
 - Added `isRunning`, `isDepthBufferEnabled`, `isLabelsBufferEnabled` and `isAutomapBufferEnabled` missing methods to Python and Lua bindings.
 
+---
 
 ## Changes in 1.1.1
 
@@ -134,6 +155,7 @@
 - Fixed minor memory leak
 - Fixed crash when calling `getState` in a terminal state.
 
+---
 
 ## Changes in 1.1.0
 

@@ -1,8 +1,4 @@
-if (BUILD_PYTHON2)
-    find_package(PythonInterp 2 REQUIRED)
-else ()
-    find_package(PythonInterp 3 REQUIRED)
-endif ()
+find_package(PythonInterp 3 REQUIRED)
 
 STRING(REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" _PYTHON_VERSION ${PYTHON_VERSION_STRING})
 find_package(PythonLibs ${_PYTHON_VERSION} REQUIRED)

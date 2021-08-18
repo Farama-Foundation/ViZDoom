@@ -23,10 +23,14 @@
 #ifndef __VIZ_SCREEN_H__
 #define __VIZ_SCREEN_H__
 
-#include <stddef.h>
+#include <cstddef>
 #include "viz_shared_memory.h"
 
 #include "v_video.h"
+#include "basictypes.h"
+#include "s_sound.h"
+#include "sounddef.h"
+
 
 extern unsigned int vizScreenWidth, vizScreenHeight;
 extern size_t vizScreenPitch, vizScreenSize, vizScreenChannelSize;
@@ -44,19 +48,19 @@ enum VIZScreenFormat {
     VIZ_SCREEN_DOOM_256_COLORS8 = 9
 };
 
-void VIZ_ScreenInit();
+void VIZ_BuffersInit();
 
-void VIZ_ScreenFormatUpdate();
+void VIZ_BuffersFormatUpdate();
 
-void VIZ_ScreenUpdateSM();
-
-void VIZ_ScreenSetSize();
+void VIZ_BuffersUpdateSM();
 
 void VIZ_CopyBuffer(BYTE* vizBuffer);
 
 void VIZ_ScreenUpdate();
 
 void VIZ_ScreenLevelMapUpdate();
+
+void VIZ_AudioUpdate();
 
 void VIZ_ScreenClose();
 

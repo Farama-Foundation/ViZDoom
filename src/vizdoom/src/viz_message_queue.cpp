@@ -20,6 +20,7 @@
  THE SOFTWARE.
 */
 
+#include "d_main.h"
 #include "viz_message_queue.h"
 #include "viz_input.h"
 #include "viz_game.h"
@@ -112,6 +113,7 @@ void VIZ_MQTic(){
 
             case VIZ_MSG_CODE_CLOSE:
             case VIZ_MSG_CODE_ERROR:
+                D_ClearAll();
                 exit(0);
 
             default : break;

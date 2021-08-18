@@ -24,13 +24,14 @@
 #include "viz_system.h"
 #include "viz_input.h"
 #include "viz_game.h"
-#include "viz_screen.h"
+#include "viz_buffers.h"
 #include "viz_message_queue.h"
 
 #include "d_main.h"
 #include "g_game.h"
 #include "sbar.h"
 #include "c_dispatch.h"
+#include "i_sound.h"
 #include "i_system.h"
 
 
@@ -107,6 +108,12 @@ CVAR (Int, viz_respawn_delay, 1, CVAR_DEMOSAVE | CVAR_SERVERINFO)
 CVAR (Bool, viz_spectator, false, CVAR_DEMOSAVE | CVAR_USERINFO) // players[playernum].userinfo.GetSpectator()
 CVAR (Int, viz_afk_timeout, 60, CVAR_DEMOSAVE | CVAR_SERVERINFO) // In seconds
 CVAR (Int, viz_connect_timeout, 60, CVAR_NOSET) // In seconds
+CVAR (String, viz_bots_path, "", CVAR_NOSET)
+
+// audio buffer related
+CVAR (Bool, viz_soft_audio, false, 0)
+CVAR (Int, viz_samp_freq, 44100, 0)
+CVAR (Int, viz_audio_tics, 4, 0)
 
 CCMD(viz_set_seed){
     viz_seed.CmdSet(argv[1]);
@@ -160,7 +167,7 @@ void VIZ_Init(){
 
         VIZ_GameStateInit();
         VIZ_InputInit();
-        VIZ_ScreenInit();
+        VIZ_BuffersInit();
 
         VIZ_GameStateSMUpdate();
 
@@ -183,6 +190,8 @@ void VIZ_Init(){
 
 void VIZ_Close(){
     if(*viz_controlled) {
+        Printf("VIZ_Close: instance id: %s\n", *viz_instance_id);
+
         VIZ_InputClose();
         VIZ_GameStateClose();
         VIZ_ScreenClose();
@@ -229,6 +238,12 @@ void VIZ_Tic(){
             if(vizUpdate) {
                 VIZ_Update();
             }
+
+            // Sound buffer will always be updated irrespective of update signal
+            if (*viz_soft_audio) {
+                VIZ_AudioUpdate();
+            }
+
             VIZ_MQSend(VIZ_MSG_CODE_DOOM_DONE);
             vizNextTic = false;
         }

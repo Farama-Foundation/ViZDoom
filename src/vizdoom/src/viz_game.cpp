@@ -26,7 +26,7 @@
 #include "viz_depth.h"
 #include "viz_labels.h"
 #include "viz_main.h"
-#include "viz_screen.h"
+#include "viz_buffers.h"
 #include "viz_shared_memory.h"
 #include "viz_version.h"
 

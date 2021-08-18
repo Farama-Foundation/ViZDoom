@@ -196,6 +196,14 @@ namespace vizdoom {
         size_t getScreenPitch();
         size_t getScreenSize();
 
+        /* Audio buffer */
+        bool isAudioBufferEnabled();
+        void setAudioBufferEnabled(bool audioBuffer);
+        int getAudioSamplingRate();
+        void setAudioSamplingRate(SamplingRate samplingRate);
+        int getAudioSamplesPerTic();
+        int getAudioBufferSize();
+        void setAudioBufferSize(int size);
 
     protected:
 

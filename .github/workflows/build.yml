@@ -32,7 +32,7 @@ jobs:
 
     - name: Install dependencies on MacOS
       if: runner.os == 'macOS'
-      run: brew install cmake boost sdl2
+      run: brew install cmake boost openal-soft sdl2
 
     - name: Set up Python ${{ matrix.python-version }} environment
       uses: actions/setup-python@v1

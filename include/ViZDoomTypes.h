@@ -35,6 +35,9 @@ namespace vizdoom{
     typedef std::vector<uint8_t> Buffer;
     typedef std::shared_ptr<Buffer> BufferPtr;
 
+    typedef std::vector<uint16_t> ShortBuffer;
+    typedef std::shared_ptr<ShortBuffer> ShortBufferPtr;
+
     struct Label {
         // Label properties
         uint8_t value;
@@ -105,6 +108,7 @@ namespace vizdoom{
         std::vector<double> gameVariables;
 
         BufferPtr screenBuffer;
+        ShortBufferPtr audioBuffer;
         BufferPtr depthBuffer;
         BufferPtr labelsBuffer;
         BufferPtr automapBuffer;
@@ -208,6 +212,12 @@ namespace vizdoom{
         OBJECTS,            // In addition to the previous, shows all things in the map as arrows pointing in
                             // the direction they are facing.
         OBJECTS_WITH_SIZE,  // In addition to the previous, all things are wrapped in a box showing their size.
+    };
+
+    enum SamplingRate {
+        SR_11025,           // Low sampling rate
+        SR_22050,           // Medium sampling rate.
+        SR_44100,           // High sampling rate
     };
 
     enum GameVariable {

@@ -156,6 +156,7 @@ namespace vizdoom {
 
         void setNoConsole(bool console);
         void setNoSound(bool noSound);
+        bool getNoSound() const;
 
         void addCustomArg(std::string arg);
         void clearCustomArgs();
@@ -212,11 +213,21 @@ namespace vizdoom {
         bool isSectorsEnabled();
         void setSectorsEnabled(bool sectors);
 
+        /* Audio buffer */
+        bool isAudioBufferEnabled() const;
+        void setAudioBufferEnabled(bool audioBuffer);
+        int getAudioSamplingFreq() const;
+        void setAudioSamplingFreq(int freq);
+        int getAudioSamplesPerTic();
+        int getAudioBufferSize() const;
+        void setAudioBufferSize(int size);
+
         /* Buffers in SM */
         uint8_t *const getScreenBuffer();
         uint8_t *const getDepthBuffer();
         uint8_t *const getLabelsBuffer();
         uint8_t *const getAutomapBuffer();
+        uint16_t *const getAudioBuffer();
 
         /* Buttons getters and setters */
         /*------------------------------------------------------------------------------------------------------------*/
@@ -338,7 +349,7 @@ namespace vizdoom {
         uint8_t *depthBuffer;
         uint8_t *automapBuffer;
         uint8_t *labelsBuffer;
-
+        uint16_t *audioBuffer;
 
         /* Settings */
         /*------------------------------------------------------------------------------------------------------------*/
@@ -351,6 +362,11 @@ namespace vizdoom {
         bool labels;
         bool objects;
         bool sectors;
+
+        bool softSoundAudio;
+        int audioSamplesPerTic;
+        int audioSamplingFreq;
+        int audioBufferSizeInTics;
 
         bool hud, minHud, weapon, crosshair, decals, particles, sprites, messages, corpses, flashes, renderAll;
         AutomapMode amMode;
@@ -387,7 +403,6 @@ namespace vizdoom {
 
         std::vector<std::string> customArgs;
         std::vector<std::string> doomArgs;
-
     };
 
 }

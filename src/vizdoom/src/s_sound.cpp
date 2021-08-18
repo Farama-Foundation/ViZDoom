@@ -347,7 +347,7 @@ void S_Shutdown ()
 		chan = next;
 	}
 
-	GSnd->UpdateSounds();
+	if(GSnd != NULL) GSnd->UpdateSounds();
 	for (chan = FreeChannels; chan != NULL; chan = next)
 	{
 		next = chan->NextChan;
@@ -1541,7 +1541,7 @@ void S_StopAllChannels ()
 		S_StopChannel(chan);
 		chan = next;
 	}
-	GSnd->UpdateSounds();
+	if(GSnd != NULL) GSnd->UpdateSounds();
 }
 
 //==========================================================================
@@ -1890,6 +1890,20 @@ void S_RestoreEvictedChannels()
 {
 	// Restart channels in the same order they were originally played.
 	S_RestoreEvictedChannel(Channels);
+}
+
+//==========================================================================
+//
+// S_GetRender
+//
+// Add music & sounds to input buffer
+// numSamples - number of sound samples to query (both channels).
+// THIS IS NOT THE SIZE OF DATA IN BYTES!
+//==========================================================================
+
+void S_GetRender (void *targetBuffer, int numSamples)
+{
+    GSnd->GetRenderBuffer(targetBuffer, numSamples);
 }
 
 //==========================================================================

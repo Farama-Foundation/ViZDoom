@@ -69,7 +69,7 @@ namespace vizdoom {
         this->mapChanging = false;
         this->mapLastTic = 1;
 
-        // TODO move default settings to separate file (ViZDoomConsts.h perhaps?
+        // TODO move default settings to separate file (ViZDoomConsts.h perhaps?)
         /* Settings */
         this->ticrate = DEFAULT_TICRATE;
 
@@ -90,7 +90,6 @@ namespace vizdoom {
         this->screenFormat = CRCGCB;
 
         this->depth = false;
-
         this->labels = false;
 
         this->automap = false;
@@ -100,6 +99,12 @@ namespace vizdoom {
 
         this->objects = false;
         this->sectors = false;
+
+        this->softSoundAudio = false;
+        this->audioSamplingFreq = 44100;
+        this->audioSamplesPerTic = this->audioSamplingFreq / int(DEFAULT_TICRATE);
+        this->audioBufferSizeInTics = 4;
+
 
         this->hud = false;
         this->minHud = false;
@@ -167,6 +172,7 @@ namespace vizdoom {
                 this->gameState = this->SM->getGameState();
                 this->input = this->SM->getInputState();
                 this->screenBuffer = this->SM->getScreenBuffer();
+                this->audioBuffer = this->SM->getAudioBuffer();
                 this->depthBuffer = this->SM->getDepthBuffer();
                 this->labelsBuffer = this->SM->getLabelsBuffer();
                 this->automapBuffer = this->SM->getAutomapBuffer();
@@ -594,6 +600,10 @@ namespace vizdoom {
         if (!this->doomRunning) this->noSound = sound;
     }
 
+    bool DoomController::getNoSound() const {
+        return this->noSound;
+    }
+
     void DoomController::setScreenResolution(unsigned int width, unsigned int height) {
         if (!this->doomRunning) {
             this->screenWidth = width;
@@ -610,7 +620,7 @@ namespace vizdoom {
     void DoomController::setDepthBufferEnabled(bool depthBuffer) {
         this->depth = depthBuffer;
         if (this->doomRunning) {
-            if (this->automap) this->sendCommand("viz_depth 1");
+            if (this->depth) this->sendCommand("viz_depth 1");
             else this->sendCommand("viz_depth 0");
         }
         this->updateSettings = true;
@@ -625,7 +635,7 @@ namespace vizdoom {
     void DoomController::setLabelsEnabled(bool labels) {
         this->labels = labels;
         if (this->doomRunning) {
-            if (this->automap) this->sendCommand("viz_labels 1");
+            if (this->labels) this->sendCommand("viz_labels 1");
             else this->sendCommand("viz_labels 0");
         }
     }
@@ -858,11 +868,42 @@ namespace vizdoom {
         this->sendCommand("viz_render_mode " + b::lexical_cast<std::string>(this->getRenderModeValue()));
     }
 
+    bool DoomController::isAudioBufferEnabled() const{
+        return softSoundAudio;
+    }
+
+    void DoomController::setAudioBufferEnabled(bool audioBuffer){
+        if (!this->doomRunning) this->softSoundAudio = audioBuffer;
+    }
+
+    int DoomController::getAudioSamplingFreq() const {
+        return this->audioSamplingFreq;
+    }
+
+    void DoomController::setAudioSamplingFreq(int freq) {
+        this->audioSamplingFreq = freq;
+        this->audioSamplesPerTic = freq / int(DEFAULT_TICRATE);
+    }
+
+    int DoomController::getAudioSamplesPerTic() {
+        return this->audioSamplesPerTic;
+    }
+
+    int DoomController::getAudioBufferSize() const {
+        return this->audioBufferSizeInTics;
+    }
+
+    void DoomController::setAudioBufferSize(int size) {
+        this->audioBufferSizeInTics = size;
+    }
+
 
     /* SM setters & getters */
     /*----------------------------------------------------------------------------------------------------------------*/
 
     uint8_t *const DoomController::getScreenBuffer() { return this->screenBuffer; }
+
+    uint16_t *const DoomController::getAudioBuffer() { return this->audioBuffer; }
 
     uint8_t *const DoomController::getDepthBuffer() { return this->depthBuffer; }
 
@@ -1382,19 +1423,29 @@ namespace vizdoom {
         this->doomArgs.push_back("-noidle");
         this->doomArgs.push_back("-nojoy");
 
-        // sound
-        if (this->noSound) {
+        // audio buffer + sound
+        if (this->softSoundAudio) {
+            this->doomArgs.push_back("+viz_soft_audio");
+            this->doomArgs.push_back("1");
+
+            this->doomArgs.push_back("+viz_samp_freq");
+            this->doomArgs.push_back(std::to_string(this->audioSamplingFreq));
+
+            this->doomArgs.push_back("+viz_audio_tics");
+            this->doomArgs.push_back(std::to_string(this->audioBufferSizeInTics));
+        } else if (this->noSound) {
             this->doomArgs.push_back("-nosound");
             this->doomArgs.push_back("+viz_nosound");
             this->doomArgs.push_back("1");
         }
 
+        // ticrate
         if (this->ticrate != DEFAULT_TICRATE) {
             this->doomArgs.push_back("-ticrate");
             this->doomArgs.push_back(b::lexical_cast<std::string>(this->ticrate));
         }
 
-        //custom args
+        // custom args
         for (int i = 0; i < this->customArgs.size(); ++i) {
             this->doomArgs.push_back(customArgs[i]);
         }

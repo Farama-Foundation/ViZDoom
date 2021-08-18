@@ -54,6 +54,8 @@ namespace vizdoom {
 
         static ScreenFormat stringToFormat(std::string str);
 
+        static SamplingRate stringToSamplingRate(std::string str);
+
         static Button stringToButton(std::string str);
 
         static GameVariable stringToGameVariable(std::string str);

@@ -17,6 +17,7 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 - Customizable resolution and rendering parameters,
 - Access to the depth buffer (3D vision),
 - Automatic labeling game objects visible in the frame,
+- Access to the audio buffer (thanks to [Shashank Hegde](https://github.com/hegde95)),
 - Off-screen rendering,
 - Episodes recording,
 - Time scaling in async mode.
@@ -66,7 +67,7 @@ pip install vizdoom
 
 ### macOS
 ```
-brew install cmake boost sdl2
+brew install cmake boost openal-soft sdl2
 pip install vizdoom
 ```
 (we recommend using at least macOS High Sierra 10.13+ with Python 3.7+)

@@ -83,6 +83,7 @@ namespace vizdoom {
         pyb::object depthBuffer;
         pyb::object labelsBuffer;
         pyb::object automapBuffer;
+        pyb::object audioBuffer;
 
         pyb::list labels;
         pyb::list objects;
@@ -120,6 +121,7 @@ namespace vizdoom {
 
         // These functions are wrapped for manual GIL management
         void init();
+        void newEpisode(std::string filePath = "");
         void advanceAction(unsigned int tics = 1, bool updateState = true);
         void respawnPlayer();
 
@@ -146,6 +148,7 @@ namespace vizdoom {
 
         npy_intp colorShape[3];
         npy_intp grayShape[2];
+        npy_intp audioShape[2];
 
         void updateBuffersShapes();
 

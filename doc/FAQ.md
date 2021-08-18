@@ -147,3 +147,19 @@ server proceeds by one frame). See discussion in Issues below for more informati
 * https://github.com/mwydmuch/ViZDoom/issues/228
 * https://github.com/mwydmuch/ViZDoom/issues/391
 * https://github.com/mwydmuch/ViZDoom/issues/417
+
+### I am trying to use audio/sound, but ViZDoom crashes or I there is no audio 
+
+Try running `examples/python/audio_buffer.py` and check the messages it gives you. This example also works as a small
+testing utility to ensure audio and audio buffers work for you.
+
+Older versions of OpenAL library (1.19, default version as of writing on e.g. Ubuntu 20.04) do not always play nice
+with ViZDoom. You have several options you can try (one of these steps has worked so far on all tested machines):
+
+* If ViZDoom crashes on init when you have sound enabled, try `doom_game.add_game_args("+snd_efx 0")`. Note that this might remove some audio effects like reverberation.
+* If you can run ViZDoom with sound enabled but there is no audio being played, try steps [here](https://github.com/mwydmuch/ViZDoom/pull/486#issuecomment-889389185).
+* If that fails, try uninstalling OpenAL you have on your system and then repeating the above installation.
+
+
+**Original issue:**
+* https://github.com/mwydmuch/ViZDoom/pull/486
