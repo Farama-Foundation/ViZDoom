@@ -618,9 +618,9 @@ namespace vizdoom {
 
     void DoomGame::setAudioBufferEnabled(bool audioBuffer) { this->doomController->setAudioBufferEnabled(audioBuffer); }
 
-    int DoomGame::getAudioSamplingFreq() { return this->doomController->getAudioSamplingFreq(); }
+    int DoomGame::getAudioSamplingRate() { return this->doomController->getAudioSamplingFreq(); }
 
-    void DoomGame::setAudioSamplingFreq(SamplingRate samplingRate) {
+    void DoomGame::setAudioSamplingRate(SamplingRate samplingRate) {
         int samp_freq = 0;
 
 #define CASE_SF(f) case SR_##f : samp_freq = f; break;

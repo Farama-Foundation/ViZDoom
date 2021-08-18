@@ -15,7 +15,7 @@
      * [Button](#button)
          * [binary buttons](#binary-buttons)
          * [delta buttons](#delta-buttons)
-
+     * [SamplingRate](#sampling-rate)
 
 ## C++ only
 
@@ -136,11 +136,12 @@ See also:
 - `unsigned int / int` **number**
 - `unsigned int / int` **tic**
 - `std::vector<float> / numpy.double[]` **gameVariables / game_variables**
-- `BufferPtr / numpy.uint8[]` **screenBuffer / screen_buffer**
-- `BufferPtr / numpy.uint8[]` **depthBuffer / depth_buffer**
-- `BufferPtr / numpy.uint8[]` **labelsBuffer / labels_buffer**
-- `BufferPtr / numpy.uint8[]` **automapBuffer / automap_buffer**
-- `std::vector<Label> / list` **labels**
+- `BufferPtr / numpy.uint8[]`  **screenBuffer / screen_buffer**
+- `BufferPtr / numpy.uint8[]`  **depthBuffer / depth_buffer**
+- `BufferPtr / numpy.uint8[]`  **labelsBuffer / labels_buffer**
+- `BufferPtr / numpy.uint8[]`  **automapBuffer / automap_buffer**
+- `BufferPtr / numpy.uint16[]` **audioBuffer / audio_buffer**
+- `std::vector<Label> / list`  **labels**
 
 **number** - number of the state in the episode.
 **tic** - ingame time, 1 tic is 1/35 of second in the game world. Added in 1.1.1.
@@ -149,6 +150,7 @@ See also:
 - [`DoomGame: getState`](DoomGame.md#getState),
 - [examples/python/basic.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/basic.py),
 - [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py).
+- [examples/python/audio_buffer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/audio_buffer.py).
 
 
 ---
@@ -412,7 +414,7 @@ Buttons whose value defines the speed of movement.
 A positive value indicates movement in the first specified direction and a negative value in the second direction.
 For example: value 10 for MOVE_LEFT_RIGHT_DELTA means slow movement to the right and -100 means fast movement to the left.
 
-- **LOOK_UP_DOWN_DELTA**
+- **`LOOK_UP_DOWN_DELTA`**
 - **TURN_LEFT_RIGHT_DELTA**
 - **MOVE_FORWARD_BACKWARD_DELTA**
 - **MOVE_LEFT_RIGHT_DELTA**
@@ -431,3 +433,13 @@ See also:
 - [examples/python/basic.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/basic.py),
 - [examples/python/delta_buttons.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/delta_buttons.py),
 - [GitHub issue: Angle changes by executing certain commands](https://github.com/mwydmuch/ViZDoom/issues/182).
+
+
+### <a name="sampling-rate"></a> `SamplingRate`
+
+Enum type that defines all supported sampling rates for **audioBuffer** in **State**.
+Added in 1.1.9.
+
+- **SR_11025**
+- **SR_22050**
+- **SR_44100**

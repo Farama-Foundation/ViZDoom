@@ -545,8 +545,8 @@ PYBIND11_MODULE(vizdoom, vz){
 
         .def("is_audio_buffer_enabled",&DoomGamePython::isAudioBufferEnabled)
         .def("set_audio_buffer_enabled",&DoomGamePython::setAudioBufferEnabled)
-        .def("get_audio_sampling_freq",&DoomGamePython::getAudioSamplingFreq)
-        .def("set_audio_sampling_freq",&DoomGamePython::setAudioSamplingFreq)
+        .def("get_audio_sampling_rate",&DoomGamePython::getAudioSamplingRate)
+        .def("set_audio_sampling_rate",&DoomGamePython::setAudioSamplingRate)
         .def("get_audio_buffer_size",&DoomGamePython::getAudioBufferSize)
         .def("set_audio_buffer_size",&DoomGamePython::setAudioBufferSize)
 

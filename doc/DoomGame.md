@@ -109,6 +109,13 @@
 * [setObjectsInfoEnabled](#setObjectsInfoEnabled)
 * [isSectorsInfoEnabled](#isSectorsInfoEnabled)
 * [setSectorsInfoEnabled](#setSectorsInfoEnabled)
+* [isAudioBufferEnabled](#isAudioBufferEnabled)
+* [is/setAudioBufferEnabled](#setAudioBufferEnabled)
+* [getAudioSamplingFreq](#getAudioSamplingFreq)
+* [setAudioSamplingFreq](#setAudioSamplingFreq)
+* [getAudioBufferSize](#getAudioBufferSize)
+* [setAudioBufferSize](#setAudioBufferSize)
+
 
 ## <a name="flow"></a> Flow control methods:
 
@@ -148,9 +155,9 @@ Changed in 1.1.0
 
 Initializes a new episode. All rewards, variables and state are restarted.
 After calling this method, the first state from the new episode will be available.
-If the recordFilePath is not empty, given episode will be recorded to this file (as a Doom lump).
+If the recordFilePath is not empty, the new episode will be recorded to this file (as a Doom lump).
 
-In multiplayer game, the host can call this method to finish the game.
+In a multiplayer game, the host can call this method to finish the game.
 Then the rest of the players must also call this method to start a new episode.
 
 
@@ -164,7 +171,7 @@ Then the rest of the players must also call this method to start a new episode.
 Added in 1.1.0
 
 Replays recorded episode from the given file and using the perspective of the specified player.
-Players are numbered from 1, `player` equal to 0 results in replaying demo using perspective
+Players are numbered from 1, `player` equal to 0 results in replaying demo using the perspective
 of default player in the recording file.
 After calling this method, the first state from replay will be available.
 All rewards, variables and state are available during replaying episode.
@@ -285,8 +292,8 @@ Returns true if the current episode is in the terminal state (is finished).
 | Python | `bool is_player_dead()`  |
 
 Returns true if the player is dead.
-In singleplayer player death is equivalent to the end of the episode.
-In multiplayer when the player is dead [`respawnPlayer`](#respawnPlayer) can be called.
+In singleplayer, player death is equivalent to the end of the episode.
+In multiplayer, when the player is dead [`respawnPlayer`](#respawnPlayer) method can be called.
 
 
 ---
@@ -296,8 +303,8 @@ In multiplayer when the player is dead [`respawnPlayer`](#respawnPlayer) can be 
 | :--    | :--                     |
 | Python | `void respawn_player()` |
 
-This method respawns player after death in multiplayer mode.
-After calling this method, the first state after respawn will be available.
+This method respawns the player after death in multiplayer mode.
+After calling this method, the first state after the respawn will be available.
 
 See also:
 - [`isMultiplayerGame`](#isMultiplayerGame)
@@ -310,7 +317,7 @@ See also:
 | :--    | :--                                     |
 | Python | `void send_game_command(str cmd)`       |
 
-Sends the command to Doom console. Can be used for controling game, changing settings, cheats etc.
+Sends the command to Doom console. It can be used for controlling the game, changing settings, cheats, etc.
 Some commands will be blocked in some modes.
 
 See also: 
@@ -329,7 +336,7 @@ See also:
 Changed in 1.1.0
 
 Returns [`GameState`](Types.md#gamestate) object with the current game state.
-If the current episode is finished `nullptr/null/None` will be returned.
+If the current episode is finished, `nullptr/null/None` will be returned.
 
 See also:
 - [`Types: GameState`](Types.md#gamestate)
@@ -486,7 +493,7 @@ See also:
 | Python | `void set_button_max_value(Button button, float maxValue = 0)` |
 
 Sets the maximum allowed, absolute value for the specified button.
-Setting maximum value equal to 0 results in no constraint at all (infinity).
+Setting the maximum value to 0 results in no constraint at all (infinity).
 This method makes sense only for delta buttons.
 Constraints limit applies in all Modes.
 
@@ -780,7 +787,8 @@ Returns current ticrate.
 
 Added in 1.1.0
 
-Sets ticrate for ASNYC Modes - number of tics executed per second.
+Sets ticrate for ASNYC Modes - number of logic tics executed per second.
+Default Doom ticrate is 35. This value will play a game at normal speed.
 
 Default value: 35 (default Doom ticrate).
 
@@ -973,7 +981,7 @@ Config key: `episodeTimeout/episode_timeout`
 
 Sets the screen resolution. ZDoom engine supports only specific resolutions,
 supported resolutions are part of ScreenResolution enumeration (e.g. `RES_320X240`, `RES_640X480`, `RES_1920X1080`).
-The buffers as well as the content of ViZDoom's display window will be affected.
+The buffers, as well as the content of ViZDoom's display window, will be affected.
 
 Default value: `RES_320X240`
 
@@ -1003,7 +1011,7 @@ Returns the format of the screen buffer and the automap buffer.
 
 Sets the format of the screen buffer and the automap buffer.
 Supported formats are defined in `ScreenFormat` enumeration type (e.g. `CRCGCB`, `RGB24`, `GRAY8`).
-The format change affects only the buffers so it will not have any effect on the content of ViZDoom's display window.
+The format change affects only the buffers, so it will not have any effect on the content of ViZDoom's display window.
 
 Default value: `CRCGCB`
 
@@ -1122,7 +1130,7 @@ See also:
 
 Added in 1.1.0
 
-Sets the automap mode (`NORMAL`, `WHOLE`, `OBJECTS`, `OBJECTS_WITH_SIZE`) with determine what will be visible on it.
+Sets the automap mode (`NORMAL`, `WHOLE`, `OBJECTS`, `OBJECTS_WITH_SIZE`), which determines what will be visible on it.
 
 Default value: `NORMAL`
 
@@ -1323,8 +1331,8 @@ Config key: `renderScreenFlashes/render_screen_flashes`
 
 Added in 1.1.3
 
-Determine if all frames between states will be rendered (when skip greater then 1 is used).
-Allows smooth preview, but can reduce performance.
+Determine if all frames between states will be rendered (when skip greater than 1 is used).
+Allows smooth preview but can reduce performance.
 It only makes sense to use it if the window is visible.
 
 Default value: false
@@ -1343,7 +1351,7 @@ See also:
 | Python | `void set_window_visible(bool visibility)`  |
 
 Determines if ViZDoom's window will be visible.
-ViZDoom with window disabled can be used on Linux system without X Server.
+ViZDoom with window disabled can be used on Linux systems without X Server.
 
 Default value: false
 
@@ -1495,3 +1503,111 @@ See also:
 
 
 ---
+### <a name="isAudioBufferEnabled"></a> `isAudioBufferEnabled`
+
+| C++    | `bool isAudioBufferEnabled()`    |
+| :--    | :--                              |
+| Python | `bool is_audio_buffer_enabled()` |
+
+Added in 1.1.9
+
+Returns true if the audio buffer is enabled.
+
+
+---
+### <a name="setAudioBufferEnabled"></a> `setSectorsInfoEnabled`
+
+| C++    | `void setAudioBufferEnabled(bool audioBuffer)`    |
+| :--    | :--                                               |
+| Python | `void set_audio_buffer_enabled(bool audioBuffer)` |
+
+Added in 1.1.9
+
+Returns true if the audio buffer is enabled.
+
+Default value: false
+
+Config key: `audioBufferEnabled/audio_buffer_enabled`
+
+See also:
+- [`Types: GameState`](Types.md#gamestate)
+- [`Types: SamplingRate`](Types.md#sampling-rate)
+- [examples/python/audio_buffer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/audio_buffer.py)
+
+
+---
+### <a name="getAudioSampliongRate"></a> `getAudioSamplingRate`
+
+| C++    | `SamplingRate getAudioSamplingRate()`    |
+| :--    | :--                                      |
+| Python | `SamplingRate get_audio_sampling_rate()` |
+
+Added in 1.1.9
+
+Returns the sampling rate of audio buffer.
+
+
+See also:
+- [`Types: GameState`](Types.md#gamestate)
+- [`Types: SamplingRate`](Types.md#sampling-rate)
+- [examples/python/audio_buffer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/audio_buffer.py)
+
+
+---
+### <a name="setAudioSamplingRate"></a> `setAudioSamplingRate`
+
+| C++    | `void setAudioSamplingRate(SamplingRate samplingRate)`    |
+| :--    | :--                                                       |
+| Python | `void set_audio_sampling_rate(SamplingRate samplingRate)` |
+
+Added in 1.1.9
+
+Sets the sampling rate of audio buffer.
+
+Default value: false
+
+Config key: `audioSamplingRate/audio_samping_rate`
+
+See also:
+- [`Types: GameState`](Types.md#gamestate)
+- [`Types: SamplingRate`](Types.md#sampling-rate)
+- [examples/python/audio_buffer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/audio_buffer.py)
+
+
+---
+### <a name="getAudioBufferSize"></a> `getAudioBufferSize`
+
+| C++    | `int getAudioBufferSize()`    |
+| :--    | :--                           |
+| Python | `int get_audio_buffer_size()` |
+
+Added in 1.1.9
+
+Returns the size of audio buffer.
+
+
+See also:
+- [`Types: GameState`](Types.md#gamestate)
+- [examples/python/audio_buffer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/audio_buffer.py)
+
+
+---
+### <a name="setAudioBufferSize"></a> `setAudioBufferSize`
+
+| C++    | `void setAudioBufferSize(int size)`    |
+| :--    | :--                                    |
+| Python | `void set_audio_buffer_size(int size)` |
+
+Added in 1.1.9
+
+Sets the size of audio buffer. Size is defined in number of logic tics. 
+After each action audio buffer will contain audio from specified number of last processed tics.
+Doom uses 35 ticks per second.
+
+Default value: 4
+
+Config key: `audioBufferSize/audio_buffer_size`
+
+See also:
+- [`Types: GameState`](Types.md#gamestate)
+- [examples/python/audio_buffer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/audio_buffer.py)

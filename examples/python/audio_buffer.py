@@ -30,12 +30,13 @@ if __name__ == "__main__":
     # - vzd.SamplingRate.SR_22050
     # - vzd.SamplingRate.SR_11025
     # Remember to also set audio saving code at the bottom to use same sampling rate!
-    game.set_audio_sampling_freq(vzd.SamplingRate.SR_22050)
+    game.set_audio_sampling_rate(vzd.SamplingRate.SR_22050)
 
     # When using frameskip (`tics` parameter of the `make_actions` function),
-    # we would only get the latest segment of audio (1/35 seconds).
-    # With this function you can set how many frames of audio you want to store,
-    # so you can get all audio that happened during the frameskip
+    # we would only get the latest "frame" of audio (1/35 seconds).
+    # With this function you can set how many last "frames" of audio will be stored in audio buffer.
+    # Note that if you use larger frameskip than size of audio buffer you will lost some information about the audio.
+    # If you use frameskip smaller than size of audio buffer, some audio information will overlap.
     frameskip = 4
     game.set_audio_buffer_size(frameskip)
 

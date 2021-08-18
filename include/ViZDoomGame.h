@@ -199,8 +199,8 @@ namespace vizdoom {
         /* Audio buffer */
         bool isAudioBufferEnabled();
         void setAudioBufferEnabled(bool audioBuffer);
-        int getAudioSamplingFreq();
-        void setAudioSamplingFreq(SamplingRate samplingRate);
+        int getAudioSamplingRate();
+        void setAudioSamplingRate(SamplingRate samplingRate);
         int getAudioSamplesPerTic();
         int getAudioBufferSize();
         void setAudioBufferSize(int size);

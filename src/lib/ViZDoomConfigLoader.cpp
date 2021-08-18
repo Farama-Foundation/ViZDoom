@@ -36,6 +36,7 @@
 namespace vizdoom {
 
     namespace b = boost;
+    using namespace b::algorithm;
 
     ConfigLoader::ConfigLoader(DoomGame *game) : game(game) {
 
@@ -58,8 +59,7 @@ namespace vizdoom {
     }
 
     unsigned int ConfigLoader::stringToUint(std::string str) {
-        unsigned int value = b::lexical_cast < unsigned
-        int > (str);
+        unsigned int value = b::lexical_cast <unsigned int> (str);
         if (str[0] == '-') throw b::bad_lexical_cast();
         return value;
     }
@@ -129,6 +129,14 @@ namespace vizdoom {
         if (str == "abgr32") return ABGR32;
         if (str == "gray8") return GRAY8;
         if (str == "doom_256_colors8") return DOOM_256_COLORS8;
+
+        throw std::exception();
+    }
+
+    SamplingRate ConfigLoader::stringToSamplingRate(std::string str) {
+        if (str == "sr_11025") return SR_11025;
+        if (str == "sr_22050") return SR_22050;
+        if (str == "sr_44100") return SR_44100;
 
         throw std::exception();
     }
@@ -374,13 +382,26 @@ namespace vizdoom {
     }
 
     bool ConfigLoader::load(std::string filePath) {
-        this->filePath = filePath;
+
+        std::string scenarioName = filePath;
+        trim_all(scenarioName);
+        to_lower(scenarioName);
+        replace_all(scenarioName, " ", "_");
+        if(!ends_with(scenarioName, ".cfg")) {
+            scenarioName += ".cfg";
+        }
+        std::string workingConfigPath = "./scenarios/" + scenarioName;
+        std::string sharedConfigPath = getThisSharedObjectPath() + "/scenarios/" + scenarioName;
+
+        // Check if scenario exists in library's scenerios directory
+        if (fileExists(filePath)) this->filePath = filePath;
+        else if (fileExists(workingConfigPath)) this->filePath = workingConfigPath;
+        else if (fileExists(sharedConfigPath)) this->filePath = sharedConfigPath;
+        else throw FileDoesNotExistException(filePath + " | " + workingConfigPath + " | " + sharedConfigPath);
+
         bool success = true;
         std::ifstream file(filePath);
 
-        if (!file.good()) {
-            throw FileDoesNotExistException(filePath);
-        }
 
         std::string line;
         int lineNumber = 0;
@@ -388,7 +409,6 @@ namespace vizdoom {
         /* Process every line. */
         while (!file.eof()) {
             ++lineNumber;
-            using namespace b::algorithm;
 
             std::getline(file, line);
 
@@ -416,7 +436,7 @@ namespace vizdoom {
                 key = line.substr(0, equals_sign_pos);
                 val = line.substr(equals_sign_pos + 1);
             } else {
-                std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Syntax erorr in line #" <<
+                std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Syntax error in line #" <<
                           lineNumber << ". Line ignored.\n";
 
                 success = false;
@@ -512,7 +532,7 @@ namespace vizdoom {
             }
 
             /* Parse game args which are string but enables "+=" */
-            if (key == "game_args" || key == "game_args") {
+            if (key == "game_args" || key == "gameargs") {
                 if (!append) {
                     this->game->clearGameArgs();
                 }
@@ -561,6 +581,10 @@ namespace vizdoom {
                     this->game->setTicrate(stringToUint(val));
                     continue;
                 }
+                if (key == "audio_buffer_size" || key == "audiobuffersize") {
+                    this->game->setAudioBufferSize(stringToUint(val));
+                    continue;
+                }
             }
             catch (b::bad_lexical_cast &) {
                 std::cerr << "WARNING! Loading config from: \"" << filePath <<
@@ -583,7 +607,7 @@ namespace vizdoom {
                 }
             }
             catch (b::bad_lexical_cast &) {
-                std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Float value expected insted of: " <<
+                std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Float value expected instead of: " <<
                           rawVal << " in line #" << lineNumber << ". Line ignored.\n";
 
                 success = false;
@@ -698,6 +722,10 @@ namespace vizdoom {
                     this->game->setSoundEnabled(stringToBool(val));
                     continue;
                 }
+                if (key == "audio_buffer_enabled" || key == "audiobufferenabled") {
+                    this->game->setAudioBufferEnabled(stringToBool(val));
+                    continue;
+                }
             }
             catch (std::exception) {
                 std::cerr << "WARNING! Loading config from: \"" << filePath <<
@@ -773,8 +801,12 @@ namespace vizdoom {
                     this->game->setScreenFormat(stringToFormat(val));
                     continue;
                 }
+                if (key == "audio_sampling_rate" || key == "audiosamplingrate") {
+                    this->game->setAudioSamplingRate(stringToSamplingRate(val));
+                    continue;
+                }
                 if (key == "button_max_value" || key == "buttonmaxvalue") {
-                    size_t space = val.find_first_of(" ");
+                    size_t space = val.find_first_of(' ');
 
                     if (space == std::string::npos) throw std::exception();
 
