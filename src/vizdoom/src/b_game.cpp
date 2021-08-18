@@ -60,6 +60,9 @@ Everything that is changed is marked (maybe commented) with "Added by MC"
 #include "d_net.h"
 #include "d_netinf.h"
 
+// VIZDOOM_CODE
+EXTERN_CVAR (String, viz_bots_path)
+
 static FRandom pr_botspawn ("BotSpawn");
 
 //Externs
@@ -233,7 +236,7 @@ bool FCajunMaster::SpawnBot (const char *name, int color)
 
 		if (thebot == NULL)
 		{
-   		 	Printf ("couldn't find %s in %s\n", name, BOTFILENAME);
+   		 	Printf ("couldn't find %s in bots config\n", name);
 			return false;
 		}
 		else if (thebot->inuse == BOTINUSE_Waiting)
@@ -261,7 +264,7 @@ bool FCajunMaster::SpawnBot (const char *name, int color)
 
 		if (BotInfoAvailable.Size () == 0)
 		{
-			Printf ("Couldn't spawn bot; no bot left in %s\n", BOTFILENAME);
+			Printf ("Couldn't spawn bot; no bot left in bots config\n");
 			return false;
 		}
 
@@ -484,18 +487,22 @@ void FCajunMaster::ForgetBots ()
 bool FCajunMaster::LoadBots ()
 {
 	FScanner sc;
-	FString tmp;
+	FString bots_filepath;
 	bool gotteam = false;
 	int loaded_bots = 0;
 
 	bglobal.ForgetBots ();
-	tmp = M_GetCajunPath(BOTFILENAME);
-	if (tmp.IsEmpty())
+
+    bots_filepath = *viz_bots_path;
+    if(!FileExists(bots_filepath)) {
+        bots_filepath = M_GetCajunPath(BOTFILENAME);
+    }
+	if (bots_filepath.IsEmpty())
 	{
-		DPrintf ("No " BOTFILENAME ", so no bots\n");
+		Printf ("No bots file \"%s\", so no bots\n", bots_filepath.GetChars());
 		return false;
 	}
-	sc.OpenFile(tmp);
+	sc.OpenFile(bots_filepath);
 
 	while (sc.GetString ())
 	{
@@ -605,7 +612,7 @@ bool FCajunMaster::LoadBots ()
 		bglobal.botinfo = newinfo;
 		loaded_bots++;
 	}
-	Printf ("%d bots read from %s\n", loaded_bots, BOTFILENAME);
+	Printf ("%d bots read from %s\n", loaded_bots, bots_filepath.GetChars());
 	return true;
 }
 

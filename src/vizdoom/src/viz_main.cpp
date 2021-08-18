@@ -108,6 +108,7 @@ CVAR (Int, viz_respawn_delay, 1, CVAR_DEMOSAVE | CVAR_SERVERINFO)
 CVAR (Bool, viz_spectator, false, CVAR_DEMOSAVE | CVAR_USERINFO) // players[playernum].userinfo.GetSpectator()
 CVAR (Int, viz_afk_timeout, 60, CVAR_DEMOSAVE | CVAR_SERVERINFO) // In seconds
 CVAR (Int, viz_connect_timeout, 60, CVAR_NOSET) // In seconds
+CVAR (String, viz_bots_path, "", CVAR_NOSET)
 
 // audio buffer related
 CVAR (Bool, viz_soft_audio, false, 0)
