@@ -5,14 +5,14 @@
 # that can be hosted using cig_multiplayer_host.py script.
 #####################################################################
 
-from vizdoom import *
+import os
 from random import choice
-import sys
+import vizdoom as vzd
 
-game = DoomGame()
+game = vzd.DoomGame()
 
 # Use CIG example config or your own.
-game.load_config("../../scenarios/cig.cfg")
+game.load_config(os.path.join(vzd.scenarios_path, "cig.cfg"))
 
 game.set_doom_map("map01")  # Limited deathmatch.
 #game.set_doom_map("map02")  # Full deathmatch.
@@ -26,7 +26,7 @@ game.add_game_args("+name AI +colorset 0")
 
 # During the competition, async mode will be forced for all agents.
 #game.set_mode(Mode.PLAYER)
-game.set_mode(Mode.ASYNC_PLAYER)
+game.set_mode(vzd.Mode.ASYNC_PLAYER)
 
 #game.set_window_visible(False)
 
@@ -36,7 +36,7 @@ game.init()
 actions = [[1,0,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0]]
 
 # Get player's number
-player_number = int(game.get_game_variable(GameVariable.PLAYER_NUMBER))
+player_number = int(game.get_game_variable(vzd.GameVariable.PLAYER_NUMBER))
 last_frags = 0
 
 # Play until the game (episode) is over.
@@ -49,7 +49,7 @@ while not game.is_episode_finished():
 
     # Make your action.
     game.make_action(choice(actions))
-    frags = game.get_game_variable(GameVariable.FRAGCOUNT)
+    frags = game.get_game_variable(vzd.GameVariable.FRAGCOUNT)
     if frags != last_frags:
         last_frags = frags
         print("Player " + str(player_number) + " has " + str(frags) + " frags.")

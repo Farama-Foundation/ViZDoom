@@ -13,14 +13,16 @@
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
+from argparse import ArgumentParser
+import cv2
+import numpy as np
+import os
 from random import choice
 import vizdoom as vzd
-import numpy as np
-from argparse import ArgumentParser
 
-import cv2
 
-DEFAULT_CONFIG = "../../scenarios/deadly_corridor.cfg"
+DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "deadly_corridor.cfg")
+
 if __name__ =="__main__":
     parser = ArgumentParser("ViZDoom example showing how to use labels and labels buffer.")
     parser.add_argument(dest="config",

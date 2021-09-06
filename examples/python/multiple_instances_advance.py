@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
+import os
 from random import choice, random
 from time import sleep, time
-from vizdoom import *
+import vizdoom as vzd
 
 # For multiplayer game use process (ZDoom's multiplayer sync mechanism prevents threads to work as expected).
 from multiprocessing import cpu_count, Process
@@ -16,25 +17,25 @@ timelimit = 1 # minutes
 players = 8 # number of players
 
 skip = 4
-mode = Mode.PLAYER # or Mode.ASYNC_PLAYER
-ticrate = 2 * DEFAULT_TICRATE # for Mode.ASYNC_PLAYER
+mode = vzd.Mode.PLAYER # or Mode.ASYNC_PLAYER
+ticrate = 2 * vzd.DEFAULT_TICRATE # for Mode.ASYNC_PLAYER
 random_sleep = True
 const_sleep_time = 0.005
-window = False
-resolution = ScreenResolution.RES_320X240
+window = True
+resolution = vzd.ScreenResolution.RES_320X240
 
 args =""
 console = False
-config = "../../scenarios/cig.cfg"
+config = os.path.join(vzd.scenarios_path, "cig.cfg")
 
 
 def setup_player():
-    game = DoomGame()
+    game = vzd.DoomGame()
 
     game.load_config(config)
     game.set_mode(mode)
     game.add_game_args(args)
-    game.set_screen_resolution(ScreenResolution.RES_640X480)
+    game.set_screen_resolution(resolution)
     game.set_console_enabled(console)
     game.set_window_visible(window)
     game.set_ticrate(ticrate)
@@ -82,12 +83,12 @@ def player_host(p):
             player_action(game, player_sleep_time, actions, player_skip)
             action_count += 1
 
-        print("Player0 frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
+        print("Player0 frags:", game.get_game_variable(vzd.GameVariable.FRAGCOUNT))
 
         print("Host: Episode finished!")
-        player_count = int(game.get_game_variable(GameVariable.PLAYER_COUNT))
+        player_count = int(game.get_game_variable(vzd.GameVariable.PLAYER_COUNT))
         for i in range(1, player_count + 1):
-            print("Host: Player" + str(i) + ":", game.get_game_variable(eval("GameVariable.PLAYER" + str(i) + "_FRAGCOUNT")))
+            print("Host: Player" + str(i) + ":", game.get_game_variable(eval("vzd.GameVariable.PLAYER" + str(i) + "_FRAGCOUNT")))
         print("Host: Episode processing time:", time() - episode_start_time)
 
         # Starts a new episode. All players have to call new_episode() in multiplayer mode.
@@ -115,7 +116,7 @@ def player_join(p):
             player_action(game, player_sleep_time, actions, player_skip)
             action_count += 1
 
-        print("Player" + str(p) + " frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
+        print("Player" + str(p) + " frags:", game.get_game_variable(vzd.GameVariable.FRAGCOUNT))
         game.new_episode()
 
     game.close()

@@ -4,19 +4,20 @@
 # This script presents how to host a deathmatch game.
 #####################################################################
 
-from vizdoom import *
+import os
 from random import choice
+import vizdoom as vzd
 
-game = DoomGame()
+game = vzd.DoomGame()
 
 # Use CIG example config or your own.
-game.load_config("../../scenarios/cig.cfg")
+game.load_config(os.path.join(vzd.scenarios_path, "cig.cfg"))
 
 game.set_doom_map("map01")  # Limited deathmatch.
 #game.set_doom_map("map02")  # Full deathmatch.
 
 # Host game with options that will be used in the competition.
-game.add_game_args("-host 8 "  
+game.add_game_args("-host 2 "  
                    # This machine will function as a host for a multiplayer game with this many players (including this machine). 
                    # It will wait for other machines to connect using the -join parameter and then start the game when everyone is connected.
                    "-deathmatch "           # Deathmatch rules are used for the game.
@@ -37,8 +38,8 @@ game.add_game_args("-host 8 "
 game.add_game_args("+name Host +colorset 0")
 
 # During the competition, async mode will be forced for all agents.
-#game.set_mode(Mode.PLAYER)
-game.set_mode(Mode.ASYNC_PLAYER)
+#game.set_mode(vzd.Mode.PLAYER)
+game.set_mode(vzd.Mode.ASYNC_PLAYER)
 
 #game.set_window_visible(False)
 

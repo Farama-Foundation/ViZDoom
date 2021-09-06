@@ -4,10 +4,10 @@
 # This script test recording functionality
 #####################################################################
 
-import vizdoom as vzd
 from random import random
-from time import sleep
 import os
+from time import sleep
+import vizdoom as vzd
 
 GV = vzd.GameVariable
 B = vzd.Button
@@ -15,7 +15,7 @@ B = vzd.Button
 
 def setup_test(buttons, variables, visible=True):
     game = vzd.DoomGame()
-    game.set_doom_scenario_path("../../scenarios/basic.wad")
+    game.set_doom_scenario_path(os.path.join(vzd.scenarios_path, "basic.cfg"))
     game.set_doom_map("map01")
     game.set_episode_start_time(10)
 

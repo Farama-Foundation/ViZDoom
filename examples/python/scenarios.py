@@ -10,13 +10,14 @@
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
+from argparse import ArgumentParser
 import itertools as it
+import os
 from random import choice
 from time import sleep
 import vizdoom as vzd
-from argparse import ArgumentParser
 
-DEFAULT_CONFIG = "../../scenarios/rocket_basic.cfg"
+DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "srocket_basic.cfg")
 if __name__ == "__main__":
 
     parser = ArgumentParser("ViZDoom scenarios example.")

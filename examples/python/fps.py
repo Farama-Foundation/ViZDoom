@@ -3,17 +3,18 @@
 #####################################################################
 # This script tests performance in frames per second.
 # Change iters, resolution, window visibility, use get_ state or not.
-# It should give you some idea how fast the framework can work on
-# your hardware. The test involes copying the state to make it more 
-# simillar to any reasonable usage. Comment the line with get_state 
+# It should give you some idea of how fast the framework can work on
+# your hardware. The test involves copying the state to make it more
+# similar to any reasonable usage. Comment the line with get_state
 # to exclude copying process.
 #####################################################################
 
+from argparse import ArgumentParser
+import os
 from random import choice
 from time import time
-import vizdoom as vzd
-from argparse import ArgumentParser
 import tqdm
+import vizdoom as vzd
 
 # Options:
 resolution = vzd.ScreenResolution.RES_320X240
@@ -23,7 +24,7 @@ labels_buffer = False
 automap_buffer = False
 
 #####################################################################
-DEFAULT_CONFIG = "../../scenarios/basic.cfg"
+DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "basic.cfg")
 DEFAULT_ITERATIONS = 10000
 
 if __name__ == "__main__":

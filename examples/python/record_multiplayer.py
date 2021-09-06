@@ -8,16 +8,15 @@
 # WARNING:
 # Due to the bug in build-in bots recording game with bots will result in the desynchronization of the recording.
 
-from vizdoom import *
-from random import choice
-import os
 from multiprocessing import Process
-
+import os
+from random import choice
+import vizdoom as vzd
 
 def player1():
-    game = DoomGame()
+    game = vzd.DoomGame()
 
-    game.load_config('../../scenarios/multi_duel.cfg')
+    game.load_config(os.path.join(vzd.scenarios_path, "multi_duel.cfg"))
     game.add_game_args("-host 2 -deathmatch +timelimit 1 +sv_spawnfarthest 1 ")
     game.add_game_args("+name Player1 +colorset 0")
 
@@ -35,7 +34,7 @@ def player1():
         game.make_action(choice(actions))
 
     print("Game finished!")
-    print("Player1 frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
+    print("Player1 frags:", game.get_game_variable(vzd.GameVariable.FRAGCOUNT))
     game.close()
 
 
@@ -57,7 +56,7 @@ def player2():
 
         game.make_action(choice(actions))
 
-    print("Player2 frags:", game.get_game_variable(GameVariable.FRAGCOUNT))
+    print("Player2 frags:", game.get_game_variable(vzd.GameVariable.FRAGCOUNT))
     game.close()
 
 
@@ -76,8 +75,8 @@ def replay_as_player2():
         game.advance_action()
 
     print("Game finished!")
-    print("Player1 frags:", game.get_game_variable(GameVariable.PLAYER1_FRAGCOUNT))
-    print("Player2 frags:", game.get_game_variable(GameVariable.PLAYER2_FRAGCOUNT))
+    print("Player1 frags:", game.get_game_variable(vzd.GameVariable.PLAYER1_FRAGCOUNT))
+    print("Player2 frags:", game.get_game_variable(vzd.GameVariable.PLAYER2_FRAGCOUNT))
     game.close()
 
     # Delete multi_rec.lmp

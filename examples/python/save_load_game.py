@@ -7,18 +7,20 @@
 # WARNING:
 # Please note that this feature is experimental and not well tested!
 
-import vizdoom as vzd
-
-import os
 import itertools as it
+import os
 from random import choice
 from time import sleep
+import vizdoom as vzd
 
 if __name__ == "__main__":
     # Create DoomGame instance. It will run the game and communicate with you.
     game = vzd.DoomGame()
     game.load_config("../../scenarios/health_gathering_supreme.cfg")
     game.set_render_hud(True)
+
+    game.add_available_game_variable(vzd.GameVariable.POSITION_X)
+    game.add_available_game_variable(vzd.GameVariable.POSITION_Y)
 
     # Creates all possible actions depending on how many buttons there are.
     actions_num = game.get_available_buttons_size()
@@ -66,6 +68,7 @@ if __name__ == "__main__":
     # A new state is available after loading.
     state = game.get_state()
 
+    # There can be small difference in some of the game variables
     print("\nGame loaded!")
     print("Game variables:", state.game_variables)
 

@@ -6,16 +6,16 @@
 # https://github.com/mwydmuch/PyOblige
 #####################################################################
 
+import os
 from random import choice
 from time import sleep
-
-from vizdoom import *
+import vizdoom as vzd
 from oblige import *
 
 game = DoomGame()
 
 # Use your config
-game.load_config("../../scenarios/cig.cfg")
+game.load_config(os.path.join(vzd.scenarios_path, "cig.cfg"))
 game.set_doom_map("map01")
 game.set_doom_skill(3)
 
@@ -59,7 +59,7 @@ game.add_game_args("+freelook 1")
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 game.set_window_visible(True)
 #game.set_mode(Mode.SPECTATOR)
-game.set_mode(Mode.ASYNC_SPECTATOR)
+game.set_mode(vzd.Mode.ASYNC_SPECTATOR)
 
 game.init()
 

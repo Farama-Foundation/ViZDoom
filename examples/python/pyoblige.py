@@ -5,12 +5,12 @@
 # https://github.com/mwydmuch/PyOblige
 #####################################################################
 
-from time import sleep
-import os
-
-import vizdoom as vzd
 from argparse import ArgumentParser
+import os
+from time import sleep
+
 import oblige
+import vizdoom as vzd
 
 DEFAULT_CONFIG = "../../scenarios/oblige.cfg"
 DEFAULT_SEED = 666

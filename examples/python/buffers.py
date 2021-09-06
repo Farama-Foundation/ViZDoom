@@ -11,11 +11,12 @@
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
+from argparse import ArgumentParser
+import os
 from random import choice
 import vizdoom as vzd
-from argparse import ArgumentParser
 
-DEFAULT_CONFIG = "../../scenarios/deadly_corridor.cfg"
+DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "deadly_corridor.cfg")
 
 import cv2
 

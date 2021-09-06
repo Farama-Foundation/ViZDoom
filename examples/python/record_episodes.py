@@ -7,20 +7,20 @@
 
 import os
 from random import choice
-from vizdoom import *
+import vizdoom as vzd
 
-game = DoomGame()
+game = vzd.DoomGame()
 
 # Use other config file if you wish.
-game.load_config("../../scenarios/basic.cfg")
+game.load_config(os.path.join(vzd.scenarios_path, "basic.cfg"))
 game.set_episode_timeout(100)
 
 # Record episodes while playing in 320x240 resolution without HUD
-game.set_screen_resolution(ScreenResolution.RES_320X240)
+game.set_screen_resolution(vzd.ScreenResolution.RES_320X240)
 game.set_render_hud(False)
 
 # Episodes can be recorder in any available mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR)
-game.set_mode(Mode.PLAYER)
+game.set_mode(vzd.Mode.PLAYER)
 
 game.init()
 
@@ -50,18 +50,18 @@ for i in range(episodes):
         print("Reward:", r)
         print("=====================")
 
-    print("Episode finished.")
+    print("Episode", i, "finished.")
     print("total reward:", game.get_total_reward())
     print("************************\n")
 
 game.close()
 
 # New render settings for replay
-game.set_screen_resolution(ScreenResolution.RES_800X600)
+game.set_screen_resolution(vzd.ScreenResolution.RES_800X600)
 game.set_render_hud(True)
 
 # Replay can be played in any mode.
-game.set_mode(Mode.SPECTATOR)
+game.set_mode(vzd.Mode.SPECTATOR)
 
 game.init()
 
@@ -87,7 +87,7 @@ for i in range(episodes):
         print("Reward:", r)
         print("=====================")
 
-    print("Episode finished.")
+    print("Episode", i, "finished.")
     print("total reward:", game.get_total_reward())
     print("************************")
 

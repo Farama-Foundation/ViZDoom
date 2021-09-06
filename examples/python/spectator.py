@@ -8,13 +8,12 @@
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
-from __future__ import print_function
-
+from argparse import ArgumentParser
+import os
 from time import sleep
 import vizdoom as vzd
-from argparse import ArgumentParser
 
-DEFAULT_CONFIG = "../../scenarios/deathmatch.cfg"
+DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "deathmatch.cfg")
 
 if __name__ == "__main__":
     parser = ArgumentParser("ViZDoom example showing how to use SPECTATOR mode.")

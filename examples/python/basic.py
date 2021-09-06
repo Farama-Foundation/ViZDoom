@@ -11,10 +11,11 @@
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
-import vizdoom as vzd
-
+import os
 from random import choice
 from time import sleep
+import vizdoom as vzd
+
 
 if __name__ == "__main__":
     # Create DoomGame instance. It will run the game and communicate with you.
@@ -27,7 +28,7 @@ if __name__ == "__main__":
 
     # Sets path to additional resources wad file which is basically your scenario wad.
     # If not specified default maps will be used and it's pretty much useless... unless you want to play good old Doom.
-    game.set_doom_scenario_path("../../scenarios/basic.wad")
+    game.set_doom_scenario_path(os.path.join(vzd.scenarios_path, "basic.wad"))
 
     # Sets map to start (scenario .wad files can contain many maps).
     game.set_doom_map("map01")
@@ -65,13 +66,24 @@ if __name__ == "__main__":
     game.set_render_corpses(False)
     game.set_render_screen_flashes(True)  # Effect upon taking damage or picking up items
 
-    # Adds buttons that will be allowed.
-    game.add_available_button(vzd.Button.MOVE_LEFT)
-    game.add_available_button(vzd.Button.MOVE_RIGHT)
-    game.add_available_button(vzd.Button.ATTACK)
+    # Adds buttons that will be allowed to use.
+    # This can be done by adding buttons one by one:
+    # game.clear_available_buttons()
+    # game.add_available_button(vzd.Button.MOVE_LEFT)
+    # game.add_available_button(vzd.Button.MOVE_RIGHT)
+    # game.add_available_button(vzd.Button.ATTACK)
+    # Or by setting them all at once:
+    game.set_available_buttons([vzd.Button.MOVE_LEFT, vzd.Button.MOVE_RIGHT, vzd.Button.ATTACK])
+    # Buttons that will be used can be also checked by:
+    print("Available buttons:", [b.name for b in game.get_available_buttons()])
 
     # Adds game variables that will be included in state.
-    game.add_available_game_variable(vzd.GameVariable.AMMO2)
+    # Similarly to buttons, they can be added one by one:
+    # game.clear_available_game_variables()
+    # game.add_available_game_variable(vzd.GameVariable.AMMO2)
+    # Or:
+    game.set_available_game_variables([vzd.GameVariable.AMMO2])
+    print("Available game variables:", [v.name for v in game.get_available_game_variables()])
 
     # Causes episodes to finish after 200 tics (actions)
     game.set_episode_timeout(200)

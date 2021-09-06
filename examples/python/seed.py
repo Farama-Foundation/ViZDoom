@@ -13,13 +13,14 @@
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
+from argparse import ArgumentParser
 import itertools as it
+import os
 from random import choice
 from time import sleep
-from argparse import ArgumentParser
 import vizdoom as vzd
 
-DEFAULT_CONFIG = "../../scenarios/basic.cfg"
+DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "basic.cfg")
 
 if __name__ == "__main__":
     parser = ArgumentParser("ViZDoom example showing how to set seed to have deterministic episodes.")

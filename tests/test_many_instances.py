@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
+from argparse import ArgumentParser
 from multiprocessing import Process
 from random import choice
 import vizdoom as vzd
-from argparse import ArgumentParser
 
 
-DEFAULT_CONFIG = "../../scenarios/basic.cfg"
-
+DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "basic.cfg")
 
 def play(process, instances, config_file):
     games = []

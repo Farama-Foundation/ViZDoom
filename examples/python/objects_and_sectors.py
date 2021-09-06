@@ -5,7 +5,8 @@ import vizdoom as vzd
 from argparse import ArgumentParser
 import matplotlib.pyplot as plt
 
-DEFAULT_CONFIG = "../../scenarios/my_way_home.cfg"
+DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "my_way_home.cfg")
+
 if __name__ =="__main__":
     parser = ArgumentParser("ViZDoom example showing how to use information about objects and map.")
     parser.add_argument(dest="config",

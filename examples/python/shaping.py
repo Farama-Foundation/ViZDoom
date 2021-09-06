@@ -13,13 +13,14 @@
 # Game variables from state and last reward are printed.
 #####################################################################
 
+from argparse import ArgumentParser
+import os
 import itertools as it
 from random import choice
 from time import sleep
-from argparse import ArgumentParser
 import vizdoom as vzd
 
-DEFAULT_CONFIG = "../../scenarios/health_gathering.cfg"
+DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "health_gathering.cfg")
 
 if __name__ == "__main__":
     parser = ArgumentParser("ViZDoom example showing how to use shaping for health gathering scenario.")

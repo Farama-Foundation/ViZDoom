@@ -5,17 +5,15 @@
 # that can be hosted using ci_singleplayer_host.py script.
 #####################################################################
 
+import os
 from random import choice
 from time import sleep
-import os
+import vizdoom as vzd
 
-from vizdoom import *
-from oblige import *
-
-game = DoomGame()
+game = vzd.DoomGame()
 
 # Use your config
-game.load_config("../../scenarios/cig.cfg")
+game.load_config(os.path.join(vzd.scenarios_path, "cig.cfg"))
 game.set_doom_map("map01")
 wad_path = "cig_singleplayer.wad"
 game.set_doom_scenario_path(wad_path)
@@ -27,10 +25,10 @@ game.add_game_args("-join 127.0.0.1") # Connect to a host for a multiplayer game
 # colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue
 game.add_game_args("+name AI +colorset 0")
 
-game.set_screen_resolution(ScreenResolution.RES_640X480)
+game.set_screen_resolution(vzd.ScreenResolution.RES_640X480)
 game.set_window_visible(True)
 #game.set_mode(Mode.PLAYER)
-game.set_mode(Mode.ASYNC_PLAYER)
+game.set_mode(vzd.Mode.ASYNC_PLAYER)
 
 # Wait for wad generator
 sleep(1)
