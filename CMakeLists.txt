@@ -11,9 +11,7 @@ set(ViZDoom_VERSION_ID ${ViZDoom_VERSION_MAJOR}${ViZDoom_VERSION_MINOR}${ViZDoom
 # Building options
 #-----------------------------------------------------------------------------------------------------------------------
 
-option(BUILD_PYTHON3 "Build ViZDoom Python 3 binding." OFF)
-option(BUILD_PYTHON "Build ViZDoom Python (3 by default) binding." OFF)
-option(BUILD_PYTHON2 "Build ViZDoom Python2 binding instead of default Python3." OFF)
+option(BUILD_PYTHON "Build ViZDoom Python (3) binding" OFF)
 option(BUILD_JULIA "Build ViZDoom Julia binding." OFF)
 set(PYBIND11_VERSION "v2.6.2" CACHE STRING "Pybind11 version to use")
 set(FREEDOOM_VERSION "0.12.1" CACHE STRING "Freedoom version to use")
@@ -165,7 +163,7 @@ add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
 # Python and Julia
 #-----------------------------------------------------------------------------------------------------------------------
 
-if (BUILD_PYTHON OR BUILD_PYTHON3 OR BUILD_PYTHON2)
+if (BUILD_PYTHON)
     add_subdirectory(${VIZDOOM_SRC_DIR}/lib_python)
 endif ()
 

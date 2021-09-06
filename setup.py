@@ -37,11 +37,7 @@ def get_vizdoom_version():
 
 
 def get_python_library(python_lib_dir):
-    if python_version[0] == 2:
-        python_lib_name = 'libpython{}.{}'
-    else:
-        python_lib_name = 'libpython{}m.{}'
-
+    python_lib_name = 'libpython{}m.{}'
     python_lib_name = python_lib_name.format(python_version, library_extension)
     python_library = os.path.join(python_lib_dir, python_lib_name)
     return python_library
@@ -67,9 +63,6 @@ class BuildCommand(build):
                 cmake_arg_list.append("-DPYTHON_LIBRARY={}".format(python_library))
                 cmake_arg_list.append("-DPYTHON_INCLUDE_DIR={}".format(python_include_dir))
                 cmake_arg_list.append("-DNUMPY_INCLUDES={}".format(numpy_include_dir))
-
-            if python_version[0] == "2":
-                cmake_arg_list.append("-DBUILD_PYTHON2=ON")
 
             subprocess.check_call(['rm', '-f', 'CMakeCache.txt'])
             subprocess.check_call(cmake_arg_list)
