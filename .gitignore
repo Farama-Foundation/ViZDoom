@@ -31,12 +31,12 @@ ImportExecutables.cmake
 *.cbp
 
 # MSVC
+.vs
 *.sln
 *.suo
 *.sdf
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
+*.vcxproj*
+*.cmd
 
 # Python 
 *.pyd
