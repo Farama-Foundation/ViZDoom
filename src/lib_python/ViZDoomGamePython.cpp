@@ -27,20 +27,10 @@
 #include <cstring>
 
 namespace vizdoom {
-
-    #if PY_MAJOR_VERSION >= 3
-        void* init_numpy() {
-            import_array();
-            return NULL;
-        }
-    #else
-        void init_numpy() {
-            import_array();
-        }
-    #endif
-
     DoomGamePython::DoomGamePython() {
-        init_numpy();
+        this->grayShape.resize(2);
+        this->audioShape.resize(2);
+        this->variablesShape.resize(1);
     }
 
     void DoomGamePython::setAction(pyb::list const &pyAction) {
@@ -68,23 +58,21 @@ namespace vizdoom {
 
         /* Update buffers */
         this->updateBuffersShapes();
-        int colorDims = 3;
-        if (this->getScreenChannels() == 1) colorDims = 2;
 
         if (this->state->screenBuffer != nullptr)
-            this->pyState->screenBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->screenBuffer->data());
+            this->pyState->screenBuffer = this->dataToNumpyArray(this->colorShape, this->state->screenBuffer->data());
         else this->pyState->screenBuffer = pyb::none();
 
         if (this->state->audioBuffer != nullptr)
-            this->pyState->audioBuffer = this->dataToNumpyArray(2, this->audioShape, NPY_SHORT, this->state->audioBuffer->data());
+            this->pyState->audioBuffer = this->dataToNumpyArray(this->audioShape, this->state->audioBuffer->data());
         else this->pyState->audioBuffer = pyb::none();
 
         if (this->state->depthBuffer != nullptr)
-            this->pyState->depthBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->depthBuffer->data());
+            this->pyState->depthBuffer = this->dataToNumpyArray(this->grayShape, this->state->depthBuffer->data());
         else this->pyState->depthBuffer = pyb::none();
 
         if (this->state->labelsBuffer != nullptr) {
-            this->pyState->labelsBuffer = this->dataToNumpyArray(2, this->grayShape, NPY_UBYTE, this->state->labelsBuffer->data());
+            this->pyState->labelsBuffer = this->dataToNumpyArray(this->grayShape, this->state->labelsBuffer->data());
 
             /* Update labels */
             this->pyState->labels = DoomGamePython::vectorToPyList<Label>(this->state->labels);
@@ -94,14 +82,14 @@ namespace vizdoom {
         }
 
         if (this->state->automapBuffer != nullptr)
-            this->pyState->automapBuffer = this->dataToNumpyArray(colorDims, this->colorShape, NPY_UBYTE, this->state->automapBuffer->data());
+            this->pyState->automapBuffer = this->dataToNumpyArray(this->colorShape, this->state->automapBuffer->data());
         else this->pyState->automapBuffer = pyb::none();
 
         /* Updates vars */
-        if (this->state->gameVariables.size() > 0) {
+        if (!this->state->gameVariables.empty()) {
             // Numpy array version
-            npy_intp shape = this->state->gameVariables.size();
-            this->pyState->gameVariables = dataToNumpyArray(1, &shape, NPY_DOUBLE, this->state->gameVariables.data());
+            this->variablesShape[0] = this->state->gameVariables.size();
+            this->pyState->gameVariables = dataToNumpyArray(this->variablesShape, this->state->gameVariables.data());
 
             // Python list version
             //this->pyState->gameVariables = DoomGamePython::vectorToPyList<double>(this->state->gameVariables);
@@ -184,7 +172,6 @@ namespace vizdoom {
     }
 
     void DoomGamePython::newEpisode(std::string filePath) {
-
         ReleaseGIL gil = ReleaseGIL();  // this prevents the deadlock during the start of multiplayer game, if different Doom instances are started from different Python threads
         DoomGame::newEpisode(filePath);
     }
@@ -207,15 +194,24 @@ namespace vizdoom {
         switch(this->getScreenFormat()){
             case CRCGCB:
             case CBCGCR:
+                this->colorShape.resize(3);
                 this->colorShape[0] = channels;
                 this->colorShape[1] = height;
                 this->colorShape[2] = width;
                 break;
 
+//            case GRAY8:
+//            case DOOM_256_COLORS8:
+//                this->colorShape.resize(2);
+//                this->colorShape[0] = height;
+//                this->colorShape[1] = width;
+//                break;
+
             default:
+                this->colorShape.resize(2);
                 this->colorShape[0] = height;
                 this->colorShape[1] = width;
-                this->colorShape[2] = channels;
+//                this->colorShape[2] = channels;
         }
 
         this->grayShape[0] = height;
@@ -239,16 +235,9 @@ namespace vizdoom {
         return vector;
     }
 
-    pyb::object DoomGamePython::dataToNumpyArray(int dims, npy_intp *shape, int type, void *data) {
-        PyObject *pyArray = PyArray_SimpleNewFromData(dims, shape, type, data);
-        /* This line makes a copy: */
-        PyObject *pyArrayCopied = PyArray_FROM_OTF(pyArray, type, NPY_ARRAY_ENSURECOPY | NPY_ARRAY_ENSUREARRAY);
-        /* And this line gets rid of the old object which caused a memory leak: */
-        Py_DECREF(pyArray);
-
-        pyb::handle numpyArrayHandle = pyb::handle(pyArrayCopied);
-        pyb::object numpyArray = pyb::reinterpret_steal<pyb::object>(numpyArrayHandle);
-
-        return numpyArray;
+    template<class T> pyb::array_t<T> DoomGamePython::dataToNumpyArray(std::vector<pyb::ssize_t> dims, T *data){
+//        T *pydata = new T[size];
+//        std::copy(data, data + size, pydata);
+        return pyb::array(dims, data);
     }
 }

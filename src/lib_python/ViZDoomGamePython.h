@@ -23,8 +23,6 @@
 #ifndef __VIZDOOM_GAME_PYTHON_H__
 #define __VIZDOOM_GAME_PYTHON_H__
 
-#define NPY_NO_DEPRECATED_API NPY_1_8_API_VERSION
-
 #include "ViZDoomGame.h"
 
 #include <iostream>
@@ -32,8 +30,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h>
-#include <numpy/ndarrayobject.h>
-#include <numpy/npy_math.h>
 #include <vector>
 
 namespace vizdoom {
@@ -146,17 +142,16 @@ namespace vizdoom {
     private:
         GameStatePython* pyState;
 
-        npy_intp colorShape[3];
-        npy_intp grayShape[2];
-        npy_intp audioShape[2];
+        std::vector<pyb::ssize_t> colorShape;
+        std::vector<pyb::ssize_t> grayShape;
+        std::vector<pyb::ssize_t> audioShape;
+        std::vector<pyb::ssize_t> variablesShape;
 
         void updateBuffersShapes();
 
         template<class T> static pyb::list vectorToPyList(const std::vector<T>& vector);
         template<class T> static std::vector<T> pyListToVector(pyb::list const &pyList);
-
-        pyb::object dataToNumpyArray(int dims, npy_intp *shape, int type, void *data);
-
+        template<class T> static pyb::array_t<T> dataToNumpyArray(std::vector<pyb::ssize_t> dims, T *data);
     };
 
 }

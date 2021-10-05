@@ -42,17 +42,6 @@ double (*doomFixedToDouble_double)(double) = &doomFixedToDouble;
 /* Module definition */
 /*--------------------------------------------------------------------------------------------------------------------*/
 
-#if PY_MAJOR_VERSION >= 3
-    void* init_numpy() {
-        import_array();
-        return NULL;
-    }
-#else
-    void init_numpy() {
-        import_array();
-    }
-#endif
-
 PYBIND11_MODULE(vizdoom, vz){
 
     using namespace pybind11;
@@ -60,7 +49,6 @@ PYBIND11_MODULE(vizdoom, vz){
 
     Py_Initialize();
     PyEval_InitThreads();
-    init_numpy();
 
     /* Exceptions */
     /*----------------------------------------------------------------------------------------------------------------*/
