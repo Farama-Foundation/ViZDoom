@@ -33,14 +33,26 @@ namespace vizdoom {
         this->variablesShape.resize(1);
     }
 
-    void DoomGamePython::setAction(pyb::list const &pyAction) {
-        auto action = DoomGamePython::pyListToVector<double>(pyAction);
+//    void DoomGamePython::setAction(pyb::list const &pyAction) {
+//        auto action = DoomGamePython::pyListToVector<double>(pyAction);
+//        ReleaseGIL gil = ReleaseGIL();
+//        DoomGame::setAction(action);
+//    }
+
+//    double DoomGamePython::makeAction(pyb::list const &pyAction, unsigned int tics) {
+//        auto action = DoomGamePython::pyListToVector<double>(pyAction);
+//        ReleaseGIL gil = ReleaseGIL();
+//        return DoomGame::makeAction(action, tics);
+//    }
+
+    void DoomGamePython::setAction(pyb::object const &pyAction) {
+        auto action = DoomGamePython::pyObjectToVector<double>(pyAction);
         ReleaseGIL gil = ReleaseGIL();
         DoomGame::setAction(action);
     }
 
-    double DoomGamePython::makeAction(pyb::list const &pyAction, unsigned int tics) {
-        auto action = DoomGamePython::pyListToVector<double>(pyAction);
+    double DoomGamePython::makeAction(pyb::object const &pyAction, unsigned int tics) {
+        auto action = DoomGamePython::pyObjectToVector<double>(pyAction);
         ReleaseGIL gil = ReleaseGIL();
         return DoomGame::makeAction(action, tics);
     }
@@ -200,18 +212,10 @@ namespace vizdoom {
                 this->colorShape[2] = width;
                 break;
 
-//            case GRAY8:
-//            case DOOM_256_COLORS8:
-//                this->colorShape.resize(2);
-//                this->colorShape[0] = height;
-//                this->colorShape[1] = width;
-//                break;
-
             default:
                 this->colorShape.resize(2);
                 this->colorShape[0] = height;
                 this->colorShape[1] = width;
-//                this->colorShape[2] = channels;
         }
 
         this->grayShape[0] = height;
@@ -229,15 +233,37 @@ namespace vizdoom {
     }
 
     template<class T> std::vector<T> DoomGamePython::pyListToVector(pyb::list const &pyList){
-        size_t pyListLength = pyb::len(pyList);
-        std::vector<T> vector = std::vector<T>(pyListLength);
-        for (size_t i = 0; i < pyListLength; ++i) vector[i] = pyb::cast<T>(pyList[i]);
+        size_t pyLen = pyb::len(pyList);
+        std::vector<T> vector = std::vector<T>(pyLen);
+        for (size_t i = 0; i < pyLen; ++i) vector[i] = pyb::cast<T>(pyList[i]);
         return vector;
     }
+
+    template<class T> std::vector<T> DoomGamePython::pyArrayToVector(pyb::array_t<T> const &pyArray){
+        if (pyArray.ndim() != 1)
+            throw pyb::value_error("Array needs to be 1D");
+
+        size_t pyLen = pyArray.shape(0);
+        std::vector<T> vector = std::vector<T>(pyLen);
+        for (size_t i = 0; i < pyLen; ++i) vector[i] = pyArray.at(i);
+        return vector;
+    }
+
+    template<typename T> std::vector<T> DoomGamePython::pyObjectToVector(pyb::object const &pyObject) {
+        if(pyb::isinstance<pyb::list>(pyObject) || pyb::isinstance<pyb::tuple>(pyObject)) {
+            return pyListToVector<T>(pyObject);
+        }
+        else if(pyb::isinstance<pyb::array>(pyObject)) {
+            return pyArrayToVector<T>(pyObject);
+        }
+        else throw std::runtime_error("Unsupported type, should be list or 1D ndarray of numeric or boolean values");
+
 
     template<class T> pyb::array_t<T> DoomGamePython::dataToNumpyArray(std::vector<pyb::ssize_t> dims, T *data){
 //        T *pydata = new T[size];
 //        std::copy(data, data + size, pydata);
         return pyb::array(dims, data);
     }
+
+
 }

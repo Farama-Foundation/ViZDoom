@@ -102,8 +102,8 @@ namespace vizdoom {
     public:
         DoomGamePython();
 
-        void setAction(pyb::list const &pyAction);
-        double makeAction(pyb::list const &pyAction, unsigned int tics = 1);
+        void setAction(pyb::object const &pyAction);
+        double makeAction(pyb::object const &pyAction, unsigned int tics = 1);
 
         GameStatePython* getState();
         ServerStatePython* getServerState();
@@ -126,8 +126,11 @@ namespace vizdoom {
         void newEpisode_() { this->newEpisode(); };
         void newEpisode_str(std::string _str) { this->newEpisode(_str); };
 
-        double makeAction_list(pyb::list const &_list){ return this->makeAction(_list); }
-        double makeAction_list_int(pyb::list const &_list, unsigned int _int){ return this->makeAction(_list, _int); }
+//        double makeAction_list(pyb::list const &_list){ return this->makeAction(_list); }
+//        double makeAction_list_int(pyb::list const &_list, unsigned int _int){ return this->makeAction(_list, _int); }
+
+        double makeAction_list(pyb::object const &_list){ return this->makeAction(_list); }
+        double makeAction_list_int(pyb::object const &_list, unsigned int _int){ return this->makeAction(_list, _int); }
 
         void advanceAction_() { this->advanceAction(); }
         void advanceAction_int(unsigned int _int) { this->advanceAction(_int); }
@@ -149,8 +152,11 @@ namespace vizdoom {
 
         void updateBuffersShapes();
 
-        template<class T> static pyb::list vectorToPyList(const std::vector<T>& vector);
         template<class T> static std::vector<T> pyListToVector(pyb::list const &pyList);
+        template<class T> static std::vector<T> pyArrayToVector(pyb::array_t<T> const &pyArray);
+        template<class T> static std::vector<T> pyObjectToVector(pyb::object const &pyObject);
+
+        template<class T> static pyb::list vectorToPyList(const std::vector<T>& vector);
         template<class T> static pyb::array_t<T> dataToNumpyArray(std::vector<pyb::ssize_t> dims, T *data);
     };
 
