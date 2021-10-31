@@ -1,7 +1,8 @@
 find_package(PythonInterp 3 REQUIRED)
 
-STRING(REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" _PYTHON_VERSION ${PYTHON_VERSION_STRING})
-find_package(PythonLibs ${_PYTHON_VERSION} REQUIRED)
+set(PYTHON_VERSION_FULL ${PYTHON_VERSION_STRING})
+STRING(REGEX REPLACE "([0-9.]+)\\.[0-9]+" "\\1" PYTHON_VERSION_MINOR ${PYTHON_VERSION_STRING})
+find_package(PythonLibs ${PYTHON_VERSION_MINOR} REQUIRED)
 
 set(VIZDOOM_PYTHON_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python${_PYTHON_VERSION})
 set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
@@ -26,7 +27,7 @@ include_directories(${VIZDOOM_PYTHON_INCLUDE_DIR}
     ${Boost_INCLUDE_DIR})
 
 set(ViZDoom_PYTHON_INLCUDE_DIR ${VIZDOOM_PYTHON_INCLUDE_DIR})
-set(ViZDoom_PYTHON_VERSION_STR ${PYTHON_VERSION_STRING})
+set(ViZDoom_PYTHON_VERSION_STR ${PYTHON_VERSION_MINOR})
 
 configure_file(
     "${VIZDOOM_PYTHON_SRC_DIR}/__init__.py.in"
@@ -48,15 +49,15 @@ set_target_properties(libvizdoom_python
     LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_PYTHON_OUTPUT_DIR}
     LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON_OUTPUT_DIR}
     OUTPUT_NAME vizdoom
-    PROJECT_LABEL "python${_PYTHON_VERSION} binding")
+    PROJECT_LABEL "python${PYTHON_VERSION_MINOR} binding")
 
 if (UNIX)
     add_custom_target(python_pip_package ALL
-        COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.sh ${_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
+        COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.sh ${PYTHON_VERSION_MINOR} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
         COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
 elseif (WIN32)
     add_custom_target(python_pip_package ALL
-        COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.bat ${_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
+        COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.bat ${PYTHON_VERSION_MINOR} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
         COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
 endif ()
 

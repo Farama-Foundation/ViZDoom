@@ -2,7 +2,7 @@ import sys as _sys
 
 _COMPILED_PYTHON_VERSION = "@ViZDoom_PYTHON_VERSION_STR@"
 
-_this_python_version = "{}.{}.{}".format(*_sys.version_info[0:3])
+_this_python_version = "{}.{}".format(*_sys.version_info[0:2])
 
 if _COMPILED_PYTHON_VERSION != _this_python_version:
     raise SystemError(
