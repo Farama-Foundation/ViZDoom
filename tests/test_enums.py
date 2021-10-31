@@ -2,8 +2,12 @@
 
 import vizdoom as vzd
 
-def test_enums(enum_name, func_name):
+def _test_enums(enum_name, func_name):
+    print("Testing vzd.{} enum ...".format(enum_name))
+
     game = vzd.DoomGame()
+    game.set_window_visible(False)
+
     add_func = eval("game.add_" + func_name)
     get_func = eval("game.get_" + func_name + "s")
     set_func = eval("game.set_" + func_name + "s")
@@ -42,11 +46,11 @@ def test_enums(enum_name, func_name):
 
 
 def test_buttons():
-    test_enums("Button", "available_button")
+    _test_enums("Button", "available_button")
 
 
 def test_game_variables():
-    test_enums("GameVariable", "available_game_variable")
+    _test_enums("GameVariable", "available_game_variable")
 
 
 if __name__ == "__main__":

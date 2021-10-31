@@ -23,8 +23,6 @@
 #ifndef __VIZDOOM_GAME_PYTHON_H__
 #define __VIZDOOM_GAME_PYTHON_H__
 
-#define NPY_NO_DEPRECATED_API NPY_1_8_API_VERSION
-
 #include "ViZDoomGame.h"
 
 #include <iostream>
@@ -32,8 +30,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h>
-#include <numpy/ndarrayobject.h>
-#include <numpy/npy_math.h>
 #include <vector>
 
 namespace vizdoom {
@@ -106,8 +102,8 @@ namespace vizdoom {
     public:
         DoomGamePython();
 
-        void setAction(pyb::list const &pyAction);
-        double makeAction(pyb::list const &pyAction, unsigned int tics = 1);
+        void setAction(pyb::object const &pyAction);
+        double makeAction(pyb::object const &pyAction, unsigned int tics = 1);
 
         GameStatePython* getState();
         ServerStatePython* getServerState();
@@ -130,8 +126,11 @@ namespace vizdoom {
         void newEpisode_() { this->newEpisode(); };
         void newEpisode_str(std::string _str) { this->newEpisode(_str); };
 
-        double makeAction_list(pyb::list const &_list){ return this->makeAction(_list); }
-        double makeAction_list_int(pyb::list const &_list, unsigned int _int){ return this->makeAction(_list, _int); }
+//        double makeAction_list(pyb::list const &_list){ return this->makeAction(_list); }
+//        double makeAction_list_int(pyb::list const &_list, unsigned int _int){ return this->makeAction(_list, _int); }
+
+        double makeAction_list(pyb::object const &_list){ return this->makeAction(_list); }
+        double makeAction_list_int(pyb::object const &_list, unsigned int _int){ return this->makeAction(_list, _int); }
 
         void advanceAction_() { this->advanceAction(); }
         void advanceAction_int(unsigned int _int) { this->advanceAction(_int); }
@@ -146,17 +145,19 @@ namespace vizdoom {
     private:
         GameStatePython* pyState;
 
-        npy_intp colorShape[3];
-        npy_intp grayShape[2];
-        npy_intp audioShape[2];
+        std::vector<pyb::ssize_t> colorShape;
+        std::vector<pyb::ssize_t> grayShape;
+        std::vector<pyb::ssize_t> audioShape;
+        std::vector<pyb::ssize_t> variablesShape;
 
         void updateBuffersShapes();
 
-        template<class T> static pyb::list vectorToPyList(const std::vector<T>& vector);
         template<class T> static std::vector<T> pyListToVector(pyb::list const &pyList);
+        template<class T> static std::vector<T> pyArrayToVector(pyb::array_t<T> const &pyArray);
+        template<class T> static std::vector<T> pyObjectToVector(pyb::object const &pyObject);
 
-        pyb::object dataToNumpyArray(int dims, npy_intp *shape, int type, void *data);
-
+        template<class T> static pyb::list vectorToPyList(const std::vector<T>& vector);
+        template<class T> static pyb::array_t<T> dataToNumpyArray(std::vector<pyb::ssize_t> dims, T *data);
     };
 
 }

@@ -99,7 +99,7 @@ if __name__ == "__main__":
     # Because of some problems with OpenAL on Ubuntu 20.04, we keep this line commented,
     # the sound is only useful for humans watching the game.
 
-# Sets the living reward (for each move) to -1
+    # Sets the living reward (for each move) to -1
     game.set_living_reward(-1)
 
     # Sets ViZDoom mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR, PLAYER mode is default)
