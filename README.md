@@ -65,7 +65,8 @@ pip install vizdoom
 ```
 (we recommend using at least Ubuntu 18.04+ with Python 3.7+)
 
-### macOS
+### macOS 
+Currently, only for Intel CPU, we will gladly accept PR with M1 support.
 ```
 brew install cmake boost openal-soft sdl2
 pip install vizdoom

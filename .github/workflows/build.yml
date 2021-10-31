@@ -2,9 +2,21 @@ name: Build
 
 on:
   push:
+    paths:
+      - 'include/**'
+      - 'scripts/**'
+      - 'src/**'
+      - 'CMakeLists.txt'
+      - 'setup.py'
     branches:
       - master
   pull_request:
+    paths:
+      - 'include/**'
+      - 'scripts/**'
+      - 'src/**'
+      - 'CMakeLists.txt'
+      - 'setup.py'
     branches:
       - master
 
