@@ -34,7 +34,8 @@ set OPENAL_DLL=%LIB_DIR%\openal-soft\bin\Win64\OpenAL32.dll
 :: Build wheels for all Python versions
 for %%P in (36 37 38 39 310) do (
 	set PYTHON_VERSION=%%P
-	echo Building for Python !PYTHON_VERSION! version using !CMAKE_GENERATOR_NAME!
+	set PYTHON_VERSION_DOT=!PYTHON_VERSION:~0,1!.!PYTHON_VERSION:~1!
+	echo Building for Python !PYTHON_VERSION_DOT! version using !CMAKE_GENERATOR_NAME!
 	
 	set PYTHON_LOCATION=E:\Python!PYTHON_VERSION!
 	set PYTHON_EXECUTABLE=!PYTHON_LOCATION!\python.exe
@@ -58,7 +59,7 @@ for %%P in (36 37 38 39 310) do (
 	:: Run build
 	cmake --build . --config Release
 
-	xcopy /q !MPG123_DLL! .\bin\python3.!PYTHON_VERSION:~1!\pip_package\
-	xcopy /q !SNDFILE_DLL! .\bin\python3.!PYTHON_VERSION:~1!\pip_package\
-	xcopy /q !OPENAL_DLL! .\bin\python3.!PYTHON_VERSION:~1!\pip_package\
+	xcopy /y /q !MPG123_DLL! .\bin\python!PYTHON_VERSION_DOT!\pip_package\
+	xcopy /y /q !SNDFILE_DLL! .\bin\python!PYTHON_VERSION_DOT!\pip_package\
+	xcopy /y /q !OPENAL_DLL! .\bin\python!PYTHON_VERSION_DOT!\pip_package\
 )
