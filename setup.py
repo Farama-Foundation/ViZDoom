@@ -12,6 +12,7 @@ package_path = build_output_path + '/python' + python_version + '/pip_package'
 supported_platforms = ["Linux", "Mac OS X", "Windows"]
 package_data = ['__init__.py', 'bots.cfg', 'freedoom2.wad', 'vizdoom.pk3', 'vizdoom', 'scenarios/*']
 
+os.makedirs(package_path, exist_ok=True)
 
 if platform.startswith("win"):
     package_data.extend(["vizdoom.exe", "*.pyd", "*.dll"])
@@ -72,8 +73,7 @@ class Wheel(bdist_wheel):
 class BuildCommand(build):
     def run(self):
         try:
-            os.makedirs(package_path, exist_ok=True)
-        
+
             cpu_cores = max(1, cpu_count() - 1)
             python_executable = os.path.realpath(sys.executable)
 
@@ -165,15 +165,20 @@ setup(
     platforms=supported_platforms,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Education',
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'License :: OSI Approved :: MIT License',
+        'Programming Language :: C++',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: MacOS :: MacOS X'
+        'Operating System :: POSIX :: Linux',
     ],
     keywords=['vizdoom', 'doom', 'ai', 'deep learning', 'reinforcement learning', 'research']
 )
