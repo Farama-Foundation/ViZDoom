@@ -31,6 +31,7 @@ set OPENALDIR=%LIB_DIR%\openal-soft
 set OPENAL_DLL=%LIB_DIR%\openal-soft\bin\Win64\OpenAL32.dll
 
 :: Build wheels for all Python versions
+:: for %%P in (36 37 38 39 310) do (
 for %%P in (36 37 38 39 310) do (
 	set PYTHON_VERSION=%%P
 	set PYTHON_VERSION_DOT=!PYTHON_VERSION:~0,1!.!PYTHON_VERSION:~1!

@@ -5,7 +5,6 @@ from multiprocessing import cpu_count
 from setuptools import setup
 from wheel.bdist_wheel import bdist_wheel
 
-
 platform = sys.platform
 python_version = sysconfig.get_python_version()
 build_output_path = 'bin'
@@ -41,11 +40,22 @@ def get_vizdoom_version():
                            "you should create an issue at https://github.com/mwydmuch/ViZDoom/")
 
 
-def get_python_library(python_lib_dir):
-    python_lib_name = 'libpython{}m.{}'
-    python_lib_name = python_lib_name.format(python_version, library_extension)
-    python_library = os.path.join(python_lib_dir, python_lib_name)
-    return python_library
+def get_python_library(python_root_dir):
+    paths_to_check = [
+        "libs\python{}{}.{}",
+        "libs\python{}.{}.{}",
+        "libpython{}.{}m.{}",
+        "libpython{}.{}.{}",
+        "lib\libpython{}.{}m.{}",
+        "lib\libpython{}.{}.{}",
+    ]
+    
+    for path_format in paths_to_check:
+        path = os.path.join(python_root_dir, path_format.format(*python_version.split('.'), library_extension))
+        if os.path.exists(path):
+            return path
+     
+    return None
     
     
 class Wheel(bdist_wheel):
@@ -106,20 +116,25 @@ class BuildCommand(build):
                 shutil.copy(openal_dll, build_output_path)
 
             python_standard_lib = sysconfig.get_python_lib(standard_lib=True)
-            python_lib_dir = os.path.dirname(python_standard_lib)
-            python_library = get_python_library(python_lib_dir)
+            python_root_dir = os.path.dirname(python_standard_lib)
+            python_library = get_python_library(python_root_dir)
             python_include_dir = sysconfig.get_python_inc()
-
-            if os.path.exists(python_library) and os.path.exists(python_include_dir):
-                cmake_arg_list.append("-DPYTHON_LIBRARY={}".format(python_library))
+            
+            if os.path.exists(python_include_dir):
                 cmake_arg_list.append("-DPYTHON_INCLUDE_DIR={}".format(python_include_dir))
+            else:
+                pass # TODO: Raise Error
+                
+            if os.path.exists(python_library):
+                cmake_arg_list.append("-DPYTHON_LIBRARY={}".format(python_library))
+            else:
+                pass # TODO: Raise Error
             
             shutil.rmtree('CMakeCache.txt', ignore_errors=True)
-            print(cmake_arg_list)
             subprocess.check_call(cmake_arg_list)
             
             if platform.startswith("win"):
-                shutil.rmtree("src\lib_python\libvizdoom_python.dir", ignore_errors=True)
+                shutil.rmtree("src/lib_python/libvizdoom_python.dir", ignore_errors=True)
                 subprocess.check_call(['cmake', '--build', '.', '--config', 'Release'])
             else:
                 subprocess.check_call(['make', '-j', str(cpu_cores)])
