@@ -230,7 +230,7 @@ namespace vizdoom {
         uint8_t *getDepthBuffer();
         uint8_t *getLabelsBuffer();
         uint8_t *getAutomapBuffer();
-        uint16_t * getAudioBuffer();
+        int16_t *getAudioBuffer();
 
     private:
         bip::shared_memory_object sm;

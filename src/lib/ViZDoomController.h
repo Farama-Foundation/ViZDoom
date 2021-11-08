@@ -227,7 +227,7 @@ namespace vizdoom {
         uint8_t *const getDepthBuffer();
         uint8_t *const getLabelsBuffer();
         uint8_t *const getAutomapBuffer();
-        uint16_t *const getAudioBuffer();
+        int16_t *const getAudioBuffer();
 
         /* Buttons getters and setters */
         /*------------------------------------------------------------------------------------------------------------*/
@@ -349,7 +349,7 @@ namespace vizdoom {
         uint8_t *depthBuffer;
         uint8_t *automapBuffer;
         uint8_t *labelsBuffer;
-        uint16_t *audioBuffer;
+        int16_t *audioBuffer;
 
         /* Settings */
         /*------------------------------------------------------------------------------------------------------------*/

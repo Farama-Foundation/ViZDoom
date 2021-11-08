@@ -135,7 +135,7 @@ namespace vizdoom {
         return static_cast<uint8_t *>(this->region[5].address);
     }
 
-    uint16_t * SharedMemory::getAudioBuffer() {
-        return static_cast<uint16_t *>(this->region[6].address);
+    int16_t * SharedMemory::getAudioBuffer() {
+        return static_cast<int16_t *>(this->region[6].address);
     }
 }

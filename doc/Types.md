@@ -20,7 +20,7 @@
 ## C++ only
 
 - `Buffer (std::vector<uint8_t>)`
-- `BufferPtr (std::shared_ptr<Buffer>)`
+- `ImageBufferPtr (std::shared_ptr<Buffer>)`
 - `GameStatePtr (std::shared_ptr<GameState>)`
 
 
@@ -136,11 +136,11 @@ See also:
 - `unsigned int / int` **number**
 - `unsigned int / int` **tic**
 - `std::vector<float> / numpy.double[]` **gameVariables / game_variables**
-- `BufferPtr / numpy.uint8[]`  **screenBuffer / screen_buffer**
-- `BufferPtr / numpy.uint8[]`  **depthBuffer / depth_buffer**
-- `BufferPtr / numpy.uint8[]`  **labelsBuffer / labels_buffer**
-- `BufferPtr / numpy.uint8[]`  **automapBuffer / automap_buffer**
-- `BufferPtr / numpy.uint16[]` **audioBuffer / audio_buffer**
+- `ImageBufferPtr / numpy.uint8[]`  **screenBuffer / screen_buffer**
+- `ImageBufferPtr / numpy.uint8[]`  **depthBuffer / depth_buffer**
+- `ImageBufferPtr / numpy.uint8[]`  **labelsBuffer / labels_buffer**
+- `ImageBufferPtr / numpy.uint8[]`  **automapBuffer / automap_buffer**
+- `AudioBufferPtr / numpy.int16[]` **audioBuffer / audio_buffer**
 - `std::vector<Label> / list`  **labels**
 
 **number** - number of the state in the episode.

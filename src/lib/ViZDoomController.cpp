@@ -903,7 +903,7 @@ namespace vizdoom {
 
     uint8_t *const DoomController::getScreenBuffer() { return this->screenBuffer; }
 
-    uint16_t *const DoomController::getAudioBuffer() { return this->audioBuffer; }
+    int16_t *const DoomController::getAudioBuffer() { return this->audioBuffer; }
 
     uint8_t *const DoomController::getDepthBuffer() { return this->depthBuffer; }
 

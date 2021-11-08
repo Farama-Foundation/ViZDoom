@@ -246,9 +246,9 @@ namespace vizdoom {
 
             /* Audio */
             if (this->doomController->isAudioBufferEnabled()) {
-                const uint16_t *audioBuf = this->doomController->getAudioBuffer();
+                const int16_t *audioBuf = this->doomController->getAudioBuffer();
                 const size_t audioSize = SOUND_NUM_CHANNELS * this->getAudioSamplesPerTic() * this->getAudioBufferSize();
-                this->state->audioBuffer = std::make_shared<std::vector<uint16_t>>(audioBuf, audioBuf + audioSize);
+                this->state->audioBuffer = std::make_shared<std::vector<int16_t>>(audioBuf, audioBuf + audioSize);
             }
 
             if (this->doomController->isDepthBufferEnabled()) {

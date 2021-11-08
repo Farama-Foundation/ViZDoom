@@ -217,7 +217,7 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 - A lot of overloaded methods turned into a methods with default arguments.
 - `getState()` now returns `GameStatePtr (std::shared_ptr<GameState>)` instead of `GameState`.
 - Buffers are now copied.
-- GameState's buffer has now `BufferPtr (std::shared_ptr<Buffer>)` type - `Buffer (std::vector<uint8_t>)`.
+- GameState's buffer has now `ImageBufferPtr (std::shared_ptr<ImageBuffer>)` type - `Buffer (std::vector<uint8_t>)`.
 - GameState's gameVariables are now vector of doubles instead of ints.
 
 
