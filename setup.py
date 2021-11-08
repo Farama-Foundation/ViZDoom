@@ -1,26 +1,31 @@
-import sys, os, subprocess
+import sys, os, subprocess, shutil
 from distutils import sysconfig
 from distutils.command.build import build
 from multiprocessing import cpu_count
 from setuptools import setup
+from wheel.bdist_wheel import bdist_wheel
 
 
 platform = sys.platform
 python_version = sysconfig.get_python_version()
-package_path = 'bin/python' + python_version + '/pip_package'
-supported_platforms = ["Linux", "Mac OS-X"]
+build_output_path = 'bin'
+package_path = build_output_path + '/python' + python_version + '/pip_package'
+supported_platforms = ["Linux", "Mac OS X", "Windows"]
+package_data = ['__init__.py', 'bots.cfg', 'freedoom2.wad', 'vizdoom.pk3', 'vizdoom', 'scenarios/*']
+
 
 if platform.startswith("win"):
-    raise RuntimeError("Building pip package on Windows is not currently available ...")
+    package_data.extend(["vizdoom.exe", "vizdoom.pyd", "*.dll"])
+    library_extension = "lib"
 elif platform.startswith("darwin"):
+    package_data.extend(["vizdoom", "vizdoom.so"])
     library_extension = "dylib"
 elif platform.startswith("linux"):
+    package_data.extend(["vizdoom", "vizdoom.so"])
     library_extension = "so"
 else:
-    raise RuntimeError("Unrecognized platform: {}".format(sys.platform))
-
-subprocess.check_call(['mkdir', '-p', package_path])
-
+    raise RuntimeError("Unsupported platform: {}".format(sys.platform))
+   
 
 def get_vizdoom_version():
     try:
@@ -41,32 +46,83 @@ def get_python_library(python_lib_dir):
     python_lib_name = python_lib_name.format(python_version, library_extension)
     python_library = os.path.join(python_lib_dir, python_lib_name)
     return python_library
+    
+    
+class Wheel(bdist_wheel):
+    def finalize_options(self):
+        bdist_wheel.finalize_options(self)
+        # Mark us as not a pure python package
+        self.root_is_pure = False
+
+    def get_tag(self):
+        python, abi, plat = bdist_wheel.get_tag(self)
+        return python, abi, plat
 
 
 class BuildCommand(build):
     def run(self):
         try:
+            os.makedirs(package_path, exist_ok=True)
+        
             cpu_cores = max(1, cpu_count() - 1)
             python_executable = os.path.realpath(sys.executable)
 
             cmake_arg_list = ["cmake", "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_PYTHON=ON",
                               "-DPYTHON_EXECUTABLE={}".format(python_executable)]
+                              
+            if platform.startswith("win"):
+                generator = os.getenv('VIZDOOM_BUILD_GENERATOR_NAME')
+                if generator is None:
+                    pass # TODO: Raise Error
+                
+                deps_root = os.getenv('VIZDOOM_WIN_DEPS_ROOT')
+                if deps_root is None:
+                    pass # TODO: Raise Error
+                
+                mpg123_include=os.path.join(deps_root, 'libmpg123')
+                mpg123_lib=os.path.join(deps_root, 'libmpg123/libmpg123-0.lib')
+                mpg123_dll=os.path.join(deps_root, 'libmpg123/libmpg123-0.dll')
+
+                sndfile_include=os.path.join(deps_root, 'libsndfile/include')
+                sndfile_lib=os.path.join(deps_root, 'libsndfile/lib/libsndfile-1.lib')
+                sndfile_dll=os.path.join(deps_root, 'libsndfile/bin/libsndfile-1.dll')
+                
+                os.environ["OPENALDIR"]=str(os.path.join(deps_root, 'openal-soft'))
+                openal_dll=os.path.join(deps_root, 'openal-soft/bin/Win64/OpenAL32.dll')
+                
+                cmake_arg_list.extend(
+                    ["-G",
+                     generator,
+                     "-DNO_ASM=ON",
+                     "-DMPG123_INCLUDE_DIR={}".format(mpg123_include),
+                     "-DMPG123_LIBRARIES={}".format(mpg123_lib),
+                     "-DSNDFILE_INCLUDE_DIR={}".format(sndfile_include),
+                     "-DSNDFILE_LIBRARY={}".format(sndfile_lib)
+                    ]
+                )
+                
+                shutil.copy(mpg123_dll, build_output_path)
+                shutil.copy(sndfile_dll, build_output_path)
+                shutil.copy(openal_dll, build_output_path)
 
             python_standard_lib = sysconfig.get_python_lib(standard_lib=True)
-            python_site_packages = sysconfig.get_python_lib(standard_lib=False)
             python_lib_dir = os.path.dirname(python_standard_lib)
             python_library = get_python_library(python_lib_dir)
             python_include_dir = sysconfig.get_python_inc()
-            numpy_include_dir = os.path.join(python_site_packages, "numpy/core/include")
 
-            if os.path.exists(python_library) and os.path.exists(python_include_dir) and os.path.exists(numpy_include_dir):
+            if os.path.exists(python_library) and os.path.exists(python_include_dir):
                 cmake_arg_list.append("-DPYTHON_LIBRARY={}".format(python_library))
                 cmake_arg_list.append("-DPYTHON_INCLUDE_DIR={}".format(python_include_dir))
-                cmake_arg_list.append("-DNUMPY_INCLUDES={}".format(numpy_include_dir))
-
-            subprocess.check_call(['rm', '-f', 'CMakeCache.txt'])
+            
+            shutil.rmtree('CMakeCache.txt', ignore_errors=True)
+            print(cmake_arg_list)
             subprocess.check_call(cmake_arg_list)
-            subprocess.check_call(['make', '-j', str(cpu_cores)])
+            
+            if platform.startswith("win"):
+                shutil.rmtree("src\lib_python\libvizdoom_python.dir", ignore_errors=True)
+                subprocess.check_call(['cmake', '--build', '.', '--config', 'Release'])
+            else:
+                subprocess.check_call(['make', '-j', str(cpu_cores)])
         except subprocess.CalledProcessError:
             sys.stderr.write("\033[1m\nInstallation failed, you may be missing some dependencies. "
                              "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md "
@@ -83,15 +139,14 @@ setup(
                      "It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.",
     url='http://vizdoom.cs.put.edu.pl/',
     author='Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, Grzegorz Runc, Jakub Toczek',
-    author_email='vizdoom@googlegroups.com',
+    author_email='mwydmuch@cs.put.poznan.pl',
 
     install_requires=['numpy'],
-    setup_requires=['cython', 'numpy'],
     packages=['vizdoom'],
     package_dir={'vizdoom': package_path},
-    package_data={'vizdoom': ['__init__.py', 'bots.cfg', 'freedoom2.wad', 'vizdoom', 'vizdoom.pk3', 'vizdoom.so', 'scenarios/*']},
+    package_data={'vizdoom': package_data},
     include_package_data=True,
-    cmdclass={'build': BuildCommand},
+    cmdclass={'bdist_wheel': Wheel, 'build': BuildCommand},
     platforms=supported_platforms,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
