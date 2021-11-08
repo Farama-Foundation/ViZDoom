@@ -25,13 +25,10 @@ set MPG123_DLL=%LIB_DIR%\libmpg123\libmpg123-0.dll
 set SNDFILE_INCLUDE_DIR=%LIB_DIR%\libsndfile\include
 set SNDFILE_LIBRARY=%LIB_DIR%\libsndfile\lib\libsndfile-1.lib
 set SNDFILE_DLL=%LIB_DIR%\libsndfile\bin\libsndfile-1.dll
-:: set OPENAL_INCLUDE_DIR=%LIB_DIR%\openal-soft\include\AL
-:: set OPENAL_LIBRARY=%LIB_DIR%\openal-soft\libs\Win64\OpenAL32.lib
 set OPENALDIR=%LIB_DIR%\openal-soft
 set OPENAL_DLL=%LIB_DIR%\openal-soft\bin\Win64\OpenAL32.dll
 
 :: Build wheels for all Python versions
-:: for %%P in (36 37 38 39 310) do (
 for %%P in (36 37 38 39 310) do (
 	set PYTHON_VERSION=%%P
 	set PYTHON_VERSION_DOT=!PYTHON_VERSION:~0,1!.!PYTHON_VERSION:~1!
@@ -62,7 +59,7 @@ for %%P in (36 37 38 39 310) do (
 	:: Run build
 	cmake --build . --config Release
 
-	xcopy /y /q !MPG123_DLL! .\bin\python!PYTHON_VERSION_DOT!\pip_package\
-	xcopy /y /q !SNDFILE_DLL! .\bin\python!PYTHON_VERSION_DOT!\pip_package\
-	xcopy /y /q !OPENAL_DLL! .\bin\python!PYTHON_VERSION_DOT!\pip_package\
+	copy /Y !MPG123_DLL! .\bin\python!PYTHON_VERSION_DOT!\pip_package\
+	copy /Y !SNDFILE_DLL! .\bin\python!PYTHON_VERSION_DOT!\pip_package\
+	copy /Y !OPENAL_DLL! .\bin\python!PYTHON_VERSION_DOT!\pip_package\
 )

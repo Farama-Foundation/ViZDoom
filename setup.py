@@ -14,13 +14,13 @@ package_data = ['__init__.py', 'bots.cfg', 'freedoom2.wad', 'vizdoom.pk3', 'vizd
 
 
 if platform.startswith("win"):
-    package_data.extend(["vizdoom.exe", "vizdoom.pyd", "*.dll"])
+    package_data.extend(["vizdoom.exe", "*.pyd", "*.dll"])
     library_extension = "lib"
 elif platform.startswith("darwin"):
-    package_data.extend(["vizdoom", "vizdoom.so"])
+    package_data.extend(["vizdoom", "*.so"])
     library_extension = "dylib"
 elif platform.startswith("linux"):
-    package_data.extend(["vizdoom", "vizdoom.so"])
+    package_data.extend(["vizdoom", "*.so"])
     library_extension = "so"
 else:
     raise RuntimeError("Unsupported platform: {}".format(sys.platform))
