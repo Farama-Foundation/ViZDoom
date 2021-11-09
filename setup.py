@@ -43,12 +43,11 @@ def get_vizdoom_version():
 
 def get_python_library(python_root_dir):
     paths_to_check = [
-        "libs\python{}{}.{}",
-        "libs\python{}.{}.{}",
-        "libpython{}.{}m.{}",
-        "libpython{}.{}.{}",
-        "lib\libpython{}.{}m.{}",
-        "lib\libpython{}.{}.{}",
+        "libs/python{}{}.{}", # Windows Python/Anaconda
+        "libpython{}.{}m.{}", # Unix
+        "libpython{}.{}.{}", # Unix
+        "lib/libpython{}.{}m.{}", # Unix Anaconda
+        "lib/libpython{}.{}.{}", # Unix Anaconda
     ]
     
     for path_format in paths_to_check:
@@ -82,12 +81,12 @@ class BuildCommand(build):
                               
             if platform.startswith("win"):
                 generator = os.getenv('VIZDOOM_BUILD_GENERATOR_NAME')
-                if generator is None:
-                    pass # TODO: Raise Error
-                
-                deps_root = os.getenv('VIZDOOM_WIN_DEPS_ROOT')
+                if not generator:
+                    raise RuntimeError("VIZDOOM_BUILD_GENERATOR_NAME is not set") # TODO: Improve
+                    
+                deps_root = os.getenv('VIZDOOM_WIN_DEPS_ROOT') 
                 if deps_root is None:
-                    pass # TODO: Raise Error
+                    raise RuntimeError("VIZDOOM_WIN_DEPS_ROOT is not set") # TODO: Improve
                 
                 mpg123_include=os.path.join(deps_root, 'libmpg123')
                 mpg123_lib=os.path.join(deps_root, 'libmpg123/libmpg123-0.lib')
@@ -122,21 +121,20 @@ class BuildCommand(build):
             
             if os.path.exists(python_include_dir):
                 cmake_arg_list.append("-DPYTHON_INCLUDE_DIR={}".format(python_include_dir))
-            else:
-                pass # TODO: Raise Error
                 
             if os.path.exists(python_library):
                 cmake_arg_list.append("-DPYTHON_LIBRARY={}".format(python_library))
-            else:
-                pass # TODO: Raise Error
             
-            shutil.rmtree('CMakeCache.txt', ignore_errors=True)
-            subprocess.check_call(cmake_arg_list)
+            if os.path.exists('CMakeCache.txt'):
+                os.remove('CMakeCache.txt')
             
             if platform.startswith("win"):
-                shutil.rmtree("src/lib_python/libvizdoom_python.dir", ignore_errors=True)
+                if os.path.exists("./src/lib_python/libvizdoom_python.dir"):
+                    shutil.rmtree("./src/lib_python/libvizdoom_python.dir") # TODO: This is not very elegant, improve
+                subprocess.check_call(cmake_arg_list)
                 subprocess.check_call(['cmake', '--build', '.', '--config', 'Release'])
             else:
+                subprocess.check_call(cmake_arg_list)
                 subprocess.check_call(['make', '-j', str(cpu_cores)])
         except subprocess.CalledProcessError:
             sys.stderr.write("\033[1m\nInstallation failed, you may be missing some dependencies. "

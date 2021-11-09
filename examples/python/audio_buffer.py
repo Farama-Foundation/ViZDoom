@@ -8,16 +8,18 @@
 
 import vizdoom as vzd
 
+import os
 from random import choice
 import numpy as np
 from scipy.io import wavfile
 from time import sleep
 
+
 if __name__ == "__main__":
     game = vzd.DoomGame()
 
     # Load config of the basic scenario
-    game.load_config('../../scenarios/basic.cfg')
+    game.load_config(os.path.join(vzd.scenarios_path, "basic.cfg"))
 
     # Turns on the audio buffer. (turned off by default)
     # If this is switched on, the audio will stop playing on device, even with game.set_sound_enabled(True)
