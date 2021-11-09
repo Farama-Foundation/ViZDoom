@@ -212,10 +212,18 @@ namespace vizdoom {
                 this->colorShape[2] = width;
                 break;
 
-            default:
+            case GRAY8:
+            case DOOM_256_COLORS8:
                 this->colorShape.resize(2);
                 this->colorShape[0] = height;
                 this->colorShape[1] = width;
+                break;
+
+            default:
+                this->colorShape.resize(3);
+                this->colorShape[0] = height;
+                this->colorShape[1] = width;
+                this->colorShape[2] = channels;
         }
 
         this->grayShape[0] = height;
