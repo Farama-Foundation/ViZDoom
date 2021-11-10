@@ -9,7 +9,7 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 
 ## Features
 - Multi-platform (Linux, macOS, Windows),
-- API for Python, C++, Lua, Java and Julia (thanks to [Jun Tian](https://github.com/findmyway)),
+- API for Python, C++, and Julia (thanks to [Jun Tian](https://github.com/findmyway)), and also Lua and Java for older versions,
 - Easy-to-create custom scenarios (visual editors, scripting language and examples available),
 - Async and sync single-player and multi-player modes,
 - Fast (up to 7000 fps in sync mode, single threaded),
@@ -84,8 +84,6 @@ pip install vizdoom
 
 ## Examples
 
-Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed in the same directory as the ViZDoom executable (on Linux and macOS it should be done automatically by the building process):
-
 - [Python](examples/python) (contain learning examples implemented in PyTorch, TensorFlow and Theano)
 - [C++](examples/c%2B%2B)
 - [Julia](examples/julia)
@@ -93,6 +91,13 @@ Before running the provided examples, make sure that [freedoom2.wad](https://fre
 Python examples are currently the richest, so we recommend to look at them, even if you plan to use other language. API is almost identical for all languages.
 
 **See also the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial).**
+
+
+## Original Doom graphics
+
+If you own original Doom or Doom 2 games, you can replace [Freedoom](https://freedoom.github.io/) graphics by placing `doom.wad` or `doom2.wad` into your working directory or `vizdoom` package directory.
+
+Alternativley any game WAD file can be setting a path to it by [`set_doom_game_path/setDoomGamePath`](https://github.com/mwydmuch/ViZDoom/blob/master/doc/DoomGame.md#-setdoomscenariopath) method.
 
 
 ## Documentation
