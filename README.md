@@ -59,30 +59,27 @@ or
 ## Python quick start
 
 ### Ubuntu
+To install ViZDoom on Ubuntu run (may take few minutes):
 ```
 sudo apt install cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar nasm
 pip install vizdoom
 ```
-(we recommend using at least Ubuntu 18.04+ with Python 3.7+)
+We recommend using at least Ubuntu 18.04+ with Python 3.6+.
 
 ### macOS 
-Currently, only for Intel CPU, we will gladly accept PR with M1 support.
+To install ViZDoom on macOS run (may take few minutes):
 ```
 brew install cmake boost openal-soft sdl2
 pip install vizdoom
 ```
-(we recommend using at least macOS High Sierra 10.13+ with Python 3.7+)
+We recommend using at least macOS High Sierra 10.13+ with Python 3.6+.
+Currently, only for Intel CPU, we will gladly accept PR with M1 support.
 
-
-## Windows build
-We will provide new Windows builds soon.
-
-## Building instructions
-
-- **[PyPI (pip)](doc/Building.md#pypi)**
-- [Linux](doc/Building.md#linux_build)
-- [MacOS](doc/Building.md#macos_build)
-- [Windows](doc/Building.md#windows_build)
+### Windows build
+To download pre-build release for Windows 10 or 11 64-bit and Python 3.6+ just run:
+```
+pip install vizdoom
+```
 
 
 ## Examples
