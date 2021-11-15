@@ -97,7 +97,7 @@ Python examples are currently the richest, so we recommend to look at them, even
 
 If you own original Doom or Doom 2 games, you can replace [Freedoom](https://freedoom.github.io/) graphics by placing `doom.wad` or `doom2.wad` into your working directory or `vizdoom` package directory.
 
-Alternativley any game WAD file can be setting a path to it by [`set_doom_game_path/setDoomGamePath`](https://github.com/mwydmuch/ViZDoom/blob/master/doc/DoomGame.md#-setdoomscenariopath) method.
+Alternatively, any base game WAD (including other Doom engine-based games) can be used by pointing to it with the [`set_doom_game_path/setDoomGamePath`](https://github.com/mwydmuch/ViZDoom/blob/master/doc/DoomGame.md#-setdoomscenariopath) method.
 
 
 ## Documentation
