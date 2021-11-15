@@ -75,8 +75,8 @@ pip install vizdoom
 We recommend using at least macOS High Sierra 10.13+ with Python 3.6+.
 Currently, only for Intel CPU, we will gladly accept PR with M1 support.
 
-### Windows build
-To download pre-build release for Windows 10 or 11 64-bit and Python 3.6+ just run:
+### Windows
+To install pre-build release for Windows 10 or 11 64-bit and Python 3.6+ just run (should take few seconds):
 ```
 pip install vizdoom
 ```
@@ -135,6 +135,7 @@ Useful parts:
 - [MazeExplorer](https://github.com/microsoft/MazeExplorer) - More sophisticated maze navigation generator for ViZDoom.
 - [ViZDoomGym](https://github.com/shakenes/vizdoomgym) - OpenAI Gym Wrapper for ViZDoom.
 - [Sample Factory](https://github.com/alex-petrenko/sample-factory) - A high performance reinforcement learning framework for ViZDoom.
+
 
 ## Contributions
 
