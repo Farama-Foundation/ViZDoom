@@ -54,7 +54,7 @@ def get_python_library(python_root_dir):
         path = os.path.join(python_root_dir, path_format.format(*python_version.split('.'), library_extension))
         if os.path.exists(path):
             return path
-     
+
     return None
     
     
@@ -96,7 +96,7 @@ class BuildCommand(build):
                 sndfile_lib=os.path.join(deps_root, 'libsndfile/lib/libsndfile-1.lib')
                 sndfile_dll=os.path.join(deps_root, 'libsndfile/bin/libsndfile-1.dll')
                 
-                os.environ["OPENALDIR"]=str(os.path.join(deps_root, 'openal-soft'))
+                os.environ["OPENALDIR"] = str(os.path.join(deps_root, 'openal-soft'))
                 openal_dll=os.path.join(deps_root, 'openal-soft/bin/Win64/OpenAL32.dll')
                 
                 cmake_arg_list.extend(
@@ -119,10 +119,10 @@ class BuildCommand(build):
             python_library = get_python_library(python_root_dir)
             python_include_dir = sysconfig.get_python_inc()
             
-            if os.path.exists(python_include_dir):
+            if python_include_dir and os.path.exists(python_include_dir):
                 cmake_arg_list.append("-DPYTHON_INCLUDE_DIR={}".format(python_include_dir))
-                
-            if os.path.exists(python_library):
+
+            if python_library and os.path.exists(python_library):
                 cmake_arg_list.append("-DPYTHON_LIBRARY={}".format(python_library))
             
             if os.path.exists('CMakeCache.txt'):
