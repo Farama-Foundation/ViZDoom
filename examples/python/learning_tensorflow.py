@@ -9,6 +9,7 @@ import vizdoom as vzd
 import itertools as it
 import tensorflow as tf
 import skimage.color, skimage.transform
+import os
 
 from tqdm import trange
 from random import sample
@@ -47,7 +48,7 @@ skip_learning = False
 watch = True
 
 # Configuration file path
-config_file_path = "../../scenarios/simpler_basic.cfg"
+config_file_path = os.path.join(vzd.scenarios_path, "simpler_basic.cfg")
 model_savefolder = "./model"
 
 if len(tf.config.experimental.list_physical_devices('GPU')) > 0:

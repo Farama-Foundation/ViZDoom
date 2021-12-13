@@ -13,7 +13,7 @@ import random
 import itertools as it
 import skimage.transform
 
-from vizdoom import Mode
+import os
 from time import sleep, time
 from collections import deque
 from tqdm import trange
@@ -42,9 +42,9 @@ load_model = False
 skip_learning = False
 
 # Configuration file path
-config_file_path = "../../scenarios/simpler_basic.cfg"
-# config_file_path = "../../scenarios/rocket_basic.cfg"
-# config_file_path = "../../scenarios/basic.cfg"
+config_file_path = os.path.join(vzd.scenarios_path, "simpler_basic.cfg")
+# config_file_path = os.path.join(vzd.scenarios_path, "rocket_basic.cfg")
+# config_file_path = os.path.join(vzd.scenarios_path, "basic.cfg")
 
 # Uses GPU if available
 if torch.cuda.is_available():
@@ -67,7 +67,7 @@ def create_simple_game():
     game = vzd.DoomGame()
     game.load_config(config_file_path)
     game.set_window_visible(False)
-    game.set_mode(Mode.PLAYER)
+    game.set_mode(vzd.Mode.PLAYER)
     game.set_screen_format(vzd.ScreenFormat.GRAY8)
     game.set_screen_resolution(vzd.ScreenResolution.RES_640X480)
     game.init()
@@ -311,7 +311,7 @@ if __name__ == '__main__':
     # Reinitialize the game with window visible
     game.close()
     game.set_window_visible(True)
-    game.set_mode(Mode.ASYNC_PLAYER)
+    game.set_mode(vzd.Mode.ASYNC_PLAYER)
     game.init()
 
     for _ in range(episodes_to_watch):

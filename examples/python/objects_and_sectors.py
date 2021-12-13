@@ -1,11 +1,20 @@
 #!/usr/bin/env python3
 
+#####################################################################
+# This script presents how to access the information
+# about the actors and objects present in the current scenario
+# and map sectors (geometry).
+#
+# This information is not available if "+viz_nocheat" flag is enabled.
+#####################################################################
+
 from random import choice
 import vizdoom as vzd
 from argparse import ArgumentParser
 import matplotlib.pyplot as plt
 
 DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "my_way_home.cfg")
+
 
 if __name__ =="__main__":
     parser = ArgumentParser("ViZDoom example showing how to use information about objects and map.")
