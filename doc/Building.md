@@ -50,6 +50,18 @@ julia> using Pkg
 julia> Pkg.add("CxxWrap")
 ```
 
+If you do not have a root access, you can use a conda (e.g. [miniconda](https://docs.conda.io/en/latest/miniconda.html)) environment to install dependencies to your environment only:
+```
+conda install -c conda-forge boost cmake gtk2 sdl2
+```
+
+Note that to install ViZDoom in a conda environment you have to pull, build and install ViZDoom manually with
+```
+git clone https://github.com/mwydmuch/ViZDoom.git
+cd ViZDoom
+python setup.py build && python setup.py install
+```
+
 
 ### <a name="macos_deps"></a> MacOS
 * CMake 3.1+
