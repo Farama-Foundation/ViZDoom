@@ -67,6 +67,16 @@ pip install vizdoom
 ```
 We recommend using at least Ubuntu 18.04+ with Python 3.6+.
 
+### Conda
+To install ViZDoom on a conda environment (no system-wide installations required):
+```
+conda install -c conda-forge boost cmake gtk2 sdl2
+git clone https://github.com/mwydmuch/ViZDoom.git
+cd ViZDoom
+python setup.py build && python setup.py install
+```
+Note that `pip install vizdoom` won't work with conda install and you have to follow these steps.
+
 ### macOS 
 To install ViZDoom on macOS run (may take few minutes):
 ```
