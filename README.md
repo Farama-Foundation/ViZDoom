@@ -146,6 +146,7 @@ Useful parts:
 - [MazeExplorer](https://github.com/microsoft/MazeExplorer) - More sophisticated maze navigation generator for ViZDoom.
 - [ViZDoomGym](https://github.com/shakenes/vizdoomgym) - OpenAI Gym Wrapper for ViZDoom.
 - [Sample Factory](https://github.com/alex-petrenko/sample-factory) - A high performance reinforcement learning framework for ViZDoom.
+- [EnvPool](https://github.com/sail-sg/envpool/) - A high performance vectorized environment for ViZDoom.
 
 
 ## Contributions
