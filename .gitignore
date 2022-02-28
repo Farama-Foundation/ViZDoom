@@ -119,3 +119,7 @@ vizdoom.egg-info/
 /build/
 /venv/
 /.eggs/
+mytest/logs
+mytest/train
+_vizdoom
+__pycache__
