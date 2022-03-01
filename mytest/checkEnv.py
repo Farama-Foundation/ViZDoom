@@ -6,8 +6,8 @@ _env = MyDoom(render=True)
 total_steps = 100
 
 state = _env.reset()
-for step in range(total_steps):
-    state, reward, done, info = _env.step(2)
-    print(state.shape)
-    sleep(0.02)
+for step in range(total_steps):    
+    state, reward, done, info = _env.step(_env.action_space.sample())
+    print(info)
+    sleep(0.2)
 _env.close()

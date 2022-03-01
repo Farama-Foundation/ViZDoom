@@ -28,12 +28,12 @@ class TrainAndLoggingCallback(BaseCallback):
 _env = MyDoom(render=False)
 #state = _env.reset()
 
-CHECKPOINT_DIR = './train/train_basic'
-LOG_DIR = './logs/log_basic'
+CHECKPOINT_DIR = './train/train_defend_nstep4096'
+LOG_DIR = './logs/log_defend_nstep4096'
 
 callback = TrainAndLoggingCallback(check_freq=10000, save_path=CHECKPOINT_DIR)
 
-model = PPO('CnnPolicy', _env, tensorboard_log=LOG_DIR, verbose=1, learning_rate=0.0001, n_steps=2048)
+model = PPO('CnnPolicy', _env, tensorboard_log=LOG_DIR, verbose=1, learning_rate=0.0001, n_steps=4096)
 
-model.learn(total_timesteps=100000, callback=callback)
+model.learn(total_timesteps=total_steps, callback=callback)
 

@@ -7,13 +7,14 @@ from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3 import PPO
 
 # Reload model from disc
-model = PPO.load('./train/train_basic_n_step2048/best_model_100000')
+model = PPO.load('./train/train_defend_nstep2048/best_model_100000')
+
+env = MyDoom(render=False)
+mean_reward, _ = evaluate_policy(model, env, n_eval_episodes=100)
+print("mean_reward", mean_reward)
 
 # Create rendered environment
 env = MyDoom(render=True)
-
-# Evaluate mean reward for 10 games
-mean_reward, _ = evaluate_policy(model, env, n_eval_episodes=100)
 
 for episode in range(100): 
     obs = env.reset()
@@ -24,6 +25,6 @@ for episode in range(100):
         obs, reward, done, info = env.step(action)
         # time.sleep(0.20)
         total_reward += reward
-        sleep(0.2)
+        sleep(0.1)
     print('Total Reward for episode {} is {}'.format(total_reward, episode))
     sleep(2)
