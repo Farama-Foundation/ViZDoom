@@ -7,11 +7,13 @@ from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3 import PPO
 
 # Reload model from disc
-model = PPO.load('./train/train_defend_nstep2048/best_model_100000')
+model = PPO.load('./train/train_deadly_corridor_seed2/best_model_260000')
+#model = PPO.load('./train/train_deadly_corridor5/best_model_40000')
 
-env = MyDoom(render=False)
-mean_reward, _ = evaluate_policy(model, env, n_eval_episodes=100)
-print("mean_reward", mean_reward)
+
+#env = MyDoom(render=False)
+#mean_reward, _ = evaluate_policy(model, env, n_eval_episodes=100)
+#print("mean_reward", mean_reward)
 
 # Create rendered environment
 env = MyDoom(render=True)
