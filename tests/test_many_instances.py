@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
+import os
 from argparse import ArgumentParser
 from multiprocessing import Process
 from random import choice
-import vizdoom as vzd
 
+import vizdoom as vzd
 
 DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "basic.cfg")
 
