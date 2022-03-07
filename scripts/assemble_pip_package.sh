@@ -25,6 +25,8 @@ PYTHON_BIN_PATH="$(ls ${PACKAGE_DEST_DIRECTORY}/vizdoom*)"
 FREEDOOM_PATH="${SRC_PATH}/src/freedoom2.wad"
 SCENARIOS_DEST_DIR="${PACKAGE_DEST_PATH}/scenarios"
 SCENARIOS_PATH="${SRC_PATH}/scenarios"
+GYM_WRAPPER_DEST_DIR="${PACKAGE_DEST_PATH}/gym_wrapper"
+GYM_WRAPPER_PATH="${SRC_PATH}/gym_wrapper"
 
 if [ ! -e ${PYTHON_BIN_PATH} ]; then
     echo "Library for specified Python version does not exist. Aborting."
@@ -48,3 +50,6 @@ mkdir -p ${SCENARIOS_DEST_DIR}
 cp ${SCENARIOS_PATH}/*.wad ${SCENARIOS_DEST_DIR}
 cp ${SCENARIOS_PATH}/*.cfg ${SCENARIOS_DEST_DIR}
 mv ${SCENARIOS_DEST_DIR}/bots.cfg ${PACKAGE_DEST_PATH}
+
+mkdir -p ${GYM_WRAPPER_DEST_DIR}
+cp ${GYM_WRAPPER_PATH}/*.py ${GYM_WRAPPER_DEST_DIR}
