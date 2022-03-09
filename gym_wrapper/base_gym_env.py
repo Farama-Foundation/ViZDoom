@@ -6,49 +6,35 @@ import numpy as np
 import pygame
 import vizdoom.vizdoom as vzd
 from gym import spaces
-from vizdoom import scenarios_path
-
-
-
-CONFIGS = [
-    ["basic.cfg", 3],  # 0
-    ["deadly_corridor.cfg", 7],  # 1
-    ["defend_the_center.cfg", 3],  # 2
-    ["defend_the_line.cfg", 3],  # 3
-    ["health_gathering.cfg", 3],  # 4
-    ["my_way_home.cfg", 5],  # 5
-    ["predict_position.cfg", 3],  # 6
-    ["take_cover.cfg", 2],  # 7
-    ["deathmatch.cfg", 20],  # 8
-    ["health_gathering_supreme.cfg", 3],  # 9
-]
 
 
 class VizdoomEnv(gym.Env):
-    def __init__(self, level, **kwargs):
+    def __init__(
+        self,
+        level,
+        frame_skip=1,
+        depth=False,
+        labels=False,
+        position=False,
+        health=False,
+    ):
         """
         Base class for Gym interface for ViZDoom. Thanks to https://github.com/shakenes/vizdoomgym
         Child classes are defined in vizdoom_env_definitions.py,
-        that contain the level parameter and pass through any kwargs from gym.make()
-        :param level: index of level in the CONFIGS list above
-        :param kwargs: keyword arguments from gym.make(env_name_string, **kwargs) call. 'depth' will render the
         depth buffer and 'labels' will render the object labels and return it in the observation.
-        Note that the observation will be a list with the screen buffer as the first element. If no kwargs are
-        provided (or depth=False and labels=False) the observation will be of type np.ndarray.
+        Note that the observation will be a list with the screen buffer as the first element.
         """
 
         # parse keyword arguments
-        self.depth = kwargs.get("depth", False)
-        self.labels = kwargs.get("labels", False)
-        self.position = kwargs.get("position", False)
-        self.health = kwargs.get("health", False)
+        self.frame_skip = frame_skip
+        self.depth = depth
+        self.labels = labels
+        self.position = position
+        self.health = health
 
         # init game
         self.game = vzd.DoomGame()
-        self.game.set_screen_resolution(
-            vzd.ScreenResolution.RES_320X240
-        )  
-        self.game.load_config(os.path.join(scenarios_path, CONFIGS[level][0]))
+        self.game.load_config(level)
         self.game.set_window_visible(False)
         self.game.set_depth_buffer_enabled(self.depth)
         self.game.set_labels_buffer_enabled(self.labels)
@@ -65,7 +51,10 @@ class VizdoomEnv(gym.Env):
         self.window_surface = None
         self.isopen = True
 
-        self.action_space = spaces.Discrete(CONFIGS[level][1])
+        assert all(
+            ["DELTA" not in button.name for button in self.game.get_available_buttons()]
+        ), "DELTA Buttons not supported"
+        self.action_space = spaces.Discrete(self.game.get_available_buttons_size())
 
         # specify observation space(s)
         list_spaces: List[gym.Space] = [
@@ -117,16 +106,14 @@ class VizdoomEnv(gym.Env):
 
     def step(self, action):
         # convert action to vizdoom action space (one hot)
-        act = np.zeros(self.action_space.n)
+        act = [0 for _ in range(self.action_space.n)]
         act[action] = 1
-        act = np.uint8(act)
-        act = act.tolist()
 
         err_msg = f"{action!r} ({type(action)}) invalid"
         assert self.action_space.contains(action), err_msg
         assert self.state is not None, "Call reset before using step method."
 
-        reward = self.game.make_action(act)
+        reward = self.game.make_action(act, self.frame_skip)
         self.state = self.game.get_state()
         done = self.game.is_episode_finished()
 
@@ -225,17 +212,3 @@ class VizdoomEnv(gym.Env):
         if self.window_surface:
             pygame.quit()
             self.isopen = False
-
-    @staticmethod
-    def get_keys_to_action():
-        # you can press only one key at a time!
-        keys = {
-            (): 2,
-            (ord("a"),): 0,
-            (ord("d"),): 1,
-            (ord("w"),): 3,
-            (ord("s"),): 4,
-            (ord("q"),): 5,
-            (ord("e"),): 6,
-        }
-        return keys
