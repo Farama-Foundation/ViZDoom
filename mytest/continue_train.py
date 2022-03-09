@@ -2,7 +2,7 @@ from setup_env import MyDoom
 from time import sleep
 import os
 from stable_baselines3 import PPO
-from utils import TrainAndLoggingCallback
+from mytest.tools import TrainAndLoggingCallback
 
 
 total_steps = 4e4

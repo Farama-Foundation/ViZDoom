@@ -5,8 +5,26 @@ from typing import Any, Dict, List, Optional, Union
 
 import gym
 import numpy as np
+from .base_vec_env import  VecEnv
 
-import utils
+GymEnv = Union[gym.Env, VecEnv]
+def check_for_correct_spaces(env: GymEnv, observation_space: gym.spaces.Space, action_space: gym.spaces.Space) -> None:
+    """
+    Checks that the environment has same spaces as provided ones. Used by BaseAlgorithm to check if
+    spaces match after loading the model with given env.
+    Checked parameters:
+    - observation_space
+    - action_space
+
+    :param env: Environment to check for valid spaces
+    :param observation_space: Observation space to check against
+    :param action_space: Action space to check against
+    """
+    if observation_space != env.observation_space:
+        raise ValueError(f"Observation spaces do not match: {observation_space} != {env.observation_space}")
+    if action_space != env.action_space:
+        raise ValueError(f"Action spaces do not match: {action_space} != {env.action_space}")
+
 from ..running_mean_std import RunningMeanStd
 from .base_vec_env import VecEnv, VecEnvStepReturn, VecEnvWrapper
 
@@ -136,7 +154,7 @@ class VecNormalize(VecEnvWrapper):
         VecEnvWrapper.__init__(self, venv)
 
         # Check only that the observation_space match
-        utils.check_for_correct_spaces(venv, self.observation_space, venv.action_space)
+        check_for_correct_spaces(venv, self.observation_space, venv.action_space)
         self.returns = np.zeros(self.num_envs)
 
     def step_wait(self) -> VecEnvStepReturn:
