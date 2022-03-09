@@ -7,9 +7,9 @@ from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3 import PPO
 
 # Reload model from disc
-model = PPO.load('./train/train_deadly_corridor_seed2/best_model_260000')
-#model = PPO.load('./train/train_deadly_corridor5/best_model_40000')
-
+#model = PPO.load('./train/train_deadly_corridor_seed2/best_model_400000')
+model = PPO.load('./train/train_deadly_corridor_killingmachine/best_model_400000.zip')
+#model = PPO.load('./train/train_deadly_corridor_origin/best_model_400000.zip')
 
 #env = MyDoom(render=False)
 #mean_reward, _ = evaluate_policy(model, env, n_eval_episodes=100)

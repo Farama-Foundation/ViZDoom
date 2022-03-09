@@ -36,7 +36,6 @@ class MyDoom(Env):
         self.damage_taken = 0
         self.hitcount = 0
         self.ammo = 52 ## CHANGED
-
         
     def step(self, action):
         actions = np.identity(7, dtype=np.uint8)
@@ -60,8 +59,11 @@ class MyDoom(Env):
             self.hitcount = hitcount
             ammo_delta = ammo - self.ammo
             self.ammo = ammo
-            
-            reward = movement_reward + damage_taken_delta*10 + hitcount_delta*200  + ammo_delta*5 
+
+            #print(movement_reward, damage_taken_delta*10, hitcount_delta*200, ammo_delta*5)
+            # https://github.com/mrzhuzhe/ViZDoom/blob/master/doc/Types.md#gamevariable
+            #reward = movement_reward + damage_taken_delta*10 + hitcount_delta*400  + ammo_delta*5
+            reward = movement_reward + hitcount_delta*200 
             info = { "health": health }
         else:
             state = np.zeros(self.observation_space.shape)
