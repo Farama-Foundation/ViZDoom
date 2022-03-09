@@ -11,7 +11,6 @@ import gym
 import numpy as np
 import torch as th
 
-from .import utils
 from .callbacks import BaseCallback, CallbackList, ConvertCallback, EvalCallback
 from .env_util import is_wrapped
 from .logger import Logger
@@ -22,6 +21,7 @@ from .preprocessing import check_for_nested_spaces, is_image_space, is_image_spa
 from .save_util import load_from_zip_file, recursive_getattr, recursive_setattr, save_to_zip_file
 from .type_aliases import GymEnv, MaybeCallback, Schedule
 from .utils import (
+    configure_logger,
     check_for_correct_spaces,
     get_device,
     get_schedule_fn,
@@ -439,7 +439,7 @@ class BaseAlgorithm(ABC):
 
         # Configure logger's outputs if no logger was passed
         if not self._custom_logger:
-            self._logger = utils.configure_logger(self.verbose, self.tensorboard_log, tb_log_name, reset_num_timesteps)
+            self._logger = configure_logger(self.verbose, self.tensorboard_log, tb_log_name, reset_num_timesteps)
 
         # Create eval callback if needed
         callback = self._init_callback(callback, eval_env, eval_freq, n_eval_episodes, log_path)
