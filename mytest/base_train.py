@@ -1,3 +1,4 @@
+# https://github.com/Stable-Baselines-Team/stable-baselines3-contrib/pull/53/files reppo
 from setup_env import MyDoom
 from time import sleep
 import os
@@ -30,9 +31,9 @@ _env = VecFrameStack(_env, 4, channels_order='last')
 callback = TrainAndLoggingCallback(check_freq=20*10000, save_path=CHECKPOINT_DIR)
 
 #model = PPO('CnnPolicy', _env, tensorboard_log=LOG_DIR, verbose=1, learning_rate=0.0001, n_steps=4096)
-Debug = False
+Debug = True
 if Debug:
-    model = PPO('CnnPolicy', _env, verbose=1, learning_rate=0.00001, n_steps=8192, clip_range=.1, gamma=.95, gae_lambda=.9)
+    model = PPO('CnnLSTMPolicy', _env, verbose=1, learning_rate=0.00001, n_steps=8192, clip_range=.1, gamma=.95, gae_lambda=.9)
     model.learn(total_timesteps=1e4)
 else: 
     model = PPO('CnnPolicy', _env, tensorboard_log=LOG_DIR, verbose=1, learning_rate=0.00001, n_steps=8192, clip_range=.1, gamma=.95, gae_lambda=.9)
