@@ -27,7 +27,7 @@ _env = VecFrameStack(_env, 4, channels_order='last')
 
 #state = _env.reset()
 
-callback = TrainAndLoggingCallback(check_freq=10*10000, save_path=CHECKPOINT_DIR)
+callback = TrainAndLoggingCallback(check_freq=20*10000, save_path=CHECKPOINT_DIR)
 
 #model = PPO('CnnPolicy', _env, tensorboard_log=LOG_DIR, verbose=1, learning_rate=0.0001, n_steps=4096)
 Debug = False

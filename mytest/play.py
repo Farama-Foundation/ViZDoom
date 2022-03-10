@@ -1,15 +1,18 @@
 # Import eval policy to test agent
-from stable_baselines3.common.evaluation import evaluate_policy
+from PPO.common.evaluation import evaluate_policy
 from setup_env import MyDoom
 from time import sleep
 import os
-from stable_baselines3.common.callbacks import BaseCallback
-from stable_baselines3 import PPO
+from PPO.common.callbacks import BaseCallback
+from PPO import PPO
+from PPO.common.vec_env import DummyVecEnv, VecFrameStack
 
 # Reload model from disc
 #model = PPO.load('./train/train_deadly_corridor_seed2/best_model_400000')
-model = PPO.load('./train/train_deadly_corridor_killingmachine/best_model_400000.zip')
+#model = PPO.load('./train/train_deadly_corridor_killingmachine/best_model_400000.zip')
 #model = PPO.load('./train/train_deadly_corridor_origin/best_model_400000.zip')
+model = PPO.load('./train/train_deadly_corridor_frameStack/best_model_400000.zip')
+
 
 #env = MyDoom(render=False)
 #mean_reward, _ = evaluate_policy(model, env, n_eval_episodes=100)
@@ -17,6 +20,9 @@ model = PPO.load('./train/train_deadly_corridor_killingmachine/best_model_400000
 
 # Create rendered environment
 env = MyDoom(render=True)
+env = DummyVecEnv([lambda: env])
+env = VecFrameStack(env, 4, channels_order='last')
+
 
 for episode in range(100): 
     obs = env.reset()
