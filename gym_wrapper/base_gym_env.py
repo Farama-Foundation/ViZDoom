@@ -103,13 +103,12 @@ class VizdoomEnv(gym.Env):
         self.observation_space = gym.spaces.Dict(spaces)
 
     def step(self, action):
+        assert self.action_space.contains(action), f"{action!r} ({type(action)}) invalid"
+        assert self.state is not None, "Call `reset` before using `step` method."
+
         # convert action to vizdoom action space (one hot)
         act = [0 for _ in range(self.action_space.n)]
         act[action] = 1
-
-        err_msg = f"{action!r} ({type(action)}) invalid"
-        assert self.action_space.contains(action), err_msg
-        assert self.state is not None, "Call reset before using step method."
 
         reward = self.game.make_action(act, self.frame_skip)
         self.state = self.game.get_state()
