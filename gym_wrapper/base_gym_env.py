@@ -1,5 +1,5 @@
-import os
 from typing import List, Optional
+import warnings
 
 import gym
 import numpy as np
@@ -51,10 +51,14 @@ class VizdoomEnv(gym.Env):
         self.window_surface = None
         self.isopen = True
 
-        assert all(
-            ["DELTA" not in button.name for button in self.game.get_available_buttons()]
-        ), "DELTA Buttons not supported"
-        self.action_space = spaces.Discrete(self.game.get_available_buttons_size())
+        allowed_buttons = []
+        for button in self.game.get_available_buttons():
+            if "DELTA" in button.name:
+                warnings.warn(f"Removing button {button.name}. DELTA buttons are not supported. Use binary buttons instead.")
+            else:
+                allowed_buttons.append(button)
+        self.game.set_available_buttons(allowed_buttons)
+        self.action_space = spaces.Discrete(len(allowed_buttons))
 
         # specify observation space(s)
         list_spaces: List[gym.Space] = [
