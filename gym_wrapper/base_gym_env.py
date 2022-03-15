@@ -1,11 +1,10 @@
-from typing import List, Optional
+from typing import Optional
 import warnings
 
 import gym
 import numpy as np
 import pygame
 import vizdoom.vizdoom as vzd
-from gym import spaces
 
 
 class VizdoomEnv(gym.Env):
@@ -54,11 +53,11 @@ class VizdoomEnv(gym.Env):
             else:
                 allowed_buttons.append(button)
         self.game.set_available_buttons(allowed_buttons)
-        self.action_space = spaces.Discrete(len(allowed_buttons))
+        self.action_space = gym.spaces.Discrete(len(allowed_buttons))
 
         # specify observation space(s)
         spaces = {
-            "rgb": spaces.Box(
+            "rgb": gym.spaces.Box(
                 0,
                 255,
                 (
@@ -72,7 +71,7 @@ class VizdoomEnv(gym.Env):
         }
 
         if self.depth:
-            spaces["depth"] = spaces.Box(
+            spaces["depth"] = gym.spaces.Box(
                 0,
                 255,
                 (
@@ -82,7 +81,7 @@ class VizdoomEnv(gym.Env):
                 dtype=np.uint8,
             )
         if self.labels:
-            spaces["labels"] = spaces.Box(
+            spaces["labels"] = gym.spaces.Box(
                 0,
                 255,
                 (
@@ -94,14 +93,14 @@ class VizdoomEnv(gym.Env):
 
         self.num_game_variables = self.game.get_available_game_variables_size()
         if self.num_game_variables > 0:
-            spaces["gamevariables"] = spaces.Box(
+            spaces["gamevariables"] = gym.spaces.Box(
                 np.finfo(np.float32).min,
                 np.finfo(np.float32).max,
                 (self.num_game_variables,),
                 dtype=np.float32
             )
 
-        self.observation_space = spaces.Dict(spaces)
+        self.observation_space = gym.spaces.Dict(spaces)
 
     def step(self, action):
         # convert action to vizdoom action space (one hot)
@@ -145,7 +144,7 @@ class VizdoomEnv(gym.Env):
             if self.labels:
                 observation["labels"] = self.state.labels_buffer
             if self.num_game_variables > 0:
-                observation["gamevariables"] = self.state.game_variables
+                observation["gamevariables"] = self.state.game_variables.astype(np.float32)
         else:
             # there is no state in the terminal step, so a zero observation is returned instead
             for space_key, space_item in self.observation_space.items():
