@@ -13,43 +13,39 @@ class VizdoomEnv(gym.Env):
         self,
         level,
         frame_skip=1,
-        depth=False,
-        labels=False,
-        position=False,
-        health=False,
     ):
         """
         Base class for Gym interface for ViZDoom. Thanks to https://github.com/shakenes/vizdoomgym
         Child classes are defined in vizdoom_env_definitions.py,
-        depth buffer and 'labels' will render the object labels and return it in the observation.
-        Note that the observation will be a list with the screen buffer as the first element.
-        """
 
-        # parse keyword arguments
+        Arguments:
+            level (str): path to the config file to load. Most settings should be set by this config file.
+            frame_skip (int): how many frames should be advanced per action. 1 = take action on every frame. Default: 1.
+
+        This environment forces window to be hidden. Use `render()` function to see the game.
+
+        Observations are dictionaries with different amount of entries, depending on if depth/label buffers were
+        enabled in the config file:
+          "rgb"           = the RGB image (always available), in the format specified by the config file
+          "depth"         = the depth image, if enabled by the config file
+          "labels"        = the label image buffer, if enabled by the config file. For info on labels, access `env.state.labels` variable.
+          "gamevariables" = all game variables, in the order specified by the config file
+
+        Action space is always a Discrete one, one choice for each button (only one button can be pressed down at a time).
+        """
         self.frame_skip = frame_skip
-        self.depth = depth
-        self.labels = labels
-        self.position = position
-        self.health = health
 
         # init game
         self.game = vzd.DoomGame()
         self.game.load_config(level)
         self.game.set_window_visible(False)
-        self.game.set_depth_buffer_enabled(self.depth)
-        self.game.set_labels_buffer_enabled(self.labels)
-        self.game.clear_available_game_variables()
-        if self.position:
-            self.game.add_available_game_variable(vzd.GameVariable.POSITION_X)
-            self.game.add_available_game_variable(vzd.GameVariable.POSITION_Y)
-            self.game.add_available_game_variable(vzd.GameVariable.POSITION_Z)
-            self.game.add_available_game_variable(vzd.GameVariable.ANGLE)
-        if self.health:
-            self.game.add_available_game_variable(vzd.GameVariable.HEALTH)
         self.game.init()
         self.state = None
         self.window_surface = None
         self.isopen = True
+
+        self.depth = self.game.is_depth_buffer_enabled()
+        self.labels = self.game.is_labels_buffer_enabled()
 
         allowed_buttons = []
         for button in self.game.get_available_buttons():
@@ -61,8 +57,8 @@ class VizdoomEnv(gym.Env):
         self.action_space = spaces.Discrete(len(allowed_buttons))
 
         # specify observation space(s)
-        list_spaces: List[gym.Space] = [
-            spaces.Box(
+        spaces = {
+            "rgb": spaces.Box(
                 0,
                 255,
                 (
@@ -70,43 +66,42 @@ class VizdoomEnv(gym.Env):
                     self.game.get_screen_width(),
                     self.game.get_screen_channels(),
                 ),
+                # TODO not always true, but in most cases, yes...
                 dtype=np.uint8,
             )
-        ]
+        }
+
         if self.depth:
-            list_spaces.append(
-                spaces.Box(
-                    0,
-                    255,
-                    (
-                        self.game.get_screen_height(),
-                        self.game.get_screen_width(),
-                    ),
-                    dtype=np.uint8,
-                )
+            spaces["depth"] = spaces.Box(
+                0,
+                255,
+                (
+                    self.game.get_screen_height(),
+                    self.game.get_screen_width(),
+                ),
+                dtype=np.uint8,
             )
         if self.labels:
-            list_spaces.append(
-                spaces.Box(
-                    0,
-                    255,
-                    (
-                        self.game.get_screen_height(),
-                        self.game.get_screen_width(),
-                    ),
-                    dtype=np.uint8,
-                )
+            spaces["labels"] = spaces.Box(
+                0,
+                255,
+                (
+                    self.game.get_screen_height(),
+                    self.game.get_screen_width(),
+                ),
+                dtype=np.uint8,
             )
-        if self.position:
-            list_spaces.append(
-                spaces.Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (4,))
+
+        self.num_game_variables = self.game.get_available_game_variables_size()
+        if self.num_game_variables > 0:
+            spaces["gamevariables"] = spaces.Box(
+                np.finfo(np.float32).min,
+                np.finfo(np.float32).max,
+                (self.num_game_variables,),
+                dtype=np.float32
             )
-        if self.health:
-            list_spaces.append(spaces.Box(0, np.finfo(np.float32).max, (1,)))
-        if len(list_spaces) == 1:
-            self.observation_space = list_spaces[0]
-        else:
-            self.observation_space = spaces.Tuple(list_spaces)
+
+        self.observation_space = spaces.Dict(spaces)
 
     def step(self, action):
         # convert action to vizdoom action space (one hot)
@@ -141,42 +136,21 @@ class VizdoomEnv(gym.Env):
             return self.__collect_observations(), {}
 
     def __collect_observations(self):
-        observation = []
+        observation = {}
         if self.state is not None:
-            observation.append(np.transpose(self.state.screen_buffer, (1, 2, 0)))
+            # TODO ensure that this works with GRAY8 images
+            observation["rgb"] = np.transpose(self.state.screen_buffer, (1, 2, 0))
             if self.depth:
-                observation.append(self.state.depth_buffer)
+                observation["depth"] = self.state.depth_buffer
             if self.labels:
-                observation.append(self.state.labels_buffer)
-            if self.position:
-                observation.append(
-                    np.array(
-                        [self.state.game_variables[i] for i in range(4)],
-                        dtype=np.float32,
-                    )
-                )
-                if self.health:
-                    observation.append(
-                        np.array([self.state.game_variables[4]], dtype=np.float32)
-                    )
-            elif self.health:
-                observation.append(
-                    np.array([self.state.game_variables[0]], dtype=np.float32)
-                )
+                observation["labels"] = self.state.labels_buffer
+            if self.num_game_variables > 0:
+                observation["gamevariables"] = self.state.game_variables
         else:
             # there is no state in the terminal step, so a zero observation is returned instead
-            if isinstance(self.observation_space, gym.spaces.box.Box):
-                # Box isn't iterable
-                obs_space = [self.observation_space]
-            else:
-                obs_space = self.observation_space
+            for space_key, space_item in self.observation_space.items():
+                observation[space_key] = np.zeros(space_item.shape, dtype=space_item.dtype)
 
-            for space in obs_space:
-                observation.append(np.zeros(space.shape, dtype=space.dtype))
-
-        # if there is only one observation, return obs as array to sustain compatibility
-        if len(observation) == 1:
-            observation = observation[0]
         return observation
 
     def render(self, mode="human"):
@@ -187,7 +161,8 @@ class VizdoomEnv(gym.Env):
                     self.game.get_screen_channels(),
                     self.game.get_screen_height(),
                     self.game.get_screen_width(),
-                )
+                ),
+                dtype=np.uint8,
             )
         else:
             img = game_state.screen_buffer
