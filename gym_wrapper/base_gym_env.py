@@ -137,8 +137,12 @@ class VizdoomEnv(gym.Env):
     def __collect_observations(self):
         observation = {}
         if self.state is not None:
-            # TODO ensure that this works with GRAY8 images
-            observation["rgb"] = np.transpose(self.state.screen_buffer, (1, 2, 0))
+            # Check for GRAY8 (no channel dim)
+            screen_buffer = self.state.screen_buffer
+            if screen_buffer.ndim == 2:
+                # Add extra dimension for channel
+                screen_buffer = screen_buffer[None]
+            observation["rgb"] = np.transpose(screen_buffer, (1, 2, 0))
             if self.depth:
                 observation["depth"] = self.state.depth_buffer
             if self.labels:
