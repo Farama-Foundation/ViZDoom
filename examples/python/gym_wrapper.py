@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
+#####################################################################
 # Example for running a vizdoom scenario as a gym env
+#####################################################################
 
 import gym
 from vizdoom import gym_wrapper

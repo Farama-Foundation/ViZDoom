@@ -10,6 +10,7 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 ## Features
 - Multi-platform (Linux, macOS, Windows),
 - API for Python, C++, and Julia (thanks to [Jun Tian](https://github.com/findmyway)), and also Lua and Java for older versions,
+- [OpenAI Gym](https://github.com/openai/gym) environment wrappers for basic scenarios.
 - Easy-to-create custom scenarios (visual editors, scripting language and examples available),
 - Async and sync single-player and multi-player modes,
 - Fast (up to 7000 fps in sync mode, single-threaded),
@@ -91,6 +92,13 @@ To install pre-build release for Windows 10 or 11 64-bit and Python 3.6+ just ru
 ```
 pip install vizdoom
 ```
+
+### Gym wrappers
+If you wish to use OpenAI Gym environments, install ViZDoom with
+```
+pip install vizdoom[gym]
+```
+See [documentation](doc/Gym.md) and [examples](examples/python/gym_wrapper.py) on the use of Gym API.
 
 
 ## Examples

@@ -150,7 +150,7 @@ class VizdoomEnv(gym.Env):
                 observation["gamevariables"] = self.state.game_variables.astype(np.float32)
         else:
             # there is no state in the terminal step, so a zero observation is returned instead
-            for space_key, space_item in self.observation_space.items():
+            for space_key, space_item in self.observation_space.spaces.items():
                 observation[space_key] = np.zeros(space_item.shape, dtype=space_item.dtype)
 
         return observation
