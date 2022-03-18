@@ -17,7 +17,7 @@ from random import choice
 from time import sleep
 import vizdoom as vzd
 
-DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "srocket_basic.cfg")
+DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "basic.cfg")
 if __name__ == "__main__":
 
     parser = ArgumentParser("ViZDoom scenarios example.")
