@@ -164,7 +164,7 @@ class VizdoomEnv(gym.Env):
     def __collect_observations(self):
         observation = {}
         if self.state is not None:
-            observation["rgb"] = self.state.automap_buffer
+            observation["rgb"] = self.state.screen_buffer
             if self.depth:
                 observation["depth"] = self.state.depth_buffer
             if self.labels:
