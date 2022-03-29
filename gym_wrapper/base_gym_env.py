@@ -25,9 +25,10 @@ class VizdoomEnv(gym.Env):
 
         Observations are dictionaries with different amount of entries, depending on if depth/label buffers were
         enabled in the config file:
-          "rgb"           = the RGB image (always available), in the format specified by the config file
-          "depth"         = the depth image, if enabled by the config file
-          "labels"        = the label image buffer, if enabled by the config file. For info on labels, access `env.state.labels` variable.
+          "rgb"           = the RGB image (always available) in shape (HEIGHT, WIDTH, CHANNELS)
+          "depth"         = the depth image in shape (HEIGHT, WIDTH), if enabled by the config file,
+          "labels"        = the label image buffer in shape (HEIGHT, WIDTH), if enabled by the config file. For info on labels, access `env.state.labels` variable.
+          "autmap"        = the automap image buffer in shape (HEIGHT, WIDTH, CHANNELS), if enabled by the config file
           "gamevariables" = all game variables, in the order specified by the config file
 
         Action space is always a Discrete one, one choice for each button (only one button can be pressed down at a time).
@@ -38,6 +39,12 @@ class VizdoomEnv(gym.Env):
         self.game = vzd.DoomGame()
         self.game.load_config(level)
         self.game.set_window_visible(False)
+
+        screen_format = self.game.get_screen_format()
+        if screen_format not in [vzd.ScreenFormat.RGB24, vzd.ScreenFormat.GRAY8]:
+            warnings.warn(f"Detected screen format {screen_format.name}. Only RGB24 and GRAY8 are supported in Gym wrapper, forcing RGB24.")
+            self.game.set_screen_format(vzd.ScreenFormat.RGB24)
+
         self.game.init()
         self.state = None
         self.window_surface = None
@@ -45,11 +52,12 @@ class VizdoomEnv(gym.Env):
 
         self.depth = self.game.is_depth_buffer_enabled()
         self.labels = self.game.is_labels_buffer_enabled()
+        self.automap = self.game.is_automap_buffer_enabled()
 
         allowed_buttons = []
         for button in self.game.get_available_buttons():
             if "DELTA" in button.name:
-                warnings.warn(f"Removing button {button.name}. DELTA buttons are not supported. Use binary buttons instead.")
+                warnings.warn(f"Removing button {button.name}. DELTA buttons are currently not supported in Gym wrapper. Use binary buttons instead.")
             else:
                 allowed_buttons.append(button)
         self.game.set_available_buttons(allowed_buttons)
@@ -65,7 +73,6 @@ class VizdoomEnv(gym.Env):
                     self.game.get_screen_width(),
                     self.game.get_screen_channels(),
                 ),
-                # TODO not always true, but in most cases, yes...
                 dtype=np.uint8,
             )
         }
@@ -80,6 +87,7 @@ class VizdoomEnv(gym.Env):
                 ),
                 dtype=np.uint8,
             )
+
         if self.labels:
             spaces["labels"] = gym.spaces.Box(
                 0,
@@ -87,6 +95,18 @@ class VizdoomEnv(gym.Env):
                 (
                     self.game.get_screen_height(),
                     self.game.get_screen_width(),
+                ),
+                dtype=np.uint8,
+            )
+
+        if self.automap:
+            spaces["automap"] = gym.spaces.Box(
+                0,
+                255,
+                (
+                    self.game.get_screen_height(),
+                    self.game.get_screen_width(),
+                    self.game.get_screen_channels(),
                 ),
                 dtype=np.uint8,
             )
@@ -133,19 +153,24 @@ class VizdoomEnv(gym.Env):
         else:
             return self.__collect_observations(), {}
 
+    @staticmethod
+    def __check_buffer(buffer):
+        # Check for GRAY8 (no channel dim)
+        if buffer.ndim == 2:
+            buffer = buffer.reshape(buffer.shape[0], buffer.shape[1], 1)
+        return buffer
+
+
     def __collect_observations(self):
         observation = {}
         if self.state is not None:
-            # Check for GRAY8 (no channel dim)
-            screen_buffer = self.state.screen_buffer
-            if screen_buffer.ndim == 2:
-                # Add extra dimension for channel
-                screen_buffer = screen_buffer[None]
-            observation["rgb"] = np.transpose(screen_buffer, (1, 2, 0))
+            observation["rgb"] = VizdoomEnv.__check_buffer(self.state.screen_buffer)
             if self.depth:
                 observation["depth"] = self.state.depth_buffer
             if self.labels:
                 observation["labels"] = self.state.labels_buffer
+            if self.automap:
+                observation["automap"] = VizdoomEnv.__check_buffer(self.state.automap_buffer)
             if self.num_game_variables > 0:
                 observation["gamevariables"] = self.state.game_variables.astype(np.float32)
         else:
@@ -160,19 +185,24 @@ class VizdoomEnv(gym.Env):
         if game_state is None:
             img = np.zeros(
                 (
-                    self.game.get_screen_channels(),
                     self.game.get_screen_height(),
                     self.game.get_screen_width(),
+                    3,
                 ),
                 dtype=np.uint8,
             )
         else:
             img = game_state.screen_buffer
-        img = np.transpose(img, [2, 1, 0])
+
+        if img.ndim == 2:  # PyGame doesn't support grayscale images, so we need to create RGB image from it
+            img = np.stack([img, img, img])
+            img = np.transpose(img, (2, 1, 0))
+        else:
+            img = np.transpose(img, (1, 0, 2))
 
         if self.window_surface is None:
             pygame.init()
-            pygame.display.set_caption("Vizdoom")
+            pygame.display.set_caption("ViZDoom")
             if mode == "human":
                 self.window_surface = pygame.display.set_mode(img.shape[:2])
             else:  # rgb_array
