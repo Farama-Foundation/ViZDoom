@@ -6,6 +6,12 @@ import numpy as np
 import pygame
 import vizdoom.vizdoom as vzd
 
+# A fixed set of colors for each potential label
+# for rendering an image.
+# 256 is not nearly enough for all IDs, but we limit
+# ourselves here to avoid hogging too much memory.
+LABEL_COLORS = np.random.default_rng(42).uniform(25, 256, size=(256, 3)).astype(np.uint8)
+
 
 class VizdoomEnv(gym.Env):
     def __init__(
@@ -28,7 +34,7 @@ class VizdoomEnv(gym.Env):
           "rgb"           = the RGB image (always available) in shape (HEIGHT, WIDTH, CHANNELS)
           "depth"         = the depth image in shape (HEIGHT, WIDTH), if enabled by the config file,
           "labels"        = the label image buffer in shape (HEIGHT, WIDTH), if enabled by the config file. For info on labels, access `env.state.labels` variable.
-          "autmap"        = the automap image buffer in shape (HEIGHT, WIDTH, CHANNELS), if enabled by the config file
+          "automap"       = the automap image buffer in shape (HEIGHT, WIDTH, CHANNELS), if enabled by the config file
           "gamevariables" = all game variables, in the order specified by the config file
 
         Action space is always a Discrete one, one choice for each button (only one button can be pressed down at a time).
@@ -41,8 +47,8 @@ class VizdoomEnv(gym.Env):
         self.game.set_window_visible(False)
 
         screen_format = self.game.get_screen_format()
-        if screen_format not in [vzd.ScreenFormat.RGB24, vzd.ScreenFormat.GRAY8]:
-            warnings.warn(f"Detected screen format {screen_format.name}. Only RGB24 and GRAY8 are supported in Gym wrapper, forcing RGB24.")
+        if screen_format != vzd.ScreenFormat.RGB24:
+            warnings.warn(f"Detected screen format {screen_format.name}. Only RGB24 is supported in the Gym wrapper. Forcing RGB24.")
             self.game.set_screen_format(vzd.ScreenFormat.RGB24)
 
         self.game.init()
@@ -71,7 +77,7 @@ class VizdoomEnv(gym.Env):
                 (
                     self.game.get_screen_height(),
                     self.game.get_screen_width(),
-                    self.game.get_screen_channels(),
+                    3,
                 ),
                 dtype=np.uint8,
             )
@@ -106,7 +112,9 @@ class VizdoomEnv(gym.Env):
                 (
                     self.game.get_screen_height(),
                     self.game.get_screen_width(),
-                    self.game.get_screen_channels(),
+                    # "automap" buffer uses same number of channels
+                    # as the main screen buffer
+                    3,
                 ),
                 dtype=np.uint8,
             )
@@ -153,24 +161,16 @@ class VizdoomEnv(gym.Env):
         else:
             return self.__collect_observations(), {}
 
-    @staticmethod
-    def __check_buffer(buffer):
-        # Check for GRAY8 (no channel dim)
-        if buffer.ndim == 2:
-            buffer = buffer.reshape(buffer.shape[0], buffer.shape[1], 1)
-        return buffer
-
-
     def __collect_observations(self):
         observation = {}
         if self.state is not None:
-            observation["rgb"] = VizdoomEnv.__check_buffer(self.state.screen_buffer)
+            observation["rgb"] = self.state.automap_buffer
             if self.depth:
                 observation["depth"] = self.state.depth_buffer
             if self.labels:
                 observation["labels"] = self.state.labels_buffer
             if self.automap:
-                observation["automap"] = VizdoomEnv.__check_buffer(self.state.automap_buffer)
+                observation["automap"] = self.state.automap_buffer
             if self.num_game_variables > 0:
                 observation["gamevariables"] = self.state.game_variables.astype(np.float32)
         else:
@@ -180,45 +180,63 @@ class VizdoomEnv(gym.Env):
 
         return observation
 
-    def render(self, mode="human"):
+    def __build_human_render_image(self):
+        """Stack all available buffers into one for human consumption"""
         game_state = self.game.get_state()
-        if game_state is None:
+        valid_buffers = game_state is not None
+
+        if not valid_buffers:
+            # Return a blank image
+            num_enabled_buffers = 1 + self.depth + self.labels + self.automap
             img = np.zeros(
                 (
                     self.game.get_screen_height(),
-                    self.game.get_screen_width(),
+                    self.game.get_screen_width() * num_enabled_buffers,
                     3,
                 ),
                 dtype=np.uint8,
             )
-        else:
-            img = game_state.screen_buffer
-
-        if img.ndim == 2:  # PyGame doesn't support grayscale images, so we need to create RGB image from it
-            img = np.stack([img, img, img])
-            img = np.transpose(img, (2, 1, 0))
-        else:
-            img = np.transpose(img, (1, 0, 2))
-
-        if self.window_surface is None:
-            pygame.init()
-            pygame.display.set_caption("ViZDoom")
-            if mode == "human":
-                self.window_surface = pygame.display.set_mode(img.shape[:2])
-            else:  # rgb_array
-                self.window_surface = pygame.Surface(img.shape[:2])
-
-        surf = pygame.surfarray.make_surface(img)
-        self.window_surface.blit(surf, (0, 0))
-
-        if mode == "human":
-            pygame.display.update()
-
-        if mode == "rgb_array":
             return img
+
+        image_list = [game_state.screen_buffer]
+
+        if self.depth:
+            image_list.append(np.repeat(game_state.depth_buffer[..., None], repeats=3, axis=2))
+
+        if self.labels:
+            # Give each label a fixed color.
+            # We need to connect each pixel in labels_buffer to the corresponding
+            # id via `value``
+            labels_rgb = np.zeros_like(game_state.screen_buffer)
+            labels_buffer = game_state.labels_buffer
+            for label in game_state.labels:
+                color = LABEL_COLORS[label.object_id % 256]
+                labels_rgb[labels_buffer == label.value] = color
+            image_list.append(labels_rgb)
+
+        if self.automap:
+            image_list.append(game_state.automap_buffer)
+
+        return np.concatenate(image_list, axis=1)
+
+    def render(self, mode="human"):
+        render_image = self.__build_human_render_image()
+        if mode == "rgb_array":
+            return render_image
+        elif mode == "human":
+            # Transpose image (pygame wants (width, height, channels), we have (height, width, channels))
+            render_image = render_image.transpose(1, 0, 2)
+            if self.window_surface is None:
+                pygame.init()
+                pygame.display.set_caption("ViZDoom")
+                self.window_surface = pygame.display.set_mode(render_image.shape[:2])
+
+            surf = pygame.surfarray.make_surface(render_image)
+            self.window_surface.blit(surf, (0, 0))
+            pygame.display.update()
         else:
             return self.isopen
-
+    
     def close(self):
         if self.window_surface:
             pygame.quit()
