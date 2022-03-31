@@ -53,7 +53,7 @@ jobs:
       run: brew install cmake boost openal-soft sdl2
 
     - name: Set up Python ${{ matrix.python-version }} environment
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -61,8 +61,7 @@ jobs:
       run: python -c "import sys; print(sys.version)"
 
     - name: Pip install
-      run: pip install .
-      
+      run: pip install .[gym]
+    
     - name: Import check
       run: python -c "import vizdoom"
-

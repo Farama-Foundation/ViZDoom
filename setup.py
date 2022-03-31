@@ -10,7 +10,7 @@ python_version = sysconfig.get_python_version()
 build_output_path = 'bin'
 package_path = build_output_path + '/python' + python_version + '/pip_package'
 supported_platforms = ["Linux", "Mac OS X", "Windows"]
-package_data = ['__init__.py', 'bots.cfg', 'freedoom2.wad', 'vizdoom.pk3', 'vizdoom', 'scenarios/*']
+package_data = ['__init__.py', 'bots.cfg', 'freedoom2.wad', 'vizdoom.pk3', 'vizdoom', 'scenarios/*', 'gym_wrapper/*']
 
 os.makedirs(package_path, exist_ok=True)
 
@@ -153,7 +153,7 @@ setup(
     url='http://vizdoom.cs.put.edu.pl/',
     author='Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, Grzegorz Runc, Jakub Toczek',
     author_email='mwydmuch@cs.put.poznan.pl',
-
+    extras_require={"gym": ["gym==0.23.0", "pygame==2.1.0"]},
     install_requires=['numpy'],
     packages=['vizdoom'],
     package_dir={'vizdoom': package_path},
