@@ -12,13 +12,16 @@ set VIZDOOM_BUILD_GENERATOR_NAME=Visual Studio 16 2019
 set VIZDOOM_WIN_DEPS_ROOT=C:/ViZDoomWinDepBin
 
 :: API dependencies
-:: %%% Set path to Boost library
+:: %%% Set path to Boost library	
 :: %%% Prebuild Boost for MSVC can be downloaded from https://sourceforge.net/projects/boost/files/boost-binaries/
 set BOOST_ROOT=%VIZDOOM_WIN_DEPS_ROOT%/boost
 
 
 :: Build wheels for all Python versions
-for %%P in (36 37 38 39 310) do (
+for %%P in (37 38 39 310) do (
+	rmdir /Q /S "./bin/"
+	rmdir /Q /S "./build/"
+
 	set PYTHON_VERSION=%%P
 	set PYTHON_VERSION_DOT=!PYTHON_VERSION:~0,1!.!PYTHON_VERSION:~1!
 	echo Building wheel for Python !PYTHON_VERSION_DOT! version using !VIZDOOM_BUILD_GENERATOR_NAME!
