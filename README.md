@@ -66,7 +66,7 @@ To install ViZDoom on Ubuntu run (may take few minutes):
 sudo apt install cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar nasm
 pip install vizdoom
 ```
-We recommend using at least Ubuntu 18.04+ with Python 3.6+.
+We recommend using at least Ubuntu 18.04+ with Python 3.7+.
 
 ### Conda
 To install ViZDoom on a conda environment (no system-wide installations required):
@@ -84,7 +84,7 @@ To install ViZDoom on macOS run (may take few minutes):
 brew install cmake boost openal-soft sdl2
 pip install vizdoom
 ```
-We recommend using at least macOS High Sierra 10.13+ with Python 3.6+.
+We recommend using at least macOS High Sierra 10.13+ with Python 3.7+.
 Currently, only for Intel CPU, we will gladly accept PR with M1 support.
 
 ### Windows

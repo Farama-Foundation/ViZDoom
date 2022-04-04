@@ -1,5 +1,29 @@
 # Changelog
 
+## Changes in 1.1.12
+
+#### New OpenAI Gym wrapper
+- Added a new wrapper for OpenAI Gym.
+
+---
+
+## Changes in 1.1.11
+
+#### Python
+- Fixed issues with installing/building Python package.
+
+---
+
+## Changes in 1.1.10
+
+#### Python Bindings
+- Fixed support for Python 3.10
+- Removed dependency on Numpy and simplified the process of building Windows wheels.
+
+#### Input/output
+- Added support for tuples and ndarrays as arguments in many functions, where previously only lists were accepted.
+
+---
 
 ## Changes in 1.1.9
 
@@ -7,7 +31,7 @@
 - Added `audio_buffer` to `State` and related methods `is/setAudioBufferEnabled`, `get/setAudioSamplingRate`, `get/setAudioBufferSize`.
 
 #### Save/load methods
-- Added `save` and `load` methods that allow to save/load game to/from a file.
+- Added `save` and `load` methods that allow saving/loading game to/from a file.
 
 #### Misc
 - Added `viz_bots_path` CVAR that allows specifying path to custom bots configuration.
@@ -50,7 +74,7 @@
 #### Server state
 - Added `getServerState` method that returns `ServerState` object.
 
-#### Mutliplayer
+#### Multiplayer
 - Added timeout for network game synchronization controlled by `viz_connect_timeout` CVAR.
 - Fixed `viz_spectator` CVAR.
 
@@ -85,7 +109,7 @@
 - Added scripts for downloading freedoom2.wad and assembling Python packages.
 
 #### Rendering
-- Fixed minor rendering issue in depth and labels buffer.
+- Fixed minor rendering issue in depth and labels buffers.
 - Fixed order of color values in `RGB/BGR` modes of `ScreenFormat`.
 
 ---
@@ -161,7 +185,7 @@
 
 #### Buffers
 
-- Depth buffer is now separate buffer in state and `ScreenFormat` values with it was removed - `is/setDepthBufferEnabled` added.
+- Depth buffer is now a separate buffer in state and `ScreenFormat` values with it were removed - `is/setDepthBufferEnabled` added.
 - Added in frame actors labeling feature -`is/setLabelsBufferEnabled` added.
 - Added buffer with in game automap - `is/setAutomapBufferEnabled`, `setAutomapMode`, `setAutomapRoate`, `setAutomapRenderTextures`, `AutomapMode` enum added.
 
@@ -183,7 +207,7 @@
 
 #### Episode recording and replaying
 
-- The option to record and replaying episodes, based on adapted ZDoom's demo mechanism -
+- The option to record and replay episodes, based on adapted ZDoom's demo mechanism -
 recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 - The option to replay demo from other players' perspective.
 
@@ -206,8 +230,8 @@ recording `filePath` argument added to `newEpisode`, `replayEpisode` added.
 - ZDoom engine updated to 2.8.1.
 - **Basic support for multiplayer in PLAYER and SPECTATOR Modes.**
 - Improved exceptions messages.
-- Bugs associated with paths handling fixed.
-- Many minor bugs fixed.
+- Bugs associated with paths handling were fixed.
+- Many minor bugs were fixed.
 - Possibility to change scenario wad during runtime (only first map from WAD file).
 - Added `viz_debug` CVAR to control some diagnostic messages.
 
