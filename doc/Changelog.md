@@ -1,5 +1,15 @@
 # Changelog
 
+## Changes in 1.1.13
+
+#### Releases
+- The pybind11 library and freedoom2.wad are now part of the source release instead of being downloaded during building.
+
+#### Consts
+- Added new consts: `DEFAULT_FPS` (= `DEFAULT_TICRATE`), `DEFAULT_FRAMETIME_S` (= `1.0 / DEFAULT_TICRATE`), `DEFAULT_FRAMETIME_MS` (= `DEFAULT_FRAMETIME_S * 1000`);
+
+--- 
+
 ## Changes in 1.1.12
 
 #### New OpenAI Gym wrapper

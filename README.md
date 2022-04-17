@@ -72,7 +72,7 @@ We recommend using at least Ubuntu 18.04+ with Python 3.7+.
 To install ViZDoom on a conda environment (no system-wide installations required):
 ```
 conda install -c conda-forge boost cmake gtk2 sdl2
-git clone https://github.com/mwydmuch/ViZDoom.git
+git clone https://github.com/mwydmuch/ViZDoom.git --recurse-submodules
 cd ViZDoom
 python setup.py build && python setup.py install
 ```
@@ -155,6 +155,7 @@ Useful parts:
 - [ViZDoomGym](https://github.com/shakenes/vizdoomgym) - OpenAI Gym Wrapper for ViZDoom.
 - [Sample Factory](https://github.com/alex-petrenko/sample-factory) - A high performance reinforcement learning framework for ViZDoom.
 - [EnvPool](https://github.com/sail-sg/envpool/) - A high performance vectorized environment for ViZDoom.
+- [Obsidian](https://github.com/dashodanger/Obsidian) - Doom random map generator, continuation of OBLIGE.
 
 
 ## Contributions

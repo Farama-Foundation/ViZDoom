@@ -9,6 +9,7 @@ on:
       - 'src/**'
       - 'CMakeLists.txt'
       - 'setup.py'
+      - 'pyproject.toml'
     branches:
       - master
   pull_request:
@@ -19,6 +20,7 @@ on:
       - 'src/**'
       - 'CMakeLists.txt'
       - 'setup.py'
+      - 'pyproject.toml'
     branches:
       - master
 
