@@ -31,6 +31,9 @@ namespace vizdoom{
     const unsigned int MAX_PLAYER_NAME_LENGTH = MAX_NAME_LENGTH;
     const unsigned int USER_VARIABLE_COUNT = 60;
     const unsigned int DEFAULT_TICRATE = 35;
+    const unsigned int DEFAULT_FPS = DEFAULT_TICRATE;
+    const double DEFAULT_FRAMETIME_S = 1.0 / DEFAULT_TICRATE;
+    const double DEFAULT_FRAMETIME_MS = DEFAULT_FRAMETIME_S * 1000;
 
     const unsigned int BINARY_BUTTON_COUNT = 38;
     const unsigned int DELTA_BUTTON_COUNT = 5;
@@ -40,7 +43,5 @@ namespace vizdoom{
     const int DEFAULT_SAMPLES_TIC = DEFAULT_SOUND_FREQ / DEFAULT_TICRATE;
     const int SOUND_NUM_CHANNELS = 2;  // it is stereo by default
 
-    // corresponds to viz_sound.h, maximum number of tics we can query
-    const int MAX_SOUND_FRAMES_TO_STORE = 4;
 }
 #endif
