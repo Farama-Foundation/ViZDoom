@@ -6,8 +6,8 @@ import vizdoom as vzd
 # This test can be run as Python script or via PyTest
 
 def check_label(labels_buffer, label):
-    # Returns True if label seems to be ok
-    if label.width > 0 and label.height > 0:
+    assert label.value > 1
+    if label.width > 4 and label.height > 4:  # Sometimes very tiny objects may be obscured by level geometry or not rendered due to sprite size
         # Values decrease with the distance from the player,
         # check for >= since objects with higher values (closer ones) can obscure objects with lower values (further ones).
         detect_color = (labels_buffer >= label.value)
@@ -23,8 +23,9 @@ def test_labels_buffer():
 
     game.set_screen_resolution(vzd.ScreenResolution.RES_640X480)
     game.set_labels_buffer_enabled(True)
-    game.set_window_visible(False)
     game.set_render_hud(False)
+    game.set_window_visible(False)
+    #game.set_mode(vzd.Mode.SPECTATOR)  # For manual testing
 
     game.init()
 
@@ -32,15 +33,23 @@ def test_labels_buffer():
                [False, False, True, False], [False, False, False, True]]
 
     game.new_episode()
+    state_count = 0
+    seen_labels = 0
+    seen_unique_objects = set()
+
     while not game.is_episode_finished():
         state = game.get_state()
         labels_buffer = state.labels_buffer
         game.make_action(choice(actions))
 
+        state_count += 1
+        seen_labels += len(state.labels)
         for l in state.labels:
+            seen_unique_objects.add(l.object_name)
             check_label(labels_buffer, l)
     game.close()
 
+    print(f"Seen {seen_labels} labels with {len(seen_unique_objects)} unique objects in {state_count} states.")
 
 if __name__ == '__main__':
     test_labels_buffer()
