@@ -5,6 +5,7 @@ viz_version.h
 Makefile
 ImportExecutables.cmake
 **/link-make
+cmake-build-*
 
 *~
 *.o
@@ -43,12 +44,17 @@ ImportExecutables.cmake
 *.pyc
 examples/python/*.cfg
 examples/python/*.ini
+dist/
+/build/
+/venv/
+/.eggs/
+/vizdoom.egg-info/
 
 # Lua
 examples/lua/*.cfg
 examples/lua/*.ini
 examples/lua/vizdoom
-vizdoom-1.1.0-1.src.rock
+*.rock
 
 # Java
 *.jar
@@ -106,16 +112,10 @@ src/vizdoom/zlib/x64/
 **/freedoom2.wad
 **/freedoom1.wad
 **/freedm.wad
+**_vizdoom.ini
 
 # CLion & PyCharm
 **/.idea
-**_vizdoom.ini
-cmake-build-debug/
-dist/
-vizdoom.egg-info/
 
 # MacOS
 .DS_Store
-/build/
-/venv/
-/.eggs/
