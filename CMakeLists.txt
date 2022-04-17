@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.4)
 # Project + versions
 #-----------------------------------------------------------------------------------------------------------------------
 
-project(ViZDoom VERSION 1.1.12)
+project(ViZDoom VERSION 1.1.13)
 set(ViZDoom_VERSION_STR ${ViZDoom_VERSION_MAJOR}.${ViZDoom_VERSION_MINOR}.${ViZDoom_VERSION_PATCH})
 set(ViZDoom_VERSION_ID ${ViZDoom_VERSION_MAJOR}${ViZDoom_VERSION_MINOR}${ViZDoom_VERSION_PATCH})
 
@@ -13,7 +13,7 @@ set(ViZDoom_VERSION_ID ${ViZDoom_VERSION_MAJOR}${ViZDoom_VERSION_MINOR}${ViZDoom
 
 option(BUILD_PYTHON "Build ViZDoom Python (3) binding" OFF)
 option(BUILD_JULIA "Build ViZDoom Julia binding." OFF)
-set(PYBIND11_VERSION "v2.8.1" CACHE STRING "Pybind11 version to use")
+set(PYBIND11_VERSION "v2.9.2" CACHE STRING "Pybind11 version to use")
 set(FREEDOOM_VERSION "0.12.1" CACHE STRING "Freedoom version to use")
 
 

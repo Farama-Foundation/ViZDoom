@@ -5,4 +5,5 @@ recursive-include scripts *.sh
 recursive-include scenarios *wad *cfg
 recursive-include src *
 include CMakeLists.txt
-include freedoom2.wad
+include pyproject.toml
+include setup.py

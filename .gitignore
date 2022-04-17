@@ -39,16 +39,16 @@ cmake-build-*
 *.vcxproj*
 *.cmd
 
-# Python 
+# Python
 *.pyd
 *.pyc
 examples/python/*.cfg
 examples/python/*.ini
-dist/
-/build/
-/venv/
-/.eggs/
-/vizdoom.egg-info/
+dist
+build
+venv
+.eggs
+vizdoom.egg-info
 
 # Lua
 examples/lua/*.cfg
