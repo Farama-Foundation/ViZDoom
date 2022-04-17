@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
+# This test can be run as Python script or via PyTest
+
 import vizdoom as vzd
+
 
 def _test_enums(enum_name, func_name):
     print("Testing vzd.{} enum ...".format(enum_name))

@@ -55,7 +55,8 @@ if __name__ =="__main__":
 
     game.init()
 
-    actions = [[True, False, False], [False, True, False], [False, False, True]]
+    actions = [[True, False, False, False], [False, True, False, False],
+               [False, False, True, False], [False, False, False, True]]
 
     episodes = 10
 
@@ -64,11 +65,15 @@ if __name__ =="__main__":
 
 
     # Prepare some colors and drawing function
-    # Colors in in BGR order
+    # Colors in in BGR order (expected by OpenCV)
     doom_red_color = [0, 0, 203]
     doom_blue_color = [203, 0, 0]
 
+
     def draw_bounding_box(buffer, x, y, width, height, color):
+        """
+        Draw a rectangle (bounding box) on a given buffer in the given color.
+        """
         for i in range(width):
             buffer[y, x + i, :] = color
             buffer[y + height, x + i, :] = color
@@ -76,6 +81,7 @@ if __name__ =="__main__":
         for i in range(height):
             buffer[y + i, x, :] = color
             buffer[y + i, x + width, :] = color
+
 
     def color_labels(labels):
         """
@@ -96,17 +102,17 @@ if __name__ =="__main__":
         game.new_episode()
         while not game.is_episode_finished():
 
-            # Gets the state
+            # Get the state
             state = game.get_state()
 
-            # Labels buffer, always in 8-bit gray channel format.
-            # Shows only visible game objects (enemies, pickups, exploding barrels etc.), each with unique label.
-            # Labels data are available in state.labels.
+            # Get labels buffer, that is always in 8-bit grey channel format.
+            # Show only visible game objects (enemies, pickups, exploding barrels etc.), each with a unique label.
+            # Additional labels data are available in state.labels.
             labels = state.labels_buffer
             if labels is not None:
                 cv2.imshow('ViZDoom Labels Buffer', color_labels(labels))
 
-            # Screen buffer, given in selected format. This buffer is always available.
+            # Get screen buffer, given in selected format. This buffer is always available.
             # Using information from state.labels draw bounding boxes.
             screen = state.screen_buffer
             for l in state.labels:
@@ -118,6 +124,7 @@ if __name__ =="__main__":
 
             cv2.waitKey(sleep_time)
 
+            # Make random action
             game.make_action(choice(actions))
 
             print("State #" + str(state.number))
@@ -125,16 +132,19 @@ if __name__ =="__main__":
             print("Labels:")
 
             # Print information about objects visible on the screen.
-            # object_id identifies specific in game object.
-            # object_name contains name of object.
-            # value tells which value represents object in labels_buffer.
+            # object_id identifies a specific in-game object.
+            # It's unique for each object instance (two objects of the same type on the screen will have two different ids).
+            # object_name contains the name of the object (can be understood as type of the object).
+            # value tells which value represents the object in labels_buffer.
+            # Values decrease with the distance from the player.
+            # Objects with higher values (closer ones) can obscure objects with lower values (further ones).
             for l in state.labels:
                 seen_in_this_episode.add(l.object_name)
-                # print("---------------------")
+                #print("---------------------")
                 print("Label:", l.value, ", object id:", l.object_id, ", object name:", l.object_name)
                 print("Object position: x:", l.object_position_x, ", y:", l.object_position_y, ", z:", l.object_position_z)
 
-                # Other available fields:
+                # Other available fields (position and velocity and bounding box):
                 #print("Object rotation angle", l.object_angle, "pitch:", l.object_pitch, "roll:", l.object_roll)
                 #print("Object velocity x:", l.object_velocity_x, "y:", l.object_velocity_y, "z:", l.object_velocity_z)
                 print("Bounding box: x:", l.x, ", y:", l.y, ", width:", l.width, ", height:", l.height)
@@ -145,7 +155,7 @@ if __name__ =="__main__":
 
         print("=====================")
 
-        print("Seen in this episode:")
+        print("Unique objects types seen in this episode:")
         for l in seen_in_this_episode:
             print(l)
 

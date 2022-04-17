@@ -1,13 +1,18 @@
+#!/usr/bin/env python3
+
+# This test can be run as Python script or via PyTest
+
 import gym
 import numpy as np
 from gym.utils.env_checker import check_env
 from vizdoom import gym_wrapper
 
+
 vizdoom_envs = [env for env in [env_spec.id for env_spec in gym.envs.registry.all()] if "Vizdoom" in env]
 
 # Testing with different non-default kwargs (since each has a different obs space)
 def test_gym_wrapper():
-    print("Testing Gym wrapper compatiblility with gym API")
+    print("Testing Gym wrapper compatibility with gym API")
     for env_name in vizdoom_envs:
         for frame_skip in [1, 4]:
             env = gym.make(

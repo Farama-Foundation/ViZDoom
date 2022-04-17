@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# This test can be run as Python script or via PyTest
+
 import vizdoom as vzd
 import numpy as np
 

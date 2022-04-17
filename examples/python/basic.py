@@ -146,10 +146,11 @@ if __name__ == "__main__":
             objects = state.objects
             sectors = state.sectors
 
-            # Games variables can be also accessed via:
+            # Games variables can be also accessed via
+            # (including the ones that were not added as available to a game state):
             #game.get_game_variable(GameVariable.AMMO2)
 
-            # Makes a random action and get remember reward.
+            # Makes an action (here random one) and returns a reward.
             r = game.make_action(choice(actions))
 
             # Makes a "prolonged" action and skip frames:
