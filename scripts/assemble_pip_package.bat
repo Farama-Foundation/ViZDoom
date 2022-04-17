@@ -15,7 +15,7 @@ set PACAKGE_INIT_FILE_SRC=%SRC_PATH%\src\lib_python\__init__.py
 
 set VIZDOOM_EXEC_PATH=%BIN_PATH%\vizdoom.exe
 set VIZDOOM_PK3_PATH=%BIN_PATH%\vizdoom.pk3
-set FREEDOOM_PATH=%SRC_PATH%\src\freedoom.wad
+set FREEDOOM_PATH=%SRC_PATH%\src\freedoom2.wad
 set BOTS_PATH=%SRC_PATH%\src\bots.cfg
 set SCENARIOS_DEST_DIR=%PACKAGE_DEST_PATH%\scenarios
 set SCENARIOS_PATH=%SRC_PATH%\scenarios
@@ -44,8 +44,8 @@ copy "%PACAKGE_INIT_FILE_SRC%" "%PACKAGE_DEST_PATH%"
 copy "%VIZDOOM_EXEC_PATH%" "%PACKAGE_DEST_PATH%"
 copy "%VIZDOOM_PK3_PATH%" "%PACKAGE_DEST_PATH%"
 copy "%BIN_PATH%\python%PYTHON_VERSION%\vizdoom*.pyd" "%PACKAGE_DEST_PATH%"
-copy "%FREEDOOM_DIR%" "%PACKAGE_DEST_PATH%"
-copy "%BOTS_DIR%" "%PACKAGE_DEST_PATH%"
+copy "%FREEDOOM_PATH%" "%PACKAGE_DEST_PATH%"
+copy "%BOTS_PATH%" "%PACKAGE_DEST_PATH%"
 copy "%BIN_PATH%\*.dll" "%PACKAGE_DEST_PATH%"
 
 md "%SCENARIOS_DEST_DIR%
