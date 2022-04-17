@@ -13,8 +13,6 @@ set(ViZDoom_VERSION_ID ${ViZDoom_VERSION_MAJOR}${ViZDoom_VERSION_MINOR}${ViZDoom
 
 option(BUILD_PYTHON "Build ViZDoom Python (3) binding" OFF)
 option(BUILD_JULIA "Build ViZDoom Julia binding." OFF)
-set(PYBIND11_VERSION "v2.9.2" CACHE STRING "Pybind11 version to use")
-set(FREEDOOM_VERSION "0.12.1" CACHE STRING "Freedoom version to use")
 
 
 # CMake options
@@ -171,12 +169,3 @@ if (BUILD_JULIA)
     add_subdirectory(${VIZDOOM_SRC_DIR}/lib_julia)
 endif ()
 
-
-# Freedoom 2 download
-#-----------------------------------------------------------------------------------------------------------------------
-
-set(FREEDOOM_URL https://github.com/mwydmuch/ViZDoomWADs/raw/master/freedoom-${FREEDOOM_VERSION}/freedoom2.wad)
-set(FREEDOOM_WAD ${VIZDOOM_SRC_DIR}/freedoom2.wad)
-if(NOT EXISTS ${FREEDOOM_WAD})
-    file(DOWNLOAD ${FREEDOOM_URL} ${FREEDOOM_WAD} SHOW_PROGRESS)
-endif()

@@ -8,14 +8,21 @@ set(VIZDOOM_PYTHON_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python${PYTHON_VERSION_MINOR
 set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
 set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
 
-# Get pybind11
-if(NOT EXISTS ${VIZDOOM_PYTHON_SRC_DIR}/pybind11)
-    include(GitUtils)
-    git_clone(PROJECT_NAME pybind11
-            GIT_URL https://github.com/pybind/pybind11.git
-            #GIT_BRANCH master # To use master version
-            GIT_TAG ${PYBIND11_VERSION}
-            DIRECTORY ${VIZDOOM_PYTHON_SRC_DIR})
+if(NOT EXISTS ${VIZDOOM_PYTHON_SRC_DIR}/pybind11/CMakeLists.txt)
+    find_package(Git QUIET)
+    if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
+        message(STATUS "Pybind11 submodule update")
+        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                RESULT_VARIABLE GIT_SUBMOD_RESULT)
+        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+            message(FATAL_ERROR "git submodule update --init --recursive failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
+        endif()
+    endif()
+
+    if(NOT EXISTS ${VIZDOOM_PYTHON_SRC_DIR}/pybind11/CMakeLists.txt)
+        message(FATAL_ERROR "The pybind11 submodule was not downloaded!")
+    endif()
 endif()
 add_subdirectory(${VIZDOOM_PYTHON_SRC_DIR}/pybind11)
 
