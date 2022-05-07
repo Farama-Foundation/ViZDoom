@@ -70,11 +70,11 @@ def player2():
 
 if __name__ == '__main__':
     # Both Processes or Threads can be used to have many DoomGame instances running in parallel.
-    # Because ViZDoom releases GIL, there is no difference in performance between Processes and Threads
+    # Because ViZDoom releases GIL, there is no/minimal difference in performance between Processes and Threads.
     start = time()
     #p1 = Process(target=player1)
     p1 = Thread(target=player1)
     p1.start()
     player2()
 
-    print("Finished", episodes, " after ", time() - start, "episodes.")
+    print("Finished", episodes, "episodes after", time() - start, "seconds")

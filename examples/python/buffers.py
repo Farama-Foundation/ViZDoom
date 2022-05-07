@@ -37,9 +37,6 @@ if __name__ == "__main__":
     # Use other config file if you wish.
     game.load_config(args.config)
 
-    # game.set_console_enabled(True)
-    # game.set_window_visible(False)
-
     # Just uncomment desired format for screen buffer (and map buffer).
     # The last uncommented will be applied.
     # Formats with C (CRCGCB and CBCGCR) were omitted cause they are not cv2 friendly.

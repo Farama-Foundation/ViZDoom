@@ -105,7 +105,7 @@ if __name__ == "__main__":
     # Sets ViZDoom mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR, PLAYER mode is default)
     game.set_mode(vzd.Mode.PLAYER)
 
-    # Enables engine output to console.
+    # Enables engine output to console, in case of a problem this might provide additional information.
     #game.set_console_enabled(True)
 
     # Initialize the game. Further configuration won't take any effect from now on.
