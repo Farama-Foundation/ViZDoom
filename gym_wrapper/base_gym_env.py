@@ -18,6 +18,7 @@ class VizdoomEnv(gym.Env):
         self,
         level,
         frame_skip=1,
+        max_buttons_pressed=1,
     ):
         """
         Base class for Gym interface for ViZDoom. Thanks to https://github.com/shakenes/vizdoomgym
@@ -26,6 +27,8 @@ class VizdoomEnv(gym.Env):
         Arguments:
             level (str): path to the config file to load. Most settings should be set by this config file.
             frame_skip (int): how many frames should be advanced per action. 1 = take action on every frame. Default: 1.
+            max_buttons_pressed (int): how many binary buttons can be pressed at once. 1 results in a discrete action space.
+                                       Otherwise results in a MultiDiscrete action space. Default: 1
 
         This environment forces window to be hidden. Use `render()` function to see the game.
 
@@ -37,7 +40,11 @@ class VizdoomEnv(gym.Env):
           "automap"       = the automap image buffer in shape (HEIGHT, WIDTH, CHANNELS), if enabled by the config file
           "gamevariables" = all game variables, in the order specified by the config file
 
-        Action space is always a Discrete one, one choice for each button (only one button can be pressed down at a time).
+        Action space can be Discrete (only one button can be pressed down at a time), MultiDiscrete (multiple buttons can be pressed), Box (Continuous), or a dictionary of some combination
+        If dictionary, the entires are:
+          "binary"        = Discrete(x)/MultiDiscrete(x) depending on if max_buttons_pressed == 1 or not
+          "delta_{x}"     = Box(-max_value, max_value, (1,), np.float32) where {x} is the index of the delta button thus
+                            a dictionary could consist of ("binary":..., "delta_0":..., ..., "delta_3":...) for example
         """
         self.frame_skip = frame_skip
 
@@ -47,37 +54,80 @@ class VizdoomEnv(gym.Env):
         self.game.set_window_visible(False)
 
         screen_format = self.game.get_screen_format()
-        if screen_format != vzd.ScreenFormat.RGB24:
-            warnings.warn(f"Detected screen format {screen_format.name}. Only RGB24 is supported in the Gym wrapper. Forcing RGB24.")
+        if screen_format != vzd.ScreenFormat.RGB24 and screen_format != vzd.ScreenFormat.GRAY8:
+            warnings.warn(f"Detected screen format {screen_format.name}. Only RGB24 and GRAY8 is supported in the Gym wrapper. Forcing RGB24.")
             self.game.set_screen_format(vzd.ScreenFormat.RGB24)
 
-        self.game.init()
         self.state = None
         self.window_surface = None
         self.isopen = True
+        self.channels = 3
+        if screen_format == vzd.ScreenFormat.GRAY8:
+            self.channels = 1
 
         self.depth = self.game.is_depth_buffer_enabled()
         self.labels = self.game.is_labels_buffer_enabled()
         self.automap = self.game.is_automap_buffer_enabled()
 
-        allowed_buttons = []
+        delta_buttons = []
+        binary_buttons = []
+        button_space = {}
         for button in self.game.get_available_buttons():
-            if "DELTA" in button.name:
-                warnings.warn(f"Removing button {button.name}. DELTA buttons are currently not supported in Gym wrapper. Use binary buttons instead.")
+            if vzd.is_delta_button(button) and button not in delta_buttons:
+                max_value = self.game.get_button_max_value(button)
+                # if max value not set, default to infinity
+                if max_value == 0:
+                    max_value = np.inf
+                button_space["delta_" + str(len(delta_buttons))] = gym.spaces.Box(
+                    -max_value,
+                    max_value,
+                    (1,),
+                    dtype=np.float32,
+                )
+                delta_buttons.append(button)
             else:
-                allowed_buttons.append(button)
-        self.game.set_available_buttons(allowed_buttons)
-        self.action_space = gym.spaces.Discrete(len(allowed_buttons))
+                binary_buttons.append(button)
+        # fix delta buttons to be first in the one hot encoded action
+        self.game.set_available_buttons(delta_buttons + binary_buttons)
+        self.delta_buttons = len(delta_buttons)
+        self.binary_buttons = len(binary_buttons)
+
+        if self.delta_buttons == self.binary_buttons == 0:
+            warnings.warn(f"No buttons defined. Defining ATTACK button.")
+            self.game.set_available_buttons([vzd.Button.ATTACK])
+            self.binary_buttons = 1
+
+        # Discrete or MultiDiscrete for binary buttons
+        if self.binary_buttons != 0:
+            if max_buttons_pressed > self.binary_buttons:
+                warnings.warn(
+                    f"max_buttons_pressed = {max_buttons_pressed} > number of binary buttons defined = {self.binary_buttons}. "
+                    f"Clipping max_buttons_pressed to {self.binary_buttons}.")
+                max_buttons_pressed = self.binary_buttons
+            elif max_buttons_pressed <= 0:
+                warnings.warn(f"max_buttons_pressed = {max_buttons_pressed} <= 0. Setting to 1. ")
+                max_buttons_pressed = 1
+            if max_buttons_pressed == 1:
+                button_space["binary"] = gym.spaces.Discrete(self.binary_buttons)
+            else:
+                button_space["binary"] = gym.spaces.MultiDiscrete([self.binary_buttons for _ in range(max_buttons_pressed)])
+
+        # specify action space(s)
+        self.max_buttons_pressed = max_buttons_pressed
+        if self.delta_buttons == 0:
+            self.action_space = button_space["binary"]
+        else:
+            self.action_space = gym.spaces.Dict(button_space)
 
         # specify observation space(s)
         spaces = {
-            "rgb": gym.spaces.Box(
+            "screen": gym.spaces.Box(
                 0,
                 255,
                 (
                     self.game.get_screen_height(),
                     self.game.get_screen_width(),
-                    3,
+                    self.channels
                 ),
                 dtype=np.uint8,
             )
@@ -113,8 +163,8 @@ class VizdoomEnv(gym.Env):
                     self.game.get_screen_height(),
                     self.game.get_screen_width(),
                     # "automap" buffer uses same number of channels
-                    # as the main screen buffer
-                    3,
+                    # as the main screen buffer,
+                    self.channels
                 ),
                 dtype=np.uint8,
             )
@@ -130,19 +180,41 @@ class VizdoomEnv(gym.Env):
 
         self.observation_space = gym.spaces.Dict(spaces)
 
+        self.game.init()
+
     def step(self, action):
         assert self.action_space.contains(action), f"{action!r} ({type(action)}) invalid"
         assert self.state is not None, "Call `reset` before using `step` method."
 
-        # convert action to vizdoom action space (one hot)
-        act = [0 for _ in range(self.action_space.n)]
-        act[action] = 1
-
+        act = self.__build_action(action)
         reward = self.game.make_action(act, self.frame_skip)
         self.state = self.game.get_state()
         done = self.game.is_episode_finished()
 
         return self.__collect_observations(), reward, done, {}
+
+    def __parse_binary_buttons(self, act, action):
+        if self.binary_buttons != 0:
+            if self.delta_buttons != 0:
+                action = action["binary"]
+
+            if self.max_buttons_pressed == 1:
+                act[action + self.delta_buttons] = 1
+            else:
+                for button in action:
+                    act[button + self.delta_buttons] = 1
+
+    def __parse_delta_buttons(self, act, action):
+        if self.delta_buttons != 0:
+            for delta_idx in range(self.delta_buttons):
+                act[delta_idx] = action["delta_" + str(delta_idx)][0]
+
+    def __build_action(self, action):
+        # convert action to vizdoom action space (one hot)
+        act = [0 for _ in range(self.delta_buttons + self.binary_buttons)]
+        self.__parse_delta_buttons(act, action)
+        self.__parse_binary_buttons(act, action)
+        return np.array(act)
 
     def reset(
         self,
@@ -164,13 +236,17 @@ class VizdoomEnv(gym.Env):
     def __collect_observations(self):
         observation = {}
         if self.state is not None:
-            observation["rgb"] = self.state.screen_buffer
+            observation["screen"] = self.state.screen_buffer
+            if self.channels == 1:
+                observation["screen"] = self.state.screen_buffer[..., None]
             if self.depth:
                 observation["depth"] = self.state.depth_buffer
             if self.labels:
                 observation["labels"] = self.state.labels_buffer
             if self.automap:
                 observation["automap"] = self.state.automap_buffer
+                if self.channels == 1:
+                    observation["automap"] =self.state.automap_buffer[..., None]
             if self.num_game_variables > 0:
                 observation["gamevariables"] = self.state.game_variables.astype(np.float32)
         else:
@@ -199,6 +275,8 @@ class VizdoomEnv(gym.Env):
             return img
 
         image_list = [game_state.screen_buffer]
+        if self.channels == 1:
+            image_list = [np.repeat(game_state.screen_buffer[..., None], repeats=3, axis=2)]
 
         if self.depth:
             image_list.append(np.repeat(game_state.depth_buffer[..., None], repeats=3, axis=2))
@@ -207,7 +285,7 @@ class VizdoomEnv(gym.Env):
             # Give each label a fixed color.
             # We need to connect each pixel in labels_buffer to the corresponding
             # id via `value``
-            labels_rgb = np.zeros_like(game_state.screen_buffer)
+            labels_rgb = np.zeros_like(image_list[0])
             labels_buffer = game_state.labels_buffer
             for label in game_state.labels:
                 color = LABEL_COLORS[label.object_id % 256]
@@ -215,7 +293,10 @@ class VizdoomEnv(gym.Env):
             image_list.append(labels_rgb)
 
         if self.automap:
-            image_list.append(game_state.automap_buffer)
+            automap_buffer = game_state.automap_buffer
+            if self.channels == 1:
+                automap_buffer = np.repeat(automap_buffer[..., None], repeats=3, axis=2)
+            image_list.append(automap_buffer)
 
         return np.concatenate(image_list, axis=1)
 
