@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.4)
 
-	set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}" "${CMAKE_SOURCE_DIR}/cmake_modules")
+	set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}/cmake_modules")
 
 if( COMMAND cmake_policy )
 	cmake_policy( SET CMP0003 NEW )
@@ -91,9 +91,9 @@ if( WIN32 )
 		set( WIN_TYPE Win32 )
 		set( XBITS x86 )
 	endif( X64 )
-	
+
 	add_definitions( -D_WIN32 )
-	
+
 	set( FMOD_SEARCH_PATHS
 		"C:/Program Files/FMOD SoundSystem/FMOD Programmers API ${WIN_TYPE}/api"
 		"C:/Program Files (x86)/FMOD SoundSystem/FMOD Programmers API ${WIN_TYPE}/api"
@@ -112,7 +112,7 @@ if( WIN32 )
 	else( NOT D3D_INCLUDE_DIR )
 		include_directories( ${D3D_INCLUDE_DIR} )
 	endif( NOT D3D_INCLUDE_DIR )
-	
+
 	find_path( XINPUT_INCLUDE_DIR xinput.h
 		PATHS ENV DXSDK_DIR
 		PATH_SUFFIXES Include )
@@ -154,7 +154,7 @@ if( WIN32 )
 		comdlg32
 		ws2_32
 		setupapi
-		oleaut32 
+		oleaut32
 		DelayImp )
 else( WIN32 )
 	if( APPLE )
@@ -190,11 +190,11 @@ else( WIN32 )
 		endif( NOT NO_GTK )
 	endif( APPLE )
 	set( NASM_NAMES nasm )
-	
+
 	if( NO_GTK )
 		add_definitions( -DNO_GTK=1 )
 	endif( NO_GTK )
-	
+
 	# Non-Windows version also needs SDL except native OS X backend
 	if( NOT WIN32 )
 		find_package( SDL2 REQUIRED )
@@ -303,7 +303,7 @@ find_package( FluidSynth )
 if( NOT NO_ASM )
 	if( UNIX AND X64 )
 		find_program( GAS_PATH as )
-		
+
 		if( GAS_PATH )
 			set( ASSEMBLER ${GAS_PATH} )
 		else( GAS_PATH )
@@ -334,7 +334,7 @@ if( NOT NO_ASM )
 	# I think the only reason there was a version requirement was because the
 	# executable name for Windows changed from 0.x to 2.0, right? This is
 	# how to do it in case I need to do something similar later.
-	
+
 	#	execute_process( COMMAND ${NASM_PATH} -v
 	#		OUTPUT_VARIABLE NASM_VER_STRING )
 	#	string( REGEX REPLACE ".*version ([0-9]+[.][0-9]+).*" "\\1" NASM_VER "${NASM_VER_STRING}" )
@@ -617,7 +617,7 @@ if( WIN32 )
 	set( SYSTEM_SOURCES_DIR win32 )
 	set( SYSTEM_SOURCES ${PLAT_WIN32_SOURCES} )
 	set( OTHER_SYSTEM_SOURCES ${PLAT_POSIX_SOURCES} ${PLAT_SDL_SOURCES} ${PLAT_OSX_SOURCES} ${PLAT_COCOA_SOURCES} )
-	
+
 	if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 		# CMake is not set up to compile and link rc files with GCC. :(
 		add_custom_command( OUTPUT zdoom-rc.o

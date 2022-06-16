@@ -96,7 +96,7 @@ if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 	set( PROFILE 0 CACHE BOOL "Enable profiling with gprof for Debug and RelWithDebInfo build types." )
 endif( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 
 option( NO_FMOD "Disable FMODEx sound support" OFF )
 option( NO_OPENAL "Disable OpenAL sound support" OFF )
@@ -121,7 +121,7 @@ if( MSVC )
 	# Function-level linking
 	# Disable run-time type information
 	set( ALL_C_FLAGS "/GF /Gy /GR-" )
-	
+
 	if( CMAKE_SIZEOF_VOID_P MATCHES "4")
 		# SSE2 option (mostly to switch it off in VC2012 and later where it's the default
 		option (ZDOOM_USE_SSE2	"Use SSE2 instruction set")
@@ -134,7 +134,7 @@ if( MSVC )
 			endif (MSVC_VERSION GREATER 1699)
 		endif (ZDOOM_USE_SSE2)
 	endif( CMAKE_SIZEOF_VOID_P MATCHES "4")
-	
+
 	# Avoid CRT DLL dependancies in release builds, optionally generate assembly output for checking crash locations.
 	option( ZDOOM_GENERATE_ASM "Generate assembly output." OFF )
 	if( ZDOOM_GENERATE_ASM )
@@ -143,7 +143,7 @@ if( MSVC )
 		set( REL_C_FLAGS "/MT /Oy /Oi" )
 	endif( ZDOOM_GENERATE_ASM )
 
-	
+
 	# Debug allocations in debug builds
 	set( DEB_C_FLAGS "/D _CRTDBG_MAP_ALLOC /MTd" )
 
@@ -151,7 +151,7 @@ if( MSVC )
 	if( MSVC_VERSION GREATER 1399 )
 		set( ALL_C_FLAGS "${ALL_C_FLAGS} /wd4996" )
 	endif( MSVC_VERSION GREATER 1399 )
-	
+
 	# The CMake configurations set /GR and /MD by default, which conflict with our settings.
 	string(REPLACE "/MD " " " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE} )
 	string(REPLACE "/MD " " " CMAKE_CXX_FLAGS_MINSIZEREL ${CMAKE_CXX_FLAGS_MINSIZEREL} )
