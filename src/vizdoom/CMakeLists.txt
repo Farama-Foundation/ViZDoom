@@ -96,8 +96,6 @@ if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 	set( PROFILE 0 CACHE BOOL "Enable profiling with gprof for Debug and RelWithDebInfo build types." )
 endif( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
-
 option( NO_FMOD "Disable FMODEx sound support" OFF )
 option( NO_OPENAL "Disable OpenAL sound support" OFF )
 
