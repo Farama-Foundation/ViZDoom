@@ -39,6 +39,10 @@
 # (See accompanying file LICENSE_1_0.txt or copy at
 # http://www.boost.org/LICENSE_1_0.txt)
 
+if( NOT MSVC )
+	return()
+endif()
+
 if(__create_launchers)
 	return()
 endif()
