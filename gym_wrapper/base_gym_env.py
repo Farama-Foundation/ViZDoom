@@ -22,29 +22,36 @@ class VizdoomEnv(gym.Env):
     ):
         """
         Base class for Gym interface for ViZDoom. Thanks to https://github.com/shakenes/vizdoomgym
-        Child classes are defined in vizdoom_env_definitions.py,
+        Child classes are defined in gym_env_defns.py,
 
         Arguments:
             level (str): path to the config file to load. Most settings should be set by this config file.
             frame_skip (int): how many frames should be advanced per action. 1 = take action on every frame. Default: 1.
-            max_buttons_pressed (int): how many binary buttons can be pressed at once. 1 results in a discrete action space.
-                                       Otherwise results in a MultiDiscrete action space. Default: 1
+            max_buttons_pressed (int): defines the number of binary buttons that can be selected at once. Default: 1.
+                                       Should be >= 0. If < 0 a RuntimeError is raised.
+                                       If == 0, the binary action space becomes MultiDiscrete([2] * num_binary_buttons)
+                                       and [0, num_binary_buttons] number of binary buttons can be selected.
+                                       If > 0, the binary action space becomes Discrete(2**n)
+                                       and [0, max_buttons_pressed] number of binary buttons can be selected.
 
         This environment forces window to be hidden. Use `render()` function to see the game.
 
         Observations are dictionaries with different amount of entries, depending on if depth/label buffers were
-        enabled in the config file:
-          "rgb"           = the RGB image (always available) in shape (HEIGHT, WIDTH, CHANNELS)
-          "depth"         = the depth image in shape (HEIGHT, WIDTH), if enabled by the config file,
-          "labels"        = the label image buffer in shape (HEIGHT, WIDTH), if enabled by the config file. For info on labels, access `env.state.labels` variable.
+        enabled in the config file (CHANNELS == 1 if GRAY8, else 3):
+          "screen"        = the screen image buffer (always available) in shape (HEIGHT, WIDTH, CHANNELS)
+          "depth"         = the depth image in shape (HEIGHT, WIDTH, 1), if enabled by the config file,
+          "labels"        = the label image buffer in shape (HEIGHT, WIDTH, 1), if enabled by the config file.
+                            For info on labels, access `env.state.labels` variable.
           "automap"       = the automap image buffer in shape (HEIGHT, WIDTH, CHANNELS), if enabled by the config file
           "gamevariables" = all game variables, in the order specified by the config file
 
-        Action space can be Discrete (only one button can be pressed down at a time), MultiDiscrete (multiple buttons can be pressed), Box (Continuous), or a dictionary of some combination
-        If dictionary, the entires are:
-          "binary"        = Discrete(x)/MultiDiscrete(x) depending on if max_buttons_pressed == 1 or not
-          "delta_{x}"     = Box(-max_value, max_value, (1,), np.float32) where {x} is the index of the delta button thus
-                            a dictionary could consist of ("binary":..., "delta_0":..., ..., "delta_3":...) for example
+        Action space can be a single one of binary/continuous action space, or a Dict containing both.
+          "binary":
+                          = MultiDiscrete([2] * num_binary_buttons): if max_buttons_pressed == 0
+                          = Discrete(2**n): if max_buttons_pressed > 1
+          "continuous":
+                          = Box(-max_value, max_value, (1,), np.float32) if num_delta_buttons == 1
+                          = Tuple(Box(-max_value, max_value, (1,), np.float32), ...) with len == num_delta_buttons
         """
         self.frame_skip = frame_skip
 
@@ -55,7 +62,8 @@ class VizdoomEnv(gym.Env):
 
         screen_format = self.game.get_screen_format()
         if screen_format != vzd.ScreenFormat.RGB24 and screen_format != vzd.ScreenFormat.GRAY8:
-            warnings.warn(f"Detected screen format {screen_format.name}. Only RGB24 and GRAY8 is supported in the Gym wrapper. Forcing RGB24.")
+            warnings.warn(f"Detected screen format {screen_format.name}. Only RGB24 and GRAY8 are supported in the Gym"
+                          f" wrapper. Forcing RGB24.")
             self.game.set_screen_format(vzd.ScreenFormat.RGB24)
 
         self.state = None
@@ -69,116 +77,25 @@ class VizdoomEnv(gym.Env):
         self.labels = self.game.is_labels_buffer_enabled()
         self.automap = self.game.is_automap_buffer_enabled()
 
-        delta_buttons = []
-        binary_buttons = []
-        button_space = {}
-        for button in self.game.get_available_buttons():
-            if vzd.is_delta_button(button) and button not in delta_buttons:
-                max_value = self.game.get_button_max_value(button)
-                # if max value not set, default to infinity
-                if max_value == 0:
-                    max_value = np.inf
-                button_space["delta_" + str(len(delta_buttons))] = gym.spaces.Box(
-                    -max_value,
-                    max_value,
-                    (1,),
-                    dtype=np.float32,
-                )
-                delta_buttons.append(button)
-            else:
-                binary_buttons.append(button)
-        # fix delta buttons to be first in the one hot encoded action
-        self.game.set_available_buttons(delta_buttons + binary_buttons)
-        self.delta_buttons = len(delta_buttons)
-        self.binary_buttons = len(binary_buttons)
+        # parse buttons defined by config file
+        continuous_action_space, self.num_delta_buttons, self.num_binary_buttons = self.__parse_available_buttons()
 
-        if self.delta_buttons == self.binary_buttons == 0:
-            warnings.warn(f"No buttons defined. Defining ATTACK button.")
-            self.game.set_available_buttons([vzd.Button.ATTACK])
-            self.binary_buttons = 1
-
-        # Discrete or MultiDiscrete for binary buttons
-        if self.binary_buttons != 0:
-            if max_buttons_pressed > self.binary_buttons:
-                warnings.warn(
-                    f"max_buttons_pressed = {max_buttons_pressed} > number of binary buttons defined = {self.binary_buttons}. "
-                    f"Clipping max_buttons_pressed to {self.binary_buttons}.")
-                max_buttons_pressed = self.binary_buttons
-            elif max_buttons_pressed <= 0:
-                warnings.warn(f"max_buttons_pressed = {max_buttons_pressed} <= 0. Setting to 1. ")
-                max_buttons_pressed = 1
-            if max_buttons_pressed == 1:
-                button_space["binary"] = gym.spaces.Discrete(self.binary_buttons)
-            else:
-                button_space["binary"] = gym.spaces.MultiDiscrete([self.binary_buttons for _ in range(max_buttons_pressed)])
+        # check for valid max_buttons_pressed
+        if max_buttons_pressed > self.num_binary_buttons > 0:
+            warnings.warn(
+                f"max_buttons_pressed={max_buttons_pressed} "
+                f"> number of binary buttons defined={self.num_binary_buttons}. "
+                f"Clipping max_buttons_pressed to {self.num_binary_buttons}.")
+            max_buttons_pressed = self.num_binary_buttons
+        elif max_buttons_pressed < 0:
+            raise RuntimeError(f"max_buttons_pressed={max_buttons_pressed} < 0. Should be >= 0. ")
 
         # specify action space(s)
         self.max_buttons_pressed = max_buttons_pressed
-        if self.delta_buttons == 0:
-            self.action_space = button_space["binary"]
-        else:
-            self.action_space = gym.spaces.Dict(button_space)
+        self.action_space = self.__get_action_space(continuous_action_space)
 
         # specify observation space(s)
-        spaces = {
-            "screen": gym.spaces.Box(
-                0,
-                255,
-                (
-                    self.game.get_screen_height(),
-                    self.game.get_screen_width(),
-                    self.channels
-                ),
-                dtype=np.uint8,
-            )
-        }
-
-        if self.depth:
-            spaces["depth"] = gym.spaces.Box(
-                0,
-                255,
-                (
-                    self.game.get_screen_height(),
-                    self.game.get_screen_width(),
-                ),
-                dtype=np.uint8,
-            )
-
-        if self.labels:
-            spaces["labels"] = gym.spaces.Box(
-                0,
-                255,
-                (
-                    self.game.get_screen_height(),
-                    self.game.get_screen_width(),
-                ),
-                dtype=np.uint8,
-            )
-
-        if self.automap:
-            spaces["automap"] = gym.spaces.Box(
-                0,
-                255,
-                (
-                    self.game.get_screen_height(),
-                    self.game.get_screen_width(),
-                    # "automap" buffer uses same number of channels
-                    # as the main screen buffer,
-                    self.channels
-                ),
-                dtype=np.uint8,
-            )
-
-        self.num_game_variables = self.game.get_available_game_variables_size()
-        if self.num_game_variables > 0:
-            spaces["gamevariables"] = gym.spaces.Box(
-                np.finfo(np.float32).min,
-                np.finfo(np.float32).max,
-                (self.num_game_variables,),
-                dtype=np.float32
-            )
-
-        self.observation_space = gym.spaces.Dict(spaces)
+        self.observation_space = self.__get_observation_space()
 
         self.game.init()
 
@@ -186,35 +103,50 @@ class VizdoomEnv(gym.Env):
         assert self.action_space.contains(action), f"{action!r} ({type(action)}) invalid"
         assert self.state is not None, "Call `reset` before using `step` method."
 
-        act = self.__build_action(action)
-        reward = self.game.make_action(act, self.frame_skip)
+        env_action = self.__build_env_action(action)
+        reward = self.game.make_action(env_action, self.frame_skip)
         self.state = self.game.get_state()
         done = self.game.is_episode_finished()
 
         return self.__collect_observations(), reward, done, {}
 
-    def __parse_binary_buttons(self, act, action):
-        if self.binary_buttons != 0:
-            if self.delta_buttons != 0:
-                action = action["binary"]
+    def __parse_binary_buttons(self, env_action, agent_action):
+        if self.num_binary_buttons != 0:
+            if self.num_delta_buttons != 0:
+                agent_action = agent_action["binary"]
 
-            if self.max_buttons_pressed == 1:
-                act[action + self.delta_buttons] = 1
+            if isinstance(agent_action, int):
+                # agent action maps to numerically equivalent environment action (i.e. bit string is the env action)
+                agent_action = self.button_map[agent_action]
+                agent_action = np.array([i for i in range(agent_action.bit_length()) if agent_action & (1 << i)])
             else:
-                for button in action:
-                    act[button + self.delta_buttons] = 1
+                # direct encoding of 0/1 for [0, n] actions
+                agent_action = np.arange(self.num_binary_buttons)[np.array(agent_action) == 1]
 
-    def __parse_delta_buttons(self, act, action):
-        if self.delta_buttons != 0:
-            for delta_idx in range(self.delta_buttons):
-                act[delta_idx] = action["delta_" + str(delta_idx)][0]
+            if len(agent_action) != 0:
+                # binary actions offset by number of delta buttons
+                agent_action = agent_action + self.num_delta_buttons
+                env_action[agent_action] = 1
 
-    def __build_action(self, action):
-        # convert action to vizdoom action space (one hot)
-        act = [0 for _ in range(self.delta_buttons + self.binary_buttons)]
-        self.__parse_delta_buttons(act, action)
-        self.__parse_binary_buttons(act, action)
-        return np.array(act)
+    def __parse_delta_buttons(self, env_action, agent_action):
+        if self.num_delta_buttons != 0:
+            if self.num_binary_buttons != 0:
+                agent_action = agent_action["continuous"]
+
+            # if action space is just Box() -> change action to be Tuple(Box(),)
+            if len(agent_action) == 1:
+                agent_action = (agent_action,)
+
+            # delta buttons have a direct mapping since they're reorganized to be prior to any binary buttons
+            for delta_idx in range(len(agent_action)):
+                env_action[delta_idx] = agent_action[delta_idx][0]
+
+    def __build_env_action(self, agent_action):
+        # encode users action as environment action
+        env_action = np.array([0 for _ in range(self.num_delta_buttons + self.num_binary_buttons)], dtype=np.float32)
+        self.__parse_delta_buttons(env_action, agent_action)
+        self.__parse_binary_buttons(env_action, agent_action)
+        return env_action
 
     def reset(
         self,
@@ -240,9 +172,9 @@ class VizdoomEnv(gym.Env):
             if self.channels == 1:
                 observation["screen"] = self.state.screen_buffer[..., None]
             if self.depth:
-                observation["depth"] = self.state.depth_buffer
+                observation["depth"] = self.state.depth_buffer[..., None]
             if self.labels:
-                observation["labels"] = self.state.labels_buffer
+                observation["labels"] = self.state.labels_buffer[..., None]
             if self.automap:
                 observation["automap"] = self.state.automap_buffer
                 if self.channels == 1:
@@ -322,3 +254,154 @@ class VizdoomEnv(gym.Env):
         if self.window_surface:
             pygame.quit()
             self.isopen = False
+
+    def __parse_available_buttons(self):
+        """
+        Parses the currently available game buttons,
+        reorganizes all delta buttons to be prior to any binary buttons
+        returns list of delta buttons, number of delta buttons, number of binary buttons
+        list of delta buttons contains Box type for each delta button.
+        """
+        delta_buttons = []
+        binary_buttons = []
+        continuous_action_space = []
+        for button in self.game.get_available_buttons():
+            if vzd.is_delta_button(button) and button not in delta_buttons:
+                max_value = self.game.get_button_max_value(button)
+                # if max value not set, default to infinity
+                if max_value == 0:
+                    max_value = np.inf
+                continuous_action_space.append(gym.spaces.Box(-max_value, max_value, (1,), dtype=np.float32,))
+                delta_buttons.append(button)
+            else:
+                binary_buttons.append(button)
+        # force all delta buttons to be first before any binary buttons
+        self.game.set_available_buttons(delta_buttons + binary_buttons)
+        delta_buttons = len(delta_buttons)
+        binary_buttons = len(binary_buttons)
+        if delta_buttons == binary_buttons == 0:
+            raise RuntimeError("No game buttons defined. Must specify game buttons using `available_buttons` in the "
+                               "config file.")
+        return continuous_action_space, delta_buttons, binary_buttons
+
+    def __get_binary_action_space(self):
+        """
+        return binary action space: either Discrete(2**n)/MultiDiscrete([2,]*num_binary_buttons)
+        """
+        if self.max_buttons_pressed == 0:
+            button_space = gym.spaces.MultiDiscrete([2,] * self.num_binary_buttons)
+        else:
+            # set button mapping that maps agent action to numerically equivalent environment action
+            button_map = []
+            for k in range(self.max_buttons_pressed + 1):
+                button_map += self.__actions_using_k_buttons(k)
+            self.button_map = button_map
+            button_space = gym.spaces.Discrete(len(button_map))
+        return button_space
+
+    def __get_continuous_action_space(self, continuous_action_space):
+        """
+        return continuous action space: either Box()/Tuple(Box(), ...) with len num_delta_buttons
+        """
+        if self.num_delta_buttons == 1:
+            button_space = continuous_action_space[0]
+        else:
+            button_space = gym.spaces.Tuple(continuous_action_space)
+        return button_space
+
+    def __get_action_space(self, continuous_action_space):
+        """
+        return action space:
+            if both binary and delta buttons defined in the config file, action space will be:
+              Dict("binary": (MultiDiscrete|Discrete), "continuous", (Box()|Tuple(Box(), ...)))
+            else:
+              action space will be only one of the following (MultiDiscrete|Discrete|Box()|Tuple(Box(), ...)))
+        """
+        if self.num_delta_buttons == 0:
+            return self.__get_binary_action_space()
+        elif self.num_binary_buttons == 0:
+            return self.__get_continuous_action_space(continuous_action_space)
+        else:
+            return gym.spaces.Dict({"binary": self.__get_binary_action_space(),
+                                    "continuous": self.__get_continuous_action_space(continuous_action_space)})
+
+    def __actions_using_k_buttons(self, k):
+        """
+        return a list of all combinations of k set bits in self.num_binary_buttons places.
+        Representing k number of buttons pressed, with an encoding using a total number of
+        self.num_binary_buttons buttons defined.
+        EX:
+        self.num_binary_buttons=4, k=0 -> [0] ([0000])
+        self.num_binary_buttons=4, k=1 -> [1, 2, 4, 8] ([0001, 0010, 0100, 1000])
+        self.num_binary_buttons=3, k=2 -> [3, 5, 6] ([011, 101, 110])
+        """
+        button_map = [(1 << k) - 1]
+        finish = button_map[-1] << (self.num_binary_buttons - k)
+        while button_map[-1] != finish:
+            t = (button_map[-1] | (button_map[-1] - 1)) + 1
+            v = t | ((((t & -t) // (button_map[-1] & -button_map[-1])) >> 1) - 1)
+            button_map.append(v)
+        return button_map
+
+    def __get_observation_space(self):
+        spaces = {
+            "screen": gym.spaces.Box(
+                0,
+                255,
+                (
+                    self.game.get_screen_height(),
+                    self.game.get_screen_width(),
+                    self.channels
+                ),
+                dtype=np.uint8,
+            )
+        }
+
+        if self.depth:
+            spaces["depth"] = gym.spaces.Box(
+                0,
+                255,
+                (
+                    self.game.get_screen_height(),
+                    self.game.get_screen_width(),
+                    1
+                ),
+                dtype=np.uint8,
+            )
+
+        if self.labels:
+            spaces["labels"] = gym.spaces.Box(
+                0,
+                255,
+                (
+                    self.game.get_screen_height(),
+                    self.game.get_screen_width(),
+                    1
+                ),
+                dtype=np.uint8,
+            )
+
+        if self.automap:
+            spaces["automap"] = gym.spaces.Box(
+                0,
+                255,
+                (
+                    self.game.get_screen_height(),
+                    self.game.get_screen_width(),
+                    # "automap" buffer uses same number of channels
+                    # as the main screen buffer,
+                    self.channels
+                ),
+                dtype=np.uint8,
+            )
+
+        self.num_game_variables = self.game.get_available_game_variables_size()
+        if self.num_game_variables > 0:
+            spaces["gamevariables"] = gym.spaces.Box(
+                np.finfo(np.float32).min,
+                np.finfo(np.float32).max,
+                (self.num_game_variables,),
+                dtype=np.float32
+            )
+
+        return gym.spaces.Dict(spaces)
