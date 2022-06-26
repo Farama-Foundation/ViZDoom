@@ -143,6 +143,7 @@ class VizdoomEnv(gym.Env):
         return_info: bool = False,
         options: Optional[dict] = None,
     ):
+        super().reset(seed=seed)
         if seed is not None:
             self.game.set_seed(seed)
         self.game.new_episode()
