@@ -77,7 +77,7 @@ def test_gym_wrapper_obs_space():
                    "basic_g8_i_1_0",
                    "basic_g8_idla_4_2",
                    "basic_g8_idl_3_1",
-                   "basic_rgb_id_3_0",
+                   "basic_rgb_id_2_0",
                    "basic_rgb_idla_0_1",
                    ]
     tri_channel_screen_obs_space = Box(0, 255, (240, 320, 3), dtype=np.uint8)
@@ -110,72 +110,55 @@ def test_gym_wrapper_action_space():
     print("Testing Gym wrapper action spaces")
     env_configs = ["basic_rgb_i_1_3",
                    "basic_g8_i_1_0",
-                   "basic_g8_i_1_1",
                    "basic_g8_idla_4_2",
                    "basic_g8_idl_3_1",
-                   "basic_rgb_id_3_0",
-                   "basic_rgb_i_0_3",
+                   "basic_rgb_id_2_0",
                    "basic_rgb_idla_0_1"]
     action_spaces = [
         # max_button_pressed = 0, binary action space is MultiDiscrete
-        [Dict({"binary": MultiDiscrete([2]), "continuous": Tuple((Box(-np.inf, np.inf, (1,), np.float32),
-                                                                  Box(-np.inf, np.inf, (1,), np.float32),
-                                                                  Box(-np.inf, np.inf, (1,), np.float32)))}),
+        [Dict({"binary": MultiDiscrete([2]),
+               "continuous": Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (3,), dtype=np.float32)}),
          MultiDiscrete([2]),
-         Dict({"binary": MultiDiscrete([2]), "continuous": Box(-np.inf, np.inf, (1,), np.float32)}),
-         Dict({"binary": MultiDiscrete([2, 2, 2, 2]), "continuous": Tuple((Box(-np.inf, np.inf, (1,), np.float32),
-                                                                           Box(-np.inf, np.inf, (1,), np.float32)))}),
-         Dict({"binary": MultiDiscrete([2, 2, 2]), "continuous": Box(-np.inf, np.inf, (1,), np.float32)}),
-         MultiDiscrete([2, 2, 2]),
-         Tuple((Box(-np.inf, np.inf, (1,), np.float32), Box(-np.inf, np.inf, (1,), np.float32),
-                Box(-np.inf, np.inf, (1,), np.float32))),
-         Box(-np.inf, np.inf, (1,), np.float32)],
-        # max_button_pressed = 1, binary action space is Discrete(n + 1) where n is the number of
-        # binary buttons defined in config file
-        [Dict({"binary": Discrete(2), "continuous": Tuple((Box(-np.inf, np.inf, (1,), np.float32),
-                                                           Box(-np.inf, np.inf, (1,), np.float32),
-                                                           Box(-np.inf, np.inf, (1,), np.float32)))}),
+         Dict({"binary": MultiDiscrete([2, 2, 2, 2]),
+               "continuous": Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (2,), dtype=np.float32)}),
+         Dict({"binary": MultiDiscrete([2, 2, 2]),
+               "continuous": Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (1,), dtype=np.float32)}),
+         MultiDiscrete([2, 2]),
+         Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (1,), dtype=np.float32)],
+        # max_button_pressed = 1, binary action space is Discrete(num_binary_buttons + 1)
+        [Dict({"binary": Discrete(2),
+               "continuous": Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (3,), dtype=np.float32)}),
          Discrete(2),
-         Dict({"binary": Discrete(2), "continuous": Box(-np.inf, np.inf, (1,), np.float32)}),
-         Dict({"binary": Discrete(5), "continuous": Tuple((Box(-np.inf, np.inf, (1,), np.float32),
-                                                           Box(-np.inf, np.inf, (1,), np.float32)))}),
-         Dict({"binary": Discrete(4), "continuous": Box(-np.inf, np.inf, (1,), np.float32)}),
+         Dict({"binary": Discrete(5),
+               "continuous": Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (2,), dtype=np.float32)}),
+         Dict({"binary": Discrete(4),
+               "continuous": Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (1,), dtype=np.float32)}),
+         Discrete(3),
+         Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (1,), dtype=np.float32)],
+        # max_button_pressed = 2, binary action space is Discrete(m) m=all combinations
+        # indices=[0,1] should give warning clipping max_buttons_pressed to 1
+        [Dict({"binary": Discrete(2),
+               "continuous": Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (3,), dtype=np.float32)}),
+         Discrete(2),
+         Dict({"binary": Discrete(11),
+               "continuous": Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (2,), dtype=np.float32)}),
+         Dict({"binary": Discrete(7),
+               "continuous": Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (1,), dtype=np.float32)}),
          Discrete(4),
-         Tuple((Box(-np.inf, np.inf, (1,), np.float32), Box(-np.inf, np.inf, (1,), np.float32),
-                Box(-np.inf, np.inf, (1,), np.float32))),
-         Box(-np.inf, np.inf, (1,), np.float32)],
-        # max_button_pressed = 2, binary action space is Discrete(m) where m number of all
-        # possible combinations of pressing n buttons (the n buttons defined in config file)
-        # indices=[0,1,2] should give warning clipping max_buttons_pressed to 1
-        [Dict({"binary": Discrete(2), "continuous": Tuple((Box(-np.inf, np.inf, (1,), np.float32),
-                                                           Box(-np.inf, np.inf, (1,), np.float32),
-                                                           Box(-np.inf, np.inf, (1,), np.float32)))}),
+         Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (1,), dtype=np.float32)],
+        # max_button_pressed = 3, binary action space is Discrete(m) m=all combinations
+        # indices=[0,1, 4] should give warning clipping max_buttons_pressed to 1 or 2
+        [Dict({"binary": Discrete(2),
+               "continuous": Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (3,), dtype=np.float32)}),
          Discrete(2),
-         Dict({"binary": Discrete(2), "continuous": Box(-np.inf, np.inf, (1,), np.float32)}),
-         Dict({"binary": Discrete(11), "continuous": Tuple((Box(-np.inf, np.inf, (1,), np.float32),
-                                                            Box(-np.inf, np.inf, (1,), np.float32)))}),
-         Dict({"binary": Discrete(7), "continuous": Box(-np.inf, np.inf, (1,), np.float32)}),
-         Discrete(7),
-         Tuple((Box(-np.inf, np.inf, (1,), np.float32), Box(-np.inf, np.inf, (1,), np.float32),
-                Box(-np.inf, np.inf, (1,), np.float32))),
-         Box(-np.inf, np.inf, (1,), np.float32)],
-        # max_button_pressed = 3, binary action space is Discrete(m) where m number of all
-        # possible combinations of pressing n buttons (the n buttons defined in config file)
-        # indices=[0,1,2] should give warning clipping max_buttons_pressed to 1
-        [Dict({"binary": Discrete(2), "continuous": Tuple((Box(-np.inf, np.inf, (1,), np.float32),
-                                                           Box(-np.inf, np.inf, (1,), np.float32),
-                                                           Box(-np.inf, np.inf, (1,), np.float32)))}),
-         Discrete(2),
-         Dict({"binary": Discrete(2), "continuous": Box(-np.inf, np.inf, (1,), np.float32)}),
-         Dict({"binary": Discrete(15), "continuous": Tuple((Box(-np.inf, np.inf, (1,), np.float32),
-                                                            Box(-np.inf, np.inf, (1,), np.float32)))}),
-         Dict({"binary": Discrete(8), "continuous": Box(-np.inf, np.inf, (1,), np.float32)}),
-         Discrete(8),
-         Tuple((Box(-np.inf, np.inf, (1,), np.float32), Box(-np.inf, np.inf, (1,), np.float32),
-                Box(-np.inf, np.inf, (1,), np.float32))),
-         Box(-np.inf, np.inf, (1,), np.float32)]
+         Dict({"binary": Discrete(15),
+               "continuous": Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (2,), dtype=np.float32)}),
+         Dict({"binary": Discrete(8),
+               "continuous": Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (1,), dtype=np.float32)}),
+         Discrete(4),
+         Box(np.finfo(np.float32).min, np.finfo(np.float32).max, (1,), dtype=np.float32)]
     ]
-    for max_button_pressed in range(0, 4, 1):
+    for max_button_pressed in range(0, 4):
         for i in range(len(env_configs)):
             env = VizdoomEnv(
                 level=os.path.join(test_env_configs, env_configs[i] + ".cfg"),
