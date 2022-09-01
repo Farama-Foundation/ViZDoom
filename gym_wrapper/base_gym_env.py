@@ -106,9 +106,10 @@ class VizdoomEnv(gym.Env):
         env_action = self.__build_env_action(action)
         reward = self.game.make_action(env_action, self.frame_skip)
         self.state = self.game.get_state()
-        done = self.game.is_episode_finished()
+        terminated = self.game.is_episode_finished()
+        truncated = False # Trunctation to be handled by the TimeLimit wrapper
 
-        return self.__collect_observations(), reward, done, {}
+        return self.__collect_observations(), reward, terminated, truncated, {}
 
     def __parse_binary_buttons(self, env_action, agent_action):
         if self.num_binary_buttons != 0:
@@ -140,7 +141,6 @@ class VizdoomEnv(gym.Env):
         self,
         *,
         seed: Optional[int] = None,
-        return_info: bool = False,
         options: Optional[dict] = None,
     ):
         super().reset(seed=seed)
@@ -149,10 +149,7 @@ class VizdoomEnv(gym.Env):
         self.game.new_episode()
         self.state = self.game.get_state()
 
-        if not return_info:
-            return self.__collect_observations()
-        else:
-            return self.__collect_observations(), {}
+        return self.__collect_observations(), {}
 
     def __collect_observations(self):
         observation = {}
