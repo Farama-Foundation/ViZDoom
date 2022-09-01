@@ -6,7 +6,7 @@ import os
 import gym
 import numpy as np
 from gym.utils.env_checker import check_env
-from gym.spaces import Discrete, MultiDiscrete, Tuple, Dict, Box
+from gym.spaces import Discrete, MultiDiscrete, Dict, Box
 from vizdoom.gym_wrapper.base_gym_env import VizdoomEnv
 from vizdoom import gym_wrapper
 
@@ -35,12 +35,12 @@ def test_gym_wrapper():
             assert ob_space.contains(ob), f"Reset observation: {ob!r} not in space"
 
             a = act_space.sample()
-            observation, reward, done, _info = env.step(a)
+            observation, reward, terminated, truncated, _info = env.step(a)
             assert ob_space.contains(
                 observation
             ), f"Step observation: {observation!r} not in space"
             assert np.isscalar(reward), f"{reward} is not a scalar for {env}"
-            assert isinstance(done, bool), f"Expected {done} to be a boolean"
+            assert isinstance(terminated, bool), f"Expected {terminated} to be a boolean"
 
             env.close()
 
@@ -59,10 +59,13 @@ def test_gym_wrapper_terminal_state():
 
             agent = lambda ob: env.action_space.sample()
             ob = env.reset()
-            done = False
+            terminated = False
+            truncated = False
+            done = terminated or truncated
             while not done:
                 a = agent(ob)
-                (ob, _reward, done, _info) = env.step(a)
+                (ob, _reward, terminated, truncated, _info) = env.step(a)
+                done = terminated or truncated
                 if done:
                     break
                 env.close()
