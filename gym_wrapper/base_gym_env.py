@@ -20,6 +20,7 @@ class VizdoomEnv(gym.Env):
         level,
         frame_skip=1,
         max_buttons_pressed=1,
+        render_mode:Optional[str]=None,
     ):
         """
         Base class for Gym interface for ViZDoom. Thanks to https://github.com/shakenes/vizdoomgym
@@ -34,6 +35,7 @@ class VizdoomEnv(gym.Env):
                                        and [0, num_binary_buttons] number of binary buttons can be selected.
                                        If > 0, the binary action space becomes Discrete(n)
                                        and [0, max_buttons_pressed] number of binary buttons can be selected.
+            render_mode(Optional[str]): the render mode to use could be either 'human' or 'rgb_array'
 
         This environment forces window to be hidden. Use `render()` function to see the game.
 
@@ -54,6 +56,7 @@ class VizdoomEnv(gym.Env):
                           = Box(float32.min, float32.max, (num_delta_buttons,), float32).
         """
         self.frame_skip = frame_skip
+        self.render_mode  = render_mode
 
         # init game
         self.game = vzd.DoomGame()
@@ -217,12 +220,12 @@ class VizdoomEnv(gym.Env):
             image_list.append(automap_buffer)
 
         return np.concatenate(image_list, axis=1)
-
-    def render(self, mode="human"):
+    
+    def render(self):
         render_image = self.__build_human_render_image()
-        if mode == "rgb_array":
+        if self.render_mode == "rgb_array":
             return render_image
-        elif mode == "human":
+        elif self.render_mode == "human":
             # Transpose image (pygame wants (width, height, channels), we have (height, width, channels))
             render_image = render_image.transpose(1, 0, 2)
             if self.window_surface is None:
