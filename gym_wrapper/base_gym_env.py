@@ -220,7 +220,7 @@ class VizdoomEnv(gym.Env):
             image_list.append(automap_buffer)
 
         return np.concatenate(image_list, axis=1)
-    
+
     def render(self):
         render_image = self.__build_human_render_image()
         if self.render_mode == "rgb_array":
