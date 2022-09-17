@@ -16,6 +16,7 @@ LABEL_COLORS = np.random.default_rng(42).uniform(25, 256, size=(256, 3)).astype(
 
 class VizdoomEnv(gym.Env):
     metadata = {"render_modes": ["human","rgb_array"]}
+    
     def __init__(
         self,
         level,
