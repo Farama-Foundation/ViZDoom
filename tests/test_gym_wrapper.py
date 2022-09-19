@@ -28,7 +28,7 @@ def test_gym_wrapper():
             )
 
             # Test if env adheres to Gym API
-            check_env(env, skip_render_check=True)
+            check_env(env.unwrapped, skip_render_check=True)
 
             ob_space = env.observation_space
             act_space = env.action_space
