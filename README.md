@@ -10,7 +10,7 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 ## Features
 - Multi-platform (Linux, macOS, Windows),
 - API for Python, C++, and Julia (thanks to [Jun Tian](https://github.com/findmyway)), and also Lua and Java for older versions,
-- [OpenAI Gym](https://github.com/openai/gym) environment wrappers for basic scenarios.
+- [OpenAI Gym](https://www.gymlibrary.dev/) environment wrappers (thanks to [Benjamin Noah Beal](https://github.com/bebeal), [Lawrence Francis](https://github.com/ldfrancis), and [Mark Towers](https://github.com/pseudo-rnd-thoughts)).
 - Easy-to-create custom scenarios (visual editors, scripting language and examples available),
 - Async and sync single-player and multi-player modes,
 - Fast (up to 7000 fps in sync mode, single-threaded),
@@ -23,8 +23,6 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 - Off-screen rendering,
 - Episodes recording,
 - Time scaling in async mode,
-- [OpenAI Gym](https://www.gymlibrary.dev/) wrapper
-(thanks to [Benjamin Noah Beal](https://github.com/bebeal), [Lawrence Francis](https://github.com/ldfrancis), and [Mark Towers](https://github.com/pseudo-rnd-thoughts)).
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
