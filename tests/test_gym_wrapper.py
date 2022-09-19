@@ -4,13 +4,14 @@
 import os
 
 import gym
+from gym.spaces import Dict
 import numpy as np
 from gym.utils.env_checker import check_env
-from gym.spaces import Discrete, MultiDiscrete, Tuple, Dict, Box
+from gym.spaces import Discrete, MultiDiscrete, Dict, Box
 from vizdoom.gym_wrapper.base_gym_env import VizdoomEnv
 from vizdoom import gym_wrapper
 
-vizdoom_envs = [env for env in [env_spec.id for env_spec in gym.envs.registry.all()] if "Vizdoom" in env]
+vizdoom_envs = [env for env in [env_spec.id for env_spec in gym.envs.registry.values()] if "Vizdoom" in env]
 test_env_configs = os.path.abspath("./env_configs")
 
 
@@ -27,20 +28,21 @@ def test_gym_wrapper():
             )
 
             # Test if env adheres to Gym API
-            check_env(env, skip_render_check=True)
+            check_env(env.unwrapped, skip_render_check=True)
 
             ob_space = env.observation_space
             act_space = env.action_space
-            ob = env.reset()
+            ob, _ = env.reset()
             assert ob_space.contains(ob), f"Reset observation: {ob!r} not in space"
 
             a = act_space.sample()
-            observation, reward, done, _info = env.step(a)
+            observation, reward, terminated, truncated, _info = env.step(a)
             assert ob_space.contains(
                 observation
             ), f"Step observation: {observation!r} not in space"
             assert np.isscalar(reward), f"{reward} is not a scalar for {env}"
-            assert isinstance(done, bool), f"Expected {done} to be a boolean"
+            assert isinstance(terminated, bool), f"Expected {terminated} to be a boolean"
+            assert isinstance(truncated, bool), f"Expected {truncated} to be a boolean"
 
             env.close()
 
@@ -59,10 +61,13 @@ def test_gym_wrapper_terminal_state():
 
             agent = lambda ob: env.action_space.sample()
             ob = env.reset()
-            done = False
+            terminated = False
+            truncated = False
+            done = terminated or truncated
             while not done:
                 a = agent(ob)
-                (ob, _reward, done, _info) = env.step(a)
+                (ob, _reward, terminated, truncated, _info) = env.step(a)
+                done = terminated or truncated
                 if done:
                     break
                 env.close()
@@ -82,15 +87,15 @@ def test_gym_wrapper_obs_space():
                    ]
     tri_channel_screen_obs_space = Box(0, 255, (240, 320, 3), dtype=np.uint8)
     single_channel_screen_obs_space = Box(0, 255, (240, 320, 1), dtype=np.uint8)
-    observation_spaces = [{"screen": tri_channel_screen_obs_space},
-                          {"screen": single_channel_screen_obs_space},
-                          {"screen": single_channel_screen_obs_space, "depth": single_channel_screen_obs_space,
-                           "labels": single_channel_screen_obs_space, "automap": single_channel_screen_obs_space},
-                          {"screen": single_channel_screen_obs_space, "depth": single_channel_screen_obs_space,
-                           "labels": single_channel_screen_obs_space},
-                          {"screen": tri_channel_screen_obs_space, "depth": single_channel_screen_obs_space},
-                          {"screen": tri_channel_screen_obs_space, "depth": single_channel_screen_obs_space,
-                           "labels": single_channel_screen_obs_space, "automap": tri_channel_screen_obs_space}
+    observation_spaces = [Dict({"screen": tri_channel_screen_obs_space}),
+                          Dict({"screen": single_channel_screen_obs_space}),
+                          Dict({"screen": single_channel_screen_obs_space, "depth": single_channel_screen_obs_space,
+                           "labels": single_channel_screen_obs_space, "automap": single_channel_screen_obs_space}),
+                          Dict({"screen": single_channel_screen_obs_space, "depth": single_channel_screen_obs_space,
+                           "labels": single_channel_screen_obs_space}),
+                          Dict({"screen": tri_channel_screen_obs_space, "depth": single_channel_screen_obs_space}),
+                          Dict({"screen": tri_channel_screen_obs_space, "depth": single_channel_screen_obs_space,
+                           "labels": single_channel_screen_obs_space, "automap": tri_channel_screen_obs_space})
                           ]
 
     for i in range(len(env_configs)):
@@ -101,7 +106,7 @@ def test_gym_wrapper_obs_space():
         )
         assert env.observation_space == observation_spaces[i], f"Incorrect observation space: {env.observation_space!r}, " \
                                                                f"should be: {observation_spaces[i]!r}"
-        obs = env.reset()
+        obs, _ = env.reset()
         assert env.observation_space.contains(obs), f"Step observation: {obs!r} not in space"
 
 

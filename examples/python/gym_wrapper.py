@@ -15,5 +15,6 @@ if __name__  == '__main__':
         done = False
         obs = env.reset()
         while not done:
-            obs, rew, done, info = env.step(env.action_space.sample())
+            obs, rew, terminated, truncated, info = env.step(env.action_space.sample())
+            done = terminated or truncated
             env.render()
