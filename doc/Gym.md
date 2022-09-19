@@ -1,7 +1,7 @@
 # OpenAI Gym wrappers
 
 Installing ViZDoom with `pip install vizdoom[gym]` will include
-Gym wrappers to interact with ViZDoom over [Gym API](https://www.gymlibrary.ml/).
+Gym wrappers to interact with ViZDoom over [Gym API](https://www.gymlibrary.dev/).
 
 These wrappers are under `gym_wrappers`, containing the basic environment and
 few example environments based on the built-in scenarios. This environment

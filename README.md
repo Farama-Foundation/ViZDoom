@@ -22,7 +22,9 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 - Access to the list of actors/objects and map geometry,
 - Off-screen rendering,
 - Episodes recording,
-- Time scaling in async mode.
+- Time scaling in async mode,
+- [OpenAI Gym](https://www.gymlibrary.dev/) wrapper
+(thanks to [Benjamin Noah Beal](https://github.com/bebeal), [Lawrence Francis](https://github.com/ldfrancis), and [Mark Towers](https://github.com/pseudo-rnd-thoughts)).
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
