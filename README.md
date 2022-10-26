@@ -10,7 +10,7 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 ## Features
 - Multi-platform (Linux, macOS, Windows),
 - API for Python, C++, and Julia (thanks to [Jun Tian](https://github.com/findmyway)), and also Lua and Java for older versions,
-- [OpenAI Gym](https://www.gymlibrary.dev/) environment wrappers (thanks to [Benjamin Noah Beal](https://github.com/bebeal), [Lawrence Francis](https://github.com/ldfrancis), and [Mark Towers](https://github.com/pseudo-rnd-thoughts)).
+- [OpenAI Gym](https://www.gymlibrary.dev/) environment wrappers (thanks to [Benjamin Noah Beal](https://github.com/bebeal), [Lawrence Francis](https://github.com/ldfrancis), and [Mark Towers](https://github.com/pseudo-rnd-thoughts)),
 - Easy-to-create custom scenarios (visual editors, scripting language and examples available),
 - Async and sync single-player and multi-player modes,
 - Fast (up to 7000 fps in sync mode, single-threaded),
@@ -22,7 +22,7 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 - Access to the list of actors/objects and map geometry,
 - Off-screen rendering,
 - Episodes recording,
-- Time scaling in async mode,
+- Time scaling in async mode.
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
@@ -152,7 +152,6 @@ Useful parts:
 - [Omgifol](https://github.com/devinacker/omgifol) - nice Python library for manipulating Doom maps.
 - [NavDoom](https://github.com/agiantwhale/navdoom) - Maze navigation generator for ViZDoom (similar to DeepMind Lab).
 - [MazeExplorer](https://github.com/microsoft/MazeExplorer) - More sophisticated maze navigation generator for ViZDoom.
-- [ViZDoomGym](https://github.com/shakenes/vizdoomgym) - OpenAI Gym Wrapper for ViZDoom.
 - [Sample Factory](https://github.com/alex-petrenko/sample-factory) - A high performance reinforcement learning framework for ViZDoom.
 - [EnvPool](https://github.com/sail-sg/envpool/) - A high performance vectorized environment for ViZDoom.
 - [Obsidian](https://github.com/dashodanger/Obsidian) - Doom random map generator, continuation of OBLIGE.
