@@ -56,7 +56,7 @@ or
   month     = {Sep},
   pages     = {341--348},
   publisher = {IEEE},
-  doi       = {10.1109/CIG.2016.7860433}}
+  doi       = {10.1109/CIG.2016.7860433},
   note      = {The Best Paper Award}
 }
 ```
