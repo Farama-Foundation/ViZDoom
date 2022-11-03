@@ -28,8 +28,8 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 
 
 ## Cite as
-> M Wydmuch, M Kempka & W Jaśkowski, ViZDoom Competitions: Playing Doom from Pixels, IEEE Transactions on Games, vol. 11, no. 3, pp. 248-259, 2019,
-[arXiv:1809.03470](https://arxiv.org/abs/1809.03470)
+> M Wydmuch, M Kempka & W Jaśkowski, ViZDoom Competitions: Playing Doom from Pixels, IEEE Transactions on Games, vol. 11, no. 3, pp. 248-259, 2019
+([arXiv:1809.03470](https://arxiv.org/abs/1809.03470))
 ```
 @article{Wydmuch2019ViZdoom,
   author  = {Marek Wydmuch and Micha{\l} Kempka and Wojciech Ja\'skowski},
