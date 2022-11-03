@@ -28,15 +28,19 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 
 
 ## Cite as
-> M Wydmuch, M Kempka & W Jaśkowski, ViZDoom Competitions: Playing Doom from Pixels, IEEE Transactions on Games, in print,
+> M Wydmuch, M Kempka & W Jaśkowski, ViZDoom Competitions: Playing Doom from Pixels, IEEE Transactions on Games, vol. 11, no. 3, pp. 248-259, 2019,
 [arXiv:1809.03470](https://arxiv.org/abs/1809.03470)
 ```
-@article{wydmuch2018vizdoom,
-  title={ViZDoom Competitions: Playing Doom from Pixels},
-  author={Wydmuch, Marek and Kempka, Micha{\l} and Ja{\'s}kowski, Wojciech},
-  journal={IEEE Transactions on Games},
-  year={2018},
-  publisher={IEEE}
+@article{Wydmuch2019ViZdoom,
+  author  = {Marek Wydmuch and Micha{\l} Kempka and Wojciech Ja\'skowski},
+  title   = {{ViZDoom} {C}ompetitions: {P}laying {D}oom from {P}ixels},
+  journal = {IEEE Transactions on Games},
+  year    = {2019},
+  volume  = {11},
+  number  = {3},
+  pages   = {248--259},
+  doi     = {10.1109/TG.2018.2877047},
+  note    = {The 2022 IEEE Transactions on Games Outstanding Paper Award}
 }
 ```
 or
@@ -48,12 +52,12 @@ or
   title     = {{ViZDoom}: A {D}oom-based {AI} Research Platform for Visual Reinforcement Learning},
   booktitle = {IEEE Conference on Computational Intelligence and Games},  
   year      = {2016},
-  url       = {http://arxiv.org/abs/1605.02097},
   address   = {Santorini, Greece},
-  Month     = {Sep},
-  Pages     = {341--348},
-  Publisher = {IEEE},
-  Note      = {The best paper award}
+  month     = {Sep},
+  pages     = {341--348},
+  publisher = {IEEE},
+  doi       = {10.1109/CIG.2016.7860433}}
+  note      = {The Best Paper Award}
 }
 ```
 
