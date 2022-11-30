@@ -76,7 +76,7 @@ class BuildCommand(build):
             cpu_cores = max(1, cpu_count() - 1)
             python_executable = os.path.realpath(sys.executable)
 
-            cmake_arg_list = ["cmake", "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_PYTHON=ON",
+            cmake_arg_list = ["cmake", "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_PYTHON=ON", "-DBoost_NO_BOOST_CMAKE=ON",  
                               "-DPYTHON_EXECUTABLE={}".format(python_executable)]
                               
             if platform.startswith("win"):
