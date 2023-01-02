@@ -83,13 +83,18 @@ python setup.py build && python setup.py install
 Note that `pip install vizdoom` won't work with conda install and you have to follow these steps.
 
 ### macOS 
-To install ViZDoom on macOS run (may take few minutes):
+To install ViZDoom on macOS (Intel) run (may take few minutes):
 ```
 brew install cmake boost openal-soft sdl2
 pip install vizdoom
 ```
 We recommend using at least macOS High Sierra 10.13+ with Python 3.7+.
-Currently, only for Intel CPU, we will gladly accept PR with M1 support.
+
+To install ViZDoom on macOS with Apple Silicon (M1 or M2) run:
+```
+brew install cmake boost openal-soft sdl2
+pip install git+https://github.com/mwydmuch/ViZDoom.git
+```
 
 ### Windows
 To install pre-build release for Windows 10 or 11 64-bit and Python 3.6+ just run (should take few seconds):
