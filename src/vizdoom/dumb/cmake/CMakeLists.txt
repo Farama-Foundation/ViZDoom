@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 2.6)
 project(libdumb C)
 
 set(CMAKE_C_FLAGS "-Wall -DDUMB_DECLARE_DEPRECATED -D_USE_SSE -msse -Wno-unused-variable -Wno-unused-but-set-variable")
