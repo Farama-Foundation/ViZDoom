@@ -67,12 +67,7 @@ extern void (*R_DrawColumn)(void);
 
 extern DWORD (STACK_ARGS *dovline1) ();
 extern DWORD (STACK_ARGS *doprevline1) ();
-#ifdef X64_ASM
-#define dovline4 vlinetallasm4
-extern "C" void vlinetallasm4();
-#else
 extern void (STACK_ARGS *dovline4) ();
-#endif
 extern void setupvline (int);
 
 extern DWORD (STACK_ARGS *domvline1) ();
@@ -165,21 +160,12 @@ void STACK_ARGS rt_addclamp4cols_asm (int sx, int yl, int yh);
 
 extern void (STACK_ARGS *rt_map4cols)(int sx, int yl, int yh);
 
-#ifdef X86_ASM
-#define rt_copy1col			rt_copy1col_asm
-#define rt_copy4cols		rt_copy4cols_asm
-#define rt_map1col			rt_map1col_asm
-#define rt_shaded4cols		rt_shaded4cols_asm
-#define rt_add4cols			rt_add4cols_asm
-#define rt_addclamp4cols	rt_addclamp4cols_asm
-#else
 #define rt_copy1col			rt_copy1col_c
 #define rt_copy4cols		rt_copy4cols_c
 #define rt_map1col			rt_map1col_c
 #define rt_shaded4cols		rt_shaded4cols_c
 #define rt_add4cols			rt_add4cols_c
 #define rt_addclamp4cols	rt_addclamp4cols_c
-#endif
 
 void rt_draw4cols (int sx);
 
@@ -188,20 +174,6 @@ void rt_initcols (BYTE *buffer=NULL);
 
 void R_DrawFogBoundary (int x1, int x2, short *uclip, short *dclip);
 
-
-#ifdef X86_ASM
-
-extern "C" void	R_DrawColumnP_Unrolled (void);
-extern "C" void	R_DrawColumnHorizP_ASM (void);
-extern "C" void	R_DrawColumnP_ASM (void);
-extern "C" void	R_DrawFuzzColumnP_ASM (void);
-		   void R_DrawTranslatedColumnP_C (void);
-		   void R_DrawShadedColumnP_C (void);
-extern "C" void	R_DrawSpanP_ASM (void);
-extern "C" void R_DrawSpanMaskedP_ASM (void);
-
-#else
-
 void	R_DrawColumnHorizP_C (void);
 void	R_DrawColumnP_C (void);
 void	R_DrawFuzzColumnP_C (void);
@@ -209,8 +181,6 @@ void	R_DrawTranslatedColumnP_C (void);
 void	R_DrawShadedColumnP_C (void);
 void	R_DrawSpanP_C (void);
 void	R_DrawSpanMaskedP_C (void);
-
-#endif
 
 void	R_DrawSpanTranslucentP_C (void);
 void	R_DrawSpanMaskedTranslucentP_C (void);
@@ -222,13 +192,8 @@ void	R_FillColumnP (void);
 void	R_FillColumnHorizP (void);
 void	R_FillSpan (void);
 
-#ifdef X86_ASM
-#define R_SetupDrawSlab R_SetupDrawSlabA
-#define R_DrawSlab R_DrawSlabA
-#else
 #define R_SetupDrawSlab R_SetupDrawSlabC
 #define R_DrawSlab R_DrawSlabC
-#endif
 
 extern "C" void			   R_SetupDrawSlab(const BYTE *colormap);
 extern "C" void STACK_ARGS R_DrawSlab(int dx, fixed_t v, int dy, fixed_t vi, const BYTE *vptr, BYTE *p);
