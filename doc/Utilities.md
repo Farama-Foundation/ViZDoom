@@ -1,7 +1,5 @@
 # Utilities
 
-In Java utilities functions are static methods in DoomGame class.
-
 * [doomTicsToMs](#doomTicsToMs)
 * [msToDoomTics](#msToDoomTics)
 * [doomTicsToSec](#doomTicsToSec)

@@ -34,7 +34,7 @@ Each list assignment (**KEY = { VALUES }**)clears values specified for this key 
 * `DoomConfigPath/doom_config_path`
 * `DoomGamePath/doom_game_path`
 * `DoomMap/doom_map`
-* `DoomScenarioPath/set_doom_scenario_path`
+* `DoomScenarioPath/doom_scenario_path`
 * `DoomSkill/doom_skill`
 * `episodeStartTime/episode_start_time`
 * `episodeTimeout/episode_timeout`
