@@ -12,7 +12,7 @@ from vizdoom.gym_wrapper.base_gym_env import VizdoomEnv
 from vizdoom import gym_wrapper
 
 vizdoom_envs = [env for env in [env_spec.id for env_spec in gym.envs.registry.values()] if "Vizdoom" in env]
-test_env_configs = os.path.abspath("./env_configs")
+test_env_configs = f"{os.path.dirname(os.path.abspath(__file__))}/env_configs"
 
 
 # Testing with different non-default kwargs (since each has a different obs space)
