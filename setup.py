@@ -102,7 +102,6 @@ class BuildCommand(build):
                 cmake_arg_list.extend(
                     ["-G",
                      generator,
-                     "-DNO_ASM=ON",
                      "-DMPG123_INCLUDE_DIR={}".format(mpg123_include),
                      "-DMPG123_LIBRARIES={}".format(mpg123_lib),
                      "-DSNDFILE_INCLUDE_DIR={}".format(sndfile_include),
