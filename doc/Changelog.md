@@ -1,5 +1,15 @@
 # Changelog
 
+## Changes in 1.1.14
+
+#### Support for Apple Silicon
+- Fixed building on Apple Silicon Macbooks.
+
+#### Gym
+- OpenAI Gym environment wrappers were updated to the Gym v0.26 API version.
+
+--- 
+
 ## Changes in 1.1.13
 
 #### Releases

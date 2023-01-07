@@ -69,7 +69,7 @@ or
 ### Ubuntu
 To install ViZDoom on Ubuntu run (may take few minutes):
 ```
-sudo apt install cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar nasm
+sudo apt install cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar
 pip install vizdoom
 ```
 We recommend using at least Ubuntu 18.04+ with Python 3.7+.
@@ -85,27 +85,22 @@ python setup.py build && python setup.py install
 Note that `pip install vizdoom` won't work with conda install and you have to follow these steps.
 
 ### macOS 
-To install ViZDoom on macOS (Intel) run (may take few minutes):
+To install ViZDoom on macOS (for Intel and Apple Silicon) run (may take few minutes):
 ```
 brew install cmake boost openal-soft sdl2
 pip install vizdoom
 ```
 We recommend using at least macOS High Sierra 10.13+ with Python 3.7+.
-
-To install ViZDoom on macOS with Apple Silicon (M1 or M2) run:
-```
-brew install cmake boost openal-soft sdl2
-pip install git+https://github.com/mwydmuch/ViZDoom.git
-```
+On Apple Silicon (M1 and M2), make sure you are using Python for Apple Silicon.
 
 ### Windows
-To install pre-build release for Windows 10 or 11 64-bit and Python 3.6+ just run (should take few seconds):
+To install pre-build release for Windows 10 or 11 64-bit and Python 3.7+ just run (should take few seconds):
 ```
 pip install vizdoom
 ```
 
 ### Gym wrappers
-If you wish to use OpenAI Gym environments, install ViZDoom with
+If you wish to also install OpenAI Gym environments, install ViZDoom with
 ```
 pip install vizdoom[gym]
 ```

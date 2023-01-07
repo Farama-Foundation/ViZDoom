@@ -159,7 +159,9 @@ with ViZDoom. You have several options you can try (one of these steps has worke
 
 ## How to display ViZDoom's window when running it on WSL (Windows Subsystem for Linux)
 
-GUI apps do not work out-of-the-box on WSL on Windows 10. To make it work you need:
+Please note that as running ViZDoom on WSL seems to be working fine, it is not officially supported.
+
+GUI apps do not work out-of-the-box on WSL on Windows 10/11. To make it work, you need:
 
 * Download and install X-Server (VcXsrv) on Windows: https://sourceforge.net/projects/vcxsrv/.
 * Start it using Command Prompt (cmd.exe) on Windows: `"C:\Program Files\VcXsrv\vcxsrv.exe" :0 -ac -terminate -lesspointer -multiwindow -clipboard -wgl -dpi auto` (`"C:\Program Files\VcXsrv\vcxsrv.exe"` is default install location).
@@ -168,3 +170,8 @@ GUI apps do not work out-of-the-box on WSL on Windows 10. To make it work you ne
 
 **Original issue:**
 * https://github.com/mwydmuch/ViZDoom/issues/491
+
+
+## What is a difference between ViZDoom, ZDoom and GZDoom
+
+ViZDoom is based on the last version of ZDoom (2.8.1). ZDoom was discontinued in 2016, and the development switched to GZDoom, which provides a new 3D renderer implemented in OpenGL. ViZDoom, however, sticks to the original 2D software renderer, which is much faster for small resolutions than OpenGL. Because of that, ViZDoom modernized the ZDoom engine by adding support for Apple Silicon and removing old unused parts of the code base (e.g., by removing Assembler parts).
