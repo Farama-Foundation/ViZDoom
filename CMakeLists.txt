@@ -11,8 +11,8 @@ set(ViZDoom_VERSION_ID ${ViZDoom_VERSION_MAJOR}${ViZDoom_VERSION_MINOR}${ViZDoom
 # Building options
 #-----------------------------------------------------------------------------------------------------------------------
 
-option(BUILD_PYTHON "Build ViZDoom Python (3) binding" OFF)
-option(BUILD_JULIA "Build ViZDoom Julia binding." OFF)
+option(BUILD_PYTHON "Build ViZDoom Python (3) binding" ON)
+option(BUILD_ENGINE "Build ViZDoom Engine" ON)
 
 
 # CMake options
@@ -86,7 +86,7 @@ if (MSVC)
 endif ()
 
 
-# Main library and engine
+# Main library
 #-----------------------------------------------------------------------------------------------------------------------
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -155,17 +155,16 @@ set_target_properties(libvizdoom_shared
     PROPERTIES
     PROJECT_LABEL "shared library")
 
+
+# ViZDoom Engine
+#-----------------------------------------------------------------------------------------------------------------------
+
 add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
 
 
-# Python and Julia
+# Python bindings
 #-----------------------------------------------------------------------------------------------------------------------
 
 if (BUILD_PYTHON)
     add_subdirectory(${VIZDOOM_SRC_DIR}/lib_python)
 endif ()
-
-if (BUILD_JULIA)
-    add_subdirectory(${VIZDOOM_SRC_DIR}/lib_julia)
-endif ()
-

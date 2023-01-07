@@ -16,15 +16,15 @@
 
 ## <a name="deps"></a> Dependencies
 
-Even if you plan to install ViZDoom via PyPI or LuaRocks, you need to install some dependencies in your system first.
+Even if you plan to install ViZDoom via PyPI you need to install some dependencies in your system first.
 
 
 ### <a name="linux_deps"></a> Linux
-* CMake 3.1+
+* CMake 3.4+
 * Make
 * GCC 6.0+
 * Boost libraries 1.65.0+
-* Python 3.5+ with Numpy for Python binding (optional)
+* Python 3.7+ for Python binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
@@ -40,14 +40,7 @@ sudo apt-get install libboost-all-dev
 
 # Python 3 dependencies
 sudo apt-get install python3-dev python3-pip
-pip3 install numpy
 # or install Anaconda 3 and add it to PATH
-
-# Julia dependencies
-sudo apt-get install julia
-julia
-julia> using Pkg
-julia> Pkg.add("CxxWrap")
 ```
 
 If you do not have a root access, you can use a conda (e.g. [miniconda](https://docs.conda.io/en/latest/miniconda.html)) environment to install dependencies to your environment only:
@@ -64,10 +57,10 @@ python setup.py build && python setup.py install
 
 
 ### <a name="macos_deps"></a> MacOS
-* CMake 3.1+
+* CMake 3.4+
 * Clang 5.0+
 * Boost libraries 1.65.0+
-* Python 3.5+ with Numpy for Python binding (optional)
+* Python 3.7+ for Python binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X) are needed.
 
@@ -77,27 +70,19 @@ To get dependencies install [homebrew](https://brew.sh/)
 # ZDoom dependencies and Boost libraries
 brew install cmake boost openal-soft sdl2
 
-# Python 3 dependencies
-brew install python3
-pip3 install numpy
-# or install Anaconda 3 and add it to PATH
-
-# Julia dependencies
-brew cask install julia
-julia
-julia> using Pkg
-julia> Pkg.add("CxxWrap")
+# You can use system python or install Anaconda 3 and add it to PATH
 ```
 
 
 ### <a name="windows_deps"></a> Windows
-* CMake 3.1+
+* CMake 3.4+
 * Visual Studio 2012+
 * Boost 1.65+
-* Python 3.5+ with Numpy for Python binding (optional)
+* Python 3.7+ for Python binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Windows) are needed.
-Most of them are gathered in this repository: [ViZDoomWinDepBin](https://github.com/mwydmuch/ViZDoomWinDepBin).
+Most of them (except Boost) are gathered in this repository: [ViZDoomWinDepBin](https://github.com/mwydmuch/ViZDoomWinDepBin).
+You can download Boost from [here](https://www.boost.org/users/download).
 
 
 ## <a name="pypi"></a> Installation via PyPI (recommended for Python users)
@@ -118,17 +103,9 @@ pip install git+https://github.com/mwydmuch/ViZDoom.git
 ```
 
 
-## <a name="windows_bin"></a> Installation of Windows binaries
-
-For Windows we are providing a compiled environment that can be download from [releases](https://github.com/mwydmuch/ViZDoom/releases) page.
-To install it for Python, copy files to `site-packages` folder.
-
-Location of `site-packages` depends on Python distribution:
-- Python: `python_root\Lib\site-packges`
-- Anaconda: `anaconda_root\lib\pythonX.X\site-packages`
-
-
 ## <a name="build"></a> Building
+
+Instructions below can be used to build ViZDoom manually.
 
 ### <a name="linux_build"></a> Linux
 
@@ -138,22 +115,11 @@ In ViZDoom's root directory:
 ```bash
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON -DBUILD_LUA=ON -DBUILD_JULIA=ON
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ENGINE=ON -DBUILD_PYTHON=ON
 make
 ```
 
-where `-DBUILD_PYTHON=ON` and `-DBUILD_JULIA=ON` CMake options for Python and Julia bindings are optional (default OFF). To force building bindings for Python3 instead of the first version found use `-DBUILD_PYTHON3=ON`.
-
-To build Julia binding you first need to install CxxWrap package by running `julia` and using `Pkg.add("CxxWrap")` command (see [Linux dependencies](#linux_deps)). Then you need to manually set `JlCxx_DIR` variable:
-
-```sh
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release \
--DBUILD_JULIA=ON \
--DJlCxx_DIR=~/.julia/vX.X/CxxWrap/deps/usr/lib/cmake/JlCxx/
-```
-
+where `-DBUILD_ENGINE=ON` and `-DBUILD_PYTHON=ON` CMake options are optional (default ON).
 
 ### <a name="macos_build"></a> MacOS
 
@@ -164,15 +130,15 @@ Run CMake and build generated Makefile.
 ```sh
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JULIA=ON
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ENGINE=ON -DBUILD_PYTHON=ON
 make
 ```
 
-where `-DBUILD_PYTHON=ON` and `-DBUILD_JULIA=ON` CMake options for Python and Julia bindings are optional (default OFF). To force building bindings for Python3 instead of the first version found use `-DBUILD_PYTHON3=ON`.
+where `-DBUILD_ENGINE=ON` and `-DBUILD_PYTHON=ON` CMake options are optional (default ON).
 
-Users with brew-installed Python/Anaconda **may** need to manually set `PYTHON_EXECUTABLE`, `PYTHON_INCLUDE_DIR`, `PYTHON_LIBRARY` variables:
+Users with brew-installed Python/Anaconda **may** (in some cases) need to manually set `PYTHON_EXECUTABLE`, `PYTHON_INCLUDE_DIR`, `PYTHON_LIBRARY` variables:
 
-It should look like this for brew-installed Python (use `-DBUILD_PYTHON3=ON`, `include/pythonX.Xm` and `lib/libpythonX.Xm.dylib` for Python 3):
+It should look like this for brew-installed Python:
 
 ```sh
 mkdir build
@@ -185,7 +151,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release \
 -DNUMPY_INCLUDES=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/lib/pythonX.X/site-packages/numpy/core/include
 ```
 
-Or for Anaconda (use `-DBUILD_PYTHON3=ON`, `include/pythonX.Xm` and `lib/libpythonX.Xm.dylib` for Python 3):
+Or for Anaconda:
 
 ```sh
 mkdir build
@@ -197,17 +163,6 @@ cmake .. -DCMAKE_BUILD_TYPE=Release \
 -DPYTHON_LIBRARY=~/anacondaX/lib/libpythonX.X.dylib \
 -DNUMPY_INCLUDES=~/anacondaX/lib/pythonX.X/site-packages/numpy/core/include
 ```
-
-To build Julia binding, you first need to install CxxWrap package by running `julia` and using `Pkg.add("CxxWrap")` command (see [MacOS dependencies](#macos_deps)). Then you need to manually set `JlCxx_DIR` variable:
-
-```sh
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release \
--DBUILD_JULIA=ON \
--DJlCxx_DIR=~/.julia/vX.X/CxxWrap/deps/usr/lib/cmake/JlCxx/
-```
-
 
 ### <a name="windows_build"></a> Windows
 
@@ -223,10 +178,9 @@ Run CMake GUI, select ViZDoom root directory and set paths to:
 * BOOST_LIBRARYDIR
 * PYTHON_INCLUDE_DIR (optional, for Python/Anaconda bindings)
 * PYTHON_LIBRARY (optional, for Python/Anaconda bindings)
-* NUMPY_INCLUDES (optional, for Python/Anaconda bindings)
 * ZDoom dependencies paths
 
-In configuration select BUILD_PYTHON, BUILD_PYTHON3 and BUILD_JAVA options for Python and Java bindings (optional, default OFF).
+In configuration select `DBUILD_ENGINE` and `DBUILD_PYTHON` (optional, default ON).
 
 Use generated Visual Studio solution to build all parts of ViZDoom environment.
 

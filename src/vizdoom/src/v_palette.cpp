@@ -110,13 +110,6 @@ extern "C" BYTE BestColor_MMX (DWORD rgb, const DWORD *pal);
 
 int BestColor (const uint32 *pal_in, int r, int g, int b, int first, int num)
 {
-#ifdef X86_ASM
-	if (CPU.bMMX)
-	{
-		int pre = 256 - num - first;
-		return BestColor_MMX (((first+pre)<<24)|(r<<16)|(g<<8)|b, pal_in-pre) - pre;
-	}
-#endif
 	const PalEntry *pal = (const PalEntry *)pal_in;
 	int bestcolor = first;
 	int bestdist = 257*257+257*257+257*257;
@@ -413,23 +406,6 @@ void DoBlending (const PalEntry *from, PalEntry *to, int count, int r, int g, in
 		{
 			int not3count = count & ~3;
 			DoBlending_SSE2 (from, to, not3count, r, g, b, a);
-			count &= 3;
-			if (count <= 0)
-			{
-				return;
-			}
-			from += not3count;
-			to += not3count;
-		}
-	}
-#endif
-#ifdef X86_ASM
-	else if (CPU.bMMX)
-	{
-		if (count >= 4)
-		{
-			int not3count = count & ~3;
-			DoBlending_MMX (from, to, not3count, r, g, b, a);
 			count &= 3;
 			if (count <= 0)
 			{

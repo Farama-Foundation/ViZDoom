@@ -2,10 +2,7 @@
 #include "doomdef.h"
 #include "x86.h"
 
-extern "C"
-{
-	CPUInfo CPU;
-}
+CPUInfo CPU;
 
 #if !defined(__amd64__) && !defined(__i386__) && !defined(_M_IX86) && !defined(_M_X64)
 void CheckCPUID(CPUInfo *cpu)
@@ -22,7 +19,6 @@ void DumpCPUInfo(const CPUInfo *cpu)
 #ifdef _MSC_VER
 #include <intrin.h>
 #endif
-#include <mmintrin.h>
 #include <emmintrin.h>
 
 
@@ -111,6 +107,8 @@ haveid:
 	cpu->FeatureFlags[0] = foo[1];	// Store brand index and other stuff
 	cpu->FeatureFlags[1] = foo[2];	// Store extended feature flags
 	cpu->FeatureFlags[2] = foo[3];	// Store feature flags
+
+	cpu->HyperThreading = (foo[3] & (1 << 28)) > 0;
 
 	// If CLFLUSH instruction is supported, get the real cache line size.
 	if (foo[3] & (1 << 19))
@@ -223,58 +221,11 @@ void DumpCPUInfo(const CPUInfo *cpu)
 		if (cpu->bSSE42)		Printf(" SSE4.2");
 		if (cpu->b3DNow)		Printf(" 3DNow!");
 		if (cpu->b3DNowPlus)	Printf(" 3DNow!+");
-		Printf ("\n");
+		if (cpu->HyperThreading)	Printf(" HyperThreading");
+		Printf("\n");
 	}
 }
 
-#if 0
-// Compiler output for this function is crap compared to the assembly
-// version, which is why it isn't used.
-void DoBlending_MMX2(const PalEntry *from, PalEntry *to, int count, int r, int g, int b, int a)
-{
-	__m64 blendcolor;
-	__m64 blendalpha;
-	__m64 zero;
-	__m64 blending256;
-	__m64 color1;
-	__m64 color2;
-
-	zero = _mm_setzero_si64();
-#ifndef __GNUC__
-	blending256.m64_i64 = 0x10001000100;
-#else
-	blending256 = (__m64)0x10001000100ll;
-#endif
-
-	blendcolor = _mm_unpacklo_pi8(_m_from_int((r << 16) | (g << 8) | b), zero);	// 000000RR 00GG00BB
-	blendalpha = _mm_unpacklo_pi8(_m_from_int((a << 16) | (a << 8) | a), zero);	// 000000AA 00AA00AA
-
-	blendcolor = _mm_mullo_pi16(blendcolor, blendalpha);	// premultiply blend by alpha
-	blendalpha = _mm_subs_pu16(blending256, blendalpha);	// one minus alpha
-
-	// Do two colors per iteration: Count must be even
-	for (count >>= 1; count > 0; --count)
-	{
-		color1 = *(__m64 *)from;						// 00r2g2b2 00r1g1b1
-		from += 2;
-		color2 = _mm_unpackhi_pi8(color1, zero);		// 000000r2 00g200b2
-		color1 = _mm_unpacklo_pi8(color1, zero);		// 000000r1 00g100b1
-		color1 = _mm_mullo_pi16(blendalpha, color1);	// 0000r1rr g1ggb1bb
-		color2 = _mm_mullo_pi16(blendalpha, color2);	// 0000r2rr g2ggb2bb
-		color1 = _mm_adds_pu16(blendcolor, color1);
-		color2 = _mm_adds_pu16(blendcolor, color2);
-		color1 = _mm_srli_pi16(color1, 8);
-		color2 = _mm_srli_pi16(color2, 8);
-		*(__m64 *)to = _mm_packs_pu16(color1, color2);	// 00r2g2b2 00r1g1b1
-		to += 2;
-	}
-	_mm_empty();
-}
-#endif
-
-#ifdef X86_ASM
-extern "C" void STACK_ARGS DoBlending_MMX(const PalEntry *from, PalEntry *to, int count, int r, int g, int b, int a);
-#endif
 
 void DoBlending_SSE2(const PalEntry *from, PalEntry *to, int count, int r, int g, int b, int a)
 {
@@ -288,26 +239,15 @@ void DoBlending_SSE2(const PalEntry *from, PalEntry *to, int count, int r, int g
 
 	unaligned = ((size_t)from | (size_t)to) & 0xF;
 
-#ifdef X86_ASM
-	// For unaligned accesses, the assembly MMX version is slightly faster.
-	// Note that using unaligned SSE loads and stores is still faster than
-	// the compiler-generated MMX version.
-	if (unaligned)
-	{
-		DoBlending_MMX(from, to, count, r, g, b, a);
-		return;
-	}
-#endif
-
 #if defined(__amd64__) || defined(_M_X64)
-	long long color;
+	int64_t color;
 
 	blending256 = _mm_set_epi64x(0x10001000100ll, 0x10001000100ll);
 
-	color = ((long long)r << 32) | (g << 16) | b;
+	color = ((int64_t)r << 32) | (g << 16) | b;
 	blendcolor = _mm_set_epi64x(color, color);
 
-	color = ((long long)a << 32) | (a << 16) | a;
+	color = ((int64_t)a << 32) | (a << 16) | a;
 	blendalpha = _mm_set_epi64x(color, color);
 #else
 	int color;
@@ -326,7 +266,6 @@ void DoBlending_SSE2(const PalEntry *from, PalEntry *to, int count, int r, int g
 
 	zero = _mm_setzero_si128();
 
-#ifndef X86_ASM
 	if (unaligned)
 	{
 		for (count >>= 2; count > 0; --count)
@@ -346,7 +285,6 @@ void DoBlending_SSE2(const PalEntry *from, PalEntry *to, int count, int r, int g
 		}
 	}
 	else
-#endif
 	{
 		for (count >>= 2; count > 0; --count)
 		{

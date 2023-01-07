@@ -2221,6 +2221,7 @@ static void D_DoomInit()
 	// Set the FPU precision to 53 significant bits. This is the default
 	// for Visual C++, but not for GCC, so some slight math variances
 	// might crop up if we leave it alone.
+#if !defined(__arm__)
 #if defined(_FPU_GETCW)
 	{
 		int cw;
@@ -2232,6 +2233,7 @@ static void D_DoomInit()
 // On the x64 architecture, changing the floating point precision is not supported.
 #ifndef _WIN64
 	int cfp = _control87(_PC_53, _MCW_PC);
+#endif
 #endif
 #endif
 

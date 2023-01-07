@@ -9,15 +9,15 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 
 ## Features
 - Multi-platform (Linux, macOS, Windows),
-- API for Python, C++, and Julia (thanks to [Jun Tian](https://github.com/findmyway)), and also Lua and Java for older versions,
+- API for Python and C++,
 - [OpenAI Gym](https://www.gymlibrary.dev/) environment wrappers (thanks to [Benjamin Noah Beal](https://github.com/bebeal), [Lawrence Francis](https://github.com/ldfrancis), and [Mark Towers](https://github.com/pseudo-rnd-thoughts)),
-- Easy-to-create custom scenarios (visual editors, scripting language and examples available),
-- Async and sync single-player and multi-player modes,
+- Easy-to-create custom scenarios (visual editors, scripting language, and examples available),
+- Async and sync single-player and multiplayer modes,
 - Fast (up to 7000 fps in sync mode, single-threaded),
 - Lightweight (few MBs),
 - Customizable resolution and rendering parameters,
 - Access to the depth buffer (3D vision),
-- Automatic labelling game objects visible in the frame,
+- Automatic labeling of game objects visible in the frame,
 - Access to the audio buffer (thanks to [Shashank Hegde](https://github.com/hegde95)),
 - Access to the list of actors/objects and map geometry,
 - Off-screen rendering,
@@ -25,6 +25,8 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 - Time scaling in async mode.
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
+
+Julia (thanks to [Jun Tian](https://github.com/findmyway)), Lua, and Java bindings are available in other branches but are no longer maintained.
 
 
 ## Cite as
@@ -67,7 +69,7 @@ or
 ### Ubuntu
 To install ViZDoom on Ubuntu run (may take few minutes):
 ```
-sudo apt install cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar nasm
+sudo apt install cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar
 pip install vizdoom
 ```
 We recommend using at least Ubuntu 18.04+ with Python 3.7+.
@@ -83,27 +85,22 @@ python setup.py build && python setup.py install
 Note that `pip install vizdoom` won't work with conda install and you have to follow these steps.
 
 ### macOS 
-To install ViZDoom on macOS (Intel) run (may take few minutes):
+To install ViZDoom on macOS (for Intel and Apple Silicon) run (may take few minutes):
 ```
 brew install cmake boost openal-soft sdl2
 pip install vizdoom
 ```
 We recommend using at least macOS High Sierra 10.13+ with Python 3.7+.
-
-To install ViZDoom on macOS with Apple Silicon (M1 or M2) run:
-```
-brew install cmake boost openal-soft sdl2
-pip install git+https://github.com/mwydmuch/ViZDoom.git
-```
+On Apple Silicon (M1 and M2), make sure you are using Python for Apple Silicon.
 
 ### Windows
-To install pre-build release for Windows 10 or 11 64-bit and Python 3.6+ just run (should take few seconds):
+To install pre-build release for Windows 10 or 11 64-bit and Python 3.7+ just run (should take few seconds):
 ```
 pip install vizdoom
 ```
 
 ### Gym wrappers
-If you wish to use OpenAI Gym environments, install ViZDoom with
+If you wish to also install OpenAI Gym environments, install ViZDoom with
 ```
 pip install vizdoom[gym]
 ```
@@ -114,7 +111,6 @@ See [documentation](doc/Gym.md) and [examples](examples/python/gym_wrapper.py) o
 
 - [Python](examples/python) (contain learning examples implemented in PyTorch, TensorFlow and Theano)
 - [C++](examples/c%2B%2B)
-- [Julia](examples/julia)
 
 Python examples are currently the richest, so we recommend to look at them, even if you plan to use other language. API is almost identical for all languages.
 

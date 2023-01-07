@@ -110,7 +110,7 @@
 * [isSectorsInfoEnabled](#isSectorsInfoEnabled)
 * [setSectorsInfoEnabled](#setSectorsInfoEnabled)
 * [isAudioBufferEnabled](#isAudioBufferEnabled)
-* [is/setAudioBufferEnabled](#setAudioBufferEnabled)
+* [setAudioBufferEnabled](#setAudioBufferEnabled)
 * [getAudioSamplingFreq](#getAudioSamplingFreq)
 * [setAudioSamplingFreq](#setAudioSamplingFreq)
 * [getAudioBufferSize](#getAudioBufferSize)

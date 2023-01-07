@@ -145,13 +145,6 @@ static fixed_t			xscale, yscale;
 static DWORD			xstepscale, ystepscale;
 static DWORD			basexfrac, baseyfrac;
 
-#ifdef X86_ASM
-extern "C" void R_SetSpanSource_ASM (const BYTE *flat);
-extern "C" void STACK_ARGS R_SetSpanSize_ASM (int xbits, int ybits);
-extern "C" void R_SetSpanColormap_ASM (BYTE *colormap);
-extern "C" void R_SetTiltedSpanSource_ASM (const BYTE *flat);
-extern "C" BYTE *ds_curcolormap, *ds_cursource, *ds_curtiltedsource;
-#endif
 void					R_DrawSinglePlane (visplane_t *, fixed_t alpha, bool additive, bool masked);
 
 //==========================================================================
@@ -230,11 +223,7 @@ void R_MapPlane (int y, int x1)
 			FixedMul (GlobVis, abs (centeryfrac - (y << FRACBITS))), planeshade) << COLORMAPSHIFT);
 	}
 
-#ifdef X86_ASM
-	if (ds_colormap != ds_curcolormap)
-		R_SetSpanColormap_ASM (ds_colormap);
-#endif
-
+	//VIZDOOM_CODE
 	if(vizDepthMap!=NULL) vizDepthMap->setActualDepthConv(distance);
 	/*static long max, min;
 	if(min==0) min=max;
@@ -1522,12 +1511,6 @@ void R_DrawSkyPlane (visplane_t *pl)
 
 void R_DrawNormalPlane (visplane_t *pl, fixed_t alpha, bool additive, bool masked)
 {
-#ifdef X86_ASM
-	if (ds_source != ds_cursource)
-	{
-		R_SetSpanSource_ASM (ds_source);
-	}
-#endif
 
 	if (alpha <= 0)
 	{
@@ -1746,13 +1729,7 @@ void R_DrawTiltedPlane (visplane_t *pl, fixed_t alpha, bool additive, bool maske
 		}
 	}
 
-#if defined(X86_ASM)
-	if (ds_source != ds_curtiltedsource)
-		R_SetTiltedSpanSource_ASM (ds_source);
-	R_MapVisPlane (pl, R_DrawTiltedPlane_ASM);
-#else
 	R_MapVisPlane (pl, R_MapTiltedPlane);
-#endif
 }
 
 //==========================================================================
