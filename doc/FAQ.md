@@ -141,6 +141,15 @@ server proceeds by one frame). See discussion in Issues below for more informati
 * https://github.com/mwydmuch/ViZDoom/issues/417
 
 
+## Why `game.get_state()` when `game.is_episode_finished() == True`
+
+After the end of the episode, ZDoom engine might change its state and exit the episode (map) resulting in some objects and variables being destroyed or reseted. Because of that it's difficult to provide a proper state after that. When we were originaly designing ViZDoom we wanted to have a simple logic and we only update state after complete logic tic. Becasue of that we are not able to detect end of episode early before to save a proper state and decided to provide null/none value instead. We belive that it's easy to provide dummy (e.g. filed with zeros) state if it's needed by an algorithm.
+
+**Original issues:**
+* https://github.com/mwydmuch/ViZDoom/issues/183
+* https://github.com/mwydmuch/ViZDoom/issues/418
+
+
 ## I am trying to use audio/sound, but ViZDoom crashes or I there is no audio 
 
 Try running `examples/python/audio_buffer.py` and check the messages it gives you. This example also works as a small
