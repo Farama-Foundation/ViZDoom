@@ -38,7 +38,19 @@ def get_vizdoom_version():
     except Exception:
         raise RuntimeError("Package version retrieval failed. "
                            "Most probably something is wrong with this code and "
-                           "you should create an issue at https://github.com/mwydmuch/ViZDoom/")
+                           "you should create an issue at https://github.com/Farama-Foundation/ViZDoom")
+
+
+def get_long_description():
+    try:
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        with open(os.path.join(dir_path, "README.md"), encoding="utf-8") as readme_file:
+            return readme_file.read()
+
+    except Exception:
+        raise RuntimeError("Package description retrieval failed. "
+                           "Most probably something is wrong with this code and "
+                           "you should create an issue at https://github.com/Farama-Foundation/ViZDoom")
 
 
 def get_python_library(python_root_dir):
@@ -146,9 +158,9 @@ class BuildCommand(build):
 setup(
     name='vizdoom',
     version=get_vizdoom_version(),
-    description='Reinforcement learning platform based on Doom',
-    long_description="ViZDoom allows developing AI bots that play Doom using only the visual information (the screen buffer). " \
-                     "It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.",
+    description='ViZDoom is Doom-based AI Research Platform for Reinforcement Learning from Raw Visual Information.',
+    long_description=get_long_description(),
+    long_description_content_type="text/markdown",
     url='http://vizdoom.cs.put.edu.pl/',
     author='Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, Grzegorz Runc, Jakub Toczek',
     author_email='mwydmuch@cs.put.poznan.pl',
