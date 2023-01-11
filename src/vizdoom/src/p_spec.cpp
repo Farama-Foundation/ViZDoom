@@ -1826,7 +1826,7 @@ static void P_SpawnScrollers(void)
 
 		switch (special)
 		{
-			register int s;
+			int s;
 
 		case Scroll_Ceiling:
 		{
@@ -2357,7 +2357,7 @@ static void P_SpawnPushers ()
 {
 	int i;
 	line_t *l = lines;
-	register int s;
+	int s;
 
 	for (i = 0; i < numlines; i++, l++)
 	{
