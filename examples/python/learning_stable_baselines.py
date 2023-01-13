@@ -53,7 +53,7 @@ class ObservationWrapper(gym.ObservationWrapper):
         super().__init__(env)
         self.image_shape = shape
         self.image_shape_reverse = shape[::-1]
-        self.frame_skip = FRAME_SKIP
+        self.env.frame_skip = FRAME_SKIP
 
         # Create new observation space with the new shape
         num_channels = env.observation_space["rgb"].shape[-1]
