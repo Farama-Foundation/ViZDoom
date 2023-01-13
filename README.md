@@ -1,7 +1,7 @@
 [![PyPI version](https://badge.fury.io/py/vizdoom.svg)](https://badge.fury.io/py/vizdoom) ![Build](https://github.com/mwydmuch/ViZDoom/workflows/Build/badge.svg)
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Farama-Foundation/ViZDoom/main/vizdoom-text.png" width="500px"/>
+  <img src="https://raw.githubusercontent.com/Farama-Foundation/ViZDoom/master/vizdoom-text.png" width="500px"/>
 </p>
 
 ViZDoom allows developing AI **bots that play Doom using only the visual information** (the screen buffer). It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.
