@@ -1,4 +1,4 @@
-import sys, os, subprocess, shutil
+import sys, os, subprocess, shutil, warnings
 from distutils import sysconfig
 from distutils.command.build import build
 from multiprocessing import cpu_count
@@ -83,62 +83,66 @@ class Wheel(bdist_wheel):
 
 class BuildCommand(build):
     def run(self):
-        try:
+        cpu_cores = max(1, cpu_count() - 1)
+        python_executable = os.path.realpath(sys.executable)
 
-            cpu_cores = max(1, cpu_count() - 1)
-            python_executable = os.path.realpath(sys.executable)
+        cmake_arg_list = ["cmake", "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_PYTHON=ON",
+                            "-DPYTHON_EXECUTABLE={}".format(python_executable)]
 
-            cmake_arg_list = ["cmake", "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_PYTHON=ON",
-                              "-DPYTHON_EXECUTABLE={}".format(python_executable)]
-                              
-            if platform.startswith("win"):
-                generator = os.getenv('VIZDOOM_BUILD_GENERATOR_NAME')
-                if not generator:
-                    raise RuntimeError("VIZDOOM_BUILD_GENERATOR_NAME is not set") # TODO: Improve
-                    
-                deps_root = os.getenv('VIZDOOM_WIN_DEPS_ROOT') 
-                if deps_root is None:
-                    raise RuntimeError("VIZDOOM_WIN_DEPS_ROOT is not set") # TODO: Improve
-                
-                mpg123_include=os.path.join(deps_root, 'libmpg123')
-                mpg123_lib=os.path.join(deps_root, 'libmpg123/libmpg123-0.lib')
-                mpg123_dll=os.path.join(deps_root, 'libmpg123/libmpg123-0.dll')
+        env_cmake_args = os.getenv('VIZDOOM_CMAKE_ARGS')
+        if env_cmake_args:
+            cmake_arg_list += env_cmake_args.split()
+            warnings.warn("VIZDOOM_CMAKE_ARGS is set, the following arguments will be added to cmake command: {}".format(env_cmake_args))
 
-                sndfile_include=os.path.join(deps_root, 'libsndfile/include')
-                sndfile_lib=os.path.join(deps_root, 'libsndfile/lib/libsndfile-1.lib')
-                sndfile_dll=os.path.join(deps_root, 'libsndfile/bin/libsndfile-1.dll')
+        if platform.startswith("win"):
+            generator = os.getenv('VIZDOOM_BUILD_GENERATOR_NAME')
+            if not generator:
+                raise RuntimeError("VIZDOOM_BUILD_GENERATOR_NAME is not set") # TODO: Improve
                 
-                os.environ["OPENALDIR"] = str(os.path.join(deps_root, 'openal-soft'))
-                openal_dll=os.path.join(deps_root, 'openal-soft/bin/Win64/OpenAL32.dll')
-                
-                cmake_arg_list.extend(
-                    ["-G",
-                     generator,
-                     "-DMPG123_INCLUDE_DIR={}".format(mpg123_include),
-                     "-DMPG123_LIBRARIES={}".format(mpg123_lib),
-                     "-DSNDFILE_INCLUDE_DIR={}".format(sndfile_include),
-                     "-DSNDFILE_LIBRARY={}".format(sndfile_lib)
-                    ]
-                )
-                
-                shutil.copy(mpg123_dll, build_output_path)
-                shutil.copy(sndfile_dll, build_output_path)
-                shutil.copy(openal_dll, build_output_path)
-
-            python_standard_lib = sysconfig.get_python_lib(standard_lib=True)
-            python_root_dir = os.path.dirname(python_standard_lib)
-            python_library = get_python_library(python_root_dir)
-            python_include_dir = sysconfig.get_python_inc()
+            deps_root = os.getenv('VIZDOOM_WIN_DEPS_ROOT') 
+            if deps_root is None:
+                raise RuntimeError("VIZDOOM_WIN_DEPS_ROOT is not set") # TODO: Improve
             
-            if python_include_dir and os.path.exists(python_include_dir):
-                cmake_arg_list.append("-DPYTHON_INCLUDE_DIR={}".format(python_include_dir))
+            mpg123_include=os.path.join(deps_root, 'libmpg123')
+            mpg123_lib=os.path.join(deps_root, 'libmpg123/libmpg123-0.lib')
+            mpg123_dll=os.path.join(deps_root, 'libmpg123/libmpg123-0.dll')
 
-            if python_library and os.path.exists(python_library):
-                cmake_arg_list.append("-DPYTHON_LIBRARY={}".format(python_library))
+            sndfile_include=os.path.join(deps_root, 'libsndfile/include')
+            sndfile_lib=os.path.join(deps_root, 'libsndfile/lib/libsndfile-1.lib')
+            sndfile_dll=os.path.join(deps_root, 'libsndfile/bin/libsndfile-1.dll')
             
-            if os.path.exists('CMakeCache.txt'):
-                os.remove('CMakeCache.txt')
+            os.environ["OPENALDIR"] = str(os.path.join(deps_root, 'openal-soft'))
+            openal_dll=os.path.join(deps_root, 'openal-soft/bin/Win64/OpenAL32.dll')
             
+            cmake_arg_list.extend(
+                ["-G",
+                    generator,
+                    "-DMPG123_INCLUDE_DIR={}".format(mpg123_include),
+                    "-DMPG123_LIBRARIES={}".format(mpg123_lib),
+                    "-DSNDFILE_INCLUDE_DIR={}".format(sndfile_include),
+                    "-DSNDFILE_LIBRARY={}".format(sndfile_lib)
+                ]
+            )
+            
+            shutil.copy(mpg123_dll, build_output_path)
+            shutil.copy(sndfile_dll, build_output_path)
+            shutil.copy(openal_dll, build_output_path)
+
+        python_standard_lib = sysconfig.get_python_lib(standard_lib=True)
+        python_root_dir = os.path.dirname(python_standard_lib)
+        python_library = get_python_library(python_root_dir)
+        python_include_dir = sysconfig.get_python_inc()
+        
+        if python_include_dir and os.path.exists(python_include_dir):
+            cmake_arg_list.append("-DPYTHON_INCLUDE_DIR={}".format(python_include_dir))
+
+        if python_library and os.path.exists(python_library):
+            cmake_arg_list.append("-DPYTHON_LIBRARY={}".format(python_library))
+        
+        if os.path.exists('CMakeCache.txt'):
+            os.remove('CMakeCache.txt')
+
+        try:    
             if platform.startswith("win"):
                 if os.path.exists("./src/lib_python/libvizdoom_python.dir"):
                     shutil.rmtree("./src/lib_python/libvizdoom_python.dir") # TODO: This is not very elegant, improve
@@ -152,6 +156,7 @@ class BuildCommand(build):
                              "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md "
                              "for details\n\n\033[0m")
             raise
+
         build.run(self)
 
 
