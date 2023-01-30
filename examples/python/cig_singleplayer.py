@@ -6,7 +6,6 @@
 #####################################################################
 
 import os
-from random import choice
 from time import sleep
 
 import vizdoom as vzd

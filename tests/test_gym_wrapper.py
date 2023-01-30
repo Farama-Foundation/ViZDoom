@@ -7,7 +7,7 @@ import gym
 import numpy as np
 from gym.spaces import Box, Dict, Discrete, MultiDiscrete
 from gym.utils.env_checker import check_env
-from vizdoom import gym_wrapper
+from vizdoom import gym_wrapper  # noqa
 from vizdoom.gym_wrapper.base_gym_env import VizdoomEnv
 
 
@@ -57,7 +57,9 @@ def test_gym_wrapper_terminal_state():
         for frame_skip in [1, 4]:
             env = gym.make(env_name, frame_skip=frame_skip, max_buttons_pressed=0)
 
-            agent = lambda ob: env.action_space.sample()
+            def agent(ob):
+                return env.action_space.sample()
+
             ob = env.reset()
             terminated = False
             truncated = False

@@ -3,7 +3,6 @@
 # This test can be run as Python script or via PyTest
 
 import os
-from copy import deepcopy
 from itertools import product
 from random import choice
 

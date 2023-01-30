@@ -48,7 +48,7 @@ if __name__ == "__main__":
     # Initialize the game. Further configuration won't take any effect from now on.
     try:
         game.init()
-    except Exception as e:
+    except Exception:
         print(
             "[ERROR] Could not launch ViZDoom. If you see an error above about BiquadFilter and gain,\n"
             "        try setting game.add_game_args('+snd_efx 0'). If that fails, see\n"

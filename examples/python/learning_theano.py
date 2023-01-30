@@ -24,7 +24,7 @@ from lasagne.objectives import squared_error
 from lasagne.updates import rmsprop
 from theano import tensor
 from tqdm import trange
-from vizdoom import *
+from vizdoom import DoomGame, Mode, ScreenFormat, ScreenResolution, os, vzd
 
 
 # Q-learning settings
@@ -52,6 +52,7 @@ model_savefile = "/tmp/weights.dump"
 config_file_path = os.path.join(vzd.scenarios_path, "simpler_basic.cfg")
 # config_file_path = os.path.join(vzd.scenarios_path, "rocket_basic.cfg")
 # config_file_path = os.path.join(vzd.scenarios_path, "basic.cfg")
+
 
 # Converts and downsamples the input image
 def preprocess(img):

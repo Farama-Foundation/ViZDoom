@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-from multiprocessing import Process
 from random import choice
 from threading import Thread
 from time import time

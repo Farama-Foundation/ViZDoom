@@ -4,8 +4,7 @@
 # August 2017
 
 import itertools as it
-from random import randint, random, sample
-from time import sleep, time
+from time import sleep
 
 import numpy as np
 import skimage.color
@@ -14,8 +13,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
-from torchvision import datasets, transforms
-from vizdoom import *
+from vizdoom import DoomGame, Mode, ScreenFormat, ScreenResolution, os, vzd
 
 
 # NN learning settings
@@ -38,6 +36,7 @@ skip_learning = False
 config_file_path = os.path.join(vzd.scenarios_path, "simpler_basic.cfg")
 # config_file_path = os.path.join(vzd.scenarios_path, "rocket_basic.cfg")
 # config_file_path = os.path.join(vzd.scenarios_path, "basic.cfg")
+
 
 # Converts and down-samples the input image
 def preprocess(img):

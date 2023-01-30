@@ -13,6 +13,7 @@ from random import choice
 
 import matplotlib.pyplot as plt
 import vizdoom as vzd
+from vizdoom import os
 
 
 DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "my_way_home.cfg")
@@ -116,13 +117,21 @@ if __name__ == "__main__":
                 )
                 print(
                     "Sector lines:",
-                    [(l.x1, l.y1, l.x2, l.y2, l.is_blocking) for l in s.lines],
+                    [
+                        (line.x1, line.y1, line.x2, line.y2, line.is_blocking)
+                        for line in s.lines
+                    ],
                 )
 
                 # Plot sector on map
-                for l in s.lines:
-                    if l.is_blocking:
-                        plt.plot([l.x1, l.x2], [l.y1, l.y2], color="black", linewidth=2)
+                for line in s.lines:
+                    if line.is_blocking:
+                        plt.plot(
+                            [line.x1, line.x2],
+                            [line.y1, line.y2],
+                            color="black",
+                            linewidth=2,
+                        )
 
             # Show map
             plt.show()

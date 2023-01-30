@@ -5,7 +5,7 @@
 #####################################################################
 
 import gym
-from vizdoom import gym_wrapper
+from vizdoom import gym_wrapper  # noqa
 
 
 if __name__ == "__main__":

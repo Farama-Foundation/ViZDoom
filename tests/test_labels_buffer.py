@@ -62,9 +62,9 @@ def test_labels_buffer():
 
         state_count += 1
         seen_labels += len(state.labels)
-        for l in state.labels:
-            seen_unique_objects.add(l.object_name)
-            check_label(labels_buffer, l)
+        for label in state.labels:
+            seen_unique_objects.add(label.object_name)
+            check_label(labels_buffer, label)
     game.close()
 
     print(

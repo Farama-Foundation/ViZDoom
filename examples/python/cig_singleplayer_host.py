@@ -7,11 +7,16 @@
 #####################################################################
 
 import os
-from random import choice
 from time import sleep
 
 import vizdoom as vzd
-from oblige import *
+from oblige import (
+    DoomGame,
+    DoomLevelGenerator,
+    ScreenResolution,
+    cig2018_difficulty_1,
+    cig2018_test,
+)
 
 
 game = DoomGame()

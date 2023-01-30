@@ -120,14 +120,24 @@ if __name__ == "__main__":
             # Get screen buffer, given in selected format. This buffer is always available.
             # Using information from state.labels draw bounding boxes.
             screen = state.screen_buffer
-            for l in state.labels:
-                if l.object_name in ["Medkit", "GreenArmor"]:
+            for label in state.labels:
+                if label.object_name in ["Medkit", "GreenArmor"]:
                     draw_bounding_box(
-                        screen, l.x, l.y, l.width, l.height, doom_blue_color
+                        screen,
+                        label.x,
+                        label.y,
+                        label.width,
+                        label.height,
+                        doom_blue_color,
                     )
                 else:
                     draw_bounding_box(
-                        screen, l.x, l.y, l.width, l.height, doom_red_color
+                        screen,
+                        label.x,
+                        label.y,
+                        label.width,
+                        label.height,
+                        doom_red_color,
                     )
             cv2.imshow("ViZDoom Screen Buffer", screen)
 
@@ -154,38 +164,38 @@ if __name__ == "__main__":
             # value tells which value represents the object in labels_buffer.
             # Values decrease with the distance from the player.
             # Objects with higher values (closer ones) can obscure objects with lower values (further ones).
-            for l in state.labels:
-                seen_in_this_episode.add(l.object_name)
+            for label in state.labels:
+                seen_in_this_episode.add(label.object_name)
                 # print("---------------------")
                 print(
                     "Label:",
-                    l.value,
+                    label.value,
                     ", object id:",
-                    l.object_id,
+                    label.object_id,
                     ", object name:",
-                    l.object_name,
+                    label.object_name,
                 )
                 print(
                     "Object position: x:",
-                    l.object_position_x,
+                    label.object_position_x,
                     ", y:",
-                    l.object_position_y,
+                    label.object_position_y,
                     ", z:",
-                    l.object_position_z,
+                    label.object_position_z,
                 )
 
                 # Other available fields (position and velocity and bounding box):
-                # print("Object rotation angle", l.object_angle, "pitch:", l.object_pitch, "roll:", l.object_roll)
-                # print("Object velocity x:", l.object_velocity_x, "y:", l.object_velocity_y, "z:", l.object_velocity_z)
+                # print("Object rotation angle", label.object_angle, "pitch:", label.object_pitch, "roll:", label.object_roll)
+                # print("Object velocity x:", label.object_velocity_x, "y:", label.object_velocity_y, "z:", label.object_velocity_z)
                 print(
                     "Bounding box: x:",
-                    l.x,
+                    label.x,
                     ", y:",
-                    l.y,
+                    label.y,
                     ", width:",
-                    l.width,
+                    label.width,
                     ", height:",
-                    l.height,
+                    label.height,
                 )
 
             print("=====================")
@@ -195,8 +205,8 @@ if __name__ == "__main__":
         print("=====================")
 
         print("Unique objects types seen in this episode:")
-        for l in seen_in_this_episode:
-            print(l)
+        for label in seen_in_this_episode:
+            print(label)
 
         print("************************")
 

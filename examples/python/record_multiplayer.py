@@ -8,11 +8,11 @@
 # WARNING:
 # Due to the bug in built-in bots recording game with bots will result in the desynchronization of the recording.
 
-import os
 from multiprocessing import Process
 from random import choice
 
 import vizdoom as vzd
+from vizdoom import DoomGame, os
 
 
 def player1():

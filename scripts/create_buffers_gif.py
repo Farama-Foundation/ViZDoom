@@ -9,7 +9,7 @@ import imageio
 import numpy as np
 import vizdoom as vzd
 from tqdm import tqdm
-from vizdoom import *
+from vizdoom import AutomapMode, DoomGame, Mode, ScreenFormat, ScreenResolution
 
 
 def get_random_color():
@@ -35,7 +35,10 @@ medikit_color = [0, 255, 0]
 armor_color = [0, 128, 0]
 fog_color = (255, 255, 255)
 
-random_monster_color = lambda: [randint(100, 255), 0, randint(0, 40)]
+
+def random_monster_color():
+    return [randint(100, 255), 0, randint(0, 40)]
+
 
 name_to_color_map["DoomPlayer"] = [128, 128, 128]
 name_to_color_map["ClipBox"] = ammo_color
@@ -92,33 +95,35 @@ def transform_labels(
 
     if not (disco or colorful_name or colorful_object or bounding_boxes):
         return rgb_buffer
-    for l in labels:
+    for label in labels:
         if disco:
             color = get_random_color()
         elif colorful_name:
-            name = l.object_name
+            name = label.object_name
             if name not in name_to_color_map:
                 name_to_color_map[name] = get_random_color()
             color = name_to_color_map[name]
         elif colorful_object:
-            if l.object_name == "DoomPlayer":
-                color = name_to_color_map[l.object_name]
+            if label.object_name == "DoomPlayer":
+                color = name_to_color_map[label.object_name]
             else:
-                if l.object_id not in id_to_color_map:
-                    id_to_color_map[l.object_id] = get_random_color()
-                color = id_to_color_map[l.object_id]
+                if label.object_id not in id_to_color_map:
+                    id_to_color_map[label.object_id] = get_random_color()
+                color = id_to_color_map[label.object_id]
         else:
-            color = [l.value] * 3
+            color = [label.value] * 3
 
-        rgb_buffer[buffer == l.value, :] = color
+        rgb_buffer[buffer == label.value, :] = color
 
         if bounding_boxes:
-            draw_bounding_box(rgb_buffer, l.x, l.y, l.width, l.height, color)
+            draw_bounding_box(
+                rgb_buffer, label.x, label.y, label.width, label.height, color
+            )
             font = cv2.FONT_HERSHEY_SIMPLEX
             cv2.putText(
                 rgb_buffer,
-                l.object_name,
-                (l.x, l.y - 3),
+                label.object_name,
+                (label.x, label.y - 3),
                 font,
                 0.3,
                 [int(c) for c in color],

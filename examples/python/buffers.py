@@ -15,12 +15,11 @@ import os
 from argparse import ArgumentParser
 from random import choice
 
+import cv2
 import vizdoom as vzd
 
 
 DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "deadly_corridor.cfg")
-
-import cv2
 
 
 if __name__ == "__main__":
