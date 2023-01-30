@@ -56,7 +56,7 @@ or
 @inproceedings{Kempka2016ViZDoom,
   author    = {Micha{\l} Kempka and Marek Wydmuch and Grzegorz Runc and Jakub Toczek and Wojciech Ja\'skowski},
   title     = {{ViZDoom}: A {D}oom-based {AI} Research Platform for Visual Reinforcement Learning},
-  booktitle = {IEEE Conference on Computational Intelligence and Games},  
+  booktitle = {IEEE Conference on Computational Intelligence and Games},
   year      = {2016},
   address   = {Santorini, Greece},
   month     = {Sep},
@@ -88,7 +88,7 @@ python setup.py build && python setup.py install
 ```
 Note that `pip install vizdoom` won't work with conda install and you have to follow these steps.
 
-### macOS 
+### macOS
 To install ViZDoom on macOS (for Intel and Apple Silicon) run (may take few minutes):
 ```
 brew install cmake boost openal-soft sdl2

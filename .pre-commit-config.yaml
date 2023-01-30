@@ -1,22 +1,35 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
-#   - repo: https://github.com/pre-commit/pre-commit-hooks
-#     rev: v4.4.0
-#     hooks:
-#       - id: check-symlinks
-#       - id: destroyed-symlinks
-#       - id: trailing-whitespace
-#       - id: end-of-file-fixer
-#       - id: check-yaml
-#       - id: check-toml
-#       - id: check-ast
-#       - id: check-added-large-files
-#       - id: check-merge-conflict
-#       - id: check-executables-have-shebangs
-#       - id: check-shebang-scripts-are-executable
-#       - id: detect-private-key
-#       - id: debug-statements
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-symlinks
+        exclude: src/
+      - id: destroyed-symlinks
+        exclude: src/
+      - id: trailing-whitespace
+        exclude: src/
+      - id: end-of-file-fixer
+        exclude: src/
+      - id: check-yaml
+        exclude: src/
+      - id: check-toml
+        exclude: src/
+      - id: check-ast
+        exclude: src/
+      - id: check-added-large-files
+        exclude: src/
+      - id: check-merge-conflict
+        exclude: src/
+      - id: check-executables-have-shebangs
+        exclude: src/
+      - id: check-shebang-scripts-are-executable
+        exclude: src/
+      - id: detect-private-key
+        exclude: src/
+      - id: debug-statements
+        exclude: src/
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.2

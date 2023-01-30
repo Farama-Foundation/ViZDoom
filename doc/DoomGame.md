@@ -320,10 +320,10 @@ See also:
 Sends the command to Doom console. It can be used for controlling the game, changing settings, cheats, etc.
 Some commands will be blocked in some modes.
 
-See also: 
+See also:
 - [ZDoom Wiki: Console](http://zdoom.org/wiki/Console)
-- [ZDoom Wiki: CVARs (console variables)](https://zdoom.org/wiki/CVARs) 
-- [ZDoom Wiki: CCMD (console commands)](https://zdoom.org/wiki/CCMDs) 
+- [ZDoom Wiki: CVARs (console variables)](https://zdoom.org/wiki/CVARs)
+- [ZDoom Wiki: CCMD (console commands)](https://zdoom.org/wiki/CCMDs)
 
 
 ---
@@ -351,7 +351,7 @@ See also:
 
 Added in 1.1.6
 
-Returns [`ServerState`](Types.md#serverstate) object with the current server state. 
+Returns [`ServerState`](Types.md#serverstate) object with the current server state.
 
 See also:
 - [`Types: ServerState`](Types.md#serverstate)
@@ -1600,7 +1600,7 @@ See also:
 
 Added in 1.1.9
 
-Sets the size of audio buffer. Size is defined in number of logic tics. 
+Sets the size of audio buffer. Size is defined in number of logic tics.
 After each action audio buffer will contain audio from specified number of last processed tics.
 Doom uses 35 ticks per second.
 

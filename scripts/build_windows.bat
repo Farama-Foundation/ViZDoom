@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-:: Configuration 
+:: Configuration
 :: %%% Set this variables to match your environment.
 :: %%% CMake for Windws can be downloaded from https://cmake.org/download/
 
@@ -33,12 +33,12 @@ for %%P in (36 37 38 39 310) do (
 	set PYTHON_VERSION=%%P
 	set PYTHON_VERSION_DOT=!PYTHON_VERSION:~0,1!.!PYTHON_VERSION:~1!
 	echo Building for Python !PYTHON_VERSION_DOT! version using !CMAKE_GENERATOR_NAME!
-	
+
 	set PYTHON_LOCATION=C:\Python!PYTHON_VERSION!
 	set PYTHON_EXECUTABLE=!PYTHON_LOCATION!\python.exe
 	set PYTHON_INCLUDE_DIR=!PYTHON_LOCATION!\include
 	set PYTHON_LIBRARY=!PYTHON_LOCATION!\libs\python!PYTHON_VERSION!.lib
-	
+
 	!PYTHON_EXECUTABLE! -m pip install --upgrade pip
     !PYTHON_EXECUTABLE! -m pip install --upgrade numpy
 
@@ -55,7 +55,7 @@ for %%P in (36 37 38 39 310) do (
 	echo cmake !CMAKE_CMD!
 
 	cmake !CMAKE_CMD!
-	
+
 	:: Run build
 	cmake --build . --config Release
 

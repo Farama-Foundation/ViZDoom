@@ -8,7 +8,7 @@
 #### Gym
 - OpenAI Gym environment wrappers were updated to the Gym v0.26 API version.
 
---- 
+---
 
 ## Changes in 1.1.13
 
@@ -18,7 +18,7 @@
 #### Consts
 - Added new consts: `DEFAULT_FPS` (= `DEFAULT_TICRATE`), `DEFAULT_FRAMETIME_S` (= `1.0 / DEFAULT_TICRATE`), `DEFAULT_FRAMETIME_MS` (= `DEFAULT_FRAMETIME_S * 1000`);
 
---- 
+---
 
 ## Changes in 1.1.12
 

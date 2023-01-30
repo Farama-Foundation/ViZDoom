@@ -101,7 +101,7 @@ See also:
 - List of CVARs: [https://zdoom.org/wiki/CVARs:Configuration](https://zdoom.org/wiki/CVARs:Configuration)
 
 
-## I am getting `Buffers size mismatch.` error 
+## I am getting `Buffers size mismatch.` error
 
 Make sure you can run ZDoom binary inside the ViZDoom package.
 
@@ -150,7 +150,7 @@ After the end of the episode, ZDoom engine might change its state and exit the e
 * https://github.com/mwydmuch/ViZDoom/issues/418
 
 
-## I am trying to use audio/sound, but ViZDoom crashes or I there is no audio 
+## I am trying to use audio/sound, but ViZDoom crashes or I there is no audio
 
 Try running `examples/python/audio_buffer.py` and check the messages it gives you. This example also works as a small
 testing utility to ensure audio and audio buffers work for you.

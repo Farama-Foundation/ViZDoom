@@ -13,36 +13,36 @@ for %%P in (37 38 39 310) do (
 	:: Modify these lines to point to your Python location (C:\PythonX is usually a default)
     set PYTHON_LOCATION=C:\Python!PYTHON_VERSION!
 	set PYTHON_EXECUTABLE=!PYTHON_LOCATION!\python.exe
-	
+
 	!PYTHON_EXECUTABLE! -m pip uninstall -y vizdoom
-	
+
 	!PYTHON_EXECUTABLE! -m pip install --upgrade pip
 	!PYTHON_EXECUTABLE! -m pip install scipy opencv-python pytest
-	
+
 	set WHEEL_FILE=dist\vizdoom-!VIZDOOM_VERSION!-cp!PYTHON_VERSION!-cp!PYTHON_VERSION!-win_amd64.whl
 	if exist !WHEEL_FILE! (
 		!PYTHON_EXECUTABLE! -m pip install !WHEEL_FILE![gym]
 	)
-	
+
 	:: This can be removed after end of support for Python 3.7
 	set WHEEL_M_FILE=dist\vizdoom-!VIZDOOM_VERSION!-cp!PYTHON_VERSION!-cp!PYTHON_VERSION!m-win_amd64.whl
 	if exist !WHEEL_M_FILE! (
 		!PYTHON_EXECUTABLE! -m pip install !WHEEL_M_FILE![gym]
 	)
-	
+
 	:: Test wheel from test PyPI index
 	rem !PYTHON_EXECUTABLE! -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ vizdoom
-	
+
 	:: Run some examples
 	!PYTHON_EXECUTABLE! examples\python\basic.py
 	!PYTHON_EXECUTABLE! examples\python\buffers.py
 	!PYTHON_EXECUTABLE! examples\python\audio_buffer.py
-	
+
 	:: Run tests
 	!PYTHON_EXECUTABLE! -m pytest tests\test_enums.py
 	!PYTHON_EXECUTABLE! -m pytest tests\test_gym_wrapper.py
 	!PYTHON_EXECUTABLE! -m pytest tests\test_labels_buffer.py
 	!PYTHON_EXECUTABLE! -m pytest tests\test_make_action.py
-	
+
 	!PYTHON_EXECUTABLE! -m pip uninstall -y vizdoom
 )
