@@ -3,30 +3,34 @@
 #####################################################################
 # This script presents how to run some scenarios.
 # Configuration is loaded from "../../scenarios/<SCENARIO_NAME>.cfg" file.
-# <episodes> number of episodes are played. 
+# <episodes> number of episodes are played.
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
 #
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
-from argparse import ArgumentParser
 import itertools as it
 import os
+from argparse import ArgumentParser
 from random import choice
 from time import sleep
+
 import vizdoom as vzd
+
 
 DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "basic.cfg")
 if __name__ == "__main__":
 
     parser = ArgumentParser("ViZDoom scenarios example.")
-    parser.add_argument(dest="config",
-                        default=DEFAULT_CONFIG,
-                        nargs="?",
-                        help="Path to the configuration file of the scenario."
-                             " Please see "
-                             "../../scenarios/*cfg for more scenarios.")
+    parser.add_argument(
+        dest="config",
+        default=DEFAULT_CONFIG,
+        nargs="?",
+        help="Path to the configuration file of the scenario."
+        " Please see "
+        "../../scenarios/*cfg for more scenarios.",
+    )
 
     args = parser.parse_args()
     game = vzd.DoomGame()

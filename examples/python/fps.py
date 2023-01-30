@@ -9,12 +9,14 @@
 # to exclude copying process.
 #####################################################################
 
-from argparse import ArgumentParser
 import os
+from argparse import ArgumentParser
 from random import choice
 from time import time
+
 import tqdm
 import vizdoom as vzd
+
 
 # Options:
 resolution = vzd.ScreenResolution.RES_320X240
@@ -30,16 +32,21 @@ DEFAULT_ITERATIONS = 10000
 if __name__ == "__main__":
 
     parser = ArgumentParser("ViZDoom example showing possible framerates.")
-    parser.add_argument(dest="config",
-                        default=DEFAULT_CONFIG,
-                        nargs="?",
-                        help="Path to the configuration file of the scenario."
-                             " Please see "
-                             "../../scenarios/*cfg for more scenarios.")
-    parser.add_argument("-i", "--iterations",
-                        default=DEFAULT_ITERATIONS,
-                        type=int,
-                        help="Number of iterations(actions) to run")
+    parser.add_argument(
+        dest="config",
+        default=DEFAULT_CONFIG,
+        nargs="?",
+        help="Path to the configuration file of the scenario."
+        " Please see "
+        "../../scenarios/*cfg for more scenarios.",
+    )
+    parser.add_argument(
+        "-i",
+        "--iterations",
+        default=DEFAULT_ITERATIONS,
+        type=int,
+        help="Number of iterations(actions) to run",
+    )
     args = parser.parse_args()
 
     game = vzd.DoomGame()
@@ -68,7 +75,9 @@ if __name__ == "__main__":
 
     start = time()
 
-    print("Checking FPS rating with all features enabled. It may take some time. Be patient.")
+    print(
+        "Checking FPS rating with all features enabled. It may take some time. Be patient."
+    )
 
     for i in tqdm.trange(args.iterations, leave=False):
 

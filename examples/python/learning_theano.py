@@ -1,22 +1,31 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
-from vizdoom import *
 import itertools as it
 import pickle
-from random import sample, randint, random
-from time import time, sleep
+from random import randint, random, sample
+from time import sleep, time
+
 import numpy as np
-import skimage.color, skimage.transform
-from lasagne.init import HeUniform, Constant
-from lasagne.layers import Conv2DLayer, InputLayer, DenseLayer, get_output, \
-    get_all_params, get_all_param_values, set_all_param_values
+import skimage.color
+import skimage.transform
+import theano
+from lasagne.init import Constant, HeUniform
+from lasagne.layers import (
+    Conv2DLayer,
+    DenseLayer,
+    InputLayer,
+    get_all_param_values,
+    get_all_params,
+    get_output,
+    set_all_param_values,
+)
 from lasagne.nonlinearities import rectify
 from lasagne.objectives import squared_error
 from lasagne.updates import rmsprop
-import theano
 from theano import tensor
 from tqdm import trange
+from vizdoom import DoomGame, Mode, ScreenFormat, ScreenResolution, os, vzd
+
 
 # Q-learning settings
 learning_rate = 0.00025
@@ -43,6 +52,7 @@ model_savefile = "/tmp/weights.dump"
 config_file_path = os.path.join(vzd.scenarios_path, "simpler_basic.cfg")
 # config_file_path = os.path.join(vzd.scenarios_path, "rocket_basic.cfg")
 # config_file_path = os.path.join(vzd.scenarios_path, "basic.cfg")
+
 
 # Converts and downsamples the input image
 def preprocess(img):
@@ -92,16 +102,29 @@ def create_network(available_actions_count):
     dqn = InputLayer(shape=[None, 1, resolution[0], resolution[1]], input_var=s1)
 
     # Add 2 convolutional layers with ReLu activation
-    dqn = Conv2DLayer(dqn, num_filters=8, filter_size=[6, 6],
-                      nonlinearity=rectify, W=HeUniform("relu"),
-                      b=Constant(.1), stride=3)
-    dqn = Conv2DLayer(dqn, num_filters=8, filter_size=[3, 3],
-                      nonlinearity=rectify, W=HeUniform("relu"),
-                      b=Constant(.1), stride=2)
+    dqn = Conv2DLayer(
+        dqn,
+        num_filters=8,
+        filter_size=[6, 6],
+        nonlinearity=rectify,
+        W=HeUniform("relu"),
+        b=Constant(0.1),
+        stride=3,
+    )
+    dqn = Conv2DLayer(
+        dqn,
+        num_filters=8,
+        filter_size=[3, 3],
+        nonlinearity=rectify,
+        W=HeUniform("relu"),
+        b=Constant(0.1),
+        stride=2,
+    )
 
     # Add a single fully-connected layer.
-    dqn = DenseLayer(dqn, num_units=128, nonlinearity=rectify, W=HeUniform("relu"),
-                     b=Constant(.1))
+    dqn = DenseLayer(
+        dqn, num_units=128, nonlinearity=rectify, W=HeUniform("relu"), b=Constant(0.1)
+    )
 
     # Add the output layer (also fully-connected).
     # (no nonlinearity as it is for approximating an arbitrary real function)
@@ -111,7 +134,9 @@ def create_network(available_actions_count):
     q = get_output(dqn)
     # target differs from q only for the selected action. The following means:
     # target_Q(s,a) = r + gamma * max Q(s2,_) if isterminal else r
-    target_q = tensor.set_subtensor(q[tensor.arange(q.shape[0]), a], r + discount_factor * (1 - isterminal) * q2)
+    target_q = tensor.set_subtensor(
+        q[tensor.arange(q.shape[0]), a], r + discount_factor * (1 - isterminal) * q2
+    )
     loss = squared_error(q, target_q).mean()
 
     # Update the parameters according to the computed gradient using RMSProp.
@@ -120,21 +145,25 @@ def create_network(available_actions_count):
 
     # Compile the theano functions
     print("Compiling the network ...")
-    function_learn = theano.function([s1, q2, a, r, isterminal], loss, updates=updates, name="learn_fn")
+    function_learn = theano.function(
+        [s1, q2, a, r, isterminal], loss, updates=updates, name="learn_fn"
+    )
     function_get_q_values = theano.function([s1], q, name="eval_fn")
     function_get_best_action = theano.function([s1], tensor.argmax(q), name="test_fn")
     print("Network compiled.")
 
     def simple_get_best_action(state):
-        return function_get_best_action(state.reshape([1, 1, resolution[0], resolution[1]]))
+        return function_get_best_action(
+            state.reshape([1, 1, resolution[0], resolution[1]])
+        )
 
     # Returns Theano objects for the net and functions.
     return dqn, function_learn, function_get_q_values, simple_get_best_action
 
 
 def learn_from_memory():
-    """ Learns from a single transition (making use of replay memory).
-    s2 is ignored if s2_isterminal """
+    """Learns from a single transition (making use of replay memory).
+    s2 is ignored if s2_isterminal"""
 
     # Get a random minibatch from the replay memory and learns from it.
     if memory.size > batch_size:
@@ -146,7 +175,7 @@ def learn_from_memory():
 
 
 def perform_learning_step(epoch):
-    """ Makes an action according to eps-greedy policy, observes the result
+    """Makes an action according to eps-greedy policy, observes the result
     (next state, reward) and learns from the transition"""
 
     def exploration_rate(epoch):
@@ -160,8 +189,9 @@ def perform_learning_step(epoch):
             return start_eps
         elif epoch < eps_decay_epochs:
             # Linear decay
-            return start_eps - (epoch - const_eps_epochs) / \
-                               (eps_decay_epochs - const_eps_epochs) * (start_eps - end_eps)
+            return start_eps - (epoch - const_eps_epochs) / (
+                eps_decay_epochs - const_eps_epochs
+            ) * (start_eps - end_eps)
         else:
             return end_eps
 
@@ -233,8 +263,11 @@ for epoch in range(epochs):
 
     train_scores = np.array(train_scores)
 
-    print("Results: mean: %.1f±%.1f," % (train_scores.mean(), train_scores.std()), \
-          "min: %.1f," % train_scores.min(), "max: %.1f," % train_scores.max())
+    print(
+        f"Results: mean: {train_scores.mean():.1f}±{train_scores.std():.1f},",
+        "min: %.1f," % train_scores.min(),
+        "max: %.1f," % train_scores.max(),
+    )
 
     print("\nTesting...")
     test_episode = []
@@ -250,17 +283,20 @@ for epoch in range(epochs):
         test_scores.append(r)
 
     test_scores = np.array(test_scores)
-    print("Results: mean: %.1f±%.1f," % (
-        test_scores.mean(), test_scores.std()), "min: %.1f" % test_scores.min(), "max: %.1f" % test_scores.max())
+    print(
+        f"Results: mean: {test_scores.mean():.1f}±{test_scores.std():.1f},",
+        "min: %.1f" % test_scores.min(),
+        "max: %.1f" % test_scores.max(),
+    )
 
-    print("Saving the network weigths to:", model_savefile)
+    print("Saving the network weights to:", model_savefile)
     pickle.dump(get_all_param_values(net), open(model_savefile, "wb"))
 
     print("Total elapsed time: %.2f minutes" % ((time() - time_start) / 60.0))
 
 game.close()
 print("======================================")
-print("Loading the network weigths from:", model_savefile)
+print("Loading the network weights from:", model_savefile)
 print("Training finished. It's time to watch!")
 
 # Load the network's parameters from a file

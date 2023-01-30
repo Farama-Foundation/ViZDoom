@@ -1,20 +1,26 @@
 #!/usr/bin/env python3
 
-from random import choice
-import vizdoom as vzd
 from argparse import ArgumentParser
+from random import choice
+
 import cv2
+import vizdoom as vzd
+
 
 DEFAULT_CONFIG = "../../scenarios/defend_the_center.cfg"
 
 if __name__ == "__main__":
-    parser = ArgumentParser("ViZDoom example showing how to use the 'automap' (top-down view map).")
-    parser.add_argument(dest="config",
-                        default=DEFAULT_CONFIG,
-                        nargs="?",
-                        help="Path to the configuration file of the scenario."
-                             " Please see "
-                             "../../scenarios/*cfg for more scenarios.")
+    parser = ArgumentParser(
+        "ViZDoom example showing how to use the 'automap' (top-down view map)."
+    )
+    parser.add_argument(
+        dest="config",
+        default=DEFAULT_CONFIG,
+        nargs="?",
+        help="Path to the configuration file of the scenario."
+        " Please see "
+        "../../scenarios/*cfg for more scenarios.",
+    )
 
     args = parser.parse_args()
     game = vzd.DoomGame()
@@ -74,15 +80,21 @@ if __name__ == "__main__":
             # Shows automap buffer
             map = state.automap_buffer
             if map is not None:
-                cv2.imshow('ViZDoom Automap Buffer', map)
+                cv2.imshow("ViZDoom Automap Buffer", map)
 
             cv2.waitKey(sleep_time)
 
             game.make_action(choice(actions))
 
             print("State #" + str(state.number))
-            print("Player position X:", state.game_variables[0], "Y:", state.game_variables[1], "Z:",
-                  state.game_variables[2])
+            print(
+                "Player position X:",
+                state.game_variables[0],
+                "Y:",
+                state.game_variables[1],
+                "Z:",
+                state.game_variables[2],
+            )
 
             print("=====================")
 

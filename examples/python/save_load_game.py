@@ -11,7 +11,9 @@ import itertools as it
 import os
 from random import choice
 from time import sleep
+
 import vizdoom as vzd
+
 
 if __name__ == "__main__":
     # Create DoomGame instance. It will run the game and communicate with you.
@@ -50,14 +52,13 @@ if __name__ == "__main__":
 
         if state.number == save_after_steps:
             # The current game state will be save to the file,
-            game.save("save.png") # Save files can be saved as png files
+            game.save("save.png")  # Save files can be saved as png files
 
             print("\nGame saved!")
             print("Game variables:", state.game_variables)
 
         if sleep_time > 0:
             sleep(sleep_time)
-
 
     print("Starting second episode from saved game...")
     # It's not necessary, but we recommend calling new_episode before load.

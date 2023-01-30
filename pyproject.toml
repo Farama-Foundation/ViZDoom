@@ -1,2 +1,31 @@
 [build-system]
 requires = ["cmake>=3.1.0", "setuptools", "wheel"]
+
+[tool.black]
+safe = true
+
+[tool.isort]
+atomic = true
+profile = "black"
+src_paths = ["examples/python", "gym_wrapper", "tests"]
+indent = 4
+lines_after_imports = 2
+multi_line_output = 3
+
+[tool.pyright]
+include = ["examples/python/**", "gym_wrapper/", "tests/**"]
+exclude = ["**/__pycache__"]
+strict = []
+
+typeCheckingMode = "basic"
+pythonVersion = "3.7"
+pythonPlatform = "All"
+typeshedPath = "typeshed"
+enableTypeIgnoreComments = true
+
+# This is required as the CI pre-commit does not download the module
+#   Therefore, we have to ignore missing imports
+reportMissingImports = "none"
+reportGeneralTypeIssues = "none"
+reportPrivateUsage = "warning"
+reportPrivateImportUsage = "warning"

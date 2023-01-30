@@ -66,7 +66,7 @@ Calculates the number of seconds that will pass during specified number of tics.
 
 Converts Doom's fixed point numeral to a floating point value.
 
-See also: 
+See also:
 - Types: `User variables` in `GameVariables`
 
 Python aliases (added in 1.1):
@@ -91,4 +91,3 @@ Returns true if button is binary button.
 | Python | `bool is_delta_button(Button button)`  |
 
 Returns true if button is delta button.
-

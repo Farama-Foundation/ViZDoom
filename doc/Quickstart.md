@@ -5,7 +5,7 @@
 * [Quickstart for MacOS with Anaconda3](#quickstart_macos_anaconda)
 
 TODO:
-* Quickstart for Ubuntu 
+* Quickstart for Ubuntu
 * Quickstart for Windows
 * Change "Quickstart for MacOS" to use PyPI
 
@@ -29,16 +29,16 @@ git clone https://github.com/mwydmuch/ViZDoom
 cd ViZDoom
 ```
 
-3. Run cmake against anaconda and native boost libraries. 
+3. Run cmake against anaconda and native boost libraries.
 
-The library version numbers will change over time (e.g. `python3.6m`, `boost-python/1.64.0`) and may need to be updated. 
+The library version numbers will change over time (e.g. `python3.6m`, `boost-python/1.64.0`) and may need to be updated.
 
 ```sh
 mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release \
 -DBUILD_PYTHON3=ON \
--DPYTHON_INCLUDE_DIR=$HOME/anaconda3/include/python3.6m \ 
+-DPYTHON_INCLUDE_DIR=$HOME/anaconda3/include/python3.6m \
 -DPYTHON_LIBRARY=$HOME/anaconda3/lib/libpython3.6m.dylib \
 -DPYTHON_EXECUTABLE=$HOME/anaconda3/bin/python3 \
 -DBOOST_PYTHON3_LIBRARY=/usr/local/Cellar/boost-python/1.64.0/lib/libboost_python3.dylib \
@@ -51,7 +51,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release \
 make
 ```
 
-5. Move the output to anaconda's `site-packages` directory, or your local virtual environments `site-packages` directory. 
+5. Move the output to anaconda's `site-packages` directory, or your local virtual environments `site-packages` directory.
 
 ```sh
 mv -r build/bin/python3/pip_package/ $HOME/anaconda3/lib/python3.6/site-packages/vizdoom

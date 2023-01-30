@@ -95,4 +95,3 @@ int main(){
     game->close();
     delete game;
 }
-

@@ -5,9 +5,10 @@
 #####################################################################
 
 import gym
-from vizdoom import gym_wrapper
+from vizdoom import gym_wrapper  # noqa
 
-if __name__  == '__main__':
+
+if __name__ == "__main__":
     env = gym.make("VizdoomHealthGatheringSupreme-v0")
 
     # Rendering random rollouts for ten episodes

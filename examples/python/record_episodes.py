@@ -7,7 +7,9 @@
 
 import os
 from random import choice
+
 import vizdoom as vzd
+
 
 game = vzd.DoomGame()
 

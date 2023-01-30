@@ -118,8 +118,8 @@ See also:
 **floorHeight / floor_height** - height of the sector's floor.
 
 **ceilingHeight / ceiling_height** - height of the sector's ceiling.
- 
-**lines** - contains list of line segments, that forms sector. 
+
+**lines** - contains list of line segments, that forms sector.
 
 Right now `Sector` is only available to C++ and Python.
 Added in 1.1.8.
@@ -323,7 +323,7 @@ Enum type that defines all variables that can be obtained from the game.
 - **POSITION_Y**
 - **POSITION_Z**
 - **ANGLE**                 - Orientation of the player, not available if `viz_nocheat` is enabled.
-- **PITCH**                 
+- **PITCH**
 - **ROLL**
 - **VIEW_HEIGHT**           - View high of the player, not available if `viz_nocheat` is enabled. Position of the camera in Z axis is equal to **POSITION_Z** + **VIEW_HEIGHT**. Added in 1.1.7.
 - **VELOCITY_X**            - Velocity of the player, not available if `viz_nocheat` is enabled.
@@ -341,7 +341,7 @@ Enum type that defines all variables that can be obtained from the game.
 - **PLAYER1_FRAGCOUNT** - **PLAYER16_FRAGCOUNT** - Number of N player's frags
 
 
-#### User (ACS) variables  
+#### User (ACS) variables
 - **USER1** - **USER60**
 
 ACS global int variables can be accessed as USER GameVariables.

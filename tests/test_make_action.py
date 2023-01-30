@@ -2,16 +2,20 @@
 
 # This test can be run as Python script or via PyTest
 
-import vizdoom as vzd
 import numpy as np
+import vizdoom as vzd
 
 
 def _test_make_action_input(type_name, type_args={}):
-    print("Testing make_action with {}([], {}) type as input ...".format(type_name.__name__, type_args))
+    print(
+        f"Testing make_action with {type_name.__name__}([], {type_args}) type as input ..."
+    )
 
     game = vzd.DoomGame()
     game.set_window_visible(False)
-    game.set_available_buttons([vzd.Button.MOVE_LEFT, vzd.Button.MOVE_RIGHT, vzd.Button.ATTACK])
+    game.set_available_buttons(
+        [vzd.Button.MOVE_LEFT, vzd.Button.MOVE_RIGHT, vzd.Button.ATTACK]
+    )
     game.set_episode_start_time(35)
 
     game.init()

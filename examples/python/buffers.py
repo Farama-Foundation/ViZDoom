@@ -11,24 +11,30 @@
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
-from argparse import ArgumentParser
 import os
+from argparse import ArgumentParser
 from random import choice
+
+import cv2
 import vizdoom as vzd
+
 
 DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "deadly_corridor.cfg")
 
-import cv2
 
 if __name__ == "__main__":
 
-    parser = ArgumentParser("ViZDoom example showing different buffers (screen, depth, labels).")
-    parser.add_argument(dest="config",
-                        default=DEFAULT_CONFIG,
-                        nargs="?",
-                        help="Path to the configuration file of the scenario."
-                             " Please see "
-                             "../../scenarios/*cfg for more scenarios.")
+    parser = ArgumentParser(
+        "ViZDoom example showing different buffers (screen, depth, labels)."
+    )
+    parser.add_argument(
+        dest="config",
+        default=DEFAULT_CONFIG,
+        nargs="?",
+        help="Path to the configuration file of the scenario."
+        " Please see "
+        "../../scenarios/*cfg for more scenarios.",
+    )
 
     args = parser.parse_args()
 
@@ -94,26 +100,26 @@ if __name__ == "__main__":
 
             # Just screen buffer, given in selected format. This buffer is always available.
             screen = state.screen_buffer
-            cv2.imshow('ViZDoom Screen Buffer', screen)
+            cv2.imshow("ViZDoom Screen Buffer", screen)
 
             # Depth buffer, always in 8-bit gray channel format.
             # This is most fun. It looks best if you inverse colors.
             depth = state.depth_buffer
             if depth is not None:
-                cv2.imshow('ViZDoom Depth Buffer', depth)
+                cv2.imshow("ViZDoom Depth Buffer", depth)
 
             # Labels buffer, always in 8-bit gray channel format.
             # Shows only visible game objects (enemies, pickups, exploding barrels etc.), each with unique label.
             # Labels data are available in state.labels, also see labels.py example.
             labels = state.labels_buffer
             if labels is not None:
-                cv2.imshow('ViZDoom Labels Buffer', labels)
+                cv2.imshow("ViZDoom Labels Buffer", labels)
 
             # Map buffer, in the same format as screen buffer.
             # Shows top down map of the current episode/level.
             automap = state.automap_buffer
             if automap is not None:
-                cv2.imshow('ViZDoom Map Buffer', automap)
+                cv2.imshow("ViZDoom Map Buffer", automap)
 
             cv2.waitKey(int(sleep_time * 1000))
 

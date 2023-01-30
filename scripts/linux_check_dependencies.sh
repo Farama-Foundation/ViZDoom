@@ -14,5 +14,3 @@ sudo apt-get install libboost-all-dev
 # Python 3 dependencies
 sudo apt-get install python3-dev python3-pip
 pip3 install numpy
-
-

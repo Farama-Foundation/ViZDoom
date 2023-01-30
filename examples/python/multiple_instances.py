@@ -2,14 +2,16 @@
 
 import os
 from random import choice
-from time import time
-import vizdoom as vzd
-from multiprocessing import Process
 from threading import Thread
+from time import time
+
+import vizdoom as vzd
+
 
 # Run this many episodes
 episodes = 1
 config = os.path.join(vzd.scenarios_path, "multi_duel.cfg")
+
 
 def player1():
     game = vzd.DoomGame()
@@ -66,13 +68,11 @@ def player2():
     game.close()
 
 
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Both Processes or Threads can be used to have many DoomGame instances running in parallel.
     # Because ViZDoom releases GIL, there is no/minimal difference in performance between Processes and Threads.
     start = time()
-    #p1 = Process(target=player1)
+    # p1 = Process(target=player1)
     p1 = Thread(target=player1)
     p1.start()
     player2()

@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-import operator
 
 # M. Kempka, T.Sternal, M.Wydmuch, Z.Boztoprak
-# Januar 2021
+# January 2021
+
+import itertools as it
+import os
+from collections import deque
+from random import sample
+from time import sleep, time
 
 import numpy as np
-import vizdoom as vzd
-import itertools as it
+import skimage.color
+import skimage.transform
 import tensorflow as tf
-import skimage.color, skimage.transform
-import os
-
-from tqdm import trange
-from random import sample
-from time import time, sleep
-from collections import deque
-from tensorflow.keras import Model, Sequential, Input, losses, metrics
-from tensorflow.keras.models import load_model
+import vizdoom as vzd
+from tensorflow.keras import Model, Sequential
+from tensorflow.keras.layers import BatchNormalization, Conv2D, Dense, Flatten, ReLU
 from tensorflow.keras.optimizers import SGD
-from tensorflow.keras.layers import Conv2D, BatchNormalization, Flatten, Dense, ReLU
+from tqdm import trange
+
 
 tf.compat.v1.enable_eager_execution()
 tf.executing_eagerly()
@@ -34,7 +34,7 @@ target_net_update_steps = 1000
 # NN learning settings
 batch_size = 64
 
-# Training regime 
+# Training regime
 test_episodes_per_epoch = 100
 
 # Other parameters
@@ -51,7 +51,7 @@ watch = True
 config_file_path = os.path.join(vzd.scenarios_path, "simpler_basic.cfg")
 model_savefolder = "./model"
 
-if len(tf.config.experimental.list_physical_devices('GPU')) > 0:
+if len(tf.config.experimental.list_physical_devices("GPU")) > 0:
     print("GPU available")
     DEVICE = "/gpu:0"
 else:
@@ -63,7 +63,7 @@ def preprocess(img):
     img = skimage.transform.resize(img, resolution)
     img = img.astype(np.float32)
     img = np.expand_dims(img, axis=-1)
-   
+
     return tf.stack(img)
 
 
@@ -82,7 +82,9 @@ def initialize_game():
 
 
 class DQNAgent:
-    def __init__(self, num_actions=8, epsilon=1, epsilon_min=0.1, epsilon_decay=0.9995, load=load):
+    def __init__(
+        self, num_actions=8, epsilon=1, epsilon_min=0.1, epsilon_decay=0.9995, load=load
+    ):
         self.epsilon = epsilon
         self.epsilon_min = epsilon_min
         self.epsilon_decay = epsilon_decay
@@ -91,7 +93,7 @@ class DQNAgent:
         self.optimizer = SGD(learning_rate)
 
         if load:
-            print("Loading model from: ", model_savefolder) 
+            print("Loading model from: ", model_savefolder)
             self.dqn = tf.keras.models.load_model(model_savefolder)
         else:
             self.dqn = DQN(self.num_actions)
@@ -99,10 +101,10 @@ class DQNAgent:
 
     def update_target_net(self):
         self.target_net.set_weights(self.dqn.get_weights())
- 
+
     def choose_action(self, state):
-        if self.epsilon < np.random.uniform(0,1):
-            action = int(tf.argmax(self.dqn(tf.reshape(state, (1,30,45,1))), axis=1))
+        if self.epsilon < np.random.uniform(0, 1):
+            action = int(tf.argmax(self.dqn(tf.reshape(state, (1, 30, 45, 1))), axis=1))
         else:
             action = np.random.choice(range(self.num_actions), 1)[0]
 
@@ -120,15 +122,20 @@ class DQNAgent:
             tape.watch(self.dqn.trainable_variables)
 
             Q_prev = tf.gather_nd(self.dqn(screen_buf), ids)
-            
+
             Q_next = self.target_net(next_screen_buf)
-            Q_next = tf.gather_nd(Q_next, extractDigits(row_ids, tf.argmax(agent.dqn(next_screen_buf), axis=1)))
-            
+            Q_next = tf.gather_nd(
+                Q_next,
+                extractDigits(row_ids, tf.argmax(agent.dqn(next_screen_buf), axis=1)),
+            )
+
             q_target = rewards + self.discount_factor * Q_next
 
-            if len(done_ids)>0:
+            if len(done_ids) > 0:
                 done_rewards = tf.gather_nd(rewards, done_ids)
-                q_target = tf.tensor_scatter_nd_update(tensor=q_target, indices=done_ids, updates=done_rewards)
+                q_target = tf.tensor_scatter_nd_update(
+                    tensor=q_target, indices=done_ids, updates=done_rewards
+                )
 
             td_error = tf.keras.losses.MSE(q_target, Q_prev)
 
@@ -140,23 +147,22 @@ class DQNAgent:
         else:
             self.epsilon = self.epsilon_min
 
-   
- 
+
 def split_tuple(samples):
     samples = np.array(samples, dtype=object)
-    screen_buf = tf.stack(samples[:,0])
-    actions = samples[:,1]
-    rewards = tf.stack(samples[:,2])
-    next_screen_buf = tf.stack(samples[:,3])
-    dones = tf.stack(samples[:,4])  
-    return screen_buf, actions, rewards, next_screen_buf, dones 
+    screen_buf = tf.stack(samples[:, 0])
+    actions = samples[:, 1]
+    rewards = tf.stack(samples[:, 2])
+    next_screen_buf = tf.stack(samples[:, 3])
+    dones = tf.stack(samples[:, 4])
+    return screen_buf, actions, rewards, next_screen_buf, dones
 
 
 def extractDigits(*argv):
-    if len(argv)==1:
+    if len(argv) == 1:
         return list(map(lambda x: [x], argv[0]))
 
-    return list(map(lambda x,y: [x,y], argv[0], argv[1]))
+    return list(map(lambda x, y: [x, y], argv[0], argv[1]))
 
 
 def get_samples(memory):
@@ -198,13 +204,18 @@ def run(agent, game, replay_memory):
 
             if i >= batch_size:
                 agent.train_dqn(get_samples(replay_memory))
-       
-            if ((i % target_net_update_steps) == 0):
+
+            if (i % target_net_update_steps) == 0:
                 agent.update_target_net()
 
         train_scores = np.array(train_scores)
-        print("Results: mean: %.1f±%.1f," % (train_scores.mean(), train_scores.std()), \
-                  "min: %.1f," % train_scores.min(), "max: %.1f," % train_scores.max())
+        print(
+            "Results: mean: {:.1f}±{:.1f},".format(
+                train_scores.mean(), train_scores.std()
+            ),
+            "min: %.1f," % train_scores.min(),
+            "max: %.1f," % train_scores.max(),
+        )
 
         test(test_episodes_per_epoch, game, agent)
         print("Total elapsed time: %.2f minutes" % ((time() - time_start) / 60.0))
@@ -225,29 +236,35 @@ def test(test_episodes_per_epoch, game, agent):
         test_scores.append(r)
 
     test_scores = np.array(test_scores)
-    print("Results: mean: %.1f±%.1f," % (
-        test_scores.mean(), test_scores.std()), "min: %.1f" % test_scores.min(),
-          "max: %.1f" % test_scores.max())
+    print(
+        f"Results: mean: {test_scores.mean():.1f}±{test_scores.std():.1f},",
+        "min: %.1f" % test_scores.min(),
+        "max: %.1f" % test_scores.max(),
+    )
 
 
 class DQN(Model):
     def __init__(self, num_actions):
-        super(DQN,self).__init__()
-        self.conv1 = Sequential([
-                                Conv2D(8, kernel_size=6, strides=3, input_shape=(30,45,1)),
-                                BatchNormalization(),
-                                ReLU()
-                                ])
+        super().__init__()
+        self.conv1 = Sequential(
+            [
+                Conv2D(8, kernel_size=6, strides=3, input_shape=(30, 45, 1)),
+                BatchNormalization(),
+                ReLU(),
+            ]
+        )
 
-        self.conv2 = Sequential([
-                                Conv2D(8, kernel_size=3, strides=2, input_shape=(9, 14, 8)),
-                                BatchNormalization(),
-                                ReLU()
-                                ])
-        
+        self.conv2 = Sequential(
+            [
+                Conv2D(8, kernel_size=3, strides=2, input_shape=(9, 14, 8)),
+                BatchNormalization(),
+                ReLU(),
+            ]
+        )
+
         self.flatten = Flatten()
-       
-        self.state_value = Dense(1) 
+
+        self.state_value = Dense(1)
         self.advantage = Dense(num_actions)
 
     def call(self, x):
@@ -257,20 +274,20 @@ class DQN(Model):
         x1 = x[:, :96]
         x2 = x[:, 96:]
         x1 = self.state_value(x1)
-        x2 = self.advantage(x2) 
-        
-        x = x1 + (x2 - tf.reshape(tf.math.reduce_mean(x2, axis=1), shape=(-1,1)))
+        x2 = self.advantage(x2)
+
+        x = x1 + (x2 - tf.reshape(tf.math.reduce_mean(x2, axis=1), shape=(-1, 1)))
         return x
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     agent = DQNAgent()
     game = initialize_game()
     replay_memory = deque(maxlen=replay_memory_size)
 
     n = game.get_available_buttons_size()
     actions = [list(a) for a in it.product([0, 1], repeat=n)]
-    
+
     with tf.device(DEVICE):
 
         if not skip_learning:

@@ -6,12 +6,14 @@
 #####################################################################
 
 # WARNING:
-# Due to the bug in build-in bots recording game with bots will result in the desynchronization of the recording.
+# Due to the bug in built-in bots recording game with bots will result in the desynchronization of the recording.
 
 from multiprocessing import Process
-import os
 from random import choice
+
 import vizdoom as vzd
+from vizdoom import DoomGame, os
+
 
 def player1():
     game = vzd.DoomGame()
@@ -41,7 +43,7 @@ def player1():
 def player2():
     game = DoomGame()
 
-    game.load_config('../../scenarios/multi_duel.cfg')
+    game.load_config("../../scenarios/multi_duel.cfg")
     game.set_window_visible(False)
     game.add_game_args("-join 127.0.0.1")
     game.add_game_args("+name Player2 +colorset 3")
@@ -62,7 +64,7 @@ def player2():
 
 def replay_as_player2():
     game = DoomGame()
-    game.load_config('../config/multi_duel.cfg')
+    game.load_config("../config/multi_duel.cfg")
     # At this moment ViZDoom will crash if there is no starting point - this is workaround for multiplayer map.
     game.add_game_args("-host 1 -deathmatch")
 
@@ -83,7 +85,7 @@ def replay_as_player2():
     os.remove("multi_rec.lmp")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("\nRECORDING")
     print("************************\n")
 

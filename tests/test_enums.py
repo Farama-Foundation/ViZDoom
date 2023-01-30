@@ -6,7 +6,7 @@ import vizdoom as vzd
 
 
 def _test_enums(enum_name, func_name):
-    print("Testing vzd.{} enum ...".format(enum_name))
+    print(f"Testing vzd.{enum_name} enum ...")
 
     game = vzd.DoomGame()
     game.set_window_visible(False)
@@ -16,7 +16,11 @@ def _test_enums(enum_name, func_name):
     set_func = eval("game.set_" + func_name + "s")
     clear_func = eval("game.clear_" + func_name + "s")
 
-    all_values = [eval("vzd." + enum_name + "." + v) for v in dir(eval("vzd." + enum_name)) if not v.startswith('__') and not v == 'name' and not v == 'value']
+    all_values = [
+        eval("vzd." + enum_name + "." + v)
+        for v in dir(eval("vzd." + enum_name))
+        if not v.startswith("__") and not v == "name" and not v == "value"
+    ]
     all_values_names = [v.name for v in all_values]
 
     # set test
@@ -29,7 +33,7 @@ def _test_enums(enum_name, func_name):
     for i, v in enumerate(all_values):
         add_func(v)
         get_values_names = [v.name for v in get_func()]
-        assert all_values_names[:i + 1] == get_values_names
+        assert all_values_names[: i + 1] == get_values_names
 
     # again set test
     set_func(all_values)

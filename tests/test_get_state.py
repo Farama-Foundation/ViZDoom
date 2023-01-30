@@ -2,12 +2,13 @@
 
 # This test can be run as Python script or via PyTest
 
-import vizdoom as vzd
-import numpy as np
-from random import choice
+import os
 from itertools import product
-from copy import deepcopy
-import os, psutil
+from random import choice
+
+import numpy as np
+import psutil
+import vizdoom as vzd
 
 
 def test_get_state():
@@ -15,10 +16,16 @@ def test_get_state():
 
     episodes = 10000
     episode_timeout = 1000
-    buttons = [vzd.Button.MOVE_FORWARD, vzd.Button.MOVE_BACKWARD,
-               vzd.Button.MOVE_LEFT, vzd.Button.MOVE_RIGHT,
-               vzd.Button.TURN_LEFT, vzd.Button.TURN_RIGHT,
-               vzd.Button.ATTACK, vzd.Button.USE]
+    buttons = [
+        vzd.Button.MOVE_FORWARD,
+        vzd.Button.MOVE_BACKWARD,
+        vzd.Button.MOVE_LEFT,
+        vzd.Button.MOVE_RIGHT,
+        vzd.Button.TURN_LEFT,
+        vzd.Button.TURN_RIGHT,
+        vzd.Button.ATTACK,
+        vzd.Button.USE,
+    ]
     actions = [list(i) for i in product([0, 1], repeat=len(buttons))]
 
     game = vzd.DoomGame()
@@ -52,13 +59,16 @@ def test_get_state():
         mem = process.memory_info().rss / 1024 / 1024
 
         if i % 100 == 0:
-            print("Memory, with {} states saved, after episode {} / {}: {} MB".format(len(states), i, episodes, mem))
+            print(
+                f"Memory, with {len(states)} states saved, after episode {i} / {episodes}: {mem} MB"
+            )
 
         if prev_len < len(states):
             prev_mem = mem
             prev_len = len(states)
         elif prev_len == len(states):
             assert abs(prev_mem - mem) < mem_eta
+
 
 if __name__ == "__main__":
     test_get_state()
