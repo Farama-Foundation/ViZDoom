@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 # E. Culurciello, L. Mueller, Z. Boztoprak
 # December 2020
 
-import vizdoom as vzd
+import itertools as it
+import os
+import random
+from collections import deque
+from time import sleep, time
+
+import numpy as np
+import skimage.transform
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import numpy as np
-import random
-import itertools as it
-import skimage.transform
-
-import os
-from time import sleep, time
-from collections import deque
+import vizdoom as vzd
 from tqdm import trange
+
 
 # Q-learning settings
 learning_rate = 0.00025
@@ -48,10 +48,10 @@ config_file_path = os.path.join(vzd.scenarios_path, "simpler_basic.cfg")
 
 # Uses GPU if available
 if torch.cuda.is_available():
-    DEVICE = torch.device('cuda')
+    DEVICE = torch.device("cuda")
     torch.backends.cudnn.benchmark = True
 else:
-    DEVICE = torch.device('cpu')
+    DEVICE = torch.device("cpu")
 
 
 def preprocess(img):
@@ -91,9 +91,13 @@ def test(game, agent):
         test_scores.append(r)
 
     test_scores = np.array(test_scores)
-    print("Results: mean: %.1f +/- %.1f," % (
-        test_scores.mean(), test_scores.std()), "min: %.1f" % test_scores.min(),
-          "max: %.1f" % test_scores.max())
+    print(
+        "Results: mean: {:.1f} +/- {:.1f},".format(
+            test_scores.mean(), test_scores.std()
+        ),
+        "min: %.1f" % test_scores.min(),
+        "max: %.1f" % test_scores.max(),
+    )
 
 
 def run(game, agent, actions, num_epochs, frame_repeat, steps_per_epoch=2000):
@@ -135,8 +139,13 @@ def run(game, agent, actions, num_epochs, frame_repeat, steps_per_epoch=2000):
         agent.update_target_net()
         train_scores = np.array(train_scores)
 
-        print("Results: mean: %.1f +/- %.1f," % (train_scores.mean(), train_scores.std()),
-              "min: %.1f," % train_scores.min(), "max: %.1f," % train_scores.max())
+        print(
+            "Results: mean: {:.1f} +/- {:.1f},".format(
+                train_scores.mean(), train_scores.std()
+            ),
+            "min: %.1f," % train_scores.min(),
+            "max: %.1f," % train_scores.max(),
+        )
 
         test(game, agent)
         if save_model:
@@ -155,41 +164,35 @@ class DuelQNet(nn.Module):
     """
 
     def __init__(self, available_actions_count):
-        super(DuelQNet, self).__init__()
+        super().__init__()
         self.conv1 = nn.Sequential(
             nn.Conv2d(1, 8, kernel_size=3, stride=2, bias=False),
             nn.BatchNorm2d(8),
-            nn.ReLU()
+            nn.ReLU(),
         )
 
         self.conv2 = nn.Sequential(
             nn.Conv2d(8, 8, kernel_size=3, stride=2, bias=False),
             nn.BatchNorm2d(8),
-            nn.ReLU()
+            nn.ReLU(),
         )
 
         self.conv3 = nn.Sequential(
             nn.Conv2d(8, 8, kernel_size=3, stride=1, bias=False),
             nn.BatchNorm2d(8),
-            nn.ReLU()
+            nn.ReLU(),
         )
 
         self.conv4 = nn.Sequential(
             nn.Conv2d(8, 16, kernel_size=3, stride=1, bias=False),
             nn.BatchNorm2d(16),
-            nn.ReLU()
+            nn.ReLU(),
         )
 
-        self.state_fc = nn.Sequential(
-            nn.Linear(96, 64),
-            nn.ReLU(),
-            nn.Linear(64, 1)
-        )
+        self.state_fc = nn.Sequential(nn.Linear(96, 64), nn.ReLU(), nn.Linear(64, 1))
 
         self.advantage_fc = nn.Sequential(
-            nn.Linear(96, 64),
-            nn.ReLU(),
-            nn.Linear(64, available_actions_count)
+            nn.Linear(96, 64), nn.ReLU(), nn.Linear(64, available_actions_count)
         )
 
     def forward(self, x):
@@ -202,13 +205,26 @@ class DuelQNet(nn.Module):
         x2 = x[:, 96:]  # relative advantage of actions in the state
         state_value = self.state_fc(x1).reshape(-1, 1)
         advantage_values = self.advantage_fc(x2)
-        x = state_value + (advantage_values - advantage_values.mean(dim=1).reshape(-1, 1))
+        x = state_value + (
+            advantage_values - advantage_values.mean(dim=1).reshape(-1, 1)
+        )
 
         return x
 
+
 class DQNAgent:
-    def __init__(self, action_size, memory_size, batch_size, discount_factor, 
-                 lr, load_model, epsilon=1, epsilon_decay=0.9996, epsilon_min=0.1):
+    def __init__(
+        self,
+        action_size,
+        memory_size,
+        batch_size,
+        discount_factor,
+        lr,
+        load_model,
+        epsilon=1,
+        epsilon_decay=0.9996,
+        epsilon_min=0.1,
+    ):
         self.action_size = action_size
         self.epsilon = epsilon
         self.epsilon_decay = epsilon_decay
@@ -289,21 +305,32 @@ class DQNAgent:
             self.epsilon = self.epsilon_min
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Initialize game and actions
     game = create_simple_game()
     n = game.get_available_buttons_size()
     actions = [list(a) for a in it.product([0, 1], repeat=n)]
 
     # Initialize our agent with the set parameters
-    agent = DQNAgent(len(actions), lr=learning_rate, batch_size=batch_size,
-                     memory_size=replay_memory_size, discount_factor=discount_factor,
-                     load_model=load_model)
+    agent = DQNAgent(
+        len(actions),
+        lr=learning_rate,
+        batch_size=batch_size,
+        memory_size=replay_memory_size,
+        discount_factor=discount_factor,
+        load_model=load_model,
+    )
 
     # Run the training for the set number of epochs
     if not skip_learning:
-        agent, game = run(game, agent, actions, num_epochs=train_epochs, frame_repeat=frame_repeat,
-                          steps_per_epoch=learning_steps_per_epoch)
+        agent, game = run(
+            game,
+            agent,
+            actions,
+            num_epochs=train_epochs,
+            frame_repeat=frame_repeat,
+            steps_per_epoch=learning_steps_per_epoch,
+        )
 
         print("======================================")
         print("Training finished. It's time to watch!")

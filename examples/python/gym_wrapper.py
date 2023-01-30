@@ -7,7 +7,8 @@
 import gym
 from vizdoom import gym_wrapper
 
-if __name__  == '__main__':
+
+if __name__ == "__main__":
     env = gym.make("VizdoomHealthGatheringSupreme-v0")
 
     # Rendering random rollouts for ten episodes

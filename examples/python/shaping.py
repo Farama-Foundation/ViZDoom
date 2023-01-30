@@ -5,7 +5,7 @@
 # shaping using health_guided.wad scenario
 # Health_guided scenario is just like health_gathering
 # (see "../../scenarios/README.md") but for each collected medkit global
-# variable number 1 in acs script (coresponding to USER1) is increased
+# variable number 1 in acs script (corresponding to USER1) is increased
 # by 100.0. It is not considered a part of reward but will possibly
 # reduce learning time.
 # <episodes> number of episodes are played.
@@ -13,30 +13,36 @@
 # Game variables from state and last reward are printed.
 #####################################################################
 
-from argparse import ArgumentParser
-import os
 import itertools as it
+import os
+from argparse import ArgumentParser
 from random import choice
 from time import sleep
+
 import vizdoom as vzd
+
 
 DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "health_gathering.cfg")
 
 if __name__ == "__main__":
-    parser = ArgumentParser("ViZDoom example showing how to use shaping for health gathering scenario.")
-    parser.add_argument(dest="config",
-                        default=DEFAULT_CONFIG,
-                        nargs="?",
-                        help="Path to the configuration file of the scenario."
-                             " Please see "
-                             "../../scenarios/*cfg for more scenarios.")
+    parser = ArgumentParser(
+        "ViZDoom example showing how to use shaping for health gathering scenario."
+    )
+    parser.add_argument(
+        dest="config",
+        default=DEFAULT_CONFIG,
+        nargs="?",
+        help="Path to the configuration file of the scenario."
+        " Please see "
+        "../../scenarios/*cfg for more scenarios.",
+    )
 
     args = parser.parse_args()
 
     game = vzd.DoomGame()
 
     # Choose scenario config file you wish to watch.
-    # Don't load two configs cause the second will overrite the first one.
+    # Don't load two configs cause the second will overwrite the first one.
     # Multiple config files are ok but combining these ones doesn't make much sense.
 
     game.load_config(args.config)
@@ -71,9 +77,12 @@ if __name__ == "__main__":
             reward = game.make_action(choice(actions))
 
             # Retrieve the shaping reward
-            fixed_shaping_reward = game.get_game_variable(vzd.GameVariable.USER1)  # Get value of scripted variable
+            fixed_shaping_reward = game.get_game_variable(
+                vzd.GameVariable.USER1
+            )  # Get value of scripted variable
             shaping_reward = vzd.doom_fixed_to_double(
-                fixed_shaping_reward)  # If value is in DoomFixed format project it to double
+                fixed_shaping_reward
+            )  # If value is in DoomFixed format project it to double
             shaping_reward = shaping_reward - last_total_shaping_reward
             last_total_shaping_reward += shaping_reward
 

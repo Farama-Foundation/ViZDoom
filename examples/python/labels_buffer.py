@@ -13,24 +13,29 @@
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
+import os
 from argparse import ArgumentParser
+from random import choice
+
 import cv2
 import numpy as np
-import os
-from random import choice
 import vizdoom as vzd
 
 
 DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "deadly_corridor.cfg")
 
-if __name__ =="__main__":
-    parser = ArgumentParser("ViZDoom example showing how to use labels and labels buffer.")
-    parser.add_argument(dest="config",
-                        default=DEFAULT_CONFIG,
-                        nargs="?",
-                        help="Path to the configuration file of the scenario."
-                             " Please see "
-                             "../../scenarios/*cfg for more scenarios.")
+if __name__ == "__main__":
+    parser = ArgumentParser(
+        "ViZDoom example showing how to use labels and labels buffer."
+    )
+    parser.add_argument(
+        dest="config",
+        default=DEFAULT_CONFIG,
+        nargs="?",
+        help="Path to the configuration file of the scenario."
+        " Please see "
+        "../../scenarios/*cfg for more scenarios.",
+    )
 
     args = parser.parse_args()
 
@@ -55,20 +60,22 @@ if __name__ =="__main__":
 
     game.init()
 
-    actions = [[True, False, False, False], [False, True, False, False],
-               [False, False, True, False], [False, False, False, True]]
+    actions = [
+        [True, False, False, False],
+        [False, True, False, False],
+        [False, False, True, False],
+        [False, False, False, True],
+    ]
 
     episodes = 10
 
     # Sleep time between actions in ms
     sleep_time = 28
 
-
     # Prepare some colors and drawing function
     # Colors in in BGR order (expected by OpenCV)
     doom_red_color = [0, 0, 203]
     doom_blue_color = [203, 0, 0]
-
 
     def draw_bounding_box(buffer, x, y, width, height, color):
         """
@@ -82,7 +89,6 @@ if __name__ =="__main__":
             buffer[y + i, x, :] = color
             buffer[y + i, x + width, :] = color
 
-
     def color_labels(labels):
         """
         Walls are blue, floor/ceiling are red (OpenCV uses BGR).
@@ -92,7 +98,6 @@ if __name__ =="__main__":
         tmp[labels == 1] = [0, 0, 255]
 
         return tmp
-
 
     for i in range(episodes):
         print("Episode #" + str(i + 1))
@@ -110,17 +115,21 @@ if __name__ =="__main__":
             # Additional labels data are available in state.labels.
             labels = state.labels_buffer
             if labels is not None:
-                cv2.imshow('ViZDoom Labels Buffer', color_labels(labels))
+                cv2.imshow("ViZDoom Labels Buffer", color_labels(labels))
 
             # Get screen buffer, given in selected format. This buffer is always available.
             # Using information from state.labels draw bounding boxes.
             screen = state.screen_buffer
             for l in state.labels:
                 if l.object_name in ["Medkit", "GreenArmor"]:
-                    draw_bounding_box(screen, l.x, l.y, l.width, l.height, doom_blue_color)
+                    draw_bounding_box(
+                        screen, l.x, l.y, l.width, l.height, doom_blue_color
+                    )
                 else:
-                    draw_bounding_box(screen, l.x, l.y, l.width, l.height, doom_red_color)
-            cv2.imshow('ViZDoom Screen Buffer', screen)
+                    draw_bounding_box(
+                        screen, l.x, l.y, l.width, l.height, doom_red_color
+                    )
+            cv2.imshow("ViZDoom Screen Buffer", screen)
 
             cv2.waitKey(sleep_time)
 
@@ -128,7 +137,14 @@ if __name__ =="__main__":
             game.make_action(choice(actions))
 
             print("State #" + str(state.number))
-            print("Player position: x:", state.game_variables[0], ", y:", state.game_variables[1], ", z:", state.game_variables[2])
+            print(
+                "Player position: x:",
+                state.game_variables[0],
+                ", y:",
+                state.game_variables[1],
+                ", z:",
+                state.game_variables[2],
+            )
             print("Labels:")
 
             # Print information about objects visible on the screen.
@@ -140,14 +156,37 @@ if __name__ =="__main__":
             # Objects with higher values (closer ones) can obscure objects with lower values (further ones).
             for l in state.labels:
                 seen_in_this_episode.add(l.object_name)
-                #print("---------------------")
-                print("Label:", l.value, ", object id:", l.object_id, ", object name:", l.object_name)
-                print("Object position: x:", l.object_position_x, ", y:", l.object_position_y, ", z:", l.object_position_z)
+                # print("---------------------")
+                print(
+                    "Label:",
+                    l.value,
+                    ", object id:",
+                    l.object_id,
+                    ", object name:",
+                    l.object_name,
+                )
+                print(
+                    "Object position: x:",
+                    l.object_position_x,
+                    ", y:",
+                    l.object_position_y,
+                    ", z:",
+                    l.object_position_z,
+                )
 
                 # Other available fields (position and velocity and bounding box):
-                #print("Object rotation angle", l.object_angle, "pitch:", l.object_pitch, "roll:", l.object_roll)
-                #print("Object velocity x:", l.object_velocity_x, "y:", l.object_velocity_y, "z:", l.object_velocity_z)
-                print("Bounding box: x:", l.x, ", y:", l.y, ", width:", l.width, ", height:", l.height)
+                # print("Object rotation angle", l.object_angle, "pitch:", l.object_pitch, "roll:", l.object_roll)
+                # print("Object velocity x:", l.object_velocity_x, "y:", l.object_velocity_y, "z:", l.object_velocity_z)
+                print(
+                    "Bounding box: x:",
+                    l.x,
+                    ", y:",
+                    l.y,
+                    ", width:",
+                    l.width,
+                    ", height:",
+                    l.height,
+                )
 
             print("=====================")
 

@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
 #####################################################################
-# This script presents how to play a deathmatch game with build-in bots.
+# This script presents how to play a deathmatch game with built-in bots.
 #####################################################################
 
 import os
 from random import choice
+
 import vizdoom as vzd
+
 
 game = vzd.DoomGame()
 
@@ -14,13 +16,15 @@ game = vzd.DoomGame()
 game.load_config(os.path.join(vzd.scenarios_path, "cig.cfg"))
 
 game.set_doom_map("map01")  # Limited deathmatch.
-#game.set_doom_map("map02")  # Full deathmatch.
+# game.set_doom_map("map02")  # Full deathmatch.
 
 # Start multiplayer game only with your AI
 # (with options that will be used in the competition, details in cig_mutliplayer_host.py example).
-game.add_game_args("-host 1 -deathmatch +timelimit 10.0 "
-                   "+sv_forcerespawn 1 +sv_noautoaim 1 +sv_respawnprotect 1 +sv_spawnfarthest 1 +sv_nocrouch 1 "
-                   "+viz_respawn_delay 10 +viz_nocheat 1")
+game.add_game_args(
+    "-host 1 -deathmatch +timelimit 10.0 "
+    "+sv_forcerespawn 1 +sv_noautoaim 1 +sv_respawnprotect 1 +sv_spawnfarthest 1 +sv_nocrouch 1 "
+    "+viz_respawn_delay 10 +viz_nocheat 1"
+)
 
 # Bots are loaded from file, that by default is bots.cfg located in the same dir as ViZDoom exe
 # Other location of bots configuration can be specified by passing this argument
@@ -33,12 +37,16 @@ game.add_game_args("+name AI +colorset 0")
 game.set_mode(vzd.Mode.PLAYER)
 game.set_console_enabled(True)
 
-#game.set_window_visible(False)
+# game.set_window_visible(False)
 
 game.init()
 
 # Three example sample actions
-actions = [[1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0]]
+actions = [
+    [1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 0, 0, 0],
+]
 last_frags = 0
 
 # Play with this many bots
@@ -86,7 +94,11 @@ for i in range(episodes):
     server_state = game.get_server_state()
     for i in range(len(server_state.players_in_game)):
         if server_state.players_in_game[i]:
-            print(server_state.players_names[i] + ": " + str(server_state.players_frags[i]))
+            print(
+                server_state.players_names[i]
+                + ": "
+                + str(server_state.players_frags[i])
+            )
     print("************************")
 
     # Starts a new episode. All players have to call new_episode() in multiplayer mode.

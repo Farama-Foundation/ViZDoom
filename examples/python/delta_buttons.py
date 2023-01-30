@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 from time import sleep
+
 import vizdoom as vzd
+
 
 if __name__ == "__main__":
 

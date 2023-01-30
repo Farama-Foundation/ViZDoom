@@ -1,4 +1,4 @@
-# Scenarios  Decription:
+# Scenarios  Description:
 
 Scenarios contained in iwad files do not support action constraints, death penalty and living rewards.
 Every mention of any settings that are not included in iwads will be specified with "(config)".
@@ -33,7 +33,7 @@ his fundamental goal (the vest) and make sure he survives at the
 same time.
 
 Map is a corridor with shooting monsters on both sides (6 monsters 
-in total). A green vest is placed at the oposite end of the corridor.
+in total). A green vest is placed at the opposite end of the corridor.
 Reward is proportional (negative or positive) to change of the
 distance between the player and the vest. If player ignores monsters 
 on the sides and runs straight for the vest he will be killed somewhere 
@@ -55,14 +55,14 @@ Further configuration:
 ## DEFEND THE CENTER
 The purpose of this scenario is to teach the agent that killing the 
 monsters is GOOD and when monsters kill you is BAD. In addition,
-wasting amunition is not very good either. Agent is rewarded only 
+wasting ammunition is not very good either. Agent is rewarded only 
 for killing monsters so he has to figure out the rest for himself.
 
 Map is a large circle. Player is spawned in the exact center.
 5 melee-only, monsters are spawned along the wall. Monsters are 
 killed after a single shot. After dying each monster is respawned 
 after some time. Episode ends when the player dies (it's inevitable 
-becuse of limitted ammo).
+because of limited ammo).
 
 __REWARDS:__
 +1 for killing a monster
@@ -74,15 +74,15 @@ Further configuration:
 ## DEFEND THE LINE
 The purpose of this scenario is to teach the agent that killing the 
 monsters is GOOD and when monsters kill you is BAD. In addition,
-wasting amunition is not very good either. Agent is rewarded only 
+wasting ammunition is not very good either. Agent is rewarded only 
 for killing monsters so he has to figure out the rest for himself.
 
 Map is a rectangle. Player is spawned along the longer wall, in the 
 center. 3 melee-only and 3 shooting monsters are spawned along the 
-oposite wall. Monsters are killed after a single shot, at first. 
+opposite wall. Monsters are killed after a single shot, at first. 
 After dying each monster is respawned after some time and can endure 
 more damage. Episode ends when the player dies (it's inevitable 
-becuse of limitted ammo).
+because of limited ammo).
 
 __REWARDS:__
 +1 for killing a monster
@@ -119,7 +119,7 @@ in a labirynth-like surroundings and reach his ultimate goal
 Map is a series of rooms with interconnection and 1 corridor 
 with a dead end. Each room has a different color. There is a 
 green vest in one of the rooms (the same room every time). 
-Player is spawned in randomly choosen room facing a random 
+Player is spawned in randomly chosen room facing a random 
 direction. Episode ends when vest is reached or on timeout/
 
 __REWARDS:__
@@ -132,15 +132,15 @@ Further configuration:
 
 ## PREDICT POSITION
 The purpose of the scenario is teach agent to synchronize 
-missle weapon shot (involving a signifficant delay between 
+missile weapon shot (involving a significant delay between 
 shooting and hitting) with target movements. Agent should be 
-able to shoot so that missle and monster meet each other.
+able to shoot so that missile and monster meet each other.
 
 The map is a rectangle room. Player is spawned along the longer 
 wall, in the center. A monster is spawned randomly somewhere 
 along the opposite wall and walks between left and right corners 
 along the wall. Player is equipped with a rocket launcher and 
-a single rocket. Episode ends when missle hits a wall/the monster 
+a single rocket. Episode ends when missile hits a wall/the monster 
 or on timeout.
 
 __REWARDS:__
@@ -152,7 +152,7 @@ Further configuration:
 * timeout = 300
 
 ## TAKE COVER
-The purpose of this scenario is to teach agent to link incomming 
+The purpose of this scenario is to teach agent to link incoming 
 missles with his estimated lifespan. Agent should learn that 
 being hit means health decrease and this in turn will lead to
 death which is undesirable. In effect agent should avoid 

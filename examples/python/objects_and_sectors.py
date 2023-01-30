@@ -8,22 +8,28 @@
 # This information is not available if "+viz_nocheat" flag is enabled.
 #####################################################################
 
-from random import choice
-import vizdoom as vzd
 from argparse import ArgumentParser
+from random import choice
+
 import matplotlib.pyplot as plt
+import vizdoom as vzd
+
 
 DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "my_way_home.cfg")
 
 
-if __name__ =="__main__":
-    parser = ArgumentParser("ViZDoom example showing how to use information about objects and map.")
-    parser.add_argument(dest="config",
-                        default=DEFAULT_CONFIG,
-                        nargs="?",
-                        help="Path to the configuration file of the scenario."
-                             " Please see "
-                             "../../scenarios/*cfg for more scenarios.")
+if __name__ == "__main__":
+    parser = ArgumentParser(
+        "ViZDoom example showing how to use information about objects and map."
+    )
+    parser.add_argument(
+        dest="config",
+        default=DEFAULT_CONFIG,
+        nargs="?",
+        help="Path to the configuration file of the scenario."
+        " Please see "
+        "../../scenarios/*cfg for more scenarios.",
+    )
 
     args = parser.parse_args()
 
@@ -54,47 +60,69 @@ if __name__ =="__main__":
 
     for i in range(episodes):
         print("Episode #" + str(i + 1))
-    
+
         # Not needed for the first episode but the loop is nicer.
         game.new_episode()
         while not game.is_episode_finished():
-    
+
             # Gets the state
             state = game.get_state()
             game.make_action(choice(actions))
-    
+
             print("State #" + str(state.number))
-            print("Player position: x:", state.game_variables[0], ", y:", state.game_variables[1], ", z:", state.game_variables[2])
+            print(
+                "Player position: x:",
+                state.game_variables[0],
+                ", y:",
+                state.game_variables[1],
+                ", z:",
+                state.game_variables[2],
+            )
             print("Objects:")
-    
+
             # Print information about objects present in the episode.
             for o in state.objects:
                 print("Object id:", o.id, "object name:", o.name)
-                print("Object position: x:", o.position_x, ", y:", o.position_y, ", z:", o.position_z)
+                print(
+                    "Object position: x:",
+                    o.position_x,
+                    ", y:",
+                    o.position_y,
+                    ", z:",
+                    o.position_z,
+                )
 
                 # Other available fields:
-                #print("Object rotation angle", o.angle, "pitch:", o.pitch, "roll:", o.roll)
-                #print("Object velocity x:", o.velocity_x, "y:", o.velocity_y, "z:", o.velocity_z)
+                # print("Object rotation angle", o.angle, "pitch:", o.pitch, "roll:", o.roll)
+                # print("Object velocity x:", o.velocity_x, "y:", o.velocity_y, "z:", o.velocity_z)
 
                 # Plot object on map
                 if o.name == "DoomPlayer":
-                    plt.plot(o.position_x, o.position_y, color='green', marker='o')
+                    plt.plot(o.position_x, o.position_y, color="green", marker="o")
                 else:
-                    plt.plot(o.position_x, o.position_y, color='red', marker='o')
-    
+                    plt.plot(o.position_x, o.position_y, color="red", marker="o")
+
             print("=====================")
 
             print("Sectors:")
 
             # Print information about sectors.
             for s in state.sectors:
-                print("Sector floor height:", s.floor_height, ", ceiling height:", s.ceiling_height)
-                print("Sector lines:", [(l.x1, l.y1, l.x2, l.y2, l.is_blocking) for l in s.lines])
+                print(
+                    "Sector floor height:",
+                    s.floor_height,
+                    ", ceiling height:",
+                    s.ceiling_height,
+                )
+                print(
+                    "Sector lines:",
+                    [(l.x1, l.y1, l.x2, l.y2, l.is_blocking) for l in s.lines],
+                )
 
                 # Plot sector on map
                 for l in s.lines:
                     if l.is_blocking:
-                        plt.plot([l.x1, l.x2], [l.y1, l.y2], color='black', linewidth=2)
+                        plt.plot([l.x1, l.x2], [l.y1, l.y2], color="black", linewidth=2)
 
             # Show map
             plt.show()

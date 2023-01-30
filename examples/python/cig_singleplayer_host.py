@@ -9,8 +9,10 @@
 import os
 from random import choice
 from time import sleep
+
 import vizdoom as vzd
 from oblige import *
+
 
 game = DoomGame()
 
@@ -25,10 +27,10 @@ generator = DoomLevelGenerator()
 # There are few predefined sets of settings already defined in Oblige package for CIG competition
 generator.set_config(cig2018_test)
 generator.set_config(cig2018_difficulty_1)  # aka childs_play_wad
-#generator.set_config(cig2018_difficulty_2)  # aka painless_wad
-#generator.set_config(cig2018_difficulty_3)  # aka too_young_to_die_wad
-#generator.set_config(cig2018_difficulty_4)  # aka no_sweat_wad
-#generator.set_config(cig2018_difficulty_5)  # aka easy_wad
+# generator.set_config(cig2018_difficulty_2)  # aka painless_wad
+# generator.set_config(cig2018_difficulty_3)  # aka too_young_to_die_wad
+# generator.set_config(cig2018_difficulty_4)  # aka no_sweat_wad
+# generator.set_config(cig2018_difficulty_5)  # aka easy_wad
 
 # Tell generator to generate few maps (options for "length": "single", "few", "episode", "game").
 generator.set_config({"length": "few"})
@@ -40,14 +42,16 @@ maps = generator.generate(wad_path)
 # Set Scenario to the new generated WAD
 game.set_doom_scenario_path(wad_path)
 
-game.add_game_args("-host 2 "
-                   # This machine will function as a host for a singleplayer game with host as spectator and player. 
-                   # It will wait for player's machine to connect using the -join parameter and then start the game.
-                   "-skill 3 "  # The game will run on normal difficulty setting
-                   "+timelimit 10.0 "  # The game (episode) will end after this many minutes have elapsed.
-                   "+sv_forcerespawn 1 "  # Players will respawn automatically after they die.
-                   "+sv_noautoaim 1 "  # Autoaim is disabled for all players.
-                   "+sv_nocrouch 1 ")  # Disables crouching.
+game.add_game_args(
+    "-host 2 "
+    # This machine will function as a host for a singleplayer game with host as spectator and player.
+    # It will wait for player's machine to connect using the -join parameter and then start the game.
+    "-skill 3 "  # The game will run on normal difficulty setting
+    "+timelimit 10.0 "  # The game (episode) will end after this many minutes have elapsed.
+    "+sv_forcerespawn 1 "  # Players will respawn automatically after they die.
+    "+sv_noautoaim 1 "  # Autoaim is disabled for all players.
+    "+sv_nocrouch 1 "
+)  # Disables crouching.
 
 game.add_game_args("+name Host")
 
@@ -58,7 +62,7 @@ game.add_game_args("+viz_spectator 1")
 game.add_game_args("+freelook 1")
 game.set_screen_resolution(ScreenResolution.RES_640X480)
 game.set_window_visible(True)
-#game.set_mode(Mode.SPECTATOR)
+# game.set_mode(Mode.SPECTATOR)
 game.set_mode(vzd.Mode.ASYNC_SPECTATOR)
 
 game.init()
@@ -68,7 +72,7 @@ episodes = maps
 
 # Play until the game (episode) is over.
 for i in range(1, episodes + 1):
-    print("Map {}/{}".format(i, episodes))
+    print(f"Map {i}/{episodes}")
 
     time = 0
     while not game.is_episode_finished():
@@ -92,7 +96,7 @@ for i in range(1, episodes + 1):
     sleep(1.0)
 
     # Set next map
-    map = "map{:02}".format(i + 1)
+    map = f"map{i + 1:02}"
     game.set_doom_map(map)
     game.new_episode()
 

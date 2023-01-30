@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 # E. Culurciello
 # August 2017
 
-from vizdoom import *
 import itertools as it
-from random import sample, randint, random
-from time import time, sleep
+from random import randint, random, sample
+from time import sleep, time
+
 import numpy as np
-import skimage.color, skimage.transform
+import skimage.color
+import skimage.transform
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torchvision import datasets, transforms
 from torch.autograd import Variable
+from torchvision import datasets, transforms
+from vizdoom import *
 
 
 # NN learning settings
@@ -47,7 +48,7 @@ def preprocess(img):
 
 class Net(nn.Module):
     def __init__(self, available_actions_count):
-        super(Net, self).__init__()
+        super().__init__()
         self.conv1 = nn.Conv2d(1, 8, kernel_size=6, stride=3)
         self.conv2 = nn.Conv2d(8, 8, kernel_size=3, stride=2)
         self.fc1 = nn.Linear(192, 128)
@@ -65,6 +66,7 @@ def get_q_values(state):
     state = torch.from_numpy(state)
     state = Variable(state)
     return model(state)
+
 
 def get_best_action(state):
     q = get_q_values(state)
@@ -87,7 +89,7 @@ def initialize_vizdoom(config_file_path):
     return game
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Create Doom instance
     game = initialize_vizdoom(config_file_path)
 
@@ -97,7 +99,7 @@ if __name__ == '__main__':
 
     print("Loading model from: ", model_savefile)
     model = torch.load(model_savefile)
-    
+
     print("======================================")
     print("Testing trained neural network!")
 

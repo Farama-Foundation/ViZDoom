@@ -4,10 +4,12 @@
 # This script test recording functionality
 #####################################################################
 
-from random import random
 import os
+from random import random
 from time import sleep
+
 import vizdoom as vzd
+
 
 GV = vzd.GameVariable
 B = vzd.Button
@@ -54,15 +56,29 @@ def normalize_variables(vars):
 def test_mode_and_sleep(buttons, variables, actions, title):
     sleep_times = [0, 0.001, 0.1]
     for sleep_time in sleep_times:
-        recording_test(buttons, variables, actions, mode=vzd.Mode.PLAYER,
-                       title=title + " PLAYER mode with sleep = " + str(sleep_time))
-        #recording_test(buttons, variables, actions, mode=vzd.Mode.SPECTATOR,
+        recording_test(
+            buttons,
+            variables,
+            actions,
+            mode=vzd.Mode.PLAYER,
+            title=title + " PLAYER mode with sleep = " + str(sleep_time),
+        )
+        # recording_test(buttons, variables, actions, mode=vzd.Mode.SPECTATOR,
         #               title=title + " SPECTATOR mode with sleep = " + str(sleep_time))
 
 
-def recording_test(buttons, variables, actions, recording_file="test_recording.lmp", sleep_time=0, mode=vzd.Mode.PLAYER,
-                   verbose=0, verbose_sleep_time=0.1, title="Unnamed test"):
-    print("Test: {}".format(title))
+def recording_test(
+    buttons,
+    variables,
+    actions,
+    recording_file="test_recording.lmp",
+    sleep_time=0,
+    mode=vzd.Mode.PLAYER,
+    verbose=0,
+    verbose_sleep_time=0.1,
+    title="Unnamed test",
+):
+    print(f"Test: {title}")
 
     game = setup_test(buttons, variables, visible=verbose)
 
@@ -76,7 +92,7 @@ def recording_test(buttons, variables, actions, recording_file="test_recording.l
     game.init()
     game.new_episode(recording_file)
     for i, action in enumerate(actions):
-        print("  Playing:", i, "/", len(actions), end = '\r')
+        print("  Playing:", i, "/", len(actions), end="\r")
 
         normalize_action(action)
         history_of_actions.append(action)
@@ -94,8 +110,11 @@ def recording_test(buttons, variables, actions, recording_file="test_recording.l
         assert type(last_action) == list
 
         if verbose > 1:
-            print("  State: {}, tic: {}, reward: {}, action: {}, last action: {}, variables: {}".format(
-                state.number, state.tic, reward, action, last_action, variables))
+            print(
+                "  State: {}, tic: {}, reward: {}, action: {}, last action: {}, variables: {}".format(
+                    state.number, state.tic, reward, action, last_action, variables
+                )
+            )
             sleep(verbose_sleep_time)
 
         # Asserts
@@ -110,7 +129,7 @@ def recording_test(buttons, variables, actions, recording_file="test_recording.l
     game.init()
     game.replay_episode(recording_file)
     while not game.is_episode_finished() and state_number < len(history_of_variables):
-        print("  Replaying:", state_number, "/", len(history_of_variables), end = '\r')
+        print("  Replaying:", state_number, "/", len(history_of_variables), end="\r")
 
         state = game.get_state()
         variables = normalize_variables(state.game_variables)
@@ -125,8 +144,17 @@ def recording_test(buttons, variables, actions, recording_file="test_recording.l
         sleep(sleep_time)
 
         if verbose > 1:
-            print("  State: {}, tic: {}, reward: {}, recorded action: {}, last action: {}, recorded variables: {} variables: {}".format(
-                state.number, state.tic, reward, history_of_actions[state_number], last_action, history_of_variables[state_number], variables))
+            print(
+                "  State: {}, tic: {}, reward: {}, recorded action: {}, last action: {}, recorded variables: {} variables: {}".format(
+                    state.number,
+                    state.tic,
+                    reward,
+                    history_of_actions[state_number],
+                    last_action,
+                    history_of_variables[state_number],
+                    variables,
+                )
+            )
             sleep(verbose_sleep_time)
 
         # Asserts
@@ -137,8 +165,14 @@ def recording_test(buttons, variables, actions, recording_file="test_recording.l
             error = True
             if verbose > 0:
                 print("  Test failed:")
-                print("    State: {}, tic: {}, recorded reward: {} != reward: {}".format(
-                   state.number, state.tic, history_of_rewards[state_number], reward))
+                print(
+                    "    State: {}, tic: {}, recorded reward: {} != reward: {}".format(
+                        state.number,
+                        state.tic,
+                        history_of_rewards[state_number],
+                        reward,
+                    )
+                )
 
         try:
             assert history_of_variables[state_number] == variables
@@ -146,8 +180,14 @@ def recording_test(buttons, variables, actions, recording_file="test_recording.l
             error = True
             if verbose > 0:
                 print("  Test failed:")
-                print("    State: {}, tic: {}, recorded variables: {} != variables: {}".format(
-                   state.number, state.tic, history_of_variables[state_number], variables))
+                print(
+                    "    State: {}, tic: {}, recorded variables: {} != variables: {}".format(
+                        state.number,
+                        state.tic,
+                        history_of_variables[state_number],
+                        variables,
+                    )
+                )
 
         try:
             assert history_of_actions[state_number] == last_action
@@ -155,8 +195,14 @@ def recording_test(buttons, variables, actions, recording_file="test_recording.l
             error = True
             if verbose > 0:
                 print("  Test failed:")
-                print("    State: {}, tic: {}, recorded action: {} != last action: {}".format(
-                   state.number, state.tic, history_of_actions[state_number], last_action))
+                print(
+                    "    State: {}, tic: {}, recorded action: {} != last action: {}".format(
+                        state.number,
+                        state.tic,
+                        history_of_actions[state_number],
+                        last_action,
+                    )
+                )
 
         if error:
             error_count += 1
@@ -176,22 +222,26 @@ def random_action(action_len, button_press_prob):
 
 
 def random_test():
-    buttons = [B.MOVE_LEFT,
-               B.MOVE_RIGHT,
-               B.MOVE_BACKWARD,
-               B.MOVE_FORWARD,
-               B.TURN_RIGHT,
-               B.TURN_LEFT,
-               B.CROUCH,
-               B.JUMP]
+    buttons = [
+        B.MOVE_LEFT,
+        B.MOVE_RIGHT,
+        B.MOVE_BACKWARD,
+        B.MOVE_FORWARD,
+        B.TURN_RIGHT,
+        B.TURN_LEFT,
+        B.CROUCH,
+        B.JUMP,
+    ]
 
-    variables = [GV.POSITION_X,
-                 GV.POSITION_Y,
-                 GV.POSITION_Z,
-                 GV.VIEW_HEIGHT,
-                 GV.ANGLE,
-                 GV.PITCH,
-                 GV.ROLL]
+    variables = [
+        GV.POSITION_X,
+        GV.POSITION_Y,
+        GV.POSITION_Z,
+        GV.VIEW_HEIGHT,
+        GV.ANGLE,
+        GV.PITCH,
+        GV.ROLL,
+    ]
 
     test_actions1 = []
     for _ in range(1000):
@@ -258,15 +308,14 @@ def ankitkv_test():
 
 
 def delta_buttons_test():
-    buttons = [B.MOVE_FORWARD_BACKWARD_DELTA,
-               B.MOVE_LEFT_RIGHT_DELTA,
-               B.LOOK_UP_DOWN_DELTA,
-               B.TURN_LEFT_RIGHT_DELTA]
+    buttons = [
+        B.MOVE_FORWARD_BACKWARD_DELTA,
+        B.MOVE_LEFT_RIGHT_DELTA,
+        B.LOOK_UP_DOWN_DELTA,
+        B.TURN_LEFT_RIGHT_DELTA,
+    ]
 
-    variables = [GV.POSITION_X,
-                 GV.POSITION_Y,
-                 GV.ANGLE,
-                 GV.PITCH]
+    variables = [GV.POSITION_X, GV.POSITION_Y, GV.ANGLE, GV.PITCH]
 
     test_actions1 = []
     for i in range(10):
@@ -277,22 +326,20 @@ def delta_buttons_test():
         new_action = [-15, -10 if i % 2 == 0 else 0, 6, -20]
         test_actions1.append(new_action)
 
-    test_mode_and_sleep(buttons, variables, test_actions1, title="Delta buttons test #1")
+    test_mode_and_sleep(
+        buttons, variables, test_actions1, title="Delta buttons test #1"
+    )
 
 
 # https://github.com/mwydmuch/ViZDoom/issues/412
 def mhe500_test():
-    buttons = [B.MOVE_LEFT,
-               B.MOVE_RIGHT,
-               B.ATTACK]
+    buttons = [B.MOVE_LEFT, B.MOVE_RIGHT, B.ATTACK]
 
-    variables = [GV.POSITION_X,
-                 GV.POSITION_Y,
-                 GV.AMMO1]
+    variables = [GV.POSITION_X, GV.POSITION_Y, GV.AMMO1]
 
     test_actions1 = []
     for i in range(300):
-        new_action = [0] * len(buttons) # Do nothing
+        new_action = [0] * len(buttons)  # Do nothing
         test_actions1.append(new_action)
 
     test_mode_and_sleep(buttons, variables, test_actions1, title="mhe500 test #1")

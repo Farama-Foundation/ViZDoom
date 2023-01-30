@@ -13,36 +13,45 @@
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
-from argparse import ArgumentParser
 import itertools as it
 import os
+from argparse import ArgumentParser
 from random import choice
 from time import sleep
+
 import vizdoom as vzd
+
 
 DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "basic.cfg")
 
 if __name__ == "__main__":
-    parser = ArgumentParser("ViZDoom example showing how to set seed to have deterministic episodes.")
-    parser.add_argument(dest="config",
-                        default=DEFAULT_CONFIG,
-                        nargs="?",
-                        help="Path to the configuration file of the scenario."
-                             " Please see "
-                             "../../scenarios/*cfg for more scenarios.")
-    parser.add_argument("-s", "--seed",
-                        default=666,
-                        type=int,
-                        help="Seed for the random generator in DoomGame.")
-    parser.add_argument("-e", "--per_episode",
-                        action="store_true",
-                        help="Set seed for every episode.")
+    parser = ArgumentParser(
+        "ViZDoom example showing how to set seed to have deterministic episodes."
+    )
+    parser.add_argument(
+        dest="config",
+        default=DEFAULT_CONFIG,
+        nargs="?",
+        help="Path to the configuration file of the scenario."
+        " Please see "
+        "../../scenarios/*cfg for more scenarios.",
+    )
+    parser.add_argument(
+        "-s",
+        "--seed",
+        default=666,
+        type=int,
+        help="Seed for the random generator in DoomGame.",
+    )
+    parser.add_argument(
+        "-e", "--per_episode", action="store_true", help="Set seed for every episode."
+    )
     args = parser.parse_args()
 
     game = vzd.DoomGame()
 
     # Choose the scenario config file you wish to watch.
-    # Don't load two configs cause the second will overrite the first one.
+    # Don't load two configs cause the second will overwrite the first one.
     # Multiple config files are ok but combining these ones doesn't make much sense.
 
     game.load_config(args.config)

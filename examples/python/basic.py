@@ -4,7 +4,7 @@
 # This script presents how to use the most basic features of the environment.
 # It configures the engine, and makes the agent perform random actions.
 # It also gets current state and reward earned with the action.
-# <episodes> number of episodes are played. 
+# <episodes> number of episodes are played.
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
 #
@@ -14,6 +14,7 @@
 import os
 from random import choice
 from time import sleep
+
 import vizdoom as vzd
 
 
@@ -64,7 +65,9 @@ if __name__ == "__main__":
     game.set_render_effects_sprites(False)  # Smoke and blood
     game.set_render_messages(False)  # In-game messages
     game.set_render_corpses(False)
-    game.set_render_screen_flashes(True)  # Effect upon taking damage or picking up items
+    game.set_render_screen_flashes(
+        True
+    )  # Effect upon taking damage or picking up items
 
     # Adds buttons that will be allowed to use.
     # This can be done by adding buttons one by one:
@@ -73,7 +76,9 @@ if __name__ == "__main__":
     # game.add_available_button(vzd.Button.MOVE_RIGHT)
     # game.add_available_button(vzd.Button.ATTACK)
     # Or by setting them all at once:
-    game.set_available_buttons([vzd.Button.MOVE_LEFT, vzd.Button.MOVE_RIGHT, vzd.Button.ATTACK])
+    game.set_available_buttons(
+        [vzd.Button.MOVE_LEFT, vzd.Button.MOVE_RIGHT, vzd.Button.ATTACK]
+    )
     # Buttons that will be used can be also checked by:
     print("Available buttons:", [b.name for b in game.get_available_buttons()])
 
@@ -83,7 +88,10 @@ if __name__ == "__main__":
     # game.add_available_game_variable(vzd.GameVariable.AMMO2)
     # Or:
     game.set_available_game_variables([vzd.GameVariable.AMMO2])
-    print("Available game variables:", [v.name for v in game.get_available_game_variables()])
+    print(
+        "Available game variables:",
+        [v.name for v in game.get_available_game_variables()],
+    )
 
     # Causes episodes to finish after 200 tics (actions)
     game.set_episode_timeout(200)
@@ -106,7 +114,7 @@ if __name__ == "__main__":
     game.set_mode(vzd.Mode.PLAYER)
 
     # Enables engine output to console, in case of a problem this might provide additional information.
-    #game.set_console_enabled(True)
+    # game.set_console_enabled(True)
 
     # Initialize the game. Further configuration won't take any effect from now on.
     game.init()
@@ -148,7 +156,7 @@ if __name__ == "__main__":
 
             # Games variables can be also accessed via
             # (including the ones that were not added as available to a game state):
-            #game.get_game_variable(GameVariable.AMMO2)
+            # game.get_game_variable(GameVariable.AMMO2)
 
             # Makes an action (here random one) and returns a reward.
             r = game.make_action(choice(actions))

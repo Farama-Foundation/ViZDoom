@@ -5,12 +5,13 @@
 # https://github.com/mwydmuch/PyOblige
 #####################################################################
 
-from argparse import ArgumentParser
 import os
+from argparse import ArgumentParser
 from time import sleep
 
 import oblige
 import vizdoom as vzd
+
 
 DEFAULT_CONFIG = "../../scenarios/oblige.cfg"
 DEFAULT_SEED = 666
@@ -18,25 +19,39 @@ DEFAULT_OUTPUT_FILE = "test.wad"
 
 if __name__ == "__main__":
     parser = ArgumentParser("An example showing how to generate maps with PyOblige.")
-    parser.add_argument(dest="config",
-                        default=DEFAULT_CONFIG,
-                        nargs="?",
-                        help="Path to the configuration file of the scenario."
-                             " Please see "
-                             "../../scenarios/*cfg for more scenarios.")
-    parser.add_argument("-s", "--seed",
-                        default=DEFAULT_SEED,
-                        type=int,
-                        help="Number of iterations(actions) to run")
-    parser.add_argument("-v", "--verbose",
-                        action="store_true",
-                        help="Use verbose mode during map generation.")
-    parser.add_argument("-o", "--output_file",
-                        default=DEFAULT_OUTPUT_FILE,
-                        help="Where the wad file will be created.")
-    parser.add_argument("-x", "--exit",
-                        action="store_true",
-                        help="Do not test the wad, just leave after generation.")
+    parser.add_argument(
+        dest="config",
+        default=DEFAULT_CONFIG,
+        nargs="?",
+        help="Path to the configuration file of the scenario."
+        " Please see "
+        "../../scenarios/*cfg for more scenarios.",
+    )
+    parser.add_argument(
+        "-s",
+        "--seed",
+        default=DEFAULT_SEED,
+        type=int,
+        help="Number of iterations(actions) to run",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Use verbose mode during map generation.",
+    )
+    parser.add_argument(
+        "-o",
+        "--output_file",
+        default=DEFAULT_OUTPUT_FILE,
+        help="Where the wad file will be created.",
+    )
+    parser.add_argument(
+        "-x",
+        "--exit",
+        action="store_true",
+        help="Do not test the wad, just leave after generation.",
+    )
 
     args = parser.parse_args()
 
@@ -51,10 +66,7 @@ if __name__ == "__main__":
     generator.set_seed(args.seed)
 
     # Set generator configs, specified keys will be overwritten.
-    generator.set_config({
-        "size": "micro",
-        "health": "more",
-        "weapons": "sooner"})
+    generator.set_config({"size": "micro", "health": "more", "weapons": "sooner"})
 
     # There are few predefined sets of settings already defined in Oblige package, like test_wad and childs_play_wad
     generator.set_config(oblige.childs_play_wad)
@@ -64,9 +76,9 @@ if __name__ == "__main__":
 
     # Generate method will return number of maps inside wad file.
     wad_path = args.output_file
-    print("Generating {} ...".format(wad_path))
+    print(f"Generating {wad_path} ...")
     num_maps = generator.generate(wad_path, verbose=args.verbose)
-    print("Generated {} maps.".format(num_maps))
+    print(f"Generated {num_maps} maps.")
 
     if args.exit:
         exit(0)
@@ -89,8 +101,8 @@ if __name__ == "__main__":
     for i in range(1, episodes + 1):
 
         # Update map name
-        print("Map {}/{}".format(i, episodes))
-        map = "map{:02}".format(i)
+        print(f"Map {i}/{episodes}")
+        map = f"map{i:02}"
         game.set_doom_map(map)
         game.new_episode()
 

@@ -795,7 +795,7 @@ Default value: 35 (default Doom ticrate).
 Config key: `ticrate`
 
 See also:
-- [exmaples/python/ticrate.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/ticrate.py)
+- [examples/python/ticrate.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/ticrate.py)
 
 
 ---

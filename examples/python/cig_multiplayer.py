@@ -7,7 +7,9 @@
 
 import os
 from random import choice
+
 import vizdoom as vzd
+
 
 game = vzd.DoomGame()
 
@@ -15,25 +17,31 @@ game = vzd.DoomGame()
 game.load_config(os.path.join(vzd.scenarios_path, "cig.cfg"))
 
 game.set_doom_map("map01")  # Limited deathmatch.
-#game.set_doom_map("map02")  # Full deathmatch.
+# game.set_doom_map("map02")  # Full deathmatch.
 
 # Join existing game.
-game.add_game_args("-join 127.0.0.1 -port 5029") # Connect to a host for a multiplayer game.
+game.add_game_args(
+    "-join 127.0.0.1 -port 5029"
+)  # Connect to a host for a multiplayer game.
 
 # Name your agent and select color
 # colors: 0 - green, 1 - gray, 2 - brown, 3 - red, 4 - light gray, 5 - light brown, 6 - light red, 7 - light blue
 game.add_game_args("+name AI +colorset 0")
 
 # During the competition, async mode will be forced for all agents.
-#game.set_mode(Mode.PLAYER)
+# game.set_mode(Mode.PLAYER)
 game.set_mode(vzd.Mode.ASYNC_PLAYER)
 
-#game.set_window_visible(False)
+# game.set_window_visible(False)
 
 game.init()
 
 # Three example sample actions
-actions = [[1,0,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0]]
+actions = [
+    [1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 0, 0, 0],
+]
 
 # Get player's number
 player_number = int(game.get_game_variable(vzd.GameVariable.PLAYER_NUMBER))

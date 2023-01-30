@@ -16,15 +16,19 @@
 from argparse import ArgumentParser
 
 import cv2
-import numpy as np
 import gym
+import numpy as np
 import vizdoom.gym_wrapper
-
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 
+
 DEFAULT_ENV = "VizdoomBasic-v0"
-AVAILABLE_ENVS = [env for env in [env_spec.id for env_spec in gym.envs.registry.all()] if "Vizdoom" in env]
+AVAILABLE_ENVS = [
+    env
+    for env in [env_spec.id for env_spec in gym.envs.registry.all()]
+    if "Vizdoom" in env
+]
 # Height and width of the resized image
 IMAGE_SHAPE = (60, 80)
 
@@ -49,6 +53,7 @@ class ObservationWrapper(gym.ObservationWrapper):
           for faster running of ViZDoom. This can really impact performance,
           and this code is pretty slow because of this!
     """
+
     def __init__(self, env, shape=IMAGE_SHAPE):
         super().__init__(env)
         self.image_shape = shape
@@ -76,11 +81,7 @@ def main(args):
         env = gym.wrappers.TransformReward(env, lambda r: r * 0.01)
         return env
 
-    envs = make_vec_env(
-        args.env,
-        n_envs=N_ENVS,
-        wrapper_class=wrap_env
-    )
+    envs = make_vec_env(args.env, n_envs=N_ENVS, wrapper_class=wrap_env)
 
     agent = PPO("CnnPolicy", envs, n_steps=N_STEPS, verbose=1)
 
@@ -92,9 +93,11 @@ def main(args):
 
 if __name__ == "__main__":
     parser = ArgumentParser("Train stable-baselines3 PPO agents on ViZDoom.")
-    parser.add_argument("--env",
-                        default=DEFAULT_ENV,
-                        choices=AVAILABLE_ENVS,
-                        help="Name of the environment to play")
+    parser.add_argument(
+        "--env",
+        default=DEFAULT_ENV,
+        choices=AVAILABLE_ENVS,
+        help="Name of the environment to play",
+    )
     args = parser.parse_args()
     main(args)

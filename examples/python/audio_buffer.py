@@ -6,13 +6,13 @@
 # Note: This requires scipy library
 #####################################################################
 
-import vizdoom as vzd
-
 import os
 from random import choice
-import numpy as np
-from scipy.io import wavfile
 from time import sleep
+
+import numpy as np
+import vizdoom as vzd
+from scipy.io import wavfile
 
 
 if __name__ == "__main__":
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     game.set_audio_buffer_size(frameskip)
 
     # This could fix "no audio in buffer" bug on Ubuntu 20.04.
-    #game.add_game_args("+snd_efx 0")
+    # game.add_game_args("+snd_efx 0")
 
     # Initialize the game. Further configuration won't take any effect from now on.
     try:
@@ -76,7 +76,7 @@ if __name__ == "__main__":
             r = game.make_action(choice(actions), frameskip)
 
             if not AUDIO_BUFFER_ENABLED:
-                sleep(sleep_time * frameskip)            
+                sleep(sleep_time * frameskip)
     game.close()
 
     if AUDIO_BUFFER_ENABLED:

@@ -4,30 +4,34 @@
 # This script presents SPECTATOR mode. In SPECTATOR mode you play and
 # your agent can learn from it.
 # Configuration is loaded from "../../scenarios/<SCENARIO_NAME>.cfg" file.
-# 
+#
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
-from argparse import ArgumentParser
 import os
+from argparse import ArgumentParser
 from time import sleep
+
 import vizdoom as vzd
+
 
 DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "deathmatch.cfg")
 
 if __name__ == "__main__":
     parser = ArgumentParser("ViZDoom example showing how to use SPECTATOR mode.")
-    parser.add_argument(dest="config",
-                        default=DEFAULT_CONFIG,
-                        nargs="?",
-                        help="Path to the configuration file of the scenario."
-                             " Please see "
-                             "../../scenarios/*cfg for more scenarios.")
+    parser.add_argument(
+        dest="config",
+        default=DEFAULT_CONFIG,
+        nargs="?",
+        help="Path to the configuration file of the scenario."
+        " Please see "
+        "../../scenarios/*cfg for more scenarios.",
+    )
     args = parser.parse_args()
     game = vzd.DoomGame()
 
     # Choose scenario config file you wish to watch.
-    # Don't load two configs cause the second will overrite the first one.
+    # Don't load two configs cause the second will overwrite the first one.
     # Multiple config files are ok but combining these ones doesn't make much sense.
 
     game.load_config(args.config)
