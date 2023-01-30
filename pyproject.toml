@@ -1,2 +1,46 @@
 [build-system]
 requires = ["cmake>=3.1.0", "setuptools", "wheel"]
+
+[tool.black]
+safe = true
+
+[tool.isort]
+atomic = true
+profile = "black"
+src_paths = ["gymnasium", "tests", "docs/scripts"]
+extra_standard_library = ["typing_extensions"]
+indent = 4
+lines_after_imports = 2
+multi_line_output = 3
+
+[tool.pyright]
+include = ["gymnasium/**", "tests/**"]
+exclude = ["**/node_modules", "**/__pycache__"]
+strict = []
+
+typeCheckingMode = "basic"
+pythonVersion = "3.7"
+pythonPlatform = "All"
+typeshedPath = "typeshed"
+enableTypeIgnoreComments = true
+
+# This is required as the CI pre-commit does not download the module (i.e. numpy, pygame, box2d)
+#   Therefore, we have to ignore missing imports
+reportMissingImports = "none"
+# Some modules are missing type stubs, which is an issue when running pyright locally
+reportMissingTypeStubs = false
+# For warning and error, will raise an error when
+reportInvalidTypeVarUse = "none"
+
+# reportUnknownMemberType = "warning"  # -> raises 6035 warnings
+# reportUnknownParameterType = "warning"  # -> raises 1327 warnings
+# reportUnknownVariableType = "warning"  # -> raises 2585 warnings
+# reportUnknownArgumentType = "warning"  # -> raises 2104 warnings
+reportGeneralTypeIssues = "none"  # -> commented out raises 489 errors
+reportUntypedFunctionDecorator = "none"  # -> pytest.mark.parameterize issues
+
+reportPrivateUsage = "warning"
+reportUnboundVariable = "warning"
+
+[tool.pytest.ini_options]
+filterwarnings = ['ignore:.*The environment .* is out of date.*']
