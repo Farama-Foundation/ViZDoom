@@ -13,7 +13,7 @@ from vizdoom.gym_wrapper.base_gym_env import VizdoomEnv
 
 vizdoom_envs = [
     env
-    for env in [env_spec.id for env_spec in gym.envs.registry.values()]
+    for env in [env_spec.id for env_spec in gym.envs.registry.values()]  # type: ignore
     if "Vizdoom" in env
 ]
 test_env_configs = f"{os.path.dirname(os.path.abspath(__file__))}/env_configs"

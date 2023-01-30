@@ -80,7 +80,7 @@ def recording_test(
 ):
     print(f"Test: {title}")
 
-    game = setup_test(buttons, variables, visible=verbose)
+    game = setup_test(buttons, variables, visible=bool(verbose))
 
     # Append all zeros action
     actions.append([0.0] * game.get_available_buttons_size())

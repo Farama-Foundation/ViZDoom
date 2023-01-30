@@ -205,7 +205,7 @@ setup(
     author="Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, Grzegorz Runc, Jakub Toczek",
     author_email="mwydmuch@cs.put.poznan.pl",
     extras_require={"gym": ["gym==0.26.0", "pygame==2.1.0"]},
-    install_requires=["numpy"],
+    install_requires=["numpy", "tqdm"],
     tests_require=["psutil"],
     packages=["vizdoom"],
     package_dir={"vizdoom": package_path},

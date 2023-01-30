@@ -28,6 +28,10 @@ repos:
       - id: codespell
         args:
           - --ignore-words-list=msdos,MSDOS,LTS,STLE,parms,bord,partialy,nd,siz,ore,CLER,
+  - repo: https://github.com/python/black
+    rev: 22.10.0
+    hooks:
+      - id: black
   - repo: https://github.com/PyCQA/flake8
     rev: 5.0.4
     hooks:
@@ -49,10 +53,6 @@ repos:
     hooks:
       - id: isort
 
-  - repo: https://github.com/python/black
-    rev: 22.10.0
-    hooks:
-      - id: black
   # - repo: https://github.com/pycqa/pydocstyle
   #   rev: 6.1.1
   #   hooks:
