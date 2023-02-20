@@ -1,6 +1,7 @@
 recursive-include cmake_modules *cmake *.in
 recursive-include include *.h
 recursive-include gym_wrapper *
+recursive-include gymnasium_wrapper *
 recursive-include scripts *.sh
 recursive-include scenarios *wad *cfg
 recursive-include src *

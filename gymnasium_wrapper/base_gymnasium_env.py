@@ -2,7 +2,7 @@ import itertools
 import warnings
 from typing import Optional
 
-import gym
+import gymnasium as gym 
 import numpy as np
 import pygame
 import vizdoom.vizdoom as vzd
@@ -18,7 +18,7 @@ LABEL_COLORS = (
 
 
 class VizdoomEnv(gym.Env):
-    metadata = {"render_modes": ["human", "rgb_array"]}
+    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 50}
 
     def __init__(
         self,
@@ -28,7 +28,7 @@ class VizdoomEnv(gym.Env):
         render_mode: Optional[str] = None,
     ):
         """
-        Base class for Gym interface for ViZDoom. Thanks to https://github.com/shakenes/vizdoomgym
+        Base class for Gymnasium interface for ViZDoom. Thanks to https://github.com/shakenes/vizdoomgym
         Child classes are defined in gym_env_defns.py,
 
         Arguments:
@@ -74,12 +74,13 @@ class VizdoomEnv(gym.Env):
             and screen_format != vzd.ScreenFormat.GRAY8
         ):
             warnings.warn(
-                f"Detected screen format {screen_format.name}. Only RGB24 and GRAY8 are supported in the Gym"
+                f"Detected screen format {screen_format.name}. Only RGB24 and GRAY8 are supported in the Gymnasium"
                 f" wrapper. Forcing RGB24."
             )
             self.game.set_screen_format(vzd.ScreenFormat.RGB24)
 
         self.state = None
+        self.clock = None
         self.window_surface = None
         self.isopen = True
         self.channels = 3
@@ -249,6 +250,8 @@ class VizdoomEnv(gym.Env):
         return np.concatenate(image_list, axis=1)
 
     def render(self):
+        if self.clock is None:
+            self.clock = pygame.time.Clock()
         render_image = self.__build_human_render_image()
         if self.render_mode == "rgb_array":
             return render_image
@@ -263,6 +266,8 @@ class VizdoomEnv(gym.Env):
             surf = pygame.surfarray.make_surface(render_image)
             self.window_surface.blit(surf, (0, 0))
             pygame.display.update()
+            pygame.event.pump()
+            self.clock.tick(self.metadata["render_fps"])
         else:
             return self.isopen
 

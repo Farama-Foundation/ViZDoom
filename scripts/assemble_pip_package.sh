@@ -27,6 +27,8 @@ SCENARIOS_DEST_DIR="${PACKAGE_DEST_PATH}/scenarios"
 SCENARIOS_PATH="${SRC_PATH}/scenarios"
 GYM_WRAPPER_DEST_DIR="${PACKAGE_DEST_PATH}/gym_wrapper"
 GYM_WRAPPER_PATH="${SRC_PATH}/gym_wrapper"
+GYMNASIUM_WRAPPER_DEST_DIR="${PACKAGE_DEST_PATH}/gymnasium_wrapper"
+GYMNASIUM_WRAPPER_PATH="${SRC_PATH}/gymnasium_wrapper"
 
 if [ ! -e ${PYTHON_BIN_PATH} ]; then
     echo "Library for specified Python version does not exist. Aborting."
@@ -55,3 +57,5 @@ mv ${SCENARIOS_DEST_DIR}/bots.cfg ${PACKAGE_DEST_PATH}
 
 mkdir -p ${GYM_WRAPPER_DEST_DIR}
 cp ${GYM_WRAPPER_PATH}/*.py ${GYM_WRAPPER_DEST_DIR}
+mkdir -p ${GYMNASIUM_WRAPPER_DEST_DIR}
+cp ${GYMNASIUM_WRAPPER_PATH}/*.py ${GYMNASIUM_WRAPPER_DEST_DIR}
