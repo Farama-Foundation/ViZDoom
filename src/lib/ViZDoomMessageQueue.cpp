@@ -40,10 +40,10 @@ namespace vizdoom {
             this->mq = new bip::message_queue(bip::open_or_create, this->name.c_str(), MQ_MAX_MSG_NUM, sizeof(Message));
         }
         catch(bip::interprocess_exception& ex) {
-            throw MessageQueueException(std::string("Failed to create message queues: ") + std::string(ex.what()));
+            throw MessageQueueException(std::string("Failed to create the message queue: ") + std::string(ex.what()));
         }
         catch (...) {
-            throw MessageQueueException("Failed to create message queues for unknown reason.");
+            throw MessageQueueException("Failed to create the message queue for an unknown reason.");
         }
     }
 
@@ -64,10 +64,10 @@ namespace vizdoom {
             this->mq->send(&msg, sizeof(Message), 0);
         }
         catch(bip::interprocess_exception& ex) {
-            throw MessageQueueException(std::string("Failed to send message: ") + std::string(ex.what()));
+            throw MessageQueueException(std::string("Failed to send the message: ") + std::string(ex.what()));
         }
         catch (...) {
-            throw MessageQueueException("Failed to send message for unknown reason.");
+            throw MessageQueueException("Failed to send the message for an unknown reason.");
         }
     }
 

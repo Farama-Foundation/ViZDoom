@@ -39,10 +39,10 @@ namespace vizdoom {
             this->sm = bip::shared_memory_object(bip::open_only, this->name.c_str(), bip::read_write);
         }
         catch(bip::interprocess_exception& ex) {
-            throw SharedMemoryException(std::string("Failed to open shared memory: ") + std::string(ex.what()));
+            throw SharedMemoryException(std::string("Failed to open the shared memory: ") + std::string(ex.what()));
         }
         catch (...) {
-            throw SharedMemoryException("Failed to open shared memory for unknown reason.");
+            throw SharedMemoryException("Failed to open the shared memory for an unknown reason.");
         }
 
         this->update();
@@ -75,17 +75,17 @@ namespace vizdoom {
             }
         }
         catch(bip::interprocess_exception& ex) {
-            throw SharedMemoryException(std::string("Failed to map shared memory regions: ") + std::string(ex.what()));
+            throw SharedMemoryException(std::string("Failed to map the shared memory regions: ") + std::string(ex.what()));
         }
         catch (...) {
-            throw SharedMemoryException("Failed to map shared memory regions for unknown reason.");
+            throw SharedMemoryException("Failed to map the shared memory regions for an unknown reason.");
         }
 
         if (this->getGameState()->SM_SIZE != this->size ||
             this->getGameState()->SM_REGION_SIZE[0] != sizeof(SMGameState) ||
             this->getGameState()->SM_REGION_SIZE[1] != sizeof(SMInputState))
             throw SharedMemoryException(
-                    "Memory size does not match the the expected size. Possible ViZDoom version mismatch.");
+                    "The memory size does not match the expected size. Possible ViZDoom library and ViZDoom engine versions mismatch.");
     }
 
     void SharedMemory::mapRegion(SMRegion *regionPtr) {

@@ -56,9 +56,6 @@ namespace vizdoom {
         void send(uint8_t code, const char *command = nullptr);
         Message receive();
 
-        //void receive(Message  *msg);
-        //bool tryReceive(Message  *msg);
-
     private:
         bip::message_queue *mq;
         std::string name;
