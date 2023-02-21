@@ -1,4 +1,4 @@
-> For the examples to work properly you need to install ViZDoom [system-wide with pip](https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md) or create a link to dir with ViZDoom pip_package or set doom_game_path and vizdoom_path manually or in config files.
+> For the examples to work properly you need to install ViZDoom system-wide with pip or create a link to dir with ViZDoom pip_package or set doom_game_path and vizdoom_path manually or in config files.
 
 # Examples
 
@@ -26,8 +26,8 @@ Shows how delta buttons work (they may take values other than 0 and 1 and can be
 ## [format.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/format.py)
 Presents different formats of the screen buffer. [OpenCV](http://opencv.org/) is used to display the images.
 
-## [fps.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/fps.py)
-Tests the performance of the environment in frames per second. It should give you some idea how fast the framework works on your hardware.
+## [fps_test.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/fps_test.py)
+Tests the performance of the environment in frames per second. It should give you some idea how fast ViZDoom works on your hardware.
 
 ## [labels.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/labels.py)
 Contains an example of how to implement basic Q-learning on the interface within PyTorch.

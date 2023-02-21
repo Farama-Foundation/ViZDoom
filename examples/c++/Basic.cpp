@@ -69,7 +69,9 @@ int main() {
     game->setWindowVisible(true);
 
     // Turns on the sound. (turned off by default)
-    game->setSoundEnabled(true);
+    // game->setSoundEnabled(true);
+    // Because of some problems with OpenAL on Ubuntu 20.04, we keep this line commented,
+    // the sound is only useful for humans watching the game.
 
     // Sets ViZDoom mode (PLAYER, ASYNC_PLAYER, SPECTATOR, ASYNC_SPECTATOR, PLAYER mode is default)
     game->setMode(PLAYER);
@@ -118,18 +120,25 @@ int main() {
             std::vector<double> vars    = state->gameVariables;
 
             // Different image buffers (screen, depth, labels, automap)
+            // Expect of screen buffer some may be nullptr if not first enabled.
             ImageBufferPtr screenBuf    = state->screenBuffer;
             ImageBufferPtr depthBuf     = state->depthBuffer;
             ImageBufferPtr labelsBuf    = state->labelsBuffer;
             ImageBufferPtr automapBuf   = state->automapBuffer;
             // ImageBufferPtr is std::shared_ptr<ImageBuffer> where Buffer is std::vector<uint8_t>
 
-            // Access audio buffer
+            // Audio buffer
             AudioBufferPtr audioBuf     = state->audioBuffer;
             // AudioBufferPtr is std::shared_ptr<AudioBuffer> where Buffer is std::vector<int16_t>
 
-            // And labels
+            // Vector of labeled objects visible in the frame, may be empty if not first enabled.
             std::vector<Label> labels   = state->labels;
+
+            // Vector of all objects (enemies, pickups, etc.) present in the current episode, may be empty if not first enabled. 
+            std::vector<Object> objects = state->objects;
+             
+            // Vector of all sectors (map geometry), may be None if not first enabled.
+            std::vector<Sector> sectors = state->sectors;
 
 
             // Make random action and get reward

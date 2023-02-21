@@ -40,19 +40,19 @@ if __name__ == "__main__":
     # Sets the screen buffer format. Not used here but now you can change it. Default is CRCGCB.
     game.set_screen_format(vzd.ScreenFormat.RGB24)
 
-    # Enables depth buffer.
-    game.set_depth_buffer_enabled(True)
+    # Enables depth buffer (turned off by default).
+    game.set_depth_buffer_enabled(True) 
 
-    # Enables labeling of in game objects labeling.
+    # Enables labeling of in-game objects labeling (turned off by default).
     game.set_labels_buffer_enabled(True)
 
-    # Enables buffer with top down map of the current episode/level.
+    # Enables buffer with a top-down map of the current episode/level (turned off by default).
     game.set_automap_buffer_enabled(True)
 
-    # Enables information about all objects present in the current episode/level.
+    # Enables information about all objects present in the current episode/level (turned off by default).
     game.set_objects_info_enabled(True)
 
-    # Enables information about all sectors (map layout).
+    # Enables information about all sectors (map layout/geometry, turned off by default).
     game.set_sectors_info_enabled(True)
 
     # Sets other rendering options (all of these options except crosshair are enabled (set to True) by default)
@@ -62,8 +62,8 @@ if __name__ == "__main__":
     game.set_render_weapon(True)
     game.set_render_decals(False)  # Bullet holes and blood on the walls
     game.set_render_particles(False)
-    game.set_render_effects_sprites(False)  # Smoke and blood
-    game.set_render_messages(False)  # In-game messages
+    game.set_render_effects_sprites(False)  # Like smoke and blood
+    game.set_render_messages(False)  # In-game text messages
     game.set_render_corpses(False)
     game.set_render_screen_flashes(
         True
@@ -107,6 +107,12 @@ if __name__ == "__main__":
     # Because of some problems with OpenAL on Ubuntu 20.04, we keep this line commented,
     # the sound is only useful for humans watching the game.
 
+    # Turns on the audio buffer. (turned off by default)
+    # If this is switched on, the audio will stop playing on device, even with game.set_sound_enabled(True)
+    # Setting game.set_sound_enabled(True) is not required for audio buffer to work.
+    game.set_audio_buffer_enabled(True)
+
+
     # Sets the living reward (for each move) to -1
     game.set_living_reward(-1)
 
@@ -146,12 +152,22 @@ if __name__ == "__main__":
             # Which consists of:
             n = state.number
             vars = state.game_variables
+            
+            # Different buffers (screens, depth, labels, automap, audio)
+            # Expect of screen buffer some may be None if not first enabled.
             screen_buf = state.screen_buffer
             depth_buf = state.depth_buffer
             labels_buf = state.labels_buffer
             automap_buf = state.automap_buffer
+            audio_buf = state.audio_buffer
+
+            # List of labeled objects visible in the frame, may be None if not first enabled.
             labels = state.labels
+             
+            # List of all objects (enemies, pickups, etc.) present in the current episode, may be None if not first enabled 
             objects = state.objects
+             
+            # List of all sectors (map geometry), may be None if not first enabled.
             sectors = state.sectors
 
             # Games variables can be also accessed via
