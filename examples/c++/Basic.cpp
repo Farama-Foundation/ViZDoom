@@ -113,13 +113,24 @@ int main() {
 
             // Which consists of:
             unsigned int n              = state->number;
-            std::vector<double> vars       = state->gameVariables;
-            BufferPtr screenBuf         = state->screenBuffer;
-            BufferPtr depthBuf          = state->depthBuffer;
-            BufferPtr labelsBuf         = state->labelsBuffer;
-            BufferPtr automapBuf        = state->automapBuffer;
-            // BufferPtr is std::shared_ptr<Buffer> where Buffer is std::vector<uint8_t>
+
+            // Game variables
+            std::vector<double> vars    = state->gameVariables;
+
+            // Different image buffers (screen, depth, labels, automap)
+            ImageBufferPtr screenBuf    = state->screenBuffer;
+            ImageBufferPtr depthBuf     = state->depthBuffer;
+            ImageBufferPtr labelsBuf    = state->labelsBuffer;
+            ImageBufferPtr automapBuf   = state->automapBuffer;
+            // ImageBufferPtr is std::shared_ptr<ImageBuffer> where Buffer is std::vector<uint8_t>
+
+            // Access audio buffer
+            AudioBufferPtr audioBuf     = state->audioBuffer;
+            // AudioBufferPtr is std::shared_ptr<AudioBuffer> where Buffer is std::vector<int16_t>
+
+            // And labels
             std::vector<Label> labels   = state->labels;
+
 
             // Make random action and get reward
             double reward = game->makeAction(actions[std::rand() % game->getAvailableButtonsSize()]);
