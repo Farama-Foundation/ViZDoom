@@ -3,7 +3,7 @@
 # This test can be run as Python script or via PyTest
 import os
 
-import gymnasium 
+import gymnasium
 import numpy as np
 from gymnasium.spaces import Box, Dict, Discrete, MultiDiscrete
 from gymnasium.utils.env_checker import check_env

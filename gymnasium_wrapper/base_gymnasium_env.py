@@ -2,7 +2,7 @@ import itertools
 import warnings
 from typing import Optional
 
-import gymnasium as gym 
+import gymnasium as gym
 import numpy as np
 import pygame
 import vizdoom.vizdoom as vzd
