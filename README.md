@@ -104,11 +104,7 @@ pip install vizdoom
 ```
 
 ### Gymnasium wrappers
-If you wish to also install Gymnasium environments, install ViZDoom with
-```
-pip install vizdoom[gymnasium]
-```
-
+Gymnasium environments are installed along with Vizdoom
 See [documentation](doc/Gymnasium.md) and [examples](examples/python/gymnasium_wrapper.py) on the use of Gymnasium API.
 
 OpenAI-Gym wrappers that were previously used are also available, but these will be removed in future versions in favour of Gymnasium.

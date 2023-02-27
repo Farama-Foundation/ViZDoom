@@ -207,9 +207,8 @@ setup(
     author_email="mwydmuch@cs.put.poznan.pl",
     extras_require={
         "gym": ["gym==0.26.0", "pygame==2.1.0"],
-        "gymnasium": ["gymnasium==0.27.1", "pygame==2.1.0"],
     },
-    install_requires=["numpy", "tqdm"],
+    install_requires=["numpy", "tqdm", "gymnasium==0.27.1", "pygame==2.1.0"],
     tests_require=["psutil"],
     packages=["vizdoom"],
     package_dir={"vizdoom": package_path},

@@ -1,6 +1,6 @@
 # Gymnasium wrappers
 
-Installing ViZDoom with `pip install vizdoom[gymnasium]` will include
+Installing ViZDoom with `pip install vizdoom` will include
 Gymnasium wrappers to interact with ViZDoom over [Gymnasium API](https://gymnasium.farama.org/).
 
 These wrappers are under `gymnasium_wrappers`, containing the basic environment and
