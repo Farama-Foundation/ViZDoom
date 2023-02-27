@@ -114,6 +114,13 @@ See [documentation](doc/Gymnasium.md) and [examples](examples/python/gymnasium_w
 OpenAI-Gym wrappers that were previously used are also available, but these will be removed in future versions in favour of Gymnasium.
 
 
+### Gym wrappers
+If you wish to also install OpenAI Gym environments, install ViZDoom with
+```
+pip install vizdoom[gym]
+```
+See [documentation](doc/Gym.md) and [examples](examples/python/gym_wrapper.py) on the use of Gym API.
+
 ## Examples
 
 - [Python](examples/python) (contain learning examples implemented in PyTorch, TensorFlow and Theano)
