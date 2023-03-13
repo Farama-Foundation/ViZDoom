@@ -21,6 +21,9 @@ set SCENARIOS_DEST_DIR=%PACKAGE_DEST_PATH%\scenarios
 set SCENARIOS_PATH=%SRC_PATH%\scenarios
 set GYM_WRAPPER_DEST_DIR=%PACKAGE_DEST_PATH%\gym_wrapper
 set GYM_WRAPPER_PATH=%SRC_PATH%\gym_wrapper
+set GYMNASIUM_WRAPPER_DEST_DIR=%PACKAGE_DEST_PATH%\gymnasium_wrapper
+set GYMNASIUM_WRAPPER_PATH=%SRC_PATH%\gymnasium_wrapper
+
 
 if not exist "%BIN_PATH%\python%PYTHON_VERSION%\vizdoom*.pyd" (
     echo "Library for specified Python version does not exist. Aborting."
@@ -55,3 +58,5 @@ move "%SRC_DIR%\bots.cfg" "%PACKAGE_DEST_PATH%"
 
 md "%GYM_WRAPPER_DEST_DIR%
 copy "%GYM_WRAPPER_PATH%\*.py" "%GYM_WRAPPER_DEST_DIR%"
+md "%GYMNASIUM_WRAPPER_DEST_DIR%
+copy "%GYMNASIUM_WRAPPER_PATH%\*.py" "%GYMNASIUM_WRAPPER_DEST_DIR%"

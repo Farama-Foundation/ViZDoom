@@ -103,13 +103,19 @@ To install pre-build release for Windows 10 or 11 64-bit and Python 3.7+ just ru
 pip install vizdoom
 ```
 
+### Gymnasium wrappers
+Gymnasium environments are installed along with Vizdoom
+See [documentation](doc/Gymnasium.md) and [examples](examples/python/gymnasium_wrapper.py) on the use of Gymnasium API.
+
+OpenAI-Gym wrappers that were previously used are also available, but these will be removed in future versions in favour of Gymnasium.
+
+
 ### Gym wrappers
 If you wish to also install OpenAI Gym environments, install ViZDoom with
 ```
 pip install vizdoom[gym]
 ```
 See [documentation](doc/Gym.md) and [examples](examples/python/gym_wrapper.py) on the use of Gym API.
-
 
 ## Examples
 
