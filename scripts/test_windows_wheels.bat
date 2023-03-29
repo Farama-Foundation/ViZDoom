@@ -41,6 +41,7 @@ for %%P in (37 38 39 310) do (
 	:: Run tests
 	!PYTHON_EXECUTABLE! -m pytest tests\test_enums.py
 	!PYTHON_EXECUTABLE! -m pytest tests\test_gym_wrapper.py
+	!PYTHON_EXECUTABLE! -m pytest tests\test_gymnasium_wrapper.py
 	!PYTHON_EXECUTABLE! -m pytest tests\test_labels_buffer.py
 	!PYTHON_EXECUTABLE! -m pytest tests\test_make_action.py
 

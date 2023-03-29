@@ -24,6 +24,7 @@ package_data = [
     "vizdoom",
     "scenarios/*",
     "gym_wrapper/*",
+    "gymnasium_wrapper/*",
 ]
 
 os.makedirs(package_path, exist_ok=True)
@@ -204,8 +205,10 @@ setup(
     url="http://vizdoom.cs.put.edu.pl/",
     author="Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, Grzegorz Runc, Jakub Toczek",
     author_email="mwydmuch@cs.put.poznan.pl",
-    extras_require={"gym": ["gym==0.26.0", "pygame==2.1.0"]},
-    install_requires=["numpy", "tqdm"],
+    extras_require={
+        "gym": ["gym==0.26.0", "pygame==2.1.0"],
+    },
+    install_requires=["numpy", "tqdm", "gymnasium==0.27.1", "pygame==2.1.0"],
     tests_require=["psutil"],
     packages=["vizdoom"],
     package_dir={"vizdoom": package_path},
