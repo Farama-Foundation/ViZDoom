@@ -24,6 +24,7 @@ from lasagne.objectives import squared_error
 from lasagne.updates import rmsprop
 from theano import tensor
 from tqdm import trange
+
 from vizdoom import DoomGame, Mode, ScreenFormat, ScreenResolution, os, vzd
 
 

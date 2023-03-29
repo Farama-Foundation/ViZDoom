@@ -12,6 +12,7 @@ from argparse import ArgumentParser
 from random import choice
 
 import matplotlib.pyplot as plt
+
 import vizdoom as vzd
 from vizdoom import os
 

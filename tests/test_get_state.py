@@ -8,6 +8,7 @@ from random import choice
 
 import numpy as np
 import psutil
+
 import vizdoom as vzd
 
 

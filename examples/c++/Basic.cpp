@@ -134,9 +134,9 @@ int main() {
             // Vector of labeled objects visible in the frame, may be empty if not first enabled.
             std::vector<Label> labels   = state->labels;
 
-            // Vector of all objects (enemies, pickups, etc.) present in the current episode, may be empty if not first enabled. 
+            // Vector of all objects (enemies, pickups, etc.) present in the current episode, may be empty if not first enabled.
             std::vector<Object> objects = state->objects;
-             
+
             // Vector of all sectors (map geometry), may be None if not first enabled.
             std::vector<Sector> sectors = state->sectors;
 

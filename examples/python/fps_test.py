@@ -15,6 +15,7 @@ from random import choice
 from time import time
 
 import tqdm
+
 import vizdoom as vzd
 
 

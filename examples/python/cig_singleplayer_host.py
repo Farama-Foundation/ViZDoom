@@ -9,7 +9,6 @@
 import os
 from time import sleep
 
-import vizdoom as vzd
 from oblige import (
     DoomGame,
     DoomLevelGenerator,
@@ -17,6 +16,8 @@ from oblige import (
     cig2018_difficulty_1,
     cig2018_test,
 )
+
+import vizdoom as vzd
 
 
 game = DoomGame()

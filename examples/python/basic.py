@@ -41,7 +41,7 @@ if __name__ == "__main__":
     game.set_screen_format(vzd.ScreenFormat.RGB24)
 
     # Enables depth buffer (turned off by default).
-    game.set_depth_buffer_enabled(True) 
+    game.set_depth_buffer_enabled(True)
 
     # Enables labeling of in-game objects labeling (turned off by default).
     game.set_labels_buffer_enabled(True)
@@ -112,7 +112,6 @@ if __name__ == "__main__":
     # Setting game.set_sound_enabled(True) is not required for audio buffer to work.
     game.set_audio_buffer_enabled(True)
 
-
     # Sets the living reward (for each move) to -1
     game.set_living_reward(-1)
 
@@ -152,7 +151,7 @@ if __name__ == "__main__":
             # Which consists of:
             n = state.number
             vars = state.game_variables
-            
+
             # Different buffers (screens, depth, labels, automap, audio)
             # Expect of screen buffer some may be None if not first enabled.
             screen_buf = state.screen_buffer
@@ -163,10 +162,10 @@ if __name__ == "__main__":
 
             # List of labeled objects visible in the frame, may be None if not first enabled.
             labels = state.labels
-             
-            # List of all objects (enemies, pickups, etc.) present in the current episode, may be None if not first enabled 
+
+            # List of all objects (enemies, pickups, etc.) present in the current episode, may be None if not first enabled
             objects = state.objects
-             
+
             # List of all sectors (map geometry), may be None if not first enabled.
             sectors = state.sectors
 
