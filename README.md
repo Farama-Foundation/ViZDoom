@@ -1,4 +1,4 @@
-[![PyPI version](https://badge.fury.io/py/vizdoom.svg)](https://badge.fury.io/py/vizdoom) ![Build](https://github.com/mwydmuch/ViZDoom/workflows/Build/badge.svg)
+[![PyPI version](https://badge.fury.io/py/vizdoom.svg)](https://badge.fury.io/py/vizdoom) ![Build](https://github.com/mwydmuch/ViZDoom/workflows/Build/badge.svg) [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Farama-Foundation/ViZDoom/master/vizdoom-text.png" width="500px"/>
@@ -14,7 +14,7 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 ## Features
 - Multi-platform (Linux, macOS, Windows),
 - API for Python and C++,
-- [OpenAI Gym](https://www.gymlibrary.dev/) environment wrappers (thanks to [Benjamin Noah Beal](https://github.com/bebeal), [Lawrence Francis](https://github.com/ldfrancis), and [Mark Towers](https://github.com/pseudo-rnd-thoughts)),
+- [Gymnasium](https://gymnasium.farama.org/)/[OpenAI Gym](https://www.gymlibrary.dev/) environment wrappers (thanks to [Arjun KG](https://github.com/arjun-kg) [Benjamin Noah Beal](https://github.com/bebeal), [Lawrence Francis](https://github.com/ldfrancis), and [Mark Towers](https://github.com/pseudo-rnd-thoughts)),
 - Easy-to-create custom scenarios (visual editors, scripting language, and examples available),
 - Async and sync single-player and multiplayer modes,
 - Fast (up to 7000 fps in sync mode, single-threaded),
@@ -70,26 +70,43 @@ or
 
 ## Python quick start
 
-### Ubuntu
-To install ViZDoom on Ubuntu run (may take few minutes):
+### Linux
+Both x86-64 and ARM64 architectures are supported.
+ViZDoom requires C++11 compiler, CMake 3.4+, Boost 1.65+ SDL2, OpenAL (optional) and Python 3.7+. Below you will find instructrion how to install these dependencies.
+
+#### Apt-based distros (Ubuntu, Debian, Linux Mint, etc.)
+
+To install ViZDoom run (may take few minutes):
 ```
-sudo apt install cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar
+apt install cmake libboost-all-dev libsdl2-dev libopenal-dev
 pip install vizdoom
 ```
-We recommend using at least Ubuntu 18.04+ with Python 3.7+.
+We recommend using at least Ubuntu 18.04+ or Debian 10+ with Python 3.7+.
 
-### Conda
+#### dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)
+
+To install ViZDoom run (may take few minutes):
+```
+dnf install boost-devel SDL2-devel openal-soft-devel
+pip install vizdoom
+```
+We recommend using at least Fedora 35+ or RHEL/CentOS/Alma/Rocky Linux 9+ with Python 3.7+. To install openal-soft-devel on RHEL/CentOS/Alma/Rocky Linux 9, one needs to use `dnf --enablerepo=crb install`.
+
+#### Conda-based installation
 To install ViZDoom on a conda environment (no system-wide installations required):
 ```
-conda install -c conda-forge boost cmake gtk2 sdl2
+conda install -c conda-forge boost cmake sdl2
 git clone https://github.com/mwydmuch/ViZDoom.git --recurse-submodules
 cd ViZDoom
 python setup.py build && python setup.py install
 ```
 Note that `pip install vizdoom` won't work with conda install and you have to follow these steps.
 
+
 ### macOS
-To install ViZDoom on macOS (for Intel and Apple Silicon) run (may take few minutes):
+Both Intel and Apple Silicon CPUs are supported.
+
+To install ViZDoom on run (may take few minutes):
 ```
 brew install cmake boost openal-soft sdl2
 pip install vizdoom
@@ -97,25 +114,24 @@ pip install vizdoom
 We recommend using at least macOS High Sierra 10.13+ with Python 3.7+.
 On Apple Silicon (M1 and M2), make sure you are using Python for Apple Silicon.
 
+
 ### Windows
 To install pre-build release for Windows 10 or 11 64-bit and Python 3.7+ just run (should take few seconds):
 ```
 pip install vizdoom
 ```
 
-### Gymnasium wrappers
-Gymnasium environments are installed along with Vizdoom
+### Gymnasium/Gym wrappers
+Gymnasium environments are installed along with ViZDoom
 See [documentation](doc/Gymnasium.md) and [examples](examples/python/gymnasium_wrapper.py) on the use of Gymnasium API.
 
-OpenAI-Gym wrappers that were previously used are also available, but these will be removed in future versions in favour of Gymnasium.
-
-
-### Gym wrappers
-If you wish to also install OpenAI Gym environments, install ViZDoom with
+OpenAI-Gym wrappers that were previously used are also available, to install them run
 ```
 pip install vizdoom[gym]
 ```
 See [documentation](doc/Gym.md) and [examples](examples/python/gym_wrapper.py) on the use of Gym API.
+**OpenAI-Gym are deprecated and will be removed in future versions in favour.**
+
 
 ## Examples
 
@@ -129,9 +145,10 @@ Python examples are currently the richest, so we recommend to look at them, even
 
 ## Original Doom graphics
 
+Unfortunately, we cannot distribute ViZDoom with original Doom graphics.
 If you own original Doom or Doom 2 games, you can replace [Freedoom](https://freedoom.github.io/) graphics by placing `doom.wad` or `doom2.wad` into your working directory or `vizdoom` package directory.
 
-Alternatively, any base game WAD (including other Doom engine-based games) can be used by pointing to it with the [`set_doom_game_path/setDoomGamePath`](https://github.com/mwydmuch/ViZDoom/blob/master/doc/DoomGame.md#-setdoomscenariopath) method.
+Alternatively, any base game WAD (including other Doom engine-based games and custom/community games) can be used by pointing to it with the [`set_doom_game_path/setDoomGamePath`](https://github.com/mwydmuch/ViZDoom/blob/master/doc/DoomGame.md#-setdoomscenariopath) method.
 
 
 ## Documentation
