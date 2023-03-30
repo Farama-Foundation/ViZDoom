@@ -1,4 +1,4 @@
-#ViZDoom 1.0.4
+# ViZDoom 1.0.4
 [http://vizdoom.cs.put.edu.pl](http://vizdoom.cs.put.edu.pl)
 
 ViZDoom allows developing AI **bots that play Doom using only the visual information** (the screen buffer). It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.
@@ -25,9 +25,9 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 ---
 ## Building
 
-###Linux
+### Linux
 
-####Dependencies
+#### Dependencies
 * CMake 3.0+
 * Make
 * GCC 4.6+
@@ -37,7 +37,7 @@ ViZDoom API is **reinforcement learning** friendly (suitable also for learning f
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
-####Compiling
+#### Compiling
 In ViZDoom's root directory:
 ```bash
 cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON -DBUILD_JAVA=ON
@@ -46,11 +46,11 @@ make
 
 ``-DBUILD_PYTHON=ON`` and ``-DBUILD_JAVA=ON`` CMake options for Python and Java bindings are optional (default OFF). To force building bindings for Python3 instead of first version found use ``-DBUILD_PYTHON3=ON`` (needs Boost.Python builded with Python 3, default OFF).
 
-###Windows
+### Windows
 
 We are providing compiled runtime binaries and development libraries for Windows [here](https://github.com/Marqt/ViZDoom/releases/download/1.0.4/ViZDoom-1.0.4-Win-x86_64.zip).
 
-####Dependencies
+#### Dependencies
 * CMake 3.0+
 * Visual Studio 2012+
 * Boost libraries
@@ -59,7 +59,7 @@ We are providing compiled runtime binaries and development libraries for Windows
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Windows) are needed.
 
-####Compiling
+#### Compiling
 Run CMake GUI, select ViZDoom's root directory and set paths to:
 * BOOST_ROOT
 * BOOST_INCLUDEDIR
@@ -73,11 +73,11 @@ In configuration select BUILD_PYTHON, BUILD_PYTHON3 and BUILD_JAVA options for P
 
 Use generated Visual Studio solution to build all ViZDoom's parts.
 
-###OSX
+### OSX
 Untested, code is compatible, CMake still may need minor adjustments.
 Let us know if You are using ViZDoom on OSX.
 
-####Dependencies
+#### Dependencies
 * CMake 3.0+
 * XCode 5+
 * Boost libraries
@@ -86,18 +86,18 @@ Let us know if You are using ViZDoom on OSX.
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X) are needed.
 
-####Compiling
+#### Compiling
 Run CMake and use generated project.
 
 Users with brew-installed Python may need to manually set:
 ``-DPYTHON_INCLUDE_DIR=/usr/local/Cellar/python/2.x.x/Frameworks/Python.framework/Versions/2.7/include/python2.7`` and 
 ``-DPYTHON_LIBRARY=/usr/local/Cellar/python/2.x.x/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib``
 
-####Configuration
+#### Configuration
 Craeting symlink to the app executable may be need:
 ``rm bin/vizdoom && ln -s vizdoom.app/Contents/MacOS/vizdoom bin/vizdoom``
 
-###Compilation output
+### Compilation output
 Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should contain following files (Windows names are in brackets):
 
 * ``bin/vizdoom (vizdoom.exe)`` - ViZDoom executable
@@ -117,7 +117,7 @@ Compilation output will be placed in ``vizdoom_root_dir/bin`` and it should cont
 Note: third-party maintained
 
 ---
-##Examples
+## Examples
 
 Before running the provided examples, make sure that [freedoom2.wad](https://freedoom.github.io/download.html) is placed it in the ``scenarios`` subdirectory (on Linux it should be done automatically by the building process).
 
@@ -128,6 +128,6 @@ Before running the provided examples, make sure that [freedoom2.wad](https://fre
 See also the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial).
 
 ---
-##License
+## License
 
 Code original to ViZDoom is under MIT license. ZDoom uses code from several sources which varied licensing schemes, more informations [here](http://zdoom.org/wiki/license).
