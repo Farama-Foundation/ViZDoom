@@ -19,6 +19,7 @@ from random import choice
 
 import cv2
 import numpy as np
+
 import vizdoom as vzd
 
 

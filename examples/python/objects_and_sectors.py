@@ -8,12 +8,13 @@
 # This information is not available if "+viz_nocheat" flag is enabled.
 #####################################################################
 
+import os
 from argparse import ArgumentParser
 from random import choice
 
 import matplotlib.pyplot as plt
+
 import vizdoom as vzd
-from vizdoom import os
 
 
 DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "my_way_home.cfg")

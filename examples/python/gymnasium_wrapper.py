@@ -5,6 +5,7 @@
 #####################################################################
 
 import gymnasium
+
 from vizdoom import gymnasium_wrapper  # noqa
 
 

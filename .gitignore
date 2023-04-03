@@ -117,5 +117,8 @@ src/vizdoom/zlib/x64/
 # CLion & PyCharm
 **/.idea
 
+# Visual Studio Code
+.vscode
+
 # MacOS
 .DS_Store

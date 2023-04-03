@@ -13,11 +13,12 @@ import numpy as np
 import skimage.color
 import skimage.transform
 import tensorflow as tf
-import vizdoom as vzd
 from tensorflow.keras import Model, Sequential
 from tensorflow.keras.layers import BatchNormalization, Conv2D, Dense, Flatten, ReLU
 from tensorflow.keras.optimizers import SGD
 from tqdm import trange
+
+import vizdoom as vzd
 
 
 tf.compat.v1.enable_eager_execution()

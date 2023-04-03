@@ -7,6 +7,7 @@ import gymnasium
 import numpy as np
 from gymnasium.spaces import Box, Dict, Discrete, MultiDiscrete
 from gymnasium.utils.env_checker import check_env
+
 from vizdoom import gymnasium_wrapper  # noqa
 from vizdoom.gymnasium_wrapper.base_gymnasium_env import VizdoomEnv
 

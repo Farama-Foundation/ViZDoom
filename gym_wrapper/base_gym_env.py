@@ -5,6 +5,7 @@ from typing import Optional
 import gym
 import numpy as np
 import pygame
+
 import vizdoom.vizdoom as vzd
 
 

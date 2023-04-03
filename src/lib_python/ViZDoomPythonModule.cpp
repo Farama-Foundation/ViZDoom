@@ -45,16 +45,13 @@ double (*doomFixedToDouble_double)(double) = &doomFixedToDouble;
 
 PYBIND11_MODULE(vizdoom, vz){
 
-    using namespace pybind11;
+    vz.doc() = "ViZDoom Python module.";
     vz.attr("__version__") = pyb::str(VIZDOOM_LIB_VERSION_STR);
-
-    Py_Initialize();
-    PyEval_InitThreads();
 
     /* Exceptions */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    #define EXCEPTION_TO_PYT(n) register_exception< n >(vz, #n);
+    #define EXCEPTION_TO_PYT(n) pyb::register_exception< n >(vz, #n);
     /* register_exception< ExceptionName >(vz, "ExceptionName"); */
 
     EXCEPTION_TO_PYT(FileDoesNotExistException)
@@ -105,13 +102,13 @@ PYBIND11_MODULE(vizdoom, vz){
     /* Enums */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    enum_<Mode>(vz, "Mode")
+    pyb::enum_<Mode>(vz, "Mode")
         ENUM_VAL_2_PYT(PLAYER)
         ENUM_VAL_2_PYT(SPECTATOR)
         ENUM_VAL_2_PYT(ASYNC_PLAYER)
         ENUM_VAL_2_PYT(ASYNC_SPECTATOR);
 
-    enum_<ScreenFormat>(vz, "ScreenFormat")
+    pyb::enum_<ScreenFormat>(vz, "ScreenFormat")
         ENUM_VAL_2_PYT(CRCGCB)
         ENUM_VAL_2_PYT(RGB24)
         ENUM_VAL_2_PYT(RGBA32)
@@ -123,7 +120,7 @@ PYBIND11_MODULE(vizdoom, vz){
         ENUM_VAL_2_PYT(GRAY8)
         ENUM_VAL_2_PYT(DOOM_256_COLORS8);
 
-    enum_<ScreenResolution>(vz, "ScreenResolution")
+    pyb::enum_<ScreenResolution>(vz, "ScreenResolution")
         ENUM_VAL_2_PYT(RES_160X120)
 
         ENUM_VAL_2_PYT(RES_200X125)
@@ -174,14 +171,14 @@ PYBIND11_MODULE(vizdoom, vz){
         ENUM_VAL_2_PYT(RES_1920X1080)
         .export_values();
 
-    enum_<AutomapMode>(vz, "AutomapMode")
+    pyb::enum_<AutomapMode>(vz, "AutomapMode")
         ENUM_VAL_2_PYT(NORMAL)
         ENUM_VAL_2_PYT(WHOLE)
         ENUM_VAL_2_PYT(OBJECTS)
         ENUM_VAL_2_PYT(OBJECTS_WITH_SIZE)
         .export_values();
 
-    enum_<Button>(vz, "Button")
+    pyb::enum_<Button>(vz, "Button")
         ENUM_VAL_2_PYT(ATTACK)
         ENUM_VAL_2_PYT(USE)
         ENUM_VAL_2_PYT(JUMP)
@@ -227,7 +224,7 @@ PYBIND11_MODULE(vizdoom, vz){
         ENUM_VAL_2_PYT(MOVE_UP_DOWN_DELTA)
         .export_values();
 
-    enum_<GameVariable>(vz, "GameVariable")
+    pyb::enum_<GameVariable>(vz, "GameVariable")
         ENUM_VAL_2_PYT(KILLCOUNT)
         ENUM_VAL_2_PYT(ITEMCOUNT)
         ENUM_VAL_2_PYT(SECRETCOUNT)
@@ -362,63 +359,202 @@ PYBIND11_MODULE(vizdoom, vz){
         ENUM_VAL_2_PYT(PLAYER16_FRAGCOUNT)
         .export_values();
 
-    enum_<SamplingRate>(vz, "SamplingRate")
+    pyb::enum_<SamplingRate>(vz, "SamplingRate")
         ENUM_VAL_2_PYT(SR_11025)
         ENUM_VAL_2_PYT(SR_22050)
         ENUM_VAL_2_PYT(SR_44100)
         .export_values();
 
+
     /* Structs */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    #define LABEL_CLASS Label
-    class_<LABEL_CLASS>(vz, "Label")
-        .def_readonly("object_id", &LABEL_CLASS::objectId)
-        .def_readonly("object_name", &LABEL_CLASS::objectName)
-        .def_readonly("value", &LABEL_CLASS::value)
-        .def_readonly("x", &LABEL_CLASS::x)
-        .def_readonly("y", &LABEL_CLASS::y)
-        .def_readonly("width", &LABEL_CLASS::width)
-        .def_readonly("height", &LABEL_CLASS::height)
-        .def_readonly("object_position_x", &LABEL_CLASS::objectPositionX)
-        .def_readonly("object_position_y", &LABEL_CLASS::objectPositionY)
-        .def_readonly("object_position_z", &LABEL_CLASS::objectPositionZ)
-        .def_readonly("object_angle", &LABEL_CLASS::objectAngle)
-        .def_readonly("object_pitch", &LABEL_CLASS::objectPitch)
-        .def_readonly("object_roll", &LABEL_CLASS::objectRoll)
-        .def_readonly("object_velocity_x", &LABEL_CLASS::objectVelocityX)
-        .def_readonly("object_velocity_y", &LABEL_CLASS::objectVelocityY)
-        .def_readonly("object_velocity_z", &LABEL_CLASS::objectVelocityZ);
+    pyb::class_<Label>(vz, "Label")
+        .def(pyb::pickle(
+            [](const Label& o) { // dump
+                return pyb::make_tuple(
+                    o.value, 
+                    o.x, 
+                    o.y, 
+                    o.width, 
+                    o.height,
+                    o.objectId,
+                    o.objectPositionX, 
+                    o.objectPositionY, 
+                    o.objectPositionZ,
+                    o.objectAngle,
+                    o.objectPitch,
+                    o.objectRoll,
+                    o.objectVelocityX,
+                    o.objectVelocityY,
+                    o.objectVelocityZ,
+                    o.objectName
+                );
+            },
+            [](pyb::tuple t) { // load
+                return Label{
+                    t[0].cast<uint8_t>(), 
+                    t[1].cast<unsigned int>(),
+                    t[2].cast<unsigned int>(), 
+                    t[3].cast<unsigned int>(), 
+                    t[4].cast<unsigned int>(), 
+                    t[5].cast<unsigned int>(),
+                    t[6].cast<double>(),
+                    t[7].cast<double>(),
+                    t[8].cast<double>(),
+                    t[9].cast<double>(),
+                    t[10].cast<double>(),
+                    t[11].cast<double>(),
+                    t[12].cast<double>(),
+                    t[13].cast<double>(),
+                    t[14].cast<double>(),
+                    t[15].cast<std::string>()
+                };
+            })
+        )
+        .def_readonly("value", &Label::value)
+        .def_readonly("x", &Label::x)
+        .def_readonly("y", &Label::y)
+        .def_readonly("width", &Label::width)
+        .def_readonly("height", &Label::height)
+        .def_readonly("object_id", &Label::objectId)
+        .def_readonly("object_position_x", &Label::objectPositionX)
+        .def_readonly("object_position_y", &Label::objectPositionY)
+        .def_readonly("object_position_z", &Label::objectPositionZ)
+        .def_readonly("object_angle", &Label::objectAngle)
+        .def_readonly("object_pitch", &Label::objectPitch)
+        .def_readonly("object_roll", &Label::objectRoll)
+        .def_readonly("object_velocity_x", &Label::objectVelocityX)
+        .def_readonly("object_velocity_y", &Label::objectVelocityY)
+        .def_readonly("object_velocity_z", &Label::objectVelocityZ)
+        .def_readonly("object_name", &Label::objectName);
 
-    #define OBJECT_CLASS Object
-    class_<OBJECT_CLASS>(vz, "Object")
-        .def_readonly("id", &OBJECT_CLASS::id)
-        .def_readonly("name", &OBJECT_CLASS::name)
-        .def_readonly("position_x", &OBJECT_CLASS::positionX)
-        .def_readonly("position_y", &OBJECT_CLASS::positionY)
-        .def_readonly("position_z", &OBJECT_CLASS::positionZ)
-        .def_readonly("angle", &OBJECT_CLASS::angle)
-        .def_readonly("pitch", &OBJECT_CLASS::pitch)
-        .def_readonly("roll", &OBJECT_CLASS::roll)
-        .def_readonly("velocity_x", &OBJECT_CLASS::velocityX)
-        .def_readonly("velocity_y", &OBJECT_CLASS::velocityY)
-        .def_readonly("velocity_z", &OBJECT_CLASS::velocityZ);
+    pyb::class_<Object>(vz, "Object")
+            .def(pyb::pickle(
+            [](const Object& o) { // dump
+                return pyb::make_tuple(
+                    o.id,
+                    o.positionX, 
+                    o.positionY, 
+                    o.positionZ,
+                    o.angle,
+                    o.pitch,
+                    o.roll,
+                    o.velocityX,
+                    o.velocityY,
+                    o.velocityZ,
+                    o.name
+                );
+            },
+            [](pyb::tuple t) { // load
+                return Object{
+                    t[0].cast<unsigned int>(), 
+                    t[1].cast<double>(),
+                    t[2].cast<double>(),
+                    t[3].cast<double>(),
+                    t[4].cast<double>(),
+                    t[5].cast<double>(),
+                    t[6].cast<double>(),
+                    t[7].cast<double>(),
+                    t[8].cast<double>(),
+                    t[9].cast<double>(),
+                    t[10].cast<std::string>()
+                };
+            })
+        )
+        .def_readonly("id", &Object::id)
+        .def_readonly("position_x", &Object::positionX)
+        .def_readonly("position_y", &Object::positionY)
+        .def_readonly("position_z", &Object::positionZ)
+        .def_readonly("angle", &Object::angle)
+        .def_readonly("pitch", &Object::pitch)
+        .def_readonly("roll", &Object::roll)
+        .def_readonly("velocity_x", &Object::velocityX)
+        .def_readonly("velocity_y", &Object::velocityY)
+        .def_readonly("velocity_z", &Object::velocityZ)
+        .def_readonly("name", &Object::name);
 
-    #define LINE_CLASS Line
-    class_<LINE_CLASS>(vz, "Line")
-        .def_readonly("x1", &LINE_CLASS::x1)
-        .def_readonly("y1", &LINE_CLASS::y1)
-        .def_readonly("x2", &LINE_CLASS::x2)
-        .def_readonly("y2", &LINE_CLASS::y2)
-        .def_readonly("is_blocking", &LINE_CLASS::isBlocking);
+    pyb::class_<Line>(vz, "Line")
+        .def(pyb::pickle(
+            [](const Line& o) { // dump
+                return pyb::make_tuple(
+                    o.x1, 
+                    o.y1, 
+                    o.x2,
+                    o.y2,
+                    o.isBlocking
+                );
+            },
+            [](pyb::tuple t) { // load
+                return Line{
+                    t[0].cast<double>(), 
+                    t[1].cast<double>(),
+                    t[2].cast<double>(),
+                    t[3].cast<double>(),
+                    t[4].cast<bool>()
+                };
+            })
+        )
+        .def_readonly("x1", &Line::x1)
+        .def_readonly("y1", &Line::y1)
+        .def_readonly("x2", &Line::x2)
+        .def_readonly("y2", &Line::y2)
+        .def_readonly("is_blocking", &Line::isBlocking);
 
-    #define SECTOR_CLASS SectorPython
-    class_<SECTOR_CLASS>(vz, "Sector")
-        .def_readonly("floor_height", &SECTOR_CLASS::floorHeight)
-        .def_readonly("ceiling_height", &SECTOR_CLASS::ceilingHeight)
-        .def_readonly("lines", &SECTOR_CLASS::lines);
+    pyb::class_<SectorPython>(vz, "Sector")
+        .def(pyb::pickle(
+            [](const SectorPython& o) { // dump
+                return pyb::make_tuple(
+                    o.floorHeight, 
+                    o.ceilingHeight, 
+                    o.lines
+                );
+            },
+            [](pyb::tuple t) { // load
+                return SectorPython{
+                    t[0].cast<double>(), 
+                    t[1].cast<double>(),
+                    t[2].cast<pyb::list>()
+                };
+            })
+        )
+        .def_readonly("floor_height", &SectorPython::floorHeight)
+        .def_readonly("ceiling_height", &SectorPython::ceilingHeight)
+        .def_readonly("lines", &SectorPython::lines);
 
-    class_<GameStatePython>(vz, "GameState")
+    pyb::class_<GameStatePython>(vz, "GameState")
+        .def(pyb::pickle(
+            [](const GameStatePython& o) { // dump
+                return pyb::make_tuple(
+                    o.number, 
+                    o.tic, 
+                    o.gameVariables, 
+                    o.screenBuffer, 
+                    o.depthBuffer,
+                    o.labelsBuffer,
+                    o.automapBuffer, 
+                    o.audioBuffer, 
+                    o.labels,
+                    o.objects,
+                    o.sectors
+                );
+            },
+            [](pyb::tuple t) { // load
+                return GameStatePython{
+                    t[0].cast<unsigned int>(), 
+                    t[1].cast<unsigned int>(),
+                    t[2].cast<pyb::object>(), 
+                    t[3].cast<pyb::object>(), 
+                    t[4].cast<pyb::object>(), 
+                    t[5].cast<pyb::object>(),
+                    t[6].cast<pyb::object>(),
+                    t[7].cast<pyb::object>(),
+                    t[8].cast<pyb::list>(),
+                    t[9].cast<pyb::list>(),
+                    t[10].cast<pyb::list>()
+                };
+            })
+        )
         .def_readonly("number", &GameStatePython::number)
         .def_readonly("tic", &GameStatePython::tic)
         .def_readonly("game_variables", &GameStatePython::gameVariables)
@@ -433,7 +569,33 @@ PYBIND11_MODULE(vizdoom, vz){
         .def_readonly("objects", &GameStatePython::objects)
         .def_readonly("sectors", &GameStatePython::sectors);
 
-    class_<ServerStatePython>(vz, "ServerState")
+    pyb::class_<ServerStatePython>(vz, "ServerState")
+            .def(pyb::pickle(
+            [](const ServerStatePython& o) { // dump
+                return pyb::make_tuple(
+                    o.tic, 
+                    o.playerCount, 
+                    o.playersInGame, 
+                    o.playersNames,
+                    o.playersFrags,
+                    o.playersAfk, 
+                    o.playersLastActionTic, 
+                    o.playersLastKillTic
+                );
+            },
+            [](pyb::tuple t) { // load
+                return ServerStatePython{
+                    t[0].cast<unsigned int>(), 
+                    t[1].cast<unsigned int>(),
+                    t[2].cast<pyb::list>(), 
+                    t[3].cast<pyb::list>(), 
+                    t[4].cast<pyb::list>(), 
+                    t[5].cast<pyb::list>(),
+                    t[6].cast<pyb::list>(),
+                    t[7].cast<pyb::list>()
+                };
+            })
+        )
         .def_readonly("tic", &ServerStatePython::tic)
         .def_readonly("player_count", &ServerStatePython::playerCount)
         .def_readonly("players_in_game", &ServerStatePython::playersInGame)
@@ -447,8 +609,8 @@ PYBIND11_MODULE(vizdoom, vz){
     /* DoomGame */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    class_<DoomGamePython>(vz, "DoomGame")
-        .def(init<>())
+    pyb::class_<DoomGamePython>(vz, "DoomGame")
+        .def(pyb::init<>())
         .def("init", &DoomGamePython::init)
         .def("load_config", &DoomGamePython::loadConfig)
         .def("close", &DoomGamePython::close)
@@ -473,8 +635,8 @@ PYBIND11_MODULE(vizdoom, vz){
         .def("save", &DoomGamePython::save)
         .def("load", &DoomGamePython::load)
 
-        .def("get_state", &DoomGamePython::getState, return_value_policy::take_ownership)
-        .def("get_server_state", &DoomGamePython::getServerState, return_value_policy::take_ownership)
+        .def("get_state", &DoomGamePython::getState, pyb::return_value_policy::take_ownership)
+        .def("get_server_state", &DoomGamePython::getServerState, pyb::return_value_policy::take_ownership)
 
         .def("get_game_variable", &DoomGamePython::getGameVariable)
         .def("get_button", &DoomGamePython::getButton)

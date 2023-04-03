@@ -7,6 +7,7 @@ import gym
 import numpy as np
 from gym.spaces import Box, Dict, Discrete, MultiDiscrete
 from gym.utils.env_checker import check_env
+
 from vizdoom import gym_wrapper  # noqa
 from vizdoom.gym_wrapper.base_gym_env import VizdoomEnv
 

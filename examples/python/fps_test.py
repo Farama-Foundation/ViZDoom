@@ -15,15 +15,19 @@ from random import choice
 from time import time
 
 import tqdm
+
 import vizdoom as vzd
 
 
-# Options:
+# Rendering options:
 resolution = vzd.ScreenResolution.RES_320X240
 screen_format = vzd.ScreenFormat.CRCGCB
 depth_buffer = False
 labels_buffer = False
 automap_buffer = False
+audio_buffer = False
+objects_info = False
+sectors_info = False
 
 #####################################################################
 DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "basic.cfg")
@@ -60,8 +64,9 @@ if __name__ == "__main__":
     game.set_depth_buffer_enabled(depth_buffer)
     game.set_labels_buffer_enabled(labels_buffer)
     game.set_automap_buffer_enabled(automap_buffer)
-    game.set_objects_info_enabled(True)
-    game.set_sectors_info_enabled(True)
+    game.set_audio_buffer_enabled(audio_buffer)
+    game.set_objects_info_enabled(objects_info)
+    game.set_sectors_info_enabled(sectors_info)
 
     game.set_window_visible(False)
 
@@ -75,9 +80,7 @@ if __name__ == "__main__":
 
     start = time()
 
-    print(
-        "Checking FPS rating with all features enabled. It may take some time. Be patient."
-    )
+    print("Checking FPS with selected features. It may take some time. Be patient.")
 
     for i in tqdm.trange(args.iterations, leave=False):
 
