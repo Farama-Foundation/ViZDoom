@@ -5,6 +5,7 @@ from typing import Optional
 import gym
 import numpy as np
 import pygame
+from gym.utils import EzPickle
 
 import vizdoom.vizdoom as vzd
 
@@ -18,7 +19,7 @@ LABEL_COLORS = (
 )
 
 
-class VizdoomEnv(gym.Env):
+class VizdoomEnv(gym.Env, EzPickle):
     metadata = {"render_modes": ["human", "rgb_array"]}
 
     def __init__(
@@ -61,6 +62,7 @@ class VizdoomEnv(gym.Env):
           "continuous":
                           = Box(float32.min, float32.max, (num_delta_buttons,), float32).
         """
+        EzPickle.__init__(self, level, frame_skip, max_buttons_pressed, render_mode)
         self.frame_skip = frame_skip
         self.render_mode = render_mode
 
