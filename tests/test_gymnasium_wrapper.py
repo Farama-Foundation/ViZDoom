@@ -2,10 +2,12 @@
 
 # This test can be run as Python script or via PyTest
 import os
+import pickle
 
 import gymnasium
 import numpy as np
 from gymnasium.spaces import Box, Dict, Discrete, MultiDiscrete
+from gymnasium.utils.env_check import data_equivalence
 from gymnasium.utils.env_checker import check_env
 
 from vizdoom import gymnasium_wrapper  # noqa
@@ -347,8 +349,105 @@ def test_gymnasium_wrapper_action_space():
             env.step(sample_action)
 
 
+def test_gymnasium_wrapper_pickle():
+    print("Testing Gymnasium wrapper pickling (EzPickle).")
+    for env_name in vizdoom_envs:
+        env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
+        env2 = pickle.loads(pickle.dumps(env1))
+
+        ob1 = env1.reset(seed=42)
+        ob2 = env2.reset(seed=42)
+        assert data_equivalence(
+            ob1, ob2
+        ), f"Initial observations incorrect. Original environment: {ob1}. Pickled environment: {ob2}"
+        terminated = False
+        truncated = False
+        done = terminated or truncated
+        while not done:
+            a1 = env1.action_space.sample()
+            a2 = env2.action_space.sample()
+            assert data_equivalence(
+                a1, a2
+            ), f"Actions incorrect. Original environment: {a1}. Pickled environment: {a2}"
+
+            obs1, rew1, term1, trunc1, info1 = env1.step(a1)
+            obs2, rew2, term2, trunc2, info2 = env2.last(a2)
+
+            assert data_equivalence(
+                obs1, obs2
+            ), f"Incorrect observations: {obs1} {obs2}"
+            assert data_equivalence(rew1, rew2), f"Incorrect rewards: {rew1} {rew2}"
+            assert data_equivalence(term1, term2), f"Incorrect terms: {term1} {term2}"
+            assert data_equivalence(
+                trunc1, trunc2
+            ), f"Incorrect truncs: {trunc1} {trunc2}"
+            assert data_equivalence(info1, info2), f"Incorrect info: {info1} {info2}"
+
+            done1 = term1 or trunc1
+            done2 = term2 or trunc2
+            if done1 or done2:
+                assert data_equivalence(
+                    done1, done2
+                ), f"Incorrect truncation or termination values. Original environment: terminated {term1}, truncated {trunc1}. Pickled environment: terminated {term2} truncated {trunc2}"
+                break
+        env1.close()
+        env2.close()
+
+
+def test_gymnasium_wrapper_seed():
+    print("Testing gymnasium wrapper seeding.")
+
+    for env_name in vizdoom_envs:
+        env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
+        env2 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
+
+        env1.reset(seed=42)
+        env2.reset(seed=42)
+
+        ob1 = env1.reset(seed=42)
+        ob2 = env2.reset(seed=42)
+        assert data_equivalence(
+            ob1, ob2
+        ), f"Initial observations incorrect. Original environment: {ob1}. Pickled environment: {ob2}"
+
+        terminated = False
+        truncated = False
+        done = terminated or truncated
+        while not done:
+            a1 = env1.action_space.sample()
+            a2 = env2.action_space.sample()
+            assert data_equivalence(
+                a1, a2
+            ), f"Actions incorrect. Original environment: {a1}. Pickled environment: {a2}"
+
+            obs1, rew1, term1, trunc1, info1 = env1.step(a1)
+            obs2, rew2, term2, trunc2, info2 = env2.last(a2)
+
+            assert data_equivalence(
+                obs1, obs2
+            ), f"Incorrect observations: {obs1} {obs2}"
+            assert data_equivalence(rew1, rew2), f"Incorrect rewards: {rew1} {rew2}"
+            assert data_equivalence(term1, term2), f"Incorrect terms: {term1} {term2}"
+            assert data_equivalence(
+                trunc1, trunc2
+            ), f"Incorrect truncs: {trunc1} {trunc2}"
+            assert data_equivalence(info1, info2), f"Incorrect info: {info1} {info2}"
+
+            done1 = term1 or trunc1
+            done2 = term2 or trunc2
+            if done1 or done2:
+                assert data_equivalence(
+                    done1, done2
+                ), f"Incorrect truncation or termination values. Original environment: terminated {term1}, truncated {trunc1}. Pickled environment: terminated {term2} truncated {trunc2}"
+                break
+        env1.close()
+        env2.close()
+
+
 if __name__ == "__main__":
     test_gymnasium_wrapper()
     test_gymnasium_wrapper_terminal_state()
     test_gymnasium_wrapper_action_space()
     test_gymnasium_wrapper_obs_space()
+    test_gymnasium_wrapper_pickle()
+    test_gymnasium_wrapper_seed()
