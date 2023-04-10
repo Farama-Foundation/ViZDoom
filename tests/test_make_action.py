@@ -3,6 +3,7 @@
 # This test can be run as Python script or via PyTest
 
 import numpy as np
+
 import vizdoom as vzd
 
 

@@ -18,9 +18,10 @@ from argparse import ArgumentParser
 import cv2
 import gym
 import numpy as np
-import vizdoom.gym_wrapper  # noqa
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
+
+import vizdoom.gym_wrapper  # noqa
 
 
 DEFAULT_ENV = "VizdoomBasic-v0"

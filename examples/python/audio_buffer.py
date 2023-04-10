@@ -11,8 +11,9 @@ from random import choice
 from time import sleep
 
 import numpy as np
-import vizdoom as vzd
 from scipy.io import wavfile
+
+import vizdoom as vzd
 
 
 if __name__ == "__main__":

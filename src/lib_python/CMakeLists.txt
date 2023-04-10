@@ -70,7 +70,7 @@ endif ()
 
 set_target_properties(python_pip_package
     PROPERTIES
-    PROJECT_LABEL "pip package")
+    PROJECT_LABEL "Python module")
 
 # vizdoom, vizdoom.pk3 are needed to assemble the package
 add_dependencies(python_pip_package libvizdoom_python vizdoom pk3)

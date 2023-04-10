@@ -184,12 +184,6 @@ else( WIN32 )
 		include_directories( "${SDL2_INCLUDE_DIR}" )
 		set( ZDOOM_LIBS ${ZDOOM_LIBS} "${SDL2_LIBRARY}" )
 	endif( NOT WIN32 )
-
-	find_path( FPU_CONTROL_DIR fpu_control.h )
-	if( FPU_CONTROL_DIR )
-		include_directories( ${FPU_CONTROL_DIR} )
-		add_definitions( -DHAVE_FPU_CONTROL )
-	endif( FPU_CONTROL_DIR )
 endif( WIN32 )
 
 

@@ -14,8 +14,9 @@ import skimage.transform
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import vizdoom as vzd
 from tqdm import trange
+
+import vizdoom as vzd
 
 
 # Q-learning settings

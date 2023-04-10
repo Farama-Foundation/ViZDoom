@@ -33,9 +33,6 @@
 #include <sys/stat.h>
 #endif
 
-#ifdef HAVE_FPU_CONTROL
-#include <fpu_control.h>
-#endif
 #include <float.h>
 
 #if defined(__unix__) || defined(__APPLE__)
@@ -2218,25 +2215,6 @@ static void SetMapxxFlag()
 
 static void D_DoomInit()
 {
-	// Set the FPU precision to 53 significant bits. This is the default
-	// for Visual C++, but not for GCC, so some slight math variances
-	// might crop up if we leave it alone.
-#if !defined(__arm__)
-#if defined(_FPU_GETCW)
-	{
-		int cw;
-		_FPU_GETCW(cw);
-		cw = (cw & ~_FPU_EXTENDED) | _FPU_DOUBLE;
-		_FPU_SETCW(cw);
-	}
-#elif defined(_PC_53)
-// On the x64 architecture, changing the floating point precision is not supported.
-#ifndef _WIN64
-	int cfp = _control87(_PC_53, _MCW_PC);
-#endif
-#endif
-#endif
-
 	// Check response files before coalescing file parameters.
 	M_FindResponseFile ();
 

@@ -7,8 +7,9 @@ from random import randint
 import cv2
 import imageio
 import numpy as np
-import vizdoom as vzd
 from tqdm import tqdm
+
+import vizdoom as vzd
 from vizdoom import AutomapMode, DoomGame, Mode, ScreenFormat, ScreenResolution
 
 

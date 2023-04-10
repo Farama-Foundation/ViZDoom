@@ -43,12 +43,12 @@ const char *GetVersionString();
 
 /** Lots of different version numbers **/
 //VIZDOOM_CODE
-#define VERSIONSTR VIZ_VERSION_STR " (ZDOOM 2.8.1)"
+#define VERSIONSTR VIZ_VERSION_STR " (ZDOOM 2.8.1+)"
 
 // The version as seen in the Windows resource
 #define RC_FILEVERSION 2,8,1,0
 #define RC_PRODUCTVERSION 2,8,1,0
-#define RC_PRODUCTVERSION2 "2.8.1"
+#define RC_PRODUCTVERSION2 "2.8.1+"
 
 // Version identifier for network games.
 // Bump it every time you do a release unless you're certain you

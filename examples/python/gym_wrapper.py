@@ -5,6 +5,7 @@
 #####################################################################
 
 import gym
+
 from vizdoom import gym_wrapper  # noqa
 
 

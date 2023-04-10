@@ -4,6 +4,7 @@ import os
 from random import choice
 
 import numpy as np
+
 import vizdoom as vzd
 
 

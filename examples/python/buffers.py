@@ -16,6 +16,7 @@ from argparse import ArgumentParser
 from random import choice
 
 import cv2
+
 import vizdoom as vzd
 
 

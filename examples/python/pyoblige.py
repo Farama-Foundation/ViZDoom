@@ -10,6 +10,7 @@ from argparse import ArgumentParser
 from time import sleep
 
 import oblige
+
 import vizdoom as vzd
 
 
