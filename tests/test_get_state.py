@@ -111,7 +111,7 @@ def test_get_state(num_iterations=10, num_states=20):
     _test_get_state(
         num_iterations=num_iterations,
         num_states=num_states,
-        mem_eta_mb=2,
+        mem_eta_mb=4,
         depthBuffer=True,
         labelsBuffer=True,
         automapBuffer=True,
