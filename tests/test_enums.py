@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+# Tests for ViZDoom enums and related methods.
 # This test can be run as Python script or via PyTest
 
 import vizdoom as vzd

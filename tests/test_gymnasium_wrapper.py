@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
+# Tests for Gymnasium wrapper.
 # This test can be run as Python script or via PyTest
+
 import os
 import pickle
 

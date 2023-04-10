@@ -16,19 +16,17 @@ gcc --version
 # Report python version
 python3 -c "import sys; print('Python', sys.version)"
 
-# # Install
-# python3 -m pip install .
+# Install
+python3 -m pip install .
 
-# # Test import
-# python3 -c "import vizdoom"
+# Test import
+python3 -c "import vizdoom"
 
-# # # Install rest deps
-# # python3 -m pip install pytest
-
-# Run tests
-echo "Conda prefix: ${CONDA_PREFIX}"
+# Install pytest deps
+python3 -m pip install pytest
+pytest tests
 
 # CMake manual build
-rm CMakeCache.txt
-cmake -DCMAKE_PREFIX_PATH=$CONDA_PREFIX -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON .
-make -j
+# rm CMakeCache.txt
+# cmake -DCMAKE_PREFIX_PATH=$CONDA_PREFIX -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON=ON .
+# make -j
