@@ -7,8 +7,7 @@ import pickle
 import gymnasium
 import numpy as np
 from gymnasium.spaces import Box, Dict, Discrete, MultiDiscrete
-from gymnasium.utils.env_check import data_equivalence
-from gymnasium.utils.env_checker import check_env
+from gymnasium.utils.env_checker import check_env, data_equivalence
 
 from vizdoom import gymnasium_wrapper  # noqa
 from vizdoom.gymnasium_wrapper.base_gymnasium_env import VizdoomEnv
@@ -20,6 +19,10 @@ vizdoom_envs = [
     if "Vizdoom" in env
 ]
 test_env_configs = f"{os.path.dirname(os.path.abspath(__file__))}/env_configs"
+envs_with_animated_textures = [
+    "VizdoomHealthGathering",
+    "VizdoomHealthGatheringSupreme",
+]
 
 
 # Testing with different non-default kwargs (since each has a different obs space)
@@ -349,99 +352,101 @@ def test_gymnasium_wrapper_action_space():
             env.step(sample_action)
 
 
+def _compare_envs(
+    env1, env2, env1_name="First", env2_name="Second", seed=42, compare_screens=True
+):
+    # Seed environments
+    obs1, _ = env1.reset(seed=seed)
+    obs2, _ = env2.reset(seed=seed)
+
+    # Seed action space sampler
+    env1.action_space.seed(seed)
+    env2.action_space.seed(seed)
+
+    # Compare initial states
+    if not compare_screens:
+        obs1["screen"] = np.zeros_like(obs1["screen"])
+        obs2["screen"] = np.zeros_like(obs2["screen"])
+
+    assert data_equivalence(
+        obs1, obs2
+    ), f"Initial observations incorrect. {env1_name} environment: {obs1}. {env2_name} environment: {obs2}"
+
+    # Compare sequance of random actions and states
+    terminated = False
+    truncated = False
+    done = terminated or truncated
+    while not done:
+        a1 = env1.action_space.sample()
+        a2 = env2.action_space.sample()
+        assert data_equivalence(
+            a1, a2
+        ), f"Actions incorrect. First environment: {a1}. Second environment: {a2}"
+
+        obs1, rew1, term1, trunc1, info1 = env1.step(a1)
+        obs2, rew2, term2, trunc2, info2 = env2.step(a2)
+
+        if not compare_screens:
+            obs1["screen"] = np.zeros_like(obs1["screen"])
+            obs2["screen"] = np.zeros_like(obs2["screen"])
+
+        assert data_equivalence(
+            obs1, obs2
+        ), f"Incorrect observations: {env1_name} environment: {obs1}. {env2_name} environment: {obs2}"
+        assert data_equivalence(
+            rew1, rew2
+        ), f"Incorrect rewards: {env1_name} environment: {rew1}. {env2_name} environment:{rew2}"
+        assert data_equivalence(
+            term1, term2
+        ), f"Incorrect terms: {env1_name} environment: {term1}. {env2_name} environment: {term2}"
+        assert data_equivalence(
+            trunc1, trunc2
+        ), f"Incorrect truncs: {env1_name} environment: {trunc1}. {env2_name} environment:  {trunc2}"
+        assert data_equivalence(
+            info1, info2
+        ), f"Incorrect info: {env1_name} environment: {info1}. {env2_name} environment:  {info2}"
+
+        done1 = term1 or trunc1
+        done2 = term2 or trunc2
+        if done1 or done2:
+            assert data_equivalence(
+                done1, done2
+            ), f"Incorrect truncation or termination values. {env1_name} environment: terminated {term1}, truncated {trunc1}. {env2_name} environment: terminated {term2} truncated {trunc2}"
+            break
+        env1.close()
+        env2.close()
+
+
 def test_gymnasium_wrapper_pickle():
     print("Testing Gymnasium wrapper pickling (EzPickle).")
     for env_name in vizdoom_envs:
         env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
         env2 = pickle.loads(pickle.dumps(env1))
 
-        ob1 = env1.reset(seed=42)
-        ob2 = env2.reset(seed=42)
-        assert data_equivalence(
-            ob1, ob2
-        ), f"Initial observations incorrect. Original environment: {ob1}. Pickled environment: {ob2}"
-        terminated = False
-        truncated = False
-        done = terminated or truncated
-        while not done:
-            a1 = env1.action_space.sample()
-            a2 = env2.action_space.sample()
-            assert data_equivalence(
-                a1, a2
-            ), f"Actions incorrect. Original environment: {a1}. Pickled environment: {a2}"
-
-            obs1, rew1, term1, trunc1, info1 = env1.step(a1)
-            obs2, rew2, term2, trunc2, info2 = env2.last(a2)
-
-            assert data_equivalence(
-                obs1, obs2
-            ), f"Incorrect observations: {obs1} {obs2}"
-            assert data_equivalence(rew1, rew2), f"Incorrect rewards: {rew1} {rew2}"
-            assert data_equivalence(term1, term2), f"Incorrect terms: {term1} {term2}"
-            assert data_equivalence(
-                trunc1, trunc2
-            ), f"Incorrect truncs: {trunc1} {trunc2}"
-            assert data_equivalence(info1, info2), f"Incorrect info: {info1} {info2}"
-
-            done1 = term1 or trunc1
-            done2 = term2 or trunc2
-            if done1 or done2:
-                assert data_equivalence(
-                    done1, done2
-                ), f"Incorrect truncation or termination values. Original environment: terminated {term1}, truncated {trunc1}. Pickled environment: terminated {term2} truncated {trunc2}"
-                break
-        env1.close()
-        env2.close()
+        _compare_envs(
+            env1,
+            env2,
+            env1_name="Original",
+            env2_name="Pickled",
+            seed=42,
+            compare_screens=(env_name.split("-")[0] not in envs_with_animated_textures),
+        )
 
 
 def test_gymnasium_wrapper_seed():
     print("Testing gymnasium wrapper seeding.")
-
     for env_name in vizdoom_envs:
         env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
         env2 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
 
-        env1.reset(seed=42)
-        env2.reset(seed=42)
-
-        ob1 = env1.reset(seed=42)
-        ob2 = env2.reset(seed=42)
-        assert data_equivalence(
-            ob1, ob2
-        ), f"Initial observations incorrect. Original environment: {ob1}. Pickled environment: {ob2}"
-
-        terminated = False
-        truncated = False
-        done = terminated or truncated
-        while not done:
-            a1 = env1.action_space.sample()
-            a2 = env2.action_space.sample()
-            assert data_equivalence(
-                a1, a2
-            ), f"Actions incorrect. Original environment: {a1}. Pickled environment: {a2}"
-
-            obs1, rew1, term1, trunc1, info1 = env1.step(a1)
-            obs2, rew2, term2, trunc2, info2 = env2.last(a2)
-
-            assert data_equivalence(
-                obs1, obs2
-            ), f"Incorrect observations: {obs1} {obs2}"
-            assert data_equivalence(rew1, rew2), f"Incorrect rewards: {rew1} {rew2}"
-            assert data_equivalence(term1, term2), f"Incorrect terms: {term1} {term2}"
-            assert data_equivalence(
-                trunc1, trunc2
-            ), f"Incorrect truncs: {trunc1} {trunc2}"
-            assert data_equivalence(info1, info2), f"Incorrect info: {info1} {info2}"
-
-            done1 = term1 or trunc1
-            done2 = term2 or trunc2
-            if done1 or done2:
-                assert data_equivalence(
-                    done1, done2
-                ), f"Incorrect truncation or termination values. Original environment: terminated {term1}, truncated {trunc1}. Pickled environment: terminated {term2} truncated {trunc2}"
-                break
-        env1.close()
-        env2.close()
+        _compare_envs(
+            env1,
+            env2,
+            env1_name="First",
+            env2_name="Second",
+            seed=42,
+            compare_screens=(env_name.split("-")[0] not in envs_with_animated_textures),
+        )
 
 
 if __name__ == "__main__":
