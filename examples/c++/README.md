@@ -1,14 +1,16 @@
-##Building
+# C++ Examples
+
+## Building
+To build the examples first you need to build the ViZDoom library, then you can run the following commands in this directory (`examples/c++`):
+
 ```
 cmake . && make
 ```
 
-Examples will be placed in ``<vizdoom_dir>/bin/examples``.
-
-To run the examples, [freedoom2.wad]( https://freedoom.github.io/download.html) should be placed in the ``scenarios`` subdirectory.
+Examples will be placed in `<vizdoom_dir>/bin/examples`.
 
 ---
-##Examples
+## The list of examples
 
 ###[Basic.cpp](https://github.com/Marqt/ViZDoom/blob/master/examples/c++/Basic.cpp)
 Demonstrates how to use the most basic features of the environment. It configures the engine, and makes the agent perform random actions. It also prints the current state and the reward earned with every action.

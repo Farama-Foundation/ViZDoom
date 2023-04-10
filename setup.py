@@ -188,7 +188,7 @@ class BuildCommand(build):
         except subprocess.CalledProcessError:
             sys.stderr.write(
                 "\033[1m\nInstallation failed, you may be missing some dependencies. "
-                "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md "
+                "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Installation.md "
                 "for details\n\n\033[0m"
             )
             raise

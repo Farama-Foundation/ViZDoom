@@ -78,7 +78,7 @@ ViZDoom requires C++11 compiler, CMake 3.4+, Boost 1.65+ SDL2, OpenAL (optional)
 
 To install ViZDoom run (may take few minutes):
 ```
-apt install cmake libboost-all-dev libsdl2-dev libopenal-dev
+apt install cmake git libboost-all-dev libsdl2-dev libopenal-dev
 pip install vizdoom
 ```
 We recommend using at least Ubuntu 18.04+ or Debian 10+ with Python 3.7+.
@@ -87,7 +87,7 @@ We recommend using at least Ubuntu 18.04+ or Debian 10+ with Python 3.7+.
 
 To install ViZDoom run (may take few minutes):
 ```
-dnf install boost-devel SDL2-devel openal-soft-devel
+dnf install cmake git boost-devel SDL2-devel openal-soft-devel
 pip install vizdoom
 ```
 We recommend using at least Fedora 35+ or RHEL/CentOS/Alma/Rocky Linux 9+ with Python 3.7+. To install openal-soft-devel on RHEL/CentOS/Alma/Rocky Linux 9, one needs to use `dnf --enablerepo=crb install`.
@@ -108,7 +108,7 @@ Both Intel and Apple Silicon CPUs are supported.
 
 To install ViZDoom on run (may take few minutes):
 ```
-brew install cmake boost openal-soft sdl2
+brew install cmake git boost openal-soft sdl2
 pip install vizdoom
 ```
 We recommend using at least macOS High Sierra 10.13+ with Python 3.7+.

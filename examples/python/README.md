@@ -1,6 +1,8 @@
-> For the examples to work properly you need to install ViZDoom [system-wide with pip](https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md) or create a link to dir with ViZDoom pip_package or set doom_game_path and vizdoom_path manually or in config files.
+# Python examples
+<<<<<<< Updated upstream
+For the examples to work properly you need to install ViZDoom or create a link to dir with ViZDoom pip_package.
 
-# Examples
+# The list of examples
 
 ## [audio_buffer.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/audio_buffer.py)
 Demonstrates how to use the audio buffer.

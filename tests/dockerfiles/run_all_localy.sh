@@ -24,9 +24,6 @@ function create_dockerfile ( ) {
     cat ${DOCKERFILES_DIR}/$base_dockerfile | tail -n +2 >> $dockerfile
 }
 
-# Run dockerfiles in the directory of the script
-#DOCKERFILES_TO_BUILD_AND_RUN=${DOCKERFILES_DIR}/*.Dockerfile
-
 # Generate and run dockerfiles
 # Array in florma "<base docker image> <base dockerfile to use> <additional commands to add to the dockerfile after FROM statement>"
 DOCKERFILES_TO_BUILD_AND_RUN=(
