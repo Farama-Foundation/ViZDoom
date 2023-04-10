@@ -65,13 +65,10 @@ jobs:
       run: python -c "import sys; print(sys.version)"
 
     - name: Pip install
-      run: pip install .
+      run: pip install .[test]
 
     - name: Import check
       run: python -c "import vizdoom"
-
-    - name: Install pytest
-      run: pip install pytest
 
     - name: Run tests
       run: pytest tests

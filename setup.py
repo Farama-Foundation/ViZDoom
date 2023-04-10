@@ -207,9 +207,10 @@ setup(
     author_email="mwydmuch@cs.put.poznan.pl",
     extras_require={
         "gym": ["gym==0.26.0", "pygame==2.3.0"],
+        "test": ["pytest", "psutil"],
     },
     install_requires=["numpy", "tqdm", "gymnasium==0.28.1", "pygame==2.3.0"],
-    tests_require=["psutil"],
+    tests_require=["pytest", "psutil"],
     packages=["vizdoom"],
     package_dir={"vizdoom": package_path},
     package_data={"vizdoom": package_data},

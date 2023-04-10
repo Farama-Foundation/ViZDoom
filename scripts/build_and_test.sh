@@ -17,13 +17,12 @@ gcc --version
 python3 -c "import sys; print('Python', sys.version)"
 
 # Install
-python3 -m pip install .
+python3 -m pip install .[test]
 
 # Test import
 python3 -c "import vizdoom"
 
-# Install pytest deps
-python3 -m pip install pytest
+# Run tests
 pytest tests
 
 # CMake manual build
