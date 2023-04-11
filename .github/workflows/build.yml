@@ -7,6 +7,7 @@ on:
       - 'include/**'
       - 'scripts/**'
       - 'src/**'
+      - 'tests/**'
       - 'CMakeLists.txt'
       - 'setup.py'
       - 'pyproject.toml'
@@ -18,6 +19,7 @@ on:
       - 'include/**'
       - 'scripts/**'
       - 'src/**'
+      - 'tests/**'
       - 'CMakeLists.txt'
       - 'setup.py'
       - 'pyproject.toml'
@@ -63,7 +65,10 @@ jobs:
       run: python -c "import sys; print(sys.version)"
 
     - name: Pip install
-      run: pip install .
+      run: pip install .[test]
 
     - name: Import check
       run: python -c "import vizdoom"
+
+    - name: Run tests
+      run: pytest tests

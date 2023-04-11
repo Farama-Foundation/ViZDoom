@@ -188,7 +188,7 @@ class BuildCommand(build):
         except subprocess.CalledProcessError:
             sys.stderr.write(
                 "\033[1m\nInstallation failed, you may be missing some dependencies. "
-                "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Building.md "
+                "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Installation.md "
                 "for details\n\n\033[0m"
             )
             raise
@@ -207,9 +207,10 @@ setup(
     author_email="mwydmuch@cs.put.poznan.pl",
     extras_require={
         "gym": ["gym==0.26.0", "pygame==2.3.0"],
+        "test": ["pytest", "psutil"],
     },
     install_requires=["numpy", "tqdm", "gymnasium==0.28.1", "pygame==2.3.0"],
-    tests_require=["psutil"],
+    tests_require=["pytest", "psutil"],
     packages=["vizdoom"],
     package_dir={"vizdoom": package_path},
     package_data={"vizdoom": package_data},

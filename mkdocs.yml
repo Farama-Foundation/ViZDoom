@@ -3,7 +3,7 @@ repo_url : https://github.com/mwydmuch/ViZDoom
 docs_dir : doc
 pages:
 - ViZDoom: index.md
-- Installation/Building: Building.md
+- Installation and building: Installation.md
 - Changelog: Changelog.md
 - Configuration Files: ConfigFile.md
 - DoomGame: DoomGame.md

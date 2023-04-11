@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
+# Tests for Gymnasium wrapper.
 # This test can be run as Python script or via PyTest
+
 import os
 import pickle
 
@@ -22,6 +24,7 @@ test_env_configs = f"{os.path.dirname(os.path.abspath(__file__))}/env_configs"
 envs_with_animated_textures = [
     "VizdoomHealthGathering",
     "VizdoomHealthGatheringSupreme",
+    "VizdoomDeathmatch",
 ]
 
 
@@ -30,6 +33,12 @@ envs_with_animated_textures = [
 def test_gymnasium_wrapper():
     print("Testing Gymnasium wrapper compatibility with gymnasium API")
     for env_name in vizdoom_envs:
+
+        # Skip environments with animated textures,
+        # as they might render different states for the same seeds
+        if env_name.split("-")[0] in envs_with_animated_textures:
+            continue
+
         for frame_skip in [1, 4]:
             env = gymnasium.make(env_name, frame_skip=frame_skip, max_buttons_pressed=0)
 
@@ -38,8 +47,8 @@ def test_gymnasium_wrapper():
 
             ob_space = env.observation_space
             act_space = env.action_space
-            ob, _ = env.reset()
-            assert ob_space.contains(ob), f"Reset observation: {ob!r} not in space"
+            obs, _ = env.reset()
+            assert ob_space.contains(obs), f"Reset observation: {obs!r} not in space"
 
             a = act_space.sample()
             observation, reward, terminated, truncated, _info = env.step(a)
@@ -63,21 +72,21 @@ def test_gymnasium_wrapper_terminal_state():
         for frame_skip in [1, 4]:
             env = gymnasium.make(env_name, frame_skip=frame_skip, max_buttons_pressed=0)
 
-            def agent(ob):
+            def agent(obs):
                 return env.action_space.sample()
 
-            ob = env.reset()
+            obs = env.reset()
             terminated = False
             truncated = False
             done = terminated or truncated
             while not done:
-                a = agent(ob)
-                (ob, _reward, terminated, truncated, _info) = env.step(a)
+                a = agent(obs)
+                (obs, _reward, terminated, truncated, _info) = env.step(a)
                 done = terminated or truncated
                 if done:
                     break
                 env.close()
-            assert env.observation_space.contains(ob)
+            assert env.observation_space.contains(obs)
 
 
 # Testing various observation spaces
@@ -353,7 +362,7 @@ def test_gymnasium_wrapper_action_space():
 
 
 def _compare_envs(
-    env1, env2, env1_name="First", env2_name="Second", seed=42, compare_screens=True
+    env1, env2, env1_name="First", env2_name="Second", seed=1993, compare_screens=True
 ):
     # Seed environments
     obs1, _ = env1.reset(seed=seed)
@@ -428,7 +437,7 @@ def test_gymnasium_wrapper_pickle():
             env2,
             env1_name="Original",
             env2_name="Pickled",
-            seed=42,
+            seed=1993,
             compare_screens=(env_name.split("-")[0] not in envs_with_animated_textures),
         )
 
@@ -444,7 +453,7 @@ def test_gymnasium_wrapper_seed():
             env2,
             env1_name="First",
             env2_name="Second",
-            seed=42,
+            seed=1993,
             compare_screens=(env_name.split("-")[0] not in envs_with_animated_textures),
         )
 

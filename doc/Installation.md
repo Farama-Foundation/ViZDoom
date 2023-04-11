@@ -1,14 +1,12 @@
-# Installation/Building
+# Installation and building
 
 * [Dependencies](#deps)
   * [Linux](#linux_deps)
   * [MacOS](#macos_deps)
   * [Windows](#windows_deps)
-* [Installation via PyPI(pip/conda)](#pypi)
-* [Installation of build Windows binaries](#windows_bin)
+* [Installation via pip](#pypi)
 * [Building (not recommended)](#build)
-  * [Linux](#linux_build)
-  * [MacOS](#macos_build)
+  * [Linux/MacOS](#linux_macos_build)
   * [Windows](#windows_build)
   * [Compilation output](#output)
   * [Manual installation](#manual-install)
@@ -16,7 +14,7 @@
 
 ## <a name="deps"></a> Dependencies
 
-Even if you plan to install ViZDoom via PyPI you need to install some dependencies in your system first.
+Even if you plan to install ViZDoom via pip, you need to install some dependencies in your system first.
 
 
 ### <a name="linux_deps"></a> Linux
@@ -28,19 +26,28 @@ Even if you plan to install ViZDoom via PyPI you need to install some dependenci
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
-To get all dependencies on Ubuntu (we recommend using Ubuntu 18.04+) execute the following commands in the shell (requires root access). `scripts/linux_check_dependencies.sh` installs these for Python3:
+To get all dependencies on apt-based Linux (Ubuntu, Debian, Linux Mint, etc.) execute the following commands in the shell (might require root access).
 ```bash
-# ZDoom dependencies
-sudo apt-get install build-essential zlib1g-dev libsdl2-dev libjpeg-dev \
-nasm tar libbz2-dev libgtk2.0-dev cmake git libfluidsynth-dev libgme-dev \
-libopenal-dev timidity libwildmidi-dev unzip
+# All ZDoom dependencies (most are optional)
+apt install build-essential zlib1g-dev libsdl2-dev libjpeg-dev \
+tar libbz2-dev libgtk2.0-dev cmake git libfluidsynth-dev libgme-dev \
+libopenal-dev timidity libwildmidi-dev unzip libboost-all-dev
 
-# Boost libraries
-sudo apt-get install libboost-all-dev
+# Only essential ZDoom dependencies
+apt install build-essential cmake git libboost-all-dev libsdl2-dev libopenal-dev
 
-# Python 3 dependencies
-sudo apt-get install python3-dev python3-pip
+# Python 3 dependencies (alternatively Anaconda 3 installed)
+apt install python3-dev python3-pip
 # or install Anaconda 3 and add it to PATH
+```
+
+To get all dependencies on dnf/yum-based Linux (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.) execute the following commands in the shell (might require root access).
+```bash
+# Essential ZDoom dependencies
+dnf install cmake git boost-devel SDL2-devel openal-soft-devel
+
+# Python 3 dependencies (alternatively Anaconda 3 installed)
+dnf install python3-devel python3-pip
 ```
 
 If you do not have a root access, you can use a conda (e.g. [miniconda](https://docs.conda.io/en/latest/miniconda.html)) environment to install dependencies to your environment only:
@@ -61,6 +68,7 @@ python setup.py build && python setup.py install
 * Clang 5.0+
 * Boost libraries 1.65.0+
 * Python 3.7+ for Python binding (optional)
+## <a name="build"></a> Building
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X) are needed.
 
@@ -85,31 +93,31 @@ Most of them (except Boost) are gathered in this repository: [ViZDoomWinDepBin](
 You can download Boost from [here](https://www.boost.org/users/download).
 
 
-## <a name="pypi"></a> Installation via PyPI (recommended for Python users)
+## <a name="pypi"></a> Installation via pip (recommended for Python users)
 
-ViZDoom for Python can be installed via **pip/conda** on Linux and MacOS, and it is strongly recommended.
-However you will still need to install **[Linux](#linux_deps)/[MacOS](#macos_deps) dependencies**.
+ViZDoom for Python can be installed via **pip** on Linux, MacOS and Windows, and it is strongly recommended.
+However you will still need to install **[Linux](#linux_deps)/[MacOS](#macos_deps) dependencies**, as it will be build locally from source.
+For Windows 10 or 11 64-bit and Python 3.7+ we provide pre-build wheels (binary packages).
 
-> Pip installation is not supported on Windows at the moment, but we hope some day it will.
 
 To install the most stable official release from [PyPI](https://pypi.python.org/pypi):
 ```bash
 pip install vizdoom
 ```
 
-To install the newest version from the repository:
+To install the newest version from the repository (only Linux and MacOS):
 ```bash
 pip install git+https://github.com/mwydmuch/ViZDoom.git
 ```
 
 
-## <a name="build"></a> Building
+## <a name="build"></a> Building manually (not recommended)
 
 Instructions below can be used to build ViZDoom manually.
 
-### <a name="linux_build"></a> Linux
+### <a name="linux_macos_build"></a> Linux / MacOS
 
->>> Using [pip/conda](#pypi) is the recommended way to install ViZDoom, please try it first unless you are sure you want to compile the package by hand.
+>>> Using [pip](#pypi) is the recommended way to install ViZDoom, please try it first unless you are sure you want to compile the package by hand.
 
 In ViZDoom's root directory:
 ```bash
@@ -121,56 +129,7 @@ make
 
 where `-DBUILD_ENGINE=ON` and `-DBUILD_PYTHON=ON` CMake options are optional (default ON).
 
-### <a name="macos_build"></a> MacOS
-
->>> Using [pip/conda](#pypi) is the recommended way to install ViZDoom, please try it first unless you are sure you want to compile the package by hand.
-
-Run CMake and build generated Makefile.
-
-```sh
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ENGINE=ON -DBUILD_PYTHON=ON
-make
-```
-
-where `-DBUILD_ENGINE=ON` and `-DBUILD_PYTHON=ON` CMake options are optional (default ON).
-
-Users with brew-installed Python/Anaconda **may** (in some cases) need to manually set `PYTHON_EXECUTABLE`, `PYTHON_INCLUDE_DIR`, `PYTHON_LIBRARY` variables:
-
-It should look like this for brew-installed Python:
-
-```sh
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release \
--DBUILD_PYTHON=ON \
--DPYTHON_EXECUTABLE=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/bin/pythonX \
--DPYTHON_INCLUDE_DIR=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/include/pythonX.X \
--DPYTHON_LIBRARY=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/lib/libpythonX.X.dylib \
--DNUMPY_INCLUDES=/usr/local/Cellar/python/X.X.X/Frameworks/Python.framework/Versions/X.X/lib/pythonX.X/site-packages/numpy/core/include
-```
-
-Or for Anaconda:
-
-```sh
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release \
--DBUILD_PYTHON=ON \
--DPYTHON_EXECUTABLE=~/anacondaX/bin/pythonX \
--DPYTHON_INCLUDE_DIR=~/anacondaX/include/pythonX.X \
--DPYTHON_LIBRARY=~/anacondaX/lib/libpythonX.X.dylib \
--DNUMPY_INCLUDES=~/anacondaX/lib/pythonX.X/site-packages/numpy/core/include
-```
-
 ### <a name="windows_build"></a> Windows
-
-Setting up the compilation on Windows is really tedious so using the [precompiled binaries](#windows_bin) is recommended.
-
-`vizdoom` directory from Python builds contains complete Python package for Windows.
-You can copy it to your project directory or copy it into `python_dir/lib/site-packages/vizdoom` to install it globally in your system.
-
 
 Run CMake GUI, select ViZDoom root directory and set paths to:
 * BOOST_ROOT
@@ -186,7 +145,7 @@ Use generated Visual Studio solution to build all parts of ViZDoom environment.
 
 
 ### <a name="output"></a> Compilation output
-Compilation output will be placed in `build/bin` and it should contain following files.
+Compilation output will be placed in `build/bin` and it should contain the following files.
 
 * `bin/vizdoom / vizdoom.exe` - ViZDoom executable
 * `bin/vizdoom.pk3` - resources file used by ViZDoom (needed by ViZDoom executable)

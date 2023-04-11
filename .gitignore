@@ -1,5 +1,6 @@
 # CMake and building output
 **/bin
+**/build
 ViZDoomVersion.h
 viz_version.h
 Makefile
@@ -122,3 +123,6 @@ src/vizdoom/zlib/x64/
 
 # MacOS
 .DS_Store
+
+# Dockerfiles
+tmp_dockerfiles

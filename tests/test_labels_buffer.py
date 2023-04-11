@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
+# Test correctness of labels buffer.
+# This test can be run as Python script or via PyTest
+
 import os
 from random import choice
 
 import numpy as np
 
 import vizdoom as vzd
-
-
-# This test can be run as Python script or via PyTest
 
 
 def check_label(labels_buffer, label):
