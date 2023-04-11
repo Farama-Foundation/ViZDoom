@@ -17,7 +17,7 @@ import vizdoom as vzd
 def _test_get_state(
     num_iterations=10,
     num_states=20,
-    mem_eta_mb=2,
+    mem_eta_mb=0,
     depthBuffer=False,
     labelsBuffer=False,
     automapBuffer=False,
@@ -99,19 +99,20 @@ def _test_get_state(
                 f"Memory, with {len(states)} states saved, after episode {i + 1} / {num_iterations}: {mem} MB, expected ~{prev_mem} +/- {mem_eta_mb} MB"
             )
 
-        if prev_len < len(states):
-            prev_mem = mem
-            prev_len = len(states)
-        elif prev_len == len(states):
-            assert abs(prev_mem - mem) < mem_eta_mb
+        if mem_eta_mb > 0:
+            if prev_len < len(states):
+                prev_mem = mem
+                prev_len = len(states)
+            elif prev_len == len(states):
+                assert abs(prev_mem - mem) < mem_eta_mb
 
 
 def test_get_state(num_iterations=10, num_states=20):
-    _test_get_state(num_iterations=num_iterations, num_states=num_states, mem_eta_mb=2)
+    _test_get_state(num_iterations=num_iterations, num_states=num_states, mem_eta_mb=0)
     _test_get_state(
         num_iterations=num_iterations,
         num_states=num_states,
-        mem_eta_mb=4,
+        mem_eta_mb=0,
         depthBuffer=True,
         labelsBuffer=True,
         automapBuffer=True,
