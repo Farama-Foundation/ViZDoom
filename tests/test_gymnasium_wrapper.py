@@ -24,6 +24,7 @@ test_env_configs = f"{os.path.dirname(os.path.abspath(__file__))}/env_configs"
 envs_with_animated_textures = [
     "VizdoomHealthGathering",
     "VizdoomHealthGatheringSupreme",
+    "VizdoomDeathmatch",
 ]
 
 
