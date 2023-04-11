@@ -126,7 +126,7 @@
 | :--    | :--              |
 | Python | `bool init()`    |
 
-Initializes ViZDoom game instance and starts newEpisode.
+Initializes ViZDoom game instance and starts a new episode.
 After calling this method, the first state from a new episode will be available.
 Some configuration options cannot be changed after calling this method.
 Init returns true when the game was started properly and false otherwise.
@@ -153,9 +153,9 @@ The game can be initialized again after being closed.
 
 Changed in 1.1.0
 
-Initializes a new episode. All rewards, variables and state are restarted.
+Initializes a new episode. The state of an environment is completely restarted (all variables and rewards are reset to their initial values).
 After calling this method, the first state from the new episode will be available.
-If the recordFilePath is not empty, the new episode will be recorded to this file (as a Doom lump).
+If the `recordFilePath` is not empty, the new episode will be recorded to this file (as a Doom lump).
 
 In a multiplayer game, the host can call this method to finish the game.
 Then the rest of the players must also call this method to start a new episode.
@@ -170,11 +170,10 @@ Then the rest of the players must also call this method to start a new episode.
 
 Added in 1.1.0
 
-Replays recorded episode from the given file and using the perspective of the specified player.
-Players are numbered from 1, `player` equal to 0 results in replaying demo using the perspective
-of default player in the recording file.
-After calling this method, the first state from replay will be available.
-All rewards, variables and state are available during replaying episode.
+Replays a recorded episode from the given file using the perspective of the specified player.
+Players are numbered from 1, `player` equal to 0 results in replaying the demo using the perspective of the default player in the recording file.
+After calling this method, the first state from the replay will be available.
+All rewards, variables, and states are available during the replaying episode.
 
 See also:
 - [examples/python/record_episodes.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/record_episodes.py)
@@ -246,9 +245,10 @@ or in the configuration file (in order of appearance).
 | :--    | :--                                                                  |
 | Python | `void advance_action(int tics = 1, bool updateState = True)`         |
 
-Processes a specified number of tics. If `updateState` is set the state will be updated after last processed tic
-and a new reward will be calculated. To get new state use `getState` and to get the new reward use `getLastReward`.
-If `updateState` is not set the state will not be updated.
+Processes a specified number of tics. If `updateState` is set,
+the state will be updated after the last processed tic and a new reward will be calculated.
+To get the new state, use `getState` and to get the new reward use `getLastReward`.
+If `updateState` is not set, the state will not be updated.
 
 
 ---
@@ -292,7 +292,7 @@ Returns true if the current episode is in the terminal state (is finished).
 | Python | `bool is_player_dead()`  |
 
 Returns true if the player is dead.
-In singleplayer, player death is equivalent to the end of the episode.
+In singleplayer, the player's death is equivalent to the end of the episode.
 In multiplayer, when the player is dead [`respawnPlayer`](#respawnPlayer) method can be called.
 
 
@@ -388,7 +388,7 @@ Returns number of current episode tic.
 
 Added in 1.1.9
 
-Saves current game state to the file.
+Saves a game's internal state to the file using ZDoom's save game functionality.
 
 
 ---
@@ -400,7 +400,7 @@ Saves current game state to the file.
 
 Added in 1.1.9
 
-Loads game state from the file.
+Loads a game's internal state from the file using ZDoom's load game functionality.
 A new state is available after loading.
 Loading the game state does not reset the current episode state,
 tic counter/time and total reward state keep their values.
@@ -492,10 +492,10 @@ See also:
 | :--    | :--                                                            |
 | Python | `void set_button_max_value(Button button, float maxValue = 0)` |
 
-Sets the maximum allowed, absolute value for the specified button.
+Sets the maximum allowed absolute value for the specified button.
 Setting the maximum value to 0 results in no constraint at all (infinity).
 This method makes sense only for delta buttons.
-Constraints limit applies in all Modes.
+The constraints limit applies in all Modes.
 
 See also:
 - [`Types: Button`](Types.md#button)
@@ -508,7 +508,7 @@ See also:
 | :--    | :--                                             |
 | Python | `int get_button_max_value(Button button)`       |
 
-Returns the maximum allowed, absolute value for the specified button.
+Returns the maximum allowed absolute value for the specified button.
 
 See also:
 - [`Types: Button`](Types.md#button)
@@ -683,7 +683,7 @@ Config key: `livingReward/living_reward`
 | :--    | :--                          |
 | Python | `double get_death_penalty()` |
 
-Returns the penalty for player's death.
+Returns the penalty for the player's death.
 
 
 ---
@@ -693,7 +693,7 @@ Returns the penalty for player's death.
 | :--    | :--                                          |
 | Python | `void set_death_penalty(float deathPenalty)` |
 
-Sets a penalty for player's death. Note that in case of a negative value, the player will be rewarded upon dying.
+Sets a penalty for the player's death. Note that in case of a negative value, the player will be rewarded upon dying.
 
 Default value: 0
 
@@ -788,7 +788,7 @@ Returns current ticrate.
 Added in 1.1.0
 
 Sets ticrate for ASNYC Modes - number of logic tics executed per second.
-Default Doom ticrate is 35. This value will play a game at normal speed.
+The default Doom ticrate is 35. This value will play a game at normal speed.
 
 Default value: 35 (default Doom ticrate).
 
@@ -805,9 +805,9 @@ See also:
 | :--    | :--                                         |
 | Python | `void set_vizdoom_path(str filePath)`       |
 
-Sets path to ViZDoom engine executable.
+Sets path to the ViZDoom engine executable vizdoom.
 
-Default value: "$VIZDOOM.SO_LOCATION/vizdoom", "vizdoom.exe" on Windows.
+Default value: "{vizdoom.so location}/{vizdoom or vizdoom.exe (on Windows)}".
 
 Config key: `ViZDoomPath/vizdoom_path`
 
@@ -819,9 +819,10 @@ Config key: `ViZDoomPath/vizdoom_path`
 | :--    | :--                                          |
 | Python | `void set_doom_game_path(str filePath)`      |
 
-Sets path to the Doom engine based game file (wad format). If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom.so is).
+Sets the path to the Doom engine based game file (wad format).
+If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom.so/pyd is).
 
-Default value: "$VIZDOOM.SO_LOCATION/{doom2.wad or freedoom2.wad}"
+Default value: "{vizdoom.so location}/{doom2.wad, doom.wad, freedoom2.wad or freedoom.wad}"
 
 Config key: `DoomGamePath/doom_game_path`
 
@@ -833,7 +834,8 @@ Config key: `DoomGamePath/doom_game_path`
 | :--    | :--                                              |
 | Python | `void set_doom_scenario_path(str filePath)`      |
 
-Sets path to additional scenario file (wad format).
+Sets the path to an additional scenario file (wad format).
+If not provided, the default Doom single-player maps will be loaded.
 
 Default value: ""
 
@@ -861,9 +863,9 @@ Config key: `DoomMap/doom_map`
 | :--    | :--                               |
 | Python | `void set_doom_skill(int skill)`  |
 
-Sets Doom game difficulty level which is called skill in Doom.
-The higher is the skill, the harder the game becomes.
-Skill level affects monsters' aggressiveness, monsters' speed, weapon damage, ammunition quantities etc.
+Sets Doom game difficulty level, which is called skill in Doom.
+The higher the skill, the harder the game becomes.
+Skill level affects monsters' aggressiveness, monsters' speed, weapon damage, ammunition quantities, etc.
 Takes effect from the next episode.
 
 - 1 - VERY EASY, “I'm Too Young to Die” in Doom.
@@ -884,10 +886,10 @@ Config key: `DoomSkill/doom_skill`
 | :--    | :--                                            |
 | Python | `void set_doom_config_path(str filePath)`      |
 
-Sets path for ViZDoom engine configuration file.
-The file is responsible for configuration of Doom engine itself.
-If it does not exist, it will be created after vizdoom executable is run.
-This method is not needed for most of the tasks and is added for convenience of users with hacking tendencies.
+Sets the path for ZDoom's configuration file.
+The file is responsible for the configuration of the ZDoom engine itself.
+If it does not exist, it will be created after the `vizdoom` executable is run.
+This method is not needed for most of the tasks and is added for the convenience of users with hacking tendencies.
 
 Default value: "", if left empty "_vizdoom.ini" will be used.
 
@@ -940,7 +942,7 @@ Returns start delay of every episode in tics.
 | Python | `void set_episode_start_time(int tics)`       |
 
 Sets start delay of every episode in tics.
-Every episode will effectively start (from the user's perspective) after given number of tics.
+Every episode will effectively start (from the user's perspective) after the provided number of tics.
 
 Default value: 1
 
@@ -979,8 +981,8 @@ Config key: `episodeTimeout/episode_timeout`
 | :--    | :--                                                       |
 | Python | `void set_screen_resolution(ScreenResolution resolution)` |
 
-Sets the screen resolution. ZDoom engine supports only specific resolutions,
-supported resolutions are part of ScreenResolution enumeration (e.g. `RES_320X240`, `RES_640X480`, `RES_1920X1080`).
+Sets the screen resolution. ZDoom engine supports only specific resolutions.
+Supported resolutions are part of ScreenResolution enumeration (e.g., `RES_320X240`, `RES_640X480`, `RES_1920X1080`).
 The buffers, as well as the content of ViZDoom's display window, will be affected.
 
 Default value: `RES_320X240`
@@ -1130,7 +1132,8 @@ See also:
 
 Added in 1.1.0
 
-Sets the automap mode (`NORMAL`, `WHOLE`, `OBJECTS`, `OBJECTS_WITH_SIZE`), which determines what will be visible on it.
+Sets the automap mode (`NORMAL`, `WHOLE`, `OBJECTS`, `OBJECTS_WITH_SIZE`),
+which determines what will be visible on it.
 
 Default value: `NORMAL`
 
@@ -1149,7 +1152,8 @@ See also:
 
 Added in 1.1.0
 
-Determine if the automap will be rotating with the player. If false, north always will be at the top of the buffer.
+Determine if the automap will be rotating with the player.
+If false, north always will be at the top of the buffer.
 
 Default value: false
 
@@ -1179,7 +1183,7 @@ Config key: `automapRenderTextures/automap_render_textures`
 | :--    | :--                              |
 | Python | `void set_render_hud(bool hud)`  |
 
-Determine if the hud will be rendered in game.
+Determine if the hud will be rendered in the game.
 
 Default value: false
 
@@ -1209,7 +1213,7 @@ Config key: `renderMinimalHud/render_minimal_hud`
 | :--    | :--                                    |
 | Python | `void set_render_weapon(bool weapon)`  |
 
-Determine if the weapon held by the player will be rendered in game.
+Determine if the weapon held by the player will be rendered in the game.
 
 Default value: true
 
@@ -1223,7 +1227,7 @@ Config key: `renderWeapon/render_weapon`
 | :--    | :--                                          |
 | Python | `void set_render_crosshair(bool crosshair)`  |
 
-Determine if the crosshair will be rendered in game.
+Determine if the crosshair will be rendered in the game.
 
 Default value: false
 
@@ -1237,7 +1241,7 @@ Config key: `renderCrosshair/render_crosshair`
 | :--    | :--                                    |
 | Python | `void set_render_decals(bool decals)`  |
 
-Determine if the decals (marks on the walls) will be rendered in game.
+Determine if the decals (marks on the walls) will be rendered in the game.
 
 Default value: true
 
@@ -1251,7 +1255,7 @@ Config key: `renderDecals/render_decals`
 | :--    | :--                                          |
 | Python | `void set_render_particles(bool particles)`  |
 
-Determine if the particles will be rendered in game.
+Determine if the particles will be rendered in the game.
 
 Default value: true
 
@@ -1267,7 +1271,7 @@ Config key: `renderParticles/render_particles`
 
 Added in 1.1.0
 
-Determine if some effects sprites (gun puffs, blood splats etc.) will be rendered in game.
+Determine if some effects sprites (gun puffs, blood splats etc.) will be rendered in the game.
 
 Default value: true
 
@@ -1283,7 +1287,7 @@ Config key: `renderEffectsSprites/render_effects_sprites`
 
 Added in 1.1.0
 
-Determine if ingame messages (information about pickups, kills etc.) will be rendered in game.
+Determine if in-game messages (information about pickups, kills, etc.) will be rendered in the game.
 
 Default value: false
 
@@ -1299,7 +1303,7 @@ Config key: `renderMessages/render_messages`
 
 Added in 1.1.0
 
-Determine if actors' corpses will be rendered in game.
+Determine if actors' corpses will be rendered in the game.
 
 Default value: true
 
@@ -1315,7 +1319,7 @@ Config key: `renderCorpses/render_corpses`
 
 Added in 1.1.3
 
-Determine if the screen flash effect upon taking damage or picking up items will be rendered in game.
+Determine if the screen flash effect upon taking damage or picking up items will be rendered in the game.
 
 Default value: true
 
@@ -1457,7 +1461,8 @@ Returns true if the objects information is enabled.
 
 Added in 1.1.8
 
-Enables information about all objects present in current episode/level, it will be available in the state.
+Enables information about all objects present in the current episode/level.
+It will be available in the state.
 
 Default value: false
 
@@ -1478,7 +1483,7 @@ See also:
 
 Added in 1.1.8
 
-Returns true if the sectors information is enabled.
+Returns true if the information about sectors is enabled.
 
 
 ---
@@ -1490,7 +1495,8 @@ Returns true if the sectors information is enabled.
 
 Added in 1.1.8
 
-Enables information about all sectors (map layout) present in current episode/level, it will be available in the state.
+Enables information about all sectors (map layout) present in the current episode/level.
+It will be available in the state.
 
 Default value: false
 
@@ -1544,7 +1550,7 @@ See also:
 
 Added in 1.1.9
 
-Returns the sampling rate of audio buffer.
+Returns the sampling rate of the audio buffer.
 
 
 See also:
@@ -1562,7 +1568,7 @@ See also:
 
 Added in 1.1.9
 
-Sets the sampling rate of audio buffer.
+Sets the sampling rate of the audio buffer.
 
 Default value: false
 
@@ -1583,7 +1589,7 @@ See also:
 
 Added in 1.1.9
 
-Returns the size of audio buffer.
+Returns the size of the audio buffer.
 
 
 See also:
@@ -1600,8 +1606,8 @@ See also:
 
 Added in 1.1.9
 
-Sets the size of audio buffer. Size is defined in number of logic tics.
-After each action audio buffer will contain audio from specified number of last processed tics.
+Sets the size of the audio buffer. The size is defined by a number of logic tics.
+After each action audio buffer will contain audio from the specified number of the last processed tics.
 Doom uses 35 ticks per second.
 
 Default value: 4
