@@ -82,7 +82,7 @@ living_reward = -1
 # Rendering options
 screen_resolution = RES_320X240
 screen_format = CRCGCB
-render_hud = True
+render_hud = true
 render_crosshair = false
 render_weapon = true
 render_decals = false
@@ -104,7 +104,7 @@ available_buttons =
     }
 
 # Game variables that will be in the state
-available_game_variables = { AMMO2}
+available_game_variables = { AMMO2 }
 
 # Default mode - the game is controlled from the code
 mode = PLAYER
