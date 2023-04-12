@@ -15,7 +15,7 @@ import vizdoom.vizdoom as vzd
 # 256 is not nearly enough for all IDs, but we limit
 # ourselves here to avoid hogging too much memory.
 LABEL_COLORS = (
-    np.random.default_rng(42).uniform(25, 256, size=(256, 3)).astype(np.uint8)
+    np.random.default_rng(1993).uniform(25, 256, size=(256, 3)).astype(np.uint8)
 )
 
 
