@@ -183,4 +183,4 @@ GUI apps do not work out-of-the-box on WSL on Windows 10/11. To make it work, yo
 
 ## What is a difference between ViZDoom, ZDoom and GZDoom
 
-ViZDoom is based on the last version of ZDoom (2.8.1). ZDoom was discontinued in 2016, and the development switched to GZDoom, which provides a new 3D renderer implemented in OpenGL. ViZDoom, however, sticks to the original 2D software renderer, which is much faster for small resolutions than OpenGL. Because of that, ViZDoom modernized the ZDoom engine by adding support for Apple Silicon and removing old unused parts of the code base (e.g., by removing Assembler parts).
+ViZDoom is based on the last version of ZDoom (2.8.1). ZDoom was discontinued in 2016, and the development switched to GZDoom, which provides a new 3D renderer implemented in OpenGL. ViZDoom, however, sticks to the original 2D software renderer, which is much faster for small resolutions than OpenGL. Because of that, ViZDoom modernized the ZDoom engine by adding support for Apple Silicon and ARM Linux and removing old unused parts of the code base (e.g., by removing Assembler parts).

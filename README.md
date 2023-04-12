@@ -74,7 +74,7 @@ or
 Both x86-64 and ARM64 architectures are supported.
 ViZDoom requires C++11 compiler, CMake 3.4+, Boost 1.65+ SDL2, OpenAL (optional) and Python 3.7+. Below you will find instructrion how to install these dependencies.
 
-#### Apt-based distros (Ubuntu, Debian, Linux Mint, etc.)
+#### apt-based distros (Ubuntu, Debian, Linux Mint, etc.)
 
 To install ViZDoom run (may take few minutes):
 ```
@@ -120,6 +120,9 @@ To install pre-build release for Windows 10 or 11 64-bit and Python 3.7+ just ru
 ```
 pip install vizdoom
 ```
+
+Please note that the Windows version is not as well-tested as Linux and macOS versions. It can be used for development and testing if you want to conduct experiments on Windows, please consider using [Docker](https://docs.docker.com/docker-for-windows/install/) or [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+
 
 ### Gymnasium/Gym wrappers
 Gymnasium environments are installed along with ViZDoom
