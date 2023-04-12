@@ -661,7 +661,7 @@ PYBIND11_MODULE(vizdoom, vz){
         .def("get_available_buttons", &DoomGamePython::getAvailableButtons)
         .def("set_available_buttons", &DoomGamePython::setAvailableButtons)
         .def("add_available_button", &DoomGamePython::addAvailableButton_btn)
-        .def("add_available_button", &DoomGamePython::addAvailableButton_btn_int)
+        .def("add_available_button", &DoomGamePython::addAvailableButton_btn_double)
         .def("clear_available_buttons", &DoomGamePython::clearAvailableButtons)
         .def("get_available_buttons_size", &DoomGamePython::getAvailableButtonsSize)
         .def("set_button_max_value", &DoomGamePython::setButtonMaxValue)

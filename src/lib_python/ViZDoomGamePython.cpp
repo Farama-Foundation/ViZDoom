@@ -34,18 +34,6 @@ namespace vizdoom {
         this->variablesShape.resize(1);
     }
 
-//    void DoomGamePython::setAction(pyb::list const &pyAction) {
-//        auto action = DoomGamePython::pyListToVector<double>(pyAction);
-//        ReleaseGIL gil = ReleaseGIL();
-//        DoomGame::setAction(action);
-//    }
-
-//    double DoomGamePython::makeAction(pyb::list const &pyAction, unsigned int tics) {
-//        auto action = DoomGamePython::pyListToVector<double>(pyAction);
-//        ReleaseGIL gil = ReleaseGIL();
-//        return DoomGame::makeAction(action, tics);
-//    }
-
     void DoomGamePython::setAction(pyb::object const &pyAction) {
         auto action = DoomGamePython::pyObjectToVector<double>(pyAction);
         ReleaseGIL gil = ReleaseGIL();
