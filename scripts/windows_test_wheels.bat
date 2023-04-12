@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 :: Set to current ViZDoom version
-set VIZDOOM_VERSION=1.1.14
+set VIZDOOM_VERSION=1.2.0
 
 :: Build wheels for all Python versions
 for %%P in (37 38 39 310) do (
@@ -39,11 +39,7 @@ for %%P in (37 38 39 310) do (
 	!PYTHON_EXECUTABLE! examples\python\audio_buffer.py
 
 	:: Run tests
-	!PYTHON_EXECUTABLE! -m pytest tests\test_enums.py
-	!PYTHON_EXECUTABLE! -m pytest tests\test_gym_wrapper.py
-	!PYTHON_EXECUTABLE! -m pytest tests\test_gymnasium_wrapper.py
-	!PYTHON_EXECUTABLE! -m pytest tests\test_labels_buffer.py
-	!PYTHON_EXECUTABLE! -m pytest tests\test_make_action.py
+	!PYTHON_EXECUTABLE! -m pytest tests
 
 	!PYTHON_EXECUTABLE! -m pip uninstall -y vizdoom
 )
