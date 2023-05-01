@@ -30,7 +30,7 @@ jobs:
         run: mv _build/404/index.html _build/404.html
 
       - name: Update 404 links
-        run: python docs/scripts/move404.py _build/404.html
+        run: python docs/_scripts/move404.py _build/404.html
 
       - name: Remove .doctrees
         run: rm -r _build/.doctrees
