@@ -1,16 +1,7 @@
 # Utilities
 
-* [doomTicsToMs](#doomTicsToMs)
-* [msToDoomTics](#msToDoomTics)
-* [doomTicsToSec](#doomTicsToSec)
-* [secToDoomTics](#secToDoomTics)
-* [doomFixedToDouble](#doomFixedToDouble)
-* [isBinaryButton](#isBinaryButton)
-* [isDeltaButton](#isDeltaButton)
-
-
 ---
-### <a name="doomTicsToMs"></a> `doomTicsToMs`
+## <a name="doomTicsToMs"></a> `doomTicsToMs`
 
 | C++    | `double doomTicsToMs(double tics, unsigned int ticrate = 35)` |
 | :--    | :--                                                           |
@@ -22,7 +13,7 @@ Calculates how many tics will be made during given number of milliseconds.
 
 
 ---
-### <a name="msToDoomTics"></a>`msToDoomTics`
+## <a name="msToDoomTics"></a>`msToDoomTics`
 
 | C++    | `double msToDoomTics(double ms, unsigned int ticrate = 35)` |
 | :--    | :--                                                         |
@@ -34,7 +25,7 @@ Calculates the number of milliseconds that will pass during specified number of 
 
 
 ---
-### <a name="doomTicsToSec"></a>`doomTicsToSec`
+## <a name="doomTicsToSec"></a>`doomTicsToSec`
 
 | C++    | `double doomTicsToSec(double tics, unsigned int ticrate = 35)` |
 | :--    | :--                                                            |
@@ -46,7 +37,7 @@ Calculates how many tics will be made during given number of seconds.
 
 
 ---
-### <a name="secToDoomTics"></a>`secToDoomTics`
+## <a name="secToDoomTics"></a>`secToDoomTics`
 
 | C++    | `double secToDoomTics(double sec, unsigned int ticrate = 35)` |
 | :--    | :--                                                           |
@@ -58,7 +49,7 @@ Calculates the number of seconds that will pass during specified number of tics.
 
 
 ---
-### <a name="doomFixedToDouble"></a>`doomFixedToDouble`
+## <a name="doomFixedToDouble"></a>`doomFixedToDouble`
 
 | C++    | `double doomFixedToDouble(int / double doomFixed)`  |
 | :--    | :--                                                 |
@@ -74,7 +65,7 @@ Python aliases (added in 1.1):
 
 
 ---
-### <a name="isBinaryButton"></a>`isBinaryButton`
+## <a name="isBinaryButton"></a>`isBinaryButton`
 
 | C++    | `bool isBinaryButton(Button button)`    |
 | :--    | :--                                     |
@@ -84,7 +75,7 @@ Returns true if button is binary button.
 
 
 ---
-### <a name="isDeltaButton"></a>`isDeltaButton`
+## <a name="isDeltaButton"></a>`isDeltaButton`
 
 | C++    | `bool isDeltaButton(Button button)`    |
 | :--    | :--                                    |

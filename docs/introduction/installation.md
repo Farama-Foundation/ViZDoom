@@ -1,15 +1,17 @@
 # Installation and building
 
-* [Dependencies](#deps)
-  * [Linux](#linux_deps)
-  * [MacOS](#macos_deps)
-  * [Windows](#windows_deps)
-* [Installation via pip](#pypi)
-* [Building (not recommended)](#build)
-  * [Linux/MacOS](#linux_macos_build)
-  * [Windows](#windows_build)
-  * [Compilation output](#output)
-  * [Manual installation](#manual-install)
+- [Installation and building](#installation-and-building)
+  - [ Dependencies](#-dependencies)
+    - [ Linux](#-linux)
+    - [ MacOS](#-macos)
+  - [ Building](#-building)
+    - [ Windows](#-windows)
+  - [ Installation via pip (recommended for Python users)](#-installation-via-pip-recommended-for-python-users)
+  - [ Building manually (not recommended)](#-building-manually-not-recommended)
+    - [ Linux / MacOS](#-linux--macos)
+    - [ Windows](#-windows-1)
+    - [ Compilation output](#-compilation-output)
+    - [ Manual installation](#-manual-installation)
 
 
 ## <a name="deps"></a> Dependencies

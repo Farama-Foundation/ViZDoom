@@ -1,22 +1,5 @@
 # Types
 
-* [Label](#label)
-* [Object](#object)
-* [Line](#line)
-* [Sector](#sector)
-* [GameState](#gamestate)
-* [ServerState](#serverstate)
-* [Enums](#enums)
-    * [Mode](#mode)
-    * [ScreenFormat](#screenformat)
-     * [ScreenResolution](#screenresolution)
-     * [AutomapMode](#automapmode)
-     * [GameVariable](#gamevariable)
-     * [Button](#button)
-         * [binary buttons](#binary-buttons)
-         * [delta buttons](#delta-buttons)
-     * [SamplingRate](#sampling-rate)
-
 ## C++ only
 
 - `Buffer (std::vector<uint8_t>)`
@@ -80,7 +63,7 @@ Right now `Object` is only available to C++ and Python.
 Added in 1.1.8.
 
 See also:
-- [`DoomGame: setObjectsInfoEnabled`](DoomGame.md#setSectorsInfoEnabled),
+- [`DoomGame: setObjectsInfoEnabled`](./doomGame.md#setSectorsInfoEnabled),
 - [examples/python/objects_and_sectors.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/objects_and_sectors.py).
 
 
@@ -125,7 +108,7 @@ Right now `Sector` is only available to C++ and Python.
 Added in 1.1.8.
 
 See also:
-- [`DoomGame: setSectorsInfoEnabled`](DoomGame.md#setSectorsInfoEnabled),
+- [`DoomGame: setSectorsInfoEnabled`](./doomGame.md#setSectorsInfoEnabled),
 - [examples/python/objects_and_sectors.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/objects_and_sectors.py).
 
 
@@ -147,7 +130,7 @@ See also:
 **tic** - ingame time, 1 tic is 1/35 of second in the game world. Added in 1.1.1.
 
 See also:
-- [`DoomGame: getState`](DoomGame.md#getState),
+- [`DoomGame: getState`](./doomGame.md#getState),
 - [examples/python/basic.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/basic.py),
 - [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py).
 - [examples/python/audio_buffer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/audio_buffer.py).
@@ -192,10 +175,10 @@ In **ASYNC** modes the game progress with constant speed (default 35 tics per se
 All modes can be used in singleplayer and multiplayer.
 
 See also:
-- [`DoomGame: getMode`](DoomGame.md#getMode),
-- [`DoomGame: setMode`](DoomGame.md#setMode),
-- [`DoomGame: getTicrate`](DoomGame.md#getTicrate),
-- [`DoomGame: setTicrate`](DoomGame.md#setTicrate).
+- [`DoomGame: getMode`](./doomGame.md#getMode),
+- [`DoomGame: setMode`](./doomGame.md#setMode),
+- [`DoomGame: getTicrate`](./doomGame.md#getTicrate),
+- [`DoomGame: setTicrate`](./doomGame.md#setTicrate).
 
 
 ---
@@ -226,8 +209,8 @@ In **GRAY8** and **DOOM_256_COLORS8** format **screenBuffer** and **automapBuffe
 **depthBuffer** and **lablesBuffer** always store single 8-bit values, so they always have [y, x] shape.
 
 See also:
-- [`DoomGame: getScreenFormat`](DoomGame.md#getScreenFormat),
-- [`DoomGame: setScreenFormat`](DoomGame.md#setScreenFormat),
+- [`DoomGame: getScreenFormat`](./doomGame.md#getScreenFormat),
+- [`DoomGame: setScreenFormat`](./doomGame.md#setScreenFormat),
 - [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py).
 
 
@@ -274,9 +257,9 @@ Enum type that defines all supported resolutions - shapes of **screenBuffer**, *
 - **RES_1920X1080** (16:9)
 
 See also:
-- [`DoomGame: setScreenResolution`](DoomGame.md#setScreenResolution),
-- [`DoomGame: getScreenWidth`](DoomGame.md#getScreenWidth),
-- [`DoomGame: getScreenHeight`](DoomGame.md#getScreenHeight).
+- [`DoomGame: setScreenResolution`](./doomGame.md#setScreenResolution),
+- [`DoomGame: getScreenWidth`](./doomGame.md#getScreenWidth),
+- [`DoomGame: getScreenHeight`](./doomGame.md#getScreenHeight).
 
 
 ---
@@ -290,7 +273,7 @@ Enum type that defines all **automapBuffer** modes.
 - **OBJECTS_WITH_SIZE** - In addition to the previous, all things are wrapped in a box showing their size.
 
 See also:
-- [`DoomGame: setAutomapMode`](DoomGame.md#setAutomapMode),
+- [`DoomGame: setAutomapMode`](./doomGame.md#setAutomapMode),
 - [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py).
 
 
@@ -350,10 +333,10 @@ Other from 1 to 60 (global int 1-60) can be accessed as USER1 - USER60 GameVaria
 
 See also:
 - [ZDoom Wiki: ACS](http://zdoom.org/wiki/ACS),
-- [`DoomGame: getAvailableGameVariables`](DoomGame.md#getAvailableGameVariables),
-- [`DoomGame: setAvailableGameVariables`](DoomGame.md#setAvailableGameVariables),
-- [`DoomGame: addAvailableGameVariable`](DoomGame.md#addAvailableGameVariable),
-- [`DoomGame: getGameVariable`](DoomGame.md#getGameVariable),
+- [`DoomGame: getAvailableGameVariables`](./doomGame.md#getAvailableGameVariables),
+- [`DoomGame: setAvailableGameVariables`](./doomGame.md#setAvailableGameVariables),
+- [`DoomGame: addAvailableGameVariable`](./doomGame.md#addAvailableGameVariable),
+- [`DoomGame: getGameVariable`](./doomGame.md#getGameVariable),
 - [`Utilities: doomFixedToDouble`](Utilities.md#doomFixedToDouble),
 - [examples/python/basic.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/basic.py),
 - [examples/python/shaping.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/shaping.py).
@@ -425,11 +408,11 @@ In case of **MOVE_FORWARD_BACKWARD_DELTA**, **MOVE_LEFT_RIGHT_DELTA**, **MOVE_UP
 
 See also:
 - [Doom Wiki: Map unit](https://doomwiki.org/wiki/Map_unit),
-- [`DoomGame: getAvailableButtons`](DoomGame.md#getAvailableButtons),
-- [`DoomGame: setAvailableButtons`](DoomGame.md#setAvailableButtons),
-- [`DoomGame: addAvailableButton`](DoomGame.md#addAvailableButton),
-- [`DoomGame: setButtonMaxValue`](DoomGame.md#setButtonMaxValue),
-- [`DoomGame: getButtonMaxValue`](DoomGame.md#getButtonMaxValue),
+- [`DoomGame: getAvailableButtons`](./doomGame.md#getAvailableButtons),
+- [`DoomGame: setAvailableButtons`](./doomGame.md#setAvailableButtons),
+- [`DoomGame: addAvailableButton`](./doomGame.md#addAvailableButton),
+- [`DoomGame: setButtonMaxValue`](./doomGame.md#setButtonMaxValue),
+- [`DoomGame: getButtonMaxValue`](./doomGame.md#getButtonMaxValue),
 - [examples/python/basic.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/basic.py),
 - [examples/python/delta_buttons.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/delta_buttons.py),
 - [GitHub issue: Angle changes by executing certain commands](https://github.com/mwydmuch/ViZDoom/issues/182).

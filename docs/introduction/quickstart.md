@@ -2,7 +2,8 @@
 
 > This guide can be a little bit outdated.
 
-* [Quickstart for MacOS with Anaconda3](#quickstart_macos_anaconda)
+- [Quickstart](#quickstart)
+  - [ Quickstart for MacOS and Anaconda3 (Python 3.6)](#-quickstart-for-macos-and-anaconda3-python-36)
 
 TODO:
 * Quickstart for Ubuntu

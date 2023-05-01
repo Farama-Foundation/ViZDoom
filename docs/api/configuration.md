@@ -1,4 +1,5 @@
 # Configuration files
+
 Instead of configuring the ViZDoom in code, you can load it from the configuration file(s). Each file is read sequentially, so multiple entries with the same key will overwrite previous entries.
 
 ## <a name="format"></a> Format
