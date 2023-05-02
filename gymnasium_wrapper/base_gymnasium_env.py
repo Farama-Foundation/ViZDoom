@@ -20,7 +20,10 @@ LABEL_COLORS = (
 
 
 class VizdoomEnv(gym.Env, EzPickle):
-    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": vzd.DEFAULT_TICRATE}
+    metadata = {
+        "render_modes": ["human", "rgb_array"],
+        "render_fps": vzd.DEFAULT_TICRATE,
+    }
 
     def __init__(
         self,
