@@ -133,7 +133,7 @@ OpenAI-Gym wrappers are also available, to install them run
 pip install vizdoom[gym]
 ```
 See [documentation](doc/Gym.md) and [examples](examples/python/gym_wrapper.py) on the use of Gym API.
-**OpenAI-Gym are wrappers are deprecated and will be removed in future versions in favour of Gymnasium.**
+**OpenAI-Gym wrappers are deprecated and will be removed in future versions in favour of Gymnasium.**
 
 
 ## Examples
