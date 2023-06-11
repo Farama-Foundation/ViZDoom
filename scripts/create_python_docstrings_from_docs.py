@@ -15,9 +15,13 @@ LINES_TO_IGNORE_REGEXES = [
     r"---", # Lines
     r"^\|.+\|$", # Tables
     r"^See also:.*$", # See also
-    r"- \[.*\]\(.*\)", # Lists of links
+    r"- \[.*\]\(.*\)", # List of links starting with -
+    r"\* \[.*\]\(.*\)", # List of links starting with *
     r"^Added in .*$", # Added in annotations
     r"^Changed in .*$", # Changed in annotations
+    r"^Deprecated since .*$", # Deprecated since annotations
+    r"^Removed in .*$", # Removed in annotations
+    r"^Config key: .*$", # Config annotations
 ]
 
 
@@ -32,8 +36,6 @@ f"""
 
 #ifndef __VIZDOOM_DOCSTRINGS_H__
 #define __VIZDOOM_DOCSTRINGS_H__
-
-#include <string>
 
 namespace vizdoom {{
 namespace docstrings {{
@@ -60,7 +62,7 @@ namespace docstrings {{
                     
                     next_docstring = ""
                     function_name = match.group(1)
-                    output_file.write(f"    const std::string {function_name} = R\"{RAW_STRING_ESCAPE_SEQ}(")
+                    output_file.write(f"    const char *{function_name} = R\"{RAW_STRING_ESCAPE_SEQ}(")
                     started = True
 
                 elif started:
