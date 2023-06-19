@@ -24,6 +24,7 @@
 #include "ViZDoom.h"
 #include "ViZDoomGamePython.h"
 #include "ViZDoomVersion.h"
+#include "ViZDoomDocstrings.h"
 
 #include <pybind11/pybind11.h>
 #include <vector>
@@ -75,11 +76,11 @@ PYBIND11_MODULE(vizdoom, vz){
     #define ENUM_CLASS_VAL_2_PYT(c, v) .value( #v , c::v )
     /* .value("VALUE", class::VALUE) */
 
-    #define FUNC_2_PYT(f) vz.def( #f , f )
-    /* vz.def("function", function) */
+    #define FUNC_2_PYT(n, f) vz.def( n , f , docstrings::f )
+    /* vz.def("name", function, docstrings::function) */
 
-    #define CLASS_FUNC_2_PYT(c, f) .def( #f , &c::f )
-    /* .def("function", &class::function) */
+    #define CLASS_FUNC_2_PYT(n, cf) .def( n , &cf , docstrings::cf )
+    /* .def("name", &class::function, docstrings::class::function) */
 
 
     /* Consts */
@@ -611,148 +612,148 @@ PYBIND11_MODULE(vizdoom, vz){
 
     pyb::class_<DoomGamePython>(vz, "DoomGame")
         .def(pyb::init<>())
-        .def("init", &DoomGamePython::init)
-        .def("load_config", &DoomGamePython::loadConfig)
-        .def("close", &DoomGamePython::close)
-        .def("is_running", &DoomGamePython::isRunning)
-        .def("is_multiplayer_game", &DoomGamePython::isMultiplayerGame)
-        .def("is_recording_episode", &DoomGamePython::isRecordingEpisode)
-        .def("is_replaying_episode", &DoomGamePython::isReplayingEpisode)
-        .def("new_episode", &DoomGamePython::newEpisode_)
-        .def("new_episode", &DoomGamePython::newEpisode_str)
-        .def("replay_episode", &DoomGamePython::replayEpisode_str)
-        .def("replay_episode", &DoomGamePython::replayEpisode_str_int)
-        .def("is_episode_finished", &DoomGamePython::isEpisodeFinished)
-        .def("is_new_episode", &DoomGamePython::isNewEpisode)
-        .def("is_player_dead", &DoomGamePython::isPlayerDead)
-        .def("respawn_player", &DoomGamePython::respawnPlayer)
-        .def("set_action", &DoomGamePython::setAction)
-        .def("make_action", &DoomGamePython::makeAction_list)
-        .def("make_action", &DoomGamePython::makeAction_list_int)
-        .def("advance_action", &DoomGamePython::advanceAction_)
-        .def("advance_action", &DoomGamePython::advanceAction_int)
-        .def("advance_action", &DoomGamePython::advanceAction_int_bool)
-        .def("save", &DoomGamePython::save)
-        .def("load", &DoomGamePython::load)
+        CLASS_FUNC_2_PYT("init", DoomGamePython::init)
+        CLASS_FUNC_2_PYT("load_config", DoomGamePython::loadConfig)
+        CLASS_FUNC_2_PYT("close", DoomGamePython::close)
+        CLASS_FUNC_2_PYT("is_running", DoomGamePython::isRunning)
+        CLASS_FUNC_2_PYT("is_multiplayer_game", DoomGamePython::isMultiplayerGame)
+        CLASS_FUNC_2_PYT("is_recording_episode", DoomGamePython::isRecordingEpisode)
+        CLASS_FUNC_2_PYT("is_replaying_episode", DoomGamePython::isReplayingEpisode)
+        .def("new_episode", &DoomGamePython::newEpisode_, docstrings::DoomGamePython::newEpisode)
+        .def("new_episode", &DoomGamePython::newEpisode_str, docstrings::DoomGamePython::newEpisode)
+        .def("replay_episode", &DoomGamePython::replayEpisode_str, docstrings::DoomGamePython::replayEpisode)
+        .def("replay_episode", &DoomGamePython::replayEpisode_str_int, docstrings::DoomGamePython::replayEpisode)
+        CLASS_FUNC_2_PYT("is_episode_finished", DoomGamePython::isEpisodeFinished)
+        CLASS_FUNC_2_PYT("is_new_episode", DoomGamePython::isNewEpisode)
+        CLASS_FUNC_2_PYT("is_player_dead", DoomGamePython::isPlayerDead)
+        CLASS_FUNC_2_PYT("respawn_player", DoomGamePython::respawnPlayer)
+        CLASS_FUNC_2_PYT("set_action", DoomGamePython::setAction)
+        .def("make_action", &DoomGamePython::makeAction_list, docstrings::DoomGamePython::makeAction)
+        .def("make_action", &DoomGamePython::makeAction_list_int, docstrings::DoomGamePython::makeAction)
+        .def("advance_action", &DoomGamePython::advanceAction_, docstrings::DoomGamePython::advanceAction)
+        .def("advance_action", &DoomGamePython::advanceAction_int, docstrings::DoomGamePython::advanceAction)
+        .def("advance_action", &DoomGamePython::advanceAction_int_bool, docstrings::DoomGamePython::advanceAction)
+        CLASS_FUNC_2_PYT("save", DoomGamePython::save)
+        CLASS_FUNC_2_PYT("load", DoomGamePython::load)
 
-        .def("get_state", &DoomGamePython::getState, pyb::return_value_policy::take_ownership)
-        .def("get_server_state", &DoomGamePython::getServerState, pyb::return_value_policy::take_ownership)
+        .def("get_state", &DoomGamePython::getState, pyb::return_value_policy::take_ownership, docstrings::DoomGamePython::getState)
+        .def("get_server_state", &DoomGamePython::getServerState, pyb::return_value_policy::take_ownership, docstrings::DoomGamePython::getServerState)
 
-        .def("get_game_variable", &DoomGamePython::getGameVariable)
-        .def("get_button", &DoomGamePython::getButton)
+        CLASS_FUNC_2_PYT("get_game_variable", DoomGamePython::getGameVariable)
+        CLASS_FUNC_2_PYT("get_button", DoomGamePython::getButton)
 
-        .def("get_living_reward", &DoomGamePython::getLivingReward)
-        .def("set_living_reward", &DoomGamePython::setLivingReward)
+        CLASS_FUNC_2_PYT("get_living_reward", DoomGamePython::getLivingReward)
+        CLASS_FUNC_2_PYT("set_living_reward", DoomGamePython::setLivingReward)
 
-        .def("get_death_penalty", &DoomGamePython::getDeathPenalty)
-        .def("set_death_penalty", &DoomGamePython::setDeathPenalty)
+        CLASS_FUNC_2_PYT("get_death_penalty", DoomGamePython::getDeathPenalty)
+        CLASS_FUNC_2_PYT("set_death_penalty", DoomGamePython::setDeathPenalty)
 
-        .def("get_last_reward", &DoomGamePython::getLastReward)
-        .def("get_total_reward", &DoomGamePython::getTotalReward)
+        CLASS_FUNC_2_PYT("get_last_reward", DoomGamePython::getLastReward)
+        CLASS_FUNC_2_PYT("get_total_reward", DoomGamePython::getTotalReward)
 
-        .def("get_last_action", &DoomGamePython::getLastAction)
+        CLASS_FUNC_2_PYT("get_last_action", DoomGamePython::getLastAction)
 
-        .def("get_available_game_variables", &DoomGamePython::getAvailableGameVariables)
-        .def("set_available_game_variables", &DoomGamePython::setAvailableGameVariables)
-        .def("add_available_game_variable", &DoomGamePython::addAvailableGameVariable)
-        .def("clear_available_game_variables", &DoomGamePython::clearAvailableGameVariables)
-        .def("get_available_game_variables_size", &DoomGamePython::getAvailableGameVariablesSize)
+        CLASS_FUNC_2_PYT("get_available_game_variables", DoomGamePython::getAvailableGameVariables)
+        CLASS_FUNC_2_PYT("set_available_game_variables", DoomGamePython::setAvailableGameVariables)
+        CLASS_FUNC_2_PYT("add_available_game_variable", DoomGamePython::addAvailableGameVariable)
+        CLASS_FUNC_2_PYT("clear_available_game_variables", DoomGamePython::clearAvailableGameVariables)
+        CLASS_FUNC_2_PYT("get_available_game_variables_size", DoomGamePython::getAvailableGameVariablesSize)
 
-        .def("get_available_buttons", &DoomGamePython::getAvailableButtons)
-        .def("set_available_buttons", &DoomGamePython::setAvailableButtons)
-        .def("add_available_button", &DoomGamePython::addAvailableButton_btn)
-        .def("add_available_button", &DoomGamePython::addAvailableButton_btn_double)
-        .def("clear_available_buttons", &DoomGamePython::clearAvailableButtons)
-        .def("get_available_buttons_size", &DoomGamePython::getAvailableButtonsSize)
-        .def("set_button_max_value", &DoomGamePython::setButtonMaxValue)
-        .def("get_button_max_value", &DoomGamePython::getButtonMaxValue)
+        CLASS_FUNC_2_PYT("get_available_buttons", DoomGamePython::getAvailableButtons)
+        CLASS_FUNC_2_PYT("set_available_buttons", DoomGamePython::setAvailableButtons)
+        .def("add_available_button", &DoomGamePython::addAvailableButton_btn, docstrings::DoomGamePython::addAvailableButton)
+        .def("add_available_button", &DoomGamePython::addAvailableButton_btn_double, docstrings::DoomGamePython::addAvailableButton)
+        CLASS_FUNC_2_PYT("clear_available_buttons", DoomGamePython::clearAvailableButtons)
+        CLASS_FUNC_2_PYT("get_available_buttons_size", DoomGamePython::getAvailableButtonsSize)
+        CLASS_FUNC_2_PYT("set_button_max_value", DoomGamePython::setButtonMaxValue)
+        CLASS_FUNC_2_PYT("get_button_max_value", DoomGamePython::getButtonMaxValue)
 
-        .def("add_game_args", &DoomGamePython::addGameArgs)
-        .def("clear_game_args", &DoomGamePython::clearGameArgs)
+        CLASS_FUNC_2_PYT("add_game_args", DoomGamePython::addGameArgs)
+        CLASS_FUNC_2_PYT("clear_game_args", DoomGamePython::clearGameArgs)
 
-        .def("send_game_command", &DoomGamePython::sendGameCommand)
+        CLASS_FUNC_2_PYT("send_game_command", DoomGamePython::sendGameCommand)
 
-        .def("get_mode", &DoomGamePython::getMode)
-        .def("set_mode", &DoomGamePython::setMode)
+        CLASS_FUNC_2_PYT("get_mode", DoomGamePython::getMode)
+        CLASS_FUNC_2_PYT("set_mode", DoomGamePython::setMode)
 
-        .def("get_ticrate", &DoomGamePython::getTicrate)
-        .def("set_ticrate", &DoomGamePython::setTicrate)
+        CLASS_FUNC_2_PYT("get_ticrate", DoomGamePython::getTicrate)
+        CLASS_FUNC_2_PYT("set_ticrate", DoomGamePython::setTicrate)
 
-        .def("set_vizdoom_path", &DoomGamePython::setViZDoomPath)
-        .def("set_doom_game_path", &DoomGamePython::setDoomGamePath)
-        .def("set_doom_scenario_path", &DoomGamePython::setDoomScenarioPath)
-        .def("set_doom_map", &DoomGamePython::setDoomMap)
-        .def("set_doom_skill", &DoomGamePython::setDoomSkill)
-        .def("set_doom_config_path", &DoomGamePython::setDoomConfigPath)
+        CLASS_FUNC_2_PYT("set_vizdoom_path", DoomGamePython::setViZDoomPath)
+        CLASS_FUNC_2_PYT("set_doom_game_path", DoomGamePython::setDoomGamePath)
+        CLASS_FUNC_2_PYT("set_doom_scenario_path", DoomGamePython::setDoomScenarioPath)
+        CLASS_FUNC_2_PYT("set_doom_map", DoomGamePython::setDoomMap)
+        CLASS_FUNC_2_PYT("set_doom_skill", DoomGamePython::setDoomSkill)
+        CLASS_FUNC_2_PYT("set_doom_config_path", DoomGamePython::setDoomConfigPath)
 
-        .def("get_seed", &DoomGamePython::getSeed)
-        .def("set_seed", &DoomGamePython::setSeed)
+        CLASS_FUNC_2_PYT("get_seed", DoomGamePython::getSeed)
+        CLASS_FUNC_2_PYT("set_seed", DoomGamePython::setSeed)
 
-        .def("get_episode_start_time", &DoomGamePython::getEpisodeStartTime)
-        .def("set_episode_start_time", &DoomGamePython::setEpisodeStartTime)
-        .def("get_episode_timeout", &DoomGamePython::getEpisodeTimeout)
-        .def("set_episode_timeout", &DoomGamePython::setEpisodeTimeout)
-        .def("get_episode_time", &DoomGamePython::getEpisodeTime)
+        CLASS_FUNC_2_PYT("get_episode_start_time", DoomGamePython::getEpisodeStartTime)
+        CLASS_FUNC_2_PYT("set_episode_start_time", DoomGamePython::setEpisodeStartTime)
+        CLASS_FUNC_2_PYT("get_episode_timeout", DoomGamePython::getEpisodeTimeout)
+        CLASS_FUNC_2_PYT("set_episode_timeout", DoomGamePython::setEpisodeTimeout)
+        CLASS_FUNC_2_PYT("get_episode_time", DoomGamePython::getEpisodeTime)
 
-        .def("set_console_enabled",&DoomGamePython::setConsoleEnabled)
-        .def("set_sound_enabled",&DoomGamePython::setSoundEnabled)
+        CLASS_FUNC_2_PYT("set_console_enabled", DoomGamePython::setConsoleEnabled)
+        CLASS_FUNC_2_PYT("set_sound_enabled", DoomGamePython::setSoundEnabled)
 
-        .def("is_audio_buffer_enabled",&DoomGamePython::isAudioBufferEnabled)
-        .def("set_audio_buffer_enabled",&DoomGamePython::setAudioBufferEnabled)
-        .def("get_audio_sampling_rate",&DoomGamePython::getAudioSamplingRate)
-        .def("set_audio_sampling_rate",&DoomGamePython::setAudioSamplingRate)
-        .def("get_audio_buffer_size",&DoomGamePython::getAudioBufferSize)
-        .def("set_audio_buffer_size",&DoomGamePython::setAudioBufferSize)
+        CLASS_FUNC_2_PYT("is_audio_buffer_enabled", DoomGamePython::isAudioBufferEnabled)
+        CLASS_FUNC_2_PYT("set_audio_buffer_enabled", DoomGamePython::setAudioBufferEnabled)
+        CLASS_FUNC_2_PYT("get_audio_sampling_rate", DoomGamePython::getAudioSamplingRate)
+        CLASS_FUNC_2_PYT("set_audio_sampling_rate", DoomGamePython::setAudioSamplingRate)
+        CLASS_FUNC_2_PYT("get_audio_buffer_size", DoomGamePython::getAudioBufferSize)
+        CLASS_FUNC_2_PYT("set_audio_buffer_size", DoomGamePython::setAudioBufferSize)
 
-        .def("set_screen_resolution", &DoomGamePython::setScreenResolution)
-        .def("set_screen_format", &DoomGamePython::setScreenFormat)
+        CLASS_FUNC_2_PYT("set_screen_resolution", DoomGamePython::setScreenResolution)
+        CLASS_FUNC_2_PYT("set_screen_format", DoomGamePython::setScreenFormat)
 
-        .def("is_depth_buffer_enabled", &DoomGamePython::isDepthBufferEnabled)
-        .def("set_depth_buffer_enabled", &DoomGamePython::setDepthBufferEnabled)
-        .def("is_labels_buffer_enabled", &DoomGamePython::isLabelsBufferEnabled)
-        .def("set_labels_buffer_enabled", &DoomGamePython::setLabelsBufferEnabled)
-        .def("is_automap_buffer_enabled", &DoomGamePython::isAutomapBufferEnabled)
-        .def("set_automap_buffer_enabled", &DoomGamePython::setAutomapBufferEnabled)
-        .def("set_automap_mode", &DoomGamePython::setAutomapMode)
-        .def("set_automap_rotate", &DoomGamePython::setAutomapRotate)
-        .def("set_automap_render_textures", &DoomGamePython::setAutomapRenderTextures)
-        .def("is_objects_info_enabled", &DoomGamePython::isObjectsInfoEnabled)
-        .def("set_objects_info_enabled", &DoomGamePython::setObjectsInfoEnabled)
-        .def("is_sectors_info_enabled", &DoomGamePython::isSectorsInfoEnabled)
-        .def("set_sectors_info_enabled", &DoomGamePython::setSectorsInfoEnabled)
+        CLASS_FUNC_2_PYT("is_depth_buffer_enabled", DoomGamePython::isDepthBufferEnabled)
+        CLASS_FUNC_2_PYT("set_depth_buffer_enabled", DoomGamePython::setDepthBufferEnabled)
+        CLASS_FUNC_2_PYT("is_labels_buffer_enabled", DoomGamePython::isLabelsBufferEnabled)
+        CLASS_FUNC_2_PYT("set_labels_buffer_enabled", DoomGamePython::setLabelsBufferEnabled)
+        CLASS_FUNC_2_PYT("is_automap_buffer_enabled", DoomGamePython::isAutomapBufferEnabled)
+        CLASS_FUNC_2_PYT("set_automap_buffer_enabled", DoomGamePython::setAutomapBufferEnabled)
+        CLASS_FUNC_2_PYT("set_automap_mode", DoomGamePython::setAutomapMode)
+        CLASS_FUNC_2_PYT("set_automap_rotate", DoomGamePython::setAutomapRotate)
+        CLASS_FUNC_2_PYT("set_automap_render_textures", DoomGamePython::setAutomapRenderTextures)
+        CLASS_FUNC_2_PYT("is_objects_info_enabled", DoomGamePython::isObjectsInfoEnabled)
+        CLASS_FUNC_2_PYT("set_objects_info_enabled", DoomGamePython::setObjectsInfoEnabled)
+        CLASS_FUNC_2_PYT("is_sectors_info_enabled", DoomGamePython::isSectorsInfoEnabled)
+        CLASS_FUNC_2_PYT("set_sectors_info_enabled", DoomGamePython::setSectorsInfoEnabled)
 
-        .def("set_render_hud", &DoomGamePython::setRenderHud)
-        .def("set_render_minimal_hud", &DoomGamePython::setRenderMinimalHud)
-        .def("set_render_weapon", &DoomGamePython::setRenderWeapon)
-        .def("set_render_crosshair", &DoomGamePython::setRenderCrosshair)
-        .def("set_render_decals", &DoomGamePython::setRenderDecals)
-        .def("set_render_particles", &DoomGamePython::setRenderParticles)
-        .def("set_render_effects_sprites", &DoomGamePython::setRenderEffectsSprites)
-        .def("set_render_messages", &DoomGamePython::setRenderMessages)
-        .def("set_render_corpses", &DoomGamePython::setRenderCorpses)
-        .def("set_render_screen_flashes", &DoomGamePython::setRenderScreenFlashes)
-        .def("set_render_all_frames", &DoomGamePython::setRenderAllFrames)
-        .def("set_window_visible", &DoomGamePython::setWindowVisible)
-        .def("get_screen_width", &DoomGamePython::getScreenWidth)
-        .def("get_screen_height", &DoomGamePython::getScreenHeight)
-        .def("get_screen_channels", &DoomGamePython::getScreenChannels)
-        .def("get_screen_size", &DoomGamePython::getScreenSize)
-        .def("get_screen_pitch", &DoomGamePython::getScreenPitch)
-        .def("get_screen_format", &DoomGamePython::getScreenFormat);
+        CLASS_FUNC_2_PYT("set_render_hud", DoomGamePython::setRenderHud)
+        CLASS_FUNC_2_PYT("set_render_minimal_hud", DoomGamePython::setRenderMinimalHud)
+        CLASS_FUNC_2_PYT("set_render_weapon", DoomGamePython::setRenderWeapon)
+        CLASS_FUNC_2_PYT("set_render_crosshair", DoomGamePython::setRenderCrosshair)
+        CLASS_FUNC_2_PYT("set_render_decals", DoomGamePython::setRenderDecals)
+        CLASS_FUNC_2_PYT("set_render_particles", DoomGamePython::setRenderParticles)
+        CLASS_FUNC_2_PYT("set_render_effects_sprites", DoomGamePython::setRenderEffectsSprites)
+        CLASS_FUNC_2_PYT("set_render_messages", DoomGamePython::setRenderMessages)
+        CLASS_FUNC_2_PYT("set_render_corpses", DoomGamePython::setRenderCorpses)
+        CLASS_FUNC_2_PYT("set_render_screen_flashes", DoomGamePython::setRenderScreenFlashes)
+        CLASS_FUNC_2_PYT("set_render_all_frames", DoomGamePython::setRenderAllFrames)
+        CLASS_FUNC_2_PYT("set_window_visible", DoomGamePython::setWindowVisible)
+        CLASS_FUNC_2_PYT("get_screen_width", DoomGamePython::getScreenWidth)
+        CLASS_FUNC_2_PYT("get_screen_height", DoomGamePython::getScreenHeight)
+        CLASS_FUNC_2_PYT("get_screen_channels", DoomGamePython::getScreenChannels)
+        CLASS_FUNC_2_PYT("get_screen_size", DoomGamePython::getScreenSize)
+        CLASS_FUNC_2_PYT("get_screen_pitch", DoomGamePython::getScreenPitch)
+        CLASS_FUNC_2_PYT("get_screen_format", DoomGamePython::getScreenFormat);
 
 
     /* Utilities */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    vz.def("doom_tics_to_ms", doomTicsToMs);
-    vz.def("ms_to_doom_tics", msToDoomTics);
-    vz.def("doom_tics_to_sec", doomTicsToSec);
-    vz.def("sec_to_doom_tics", secToDoomTics);
+    FUNC_2_PYT("doom_tics_to_ms", doomTicsToMs);
+    FUNC_2_PYT("ms_to_doom_tics", msToDoomTics);
+    FUNC_2_PYT("doom_tics_to_sec", doomTicsToSec);
+    FUNC_2_PYT("sec_to_doom_tics", secToDoomTics);
     vz.def("doom_fixed_to_double", doomFixedToDouble_int);
     vz.def("doom_fixed_to_double", doomFixedToDouble_double);
     vz.def("doom_fixed_to_float", doomFixedToDouble_int);
     vz.def("doom_fixed_to_float", doomFixedToDouble_double);
-    vz.def("is_binary_button", isBinaryButton);
-    vz.def("is_delta_button", isDeltaButton);
+    FUNC_2_PYT("is_binary_button", isBinaryButton);
+    FUNC_2_PYT("is_delta_button", isDeltaButton);
 
 }

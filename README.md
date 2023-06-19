@@ -4,7 +4,7 @@
   <img src="https://raw.githubusercontent.com/Farama-Foundation/ViZDoom/master/vizdoom-text.png" width="500px"/>
 </p>
 
-ViZDoom allows developing AI **bots that play Doom using only the visual information** (the screen buffer). It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.
+ViZDoom allows developing AI **bots that play Doom using only visual information** (the screen buffer). It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.
 
 ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game mechanics.
 
@@ -125,23 +125,23 @@ Please note that the Windows version is not as well-tested as Linux and macOS ve
 
 
 ### Gymnasium/Gym wrappers
-Gymnasium environments are installed along with ViZDoom
-See [documentation](doc/Gymnasium.md) and [examples](examples/python/gymnasium_wrapper.py) on the use of Gymnasium API.
+Gymnasium environments are installed along with ViZDoom.
+See [documentation](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/Gymnasium.md) and [examples](https://github.com/Farama-Foundation/ViZDoom/blob/master/examples/python/gymnasium_wrapper.py) on the use of Gymnasium API.
 
-OpenAI-Gym wrappers that were previously used are also available, to install them run
+OpenAI-Gym wrappers are also available, to install them run:
 ```
 pip install vizdoom[gym]
 ```
-See [documentation](doc/Gym.md) and [examples](examples/python/gym_wrapper.py) on the use of Gym API.
-**OpenAI-Gym are deprecated and will be removed in future versions in favour.**
+See [documentation](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/Gym.md) and [examples](https://github.com/Farama-Foundation/ViZDoom/blob/master/examples/python/gym_wrapper.py) on the use of Gym API.
+**OpenAI-Gym wrappers are deprecated and will be removed in future versions in favour of Gymnasium.**
 
 
 ## Examples
 
-- [Python](examples/python) (contain learning examples implemented in PyTorch, TensorFlow and Theano)
-- [C++](examples/c%2B%2B)
+- [Python](https://github.com/Farama-Foundation/ViZDoom/blob/master/examples/python) (contain learning examples implemented in PyTorch, TensorFlow and Theano)
+- [C++](https://github.com/Farama-Foundation/ViZDoom/blob/master/examples/c%2B%2B)
 
-Python examples are currently the richest, so we recommend to look at them, even if you plan to use other language. API is almost identical for all languages.
+Python examples are currently the richest, so we recommend to look at them, even if you plan to use other language. The API is almost identical for all languages.
 
 **See also the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial).**
 
@@ -151,28 +151,28 @@ Python examples are currently the richest, so we recommend to look at them, even
 Unfortunately, we cannot distribute ViZDoom with original Doom graphics.
 If you own original Doom or Doom 2 games, you can replace [Freedoom](https://freedoom.github.io/) graphics by placing `doom.wad` or `doom2.wad` into your working directory or `vizdoom` package directory.
 
-Alternatively, any base game WAD (including other Doom engine-based games and custom/community games) can be used by pointing to it with the [`set_doom_game_path/setDoomGamePath`](https://github.com/mwydmuch/ViZDoom/blob/master/doc/DoomGame.md#-setdoomscenariopath) method.
+Alternatively, any base game WAD (including other Doom engine-based games and custom/community games) can be used by pointing to it with the [`set_doom_game_path/setDoomGamePath`](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/DoomGame.md#-setdoomscenariopath) method.
 
 
 ## Documentation
 
 Detailed description of all types and methods:
 
-- **[DoomGame](doc/DoomGame.md)**
-- **[Types](doc/Types.md)**
-- [Configuration files](doc/ConfigFile.md)
-- [Exceptions](doc/Exceptions.md)
-- [Utilities](doc/Utilities.md)
+- **[DoomGame](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/DoomGame.md)**
+- **[Types](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/Types.md)**
+- [Configuration files](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/ConfigFile.md)
+- [Exceptions](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/Exceptions.md)
+- [Utilities](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/Utilities.md)
 
 Additional documents:
 
-- **[FAQ](doc/FAQ.md)**
-- [Changelog](doc/Changelog.md) for 1.1.X version.
+- **[FAQ](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/FAQ.md)**
+- [Changelog](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/Changelog.md) for 1.1.X version.
 
-Also full documentation of engine and ACS scripting language can be found on
+Full documentation of the Doom engine and ACS scripting language can be found on
 [ZDoom Wiki](https://zdoom.org/wiki/).
 
-Useful parts:
+Useful articles:
 
 - [ZDoom Wiki: ACS (scripting language)](https://zdoom.org/wiki/ACS)
 - [ZDoom Wiki: CVARs (console variables)](https://zdoom.org/wiki/CVARs)

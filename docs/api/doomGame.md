@@ -413,7 +413,7 @@ See also:
 ## <a name="vars"></a> GameVariables methods
 
 ---
-### <a name="getAvailableGameVariable"></a> `getAvailableGameVariable`
+### <a name="getAvailableGameVariables"></a> `getAvailableGameVariables`
 
 | C++    | `std::vector<GameVariable> getAvailableGameVariables()` |
 | :--    | :--                                                     |
@@ -1425,11 +1425,11 @@ See also:
 
 
 ---
-### <a name="getAudioSampliongRate"></a> `getAudioSamplingRate`
+### <a name="getAudioSamplingRate"></a> `getAudioSamplingRate`
 
-| C++    | `SamplingRate getAudioSamplingRate()`    |
+| C++    | `int getAudioSamplingRate()`    |
 | :--    | :--                                      |
-| Python | `SamplingRate get_audio_sampling_rate()` |
+| Python | `int get_audio_sampling_rate()` |
 
 Added in 1.1.9
 
