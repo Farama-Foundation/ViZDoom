@@ -3,7 +3,7 @@
 import vizdoom as vzd
 
 
-def test_docstrings(object):
+def _check_object_docstrings(object):
     object_methods = [
         method_name
         for method_name in dir(object)
@@ -14,5 +14,9 @@ def test_docstrings(object):
         assert method.__doc__ is not None, f"Method {method} has no docstring"
 
 
+def test_docstrings():
+    _check_object_docstrings(vzd.DoomGame)
+
+
 if __name__ == "__main__":
-    test_docstrings(vzd.DoomGame)
+    test_docstrings()
