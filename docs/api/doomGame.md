@@ -1,13 +1,18 @@
 # DoomGame
 
+DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc.
+
+Here we document all the methods of the DoomGame class and their Python bindings.
+
+
 ## Flow control methods:
 
 ---
-### <a name="init"></a> `init`
+### `init`
 
 | C++    | `bool init()`    |
 | :--    | :--              |
-| Python | `bool init()`    |
+| Python | `init() -> bool` |
 
 Initializes ViZDoom game instance and starts a new episode.
 After calling this method, the first state from a new episode will be available.
@@ -16,11 +21,11 @@ Init returns true when the game was started properly and false otherwise.
 
 
 ---
-### <a name="close"></a> `close`
+### `close`
 
-| C++    | `void close()` |
-| :--    | :--            |
-| Python | `void close()` |
+| C++    | `void close()`    |
+| :--    | :--               |
+| Python | `close() -> None` |
 
 Closes ViZDoom game instance.
 It is automatically invoked by the destructor.
@@ -28,11 +33,11 @@ The game can be initialized again after being closed.
 
 
 ---
-### <a name="newEpisode"></a> `newEpisode`
+### `newEpisode`
 
 | C++    | `void newEpisode(std::string recordFilePath = "")` |
 | :--    | :--                                                |
-| Python | `void new_episode(str recordFilePath = "")`        |
+| Python | `new_episode(recordFilePath: str = "") -> None`    |
 
 Changed in 1.1.0
 
@@ -45,11 +50,11 @@ Then the rest of the players must also call this method to start a new episode.
 
 
 ---
-### <a name="replayEpisode"></a> `replayEpisode`
+### `replayEpisode`
 
 | C++    | `void replayEpisode(std::string filePath, unsigned int player = 0)` |
 | :--    | :--                                                                 |
-| Python | `void replay_episode(str filePath, int player = 0)`                 |
+| Python | `replay_episode(filePath: str, player: int = 0) -> None`            |
 
 Added in 1.1.0
 
@@ -59,26 +64,26 @@ After calling this method, the first state from the replay will be available.
 All rewards, variables, and states are available during the replaying episode.
 
 See also:
-- [examples/python/record_episodes.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/record_episodes.py)
-- [examples/python/record_multiplayer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/record_multiplayer.py)
+- [examples/python/record_episodes.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/record_episodes.py)
+- [examples/python/record_multiplayer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/record_multiplayer.py)
 
 
 ---
-### <a name="isRunning"></a> `isRunning`
+### `isRunning`
 
-| C++    | `bool isRunning()`    |
-| :--    | :--                   |
-| Python | `bool is_running()`   |
+| C++    | `bool isRunning()`     |
+| :--    | :--                    |
+| Python | `is_running() -> bool` |
 
 Checks if the ViZDoom game instance is running.
 
 
 ---
-### <a name="isMultiplayerGame"></a> `isMultiplayerGame`
+### `isMultiplayerGame`
 
-| C++    | `bool isMultiplayerGame()`    |
-| :--    | :--                           |
-| Python | `bool is_multiplayer_game()`  |
+| C++    | `bool isMultiplayerGame()`      |
+| :--    | :--                             |
+| Python | `is_multiplayer_game() -> bool` |
 
 Added in 1.1.2
 
@@ -86,11 +91,11 @@ Checks if the game is in multiplayer mode.
 
 
 ---
-### <a name="isRecordingEpisode"></a> `isRecordingEpisode`
+### `isRecordingEpisode`
 
-| C++    | `bool isRecordingEpisode()`    |
-| :--    | :--                            |
-| Python | `bool is_recording_episode()`  |
+| C++    | `bool isRecordingEpisode()`      |
+| :--    | :--                              |
+| Python | `is_recording_episode() -> bool` |
 
 Added in 1.1.5
 
@@ -98,11 +103,11 @@ Checks if the game is in recording mode.
 
 
 ---
-### <a name="isReplayingEpisode"></a> `isReplayingEpisode`
+### `isReplayingEpisode`
 
-| C++    | `bool isReplayingEpisode()`    |
-| :--    | :--                            |
-| Python | `bool is_replaying_episode()`  |
+| C++    | `bool isReplayingEpisode()`      |
+| :--    | :--                              |
+| Python | `is_replaying_episode() -> bool` |
 
 Added in 1.1.5
 
@@ -110,11 +115,11 @@ Checks if the game is in replaying mode.
 
 
 ---
-### <a name="setAction"></a> `setAction`
+### `setAction`
 
-| C++    | `void setAction(std::vector<double> const &actions)` |
-| :--    | :--                                                  |
-| Python | `void set_action(list actions)`                      |
+| C++    | `void setAction(std::vector<double> const &actions)`          |
+| :--    | :--                                                           |
+| Python | `set_action(actions: list | tuple | ndarray [float]) -> None` |
 
 Sets the player's action for the next tics.
 Each value corresponds to a button specified with [`addAvailableButton`](#addAvailableButton) method
@@ -122,11 +127,11 @@ or in the configuration file (in order of appearance).
 
 
 ---
-### <a name="advanceAction"></a> `advanceAction`
+### `advanceAction`
 
 | C++    | `void advanceAction(unsigned int tics = 1, bool updateState = true)` |
 | :--    | :--                                                                  |
-| Python | `void advance_action(int tics = 1, bool updateState = True)`         |
+| Python | `advance_action(tics: int = 1, updateState: bool = True) -> None`    |
 
 Processes a specified number of tics. If `updateState` is set,
 the state will be updated after the last processed tic and a new reward will be calculated.
@@ -135,11 +140,11 @@ If `updateState` is not set, the state will not be updated.
 
 
 ---
-### <a name="makeAction"></a> `makeAction`
+### `makeAction`
 
 | C++    | `double makeAction(std::vector<double> const &actions, unsigned int tics = 1)` |
 | :--    | :--                                                                            |
-| Python | `float make_action(list actions, int tics = 1)`                               |
+| Python | `make_action(actions: list | tuple | ndarray [float], tics: int = 1) -> float` |
 
 Method combining usability of [`setAction`](#setAction), [`advanceAction`](#advanceAction) and [`getLastReward`](#getLastReward).
 Sets the player's action for the next tics, processes a specified number of tics,
@@ -147,32 +152,32 @@ updates the state and calculates a new reward, which is returned.
 
 
 ---
-### <a name="isNewEpisode"></a> `isNewEpisode`
+### `isNewEpisode`
 
-| C++    | `bool isNewEpisode()`    |
-| :--    | :--                      |
-| Python | `bool is_new_episode()`  |
+| C++    | `bool isNewEpisode()`      |
+| :--    | :--                        |
+| Python | `is_new_episode() -> bool` |
 
 Returns true if the current episode is in the initial state - the first state, no actions were performed yet.
 
 
 ---
-### <a name="isEpisodeFinished"></a> `isEpisodeFinished`
+### `isEpisodeFinished`
 
-| C++    | `bool isEpisodeFinished()`    |
-| :--    | :--                           |
-| Python | `bool is_episode_finished()`  |
+| C++    | `bool isEpisodeFinished()`      |
+| :--    | :--                             |
+| Python | `is_episode_finished() -> bool` |
 
 Returns true if the current episode is in the terminal state (is finished).
 [`makeAction`](#makeAction) and [`advanceAction`](#advanceAction) methods will take no effect after this point (unless [`newEpisode`](#newEpisode) method is called).
 
 
 ---
-### <a name="isPlayerDead"></a> `isPlayerDead`
+### `isPlayerDead`
 
-| C++    | `bool isPlayerDead()`    |
-| :--    | :--                      |
-| Python | `bool is_player_dead()`  |
+| C++    | `bool isPlayerDead()`      |
+| :--    | :--                        |
+| Python | `is_player_dead() -> bool` |
 
 Returns true if the player is dead.
 In singleplayer, the player's death is equivalent to the end of the episode.
@@ -180,11 +185,11 @@ In multiplayer, when the player is dead [`respawnPlayer`](#respawnPlayer) method
 
 
 ---
-### <a name="respawnPlayer"></a> `respawnPlayer`
+### `respawnPlayer`
 
-| C++    | `void respawnPlayer()`  |
-| :--    | :--                     |
-| Python | `void respawn_player()` |
+| C++    | `void respawnPlayer()`     |
+| :--    | :--                        |
+| Python | `respawn_player() -> None` |
 
 This method respawns the player after death in multiplayer mode.
 After calling this method, the first state after the respawn will be available.
@@ -194,11 +199,11 @@ See also:
 
 
 ---
-### <a name="sendGameCommand"></a> `sendGameCommand`
+### `sendGameCommand`
 
 | C++    | `void sendGameCommand(std::string cmd)` |
 | :--    | :--                                     |
-| Python | `void send_game_command(str cmd)`       |
+| Python | `send_game_command(cmd: str) -> None`   |
 
 Sends the command to Doom console. It can be used for controlling the game, changing settings, cheats, etc.
 Some commands will be blocked in some modes.
@@ -210,11 +215,11 @@ See also:
 
 
 ---
-### <a name="getState"></a> `getState`
+### `getState`
 
 | C++    | `GameStatePtr (std::shared_ptr<GameState>) GameState getState()` |
 | :--    | :--                                                              |
-| Python | `GameState get_state()`                                          |
+| Python | `get_state() -> GameState`                                       |
 
 Changed in 1.1.0
 
@@ -226,11 +231,11 @@ See also:
 
 
 ---
-### <a name="getServerState"></a> `getServerState`
+### `getServerState`
 
 | C++    | `ServerStatePtr (std::shared_ptr<ServerState>) ServerState getServerState()` |
 | :--    | :--                                                                          |
-| Python | `ServerState get_state_state()`                                              |
+| Python | `get_state_state() -> ServerState`                                           |
 
 Added in 1.1.6
 
@@ -241,11 +246,11 @@ See also:
 
 
 ---
-### <a name="getLastAction"></a> `getLastAction`
+### `getLastAction`
 
 | C++    | `std::vector<double> getLastAction()` |
 | :--    | :--                                   |
-| Python | `list get_last_action()`              |
+| Python | `get_last_action() -> list`           |
 
 Returns the last action performed.
 Each value corresponds to a button added with `[addAvailableButton](#addAvailableButton)` (in order of appearance).
@@ -253,21 +258,21 @@ Most useful in `SPECTATOR` mode.
 
 
 ---
-### <a name="getEpisodeTime"></a> `getEpisodeTime`
+### `getEpisodeTime`
 
 | C++    | `unsigned int getEpisodeTime()` |
 | :--    | :--                             |
-| Python | `int get_episode_time()`        |
+| Python | `get_episode_time() -> int`        |
 
 Returns number of current episode tic.
 
 
 ---
-### <a name="save"></a> `save`
+### `save`
 
 | C++    | `void save(std::string filePath)` |
 | :--    | :--                               |
-| Python | `void save(str filePath)`         |
+| Python | `save(filePath: str) -> None`     |
 
 Added in 1.1.9
 
@@ -275,11 +280,11 @@ Saves a game's internal state to the file using ZDoom's save game functionality.
 
 
 ---
-### <a name="load"></a> `load`
+### `load`
 
 | C++    | `void load(std::string filePath)` |
 | :--    | :--                               |
-| Python | `void load(str filePath)`         |
+| Python | `load(filePath: str) -> None`     |
 
 Added in 1.1.9
 
@@ -289,14 +294,14 @@ Loading the game state does not reset the current episode state,
 tic counter/time and total reward state keep their values.
 
 
-## <a name="buttons"></a> Buttons settings methods
+## Buttons settings methods
 
 ---
-### <a name="getAvailableButtons"></a> `getAvailableButtons`
+### `getAvailableButtons`
 
 | C++    | `std::vector<Button> getAvailableButtons()` |
 | :--    | :--                                         |
-| Python | `list get_available_buttons()`              |
+| Python | `get_available_buttons() -> list[Button]`   |
 
 Returns the list of available `Buttons`.
 
@@ -307,11 +312,11 @@ See also:
 
 
 ---
-### <a name="setAvailableButtons"></a> `setAvailableButtons`
+### `setAvailableButtons`
 
-| C++    | `void setAvailableButtons(std::vector<Button> buttons)` |
-| :--    | :--                                                     |
-| Python | `void add_available_button(list)`                       |
+| C++    | `void setAvailableButtons(std::vector<Button> buttons)`       |
+| :--    | :--                                                           |
+| Python | `add_available_button(buttons: list | tuple[Button]) -> None` |
 
 Set given list of `Button`s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available `Buttons`,
 
@@ -324,11 +329,11 @@ See also:
 
 
 ---
-### <a name="addAvailableButton"></a> `addAvailableButton`
+### `addAvailableButton`
 
-| C++    | `void addAvailableButton(Button button, double maxValue = 0)`  |
-| :--    | :--                                                            |
-| Python | `void add_available_button(Button button, float maxValue = 0)` |
+| C++    | `void addAvailableButton(Button button, double maxValue = 0)`       |
+| :--    | :--                                                                 |
+| Python | `add_available_button(button: Button, maxValue: float = 0) -> None` |
 
 Add [`Button`](Types.md#button) type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to available `Buttons` and sets the maximum allowed, absolute value for the specified button.
 If the given button has already been added, it will not be added again, but the maximum value is overridden.
@@ -343,11 +348,11 @@ See also:
 
 
 ---
-### <a name="clearAvailableButtons"></a> `clearAvailableButtons`
+### `clearAvailableButtons`
 
-| C++    | `void clearAvailableButtons()`   |
-| :--    | :--                              |
-| Python | `void clear_available_buttons()` |
+| C++    | `void clearAvailableButtons()`      |
+| :--    | :--                                 |
+| Python | `clear_available_buttons() -> None` |
 
 Clears all available `Buttons` added so far.
 
@@ -356,11 +361,11 @@ See also:
 
 
 ---
-### <a name="getAvailableButtonsSize"></a> `getAvailableButtonsSize`
+### `getAvailableButtonsSize`
 
-| C++    | `int getAvailableButtonsSize()`    |
-| :--    | :--                                |
-| Python | `int get_available_buttons_size()` |
+| C++    | `int getAvailableButtonsSize()`       |
+| :--    | :--                                   |
+| Python | `get_available_buttons_size() -> int` |
 
 Returns the number of available `Buttons`.
 
@@ -369,11 +374,11 @@ See also:
 
 
 ---
-### <a name="setButtonMaxValue"></a> `setButtonMaxValue`
+### `setButtonMaxValue`
 
-| C++    | `void setButtonMaxValue(Button button, double maxValue = 0)`   |
-| :--    | :--                                                            |
-| Python | `void set_button_max_value(Button button, float maxValue = 0)` |
+| C++    | `void setButtonMaxValue(Button button, double maxValue = 0)`        |
+| :--    | :--                                                                 |
+| Python | `set_button_max_value(button: Button, maxValue: float = 0) -> None` |
 
 Sets the maximum allowed absolute value for the specified button.
 Setting the maximum value to 0 results in no constraint at all (infinity).
@@ -385,11 +390,11 @@ See also:
 
 
 ---
-### <a name="getButtonMaxValue"></a> `getButtonMaxValue`
+### `getButtonMaxValue`
 
 | C++    | `unsigned int getButtonMaxValue(Button button)` |
 | :--    | :--                                             |
-| Python | `int get_button_max_value(Button button)`       |
+| Python | `set_button_max_value(button: Button) -> int`   |
 
 Returns the maximum allowed absolute value for the specified button.
 
@@ -398,11 +403,11 @@ See also:
 
 
 ---
-### <a name="getButton"></a> `getButton`
+### `getButton`
 
-| C++    | `double getButton(Button button)` |
-| :--    | :--                               |
-| Python | `float get_button(Button button)` |
+| C++    | `double getButton(Button button)`     |
+| :--    | :--                                   |
+| Python | `set_button(button: Button) -> float` |
 
 Returns the current state of the specified button (`ATTACK`, `USE` etc.).
 
@@ -410,14 +415,14 @@ See also:
 - [`Types: Button`](Types.md#button)
 
 
-## <a name="vars"></a> GameVariables methods
+## GameVariables methods
 
 ---
-### <a name="getAvailableGameVariables"></a> `getAvailableGameVariables`
+### `getAvailableGameVariables`
 
 | C++    | `std::vector<GameVariable> getAvailableGameVariables()` |
 | :--    | :--                                                     |
-| Python | `list get_available_game_variables()`                   |
+| Python | `get_available_game_variables() -> list[GameVariables]` |
 
 Returns the list of available `GameVariables`.
 
@@ -428,11 +433,11 @@ See also:
 
 
 ---
-### <a name="setAvailableGameVariables"></a> `setAvailableGameVariables`
+### `setAvailableGameVariables`
 
-| C++    | `void setAvailableGameVariables(std::vector<GameVariable> variables)` |
-| :--    | :--                                                                   |
-| Python | `void set_available_game_variables(list variables)`                   |
+| C++    | `void setAvailableGameVariables(std::vector<GameVariable> variables)`          |  
+| :--    | :--                                                                            |
+| Python | `set_available_game_variables(variables: list | tuple[GameVariables]) -> None` |
 
 Set list of [`GameVariable`](Types.md#gamevariable) as available `GameVariables` in the [`GameState`](Types.md#gamestate) returned by `getState` method.
 
@@ -445,11 +450,11 @@ See also:
 
 
 ---
-### <a name="addAvailableGameVariable"></a> `addAvailableGameVariable`
+### `addAvailableGameVariable`
 
-| C++    | `void addAvailableGameVariable(GameVariable variable)`    |
-| :--    | :--                                                       |
-| Python | `void add_available_game_variable(GameVariable variable)` |
+| C++    | `void addAvailableGameVariable(GameVariable variable)`        |
+| :--    | :--                                                           |
+| Python | `add_available_game_variable(variable: GameVariable) -> None` |
 
 Adds the specified [`GameVariable`](Types.md#gamevariable) to the list of available game variables (e.g. `HEALTH`, `AMMO1`, `ATTACK_READY`) in the [`GameState`](Types.md#gamestate) returned by `getState` method.
 
@@ -462,11 +467,11 @@ See also:
 
 
 ---
-### <a name="clearAvailableGameVariables"></a> `clearAvailableGameVariables`
+### `clearAvailableGameVariables`
 
-| C++    | `void clearAvailableGameVariables()`    |
-| :--    | :--                                     |
-| Python | `void clear_available_game_variables()` |
+| C++    | `void clearAvailableGameVariables()`       |
+| :--    | :--                                        |
+| Python | `clear_available_game_variables() -> None` |
 
 Clears the list of available `GameVariables` that are included in the GameState returned by [`getState`](#getState) method.
 
@@ -476,11 +481,11 @@ See also:
 
 
 ---
-### <a name="getAvailableGameVariablesSize"></a> `getAvailableGameVariablesSize`
+### `getAvailableGameVariablesSize`
 
-| C++    | `unsigned int getAvailableGameVariablesSize()`     |
-| :--    | :--                                                |
-| Python | `int get_available_game_variables_size()`          |
+| C++    | `unsigned int getAvailableGameVariablesSize()` |
+| :--    | :--                                            |
+| Python | `get_available_game_variables_size() -> int`   |
 
 Returns the number of available `GameVariables`.
 
@@ -490,11 +495,11 @@ See also:
 
 
 ---
-### <a name="getGameVariable"></a> `getGameVariable`
+### `getGameVariable`
 
-| C++    | `double getGameVariable(GameVariable variable)`  |
-| :--    | :--                                              |
-| Python | `float get_game_variable(GameVariable variable)` |
+| C++    | `double getGameVariable(GameVariable variable)`      |
+| :--    | :--                                                  |
+| Python | `get_game_variable(variable: GameVariable) -> float` |
 
 Returns the current value of the specified game variable (`HEALTH`, `AMMO1` etc.).
 The specified game variable does not need to be among available game variables (included in the state).
@@ -504,14 +509,14 @@ See also:
 - [`Types: GameVariable`](Types.md#gamevariable)
 
 
-## <a name="args"></a> Game Arguments methods
+## Game Arguments methods
 
 ---
-### <a name="addGameArgs"></a> `addGameArgs`
+### `addGameArgs`
 
 | C++    | `void addGameArgs(std::string args)` |
 | :--    | :--                                  |
-| Python | `void add_game_args(str args)`       |
+| Python | `add_game_args(args: str) -> None`   |
 
 Adds a custom argument that will be passed to ViZDoom process during initialization.
 Useful for changing additional game settings.
@@ -524,33 +529,33 @@ See also:
 
 
 ---
-### <a name="clearGameArgs"></a> `clearGameArgs`
+### `clearGameArgs`
 
-| C++    | `void clearGameArgs()`   |
-| :--    | :--                      |
-| Python | `void clear_game_args()` |
+| C++    | `void clearGameArgs()`      |
+| :--    | :--                         |
+| Python | `clear_game_args() -> None` |
 
 Clears all arguments previously added with [`addGameArgs`](#addGameArgs) method.
 
 
-## <a name="rewards"></a> Reward methods
+## Reward methods
 
 ---
-### <a name="getLivingReward"></a> `getLivingReward`
+### `getLivingReward`
 
-| C++    | `double getLivingReward()`   |
-| :--    | :--                          |
-| Python | `double get_living_reward()` |
+| C++    | `double getLivingReward()`     |
+| :--    | :--                            |
+| Python | `get_living_reward() -> float` |
 
 Returns the reward granted to the player after every tic.
 
 
 ---
-### <a name="setLivingReward"></a> `setLivingReward`
+### `setLivingReward`
 
-| C++    | `void setLivingReward(double livingReward)`  |
-| :--    | :--                                          |
-| Python | `void set_living_reward(float livingReward)` |
+| C++    | `void setLivingReward(double livingReward)`      |
+| :--    | :--                                              |
+| Python | `set_living_reward(livingReward: float) -> None` |
 
 Sets the reward granted to the player after every tic. A negative value is also allowed.
 
@@ -560,21 +565,21 @@ Config key: `livingReward/living_reward`
 
 
 ---
-### <a name="getDeathPenalty"></a> `getDeathPenalty`
+### `getDeathPenalty`
 
-| C++    | `double getDeathPenalty()`   |
-| :--    | :--                          |
-| Python | `double get_death_penalty()` |
+| C++    | `double getDeathPenalty()`     |
+| :--    | :--                            |
+| Python | `get_death_penalty() -> float` |
 
 Returns the penalty for the player's death.
 
 
 ---
-### <a name="setDeathPenalty"></a> `setDeathPenalty`
+### `setDeathPenalty`
 
-| C++    | `void setDeathPenalty(double deathPenalty)`  |
-| :--    | :--                                          |
-| Python | `void set_death_penalty(float deathPenalty)` |
+| C++    | `void setDeathPenalty(double deathPenalty)`      |
+| :--    | :--                                              |
+| Python | `set_death_penalty(deathPenalty: float) -> None` |
 
 Sets a penalty for the player's death. Note that in case of a negative value, the player will be rewarded upon dying.
 
@@ -584,33 +589,33 @@ Config key: `deathPenalty/death_penalty`
 
 
 ---
-### <a name="getLastReward"></a> `getLastReward`
+### `getLastReward`
 
-| C++    | `double getLastReward()`  |
-| :--    | :--                       |
-| Python | `float get_last_reward()` |
+| C++    | `double getLastReward()`     |
+| :--    | :--                          |
+| Python | `get_last_reward() -> float` |
 
 Returns a reward granted after the last update of state.
 
 
 ---
-### <a name="getTotalReward"></a> `getTotalReward`
+### `getTotalReward`
 
-| C++    | `double getTotalReward()`  |
-| :--    | :--                        |
-| Python | `float get_total_reward()` |
+| C++    | `double getTotalReward()`     |
+| :--    | :--                           |
+| Python | `get_total_reward() -> float` |
 
 Returns the sum of all rewards gathered in the current episode.
 
 
-## <a name="settings"></a> General game setting methods
+## General game setting methods
 
 ---
-### <a name="loadConfig"></a> `loadConfig`
+### `loadConfig`
 
 | C++    | `bool loadConfig(std::string filePath)` |
 | :--    | :--                                     |
-| Python | `bool load_config(str filePath)`        |
+| Python | `load_config(filePath: str) -> bool`    |
 
 Loads configuration (resolution, available buttons, game variables etc.) from a configuration file.
 In case of multiple invocations, older configurations will be overwritten by the recent ones.
@@ -623,21 +628,24 @@ See also:
 
 
 ---
-### <a name="getMode"></a> `getMode`
+### `getMode`
 
-| C++    | `Mode getMode()`  |
-| :--    | :--               |
-| Python | `Mode get_mode()` |
+| C++    | `Mode getMode()`     |
+| :--    | :--                  |
+| Python | `get_mode() -> Mode` |
 
-Returns current mode.
+Returns current mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`).
+
+See also:
+- [`Types: Mode`](Types.md#mode)
 
 
 ---
-### <a name="setMode"></a> `setMode`
+### `setMode`
 
-| C++    | `void setMode(Mode mode)`  |
-| :--    | :--                        |
-| Python | `void set_mode(Mode mode)` |
+| C++    | `void setMode(Mode mode)`      |
+| :--    | :--                            |
+| Python | `set_mode(mode: Mode) -> None` |
 
 Sets mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`) in which the game will be running.
 
@@ -650,11 +658,11 @@ See also:
 
 
 ---
-### <a name="getTicrate"></a> `getTicrate`
+### `getTicrate`
 
 | C++    | `unsigned int getTicrate()` |
 | :--    | :--                         |
-| Python | `int get_ticrate()`         |
+| Python | `get_ticrate() -> int`      |
 
 Added in 1.1.0
 
@@ -662,11 +670,11 @@ Returns current ticrate.
 
 
 ---
-### <a name="setTicrate"></a> `setTicrate`
+### `setTicrate`
 
 | C++    | `void setTicrate(unsigned int ticrate)` |
 | :--    | :--                                     |
-| Python | `void set_ticrate(int ticrate)`         |
+| Python | `set_ticrate(ticrate: int) -> None`     |
 
 Added in 1.1.0
 
@@ -678,29 +686,25 @@ Default value: 35 (default Doom ticrate).
 Config key: `ticrate`
 
 See also:
-- [examples/python/ticrate.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/ticrate.py)
+- [examples/python/ticrate.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/ticrate.py)
 
 
 ---
-### <a name="setViZDoomPath"></a> `setViZDoomPath`
+### `setViZDoomPath`
 
 | C++    | `void setViZDoomPath(std::string filePath)` |
 | :--    | :--                                         |
-| Python | `void set_vizdoom_path(str filePath)`       |
+| Python | `set_vizdoom_path(filePath: str) -> None`       |
 
 Sets path to the ViZDoom engine executable vizdoom.
 
 Default value: "{vizdoom.so location}/{vizdoom or vizdoom.exe (on Windows)}".
 
-Config key: `ViZDoomPath/vizdoom_path`
-
-
----
-### <a name="setDoomGamePath"></a> `setDoomGamePath`
+Config key: `ViZDoomPath/vizdoom_path    
 
 | C++    | `void setDoomGamePath(std::string filePath)` |
 | :--    | :--                                          |
-| Python | `void set_doom_game_path(str filePath)`      |
+| Python | `set_doom_game_path(filePath: str) -> None`      |
 
 Sets the path to the Doom engine based game file (wad format).
 If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom.so/pyd is).
@@ -711,11 +715,11 @@ Config key: `DoomGamePath/doom_game_path`
 
 
 ---
-### <a name="setDoomScenarioPath"></a> `setDoomScenarioPath`
+### `setDoomScenarioPath`
 
 | C++    | `void setDoomScenarioPath(std::string filePath)` |
 | :--    | :--                                              |
-| Python | `void set_doom_scenario_path(str filePath)`      |
+| Python | `set_doom_scenario_path(filePath: str) -> None`      |
 
 Sets the path to an additional scenario file (wad format).
 If not provided, the default Doom single-player maps will be loaded.
@@ -726,11 +730,11 @@ Config key: `DoomScenarioPath/set_doom_scenario_path`
 
 
 ---
-### <a name="setDoomMap"></a> `setDoomMap`
+### `setDoomMap`
 
 | C++    | `void setDoomMap(std::string map)` |
 | :--    | :--                                |
-| Python | `void set_doom_map(str map)`       |
+| Python | `set_doom_map(map: str) -> None`   |
 
 Sets the map name to be used.
 
@@ -740,11 +744,11 @@ Config key: `DoomMap/doom_map`
 
 
 ---
-### <a name="setDoomSkill"></a> `setDoomSkill`
+### `setDoomSkill`
 
-| C++    | `void setDoomSkill(int skill)`    |
-| :--    | :--                               |
-| Python | `void set_doom_skill(int skill)`  |
+| C++    | `void setDoomSkill(unsigned int skill)` |
+| :--    | :--                                     |
+| Python | `set_doom_skill(skill: int) -> None`    |
 
 Sets Doom game difficulty level, which is called skill in Doom.
 The higher the skill, the harder the game becomes.
@@ -763,11 +767,11 @@ Config key: `DoomSkill/doom_skill`
 
 
 ---
-### <a name="setDoomConfigPath"></a> `setDoomConfigPath`
+### `setDoomConfigPath`
 
 | C++    | `void setDoomConfigPath(std::string filePath)` |
 | :--    | :--                                            |
-| Python | `void set_doom_config_path(str filePath)`      |
+| Python | `set_doom_config_path(filePath: str) -> None`  |
 
 Sets the path for ZDoom's configuration file.
 The file is responsible for the configuration of the ZDoom engine itself.
@@ -780,21 +784,21 @@ Config key: `DoomConfigPath/doom_config_path`
 
 
 ---
-### <a name="getSeed"></a> `getSeed`
+### `getSeed`
 
 | C++    | `unsigned int getSeed()` |
 | :--    | :--                      |
-| Python | `int getSeed()`          |
+| Python | `getSeed() -> int`       |
 
 Return ViZDoom's seed.
 
 
 ---
-### <a name="setSeed"></a> `setSeed`
+### `setSeed`
 
 | C++    | `void setSeed(unsigned int seed)` |
 | :--    | :--                               |
-| Python | `void set_seed(int seed)`         |
+| Python | `set_seed(seed: int) -> None`     |
 
 Sets the seed of the ViZDoom's RNG that generates seeds (initial state) for episodes.
 
@@ -803,26 +807,26 @@ Default value: randomized in constructor
 Config key: `seed`
 
 See also:
-- [examples/python/seed.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/seed.py)
+- [examples/python/seed.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/seed.py)
 
 
 
 ---
-### <a name="getEpisodeStartTime"></a> `getEpisodeStartTime`
+### `getEpisodeStartTime`
 
 | C++    | `unsigned int getEpisodeStartTime()` |
 | :--    | :--                                  |
-| Python | `int get_episode_start_time()`       |
+| Python | `get_episode_start_time() -> int`    |
 
 Returns start delay of every episode in tics.
 
 
 ---
-### <a name="setEpisodeStartTime"></a> `setEpisodeStartTime`
+### `setEpisodeStartTime`
 
 | C++    | `void setEpisodeStartTime(unsigned int tics)` |
 | :--    | :--                                           |
-| Python | `void set_episode_start_time(int tics)`       |
+| Python | `set_episode_start_time(tics: int) -> None`   |
 
 Sets start delay of every episode in tics.
 Every episode will effectively start (from the user's perspective) after the provided number of tics.
@@ -833,36 +837,36 @@ Config key: `episodeStartTime/episode_start_time`
 
 
 ---
-### <a name="getEpisodeTimeout"></a> `getEpisodeTimeout`
+### `getEpisodeTimeout`
 
 | C++    | `unsigned int getEpisodeTimeout()` |
 | :--    | :--                                |
-| Python | `int get_episode_timeout()`        |
+| Python | `get_episode_timeout() -> int`     |
 
 Returns the number of tics after which the episode will be finished.
 
 
 ---
-### <a name="setEpisodeTimeout"></a> `setEpisodeTimeout`
+### `setEpisodeTimeout`
 
 | C++    | `void setEpisodeTimeout(unsigned int tics)` |
 | :--    | :--                                         |
-| Python | `void set_episode_timeout(int tics)`        |
+| Python | `set_episode_timeout(tics: int) -> None`    |
 
 Sets the number of tics after which the episode will be finished. 0 will result in no timeout.
 
 Config key: `episodeTimeout/episode_timeout`
 
 
-## <a name="rendering"></a> Output/rendering setting methods
+## Output/rendering setting methods
 ------------------------------------------------------------------------------------------------------------
 
 ---
-### <a name="setScreenResolution"></a> `setScreenResolution`
+### `setScreenResolution`
 
-| C++    | `void setScreenResolution(ScreenResolution resolution)`   |
-| :--    | :--                                                       |
-| Python | `void set_screen_resolution(ScreenResolution resolution)` |
+| C++    | `void setScreenResolution(ScreenResolution resolution)`       |
+| :--    | :--                                                           |
+| Python | `set_screen_resolution(resolution: ScreenResolution) -> None` |
 
 Sets the screen resolution. ZDoom engine supports only specific resolutions.
 Supported resolutions are part of ScreenResolution enumeration (e.g., `RES_320X240`, `RES_640X480`, `RES_1920X1080`).
@@ -878,21 +882,21 @@ See also:
 
 
 ---
-### <a name="getScreenFormat"></a> `getScreenFormat`
+### `getScreenFormat`
 
-| C++    | `ScreenFormat getScreenFormat()`   |
-| :--    | :--                                |
-| Python | `ScreenFormat get_screen_format()` |
+| C++    | `ScreenFormat getScreenFormat()`      |
+| :--    | :--                                   |
+| Python | `get_screen_format() -> ScreenFormat` |
 
 Returns the format of the screen buffer and the automap buffer.
 
 
 ---
-### <a name="setScreenFormat"></a> `setScreenFormat`
+### `setScreenFormat`
 
-| C++    | `void setScreenFormat(ScreenFormat format)`   |
-| :--    | :--                                           |
-| Python | `void set_screen_format(ScreenFormat format)` |
+| C++    | `void setScreenFormat(ScreenFormat format)`       |
+| :--    | :--                                               |
+| Python | `set_screen_format(format: ScreenFormat) -> None` |
 
 Sets the format of the screen buffer and the automap buffer.
 Supported formats are defined in `ScreenFormat` enumeration type (e.g. `CRCGCB`, `RGB24`, `GRAY8`).
@@ -907,11 +911,11 @@ See also:
 
 
 ---
-### <a name="isDepthBufferEnabled"></a> `isDepthBufferEnabled`
+### `isDepthBufferEnabled`
 
-| C++    | `bool isDepthBufferEnabled()`    |
-| :--    | :--                              |
-| Python | `bool isDepthBufferEnabled()`    |
+| C++    | `bool isDepthBufferEnabled()`       |
+| :--    | :--                                 |
+| Python | `is_depth_buffer_enabled() -> None` |
 
 Added in 1.1.0
 
@@ -919,11 +923,11 @@ Returns true if the depth buffer is enabled.
 
 
 ---
-### <a name="setDepthBufferEnabled"></a> `setDepthBufferEnabled`
+### `setDepthBufferEnabled`
 
-| C++    | `void setDepthBufferEnabled(bool depthBuffer)`    |
-| :--    | :--                                               |
-| Python | `void set_depth_buffer_enabled(bool depthBuffer)` |
+| C++    | `void setDepthBufferEnabled(bool depthBuffer)`        |
+| :--    | :--                                                   |
+| Python | `set_depth_buffer_enabled(depthBuffer: bool) -> None` |
 
 Added in 1.1.0
 
@@ -936,15 +940,15 @@ Config key: `depthBufferEnabled/depth_buffer_enabled`
 
 See also:
 - [`Types: GameState`](Types.md#gamestate)
-- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py)
+- [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
 
 
 ---
-### <a name="isLabelsBufferEnabled"></a> `isLabelsBufferEnabled`
+### `isLabelsBufferEnabled`
 
-| C++    | `bool isLabelsBufferEnabled()`    |
-| :--    | :--                               |
-| Python | `bool isLabelsBufferEnabled()`    |
+| C++    | `bool isLabelsBufferEnabled()`       |
+| :--    | :--                                  |
+| Python | `is_labels_buffer_enabled() -> None` |
 
 Added in 1.1.0
 
@@ -952,11 +956,11 @@ Returns true if the labels buffer is enabled.
 
 
 ---
-### <a name="setLabelsBufferEnabled"></a> `setLabelsBufferEnabled`
+### `setLabelsBufferEnabled`
 
-| C++    | `void setLabelsBufferEnabled(bool labelsBuffer)`    |
-| :--    | :--                                                 |
-| Python | `void set_labels_buffer_enabled(bool labelsBuffer)` |
+| C++    | `void setLabelsBufferEnabled(bool labelsBuffer)`       |
+| :--    | :--                                                    |
+| Python | `set_labels_buffer_enabled(bool labelsBuffer) -> None` |
 
 Added in 1.1.0
 
@@ -970,16 +974,16 @@ Config key: `labelsBufferEnabled/labels_buffer_enabled`
 See also:
 - [`Types: Label`](Types.md#label)
 - [`Types: GameState`](Types.md#gamestate)
-- [examples/python/labels.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/labels.py)
-- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py)
+- [examples/python/labels.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels.py)
+- [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
 
 
 ---
-### <a name="isAutomapBufferEnabled"></a> `isAutomapBufferEnabled`
+### `isAutomapBufferEnabled`
 
-| C++    | `bool isAutomapBufferEnabled()`    |
-| :--    | :--                                |
-| Python | `bool is_automap_buffer_enabled()` |
+| C++    | `bool isAutomapBufferEnabled()`       |
+| :--    | :--                                   |
+| Python | `is_automap_buffer_enabled() -> bool` |
 
 Added in 1.1.0
 
@@ -987,11 +991,11 @@ Returns true if the automap buffer is enabled.
 
 
 ---
-### <a name="setAutomapBufferEnabled"></a> `setAutomapBufferEnabled`
+### `setAutomapBufferEnabled`
 
-| C++    | `void setAutomapBufferEnabled(bool automapBuffer)`    |
-| :--    | :--                                                   |
-| Python | `void set_automap_buffer_enabled(bool automapBuffer)` |
+| C++    | `void setAutomapBufferEnabled(bool automapBuffer)`        |
+| :--    | :--                                                       |
+| Python | `set_automap_buffer_enabled(automapBuffer: bool) -> None` |
 
 Added in 1.1.0
 
@@ -1003,15 +1007,15 @@ Config key: `automapBufferEnabled/automap_buffer_enabled`
 
 See also:
 - [`Types: GameState`](Types.md#gamestate)
-- [examples/python/buffers.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/buffers.py),
+- [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py),
 
 
 ---
-### <a name="setAutomapMode"></a> `setAutomapMode`
+### `setAutomapMode`
 
-| C++    | `void setAutomapMode(AutomapMode mode)`   |
-| :--    | :--                                       |
-| Python | `void set_automap_mode(AutomapMode mode)` |
+| C++    | `void setAutomapMode(AutomapMode mode)`       |
+| :--    | :--                                           |
+| Python | `set_automap_mode(mode: AutomapMode) -> None` |
 
 Added in 1.1.0
 
@@ -1027,11 +1031,11 @@ See also:
 
 
 ---
-### <a name="setAutomapRotate"></a> `setAutomapRotate`
+### `setAutomapRotate`
 
-| C++    | `void setAutomapRotate(bool rotate)`    |
-| :--    | :--                                     |
-| Python | `void set_automap_rotate(bool rotate)`  |
+| C++    | `void setAutomapRotate(bool rotate)`       |
+| :--    | :--                                        |
+| Python | `set_automap_rotate(rotate: bool) -> None` |
 
 Added in 1.1.0
 
@@ -1044,11 +1048,11 @@ Config key: `automapRotate/automap_rotate`
 
 
 ---
-### <a name="setAutomapRenderTextures"></a> `setAutomapRenderTextures`
+### `setAutomapRenderTextures`
 
-| C++    | `void setAutomapRenderTextures(bool textures)`    |
-| :--    | :--                                               |
-| Python | `void set_automap_render_textures(bool textures)` |
+| C++    | `void setAutomapRenderTextures(bool textures)`        |
+| :--    | :--                                                   |
+| Python | `set_automap_render_textures(textures: bool) -> None` |
 
 Added in 1.1.0
 
@@ -1060,11 +1064,11 @@ Config key: `automapRenderTextures/automap_render_textures`
 
 
 ---
-### <a name="setRenderHud"></a> `setRenderHud`
+### `setRenderHud`
 
-| C++    | `void setRenderHud(bool hud)`    |
-| :--    | :--                              |
-| Python | `void set_render_hud(bool hud)`  |
+| C++    | `void setRenderHud(bool hud)`       |
+| :--    | :--                                 |
+| Python | `set_render_hud(hud: bool) -> None` |
 
 Determine if the hud will be rendered in the game.
 
@@ -1074,11 +1078,11 @@ Config key: `renderHud/render_hud`
 
 
 ---
-### <a name="setRenderMinimalHud"></a> `setRenderMinimalHud`
+### `setRenderMinimalHud`
 
-| C++    | `void setRenderMinimalHud(bool minHud)`    |
-| :--    | :--                                        |
-| Python | `void set_render_minimal_hud(bool minHud)` |
+| C++    | `void setRenderMinimalHud(bool minHud)`        |
+| :--    | :--                                            |
+| Python | `set_render_minimal_hud(minHud: bool) -> None` |
 
 Added in 1.1.0
 
@@ -1090,11 +1094,11 @@ Config key: `renderMinimalHud/render_minimal_hud`
 
 
 ---
-### <a name="setRenderWeapon"></a> `setRenderWeapon`
+### `setRenderWeapon`
 
-| C++    | `void setRenderWeapon(bool weapon)`    |
-| :--    | :--                                    |
-| Python | `void set_render_weapon(bool weapon)`  |
+| C++    | `void setRenderWeapon(bool weapon)`       |
+| :--    | :--                                       |
+| Python | `set_render_weapon(weapon: bool) -> None` |
 
 Determine if the weapon held by the player will be rendered in the game.
 
@@ -1104,11 +1108,11 @@ Config key: `renderWeapon/render_weapon`
 
 
 ---
-### <a name="setRenderCrosshair"></a> `setRenderCrosshair`
+### `setRenderCrosshair`
 
-| C++    | `void setRenderCrosshair(bool crosshair)`    |
-| :--    | :--                                          |
-| Python | `void set_render_crosshair(bool crosshair)`  |
+| C++    | `void setRenderCrosshair(bool crosshair)`       |
+| :--    | :--                                             |
+| Python | `set_render_crosshair(crosshair: bool) -> None` |
 
 Determine if the crosshair will be rendered in the game.
 
@@ -1118,11 +1122,11 @@ Config key: `renderCrosshair/render_crosshair`
 
 
 ---
-### <a name="setRenderDecals"></a> `setRenderDecals`
+### `setRenderDecals`
 
-| C++    | `void setRenderDecals(bool decals)`    |
-| :--    | :--                                    |
-| Python | `void set_render_decals(bool decals)`  |
+| C++    | `void setRenderDecals(bool decals)`       |
+| :--    | :--                                       |
+| Python | `set_render_decals(decals: bool) -> None` |
 
 Determine if the decals (marks on the walls) will be rendered in the game.
 
@@ -1132,11 +1136,11 @@ Config key: `renderDecals/render_decals`
 
 
 ---
-### <a name="setRenderParticles"></a> `setRenderParticles`
+### `setRenderParticles`
 
-| C++    | `void setRenderParticles(bool particles)`    |
-| :--    | :--                                          |
-| Python | `void set_render_particles(bool particles)`  |
+| C++    | `void setRenderParticles(bool particles)`       |
+| :--    | :--                                             |
+| Python | `set_render_particles(particles: bool) -> None` |
 
 Determine if the particles will be rendered in the game.
 
@@ -1146,11 +1150,11 @@ Config key: `renderParticles/render_particles`
 
 
 ---
-### <a name="setRenderEffectsSprites"></a> `setRenderEffectsSprites`
+### `setRenderEffectsSprites`
 
-| C++    | `void setRenderEffectsSprites(bool sprites)`    |
-| :--    | :--                                             |
-| Python | `void set_render_effects_sprites(bool sprites)` |
+| C++    | `void setRenderEffectsSprites(bool sprites)`        |
+| :--    | :--                                                 |
+| Python | `set_render_effects_sprites(sprites: bool) -> None` |
 
 Added in 1.1.0
 
@@ -1162,11 +1166,11 @@ Config key: `renderEffectsSprites/render_effects_sprites`
 
 
 ---
-### <a name="setRenderMessages"></a> `setRenderMessages`
+### `setRenderMessages`
 
-| C++    | `void setRenderMessages(bool messages)`    |
-| :--    | :--                                        |
-| Python | `void set_render_messages(bool messages)`  |
+| C++    | `void setRenderMessages(bool messages)`       |
+| :--    | :--                                           |
+| Python | `set_render_messages(messages: bool) -> None` |
 
 Added in 1.1.0
 
@@ -1178,11 +1182,11 @@ Config key: `renderMessages/render_messages`
 
 
 ---
-### <a name="setRenderCorpses"></a> `setRenderCorpses`
+### `setRenderCorpses`
 
-| C++    | `void setRenderCorpses(bool corpses)`    |
-| :--    | :--                                      |
-| Python | `void set_render_corpsess(bool corpses)` |
+| C++    | `void setRenderCorpses(bool corpses)`        |
+| :--    | :--                                          |
+| Python | `set_render_corpsess(corpses: bool) -> None` |
 
 Added in 1.1.0
 
@@ -1194,11 +1198,11 @@ Config key: `renderCorpses/render_corpses`
 
 
 ---
-### <a name="setRenderScreenFlashes"></a> `setRenderScreenFlashes`
+### `setRenderScreenFlashes`
 
-| C++    | `void setRenderScreenFlashes(bool flashes)`    |
-| :--    | :--                                            |
-| Python | `void set_render_screen_flashes(bool flashes)` |
+| C++    | `void setRenderScreenFlashes(bool flashes)`        |
+| :--    | :--                                                |
+| Python | `set_render_screen_flashes(flashes: bool) -> None` |
 
 Added in 1.1.3
 
@@ -1210,11 +1214,11 @@ Config key: `renderScreenFlashes/render_screen_flashes`
 
 
 ---
-### <a name="setRenderAllFrames"></a> `setRenderAllFrames`
+### `setRenderAllFrames`
 
-| C++    | `void setRenderAllFrames(bool allFrames)`     |
-| :--    | :--                                           |
-| Python | `void set_render_all_frames(bool all_frames)` |
+| C++    | `void setRenderAllFrames(bool allFrames)`         |
+| :--    | :--                                               |
+| Python | `set_render_all_frames(all_frames: bool) -> None` |
 
 Added in 1.1.3
 
@@ -1231,11 +1235,11 @@ See also:
 
 
 ---
-### <a name="setWindowVisible"></a> `setWindowVisible`
+### `setWindowVisible`
 
-| C++    | `void setWindowVisible(bool visibility)`    |
-| :--    | :--                                         |
-| Python | `void set_window_visible(bool visibility)`  |
+| C++    | `void setWindowVisible(bool visibility)`       |
+| :--    | :--                                            |
+| Python | `set_window_visible(visibility: bool) -> None` |
 
 Determines if ViZDoom's window will be visible.
 ViZDoom with window disabled can be used on Linux systems without X Server.
@@ -1246,11 +1250,11 @@ Config key: `windowVisible/window_visible`
 
 
 ---
-### <a name="setConsoleEnabled"></a> `setConsoleEnabled`
+### `setConsoleEnabled`
 
-| C++    | `void setConsoleEnabled(bool console)`    |
-| :--    | :--                                       |
-| Python | `void set_console_enabled(bool console)`  |
+| C++    | `void setConsoleEnabled(bool console)`       |
+| :--    | :--                                          |
+| Python | `set_console_enabled(console: bool) -> None` |
 
 Determines if ViZDoom's console output will be enabled.
 
@@ -1260,11 +1264,11 @@ Config key: `consoleEnabled/console_enabled`
 
 
 ---
-### <a name="setSoundEnabled"></a> `setSoundEnabled`
+### `setSoundEnabled`
 
-| C++    | `void setSoundEnabled(bool sound)`    |
-| :--    | :--                                   |
-| Python | `void set_sound_enabled(bool sound)`  |
+| C++    | `void setSoundEnabled(bool sound)`       |
+| :--    | :--                                      |
+| Python | `set_sound_enabled(sound: bool) -> None` |
 
 Determines if ViZDoom's sound will be played.
 
@@ -1274,61 +1278,61 @@ Config key: `soundEnabled/sound_enabled`
 
 
 ---
-### <a name="getScreenWidth"></a> `getScreenWidth`
+### `getScreenWidth`
 
-| C++    | `int getScreenWidth()`    |
-| :--    | :--                       |
-| Python | `int get_screen_width()`  |
+| C++    | `int getScreenWidth()`      |
+| :--    | :--                         |
+| Python | `get_screen_width() -> int` |
 
 Returns game's screen width - width of all buffers.
 
 
 ---
-### <a name="getScreenHeight"></a> `getScreenHeight`
+### `getScreenHeight`
 
-| C++    | `int getScreenHeight()`    |
-| :--    | :--                        |
-| Python | `int get_screen_height()`  |
+| C++    | `int getScreenHeight()`      | 
+| :--    | :--                          |
+| Python | `get_screen_height() -> int` |
 
 Returns game's screen height - height of all buffers.
 
 
 ---
-### <a name="getScreenChannels"></a> `getScreenChannels`
+### `getScreenChannels`
 
-| C++    | `int getScreenChannels()`    |
-| :--    | :--                          |
-| Python | `int get_screen_channels()`  |
+| C++    | `int getScreenChannels()`      |
+| :--    | :--                            |
+| Python | `get_screen_channels() -> int` |
 
 Returns number of channels in screen buffer and map buffer (depth and labels buffer always have one channel).
 
 
 ---
-### <a name="getScreenPitch"></a> `getScreenPitch`
+### `getScreenPitch`
 
-| C++    | `size_t getScreenPitch()` |
-| :--    | :--                       |
-| Python | `int get_screen_pitch()`  |
+| C++    | `size_t getScreenPitch()`   |
+| :--    | :--                         |
+| Python | `get_screen_pitch() -> int` |
 
 Returns size in bytes of one row in screen buffer and map buffer.
 
 
 ---
-### <a name="getScreenSize"></a> `getScreenSize`
+### `getScreenSize`
 
-| C++    | `size_t getScreenSize()` |
-| :--    | :--                      |
-| Python | `int get_screen_size()`  |
+| C++    | `size_t getScreenSize()`   |
+| :--    | :--                        |
+| Python | `get_screen_size() -> int` |
 
 Returns size in bytes of screen buffer and map buffer.
 
 
 ---
-### <a name="isObjectsInfoEnabled"></a> `isObjectsInfoEnabled`
+### `isObjectsInfoEnabled`
 
-| C++    | `bool isAutomapBufferEnabled()`    |
+| C++    | `bool isObjectInfoEnabled()`       |
 | :--    | :--                                |
-| Python | `bool isAutomapBufferEnabled()`    |
+| Python | `is_object_info_enabled() -> bool` |
 
 Added in 1.1.8
 
@@ -1336,11 +1340,11 @@ Returns true if the objects information is enabled.
 
 
 ---
-### <a name="setObjectsInfoEnabled"></a> `setObjectsInfoEnabled`
+### `setObjectsInfoEnabled`
 
-| C++    | `void setObjectsInfoEnabled(bool objectsInfo)`    |
-| :--    | :--                                               |
-| Python | `void set_objects_info_enabled(bool objectsInfo)` |
+| C++    | `void setObjectsInfoEnabled(bool objectsInfo)`       |
+| :--    | :--                                                  |
+| Python | `set_objects_info_enabled(bool objectsInfo) -> None` |
 
 Added in 1.1.8
 
@@ -1354,15 +1358,15 @@ Config key: `objectsInfoEnabled/objects_info_enabled`
 See also:
 - [`Types: GameState`](Types.md#gamestate)
 - [`Types: Object`](Types.md#object)
-- [examples/python/objects_and_sectors.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/objects_and_sectors.py),
+- [examples/python/objects_and_sectors.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py),
 
 
 ---
-### <a name="isSectorsInfoEnabled"></a> `isSectorsInfoEnabled`
+### `isSectorsInfoEnabled`
 
-| C++    | `bool isSectorsInfoEnabled()`    |
-| :--    | :--                              |
-| Python | `bool is_sectors_info_enabled()` |
+| C++    | `bool isSectorsInfoEnabled()`       |
+| :--    | :--                                 |
+| Python | `is_sectors_info_enabled() -> bool` |
 
 Added in 1.1.8
 
@@ -1370,11 +1374,11 @@ Returns true if the information about sectors is enabled.
 
 
 ---
-### <a name="setSectorsInfoEnabled"></a> `setSectorsInfoEnabled`
+### `setSectorsInfoEnabled`
 
-| C++    | `void setSectorsInfoEnabled(bool sectorsInfo)`    |
-| :--    | :--                                               |
-| Python | `void set_sectors_info_enabled(bool sectorsInfo)` |
+| C++    | `void setSectorsInfoEnabled(bool sectorsInfo)`       |
+| :--    | :--                                                  |
+| Python | `set_sectors_info_enabled(bool sectorsInfo) -> None` |
 
 Added in 1.1.8
 
@@ -1388,15 +1392,15 @@ Config key: `sectorsInfoEnabled/sectors_info_enabled`
 See also:
 - [`Types: GameState`](Types.md#gamestate)
 - [`Types: Sector`](Types.md#sector)
-- [examples/python/objects_and_sectors.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/objects_and_sectors.py)
+- [examples/python/objects_and_sectors.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py)
 
 
 ---
-### <a name="isAudioBufferEnabled"></a> `isAudioBufferEnabled`
+### `isAudioBufferEnabled`
 
-| C++    | `bool isAudioBufferEnabled()`    |
-| :--    | :--                              |
-| Python | `bool is_audio_buffer_enabled()` |
+| C++    | `bool isAudioBufferEnabled()`       |
+| :--    | :--                                 |
+| Python | `is_audio_buffer_enabled() -> bool` |
 
 Added in 1.1.9
 
@@ -1404,11 +1408,11 @@ Returns true if the audio buffer is enabled.
 
 
 ---
-### <a name="setAudioBufferEnabled"></a> `setSectorsInfoEnabled`
+### `setSectorsInfoEnabled`
 
-| C++    | `void setAudioBufferEnabled(bool audioBuffer)`    |
-| :--    | :--                                               |
-| Python | `void set_audio_buffer_enabled(bool audioBuffer)` |
+| C++    | `void setAudioBufferEnabled(bool audioBuffer)`       |
+| :--    | :--                                                  |
+| Python | `set_audio_buffer_enabled(bool audioBuffer) -> None` |
 
 Added in 1.1.9
 
@@ -1421,15 +1425,15 @@ Config key: `audioBufferEnabled/audio_buffer_enabled`
 See also:
 - [`Types: GameState`](Types.md#gamestate)
 - [`Types: SamplingRate`](Types.md#sampling-rate)
-- [examples/python/audio_buffer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/audio_buffer.py)
+- [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
 
 
 ---
-### <a name="getAudioSamplingRate"></a> `getAudioSamplingRate`
+### `getAudioSamplingRate`
 
-| C++    | `int getAudioSamplingRate()`    |
-| :--    | :--                                      |
-| Python | `int get_audio_sampling_rate()` |
+| C++    | `int getAudioSamplingRate()`       |
+| :--    | :--                                |
+| Python | `get_audio_sampling_rate() -> int` |
 
 Added in 1.1.9
 
@@ -1439,15 +1443,15 @@ Returns the sampling rate of the audio buffer.
 See also:
 - [`Types: GameState`](Types.md#gamestate)
 - [`Types: SamplingRate`](Types.md#sampling-rate)
-- [examples/python/audio_buffer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/audio_buffer.py)
+- [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
 
 
 ---
-### <a name="setAudioSamplingRate"></a> `setAudioSamplingRate`
+### `setAudioSamplingRate`
 
-| C++    | `void setAudioSamplingRate(SamplingRate samplingRate)`    |
-| :--    | :--                                                       |
-| Python | `void set_audio_sampling_rate(SamplingRate samplingRate)` |
+| C++    | `void setAudioSamplingRate(SamplingRate samplingRate)`       |
+| :--    | :--                                                          |
+| Python | `set_audio_sampling_rate(SamplingRate samplingRate) -> None` |
 
 Added in 1.1.9
 
@@ -1460,15 +1464,15 @@ Config key: `audioSamplingRate/audio_samping_rate`
 See also:
 - [`Types: GameState`](Types.md#gamestate)
 - [`Types: SamplingRate`](Types.md#sampling-rate)
-- [examples/python/audio_buffer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/audio_buffer.py)
+- [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
 
 
 ---
-### <a name="getAudioBufferSize"></a> `getAudioBufferSize`
+### `getAudioBufferSize`
 
-| C++    | `int getAudioBufferSize()`    |
-| :--    | :--                           |
-| Python | `int get_audio_buffer_size()` |
+| C++    | `int getAudioBufferSize()`       |
+| :--    | :--                              |
+| Python | `get_audio_buffer_size() -> int` |
 
 Added in 1.1.9
 
@@ -1477,15 +1481,15 @@ Returns the size of the audio buffer.
 
 See also:
 - [`Types: GameState`](Types.md#gamestate)
-- [examples/python/audio_buffer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/audio_buffer.py)
+- [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
 
 
 ---
-### <a name="setAudioBufferSize"></a> `setAudioBufferSize`
+### `setAudioBufferSize`
 
-| C++    | `void setAudioBufferSize(int size)`    |
-| :--    | :--                                    |
-| Python | `void set_audio_buffer_size(int size)` |
+| C++    | `void setAudioBufferSize(unsigned int size)` |
+| :--    | :--                                          |
+| Python | `set_audio_buffer_size(size: int) -> None`   |
 
 Added in 1.1.9
 
@@ -1499,4 +1503,4 @@ Config key: `audioBufferSize/audio_buffer_size`
 
 See also:
 - [`Types: GameState`](Types.md#gamestate)
-- [examples/python/audio_buffer.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/audio_buffer.py)
+- [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
