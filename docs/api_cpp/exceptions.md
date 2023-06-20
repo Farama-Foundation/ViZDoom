@@ -1,6 +1,8 @@
 # Exceptions
 
-* `FileDoesNotExistException`  - means that file specified as part of a configuration does not exist.
+ViZDoom defines several exceptions that can be thrown by its API:
+
+* `FileDoesNotExistException` - means that file specified as part of a configuration does not exist.
 
 * `MessageQueueException/SharedMemoryException` - means that communication with ViZDoom's instance failed. Usually, means a problem with permissions or system configuration.
 

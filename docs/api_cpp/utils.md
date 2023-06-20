@@ -1,6 +1,6 @@
 # Utilities
 
----
+
 ## <a name="doomTicsToMs"></a> `doomTicsToMs`
 
 | C++    | `double doomTicsToMs(double tics, unsigned int ticrate = 35)` |

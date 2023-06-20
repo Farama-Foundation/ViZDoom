@@ -38,13 +38,13 @@ introduction/wrappers
 
 ```{toctree}
 :hidden:
-:caption: API
+:caption: C++ API
 
-api/doomGame
-api/configuration
-api/exceptions
-api/types
-api/utils
+api_cpp/doomGame
+api_cpp/types
+api_cpp/configurationFiles
+api_cpp/exceptions
+api_cpp/utils
 ```
 
 ```{toctree}

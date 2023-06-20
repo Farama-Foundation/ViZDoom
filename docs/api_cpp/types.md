@@ -9,8 +9,8 @@
 
 ## Structures
 
----
-### <a name="label"></a> `Label`
+
+### `Label`
 (`C++ type / Python type` **name**)
 
 - `unsigned int / int` **objectId / object_id**
@@ -40,7 +40,7 @@
 
 
 ---
-### <a name="object"></a> `Object`
+### `Object`
 (`C++ type / Python type` **name**)
 
 - `unsigned int / int` **id**
@@ -68,7 +68,7 @@ See also:
 
 
 ---
-### <a name="line"></a> `Line`
+### `Line`
 (`C++ type / Python type` **name**)
 
 - `double / float` **x1**
@@ -91,7 +91,7 @@ See also:
 
 
 ---
-### <a name="sector"></a> `Sector`
+### `Sector`
 (`C++ type / Python type` **name**)
 
 - `double / float` **floorHeight / floor_height**
@@ -113,7 +113,7 @@ See also:
 
 
 ---
-### <a name="gamestate"></a> `GameState`
+### `GameState`
 (`C++ type / Python type` **name**)
 
 - `unsigned int / int` **number**
@@ -137,7 +137,7 @@ See also:
 
 
 ---
-#### <a name="serverstate"></a> `ServerState`
+#### `ServerState`
 (`C++ type / Python type` **name**)
 
 - `unsigned int / int` **tic**
@@ -152,10 +152,10 @@ See also:
 Right now `ServerInfo` is only available to C++ and Python.
 Added in 1.1.6.
 
-## <a name="enums"></a> Enums
 
----
-### <a name="mode"></a> `Mode`
+## Enums
+
+### `Mode`
 
 Enum type that defines all supported modes.
 
@@ -182,7 +182,7 @@ See also:
 
 
 ---
-### <a name="screenformat"></a> `ScreenFormat`
+### `ScreenFormat`
 
 Enum type that defines all supported **screenBuffer** and **automapBuffer** formats.
 
@@ -215,7 +215,7 @@ See also:
 
 
 ---
-### <a name="screenresolution"></a> `ScreenResolution`
+### `ScreenResolution`
 
 Enum type that defines all supported resolutions - shapes of **screenBuffer**, **depthBuffer**, **labelsBuffer** and **automapBuffer** in **State**.
 
@@ -263,7 +263,7 @@ See also:
 
 
 ---
-### <a name="automapmode"></a> `AutomapMode`
+### `AutomapMode`
 
 Enum type that defines all **automapBuffer** modes.
 
@@ -278,7 +278,7 @@ See also:
 
 
 ---
-### <a name="gamevariable"></a> `GameVariable`
+### `GameVariable`
 
 Enum type that defines all variables that can be obtained from the game.
 
@@ -343,11 +343,11 @@ See also:
 
 
 ---
-### <a name="button"></a> `Button`
+### `Button`
 
 Enum type that defines all buttons that can be "pressed" by the agent.
 
-#### <a name="binary-buttons"></a> Binary buttons
+#### Binary buttons
 
 Binary buttons have only 2 states "not pressed" if value 0 and "pressed" if value other then 0.
 
@@ -391,13 +391,13 @@ Binary buttons have only 2 states "not pressed" if value 0 and "pressed" if valu
 - **DROP_SELECTED_ITEM**
 
 
-#### <a name="delta-buttons"></a> Delta buttons
+#### Delta buttons
 
 Buttons whose value defines the speed of movement.
 A positive value indicates movement in the first specified direction and a negative value in the second direction.
 For example: value 10 for MOVE_LEFT_RIGHT_DELTA means slow movement to the right and -100 means fast movement to the left.
 
-- **`LOOK_UP_DOWN_DELTA`**
+- **LOOK_UP_DOWN_DELTA**
 - **TURN_LEFT_RIGHT_DELTA**
 - **MOVE_FORWARD_BACKWARD_DELTA**
 - **MOVE_LEFT_RIGHT_DELTA**
