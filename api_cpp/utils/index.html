@@ -234,7 +234,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api_python/doomGame/">DoomGame</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_python/gameState/">GameState</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_python/enums/">Enums</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api_python/utils/">Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_python/utils/">Utilities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">C++ API</span></p>
 <ul class="current">
@@ -318,8 +318,12 @@
             
             <section id="utilities">
 <h1>Utilities<a class="headerlink" href="#utilities" title="Permalink to this heading">#</a></h1>
+<p>Here we document the helpers functions that are not part of any object.
+They mostly help to deal with conversion of Doom’s engine types.</p>
+<section id="time-conversion-functions">
+<h2>Time conversion functions<a class="headerlink" href="#time-conversion-functions" title="Permalink to this heading">#</a></h2>
 <section id="doomticstoms">
-<h2><code class="docutils literal notranslate"><span class="pre">doomTicsToMs</span></code><a class="headerlink" href="#doomticstoms" title="Permalink to this heading">#</a></h2>
+<h3><code class="docutils literal notranslate"><span class="pre">doomTicsToMs</span></code><a class="headerlink" href="#doomticstoms" title="Permalink to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -339,7 +343,7 @@
 </section>
 <hr class="docutils" />
 <section id="mstodoomtics">
-<h2><code class="docutils literal notranslate"><span class="pre">msToDoomTics</span></code><a class="headerlink" href="#mstodoomtics" title="Permalink to this heading">#</a></h2>
+<h3><code class="docutils literal notranslate"><span class="pre">msToDoomTics</span></code><a class="headerlink" href="#mstodoomtics" title="Permalink to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -359,7 +363,7 @@
 </section>
 <hr class="docutils" />
 <section id="doomticstosec">
-<h2><code class="docutils literal notranslate"><span class="pre">doomTicsToSec</span></code><a class="headerlink" href="#doomticstosec" title="Permalink to this heading">#</a></h2>
+<h3><code class="docutils literal notranslate"><span class="pre">doomTicsToSec</span></code><a class="headerlink" href="#doomticstosec" title="Permalink to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -379,7 +383,7 @@
 </section>
 <hr class="docutils" />
 <section id="sectodoomtics">
-<h2><code class="docutils literal notranslate"><span class="pre">secToDoomTics</span></code><a class="headerlink" href="#sectodoomtics" title="Permalink to this heading">#</a></h2>
+<h3><code class="docutils literal notranslate"><span class="pre">secToDoomTics</span></code><a class="headerlink" href="#sectodoomtics" title="Permalink to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -397,9 +401,12 @@
 <p>Added in 1.1</p>
 <p>Calculates the number of seconds that will pass during specified number of tics.</p>
 </section>
+</section>
+<section id="doom-fixed-point-conversion-functions">
+<h2>Doom fixed point conversion functions<a class="headerlink" href="#doom-fixed-point-conversion-functions" title="Permalink to this heading">#</a></h2>
 <hr class="docutils" />
 <section id="doomfixedtodouble">
-<h2><code class="docutils literal notranslate"><span class="pre">doomFixedToDouble</span></code><a class="headerlink" href="#doomfixedtodouble" title="Permalink to this heading">#</a></h2>
+<h3><code class="docutils literal notranslate"><span class="pre">doomFixedToDouble</span></code><a class="headerlink" href="#doomfixedtodouble" title="Permalink to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -414,17 +421,22 @@
 </tbody>
 </table>
 </div>
-<p>Converts Doom’s fixed point numeral to a floating point value.</p>
+<p>Converts fixed point numeral to a floating point value.
+Doom’s engine internaly use fixed point numbers.
+If you read them directly from <code class="docutils literal notranslate"><span class="pre">USERX</span></code> variables,
+you may want to convert them to floating point numbers.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../enums/#user-acs-variables"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">User</span> <span class="pre">variables</span></code> in <code class="docutils literal notranslate"><span class="pre">GameVariables</span></code></span></a></p></li>
 </ul>
-<p>Python aliases (added in 1.1):
-<code class="docutils literal notranslate"><span class="pre">doom_fixed_to_float(doomFixed:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code></p>
+<p>Python aliases (added in 1.1): <code class="docutils literal notranslate"><span class="pre">doom_fixed_to_float(doomFixed:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code></p>
 </section>
+</section>
+<section id="button-functions">
+<h2>Button functions<a class="headerlink" href="#button-functions" title="Permalink to this heading">#</a></h2>
 <hr class="docutils" />
 <section id="isbinarybutton">
-<h2><code class="docutils literal notranslate"><span class="pre">isBinaryButton</span></code><a class="headerlink" href="#isbinarybutton" title="Permalink to this heading">#</a></h2>
+<h3><code class="docutils literal notranslate"><span class="pre">isBinaryButton</span></code><a class="headerlink" href="#isbinarybutton" title="Permalink to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -447,7 +459,7 @@
 </section>
 <hr class="docutils" />
 <section id="isdeltabutton">
-<h2><code class="docutils literal notranslate"><span class="pre">isDeltaButton</span></code><a class="headerlink" href="#isdeltabutton" title="Permalink to this heading">#</a></h2>
+<h3><code class="docutils literal notranslate"><span class="pre">isDeltaButton</span></code><a class="headerlink" href="#isdeltabutton" title="Permalink to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -467,6 +479,7 @@
 <ul class="simple">
 <li><p><a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Button</span></code></span></a></p></li>
 </ul>
+</section>
 </section>
 </section>
 
@@ -540,13 +553,22 @@
             <div class="toc-tree">
               <ul>
 <li><a class="reference internal" href="#">Utilities</a><ul>
+<li><a class="reference internal" href="#time-conversion-functions">Time conversion functions</a><ul>
 <li><a class="reference internal" href="#doomticstoms"><code class="docutils literal notranslate"><span class="pre">doomTicsToMs</span></code></a></li>
 <li><a class="reference internal" href="#mstodoomtics"><code class="docutils literal notranslate"><span class="pre">msToDoomTics</span></code></a></li>
 <li><a class="reference internal" href="#doomticstosec"><code class="docutils literal notranslate"><span class="pre">doomTicsToSec</span></code></a></li>
 <li><a class="reference internal" href="#sectodoomtics"><code class="docutils literal notranslate"><span class="pre">secToDoomTics</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#doom-fixed-point-conversion-functions">Doom fixed point conversion functions</a><ul>
 <li><a class="reference internal" href="#doomfixedtodouble"><code class="docutils literal notranslate"><span class="pre">doomFixedToDouble</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#button-functions">Button functions</a><ul>
 <li><a class="reference internal" href="#isbinarybutton"><code class="docutils literal notranslate"><span class="pre">isBinaryButton</span></code></a></li>
 <li><a class="reference internal" href="#isdeltabutton"><code class="docutils literal notranslate"><span class="pre">isDeltaButton</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

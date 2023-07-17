@@ -8,7 +8,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
     <meta property="og:url" content="https://vizdoom.farama.org/api_cpp/doomGame.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="GameState" href="../gameState/" /><link rel="prev" title="Utils" href="../../api_python/utils/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="GameState" href="../gameState/" /><link rel="prev" title="Utilities" href="../../api_python/utils/" />
         <link rel="canonical" href="https://vizdoom.farama.org/api_cpp/doomGame.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20.dev1 -->
@@ -234,7 +234,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api_python/doomGame/">DoomGame</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_python/gameState/">GameState</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_python/enums/">Enums</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api_python/utils/">Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_python/utils/">Utilities</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">C++ API</span></p>
 <ul class="current">
@@ -321,7 +321,7 @@
 <p>DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc.</p>
 <p>Here we document all the methods of the DoomGame class and their corresponding Python bindings implemented as pybind11 module.</p>
 <section id="flow-control-methods">
-<h2>Flow control methods:<a class="headerlink" href="#flow-control-methods" title="Permalink to this heading">#</a></h2>
+<h2>Flow control methods<a class="headerlink" href="#flow-control-methods" title="Permalink to this heading">#</a></h2>
 <section id="init">
 <h3><code class="docutils literal notranslate"><span class="pre">init</span></code><a class="headerlink" href="#init" title="Permalink to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -845,7 +845,7 @@ tic counter/time and total reward state keep their values.</p>
 </tbody>
 </table>
 </div>
-<p>Set given list of <code class="docutils literal notranslate"><span class="pre">Button</span></code>s (e.g. <code class="docutils literal notranslate"><span class="pre">TURN_LEFT</span></code>, <code class="docutils literal notranslate"><span class="pre">MOVE_FORWARD</span></code>) as available <code class="docutils literal notranslate"><span class="pre">Buttons</span></code>,</p>
+<p>Set given list of <code class="docutils literal notranslate"><span class="pre">Button</span></code>s (e.g. <code class="docutils literal notranslate"><span class="pre">TURN_LEFT</span></code>, <code class="docutils literal notranslate"><span class="pre">MOVE_FORWARD</span></code>) as available <code class="docutils literal notranslate"><span class="pre">Buttons</span></code>.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">availableButtons/available_buttons</span></code> (list)</p>
 <p>See also:</p>
 <ul class="simple">
@@ -1463,6 +1463,10 @@ The default Doom ticrate is 35. This value will play a game at normal speed.</p>
 <p>Sets path to the ViZDoom engine executable vizdoom.</p>
 <p>Default value: “{vizdoom.so location}/{vizdoom or vizdoom.exe (on Windows)}”.</p>
 <p>Config key: `ViZDoomPath/vizdoom_path</p>
+</section>
+<hr class="docutils" />
+<section id="setdoomgamepath">
+<h3><code class="docutils literal notranslate"><span class="pre">setDoomGamePath</span></code><a class="headerlink" href="#setdoomgamepath" title="Permalink to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2680,7 +2684,7 @@ Doom uses 35 ticks per second.</p>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Utils</div>
+                <div class="title">Utilities</div>
                 
               </div>
             </a>
@@ -2725,7 +2729,7 @@ Doom uses 35 ticks per second.</p>
             <div class="toc-tree">
               <ul>
 <li><a class="reference internal" href="#">DoomGame</a><ul>
-<li><a class="reference internal" href="#flow-control-methods">Flow control methods:</a><ul>
+<li><a class="reference internal" href="#flow-control-methods">Flow control methods</a><ul>
 <li><a class="reference internal" href="#init"><code class="docutils literal notranslate"><span class="pre">init</span></code></a></li>
 <li><a class="reference internal" href="#close"><code class="docutils literal notranslate"><span class="pre">close</span></code></a></li>
 <li><a class="reference internal" href="#newepisode"><code class="docutils literal notranslate"><span class="pre">newEpisode</span></code></a></li>
@@ -2791,6 +2795,7 @@ Doom uses 35 ticks per second.</p>
 <li><a class="reference internal" href="#getticrate"><code class="docutils literal notranslate"><span class="pre">getTicrate</span></code></a></li>
 <li><a class="reference internal" href="#setticrate"><code class="docutils literal notranslate"><span class="pre">setTicrate</span></code></a></li>
 <li><a class="reference internal" href="#setvizdoompath"><code class="docutils literal notranslate"><span class="pre">setViZDoomPath</span></code></a></li>
+<li><a class="reference internal" href="#setdoomgamepath"><code class="docutils literal notranslate"><span class="pre">setDoomGamePath</span></code></a></li>
 <li><a class="reference internal" href="#setdoomscenariopath"><code class="docutils literal notranslate"><span class="pre">setDoomScenarioPath</span></code></a></li>
 <li><a class="reference internal" href="#setdoommap"><code class="docutils literal notranslate"><span class="pre">setDoomMap</span></code></a></li>
 <li><a class="reference internal" href="#setdoomskill"><code class="docutils literal notranslate"><span class="pre">setDoomSkill</span></code></a></li>
