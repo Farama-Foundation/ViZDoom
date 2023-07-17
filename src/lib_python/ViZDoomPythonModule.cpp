@@ -749,10 +749,10 @@ PYBIND11_MODULE(vizdoom, vz){
     FUNC_2_PYT("ms_to_doom_tics", msToDoomTics);
     FUNC_2_PYT("doom_tics_to_sec", doomTicsToSec);
     FUNC_2_PYT("sec_to_doom_tics", secToDoomTics);
-    vz.def("doom_fixed_to_double", doomFixedToDouble_int);
-    vz.def("doom_fixed_to_double", doomFixedToDouble_double);
-    vz.def("doom_fixed_to_float", doomFixedToDouble_int);
-    vz.def("doom_fixed_to_float", doomFixedToDouble_double);
+    vz.def("doom_fixed_to_double", doomFixedToDouble_int, docstrings::doomFixedToDouble);
+    vz.def("doom_fixed_to_double", doomFixedToDouble_double, docstrings::doomFixedToDouble);
+    vz.def("doom_fixed_to_float", doomFixedToDouble_int, docstrings::doomFixedToDouble);
+    vz.def("doom_fixed_to_float", doomFixedToDouble_double, docstrings::doomFixedToDouble);
     FUNC_2_PYT("is_binary_button", isBinaryButton);
     FUNC_2_PYT("is_delta_button", isDeltaButton);
 

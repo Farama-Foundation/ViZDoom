@@ -7,8 +7,8 @@
 #ifndef __VIZDOOM_DOCSTRINGS_H__
 #define __VIZDOOM_DOCSTRINGS_H__
 
-namespace vizdoom {{
-namespace docstrings {{
+namespace vizdoom {
+namespace docstrings {
 
 namespace DoomGamePython {
 
@@ -386,4 +386,5 @@ Default value: 4)DOCSTRING";
 
 } // namespace docstrings
 } // namespace vizdoom
+
 #endif

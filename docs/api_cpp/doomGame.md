@@ -5,7 +5,7 @@ DoomGame is the main object of the ViZDoom library, representing a single instan
 Here we document all the methods of the DoomGame class and their corresponding Python bindings implemented as pybind11 module.
 
 
-## Flow control methods:
+## Flow control methods
 
 ### `init`
 
