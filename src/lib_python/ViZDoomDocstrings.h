@@ -377,7 +377,10 @@ Default value: 4)DOCSTRING";
 
     const char *secToDoomTics = R"DOCSTRING(Calculates the number of seconds that will pass during specified number of tics.)DOCSTRING";
 
-    const char *doomFixedToDouble = R"DOCSTRING(Converts Doom's fixed point numeral to a floating point value.)DOCSTRING";
+    const char *doomFixedToDouble = R"DOCSTRING(Converts fixed point numeral to a floating point value.
+Doom's engine internaly use fixed point numbers. 
+If you read them directly from `USERX` variables, 
+you may want to convert them to floating point numbers.)DOCSTRING";
 
     const char *isBinaryButton = R"DOCSTRING(Returns true if button is binary button.)DOCSTRING";
 

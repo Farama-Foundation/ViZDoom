@@ -51,8 +51,8 @@ namespace docstrings {
             if "namespace" in file:
                 output_file.write(f"namespace {file['namespace']} {{\n\n")
 
-            with open(file["filepath"]) as f:
-                lines = f.readlines()
+            with open(file["filepath"]) as input_file:
+                lines = input_file.readlines()
 
             started = False
             next_docstring = ""

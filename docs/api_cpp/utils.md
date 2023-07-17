@@ -1,7 +1,13 @@
 # Utilities
 
+Here we document the helpers functions that are not part of any object.
+They mostly help to deal with conversion of Doom's engine types.
 
-## `doomTicsToMs`
+
+## Time conversion functions
+
+
+### `doomTicsToMs`
 
 | C++    | `double doomTicsToMs(double tics, unsigned int ticrate = 35)` |
 | :--    | :--                                                           |
@@ -13,7 +19,7 @@ Calculates how many tics will be made during given number of milliseconds.
 
 
 ---
-## `msToDoomTics`
+### `msToDoomTics`
 
 | C++    | `double msToDoomTics(double ms, unsigned int ticrate = 35)` |
 | :--    | :--                                                         |
@@ -25,7 +31,7 @@ Calculates the number of milliseconds that will pass during specified number of 
 
 
 ---
-## `doomTicsToSec`
+### `doomTicsToSec`
 
 | C++    | `double doomTicsToSec(double tics, unsigned int ticrate = 35)` |
 | :--    | :--                                                            |
@@ -37,7 +43,7 @@ Calculates how many tics will be made during given number of seconds.
 
 
 ---
-## `secToDoomTics`
+### `secToDoomTics`
 
 | C++    | `double secToDoomTics(double sec, unsigned int ticrate = 35)` |
 | :--    | :--                                                           |
@@ -48,14 +54,20 @@ Added in 1.1
 Calculates the number of seconds that will pass during specified number of tics.
 
 
+## Doom fixed point conversion functions
+
+
 ---
-## `doomFixedToDouble`
+### `doomFixedToDouble`
 
 | C++    | `double doomFixedToDouble(int / double doomFixed)`      |
 | :--    | :--                                                     |
 | Python | `doom_fixed_to_double(doomFixed: int | float) -> float` |
 
-Converts Doom's fixed point numeral to a floating point value.
+Converts fixed point numeral to a floating point value.
+Doom's engine internaly use fixed point numbers. 
+If you read them directly from `USERX` variables, 
+you may want to convert them to floating point numbers.
 
 See also:
 - [`Enums: User variables` in `GameVariables`](./enums.md#user-acs-variables)
@@ -63,8 +75,11 @@ See also:
 Python aliases (added in 1.1): `doom_fixed_to_float(doomFixed: int | float) -> float`
 
 
+## Button functions
+
+
 ---
-## `isBinaryButton`
+### `isBinaryButton`
 
 | C++    | `bool isBinaryButton(Button button)`     |
 | :--    | :--                                      |
@@ -77,7 +92,7 @@ See also:
 
 
 ---
-## `isDeltaButton`
+### `isDeltaButton`
 
 | C++    | `bool isDeltaButton(Button button)`       |
 | :--    | :--                                       |
