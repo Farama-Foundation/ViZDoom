@@ -1,0 +1,3061 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="">
+    <meta property="og:title" content="ViZDoom Documentation" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="" />
+    <meta property="og:url" content="https://vizdoom.farama.org/api_cpp/doomGame.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="GameState" href="../gameState/" /><link rel="prev" title="Utils" href="../../api_python/utils/" />
+        <link rel="canonical" href="https://vizdoom.farama.org/api_cpp/doomGame.html" />
+
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20.dev1 -->
+        <title>DoomGame - ViZDoom Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=a022fd11c0d7e10ac71ac296890386cea7a2fa24" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=093e2efd5a2c7b46ab7c7157e45f5f05a1e0a463" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    <header class="farama-header" aria-label="Farama header">
+      <div class="farama-header__container">
+        <div class="farama-header__left--mobile">
+          <label class="nav-overlay-icon" for="__navigation">
+            <div class="visually-hidden">Toggle site navigation sidebar</div>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <defs></defs>
+              <line x1="0.5" y1="4" x2="23.5" y2="4"></line>
+              <line x1="0.232" y1="12" x2="23.5" y2="12"></line>
+              <line x1="0.232" y1="20" x2="23.5" y2="20"></line>
+            </svg>
+            <!-- <svg viewBox="0 0 24 24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <line x1="0.5" y1="4.5" x2="23.5" y2="4.5" style="fill: none; "></line>
+              <line x1="0.5" y1="12" x2="14" y2="12" ></line>
+              <line x1="0.5" y1="19.5" x2="23.5" y2="19.5"></line>
+              <polyline style="stroke-width: 0px;" points="17 7 22 12 17 17"></polyline>
+            </svg> -->
+            <!-- <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:20px">
+              <defs></defs>
+              <rect y="1" width="22" height="22" rx="2" ry="2" style="fill: none;" x="1"></rect>
+              <line x1="8" y1="1" x2="8" y2="23"></line>
+              <polyline style="stroke-linecap: round; fill: none; stroke-linejoin: round;" points="13 7 17 12 13 17"></polyline>
+            </svg> -->
+          </label>
+        </div>
+        <div class="farama-header__left farama-header__center--mobile">
+          <a href="../../">
+              <img class="farama-header__logo only-light" src="../../_static/img/vizdoom-black.svg" alt="Light Logo"/>
+              <img class="farama-header__logo only-dark" src="../../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
+            <span class="farama-header__title">ViZDoom Documentation</span>
+          </a>
+        </div>
+        <div class="farama-header__right">
+          <div class="farama-header-menu">
+            <button class="farama-header-menu__btn" aria-label="Open Farama Menu" aria-expanded="false" aria-haspopup="true" aria-controls="farama-menu">
+              <img class="farama-black-logo-invert" src="../../_static/img/farama-logo-header.svg">
+              <svg viewBox="0 0 24 24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <polyline style="stroke-linecap: round; stroke-linejoin: round; fill: none; stroke-width: 2px;" points="1 7 12 18 23 7"></polyline>
+              </svg>
+            </button>
+            <div class="farama-header-menu-container farama-hidden" aria-hidden="true" id="farama-menu">
+              <div class="farama-header-menu__header">
+                <a href="https://farama.org">
+                  <img class="farama-header-menu__logo farama-white-logo-invert" src="../../_static/img/farama_solid_white.svg" alt="Farama Foundation logo">
+                  <span>Farama Foundation</span>
+                </a>
+                <div class="farama-header-menu-header__right">
+                  <button id="farama-close-menu">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-close">
+                      <line x1="3" y1="21" x2="21" y2="3"></line>
+                      <line x1="3" y1="3" x2="21" y2="21"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="farama-header-menu__body">
+                <!-- Response from farama.org/api/projects.json -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="page">
+  <!--<header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../"><div class="brand">ViZDoom Documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>-->
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="farama-sidebar__title" href="../../">
+      <img class="farama-header__logo only-light" src="../../_static/img/vizdoom-black.svg" alt="Light Logo"/>
+      <img class="farama-header__logo only-dark" src="../../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
+    <span class="farama-header__title">ViZDoom Documentation</span>
+  </a><form class="sidebar-search-container" method="get" action="../../search/" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/pythonQuickstart/">Python quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/building/">Building from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/wrappers/">Wrapper</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Python API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api_python/gymnasium/">Gymnasium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_python/doomGame/">DoomGame</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_python/gameState/">GameState</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_python/enums/">Enums</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_python/utils/">Utils</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">C++ API</span></p>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">DoomGame</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gameState/">GameState</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enums/">Enums</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configurationFiles/">Configuration files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions/">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils/">Utilities</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../environments/default/">Default scenarios/environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environments/creatingCustom/">Creating a custom environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Others</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation/">How to cite</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom">Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes/">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/blob/master/docs/README.md">Contribute to the Docs</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main-container">
+
+    
+
+    
+
+    <div class="main">
+      <div class="content">
+        <div class="article-container">
+          <a href="#" class="back-to-top muted-link">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+            </svg>
+            <span>Back to top</span>
+          </a>
+          <div class="content-icon-container"><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/api_cpp/doomGame.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+              <button class="theme-toggle" title="Toggle color theme">
+                <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                <svg class="theme-icon-when-auto">
+                  <use href="#svg-sun-half"></use>
+                </svg>
+                <svg class="theme-icon-when-dark">
+                  <use href="#svg-moon"></use>
+                </svg>
+                <svg class="theme-icon-when-light">
+                  <use href="#svg-sun"></use>
+                </svg>
+              </button>
+            </div>
+            <label class="toc-overlay-icon toc-content-icon" for="__toc">
+              <div class="visually-hidden">Toggle table of contents sidebar</div>
+              <i class="icon"><svg>
+                  <use href="#svg-toc"></use>
+                </svg></i>
+            </label>
+          </div>
+          <article role="main">
+            
+            <section id="doomgame">
+<h1>DoomGame<a class="headerlink" href="#doomgame" title="Permalink to this heading">#</a></h1>
+<p>DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc.</p>
+<p>Here we document all the methods of the DoomGame class and their corresponding Python bindings implemented as pybind11 module.</p>
+<section id="flow-control-methods">
+<h2>Flow control methods:<a class="headerlink" href="#flow-control-methods" title="Permalink to this heading">#</a></h2>
+<section id="init">
+<h3><code class="docutils literal notranslate"><span class="pre">init</span></code><a class="headerlink" href="#init" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">init()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">init()</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Initializes ViZDoom game instance and starts a new episode.
+After calling this method, the first state from a new episode will be available.
+Some configuration options cannot be changed after calling this method.
+Init returns true when the game was started properly and false otherwise.</p>
+</section>
+<hr class="docutils" />
+<section id="close">
+<h3><code class="docutils literal notranslate"><span class="pre">close</span></code><a class="headerlink" href="#close" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">close()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">close()</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Closes ViZDoom game instance.
+It is automatically invoked by the destructor.
+The game can be initialized again after being closed.</p>
+</section>
+<hr class="docutils" />
+<section id="newepisode">
+<h3><code class="docutils literal notranslate"><span class="pre">newEpisode</span></code><a class="headerlink" href="#newepisode" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">newEpisode(std::string</span> <span class="pre">recordingFilePath</span> <span class="pre">=</span> <span class="pre">&quot;&quot;)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">new_episode(recordingFilePath:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">&quot;&quot;)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Changed in 1.1.0</p>
+<p>Initializes a new episode. The state of an environment is completely restarted (all variables and rewards are reset to their initial values).
+After calling this method, the first state from the new episode will be available.
+If the <code class="docutils literal notranslate"><span class="pre">recordingFilePath</span></code> is not empty, the new episode will be recorded to this file (as a Doom lump).</p>
+<p>In a multiplayer game, the host can call this method to finish the game.
+Then the rest of the players must also call this method to start a new episode.</p>
+</section>
+<hr class="docutils" />
+<section id="replayepisode">
+<h3><code class="docutils literal notranslate"><span class="pre">replayEpisode</span></code><a class="headerlink" href="#replayepisode" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">replayEpisode(std::string</span> <span class="pre">filePath,</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">player</span> <span class="pre">=</span> <span class="pre">0)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">replay_episode(filePath:</span> <span class="pre">str,</span> <span class="pre">player:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">0)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Replays a recorded episode from the given file using the perspective of the specified player.
+Players are numbered from 1, <code class="docutils literal notranslate"><span class="pre">player</span></code> equal to 0 results in replaying the demo using the perspective of the default player in the recording file.
+After calling this method, the first state from the replay will be available.
+All rewards, variables, and states are available during the replaying episode.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/record_episodes.py">examples/python/record_episodes.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/record_multiplayer.py">examples/python/record_multiplayer.py</a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="isrunning">
+<h3><code class="docutils literal notranslate"><span class="pre">isRunning</span></code><a class="headerlink" href="#isrunning" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">isRunning()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_running()</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Checks if the ViZDoom game instance is running.</p>
+</section>
+<hr class="docutils" />
+<section id="ismultiplayergame">
+<h3><code class="docutils literal notranslate"><span class="pre">isMultiplayerGame</span></code><a class="headerlink" href="#ismultiplayergame" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">isMultiplayerGame()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_multiplayer_game()</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.2</p>
+<p>Checks if the game is in multiplayer mode.</p>
+</section>
+<hr class="docutils" />
+<section id="isrecordingepisode">
+<h3><code class="docutils literal notranslate"><span class="pre">isRecordingEpisode</span></code><a class="headerlink" href="#isrecordingepisode" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">isRecordingEpisode()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_recording_episode()</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.5</p>
+<p>Checks if the game is in recording mode.</p>
+</section>
+<hr class="docutils" />
+<section id="isreplayingepisode">
+<h3><code class="docutils literal notranslate"><span class="pre">isReplayingEpisode</span></code><a class="headerlink" href="#isreplayingepisode" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">isReplayingEpisode()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_replaying_episode()</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.5</p>
+<p>Checks if the game is in replaying mode.</p>
+</section>
+<hr class="docutils" />
+<section id="setaction">
+<h3><code class="docutils literal notranslate"><span class="pre">setAction</span></code><a class="headerlink" href="#setaction" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setAction(std::vector&lt;double&gt;</span> <span class="pre">const</span> <span class="pre">&amp;actions)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p>`set_action(actions: list</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets the player’s action for the next tics.
+Each value corresponds to a button specified with <a class="reference internal" href="#addavailablebutton"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">addAvailableButton</span></code></span></a> method
+or in the configuration file (in order of appearance).</p>
+</section>
+<hr class="docutils" />
+<section id="advanceaction">
+<h3><code class="docutils literal notranslate"><span class="pre">advanceAction</span></code><a class="headerlink" href="#advanceaction" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">advanceAction(unsigned</span> <span class="pre">int</span> <span class="pre">tics</span> <span class="pre">=</span> <span class="pre">1,</span> <span class="pre">bool</span> <span class="pre">updateState</span> <span class="pre">=</span> <span class="pre">true)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">advance_action(tics:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1,</span> <span class="pre">updateState:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Processes a specified number of tics. If <code class="docutils literal notranslate"><span class="pre">updateState</span></code> is set,
+the state will be updated after the last processed tic and a new reward will be calculated.
+To get the new state, use <code class="docutils literal notranslate"><span class="pre">getState</span></code> and to get the new reward use <code class="docutils literal notranslate"><span class="pre">getLastReward</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">updateState</span></code> is not set, the state will not be updated.</p>
+</section>
+<hr class="docutils" />
+<section id="makeaction">
+<h3><code class="docutils literal notranslate"><span class="pre">makeAction</span></code><a class="headerlink" href="#makeaction" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">makeAction(std::vector&lt;double&gt;</span> <span class="pre">const</span> <span class="pre">&amp;actions,</span> <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">tics</span> <span class="pre">=</span> <span class="pre">1)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p>`make_action(actions: list</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Method combining usability of <a class="reference internal" href="#setaction"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAction</span></code></span></a>, <a class="reference internal" href="#advanceaction"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">advanceAction</span></code></span></a> and <a class="reference internal" href="#getlastreward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getLastReward</span></code></span></a>.
+Sets the player’s action for the next tics, processes a specified number of tics,
+updates the state and calculates a new reward, which is returned.</p>
+</section>
+<hr class="docutils" />
+<section id="isnewepisode">
+<h3><code class="docutils literal notranslate"><span class="pre">isNewEpisode</span></code><a class="headerlink" href="#isnewepisode" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">isNewEpisode()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_new_episode()</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns true if the current episode is in the initial state - the first state, no actions were performed yet.</p>
+</section>
+<hr class="docutils" />
+<section id="isepisodefinished">
+<h3><code class="docutils literal notranslate"><span class="pre">isEpisodeFinished</span></code><a class="headerlink" href="#isepisodefinished" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">isEpisodeFinished()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_episode_finished()</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns true if the current episode is in the terminal state (is finished).
+<a class="reference internal" href="#makeaction"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">makeAction</span></code></span></a> and <a class="reference internal" href="#advanceaction"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">advanceAction</span></code></span></a> methods will take no effect after this point (unless <a class="reference internal" href="#newepisode"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">newEpisode</span></code></span></a> method is called).</p>
+</section>
+<hr class="docutils" />
+<section id="isplayerdead">
+<h3><code class="docutils literal notranslate"><span class="pre">isPlayerDead</span></code><a class="headerlink" href="#isplayerdead" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">isPlayerDead()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_player_dead()</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns true if the player is dead.
+In singleplayer, the player’s death is equivalent to the end of the episode.
+In multiplayer, when the player is dead <a class="reference internal" href="#respawnplayer"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">respawnPlayer</span></code></span></a> method can be called.</p>
+</section>
+<hr class="docutils" />
+<section id="respawnplayer">
+<h3><code class="docutils literal notranslate"><span class="pre">respawnPlayer</span></code><a class="headerlink" href="#respawnplayer" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">respawnPlayer()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">respawn_player()</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This method respawns the player after death in multiplayer mode.
+After calling this method, the first state after the respawn will be available.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#ismultiplayergame"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">isMultiplayerGame</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="sendgamecommand">
+<h3><code class="docutils literal notranslate"><span class="pre">sendGameCommand</span></code><a class="headerlink" href="#sendgamecommand" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">sendGameCommand(std::string</span> <span class="pre">cmd)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">send_game_command(cmd:</span> <span class="pre">str)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sends the command to Doom console. It can be used for controlling the game, changing settings, cheats, etc.
+Some commands will be blocked in some modes.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://zdoom.org/wiki/Console">ZDoom Wiki: Console</a></p></li>
+<li><p><a class="reference external" href="https://zdoom.org/wiki/CVARs">ZDoom Wiki: CVARs (console variables)</a></p></li>
+<li><p><a class="reference external" href="https://zdoom.org/wiki/CCMDs">ZDoom Wiki: CCMD (console commands)</a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="getstate">
+<h3><code class="docutils literal notranslate"><span class="pre">getState</span></code><a class="headerlink" href="#getstate" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">GameStatePtr</span> <span class="pre">(std::shared_ptr&lt;GameState&gt;)</span> <span class="pre">GameState</span> <span class="pre">getState()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_state()</span> <span class="pre">-&gt;</span> <span class="pre">GameState</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Changed in 1.1.0</p>
+<p>Returns <a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> object with the current game state.
+If the current episode is finished, <code class="docutils literal notranslate"><span class="pre">nullptr/null/None</span></code> will be returned.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="getserverstate">
+<h3><code class="docutils literal notranslate"><span class="pre">getServerState</span></code><a class="headerlink" href="#getserverstate" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">ServerStatePtr</span> <span class="pre">(std::shared_ptr&lt;ServerState&gt;)</span> <span class="pre">ServerState</span> <span class="pre">getServerState()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_state_state()</span> <span class="pre">-&gt;</span> <span class="pre">ServerState</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.6</p>
+<p>Returns <a class="reference internal" href="../gameState/#serverstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">ServerState</span></code></span></a> object with the current server state.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../gameState/#serverstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">ServerState</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="getlastaction">
+<h3><code class="docutils literal notranslate"><span class="pre">getLastAction</span></code><a class="headerlink" href="#getlastaction" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">std::vector&lt;double&gt;</span> <span class="pre">getLastAction()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_last_action()</span> <span class="pre">-&gt;</span> <span class="pre">list</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the last action performed.
+Each value corresponds to a button added with <code class="docutils literal notranslate"><span class="pre">[addAvailableButton](#addAvailableButton)</span></code> (in order of appearance).
+Most useful in <code class="docutils literal notranslate"><span class="pre">SPECTATOR</span></code> mode.</p>
+</section>
+<hr class="docutils" />
+<section id="getepisodetime">
+<h3><code class="docutils literal notranslate"><span class="pre">getEpisodeTime</span></code><a class="headerlink" href="#getepisodetime" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">getEpisodeTime()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_episode_time()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns number of current episode tic.</p>
+</section>
+<hr class="docutils" />
+<section id="save">
+<h3><code class="docutils literal notranslate"><span class="pre">save</span></code><a class="headerlink" href="#save" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">save(std::string</span> <span class="pre">filePath)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">save(filePath:</span> <span class="pre">str)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.9</p>
+<p>Saves a game’s internal state to the file using ZDoom’s save game functionality.</p>
+</section>
+<hr class="docutils" />
+<section id="load">
+<h3><code class="docutils literal notranslate"><span class="pre">load</span></code><a class="headerlink" href="#load" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">load(std::string</span> <span class="pre">filePath)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">load(filePath:</span> <span class="pre">str)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.9</p>
+<p>Loads a game’s internal state from the file using ZDoom’s load game functionality.
+A new state is available after loading.
+Loading the game state does not reset the current episode state,
+tic counter/time and total reward state keep their values.</p>
+</section>
+</section>
+<section id="buttons-settings-methods">
+<h2>Buttons settings methods<a class="headerlink" href="#buttons-settings-methods" title="Permalink to this heading">#</a></h2>
+<section id="getavailablebuttons">
+<h3><code class="docutils literal notranslate"><span class="pre">getAvailableButtons</span></code><a class="headerlink" href="#getavailablebuttons" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">std::vector&lt;Button&gt;</span> <span class="pre">getAvailableButtons()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_available_buttons()</span> <span class="pre">-&gt;</span> <span class="pre">list[Button]</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the list of available <code class="docutils literal notranslate"><span class="pre">Buttons</span></code>.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Button</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#addavailablebutton"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">addAvailableButton</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#addavailablebuttons"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAvailableButtons</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="setavailablebuttons">
+<h3><code class="docutils literal notranslate"><span class="pre">setAvailableButtons</span></code><a class="headerlink" href="#setavailablebuttons" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setAvailableButtons(std::vector&lt;Button&gt;</span> <span class="pre">buttons)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p>`add_available_button(buttons: list</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Set given list of <code class="docutils literal notranslate"><span class="pre">Button</span></code>s (e.g. <code class="docutils literal notranslate"><span class="pre">TURN_LEFT</span></code>, <code class="docutils literal notranslate"><span class="pre">MOVE_FORWARD</span></code>) as available <code class="docutils literal notranslate"><span class="pre">Buttons</span></code>,</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">availableButtons/available_buttons</span></code> (list)</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Button</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../configurationFiles/#list"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">ConfigFile:</span> <span class="pre">List</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#addavailablebutton"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">addAvailableButton</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="addavailablebutton">
+<h3><code class="docutils literal notranslate"><span class="pre">addAvailableButton</span></code><a class="headerlink" href="#addavailablebutton" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">addAvailableButton(Button</span> <span class="pre">button,</span> <span class="pre">double</span> <span class="pre">maxValue</span> <span class="pre">=</span> <span class="pre">0)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">add_available_button(button:</span> <span class="pre">Button,</span> <span class="pre">maxValue:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Add <a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Button</span></code></span></a> type (e.g. <code class="docutils literal notranslate"><span class="pre">TURN_LEFT</span></code>, <code class="docutils literal notranslate"><span class="pre">MOVE_FORWARD</span></code>) to available <code class="docutils literal notranslate"><span class="pre">Buttons</span></code> and sets the maximum allowed, absolute value for the specified button.
+If the given button has already been added, it will not be added again, but the maximum value is overridden.</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">availableButtons/available_buttons</span></code> (list)</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Button</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../configurationFiles/#list"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">ConfigFile:</span> <span class="pre">List</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#addavailablebuttons"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAvailableButtons</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#setbuttonmaxvalue"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setButtonMaxValue</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="clearavailablebuttons">
+<h3><code class="docutils literal notranslate"><span class="pre">clearAvailableButtons</span></code><a class="headerlink" href="#clearavailablebuttons" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">clearAvailableButtons()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">clear_available_buttons()</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Clears all available <code class="docutils literal notranslate"><span class="pre">Buttons</span></code> added so far.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Button</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="getavailablebuttonssize">
+<h3><code class="docutils literal notranslate"><span class="pre">getAvailableButtonsSize</span></code><a class="headerlink" href="#getavailablebuttonssize" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">getAvailableButtonsSize()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_available_buttons_size()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the number of available <code class="docutils literal notranslate"><span class="pre">Buttons</span></code>.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Button</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="setbuttonmaxvalue">
+<h3><code class="docutils literal notranslate"><span class="pre">setButtonMaxValue</span></code><a class="headerlink" href="#setbuttonmaxvalue" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setButtonMaxValue(Button</span> <span class="pre">button,</span> <span class="pre">double</span> <span class="pre">maxValue</span> <span class="pre">=</span> <span class="pre">0)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_button_max_value(button:</span> <span class="pre">Button,</span> <span class="pre">maxValue:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets the maximum allowed absolute value for the specified button.
+Setting the maximum value to 0 results in no constraint at all (infinity).
+This method makes sense only for delta buttons.
+The constraints limit applies in all Modes.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Button</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="getbuttonmaxvalue">
+<h3><code class="docutils literal notranslate"><span class="pre">getButtonMaxValue</span></code><a class="headerlink" href="#getbuttonmaxvalue" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">getButtonMaxValue(Button</span> <span class="pre">button)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_button_max_value(button:</span> <span class="pre">Button)</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the maximum allowed absolute value for the specified button.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Button</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="getbutton">
+<h3><code class="docutils literal notranslate"><span class="pre">getButton</span></code><a class="headerlink" href="#getbutton" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">getButton(Button</span> <span class="pre">button)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_button(button:</span> <span class="pre">Button)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the current state of the specified button (<code class="docutils literal notranslate"><span class="pre">ATTACK</span></code>, <code class="docutils literal notranslate"><span class="pre">USE</span></code> etc.).</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Button</span></code></span></a></p></li>
+</ul>
+</section>
+</section>
+<section id="gamevariables-methods">
+<h2>GameVariables methods<a class="headerlink" href="#gamevariables-methods" title="Permalink to this heading">#</a></h2>
+<section id="getavailablegamevariables">
+<h3><code class="docutils literal notranslate"><span class="pre">getAvailableGameVariables</span></code><a class="headerlink" href="#getavailablegamevariables" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">std::vector&lt;GameVariable&gt;</span> <span class="pre">getAvailableGameVariables()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_available_game_variables()</span> <span class="pre">-&gt;</span> <span class="pre">list[GameVariables]</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the list of available <code class="docutils literal notranslate"><span class="pre">GameVariables</span></code>.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">GameVariable</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#addavailablegamevariable"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">addAvailableGameVariable</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#setavailablegamevariables"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAvailableGameVariables</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="setavailablegamevariables">
+<h3><code class="docutils literal notranslate"><span class="pre">setAvailableGameVariables</span></code><a class="headerlink" href="#setavailablegamevariables" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setAvailableGameVariables(std::vector&lt;GameVariable&gt;</span> <span class="pre">variables)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p>`set_available_game_variables(variables: list</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Set list of <a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code></span></a> as available <code class="docutils literal notranslate"><span class="pre">GameVariables</span></code> in the <a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <code class="docutils literal notranslate"><span class="pre">getState</span></code> method.</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">availableGameVariables/available_game_variables</span></code> (list)</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">GameVariable</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../configurationFiles/#list"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">ConfigFile:</span> <span class="pre">List</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#addavailablegamevariable"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">addAvailableGameVariable</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="addavailablegamevariable">
+<h3><code class="docutils literal notranslate"><span class="pre">addAvailableGameVariable</span></code><a class="headerlink" href="#addavailablegamevariable" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">addAvailableGameVariable(GameVariable</span> <span class="pre">variable)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">add_available_game_variable(variable:</span> <span class="pre">GameVariable)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Adds the specified <a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code></span></a> to the list of available game variables (e.g. <code class="docutils literal notranslate"><span class="pre">HEALTH</span></code>, <code class="docutils literal notranslate"><span class="pre">AMMO1</span></code>, <code class="docutils literal notranslate"><span class="pre">ATTACK_READY</span></code>) in the <a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <code class="docutils literal notranslate"><span class="pre">getState</span></code> method.</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">availableGameVariables/available_game_variables</span></code> (list)</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">GameVariable</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../configurationFiles/#list"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">ConfigFile:</span> <span class="pre">List</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#setavailablegamevariables"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAvailableGameVariables</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="clearavailablegamevariables">
+<h3><code class="docutils literal notranslate"><span class="pre">clearAvailableGameVariables</span></code><a class="headerlink" href="#clearavailablegamevariables" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">clearAvailableGameVariables()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">clear_available_game_variables()</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Clears the list of available <code class="docutils literal notranslate"><span class="pre">GameVariables</span></code> that are included in the <a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <a class="reference internal" href="#getstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getState</span></code></span></a> method.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">GameVariable</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../configurationFiles/#list"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">ConfigFile:</span> <span class="pre">List</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="getavailablegamevariablessize">
+<h3><code class="docutils literal notranslate"><span class="pre">getAvailableGameVariablesSize</span></code><a class="headerlink" href="#getavailablegamevariablessize" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">getAvailableGameVariablesSize()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_available_game_variables_size()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the number of available <code class="docutils literal notranslate"><span class="pre">GameVariables</span></code>.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">GameVariable</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../configurationFiles/#list"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">ConfigFile:</span> <span class="pre">List</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="getgamevariable">
+<h3><code class="docutils literal notranslate"><span class="pre">getGameVariable</span></code><a class="headerlink" href="#getgamevariable" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">getGameVariable(GameVariable</span> <span class="pre">variable)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_game_variable(variable:</span> <span class="pre">GameVariable)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the current value of the specified game variable (<code class="docutils literal notranslate"><span class="pre">HEALTH</span></code>, <code class="docutils literal notranslate"><span class="pre">AMMO1</span></code> etc.).
+The specified game variable does not need to be among available game variables (included in the state).
+It could be used for e.g. shaping. Returns 0 in case of not finding given <code class="docutils literal notranslate"><span class="pre">GameVariable</span></code>.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">GameVariable</span></code></span></a></p></li>
+</ul>
+</section>
+</section>
+<section id="game-arguments-methods">
+<h2>Game Arguments methods<a class="headerlink" href="#game-arguments-methods" title="Permalink to this heading">#</a></h2>
+<section id="addgameargs">
+<h3><code class="docutils literal notranslate"><span class="pre">addGameArgs</span></code><a class="headerlink" href="#addgameargs" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">addGameArgs(std::string</span> <span class="pre">args)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">add_game_args(args:</span> <span class="pre">str)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Adds a custom argument that will be passed to ViZDoom process during initialization.
+Useful for changing additional game settings.</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">gameArgs/game_args</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://zdoom.org/wiki/Command_line_parameters">ZDoom Wiki: Command line parameters</a></p></li>
+<li><p><a class="reference external" href="http://zdoom.org/wiki/CVARS">ZDoom Wiki: CVARs (Console Variables)</a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="cleargameargs">
+<h3><code class="docutils literal notranslate"><span class="pre">clearGameArgs</span></code><a class="headerlink" href="#cleargameargs" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">clearGameArgs()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">clear_game_args()</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Clears all arguments previously added with <a class="reference internal" href="#addgameargs"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">addGameArgs</span></code></span></a> method.</p>
+</section>
+</section>
+<section id="reward-methods">
+<h2>Reward methods<a class="headerlink" href="#reward-methods" title="Permalink to this heading">#</a></h2>
+<section id="getlivingreward">
+<h3><code class="docutils literal notranslate"><span class="pre">getLivingReward</span></code><a class="headerlink" href="#getlivingreward" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">getLivingReward()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_living_reward()</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the reward granted to the player after every tic.</p>
+</section>
+<hr class="docutils" />
+<section id="setlivingreward">
+<h3><code class="docutils literal notranslate"><span class="pre">setLivingReward</span></code><a class="headerlink" href="#setlivingreward" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setLivingReward(double</span> <span class="pre">livingReward)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_living_reward(livingReward:</span> <span class="pre">float)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets the reward granted to the player after every tic. A negative value is also allowed.</p>
+<p>Default value: 0</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">livingReward/living_reward</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="getdeathpenalty">
+<h3><code class="docutils literal notranslate"><span class="pre">getDeathPenalty</span></code><a class="headerlink" href="#getdeathpenalty" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">getDeathPenalty()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_death_penalty()</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the penalty for the player’s death.</p>
+</section>
+<hr class="docutils" />
+<section id="setdeathpenalty">
+<h3><code class="docutils literal notranslate"><span class="pre">setDeathPenalty</span></code><a class="headerlink" href="#setdeathpenalty" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setDeathPenalty(double</span> <span class="pre">deathPenalty)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_death_penalty(deathPenalty:</span> <span class="pre">float)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets a penalty for the player’s death. Note that in case of a negative value, the player will be rewarded upon dying.</p>
+<p>Default value: 0</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">deathPenalty/death_penalty</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="getlastreward">
+<h3><code class="docutils literal notranslate"><span class="pre">getLastReward</span></code><a class="headerlink" href="#getlastreward" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">getLastReward()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_last_reward()</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns a reward granted after the last update of state.</p>
+</section>
+<hr class="docutils" />
+<section id="gettotalreward">
+<h3><code class="docutils literal notranslate"><span class="pre">getTotalReward</span></code><a class="headerlink" href="#gettotalreward" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">getTotalReward()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_total_reward()</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the sum of all rewards gathered in the current episode.</p>
+</section>
+</section>
+<section id="general-game-setting-methods">
+<h2>General game setting methods<a class="headerlink" href="#general-game-setting-methods" title="Permalink to this heading">#</a></h2>
+<section id="loadconfig">
+<h3><code class="docutils literal notranslate"><span class="pre">loadConfig</span></code><a class="headerlink" href="#loadconfig" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">loadConfig(std::string</span> <span class="pre">filePath)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">load_config(filePath:</span> <span class="pre">str)</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Loads configuration (resolution, available buttons, game variables etc.) from a configuration file.
+In case of multiple invocations, older configurations will be overwritten by the recent ones.
+Overwriting does not involve resetting to default values. Thus only overlapping parameters will be changed.
+The method returns true if the whole configuration file was correctly read and applied,
+false if the file contained errors.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../configurationFiles/"><span class="std std-doc">ConfigFile</span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="getmode">
+<h3><code class="docutils literal notranslate"><span class="pre">getMode</span></code><a class="headerlink" href="#getmode" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">Mode</span> <span class="pre">getMode()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_mode()</span> <span class="pre">-&gt;</span> <span class="pre">Mode</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns current mode (<code class="docutils literal notranslate"><span class="pre">PLAYER</span></code>, <code class="docutils literal notranslate"><span class="pre">SPECTATOR</span></code>, <code class="docutils literal notranslate"><span class="pre">ASYNC_PLAYER</span></code>, <code class="docutils literal notranslate"><span class="pre">ASYNC_SPECTATOR</span></code>).</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#mode"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Mode</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="setmode">
+<h3><code class="docutils literal notranslate"><span class="pre">setMode</span></code><a class="headerlink" href="#setmode" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setMode(Mode</span> <span class="pre">mode)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_mode(mode:</span> <span class="pre">Mode)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets mode (<code class="docutils literal notranslate"><span class="pre">PLAYER</span></code>, <code class="docutils literal notranslate"><span class="pre">SPECTATOR</span></code>, <code class="docutils literal notranslate"><span class="pre">ASYNC_PLAYER</span></code>, <code class="docutils literal notranslate"><span class="pre">ASYNC_SPECTATOR</span></code>) in which the game will be running.</p>
+<p>Default value: <code class="docutils literal notranslate"><span class="pre">PLAYER</span></code>.</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">mode</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#mode"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Mode</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="getticrate">
+<h3><code class="docutils literal notranslate"><span class="pre">getTicrate</span></code><a class="headerlink" href="#getticrate" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">getTicrate()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_ticrate()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Returns current ticrate.</p>
+</section>
+<hr class="docutils" />
+<section id="setticrate">
+<h3><code class="docutils literal notranslate"><span class="pre">setTicrate</span></code><a class="headerlink" href="#setticrate" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setTicrate(unsigned</span> <span class="pre">int</span> <span class="pre">ticrate)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_ticrate(ticrate:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Sets ticrate for ASNYC Modes - number of logic tics executed per second.
+The default Doom ticrate is 35. This value will play a game at normal speed.</p>
+<p>Default value: 35 (default Doom ticrate).</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">ticrate</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/ticrate.py">examples/python/ticrate.py</a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="setvizdoompath">
+<h3><code class="docutils literal notranslate"><span class="pre">setViZDoomPath</span></code><a class="headerlink" href="#setvizdoompath" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setViZDoomPath(std::string</span> <span class="pre">filePath)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_vizdoom_path(filePath:</span> <span class="pre">str)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets path to the ViZDoom engine executable vizdoom.</p>
+<p>Default value: “{vizdoom.so location}/{vizdoom or vizdoom.exe (on Windows)}”.</p>
+<p>Config key: `ViZDoomPath/vizdoom_path</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setDoomGamePath(std::string</span> <span class="pre">filePath)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_doom_game_path(filePath:</span> <span class="pre">str)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets the path to the Doom engine based game file (wad format).
+If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom’s installation (where vizdoom.so/pyd is).</p>
+<p>Default value: “{vizdoom.so location}/{doom2.wad, doom.wad, freedoom2.wad or freedoom.wad}”</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">DoomGamePath/doom_game_path</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setdoomscenariopath">
+<h3><code class="docutils literal notranslate"><span class="pre">setDoomScenarioPath</span></code><a class="headerlink" href="#setdoomscenariopath" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setDoomScenarioPath(std::string</span> <span class="pre">filePath)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_doom_scenario_path(filePath:</span> <span class="pre">str)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets the path to an additional scenario file (wad format).
+If not provided, the default Doom single-player maps will be loaded.</p>
+<p>Default value: “”</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">DoomScenarioPath/set_doom_scenario_path</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setdoommap">
+<h3><code class="docutils literal notranslate"><span class="pre">setDoomMap</span></code><a class="headerlink" href="#setdoommap" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setDoomMap(std::string</span> <span class="pre">map)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_doom_map(map:</span> <span class="pre">str)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets the map name to be used.</p>
+<p>Default value: “map01”, if set to empty “map01” will be used.</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">DoomMap/doom_map</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setdoomskill">
+<h3><code class="docutils literal notranslate"><span class="pre">setDoomSkill</span></code><a class="headerlink" href="#setdoomskill" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setDoomSkill(unsigned</span> <span class="pre">int</span> <span class="pre">skill)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_doom_skill(skill:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets Doom game difficulty level, which is called skill in Doom.
+The higher the skill, the harder the game becomes.
+Skill level affects monsters’ aggressiveness, monsters’ speed, weapon damage, ammunition quantities, etc.
+Takes effect from the next episode.</p>
+<ul class="simple">
+<li><p>1 - VERY EASY, “I’m Too Young to Die” in Doom.</p></li>
+<li><p>2 - EASY, “Hey, Not Too Rough” in Doom.</p></li>
+<li><p>3 - NORMAL, “Hurt Me Plenty” in Doom.</p></li>
+<li><p>4 - HARD, “Ultra-Violence” in Doom.</p></li>
+<li><p>5 - VERY HARD, “Nightmare!” in Doom.</p></li>
+</ul>
+<p>Default value: 3</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">DoomSkill/doom_skill</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setdoomconfigpath">
+<h3><code class="docutils literal notranslate"><span class="pre">setDoomConfigPath</span></code><a class="headerlink" href="#setdoomconfigpath" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setDoomConfigPath(std::string</span> <span class="pre">filePath)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_doom_config_path(filePath:</span> <span class="pre">str)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets the path for ZDoom’s configuration file.
+The file is responsible for the configuration of the ZDoom engine itself.
+If it does not exist, it will be created after the <code class="docutils literal notranslate"><span class="pre">vizdoom</span></code> executable is run.
+This method is not needed for most of the tasks and is added for the convenience of users with hacking tendencies.</p>
+<p>Default value: “”, if left empty “_vizdoom.ini” will be used.</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">DoomConfigPath/doom_config_path</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="getseed">
+<h3><code class="docutils literal notranslate"><span class="pre">getSeed</span></code><a class="headerlink" href="#getseed" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">getSeed()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">getSeed()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Return ViZDoom’s seed.</p>
+</section>
+<hr class="docutils" />
+<section id="setseed">
+<h3><code class="docutils literal notranslate"><span class="pre">setSeed</span></code><a class="headerlink" href="#setseed" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setSeed(unsigned</span> <span class="pre">int</span> <span class="pre">seed)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_seed(seed:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets the seed of the ViZDoom’s RNG that generates seeds (initial state) for episodes.</p>
+<p>Default value: randomized in constructor</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">seed</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/seed.py">examples/python/seed.py</a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="getepisodestarttime">
+<h3><code class="docutils literal notranslate"><span class="pre">getEpisodeStartTime</span></code><a class="headerlink" href="#getepisodestarttime" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">getEpisodeStartTime()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_episode_start_time()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns start delay of every episode in tics.</p>
+</section>
+<hr class="docutils" />
+<section id="setepisodestarttime">
+<h3><code class="docutils literal notranslate"><span class="pre">setEpisodeStartTime</span></code><a class="headerlink" href="#setepisodestarttime" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setEpisodeStartTime(unsigned</span> <span class="pre">int</span> <span class="pre">tics)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_episode_start_time(tics:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets start delay of every episode in tics.
+Every episode will effectively start (from the user’s perspective) after the provided number of tics.</p>
+<p>Default value: 1</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">episodeStartTime/episode_start_time</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="getepisodetimeout">
+<h3><code class="docutils literal notranslate"><span class="pre">getEpisodeTimeout</span></code><a class="headerlink" href="#getepisodetimeout" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">getEpisodeTimeout()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_episode_timeout()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the number of tics after which the episode will be finished.</p>
+</section>
+<hr class="docutils" />
+<section id="setepisodetimeout">
+<h3><code class="docutils literal notranslate"><span class="pre">setEpisodeTimeout</span></code><a class="headerlink" href="#setepisodetimeout" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setEpisodeTimeout(unsigned</span> <span class="pre">int</span> <span class="pre">tics)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_episode_timeout(tics:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets the number of tics after which the episode will be finished. 0 will result in no timeout.</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">episodeTimeout/episode_timeout</span></code></p>
+</section>
+</section>
+<section id="output-rendering-setting-methods">
+<h2>Output/rendering setting methods<a class="headerlink" href="#output-rendering-setting-methods" title="Permalink to this heading">#</a></h2>
+<section id="setscreenresolution">
+<h3><code class="docutils literal notranslate"><span class="pre">setScreenResolution</span></code><a class="headerlink" href="#setscreenresolution" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setScreenResolution(ScreenResolution</span> <span class="pre">resolution)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_screen_resolution(resolution:</span> <span class="pre">ScreenResolution)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets the screen resolution. ZDoom engine supports only specific resolutions.
+Supported resolutions are part of ScreenResolution enumeration (e.g., <code class="docutils literal notranslate"><span class="pre">RES_320X240</span></code>, <code class="docutils literal notranslate"><span class="pre">RES_640X480</span></code>, <code class="docutils literal notranslate"><span class="pre">RES_1920X1080</span></code>).
+The buffers, as well as the content of ViZDoom’s display window, will be affected.</p>
+<p>Default value: <code class="docutils literal notranslate"><span class="pre">RES_320X240</span></code></p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">screenResolution/screen_resolution</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#screenresolution"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">ScreenResolution</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="getscreenformat">
+<h3><code class="docutils literal notranslate"><span class="pre">getScreenFormat</span></code><a class="headerlink" href="#getscreenformat" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">ScreenFormat</span> <span class="pre">getScreenFormat()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_screen_format()</span> <span class="pre">-&gt;</span> <span class="pre">ScreenFormat</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the format of the screen buffer and the automap buffer.</p>
+</section>
+<hr class="docutils" />
+<section id="setscreenformat">
+<h3><code class="docutils literal notranslate"><span class="pre">setScreenFormat</span></code><a class="headerlink" href="#setscreenformat" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setScreenFormat(ScreenFormat</span> <span class="pre">format)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_screen_format(format:</span> <span class="pre">ScreenFormat)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets the format of the screen buffer and the automap buffer.
+Supported formats are defined in <code class="docutils literal notranslate"><span class="pre">ScreenFormat</span></code> enumeration type (e.g. <code class="docutils literal notranslate"><span class="pre">CRCGCB</span></code>, <code class="docutils literal notranslate"><span class="pre">RGB24</span></code>, <code class="docutils literal notranslate"><span class="pre">GRAY8</span></code>).
+The format change affects only the buffers, so it will not have any effect on the content of ViZDoom’s display window.</p>
+<p>Default value: <code class="docutils literal notranslate"><span class="pre">CRCGCB</span></code></p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">screenFormat/screen_format</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#screenformat"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">ScreenFormat</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="isdepthbufferenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">isDepthBufferEnabled</span></code><a class="headerlink" href="#isdepthbufferenabled" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">isDepthBufferEnabled()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_depth_buffer_enabled()</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Returns true if the depth buffer is enabled.</p>
+</section>
+<hr class="docutils" />
+<section id="setdepthbufferenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">setDepthBufferEnabled</span></code><a class="headerlink" href="#setdepthbufferenabled" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setDepthBufferEnabled(bool</span> <span class="pre">depthBuffer)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_depth_buffer_enabled(depthBuffer:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Enables rendering of the depth buffer, it will be available in the state.
+Depth buffer will contain noise if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">depthBufferEnabled/depth_buffer_enabled</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="islabelsbufferenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">isLabelsBufferEnabled</span></code><a class="headerlink" href="#islabelsbufferenabled" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">isLabelsBufferEnabled()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_labels_buffer_enabled()</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Returns true if the labels buffer is enabled.</p>
+</section>
+<hr class="docutils" />
+<section id="setlabelsbufferenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">setLabelsBufferEnabled</span></code><a class="headerlink" href="#setlabelsbufferenabled" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setLabelsBufferEnabled(bool</span> <span class="pre">labelsBuffer)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_labels_buffer_enabled(bool</span> <span class="pre">labelsBuffer)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Enables rendering of the labels buffer, it will be available in the state with the vector of <code class="docutils literal notranslate"><span class="pre">Label</span></code>s.
+LabelsBuffer will contain noise if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">labelsBufferEnabled/labels_buffer_enabled</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../gameState/#label"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState:</span> <span class="pre">Label</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels.py">examples/python/labels.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="isautomapbufferenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">isAutomapBufferEnabled</span></code><a class="headerlink" href="#isautomapbufferenabled" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">isAutomapBufferEnabled()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_automap_buffer_enabled()</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Returns true if the automap buffer is enabled.</p>
+</section>
+<hr class="docutils" />
+<section id="setautomapbufferenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">setAutomapBufferEnabled</span></code><a class="headerlink" href="#setautomapbufferenabled" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setAutomapBufferEnabled(bool</span> <span class="pre">automapBuffer)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_automap_buffer_enabled(automapBuffer:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Enables rendering of the automap buffer, it will be available in the state.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">automapBufferEnabled/automap_buffer_enabled</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a>,</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="setautomapmode">
+<h3><code class="docutils literal notranslate"><span class="pre">setAutomapMode</span></code><a class="headerlink" href="#setautomapmode" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setAutomapMode(AutomapMode</span> <span class="pre">mode)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_automap_mode(mode:</span> <span class="pre">AutomapMode)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Sets the automap mode (<code class="docutils literal notranslate"><span class="pre">NORMAL</span></code>, <code class="docutils literal notranslate"><span class="pre">WHOLE</span></code>, <code class="docutils literal notranslate"><span class="pre">OBJECTS</span></code>, <code class="docutils literal notranslate"><span class="pre">OBJECTS_WITH_SIZE</span></code>),
+which determines what will be visible on it.</p>
+<p>Default value: <code class="docutils literal notranslate"><span class="pre">NORMAL</span></code></p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">automapMode/set_automap_mode</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../enums/#automapmode"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">AutomapMode</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="setautomaprotate">
+<h3><code class="docutils literal notranslate"><span class="pre">setAutomapRotate</span></code><a class="headerlink" href="#setautomaprotate" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setAutomapRotate(bool</span> <span class="pre">rotate)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_automap_rotate(rotate:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Determine if the automap will be rotating with the player.
+If false, north always will be at the top of the buffer.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">automapRotate/automap_rotate</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setautomaprendertextures">
+<h3><code class="docutils literal notranslate"><span class="pre">setAutomapRenderTextures</span></code><a class="headerlink" href="#setautomaprendertextures" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setAutomapRenderTextures(bool</span> <span class="pre">textures)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_automap_render_textures(textures:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Determine if the automap will be textured, showing the floor textures.</p>
+<p>Default value: true</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">automapRenderTextures/automap_render_textures</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setrenderhud">
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderHud</span></code><a class="headerlink" href="#setrenderhud" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setRenderHud(bool</span> <span class="pre">hud)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_render_hud(hud:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Determine if the hud will be rendered in the game.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">renderHud/render_hud</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setrenderminimalhud">
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderMinimalHud</span></code><a class="headerlink" href="#setrenderminimalhud" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setRenderMinimalHud(bool</span> <span class="pre">minHud)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_render_minimal_hud(minHud:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Determine if the minimalistic version of the hud will be rendered instead of the full hud.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">renderMinimalHud/render_minimal_hud</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setrenderweapon">
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderWeapon</span></code><a class="headerlink" href="#setrenderweapon" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setRenderWeapon(bool</span> <span class="pre">weapon)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_render_weapon(weapon:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Determine if the weapon held by the player will be rendered in the game.</p>
+<p>Default value: true</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">renderWeapon/render_weapon</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setrendercrosshair">
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderCrosshair</span></code><a class="headerlink" href="#setrendercrosshair" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setRenderCrosshair(bool</span> <span class="pre">crosshair)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_render_crosshair(crosshair:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Determine if the crosshair will be rendered in the game.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">renderCrosshair/render_crosshair</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setrenderdecals">
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderDecals</span></code><a class="headerlink" href="#setrenderdecals" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setRenderDecals(bool</span> <span class="pre">decals)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_render_decals(decals:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Determine if the decals (marks on the walls) will be rendered in the game.</p>
+<p>Default value: true</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">renderDecals/render_decals</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setrenderparticles">
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderParticles</span></code><a class="headerlink" href="#setrenderparticles" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setRenderParticles(bool</span> <span class="pre">particles)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_render_particles(particles:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Determine if the particles will be rendered in the game.</p>
+<p>Default value: true</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">renderParticles/render_particles</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setrendereffectssprites">
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderEffectsSprites</span></code><a class="headerlink" href="#setrendereffectssprites" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setRenderEffectsSprites(bool</span> <span class="pre">sprites)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_render_effects_sprites(sprites:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Determine if some effects sprites (gun puffs, blood splats etc.) will be rendered in the game.</p>
+<p>Default value: true</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">renderEffectsSprites/render_effects_sprites</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setrendermessages">
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderMessages</span></code><a class="headerlink" href="#setrendermessages" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setRenderMessages(bool</span> <span class="pre">messages)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_render_messages(messages:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Determine if in-game messages (information about pickups, kills, etc.) will be rendered in the game.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">renderMessages/render_messages</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setrendercorpses">
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderCorpses</span></code><a class="headerlink" href="#setrendercorpses" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setRenderCorpses(bool</span> <span class="pre">corpses)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_render_corpsess(corpses:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.0</p>
+<p>Determine if actors’ corpses will be rendered in the game.</p>
+<p>Default value: true</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">renderCorpses/render_corpses</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setrenderscreenflashes">
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderScreenFlashes</span></code><a class="headerlink" href="#setrenderscreenflashes" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setRenderScreenFlashes(bool</span> <span class="pre">flashes)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_render_screen_flashes(flashes:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.3</p>
+<p>Determine if the screen flash effect upon taking damage or picking up items will be rendered in the game.</p>
+<p>Default value: true</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">renderScreenFlashes/render_screen_flashes</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setrenderallframes">
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderAllFrames</span></code><a class="headerlink" href="#setrenderallframes" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setRenderAllFrames(bool</span> <span class="pre">allFrames)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_render_all_frames(all_frames:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.3</p>
+<p>Determine if all frames between states will be rendered (when skip greater than 1 is used).
+Allows smooth preview but can reduce performance.
+It only makes sense to use it if the window is visible.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">renderAllFrames/render_all_frames</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#setwindowvisible"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setWindowVisible</span></code></span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="setwindowvisible">
+<h3><code class="docutils literal notranslate"><span class="pre">setWindowVisible</span></code><a class="headerlink" href="#setwindowvisible" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setWindowVisible(bool</span> <span class="pre">visibility)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_window_visible(visibility:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Determines if ViZDoom’s window will be visible.
+ViZDoom with window disabled can be used on Linux systems without X Server.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">windowVisible/window_visible</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setconsoleenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">setConsoleEnabled</span></code><a class="headerlink" href="#setconsoleenabled" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setConsoleEnabled(bool</span> <span class="pre">console)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_console_enabled(console:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Determines if ViZDoom’s console output will be enabled.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">consoleEnabled/console_enabled</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="setsoundenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">setSoundEnabled</span></code><a class="headerlink" href="#setsoundenabled" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setSoundEnabled(bool</span> <span class="pre">sound)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_sound_enabled(sound:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Determines if ViZDoom’s sound will be played.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">soundEnabled/sound_enabled</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="getscreenwidth">
+<h3><code class="docutils literal notranslate"><span class="pre">getScreenWidth</span></code><a class="headerlink" href="#getscreenwidth" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">getScreenWidth()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_screen_width()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns game’s screen width - width of all buffers.</p>
+</section>
+<hr class="docutils" />
+<section id="getscreenheight">
+<h3><code class="docutils literal notranslate"><span class="pre">getScreenHeight</span></code><a class="headerlink" href="#getscreenheight" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">getScreenHeight()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_screen_height()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns game’s screen height - height of all buffers.</p>
+</section>
+<hr class="docutils" />
+<section id="getscreenchannels">
+<h3><code class="docutils literal notranslate"><span class="pre">getScreenChannels</span></code><a class="headerlink" href="#getscreenchannels" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">getScreenChannels()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_screen_channels()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns number of channels in screen buffer and map buffer (depth and labels buffer always have one channel).</p>
+</section>
+<hr class="docutils" />
+<section id="getscreenpitch">
+<h3><code class="docutils literal notranslate"><span class="pre">getScreenPitch</span></code><a class="headerlink" href="#getscreenpitch" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">getScreenPitch()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_screen_pitch()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns size in bytes of one row in screen buffer and map buffer.</p>
+</section>
+<hr class="docutils" />
+<section id="getscreensize">
+<h3><code class="docutils literal notranslate"><span class="pre">getScreenSize</span></code><a class="headerlink" href="#getscreensize" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">getScreenSize()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_screen_size()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns size in bytes of screen buffer and map buffer.</p>
+</section>
+<hr class="docutils" />
+<section id="isobjectsinfoenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">isObjectsInfoEnabled</span></code><a class="headerlink" href="#isobjectsinfoenabled" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">isObjectInfoEnabled()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_object_info_enabled()</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.8</p>
+<p>Returns true if the objects information is enabled.</p>
+</section>
+<hr class="docutils" />
+<section id="setobjectsinfoenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">setObjectsInfoEnabled</span></code><a class="headerlink" href="#setobjectsinfoenabled" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setObjectsInfoEnabled(bool</span> <span class="pre">objectsInfo)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_objects_info_enabled(bool</span> <span class="pre">objectsInfo)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.8</p>
+<p>Enables information about all objects present in the current episode/level.
+It will be available in the state.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">objectsInfoEnabled/objects_info_enabled</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../gameState/#object"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState:</span> <span class="pre">Object</span></code></span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>,</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="issectorsinfoenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">isSectorsInfoEnabled</span></code><a class="headerlink" href="#issectorsinfoenabled" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">isSectorsInfoEnabled()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_sectors_info_enabled()</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.8</p>
+<p>Returns true if the information about sectors is enabled.</p>
+</section>
+<hr class="docutils" />
+<section id="setsectorsinfoenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">setSectorsInfoEnabled</span></code><a class="headerlink" href="#setsectorsinfoenabled" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setSectorsInfoEnabled(bool</span> <span class="pre">sectorsInfo)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_sectors_info_enabled(bool</span> <span class="pre">sectorsInfo)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.8</p>
+<p>Enables information about all sectors (map layout) present in the current episode/level.
+It will be available in the state.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">sectorsInfoEnabled/sectors_info_enabled</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../gameState/#sector"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState:</span> <span class="pre">Sector</span></code></span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="isaudiobufferenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">isAudioBufferEnabled</span></code><a class="headerlink" href="#isaudiobufferenabled" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">isAudioBufferEnabled()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_audio_buffer_enabled()</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.9</p>
+<p>Returns true if the audio buffer is enabled.</p>
+</section>
+<hr class="docutils" />
+<section id="setaudiobufferenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">setAudioBufferEnabled</span></code><a class="headerlink" href="#setaudiobufferenabled" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setAudioBufferEnabled(bool</span> <span class="pre">audioBuffer)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_audio_buffer_enabled(bool</span> <span class="pre">audioBuffer)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.9</p>
+<p>Returns true if the audio buffer is enabled.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">audioBufferEnabled/audio_buffer_enabled</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../enums/#sampling-rate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">SamplingRate</span></code></span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="getaudiosamplingrate">
+<h3><code class="docutils literal notranslate"><span class="pre">getAudioSamplingRate</span></code><a class="headerlink" href="#getaudiosamplingrate" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">getAudioSamplingRate()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_audio_sampling_rate()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.9</p>
+<p>Returns the sampling rate of the audio buffer.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../enums/#sampling-rate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">SamplingRate</span></code></span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="setaudiosamplingrate">
+<h3><code class="docutils literal notranslate"><span class="pre">setAudioSamplingRate</span></code><a class="headerlink" href="#setaudiosamplingrate" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setAudioSamplingRate(SamplingRate</span> <span class="pre">samplingRate)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_audio_sampling_rate(SamplingRate</span> <span class="pre">samplingRate)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.9</p>
+<p>Sets the sampling rate of the audio buffer.</p>
+<p>Default value: false</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">audioSamplingRate/audio_samping_rate</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../enums/#sampling-rate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">SamplingRate</span></code></span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="getaudiobuffersize">
+<h3><code class="docutils literal notranslate"><span class="pre">getAudioBufferSize</span></code><a class="headerlink" href="#getaudiobuffersize" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">getAudioBufferSize()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_audio_buffer_size()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.9</p>
+<p>Returns the size of the audio buffer.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="setaudiobuffersize">
+<h3><code class="docutils literal notranslate"><span class="pre">setAudioBufferSize</span></code><a class="headerlink" href="#setaudiobuffersize" title="Permalink to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setAudioBufferSize(unsigned</span> <span class="pre">int</span> <span class="pre">size)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_audio_buffer_size(size:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.1.9</p>
+<p>Sets the size of the audio buffer. The size is defined by a number of logic tics.
+After each action audio buffer will contain audio from the specified number of the last processed tics.
+Doom uses 35 ticks per second.</p>
+<p>Default value: 4</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">audioBufferSize/audio_buffer_size</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
+</ul>
+</section>
+</section>
+</section>
+
+          </article>
+        </div>
+        <footer>
+          
+          <div class="related-pages">
+            <a class="next-page" href="../gameState/">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">GameState</div>
+              </div>
+              <svg class="furo-related-icon">
+                <use href="#svg-arrow-right"></use>
+              </svg>
+            </a>
+            <a class="prev-page" href="../../api_python/utils/">
+              <svg class="furo-related-icon">
+                <use href="#svg-arrow-right"></use>
+              </svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Utils</div>
+                
+              </div>
+            </a>
+          </div>
+          <div class="bottom-of-page">
+            <div class="left-details">
+              <div class="copyright">
+                Copyright &#169; 2023 Farama Foundation
+              </div>
+              <!--
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            -->
+            </div>
+            <div class="right-details">
+              <div class="icons">
+                <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/"
+                  aria-label="On GitHub">
+                  <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                      d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z">
+                    </path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+        </footer>
+      </div>
+      <aside class="toc-drawer">
+        
+        
+        <div class="toc-sticky toc-scroll">
+          <div class="toc-title-container">
+            <span class="toc-title">
+              On this page
+            </span>
+          </div>
+          <div class="toc-tree-container">
+            <div class="toc-tree">
+              <ul>
+<li><a class="reference internal" href="#">DoomGame</a><ul>
+<li><a class="reference internal" href="#flow-control-methods">Flow control methods:</a><ul>
+<li><a class="reference internal" href="#init"><code class="docutils literal notranslate"><span class="pre">init</span></code></a></li>
+<li><a class="reference internal" href="#close"><code class="docutils literal notranslate"><span class="pre">close</span></code></a></li>
+<li><a class="reference internal" href="#newepisode"><code class="docutils literal notranslate"><span class="pre">newEpisode</span></code></a></li>
+<li><a class="reference internal" href="#replayepisode"><code class="docutils literal notranslate"><span class="pre">replayEpisode</span></code></a></li>
+<li><a class="reference internal" href="#isrunning"><code class="docutils literal notranslate"><span class="pre">isRunning</span></code></a></li>
+<li><a class="reference internal" href="#ismultiplayergame"><code class="docutils literal notranslate"><span class="pre">isMultiplayerGame</span></code></a></li>
+<li><a class="reference internal" href="#isrecordingepisode"><code class="docutils literal notranslate"><span class="pre">isRecordingEpisode</span></code></a></li>
+<li><a class="reference internal" href="#isreplayingepisode"><code class="docutils literal notranslate"><span class="pre">isReplayingEpisode</span></code></a></li>
+<li><a class="reference internal" href="#setaction"><code class="docutils literal notranslate"><span class="pre">setAction</span></code></a></li>
+<li><a class="reference internal" href="#advanceaction"><code class="docutils literal notranslate"><span class="pre">advanceAction</span></code></a></li>
+<li><a class="reference internal" href="#makeaction"><code class="docutils literal notranslate"><span class="pre">makeAction</span></code></a></li>
+<li><a class="reference internal" href="#isnewepisode"><code class="docutils literal notranslate"><span class="pre">isNewEpisode</span></code></a></li>
+<li><a class="reference internal" href="#isepisodefinished"><code class="docutils literal notranslate"><span class="pre">isEpisodeFinished</span></code></a></li>
+<li><a class="reference internal" href="#isplayerdead"><code class="docutils literal notranslate"><span class="pre">isPlayerDead</span></code></a></li>
+<li><a class="reference internal" href="#respawnplayer"><code class="docutils literal notranslate"><span class="pre">respawnPlayer</span></code></a></li>
+<li><a class="reference internal" href="#sendgamecommand"><code class="docutils literal notranslate"><span class="pre">sendGameCommand</span></code></a></li>
+<li><a class="reference internal" href="#getstate"><code class="docutils literal notranslate"><span class="pre">getState</span></code></a></li>
+<li><a class="reference internal" href="#getserverstate"><code class="docutils literal notranslate"><span class="pre">getServerState</span></code></a></li>
+<li><a class="reference internal" href="#getlastaction"><code class="docutils literal notranslate"><span class="pre">getLastAction</span></code></a></li>
+<li><a class="reference internal" href="#getepisodetime"><code class="docutils literal notranslate"><span class="pre">getEpisodeTime</span></code></a></li>
+<li><a class="reference internal" href="#save"><code class="docutils literal notranslate"><span class="pre">save</span></code></a></li>
+<li><a class="reference internal" href="#load"><code class="docutils literal notranslate"><span class="pre">load</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#buttons-settings-methods">Buttons settings methods</a><ul>
+<li><a class="reference internal" href="#getavailablebuttons"><code class="docutils literal notranslate"><span class="pre">getAvailableButtons</span></code></a></li>
+<li><a class="reference internal" href="#setavailablebuttons"><code class="docutils literal notranslate"><span class="pre">setAvailableButtons</span></code></a></li>
+<li><a class="reference internal" href="#addavailablebutton"><code class="docutils literal notranslate"><span class="pre">addAvailableButton</span></code></a></li>
+<li><a class="reference internal" href="#clearavailablebuttons"><code class="docutils literal notranslate"><span class="pre">clearAvailableButtons</span></code></a></li>
+<li><a class="reference internal" href="#getavailablebuttonssize"><code class="docutils literal notranslate"><span class="pre">getAvailableButtonsSize</span></code></a></li>
+<li><a class="reference internal" href="#setbuttonmaxvalue"><code class="docutils literal notranslate"><span class="pre">setButtonMaxValue</span></code></a></li>
+<li><a class="reference internal" href="#getbuttonmaxvalue"><code class="docutils literal notranslate"><span class="pre">getButtonMaxValue</span></code></a></li>
+<li><a class="reference internal" href="#getbutton"><code class="docutils literal notranslate"><span class="pre">getButton</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gamevariables-methods">GameVariables methods</a><ul>
+<li><a class="reference internal" href="#getavailablegamevariables"><code class="docutils literal notranslate"><span class="pre">getAvailableGameVariables</span></code></a></li>
+<li><a class="reference internal" href="#setavailablegamevariables"><code class="docutils literal notranslate"><span class="pre">setAvailableGameVariables</span></code></a></li>
+<li><a class="reference internal" href="#addavailablegamevariable"><code class="docutils literal notranslate"><span class="pre">addAvailableGameVariable</span></code></a></li>
+<li><a class="reference internal" href="#clearavailablegamevariables"><code class="docutils literal notranslate"><span class="pre">clearAvailableGameVariables</span></code></a></li>
+<li><a class="reference internal" href="#getavailablegamevariablessize"><code class="docutils literal notranslate"><span class="pre">getAvailableGameVariablesSize</span></code></a></li>
+<li><a class="reference internal" href="#getgamevariable"><code class="docutils literal notranslate"><span class="pre">getGameVariable</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#game-arguments-methods">Game Arguments methods</a><ul>
+<li><a class="reference internal" href="#addgameargs"><code class="docutils literal notranslate"><span class="pre">addGameArgs</span></code></a></li>
+<li><a class="reference internal" href="#cleargameargs"><code class="docutils literal notranslate"><span class="pre">clearGameArgs</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#reward-methods">Reward methods</a><ul>
+<li><a class="reference internal" href="#getlivingreward"><code class="docutils literal notranslate"><span class="pre">getLivingReward</span></code></a></li>
+<li><a class="reference internal" href="#setlivingreward"><code class="docutils literal notranslate"><span class="pre">setLivingReward</span></code></a></li>
+<li><a class="reference internal" href="#getdeathpenalty"><code class="docutils literal notranslate"><span class="pre">getDeathPenalty</span></code></a></li>
+<li><a class="reference internal" href="#setdeathpenalty"><code class="docutils literal notranslate"><span class="pre">setDeathPenalty</span></code></a></li>
+<li><a class="reference internal" href="#getlastreward"><code class="docutils literal notranslate"><span class="pre">getLastReward</span></code></a></li>
+<li><a class="reference internal" href="#gettotalreward"><code class="docutils literal notranslate"><span class="pre">getTotalReward</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#general-game-setting-methods">General game setting methods</a><ul>
+<li><a class="reference internal" href="#loadconfig"><code class="docutils literal notranslate"><span class="pre">loadConfig</span></code></a></li>
+<li><a class="reference internal" href="#getmode"><code class="docutils literal notranslate"><span class="pre">getMode</span></code></a></li>
+<li><a class="reference internal" href="#setmode"><code class="docutils literal notranslate"><span class="pre">setMode</span></code></a></li>
+<li><a class="reference internal" href="#getticrate"><code class="docutils literal notranslate"><span class="pre">getTicrate</span></code></a></li>
+<li><a class="reference internal" href="#setticrate"><code class="docutils literal notranslate"><span class="pre">setTicrate</span></code></a></li>
+<li><a class="reference internal" href="#setvizdoompath"><code class="docutils literal notranslate"><span class="pre">setViZDoomPath</span></code></a></li>
+<li><a class="reference internal" href="#setdoomscenariopath"><code class="docutils literal notranslate"><span class="pre">setDoomScenarioPath</span></code></a></li>
+<li><a class="reference internal" href="#setdoommap"><code class="docutils literal notranslate"><span class="pre">setDoomMap</span></code></a></li>
+<li><a class="reference internal" href="#setdoomskill"><code class="docutils literal notranslate"><span class="pre">setDoomSkill</span></code></a></li>
+<li><a class="reference internal" href="#setdoomconfigpath"><code class="docutils literal notranslate"><span class="pre">setDoomConfigPath</span></code></a></li>
+<li><a class="reference internal" href="#getseed"><code class="docutils literal notranslate"><span class="pre">getSeed</span></code></a></li>
+<li><a class="reference internal" href="#setseed"><code class="docutils literal notranslate"><span class="pre">setSeed</span></code></a></li>
+<li><a class="reference internal" href="#getepisodestarttime"><code class="docutils literal notranslate"><span class="pre">getEpisodeStartTime</span></code></a></li>
+<li><a class="reference internal" href="#setepisodestarttime"><code class="docutils literal notranslate"><span class="pre">setEpisodeStartTime</span></code></a></li>
+<li><a class="reference internal" href="#getepisodetimeout"><code class="docutils literal notranslate"><span class="pre">getEpisodeTimeout</span></code></a></li>
+<li><a class="reference internal" href="#setepisodetimeout"><code class="docutils literal notranslate"><span class="pre">setEpisodeTimeout</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#output-rendering-setting-methods">Output/rendering setting methods</a><ul>
+<li><a class="reference internal" href="#setscreenresolution"><code class="docutils literal notranslate"><span class="pre">setScreenResolution</span></code></a></li>
+<li><a class="reference internal" href="#getscreenformat"><code class="docutils literal notranslate"><span class="pre">getScreenFormat</span></code></a></li>
+<li><a class="reference internal" href="#setscreenformat"><code class="docutils literal notranslate"><span class="pre">setScreenFormat</span></code></a></li>
+<li><a class="reference internal" href="#isdepthbufferenabled"><code class="docutils literal notranslate"><span class="pre">isDepthBufferEnabled</span></code></a></li>
+<li><a class="reference internal" href="#setdepthbufferenabled"><code class="docutils literal notranslate"><span class="pre">setDepthBufferEnabled</span></code></a></li>
+<li><a class="reference internal" href="#islabelsbufferenabled"><code class="docutils literal notranslate"><span class="pre">isLabelsBufferEnabled</span></code></a></li>
+<li><a class="reference internal" href="#setlabelsbufferenabled"><code class="docutils literal notranslate"><span class="pre">setLabelsBufferEnabled</span></code></a></li>
+<li><a class="reference internal" href="#isautomapbufferenabled"><code class="docutils literal notranslate"><span class="pre">isAutomapBufferEnabled</span></code></a></li>
+<li><a class="reference internal" href="#setautomapbufferenabled"><code class="docutils literal notranslate"><span class="pre">setAutomapBufferEnabled</span></code></a></li>
+<li><a class="reference internal" href="#setautomapmode"><code class="docutils literal notranslate"><span class="pre">setAutomapMode</span></code></a></li>
+<li><a class="reference internal" href="#setautomaprotate"><code class="docutils literal notranslate"><span class="pre">setAutomapRotate</span></code></a></li>
+<li><a class="reference internal" href="#setautomaprendertextures"><code class="docutils literal notranslate"><span class="pre">setAutomapRenderTextures</span></code></a></li>
+<li><a class="reference internal" href="#setrenderhud"><code class="docutils literal notranslate"><span class="pre">setRenderHud</span></code></a></li>
+<li><a class="reference internal" href="#setrenderminimalhud"><code class="docutils literal notranslate"><span class="pre">setRenderMinimalHud</span></code></a></li>
+<li><a class="reference internal" href="#setrenderweapon"><code class="docutils literal notranslate"><span class="pre">setRenderWeapon</span></code></a></li>
+<li><a class="reference internal" href="#setrendercrosshair"><code class="docutils literal notranslate"><span class="pre">setRenderCrosshair</span></code></a></li>
+<li><a class="reference internal" href="#setrenderdecals"><code class="docutils literal notranslate"><span class="pre">setRenderDecals</span></code></a></li>
+<li><a class="reference internal" href="#setrenderparticles"><code class="docutils literal notranslate"><span class="pre">setRenderParticles</span></code></a></li>
+<li><a class="reference internal" href="#setrendereffectssprites"><code class="docutils literal notranslate"><span class="pre">setRenderEffectsSprites</span></code></a></li>
+<li><a class="reference internal" href="#setrendermessages"><code class="docutils literal notranslate"><span class="pre">setRenderMessages</span></code></a></li>
+<li><a class="reference internal" href="#setrendercorpses"><code class="docutils literal notranslate"><span class="pre">setRenderCorpses</span></code></a></li>
+<li><a class="reference internal" href="#setrenderscreenflashes"><code class="docutils literal notranslate"><span class="pre">setRenderScreenFlashes</span></code></a></li>
+<li><a class="reference internal" href="#setrenderallframes"><code class="docutils literal notranslate"><span class="pre">setRenderAllFrames</span></code></a></li>
+<li><a class="reference internal" href="#setwindowvisible"><code class="docutils literal notranslate"><span class="pre">setWindowVisible</span></code></a></li>
+<li><a class="reference internal" href="#setconsoleenabled"><code class="docutils literal notranslate"><span class="pre">setConsoleEnabled</span></code></a></li>
+<li><a class="reference internal" href="#setsoundenabled"><code class="docutils literal notranslate"><span class="pre">setSoundEnabled</span></code></a></li>
+<li><a class="reference internal" href="#getscreenwidth"><code class="docutils literal notranslate"><span class="pre">getScreenWidth</span></code></a></li>
+<li><a class="reference internal" href="#getscreenheight"><code class="docutils literal notranslate"><span class="pre">getScreenHeight</span></code></a></li>
+<li><a class="reference internal" href="#getscreenchannels"><code class="docutils literal notranslate"><span class="pre">getScreenChannels</span></code></a></li>
+<li><a class="reference internal" href="#getscreenpitch"><code class="docutils literal notranslate"><span class="pre">getScreenPitch</span></code></a></li>
+<li><a class="reference internal" href="#getscreensize"><code class="docutils literal notranslate"><span class="pre">getScreenSize</span></code></a></li>
+<li><a class="reference internal" href="#isobjectsinfoenabled"><code class="docutils literal notranslate"><span class="pre">isObjectsInfoEnabled</span></code></a></li>
+<li><a class="reference internal" href="#setobjectsinfoenabled"><code class="docutils literal notranslate"><span class="pre">setObjectsInfoEnabled</span></code></a></li>
+<li><a class="reference internal" href="#issectorsinfoenabled"><code class="docutils literal notranslate"><span class="pre">isSectorsInfoEnabled</span></code></a></li>
+<li><a class="reference internal" href="#setsectorsinfoenabled"><code class="docutils literal notranslate"><span class="pre">setSectorsInfoEnabled</span></code></a></li>
+<li><a class="reference internal" href="#isaudiobufferenabled"><code class="docutils literal notranslate"><span class="pre">isAudioBufferEnabled</span></code></a></li>
+<li><a class="reference internal" href="#setaudiobufferenabled"><code class="docutils literal notranslate"><span class="pre">setAudioBufferEnabled</span></code></a></li>
+<li><a class="reference internal" href="#getaudiosamplingrate"><code class="docutils literal notranslate"><span class="pre">getAudioSamplingRate</span></code></a></li>
+<li><a class="reference internal" href="#setaudiosamplingrate"><code class="docutils literal notranslate"><span class="pre">setAudioSamplingRate</span></code></a></li>
+<li><a class="reference internal" href="#getaudiobuffersize"><code class="docutils literal notranslate"><span class="pre">getAudioBufferSize</span></code></a></li>
+<li><a class="reference internal" href="#setaudiobuffersize"><code class="docutils literal notranslate"><span class="pre">setAudioBufferSize</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
+        
+        
+      </aside>
+    </div>
+  </div>
+</div>
+    <script>
+      const toggleMenu = () => {
+        const menuBtn = document.querySelector(".farama-header-menu__btn");
+        const menuContainer = document.querySelector(".farama-header-menu-container");
+        if (document.querySelector(".farama-header-menu").classList.contains("active")) {
+          menuBtn.setAttribute("aria-expanded", "false");
+          menuContainer.setAttribute("aria-hidden", "true");
+        } else {
+          menuBtn.setAttribute("aria-expanded", "true");
+          menuContainer.setAttribute("aria-hidden", "false");
+        }
+        document.querySelector(".farama-header-menu").classList.toggle("active");
+      }
+
+      document.querySelector(".farama-header-menu__btn").addEventListener("click", toggleMenu);
+      document.getElementById("farama-close-menu").addEventListener("click", toggleMenu);
+    </script>
+
+    
+    <script>
+          (() => {
+              if (!localStorage.getItem("shownCookieAlert")) {
+                  const boxElem = document.createElement("div");
+                  boxElem.classList.add("cookie-alert");
+                  const containerElem = document.createElement("div");
+                  containerElem.classList.add("cookie-alert__container");
+                  const textElem = document.createElement("p");
+                  textElem.innerHTML = `This page uses <a href="https://analytics.google.com/">
+                                      Google Analytics</a> to collect statistics. You can disable it by blocking
+                                      the JavaScript coming from www.google-analytics.com.`;
+                                      containerElem.appendChild(textElem);
+                  const closeBtn = document.createElement("button");
+                  closeBtn.innerHTML = `<?xml version="1.0" ?><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;}</style></defs><title/><g id="cross"><line class="cls-1" x1="7" x2="25" y1="7" y2="25"/><line class="cls-1" x1="7" x2="25" y1="25" y2="7"/></g></svg>`
+                  closeBtn.onclick = () => {
+                      localStorage.setItem("shownCookieAlert", "true");
+                      boxElem.style.display = "none";
+                  }
+                  containerElem.appendChild(closeBtn);
+                  boxElem.appendChild(containerElem);
+                  document.body.appendChild(boxElem);
+              }
+          })()
+      </script>
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-6H9C8TWXZ8"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-6H9C8TWXZ8');
+      </script>
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    
+    <script>
+      // Create menu with Farama projects by using the API at farama.org/api/projects.json
+      const createCORSRequest = (method, url) => {
+        let xhr = new XMLHttpRequest();
+        xhr.responseType = 'json';
+
+        if ("withCredentials" in xhr) {
+          xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+          // IE8 & IE9
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+        } else {
+          // CORS not supported.
+          xhr = null;
+        }
+        return xhr;
+      };
+
+      const url = 'https://farama.org/api/projects.json';
+      const imagesBasepath = "https://farama.org/assets/images"
+      const method = 'GET';
+      let xhr = createCORSRequest(method, url);
+
+      xhr.onload = () => {
+        const jsonResponse = xhr.response;
+        const sections = {
+          "Documentation": [],
+          "Mature Projects": [],
+          "Incubating Projects": [],
+          "Foundation": [
+            {
+              name: "About",
+              link: "https://farama.org/about"
+            },
+            {
+              name: "Standards",
+              link: "https://farama.org/project_standards",
+            },
+            {
+              name: "Donate",
+              link: "https://farama.org/donations"
+            }
+          ]
+        }
+        Object.keys(jsonResponse).forEach(key => {
+          projectJson = jsonResponse[key];
+          if (projectJson.website !== null) {
+            projectJson.link = projectJson.website;
+            sections["Documentation"].push(projectJson)
+          } else if (projectJson.type == "mature") {
+            projectJson.link = projectJson.github;
+            sections["Mature Projects"].push(projectJson)
+          } else {
+            projectJson.link = projectJson.github;
+            sections["Incubating Projects"].push(projectJson)
+          }
+        })
+
+        const menuContainer = document.querySelector(".farama-header-menu__body");
+
+        Object.keys(sections).forEach((key, i) => {
+          projects = sections[key];
+          const sectionElem = Object.assign(
+            document.createElement('div'), {
+              className:'farama-header-menu__section',
+              style: "padding-left: 24px"
+            }
+          )
+          sectionElem.appendChild(Object.assign(document.createElement('span'),
+            {
+              className:'farama-header-menu__section-title' ,
+              innerText: key
+            }
+          ))
+          const ulElem = Object.assign(document.createElement('ul'),
+            {
+              className:'farama-header-menu-list',
+            }
+          )
+          for (let project of projects) {
+            const liElem = document.createElement("li");
+            const aElem = Object.assign(document.createElement("a"),
+              {
+                href: project.link
+              }
+            );
+            liElem.appendChild(aElem);
+            if (key !== "Foundation") {
+              const imgElem = Object.assign(document.createElement("img"),
+                {
+                  src: project.image ? imagesBasepath + project.image : imagesBasepath + "/farama_black.svg",
+                  alt: `${project.name} logo`,
+                  className: "farama-black-logo-invert"
+                }
+              );
+              aElem.appendChild(imgElem);
+            }
+            aElem.appendChild(document.createTextNode(project.name));
+            ulElem.appendChild(liElem);
+          }
+          sectionElem.appendChild(ulElem);
+          menuContainer.appendChild(sectionElem)
+        });
+      }
+
+      xhr.onerror = function() {
+        console.error("Unable to load projects");
+      };
+
+      xhr.send();
+    </script>
+
+    
+    <script>
+      const versioningConfig = {
+        githubUser: 'Farama-Foundation',
+        githubRepo: 'ViZDoom',
+      };
+      fetch('/main/_static/versioning/versioning_menu.html').then(response => {
+        if (response.status === 200) {
+            response.text().then(text => {
+                const container = document.createElement("div");
+                container.innerHTML = text;
+                document.querySelector("body").appendChild(container);
+                // innerHtml doenst evaluate scripts, we need to add them dynamically
+                Array.from(container.querySelectorAll("script")).forEach(oldScript => {
+                    const newScript = document.createElement("script");
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+            });
+        } else {
+            console.warn("Unable to load versioning menu", response);
+        }
+      });
+    </script>
+
+    </body>
+</html>
