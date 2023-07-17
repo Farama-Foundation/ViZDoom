@@ -316,7 +316,7 @@ See also:
 | :--    | :--                                                           |
 | Python | `add_available_button(buttons: list | tuple[Button]) -> None` |
 
-Set given list of `Button`s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available `Buttons`,
+Set given list of `Button`s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available `Buttons`.
 
 Config key: `availableButtons/available_buttons` (list)
 
@@ -698,6 +698,10 @@ Sets path to the ViZDoom engine executable vizdoom.
 Default value: "{vizdoom.so location}/{vizdoom or vizdoom.exe (on Windows)}".
 
 Config key: `ViZDoomPath/vizdoom_path
+
+
+---
+### `setDoomGamePath`
 
 | C++    | `void setDoomGamePath(std::string filePath)` |
 | :--    | :--                                          |

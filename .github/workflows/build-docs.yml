@@ -18,13 +18,16 @@ jobs:
         with:
             python-version: '3.9'
 
+      - name: Install ViZDoom dependencies
+        run: apt install cmake git libboost-all-dev libsdl2-dev libopenal-dev
+
+      - name: Install ViZDoom
+        run: pip install .
+
       - name: Install docs dependencies
         run: pip install -r docs/requirements.txt
 
-      - name: Install ViZDoom
-        run: pip install -e .
-
-      - name: Build
+      - name: Build docs
         run: sphinx-build -b dirhtml -v docs _build
 
       - name: Move 404

@@ -48,7 +48,7 @@ namespace vizdoom {
 
         bool init();
         void close();
-        void newEpisode(std::string filePath = "");
+        void newEpisode(std::string recordingFilePath = "");
         //void newEpisode(std::string recordingFilePath = "", std::string saveFilePath = ""); // TODO: save support for newEpisode
         void replayEpisode(std::string filePath, unsigned int player = 0);
         bool isRunning();

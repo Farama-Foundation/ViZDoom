@@ -128,11 +128,11 @@ namespace vizdoom {
         return this->running && this->doomController->isReplaying();
     }
 
-    void DoomGame::newEpisode(std::string filePath) {
+    void DoomGame::newEpisode(std::string recordingFilePath) {
 
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
 
-        this->doomController->restartMap(filePath);
+        this->doomController->restartMap(recordingFilePath);
         this->resetState();
     }
 

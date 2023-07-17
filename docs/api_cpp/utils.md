@@ -60,8 +60,7 @@ Converts Doom's fixed point numeral to a floating point value.
 See also:
 - [`Enums: User variables` in `GameVariables`](./enums.md#user-acs-variables)
 
-Python aliases (added in 1.1):
-`doom_fixed_to_float(doomFixed: int | float) -> float`
+Python aliases (added in 1.1): `doom_fixed_to_float(doomFixed: int | float) -> float`
 
 
 ---
