@@ -110,7 +110,8 @@ if __name__ == "__main__":
     # Turns on the audio buffer. (turned off by default)
     # If this is switched on, the audio will stop playing on device, even with game.set_sound_enabled(True)
     # Setting game.set_sound_enabled(True) is not required for audio buffer to work.
-    game.set_audio_buffer_enabled(True)
+    # game.set_audio_buffer_enabled(True)
+    # Because of some problems with OpenAL on Ubuntu 20.04, we keep this line commented.
 
     # Sets the living reward (for each move) to -1
     game.set_living_reward(-1)
