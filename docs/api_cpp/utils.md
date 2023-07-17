@@ -1,11 +1,11 @@
 # Utilities
 
 
-## <a name="doomTicsToMs"></a> `doomTicsToMs`
+## `doomTicsToMs`
 
 | C++    | `double doomTicsToMs(double tics, unsigned int ticrate = 35)` |
 | :--    | :--                                                           |
-| Python | `float doom_tics_to_ms(float tics, int ticrate = 35)`         |
+| Python | `doom_tics_to_ms(tics: float, ticrate: int = 35) -> float`    |
 
 Changed in 1.1
 
@@ -13,11 +13,11 @@ Calculates how many tics will be made during given number of milliseconds.
 
 
 ---
-## <a name="msToDoomTics"></a>`msToDoomTics`
+## `msToDoomTics`
 
 | C++    | `double msToDoomTics(double ms, unsigned int ticrate = 35)` |
 | :--    | :--                                                         |
-| Python | `float ms_to_doom_tics(float ms, int ticrate = 35)`         |
+| Python | `ms_to_doom_tics(ms: float, ticrate: int = 35) -> float`    |
 
 Changed in 1.1
 
@@ -25,11 +25,11 @@ Calculates the number of milliseconds that will pass during specified number of 
 
 
 ---
-## <a name="doomTicsToSec"></a>`doomTicsToSec`
+## `doomTicsToSec`
 
 | C++    | `double doomTicsToSec(double tics, unsigned int ticrate = 35)` |
 | :--    | :--                                                            |
-| Python | `float doom_tics_to_sec(float tics, int ticrate = 35)`         |
+| Python | `doom_tics_to_sec(tics: float, ticrate: int = 35) -> float`    |
 
 Added in 1.1
 
@@ -37,11 +37,11 @@ Calculates how many tics will be made during given number of seconds.
 
 
 ---
-## <a name="secToDoomTics"></a>`secToDoomTics`
+## `secToDoomTics`
 
 | C++    | `double secToDoomTics(double sec, unsigned int ticrate = 35)` |
 | :--    | :--                                                           |
-| Python | `float sec_to_doom_tics(float sec, int ticrate = 35)`         |
+| Python | `sec_to_doom_tics(sec: float, ticrate: int = 35) -> float`    |
 
 Added in 1.1
 
@@ -49,36 +49,42 @@ Calculates the number of seconds that will pass during specified number of tics.
 
 
 ---
-## <a name="doomFixedToDouble"></a>`doomFixedToDouble`
+## `doomFixedToDouble`
 
-| C++    | `double doomFixedToDouble(int / double doomFixed)`  |
-| :--    | :--                                                 |
-| Python | `float doom_fixed_to_double(int / float doomFixed)` |
+| C++    | `double doomFixedToDouble(int / double doomFixed)`      |
+| :--    | :--                                                     |
+| Python | `doom_fixed_to_double(doomFixed: int | float) -> float` |
 
 Converts Doom's fixed point numeral to a floating point value.
 
 See also:
-- Types: `User variables` in `GameVariables`
+- [`Enums: User variables` in `GameVariables`](./enums.md#user-acs-variables)
 
 Python aliases (added in 1.1):
-`float doom_fixed_to_float(int / float doomFixed)`
+`doom_fixed_to_float(doomFixed: int | float) -> float`
 
 
 ---
-## <a name="isBinaryButton"></a>`isBinaryButton`
+## `isBinaryButton`
 
-| C++    | `bool isBinaryButton(Button button)`    |
-| :--    | :--                                     |
-| Python | `bool is_binary_button(Button button)`  |
+| C++    | `bool isBinaryButton(Button button)`     |
+| :--    | :--                                      |
+| Python | `is_binary_button(button: Button): bool` |
 
 Returns true if button is binary button.
 
+See also:
+- [`Enums: Button`](./enums.md#button)
+
 
 ---
-## <a name="isDeltaButton"></a>`isDeltaButton`
+## `isDeltaButton`
 
-| C++    | `bool isDeltaButton(Button button)`    |
-| :--    | :--                                    |
-| Python | `bool is_delta_button(Button button)`  |
+| C++    | `bool isDeltaButton(Button button)`       |
+| :--    | :--                                       |
+| Python | `is_delta_button(button: Button) -> bool` |
 
 Returns true if button is delta button.
+
+See also:
+- [`Enums: Button`](./enums.md#button)

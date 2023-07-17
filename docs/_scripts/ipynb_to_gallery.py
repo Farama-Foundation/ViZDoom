@@ -12,6 +12,7 @@ import numpy as np
 import pypandoc as pdoc
 from bs4 import BeautifulSoup
 
+
 warnings.filterwarnings(
     "ignore",
     message="The input looks more like a filename than markup. You may want to open this file and pass the filehandle into Beautiful Soup",

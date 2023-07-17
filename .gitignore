@@ -126,3 +126,6 @@ src/vizdoom/zlib/x64/
 
 # Dockerfiles
 tmp_dockerfiles
+
+# Documentation
+docs_html

@@ -1,9 +1,9 @@
-# Scenarios/Environments Descriptions:
+# Default scenarios/environments
 
 Below we describe all default scenarios (original ViZDoom nomenclature)/environments (Gymnasium/Open AI Gym nomenclature) included with ViZDoom. The PRs with new scenarios are welcome!
 
 
-### Note on .wad, .cfg files, and rewards:
+## Note on .wad, .cfg files, and rewards
 
 The scenarios consist of two files - .wad and .cfg ([see scenarios directory](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios)). The .wad file contains the map and script, and the .cfg file contains additional settings. The maps contained in .wad files (Doom's engine format for storing maps and assets) usually do not implement action constraints, the death penalty, and living rewards (however it is possible). To make it easier, this can be specified in ViZDoom .cfg files as well as other options like access to additional information. These can also be overridden in the code when using the original ViZDoom API. Every mention of any settings that are not included in .wad files is specified with "(config)" in the descriptions below. ViZDoom does not support setting certain rewards (such as killing opponents) in .cfg files. These must be programmed in the .wad files instead.
 

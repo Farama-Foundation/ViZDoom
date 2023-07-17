@@ -1,4 +1,4 @@
-# Installation and building
+# Building from source
 
 - [Installation and building](#installation-and-building)
   - [ Dependencies](#-dependencies)

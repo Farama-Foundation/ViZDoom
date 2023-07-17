@@ -2,9 +2,9 @@
 
 This file contains a list of questions that ViZDoom users may ask at some point.
 You can find more questions and answers by searching for issues with "question" tag
-([is:issue label:question](https://github.com/mwydmuch/ViZDoom/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3Aquestion)).
+([is:issue label:question](https://github.com/Farama-Foundation/ViZDoom/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3Aquestion)).
 
-Did not find answer for your question? Post an [issue](https://github.com/mwydmuch/ViZDoom/issues)
+Did not find answer for your question? Post an [issue](https://github.com/Farama-Foundation/ViZDoom/issues)
 
 
 ## How to use original Doom's assets?
@@ -24,16 +24,16 @@ You should select ZDoom as your Doom engine version and UDMF map format (Univers
 that supports the widest range of features.
 
 **Original issue and answer:**
-https://github.com/mwydmuch/ViZDoom/issues/319
+[https://github.com/Farama-Foundation/ViZDoom/issues/319](https://github.com/Farama-Foundation/ViZDoom/issues/319)
 
 
 ## How to stack frames?
 
 ViZDoom does not automatically stacks frames for you.
-You have to manually store the states from [`DoomGame: getState`](DoomGame.md#getState). and build up stacked states for your agent.
+You have to manually store the states from [`DoomGame: getState`](doomGame.md#getState). and build up stacked states for your agent.
 
 **Original issue and answer: (contains code an example)**
-https://github.com/mwydmuch/ViZDoom/issues/296
+[https://github.com/Farama-Foundation/ViZDoom/issues/296](https://github.com/Farama-Foundation/ViZDoom/issues/296)
 
 
 ## How to change keyboard binding for Spectator Mode?
@@ -41,10 +41,10 @@ https://github.com/mwydmuch/ViZDoom/issues/296
 When you launch an instance of vizdoom, it will create `_vizdoom.ini` in your working directory (if it does not exist yet).
 This file contains all the additional engine settings, including key bindings, that you can edit freely.
 
-You can also load .ini file from different location using [`DoomGame: setDoomConfigPath`](DoomGame.md#setDoomConfigPath).
+You can also load .ini file from different location using [`DoomGame: setDoomConfigPath`](doomGame.md#setDoomConfigPath).
 
 **Original issue and answer:**
-https://github.com/mwydmuch/ViZDoom/issues/253
+[https://github.com/Farama-Foundation/ViZDoom/issues/253](https://github.com/Farama-Foundation/ViZDoom/issues/253)
 
 
 ## Is it possible to generate maze navigation scenario from a text file (like in DeepMind Lab)?
@@ -52,28 +52,28 @@ https://github.com/mwydmuch/ViZDoom/issues/253
 Try [NavDoom](https://github.com/agiantwhale/navdoom) or [MazeExplorer](https://github.com/microsoft/MazeExplorer).
 
 **Original issue and answer:**
-https://github.com/mwydmuch/ViZDoom/issues/308
+[https://github.com/Farama-Foundation/ViZDoom/issues/308](https://github.com/Farama-Foundation/ViZDoom/issues/308)
 
 
 ## How to control game speed in `ASYNC` modes?
 
-See: [`DoomGame: setTicrate`](DoomGame.md#setTicrate) and [examples/python/ticrate.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/ticrate.py)
+See: [`DoomGame: setTicrate`](DoomGame.md#setTicrate) and [examples/python/ticrate.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/ticrate.py)
 
 **Original issue and answer:**
-https://github.com/mwydmuch/ViZDoom/issues/209
+[https://github.com/Farama-Foundation/ViZDoom/issues/209](https://github.com/Farama-Foundation/ViZDoom/issues/209)
 
 
 ## How can to make an exact 90 degree turn in one action?
 
-See: [examples/python/delta_buttons.py](https://github.com/mwydmuch/ViZDoom/tree/master/examples/python/delta_buttons.py)
+See: [examples/python/delta_buttons.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/delta_buttons.py)
 
 **Original issue and answer:**
-https://github.com/mwydmuch/ViZDoom/issues/279
+[https://github.com/Farama-Foundation/ViZDoom/issues/279](https://github.com/Farama-Foundation/ViZDoom/issues/279)
 
 See also:
 - [`Types: Button`](Types.md#button)
-- [examples/python/DeltaDuttons.cpp](https://github.com/mwydmuch/ViZDoom/tree/master/examples/cpp/DeltaDuttons.cpp)
-- [examples/python/DeltaDuttons.java](https://github.com/mwydmuch/ViZDoom/tree/master/examples/java/DeltaDuttons.java)
+- [examples/python/DeltaDuttons.cpp](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/cpp/DeltaDuttons.cpp)
+- [examples/python/DeltaDuttons.java](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/java/DeltaDuttons.java)
 
 
 ## Agent does not fire after picking up ammo or weapon?
@@ -82,7 +82,7 @@ Some weapons have a `noautofire` flag for weapons to prevent using them by accid
 Agent needs to release `ATTACK` button and then press it again to start firing after picking one of those weapons or ammo for them.
 
 **Original issue and answer:**
-https://github.com/mwydmuch/ViZDoom/issues/289
+https://github.com/Farama-Foundation/ViZDoom/issues/289
 
 See also:
 - List of weapon flags: [https://zdoom.org/wiki/Weapon_flags](https://zdoom.org/wiki/Weapon_flags)
@@ -95,7 +95,7 @@ CVARs implemented in ZDoom engine are very helpful in quickly modifying some asp
 `game.add_game_args("+sv_unlimited_pickup 1")` adding before init will allow picking up unlimited items.
 
 **Original issue and answer:**
-https://github.com/mwydmuch/ViZDoom/issues/187
+[https://github.com/Farama-Foundation/ViZDoom/issues/187](https://github.com/Farama-Foundation/ViZDoom/issues/187)
 
 See also:
 - List of CVARs: [https://zdoom.org/wiki/CVARs:Configuration](https://zdoom.org/wiki/CVARs:Configuration)
@@ -108,7 +108,7 @@ Make sure you can run ZDoom binary inside the ViZDoom package.
 If the game works, go to `Options -> Set Video Mode` and see the list of available resolutions there. Try one of these resolutions viz ViZDoom.
 
 **Original issue and answer:**
-https://github.com/mwydmuch/ViZDoom/issues/404
+[https://github.com/Farama-Foundation/ViZDoom/issues/404](https://github.com/Farama-Foundation/ViZDoom/issues/404)
 
 
 ## Issues getting ViZDoom instances communicating between each-other in Kubernetes
@@ -116,7 +116,7 @@ https://github.com/mwydmuch/ViZDoom/issues/404
 Try setting `tty=True` in all containers running ViZDoom.
 
 **Original issue:**
-https://github.com/mwydmuch/ViZDoom/issues/329
+[https://github.com/Farama-Foundation/ViZDoom/issues/329](https://github.com/Farama-Foundation/ViZDoom/issues/329)
 
 
 ## Reading replays (invalid actions, wrong rewards)
@@ -125,8 +125,8 @@ Replay files are known to have wonky issues at times: Even when they are opened 
 the read variables may be different from what they were during recording. There are tricks
 to fix this:
 
-- Try adding a small amount of sleep between proceeding actions (Original issue: https://github.com/mwydmuch/ViZDoom/issues/354)
-- Try using `GameMode.SPECTATOR` mode for reading replays. **Note** that processing of individual steps must be done fast, otherwise multiple steps get bundled up into one. (Original issue: https://github.com/mwydmuch/ViZDoom/issues/412)
+- Try adding a small amount of sleep between proceeding actions (Original issue: https://github.com/Farama-Foundation/ViZDoom/issues/354)
+- Try using `GameMode.SPECTATOR` mode for reading replays. **Note** that processing of individual steps must be done fast, otherwise multiple steps get bundled up into one. (Original issue: https://github.com/Farama-Foundation/ViZDoom/issues/412)
 
 
 ## Having multiple agents in one game / multiplayer issues
@@ -136,9 +136,9 @@ if you use `PLAYER` Mode, you can not use frameskip of the `make_actions` (each 
 server proceeds by one frame). See discussion in Issues below for more information.
 
 **Original issues:**
-* https://github.com/mwydmuch/ViZDoom/issues/228
-* https://github.com/mwydmuch/ViZDoom/issues/391
-* https://github.com/mwydmuch/ViZDoom/issues/417
+- [https://github.com/Farama-Foundation/ViZDoom/issues/228](https://github.com/Farama-Foundation/ViZDoom/issues/228)
+- [https://github.com/Farama-Foundation/ViZDoom/issues/391](https://github.com/Farama-Foundation/ViZDoom/issues/391)
+- [https://github.com/Farama-Foundation/ViZDoom/issues/417](https://github.com/Farama-Foundation/ViZDoom/issues/417)
 
 
 ## Why `game.get_state()` when `game.is_episode_finished() == True`
@@ -146,8 +146,8 @@ server proceeds by one frame). See discussion in Issues below for more informati
 After the end of the episode, ZDoom engine might change its state and exit the episode (map) resulting in some objects and variables being destroyed or reset. Because of that it's difficult to provide a proper state after that. When we were originally designing ViZDoom we wanted to have a simple logic and we only update state after complete logic tic. Because of that we are not able to detect end of episode early before to save a proper state and decided to provide null/none value instead. We believe that it's easy to provide dummy (e.g. filed with zeros) state if it's needed by an algorithm.
 
 **Original issues:**
-* https://github.com/mwydmuch/ViZDoom/issues/183
-* https://github.com/mwydmuch/ViZDoom/issues/418
+- [https://github.com/Farama-Foundation/ViZDoom/issues/183](https://github.com/Farama-Foundation/ViZDoom/issues/183)
+- [https://github.com/Farama-Foundation/ViZDoom/issues/418](https://github.com/Farama-Foundation/ViZDoom/issues/418)
 
 
 ## I am trying to use audio/sound, but ViZDoom crashes or I there is no audio
@@ -159,11 +159,11 @@ Older versions of OpenAL library (1.19, default version as of writing on e.g. Ub
 with ViZDoom. You have several options you can try (one of these steps has worked so far on all tested machines):
 
 * If ViZDoom crashes on init when you have sound enabled, try `doom_game.add_game_args("+snd_efx 0")`. Note that this might remove some audio effects like reverberation.
-* If you can run ViZDoom with sound enabled but there is no audio being played, try steps [here](https://github.com/mwydmuch/ViZDoom/pull/486#issuecomment-889389185).
+* If you can run ViZDoom with sound enabled but there is no audio being played, try steps [here](https://github.com/Farama-Foundation/ViZDoom/pull/486#issuecomment-889389185).
 * If that fails, try uninstalling OpenAL you have on your system and then repeating the above installation.
 
 **Original issue:**
-* https://github.com/mwydmuch/ViZDoom/pull/486
+[https://github.com/Farama-Foundation/ViZDoom/pull/486](https://github.com/Farama-Foundation/ViZDoom/pull/486)
 
 
 ## How to display ViZDoom's window when running it on WSL (Windows Subsystem for Linux)
@@ -178,9 +178,18 @@ GUI apps do not work out-of-the-box on WSL on Windows 10/11. To make it work, yo
 * Now you can lunch your graphical application inside Ubuntu WSL including ViZDoom.
 
 **Original issue:**
-* https://github.com/mwydmuch/ViZDoom/issues/491
+[https://github.com/Farama-Foundation/ViZDoom/issues/491](https://github.com/Farama-Foundation/ViZDoom/issues/491)
 
 
 ## What is a difference between ViZDoom, ZDoom and GZDoom
 
 ViZDoom is based on the last version of ZDoom (2.8.1). ZDoom was discontinued in 2016, and the development switched to GZDoom, which provides a new 3D renderer implemented in OpenGL. ViZDoom, however, sticks to the original 2D software renderer, which is much faster for small resolutions than OpenGL. Because of that, ViZDoom modernized the ZDoom engine by adding support for Apple Silicon and ARM Linux and removing old unused parts of the code base (e.g., by removing Assembler parts).
+
+15.1K Views
+90%
+1 month ago
+Add to
+Jump to
+Report
+28
+3

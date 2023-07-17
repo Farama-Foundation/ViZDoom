@@ -37,6 +37,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.doctest",
     "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
     "sphinx.ext.githubpages",
     "sphinx.ext.autosectionlabel",
     "myst_parser",

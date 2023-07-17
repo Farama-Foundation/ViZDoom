@@ -2,7 +2,7 @@
 
 Instead of configuring the ViZDoom in code, you can load it from the configuration file(s). Each file is read sequentially, so multiple entries with the same key will overwrite previous entries.
 
-## <a name="format"></a> Format
+## Format
 Each entry in a configraution file is a pair of **key** and **value** separated by an equal sign (**"="**). The file format should also abide the following rules:
 
 * one entry per line (except for list parameters),
@@ -13,10 +13,10 @@ Each entry in a configraution file is a pair of **key** and **value** separated 
 
 A violation of any of these rules will result in ignoring **only** the line with the error and sending a warning message to stderr ("WARNING! Loading config from: ...").
 
-### <a name="list"></a> List of values
+### List of values
 **available_buttons** and **available_game_variables** are special parameters, which use multiple values and instead of a single value they expect a list of values separated by whitespaces and enclosed within braces ("{" and "}"). The list can stretch throughout multiple lines as long as all values are separated from each other by whitespaces.
 
-### <a name="append"></a> Appending values
+### Appending values
 Each list assignment (**KEY = { VALUES }**)clears values specified for this key before (in other configuration files or in the code). That is why the **append operator(*KEY += { VALUES })** is available. This way you can more easily combine multiple configuration files and tinker in code.
 
 ### <a name="config_keys"></a> Supported configuration keys:
@@ -68,7 +68,7 @@ Each list assignment (**KEY = { VALUES }**)clears values specified for this key 
 See also: [`DoomGame`](DoomGame.md) for config keys and functions related to them.
 
 
-### <a name="sample_config"></a>Sample configuration file content:
+### Sample configuration file content:
 
 ```ini
 vizdoom_path = ../../bin/vizdoom
@@ -115,4 +115,4 @@ doom_skill = 5
 
 ```
 
-Other examples of configuration files can be found [here](../scenarios)
+Other examples of configuration files can be found in [https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios)

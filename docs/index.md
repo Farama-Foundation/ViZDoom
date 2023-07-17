@@ -4,36 +4,75 @@ firstpage:
 lastpage:
 ---
 
-# ViZDoom allows developing AI bots that play Doom using only the visual information.
-
-```{figure} _static/REPLACE_ME.gif
-   :alt: ViZDoom
-   :width: 500
+```{project-logo} _static/img/vizdoom-text.png
+:alt: Gymnasium Logo
 ```
 
-**Basic example:**
+```{project-heading}
+Library for developing AI bots that play Doom using visual information.
+```
+
+```{figure} _static/img/vizdoom-demo.gif
+   :alt: ViZDoom Demo
+```
+
+This library allows creating of environments based on the Doom engine. It is primarily intended for research in machine visual learning and deep reinforcement learning, in particular. The library is written in C++ and provides Python API and wrappers for Gymnasium/OpenAI Gym interface. It is multi-platform (Linux, macOS, Windows), lightweight (just a few MB), and fast (capable of rendering even 7000 fps on a single CPU thread). The design of the library is meant to give high customization options; it supports single-player as well as multi-player modes and implements many additional features like access to the depth buffer (3D vision), automatic labeling of game objects visible in the frame, access to the audio buffer, access to the list of actors/objects and map geometry, off-screen rendering, episodes recording, in-game time scaling. While it provides a set of simple exemplary scenarios, it easily allows one to create custom ones thanks to the visual editors and scripting language supported by the engine.
+
+
+The Gymnasium interface allows to initialize and interact with the ViZDoom default environments as follows:
 
 ```{code-block} python
-
-import gymnasium as gym
-env = gym.make("LunarLander-v2", render_mode="human")
-observation, info = env.reset(seed=42)
+import gymnasium
+from vizdoom import gymnasium_wrapper
+env = gymnasium.make("VizdoomDeadlyCorridor-v0")
+observation, info = env.reset()
 for _ in range(1000):
-   action = env.action_space.sample()  # this is where you would insert your policy
+   action = policy(observation)  # this is where you would insert your policy
    observation, reward, terminated, truncated, info = env.step(action)
 
    if terminated or truncated:
       observation, info = env.reset()
+
 env.close()
 ```
+
+There is also the orginal ViZDoom API:
+
+```{code-block} python
+import vizdoom as vzd
+game = DoomGame()
+game.load_config(os.path.join(vzd.scenarios_path, "deadly_corridor.cfg"))
+game.init()
+for _ in range(1000):   
+   state = game.get_state()
+   action = policy(state)  # this is where you would insert your policy
+   reward = game.make_action(action)
+   
+   if game.is_episode_finished():
+      game.new_episode()
+
+game.close()
+```
+
 
 ```{toctree}
 :hidden:
 :caption: Introduction
 
-introduction/quickstart
-introduction/installation
+introduction/pythonQuickstart
+introduction/building
 introduction/wrappers
+```
+
+```{toctree}
+:hidden:
+:caption: Python API
+
+api_python/gymnasium
+api_python/doomGame
+api_python/gameState
+api_python/enums
+api_python/utils
 ```
 
 ```{toctree}
@@ -41,10 +80,19 @@ introduction/wrappers
 :caption: C++ API
 
 api_cpp/doomGame
-api_cpp/types
+api_cpp/gameState
+api_cpp/enums
 api_cpp/configurationFiles
 api_cpp/exceptions
 api_cpp/utils
+```
+
+```{toctree}
+:hidden:
+:caption: Environments
+
+environments/default
+environments/creatingCustom
 ```
 
 ```{toctree}

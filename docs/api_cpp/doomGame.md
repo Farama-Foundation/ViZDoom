@@ -2,7 +2,7 @@
 
 DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc.
 
-Here we document all the methods of the DoomGame class and their Python bindings.
+Here we document all the methods of the DoomGame class and their corresponding Python bindings implemented as pybind11 module.
 
 
 ## Flow control methods:
@@ -34,15 +34,15 @@ The game can be initialized again after being closed.
 ---
 ### `newEpisode`
 
-| C++    | `void newEpisode(std::string recordFilePath = "")` |
-| :--    | :--                                                |
-| Python | `new_episode(recordFilePath: str = "") -> None`    |
+| C++    | `void newEpisode(std::string recordingFilePath = "")` |
+| :--    | :--                                                   |
+| Python | `new_episode(recordingFilePath: str = "") -> None`    |
 
 Changed in 1.1.0
 
 Initializes a new episode. The state of an environment is completely restarted (all variables and rewards are reset to their initial values).
 After calling this method, the first state from the new episode will be available.
-If the `recordFilePath` is not empty, the new episode will be recorded to this file (as a Doom lump).
+If the `recordingFilePath` is not empty, the new episode will be recorded to this file (as a Doom lump).
 
 In a multiplayer game, the host can call this method to finish the game.
 Then the rest of the players must also call this method to start a new episode.
@@ -222,11 +222,11 @@ See also:
 
 Changed in 1.1.0
 
-Returns [`GameState`](./types.md#gamestate) object with the current game state.
+Returns [`GameState`](./gameState.md#gamestate) object with the current game state.
 If the current episode is finished, `nullptr/null/None` will be returned.
 
 See also:
-- [`Types: GameState`](./types.md#gamestate)
+- [`GameState`](./gameState.md#gamestate)
 
 
 ---
@@ -238,10 +238,10 @@ See also:
 
 Added in 1.1.6
 
-Returns [`ServerState`](./types.md#serverstate) object with the current server state.
+Returns [`ServerState`](./gameState.md#serverstate) object with the current server state.
 
 See also:
-- [`Types: ServerState`](./types.md#serverstate)
+- [`ServerState`](./gameState.md#serverstate)
 
 
 ---
@@ -304,7 +304,7 @@ tic counter/time and total reward state keep their values.
 Returns the list of available `Buttons`.
 
 See also:
-- [`Types: Button`](./types.md#button)
+- [`Enums: Button`](./enums.md#button)
 - [`addAvailableButton`](#addavailablebutton)
 - [`setAvailableButtons`](#addavailablebuttons)
 
@@ -321,7 +321,7 @@ Set given list of `Button`s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available `But
 Config key: `availableButtons/available_buttons` (list)
 
 See also:
-- [`Types: Button`](./types.md#button)
+- [`Enums: Button`](./enums.md#button)
 - [`ConfigFile: List`](./configurationFiles.md#list)
 - [`addAvailableButton`](#addavailablebutton)
 
@@ -333,13 +333,13 @@ See also:
 | :--    | :--                                                                 |
 | Python | `add_available_button(button: Button, maxValue: float = 0) -> None` |
 
-Add [`Button`](./types.md#button) type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to available `Buttons` and sets the maximum allowed, absolute value for the specified button.
+Add [`Button`](./enums.md#button) type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to available `Buttons` and sets the maximum allowed, absolute value for the specified button.
 If the given button has already been added, it will not be added again, but the maximum value is overridden.
 
 Config key: `availableButtons/available_buttons` (list)
 
 See also:
-- [`Types: Button`](./types.md#button)
+- [`Enums: Button`](./enums.md#button)
 - [`ConfigFile: List`](./configurationFiles.md#list)
 - [`setAvailableButtons`](#addavailablebuttons)
 - [`setButtonMaxValue`](#setbuttonmaxvalue)
@@ -355,7 +355,7 @@ See also:
 Clears all available `Buttons` added so far.
 
 See also:
-- [`Types: Button`](./types.md#button)
+- [`Enums: Button`](./enums.md#button)
 
 
 ---
@@ -368,7 +368,7 @@ See also:
 Returns the number of available `Buttons`.
 
 See also:
-- [`Types: Button`](./types.md#button)
+- [`Enums: Button`](./enums.md#button)
 
 
 ---
@@ -384,7 +384,7 @@ This method makes sense only for delta buttons.
 The constraints limit applies in all Modes.
 
 See also:
-- [`Types: Button`](./types.md#button)
+- [`Enums: Button`](./enums.md#button)
 
 
 ---
@@ -397,7 +397,7 @@ See also:
 Returns the maximum allowed absolute value for the specified button.
 
 See also:
-- [`Types: Button`](./types.md#button)
+- [`Enums: Button`](./enums.md#button)
 
 
 ---
@@ -410,7 +410,7 @@ See also:
 Returns the current state of the specified button (`ATTACK`, `USE` etc.).
 
 See also:
-- [`Types: Button`](./types.md#button)
+- [`Enums: Button`](./enums.md#button)
 
 
 ## GameVariables methods
@@ -425,7 +425,7 @@ See also:
 Returns the list of available `GameVariables`.
 
 See also:
-- [`Types: GameVariable`](./types.md#gamevariable)
+- [`Enums: GameVariable`](./enums.md#gamevariable)
 - [`addAvailableGameVariable`](#addavailablegamevariable)
 - [`setAvailableGameVariables`](#setavailablegamevariables)
 
@@ -437,12 +437,12 @@ See also:
 | :--    | :--                                                                            |
 | Python | `set_available_game_variables(variables: list | tuple[GameVariables]) -> None` |
 
-Set list of [`GameVariable`](./types.md#gamevariable) as available `GameVariables` in the [`GameState`](./types.md#gamestate) returned by `getState` method.
+Set list of [`GameVariable`](./enums.md#gamevariable) as available `GameVariables` in the [`GameState`](./gameState.md#gamestate) returned by `getState` method.
 
 Config key: `availableGameVariables/available_game_variables` (list)
 
 See also:
-- [`Types: GameVariable`](./types.md#gamevariable)
+- [`Enums: GameVariable`](./enums.md#gamevariable)
 - [`ConfigFile: List`](./configurationFiles.md#list)
 - [`addAvailableGameVariable`](#addavailablegamevariable)
 
@@ -454,12 +454,12 @@ See also:
 | :--    | :--                                                           |
 | Python | `add_available_game_variable(variable: GameVariable) -> None` |
 
-Adds the specified [`GameVariable`](./types.md#gamevariable) to the list of available game variables (e.g. `HEALTH`, `AMMO1`, `ATTACK_READY`) in the [`GameState`](./types.md#gamestate) returned by `getState` method.
+Adds the specified [`GameVariable`](./enums.md#gamevariable) to the list of available game variables (e.g. `HEALTH`, `AMMO1`, `ATTACK_READY`) in the [`GameState`](./gameState.md#gamestate) returned by `getState` method.
 
 Config key: `availableGameVariables/available_game_variables` (list)
 
 See also:
-- [`Types: GameVariable`](./types.md#gamevariable)
+- [`Enums: GameVariable`](./enums.md#gamevariable)
 - [`ConfigFile: List`](./configurationFiles.md#list)
 - [`setAvailableGameVariables`](#setavailablegamevariables)
 
@@ -471,10 +471,10 @@ See also:
 | :--    | :--                                        |
 | Python | `clear_available_game_variables() -> None` |
 
-Clears the list of available `GameVariables` that are included in the GameState returned by [`getState`](#getstate) method.
+Clears the list of available `GameVariables` that are included in the [`GameState`](./gameState.md#gamestate) returned by [`getState`](#getstate) method.
 
 See also:
-- [`Types: GameVariable`](./types.md#gamevariable)
+- [`Enums: GameVariable`](./enums.md#gamevariable)
 - [`ConfigFile: List`](./configurationFiles.md#list)
 
 
@@ -488,7 +488,7 @@ See also:
 Returns the number of available `GameVariables`.
 
 See also:
-- [`Types: GameVariable`](./types.md#gamevariable)
+- [`Enums: GameVariable`](./enums.md#gamevariable)
 - [`ConfigFile: List`](./configurationFiles.md#list)
 
 
@@ -504,7 +504,7 @@ The specified game variable does not need to be among available game variables (
 It could be used for e.g. shaping. Returns 0 in case of not finding given `GameVariable`.
 
 See also:
-- [`Types: GameVariable`](./types.md#gamevariable)
+- [`Enums: GameVariable`](./enums.md#gamevariable)
 
 
 ## Game Arguments methods
@@ -634,7 +634,7 @@ See also:
 Returns current mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`).
 
 See also:
-- [`Types: Mode`](./types.md#mode)
+- [`Enums: Mode`](./enums.md#mode)
 
 
 ---
@@ -651,7 +651,7 @@ Default value: `PLAYER`.
 Config key: `mode`
 
 See also:
-- [`Types: Mode`](./types.md#mode)
+- [`Enums: Mode`](./enums.md#mode)
 
 
 ---
@@ -874,7 +874,7 @@ Config key: `screenResolution/screen_resolution`
 
 
 See also:
-- [`Types: ScreenResolution`](./types.md#screenresolution)
+- [`Enums: ScreenResolution`](./enums.md#screenresolution)
 
 
 ---
@@ -903,7 +903,7 @@ Default value: `CRCGCB`
 Config key: `screenFormat/screen_format`
 
 See also:
-- [`Types: ScreenFormat`](./types.md#screenformat)
+- [`Enums: ScreenFormat`](./enums.md#screenformat)
 
 
 ---
@@ -935,7 +935,7 @@ Default value: false
 Config key: `depthBufferEnabled/depth_buffer_enabled`
 
 See also:
-- [`Types: GameState`](./types.md#gamestate)
+- [`GameState`](./gameState.md#gamestate)
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
 
 
@@ -968,8 +968,8 @@ Default value: false
 Config key: `labelsBufferEnabled/labels_buffer_enabled`
 
 See also:
-- [`Types: Label`](./types.md#label)
-- [`Types: GameState`](./types.md#gamestate)
+- [`GameState: Label`](./gameState.md#label)
+- [`GameState`](./gameState.md#gamestate)
 - [examples/python/labels.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels.py)
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
 
@@ -1002,7 +1002,7 @@ Default value: false
 Config key: `automapBufferEnabled/automap_buffer_enabled`
 
 See also:
-- [`Types: GameState`](./types.md#gamestate)
+- [`GameState`](./gameState.md#gamestate)
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py),
 
 
@@ -1023,7 +1023,7 @@ Default value: `NORMAL`
 Config key: `automapMode/set_automap_mode`
 
 See also:
-- [`Types: AutomapMode`](./types.md#automapmode)
+- [`Enums: AutomapMode`](./enums.md#automapmode)
 
 
 ---
@@ -1352,8 +1352,8 @@ Default value: false
 Config key: `objectsInfoEnabled/objects_info_enabled`
 
 See also:
-- [`Types: GameState`](./types.md#gamestate)
-- [`Types: Object`](./types.md#object)
+- [`GameState`](./gameState.md#gamestate)
+- [`GameState: Object`](./gameState.md#object)
 - [examples/python/objects_and_sectors.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py),
 
 
@@ -1386,8 +1386,8 @@ Default value: false
 Config key: `sectorsInfoEnabled/sectors_info_enabled`
 
 See also:
-- [`Types: GameState`](./types.md#gamestate)
-- [`Types: Sector`](./types.md#sector)
+- [`GameState`](./gameState.md#gamestate)
+- [`GameState: Sector`](./gameState.md#sector)
 - [examples/python/objects_and_sectors.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py)
 
 
@@ -1404,7 +1404,7 @@ Returns true if the audio buffer is enabled.
 
 
 ---
-### `setSectorsInfoEnabled`
+### `setAudioBufferEnabled`
 
 | C++    | `void setAudioBufferEnabled(bool audioBuffer)`       |
 | :--    | :--                                                  |
@@ -1419,8 +1419,8 @@ Default value: false
 Config key: `audioBufferEnabled/audio_buffer_enabled`
 
 See also:
-- [`Types: GameState`](./types.md#gamestate)
-- [`Types: SamplingRate`](./types.md#sampling-rate)
+- [`GameState`](./gameState.md#gamestate)
+- [`Enums: SamplingRate`](./enums.md#sampling-rate)
 - [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
 
 
@@ -1437,8 +1437,8 @@ Returns the sampling rate of the audio buffer.
 
 
 See also:
-- [`Types: GameState`](./types.md#gamestate)
-- [`Types: SamplingRate`](./types.md#sampling-rate)
+- [`GameState`](./gameState.md#gamestate)
+- [`Enums: SamplingRate`](./enums.md#sampling-rate)
 - [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
 
 
@@ -1458,8 +1458,8 @@ Default value: false
 Config key: `audioSamplingRate/audio_samping_rate`
 
 See also:
-- [`Types: GameState`](./types.md#gamestate)
-- [`Types: SamplingRate`](./types.md#sampling-rate)
+- [`GameState`](./gameState.md#gamestate)
+- [`Enums: SamplingRate`](./enums.md#sampling-rate)
 - [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
 
 
@@ -1476,7 +1476,7 @@ Returns the size of the audio buffer.
 
 
 See also:
-- [`Types: GameState`](./types.md#gamestate)
+- [`GameState`](./gameState.md#gamestate)
 - [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
 
 
@@ -1498,5 +1498,5 @@ Default value: 4
 Config key: `audioBufferSize/audio_buffer_size`
 
 See also:
-- [`Types: GameState`](./types.md#gamestate)
+- [`GameState`](./gameState.md#gamestate)
 - [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
