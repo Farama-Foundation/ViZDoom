@@ -16,9 +16,9 @@
 
 # -- Project information -----------------------------------------------------
 import os
-from typing import Any, Dict
+from typing import Any, Dict  # noqa
 
-import vizdoom
+import vizdoom  # noqa
 
 
 project = "ViZDoom"

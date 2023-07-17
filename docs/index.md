@@ -36,18 +36,18 @@ for _ in range(1000):
 env.close()
 ```
 
-There is also the orginal ViZDoom API:
+There is also the original ViZDoom API:
 
 ```{code-block} python
 import vizdoom as vzd
 game = DoomGame()
 game.load_config(os.path.join(vzd.scenarios_path, "deadly_corridor.cfg"))
 game.init()
-for _ in range(1000):   
+for _ in range(1000):
    state = game.get_state()
    action = policy(state)  # this is where you would insert your policy
    reward = game.make_action(action)
-   
+
    if game.is_episode_finished():
       game.new_episode()
 
