@@ -1,14 +1,14 @@
 [![PyPI version](https://badge.fury.io/py/vizdoom.svg)](https://badge.fury.io/py/vizdoom) ![Build](https://github.com/mwydmuch/ViZDoom/workflows/Build/badge.svg) [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Farama-Foundation/ViZDoom/master/vizdoom-text.png" width="500px"/>
+  <img src="https://raw.githubusercontent.com/Farama-Foundation/ViZDoom/master/docs/_static/img/vizdoom-text.png" width="500px"/>
 </p>
 
 ViZDoom allows developing AI **bots that play Doom using only visual information** (the screen buffer). It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.
 
 ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game mechanics.
 
-![vizdoom_deadly_corridor](http://www.cs.put.poznan.pl/mkempka/misc/vizdoom_gifs/vizdoom_corridor_segmentation.gif)
+![ViZDoom Demo](https://raw.githubusercontent.com/Farama-Foundation/ViZDoom/master/docs/_static/img/vizdoom-demo.gif)
 
 
 ## Features
@@ -26,7 +26,7 @@ ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game 
 - Access to the list of actors/objects and map geometry,
 - Off-screen rendering,
 - Episodes recording,
-- Time scaling in async mode.
+- In-game time scaling in async mode.
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
