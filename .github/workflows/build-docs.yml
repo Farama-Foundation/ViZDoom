@@ -1,4 +1,4 @@
-name: Build and Deploy Docs
+name: Build and deploy docs
 on:
   push:
     branches: [master]
@@ -19,7 +19,7 @@ jobs:
             python-version: '3.9'
 
       - name: Install ViZDoom dependencies
-        run: apt install cmake git libboost-all-dev libsdl2-dev libopenal-dev
+        run: sudo apt install cmake git libboost-all-dev libsdl2-dev libopenal-dev
 
       - name: Install ViZDoom
         run: pip install .
