@@ -181,22 +181,24 @@ Useful articles:
 
 ## Awesome Doom tools/projects
 
-- [SLADE3](http://slade.mancubus.net/) - great Doom map (scenario) editor for Linux, MacOS and Windows.
-- [Doom Builder 2](http://www.doombuilder.com/) - another great Doom map editor for Windows.
+- [SLADE3](http://slade.mancubus.net/) - Great Doom map (scenario) editor for Linux, MacOS and Windows.
+- [Doom Builder 2](http://www.doombuilder.com/) - Another great Doom map editor for Windows.
 - [OBLIGE](http://oblige.sourceforge.net/) - Doom random map generator and [PyOblige](https://github.com/mwydmuch/PyOblige) is a simple Python wrapper for it.
-- [Omgifol](https://github.com/devinacker/omgifol) - nice Python library for manipulating Doom maps.
+- [Omgifol](https://github.com/devinacker/omgifol) - Nice Python library for manipulating Doom maps.
 - [NavDoom](https://github.com/agiantwhale/navdoom) - Maze navigation generator for ViZDoom (similar to DeepMind Lab).
 - [MazeExplorer](https://github.com/microsoft/MazeExplorer) - More sophisticated maze navigation generator for ViZDoom.
-- [Sample Factory](https://github.com/alex-petrenko/sample-factory) - A high performance reinforcement learning framework for ViZDoom.
-- [EnvPool](https://github.com/sail-sg/envpool/) - A high performance vectorized environment for ViZDoom.
-- [Obsidian](https://github.com/dashodanger/Obsidian) - Doom random map generator, continuation of OBLIGE.
+- [Sample Factory](https://github.com/alex-petrenko/sample-factory) - A high-performance reinforcement learning framework for ViZDoom.
+- [EnvPool](https://github.com/sail-sg/envpool/) - A high-performance vectorized environment for ViZDoom.
+- [Obsidian](https://github.com/dashodanger/Obsidian) - Doom random map generator, a continuation of OBLIGE.
 
 
 ## Contributions
 
-This project is maintained and developed in our free time. All bug fixes, new examples, scenarios and other contributions are welcome! We are also open to features ideas and design suggestions.
+This project is maintained and developed in our free time. All bug fixes, new examples, scenarios, and other contributions are welcome! We are also open to feature ideas and design suggestions.
+
+We have a roadmap for future development work for ViZDoom available [here](https://github.com/Farama-Foundation/ViZDoom/issues/546).
 
 
 ## License
 
-Code original to ViZDoom is under MIT license. ZDoom uses code from several sources with [varying licensing schemes](http://zdoom.org/wiki/license).
+The code original to ViZDoom is under MIT license. ZDoom uses code from several sources with [varying licensing schemes](http://zdoom.org/wiki/license).
