@@ -65,8 +65,8 @@ Calculates the number of seconds that will pass during specified number of tics.
 | Python | `doom_fixed_to_double(doomFixed: int | float) -> float` |
 
 Converts fixed point numeral to a floating point value.
-Doom's engine internaly use fixed point numbers. 
-If you read them directly from `USERX` variables, 
+Doom's engine internally use fixed point numbers.
+If you read them directly from `USERX` variables,
 you may want to convert them to floating point numbers.
 
 See also:

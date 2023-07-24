@@ -11,7 +11,7 @@ OUTPUT_FILE = "src/lib_python/ViZDoomDocstrings.h"
 RAW_STRING_ESCAPE_SEQ = "DOCSTRING"
 FUNCTION_HEADER_REGEX = r"^##+ *`([a-zA-Z]+)` *$"
 TO_REPLACE = [
-    r"\[([`a-zA-Z]+)\]\(.*\)", # Links
+    r"\[([`a-zA-Z]+)\]\(.*\)",  # Links
 ]
 LINES_TO_IGNORE_REGEXES = [
     r"---",  # Lines
@@ -24,7 +24,7 @@ LINES_TO_IGNORE_REGEXES = [
     r"^Deprecated since .*$",  # Deprecated since annotations
     r"^Removed in .*$",  # Removed in annotations
     r"^Config key: .*$",  # Config annotations
-    r"^Python aliases .*$",  # Python aliasses
+    r"^Python aliases .*$",  # Python aliases
     r"^#+.*",  # Other headings
 ]
 
@@ -80,7 +80,9 @@ namespace docstrings {
                         next_docstring += line
 
             if started:
-                output_file.write(f'{next_docstring.strip()}){RAW_STRING_ESCAPE_SEQ}";\n\n')
+                output_file.write(
+                    f'{next_docstring.strip()}){RAW_STRING_ESCAPE_SEQ}";\n\n'
+                )
 
             if "namespace" in file:
                 output_file.write(f"}} // namespace {file['namespace']}\n\n")
