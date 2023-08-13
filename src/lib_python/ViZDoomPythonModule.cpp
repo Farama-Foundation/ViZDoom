@@ -24,7 +24,8 @@
 #include "ViZDoom.h"
 #include "ViZDoomGamePython.h"
 #include "ViZDoomVersion.h"
-#include "ViZDoomDocstrings.h"
+#include "ViZDoomMethodsDocstrings.h"
+#include "ViZDoomObjectsDocstrings.h"
 
 #include <pybind11/pybind11.h>
 #include <vector>

@@ -4,15 +4,23 @@ import re
 
 
 FILES_TO_PARSE = [
-    {"input_filepath": "docs/api_cpp/doomGame.md", "output_filepath": "docs/api_python/doomGame.md", "submodule": "DoomGame.", 
-     "append_to_header": """
+    {
+        "input_filepath": "docs/api/cpp/doomGame.md",
+        "output_filepath": "docs/api/python/doomGame.md",
+        "submodule": "DoomGame.",
+        "append_to_header": """
 ```{eval-rst}
 .. autoclass:: vizdoom.DoomGame
 ```
-"""},
-    {"input_filepath": "docs/api_cpp/utils.md", "output_filepath": "docs/api_python/utils.md", "submodule": ""},
+""",
+    },
+    {
+        "input_filepath": "docs/api/cpp/utils.md",
+        "output_filepath": "docs/api/python/utils.md",
+        "submodule": "",
+    },
 ]
-SECTION_REGEX = r"^##+ *([a-zA-Z ]+) *$"
+SECTION_REGEX = r"^##+ *([a-zA-Z/-:, ]+) *$"
 FUNCTION_REGEX = r"^###+ *`([a-zA-Z]+)` *$"
 
 
@@ -43,13 +51,17 @@ if __name__ == "__main__":
 
                 elif not started:
                     start_lines += line
-                
+
                 else:
                     match = re.match(FUNCTION_REGEX, line)
                     if match:
                         function_name = match.group(1)
                         function_name = function_name.replace("ViZDoom", "Vizdoom")
-                        function_name = re.sub(r'(?<!^)(?=[A-Z])', '_', function_name).lower()  # Convert CamelCase to snake_case
-                        output_file.write(f".. autofunction:: vizdoom.{fp['submodule']}{function_name}\n")
+                        function_name = re.sub(
+                            r"(?<!^)(?=[A-Z])", "_", function_name
+                        ).lower()  # Convert CamelCase to snake_case
+                        output_file.write(
+                            f".. autofunction:: vizdoom.{fp['submodule']}{function_name}\n"
+                        )
 
-
+            output_file.write("```\n")

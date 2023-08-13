@@ -42,9 +42,10 @@ configure_file(
 )
 
 set(VIZDOOM_PYTHON_SOURCES
-    ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomDocstrings.h
     ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.h
     ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomGamePython.cpp
+    ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomMethodsDocstrings.h
+    ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomObjectsDocstrings.h
     ${VIZDOOM_PYTHON_SRC_DIR}/ViZDoomPythonModule.cpp)
 
 pybind11_add_module(libvizdoom_python ${VIZDOOM_PYTHON_SOURCES})
