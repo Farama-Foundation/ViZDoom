@@ -93,9 +93,9 @@ namespace vizdoom {
         /*------------------------------------------------------------------------------------------------------------*/
 
         std::vector<GameVariable> getAvailableGameVariables();
-        void setAvailableGameVariables(std::vector<GameVariable> gameVariables);
+        void setAvailableGameVariables(std::vector<GameVariable> variables);
 
-        void addAvailableGameVariable(GameVariable var);
+        void addAvailableGameVariable(GameVariable variable);
         void clearAvailableGameVariables();
         size_t getAvailableGameVariablesSize();
         double getGameVariable(GameVariable variable);

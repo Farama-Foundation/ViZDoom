@@ -398,16 +398,16 @@ namespace vizdoom {
         return this->availableGameVariables;
     }
 
-    void DoomGame::setAvailableGameVariables(std::vector<GameVariable> gameVariables){
+    void DoomGame::setAvailableGameVariables(std::vector<GameVariable> variables){
         this->clearAvailableGameVariables();
-        for(auto i : gameVariables) this->addAvailableGameVariable(i);
+        for(auto i : variables) this->addAvailableGameVariable(i);
     }
 
-    void DoomGame::addAvailableGameVariable(GameVariable var) {
+    void DoomGame::addAvailableGameVariable(GameVariable variable) {
         if (!this->isRunning() &&
-            std::find(this->availableGameVariables.begin(), this->availableGameVariables.end(), var)
+            std::find(this->availableGameVariables.begin(), this->availableGameVariables.end(), variable)
             == this->availableGameVariables.end()) {
-            this->availableGameVariables.push_back(var);
+            this->availableGameVariables.push_back(variable);
         }
     }
 
@@ -667,7 +667,3 @@ namespace vizdoom {
         updateState();
     }
 }
-
-
-
-
