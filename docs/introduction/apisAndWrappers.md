@@ -1,4 +1,4 @@
-# Wrapper
+# API and wrappers
 
 ## Gymnasium wrappers
 

@@ -1,6 +1,6 @@
 # DoomGame
 
-DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc.
+DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc. The declarations of this class and its methods can be found in the `include/ViZDoomGame.h` header file.
 
 Here we document all the methods of the DoomGame class and their corresponding Python bindings implemented as pybind11 module.
 

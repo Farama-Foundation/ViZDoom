@@ -4,8 +4,6 @@ Here we document the helpers functions that are not part of any object.
 They mostly help to deal with conversion of Doom's engine types.
 
 
-
-
 ## Time conversion functions
 
 ```{eval-rst}
@@ -26,3 +24,4 @@ They mostly help to deal with conversion of Doom's engine types.
 ```{eval-rst}
 .. autofunction:: vizdoom.is_binary_button
 .. autofunction:: vizdoom.is_delta_button
+```

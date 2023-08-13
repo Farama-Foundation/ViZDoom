@@ -1,6 +1,7 @@
 # GameState
 
 GameState is the main object returned by [`DoomGame: getState`](./doomGame.md#getstate) method.
+The declarations of all the enums can be found in the `include/ViZDoomTypes.h` header file.
 
 
 ## `GameState`
@@ -57,7 +58,10 @@ See also:
 - `double / float` **objectVelocityY / object_velocity_y**
 - `double / float` **objectVelocityZ / object_velocity_z**
 
-**objectId / object_id** - unique object ID, if both Labels and Objects information is enabled, this will be the same as **id** in corresponding**Object**.
+
+Description of the object in the labels buffer.
+
+**objectId / object_id** - unique object ID, if both Labels and Objects information is enabled, this will be the same as **id** in corresponding **Object**.
 
 **objectName / object_name** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
 
@@ -87,11 +91,12 @@ See also:
 - `double / float` **velocityY / velocity_y**
 - `double / float` **velocityZ / velocity_z**
 
+Description of the object present in the game world.
+
 **id** - unique object ID.
 
 **name** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
 
-Right now `Object` is only available to C++ and Python.
 Added in 1.1.8.
 
 See also:
@@ -109,13 +114,14 @@ See also:
 - `double / float` **y2**
 - `bool / bool` **isBlocking / is_blocking**
 
+Description of the line that is part of a sector definition.
+
 **x1**, **y1** - position of the line's first vertex.
 
 **x2**, **y2** - position of the line's second vertex.
 
 **isBlocking / is_blocking** - is true, if line is a wall that can't be passed.
 
-Right now `Line` is only available to C++ and Python.
 Added in 1.1.8.
 
 See also:
@@ -130,13 +136,14 @@ See also:
 - `double / float` **ceilingHeight / ceiling_height**
 - `std::vector<Label> / list` **lines**
 
+Description of the sector, part of the map with the same floor and ceiling height.
+
 **floorHeight / floor_height** - height of the sector's floor.
 
 **ceilingHeight / ceiling_height** - height of the sector's ceiling.
 
 **lines** - contains list of line segments, that forms sector.
 
-Right now `Sector` is only available to C++ and Python.
 Added in 1.1.8.
 
 See also:
@@ -146,11 +153,6 @@ See also:
 
 ---
 ## `ServerState`
-
-
-ServerState is the main object returned by [`DoomGame: getServerState`](./doomGame.md#getserverstate) method, and it purpose is to get more information about the state of the multi-player game.
-
-
 (`C++ type / Python type` **name**)
 
 - `unsigned int / int` **tic**
@@ -162,9 +164,9 @@ ServerState is the main object returned by [`DoomGame: getServerState`](./doomGa
 - `unsigned int[] / list` **playersLastActionTic / players_last_action_tic **
 - `unsigned int[] / list` **playersLastKillTic / players_last_kill_tic **
 
-Right now `ServerInfo` is only available to C++ and Python.
-Added in 1.1.6.
+ServerState is the main object returned by [`DoomGame: getServerState`](./doomGame.md#getserverstate) method, and it purpose is to get more information about the state of the multi-player game. 
 
+Added in 1.1.6.
 
 See also:
 - [`DoomGame: getServerState`](./doomGame.md#getserverstate),
