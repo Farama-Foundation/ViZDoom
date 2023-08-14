@@ -1,6 +1,6 @@
 # Creating a custom environment
 
-ViZDoom allows using of custom scenarios/environments that can be easily prepared using modern Doom map editors like [SLADE](http://slade.mancubus.net/index.php?page=downloads) (available for Linux, MacOS, and Windows) or [DoomBuilder](http://www.doombuilder.com/index.php?p=downloads) (a bit better editor, but only available for Windows), that we recommend using. These editors allow designing a map used by the environment as well as programming the custom logic and rewards using ACS scripting language. In addition to a map created in one of the editors, that are saved to a .wad file, ViZDoom uses .cfg config files that store additional information about the environment. Such .wad and .cfg together define a custom environment that can be used with ViZDoom. The following will guide you through the process of creating a custom environment.
+ViZDoom allows using of custom scenarios/environments that can be easily prepared using modern Doom map editors like [SLADE](http://slade.mancubus.net/index.php?page=downloads) (available for Linux, MacOS, and Windows) or [DoomBuilder](http://www.doombuilder.com/index.php?p=downloads) (a bit better editor, but only available for Windows), that we recommend using. These editors allow designing a map used by the environment as well as programming the custom logic and rewards using ACS scripting language. In addition to a map created in one of the editors that are saved to a .wad file, ViZDoom uses .cfg config files that store additional information about the environment. Such .wad and .cfg together define a custom environment that can be used with ViZDoom. The following will guide you through the process of creating a custom environment.
 
 
 ## Limitations and possibilities
@@ -14,39 +14,23 @@ It has a simple C-like syntax and is very powerful. It allows to create of custo
 Due to the engine's architecture, the only area that ACS is a bit lacking is the possibility of modifying map geometry. Simple modifications, like changing the height of some part of the level to create elevators or doors, are possible, but there are not many more options. Using those, it is possible, for example, to create a randomized maze, but something more complex might be tricky or impossible.
 - **Basic functionality provided by the library:** To simplify the creation of environments, some simple functionalities are also embedded into the library. This way, they don't need to be implemented in ACS every single time but can be configured in a config file. These include:
   - possibility to define actions space
+  - possibility to define what is included in the observation (types of buffers, additional variables, etc.)
   - living rewards and death rewards
   - limited time/truncation
-- **Lack of advanced physics:** ViZDoom engine is obviously based on old technology, and it's limited. It does not support advanced physics, so environments where the aim is to move objects, build structures, etc., are not possible. 
+- **Lack of advanced physics:** ViZDoom engine is obviously based on old technology, and it's limited. It does not support advanced physics, so environments where the aim is to move objects, build structures, etc., are not possible.
 - **Support for multiplayer**: ViZDoom supports multiplayer for up to 16 players. Beyond standard multiplayer mods. ACS can be used to create custom multiplayer scenarios, which can be cooperative or adversarial.
 
 
-## Createing a custom map
+## Step 1: Creating a custom map
 
+To create a custom scenario (.wad file), you need to use a dedicated editor. [SLADE](http://slade.mancubus.net/index.php?page=downloads) (available for Linux, MacOS, and Windows) or [DoomBuilder](http://www.doombuilder.com/index.php?p=downloads) (a bit better editor, but only available for Windows), are software that we recommend using for this task.
 
+When creating a new map, select UDMF format for maps and ZDBPS, which is a node builder for ZDoom. You should not have any problems with creating a map using the editor, it is simple, and you can find a lot of tutorials on the internet.
 
+You can add some custom ACS scripts to your map. This ACS script allows to add implement a rewarding mechanism.
+To do that, you need to employ the global variable 0 like this:
 
-
-
-The following tutorial will show how to create a simple environment with a custom map and a custom scenario.
-
-
-
-To create a custom scenario (iwad file), you need to use a dedicated editor. Doom Builder and Slade are the software tools we recommend for this task.
-
-Scenarios (iwad files) contain maps and ACS scripts. For starters, it is a good idea to analyze the sample scenarios, which come with ViZDoom (remember that these are binary files).
-
-
-KEEP THIS IN MIND
-
-ACS and software for creating wads is quite simple and relatively user friendly but sometimes they act unexpectedly without notifying you so here are some thoughts that can potentailly help you and save hours of wondering:
-
-    1.0 and 1 is not the same, the first one is the fixed point number stored in int and the second one is an ordinary int. Watch out what is expected by the functions you use cause using the wrong format can result in rubbish.
-    Use UDMF format for maps and ZDBPS which is node (whatever that is) builder for Zdoom.
-
-Reward
-
-In order to use the rewarding mechanism you need to employ the global variable 0:
-
+```{code-block} C
 global int 0:reward;
 ...
 script 1(void)
@@ -55,8 +39,66 @@ script 1(void)
     reward += 100.0;
 }
 ...
+```
 
-ViZDoom treats the reward as a fixed point numeral, so you need to use decimal points in ACS scripts. For example 1 is treated as an ordinary integer and 1.0 is a fixed point number. Using ordinary integer values will, most probably, result in unexpected behaviour.
+The global variable 0 will be used by ViZDoom to get the reward value.
+
+Please note that in ACS 1.0 and 1 are not the same. The first one is the fixed point number stored in int, and the second one is an ordinary int. Watch out for what is expected by the functions you use cause using the wrong format can result in rubbish.
+ViZDoom treats the reward as a fixed point numeral, so you always need to use decimal points in ACS scripts.
 
 
+## Step 2: Creating a custom config file
 
+After creating a map, it is a good idea to create an accompanying config file, that allows to easily defined action space, available information in a state/observation, additional rewards, etc. The config file is a simple text file in ini-like format that can be created using any text editor. The config files are documented under [api/configurationFiles.md](api/configurationFiles.md).
+
+The following is an example of a config file that can be used with the map created in the previous step:
+
+```{code-block} ini
+doom_scenario_path = mywad.wad
+doom_map = map01        # map in the wad file that will be used (wad can contain more than one map)
+
+living_reward = -1      # add -1 reward for each tic (action)
+episode_start_time = 14 # make episodes start after 14 tics (after unholstering the gun)
+episode_timeout = 300   # make episodes finish after 300 actions (tics)
+
+available_buttons = {   # limit action space to only three buttons
+    MOVE_LEFT
+    MOVE_RIGHT
+    ATTACK
+}
+
+available_game_variables = { # make information about ammo available in the state
+    AMMO2
+    AMMO3
+}
+
+depth_buffer = true     # add depth buffer to the state
+```
+
+
+## Step 3: Loading/using a custom environment/scenario
+
+The easiest way to use a custom scenario in the original ViZDoom API is to load the config file using a dedicated method:
+
+```{code-block} python
+game = vzd.DoomGame()
+game.load_config("<path to .cfg file>")
+```
+
+It can also be registered as a Gymnasium environment using the following method:
+
+```{code-block} python
+from gymnasium.envs.registration import register
+
+register(
+    id="<name of your environment>",
+    entry_point="vizdoom.gymnasium_wrapper.base_gymnasium_env:VizdoomEnv",
+    kwargs={"scenario_file": "<path to .cfg file>"},
+)
+```
+
+And then used as any other Gymnasium environment:
+
+```{code-block} python
+env = gymnasium.make("<name of your environment>")
+```

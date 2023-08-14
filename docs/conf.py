@@ -72,17 +72,17 @@ add_module_names = False
 
 # Shorten C++ module signatures
 def strip_signatures(app, what, name, obj, options, signature, return_annotation):
-    if signature is not None:                                                   
-        signature = signature.replace('.vizdoom.', '.')                  
+    if signature is not None:
+        signature = signature.replace(".vizdoom.", ".")
 
-    if return_annotation is not None:                                           
-        return_annotation = return_annotation.replace('.vizdoom.', '.')
+    if return_annotation is not None:
+        return_annotation = return_annotation.replace(".vizdoom.", ".")
 
     return signature, return_annotation
 
-def setup(app):
-    app.connect('autodoc-process-signature', strip_signatures)
 
+def setup(app):
+    app.connect("autodoc-process-signature", strip_signatures)
 
 
 # -- Options for HTML output -------------------------------------------------

@@ -164,7 +164,7 @@ See also:
 - `unsigned int[] / list` **playersLastActionTic / players_last_action_tic **
 - `unsigned int[] / list` **playersLastKillTic / players_last_kill_tic **
 
-ServerState is the main object returned by [`DoomGame: getServerState`](./doomGame.md#getserverstate) method, and it purpose is to get more information about the state of the multi-player game. 
+ServerState is the main object returned by [`DoomGame: getServerState`](./doomGame.md#getserverstate) method, and it purpose is to get more information about the state of the multi-player game.
 
 Added in 1.1.6.
 

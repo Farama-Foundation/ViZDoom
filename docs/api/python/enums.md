@@ -57,7 +57,7 @@ See also:
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py).
 
 
-```{eval-rst} 
+```{eval-rst}
 .. autoclass:: vizdoom.ScreenResolution
 ```
 
@@ -69,7 +69,7 @@ See also:
 - [`DoomGame.get_screen_height`](./doomGame.md#vizdoom.DoomGame.get_screen_height).
 
 
-```{eval-rst} 
+```{eval-rst}
 .. autoclass:: vizdoom.AutomapMode
 ```
 
@@ -85,7 +85,7 @@ See also:
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py).
 
 
-```{eval-rst} 
+```{eval-rst}
 .. autoclass:: vizdoom.GameVariable
 ```
 
@@ -136,11 +136,11 @@ See also:
 
 
 
-```{eval-rst} 
+```{eval-rst}
 .. autoclass:: vizdoom.Button
 ```
 
-Enum type that defines all buttons that can be "pressed" by the agent. They can be devided into two categories:
+Enum type that defines all buttons that can be "pressed" by the agent. They can be divided into two categories:
 
 1. Delta buttons whose value defines the speed of movement.
 A positive value indicates movement in the first specified direction and a negative value in the second direction.
@@ -163,7 +163,7 @@ See also:
 - [GitHub issue: Angle changes by executing certain commands](https://github.com/Farama-Foundation/ViZDoom/issues/182).
 
 
-```{eval-rst} 
+```{eval-rst}
 .. autoclass:: vizdoom.SamplingRate
 ```
 

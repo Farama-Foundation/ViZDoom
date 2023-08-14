@@ -43,4 +43,3 @@ Means that called method cannot be used when ViZDoom instance is not running.
 ```
 
 Means that ViZDoom's instance was closed/terminated/killed from the outside.
-

@@ -1,6 +1,5 @@
 # Configuration files
 
-ViZDoom 
 Instead of configuring the ViZDoom in code, you can load it from the configuration file(s). Each file is read sequentially, so multiple entries with the same key will overwrite previous entries.
 
 ## Format
@@ -113,7 +112,6 @@ mode = PLAYER
 
 # Difficulty of gameplay ranging from 1 (baby) to 5 (nightmare)
 doom_skill = 5
-
 ```
 
 Other examples of configuration files can be found in [https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios)

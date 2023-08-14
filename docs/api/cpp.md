@@ -1,10 +1,9 @@
 # C++ API
 
-ViZDoom was created the end of 2015, before release of OpenAI Gym, becasue of that it uses some different terms for its API than Gym/Gymmnasium. This page is meant to clarify the terms used in ViZDoom.
+ViZDoom is implemented in C++ and can be used as a C++ library. The C++ API is one-to-one with the Python API. The only difference is the use of `camelCase` instead of `snake_case` for method names.
 
-- enviroments and scenarios 
-- observations and states 
-
+ViZDoom can be built as a static or dynamic library. The header files are located in the `include` directory.
+See [examples/cpp](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/cpp) for examples, including CMake files for building.
 
 
 ```{toctree}

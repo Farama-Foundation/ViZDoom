@@ -40,7 +40,7 @@ There is also the original ViZDoom API:
 
 ```{code-block} python
 import vizdoom as vzd
-game = DoomGame()
+game = vzd.DoomGame()
 game.load_config(os.path.join(vzd.scenarios_path, "deadly_corridor.cfg"))
 game.init()
 for _ in range(1000):
@@ -87,6 +87,7 @@ environments/creatingCustom
 
 faq/index
 citation/index
+Original website <https://vizdoom.cs.put.edu.pl/>
 ```
 
 ```{toctree}

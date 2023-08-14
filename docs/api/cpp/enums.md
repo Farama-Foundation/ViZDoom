@@ -1,6 +1,6 @@
 # Enums
 
-ViZDoom is using few types of enums as parameters for its functions. Below you can find the description of all of them. 
+ViZDoom is using few types of enums as parameters for its functions. Below you can find the description of all of them.
 The declarations of all the enums can be found in the `include/ViZDoomTypes.h` header file.
 
 ## `Mode`
