@@ -4,6 +4,7 @@
 ViZDoomVersion.h
 viz_version.h
 Makefile
+!docs/Makefile
 ImportExecutables.cmake
 **/link-make
 cmake-build-*
