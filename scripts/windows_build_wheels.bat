@@ -18,7 +18,7 @@ set BOOST_ROOT=%VIZDOOM_WIN_DEPS_ROOT%/boost
 
 
 :: Build wheels for all Python versions
-for %%P in (37 38 39 310) do (
+for %%P in (38 39 310 311) do (
 	rmdir /Q /S "./bin/"
 	rmdir /Q /S "./build/"
 

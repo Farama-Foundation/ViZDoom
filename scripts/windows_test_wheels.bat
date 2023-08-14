@@ -2,10 +2,10 @@
 setlocal enabledelayedexpansion
 
 :: Set to current ViZDoom version
-set VIZDOOM_VERSION=1.2.0
+set VIZDOOM_VERSION=1.2.1
 
 :: Build wheels for all Python versions
-for %%P in (37 38 39 310) do (
+for %%P in (38 39 310 311) do (
 	set PYTHON_VERSION=%%P
 	set PYTHON_VERSION_DOT=!PYTHON_VERSION:~0,1!.!PYTHON_VERSION:~1!
 	echo Testing wheels for Python !PYTHON_VERSION_DOT! ...
@@ -22,12 +22,6 @@ for %%P in (37 38 39 310) do (
 	set WHEEL_FILE=dist\vizdoom-!VIZDOOM_VERSION!-cp!PYTHON_VERSION!-cp!PYTHON_VERSION!-win_amd64.whl
 	if exist !WHEEL_FILE! (
 		!PYTHON_EXECUTABLE! -m pip install !WHEEL_FILE![gym]
-	)
-
-	:: This can be removed after end of support for Python 3.7
-	set WHEEL_M_FILE=dist\vizdoom-!VIZDOOM_VERSION!-cp!PYTHON_VERSION!-cp!PYTHON_VERSION!m-win_amd64.whl
-	if exist !WHEEL_M_FILE! (
-		!PYTHON_EXECUTABLE! -m pip install !WHEEL_M_FILE![gym]
 	)
 
 	:: Test wheel from test PyPI index
