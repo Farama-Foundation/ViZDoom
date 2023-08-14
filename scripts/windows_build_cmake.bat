@@ -1,6 +1,8 @@
 @echo off
 setlocal enabledelayedexpansion
 
+:: This script should only be used for development purposes on Windows.
+
 :: Configuration
 :: %%% Set this variables to match your environment.
 :: %%% CMake for Windws can be downloaded from https://cmake.org/download/
@@ -29,7 +31,7 @@ set OPENALDIR=%LIB_DIR%\openal-soft
 set OPENAL_DLL=%LIB_DIR%\openal-soft\bin\Win64\OpenAL32.dll
 
 :: Build wheels for all Python versions
-for %%P in (36 37 38 39 310) do (
+for %%P in (38 39 310 311) do (
 	set PYTHON_VERSION=%%P
 	set PYTHON_VERSION_DOT=!PYTHON_VERSION:~0,1!.!PYTHON_VERSION:~1!
 	echo Building for Python !PYTHON_VERSION_DOT! version using !CMAKE_GENERATOR_NAME!

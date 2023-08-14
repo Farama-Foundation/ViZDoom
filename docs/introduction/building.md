@@ -24,7 +24,7 @@ Even if you plan to install ViZDoom via pip, you need to install some dependenci
 * Make
 * GCC 6.0+
 * Boost libraries 1.65.0+
-* Python 3.7+ for Python binding (optional)
+* Python 3.8+ for Python binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
@@ -69,7 +69,7 @@ python setup.py build && python setup.py install
 * CMake 3.4+
 * Clang 5.0+
 * Boost libraries 1.65.0+
-* Python 3.7+ for Python binding (optional)
+* Python 3.8+ for Python binding (optional)
 ## <a name="build"></a> Building
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X) are needed.
@@ -88,7 +88,7 @@ brew install cmake boost openal-soft sdl2
 * CMake 3.4+
 * Visual Studio 2012+
 * Boost 1.65+
-* Python 3.7+ for Python binding (optional)
+* Python 3.8+ for Python binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Windows) are needed.
 Most of them (except Boost) are gathered in this repository: [ViZDoomWinDepBin](https://github.com/mwydmuch/ViZDoomWinDepBin).
@@ -99,7 +99,7 @@ You can download Boost from [here](https://www.boost.org/users/download).
 
 ViZDoom for Python can be installed via **pip** on Linux, MacOS and Windows, and it is strongly recommended.
 However you will still need to install **[Linux](#linux_deps)/[MacOS](#macos_deps) dependencies**, as it will be build locally from source.
-For Windows 10 or 11 64-bit and Python 3.7+ we provide pre-build wheels (binary packages).
+For Windows 10 or 11 64-bit and Python 3.8+ we provide pre-build wheels (binary packages).
 
 
 To install the most stable official release from [PyPI](https://pypi.python.org/pypi):
