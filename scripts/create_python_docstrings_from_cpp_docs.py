@@ -26,7 +26,7 @@ LINES_TO_IGNORE_REGEXES = [
     r"^Deprecated since .*$",  # Deprecated since annotations
     r"^Removed in .*$",  # Removed in annotations
     r"^Config key: .*$",  # Config annotations
-    r"^Python aliases .*$",  # Python aliasses
+    r"^Python aliases .*$",  # Python aliases
     r"^#+.*",  # Other headings
 ]
 
