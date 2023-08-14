@@ -2,10 +2,10 @@
 
 Here we document the helpers functions that are not part of any object.
 They mostly help to deal with conversion of Doom's engine types.
+The declarations of all the enums can be found in the `include/ViZDoomUtils.h` header file.
 
 
 ## Time conversion functions
-
 
 ### `doomTicsToMs`
 
@@ -56,8 +56,6 @@ Calculates the number of seconds that will pass during specified number of tics.
 
 ## Doom fixed point conversion functions
 
-
----
 ### `doomFixedToDouble`
 
 | C++    | `double doomFixedToDouble(int / double doomFixed)`      |
@@ -77,8 +75,6 @@ Python aliases (added in 1.1): `doom_fixed_to_float(doomFixed: int | float) -> f
 
 ## Button functions
 
-
----
 ### `isBinaryButton`
 
 | C++    | `bool isBinaryButton(Button button)`     |

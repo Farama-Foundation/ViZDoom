@@ -25,6 +25,23 @@ def _compare_actions(action_a, action_b):
 
 
 def _test_make_action_input(type_name, type_args={}):
+    def _make_func(game, action, tics=1):
+        return game.make_action(action, tics)
+
+    def _set_advance_func(game, action, tics=1):
+        game.set_action(action)
+        game.advance_action(tics, True)
+        return game.get_last_reward()
+
+    __test_make_action_input(_make_func, type_name, type_args=type_args)
+    __test_make_action_input(_set_advance_func, type_name, type_args=type_args)
+
+
+def __test_make_action_input(
+    make_action_func,
+    type_name,
+    type_args={},
+):
     print(
         f"Testing make_action with {type_name.__name__}([], {type_args}) type as input ..."
     )
@@ -51,23 +68,31 @@ def _test_make_action_input(type_name, type_args={}):
     _compare_actions(next_action, type_name(game.get_last_action(), **type_args))
 
     # make_action() without skipping frames
-    game.make_action(next_action)
+    make_action_func(game, next_action)
+
+    # use set_action() instead of make_action()
+    game.set_action(next_action)
+    game.advance_action()
 
     # make_action() with negative frames and other types
     error_msg = "make_action() should raise TypeError when called with negative frames or type other than unsigned int"
-    _test_exception(lambda: game.make_action(next_action, -10), TypeError, error_msg)
-    _test_exception(lambda: game.make_action(next_action, "10"), TypeError, error_msg)
+    _test_exception(
+        lambda: make_action_func(game, next_action, -10), TypeError, error_msg
+    )
+    _test_exception(
+        lambda: make_action_func(game, next_action, "10"), TypeError, error_msg
+    )
 
     # make_action() with too short action
     next_action = type_name([1, 0], **type_args)
-    game.make_action(next_action, 8)
+    make_action_func(game, next_action, 8)
     assert prev_pos_y < game.get_game_variable(vzd.GameVariable.POSITION_Y)
     prev_pos_y = game.get_game_variable(vzd.GameVariable.POSITION_Y)
     _compare_actions(next_action, type_name(game.get_last_action()[:2], **type_args))
 
     # make_action() with too long action
     next_action = type_name([1, 0, 1, 0], **type_args)
-    game.make_action(next_action, 8)
+    make_action_func(game, next_action, 8)
     assert prev_pos_y < game.get_game_variable(vzd.GameVariable.POSITION_Y)
     prev_pos_y = game.get_game_variable(vzd.GameVariable.POSITION_Y)
     assert prev_ammo > game.get_game_variable(vzd.GameVariable.AMMO2)
@@ -76,7 +101,7 @@ def _test_make_action_input(type_name, type_args={}):
 
     # make_action() with values other than 0 and 1
     next_action = type_name([0, 5, -5], **type_args)
-    game.make_action(next_action, 16)
+    make_action_func(game, next_action, 16)
     assert prev_pos_y > game.get_game_variable(vzd.GameVariable.POSITION_Y)
     assert prev_ammo > game.get_game_variable(vzd.GameVariable.AMMO2)
     _compare_actions(next_action[:3], type_name(game.get_last_action(), **type_args))

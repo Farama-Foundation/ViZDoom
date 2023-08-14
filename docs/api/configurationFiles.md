@@ -19,7 +19,7 @@ A violation of any of these rules will result in ignoring **only** the line with
 ### Appending values
 Each list assignment (**KEY = { VALUES }**)clears values specified for this key before (in other configuration files or in the code). That is why the **append operator(*KEY += { VALUES })** is available. This way you can more easily combine multiple configuration files and tinker in code.
 
-### <a name="config_keys"></a> Supported configuration keys:
+### Supported configuration keys:
 * `audioBufferEnabled/audio_buffer_enabled`
 * `audioBufferSize/audio_buffer_size`
 * `audioSamplingRate/audio_samping_rate`
@@ -112,7 +112,6 @@ mode = PLAYER
 
 # Difficulty of gameplay ranging from 1 (baby) to 5 (nightmare)
 doom_skill = 5
-
 ```
 
 Other examples of configuration files can be found in [https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios)

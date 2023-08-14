@@ -40,7 +40,7 @@ There is also the original ViZDoom API:
 
 ```{code-block} python
 import vizdoom as vzd
-game = DoomGame()
+game = vzd.DoomGame()
 game.load_config(os.path.join(vzd.scenarios_path, "deadly_corridor.cfg"))
 game.init()
 for _ in range(1000):
@@ -61,30 +61,16 @@ game.close()
 
 introduction/pythonQuickstart
 introduction/building
-introduction/wrappers
+introduction/apisAndWrappers
 ```
 
 ```{toctree}
 :hidden:
-:caption: Python API
+:caption: API
 
-api_python/gymnasium
-api_python/doomGame
-api_python/gameState
-api_python/enums
-api_python/utils
-```
-
-```{toctree}
-:hidden:
-:caption: C++ API
-
-api_cpp/doomGame
-api_cpp/gameState
-api_cpp/enums
-api_cpp/configurationFiles
-api_cpp/exceptions
-api_cpp/utils
+api/python
+api/cpp
+api/configurationFiles
 ```
 
 ```{toctree}
@@ -101,6 +87,7 @@ environments/creatingCustom
 
 faq/index
 citation/index
+Original website <https://vizdoom.cs.put.edu.pl/>
 ```
 
 ```{toctree}

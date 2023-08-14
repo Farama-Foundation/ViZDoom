@@ -2,9 +2,6 @@
 
 DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc.
 
-Here we document all the methods of the DoomGame class and their corresponding Python bindings implemented as pybind11 module.
-
-
 
 ```{eval-rst}
 .. autoclass:: vizdoom.DoomGame
@@ -100,6 +97,11 @@ Here we document all the methods of the DoomGame class and their corresponding P
 .. autofunction:: vizdoom.DoomGame.set_episode_start_time
 .. autofunction:: vizdoom.DoomGame.get_episode_timeout
 .. autofunction:: vizdoom.DoomGame.set_episode_timeout
+```
+
+## Output/rendering setting methods
+
+```{eval-rst}
 .. autofunction:: vizdoom.DoomGame.set_screen_resolution
 .. autofunction:: vizdoom.DoomGame.get_screen_format
 .. autofunction:: vizdoom.DoomGame.set_screen_format
@@ -141,3 +143,4 @@ Here we document all the methods of the DoomGame class and their corresponding P
 .. autofunction:: vizdoom.DoomGame.set_audio_sampling_rate
 .. autofunction:: vizdoom.DoomGame.get_audio_buffer_size
 .. autofunction:: vizdoom.DoomGame.set_audio_buffer_size
+```

@@ -122,24 +122,6 @@ namespace vizdoom {
         void advanceAction(unsigned int tics = 1, bool updateState = true);
         void respawnPlayer();
 
-        // Overloaded functions instead of default arguments for pybind11
-
-        void newEpisode_() { this->newEpisode(); };
-        void newEpisode_str(std::string _str) { this->newEpisode(_str); };
-
-        double makeAction_list(pyb::object const &_list){ return this->makeAction(_list); }
-        double makeAction_list_int(pyb::object const &_list, unsigned int _int){ return this->makeAction(_list, _int); }
-
-        void advanceAction_() { this->advanceAction(); }
-        void advanceAction_int(unsigned int _int) { this->advanceAction(_int); }
-        void advanceAction_int_bool(unsigned int _int, bool _bool) { this->advanceAction(_int, _bool); }
-
-        void addAvailableButton_btn(Button _btn) { this->addAvailableButton(_btn); }
-        void addAvailableButton_btn_double(Button _btn, double _double) { this->addAvailableButton(_btn, _double); }
-
-        void replayEpisode_str(std::string _str) { this->replayEpisode(_str); }
-        void replayEpisode_str_int(std::string _str, unsigned int _int) { this->replayEpisode(_str, _int); }
-
     private:
         GameStatePython* pyState;
 

@@ -1,6 +1,9 @@
 # Exceptions
 
 ViZDoom defines several exceptions that can be thrown by its API:
+Most of the exceptions contain more information in "what()" message.
+The declarations of all the enums can be found in the `include/ViZDoomExceptions.h` header file.
+
 
 * `FileDoesNotExistException` - means that file specified as part of a configuration does not exist.
 
@@ -13,5 +16,3 @@ ViZDoom defines several exceptions that can be thrown by its API:
 * `ViZDoomIsNotRunningException` - means that called method cannot be used when ViZDoom instance is not running.
 
 * `ViZDoomUnexpectedExitException` - means that ViZDoom's instance was closed/terminated/killed from the outside.
-
-Most of the exceptions contain more information in "what()" message.

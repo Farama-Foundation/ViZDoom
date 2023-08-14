@@ -5,8 +5,8 @@ import re
 
 FILES_TO_PARSE = [
     {
-        "input_filepath": "docs/api_cpp/doomGame.md",
-        "output_filepath": "docs/api_python/doomGame.md",
+        "input_filepath": "docs/api/cpp/doomGame.md",
+        "output_filepath": "docs/api/python/doomGame.md",
         "submodule": "DoomGame.",
         "append_to_header": """
 ```{eval-rst}
@@ -15,12 +15,12 @@ FILES_TO_PARSE = [
 """,
     },
     {
-        "input_filepath": "docs/api_cpp/utils.md",
-        "output_filepath": "docs/api_python/utils.md",
+        "input_filepath": "docs/api/cpp/utils.md",
+        "output_filepath": "docs/api/python/utils.md",
         "submodule": "",
     },
 ]
-SECTION_REGEX = r"^##+ *([a-zA-Z ]+) *$"
+SECTION_REGEX = r"^##+ *([a-zA-Z/-:, ]+) *$"
 FUNCTION_REGEX = r"^###+ *`([a-zA-Z]+)` *$"
 
 
@@ -63,3 +63,5 @@ if __name__ == "__main__":
                         output_file.write(
                             f".. autofunction:: vizdoom.{fp['submodule']}{function_name}\n"
                         )
+
+            output_file.write("```\n")
