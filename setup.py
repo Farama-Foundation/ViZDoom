@@ -7,7 +7,8 @@ from distutils import sysconfig
 from distutils.command.build import build
 from multiprocessing import cpu_count
 
-from setuptools import setup
+from setuptools import setup, Distribution
+from setuptools.command.install import install
 from wheel.bdist_wheel import bdist_wheel
 
 
@@ -73,26 +74,6 @@ def get_long_description():
         )
 
 
-def get_python_library(python_root_dir):
-    paths_to_check = [
-        "libs/python{}{}.{}",  # Windows Python/Anaconda
-        "libpython{}.{}m.{}",  # Unix
-        "libpython{}.{}.{}",  # Unix
-        "lib/libpython{}.{}m.{}",  # Unix Anaconda
-        "lib/libpython{}.{}.{}",  # Unix Anaconda
-    ]
-
-    for path_format in paths_to_check:
-        path = os.path.join(
-            python_root_dir,
-            path_format.format(*python_version.split("."), library_extension),
-        )
-        if os.path.exists(path):
-            return path
-
-    return None
-
-
 class Wheel(bdist_wheel):
     def finalize_options(self):
         bdist_wheel.finalize_options(self)
@@ -104,16 +85,29 @@ class Wheel(bdist_wheel):
         return python, abi, plat
 
 
+class BinaryDistribution(Distribution):
+    def has_ext_modules(self):
+        return True
+    
+    def is_pure(self):
+        return False
+    
+
+class InstallPlatlib(install):
+    def finalize_options(self):
+        install.finalize_options(self)
+        if self.distribution.has_ext_modules():
+            self.install_lib = self.install_platlib
+
+
 class BuildCommand(build):
     def run(self):
         cpu_cores = max(1, cpu_count() - 1)
-        python_executable = os.path.realpath(sys.executable)
-
         cmake_arg_list = [
             "cmake",
             "-DCMAKE_BUILD_TYPE=Release",
             "-DBUILD_PYTHON=ON",
-            f"-DPYTHON_EXECUTABLE={python_executable}",
+            f"-DBUILD_PYTHON_VERSION={python_version}"
         ]
 
         env_cmake_args = os.getenv("VIZDOOM_CMAKE_ARGS")
@@ -123,6 +117,7 @@ class BuildCommand(build):
                 f"VIZDOOM_CMAKE_ARGS is set, the following arguments will be added to cmake command: {env_cmake_args}"
             )
 
+        # Windows specific version of the libraries
         if platform.startswith("win"):
             generator = os.getenv("VIZDOOM_BUILD_GENERATOR_NAME")
             if not generator:
@@ -160,19 +155,16 @@ class BuildCommand(build):
             shutil.copy(sndfile_dll, build_output_path)
             shutil.copy(openal_dll, build_output_path)
 
-        python_standard_lib = sysconfig.get_python_lib(standard_lib=True)
-        python_root_dir = os.path.dirname(python_standard_lib)
-        python_library = get_python_library(python_root_dir)
-        python_include_dir = sysconfig.get_python_inc()
+        #python_standard_lib = sysconfig.get_python_lib(standard_lib=True)
+        python_root_dir = os.path.dirname(sys.executable)
 
-        if python_include_dir and os.path.exists(python_include_dir):
-            cmake_arg_list.append(f"-DPYTHON_INCLUDE_DIR={python_include_dir}")
-
-        if python_library and os.path.exists(python_library):
-            cmake_arg_list.append(f"-DPYTHON_LIBRARY={python_library}")
+        if python_root_dir and os.path.exists(python_root_dir):
+            cmake_arg_list.append(f"-DPython_ROOT_DIR={python_root_dir}")
 
         if os.path.exists("CMakeCache.txt"):
             os.remove("CMakeCache.txt")
+
+        print(f"Running cmake with arguments: {cmake_arg_list}", file=sys.stderr)
 
         try:
             if platform.startswith("win"):
@@ -214,7 +206,8 @@ setup(
     package_dir={"vizdoom": package_path},
     package_data={"vizdoom": package_data},
     include_package_data=True,
-    cmdclass={"bdist_wheel": Wheel, "build": BuildCommand},
+    cmdclass={"bdist_wheel": Wheel, "build": BuildCommand, "install": InstallPlatlib},
+    distclass=BinaryDistribution,
     platforms=supported_platforms,
     classifiers=[
         "Development Status :: 5 - Production/Stable",

@@ -1,17 +1,24 @@
-find_package(PythonInterp 3 REQUIRED)
+set(BUILD_PYTHON_VERSION "" CACHE STRING "Version of Python to build bindings for")
 
-set(PYTHON_VERSION_FULL ${PYTHON_VERSION_STRING})
-STRING(REGEX REPLACE "([0-9]+\\.[0-9]+).*" "\\1" PYTHON_VERSION_MINOR ${PYTHON_VERSION_STRING})
-find_package(PythonLibs ${PYTHON_VERSION_MINOR} REQUIRED)
+if("${BUILD_PYTHON_VERSION}" STREQUAL "")
+    # Try to find Python 3 if BUILD_PYTHON_VERSION is not set
+    message(STATUS "BUILD_PYTHON_VERSION is not set, trying to find Python 3, Python_ROOT_DIR is ${Python_ROOT_DIR}")
+    find_package(Python 3 REQUIRED)
+    set(BUILD_PYTHON_VERSION ${Python_VERSION_MAJOR}.${Python_VERSION_MINOR})
+endif()
 
-set(VIZDOOM_PYTHON_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python${PYTHON_VERSION_MINOR})
+set (PYBIND11_PYTHON_VERSION ${BUILD_PYTHON_VERSION})
+
+set(VIZDOOM_PYTHON_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python${BUILD_PYTHON_VERSION})
 set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
 set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
+
+message(STATUS "Specified Python version to use: ${BUILD_PYTHON_VERSION}")
 
 if(NOT EXISTS ${VIZDOOM_PYTHON_SRC_DIR}/pybind11/CMakeLists.txt)
     find_package(Git QUIET)
     if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
-        message(STATUS "Pybind11 submodule update")
+        message(STATUS "pybind11 submodule update")
         execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
                 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                 RESULT_VARIABLE GIT_SUBMOD_RESULT)
@@ -34,7 +41,7 @@ include_directories(${VIZDOOM_PYTHON_INCLUDE_DIR}
     ${Boost_INCLUDE_DIR})
 
 set(ViZDoom_PYTHON_INLCUDE_DIR ${VIZDOOM_PYTHON_INCLUDE_DIR})
-set(ViZDoom_PYTHON_VERSION_STR ${PYTHON_VERSION_MINOR})
+set(ViZDoom_PYTHON_VERSION_STR ${BUILD_PYTHON_VERSION})
 
 configure_file(
     "${VIZDOOM_PYTHON_SRC_DIR}/__init__.py.in"
@@ -58,15 +65,15 @@ set_target_properties(libvizdoom_python
     LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${VIZDOOM_PYTHON_OUTPUT_DIR}
     LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON_OUTPUT_DIR}
     OUTPUT_NAME vizdoom
-    PROJECT_LABEL "python${PYTHON_VERSION_MINOR} binding")
+    PROJECT_LABEL "python${BUILD_PYTHON_VERSION} binding")
 
 if (UNIX)
     add_custom_target(python_pip_package ALL
-        COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.sh ${PYTHON_VERSION_MINOR} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
+        COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.sh ${BUILD_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
         COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
 elseif (WIN32)
     add_custom_target(python_pip_package ALL
-        COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.bat ${PYTHON_VERSION_MINOR} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
+        COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.bat ${BUILD_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
         COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
 endif ()
 
