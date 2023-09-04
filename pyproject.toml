@@ -1,5 +1,6 @@
 [build-system]
-requires = ["cmake>=3.1.0", "setuptools", "wheel"]
+requires-python = ">=3.8"
+requires = ["cmake>=3.12.0", "setuptools", "wheel"]
 
 [tool.black]
 safe = true
@@ -30,3 +31,19 @@ reportMissingImports = "none"
 reportGeneralTypeIssues = "none"
 reportPrivateUsage = "warning"
 reportPrivateImportUsage = "warning"
+
+[tool.cibuildwheel]
+build = "cp{38,39,310,311}-*"
+build-verbosity = 3
+
+[tool.cibuildwheel.linux]
+# For manylinux_2_28 we need to install the following dependencies:
+before-all = "yum install -y cmake git boost-devel SDL2-devel openal-soft-devel"
+repair-wheel-command = "auditwheel show {wheel} && auditwheel repair {wheel} -w {dest_dir}"
+
+manylinux-x86_64-image = "manylinux_2_28"
+manylinux-i686-image = "manylinux_2_28"
+manylinux-aarch64-image = "manylinux_2_28"
+
+[tool.cibuildwheel.macos]
+before-all = "brew install cmake boost sdl2 openal-soft"
