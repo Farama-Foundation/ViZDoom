@@ -10,7 +10,7 @@ set(GME_VERSION 0.6.0 CACHE INTERNAL "libgme Version")
 # Of course, 2.4 might work, in which case you're welcome to drop
 # down the requirement, but I can't test that.
 #cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.5)
 
 make_release_only()
 

@@ -20,7 +20,7 @@ Even if you plan to install ViZDoom via pip, you need to install some dependenci
 
 
 ### <a name="linux_deps"></a> Linux
-* CMake 3.4+
+* CMake 3.12+
 * Make
 * GCC 6.0+
 * Boost libraries 1.65.0+
@@ -66,7 +66,7 @@ python setup.py build && python setup.py install
 
 
 ### <a name="macos_deps"></a> MacOS
-* CMake 3.4+
+* CMake 3.12+
 * Clang 5.0+
 * Boost libraries 1.65.0+
 * Python 3.8+ for Python binding (optional)
@@ -85,7 +85,7 @@ brew install cmake boost openal-soft sdl2
 
 
 ### <a name="windows_deps"></a> Windows
-* CMake 3.4+
+* CMake 3.12+
 * Visual Studio 2012+
 * Boost 1.65+
 * Python 3.8+ for Python binding (optional)

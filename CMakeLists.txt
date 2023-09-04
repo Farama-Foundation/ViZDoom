@@ -77,7 +77,7 @@ endif (APPLE)
 if (CMAKE_COMPILER_IS_GNUCXX)
     add_definitions("-fPIC")
     # Explicitly silence some warnings 
-    add_definitions("-Wno-implicit-fallthrough -Wno-shift-negative-value")
+    add_definitions("-Wno-implicit-fallthrough -Wno-shift-negative-value -Wno-stringop-truncation")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-class-memaccess -Wno-deprecated-copy") # C++ only
 endif ()
 

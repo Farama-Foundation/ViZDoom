@@ -72,7 +72,7 @@ or
 
 ### Linux
 Both x86-64 and ARM64 architectures are supported.
-ViZDoom requires C++11 compiler, CMake 3.4+, Boost 1.65+ SDL2, OpenAL (optional) and Python 3.8+. Below you will find instructrion how to install these dependencies.
+ViZDoom requires C++11 compiler, CMake 3.12+, Boost 1.65+ SDL2, OpenAL (optional) and Python 3.8+. Below you will find instructrion how to install these dependencies.
 
 #### apt-based distros (Ubuntu, Debian, Linux Mint, etc.)
 
