@@ -37,13 +37,13 @@ jobs:
         uses: pypa/cibuildwheel@v2.15.0
         env:
           # Configure cibuildwheel to build native archs, and some emulated ones
-          CIBW_ARCHS_LINUX: x86_64 aarch64 
+          CIBW_ARCHS_LINUX: x86_64 aarch64
           CIBW_ARCHS_MACOS: x86_64
           CIBW_BUILD_VERBOSITY: 3
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: >
             auditwheel show {wheel} && auditwheel repair -w {dest_dir} {wheel}
 
-      - name: Report builded wheels
+      - name: Report built wheels
         run: |
           ls -l ./wheelhouse/*.whl
 
@@ -89,4 +89,3 @@ jobs:
         # To test:
         # with:
         #   repository_url: https://test.pypi.org/legacy/
-
