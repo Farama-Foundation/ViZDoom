@@ -1,4 +1,4 @@
-name: Build
+name: Build and test
 
 on:
   push:
@@ -11,8 +11,7 @@ on:
       - 'CMakeLists.txt'
       - 'setup.py'
       - 'pyproject.toml'
-    branches:
-      - master
+    branches: [master]
   pull_request:
     paths:
       - '.github/workflows/**'
@@ -23,8 +22,7 @@ on:
       - 'CMakeLists.txt'
       - 'setup.py'
       - 'pyproject.toml'
-    branches:
-      - master
+    branches: [master]
 
 env:
   HOMEBREW_NO_AUTO_UPDATE: 1
@@ -36,7 +34,6 @@ jobs:
       matrix:
         os: [ubuntu-20.04, ubuntu-22.04, macos-12]
         python-version: ['3.8', '3.9', '3.10', '3.11']
-
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -46,7 +43,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
            sudo apt update
-           sudo apt install -y cmake libboost-all-dev libsdl2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libpng-dev libjpeg-dev libbz2-dev libfluidsynth-dev libgme-dev libopenal-dev zlib1g-dev timidity tar nasm
+           sudo apt install -y cmake git libboost-all-dev libsdl2-dev libopenal-dev
 
     - name: Apt report
       if: runner.os == 'Linux'
