@@ -12,7 +12,7 @@ set(ViZDoom_VERSION_ID ${ViZDoom_VERSION_MAJOR}${ViZDoom_VERSION_MINOR}${ViZDoom
 #-----------------------------------------------------------------------------------------------------------------------
 
 option(BUILD_PYTHON "Build ViZDoom Python (3) binding/module" ON)
-option(BUILD_ENGINE "Build ViZDoom Engine" ON)
+option(BUILD_ENGINE "Build ViZDoom Engine (required to build Python package)" ON)
 
 
 # CMake options
@@ -76,7 +76,7 @@ endif (APPLE)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     add_definitions("-fPIC")
-    # Explicitly silence some warnings 
+    # Explicitly silence some warnings
     add_definitions("-Wno-implicit-fallthrough -Wno-shift-negative-value -Wno-stringop-truncation")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-class-memaccess -Wno-deprecated-copy") # C++ only
 endif ()

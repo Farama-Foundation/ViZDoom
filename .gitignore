@@ -4,10 +4,10 @@
 ViZDoomVersion.h
 viz_version.h
 Makefile
-!docs/Makefile
 ImportExecutables.cmake
 **/link-make
 cmake-build-*
+src/boost_*
 
 *~
 *.o
@@ -47,20 +47,10 @@ cmake-build-*
 examples/python/*.cfg
 examples/python/*.ini
 dist
-build
 venv
 .eggs
 vizdoom.egg-info
-
-# Lua
-examples/lua/*.cfg
-examples/lua/*.ini
-examples/lua/vizdoom
-*.rock
-
-# Java
-*.jar
-*.class
+wheelhouse
 
 # Copied from the original ZDoom repository (and modified)
 *.cbp
@@ -119,14 +109,5 @@ src/vizdoom/zlib/x64/
 # CLion & PyCharm
 **/.idea
 
-# Visual Studio Code
-.vscode
-
 # MacOS
 .DS_Store
-
-# Dockerfiles
-tmp_dockerfiles
-
-# Documentation
-docs_html

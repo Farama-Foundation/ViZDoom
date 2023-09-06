@@ -1,5 +1,4 @@
 [build-system]
-requires-python = ">=3.8"
 requires = ["cmake>=3.12.0", "setuptools", "wheel"]
 
 [tool.black]
@@ -33,16 +32,19 @@ reportPrivateUsage = "warning"
 reportPrivateImportUsage = "warning"
 
 [tool.cibuildwheel]
+# We need to build for the following Python versions:
 build = "cp{38,39,310,311}-*"
-build-verbosity = 3
 
 [tool.cibuildwheel.linux]
-# For manylinux_2_28 we need to install the following dependencies:
-before-all = "yum install -y cmake git boost-devel SDL2-devel openal-soft-devel"
-repair-wheel-command = "auditwheel show {wheel} && auditwheel repair {wheel} -w {dest_dir}"
+# Only manylinux is supported (no musl)
+build = "cp{38,39,310,311}-manylinux*"
 
+# For manylinux_2_28 we need to install the following dependencies using yum:
+before-all = "yum install -y cmake git boost-devel SDL2-devel openal-soft-devel"
+
+# Only build for x86_64 and aarch64 are officially supported
+archs = "x86_64 aarch64"
 manylinux-x86_64-image = "manylinux_2_28"
-manylinux-i686-image = "manylinux_2_28"
 manylinux-aarch64-image = "manylinux_2_28"
 
 [tool.cibuildwheel.macos]

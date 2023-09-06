@@ -7,7 +7,7 @@ from distutils import sysconfig
 from distutils.command.build import build
 from multiprocessing import cpu_count
 
-from setuptools import setup, Distribution
+from setuptools import Distribution, setup
 from setuptools.command.install import install
 from wheel.bdist_wheel import bdist_wheel
 
@@ -88,10 +88,10 @@ class Wheel(bdist_wheel):
 class BinaryDistribution(Distribution):
     def has_ext_modules(self):
         return True
-    
+
     def is_pure(self):
         return False
-    
+
 
 class InstallPlatlib(install):
     def finalize_options(self):
@@ -107,7 +107,7 @@ class BuildCommand(build):
             "cmake",
             "-DCMAKE_BUILD_TYPE=Release",
             "-DBUILD_PYTHON=ON",
-            f"-DBUILD_PYTHON_VERSION={python_version}"
+            f"-DBUILD_PYTHON_VERSION={python_version}",
         ]
 
         env_cmake_args = os.getenv("VIZDOOM_CMAKE_ARGS")
@@ -155,7 +155,7 @@ class BuildCommand(build):
             shutil.copy(sndfile_dll, build_output_path)
             shutil.copy(openal_dll, build_output_path)
 
-        #python_standard_lib = sysconfig.get_python_lib(standard_lib=True)
+        # python_standard_lib = sysconfig.get_python_lib(standard_lib=True)
         python_root_dir = os.path.dirname(sys.executable)
 
         if python_root_dir and os.path.exists(python_root_dir):
