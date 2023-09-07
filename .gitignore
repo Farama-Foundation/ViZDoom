@@ -52,6 +52,9 @@ venv
 vizdoom.egg-info
 wheelhouse
 
+# Tests
+test_dockerfiles
+
 # Copied from the original ZDoom repository (and modified)
 *.cbp
 *.ncb
