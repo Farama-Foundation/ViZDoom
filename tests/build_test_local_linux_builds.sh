@@ -52,8 +52,8 @@ for dockerfile_setting in "${DOCKERFILES_TO_BUILD_AND_RUN[@]}"; do
     tag="${without_ext}:latest"
     log="${dockerfile_dir}/${without_ext}.log"
 
-    docker build -t $tag -f $dockerfile . #&> $log || ( echo -e "${RED}FAILED${NC}"; exit 1 )
-    docker run -it $tag #&>> $log || ( echo -e "${RED}FAILED${NC}"; exit 1 )
+    docker build -t $tag -f $dockerfile . &> $log || ( echo -e "${RED}FAILED${NC}"; exit 1 )
+    docker run -it $tag &>> $log || ( echo -e "${RED}FAILED${NC}"; exit 1 )
 
     echo -e "${GREEN}OK${NC}"
 done
