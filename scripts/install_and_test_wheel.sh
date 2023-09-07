@@ -15,7 +15,7 @@ python3 -c "import sys; print('Python', sys.version)"
 PYTHON_VERSION=$(python3 -c "import sys; print('{}{}'.format(sys.version_info.major, sys.version_info.minor))")
 PYTHON_WHEEL=$(ls wheelhouse/vizdoom-*-cp${PYTHON_VERSION}-cp${PYTHON_VERSION}*.whl)
 
-# Updgrade pip and install test deps
+# Updgrad pip and install test deps
 python3 -m pip install --upgrade pip
 python3 -m pip install pytest psutil
 
