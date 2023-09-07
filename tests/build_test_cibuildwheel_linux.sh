@@ -9,7 +9,7 @@ DOCKERFILES_DIR=$( dirname ${BASH_SOURCE[0]} )/wheels_test_dockerfiles
 GENERATED_DOCKERFILES_DIR=tests/test_dockerfiles
 IMAGE_PREFIX="vizdoom_wheels"
 
-# Generate and run dockerfiles
+
 # Array in format "<base docker image> <base dockerfile to use> <additional commands to add to the dockerfile after FROM statement>"
 DOCKERFILES_TO_BUILD_AND_RUN=(
     "almalinux:9 dnf-based.Dockerfile"  # Python 3.9
@@ -21,6 +21,9 @@ DOCKERFILES_TO_BUILD_AND_RUN=(
     "ubuntu:22.04 apt-based.Dockerfile"  # Python 3.10
     "continuumio/miniconda3:latest conda-based.Dockerfile"  # Python 3.10
 )
+
+# Build wheels using cibuildwheel
+cibuildwheel --platform linux --arch $(uname -m)
 
 function create_dockerfile ( ) {
     local all_args=("$@")

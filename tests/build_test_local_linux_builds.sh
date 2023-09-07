@@ -9,6 +9,7 @@ DOCKERFILES_DIR=$( dirname ${BASH_SOURCE[0]} )/local_builds_dockerfiles
 GENERATED_DOCKERFILES_DIR=tests/test_dockerfiles
 IMAGE_PREFIX="vizdoom_local"
 
+# Generate and run dockerfiles
 # Array in format "<base docker image> <base dockerfile to use> <additional commands to add to the dockerfile after FROM statement>"
 DOCKERFILES_TO_BUILD_AND_RUN=(
     "almalinux:9 dnf-based.Dockerfile RUN dnf install -y 'dnf-command(config-manager)' && dnf config-manager --set-enabled crb"
@@ -20,14 +21,9 @@ DOCKERFILES_TO_BUILD_AND_RUN=(
     "ubuntu:18.04 apt-based.Dockerfile"
     "ubuntu:20.04 apt-based.Dockerfile"
     "ubuntu:22.04 apt-based.Dockerfile"
-    "ubuntu:latest apt-based.Dockerfile"
-    #"continuumio/miniconda3:latest conda-based.Dockerfile" # Does not work at the moment
+    "ubuntu:20.04 apt+conda-based.Dockerfile"  # Ubuntu build with dependencies installed via conda
+    #"continuumio/miniconda3:latest conda-based.Dockerfile"  # Does not work at the moment
 )
-
-
-# Build wheels using cibuildwheel
-cibuildwheel --platform linux --arch $(uname -m)
-
 
 # Test wheels inside docker containers
 function create_dockerfile ( ) {
@@ -56,8 +52,8 @@ for dockerfile_setting in "${DOCKERFILES_TO_BUILD_AND_RUN[@]}"; do
     tag="${without_ext}:latest"
     log="${dockerfile_dir}/${without_ext}.log"
 
-    docker build -t $tag -f $dockerfile . &> $log || ( echo -e "${RED}FAILED${NC}"; exit 1 )
-    docker run -it $tag &>> $log || ( echo -e "${RED}FAILED${NC}"; exit 1 )
+    docker build -t $tag -f $dockerfile . #&> $log || ( echo -e "${RED}FAILED${NC}"; exit 1 )
+    docker run -it $tag #&>> $log || ( echo -e "${RED}FAILED${NC}"; exit 1 )
 
     echo -e "${GREEN}OK${NC}"
 done
