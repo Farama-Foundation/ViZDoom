@@ -5,7 +5,7 @@ ENV TZ=Europe/Warsaw
 
 WORKDIR vizdoom
 
-# Instal wget
+# Install wget
 RUN apt-get update && apt-get install -y build-essential git make cmake wget
 
 # Install miniconda
@@ -14,7 +14,7 @@ RUN bash ~/miniconda.sh -b -p $HOME/miniconda
 ENV PATH="/root/miniconda/bin:${PATH}"
 
 # Install conda dependencies
-RUN conda install -y -c conda-forge boost sdl2 openal-soft 
+RUN conda install -y -c conda-forge boost sdl2 openal-soft
 
 COPY . ./
 CMD ["bash", "./scripts/build_and_test_conda.sh"]

@@ -24,4 +24,3 @@ python3 -c "import vizdoom"
 
 # Run tests
 pytest tests
-
