@@ -19,16 +19,19 @@ the opposite wall. A player can only (config) go left/right
 and shoot. 1 hit is enough to kill the monster. The episode
 finishes when the monster is killed or on timeout.
 
-__REWARDS:__
+**REWARDS:**
 
-+101 for killing the monster
--5 for missing
+* +106 for killing the monster
+* -5 for every shot
+* +1 for every tic the agent is alive
+
 The episode ends after killing the monster or on timeout.
 
-Further configuration:
-* living reward = -1,
+**CONFIGURATION:**
 * 3 available buttons: move left, move right, shoot (attack)
-* timeout = 300
+* timeout = 300 tics
+
+Configuration file: [basic.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic.cfg)
 
 ## DEADLY CORRIDOR
 The purpose of this scenario is to teach the agent to navigate towards
@@ -43,16 +46,18 @@ on the sides and runs straight for the vest, he will be killed somewhere
 along the way. To ensure this behavior doom_skill = 5 (config) is
 needed.
 
-__REWARDS:__
+**REWARDS:**
 
-+dX for getting closer to the vest.
--dX for getting further from the vest.
+* +dX for getting closer to the vest.
+* -dX for getting further from the vest.
+* -100 for death
 
-Further configuration:
+**CONFIGURATION:**
 * 5 available buttons: turn left, turn right, move left, move right, shoot (attack)
 * timeout = 4200
-* death penalty = 100
 * doom_skill = 5
+
+Configuration file: [scenarios/basic.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deadly_corridor.cfg)
 
 
 ## DEFEND THE CENTER
@@ -67,12 +72,15 @@ killed after a single shot. After dying, each monster is respawned
 after some time. The episode ends when the player dies (it's inevitable
 because of limited ammo).
 
-__REWARDS:__
-+1 for killing a monster
+**REWARDS:**
+* +1 for killing a monster
+* -1 for death
 
-Further configuration:
+**CONFIGURATION:**
 * 3 available buttons: turn left, turn right, shoot (attack)
-* death penalty = 1
+
+Configuration file: [scenarios/defend_the_center.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_center.cfg)
+
 
 ## DEFEND THE LINE
 The purpose of this scenario is to teach an agent that killing the
@@ -87,14 +95,17 @@ After dying, each monster is respawned after some time and can endure
 more damage. The episode ends when the player dies (it's inevitable
 because of limited ammo).
 
-__REWARDS:__
-+1 for killing a monster
+**REWARDS:**
+* +1 for killing a monster
+* -1 for death
 
-Further configuration:
+**CONFIGURATION:**
 * 3 available buttons: turn left, turn right, shoot (attack)
-* death penalty = 1
 
-## HEALTH GATHERING
+Configuration file: [scenarios/defend_the_line.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_line.cfg)
+
+
+## HEALTH GATHERING (AND HEALTH GATHERING SUPREME)
 The purpose of this scenario is to teach the agent how to survive
 without knowing what makes him survive. An agent knows only that life
 is precious, and death is bad, so he must learn what prolongs his
@@ -107,12 +118,19 @@ Medkits heal some portions of the player's health - to survive agent
 needs to pick them up. The episode finishes after the player's death or
 on timeout.
 
+There is more advance version of this scenario called HEALTH GATHERING SUPREME,
+that makes map layout more complex.
 
-Further configuration:
-* living_reward = 1
+**REWARDS:**
+* +1 for every tic the agent is alive
+* -100 for death
+
+**CONFIGURATION:**
 * 3 available buttons: turn left, turn right, move forward
 * 1 available game variable: HEALTH
-* death penalty = 100
+
+Configuration file: [scenarios/health_gathering.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering.cfg)/[scenarios/health_gathering_supreme.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering_supreme.cfg)
+
 
 ## MY WAY HOME
 The purpose of this scenario is to teach the agent how to navigate
@@ -125,13 +143,16 @@ green vest in one of the rooms (the same room every time).
 The player is spawned in a randomly chosen room facing a random
 direction. The episode ends when the vest is reached or on timeout/
 
-__REWARDS:__
-+1 for reaching the vest
+**REWARDS:**
+* +1 for reaching the vest
+* -0.0001 for every tic the agent is alive
 
-Further configuration:
+**CONFIGURATION:**
 * 3 available buttons: turn left, turn right, move forward
-* living reward = -0.0001
 * timeout = 2100
+
+Configuration file: [scenarios/my_way_home.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/my_way_home.cfg)
+
 
 ## PREDICT POSITION
 The purpose of the scenario is to teach an agent to synchronize
@@ -146,13 +167,16 @@ along the wall. The player is equipped with a rocket launcher and
 a single rocket. The episode ends when the missile hits a wall/the monster
 or on timeout.
 
-__REWARDS:__
-+1 for killing the monster
+**REWARDS:**
+* +1 for killing the monster
+* -0.0001 for every tic the agent is alive
 
-Further configuration:
-* living reward = -0.0001,
+**CONFIGURATION:**
 * 3 available buttons: turn left, turn right, shoot (attack)
 * timeout = 300
+
+Configuration file: [scenarios/predict_position.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/predict_position.cfg)
+
 
 ## TAKE COVER
 The purpose of this scenario is to teach an agent to link incoming
@@ -168,9 +192,10 @@ the player with fireballs. The player can only (config) move
 left/right. More monsters appear with time. The episode ends when
 the player dies.
 
-__REWARDS:__
-+1 for each tic of life
+**REWARDS:**
+* +1 for every tic the agent is alive
 
-Further configuration:
-* living reward = 1.0,
+**CONFIGURATION:**
 * 2 available buttons: move left, move right
+
+Configuration file: [scenarios/take_cover.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/take_cover.cfg)
