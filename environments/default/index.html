@@ -243,7 +243,7 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Default scenarios/environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../creatingCustom/">Creating a custom environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Others</span></p>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../faq/">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../citation/">How to cite</a></li>
@@ -328,15 +328,18 @@ the opposite wall. A player can only (config) go left/right
 and shoot. 1 hit is enough to kill the monster. The episode
 finishes when the monster is killed or on timeout.</p>
 <p><strong>REWARDS:</strong></p>
-<p>+101 for killing the monster
--5 for missing
-The episode ends after killing the monster or on timeout.</p>
-<p>Further configuration:</p>
 <ul class="simple">
-<li><p>living reward = -1,</p></li>
-<li><p>3 available buttons: move left, move right, shoot (attack)</p></li>
-<li><p>timeout = 300</p></li>
+<li><p>+106 for killing the monster</p></li>
+<li><p>-5 for every shot</p></li>
+<li><p>+1 for every tic the agent is alive</p></li>
 </ul>
+<p>The episode ends after killing the monster or on timeout.</p>
+<p><strong>CONFIGURATION:</strong></p>
+<ul class="simple">
+<li><p>3 available buttons: move left, move right, shoot (attack)</p></li>
+<li><p>timeout = 300 tics</p></li>
+</ul>
+<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic.cfg">basic.cfg</a></p>
 </section>
 <section id="deadly-corridor">
 <h2>DEADLY CORRIDOR<a class="headerlink" href="#deadly-corridor" title="Link to this heading">#</a></h2>
@@ -351,15 +354,18 @@ on the sides and runs straight for the vest, he will be killed somewhere
 along the way. To ensure this behavior doom_skill = 5 (config) is
 needed.</p>
 <p><strong>REWARDS:</strong></p>
-<p>+dX for getting closer to the vest.
--dX for getting further from the vest.</p>
-<p>Further configuration:</p>
+<ul class="simple">
+<li><p>+dX for getting closer to the vest.</p></li>
+<li><p>-dX for getting further from the vest.</p></li>
+<li><p>-100 for death</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
 <li><p>5 available buttons: turn left, turn right, move left, move right, shoot (attack)</p></li>
 <li><p>timeout = 4200</p></li>
-<li><p>death penalty = 100</p></li>
 <li><p>doom_skill = 5</p></li>
 </ul>
+<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deadly_corridor.cfg">scenarios/basic.cfg</a></p>
 </section>
 <section id="defend-the-center">
 <h2>DEFEND THE CENTER<a class="headerlink" href="#defend-the-center" title="Link to this heading">#</a></h2>
@@ -372,13 +378,16 @@ for killing monsters so he has to figure out the rest for himself.</p>
 killed after a single shot. After dying, each monster is respawned
 after some time. The episode ends when the player dies (it’s inevitable
 because of limited ammo).</p>
-<p><strong>REWARDS:</strong>
-+1 for killing a monster</p>
-<p>Further configuration:</p>
+<p><strong>REWARDS:</strong></p>
+<ul class="simple">
+<li><p>+1 for killing a monster</p></li>
+<li><p>-1 for death</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
 <li><p>3 available buttons: turn left, turn right, shoot (attack)</p></li>
-<li><p>death penalty = 1</p></li>
 </ul>
+<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_center.cfg">scenarios/defend_the_center.cfg</a></p>
 </section>
 <section id="defend-the-line">
 <h2>DEFEND THE LINE<a class="headerlink" href="#defend-the-line" title="Link to this heading">#</a></h2>
@@ -392,16 +401,19 @@ opposite wall. Monsters are killed after a single shot, at first.
 After dying, each monster is respawned after some time and can endure
 more damage. The episode ends when the player dies (it’s inevitable
 because of limited ammo).</p>
-<p><strong>REWARDS:</strong>
-+1 for killing a monster</p>
-<p>Further configuration:</p>
+<p><strong>REWARDS:</strong></p>
+<ul class="simple">
+<li><p>+1 for killing a monster</p></li>
+<li><p>-1 for death</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
 <li><p>3 available buttons: turn left, turn right, shoot (attack)</p></li>
-<li><p>death penalty = 1</p></li>
 </ul>
+<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_line.cfg">scenarios/defend_the_line.cfg</a></p>
 </section>
-<section id="health-gathering">
-<h2>HEALTH GATHERING<a class="headerlink" href="#health-gathering" title="Link to this heading">#</a></h2>
+<section id="health-gathering-and-health-gathering-supreme">
+<h2>HEALTH GATHERING (AND HEALTH GATHERING SUPREME)<a class="headerlink" href="#health-gathering-and-health-gathering-supreme" title="Link to this heading">#</a></h2>
 <p>The purpose of this scenario is to teach the agent how to survive
 without knowing what makes him survive. An agent knows only that life
 is precious, and death is bad, so he must learn what prolongs his
@@ -412,13 +424,19 @@ over the map. A new medkit falls from the skies every now and then.
 Medkits heal some portions of the player’s health - to survive agent
 needs to pick them up. The episode finishes after the player’s death or
 on timeout.</p>
-<p>Further configuration:</p>
+<p>There is more advance version of this scenario called HEALTH GATHERING SUPREME,
+that makes map layout more complex.</p>
+<p><strong>REWARDS:</strong></p>
 <ul class="simple">
-<li><p>living_reward = 1</p></li>
+<li><p>+1 for every tic the agent is alive</p></li>
+<li><p>-100 for death</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
+<ul class="simple">
 <li><p>3 available buttons: turn left, turn right, move forward</p></li>
 <li><p>1 available game variable: HEALTH</p></li>
-<li><p>death penalty = 100</p></li>
 </ul>
+<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering.cfg">scenarios/health_gathering.cfg</a>/<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering_supreme.cfg">scenarios/health_gathering_supreme.cfg</a></p>
 </section>
 <section id="my-way-home">
 <h2>MY WAY HOME<a class="headerlink" href="#my-way-home" title="Link to this heading">#</a></h2>
@@ -430,14 +448,17 @@ with a dead end. Each room has a different color. There is a
 green vest in one of the rooms (the same room every time).
 The player is spawned in a randomly chosen room facing a random
 direction. The episode ends when the vest is reached or on timeout/</p>
-<p><strong>REWARDS:</strong>
-+1 for reaching the vest</p>
-<p>Further configuration:</p>
+<p><strong>REWARDS:</strong></p>
+<ul class="simple">
+<li><p>+1 for reaching the vest</p></li>
+<li><p>-0.0001 for every tic the agent is alive</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
 <li><p>3 available buttons: turn left, turn right, move forward</p></li>
-<li><p>living reward = -0.0001</p></li>
 <li><p>timeout = 2100</p></li>
 </ul>
+<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/my_way_home.cfg">scenarios/my_way_home.cfg</a></p>
 </section>
 <section id="predict-position">
 <h2>PREDICT POSITION<a class="headerlink" href="#predict-position" title="Link to this heading">#</a></h2>
@@ -451,14 +472,17 @@ along the opposite wall and walks between left and right corners
 along the wall. The player is equipped with a rocket launcher and
 a single rocket. The episode ends when the missile hits a wall/the monster
 or on timeout.</p>
-<p><strong>REWARDS:</strong>
-+1 for killing the monster</p>
-<p>Further configuration:</p>
+<p><strong>REWARDS:</strong></p>
 <ul class="simple">
-<li><p>living reward = -0.0001,</p></li>
+<li><p>+1 for killing the monster</p></li>
+<li><p>-0.0001 for every tic the agent is alive</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
+<ul class="simple">
 <li><p>3 available buttons: turn left, turn right, shoot (attack)</p></li>
 <li><p>timeout = 300</p></li>
 </ul>
+<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/predict_position.cfg">scenarios/predict_position.cfg</a></p>
 </section>
 <section id="take-cover">
 <h2>TAKE COVER<a class="headerlink" href="#take-cover" title="Link to this heading">#</a></h2>
@@ -473,13 +497,15 @@ randomly somewhere along the opposite wall and try to kill
 the player with fireballs. The player can only (config) move
 left/right. More monsters appear with time. The episode ends when
 the player dies.</p>
-<p><strong>REWARDS:</strong>
-+1 for each tic of life</p>
-<p>Further configuration:</p>
+<p><strong>REWARDS:</strong></p>
 <ul class="simple">
-<li><p>living reward = 1.0,</p></li>
+<li><p>+1 for every tic the agent is alive</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
+<ul class="simple">
 <li><p>2 available buttons: move left, move right</p></li>
 </ul>
+<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/take_cover.cfg">scenarios/take_cover.cfg</a></p>
 </section>
 </section>
 
@@ -558,7 +584,7 @@ the player dies.</p>
 <li><a class="reference internal" href="#deadly-corridor">DEADLY CORRIDOR</a></li>
 <li><a class="reference internal" href="#defend-the-center">DEFEND THE CENTER</a></li>
 <li><a class="reference internal" href="#defend-the-line">DEFEND THE LINE</a></li>
-<li><a class="reference internal" href="#health-gathering">HEALTH GATHERING</a></li>
+<li><a class="reference internal" href="#health-gathering-and-health-gathering-supreme">HEALTH GATHERING (AND HEALTH GATHERING SUPREME)</a></li>
 <li><a class="reference internal" href="#my-way-home">MY WAY HOME</a></li>
 <li><a class="reference internal" href="#predict-position">PREDICT POSITION</a></li>
 <li><a class="reference internal" href="#take-cover">TAKE COVER</a></li>
