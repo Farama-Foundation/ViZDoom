@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark">
@@ -11,11 +11,11 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="OpenAI Gym Env" href="../gym/" /><link rel="prev" title="Exceptions" href="../exceptions/" />
         <link rel="canonical" href="https://vizdoom.farama.org/api/python/gymnasium.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20.dev1 -->
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19.dev1 -->
         <title>Gymnasium Env - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=2b6f8eb5452c44539a42dd9ada0a48f56e5f404d" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=5d0deb98f4b2e6cecaee64745957f1068f205919" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=49cbaffd" />
     
     
 
@@ -311,10 +311,10 @@
           <article role="main">
             
             <section id="gymnasium-env">
-<h1>Gymnasium Env<a class="headerlink" href="#gymnasium-env" title="Permalink to this heading">#</a></h1>
+<h1>Gymnasium Env<a class="headerlink" href="#gymnasium-env" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VizdoomEnv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_buttons_pressed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">render_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VizdoomEnv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_buttons_pressed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">render_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv" title="Link to this definition">#</a></dt>
 <dd><p>Base class for Gymnasium interface for ViZDoom. Thanks to <a class="reference external" href="https://github.com/shakenes/vizdoomgym">https://github.com/shakenes/vizdoomgym</a>
 Child classes are defined in gym_env_defns.py,</p>
 <dl class="field-list simple">
@@ -357,7 +357,7 @@ enabled in the config file (CHANNELS == 1 if GRAY8, else 3):</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.close" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.close" title="Link to this definition">#</a></dt>
 <dd><p>After the user has finished using the environment, close contains the code necessary to “clean up” the environment.</p>
 <p>This is critical for closing rendering windows, database or HTTP connections.
 Calling <code class="docutils literal notranslate"><span class="pre">close</span></code> on an already closed environment has no effect and won’t raise an error.</p>
@@ -365,7 +365,7 @@ Calling <code class="docutils literal notranslate"><span class="pre">close</span
 
 <dl class="py method">
 <dt class="sig sig-object py" id="vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.render">
-<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.render" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.render" title="Link to this definition">#</a></dt>
 <dd><p>Compute the render frames as specified by <code class="xref py py-attr docutils literal notranslate"><span class="pre">render_mode</span></code> during the initialization of the environment.</p>
 <p>The environment’s <code class="xref py py-attr docutils literal notranslate"><span class="pre">metadata</span></code> render modes (<cite>env.metadata[“render_modes”]</cite>) should contain the possible
 ways to implement the render modes. In addition, list versions for most render modes is achieved through
@@ -400,7 +400,7 @@ in the environment initialised, i.e., <code class="docutils literal notranslate"
 
 <dl class="py method">
 <dt class="sig sig-object py" id="vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.reset">
-<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.reset" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.reset" title="Link to this definition">#</a></dt>
 <dd><p>Resets the environment to an initial internal state, returning an initial observation and info.</p>
 <p>This method generates a new starting state often with some randomness to ensure that the agent explores the
 state space and learns a generalised policy about the environment. This randomness can be controlled
@@ -439,7 +439,7 @@ the <code class="docutils literal notranslate"><span class="pre">info</span></co
 
 <dl class="py method">
 <dt class="sig sig-object py" id="vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.step">
-<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.step" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.step" title="Link to this definition">#</a></dt>
 <dd><p>Run one timestep of the environment’s dynamics using the agent actions.</p>
 <p>When the end of an episode is reached (<code class="docutils literal notranslate"><span class="pre">terminated</span> <span class="pre">or</span> <span class="pre">truncated</span></code>), it is necessary to call <a class="reference internal" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.reset" title="vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.reset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code></a> to
 reset this environment’s state for the next episode.</p>
@@ -645,9 +645,9 @@ a certain timelimit was exceeded, or the physics simulation has entered an inval
         })()
       </script>
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=dda0c7a7"></script>
+    <script src="../../../_static/documentation_options.js?v=a5603611"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=7660844c"></script>
     
     <script>

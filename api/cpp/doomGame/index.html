@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark">
@@ -11,11 +11,11 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="GameState" href="../gameState/" /><link rel="prev" title="C++ API" href="../" />
         <link rel="canonical" href="https://vizdoom.farama.org/api/cpp/doomGame.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20.dev1 -->
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19.dev1 -->
         <title>DoomGame - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=2b6f8eb5452c44539a42dd9ada0a48f56e5f404d" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=5d0deb98f4b2e6cecaee64745957f1068f205919" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=49cbaffd" />
     
     
 
@@ -311,13 +311,13 @@
           <article role="main">
             
             <section id="doomgame">
-<h1>DoomGame<a class="headerlink" href="#doomgame" title="Permalink to this heading">#</a></h1>
+<h1>DoomGame<a class="headerlink" href="#doomgame" title="Link to this heading">#</a></h1>
 <p>DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc. The declarations of this class and its methods can be found in the <code class="docutils literal notranslate"><span class="pre">include/ViZDoomGame.h</span></code> header file.</p>
 <p>Here we document all the methods of the DoomGame class and their corresponding Python bindings implemented as pybind11 module.</p>
 <section id="flow-control-methods">
-<h2>Flow control methods<a class="headerlink" href="#flow-control-methods" title="Permalink to this heading">#</a></h2>
+<h2>Flow control methods<a class="headerlink" href="#flow-control-methods" title="Link to this heading">#</a></h2>
 <section id="init">
-<h3><code class="docutils literal notranslate"><span class="pre">init</span></code><a class="headerlink" href="#init" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">init</span></code><a class="headerlink" href="#init" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -339,7 +339,7 @@ Init returns true when the game was started properly and false otherwise.</p>
 </section>
 <hr class="docutils" />
 <section id="close">
-<h3><code class="docutils literal notranslate"><span class="pre">close</span></code><a class="headerlink" href="#close" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">close</span></code><a class="headerlink" href="#close" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -360,7 +360,7 @@ The game can be initialized again after being closed.</p>
 </section>
 <hr class="docutils" />
 <section id="newepisode">
-<h3><code class="docutils literal notranslate"><span class="pre">newEpisode</span></code><a class="headerlink" href="#newepisode" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">newEpisode</span></code><a class="headerlink" href="#newepisode" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -384,7 +384,7 @@ Then the rest of the players must also call this method to start a new episode.<
 </section>
 <hr class="docutils" />
 <section id="replayepisode">
-<h3><code class="docutils literal notranslate"><span class="pre">replayEpisode</span></code><a class="headerlink" href="#replayepisode" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">replayEpisode</span></code><a class="headerlink" href="#replayepisode" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -412,7 +412,7 @@ All rewards, variables, and states are available during the replaying episode.</
 </section>
 <hr class="docutils" />
 <section id="isrunning">
-<h3><code class="docutils literal notranslate"><span class="pre">isRunning</span></code><a class="headerlink" href="#isrunning" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">isRunning</span></code><a class="headerlink" href="#isrunning" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -431,7 +431,7 @@ All rewards, variables, and states are available during the replaying episode.</
 </section>
 <hr class="docutils" />
 <section id="ismultiplayergame">
-<h3><code class="docutils literal notranslate"><span class="pre">isMultiplayerGame</span></code><a class="headerlink" href="#ismultiplayergame" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">isMultiplayerGame</span></code><a class="headerlink" href="#ismultiplayergame" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -451,7 +451,7 @@ All rewards, variables, and states are available during the replaying episode.</
 </section>
 <hr class="docutils" />
 <section id="isrecordingepisode">
-<h3><code class="docutils literal notranslate"><span class="pre">isRecordingEpisode</span></code><a class="headerlink" href="#isrecordingepisode" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">isRecordingEpisode</span></code><a class="headerlink" href="#isrecordingepisode" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -471,7 +471,7 @@ All rewards, variables, and states are available during the replaying episode.</
 </section>
 <hr class="docutils" />
 <section id="isreplayingepisode">
-<h3><code class="docutils literal notranslate"><span class="pre">isReplayingEpisode</span></code><a class="headerlink" href="#isreplayingepisode" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">isReplayingEpisode</span></code><a class="headerlink" href="#isreplayingepisode" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -491,7 +491,7 @@ All rewards, variables, and states are available during the replaying episode.</
 </section>
 <hr class="docutils" />
 <section id="setaction">
-<h3><code class="docutils literal notranslate"><span class="pre">setAction</span></code><a class="headerlink" href="#setaction" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setAction</span></code><a class="headerlink" href="#setaction" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -512,7 +512,7 @@ or in the configuration file (in order of appearance).</p>
 </section>
 <hr class="docutils" />
 <section id="advanceaction">
-<h3><code class="docutils literal notranslate"><span class="pre">advanceAction</span></code><a class="headerlink" href="#advanceaction" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">advanceAction</span></code><a class="headerlink" href="#advanceaction" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -534,7 +534,7 @@ If <code class="docutils literal notranslate"><span class="pre">updateState</spa
 </section>
 <hr class="docutils" />
 <section id="makeaction">
-<h3><code class="docutils literal notranslate"><span class="pre">makeAction</span></code><a class="headerlink" href="#makeaction" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">makeAction</span></code><a class="headerlink" href="#makeaction" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -555,7 +555,7 @@ updates the state and calculates a new reward, which is returned.</p>
 </section>
 <hr class="docutils" />
 <section id="isnewepisode">
-<h3><code class="docutils literal notranslate"><span class="pre">isNewEpisode</span></code><a class="headerlink" href="#isnewepisode" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">isNewEpisode</span></code><a class="headerlink" href="#isnewepisode" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -574,7 +574,7 @@ updates the state and calculates a new reward, which is returned.</p>
 </section>
 <hr class="docutils" />
 <section id="isepisodefinished">
-<h3><code class="docutils literal notranslate"><span class="pre">isEpisodeFinished</span></code><a class="headerlink" href="#isepisodefinished" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">isEpisodeFinished</span></code><a class="headerlink" href="#isepisodefinished" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -594,7 +594,7 @@ updates the state and calculates a new reward, which is returned.</p>
 </section>
 <hr class="docutils" />
 <section id="isplayerdead">
-<h3><code class="docutils literal notranslate"><span class="pre">isPlayerDead</span></code><a class="headerlink" href="#isplayerdead" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">isPlayerDead</span></code><a class="headerlink" href="#isplayerdead" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -615,7 +615,7 @@ In multiplayer, when the player is dead <a class="reference internal" href="#res
 </section>
 <hr class="docutils" />
 <section id="respawnplayer">
-<h3><code class="docutils literal notranslate"><span class="pre">respawnPlayer</span></code><a class="headerlink" href="#respawnplayer" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">respawnPlayer</span></code><a class="headerlink" href="#respawnplayer" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -639,7 +639,7 @@ After calling this method, the first state after the respawn will be available.<
 </section>
 <hr class="docutils" />
 <section id="sendgamecommand">
-<h3><code class="docutils literal notranslate"><span class="pre">sendGameCommand</span></code><a class="headerlink" href="#sendgamecommand" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">sendGameCommand</span></code><a class="headerlink" href="#sendgamecommand" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -665,7 +665,7 @@ Some commands will be blocked in some modes.</p>
 </section>
 <hr class="docutils" />
 <section id="getstate">
-<h3><code class="docutils literal notranslate"><span class="pre">getState</span></code><a class="headerlink" href="#getstate" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getState</span></code><a class="headerlink" href="#getstate" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -690,7 +690,7 @@ If the current episode is finished, <code class="docutils literal notranslate"><
 </section>
 <hr class="docutils" />
 <section id="getserverstate">
-<h3><code class="docutils literal notranslate"><span class="pre">getServerState</span></code><a class="headerlink" href="#getserverstate" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getServerState</span></code><a class="headerlink" href="#getserverstate" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -714,7 +714,7 @@ If the current episode is finished, <code class="docutils literal notranslate"><
 </section>
 <hr class="docutils" />
 <section id="getlastaction">
-<h3><code class="docutils literal notranslate"><span class="pre">getLastAction</span></code><a class="headerlink" href="#getlastaction" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getLastAction</span></code><a class="headerlink" href="#getlastaction" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -735,7 +735,7 @@ Most useful in <code class="docutils literal notranslate"><span class="pre">SPEC
 </section>
 <hr class="docutils" />
 <section id="getepisodetime">
-<h3><code class="docutils literal notranslate"><span class="pre">getEpisodeTime</span></code><a class="headerlink" href="#getepisodetime" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getEpisodeTime</span></code><a class="headerlink" href="#getepisodetime" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -754,7 +754,7 @@ Most useful in <code class="docutils literal notranslate"><span class="pre">SPEC
 </section>
 <hr class="docutils" />
 <section id="save">
-<h3><code class="docutils literal notranslate"><span class="pre">save</span></code><a class="headerlink" href="#save" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">save</span></code><a class="headerlink" href="#save" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -774,7 +774,7 @@ Most useful in <code class="docutils literal notranslate"><span class="pre">SPEC
 </section>
 <hr class="docutils" />
 <section id="load">
-<h3><code class="docutils literal notranslate"><span class="pre">load</span></code><a class="headerlink" href="#load" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">load</span></code><a class="headerlink" href="#load" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -797,9 +797,9 @@ tic counter/time and total reward state keep their values.</p>
 </section>
 </section>
 <section id="buttons-settings-methods">
-<h2>Buttons settings methods<a class="headerlink" href="#buttons-settings-methods" title="Permalink to this heading">#</a></h2>
+<h2>Buttons settings methods<a class="headerlink" href="#buttons-settings-methods" title="Link to this heading">#</a></h2>
 <section id="getavailablebuttons">
-<h3><code class="docutils literal notranslate"><span class="pre">getAvailableButtons</span></code><a class="headerlink" href="#getavailablebuttons" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getAvailableButtons</span></code><a class="headerlink" href="#getavailablebuttons" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -824,7 +824,7 @@ tic counter/time and total reward state keep their values.</p>
 </section>
 <hr class="docutils" />
 <section id="setavailablebuttons">
-<h3><code class="docutils literal notranslate"><span class="pre">setAvailableButtons</span></code><a class="headerlink" href="#setavailablebuttons" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setAvailableButtons</span></code><a class="headerlink" href="#setavailablebuttons" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -850,7 +850,7 @@ tic counter/time and total reward state keep their values.</p>
 </section>
 <hr class="docutils" />
 <section id="addavailablebutton">
-<h3><code class="docutils literal notranslate"><span class="pre">addAvailableButton</span></code><a class="headerlink" href="#addavailablebutton" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">addAvailableButton</span></code><a class="headerlink" href="#addavailablebutton" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -878,7 +878,7 @@ If the given button has already been added, it will not be added again, but the 
 </section>
 <hr class="docutils" />
 <section id="clearavailablebuttons">
-<h3><code class="docutils literal notranslate"><span class="pre">clearAvailableButtons</span></code><a class="headerlink" href="#clearavailablebuttons" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">clearAvailableButtons</span></code><a class="headerlink" href="#clearavailablebuttons" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -901,7 +901,7 @@ If the given button has already been added, it will not be added again, but the 
 </section>
 <hr class="docutils" />
 <section id="getavailablebuttonssize">
-<h3><code class="docutils literal notranslate"><span class="pre">getAvailableButtonsSize</span></code><a class="headerlink" href="#getavailablebuttonssize" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getAvailableButtonsSize</span></code><a class="headerlink" href="#getavailablebuttonssize" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -924,7 +924,7 @@ If the given button has already been added, it will not be added again, but the 
 </section>
 <hr class="docutils" />
 <section id="setbuttonmaxvalue">
-<h3><code class="docutils literal notranslate"><span class="pre">setButtonMaxValue</span></code><a class="headerlink" href="#setbuttonmaxvalue" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setButtonMaxValue</span></code><a class="headerlink" href="#setbuttonmaxvalue" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -950,7 +950,7 @@ The constraints limit applies in all Modes.</p>
 </section>
 <hr class="docutils" />
 <section id="getbuttonmaxvalue">
-<h3><code class="docutils literal notranslate"><span class="pre">getButtonMaxValue</span></code><a class="headerlink" href="#getbuttonmaxvalue" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getButtonMaxValue</span></code><a class="headerlink" href="#getbuttonmaxvalue" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -973,7 +973,7 @@ The constraints limit applies in all Modes.</p>
 </section>
 <hr class="docutils" />
 <section id="getbutton">
-<h3><code class="docutils literal notranslate"><span class="pre">getButton</span></code><a class="headerlink" href="#getbutton" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getButton</span></code><a class="headerlink" href="#getbutton" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -996,9 +996,9 @@ The constraints limit applies in all Modes.</p>
 </section>
 </section>
 <section id="gamevariables-methods">
-<h2>GameVariables methods<a class="headerlink" href="#gamevariables-methods" title="Permalink to this heading">#</a></h2>
+<h2>GameVariables methods<a class="headerlink" href="#gamevariables-methods" title="Link to this heading">#</a></h2>
 <section id="getavailablegamevariables">
-<h3><code class="docutils literal notranslate"><span class="pre">getAvailableGameVariables</span></code><a class="headerlink" href="#getavailablegamevariables" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getAvailableGameVariables</span></code><a class="headerlink" href="#getavailablegamevariables" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1023,7 +1023,7 @@ The constraints limit applies in all Modes.</p>
 </section>
 <hr class="docutils" />
 <section id="setavailablegamevariables">
-<h3><code class="docutils literal notranslate"><span class="pre">setAvailableGameVariables</span></code><a class="headerlink" href="#setavailablegamevariables" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setAvailableGameVariables</span></code><a class="headerlink" href="#setavailablegamevariables" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1049,7 +1049,7 @@ The constraints limit applies in all Modes.</p>
 </section>
 <hr class="docutils" />
 <section id="addavailablegamevariable">
-<h3><code class="docutils literal notranslate"><span class="pre">addAvailableGameVariable</span></code><a class="headerlink" href="#addavailablegamevariable" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">addAvailableGameVariable</span></code><a class="headerlink" href="#addavailablegamevariable" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1075,7 +1075,7 @@ The constraints limit applies in all Modes.</p>
 </section>
 <hr class="docutils" />
 <section id="clearavailablegamevariables">
-<h3><code class="docutils literal notranslate"><span class="pre">clearAvailableGameVariables</span></code><a class="headerlink" href="#clearavailablegamevariables" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">clearAvailableGameVariables</span></code><a class="headerlink" href="#clearavailablegamevariables" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1099,7 +1099,7 @@ The constraints limit applies in all Modes.</p>
 </section>
 <hr class="docutils" />
 <section id="getavailablegamevariablessize">
-<h3><code class="docutils literal notranslate"><span class="pre">getAvailableGameVariablesSize</span></code><a class="headerlink" href="#getavailablegamevariablessize" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getAvailableGameVariablesSize</span></code><a class="headerlink" href="#getavailablegamevariablessize" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1123,7 +1123,7 @@ The constraints limit applies in all Modes.</p>
 </section>
 <hr class="docutils" />
 <section id="getgamevariable">
-<h3><code class="docutils literal notranslate"><span class="pre">getGameVariable</span></code><a class="headerlink" href="#getgamevariable" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getGameVariable</span></code><a class="headerlink" href="#getgamevariable" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1148,9 +1148,9 @@ It could be used for e.g. shaping. Returns 0 in case of not finding given <code 
 </section>
 </section>
 <section id="game-arguments-methods">
-<h2>Game Arguments methods<a class="headerlink" href="#game-arguments-methods" title="Permalink to this heading">#</a></h2>
+<h2>Game Arguments methods<a class="headerlink" href="#game-arguments-methods" title="Link to this heading">#</a></h2>
 <section id="addgameargs">
-<h3><code class="docutils literal notranslate"><span class="pre">addGameArgs</span></code><a class="headerlink" href="#addgameargs" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">addGameArgs</span></code><a class="headerlink" href="#addgameargs" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1176,7 +1176,7 @@ Useful for changing additional game settings.</p>
 </section>
 <hr class="docutils" />
 <section id="cleargameargs">
-<h3><code class="docutils literal notranslate"><span class="pre">clearGameArgs</span></code><a class="headerlink" href="#cleargameargs" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">clearGameArgs</span></code><a class="headerlink" href="#cleargameargs" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1195,9 +1195,9 @@ Useful for changing additional game settings.</p>
 </section>
 </section>
 <section id="reward-methods">
-<h2>Reward methods<a class="headerlink" href="#reward-methods" title="Permalink to this heading">#</a></h2>
+<h2>Reward methods<a class="headerlink" href="#reward-methods" title="Link to this heading">#</a></h2>
 <section id="getlivingreward">
-<h3><code class="docutils literal notranslate"><span class="pre">getLivingReward</span></code><a class="headerlink" href="#getlivingreward" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getLivingReward</span></code><a class="headerlink" href="#getlivingreward" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1216,7 +1216,7 @@ Useful for changing additional game settings.</p>
 </section>
 <hr class="docutils" />
 <section id="setlivingreward">
-<h3><code class="docutils literal notranslate"><span class="pre">setLivingReward</span></code><a class="headerlink" href="#setlivingreward" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setLivingReward</span></code><a class="headerlink" href="#setlivingreward" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1237,7 +1237,7 @@ Useful for changing additional game settings.</p>
 </section>
 <hr class="docutils" />
 <section id="getdeathpenalty">
-<h3><code class="docutils literal notranslate"><span class="pre">getDeathPenalty</span></code><a class="headerlink" href="#getdeathpenalty" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getDeathPenalty</span></code><a class="headerlink" href="#getdeathpenalty" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1256,7 +1256,7 @@ Useful for changing additional game settings.</p>
 </section>
 <hr class="docutils" />
 <section id="setdeathpenalty">
-<h3><code class="docutils literal notranslate"><span class="pre">setDeathPenalty</span></code><a class="headerlink" href="#setdeathpenalty" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setDeathPenalty</span></code><a class="headerlink" href="#setdeathpenalty" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1277,7 +1277,7 @@ Useful for changing additional game settings.</p>
 </section>
 <hr class="docutils" />
 <section id="getlastreward">
-<h3><code class="docutils literal notranslate"><span class="pre">getLastReward</span></code><a class="headerlink" href="#getlastreward" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getLastReward</span></code><a class="headerlink" href="#getlastreward" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1296,7 +1296,7 @@ Useful for changing additional game settings.</p>
 </section>
 <hr class="docutils" />
 <section id="gettotalreward">
-<h3><code class="docutils literal notranslate"><span class="pre">getTotalReward</span></code><a class="headerlink" href="#gettotalreward" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getTotalReward</span></code><a class="headerlink" href="#gettotalreward" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1315,9 +1315,9 @@ Useful for changing additional game settings.</p>
 </section>
 </section>
 <section id="general-game-setting-methods">
-<h2>General game setting methods<a class="headerlink" href="#general-game-setting-methods" title="Permalink to this heading">#</a></h2>
+<h2>General game setting methods<a class="headerlink" href="#general-game-setting-methods" title="Link to this heading">#</a></h2>
 <section id="loadconfig">
-<h3><code class="docutils literal notranslate"><span class="pre">loadConfig</span></code><a class="headerlink" href="#loadconfig" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">loadConfig</span></code><a class="headerlink" href="#loadconfig" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1344,7 +1344,7 @@ false if the file contained errors.</p>
 </section>
 <hr class="docutils" />
 <section id="getmode">
-<h3><code class="docutils literal notranslate"><span class="pre">getMode</span></code><a class="headerlink" href="#getmode" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getMode</span></code><a class="headerlink" href="#getmode" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1367,7 +1367,7 @@ false if the file contained errors.</p>
 </section>
 <hr class="docutils" />
 <section id="setmode">
-<h3><code class="docutils literal notranslate"><span class="pre">setMode</span></code><a class="headerlink" href="#setmode" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setMode</span></code><a class="headerlink" href="#setmode" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1392,7 +1392,7 @@ false if the file contained errors.</p>
 </section>
 <hr class="docutils" />
 <section id="getticrate">
-<h3><code class="docutils literal notranslate"><span class="pre">getTicrate</span></code><a class="headerlink" href="#getticrate" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getTicrate</span></code><a class="headerlink" href="#getticrate" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1412,7 +1412,7 @@ false if the file contained errors.</p>
 </section>
 <hr class="docutils" />
 <section id="setticrate">
-<h3><code class="docutils literal notranslate"><span class="pre">setTicrate</span></code><a class="headerlink" href="#setticrate" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setTicrate</span></code><a class="headerlink" href="#setticrate" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1439,7 +1439,7 @@ The default Doom ticrate is 35. This value will play a game at normal speed.</p>
 </section>
 <hr class="docutils" />
 <section id="setvizdoompath">
-<h3><code class="docutils literal notranslate"><span class="pre">setViZDoomPath</span></code><a class="headerlink" href="#setvizdoompath" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setViZDoomPath</span></code><a class="headerlink" href="#setvizdoompath" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1460,7 +1460,7 @@ The default Doom ticrate is 35. This value will play a game at normal speed.</p>
 </section>
 <hr class="docutils" />
 <section id="setdoomgamepath">
-<h3><code class="docutils literal notranslate"><span class="pre">setDoomGamePath</span></code><a class="headerlink" href="#setdoomgamepath" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setDoomGamePath</span></code><a class="headerlink" href="#setdoomgamepath" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1482,7 +1482,7 @@ If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) i
 </section>
 <hr class="docutils" />
 <section id="setdoomscenariopath">
-<h3><code class="docutils literal notranslate"><span class="pre">setDoomScenarioPath</span></code><a class="headerlink" href="#setdoomscenariopath" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setDoomScenarioPath</span></code><a class="headerlink" href="#setdoomscenariopath" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1504,7 +1504,7 @@ If not provided, the default Doom single-player maps will be loaded.</p>
 </section>
 <hr class="docutils" />
 <section id="setdoommap">
-<h3><code class="docutils literal notranslate"><span class="pre">setDoomMap</span></code><a class="headerlink" href="#setdoommap" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setDoomMap</span></code><a class="headerlink" href="#setdoommap" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1525,7 +1525,7 @@ If not provided, the default Doom single-player maps will be loaded.</p>
 </section>
 <hr class="docutils" />
 <section id="setdoomskill">
-<h3><code class="docutils literal notranslate"><span class="pre">setDoomSkill</span></code><a class="headerlink" href="#setdoomskill" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setDoomSkill</span></code><a class="headerlink" href="#setdoomskill" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1556,7 +1556,7 @@ Takes effect from the next episode.</p>
 </section>
 <hr class="docutils" />
 <section id="setdoomconfigpath">
-<h3><code class="docutils literal notranslate"><span class="pre">setDoomConfigPath</span></code><a class="headerlink" href="#setdoomconfigpath" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setDoomConfigPath</span></code><a class="headerlink" href="#setdoomconfigpath" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1580,7 +1580,7 @@ This method is not needed for most of the tasks and is added for the convenience
 </section>
 <hr class="docutils" />
 <section id="getseed">
-<h3><code class="docutils literal notranslate"><span class="pre">getSeed</span></code><a class="headerlink" href="#getseed" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getSeed</span></code><a class="headerlink" href="#getseed" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1599,7 +1599,7 @@ This method is not needed for most of the tasks and is added for the convenience
 </section>
 <hr class="docutils" />
 <section id="setseed">
-<h3><code class="docutils literal notranslate"><span class="pre">setSeed</span></code><a class="headerlink" href="#setseed" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setSeed</span></code><a class="headerlink" href="#setseed" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1624,7 +1624,7 @@ This method is not needed for most of the tasks and is added for the convenience
 </section>
 <hr class="docutils" />
 <section id="getepisodestarttime">
-<h3><code class="docutils literal notranslate"><span class="pre">getEpisodeStartTime</span></code><a class="headerlink" href="#getepisodestarttime" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getEpisodeStartTime</span></code><a class="headerlink" href="#getepisodestarttime" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1643,7 +1643,7 @@ This method is not needed for most of the tasks and is added for the convenience
 </section>
 <hr class="docutils" />
 <section id="setepisodestarttime">
-<h3><code class="docutils literal notranslate"><span class="pre">setEpisodeStartTime</span></code><a class="headerlink" href="#setepisodestarttime" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setEpisodeStartTime</span></code><a class="headerlink" href="#setepisodestarttime" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1665,7 +1665,7 @@ Every episode will effectively start (from the user’s perspective) after the p
 </section>
 <hr class="docutils" />
 <section id="getepisodetimeout">
-<h3><code class="docutils literal notranslate"><span class="pre">getEpisodeTimeout</span></code><a class="headerlink" href="#getepisodetimeout" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getEpisodeTimeout</span></code><a class="headerlink" href="#getepisodetimeout" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1684,7 +1684,7 @@ Every episode will effectively start (from the user’s perspective) after the p
 </section>
 <hr class="docutils" />
 <section id="setepisodetimeout">
-<h3><code class="docutils literal notranslate"><span class="pre">setEpisodeTimeout</span></code><a class="headerlink" href="#setepisodetimeout" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setEpisodeTimeout</span></code><a class="headerlink" href="#setepisodetimeout" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1704,9 +1704,9 @@ Every episode will effectively start (from the user’s perspective) after the p
 </section>
 </section>
 <section id="output-rendering-setting-methods">
-<h2>Output/rendering setting methods<a class="headerlink" href="#output-rendering-setting-methods" title="Permalink to this heading">#</a></h2>
+<h2>Output/rendering setting methods<a class="headerlink" href="#output-rendering-setting-methods" title="Link to this heading">#</a></h2>
 <section id="setscreenresolution">
-<h3><code class="docutils literal notranslate"><span class="pre">setScreenResolution</span></code><a class="headerlink" href="#setscreenresolution" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setScreenResolution</span></code><a class="headerlink" href="#setscreenresolution" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1733,7 +1733,7 @@ The buffers, as well as the content of ViZDoom’s display window, will be affec
 </section>
 <hr class="docutils" />
 <section id="getscreenformat">
-<h3><code class="docutils literal notranslate"><span class="pre">getScreenFormat</span></code><a class="headerlink" href="#getscreenformat" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getScreenFormat</span></code><a class="headerlink" href="#getscreenformat" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1752,7 +1752,7 @@ The buffers, as well as the content of ViZDoom’s display window, will be affec
 </section>
 <hr class="docutils" />
 <section id="setscreenformat">
-<h3><code class="docutils literal notranslate"><span class="pre">setScreenFormat</span></code><a class="headerlink" href="#setscreenformat" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setScreenFormat</span></code><a class="headerlink" href="#setscreenformat" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1779,7 +1779,7 @@ The format change affects only the buffers, so it will not have any effect on th
 </section>
 <hr class="docutils" />
 <section id="isdepthbufferenabled">
-<h3><code class="docutils literal notranslate"><span class="pre">isDepthBufferEnabled</span></code><a class="headerlink" href="#isdepthbufferenabled" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">isDepthBufferEnabled</span></code><a class="headerlink" href="#isdepthbufferenabled" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1799,7 +1799,7 @@ The format change affects only the buffers, so it will not have any effect on th
 </section>
 <hr class="docutils" />
 <section id="setdepthbufferenabled">
-<h3><code class="docutils literal notranslate"><span class="pre">setDepthBufferEnabled</span></code><a class="headerlink" href="#setdepthbufferenabled" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setDepthBufferEnabled</span></code><a class="headerlink" href="#setdepthbufferenabled" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1827,7 +1827,7 @@ Depth buffer will contain noise if <code class="docutils literal notranslate"><s
 </section>
 <hr class="docutils" />
 <section id="islabelsbufferenabled">
-<h3><code class="docutils literal notranslate"><span class="pre">isLabelsBufferEnabled</span></code><a class="headerlink" href="#islabelsbufferenabled" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">isLabelsBufferEnabled</span></code><a class="headerlink" href="#islabelsbufferenabled" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1847,7 +1847,7 @@ Depth buffer will contain noise if <code class="docutils literal notranslate"><s
 </section>
 <hr class="docutils" />
 <section id="setlabelsbufferenabled">
-<h3><code class="docutils literal notranslate"><span class="pre">setLabelsBufferEnabled</span></code><a class="headerlink" href="#setlabelsbufferenabled" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setLabelsBufferEnabled</span></code><a class="headerlink" href="#setlabelsbufferenabled" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1877,7 +1877,7 @@ LabelsBuffer will contain noise if <code class="docutils literal notranslate"><s
 </section>
 <hr class="docutils" />
 <section id="isautomapbufferenabled">
-<h3><code class="docutils literal notranslate"><span class="pre">isAutomapBufferEnabled</span></code><a class="headerlink" href="#isautomapbufferenabled" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">isAutomapBufferEnabled</span></code><a class="headerlink" href="#isautomapbufferenabled" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1897,7 +1897,7 @@ LabelsBuffer will contain noise if <code class="docutils literal notranslate"><s
 </section>
 <hr class="docutils" />
 <section id="setautomapbufferenabled">
-<h3><code class="docutils literal notranslate"><span class="pre">setAutomapBufferEnabled</span></code><a class="headerlink" href="#setautomapbufferenabled" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setAutomapBufferEnabled</span></code><a class="headerlink" href="#setautomapbufferenabled" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1924,7 +1924,7 @@ LabelsBuffer will contain noise if <code class="docutils literal notranslate"><s
 </section>
 <hr class="docutils" />
 <section id="setautomapmode">
-<h3><code class="docutils literal notranslate"><span class="pre">setAutomapMode</span></code><a class="headerlink" href="#setautomapmode" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setAutomapMode</span></code><a class="headerlink" href="#setautomapmode" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1951,7 +1951,7 @@ which determines what will be visible on it.</p>
 </section>
 <hr class="docutils" />
 <section id="setautomaprotate">
-<h3><code class="docutils literal notranslate"><span class="pre">setAutomapRotate</span></code><a class="headerlink" href="#setautomaprotate" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setAutomapRotate</span></code><a class="headerlink" href="#setautomaprotate" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1974,7 +1974,7 @@ If false, north always will be at the top of the buffer.</p>
 </section>
 <hr class="docutils" />
 <section id="setautomaprendertextures">
-<h3><code class="docutils literal notranslate"><span class="pre">setAutomapRenderTextures</span></code><a class="headerlink" href="#setautomaprendertextures" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setAutomapRenderTextures</span></code><a class="headerlink" href="#setautomaprendertextures" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -1996,7 +1996,7 @@ If false, north always will be at the top of the buffer.</p>
 </section>
 <hr class="docutils" />
 <section id="setrenderhud">
-<h3><code class="docutils literal notranslate"><span class="pre">setRenderHud</span></code><a class="headerlink" href="#setrenderhud" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderHud</span></code><a class="headerlink" href="#setrenderhud" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2017,7 +2017,7 @@ If false, north always will be at the top of the buffer.</p>
 </section>
 <hr class="docutils" />
 <section id="setrenderminimalhud">
-<h3><code class="docutils literal notranslate"><span class="pre">setRenderMinimalHud</span></code><a class="headerlink" href="#setrenderminimalhud" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderMinimalHud</span></code><a class="headerlink" href="#setrenderminimalhud" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2039,7 +2039,7 @@ If false, north always will be at the top of the buffer.</p>
 </section>
 <hr class="docutils" />
 <section id="setrenderweapon">
-<h3><code class="docutils literal notranslate"><span class="pre">setRenderWeapon</span></code><a class="headerlink" href="#setrenderweapon" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderWeapon</span></code><a class="headerlink" href="#setrenderweapon" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2060,7 +2060,7 @@ If false, north always will be at the top of the buffer.</p>
 </section>
 <hr class="docutils" />
 <section id="setrendercrosshair">
-<h3><code class="docutils literal notranslate"><span class="pre">setRenderCrosshair</span></code><a class="headerlink" href="#setrendercrosshair" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderCrosshair</span></code><a class="headerlink" href="#setrendercrosshair" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2081,7 +2081,7 @@ If false, north always will be at the top of the buffer.</p>
 </section>
 <hr class="docutils" />
 <section id="setrenderdecals">
-<h3><code class="docutils literal notranslate"><span class="pre">setRenderDecals</span></code><a class="headerlink" href="#setrenderdecals" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderDecals</span></code><a class="headerlink" href="#setrenderdecals" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2102,7 +2102,7 @@ If false, north always will be at the top of the buffer.</p>
 </section>
 <hr class="docutils" />
 <section id="setrenderparticles">
-<h3><code class="docutils literal notranslate"><span class="pre">setRenderParticles</span></code><a class="headerlink" href="#setrenderparticles" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderParticles</span></code><a class="headerlink" href="#setrenderparticles" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2123,7 +2123,7 @@ If false, north always will be at the top of the buffer.</p>
 </section>
 <hr class="docutils" />
 <section id="setrendereffectssprites">
-<h3><code class="docutils literal notranslate"><span class="pre">setRenderEffectsSprites</span></code><a class="headerlink" href="#setrendereffectssprites" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderEffectsSprites</span></code><a class="headerlink" href="#setrendereffectssprites" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2145,7 +2145,7 @@ If false, north always will be at the top of the buffer.</p>
 </section>
 <hr class="docutils" />
 <section id="setrendermessages">
-<h3><code class="docutils literal notranslate"><span class="pre">setRenderMessages</span></code><a class="headerlink" href="#setrendermessages" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderMessages</span></code><a class="headerlink" href="#setrendermessages" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2167,7 +2167,7 @@ If false, north always will be at the top of the buffer.</p>
 </section>
 <hr class="docutils" />
 <section id="setrendercorpses">
-<h3><code class="docutils literal notranslate"><span class="pre">setRenderCorpses</span></code><a class="headerlink" href="#setrendercorpses" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderCorpses</span></code><a class="headerlink" href="#setrendercorpses" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2189,7 +2189,7 @@ If false, north always will be at the top of the buffer.</p>
 </section>
 <hr class="docutils" />
 <section id="setrenderscreenflashes">
-<h3><code class="docutils literal notranslate"><span class="pre">setRenderScreenFlashes</span></code><a class="headerlink" href="#setrenderscreenflashes" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderScreenFlashes</span></code><a class="headerlink" href="#setrenderscreenflashes" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2211,7 +2211,7 @@ If false, north always will be at the top of the buffer.</p>
 </section>
 <hr class="docutils" />
 <section id="setrenderallframes">
-<h3><code class="docutils literal notranslate"><span class="pre">setRenderAllFrames</span></code><a class="headerlink" href="#setrenderallframes" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setRenderAllFrames</span></code><a class="headerlink" href="#setrenderallframes" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2239,7 +2239,7 @@ It only makes sense to use it if the window is visible.</p>
 </section>
 <hr class="docutils" />
 <section id="setwindowvisible">
-<h3><code class="docutils literal notranslate"><span class="pre">setWindowVisible</span></code><a class="headerlink" href="#setwindowvisible" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setWindowVisible</span></code><a class="headerlink" href="#setwindowvisible" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2261,7 +2261,7 @@ ViZDoom with window disabled can be used on Linux systems without X Server.</p>
 </section>
 <hr class="docutils" />
 <section id="setconsoleenabled">
-<h3><code class="docutils literal notranslate"><span class="pre">setConsoleEnabled</span></code><a class="headerlink" href="#setconsoleenabled" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setConsoleEnabled</span></code><a class="headerlink" href="#setconsoleenabled" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2282,7 +2282,7 @@ ViZDoom with window disabled can be used on Linux systems without X Server.</p>
 </section>
 <hr class="docutils" />
 <section id="setsoundenabled">
-<h3><code class="docutils literal notranslate"><span class="pre">setSoundEnabled</span></code><a class="headerlink" href="#setsoundenabled" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setSoundEnabled</span></code><a class="headerlink" href="#setsoundenabled" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2303,7 +2303,7 @@ ViZDoom with window disabled can be used on Linux systems without X Server.</p>
 </section>
 <hr class="docutils" />
 <section id="getscreenwidth">
-<h3><code class="docutils literal notranslate"><span class="pre">getScreenWidth</span></code><a class="headerlink" href="#getscreenwidth" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getScreenWidth</span></code><a class="headerlink" href="#getscreenwidth" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2322,7 +2322,7 @@ ViZDoom with window disabled can be used on Linux systems without X Server.</p>
 </section>
 <hr class="docutils" />
 <section id="getscreenheight">
-<h3><code class="docutils literal notranslate"><span class="pre">getScreenHeight</span></code><a class="headerlink" href="#getscreenheight" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getScreenHeight</span></code><a class="headerlink" href="#getscreenheight" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2341,7 +2341,7 @@ ViZDoom with window disabled can be used on Linux systems without X Server.</p>
 </section>
 <hr class="docutils" />
 <section id="getscreenchannels">
-<h3><code class="docutils literal notranslate"><span class="pre">getScreenChannels</span></code><a class="headerlink" href="#getscreenchannels" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getScreenChannels</span></code><a class="headerlink" href="#getscreenchannels" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2360,7 +2360,7 @@ ViZDoom with window disabled can be used on Linux systems without X Server.</p>
 </section>
 <hr class="docutils" />
 <section id="getscreenpitch">
-<h3><code class="docutils literal notranslate"><span class="pre">getScreenPitch</span></code><a class="headerlink" href="#getscreenpitch" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getScreenPitch</span></code><a class="headerlink" href="#getscreenpitch" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2379,7 +2379,7 @@ ViZDoom with window disabled can be used on Linux systems without X Server.</p>
 </section>
 <hr class="docutils" />
 <section id="getscreensize">
-<h3><code class="docutils literal notranslate"><span class="pre">getScreenSize</span></code><a class="headerlink" href="#getscreensize" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getScreenSize</span></code><a class="headerlink" href="#getscreensize" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2398,7 +2398,7 @@ ViZDoom with window disabled can be used on Linux systems without X Server.</p>
 </section>
 <hr class="docutils" />
 <section id="isobjectsinfoenabled">
-<h3><code class="docutils literal notranslate"><span class="pre">isObjectsInfoEnabled</span></code><a class="headerlink" href="#isobjectsinfoenabled" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">isObjectsInfoEnabled</span></code><a class="headerlink" href="#isobjectsinfoenabled" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2418,7 +2418,7 @@ ViZDoom with window disabled can be used on Linux systems without X Server.</p>
 </section>
 <hr class="docutils" />
 <section id="setobjectsinfoenabled">
-<h3><code class="docutils literal notranslate"><span class="pre">setObjectsInfoEnabled</span></code><a class="headerlink" href="#setobjectsinfoenabled" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setObjectsInfoEnabled</span></code><a class="headerlink" href="#setobjectsinfoenabled" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2447,7 +2447,7 @@ It will be available in the state.</p>
 </section>
 <hr class="docutils" />
 <section id="issectorsinfoenabled">
-<h3><code class="docutils literal notranslate"><span class="pre">isSectorsInfoEnabled</span></code><a class="headerlink" href="#issectorsinfoenabled" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">isSectorsInfoEnabled</span></code><a class="headerlink" href="#issectorsinfoenabled" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2467,7 +2467,7 @@ It will be available in the state.</p>
 </section>
 <hr class="docutils" />
 <section id="setsectorsinfoenabled">
-<h3><code class="docutils literal notranslate"><span class="pre">setSectorsInfoEnabled</span></code><a class="headerlink" href="#setsectorsinfoenabled" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setSectorsInfoEnabled</span></code><a class="headerlink" href="#setsectorsinfoenabled" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2496,7 +2496,7 @@ It will be available in the state.</p>
 </section>
 <hr class="docutils" />
 <section id="isaudiobufferenabled">
-<h3><code class="docutils literal notranslate"><span class="pre">isAudioBufferEnabled</span></code><a class="headerlink" href="#isaudiobufferenabled" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">isAudioBufferEnabled</span></code><a class="headerlink" href="#isaudiobufferenabled" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2516,7 +2516,7 @@ It will be available in the state.</p>
 </section>
 <hr class="docutils" />
 <section id="setaudiobufferenabled">
-<h3><code class="docutils literal notranslate"><span class="pre">setAudioBufferEnabled</span></code><a class="headerlink" href="#setaudiobufferenabled" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setAudioBufferEnabled</span></code><a class="headerlink" href="#setaudiobufferenabled" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2544,7 +2544,7 @@ It will be available in the state.</p>
 </section>
 <hr class="docutils" />
 <section id="getaudiosamplingrate">
-<h3><code class="docutils literal notranslate"><span class="pre">getAudioSamplingRate</span></code><a class="headerlink" href="#getaudiosamplingrate" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getAudioSamplingRate</span></code><a class="headerlink" href="#getaudiosamplingrate" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2570,7 +2570,7 @@ It will be available in the state.</p>
 </section>
 <hr class="docutils" />
 <section id="setaudiosamplingrate">
-<h3><code class="docutils literal notranslate"><span class="pre">setAudioSamplingRate</span></code><a class="headerlink" href="#setaudiosamplingrate" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setAudioSamplingRate</span></code><a class="headerlink" href="#setaudiosamplingrate" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2598,7 +2598,7 @@ It will be available in the state.</p>
 </section>
 <hr class="docutils" />
 <section id="getaudiobuffersize">
-<h3><code class="docutils literal notranslate"><span class="pre">getAudioBufferSize</span></code><a class="headerlink" href="#getaudiobuffersize" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">getAudioBufferSize</span></code><a class="headerlink" href="#getaudiobuffersize" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2623,7 +2623,7 @@ It will be available in the state.</p>
 </section>
 <hr class="docutils" />
 <section id="setaudiobuffersize">
-<h3><code class="docutils literal notranslate"><span class="pre">setAudioBufferSize</span></code><a class="headerlink" href="#setaudiobuffersize" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">setAudioBufferSize</span></code><a class="headerlink" href="#setaudiobuffersize" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -2932,9 +2932,9 @@ Doom uses 35 ticks per second.</p>
         })()
       </script>
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=dda0c7a7"></script>
+    <script src="../../../_static/documentation_options.js?v=a5603611"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=7660844c"></script>
     
     <script>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark">
@@ -11,11 +11,11 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="APIs and wrappers" href="../apisAndWrappers/" /><link rel="prev" title="Python quick start" href="../pythonQuickstart/" />
         <link rel="canonical" href="https://vizdoom.farama.org/introduction/building.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19.dev1 -->
         <title>Building from source - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=2b6f8eb5452c44539a42dd9ada0a48f56e5f404d" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=5d0deb98f4b2e6cecaee64745957f1068f205919" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=49cbaffd" />
     
     
 
@@ -311,7 +311,7 @@
           <article role="main">
             
             <section id="building-from-source">
-<h1>Building from source<a class="headerlink" href="#building-from-source" title="Permalink to this heading">#</a></h1>
+<h1>Building from source<a class="headerlink" href="#building-from-source" title="Link to this heading">#</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="#installation-and-building"><span class="xref myst">Installation and building</span></a></p>
 <ul>
@@ -339,10 +339,10 @@
 </li>
 </ul>
 <section id="dependencies">
-<h2><a name="deps"></a> Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this heading">#</a></h2>
+<h2><a name="deps"></a> Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">#</a></h2>
 <p>Even if you plan to install ViZDoom via pip, you need to install some dependencies in your system first.</p>
 <section id="linux">
-<h3><a name="linux_deps"></a> Linux<a class="headerlink" href="#linux" title="Permalink to this heading">#</a></h3>
+<h3><a name="linux_deps"></a> Linux<a class="headerlink" href="#linux" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>CMake 3.4+</p></li>
 <li><p>Make</p></li>
@@ -385,7 +385,7 @@ dnf<span class="w"> </span>install<span class="w"> </span>python3-devel<span cla
 </div>
 </section>
 <section id="macos">
-<h3><a name="macos_deps"></a> MacOS<a class="headerlink" href="#macos" title="Permalink to this heading">#</a></h3>
+<h3><a name="macos_deps"></a> MacOS<a class="headerlink" href="#macos" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>CMake 3.4+</p></li>
 <li><p>Clang 5.0+</p></li>
@@ -395,7 +395,7 @@ dnf<span class="w"> </span>install<span class="w"> </span>python3-devel<span cla
 </section>
 </section>
 <section id="building">
-<h2><a name="build"></a> Building<a class="headerlink" href="#building" title="Permalink to this heading">#</a></h2>
+<h2><a name="build"></a> Building<a class="headerlink" href="#building" title="Link to this heading">#</a></h2>
 <p>Additionally, <a class="reference external" href="http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X">ZDoom dependencies</a> are needed.</p>
 <p>To get dependencies install <a class="reference external" href="https://brew.sh/">homebrew</a></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># ZDoom dependencies and Boost libraries</span>
@@ -405,7 +405,7 @@ brew<span class="w"> </span>install<span class="w"> </span>cmake<span class="w">
 </pre></div>
 </div>
 <section id="windows">
-<h3><a name="windows_deps"></a> Windows<a class="headerlink" href="#windows" title="Permalink to this heading">#</a></h3>
+<h3><a name="windows_deps"></a> Windows<a class="headerlink" href="#windows" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>CMake 3.4+</p></li>
 <li><p>Visual Studio 2012+</p></li>
@@ -418,7 +418,7 @@ You can download Boost from <a class="reference external" href="https://www.boos
 </section>
 </section>
 <section id="installation-via-pip-recommended-for-python-users">
-<h2><a name="pypi"></a> Installation via pip (recommended for Python users)<a class="headerlink" href="#installation-via-pip-recommended-for-python-users" title="Permalink to this heading">#</a></h2>
+<h2><a name="pypi"></a> Installation via pip (recommended for Python users)<a class="headerlink" href="#installation-via-pip-recommended-for-python-users" title="Link to this heading">#</a></h2>
 <p>ViZDoom for Python can be installed via <strong>pip</strong> on Linux, MacOS and Windows, and it is strongly recommended.
 However you will still need to install <strong><a class="reference internal" href="#linux_deps"><span class="xref myst">Linux</span></a>/<a class="reference internal" href="#macos_deps"><span class="xref myst">MacOS</span></a> dependencies</strong>, as it will be build locally from source.
 For Windows 10 or 11 64-bit and Python 3.8+ we provide pre-build wheels (binary packages).</p>
@@ -432,10 +432,10 @@ For Windows 10 or 11 64-bit and Python 3.8+ we provide pre-build wheels (binary 
 </div>
 </section>
 <section id="building-manually-not-recommended">
-<h2><a name="build"></a> Building manually (not recommended)<a class="headerlink" href="#building-manually-not-recommended" title="Permalink to this heading">#</a></h2>
+<h2><a name="build"></a> Building manually (not recommended)<a class="headerlink" href="#building-manually-not-recommended" title="Link to this heading">#</a></h2>
 <p>Instructions below can be used to build ViZDoom manually.</p>
 <section id="linux-macos">
-<h3><a name="linux_macos_build"></a> Linux / MacOS<a class="headerlink" href="#linux-macos" title="Permalink to this heading">#</a></h3>
+<h3><a name="linux_macos_build"></a> Linux / MacOS<a class="headerlink" href="#linux-macos" title="Link to this heading">#</a></h3>
 <blockquote>
 <div><blockquote>
 <div><blockquote>
@@ -453,7 +453,7 @@ make
 <p>where <code class="docutils literal notranslate"><span class="pre">-DBUILD_ENGINE=ON</span></code> and <code class="docutils literal notranslate"><span class="pre">-DBUILD_PYTHON=ON</span></code> CMake options are optional (default ON).</p>
 </section>
 <section id="id1">
-<h3><a name="windows_build"></a> Windows<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<h3><a name="windows_build"></a> Windows<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <p>Run CMake GUI, select ViZDoom root directory and set paths to:</p>
 <ul class="simple">
 <li><p>BOOST_ROOT</p></li>
@@ -467,7 +467,7 @@ make
 <p>Use generated Visual Studio solution to build all parts of ViZDoom environment.</p>
 </section>
 <section id="compilation-output">
-<h3><a name="output"></a> Compilation output<a class="headerlink" href="#compilation-output" title="Permalink to this heading">#</a></h3>
+<h3><a name="output"></a> Compilation output<a class="headerlink" href="#compilation-output" title="Link to this heading">#</a></h3>
 <p>Compilation output will be placed in <code class="docutils literal notranslate"><span class="pre">build/bin</span></code> and it should contain the following files.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">bin/vizdoom</span> <span class="pre">/</span> <span class="pre">vizdoom.exe</span></code> - ViZDoom executable</p></li>
@@ -479,7 +479,7 @@ make
 </ul>
 </section>
 <section id="manual-installation">
-<h3><a name="manual-install"></a> Manual installation<a class="headerlink" href="#manual-installation" title="Permalink to this heading">#</a></h3>
+<h3><a name="manual-install"></a> Manual installation<a class="headerlink" href="#manual-installation" title="Link to this heading">#</a></h3>
 <p>To manually install Python package copy <code class="docutils literal notranslate"><span class="pre">vizdoom_root_dir/build/bin/pythonX.X/pip_package</span></code> contents to <code class="docutils literal notranslate"><span class="pre">python_root_dir/lib/pythonX.X/site-packages/site-packages/vizdoom</span></code>.</p>
 </section>
 </section>
@@ -658,9 +658,9 @@ make
         })()
       </script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=dda0c7a7"></script>
+    <script src="../../_static/documentation_options.js?v=a5603611"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     
     <script>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark">
@@ -11,11 +11,11 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Default scenarios/environments" href="../../environments/default/" /><link rel="prev" title="Utilities" href="../cpp/utils/" />
         <link rel="canonical" href="https://vizdoom.farama.org/api/configurationFiles.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19.dev1 -->
         <title>Configuration files - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=2b6f8eb5452c44539a42dd9ada0a48f56e5f404d" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=5d0deb98f4b2e6cecaee64745957f1068f205919" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=49cbaffd" />
     
     
 
@@ -311,10 +311,10 @@
           <article role="main">
             
             <section id="configuration-files">
-<h1>Configuration files<a class="headerlink" href="#configuration-files" title="Permalink to this heading">#</a></h1>
+<h1>Configuration files<a class="headerlink" href="#configuration-files" title="Link to this heading">#</a></h1>
 <p>Instead of configuring the ViZDoom in code, you can load it from the configuration file(s). Each file is read sequentially, so multiple entries with the same key will overwrite previous entries.</p>
 <section id="format">
-<h2>Format<a class="headerlink" href="#format" title="Permalink to this heading">#</a></h2>
+<h2>Format<a class="headerlink" href="#format" title="Link to this heading">#</a></h2>
 <p>Each entry in a configraution file is a pair of <strong>key</strong> and <strong>value</strong> separated by an equal sign (<strong>“=”</strong>). The file format should also abide the following rules:</p>
 <ul class="simple">
 <li><p>one entry per line (except for list parameters),</p></li>
@@ -325,15 +325,15 @@
 </ul>
 <p>A violation of any of these rules will result in ignoring <strong>only</strong> the line with the error and sending a warning message to stderr (“WARNING! Loading config from: …”).</p>
 <section id="list-of-values">
-<h3>List of values<a class="headerlink" href="#list-of-values" title="Permalink to this heading">#</a></h3>
+<h3>List of values<a class="headerlink" href="#list-of-values" title="Link to this heading">#</a></h3>
 <p><strong>available_buttons</strong> and <strong>available_game_variables</strong> are special parameters, which use multiple values and instead of a single value they expect a list of values separated by whitespaces and enclosed within braces (“{” and “}”). The list can stretch throughout multiple lines as long as all values are separated from each other by whitespaces.</p>
 </section>
 <section id="appending-values">
-<h3>Appending values<a class="headerlink" href="#appending-values" title="Permalink to this heading">#</a></h3>
+<h3>Appending values<a class="headerlink" href="#appending-values" title="Link to this heading">#</a></h3>
 <p>Each list assignment (<strong>KEY = { VALUES }</strong>)clears values specified for this key before (in other configuration files or in the code). That is why the *<em>append operator(<em>KEY += { VALUES })</em></em> is available. This way you can more easily combine multiple configuration files and tinker in code.</p>
 </section>
 <section id="supported-configuration-keys">
-<h3>Supported configuration keys:<a class="headerlink" href="#supported-configuration-keys" title="Permalink to this heading">#</a></h3>
+<h3>Supported configuration keys:<a class="headerlink" href="#supported-configuration-keys" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">audioBufferEnabled/audio_buffer_enabled</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">audioBufferSize/audio_buffer_size</span></code></p></li>
@@ -382,7 +382,7 @@
 <p>See also: <a class="reference internal" href="#DoomGame.md"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame</span></code></span></a> for config keys and functions related to them.</p>
 </section>
 <section id="sample-configuration-file-content">
-<h3>Sample configuration file content:<a class="headerlink" href="#sample-configuration-file-content" title="Permalink to this heading">#</a></h3>
+<h3>Sample configuration file content:<a class="headerlink" href="#sample-configuration-file-content" title="Link to this heading">#</a></h3>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">vizdoom_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">../../bin/vizdoom</span>
 <span class="c1">#doom_game_path = ../../scenarios/doom2.wad</span>
 <span class="na">doom_game_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">../../scenarios/freedoom2.wad</span>
@@ -594,9 +594,9 @@
         })()
       </script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=dda0c7a7"></script>
+    <script src="../../_static/documentation_options.js?v=a5603611"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     
     <script>

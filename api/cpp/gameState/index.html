@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark">
@@ -11,11 +11,11 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Enums" href="../enums/" /><link rel="prev" title="DoomGame" href="../doomGame/" />
         <link rel="canonical" href="https://vizdoom.farama.org/api/cpp/gameState.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20.dev1 -->
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19.dev1 -->
         <title>GameState - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=2b6f8eb5452c44539a42dd9ada0a48f56e5f404d" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=5d0deb98f4b2e6cecaee64745957f1068f205919" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=49cbaffd" />
     
     
 
@@ -311,11 +311,11 @@
           <article role="main">
             
             <section id="gamestate">
-<h1>GameState<a class="headerlink" href="#gamestate" title="Permalink to this heading">#</a></h1>
+<h1>GameState<a class="headerlink" href="#gamestate" title="Link to this heading">#</a></h1>
 <p>GameState is the main object returned by <a class="reference internal" href="../doomGame/#getstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getState</span></code></span></a> method.
 The declarations of all the enums can be found in the <code class="docutils literal notranslate"><span class="pre">include/ViZDoomTypes.h</span></code> header file.</p>
 <section id="id1">
-<h2><code class="docutils literal notranslate"><span class="pre">GameState</span></code><a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">GameState</span></code><a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p>(<code class="docutils literal notranslate"><span class="pre">C++</span> <span class="pre">type</span> <span class="pre">/</span> <span class="pre">Python</span> <span class="pre">type</span></code> <strong>name</strong>)</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>number</strong></p></li>
@@ -338,7 +338,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a>.</p></li>
 </ul>
 <section id="types-used-only-in-c">
-<h3>Types used only in C++<a class="headerlink" href="#types-used-only-in-c" title="Permalink to this heading">#</a></h3>
+<h3>Types used only in C++<a class="headerlink" href="#types-used-only-in-c" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Buffer</span> <span class="pre">(std::vector&lt;uint8_t&gt;)</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ImageBufferPtr</span> <span class="pre">(std::shared_ptr&lt;Buffer&gt;)</span></code></p></li>
@@ -347,9 +347,9 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </section>
 </section>
 <section id="structures">
-<h2>Structures<a class="headerlink" href="#structures" title="Permalink to this heading">#</a></h2>
+<h2>Structures<a class="headerlink" href="#structures" title="Link to this heading">#</a></h2>
 <section id="label">
-<h3><code class="docutils literal notranslate"><span class="pre">Label</span></code><a class="headerlink" href="#label" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">Label</span></code><a class="headerlink" href="#label" title="Link to this heading">#</a></h3>
 <p>(<code class="docutils literal notranslate"><span class="pre">C++</span> <span class="pre">type</span> <span class="pre">/</span> <span class="pre">Python</span> <span class="pre">type</span></code> <strong>name</strong>)</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>objectId / object_id</strong></p></li>
@@ -382,7 +382,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </section>
 <hr class="docutils" />
 <section id="object">
-<h3><code class="docutils literal notranslate"><span class="pre">Object</span></code><a class="headerlink" href="#object" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">Object</span></code><a class="headerlink" href="#object" title="Link to this heading">#</a></h3>
 <p>(<code class="docutils literal notranslate"><span class="pre">C++</span> <span class="pre">type</span> <span class="pre">/</span> <span class="pre">Python</span> <span class="pre">type</span></code> <strong>name</strong>)</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>id</strong></p></li>
@@ -409,7 +409,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </section>
 <hr class="docutils" />
 <section id="line">
-<h3><code class="docutils literal notranslate"><span class="pre">Line</span></code><a class="headerlink" href="#line" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">Line</span></code><a class="headerlink" href="#line" title="Link to this heading">#</a></h3>
 <p>(<code class="docutils literal notranslate"><span class="pre">C++</span> <span class="pre">type</span> <span class="pre">/</span> <span class="pre">Python</span> <span class="pre">type</span></code> <strong>name</strong>)</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>x1</strong></p></li>
@@ -430,7 +430,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </section>
 <hr class="docutils" />
 <section id="sector">
-<h3><code class="docutils literal notranslate"><span class="pre">Sector</span></code><a class="headerlink" href="#sector" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">Sector</span></code><a class="headerlink" href="#sector" title="Link to this heading">#</a></h3>
 <p>(<code class="docutils literal notranslate"><span class="pre">C++</span> <span class="pre">type</span> <span class="pre">/</span> <span class="pre">Python</span> <span class="pre">type</span></code> <strong>name</strong>)</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>floorHeight / floor_height</strong></p></li>
@@ -451,7 +451,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </section>
 <hr class="docutils" />
 <section id="serverstate">
-<h2><code class="docutils literal notranslate"><span class="pre">ServerState</span></code><a class="headerlink" href="#serverstate" title="Permalink to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">ServerState</span></code><a class="headerlink" href="#serverstate" title="Link to this heading">#</a></h2>
 <p>(<code class="docutils literal notranslate"><span class="pre">C++</span> <span class="pre">type</span> <span class="pre">/</span> <span class="pre">Python</span> <span class="pre">type</span></code> <strong>name</strong>)</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>tic</strong></p></li>
@@ -640,9 +640,9 @@ The declarations of all the enums can be found in the <code class="docutils lite
         })()
       </script>
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=dda0c7a7"></script>
+    <script src="../../../_static/documentation_options.js?v=a5603611"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=7660844c"></script>
     
     <script>

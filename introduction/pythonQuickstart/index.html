@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark">
@@ -11,11 +11,11 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Building from source" href="../building/" /><link rel="prev" title="&lt;no title&gt;" href="../../" />
         <link rel="canonical" href="https://vizdoom.farama.org/introduction/pythonQuickstart.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19.dev1 -->
         <title>Python quick start - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=2b6f8eb5452c44539a42dd9ada0a48f56e5f404d" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=5d0deb98f4b2e6cecaee64745957f1068f205919" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=49cbaffd" />
     
     
 
@@ -311,13 +311,13 @@
           <article role="main">
             
             <section id="python-quick-start">
-<h1>Python quick start<a class="headerlink" href="#python-quick-start" title="Permalink to this heading">#</a></h1>
+<h1>Python quick start<a class="headerlink" href="#python-quick-start" title="Link to this heading">#</a></h1>
 <section id="linux">
-<h2>Linux<a class="headerlink" href="#linux" title="Permalink to this heading">#</a></h2>
+<h2>Linux<a class="headerlink" href="#linux" title="Link to this heading">#</a></h2>
 <p>Both x86-64 and ARM64 architectures are supported.
 ViZDoom requires C++11 compiler, CMake 3.4+, Boost 1.65+ SDL2, OpenAL (optional) and Python 3.8+. Below you will find instructrion how to install these dependencies.</p>
 <section id="apt-based-distros-ubuntu-debian-linux-mint-etc">
-<h3>apt-based distros (Ubuntu, Debian, Linux Mint, etc.)<a class="headerlink" href="#apt-based-distros-ubuntu-debian-linux-mint-etc" title="Permalink to this heading">#</a></h3>
+<h3>apt-based distros (Ubuntu, Debian, Linux Mint, etc.)<a class="headerlink" href="#apt-based-distros-ubuntu-debian-linux-mint-etc" title="Link to this heading">#</a></h3>
 <p>To install ViZDoom run (may take few minutes):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apt</span> <span class="n">install</span> <span class="n">cmake</span> <span class="n">git</span> <span class="n">libboost</span><span class="o">-</span><span class="nb">all</span><span class="o">-</span><span class="n">dev</span> <span class="n">libsdl2</span><span class="o">-</span><span class="n">dev</span> <span class="n">libopenal</span><span class="o">-</span><span class="n">dev</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="n">vizdoom</span>
@@ -326,7 +326,7 @@ ViZDoom requires C++11 compiler, CMake 3.4+, Boost 1.65+ SDL2, OpenAL (optional)
 <p>We recommend using at least Ubuntu 18.04+ or Debian 10+ with Python 3.8+.</p>
 </section>
 <section id="dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc">
-<h3>dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)<a class="headerlink" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc" title="Permalink to this heading">#</a></h3>
+<h3>dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)<a class="headerlink" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc" title="Link to this heading">#</a></h3>
 <p>To install ViZDoom run (may take few minutes):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dnf</span> <span class="n">install</span> <span class="n">cmake</span> <span class="n">git</span> <span class="n">boost</span><span class="o">-</span><span class="n">devel</span> <span class="n">SDL2</span><span class="o">-</span><span class="n">devel</span> <span class="n">openal</span><span class="o">-</span><span class="n">soft</span><span class="o">-</span><span class="n">devel</span>
 <span class="n">pip</span> <span class="n">install</span> <span class="n">vizdoom</span>
@@ -335,7 +335,7 @@ ViZDoom requires C++11 compiler, CMake 3.4+, Boost 1.65+ SDL2, OpenAL (optional)
 <p>We recommend using at least Fedora 35+ or RHEL/CentOS/Alma/Rocky Linux 9+ with Python 3.8+. To install openal-soft-devel on RHEL/CentOS/Alma/Rocky Linux 9, one needs to use <code class="docutils literal notranslate"><span class="pre">dnf</span> <span class="pre">--enablerepo=crb</span> <span class="pre">install</span></code>.</p>
 </section>
 <section id="conda-based-installation">
-<h3>Conda-based installation<a class="headerlink" href="#conda-based-installation" title="Permalink to this heading">#</a></h3>
+<h3>Conda-based installation<a class="headerlink" href="#conda-based-installation" title="Link to this heading">#</a></h3>
 <p>To install ViZDoom on a conda environment (no system-wide installations required):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">boost</span> <span class="n">cmake</span> <span class="n">sdl2</span>
 <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">mwydmuch</span><span class="o">/</span><span class="n">ViZDoom</span><span class="o">.</span><span class="n">git</span> <span class="o">--</span><span class="n">recurse</span><span class="o">-</span><span class="n">submodules</span>
@@ -347,7 +347,7 @@ ViZDoom requires C++11 compiler, CMake 3.4+, Boost 1.65+ SDL2, OpenAL (optional)
 </section>
 </section>
 <section id="macos">
-<h2>macOS<a class="headerlink" href="#macos" title="Permalink to this heading">#</a></h2>
+<h2>macOS<a class="headerlink" href="#macos" title="Link to this heading">#</a></h2>
 <p>Both Intel and Apple Silicon CPUs are supported.</p>
 <p>To install ViZDoom on run (may take few minutes):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">cmake</span> <span class="n">git</span> <span class="n">boost</span> <span class="n">openal</span><span class="o">-</span><span class="n">soft</span> <span class="n">sdl2</span>
@@ -358,7 +358,7 @@ ViZDoom requires C++11 compiler, CMake 3.4+, Boost 1.65+ SDL2, OpenAL (optional)
 On Apple Silicon (M1 and M2), make sure you are using Python for Apple Silicon.</p>
 </section>
 <section id="windows">
-<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this heading">#</a></h2>
+<h2>Windows<a class="headerlink" href="#windows" title="Link to this heading">#</a></h2>
 <p>To install pre-build release for Windows 10 or 11 64-bit and Python 3.8+ just run (should take few seconds):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">vizdoom</span>
 </pre></div>
@@ -531,9 +531,9 @@ On Apple Silicon (M1 and M2), make sure you are using Python for Apple Silicon.<
         })()
       </script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=dda0c7a7"></script>
+    <script src="../../_static/documentation_options.js?v=a5603611"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     
     <script>
