@@ -312,52 +312,33 @@
             
             <section id="building-from-source">
 <h1>Building from source<a class="headerlink" href="#building-from-source" title="Link to this heading">#</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="#installation-and-building"><span class="xref myst">Installation and building</span></a></p>
-<ul>
-<li><p><a class="reference internal" href="#-dependencies"><span class="xref myst"> Dependencies</span></a></p>
-<ul>
-<li><p><a class="reference internal" href="#-linux"><span class="xref myst"> Linux</span></a></p></li>
-<li><p><a class="reference internal" href="#-macos"><span class="xref myst"> MacOS</span></a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#-building"><span class="xref myst"> Building</span></a></p>
-<ul>
-<li><p><a class="reference internal" href="#-windows"><span class="xref myst"> Windows</span></a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#-installation-via-pip-recommended-for-python-users"><span class="xref myst"> Installation via pip (recommended for Python users)</span></a></p></li>
-<li><p><a class="reference internal" href="#-building-manually-not-recommended"><span class="xref myst"> Building manually (not recommended)</span></a></p>
-<ul>
-<li><p><a class="reference internal" href="#-linux--macos"><span class="xref myst"> Linux / MacOS</span></a></p></li>
-<li><p><a class="reference internal" href="#-windows-1"><span class="xref myst"> Windows</span></a></p></li>
-<li><p><a class="reference internal" href="#-compilation-output"><span class="xref myst"> Compilation output</span></a></p></li>
-<li><p><a class="reference internal" href="#-manual-installation"><span class="xref myst"> Manual installation</span></a></p></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+<p>Here we describe how to build ViZDoom from source.
+If you want to install pre-build ViZDoom wheels for Python, see <a class="reference internal" href="../pythonQuickstart/"><span class="std std-doc">Python quick start</span></a>.</p>
 <section id="dependencies">
-<h2><a name="deps"></a> Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">#</a></h2>
-<p>Even if you plan to install ViZDoom via pip, you need to install some dependencies in your system first.</p>
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">#</a></h2>
+<p>To build ViZDoom (regardless of the method), you need to install some dependencies in your system first.</p>
 <section id="linux">
-<h3><a name="linux_deps"></a> Linux<a class="headerlink" href="#linux" title="Link to this heading">#</a></h3>
+<h3>Linux<a class="headerlink" href="#linux" title="Link to this heading">#</a></h3>
+<p>To build ViZDoom on Linux, the following dependencies are required:</p>
 <ul class="simple">
-<li><p>CMake 3.4+</p></li>
+<li><p>CMake 3.12+</p></li>
 <li><p>Make</p></li>
 <li><p>GCC 6.0+</p></li>
-<li><p>Boost libraries 1.65.0+</p></li>
-<li><p>Python 3.8+ for Python binding (optional)</p></li>
+<li><p>Boost libraries 1.54.0+</p></li>
+<li><p>Python 3.7+ for Python binding (optional)</p></li>
 </ul>
-<p>Additionally, <a class="reference external" href="http://zdoom.org/wiki/Compile_ZDoom_on_Linux">ZDoom dependencies</a> are needed.</p>
+<p>Also some of additionally <a class="reference external" href="http://zdoom.org/wiki/Compile_ZDoom_on_Linux">ZDoom dependencies</a> are needed.</p>
+<section id="apt-based-distros-ubuntu-debian-linux-mint-etc">
+<h4>apt-based distros (Ubuntu, Debian, Linux Mint, etc.)<a class="headerlink" href="#apt-based-distros-ubuntu-debian-linux-mint-etc" title="Link to this heading">#</a></h4>
 <p>To get all dependencies on apt-based Linux (Ubuntu, Debian, Linux Mint, etc.) execute the following commands in the shell (might require root access).</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># All ZDoom dependencies (most are optional)</span>
-apt<span class="w"> </span>install<span class="w"> </span>build-essential<span class="w"> </span>zlib1g-dev<span class="w"> </span>libsdl2-dev<span class="w"> </span>libjpeg-dev<span class="w"> </span><span class="se">\</span>
-tar<span class="w"> </span>libbz2-dev<span class="w"> </span>libgtk2.0-dev<span class="w"> </span>cmake<span class="w"> </span>git<span class="w"> </span>libfluidsynth-dev<span class="w"> </span>libgme-dev<span class="w"> </span><span class="se">\</span>
-libopenal-dev<span class="w"> </span>timidity<span class="w"> </span>libwildmidi-dev<span class="w"> </span>unzip<span class="w"> </span>libboost-all-dev
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># All possible ViZDoom dependencies,</span>
+<span class="c1"># most are optional and required only to support alternative sound and music backends in the engine</span>
+<span class="c1"># other can replace libraries that are included in the ViZDoom repository</span>
+apt<span class="w"> </span>install<span class="w"> </span>build-essential<span class="w"> </span>cmake<span class="w"> </span>git<span class="w"> </span>libsdl2-dev<span class="w"> </span>libboost-all-dev<span class="w"> </span>libopenal-dev<span class="w"> </span><span class="se">\</span>
+zlib1g-dev<span class="w"> </span>libjpeg-dev<span class="w"> </span>tar<span class="w"> </span>libbz2-dev<span class="w"> </span>libgtk2.0-dev<span class="w"> </span>libfluidsynth-dev<span class="w"> </span>libgme-dev<span class="w"> </span><span class="se">\</span>
+timidity<span class="w"> </span>libwildmidi-dev<span class="w"> </span>unzip
 
-<span class="c1"># Only essential ZDoom dependencies</span>
+<span class="c1"># Only essential ViZDoom dependencies</span>
 apt<span class="w"> </span>install<span class="w"> </span>build-essential<span class="w"> </span>cmake<span class="w"> </span>git<span class="w"> </span>libboost-all-dev<span class="w"> </span>libsdl2-dev<span class="w"> </span>libopenal-dev
 
 <span class="c1"># Python 3 dependencies (alternatively Anaconda 3 installed)</span>
@@ -365,16 +346,22 @@ apt<span class="w"> </span>install<span class="w"> </span>python3-dev<span class
 <span class="c1"># or install Anaconda 3 and add it to PATH</span>
 </pre></div>
 </div>
+</section>
+<section id="dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc">
+<h4>dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)<a class="headerlink" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc" title="Link to this heading">#</a></h4>
 <p>To get all dependencies on dnf/yum-based Linux (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.) execute the following commands in the shell (might require root access).</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Essential ZDoom dependencies</span>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Essential ZDoom dependencies</span>
 dnf<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>git<span class="w"> </span>boost-devel<span class="w"> </span>SDL2-devel<span class="w"> </span>openal-soft-devel
 
 <span class="c1"># Python 3 dependencies (alternatively Anaconda 3 installed)</span>
 dnf<span class="w"> </span>install<span class="w"> </span>python3-devel<span class="w"> </span>python3-pip
 </pre></div>
 </div>
+</section>
+<section id="anaconda-miniconda">
+<h4>Anaconda/Miniconda<a class="headerlink" href="#anaconda-miniconda" title="Link to this heading">#</a></h4>
 <p>If you do not have a root access, you can use a conda (e.g. <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">miniconda</a>) environment to install dependencies to your environment only:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">boost</span> <span class="n">cmake</span> <span class="n">gtk2</span> <span class="n">sdl2</span>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>boost<span class="w"> </span>cmake<span class="w"> </span>gtk2<span class="w"> </span>sdl2
 </pre></div>
 </div>
 <p>Note that to install ViZDoom in a conda environment you have to pull, build and install ViZDoom manually with</p>
@@ -384,65 +371,73 @@ dnf<span class="w"> </span>install<span class="w"> </span>python3-devel<span cla
 </pre></div>
 </div>
 </section>
+</section>
 <section id="macos">
-<h3><a name="macos_deps"></a> MacOS<a class="headerlink" href="#macos" title="Link to this heading">#</a></h3>
+<h3>MacOS<a class="headerlink" href="#macos" title="Link to this heading">#</a></h3>
+<p>To build ViZDoom on MacOS, the following dependencies are required:</p>
 <ul class="simple">
-<li><p>CMake 3.4+</p></li>
+<li><p>CMake 3.12+</p></li>
 <li><p>Clang 5.0+</p></li>
-<li><p>Boost libraries 1.65.0+</p></li>
-<li><p>Python 3.8+ for Python binding (optional)</p></li>
+<li><p>Boost libraries 1.54.0+</p></li>
+<li><p>Python 3.7+ for Python binding (optional)</p></li>
 </ul>
-</section>
-</section>
-<section id="building">
-<h2><a name="build"></a> Building<a class="headerlink" href="#building" title="Link to this heading">#</a></h2>
-<p>Additionally, <a class="reference external" href="http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X">ZDoom dependencies</a> are needed.</p>
-<p>To get dependencies install <a class="reference external" href="https://brew.sh/">homebrew</a></p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># ZDoom dependencies and Boost libraries</span>
-brew<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>boost<span class="w"> </span>openal-soft<span class="w"> </span>sdl2
-
-<span class="c1"># You can use system python or install Anaconda 3 and add it to PATH</span>
+<p>Also some of additionally <a class="reference external" href="http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X">ZDoom dependencies</a> are needed.</p>
+<p>To get all the dependencies install <a class="reference external" href="https://brew.sh/">homebrew</a> first, than execute the following commands in the shell:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>boost<span class="w"> </span>sdl2<span class="w"> </span>openal-soft
 </pre></div>
 </div>
+</section>
 <section id="windows">
-<h3><a name="windows_deps"></a> Windows<a class="headerlink" href="#windows" title="Link to this heading">#</a></h3>
+<h3>Windows<a class="headerlink" href="#windows" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p>CMake 3.4+</p></li>
+<li><p>CMake 3.12+</p></li>
 <li><p>Visual Studio 2012+</p></li>
-<li><p>Boost 1.65+</p></li>
-<li><p>Python 3.8+ for Python binding (optional)</p></li>
+<li><p>Boost libraries 1.54.0+</p></li>
+<li><p>Python 3.7+ for Python binding (optional)</p></li>
 </ul>
 <p>Additionally, <a class="reference external" href="http://zdoom.org/wiki/Compile_ZDoom_on_Windows">ZDoom dependencies</a> are needed.
 Most of them (except Boost) are gathered in this repository: <a class="reference external" href="https://github.com/mwydmuch/ViZDoomWinDepBin">ViZDoomWinDepBin</a>.
 You can download Boost from <a class="reference external" href="https://www.boost.org/users/download">here</a>.</p>
 </section>
 </section>
-<section id="installation-via-pip-recommended-for-python-users">
-<h2><a name="pypi"></a> Installation via pip (recommended for Python users)<a class="headerlink" href="#installation-via-pip-recommended-for-python-users" title="Link to this heading">#</a></h2>
-<p>ViZDoom for Python can be installed via <strong>pip</strong> on Linux, MacOS and Windows, and it is strongly recommended.
-However you will still need to install <strong><a class="reference internal" href="#linux_deps"><span class="xref myst">Linux</span></a>/<a class="reference internal" href="#macos_deps"><span class="xref myst">MacOS</span></a> dependencies</strong>, as it will be build locally from source.
-For Windows 10 or 11 64-bit and Python 3.8+ we provide pre-build wheels (binary packages).</p>
-<p>To install the most stable official release from <a class="reference external" href="https://pypi.python.org/pypi">PyPI</a>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vizdoom
+<section id="building-via-pip-recommended-for-python-users">
+<h2>Building via pip (recommended for Python users)<a class="headerlink" href="#building-via-pip-recommended-for-python-users" title="Link to this heading">#</a></h2>
+<p>ViZDoom for Python can be build via <strong>pip</strong> on Linux, MacOS and Windows, and it is strongly recommended.
+Even when building using pip you still need to install dependencies.</p>
+<p>To build the newest version from the repository run:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/mwydmuch/ViZDoom.git
 </pre></div>
 </div>
-<p>To install the newest version from the repository (only Linux and MacOS):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/mwydmuch/ViZDoom.git
+<p>or</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/mwydmuch/ViZDoom.git
+<span class="nb">cd</span><span class="w"> </span>ViZDoom
+pip<span class="w"> </span>install<span class="w"> </span>.
 </pre></div>
 </div>
+<p>On Linux and MacOS dependencies should be found automatically.
+On Windows you need to manually set following environment variables:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BOOST_ROOT</span></code> - the path to the directory with Boost libraries (e.g. <code class="docutils literal notranslate"><span class="pre">C:\boost_1_76_0</span></code>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">VIZDOOM_BUILD_GENERATOR_NAME</span></code> - generator name (e.g. <code class="docutils literal notranslate"><span class="pre">Visual</span> <span class="pre">Studio</span> <span class="pre">16</span> <span class="pre">2019</span></code>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">VIZDOOM_WIN_DEPS_ROOT</span></code> - the path to the directory with ZDoom dependencies (e.g. <code class="docutils literal notranslate"><span class="pre">C:\ViZDoomWinDepBin</span></code>).</p></li>
+</ul>
+<p>The process of building ViZDoom this way on Windows is demonstarted in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scripts/windows_build_wheels.bat">scripts/windows_build_wheels.bat</a>.</p>
+</section>
+<section id="building-manylinux-wheels">
+<h2>Building manylinux wheels<a class="headerlink" href="#building-manylinux-wheels" title="Link to this heading">#</a></h2>
+<p>To build manylinux wheels you need to install docker and cibuildwheel. Then on Linux and MacOS run in ViZDoom root directory:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>cibuildwheel<span class="w"> </span>--platform<span class="w"> </span>linux
+</pre></div>
+</div>
+<p>The binary ViZDoom wheels will be placed in <code class="docutils literal notranslate"><span class="pre">wheelhouse</span></code> directory.
+In case of building using cibuildwheel, the dependencies are installed automatically inside the docker container, so you do not need to install them manually in your system.</p>
 </section>
 <section id="building-manually-not-recommended">
-<h2><a name="build"></a> Building manually (not recommended)<a class="headerlink" href="#building-manually-not-recommended" title="Link to this heading">#</a></h2>
-<p>Instructions below can be used to build ViZDoom manually.</p>
+<h2>Building manually (not recommended)<a class="headerlink" href="#building-manually-not-recommended" title="Link to this heading">#</a></h2>
+<p>Instructions below can be used to build ViZDoom manually.
+We recommend doing it only if you want to use C++ API, work on the ViZDoom, or if you have problems with pip installation.</p>
 <section id="linux-macos">
-<h3><a name="linux_macos_build"></a> Linux / MacOS<a class="headerlink" href="#linux-macos" title="Link to this heading">#</a></h3>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>Using <a class="reference internal" href="#pypi"><span class="xref myst">pip</span></a> is the recommended way to install ViZDoom, please try it first unless you are sure you want to compile the package by hand.</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<h3>Linux / MacOS<a class="headerlink" href="#linux-macos" title="Link to this heading">#</a></h3>
 <p>In ViZDoom’s root directory:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>build
 <span class="nb">cd</span><span class="w"> </span>build
@@ -453,8 +448,10 @@ make
 <p>where <code class="docutils literal notranslate"><span class="pre">-DBUILD_ENGINE=ON</span></code> and <code class="docutils literal notranslate"><span class="pre">-DBUILD_PYTHON=ON</span></code> CMake options are optional (default ON).</p>
 </section>
 <section id="id1">
-<h3><a name="windows_build"></a> Windows<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
-<p>Run CMake GUI, select ViZDoom root directory and set paths to:</p>
+<h3>Windows<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Run CMake GUI or cmake command in cmd/powershell in ViZDoom root directory with the following paths provided:</p></li>
+</ol>
 <ul class="simple">
 <li><p>BOOST_ROOT</p></li>
 <li><p>BOOST_INCLUDEDIR</p></li>
@@ -463,11 +460,14 @@ make
 <li><p>PYTHON_LIBRARY (optional, for Python/Anaconda bindings)</p></li>
 <li><p>ZDoom dependencies paths</p></li>
 </ul>
-<p>In configuration select <code class="docutils literal notranslate"><span class="pre">DBUILD_ENGINE</span></code> and <code class="docutils literal notranslate"><span class="pre">DBUILD_PYTHON</span></code> (optional, default ON).</p>
-<p>Use generated Visual Studio solution to build all parts of ViZDoom environment.</p>
+<ol class="arabic simple" start="2">
+<li><p>In configuration select <code class="docutils literal notranslate"><span class="pre">DBUILD_ENGINE</span></code> and <code class="docutils literal notranslate"><span class="pre">DBUILD_PYTHON</span></code> (optional, default ON).</p></li>
+<li><p>Use generated Visual Studio solution to build all parts of ViZDoom environment.</p></li>
+</ol>
+<p>The process of building ViZDoom this way on Windows is demonstarted in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scripts/windows_build_cmake.bat">scripts/windows_build_cmake.bat</a> script.</p>
 </section>
 <section id="compilation-output">
-<h3><a name="output"></a> Compilation output<a class="headerlink" href="#compilation-output" title="Link to this heading">#</a></h3>
+<h3>Compilation output<a class="headerlink" href="#compilation-output" title="Link to this heading">#</a></h3>
 <p>Compilation output will be placed in <code class="docutils literal notranslate"><span class="pre">build/bin</span></code> and it should contain the following files.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">bin/vizdoom</span> <span class="pre">/</span> <span class="pre">vizdoom.exe</span></code> - ViZDoom executable</p></li>
@@ -479,7 +479,7 @@ make
 </ul>
 </section>
 <section id="manual-installation">
-<h3><a name="manual-install"></a> Manual installation<a class="headerlink" href="#manual-installation" title="Link to this heading">#</a></h3>
+<h3>Manual installation<a class="headerlink" href="#manual-installation" title="Link to this heading">#</a></h3>
 <p>To manually install Python package copy <code class="docutils literal notranslate"><span class="pre">vizdoom_root_dir/build/bin/pythonX.X/pip_package</span></code> contents to <code class="docutils literal notranslate"><span class="pre">python_root_dir/lib/pythonX.X/site-packages/site-packages/vizdoom</span></code>.</p>
 </section>
 </section>
@@ -555,21 +555,24 @@ make
             <div class="toc-tree">
               <ul>
 <li><a class="reference internal" href="#">Building from source</a><ul>
-<li><a class="reference internal" href="#dependencies"><a name="deps"></a> Dependencies</a><ul>
-<li><a class="reference internal" href="#linux"><a name="linux_deps"></a> Linux</a></li>
-<li><a class="reference internal" href="#macos"><a name="macos_deps"></a> MacOS</a></li>
+<li><a class="reference internal" href="#dependencies">Dependencies</a><ul>
+<li><a class="reference internal" href="#linux">Linux</a><ul>
+<li><a class="reference internal" href="#apt-based-distros-ubuntu-debian-linux-mint-etc">apt-based distros (Ubuntu, Debian, Linux Mint, etc.)</a></li>
+<li><a class="reference internal" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc">dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)</a></li>
+<li><a class="reference internal" href="#anaconda-miniconda">Anaconda/Miniconda</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#building"><a name="build"></a> Building</a><ul>
-<li><a class="reference internal" href="#windows"><a name="windows_deps"></a> Windows</a></li>
+<li><a class="reference internal" href="#macos">MacOS</a></li>
+<li><a class="reference internal" href="#windows">Windows</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#installation-via-pip-recommended-for-python-users"><a name="pypi"></a> Installation via pip (recommended for Python users)</a></li>
-<li><a class="reference internal" href="#building-manually-not-recommended"><a name="build"></a> Building manually (not recommended)</a><ul>
-<li><a class="reference internal" href="#linux-macos"><a name="linux_macos_build"></a> Linux / MacOS</a></li>
-<li><a class="reference internal" href="#id1"><a name="windows_build"></a> Windows</a></li>
-<li><a class="reference internal" href="#compilation-output"><a name="output"></a> Compilation output</a></li>
-<li><a class="reference internal" href="#manual-installation"><a name="manual-install"></a> Manual installation</a></li>
+<li><a class="reference internal" href="#building-via-pip-recommended-for-python-users">Building via pip (recommended for Python users)</a></li>
+<li><a class="reference internal" href="#building-manylinux-wheels">Building manylinux wheels</a></li>
+<li><a class="reference internal" href="#building-manually-not-recommended">Building manually (not recommended)</a><ul>
+<li><a class="reference internal" href="#linux-macos">Linux / MacOS</a></li>
+<li><a class="reference internal" href="#id1">Windows</a></li>
+<li><a class="reference internal" href="#compilation-output">Compilation output</a></li>
+<li><a class="reference internal" href="#manual-installation">Manual installation</a></li>
 </ul>
 </li>
 </ul>

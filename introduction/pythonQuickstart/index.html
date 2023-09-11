@@ -314,56 +314,54 @@
 <h1>Python quick start<a class="headerlink" href="#python-quick-start" title="Link to this heading">#</a></h1>
 <section id="linux">
 <h2>Linux<a class="headerlink" href="#linux" title="Link to this heading">#</a></h2>
-<p>Both x86-64 and ARM64 architectures are supported.
-ViZDoom requires C++11 compiler, CMake 3.4+, Boost 1.65+ SDL2, OpenAL (optional) and Python 3.8+. Below you will find instructrion how to install these dependencies.</p>
-<section id="apt-based-distros-ubuntu-debian-linux-mint-etc">
-<h3>apt-based distros (Ubuntu, Debian, Linux Mint, etc.)<a class="headerlink" href="#apt-based-distros-ubuntu-debian-linux-mint-etc" title="Link to this heading">#</a></h3>
-<p>To install ViZDoom run (may take few minutes):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apt</span> <span class="n">install</span> <span class="n">cmake</span> <span class="n">git</span> <span class="n">libboost</span><span class="o">-</span><span class="nb">all</span><span class="o">-</span><span class="n">dev</span> <span class="n">libsdl2</span><span class="o">-</span><span class="n">dev</span> <span class="n">libopenal</span><span class="o">-</span><span class="n">dev</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="n">vizdoom</span>
+<p>To install the latest release of ViZDoom, just run:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vizdoom
 </pre></div>
 </div>
-<p>We recommend using at least Ubuntu 18.04+ or Debian 10+ with Python 3.8+.</p>
+<p>Both x86-64 and AArch64 (ARM64) architectures are supported.</p>
+<p>If Python wheel is not available for your platform (Python version &lt;3.8, distros below manylinux_2_28 standard), pip will try to install (build) ViZDoom from source.
+ViZDoom requires C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional) and Python 3.7+. Below you will find instructrion how to install these dependencies.</p>
+<section id="apt-based-distros-ubuntu-debian-linux-mint-etc">
+<h3>apt-based distros (Ubuntu, Debian, Linux Mint, etc.)<a class="headerlink" href="#apt-based-distros-ubuntu-debian-linux-mint-etc" title="Link to this heading">#</a></h3>
+<p>To build ViZDoom run (it may take few minutes):</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>apt<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>git<span class="w"> </span>libboost-all-dev<span class="w"> </span>libsdl2-dev<span class="w"> </span>libopenal-dev
+pip<span class="w"> </span>install<span class="w"> </span>vizdoom
+</pre></div>
+</div>
+<p>We recommend using at least Ubuntu 18.04+ or Debian 10+ with Python 3.7+.</p>
 </section>
 <section id="dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc">
 <h3>dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)<a class="headerlink" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc" title="Link to this heading">#</a></h3>
-<p>To install ViZDoom run (may take few minutes):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dnf</span> <span class="n">install</span> <span class="n">cmake</span> <span class="n">git</span> <span class="n">boost</span><span class="o">-</span><span class="n">devel</span> <span class="n">SDL2</span><span class="o">-</span><span class="n">devel</span> <span class="n">openal</span><span class="o">-</span><span class="n">soft</span><span class="o">-</span><span class="n">devel</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="n">vizdoom</span>
+<p>To install ViZDoom run (it may take few minutes):</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>dnf<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>git<span class="w"> </span>boost-devel<span class="w"> </span>SDL2-devel<span class="w"> </span>openal-soft-devel
+pip<span class="w"> </span>install<span class="w"> </span>vizdoom
 </pre></div>
 </div>
-<p>We recommend using at least Fedora 35+ or RHEL/CentOS/Alma/Rocky Linux 9+ with Python 3.8+. To install openal-soft-devel on RHEL/CentOS/Alma/Rocky Linux 9, one needs to use <code class="docutils literal notranslate"><span class="pre">dnf</span> <span class="pre">--enablerepo=crb</span> <span class="pre">install</span></code>.</p>
-</section>
-<section id="conda-based-installation">
-<h3>Conda-based installation<a class="headerlink" href="#conda-based-installation" title="Link to this heading">#</a></h3>
-<p>To install ViZDoom on a conda environment (no system-wide installations required):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">boost</span> <span class="n">cmake</span> <span class="n">sdl2</span>
-<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">mwydmuch</span><span class="o">/</span><span class="n">ViZDoom</span><span class="o">.</span><span class="n">git</span> <span class="o">--</span><span class="n">recurse</span><span class="o">-</span><span class="n">submodules</span>
-<span class="n">cd</span> <span class="n">ViZDoom</span>
-<span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">build</span> <span class="o">&amp;&amp;</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
-</pre></div>
-</div>
-<p>Note that <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">vizdoom</span></code> won’t work with conda install and you have to follow these steps.</p>
+<p>We recommend using at least Fedora 35+ or RHEL/CentOS/Alma/Rocky Linux 9+ with Python 3.7+.
+To install openal-soft-devel on RHEL/CentOS/Alma/Rocky Linux 9, one needs to use <code class="docutils literal notranslate"><span class="pre">dnf</span> <span class="pre">--enablerepo=crb</span> <span class="pre">install</span></code>.</p>
 </section>
 </section>
 <section id="macos">
 <h2>macOS<a class="headerlink" href="#macos" title="Link to this heading">#</a></h2>
-<p>Both Intel and Apple Silicon CPUs are supported.</p>
-<p>To install ViZDoom on run (may take few minutes):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">cmake</span> <span class="n">git</span> <span class="n">boost</span> <span class="n">openal</span><span class="o">-</span><span class="n">soft</span> <span class="n">sdl2</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="n">vizdoom</span>
+<p>To install the latest release of ViZDoom just run (may take few minutes as it will build ViZDoom from source on M1/M2 chips):</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>boost<span class="w"> </span>sdl2<span class="w"> </span>openal-soft
+pip<span class="w"> </span>install<span class="w"> </span>vizdoom
 </pre></div>
 </div>
-<p>We recommend using at least macOS High Sierra 10.13+ with Python 3.8+.
-On Apple Silicon (M1 and M2), make sure you are using Python for Apple Silicon.</p>
+<p>Both Intel and Apple Silicon CPUs are supported.
+We recommend using at least macOS High Sierra 10.13+ with Python 3.7+.
+On Apple Silicon (M1 and M2), make sure you are using Python/Pip for Apple Silicon.</p>
 </section>
 <section id="windows">
 <h2>Windows<a class="headerlink" href="#windows" title="Link to this heading">#</a></h2>
-<p>To install pre-build release for Windows 10 or 11 64-bit and Python 3.8+ just run (should take few seconds):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">vizdoom</span>
+<p>To install the latest release of ViZDoom, just run:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vizdoom
 </pre></div>
 </div>
-<p>Please note that the Windows version is not as well-tested as Linux and macOS versions. It can be used for development and testing if you want to conduct experiments on Windows, please consider using <a class="reference external" href="https://docs.docker.com/docker-for-windows/install/">Docker</a> or <a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">WSL</a>.</p>
+<p>At the moment only x86-64 architecture is supported on Windows.</p>
+<p>Please note that the Windows version is not as well-tested as Linux and macOS versions.
+It can be used for development and testing but if you want to conduct serious (time and resource-extensive) experiments on Windows,
+please consider using <a class="reference external" href="https://docs.docker.com/docker-for-windows/install/">Docker</a> or <a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">WSL</a> with Linux version.</p>
 </section>
 </section>
 
@@ -440,7 +438,6 @@ On Apple Silicon (M1 and M2), make sure you are using Python for Apple Silicon.<
 <li><a class="reference internal" href="#linux">Linux</a><ul>
 <li><a class="reference internal" href="#apt-based-distros-ubuntu-debian-linux-mint-etc">apt-based distros (Ubuntu, Debian, Linux Mint, etc.)</a></li>
 <li><a class="reference internal" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc">dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)</a></li>
-<li><a class="reference internal" href="#conda-based-installation">Conda-based installation</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#macos">macOS</a></li>
