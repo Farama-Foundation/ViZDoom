@@ -1130,7 +1130,12 @@ namespace vizdoom {
     void DoomController::handleSignals() {
         this->ioService = new ba::io_service();
         ba::signal_set signals(*this->ioService, SIGINT, SIGABRT, SIGTERM);
+        
+    #if BOOST_VERSION >= 106000
         signals.async_wait(b::bind(signalHandler, b::ref(signals), this, bpl::_1, bpl::_2));
+    #else
+        signals.async_wait(b::bind(signalHandler, b::ref(signals), this, _1, _2));
+    #endif
 
         this->ioService->run();
     }
