@@ -88,13 +88,15 @@ src/vizdoom/tools/*/release
 src/vizdoom/tools/*/*.exe
 src/vizdoom/tools/lemon/lemon
 src/vizdoom/tools/re2c/re2c
+src/vizdoom/tools/re2c/config.h
 src/vizdoom/tools/updaterevision/x64/
 src/vizdoom/tools/updaterevision/updaterevision
-src/vizdoom/tools/zipdir/x64
+src/vizdoom/tools/zipdir/x64/
 src/vizdoom/tools/zipdir/zipdir
 src/vizdoom/wadsrc_wad
 src/vizdoom/zdoom_docs
 src/vizdoom/zlib/x64/
+src/vizdoom/zlib/CTestTestfile.cmake
 
 # Game wads, scenarios backups, logs, demos and personal configurations
 *.bak

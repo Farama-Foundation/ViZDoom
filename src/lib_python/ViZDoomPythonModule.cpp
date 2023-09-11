@@ -53,7 +53,7 @@ PYBIND11_MODULE(vizdoom, vz){
     /* Exceptions */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    #define EXCEPTION_TO_PYT(n) pyb::register_exception< n >(vz, #n);
+    #define EXCEPTION_TO_PYT(n) pyb::register_exception< n >(vz , #n);
     /* register_exception< ExceptionName >(vz, "ExceptionName"); */
 
     EXCEPTION_TO_PYT(FileDoesNotExistException)
@@ -81,13 +81,13 @@ PYBIND11_MODULE(vizdoom, vz){
     #define FUNC_2_PYT(n, f) vz.def( n , f , docstrings::f )
     /* vz.def("name", function, docstrings::function) */
 
-    #define FUNC_2_PYT_WITH_ARGS(n, f, a...) vz.def( n , f , docstrings::f , a)
+    #define FUNC_2_PYT_WITH_ARGS(n, f, ...) vz.def( n , f , docstrings::f , __VA_ARGS__ )
     /* vz.def("name", function, docstrings::function, args) */
 
     #define CLASS_FUNC_2_PYT(n, cf) .def( n , &cf , docstrings::cf )
     /* .def("name", &class::function, docstrings::class::function) */
 
-    #define CLASS_FUNC_2_PYT_WITH_ARGS(n, cf, a...) .def( n , &cf , docstrings::cf, a )
+    #define CLASS_FUNC_2_PYT_WITH_ARGS(n, cf, ...) .def( n , &cf , docstrings::cf , __VA_ARGS__ )
     /* .def("name", &class::function, docstrings::class::function, args) */
 
 
