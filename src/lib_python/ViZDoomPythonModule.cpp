@@ -670,6 +670,7 @@ PYBIND11_MODULE(vizdoom, vz){
         CLASS_FUNC_2_PYT_WITH_ARGS("set_button_max_value", DoomGamePython::setButtonMaxValue, pyb::arg("button"), pyb::arg("max_value"))
         CLASS_FUNC_2_PYT_WITH_ARGS("get_button_max_value", DoomGamePython::getButtonMaxValue, pyb::arg("button"))
 
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_game_args", DoomGamePython::setGameArgs, pyb::arg("args"))
         CLASS_FUNC_2_PYT_WITH_ARGS("add_game_args", DoomGamePython::addGameArgs, pyb::arg("args"))
         CLASS_FUNC_2_PYT("clear_game_args", DoomGamePython::clearGameArgs)
 

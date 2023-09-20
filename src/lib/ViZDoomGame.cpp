@@ -419,6 +419,11 @@ namespace vizdoom {
         return this->availableGameVariables.size();
     }
 
+    void DoomGame::setGameArgs(std::string args) {
+        this->clearGameArgs();
+        this->addGameArgs(args);
+    }
+
     void DoomGame::addGameArgs(std::string args) {
         if (args.length() != 0) {
             std::vector<std::string> _args;

@@ -316,7 +316,7 @@ See also:
 | :--    | :--                                                           |
 | Python | `add_available_button(buttons: list | tuple[Button]) -> None` |
 
-Set given list of `Button`s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available `Buttons`.
+Sets given list of `Button`s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available `Buttons`.
 
 Config key: `availableButtons/available_buttons` (list)
 
@@ -333,7 +333,7 @@ See also:
 | :--    | :--                                                                 |
 | Python | `add_available_button(button: Button, maxValue: float = 0) -> None` |
 
-Add [`Button`](./enums.md#button) type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to available `Buttons` and sets the maximum allowed, absolute value for the specified button.
+Adds [`Button`](./enums.md#button) type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to available `Buttons` and sets the maximum allowed, absolute value for the specified button.
 If the given button has already been added, it will not be added again, but the maximum value is overridden.
 
 Config key: `availableButtons/available_buttons` (list)
@@ -437,7 +437,7 @@ See also:
 | :--    | :--                                                                            |
 | Python | `set_available_game_variables(variables: list | tuple[GameVariables]) -> None` |
 
-Set list of [`GameVariable`](./enums.md#gamevariable) as available `GameVariables` in the [`GameState`](./gameState.md#gamestate) returned by `getState` method.
+Sets list of [`GameVariable`](./enums.md#gamevariable) as available `GameVariables` in the [`GameState`](./gameState.md#gamestate) returned by `getState` method.
 
 Config key: `availableGameVariables/available_game_variables` (list)
 
@@ -509,14 +509,35 @@ See also:
 
 ## Game Arguments methods
 
+
+### `setGameArgs`
+
+| C++    | `void setGameArgs(std::string args)` |
+| :--    | :--                                  |
+| Python | `set_game_args(args: str) -> None`   |
+
+Added in 1.3.0
+
+Sets custom arguments that will be passed to ViZDoom process during initialization.
+It is useful for changing additional game settings.
+Using this method is equivalent to first calling  [`clearGameArgs`](#cleargameargs) and then [`addGameArgs`](#addgameargs).
+
+Config key: `gameArgs/game_args`
+
+See also:
+- [ZDoom Wiki: Command line parameters](http://zdoom.org/wiki/Command_line_parameters)
+- [ZDoom Wiki: CVARs (Console Variables)](http://zdoom.org/wiki/CVARS)
+
+
+---
 ### `addGameArgs`
 
 | C++    | `void addGameArgs(std::string args)` |
 | :--    | :--                                  |
 | Python | `add_game_args(args: str) -> None`   |
 
-Adds a custom argument that will be passed to ViZDoom process during initialization.
-Useful for changing additional game settings.
+Adds custom arguments that will be passed to ViZDoom process during initialization.
+It is useful for changing additional game settings.
 
 Config key: `gameArgs/game_args`
 
@@ -532,7 +553,7 @@ See also:
 | :--    | :--                         |
 | Python | `clear_game_args() -> None` |
 
-Clears all arguments previously added with [`addGameArgs`](#addgameargs) method.
+Clears all arguments previously added with [`setGameArgs`](#setgameargs) or/and [`addGameArgs`](#addgameargs) methods.
 
 
 ## Reward methods
