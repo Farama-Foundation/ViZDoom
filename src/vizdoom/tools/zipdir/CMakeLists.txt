@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.5)
 
 if(NOT CMAKE_CROSSCOMPILING)
 	message(STATUS "${ZLIB_INCLUDE_DIR}" )

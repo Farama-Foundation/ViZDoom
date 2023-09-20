@@ -14,13 +14,15 @@ cmake --version
 gcc --version
 
 # Report python version
-python3 -c "import sys; print('Python', sys.version)"
+python --version
+python -c "import sys; print('Python', sys.version)"
 
 # Install
-python3 -m pip install .[test]
+export VIZDOOM_CMAKE_ARGS="-DCMAKE_PREFIX_PATH=/root/miniconda/"
+python -m pip install .[test]
 
 # Test import
-python3 -c "import vizdoom"
+python -c "import vizdoom"
 
 # Run tests
 pytest tests

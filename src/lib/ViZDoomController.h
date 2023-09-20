@@ -36,13 +36,16 @@
 #include <boost/asio.hpp>
 #include <boost/random.hpp>
 #include <boost/thread.hpp>
+#include <boost/version.hpp>
 #include <string>
 #include <vector>
 
 namespace vizdoom {
 
     namespace b         = boost;
+#if BOOST_VERSION >= 106000
     namespace bpl       = boost::placeholders;
+#endif
     namespace ba        = boost::asio;
     namespace bip       = boost::interprocess;
     namespace br        = boost::random;

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.12)
 
 # Project + versions
 #-----------------------------------------------------------------------------------------------------------------------
@@ -12,7 +12,7 @@ set(ViZDoom_VERSION_ID ${ViZDoom_VERSION_MAJOR}${ViZDoom_VERSION_MINOR}${ViZDoom
 #-----------------------------------------------------------------------------------------------------------------------
 
 option(BUILD_PYTHON "Build ViZDoom Python (3) binding/module" ON)
-option(BUILD_ENGINE "Build ViZDoom Engine" ON)
+option(BUILD_ENGINE "Build ViZDoom Engine (required to build Python package)" ON)
 
 
 # CMake options
@@ -76,6 +76,9 @@ endif (APPLE)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     add_definitions("-fPIC")
+    # Explicitly silence some warnings
+    add_definitions("-Wno-implicit-fallthrough -Wno-shift-negative-value -Wno-stringop-truncation")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-class-memaccess -Wno-deprecated-copy") # C++ only
 endif ()
 
 if (MSVC)
@@ -98,7 +101,7 @@ set(VIZDOOM_LIB_SRC_DIR ${VIZDOOM_SRC_DIR}/lib)
 set(VIZDOOM_LIB_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LIB_SRC_DIR})
 set(VIZDOOM_OUTPUT_NAME vizdoom)
 
-find_package(Boost 1.65.0 COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
+find_package(Boost 1.53 COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
 find_package(Threads REQUIRED)
 
 include_directories(${VIZDOOM_LIB_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
@@ -159,7 +162,9 @@ set_target_properties(libvizdoom_shared
 # ViZDoom Engine
 #-----------------------------------------------------------------------------------------------------------------------
 
-add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
+if (BUILD_ENGINE)
+    add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
+endif ()
 
 
 # Python bindings
