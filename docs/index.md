@@ -83,7 +83,7 @@ environments/creatingCustom
 
 ```{toctree}
 :hidden:
-:caption: Others
+:caption: Other
 
 faq/index
 citation/index
