@@ -118,16 +118,21 @@ The constraints limit applies in all Modes.)DOCSTRING";
 
     const char *getGameVariable = R"DOCSTRING(Returns the current value of the specified game variable (`HEALTH`, `AMMO1` etc.).
 The specified game variable does not need to be among available game variables (included in the state).
-It could be used for e.g. shaping. Returns 0 in case of not finding given `GameVariable`.)DOCSTRING";
+It could be used for e.g. shaping. Returns 0 in case of not finding given `GameVariable`.
+git lo)DOCSTRING";
 
     const char *setGameArgs = R"DOCSTRING(Sets custom arguments that will be passed to ViZDoom process during initialization.
-It is useful for changing additional game settings.
+It is useful for changing additional game settings. 
+Use with caution, as in rare cases it may prevent the library from working properly.
 Using this method is equivalent to first calling  `clearGameArgs`.)DOCSTRING";
 
     const char *addGameArgs = R"DOCSTRING(Adds custom arguments that will be passed to ViZDoom process during initialization.
-It is useful for changing additional game settings.)DOCSTRING";
+It is useful for changing additional game settings.
+Use with caution, as in rare cases it may prevent the library from working properly.)DOCSTRING";
 
     const char *clearGameArgs = R"DOCSTRING(Clears all arguments previously added with `setGameArgs` methods.)DOCSTRING";
+
+    const char *getGameArgs = R"DOCSTRING(Returns the additional arguments for ViZDoom process set with `setGameArgs` methods.)DOCSTRING";
 
     const char *getLivingReward = R"DOCSTRING(Returns the reward granted to the player after every tic.)DOCSTRING";
 

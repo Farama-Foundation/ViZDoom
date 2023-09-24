@@ -502,12 +502,12 @@ See also:
 Returns the current value of the specified game variable (`HEALTH`, `AMMO1` etc.).
 The specified game variable does not need to be among available game variables (included in the state).
 It could be used for e.g. shaping. Returns 0 in case of not finding given `GameVariable`.
-
+git lo
 See also:
 - [`Enums: GameVariable`](./enums.md#gamevariable)
 
 
-## Game Arguments methods
+## Game arguments methods
 
 
 ### `setGameArgs`
@@ -519,7 +519,8 @@ See also:
 Added in 1.3.0
 
 Sets custom arguments that will be passed to ViZDoom process during initialization.
-It is useful for changing additional game settings.
+It is useful for changing additional game settings. 
+Use with caution, as in rare cases it may prevent the library from working properly.
 Using this method is equivalent to first calling  [`clearGameArgs`](#cleargameargs) and then [`addGameArgs`](#addgameargs).
 
 Config key: `gameArgs/game_args`
@@ -538,6 +539,7 @@ See also:
 
 Adds custom arguments that will be passed to ViZDoom process during initialization.
 It is useful for changing additional game settings.
+Use with caution, as in rare cases it may prevent the library from working properly.
 
 Config key: `gameArgs/game_args`
 
@@ -554,6 +556,15 @@ See also:
 | Python | `clear_game_args() -> None` |
 
 Clears all arguments previously added with [`setGameArgs`](#setgameargs) or/and [`addGameArgs`](#addgameargs) methods.
+
+
+### `getGameArgs`
+
+| C++    | `std::string getGameArgs()` |
+| :--    | :--                         |
+| Python | `get_game_args() -> str`    |
+
+Returns the additional arguments for ViZDoom process set with [`setGameArgs`](#setgameargs) or/and [`addGameArgs`](#addgameargs) methods.
 
 
 ## Reward methods

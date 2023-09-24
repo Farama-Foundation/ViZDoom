@@ -164,6 +164,7 @@ namespace vizdoom {
 
         void addCustomArg(std::string arg);
         void clearCustomArgs();
+        std::vector<std::string> getCustomArgs();
 
 
         /* Rendering getters and setters */

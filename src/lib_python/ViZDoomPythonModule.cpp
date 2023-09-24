@@ -673,6 +673,7 @@ PYBIND11_MODULE(vizdoom, vz){
         CLASS_FUNC_2_PYT_WITH_ARGS("set_game_args", DoomGamePython::setGameArgs, pyb::arg("args"))
         CLASS_FUNC_2_PYT_WITH_ARGS("add_game_args", DoomGamePython::addGameArgs, pyb::arg("args"))
         CLASS_FUNC_2_PYT("clear_game_args", DoomGamePython::clearGameArgs)
+        CLASS_FUNC_2_PYT("get_game_args", DoomGamePython::getGameArgs)
 
         CLASS_FUNC_2_PYT_WITH_ARGS("send_game_command", DoomGamePython::sendGameCommand, pyb::arg("cmd"))
 
