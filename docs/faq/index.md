@@ -10,7 +10,7 @@ Did not find answer for your question? Post an [issue](https://github.com/Farama
 ## How to use original Doom's assets?
 
 We cannot provide original Doom's assets due to licensing issues, that is why ViZDoom uses [freedoom2.wad](https://freedoom.github.io) as default assets.
-If you own original Doom or Doom 2 game (can be bought them on Steam or GOG), you can replace Freedoom graphics with original Doom's assets by placing doom.wad or doom2.wad into your working directory or vizdoom package directory (same directory as vizdoom(.exe)). Alternatively, any base game WAD (including other Doom engine-based games) can be used by pointing to it with the [`DoomGame: setDoomGamePath`](DoomGame.md#setDoomGamePath) method. On Unix you can also set `DOOMWADDIR` environment variable to directory with your wads files.
+If you own original Doom or Doom 2 game (can be bought them on Steam or GOG), you can replace Freedoom graphics with original Doom's assets by placing doom.wad or doom2.wad into your working directory or vizdoom package directory (same directory as vizdoom(.exe)). Alternatively, any base game WAD (including other Doom engine-based games) can be used by pointing to it with the [`DoomGame.set_doom_game_path`](../api/python/doomGame.md#vizdoom.DoomGame.set_doom_game_path) method. On Unix you can also set `DOOMWADDIR` environment variable to directory with your wads files.
 
 
 ## How to create/modify scenarios?
@@ -23,6 +23,8 @@ We recommend using one of these two editors:
 You should select ZDoom as your Doom engine version and UDMF map format (Universal Doom Map Format),
 that supports the widest range of features.
 
+For more details check
+
 **Original issue and answer:**
 [https://github.com/Farama-Foundation/ViZDoom/issues/319](https://github.com/Farama-Foundation/ViZDoom/issues/319)
 
@@ -30,7 +32,7 @@ that supports the widest range of features.
 ## How to stack frames?
 
 ViZDoom does not automatically stacks frames for you.
-You have to manually store the states from [`DoomGame: getState`](doomGame.md#getState). and build up stacked states for your agent.
+You have to manually store the states from [`DoomGame.get_state`](../api/python/doomGame.md#vizdoom.DoomGame.get_state). and build up stacked states for your agent.
 
 **Original issue and answer: (contains code an example)**
 [https://github.com/Farama-Foundation/ViZDoom/issues/296](https://github.com/Farama-Foundation/ViZDoom/issues/296)
@@ -41,7 +43,7 @@ You have to manually store the states from [`DoomGame: getState`](doomGame.md#ge
 When you launch an instance of vizdoom, it will create `_vizdoom.ini` in your working directory (if it does not exist yet).
 This file contains all the additional engine settings, including key bindings, that you can edit freely.
 
-You can also load .ini file from different location using [`DoomGame: setDoomConfigPath`](doomGame.md#setDoomConfigPath).
+You can also load .ini file from different location using [`DoomGame.set_doom_config_path`](../api/python/doomGame.md#vizdoom.DoomGame.set_doom_config_path).
 
 **Original issue and answer:**
 [https://github.com/Farama-Foundation/ViZDoom/issues/253](https://github.com/Farama-Foundation/ViZDoom/issues/253)
@@ -57,7 +59,7 @@ Try [NavDoom](https://github.com/agiantwhale/navdoom) or [MazeExplorer](https://
 
 ## How to control game speed in `ASYNC` modes?
 
-See: [`DoomGame: setTicrate`](DoomGame.md#setTicrate) and [examples/python/ticrate.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/ticrate.py)
+See: [`DoomGame.set_ticrate`](../api/python/doomGame.md#vizdoom.DoomGame.set_ticrate) and [examples/python/ticrate.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/ticrate.py)
 
 **Original issue and answer:**
 [https://github.com/Farama-Foundation/ViZDoom/issues/209](https://github.com/Farama-Foundation/ViZDoom/issues/209)
@@ -71,9 +73,8 @@ See: [examples/python/delta_buttons.py](https://github.com/Farama-Foundation/ViZ
 [https://github.com/Farama-Foundation/ViZDoom/issues/279](https://github.com/Farama-Foundation/ViZDoom/issues/279)
 
 See also:
-- [`Types: Button`](Types.md#button)
+- [`Enums: Button`](../api/python/enums.md#vizdoom.Button)
 - [examples/python/DeltaDuttons.cpp](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/cpp/DeltaDuttons.cpp)
-- [examples/python/DeltaDuttons.java](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/java/DeltaDuttons.java)
 
 
 ## Agent does not fire after picking up ammo or weapon?
@@ -92,7 +93,7 @@ See also:
 ## How to pick up items (medikit, ammo, armour) when inventory is full?
 
 CVARs implemented in ZDoom engine are very helpful in quickly modifying some aspects of the game.
-`game.add_game_args("+sv_unlimited_pickup 1")` adding before init will allow picking up unlimited items.
+`doom_game.add_game_args("+sv_unlimited_pickup 1")` adding before init will allow picking up unlimited items.
 
 **Original issue and answer:**
 [https://github.com/Farama-Foundation/ViZDoom/issues/187](https://github.com/Farama-Foundation/ViZDoom/issues/187)
@@ -141,7 +142,7 @@ server proceeds by one frame). See discussion in Issues below for more informati
 - [https://github.com/Farama-Foundation/ViZDoom/issues/417](https://github.com/Farama-Foundation/ViZDoom/issues/417)
 
 
-## Why `game.get_state()` when `game.is_episode_finished() == True`
+## Why `doom_game.get_state()` when `doom_game.is_episode_finished() == True`
 
 After the end of the episode, ZDoom engine might change its state and exit the episode (map) resulting in some objects and variables being destroyed or reset. Because of that it's difficult to provide a proper state after that. When we were originally designing ViZDoom we wanted to have a simple logic and we only update state after complete logic tic. Because of that we are not able to detect end of episode early before to save a proper state and decided to provide null/none value instead. We believe that it's easy to provide dummy (e.g. filed with zeros) state if it's needed by an algorithm.
 
@@ -184,12 +185,3 @@ GUI apps do not work out-of-the-box on WSL on Windows 10/11. To make it work, yo
 ## What is a difference between ViZDoom, ZDoom and GZDoom
 
 ViZDoom is based on the last version of ZDoom (2.8.1). ZDoom was discontinued in 2016, and the development switched to GZDoom, which provides a new 3D renderer implemented in OpenGL. ViZDoom, however, sticks to the original 2D software renderer, which is much faster for small resolutions than OpenGL. Because of that, ViZDoom modernized the ZDoom engine by adding support for Apple Silicon and ARM Linux and removing old unused parts of the code base (e.g., by removing Assembler parts).
-
-15.1K Views
-90%
-1 month ago
-Add to
-Jump to
-Report
-28
-3
