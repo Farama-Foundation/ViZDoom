@@ -319,7 +319,7 @@ You can find more questions and answers by searching for issues with “question
 <section id="how-to-use-original-doom-s-assets">
 <h2>How to use original Doom’s assets?<a class="headerlink" href="#how-to-use-original-doom-s-assets" title="Link to this heading">#</a></h2>
 <p>We cannot provide original Doom’s assets due to licensing issues, that is why ViZDoom uses <a class="reference external" href="https://freedoom.github.io">freedoom2.wad</a> as default assets.
-If you own original Doom or Doom 2 game (can be bought them on Steam or GOG), you can replace Freedoom graphics with original Doom’s assets by placing doom.wad or doom2.wad into your working directory or vizdoom package directory (same directory as vizdoom(.exe)). Alternatively, any base game WAD (including other Doom engine-based games) can be used by pointing to it with the <a class="reference internal" href="#DoomGame.md#setDoomGamePath"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setDoomGamePath</span></code></span></a> method. On Unix you can also set <code class="docutils literal notranslate"><span class="pre">DOOMWADDIR</span></code> environment variable to directory with your wads files.</p>
+If you own original Doom or Doom 2 game (can be bought them on Steam or GOG), you can replace Freedoom graphics with original Doom’s assets by placing doom.wad or doom2.wad into your working directory or vizdoom package directory (same directory as vizdoom(.exe)). Alternatively, any base game WAD (including other Doom engine-based games) can be used by pointing to it with the <a class="reference internal" href="../api/python/doomGame/#vizdoom.DoomGame.set_doom_game_path"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_doom_game_path</span></code></span></a> method. On Unix you can also set <code class="docutils literal notranslate"><span class="pre">DOOMWADDIR</span></code> environment variable to directory with your wads files.</p>
 </section>
 <section id="how-to-create-modify-scenarios">
 <h2>How to create/modify scenarios?<a class="headerlink" href="#how-to-create-modify-scenarios" title="Link to this heading">#</a></h2>
@@ -331,13 +331,14 @@ We recommend using one of these two editors:</p>
 </ul>
 <p>You should select ZDoom as your Doom engine version and UDMF map format (Universal Doom Map Format),
 that supports the widest range of features.</p>
+<p>For more details check</p>
 <p><strong>Original issue and answer:</strong>
 <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/319">https://github.com/Farama-Foundation/ViZDoom/issues/319</a></p>
 </section>
 <section id="how-to-stack-frames">
 <h2>How to stack frames?<a class="headerlink" href="#how-to-stack-frames" title="Link to this heading">#</a></h2>
 <p>ViZDoom does not automatically stacks frames for you.
-You have to manually store the states from <a class="reference internal" href="#doomGame.md#getState"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getState</span></code></span></a>. and build up stacked states for your agent.</p>
+You have to manually store the states from <a class="reference internal" href="../api/python/doomGame/#vizdoom.DoomGame.get_state"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_state</span></code></span></a>. and build up stacked states for your agent.</p>
 <p><strong>Original issue and answer: (contains code an example)</strong>
 <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/296">https://github.com/Farama-Foundation/ViZDoom/issues/296</a></p>
 </section>
@@ -345,7 +346,7 @@ You have to manually store the states from <a class="reference internal" href="#
 <h2>How to change keyboard binding for Spectator Mode?<a class="headerlink" href="#how-to-change-keyboard-binding-for-spectator-mode" title="Link to this heading">#</a></h2>
 <p>When you launch an instance of vizdoom, it will create <code class="docutils literal notranslate"><span class="pre">_vizdoom.ini</span></code> in your working directory (if it does not exist yet).
 This file contains all the additional engine settings, including key bindings, that you can edit freely.</p>
-<p>You can also load .ini file from different location using <a class="reference internal" href="#doomGame.md#setDoomConfigPath"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setDoomConfigPath</span></code></span></a>.</p>
+<p>You can also load .ini file from different location using <a class="reference internal" href="../api/python/doomGame/#vizdoom.DoomGame.set_doom_config_path"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_doom_config_path</span></code></span></a>.</p>
 <p><strong>Original issue and answer:</strong>
 <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/253">https://github.com/Farama-Foundation/ViZDoom/issues/253</a></p>
 </section>
@@ -357,7 +358,7 @@ This file contains all the additional engine settings, including key bindings, t
 </section>
 <section id="how-to-control-game-speed-in-async-modes">
 <h2>How to control game speed in <code class="docutils literal notranslate"><span class="pre">ASYNC</span></code> modes?<a class="headerlink" href="#how-to-control-game-speed-in-async-modes" title="Link to this heading">#</a></h2>
-<p>See: <a class="reference internal" href="#DoomGame.md#setTicrate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setTicrate</span></code></span></a> and <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/ticrate.py">examples/python/ticrate.py</a></p>
+<p>See: <a class="reference internal" href="../api/python/doomGame/#vizdoom.DoomGame.set_ticrate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_ticrate</span></code></span></a> and <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/ticrate.py">examples/python/ticrate.py</a></p>
 <p><strong>Original issue and answer:</strong>
 <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/209">https://github.com/Farama-Foundation/ViZDoom/issues/209</a></p>
 </section>
@@ -368,9 +369,8 @@ This file contains all the additional engine settings, including key bindings, t
 <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/279">https://github.com/Farama-Foundation/ViZDoom/issues/279</a></p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#Types.md#button"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">Types:</span> <span class="pre">Button</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../api/python/enums/#vizdoom.Button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Button</span></code></span></a></p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/cpp/DeltaDuttons.cpp">examples/python/DeltaDuttons.cpp</a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/java/DeltaDuttons.java">examples/python/DeltaDuttons.java</a></p></li>
 </ul>
 </section>
 <section id="agent-does-not-fire-after-picking-up-ammo-or-weapon">
@@ -388,7 +388,7 @@ https://github.com/Farama-Foundation/ViZDoom/issues/289</p>
 <section id="how-to-pick-up-items-medikit-ammo-armour-when-inventory-is-full">
 <h2>How to pick up items (medikit, ammo, armour) when inventory is full?<a class="headerlink" href="#how-to-pick-up-items-medikit-ammo-armour-when-inventory-is-full" title="Link to this heading">#</a></h2>
 <p>CVARs implemented in ZDoom engine are very helpful in quickly modifying some aspects of the game.
-<code class="docutils literal notranslate"><span class="pre">game.add_game_args(&quot;+sv_unlimited_pickup</span> <span class="pre">1&quot;)</span></code> adding before init will allow picking up unlimited items.</p>
+<code class="docutils literal notranslate"><span class="pre">doom_game.add_game_args(&quot;+sv_unlimited_pickup</span> <span class="pre">1&quot;)</span></code> adding before init will allow picking up unlimited items.</p>
 <p><strong>Original issue and answer:</strong>
 <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/187">https://github.com/Farama-Foundation/ViZDoom/issues/187</a></p>
 <p>See also:</p>
@@ -431,8 +431,8 @@ server proceeds by one frame). See discussion in Issues below for more informati
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/417">https://github.com/Farama-Foundation/ViZDoom/issues/417</a></p></li>
 </ul>
 </section>
-<section id="why-game-get-state-when-game-is-episode-finished-true">
-<h2>Why <code class="docutils literal notranslate"><span class="pre">game.get_state()</span></code> when <code class="docutils literal notranslate"><span class="pre">game.is_episode_finished()</span> <span class="pre">==</span> <span class="pre">True</span></code><a class="headerlink" href="#why-game-get-state-when-game-is-episode-finished-true" title="Link to this heading">#</a></h2>
+<section id="why-doom-game-get-state-when-doom-game-is-episode-finished-true">
+<h2>Why <code class="docutils literal notranslate"><span class="pre">doom_game.get_state()</span></code> when <code class="docutils literal notranslate"><span class="pre">doom_game.is_episode_finished()</span> <span class="pre">==</span> <span class="pre">True</span></code><a class="headerlink" href="#why-doom-game-get-state-when-doom-game-is-episode-finished-true" title="Link to this heading">#</a></h2>
 <p>After the end of the episode, ZDoom engine might change its state and exit the episode (map) resulting in some objects and variables being destroyed or reset. Because of that it’s difficult to provide a proper state after that. When we were originally designing ViZDoom we wanted to have a simple logic and we only update state after complete logic tic. Because of that we are not able to detect end of episode early before to save a proper state and decided to provide null/none value instead. We believe that it’s easy to provide dummy (e.g. filed with zeros) state if it’s needed by an algorithm.</p>
 <p><strong>Original issues:</strong></p>
 <ul class="simple">
@@ -470,14 +470,6 @@ with ViZDoom. You have several options you can try (one of these steps has worke
 <section id="what-is-a-difference-between-vizdoom-zdoom-and-gzdoom">
 <h2>What is a difference between ViZDoom, ZDoom and GZDoom<a class="headerlink" href="#what-is-a-difference-between-vizdoom-zdoom-and-gzdoom" title="Link to this heading">#</a></h2>
 <p>ViZDoom is based on the last version of ZDoom (2.8.1). ZDoom was discontinued in 2016, and the development switched to GZDoom, which provides a new 3D renderer implemented in OpenGL. ViZDoom, however, sticks to the original 2D software renderer, which is much faster for small resolutions than OpenGL. Because of that, ViZDoom modernized the ZDoom engine by adding support for Apple Silicon and ARM Linux and removing old unused parts of the code base (e.g., by removing Assembler parts).</p>
-<p>15.1K Views
-90%
-1 month ago
-Add to
-Jump to
-Report
-28
-3</p>
 </section>
 </section>
 
@@ -564,7 +556,7 @@ Report
 <li><a class="reference internal" href="#issues-getting-vizdoom-instances-communicating-between-each-other-in-kubernetes">Issues getting ViZDoom instances communicating between each-other in Kubernetes</a></li>
 <li><a class="reference internal" href="#reading-replays-invalid-actions-wrong-rewards">Reading replays (invalid actions, wrong rewards)</a></li>
 <li><a class="reference internal" href="#having-multiple-agents-in-one-game-multiplayer-issues">Having multiple agents in one game / multiplayer issues</a></li>
-<li><a class="reference internal" href="#why-game-get-state-when-game-is-episode-finished-true">Why <code class="docutils literal notranslate"><span class="pre">game.get_state()</span></code> when <code class="docutils literal notranslate"><span class="pre">game.is_episode_finished()</span> <span class="pre">==</span> <span class="pre">True</span></code></a></li>
+<li><a class="reference internal" href="#why-doom-game-get-state-when-doom-game-is-episode-finished-true">Why <code class="docutils literal notranslate"><span class="pre">doom_game.get_state()</span></code> when <code class="docutils literal notranslate"><span class="pre">doom_game.is_episode_finished()</span> <span class="pre">==</span> <span class="pre">True</span></code></a></li>
 <li><a class="reference internal" href="#i-am-trying-to-use-audio-sound-but-vizdoom-crashes-or-i-there-is-no-audio">I am trying to use audio/sound, but ViZDoom crashes or I there is no audio</a></li>
 <li><a class="reference internal" href="#how-to-display-vizdoom-s-window-when-running-it-on-wsl-windows-subsystem-for-linux">How to display ViZDoom’s window when running it on WSL (Windows Subsystem for Linux)</a></li>
 <li><a class="reference internal" href="#what-is-a-difference-between-vizdoom-zdoom-and-gzdoom">What is a difference between ViZDoom, ZDoom and GZDoom</a></li>
