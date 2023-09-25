@@ -14,7 +14,7 @@ cmake --version
 gcc --version
 
 # Report python version
-python3 -c "import sys; print('Python', sys.version)"
+python3 --version
 
 # Install
 python3 -m pip install .[test]

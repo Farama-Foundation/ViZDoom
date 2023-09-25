@@ -23,6 +23,7 @@ DOCKERFILES_TO_BUILD_AND_RUN=(
 )
 
 # Build wheels using cibuildwheel
+#export CIBW_BUILD_VERBOSITY=3  # Uncomment to see full build logs
 cibuildwheel --platform linux --arch $(uname -m)
 
 function create_dockerfile ( ) {

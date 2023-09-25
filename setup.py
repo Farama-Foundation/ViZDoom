@@ -154,12 +154,15 @@ class BuildCommand(build):
             shutil.copy(mpg123_dll, build_output_path)
             shutil.copy(sndfile_dll, build_output_path)
             shutil.copy(openal_dll, build_output_path)
-
-        # python_standard_lib = sysconfig.get_python_lib(standard_lib=True)
+        
         python_root_dir = os.path.dirname(sys.executable)
+        cmake_arg_list.append(f"-DPython_ROOT_DIR={python_root_dir}")
+        cmake_arg_list.append("-DPython_FIND_STRATEGY=LOCATION")
 
-        if python_root_dir and os.path.exists(python_root_dir):
-            cmake_arg_list.append(f"-DPython_ROOT_DIR={python_root_dir}")
+        # Manually specified artifacts 
+        #python_executable = sys.executable
+        #python_include = sysconfig.get_python_inc()
+        #python_standard_lib = sysconfig.get_python_lib(standard_lib=True)
 
         if os.path.exists("CMakeCache.txt"):
             os.remove("CMakeCache.txt")
