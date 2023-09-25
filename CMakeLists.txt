@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 # Project + versions
 #-----------------------------------------------------------------------------------------------------------------------
 
-project(ViZDoom VERSION 1.2.1)
+project(ViZDoom VERSION 1.2.2)
 set(ViZDoom_VERSION_STR ${ViZDoom_VERSION_MAJOR}.${ViZDoom_VERSION_MINOR}.${ViZDoom_VERSION_PATCH})
 set(ViZDoom_VERSION_ID ${ViZDoom_VERSION_MAJOR}${ViZDoom_VERSION_MINOR}${ViZDoom_VERSION_PATCH})
 
