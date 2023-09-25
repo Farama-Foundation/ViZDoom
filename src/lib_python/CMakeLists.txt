@@ -3,11 +3,11 @@ set(BUILD_PYTHON_VERSION "" CACHE STRING "Version of Python to build bindings fo
 if("${BUILD_PYTHON_VERSION}" STREQUAL "")
     # Try to find Python 3 if BUILD_PYTHON_VERSION is not set
     message(STATUS "BUILD_PYTHON_VERSION is not set, trying to find Python 3, Python_ROOT_DIR is ${Python_ROOT_DIR}")
-    find_package(Python 3 REQUIRED)
+    find_package(Python 3 COMPONENTS Interpreter Development REQUIRED)
     set(BUILD_PYTHON_VERSION ${Python_VERSION_MAJOR}.${Python_VERSION_MINOR})
 endif()
 
-set (PYBIND11_PYTHON_VERSION ${BUILD_PYTHON_VERSION})
+set(PYBIND11_PYTHON_VERSION ${BUILD_PYTHON_VERSION})
 
 set(VIZDOOM_PYTHON_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python${BUILD_PYTHON_VERSION})
 set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
@@ -67,15 +67,15 @@ set_target_properties(libvizdoom_python
     OUTPUT_NAME vizdoom
     PROJECT_LABEL "python${BUILD_PYTHON_VERSION} binding")
 
-if (UNIX)
+if(UNIX)
     add_custom_target(python_pip_package ALL
         COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.sh ${BUILD_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
         COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
-elseif (WIN32)
+elseif(WIN32)
     add_custom_target(python_pip_package ALL
         COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.bat ${BUILD_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
         COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
-endif ()
+endif()
 
 set_target_properties(python_pip_package
     PROPERTIES

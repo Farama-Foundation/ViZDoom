@@ -15,7 +15,6 @@ gcc --version
 
 # Report python version
 python --version
-python -c "import sys; print('Python', sys.version)"
 
 # Install
 export VIZDOOM_CMAKE_ARGS="-DCMAKE_PREFIX_PATH=/root/miniconda/"

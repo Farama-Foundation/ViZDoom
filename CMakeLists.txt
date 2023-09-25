@@ -20,9 +20,9 @@ option(BUILD_ENGINE "Build ViZDoom Engine (required to build Python package)" ON
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_LINK)
-if (COMMAND cmake_policy)
+if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
-endif (COMMAND cmake_policy)
+endif()
 
 # Add cmake_modules to module
 set(CMAKE_MODULE_PATH
@@ -30,27 +30,27 @@ set(CMAKE_MODULE_PATH
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 
 # Set the release mode if not specified
-if (NOT CMAKE_BUILD_TYPE)
+if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
-endif ()
+endif()
 
 
 # System dependent settings
 #-----------------------------------------------------------------------------------------------------------------------
 
-if (UNIX)
+if(UNIX)
     set(Boost_USE_STATIC_LIBS OFF)
     set(Boost_USE_MULTITHREADED ON)
     set(Boost_USE_STATIC_RUNTIME OFF)
-endif ()
+endif()
 
-if (WIN32)
+if(WIN32)
     set(Boost_USE_STATIC_LIBS ON)
     set(Boost_USE_MULTITHREADED ON)
     set(Boost_USE_STATIC_RUNTIME ON)
 
     macro(get_WIN32_WINNT version)
-        if (WIN32 AND CMAKE_SYSTEM_VERSION)
+        if(WIN32 AND CMAKE_SYSTEM_VERSION)
             set(ver ${CMAKE_SYSTEM_VERSION})
             string(REPLACE "10" "A" ver ${ver})
             string(REPLACE "." "" ver ${ver})
@@ -58,35 +58,35 @@ if (WIN32)
             string(SUBSTRING ${ver} 0 4 ver)
 
             set(${version} "0x${ver}")
-        endif ()
+        endif()
     endmacro()
 
     get_WIN32_WINNT(ver)
     add_definitions(-D_WIN32_WINNT=${ver})
-endif ()
+endif()
 
-if (APPLE)
+if(APPLE)
     set(CMAKE_MACOSX_RPATH ON)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
-endif (APPLE)
+endif(APPLE)
 
 
 # Compiler dependent settings
 #-----------------------------------------------------------------------------------------------------------------------
 
-if (CMAKE_COMPILER_IS_GNUCXX)
+if(CMAKE_COMPILER_IS_GNUCXX)
     add_definitions("-fPIC")
     # Explicitly silence some warnings
     add_definitions("-Wno-implicit-fallthrough -Wno-shift-negative-value -Wno-stringop-truncation")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-class-memaccess -Wno-deprecated-copy") # C++ only
-endif ()
+endif()
 
-if (MSVC)
+if(MSVC)
     string(REPLACE "/MD " "/MT " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
     string(REPLACE "/MD " "/MT " CMAKE_CXX_FLAGS_MINSIZEREL ${CMAKE_CXX_FLAGS_MINSIZEREL})
     string(REPLACE "/MD " "/MT " CMAKE_CXX_FLAGS_RELWITHDEBINFO ${CMAKE_CXX_FLAGS_RELWITHDEBINFO})
     string(REPLACE "/MDd " "/MTd " CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
-endif ()
+endif()
 
 
 # Main library
@@ -110,9 +110,9 @@ set(VIZDOOM_LIBS
     ${Boost_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT})
 
-if (UNIX AND NOT APPLE)
+if(UNIX AND NOT APPLE)
     set(VIZDOOM_LIBS ${VIZDOOM_LIBS} rt)
-endif ()
+endif()
 
 configure_file(
     "${VIZDOOM_LIB_SRC_DIR}/ViZDoomVersion.h.in"
@@ -162,14 +162,14 @@ set_target_properties(libvizdoom_shared
 # ViZDoom Engine
 #-----------------------------------------------------------------------------------------------------------------------
 
-if (BUILD_ENGINE)
+if(BUILD_ENGINE)
     add_subdirectory(${VIZDOOM_SRC_DIR}/vizdoom)
-endif ()
+endif()
 
 
 # Python bindings
 #-----------------------------------------------------------------------------------------------------------------------
 
-if (BUILD_PYTHON)
+if(BUILD_PYTHON)
     add_subdirectory(${VIZDOOM_SRC_DIR}/lib_python)
-endif ()
+endif()
