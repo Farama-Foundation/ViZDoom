@@ -45,7 +45,7 @@ function create_dockerfile ( ) {
 for dockerfile_setting in "${DOCKERFILES_TO_BUILD_AND_RUN[@]}"; do
     create_dockerfile $dockerfile_setting
 
-    echo -n "Building and running $dockerfile, saving output to $dockerfile.log ... "
+    echo -n "Running $dockerfile, saving output to $dockerfile.log ... "
     filename=$( basename "$dockerfile" )
     dockerfile_dir=$( dirname "$dockerfile" )
     without_ext="${filename%.*}"
