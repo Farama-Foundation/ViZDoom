@@ -13,7 +13,7 @@ The declarations of all the enums can be found in the `include/ViZDoomUtils.h` h
 | :--    | :--                                                           |
 | Python | `doom_tics_to_ms(tics: float, ticrate: int = 35) -> float`    |
 
-Changed in 1.1
+Changed in 1.1.0
 
 Calculates how many tics will be made during given number of milliseconds.
 
@@ -25,7 +25,7 @@ Calculates how many tics will be made during given number of milliseconds.
 | :--    | :--                                                         |
 | Python | `ms_to_doom_tics(ms: float, ticrate: int = 35) -> float`    |
 
-Changed in 1.1
+Changed in 1.1.0
 
 Calculates the number of milliseconds that will pass during specified number of tics.
 
@@ -37,7 +37,7 @@ Calculates the number of milliseconds that will pass during specified number of 
 | :--    | :--                                                            |
 | Python | `doom_tics_to_sec(tics: float, ticrate: int = 35) -> float`    |
 
-Added in 1.1
+Added in 1.1.0
 
 Calculates how many tics will be made during given number of seconds.
 
@@ -49,7 +49,7 @@ Calculates how many tics will be made during given number of seconds.
 | :--    | :--                                                           |
 | Python | `sec_to_doom_tics(sec: float, ticrate: int = 35) -> float`    |
 
-Added in 1.1
+Added in 1.1.0
 
 Calculates the number of seconds that will pass during specified number of tics.
 
@@ -70,7 +70,7 @@ you may want to convert them to floating point numbers.
 See also:
 - [`Enums: User variables` in `GameVariables`](./enums.md#user-acs-variables)
 
-Python aliases (added in 1.1): `doom_fixed_to_float(doomFixed: int | float) -> float`
+Python aliases (added in 1.1.0): `doom_fixed_to_float(doomFixed: int | float) -> float`
 
 
 ## Button functions

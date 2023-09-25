@@ -18,7 +18,7 @@ TO_REPLACE = [
 LINES_TO_IGNORE_REGEXES = [
     r"---",  # Lines
     r"^\|.+\|$",  # Tables
-    r"^See also:.*$",  # See also
+    r"^See also: .*$",  # See also
     r"- \[.*\]\(.*\)",  # List of links starting with -
     r"\* \[.*\]\(.*\)",  # List of links starting with *
     r"^Added in .*$",  # Added in annotations
