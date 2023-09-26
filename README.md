@@ -76,7 +76,7 @@ To install the latest release of ViZDoom, just run:
 pip install vizdoom
 ```
 Both x86-64 and AArch64 (ARM64) architectures are supported.
-Wheels are avialable for Python 3.8+ on Linux.
+Wheels are available for Python 3.8+ on Linux.
 
 If Python wheel is not available for your platform (Python version <3.8, distros below manylinux_2_28 standard), pip will try to install (build) ViZDoom from the source.
 ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.7+ to install from source. See [documentation](https://vizdoom.farama.org/introduction/pythonQuickstart/) for more details.
@@ -99,7 +99,7 @@ To install the latest release of ViZDoom, just run:
 pip install vizdoom
 ```
 At the moment, only x86-64 architecture is supported on Windows.
-Wheels are avialable for Python 3.8+ on Windows.
+Wheels are available for Python 3.8+ on Windows.
 
 Please note that the Windows version is not as well-tested as Linux and macOS versions.
 It can be used for development and testing but if you want to conduct serious (time and resource-extensive) experiments on Windows,
