@@ -72,38 +72,20 @@ or
 
 ### Linux
 To install the latest release of ViZDoom, just run:
-```
+```sh
 pip install vizdoom
 ```
 Both x86-64 and AArch64 (ARM64) architectures are supported.
+Wheels are available for Python 3.8+ on Linux.
 
-If Python wheel is not available for your platform (Python version <3.8, distros below manylinux_2_28 standard), pip will try to install (build) ViZDoom from source.
-ViZDoom requires C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional) and Python 3.7+. Below you will find instructrion how to install these dependencies.
-
-#### apt-based distros (Ubuntu, Debian, Linux Mint, etc.)
-
-To build ViZDoom run (it may take few minutes):
-```
-apt install cmake git libboost-all-dev libsdl2-dev libopenal-dev
-pip install vizdoom
-```
-We recommend using at least Ubuntu 18.04+ or Debian 10+ with Python 3.7+.
-
-#### dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)
-
-To install ViZDoom run (it may take few minutes):
-```
-dnf install cmake git boost-devel SDL2-devel openal-soft-devel
-pip install vizdoom
-```
-We recommend using at least Fedora 35+ or RHEL/CentOS/Alma/Rocky Linux 9+ with Python 3.7+.
-To install openal-soft-devel on RHEL/CentOS/Alma/Rocky Linux 9, one needs to use `dnf --enablerepo=crb install`.
+If Python wheel is not available for your platform (Python version <3.8, distros below manylinux_2_28 standard), pip will try to install (build) ViZDoom from the source.
+ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.7+ to install from source. See [documentation](https://vizdoom.farama.org/introduction/pythonQuickstart/) for more details.
 
 
 ### macOS
-To install the latest release of ViZDoom just run (it may take few minutes as it will build ViZDoom from source on M1/M2 chips):
-```
-brew install cmake git boost openal-soft sdl2
+To install the latest release of ViZDoom, just run (it may take a few minutes as it will build ViZDoom from source on M1/M2 chips):
+```sh
+brew install cmake boost sdl2 openal-soft
 pip install vizdoom
 ```
 Both Intel and Apple Silicon CPUs are supported.
@@ -113,10 +95,11 @@ On Apple Silicon (M1 and M2), make sure you are using Python/Pip for Apple Silic
 
 ### Windows
 To install the latest release of ViZDoom, just run:
-```
+```sh
 pip install vizdoom
 ```
-At the moment only x86-64 architecture is supported on Windows.
+At the moment, only x86-64 architecture is supported on Windows.
+Wheels are available for Python 3.8+ on Windows.
 
 Please note that the Windows version is not as well-tested as Linux and macOS versions.
 It can be used for development and testing but if you want to conduct serious (time and resource-extensive) experiments on Windows,
@@ -136,7 +119,6 @@ See [documentation](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc
 
 
 ## Examples
-
 - [Python](https://github.com/Farama-Foundation/ViZDoom/blob/master/examples/python) (contain learning examples implemented in PyTorch, TensorFlow and Theano)
 - [C++](https://github.com/Farama-Foundation/ViZDoom/blob/master/examples/c%2B%2B)
 
@@ -146,7 +128,6 @@ Python examples are currently the richest, so we recommend to look at them, even
 
 
 ## Original Doom graphics
-
 Unfortunately, we cannot distribute ViZDoom with original Doom graphics.
 If you own original Doom or Doom 2 games, you can replace [Freedoom](https://freedoom.github.io/) graphics by placing `doom.wad` or `doom2.wad` into your working directory or `vizdoom` package directory.
 
@@ -154,32 +135,18 @@ Alternatively, any base game WAD (including other Doom engine-based games and cu
 
 
 ## Documentation
+Detailed descriptions of all ViZDoom types and methods can be found in the [documentation](https://vizdoom.farama.org/).
 
-Detailed description of all types and methods:
-
-- **[DoomGame](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/DoomGame.md)**
-- **[Types](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/Types.md)**
-- [Configuration files](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/ConfigFile.md)
-- [Exceptions](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/Exceptions.md)
-- [Utilities](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/Utilities.md)
-
-Additional documents:
-
-- **[FAQ](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/FAQ.md)**
-- [Changelog](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/Changelog.md) for 1.1.X version.
-
-Full documentation of the Doom engine and ACS scripting language can be found on
+Full documentation of the ZDoom engine and ACS scripting language can be found on
 [ZDoom Wiki](https://zdoom.org/wiki/).
 
-Useful articles:
-
+Useful articles (for advanced users who want to create custom environments/scenarios):
 - [ZDoom Wiki: ACS (scripting language)](https://zdoom.org/wiki/ACS)
 - [ZDoom Wiki: CVARs (console variables)](https://zdoom.org/wiki/CVARs)
 - [ZDoom Wiki: CCMD (console commands)](https://zdoom.org/wiki/CCMDs)
 
 
 ## Awesome Doom tools/projects
-
 - [SLADE3](http://slade.mancubus.net/) - Great Doom map (scenario) editor for Linux, MacOS and Windows.
 - [Doom Builder 2](http://www.doombuilder.com/) - Another great Doom map editor for Windows.
 - [OBLIGE](http://oblige.sourceforge.net/) - Doom random map generator and [PyOblige](https://github.com/mwydmuch/PyOblige) is a simple Python wrapper for it.
@@ -192,12 +159,10 @@ Useful articles:
 
 
 ## Contributions
-
 This project is maintained and developed in our free time. All bug fixes, new examples, scenarios, and other contributions are welcome! We are also open to feature ideas and design suggestions.
 
 We have a roadmap for future development work for ViZDoom available [here](https://github.com/Farama-Foundation/ViZDoom/issues/546).
 
 
 ## License
-
 The code original to ViZDoom is under MIT license. ZDoom uses code from several sources with [varying licensing schemes](http://zdoom.org/wiki/license).
