@@ -1337,6 +1337,7 @@ In case of multiple invocations, older configurations will be overwritten by the
 Overwriting does not involve resetting to default values. Thus only overlapping parameters will be changed.
 The method returns true if the whole configuration file was correctly read and applied,
 false if the file contained errors.</p>
+<p>If the file relative path is given, it will be searched for in the following order: current directory, current directory + <code class="docutils literal notranslate"><span class="pre">/scenarios/</span></code>, ViZDoom’s installation directory + <code class="docutils literal notranslate"><span class="pre">/scenarios/</span></code>.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#./configurationFiles.md"><span class="xref myst">ConfigFile</span></a></p></li>
