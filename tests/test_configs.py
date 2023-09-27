@@ -4,6 +4,7 @@
 # This test can be run as Python script or via PyTest
 
 import os
+
 import vizdoom as vzd
 
 
