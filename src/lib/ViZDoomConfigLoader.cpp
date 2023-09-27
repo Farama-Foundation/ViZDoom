@@ -395,14 +395,13 @@ namespace vizdoom {
         std::string sharedConfigPath = getThisSharedObjectPath() + "/scenarios/" + scenarioName;
 
         // Check if scenario exists in library's scenerios directory
-        if (fileExists(filePath)) this->filePath = filePath;
-        else if (fileExists(workingConfigPath)) this->filePath = workingConfigPath;
-        else if (fileExists(sharedConfigPath)) this->filePath = sharedConfigPath;
+        if (fileExistsAndCanBeRead(filePath)) this->filePath = filePath;
+        else if (fileExistsAndCanBeRead(workingConfigPath)) this->filePath = workingConfigPath;
+        else if (fileExistsAndCanBeRead(sharedConfigPath)) this->filePath = sharedConfigPath;
         else throw FileDoesNotExistException(filePath + " | " + workingConfigPath + " | " + sharedConfigPath);
 
         bool success = true;
-        std::ifstream file(filePath);
-
+        std::ifstream file(this->filePath);
 
         std::string line;
         int lineNumber = 0;

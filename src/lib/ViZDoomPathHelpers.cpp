@@ -62,6 +62,17 @@ namespace vizdoom {
         //return exist;
     }
 
+    bool ifstreamGood(std::string filePath) {
+        std::ifstream file(filePath);
+        bool isGood = file.good();
+        file.close();
+        return isGood;
+    }
+
+    bool fileExistsAndCanBeRead(std::string filePath){
+        return fileExists(filePath) && ifstreamGood(filePath);
+    }
+
     std::string relativePath(std::string relativePath, std::string basePath) {
         bfs::path outPath(basePath);
         outPath.remove_filename();

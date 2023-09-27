@@ -556,7 +556,7 @@ int FIWadManager::IdentifyVersion (TArray<FString> &wadfiles, const char *iwad, 
 	if (pickwad < 0)
 		exit (0);
 
-	// zdoom.pk3 must always be the first file loaded and the IWAD second.
+	// vizdoom.pk3 must always be the first file loaded and the IWAD second.
 	wadfiles.Clear();
 	D_AddFile (wadfiles, zdoom_wad);
 
