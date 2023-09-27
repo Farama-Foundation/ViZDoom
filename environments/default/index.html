@@ -312,10 +312,28 @@
             
             <section id="default-scenarios-environments">
 <h1>Default scenarios/environments<a class="headerlink" href="#default-scenarios-environments" title="Link to this heading">#</a></h1>
-<p>Below we describe all default scenarios (original ViZDoom nomenclature)/environments (Gymnasium/Open AI Gym nomenclature) included with ViZDoom. The PRs with new scenarios are welcome!</p>
+<p>Below we describe a default singleplayer scenarios (original ViZDoom nomenclature)/environments (Gymnasium/Open AI Gym nomenclature) included with ViZDoom. The PRs with new scenarios are welcome!</p>
+<section id="how-to-use-default-scenarios">
+<h2>How to use default scenarios<a class="headerlink" href="#how-to-use-default-scenarios" title="Link to this heading">#</a></h2>
+<p>When using original ViZDoom API, each scenario can be loaded <a class="reference internal" href="../../api/python/doomGame/#vizdoom.DoomGame.load_config"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">load_config</span></code></span></a> (Python)/<a class="reference internal" href="../../api/cpp/doomGame/#loadconfig"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">loadConfig</span></code></span></a> (C++) method:</p>
+<p>Python example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">vizdoom</span> <span class="k">as</span> <span class="nn">vzd</span>
+<span class="n">game</span> <span class="o">=</span> <span class="n">vzd</span><span class="o">.</span><span class="n">DoomGame</span><span class="p">()</span>
+<span class="n">game</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vzd</span><span class="o">.</span><span class="n">scenarios_path</span><span class="p">,</span> <span class="s2">&quot;basic.cfg&quot;</span><span class="p">))</span> <span class="c1"># or any other scenario file</span>
+</pre></div>
+</div>
+<p>When using Gymnasium (or Gym) API the scenario can be loaded by passing the scenario id to <code class="docutils literal notranslate"><span class="pre">make</span></code> method like-this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gymnasium</span>
+<span class="kn">from</span> <span class="nn">vizdoom</span> <span class="kn">import</span> <span class="n">gymnasium_wrapper</span> <span class="c1"># This import will register all the environments</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">&quot;VizdoomBasic-v0&quot;</span><span class="p">)</span> <span class="c1"># or any other environment id</span>
+</pre></div>
+</div>
+</section>
 <section id="note-on-wad-cfg-files-and-rewards">
 <h2>Note on .wad, .cfg files, and rewards<a class="headerlink" href="#note-on-wad-cfg-files-and-rewards" title="Link to this heading">#</a></h2>
-<p>The scenarios consist of two files - .wad and .cfg (<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios">see scenarios directory</a>). The .wad file contains the map and script, and the .cfg file contains additional settings. The maps contained in .wad files (Doom’s engine format for storing maps and assets) usually do not implement action constraints, the death penalty, and living rewards (however it is possible). To make it easier, this can be specified in ViZDoom .cfg files as well as other options like access to additional information. These can also be overridden in the code when using the original ViZDoom API. Every mention of any settings that are not included in .wad files is specified with “(config)” in the descriptions below. ViZDoom does not support setting certain rewards (such as killing opponents) in .cfg files. These must be programmed in the .wad files instead.</p>
+<p>A scenario usually consist of two files - .wad and .cfg (<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios">see scenarios directory</a>). The .wad file contains the map and script, and the .cfg file contains additional settings. The maps contained in .wad files (Doom’s engine format for storing maps and assets) usually do not implement action constraints, the death penalty, and living rewards (however it is possible). To make it easier, this can be specified in ViZDoom .cfg files as well as other options like access to additional information. These can also be overridden in the code when using the original ViZDoom API. Every mention of any settings that are not included in .wad files is specified with “(config)” in the descriptions below. ViZDoom does not support setting certain rewards (such as killing opponents) in .cfg files. These must be programmed in the .wad files instead.</p>
 </section>
 <section id="basic">
 <h2>BASIC<a class="headerlink" href="#basic" title="Link to this heading">#</a></h2>
@@ -336,10 +354,12 @@ finishes when the monster is killed or on timeout.</p>
 <p>The episode ends after killing the monster or on timeout.</p>
 <p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
-<li><p>3 available buttons: move left, move right, shoot (attack)</p></li>
+<li><p>3 available buttons: move left/right, shoot (attack)</p></li>
+<li><p>1 available game variable: player’s ammo</p></li>
 <li><p>timeout = 300 tics</p></li>
 </ul>
-<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic.cfg">basic.cfg</a></p>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomBasic-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic.cfg">basic.cfg</a></strong></p>
 </section>
 <section id="deadly-corridor">
 <h2>DEADLY CORRIDOR<a class="headerlink" href="#deadly-corridor" title="Link to this heading">#</a></h2>
@@ -351,7 +371,7 @@ in total). A green vest is placed at the opposite end of the corridor.
 The reward is proportional (negative or positive) to the change in the
 distance between the player and the vest. If the player ignores monsters
 on the sides and runs straight for the vest, he will be killed somewhere
-along the way. To ensure this behavior doom_skill = 5 (config) is
+along the way. To ensure this behavior difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 5 (config) is
 needed.</p>
 <p><strong>REWARDS:</strong></p>
 <ul class="simple">
@@ -361,11 +381,35 @@ needed.</p>
 </ul>
 <p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
-<li><p>5 available buttons: turn left, turn right, move left, move right, shoot (attack)</p></li>
-<li><p>timeout = 4200</p></li>
-<li><p>doom_skill = 5</p></li>
+<li><p>7 available buttons: move forward/backwward/left/right, turn left/right, shoot (attack)</p></li>
+<li><p>1 available game variable: player’s health</p></li>
+<li><p>timeout = 2100</p></li>
+<li><p>difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 5</p></li>
 </ul>
-<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deadly_corridor.cfg">scenarios/basic.cfg</a></p>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomCorridor-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deadly_corridor.cfg">deadly_corridor.cfg</a></strong></p>
+</section>
+<section id="deathmatch">
+<h2>DEATHMATCH<a class="headerlink" href="#deathmatch" title="Link to this heading">#</a></h2>
+<p>In this scenario, the agent is spawned in the random place of the arena filled with resources.
+A random monster is spawned every few seconds that will try to kill the player.
+The reward for killing a monster depends on its difficulty.
+The aim of the agent is to kill as many monsters as possible
+before the time runs out or it’s killed by monsters.</p>
+<p><strong>REWARDS:</strong></p>
+<ul class="simple">
+<li><p>Different rewards are given for killing different monsters</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
+<ul class="simple">
+<li><p>16 available binary buttons: move forward/backwward/left/right, turn left/right, strafe, sprint (speed), shoot (attack), select weapon 1-6/next/previous</p></li>
+<li><p>3 available delta buttons: look up/down, turn left/right, move left/right</p></li>
+<li><p>5 available game variables: player’s health, armor, selected weapon and ammo, killcount</p></li>
+<li><p>timeout = 4200</p></li>
+<li><p>difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 3</p></li>
+</ul>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomDeathmatch-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deathmatch.cfg">scenarios/deathmatch.cfg</a></strong></p>
 </section>
 <section id="defend-the-center">
 <h2>DEFEND THE CENTER<a class="headerlink" href="#defend-the-center" title="Link to this heading">#</a></h2>
@@ -386,8 +430,12 @@ because of limited ammo).</p>
 <p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
 <li><p>3 available buttons: turn left, turn right, shoot (attack)</p></li>
+<li><p>2 available game variables: player’s health and ammo</p></li>
+<li><p>timeout = 2100</p></li>
+<li><p>difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 3</p></li>
 </ul>
-<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_center.cfg">scenarios/defend_the_center.cfg</a></p>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomDefendCenter-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_center.cfg">defend_the_center.cfg</a></strong></p>
 </section>
 <section id="defend-the-line">
 <h2>DEFEND THE LINE<a class="headerlink" href="#defend-the-line" title="Link to this heading">#</a></h2>
@@ -409,8 +457,11 @@ because of limited ammo).</p>
 <p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
 <li><p>3 available buttons: turn left, turn right, shoot (attack)</p></li>
+<li><p>2 available game variables: player’s health and ammo</p></li>
+<li><p>difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 3</p></li>
 </ul>
-<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_line.cfg">scenarios/defend_the_line.cfg</a></p>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomDefendLine-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_line.cfg">defend_the_line.cfg</a></strong></p>
 </section>
 <section id="health-gathering-and-health-gathering-supreme">
 <h2>HEALTH GATHERING (AND HEALTH GATHERING SUPREME)<a class="headerlink" href="#health-gathering-and-health-gathering-supreme" title="Link to this heading">#</a></h2>
@@ -433,10 +484,11 @@ that makes map layout more complex.</p>
 </ul>
 <p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
-<li><p>3 available buttons: turn left, turn right, move forward</p></li>
-<li><p>1 available game variable: HEALTH</p></li>
+<li><p>3 available buttons: turn left/right, move forward</p></li>
+<li><p>1 available game variable: player’s health</p></li>
 </ul>
-<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering.cfg">scenarios/health_gathering.cfg</a>/<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering_supreme.cfg">scenarios/health_gathering_supreme.cfg</a></p>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomHealthGathering-v0&quot;</span></code>/<code class="docutils literal notranslate"><span class="pre">&quot;VizdoomHealthGatheringSupreme-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering.cfg">health_gathering.cfg</a>/<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering_supreme.cfg">health_gathering_supreme.cfg</a></strong></p>
 </section>
 <section id="my-way-home">
 <h2>MY WAY HOME<a class="headerlink" href="#my-way-home" title="Link to this heading">#</a></h2>
@@ -455,10 +507,11 @@ direction. The episode ends when the vest is reached or on timeout/</p>
 </ul>
 <p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
-<li><p>3 available buttons: turn left, turn right, move forward</p></li>
+<li><p>3 available buttons: turn left/right, move forward</p></li>
 <li><p>timeout = 2100</p></li>
 </ul>
-<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/my_way_home.cfg">scenarios/my_way_home.cfg</a></p>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomMyWayHome-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/my_way_home.cfg">my_way_home.cfg</a></strong></p>
 </section>
 <section id="predict-position">
 <h2>PREDICT POSITION<a class="headerlink" href="#predict-position" title="Link to this heading">#</a></h2>
@@ -479,10 +532,11 @@ or on timeout.</p>
 </ul>
 <p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
-<li><p>3 available buttons: turn left, turn right, shoot (attack)</p></li>
+<li><p>3 available buttons: turn left/right, shoot (attack)</p></li>
 <li><p>timeout = 300</p></li>
 </ul>
-<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/predict_position.cfg">scenarios/predict_position.cfg</a></p>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomPredictPosition-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/predict_position.cfg">predict_position.cfg</a></strong></p>
 </section>
 <section id="take-cover">
 <h2>TAKE COVER<a class="headerlink" href="#take-cover" title="Link to this heading">#</a></h2>
@@ -503,9 +557,12 @@ the player dies.</p>
 </ul>
 <p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
-<li><p>2 available buttons: move left, move right</p></li>
+<li><p>2 available buttons: move left/right</p></li>
+<li><p>1 available game variable: player’s health</p></li>
+<li><p>difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 4</p></li>
 </ul>
-<p>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/take_cover.cfg">scenarios/take_cover.cfg</a></p>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomTakeCover-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/take_cover.cfg">take_cover.cfg</a></strong></p>
 </section>
 </section>
 
@@ -579,9 +636,11 @@ the player dies.</p>
             <div class="toc-tree">
               <ul>
 <li><a class="reference internal" href="#">Default scenarios/environments</a><ul>
+<li><a class="reference internal" href="#how-to-use-default-scenarios">How to use default scenarios</a></li>
 <li><a class="reference internal" href="#note-on-wad-cfg-files-and-rewards">Note on .wad, .cfg files, and rewards</a></li>
 <li><a class="reference internal" href="#basic">BASIC</a></li>
 <li><a class="reference internal" href="#deadly-corridor">DEADLY CORRIDOR</a></li>
+<li><a class="reference internal" href="#deathmatch">DEATHMATCH</a></li>
 <li><a class="reference internal" href="#defend-the-center">DEFEND THE CENTER</a></li>
 <li><a class="reference internal" href="#defend-the-line">DEFEND THE LINE</a></li>
 <li><a class="reference internal" href="#health-gathering-and-health-gathering-supreme">HEALTH GATHERING (AND HEALTH GATHERING SUPREME)</a></li>
