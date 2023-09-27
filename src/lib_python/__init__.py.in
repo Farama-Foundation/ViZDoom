@@ -14,6 +14,10 @@ from .vizdoom import *
 
 import os as _os
 
+root_path = __path__[0]
+exe_path_windows = _os.path.join(__path__[0], "vizdoom.exe")
+exe_path_unix = _os.path.join(__path__[0], "vizdoom")
+exe_path = exe_path_windows if _os.path.exists(exe_path_windows) else exe_path_unix
 scenarios_path = _os.path.join(__path__[0], "scenarios")
 wads = [wad for wad in sorted(_os.listdir(scenarios_path)) if wad.endswith(".wad")]
 configs = [cfg for cfg in sorted(_os.listdir(scenarios_path)) if cfg.endswith(".cfg")]

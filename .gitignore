@@ -111,8 +111,11 @@ src/vizdoom/zlib/CTestTestfile.cmake
 **/freedm.wad
 **_vizdoom.ini
 
-# CLion & PyCharm
-**/.idea
-
 # MacOS
 .DS_Store
+
+# Visual Studio Code
+.vscode
+
+# CLion & PyCharm
+**/.idea
