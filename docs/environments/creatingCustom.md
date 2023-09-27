@@ -1,6 +1,6 @@
 # Creating a custom environment
 
-ViZDoom allows using of custom scenarios/environments that can be easily prepared using modern Doom map editors like [SLADE](http://slade.mancubus.net/index.php?page=downloads) (available for Linux, MacOS, and Windows) or [DoomBuilder](http://www.doombuilder.com/index.php?p=downloads) (a bit better editor, but only available for Windows), that we recommend using. These editors allow designing a map used by the environment as well as programming the custom logic and rewards using ACS scripting language. In addition to a map created in one of the editors that are saved to a .wad file, ViZDoom uses .cfg config files that store additional information about the environment. Such .wad and .cfg together define a custom environment that can be used with ViZDoom. The following will guide you through the process of creating a custom environment.
+ViZDoom allows the use of custom scenarios/environments that can be easily prepared using modern Doom map editors like [SLADE](http://slade.mancubus.net/index.php?page=downloads) (available for Linux, MacOS, and Windows) or [DoomBuilder](http://www.doombuilder.com/index.php?p=downloads) (a bit better editor, but only available for Windows), that we recommend using. These editors allow you to create a map used by the environment and program custom logic and rewards using ACS scripting language. In addition to a map+script created in one of the editors that is saved to a .wad file, ViZDoom uses .cfg config files that store additional information about the environment. Such .wad and .cfg together define a custom environment that can be used with ViZDoom. The following will guide you through the process of creating a custom environment.
 
 
 ## Limitations and possibilities
@@ -10,8 +10,8 @@ Before we start explaining the process of creating custom environments, one ques
 - **3D is limited:** ViZDoom engine does not support full 3D maps. As in the original Doom, the map is, in fact, a 2D map with additional information about floor and ceiling height. This means that some 3D structures, like bridges or multi-floor buildings, are impossible in ViZDoom. However, ViZDoom supports 3D movement like jumping, crouching, swimming, or flying, which were not possible in original Doom.
 - **Map editors are easy to use:** Because of 3D limitations, the Doom-level editors (like mentioned SLADE or DoomBuilder) are actually much simpler than editors for later full 3D engines since they are based on drawing a map from a top-down view. Because of that, they are much easier to use, and everyone is able to create new maps right away.
 - **Scripting is powerful:** ViZDoom environments are not limited to particular tasks, as ViZDoom supports ACS scripting language, which was created for later revisions of the Doom engine.
-It has a simple C-like syntax and is very powerful. It allows to create of custom game rules and rewards. It has a large number of functions that allow to modify/extend the game logic in many ways. ZDoom ACS documentation (https://zdoom.org/wiki/ACS) is generally well-written and complete, making it easy to find the right function for the task.
-Due to the engine's architecture, the only area that ACS is a bit lacking is the possibility of modifying map geometry. Simple modifications, like changing the height of some part of the level to create elevators or doors, are possible, but there are not many more options. Using those, it is possible, for example, to create a randomized maze, but something more complex might be tricky or impossible.
+It has a simple C-like syntax and is very powerful. It allows you to create custom game rules and rewards. It has a large number of functions that allow the modification/extension of the game logic in many ways. ZDoom ACS documentation (https://zdoom.org/wiki/ACS) is generally well-written and complete, making it easy to find the right function for the task.
+Due to the engine's architecture, the only area that ACS is a bit lacking is the possibility of modifying map geometry. Simple modifications are possible (like changing the height of some part of the level to create elevators or doors), but there are not many more options. Using those, it is possible, for example, to create a randomized maze, but something more complex might be tricky or impossible.
 - **Basic functionality provided by the library:** To simplify the creation of environments, some simple functionalities are also embedded into the library. This way, they don't need to be implemented in ACS every single time but can be configured in a config file. These include:
   - possibility to define actions space
   - possibility to define what is included in the observation (types of buffers, additional variables, etc.)
@@ -25,9 +25,9 @@ Due to the engine's architecture, the only area that ACS is a bit lacking is the
 
 To create a custom scenario (.wad file), you need to use a dedicated editor. [SLADE](http://slade.mancubus.net/index.php?page=downloads) (available for Linux, MacOS, and Windows) or [DoomBuilder](http://www.doombuilder.com/index.php?p=downloads) (a bit better editor, but only available for Windows), are software that we recommend using for this task.
 
-When creating a new map, select UDMF format for maps and ZDBPS, which is a node builder for ZDoom. You should not have any problems with creating a map using the editor, it is simple, and you can find a lot of tutorials on the internet.
+When creating a new map, select UDMF format for maps. If asked for a node builder, you can select none, as ViZDoom has it built in. You should not have any problems with creating a map using the editor, it is simple, and you can find a lot of tutorials on the internet.
 
-You can add some custom ACS scripts to your map. This ACS script allows to add implement a rewarding mechanism.
+You can add some custom ACS scripts to your map. This ACS script allows the implementation of a rewarding mechanism.
 To do that, you need to employ the global variable 0 like this:
 
 ```{code-block} C
@@ -43,13 +43,13 @@ script 1(void)
 
 The global variable 0 will be used by ViZDoom to get the reward value.
 
-Please note that in ACS 1.0 and 1 are not the same. The first one is the fixed point number stored in int, and the second one is an ordinary int. Watch out for what is expected by the functions you use cause using the wrong format can result in rubbish.
-ViZDoom treats the reward as a fixed point numeral, so you always need to use decimal points in ACS scripts.
+Please note that in ACS, `1.0` and `1` are not the same. The first one is the fixed point number stored in int, and the second one is an ordinary int. Please be aware of that difference. ViZDoom treats the reward as a fixed point numeral, so you always need to use decimal points in ACS scripts.
+Unfortunately, ACS does not support real floating point numbers.
 
 
 ## Step 2: Creating a custom config file
 
-After creating a map, it is a good idea to create an accompanying config file, that allows to easily defined action space, available information in a state/observation, additional rewards, etc. The config file is a simple text file in ini-like format that can be created using any text editor. The config files are documented under [api/configurationFiles.md](api/configurationFiles.md).
+After creating a map, it is a good idea to create an accompanying config file, that allows to easily define action space, available information in a state/observation, additional rewards, etc. The config file is a simple text file in an *.ini-like format that can be created using any text editor. The config files are documented under [api/configurationFiles.md](api/configurationFiles.md).
 
 The following is an example of a config file that can be used with the map created in the previous step:
 
