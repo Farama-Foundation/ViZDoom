@@ -1,6 +1,6 @@
 FROM fedora:latest
 
-WORKDIR vizdoom
+WORKDIR /vizdoom
 
 # Install Python and pip
 RUN dnf update -y && dnf clean all && dnf install -y python3-devel python3-pip

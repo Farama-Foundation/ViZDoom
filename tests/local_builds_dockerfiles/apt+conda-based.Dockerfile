@@ -3,7 +3,7 @@ FROM ubuntu:latest
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Warsaw
 
-WORKDIR vizdoom
+WORKDIR /vizdoom
 
 # Install wget
 RUN apt-get update && apt-get install -y build-essential git make cmake wget
