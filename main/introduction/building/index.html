@@ -1,0 +1,860 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="">
+    <meta property="og:title" content="ViZDoom Documentation" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="" />
+    <meta property="og:url" content="https://vizdoom.farama.org/introduction/building.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="APIs and wrappers" href="../apisAndWrappers/" /><link rel="prev" title="Python quick start" href="../pythonQuickstart/" />
+        <link rel="canonical" href="https://vizdoom.farama.org/introduction/building.html" />
+
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+        <title>Building from source - ViZDoom Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=49cbaffd" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    <header class="farama-header" aria-label="Farama header">
+      <div class="farama-header__container">
+        <div class="farama-header__left--mobile">
+          <label class="nav-overlay-icon" for="__navigation">
+            <div class="visually-hidden">Toggle site navigation sidebar</div>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <defs></defs>
+              <line x1="0.5" y1="4" x2="23.5" y2="4"></line>
+              <line x1="0.232" y1="12" x2="23.5" y2="12"></line>
+              <line x1="0.232" y1="20" x2="23.5" y2="20"></line>
+            </svg>
+          </label>
+        </div>
+        <div class="farama-header__left farama-header__center--mobile">
+          <a href="../../">
+              <img class="farama-header__logo only-light" src="../../_static/img/vizdoom-black.svg" alt="Light Logo"/>
+              <img class="farama-header__logo only-dark" src="../../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
+            <span class="farama-header__title">ViZDoom Documentation</span>
+          </a>
+        </div>
+        <div class="farama-header__right">
+          <div class="farama-header-menu">
+            <button class="farama-header-menu__btn" aria-label="Open Farama Menu" aria-expanded="false" aria-haspopup="true" aria-controls="farama-menu">
+              <img class="farama-black-logo-invert" src="../../_static/img/farama-logo-header.svg">
+              <svg viewBox="0 0 24 24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <polyline style="stroke-linecap: round; stroke-linejoin: round; fill: none; stroke-width: 2px;" points="1 7 12 18 23 7"></polyline>
+              </svg>
+            </button>
+            <div class="farama-header-menu-container farama-hidden" aria-hidden="true" id="farama-menu">
+              <div class="farama-header-menu__header">
+                <a href="https://farama.org">
+                  <img class="farama-header-menu__logo farama-white-logo-invert" src="../../_static/img/farama_solid_white.svg" alt="Farama Foundation logo">
+                  <span>Farama Foundation</span>
+                </a>
+                <div class="farama-header-menu-header__right">
+                  <button id="farama-close-menu">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-close">
+                      <line x1="3" y1="21" x2="21" y2="3"></line>
+                      <line x1="3" y1="3" x2="21" y2="21"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="farama-header-menu__body">
+                <!-- Response from farama.org/api/projects.json -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="page">
+  <!--<header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../"><div class="brand">ViZDoom Documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>-->
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="farama-sidebar__title" href="../../">
+      <img class="farama-header__logo only-light" src="../../_static/img/vizdoom-black.svg" alt="Light Logo"/>
+      <img class="farama-header__logo only-dark" src="../../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
+    <span class="farama-header__title">ViZDoom Documentation</span>
+  </a><form class="sidebar-search-container" method="get" action="../../search/" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../pythonQuickstart/">Python quick start</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Building from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisAndWrappers/">APIs and wrappers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/doomGame/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gameState/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/utils/">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium/">Gymnasium Env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym/">OpenAI Gym Env</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/doomGame/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/gameState/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/utils/">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/configurationFiles/">Configuration files</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../environments/default/">Default scenarios/environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environments/creatingCustom/">Creating a custom environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation/">How to cite</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://vizdoom.cs.put.edu.pl/">Original website</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom">Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes/">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/blob/master/docs/README.md">Contribute to the Docs</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main-container">
+
+    
+
+    
+
+    <div class="main">
+      <div class="content">
+        <div class="article-container">
+          <a href="#" class="back-to-top muted-link">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+            </svg>
+            <span>Back to top</span>
+          </a>
+          <div class="content-icon-container"><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/introduction/building.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+              <button class="theme-toggle" title="Toggle color theme">
+                <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                <svg class="theme-icon-when-auto">
+                  <use href="#svg-sun-half"></use>
+                </svg>
+                <svg class="theme-icon-when-dark">
+                  <use href="#svg-moon"></use>
+                </svg>
+                <svg class="theme-icon-when-light">
+                  <use href="#svg-sun"></use>
+                </svg>
+              </button>
+            </div>
+            <label class="toc-overlay-icon toc-content-icon" for="__toc">
+              <div class="visually-hidden">Toggle table of contents sidebar</div>
+              <i class="icon"><svg>
+                  <use href="#svg-toc"></use>
+                </svg></i>
+            </label>
+          </div>
+          <article role="main">
+            
+            <section id="building-from-source">
+<h1>Building from source<a class="headerlink" href="#building-from-source" title="Link to this heading">#</a></h1>
+<p>Here we describe how to build ViZDoom from source.
+If you want to install pre-build ViZDoom wheels for Python, see <a class="reference internal" href="../pythonQuickstart/"><span class="std std-doc">Python quick start</span></a>.</p>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">#</a></h2>
+<p>To build ViZDoom (regardless of the method), you need to install some dependencies in your system first.</p>
+<section id="linux">
+<h3>Linux<a class="headerlink" href="#linux" title="Link to this heading">#</a></h3>
+<p>To build ViZDoom on Linux, the following dependencies are required:</p>
+<ul class="simple">
+<li><p>CMake 3.12+</p></li>
+<li><p>Make</p></li>
+<li><p>GCC 6.0+</p></li>
+<li><p>Boost libraries 1.54.0+</p></li>
+<li><p>Python 3.7+ for Python binding (optional)</p></li>
+</ul>
+<p>Also some of additionally <a class="reference external" href="http://zdoom.org/wiki/Compile_ZDoom_on_Linux">ZDoom dependencies</a> are needed.</p>
+<section id="apt-based-distros-ubuntu-debian-linux-mint-etc">
+<h4>apt-based distros (Ubuntu, Debian, Linux Mint, etc.)<a class="headerlink" href="#apt-based-distros-ubuntu-debian-linux-mint-etc" title="Link to this heading">#</a></h4>
+<p>To get all dependencies on apt-based Linux (Ubuntu, Debian, Linux Mint, etc.) execute the following commands in the shell (might require root access).</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># All possible ViZDoom dependencies,</span>
+<span class="c1"># most are optional and required only to support alternative sound and music backends in the engine</span>
+<span class="c1"># other can replace libraries that are included in the ViZDoom repository</span>
+apt<span class="w"> </span>install<span class="w"> </span>build-essential<span class="w"> </span>cmake<span class="w"> </span>git<span class="w"> </span>libsdl2-dev<span class="w"> </span>libboost-all-dev<span class="w"> </span>libopenal-dev<span class="w"> </span><span class="se">\</span>
+zlib1g-dev<span class="w"> </span>libjpeg-dev<span class="w"> </span>tar<span class="w"> </span>libbz2-dev<span class="w"> </span>libgtk2.0-dev<span class="w"> </span>libfluidsynth-dev<span class="w"> </span>libgme-dev<span class="w"> </span><span class="se">\</span>
+timidity<span class="w"> </span>libwildmidi-dev<span class="w"> </span>unzip
+
+<span class="c1"># Only essential ViZDoom dependencies</span>
+apt<span class="w"> </span>install<span class="w"> </span>build-essential<span class="w"> </span>cmake<span class="w"> </span>git<span class="w"> </span>libboost-all-dev<span class="w"> </span>libsdl2-dev<span class="w"> </span>libopenal-dev
+
+<span class="c1"># Python 3 dependencies (alternatively Anaconda 3 installed)</span>
+apt<span class="w"> </span>install<span class="w"> </span>python3-dev<span class="w"> </span>python3-pip
+<span class="c1"># or install Anaconda 3 and add it to PATH</span>
+</pre></div>
+</div>
+</section>
+<section id="dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc">
+<h4>dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)<a class="headerlink" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc" title="Link to this heading">#</a></h4>
+<p>To get all dependencies on dnf/yum-based Linux (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.) execute the following commands in the shell (might require root access).</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Essential ZDoom dependencies</span>
+dnf<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>git<span class="w"> </span>boost-devel<span class="w"> </span>SDL2-devel<span class="w"> </span>openal-soft-devel
+
+<span class="c1"># Python 3 dependencies (alternatively Anaconda 3 installed)</span>
+dnf<span class="w"> </span>install<span class="w"> </span>python3-devel<span class="w"> </span>python3-pip
+</pre></div>
+</div>
+</section>
+<section id="anaconda-miniconda">
+<h4>Anaconda/Miniconda<a class="headerlink" href="#anaconda-miniconda" title="Link to this heading">#</a></h4>
+<p>If you do not have a root access, you can use a conda (e.g. <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">miniconda</a>) environment to install dependencies to your environment only:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>boost<span class="w"> </span>cmake<span class="w"> </span>gtk2<span class="w"> </span>sdl2
+</pre></div>
+</div>
+<p>Note that to install ViZDoom in a conda environment you have to pull, build and install ViZDoom manually with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">mwydmuch</span><span class="o">/</span><span class="n">ViZDoom</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">ViZDoom</span>
+<span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">build</span> <span class="o">&amp;&amp;</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="macos">
+<h3>MacOS<a class="headerlink" href="#macos" title="Link to this heading">#</a></h3>
+<p>To build ViZDoom on MacOS, the following dependencies are required:</p>
+<ul class="simple">
+<li><p>CMake 3.12+</p></li>
+<li><p>Clang 5.0+</p></li>
+<li><p>Boost libraries 1.54.0+</p></li>
+<li><p>Python 3.7+ for Python binding (optional)</p></li>
+</ul>
+<p>Also some of additionally <a class="reference external" href="http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X">ZDoom dependencies</a> are needed.</p>
+<p>To get all the dependencies install <a class="reference external" href="https://brew.sh/">homebrew</a> first, than execute the following commands in the shell:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>boost<span class="w"> </span>sdl2<span class="w"> </span>openal-soft
+</pre></div>
+</div>
+</section>
+<section id="windows">
+<h3>Windows<a class="headerlink" href="#windows" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>CMake 3.12+</p></li>
+<li><p>Visual Studio 2012+</p></li>
+<li><p>Boost libraries 1.54.0+</p></li>
+<li><p>Python 3.7+ for Python binding (optional)</p></li>
+</ul>
+<p>Additionally, <a class="reference external" href="http://zdoom.org/wiki/Compile_ZDoom_on_Windows">ZDoom dependencies</a> are needed.
+Most of them (except Boost) are gathered in this repository: <a class="reference external" href="https://github.com/mwydmuch/ViZDoomWinDepBin">ViZDoomWinDepBin</a>.
+You can download Boost from <a class="reference external" href="https://www.boost.org/users/download">here</a>.</p>
+</section>
+</section>
+<section id="building-via-pip-recommended-for-python-users">
+<h2>Building via pip (recommended for Python users)<a class="headerlink" href="#building-via-pip-recommended-for-python-users" title="Link to this heading">#</a></h2>
+<p>ViZDoom for Python can be build via <strong>pip</strong> on Linux, MacOS and Windows, and it is strongly recommended.
+Even when building using pip you still need to install dependencies.</p>
+<p>To build the newest version from the repository run:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/mwydmuch/ViZDoom.git
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/mwydmuch/ViZDoom.git
+<span class="nb">cd</span><span class="w"> </span>ViZDoom
+pip<span class="w"> </span>install<span class="w"> </span>.
+</pre></div>
+</div>
+<p>On Linux and MacOS dependencies should be found automatically.
+On Windows you need to manually set following environment variables:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BOOST_ROOT</span></code> - the path to the directory with Boost libraries (e.g. <code class="docutils literal notranslate"><span class="pre">C:\boost_1_76_0</span></code>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">VIZDOOM_BUILD_GENERATOR_NAME</span></code> - generator name (e.g. <code class="docutils literal notranslate"><span class="pre">Visual</span> <span class="pre">Studio</span> <span class="pre">16</span> <span class="pre">2019</span></code>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">VIZDOOM_WIN_DEPS_ROOT</span></code> - the path to the directory with ZDoom dependencies (e.g. <code class="docutils literal notranslate"><span class="pre">C:\ViZDoomWinDepBin</span></code>).</p></li>
+</ul>
+<p>The process of building ViZDoom this way on Windows is demonstarted in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scripts/windows_build_wheels.bat">scripts/windows_build_wheels.bat</a>.</p>
+</section>
+<section id="building-manylinux-wheels">
+<h2>Building manylinux wheels<a class="headerlink" href="#building-manylinux-wheels" title="Link to this heading">#</a></h2>
+<p>To build manylinux wheels you need to install docker and cibuildwheel. Then on Linux and MacOS run in ViZDoom root directory:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>cibuildwheel<span class="w"> </span>--platform<span class="w"> </span>linux
+</pre></div>
+</div>
+<p>The binary ViZDoom wheels will be placed in <code class="docutils literal notranslate"><span class="pre">wheelhouse</span></code> directory.
+In case of building using cibuildwheel, the dependencies are installed automatically inside the docker container, so you do not need to install them manually in your system.</p>
+</section>
+<section id="building-manually-not-recommended">
+<h2>Building manually (not recommended)<a class="headerlink" href="#building-manually-not-recommended" title="Link to this heading">#</a></h2>
+<p>Instructions below can be used to build ViZDoom manually.
+We recommend doing it only if you want to use C++ API, work on the ViZDoom, or if you have problems with pip installation.</p>
+<section id="linux-macos">
+<h3>Linux / MacOS<a class="headerlink" href="#linux-macos" title="Link to this heading">#</a></h3>
+<p>In ViZDoom’s root directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>build
+<span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>..<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release<span class="w"> </span>-DBUILD_ENGINE<span class="o">=</span>ON<span class="w"> </span>-DBUILD_PYTHON<span class="o">=</span>ON
+make
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">-DBUILD_ENGINE=ON</span></code> and <code class="docutils literal notranslate"><span class="pre">-DBUILD_PYTHON=ON</span></code> CMake options are optional (default ON).</p>
+</section>
+<section id="id1">
+<h3>Windows<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Run CMake GUI or cmake command in cmd/powershell in ViZDoom root directory with the following paths provided:</p></li>
+</ol>
+<ul class="simple">
+<li><p>BOOST_ROOT</p></li>
+<li><p>BOOST_INCLUDEDIR</p></li>
+<li><p>BOOST_LIBRARYDIR</p></li>
+<li><p>PYTHON_INCLUDE_DIR (optional, for Python/Anaconda bindings)</p></li>
+<li><p>PYTHON_LIBRARY (optional, for Python/Anaconda bindings)</p></li>
+<li><p>ZDoom dependencies paths</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>In configuration select <code class="docutils literal notranslate"><span class="pre">DBUILD_ENGINE</span></code> and <code class="docutils literal notranslate"><span class="pre">DBUILD_PYTHON</span></code> (optional, default ON).</p></li>
+<li><p>Use generated Visual Studio solution to build all parts of ViZDoom environment.</p></li>
+</ol>
+<p>The process of building ViZDoom this way on Windows is demonstarted in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scripts/windows_build_cmake.bat">scripts/windows_build_cmake.bat</a> script.</p>
+</section>
+<section id="compilation-output">
+<h3>Compilation output<a class="headerlink" href="#compilation-output" title="Link to this heading">#</a></h3>
+<p>Compilation output will be placed in <code class="docutils literal notranslate"><span class="pre">build/bin</span></code> and it should contain the following files.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bin/vizdoom</span> <span class="pre">/</span> <span class="pre">vizdoom.exe</span></code> - ViZDoom executable</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bin/vizdoom.pk3</span></code> - resources file used by ViZDoom (needed by ViZDoom executable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bin/libvizdoom.a</span> <span class="pre">/</span> <span class="pre">vizdoom.lib</span></code> - C++ ViZDoom static library</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bin/libvizdoom.so</span> <span class="pre">/</span> <span class="pre">vizdoom.dll</span> <span class="pre">/</span> <span class="pre">libvizdoom.dylib</span></code> -  C++ ViZDoom dynamically linked library</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bin/pythonX.X/vizdoom.so</span> <span class="pre">/</span> <span class="pre">vizdoom.pyd</span> <span class="pre">/</span> <span class="pre">vizdoom.dylib</span> </code> - ViZDoom Python X.X module</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bin/pythonX.X/pip_package</span></code> - complete ViZDoom Python X.X package</p></li>
+</ul>
+</section>
+<section id="manual-installation">
+<h3>Manual installation<a class="headerlink" href="#manual-installation" title="Link to this heading">#</a></h3>
+<p>To manually install Python package copy <code class="docutils literal notranslate"><span class="pre">vizdoom_root_dir/build/bin/pythonX.X/pip_package</span></code> contents to <code class="docutils literal notranslate"><span class="pre">python_root_dir/lib/pythonX.X/site-packages/site-packages/vizdoom</span></code>.</p>
+</section>
+</section>
+</section>
+
+          </article>
+        </div>
+        <footer>
+          
+          <div class="related-pages">
+            <a class="next-page" href="../apisAndWrappers/">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">APIs and wrappers</div>
+              </div>
+              <svg class="furo-related-icon">
+                <use href="#svg-arrow-right"></use>
+              </svg>
+            </a>
+            <a class="prev-page" href="../pythonQuickstart/">
+              <svg class="furo-related-icon">
+                <use href="#svg-arrow-right"></use>
+              </svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Python quick start</div>
+                
+              </div>
+            </a>
+          </div>
+          <div class="bottom-of-page">
+            <div class="left-details">
+              <div class="copyright">
+                Copyright &#169; 2023 Farama Foundation
+              </div>
+              <!--
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            -->
+            </div>
+            <div class="right-details">
+              <div class="icons">
+                <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/"
+                  aria-label="On GitHub">
+                  <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                      d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z">
+                    </path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+        </footer>
+      </div>
+      <aside class="toc-drawer">
+        
+        
+        <div class="toc-sticky toc-scroll">
+          <div class="toc-title-container">
+            <span class="toc-title">
+              On this page
+            </span>
+          </div>
+          <div class="toc-tree-container">
+            <div class="toc-tree">
+              <ul>
+<li><a class="reference internal" href="#">Building from source</a><ul>
+<li><a class="reference internal" href="#dependencies">Dependencies</a><ul>
+<li><a class="reference internal" href="#linux">Linux</a><ul>
+<li><a class="reference internal" href="#apt-based-distros-ubuntu-debian-linux-mint-etc">apt-based distros (Ubuntu, Debian, Linux Mint, etc.)</a></li>
+<li><a class="reference internal" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc">dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)</a></li>
+<li><a class="reference internal" href="#anaconda-miniconda">Anaconda/Miniconda</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#macos">MacOS</a></li>
+<li><a class="reference internal" href="#windows">Windows</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#building-via-pip-recommended-for-python-users">Building via pip (recommended for Python users)</a></li>
+<li><a class="reference internal" href="#building-manylinux-wheels">Building manylinux wheels</a></li>
+<li><a class="reference internal" href="#building-manually-not-recommended">Building manually (not recommended)</a><ul>
+<li><a class="reference internal" href="#linux-macos">Linux / MacOS</a></li>
+<li><a class="reference internal" href="#id1">Windows</a></li>
+<li><a class="reference internal" href="#compilation-output">Compilation output</a></li>
+<li><a class="reference internal" href="#manual-installation">Manual installation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
+        
+        
+      </aside>
+    </div>
+  </div>
+</div>
+    <script>
+      const toggleMenu = () => {
+        const menuBtn = document.querySelector(".farama-header-menu__btn");
+        const menuContainer = document.querySelector(".farama-header-menu-container");
+        if (document.querySelector(".farama-header-menu").classList.contains("active")) {
+          menuBtn.setAttribute("aria-expanded", "false");
+          menuContainer.setAttribute("aria-hidden", "true");
+        } else {
+          menuBtn.setAttribute("aria-expanded", "true");
+          menuContainer.setAttribute("aria-hidden", "false");
+        }
+        document.querySelector(".farama-header-menu").classList.toggle("active");
+      }
+
+      document.querySelector(".farama-header-menu__btn").addEventListener("click", toggleMenu);
+      document.getElementById("farama-close-menu").addEventListener("click", toggleMenu);
+    </script>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6H9C8TWXZ8"></script>
+      <script>
+        const enableGtag = () => {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-6H9C8TWXZ8');
+        }
+        (() => {
+            if (!localStorage.getItem("acceptedCookieAlert")) {
+                const boxElem = document.createElement("div");
+                boxElem.classList.add("cookie-alert");
+                const containerElem = document.createElement("div");
+                containerElem.classList.add("cookie-alert__container");
+                const textElem = document.createElement("p");
+                textElem.innerHTML = `This page uses <a href="https://analytics.google.com/">
+                                    Google Analytics</a> to collect statistics.`;
+                                    containerElem.appendChild(textElem);
+
+                const declineBtn = Object.assign(document.createElement("button"),
+                  {
+                    innerText: "Deny",
+                    className: "farama-btn cookie-alert__button",
+                    id: "cookie-alert__decline",
+                  }
+                );
+                declineBtn.addEventListener("click", () => {
+                  localStorage.setItem("acceptedCookieAlert", false);
+                  boxElem.remove();
+                });
+
+                const acceptBtn = Object.assign(document.createElement("button"),
+                  {
+                    innerText: "Allow",
+                    className: "farama-btn cookie-alert__button",
+                    id: "cookie-alert__accept",
+                  }
+                );
+                acceptBtn.addEventListener("click", () => {
+                  localStorage.setItem("acceptedCookieAlert", true);
+                  boxElem.remove();
+                  enableGtag();
+                });
+
+                containerElem.appendChild(declineBtn);
+                containerElem.appendChild(acceptBtn);
+                boxElem.appendChild(containerElem);
+                document.body.appendChild(boxElem);
+            } else if (localStorage.getItem("acceptedCookieAlert") === "true") {
+              enableGtag();
+            }
+        })()
+      </script>
+
+    <script src="../../_static/documentation_options.js?v=a5603611"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=7660844c"></script>
+    
+    <script>
+
+      const createProjectsList = (projects, displayImages) => {
+        const ulElem = Object.assign(document.createElement('ul'),
+          {
+            className:'farama-header-menu-list',
+          }
+        )
+        for (let project of projects) {
+          const liElem = document.createElement("li");
+          const aElem = Object.assign(document.createElement("a"),
+            {
+              href: project.link
+            }
+          );
+          liElem.appendChild(aElem);
+          if (displayImages) {
+            const imgElem = Object.assign(document.createElement("img"),
+              {
+                src: project.image ? imagesBasepath + project.image : imagesBasepath + "/farama_black.svg",
+                alt: `${project.name} logo`,
+                className: "farama-black-logo-invert"
+              }
+            );
+            aElem.appendChild(imgElem);
+          }
+          aElem.appendChild(document.createTextNode(project.name));
+          ulElem.appendChild(liElem);
+        }
+        return ulElem;
+      }
+
+      // Create menu with Farama projects by using the API at farama.org/api/projects.json
+      const createCORSRequest = (method, url) => {
+        let xhr = new XMLHttpRequest();
+        xhr.responseType = 'json';
+
+        if ("withCredentials" in xhr) {
+          xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+          // IE8 & IE9
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+        } else {
+          // CORS not supported.
+          xhr = null;
+        }
+        return xhr;
+      };
+
+      const url = 'https://farama.org/api/projects.json';
+      const imagesBasepath = "https://farama.org/assets/images"
+      const method = 'GET';
+      let xhr = createCORSRequest(method, url);
+
+      xhr.onload = () => {
+        const jsonResponse = xhr.response;
+        const sections = {
+          "Core Projects": [],
+          "Mature Projects": {
+            "Documentation": [],
+            "Repositories": [],
+          },
+          "Incubating Projects": {
+            "Documentation": [],
+            "Repositories": [],
+          },
+          "Foundation": [
+            {
+              name: "About",
+              link: "https://farama.org/about"
+            },
+            {
+              name: "Standards",
+              link: "https://farama.org/project_standards",
+            },
+            {
+              name: "Donate",
+              link: "https://farama.org/donations"
+            }
+          ]
+        }
+
+        // Categorize projects
+        Object.keys(jsonResponse).forEach(key => {
+          projectJson = jsonResponse[key];
+          if (projectJson.website !== null) {
+            projectJson.link = projectJson.website;
+          } else {
+            projectJson.link = projectJson.github;
+          }
+          if (projectJson.type === "core") {
+            sections["Core Projects"].push(projectJson)
+          } else if (projectJson.type == "mature") {
+            if (projectJson.website !== null) {
+              sections["Mature Projects"]["Documentation"].push(projectJson)
+            } else {
+              sections["Mature Projects"]["Repositories"].push(projectJson)
+            }
+          } else {
+            if (projectJson.website !== null) {
+              sections["Incubating Projects"]["Documentation"].push(projectJson)
+            } else {
+              sections["Incubating Projects"]["Repositories"].push(projectJson)
+            }
+          }
+        })
+
+        const menuContainer = document.querySelector(".farama-header-menu__body");
+
+        Object.keys(sections).forEach((key, i) => {
+          const sectionElem = Object.assign(
+            document.createElement('div'), {
+              className:'farama-header-menu__section',
+            }
+          )
+          sectionElem.appendChild(Object.assign(document.createElement('span'),
+            {
+              className:'farama-header-menu__section-title' ,
+              innerText: key
+            }
+          ))
+          // is not a list
+          if (sections[key].constructor !== Array) {
+            const subSections = sections[key];
+            const subSectionContainerElem = Object.assign(
+                document.createElement('div'), {
+                  className:'farama-header-menu__subsections-container',
+                  style: 'display: flex'
+                }
+            )
+            Object.keys(subSections).forEach((subKey, i) => {
+              const subSectionElem = Object.assign(
+                document.createElement('div'), {
+                  className:'farama-header-menu__subsection',
+                }
+              )
+              subSectionElem.appendChild(Object.assign(document.createElement('span'),
+                {
+                  className:'farama-header-menu__subsection-title' ,
+                  innerText: subKey
+                }
+              ))
+              const ulElem = createProjectsList(subSections[subKey], key !== 'Foundation');
+              subSectionElem.appendChild(ulElem);
+              subSectionContainerElem.appendChild(subSectionElem);
+            })
+            sectionElem.appendChild(subSectionContainerElem);
+          } else {
+            const projects = sections[key];
+            const ulElem = createProjectsList(projects, true);
+            sectionElem.appendChild(ulElem);
+          }
+          menuContainer.appendChild(sectionElem)
+        });
+      }
+
+      xhr.onerror = function() {
+        console.error("Unable to load projects");
+      };
+
+      xhr.send();
+    </script>
+
+    
+    <script>
+      const versioningConfig = {
+        githubUser: 'Farama-Foundation',
+        githubRepo: 'ViZDoom',
+      };
+      fetch('/main/_static/versioning/versioning_menu.html').then(response => {
+        if (response.status === 200) {
+            response.text().then(text => {
+                const container = document.createElement("div");
+                container.innerHTML = text;
+                document.querySelector("body").appendChild(container);
+                // innerHtml doenst evaluate scripts, we need to add them dynamically
+                Array.from(container.querySelectorAll("script")).forEach(oldScript => {
+                    const newScript = document.createElement("script");
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+            });
+        } else {
+            console.warn("Unable to load versioning menu", response);
+        }
+      });
+    </script>
+
+    </body>
+</html>
