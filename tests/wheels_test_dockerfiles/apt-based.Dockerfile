@@ -3,7 +3,7 @@ FROM ubuntu:latest
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Warsaw
 
-WORKDIR vizdoom
+WORKDIR /vizdoom
 
 # Install Python and pip
 RUN apt update && apt install -y python3-dev python3-pip

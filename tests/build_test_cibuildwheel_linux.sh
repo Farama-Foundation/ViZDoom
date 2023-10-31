@@ -5,6 +5,7 @@ NC='\033[0m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 
+REPO_ROOT=$( dirname ${BASH_SOURCE[0]} )/..
 DOCKERFILES_DIR=$( dirname ${BASH_SOURCE[0]} )/wheels_test_dockerfiles
 GENERATED_DOCKERFILES_DIR=tests/test_dockerfiles
 IMAGE_PREFIX="vizdoom_wheels"
@@ -23,6 +24,7 @@ DOCKERFILES_TO_BUILD_AND_RUN=(
 )
 
 # Build wheels using cibuildwheel
+cd $REPO_ROOT
 #export CIBW_BUILD_VERBOSITY=3  # Uncomment to see full build logs
 cibuildwheel --platform linux --arch $(uname -m)
 

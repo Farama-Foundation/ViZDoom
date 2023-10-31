@@ -1,6 +1,6 @@
 FROM fedora:latest
 
-WORKDIR vizdoom
+WORKDIR /vizdoom
 
 # Install minimal dependencies
 RUN dnf update -y && dnf clean all && dnf install -y gcc gcc-c++ make cmake git boost-devel SDL2-devel openal-soft-devel python3-devel python3-pip

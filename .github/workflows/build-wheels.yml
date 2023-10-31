@@ -1,4 +1,4 @@
-name: Build Python wheels and make a release
+name: Build Python wheels and make PyPI release
 
 on:
   workflow_dispatch:
