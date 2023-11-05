@@ -14,6 +14,9 @@ jobs:
       SPHINX_GITHUB_CHANGELOG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
       - uses: actions/setup-python@v4
         with:
             python-version: '3.9'
@@ -22,7 +25,7 @@ jobs:
         run: sudo apt install cmake git libboost-all-dev libsdl2-dev libopenal-dev
 
       - name: Install ViZDoom
-        run: pip install .
+        run: pip install .[gym]
 
       - name: Install docs dependencies
         run: pip install -r docs/requirements.txt

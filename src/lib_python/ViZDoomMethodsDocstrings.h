@@ -154,7 +154,9 @@ Default value: 0)DOCSTRING";
 In case of multiple invocations, older configurations will be overwritten by the recent ones.
 Overwriting does not involve resetting to default values. Thus only overlapping parameters will be changed.
 The method returns True if the whole configuration file was correctly read and applied,
-False if the file contained errors.)DOCSTRING";
+False if the file contained errors.
+
+If the file relative path is given, it will be searched for in the following order: current directory, current directory + `/scenarios/`, ViZDoom's installation directory + `/scenarios/`.)DOCSTRING";
 
     const char *getMode = R"DOCSTRING(Returns current mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`).)DOCSTRING";
 

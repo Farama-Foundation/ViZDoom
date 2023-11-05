@@ -652,6 +652,8 @@ Overwriting does not involve resetting to default values. Thus only overlapping 
 The method returns true if the whole configuration file was correctly read and applied,
 false if the file contained errors.
 
+If the file relative path is given, it will be searched for in the following order: current directory, current directory + `/scenarios/`, ViZDoom's installation directory + `/scenarios/`.
+
 See also:
 - [ConfigFile](./configurationFiles.md)
 

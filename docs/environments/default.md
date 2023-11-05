@@ -1,11 +1,34 @@
 # Default scenarios/environments
 
-Below we describe all default scenarios (original ViZDoom nomenclature)/environments (Gymnasium/Open AI Gym nomenclature) included with ViZDoom. The PRs with new scenarios are welcome!
+Below we describe a default singleplayer scenarios (original ViZDoom nomenclature)/environments (Gymnasium/Open AI Gym nomenclature) included with ViZDoom. The PRs with new scenarios are welcome!
+
+
+## How to use default scenarios
+
+When using original ViZDoom API, each scenario can be loaded [`load_config`](../api/python/doomGame.md#vizdoom.DoomGame.load_config) (Python)/[`loadConfig`](../api/cpp/doomGame.md#loadconfig) (C++) method:
+
+Python example:
+```{code-block} python
+import os
+import vizdoom as vzd
+game = vzd.DoomGame()
+game.load_config(os.path.join(vzd.scenarios_path, "basic.cfg")) # or any other scenario file
+```
+
+When using Gymnasium (or Gym) API the scenario can be loaded by passing the scenario id to `make` method like-this:
+
+```{code-block} python
+import gymnasium
+from vizdoom import gymnasium_wrapper # This import will register all the environments
+
+env = gymnasium.make("VizdoomBasic-v0") # or any other environment id
+```
+
 
 
 ## Note on .wad, .cfg files, and rewards
 
-The scenarios consist of two files - .wad and .cfg ([see scenarios directory](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios)). The .wad file contains the map and script, and the .cfg file contains additional settings. The maps contained in .wad files (Doom's engine format for storing maps and assets) usually do not implement action constraints, the death penalty, and living rewards (however it is possible). To make it easier, this can be specified in ViZDoom .cfg files as well as other options like access to additional information. These can also be overridden in the code when using the original ViZDoom API. Every mention of any settings that are not included in .wad files is specified with "(config)" in the descriptions below. ViZDoom does not support setting certain rewards (such as killing opponents) in .cfg files. These must be programmed in the .wad files instead.
+A scenario usually consist of two files - .wad and .cfg ([see scenarios directory](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios)). The .wad file contains the map and script, and the .cfg file contains additional settings. The maps contained in .wad files (Doom's engine format for storing maps and assets) usually do not implement action constraints, the death penalty, and living rewards (however it is possible). To make it easier, this can be specified in ViZDoom .cfg files as well as other options like access to additional information. These can also be overridden in the code when using the original ViZDoom API. Every mention of any settings that are not included in .wad files is specified with "(config)" in the descriptions below. ViZDoom does not support setting certain rewards (such as killing opponents) in .cfg files. These must be programmed in the .wad files instead.
 
 
 ## BASIC
@@ -20,7 +43,6 @@ and shoot. 1 hit is enough to kill the monster. The episode
 finishes when the monster is killed or on timeout.
 
 **REWARDS:**
-
 * +106 for killing the monster
 * -5 for every shot
 * +1 for every tic the agent is alive
@@ -28,10 +50,15 @@ finishes when the monster is killed or on timeout.
 The episode ends after killing the monster or on timeout.
 
 **CONFIGURATION:**
-* 3 available buttons: move left, move right, shoot (attack)
+* 3 available buttons: move left/right, shoot (attack)
+* 1 available game variable: player's ammo
 * timeout = 300 tics
 
-Configuration file: [basic.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic.cfg)
+
+**Gymnasium/Gym id: `"VizdoomBasic-v0"`**
+
+**Configuration file: [basic.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic.cfg)**
+
 
 ## DEADLY CORRIDOR
 The purpose of this scenario is to teach the agent to navigate towards
@@ -43,21 +70,45 @@ in total). A green vest is placed at the opposite end of the corridor.
 The reward is proportional (negative or positive) to the change in the
 distance between the player and the vest. If the player ignores monsters
 on the sides and runs straight for the vest, he will be killed somewhere
-along the way. To ensure this behavior doom_skill = 5 (config) is
+along the way. To ensure this behavior difficulty level (`doom_skill`) = 5 (config) is
 needed.
 
 **REWARDS:**
-
 * +dX for getting closer to the vest.
 * -dX for getting further from the vest.
 * -100 for death
 
 **CONFIGURATION:**
-* 5 available buttons: turn left, turn right, move left, move right, shoot (attack)
-* timeout = 4200
-* doom_skill = 5
+* 7 available buttons: move forward/backwward/left/right, turn left/right, shoot (attack)
+* 1 available game variable: player's health
+* timeout = 2100
+* difficulty level (`doom_skill`) = 5
 
-Configuration file: [scenarios/basic.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deadly_corridor.cfg)
+**Gymnasium/Gym id: `"VizdoomCorridor-v0"`**
+
+**Configuration file: [deadly_corridor.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deadly_corridor.cfg)**
+
+
+## DEATHMATCH
+In this scenario, the agent is spawned in the random place of the arena filled with resources.
+A random monster is spawned every few seconds that will try to kill the player.
+The reward for killing a monster depends on its difficulty.
+The aim of the agent is to kill as many monsters as possible
+before the time runs out or it's killed by monsters.
+
+**REWARDS:**
+* Different rewards are given for killing different monsters
+
+**CONFIGURATION:**
+* 16 available binary buttons: move forward/backwward/left/right, turn left/right, strafe, sprint (speed), shoot (attack), select weapon 1-6/next/previous
+* 3 available delta buttons: look up/down, turn left/right, move left/right
+* 5 available game variables: player's health, armor, selected weapon and ammo, killcount
+* timeout = 4200
+* difficulty level (`doom_skill`) = 3
+
+**Gymnasium/Gym id: `"VizdoomDeathmatch-v0"`**
+
+**Configuration file: [scenarios/deathmatch.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deathmatch.cfg)**
 
 
 ## DEFEND THE CENTER
@@ -78,8 +129,13 @@ because of limited ammo).
 
 **CONFIGURATION:**
 * 3 available buttons: turn left, turn right, shoot (attack)
+* 2 available game variables: player's health and ammo
+* timeout = 2100
+* difficulty level (`doom_skill`) = 3
 
-Configuration file: [scenarios/defend_the_center.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_center.cfg)
+**Gymnasium/Gym id: `"VizdoomDefendCenter-v0"`**
+
+**Configuration file: [defend_the_center.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_center.cfg)**
 
 
 ## DEFEND THE LINE
@@ -101,8 +157,12 @@ because of limited ammo).
 
 **CONFIGURATION:**
 * 3 available buttons: turn left, turn right, shoot (attack)
+* 2 available game variables: player's health and ammo
+* difficulty level (`doom_skill`) = 3
 
-Configuration file: [scenarios/defend_the_line.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_line.cfg)
+**Gymnasium/Gym id: `"VizdoomDefendLine-v0"`**
+
+**Configuration file: [defend_the_line.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_line.cfg)**
 
 
 ## HEALTH GATHERING (AND HEALTH GATHERING SUPREME)
@@ -126,10 +186,12 @@ that makes map layout more complex.
 * -100 for death
 
 **CONFIGURATION:**
-* 3 available buttons: turn left, turn right, move forward
-* 1 available game variable: HEALTH
+* 3 available buttons: turn left/right, move forward
+* 1 available game variable: player's health
 
-Configuration file: [scenarios/health_gathering.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering.cfg)/[scenarios/health_gathering_supreme.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering_supreme.cfg)
+**Gymnasium/Gym id: `"VizdoomHealthGathering-v0"`/`"VizdoomHealthGatheringSupreme-v0"`**
+
+**Configuration file: [health_gathering.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering.cfg)/[health_gathering_supreme.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering_supreme.cfg)**
 
 
 ## MY WAY HOME
@@ -148,10 +210,12 @@ direction. The episode ends when the vest is reached or on timeout/
 * -0.0001 for every tic the agent is alive
 
 **CONFIGURATION:**
-* 3 available buttons: turn left, turn right, move forward
+* 3 available buttons: turn left/right, move forward
 * timeout = 2100
 
-Configuration file: [scenarios/my_way_home.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/my_way_home.cfg)
+**Gymnasium/Gym id: `"VizdoomMyWayHome-v0"`**
+
+**Configuration file: [my_way_home.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/my_way_home.cfg)**
 
 
 ## PREDICT POSITION
@@ -172,10 +236,12 @@ or on timeout.
 * -0.0001 for every tic the agent is alive
 
 **CONFIGURATION:**
-* 3 available buttons: turn left, turn right, shoot (attack)
+* 3 available buttons: turn left/right, shoot (attack)
 * timeout = 300
 
-Configuration file: [scenarios/predict_position.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/predict_position.cfg)
+**Gymnasium/Gym id: `"VizdoomPredictPosition-v0"`**
+
+**Configuration file: [predict_position.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/predict_position.cfg)**
 
 
 ## TAKE COVER
@@ -196,6 +262,10 @@ the player dies.
 * +1 for every tic the agent is alive
 
 **CONFIGURATION:**
-* 2 available buttons: move left, move right
+* 2 available buttons: move left/right
+* 1 available game variable: player's health
+* difficulty level (`doom_skill`) = 4
 
-Configuration file: [scenarios/take_cover.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/take_cover.cfg)
+**Gymnasium/Gym id: `"VizdoomTakeCover-v0"`**
+
+**Configuration file: [take_cover.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/take_cover.cfg)**
