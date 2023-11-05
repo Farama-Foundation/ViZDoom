@@ -77,7 +77,7 @@ if __name__ == "__main__":
     sleep_time = 0.028
 
     for i in range(episodes):
-        print("Episode #" + str(i + 1))
+        print(f"Episode #{i + 1}")
 
         # Seed can be changed anytime. It will take effect from next episodes.
         # game.set_seed(seed)
@@ -94,7 +94,7 @@ if __name__ == "__main__":
             # Check which action you chose!
             reward = game.make_action(choice(actions))
 
-            print("State #" + str(state.number))
+            print(f"State #{state.number}")
             print("Game Variables:", vars)
             print("Last Reward:", reward)
             print("Seed:", game.get_seed())

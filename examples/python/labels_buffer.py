@@ -101,7 +101,8 @@ if __name__ == "__main__":
         return tmp
 
     for i in range(episodes):
-        print("Episode #" + str(i + 1))
+        print(f"Episode #{i + 1}")
+
         seen_in_this_episode = set()
 
         # Not needed for the first episode but the loop is nicer.
@@ -147,7 +148,7 @@ if __name__ == "__main__":
             # Make random action
             game.make_action(choice(actions))
 
-            print("State #" + str(state.number))
+            print(f"State #{state.number}")
             print(
                 "Player position: x:",
                 state.game_variables[0],

@@ -7,6 +7,9 @@ For the examples to work properly you need to install ViZDoom or create a link t
 ### [audio_buffer.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/audio_buffer.py)
 Demonstrates how to use the audio buffer.
 
+### [automap_buffer.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/automap_buffer.py)
+Demonstrates how to use the automap buffer.
+
 ### [basic.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/basic.py)
 Demonstrates how to use the most basic features of the environment. It configures the engine, and makes the agent perform random actions. It also prints the current state and the reward earned with every action.
 
@@ -25,14 +28,14 @@ Demonstrates how to configure and play the singleplayer game for CIG competition
 ### [delta_buttons.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/delta_buttons.py)
 Shows how delta buttons work (they may take values other than 0 and 1 and can be used for precise movement).
 
-### [format.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/format.py)
-Presents different formats of the screen buffer. [OpenCV](http://opencv.org/) is used to display the images.
-
 ### [fps_test.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/fps_test.py)
 Tests the performance of the environment in frames per second. It should give you some idea how fast ViZDoom works on your hardware.
 
-### [labels.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/labels.py)
-Contains an example of how to implement basic Q-learning on the interface within PyTorch.
+### [gymnasium_wrapper.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/gymnasium_wrapper.py)
+Shows how to use ViZDoom Gymnasium wrapper.
+
+### [labels_buffer.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/labels_buffer.py)
+Demonstrates how to use the labels buffer.
 
 ### [learning_pytorch.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/learning_pytorch.py), [learning_pytorch_test.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/learning_pytorch_test.py)
 Contains an example of how to implement basic Q-learning on the interface within PyTorch.
@@ -57,6 +60,9 @@ Demonstrates how to record an episode and replay it.
 
 ### [record_multiplayer.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/record_multiplayer.py)
 Demonstrates how to record the multiplayer game and replay it.
+
+### [save_load_game.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/save_load_game.py)
+Demonstrates how to use save and load functionality build into the game engine.
 
 ### [scenarios.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/scenarios.py)
 Presents different scenarios that come with ViZDoom environment.

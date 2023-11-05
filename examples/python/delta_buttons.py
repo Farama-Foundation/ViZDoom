@@ -40,7 +40,7 @@ if __name__ == "__main__":
     sleep_time = 0.028
 
     for i in range(episodes):
-        print("Episode #" + str(i + 1))
+        print(f"Episode #{i + 1}")
 
         game.new_episode()
 
@@ -57,7 +57,7 @@ if __name__ == "__main__":
             if not time % 50:
                 action[3] = -action[3]
 
-            print("State #" + str(state.number))
+            print(f"State #{state.number}")
             print("Action made: ", action)
             print("=====================")
 

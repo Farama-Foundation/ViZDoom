@@ -40,14 +40,14 @@ for i in range(episodes):
     # new_episode can record the episode using Doom's demo recording functionality to given file.
     # Recorded episodes can be reconstructed with perfect accuracy using different rendering settings.
     # This can not be used to record episodes in multiplayer mode.
-    game.new_episode("episode" + str(i) + "_rec.lmp")
+    game.new_episode(f"episode{i}_rec.lmp")
 
     while not game.is_episode_finished():
         s = game.get_state()
 
         r = game.make_action(choice(actions))
 
-        print("State #" + str(s.number))
+        print(f"State #{s.number}")
         print("Game variables:", s.game_variables[0])
         print("Reward:", r)
         print("=====================")
@@ -73,7 +73,7 @@ print("************************\n")
 for i in range(episodes):
 
     # Replays episodes stored in given file. Sending game command will interrupt playback.
-    game.replay_episode("episode" + str(i) + "_rec.lmp")
+    game.replay_episode(f"episode{i}_rec.lmp")
 
     while not game.is_episode_finished():
         s = game.get_state()
@@ -84,7 +84,7 @@ for i in range(episodes):
         r = game.get_last_reward()
         # game.get_last_action is not supported and don't work for replay at the moment.
 
-        print("State #" + str(s.number))
+        print(f"State #{s.number}")
         print("Game variables:", s.game_variables[0])
         print("Reward:", r)
         print("=====================")
@@ -97,4 +97,4 @@ game.close()
 
 # Delete recordings (*.lmp files).
 for i in range(episodes):
-    os.remove("episode" + str(i) + "_rec.lmp")
+    os.remove(f"episode{i}_rec.lmp")
