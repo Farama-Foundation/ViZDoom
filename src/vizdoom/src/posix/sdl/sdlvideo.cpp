@@ -105,6 +105,8 @@ EXTERN_CVAR (Bool, vid_vsync)
 //VIZDOOM_CODE
 EXTERN_CVAR (Bool, viz_window_hidden)
 EXTERN_CVAR (Bool, viz_noxserver)
+EXTERN_CVAR (Int, win_x)
+EXTERN_CVAR (Int, win_y)
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
@@ -375,7 +377,8 @@ SDLFB::SDLFB (int width, int height, bool fullscreen, SDL_Window *oldwin)
 		if(!(*viz_noxserver))
 		{
 			Screen = SDL_CreateWindow (caption,
-			SDL_WINDOWPOS_UNDEFINED_DISPLAY(vid_adapter), SDL_WINDOWPOS_UNDEFINED_DISPLAY(vid_adapter),
+			(win_x <= 0) ? SDL_WINDOWPOS_UNDEFINED_DISPLAY(vid_adapter) : win_x,
+			(win_x <= 0) ? SDL_WINDOWPOS_UNDEFINED_DISPLAY(vid_adapter) : win_y,
 			width, height, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0) |
 						   (*viz_window_hidden ? SDL_WINDOW_HIDDEN : SDL_WINDOW_RESIZABLE));
 

@@ -54,6 +54,9 @@ EXTERN_CVAR (Bool, fullscreen)
 EXTERN_CVAR (Float, vid_winscale)
 EXTERN_CVAR (Bool, viz_noxserver)
 
+CVAR(Int, win_x, -1, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+CVAR(Int, win_y, -1, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+
 IVideo *Video;
 
 void I_ShutdownGraphics ()
