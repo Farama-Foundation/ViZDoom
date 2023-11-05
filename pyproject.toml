@@ -33,11 +33,11 @@ reportPrivateImportUsage = "warning"
 
 [tool.cibuildwheel]
 # We need to build for the following Python versions:
-build = "cp{38,39,310,311}-*"
+build = "cp{38,39,310,311,312}-*"
 
 [tool.cibuildwheel.linux]
 # Only manylinux is supported (no musl)
-build = "cp{38,39,310,311}-manylinux*"
+build = "cp{38,39,310,311,312}-manylinux*"
 
 # For manylinux_2_28 we need to install the following dependencies using yum:
 before-all = "yum install -y cmake git boost-devel SDL2-devel openal-soft-devel"
