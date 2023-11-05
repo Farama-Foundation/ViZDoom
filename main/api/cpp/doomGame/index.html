@@ -839,7 +839,7 @@ tic counter/time and total reward state keep their values.</p>
 </tbody>
 </table>
 </div>
-<p>Set given list of <code class="docutils literal notranslate"><span class="pre">Button</span></code>s (e.g. <code class="docutils literal notranslate"><span class="pre">TURN_LEFT</span></code>, <code class="docutils literal notranslate"><span class="pre">MOVE_FORWARD</span></code>) as available <code class="docutils literal notranslate"><span class="pre">Buttons</span></code>.</p>
+<p>Sets given list of <code class="docutils literal notranslate"><span class="pre">Button</span></code>s (e.g. <code class="docutils literal notranslate"><span class="pre">TURN_LEFT</span></code>, <code class="docutils literal notranslate"><span class="pre">MOVE_FORWARD</span></code>) as available <code class="docutils literal notranslate"><span class="pre">Buttons</span></code>.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">availableButtons/available_buttons</span></code> (list)</p>
 <p>See also:</p>
 <ul class="simple">
@@ -865,7 +865,7 @@ tic counter/time and total reward state keep their values.</p>
 </tbody>
 </table>
 </div>
-<p>Add <a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Button</span></code></span></a> type (e.g. <code class="docutils literal notranslate"><span class="pre">TURN_LEFT</span></code>, <code class="docutils literal notranslate"><span class="pre">MOVE_FORWARD</span></code>) to available <code class="docutils literal notranslate"><span class="pre">Buttons</span></code> and sets the maximum allowed, absolute value for the specified button.
+<p>Adds <a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Button</span></code></span></a> type (e.g. <code class="docutils literal notranslate"><span class="pre">TURN_LEFT</span></code>, <code class="docutils literal notranslate"><span class="pre">MOVE_FORWARD</span></code>) to available <code class="docutils literal notranslate"><span class="pre">Buttons</span></code> and sets the maximum allowed, absolute value for the specified button.
 If the given button has already been added, it will not be added again, but the maximum value is overridden.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">availableButtons/available_buttons</span></code> (list)</p>
 <p>See also:</p>
@@ -1038,7 +1038,7 @@ The constraints limit applies in all Modes.</p>
 </tbody>
 </table>
 </div>
-<p>Set list of <a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code></span></a> as available <code class="docutils literal notranslate"><span class="pre">GameVariables</span></code> in the <a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <code class="docutils literal notranslate"><span class="pre">getState</span></code> method.</p>
+<p>Sets list of <a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code></span></a> as available <code class="docutils literal notranslate"><span class="pre">GameVariables</span></code> in the <a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <code class="docutils literal notranslate"><span class="pre">getState</span></code> method.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">availableGameVariables/available_game_variables</span></code> (list)</p>
 <p>See also:</p>
 <ul class="simple">
@@ -1140,15 +1140,45 @@ The constraints limit applies in all Modes.</p>
 </div>
 <p>Returns the current value of the specified game variable (<code class="docutils literal notranslate"><span class="pre">HEALTH</span></code>, <code class="docutils literal notranslate"><span class="pre">AMMO1</span></code> etc.).
 The specified game variable does not need to be among available game variables (included in the state).
-It could be used for e.g. shaping. Returns 0 in case of not finding given <code class="docutils literal notranslate"><span class="pre">GameVariable</span></code>.</p>
-<p>See also:</p>
+It could be used for e.g. shaping. Returns 0 in case of not finding given <code class="docutils literal notranslate"><span class="pre">GameVariable</span></code>.
+git lo
+See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">GameVariable</span></code></span></a></p></li>
 </ul>
 </section>
 </section>
 <section id="game-arguments-methods">
-<h2>Game Arguments methods<a class="headerlink" href="#game-arguments-methods" title="Link to this heading">#</a></h2>
+<h2>Game arguments methods<a class="headerlink" href="#game-arguments-methods" title="Link to this heading">#</a></h2>
+<section id="setgameargs">
+<h3><code class="docutils literal notranslate"><span class="pre">setGameArgs</span></code><a class="headerlink" href="#setgameargs" title="Link to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setGameArgs(std::string</span> <span class="pre">args)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_game_args(args:</span> <span class="pre">str)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Added in 1.3.0</p>
+<p>Sets custom arguments that will be passed to ViZDoom process during initialization.
+It is useful for changing additional game settings.
+Use with caution, as in rare cases it may prevent the library from working properly.
+Using this method is equivalent to first calling <a class="reference internal" href="#cleargameargs"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">clearGameArgs</span></code></span></a> and then <a class="reference internal" href="#addgameargs"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">addGameArgs</span></code></span></a>.</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">gameArgs/game_args</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://zdoom.org/wiki/Command_line_parameters">ZDoom Wiki: Command line parameters</a></p></li>
+<li><p><a class="reference external" href="http://zdoom.org/wiki/CVARS">ZDoom Wiki: CVARs (Console Variables)</a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
 <section id="addgameargs">
 <h3><code class="docutils literal notranslate"><span class="pre">addGameArgs</span></code><a class="headerlink" href="#addgameargs" title="Link to this heading">#</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -1165,8 +1195,9 @@ It could be used for e.g. shaping. Returns 0 in case of not finding given <code 
 </tbody>
 </table>
 </div>
-<p>Adds a custom argument that will be passed to ViZDoom process during initialization.
-Useful for changing additional game settings.</p>
+<p>Adds custom arguments that will be passed to ViZDoom process during initialization.
+It is useful for changing additional game settings.
+Use with caution, as in rare cases it may prevent the library from working properly.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">gameArgs/game_args</span></code></p>
 <p>See also:</p>
 <ul class="simple">
@@ -1191,7 +1222,25 @@ Useful for changing additional game settings.</p>
 </tbody>
 </table>
 </div>
-<p>Clears all arguments previously added with <a class="reference internal" href="#addgameargs"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">addGameArgs</span></code></span></a> method.</p>
+<p>Clears all arguments previously added with <a class="reference internal" href="#setgameargs"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setGameArgs</span></code></span></a> or/and <a class="reference internal" href="#addgameargs"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">addGameArgs</span></code></span></a> methods.</p>
+</section>
+<section id="getgameargs">
+<h3><code class="docutils literal notranslate"><span class="pre">getGameArgs</span></code><a class="headerlink" href="#getgameargs" title="Link to this heading">#</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">std::string</span> <span class="pre">getGameArgs()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_game_args()</span> <span class="pre">-&gt;</span> <span class="pre">str</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the additional arguments for ViZDoom process set with <a class="reference internal" href="#setgameargs"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setGameArgs</span></code></span></a> or/and <a class="reference internal" href="#addgameargs"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">addGameArgs</span></code></span></a> methods.</p>
 </section>
 </section>
 <section id="reward-methods">
@@ -2769,9 +2818,11 @@ Doom uses 35 ticks per second.</p>
 <li><a class="reference internal" href="#getgamevariable"><code class="docutils literal notranslate"><span class="pre">getGameVariable</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#game-arguments-methods">Game Arguments methods</a><ul>
+<li><a class="reference internal" href="#game-arguments-methods">Game arguments methods</a><ul>
+<li><a class="reference internal" href="#setgameargs"><code class="docutils literal notranslate"><span class="pre">setGameArgs</span></code></a></li>
 <li><a class="reference internal" href="#addgameargs"><code class="docutils literal notranslate"><span class="pre">addGameArgs</span></code></a></li>
 <li><a class="reference internal" href="#cleargameargs"><code class="docutils literal notranslate"><span class="pre">clearGameArgs</span></code></a></li>
+<li><a class="reference internal" href="#getgameargs"><code class="docutils literal notranslate"><span class="pre">getGameArgs</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#reward-methods">Reward methods</a><ul>
