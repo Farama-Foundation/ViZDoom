@@ -57,7 +57,7 @@ episodes = 10
 
 for i in range(episodes):
 
-    print("Episode #" + str(i + 1))
+    print(f"Episode #{i + 1}")
 
     # Add specific number of bots
     # (file examples/bots.cfg must be placed in the same directory as the Doom executable file,
@@ -79,7 +79,7 @@ for i in range(episodes):
         frags = game.get_game_variable(vzd.GameVariable.FRAGCOUNT)
         if frags != last_frags:
             last_frags = frags
-            print("Player has " + str(frags) + " frags.")
+            print(f"Player has {frags} frags.")
 
         # Check if player is dead
         if game.is_player_dead():
@@ -94,11 +94,7 @@ for i in range(episodes):
     server_state = game.get_server_state()
     for i in range(len(server_state.players_in_game)):
         if server_state.players_in_game[i]:
-            print(
-                server_state.players_names[i]
-                + ": "
-                + str(server_state.players_frags[i])
-            )
+            print(f"{server_state.players_names[i]}: {server_state.players_frags[i]}")
     print("************************")
 
     # Starts a new episode. All players have to call new_episode() in multiplayer mode.

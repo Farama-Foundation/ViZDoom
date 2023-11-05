@@ -17,6 +17,8 @@ import vizdoom as vzd
 episodes = 1
 timelimit = 1  # minutes
 players = 8  # number of players
+win_x = 100
+win_y = 100
 
 skip = 4
 mode = vzd.Mode.PLAYER  # or Mode.ASYNC_PLAYER
@@ -65,13 +67,14 @@ def player_action(game, player_sleep_time, actions, player_skip):
 
 def player_host(p):
     game, actions = setup_player()
+
+    # Setup multiplayer deathmatch game for {p} players that will time out after {timelimit} minutes
     game.add_game_args(
-        "-host "
-        + str(p)
-        + " -netmode 0 -deathmatch +timelimit "
-        + str(timelimit)
-        + " +sv_spawnfarthest 1 +name Player0 +colorset 0"
+        f"-host {p} -netmode 0 -deathmatch +timelimit {timelimit} +sv_spawnfarthest 1"
     )
+    # Use additional arguments to set player name, color and window position
+    game.add_game_args(f"+name Player0 +colorset 0 +win_x {win_x} +win_y {win_y}")
+    # Add additional arguments
     game.add_game_args(args)
 
     game.init()
@@ -81,7 +84,7 @@ def player_host(p):
     player_skip = skip
 
     for i in range(episodes):
-        print("Episode #" + str(i + 1))
+        print(f"Episode #{i + 1}")
         episode_start_time = None
 
         while not game.is_episode_finished():
@@ -100,10 +103,8 @@ def player_host(p):
         player_count = int(game.get_game_variable(vzd.GameVariable.PLAYER_COUNT))
         for i in range(1, player_count + 1):
             print(
-                "Host: Player" + str(i) + ":",
-                game.get_game_variable(
-                    eval("vzd.GameVariable.PLAYER" + str(i) + "_FRAGCOUNT")
-                ),
+                f"Host: Player{i}:",
+                game.get_game_variable(eval(f"vzd.GameVariable.PLAYER{i}_FRAGCOUNT")),
             )
         print("Host: Episode processing time:", time() - episode_start_time)
 
@@ -115,7 +116,14 @@ def player_host(p):
 
 def player_join(p):
     game, actions = setup_player()
-    game.add_game_args("-join 127.0.0.1 +name Player" + str(p) + " +colorset " + str(p))
+
+    # Join existing game
+    game.add_game_args("-join 127.0.0.1")
+    # Use additional arguments to set player name, color and window position
+    game.add_game_args(
+        f"+name Player{p} +colorset 0 +win_x {win_x + p % 4 * game.get_screen_width()} +win_y {win_y + p // 4 * game.get_screen_height()} "
+    )
+    # Add additional arguments
     game.add_game_args(args)
 
     game.init()
@@ -129,7 +137,7 @@ def player_join(p):
         while not game.is_episode_finished():
             state = game.get_state()
             print(
-                "Player" + str(p) + ":",
+                f"Player{p}:",
                 state.number,
                 action_count,
                 game.get_episode_time(),
@@ -138,7 +146,7 @@ def player_join(p):
             action_count += 1
 
         print(
-            "Player" + str(p) + " frags:",
+            f"Player{p} frags:",
             game.get_game_variable(vzd.GameVariable.FRAGCOUNT),
         )
         game.new_episode()

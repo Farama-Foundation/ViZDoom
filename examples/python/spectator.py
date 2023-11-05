@@ -50,7 +50,7 @@ if __name__ == "__main__":
     episodes = 10
 
     for i in range(episodes):
-        print("Episode #" + str(i + 1))
+        print(f"Episode #{i + 1}")
 
         game.new_episode()
         while not game.is_episode_finished():
@@ -60,7 +60,7 @@ if __name__ == "__main__":
             last_action = game.get_last_action()
             reward = game.get_last_reward()
 
-            print("State #" + str(state.number))
+            print(f"State #{state.number}")
             print("Game variables: ", state.game_variables)
             print("Action:", last_action)
             print("Reward:", reward)

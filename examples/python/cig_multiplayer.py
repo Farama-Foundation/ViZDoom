@@ -60,11 +60,11 @@ while not game.is_episode_finished():
     frags = game.get_game_variable(vzd.GameVariable.FRAGCOUNT)
     if frags != last_frags:
         last_frags = frags
-        print("Player " + str(player_number) + " has " + str(frags) + " frags.")
+        print(f"Player {player_number} has {frags} frags.")
 
     # Check if player is dead
     if game.is_player_dead():
-        print("Player " + str(player_number) + " died.")
+        print(f"Player {player_number} died.")
         # Use this to respawn immediately after death, new state will be available.
         game.respawn_player()
 

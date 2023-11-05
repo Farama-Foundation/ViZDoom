@@ -366,6 +366,10 @@ namespace vizdoom {
         this->customArgs.clear();
     }
 
+    std::vector<std::string> DoomController::getCustomArgs() {
+        return this->customArgs;
+    }
+
     bool DoomController::isDoomRunning() { return this->doomRunning; }
 
     std::string DoomController::getMap() { return this->map; }

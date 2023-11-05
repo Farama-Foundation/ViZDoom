@@ -30,6 +30,7 @@
 #include "ViZDoomUtilities.h"
 
 #include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/join.hpp>
 #include <boost/filesystem.hpp> // for reading the shared object/dll path
 
 #include <cstddef>
@@ -37,8 +38,6 @@
 
 
 namespace vizdoom {
-
-
     DoomGame::DoomGame() {
         this->running = false;
         this->lastReward = 0;
@@ -419,18 +418,29 @@ namespace vizdoom {
         return this->availableGameVariables.size();
     }
 
+    void DoomGame::setGameArgs(std::string args) {
+        this->clearGameArgs();
+        this->addGameArgs(args);
+    }
+
     void DoomGame::addGameArgs(std::string args) {
         if (args.length() != 0) {
-            std::vector<std::string> _args;
-            b::split(_args, args, b::is_any_of("\t\n "));
-            for (unsigned int i = 0; i < _args.size(); ++i) {
-                if (_args[i].length() > 0) this->doomController->addCustomArg(_args[i]);
+            std::vector<std::string> argsVec;
+            b::split(argsVec, args, b::is_any_of("\t\n "));
+            for (auto &arg : argsVec){
+                if (arg.length() > 0) this->doomController->addCustomArg(arg);
             }
         }
     }
 
     void DoomGame::clearGameArgs() {
         this->doomController->clearCustomArgs();
+    }
+
+    std::string DoomGame::getGameArgs() {
+        auto argsVec = this->doomController->getCustomArgs();
+        std::string argsStr = boost::algorithm::join(argsVec, " ");
+        return argsStr;
     }
 
     void DoomGame::sendGameCommand(std::string cmd) {

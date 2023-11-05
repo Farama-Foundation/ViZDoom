@@ -88,9 +88,9 @@ tic counter/time and total reward state keep their values.)DOCSTRING";
 
     const char *getAvailableButtons = R"DOCSTRING(Returns the list of available `Buttons`.)DOCSTRING";
 
-    const char *setAvailableButtons = R"DOCSTRING(Set given list of `Button`s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available `Buttons`.)DOCSTRING";
+    const char *setAvailableButtons = R"DOCSTRING(Sets given list of `Button`s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available `Buttons`.)DOCSTRING";
 
-    const char *addAvailableButton = R"DOCSTRING(Add `Button` to available `Buttons` and sets the maximum allowed, absolute value for the specified button.
+    const char *addAvailableButton = R"DOCSTRING(Adds `Button` to available `Buttons` and sets the maximum allowed, absolute value for the specified button.
 If the given button has already been added, it will not be added again, but the maximum value is overridden.)DOCSTRING";
 
     const char *clearAvailableButtons = R"DOCSTRING(Clears all available `Buttons` added so far.)DOCSTRING";
@@ -108,7 +108,7 @@ The constraints limit applies in all Modes.)DOCSTRING";
 
     const char *getAvailableGameVariables = R"DOCSTRING(Returns the list of available `GameVariables`.)DOCSTRING";
 
-    const char *setAvailableGameVariables = R"DOCSTRING(Set list of `GameVariable` returned by `getState` method.)DOCSTRING";
+    const char *setAvailableGameVariables = R"DOCSTRING(Sets list of `GameVariable` returned by `getState` method.)DOCSTRING";
 
     const char *addAvailableGameVariable = R"DOCSTRING(Adds the specified `GameVariable` returned by `getState` method.)DOCSTRING";
 
@@ -118,12 +118,21 @@ The constraints limit applies in all Modes.)DOCSTRING";
 
     const char *getGameVariable = R"DOCSTRING(Returns the current value of the specified game variable (`HEALTH`, `AMMO1` etc.).
 The specified game variable does not need to be among available game variables (included in the state).
-It could be used for e.g. shaping. Returns 0 in case of not finding given `GameVariable`.)DOCSTRING";
+It could be used for e.g. shaping. Returns 0 in case of not finding given `GameVariable`.
+git lo)DOCSTRING";
 
-    const char *addGameArgs = R"DOCSTRING(Adds a custom argument that will be passed to ViZDoom process during initialization.
-Useful for changing additional game settings.)DOCSTRING";
+    const char *setGameArgs = R"DOCSTRING(Sets custom arguments that will be passed to ViZDoom process during initialization.
+It is useful for changing additional game settings. 
+Use with caution, as in rare cases it may prevent the library from working properly.
+Using this method is equivalent to first calling `clearGameArgs`.)DOCSTRING";
 
-    const char *clearGameArgs = R"DOCSTRING(Clears all arguments previously added with `addGameArgs` method.)DOCSTRING";
+    const char *addGameArgs = R"DOCSTRING(Adds custom arguments that will be passed to ViZDoom process during initialization.
+It is useful for changing additional game settings.
+Use with caution, as in rare cases it may prevent the library from working properly.)DOCSTRING";
+
+    const char *clearGameArgs = R"DOCSTRING(Clears all arguments previously added with `setGameArgs` methods.)DOCSTRING";
+
+    const char *getGameArgs = R"DOCSTRING(Returns the additional arguments for ViZDoom process set with `setGameArgs` methods.)DOCSTRING";
 
     const char *getLivingReward = R"DOCSTRING(Returns the reward granted to the player after every tic.)DOCSTRING";
 

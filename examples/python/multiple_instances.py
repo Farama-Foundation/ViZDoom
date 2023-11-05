@@ -11,22 +11,27 @@ import vizdoom as vzd
 # Run this many episodes
 episodes = 1
 config = os.path.join(vzd.scenarios_path, "multi_duel.cfg")
+win_x = 100
+win_y = 100
 
 
 def player1():
     game = vzd.DoomGame()
 
     game.load_config(config)
+
+    # Setup 2 players deathmatch game that will time out after 1 minute
     game.add_game_args("-host 2 -deathmatch +timelimit 1 +sv_spawnfarthest 1")
-    game.add_game_args("+name Player1 +colorset 0")
+
+    # Use additional arguments to set player name, color and window position
+    game.add_game_args(f"+name Player1 +colorset 0 +win_x {win_x} +win_y {win_y}")
 
     game.init()
 
     actions = [[True, False, False], [False, True, False], [False, False, True]]
 
     for i in range(episodes):
-
-        print("Episode #" + str(i + 1))
+        print(f"Episode #{i + 1}")
 
         while not game.is_episode_finished():
             if game.is_player_dead():
@@ -47,8 +52,14 @@ def player2():
     game = vzd.DoomGame()
 
     game.load_config(config)
+
+    # Join existing game
     game.add_game_args("-join 127.0.0.1")
-    game.add_game_args("+name Player2 +colorset 3")
+
+    # Use additional arguments to set player name, color and window position
+    game.add_game_args(
+        f"+name Player2 +colorset 3 +win_x {win_x + game.get_screen_width()} +win_y {win_y}"
+    )
 
     game.init()
 

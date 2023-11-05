@@ -139,7 +139,7 @@ if __name__ == "__main__":
     sleep_time = 1.0 / vzd.DEFAULT_TICRATE  # = 0.028
 
     for i in range(episodes):
-        print("Episode #" + str(i + 1))
+        print(f"Episode #{i + 1}")
 
         # Starts a new episode. It is not needed right after init() but it doesn't cost much. At least the loop is nicer.
         game.new_episode()
@@ -187,7 +187,7 @@ if __name__ == "__main__":
             # r = game.get_last_reward()
 
             # Prints state's game variables and reward.
-            print("State #" + str(n))
+            print(f"State #{n}")
             print("Game variables:", vars)
             print("Reward:", r)
             print("=====================")

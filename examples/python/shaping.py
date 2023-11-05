@@ -60,8 +60,8 @@ if __name__ == "__main__":
     sleep_time = 0.028
 
     for i in range(episodes):
+        print(f"Episode #{i + 1}")
 
-        print("Episode #" + str(i + 1))
         # Not needed for the first episode but the loop is nicer.
         game.new_episode()
 
@@ -86,7 +86,7 @@ if __name__ == "__main__":
             shaping_reward = shaping_reward - last_total_shaping_reward
             last_total_shaping_reward += shaping_reward
 
-            print("State #" + str(state.number))
+            print(f"State #{state.number}")
             print("Health: ", state.game_variables[0])
             print("Last Reward:", reward)
             print("Last Shaping Reward:", shaping_reward)

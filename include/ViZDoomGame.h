@@ -104,8 +104,10 @@ namespace vizdoom {
         /* GameArgs getters and setters */
         /*------------------------------------------------------------------------------------------------------------*/
 
+        void setGameArgs(std::string args);
         void addGameArgs(std::string args);
         void clearGameArgs();
+        std::string getGameArgs();
 
 
         /* Rewards getters and setters */

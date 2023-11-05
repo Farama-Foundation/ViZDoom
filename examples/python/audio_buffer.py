@@ -53,7 +53,7 @@ if __name__ == "__main__":
         print(
             "[ERROR] Could not launch ViZDoom. If you see an error above about BiquadFilter and gain,\n"
             "        try setting game.add_game_args('+snd_efx 0'). If that fails, see\n"
-            "        https://github.com/mwydmuch/ViZDoom/pull/486"
+            "        https://github.com/Farama-Foundation/ViZDoom/pull/486"
         )
         exit(1)
 
@@ -63,8 +63,10 @@ if __name__ == "__main__":
     episodes = 3
     audio_slices = []
     for i in range(episodes):
-        print("Episode #" + str(i + 1))
+        print(f"Episode #{i + 1}")
+
         game.new_episode()
+
         while not game.is_episode_finished():
 
             # Gets the state
@@ -87,10 +89,10 @@ if __name__ == "__main__":
         if audio_data.max() == 0:
             print(
                 "[WARNING] Audio buffers were full of silence. This is a common bug on e.g. Ubuntu 20.04\n"
-                "          See https://github.com/mwydmuch/ViZDoom/pull/486\n"
+                "          See https://github.com/Farama-Foundation/ViZDoom/pull/486\n"
                 "          Two possible fixes:\n"
                 "            1) Try setting game.add_game_args('+snd_efx 0'). This my disable some audio effects\n"
-                "            2) Try installing a newer version of OpenAL Soft library, see https://github.com/mwydmuch/ViZDoom/pull/486#issuecomment-889389185"
+                "            2) Try installing a newer version of OpenAL Soft library, see https://github.com/Farama-Foundation/ViZDoom/pull/486#issuecomment-889389185"
             )
         # Save audio file
         wavfile.write("basic_sounds.wav", 22050, np.concatenate(audio_slices, axis=0))

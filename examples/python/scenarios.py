@@ -55,7 +55,7 @@ if __name__ == "__main__":
     sleep_time = 0.028
 
     for i in range(episodes):
-        print("Episode #" + str(i + 1))
+        print(f"Episode #{i + 1}")
 
         # Not needed for the first episode but the loop is nicer.
         game.new_episode()
@@ -67,7 +67,7 @@ if __name__ == "__main__":
             # Makes a random action and save the reward.
             reward = game.make_action(choice(actions))
 
-            print("State #" + str(state.number))
+            print(f"State #{state.number}")
             print("Game Variables:", state.game_variables)
             print("Performed action:", game.get_last_action())
             print("Last Reward:", reward)

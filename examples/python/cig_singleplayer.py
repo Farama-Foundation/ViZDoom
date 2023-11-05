@@ -52,7 +52,7 @@ while True:
             # Use this to respawn immediately after death, new state will be available.
             game.respawn_player()
 
-        print("State #" + str(state.number))
+        print(f"State #{state.number}")
         print("Game variables: ", state.game_variables)
         print("Action:", last_action)
         print("Reward:", reward)
