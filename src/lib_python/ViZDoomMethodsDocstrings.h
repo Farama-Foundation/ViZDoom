@@ -124,7 +124,7 @@ git lo)DOCSTRING";
     const char *setGameArgs = R"DOCSTRING(Sets custom arguments that will be passed to ViZDoom process during initialization.
 It is useful for changing additional game settings. 
 Use with caution, as in rare cases it may prevent the library from working properly.
-Using this method is equivalent to first calling  `clearGameArgs`.)DOCSTRING";
+Using this method is equivalent to first calling `clearGameArgs`.)DOCSTRING";
 
     const char *addGameArgs = R"DOCSTRING(Adds custom arguments that will be passed to ViZDoom process during initialization.
 It is useful for changing additional game settings.

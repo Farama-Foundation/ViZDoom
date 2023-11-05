@@ -519,9 +519,9 @@ See also:
 Added in 1.3.0
 
 Sets custom arguments that will be passed to ViZDoom process during initialization.
-It is useful for changing additional game settings. 
+It is useful for changing additional game settings.
 Use with caution, as in rare cases it may prevent the library from working properly.
-Using this method is equivalent to first calling  [`clearGameArgs`](#cleargameargs) and then [`addGameArgs`](#addgameargs).
+Using this method is equivalent to first calling [`clearGameArgs`](#cleargameargs) and then [`addGameArgs`](#addgameargs).
 
 Config key: `gameArgs/game_args`
 

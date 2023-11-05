@@ -7,7 +7,7 @@ import vizdoom as vzd
 
 
 def test_game_args():
-    
+
     game = vzd.DoomGame()
     game.set_window_visible(False)
 
