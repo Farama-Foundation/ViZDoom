@@ -3,12 +3,12 @@ import shutil
 import subprocess
 import sys
 import warnings
-from distutils import sysconfig
-from distutils.command.build import build
+import sysconfig
 from multiprocessing import cpu_count
 
 from setuptools import Distribution, setup
 from setuptools.command.install import install
+from setuptools.command.build import build
 from wheel.bdist_wheel import bdist_wheel
 
 
@@ -182,7 +182,7 @@ class BuildCommand(build):
                 subprocess.check_call(["make", "-j", str(cpu_cores)])
         except subprocess.CalledProcessError:
             sys.stderr.write(
-                "\033[1m\nInstallation failed, you may be missing some dependencies. "
+                "\033[1m\nInstallation from source failed, you may be missing some dependencies. "
                 "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Installation.md "
                 "for details\n\n\033[0m"
             )
@@ -197,14 +197,15 @@ setup(
     description="ViZDoom is Doom-based AI Research Platform for Reinforcement Learning from Raw Visual Information.",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
-    url="http://vizdoom.cs.put.edu.pl/",
-    author="Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, Grzegorz Runc, Jakub Toczek, and the respective contributors",
+    url="https://vizdoom.farama.org",
+    author="Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, Farama Foundation, and the respective contributors",
     author_email="mwydmuch@cs.put.poznan.pl",
     extras_require={
         "gym": ["gym>=0.26.0", "pygame>=2.1.3"],
         "test": ["pytest", "psutil"],
     },
     install_requires=["numpy", "gymnasium>=0.28.0", "pygame>=2.1.3"],
+    python_requires=">=3.8.0,<3.13",
     packages=["vizdoom"],
     package_dir={"vizdoom": package_path},
     package_data={"vizdoom": package_data},
@@ -224,6 +225,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Operating System :: Microsoft :: Windows",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX :: Linux",
