@@ -192,8 +192,10 @@ void FTTYStartupScreen::NetInit(const char *message, int numplayers)
 	{
 		termios rawtermios;
 
-		fprintf (stderr, "Press 'Q' to abort network game synchronization.");
-        fprintf (stderr, "\nNetwork game synchronization timeout: %ds.", (unsigned int)*viz_connect_timeout);
+		// VIZDOOM_CODE
+		//fprintf (stderr, "Press 'Q' to abort network game synchronization.\n"); // When using as controlled subpcrocess, this won't work.
+		
+        fprintf (stderr, "Network game synchronization timeout: %ds.", (unsigned int)*viz_connect_timeout);
         // Set stdin to raw mode so we can get keypresses in ST_CheckNetAbort()
 		// immediately without waiting for an EOL.
 		tcgetattr (STDIN_FILENO, &OldTermIOS);
