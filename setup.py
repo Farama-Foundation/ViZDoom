@@ -2,34 +2,42 @@ import os
 import shutil
 import subprocess
 import sys
-import warnings
 import sysconfig
+import warnings
 from multiprocessing import cpu_count
 
 from setuptools import Distribution, setup
-from setuptools.command.install import install
 from setuptools.command.build import build
+from setuptools.command.install import install
 from wheel.bdist_wheel import bdist_wheel
 
 
+# Configure paths
 platform = sys.platform
 python_version = sysconfig.get_python_version()
 build_output_path = "bin"
-package_path = build_output_path + "/python" + python_version + "/pip_package"
-supported_platforms = ["Linux", "Mac OS X", "Windows"]
-package_data = [
-    "__init__.py",
-    "bots.cfg",
-    "freedoom2.wad",
-    "vizdoom.pk3",
-    "vizdoom",
-    "scenarios/*",
-    "gym_wrapper/*",
-    "gymnasium_wrapper/*",
-]
+package_root = os.path.join(build_output_path, f"python{python_version}")
+package_path = os.path.join(package_root, "vizdoom")
 
+# Configure packages and package data
+packages = ["vizdoom"]
+shutil.rmtree(package_path, ignore_errors=True)
 os.makedirs(package_path, exist_ok=True)
+package_data = ["__init__.py", "bots.cfg", "freedoom2.wad", "vizdoom.pk3"]
 
+
+# Add subpackages
+def add_subpackage(dir_path):
+    shutil.copytree(dir_path, os.path.join(package_path, dir_path))
+    packages.append(f"vizdoom.{dir_path}")
+    package_data.append(f"{dir_path}/*")
+
+
+add_subpackage("scenarios")
+add_subpackage("gym_wrapper")
+add_subpackage("gymnasium_wrapper")
+
+# Platform specific package data
 if platform.startswith("win"):
     package_data.extend(["vizdoom.exe", "*.pyd", "*.dll"])
     library_extension = "lib"
@@ -167,6 +175,7 @@ class BuildCommand(build):
         if os.path.exists("CMakeCache.txt"):
             os.remove("CMakeCache.txt")
 
+        cmake_arg_list.append(".")
         print(f"Running cmake with arguments: {cmake_arg_list}", file=sys.stderr)
 
         try:
@@ -183,8 +192,7 @@ class BuildCommand(build):
         except subprocess.CalledProcessError:
             sys.stderr.write(
                 "\033[1m\nInstallation from source failed, you may be missing some dependencies. "
-                "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Installation.md "
-                "for details\n\n\033[0m"
+                "\nPlease check https://vizdoom.farama.org/introduction/pythonQuickstart for details.\n\n\033[0m"
             )
             raise
 
@@ -206,13 +214,13 @@ setup(
     },
     install_requires=["numpy", "gymnasium>=0.28.0", "pygame>=2.1.3"],
     python_requires=">=3.8.0,<3.13",
-    packages=["vizdoom"],
-    package_dir={"vizdoom": package_path},
+    packages=packages,
+    package_dir={"": package_root},
     package_data={"vizdoom": package_data},
     include_package_data=True,
     cmdclass={"bdist_wheel": Wheel, "build": BuildCommand, "install": InstallPlatlib},
     distclass=BinaryDistribution,
-    platforms=supported_platforms,
+    platforms=["Linux", "Mac OS X", "Windows"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Education",

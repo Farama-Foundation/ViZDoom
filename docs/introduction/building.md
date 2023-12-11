@@ -172,9 +172,9 @@ Compilation output will be placed in `build/bin` and it should contain the follo
 * `bin/libvizdoom.a / vizdoom.lib` - C++ ViZDoom static library
 * `bin/libvizdoom.so / vizdoom.dll / libvizdoom.dylib` -  C++ ViZDoom dynamically linked library
 * `bin/pythonX.X/vizdoom.so / vizdoom.pyd / vizdoom.dylib ` - ViZDoom Python X.X module
-* `bin/pythonX.X/pip_package` - complete ViZDoom Python X.X package
+* `bin/pythonX.X/vizdoom` - complete ViZDoom Python X.X package
 
 
 ### Manual installation
 
-To manually install Python package copy `vizdoom_root_dir/build/bin/pythonX.X/pip_package` contents to `python_root_dir/lib/pythonX.X/site-packages/site-packages/vizdoom`.
+To manually install Python package copy `vizdoom_root_dir/build/bin/pythonX.X/vizdoom` contents to `python_root_dir/lib/pythonX.X/site-packages/site-packages/vizdoom`.

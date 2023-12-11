@@ -61,7 +61,7 @@ for %%P in (38 39 310 311) do (
 	:: Run build
 	cmake --build . --config Release
 
-	copy /Y !MPG123_DLL! .\bin\python!PYTHON_VERSION_DOT!\pip_package\
-	copy /Y !SNDFILE_DLL! .\bin\python!PYTHON_VERSION_DOT!\pip_package\
-	copy /Y !OPENAL_DLL! .\bin\python!PYTHON_VERSION_DOT!\pip_package\
+	copy /Y !MPG123_DLL! .\bin\python!PYTHON_VERSION_DOT!\vizdoom\
+	copy /Y !SNDFILE_DLL! .\bin\python!PYTHON_VERSION_DOT!\vizdoom\
+	copy /Y !OPENAL_DLL! .\bin\python!PYTHON_VERSION_DOT!\vizdoom\
 )

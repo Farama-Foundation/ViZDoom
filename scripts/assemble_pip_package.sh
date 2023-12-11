@@ -10,7 +10,7 @@ if [ $# -ne 3 ];then
 fi
 
 PACKAGE_DEST_DIRECTORY="${BIN_PATH}/python${PYTHON_VERSION}"
-PACKAGE_DEST_PATH="${PACKAGE_DEST_DIRECTORY}/pip_package"
+PACKAGE_DEST_PATH="${PACKAGE_DEST_DIRECTORY}/vizdoom"
 PACKAGE_INIT_FILE_SRC="${SRC_PATH}/src/lib_python/__init__.py"
 
 if [ "$(uname)" == "Darwin" ]; then
