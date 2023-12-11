@@ -1,5 +1,5 @@
 [build-system]
-requires = ["cmake>=3.12.0", "setuptools", "wheel"]
+requires = ["cmake>=3.12.0", "setuptools>=65", "wheel"]
 
 [tool.black]
 safe = true
@@ -14,7 +14,7 @@ multi_line_output = 3
 known_first_party = ['vizdoom']
 
 [tool.pyright]
-include = ["examples/python/**", "gym_wrapper/", "gymnasium_wrapper", "tests/**"]
+include = ["examples/python/**", "gym_wrapper", "gymnasium_wrapper", "tests/**"]
 exclude = ["**/__pycache__"]
 strict = []
 
