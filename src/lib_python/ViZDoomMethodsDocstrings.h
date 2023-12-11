@@ -27,30 +27,32 @@ If the `recordingFilePath` is not empty, the new episode will be recorded to thi
 In a multiplayer game, the host can call this method to finish the game.
 Then the rest of the players must also call this method to start a new episode.)DOCSTRING";
 
-    const char *replayEpisode = R"DOCSTRING(Replays a recorded episode from the given file using the perspective of the specified player.
-Players are numbered from 1, `player` equal to 0 results in replaying the demo using the perspective of the default player in the recording file.
+    const char *replayEpisode = R"DOCSTRING(Replays the recorded episode from the given file using the perspective of the specified player.
+Players are numbered from 1, If `player` is equal to 0, the episode will be replayed using the perspective of the default player in the recording file.
 After calling this method, the first state from the replay will be available.
-All rewards, variables, and states are available during the replaying episode.)DOCSTRING";
+All rewards, variables, and states are available when replaying the episode.
 
-    const char *isRunning = R"DOCSTRING(Checks if the ViZDoom game instance is running.)DOCSTRING";
+See also:)DOCSTRING";
+
+    const char *isRunning = R"DOCSTRING(Checks if the controlled game instance is running.)DOCSTRING";
 
     const char *isMultiplayerGame = R"DOCSTRING(Checks if the game is in multiplayer mode.)DOCSTRING";
 
     const char *isRecordingEpisode = R"DOCSTRING(Checks if the game is in recording mode.)DOCSTRING";
 
-    const char *isReplayingEpisode = R"DOCSTRING(Checks if the game is in replaying mode.)DOCSTRING";
+    const char *isReplayingEpisode = R"DOCSTRING(Checks if the game is in replay mode.)DOCSTRING";
 
     const char *setAction = R"DOCSTRING(Sets the player's action for the next tics.
-Each value corresponds to a button specified with `addAvailableButton` method
+Each value corresponds to a button previosuly specified with `addAvailableButton` methods,
 or in the configuration file (in order of appearance).)DOCSTRING";
 
-    const char *advanceAction = R"DOCSTRING(Processes a specified number of tics. If `updateState` is set,
+    const char *advanceAction = R"DOCSTRING(Processes the specified number of tics. If `updateState` is set,
 the state will be updated after the last processed tic and a new reward will be calculated.
 To get the new state, use `getState` and to get the new reward use `getLastReward`.
 If `updateState` is not set, the state will not be updated.)DOCSTRING";
 
-    const char *makeAction = R"DOCSTRING(Method combining usability of `setAction`.
-Sets the player's action for the next tics, processes a specified number of tics,
+    const char *makeAction = R"DOCSTRING(This method combines functionality of `setAction`.
+Sets the player's action for the next tics, processes the specified number of tics,
 updates the state and calculates a new reward, which is returned.)DOCSTRING";
 
     const char *isNewEpisode = R"DOCSTRING(Returns True if the current episode is in the initial state - the first state, no actions were performed yet.)DOCSTRING";
@@ -63,15 +65,23 @@ In singleplayer, the player's death is equivalent to the end of the episode.
 In multiplayer, when the player is dead `respawnPlayer` method can be called.)DOCSTRING";
 
     const char *respawnPlayer = R"DOCSTRING(This method respawns the player after death in multiplayer mode.
-After calling this method, the first state after the respawn will be available.)DOCSTRING";
+After calling this method, the first state after the respawn will be available.
+
+See also:)DOCSTRING";
 
     const char *sendGameCommand = R"DOCSTRING(Sends the command to Doom console. It can be used for controlling the game, changing settings, cheats, etc.
-Some commands will be blocked in some modes.)DOCSTRING";
+Some commands will be blocked in some modes.
+
+See also:)DOCSTRING";
 
     const char *getState = R"DOCSTRING(Returns `GameState` object with the current game state.
-If the current episode is finished, `nullptr/null/None` will be returned.)DOCSTRING";
+If the current episode is finished, `nullptr/null/None` will be returned.
 
-    const char *getServerState = R"DOCSTRING(Returns `ServerState` object with the current server state.)DOCSTRING";
+See also:)DOCSTRING";
+
+    const char *getServerState = R"DOCSTRING(Returns `ServerState` object with the current server state.
+
+See also:)DOCSTRING";
 
     const char *getLastAction = R"DOCSTRING(Returns the last action performed.
 Each value corresponds to a button added with `addAvailableButton.
@@ -86,49 +96,100 @@ A new state is available after loading.
 Loading the game state does not reset the current episode state,
 tic counter/time and total reward state keep their values.)DOCSTRING";
 
-    const char *getAvailableButtons = R"DOCSTRING(Returns the list of available `Buttons`.)DOCSTRING";
+    const char *getAvailableButtons = R"DOCSTRING(Returns the list of available `Buttons`.
 
-    const char *setAvailableButtons = R"DOCSTRING(Sets given list of `Button`s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available `Buttons`.)DOCSTRING";
+See also:)DOCSTRING";
+
+    const char *setAvailableButtons = R"DOCSTRING(Sets given list of `Button`s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available `Buttons`.
+
+Has no effect when the game is running.
+
+
+See also:)DOCSTRING";
 
     const char *addAvailableButton = R"DOCSTRING(Adds `Button` to available `Buttons` and sets the maximum allowed, absolute value for the specified button.
-If the given button has already been added, it will not be added again, but the maximum value is overridden.)DOCSTRING";
+If the given button has already been added, it will not be added again, but the maximum value is overridden.
 
-    const char *clearAvailableButtons = R"DOCSTRING(Clears all available `Buttons` added so far.)DOCSTRING";
+Has no effect when the game is running.
 
-    const char *getAvailableButtonsSize = R"DOCSTRING(Returns the number of available `Buttons`.)DOCSTRING";
+
+See also:)DOCSTRING";
+
+    const char *clearAvailableButtons = R"DOCSTRING(Clears all available `Buttons` added so far.
+
+Has no effect when the game is running.
+
+See also:)DOCSTRING";
+
+    const char *getAvailableButtonsSize = R"DOCSTRING(Returns the number of available `Buttons`.
+
+See also:)DOCSTRING";
 
     const char *setButtonMaxValue = R"DOCSTRING(Sets the maximum allowed absolute value for the specified button.
 Setting the maximum value to 0 results in no constraint at all (infinity).
 This method makes sense only for delta buttons.
-The constraints limit applies in all Modes.)DOCSTRING";
+The constraints limit applies in all Modes.
 
-    const char *getButtonMaxValue = R"DOCSTRING(Returns the maximum allowed absolute value for the specified button.)DOCSTRING";
+Has no effect when the game is running.
 
-    const char *getButton = R"DOCSTRING(Returns the current state of the specified button (`ATTACK`, `USE` etc.).)DOCSTRING";
+See also:)DOCSTRING";
 
-    const char *getAvailableGameVariables = R"DOCSTRING(Returns the list of available `GameVariables`.)DOCSTRING";
+    const char *getButtonMaxValue = R"DOCSTRING(Returns the maximum allowed absolute value for the specified button.
 
-    const char *setAvailableGameVariables = R"DOCSTRING(Sets list of `GameVariable` returned by `getState` method.)DOCSTRING";
+See also:)DOCSTRING";
 
-    const char *addAvailableGameVariable = R"DOCSTRING(Adds the specified `GameVariable` returned by `getState` method.)DOCSTRING";
+    const char *getButton = R"DOCSTRING(Returns the current state of the specified button (`ATTACK`, `USE` etc.).
 
-    const char *clearAvailableGameVariables = R"DOCSTRING(Clears the list of available `GameVariables` that are included in the `GameState` method.)DOCSTRING";
+See also:)DOCSTRING";
 
-    const char *getAvailableGameVariablesSize = R"DOCSTRING(Returns the number of available `GameVariables`.)DOCSTRING";
+    const char *getAvailableGameVariables = R"DOCSTRING(Returns the list of available `GameVariables`.
+
+See also:)DOCSTRING";
+
+    const char *setAvailableGameVariables = R"DOCSTRING(Sets list of `GameVariable` method.
+
+Has no effect when the game is running.
+
+
+See also:)DOCSTRING";
+
+    const char *addAvailableGameVariable = R"DOCSTRING(Adds the specified `GameVariable` method.
+
+Has no effect when the game is running.
+
+
+See also:)DOCSTRING";
+
+    const char *clearAvailableGameVariables = R"DOCSTRING(Clears the list of available `GameVariables` that are included in the `GameState` method.
+
+Has no effect when the game is running.
+
+See also:)DOCSTRING";
+
+    const char *getAvailableGameVariablesSize = R"DOCSTRING(Returns the number of available `GameVariables`.
+
+See also:)DOCSTRING";
 
     const char *getGameVariable = R"DOCSTRING(Returns the current value of the specified game variable (`HEALTH`, `AMMO1` etc.).
 The specified game variable does not need to be among available game variables (included in the state).
 It could be used for e.g. shaping. Returns 0 in case of not finding given `GameVariable`.
-git lo)DOCSTRING";
+
+See also:)DOCSTRING";
 
     const char *setGameArgs = R"DOCSTRING(Sets custom arguments that will be passed to ViZDoom process during initialization.
-It is useful for changing additional game settings. 
+It is useful for changing additional game settings.
 Use with caution, as in rare cases it may prevent the library from working properly.
-Using this method is equivalent to first calling `clearGameArgs`.)DOCSTRING";
+Using this method is equivalent to first calling `clearGameArgs`.
+
+
+See also:)DOCSTRING";
 
     const char *addGameArgs = R"DOCSTRING(Adds custom arguments that will be passed to ViZDoom process during initialization.
 It is useful for changing additional game settings.
-Use with caution, as in rare cases it may prevent the library from working properly.)DOCSTRING";
+Use with caution, as in rare cases it may prevent the library from working properly.
+
+
+See also:)DOCSTRING";
 
     const char *clearGameArgs = R"DOCSTRING(Clears all arguments previously added with `setGameArgs` methods.)DOCSTRING";
 
@@ -156,22 +217,36 @@ Overwriting does not involve resetting to default values. Thus only overlapping 
 The method returns True if the whole configuration file was correctly read and applied,
 False if the file contained errors.
 
-If the file relative path is given, it will be searched for in the following order: current directory, current directory + `/scenarios/`, ViZDoom's installation directory + `/scenarios/`.)DOCSTRING";
+If the file relative path is given, it will be searched for in the following order: current directory, current directory + `/scenarios/`, ViZDoom's installation directory + `/scenarios/`.
 
-    const char *getMode = R"DOCSTRING(Returns current mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`).)DOCSTRING";
+See also:)DOCSTRING";
 
-    const char *setMode = R"DOCSTRING(Sets mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`) in which the game will be running.
+    const char *getMode = R"DOCSTRING(Returns the current mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`).
 
-Default value: `PLAYER`.)DOCSTRING";
+See also:)DOCSTRING";
+
+    const char *setMode = R"DOCSTRING(Sets the mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`) in which the game will be running.
+
+Default value: `PLAYER`.
+
+Has no effect when the game is running.
+
+
+See also:)DOCSTRING";
 
     const char *getTicrate = R"DOCSTRING(Returns current ticrate.)DOCSTRING";
 
-    const char *setTicrate = R"DOCSTRING(Sets ticrate for ASNYC Modes - number of logic tics executed per second.
+    const char *setTicrate = R"DOCSTRING(Sets the ticrate for ASNYC Modes - number of logic tics executed per second.
 The default Doom ticrate is 35. This value will play a game at normal speed.
 
-Default value: 35 (default Doom ticrate).)DOCSTRING";
+Default value: 35 (default Doom ticrate).
 
-    const char *setViZDoomPath = R"DOCSTRING(Sets path to the ViZDoom engine executable vizdoom.
+Has no effect when the game is running.
+
+
+See also:)DOCSTRING";
+
+    const char *setViZDoomPath = R"DOCSTRING(Sets the path to the ViZDoom engine executable vizdoom.
 
 Default value: "{vizdoom.so location}/{vizdoom or vizdoom.exe (on Windows)}".)DOCSTRING";
 
@@ -209,28 +284,39 @@ This method is not needed for most of the tasks and is added for the convenience
 
 Default value: "", if left empty "_vizdoom.ini" will be used.)DOCSTRING";
 
-    const char *getSeed = R"DOCSTRING(Return ViZDoom's seed.)DOCSTRING";
+    const char *getSeed = R"DOCSTRING(Returns ViZDoom's seed.)DOCSTRING";
 
-    const char *setSeed = R"DOCSTRING(Sets the seed of the ViZDoom's RNG that generates seeds (initial state) for episodes.
+    const char *setSeed = R"DOCSTRING(Sets the seed of ViZDoom's RNG that generates seeds (initial state) for episodes.
 
-Default value: randomized in constructor)DOCSTRING";
+Default value: randomized in constructor
 
-    const char *getEpisodeStartTime = R"DOCSTRING(Returns start delay of every episode in tics.)DOCSTRING";
 
-    const char *setEpisodeStartTime = R"DOCSTRING(Sets start delay of every episode in tics.
+See also:)DOCSTRING";
+
+    const char *getEpisodeStartTime = R"DOCSTRING(Returns the start time (delay) of every episode in tics.)DOCSTRING";
+
+    const char *setEpisodeStartTime = R"DOCSTRING(Sets the start time (delay) of every episode in tics.
 Every episode will effectively start (from the user's perspective) after the provided number of tics.
 
 Default value: 1)DOCSTRING";
 
     const char *getEpisodeTimeout = R"DOCSTRING(Returns the number of tics after which the episode will be finished.)DOCSTRING";
 
-    const char *setEpisodeTimeout = R"DOCSTRING(Sets the number of tics after which the episode will be finished. 0 will result in no timeout.)DOCSTRING";
+    const char *setEpisodeTimeout = R"DOCSTRING(Sets the number of tics after which the episode will be finished. 0 will result in no timeout.
+
+Default value: 0)DOCSTRING";
 
     const char *setScreenResolution = R"DOCSTRING(Sets the screen resolution. ZDoom engine supports only specific resolutions.
 Supported resolutions are part of ScreenResolution enumeration (e.g., `RES_320X240`, `RES_640X480`, `RES_1920X1080`).
 The buffers, as well as the content of ViZDoom's display window, will be affected.
 
-Default value: `RES_320X240`)DOCSTRING";
+Default value: `RES_320X240`
+
+Has no effect when the game is running.
+
+
+
+See also:)DOCSTRING";
 
     const char *getScreenFormat = R"DOCSTRING(Returns the format of the screen buffer and the automap buffer.)DOCSTRING";
 
@@ -238,32 +324,55 @@ Default value: `RES_320X240`)DOCSTRING";
 Supported formats are defined in `ScreenFormat` enumeration type (e.g. `CRCGCB`, `RGB24`, `GRAY8`).
 The format change affects only the buffers, so it will not have any effect on the content of ViZDoom's display window.
 
-Default value: `CRCGCB`)DOCSTRING";
+Default value: `CRCGCB`
+
+Has no effect when the game is running.
+
+
+See also:)DOCSTRING";
 
     const char *isDepthBufferEnabled = R"DOCSTRING(Returns True if the depth buffer is enabled.)DOCSTRING";
 
     const char *setDepthBufferEnabled = R"DOCSTRING(Enables rendering of the depth buffer, it will be available in the state.
 Depth buffer will contain noise if `viz_nocheat` is enabled.
 
-Default value: False)DOCSTRING";
+Default value: False
+
+Has no effect when the game is running.
+
+
+See also:)DOCSTRING";
 
     const char *isLabelsBufferEnabled = R"DOCSTRING(Returns True if the labels buffer is enabled.)DOCSTRING";
 
     const char *setLabelsBufferEnabled = R"DOCSTRING(Enables rendering of the labels buffer, it will be available in the state with the vector of `Label`s.
 LabelsBuffer will contain noise if `viz_nocheat` is enabled.
 
-Default value: False)DOCSTRING";
+Default value: False
+
+Has no effect when the game is running.
+
+
+See also:)DOCSTRING";
 
     const char *isAutomapBufferEnabled = R"DOCSTRING(Returns True if the automap buffer is enabled.)DOCSTRING";
 
     const char *setAutomapBufferEnabled = R"DOCSTRING(Enables rendering of the automap buffer, it will be available in the state.
 
-Default value: False)DOCSTRING";
+Default value: False
+
+Has no effect when the game is running.
+
+
+See also:)DOCSTRING";
 
     const char *setAutomapMode = R"DOCSTRING(Sets the automap mode (`NORMAL`, `WHOLE`, `OBJECTS`, `OBJECTS_WITH_SIZE`),
 which determines what will be visible on it.
 
-Default value: `NORMAL`)DOCSTRING";
+Default value: `NORMAL`
+
+
+See also:)DOCSTRING";
 
     const char *setAutomapRotate = R"DOCSTRING(Determine if the automap will be rotating with the player.
 If False, north always will be at the top of the buffer.
@@ -318,12 +427,17 @@ Default value: True)DOCSTRING";
 Allows smooth preview but can reduce performance.
 It only makes sense to use it if the window is visible.
 
-Default value: False)DOCSTRING";
+Default value: False
+
+
+See also:)DOCSTRING";
 
     const char *setWindowVisible = R"DOCSTRING(Determines if ViZDoom's window will be visible.
 ViZDoom with window disabled can be used on Linux systems without X Server.
 
-Default value: False)DOCSTRING";
+Default value: False
+
+Has no effect when the game is running.)DOCSTRING";
 
     const char *setConsoleEnabled = R"DOCSTRING(Determines if ViZDoom's console output will be enabled.
 
@@ -348,34 +462,65 @@ Default value: False)DOCSTRING";
     const char *setObjectsInfoEnabled = R"DOCSTRING(Enables information about all objects present in the current episode/level.
 It will be available in the state.
 
-Default value: False)DOCSTRING";
+Default value: False
+
+Has no effect when the game is running.
+
+
+See also:)DOCSTRING";
 
     const char *isSectorsInfoEnabled = R"DOCSTRING(Returns True if the information about sectors is enabled.)DOCSTRING";
 
     const char *setSectorsInfoEnabled = R"DOCSTRING(Enables information about all sectors (map layout) present in the current episode/level.
 It will be available in the state.
 
-Default value: False)DOCSTRING";
+Default value: False
+
+Has no effect when the game is running.
+
+
+See also:)DOCSTRING";
 
     const char *isAudioBufferEnabled = R"DOCSTRING(Returns True if the audio buffer is enabled.)DOCSTRING";
 
     const char *setAudioBufferEnabled = R"DOCSTRING(Returns True if the audio buffer is enabled.
 
-Default value: False)DOCSTRING";
+Default value: False
 
-    const char *getAudioSamplingRate = R"DOCSTRING(Returns the sampling rate of the audio buffer.)DOCSTRING";
+Has no effect when the game is running.
+
+
+See also:)DOCSTRING";
+
+    const char *getAudioSamplingRate = R"DOCSTRING(Returns the sampling rate of the audio buffer.
+
+
+See also:)DOCSTRING";
 
     const char *setAudioSamplingRate = R"DOCSTRING(Sets the sampling rate of the audio buffer.
 
-Default value: False)DOCSTRING";
+Default value: False
 
-    const char *getAudioBufferSize = R"DOCSTRING(Returns the size of the audio buffer.)DOCSTRING";
+Has no effect when the game is running.
+
+
+See also:)DOCSTRING";
+
+    const char *getAudioBufferSize = R"DOCSTRING(Returns the size of the audio buffer.
+
+
+See also:)DOCSTRING";
 
     const char *setAudioBufferSize = R"DOCSTRING(Sets the size of the audio buffer. The size is defined by a number of logic tics.
 After each action audio buffer will contain audio from the specified number of the last processed tics.
 Doom uses 35 ticks per second.
 
-Default value: 4)DOCSTRING";
+Default value: 4
+
+Has no effect when the game is running.
+
+
+See also:)DOCSTRING";
 
 } // namespace DoomGamePython
 
@@ -390,11 +535,17 @@ Default value: 4)DOCSTRING";
     const char *doomFixedToDouble = R"DOCSTRING(Converts fixed point numeral to a floating point value.
 Doom's engine internally use fixed point numbers.
 If you read them directly from `USERX` variables,
-you may want to convert them to floating point numbers.)DOCSTRING";
+you may want to convert them to floating point numbers.
 
-    const char *isBinaryButton = R"DOCSTRING(Returns True if button is binary button.)DOCSTRING";
+See also:)DOCSTRING";
 
-    const char *isDeltaButton = R"DOCSTRING(Returns True if button is delta button.)DOCSTRING";
+    const char *isBinaryButton = R"DOCSTRING(Returns True if button is binary button.
+
+See also:)DOCSTRING";
+
+    const char *isDeltaButton = R"DOCSTRING(Returns True if button is delta button.
+
+See also:)DOCSTRING";
 
 
 } // namespace docstrings
