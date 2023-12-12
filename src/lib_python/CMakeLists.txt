@@ -13,6 +13,7 @@ if(WIN32)
 endif()
 
 set(VIZDOOM_PYTHON_OUTPUT_DIR ${VIZDOOM_OUTPUT_DIR}/python${BUILD_PYTHON_VERSION})
+set(VIZDOOM_PYTHON_PACKAGE_DIR ${VIZDOOM_PYTHON_OUTPUT_DIR}/vizdoom)
 set(VIZDOOM_PYTHON_SRC_DIR ${VIZDOOM_SRC_DIR}/lib_python)
 set(VIZDOOM_PYTHON_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_PYTHON_SRC_DIR})
 
@@ -69,16 +70,6 @@ set_target_properties(libvizdoom_python
     LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${VIZDOOM_PYTHON_OUTPUT_DIR}
     OUTPUT_NAME vizdoom
     PROJECT_LABEL "python${BUILD_PYTHON_VERSION} binding")
-
-# if(UNIX)
-#     add_custom_target(python_pip_package ALL
-#         COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.sh ${BUILD_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
-#         COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
-# elseif(WIN32)
-#     add_custom_target(python_pip_package ALL
-#         COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.bat ${BUILD_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
-#         COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
-# endif()
 
 add_custom_target(assemble_package ALL
     COMMAND ${CMAKE_COMMAND} -E make_directory ${VIZDOOM_PYTHON_PACKAGE_DIR}

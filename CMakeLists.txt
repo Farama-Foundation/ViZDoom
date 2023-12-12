@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 # Project + versions
 #-----------------------------------------------------------------------------------------------------------------------
 
-project(ViZDoom VERSION 1.2.2)
+project(ViZDoom VERSION 1.3.0)
 set(ViZDoom_VERSION_STR ${ViZDoom_VERSION_MAJOR}.${ViZDoom_VERSION_MINOR}.${ViZDoom_VERSION_PATCH})
 set(ViZDoom_VERSION_ID ${ViZDoom_VERSION_MAJOR}${ViZDoom_VERSION_MINOR}${ViZDoom_VERSION_PATCH})
 
@@ -68,6 +68,14 @@ endif()
 if(APPLE)
     set(CMAKE_MACOSX_RPATH ON)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
+    
+    if(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "arm64")
+        set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE INTERNAL "" FORCE)
+        message(STATUS "Apple Silicon detected, building for arm64")
+    else()
+        set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE INTERNAL "" FORCE)
+        message(STATUS "Intel CPU detected, building for x86_64")
+    endif()
 endif(APPLE)
 
 
