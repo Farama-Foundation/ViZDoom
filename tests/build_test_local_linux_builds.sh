@@ -12,9 +12,9 @@ IMAGE_PREFIX="vizdoom_local"
 # Generate and run dockerfiles
 # Array in format "<base docker image> <base dockerfile to use> <additional commands to add to the dockerfile after FROM statement>"
 DOCKERFILES_TO_BUILD_AND_RUN=(
-    #"almalinux:9 dnf-based.Dockerfile RUN dnf install -y 'dnf-command(config-manager)' && dnf config-manager --set-enabled crb"
-    #"tgagor/centos:stream9 dnf-based.Dockerfile RUN dnf install -y 'dnf-command(config-manager)' && dnf config-manager --set-enabled crb"
-    #"fedora:36 dnf-based.Dockerfile"
+    "almalinux:9 dnf-based.Dockerfile RUN dnf install -y 'dnf-command(config-manager)' && dnf config-manager --set-enabled crb"
+    "tgagor/centos:stream9 dnf-based.Dockerfile RUN dnf install -y 'dnf-command(config-manager)' && dnf config-manager --set-enabled crb"
+    "fedora:36 dnf-based.Dockerfile"
     "fedora:37 dnf-based.Dockerfile"
     "rockylinux:9 dnf-based.Dockerfile RUN dnf install -y 'dnf-command(config-manager)' && dnf config-manager --set-enabled crb"
     "debian:11 apt-based.Dockerfile ENV LANG C.UTF-8"
