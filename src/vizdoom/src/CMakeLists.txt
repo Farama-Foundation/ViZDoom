@@ -178,12 +178,10 @@ else( WIN32 )
 		add_definitions( -DNO_GTK=1 )
 	endif( NO_GTK )
 
-	# Non-Windows version also needs SDL except native OS X backend
-	if( NOT WIN32 )
-		find_package( SDL2 REQUIRED )
-		include_directories( "${SDL2_INCLUDE_DIR}" )
-		set( ZDOOM_LIBS ${ZDOOM_LIBS} "${SDL2_LIBRARY}" )
-	endif( NOT WIN32 )
+	# Non-Windows version needs SDL2
+	find_package( SDL2 REQUIRED )
+	include_directories( "${SDL2_INCLUDE_DIR}" )
+	set( ZDOOM_LIBS ${ZDOOM_LIBS} "${SDL2_LIBRARY}" )
 endif( WIN32 )
 
 

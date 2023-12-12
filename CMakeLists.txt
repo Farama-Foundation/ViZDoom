@@ -93,6 +93,7 @@ endif()
 #-----------------------------------------------------------------------------------------------------------------------
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(VIZDOOM_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(VIZDOOM_OUTPUT_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 set(VIZDOOM_SCRIPTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/scripts)
 set(VIZDOOM_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
