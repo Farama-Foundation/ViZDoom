@@ -5,8 +5,8 @@
 
 import os
 import pickle
+import random
 from itertools import product
-from random import choice
 
 import numpy as np
 import psutil
@@ -23,8 +23,11 @@ def _test_get_state(
     automapBuffer=False,
     objectsInfo=False,
     sectorsInfo=False,
+    audioBuffer=False,
 ):
     print("Testing get_state() ...")
+
+    random.seed(1993)
 
     buttons = [
         vzd.Button.MOVE_FORWARD,
@@ -48,6 +51,20 @@ def _test_get_state(
     game.set_automap_buffer_enabled(automapBuffer)
     game.set_objects_info_enabled(objectsInfo)
     game.set_sectors_info_enabled(sectorsInfo)
+    game.set_audio_buffer_enabled(audioBuffer)
+
+    buffers = ["screen_buffer"]
+    if depthBuffer:
+        buffers.append("depth_buffer")
+    if labelsBuffer:
+        buffers.append("labels_buffer")
+    if automapBuffer:
+        buffers.append("automap_buffer")
+    if audioBuffer:
+        buffers.append("audio_buffer")
+        # This fixes "BiquadFilter_setParams: Assertion `gain > 0.00001f' failed" issue
+        # or "no audio in buffer" issue caused by a bug in OpenAL version 1.19.
+        game.add_game_args("+snd_efx 0")
 
     game.init()
 
@@ -56,7 +73,7 @@ def _test_get_state(
     for i in range(num_iterations):
 
         states = []
-        screen_buffer_copies = []
+        buffers_copies = []
 
         game.new_episode()
         for _ in range(num_states):
@@ -65,16 +82,28 @@ def _test_get_state(
 
             state = game.get_state()
             states.append(state)
-            screen_buffer_copies.append(np.copy(state.screen_buffer))
-
-            game.make_action(choice(actions), 4)
+            copies = {}
+            for b in buffers:
+                copies[b] = np.copy(getattr(state, b))
+            buffers_copies.append(copies)
+            game.make_action(random.choice(actions), 4)
 
         assert len(states) == num_states
-        assert len(screen_buffer_copies) == num_states
+        assert len(buffers_copies) == num_states
 
         # Compare states with their copies - confirms that states don't mutate.
-        for s, sb_copy in zip(states, screen_buffer_copies):
-            assert np.array_equal(s.screen_buffer, sb_copy)
+        # Check min and max values of buffers - confirms that buffers are not empty.
+        min_vals = {b: np.inf for b in buffers}
+        max_vals = {b: -np.inf for b in buffers}
+        for s, bs_copy in zip(states, buffers_copies):
+            for b in buffers:
+                assert np.array_equal(getattr(s, b), bs_copy[b])
+                min_vals[b] = min(min_vals[b], np.min(bs_copy[b]))
+                max_vals[b] = max(max_vals[b], np.max(bs_copy[b]))
+
+        for b in buffers:
+            print(f"Buffer {b} min: {min_vals[b]}, max: {max_vals[b]}")
+            assert min_vals[b] != max_vals[b]
 
         # Save and load states via pickle - confirms that states and all sub-objects (labels, lines, objects) are picklable.
         with open("tmp_states.pkl", "wb") as f:
@@ -118,6 +147,7 @@ def test_get_state(num_iterations=10, num_states=20):
         automapBuffer=True,
         objectsInfo=True,
         sectorsInfo=True,
+        audioBuffer=False,  # Turned off by default, because it fails on some systems without audio backend and OpenAL installed
     )
 
 

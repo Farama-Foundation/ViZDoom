@@ -238,7 +238,7 @@ namespace vizdoom {
 
     template<class T> std::vector<T> DoomGamePython::pyArrayToVector(pyb::array_t<T> const &pyArray){
         if (pyArray.ndim() != 1)
-            throw std::runtime_error("Number of dimensions larger than 1, should be 1D ndarray");
+            throw std::runtime_error("The number of dimensions larger than 1, the array should be 1D ndarray");
 
         size_t pyLen = pyArray.shape(0);
         std::vector<T> vector = std::vector<T>(pyLen);
@@ -251,7 +251,7 @@ namespace vizdoom {
             return pyListToVector<T>(pyObject);
         else if(pyb::isinstance<pyb::array>(pyObject))
             return pyArrayToVector<T>(pyObject);
-        else throw std::runtime_error("Unsupported type, should be list or 1D ndarray of numeric or boolean values");
+        else throw std::runtime_error("Unsupported type, should be list, tuple, or 1D ndarray of numeric or boolean values");
     }
 
     template<class T> pyb::array_t<T> DoomGamePython::dataToNumpyArray(std::vector<pyb::ssize_t> dims, T *data){

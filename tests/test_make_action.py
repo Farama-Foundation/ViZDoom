@@ -8,6 +8,18 @@ import numpy as np
 import vizdoom as vzd
 
 
+def _init_game():
+    game = vzd.DoomGame()
+    game.set_window_visible(False)
+    game.set_available_buttons(
+        [vzd.Button.MOVE_LEFT, vzd.Button.MOVE_RIGHT, vzd.Button.ATTACK]
+    )
+    game.set_episode_start_time(35)
+    game.init()
+
+    return game
+
+
 def _test_exception(func, error, msg):
     try:
         func()
@@ -47,20 +59,14 @@ def __test_make_action_input(
     )
 
     # Prepare game
-    game = vzd.DoomGame()
-    game.set_window_visible(False)
-    game.set_available_buttons(
-        [vzd.Button.MOVE_LEFT, vzd.Button.MOVE_RIGHT, vzd.Button.ATTACK]
-    )
-    game.set_episode_start_time(35)
+    game = _init_game()
 
-    game.init()
     prev_pos_y = game.get_game_variable(vzd.GameVariable.POSITION_Y)
     prev_ammo = game.get_game_variable(vzd.GameVariable.AMMO2)
 
     # make_action() with correct arguments
     next_action = type_name([1, 0, 1], **type_args)
-    game.make_action(next_action, 8)
+    make_action_func(game, next_action, 8)
     assert prev_pos_y < game.get_game_variable(vzd.GameVariable.POSITION_Y)
     prev_pos_y = game.get_game_variable(vzd.GameVariable.POSITION_Y)
     assert prev_ammo > game.get_game_variable(vzd.GameVariable.AMMO2)
@@ -70,11 +76,7 @@ def __test_make_action_input(
     # make_action() without skipping frames
     make_action_func(game, next_action)
 
-    # use set_action() instead of make_action()
-    game.set_action(next_action)
-    game.advance_action()
-
-    # make_action() with negative frames and other types
+    # make_action_func() with negative frames and other types
     error_msg = "make_action() should raise TypeError when called with negative frames or type other than unsigned int"
     _test_exception(
         lambda: make_action_func(game, next_action, -10), TypeError, error_msg
@@ -147,8 +149,35 @@ def test_make_action_mixed_list():
     _test_make_action_input(mixed_typed_list, {"dtypes": [bool, int, float, bool]})
 
 
+def test_keyword_arguments():
+    game = _init_game()
+
+    game.make_action(action=[1, 1, 1], tics=10)
+    game.set_action(action=[1, 0, 1])
+    game.advance_action(update_state=False)
+    game.advance_action(tics=10, update_state=True)
+    game.advance_action(tics=1)
+
+
+def test_advance_action():
+    game = _init_game()
+
+    # advance_action() without set_action()
+    game.advance_action()
+
+    # advance_action() with update_state argument set to False
+    prev_tic = game.get_state().tic
+    tics_to_advance = 10
+    game.advance_action(tics_to_advance, update_state=False)
+    assert game.get_state().tic == prev_tic
+    game.advance_action()
+    assert game.get_state().tic == prev_tic + tics_to_advance + 1
+
+
 if __name__ == "__main__":
     test_make_action_list()
     test_make_action_numpy()
     test_make_action_tuple()
     test_make_action_mixed_list()
+    test_keyword_arguments()
+    test_advance_action()

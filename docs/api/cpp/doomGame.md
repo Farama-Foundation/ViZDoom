@@ -57,10 +57,10 @@ Then the rest of the players must also call this method to start a new episode.
 
 Added in 1.1.0
 
-Replays a recorded episode from the given file using the perspective of the specified player.
-Players are numbered from 1, `player` equal to 0 results in replaying the demo using the perspective of the default player in the recording file.
+Replays the recorded episode from the given file using the perspective of the specified player.
+Players are numbered from 1, If `player` is equal to 0, the episode will be replayed using the perspective of the default player in the recording file.
 After calling this method, the first state from the replay will be available.
-All rewards, variables, and states are available during the replaying episode.
+All rewards, variables, and states are available when replaying the episode.
 
 See also:
 - [examples/python/record_episodes.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/record_episodes.py)
@@ -74,7 +74,7 @@ See also:
 | :--    | :--                    |
 | Python | `is_running() -> bool` |
 
-Checks if the ViZDoom game instance is running.
+Checks if the controlled game instance is running.
 
 
 ---
@@ -110,7 +110,7 @@ Checks if the game is in recording mode.
 
 Added in 1.1.5
 
-Checks if the game is in replaying mode.
+Checks if the game is in replay mode.
 
 
 ---
@@ -121,7 +121,8 @@ Checks if the game is in replaying mode.
 | Python | `set_action(actions: list | tuple | ndarray [float]) -> None` |
 
 Sets the player's action for the next tics.
-Each value corresponds to a button specified with [`addAvailableButton`](#addavailablebutton) method
+Each value corresponds to a button previously specified
+with [`addAvailableButton`](#addavailablebutton), or [`setAvailableButtons`](#setavailablebuttons) methods,
 or in the configuration file (in order of appearance).
 
 
@@ -132,7 +133,7 @@ or in the configuration file (in order of appearance).
 | :--    | :--                                                                  |
 | Python | `advance_action(tics: int = 1, updateState: bool = True) -> None`    |
 
-Processes a specified number of tics. If `updateState` is set,
+Processes the specified number of tics. If `updateState` is set,
 the state will be updated after the last processed tic and a new reward will be calculated.
 To get the new state, use `getState` and to get the new reward use `getLastReward`.
 If `updateState` is not set, the state will not be updated.
@@ -145,8 +146,8 @@ If `updateState` is not set, the state will not be updated.
 | :--    | :--                                                                            |
 | Python | `make_action(actions: list | tuple | ndarray [float], tics: int = 1) -> float` |
 
-Method combining usability of [`setAction`](#setaction), [`advanceAction`](#advanceaction) and [`getLastReward`](#getlastreward).
-Sets the player's action for the next tics, processes a specified number of tics,
+This method combines functionality of [`setAction`](#setaction), [`advanceAction`](#advanceaction) and [`getLastReward`](#getlastreward).
+Sets the player's action for the next tics, processes the specified number of tics,
 updates the state and calculates a new reward, which is returned.
 
 
@@ -314,9 +315,11 @@ See also:
 
 | C++    | `void setAvailableButtons(std::vector<Button> buttons)`       |
 | :--    | :--                                                           |
-| Python | `add_available_button(buttons: list | tuple[Button]) -> None` |
+| Python | `add_available_buttons(buttons: list | tuple[Button]) -> None` |
 
 Sets given list of `Button`s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available `Buttons`.
+
+Has no effect when the game is running.
 
 Config key: `availableButtons/available_buttons` (list)
 
@@ -336,6 +339,8 @@ See also:
 Adds [`Button`](./enums.md#button) type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to available `Buttons` and sets the maximum allowed, absolute value for the specified button.
 If the given button has already been added, it will not be added again, but the maximum value is overridden.
 
+Has no effect when the game is running.
+
 Config key: `availableButtons/available_buttons` (list)
 
 See also:
@@ -353,6 +358,8 @@ See also:
 | Python | `clear_available_buttons() -> None` |
 
 Clears all available `Buttons` added so far.
+
+Has no effect when the game is running.
 
 See also:
 - [`Enums: Button`](./enums.md#button)
@@ -382,6 +389,8 @@ Sets the maximum allowed absolute value for the specified button.
 Setting the maximum value to 0 results in no constraint at all (infinity).
 This method makes sense only for delta buttons.
 The constraints limit applies in all Modes.
+
+Has no effect when the game is running.
 
 See also:
 - [`Enums: Button`](./enums.md#button)
@@ -437,7 +446,9 @@ See also:
 | :--    | :--                                                                            |
 | Python | `set_available_game_variables(variables: list | tuple[GameVariables]) -> None` |
 
-Sets list of [`GameVariable`](./enums.md#gamevariable) as available `GameVariables` in the [`GameState`](./gameState.md#gamestate) returned by `getState` method.
+Sets list of [`GameVariable`](./enums.md#gamevariable) as available `GameVariables` in the [`GameState`](./gameState.md#gamestate) returned by [`getState`](#getstate) method.
+
+Has no effect when the game is running.
 
 Config key: `availableGameVariables/available_game_variables` (list)
 
@@ -454,7 +465,9 @@ See also:
 | :--    | :--                                                           |
 | Python | `add_available_game_variable(variable: GameVariable) -> None` |
 
-Adds the specified [`GameVariable`](./enums.md#gamevariable) to the list of available game variables (e.g. `HEALTH`, `AMMO1`, `ATTACK_READY`) in the [`GameState`](./gameState.md#gamestate) returned by `getState` method.
+Adds the specified [`GameVariable`](./enums.md#gamevariable) to the list of available game variables (e.g. `HEALTH`, `AMMO1`, `ATTACK_READY`) in the [`GameState`](./gameState.md#gamestate) returned by [`getState`](#getstate) method.
+
+Has no effect when the game is running.
 
 Config key: `availableGameVariables/available_game_variables` (list)
 
@@ -472,6 +485,8 @@ See also:
 | Python | `clear_available_game_variables() -> None` |
 
 Clears the list of available `GameVariables` that are included in the [`GameState`](./gameState.md#gamestate) returned by [`getState`](#getstate) method.
+
+Has no effect when the game is running.
 
 See also:
 - [`Enums: GameVariable`](./enums.md#gamevariable)
@@ -502,7 +517,7 @@ See also:
 Returns the current value of the specified game variable (`HEALTH`, `AMMO1` etc.).
 The specified game variable does not need to be among available game variables (included in the state).
 It could be used for e.g. shaping. Returns 0 in case of not finding given `GameVariable`.
-git lo
+
 See also:
 - [`Enums: GameVariable`](./enums.md#gamevariable)
 
@@ -665,7 +680,7 @@ See also:
 | :--    | :--                  |
 | Python | `get_mode() -> Mode` |
 
-Returns current mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`).
+Returns the current mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`).
 
 See also:
 - [`Enums: Mode`](./enums.md#mode)
@@ -678,9 +693,11 @@ See also:
 | :--    | :--                            |
 | Python | `set_mode(mode: Mode) -> None` |
 
-Sets mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`) in which the game will be running.
+Sets the mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`) in which the game will be running.
 
 Default value: `PLAYER`.
+
+Has no effect when the game is running.
 
 Config key: `mode`
 
@@ -709,10 +726,12 @@ Returns current ticrate.
 
 Added in 1.1.0
 
-Sets ticrate for ASNYC Modes - number of logic tics executed per second.
+Sets the ticrate for ASNYC Modes - number of logic tics executed per second.
 The default Doom ticrate is 35. This value will play a game at normal speed.
 
 Default value: 35 (default Doom ticrate).
+
+Has no effect when the game is running.
 
 Config key: `ticrate`
 
@@ -727,7 +746,7 @@ See also:
 | :--    | :--                                         |
 | Python | `set_vizdoom_path(filePath: str) -> None`       |
 
-Sets path to the ViZDoom engine executable vizdoom.
+Sets the path to the ViZDoom engine executable vizdoom.
 
 Default value: "{vizdoom.so location}/{vizdoom or vizdoom.exe (on Windows)}".
 
@@ -825,7 +844,7 @@ Config key: `DoomConfigPath/doom_config_path`
 | :--    | :--                      |
 | Python | `getSeed() -> int`       |
 
-Return ViZDoom's seed.
+Returns ViZDoom's seed.
 
 
 ---
@@ -835,7 +854,7 @@ Return ViZDoom's seed.
 | :--    | :--                               |
 | Python | `set_seed(seed: int) -> None`     |
 
-Sets the seed of the ViZDoom's RNG that generates seeds (initial state) for episodes.
+Sets the seed of ViZDoom's RNG that generates seeds (initial state) for episodes.
 
 Default value: randomized in constructor
 
@@ -853,7 +872,7 @@ See also:
 | :--    | :--                                  |
 | Python | `get_episode_start_time() -> int`    |
 
-Returns start delay of every episode in tics.
+Returns the start time (delay) of every episode in tics.
 
 
 ---
@@ -863,7 +882,7 @@ Returns start delay of every episode in tics.
 | :--    | :--                                           |
 | Python | `set_episode_start_time(tics: int) -> None`   |
 
-Sets start delay of every episode in tics.
+Sets the start time (delay) of every episode in tics.
 Every episode will effectively start (from the user's perspective) after the provided number of tics.
 
 Default value: 1
@@ -890,6 +909,8 @@ Returns the number of tics after which the episode will be finished.
 
 Sets the number of tics after which the episode will be finished. 0 will result in no timeout.
 
+Default value: 0
+
 Config key: `episodeTimeout/episode_timeout`
 
 
@@ -907,6 +928,8 @@ Supported resolutions are part of ScreenResolution enumeration (e.g., `RES_320X2
 The buffers, as well as the content of ViZDoom's display window, will be affected.
 
 Default value: `RES_320X240`
+
+Has no effect when the game is running.
 
 Config key: `screenResolution/screen_resolution`
 
@@ -937,6 +960,8 @@ Supported formats are defined in `ScreenFormat` enumeration type (e.g. `CRCGCB`,
 The format change affects only the buffers, so it will not have any effect on the content of ViZDoom's display window.
 
 Default value: `CRCGCB`
+
+Has no effect when the game is running.
 
 Config key: `screenFormat/screen_format`
 
@@ -969,6 +994,8 @@ Enables rendering of the depth buffer, it will be available in the state.
 Depth buffer will contain noise if `viz_nocheat` is enabled.
 
 Default value: false
+
+Has no effect when the game is running.
 
 Config key: `depthBufferEnabled/depth_buffer_enabled`
 
@@ -1003,6 +1030,8 @@ LabelsBuffer will contain noise if `viz_nocheat` is enabled.
 
 Default value: false
 
+Has no effect when the game is running.
+
 Config key: `labelsBufferEnabled/labels_buffer_enabled`
 
 See also:
@@ -1036,6 +1065,8 @@ Added in 1.1.0
 Enables rendering of the automap buffer, it will be available in the state.
 
 Default value: false
+
+Has no effect when the game is running.
 
 Config key: `automapBufferEnabled/automap_buffer_enabled`
 
@@ -1280,6 +1311,8 @@ ViZDoom with window disabled can be used on Linux systems without X Server.
 
 Default value: false
 
+Has no effect when the game is running.
+
 Config key: `windowVisible/window_visible`
 
 
@@ -1387,6 +1420,8 @@ It will be available in the state.
 
 Default value: false
 
+Has no effect when the game is running.
+
 Config key: `objectsInfoEnabled/objects_info_enabled`
 
 See also:
@@ -1421,6 +1456,8 @@ It will be available in the state.
 
 Default value: false
 
+Has no effect when the game is running.
+
 Config key: `sectorsInfoEnabled/sectors_info_enabled`
 
 See also:
@@ -1453,6 +1490,8 @@ Added in 1.1.9
 Returns true if the audio buffer is enabled.
 
 Default value: false
+
+Has no effect when the game is running.
 
 Config key: `audioBufferEnabled/audio_buffer_enabled`
 
@@ -1493,6 +1532,8 @@ Sets the sampling rate of the audio buffer.
 
 Default value: false
 
+Has no effect when the game is running.
+
 Config key: `audioSamplingRate/audio_samping_rate`
 
 See also:
@@ -1532,6 +1573,8 @@ After each action audio buffer will contain audio from the specified number of t
 Doom uses 35 ticks per second.
 
 Default value: 4
+
+Has no effect when the game is running.
 
 Config key: `audioBufferSize/audio_buffer_size`
 

@@ -17,9 +17,11 @@ DOCKERFILES_TO_BUILD_AND_RUN=(
     "fedora:36 dnf-based.Dockerfile"
     "fedora:37 dnf-based.Dockerfile"
     "rockylinux:9 dnf-based.Dockerfile RUN dnf install -y 'dnf-command(config-manager)' && dnf config-manager --set-enabled crb"
-    "debian:11.6 apt-based.Dockerfile ENV LANG C.UTF-8"
+    "debian:11 apt-based.Dockerfile ENV LANG C.UTF-8"
+    "debian:latest apt-based.Dockerfile ENV LANG C.UTF-8"
     "ubuntu:20.04 apt-based.Dockerfile"
     "ubuntu:22.04 apt-based.Dockerfile"
+    "ubuntu:latest apt-based.Dockerfile"
     "ubuntu:20.04 apt+conda-based.Dockerfile"  # Ubuntu build with dependencies installed via conda
     #"continuumio/miniconda3:latest conda-based.Dockerfile"  # Does not work at the moment
 )

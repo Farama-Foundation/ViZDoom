@@ -2,34 +2,48 @@ import os
 import shutil
 import subprocess
 import sys
+import sysconfig
 import warnings
-from distutils import sysconfig
-from distutils.command.build import build
 from multiprocessing import cpu_count
 
 from setuptools import Distribution, setup
+
+
+try:  # for backwards compatibility with setuptools version < 65
+    from setuptools.command.build import build
+except ImportError:
+    from distutils.command.build import build
+
 from setuptools.command.install import install
 from wheel.bdist_wheel import bdist_wheel
 
 
+# Configure paths
 platform = sys.platform
 python_version = sysconfig.get_python_version()
 build_output_path = "bin"
-package_path = build_output_path + "/python" + python_version + "/pip_package"
-supported_platforms = ["Linux", "Mac OS X", "Windows"]
-package_data = [
-    "__init__.py",
-    "bots.cfg",
-    "freedoom2.wad",
-    "vizdoom.pk3",
-    "vizdoom",
-    "scenarios/*",
-    "gym_wrapper/*",
-    "gymnasium_wrapper/*",
-]
+package_root = os.path.join(build_output_path, f"python{python_version}")
+package_path = os.path.join(package_root, "vizdoom")
 
+# Configure packages and package data
+packages = ["vizdoom"]
+shutil.rmtree(package_path, ignore_errors=True)
 os.makedirs(package_path, exist_ok=True)
+package_data = ["__init__.py", "bots.cfg", "freedoom2.wad", "vizdoom.pk3"]
 
+
+# Add subpackages
+def add_subpackage(dir_path):
+    shutil.copytree(dir_path, os.path.join(package_path, dir_path))
+    packages.append(f"vizdoom.{dir_path}")
+    package_data.append(f"{dir_path}/*")
+
+
+add_subpackage("scenarios")
+add_subpackage("gym_wrapper")
+add_subpackage("gymnasium_wrapper")
+
+# Platform specific package data
 if platform.startswith("win"):
     package_data.extend(["vizdoom.exe", "*.pyd", "*.dll"])
     library_extension = "lib"
@@ -167,6 +181,7 @@ class BuildCommand(build):
         if os.path.exists("CMakeCache.txt"):
             os.remove("CMakeCache.txt")
 
+        cmake_arg_list.append(".")
         print(f"Running cmake with arguments: {cmake_arg_list}", file=sys.stderr)
 
         try:
@@ -182,9 +197,8 @@ class BuildCommand(build):
                 subprocess.check_call(["make", "-j", str(cpu_cores)])
         except subprocess.CalledProcessError:
             sys.stderr.write(
-                "\033[1m\nInstallation failed, you may be missing some dependencies. "
-                "\nPlease check https://github.com/mwydmuch/ViZDoom/blob/master/doc/Installation.md "
-                "for details\n\n\033[0m"
+                "\033[1m\nInstallation from source failed, you may be missing some dependencies. "
+                "\nPlease check https://vizdoom.farama.org/introduction/pythonQuickstart for details.\n\n\033[0m"
             )
             raise
 
@@ -197,21 +211,22 @@ setup(
     description="ViZDoom is Doom-based AI Research Platform for Reinforcement Learning from Raw Visual Information.",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
-    url="http://vizdoom.cs.put.edu.pl/",
-    author="Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, Grzegorz Runc, Jakub Toczek, and the respective contributors",
+    url="https://vizdoom.farama.org",
+    author="Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, Farama Foundation, and the respective contributors",
     author_email="mwydmuch@cs.put.poznan.pl",
     extras_require={
         "gym": ["gym>=0.26.0", "pygame>=2.1.3"],
         "test": ["pytest", "psutil"],
     },
     install_requires=["numpy", "gymnasium>=0.28.0", "pygame>=2.1.3"],
-    packages=["vizdoom"],
-    package_dir={"vizdoom": package_path},
+    python_requires=">=3.8.0,<3.13",
+    packages=packages,
+    package_dir={"": package_root},
     package_data={"vizdoom": package_data},
     include_package_data=True,
     cmdclass={"bdist_wheel": Wheel, "build": BuildCommand, "install": InstallPlatlib},
     distclass=BinaryDistribution,
-    platforms=supported_platforms,
+    platforms=["Linux", "Mac OS X", "Windows"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Education",
@@ -224,6 +239,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Operating System :: Microsoft :: Windows",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX :: Linux",

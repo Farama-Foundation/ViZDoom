@@ -73,11 +73,11 @@ set_target_properties(libvizdoom_python
 if(UNIX)
     add_custom_target(python_pip_package ALL
         COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.sh ${BUILD_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
-        COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
+        COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/vizdoom")
 elseif(WIN32)
     add_custom_target(python_pip_package ALL
         COMMAND ${VIZDOOM_SCRIPTS_DIR}/assemble_pip_package.bat ${BUILD_PYTHON_VERSION} ${VIZDOOM_OUTPUT_DIR} ${CMAKE_SOURCE_DIR}
-        COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/pip_package")
+        COMMENT "Assembling pip package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/vizdoom")
 endif()
 
 set_target_properties(python_pip_package

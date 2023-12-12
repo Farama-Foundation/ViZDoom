@@ -43,7 +43,8 @@ if __name__ == "__main__":
     frameskip = 4
     game.set_audio_buffer_size(frameskip)
 
-    # This could fix "no audio in buffer" bug on Ubuntu 20.04.
+    # This could fix "BiquadFilter_setParams: Assertion `gain > 0.00001f' failed" issue
+    # or "no audio in buffer" issue caused by a bug in OpenAL version 1.19.
     # game.add_game_args("+snd_efx 0")
 
     # Initialize the game. Further configuration won't take any effect from now on.
@@ -92,7 +93,7 @@ if __name__ == "__main__":
                 "          See https://github.com/Farama-Foundation/ViZDoom/pull/486\n"
                 "          Two possible fixes:\n"
                 "            1) Try setting game.add_game_args('+snd_efx 0'). This my disable some audio effects\n"
-                "            2) Try installing a newer version of OpenAL Soft library, see https://github.com/Farama-Foundation/ViZDoom/pull/486#issuecomment-889389185"
+                "            2) Try installing OpenAL or a newer version of OpenAL Soft library, see https://github.com/Farama-Foundation/ViZDoom/pull/486#issuecomment-889389185"
             )
         # Save audio file
         wavfile.write("basic_sounds.wav", 22050, np.concatenate(audio_slices, axis=0))
