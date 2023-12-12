@@ -400,10 +400,10 @@ Then the rest of the players must also call this method to start a new episode.<
 </table>
 </div>
 <p>Added in 1.1.0</p>
-<p>Replays a recorded episode from the given file using the perspective of the specified player.
-Players are numbered from 1, <code class="docutils literal notranslate"><span class="pre">player</span></code> equal to 0 results in replaying the demo using the perspective of the default player in the recording file.
+<p>Replays the recorded episode from the given file using the perspective of the specified player.
+Players are numbered from 1, If <code class="docutils literal notranslate"><span class="pre">player</span></code> is equal to 0, the episode will be replayed using the perspective of the default player in the recording file.
 After calling this method, the first state from the replay will be available.
-All rewards, variables, and states are available during the replaying episode.</p>
+All rewards, variables, and states are available when replaying the episode.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/record_episodes.py">examples/python/record_episodes.py</a></p></li>
@@ -427,7 +427,7 @@ All rewards, variables, and states are available during the replaying episode.</
 </tbody>
 </table>
 </div>
-<p>Checks if the ViZDoom game instance is running.</p>
+<p>Checks if the controlled game instance is running.</p>
 </section>
 <hr class="docutils" />
 <section id="ismultiplayergame">
@@ -487,7 +487,7 @@ All rewards, variables, and states are available during the replaying episode.</
 </table>
 </div>
 <p>Added in 1.1.5</p>
-<p>Checks if the game is in replaying mode.</p>
+<p>Checks if the game is in replay mode.</p>
 </section>
 <hr class="docutils" />
 <section id="setaction">
@@ -507,7 +507,8 @@ All rewards, variables, and states are available during the replaying episode.</
 </table>
 </div>
 <p>Sets the player’s action for the next tics.
-Each value corresponds to a button specified with <a class="reference internal" href="#addavailablebutton"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">addAvailableButton</span></code></span></a> method
+Each value corresponds to a button previously specified
+with <a class="reference internal" href="#addavailablebutton"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">addAvailableButton</span></code></span></a>, or <a class="reference internal" href="#setavailablebuttons"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAvailableButtons</span></code></span></a> methods,
 or in the configuration file (in order of appearance).</p>
 </section>
 <hr class="docutils" />
@@ -527,7 +528,7 @@ or in the configuration file (in order of appearance).</p>
 </tbody>
 </table>
 </div>
-<p>Processes a specified number of tics. If <code class="docutils literal notranslate"><span class="pre">updateState</span></code> is set,
+<p>Processes the specified number of tics. If <code class="docutils literal notranslate"><span class="pre">updateState</span></code> is set,
 the state will be updated after the last processed tic and a new reward will be calculated.
 To get the new state, use <code class="docutils literal notranslate"><span class="pre">getState</span></code> and to get the new reward use <code class="docutils literal notranslate"><span class="pre">getLastReward</span></code>.
 If <code class="docutils literal notranslate"><span class="pre">updateState</span></code> is not set, the state will not be updated.</p>
@@ -549,8 +550,8 @@ If <code class="docutils literal notranslate"><span class="pre">updateState</spa
 </tbody>
 </table>
 </div>
-<p>Method combining usability of <a class="reference internal" href="#setaction"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAction</span></code></span></a>, <a class="reference internal" href="#advanceaction"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">advanceAction</span></code></span></a> and <a class="reference internal" href="#getlastreward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getLastReward</span></code></span></a>.
-Sets the player’s action for the next tics, processes a specified number of tics,
+<p>This method combines functionality of <a class="reference internal" href="#setaction"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAction</span></code></span></a>, <a class="reference internal" href="#advanceaction"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">advanceAction</span></code></span></a> and <a class="reference internal" href="#getlastreward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getLastReward</span></code></span></a>.
+Sets the player’s action for the next tics, processes the specified number of tics,
 updates the state and calculates a new reward, which is returned.</p>
 </section>
 <hr class="docutils" />
@@ -834,12 +835,13 @@ tic counter/time and total reward state keep their values.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td class="text-left"><p>Python</p></td>
-<td class="text-left"><p>`add_available_button(buttons: list</p></td>
+<td class="text-left"><p>`add_available_buttons(buttons: list</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <p>Sets given list of <code class="docutils literal notranslate"><span class="pre">Button</span></code>s (e.g. <code class="docutils literal notranslate"><span class="pre">TURN_LEFT</span></code>, <code class="docutils literal notranslate"><span class="pre">MOVE_FORWARD</span></code>) as available <code class="docutils literal notranslate"><span class="pre">Buttons</span></code>.</p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">availableButtons/available_buttons</span></code> (list)</p>
 <p>See also:</p>
 <ul class="simple">
@@ -867,6 +869,7 @@ tic counter/time and total reward state keep their values.</p>
 </div>
 <p>Adds <a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Button</span></code></span></a> type (e.g. <code class="docutils literal notranslate"><span class="pre">TURN_LEFT</span></code>, <code class="docutils literal notranslate"><span class="pre">MOVE_FORWARD</span></code>) to available <code class="docutils literal notranslate"><span class="pre">Buttons</span></code> and sets the maximum allowed, absolute value for the specified button.
 If the given button has already been added, it will not be added again, but the maximum value is overridden.</p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">availableButtons/available_buttons</span></code> (list)</p>
 <p>See also:</p>
 <ul class="simple">
@@ -894,6 +897,7 @@ If the given button has already been added, it will not be added again, but the 
 </table>
 </div>
 <p>Clears all available <code class="docutils literal notranslate"><span class="pre">Buttons</span></code> added so far.</p>
+<p>Has no effect when the game is running.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Button</span></code></span></a></p></li>
@@ -943,6 +947,7 @@ If the given button has already been added, it will not be added again, but the 
 Setting the maximum value to 0 results in no constraint at all (infinity).
 This method makes sense only for delta buttons.
 The constraints limit applies in all Modes.</p>
+<p>Has no effect when the game is running.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Button</span></code></span></a></p></li>
@@ -1038,7 +1043,8 @@ The constraints limit applies in all Modes.</p>
 </tbody>
 </table>
 </div>
-<p>Sets list of <a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code></span></a> as available <code class="docutils literal notranslate"><span class="pre">GameVariables</span></code> in the <a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <code class="docutils literal notranslate"><span class="pre">getState</span></code> method.</p>
+<p>Sets list of <a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code></span></a> as available <code class="docutils literal notranslate"><span class="pre">GameVariables</span></code> in the <a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <a class="reference internal" href="#getstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getState</span></code></span></a> method.</p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">availableGameVariables/available_game_variables</span></code> (list)</p>
 <p>See also:</p>
 <ul class="simple">
@@ -1064,7 +1070,8 @@ The constraints limit applies in all Modes.</p>
 </tbody>
 </table>
 </div>
-<p>Adds the specified <a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code></span></a> to the list of available game variables (e.g. <code class="docutils literal notranslate"><span class="pre">HEALTH</span></code>, <code class="docutils literal notranslate"><span class="pre">AMMO1</span></code>, <code class="docutils literal notranslate"><span class="pre">ATTACK_READY</span></code>) in the <a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <code class="docutils literal notranslate"><span class="pre">getState</span></code> method.</p>
+<p>Adds the specified <a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code></span></a> to the list of available game variables (e.g. <code class="docutils literal notranslate"><span class="pre">HEALTH</span></code>, <code class="docutils literal notranslate"><span class="pre">AMMO1</span></code>, <code class="docutils literal notranslate"><span class="pre">ATTACK_READY</span></code>) in the <a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <a class="reference internal" href="#getstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getState</span></code></span></a> method.</p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">availableGameVariables/available_game_variables</span></code> (list)</p>
 <p>See also:</p>
 <ul class="simple">
@@ -1091,6 +1098,7 @@ The constraints limit applies in all Modes.</p>
 </table>
 </div>
 <p>Clears the list of available <code class="docutils literal notranslate"><span class="pre">GameVariables</span></code> that are included in the <a class="reference internal" href="../gameState/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <a class="reference internal" href="#getstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getState</span></code></span></a> method.</p>
+<p>Has no effect when the game is running.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">GameVariable</span></code></span></a></p></li>
@@ -1140,9 +1148,8 @@ The constraints limit applies in all Modes.</p>
 </div>
 <p>Returns the current value of the specified game variable (<code class="docutils literal notranslate"><span class="pre">HEALTH</span></code>, <code class="docutils literal notranslate"><span class="pre">AMMO1</span></code> etc.).
 The specified game variable does not need to be among available game variables (included in the state).
-It could be used for e.g. shaping. Returns 0 in case of not finding given <code class="docutils literal notranslate"><span class="pre">GameVariable</span></code>.
-git lo
-See also:</p>
+It could be used for e.g. shaping. Returns 0 in case of not finding given <code class="docutils literal notranslate"><span class="pre">GameVariable</span></code>.</p>
+<p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">GameVariable</span></code></span></a></p></li>
 </ul>
@@ -1409,7 +1416,7 @@ false if the file contained errors.</p>
 </tbody>
 </table>
 </div>
-<p>Returns current mode (<code class="docutils literal notranslate"><span class="pre">PLAYER</span></code>, <code class="docutils literal notranslate"><span class="pre">SPECTATOR</span></code>, <code class="docutils literal notranslate"><span class="pre">ASYNC_PLAYER</span></code>, <code class="docutils literal notranslate"><span class="pre">ASYNC_SPECTATOR</span></code>).</p>
+<p>Returns the current mode (<code class="docutils literal notranslate"><span class="pre">PLAYER</span></code>, <code class="docutils literal notranslate"><span class="pre">SPECTATOR</span></code>, <code class="docutils literal notranslate"><span class="pre">ASYNC_PLAYER</span></code>, <code class="docutils literal notranslate"><span class="pre">ASYNC_SPECTATOR</span></code>).</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../enums/#mode"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Mode</span></code></span></a></p></li>
@@ -1432,8 +1439,9 @@ false if the file contained errors.</p>
 </tbody>
 </table>
 </div>
-<p>Sets mode (<code class="docutils literal notranslate"><span class="pre">PLAYER</span></code>, <code class="docutils literal notranslate"><span class="pre">SPECTATOR</span></code>, <code class="docutils literal notranslate"><span class="pre">ASYNC_PLAYER</span></code>, <code class="docutils literal notranslate"><span class="pre">ASYNC_SPECTATOR</span></code>) in which the game will be running.</p>
+<p>Sets the mode (<code class="docutils literal notranslate"><span class="pre">PLAYER</span></code>, <code class="docutils literal notranslate"><span class="pre">SPECTATOR</span></code>, <code class="docutils literal notranslate"><span class="pre">ASYNC_PLAYER</span></code>, <code class="docutils literal notranslate"><span class="pre">ASYNC_SPECTATOR</span></code>) in which the game will be running.</p>
 <p>Default value: <code class="docutils literal notranslate"><span class="pre">PLAYER</span></code>.</p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">mode</span></code></p>
 <p>See also:</p>
 <ul class="simple">
@@ -1478,9 +1486,10 @@ false if the file contained errors.</p>
 </table>
 </div>
 <p>Added in 1.1.0</p>
-<p>Sets ticrate for ASNYC Modes - number of logic tics executed per second.
+<p>Sets the ticrate for ASNYC Modes - number of logic tics executed per second.
 The default Doom ticrate is 35. This value will play a game at normal speed.</p>
 <p>Default value: 35 (default Doom ticrate).</p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">ticrate</span></code></p>
 <p>See also:</p>
 <ul class="simple">
@@ -1504,7 +1513,7 @@ The default Doom ticrate is 35. This value will play a game at normal speed.</p>
 </tbody>
 </table>
 </div>
-<p>Sets path to the ViZDoom engine executable vizdoom.</p>
+<p>Sets the path to the ViZDoom engine executable vizdoom.</p>
 <p>Default value: “{vizdoom.so location}/{vizdoom or vizdoom.exe (on Windows)}”.</p>
 <p>Config key: `ViZDoomPath/vizdoom_path</p>
 </section>
@@ -1645,7 +1654,7 @@ This method is not needed for most of the tasks and is added for the convenience
 </tbody>
 </table>
 </div>
-<p>Return ViZDoom’s seed.</p>
+<p>Returns ViZDoom’s seed.</p>
 </section>
 <hr class="docutils" />
 <section id="setseed">
@@ -1664,7 +1673,7 @@ This method is not needed for most of the tasks and is added for the convenience
 </tbody>
 </table>
 </div>
-<p>Sets the seed of the ViZDoom’s RNG that generates seeds (initial state) for episodes.</p>
+<p>Sets the seed of ViZDoom’s RNG that generates seeds (initial state) for episodes.</p>
 <p>Default value: randomized in constructor</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">seed</span></code></p>
 <p>See also:</p>
@@ -1689,7 +1698,7 @@ This method is not needed for most of the tasks and is added for the convenience
 </tbody>
 </table>
 </div>
-<p>Returns start delay of every episode in tics.</p>
+<p>Returns the start time (delay) of every episode in tics.</p>
 </section>
 <hr class="docutils" />
 <section id="setepisodestarttime">
@@ -1708,7 +1717,7 @@ This method is not needed for most of the tasks and is added for the convenience
 </tbody>
 </table>
 </div>
-<p>Sets start delay of every episode in tics.
+<p>Sets the start time (delay) of every episode in tics.
 Every episode will effectively start (from the user’s perspective) after the provided number of tics.</p>
 <p>Default value: 1</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">episodeStartTime/episode_start_time</span></code></p>
@@ -1750,6 +1759,7 @@ Every episode will effectively start (from the user’s perspective) after the p
 </table>
 </div>
 <p>Sets the number of tics after which the episode will be finished. 0 will result in no timeout.</p>
+<p>Default value: 0</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">episodeTimeout/episode_timeout</span></code></p>
 </section>
 </section>
@@ -1775,6 +1785,7 @@ Every episode will effectively start (from the user’s perspective) after the p
 Supported resolutions are part of ScreenResolution enumeration (e.g., <code class="docutils literal notranslate"><span class="pre">RES_320X240</span></code>, <code class="docutils literal notranslate"><span class="pre">RES_640X480</span></code>, <code class="docutils literal notranslate"><span class="pre">RES_1920X1080</span></code>).
 The buffers, as well as the content of ViZDoom’s display window, will be affected.</p>
 <p>Default value: <code class="docutils literal notranslate"><span class="pre">RES_320X240</span></code></p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">screenResolution/screen_resolution</span></code></p>
 <p>See also:</p>
 <ul class="simple">
@@ -1821,6 +1832,7 @@ The buffers, as well as the content of ViZDoom’s display window, will be affec
 Supported formats are defined in <code class="docutils literal notranslate"><span class="pre">ScreenFormat</span></code> enumeration type (e.g. <code class="docutils literal notranslate"><span class="pre">CRCGCB</span></code>, <code class="docutils literal notranslate"><span class="pre">RGB24</span></code>, <code class="docutils literal notranslate"><span class="pre">GRAY8</span></code>).
 The format change affects only the buffers, so it will not have any effect on the content of ViZDoom’s display window.</p>
 <p>Default value: <code class="docutils literal notranslate"><span class="pre">CRCGCB</span></code></p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">screenFormat/screen_format</span></code></p>
 <p>See also:</p>
 <ul class="simple">
@@ -1868,6 +1880,7 @@ The format change affects only the buffers, so it will not have any effect on th
 <p>Enables rendering of the depth buffer, it will be available in the state.
 Depth buffer will contain noise if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled.</p>
 <p>Default value: false</p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">depthBufferEnabled/depth_buffer_enabled</span></code></p>
 <p>See also:</p>
 <ul class="simple">
@@ -1916,6 +1929,7 @@ Depth buffer will contain noise if <code class="docutils literal notranslate"><s
 <p>Enables rendering of the labels buffer, it will be available in the state with the vector of <code class="docutils literal notranslate"><span class="pre">Label</span></code>s.
 LabelsBuffer will contain noise if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled.</p>
 <p>Default value: false</p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">labelsBufferEnabled/labels_buffer_enabled</span></code></p>
 <p>See also:</p>
 <ul class="simple">
@@ -1965,6 +1979,7 @@ LabelsBuffer will contain noise if <code class="docutils literal notranslate"><s
 <p>Added in 1.1.0</p>
 <p>Enables rendering of the automap buffer, it will be available in the state.</p>
 <p>Default value: false</p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">automapBufferEnabled/automap_buffer_enabled</span></code></p>
 <p>See also:</p>
 <ul class="simple">
@@ -2307,6 +2322,7 @@ It only makes sense to use it if the window is visible.</p>
 <p>Determines if ViZDoom’s window will be visible.
 ViZDoom with window disabled can be used on Linux systems without X Server.</p>
 <p>Default value: false</p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">windowVisible/window_visible</span></code></p>
 </section>
 <hr class="docutils" />
@@ -2487,6 +2503,7 @@ ViZDoom with window disabled can be used on Linux systems without X Server.</p>
 <p>Enables information about all objects present in the current episode/level.
 It will be available in the state.</p>
 <p>Default value: false</p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">objectsInfoEnabled/objects_info_enabled</span></code></p>
 <p>See also:</p>
 <ul class="simple">
@@ -2536,6 +2553,7 @@ It will be available in the state.</p>
 <p>Enables information about all sectors (map layout) present in the current episode/level.
 It will be available in the state.</p>
 <p>Default value: false</p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">sectorsInfoEnabled/sectors_info_enabled</span></code></p>
 <p>See also:</p>
 <ul class="simple">
@@ -2584,6 +2602,7 @@ It will be available in the state.</p>
 <p>Added in 1.1.9</p>
 <p>Returns true if the audio buffer is enabled.</p>
 <p>Default value: false</p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">audioBufferEnabled/audio_buffer_enabled</span></code></p>
 <p>See also:</p>
 <ul class="simple">
@@ -2638,6 +2657,7 @@ It will be available in the state.</p>
 <p>Added in 1.1.9</p>
 <p>Sets the sampling rate of the audio buffer.</p>
 <p>Default value: false</p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">audioSamplingRate/audio_samping_rate</span></code></p>
 <p>See also:</p>
 <ul class="simple">
@@ -2693,6 +2713,7 @@ It will be available in the state.</p>
 After each action audio buffer will contain audio from the specified number of the last processed tics.
 Doom uses 35 ticks per second.</p>
 <p>Default value: 4</p>
+<p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">audioBufferSize/audio_buffer_size</span></code></p>
 <p>See also:</p>
 <ul class="simple">

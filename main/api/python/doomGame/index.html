@@ -350,16 +350,17 @@ Then the rest of the players must also call this method to start a new episode.<
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.replay_episode">
 <span class="sig-name descname"><span class="pre">replay_episode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.replay_episode" title="Link to this definition">#</a></dt>
-<dd><p>Replays a recorded episode from the given file using the perspective of the specified player.
-Players are numbered from 1, <cite>player</cite> equal to 0 results in replaying the demo using the perspective of the default player in the recording file.
+<dd><p>Replays the recorded episode from the given file using the perspective of the specified player.
+Players are numbered from 1, If <cite>player</cite> is equal to 0, the episode will be replayed using the perspective of the default player in the recording file.
 After calling this method, the first state from the replay will be available.
-All rewards, variables, and states are available during the replaying episode.</p>
+All rewards, variables, and states are available when replaying the episode.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.is_running">
 <span class="sig-name descname"><span class="pre">is_running</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.is_running" title="Link to this definition">#</a></dt>
-<dd><p>Checks if the ViZDoom game instance is running.</p>
+<dd><p>Checks if the controlled game instance is running.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -377,21 +378,22 @@ All rewards, variables, and states are available during the replaying episode.</
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.is_replaying_episode">
 <span class="sig-name descname"><span class="pre">is_replaying_episode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.is_replaying_episode" title="Link to this definition">#</a></dt>
-<dd><p>Checks if the game is in replaying mode.</p>
+<dd><p>Checks if the game is in replay mode.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_action">
 <span class="sig-name descname"><span class="pre">set_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_action" title="Link to this definition">#</a></dt>
 <dd><p>Sets the player’s action for the next tics.
-Each value corresponds to a button specified with <cite>addAvailableButton</cite> method
+Each value corresponds to a button previously specified
+with <cite>addAvailableButton</cite> methods,
 or in the configuration file (in order of appearance).</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.advance_action">
 <span class="sig-name descname"><span class="pre">advance_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.advance_action" title="Link to this definition">#</a></dt>
-<dd><p>Processes a specified number of tics. If <cite>updateState</cite> is set,
+<dd><p>Processes the specified number of tics. If <cite>updateState</cite> is set,
 the state will be updated after the last processed tic and a new reward will be calculated.
 To get the new state, use <cite>getState</cite> and to get the new reward use <cite>getLastReward</cite>.
 If <cite>updateState</cite> is not set, the state will not be updated.</p>
@@ -400,8 +402,8 @@ If <cite>updateState</cite> is not set, the state will not be updated.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.make_action">
 <span class="sig-name descname"><span class="pre">make_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.make_action" title="Link to this definition">#</a></dt>
-<dd><p>Method combining usability of <cite>setAction</cite>.
-Sets the player’s action for the next tics, processes a specified number of tics,
+<dd><p>This method combines functionality of <cite>setAction</cite>.
+Sets the player’s action for the next tics, processes the specified number of tics,
 updates the state and calculates a new reward, which is returned.</p>
 </dd></dl>
 
@@ -431,6 +433,7 @@ In multiplayer, when the player is dead <cite>respawnPlayer</cite> method can be
 <span class="sig-name descname"><span class="pre">respawn_player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.respawn_player" title="Link to this definition">#</a></dt>
 <dd><p>This method respawns the player after death in multiplayer mode.
 After calling this method, the first state after the respawn will be available.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -438,6 +441,7 @@ After calling this method, the first state after the respawn will be available.<
 <span class="sig-name descname"><span class="pre">send_game_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.send_game_command" title="Link to this definition">#</a></dt>
 <dd><p>Sends the command to Doom console. It can be used for controlling the game, changing settings, cheats, etc.
 Some commands will be blocked in some modes.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -445,12 +449,14 @@ Some commands will be blocked in some modes.</p>
 <span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../gameState/#vizdoom.GameState" title="vizdoom.GameState"><span class="pre">vizdoom.GameState</span></a></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_state" title="Link to this definition">#</a></dt>
 <dd><p>Returns <cite>GameState</cite> object with the current game state.
 If the current episode is finished, <cite>nullptr/null/None</cite> will be returned.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.get_server_state">
 <span class="sig-name descname"><span class="pre">get_server_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../gameState/#vizdoom.ServerState" title="vizdoom.ServerState"><span class="pre">vizdoom.ServerState</span></a></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_server_state" title="Link to this definition">#</a></dt>
 <dd><p>Returns <cite>ServerState</cite> object with the current server state.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -489,12 +495,15 @@ tic counter/time and total reward state keep their values.</p>
 <dt class="sig sig-object py" id="vizdoom.DoomGame.get_available_buttons">
 <span class="sig-name descname"><span class="pre">get_available_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_available_buttons" title="Link to this definition">#</a></dt>
 <dd><p>Returns the list of available <cite>Buttons</cite>.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_available_buttons">
 <span class="sig-name descname"><span class="pre">set_available_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">buttons</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_available_buttons" title="Link to this definition">#</a></dt>
 <dd><p>Sets given list of <cite>Button`s (e.g. `TURN_LEFT</cite>, <cite>MOVE_FORWARD</cite>) as available <cite>Buttons</cite>.</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -502,18 +511,23 @@ tic counter/time and total reward state keep their values.</p>
 <span class="sig-name descname"><span class="pre">add_available_button</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../enums/#vizdoom.Button" title="vizdoom.Button"><span class="pre">vizdoom.Button</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.add_available_button" title="Link to this definition">#</a></dt>
 <dd><p>Adds <cite>Button</cite> to available <cite>Buttons</cite> and sets the maximum allowed, absolute value for the specified button.
 If the given button has already been added, it will not be added again, but the maximum value is overridden.</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.clear_available_buttons">
 <span class="sig-name descname"><span class="pre">clear_available_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.clear_available_buttons" title="Link to this definition">#</a></dt>
 <dd><p>Clears all available <cite>Buttons</cite> added so far.</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.get_available_buttons_size">
 <span class="sig-name descname"><span class="pre">get_available_buttons_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_available_buttons_size" title="Link to this definition">#</a></dt>
 <dd><p>Returns the number of available <cite>Buttons</cite>.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -523,18 +537,22 @@ If the given button has already been added, it will not be added again, but the 
 Setting the maximum value to 0 results in no constraint at all (infinity).
 This method makes sense only for delta buttons.
 The constraints limit applies in all Modes.</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.get_button_max_value">
 <span class="sig-name descname"><span class="pre">get_button_max_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../enums/#vizdoom.Button" title="vizdoom.Button"><span class="pre">vizdoom.Button</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_button_max_value" title="Link to this definition">#</a></dt>
 <dd><p>Returns the maximum allowed absolute value for the specified button.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.get_button">
 <span class="sig-name descname"><span class="pre">get_button</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../enums/#vizdoom.Button" title="vizdoom.Button"><span class="pre">vizdoom.Button</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_button" title="Link to this definition">#</a></dt>
 <dd><p>Returns the current state of the specified button (<cite>ATTACK</cite>, <cite>USE</cite> etc.).</p>
+<p>See also:</p>
 </dd></dl>
 
 </section>
@@ -544,30 +562,38 @@ The constraints limit applies in all Modes.</p>
 <dt class="sig sig-object py" id="vizdoom.DoomGame.get_available_game_variables">
 <span class="sig-name descname"><span class="pre">get_available_game_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_available_game_variables" title="Link to this definition">#</a></dt>
 <dd><p>Returns the list of available <cite>GameVariables</cite>.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_available_game_variables">
 <span class="sig-name descname"><span class="pre">set_available_game_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_available_game_variables" title="Link to this definition">#</a></dt>
-<dd><p>Sets list of <cite>GameVariable</cite> returned by <cite>getState</cite> method.</p>
+<dd><p>Sets list of <cite>GameVariable</cite> method.</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.add_available_game_variable">
 <span class="sig-name descname"><span class="pre">add_available_game_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../enums/#vizdoom.GameVariable" title="vizdoom.GameVariable"><span class="pre">vizdoom.GameVariable</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.add_available_game_variable" title="Link to this definition">#</a></dt>
-<dd><p>Adds the specified <cite>GameVariable</cite> returned by <cite>getState</cite> method.</p>
+<dd><p>Adds the specified <cite>GameVariable</cite> method.</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.clear_available_game_variables">
 <span class="sig-name descname"><span class="pre">clear_available_game_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.clear_available_game_variables" title="Link to this definition">#</a></dt>
 <dd><p>Clears the list of available <cite>GameVariables</cite> that are included in the <cite>GameState</cite> method.</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.get_available_game_variables_size">
 <span class="sig-name descname"><span class="pre">get_available_game_variables_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_available_game_variables_size" title="Link to this definition">#</a></dt>
 <dd><p>Returns the number of available <cite>GameVariables</cite>.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -575,13 +601,13 @@ The constraints limit applies in all Modes.</p>
 <span class="sig-name descname"><span class="pre">get_game_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../enums/#vizdoom.GameVariable" title="vizdoom.GameVariable"><span class="pre">vizdoom.GameVariable</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_game_variable" title="Link to this definition">#</a></dt>
 <dd><p>Returns the current value of the specified game variable (<cite>HEALTH</cite>, <cite>AMMO1</cite> etc.).
 The specified game variable does not need to be among available game variables (included in the state).
-It could be used for e.g. shaping. Returns 0 in case of not finding given <cite>GameVariable</cite>.
-git lo</p>
+It could be used for e.g. shaping. Returns 0 in case of not finding given <cite>GameVariable</cite>.</p>
+<p>See also:</p>
 </dd></dl>
 
 </section>
 <section id="game-arguments-methods">
-<h2>Game Arguments methods<a class="headerlink" href="#game-arguments-methods" title="Link to this heading">#</a></h2>
+<h2>Game arguments methods<a class="headerlink" href="#game-arguments-methods" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_game_args">
 <span class="sig-name descname"><span class="pre">set_game_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_game_args" title="Link to this definition">#</a></dt>
@@ -589,6 +615,7 @@ git lo</p>
 It is useful for changing additional game settings.
 Use with caution, as in rare cases it may prevent the library from working properly.
 Using this method is equivalent to first calling <cite>clearGameArgs</cite>.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -597,12 +624,19 @@ Using this method is equivalent to first calling <cite>clearGameArgs</cite>.</p>
 <dd><p>Adds custom arguments that will be passed to ViZDoom process during initialization.
 It is useful for changing additional game settings.
 Use with caution, as in rare cases it may prevent the library from working properly.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.clear_game_args">
 <span class="sig-name descname"><span class="pre">clear_game_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.clear_game_args" title="Link to this definition">#</a></dt>
 <dd><p>Clears all arguments previously added with <cite>setGameArgs</cite> methods.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_game_args">
+<span class="sig-name descname"><span class="pre">get_game_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_game_args" title="Link to this definition">#</a></dt>
+<dd><p>Returns the additional arguments for ViZDoom process set with <cite>setGameArgs</cite> methods.</p>
 </dd></dl>
 
 </section>
@@ -658,19 +692,23 @@ Overwriting does not involve resetting to default values. Thus only overlapping 
 The method returns True if the whole configuration file was correctly read and applied,
 False if the file contained errors.</p>
 <p>If the file relative path is given, it will be searched for in the following order: current directory, current directory + <cite>/scenarios/</cite>, ViZDoom’s installation directory + <cite>/scenarios/</cite>.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.get_mode">
 <span class="sig-name descname"><span class="pre">get_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../enums/#vizdoom.Mode" title="vizdoom.Mode"><span class="pre">vizdoom.Mode</span></a></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_mode" title="Link to this definition">#</a></dt>
-<dd><p>Returns current mode (<cite>PLAYER</cite>, <cite>SPECTATOR</cite>, <cite>ASYNC_PLAYER</cite>, <cite>ASYNC_SPECTATOR</cite>).</p>
+<dd><p>Returns the current mode (<cite>PLAYER</cite>, <cite>SPECTATOR</cite>, <cite>ASYNC_PLAYER</cite>, <cite>ASYNC_SPECTATOR</cite>).</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_mode">
 <span class="sig-name descname"><span class="pre">set_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../enums/#vizdoom.Mode" title="vizdoom.Mode"><span class="pre">vizdoom.Mode</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_mode" title="Link to this definition">#</a></dt>
-<dd><p>Sets mode (<cite>PLAYER</cite>, <cite>SPECTATOR</cite>, <cite>ASYNC_PLAYER</cite>, <cite>ASYNC_SPECTATOR</cite>) in which the game will be running.</p>
+<dd><p>Sets the mode (<cite>PLAYER</cite>, <cite>SPECTATOR</cite>, <cite>ASYNC_PLAYER</cite>, <cite>ASYNC_SPECTATOR</cite>) in which the game will be running.</p>
 <p>Default value: <cite>PLAYER</cite>.</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -682,15 +720,17 @@ False if the file contained errors.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_ticrate">
 <span class="sig-name descname"><span class="pre">set_ticrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_ticrate" title="Link to this definition">#</a></dt>
-<dd><p>Sets ticrate for ASNYC Modes - number of logic tics executed per second.
+<dd><p>Sets the ticrate for ASNYC Modes - number of logic tics executed per second.
 The default Doom ticrate is 35. This value will play a game at normal speed.</p>
 <p>Default value: 35 (default Doom ticrate).</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_vizdoom_path">
 <span class="sig-name descname"><span class="pre">set_vizdoom_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_vizdoom_path" title="Link to this definition">#</a></dt>
-<dd><p>Sets path to the ViZDoom engine executable vizdoom.</p>
+<dd><p>Sets the path to the ViZDoom engine executable vizdoom.</p>
 <p>Default value: “{vizdoom.so location}/{vizdoom or vizdoom.exe (on Windows)}”.</p>
 </dd></dl>
 
@@ -747,26 +787,27 @@ This method is not needed for most of the tasks and is added for the convenience
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.get_seed">
 <span class="sig-name descname"><span class="pre">get_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_seed" title="Link to this definition">#</a></dt>
-<dd><p>Return ViZDoom’s seed.</p>
+<dd><p>Returns ViZDoom’s seed.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_seed">
 <span class="sig-name descname"><span class="pre">set_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_seed" title="Link to this definition">#</a></dt>
-<dd><p>Sets the seed of the ViZDoom’s RNG that generates seeds (initial state) for episodes.</p>
+<dd><p>Sets the seed of ViZDoom’s RNG that generates seeds (initial state) for episodes.</p>
 <p>Default value: randomized in constructor</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.get_episode_start_time">
 <span class="sig-name descname"><span class="pre">get_episode_start_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_episode_start_time" title="Link to this definition">#</a></dt>
-<dd><p>Returns start delay of every episode in tics.</p>
+<dd><p>Returns the start time (delay) of every episode in tics.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_episode_start_time">
 <span class="sig-name descname"><span class="pre">set_episode_start_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_episode_start_time" title="Link to this definition">#</a></dt>
-<dd><p>Sets start delay of every episode in tics.
+<dd><p>Sets the start time (delay) of every episode in tics.
 Every episode will effectively start (from the user’s perspective) after the provided number of tics.</p>
 <p>Default value: 1</p>
 </dd></dl>
@@ -781,6 +822,7 @@ Every episode will effectively start (from the user’s perspective) after the p
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_episode_timeout">
 <span class="sig-name descname"><span class="pre">set_episode_timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_episode_timeout" title="Link to this definition">#</a></dt>
 <dd><p>Sets the number of tics after which the episode will be finished. 0 will result in no timeout.</p>
+<p>Default value: 0</p>
 </dd></dl>
 
 </section>
@@ -793,6 +835,8 @@ Every episode will effectively start (from the user’s perspective) after the p
 Supported resolutions are part of ScreenResolution enumeration (e.g., <cite>RES_320X240</cite>, <cite>RES_640X480</cite>, <cite>RES_1920X1080</cite>).
 The buffers, as well as the content of ViZDoom’s display window, will be affected.</p>
 <p>Default value: <cite>RES_320X240</cite></p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -808,6 +852,8 @@ The buffers, as well as the content of ViZDoom’s display window, will be affec
 Supported formats are defined in <cite>ScreenFormat</cite> enumeration type (e.g. <cite>CRCGCB</cite>, <cite>RGB24</cite>, <cite>GRAY8</cite>).
 The format change affects only the buffers, so it will not have any effect on the content of ViZDoom’s display window.</p>
 <p>Default value: <cite>CRCGCB</cite></p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -822,6 +868,8 @@ The format change affects only the buffers, so it will not have any effect on th
 <dd><p>Enables rendering of the depth buffer, it will be available in the state.
 Depth buffer will contain noise if <cite>viz_nocheat</cite> is enabled.</p>
 <p>Default value: False</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -836,6 +884,8 @@ Depth buffer will contain noise if <cite>viz_nocheat</cite> is enabled.</p>
 <dd><p>Enables rendering of the labels buffer, it will be available in the state with the vector of <cite>Label`s.
 LabelsBuffer will contain noise if `viz_nocheat</cite> is enabled.</p>
 <p>Default value: False</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -849,6 +899,8 @@ LabelsBuffer will contain noise if `viz_nocheat</cite> is enabled.</p>
 <span class="sig-name descname"><span class="pre">set_automap_buffer_enabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">automap_buffer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_automap_buffer_enabled" title="Link to this definition">#</a></dt>
 <dd><p>Enables rendering of the automap buffer, it will be available in the state.</p>
 <p>Default value: False</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -857,6 +909,7 @@ LabelsBuffer will contain noise if `viz_nocheat</cite> is enabled.</p>
 <dd><p>Sets the automap mode (<cite>NORMAL</cite>, <cite>WHOLE</cite>, <cite>OBJECTS</cite>, <cite>OBJECTS_WITH_SIZE</cite>),
 which determines what will be visible on it.</p>
 <p>Default value: <cite>NORMAL</cite></p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -951,6 +1004,7 @@ If False, north always will be at the top of the buffer.</p>
 Allows smooth preview but can reduce performance.
 It only makes sense to use it if the window is visible.</p>
 <p>Default value: False</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -959,6 +1013,7 @@ It only makes sense to use it if the window is visible.</p>
 <dd><p>Determines if ViZDoom’s window will be visible.
 ViZDoom with window disabled can be used on Linux systems without X Server.</p>
 <p>Default value: False</p>
+<p>Has no effect when the game is running.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1017,6 +1072,8 @@ ViZDoom with window disabled can be used on Linux systems without X Server.</p>
 <dd><p>Enables information about all objects present in the current episode/level.
 It will be available in the state.</p>
 <p>Default value: False</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1031,6 +1088,8 @@ It will be available in the state.</p>
 <dd><p>Enables information about all sectors (map layout) present in the current episode/level.
 It will be available in the state.</p>
 <p>Default value: False</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1044,12 +1103,15 @@ It will be available in the state.</p>
 <span class="sig-name descname"><span class="pre">set_audio_buffer_enabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">audio_buffer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_audio_buffer_enabled" title="Link to this definition">#</a></dt>
 <dd><p>Returns True if the audio buffer is enabled.</p>
 <p>Default value: False</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.get_audio_sampling_rate">
 <span class="sig-name descname"><span class="pre">get_audio_sampling_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_audio_sampling_rate" title="Link to this definition">#</a></dt>
 <dd><p>Returns the sampling rate of the audio buffer.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1057,12 +1119,15 @@ It will be available in the state.</p>
 <span class="sig-name descname"><span class="pre">set_audio_sampling_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../enums/#vizdoom.SamplingRate" title="vizdoom.SamplingRate"><span class="pre">vizdoom.SamplingRate</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_audio_sampling_rate" title="Link to this definition">#</a></dt>
 <dd><p>Sets the sampling rate of the audio buffer.</p>
 <p>Default value: False</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.get_audio_buffer_size">
 <span class="sig-name descname"><span class="pre">get_audio_buffer_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_audio_buffer_size" title="Link to this definition">#</a></dt>
 <dd><p>Returns the size of the audio buffer.</p>
+<p>See also:</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1072,6 +1137,8 @@ It will be available in the state.</p>
 After each action audio buffer will contain audio from the specified number of the last processed tics.
 Doom uses 35 ticks per second.</p>
 <p>Default value: 4</p>
+<p>Has no effect when the game is running.</p>
+<p>See also:</p>
 </dd></dl>
 
 </section>
@@ -1193,10 +1260,11 @@ Doom uses 35 ticks per second.</p>
 <li><a class="reference internal" href="#vizdoom.DoomGame.get_game_variable"><code class="docutils literal notranslate"><span class="pre">get_game_variable()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#game-arguments-methods">Game Arguments methods</a><ul>
+<li><a class="reference internal" href="#game-arguments-methods">Game arguments methods</a><ul>
 <li><a class="reference internal" href="#vizdoom.DoomGame.set_game_args"><code class="docutils literal notranslate"><span class="pre">set_game_args()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.add_game_args"><code class="docutils literal notranslate"><span class="pre">add_game_args()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.clear_game_args"><code class="docutils literal notranslate"><span class="pre">clear_game_args()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_game_args"><code class="docutils literal notranslate"><span class="pre">get_game_args()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#reward-methods">Reward methods</a><ul>
