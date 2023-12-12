@@ -121,7 +121,8 @@ Checks if the game is in replay mode.
 | Python | `set_action(actions: list | tuple | ndarray [float]) -> None` |
 
 Sets the player's action for the next tics.
-Each value corresponds to a button previosuly specified with [`addAvailableButton`](#addavailablebutton), or [`setAvailableButtons`](#setavailablebuttons) methods,
+Each value corresponds to a button previously specified
+with [`addAvailableButton`](#addavailablebutton), or [`setAvailableButtons`](#setavailablebuttons) methods,
 or in the configuration file (in order of appearance).
 
 

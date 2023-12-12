@@ -43,7 +43,8 @@ See also:)DOCSTRING";
     const char *isReplayingEpisode = R"DOCSTRING(Checks if the game is in replay mode.)DOCSTRING";
 
     const char *setAction = R"DOCSTRING(Sets the player's action for the next tics.
-Each value corresponds to a button previosuly specified with `addAvailableButton` methods,
+Each value corresponds to a button previously specified
+with `addAvailableButton` methods,
 or in the configuration file (in order of appearance).)DOCSTRING";
 
     const char *advanceAction = R"DOCSTRING(Processes the specified number of tics. If `updateState` is set,

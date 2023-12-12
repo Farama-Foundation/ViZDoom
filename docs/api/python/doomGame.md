@@ -59,12 +59,13 @@ DoomGame is the main object of the ViZDoom library, representing a single instan
 .. autofunction:: vizdoom.DoomGame.get_game_variable
 ```
 
-## Game Arguments methods
+## Game arguments methods
 
 ```{eval-rst}
 .. autofunction:: vizdoom.DoomGame.set_game_args
 .. autofunction:: vizdoom.DoomGame.add_game_args
 .. autofunction:: vizdoom.DoomGame.clear_game_args
+.. autofunction:: vizdoom.DoomGame.get_game_args
 ```
 
 ## Reward methods
