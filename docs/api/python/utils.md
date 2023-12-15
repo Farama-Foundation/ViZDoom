@@ -16,7 +16,7 @@ They mostly help to deal with conversion of Doom's engine types.
 ## Doom fixed point conversion functions
 
 ```{eval-rst}
-.. autofunction:: vizdoom.doom_fixed_to_double
+.. autofunction:: vizdoom.doom_fixed_to_float
 ```
 
 ## Button functions

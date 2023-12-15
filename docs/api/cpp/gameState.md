@@ -18,7 +18,7 @@ The declarations of all the enums can be found in the `include/ViZDoomTypes.h` h
 - `std::vector<Label> / list`  **labels**
 
 **number** - number of the state in the episode.
-**tic** - ingame time, 1 tic is 1/35 of second in the game world. Added in 1.1.1.
+**tic** - ingame time, 1 tic is 1/35 of second in the game world. Note: added in 1.1.1.
 
 See also:
 - [`DoomGame: getState`](./doomGame.md#getstate),
@@ -67,7 +67,7 @@ Description of the object in the labels buffer.
 
 **value** - value that represents this particular object in **labelsBuffer**.
 
-**x**, **y**, **width**, **height** - describes bounding box of this particular object in **labelsBuffer**. Added in 1.1.5.
+**x**, **y**, **width**, **height** - describes bounding box of this particular object in **labelsBuffer**. Note: added in 1.1.5.
 
 
 See also:
@@ -97,11 +97,11 @@ Description of the object present in the game world.
 
 **name** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
 
-Added in 1.1.8.
-
 See also:
 - [`DoomGame: setObjectsInfoEnabled`](./doomGame.md#setsectorsinfoenabled),
 - [examples/python/objects_and_sectors.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py).
+
+Note: added in 1.1.8.
 
 
 ---
@@ -122,10 +122,10 @@ Description of the line that is part of a sector definition.
 
 **isBlocking / is_blocking** - is true, if line is a wall that can't be passed.
 
-Added in 1.1.8.
-
 See also:
 - [examples/python/objects_and_sectors.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py).
+
+Note: added in 1.1.8.
 
 
 ---
@@ -144,11 +144,11 @@ Description of the sector, part of the map with the same floor and ceiling heigh
 
 **lines** - contains list of line segments, that forms sector.
 
-Added in 1.1.8.
-
 See also:
 - [`DoomGame: setSectorsInfoEnabled`](./doomGame.md#setsectorsinfoenabled),
 - [examples/python/objects_and_sectors.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py).
+
+Note: added in 1.1.8.
 
 
 ---
@@ -166,7 +166,7 @@ See also:
 
 ServerState is the main object returned by [`DoomGame: getServerState`](./doomGame.md#getserverstate) method, and it purpose is to get more information about the state of the multi-player game.
 
-Added in 1.1.6.
-
 See also:
 - [`DoomGame: getServerState`](./doomGame.md#getserverstate),
+
+Note: added in 1.1.6.

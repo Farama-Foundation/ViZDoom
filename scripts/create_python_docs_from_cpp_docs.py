@@ -22,7 +22,10 @@ FILES_TO_PARSE = [
 ]
 SECTION_REGEX = r"^##+ *([a-zA-Z/-:, ]+) *$"
 FUNCTION_REGEX = r"^###+ *`([a-zA-Z]+)` *$"
-
+TO_REPLACE = [
+    ("ViZDoom", "Vizdoom"),
+    ("doomFixedToDouble", "doomFixedToFloat")
+]
 
 if __name__ == "__main__":
     for fp in FILES_TO_PARSE:
@@ -56,10 +59,16 @@ if __name__ == "__main__":
                     match = re.match(FUNCTION_REGEX, line)
                     if match:
                         function_name = match.group(1)
-                        function_name = function_name.replace("ViZDoom", "Vizdoom")
+
+                        # Replace some patterns
+                        for r in TO_REPLACE:
+                            function_name = re.sub(r[0], r[1], function_name)
+
+                        # Convert CamelCase to snake_case
                         function_name = re.sub(
                             r"(?<!^)(?=[A-Z])", "_", function_name
-                        ).lower()  # Convert CamelCase to snake_case
+                        ).lower()  
+                        
                         output_file.write(
                             f".. autofunction:: vizdoom.{fp['submodule']}{function_name}\n"
                         )

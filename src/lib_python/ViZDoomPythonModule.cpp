@@ -753,10 +753,10 @@ PYBIND11_MODULE(vizdoom, vz){
     FUNC_2_PYT_WITH_ARGS("ms_to_doom_tics", msToDoomTics, pyb::arg("doom_tics"), pyb::arg("fps") = 35);
     FUNC_2_PYT_WITH_ARGS("doom_tics_to_sec", doomTicsToSec, pyb::arg("doom_tics"), pyb::arg("fps") = 35);
     FUNC_2_PYT_WITH_ARGS("sec_to_doom_tics", secToDoomTics, pyb::arg("doom_tics"), pyb::arg("fps") = 35);
-    vz.def("doom_fixed_to_double", doomFixedToDouble_int);
-    vz.def("doom_fixed_to_double", doomFixedToDouble_double);
-    vz.def("doom_fixed_to_float", doomFixedToDouble_int);
-    vz.def("doom_fixed_to_float", doomFixedToDouble_double);
+    vz.def("doom_fixed_to_double", doomFixedToDouble_int, docstrings::doomFixedToDouble, pyb::arg("doom_fixed"));
+    vz.def("doom_fixed_to_double", doomFixedToDouble_double, docstrings::doomFixedToDouble, pyb::arg("doom_fixed"));
+    vz.def("doom_fixed_to_float", doomFixedToDouble_int, docstrings::doomFixedToDouble, pyb::arg("doom_fixed"));
+    vz.def("doom_fixed_to_float", doomFixedToDouble_double, docstrings::doomFixedToDouble, pyb::arg("doom_fixed"));
     FUNC_2_PYT_WITH_ARGS("is_binary_button", isBinaryButton, pyb::arg("button"));
     FUNC_2_PYT_WITH_ARGS("is_delta_button", isDeltaButton, pyb::arg("button"));
 
