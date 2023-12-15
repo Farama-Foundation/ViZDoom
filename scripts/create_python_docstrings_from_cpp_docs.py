@@ -32,7 +32,7 @@ TO_REPLACE = [
         r"\[([a-zA-Z/_\(\):\-\. \(\)]+)?\]\((.*)?\)",
         r"`\1 <\2>`_",
     ),  # MD links -> RT links
-    (r"\.md([#a-zA-Z\-]*)>`_", r".html\1>`_"),  # Fix links ending with .md
+    (r"\.md([#a-zA-Z\-]*)>`_", r"/\1>`_"),  # Fix links ending with .md
     (
         r"^See also:.*$",
         "See also:\n",

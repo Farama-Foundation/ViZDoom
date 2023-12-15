@@ -30,7 +30,7 @@ Then the rest of the players must also call this method to start a new episode.
 Note: Changed in 1.1.0)DOCSTRING";
 
     const char *replayEpisode = R"DOCSTRING(Replays the recorded episode from the given file using the perspective of the specified player.
-Players are numbered from 1, If ``player`` argument is equal to 0, 
+Players are numbered from 1, If ``player`` argument is equal to 0,
 the episode will be replayed using the perspective of the default player in the recording file.
 After calling this method, the first state from the replay will be available.
 All rewards, variables, and states are available when replaying the episode.
@@ -78,7 +78,7 @@ updates the state and calculates a new reward, which is returned.)DOCSTRING";
     const char *isNewEpisode = R"DOCSTRING(Returns ``True`` if the current episode is in the initial state - the first state, no actions were performed yet.)DOCSTRING";
 
     const char *isEpisodeFinished = R"DOCSTRING(Returns ``True`` if the current episode is in the terminal state (is finished).
-:meth:`make_action` and :meth:`advance_action` methods 
+:meth:`make_action` and :meth:`advance_action` methods
 will take no effect after this point (unless :meth:`new_episode` method is called).)DOCSTRING";
 
     const char *isPlayerDead = R"DOCSTRING(Returns ``True`` if the player is dead.
@@ -111,7 +111,7 @@ Note: Changed in 1.1.0)DOCSTRING";
 Note: added in 1.1.6.)DOCSTRING";
 
     const char *getLastAction = R"DOCSTRING(Returns the last action performed.
-Each value corresponds to a button added with :meth:`set_available_buttons` 
+Each value corresponds to a button added with :meth:`set_available_buttons`
 or/and :meth:`add_available_button` (in order of appearance).
 Most useful in ``SPECTATOR`` mode.)DOCSTRING";
 
@@ -139,7 +139,7 @@ Config key: ``availableButtons``/``available_buttons`` (list of values)
 
 See also:
 
-- `Configuration files: List of values <../configurationFiles.html#list-of-values>`_)DOCSTRING";
+- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
 
     const char *addAvailableButton = R"DOCSTRING(Adds :class:`.Button` type (e.g. ``TURN_LEFT``, ``MOVE_FORWARD``) to available buttons and sets the maximum allowed, absolute value for the specified button.
 If the given button has already been added, it will not be added again, but the maximum value will be overridden.
@@ -150,7 +150,7 @@ Config key: ``availableButtons``/``available_buttons`` (list of values)
 
 See also:
 
-- `Configuration files: List of values <../configurationFiles.html#list-of-values>`_)DOCSTRING";
+- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
 
     const char *clearAvailableButtons = R"DOCSTRING(Clears all available :class:`.Button`s added so far.
 
@@ -180,7 +180,7 @@ Config key: ``availableGameVariables``/``available_game_variables`` (list of val
 
 See also:
 
-- `Configuration files: List of values <../configurationFiles.html#list-of-values>`_)DOCSTRING";
+- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
 
     const char *addAvailableGameVariable = R"DOCSTRING(Adds the specified :class:`.GameVariable` to the list of available game variables (e.g. ``HEALTH``, ``AMMO1``, ``ATTACK_READY``) in the :class:`.GameState` returned by :meth:`get_state` method.
 
@@ -190,7 +190,7 @@ Config key: ``availableGameVariables``/``available_game_variables`` (list of val
 
 See also:
 
-- `Configuration files: List of values <../configurationFiles.html#list-of-values>`_)DOCSTRING";
+- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
 
     const char *clearAvailableGameVariables = R"DOCSTRING(Clears the list of available :class:`.GameVariable` s that are included in the :class:`.GameState` returned by :meth:`get_state` method.
 
@@ -198,14 +198,14 @@ Has no effect when the game is running.
 
 See also:
 
-- `Configuration files: List of values <../configurationFiles.html#list-of-values>`_)DOCSTRING";
+- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
 
     const char *getAvailableGameVariablesSize = R"DOCSTRING(Returns the number of available :class:`.GameVariable`.
 It corresponds to taking the size of the list returned by :meth:`get_available_game_variables`.
 
 See also:
 
-- `Configuration files: List of values <../configurationFiles.html#list-of-values>`_)DOCSTRING";
+- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
 
     const char *getGameVariable = R"DOCSTRING(Returns the current value of the specified :class:`.GameVariable` (``HEALTH``, ``AMMO1`` etc.).
 The specified game variable does not need to be among available game variables (included in the state).
@@ -272,7 +272,7 @@ If the file relative path is given, it will be searched for in the following ord
 
 See also:
 
-- `Configuration files <../configurationFiles.html>`_)DOCSTRING";
+- `Configuration files <../configurationFiles/>`_)DOCSTRING";
 
     const char *getMode = R"DOCSTRING(Returns the current :class:`.Mode` (``PLAYER``, ``SPECTATOR``, ``ASYNC_PLAYER``, ``ASYNC_SPECTATOR``).)DOCSTRING";
 
