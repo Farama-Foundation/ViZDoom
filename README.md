@@ -6,7 +6,7 @@
 
 ViZDoom allows developing AI **bots that play Doom using only visual information** (the screen buffer). It is primarily intended for research in machine visual learning, and deep reinforcement learning, in particular.
 
-ViZDoom is based on [ZDoom](https://github.com/rheit/zdoom) to provide the game mechanics.
+ViZDoom is based on [ZDoom](https://zdoom.org) engine to provide the game mechanics.
 
 ![ViZDoom Demo](https://raw.githubusercontent.com/Farama-Foundation/ViZDoom/master/docs/_static/img/vizdoom-demo.gif)
 

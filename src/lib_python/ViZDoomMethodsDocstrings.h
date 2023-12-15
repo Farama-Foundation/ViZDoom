@@ -14,7 +14,7 @@ namespace DoomGamePython {
     const char *init = R"DOCSTRING(Initializes ViZDoom game instance and starts a new episode.
 After calling this method, the first state from a new episode will be available.
 Some configuration options cannot be changed after calling this method.
-Init returns True when the game was started properly and False otherwise.)DOCSTRING";
+Init returns ``True`` when the game was started properly and ``False`` otherwise.)DOCSTRING";
 
     const char *close = R"DOCSTRING(Closes ViZDoom game instance.
 It is automatically invoked by the destructor.
@@ -22,191 +22,241 @@ The game can be initialized again after being closed.)DOCSTRING";
 
     const char *newEpisode = R"DOCSTRING(Initializes a new episode. The state of an environment is completely restarted (all variables and rewards are reset to their initial values).
 After calling this method, the first state from the new episode will be available.
-If the `recordingFilePath` is not empty, the new episode will be recorded to this file (as a Doom lump).
+If the ``recording_file_path`` argument is not empty, the new episode will be recorded to this file (as a Doom lump).
 
 In a multiplayer game, the host can call this method to finish the game.
-Then the rest of the players must also call this method to start a new episode.)DOCSTRING";
+Then the rest of the players must also call this method to start a new episode.
+
+Note: Changed in 1.1.0)DOCSTRING";
 
     const char *replayEpisode = R"DOCSTRING(Replays the recorded episode from the given file using the perspective of the specified player.
-Players are numbered from 1, If `player` is equal to 0, the episode will be replayed using the perspective of the default player in the recording file.
+Players are numbered from 1, If ``player`` argument is equal to 0,
+the episode will be replayed using the perspective of the default player in the recording file.
 After calling this method, the first state from the replay will be available.
 All rewards, variables, and states are available when replaying the episode.
 
-See also:)DOCSTRING";
+See also:
 
-    const char *isRunning = R"DOCSTRING(Checks if the controlled game instance is running.)DOCSTRING";
+- `examples/python/record_episodes.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/record_episodes.py>`_
+- `examples/python/record_multiplayer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/record_multiplayer.py>`_
 
-    const char *isMultiplayerGame = R"DOCSTRING(Checks if the game is in multiplayer mode.)DOCSTRING";
+Note: added in 1.1.0.)DOCSTRING";
 
-    const char *isRecordingEpisode = R"DOCSTRING(Checks if the game is in recording mode.)DOCSTRING";
+    const char *isRunning = R"DOCSTRING(Returns ``True`` if the controlled game instance is running.)DOCSTRING";
 
-    const char *isReplayingEpisode = R"DOCSTRING(Checks if the game is in replay mode.)DOCSTRING";
+    const char *isMultiplayerGame = R"DOCSTRING(Returns ``True`` if the game is in multiplayer mode.
+
+See also:
+
+- `examples/python/multiple_instances.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/multiple_instances.py>`_
+- `examples/python/cig_multiplayer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer.py)>`_
+- `examples/python/cig_multiplayer_host.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer_host.py)>`_
+
+Note: added in 1.1.2.)DOCSTRING";
+
+    const char *isRecordingEpisode = R"DOCSTRING(Returns ``True`` if the game is in recording mode.
+
+Note: added in 1.1.5.)DOCSTRING";
+
+    const char *isReplayingEpisode = R"DOCSTRING(Returns ``True`` if the game is in replay mode.
+
+Note: added in 1.1.5.)DOCSTRING";
 
     const char *setAction = R"DOCSTRING(Sets the player's action for the next tics.
 Each value corresponds to a button previously specified
-with `addAvailableButton` methods,
+with :meth:`add_available_button`, or :meth:`set_available_buttons` methods,
 or in the configuration file (in order of appearance).)DOCSTRING";
 
-    const char *advanceAction = R"DOCSTRING(Processes the specified number of tics. If `updateState` is set,
+    const char *advanceAction = R"DOCSTRING(Processes the specified number of tics. If ``update_state`` argument is set,
 the state will be updated after the last processed tic and a new reward will be calculated.
-To get the new state, use `getState` and to get the new reward use `getLastReward`.
-If `updateState` is not set, the state will not be updated.)DOCSTRING";
+To get the new state, use :meth:`get_state` and to get the new reward use :meth:`get_last_reward`.)DOCSTRING";
 
-    const char *makeAction = R"DOCSTRING(This method combines functionality of `setAction`.
+    const char *makeAction = R"DOCSTRING(This method combines functionality of :meth:`set_action`, :meth:`advance_action` and :meth:`get_last_reward`.
 Sets the player's action for the next tics, processes the specified number of tics,
 updates the state and calculates a new reward, which is returned.)DOCSTRING";
 
-    const char *isNewEpisode = R"DOCSTRING(Returns True if the current episode is in the initial state - the first state, no actions were performed yet.)DOCSTRING";
+    const char *isNewEpisode = R"DOCSTRING(Returns ``True`` if the current episode is in the initial state - the first state, no actions were performed yet.)DOCSTRING";
 
-    const char *isEpisodeFinished = R"DOCSTRING(Returns True if the current episode is in the terminal state (is finished).
-`makeAction`.)DOCSTRING";
+    const char *isEpisodeFinished = R"DOCSTRING(Returns ``True`` if the current episode is in the terminal state (is finished).
+:meth:`make_action` and :meth:`advance_action` methods
+will take no effect after this point (unless :meth:`new_episode` method is called).)DOCSTRING";
 
-    const char *isPlayerDead = R"DOCSTRING(Returns True if the player is dead.
+    const char *isPlayerDead = R"DOCSTRING(Returns ``True`` if the player is dead.
 In singleplayer, the player's death is equivalent to the end of the episode.
-In multiplayer, when the player is dead `respawnPlayer` method can be called.)DOCSTRING";
+In multiplayer, when the player is dead :meth:`respawn_player` method can be called.)DOCSTRING";
 
     const char *respawnPlayer = R"DOCSTRING(This method respawns the player after death in multiplayer mode.
 After calling this method, the first state after the respawn will be available.
 
-See also:)DOCSTRING";
+See also:
+
+- :meth:`is_multiplayer_game`)DOCSTRING";
 
     const char *sendGameCommand = R"DOCSTRING(Sends the command to Doom console. It can be used for controlling the game, changing settings, cheats, etc.
 Some commands will be blocked in some modes.
 
-See also:)DOCSTRING";
+See also:
 
-    const char *getState = R"DOCSTRING(Returns `GameState` object with the current game state.
-If the current episode is finished, `nullptr/null/None` will be returned.
+- `ZDoom Wiki: Console <http://zdoom.org/wiki/Console>`_
+- `ZDoom Wiki: CVARs (console variables) <https://zdoom.org/wiki/CVARs>`_
+- `ZDoom Wiki: CCMD (console commands) <https://zdoom.org/wiki/CCMDs>`_)DOCSTRING";
 
-See also:)DOCSTRING";
+    const char *getState = R"DOCSTRING(Returns :class:`.GameState` object with the current game state.
+If the current episode is finished, ``None`` will be returned.
 
-    const char *getServerState = R"DOCSTRING(Returns `ServerState` object with the current server state.
+Note: Changed in 1.1.0)DOCSTRING";
 
-See also:)DOCSTRING";
+    const char *getServerState = R"DOCSTRING(Returns :class:`.ServerState` object with the current server state.
+
+Note: added in 1.1.6.)DOCSTRING";
 
     const char *getLastAction = R"DOCSTRING(Returns the last action performed.
-Each value corresponds to a button added with `addAvailableButton.
-Most useful in `SPECTATOR` mode.)DOCSTRING";
+Each value corresponds to a button added with :meth:`set_available_buttons`
+or/and :meth:`add_available_button` (in order of appearance).
+Most useful in ``SPECTATOR`` mode.)DOCSTRING";
 
     const char *getEpisodeTime = R"DOCSTRING(Returns number of current episode tic.)DOCSTRING";
 
-    const char *save = R"DOCSTRING(Saves a game's internal state to the file using ZDoom's save game functionality.)DOCSTRING";
+    const char *save = R"DOCSTRING(Saves a game's internal state to the file using ZDoom save game functionality.
 
-    const char *load = R"DOCSTRING(Loads a game's internal state from the file using ZDoom's load game functionality.
+Note: added in 1.1.9.)DOCSTRING";
+
+    const char *load = R"DOCSTRING(Loads a game's internal state from the file using ZDoom load game functionality.
 A new state is available after loading.
 Loading the game state does not reset the current episode state,
-tic counter/time and total reward state keep their values.)DOCSTRING";
+tic counter/time and total reward state keep their values.
 
-    const char *getAvailableButtons = R"DOCSTRING(Returns the list of available `Buttons`.
+Note: added in 1.1.9.)DOCSTRING";
 
-See also:)DOCSTRING";
+    const char *getAvailableButtons = R"DOCSTRING(Returns the list of available :class:`.Button` s,
+that were added with :meth:`set_available_buttons` or/and :meth:`add_available_button` methods.)DOCSTRING";
 
-    const char *setAvailableButtons = R"DOCSTRING(Sets given list of `Button`s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available `Buttons`.
-
-Has no effect when the game is running.
-
-
-See also:)DOCSTRING";
-
-    const char *addAvailableButton = R"DOCSTRING(Adds `Button` to available `Buttons` and sets the maximum allowed, absolute value for the specified button.
-If the given button has already been added, it will not be added again, but the maximum value is overridden.
+    const char *setAvailableButtons = R"DOCSTRING(Sets given list of :class:`.Button` s (e.g. ``TURN_LEFT``, ``MOVE_FORWARD``) as available buttons.
 
 Has no effect when the game is running.
 
+Config key: ``availableButtons``/``available_buttons`` (list of values)
 
-See also:)DOCSTRING";
+See also:
 
-    const char *clearAvailableButtons = R"DOCSTRING(Clears all available `Buttons` added so far.
+- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
+
+    const char *addAvailableButton = R"DOCSTRING(Adds :class:`.Button` type (e.g. ``TURN_LEFT``, ``MOVE_FORWARD``) to available buttons and sets the maximum allowed, absolute value for the specified button.
+If the given button has already been added, it will not be added again, but the maximum value will be overridden.
 
 Has no effect when the game is running.
 
-See also:)DOCSTRING";
+Config key: ``availableButtons``/``available_buttons`` (list of values)
 
-    const char *getAvailableButtonsSize = R"DOCSTRING(Returns the number of available `Buttons`.
+See also:
 
-See also:)DOCSTRING";
+- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
 
-    const char *setButtonMaxValue = R"DOCSTRING(Sets the maximum allowed absolute value for the specified button.
+    const char *clearAvailableButtons = R"DOCSTRING(Clears all available :class:`.Button`s added so far.
+
+Has no effect when the game is running.)DOCSTRING";
+
+    const char *getAvailableButtonsSize = R"DOCSTRING(Returns the number of available :class:`.Button` s.)DOCSTRING";
+
+    const char *setButtonMaxValue = R"DOCSTRING(Sets the maximum allowed absolute value for the specified :class:`.Button`.
 Setting the maximum value to 0 results in no constraint at all (infinity).
 This method makes sense only for delta buttons.
 The constraints limit applies in all Modes.
 
-Has no effect when the game is running.
+Has no effect when the game is running.)DOCSTRING";
 
-See also:)DOCSTRING";
+    const char *getButtonMaxValue = R"DOCSTRING(Returns the maximum allowed absolute value for the specified :class:`.Button`.)DOCSTRING";
 
-    const char *getButtonMaxValue = R"DOCSTRING(Returns the maximum allowed absolute value for the specified button.
+    const char *getButton = R"DOCSTRING(Returns the current state of the specified :class:`.Button` (``ATTACK``, ``USE`` etc.).)DOCSTRING";
 
-See also:)DOCSTRING";
+    const char *getAvailableGameVariables = R"DOCSTRING(Returns the list of available :class:`.GameVariable` s,
+that were added with :meth:`set_available_game_variables` or/and :meth:`add_available_game_variable` methods.)DOCSTRING";
 
-    const char *getButton = R"DOCSTRING(Returns the current state of the specified button (`ATTACK`, `USE` etc.).
-
-See also:)DOCSTRING";
-
-    const char *getAvailableGameVariables = R"DOCSTRING(Returns the list of available `GameVariables`.
-
-See also:)DOCSTRING";
-
-    const char *setAvailableGameVariables = R"DOCSTRING(Sets list of `GameVariable` method.
+    const char *setAvailableGameVariables = R"DOCSTRING(Sets list of :class:`.GameVariable` s as available game variables in the :class:`.GameState` returned by :meth:`get_state` method.
 
 Has no effect when the game is running.
 
+Config key: ``availableGameVariables``/``available_game_variables`` (list of values)
 
-See also:)DOCSTRING";
+See also:
 
-    const char *addAvailableGameVariable = R"DOCSTRING(Adds the specified `GameVariable` method.
+- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
 
-Has no effect when the game is running.
-
-
-See also:)DOCSTRING";
-
-    const char *clearAvailableGameVariables = R"DOCSTRING(Clears the list of available `GameVariables` that are included in the `GameState` method.
+    const char *addAvailableGameVariable = R"DOCSTRING(Adds the specified :class:`.GameVariable` to the list of available game variables (e.g. ``HEALTH``, ``AMMO1``, ``ATTACK_READY``) in the :class:`.GameState` returned by :meth:`get_state` method.
 
 Has no effect when the game is running.
 
-See also:)DOCSTRING";
+Config key: ``availableGameVariables``/``available_game_variables`` (list of values)
 
-    const char *getAvailableGameVariablesSize = R"DOCSTRING(Returns the number of available `GameVariables`.
+See also:
 
-See also:)DOCSTRING";
+- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
 
-    const char *getGameVariable = R"DOCSTRING(Returns the current value of the specified game variable (`HEALTH`, `AMMO1` etc.).
+    const char *clearAvailableGameVariables = R"DOCSTRING(Clears the list of available :class:`.GameVariable` s that are included in the :class:`.GameState` returned by :meth:`get_state` method.
+
+Has no effect when the game is running.
+
+See also:
+
+- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
+
+    const char *getAvailableGameVariablesSize = R"DOCSTRING(Returns the number of available :class:`.GameVariable`.
+It corresponds to taking the size of the list returned by :meth:`get_available_game_variables`.
+
+See also:
+
+- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
+
+    const char *getGameVariable = R"DOCSTRING(Returns the current value of the specified :class:`.GameVariable` (``HEALTH``, ``AMMO1`` etc.).
 The specified game variable does not need to be among available game variables (included in the state).
-It could be used for e.g. shaping. Returns 0 in case of not finding given `GameVariable`.
-
-See also:)DOCSTRING";
+It could be used for e.g. shaping. Returns 0 in case of not finding given :class:`.GameVariable`.)DOCSTRING";
 
     const char *setGameArgs = R"DOCSTRING(Sets custom arguments that will be passed to ViZDoom process during initialization.
 It is useful for changing additional game settings.
 Use with caution, as in rare cases it may prevent the library from working properly.
-Using this method is equivalent to first calling `clearGameArgs`.
+Using this method is equivalent to first calling :meth:`clear_game_args` and then :meth:`add_game_args`.
 
+Config key: ``gameArgs``/``game_args``
 
-See also:)DOCSTRING";
+See also:
+
+- `ZDoom Wiki: Command line parameters <http://zdoom.org/wiki/Command_line_parameters>`_
+- `ZDoom Wiki: CVARs (Console Variables) <http://zdoom.org/wiki/CVARS>`_
+
+Note: added in 1.2.3.)DOCSTRING";
 
     const char *addGameArgs = R"DOCSTRING(Adds custom arguments that will be passed to ViZDoom process during initialization.
 It is useful for changing additional game settings.
 Use with caution, as in rare cases it may prevent the library from working properly.
 
+Config key: ``gameArgs``/``game_args``
 
-See also:)DOCSTRING";
+See also:
 
-    const char *clearGameArgs = R"DOCSTRING(Clears all arguments previously added with `setGameArgs` methods.)DOCSTRING";
+- `ZDoom Wiki: Command line parameters <http://zdoom.org/wiki/Command_line_parameters>`_
+- `ZDoom Wiki: CVARs (Console Variables) <http://zdoom.org/wiki/CVARS>`_)DOCSTRING";
 
-    const char *getGameArgs = R"DOCSTRING(Returns the additional arguments for ViZDoom process set with `setGameArgs` methods.)DOCSTRING";
+    const char *clearGameArgs = R"DOCSTRING(Clears all arguments previously added with :meth:`set_game_args` or/and :meth:`add_game_args` methods.)DOCSTRING";
+
+    const char *getGameArgs = R"DOCSTRING(Returns the additional arguments for ViZDoom process set with :meth:`set_game_args` or/and :meth:`add_game_args` methods.
+
+Note: added in 1.2.3.)DOCSTRING";
 
     const char *getLivingReward = R"DOCSTRING(Returns the reward granted to the player after every tic.)DOCSTRING";
 
     const char *setLivingReward = R"DOCSTRING(Sets the reward granted to the player after every tic. A negative value is also allowed.
 
-Default value: 0)DOCSTRING";
+Default value: 0
+
+Config key: ``livingReward``/``living_reward``)DOCSTRING";
 
     const char *getDeathPenalty = R"DOCSTRING(Returns the penalty for the player's death.)DOCSTRING";
 
     const char *setDeathPenalty = R"DOCSTRING(Sets a penalty for the player's death. Note that in case of a negative value, the player will be rewarded upon dying.
 
-Default value: 0)DOCSTRING";
+Default value: 0
+
+Config key: ``deathPenalty``/``death_penalty``)DOCSTRING";
 
     const char *getLastReward = R"DOCSTRING(Returns a reward granted after the last update of state.)DOCSTRING";
 
@@ -215,27 +265,28 @@ Default value: 0)DOCSTRING";
     const char *loadConfig = R"DOCSTRING(Loads configuration (resolution, available buttons, game variables etc.) from a configuration file.
 In case of multiple invocations, older configurations will be overwritten by the recent ones.
 Overwriting does not involve resetting to default values. Thus only overlapping parameters will be changed.
-The method returns True if the whole configuration file was correctly read and applied,
-False if the file contained errors.
+The method returns ``True`` if the whole configuration file was correctly read and applied,
+`False` if the file contained errors.
 
-If the file relative path is given, it will be searched for in the following order: current directory, current directory + `/scenarios/`, ViZDoom's installation directory + `/scenarios/`.
+If the file relative path is given, it will be searched for in the following order: ``<current directory>``, ``<current directory>/scenarios/``, ``<ViZDoom library location>/scenarios/``.
 
-See also:)DOCSTRING";
+See also:
 
-    const char *getMode = R"DOCSTRING(Returns the current mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`).
+- `Configuration files <../configurationFiles/>`_)DOCSTRING";
 
-See also:)DOCSTRING";
+    const char *getMode = R"DOCSTRING(Returns the current :class:`.Mode` (``PLAYER``, ``SPECTATOR``, ``ASYNC_PLAYER``, ``ASYNC_SPECTATOR``).)DOCSTRING";
 
-    const char *setMode = R"DOCSTRING(Sets the mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`) in which the game will be running.
+    const char *setMode = R"DOCSTRING(Sets the :class:`.Mode` (``PLAYER``, ``SPECTATOR``, ``ASYNC_PLAYER``, ``ASYNC_SPECTATOR``) in which the game will be running.
 
-Default value: `PLAYER`.
+Default value: ``PLAYER``.
 
 Has no effect when the game is running.
 
+Config key: ``mode``)DOCSTRING";
 
-See also:)DOCSTRING";
+    const char *getTicrate = R"DOCSTRING(Returns current ticrate.
 
-    const char *getTicrate = R"DOCSTRING(Returns current ticrate.)DOCSTRING";
+Note: added in 1.1.0.)DOCSTRING";
 
     const char *setTicrate = R"DOCSTRING(Sets the ticrate for ASNYC Modes - number of logic tics executed per second.
 The default Doom ticrate is 35. This value will play a game at normal speed.
@@ -244,26 +295,39 @@ Default value: 35 (default Doom ticrate).
 
 Has no effect when the game is running.
 
+Config key: ``ticrate``
 
-See also:)DOCSTRING";
+See also:
+
+- `examples/python/ticrate.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/ticrate.py>`_
+
+Note: added in 1.1.0.)DOCSTRING";
 
     const char *setViZDoomPath = R"DOCSTRING(Sets the path to the ViZDoom engine executable vizdoom.
 
-Default value: "{vizdoom.so location}/{vizdoom or vizdoom.exe (on Windows)}".)DOCSTRING";
+Default value: ``<ViZDoom library location>/<vizdoom or vizdoom.exe on Windows>``.
+
+Config key: ``ViZDoomPath``/``vizdoom_path``)DOCSTRING";
 
     const char *setDoomGamePath = R"DOCSTRING(Sets the path to the Doom engine based game file (wad format).
-If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom.so/pyd is).
+If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom library/pyd is).
 
-Default value: "{vizdoom.so location}/{doom2.wad, doom.wad, freedoom2.wad or freedoom.wad}")DOCSTRING";
+Default value: ``<ViZDoom library location>/<doom2.wad, doom.wad, freedoom2.wad, or freedoom.wad - in this order>``
+
+Config key: ``DoomGamePath``/``doom_game_path``)DOCSTRING";
 
     const char *setDoomScenarioPath = R"DOCSTRING(Sets the path to an additional scenario file (wad format).
 If not provided, the default Doom single-player maps will be loaded.
 
-Default value: "")DOCSTRING";
+Default value: ``""``
+
+Config key: ``DoomScenarioPath``/``set_doom_scenario_path``)DOCSTRING";
 
     const char *setDoomMap = R"DOCSTRING(Sets the map name to be used.
 
-Default value: "map01", if set to empty "map01" will be used.)DOCSTRING";
+Default value: ``"map01"``, if set to empty ``"map01"`` will be used.
+
+Config key: ``DoomMap``/``doom_map``)DOCSTRING";
 
     const char *setDoomSkill = R"DOCSTRING(Sets Doom game difficulty level, which is called skill in Doom.
 The higher the skill, the harder the game becomes.
@@ -276,14 +340,18 @@ Takes effect from the next episode.
 - 4 - HARD, “Ultra-Violence” in Doom.
 - 5 - VERY HARD, “Nightmare!” in Doom.
 
-Default value: 3)DOCSTRING";
+Default value: 3
+
+Config key: ``DoomSkill``/``doom_skill``)DOCSTRING";
 
     const char *setDoomConfigPath = R"DOCSTRING(Sets the path for ZDoom's configuration file.
 The file is responsible for the configuration of the ZDoom engine itself.
-If it does not exist, it will be created after the `vizdoom` executable is run.
+If it does not exist, it will be created after the ``vizdoom`` executable is run.
 This method is not needed for most of the tasks and is added for the convenience of users with hacking tendencies.
 
-Default value: "", if left empty "_vizdoom.ini" will be used.)DOCSTRING";
+Default value: ``""``, if left empty ``"_vizdoom.ini"`` will be used.
+
+Config key: ``DoomConfigPath``/``doom_config_path``)DOCSTRING";
 
     const char *getSeed = R"DOCSTRING(Returns ViZDoom's seed.)DOCSTRING";
 
@@ -291,166 +359,246 @@ Default value: "", if left empty "_vizdoom.ini" will be used.)DOCSTRING";
 
 Default value: randomized in constructor
 
+Config key: ``seed``
 
-See also:)DOCSTRING";
+See also:
+
+- `examples/python/seed.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/seed.py>`_)DOCSTRING";
 
     const char *getEpisodeStartTime = R"DOCSTRING(Returns the start time (delay) of every episode in tics.)DOCSTRING";
 
     const char *setEpisodeStartTime = R"DOCSTRING(Sets the start time (delay) of every episode in tics.
 Every episode will effectively start (from the user's perspective) after the provided number of tics.
 
-Default value: 1)DOCSTRING";
+Default value: 1
+
+Config key: ``episodeStartTime``/``episode_start_time``)DOCSTRING";
 
     const char *getEpisodeTimeout = R"DOCSTRING(Returns the number of tics after which the episode will be finished.)DOCSTRING";
 
     const char *setEpisodeTimeout = R"DOCSTRING(Sets the number of tics after which the episode will be finished. 0 will result in no timeout.
 
-Default value: 0)DOCSTRING";
+Default value: 0
 
-    const char *setScreenResolution = R"DOCSTRING(Sets the screen resolution. ZDoom engine supports only specific resolutions.
-Supported resolutions are part of ScreenResolution enumeration (e.g., `RES_320X240`, `RES_640X480`, `RES_1920X1080`).
+Config key: ``episodeTimeout``/``episode_timeout``)DOCSTRING";
+
+    const char *setScreenResolution = R"DOCSTRING(Sets the screen resolution and additional buffers (depth, labels, and automap). ZDoom engine supports only specific resolutions.
+Supported resolutions are part of :class:`.ScreenResolution` enumeration (e.g., ``RES_320X240``, ``RES_640X480``, ``RES_1920X1080``).
 The buffers, as well as the content of ViZDoom's display window, will be affected.
 
-Default value: `RES_320X240`
+Default value: ``RES_320X240``
 
 Has no effect when the game is running.
 
-
-
-See also:)DOCSTRING";
+Config key: ``screenResolution``/``screen_resolution``)DOCSTRING";
 
     const char *getScreenFormat = R"DOCSTRING(Returns the format of the screen buffer and the automap buffer.)DOCSTRING";
 
     const char *setScreenFormat = R"DOCSTRING(Sets the format of the screen buffer and the automap buffer.
-Supported formats are defined in `ScreenFormat` enumeration type (e.g. `CRCGCB`, `RGB24`, `GRAY8`).
+Supported formats are defined in :class:`.ScreenFormat` enumeration type (e.g. ``CRCGCB``, ``RGB24``, ``GRAY8``).
 The format change affects only the buffers, so it will not have any effect on the content of ViZDoom's display window.
 
-Default value: `CRCGCB`
+Default value: ``CRCGCB``
 
 Has no effect when the game is running.
 
+Config key: ``screenFormat``/``screen_format``)DOCSTRING";
 
-See also:)DOCSTRING";
-
-    const char *isDepthBufferEnabled = R"DOCSTRING(Returns True if the depth buffer is enabled.)DOCSTRING";
+    const char *isDepthBufferEnabled = R"DOCSTRING(Returns ``True`` if the depth buffer is enabled.)DOCSTRING";
 
     const char *setDepthBufferEnabled = R"DOCSTRING(Enables rendering of the depth buffer, it will be available in the state.
-Depth buffer will contain noise if `viz_nocheat` is enabled.
+The buffer always has the same resolution as the screen buffer.
+Depth buffer will contain noise if ``viz_nocheat`` flag is enabled.
 
-Default value: False
-
-Has no effect when the game is running.
-
-
-See also:)DOCSTRING";
-
-    const char *isLabelsBufferEnabled = R"DOCSTRING(Returns True if the labels buffer is enabled.)DOCSTRING";
-
-    const char *setLabelsBufferEnabled = R"DOCSTRING(Enables rendering of the labels buffer, it will be available in the state with the vector of `Label`s.
-LabelsBuffer will contain noise if `viz_nocheat` is enabled.
-
-Default value: False
+Default value: ``False``
 
 Has no effect when the game is running.
 
+Config key: ``depthBufferEnabled``/``depth_buffer_enabled``
 
-See also:)DOCSTRING";
+See also:
 
-    const char *isAutomapBufferEnabled = R"DOCSTRING(Returns True if the automap buffer is enabled.)DOCSTRING";
+- :class:`.GameState`
+- `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
+
+Note: added in 1.1.0.)DOCSTRING";
+
+    const char *isLabelsBufferEnabled = R"DOCSTRING(Returns ``True`` if the labels buffer is enabled.
+
+Note: added in 1.1.0.)DOCSTRING";
+
+    const char *setLabelsBufferEnabled = R"DOCSTRING(Enables rendering of the labels buffer, it will be available in the state with the vector of :class:`.Label` s.
+The buffer always has the same resolution as the screen buffer.
+LabelsBuffer will contain noise if ``viz_nocheat`` is enabled.
+
+Default value: ``False``
+
+Has no effect when the game is running.
+
+Config key: ``labelsBufferEnabled``/``labels_buffer_enabled``
+
+See also:
+
+- :class:`.GameState`
+- `examples/python/labels.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels.py>`_
+- `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
+
+Note: added in 1.1.0.)DOCSTRING";
+
+    const char *isAutomapBufferEnabled = R"DOCSTRING(Returns ``True`` if the automap buffer is enabled.
+
+Note: added in 1.1.0.)DOCSTRING";
 
     const char *setAutomapBufferEnabled = R"DOCSTRING(Enables rendering of the automap buffer, it will be available in the state.
+The buffer always has the same resolution as the screen buffer.
 
-Default value: False
+Default value: ``False``
 
 Has no effect when the game is running.
 
+Config key: ``automapBufferEnabled``/``automap_buffer_enabled``
 
-See also:)DOCSTRING";
+See also:
 
-    const char *setAutomapMode = R"DOCSTRING(Sets the automap mode (`NORMAL`, `WHOLE`, `OBJECTS`, `OBJECTS_WITH_SIZE`),
+- :class:`.GameState`
+- `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_,
+
+Note: added in 1.1.0.)DOCSTRING";
+
+    const char *setAutomapMode = R"DOCSTRING(Sets the :class:`.AutomapMode` (``NORMAL``, ``WHOLE``, ``OBJECTS``, ``OBJECTS_WITH_SIZE``),
 which determines what will be visible on it.
 
-Default value: `NORMAL`
+Default value: ``NORMAL``
 
+Config key: ``automapMode``/``set_automap_mode``
 
-See also:)DOCSTRING";
+Note: added in 1.1.0.)DOCSTRING";
 
     const char *setAutomapRotate = R"DOCSTRING(Determine if the automap will be rotating with the player.
-If False, north always will be at the top of the buffer.
+If ``False``, north always will be at the top of the buffer.
 
-Default value: False)DOCSTRING";
+Default value: ``False``
+
+Config key: ``automapRotate``/``automap_rotate``
+
+Note: added in 1.1.0.)DOCSTRING";
 
     const char *setAutomapRenderTextures = R"DOCSTRING(Determine if the automap will be textured, showing the floor textures.
 
-Default value: True)DOCSTRING";
+Default value: ``True``
+
+Config key: ``automapRenderTextures``/``automap_render_textures``
+
+Note: added in 1.1.0.)DOCSTRING";
 
     const char *setRenderHud = R"DOCSTRING(Determine if the hud will be rendered in the game.
 
-Default value: False)DOCSTRING";
+Default value: ``False``
+
+Config key: ``renderHud``/``render_hud``)DOCSTRING";
 
     const char *setRenderMinimalHud = R"DOCSTRING(Determine if the minimalistic version of the hud will be rendered instead of the full hud.
 
-Default value: False)DOCSTRING";
+Default value: ``False``
+
+Config key: ``renderMinimalHud``/``render_minimal_hud``
+
+Note: added in 1.1.0.)DOCSTRING";
 
     const char *setRenderWeapon = R"DOCSTRING(Determine if the weapon held by the player will be rendered in the game.
 
-Default value: True)DOCSTRING";
+Default value: ``True``
+
+Config key: ``renderWeapon``/``render_weapon``)DOCSTRING";
 
     const char *setRenderCrosshair = R"DOCSTRING(Determine if the crosshair will be rendered in the game.
 
-Default value: False)DOCSTRING";
+Default value: ``False``
+
+Config key: ``renderCrosshair``/``render_crosshair``)DOCSTRING";
 
     const char *setRenderDecals = R"DOCSTRING(Determine if the decals (marks on the walls) will be rendered in the game.
 
-Default value: True)DOCSTRING";
+Default value: ``True``
+
+Config key: ``renderDecals``/``render_decals``)DOCSTRING";
 
     const char *setRenderParticles = R"DOCSTRING(Determine if the particles will be rendered in the game.
 
-Default value: True)DOCSTRING";
+Default value: ``True``
+
+Config key: ``renderParticles``/``render_particles``)DOCSTRING";
 
     const char *setRenderEffectsSprites = R"DOCSTRING(Determine if some effects sprites (gun puffs, blood splats etc.) will be rendered in the game.
 
-Default value: True)DOCSTRING";
+Default value: ``True``
+
+Config key: ``renderEffectsSprites``/``render_effects_sprites``
+
+Note: added in 1.1.0.)DOCSTRING";
 
     const char *setRenderMessages = R"DOCSTRING(Determine if in-game messages (information about pickups, kills, etc.) will be rendered in the game.
 
-Default value: False)DOCSTRING";
+Default value: ``False``
+
+Config key: ``renderMessages``/``render_messages``
+
+Note: added in 1.1.0.)DOCSTRING";
 
     const char *setRenderCorpses = R"DOCSTRING(Determine if actors' corpses will be rendered in the game.
 
-Default value: True)DOCSTRING";
+Default value: ``True``
+
+Config key: ``renderCorpses``/``render_corpses``
+
+Note: added in 1.1.0.)DOCSTRING";
 
     const char *setRenderScreenFlashes = R"DOCSTRING(Determine if the screen flash effect upon taking damage or picking up items will be rendered in the game.
 
-Default value: True)DOCSTRING";
+Default value: ``True``
+
+Config key: ``renderScreenFlashes``/``render_screen_flashes``
+
+Note: added in 1.1.0.)DOCSTRING";
 
     const char *setRenderAllFrames = R"DOCSTRING(Determine if all frames between states will be rendered (when skip greater than 1 is used).
 Allows smooth preview but can reduce performance.
 It only makes sense to use it if the window is visible.
 
-Default value: False
+Default value: ``False``
 
+Config key: ``renderAllFrames``/``render_all_frames``
 
-See also:)DOCSTRING";
+See also:
+
+- :meth:`set_window_visible`
+
+Note: added in 1.1.3.)DOCSTRING";
 
     const char *setWindowVisible = R"DOCSTRING(Determines if ViZDoom's window will be visible.
 ViZDoom with window disabled can be used on Linux systems without X Server.
 
-Default value: False
+Default value: ``False``
 
-Has no effect when the game is running.)DOCSTRING";
+Has no effect when the game is running.
+
+Config key: ``windowVisible``/``window_visible``)DOCSTRING";
 
     const char *setConsoleEnabled = R"DOCSTRING(Determines if ViZDoom's console output will be enabled.
 
-Default value: False)DOCSTRING";
+Default value: ``False``
+
+Config key: ``consoleEnabled``/``console_enabled``)DOCSTRING";
 
     const char *setSoundEnabled = R"DOCSTRING(Determines if ViZDoom's sound will be played.
 
-Default value: False)DOCSTRING";
+Default value: ``False``
 
-    const char *getScreenWidth = R"DOCSTRING(Returns game's screen width - width of all buffers.)DOCSTRING";
+Config key: ``soundEnabled``/``sound_enabled``)DOCSTRING";
 
-    const char *getScreenHeight = R"DOCSTRING(Returns game's screen height - height of all buffers.)DOCSTRING";
+    const char *getScreenWidth = R"DOCSTRING(Returns game's screen width - width of screen, depth, labels, and automap buffers.)DOCSTRING";
+
+    const char *getScreenHeight = R"DOCSTRING(Returns game's screen height - height of screen, depth, labels, and automap buffers.)DOCSTRING";
 
     const char *getScreenChannels = R"DOCSTRING(Returns number of channels in screen buffer and map buffer (depth and labels buffer always have one channel).)DOCSTRING";
 
@@ -458,59 +606,101 @@ Default value: False)DOCSTRING";
 
     const char *getScreenSize = R"DOCSTRING(Returns size in bytes of screen buffer and map buffer.)DOCSTRING";
 
-    const char *isObjectsInfoEnabled = R"DOCSTRING(Returns True if the objects information is enabled.)DOCSTRING";
+    const char *isObjectsInfoEnabled = R"DOCSTRING(Returns ``True`` if the objects information is enabled.
 
-    const char *setObjectsInfoEnabled = R"DOCSTRING(Enables information about all objects present in the current episode/level.
+Note: added in 1.1.8.)DOCSTRING";
+
+    const char *setObjectsInfoEnabled = R"DOCSTRING(Enables information about all :class:`.Object` s present in the current episode/level.
 It will be available in the state.
 
-Default value: False
+Default value: ``False``
 
 Has no effect when the game is running.
 
+Config key: ``objectsInfoEnabled``/``objects_info_enabled``
 
-See also:)DOCSTRING";
+See also:
 
-    const char *isSectorsInfoEnabled = R"DOCSTRING(Returns True if the information about sectors is enabled.)DOCSTRING";
+- :class:`.GameState`
+- `examples/python/objects_and_sectors.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py>`_,
 
-    const char *setSectorsInfoEnabled = R"DOCSTRING(Enables information about all sectors (map layout) present in the current episode/level.
+Note: added in 1.1.8.)DOCSTRING";
+
+    const char *isSectorsInfoEnabled = R"DOCSTRING(Returns ``True`` if the information about sectors is enabled.
+
+Note: added in 1.1.8.)DOCSTRING";
+
+    const char *setSectorsInfoEnabled = R"DOCSTRING(Enables information about all :class:`.Sector` s (map layout) present in the current episode/level.
 It will be available in the state.
 
-Default value: False
+Default value: ``False``
 
 Has no effect when the game is running.
 
+Config key: ``sectorsInfoEnabled``/``sectors_info_enabled``
 
-See also:)DOCSTRING";
+See also:
 
-    const char *isAudioBufferEnabled = R"DOCSTRING(Returns True if the audio buffer is enabled.)DOCSTRING";
+- :class:`.GameState`
+- `examples/python/objects_and_sectors.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py>`_
 
-    const char *setAudioBufferEnabled = R"DOCSTRING(Returns True if the audio buffer is enabled.
+Note: added in 1.1.8.)DOCSTRING";
 
-Default value: False
+    const char *isAudioBufferEnabled = R"DOCSTRING(Returns ``True`` if the audio buffer is enabled.
 
-Has no effect when the game is running.
+Note: added in 1.1.9.)DOCSTRING";
 
+    const char *setAudioBufferEnabled = R"DOCSTRING(Enables rendering of the audio buffer, it will be available in the state.
+The audio buffer will contain audio from the number of the last tics specified by :meth:`set_audio_buffer_size` method.
+Sampling rate can be set with :meth:`set_audio_sampling_rate` method.
 
-See also:)DOCSTRING";
-
-    const char *getAudioSamplingRate = R"DOCSTRING(Returns the sampling rate of the audio buffer.
-
-
-See also:)DOCSTRING";
-
-    const char *setAudioSamplingRate = R"DOCSTRING(Sets the sampling rate of the audio buffer.
-
-Default value: False
+Default value: ``False``
 
 Has no effect when the game is running.
 
+Config key: ``audioBufferEnabled``/``audio_buffer_enabled``
 
-See also:)DOCSTRING";
+See also:
+
+- :class:`.GameState`
+- :class:`.SamplingRate`
+- `examples/python/audio_buffer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py>`_
+
+Note: added in 1.1.9.)DOCSTRING";
+
+    const char *getAudioSamplingRate = R"DOCSTRING(Returns the :class:`.SamplingRate` of the audio buffer.
+
+See also:
+
+- :class:`.GameState`
+- `examples/python/audio_buffer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py>`_
+
+Note: added in 1.1.9.)DOCSTRING";
+
+    const char *setAudioSamplingRate = R"DOCSTRING(Sets the :class:`.SamplingRate` of the audio buffer.
+
+Default value: ``False``
+
+Has no effect when the game is running.
+
+Config key: ``audioSamplingRate``/``audio_samping_rate``
+
+See also:
+
+- :class:`.GameState`
+- `examples/python/audio_buffer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py>`_
+
+Note: added in 1.1.9.)DOCSTRING";
 
     const char *getAudioBufferSize = R"DOCSTRING(Returns the size of the audio buffer.
 
+Note: added in 1.1.9.
 
-See also:)DOCSTRING";
+
+See also:
+
+- :class:`.GameState`
+- `examples/python/audio_buffer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py>`_)DOCSTRING";
 
     const char *setAudioBufferSize = R"DOCSTRING(Sets the size of the audio buffer. The size is defined by a number of logic tics.
 After each action audio buffer will contain audio from the specified number of the last processed tics.
@@ -520,33 +710,41 @@ Default value: 4
 
 Has no effect when the game is running.
 
+Config key: ``audioBufferSize``/``audio_buffer_size``
 
-See also:)DOCSTRING";
+See also:
+
+- :class:`.GameState`
+- `examples/python/audio_buffer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py>`_
+
+Note: added in 1.1.9.)DOCSTRING";
 
 } // namespace DoomGamePython
 
-    const char *doomTicsToMs = R"DOCSTRING(Calculates how many tics will be made during given number of milliseconds.)DOCSTRING";
+    const char *doomTicsToMs = R"DOCSTRING(Calculates how many tics will be made during given number of milliseconds.
 
-    const char *msToDoomTics = R"DOCSTRING(Calculates the number of milliseconds that will pass during specified number of tics.)DOCSTRING";
+Note: changed in 1.1.0)DOCSTRING";
 
-    const char *doomTicsToSec = R"DOCSTRING(Calculates how many tics will be made during given number of seconds.)DOCSTRING";
+    const char *msToDoomTics = R"DOCSTRING(Calculates the number of milliseconds that will pass during specified number of tics.
 
-    const char *secToDoomTics = R"DOCSTRING(Calculates the number of seconds that will pass during specified number of tics.)DOCSTRING";
+Note: changed in 1.1.0)DOCSTRING";
+
+    const char *doomTicsToSec = R"DOCSTRING(Calculates how many tics will be made during given number of seconds.
+
+Note: added in 1.1.0)DOCSTRING";
+
+    const char *secToDoomTics = R"DOCSTRING(Calculates the number of seconds that will pass during specified number of tics.
+
+Note: added in 1.1.0)DOCSTRING";
 
     const char *doomFixedToDouble = R"DOCSTRING(Converts fixed point numeral to a floating point value.
 Doom's engine internally use fixed point numbers.
-If you read them directly from `USERX` variables,
-you may want to convert them to floating point numbers.
+If you read them from ``USER0`` - ``USER60`` variables,
+you should convert them to floating point numbers.)DOCSTRING";
 
-See also:)DOCSTRING";
+    const char *isBinaryButton = R"DOCSTRING(Returns ``True`` if :class:`.Button` is binary button.)DOCSTRING";
 
-    const char *isBinaryButton = R"DOCSTRING(Returns True if button is binary button.
-
-See also:)DOCSTRING";
-
-    const char *isDeltaButton = R"DOCSTRING(Returns True if button is delta button.
-
-See also:)DOCSTRING";
+    const char *isDeltaButton = R"DOCSTRING(Returns ``True`` if :class:`.Button` is delta button.)DOCSTRING";
 
 
 } // namespace docstrings

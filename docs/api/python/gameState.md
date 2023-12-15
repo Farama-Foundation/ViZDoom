@@ -7,7 +7,8 @@
 ```
 
 **number** - number of the state in the episode.
-**tic** - ingame time, 1 tic is 1/35 of second in the game world. Added in 1.1.1.
+
+**tic** - ingame time, 1 tic is 1/35 of second in the game world. Note: added in 1.1.1.
 
 See also:
 - [`DoomGame.get_state`](./doomGame.md#vizdoom.DoomGame.get_state),
@@ -30,7 +31,7 @@ See also:
 
 **value** - value that represents this particular object in **labels_buffer**.
 
-**x**, **y**, **width**, **height** - describes bounding box of this particular object in **labels_buffer**. Added in 1.1.5.
+**x**, **y**, **width**, **height** - describes bounding box of this particular object in **labels_buffer**. Note: added in 1.1.5.
 
 
 See also:
@@ -49,11 +50,11 @@ See also:
 
 **name** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
 
-Added in 1.1.8.
-
 See also:
 - [`DoomGame.set_objects_info_enabled`](./doomGame.md#vizdoom.DoomGame.set_sectors_info_enabled),
 - [examples/python/objects_and_sectors.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py).
+
+Note: added in 1.1.8.
 
 
 ```{eval-rst}
@@ -68,10 +69,10 @@ See also:
 
 **is_blocking** - is true, if line is a wall that can't be passed.
 
-Added in 1.1.8.
-
 See also:
 - [examples/python/objects_and_sectors.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py).
+
+Note: added in 1.1.8.
 
 
 ```{eval-rst}
@@ -86,12 +87,11 @@ See also:
 
 **lines** - contains list of line segments, that forms sector.
 
-Added in 1.1.8.
-
 See also:
 - [`DoomGame.set_sectors_info_enabled`](./doomGame.md#vizdoom.DoomGame.set_sectors_info_enabled),
 - [examples/python/objects_and_sectors.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py).
 
+Note: added in 1.1.8.
 
 
 ```{eval-rst}
@@ -102,7 +102,7 @@ See also:
 
 ServerState is the main object returned by [`DoomGame.get_server_state`](./doomGame.md#vizdoom.DoomGame.get_server_state) method, and it purpose is to get more information about the state of the multi-player game.
 
-Added in 1.1.6.
-
 See also:
-- [`DoomGame.get_server_state`](./doomGame.md#vizdoom.DoomGame.get_server_state),
+- [`DoomGame.get_server_state`](./doomGame.md#vizdoom.DoomGame.get_server_state).
+
+Note: added in 1.1.6.

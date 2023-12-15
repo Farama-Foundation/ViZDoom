@@ -3,6 +3,11 @@
 import re
 
 
+def camel_case_to_snake_case(text):
+    """Converts CamelCase to snake_case"""
+    return re.sub(r"((?<=[a-z0-9])[A-Z]|(?!^)[A-Z](?=[a-z]))", r"_\1", text).lower()
+
+
 FILES_TO_PARSE = [
     {"filepath": "docs/api/cpp/doomGame.md", "namespace": "DoomGamePython"},
     {"filepath": "docs/api/cpp/utils.md"},
@@ -11,22 +16,41 @@ OUTPUT_FILE = "src/lib_python/ViZDoomMethodsDocstrings.h"
 RAW_STRING_ESCAPE_SEQ = "DOCSTRING"
 FUNCTION_HEADER_REGEX = r"^##+ *`([a-zA-Z]+)` *$"
 TO_REPLACE = [
-    (r"\[([`a-zA-Z]+)\]\(.*\)", r"\1"),  # Links
-    ("true", "True"),  # cpp -> python bool
-    ("false", "False"),  # cpp -> python bool
+    ("true", "`True`"),  # Cpp -> Python bool
+    ("false", "`False`"),  # Cpp -> Python bool
+    ("`nullptr/null/None`", "`None`"),  # Cpp -> Python None
+    (
+        r"\[(`[a-z][a-zA-Z]+`)?\]\(.*?\)",
+        r":meth:\1",
+    ),  # MD methods links -> :meth:`name`
+    (
+        r"\[`([A-Z][a-zA-Z]+)`?\]\(.*?\)",
+        r":class:`.\1`",
+    ),  # MD object links -> :class:`name`
+    (r"([^:])(`[<>/a-zA-Z0-9_\- \.,\"\']+?`)", r"\1`\2`"),  # `text` -> ``text``
+    (
+        r"\[([a-zA-Z/_\(\):\-\. \(\)]+)?\]\((.*)?\)",
+        r"`\1 <\2>`_",
+    ),  # MD links -> RT links
+    (r"\.md([#a-zA-Z\-]*)>`_", r"/\1>`_"),  # Fix links ending with .md
+    (
+        r"^See also:.*$",
+        "See also:\n",
+    ),  # See also: -> See also: \n (for nicer formatting of lists)
+]
+TO_PROCESS = [
+    (r":meth:`[a-z][a-zA-Z]+?`", camel_case_to_snake_case),  # CamelCase -> snake_case
+    (
+        r"``[a-z][a-zA-Z]+?`` argument",
+        camel_case_to_snake_case,
+    ),  # CamelCase -> snake_case
 ]
 LINES_TO_IGNORE_REGEXES = [
     r"---",  # Lines
     r"^\|.+\|$",  # Tables
-    r"^See also: .*$",  # See also
-    r"- \[.*\]\(.*\)",  # List of links starting with -
-    r"\* \[.*\]\(.*\)",  # List of links starting with *
-    r"^Added in .*$",  # Added in annotations
-    r"^Changed in .*$",  # Changed in annotations
-    r"^Deprecated since .*$",  # Deprecated since annotations
-    r"^Removed in .*$",  # Removed in annotations
-    r"^Config key: .*$",  # Config annotations
-    r"^Python aliases .*$",  # Python aliases
+    # r"^Config key: .*$",  # Config annotations
+    # r"^Note: .*$",  # Notes
+    r"^Python alias .*$",  # Python aliases
     r"^#+.*",  # Other headings
 ]
 
@@ -76,8 +100,13 @@ namespace docstrings {
                 elif started:
                     # Filter out some lines
                     if not any(re.match(r, line) for r in LINES_TO_IGNORE_REGEXES):
+                        # Replace some patterns
                         for r in TO_REPLACE:
                             line = re.sub(r[0], r[1], line)
+                        for r in TO_PROCESS:
+                            line = re.sub(
+                                r[0], lambda match: r[1](match.group(0)), line
+                            )
                         next_docstring += line
 
             if started:

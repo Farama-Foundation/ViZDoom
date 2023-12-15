@@ -37,33 +37,35 @@ class VizdoomEnv(gym.Env, EzPickle):
         Child classes are defined in gym_env_defns.py,
 
         Arguments:
-            level (str): path to the config file to load. Most settings should be set by this config file.
-            frame_skip (int): how many frames should be advanced per action. 1 = take action on every frame. Default: 1.
-            max_buttons_pressed (int): defines the number of binary buttons that can be selected at once. Default: 1.
+            level (str): The path to the config file to load. Most settings should be set by this config file.
+            frame_skip (int): The number of frames the will be advanced per action. 1 = take action on every frame. Default: 1.
+            max_buttons_pressed (int): Defines the number of binary buttons that can be selected at once. Default: 1.
                                        Should be >= 0. If < 0 a RuntimeError is raised.
-                                       If == 0, the binary action space becomes MultiDiscrete([2] * num_binary_buttons)
-                                       and [0, num_binary_buttons] number of binary buttons can be selected.
-                                       If > 0, the binary action space becomes Discrete(n)
-                                       and [0, max_buttons_pressed] number of binary buttons can be selected.
-            render_mode(Optional[str]): the render mode to use could be either 'human' or 'rgb_array'
+                                       If == 0, the binary action space becomes ``MultiDiscrete([2] * num_binary_buttons)``
+                                       and [0, ``num_binary_buttons``] number of binary buttons can be selected.
+                                       If > 0, the binary action space becomes ``Discrete(n)``
+                                       and ``n`` actions can be selected.
+                                       ``n`` is equal to number of possible buttons combinations
+                                       with the number of buttons pressed < ``max_buttons_pressed``.
+            render_mode(Optional[str]): The render mode to use could be either "human" or "rgb_array"
 
-        This environment forces window to be hidden. Use `render()` function to see the game.
+        This environment forces the game window to be hidden. Use :meth:`render` function to see the game.
 
-        Observations are dictionaries with different amount of entries, depending on if depth/label buffers were
+        Observations are dictionaries with different number of entries, depending on if depth/label buffers were
         enabled in the config file (CHANNELS == 1 if GRAY8, else 3):
-          "screen"        = the screen image buffer (always available) in shape (HEIGHT, WIDTH, CHANNELS)
-          "depth"         = the depth image in shape (HEIGHT, WIDTH, 1), if enabled by the config file,
-          "labels"        = the label image buffer in shape (HEIGHT, WIDTH, 1), if enabled by the config file.
-                            For info on labels, access `env.state.labels` variable.
-          "automap"       = the automap image buffer in shape (HEIGHT, WIDTH, CHANNELS), if enabled by the config file
-          "gamevariables" = all game variables, in the order specified by the config file
 
-        Action space can be a single one of binary/continuous action space, or a Dict containing both.
-          "binary":
-                          = MultiDiscrete([2] * num_binary_buttons): if max_buttons_pressed == 0
-                          = Discrete(n): if max_buttons_pressed > 1
-          "continuous":
-                          = Box(float32.min, float32.max, (num_delta_buttons,), float32).
+        - "screen": The screen image buffer (always available) as `np.ndarray` in shape ``(HEIGHT, WIDTH, CHANNELS)``.
+        - "depth": The depth image as ``np.ndarray`` in shape ``(HEIGHT, WIDTH, 1)``, if enabled by the config file.
+        - "labels": The label image buffer as `np.ndarray` in shape ``(HEIGHT, WIDTH, 1)``, if enabled by the config file.
+          For info on labels, access `env.state.labels` variable.
+        - "automap": The automap image buffer as ``np.ndarray`` in shape ``(HEIGHT, WIDTH, CHANNELS)``, if enabled by the config file.
+        - "gamevariables": All game variables, in the order specified by the config file.
+
+        Action space can be a single one of binary/continuous action space, or a ``Dict`` containing both:
+
+        - "binary": Is ``MultiDiscrete([2] * num_binary_buttons)`` if :attr:`max_buttons_pressed` == 0
+          or ``Discrete(num_binary_buttons + 1)`` if :attr:`max_buttons_pressed` >= 1.
+        - "continuous": Is ``Box(float32.min, float32.max, (num_delta_buttons,), float32)``.
         """
         EzPickle.__init__(self, level, frame_skip, max_buttons_pressed, render_mode)
         self.frame_skip = frame_skip
@@ -286,7 +288,7 @@ class VizdoomEnv(gym.Env, EzPickle):
         """
         Parses the currently available game buttons,
         reorganizes all delta buttons to be prior to any binary buttons
-        sets self.num_delta_buttons, self.num_binary_buttons
+        sets ``num_delta_buttons``, ``num_binary_buttons``
         """
         delta_buttons = []
         binary_buttons = []
@@ -307,7 +309,7 @@ class VizdoomEnv(gym.Env, EzPickle):
 
     def __get_binary_action_space(self):
         """
-        return binary action space: either Discrete(n)/MultiDiscrete([2,]*num_binary_buttons)
+        Return binary action space: either ``Discrete(n)``/``MultiDiscrete([2] * num_binary_buttons)``
         """
         if self.max_buttons_pressed == 0:
             button_space = gym.spaces.MultiDiscrete(
@@ -327,7 +329,7 @@ class VizdoomEnv(gym.Env, EzPickle):
 
     def __get_continuous_action_space(self):
         """
-        return continuous action space: Box(float32.min, float32.max, (num_delta_buttons,), float32)
+        Returns continuous action space: Box(float32.min, float32.max, (num_delta_buttons,), float32)
         """
         return gym.spaces.Box(
             np.finfo(np.float32).min,
@@ -338,11 +340,11 @@ class VizdoomEnv(gym.Env, EzPickle):
 
     def __get_action_space(self):
         """
-        return action space:
+        Returns action space:
             if both binary and delta buttons defined in the config file, action space will be:
-              Dict("binary": MultiDiscrete|Discrete, "continuous", Box)
+              ``Dict("binary": MultiDiscrete|Discrete, "continuous", Box)``
             else:
-              action space will be only one of the following MultiDiscrete|Discrete|Box
+              action space will be only one of the following ``MultiDiscrete``|``Discrete``|``Box``
         """
         if self.num_delta_buttons == 0:
             return self.__get_binary_action_space()
@@ -358,7 +360,7 @@ class VizdoomEnv(gym.Env, EzPickle):
 
     def __get_observation_space(self):
         """
-        return observation space: Dict with Box entry for each activated buffer:
+        Returns observation space: Dict with Box entry for each activated buffer:
           "screen", "depth", "labels", "automap", "gamevariables"
         """
         spaces = {
