@@ -330,10 +330,10 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p>All modes can be used in singleplayer and multiplayer.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#getmode"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getMode</span></code></span></a>,</p></li>
-<li><p><a class="reference internal" href="../doomGame/#setmode"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setMode</span></code></span></a>,</p></li>
-<li><p><a class="reference internal" href="../doomGame/#getticrate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getTicrate</span></code></span></a>,</p></li>
-<li><p><a class="reference internal" href="../doomGame/#setticrate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setTicrate</span></code></span></a>.</p></li>
+<li><p><a class="reference internal" href="../doomGame/#getmode"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getMode</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#setmode"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setMode</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#getticrate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getTicrate</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#setticrate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setTicrate</span></code></span></a>.</p></li>
 </ul>
 </section>
 <hr class="docutils" />
@@ -359,8 +359,8 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p><strong>depthBuffer</strong> and <strong>lablesBuffer</strong> always store single 8-bit values, so they always have [y, x] shape.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#getscreenformat"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getScreenFormat</span></code></span></a>,</p></li>
-<li><p><a class="reference internal" href="../doomGame/#setscreenformat"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setScreenFormat</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#getscreenformat"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getScreenFormat</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#setscreenformat"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setScreenFormat</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a>.</p></li>
 </ul>
 </section>
@@ -408,9 +408,9 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </ul>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#setscreenresolution"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setScreenResolution</span></code></span></a>,</p></li>
-<li><p><a class="reference internal" href="../doomGame/#getscreenwidth"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getScreenWidth</span></code></span></a>,</p></li>
-<li><p><a class="reference internal" href="../doomGame/#getscreenheight"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getScreenHeight</span></code></span></a>.</p></li>
+<li><p><a class="reference internal" href="../doomGame/#setscreenresolution"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setScreenResolution</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#getscreenwidth"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getScreenWidth</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#getscreenheight"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getScreenHeight</span></code></span></a>.</p></li>
 </ul>
 </section>
 <hr class="docutils" />
@@ -425,7 +425,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </ul>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#setautomapmode"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setAutomapMode</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#setautomapmode"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setAutomapMode</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a>.</p></li>
 </ul>
 </section>
@@ -484,17 +484,17 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </ul>
 <p>ACS global int variables can be accessed as USER GameVariables.
 global int 0 is reserved for reward and is always treated as Doom’s fixed point numeral.
-Other from 1 to 60 (global int 1-60) can be accessed as USER1 - USER60 GameVariables.
-If you assign fixed point numeral to USER1 - USER60 GameVariables,
+Other from 1 to 60 (global int 1-60) can be accessed as <code class="docutils literal notranslate"><span class="pre">USER1</span></code> - <code class="docutils literal notranslate"><span class="pre">USER60</span></code> GameVariables.
+If you assign fixed point numeral to <code class="docutils literal notranslate"><span class="pre">USER1</span></code> - <code class="docutils literal notranslate"><span class="pre">USER60</span></code> GameVariables,
 you can convert them to floating point by using <a class="reference internal" href="../utils/#doomfixedtodouble"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">doomFixedToDouble</span></code></span></a> function.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="http://zdoom.org/wiki/ACS">ZDoom Wiki: ACS</a>,</p></li>
-<li><p><a class="reference internal" href="../doomGame/#getavailablegamevariables"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getAvailableGameVariables</span></code></span></a>,</p></li>
-<li><p><a class="reference internal" href="../doomGame/#setavailablegamevariables"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setAvailableGameVariables</span></code></span></a>,</p></li>
-<li><p><a class="reference internal" href="../doomGame/#addavailablegamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">addAvailableGameVariable</span></code></span></a>,</p></li>
-<li><p><a class="reference internal" href="../doomGame/#getgamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getGameVariable</span></code></span></a>,</p></li>
-<li><p><a class="reference internal" href="../utils/#doomfixedtodouble"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Utilities:</span> <span class="pre">doomFixedToDouble</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#getavailablegamevariables"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getAvailableGameVariables</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#setavailablegamevariables"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setAvailableGameVariables</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#addavailablegamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::addAvailableGameVariable</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#getgamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getGameVariable</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../utils/#doomfixedtodouble"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">doomFixedToDouble</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/basic.py">examples/python/basic.py</a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/shaping.py">examples/python/shaping.py</a>.</p></li>
 </ul>
@@ -552,7 +552,7 @@ you can convert them to floating point by using <a class="reference internal" hr
 <h3>Delta buttons<a class="headerlink" href="#delta-buttons" title="Link to this heading">#</a></h3>
 <p>Buttons whose value defines the speed of movement.
 A positive value indicates movement in the first specified direction and a negative value in the second direction.
-For example: value 10 for MOVE_LEFT_RIGHT_DELTA means slow movement to the right and -100 means fast movement to the left.</p>
+For example: value 10 for <code class="docutils literal notranslate"><span class="pre">MOVE_LEFT_RIGHT_DELTA</span></code> means slow movement to the right and -100 means fast movement to the left.</p>
 <ul class="simple">
 <li><p><strong>LOOK_UP_DOWN_DELTA</strong></p></li>
 <li><p><strong>TURN_LEFT_RIGHT_DELTA</strong></p></li>
@@ -565,11 +565,11 @@ In case of <strong>MOVE_FORWARD_BACKWARD_DELTA</strong>, <strong>MOVE_LEFT_RIGHT
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://doomwiki.org/wiki/Map_unit">Doom Wiki: Map unit</a>,</p></li>
-<li><p><a class="reference internal" href="../doomGame/#getavailablebuttons"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getAvailableButtons</span></code></span></a>,</p></li>
-<li><p><a class="reference internal" href="../doomGame/#setavailablebuttons"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setAvailableButtons</span></code></span></a>,</p></li>
-<li><p><a class="reference internal" href="../doomGame/#addavailablebutton"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">addAvailableButton</span></code></span></a>,</p></li>
-<li><p><a class="reference internal" href="../doomGame/#setbuttonmaxvalue"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setButtonMaxValue</span></code></span></a>,</p></li>
-<li><p><a class="reference internal" href="../doomGame/#getbuttonmaxvalue"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getButtonMaxValue</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#getavailablebuttons"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getAvailableButtons</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#setavailablebuttons"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setAvailableButtons</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#addavailablebutton"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::addAvailableButton</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#setbuttonmaxvalue"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setButtonMaxValue</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#getbuttonmaxvalue"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getButtonMaxValue</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/basic.py">examples/python/basic.py</a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/delta_buttons.py">examples/python/delta_buttons.py</a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/182">GitHub issue: Angle changes by executing certain commands</a>.</p></li>
@@ -586,7 +586,7 @@ In case of <strong>MOVE_FORWARD_BACKWARD_DELTA</strong>, <strong>MOVE_LEFT_RIGHT
 </ul>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#setaudiosamplingrate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setAudioSamplingRate</span></code></span></a>.</p></li>
+<li><p><a class="reference internal" href="../doomGame/#setaudiosamplingrate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setAudioSamplingRate</span></code></span></a>.</p></li>
 </ul>
 <p>Note: added in 1.1.9.</p>
 </section>

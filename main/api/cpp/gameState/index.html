@@ -312,7 +312,7 @@
             
             <section class="tex2jax_ignore mathjax_ignore" id="gamestate">
 <h1>GameState<a class="headerlink" href="#gamestate" title="Link to this heading">#</a></h1>
-<p>GameState is the main object returned by <a class="reference internal" href="../doomGame/#getstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getState</span></code></span></a> method.
+<p>GameState is the main object returned by <a class="reference internal" href="../doomGame/#getstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getState</span></code></span></a> method.
 The declarations of all the enums can be found in the <code class="docutils literal notranslate"><span class="pre">include/ViZDoomTypes.h</span></code> header file.</p>
 <section id="id1">
 <h2><code class="docutils literal notranslate"><span class="pre">GameState</span></code><a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
@@ -332,7 +332,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <strong>tic</strong> - ingame time, 1 tic is 1/35 of second in the game world. Note: added in 1.1.1.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#getstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getState</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#getstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getState</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/basic.py">examples/python/basic.py</a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a>.</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a>.</p></li>
@@ -376,7 +376,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p><strong>x</strong>, <strong>y</strong>, <strong>width</strong>, <strong>height</strong> - describes bounding box of this particular object in <strong>labelsBuffer</strong>. Note: added in 1.1.5.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#setlabelsbufferenabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setLabelsBufferEnabled</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#setlabelsbufferenabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setLabelsBufferEnabled</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels_buffer.py">examples/python/objects_and_sectors.py</a>.</p></li>
 </ul>
 </section>
@@ -402,7 +402,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p><strong>name</strong> - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#setsectorsinfoenabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setObjectsInfoEnabled</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#setsectorsinfoenabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setObjectsInfoEnabled</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>.</p></li>
 </ul>
 <p>Note: added in 1.1.8.</p>
@@ -443,7 +443,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p><strong>lines</strong> - contains list of line segments, that forms sector.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#setsectorsinfoenabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setSectorsInfoEnabled</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#setsectorsinfoenabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setSectorsInfoEnabled</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>.</p></li>
 </ul>
 <p>Note: added in 1.1.8.</p>
@@ -463,10 +463,10 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int[]</span> <span class="pre">/</span> <span class="pre">list</span></code> **playersLastActionTic / players_last_action_tic **</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int[]</span> <span class="pre">/</span> <span class="pre">list</span></code> **playersLastKillTic / players_last_kill_tic **</p></li>
 </ul>
-<p>ServerState is the main object returned by <a class="reference internal" href="../doomGame/#getserverstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getServerState</span></code></span></a> method, and it purpose is to get more information about the state of the multi-player game.</p>
+<p>ServerState is the main object returned by <a class="reference internal" href="../doomGame/#getserverstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getServerState</span></code></span></a> method, and it purpose is to get more information about the state of the multi-player game.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#getserverstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getServerState</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#getserverstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getServerState</span></code></span></a>,</p></li>
 </ul>
 <p>Note: added in 1.1.6.</p>
 </section>
