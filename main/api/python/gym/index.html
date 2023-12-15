@@ -313,7 +313,9 @@
             <section class="tex2jax_ignore mathjax_ignore" id="openai-gym-env">
 <h1>OpenAI Gym Env<a class="headerlink" href="#openai-gym-env" title="Link to this heading">#</a></h1>
 <blockquote>
-<div><p>Gym is deprecated in favor of Gymnasium and these wrappers will be removed in the future.</p>
+<div><p>Gym is deprecated in favor of Gymnasium and these wrappers will be removed in the future.
+Please consider migrating to Gymnasium.
+To install gym wrapper you need to run <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">vizdoom[gym]</span></code> as it is not installed by default.</p>
 </div></blockquote>
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.gym_wrapper.base_gym_env.VizdoomEnv">
@@ -338,26 +340,31 @@ and [0, max_buttons_pressed] number of binary buttons can be selected.</p></li>
 <p>This environment forces window to be hidden. Use <cite>render()</cite> function to see the game.</p>
 <p>Observations are dictionaries with different amount of entries, depending on if depth/label buffers were
 enabled in the config file (CHANNELS == 1 if GRAY8, else 3):</p>
-<blockquote>
-<div><p>“screen”        = the screen image buffer (always available) in shape (HEIGHT, WIDTH, CHANNELS)
-“depth”         = the depth image in shape (HEIGHT, WIDTH, 1), if enabled by the config file,
-“labels”        = the label image buffer in shape (HEIGHT, WIDTH, 1), if enabled by the config file.</p>
-<blockquote>
-<div><p>For info on labels, access <cite>env.state.labels</cite> variable.</p>
-</div></blockquote>
-<p>“automap”       = the automap image buffer in shape (HEIGHT, WIDTH, CHANNELS), if enabled by the config file
-“gamevariables” = all game variables, in the order specified by the config file</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Action space can be a single one of binary/continuous action space, or a Dict containing both.</dt><dd><dl class="simple">
+<ul class="simple">
+<li><p>“screen”        = the screen image buffer (always available) in shape (HEIGHT, WIDTH, CHANNELS)</p></li>
+<li><p>“depth”         = the depth image in shape (HEIGHT, WIDTH, 1), if enabled by the config file,</p></li>
+<li><dl class="simple">
+<dt>“labels”        = the label image buffer in shape (HEIGHT, WIDTH, 1), if enabled by the config file.</dt><dd><p>For info on labels, access <cite>env.state.labels</cite> variable.</p>
+</dd>
+</dl>
+</li>
+<li><p>“automap”       = the automap image buffer in shape (HEIGHT, WIDTH, CHANNELS), if enabled by the config file</p></li>
+<li><p>“gamevariables” = all game variables, in the order specified by the config file</p></li>
+</ul>
+<p>Action space can be a single one of binary/continuous action space, or a Dict containing both.</p>
+<ul class="simple">
+<li><dl class="simple">
 <dt>“binary”:</dt><dd><p>= MultiDiscrete([2] * num_binary_buttons): if max_buttons_pressed == 0
 = Discrete(n): if max_buttons_pressed &gt; 1</p>
 </dd>
+</dl>
+</li>
+<li><dl class="simple">
 <dt>“continuous”:</dt><dd><p>= Box(float32.min, float32.max, (num_delta_buttons,), float32).</p>
 </dd>
 </dl>
-</dd>
-</dl>
+</li>
+</ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="vizdoom.gym_wrapper.base_gym_env.VizdoomEnv.close">
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gym_wrapper.base_gym_env.VizdoomEnv.close" title="Link to this definition">#</a></dt>

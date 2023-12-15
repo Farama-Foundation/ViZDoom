@@ -315,7 +315,7 @@
 <p>Instead of configuring the ViZDoom in code, you can load it from the configuration file(s). Each file is read sequentially, so multiple entries with the same key will overwrite previous entries.</p>
 <section id="format">
 <h2>Format<a class="headerlink" href="#format" title="Link to this heading">#</a></h2>
-<p>Each entry in a configraution file is a pair of <strong>key</strong> and <strong>value</strong> separated by an equal sign (<strong>“=”</strong>). The file format should also abide the following rules:</p>
+<p>Each entry in a configraution file is a pair of <strong>key</strong> and <strong>value</strong> separated by an equal sign (<strong><code class="docutils literal notranslate"><span class="pre">=</span></code></strong>). The file format should also abide the following rules:</p>
 <ul class="simple">
 <li><p>one entry per line (except for list parameters),</p></li>
 <li><p>case insensitive</p></li>
@@ -326,11 +326,11 @@
 <p>A violation of any of these rules will result in ignoring <strong>only</strong> the line with the error and sending a warning message to stderr (“WARNING! Loading config from: …”).</p>
 <section id="list-of-values">
 <h3>List of values<a class="headerlink" href="#list-of-values" title="Link to this heading">#</a></h3>
-<p><strong>available_buttons</strong> and <strong>available_game_variables</strong> are special parameters, which use multiple values and instead of a single value they expect a list of values separated by whitespaces and enclosed within braces (“{” and “}”). The list can stretch throughout multiple lines as long as all values are separated from each other by whitespaces.</p>
+<p><strong>available_buttons</strong> and <strong>available_game_variables</strong> are special parameters, which use multiple values and instead of a single value they expect a list of values separated by whitespaces and enclosed within braces (<code class="docutils literal notranslate"><span class="pre">{</span></code> and <code class="docutils literal notranslate"><span class="pre">}</span></code>). The list can stretch throughout multiple lines as long as all values are separated from each other by whitespaces.</p>
 </section>
 <section id="appending-values">
 <h3>Appending values<a class="headerlink" href="#appending-values" title="Link to this heading">#</a></h3>
-<p>Each list assignment (<strong>KEY = { VALUES }</strong>)clears values specified for this key before (in other configuration files or in the code). That is why the *<em>append operator(<em>KEY += { VALUES })</em></em> is available. This way you can more easily combine multiple configuration files and tinker in code.</p>
+<p>Each list assignment (<strong><code class="docutils literal notranslate"><span class="pre">KEY</span> <span class="pre">=</span> <span class="pre">{</span> <span class="pre">VALUES</span> <span class="pre">}</span></code></strong>)clears values specified for this key before (in other configuration files or in the code). That is why the <strong>append operator (<code class="docutils literal notranslate"><span class="pre">KEY</span> <span class="pre">+=</span> <span class="pre">{</span> <span class="pre">VALUES</span> <span class="pre">}</span></code>)</strong> is available. This way you can more easily combine multiple configuration files and tinker in code.</p>
 </section>
 <section id="supported-configuration-keys">
 <h3>Supported configuration keys:<a class="headerlink" href="#supported-configuration-keys" title="Link to this heading">#</a></h3>
@@ -342,8 +342,8 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">automapMode/automap_mode</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">automapRenderTextures/automap_render_textures</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">automapRotate/automap_rotate</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">availableButtons/available_buttons</span></code> (list)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">availableGameVariables/available_game_variables</span></code> (list)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">availableButtons/available_buttons</span></code> (list of values)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">availableGameVariables/available_game_variables</span></code> (list of values)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">consoleEnabled/console_enabled</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">deathPenalty/death_penalty</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">depthBufferEnabled/depth_buffer_enabled</span></code></p></li>
@@ -379,7 +379,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">ViZDoomPath/vizdoom_path</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">windowVisible/window_visible</span></code></p></li>
 </ul>
-<p>See also: <a class="reference internal" href="#DoomGame.md"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame</span></code></span></a> for config keys and functions related to them.</p>
+<p>Config keys are also mentioned for related methods in the documentation for <code class="docutils literal notranslate"><span class="pre">DoomGame</span></code> class.</p>
 </section>
 <section id="sample-configuration-file-content">
 <h3>Sample configuration file content:<a class="headerlink" href="#sample-configuration-file-content" title="Link to this heading">#</a></h3>
@@ -426,7 +426,7 @@
 <span class="na">doom_skill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">5</span>
 </pre></div>
 </div>
-<p>Other examples of configuration files can be found in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios">https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios</a></p>
+<p>Other examples of configuration files can be found in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios">scenarios</a> directory.</p>
 </section>
 </section>
 </section>

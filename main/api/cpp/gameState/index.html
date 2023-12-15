@@ -329,7 +329,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <li><p><code class="docutils literal notranslate"><span class="pre">std::vector&lt;Label&gt;</span> <span class="pre">/</span> <span class="pre">list</span></code>  <strong>labels</strong></p></li>
 </ul>
 <p><strong>number</strong> - number of the state in the episode.
-<strong>tic</strong> - ingame time, 1 tic is 1/35 of second in the game world. Added in 1.1.1.</p>
+<strong>tic</strong> - ingame time, 1 tic is 1/35 of second in the game world. Note: added in 1.1.1.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../doomGame/#getstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getState</span></code></span></a>,</p></li>
@@ -373,7 +373,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p><strong>objectId / object_id</strong> - unique object ID, if both Labels and Objects information is enabled, this will be the same as <strong>id</strong> in corresponding <strong>Object</strong>.</p>
 <p><strong>objectName / object_name</strong> - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).</p>
 <p><strong>value</strong> - value that represents this particular object in <strong>labelsBuffer</strong>.</p>
-<p><strong>x</strong>, <strong>y</strong>, <strong>width</strong>, <strong>height</strong> - describes bounding box of this particular object in <strong>labelsBuffer</strong>. Added in 1.1.5.</p>
+<p><strong>x</strong>, <strong>y</strong>, <strong>width</strong>, <strong>height</strong> - describes bounding box of this particular object in <strong>labelsBuffer</strong>. Note: added in 1.1.5.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../doomGame/#setlabelsbufferenabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setLabelsBufferEnabled</span></code></span></a>,</p></li>
@@ -400,12 +400,12 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p>Description of the object present in the game world.</p>
 <p><strong>id</strong> - unique object ID.</p>
 <p><strong>name</strong> - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).</p>
-<p>Added in 1.1.8.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../doomGame/#setsectorsinfoenabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setObjectsInfoEnabled</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>.</p></li>
 </ul>
+<p>Note: added in 1.1.8.</p>
 </section>
 <hr class="docutils" />
 <section id="line">
@@ -422,11 +422,11 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p><strong>x1</strong>, <strong>y1</strong> - position of the line’s first vertex.</p>
 <p><strong>x2</strong>, <strong>y2</strong> - position of the line’s second vertex.</p>
 <p><strong>isBlocking / is_blocking</strong> - is true, if line is a wall that can’t be passed.</p>
-<p>Added in 1.1.8.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>.</p></li>
 </ul>
+<p>Note: added in 1.1.8.</p>
 </section>
 <hr class="docutils" />
 <section id="sector">
@@ -441,12 +441,12 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p><strong>floorHeight / floor_height</strong> - height of the sector’s floor.</p>
 <p><strong>ceilingHeight / ceiling_height</strong> - height of the sector’s ceiling.</p>
 <p><strong>lines</strong> - contains list of line segments, that forms sector.</p>
-<p>Added in 1.1.8.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../doomGame/#setsectorsinfoenabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">setSectorsInfoEnabled</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>.</p></li>
 </ul>
+<p>Note: added in 1.1.8.</p>
 </section>
 </section>
 <hr class="docutils" />
@@ -464,11 +464,11 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int[]</span> <span class="pre">/</span> <span class="pre">list</span></code> **playersLastKillTic / players_last_kill_tic **</p></li>
 </ul>
 <p>ServerState is the main object returned by <a class="reference internal" href="../doomGame/#getserverstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getServerState</span></code></span></a> method, and it purpose is to get more information about the state of the multi-player game.</p>
-<p>Added in 1.1.6.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../doomGame/#getserverstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame:</span> <span class="pre">getServerState</span></code></span></a>,</p></li>
 </ul>
+<p>Note: added in 1.1.6.</p>
 </section>
 </section>
 

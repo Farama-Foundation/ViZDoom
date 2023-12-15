@@ -320,41 +320,37 @@ Child classes are defined in gym_env_defns.py,</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>level</strong> (<em>str</em>) – path to the config file to load. Most settings should be set by this config file.</p></li>
-<li><p><strong>frame_skip</strong> (<em>int</em>) – how many frames should be advanced per action. 1 = take action on every frame. Default: 1.</p></li>
-<li><p><strong>max_buttons_pressed</strong> (<em>int</em>) – defines the number of binary buttons that can be selected at once. Default: 1.
+<li><p><strong>level</strong> (<em>str</em>) – The path to the config file to load. Most settings should be set by this config file.</p></li>
+<li><p><strong>frame_skip</strong> (<em>int</em>) – The number of frames the will be advanced per action. 1 = take action on every frame. Default: 1.</p></li>
+<li><p><strong>max_buttons_pressed</strong> (<em>int</em>) – Defines the number of binary buttons that can be selected at once. Default: 1.
 Should be &gt;= 0. If &lt; 0 a RuntimeError is raised.
-If == 0, the binary action space becomes MultiDiscrete([2] * num_binary_buttons)
-and [0, num_binary_buttons] number of binary buttons can be selected.
-If &gt; 0, the binary action space becomes Discrete(n)
-and [0, max_buttons_pressed] number of binary buttons can be selected.</p></li>
-<li><p><strong>render_mode</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – the render mode to use could be either ‘human’ or ‘rgb_array’</p></li>
+If == 0, the binary action space becomes <code class="docutils literal notranslate"><span class="pre">MultiDiscrete([2]</span> <span class="pre">*</span> <span class="pre">num_binary_buttons)</span></code>
+and [0, <code class="docutils literal notranslate"><span class="pre">num_binary_buttons</span></code>] number of binary buttons can be selected.
+If &gt; 0, the binary action space becomes <code class="docutils literal notranslate"><span class="pre">Discrete(n)</span></code>
+and <code class="docutils literal notranslate"><span class="pre">n</span></code> actions can be selected.
+<code class="docutils literal notranslate"><span class="pre">n</span></code> is equal to number of possible buttons combinations
+with the number of buttons pressed &lt; <code class="docutils literal notranslate"><span class="pre">max_buttons_pressed</span></code>.</p></li>
+<li><p><strong>render_mode</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – The render mode to use could be either “human” or “rgb_array”</p></li>
 </ul>
 </dd>
 </dl>
-<p>This environment forces window to be hidden. Use <cite>render()</cite> function to see the game.</p>
-<p>Observations are dictionaries with different amount of entries, depending on if depth/label buffers were
+<p>This environment forces the game window to be hidden. Use <a class="reference internal" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.render" title="vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.render"><code class="xref py py-meth docutils literal notranslate"><span class="pre">render()</span></code></a> function to see the game.</p>
+<p>Observations are dictionaries with different number of entries, depending on if depth/label buffers were
 enabled in the config file (CHANNELS == 1 if GRAY8, else 3):</p>
-<blockquote>
-<div><p>“screen”        = the screen image buffer (always available) in shape (HEIGHT, WIDTH, CHANNELS)
-“depth”         = the depth image in shape (HEIGHT, WIDTH, 1), if enabled by the config file,
-“labels”        = the label image buffer in shape (HEIGHT, WIDTH, 1), if enabled by the config file.</p>
-<blockquote>
-<div><p>For info on labels, access <cite>env.state.labels</cite> variable.</p>
-</div></blockquote>
-<p>“automap”       = the automap image buffer in shape (HEIGHT, WIDTH, CHANNELS), if enabled by the config file
-“gamevariables” = all game variables, in the order specified by the config file</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Action space can be a single one of binary/continuous action space, or a Dict containing both.</dt><dd><dl class="simple">
-<dt>“binary”:</dt><dd><p>= MultiDiscrete([2] * num_binary_buttons): if max_buttons_pressed == 0
-= Discrete(n): if max_buttons_pressed &gt; 1</p>
-</dd>
-<dt>“continuous”:</dt><dd><p>= Box(float32.min, float32.max, (num_delta_buttons,), float32).</p>
-</dd>
-</dl>
-</dd>
-</dl>
+<ul class="simple">
+<li><p>“screen”: The screen image buffer (always available) as <cite>np.ndarray</cite> in shape <code class="docutils literal notranslate"><span class="pre">(HEIGHT,</span> <span class="pre">WIDTH,</span> <span class="pre">CHANNELS)</span></code>.</p></li>
+<li><p>“depth”: The depth image as <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> in shape <code class="docutils literal notranslate"><span class="pre">(HEIGHT,</span> <span class="pre">WIDTH,</span> <span class="pre">1)</span></code>, if enabled by the config file.</p></li>
+<li><p>“labels”: The label image buffer as <cite>np.ndarray</cite> in shape <code class="docutils literal notranslate"><span class="pre">(HEIGHT,</span> <span class="pre">WIDTH,</span> <span class="pre">1)</span></code>, if enabled by the config file.
+For info on labels, access <cite>env.state.labels</cite> variable.</p></li>
+<li><p>“automap”: The automap image buffer as <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> in shape <code class="docutils literal notranslate"><span class="pre">(HEIGHT,</span> <span class="pre">WIDTH,</span> <span class="pre">CHANNELS)</span></code>, if enabled by the config file.</p></li>
+<li><p>“gamevariables”: All game variables, in the order specified by the config file.</p></li>
+</ul>
+<p>Action space can be a single one of binary/continuous action space, or a <code class="docutils literal notranslate"><span class="pre">Dict</span></code> containing both:</p>
+<ul class="simple">
+<li><p>“binary”: Is <code class="docutils literal notranslate"><span class="pre">MultiDiscrete([2]</span> <span class="pre">*</span> <span class="pre">num_binary_buttons)</span></code> if <code class="xref py py-attr docutils literal notranslate"><span class="pre">max_buttons_pressed</span></code> == 0
+or <code class="docutils literal notranslate"><span class="pre">Discrete(num_binary_buttons</span> <span class="pre">+</span> <span class="pre">1)</span></code> if <code class="xref py py-attr docutils literal notranslate"><span class="pre">max_buttons_pressed</span></code> &gt;= 1.</p></li>
+<li><p>“continuous”: Is <code class="docutils literal notranslate"><span class="pre">Box(float32.min,</span> <span class="pre">float32.max,</span> <span class="pre">(num_delta_buttons,),</span> <span class="pre">float32)</span></code>.</p></li>
+</ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.close">
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.close" title="Link to this definition">#</a></dt>
