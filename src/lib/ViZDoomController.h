@@ -83,12 +83,16 @@ namespace vizdoom {
 /* OSes */
 #ifdef __linux__
     #define OS_LINUX
+    #define OS_POSIX
     #include <sys/types.h>
     #include <signal.h>
 #elif _WIN32
     #define OS_WIN
 #elif __APPLE__
     #define OS_OSX
+    #define OS_POSIX
+    #include <sys/types.h>
+    #include <signal.h>
 #endif
 
     class DoomController {
@@ -329,7 +333,7 @@ namespace vizdoom {
 
         b::thread *doomThread;
 
-        #ifdef OS_LINUX
+        #ifdef OS_POSIX
             pid_t doomProcessPid;
         #endif
 

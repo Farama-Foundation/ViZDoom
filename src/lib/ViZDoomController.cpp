@@ -212,7 +212,7 @@ namespace vizdoom {
 
                 this->MQDoom->send(MSG_CODE_CLOSE);
 
-                #ifdef OS_LINUX
+                #ifdef OS_POSIX
                     if(0 == kill(this->doomProcessPid, 0)){
                         bpr::child doomProcess(this->doomProcessPid);
                         bpr::terminate(doomProcess);
@@ -1415,7 +1415,7 @@ namespace vizdoom {
             this->doomArgs.push_back("+viz_window_hidden");
             this->doomArgs.push_back("1");
 
-            #ifdef OS_LINUX
+            #ifdef OS_POSIX
                 if (this->noXServer){
                     this->doomArgs.push_back("+viz_noxserver");
                     this->doomArgs.push_back("1");
@@ -1464,7 +1464,7 @@ namespace vizdoom {
     void DoomController::launchDoom() {
         try {
             bpr::child doomProcess = bpr::execute(bpri::set_args(this->doomArgs), bpri::inherit_env());
-            #ifdef OS_LINUX
+            #ifdef OS_POSIX
                 this->doomProcessPid = doomProcess.pid;
             #endif
             bpr::wait_for_exit(doomProcess);
