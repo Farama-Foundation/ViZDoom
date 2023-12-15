@@ -123,8 +123,8 @@ Enum type that defines all variables that can be obtained from the game. Below w
 - **USER1** - **USER60**    - user defined variables. ACS global int variables can be accessed as USER GameVariables.
 global int 0 is reserved for reward and is always threaded as Doom fixed point numeral.
 Other from 1 to 60 (global int 1-60) can be accessed as USER1 - USER60 GameVariables.
-If you assign fixed point numeral to USER1 - USER60 GameVariables, 
-you can convert them to floating point by using [`doom_fixed_to_float`](./utils.md#vizdoom.doom_fixed_to_float) function. 
+If you assign fixed point numeral to USER1 - USER60 GameVariables,
+you can convert them to floating point by using [`doom_fixed_to_float`](./utils.md#vizdoom.doom_fixed_to_float) function.
 
 See also:
 - [ZDoom Wiki: ACS](http://zdoom.org/wiki/ACS),

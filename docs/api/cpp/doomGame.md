@@ -55,7 +55,7 @@ Note: Changed in 1.1.0
 | Python | `replay_episode(file_path: str, player: int = 0) -> None`            |
 
 Replays the recorded episode from the given file using the perspective of the specified player.
-Players are numbered from 1, If `player` argument is equal to 0, 
+Players are numbered from 1, If `player` argument is equal to 0,
 the episode will be replayed using the perspective of the default player in the recording file.
 After calling this method, the first state from the replay will be available.
 All rewards, variables, and states are available when replaying the episode.
@@ -172,7 +172,7 @@ Returns true if the current episode is in the initial state - the first state, n
 | Python | `is_episode_finished() -> bool` |
 
 Returns true if the current episode is in the terminal state (is finished).
-[`makeAction`](#makeaction) and [`advanceAction`](#advanceaction) methods 
+[`makeAction`](#makeaction) and [`advanceAction`](#advanceaction) methods
 will take no effect after this point (unless [`newEpisode`](#newepisode) method is called).
 
 
@@ -251,7 +251,7 @@ Note: added in 1.1.6.
 | Python | `get_last_action() -> list`           |
 
 Returns the last action performed.
-Each value corresponds to a button added with [`setAvailableButtons`](#setAvailableButtons) 
+Each value corresponds to a button added with [`setAvailableButtons`](#setAvailableButtons)
 or/and [`addAvailableButton`](#addAvailableButton) (in order of appearance).
 Most useful in `SPECTATOR` mode.
 

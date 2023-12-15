@@ -19,16 +19,31 @@ TO_REPLACE = [
     ("true", "`True`"),  # Cpp -> Python bool
     ("false", "`False`"),  # Cpp -> Python bool
     ("`nullptr/null/None`", "`None`"),  # Cpp -> Python None
-    (r"\[(`[a-z][a-zA-Z]+`)?\]\(.*?\)", r":meth:\1"),  # MD methods links -> :meth:`name`
-    (r"\[`([A-Z][a-zA-Z]+)`?\]\(.*?\)", r":class:`.\1`"),  # MD object links -> :class:`name`
+    (
+        r"\[(`[a-z][a-zA-Z]+`)?\]\(.*?\)",
+        r":meth:\1",
+    ),  # MD methods links -> :meth:`name`
+    (
+        r"\[`([A-Z][a-zA-Z]+)`?\]\(.*?\)",
+        r":class:`.\1`",
+    ),  # MD object links -> :class:`name`
     (r"([^:])(`[<>/a-zA-Z0-9_\- \.,\"\']+?`)", r"\1`\2`"),  # `text` -> ``text``
-    (r"\[([a-zA-Z/_\(\):\-\. \(\)]+)?\]\((.*)?\)", r"`\1 <\2>`_"),  # MD links -> RT links
+    (
+        r"\[([a-zA-Z/_\(\):\-\. \(\)]+)?\]\((.*)?\)",
+        r"`\1 <\2>`_",
+    ),  # MD links -> RT links
     (r"\.md([#a-zA-Z\-]*)>`_", r".html\1>`_"),  # Fix links ending with .md
-    (r"^See also:.*$", "See also:\n"),  # See also: -> See also: \n (for nicer formatting of lists)
+    (
+        r"^See also:.*$",
+        "See also:\n",
+    ),  # See also: -> See also: \n (for nicer formatting of lists)
 ]
 TO_PROCESS = [
     (r":meth:`[a-z][a-zA-Z]+?`", camel_case_to_snake_case),  # CamelCase -> snake_case
-    (r"``[a-z][a-zA-Z]+?`` argument", camel_case_to_snake_case),  # CamelCase -> snake_case
+    (
+        r"``[a-z][a-zA-Z]+?`` argument",
+        camel_case_to_snake_case,
+    ),  # CamelCase -> snake_case
 ]
 LINES_TO_IGNORE_REGEXES = [
     r"---",  # Lines
@@ -89,7 +104,9 @@ namespace docstrings {
                         for r in TO_REPLACE:
                             line = re.sub(r[0], r[1], line)
                         for r in TO_PROCESS:
-                            line = re.sub(r[0], lambda match: r[1](match.group(0)), line)
+                            line = re.sub(
+                                r[0], lambda match: r[1](match.group(0)), line
+                            )
                         next_docstring += line
 
             if started:
