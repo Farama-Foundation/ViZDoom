@@ -318,9 +318,6 @@ Has no effect when the game is running.
 
 Config key: `availableButtons`/`available_buttons` (list of values)
 
-See also:
-- [Configuration files: List of values](../configurationFiles.md#list-of-values)
-
 
 ---
 ### `addAvailableButton`
@@ -335,9 +332,6 @@ If the given button has already been added, it will not be added again, but the 
 Has no effect when the game is running.
 
 Config key: `availableButtons`/`available_buttons` (list of values)
-
-See also:
-- [Configuration files: List of values](../configurationFiles.md#list-of-values)
 
 
 ---
@@ -423,9 +417,6 @@ Has no effect when the game is running.
 
 Config key: `availableGameVariables`/`available_game_variables` (list of values)
 
-See also:
-- [Configuration files: List of values](../configurationFiles.md#list-of-values)
-
 
 ---
 ### `addAvailableGameVariable`
@@ -440,9 +431,6 @@ Has no effect when the game is running.
 
 Config key: `availableGameVariables`/`available_game_variables` (list of values)
 
-See also:
-- [Configuration files: List of values](../configurationFiles.md#list-of-values)
-
 
 ---
 ### `clearAvailableGameVariables`
@@ -455,9 +443,6 @@ Clears the list of available [`GameVariable`](./enums.md#gamevariable) s that ar
 
 Has no effect when the game is running.
 
-See also:
-- [Configuration files: List of values](../configurationFiles.md#list-of-values)
-
 
 ---
 ### `getAvailableGameVariablesSize`
@@ -468,9 +453,6 @@ See also:
 
 Returns the number of available [`GameVariable`](./enums.md#gamevariable).
 It corresponds to taking the size of the list returned by [`getAvailableGameVariables`](#getavailablegamevariables).
-
-See also:
-- [Configuration files: List of values](../configurationFiles.md#list-of-values)
 
 
 ---
@@ -633,9 +615,6 @@ The method returns true if the whole configuration file was correctly read and a
 false if the file contained errors.
 
 If the file relative path is given, it will be searched for in the following order: `<current directory>`, `<current directory>/scenarios/`, `<ViZDoom library location>/scenarios/`.
-
-See also:
-- [Configuration files](../configurationFiles.md)
 
 
 ---
