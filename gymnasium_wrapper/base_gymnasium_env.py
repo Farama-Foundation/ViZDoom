@@ -142,7 +142,7 @@ class VizdoomEnv(gym.Env, EzPickle):
             if self.num_delta_buttons != 0:
                 agent_action = agent_action["binary"]
 
-            if isinstance(agent_action, int):
+            if np.issubdtype(type(agent_action), np.integer):
                 agent_action = self.button_map[agent_action]
 
             # binary actions offset by number of delta buttons
