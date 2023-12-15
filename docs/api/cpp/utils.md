@@ -63,9 +63,9 @@ Note: added in 1.1.0
 | Python | `doom_fixed_to_double(doom_fixed: int | float) -> float` |
 
 Converts fixed point numeral to a floating point value.
-Doom's engine internally use fixed point numbers.
-If you read them from `USER0` - `USER60` variables,
-you should convert them to floating point numbers.
+Doom engine internally use fixed point numbers.
+If you assign fixed point numeral to `USER1` - `USER60` GameVariables,
+you can convert them to floating point by using this function.
 
 Python alias (added in 1.1.0): `doom_fixed_to_float(doomFixed: int | float) -> float`
 

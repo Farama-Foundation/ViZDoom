@@ -135,22 +135,14 @@ that were added with :meth:`set_available_buttons` or/and :meth:`add_available_b
 
 Has no effect when the game is running.
 
-Config key: ``availableButtons``/``available_buttons`` (list of values)
-
-See also:
-
-- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
+Config key: ``availableButtons``/``available_buttons`` (list of values))DOCSTRING";
 
     const char *addAvailableButton = R"DOCSTRING(Adds :class:`.Button` type (e.g. ``TURN_LEFT``, ``MOVE_FORWARD``) to available buttons and sets the maximum allowed, absolute value for the specified button.
 If the given button has already been added, it will not be added again, but the maximum value will be overridden.
 
 Has no effect when the game is running.
 
-Config key: ``availableButtons``/``available_buttons`` (list of values)
-
-See also:
-
-- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
+Config key: ``availableButtons``/``available_buttons`` (list of values))DOCSTRING";
 
     const char *clearAvailableButtons = R"DOCSTRING(Clears all available :class:`.Button`s added so far.
 
@@ -176,36 +168,20 @@ that were added with :meth:`set_available_game_variables` or/and :meth:`add_avai
 
 Has no effect when the game is running.
 
-Config key: ``availableGameVariables``/``available_game_variables`` (list of values)
-
-See also:
-
-- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
+Config key: ``availableGameVariables``/``available_game_variables`` (list of values))DOCSTRING";
 
     const char *addAvailableGameVariable = R"DOCSTRING(Adds the specified :class:`.GameVariable` to the list of available game variables (e.g. ``HEALTH``, ``AMMO1``, ``ATTACK_READY``) in the :class:`.GameState` returned by :meth:`get_state` method.
 
 Has no effect when the game is running.
 
-Config key: ``availableGameVariables``/``available_game_variables`` (list of values)
-
-See also:
-
-- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
+Config key: ``availableGameVariables``/``available_game_variables`` (list of values))DOCSTRING";
 
     const char *clearAvailableGameVariables = R"DOCSTRING(Clears the list of available :class:`.GameVariable` s that are included in the :class:`.GameState` returned by :meth:`get_state` method.
 
-Has no effect when the game is running.
-
-See also:
-
-- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
+Has no effect when the game is running.)DOCSTRING";
 
     const char *getAvailableGameVariablesSize = R"DOCSTRING(Returns the number of available :class:`.GameVariable`.
-It corresponds to taking the size of the list returned by :meth:`get_available_game_variables`.
-
-See also:
-
-- `Configuration files: List of values <../configurationFiles/#list-of-values>`_)DOCSTRING";
+It corresponds to taking the size of the list returned by :meth:`get_available_game_variables`.)DOCSTRING";
 
     const char *getGameVariable = R"DOCSTRING(Returns the current value of the specified :class:`.GameVariable` (``HEALTH``, ``AMMO1`` etc.).
 The specified game variable does not need to be among available game variables (included in the state).
@@ -268,11 +244,7 @@ Overwriting does not involve resetting to default values. Thus only overlapping 
 The method returns ``True`` if the whole configuration file was correctly read and applied,
 `False` if the file contained errors.
 
-If the file relative path is given, it will be searched for in the following order: ``<current directory>``, ``<current directory>/scenarios/``, ``<ViZDoom library location>/scenarios/``.
-
-See also:
-
-- `Configuration files <../configurationFiles/>`_)DOCSTRING";
+If the file relative path is given, it will be searched for in the following order: ``<current directory>``, ``<current directory>/scenarios/``, ``<ViZDoom library location>/scenarios/``.)DOCSTRING";
 
     const char *getMode = R"DOCSTRING(Returns the current :class:`.Mode` (``PLAYER``, ``SPECTATOR``, ``ASYNC_PLAYER``, ``ASYNC_SPECTATOR``).)DOCSTRING";
 
@@ -738,9 +710,9 @@ Note: added in 1.1.0)DOCSTRING";
 Note: added in 1.1.0)DOCSTRING";
 
     const char *doomFixedToDouble = R"DOCSTRING(Converts fixed point numeral to a floating point value.
-Doom's engine internally use fixed point numbers.
-If you read them from ``USER0`` - ``USER60`` variables,
-you should convert them to floating point numbers.)DOCSTRING";
+Doom engine internally use fixed point numbers.
+If you assign fixed point numeral to ``USER1`` - ``USER60`` GameVariables,
+you can convert them to floating point by using this function.)DOCSTRING";
 
     const char *isBinaryButton = R"DOCSTRING(Returns ``True`` if :class:`.Button` is binary button.)DOCSTRING";
 
