@@ -1,0 +1,845 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="">
+    <meta property="og:title" content="ViZDoom Documentation" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="" />
+    <meta property="og:url" content="https://vizdoom.farama.org/faq/index.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex/" /><link rel="search" title="Search" href="../search/" /><link rel="next" title="How to cite" href="../citation/" /><link rel="prev" title="Creating a custom environment" href="../environments/creatingCustom/" />
+        <link rel="canonical" href="https://vizdoom.farama.org/faq/index.html" />
+
+    <link rel="shortcut icon" href="../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+        <title>FAQ - ViZDoom Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=49cbaffd" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    <header class="farama-header" aria-label="Farama header">
+      <div class="farama-header__container">
+        <div class="farama-header__left--mobile">
+          <label class="nav-overlay-icon" for="__navigation">
+            <div class="visually-hidden">Toggle site navigation sidebar</div>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <defs></defs>
+              <line x1="0.5" y1="4" x2="23.5" y2="4"></line>
+              <line x1="0.232" y1="12" x2="23.5" y2="12"></line>
+              <line x1="0.232" y1="20" x2="23.5" y2="20"></line>
+            </svg>
+          </label>
+        </div>
+        <div class="farama-header__left farama-header__center--mobile">
+          <a href="../">
+              <img class="farama-header__logo only-light" src="../_static/img/vizdoom-black.svg" alt="Light Logo"/>
+              <img class="farama-header__logo only-dark" src="../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
+            <span class="farama-header__title">ViZDoom Documentation</span>
+          </a>
+        </div>
+        <div class="farama-header__right">
+          <div class="farama-header-menu">
+            <button class="farama-header-menu__btn" aria-label="Open Farama Menu" aria-expanded="false" aria-haspopup="true" aria-controls="farama-menu">
+              <img class="farama-black-logo-invert" src="../_static/img/farama-logo-header.svg">
+              <svg viewBox="0 0 24 24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <polyline style="stroke-linecap: round; stroke-linejoin: round; fill: none; stroke-width: 2px;" points="1 7 12 18 23 7"></polyline>
+              </svg>
+            </button>
+            <div class="farama-header-menu-container farama-hidden" aria-hidden="true" id="farama-menu">
+              <div class="farama-header-menu__header">
+                <a href="https://farama.org">
+                  <img class="farama-header-menu__logo farama-white-logo-invert" src="../_static/img/farama_solid_white.svg" alt="Farama Foundation logo">
+                  <span>Farama Foundation</span>
+                </a>
+                <div class="farama-header-menu-header__right">
+                  <button id="farama-close-menu">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-close">
+                      <line x1="3" y1="21" x2="21" y2="3"></line>
+                      <line x1="3" y1="3" x2="21" y2="21"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="farama-header-menu__body">
+                <!-- Response from farama.org/api/projects.json -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="page">
+  <!--<header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../"><div class="brand">ViZDoom Documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>-->
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="farama-sidebar__title" href="../">
+      <img class="farama-header__logo only-light" src="../_static/img/vizdoom-black.svg" alt="Light Logo"/>
+      <img class="farama-header__logo only-dark" src="../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
+    <span class="farama-header__title">ViZDoom Documentation</span>
+  </a><form class="sidebar-search-container" method="get" action="../search/" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/pythonQuickstart/">Python quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/building/">Building from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/apisAndWrappers/">APIs and wrappers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/python/doomGame/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/python/gameState/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/python/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/python/utils/">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/python/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/python/gymnasium/">Gymnasium Env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/python/gym/">OpenAI Gym Env</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/cpp/doomGame/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/cpp/gameState/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/cpp/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/cpp/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/cpp/utils/">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/configurationFiles/">Configuration files</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../environments/default/">Default scenarios/environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/creatingCustom/">Creating a custom environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citation/">How to cite</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://vizdoom.cs.put.edu.pl/">Original website</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom">Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes/">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/blob/master/docs/README.md">Contribute to the Docs</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main-container">
+
+    
+
+    
+
+    <div class="main">
+      <div class="content">
+        <div class="article-container">
+          <a href="#" class="back-to-top muted-link">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+            </svg>
+            <span>Back to top</span>
+          </a>
+          <div class="content-icon-container"><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/faq/index.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+              <button class="theme-toggle" title="Toggle color theme">
+                <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                <svg class="theme-icon-when-auto">
+                  <use href="#svg-sun-half"></use>
+                </svg>
+                <svg class="theme-icon-when-dark">
+                  <use href="#svg-moon"></use>
+                </svg>
+                <svg class="theme-icon-when-light">
+                  <use href="#svg-sun"></use>
+                </svg>
+              </button>
+            </div>
+            <label class="toc-overlay-icon toc-content-icon" for="__toc">
+              <div class="visually-hidden">Toggle table of contents sidebar</div>
+              <i class="icon"><svg>
+                  <use href="#svg-toc"></use>
+                </svg></i>
+            </label>
+          </div>
+          <article role="main">
+            
+            <section class="tex2jax_ignore mathjax_ignore" id="faq">
+<h1>FAQ<a class="headerlink" href="#faq" title="Link to this heading">#</a></h1>
+<p>This file contains a list of questions that ViZDoom users may ask at some point.
+You can find more questions and answers by searching for issues with “question” tag
+(<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues?utf8=%E2%9C%93&amp;amp;q=is%3Aissue+label%3Aquestion">is:issue label:question</a>).</p>
+<p>Did not find answer for your question? Post an <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues">issue</a></p>
+<section id="how-to-use-original-doom-s-assets">
+<h2>How to use original Doom’s assets?<a class="headerlink" href="#how-to-use-original-doom-s-assets" title="Link to this heading">#</a></h2>
+<p>We cannot provide original Doom’s assets due to licensing issues, that is why ViZDoom uses <a class="reference external" href="https://freedoom.github.io">freedoom2.wad</a> as default assets.
+If you own original Doom or Doom 2 game (can be bought them on Steam or GOG), you can replace Freedoom graphics with original Doom’s assets by placing doom.wad or doom2.wad into your working directory or vizdoom package directory (same directory as vizdoom(.exe)). Alternatively, any base game WAD (including other Doom engine-based games) can be used by pointing to it with the <a class="reference internal" href="../api/python/doomGame/#vizdoom.DoomGame.set_doom_game_path"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_doom_game_path</span></code></span></a> method. On Unix you can also set <code class="docutils literal notranslate"><span class="pre">DOOMWADDIR</span></code> environment variable to directory with your wads files.</p>
+</section>
+<section id="how-to-create-modify-scenarios">
+<h2>How to create/modify scenarios?<a class="headerlink" href="#how-to-create-modify-scenarios" title="Link to this heading">#</a></h2>
+<p>You can create or modify existing scenarios using many available Doom map editors.
+We recommend using one of these two editors:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://slade.mancubus.net/">SLADE3</a> - great Doom map (scenario) editor for Linux, MacOS and Windows.</p></li>
+<li><p><a class="reference external" href="http://www.doombuilder.com/">Doom Builder 2</a> - another great Doom map editor for Windows.</p></li>
+</ul>
+<p>You should select ZDoom as your Doom engine version and UDMF map format (Universal Doom Map Format),
+that supports the widest range of features.</p>
+<p>For more details check</p>
+<p><strong>Original issue and answer:</strong>
+<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/319">https://github.com/Farama-Foundation/ViZDoom/issues/319</a></p>
+</section>
+<section id="how-to-stack-frames">
+<h2>How to stack frames?<a class="headerlink" href="#how-to-stack-frames" title="Link to this heading">#</a></h2>
+<p>ViZDoom does not automatically stacks frames for you.
+You have to manually store the states from <a class="reference internal" href="../api/python/doomGame/#vizdoom.DoomGame.get_state"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_state</span></code></span></a>. and build up stacked states for your agent.</p>
+<p><strong>Original issue and answer: (contains code an example)</strong>
+<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/296">https://github.com/Farama-Foundation/ViZDoom/issues/296</a></p>
+</section>
+<section id="how-to-change-keyboard-binding-for-spectator-mode">
+<h2>How to change keyboard binding for Spectator Mode?<a class="headerlink" href="#how-to-change-keyboard-binding-for-spectator-mode" title="Link to this heading">#</a></h2>
+<p>When you launch an instance of vizdoom, it will create <code class="docutils literal notranslate"><span class="pre">_vizdoom.ini</span></code> in your working directory (if it does not exist yet).
+This file contains all the additional engine settings, including key bindings, that you can edit freely.</p>
+<p>You can also load .ini file from different location using <a class="reference internal" href="../api/python/doomGame/#vizdoom.DoomGame.set_doom_config_path"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_doom_config_path</span></code></span></a>.</p>
+<p><strong>Original issue and answer:</strong>
+<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/253">https://github.com/Farama-Foundation/ViZDoom/issues/253</a></p>
+</section>
+<section id="is-it-possible-to-generate-maze-navigation-scenario-from-a-text-file-like-in-deepmind-lab">
+<h2>Is it possible to generate maze navigation scenario from a text file (like in DeepMind Lab)?<a class="headerlink" href="#is-it-possible-to-generate-maze-navigation-scenario-from-a-text-file-like-in-deepmind-lab" title="Link to this heading">#</a></h2>
+<p>Try <a class="reference external" href="https://github.com/agiantwhale/navdoom">NavDoom</a> or <a class="reference external" href="https://github.com/microsoft/MazeExplorer">MazeExplorer</a>.</p>
+<p><strong>Original issue and answer:</strong>
+<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/308">https://github.com/Farama-Foundation/ViZDoom/issues/308</a></p>
+</section>
+<section id="how-to-control-game-speed-in-async-modes">
+<h2>How to control game speed in <code class="docutils literal notranslate"><span class="pre">ASYNC</span></code> modes?<a class="headerlink" href="#how-to-control-game-speed-in-async-modes" title="Link to this heading">#</a></h2>
+<p>See: <a class="reference internal" href="../api/python/doomGame/#vizdoom.DoomGame.set_ticrate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_ticrate</span></code></span></a> and <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/ticrate.py">examples/python/ticrate.py</a></p>
+<p><strong>Original issue and answer:</strong>
+<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/209">https://github.com/Farama-Foundation/ViZDoom/issues/209</a></p>
+</section>
+<section id="how-can-to-make-an-exact-90-degree-turn-in-one-action">
+<h2>How can to make an exact 90 degree turn in one action?<a class="headerlink" href="#how-can-to-make-an-exact-90-degree-turn-in-one-action" title="Link to this heading">#</a></h2>
+<p>See: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/delta_buttons.py">examples/python/delta_buttons.py</a></p>
+<p><strong>Original issue and answer:</strong>
+<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/279">https://github.com/Farama-Foundation/ViZDoom/issues/279</a></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../api/python/enums/#vizdoom.Button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Button</span></code></span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/cpp/DeltaDuttons.cpp">examples/python/DeltaDuttons.cpp</a></p></li>
+</ul>
+</section>
+<section id="agent-does-not-fire-after-picking-up-ammo-or-weapon">
+<h2>Agent does not fire after picking up ammo or weapon?<a class="headerlink" href="#agent-does-not-fire-after-picking-up-ammo-or-weapon" title="Link to this heading">#</a></h2>
+<p>Some weapons have a <code class="docutils literal notranslate"><span class="pre">noautofire</span></code> flag for weapons to prevent using them by accident when picking up.
+Agent needs to release <code class="docutils literal notranslate"><span class="pre">ATTACK</span></code> button and then press it again to start firing after picking one of those weapons or ammo for them.</p>
+<p><strong>Original issue and answer:</strong>
+https://github.com/Farama-Foundation/ViZDoom/issues/289</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p>List of weapon flags: <a class="reference external" href="https://zdoom.org/wiki/Weapon_flags">https://zdoom.org/wiki/Weapon_flags</a></p></li>
+<li><p>List of Doom weapons: <a class="reference external" href="https://zdoom.org/wiki/Classes:DoomWeapon">https://zdoom.org/wiki/Classes:DoomWeapon</a></p></li>
+</ul>
+</section>
+<section id="how-to-pick-up-items-medikit-ammo-armour-when-inventory-is-full">
+<h2>How to pick up items (medikit, ammo, armour) when inventory is full?<a class="headerlink" href="#how-to-pick-up-items-medikit-ammo-armour-when-inventory-is-full" title="Link to this heading">#</a></h2>
+<p>CVARs implemented in ZDoom engine are very helpful in quickly modifying some aspects of the game.
+<code class="docutils literal notranslate"><span class="pre">doom_game.add_game_args(&quot;+sv_unlimited_pickup</span> <span class="pre">1&quot;)</span></code> adding before init will allow picking up unlimited items.</p>
+<p><strong>Original issue and answer:</strong>
+<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/187">https://github.com/Farama-Foundation/ViZDoom/issues/187</a></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p>List of CVARs: <a class="reference external" href="https://zdoom.org/wiki/CVARs:Configuration">https://zdoom.org/wiki/CVARs:Configuration</a></p></li>
+</ul>
+</section>
+<section id="i-am-getting-buffers-size-mismatch-error">
+<h2>I am getting <code class="docutils literal notranslate"><span class="pre">Buffers</span> <span class="pre">size</span> <span class="pre">mismatch.</span></code> error<a class="headerlink" href="#i-am-getting-buffers-size-mismatch-error" title="Link to this heading">#</a></h2>
+<p>Make sure you can run ZDoom binary inside the ViZDoom package.</p>
+<p>If the game works, go to <code class="docutils literal notranslate"><span class="pre">Options</span> <span class="pre">-&gt;</span> <span class="pre">Set</span> <span class="pre">Video</span> <span class="pre">Mode</span></code> and see the list of available resolutions there. Try one of these resolutions viz ViZDoom.</p>
+<p><strong>Original issue and answer:</strong>
+<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/404">https://github.com/Farama-Foundation/ViZDoom/issues/404</a></p>
+</section>
+<section id="issues-getting-vizdoom-instances-communicating-between-each-other-in-kubernetes">
+<h2>Issues getting ViZDoom instances communicating between each-other in Kubernetes<a class="headerlink" href="#issues-getting-vizdoom-instances-communicating-between-each-other-in-kubernetes" title="Link to this heading">#</a></h2>
+<p>Try setting <code class="docutils literal notranslate"><span class="pre">tty=True</span></code> in all containers running ViZDoom.</p>
+<p><strong>Original issue:</strong>
+<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/329">https://github.com/Farama-Foundation/ViZDoom/issues/329</a></p>
+</section>
+<section id="reading-replays-invalid-actions-wrong-rewards">
+<h2>Reading replays (invalid actions, wrong rewards)<a class="headerlink" href="#reading-replays-invalid-actions-wrong-rewards" title="Link to this heading">#</a></h2>
+<p>Replay files are known to have wonky issues at times: Even when they are opened correctly,
+the read variables may be different from what they were during recording. There are tricks
+to fix this:</p>
+<ul class="simple">
+<li><p>Try adding a small amount of sleep between proceeding actions (Original issue: https://github.com/Farama-Foundation/ViZDoom/issues/354)</p></li>
+<li><p>Try using <code class="docutils literal notranslate"><span class="pre">GameMode.SPECTATOR</span></code> mode for reading replays. <strong>Note</strong> that processing of individual steps must be done fast, otherwise multiple steps get bundled up into one. (Original issue: https://github.com/Farama-Foundation/ViZDoom/issues/412)</p></li>
+</ul>
+</section>
+<section id="having-multiple-agents-in-one-game-multiplayer-issues">
+<h2>Having multiple agents in one game / multiplayer issues<a class="headerlink" href="#having-multiple-agents-in-one-game-multiplayer-issues" title="Link to this heading">#</a></h2>
+<p>You can use ZDoom’s multiplayer to have multiple agents in same game (see examples for how to do this). However
+if you use <code class="docutils literal notranslate"><span class="pre">PLAYER</span></code> Mode, you can not use frameskip of the <code class="docutils literal notranslate"><span class="pre">make_actions</span></code> (each agent has to make one step before
+server proceeds by one frame). See discussion in Issues below for more information.</p>
+<p><strong>Original issues:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/228">https://github.com/Farama-Foundation/ViZDoom/issues/228</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/391">https://github.com/Farama-Foundation/ViZDoom/issues/391</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/417">https://github.com/Farama-Foundation/ViZDoom/issues/417</a></p></li>
+</ul>
+</section>
+<section id="why-doom-game-get-state-when-doom-game-is-episode-finished-true">
+<h2>Why <code class="docutils literal notranslate"><span class="pre">doom_game.get_state()</span></code> when <code class="docutils literal notranslate"><span class="pre">doom_game.is_episode_finished()</span> <span class="pre">==</span> <span class="pre">True</span></code><a class="headerlink" href="#why-doom-game-get-state-when-doom-game-is-episode-finished-true" title="Link to this heading">#</a></h2>
+<p>After the end of the episode, ZDoom engine might change its state and exit the episode (map) resulting in some objects and variables being destroyed or reset. Because of that it’s difficult to provide a proper state after that. When we were originally designing ViZDoom we wanted to have a simple logic and we only update state after complete logic tic. Because of that we are not able to detect end of episode early before to save a proper state and decided to provide null/none value instead. We believe that it’s easy to provide dummy (e.g. filed with zeros) state if it’s needed by an algorithm.</p>
+<p><strong>Original issues:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/183">https://github.com/Farama-Foundation/ViZDoom/issues/183</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/418">https://github.com/Farama-Foundation/ViZDoom/issues/418</a></p></li>
+</ul>
+</section>
+<section id="i-am-trying-to-use-audio-sound-but-vizdoom-crashes-or-i-there-is-no-audio">
+<h2>I am trying to use audio/sound, but ViZDoom crashes or I there is no audio<a class="headerlink" href="#i-am-trying-to-use-audio-sound-but-vizdoom-crashes-or-i-there-is-no-audio" title="Link to this heading">#</a></h2>
+<p>Try running <code class="docutils literal notranslate"><span class="pre">examples/python/audio_buffer.py</span></code> and check the messages it gives you. This example also works as a small
+testing utility to ensure audio and audio buffers work for you.</p>
+<p>Older versions of OpenAL library (1.19, default version as of writing on e.g. Ubuntu 20.04) do not always play nice
+with ViZDoom. You have several options you can try (one of these steps has worked so far on all tested machines):</p>
+<ul class="simple">
+<li><p>If ViZDoom crashes on init when you have sound enabled, try <code class="docutils literal notranslate"><span class="pre">doom_game.add_game_args(&quot;+snd_efx</span> <span class="pre">0&quot;)</span></code>. Note that this might remove some audio effects like reverberation.</p></li>
+<li><p>If you can run ViZDoom with sound enabled but there is no audio being played, try steps <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/pull/486#issuecomment-889389185">here</a>.</p></li>
+<li><p>If that fails, try uninstalling OpenAL you have on your system and then repeating the above installation.</p></li>
+</ul>
+<p><strong>Original issue:</strong>
+<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/pull/486">https://github.com/Farama-Foundation/ViZDoom/pull/486</a></p>
+</section>
+<section id="how-to-display-vizdoom-s-window-when-running-it-on-wsl-windows-subsystem-for-linux">
+<h2>How to display ViZDoom’s window when running it on WSL (Windows Subsystem for Linux)<a class="headerlink" href="#how-to-display-vizdoom-s-window-when-running-it-on-wsl-windows-subsystem-for-linux" title="Link to this heading">#</a></h2>
+<p>Please note that as running ViZDoom on WSL seems to be working fine, it is not officially supported.</p>
+<p>GUI apps do not work out-of-the-box on WSL on Windows 10/11. To make it work, you need:</p>
+<ul class="simple">
+<li><p>Download and install X-Server (VcXsrv) on Windows: https://sourceforge.net/projects/vcxsrv/.</p></li>
+<li><p>Start it using Command Prompt (cmd.exe) on Windows: <code class="docutils literal notranslate"><span class="pre">&quot;C:\Program</span> <span class="pre">Files\VcXsrv\vcxsrv.exe&quot;</span> <span class="pre">:0</span> <span class="pre">-ac</span> <span class="pre">-terminate</span> <span class="pre">-lesspointer</span> <span class="pre">-multiwindow</span> <span class="pre">-clipboard</span> <span class="pre">-wgl</span> <span class="pre">-dpi</span> <span class="pre">auto</span></code> (<code class="docutils literal notranslate"><span class="pre">&quot;C:\Program</span> <span class="pre">Files\VcXsrv\vcxsrv.exe&quot;</span></code> is default install location).</p></li>
+<li><p>On Ubuntu WSL instance set: <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">DISPLAY=:0</span></code>.</p></li>
+<li><p>Now you can lunch your graphical application inside Ubuntu WSL including ViZDoom.</p></li>
+</ul>
+<p><strong>Original issue:</strong>
+<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/491">https://github.com/Farama-Foundation/ViZDoom/issues/491</a></p>
+</section>
+<section id="what-is-a-difference-between-vizdoom-zdoom-and-gzdoom">
+<h2>What is a difference between ViZDoom, ZDoom and GZDoom<a class="headerlink" href="#what-is-a-difference-between-vizdoom-zdoom-and-gzdoom" title="Link to this heading">#</a></h2>
+<p>ViZDoom is based on the last version of ZDoom (2.8.1). ZDoom was discontinued in 2016, and the development switched to GZDoom, which provides a new 3D renderer implemented in OpenGL. ViZDoom, however, sticks to the original 2D software renderer, which is much faster for small resolutions than OpenGL. Because of that, ViZDoom modernized the ZDoom engine by adding support for Apple Silicon and ARM Linux and removing old unused parts of the code base (e.g., by removing Assembler parts).</p>
+</section>
+</section>
+
+          </article>
+        </div>
+        <footer>
+          
+          <div class="related-pages">
+            <a class="next-page" href="../citation/">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">How to cite</div>
+              </div>
+              <svg class="furo-related-icon">
+                <use href="#svg-arrow-right"></use>
+              </svg>
+            </a>
+            <a class="prev-page" href="../environments/creatingCustom/">
+              <svg class="furo-related-icon">
+                <use href="#svg-arrow-right"></use>
+              </svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Creating a custom environment</div>
+                
+              </div>
+            </a>
+          </div>
+          <div class="bottom-of-page">
+            <div class="left-details">
+              <div class="copyright">
+                Copyright &#169; 2023 Farama Foundation
+              </div>
+              <!--
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            -->
+            </div>
+            <div class="right-details">
+              <div class="icons">
+                <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/"
+                  aria-label="On GitHub">
+                  <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                      d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z">
+                    </path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+        </footer>
+      </div>
+      <aside class="toc-drawer">
+        
+        
+        <div class="toc-sticky toc-scroll">
+          <div class="toc-title-container">
+            <span class="toc-title">
+              On this page
+            </span>
+          </div>
+          <div class="toc-tree-container">
+            <div class="toc-tree">
+              <ul>
+<li><a class="reference internal" href="#">FAQ</a><ul>
+<li><a class="reference internal" href="#how-to-use-original-doom-s-assets">How to use original Doom’s assets?</a></li>
+<li><a class="reference internal" href="#how-to-create-modify-scenarios">How to create/modify scenarios?</a></li>
+<li><a class="reference internal" href="#how-to-stack-frames">How to stack frames?</a></li>
+<li><a class="reference internal" href="#how-to-change-keyboard-binding-for-spectator-mode">How to change keyboard binding for Spectator Mode?</a></li>
+<li><a class="reference internal" href="#is-it-possible-to-generate-maze-navigation-scenario-from-a-text-file-like-in-deepmind-lab">Is it possible to generate maze navigation scenario from a text file (like in DeepMind Lab)?</a></li>
+<li><a class="reference internal" href="#how-to-control-game-speed-in-async-modes">How to control game speed in <code class="docutils literal notranslate"><span class="pre">ASYNC</span></code> modes?</a></li>
+<li><a class="reference internal" href="#how-can-to-make-an-exact-90-degree-turn-in-one-action">How can to make an exact 90 degree turn in one action?</a></li>
+<li><a class="reference internal" href="#agent-does-not-fire-after-picking-up-ammo-or-weapon">Agent does not fire after picking up ammo or weapon?</a></li>
+<li><a class="reference internal" href="#how-to-pick-up-items-medikit-ammo-armour-when-inventory-is-full">How to pick up items (medikit, ammo, armour) when inventory is full?</a></li>
+<li><a class="reference internal" href="#i-am-getting-buffers-size-mismatch-error">I am getting <code class="docutils literal notranslate"><span class="pre">Buffers</span> <span class="pre">size</span> <span class="pre">mismatch.</span></code> error</a></li>
+<li><a class="reference internal" href="#issues-getting-vizdoom-instances-communicating-between-each-other-in-kubernetes">Issues getting ViZDoom instances communicating between each-other in Kubernetes</a></li>
+<li><a class="reference internal" href="#reading-replays-invalid-actions-wrong-rewards">Reading replays (invalid actions, wrong rewards)</a></li>
+<li><a class="reference internal" href="#having-multiple-agents-in-one-game-multiplayer-issues">Having multiple agents in one game / multiplayer issues</a></li>
+<li><a class="reference internal" href="#why-doom-game-get-state-when-doom-game-is-episode-finished-true">Why <code class="docutils literal notranslate"><span class="pre">doom_game.get_state()</span></code> when <code class="docutils literal notranslate"><span class="pre">doom_game.is_episode_finished()</span> <span class="pre">==</span> <span class="pre">True</span></code></a></li>
+<li><a class="reference internal" href="#i-am-trying-to-use-audio-sound-but-vizdoom-crashes-or-i-there-is-no-audio">I am trying to use audio/sound, but ViZDoom crashes or I there is no audio</a></li>
+<li><a class="reference internal" href="#how-to-display-vizdoom-s-window-when-running-it-on-wsl-windows-subsystem-for-linux">How to display ViZDoom’s window when running it on WSL (Windows Subsystem for Linux)</a></li>
+<li><a class="reference internal" href="#what-is-a-difference-between-vizdoom-zdoom-and-gzdoom">What is a difference between ViZDoom, ZDoom and GZDoom</a></li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
+        
+        
+      </aside>
+    </div>
+  </div>
+</div>
+    <script>
+      const toggleMenu = () => {
+        const menuBtn = document.querySelector(".farama-header-menu__btn");
+        const menuContainer = document.querySelector(".farama-header-menu-container");
+        if (document.querySelector(".farama-header-menu").classList.contains("active")) {
+          menuBtn.setAttribute("aria-expanded", "false");
+          menuContainer.setAttribute("aria-hidden", "true");
+        } else {
+          menuBtn.setAttribute("aria-expanded", "true");
+          menuContainer.setAttribute("aria-hidden", "false");
+        }
+        document.querySelector(".farama-header-menu").classList.toggle("active");
+      }
+
+      document.querySelector(".farama-header-menu__btn").addEventListener("click", toggleMenu);
+      document.getElementById("farama-close-menu").addEventListener("click", toggleMenu);
+    </script>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6H9C8TWXZ8"></script>
+      <script>
+        const enableGtag = () => {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-6H9C8TWXZ8');
+        }
+        (() => {
+            if (!localStorage.getItem("acceptedCookieAlert")) {
+                const boxElem = document.createElement("div");
+                boxElem.classList.add("cookie-alert");
+                const containerElem = document.createElement("div");
+                containerElem.classList.add("cookie-alert__container");
+                const textElem = document.createElement("p");
+                textElem.innerHTML = `This page uses <a href="https://analytics.google.com/">
+                                    Google Analytics</a> to collect statistics.`;
+                                    containerElem.appendChild(textElem);
+
+                const declineBtn = Object.assign(document.createElement("button"),
+                  {
+                    innerText: "Deny",
+                    className: "farama-btn cookie-alert__button",
+                    id: "cookie-alert__decline",
+                  }
+                );
+                declineBtn.addEventListener("click", () => {
+                  localStorage.setItem("acceptedCookieAlert", false);
+                  boxElem.remove();
+                });
+
+                const acceptBtn = Object.assign(document.createElement("button"),
+                  {
+                    innerText: "Allow",
+                    className: "farama-btn cookie-alert__button",
+                    id: "cookie-alert__accept",
+                  }
+                );
+                acceptBtn.addEventListener("click", () => {
+                  localStorage.setItem("acceptedCookieAlert", true);
+                  boxElem.remove();
+                  enableGtag();
+                });
+
+                containerElem.appendChild(declineBtn);
+                containerElem.appendChild(acceptBtn);
+                boxElem.appendChild(containerElem);
+                document.body.appendChild(boxElem);
+            } else if (localStorage.getItem("acceptedCookieAlert") === "true") {
+              enableGtag();
+            }
+        })()
+      </script>
+
+    <script src="../_static/documentation_options.js?v=a5603611"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=7660844c"></script>
+    
+    <script>
+
+      const createProjectsList = (projects, displayImages) => {
+        const ulElem = Object.assign(document.createElement('ul'),
+          {
+            className:'farama-header-menu-list',
+          }
+        )
+        for (let project of projects) {
+          const liElem = document.createElement("li");
+          const aElem = Object.assign(document.createElement("a"),
+            {
+              href: project.link
+            }
+          );
+          liElem.appendChild(aElem);
+          if (displayImages) {
+            const imgElem = Object.assign(document.createElement("img"),
+              {
+                src: project.image ? imagesBasepath + project.image : imagesBasepath + "/farama_black.svg",
+                alt: `${project.name} logo`,
+                className: "farama-black-logo-invert"
+              }
+            );
+            aElem.appendChild(imgElem);
+          }
+          aElem.appendChild(document.createTextNode(project.name));
+          ulElem.appendChild(liElem);
+        }
+        return ulElem;
+      }
+
+      // Create menu with Farama projects by using the API at farama.org/api/projects.json
+      const createCORSRequest = (method, url) => {
+        let xhr = new XMLHttpRequest();
+        xhr.responseType = 'json';
+
+        if ("withCredentials" in xhr) {
+          xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+          // IE8 & IE9
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+        } else {
+          // CORS not supported.
+          xhr = null;
+        }
+        return xhr;
+      };
+
+      const url = 'https://farama.org/api/projects.json';
+      const imagesBasepath = "https://farama.org/assets/images"
+      const method = 'GET';
+      let xhr = createCORSRequest(method, url);
+
+      xhr.onload = () => {
+        const jsonResponse = xhr.response;
+        const sections = {
+          "Core Projects": [],
+          "Mature Projects": {
+            "Documentation": [],
+            "Repositories": [],
+          },
+          "Incubating Projects": {
+            "Documentation": [],
+            "Repositories": [],
+          },
+          "Foundation": [
+            {
+              name: "About",
+              link: "https://farama.org/about"
+            },
+            {
+              name: "Standards",
+              link: "https://farama.org/project_standards",
+            },
+            {
+              name: "Donate",
+              link: "https://farama.org/donations"
+            }
+          ]
+        }
+
+        // Categorize projects
+        Object.keys(jsonResponse).forEach(key => {
+          projectJson = jsonResponse[key];
+          if (projectJson.website !== null) {
+            projectJson.link = projectJson.website;
+          } else {
+            projectJson.link = projectJson.github;
+          }
+          if (projectJson.type === "core") {
+            sections["Core Projects"].push(projectJson)
+          } else if (projectJson.type == "mature") {
+            if (projectJson.website !== null) {
+              sections["Mature Projects"]["Documentation"].push(projectJson)
+            } else {
+              sections["Mature Projects"]["Repositories"].push(projectJson)
+            }
+          } else {
+            if (projectJson.website !== null) {
+              sections["Incubating Projects"]["Documentation"].push(projectJson)
+            } else {
+              sections["Incubating Projects"]["Repositories"].push(projectJson)
+            }
+          }
+        })
+
+        const menuContainer = document.querySelector(".farama-header-menu__body");
+
+        Object.keys(sections).forEach((key, i) => {
+          const sectionElem = Object.assign(
+            document.createElement('div'), {
+              className:'farama-header-menu__section',
+            }
+          )
+          sectionElem.appendChild(Object.assign(document.createElement('span'),
+            {
+              className:'farama-header-menu__section-title' ,
+              innerText: key
+            }
+          ))
+          // is not a list
+          if (sections[key].constructor !== Array) {
+            const subSections = sections[key];
+            const subSectionContainerElem = Object.assign(
+                document.createElement('div'), {
+                  className:'farama-header-menu__subsections-container',
+                  style: 'display: flex'
+                }
+            )
+            Object.keys(subSections).forEach((subKey, i) => {
+              const subSectionElem = Object.assign(
+                document.createElement('div'), {
+                  className:'farama-header-menu__subsection',
+                }
+              )
+              subSectionElem.appendChild(Object.assign(document.createElement('span'),
+                {
+                  className:'farama-header-menu__subsection-title' ,
+                  innerText: subKey
+                }
+              ))
+              const ulElem = createProjectsList(subSections[subKey], key !== 'Foundation');
+              subSectionElem.appendChild(ulElem);
+              subSectionContainerElem.appendChild(subSectionElem);
+            })
+            sectionElem.appendChild(subSectionContainerElem);
+          } else {
+            const projects = sections[key];
+            const ulElem = createProjectsList(projects, true);
+            sectionElem.appendChild(ulElem);
+          }
+          menuContainer.appendChild(sectionElem)
+        });
+      }
+
+      xhr.onerror = function() {
+        console.error("Unable to load projects");
+      };
+
+      xhr.send();
+    </script>
+
+    
+    <script>
+      const versioningConfig = {
+        githubUser: 'Farama-Foundation',
+        githubRepo: 'ViZDoom',
+      };
+      fetch('/main/_static/versioning/versioning_menu.html').then(response => {
+        if (response.status === 200) {
+            response.text().then(text => {
+                const container = document.createElement("div");
+                container.innerHTML = text;
+                document.querySelector("body").appendChild(container);
+                // innerHtml doenst evaluate scripts, we need to add them dynamically
+                Array.from(container.querySelectorAll("script")).forEach(oldScript => {
+                    const newScript = document.createElement("script");
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+            });
+        } else {
+            console.warn("Unable to load versioning menu", response);
+        }
+      });
+    </script>
+
+    </body>
+</html>

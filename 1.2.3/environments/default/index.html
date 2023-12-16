@@ -1,0 +1,932 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="">
+    <meta property="og:title" content="ViZDoom Documentation" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="" />
+    <meta property="og:url" content="https://vizdoom.farama.org/environments/default.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Creating a custom environment" href="../creatingCustom/" /><link rel="prev" title="Configuration files" href="../../api/configurationFiles/" />
+        <link rel="canonical" href="https://vizdoom.farama.org/environments/default.html" />
+
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+        <title>Default scenarios/environments - ViZDoom Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=49cbaffd" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    <header class="farama-header" aria-label="Farama header">
+      <div class="farama-header__container">
+        <div class="farama-header__left--mobile">
+          <label class="nav-overlay-icon" for="__navigation">
+            <div class="visually-hidden">Toggle site navigation sidebar</div>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <defs></defs>
+              <line x1="0.5" y1="4" x2="23.5" y2="4"></line>
+              <line x1="0.232" y1="12" x2="23.5" y2="12"></line>
+              <line x1="0.232" y1="20" x2="23.5" y2="20"></line>
+            </svg>
+          </label>
+        </div>
+        <div class="farama-header__left farama-header__center--mobile">
+          <a href="../../">
+              <img class="farama-header__logo only-light" src="../../_static/img/vizdoom-black.svg" alt="Light Logo"/>
+              <img class="farama-header__logo only-dark" src="../../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
+            <span class="farama-header__title">ViZDoom Documentation</span>
+          </a>
+        </div>
+        <div class="farama-header__right">
+          <div class="farama-header-menu">
+            <button class="farama-header-menu__btn" aria-label="Open Farama Menu" aria-expanded="false" aria-haspopup="true" aria-controls="farama-menu">
+              <img class="farama-black-logo-invert" src="../../_static/img/farama-logo-header.svg">
+              <svg viewBox="0 0 24 24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <polyline style="stroke-linecap: round; stroke-linejoin: round; fill: none; stroke-width: 2px;" points="1 7 12 18 23 7"></polyline>
+              </svg>
+            </button>
+            <div class="farama-header-menu-container farama-hidden" aria-hidden="true" id="farama-menu">
+              <div class="farama-header-menu__header">
+                <a href="https://farama.org">
+                  <img class="farama-header-menu__logo farama-white-logo-invert" src="../../_static/img/farama_solid_white.svg" alt="Farama Foundation logo">
+                  <span>Farama Foundation</span>
+                </a>
+                <div class="farama-header-menu-header__right">
+                  <button id="farama-close-menu">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-close">
+                      <line x1="3" y1="21" x2="21" y2="3"></line>
+                      <line x1="3" y1="3" x2="21" y2="21"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="farama-header-menu__body">
+                <!-- Response from farama.org/api/projects.json -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="page">
+  <!--<header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../"><div class="brand">ViZDoom Documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>-->
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="farama-sidebar__title" href="../../">
+      <img class="farama-header__logo only-light" src="../../_static/img/vizdoom-black.svg" alt="Light Logo"/>
+      <img class="farama-header__logo only-dark" src="../../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
+    <span class="farama-header__title">ViZDoom Documentation</span>
+  </a><form class="sidebar-search-container" method="get" action="../../search/" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/pythonQuickstart/">Python quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/building/">Building from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/apisAndWrappers/">APIs and wrappers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/doomGame/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gameState/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/utils/">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium/">Gymnasium Env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym/">OpenAI Gym Env</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/doomGame/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/gameState/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/utils/">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/configurationFiles/">Configuration files</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments</span></p>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Default scenarios/environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../creatingCustom/">Creating a custom environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation/">How to cite</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://vizdoom.cs.put.edu.pl/">Original website</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom">Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes/">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/blob/master/docs/README.md">Contribute to the Docs</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main-container">
+
+    
+
+    
+
+    <div class="main">
+      <div class="content">
+        <div class="article-container">
+          <a href="#" class="back-to-top muted-link">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+            </svg>
+            <span>Back to top</span>
+          </a>
+          <div class="content-icon-container"><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/environments/default.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+              <button class="theme-toggle" title="Toggle color theme">
+                <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                <svg class="theme-icon-when-auto">
+                  <use href="#svg-sun-half"></use>
+                </svg>
+                <svg class="theme-icon-when-dark">
+                  <use href="#svg-moon"></use>
+                </svg>
+                <svg class="theme-icon-when-light">
+                  <use href="#svg-sun"></use>
+                </svg>
+              </button>
+            </div>
+            <label class="toc-overlay-icon toc-content-icon" for="__toc">
+              <div class="visually-hidden">Toggle table of contents sidebar</div>
+              <i class="icon"><svg>
+                  <use href="#svg-toc"></use>
+                </svg></i>
+            </label>
+          </div>
+          <article role="main">
+            
+            <section class="tex2jax_ignore mathjax_ignore" id="default-scenarios-environments">
+<h1>Default scenarios/environments<a class="headerlink" href="#default-scenarios-environments" title="Link to this heading">#</a></h1>
+<p>Below we describe a default singleplayer scenarios (original ViZDoom nomenclature)/environments (Gymnasium/Open AI Gym nomenclature) included with ViZDoom. The PRs with new scenarios are welcome!</p>
+<section id="how-to-use-default-scenarios">
+<h2>How to use default scenarios<a class="headerlink" href="#how-to-use-default-scenarios" title="Link to this heading">#</a></h2>
+<p>When using original ViZDoom API, each scenario can be loaded <a class="reference internal" href="../../api/python/doomGame/#vizdoom.DoomGame.load_config"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">load_config</span></code></span></a> (Python)/<a class="reference internal" href="../../api/cpp/doomGame/#loadconfig"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">loadConfig</span></code></span></a> (C++) method:</p>
+<p>Python example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">vizdoom</span> <span class="k">as</span> <span class="nn">vzd</span>
+<span class="n">game</span> <span class="o">=</span> <span class="n">vzd</span><span class="o">.</span><span class="n">DoomGame</span><span class="p">()</span>
+<span class="n">game</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vzd</span><span class="o">.</span><span class="n">scenarios_path</span><span class="p">,</span> <span class="s2">&quot;basic.cfg&quot;</span><span class="p">))</span> <span class="c1"># or any other scenario file</span>
+</pre></div>
+</div>
+<p>When using Gymnasium (or Gym) API the scenario can be loaded by passing the scenario id to <code class="docutils literal notranslate"><span class="pre">make</span></code> method like-this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gymnasium</span>
+<span class="kn">from</span> <span class="nn">vizdoom</span> <span class="kn">import</span> <span class="n">gymnasium_wrapper</span> <span class="c1"># This import will register all the environments</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">&quot;VizdoomBasic-v0&quot;</span><span class="p">)</span> <span class="c1"># or any other environment id</span>
+</pre></div>
+</div>
+</section>
+<section id="note-on-wad-cfg-files-and-rewards">
+<h2>Note on .wad, .cfg files, and rewards<a class="headerlink" href="#note-on-wad-cfg-files-and-rewards" title="Link to this heading">#</a></h2>
+<p>A scenario usually consist of two files - .wad and .cfg (<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios">see scenarios directory</a>). The .wad file contains the map and script, and the .cfg file contains additional settings. The maps contained in .wad files (Doom’s engine format for storing maps and assets) usually do not implement action constraints, the death penalty, and living rewards (however it is possible). To make it easier, this can be specified in ViZDoom .cfg files as well as other options like access to additional information. These can also be overridden in the code when using the original ViZDoom API. Every mention of any settings that are not included in .wad files is specified with “(config)” in the descriptions below. ViZDoom does not support setting certain rewards (such as killing opponents) in .cfg files. These must be programmed in the .wad files instead.</p>
+</section>
+<section id="basic">
+<h2>BASIC<a class="headerlink" href="#basic" title="Link to this heading">#</a></h2>
+<p>The purpose of the scenario is just to check if using this
+framework to train some AI in a 3D environment is feasible.</p>
+<p>The map is a rectangle with gray walls, ceiling, and floor.
+The player is spawned along the longer wall in the center.
+A red, circular monster is spawned randomly somewhere along
+the opposite wall. A player can only (config) go left/right
+and shoot. 1 hit is enough to kill the monster. The episode
+finishes when the monster is killed or on timeout.</p>
+<p><strong>REWARDS:</strong></p>
+<ul class="simple">
+<li><p>+106 for killing the monster</p></li>
+<li><p>-5 for every shot</p></li>
+<li><p>+1 for every tic the agent is alive</p></li>
+</ul>
+<p>The episode ends after killing the monster or on timeout.</p>
+<p><strong>CONFIGURATION:</strong></p>
+<ul class="simple">
+<li><p>3 available buttons: move left/right, shoot (attack)</p></li>
+<li><p>1 available game variable: player’s ammo</p></li>
+<li><p>timeout = 300 tics</p></li>
+</ul>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomBasic-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic.cfg">basic.cfg</a></strong></p>
+</section>
+<section id="deadly-corridor">
+<h2>DEADLY CORRIDOR<a class="headerlink" href="#deadly-corridor" title="Link to this heading">#</a></h2>
+<p>The purpose of this scenario is to teach the agent to navigate towards
+his fundamental goal (the vest) and make sure he survives at the
+same time.</p>
+<p>The map is a corridor with shooting monsters on both sides (6 monsters
+in total). A green vest is placed at the opposite end of the corridor.
+The reward is proportional (negative or positive) to the change in the
+distance between the player and the vest. If the player ignores monsters
+on the sides and runs straight for the vest, he will be killed somewhere
+along the way. To ensure this behavior difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 5 (config) is
+needed.</p>
+<p><strong>REWARDS:</strong></p>
+<ul class="simple">
+<li><p>+dX for getting closer to the vest.</p></li>
+<li><p>-dX for getting further from the vest.</p></li>
+<li><p>-100 for death</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
+<ul class="simple">
+<li><p>7 available buttons: move forward/backwward/left/right, turn left/right, shoot (attack)</p></li>
+<li><p>1 available game variable: player’s health</p></li>
+<li><p>timeout = 2100</p></li>
+<li><p>difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 5</p></li>
+</ul>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomCorridor-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deadly_corridor.cfg">deadly_corridor.cfg</a></strong></p>
+</section>
+<section id="deathmatch">
+<h2>DEATHMATCH<a class="headerlink" href="#deathmatch" title="Link to this heading">#</a></h2>
+<p>In this scenario, the agent is spawned in the random place of the arena filled with resources.
+A random monster is spawned every few seconds that will try to kill the player.
+The reward for killing a monster depends on its difficulty.
+The aim of the agent is to kill as many monsters as possible
+before the time runs out or it’s killed by monsters.</p>
+<p><strong>REWARDS:</strong></p>
+<ul class="simple">
+<li><p>Different rewards are given for killing different monsters</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
+<ul class="simple">
+<li><p>16 available binary buttons: move forward/backwward/left/right, turn left/right, strafe, sprint (speed), shoot (attack), select weapon 1-6/next/previous</p></li>
+<li><p>3 available delta buttons: look up/down, turn left/right, move left/right</p></li>
+<li><p>5 available game variables: player’s health, armor, selected weapon and ammo, killcount</p></li>
+<li><p>timeout = 4200</p></li>
+<li><p>difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 3</p></li>
+</ul>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomDeathmatch-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deathmatch.cfg">scenarios/deathmatch.cfg</a></strong></p>
+</section>
+<section id="defend-the-center">
+<h2>DEFEND THE CENTER<a class="headerlink" href="#defend-the-center" title="Link to this heading">#</a></h2>
+<p>The purpose of this scenario is to teach the agent that killing the
+monsters is GOOD and when monsters kill you is BAD. In addition,
+wasting ammunition is not very good either. Agent is rewarded only
+for killing monsters so he has to figure out the rest for himself.</p>
+<p>The map is a large circle. A player is spawned in the exact center.
+5 melee-only, monsters are spawned along the wall. Monsters are
+killed after a single shot. After dying, each monster is respawned
+after some time. The episode ends when the player dies (it’s inevitable
+because of limited ammo).</p>
+<p><strong>REWARDS:</strong></p>
+<ul class="simple">
+<li><p>+1 for killing a monster</p></li>
+<li><p>-1 for death</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
+<ul class="simple">
+<li><p>3 available buttons: turn left, turn right, shoot (attack)</p></li>
+<li><p>2 available game variables: player’s health and ammo</p></li>
+<li><p>timeout = 2100</p></li>
+<li><p>difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 3</p></li>
+</ul>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomDefendCenter-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_center.cfg">defend_the_center.cfg</a></strong></p>
+</section>
+<section id="defend-the-line">
+<h2>DEFEND THE LINE<a class="headerlink" href="#defend-the-line" title="Link to this heading">#</a></h2>
+<p>The purpose of this scenario is to teach an agent that killing the
+monsters is GOOD and when monsters kill you is BAD. In addition,
+wasting ammunition is not very good either. The agent is rewarded only
+for killing monsters, so it has to figure out the rest for itself.</p>
+<p>The map is a rectangle. A player is spawned along the longer wall in the
+center. 3 melee-only and 3 shooting monsters are spawned along the
+opposite wall. Monsters are killed after a single shot, at first.
+After dying, each monster is respawned after some time and can endure
+more damage. The episode ends when the player dies (it’s inevitable
+because of limited ammo).</p>
+<p><strong>REWARDS:</strong></p>
+<ul class="simple">
+<li><p>+1 for killing a monster</p></li>
+<li><p>-1 for death</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
+<ul class="simple">
+<li><p>3 available buttons: turn left, turn right, shoot (attack)</p></li>
+<li><p>2 available game variables: player’s health and ammo</p></li>
+<li><p>difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 3</p></li>
+</ul>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomDefendLine-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_line.cfg">defend_the_line.cfg</a></strong></p>
+</section>
+<section id="health-gathering-and-health-gathering-supreme">
+<h2>HEALTH GATHERING (AND HEALTH GATHERING SUPREME)<a class="headerlink" href="#health-gathering-and-health-gathering-supreme" title="Link to this heading">#</a></h2>
+<p>The purpose of this scenario is to teach the agent how to survive
+without knowing what makes him survive. An agent knows only that life
+is precious, and death is bad, so he must learn what prolongs his
+existence and that his health is connected with it.</p>
+<p>The map is a rectangle with a green, acidic floor, which hurts the player
+periodically. Initially, there are some medkits spread uniformly
+over the map. A new medkit falls from the skies every now and then.
+Medkits heal some portions of the player’s health - to survive agent
+needs to pick them up. The episode finishes after the player’s death or
+on timeout.</p>
+<p>There is more advance version of this scenario called HEALTH GATHERING SUPREME,
+that makes map layout more complex.</p>
+<p><strong>REWARDS:</strong></p>
+<ul class="simple">
+<li><p>+1 for every tic the agent is alive</p></li>
+<li><p>-100 for death</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
+<ul class="simple">
+<li><p>3 available buttons: turn left/right, move forward</p></li>
+<li><p>1 available game variable: player’s health</p></li>
+</ul>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomHealthGathering-v0&quot;</span></code>/<code class="docutils literal notranslate"><span class="pre">&quot;VizdoomHealthGatheringSupreme-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering.cfg">health_gathering.cfg</a>/<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering_supreme.cfg">health_gathering_supreme.cfg</a></strong></p>
+</section>
+<section id="my-way-home">
+<h2>MY WAY HOME<a class="headerlink" href="#my-way-home" title="Link to this heading">#</a></h2>
+<p>The purpose of this scenario is to teach the agent how to navigate
+in a labyrinth-like surrounding and reach his ultimate goal
+(and learn what it actually is).</p>
+<p>The map is a series of rooms with interconnection and 1 corridor
+with a dead end. Each room has a different color. There is a
+green vest in one of the rooms (the same room every time).
+The player is spawned in a randomly chosen room facing a random
+direction. The episode ends when the vest is reached or on timeout/</p>
+<p><strong>REWARDS:</strong></p>
+<ul class="simple">
+<li><p>+1 for reaching the vest</p></li>
+<li><p>-0.0001 for every tic the agent is alive</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
+<ul class="simple">
+<li><p>3 available buttons: turn left/right, move forward</p></li>
+<li><p>timeout = 2100</p></li>
+</ul>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomMyWayHome-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/my_way_home.cfg">my_way_home.cfg</a></strong></p>
+</section>
+<section id="predict-position">
+<h2>PREDICT POSITION<a class="headerlink" href="#predict-position" title="Link to this heading">#</a></h2>
+<p>The purpose of the scenario is to teach an agent to synchronize
+missile weapon shot (involving a significant delay between
+shooting and hitting) with target movements. Agent should be
+able to shoot so that the missile and the monster meet each other.</p>
+<p>The map is a rectangular room. A player is spawned along the longer
+wall in the center. A monster is spawned randomly somewhere
+along the opposite wall and walks between left and right corners
+along the wall. The player is equipped with a rocket launcher and
+a single rocket. The episode ends when the missile hits a wall/the monster
+or on timeout.</p>
+<p><strong>REWARDS:</strong></p>
+<ul class="simple">
+<li><p>+1 for killing the monster</p></li>
+<li><p>-0.0001 for every tic the agent is alive</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
+<ul class="simple">
+<li><p>3 available buttons: turn left/right, shoot (attack)</p></li>
+<li><p>timeout = 300</p></li>
+</ul>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomPredictPosition-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/predict_position.cfg">predict_position.cfg</a></strong></p>
+</section>
+<section id="take-cover">
+<h2>TAKE COVER<a class="headerlink" href="#take-cover" title="Link to this heading">#</a></h2>
+<p>The purpose of this scenario is to teach an agent to link incoming
+missiles with his estimated lifespan. An agent should learn that
+being hit means health decrease, and this in turn will lead to
+death which is undesirable. In effect, the agent should avoid
+missiles.</p>
+<p>The map is a rectangle. A player is spawned along the longer wall,
+in the center. A couple of shooting monsters are spawned
+randomly somewhere along the opposite wall and try to kill
+the player with fireballs. The player can only (config) move
+left/right. More monsters appear with time. The episode ends when
+the player dies.</p>
+<p><strong>REWARDS:</strong></p>
+<ul class="simple">
+<li><p>+1 for every tic the agent is alive</p></li>
+</ul>
+<p><strong>CONFIGURATION:</strong></p>
+<ul class="simple">
+<li><p>2 available buttons: move left/right</p></li>
+<li><p>1 available game variable: player’s health</p></li>
+<li><p>difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 4</p></li>
+</ul>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomTakeCover-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/take_cover.cfg">take_cover.cfg</a></strong></p>
+</section>
+</section>
+
+          </article>
+        </div>
+        <footer>
+          
+          <div class="related-pages">
+            <a class="next-page" href="../creatingCustom/">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Creating a custom environment</div>
+              </div>
+              <svg class="furo-related-icon">
+                <use href="#svg-arrow-right"></use>
+              </svg>
+            </a>
+            <a class="prev-page" href="../../api/configurationFiles/">
+              <svg class="furo-related-icon">
+                <use href="#svg-arrow-right"></use>
+              </svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Configuration files</div>
+                
+              </div>
+            </a>
+          </div>
+          <div class="bottom-of-page">
+            <div class="left-details">
+              <div class="copyright">
+                Copyright &#169; 2023 Farama Foundation
+              </div>
+              <!--
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            -->
+            </div>
+            <div class="right-details">
+              <div class="icons">
+                <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/"
+                  aria-label="On GitHub">
+                  <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                      d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z">
+                    </path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+        </footer>
+      </div>
+      <aside class="toc-drawer">
+        
+        
+        <div class="toc-sticky toc-scroll">
+          <div class="toc-title-container">
+            <span class="toc-title">
+              On this page
+            </span>
+          </div>
+          <div class="toc-tree-container">
+            <div class="toc-tree">
+              <ul>
+<li><a class="reference internal" href="#">Default scenarios/environments</a><ul>
+<li><a class="reference internal" href="#how-to-use-default-scenarios">How to use default scenarios</a></li>
+<li><a class="reference internal" href="#note-on-wad-cfg-files-and-rewards">Note on .wad, .cfg files, and rewards</a></li>
+<li><a class="reference internal" href="#basic">BASIC</a></li>
+<li><a class="reference internal" href="#deadly-corridor">DEADLY CORRIDOR</a></li>
+<li><a class="reference internal" href="#deathmatch">DEATHMATCH</a></li>
+<li><a class="reference internal" href="#defend-the-center">DEFEND THE CENTER</a></li>
+<li><a class="reference internal" href="#defend-the-line">DEFEND THE LINE</a></li>
+<li><a class="reference internal" href="#health-gathering-and-health-gathering-supreme">HEALTH GATHERING (AND HEALTH GATHERING SUPREME)</a></li>
+<li><a class="reference internal" href="#my-way-home">MY WAY HOME</a></li>
+<li><a class="reference internal" href="#predict-position">PREDICT POSITION</a></li>
+<li><a class="reference internal" href="#take-cover">TAKE COVER</a></li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
+        
+        
+      </aside>
+    </div>
+  </div>
+</div>
+    <script>
+      const toggleMenu = () => {
+        const menuBtn = document.querySelector(".farama-header-menu__btn");
+        const menuContainer = document.querySelector(".farama-header-menu-container");
+        if (document.querySelector(".farama-header-menu").classList.contains("active")) {
+          menuBtn.setAttribute("aria-expanded", "false");
+          menuContainer.setAttribute("aria-hidden", "true");
+        } else {
+          menuBtn.setAttribute("aria-expanded", "true");
+          menuContainer.setAttribute("aria-hidden", "false");
+        }
+        document.querySelector(".farama-header-menu").classList.toggle("active");
+      }
+
+      document.querySelector(".farama-header-menu__btn").addEventListener("click", toggleMenu);
+      document.getElementById("farama-close-menu").addEventListener("click", toggleMenu);
+    </script>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6H9C8TWXZ8"></script>
+      <script>
+        const enableGtag = () => {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-6H9C8TWXZ8');
+        }
+        (() => {
+            if (!localStorage.getItem("acceptedCookieAlert")) {
+                const boxElem = document.createElement("div");
+                boxElem.classList.add("cookie-alert");
+                const containerElem = document.createElement("div");
+                containerElem.classList.add("cookie-alert__container");
+                const textElem = document.createElement("p");
+                textElem.innerHTML = `This page uses <a href="https://analytics.google.com/">
+                                    Google Analytics</a> to collect statistics.`;
+                                    containerElem.appendChild(textElem);
+
+                const declineBtn = Object.assign(document.createElement("button"),
+                  {
+                    innerText: "Deny",
+                    className: "farama-btn cookie-alert__button",
+                    id: "cookie-alert__decline",
+                  }
+                );
+                declineBtn.addEventListener("click", () => {
+                  localStorage.setItem("acceptedCookieAlert", false);
+                  boxElem.remove();
+                });
+
+                const acceptBtn = Object.assign(document.createElement("button"),
+                  {
+                    innerText: "Allow",
+                    className: "farama-btn cookie-alert__button",
+                    id: "cookie-alert__accept",
+                  }
+                );
+                acceptBtn.addEventListener("click", () => {
+                  localStorage.setItem("acceptedCookieAlert", true);
+                  boxElem.remove();
+                  enableGtag();
+                });
+
+                containerElem.appendChild(declineBtn);
+                containerElem.appendChild(acceptBtn);
+                boxElem.appendChild(containerElem);
+                document.body.appendChild(boxElem);
+            } else if (localStorage.getItem("acceptedCookieAlert") === "true") {
+              enableGtag();
+            }
+        })()
+      </script>
+
+    <script src="../../_static/documentation_options.js?v=a5603611"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=7660844c"></script>
+    
+    <script>
+
+      const createProjectsList = (projects, displayImages) => {
+        const ulElem = Object.assign(document.createElement('ul'),
+          {
+            className:'farama-header-menu-list',
+          }
+        )
+        for (let project of projects) {
+          const liElem = document.createElement("li");
+          const aElem = Object.assign(document.createElement("a"),
+            {
+              href: project.link
+            }
+          );
+          liElem.appendChild(aElem);
+          if (displayImages) {
+            const imgElem = Object.assign(document.createElement("img"),
+              {
+                src: project.image ? imagesBasepath + project.image : imagesBasepath + "/farama_black.svg",
+                alt: `${project.name} logo`,
+                className: "farama-black-logo-invert"
+              }
+            );
+            aElem.appendChild(imgElem);
+          }
+          aElem.appendChild(document.createTextNode(project.name));
+          ulElem.appendChild(liElem);
+        }
+        return ulElem;
+      }
+
+      // Create menu with Farama projects by using the API at farama.org/api/projects.json
+      const createCORSRequest = (method, url) => {
+        let xhr = new XMLHttpRequest();
+        xhr.responseType = 'json';
+
+        if ("withCredentials" in xhr) {
+          xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+          // IE8 & IE9
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+        } else {
+          // CORS not supported.
+          xhr = null;
+        }
+        return xhr;
+      };
+
+      const url = 'https://farama.org/api/projects.json';
+      const imagesBasepath = "https://farama.org/assets/images"
+      const method = 'GET';
+      let xhr = createCORSRequest(method, url);
+
+      xhr.onload = () => {
+        const jsonResponse = xhr.response;
+        const sections = {
+          "Core Projects": [],
+          "Mature Projects": {
+            "Documentation": [],
+            "Repositories": [],
+          },
+          "Incubating Projects": {
+            "Documentation": [],
+            "Repositories": [],
+          },
+          "Foundation": [
+            {
+              name: "About",
+              link: "https://farama.org/about"
+            },
+            {
+              name: "Standards",
+              link: "https://farama.org/project_standards",
+            },
+            {
+              name: "Donate",
+              link: "https://farama.org/donations"
+            }
+          ]
+        }
+
+        // Categorize projects
+        Object.keys(jsonResponse).forEach(key => {
+          projectJson = jsonResponse[key];
+          if (projectJson.website !== null) {
+            projectJson.link = projectJson.website;
+          } else {
+            projectJson.link = projectJson.github;
+          }
+          if (projectJson.type === "core") {
+            sections["Core Projects"].push(projectJson)
+          } else if (projectJson.type == "mature") {
+            if (projectJson.website !== null) {
+              sections["Mature Projects"]["Documentation"].push(projectJson)
+            } else {
+              sections["Mature Projects"]["Repositories"].push(projectJson)
+            }
+          } else {
+            if (projectJson.website !== null) {
+              sections["Incubating Projects"]["Documentation"].push(projectJson)
+            } else {
+              sections["Incubating Projects"]["Repositories"].push(projectJson)
+            }
+          }
+        })
+
+        const menuContainer = document.querySelector(".farama-header-menu__body");
+
+        Object.keys(sections).forEach((key, i) => {
+          const sectionElem = Object.assign(
+            document.createElement('div'), {
+              className:'farama-header-menu__section',
+            }
+          )
+          sectionElem.appendChild(Object.assign(document.createElement('span'),
+            {
+              className:'farama-header-menu__section-title' ,
+              innerText: key
+            }
+          ))
+          // is not a list
+          if (sections[key].constructor !== Array) {
+            const subSections = sections[key];
+            const subSectionContainerElem = Object.assign(
+                document.createElement('div'), {
+                  className:'farama-header-menu__subsections-container',
+                  style: 'display: flex'
+                }
+            )
+            Object.keys(subSections).forEach((subKey, i) => {
+              const subSectionElem = Object.assign(
+                document.createElement('div'), {
+                  className:'farama-header-menu__subsection',
+                }
+              )
+              subSectionElem.appendChild(Object.assign(document.createElement('span'),
+                {
+                  className:'farama-header-menu__subsection-title' ,
+                  innerText: subKey
+                }
+              ))
+              const ulElem = createProjectsList(subSections[subKey], key !== 'Foundation');
+              subSectionElem.appendChild(ulElem);
+              subSectionContainerElem.appendChild(subSectionElem);
+            })
+            sectionElem.appendChild(subSectionContainerElem);
+          } else {
+            const projects = sections[key];
+            const ulElem = createProjectsList(projects, true);
+            sectionElem.appendChild(ulElem);
+          }
+          menuContainer.appendChild(sectionElem)
+        });
+      }
+
+      xhr.onerror = function() {
+        console.error("Unable to load projects");
+      };
+
+      xhr.send();
+    </script>
+
+    
+    <script>
+      const versioningConfig = {
+        githubUser: 'Farama-Foundation',
+        githubRepo: 'ViZDoom',
+      };
+      fetch('/main/_static/versioning/versioning_menu.html').then(response => {
+        if (response.status === 200) {
+            response.text().then(text => {
+                const container = document.createElement("div");
+                container.innerHTML = text;
+                document.querySelector("body").appendChild(container);
+                // innerHtml doenst evaluate scripts, we need to add them dynamically
+                Array.from(container.querySelectorAll("script")).forEach(oldScript => {
+                    const newScript = document.createElement("script");
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+            });
+        } else {
+            console.warn("Unable to load versioning menu", response);
+        }
+      });
+    </script>
+
+    </body>
+</html>

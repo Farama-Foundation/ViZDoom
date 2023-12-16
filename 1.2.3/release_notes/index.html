@@ -1,0 +1,1113 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="">
+    <meta property="og:title" content="ViZDoom Documentation" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="" />
+    <meta property="og:url" content="https://vizdoom.farama.org/release_notes/index.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex/" /><link rel="search" title="Search" href="../search/" /><link rel="prev" title="How to cite" href="../citation/" />
+        <link rel="canonical" href="https://vizdoom.farama.org/release_notes/index.html" />
+
+    <link rel="shortcut icon" href="../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+        <title>Release Notes - ViZDoom Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=49cbaffd" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    <header class="farama-header" aria-label="Farama header">
+      <div class="farama-header__container">
+        <div class="farama-header__left--mobile">
+          <label class="nav-overlay-icon" for="__navigation">
+            <div class="visually-hidden">Toggle site navigation sidebar</div>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <defs></defs>
+              <line x1="0.5" y1="4" x2="23.5" y2="4"></line>
+              <line x1="0.232" y1="12" x2="23.5" y2="12"></line>
+              <line x1="0.232" y1="20" x2="23.5" y2="20"></line>
+            </svg>
+          </label>
+        </div>
+        <div class="farama-header__left farama-header__center--mobile">
+          <a href="../">
+              <img class="farama-header__logo only-light" src="../_static/img/vizdoom-black.svg" alt="Light Logo"/>
+              <img class="farama-header__logo only-dark" src="../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
+            <span class="farama-header__title">ViZDoom Documentation</span>
+          </a>
+        </div>
+        <div class="farama-header__right">
+          <div class="farama-header-menu">
+            <button class="farama-header-menu__btn" aria-label="Open Farama Menu" aria-expanded="false" aria-haspopup="true" aria-controls="farama-menu">
+              <img class="farama-black-logo-invert" src="../_static/img/farama-logo-header.svg">
+              <svg viewBox="0 0 24 24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <polyline style="stroke-linecap: round; stroke-linejoin: round; fill: none; stroke-width: 2px;" points="1 7 12 18 23 7"></polyline>
+              </svg>
+            </button>
+            <div class="farama-header-menu-container farama-hidden" aria-hidden="true" id="farama-menu">
+              <div class="farama-header-menu__header">
+                <a href="https://farama.org">
+                  <img class="farama-header-menu__logo farama-white-logo-invert" src="../_static/img/farama_solid_white.svg" alt="Farama Foundation logo">
+                  <span>Farama Foundation</span>
+                </a>
+                <div class="farama-header-menu-header__right">
+                  <button id="farama-close-menu">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-close">
+                      <line x1="3" y1="21" x2="21" y2="3"></line>
+                      <line x1="3" y1="3" x2="21" y2="21"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="farama-header-menu__body">
+                <!-- Response from farama.org/api/projects.json -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="page">
+  <!--<header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../"><div class="brand">ViZDoom Documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>-->
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="farama-sidebar__title" href="../">
+      <img class="farama-header__logo only-light" src="../_static/img/vizdoom-black.svg" alt="Light Logo"/>
+      <img class="farama-header__logo only-dark" src="../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
+    <span class="farama-header__title">ViZDoom Documentation</span>
+  </a><form class="sidebar-search-container" method="get" action="../search/" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/pythonQuickstart/">Python quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/building/">Building from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/apisAndWrappers/">APIs and wrappers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/python/doomGame/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/python/gameState/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/python/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/python/utils/">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/python/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/python/gymnasium/">Gymnasium Env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/python/gym/">OpenAI Gym Env</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/cpp/doomGame/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/cpp/gameState/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/cpp/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/cpp/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/cpp/utils/">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/configurationFiles/">Configuration files</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Environments</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../environments/default/">Default scenarios/environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/creatingCustom/">Creating a custom environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../faq/">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citation/">How to cite</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://vizdoom.cs.put.edu.pl/">Original website</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom">Github</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/blob/master/docs/README.md">Contribute to the Docs</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main-container">
+
+    
+
+    
+
+    <div class="main">
+      <div class="content">
+        <div class="article-container">
+          <a href="#" class="back-to-top muted-link">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+            </svg>
+            <span>Back to top</span>
+          </a>
+          <div class="content-icon-container"><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/release_notes/index.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+              <button class="theme-toggle" title="Toggle color theme">
+                <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                <svg class="theme-icon-when-auto">
+                  <use href="#svg-sun-half"></use>
+                </svg>
+                <svg class="theme-icon-when-dark">
+                  <use href="#svg-moon"></use>
+                </svg>
+                <svg class="theme-icon-when-light">
+                  <use href="#svg-sun"></use>
+                </svg>
+              </button>
+            </div>
+            <label class="toc-overlay-icon toc-content-icon" for="__toc">
+              <div class="visually-hidden">Toggle table of contents sidebar</div>
+              <i class="icon"><svg>
+                  <use href="#svg-toc"></use>
+                </svg></i>
+            </label>
+          </div>
+          <article role="main">
+            
+            <section class="tex2jax_ignore mathjax_ignore" id="release-notes">
+<h1>Release Notes<a class="headerlink" href="#release-notes" title="Link to this heading">#</a></h1>
+<section id="release-1-2-3">
+<h2>ViZDoom 1.2.3: Support for Python 3.12, fix for the Gymnasium wrapper<a class="headerlink" href="#release-1-2-3" title="Link to this heading">#</a></h2>
+<p><em>Released on 2023-12-16 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.2.3">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.2.3/">PyPI</a></em></p>
+<h1>ViZDoom 1.2.3 Release Notes</h1>
+<p>The aim of this release is mainly to add support for Python 3.12 and fix a serious bug in the Gymnasium wrapper (thanks <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/caozhenxiang-kouji/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/caozhenxiang-kouji">@caozhenxiang-kouji</a> for reporting).</p>
+<h2>What's Changed</h2>
+<ul>
+<li>Add support for Python 3.12 by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1977588705" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/570" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/570/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/570">#570</a></li>
+<li>Fix the bug in the Gymnasium wrapper that was constructing correct actions only for <code>int</code> type but not for <code>np.int</code> types, when <code>action_space = Discrete</code> (reported in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2042811902" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/574" data-hovercard-type="issue" data-hovercard-url="/Farama-Foundation/ViZDoom/issues/574/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/issues/574">#574</a>) by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2043464087" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/575" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/575/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/575">#575</a></li>
+<li>Add Farama notifications to the Python package by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1969457617" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/568" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/568/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/568">#568</a></li>
+<li>Add workflows to build docs version by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mgoulao/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mgoulao">@mgoulao</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1962917090" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/567" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/567/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/567">#567</a></li>
+<li>Add <code>set/getGameArgs</code>/<code>set/get_game_args</code> methods by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1977581372" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/569" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/569/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/569">#569</a></li>
+<li>Add support for +win_x/y CVARs on Linux and MacOS by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1977581372" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/569" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/569/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/569">#569</a></li>
+<li>Setup.py and tests updates by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2036742295" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/573" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/573/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/573">#573</a></li>
+<li>Add support for viz_noxserver option on macos by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2044443642" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/577" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/577/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/577">#577</a></li>
+<li>Documentation updates by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2044396250" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/576" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/576/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/576">#576</a> and <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="2044496704" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/578" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/578/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/578">#578</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/ViZDoom/compare/1.2.2...1.2.3"><tt>1.2.2...1.2.3</tt></a></p></section>
+<section id="release-1-2-2">
+<h2>ViZDoom 1.2.2: Fix for Python source distribution missing pybind11, fix manual building<a class="headerlink" href="#release-1-2-2" title="Link to this heading">#</a></h2>
+<p><em>Released on 2023-09-27 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.2.2">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.2.2/">PyPI</a></em></p>
+<h1>ViZDoom 1.2.2 Release Notes</h1>
+<p>The aim of this release is mainly to fix some issues with installing ViZDoom on configurations that cannot use binary wheels.</p>
+<h2>What's Changed</h2>
+<ul>
+<li>Create FUNDING.yml by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1891362870" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/557" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/557/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/557">#557</a></li>
+<li>Create CODE_OF_CONDUCT.md by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1905267151" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/559" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/559/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/559">#559</a></li>
+<li>Building and CI/CD fixes by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1905093798" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/558" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/558/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/558">#558</a>, <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1912134180" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/560" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/560/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/560">#560</a>, <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1912357834" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/562" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/562/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/562">#562</a></li>
+<li>Documentation updates by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1912353830" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/561" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/561/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/561">#561</a>, <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1912469436" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/563" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/563/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/563">#563</a>, and <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1915876427" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/564" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/564/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/564">#564</a></li>
+<li><code>load_config</code>/<code>loadConfig</code> fix by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1915925046" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/565" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/565/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/565">#565</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/ViZDoom/compare/1.2.1...1.2.2"><tt>1.2.1...1.2.2</tt></a></p></section>
+<section id="release-1-2-1">
+<h2>ViZDoom 1.2.1: Manylinux wheels, docstrings and argument names in the Python module, and a new documentation website<a class="headerlink" href="#release-1-2-1" title="Link to this heading">#</a></h2>
+<p><em>Released on 2023-09-11 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.2.1">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.2.1/">PyPI</a></em></p>
+<h1>ViZDoom 1.2.1 Release Notes</h1>
+<p>This release focuses on improving the user experience by adding support for docstrings and argument names in the Python module, a new documentation website, and, finally, improvements to the building process that allows for prebuilding manylinux wheels. This release does not introduce any changes to the API and is 100% compatible with the previous version.</p>
+<h2>What's Changed</h2>
+<ul>
+<li>Docstrings were added to the Python module by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1751651554" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/544" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/544/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/544">#544</a></li>
+<li>Argument names were added to the Python module by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1848810389" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/549" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/549/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/549">#549</a></li>
+<li>A new documentation website based on Sphinx was created by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mgoulao/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mgoulao">@mgoulao</a>, <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1690637238" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/540" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/540/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/540">#540</a>, <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1850061978" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/551" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/551/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/551">#551</a>, <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1890245875" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/554" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/554/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/554">#554</a></li>
+<li>Manylinux wheels workflow using cibuildwheel was added by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1882981579" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/552" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/552/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/552">#552</a></li>
+<li>Python 3.7 support was dropped by <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/mwydmuch/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/mwydmuch">@mwydmuch</a> in <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1849597139" data-permission-text="Title is private" data-url="https://github.com/Farama-Foundation/ViZDoom/issues/550" data-hovercard-type="pull_request" data-hovercard-url="/Farama-Foundation/ViZDoom/pull/550/hovercard" href="https://github.com/Farama-Foundation/ViZDoom/pull/550">#550</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/ViZDoom/compare/1.2.0...1.2.1"><tt>1.2.0...1.2.1</tt></a></p></section>
+<section id="release-1-2-0">
+<h2>ViZDoom 1.2.0: add Gymnasium wrapper, Pickle support, and ARM compatibility<a class="headerlink" href="#release-1-2-0" title="Link to this heading">#</a></h2>
+<p><em>Released on 2023-05-12 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.2.0">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.2.0/">PyPI</a></em></p>
+<h1>ViZDoom 1.2.0 Release Notes</h1>
+<p>This release adds official Gymnasium support, support for serialization using Pickle, and ARM compatibility. Besides that, it improves and modernizes the codebase to simply further maintenance of the library.</p>
+<p><strong>ViZDoom core API and Gym wrapper remain unchanged in this release. The code using the 1.1.X version should be fully compatible with this release.</strong></p>
+<h2>New Features and Improvements:</h2>
+<ul>
+<li><strong>Added Gymnasium support.</strong> The wrapper for Gymnasium 0.28 was added, and from now on it will be an integral part of the library. The old Gym 0.26 wrapper remains as an optional extra. Because of that, we mark this release as the next minor release for the first time in 4 years.</li>
+<li><strong>Added  Pickle support.</strong>
+<ul>
+<li>The Gymnasium/Gym wrappers now support the serialization of environments via pickle. Now both the environments and their states can be serialized.</li>
+<li>The <code>GameState</code> object and its subobjects, which are returned from C++ by <code>DoomGame.get_state()</code> method in core Python API, now also support serialization. However, <code>DoomGame</code> object that wraps the game engine cannot be serialized.</li>
+</ul>
+</li>
+<li><strong>Compatibility with ARM.</strong> The library can now be easily compiled and installed on ARM Linux as well as on Apple Silicon.</li>
+<li><strong>Python 3.11 support.</strong> The ViZDoom library can now be installed with Python 3.11.</li>
+</ul>
+<h2>Environments:</h2>
+<p>The default configurations for all build-in scenarios/environments were unified to use 320x240 resolution (original DOS Doom resolution) as default.</p>
+<h2>Bug Fixes and Documentation Updates:</h2>
+<p>This release introduces numerous improvements to the codebase that will simplify further maintenance:</p>
+<ul>
+<li>Pre-commit-hooks with code formatting and checks were added.</li>
+<li>All assembler code was removed. Instead, the C/C++ code that was present in the engine as a fallback is now used instead. Currently, these assembler parts are not bringing significant performance improvements and thus were not worth keeping in our opinion. Because of that, the assembler compiler was removed from the list of dependencies as it's no longer needed.</li>
+<li>Lemon and Zipdir libraries were updated to the newer versions to fix issues with a building project on ARM machines and some Windows configurations.</li>
+<li>Fixed some deprecation warnings in the C/C++ codebase.</li>
+<li>Updated and cleaned-up documentation related to the project building.</li>
+<li>Added a long description for the PyPI package page.</li>
+<li>Added many tests for both core API and the Gymnasium wrapper.</li>
+<li>Cleaned up the codebase and removed unused files, scripts, commented code blocks, and Visual Studio project files.</li>
+</ul>
+<p><strong>Full Changelog</strong>: <a class="commit-link" href="https://github.com/Farama-Foundation/ViZDoom/compare/1.1.14...1.2.0"><tt>1.1.14...1.2.0</tt></a></p></section>
+<section id="release-1-1-14">
+<h2>1.1.14<a class="headerlink" href="#release-1-1-14" title="Link to this heading">#</a></h2>
+<p><em>Released on 2023-01-07 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.14">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.14/">PyPI</a></em></p>
+<h2>Changes in ViZDoom 1.1.14</h2>
+<h4>Support for Apple Silicon</h4>
+<ul>
+<li>Fixed building on Apple Silicon Macbooks.</li>
+</ul>
+<h4>Gym</h4>
+<ul>
+<li>OpenAI Gym environment wrappers were updated to the Gym v0.26 API version.</li>
+</ul></section>
+<section id="release-1-1-13">
+<h2>1.1.13<a class="headerlink" href="#release-1-1-13" title="Link to this heading">#</a></h2>
+<p><em>Released on 2022-04-18 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.13">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.13/">PyPI</a></em></p>
+<h2>Changes in ViZDoom 1.1.13</h2>
+<h4>Releases</h4>
+<ul>
+<li>The pybind11 library and freedoom2.wad are now part of the source release instead of being downloaded during building.</li>
+</ul>
+<h4>Consts</h4>
+<ul>
+<li>Added new consts: <code>DEFAULT_FPS</code> (= <code>DEFAULT_TICRATE</code>), <code>DEFAULT_FRAMETIME_S</code> (= <code>1.0 / DEFAULT_TICRATE</code>), <code>DEFAULT_FRAMETIME_MS</code> (= <code>DEFAULT_FRAMETIME_S * 1000</code>);</li>
+</ul></section>
+<section id="release-1-1-12">
+<h2>1.1.12<a class="headerlink" href="#release-1-1-12" title="Link to this heading">#</a></h2>
+<p><em>Released on 2022-04-01 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.12">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.12/">PyPI</a></em></p>
+<h2>Changes in ViZDoom 1.1.12</h2>
+<h4>New OpenAI Gym wrapper</h4>
+<ul>
+<li>Added a new wrapper for OpenAI Gym.</li>
+</ul></section>
+<section id="release-1-1-11">
+<h2>1.1.11<a class="headerlink" href="#release-1-1-11" title="Link to this heading">#</a></h2>
+<p><em>Released on 2021-11-22 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.11">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.11/">PyPI</a></em></p>
+<h2>Changes in ViZDoom 1.1.11</h2>
+<h4>Python</h4>
+<ul>
+<li>Fixed issues with installing/building Python package.</li>
+</ul></section>
+<section id="release-1-1-10">
+<h2>1.1.10<a class="headerlink" href="#release-1-1-10" title="Link to this heading">#</a></h2>
+<p><em>Released on 2021-11-10 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.10">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.10/">PyPI</a></em></p>
+<h2>Changes in ViZDoom 1.1.10</h2>
+<h4>Python Bindings</h4>
+<ul>
+<li>Fixed support for Python 3.10</li>
+<li>Removed dependency on Numpy and simplified the process of building Windows wheels.</li>
+</ul>
+<h4>Input/output</h4>
+<ul>
+<li>Added support for tuples and ndarrays as arguments in many functions, where previously only lists were accepted.</li>
+</ul></section>
+<section id="release-1-1-9">
+<h2>1.1.9<a class="headerlink" href="#release-1-1-9" title="Link to this heading">#</a></h2>
+<p><em>Released on 2021-09-30 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.9">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.9/">PyPI</a></em></p>
+<h2>Changes in ViZDoom 1.1.9</h2>
+<h4>Audio buffer</h4>
+<ul>
+<li>Added <code>audio_buffer</code> to <code>State</code> and related methods <code>is/setAudioBufferEnabled</code>, <code>get/setAudioSamplingRate</code>, <code>get/setAudioBufferSize</code>.</li>
+</ul>
+<h4>Save/load methods</h4>
+<ul>
+<li>Added <code>save</code> and <code>load</code> methods that allow saving/loading game to/from a file.</li>
+</ul>
+<h4>Misc</h4>
+<ul>
+<li>Added <code>viz_bots_path</code> CVAR that allows specifying path to custom bots configuration.</li>
+</ul></section>
+<section id="release-1-1-8">
+<h2>1.1.8<a class="headerlink" href="#release-1-1-8" title="Link to this heading">#</a></h2>
+<p><em>Released on 2020-10-29 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.8">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.8/">PyPI</a></em></p>
+<h2>Changes in ViZDoom 1.1.8</h2>
+<h4>Objects and sectors</h4>
+<ul>
+<li>Added <code>is/setObjectsInfoEnabled</code>, <code>is/setSectorsInfoEnabled</code> methods to Python and C++ to enable information about all objects or/and sectors (map layout) present in the current episode/level.</li>
+<li>Added <code>objects</code> and <code>sectors</code> fields to <code>GameState</code> in Python and C++.</li>
+</ul>
+<h4>Config files</h4>
+<ul>
+<li>Added missing GameVariables introduced in 1.1.5 to the Config parser.</li>
+<li>Added missing GameVariables introduced in 1.1.7 to the Config parser.</li>
+<li>Added <code>objectsInfoEnabled/objects_info_enabled</code>.</li>
+</ul>
+<h4>Python, Java, Lua</h4>
+<ul>
+<li>Dropped support for Python 2.7</li>
+<li>Dropped support for Java bindings</li>
+<li>Dropped support for Lua/Torch bindings</li>
+</ul></section>
+<section id="release-1-1-8pre">
+<h2>1.1.8pre<a class="headerlink" href="#release-1-1-8pre" title="Link to this heading">#</a></h2>
+<p><em>Released on 2019-08-27 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.8pre">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.8pre/">PyPI</a></em></p>
+</section>
+<section id="release-1-1-7">
+<h2>1.1.7<a class="headerlink" href="#release-1-1-7" title="Link to this heading">#</a></h2>
+<p><em>Released on 2018-12-29 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.7">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.7/">PyPI</a></em></p>
+<h2>Changes in ViZDoom 1.1.7</h2>
+<h4>Python &amp; Julia</h4>
+<ul>
+<li>Added missing <code>is_multiplayer_game</code> method to Python and Julia binding.</li>
+</ul>
+<h4>CVARS</h4>
+<ul>
+<li>Added <code>VIEW_HEIGHT</code>, <code>CAMERA_POSITION_X</code>/<code>Y</code>/<code>Z</code>, <code>CAMERA_ANGLE</code>, <code>CAMERA_PITCH</code>, <code>CAMERA_ROLL</code> and <code>CAMERA_FOV</code> GameVariables.</li>
+</ul></section>
+<section id="release-1-1-6">
+<h2>1.1.6: <a class="headerlink" href="#release-1-1-6" title="Link to this heading">#</a></h2>
+<p><em>Released on 2018-07-16 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.6">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.6/">PyPI</a></em></p>
+<h2>Changes in ViZDoom 1.1.6</h2>
+<h4>Julia specific</h4>
+<ul>
+<li>Julia binding added.</li>
+</ul>
+<h4>Server state</h4>
+<ul>
+<li>Added <code>getServerState</code> method that returns <code>ServerState</code> object.</li>
+</ul>
+<h4>Multiplayer</h4>
+<ul>
+<li>Added timeout for network game synchronization controlled by <code>viz_connect_timeout</code> CVAR.</li>
+<li>Fixed <code>viz_spectator</code> CVAR.</li>
+</ul>
+<h4>Python specific</h4>
+<ul>
+<li>Added Python interpreter version check.</li>
+</ul></section>
+<section id="release-1-1-5">
+<h2>1.1.5<a class="headerlink" href="#release-1-1-5" title="Link to this heading">#</a></h2>
+<p><em>Released on 2018-05-14 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.5">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.5/">PyPI</a></em></p>
+<h2>Changes in ViZDoom 1.1.5</h2>
+<h4>Automap</h4>
+<ul>
+<li>Added <code>viz_am_scale</code> CVAR (CVAR version of <code>am_scale</code> CCMD).</li>
+<li>Added <code>viz_am_center</code> CVAR (and <code>am_center</code> CCMD).</li>
+</ul>
+<h4>Buttons and actions</h4>
+<ul>
+<li><strong>Added <code>getButton</code> method.</strong></li>
+</ul>
+<h4>Episode recording and replaying</h4>
+<ul>
+<li>Added <code>isRecordingEpisode</code> and <code>isReplayingEpisode</code> methods.</li>
+</ul>
+<h4>GameVariables</h4>
+<ul>
+<li><strong><code>KILLCOUNT</code> counts all kills, including multilayer kills.</strong></li>
+<li><strong><code>HITCOUNT</code>, <code>HITS_TAKEN</code>, <code>DAMAGECOUNT</code>, <code>DAMAGE_TAKEN</code> game variables added.</strong></li>
+</ul>
+<h4>Labels</h4>
+<ul>
+<li><strong>Added appending "Dead" prefix to label's name when actor is a corpse.</strong></li>
+<li><strong>Added bounding box information to Label object in <code>x</code>, <code>y</code>, <code>width</code> and <code>height</code> fields.</strong></li>
+<li><strong>Added <code>objectAngle</code>, <code>objectPitch</code>, <code>objectRoll</code>, <code>objectVelocityX/Y/Z</code> fields to Label object.</strong></li>
+</ul>
+<h4>Windows specific</h4>
+<ul>
+<li>Fixed problem with building on Windows 8.1 and 10.</li>
+<li>Added scripts for downloading freedoom2.wad and assembling Python packages.</li>
+</ul>
+<h4>Rendering</h4>
+<ul>
+<li>Fixed minor rendering issues in the depth and labels buffers.</li>
+<li>Fixed order of color values in <code>RGB/BGR</code> modes of <code>ScreenFormat</code>.</li>
+</ul></section>
+<section id="release-1-1-5pre">
+<h2>1.1.5pre<a class="headerlink" href="#release-1-1-5pre" title="Link to this heading">#</a></h2>
+<p><em>Released on 2017-10-22 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.5pre">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.5pre/">PyPI</a></em></p>
+</section>
+<section id="release-1-1-4">
+<h2>1.1.4<a class="headerlink" href="#release-1-1-4" title="Link to this heading">#</a></h2>
+<p><em>Released on 2017-09-29 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.4">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.4/">PyPI</a></em></p>
+<h2>Changes in ViZDoom 1.1.4</h2>
+<h4>Automap</h4>
+<ul>
+<li>Added <code>am_scale</code> CCMD.</li>
+</ul>
+<h4>Scenarios</h4>
+<ul>
+<li>Fixed <code>KILLCOUNT</code> GameVariable for ChainsawMarine in <code>defend_the_center</code> and <code>deathmatch</code> scenarios.</li>
+</ul>
+<h4>Python specific</h4>
+<ul>
+<li><strong>Ported Python binding to pybind11 as a replacement for Boost.Python.</strong></li>
+<li>Fixed problems with <code>pip install</code> detecting Python interpreter, includes and libraries from different Python versions.</li>
+</ul></section>
+<section id="release-1-1-3">
+<h2>1.1.3<a class="headerlink" href="#release-1-1-3" title="Link to this heading">#</a></h2>
+<p><em>Released on 2017-07-08 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.3">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.3/">PyPI</a></em></p>
+<h2>Changes in ViZDoom 1.1.3</h2>
+<h4>Rendering options</h4>
+<ul>
+<li>Added <code>setRenderScreenFlashes</code> and <code>setRenderAllFrames</code> methods.</li>
+<li>Added <code>viz_ignore_render_mode</code> CVAR which disables overriding rendering settings.</li>
+</ul>
+<h4>GameVariables</h4>
+<ul>
+<li><strong>Added <code>ANGLE</code>, <code>PITCH</code>, <code>ROLL</code>, <code>VELOCITY_X</code>/<code>Y</code>/<code>Z</code> GameVariables.</strong></li>
+</ul>
+<h4>Missing config keys</h4>
+<ul>
+<li>Added support for <code>DEATHCOUNT</code>, <code>USER31</code> - <code>USER60</code>, <code>PLAYER_NUMBER</code>, <code>PLAYER_COUNT</code>, <code>PLAYER1_FRAGCOUNT</code> - <code>PLAYER16_FRAGCOUNT</code>, <code>POSITION_X</code>/<code>Y</code>/<code>Z</code> GameVariables in the config file.</li>
+<li>Added support for <code>ALTATTACK</code> Button in the config file.</li>
+</ul>
+<h4>Java specific</h4>
+<ul>
+<li>Fixed <code>makeAction</code>.</li>
+<li>Added missing <code>POSITION_X</code>/<code>Y</code>/<code>Z</code> Game Variables.</li>
+</ul>
+<h4>Python specific</h4>
+<ul>
+<li>Added manual GIL management for better performance when used with Python threads.</li>
+</ul>
+<h4>Windows specific</h4>
+<ul>
+<li>Fixed building for Windows 10.</li>
+</ul></section>
+<section id="release-1-1-2">
+<h2>1.1.2<a class="headerlink" href="#release-1-1-2" title="Link to this heading">#</a></h2>
+<p><em>Released on 2017-06-11 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.2">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.2/">PyPI</a></em></p>
+<h2>Changes in ViZDoom 1.1.2</h2>
+<h4>Multiplayer</h4>
+<ul>
+<li>Added <code>isMultiplayerGame</code> method.</li>
+<li>Added <code>viz_respawn_delay</code> CVAR, which allows controlling the delay between respawns in multiplayer games.</li>
+<li>Added <code>viz_spectator</code> CVAR, which allows connecting to multiplayer games as a spectator.</li>
+<li><strong>Maximum number of connected players raised to 16, <code>PLAYER9_FRAGCOUNT</code> - <code>PLAYER16_FRAGCOUNT</code> GameVariables added.</strong></li>
+</ul>
+<h4>Missing methods</h4>
+<ul>
+<li>Added <code>isRunning</code>, <code>isDepthBufferEnabled</code>, <code>isLabelsBufferEnabled</code> and <code>isAutomapBufferEnabled</code> missing methods to Python and Lua bindings.</li>
+</ul></section>
+<section id="release-1-1-1">
+<h2>1.1.1<a class="headerlink" href="#release-1-1-1" title="Link to this heading">#</a></h2>
+<p><em>Released on 2017-03-23 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.1">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.1/">PyPI</a></em></p>
+<h2>Changes in ViZDoom 1.1.1</h2>
+<h4>GameState</h4>
+<ul>
+<li>Added <code>tic</code> field.</li>
+<li><code>GameVariable.DEATHCOUNT</code> fixed.</li>
+</ul>
+<h4>Lua specific</h4>
+<ul>
+<li>Fixed crash when calling <code>getState</code> in a terminal state.</li>
+</ul>
+<h4>Python specific</h4>
+<ul>
+<li>Fixed minor memory leak</li>
+<li>Fixed crash when calling <code>getState</code> in a terminal state.</li>
+</ul></section>
+<section id="release-1-1-0">
+<h2>1.1.0<a class="headerlink" href="#release-1-1-0" title="Link to this heading">#</a></h2>
+<p><em>Released on 2016-12-23 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.0">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.0/">PyPI</a></em></p>
+<h2>Changes in ViZDoom 1.1.0</h2>
+<h4>Buffers</h4>
+<ul>
+<li>Depth buffer is now a separate buffer in state and <code>ScreenFormat</code> values with it were removed - <code>is/setDepthBufferEnabled</code> added.</li>
+<li>Added in frame actors labeling feature -<code>is/setLabelsBufferEnabled</code> added.</li>
+<li>Added buffer with in game automap - <code>is/setAutomapBufferEnabled</code>, <code>setAutomapMode</code>, <code>setAutomapRoate</code>, <code>setAutomapRenderTextures</code>, <code>AutomapMode</code> enum added.</li>
+</ul>
+<h4>GameState</h4>
+<ul>
+<li><code>getState</code> will now return <code>nullptr/null/None</code> if game is in the terminal state.</li>
+<li><code>imageBuffer</code> renamed to <code>screenBuffer</code>.</li>
+<li>Added <code>depthBuffer</code>, <code>labelsBuffer</code> and <code>automapBuffer</code> and <code>labels</code> fields.</li>
+</ul>
+<h4>Rendering options</h4>
+<ul>
+<li>The option to use minimal hud instead of default full hud - <code>setRenderMinimalHud</code> added.</li>
+<li>The option to enable/disable effects that use sprites - <code>setRenderEffectsSprites</code> added.</li>
+<li>The option to enable/disable in game messages independently of the console output - <code>setRenderMessages</code> added.</li>
+<li>The option to enable/disable corpses - <code>setRenderCorpses</code> added.</li>
+</ul>
+<h4>Episode recording and replaying</h4>
+<ul>
+<li>The option to record and replay episodes, based on adapted ZDoom's demo mechanism -<br>
+recording <code>filePath</code> argument added to <code>newEpisode</code>, <code>replayEpisode</code> added.</li>
+<li>The option to replay demo from other players' perspective.</li>
+</ul>
+<h4>Ticrate</h4>
+<ul>
+<li>The option to set number of tics executed per second in ASNYC Modes.</li>
+<li>New <code>ticrate</code> optional argument in <code>doomTicsToMs</code>, <code>msToDoomTics</code>.</li>
+<li><code>doomTicsToSec</code> and <code>secToDoomTics</code> added.</li>
+</ul>
+<h4>Paths</h4>
+<ul>
+<li><strong>Paths in config files are now relative to config file.</strong></li>
+<li>setting <strong>vizdoom_path</strong> and <strong>doom_game_path</strong> is no longer needed - they default to location(installation) of vizdoom.so.</li>
+</ul>
+<h4>Others</h4>
+<ul>
+<li>ZDoom engine updated to 2.8.1.</li>
+<li><strong>Basic support for multiplayer in PLAYER and SPECTATOR Modes.</strong></li>
+<li>Improved exceptions messages.</li>
+<li>Bugs associated with paths handling were fixed.</li>
+<li>Many minor bugs were fixed.</li>
+<li>Possibility to change scenario wad during runtime (only first map from WAD file).</li>
+<li>Added <code>viz_debug</code> CVAR to control some diagnostic messages.</li>
+</ul>
+<h4>C++ specific</h4>
+<ul>
+<li>A lot of overloaded methods turned into a methods with default arguments.</li>
+<li><code>getState()</code> now returns <code>GameStatePtr (std::shared_ptr&lt;GameState&gt;)</code> instead of <code>GameState</code>.</li>
+<li>Buffers are now copied.</li>
+<li>GameState's buffer has now <code>ImageBufferPtr (std::shared_ptr&lt;ImageBuffer&gt;)</code> type - <code>Buffer (std::vector&lt;uint8_t&gt;)</code>.</li>
+<li>GameState's gameVariables are now vector of doubles instead of ints.</li>
+</ul>
+<h4>Lua specific</h4>
+<ul>
+<li>Lua binding added.</li>
+<li>Support for LuaRocks installation for Linux and MacOS.</li>
+</ul>
+<h4>Java specific</h4>
+<ul>
+<li>GameState buffers type changed to byte[].</li>
+<li>Performance improved.</li>
+<li>Java exceptions handling fixed.</li>
+<li>Few functions fixed.</li>
+</ul>
+<h4>Python specific</h4>
+<ul>
+<li>Consts added to Python.</li>
+<li>Aliases for <code>doom_fixed_to_double</code> - <code>doom_fixed_to_float</code> added.</li>
+<li>Support for pip installation for Linux and MacOS.</li>
+</ul></section>
+<section id="release-1-1-0rc">
+<h2>1.1.0rc<a class="headerlink" href="#release-1-1-0rc" title="Link to this heading">#</a></h2>
+<p><em>Released on 2016-11-26 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.0rc">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.0rc/">PyPI</a></em></p>
+</section>
+<section id="release-1-0-4">
+<h2>1.0.4<a class="headerlink" href="#release-1-0-4" title="Link to this heading">#</a></h2>
+<p><em>Released on 2016-06-14 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.0.4">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.0.4/">PyPI</a></em></p>
+</section>
+<section id="release-1-1-0pre-cig2016-warm-up-fixed">
+<h2>1.1.0pre-CIG2016-warm-up-fixed: 1.1.0pre-CIG2016<a class="headerlink" href="#release-1-1-0pre-cig2016-warm-up-fixed" title="Link to this heading">#</a></h2>
+<p><em>Released on 2016-06-12 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.1.0pre-CIG2016-warm-up-fixed">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.1.0pre-CIG2016-warm-up-fixed/">PyPI</a></em></p>
+</section>
+<section id="release-1-0-3">
+<h2>1.0.3<a class="headerlink" href="#release-1-0-3" title="Link to this heading">#</a></h2>
+<p><em>Released on 2016-05-29 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.0.3">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.0.3/">PyPI</a></em></p>
+</section>
+<section id="release-1-0-2">
+<h2>1.0.2<a class="headerlink" href="#release-1-0-2" title="Link to this heading">#</a></h2>
+<p><em>Released on 2016-05-17 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.0.2">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.0.2/">PyPI</a></em></p>
+</section>
+<section id="release-1-0-1">
+<h2>1.0.1<a class="headerlink" href="#release-1-0-1" title="Link to this heading">#</a></h2>
+<p><em>Released on 2016-05-08 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.0.1">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.0.1/">PyPI</a></em></p>
+</section>
+<section id="release-1-0-0">
+<h2>1.0.0<a class="headerlink" href="#release-1-0-0" title="Link to this heading">#</a></h2>
+<p><em>Released on 2016-04-18 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.0.0">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.0.0/">PyPI</a></em></p>
+</section>
+<section id="release-1-0-0-rc">
+<h2>1.0.0-rc: 1.0.0rc<a class="headerlink" href="#release-1-0-0-rc" title="Link to this heading">#</a></h2>
+<p><em>Released on 2016-03-25 - <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/releases/tag/1.0.0-rc">GitHub</a> - <a class="reference external" href="https://pypi.org/project/vizdoom/1.0.0-rc/">PyPI</a></em></p>
+</section>
+</section>
+
+          </article>
+        </div>
+        <footer>
+          
+          <div class="related-pages">
+            
+            
+          </div>
+          <div class="bottom-of-page">
+            <div class="left-details">
+              <div class="copyright">
+                Copyright &#169; 2023 Farama Foundation
+              </div>
+              <!--
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            -->
+            </div>
+            <div class="right-details">
+              <div class="icons">
+                <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/"
+                  aria-label="On GitHub">
+                  <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                      d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z">
+                    </path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+        </footer>
+      </div>
+      <aside class="toc-drawer">
+        
+        
+        <div class="toc-sticky toc-scroll">
+          <div class="toc-title-container">
+            <span class="toc-title">
+              On this page
+            </span>
+          </div>
+          <div class="toc-tree-container">
+            <div class="toc-tree">
+              <ul>
+<li><a class="reference internal" href="#">Release Notes</a><ul>
+<li><a class="reference internal" href="#release-1-2-3">ViZDoom 1.2.3: Support for Python 3.12, fix for the Gymnasium wrapper</a></li>
+<li><a class="reference internal" href="#release-1-2-2">ViZDoom 1.2.2: Fix for Python source distribution missing pybind11, fix manual building</a></li>
+<li><a class="reference internal" href="#release-1-2-1">ViZDoom 1.2.1: Manylinux wheels, docstrings and argument names in the Python module, and a new documentation website</a></li>
+<li><a class="reference internal" href="#release-1-2-0">ViZDoom 1.2.0: add Gymnasium wrapper, Pickle support, and ARM compatibility</a></li>
+<li><a class="reference internal" href="#release-1-1-14">1.1.14</a></li>
+<li><a class="reference internal" href="#release-1-1-13">1.1.13</a></li>
+<li><a class="reference internal" href="#release-1-1-12">1.1.12</a></li>
+<li><a class="reference internal" href="#release-1-1-11">1.1.11</a></li>
+<li><a class="reference internal" href="#release-1-1-10">1.1.10</a></li>
+<li><a class="reference internal" href="#release-1-1-9">1.1.9</a></li>
+<li><a class="reference internal" href="#release-1-1-8">1.1.8</a></li>
+<li><a class="reference internal" href="#release-1-1-8pre">1.1.8pre</a></li>
+<li><a class="reference internal" href="#release-1-1-7">1.1.7</a></li>
+<li><a class="reference internal" href="#release-1-1-6">1.1.6: </a></li>
+<li><a class="reference internal" href="#release-1-1-5">1.1.5</a></li>
+<li><a class="reference internal" href="#release-1-1-5pre">1.1.5pre</a></li>
+<li><a class="reference internal" href="#release-1-1-4">1.1.4</a></li>
+<li><a class="reference internal" href="#release-1-1-3">1.1.3</a></li>
+<li><a class="reference internal" href="#release-1-1-2">1.1.2</a></li>
+<li><a class="reference internal" href="#release-1-1-1">1.1.1</a></li>
+<li><a class="reference internal" href="#release-1-1-0">1.1.0</a></li>
+<li><a class="reference internal" href="#release-1-1-0rc">1.1.0rc</a></li>
+<li><a class="reference internal" href="#release-1-0-4">1.0.4</a></li>
+<li><a class="reference internal" href="#release-1-1-0pre-cig2016-warm-up-fixed">1.1.0pre-CIG2016-warm-up-fixed: 1.1.0pre-CIG2016</a></li>
+<li><a class="reference internal" href="#release-1-0-3">1.0.3</a></li>
+<li><a class="reference internal" href="#release-1-0-2">1.0.2</a></li>
+<li><a class="reference internal" href="#release-1-0-1">1.0.1</a></li>
+<li><a class="reference internal" href="#release-1-0-0">1.0.0</a></li>
+<li><a class="reference internal" href="#release-1-0-0-rc">1.0.0-rc: 1.0.0rc</a></li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
+        
+        
+      </aside>
+    </div>
+  </div>
+</div>
+    <script>
+      const toggleMenu = () => {
+        const menuBtn = document.querySelector(".farama-header-menu__btn");
+        const menuContainer = document.querySelector(".farama-header-menu-container");
+        if (document.querySelector(".farama-header-menu").classList.contains("active")) {
+          menuBtn.setAttribute("aria-expanded", "false");
+          menuContainer.setAttribute("aria-hidden", "true");
+        } else {
+          menuBtn.setAttribute("aria-expanded", "true");
+          menuContainer.setAttribute("aria-hidden", "false");
+        }
+        document.querySelector(".farama-header-menu").classList.toggle("active");
+      }
+
+      document.querySelector(".farama-header-menu__btn").addEventListener("click", toggleMenu);
+      document.getElementById("farama-close-menu").addEventListener("click", toggleMenu);
+    </script>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6H9C8TWXZ8"></script>
+      <script>
+        const enableGtag = () => {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-6H9C8TWXZ8');
+        }
+        (() => {
+            if (!localStorage.getItem("acceptedCookieAlert")) {
+                const boxElem = document.createElement("div");
+                boxElem.classList.add("cookie-alert");
+                const containerElem = document.createElement("div");
+                containerElem.classList.add("cookie-alert__container");
+                const textElem = document.createElement("p");
+                textElem.innerHTML = `This page uses <a href="https://analytics.google.com/">
+                                    Google Analytics</a> to collect statistics.`;
+                                    containerElem.appendChild(textElem);
+
+                const declineBtn = Object.assign(document.createElement("button"),
+                  {
+                    innerText: "Deny",
+                    className: "farama-btn cookie-alert__button",
+                    id: "cookie-alert__decline",
+                  }
+                );
+                declineBtn.addEventListener("click", () => {
+                  localStorage.setItem("acceptedCookieAlert", false);
+                  boxElem.remove();
+                });
+
+                const acceptBtn = Object.assign(document.createElement("button"),
+                  {
+                    innerText: "Allow",
+                    className: "farama-btn cookie-alert__button",
+                    id: "cookie-alert__accept",
+                  }
+                );
+                acceptBtn.addEventListener("click", () => {
+                  localStorage.setItem("acceptedCookieAlert", true);
+                  boxElem.remove();
+                  enableGtag();
+                });
+
+                containerElem.appendChild(declineBtn);
+                containerElem.appendChild(acceptBtn);
+                boxElem.appendChild(containerElem);
+                document.body.appendChild(boxElem);
+            } else if (localStorage.getItem("acceptedCookieAlert") === "true") {
+              enableGtag();
+            }
+        })()
+      </script>
+
+    <script src="../_static/documentation_options.js?v=a5603611"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=7660844c"></script>
+    
+    <script>
+
+      const createProjectsList = (projects, displayImages) => {
+        const ulElem = Object.assign(document.createElement('ul'),
+          {
+            className:'farama-header-menu-list',
+          }
+        )
+        for (let project of projects) {
+          const liElem = document.createElement("li");
+          const aElem = Object.assign(document.createElement("a"),
+            {
+              href: project.link
+            }
+          );
+          liElem.appendChild(aElem);
+          if (displayImages) {
+            const imgElem = Object.assign(document.createElement("img"),
+              {
+                src: project.image ? imagesBasepath + project.image : imagesBasepath + "/farama_black.svg",
+                alt: `${project.name} logo`,
+                className: "farama-black-logo-invert"
+              }
+            );
+            aElem.appendChild(imgElem);
+          }
+          aElem.appendChild(document.createTextNode(project.name));
+          ulElem.appendChild(liElem);
+        }
+        return ulElem;
+      }
+
+      // Create menu with Farama projects by using the API at farama.org/api/projects.json
+      const createCORSRequest = (method, url) => {
+        let xhr = new XMLHttpRequest();
+        xhr.responseType = 'json';
+
+        if ("withCredentials" in xhr) {
+          xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+          // IE8 & IE9
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+        } else {
+          // CORS not supported.
+          xhr = null;
+        }
+        return xhr;
+      };
+
+      const url = 'https://farama.org/api/projects.json';
+      const imagesBasepath = "https://farama.org/assets/images"
+      const method = 'GET';
+      let xhr = createCORSRequest(method, url);
+
+      xhr.onload = () => {
+        const jsonResponse = xhr.response;
+        const sections = {
+          "Core Projects": [],
+          "Mature Projects": {
+            "Documentation": [],
+            "Repositories": [],
+          },
+          "Incubating Projects": {
+            "Documentation": [],
+            "Repositories": [],
+          },
+          "Foundation": [
+            {
+              name: "About",
+              link: "https://farama.org/about"
+            },
+            {
+              name: "Standards",
+              link: "https://farama.org/project_standards",
+            },
+            {
+              name: "Donate",
+              link: "https://farama.org/donations"
+            }
+          ]
+        }
+
+        // Categorize projects
+        Object.keys(jsonResponse).forEach(key => {
+          projectJson = jsonResponse[key];
+          if (projectJson.website !== null) {
+            projectJson.link = projectJson.website;
+          } else {
+            projectJson.link = projectJson.github;
+          }
+          if (projectJson.type === "core") {
+            sections["Core Projects"].push(projectJson)
+          } else if (projectJson.type == "mature") {
+            if (projectJson.website !== null) {
+              sections["Mature Projects"]["Documentation"].push(projectJson)
+            } else {
+              sections["Mature Projects"]["Repositories"].push(projectJson)
+            }
+          } else {
+            if (projectJson.website !== null) {
+              sections["Incubating Projects"]["Documentation"].push(projectJson)
+            } else {
+              sections["Incubating Projects"]["Repositories"].push(projectJson)
+            }
+          }
+        })
+
+        const menuContainer = document.querySelector(".farama-header-menu__body");
+
+        Object.keys(sections).forEach((key, i) => {
+          const sectionElem = Object.assign(
+            document.createElement('div'), {
+              className:'farama-header-menu__section',
+            }
+          )
+          sectionElem.appendChild(Object.assign(document.createElement('span'),
+            {
+              className:'farama-header-menu__section-title' ,
+              innerText: key
+            }
+          ))
+          // is not a list
+          if (sections[key].constructor !== Array) {
+            const subSections = sections[key];
+            const subSectionContainerElem = Object.assign(
+                document.createElement('div'), {
+                  className:'farama-header-menu__subsections-container',
+                  style: 'display: flex'
+                }
+            )
+            Object.keys(subSections).forEach((subKey, i) => {
+              const subSectionElem = Object.assign(
+                document.createElement('div'), {
+                  className:'farama-header-menu__subsection',
+                }
+              )
+              subSectionElem.appendChild(Object.assign(document.createElement('span'),
+                {
+                  className:'farama-header-menu__subsection-title' ,
+                  innerText: subKey
+                }
+              ))
+              const ulElem = createProjectsList(subSections[subKey], key !== 'Foundation');
+              subSectionElem.appendChild(ulElem);
+              subSectionContainerElem.appendChild(subSectionElem);
+            })
+            sectionElem.appendChild(subSectionContainerElem);
+          } else {
+            const projects = sections[key];
+            const ulElem = createProjectsList(projects, true);
+            sectionElem.appendChild(ulElem);
+          }
+          menuContainer.appendChild(sectionElem)
+        });
+      }
+
+      xhr.onerror = function() {
+        console.error("Unable to load projects");
+      };
+
+      xhr.send();
+    </script>
+
+    
+    <script>
+      const versioningConfig = {
+        githubUser: 'Farama-Foundation',
+        githubRepo: 'ViZDoom',
+      };
+      fetch('/main/_static/versioning/versioning_menu.html').then(response => {
+        if (response.status === 200) {
+            response.text().then(text => {
+                const container = document.createElement("div");
+                container.innerHTML = text;
+                document.querySelector("body").appendChild(container);
+                // innerHtml doenst evaluate scripts, we need to add them dynamically
+                Array.from(container.querySelectorAll("script")).forEach(oldScript => {
+                    const newScript = document.createElement("script");
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+            });
+        } else {
+            console.warn("Unable to load versioning menu", response);
+        }
+      });
+    </script>
+
+    </body>
+</html>
