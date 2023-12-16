@@ -310,7 +310,7 @@
           </div>
           <article role="main">
             
-            <section id="gamestate">
+            <section class="tex2jax_ignore mathjax_ignore" id="gamestate">
 <h1>GameState<a class="headerlink" href="#gamestate" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.GameState">
@@ -372,8 +372,8 @@
 
 </dd></dl>
 
-<p><strong>number</strong> - number of the state in the episode.
-<strong>tic</strong> - ingame time, 1 tic is 1/35 of second in the game world. Added in 1.1.1.</p>
+<p><strong>number</strong> - number of the state in the episode.</p>
+<p><strong>tic</strong> - ingame time, 1 tic is 1/35 of second in the game world. Note: added in 1.1.1.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.get_state"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_state</span></code></span></a>,</p></li>
@@ -471,7 +471,7 @@
 <p><strong>object_id</strong> - unique object ID, if both Labels and Objects information is enabled, this will be the same as <strong>id</strong> in corresponding <strong>Object</strong>.</p>
 <p><strong>object_name</strong> - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).</p>
 <p><strong>value</strong> - value that represents this particular object in <strong>labels_buffer</strong>.</p>
-<p><strong>x</strong>, <strong>y</strong>, <strong>width</strong>, <strong>height</strong> - describes bounding box of this particular object in <strong>labels_buffer</strong>. Added in 1.1.5.</p>
+<p><strong>x</strong>, <strong>y</strong>, <strong>width</strong>, <strong>height</strong> - describes bounding box of this particular object in <strong>labels_buffer</strong>. Note: added in 1.1.5.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.set_labels_buffer_enabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_labels_buffer_enabled</span></code></span></a>,</p></li>
@@ -539,12 +539,12 @@
 
 <p><strong>id</strong> - unique object ID.</p>
 <p><strong>name</strong> - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).</p>
-<p>Added in 1.1.8.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.set_sectors_info_enabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_objects_info_enabled</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>.</p></li>
 </ul>
+<p>Note: added in 1.1.8.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.Line">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Line</span></span><a class="headerlink" href="#vizdoom.Line" title="Link to this definition">#</a></dt>
@@ -578,11 +578,11 @@
 <p><strong>x1</strong>, <strong>y1</strong> - position of the line’s first vertex.</p>
 <p><strong>x2</strong>, <strong>y2</strong> - position of the line’s second vertex.</p>
 <p><strong>is_blocking</strong> - is true, if line is a wall that can’t be passed.</p>
-<p>Added in 1.1.8.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>.</p></li>
 </ul>
+<p>Note: added in 1.1.8.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.Sector">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Sector</span></span><a class="headerlink" href="#vizdoom.Sector" title="Link to this definition">#</a></dt>
@@ -606,12 +606,12 @@
 <p><strong>floor_height</strong> - height of the sector’s floor.</p>
 <p><strong>ceiling_height</strong> - height of the sector’s ceiling.</p>
 <p><strong>lines</strong> - contains list of line segments, that forms sector.</p>
-<p>Added in 1.1.8.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.set_sectors_info_enabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_sectors_info_enabled</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>.</p></li>
 </ul>
+<p>Note: added in 1.1.8.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.ServerState">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ServerState</span></span><a class="headerlink" href="#vizdoom.ServerState" title="Link to this definition">#</a></dt>
@@ -658,11 +658,11 @@
 </dd></dl>
 
 <p>ServerState is the main object returned by <a class="reference internal" href="../doomGame/#vizdoom.DoomGame.get_server_state"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_server_state</span></code></span></a> method, and it purpose is to get more information about the state of the multi-player game.</p>
-<p>Added in 1.1.6.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.get_server_state"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_server_state</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.get_server_state"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_server_state</span></code></span></a>.</p></li>
 </ul>
+<p>Note: added in 1.1.6.</p>
 </section>
 </section>
 

@@ -310,7 +310,7 @@
           </div>
           <article role="main">
             
-            <section id="enums">
+            <section class="tex2jax_ignore mathjax_ignore" id="enums">
 <h1>Enums<a class="headerlink" href="#enums" title="Link to this heading">#</a></h1>
 <p>ViZDoom is using few types of enums as parameters for its functions.</p>
 <dl class="py class">
@@ -364,11 +364,11 @@
 <li><p><strong>GRAY8</strong>     - 8-bit gray channel</p></li>
 <li><p><strong>DOOM_256_COLORS8</strong> - 8-bit channel with Doom palette values</p></li>
 </ul>
-<p>In <strong>CRCGCB</strong> and <strong>CBCGCR</strong> format <strong>screenBuffer</strong> and <strong>automapBuffer</strong> store all red 8-bit values then all green values and then all blue values, each channel is considered separately. As matrices they have [3, y, x] shape.</p>
-<p>In <strong>RGB24</strong> and <strong>BGR24</strong> format <strong>screenBuffer</strong> and <strong>automapBuffer</strong> store 24 bit RGB triples. As matrices they have [y, x, 3] shape.</p>
-<p>In <strong>RGBA32</strong>, <strong>ARGB32</strong>, <strong>BGRA32</strong> and <strong>ABGR32</strong> format <strong>screenBuffer</strong> and <strong>automapBuffer</strong> store 32 bit sets of RBG + alpha values. As matrices they have [y, x, 4] shape.</p>
-<p>In <strong>GRAY8</strong> and <strong>DOOM_256_COLORS8</strong> format <strong>screenBuffer</strong> and <strong>automapBuffer</strong> store single 8 bit values. As matrices they have [y, x] shape.</p>
-<p><strong>depthBuffer</strong> and <strong>lablesBuffer</strong> always store single 8-bit values, so they always have [y, x] shape.</p>
+<p>In <strong>CRCGCB</strong> and <strong>CBCGCR</strong> format <strong>screenBuffer</strong> and <strong>automapBuffer</strong> store all red 8-bit values then all green values and then all blue values, each channel is considered separately. As matrices (<code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code>) they have <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">y,</span> <span class="pre">x)</span></code> shape.</p>
+<p>In <strong>RGB24</strong> and <strong>BGR24</strong> format <strong>screenBuffer</strong> and <strong>automapBuffer</strong> store 24 bit RGB triples. As matrices (<code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code>) they have <code class="docutils literal notranslate"><span class="pre">(y,</span> <span class="pre">x,</span> <span class="pre">3)</span></code> shape.</p>
+<p>In <strong>RGBA32</strong>, <strong>ARGB32</strong>, <strong>BGRA32</strong> and <strong>ABGR32</strong> format <strong>screenBuffer</strong> and <strong>automapBuffer</strong> store 32 bit sets of RBG + alpha values. As matrices (<code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code>) they have <code class="docutils literal notranslate"><span class="pre">(y,</span> <span class="pre">x,</span> <span class="pre">4)</span></code> shape.</p>
+<p>In <strong>GRAY8</strong> and <strong>DOOM_256_COLORS8</strong> format <strong>screenBuffer</strong> and <strong>automapBuffer</strong> store single 8 bit values. As matrices (<code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code>) they have <code class="docutils literal notranslate"><span class="pre">(y,</span> <span class="pre">x)</span></code> shape.</p>
+<p><strong>depthBuffer</strong> and <strong>lablesBuffer</strong> always store single 8-bit values, so as matrices (<code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code>) they always have <code class="docutils literal notranslate"><span class="pre">(y,</span> <span class="pre">x)</span></code> shape.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.get_screen_format"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_screen_format</span></code></span></a>,</p></li>
@@ -591,10 +591,10 @@
 <li><p><strong>SECRETCOUNT</strong>           - Counts the number of secret location/objects discovered during the current episode.</p></li>
 <li><p><strong>FRAGCOUNT</strong>             - Counts the number of players/bots killed, minus the number of committed suicides. Useful only in multiplayer mode.</p></li>
 <li><p><strong>DEATHCOUNT</strong>            - Counts the number of players deaths during the current episode. Useful only in multiplayer mode.</p></li>
-<li><p><strong>HITCOUNT</strong>              - Counts number of hit monsters/players/bots during the current episode. Added in 1.1.5.</p></li>
-<li><p><strong>HITS_TAKEN</strong>            - Counts number of hits taken by the player during the current episode. Added in 1.1.5.</p></li>
-<li><p><strong>DAMAGECOUNT</strong>           - Counts number of damage dealt to monsters/players/bots during the current episode. Added in 1.1.5.</p></li>
-<li><p><strong>DAMAGE_TAKEN</strong>          - Counts number of damage taken by the player during the current episode. Added in 1.1.5.</p></li>
+<li><p><strong>HITCOUNT</strong>              - Counts number of hit monsters/players/bots during the current episode. Note: added in 1.1.5.</p></li>
+<li><p><strong>HITS_TAKEN</strong>            - Counts number of hits taken by the player during the current episode. Note: added in 1.1.5.</p></li>
+<li><p><strong>DAMAGECOUNT</strong>           - Counts number of damage dealt to monsters/players/bots during the current episode. Note: added in 1.1.5.</p></li>
+<li><p><strong>DAMAGE_TAKEN</strong>          - Counts number of damage taken by the player during the current episode. Note: added in 1.1.5.</p></li>
 <li><p><strong>HEALTH</strong>                - Can be higher then 100!</p></li>
 <li><p><strong>ARMOR</strong>                 - Can be higher then 100!</p></li>
 <li><p><strong>DEAD</strong>                  - True if the player is dead.</p></li>
@@ -607,17 +607,19 @@
 <li><p><strong>WEAPON0</strong> - <strong>WEAPON9</strong> - Number of weapons in N slot.</p></li>
 <li><p><strong>POSITION_X, POSITION_Y, POSITION_Z</strong>        - Position of the player, not available if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled.</p></li>
 <li><p><strong>ANGLE, PITCH, ROLL</strong>                        - Orientation of the player, not available if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled.</p></li>
-<li><p><strong>VIEW_HEIGHT</strong>           - View high of the player, not available if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled. Position of the camera in Z axis is equal to <strong>POSITION_Z</strong> + <strong>VIEW_HEIGHT</strong>. Added in 1.1.7.</p></li>
+<li><p><strong>VIEW_HEIGHT</strong>           - View high of the player, not available if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled. Position of the camera in Z axis is equal to <strong>POSITION_Z</strong> + <strong>VIEW_HEIGHT</strong>. Note: added in 1.1.7.</p></li>
 <li><p><strong>VELOCITY_X, VELOCITY_Y, VELOCITY_Z</strong>        - Velocity of the player, not available if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled.</p></li>
-<li><p><strong>CAMERA_POSITION_X, CAMERA_POSITION_Y, CAMERA_POSITION_Z</strong>   - Position of the camera, not available if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled. Added in 1.1.7.</p></li>
-<li><p><strong>CAMERA_ANGLE, CAMERA_PITCH, CAMERA_ROLL</strong>   - Orientation of the camera, not available if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled. Added in 1.1.7.</p></li>
-<li><p><strong>CAMERA_FOV</strong>            - Field of view in degrees, not available if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled. Added in 1.1.7.</p></li>
+<li><p><strong>CAMERA_POSITION_X, CAMERA_POSITION_Y, CAMERA_POSITION_Z</strong>   - Position of the camera, not available if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled. Note: added in 1.1.7.</p></li>
+<li><p><strong>CAMERA_ANGLE, CAMERA_PITCH, CAMERA_ROLL</strong>   - Orientation of the camera, not available if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled. Note: added in 1.1.7.</p></li>
+<li><p><strong>CAMERA_FOV</strong>            - Field of view in degrees, not available if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled. Note: added in 1.1.7.</p></li>
 <li><p><strong>PLAYER_NUMBER</strong>         - Player’s number in multiplayer game.</p></li>
 <li><p><strong>PLAYER_COUNT</strong>          - Number of players in multiplayer game.</p></li>
-<li><p><strong>PLAYER1_FRAGCOUNT</strong> - <strong>PLAYER16_FRAGCOUNT</strong> - Number of N player’s frags</p></li>
+<li><p><strong>PLAYER1_FRAGCOUNT</strong> - <strong>PLAYER16_FRAGCOUNT</strong> - Number of player’s frags (number of kills - suicides in multiplayer deathmatch).</p></li>
 <li><p><strong>USER1</strong> - <strong>USER60</strong>    - user defined variables. ACS global int variables can be accessed as USER GameVariables.
-global int 0 is reserved for reward and is always threaded as Doom’s fixed point numeral.
-Other from 1 to 60 (global int 1-60) can be accessed as USER1 - USER60 GameVariables.</p></li>
+global int 0 is reserved for reward and is always threaded as Doom fixed point numeral.
+Other from 1 to 60 (global int 1-60) can be accessed as USER1 - USER60 GameVariables.
+If you assign fixed point numeral to USER1 - USER60 GameVariables,
+you can convert them to floating point by using <a class="reference internal" href="../utils/#vizdoom.doom_fixed_to_float"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">doom_fixed_to_float</span></code></span></a> function.</p></li>
 </ul>
 <p>See also:</p>
 <ul class="simple">
@@ -626,7 +628,7 @@ Other from 1 to 60 (global int 1-60) can be accessed as USER1 - USER60 GameVaria
 <li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.set_available_game_variables"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_available_game_variables</span></code></span></a>,</p></li>
 <li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.add_available_game_variable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.add_available_game_variable</span></code></span></a>,</p></li>
 <li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.get_game_variable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_game_variable</span></code></span></a>,</p></li>
-<li><p><a class="reference internal" href="../utils/#doomfixedtodouble"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">doomFixedToDouble</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../utils/#vizdoom.doom_fixed_to_float"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">doom_fixed_to_float</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/basic.py">examples/python/basic.py</a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/shaping.py">examples/python/shaping.py</a>.</p></li>
 </ul>
@@ -714,12 +716,12 @@ Binary buttons have only 2 states “not pressed” if value 0 and “pressed”
 <p>SR_44100</p>
 </dd></dl>
 
-<p>Enum type that defines all supported sampling rates for <strong>audioBuffer</strong> in <strong>State</strong>.
-Added in 1.1.9.</p>
+<p>Enum type that defines all supported sampling rates for <strong>audioBuffer</strong> in <strong>State</strong>.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#set_audio_sampling_rate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_audio_sampling_rate</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.set_audio_sampling_rate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_audio_sampling_rate</span></code></span></a>.</p></li>
 </ul>
+<p>Note: added in 1.1.9.</p>
 </section>
 
           </article>

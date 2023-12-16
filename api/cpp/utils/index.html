@@ -310,7 +310,7 @@
           </div>
           <article role="main">
             
-            <section id="utilities">
+            <section class="tex2jax_ignore mathjax_ignore" id="utilities">
 <h1>Utilities<a class="headerlink" href="#utilities" title="Link to this heading">#</a></h1>
 <p>Here we document the helpers functions that are not part of any object.
 They mostly help to deal with conversion of Doom’s engine types.
@@ -333,8 +333,8 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </tbody>
 </table>
 </div>
-<p>Changed in 1.1</p>
 <p>Calculates how many tics will be made during given number of milliseconds.</p>
+<p>Note: changed in 1.1.0</p>
 </section>
 <hr class="docutils" />
 <section id="mstodoomtics">
@@ -353,8 +353,8 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </tbody>
 </table>
 </div>
-<p>Changed in 1.1</p>
 <p>Calculates the number of milliseconds that will pass during specified number of tics.</p>
+<p>Note: changed in 1.1.0</p>
 </section>
 <hr class="docutils" />
 <section id="doomticstosec">
@@ -373,8 +373,8 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </tbody>
 </table>
 </div>
-<p>Added in 1.1</p>
 <p>Calculates how many tics will be made during given number of seconds.</p>
+<p>Note: added in 1.1.0</p>
 </section>
 <hr class="docutils" />
 <section id="sectodoomtics">
@@ -393,8 +393,8 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </tbody>
 </table>
 </div>
-<p>Added in 1.1</p>
 <p>Calculates the number of seconds that will pass during specified number of tics.</p>
+<p>Note: added in 1.1.0</p>
 </section>
 </section>
 <section id="doom-fixed-point-conversion-functions">
@@ -410,20 +410,16 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </thead>
 <tbody>
 <tr class="row-even"><td class="text-left"><p>Python</p></td>
-<td class="text-left"><p>`doom_fixed_to_double(doomFixed: int</p></td>
+<td class="text-left"><p>`doom_fixed_to_double(doom_fixed: int</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <p>Converts fixed point numeral to a floating point value.
-Doom’s engine internally use fixed point numbers.
-If you read them directly from <code class="docutils literal notranslate"><span class="pre">USERX</span></code> variables,
-you may want to convert them to floating point numbers.</p>
-<p>See also:</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="../enums/#user-acs-variables"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">User</span> <span class="pre">variables</span></code> in <code class="docutils literal notranslate"><span class="pre">GameVariables</span></code></span></a></p></li>
-</ul>
-<p>Python aliases (added in 1.1): <code class="docutils literal notranslate"><span class="pre">doom_fixed_to_float(doomFixed:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code></p>
+Doom engine internally use fixed point numbers.
+If you assign fixed point numeral to <code class="docutils literal notranslate"><span class="pre">USER1</span></code> - <code class="docutils literal notranslate"><span class="pre">USER60</span></code> GameVariables,
+you can convert them to floating point by using this function.</p>
+<p>Python alias (added in 1.1.0): <code class="docutils literal notranslate"><span class="pre">doom_fixed_to_float(doomFixed:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">float)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code></p>
 </section>
 </section>
 <section id="button-functions">
@@ -444,11 +440,7 @@ you may want to convert them to floating point numbers.</p>
 </tbody>
 </table>
 </div>
-<p>Returns true if button is binary button.</p>
-<p>See also:</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Button</span></code></span></a></p></li>
-</ul>
+<p>Returns true if <a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Button</span></code></span></a> is binary button.</p>
 </section>
 <hr class="docutils" />
 <section id="isdeltabutton">
@@ -467,11 +459,7 @@ you may want to convert them to floating point numbers.</p>
 </tbody>
 </table>
 </div>
-<p>Returns true if button is delta button.</p>
-<p>See also:</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Enums:</span> <span class="pre">Button</span></code></span></a></p></li>
-</ul>
+<p>Returns true if <a class="reference internal" href="../enums/#button"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Button</span></code></span></a> is delta button.</p>
 </section>
 </section>
 </section>

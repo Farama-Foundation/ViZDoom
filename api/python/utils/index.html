@@ -310,7 +310,7 @@
           </div>
           <article role="main">
             
-            <section id="utilities">
+            <section class="tex2jax_ignore mathjax_ignore" id="utilities">
 <h1>Utilities<a class="headerlink" href="#utilities" title="Link to this heading">#</a></h1>
 <p>Here we document the helpers functions that are not part of any object.
 They mostly help to deal with conversion of Doom’s engine types.</p>
@@ -320,37 +320,51 @@ They mostly help to deal with conversion of Doom’s engine types.</p>
 <dt class="sig sig-object py" id="vizdoom.doom_tics_to_ms">
 <span class="sig-name descname"><span class="pre">doom_tics_to_ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doom_tics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">35</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.doom_tics_to_ms" title="Link to this definition">#</a></dt>
 <dd><p>Calculates how many tics will be made during given number of milliseconds.</p>
+<p>Note: changed in 1.1.0</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.ms_to_doom_tics">
 <span class="sig-name descname"><span class="pre">ms_to_doom_tics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doom_tics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">35</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.ms_to_doom_tics" title="Link to this definition">#</a></dt>
 <dd><p>Calculates the number of milliseconds that will pass during specified number of tics.</p>
+<p>Note: changed in 1.1.0</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.doom_tics_to_sec">
 <span class="sig-name descname"><span class="pre">doom_tics_to_sec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doom_tics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">35</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.doom_tics_to_sec" title="Link to this definition">#</a></dt>
 <dd><p>Calculates how many tics will be made during given number of seconds.</p>
+<p>Note: added in 1.1.0</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.sec_to_doom_tics">
 <span class="sig-name descname"><span class="pre">sec_to_doom_tics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doom_tics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">35</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.sec_to_doom_tics" title="Link to this definition">#</a></dt>
 <dd><p>Calculates the number of seconds that will pass during specified number of tics.</p>
+<p>Note: added in 1.1.0</p>
 </dd></dl>
 
 </section>
 <section id="doom-fixed-point-conversion-functions">
 <h2>Doom fixed point conversion functions<a class="headerlink" href="#doom-fixed-point-conversion-functions" title="Link to this heading">#</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="vizdoom.doom_fixed_to_double">
-<span class="sig-name descname"><span class="pre">doom_fixed_to_double</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.doom_fixed_to_double" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="vizdoom.doom_fixed_to_float">
+<span class="sig-name descname"><span class="pre">doom_fixed_to_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.doom_fixed_to_float" title="Link to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>doom_fixed_to_double(arg0: int) -&gt; float</p></li>
-<li><p>doom_fixed_to_double(arg0: float) -&gt; float</p></li>
+<li><p>doom_fixed_to_float(doom_fixed: int) -&gt; float</p></li>
 </ol>
+<p>Converts fixed point numeral to a floating point value.
+Doom engine internally use fixed point numbers.
+If you assign fixed point numeral to <code class="docutils literal notranslate"><span class="pre">USER1</span></code> - <code class="docutils literal notranslate"><span class="pre">USER60</span></code> GameVariables,
+you can convert them to floating point by using this function.</p>
+<ol class="arabic simple" start="2">
+<li><p>doom_fixed_to_float(doom_fixed: float) -&gt; float</p></li>
+</ol>
+<p>Converts fixed point numeral to a floating point value.
+Doom engine internally use fixed point numbers.
+If you assign fixed point numeral to <code class="docutils literal notranslate"><span class="pre">USER1</span></code> - <code class="docutils literal notranslate"><span class="pre">USER60</span></code> GameVariables,
+you can convert them to floating point by using this function.</p>
 </dd></dl>
 
 </section>
@@ -359,13 +373,13 @@ They mostly help to deal with conversion of Doom’s engine types.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.is_binary_button">
 <span class="sig-name descname"><span class="pre">is_binary_button</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../enums/#vizdoom.Button" title="vizdoom.Button"><span class="pre">vizdoom.Button</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#vizdoom.is_binary_button" title="Link to this definition">#</a></dt>
-<dd><p>Returns True if button is binary button.</p>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <a class="reference internal" href="../enums/#vizdoom.Button" title="vizdoom.Button"><code class="xref py py-class docutils literal notranslate"><span class="pre">Button</span></code></a> is binary button.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.is_delta_button">
 <span class="sig-name descname"><span class="pre">is_delta_button</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../enums/#vizdoom.Button" title="vizdoom.Button"><span class="pre">vizdoom.Button</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#vizdoom.is_delta_button" title="Link to this definition">#</a></dt>
-<dd><p>Returns True if button is delta button.</p>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <a class="reference internal" href="../enums/#vizdoom.Button" title="vizdoom.Button"><code class="xref py py-class docutils literal notranslate"><span class="pre">Button</span></code></a> is delta button.</p>
 </dd></dl>
 
 </section>
@@ -449,7 +463,7 @@ They mostly help to deal with conversion of Doom’s engine types.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#doom-fixed-point-conversion-functions">Doom fixed point conversion functions</a><ul>
-<li><a class="reference internal" href="#vizdoom.doom_fixed_to_double"><code class="docutils literal notranslate"><span class="pre">doom_fixed_to_double()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.doom_fixed_to_float"><code class="docutils literal notranslate"><span class="pre">doom_fixed_to_float()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#button-functions">Button functions</a><ul>

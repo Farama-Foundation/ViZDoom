@@ -310,7 +310,7 @@
           </div>
           <article role="main">
             
-            <section id="python-quick-start">
+            <section class="tex2jax_ignore mathjax_ignore" id="python-quick-start">
 <h1>Python quick start<a class="headerlink" href="#python-quick-start" title="Link to this heading">#</a></h1>
 <section id="linux">
 <h2>Linux<a class="headerlink" href="#linux" title="Link to this heading">#</a></h2>
@@ -320,10 +320,27 @@
 </div>
 <p>Both x86-64 and AArch64 (ARM64) architectures are supported.
 Wheels are available for Python 3.8+ on Linux.</p>
-<p>If Python wheel is not available for your platform (Python version &lt;3.8, distros below manylinux_2_28 standard), pip will try to install (build) ViZDoom from the source.
-ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.7+ to install from source. Below, you will find instructions on how to install these dependencies.</p>
+<section id="audio-buffer-requirement">
+<h3>Audio buffer requirement<a class="headerlink" href="#audio-buffer-requirement" title="Link to this heading">#</a></h3>
+<p>If you want to use audio buffer, you need to have OpenAL library installed.
+It is installed by default in many desktop distros. Otherwise it can be installed from the package manager.
+On apt-based distros (Ubuntu, Debian, Linux Mint, etc.), you can install it by running:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>apt<span class="w"> </span>install<span class="w"> </span>libopenal1
+</pre></div>
+</div>
+<p>And on dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.), you can install it by running:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>dnf<span class="w"> </span>install<span class="w"> </span>openal-soft
+</pre></div>
+</div>
+<p>On RHEL/CentOS/Alma/Rocky Linux 9, you may need first enable crb repository by running <code class="docutils literal notranslate"><span class="pre">dnf</span> <span class="pre">--enablerepo=crb</span> <span class="pre">install</span></code>.</p>
+</section>
+<section id="installing-from-source-distribution-on-linux">
+<h3>Installing from source distribution on Linux<a class="headerlink" href="#installing-from-source-distribution-on-linux" title="Link to this heading">#</a></h3>
+<p>If Python wheel is not available for your platform (distros incompatible with manylinux_2_28 standard), pip will try to install (build) ViZDoom from the source.
+ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.8+ to install from source.
+Below, you will find instructions on how to install these dependencies.</p>
 <section id="apt-based-distros-ubuntu-debian-linux-mint-etc">
-<h3>apt-based distros (Ubuntu, Debian, Linux Mint, etc.)<a class="headerlink" href="#apt-based-distros-ubuntu-debian-linux-mint-etc" title="Link to this heading">#</a></h3>
+<h4>apt-based distros (Ubuntu, Debian, Linux Mint, etc.)<a class="headerlink" href="#apt-based-distros-ubuntu-debian-linux-mint-etc" title="Link to this heading">#</a></h4>
 <p>To build ViZDoom run (it may take a few minutes):</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>apt<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>git<span class="w"> </span>libboost-all-dev<span class="w"> </span>libsdl2-dev<span class="w"> </span>libopenal-dev
 pip<span class="w"> </span>install<span class="w"> </span>vizdoom
@@ -332,21 +349,23 @@ pip<span class="w"> </span>install<span class="w"> </span>vizdoom
 <p>We recommend using at least Ubuntu 18.04+ or Debian 10+ with Python 3.7+.</p>
 </section>
 <section id="dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc">
-<h3>dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)<a class="headerlink" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc" title="Link to this heading">#</a></h3>
+<h4>dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)<a class="headerlink" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc" title="Link to this heading">#</a></h4>
 <p>To install ViZDoom, run (it may take a few minutes):</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>dnf<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>git<span class="w"> </span>boost-devel<span class="w"> </span>SDL2-devel<span class="w"> </span>openal-soft-devel
 pip<span class="w"> </span>install<span class="w"> </span>vizdoom
 </pre></div>
 </div>
-<p>We recommend using at least Fedora 35+ or RHEL/CentOS/Alma/Rocky Linux 9+ with Python 3.7+.
-To install openal-soft-devel on RHEL/CentOS/Alma/Rocky Linux 9, one needs to use <code class="docutils literal notranslate"><span class="pre">dnf</span> <span class="pre">--enablerepo=crb</span> <span class="pre">install</span></code>.</p>
+<p>We recommend using at least Fedora 35+ or RHEL/CentOS/Alma/Rocky Linux 9+ with Python 3.8+.
+To install openal-soft-devel on RHEL/CentOS/Alma/Rocky Linux 9, one needs to enable crb repository first by running <code class="docutils literal notranslate"><span class="pre">dnf</span> <span class="pre">--enablerepo=crb</span> <span class="pre">install</span></code>.</p>
 </section>
-<section id="master-branch-version">
-<h3>master branch version<a class="headerlink" href="#master-branch-version" title="Link to this heading">#</a></h3>
+</section>
+<section id="installing-master-branch-version">
+<h3>Installing master branch version<a class="headerlink" href="#installing-master-branch-version" title="Link to this heading">#</a></h3>
 <p>To install the master branch version of ViZDoom run:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/Farama-Foundation/ViZDoom
 </pre></div>
 </div>
+<p>It requires the to have the above dependencies installed.</p>
 </section>
 </section>
 <section id="macos">
@@ -356,9 +375,9 @@ To install openal-soft-devel on RHEL/CentOS/Alma/Rocky Linux 9, one needs to use
 pip<span class="w"> </span>install<span class="w"> </span>vizdoom
 </pre></div>
 </div>
-<p>Both Intel and Apple Silicon CPUs are supported.
-We recommend using at least macOS High Sierra 10.13+ with Python 3.7+.
-On Apple Silicon (M1 and M2), make sure you are using Python/Pip for Apple Silicon.</p>
+<p>Both Intel and Apple Silicon (M1/2/3) CPUs are supported.
+We recommend using at least macOS High Sierra 10.13+ with Python 3.8+.
+On Apple Silicon, make sure you are using Python/Pip for Apple Silicon.</p>
 <p>To install the master branch version of ViZDoom, run:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/Farama-Foundation/ViZDoom
 </pre></div>
@@ -371,10 +390,11 @@ On Apple Silicon (M1 and M2), make sure you are using Python/Pip for Apple Silic
 </pre></div>
 </div>
 <p>At the moment, only x86-64 architecture is supported on Windows.
-Wheels are available for Python 3.8+ on Windows.</p>
+Wheels are available for Python 3.8+ x86-64 on Windows.</p>
 <p>Please note that the Windows version is not as well-tested as Linux and macOS versions.
 It can be used for development and testing but if you want to conduct serious (time and resource-extensive) experiments on Windows,
-please consider using <a class="reference external" href="https://docs.docker.com/docker-for-windows/install/">Docker</a> or <a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">WSL</a> with Linux version.</p>
+please consider using <a class="reference external" href="https://docs.docker.com/docker-for-windows/install/">Docker</a> or <a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">WSL</a> with Linux version.
+Windows version is bundled with OpenAL library, so you don’t need to install it separately.</p>
 </section>
 </section>
 
@@ -449,9 +469,13 @@ please consider using <a class="reference external" href="https://docs.docker.co
               <ul>
 <li><a class="reference internal" href="#">Python quick start</a><ul>
 <li><a class="reference internal" href="#linux">Linux</a><ul>
+<li><a class="reference internal" href="#audio-buffer-requirement">Audio buffer requirement</a></li>
+<li><a class="reference internal" href="#installing-from-source-distribution-on-linux">Installing from source distribution on Linux</a><ul>
 <li><a class="reference internal" href="#apt-based-distros-ubuntu-debian-linux-mint-etc">apt-based distros (Ubuntu, Debian, Linux Mint, etc.)</a></li>
 <li><a class="reference internal" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc">dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)</a></li>
-<li><a class="reference internal" href="#master-branch-version">master branch version</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installing-master-branch-version">Installing master branch version</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#macos">macOS</a></li>
