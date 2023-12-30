@@ -2,8 +2,11 @@
 
 #####################################################################
 # This script presents different buffers and formats.
-# OpenCV is used here to display images, install it or remove any
-# references to cv2
+#
+# Note: OpenCV is used here to display images, install it:
+#       pip install opencv-python
+#       or remove any references to cv2.
+#
 # Configuration is loaded from "../../scenarios/basic.cfg" file.
 # <episodes> number of episodes are played.
 # Random combination of buttons is chosen for every action.
@@ -70,12 +73,16 @@ if __name__ == "__main__":
 
     # Enables labeling of in game objects labeling.
     game.set_labels_buffer_enabled(True)
+    # See also labels_buffer.py example for more explanations.
 
-    # Enables buffer with top down map of he current episode/level .
+    # Enables buffer with top down map of the current episode/level .
     game.set_automap_buffer_enabled(True)
     game.set_automap_mode(vzd.AutomapMode.OBJECTS)
     game.set_automap_rotate(False)
     game.set_automap_render_textures(False)
+
+    # There is also audio buffer which is not present here.
+    # See audio_buffer.py example for more explanations.
 
     game.set_render_hud(True)
     game.set_render_minimal_hud(False)
