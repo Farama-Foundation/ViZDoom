@@ -14,11 +14,11 @@
 from argparse import ArgumentParser
 
 import cv2
+import gymnasium
 import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 
-import gymnasium
 import vizdoom.gymnasium_wrapper  # noqa
 
 
@@ -59,7 +59,9 @@ class ObservationWrapper(gymnasium.ObservationWrapper):
         print(env.observation_space)
         num_channels = env.observation_space["screen"].shape[-1]
         new_shape = (shape[0], shape[1], num_channels)
-        self.observation_space = gymnasium.spaces.Box(0, 255, shape=new_shape, dtype=np.uint8)
+        self.observation_space = gymnasium.spaces.Box(
+            0, 255, shape=new_shape, dtype=np.uint8
+        )
 
     def observation(self, observation):
         observation = cv2.resize(observation["screen"], self.image_shape_reverse)
