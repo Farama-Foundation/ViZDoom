@@ -49,8 +49,8 @@ Note: added in 1.1.0.)DOCSTRING";
 See also:
 
 - `examples/python/multiple_instances.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/multiple_instances.py>`_
-- `examples/python/cig_multiplayer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer.py)>`_
-- `examples/python/cig_multiplayer_host.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer_host.py)>`_
+- `examples/python/cig_multiplayer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer.py>`_
+- `examples/python/cig_multiplayer_host.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer_host.py>`_
 
 Note: added in 1.1.2.)DOCSTRING";
 
@@ -62,18 +62,21 @@ Note: added in 1.1.5.)DOCSTRING";
 
 Note: added in 1.1.5.)DOCSTRING";
 
-    const char *setAction = R"DOCSTRING(Sets the player's action for the next tics.
+    const char *setAction = R"DOCSTRING(Sets the player's action for the following tics until the method is called again with new action.
 Each value corresponds to a button previously specified
 with :meth:`add_available_button`, or :meth:`set_available_buttons` methods,
 or in the configuration file (in order of appearance).)DOCSTRING";
 
-    const char *advanceAction = R"DOCSTRING(Processes the specified number of tics. If ``update_state`` argument is set,
-the state will be updated after the last processed tic and a new reward will be calculated.
+    const char *advanceAction = R"DOCSTRING(Processes the specified number of tics, the last action set with :meth:`set_action`
+method will be repeated for each tic. If ``update_state`` argument is set,
+the state will be updated after the last processed tic
+and a new reward will be calculated based on all processed tics since last the last state update.
 To get the new state, use :meth:`get_state` and to get the new reward use :meth:`get_last_reward`.)DOCSTRING";
 
-    const char *makeAction = R"DOCSTRING(This method combines functionality of :meth:`set_action`, :meth:`advance_action` and :meth:`get_last_reward`.
-Sets the player's action for the next tics, processes the specified number of tics,
-updates the state and calculates a new reward, which is returned.)DOCSTRING";
+    const char *makeAction = R"DOCSTRING(This method combines functionality of :meth:`set_action`, :meth:`advance_action`,
+and :meth:`get_last_reward` called in this sequance.
+Sets the player's action for all the next tics (the same action will be repeated for each tic),
+processes the specified number of tics, updates the state and calculates a new reward from all processed tics, which is returned.)DOCSTRING";
 
     const char *isNewEpisode = R"DOCSTRING(Returns ``True`` if the current episode is in the initial state - the first state, no actions were performed yet.)DOCSTRING";
 
