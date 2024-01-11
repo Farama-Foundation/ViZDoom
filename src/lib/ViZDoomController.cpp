@@ -207,17 +207,18 @@ namespace vizdoom {
     void DoomController::close() {
         try{
             if (this->doomRunning) {
+                // Try to stop demo recording
+                if (this->gameState->DEMO_RECORDING){
+                    this->sendCommand("stop");
+                    this->MQDoom->send(MSG_CODE_TIC);
+                    this->waitForDoomWork();
+                }
+
                 this->doomRunning = false;
                 this->doomWorking = false;
-
+                
+                // Try to close Doom gently
                 this->MQDoom->send(MSG_CODE_CLOSE);
-
-                #ifdef OS_POSIX
-                    if(0 == kill(this->doomProcessPid, 0)){
-                        bpr::child doomProcess(this->doomProcessPid);
-                        bpr::terminate(doomProcess);
-                    }
-                #endif
             }
 
             if (this->signalThread && this->signalThread->joinable()) {
@@ -231,6 +232,16 @@ namespace vizdoom {
                 delete this->ioService;
                 this->ioService = nullptr;
             }
+
+            #ifdef OS_POSIX
+            // If the Doom thread is still running, kill the engine process
+            if (this->doomThread && !this->doomThread->joinable()) {
+                if(0 == kill(this->doomProcessPid, 0)){
+                    bpr::child doomProcess(this->doomProcessPid);
+                    bpr::terminate(doomProcess);
+                }
+            }
+            #endif
 
             if (this->doomThread && this->doomThread->joinable()) {
                 this->doomThread->interrupt();
@@ -248,6 +259,7 @@ namespace vizdoom {
                 delete this->MQDoom;
                 this->MQDoom = nullptr;
             }
+
             if (this->MQController) {
                 delete this->MQController;
                 this->MQController = nullptr;
@@ -261,7 +273,6 @@ namespace vizdoom {
         this->depthBuffer = nullptr;
         this->labelsBuffer = nullptr;
         this->automapBuffer = nullptr;
-
     }
 
     void DoomController::restart() {
