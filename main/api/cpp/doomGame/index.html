@@ -451,8 +451,8 @@ All rewards, variables, and states are available when replaying the episode.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/multiple_instances.py">examples/python/multiple_instances.py</a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer.py">examples/python/cig_multiplayer.py</a>)</p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer_host.py">examples/python/cig_multiplayer_host.py</a>)</p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer.py">examples/python/cig_multiplayer.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer_host.py">examples/python/cig_multiplayer_host.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.2.</p>
 </section>
@@ -503,17 +503,17 @@ All rewards, variables, and states are available when replaying the episode.</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head text-left"><p>C++</p></th>
-<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setAction(std::vector&lt;double&gt;</span> <span class="pre">const</span> <span class="pre">&amp;actions)</span></code></p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setAction(std::vector&lt;double&gt;</span> <span class="pre">const</span> <span class="pre">&amp;action)</span></code></p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td class="text-left"><p>Python</p></td>
-<td class="text-left"><p>`set_action(actions: list</p></td>
+<td class="text-left"><p>`set_action(action: list</p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>Sets the player’s action for the next tics.
+<p>Sets the player’s action for the following tics until the method is called again with new action.
 Each value corresponds to a button previously specified
 with <a class="reference internal" href="#addavailablebutton"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">addAvailableButton</span></code></span></a>, or <a class="reference internal" href="#setavailablebuttons"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAvailableButtons</span></code></span></a> methods,
 or in the configuration file (in order of appearance).</p>
@@ -535,8 +535,10 @@ or in the configuration file (in order of appearance).</p>
 </tbody>
 </table>
 </div>
-<p>Processes the specified number of tics. If <code class="docutils literal notranslate"><span class="pre">updateState</span></code> argument is set,
-the state will be updated after the last processed tic and a new reward will be calculated.
+<p>Processes the specified number of tics, the last action set with <a class="reference internal" href="#setaction"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAction</span></code></span></a>
+method will be repeated for each tic. If <code class="docutils literal notranslate"><span class="pre">updateState</span></code> argument is set,
+the state will be updated after the last processed tic
+and a new reward will be calculated based on all processed tics since last the last state update.
 To get the new state, use <a class="reference internal" href="#getstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getState</span></code></span></a> and to get the new reward use <a class="reference internal" href="#getlastreward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getLastReward</span></code></span></a>.</p>
 </section>
 <hr class="docutils" />
@@ -556,9 +558,10 @@ To get the new state, use <a class="reference internal" href="#getstate"><span c
 </tbody>
 </table>
 </div>
-<p>This method combines functionality of <a class="reference internal" href="#setaction"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAction</span></code></span></a>, <a class="reference internal" href="#advanceaction"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">advanceAction</span></code></span></a> and <a class="reference internal" href="#getlastreward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getLastReward</span></code></span></a>.
-Sets the player’s action for the next tics, processes the specified number of tics,
-updates the state and calculates a new reward, which is returned.</p>
+<p>This method combines functionality of <a class="reference internal" href="#setaction"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAction</span></code></span></a>, <a class="reference internal" href="#advanceaction"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">advanceAction</span></code></span></a>,
+and <a class="reference internal" href="#getlastreward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getLastReward</span></code></span></a> called in this sequance.
+Sets the player’s action for all the next tics (the same action will be repeated for each tic),
+processes the specified number of tics, updates the state and calculates a new reward from all processed tics, which is returned.</p>
 </section>
 <hr class="docutils" />
 <section id="isnewepisode">

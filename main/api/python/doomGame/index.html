@@ -377,8 +377,8 @@ All rewards, variables, and states are available when replaying the episode.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/multiple_instances.py">examples/python/multiple_instances.py</a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer.py)">examples/python/cig_multiplayer.py</a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer_host.py)">examples/python/cig_multiplayer_host.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer.py">examples/python/cig_multiplayer.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer_host.py">examples/python/cig_multiplayer_host.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.2.</p>
 </dd></dl>
@@ -400,7 +400,7 @@ All rewards, variables, and states are available when replaying the episode.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_action">
 <span class="sig-name descname"><span class="pre">set_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_action" title="Link to this definition">#</a></dt>
-<dd><p>Sets the player’s action for the next tics.
+<dd><p>Sets the player’s action for the following tics until the method is called again with new action.
 Each value corresponds to a button previously specified
 with <a class="reference internal" href="#vizdoom.DoomGame.add_available_button" title="vizdoom.DoomGame.add_available_button"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_available_button()</span></code></a>, or <a class="reference internal" href="#vizdoom.DoomGame.set_available_buttons" title="vizdoom.DoomGame.set_available_buttons"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_available_buttons()</span></code></a> methods,
 or in the configuration file (in order of appearance).</p>
@@ -409,17 +409,20 @@ or in the configuration file (in order of appearance).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.advance_action">
 <span class="sig-name descname"><span class="pre">advance_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.advance_action" title="Link to this definition">#</a></dt>
-<dd><p>Processes the specified number of tics. If <code class="docutils literal notranslate"><span class="pre">update_state</span></code> argument is set,
-the state will be updated after the last processed tic and a new reward will be calculated.
+<dd><p>Processes the specified number of tics, the last action set with <a class="reference internal" href="#vizdoom.DoomGame.set_action" title="vizdoom.DoomGame.set_action"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_action()</span></code></a>
+method will be repeated for each tic. If <code class="docutils literal notranslate"><span class="pre">update_state</span></code> argument is set,
+the state will be updated after the last processed tic
+and a new reward will be calculated based on all processed tics since last the last state update.
 To get the new state, use <a class="reference internal" href="#vizdoom.DoomGame.get_state" title="vizdoom.DoomGame.get_state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_state()</span></code></a> and to get the new reward use <a class="reference internal" href="#vizdoom.DoomGame.get_last_reward" title="vizdoom.DoomGame.get_last_reward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_last_reward()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.make_action">
 <span class="sig-name descname"><span class="pre">make_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.make_action" title="Link to this definition">#</a></dt>
-<dd><p>This method combines functionality of <a class="reference internal" href="#vizdoom.DoomGame.set_action" title="vizdoom.DoomGame.set_action"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_action()</span></code></a>, <a class="reference internal" href="#vizdoom.DoomGame.advance_action" title="vizdoom.DoomGame.advance_action"><code class="xref py py-meth docutils literal notranslate"><span class="pre">advance_action()</span></code></a> and <a class="reference internal" href="#vizdoom.DoomGame.get_last_reward" title="vizdoom.DoomGame.get_last_reward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_last_reward()</span></code></a>.
-Sets the player’s action for the next tics, processes the specified number of tics,
-updates the state and calculates a new reward, which is returned.</p>
+<dd><p>This method combines functionality of <a class="reference internal" href="#vizdoom.DoomGame.set_action" title="vizdoom.DoomGame.set_action"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_action()</span></code></a>, <a class="reference internal" href="#vizdoom.DoomGame.advance_action" title="vizdoom.DoomGame.advance_action"><code class="xref py py-meth docutils literal notranslate"><span class="pre">advance_action()</span></code></a>,
+and <a class="reference internal" href="#vizdoom.DoomGame.get_last_reward" title="vizdoom.DoomGame.get_last_reward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_last_reward()</span></code></a> called in this sequance.
+Sets the player’s action for all the next tics (the same action will be repeated for each tic),
+processes the specified number of tics, updates the state and calculates a new reward from all processed tics, which is returned.</p>
 </dd></dl>
 
 <dl class="py function">
