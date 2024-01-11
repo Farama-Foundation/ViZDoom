@@ -70,7 +70,7 @@ game.set_mode(vzd.Mode.SPECTATOR)
 
 game.init()
 
-print("\nREPLAY OF EPISODE")
+print("\nREPLAYING THE EPISODES")
 print("************************\n")
 
 for i in range(episodes):
