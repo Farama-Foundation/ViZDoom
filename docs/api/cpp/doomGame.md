@@ -36,7 +36,7 @@ The game can be initialized again after being closed.
 
 | C++    | `void newEpisode(std::string recordingFilePath = "")` |
 | :--    | :--                                                   |
-| Python | `new_episode(recording_file_path: str = "") -> None`    |
+| Python | `new_episode(recording_file_path: str = "") -> None`  |
 
 Initializes a new episode. The state of an environment is completely restarted (all variables and rewards are reset to their initial values).
 After calling this method, the first state from the new episode will be available.
@@ -52,7 +52,7 @@ Note: Changed in 1.1.0
 
 | C++    | `void replayEpisode(std::string filePath, unsigned int player = 0)` |
 | :--    | :--                                                                 |
-| Python | `replay_episode(file_path: str, player: int = 0) -> None`            |
+| Python | `replay_episode(file_path: str, player: int = 0) -> None`           |
 
 Replays the recorded episode from the given file using the perspective of the specified player.
 Players are numbered from 1, If `player` argument is equal to 0,
@@ -88,8 +88,8 @@ Returns true if the game is in multiplayer mode.
 
 See also:
 - [examples/python/multiple_instances.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/multiple_instances.py)
-- [examples/python/cig_multiplayer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer.py))
-- [examples/python/cig_multiplayer_host.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer_host.py))
+- [examples/python/cig_multiplayer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer.py)
+- [examples/python/cig_multiplayer_host.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer_host.py)
 
 Note: added in 1.1.2.
 
@@ -120,11 +120,11 @@ Note: added in 1.1.5.
 ---
 ### `setAction`
 
-| C++    | `void setAction(std::vector<double> const &actions)`          |
-| :--    | :--                                                           |
-| Python | `set_action(actions: list | tuple | ndarray [float]) -> None` |
+| C++    | `void setAction(std::vector<double> const &action)`          |
+| :--    | :--                                                          |
+| Python | `set_action(action: list | tuple | ndarray [float]) -> None` |
 
-Sets the player's action for the next tics.
+Sets the player's action for the following tics until the method is called again with new action.
 Each value corresponds to a button previously specified
 with [`addAvailableButton`](#addavailablebutton), or [`setAvailableButtons`](#setavailablebuttons) methods,
 or in the configuration file (in order of appearance).
@@ -135,10 +135,12 @@ or in the configuration file (in order of appearance).
 
 | C++    | `void advanceAction(unsigned int tics = 1, bool updateState = true)` |
 | :--    | :--                                                                  |
-| Python | `advance_action(tics: int = 1, update_state: bool = True) -> None`    |
+| Python | `advance_action(tics: int = 1, update_state: bool = True) -> None`   |
 
-Processes the specified number of tics. If `updateState` argument is set,
-the state will be updated after the last processed tic and a new reward will be calculated.
+Processes the specified number of tics, the last action set with [`setAction`](#setaction)
+method will be repeated for each tic. If `updateState` argument is set,
+the state will be updated after the last processed tic
+and a new reward will be calculated based on all processed tics since last the last state update.
 To get the new state, use [`getState`](#getstate) and to get the new reward use [`getLastReward`](#getlastreward).
 
 
@@ -149,9 +151,10 @@ To get the new state, use [`getState`](#getstate) and to get the new reward use 
 | :--    | :--                                                                            |
 | Python | `make_action(actions: list | tuple | ndarray [float], tics: int = 1) -> float` |
 
-This method combines functionality of [`setAction`](#setaction), [`advanceAction`](#advanceaction) and [`getLastReward`](#getlastreward).
-Sets the player's action for the next tics, processes the specified number of tics,
-updates the state and calculates a new reward, which is returned.
+This method combines functionality of [`setAction`](#setaction), [`advanceAction`](#advanceaction),
+and [`getLastReward`](#getlastreward) called in this sequance.
+Sets the player's action for all the next tics (the same action will be repeated for each tic),
+processes the specified number of tics, updates the state and calculates a new reward from all processed tics, which is returned.
 
 
 ---
@@ -261,7 +264,7 @@ Most useful in `SPECTATOR` mode.
 
 | C++    | `unsigned int getEpisodeTime()` |
 | :--    | :--                             |
-| Python | `get_episode_time() -> int`        |
+| Python | `get_episode_time() -> int`     |
 
 Returns number of current episode tic.
 
@@ -271,7 +274,7 @@ Returns number of current episode tic.
 
 | C++    | `void save(std::string filePath)` |
 | :--    | :--                               |
-| Python | `save(file_path: str) -> None`     |
+| Python | `save(file_path: str) -> None`    |
 
 Saves a game's internal state to the file using ZDoom save game functionality.
 
@@ -283,7 +286,7 @@ Note: added in 1.1.9.
 
 | C++    | `void load(std::string filePath)` |
 | :--    | :--                               |
-| Python | `load(file_path: str) -> None`     |
+| Python | `load(file_path: str) -> None`    |
 
 Loads a game's internal state from the file using ZDoom load game functionality.
 A new state is available after loading.
@@ -308,8 +311,8 @@ that were added with [`setAvailableButtons`](#setavailablebuttons) or/and [`addA
 ---
 ### `setAvailableButtons`
 
-| C++    | `void setAvailableButtons(std::vector<Button> buttons)`       |
-| :--    | :--                                                           |
+| C++    | `void setAvailableButtons(std::vector<Button> buttons)`        |
+| :--    | :--                                                            |
 | Python | `add_available_buttons(buttons: list | tuple[Button]) -> None` |
 
 Sets given list of [`Button`](./enums.md#button) s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available buttons.
@@ -544,8 +547,8 @@ Returns the reward granted to the player after every tic.
 ---
 ### `setLivingReward`
 
-| C++    | `void setLivingReward(double livingReward)`      |
-| :--    | :--                                              |
+| C++    | `void setLivingReward(double livingReward)`       |
+| :--    | :--                                               |
 | Python | `set_living_reward(living_reward: float) -> None` |
 
 Sets the reward granted to the player after every tic. A negative value is also allowed.
@@ -568,8 +571,8 @@ Returns the penalty for the player's death.
 ---
 ### `setDeathPenalty`
 
-| C++    | `void setDeathPenalty(double deathPenalty)`      |
-| :--    | :--                                              |
+| C++    | `void setDeathPenalty(double deathPenalty)`       |
+| :--    | :--                                               |
 | Python | `set_death_penalty(death_penalty: float) -> None` |
 
 Sets a penalty for the player's death. Note that in case of a negative value, the player will be rewarded upon dying.
@@ -606,7 +609,7 @@ Returns the sum of all rewards gathered in the current episode.
 
 | C++    | `bool loadConfig(std::string filePath)` |
 | :--    | :--                                     |
-| Python | `load_config(file_path: str) -> bool`    |
+| Python | `load_config(file_path: str) -> bool`   |
 
 Loads configuration (resolution, available buttons, game variables etc.) from a configuration file.
 In case of multiple invocations, older configurations will be overwritten by the recent ones.
@@ -682,7 +685,7 @@ Note: added in 1.1.0.
 
 | C++    | `void setViZDoomPath(std::string filePath)` |
 | :--    | :--                                         |
-| Python | `set_vizdoom_path(file_path: str) -> None`       |
+| Python | `set_vizdoom_path(file_path: str) -> None`  |
 
 Sets the path to the ViZDoom engine executable vizdoom.
 
@@ -696,7 +699,7 @@ Config key: `ViZDoomPath`/`vizdoom_path`
 
 | C++    | `void setDoomGamePath(std::string filePath)` |
 | :--    | :--                                          |
-| Python | `set_doom_game_path(file_path: str) -> None`      |
+| Python | `set_doom_game_path(file_path: str) -> None` |
 
 Sets the path to the Doom engine based game file (wad format).
 If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom library/pyd is).
@@ -711,7 +714,7 @@ Config key: `DoomGamePath`/`doom_game_path`
 
 | C++    | `void setDoomScenarioPath(std::string filePath)` |
 | :--    | :--                                              |
-| Python | `set_doom_scenario_path(file_path: str) -> None`      |
+| Python | `set_doom_scenario_path(file_path: str) -> None` |
 
 Sets the path to an additional scenario file (wad format).
 If not provided, the default Doom single-player maps will be loaded.
@@ -761,8 +764,8 @@ Config key: `DoomSkill`/`doom_skill`
 ---
 ### `setDoomConfigPath`
 
-| C++    | `void setDoomConfigPath(std::string filePath)` |
-| :--    | :--                                            |
+| C++    | `void setDoomConfigPath(std::string filePath)`  |
+| :--    | :--                                             |
 | Python | `set_doom_config_path(file_path: str) -> None`  |
 
 Sets the path for ZDoom's configuration file.
@@ -913,8 +916,8 @@ Returns true if the depth buffer is enabled.
 ---
 ### `setDepthBufferEnabled`
 
-| C++    | `void setDepthBufferEnabled(bool depthBuffer)`        |
-| :--    | :--                                                   |
+| C++    | `void setDepthBufferEnabled(bool depthBuffer)`         |
+| :--    | :--                                                    |
 | Python | `set_depth_buffer_enabled(depth_buffer: bool) -> None` |
 
 Enables rendering of the depth buffer, it will be available in the state.
@@ -949,8 +952,8 @@ Note: added in 1.1.0.
 ---
 ### `setLabelsBufferEnabled`
 
-| C++    | `void setLabelsBufferEnabled(bool labelsBuffer)`       |
-| :--    | :--                                                    |
+| C++    | `void setLabelsBufferEnabled(bool labelsBuffer)`         |
+| :--    | :--                                                      |
 | Python | `set_labels_buffer_enabled(labels_buffer: bool) -> None` |
 
 Enables rendering of the labels buffer, it will be available in the state with the vector of [`Label`](./gameState.md#label) s.
@@ -986,8 +989,8 @@ Note: added in 1.1.0.
 ---
 ### `setAutomapBufferEnabled`
 
-| C++    | `void setAutomapBufferEnabled(bool automapBuffer)`        |
-| :--    | :--                                                       |
+| C++    | `void setAutomapBufferEnabled(bool automapBuffer)`         |
+| :--    | :--                                                        |
 | Python | `set_automap_buffer_enabled(automap_buffer: bool) -> None` |
 
 Enables rendering of the automap buffer, it will be available in the state.
@@ -1073,8 +1076,8 @@ Config key: `renderHud`/`render_hud`
 ---
 ### `setRenderMinimalHud`
 
-| C++    | `void setRenderMinimalHud(bool minHud)`        |
-| :--    | :--                                            |
+| C++    | `void setRenderMinimalHud(bool minHud)`         |
+| :--    | :--                                             |
 | Python | `set_render_minimal_hud(min_hud: bool) -> None` |
 
 Determine if the minimalistic version of the hud will be rendered instead of the full hud.
@@ -1337,8 +1340,8 @@ Note: added in 1.1.8.
 ---
 ### `setObjectsInfoEnabled`
 
-| C++    | `void setObjectsInfoEnabled(bool objectsInfo)`       |
-| :--    | :--                                                  |
+| C++    | `void setObjectsInfoEnabled(bool objectsInfo)`         |
+| :--    | :--                                                    |
 | Python | `set_objects_info_enabled(objects_info: bool) -> None` |
 
 Enables information about all [`Object`](./gameState.md#object) s present in the current episode/level.
@@ -1372,8 +1375,8 @@ Note: added in 1.1.8.
 ---
 ### `setSectorsInfoEnabled`
 
-| C++    | `void setSectorsInfoEnabled(bool sectorsInfo)`       |
-| :--    | :--                                                  |
+| C++    | `void setSectorsInfoEnabled(bool sectorsInfo)`         |
+| :--    | :--                                                    |
 | Python | `set_sectors_info_enabled(sectors_info: bool) -> None` |
 
 Enables information about all [`Sector`](./gameState.md#sector) s (map layout) present in the current episode/level.
@@ -1407,8 +1410,8 @@ Note: added in 1.1.9.
 ---
 ### `setAudioBufferEnabled`
 
-| C++    | `void setAudioBufferEnabled(bool audioBuffer)`       |
-| :--    | :--                                                  |
+| C++    | `void setAudioBufferEnabled(bool audioBuffer)`         |
+| :--    | :--                                                    |
 | Python | `set_audio_buffer_enabled(audio_buffer: bool) -> None` |
 
 Enables rendering of the audio buffer, it will be available in the state.
@@ -1448,8 +1451,8 @@ Note: added in 1.1.9.
 ---
 ### `setAudioSamplingRate`
 
-| C++    | `void setAudioSamplingRate(SamplingRate samplingRate)`       |
-| :--    | :--                                                          |
+| C++    | `void setAudioSamplingRate(SamplingRate samplingRate)`         |
+| :--    | :--                                                            |
 | Python | `set_audio_sampling_rate(sampling_rate: SamplingRate) -> None` |
 
 Sets the [`SamplingRate`](./enums.md#sampling-rate) of the audio buffer.
