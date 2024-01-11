@@ -24,30 +24,30 @@ def _test_enums(enum_name, func_name):
     ]
     all_values_names = [v.name for v in all_values]
 
-    # set test
+    # set_X function test
     set_func(all_values)
-    get_buttons_names = [v.name for v in get_func()]
-    assert all_values_names == get_buttons_names
+    get_values_names = [v.name for v in get_func()]
+    assert all_values_names == get_values_names
 
-    # add test
+    # add_X function test
     clear_func()
     for i, v in enumerate(all_values):
         add_func(v)
         get_values_names = [v.name for v in get_func()]
         assert all_values_names[: i + 1] == get_values_names
 
-    # again set test
+    # Check if set function overwrites previous values
     set_func(all_values)
     get_values_names = [v.name for v in get_func()]
     assert all_values_names == get_values_names
 
-    # multiple adds
+    # Multiple add_X functions test
     for i, v in enumerate(all_values):
         add_func(v)
         get_values_names = [v.name for v in get_func()]
         assert all_values_names == get_values_names
 
-    # multiple in set
+    # Test duplicated values in set_X function
     set_func(all_values + all_values)
     get_values_names = [v.name for v in get_func()]
     assert all_values_names == get_values_names

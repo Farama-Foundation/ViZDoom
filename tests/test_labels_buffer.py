@@ -35,6 +35,7 @@ def check_label(labels_buffer, label):
 
 
 def test_labels_buffer():
+    print("Testing labels buffer ...")
     game = vzd.DoomGame()
     game.load_config(os.path.join(vzd.scenarios_path, "deathmatch.cfg"))
 

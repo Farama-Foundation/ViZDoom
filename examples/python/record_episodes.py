@@ -79,13 +79,15 @@ for i in range(episodes):
     game.replay_episode(f"episode{i}_rec.lmp")
 
     while not game.is_episode_finished():
+        # Get a state
         s = game.get_state()
 
-        # Use advance_action instead of make_action.
+        # Use advance_action instead of make_action to proceed
         game.advance_action()
 
-        r = game.get_last_reward()
+        # Retrieve the last actions and the reward
         a = game.get_last_action()
+        r = game.get_last_reward()
 
         print(f"State #{s.number}")
         print("Action:", a)
