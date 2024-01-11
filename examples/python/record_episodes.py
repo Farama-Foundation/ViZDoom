@@ -45,17 +45,20 @@ for i in range(episodes):
     while not game.is_episode_finished():
         s = game.get_state()
 
+        a = choice(actions)
         r = game.make_action(choice(actions))
 
         print(f"State #{s.number}")
+        print("Action:", a)
         print("Game variables:", s.game_variables[0])
         print("Reward:", r)
         print("=====================")
 
-    print("Episode", i, "finished.")
-    print("total reward:", game.get_total_reward())
+    print(f"Episode {i} finished. Saved to file episode{i}_rec.lmp")
+    print("Total reward:", game.get_total_reward())
     print("************************\n")
 
+game.new_episode()  # This is currently required to stop and save the previous recording.
 game.close()
 
 # New render settings for replay
@@ -82,15 +85,16 @@ for i in range(episodes):
         game.advance_action()
 
         r = game.get_last_reward()
-        # game.get_last_action is not supported and don't work for replay at the moment.
+        a = game.get_last_action()
 
         print(f"State #{s.number}")
+        print("Action:", a)
         print("Game variables:", s.game_variables[0])
         print("Reward:", r)
         print("=====================")
 
     print("Episode", i, "finished.")
-    print("total reward:", game.get_total_reward())
+    print("Total reward:", game.get_total_reward())
     print("************************")
 
 game.close()
