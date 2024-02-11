@@ -7,12 +7,12 @@
     <meta property="og:title" content="ViZDoom Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
-    <meta property="og:url" content="https://vizdoom.farama.org/introduction/apisAndWrappers.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Python API" href="../../api/python/" /><link rel="prev" title="Building from source" href="../building/" />
-        <link rel="canonical" href="https://vizdoom.farama.org/introduction/apisAndWrappers.html" />
+    <meta property="og:url" content="https://vizdoom.farama.org/environments/thirdParty.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Creating a custom environment" href="../creatingCustom/" /><link rel="prev" title="Default scenarios/environments" href="../default/" />
+        <link rel="canonical" href="https://vizdoom.farama.org/environments/thirdParty.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
-        <title>APIs and wrappers - ViZDoom Documentation</title>
+        <title>Third-party environments - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=49cbaffd" />
@@ -211,10 +211,10 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../pythonQuickstart/">Python quick start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../building/">Building from source</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">APIs and wrappers</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/pythonQuickstart/">Python quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/building/">Building from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/apisAndWrappers/">APIs and wrappers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -239,10 +239,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api/configurationFiles/">Configuration files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../environments/default/">Default scenarios/environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../environments/thirdParty/">Third-party environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../environments/creatingCustom/">Creating a custom environment</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../default/">Default scenarios/environments</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Third-party environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../creatingCustom/">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -280,7 +280,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/introduction/apisAndWrappers.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/environments/thirdParty.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -311,62 +311,25 @@
           </div>
           <article role="main">
             
-            <section class="tex2jax_ignore mathjax_ignore" id="apis-and-wrappers">
-<h1>APIs and wrappers<a class="headerlink" href="#apis-and-wrappers" title="Link to this heading">#</a></h1>
-<p>ViZDoom consists of a few APIs: C++ API, Python API that is a wrapper around C++ API, and Gymnasium/Gym wrappers that wrap around Python API to allow the use of ViZDoom scenarios as Gymnasium/Gym environments.</p>
-<p>Because ViZDoom was created before the first release of OpenAI Gym, it uses a bit different nomenclature in its API than Gym/Gymnasium:</p>
+            <section class="tex2jax_ignore mathjax_ignore" id="third-party-environments">
+<h1>Third-party environments<a class="headerlink" href="#third-party-environments" title="Link to this heading">#</a></h1>
+<p>Here, we feature a selection of third-party libraries that build upon or complement ViZDoom,
+offering diverse environments and tools for reinforcement learning research and development.</p>
+<p><em>Please note that the page contains environments that are not maintained by the ViZDoom Team or Farama Foundation.</em></p>
+<p><em>If you have a library that you would like to see featured here, please open a pull request or an issue on the <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom">GitHub repository</a></em></p>
+<section id="levdoom">
+<h2>LevDoom<a class="headerlink" href="#levdoom" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://github.com/TTomilin/LevDoom">LevDoom</a> is a benchmark for generalization in pixel-based deep reinforcement learning, offering environments with difficulty levels based on visual and gameplay modifications. It consists of 4 scenarios, each with 5 difficulty levels, that modify different aspects of the base environments, such as textures, obstacles, types, sizes, and rendering of different in-game entities, etc.</p>
+<p>LevDoom provides environments using Gymnasium API and is available through PyPi. For more details, please refer to the <a class="reference external" href="https://ieee-cog.org/2022/assets/papers/paper_30.pdf">CoG2022 paper</a> and <a class="reference external" href="https://github.com/TTomilin/LevDoom">GitHub repository</a>.</p>
+</section>
+<section id="coom">
+<h2>COOM<a class="headerlink" href="#coom" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://github.com/hyintell/COOM">COOM</a> is a Continual Learning benchmark for embodied pixel-based RL, consisting of task sequences in visually distinct 3D environments with diverse objectives and egocentric perception. COOM is designed for task-incremental learning, in which task boundaries are clearly defined. It contains 8 scenarios, every with at least 2 difficulty levels that are combined into sequences of tasks for Continual Learning. The sequence length varies between 4, 8, and 16. COOM provides two types of task sequences:</p>
 <ul class="simple">
-<li><p><strong>environments = scenarios</strong> - in the original ViZDoom API, environments are called scenarios,</p></li>
-<li><p><strong>observations = states</strong> - in the original ViZDoom API, observations are called states,</p></li>
-<li><p><strong>steps = tics</strong> - in the original ViZDoom API, steps are called tics. The Doom engine uses the name to refer to a single logic step. The tic is a single logic update of the game state that corresponds to 1/35 of a second (original Doom’s framerate).</p></li>
+<li><p>Cross-domain sequences compose modified versions of the same scenario (e.g., changing textures, enemy types, view height, and adding obstacles) while keeping the objective consistent.</p></li>
+<li><p>Cross-objective sequences contrast with Cross-Domain by changing both the visual characteristics and the objective for each task, requiring a more general policy from the agent for adequate performance.</p></li>
 </ul>
-<section id="c-api">
-<h2>C++ API<a class="headerlink" href="#c-api" title="Link to this heading">#</a></h2>
-<p>ViZDoom is implemented in C++ and can be used as a C++ library. The C++ API is one-to-one with the Python API. The only difference is the use of <code class="docutils literal notranslate"><span class="pre">camelCase</span></code> instead of <code class="docutils literal notranslate"><span class="pre">snake_case</span></code> for method names.</p>
-<p>ViZDoom can be built as a static or dynamic library. The header files are located in the <code class="docutils literal notranslate"><span class="pre">include</span></code> directory.
-See <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/cpp">examples/cpp</a> for examples, including CMake files for building.</p>
-</section>
-<section id="python-api">
-<h2>Python API<a class="headerlink" href="#python-api" title="Link to this heading">#</a></h2>
-<p>ViZDoom provides Python bindings for the library. The Python API is one-to-one with the C++ API. The only difference is the use of <code class="docutils literal notranslate"><span class="pre">snake_case</span></code> instead of <code class="docutils literal notranslate"><span class="pre">camelCase</span></code> for method and argument names.</p>
-<p>There are many examples of how to use Python API in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python">examples/python</a> directory.</p>
-</section>
-<section id="gymnasium-wrappers">
-<h2>Gymnasium wrappers<a class="headerlink" href="#gymnasium-wrappers" title="Link to this heading">#</a></h2>
-<p>Installing ViZDoom with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">vizdoom</span></code> will include
-Gymnasium wrappers to interact with ViZDoom over <a class="reference external" href="https://gymnasium.farama.org/">Gymnasium API</a>.</p>
-<p>These wrappers are under <code class="docutils literal notranslate"><span class="pre">gymnasium_wrappers</span></code>, containing the basic environment and
-a few example single-player environments based on the built-in scenarios. This environment
-simply initializes ViZDoom with the settings from the scenario config files
-and implements the necessary API to function as a Gymnasium API.</p>
-<p>See the following examples for use:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/gymnasium_wrapper.py">examples/python/gymnasium_wrapper.py</a> for basic usage</p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/learning_stable_baselines.py">examples/python/learning_stable_baselines.py</a> for example training with <a class="reference external" href="https://github.com/DLR-RM/stable-baselines3/">stable-baselines3</a> (Update - Currently facing issues, to be fixed)</p></li>
-</ul>
-</section>
-<section id="openai-gym-wrappers">
-<h2>OpenAI Gym wrappers<a class="headerlink" href="#openai-gym-wrappers" title="Link to this heading">#</a></h2>
-<blockquote>
-<div><p>Gym is deprecated in favor of Gymnasium and these wrappers will be removed in the future.</p>
-</div></blockquote>
-<p>Installing ViZDoom with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">vizdoom[gym]</span></code> will include
-Gym wrappers to interact with ViZDoom over Gym API.</p>
-<p>These wrappers are under <code class="docutils literal notranslate"><span class="pre">gym_wrappers</span></code>, containing the basic environment and
-a few example environments based on the built-in scenarios. This environment
-simply initializes ViZDoom with the settings from the scenario config files
-and implements the necessary API to function as a Gym API.</p>
-<p>See the following examples for use:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/gym_wrapper.py">examples/python/gym_wrapper.py</a> for basic usage</p></li>
-</ul>
-</section>
-<section id="julia-lua-and-java-apis">
-<h2>Julia, Lua, and Java APIs<a class="headerlink" href="#julia-lua-and-java-apis" title="Link to this heading">#</a></h2>
-<blockquote>
-<div><p>Julia, Lua, and Java bindings are no longer maintained.</p>
-</div></blockquote>
-<p>Julia, Lua, and Java can be found in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/julia">julia</a> and <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/java%26lua">java&amp;lua</a> branches for manual building.</p>
+<p>COOM provides environments using Gymnasium API and is available through PyPi. For more details, please refer to the <a class="reference external" href="https://github.com/hyintell/COOM">GitHub repository</a>.</p>
 </section>
 </section>
 
@@ -375,18 +338,18 @@ and implements the necessary API to function as a Gym API.</p>
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../../api/python/">
+            <a class="next-page" href="../creatingCustom/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Python API</div>
+                <div class="title">Creating a custom environment</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            <a class="prev-page" href="../building/">
+            <a class="prev-page" href="../default/">
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
@@ -395,7 +358,7 @@ and implements the necessary API to function as a Gym API.</p>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Building from source</div>
+                <div class="title">Default scenarios/environments</div>
                 
               </div>
             </a>
@@ -439,12 +402,9 @@ and implements the necessary API to function as a Gym API.</p>
           <div class="toc-tree-container">
             <div class="toc-tree">
               <ul>
-<li><a class="reference internal" href="#">APIs and wrappers</a><ul>
-<li><a class="reference internal" href="#c-api">C++ API</a></li>
-<li><a class="reference internal" href="#python-api">Python API</a></li>
-<li><a class="reference internal" href="#gymnasium-wrappers">Gymnasium wrappers</a></li>
-<li><a class="reference internal" href="#openai-gym-wrappers">OpenAI Gym wrappers</a></li>
-<li><a class="reference internal" href="#julia-lua-and-java-apis">Julia, Lua, and Java APIs</a></li>
+<li><a class="reference internal" href="#">Third-party environments</a><ul>
+<li><a class="reference internal" href="#levdoom">LevDoom</a></li>
+<li><a class="reference internal" href="#coom">COOM</a></li>
 </ul>
 </li>
 </ul>
