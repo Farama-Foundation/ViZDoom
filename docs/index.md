@@ -78,6 +78,7 @@ api/configurationFiles
 :caption: Environments
 
 environments/default
+environments/thirdParty
 environments/creatingCustom
 ```
 
