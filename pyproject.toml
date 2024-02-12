@@ -30,6 +30,7 @@ reportMissingImports = "none"
 reportGeneralTypeIssues = "none"
 reportPrivateUsage = "warning"
 reportPrivateImportUsage = "warning"
+reportAttributeAccessIssue = "warning"
 
 [tool.cibuildwheel]
 # We need to build for the following Python versions:
