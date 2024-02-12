@@ -24,6 +24,7 @@ DoomGame is the main object of the ViZDoom library, representing a single instan
 .. autofunction:: vizdoom.DoomGame.make_action
 .. autofunction:: vizdoom.DoomGame.is_new_episode
 .. autofunction:: vizdoom.DoomGame.is_episode_finished
+.. autofunction:: vizdoom.DoomGame.is_episode_timeout_reached
 .. autofunction:: vizdoom.DoomGame.is_player_dead
 .. autofunction:: vizdoom.DoomGame.respawn_player
 .. autofunction:: vizdoom.DoomGame.send_game_command
