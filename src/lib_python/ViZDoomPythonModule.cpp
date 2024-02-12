@@ -630,6 +630,7 @@ PYBIND11_MODULE(vizdoom, vz){
         CLASS_FUNC_2_PYT_WITH_ARGS("new_episode", DoomGamePython::newEpisode, pyb::arg("recording_file_path") = "")
         CLASS_FUNC_2_PYT_WITH_ARGS("replay_episode", DoomGamePython::replayEpisode, pyb::arg("file_path"), pyb::arg("player") = 0)
         CLASS_FUNC_2_PYT("is_episode_finished", DoomGamePython::isEpisodeFinished)
+        CLASS_FUNC_2_PYT("is_episode_timeout_reached", DoomGamePython::isEpisodeTimeoutReached)
         CLASS_FUNC_2_PYT("is_new_episode", DoomGamePython::isNewEpisode)
         CLASS_FUNC_2_PYT("is_player_dead", DoomGamePython::isPlayerDead)
         CLASS_FUNC_2_PYT("respawn_player", DoomGamePython::respawnPlayer)

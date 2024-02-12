@@ -342,6 +342,11 @@ namespace vizdoom {
         return !this->doomController->isTicPossible();
     }
 
+    bool DoomGame::isEpisodeTimeoutReached() {
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
+        return this->doomController->isMapTimeoutReached();
+    }
+
     bool DoomGame::isPlayerDead() {
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         return this->doomController->isPlayerDead();

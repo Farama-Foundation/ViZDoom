@@ -84,6 +84,9 @@ processes the specified number of tics, updates the state and calculates a new r
 :meth:`make_action` and :meth:`advance_action` methods
 will take no effect after this point (unless :meth:`new_episode` method is called).)DOCSTRING";
 
+    const char *isEpisodeTimeoutReached = R"DOCSTRING(Returns ``True`` if the current episode is in the terminal state due to exceeding the time limit (timeout) 
+set with :meth:`set_episode_timeout`` method or via ``+timelimit` parameter.)DOCSTRING";
+
     const char *isPlayerDead = R"DOCSTRING(Returns ``True`` if the player is dead.
 In singleplayer, the player's death is equivalent to the end of the episode.
 In multiplayer, when the player is dead :meth:`respawn_player` method can be called.)DOCSTRING";
