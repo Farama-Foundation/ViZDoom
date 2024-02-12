@@ -48,18 +48,20 @@ class VizdoomEnv(gym.Env, EzPickle):
 
         Observations are dictionaries with different amount of entries, depending on if depth/label buffers were
         enabled in the config file (CHANNELS == 1 if GRAY8, else 3):
-          "screen"        = the screen image buffer (always available) in shape (HEIGHT, WIDTH, CHANNELS)
-          "depth"         = the depth image in shape (HEIGHT, WIDTH, 1), if enabled by the config file,
-          "labels"        = the label image buffer in shape (HEIGHT, WIDTH, 1), if enabled by the config file.
+
+        - "screen"        = the screen image buffer (always available) in shape (HEIGHT, WIDTH, CHANNELS)
+        - "depth"         = the depth image in shape (HEIGHT, WIDTH, 1), if enabled by the config file,
+        - "labels"        = the label image buffer in shape (HEIGHT, WIDTH, 1), if enabled by the config file.
                             For info on labels, access `env.state.labels` variable.
-          "automap"       = the automap image buffer in shape (HEIGHT, WIDTH, CHANNELS), if enabled by the config file
-          "gamevariables" = all game variables, in the order specified by the config file
+        - "automap"       = the automap image buffer in shape (HEIGHT, WIDTH, CHANNELS), if enabled by the config file
+        - "gamevariables" = all game variables, in the order specified by the config file
 
         Action space can be a single one of binary/continuous action space, or a Dict containing both.
-          "binary":
+
+        - "binary":
                           = MultiDiscrete([2] * num_binary_buttons): if max_buttons_pressed == 0
                           = Discrete(n): if max_buttons_pressed > 1
-          "continuous":
+        - "continuous":
                           = Box(float32.min, float32.max, (num_delta_buttons,), float32).
         """
         EzPickle.__init__(self, level, frame_skip, max_buttons_pressed, render_mode)
@@ -138,7 +140,7 @@ class VizdoomEnv(gym.Env, EzPickle):
             if self.num_delta_buttons != 0:
                 agent_action = agent_action["binary"]
 
-            if isinstance(agent_action, int):
+            if np.issubdtype(type(agent_action), np.integer):
                 agent_action = self.button_map[agent_action]
 
             # binary actions offset by number of delta buttons

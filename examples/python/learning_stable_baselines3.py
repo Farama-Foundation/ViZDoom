@@ -2,12 +2,10 @@
 
 #####################################################################
 # Example script of training agents with stable-baselines3
-# on ViZDoom using the Gym API
+# on ViZDoom using the Gymnasium API
 #
-# Note: ViZDoom must be installed with optional gym dependencies:
-#         pip install vizdoom[gym]
-#       You also need stable-baselines3:
-#         pip install stable-baselines3
+# Note: For this example to work, you need to install stable-baselines3 and opencv:
+#       pip install stable-baselines3 opencv-python
 #
 # See more stable-baselines3 documentation here:
 #   https://stable-baselines3.readthedocs.io/en/master/index.html
@@ -16,20 +14,16 @@
 from argparse import ArgumentParser
 
 import cv2
-import gym
+import gymnasium
 import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 
-import vizdoom.gym_wrapper  # noqa
+import vizdoom.gymnasium_wrapper  # noqa
 
 
 DEFAULT_ENV = "VizdoomBasic-v0"
-AVAILABLE_ENVS = [
-    env
-    for env in [env_spec.id for env_spec in gym.envs.registry.all()]
-    if "Vizdoom" in env
-]
+AVAILABLE_ENVS = [env for env in gymnasium.envs.registry.keys() if "Vizdoom" in env]
 # Height and width of the resized image
 IMAGE_SHAPE = (60, 80)
 
@@ -40,7 +34,7 @@ N_ENVS = 8
 FRAME_SKIP = 4
 
 
-class ObservationWrapper(gym.ObservationWrapper):
+class ObservationWrapper(gymnasium.ObservationWrapper):
     """
     ViZDoom environments return dictionaries as observations, containing
     the main image as well other info.
@@ -62,12 +56,15 @@ class ObservationWrapper(gym.ObservationWrapper):
         self.env.frame_skip = FRAME_SKIP
 
         # Create new observation space with the new shape
-        num_channels = env.observation_space["rgb"].shape[-1]
+        print(env.observation_space)
+        num_channels = env.observation_space["screen"].shape[-1]
         new_shape = (shape[0], shape[1], num_channels)
-        self.observation_space = gym.spaces.Box(0, 255, shape=new_shape, dtype=np.uint8)
+        self.observation_space = gymnasium.spaces.Box(
+            0, 255, shape=new_shape, dtype=np.uint8
+        )
 
     def observation(self, observation):
-        observation = cv2.resize(observation["rgb"], self.image_shape_reverse)
+        observation = cv2.resize(observation["screen"], self.image_shape_reverse)
         return observation
 
 
@@ -79,7 +76,7 @@ def main(args):
     #     This may lead to unstable learning, and we scale the rewards by 1/100
     def wrap_env(env):
         env = ObservationWrapper(env)
-        env = gym.wrappers.TransformReward(env, lambda r: r * 0.01)
+        env = gymnasium.wrappers.TransformReward(env, lambda r: r * 0.01)
         return env
 
     envs = make_vec_env(args.env, n_envs=N_ENVS, wrapper_class=wrap_env)

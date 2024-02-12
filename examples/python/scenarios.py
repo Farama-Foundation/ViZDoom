@@ -10,7 +10,7 @@
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
-import itertools as it
+import itertools
 import os
 from argparse import ArgumentParser
 from random import choice
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     # Creates all possible actions depending on how many buttons there are.
     actions_num = game.get_available_buttons_size()
     actions = []
-    for perm in it.product([False, True], repeat=actions_num):
+    for perm in itertools.product([False, True], repeat=actions_num):
         actions.append(list(perm))
 
     episodes = 10

@@ -16,7 +16,7 @@ Library for developing AI bots that play Doom using visual information.
    :alt: ViZDoom Demo
 ```
 
-This library allows creating of environments based on the Doom engine. It is primarily intended for research in machine visual learning and deep reinforcement learning, in particular. The library is written in C++ and provides Python API and wrappers for Gymnasium/OpenAI Gym interface. It is multi-platform (Linux, macOS, Windows), lightweight (just a few MB), and fast (capable of rendering even 7000 fps on a single CPU thread). The design of the library is meant to give high customization options; it supports single-player as well as multi-player modes and implements many additional features like access to the depth buffer (3D vision), automatic labeling of game objects visible in the frame, access to the audio buffer, access to the list of actors/objects and map geometry, off-screen rendering, episodes recording, in-game time scaling. While it provides a set of simple exemplary scenarios, it easily allows one to create custom ones thanks to the visual editors and scripting language supported by the engine.
+This library allows creating of environments based on the Doom engine. It is primarily intended for research in machine visual learning and deep reinforcement learning, in particular. The library is written in C++ and provides Python API and wrappers for Gymnasium/OpenAI Gym interface. It is multi-platform (Linux, macOS, Windows), lightweight (just a few MB), and fast (capable of rendering even 7000 fps on a single CPU thread). The design of the library is meant to give high customization options; it supports single-player as well as multi-player modes and implements many additional features like access to the depth buffer (3D vision), automatic labeling of game objects visible in the frame, access to the audio buffer, access to the list of actors/objects and map geometry, off-screen rendering, episodes recording, in-game time scaling. While it provides a set of simple exemplary scenarios, it easily allows one to create custom ones thanks to the visual editors and scripting language supported by the engine. ViZDoom is based on [ZDoom](https://zdoom.org) source-port to provide the game mechanics.
 
 
 The Gymnasium interface allows to initialize and interact with the ViZDoom default environments as follows:
@@ -78,6 +78,7 @@ api/configurationFiles
 :caption: Environments
 
 environments/default
+environments/thirdParty
 environments/creatingCustom
 ```
 

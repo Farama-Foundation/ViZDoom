@@ -1,6 +1,6 @@
 # Python examples
 
-For the examples to work properly you need to install ViZDoom or create a link to dir with ViZDoom pip_package.
+For the examples to work properly you need to install ViZDoom.
 
 ## The list of examples
 

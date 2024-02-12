@@ -23,10 +23,10 @@ In **ASYNC** modes the game progress with constant speed (default 35 tics per se
 All modes can be used in singleplayer and multiplayer.
 
 See also:
-- [`DoomGame: getMode`](./doomGame.md#getmode),
-- [`DoomGame: setMode`](./doomGame.md#setmode),
-- [`DoomGame: getTicrate`](./doomGame.md#getticrate),
-- [`DoomGame: setTicrate`](./doomGame.md#setticrate).
+- [`DoomGame::getMode`](./doomGame.md#getmode),
+- [`DoomGame::setMode`](./doomGame.md#setmode),
+- [`DoomGame::getTicrate`](./doomGame.md#getticrate),
+- [`DoomGame::setTicrate`](./doomGame.md#setticrate).
 
 
 ---
@@ -57,8 +57,8 @@ In **GRAY8** and **DOOM_256_COLORS8** format **screenBuffer** and **automapBuffe
 **depthBuffer** and **lablesBuffer** always store single 8-bit values, so they always have [y, x] shape.
 
 See also:
-- [`DoomGame: getScreenFormat`](./doomGame.md#getscreenformat),
-- [`DoomGame: setScreenFormat`](./doomGame.md#setscreenformat),
+- [`DoomGame::getScreenFormat`](./doomGame.md#getscreenformat),
+- [`DoomGame::setScreenFormat`](./doomGame.md#setscreenformat),
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py).
 
 
@@ -105,9 +105,9 @@ Enum type that defines all supported resolutions - shapes of **screenBuffer**, *
 - **RES_1920X1080** (16:9)
 
 See also:
-- [`DoomGame: setScreenResolution`](./doomGame.md#setscreenresolution),
-- [`DoomGame: getScreenWidth`](./doomGame.md#getscreenwidth),
-- [`DoomGame: getScreenHeight`](./doomGame.md#getscreenheight).
+- [`DoomGame::setScreenResolution`](./doomGame.md#setscreenresolution),
+- [`DoomGame::getScreenWidth`](./doomGame.md#getscreenwidth),
+- [`DoomGame::getScreenHeight`](./doomGame.md#getscreenheight).
 
 
 ---
@@ -121,7 +121,7 @@ Enum type that defines all **automapBuffer** modes.
 - **OBJECTS_WITH_SIZE** - In addition to the previous, all things are wrapped in a box showing their size.
 
 See also:
-- [`DoomGame: setAutomapMode`](./doomGame.md#setautomapmode),
+- [`DoomGame::setAutomapMode`](./doomGame.md#setautomapmode),
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py).
 
 
@@ -136,10 +136,10 @@ Enum type that defines all variables that can be obtained from the game.
 - **SECRETCOUNT**           - Counts the number of secret location/objects discovered during the current episode.
 - **FRAGCOUNT**             - Counts the number of players/bots killed, minus the number of committed suicides. Useful only in multiplayer mode.
 - **DEATHCOUNT**            - Counts the number of players deaths during the current episode. Useful only in multiplayer mode.
-- **HITCOUNT**              - Counts number of hit monsters/players/bots during the current episode. Added in 1.1.5.
-- **HITS_TAKEN**            - Counts number of hits taken by the player during the current episode. Added in 1.1.5.
-- **DAMAGECOUNT**           - Counts number of damage dealt to monsters/players/bots during the current episode. Added in 1.1.5.
-- **DAMAGE_TAKEN**          - Counts number of damage taken by the player during the current episode. Added in 1.1.5.
+- **HITCOUNT**              - Counts number of hit monsters/players/bots during the current episode. Note: added in 1.1.5.
+- **HITS_TAKEN**            - Counts number of hits taken by the player during the current episode. Note: added in 1.1.5.
+- **DAMAGECOUNT**           - Counts number of damage dealt to monsters/players/bots during the current episode. Note: added in 1.1.5.
+- **DAMAGE_TAKEN**          - Counts number of damage taken by the player during the current episode. Note: added in 1.1.5.
 - **HEALTH**                - Can be higher then 100!
 - **ARMOR**                 - Can be higher then 100!
 - **DEAD**                  - True if the player is dead.
@@ -156,36 +156,38 @@ Enum type that defines all variables that can be obtained from the game.
 - **ANGLE**                 - Orientation of the player, not available if `viz_nocheat` is enabled.
 - **PITCH**
 - **ROLL**
-- **VIEW_HEIGHT**           - View high of the player, not available if `viz_nocheat` is enabled. Position of the camera in Z axis is equal to **POSITION_Z** + **VIEW_HEIGHT**. Added in 1.1.7.
+- **VIEW_HEIGHT**           - View high of the player, not available if `viz_nocheat` is enabled. Position of the camera in Z axis is equal to **POSITION_Z** + **VIEW_HEIGHT**. Note: added in 1.1.7.
 - **VELOCITY_X**            - Velocity of the player, not available if `viz_nocheat` is enabled.
 - **VELOCITY_Y**
 - **VELOCITY_Z**
-- **CAMERA_POSITION_X**     - Position of the camera, not available if `viz_nocheat` is enabled. Added in 1.1.7.
+- **CAMERA_POSITION_X**     - Position of the camera, not available if `viz_nocheat` is enabled. Note: added in 1.1.7.
 - **CAMERA_POSITION_Y**
 - **CAMERA_POSITION_Z**
-- **CAMERA_ANGLE**          - Orientation of the camera, not available if `viz_nocheat` is enabled. Added in 1.1.7.
+- **CAMERA_ANGLE**          - Orientation of the camera, not available if `viz_nocheat` is enabled. Note: added in 1.1.7.
 - **CAMERA_PITCH**
 - **CAMERA_ROLL**
-- **CAMERA_FOV**            - Field of view in degrees, not available if `viz_nocheat` is enabled. Added in 1.1.7.
+- **CAMERA_FOV**            - Field of view in degrees, not available if `viz_nocheat` is enabled. Note: added in 1.1.7.
 - **PLAYER_NUMBER**         - Player's number in multiplayer game.
 - **PLAYER_COUNT**          - Number of players in multiplayer game.
-- **PLAYER1_FRAGCOUNT** - **PLAYER16_FRAGCOUNT** - Number of N player's frags
+- **PLAYER1_FRAGCOUNT** - **PLAYER16_FRAGCOUNT** - Number of player's frags (number of kills - suicides in multiplayer deathmatch).
 
 
 ### User (ACS) variables
 - **USER1** - **USER60**
 
 ACS global int variables can be accessed as USER GameVariables.
-global int 0 is reserved for reward and is always threaded as Doom's fixed point numeral.
-Other from 1 to 60 (global int 1-60) can be accessed as USER1 - USER60 GameVariables.
+global int 0 is reserved for reward and is always treated as Doom's fixed point numeral.
+Other from 1 to 60 (global int 1-60) can be accessed as `USER1` - `USER60` GameVariables.
+If you assign fixed point numeral to `USER1` - `USER60` GameVariables,
+you can convert them to floating point by using [`doomFixedToDouble`](utils.md#doomfixedtodouble) function.
 
 See also:
 - [ZDoom Wiki: ACS](http://zdoom.org/wiki/ACS),
-- [`DoomGame: getAvailableGameVariables`](./doomGame.md#getavailablegamevariables),
-- [`DoomGame: setAvailableGameVariables`](./doomGame.md#setavailablegamevariables),
-- [`DoomGame: addAvailableGameVariable`](./doomGame.md#addavailablegamevariable),
-- [`DoomGame: getGameVariable`](./doomGame.md#getgamevariable),
-- [`Utilities: doomFixedToDouble`](utils.md#doomfixedtodouble),
+- [`DoomGame::getAvailableGameVariables`](./doomGame.md#getavailablegamevariables),
+- [`DoomGame::setAvailableGameVariables`](./doomGame.md#setavailablegamevariables),
+- [`DoomGame::addAvailableGameVariable`](./doomGame.md#addavailablegamevariable),
+- [`DoomGame::getGameVariable`](./doomGame.md#getgamevariable),
+- [`doomFixedToDouble`](utils.md#doomfixedtodouble),
 - [examples/python/basic.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/basic.py),
 - [examples/python/shaping.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/shaping.py).
 
@@ -243,7 +245,7 @@ Binary buttons have only 2 states "not pressed" if value 0 and "pressed" if valu
 
 Buttons whose value defines the speed of movement.
 A positive value indicates movement in the first specified direction and a negative value in the second direction.
-For example: value 10 for MOVE_LEFT_RIGHT_DELTA means slow movement to the right and -100 means fast movement to the left.
+For example: value 10 for `MOVE_LEFT_RIGHT_DELTA` means slow movement to the right and -100 means fast movement to the left.
 
 - **LOOK_UP_DOWN_DELTA**
 - **TURN_LEFT_RIGHT_DELTA**
@@ -256,11 +258,11 @@ In case of **MOVE_FORWARD_BACKWARD_DELTA**, **MOVE_LEFT_RIGHT_DELTA**, **MOVE_UP
 
 See also:
 - [Doom Wiki: Map unit](https://doomwiki.org/wiki/Map_unit),
-- [`DoomGame: getAvailableButtons`](./doomGame.md#getavailablebuttons),
-- [`DoomGame: setAvailableButtons`](./doomGame.md#setavailablebuttons),
-- [`DoomGame: addAvailableButton`](./doomGame.md#addavailablebutton),
-- [`DoomGame: setButtonMaxValue`](./doomGame.md#setbuttonmaxvalue),
-- [`DoomGame: getButtonMaxValue`](./doomGame.md#getbuttonmaxvalue),
+- [`DoomGame::getAvailableButtons`](./doomGame.md#getavailablebuttons),
+- [`DoomGame::setAvailableButtons`](./doomGame.md#setavailablebuttons),
+- [`DoomGame::addAvailableButton`](./doomGame.md#addavailablebutton),
+- [`DoomGame::setButtonMaxValue`](./doomGame.md#setbuttonmaxvalue),
+- [`DoomGame::getButtonMaxValue`](./doomGame.md#getbuttonmaxvalue),
 - [examples/python/basic.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/basic.py),
 - [examples/python/delta_buttons.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/delta_buttons.py),
 - [GitHub issue: Angle changes by executing certain commands](https://github.com/Farama-Foundation/ViZDoom/issues/182).
@@ -269,11 +271,12 @@ See also:
 ## `SamplingRate`
 
 Enum type that defines all supported sampling rates for **audioBuffer** in **State**.
-Added in 1.1.9.
 
 - **SR_11025**
 - **SR_22050**
 - **SR_44100**
 
 See also:
-- [`DoomGame: setAudioSamplingRate`](./doomGame.md#setaudiosamplingrate),
+- [`DoomGame::setAudioSamplingRate`](./doomGame.md#setaudiosamplingrate).
+
+Note: added in 1.1.9.

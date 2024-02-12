@@ -36,35 +36,35 @@ The game can be initialized again after being closed.
 
 | C++    | `void newEpisode(std::string recordingFilePath = "")` |
 | :--    | :--                                                   |
-| Python | `new_episode(recordingFilePath: str = "") -> None`    |
-
-Changed in 1.1.0
+| Python | `new_episode(recording_file_path: str = "") -> None`  |
 
 Initializes a new episode. The state of an environment is completely restarted (all variables and rewards are reset to their initial values).
 After calling this method, the first state from the new episode will be available.
-If the `recordingFilePath` is not empty, the new episode will be recorded to this file (as a Doom lump).
+If the `recordingFilePath` argument is not empty, the new episode will be recorded to this file (as a Doom lump).
 
 In a multiplayer game, the host can call this method to finish the game.
 Then the rest of the players must also call this method to start a new episode.
 
+Note: Changed in 1.1.0
 
 ---
 ### `replayEpisode`
 
 | C++    | `void replayEpisode(std::string filePath, unsigned int player = 0)` |
 | :--    | :--                                                                 |
-| Python | `replay_episode(filePath: str, player: int = 0) -> None`            |
+| Python | `replay_episode(file_path: str, player: int = 0) -> None`           |
 
-Added in 1.1.0
-
-Replays a recorded episode from the given file using the perspective of the specified player.
-Players are numbered from 1, `player` equal to 0 results in replaying the demo using the perspective of the default player in the recording file.
+Replays the recorded episode from the given file using the perspective of the specified player.
+Players are numbered from 1, If `player` argument is equal to 0,
+the episode will be replayed using the perspective of the default player in the recording file.
 After calling this method, the first state from the replay will be available.
-All rewards, variables, and states are available during the replaying episode.
+All rewards, variables, and states are available when replaying the episode.
 
 See also:
 - [examples/python/record_episodes.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/record_episodes.py)
 - [examples/python/record_multiplayer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/record_multiplayer.py)
+
+Note: added in 1.1.0.
 
 
 ---
@@ -74,7 +74,7 @@ See also:
 | :--    | :--                    |
 | Python | `is_running() -> bool` |
 
-Checks if the ViZDoom game instance is running.
+Returns true if the controlled game instance is running.
 
 
 ---
@@ -84,9 +84,14 @@ Checks if the ViZDoom game instance is running.
 | :--    | :--                             |
 | Python | `is_multiplayer_game() -> bool` |
 
-Added in 1.1.2
+Returns true if the game is in multiplayer mode.
 
-Checks if the game is in multiplayer mode.
+See also:
+- [examples/python/multiple_instances.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/multiple_instances.py)
+- [examples/python/cig_multiplayer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer.py)
+- [examples/python/cig_multiplayer_host.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer_host.py)
+
+Note: added in 1.1.2.
 
 
 ---
@@ -96,9 +101,9 @@ Checks if the game is in multiplayer mode.
 | :--    | :--                              |
 | Python | `is_recording_episode() -> bool` |
 
-Added in 1.1.5
+Returns true if the game is in recording mode.
 
-Checks if the game is in recording mode.
+Note: added in 1.1.5.
 
 
 ---
@@ -108,20 +113,20 @@ Checks if the game is in recording mode.
 | :--    | :--                              |
 | Python | `is_replaying_episode() -> bool` |
 
-Added in 1.1.5
+Returns true if the game is in replay mode.
 
-Checks if the game is in replaying mode.
-
+Note: added in 1.1.5.
 
 ---
 ### `setAction`
 
-| C++    | `void setAction(std::vector<double> const &actions)`          |
-| :--    | :--                                                           |
-| Python | `set_action(actions: list | tuple | ndarray [float]) -> None` |
+| C++    | `void setAction(std::vector<double> const &action)`          |
+| :--    | :--                                                          |
+| Python | `set_action(action: list | tuple | ndarray [float]) -> None` |
 
-Sets the player's action for the next tics.
-Each value corresponds to a button specified with [`addAvailableButton`](#addavailablebutton) method
+Sets the player's action for the following tics until the method is called again with new action.
+Each value corresponds to a button previously specified
+with [`addAvailableButton`](#addavailablebutton), or [`setAvailableButtons`](#setavailablebuttons) methods,
 or in the configuration file (in order of appearance).
 
 
@@ -130,12 +135,13 @@ or in the configuration file (in order of appearance).
 
 | C++    | `void advanceAction(unsigned int tics = 1, bool updateState = true)` |
 | :--    | :--                                                                  |
-| Python | `advance_action(tics: int = 1, updateState: bool = True) -> None`    |
+| Python | `advance_action(tics: int = 1, update_state: bool = True) -> None`   |
 
-Processes a specified number of tics. If `updateState` is set,
-the state will be updated after the last processed tic and a new reward will be calculated.
-To get the new state, use `getState` and to get the new reward use `getLastReward`.
-If `updateState` is not set, the state will not be updated.
+Processes the specified number of tics, the last action set with [`setAction`](#setaction)
+method will be repeated for each tic. If `updateState` argument is set,
+the state will be updated after the last processed tic
+and a new reward will be calculated based on all processed tics since last the last state update.
+To get the new state, use [`getState`](#getstate) and to get the new reward use [`getLastReward`](#getlastreward).
 
 
 ---
@@ -145,9 +151,10 @@ If `updateState` is not set, the state will not be updated.
 | :--    | :--                                                                            |
 | Python | `make_action(actions: list | tuple | ndarray [float], tics: int = 1) -> float` |
 
-Method combining usability of [`setAction`](#setaction), [`advanceAction`](#advanceaction) and [`getLastReward`](#getlastreward).
-Sets the player's action for the next tics, processes a specified number of tics,
-updates the state and calculates a new reward, which is returned.
+This method combines functionality of [`setAction`](#setaction), [`advanceAction`](#advanceaction),
+and [`getLastReward`](#getlastreward) called in this sequance.
+Sets the player's action for all the next tics (the same action will be repeated for each tic),
+processes the specified number of tics, updates the state and calculates a new reward from all processed tics, which is returned.
 
 
 ---
@@ -168,7 +175,8 @@ Returns true if the current episode is in the initial state - the first state, n
 | Python | `is_episode_finished() -> bool` |
 
 Returns true if the current episode is in the terminal state (is finished).
-[`makeAction`](#makeaction) and [`advanceAction`](#advanceaction) methods will take no effect after this point (unless [`newEpisode`](#newepisode) method is called).
+[`makeAction`](#makeaction) and [`advanceAction`](#advanceaction) methods
+will take no effect after this point (unless [`newEpisode`](#newepisode) method is called).
 
 
 ---
@@ -220,13 +228,10 @@ See also:
 | :--    | :--                                                              |
 | Python | `get_state() -> GameState`                                       |
 
-Changed in 1.1.0
-
 Returns [`GameState`](./gameState.md#gamestate) object with the current game state.
 If the current episode is finished, `nullptr/null/None` will be returned.
 
-See also:
-- [`GameState`](./gameState.md#gamestate)
+Note: Changed in 1.1.0
 
 
 ---
@@ -236,12 +241,9 @@ See also:
 | :--    | :--                                                                          |
 | Python | `get_state_state() -> ServerState`                                           |
 
-Added in 1.1.6
-
 Returns [`ServerState`](./gameState.md#serverstate) object with the current server state.
 
-See also:
-- [`ServerState`](./gameState.md#serverstate)
+Note: added in 1.1.6.
 
 
 ---
@@ -252,7 +254,8 @@ See also:
 | Python | `get_last_action() -> list`           |
 
 Returns the last action performed.
-Each value corresponds to a button added with `[addAvailableButton](#addAvailableButton)` (in order of appearance).
+Each value corresponds to a button added with [`setAvailableButtons`](#setAvailableButtons)
+or/and [`addAvailableButton`](#addAvailableButton) (in order of appearance).
 Most useful in `SPECTATOR` mode.
 
 
@@ -261,7 +264,7 @@ Most useful in `SPECTATOR` mode.
 
 | C++    | `unsigned int getEpisodeTime()` |
 | :--    | :--                             |
-| Python | `get_episode_time() -> int`        |
+| Python | `get_episode_time() -> int`     |
 
 Returns number of current episode tic.
 
@@ -271,11 +274,11 @@ Returns number of current episode tic.
 
 | C++    | `void save(std::string filePath)` |
 | :--    | :--                               |
-| Python | `save(filePath: str) -> None`     |
+| Python | `save(file_path: str) -> None`    |
 
-Added in 1.1.9
+Saves a game's internal state to the file using ZDoom save game functionality.
 
-Saves a game's internal state to the file using ZDoom's save game functionality.
+Note: added in 1.1.9.
 
 
 ---
@@ -283,14 +286,14 @@ Saves a game's internal state to the file using ZDoom's save game functionality.
 
 | C++    | `void load(std::string filePath)` |
 | :--    | :--                               |
-| Python | `load(filePath: str) -> None`     |
+| Python | `load(file_path: str) -> None`    |
 
-Added in 1.1.9
-
-Loads a game's internal state from the file using ZDoom's load game functionality.
+Loads a game's internal state from the file using ZDoom load game functionality.
 A new state is available after loading.
 Loading the game state does not reset the current episode state,
 tic counter/time and total reward state keep their values.
+
+Note: added in 1.1.9.
 
 
 ## Buttons settings methods
@@ -301,29 +304,22 @@ tic counter/time and total reward state keep their values.
 | :--    | :--                                         |
 | Python | `get_available_buttons() -> list[Button]`   |
 
-Returns the list of available `Buttons`.
-
-See also:
-- [`Enums: Button`](./enums.md#button)
-- [`addAvailableButton`](#addavailablebutton)
-- [`setAvailableButtons`](#addavailablebuttons)
+Returns the list of available [`Button`](./enums.md#button) s,
+that were added with [`setAvailableButtons`](#setavailablebuttons) or/and [`addAvailableButton`](#addavailablebutton) methods.
 
 
 ---
 ### `setAvailableButtons`
 
-| C++    | `void setAvailableButtons(std::vector<Button> buttons)`       |
-| :--    | :--                                                           |
-| Python | `add_available_button(buttons: list | tuple[Button]) -> None` |
+| C++    | `void setAvailableButtons(std::vector<Button> buttons)`        |
+| :--    | :--                                                            |
+| Python | `add_available_buttons(buttons: list | tuple[Button]) -> None` |
 
-Sets given list of `Button`s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available `Buttons`.
+Sets given list of [`Button`](./enums.md#button) s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available buttons.
 
-Config key: `availableButtons/available_buttons` (list)
+Has no effect when the game is running.
 
-See also:
-- [`Enums: Button`](./enums.md#button)
-- [`ConfigFile: List`](./configurationFiles.md#list)
-- [`addAvailableButton`](#addavailablebutton)
+Config key: `availableButtons`/`available_buttons` (list of values)
 
 
 ---
@@ -333,16 +329,12 @@ See also:
 | :--    | :--                                                                 |
 | Python | `add_available_button(button: Button, maxValue: float = 0) -> None` |
 
-Adds [`Button`](./enums.md#button) type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to available `Buttons` and sets the maximum allowed, absolute value for the specified button.
-If the given button has already been added, it will not be added again, but the maximum value is overridden.
+Adds [`Button`](./enums.md#button) type (e.g. `TURN_LEFT`, `MOVE_FORWARD`) to available buttons and sets the maximum allowed, absolute value for the specified button.
+If the given button has already been added, it will not be added again, but the maximum value will be overridden.
 
-Config key: `availableButtons/available_buttons` (list)
+Has no effect when the game is running.
 
-See also:
-- [`Enums: Button`](./enums.md#button)
-- [`ConfigFile: List`](./configurationFiles.md#list)
-- [`setAvailableButtons`](#addavailablebuttons)
-- [`setButtonMaxValue`](#setbuttonmaxvalue)
+Config key: `availableButtons`/`available_buttons` (list of values)
 
 
 ---
@@ -352,10 +344,9 @@ See also:
 | :--    | :--                                 |
 | Python | `clear_available_buttons() -> None` |
 
-Clears all available `Buttons` added so far.
+Clears all available [`Button`](./enums.md#button)s added so far.
 
-See also:
-- [`Enums: Button`](./enums.md#button)
+Has no effect when the game is running.
 
 
 ---
@@ -365,10 +356,7 @@ See also:
 | :--    | :--                                   |
 | Python | `get_available_buttons_size() -> int` |
 
-Returns the number of available `Buttons`.
-
-See also:
-- [`Enums: Button`](./enums.md#button)
+Returns the number of available [`Button`](./enums.md#button) s.
 
 
 ---
@@ -378,13 +366,12 @@ See also:
 | :--    | :--                                                                 |
 | Python | `set_button_max_value(button: Button, maxValue: float = 0) -> None` |
 
-Sets the maximum allowed absolute value for the specified button.
+Sets the maximum allowed absolute value for the specified [`Button`](./enums.md#button).
 Setting the maximum value to 0 results in no constraint at all (infinity).
 This method makes sense only for delta buttons.
 The constraints limit applies in all Modes.
 
-See also:
-- [`Enums: Button`](./enums.md#button)
+Has no effect when the game is running.
 
 
 ---
@@ -394,10 +381,7 @@ See also:
 | :--    | :--                                             |
 | Python | `set_button_max_value(button: Button) -> int`   |
 
-Returns the maximum allowed absolute value for the specified button.
-
-See also:
-- [`Enums: Button`](./enums.md#button)
+Returns the maximum allowed absolute value for the specified [`Button`](./enums.md#button).
 
 
 ---
@@ -407,10 +391,7 @@ See also:
 | :--    | :--                                   |
 | Python | `set_button(button: Button) -> float` |
 
-Returns the current state of the specified button (`ATTACK`, `USE` etc.).
-
-See also:
-- [`Enums: Button`](./enums.md#button)
+Returns the current state of the specified [`Button`](./enums.md#button) (`ATTACK`, `USE` etc.).
 
 
 ## GameVariables methods
@@ -422,12 +403,8 @@ See also:
 | :--    | :--                                                     |
 | Python | `get_available_game_variables() -> list[GameVariables]` |
 
-Returns the list of available `GameVariables`.
-
-See also:
-- [`Enums: GameVariable`](./enums.md#gamevariable)
-- [`addAvailableGameVariable`](#addavailablegamevariable)
-- [`setAvailableGameVariables`](#setavailablegamevariables)
+Returns the list of available [`GameVariable`](./enums.md#gamevariable) s,
+that were added with [`setAvailableGameVariables`](#setavailablegamevariables) or/and [`addAvailableGameVariable`](#addavailablegamevariable) methods.
 
 
 ---
@@ -437,14 +414,11 @@ See also:
 | :--    | :--                                                                            |
 | Python | `set_available_game_variables(variables: list | tuple[GameVariables]) -> None` |
 
-Sets list of [`GameVariable`](./enums.md#gamevariable) as available `GameVariables` in the [`GameState`](./gameState.md#gamestate) returned by `getState` method.
+Sets list of [`GameVariable`](./enums.md#gamevariable) s as available game variables in the [`GameState`](./gameState.md#gamestate) returned by [`getState`](#getstate) method.
 
-Config key: `availableGameVariables/available_game_variables` (list)
+Has no effect when the game is running.
 
-See also:
-- [`Enums: GameVariable`](./enums.md#gamevariable)
-- [`ConfigFile: List`](./configurationFiles.md#list)
-- [`addAvailableGameVariable`](#addavailablegamevariable)
+Config key: `availableGameVariables`/`available_game_variables` (list of values)
 
 
 ---
@@ -454,14 +428,11 @@ See also:
 | :--    | :--                                                           |
 | Python | `add_available_game_variable(variable: GameVariable) -> None` |
 
-Adds the specified [`GameVariable`](./enums.md#gamevariable) to the list of available game variables (e.g. `HEALTH`, `AMMO1`, `ATTACK_READY`) in the [`GameState`](./gameState.md#gamestate) returned by `getState` method.
+Adds the specified [`GameVariable`](./enums.md#gamevariable) to the list of available game variables (e.g. `HEALTH`, `AMMO1`, `ATTACK_READY`) in the [`GameState`](./gameState.md#gamestate) returned by [`getState`](#getstate) method.
 
-Config key: `availableGameVariables/available_game_variables` (list)
+Has no effect when the game is running.
 
-See also:
-- [`Enums: GameVariable`](./enums.md#gamevariable)
-- [`ConfigFile: List`](./configurationFiles.md#list)
-- [`setAvailableGameVariables`](#setavailablegamevariables)
+Config key: `availableGameVariables`/`available_game_variables` (list of values)
 
 
 ---
@@ -471,11 +442,9 @@ See also:
 | :--    | :--                                        |
 | Python | `clear_available_game_variables() -> None` |
 
-Clears the list of available `GameVariables` that are included in the [`GameState`](./gameState.md#gamestate) returned by [`getState`](#getstate) method.
+Clears the list of available [`GameVariable`](./enums.md#gamevariable) s that are included in the [`GameState`](./gameState.md#gamestate) returned by [`getState`](#getstate) method.
 
-See also:
-- [`Enums: GameVariable`](./enums.md#gamevariable)
-- [`ConfigFile: List`](./configurationFiles.md#list)
+Has no effect when the game is running.
 
 
 ---
@@ -485,11 +454,8 @@ See also:
 | :--    | :--                                            |
 | Python | `get_available_game_variables_size() -> int`   |
 
-Returns the number of available `GameVariables`.
-
-See also:
-- [`Enums: GameVariable`](./enums.md#gamevariable)
-- [`ConfigFile: List`](./configurationFiles.md#list)
+Returns the number of available [`GameVariable`](./enums.md#gamevariable).
+It corresponds to taking the size of the list returned by [`getAvailableGameVariables`](#getavailablegamevariables).
 
 
 ---
@@ -499,12 +465,9 @@ See also:
 | :--    | :--                                                  |
 | Python | `get_game_variable(variable: GameVariable) -> float` |
 
-Returns the current value of the specified game variable (`HEALTH`, `AMMO1` etc.).
+Returns the current value of the specified [`GameVariable`](./enums.md#gamevariable) (`HEALTH`, `AMMO1` etc.).
 The specified game variable does not need to be among available game variables (included in the state).
-It could be used for e.g. shaping. Returns 0 in case of not finding given `GameVariable`.
-git lo
-See also:
-- [`Enums: GameVariable`](./enums.md#gamevariable)
+It could be used for e.g. shaping. Returns 0 in case of not finding given [`GameVariable`](./enums.md#gamevariable).
 
 
 ## Game arguments methods
@@ -516,18 +479,18 @@ See also:
 | :--    | :--                                  |
 | Python | `set_game_args(args: str) -> None`   |
 
-Added in 1.3.0
-
 Sets custom arguments that will be passed to ViZDoom process during initialization.
 It is useful for changing additional game settings.
 Use with caution, as in rare cases it may prevent the library from working properly.
 Using this method is equivalent to first calling [`clearGameArgs`](#cleargameargs) and then [`addGameArgs`](#addgameargs).
 
-Config key: `gameArgs/game_args`
+Config key: `gameArgs`/`game_args`
 
 See also:
 - [ZDoom Wiki: Command line parameters](http://zdoom.org/wiki/Command_line_parameters)
 - [ZDoom Wiki: CVARs (Console Variables)](http://zdoom.org/wiki/CVARS)
+
+Note: added in 1.2.3.
 
 
 ---
@@ -541,7 +504,7 @@ Adds custom arguments that will be passed to ViZDoom process during initializati
 It is useful for changing additional game settings.
 Use with caution, as in rare cases it may prevent the library from working properly.
 
-Config key: `gameArgs/game_args`
+Config key: `gameArgs`/`game_args`
 
 See also:
 - [ZDoom Wiki: Command line parameters](http://zdoom.org/wiki/Command_line_parameters)
@@ -566,6 +529,8 @@ Clears all arguments previously added with [`setGameArgs`](#setgameargs) or/and 
 
 Returns the additional arguments for ViZDoom process set with [`setGameArgs`](#setgameargs) or/and [`addGameArgs`](#addgameargs) methods.
 
+Note: added in 1.2.3.
+
 
 ## Reward methods
 
@@ -582,15 +547,15 @@ Returns the reward granted to the player after every tic.
 ---
 ### `setLivingReward`
 
-| C++    | `void setLivingReward(double livingReward)`      |
-| :--    | :--                                              |
-| Python | `set_living_reward(livingReward: float) -> None` |
+| C++    | `void setLivingReward(double livingReward)`       |
+| :--    | :--                                               |
+| Python | `set_living_reward(living_reward: float) -> None` |
 
 Sets the reward granted to the player after every tic. A negative value is also allowed.
 
 Default value: 0
 
-Config key: `livingReward/living_reward`
+Config key: `livingReward`/`living_reward`
 
 
 ---
@@ -606,15 +571,15 @@ Returns the penalty for the player's death.
 ---
 ### `setDeathPenalty`
 
-| C++    | `void setDeathPenalty(double deathPenalty)`      |
-| :--    | :--                                              |
-| Python | `set_death_penalty(deathPenalty: float) -> None` |
+| C++    | `void setDeathPenalty(double deathPenalty)`       |
+| :--    | :--                                               |
+| Python | `set_death_penalty(death_penalty: float) -> None` |
 
 Sets a penalty for the player's death. Note that in case of a negative value, the player will be rewarded upon dying.
 
 Default value: 0
 
-Config key: `deathPenalty/death_penalty`
+Config key: `deathPenalty`/`death_penalty`
 
 
 ---
@@ -644,7 +609,7 @@ Returns the sum of all rewards gathered in the current episode.
 
 | C++    | `bool loadConfig(std::string filePath)` |
 | :--    | :--                                     |
-| Python | `load_config(filePath: str) -> bool`    |
+| Python | `load_config(file_path: str) -> bool`   |
 
 Loads configuration (resolution, available buttons, game variables etc.) from a configuration file.
 In case of multiple invocations, older configurations will be overwritten by the recent ones.
@@ -652,10 +617,7 @@ Overwriting does not involve resetting to default values. Thus only overlapping 
 The method returns true if the whole configuration file was correctly read and applied,
 false if the file contained errors.
 
-If the file relative path is given, it will be searched for in the following order: current directory, current directory + `/scenarios/`, ViZDoom's installation directory + `/scenarios/`.
-
-See also:
-- [ConfigFile](./configurationFiles.md)
+If the file relative path is given, it will be searched for in the following order: `<current directory>`, `<current directory>/scenarios/`, `<ViZDoom library location>/scenarios/`.
 
 
 ---
@@ -665,10 +627,7 @@ See also:
 | :--    | :--                  |
 | Python | `get_mode() -> Mode` |
 
-Returns current mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`).
-
-See also:
-- [`Enums: Mode`](./enums.md#mode)
+Returns the current [`Mode`](./enums.md#mode) (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`).
 
 
 ---
@@ -678,14 +637,13 @@ See also:
 | :--    | :--                            |
 | Python | `set_mode(mode: Mode) -> None` |
 
-Sets mode (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`) in which the game will be running.
+Sets the [`Mode`](./enums.md#mode) (`PLAYER`, `SPECTATOR`, `ASYNC_PLAYER`, `ASYNC_SPECTATOR`) in which the game will be running.
 
 Default value: `PLAYER`.
 
-Config key: `mode`
+Has no effect when the game is running.
 
-See also:
-- [`Enums: Mode`](./enums.md#mode)
+Config key: `mode`
 
 
 ---
@@ -695,9 +653,9 @@ See also:
 | :--    | :--                         |
 | Python | `get_ticrate() -> int`      |
 
-Added in 1.1.0
-
 Returns current ticrate.
+
+Note: added in 1.1.0.
 
 
 ---
@@ -707,17 +665,19 @@ Returns current ticrate.
 | :--    | :--                                     |
 | Python | `set_ticrate(ticrate: int) -> None`     |
 
-Added in 1.1.0
-
-Sets ticrate for ASNYC Modes - number of logic tics executed per second.
+Sets the ticrate for ASNYC Modes - number of logic tics executed per second.
 The default Doom ticrate is 35. This value will play a game at normal speed.
 
 Default value: 35 (default Doom ticrate).
+
+Has no effect when the game is running.
 
 Config key: `ticrate`
 
 See also:
 - [examples/python/ticrate.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/ticrate.py)
+
+Note: added in 1.1.0.
 
 
 ---
@@ -725,13 +685,13 @@ See also:
 
 | C++    | `void setViZDoomPath(std::string filePath)` |
 | :--    | :--                                         |
-| Python | `set_vizdoom_path(filePath: str) -> None`       |
+| Python | `set_vizdoom_path(file_path: str) -> None`  |
 
-Sets path to the ViZDoom engine executable vizdoom.
+Sets the path to the ViZDoom engine executable vizdoom.
 
-Default value: "{vizdoom.so location}/{vizdoom or vizdoom.exe (on Windows)}".
+Default value: `<ViZDoom library location>/<vizdoom or vizdoom.exe on Windows>`.
 
-Config key: `ViZDoomPath/vizdoom_path
+Config key: `ViZDoomPath`/`vizdoom_path`
 
 
 ---
@@ -739,14 +699,14 @@ Config key: `ViZDoomPath/vizdoom_path
 
 | C++    | `void setDoomGamePath(std::string filePath)` |
 | :--    | :--                                          |
-| Python | `set_doom_game_path(filePath: str) -> None`      |
+| Python | `set_doom_game_path(file_path: str) -> None` |
 
 Sets the path to the Doom engine based game file (wad format).
-If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom.so/pyd is).
+If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom library/pyd is).
 
-Default value: "{vizdoom.so location}/{doom2.wad, doom.wad, freedoom2.wad or freedoom.wad}"
+Default value: `<ViZDoom library location>/<doom2.wad, doom.wad, freedoom2.wad, or freedoom.wad - in this order>`
 
-Config key: `DoomGamePath/doom_game_path`
+Config key: `DoomGamePath`/`doom_game_path`
 
 
 ---
@@ -754,14 +714,14 @@ Config key: `DoomGamePath/doom_game_path`
 
 | C++    | `void setDoomScenarioPath(std::string filePath)` |
 | :--    | :--                                              |
-| Python | `set_doom_scenario_path(filePath: str) -> None`      |
+| Python | `set_doom_scenario_path(file_path: str) -> None` |
 
 Sets the path to an additional scenario file (wad format).
 If not provided, the default Doom single-player maps will be loaded.
 
-Default value: ""
+Default value: `""`
 
-Config key: `DoomScenarioPath/set_doom_scenario_path`
+Config key: `DoomScenarioPath`/`set_doom_scenario_path`
 
 
 ---
@@ -773,9 +733,9 @@ Config key: `DoomScenarioPath/set_doom_scenario_path`
 
 Sets the map name to be used.
 
-Default value: "map01", if set to empty "map01" will be used.
+Default value: `"map01"`, if set to empty `"map01"` will be used.
 
-Config key: `DoomMap/doom_map`
+Config key: `DoomMap`/`doom_map`
 
 
 ---
@@ -798,24 +758,24 @@ Takes effect from the next episode.
 
 Default value: 3
 
-Config key: `DoomSkill/doom_skill`
+Config key: `DoomSkill`/`doom_skill`
 
 
 ---
 ### `setDoomConfigPath`
 
-| C++    | `void setDoomConfigPath(std::string filePath)` |
-| :--    | :--                                            |
-| Python | `set_doom_config_path(filePath: str) -> None`  |
+| C++    | `void setDoomConfigPath(std::string filePath)`  |
+| :--    | :--                                             |
+| Python | `set_doom_config_path(file_path: str) -> None`  |
 
 Sets the path for ZDoom's configuration file.
 The file is responsible for the configuration of the ZDoom engine itself.
 If it does not exist, it will be created after the `vizdoom` executable is run.
 This method is not needed for most of the tasks and is added for the convenience of users with hacking tendencies.
 
-Default value: "", if left empty "_vizdoom.ini" will be used.
+Default value: `""`, if left empty `"_vizdoom.ini"` will be used.
 
-Config key: `DoomConfigPath/doom_config_path`
+Config key: `DoomConfigPath`/`doom_config_path`
 
 
 ---
@@ -825,7 +785,7 @@ Config key: `DoomConfigPath/doom_config_path`
 | :--    | :--                      |
 | Python | `getSeed() -> int`       |
 
-Return ViZDoom's seed.
+Returns ViZDoom's seed.
 
 
 ---
@@ -835,7 +795,7 @@ Return ViZDoom's seed.
 | :--    | :--                               |
 | Python | `set_seed(seed: int) -> None`     |
 
-Sets the seed of the ViZDoom's RNG that generates seeds (initial state) for episodes.
+Sets the seed of ViZDoom's RNG that generates seeds (initial state) for episodes.
 
 Default value: randomized in constructor
 
@@ -853,7 +813,7 @@ See also:
 | :--    | :--                                  |
 | Python | `get_episode_start_time() -> int`    |
 
-Returns start delay of every episode in tics.
+Returns the start time (delay) of every episode in tics.
 
 
 ---
@@ -863,12 +823,12 @@ Returns start delay of every episode in tics.
 | :--    | :--                                           |
 | Python | `set_episode_start_time(tics: int) -> None`   |
 
-Sets start delay of every episode in tics.
+Sets the start time (delay) of every episode in tics.
 Every episode will effectively start (from the user's perspective) after the provided number of tics.
 
 Default value: 1
 
-Config key: `episodeStartTime/episode_start_time`
+Config key: `episodeStartTime`/`episode_start_time`
 
 
 ---
@@ -890,7 +850,9 @@ Returns the number of tics after which the episode will be finished.
 
 Sets the number of tics after which the episode will be finished. 0 will result in no timeout.
 
-Config key: `episodeTimeout/episode_timeout`
+Default value: 0
+
+Config key: `episodeTimeout`/`episode_timeout`
 
 
 ## Output/rendering setting methods
@@ -902,17 +864,15 @@ Config key: `episodeTimeout/episode_timeout`
 | :--    | :--                                                           |
 | Python | `set_screen_resolution(resolution: ScreenResolution) -> None` |
 
-Sets the screen resolution. ZDoom engine supports only specific resolutions.
-Supported resolutions are part of ScreenResolution enumeration (e.g., `RES_320X240`, `RES_640X480`, `RES_1920X1080`).
+Sets the screen resolution and additional buffers (depth, labels, and automap). ZDoom engine supports only specific resolutions.
+Supported resolutions are part of [`ScreenResolution`](./enums.md#screenresolution) enumeration (e.g., `RES_320X240`, `RES_640X480`, `RES_1920X1080`).
 The buffers, as well as the content of ViZDoom's display window, will be affected.
 
 Default value: `RES_320X240`
 
-Config key: `screenResolution/screen_resolution`
+Has no effect when the game is running.
 
-
-See also:
-- [`Enums: ScreenResolution`](./enums.md#screenresolution)
+Config key: `screenResolution`/`screen_resolution`
 
 
 ---
@@ -933,15 +893,14 @@ Returns the format of the screen buffer and the automap buffer.
 | Python | `set_screen_format(format: ScreenFormat) -> None` |
 
 Sets the format of the screen buffer and the automap buffer.
-Supported formats are defined in `ScreenFormat` enumeration type (e.g. `CRCGCB`, `RGB24`, `GRAY8`).
+Supported formats are defined in [`ScreenFormat`](./enums.md#screenformat) enumeration type (e.g. `CRCGCB`, `RGB24`, `GRAY8`).
 The format change affects only the buffers, so it will not have any effect on the content of ViZDoom's display window.
 
 Default value: `CRCGCB`
 
-Config key: `screenFormat/screen_format`
+Has no effect when the game is running.
 
-See also:
-- [`Enums: ScreenFormat`](./enums.md#screenformat)
+Config key: `screenFormat`/`screen_format`
 
 
 ---
@@ -951,30 +910,31 @@ See also:
 | :--    | :--                                 |
 | Python | `is_depth_buffer_enabled() -> None` |
 
-Added in 1.1.0
-
 Returns true if the depth buffer is enabled.
 
 
 ---
 ### `setDepthBufferEnabled`
 
-| C++    | `void setDepthBufferEnabled(bool depthBuffer)`        |
-| :--    | :--                                                   |
-| Python | `set_depth_buffer_enabled(depthBuffer: bool) -> None` |
-
-Added in 1.1.0
+| C++    | `void setDepthBufferEnabled(bool depthBuffer)`         |
+| :--    | :--                                                    |
+| Python | `set_depth_buffer_enabled(depth_buffer: bool) -> None` |
 
 Enables rendering of the depth buffer, it will be available in the state.
-Depth buffer will contain noise if `viz_nocheat` is enabled.
+The buffer always has the same resolution as the screen buffer.
+Depth buffer will contain noise if `viz_nocheat` flag is enabled.
 
 Default value: false
 
-Config key: `depthBufferEnabled/depth_buffer_enabled`
+Has no effect when the game is running.
+
+Config key: `depthBufferEnabled`/`depth_buffer_enabled`
 
 See also:
 - [`GameState`](./gameState.md#gamestate)
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
+
+Note: added in 1.1.0.
 
 
 ---
@@ -984,32 +944,34 @@ See also:
 | :--    | :--                                  |
 | Python | `is_labels_buffer_enabled() -> None` |
 
-Added in 1.1.0
-
 Returns true if the labels buffer is enabled.
+
+Note: added in 1.1.0.
 
 
 ---
 ### `setLabelsBufferEnabled`
 
-| C++    | `void setLabelsBufferEnabled(bool labelsBuffer)`       |
-| :--    | :--                                                    |
-| Python | `set_labels_buffer_enabled(bool labelsBuffer) -> None` |
+| C++    | `void setLabelsBufferEnabled(bool labelsBuffer)`         |
+| :--    | :--                                                      |
+| Python | `set_labels_buffer_enabled(labels_buffer: bool) -> None` |
 
-Added in 1.1.0
-
-Enables rendering of the labels buffer, it will be available in the state with the vector of `Label`s.
+Enables rendering of the labels buffer, it will be available in the state with the vector of [`Label`](./gameState.md#label) s.
+The buffer always has the same resolution as the screen buffer.
 LabelsBuffer will contain noise if `viz_nocheat` is enabled.
 
 Default value: false
 
-Config key: `labelsBufferEnabled/labels_buffer_enabled`
+Has no effect when the game is running.
+
+Config key: `labelsBufferEnabled`/`labels_buffer_enabled`
 
 See also:
-- [`GameState: Label`](./gameState.md#label)
 - [`GameState`](./gameState.md#gamestate)
 - [examples/python/labels.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels.py)
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
+
+Note: added in 1.1.0.
 
 
 ---
@@ -1019,29 +981,32 @@ See also:
 | :--    | :--                                   |
 | Python | `is_automap_buffer_enabled() -> bool` |
 
-Added in 1.1.0
-
 Returns true if the automap buffer is enabled.
+
+Note: added in 1.1.0.
 
 
 ---
 ### `setAutomapBufferEnabled`
 
-| C++    | `void setAutomapBufferEnabled(bool automapBuffer)`        |
-| :--    | :--                                                       |
-| Python | `set_automap_buffer_enabled(automapBuffer: bool) -> None` |
-
-Added in 1.1.0
+| C++    | `void setAutomapBufferEnabled(bool automapBuffer)`         |
+| :--    | :--                                                        |
+| Python | `set_automap_buffer_enabled(automap_buffer: bool) -> None` |
 
 Enables rendering of the automap buffer, it will be available in the state.
+The buffer always has the same resolution as the screen buffer.
 
 Default value: false
 
-Config key: `automapBufferEnabled/automap_buffer_enabled`
+Has no effect when the game is running.
+
+Config key: `automapBufferEnabled`/`automap_buffer_enabled`
 
 See also:
 - [`GameState`](./gameState.md#gamestate)
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py),
+
+Note: added in 1.1.0.
 
 
 ---
@@ -1051,17 +1016,14 @@ See also:
 | :--    | :--                                           |
 | Python | `set_automap_mode(mode: AutomapMode) -> None` |
 
-Added in 1.1.0
-
-Sets the automap mode (`NORMAL`, `WHOLE`, `OBJECTS`, `OBJECTS_WITH_SIZE`),
+Sets the [`AutomapMode`](./enums.md#automapmode) (`NORMAL`, `WHOLE`, `OBJECTS`, `OBJECTS_WITH_SIZE`),
 which determines what will be visible on it.
 
 Default value: `NORMAL`
 
-Config key: `automapMode/set_automap_mode`
+Config key: `automapMode`/`set_automap_mode`
 
-See also:
-- [`Enums: AutomapMode`](./enums.md#automapmode)
+Note: added in 1.1.0.
 
 
 ---
@@ -1071,14 +1033,14 @@ See also:
 | :--    | :--                                        |
 | Python | `set_automap_rotate(rotate: bool) -> None` |
 
-Added in 1.1.0
-
 Determine if the automap will be rotating with the player.
 If false, north always will be at the top of the buffer.
 
 Default value: false
 
-Config key: `automapRotate/automap_rotate`
+Config key: `automapRotate`/`automap_rotate`
+
+Note: added in 1.1.0.
 
 
 ---
@@ -1088,13 +1050,13 @@ Config key: `automapRotate/automap_rotate`
 | :--    | :--                                                   |
 | Python | `set_automap_render_textures(textures: bool) -> None` |
 
-Added in 1.1.0
-
 Determine if the automap will be textured, showing the floor textures.
 
 Default value: true
 
-Config key: `automapRenderTextures/automap_render_textures`
+Config key: `automapRenderTextures`/`automap_render_textures`
+
+Note: added in 1.1.0.
 
 
 ---
@@ -1108,23 +1070,23 @@ Determine if the hud will be rendered in the game.
 
 Default value: false
 
-Config key: `renderHud/render_hud`
+Config key: `renderHud`/`render_hud`
 
 
 ---
 ### `setRenderMinimalHud`
 
-| C++    | `void setRenderMinimalHud(bool minHud)`        |
-| :--    | :--                                            |
-| Python | `set_render_minimal_hud(minHud: bool) -> None` |
-
-Added in 1.1.0
+| C++    | `void setRenderMinimalHud(bool minHud)`         |
+| :--    | :--                                             |
+| Python | `set_render_minimal_hud(min_hud: bool) -> None` |
 
 Determine if the minimalistic version of the hud will be rendered instead of the full hud.
 
 Default value: false
 
-Config key: `renderMinimalHud/render_minimal_hud`
+Config key: `renderMinimalHud`/`render_minimal_hud`
+
+Note: added in 1.1.0.
 
 
 ---
@@ -1138,7 +1100,7 @@ Determine if the weapon held by the player will be rendered in the game.
 
 Default value: true
 
-Config key: `renderWeapon/render_weapon`
+Config key: `renderWeapon`/`render_weapon`
 
 
 ---
@@ -1152,7 +1114,7 @@ Determine if the crosshair will be rendered in the game.
 
 Default value: false
 
-Config key: `renderCrosshair/render_crosshair`
+Config key: `renderCrosshair`/`render_crosshair`
 
 
 ---
@@ -1166,7 +1128,7 @@ Determine if the decals (marks on the walls) will be rendered in the game.
 
 Default value: true
 
-Config key: `renderDecals/render_decals`
+Config key: `renderDecals`/`render_decals`
 
 
 ---
@@ -1180,7 +1142,7 @@ Determine if the particles will be rendered in the game.
 
 Default value: true
 
-Config key: `renderParticles/render_particles`
+Config key: `renderParticles`/`render_particles`
 
 
 ---
@@ -1190,13 +1152,13 @@ Config key: `renderParticles/render_particles`
 | :--    | :--                                                 |
 | Python | `set_render_effects_sprites(sprites: bool) -> None` |
 
-Added in 1.1.0
-
 Determine if some effects sprites (gun puffs, blood splats etc.) will be rendered in the game.
 
 Default value: true
 
-Config key: `renderEffectsSprites/render_effects_sprites`
+Config key: `renderEffectsSprites`/`render_effects_sprites`
+
+Note: added in 1.1.0.
 
 
 ---
@@ -1206,13 +1168,13 @@ Config key: `renderEffectsSprites/render_effects_sprites`
 | :--    | :--                                           |
 | Python | `set_render_messages(messages: bool) -> None` |
 
-Added in 1.1.0
-
 Determine if in-game messages (information about pickups, kills, etc.) will be rendered in the game.
 
 Default value: false
 
-Config key: `renderMessages/render_messages`
+Config key: `renderMessages`/`render_messages`
+
+Note: added in 1.1.0.
 
 
 ---
@@ -1222,13 +1184,13 @@ Config key: `renderMessages/render_messages`
 | :--    | :--                                          |
 | Python | `set_render_corpsess(corpses: bool) -> None` |
 
-Added in 1.1.0
-
 Determine if actors' corpses will be rendered in the game.
 
 Default value: true
 
-Config key: `renderCorpses/render_corpses`
+Config key: `renderCorpses`/`render_corpses`
+
+Note: added in 1.1.0.
 
 
 ---
@@ -1238,13 +1200,13 @@ Config key: `renderCorpses/render_corpses`
 | :--    | :--                                                |
 | Python | `set_render_screen_flashes(flashes: bool) -> None` |
 
-Added in 1.1.3
-
 Determine if the screen flash effect upon taking damage or picking up items will be rendered in the game.
 
 Default value: true
 
-Config key: `renderScreenFlashes/render_screen_flashes`
+Config key: `renderScreenFlashes`/`render_screen_flashes`
+
+Note: added in 1.1.0.
 
 
 ---
@@ -1254,18 +1216,18 @@ Config key: `renderScreenFlashes/render_screen_flashes`
 | :--    | :--                                               |
 | Python | `set_render_all_frames(all_frames: bool) -> None` |
 
-Added in 1.1.3
-
 Determine if all frames between states will be rendered (when skip greater than 1 is used).
 Allows smooth preview but can reduce performance.
 It only makes sense to use it if the window is visible.
 
 Default value: false
 
-Config key: `renderAllFrames/render_all_frames`
+Config key: `renderAllFrames`/`render_all_frames`
 
 See also:
 - [`setWindowVisible`](#setwindowvisible)
+
+Note: added in 1.1.3.
 
 
 ---
@@ -1280,7 +1242,9 @@ ViZDoom with window disabled can be used on Linux systems without X Server.
 
 Default value: false
 
-Config key: `windowVisible/window_visible`
+Has no effect when the game is running.
+
+Config key: `windowVisible`/`window_visible`
 
 
 ---
@@ -1294,7 +1258,7 @@ Determines if ViZDoom's console output will be enabled.
 
 Default value: false
 
-Config key: `consoleEnabled/console_enabled`
+Config key: `consoleEnabled`/`console_enabled`
 
 
 ---
@@ -1308,7 +1272,7 @@ Determines if ViZDoom's sound will be played.
 
 Default value: false
 
-Config key: `soundEnabled/sound_enabled`
+Config key: `soundEnabled`/`sound_enabled`
 
 
 ---
@@ -1318,7 +1282,7 @@ Config key: `soundEnabled/sound_enabled`
 | :--    | :--                         |
 | Python | `get_screen_width() -> int` |
 
-Returns game's screen width - width of all buffers.
+Returns game's screen width - width of screen, depth, labels, and automap buffers.
 
 
 ---
@@ -1328,7 +1292,7 @@ Returns game's screen width - width of all buffers.
 | :--    | :--                          |
 | Python | `get_screen_height() -> int` |
 
-Returns game's screen height - height of all buffers.
+Returns game's screen height - height of screen, depth, labels, and automap buffers.
 
 
 ---
@@ -1368,31 +1332,32 @@ Returns size in bytes of screen buffer and map buffer.
 | :--    | :--                                |
 | Python | `is_object_info_enabled() -> bool` |
 
-Added in 1.1.8
-
 Returns true if the objects information is enabled.
+
+Note: added in 1.1.8.
 
 
 ---
 ### `setObjectsInfoEnabled`
 
-| C++    | `void setObjectsInfoEnabled(bool objectsInfo)`       |
-| :--    | :--                                                  |
-| Python | `set_objects_info_enabled(bool objectsInfo) -> None` |
+| C++    | `void setObjectsInfoEnabled(bool objectsInfo)`         |
+| :--    | :--                                                    |
+| Python | `set_objects_info_enabled(objects_info: bool) -> None` |
 
-Added in 1.1.8
-
-Enables information about all objects present in the current episode/level.
+Enables information about all [`Object`](./gameState.md#object) s present in the current episode/level.
 It will be available in the state.
 
 Default value: false
 
-Config key: `objectsInfoEnabled/objects_info_enabled`
+Has no effect when the game is running.
+
+Config key: `objectsInfoEnabled`/`objects_info_enabled`
 
 See also:
 - [`GameState`](./gameState.md#gamestate)
-- [`GameState: Object`](./gameState.md#object)
 - [examples/python/objects_and_sectors.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py),
+
+Note: added in 1.1.8.
 
 
 ---
@@ -1402,31 +1367,32 @@ See also:
 | :--    | :--                                 |
 | Python | `is_sectors_info_enabled() -> bool` |
 
-Added in 1.1.8
-
 Returns true if the information about sectors is enabled.
+
+Note: added in 1.1.8.
 
 
 ---
 ### `setSectorsInfoEnabled`
 
-| C++    | `void setSectorsInfoEnabled(bool sectorsInfo)`       |
-| :--    | :--                                                  |
-| Python | `set_sectors_info_enabled(bool sectorsInfo) -> None` |
+| C++    | `void setSectorsInfoEnabled(bool sectorsInfo)`         |
+| :--    | :--                                                    |
+| Python | `set_sectors_info_enabled(sectors_info: bool) -> None` |
 
-Added in 1.1.8
-
-Enables information about all sectors (map layout) present in the current episode/level.
+Enables information about all [`Sector`](./gameState.md#sector) s (map layout) present in the current episode/level.
 It will be available in the state.
 
 Default value: false
 
-Config key: `sectorsInfoEnabled/sectors_info_enabled`
+Has no effect when the game is running.
+
+Config key: `sectorsInfoEnabled`/`sectors_info_enabled`
 
 See also:
 - [`GameState`](./gameState.md#gamestate)
-- [`GameState: Sector`](./gameState.md#sector)
 - [examples/python/objects_and_sectors.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py)
+
+Note: added in 1.1.8.
 
 
 ---
@@ -1436,30 +1402,34 @@ See also:
 | :--    | :--                                 |
 | Python | `is_audio_buffer_enabled() -> bool` |
 
-Added in 1.1.9
-
 Returns true if the audio buffer is enabled.
+
+Note: added in 1.1.9.
 
 
 ---
 ### `setAudioBufferEnabled`
 
-| C++    | `void setAudioBufferEnabled(bool audioBuffer)`       |
-| :--    | :--                                                  |
-| Python | `set_audio_buffer_enabled(bool audioBuffer) -> None` |
+| C++    | `void setAudioBufferEnabled(bool audioBuffer)`         |
+| :--    | :--                                                    |
+| Python | `set_audio_buffer_enabled(audio_buffer: bool) -> None` |
 
-Added in 1.1.9
-
-Returns true if the audio buffer is enabled.
+Enables rendering of the audio buffer, it will be available in the state.
+The audio buffer will contain audio from the number of the last tics specified by [`setAudioBufferSize`](#setaudiobuffersize) method.
+Sampling rate can be set with [`setAudioSamplingRate`](#setaudiosamplingrate) method.
 
 Default value: false
 
-Config key: `audioBufferEnabled/audio_buffer_enabled`
+Has no effect when the game is running.
+
+Config key: `audioBufferEnabled`/`audio_buffer_enabled`
 
 See also:
 - [`GameState`](./gameState.md#gamestate)
-- [`Enums: SamplingRate`](./enums.md#sampling-rate)
+- [`SamplingRate`](./enums.md#sampling-rate)
 - [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
+
+Note: added in 1.1.9.
 
 
 ---
@@ -1469,36 +1439,35 @@ See also:
 | :--    | :--                                |
 | Python | `get_audio_sampling_rate() -> int` |
 
-Added in 1.1.9
-
-Returns the sampling rate of the audio buffer.
-
+Returns the [`SamplingRate`](./enums.md#sampling-rate) of the audio buffer.
 
 See also:
 - [`GameState`](./gameState.md#gamestate)
-- [`Enums: SamplingRate`](./enums.md#sampling-rate)
 - [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
+
+Note: added in 1.1.9.
 
 
 ---
 ### `setAudioSamplingRate`
 
-| C++    | `void setAudioSamplingRate(SamplingRate samplingRate)`       |
-| :--    | :--                                                          |
-| Python | `set_audio_sampling_rate(SamplingRate samplingRate) -> None` |
+| C++    | `void setAudioSamplingRate(SamplingRate samplingRate)`         |
+| :--    | :--                                                            |
+| Python | `set_audio_sampling_rate(sampling_rate: SamplingRate) -> None` |
 
-Added in 1.1.9
-
-Sets the sampling rate of the audio buffer.
+Sets the [`SamplingRate`](./enums.md#sampling-rate) of the audio buffer.
 
 Default value: false
 
-Config key: `audioSamplingRate/audio_samping_rate`
+Has no effect when the game is running.
+
+Config key: `audioSamplingRate`/`audio_samping_rate`
 
 See also:
 - [`GameState`](./gameState.md#gamestate)
-- [`Enums: SamplingRate`](./enums.md#sampling-rate)
 - [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
+
+Note: added in 1.1.9.
 
 
 ---
@@ -1508,9 +1477,9 @@ See also:
 | :--    | :--                              |
 | Python | `get_audio_buffer_size() -> int` |
 
-Added in 1.1.9
-
 Returns the size of the audio buffer.
+
+Note: added in 1.1.9.
 
 
 See also:
@@ -1525,16 +1494,18 @@ See also:
 | :--    | :--                                          |
 | Python | `set_audio_buffer_size(size: int) -> None`   |
 
-Added in 1.1.9
-
 Sets the size of the audio buffer. The size is defined by a number of logic tics.
 After each action audio buffer will contain audio from the specified number of the last processed tics.
 Doom uses 35 ticks per second.
 
 Default value: 4
 
-Config key: `audioBufferSize/audio_buffer_size`
+Has no effect when the game is running.
+
+Config key: `audioBufferSize`/`audio_buffer_size`
 
 See also:
 - [`GameState`](./gameState.md#gamestate)
 - [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
+
+Note: added in 1.1.9.

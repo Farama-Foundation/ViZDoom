@@ -41,15 +41,15 @@ Enum type that defines all supported **screenBuffer** and **automapBuffer** form
 - **DOOM_256_COLORS8** - 8-bit channel with Doom palette values
 
 
-In **CRCGCB** and **CBCGCR** format **screenBuffer** and **automapBuffer** store all red 8-bit values then all green values and then all blue values, each channel is considered separately. As matrices they have [3, y, x] shape.
+In **CRCGCB** and **CBCGCR** format **screenBuffer** and **automapBuffer** store all red 8-bit values then all green values and then all blue values, each channel is considered separately. As matrices (`np.ndarray`) they have `(3, y, x)` shape.
 
-In **RGB24** and **BGR24** format **screenBuffer** and **automapBuffer** store 24 bit RGB triples. As matrices they have [y, x, 3] shape.
+In **RGB24** and **BGR24** format **screenBuffer** and **automapBuffer** store 24 bit RGB triples. As matrices (`np.ndarray`) they have `(y, x, 3)` shape.
 
-In **RGBA32**, **ARGB32**, **BGRA32** and **ABGR32** format **screenBuffer** and **automapBuffer** store 32 bit sets of RBG + alpha values. As matrices they have [y, x, 4] shape.
+In **RGBA32**, **ARGB32**, **BGRA32** and **ABGR32** format **screenBuffer** and **automapBuffer** store 32 bit sets of RBG + alpha values. As matrices (`np.ndarray`) they have `(y, x, 4)` shape.
 
-In **GRAY8** and **DOOM_256_COLORS8** format **screenBuffer** and **automapBuffer** store single 8 bit values. As matrices they have [y, x] shape.
+In **GRAY8** and **DOOM_256_COLORS8** format **screenBuffer** and **automapBuffer** store single 8 bit values. As matrices (`np.ndarray`) they have `(y, x)` shape.
 
-**depthBuffer** and **lablesBuffer** always store single 8-bit values, so they always have [y, x] shape.
+**depthBuffer** and **lablesBuffer** always store single 8-bit values, so as matrices (`np.ndarray`) they always have `(y, x)` shape.
 
 See also:
 - [`DoomGame.get_screen_format`](./doomGame.md#vizdoom.DoomGame.get_screen_format),
@@ -96,10 +96,10 @@ Enum type that defines all variables that can be obtained from the game. Below w
 - **SECRETCOUNT**           - Counts the number of secret location/objects discovered during the current episode.
 - **FRAGCOUNT**             - Counts the number of players/bots killed, minus the number of committed suicides. Useful only in multiplayer mode.
 - **DEATHCOUNT**            - Counts the number of players deaths during the current episode. Useful only in multiplayer mode.
-- **HITCOUNT**              - Counts number of hit monsters/players/bots during the current episode. Added in 1.1.5.
-- **HITS_TAKEN**            - Counts number of hits taken by the player during the current episode. Added in 1.1.5.
-- **DAMAGECOUNT**           - Counts number of damage dealt to monsters/players/bots during the current episode. Added in 1.1.5.
-- **DAMAGE_TAKEN**          - Counts number of damage taken by the player during the current episode. Added in 1.1.5.
+- **HITCOUNT**              - Counts number of hit monsters/players/bots during the current episode. Note: added in 1.1.5.
+- **HITS_TAKEN**            - Counts number of hits taken by the player during the current episode. Note: added in 1.1.5.
+- **DAMAGECOUNT**           - Counts number of damage dealt to monsters/players/bots during the current episode. Note: added in 1.1.5.
+- **DAMAGE_TAKEN**          - Counts number of damage taken by the player during the current episode. Note: added in 1.1.5.
 - **HEALTH**                - Can be higher then 100!
 - **ARMOR**                 - Can be higher then 100!
 - **DEAD**                  - True if the player is dead.
@@ -112,17 +112,19 @@ Enum type that defines all variables that can be obtained from the game. Below w
 - **WEAPON0** - **WEAPON9** - Number of weapons in N slot.
 - **POSITION_X, POSITION_Y, POSITION_Z**        - Position of the player, not available if `viz_nocheat` is enabled.
 - **ANGLE, PITCH, ROLL**                        - Orientation of the player, not available if `viz_nocheat` is enabled.
-- **VIEW_HEIGHT**           - View high of the player, not available if `viz_nocheat` is enabled. Position of the camera in Z axis is equal to **POSITION_Z** + **VIEW_HEIGHT**. Added in 1.1.7.
+- **VIEW_HEIGHT**           - View high of the player, not available if `viz_nocheat` is enabled. Position of the camera in Z axis is equal to **POSITION_Z** + **VIEW_HEIGHT**. Note: added in 1.1.7.
 - **VELOCITY_X, VELOCITY_Y, VELOCITY_Z**        - Velocity of the player, not available if `viz_nocheat` is enabled.
-- **CAMERA_POSITION_X, CAMERA_POSITION_Y, CAMERA_POSITION_Z**   - Position of the camera, not available if `viz_nocheat` is enabled. Added in 1.1.7.
-- **CAMERA_ANGLE, CAMERA_PITCH, CAMERA_ROLL**   - Orientation of the camera, not available if `viz_nocheat` is enabled. Added in 1.1.7.
-- **CAMERA_FOV**            - Field of view in degrees, not available if `viz_nocheat` is enabled. Added in 1.1.7.
+- **CAMERA_POSITION_X, CAMERA_POSITION_Y, CAMERA_POSITION_Z**   - Position of the camera, not available if `viz_nocheat` is enabled. Note: added in 1.1.7.
+- **CAMERA_ANGLE, CAMERA_PITCH, CAMERA_ROLL**   - Orientation of the camera, not available if `viz_nocheat` is enabled. Note: added in 1.1.7.
+- **CAMERA_FOV**            - Field of view in degrees, not available if `viz_nocheat` is enabled. Note: added in 1.1.7.
 - **PLAYER_NUMBER**         - Player's number in multiplayer game.
 - **PLAYER_COUNT**          - Number of players in multiplayer game.
-- **PLAYER1_FRAGCOUNT** - **PLAYER16_FRAGCOUNT** - Number of N player's frags
+- **PLAYER1_FRAGCOUNT** - **PLAYER16_FRAGCOUNT** - Number of player's frags (number of kills - suicides in multiplayer deathmatch).
 - **USER1** - **USER60**    - user defined variables. ACS global int variables can be accessed as USER GameVariables.
-global int 0 is reserved for reward and is always threaded as Doom's fixed point numeral.
+global int 0 is reserved for reward and is always threaded as Doom fixed point numeral.
 Other from 1 to 60 (global int 1-60) can be accessed as USER1 - USER60 GameVariables.
+If you assign fixed point numeral to USER1 - USER60 GameVariables,
+you can convert them to floating point by using [`doom_fixed_to_float`](./utils.md#vizdoom.doom_fixed_to_float) function.
 
 See also:
 - [ZDoom Wiki: ACS](http://zdoom.org/wiki/ACS),
@@ -130,7 +132,7 @@ See also:
 - [`DoomGame.set_available_game_variables`](./doomGame.md#vizdoom.DoomGame.set_available_game_variables),
 - [`DoomGame.add_available_game_variable`](./doomGame.md#vizdoom.DoomGame.add_available_game_variable),
 - [`DoomGame.get_game_variable`](./doomGame.md#vizdoom.DoomGame.get_game_variable),
-- [`doomFixedToDouble`](utils.md#doomfixedtodouble),
+- [`doom_fixed_to_float`](./utils.md#vizdoom.doom_fixed_to_float),
 - [examples/python/basic.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/basic.py),
 - [examples/python/shaping.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/shaping.py).
 
@@ -168,7 +170,8 @@ See also:
 ```
 
 Enum type that defines all supported sampling rates for **audioBuffer** in **State**.
-Added in 1.1.9.
 
 See also:
-- [`DoomGame.set_audio_sampling_rate`](./doomGame.md#set_audio_sampling_rate),
+- [`DoomGame.set_audio_sampling_rate`](./doomGame.md#vizdoom.DoomGame.set_audio_sampling_rate).
+
+Note: added in 1.1.9.
