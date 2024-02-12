@@ -68,6 +68,14 @@ endif()
 if(APPLE)
     set(CMAKE_MACOSX_RPATH ON)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
+
+    if(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "arm64")
+        set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE INTERNAL "" FORCE)
+        message(STATUS "Apple Silicon detected, building for arm64")
+    else()
+        set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE INTERNAL "" FORCE)
+        message(STATUS "Intel CPU detected, building for x86_64")
+    endif()
 endif(APPLE)
 
 
@@ -93,6 +101,7 @@ endif()
 #-----------------------------------------------------------------------------------------------------------------------
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(VIZDOOM_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(VIZDOOM_OUTPUT_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 set(VIZDOOM_SCRIPTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/scripts)
 set(VIZDOOM_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
