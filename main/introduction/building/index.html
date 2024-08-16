@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="APIs and wrappers" href="../apisAndWrappers/" /><link rel="prev" title="Python quick start" href="../pythonQuickstart/" />
         <link rel="canonical" href="https://vizdoom.farama.org/introduction/building.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
         <title>Building from source - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
@@ -312,14 +312,14 @@
           <article role="main">
             
             <section class="tex2jax_ignore mathjax_ignore" id="building-from-source">
-<h1>Building from source<a class="headerlink" href="#building-from-source" title="Link to this heading">#</a></h1>
+<h1>Building from source<a class="headerlink" href="#building-from-source" title="Link to this heading">¶</a></h1>
 <p>Here we describe how to build ViZDoom from source.
 If you want to install pre-build ViZDoom wheels for Python, see <a class="reference internal" href="../pythonQuickstart/"><span class="std std-doc">Python quick start</span></a>.</p>
 <section id="dependencies">
-<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">#</a></h2>
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">¶</a></h2>
 <p>To build ViZDoom (regardless of the method), you need to install some dependencies in your system first.</p>
 <section id="linux">
-<h3>Linux<a class="headerlink" href="#linux" title="Link to this heading">#</a></h3>
+<h3>Linux<a class="headerlink" href="#linux" title="Link to this heading">¶</a></h3>
 <p>To build ViZDoom on Linux, the following dependencies are required:</p>
 <ul class="simple">
 <li><p>CMake 3.12+</p></li>
@@ -330,7 +330,7 @@ If you want to install pre-build ViZDoom wheels for Python, see <a class="refere
 </ul>
 <p>Also some of additionally <a class="reference external" href="http://zdoom.org/wiki/Compile_ZDoom_on_Linux">ZDoom dependencies</a> are needed.</p>
 <section id="apt-based-distros-ubuntu-debian-linux-mint-etc">
-<h4>apt-based distros (Ubuntu, Debian, Linux Mint, etc.)<a class="headerlink" href="#apt-based-distros-ubuntu-debian-linux-mint-etc" title="Link to this heading">#</a></h4>
+<h4>apt-based distros (Ubuntu, Debian, Linux Mint, etc.)<a class="headerlink" href="#apt-based-distros-ubuntu-debian-linux-mint-etc" title="Link to this heading">¶</a></h4>
 <p>To get all dependencies on apt-based Linux (Ubuntu, Debian, Linux Mint, etc.) execute the following commands in the shell (might require root access).</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># All possible ViZDoom dependencies,</span>
 <span class="c1"># most are optional and required only to support alternative sound and music backends in the engine</span>
@@ -349,7 +349,7 @@ apt<span class="w"> </span>install<span class="w"> </span>python3-dev<span class
 </div>
 </section>
 <section id="dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc">
-<h4>dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)<a class="headerlink" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc" title="Link to this heading">#</a></h4>
+<h4>dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)<a class="headerlink" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc" title="Link to this heading">¶</a></h4>
 <p>To get all dependencies on dnf/yum-based Linux (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.) execute the following commands in the shell (might require root access).</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Essential ZDoom dependencies</span>
 dnf<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>git<span class="w"> </span>boost-devel<span class="w"> </span>SDL2-devel<span class="w"> </span>openal-soft-devel
@@ -360,7 +360,7 @@ dnf<span class="w"> </span>install<span class="w"> </span>python3-devel<span cla
 </div>
 </section>
 <section id="anaconda-miniconda">
-<h4>Anaconda/Miniconda<a class="headerlink" href="#anaconda-miniconda" title="Link to this heading">#</a></h4>
+<h4>Anaconda/Miniconda<a class="headerlink" href="#anaconda-miniconda" title="Link to this heading">¶</a></h4>
 <p>If you do not have a root access, you can use a conda (e.g. <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">miniconda</a>) environment to install dependencies to your environment only:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>boost<span class="w"> </span>cmake<span class="w"> </span>gtk2<span class="w"> </span>sdl2
 </pre></div>
@@ -374,7 +374,7 @@ dnf<span class="w"> </span>install<span class="w"> </span>python3-devel<span cla
 </section>
 </section>
 <section id="macos">
-<h3>MacOS<a class="headerlink" href="#macos" title="Link to this heading">#</a></h3>
+<h3>MacOS<a class="headerlink" href="#macos" title="Link to this heading">¶</a></h3>
 <p>To build ViZDoom on MacOS, the following dependencies are required:</p>
 <ul class="simple">
 <li><p>CMake 3.12+</p></li>
@@ -389,7 +389,7 @@ dnf<span class="w"> </span>install<span class="w"> </span>python3-devel<span cla
 </div>
 </section>
 <section id="windows">
-<h3>Windows<a class="headerlink" href="#windows" title="Link to this heading">#</a></h3>
+<h3>Windows<a class="headerlink" href="#windows" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>CMake 3.12+</p></li>
 <li><p>Visual Studio 2012+</p></li>
@@ -402,7 +402,7 @@ You can download Boost from <a class="reference external" href="https://www.boos
 </section>
 </section>
 <section id="building-via-pip-recommended-for-python-users">
-<h2>Building via pip (recommended for Python users)<a class="headerlink" href="#building-via-pip-recommended-for-python-users" title="Link to this heading">#</a></h2>
+<h2>Building via pip (recommended for Python users)<a class="headerlink" href="#building-via-pip-recommended-for-python-users" title="Link to this heading">¶</a></h2>
 <p>ViZDoom for Python can be build via <strong>pip</strong> on Linux, MacOS and Windows, and it is strongly recommended.
 Even when building using pip you still need to install dependencies.</p>
 <p>To build the newest version from the repository run:</p>
@@ -425,7 +425,7 @@ On Windows you need to manually set following environment variables:</p>
 <p>The process of building ViZDoom this way on Windows is demonstarted in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scripts/windows_build_wheels.bat">scripts/windows_build_wheels.bat</a>.</p>
 </section>
 <section id="building-manylinux-wheels">
-<h2>Building manylinux wheels<a class="headerlink" href="#building-manylinux-wheels" title="Link to this heading">#</a></h2>
+<h2>Building manylinux wheels<a class="headerlink" href="#building-manylinux-wheels" title="Link to this heading">¶</a></h2>
 <p>To build manylinux wheels you need to install docker and cibuildwheel. Then on Linux and MacOS run in ViZDoom root directory:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>cibuildwheel<span class="w"> </span>--platform<span class="w"> </span>linux
 </pre></div>
@@ -434,11 +434,11 @@ On Windows you need to manually set following environment variables:</p>
 In case of building using cibuildwheel, the dependencies are installed automatically inside the docker container, so you do not need to install them manually in your system.</p>
 </section>
 <section id="building-manually-not-recommended">
-<h2>Building manually (not recommended)<a class="headerlink" href="#building-manually-not-recommended" title="Link to this heading">#</a></h2>
+<h2>Building manually (not recommended)<a class="headerlink" href="#building-manually-not-recommended" title="Link to this heading">¶</a></h2>
 <p>Instructions below can be used to build ViZDoom manually.
 We recommend doing it only if you want to use C++ API, work on the ViZDoom, or if you have problems with pip installation.</p>
 <section id="linux-macos">
-<h3>Linux / MacOS<a class="headerlink" href="#linux-macos" title="Link to this heading">#</a></h3>
+<h3>Linux / MacOS<a class="headerlink" href="#linux-macos" title="Link to this heading">¶</a></h3>
 <p>In ViZDoom’s root directory:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>build
 <span class="nb">cd</span><span class="w"> </span>build
@@ -449,7 +449,7 @@ make
 <p>where <code class="docutils literal notranslate"><span class="pre">-DBUILD_ENGINE=ON</span></code> and <code class="docutils literal notranslate"><span class="pre">-DBUILD_PYTHON=ON</span></code> CMake options are optional (default ON).</p>
 </section>
 <section id="id1">
-<h3>Windows<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<h3>Windows<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Run CMake GUI or cmake command in cmd/powershell in ViZDoom root directory with the following paths provided:</p></li>
 </ol>
@@ -468,7 +468,7 @@ make
 <p>The process of building ViZDoom this way on Windows is demonstarted in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scripts/windows_build_cmake.bat">scripts/windows_build_cmake.bat</a> script.</p>
 </section>
 <section id="compilation-output">
-<h3>Compilation output<a class="headerlink" href="#compilation-output" title="Link to this heading">#</a></h3>
+<h3>Compilation output<a class="headerlink" href="#compilation-output" title="Link to this heading">¶</a></h3>
 <p>Compilation output will be placed in <code class="docutils literal notranslate"><span class="pre">build/bin</span></code> and it should contain the following files.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">bin/vizdoom</span> <span class="pre">/</span> <span class="pre">vizdoom.exe</span></code> - ViZDoom executable</p></li>
@@ -480,7 +480,7 @@ make
 </ul>
 </section>
 <section id="manual-installation">
-<h3>Manual installation<a class="headerlink" href="#manual-installation" title="Link to this heading">#</a></h3>
+<h3>Manual installation<a class="headerlink" href="#manual-installation" title="Link to this heading">¶</a></h3>
 <p>To manually install Python package copy <code class="docutils literal notranslate"><span class="pre">vizdoom_root_dir/build/bin/pythonX.X/vizdoom</span></code> contents to <code class="docutils literal notranslate"><span class="pre">python_root_dir/lib/pythonX.X/site-packages/site-packages/vizdoom</span></code>.</p>
 </section>
 </section>
@@ -663,7 +663,7 @@ make
       </script>
 
     <script src="../../_static/documentation_options.js?v=a5603611"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     
