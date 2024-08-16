@@ -1,0 +1,160 @@
+name: Build Python wheels for Windows and make PyPI release
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/**'
+      - 'include/**'
+      - 'scripts/**'
+      - 'src/**'
+      - 'CMakeLists.txt'
+      - 'setup.py'
+      - 'pyproject.toml'
+    branches: [master]
+  release:
+    types: [published]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+  # Set paths to dependencies here
+  BOOST_DIR: ${{ github.workspace }}\deps\boost
+  DXSDK_DIR: ${{ github.workspace }}\deps\DXSDK
+  OPENALDIR: ${{ github.workspace }}\deps\openal-soft
+  # Point to the correct generator and dependencies
+  VIZDOOM_WIN_DEPS_ROOT: ${{ github.workspace }}\deps
+  VIZDOOM_BUILD_GENERATOR_NAME: Visual Studio 17 2022
+
+jobs:
+  build_wheels:
+    strategy:
+      matrix:
+        os: [windows-2022]
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    # Gather all dependencies
+    - name: Set up Python ${{ matrix.python-version }} environment
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Python environment report
+      run: python -c "import sys; print(sys.version)"
+
+    - name: Get deps repo
+      uses: actions/checkout@v3
+      with:
+        repository: mwydmuch/ViZDoomWinDepBin
+        path: ${{ github.workspace }}\deps
+
+    - name: Install boost
+      uses: MarkusJx/install-boost@v1.0.1
+      id: install-boost
+      with:
+          # REQUIRED: Specify the required boost version
+          # A list of supported versions can be found here:
+          # https://github.com/actions/boost-versions/blob/main/versions-manifest.json
+          boost_version: 1.73.0
+          # OPTIONAL: Specify a toolset on windows
+          toolset: msvc14.2
+          # OPTIONAL: Specify a custon install location
+          boost_install_dir: ${{ github.workspace }}\deps
+    
+    - name:  Download DXSDK
+      id: download-dxsdk
+      working-directory: ${{ github.workspace }}/deps
+      run: |
+        curl -L https://download.microsoft.com/download/a/e/7/ae743f1f-632b-4809-87a9-aa1bb3458e31/DXSDK_Jun10.exe -o _DX2010_.exe
+        7z x _DX2010_.exe DXSDK/Include -o_DX2010_
+        7z x _DX2010_.exe DXSDK/Lib -o_DX2010_
+        mv _DX2010_/DXSDK .
+        rm -fR _DX*_ _DX*_.exe
+      shell: bash
+
+    - name: Report working directory structure (cmd)
+      run: | 
+        dir .
+        dir deps
+
+    - name: Report working directory structure (bash)
+      shell: bash
+      run: |
+        ls -la .
+        ls -la deps
+
+    - name: Report env (bash)
+      shell: bash
+      env:
+        BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
+      run: |
+        echo $BUILD_TYPE
+        echo $BOOST_DIR
+        echo $BOOST_ROOT
+        echo $DXSDK_DIR
+        echo $VIZDOOM_BUILD_GENERATOR_NAME
+        echo $VIZDOOM_WIN_DEPS_ROOT
+
+    # Build
+    - name: Python environment report
+      run: python -c "import sys; print(sys.version)"
+
+    - name: CMake report
+      run: cmake --version
+
+    - name: Build
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install --upgrade numpy
+        python -m pip install --upgrade setuptools wheel twine
+        python setup.py bdist_wheel
+
+    - name: Report built wheels
+      run: |
+        ls -l ./dist/*.whl
+    
+    # Test
+    # - name: Install wheel
+    #   shell: bash
+    #   run: |
+    #     python -m pip install $(ls dist/vizdoom-*.whl)[test]
+
+    # - name: Test
+    #   run: |
+    #     python -m pytest tests
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        path: ./dist/*.whl
+
+  upload_pypi:
+    name: Upload to PyPI
+    needs: [build_wheels]
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+        id-token: write
+    if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+      - name: Download all dists
+        uses: actions/download-artifact@v3
+        with:
+            # Unpacks default artifact into dist/
+            # If `name: artifact` is omitted, the action will create extra parent dir
+            name: artifact
+            path: dist
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+            password: ${{ secrets.PYPI_API_TOKEN }}
+        # To test:
+        # with:
+        #   repository_url: https://test.pypi.org/legacy/
