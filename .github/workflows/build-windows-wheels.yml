@@ -64,9 +64,9 @@ jobs:
           boost_version: 1.73.0
           # OPTIONAL: Specify a toolset on windows
           toolset: msvc14.2
-          # OPTIONAL: Specify a custon install location
+          # OPTIONAL: Specify a custom install location
           boost_install_dir: ${{ github.workspace }}\deps
-    
+
     - name:  Download DXSDK
       id: download-dxsdk
       working-directory: ${{ github.workspace }}/deps
@@ -79,7 +79,7 @@ jobs:
       shell: bash
 
     - name: Report working directory structure (cmd)
-      run: | 
+      run: |
         dir .
         dir deps
 
@@ -118,7 +118,7 @@ jobs:
     - name: Report built wheels
       run: |
         ls -l ./dist/*.whl
-    
+
     # Test
     # - name: Install wheel
     #   shell: bash
@@ -128,7 +128,7 @@ jobs:
     # - name: Test
     #   run: |
     #     python -m pytest tests
-    
+
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
