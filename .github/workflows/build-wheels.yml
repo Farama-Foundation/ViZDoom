@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - '.github/workflows/**'
+      - '.github/workflows/build-wheels.yml'
       - 'include/**'
       - 'scripts/**'
       - 'src/**'

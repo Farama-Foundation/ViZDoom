@@ -3,7 +3,7 @@ name: Build and test
 on:
   push:
     paths:
-      - '.github/workflows/**'
+      - '.github/workflows/build-and-test.yml'
       - 'include/**'
       - 'scripts/**'
       - 'src/**'
@@ -29,7 +29,7 @@ env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
 
 jobs:
-  build:
+  build_and_test:
     strategy:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14]

@@ -1,10 +1,10 @@
-name: Build Python wheels for Windows and make PyPI release
+name: Build and test Python wheels for Windows and make PyPI release
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - '.github/workflows/**'
+      - '.github/workflows/build-and-test-windows-wheels.yml'
       - 'include/**'
       - 'scripts/**'
       - 'src/**'
@@ -37,7 +37,7 @@ env:
   VIZDOOM_BUILD_GENERATOR_NAME: Visual Studio 17 2022
 
 jobs:
-  build_wheels:
+  build_and_test_wheels:
     strategy:
       matrix:
         os: [windows-2022]
@@ -125,12 +125,13 @@ jobs:
         python -m pip install --upgrade setuptools wheel twine
         python setup.py bdist_wheel
 
-    - name: Report built wheels
+    - name: Report built wheels (bash)
+      shell: bash
       run: |
         ls -l ./dist/*.whl
 
     # Test
-    - name: Install wheel
+    - name: Install wheel (bash)
       shell: bash
       run: |
         python -m pip install $(ls dist/vizdoom-*.whl)[test]
@@ -146,7 +147,7 @@ jobs:
 
   upload_pypi:
     name: Upload to PyPI
-    needs: [build_wheels]
+    needs: [build_and_test_wheels]
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
