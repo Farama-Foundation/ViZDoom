@@ -41,7 +41,7 @@ jobs:
           platforms: all
 
       - name: Build manylinux wheels
-        if: matrix.os == 'ubuntu-22.04' 
+        if: matrix.os == 'ubuntu-22.04'
         uses: pypa/cibuildwheel@v2.19.2
         env:
           # Configure cibuildwheel to build native archs, and some emulated ones
@@ -50,20 +50,20 @@ jobs:
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: >
             auditwheel show {wheel} && auditwheel repair -w {dest_dir} {wheel}
 
-      - name: Build macOS Intel wheels 
-        if: matrix.os == 'macos-13' 
+      - name: Build macOS Intel wheels
+        if: matrix.os == 'macos-13'
         uses: pypa/cibuildwheel@v2.19.2
         env:
           CIBW_ARCHS_MACOS: x86_64
           CIBW_BUILD_VERBOSITY: 3
 
-      - name: Build macOS Apple Silicon wheels 
-        if: matrix.os == 'macos-14' 
+      - name: Build macOS Apple Silicon wheels
+        if: matrix.os == 'macos-14'
         uses: pypa/cibuildwheel@v2.19.2
         env:
           CIBW_ARCHS_MACOS: arm64
           CIBW_BUILD_VERBOSITY: 3
-          
+
       - name: Report built wheels
         run: |
           ls -l ./wheelhouse/*.whl
