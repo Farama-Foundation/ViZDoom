@@ -44,6 +44,7 @@ jobs:
     - name: Report OS
       run: |
         echo ${{ matrix.os }}
+        echo ${{ runner.os }}
         uname -p
 
     - name: Install dependencies on Ubuntu

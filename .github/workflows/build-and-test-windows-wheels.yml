@@ -43,11 +43,12 @@ jobs:
         os: [windows-2022]
         python-version: ['3.9', '3.10', '3.11', '3.12']
       fail-fast: false
-
     runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
     # Gather all dependencies
     - name: Set up Python ${{ matrix.python-version }} environment

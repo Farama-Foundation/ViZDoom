@@ -85,6 +85,17 @@ add_custom_target(assemble_package ALL
     COMMENT "Assembling Python package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/vizdoom"
 )
 
+if(WIN32) # Copy DLLs for Windows
+    file(GLOB TXT_FILES "${VIZDOOM_OUTPUT_DIR}/*.dll")
+
+    foreach(file ${TXT_FILES})
+        add_custom_command(
+            TARGET assemble_package
+            COMMAND ${CMAKE_COMMAND} -E copy ${file} ${VIZDOOM_PYTHON_PACKAGE_DIR}
+        )
+    endforeach()
+endif()
+
 set_target_properties(assemble_package
     PROPERTIES
     PROJECT_LABEL "Python package")
