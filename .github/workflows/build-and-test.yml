@@ -37,15 +37,20 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
+
+    - name: Report OS
+      run: |
+        echo ${{ matrix.os }}
+        uname -p
 
     - name: Install dependencies on Ubuntu
       if: runner.os == 'Linux'
       run: |
-           sudo apt update
-           sudo apt install -y cmake git libboost-all-dev libsdl2-dev libopenal-dev
+        sudo apt update
+        sudo apt install -y cmake git libboost-all-dev libsdl2-dev libopenal-dev
 
     - name: Apt report
       if: runner.os == 'Linux'

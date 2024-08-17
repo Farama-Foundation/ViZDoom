@@ -47,7 +47,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     # Gather all dependencies
     - name: Set up Python ${{ matrix.python-version }} environment
@@ -59,7 +59,7 @@ jobs:
       run: python -c "import sys; print(sys.version)"
 
     - name: Get deps repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: mwydmuch/ViZDoomWinDepBin
         path: ${{ github.workspace }}\deps
