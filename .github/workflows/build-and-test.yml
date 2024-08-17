@@ -3,7 +3,7 @@ name: Build and test
 on:
   push:
     paths:
-      - '.github/workflows/**'
+      - '.github/workflows/build-and-test.yml'
       - 'include/**'
       - 'scripts/**'
       - 'src/**'
@@ -29,23 +29,29 @@ env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
 
 jobs:
-  build:
+  build_and_test:
     strategy:
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, macos-12]
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14]
+        python-version: ['3.9', '3.10', '3.11', '3.12']
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
+
+    - name: Report OS
+      run: |
+        echo ${{ matrix.os }}
+        echo ${{ runner.os }}
+        uname -p
 
     - name: Install dependencies on Ubuntu
       if: runner.os == 'Linux'
       run: |
-           sudo apt update
-           sudo apt install -y cmake git libboost-all-dev libsdl2-dev libopenal-dev
+        sudo apt update
+        sudo apt install -y cmake git libboost-all-dev libsdl2-dev libopenal-dev
 
     - name: Apt report
       if: runner.os == 'Linux'
