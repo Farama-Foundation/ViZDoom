@@ -70,6 +70,8 @@ or
 
 ## Python quick start
 
+#### At the moment ViZDoom does not work with numpy 2.0. Using ViZDoom with numpy 2.0 results in a silent bug - all the state buffers containing all data. At the moment, please use ViZDoom with numpy 1.26.
+
 ### Linux
 To install the latest release of ViZDoom, just run:
 ```sh
@@ -79,7 +81,7 @@ Both x86-64 and AArch64 (ARM64) architectures are supported.
 Wheels are available for Python 3.8+ on Linux.
 
 If Python wheel is not available for your platform (Python version <3.8, distros below manylinux_2_28 standard), pip will try to install (build) ViZDoom from the source.
-ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.7+ to install from source. See [documentation](https://vizdoom.farama.org/introduction/pythonQuickstart/) for more details.
+ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.8+ to install from source. See [documentation](https://vizdoom.farama.org/introduction/pythonQuickstart/) for more details.
 
 
 ### macOS
@@ -89,8 +91,8 @@ brew install cmake boost sdl2 openal-soft
 pip install vizdoom
 ```
 Both Intel and Apple Silicon CPUs are supported.
-We recommend using at least macOS High Sierra 10.13+ with Python 3.7+.
-On Apple Silicon (M1 and M2), make sure you are using Python/Pip for Apple Silicon.
+We recommend using at least macOS High Sierra 10.13+ with Python 3.8+.
+On Apple Silicon (M1, M2, and M3), make sure you are using Python/Pip for Apple Silicon.
 
 
 ### Windows
@@ -115,16 +117,15 @@ OpenAI-Gym wrappers are also available, to install them run:
 pip install vizdoom[gym]
 ```
 See [documentation](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc/Gym.md) and [examples](https://github.com/Farama-Foundation/ViZDoom/blob/master/examples/python/gym_wrapper.py) on the use of Gym API.
-**OpenAI-Gym wrappers are deprecated and will be removed in future versions in favour of Gymnasium.**
+**OpenAI-Gym wrappers are deprecated and will be removed in future versions in favor of Gymnasium.**
 
 
 ## Examples
-- [Python](https://github.com/Farama-Foundation/ViZDoom/blob/master/examples/python) (contain learning examples implemented in PyTorch, TensorFlow and Theano)
+- [Python](https://github.com/Farama-Foundation/ViZDoom/blob/master/examples/python) (contain learning examples implemented in PyTorch, TensorFlow, and Theano)
 - [C++](https://github.com/Farama-Foundation/ViZDoom/blob/master/examples/c%2B%2B)
 
-Python examples are currently the richest, so we recommend to look at them, even if you plan to use other language. The API is almost identical for all languages.
-
-**See also the [tutorial](http://vizdoom.cs.put.edu.pl/tutorial).**
+Python examples are currently the richest, so we recommend looking at them, even if you plan to use C++. 
+The API is almost identical between the languages, with the only difference being that Python uses snake_case and C++ camelCase for methods and functions.
 
 
 ## Original Doom graphics
@@ -152,7 +153,7 @@ Useful articles (for advanced users who want to create custom environments/scena
 - [OBLIGE](http://oblige.sourceforge.net/) - Doom random map generator and [PyOblige](https://github.com/mwydmuch/PyOblige) is a simple Python wrapper for it.
 - [Omgifol](https://github.com/devinacker/omgifol) - Nice Python library for manipulating Doom maps.
 - [NavDoom](https://github.com/agiantwhale/navdoom) - Maze navigation generator for ViZDoom (similar to DeepMind Lab).
-- [MazeExplorer](https://github.com/microsoft/MazeExplorer) - More sophisticated maze navigation generator for ViZDoom.
+- [MazeExplorer](https://github.com/microsoft/MazeExplorer) - A more sophisticated maze navigation generator for ViZDoom.
 - [Sample Factory](https://github.com/alex-petrenko/sample-factory) - A high-performance reinforcement learning framework for ViZDoom.
 - [EnvPool](https://github.com/sail-sg/envpool/) - A high-performance vectorized environment for ViZDoom.
 - [Obsidian](https://github.com/dashodanger/Obsidian) - Doom random map generator, a continuation of OBLIGE.
