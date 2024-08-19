@@ -136,8 +136,6 @@ class BuildCommand(build):
             macos_arch = os.getenv("VIZDOOM_MACOS_ARCH")
             if macos_arch is not None:
                 cmake_arg_list.append(f"-DCMAKE_APPLE_SILICON_PROCESSOR={macos_arch}")
-            # else:
-            #     cmake_arg_list.append(f"-DCMAKE_APPLE_SILICON_PROCESSOR={os.uname().machine}")
 
         # Windows specific version of the libraries
         if platform.startswith("win"):
