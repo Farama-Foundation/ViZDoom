@@ -14,7 +14,7 @@ on:
     branches: [master]
   pull_request:
     paths:
-      - '.github/workflows/**'
+      - '.github/workflows/build-and-test.yml'
       - 'include/**'
       - 'scripts/**'
       - 'src/**'
