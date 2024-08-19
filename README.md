@@ -70,7 +70,7 @@ or
 
 ## Python quick start
 
-#### At the moment ViZDoom does not work with numpy 2.0. Using ViZDoom with numpy 2.0 results in a silent bug - all the state buffers containing all data. At the moment, please use ViZDoom with numpy 1.26.
+#### Versions 1.2.3 and below does not work correctly with numpy 2.0+. Please upgrade ViZDoom to the newest version or downgrade numpy to the last 1.21+ version.
 
 ### Linux
 To install the latest release of ViZDoom, just run:
@@ -85,12 +85,18 @@ ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (option
 
 
 ### macOS
-To install the latest release of ViZDoom, just run (it may take a few minutes as it will build ViZDoom from source on M1/M2 chips):
+To install the latest release of ViZDoom, just run:
 ```sh
-brew install cmake boost sdl2 openal-soft
 pip install vizdoom
 ```
 Both Intel and Apple Silicon CPUs are supported.
+Pre-build wheels are available for Intel macOS 12.0+ and Apple Silicon macOS 14.0+.
+
+If Python wheel is not available for your platform (Python version <3.8, older macOS version), pip will try to install (build) ViZDoom from the source.
+In this case, install the required dependencies using Homebrew:
+```sh
+brew install cmake boost sdl2
+```
 We recommend using at least macOS High Sierra 10.13+ with Python 3.8+.
 On Apple Silicon (M1, M2, and M3), make sure you are using Python/Pip for Apple Silicon.
 
@@ -124,7 +130,7 @@ See [documentation](https://github.com/Farama-Foundation/ViZDoom/blob/master/doc
 - [Python](https://github.com/Farama-Foundation/ViZDoom/blob/master/examples/python) (contain learning examples implemented in PyTorch, TensorFlow, and Theano)
 - [C++](https://github.com/Farama-Foundation/ViZDoom/blob/master/examples/c%2B%2B)
 
-Python examples are currently the richest, so we recommend looking at them, even if you plan to use C++. 
+Python examples are currently the richest, so we recommend looking at them, even if you plan to use C++.
 The API is almost identical between the languages, with the only difference being that Python uses snake_case and C++ camelCase for methods and functions.
 
 
