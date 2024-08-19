@@ -107,7 +107,7 @@ To install the latest release of ViZDoom, just run:
 pip install vizdoom
 ```
 At the moment, only x86-64 architecture is supported on Windows.
-Wheels are available for Python 3.8+ on Windows.
+Wheels are available for Python 3.9+ on Windows.
 
 Please note that the Windows version is not as well-tested as Linux and macOS versions.
 It can be used for development and testing but if you want to conduct serious (time and resource-extensive) experiments on Windows,
