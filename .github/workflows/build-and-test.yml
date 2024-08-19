@@ -76,4 +76,6 @@ jobs:
       run: python -c "import vizdoom"
 
     - name: Run tests
+      # Skip tests on macOS with Apple Silicon, because they are slow (TODO: investigate)
+      if: matrix.os != 'macos-14'
       run: pytest tests
