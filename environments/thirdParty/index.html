@@ -7,12 +7,12 @@
     <meta property="og:title" content="ViZDoom Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
-    <meta property="og:url" content="https://vizdoom.farama.org/api/python.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="DoomGame" href="doomGame/" /><link rel="prev" title="APIs and wrappers" href="../../introduction/apisAndWrappers/" />
-        <link rel="canonical" href="https://vizdoom.farama.org/api/python.html" />
+    <meta property="og:url" content="https://vizdoom.farama.org/environments/thirdParty.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Creating a custom environment" href="../creatingCustom/" /><link rel="prev" title="Default scenarios/environments" href="../default/" />
+        <link rel="canonical" href="https://vizdoom.farama.org/environments/thirdParty.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
-        <title>Python API - ViZDoom Documentation</title>
+        <title>Third-party environments - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=49cbaffd" />
@@ -191,7 +191,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -217,32 +217,32 @@
 <li class="toctree-l1"><a class="reference internal" href="../../introduction/apisAndWrappers/">APIs and wrappers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul class="current">
-<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Python API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="doomGame/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gameState/">GameState</a></li>
-<li class="toctree-l2"><a class="reference internal" href="enums/">Enums</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utils/">Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gymnasium/">Gymnasium Env</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gym/">OpenAI Gym Env</a></li>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/doomGame/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gameState/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/utils/">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium/">Gymnasium Env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym/">OpenAI Gym Env</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../cpp/doomGame/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cpp/gameState/">GameState</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cpp/enums/">Enums</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cpp/exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cpp/utils/">Utilities</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/doomGame/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/gameState/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/utils/">Utilities</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../configurationFiles/">Configuration files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/configurationFiles/">Configuration files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../environments/default/">Default scenarios/environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../environments/thirdParty/">Third-party environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../environments/creatingCustom/">Creating a custom environment</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../default/">Default scenarios/environments</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Third-party environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../creatingCustom/">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -280,7 +280,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/api/python.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/environments/thirdParty.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -302,7 +302,7 @@
                 </svg>
               </button>
             </div>
-            <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-content-icon" for="__toc">
               <div class="visually-hidden">Toggle table of contents sidebar</div>
               <i class="icon"><svg>
                   <use href="#svg-toc"></use>
@@ -311,12 +311,26 @@
           </div>
           <article role="main">
             
-            <section class="tex2jax_ignore mathjax_ignore" id="python-api">
-<h1>Python API<a class="headerlink" href="#python-api" title="Link to this heading">¶</a></h1>
-<p>ViZDoom provides Python bindings for the library. The Python API is one-to-one with the C++ API. The only difference is the use of <code class="docutils literal notranslate"><span class="pre">snake_case</span></code> instead of <code class="docutils literal notranslate"><span class="pre">camelCase</span></code> for method and argument names.</p>
-<p>There are many examples of how to use Python API in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python">examples/python</a> directory.</p>
-<div class="toctree-wrapper compound">
-</div>
+            <section class="tex2jax_ignore mathjax_ignore" id="third-party-environments">
+<h1>Third-party environments<a class="headerlink" href="#third-party-environments" title="Link to this heading">¶</a></h1>
+<p>Here, we feature a selection of third-party libraries that build upon or complement ViZDoom,
+offering diverse environments and tools for reinforcement learning research and development.</p>
+<p><em>Please note that the page contains environments that are not maintained by the ViZDoom Team or Farama Foundation.</em></p>
+<p><em>If you have a library that you would like to see featured here, please open a pull request or an issue on the <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom">GitHub repository</a></em></p>
+<section id="levdoom">
+<h2>LevDoom<a class="headerlink" href="#levdoom" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://github.com/TTomilin/LevDoom">LevDoom</a> is a benchmark for generalization in pixel-based deep reinforcement learning, offering environments with difficulty levels based on visual and gameplay modifications. It consists of 4 scenarios, each with 5 difficulty levels, that modify different aspects of the base environments, such as textures, obstacles, types, sizes, and rendering of different in-game entities, etc.</p>
+<p>LevDoom provides environments using Gymnasium API and is available through PyPi. For more details, please refer to the <a class="reference external" href="https://ieee-cog.org/2022/assets/papers/paper_30.pdf">CoG2022 paper</a> and <a class="reference external" href="https://github.com/TTomilin/LevDoom">GitHub repository</a>.</p>
+</section>
+<section id="coom">
+<h2>COOM<a class="headerlink" href="#coom" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://github.com/hyintell/COOM">COOM</a> is a Continual Learning benchmark for embodied pixel-based RL, consisting of task sequences in visually distinct 3D environments with diverse objectives and egocentric perception. COOM is designed for task-incremental learning, in which task boundaries are clearly defined. It contains 8 scenarios, every with at least 2 difficulty levels that are combined into sequences of tasks for Continual Learning. The sequence length varies between 4, 8, and 16. COOM provides two types of task sequences:</p>
+<ul class="simple">
+<li><p>Cross-domain sequences compose modified versions of the same scenario (e.g., changing textures, enemy types, view height, and adding obstacles) while keeping the objective consistent.</p></li>
+<li><p>Cross-objective sequences contrast with Cross-Domain by changing both the visual characteristics and the objective for each task, requiring a more general policy from the agent for adequate performance.</p></li>
+</ul>
+<p>COOM provides environments using Gymnasium API and is available through PyPi. For more details, please refer to the <a class="reference external" href="https://github.com/hyintell/COOM">GitHub repository</a>.</p>
+</section>
 </section>
 
           </article>
@@ -324,18 +338,18 @@
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="doomGame/">
+            <a class="next-page" href="../creatingCustom/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">DoomGame</div>
+                <div class="title">Creating a custom environment</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            <a class="prev-page" href="../../introduction/apisAndWrappers/">
+            <a class="prev-page" href="../default/">
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
@@ -344,7 +358,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">APIs and wrappers</div>
+                <div class="title">Default scenarios/environments</div>
                 
               </div>
             </a>
@@ -376,8 +390,28 @@
           
         </footer>
       </div>
-      <aside class="toc-drawer no-toc">
+      <aside class="toc-drawer">
         
+        
+        <div class="toc-sticky toc-scroll">
+          <div class="toc-title-container">
+            <span class="toc-title">
+              On this page
+            </span>
+          </div>
+          <div class="toc-tree-container">
+            <div class="toc-tree">
+              <ul>
+<li><a class="reference internal" href="#">Third-party environments</a><ul>
+<li><a class="reference internal" href="#levdoom">LevDoom</a></li>
+<li><a class="reference internal" href="#coom">COOM</a></li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
         
         
       </aside>

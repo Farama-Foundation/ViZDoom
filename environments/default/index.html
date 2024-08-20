@@ -8,10 +8,10 @@
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
     <meta property="og:url" content="https://vizdoom.farama.org/environments/default.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Creating a custom environment" href="../creatingCustom/" /><link rel="prev" title="Configuration files" href="../../api/configurationFiles/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Third-party environments" href="../thirdParty/" /><link rel="prev" title="Configuration files" href="../../api/configurationFiles/" />
         <link rel="canonical" href="https://vizdoom.farama.org/environments/default.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
         <title>Default scenarios/environments - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
@@ -241,6 +241,7 @@
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Default scenarios/environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thirdParty/">Third-party environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../creatingCustom/">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
@@ -311,10 +312,10 @@
           <article role="main">
             
             <section class="tex2jax_ignore mathjax_ignore" id="default-scenarios-environments">
-<h1>Default scenarios/environments<a class="headerlink" href="#default-scenarios-environments" title="Link to this heading">#</a></h1>
+<h1>Default scenarios/environments<a class="headerlink" href="#default-scenarios-environments" title="Link to this heading">¶</a></h1>
 <p>Below we describe a default singleplayer scenarios (original ViZDoom nomenclature)/environments (Gymnasium/Open AI Gym nomenclature) included with ViZDoom. The PRs with new scenarios are welcome!</p>
 <section id="how-to-use-default-scenarios">
-<h2>How to use default scenarios<a class="headerlink" href="#how-to-use-default-scenarios" title="Link to this heading">#</a></h2>
+<h2>How to use default scenarios<a class="headerlink" href="#how-to-use-default-scenarios" title="Link to this heading">¶</a></h2>
 <p>When using original ViZDoom API, each scenario can be loaded <a class="reference internal" href="../../api/python/doomGame/#vizdoom.DoomGame.load_config"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">load_config</span></code></span></a> (Python)/<a class="reference internal" href="../../api/cpp/doomGame/#loadconfig"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">loadConfig</span></code></span></a> (C++) method:</p>
 <p>Python example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
@@ -332,11 +333,11 @@
 </div>
 </section>
 <section id="note-on-wad-cfg-files-and-rewards">
-<h2>Note on .wad, .cfg files, and rewards<a class="headerlink" href="#note-on-wad-cfg-files-and-rewards" title="Link to this heading">#</a></h2>
+<h2>Note on .wad, .cfg files, and rewards<a class="headerlink" href="#note-on-wad-cfg-files-and-rewards" title="Link to this heading">¶</a></h2>
 <p>A scenario usually consist of two files - .wad and .cfg (<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios">see scenarios directory</a>). The .wad file contains the map and script, and the .cfg file contains additional settings. The maps contained in .wad files (Doom’s engine format for storing maps and assets) usually do not implement action constraints, the death penalty, and living rewards (however it is possible). To make it easier, this can be specified in ViZDoom .cfg files as well as other options like access to additional information. These can also be overridden in the code when using the original ViZDoom API. Every mention of any settings that are not included in .wad files is specified with “(config)” in the descriptions below. ViZDoom does not support setting certain rewards (such as killing opponents) in .cfg files. These must be programmed in the .wad files instead.</p>
 </section>
 <section id="basic">
-<h2>BASIC<a class="headerlink" href="#basic" title="Link to this heading">#</a></h2>
+<h2>BASIC<a class="headerlink" href="#basic" title="Link to this heading">¶</a></h2>
 <p>The purpose of the scenario is just to check if using this
 framework to train some AI in a 3D environment is feasible.</p>
 <p>The map is a rectangle with gray walls, ceiling, and floor.
@@ -362,7 +363,7 @@ finishes when the monster is killed or on timeout.</p>
 <p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic.cfg">basic.cfg</a></strong></p>
 </section>
 <section id="deadly-corridor">
-<h2>DEADLY CORRIDOR<a class="headerlink" href="#deadly-corridor" title="Link to this heading">#</a></h2>
+<h2>DEADLY CORRIDOR<a class="headerlink" href="#deadly-corridor" title="Link to this heading">¶</a></h2>
 <p>The purpose of this scenario is to teach the agent to navigate towards
 his fundamental goal (the vest) and make sure he survives at the
 same time.</p>
@@ -390,7 +391,7 @@ needed.</p>
 <p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deadly_corridor.cfg">deadly_corridor.cfg</a></strong></p>
 </section>
 <section id="deathmatch">
-<h2>DEATHMATCH<a class="headerlink" href="#deathmatch" title="Link to this heading">#</a></h2>
+<h2>DEATHMATCH<a class="headerlink" href="#deathmatch" title="Link to this heading">¶</a></h2>
 <p>In this scenario, the agent is spawned in the random place of the arena filled with resources.
 A random monster is spawned every few seconds that will try to kill the player.
 The reward for killing a monster depends on its difficulty.
@@ -412,7 +413,7 @@ before the time runs out or it’s killed by monsters.</p>
 <p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deathmatch.cfg">scenarios/deathmatch.cfg</a></strong></p>
 </section>
 <section id="defend-the-center">
-<h2>DEFEND THE CENTER<a class="headerlink" href="#defend-the-center" title="Link to this heading">#</a></h2>
+<h2>DEFEND THE CENTER<a class="headerlink" href="#defend-the-center" title="Link to this heading">¶</a></h2>
 <p>The purpose of this scenario is to teach the agent that killing the
 monsters is GOOD and when monsters kill you is BAD. In addition,
 wasting ammunition is not very good either. Agent is rewarded only
@@ -438,7 +439,7 @@ because of limited ammo).</p>
 <p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_center.cfg">defend_the_center.cfg</a></strong></p>
 </section>
 <section id="defend-the-line">
-<h2>DEFEND THE LINE<a class="headerlink" href="#defend-the-line" title="Link to this heading">#</a></h2>
+<h2>DEFEND THE LINE<a class="headerlink" href="#defend-the-line" title="Link to this heading">¶</a></h2>
 <p>The purpose of this scenario is to teach an agent that killing the
 monsters is GOOD and when monsters kill you is BAD. In addition,
 wasting ammunition is not very good either. The agent is rewarded only
@@ -464,7 +465,7 @@ because of limited ammo).</p>
 <p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_line.cfg">defend_the_line.cfg</a></strong></p>
 </section>
 <section id="health-gathering-and-health-gathering-supreme">
-<h2>HEALTH GATHERING (AND HEALTH GATHERING SUPREME)<a class="headerlink" href="#health-gathering-and-health-gathering-supreme" title="Link to this heading">#</a></h2>
+<h2>HEALTH GATHERING (AND HEALTH GATHERING SUPREME)<a class="headerlink" href="#health-gathering-and-health-gathering-supreme" title="Link to this heading">¶</a></h2>
 <p>The purpose of this scenario is to teach the agent how to survive
 without knowing what makes him survive. An agent knows only that life
 is precious, and death is bad, so he must learn what prolongs his
@@ -491,7 +492,7 @@ that makes map layout more complex.</p>
 <p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering.cfg">health_gathering.cfg</a>/<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering_supreme.cfg">health_gathering_supreme.cfg</a></strong></p>
 </section>
 <section id="my-way-home">
-<h2>MY WAY HOME<a class="headerlink" href="#my-way-home" title="Link to this heading">#</a></h2>
+<h2>MY WAY HOME<a class="headerlink" href="#my-way-home" title="Link to this heading">¶</a></h2>
 <p>The purpose of this scenario is to teach the agent how to navigate
 in a labyrinth-like surrounding and reach his ultimate goal
 (and learn what it actually is).</p>
@@ -514,7 +515,7 @@ direction. The episode ends when the vest is reached or on timeout/</p>
 <p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/my_way_home.cfg">my_way_home.cfg</a></strong></p>
 </section>
 <section id="predict-position">
-<h2>PREDICT POSITION<a class="headerlink" href="#predict-position" title="Link to this heading">#</a></h2>
+<h2>PREDICT POSITION<a class="headerlink" href="#predict-position" title="Link to this heading">¶</a></h2>
 <p>The purpose of the scenario is to teach an agent to synchronize
 missile weapon shot (involving a significant delay between
 shooting and hitting) with target movements. Agent should be
@@ -539,7 +540,7 @@ or on timeout.</p>
 <p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/predict_position.cfg">predict_position.cfg</a></strong></p>
 </section>
 <section id="take-cover">
-<h2>TAKE COVER<a class="headerlink" href="#take-cover" title="Link to this heading">#</a></h2>
+<h2>TAKE COVER<a class="headerlink" href="#take-cover" title="Link to this heading">¶</a></h2>
 <p>The purpose of this scenario is to teach an agent to link incoming
 missiles with his estimated lifespan. An agent should learn that
 being hit means health decrease, and this in turn will lead to
@@ -571,12 +572,12 @@ the player dies.</p>
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../creatingCustom/">
+            <a class="next-page" href="../thirdParty/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Creating a custom environment</div>
+                <div class="title">Third-party environments</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
@@ -734,7 +735,7 @@ the player dies.</p>
       </script>
 
     <script src="../../_static/documentation_options.js?v=a5603611"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     

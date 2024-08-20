@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Python API" href="../../api/python/" /><link rel="prev" title="Building from source" href="../building/" />
         <link rel="canonical" href="https://vizdoom.farama.org/introduction/apisAndWrappers.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
         <title>APIs and wrappers - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
@@ -241,6 +241,7 @@
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../environments/default/">Default scenarios/environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environments/thirdParty/">Third-party environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../environments/creatingCustom/">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
@@ -311,7 +312,7 @@
           <article role="main">
             
             <section class="tex2jax_ignore mathjax_ignore" id="apis-and-wrappers">
-<h1>APIs and wrappers<a class="headerlink" href="#apis-and-wrappers" title="Link to this heading">#</a></h1>
+<h1>APIs and wrappers<a class="headerlink" href="#apis-and-wrappers" title="Link to this heading">¶</a></h1>
 <p>ViZDoom consists of a few APIs: C++ API, Python API that is a wrapper around C++ API, and Gymnasium/Gym wrappers that wrap around Python API to allow the use of ViZDoom scenarios as Gymnasium/Gym environments.</p>
 <p>Because ViZDoom was created before the first release of OpenAI Gym, it uses a bit different nomenclature in its API than Gym/Gymnasium:</p>
 <ul class="simple">
@@ -320,18 +321,18 @@
 <li><p><strong>steps = tics</strong> - in the original ViZDoom API, steps are called tics. The Doom engine uses the name to refer to a single logic step. The tic is a single logic update of the game state that corresponds to 1/35 of a second (original Doom’s framerate).</p></li>
 </ul>
 <section id="c-api">
-<h2>C++ API<a class="headerlink" href="#c-api" title="Link to this heading">#</a></h2>
+<h2>C++ API<a class="headerlink" href="#c-api" title="Link to this heading">¶</a></h2>
 <p>ViZDoom is implemented in C++ and can be used as a C++ library. The C++ API is one-to-one with the Python API. The only difference is the use of <code class="docutils literal notranslate"><span class="pre">camelCase</span></code> instead of <code class="docutils literal notranslate"><span class="pre">snake_case</span></code> for method names.</p>
 <p>ViZDoom can be built as a static or dynamic library. The header files are located in the <code class="docutils literal notranslate"><span class="pre">include</span></code> directory.
 See <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/cpp">examples/cpp</a> for examples, including CMake files for building.</p>
 </section>
 <section id="python-api">
-<h2>Python API<a class="headerlink" href="#python-api" title="Link to this heading">#</a></h2>
+<h2>Python API<a class="headerlink" href="#python-api" title="Link to this heading">¶</a></h2>
 <p>ViZDoom provides Python bindings for the library. The Python API is one-to-one with the C++ API. The only difference is the use of <code class="docutils literal notranslate"><span class="pre">snake_case</span></code> instead of <code class="docutils literal notranslate"><span class="pre">camelCase</span></code> for method and argument names.</p>
 <p>There are many examples of how to use Python API in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python">examples/python</a> directory.</p>
 </section>
 <section id="gymnasium-wrappers">
-<h2>Gymnasium wrappers<a class="headerlink" href="#gymnasium-wrappers" title="Link to this heading">#</a></h2>
+<h2>Gymnasium wrappers<a class="headerlink" href="#gymnasium-wrappers" title="Link to this heading">¶</a></h2>
 <p>Installing ViZDoom with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">vizdoom</span></code> will include
 Gymnasium wrappers to interact with ViZDoom over <a class="reference external" href="https://gymnasium.farama.org/">Gymnasium API</a>.</p>
 <p>These wrappers are under <code class="docutils literal notranslate"><span class="pre">gymnasium_wrappers</span></code>, containing the basic environment and
@@ -345,7 +346,7 @@ and implements the necessary API to function as a Gymnasium API.</p>
 </ul>
 </section>
 <section id="openai-gym-wrappers">
-<h2>OpenAI Gym wrappers<a class="headerlink" href="#openai-gym-wrappers" title="Link to this heading">#</a></h2>
+<h2>OpenAI Gym wrappers<a class="headerlink" href="#openai-gym-wrappers" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>Gym is deprecated in favor of Gymnasium and these wrappers will be removed in the future.</p>
 </div></blockquote>
@@ -361,7 +362,7 @@ and implements the necessary API to function as a Gym API.</p>
 </ul>
 </section>
 <section id="julia-lua-and-java-apis">
-<h2>Julia, Lua, and Java APIs<a class="headerlink" href="#julia-lua-and-java-apis" title="Link to this heading">#</a></h2>
+<h2>Julia, Lua, and Java APIs<a class="headerlink" href="#julia-lua-and-java-apis" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p>Julia, Lua, and Java bindings are no longer maintained.</p>
 </div></blockquote>
@@ -531,7 +532,7 @@ and implements the necessary API to function as a Gym API.</p>
       </script>
 
     <script src="../../_static/documentation_options.js?v=a5603611"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     

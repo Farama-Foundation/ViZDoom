@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Exceptions" href="../exceptions/" /><link rel="prev" title="GameState" href="../gameState/" />
         <link rel="canonical" href="https://vizdoom.farama.org/api/cpp/enums.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
         <title>Enums - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=3e7f4c72" />
@@ -241,6 +241,7 @@
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../environments/default/">Default scenarios/environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environments/thirdParty/">Third-party environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environments/creatingCustom/">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
@@ -311,11 +312,11 @@
           <article role="main">
             
             <section class="tex2jax_ignore mathjax_ignore" id="enums">
-<h1>Enums<a class="headerlink" href="#enums" title="Link to this heading">#</a></h1>
+<h1>Enums<a class="headerlink" href="#enums" title="Link to this heading">¶</a></h1>
 <p>ViZDoom is using few types of enums as parameters for its functions. Below you can find the description of all of them.
 The declarations of all the enums can be found in the <code class="docutils literal notranslate"><span class="pre">include/ViZDoomTypes.h</span></code> header file.</p>
 <section id="mode">
-<h2><code class="docutils literal notranslate"><span class="pre">Mode</span></code><a class="headerlink" href="#mode" title="Link to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">Mode</span></code><a class="headerlink" href="#mode" title="Link to this heading">¶</a></h2>
 <p>Enum type that defines all supported modes.</p>
 <ul class="simple">
 <li><p><strong>PLAYER</strong> - synchronous player mode</p></li>
@@ -338,7 +339,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </section>
 <hr class="docutils" />
 <section id="screenformat">
-<h2><code class="docutils literal notranslate"><span class="pre">ScreenFormat</span></code><a class="headerlink" href="#screenformat" title="Link to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">ScreenFormat</span></code><a class="headerlink" href="#screenformat" title="Link to this heading">¶</a></h2>
 <p>Enum type that defines all supported <strong>screenBuffer</strong> and <strong>automapBuffer</strong> formats.</p>
 <ul class="simple">
 <li><p><strong>CRCGCB</strong>    - 3 channels of 8-bit values in RGB order</p></li>
@@ -366,7 +367,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </section>
 <hr class="docutils" />
 <section id="screenresolution">
-<h2><code class="docutils literal notranslate"><span class="pre">ScreenResolution</span></code><a class="headerlink" href="#screenresolution" title="Link to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">ScreenResolution</span></code><a class="headerlink" href="#screenresolution" title="Link to this heading">¶</a></h2>
 <p>Enum type that defines all supported resolutions - shapes of <strong>screenBuffer</strong>, <strong>depthBuffer</strong>, <strong>labelsBuffer</strong> and <strong>automapBuffer</strong> in <strong>State</strong>.</p>
 <ul class="simple">
 <li><p><strong>RES_160X120</strong> (4:3)</p></li>
@@ -415,7 +416,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </section>
 <hr class="docutils" />
 <section id="automapmode">
-<h2><code class="docutils literal notranslate"><span class="pre">AutomapMode</span></code><a class="headerlink" href="#automapmode" title="Link to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">AutomapMode</span></code><a class="headerlink" href="#automapmode" title="Link to this heading">¶</a></h2>
 <p>Enum type that defines all <strong>automapBuffer</strong> modes.</p>
 <ul class="simple">
 <li><p><strong>NORMAL</strong>    - Only level architecture the player has seen is shown.</p></li>
@@ -431,10 +432,10 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </section>
 <hr class="docutils" />
 <section id="gamevariable">
-<h2><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code><a class="headerlink" href="#gamevariable" title="Link to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code><a class="headerlink" href="#gamevariable" title="Link to this heading">¶</a></h2>
 <p>Enum type that defines all variables that can be obtained from the game.</p>
 <section id="defined-variables">
-<h3>Defined variables<a class="headerlink" href="#defined-variables" title="Link to this heading">#</a></h3>
+<h3>Defined variables<a class="headerlink" href="#defined-variables" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><strong>KILLCOUNT</strong>             - Counts the number of monsters killed during the current episode. ~Killing other players/bots do not count towards this.~ From 1.1.5 killing other players/bots counts towards this.</p></li>
 <li><p><strong>ITEMCOUNT</strong>             - Counts the number of picked up items during the current episode.</p></li>
@@ -478,7 +479,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 </ul>
 </section>
 <section id="user-acs-variables">
-<h3>User (ACS) variables<a class="headerlink" href="#user-acs-variables" title="Link to this heading">#</a></h3>
+<h3>User (ACS) variables<a class="headerlink" href="#user-acs-variables" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><strong>USER1</strong> - <strong>USER60</strong></p></li>
 </ul>
@@ -502,10 +503,10 @@ you can convert them to floating point by using <a class="reference internal" hr
 </section>
 <hr class="docutils" />
 <section id="button">
-<h2><code class="docutils literal notranslate"><span class="pre">Button</span></code><a class="headerlink" href="#button" title="Link to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">Button</span></code><a class="headerlink" href="#button" title="Link to this heading">¶</a></h2>
 <p>Enum type that defines all buttons that can be “pressed” by the agent.</p>
 <section id="binary-buttons">
-<h3>Binary buttons<a class="headerlink" href="#binary-buttons" title="Link to this heading">#</a></h3>
+<h3>Binary buttons<a class="headerlink" href="#binary-buttons" title="Link to this heading">¶</a></h3>
 <p>Binary buttons have only 2 states “not pressed” if value 0 and “pressed” if value other then 0.</p>
 <ul class="simple">
 <li><p><strong>ATTACK</strong></p></li>
@@ -549,7 +550,7 @@ you can convert them to floating point by using <a class="reference internal" hr
 </ul>
 </section>
 <section id="delta-buttons">
-<h3>Delta buttons<a class="headerlink" href="#delta-buttons" title="Link to this heading">#</a></h3>
+<h3>Delta buttons<a class="headerlink" href="#delta-buttons" title="Link to this heading">¶</a></h3>
 <p>Buttons whose value defines the speed of movement.
 A positive value indicates movement in the first specified direction and a negative value in the second direction.
 For example: value 10 for <code class="docutils literal notranslate"><span class="pre">MOVE_LEFT_RIGHT_DELTA</span></code> means slow movement to the right and -100 means fast movement to the left.</p>
@@ -577,7 +578,7 @@ In case of <strong>MOVE_FORWARD_BACKWARD_DELTA</strong>, <strong>MOVE_LEFT_RIGHT
 </section>
 </section>
 <section id="samplingrate">
-<h2><code class="docutils literal notranslate"><span class="pre">SamplingRate</span></code><a class="headerlink" href="#samplingrate" title="Link to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">SamplingRate</span></code><a class="headerlink" href="#samplingrate" title="Link to this heading">¶</a></h2>
 <p>Enum type that defines all supported sampling rates for <strong>audioBuffer</strong> in <strong>State</strong>.</p>
 <ul class="simple">
 <li><p><strong>SR_11025</strong></p></li>
@@ -764,7 +765,7 @@ In case of <strong>MOVE_FORWARD_BACKWARD_DELTA</strong>, <strong>MOVE_LEFT_RIGHT
       </script>
 
     <script src="../../../_static/documentation_options.js?v=a5603611"></script>
-    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=7660844c"></script>
     

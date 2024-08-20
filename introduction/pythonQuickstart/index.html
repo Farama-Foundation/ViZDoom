@@ -11,7 +11,7 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Building from source" href="../building/" /><link rel="prev" title="&lt;no title&gt;" href="../../" />
         <link rel="canonical" href="https://vizdoom.farama.org/introduction/pythonQuickstart.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
         <title>Python quick start - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
@@ -241,6 +241,7 @@
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../environments/default/">Default scenarios/environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environments/thirdParty/">Third-party environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../environments/creatingCustom/">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
@@ -311,9 +312,9 @@
           <article role="main">
             
             <section class="tex2jax_ignore mathjax_ignore" id="python-quick-start">
-<h1>Python quick start<a class="headerlink" href="#python-quick-start" title="Link to this heading">#</a></h1>
+<h1>Python quick start<a class="headerlink" href="#python-quick-start" title="Link to this heading">¶</a></h1>
 <section id="linux">
-<h2>Linux<a class="headerlink" href="#linux" title="Link to this heading">#</a></h2>
+<h2>Linux<a class="headerlink" href="#linux" title="Link to this heading">¶</a></h2>
 <p>To install the latest release of ViZDoom, just run:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vizdoom
 </pre></div>
@@ -321,7 +322,7 @@
 <p>Both x86-64 and AArch64 (ARM64) architectures are supported.
 Wheels are available for Python 3.8+ on Linux.</p>
 <section id="audio-buffer-requirement">
-<h3>Audio buffer requirement<a class="headerlink" href="#audio-buffer-requirement" title="Link to this heading">#</a></h3>
+<h3>Audio buffer requirement<a class="headerlink" href="#audio-buffer-requirement" title="Link to this heading">¶</a></h3>
 <p>If you want to use audio buffer, you need to have OpenAL library installed.
 It is installed by default in many desktop distros. Otherwise it can be installed from the package manager.
 On apt-based distros (Ubuntu, Debian, Linux Mint, etc.), you can install it by running:</p>
@@ -335,12 +336,12 @@ On apt-based distros (Ubuntu, Debian, Linux Mint, etc.), you can install it by r
 <p>On RHEL/CentOS/Alma/Rocky Linux 9, you may need first enable crb repository by running <code class="docutils literal notranslate"><span class="pre">dnf</span> <span class="pre">--enablerepo=crb</span> <span class="pre">install</span></code>.</p>
 </section>
 <section id="installing-from-source-distribution-on-linux">
-<h3>Installing from source distribution on Linux<a class="headerlink" href="#installing-from-source-distribution-on-linux" title="Link to this heading">#</a></h3>
+<h3>Installing from source distribution on Linux<a class="headerlink" href="#installing-from-source-distribution-on-linux" title="Link to this heading">¶</a></h3>
 <p>If Python wheel is not available for your platform (distros incompatible with manylinux_2_28 standard), pip will try to install (build) ViZDoom from the source.
 ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.8+ to install from source.
 Below, you will find instructions on how to install these dependencies.</p>
 <section id="apt-based-distros-ubuntu-debian-linux-mint-etc">
-<h4>apt-based distros (Ubuntu, Debian, Linux Mint, etc.)<a class="headerlink" href="#apt-based-distros-ubuntu-debian-linux-mint-etc" title="Link to this heading">#</a></h4>
+<h4>apt-based distros (Ubuntu, Debian, Linux Mint, etc.)<a class="headerlink" href="#apt-based-distros-ubuntu-debian-linux-mint-etc" title="Link to this heading">¶</a></h4>
 <p>To build ViZDoom run (it may take a few minutes):</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>apt<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>git<span class="w"> </span>libboost-all-dev<span class="w"> </span>libsdl2-dev<span class="w"> </span>libopenal-dev
 pip<span class="w"> </span>install<span class="w"> </span>vizdoom
@@ -349,7 +350,7 @@ pip<span class="w"> </span>install<span class="w"> </span>vizdoom
 <p>We recommend using at least Ubuntu 18.04+ or Debian 10+ with Python 3.7+.</p>
 </section>
 <section id="dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc">
-<h4>dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)<a class="headerlink" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc" title="Link to this heading">#</a></h4>
+<h4>dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)<a class="headerlink" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc" title="Link to this heading">¶</a></h4>
 <p>To install ViZDoom, run (it may take a few minutes):</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>dnf<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>git<span class="w"> </span>boost-devel<span class="w"> </span>SDL2-devel<span class="w"> </span>openal-soft-devel
 pip<span class="w"> </span>install<span class="w"> </span>vizdoom
@@ -360,7 +361,7 @@ To install openal-soft-devel on RHEL/CentOS/Alma/Rocky Linux 9, one needs to ena
 </section>
 </section>
 <section id="installing-master-branch-version">
-<h3>Installing master branch version<a class="headerlink" href="#installing-master-branch-version" title="Link to this heading">#</a></h3>
+<h3>Installing master branch version<a class="headerlink" href="#installing-master-branch-version" title="Link to this heading">¶</a></h3>
 <p>To install the master branch version of ViZDoom run:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/Farama-Foundation/ViZDoom
 </pre></div>
@@ -369,7 +370,7 @@ To install openal-soft-devel on RHEL/CentOS/Alma/Rocky Linux 9, one needs to ena
 </section>
 </section>
 <section id="macos">
-<h2>macOS<a class="headerlink" href="#macos" title="Link to this heading">#</a></h2>
+<h2>macOS<a class="headerlink" href="#macos" title="Link to this heading">¶</a></h2>
 <p>To install the latest release of ViZDoom, just run (it may take a few minutes as it will build ViZDoom from source on M1/M2 chips):</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>boost<span class="w"> </span>sdl2<span class="w"> </span>openal-soft
 pip<span class="w"> </span>install<span class="w"> </span>vizdoom
@@ -384,7 +385,7 @@ On Apple Silicon, make sure you are using Python/Pip for Apple Silicon.</p>
 </div>
 </section>
 <section id="windows">
-<h2>Windows<a class="headerlink" href="#windows" title="Link to this heading">#</a></h2>
+<h2>Windows<a class="headerlink" href="#windows" title="Link to this heading">¶</a></h2>
 <p>To install the latest release of ViZDoom, just run:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vizdoom
 </pre></div>
@@ -567,7 +568,7 @@ Windows version is bundled with OpenAL library, so you don’t need to install i
       </script>
 
     <script src="../../_static/documentation_options.js?v=a5603611"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     
