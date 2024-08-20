@@ -70,7 +70,7 @@ or
 
 ## Python quick start
 
-#### Versions 1.2.3 and below does not work correctly with numpy 2.0+. Please upgrade ViZDoom to the newest version or downgrade numpy to the last 1.21+ version.
+#### Versions 1.2.3 and below do not work correctly with NumPy 2.0+. To use NumPy 2.0+ please upgrade ViZDoom to version 1.2.4+.
 
 ### Linux
 To install the latest release of ViZDoom, just run:
