@@ -1,0 +1,183 @@
+name: Build and test Python wheels and make PyPI release
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/build-and-test-wheels.yml'
+      - 'include/**'
+      - 'scripts/**'
+      - 'src/**'
+      - 'CMakeLists.txt'
+      - 'setup.py'
+      - 'pyproject.toml'
+    branches: [master]
+  release:
+    types: [published]
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, macos-12, macos-14]
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Report OS
+        run: |
+          echo ${{ matrix.os }}
+          echo ${{ runner.os }}
+          uname -p
+
+      - name: Set up QEMU
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: all
+
+      - name: Build manylinux wheels
+        if: matrix.os == 'ubuntu-22.04'
+        uses: pypa/cibuildwheel@v2.19.2
+        env:
+          # Configure cibuildwheel to build native archs, and some emulated ones
+          CIBW_ARCHS_LINUX: x86_64 aarch64
+          CIBW_BUILD_VERBOSITY: 1
+
+      - name: Build macOS Intel wheels
+        if: matrix.os == 'macos-12'
+        uses: pypa/cibuildwheel@v2.19.2
+        env:
+          CIBW_ARCHS_MACOS: x86_64
+          CIBW_ENVIRONMENT_MACOS: VIZDOOM_MACOS_ARCH=x86_64 HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 MACOSX_DEPLOYMENT_TARGET=12.0
+          CIBW_BUILD_VERBOSITY: 1
+
+      - name: Build macOS Apple Silicon wheels
+        if: matrix.os == 'macos-14'
+        uses: pypa/cibuildwheel@v2.19.2
+        env:
+          CIBW_ARCHS_MACOS: arm64
+          CIBW_ENVIRONMENT_MACOS: VIZDOOM_MACOS_ARCH=arm64 HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 MACOSX_DEPLOYMENT_TARGET=14.0
+          CIBW_BUILD_VERBOSITY: 1
+
+      - name: Report built wheels
+        run: |
+          ls -l ./wheelhouse/*.whl
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: ./wheelhouse/*.whl
+
+  test_wheels:
+    name: Test wheels on ${{ matrix.os }}
+    needs: [build_wheels]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04, macos-12, macos-13, macos-14]
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Python ${{ matrix.python-version }} environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Download all dists
+        uses: actions/download-artifact@v3
+        with:
+          # Unpacks default artifact into dist/
+          # If `name: artifact` is omitted, the action will create extra parent dir
+          name: artifact
+          path: dist
+
+      - name: Report dist directory
+        run: ls -l dist
+
+      - name: Report environment
+        run: |
+          echo ${{ matrix.os }}
+          echo ${{ runner.os }}
+          uname -p
+          python -c "import sys; print(sys.version)"
+
+      - name: Install macOS Intel wheel on ${{ matrix.os }}
+        if: matrix.os == 'macos-12' || matrix.os == 'macos-13'
+        run: |
+          export PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
+          export WHEEL=$(ls dist/vizdoom*cp${PYTHON_VERSION}*macosx*x86_64.whl)
+          python -m pip install ${WHEEL}[test]
+
+      - name: Install macOS Apple Silicon wheel on ${{ matrix.os }}
+        if: matrix.os == 'macos-14'
+        run: |
+          export PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
+          export WHEEL=$(ls dist/vizdoom*cp${PYTHON_VERSION}*macosx*arm64.whl)
+          python -m pip install ${WHEEL}[test]
+
+      - name: Install manylinux wheel on ${{ matrix.os }}
+        if: matrix.os == 'ubuntu-22.04' || matrix.os == 'ubuntu-24.04'
+        run: |
+          export PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
+          export WHEEL=$(ls dist/vizdoom*cp${PYTHON_VERSION}*manylinux*x86_64.whl)
+          python -m pip install ${WHEEL}[test]
+
+      - name: Import check
+        run: python -c "import vizdoom"
+
+      - name: Run tests
+        # Skip tests on macOS with Apple Silicon, because they are slow (TODO: investigate)
+        if: matrix.os != 'macos-14'
+        run: pytest tests
+
+  build_sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build sdist
+        run: pipx run build --sdist
+
+      - name: Upload sdist
+        uses: actions/upload-artifact@v3
+        with:
+          path: dist/*.tar.gz
+
+  upload_pypi:
+    name: Upload to PyPI
+    needs: [build_wheels, build_sdist, test_wheels]
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+      - name: Download all dists
+        uses: actions/download-artifact@v3
+        with:
+          # Unpacks default artifact into dist/
+          # If `name: artifact` is omitted, the action will create extra parent dir
+          name: artifact
+          path: dist
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+        # To test:
+        # with:
+        #   repository_url: https://test.pypi.org/legacy/

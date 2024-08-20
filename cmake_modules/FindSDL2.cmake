@@ -35,7 +35,7 @@
 # Modified by Eric Wing.
 # Added code to assist with automated building by using environmental variables
 # and providing a more controlled/consistent search behavior.
-# Added new modifications to recognize OS X frameworks and
+# Added new modifications to recognize macOS frameworks and
 # additional Unix paths (FreeBSD, etc).
 # Also corrected the header search path to follow "proper" SDL2 guidelines.
 # Added a search for SDL2main which is needed by some platforms.
@@ -70,6 +70,8 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
+file(GLOB SDL2_SEARCH_PATHS "/usr/local/Cellar/sdl2/2.*" "/opt/homebrew/Cellar/sdl2/2.*")
+
 FIND_PATH(SDL2_INCLUDE_DIR SDL.h
   HINTS
   $ENV{SDL2DIR}
@@ -79,10 +81,13 @@ FIND_PATH(SDL2_INCLUDE_DIR SDL.h
   /Library/Frameworks
   /usr/local/include/SDL2
   /usr/include/SDL2
+  /usr/local/Cellar/sdl2 # Brew Intel
   /sw # Fink
+  /opt/homebrew/Cellar/sdl2 # Brew Apple Silicon
   /opt/local # DarwinPorts
   /opt/csw # Blastwave
   /opt
+  ${SDL2_SEARCH_PATHS} # Brew Intel and Apple Silicon with versions
 )
 #MESSAGE("SDL2_INCLUDE_DIR is ${SDL2_INCLUDE_DIR}")
 
@@ -92,18 +97,20 @@ FIND_LIBRARY(SDL2_LIBRARY_TEMP
   $ENV{SDL2DIR}
   PATH_SUFFIXES lib64 lib
   PATHS
+  /usr/local/Cellar/sdl2
   /sw
+  /opt/homebrew/Cellar/sdl2
   /opt/local
   /opt/csw
   /opt
+  ${SDL2_SEARCH_PATHS}
 )
-
 #MESSAGE("SDL2_LIBRARY_TEMP is ${SDL2_LIBRARY_TEMP}")
 
 IF(NOT SDL2_BUILDING_LIBRARY)
   IF(NOT ${SDL2_INCLUDE_DIR} MATCHES ".framework")
-    # Non-OS X framework versions expect you to also dynamically link to
-    # SDL2main. This is mainly for Windows and OS X. Other (Unix) platforms
+    # Non-macOS framework versions expect you to also dynamically link to
+    # SDL2main. This is mainly for Windows and macOS. Other (Unix) platforms
     # seem to provide SDL2main for compatibility even though they don't
     # necessarily need it.
     FIND_LIBRARY(SDL2MAIN_LIBRARY
@@ -112,10 +119,13 @@ IF(NOT SDL2_BUILDING_LIBRARY)
       $ENV{SDL2DIR}
       PATH_SUFFIXES lib64 lib
       PATHS
+      /usr/local/Cellar/sdl2
       /sw
+      /opt/homebrew/Cellar/sdl2
       /opt/local
       /opt/csw
       /opt
+      ${SDL2_SEARCH_PATHS}
     )
   ENDIF(NOT ${SDL2_INCLUDE_DIR} MATCHES ".framework")
 ENDIF(NOT SDL2_BUILDING_LIBRARY)

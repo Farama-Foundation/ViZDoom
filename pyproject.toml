@@ -39,6 +39,7 @@ build = "cp{38,39,310,311,312}-*"
 [tool.cibuildwheel.linux]
 # Only manylinux is supported (no musl)
 build = "cp{38,39,310,311,312}-manylinux*"
+repair-wheel-command = "auditwheel show {wheel} && auditwheel repair -w {dest_dir} {wheel}"
 
 # For manylinux_2_28 we need to install the following dependencies using yum:
 before-all = "yum install -y cmake git boost-devel SDL2-devel openal-soft-devel"
@@ -50,3 +51,7 @@ manylinux-aarch64-image = "manylinux_2_28"
 
 [tool.cibuildwheel.macos]
 before-all = "brew install cmake boost sdl2 openal-soft"
+repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
+
+# In addition, MACOSX_DEPLOYMENT_TARGET maybe needed to be set depending on the version of macOS
+environment = {"HOMEBREW_NO_AUTO_UPDATE" = "1", "HOMEBREW_NO_INSTALL_CLEANUP" = "1"}

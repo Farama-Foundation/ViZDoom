@@ -131,6 +131,12 @@ class BuildCommand(build):
                 f"VIZDOOM_CMAKE_ARGS is set, the following arguments will be added to cmake command: {env_cmake_args}"
             )
 
+        # MacOS specific flag for specifying the architecture of the binary
+        if platform.startswith("darwin"):
+            macos_arch = os.getenv("VIZDOOM_MACOS_ARCH")
+            if macos_arch is not None:
+                cmake_arg_list.append(f"-DCMAKE_APPLE_SILICON_PROCESSOR={macos_arch}")
+
         # Windows specific version of the libraries
         if platform.startswith("win"):
             generator = os.getenv("VIZDOOM_BUILD_GENERATOR_NAME")
@@ -182,7 +188,7 @@ class BuildCommand(build):
             os.remove("CMakeCache.txt")
 
         cmake_arg_list.append(".")
-        print(f"Running cmake with arguments: {cmake_arg_list}", file=sys.stderr)
+        sys.stderr.write(f"Running cmake with arguments: {cmake_arg_list}")
 
         try:
             if platform.startswith("win"):
