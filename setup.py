@@ -40,7 +40,6 @@ def add_subpackage(dir_path):
 
 
 add_subpackage("scenarios")
-add_subpackage("gym_wrapper")
 add_subpackage("gymnasium_wrapper")
 
 # Platform specific package data
@@ -204,7 +203,7 @@ class BuildCommand(build):
         except subprocess.CalledProcessError:
             sys.stderr.write(
                 "\033[1m\nInstallation from source failed, you may be missing some dependencies. "
-                "\nPlease check https://vizdoom.farama.org/introduction/pythonQuickstart for details.\n\n\033[0m"
+                "\nPlease check https://vizdoom.farama.org/introduction/python_quickstart for details.\n\n\033[0m"
             )
             raise
 
@@ -221,7 +220,6 @@ setup(
     author="Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, Farama Foundation, and the respective contributors",
     author_email="mwydmuch@cs.put.poznan.pl",
     extras_require={
-        "gym": ["gym>=0.26.0", "pygame>=2.1.3"],
         "test": ["pytest", "psutil"],
     },
     install_requires=["numpy", "gymnasium>=0.28.0", "pygame>=2.1.3"],
