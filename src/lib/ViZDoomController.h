@@ -160,6 +160,7 @@ namespace vizdoom {
         bool isMapLastTic();
         bool isMapFirstTic();
         bool isMapEnded();
+        bool isMapTimeoutReached();
         unsigned int getMapLastTic();
 
         void setNoConsole(bool console);

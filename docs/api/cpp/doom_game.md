@@ -180,6 +180,17 @@ will take no effect after this point (unless [`newEpisode`](#newepisode) method 
 
 
 ---
+### `isEpisodeTimeoutReached`
+
+| C++    | `bool isEpisodeTimeoutReached()`      |
+| :--    | :--                             |
+| Python | `is_episode_timeout_reached() -> bool` |
+
+Returns true if the current episode is in the terminal state due to exceeding the time limit (timeout)
+set with [`setEpisodeTimeout`](#setepisodetimeout) method or via `+timelimit` parameter.
+
+
+---
 ### `isPlayerDead`
 
 | C++    | `bool isPlayerDead()`      |

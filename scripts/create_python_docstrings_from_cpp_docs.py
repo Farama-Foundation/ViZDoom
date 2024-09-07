@@ -9,7 +9,7 @@ def camel_case_to_snake_case(text):
 
 
 FILES_TO_PARSE = [
-    {"filepath": "docs/api/cpp/doomGame.md", "namespace": "DoomGamePython"},
+    {"filepath": "docs/api/cpp/doom_game.md", "namespace": "DoomGamePython"},
     {"filepath": "docs/api/cpp/utils.md"},
 ]
 OUTPUT_FILE = "src/lib_python/ViZDoomMethodsDocstrings.h"

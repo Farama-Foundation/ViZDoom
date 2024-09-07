@@ -62,6 +62,7 @@ namespace vizdoom {
 
         bool isNewEpisode();
         bool isEpisodeFinished();
+        bool isEpisodeTimeoutReached();
         bool isPlayerDead();
         void respawnPlayer();
         void sendGameCommand(std::string cmd);

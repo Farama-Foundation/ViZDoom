@@ -5,8 +5,8 @@ import re
 
 FILES_TO_PARSE = [
     {
-        "input_filepath": "docs/api/cpp/doomGame.md",
-        "output_filepath": "docs/api/python/doomGame.md",
+        "input_filepath": "docs/api/cpp/doom_game.md",
+        "output_filepath": "docs/api/python/doom_game.md",
         "submodule": "DoomGame.",
         "append_to_header": """
 ```{eval-rst}

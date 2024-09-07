@@ -281,10 +281,7 @@ namespace vizdoom {
     }
 
     bool DoomController::isTicPossible() {
-        return !((!this->gameState->GAME_MULTIPLAYER && this->gameState->PLAYER_DEAD)
-                 || (this->mapTimeout > 0 && this->mapTimeout + this->mapStartTime <= this->gameState->MAP_TIC)
-                 || (this->gameState->MAP_TICLIMIT > 0 && this->gameState->MAP_TICLIMIT <= this->gameState->MAP_TIC)
-                 || (this->gameState->MAP_END));
+        return !(this->isMapEnded() || this->isMapTimeoutReached());
     }
 
     void DoomController::tic(bool update) {
@@ -601,7 +598,14 @@ namespace vizdoom {
     }
 
     bool DoomController::isMapEnded() {
-        return this->doomRunning && this->gameState->MAP_END;
+        // Check if the map has ended or the player is dead (in single player mode)
+        return (!this->gameState->GAME_MULTIPLAYER && this->gameState->PLAYER_DEAD) || (this->gameState->MAP_END);
+    }
+
+    bool DoomController::isMapTimeoutReached() {
+        // Check if internal or user-defined map timeout has been reached
+        return (this->mapTimeout > 0 && this->mapTimeout + this->mapStartTime <= this->gameState->MAP_TIC) 
+                || (this->gameState->MAP_TICLIMIT > 0 && this->gameState->MAP_TICLIMIT <= this->gameState->MAP_TIC);
     }
 
     unsigned int DoomController::getMapLastTic() {
