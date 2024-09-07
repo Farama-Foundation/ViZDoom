@@ -338,29 +338,21 @@ and implements the necessary API to function as a Gymnasium API.</p>
 <p>See the following examples for use:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/gymnasium_wrapper.py">examples/python/gymnasium_wrapper.py</a> for basic usage</p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/learning_stable_baselines.py">examples/python/learning_stable_baselines.py</a> for example training with <a class="reference external" href="https://github.com/DLR-RM/stable-baselines3/">stable-baselines3</a> (Update - Currently facing issues, to be fixed)</p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/learning_stable_baselines.py">examples/python/learning_stable_baselines.py</a> for example training with <a class="reference external" href="https://github.com/DLR-RM/stable-baselines3/">stable-baselines3</a>.</p></li>
 </ul>
 </section>
 <section id="openai-gym-wrappers">
 <h2>OpenAI Gym wrappers<a class="headerlink" href="#openai-gym-wrappers" title="Link to this heading">¶</a></h2>
 <blockquote>
-<div><p>Gym is deprecated in favor of Gymnasium and these wrappers will be removed in the future.</p>
+<div><p>Original OpenAI Gym wrappers are no longer maintained and were removed from master branch. We recommend using Gymnasium wrappers instead.</p>
 </div></blockquote>
-<p>Installing ViZDoom with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">vizdoom[gym]</span></code> will include
-Gym wrappers to interact with ViZDoom over Gym API.</p>
-<p>These wrappers are under <code class="docutils literal notranslate"><span class="pre">gym_wrappers</span></code>, containing the basic environment and
-a few example environments based on the built-in scenarios. This environment
-simply initializes ViZDoom with the settings from the scenario config files
-and implements the necessary API to function as a Gym API.</p>
-<p>See the following examples for use:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/gym_wrapper.py">examples/python/gym_wrapper.py</a> for basic usage</p></li>
-</ul>
+<p>Installing ViZDoom version &lt; 1.3.0 with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">vizdoom[gym]</span></code> will include
+Gym 0.26 wrappers to interact with ViZDoom over Gym API.</p>
 </section>
 <section id="julia-lua-and-java-apis">
 <h2>Julia, Lua, and Java APIs<a class="headerlink" href="#julia-lua-and-java-apis" title="Link to this heading">¶</a></h2>
 <blockquote>
-<div><p>Julia, Lua, and Java bindings are no longer maintained.</p>
+<div><p>Julia, Lua, and Java bindings are no longer maintained and were removed from master branch</p>
 </div></blockquote>
 <p>Julia, Lua, and Java can be found in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/julia">julia</a> and <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/java%26lua">java&amp;lua</a> branches for manual building.</p>
 </section>

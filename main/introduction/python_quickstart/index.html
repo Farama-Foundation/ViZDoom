@@ -368,14 +368,19 @@ To install openal-soft-devel on RHEL/CentOS/Alma/Rocky Linux 9, one needs to ena
 <section id="macos">
 <h2>macOS<a class="headerlink" href="#macos" title="Link to this heading">¶</a></h2>
 <p>To install the latest release of ViZDoom, just run (it may take a few minutes as it will build ViZDoom from source on M1/M2 chips):</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>boost<span class="w"> </span>sdl2<span class="w"> </span>openal-soft
-pip<span class="w"> </span>install<span class="w"> </span>vizdoom
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>vizdoom
 </pre></div>
 </div>
-<p>Both Intel and Apple Silicon (M1/2/3) CPUs are supported.
-We recommend using at least macOS High Sierra 10.13+ with Python 3.8+.
-On Apple Silicon, make sure you are using Python/Pip for Apple Silicon.</p>
-<p>To install the master branch version of ViZDoom, run:</p>
+<p>Both Intel and Apple Silicon CPUs are supported.
+Pre-build wheels are available for Intel macOS 12.0+ and Apple Silicon macOS 14.0+.</p>
+<p>If Python wheel is not available for your platform (Python version &lt;3.8, older macOS version), pip will try to install (build) ViZDoom from the source.
+In this case, install the required dependencies using Homebrew:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>boost<span class="w"> </span>sdl2<span class="w"> </span>openal-soft
+</pre></div>
+</div>
+<p>We recommend using at least macOS High Sierra 10.13+ with Python 3.8+.
+On Apple Silicon (M1, M2, and M3), make sure you are using Python/Pip for Apple Silicon.</p>
+<p>To install the master branch version of ViZDoom, run, in this case you also need to have the above dependencies installed:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/Farama-Foundation/ViZDoom
 </pre></div>
 </div>
@@ -387,10 +392,10 @@ On Apple Silicon, make sure you are using Python/Pip for Apple Silicon.</p>
 </pre></div>
 </div>
 <p>At the moment, only x86-64 architecture is supported on Windows.
-Wheels are available for Python 3.8+ x86-64 on Windows.</p>
+Wheels are available for Python 3.9+ x86-64 on Windows.</p>
 <p>Please note that the Windows version is not as well-tested as Linux and macOS versions.
 It can be used for development and testing but if you want to conduct serious (time and resource-extensive) experiments on Windows,
-please consider using <a class="reference external" href="https://docs.docker.com/docker-for-windows/install/">Docker</a> or <a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">WSL</a> with Linux version.
+please consider using <a class="reference external" href="https://docs.docker.com/docker-for-windows/install/">Docker</a> or <a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl">WSL</a> with Linux version.
 Windows version is bundled with OpenAL library, so you don’t need to install it separately.</p>
 </section>
 </section>
