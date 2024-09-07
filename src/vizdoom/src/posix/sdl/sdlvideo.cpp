@@ -253,6 +253,7 @@ bool SDLVideo::NextMode (int *width, int *height, bool *letterbox)
 	}
 	return false;
 }
+
 //VIZDOOM_CODE
 DFrameBuffer *SDLVideo::CreateFrameBuffer (int width, int height, bool fullscreen, DFrameBuffer *old)
 {
@@ -347,6 +348,7 @@ void SDLVideo::SetWindowedScale (float scale)
 }
 
 // FrameBuffer implementation -----------------------------------------------
+
 //VIZDOOM_CODE
 SDLFB::SDLFB (int width, int height, bool fullscreen, SDL_Window *oldwin)
 	: DFrameBuffer (width, height)
@@ -398,10 +400,6 @@ SDLFB::SDLFB (int width, int height, bool fullscreen, SDL_Window *oldwin)
 
 	memcpy (SourcePalette, GPalette.BaseColors, sizeof(PalEntry)*256);
 	UpdateColors ();
-
-#ifdef __APPLE__
-	SetVSync (vid_vsync);
-#endif
 }
 
 
@@ -419,6 +417,7 @@ SDLFB::~SDLFB ()
 		SDL_DestroyWindow (Screen);
 	}
 }
+
 //VIZDOOM_CODE
 bool SDLFB::IsValid ()
 {
@@ -452,6 +451,7 @@ void SDLFB::Unlock ()
 		LockCount = 0;
 	}
 }
+
 //VIZDOOM_CODE
 void SDLFB::Update ()
 {
@@ -564,7 +564,7 @@ void SDLFB::Update ()
 	//VIZDOOM_CODE
 	#ifdef VIZ_DEPTH_TEST
 		vizDepthMap->testUpdate();
-    #endif
+	#endif
 
 	#ifdef VIZ_LABELS_TEST
 		vizLabels->testUpdate();
@@ -667,11 +667,13 @@ void SDLFB::SetFullscreen (bool fullscreen)
 
 	ResetSDLRenderer ();
 }
+
 //VIZDOOM_CODE
 bool SDLFB::IsFullscreen ()
 {
 	return (*viz_noxserver) == true ? false : ((SDL_GetWindowFlags (Screen) & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0);
 }
+
 //VIZDOOM_CODE
 void SDLFB::ResetSDLRenderer ()
 {
@@ -744,25 +746,9 @@ void SDLFB::ResetSDLRenderer ()
 
 void SDLFB::SetVSync (bool vsync)
 {
-#ifdef __APPLE__
-	if (CGLContextObj context = CGLGetCurrentContext())
-	{
-		// Apply vsync for native backend only (where OpenGL context is set)
-
-#if MAC_OS_X_VERSION_MAX_ALLOWED < 1050
-		// Inconsistency between 10.4 and 10.5 SDKs:
-		// third argument of CGLSetParameter() is const long* on 10.4 and const GLint* on 10.5
-		// So, GLint typedef'ed to long instead of int to workaround this issue
-		typedef long GLint;
-#endif // prior to 10.5
-
-		const GLint value = vsync ? 1 : 0;
-		CGLSetParameter(context, kCGLCPSwapInterval, &value);
-	}
-#else
 	ResetSDLRenderer ();
-#endif // __APPLE__
 }
+
 //VIZDOOM_CODE
 void SDLFB::ScaleCoordsFromWindow(SWORD &x, SWORD &y)
 {

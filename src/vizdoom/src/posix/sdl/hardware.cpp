@@ -90,7 +90,7 @@ void I_InitGraphics ()
 		Printf("Using video driver %s\n", SDL_GetCurrentVideoDriver());
 	}
 	else
-		Printf("Not using any video driver. Check-mate GUI believers!\n");
+		Printf("Not using any video driver.\n");
 	UCVarValue val;
 
 	val.Bool = !!Args->CheckParm ("-devparm");

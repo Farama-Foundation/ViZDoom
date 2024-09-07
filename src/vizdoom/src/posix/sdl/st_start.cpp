@@ -195,8 +195,8 @@ void FTTYStartupScreen::NetInit(const char *message, int numplayers)
 		// VIZDOOM_CODE
 		//fprintf (stderr, "Press 'Q' to abort network game synchronization.\n"); // When using as controlled subpcrocess, this won't work.
 		
-        fprintf (stderr, "Network game synchronization timeout: %ds.", (unsigned int)*viz_connect_timeout);
-        // Set stdin to raw mode so we can get keypresses in ST_CheckNetAbort()
+		fprintf (stderr, "Network game synchronization timeout: %ds.", (unsigned int)*viz_connect_timeout);
+		// Set stdin to raw mode so we can get keypresses in ST_CheckNetAbort()
 		// immediately without waiting for an EOL.
 		tcgetattr (STDIN_FILENO, &OldTermIOS);
 		rawtermios = OldTermIOS;
@@ -325,17 +325,19 @@ bool FTTYStartupScreen::NetLoop(bool (*timer_callback)(void *), void *userdata)
 
 	for (;;)
 	{
-        usleep(100 * 1000);
-        VIZ_InterruptionPoint();
+		usleep(100 * 1000);
+		VIZ_InterruptionPoint();
 
-        if((unsigned int)*viz_connect_timeout * 1000 < I_MSTime() - loopEnterTime) {
-            fprintf (stderr, "\nTimeout, network game synchronization aborted.");
-            return false;
-        }
+		if((unsigned int)*viz_connect_timeout * 1000 < I_MSTime() - loopEnterTime)
+		{
+			fprintf (stderr, "\nTimeout, network game synchronization aborted.");
+			return false;
+		}
 
-        if (timer_callback (userdata))		{
-            fputc ('Timer callback...\n', stderr);
-            return true;
+		if (timer_callback (userdata))
+		{
+			fputc ('Timer callback...\n', stderr);
+			return true;
 		}
 	}
 }

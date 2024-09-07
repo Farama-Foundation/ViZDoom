@@ -204,8 +204,6 @@ int main (int argc, char **argv)
 	}
 #endif // !__APPLE__
 
-	//I'm not proud of this solution. Shame on me.
-
 	//VIZDOOM_CODE
 	for(int i = 0; i < argc; ++i){
 		if(strcmp("+viz_noconsole", argv[i]) == 0) {
