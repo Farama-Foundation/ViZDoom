@@ -15,7 +15,7 @@ game = vzd.DoomGame()
 game.load_config(os.path.join(vzd.scenarios_path, "basic.cfg")) # or any other scenario file
 ```
 
-When using Gymnasium (or Gym) API the scenario can be loaded by passing the scenario id to `make` method like-this:
+When using Gymnasium API the scenario can be loaded by passing the scenario id to `make` method like-this:
 
 ```{code-block} python
 import gymnasium

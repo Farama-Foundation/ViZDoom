@@ -37,7 +37,7 @@ jobs:
         run: sudo apt install cmake git libboost-all-dev libsdl2-dev libopenal-dev
 
       - name: Install ViZDoom
-        run: pip install .[gym]
+        run: pip install .
 
       - name: Install docs dependencies
         run: pip install -r docs/requirements.txt

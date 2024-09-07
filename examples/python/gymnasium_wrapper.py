@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 #####################################################################
-# Example for running a vizdoom scenario as a gym env
+# Example for running a vizdoom scenario as a Gymnasium env
 #####################################################################
 
 import gymnasium

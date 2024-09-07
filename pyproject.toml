@@ -7,14 +7,14 @@ safe = true
 [tool.isort]
 atomic = true
 profile = "black"
-src_paths = ["examples/python", "gym_wrapper", "gymnasium_wrapper", "tests"]
+src_paths = ["examples/python", "gymnasium_wrapper", "tests"]
 indent = 4
 lines_after_imports = 2
 multi_line_output = 3
 known_first_party = ['vizdoom']
 
 [tool.pyright]
-include = ["examples/python/**", "gym_wrapper", "gymnasium_wrapper", "tests/**"]
+include = ["examples/python/**", "gymnasium_wrapper", "tests/**"]
 exclude = ["**/__pycache__"]
 strict = []
 
