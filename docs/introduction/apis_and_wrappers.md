@@ -35,27 +35,19 @@ and implements the necessary API to function as a Gymnasium API.
 
 See the following examples for use:
 - [examples/python/gymnasium_wrapper.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/gymnasium_wrapper.py) for basic usage
-- [examples/python/learning_stable_baselines.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/learning_stable_baselines.py) for example training with [stable-baselines3](https://github.com/DLR-RM/stable-baselines3/) (Update - Currently facing issues, to be fixed)
+- [examples/python/learning_stable_baselines.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/learning_stable_baselines.py) for example training with [stable-baselines3](https://github.com/DLR-RM/stable-baselines3/).
 
 
 ## OpenAI Gym wrappers
 
-> Gym is deprecated in favor of Gymnasium and these wrappers will be removed in the future.
+> Original OpenAI Gym wrappers are no longer maintained and were removed from master branch. We recommend using Gymnasium wrappers instead.
 
-Installing ViZDoom with `pip install vizdoom[gym]` will include
-Gym wrappers to interact with ViZDoom over Gym API.
-
-These wrappers are under `gym_wrappers`, containing the basic environment and
-a few example environments based on the built-in scenarios. This environment
-simply initializes ViZDoom with the settings from the scenario config files
-and implements the necessary API to function as a Gym API.
-
-See the following examples for use:
-- [examples/python/gym_wrapper.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/gym_wrapper.py) for basic usage
+Installing ViZDoom version < 1.3.0 with `pip install vizdoom[gym]` will include
+Gym 0.26 wrappers to interact with ViZDoom over Gym API.
 
 
 ## Julia, Lua, and Java APIs
 
-> Julia, Lua, and Java bindings are no longer maintained.
+> Julia, Lua, and Java bindings are no longer maintained and were removed from master branch
 
 Julia, Lua, and Java can be found in [julia](https://github.com/Farama-Foundation/ViZDoom/tree/julia) and [java&lua](https://github.com/Farama-Foundation/ViZDoom/tree/java%26lua) branches for manual building.

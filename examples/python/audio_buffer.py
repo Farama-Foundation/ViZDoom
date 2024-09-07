@@ -27,7 +27,7 @@ if __name__ == "__main__":
     # Setting game.set_sound_enabled(True) is not required for audio buffer to work.
     # Note: This requires OpenAL library to be installed on your system.
     # It is installed by default on many Linux desktop distros.
-    # And it can be installed from package manager, see: https://vizdoom.farama.org/introduction/pythonQuickstart/#audio-buffer-requirements
+    # And it can be installed from package manager, see: https://vizdoom.farama.org/introduction/python_quickstart/#audio-buffer-requirements
     AUDIO_BUFFER_ENABLED = True
     game.set_audio_buffer_enabled(AUDIO_BUFFER_ENABLED)
 
@@ -95,7 +95,7 @@ if __name__ == "__main__":
                 "[WARNING] Audio buffers were full of silence. This is a common bug on e.g. Ubuntu 20.04\n"
                 "          See https://github.com/Farama-Foundation/ViZDoom/pull/486\n"
                 "          There are some possible fixes:\n"
-                "            1) Check that you have OpenAL installed, if not install, see: https://vizdoom.farama.org/introduction/pythonQuickstart/#audio-buffer-requirements\n"
+                "            1) Check that you have OpenAL installed, if not install, see: https://vizdoom.farama.org/introduction/python_quickstart/#audio-buffer-requirements\n"
                 "            2) Try setting game.add_game_args('+snd_efx 0'). This my disable some audio effects\n"
                 "            3) Try installing a newer version of OpenAL Soft library, see https://github.com/Farama-Foundation/ViZDoom/pull/486#issuecomment-889389185"
             )

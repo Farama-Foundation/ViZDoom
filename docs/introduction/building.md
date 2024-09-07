@@ -1,7 +1,7 @@
 # Building from source
 
 Here we describe how to build ViZDoom from source.
-If you want to install pre-build ViZDoom wheels for Python, see [Python quick start](./pythonQuickstart.md).
+If you want to install pre-build ViZDoom wheels for Python, see [Python quick start](./python_quickstart.md).
 
 
 ## Dependencies
@@ -67,7 +67,6 @@ python setup.py build && python setup.py install
 
 
 ### MacOS
-
 To build ViZDoom on MacOS, the following dependencies are required:
 * CMake 3.12+
 * Clang 5.0+
@@ -135,7 +134,6 @@ Instructions below can be used to build ViZDoom manually.
 We recommend doing it only if you want to use C++ API, work on the ViZDoom, or if you have problems with pip installation.
 
 ### Linux / MacOS
-
 In ViZDoom's root directory:
 ```bash
 mkdir build
@@ -148,7 +146,6 @@ where `-DBUILD_ENGINE=ON` and `-DBUILD_PYTHON=ON` CMake options are optional (de
 
 
 ### Windows
-
 1. Run CMake GUI or cmake command in cmd/powershell in ViZDoom root directory with the following paths provided:
 * BOOST_ROOT
 * BOOST_INCLUDEDIR
@@ -176,5 +173,4 @@ Compilation output will be placed in `build/bin` and it should contain the follo
 
 
 ### Manual installation
-
 To manually install Python package copy `vizdoom_root_dir/build/bin/pythonX.X/vizdoom` contents to `python_root_dir/lib/pythonX.X/site-packages/site-packages/vizdoom`.
