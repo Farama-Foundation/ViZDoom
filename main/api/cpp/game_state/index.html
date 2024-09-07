@@ -7,12 +7,12 @@
     <meta property="og:title" content="ViZDoom Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
-    <meta property="og:url" content="https://vizdoom.farama.org/api/cpp/exceptions.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Utilities" href="../utils/" /><link rel="prev" title="Enums" href="../enums/" />
-        <link rel="canonical" href="https://vizdoom.farama.org/api/cpp/exceptions.html" />
+    <meta property="og:url" content="https://vizdoom.farama.org/api/cpp/game_state.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" />
+        <link rel="canonical" href="https://vizdoom.farama.org/api/cpp/game_state.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
-        <title>Exceptions - ViZDoom Documentation</title>
+        <title>GameState - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=3e7f4c72" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=49cbaffd" />
@@ -191,7 +191,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -217,7 +217,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction/apis_and_wrappers/">APIs and wrappers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../python/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../python/utils/">Utilities</a></li>
@@ -226,9 +226,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../python/gym/">OpenAI Gym Env</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../">C++ API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../enums/">Enums</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exceptions/">Exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils/">Utilities</a></li>
 </ul>
 </li>
@@ -276,7 +276,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/api/cpp/exceptions.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/api/cpp/game_state.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -298,7 +298,7 @@
                 </svg>
               </button>
             </div>
-            <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-content-icon" for="__toc">
               <div class="visually-hidden">Toggle table of contents sidebar</div>
               <i class="icon"><svg>
                   <use href="#svg-toc"></use>
@@ -307,19 +307,166 @@
           </div>
           <article role="main">
             
-            <section class="tex2jax_ignore mathjax_ignore" id="exceptions">
-<h1>Exceptions<a class="headerlink" href="#exceptions" title="Link to this heading">¶</a></h1>
-<p>ViZDoom defines several exceptions that can be thrown by its API:
-Most of the exceptions contain more information in “what()” message.
-The declarations of all the enums can be found in the <code class="docutils literal notranslate"><span class="pre">include/ViZDoomExceptions.h</span></code> header file.</p>
+            <section class="tex2jax_ignore mathjax_ignore" id="gamestate">
+<h1>GameState<a class="headerlink" href="#gamestate" title="Link to this heading">¶</a></h1>
+<p>GameState is the main object returned by <a class="reference internal" href="#./doomGame.md#getstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame::getState</span></code></span></a> method.
+The declarations of all the enums can be found in the <code class="docutils literal notranslate"><span class="pre">include/ViZDoomTypes.h</span></code> header file.</p>
+<section id="id1">
+<h2><code class="docutils literal notranslate"><span class="pre">GameState</span></code><a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p>(<code class="docutils literal notranslate"><span class="pre">C++</span> <span class="pre">type</span> <span class="pre">/</span> <span class="pre">Python</span> <span class="pre">type</span></code> <strong>name</strong>)</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">FileDoesNotExistException</span></code> - means that file specified as part of a configuration does not exist.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">MessageQueueException/SharedMemoryException</span></code> - means that communication with ViZDoom’s instance failed. Usually, means a problem with permissions or system configuration.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">SignalException</span></code> - means that a signal was cached by ViZDoom’s instance.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ViZDoomErrorException</span></code> - means that an error in the ViZDoom engine occurred.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ViZDoomIsNotRunningException</span></code> - means that called method cannot be used when ViZDoom instance is not running.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ViZDoomUnexpectedExitException</span></code> - means that ViZDoom’s instance was closed/terminated/killed from the outside.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>number</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>tic</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std::vector&lt;float&gt;</span> <span class="pre">/</span> <span class="pre">numpy.double[]</span></code> <strong>gameVariables / game_variables</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ImageBufferPtr</span> <span class="pre">/</span> <span class="pre">numpy.uint8[]</span></code>  <strong>screenBuffer / screen_buffer</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ImageBufferPtr</span> <span class="pre">/</span> <span class="pre">numpy.uint8[]</span></code>  <strong>depthBuffer / depth_buffer</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ImageBufferPtr</span> <span class="pre">/</span> <span class="pre">numpy.uint8[]</span></code>  <strong>labelsBuffer / labels_buffer</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ImageBufferPtr</span> <span class="pre">/</span> <span class="pre">numpy.uint8[]</span></code>  <strong>automapBuffer / automap_buffer</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AudioBufferPtr</span> <span class="pre">/</span> <span class="pre">numpy.int16[]</span></code> <strong>audioBuffer / audio_buffer</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std::vector&lt;Label&gt;</span> <span class="pre">/</span> <span class="pre">list</span></code>  <strong>labels</strong></p></li>
 </ul>
+<p><strong>number</strong> - number of the state in the episode.
+<strong>tic</strong> - ingame time, 1 tic is 1/35 of second in the game world. Note: added in 1.1.1.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#./doomGame.md#getstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame::getState</span></code></span></a>,</p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/basic.py">examples/python/basic.py</a>,</p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a>.</p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a>.</p></li>
+</ul>
+<section id="types-used-only-in-c">
+<h3>Types used only in C++<a class="headerlink" href="#types-used-only-in-c" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Buffer</span> <span class="pre">(std::vector&lt;uint8_t&gt;)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ImageBufferPtr</span> <span class="pre">(std::shared_ptr&lt;Buffer&gt;)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GameStatePtr</span> <span class="pre">(std::shared_ptr&lt;GameState&gt;)</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="structures">
+<h2>Structures<a class="headerlink" href="#structures" title="Link to this heading">¶</a></h2>
+<section id="label">
+<h3><code class="docutils literal notranslate"><span class="pre">Label</span></code><a class="headerlink" href="#label" title="Link to this heading">¶</a></h3>
+<p>(<code class="docutils literal notranslate"><span class="pre">C++</span> <span class="pre">type</span> <span class="pre">/</span> <span class="pre">Python</span> <span class="pre">type</span></code> <strong>name</strong>)</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>objectId / object_id</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std::string</span> <span class="pre">/</span> <span class="pre">str</span></code> <strong>objectName / object_name</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uint8_t</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>value</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>x</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>y</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>width</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>height</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>objectPositionX / object_position_x</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>objectPositionY / object_position_y</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>objectPositionZ / object_position_z</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>objectAngle / object_angle</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>objectPitch / object_pitch</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>objectRoll / object_roll</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>objectVelocityX / object_velocity_x</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>objectVelocityY / object_velocity_y</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>objectVelocityZ / object_velocity_z</strong></p></li>
+</ul>
+<p>Description of the object in the labels buffer.</p>
+<p><strong>objectId / object_id</strong> - unique object ID, if both Labels and Objects information is enabled, this will be the same as <strong>id</strong> in corresponding <strong>Object</strong>.</p>
+<p><strong>objectName / object_name</strong> - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).</p>
+<p><strong>value</strong> - value that represents this particular object in <strong>labelsBuffer</strong>.</p>
+<p><strong>x</strong>, <strong>y</strong>, <strong>width</strong>, <strong>height</strong> - describes bounding box of this particular object in <strong>labelsBuffer</strong>. Note: added in 1.1.5.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#./doomGame.md#setlabelsbufferenabled"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame::setLabelsBufferEnabled</span></code></span></a>,</p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels_buffer.py">examples/python/objects_and_sectors.py</a>.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="object">
+<h3><code class="docutils literal notranslate"><span class="pre">Object</span></code><a class="headerlink" href="#object" title="Link to this heading">¶</a></h3>
+<p>(<code class="docutils literal notranslate"><span class="pre">C++</span> <span class="pre">type</span> <span class="pre">/</span> <span class="pre">Python</span> <span class="pre">type</span></code> <strong>name</strong>)</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>id</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std::string</span> <span class="pre">/</span> <span class="pre">str</span></code> <strong>name</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>positionX / position_x</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>positionY / position_y</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>positionZ / position_z</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>angle</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>pitch</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>roll</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>velocityX / velocity_x</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>velocityY / velocity_y</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>velocityZ / velocity_z</strong></p></li>
+</ul>
+<p>Description of the object present in the game world.</p>
+<p><strong>id</strong> - unique object ID.</p>
+<p><strong>name</strong> - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#./doomGame.md#setsectorsinfoenabled"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame::setObjectsInfoEnabled</span></code></span></a>,</p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>.</p></li>
+</ul>
+<p>Note: added in 1.1.8.</p>
+</section>
+<hr class="docutils" />
+<section id="line">
+<h3><code class="docutils literal notranslate"><span class="pre">Line</span></code><a class="headerlink" href="#line" title="Link to this heading">¶</a></h3>
+<p>(<code class="docutils literal notranslate"><span class="pre">C++</span> <span class="pre">type</span> <span class="pre">/</span> <span class="pre">Python</span> <span class="pre">type</span></code> <strong>name</strong>)</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>x1</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>y1</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>x2</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>y2</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">/</span> <span class="pre">bool</span></code> <strong>isBlocking / is_blocking</strong></p></li>
+</ul>
+<p>Description of the line that is part of a sector definition.</p>
+<p><strong>x1</strong>, <strong>y1</strong> - position of the line’s first vertex.</p>
+<p><strong>x2</strong>, <strong>y2</strong> - position of the line’s second vertex.</p>
+<p><strong>isBlocking / is_blocking</strong> - is true, if line is a wall that can’t be passed.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>.</p></li>
+</ul>
+<p>Note: added in 1.1.8.</p>
+</section>
+<hr class="docutils" />
+<section id="sector">
+<h3><code class="docutils literal notranslate"><span class="pre">Sector</span></code><a class="headerlink" href="#sector" title="Link to this heading">¶</a></h3>
+<p>(<code class="docutils literal notranslate"><span class="pre">C++</span> <span class="pre">type</span> <span class="pre">/</span> <span class="pre">Python</span> <span class="pre">type</span></code> <strong>name</strong>)</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>floorHeight / floor_height</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>ceilingHeight / ceiling_height</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std::vector&lt;Label&gt;</span> <span class="pre">/</span> <span class="pre">list</span></code> <strong>lines</strong></p></li>
+</ul>
+<p>Description of the sector, part of the map with the same floor and ceiling height.</p>
+<p><strong>floorHeight / floor_height</strong> - height of the sector’s floor.</p>
+<p><strong>ceilingHeight / ceiling_height</strong> - height of the sector’s ceiling.</p>
+<p><strong>lines</strong> - contains list of line segments, that forms sector.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#./doomGame.md#setsectorsinfoenabled"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame::setSectorsInfoEnabled</span></code></span></a>,</p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>.</p></li>
+</ul>
+<p>Note: added in 1.1.8.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="serverstate">
+<h2><code class="docutils literal notranslate"><span class="pre">ServerState</span></code><a class="headerlink" href="#serverstate" title="Link to this heading">¶</a></h2>
+<p>(<code class="docutils literal notranslate"><span class="pre">C++</span> <span class="pre">type</span> <span class="pre">/</span> <span class="pre">Python</span> <span class="pre">type</span></code> <strong>name</strong>)</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>tic</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>playerCount / player_count</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bool[]</span> <span class="pre">/</span> <span class="pre">list</span></code> <strong>playersInGame / players_in_game</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">int[]</span> <span class="pre">/</span> <span class="pre">list</span></code> <strong>playersFrags / players_frags</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std::string[]</span> <span class="pre">/</span> <span class="pre">list</span></code> <strong>playersNames / players_names</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bool[]</span> <span class="pre">/</span> <span class="pre">list</span></code> <strong>playersAfk / players_afk</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int[]</span> <span class="pre">/</span> <span class="pre">list</span></code> **playersLastActionTic / players_last_action_tic **</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int[]</span> <span class="pre">/</span> <span class="pre">list</span></code> **playersLastKillTic / players_last_kill_tic **</p></li>
+</ul>
+<p>ServerState is the main object returned by <a class="reference internal" href="#./doomGame.md#getserverstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame::getServerState</span></code></span></a> method, and it purpose is to get more information about the state of the multi-player game.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#./doomGame.md#getserverstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame::getServerState</span></code></span></a>,</p></li>
+</ul>
+<p>Note: added in 1.1.6.</p>
+</section>
 </section>
 
           </article>
@@ -327,30 +474,8 @@ The declarations of all the enums can be found in the <code class="docutils lite
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../utils/">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">Utilities</div>
-              </div>
-              <svg class="furo-related-icon">
-                <use href="#svg-arrow-right"></use>
-              </svg>
-            </a>
-            <a class="prev-page" href="../enums/">
-              <svg class="furo-related-icon">
-                <use href="#svg-arrow-right"></use>
-              </svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">Enums</div>
-                
-              </div>
-            </a>
+            
+            
           </div>
           <div class="bottom-of-page">
             <div class="left-details">
@@ -379,8 +504,38 @@ The declarations of all the enums can be found in the <code class="docutils lite
           
         </footer>
       </div>
-      <aside class="toc-drawer no-toc">
+      <aside class="toc-drawer">
         
+        
+        <div class="toc-sticky toc-scroll">
+          <div class="toc-title-container">
+            <span class="toc-title">
+              On this page
+            </span>
+          </div>
+          <div class="toc-tree-container">
+            <div class="toc-tree">
+              <ul>
+<li><a class="reference internal" href="#">GameState</a><ul>
+<li><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></a><ul>
+<li><a class="reference internal" href="#types-used-only-in-c">Types used only in C++</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#structures">Structures</a><ul>
+<li><a class="reference internal" href="#label"><code class="docutils literal notranslate"><span class="pre">Label</span></code></a></li>
+<li><a class="reference internal" href="#object"><code class="docutils literal notranslate"><span class="pre">Object</span></code></a></li>
+<li><a class="reference internal" href="#line"><code class="docutils literal notranslate"><span class="pre">Line</span></code></a></li>
+<li><a class="reference internal" href="#sector"><code class="docutils literal notranslate"><span class="pre">Sector</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#serverstate"><code class="docutils literal notranslate"><span class="pre">ServerState</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
         
         
       </aside>

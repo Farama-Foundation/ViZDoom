@@ -8,7 +8,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
     <meta property="og:url" content="https://vizdoom.farama.org/faq/index.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex/" /><link rel="search" title="Search" href="../search/" /><link rel="next" title="How to cite" href="../citation/" /><link rel="prev" title="Creating a custom environment" href="../environments/creatingCustom/" />
+<link rel="index" title="Index" href="../genindex/" /><link rel="search" title="Search" href="../search/" /><link rel="next" title="How to cite" href="../citation/" /><link rel="prev" title="Creating a custom environment" href="../environments/creating_custom/" />
         <link rel="canonical" href="https://vizdoom.farama.org/faq/index.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
@@ -212,15 +212,13 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/pythonQuickstart/">Python quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/python_quickstart/">Python quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../introduction/building/">Building from source</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction/apisAndWrappers/">APIs and wrappers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/apis_and_wrappers/">APIs and wrappers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/python/doomGame/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/python/gameState/">GameState</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/python/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/python/utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/python/exceptions/">Exceptions</a></li>
@@ -229,20 +227,18 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/cpp/doomGame/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/cpp/gameState/">GameState</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/cpp/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/cpp/exceptions/">Exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/cpp/utils/">Utilities</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../api/configurationFiles/">Configuration files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/configuration_files/">Configuration files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../environments/default/">Default scenarios/environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../environments/thirdParty/">Third-party environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../environments/creatingCustom/">Creating a custom environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/third_party/">Third-party environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/creating_custom/">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul class="current">
@@ -320,7 +316,7 @@ You can find more questions and answers by searching for issues with “question
 <section id="how-to-use-original-doom-s-assets">
 <h2>How to use original Doom’s assets?<a class="headerlink" href="#how-to-use-original-doom-s-assets" title="Link to this heading">¶</a></h2>
 <p>We cannot provide original Doom’s assets due to licensing issues, that is why ViZDoom uses <a class="reference external" href="https://freedoom.github.io">freedoom2.wad</a> as default assets.
-If you own original Doom or Doom 2 game (can be bought them on Steam or GOG), you can replace Freedoom graphics with original Doom’s assets by placing doom.wad or doom2.wad into your working directory or vizdoom package directory (same directory as vizdoom(.exe)). Alternatively, any base game WAD (including other Doom engine-based games) can be used by pointing to it with the <a class="reference internal" href="../api/python/doomGame/#vizdoom.DoomGame.set_doom_game_path"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_doom_game_path</span></code></span></a> method. On Unix you can also set <code class="docutils literal notranslate"><span class="pre">DOOMWADDIR</span></code> environment variable to directory with your wads files.</p>
+If you own original Doom or Doom 2 game (can be bought them on Steam or GOG), you can replace Freedoom graphics with original Doom’s assets by placing doom.wad or doom2.wad into your working directory or vizdoom package directory (same directory as vizdoom(.exe)). Alternatively, any base game WAD (including other Doom engine-based games) can be used by pointing to it with the <a class="reference internal" href="#../api/python/doomGame.md#vizdoom.DoomGame.set_doom_game_path"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_doom_game_path</span></code></span></a> method. On Unix you can also set <code class="docutils literal notranslate"><span class="pre">DOOMWADDIR</span></code> environment variable to directory with your wads files.</p>
 </section>
 <section id="how-to-create-modify-scenarios">
 <h2>How to create/modify scenarios?<a class="headerlink" href="#how-to-create-modify-scenarios" title="Link to this heading">¶</a></h2>
@@ -339,7 +335,7 @@ that supports the widest range of features.</p>
 <section id="how-to-stack-frames">
 <h2>How to stack frames?<a class="headerlink" href="#how-to-stack-frames" title="Link to this heading">¶</a></h2>
 <p>ViZDoom does not automatically stacks frames for you.
-You have to manually store the states from <a class="reference internal" href="../api/python/doomGame/#vizdoom.DoomGame.get_state"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_state</span></code></span></a>. and build up stacked states for your agent.</p>
+You have to manually store the states from <a class="reference internal" href="#../api/python/doomGame.md#vizdoom.DoomGame.get_state"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_state</span></code></span></a>. and build up stacked states for your agent.</p>
 <p><strong>Original issue and answer: (contains code an example)</strong>
 <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/296">https://github.com/Farama-Foundation/ViZDoom/issues/296</a></p>
 </section>
@@ -347,7 +343,7 @@ You have to manually store the states from <a class="reference internal" href=".
 <h2>How to change keyboard binding for Spectator Mode?<a class="headerlink" href="#how-to-change-keyboard-binding-for-spectator-mode" title="Link to this heading">¶</a></h2>
 <p>When you launch an instance of vizdoom, it will create <code class="docutils literal notranslate"><span class="pre">_vizdoom.ini</span></code> in your working directory (if it does not exist yet).
 This file contains all the additional engine settings, including key bindings, that you can edit freely.</p>
-<p>You can also load .ini file from different location using <a class="reference internal" href="../api/python/doomGame/#vizdoom.DoomGame.set_doom_config_path"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_doom_config_path</span></code></span></a>.</p>
+<p>You can also load .ini file from different location using <a class="reference internal" href="#../api/python/doomGame.md#vizdoom.DoomGame.set_doom_config_path"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_doom_config_path</span></code></span></a>.</p>
 <p><strong>Original issue and answer:</strong>
 <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/253">https://github.com/Farama-Foundation/ViZDoom/issues/253</a></p>
 </section>
@@ -359,7 +355,7 @@ This file contains all the additional engine settings, including key bindings, t
 </section>
 <section id="how-to-control-game-speed-in-async-modes">
 <h2>How to control game speed in <code class="docutils literal notranslate"><span class="pre">ASYNC</span></code> modes?<a class="headerlink" href="#how-to-control-game-speed-in-async-modes" title="Link to this heading">¶</a></h2>
-<p>See: <a class="reference internal" href="../api/python/doomGame/#vizdoom.DoomGame.set_ticrate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_ticrate</span></code></span></a> and <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/ticrate.py">examples/python/ticrate.py</a></p>
+<p>See: <a class="reference internal" href="#../api/python/doomGame.md#vizdoom.DoomGame.set_ticrate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_ticrate</span></code></span></a> and <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/ticrate.py">examples/python/ticrate.py</a></p>
 <p><strong>Original issue and answer:</strong>
 <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/issues/209">https://github.com/Farama-Foundation/ViZDoom/issues/209</a></p>
 </section>
@@ -490,7 +486,7 @@ with ViZDoom. You have several options you can try (one of these steps has worke
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            <a class="prev-page" href="../environments/creatingCustom/">
+            <a class="prev-page" href="../environments/creating_custom/">
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>

@@ -7,12 +7,12 @@
     <meta property="og:title" content="ViZDoom Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
-    <meta property="og:url" content="https://vizdoom.farama.org/api/cpp.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Enums" href="enums/" /><link rel="prev" title="OpenAI Gym Env" href="../python/gym/" />
-        <link rel="canonical" href="https://vizdoom.farama.org/api/cpp.html" />
+    <meta property="og:url" content="https://vizdoom.farama.org/api/configuration_files.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Default scenarios/environments" href="../../environments/default/" /><link rel="prev" title="Utilities" href="../cpp/utils/" />
+        <link rel="canonical" href="https://vizdoom.farama.org/api/configuration_files.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
-        <title>C++ API - ViZDoom Documentation</title>
+        <title>Configuration files - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=49cbaffd" />
@@ -191,7 +191,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -226,13 +226,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../python/gym/">OpenAI Gym Env</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">C++ API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="enums/">Enums</a></li>
-<li class="toctree-l2"><a class="reference internal" href="exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utils/">Utilities</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cpp/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cpp/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cpp/utils/">Utilities</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../configuration_files/">Configuration files</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Configuration files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
@@ -276,7 +276,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/api/cpp.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/api/configuration_files.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -298,7 +298,7 @@
                 </svg>
               </button>
             </div>
-            <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-content-icon" for="__toc">
               <div class="visually-hidden">Toggle table of contents sidebar</div>
               <i class="icon"><svg>
                   <use href="#svg-toc"></use>
@@ -307,13 +307,125 @@
           </div>
           <article role="main">
             
-            <section class="tex2jax_ignore mathjax_ignore" id="c-api">
-<h1>C++ API<a class="headerlink" href="#c-api" title="Link to this heading">¶</a></h1>
-<p>ViZDoom is implemented in C++ and can be used as a C++ library. The C++ API is one-to-one with the Python API. The only difference is the use of <code class="docutils literal notranslate"><span class="pre">camelCase</span></code> instead of <code class="docutils literal notranslate"><span class="pre">snake_case</span></code> for method names.</p>
-<p>ViZDoom can be built as a static or dynamic library. The header files are located in the <code class="docutils literal notranslate"><span class="pre">include</span></code> directory.
-See <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/cpp">examples/cpp</a> for examples, including CMake files for building.</p>
-<div class="toctree-wrapper compound">
+            <section class="tex2jax_ignore mathjax_ignore" id="configuration-files">
+<h1>Configuration files<a class="headerlink" href="#configuration-files" title="Link to this heading">¶</a></h1>
+<p>Instead of configuring the ViZDoom in code, you can load it from the configuration file(s). Each file is read sequentially, so multiple entries with the same key will overwrite previous entries.</p>
+<section id="format">
+<h2>Format<a class="headerlink" href="#format" title="Link to this heading">¶</a></h2>
+<p>Each entry in a configraution file is a pair of <strong>key</strong> and <strong>value</strong> separated by an equal sign (<strong><code class="docutils literal notranslate"><span class="pre">=</span></code></strong>). The file format should also abide the following rules:</p>
+<ul class="simple">
+<li><p>one entry per line (except for list parameters),</p></li>
+<li><p>case insensitive</p></li>
+<li><p>lines starting with <strong>#</strong> are ignored,</p></li>
+<li><p>underscores in <strong>keys</strong> are ignored (<em>episode_timeout</em> is equivalent to <em>episodetimeout</em>),</p></li>
+<li><p>string values should <strong>not</strong> be surrounded with apostrophes or quotation marks.</p></li>
+</ul>
+<p>A violation of any of these rules will result in ignoring <strong>only</strong> the line with the error and sending a warning message to stderr (“WARNING! Loading config from: …”).</p>
+<section id="list-of-values">
+<h3>List of values<a class="headerlink" href="#list-of-values" title="Link to this heading">¶</a></h3>
+<p><strong>available_buttons</strong> and <strong>available_game_variables</strong> are special parameters, which use multiple values and instead of a single value they expect a list of values separated by whitespaces and enclosed within braces (<code class="docutils literal notranslate"><span class="pre">{</span></code> and <code class="docutils literal notranslate"><span class="pre">}</span></code>). The list can stretch throughout multiple lines as long as all values are separated from each other by whitespaces.</p>
+</section>
+<section id="appending-values">
+<h3>Appending values<a class="headerlink" href="#appending-values" title="Link to this heading">¶</a></h3>
+<p>Each list assignment (<strong><code class="docutils literal notranslate"><span class="pre">KEY</span> <span class="pre">=</span> <span class="pre">{</span> <span class="pre">VALUES</span> <span class="pre">}</span></code></strong>)clears values specified for this key before (in other configuration files or in the code). That is why the <strong>append operator (<code class="docutils literal notranslate"><span class="pre">KEY</span> <span class="pre">+=</span> <span class="pre">{</span> <span class="pre">VALUES</span> <span class="pre">}</span></code>)</strong> is available. This way you can more easily combine multiple configuration files and tinker in code.</p>
+</section>
+<section id="supported-configuration-keys">
+<h3>Supported configuration keys:<a class="headerlink" href="#supported-configuration-keys" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">audioBufferEnabled/audio_buffer_enabled</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">audioBufferSize/audio_buffer_size</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">audioSamplingRate/audio_samping_rate</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">automapBufferEnabled/automap_buffer_enabled</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">automapMode/automap_mode</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">automapRenderTextures/automap_render_textures</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">automapRotate/automap_rotate</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">availableButtons/available_buttons</span></code> (list of values)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">availableGameVariables/available_game_variables</span></code> (list of values)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">consoleEnabled/console_enabled</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deathPenalty/death_penalty</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">depthBufferEnabled/depth_buffer_enabled</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DoomConfigPath/doom_config_path</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DoomGamePath/doom_game_path</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DoomMap/doom_map</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DoomScenarioPath/doom_scenario_path</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DoomSkill/doom_skill</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">episodeStartTime/episode_start_time</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">episodeTimeout/episode_timeout</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gameArgs/game_args</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">labelsBufferEnabled/labels_buffer_enabled</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">livingReward/living_reward</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mode</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">objectsInfoEnabled/objects_info_enabled</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">renderAllFrames/render_all_frames</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">renderCorpses/render_corpses</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">renderCrosshair/render_crosshair</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">renderDecals/render_decals</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">renderEffectsSprites/render_effects_sprites</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">renderScreenFlashes/render_screen_flashes</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">renderHud/render_hud</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">renderMessages/render_messages</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">renderMinimalHud/render_minimal_hud</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">renderParticles/render_particles</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">renderWeapon/render_weapon</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">screenFormat/screen_format</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">screenResolution/screen_resolution</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sectorsInfoEnabled/sectors_info_enabled</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">soundEnabled/sound_enabled</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ticrate</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ViZDoomPath/vizdoom_path</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">windowVisible/window_visible</span></code></p></li>
+</ul>
+<p>Config keys are also mentioned for related methods in the documentation for <code class="docutils literal notranslate"><span class="pre">DoomGame</span></code> class.</p>
+</section>
+<section id="sample-configuration-file-content">
+<h3>Sample configuration file content:<a class="headerlink" href="#sample-configuration-file-content" title="Link to this heading">¶</a></h3>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">vizdoom_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">../../bin/vizdoom</span>
+<span class="c1">#doom_game_path = ../../scenarios/doom2.wad</span>
+<span class="na">doom_game_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">../../scenarios/freedoom2.wad</span>
+<span class="na">doom_scenario_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">../../scenarios/basic.wad</span>
+<span class="na">doom_map</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">map01</span>
+
+<span class="c1"># Rewards</span>
+<span class="na">living_reward</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">-1</span>
+
+<span class="c1"># Rendering options</span>
+<span class="na">screen_resolution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">RES_320X240</span>
+<span class="na">screen_format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">CRCGCB</span>
+<span class="na">render_hud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+<span class="na">render_crosshair</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">false</span>
+<span class="na">render_weapon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+<span class="na">render_decals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">false</span>
+<span class="na">render_particles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">false</span>
+<span class="na">window_visible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+
+<span class="c1"># make episodes start after 14 tics (after unholstering the gun)</span>
+<span class="na">episode_start_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">14</span>
+
+<span class="c1"># make episodes finish after 300 actions (tics)</span>
+<span class="na">episode_timeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">300</span>
+
+<span class="c1"># Available buttons</span>
+<span class="na">available_buttons</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="na">{</span>
+<span class="w">        </span><span class="na">MOVE_LEFT</span>
+<span class="w">        </span><span class="na">MOVE_RIGHT</span>
+<span class="w">        </span><span class="na">ATTACK</span>
+<span class="w">    </span><span class="na">}</span>
+
+<span class="c1"># Game variables that will be in the state</span>
+<span class="na">available_game_variables</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">{ AMMO2 }</span>
+
+<span class="c1"># Default mode - the game is controlled from the code</span>
+<span class="na">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">PLAYER</span>
+
+<span class="c1"># Difficulty of gameplay ranging from 1 (baby) to 5 (nightmare)</span>
+<span class="na">doom_skill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">5</span>
+</pre></div>
 </div>
+<p>Other examples of configuration files can be found in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios">scenarios</a> directory.</p>
+</section>
+</section>
 </section>
 
           </article>
@@ -321,18 +433,18 @@ See <a class="reference external" href="https://github.com/Farama-Foundation/ViZ
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="enums/">
+            <a class="next-page" href="../../environments/default/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Enums</div>
+                <div class="title">Default scenarios/environments</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            <a class="prev-page" href="../python/gym/">
+            <a class="prev-page" href="../cpp/utils/">
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
@@ -341,7 +453,7 @@ See <a class="reference external" href="https://github.com/Farama-Foundation/ViZ
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">OpenAI Gym Env</div>
+                <div class="title">Utilities</div>
                 
               </div>
             </a>
@@ -373,8 +485,33 @@ See <a class="reference external" href="https://github.com/Farama-Foundation/ViZ
           
         </footer>
       </div>
-      <aside class="toc-drawer no-toc">
+      <aside class="toc-drawer">
         
+        
+        <div class="toc-sticky toc-scroll">
+          <div class="toc-title-container">
+            <span class="toc-title">
+              On this page
+            </span>
+          </div>
+          <div class="toc-tree-container">
+            <div class="toc-tree">
+              <ul>
+<li><a class="reference internal" href="#">Configuration files</a><ul>
+<li><a class="reference internal" href="#format">Format</a><ul>
+<li><a class="reference internal" href="#list-of-values">List of values</a></li>
+<li><a class="reference internal" href="#appending-values">Appending values</a></li>
+<li><a class="reference internal" href="#supported-configuration-keys">Supported configuration keys:</a></li>
+<li><a class="reference internal" href="#sample-configuration-file-content">Sample configuration file content:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
         
         
       </aside>

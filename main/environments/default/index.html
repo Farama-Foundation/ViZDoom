@@ -8,7 +8,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
     <meta property="og:url" content="https://vizdoom.farama.org/environments/default.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Third-party environments" href="../thirdParty/" /><link rel="prev" title="Configuration files" href="../../api/configurationFiles/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Third-party environments" href="../third_party/" /><link rel="prev" title="Configuration files" href="../../api/configuration_files/" />
         <link rel="canonical" href="https://vizdoom.farama.org/environments/default.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
@@ -212,15 +212,13 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../introduction/pythonQuickstart/">Python quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/python_quickstart/">Python quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction/building/">Building from source</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../introduction/apisAndWrappers/">APIs and wrappers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/apis_and_wrappers/">APIs and wrappers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/doomGame/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/gameState/">GameState</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/exceptions/">Exceptions</a></li>
@@ -229,20 +227,18 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/doomGame/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/gameState/">GameState</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/cpp/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/cpp/exceptions/">Exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/cpp/utils/">Utilities</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/configurationFiles/">Configuration files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/configuration_files/">Configuration files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Default scenarios/environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../thirdParty/">Third-party environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../creatingCustom/">Creating a custom environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../third_party/">Third-party environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../creating_custom/">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -316,7 +312,7 @@
 <p>Below we describe a default singleplayer scenarios (original ViZDoom nomenclature)/environments (Gymnasium/Open AI Gym nomenclature) included with ViZDoom. The PRs with new scenarios are welcome!</p>
 <section id="how-to-use-default-scenarios">
 <h2>How to use default scenarios<a class="headerlink" href="#how-to-use-default-scenarios" title="Link to this heading">¶</a></h2>
-<p>When using original ViZDoom API, each scenario can be loaded <a class="reference internal" href="../../api/python/doomGame/#vizdoom.DoomGame.load_config"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">load_config</span></code></span></a> (Python)/<a class="reference internal" href="../../api/cpp/doomGame/#loadconfig"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">loadConfig</span></code></span></a> (C++) method:</p>
+<p>When using original ViZDoom API, each scenario can be loaded <a class="reference internal" href="#../api/python/doomGame.md#vizdoom.DoomGame.load_config"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">load_config</span></code></span></a> (Python)/<a class="reference internal" href="#../api/cpp/doomGame.md#loadconfig"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">loadConfig</span></code></span></a> (C++) method:</p>
 <p>Python example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">vizdoom</span> <span class="k">as</span> <span class="nn">vzd</span>
@@ -572,7 +568,7 @@ the player dies.</p>
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../thirdParty/">
+            <a class="next-page" href="../third_party/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
@@ -583,7 +579,7 @@ the player dies.</p>
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            <a class="prev-page" href="../../api/configurationFiles/">
+            <a class="prev-page" href="../../api/configuration_files/">
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
