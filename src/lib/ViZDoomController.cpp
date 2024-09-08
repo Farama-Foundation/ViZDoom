@@ -157,9 +157,6 @@ namespace vizdoom {
                 this->MQDoom = new MessageQueue(MQ_DOOM_NAME_BASE + this->instanceId);
                 this->MQController = new MessageQueue(MQ_CTR_NAME_BASE + this->instanceId);
 
-                // Signal handle thread
-                this->signalThread = new b::thread(b::bind(&DoomController::handleSignals, this));
-
                 // Doom thread
                 this->doomThread = new b::thread(b::bind(&DoomController::launchDoom, this));
                 this->doomRunning = true;
@@ -219,18 +216,6 @@ namespace vizdoom {
                 
                 // Try to close Doom gently
                 this->MQDoom->send(MSG_CODE_CLOSE);
-            }
-
-            if (this->signalThread && this->signalThread->joinable()) {
-                this->ioService->stop();
-
-                this->signalThread->interrupt();
-                this->signalThread->join();
-                delete this->signalThread;
-                this->signalThread = nullptr;
-
-                delete this->ioService;
-                this->ioService = nullptr;
             }
 
             #ifdef OS_POSIX
@@ -1142,34 +1127,6 @@ namespace vizdoom {
         }
     }
 
-
-    /* Signals */
-    /*----------------------------------------------------------------------------------------------------------------*/
-
-    void DoomController::handleSignals() {
-        this->ioService = new ba::io_service();
-        ba::signal_set signals(*this->ioService, SIGINT, SIGABRT, SIGTERM);
-        
-    #if BOOST_VERSION >= 106000
-        signals.async_wait(b::bind(signalHandler, b::ref(signals), this, bpl::_1, bpl::_2));
-    #else
-        signals.async_wait(b::bind(signalHandler, b::ref(signals), this, _1, _2));
-    #endif
-
-        this->ioService->run();
-    }
-
-    void DoomController::signalHandler(ba::signal_set &signal, DoomController *controller, const bs::error_code &error,
-                                       int sigNumber) {
-        controller->intSignal(sigNumber);
-    }
-
-    void DoomController::intSignal(int sigNumber) {
-        this->MQDoom->send(MSG_CODE_CLOSE);
-        this->MQController->send(static_cast<uint8_t >(MSG_CODE_SIG + sigNumber));
-    }
-
-
     /* Flow */
     /*----------------------------------------------------------------------------------------------------------------*/
 
@@ -1190,18 +1147,6 @@ namespace vizdoom {
             case MSG_CODE_DOOM_ERROR :
                 this->close();
                 throw ViZDoomErrorException(std::string(msg.command));
-
-            case MSG_CODE_SIGINT :
-                this->close();
-                throw SignalException("SIGINT");
-
-            case MSG_CODE_SIGABRT :
-                this->close();
-                throw SignalException("SIGABRT");
-
-            case MSG_CODE_SIGTERM :
-                this->close();
-                throw SignalException("SIGTERM");
 
             default:
                 this->close();

@@ -59,7 +59,6 @@ PYBIND11_MODULE(vizdoom, vz){
     EXCEPTION_TO_PYT(FileDoesNotExistException)
     EXCEPTION_TO_PYT(MessageQueueException)
     EXCEPTION_TO_PYT(SharedMemoryException)
-    EXCEPTION_TO_PYT(SignalException)
     EXCEPTION_TO_PYT(ViZDoomIsNotRunningException)
     EXCEPTION_TO_PYT(ViZDoomErrorException)
     EXCEPTION_TO_PYT(ViZDoomUnexpectedExitException)

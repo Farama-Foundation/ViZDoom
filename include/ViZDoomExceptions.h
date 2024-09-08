@@ -58,15 +58,6 @@ namespace vizdoom{
         std::string error;
     };
 
-    class SignalException : public std::exception {
-    public:
-        SignalException(std::string signal): signal(signal){}
-        ~SignalException() throw(){}
-        const char* what() const throw();
-    private:
-        std::string signal;
-    };
-
     class ViZDoomErrorException : public std::exception {
     public:
         ViZDoomErrorException(){}

@@ -9,8 +9,6 @@ The declarations of all the enums can be found in the `include/ViZDoomExceptions
 
 * `MessageQueueException/SharedMemoryException` - means that communication with ViZDoom's instance failed. Usually, means a problem with permissions or system configuration.
 
-* `SignalException` - means that a signal was cached by ViZDoom's instance.
-
 * `ViZDoomErrorException` - means that an error in the ViZDoom engine occurred.
 
 * `ViZDoomIsNotRunningException` - means that called method cannot be used when ViZDoom instance is not running.

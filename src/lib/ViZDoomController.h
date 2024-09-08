@@ -75,24 +75,15 @@ namespace vizdoom {
 #define MSG_CODE_COMMAND                24
 #define MSG_CODE_CLOSE                  25
 
-#define MSG_CODE_SIG                    30
-#define MSG_CODE_SIGINT                 30 + SIGINT
-#define MSG_CODE_SIGABRT                30 + SIGABRT
-#define MSG_CODE_SIGTERM                30 + SIGTERM
-
 /* OSes */
 #ifdef __linux__
     #define OS_LINUX
     #define OS_POSIX
-    #include <sys/types.h>
-    #include <signal.h>
 #elif _WIN32
     #define OS_WIN
 #elif __APPLE__
     #define OS_OSX
     #define OS_POSIX
-    #include <sys/types.h>
-    #include <signal.h>
 #endif
 
     class DoomController {
@@ -321,16 +312,6 @@ namespace vizdoom {
 
         /* Threads */
         /*------------------------------------------------------------------------------------------------------------*/
-
-        ba::io_service *ioService;
-        b::thread *signalThread;
-
-        void handleSignals();
-
-        static void signalHandler(ba::signal_set &signal, DoomController *controller,
-                                  const bs::error_code &error, int sigNumber);
-
-        void intSignal(int sigNumber);
 
         b::thread *doomThread;
 
