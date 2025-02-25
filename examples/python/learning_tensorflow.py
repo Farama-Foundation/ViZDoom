@@ -13,13 +13,14 @@ import numpy as np
 import skimage.color
 import skimage.transform
 import tensorflow as tf
+from setuptools.command.setopt import config_file
 from tensorflow.keras import Model, Sequential
 from tensorflow.keras.layers import BatchNormalization, Conv2D, Dense, Flatten, ReLU
 from tensorflow.keras.optimizers import SGD
 from tqdm import trange
 
 import vizdoom as vzd
-
+from vizdoom import scenarios_path
 
 tf.compat.v1.enable_eager_execution()
 tf.executing_eagerly()
@@ -28,7 +29,7 @@ tf.executing_eagerly()
 learning_rate = 0.00025
 discount_factor = 0.99
 replay_memory_size = 10000
-num_train_epochs = 5
+num_train_epochs = 20
 learning_steps_per_epoch = 2000
 target_net_update_steps = 1000
 
@@ -39,7 +40,7 @@ batch_size = 64
 test_episodes_per_epoch = 100
 
 # Other parameters
-frames_per_action = 12
+frames_per_action = 4
 resolution = (30, 45)
 episodes_to_watch = 20
 
@@ -49,9 +50,12 @@ skip_learning = False
 watch = True
 
 # Configuration file path
-config_file_path = os.path.join(vzd.scenarios_path, "simpler_basic.cfg")
+# 설정 파일과 모델 저장 경로 설정
+# config_file_path = os.path.join(vzd.scenarios_path, "deadly_corridor.cfg")
+config_file_path = r"C:\Users\schale\ViZDoom\scenarios\deadly_corridor.cfg"
 model_savefolder = "./model"
 
+# GPU 사용 가능 여부 확인 후 모델 학습에 사용할 디바이스 설정
 if len(tf.config.experimental.list_physical_devices("GPU")) > 0:
     print("GPU available")
     DEVICE = "/gpu:0"
@@ -60,6 +64,7 @@ else:
     DEVICE = "/cpu:0"
 
 
+# 이미지를 resolution 변수에 맞게 resize
 def preprocess(img):
     img = skimage.transform.resize(img, resolution)
     img = img.astype(np.float32)
@@ -68,6 +73,7 @@ def preprocess(img):
     return tf.stack(img)
 
 
+# 게임 설정 및 초기화
 def initialize_game():
     print("Initializing doom...")
     game = vzd.DoomGame()
@@ -82,9 +88,10 @@ def initialize_game():
     return game
 
 
+# 강화 학습 에이전트 정의
 class DQNAgent:
     def __init__(
-        self, num_actions=8, epsilon=1, epsilon_min=0.1, epsilon_decay=0.9995, load=load
+        self, num_actions=8, epsilon=1, epsilon_min=0.1, epsilon_decay=0.9995, load=load # 액션 수, 엡실론
     ):
         self.epsilon = epsilon
         self.epsilon_min = epsilon_min
@@ -93,17 +100,17 @@ class DQNAgent:
         self.num_actions = num_actions
         self.optimizer = SGD(learning_rate)
 
-        if load:
+        if load: # 로드 할 모델이 있는 경우
             print("Loading model from: ", model_savefolder)
             self.dqn = tf.keras.models.load_model(model_savefolder)
-        else:
+        else: # 없는 경우
             self.dqn = DQN(self.num_actions)
             self.target_net = DQN(self.num_actions)
 
     def update_target_net(self):
         self.target_net.set_weights(self.dqn.get_weights())
 
-    def choose_action(self, state):
+    def choose_action(self, state): # state를 입력으로 액션 선택
         if self.epsilon < np.random.uniform(0, 1):
             action = int(tf.argmax(self.dqn(tf.reshape(state, (1, 30, 45, 1))), axis=1))
         else:
@@ -143,7 +150,7 @@ class DQNAgent:
         gradients = tape.gradient(td_error, self.dqn.trainable_variables)
         self.optimizer.apply_gradients(zip(gradients, self.dqn.trainable_variables))
 
-        if self.epsilon > self.epsilon_min:
+        if self.epsilon > self.epsilon_min: # epsilon이 최솟값보다 클 때, epsilon_decay를 곱함
             self.epsilon *= self.epsilon_decay
         else:
             self.epsilon = self.epsilon_min
@@ -174,6 +181,50 @@ def get_samples(memory):
 
     return sample(memory, sample_size)
 
+def calculate_reward(game, action, prev_state):
+    # 기본 보상
+    reward = game.make_action(actions[action], frames_per_action)
+
+    if game.get_state():
+        game_vars = game.get_state().game_variables
+        ammo = game_vars[0]
+        health = game_vars[1]
+        killcount = game_vars[2]
+
+        # 플레이어의 좌표 정보 (게임 상태에서 추출)
+        player_x, player_y = game_vars[3], game_vars[4]
+
+        # Vest(방탄복) 좌표 (미리 지정된 값, 맵을 분석해서 가져와야 함)
+        vest_x, vest_y = 1300, 0
+        # 1300, [-16,16]
+        # vest_distance = ((player_x - vest_x) ** 2 + (player_y - vest_y) ** 2) ** 0.5
+        vest_distance = (player_x - vest_x) ** 2 ** 0.5
+
+        # 🔹 탄약 감소 시 패널티
+        if ammo < prev_state["ammo"]:
+            reward -= 2
+
+        # 🔹 적을 처치하면 보상 증가
+        if killcount > prev_state["killcount"]:
+            reward += 10
+
+        # 🔹 체력이 줄어들면 패널티
+        if health < prev_state["health"]:
+            reward -= 5
+
+        # 🔹 Vest(방탄복)에 가까워지면 보상 증가
+        if vest_distance < prev_state["vest_distance"]:
+            reward += 5
+
+        # 🔹 prev_state 업데이트 (다음 프레임에서 사용)
+        prev_state["ammo"] = ammo
+        prev_state["killcount"] = killcount
+        prev_state["health"] = health
+        prev_state["vest_distance"] = vest_distance
+
+    return reward * 0.1
+
+
 
 def run(agent, game, replay_memory):
     time_start = time()
@@ -183,12 +234,14 @@ def run(agent, game, replay_memory):
         print("\nEpoch %d\n-------" % (episode + 1))
 
         game.new_episode()
-
+        prev_state = {"ammo": 52, "health": 100, "killcount": 0, "vest_distance": float("inf")}
+        total_reward = 0
         for i in trange(learning_steps_per_epoch, leave=False):
             state = game.get_state()
-            screen_buf = preprocess(state.screen_buffer)
-            action = agent.choose_action(screen_buf)
-            reward = game.make_action(actions[action], frames_per_action)
+            screen_buf = preprocess(state.screen_buffer) # 전처리 된 게임 이미지
+            action = agent.choose_action(screen_buf) # screen_buf로 액션 결정
+            # reward = game.make_action(actions[action], frames_per_action)
+            reward = calculate_reward(game, action, prev_state)
             done = game.is_episode_finished()
 
             if not done:
@@ -209,6 +262,8 @@ def run(agent, game, replay_memory):
             if (i % target_net_update_steps) == 0:
                 agent.update_target_net()
 
+            total_reward += reward
+
         train_scores = np.array(train_scores)
         print(
             "Results: mean: {:.1f}±{:.1f},".format(
@@ -220,6 +275,7 @@ def run(agent, game, replay_memory):
 
         test(test_episodes_per_epoch, game, agent)
         print("Total elapsed time: %.2f minutes" % ((time() - time_start) / 60.0))
+        print(f"Total reward: {total_reward}")
 
 
 def test(test_episodes_per_epoch, game, agent):
