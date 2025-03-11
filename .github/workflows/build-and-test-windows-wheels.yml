@@ -144,7 +144,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: artifact
+        name: artifact-${{ matrix.os }}-${{ matrix.python-version }}
         path: ./dist/*.whl
 
   upload_pypi:
@@ -159,9 +159,8 @@ jobs:
       - name: Download all dists
         uses: actions/download-artifact@v4
         with:
-            # Unpacks default artifact into dist/
-            # If `name: artifact` is omitted, the action will create extra parent dir
-            name: artifact
+            pattern: artifact-*
+            merge-multiple: true
             path: dist
 
       - name: Publish to PyPI
