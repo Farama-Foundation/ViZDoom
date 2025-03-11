@@ -410,10 +410,10 @@ def _compare_envs(
         ), f"Incorrect terms: {env1_name} environment: {term1}. {env2_name} environment: {term2}"
         assert data_equivalence(
             trunc1, trunc2
-        ), f"Incorrect truncs: {env1_name} environment: {trunc1}. {env2_name} environment:  {trunc2}"
+        ), f"Incorrect truncs: {env1_name} environment: {trunc1}. {env2_name} environment: {trunc2}"
         assert data_equivalence(
             info1, info2
-        ), f"Incorrect info: {env1_name} environment: {info1}. {env2_name} environment:  {info2}"
+        ), f"Incorrect info: {env1_name} environment: {info1}. {env2_name} environment: {info2}"
 
         done1 = term1 or trunc1
         done2 = term2 or trunc2

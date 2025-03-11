@@ -86,7 +86,7 @@ namespace docstrings {
                 if match:
                     if started:
                         next_docstring = next_docstring.strip()
-                        next_docstring += f'){RAW_STRING_ESCAPE_SEQ}";\n\n'
+                        next_docstring += f'){RAW_STRING_ESCAPE_SEQ}";\n\n'  # noqa
                         output_file.write(next_docstring)
 
                     next_docstring = ""
@@ -110,7 +110,7 @@ namespace docstrings {
 
             if started:
                 output_file.write(
-                    f'{next_docstring.strip()}){RAW_STRING_ESCAPE_SEQ}";\n\n'
+                    f'{next_docstring.strip()}){RAW_STRING_ESCAPE_SEQ}";\n\n'  # noqa
                 )
 
             if "namespace" in file:
