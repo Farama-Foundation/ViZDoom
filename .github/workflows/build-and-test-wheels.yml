@@ -12,6 +12,9 @@ on:
       - 'setup.py'
       - 'pyproject.toml'
     branches: [master]
+  pull_request:
+    paths:
+      - '.github/workflows/build-and-test-wheels.yml'
   release:
     types: [published]
 
