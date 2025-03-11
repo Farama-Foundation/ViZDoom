@@ -21,7 +21,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, macos-12, macos-14]
+        os: [ubuntu-24.04, macos-13, macos-14]
       fail-fast: false
 
     steps:
@@ -42,7 +42,7 @@ jobs:
           platforms: all
 
       - name: Build manylinux wheels
-        if: matrix.os == 'ubuntu-22.04'
+        if: matrix.os == 'ubuntu-24.04'
         uses: pypa/cibuildwheel@v2.19.2
         env:
           # Configure cibuildwheel to build native archs, and some emulated ones
@@ -50,7 +50,7 @@ jobs:
           CIBW_BUILD_VERBOSITY: 1
 
       - name: Build macOS Intel wheels
-        if: matrix.os == 'macos-12'
+        if: matrix.os == 'macos-13'
         uses: pypa/cibuildwheel@v2.19.2
         env:
           CIBW_ARCHS_MACOS: x86_64
@@ -70,8 +70,9 @@ jobs:
           ls -l ./wheelhouse/*.whl
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
+          name: artifact
           path: ./wheelhouse/*.whl
 
   test_wheels:
@@ -95,7 +96,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Download all dists
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           # Unpacks default artifact into dist/
           # If `name: artifact` is omitted, the action will create extra parent dir
@@ -153,7 +154,7 @@ jobs:
         run: pipx run build --sdist
 
       - name: Upload sdist
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
 
@@ -167,7 +168,7 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
       - name: Download all dists
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           # Unpacks default artifact into dist/
           # If `name: artifact` is omitted, the action will create extra parent dir
