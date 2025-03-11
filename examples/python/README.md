@@ -40,9 +40,6 @@ Demonstrates how to use the labels buffer.
 ### [learning_pytorch.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/learning_pytorch.py), [learning_pytorch_test.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/learning_pytorch_test.py)
 Contains an example of how to implement basic Q-learning on the interface within PyTorch.
 
-### [learning_theano.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/learning_theano.py)
-Contains an example of how to implement basic Q-learning on the interface within Theano.
-
 ### [learning_tensorflow.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/learning_tensorflow.py)
 Contains an example of how to implement basic Q-learning on the interface within Tensorflow.
 
