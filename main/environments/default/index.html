@@ -13,9 +13,9 @@
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
         <title>Default scenarios/environments - ViZDoom Documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=49cbaffd" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=82c8b628" />
     
     
 
@@ -314,15 +314,15 @@
 <h2>How to use default scenarios<a class="headerlink" href="#how-to-use-default-scenarios" title="Link to this heading">¶</a></h2>
 <p>When using original ViZDoom API, each scenario can be loaded <a class="reference internal" href="#../api/python/doomGame.md#vizdoom.DoomGame.load_config"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">load_config</span></code></span></a> (Python)/<a class="reference internal" href="#../api/cpp/doomGame.md#loadconfig"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">loadConfig</span></code></span></a> (C++) method:</p>
 <p>Python example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">vizdoom</span> <span class="k">as</span> <span class="nn">vzd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">vizdoom</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vzd</span>
 <span class="n">game</span> <span class="o">=</span> <span class="n">vzd</span><span class="o">.</span><span class="n">DoomGame</span><span class="p">()</span>
 <span class="n">game</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vzd</span><span class="o">.</span><span class="n">scenarios_path</span><span class="p">,</span> <span class="s2">&quot;basic.cfg&quot;</span><span class="p">))</span> <span class="c1"># or any other scenario file</span>
 </pre></div>
 </div>
 <p>When using Gymnasium API the scenario can be loaded by passing the scenario id to <code class="docutils literal notranslate"><span class="pre">make</span></code> method like-this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gymnasium</span>
-<span class="kn">from</span> <span class="nn">vizdoom</span> <span class="kn">import</span> <span class="n">gymnasium_wrapper</span> <span class="c1"># This import will register all the environments</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">gymnasium</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">vizdoom</span><span class="w"> </span><span class="kn">import</span> <span class="n">gymnasium_wrapper</span> <span class="c1"># This import will register all the environments</span>
 
 <span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">&quot;VizdoomBasic-v0&quot;</span><span class="p">)</span> <span class="c1"># or any other environment id</span>
 </pre></div>
