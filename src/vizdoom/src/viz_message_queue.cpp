@@ -68,12 +68,19 @@ void VIZ_MQSend(uint8_t code, const char * command){
 }
 
 void VIZ_MQReceive(void *msg) {
-    size_t size;
-    unsigned int priority;
+    if(vizMQDoom) {
+        size_t size;
+        unsigned int priority;
 
-    if(vizMQDoom) vizMQDoom->receive(msg, sizeof(VIZMessage), size, priority);
+        try{            
+            vizMQDoom->receive(msg, sizeof(VIZMessage), size, priority);
+        }
+        catch(...){ // bip::interprocess_exception
+            VIZ_Error(VIZ_FUNC, "Failed to receive message.");
+        }
 
-    VIZ_DebugMsg(4, VIZ_FUNC, "Received msg: %d.", static_cast<VIZMessage *>(msg)->code);
+        VIZ_DebugMsg(4, VIZ_FUNC, "Received msg: %d.", static_cast<VIZMessage *>(msg)->code);
+    }
 }
 
 bool VIZ_MQTryReceive(void *msg){
