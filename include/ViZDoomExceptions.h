@@ -1,6 +1,7 @@
 /*
  Copyright (C) 2016 by Wojciech Jaśkowski, Michał Kempka, Grzegorz Runc, Jakub Toczek, Marek Wydmuch
  Copyright (C) 2017 - 2022 by Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, and the respective contributors
+ Copyright (C) 2023 - 2024 by Marek Wydmuch, Farama Foundation, and the respective contributors
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -56,15 +57,6 @@ namespace vizdoom{
         const char* what() const throw();
     private:
         std::string error;
-    };
-
-    class SignalException : public std::exception {
-    public:
-        SignalException(std::string signal): signal(signal){}
-        ~SignalException() throw(){}
-        const char* what() const throw();
-    private:
-        std::string signal;
     };
 
     class ViZDoomErrorException : public std::exception {
