@@ -24,7 +24,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-13, macos-14]
+        os: [ubuntu-24.04, macos-12, macos-14]
       fail-fast: false
 
     steps:
@@ -53,7 +53,7 @@ jobs:
           CIBW_BUILD_VERBOSITY: 1
 
       - name: Build macOS Intel wheels
-        if: matrix.os == 'macos-13'
+        if: matrix.os == 'macos-12'
         uses: pypa/cibuildwheel@v2.19.2
         env:
           CIBW_ARCHS_MACOS: x86_64
