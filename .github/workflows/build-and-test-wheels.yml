@@ -12,6 +12,9 @@ on:
       - 'setup.py'
       - 'pyproject.toml'
     branches: [master]
+  pull_request:
+    paths:
+      - '.github/workflows/build-and-test-wheels.yml'
   release:
     types: [published]
 
@@ -21,7 +24,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, macos-12, macos-14]
+        os: [ubuntu-24.04, macos-13, macos-14]
       fail-fast: false
 
     steps:
@@ -42,7 +45,7 @@ jobs:
           platforms: all
 
       - name: Build manylinux wheels
-        if: matrix.os == 'ubuntu-22.04'
+        if: matrix.os == 'ubuntu-24.04'
         uses: pypa/cibuildwheel@v2.19.2
         env:
           # Configure cibuildwheel to build native archs, and some emulated ones
@@ -50,11 +53,11 @@ jobs:
           CIBW_BUILD_VERBOSITY: 1
 
       - name: Build macOS Intel wheels
-        if: matrix.os == 'macos-12'
+        if: matrix.os == 'macos-13'
         uses: pypa/cibuildwheel@v2.19.2
         env:
           CIBW_ARCHS_MACOS: x86_64
-          CIBW_ENVIRONMENT_MACOS: VIZDOOM_MACOS_ARCH=x86_64 HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 MACOSX_DEPLOYMENT_TARGET=12.0
+          CIBW_ENVIRONMENT_MACOS: VIZDOOM_MACOS_ARCH=x86_64 HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 MACOSX_DEPLOYMENT_TARGET=13.0
           CIBW_BUILD_VERBOSITY: 1
 
       - name: Build macOS Apple Silicon wheels
@@ -70,8 +73,9 @@ jobs:
           ls -l ./wheelhouse/*.whl
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
+          name: artifact-${{ matrix.os }}-${{ matrix.python-version }}
           path: ./wheelhouse/*.whl
 
   test_wheels:
@@ -80,8 +84,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, macos-12, macos-13, macos-14]
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14]
+        python-version: ['3.9', '3.10', '3.11', '3.12']
       fail-fast: false
 
     steps:
@@ -95,11 +99,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Download all dists
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          # Unpacks default artifact into dist/
-          # If `name: artifact` is omitted, the action will create extra parent dir
-          name: artifact
+          pattern: artifact-*
+          merge-multiple: true
           path: dist
 
       - name: Report dist directory
@@ -153,8 +156,9 @@ jobs:
         run: pipx run build --sdist
 
       - name: Upload sdist
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
+          name: artifact-sdist
           path: dist/*.tar.gz
 
   upload_pypi:
@@ -167,11 +171,10 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
       - name: Download all dists
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          # Unpacks default artifact into dist/
-          # If `name: artifact` is omitted, the action will create extra parent dir
-          name: artifact
+          pattern: artifact-*
+          merge-multiple: true
           path: dist
 
       - name: Publish to PyPI
