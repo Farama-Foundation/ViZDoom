@@ -75,7 +75,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: artifact-${{ matrix.os }}-${{ matrix.python-version }}
+          name: artifact-${{ matrix.os }}
           path: ./wheelhouse/*.whl
 
   test_wheels:
