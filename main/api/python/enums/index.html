@@ -313,11 +313,14 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.Mode">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.Mode" title="vizdoom.Mode"><span class="pre">vizdoom.Mode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.Mode" title="Link to this definition">¶</a></dt>
-<dd><p>Members:</p>
-<p>PLAYER</p>
+<dd><p>Defines the mode for controlling the game.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>PLAYER</p>
 <p>SPECTATOR</p>
 <p>ASYNC_PLAYER</p>
 <p>ASYNC_SPECTATOR</p>
+</div></blockquote>
 </dd></dl>
 
 <p>In <strong>PLAYER</strong> and <strong>ASYNC_PLAYER</strong> modes, the agent controls ingame character.</p>
@@ -335,8 +338,10 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.ScreenFormat">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ScreenFormat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.ScreenFormat" title="vizdoom.ScreenFormat"><span class="pre">vizdoom.ScreenFormat</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.ScreenFormat" title="Link to this definition">¶</a></dt>
-<dd><p>Members:</p>
-<p>CRCGCB</p>
+<dd><p>Defines the format of the screen buffer.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>CRCGCB</p>
 <p>RGB24</p>
 <p>RGBA32</p>
 <p>ARGB32</p>
@@ -346,6 +351,7 @@
 <p>ABGR32</p>
 <p>GRAY8</p>
 <p>DOOM_256_COLORS8</p>
+</div></blockquote>
 </dd></dl>
 
 <p>Enum type that defines all supported <strong>screenBuffer</strong> and <strong>automapBuffer</strong> formats.</p>
@@ -375,8 +381,10 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.ScreenResolution">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ScreenResolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.ScreenResolution" title="vizdoom.ScreenResolution"><span class="pre">vizdoom.ScreenResolution</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.ScreenResolution" title="Link to this definition">¶</a></dt>
-<dd><p>Members:</p>
-<p>RES_160X120</p>
+<dd><p>Defines the resolution of the screen buffer. Available resolutions include various predefined sizes like RES_320x240, etc.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>RES_160X120</p>
 <p>RES_200X125</p>
 <p>RES_200X150</p>
 <p>RES_256X144</p>
@@ -412,6 +420,7 @@
 <p>RES_1600X1000</p>
 <p>RES_1600X1200</p>
 <p>RES_1920X1080</p>
+</div></blockquote>
 </dd></dl>
 
 <p>Enum type that defines all supported resolutions - shapes of <strong>screenBuffer</strong>, <strong>depthBuffer</strong>, <strong>labelsBuffer</strong> and <strong>automapBuffer</strong> in <strong>State</strong>.</p>
@@ -424,11 +433,14 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.AutomapMode">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AutomapMode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.AutomapMode" title="vizdoom.AutomapMode"><span class="pre">vizdoom.AutomapMode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.AutomapMode" title="Link to this definition">¶</a></dt>
-<dd><p>Members:</p>
-<p>NORMAL</p>
+<dd><p>Defines the automap rendering mode.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>NORMAL</p>
 <p>WHOLE</p>
 <p>OBJECTS</p>
 <p>OBJECTS_WITH_SIZE</p>
+</div></blockquote>
 </dd></dl>
 
 <p>Enum type that defines all <strong>automapBuffer</strong> modes.</p>
@@ -446,8 +458,10 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.GameVariable">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GameVariable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.GameVariable" title="vizdoom.GameVariable"><span class="pre">vizdoom.GameVariable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.GameVariable" title="Link to this definition">¶</a></dt>
-<dd><p>Members:</p>
-<p>KILLCOUNT</p>
+<dd><p>Defines available game variables that can be accessed to get information about the game state.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>KILLCOUNT</p>
 <p>ITEMCOUNT</p>
 <p>SECRETCOUNT</p>
 <p>FRAGCOUNT</p>
@@ -579,6 +593,7 @@
 <p>PLAYER14_FRAGCOUNT</p>
 <p>PLAYER15_FRAGCOUNT</p>
 <p>PLAYER16_FRAGCOUNT</p>
+</div></blockquote>
 </dd></dl>
 
 <p>Enum type that defines all variables that can be obtained from the game. Below we describe the meaning of each variable.</p>
@@ -632,8 +647,10 @@ you can convert them to floating point by using <a class="reference internal" hr
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.Button">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Button</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.Button" title="vizdoom.Button"><span class="pre">vizdoom.Button</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.Button" title="Link to this definition">¶</a></dt>
-<dd><p>Members:</p>
-<p>ATTACK</p>
+<dd><p>Defines available game buttons/actions that can be used to control the game.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>ATTACK</p>
 <p>USE</p>
 <p>JUMP</p>
 <p>CROUCH</p>
@@ -676,6 +693,7 @@ you can convert them to floating point by using <a class="reference internal" hr
 <p>MOVE_FORWARD_BACKWARD_DELTA</p>
 <p>MOVE_LEFT_RIGHT_DELTA</p>
 <p>MOVE_UP_DOWN_DELTA</p>
+</div></blockquote>
 </dd></dl>
 
 <p>Enum type that defines all buttons that can be “pressed” by the agent. They can be divided into two categories:</p>
@@ -707,10 +725,13 @@ Binary buttons have only 2 states “not pressed” if value 0 and “pressed”
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.SamplingRate">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SamplingRate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.SamplingRate" title="vizdoom.SamplingRate"><span class="pre">vizdoom.SamplingRate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.SamplingRate" title="Link to this definition">¶</a></dt>
-<dd><p>Members:</p>
-<p>SR_11025</p>
+<dd><p>Defines available audio sampling rates.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>SR_11025</p>
 <p>SR_22050</p>
 <p>SR_44100</p>
+</div></blockquote>
 </dd></dl>
 
 <p>Enum type that defines all supported sampling rates for <strong>audioBuffer</strong> in <strong>State</strong>.</p>

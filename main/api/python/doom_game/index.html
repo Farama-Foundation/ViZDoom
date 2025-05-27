@@ -313,7 +313,8 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.DoomGame">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoomGame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.DoomGame" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc.</p>
+</dd></dl>
 
 <section id="flow-control-methods">
 <h2>Flow control methods<a class="headerlink" href="#flow-control-methods" title="Link to this heading">¶</a></h2>
@@ -537,6 +538,7 @@ that were added with <a class="reference internal" href="#vizdoom.DoomGame.set_a
 <span class="sig-name descname"><span class="pre">set_available_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">buttons</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_available_buttons" title="Link to this definition">¶</a></dt>
 <dd><p>Sets given list of <a class="reference internal" href="../enums/#vizdoom.Button" title="vizdoom.Button"><code class="xref py py-class docutils literal notranslate"><span class="pre">Button</span></code></a> s (e.g. <code class="docutils literal notranslate"><span class="pre">TURN_LEFT</span></code>, <code class="docutils literal notranslate"><span class="pre">MOVE_FORWARD</span></code>) as available buttons.</p>
 <p>Has no effect when the game is running.</p>
+<p>Default value: <cite>[]</cite> (empty vector/list, no buttons).</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">availableButtons</span></code>/<code class="docutils literal notranslate"><span class="pre">available_buttons</span></code> (list of values)</p>
 </dd></dl>
 
@@ -569,6 +571,7 @@ If the given button has already been added, it will not be added again, but the 
 Setting the maximum value to 0 results in no constraint at all (infinity).
 This method makes sense only for delta buttons.
 The constraints limit applies in all Modes.</p>
+<p>Default value: 0 (no constraint, infinity).</p>
 <p>Has no effect when the game is running.</p>
 </dd></dl>
 
@@ -599,6 +602,7 @@ that were added with <a class="reference internal" href="#vizdoom.DoomGame.set_a
 <span class="sig-name descname"><span class="pre">set_available_game_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_available_game_variables" title="Link to this definition">¶</a></dt>
 <dd><p>Sets list of <a class="reference internal" href="../enums/#vizdoom.GameVariable" title="vizdoom.GameVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameVariable</span></code></a> s as available game variables in the <a class="reference internal" href="../game_state/#vizdoom.GameState" title="vizdoom.GameState"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameState</span></code></a> returned by <a class="reference internal" href="#vizdoom.DoomGame.get_state" title="vizdoom.DoomGame.get_state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_state()</span></code></a> method.</p>
 <p>Has no effect when the game is running.</p>
+<p>Default value: <cite>[]</cite> (empty vector/list, no game variables).</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">availableGameVariables</span></code>/<code class="docutils literal notranslate"><span class="pre">available_game_variables</span></code> (list of values)</p>
 </dd></dl>
 
@@ -642,6 +646,7 @@ It could be used for e.g. shaping. Returns 0 in case of not finding given <a cla
 It is useful for changing additional game settings.
 Use with caution, as in rare cases it may prevent the library from working properly.
 Using this method is equivalent to first calling <a class="reference internal" href="#vizdoom.DoomGame.clear_game_args" title="vizdoom.DoomGame.clear_game_args"><code class="xref py py-meth docutils literal notranslate"><span class="pre">clear_game_args()</span></code></a> and then <a class="reference internal" href="#vizdoom.DoomGame.add_game_args" title="vizdoom.DoomGame.add_game_args"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_game_args()</span></code></a>.</p>
+<p>Default value: <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> (empty string, no additional arguments).</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">gameArgs</span></code>/<code class="docutils literal notranslate"><span class="pre">game_args</span></code></p>
 <p>See also:</p>
 <ul class="simple">
@@ -707,6 +712,217 @@ Use with caution, as in rare cases it may prevent the library from working prope
 <dd><p>Sets a penalty for the player’s death. Note that in case of a negative value, the player will be rewarded upon dying.</p>
 <p>Default value: 0</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">deathPenalty</span></code>/<code class="docutils literal notranslate"><span class="pre">death_penalty</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_death_reward">
+<span class="sig-name descname"><span class="pre">get_death_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_death_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the reward for the player’s death. It is equal to negation of value returned by <a class="reference internal" href="#vizdoom.DoomGame.get_death_reward" title="vizdoom.DoomGame.get_death_reward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_death_reward()</span></code></a>).</p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.set_death_reward">
+<span class="sig-name descname"><span class="pre">set_death_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">death_reward</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_death_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Sets a reward for the player’s death. A negative value is also allowed.</p>
+<p>Default value: 0</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">deathReward</span></code>/<code class="docutils literal notranslate"><span class="pre">death_reward</span></code></p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_map_exit_reward">
+<span class="sig-name descname"><span class="pre">get_map_exit_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_map_exit_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the reward for finishing a map.</p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.set_map_exit_reward">
+<span class="sig-name descname"><span class="pre">set_map_exit_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_exit_reward</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_map_exit_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Sets a reward for finishing a map (finding an exit or succeeding in other programmed objective). A negative value is also allowed.</p>
+<p>Default value: 0</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">mapExitReward</span></code>/<code class="docutils literal notranslate"><span class="pre">map_exit_reward</span></code></p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_kill_reward">
+<span class="sig-name descname"><span class="pre">get_kill_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_kill_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the reward granted to the player for killing an enemy.</p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.set_kill_reward">
+<span class="sig-name descname"><span class="pre">set_kill_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">kill_reward</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_kill_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the reward granted to the player for killing an enemy. A negative value is also allowed.</p>
+<p>Default value: 0</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">killReward</span></code>/<code class="docutils literal notranslate"><span class="pre">kill_reward</span></code></p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_item_reward">
+<span class="sig-name descname"><span class="pre">get_item_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_item_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the reward granted to the player for picking up an item.</p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.set_item_reward">
+<span class="sig-name descname"><span class="pre">set_item_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_reward</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_item_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the reward granted to the player for picking up an item. A negative value is also allowed.</p>
+<p>Default value: 0</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">itemReward</span></code>/<code class="docutils literal notranslate"><span class="pre">item_reward</span></code></p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_secret_reward">
+<span class="sig-name descname"><span class="pre">get_secret_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_secret_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the reward granted to the player for discovering a secret.</p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.set_secret_reward">
+<span class="sig-name descname"><span class="pre">set_secret_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret_reward</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_secret_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the reward granted to the player for discovering a secret. A negative value is also allowed.</p>
+<p>Default value: 0</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">secretReward</span></code>/<code class="docutils literal notranslate"><span class="pre">secret_reward</span></code></p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_frag_reward">
+<span class="sig-name descname"><span class="pre">get_frag_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_frag_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the reward granted to the player for scoring a frag (killing another player in multiplayer).</p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.set_frag_reward">
+<span class="sig-name descname"><span class="pre">set_frag_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">frag_reward</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_frag_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the reward granted to the player for scoring a frag. A negative value is also allowed.</p>
+<p>Default value: 0</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">fragReward</span></code>/<code class="docutils literal notranslate"><span class="pre">frag_reward</span></code></p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_hit_reward">
+<span class="sig-name descname"><span class="pre">get_hit_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_hit_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the reward granted to the player for hitting (damaging) an enemy.</p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.set_hit_reward">
+<span class="sig-name descname"><span class="pre">set_hit_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">hit_reward</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_hit_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the reward granted to the player for hitting (damaging) an enemy.
+The reward is the same despite the amount of damage dealt.
+A negative value is also allowed.</p>
+<p>Default value: 0</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">hitReward</span></code>/<code class="docutils literal notranslate"><span class="pre">hit_reward</span></code></p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_hit_taken_reward">
+<span class="sig-name descname"><span class="pre">get_hit_taken_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_hit_taken_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the reward granted to the player when hit (damaged) by an enemy.
+The reward is the same despite the amount of damage taken.</p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.set_hit_taken_reward">
+<span class="sig-name descname"><span class="pre">set_hit_taken_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">hit_taken_reward</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_hit_taken_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the reward granted to the player when hit (damaged) by an enemy.
+The reward is the same despite the amount of damage taken.
+A negative value is also allowed.</p>
+<p>Default value: 0</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">hitTakenReward</span></code>/<code class="docutils literal notranslate"><span class="pre">hit_taken_reward</span></code></p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_hit_taken_penalty">
+<span class="sig-name descname"><span class="pre">get_hit_taken_penalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_hit_taken_penalty" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the penalty for the player when hit (damaged) by an enemy.
+The penalty is the same despite the amount of damage taken.
+It is equal to negation of value returned by <a class="reference internal" href="#vizdoom.DoomGame.get_hit_taken_reward" title="vizdoom.DoomGame.get_hit_taken_reward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_hit_taken_reward()</span></code></a>.</p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.set_hit_taken_penalty">
+<span class="sig-name descname"><span class="pre">set_hit_taken_penalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">hit_taken_penalty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_hit_taken_penalty" title="Link to this definition">¶</a></dt>
+<dd><p>Sets a penalty for the player when hit (damaged) by an enemy.
+The penalty is the same despite the amount of damage taken.
+Note that in case of a negative value, the player will be rewarded upon being hit.</p>
+<p>Default value: 0</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">hitTakenPenalty</span></code>/<code class="docutils literal notranslate"><span class="pre">hit_taken_penalty</span></code></p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_damage_made_reward">
+<span class="sig-name descname"><span class="pre">get_damage_made_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_damage_made_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the reward granted to the player for damaging an enemy, proportional to the damage dealt.
+Every point of damage dealt to an enemy will result in a reward equal to the value returned by this method.</p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.set_damage_made_reward">
+<span class="sig-name descname"><span class="pre">set_damage_made_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">damage_made_reward</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_damage_made_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the reward granted to the player for damaging an enemy, proportional to the damage dealt.
+Every point of damage dealt to an enemy will result in a reward equal to the value returned by this method.
+A negative value is also allowed.</p>
+<p>Default value: 0</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">damageMadeReward</span></code>/<code class="docutils literal notranslate"><span class="pre">damage_made_reward</span></code></p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_damage_taken_reward">
+<span class="sig-name descname"><span class="pre">get_damage_taken_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_damage_taken_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the reward granted to the player when damaged by an enemy, proportional to the damage received.
+Every point of damage taken will result in a reward equal to the value returned by this method.</p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.set_damage_taken_reward">
+<span class="sig-name descname"><span class="pre">set_damage_taken_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">damage_taken_reward</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_damage_taken_reward" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the reward granted to the player when damaged by an enemy, proportional to the damage received.
+Every point of damage taken will result in a reward equal to the set value.
+A negative value is also allowed.</p>
+<p>Default value: 0</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">damageTakenReward</span></code>/<code class="docutils literal notranslate"><span class="pre">damage_taken_reward</span></code></p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_damage_taken_penalty">
+<span class="sig-name descname"><span class="pre">get_damage_taken_penalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_damage_taken_penalty" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the penalty for the player when damaged by an enemy, proportional to the damage received.
+Every point of damage taken will result in a penalty equal to the value returned by this method.
+It is equal to negation of value returned by <a class="reference internal" href="#vizdoom.DoomGame.get_damage_taken_reward" title="vizdoom.DoomGame.get_damage_taken_reward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_damage_taken_reward()</span></code></a>.</p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.set_damage_taken_penalty">
+<span class="sig-name descname"><span class="pre">set_damage_taken_penalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">damage_taken_penalty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_damage_taken_penalty" title="Link to this definition">¶</a></dt>
+<dd><p>Sets a penalty for the player when damaged by an enemy, proportional to the damage received.
+Every point of damage taken will result in a penalty equal to the set value.
+Note that in case of a negative value, the player will be rewarded upon receiving damage.</p>
+<p>Default value: 0</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">damageTakenPenalty</span></code>/<code class="docutils literal notranslate"><span class="pre">damage_taken_penalty</span></code></p>
+<p>Note: added in 1.3.0</p>
 </dd></dl>
 
 <dl class="py function">
@@ -795,7 +1011,7 @@ If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) i
 <dd><p>Sets the path to an additional scenario file (wad format).
 If not provided, the default Doom single-player maps will be loaded.</p>
 <p>Default value: <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
-<p>Config key: <code class="docutils literal notranslate"><span class="pre">DoomScenarioPath</span></code>/<code class="docutils literal notranslate"><span class="pre">set_doom_scenario_path</span></code></p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">DoomScenarioPath</span></code>/<code class="docutils literal notranslate"><span class="pre">doom_scenario_path</span></code></p>
 </dd></dl>
 
 <dl class="py function">
@@ -990,7 +1206,7 @@ The buffer always has the same resolution as the screen buffer.</p>
 <dd><p>Sets the <a class="reference internal" href="../enums/#vizdoom.AutomapMode" title="vizdoom.AutomapMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutomapMode</span></code></a> (<code class="docutils literal notranslate"><span class="pre">NORMAL</span></code>, <code class="docutils literal notranslate"><span class="pre">WHOLE</span></code>, <code class="docutils literal notranslate"><span class="pre">OBJECTS</span></code>, <code class="docutils literal notranslate"><span class="pre">OBJECTS_WITH_SIZE</span></code>),
 which determines what will be visible on it.</p>
 <p>Default value: <code class="docutils literal notranslate"><span class="pre">NORMAL</span></code></p>
-<p>Config key: <code class="docutils literal notranslate"><span class="pre">automapMode</span></code>/<code class="docutils literal notranslate"><span class="pre">set_automap_mode</span></code></p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">automapMode</span></code>/<code class="docutils literal notranslate"><span class="pre">automap_mode</span></code></p>
 <p>Note: added in 1.1.0.</p>
 </dd></dl>
 
@@ -1258,7 +1474,7 @@ Sampling rate can be set with <a class="reference internal" href="#vizdoom.DoomG
 <dd><p>Sets the <a class="reference internal" href="../enums/#vizdoom.SamplingRate" title="vizdoom.SamplingRate"><code class="xref py py-class docutils literal notranslate"><span class="pre">SamplingRate</span></code></a> of the audio buffer.</p>
 <p>Default value: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
 <p>Has no effect when the game is running.</p>
-<p>Config key: <code class="docutils literal notranslate"><span class="pre">audioSamplingRate</span></code>/<code class="docutils literal notranslate"><span class="pre">audio_samping_rate</span></code></p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">audioSamplingRate</span></code>/<code class="docutils literal notranslate"><span class="pre">audio_sampling_rate</span></code></p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#vizdoom.GameState" title="vizdoom.GameState"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameState</span></code></a></p></li>
@@ -1406,6 +1622,30 @@ Doom uses 35 ticks per second.</p>
 <li><a class="reference internal" href="#vizdoom.DoomGame.set_living_reward"><code class="docutils literal notranslate"><span class="pre">set_living_reward()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.get_death_penalty"><code class="docutils literal notranslate"><span class="pre">get_death_penalty()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.set_death_penalty"><code class="docutils literal notranslate"><span class="pre">set_death_penalty()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_death_reward"><code class="docutils literal notranslate"><span class="pre">get_death_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.set_death_reward"><code class="docutils literal notranslate"><span class="pre">set_death_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_map_exit_reward"><code class="docutils literal notranslate"><span class="pre">get_map_exit_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.set_map_exit_reward"><code class="docutils literal notranslate"><span class="pre">set_map_exit_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_kill_reward"><code class="docutils literal notranslate"><span class="pre">get_kill_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.set_kill_reward"><code class="docutils literal notranslate"><span class="pre">set_kill_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_item_reward"><code class="docutils literal notranslate"><span class="pre">get_item_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.set_item_reward"><code class="docutils literal notranslate"><span class="pre">set_item_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_secret_reward"><code class="docutils literal notranslate"><span class="pre">get_secret_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.set_secret_reward"><code class="docutils literal notranslate"><span class="pre">set_secret_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_frag_reward"><code class="docutils literal notranslate"><span class="pre">get_frag_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.set_frag_reward"><code class="docutils literal notranslate"><span class="pre">set_frag_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_hit_reward"><code class="docutils literal notranslate"><span class="pre">get_hit_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.set_hit_reward"><code class="docutils literal notranslate"><span class="pre">set_hit_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_hit_taken_reward"><code class="docutils literal notranslate"><span class="pre">get_hit_taken_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.set_hit_taken_reward"><code class="docutils literal notranslate"><span class="pre">set_hit_taken_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_hit_taken_penalty"><code class="docutils literal notranslate"><span class="pre">get_hit_taken_penalty()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.set_hit_taken_penalty"><code class="docutils literal notranslate"><span class="pre">set_hit_taken_penalty()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_damage_made_reward"><code class="docutils literal notranslate"><span class="pre">get_damage_made_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.set_damage_made_reward"><code class="docutils literal notranslate"><span class="pre">set_damage_made_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_damage_taken_reward"><code class="docutils literal notranslate"><span class="pre">get_damage_taken_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.set_damage_taken_reward"><code class="docutils literal notranslate"><span class="pre">set_damage_taken_reward()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_damage_taken_penalty"><code class="docutils literal notranslate"><span class="pre">get_damage_taken_penalty()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.set_damage_taken_penalty"><code class="docutils literal notranslate"><span class="pre">set_damage_taken_penalty()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.get_last_reward"><code class="docutils literal notranslate"><span class="pre">get_last_reward()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.get_total_reward"><code class="docutils literal notranslate"><span class="pre">get_total_reward()</span></code></a></li>
 </ul>
