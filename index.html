@@ -8,14 +8,14 @@
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
     <meta property="og:url" content="https://vizdoom.farama.org/index.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex/" /><link rel="search" title="Search" href="search/" /><link rel="next" title="Python quick start" href="introduction/pythonQuickstart/" />
+<link rel="index" title="Index" href="genindex/" /><link rel="search" title="Search" href="search/" /><link rel="next" title="Python quick start" href="introduction/python_quickstart/" />
         <link rel="canonical" href="https://vizdoom.farama.org/index.html" />
 
     <link rel="shortcut icon" href="_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
         <title>ViZDoom Documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=3e7f4c72" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=49cbaffd" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=82c8b628" />
     
     
 
@@ -212,15 +212,13 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction/pythonQuickstart/">Python quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction/python_quickstart/">Python quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="introduction/building/">Building from source</a></li>
-<li class="toctree-l1"><a class="reference internal" href="introduction/apisAndWrappers/">APIs and wrappers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction/apis_and_wrappers/">APIs and wrappers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/python/doomGame/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/python/gameState/">GameState</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/python/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/python/utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/python/exceptions/">Exceptions</a></li>
@@ -229,20 +227,18 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/cpp/doomGame/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/cpp/gameState/">GameState</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/cpp/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/cpp/exceptions/">Exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/cpp/utils/">Utilities</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/configurationFiles/">Configuration files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/configuration_files/">Configuration files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="environments/default/">Default scenarios/environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="environments/thirdParty/">Third-party environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="environments/creatingCustom/">Creating a custom environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environments/third_party/">Third-party environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environments/creating_custom/">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -324,8 +320,8 @@ Library for developing AI bots that play Doom using visual information.
 </figure>
 <p>This library allows creating of environments based on the Doom engine. It is primarily intended for research in machine visual learning and deep reinforcement learning, in particular. The library is written in C++ and provides Python API and wrappers for Gymnasium/OpenAI Gym interface. It is multi-platform (Linux, macOS, Windows), lightweight (just a few MB), and fast (capable of rendering even 7000 fps on a single CPU thread). The design of the library is meant to give high customization options; it supports single-player as well as multi-player modes and implements many additional features like access to the depth buffer (3D vision), automatic labeling of game objects visible in the frame, access to the audio buffer, access to the list of actors/objects and map geometry, off-screen rendering, episodes recording, in-game time scaling. While it provides a set of simple exemplary scenarios, it easily allows one to create custom ones thanks to the visual editors and scripting language supported by the engine. ViZDoom is based on <a class="reference external" href="https://zdoom.org">ZDoom</a> source-port to provide the game mechanics.</p>
 <p>The Gymnasium interface allows to initialize and interact with the ViZDoom default environments as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gymnasium</span>
-<span class="kn">from</span> <span class="nn">vizdoom</span> <span class="kn">import</span> <span class="n">gymnasium_wrapper</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">gymnasium</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">vizdoom</span><span class="w"> </span><span class="kn">import</span> <span class="n">gymnasium_wrapper</span>
 <span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">&quot;VizdoomDeadlyCorridor-v0&quot;</span><span class="p">)</span>
 <span class="n">observation</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
@@ -339,7 +335,7 @@ Library for developing AI bots that play Doom using visual information.
 </pre></div>
 </div>
 <p>There is also the original ViZDoom API:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">vizdoom</span> <span class="k">as</span> <span class="nn">vzd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vizdoom</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vzd</span>
 <span class="n">game</span> <span class="o">=</span> <span class="n">vzd</span><span class="o">.</span><span class="n">DoomGame</span><span class="p">()</span>
 <span class="n">game</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vzd</span><span class="o">.</span><span class="n">scenarios_path</span><span class="p">,</span> <span class="s2">&quot;deadly_corridor.cfg&quot;</span><span class="p">))</span>
 <span class="n">game</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>

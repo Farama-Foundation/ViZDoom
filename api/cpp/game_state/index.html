@@ -7,15 +7,15 @@
     <meta property="og:title" content="ViZDoom Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
-    <meta property="og:url" content="https://vizdoom.farama.org/api/cpp/gameState.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Enums" href="../enums/" /><link rel="prev" title="DoomGame" href="../doomGame/" />
-        <link rel="canonical" href="https://vizdoom.farama.org/api/cpp/gameState.html" />
+    <meta property="og:url" content="https://vizdoom.farama.org/api/cpp/game_state.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" />
+        <link rel="canonical" href="https://vizdoom.farama.org/api/cpp/game_state.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
         <title>GameState - ViZDoom Documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=3e7f4c72" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=49cbaffd" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=82c8b628" />
     
     
 
@@ -212,15 +212,13 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/pythonQuickstart/">Python quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/python_quickstart/">Python quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction/building/">Building from source</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/apisAndWrappers/">APIs and wrappers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/apis_and_wrappers/">APIs and wrappers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../python/doomGame/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../python/gameState/">GameState</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../python/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../python/utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../python/exceptions/">Exceptions</a></li>
@@ -228,21 +226,19 @@
 <li class="toctree-l2"><a class="reference internal" href="../../python/gym/">OpenAI Gym Env</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../">C++ API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../doomGame/">DoomGame</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">GameState</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../exceptions/">Exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils/">Utilities</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../configurationFiles/">Configuration files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration_files/">Configuration files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../environments/default/">Default scenarios/environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../environments/thirdParty/">Third-party environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../environments/creatingCustom/">Creating a custom environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environments/third_party/">Third-party environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environments/creating_custom/">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -280,7 +276,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/api/cpp/gameState.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/api/cpp/game_state.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -313,7 +309,7 @@
             
             <section class="tex2jax_ignore mathjax_ignore" id="gamestate">
 <h1>GameState<a class="headerlink" href="#gamestate" title="Link to this heading">¶</a></h1>
-<p>GameState is the main object returned by <a class="reference internal" href="../doomGame/#getstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getState</span></code></span></a> method.
+<p>GameState is the main object returned by <a class="reference internal" href="#./doomGame.md#getstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame::getState</span></code></span></a> method.
 The declarations of all the enums can be found in the <code class="docutils literal notranslate"><span class="pre">include/ViZDoomTypes.h</span></code> header file.</p>
 <section id="id1">
 <h2><code class="docutils literal notranslate"><span class="pre">GameState</span></code><a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
@@ -333,7 +329,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <strong>tic</strong> - ingame time, 1 tic is 1/35 of second in the game world. Note: added in 1.1.1.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#getstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getState</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="#./doomGame.md#getstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame::getState</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/basic.py">examples/python/basic.py</a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a>.</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a>.</p></li>
@@ -377,7 +373,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p><strong>x</strong>, <strong>y</strong>, <strong>width</strong>, <strong>height</strong> - describes bounding box of this particular object in <strong>labelsBuffer</strong>. Note: added in 1.1.5.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#setlabelsbufferenabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setLabelsBufferEnabled</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="#./doomGame.md#setlabelsbufferenabled"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame::setLabelsBufferEnabled</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels_buffer.py">examples/python/objects_and_sectors.py</a>.</p></li>
 </ul>
 </section>
@@ -403,7 +399,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p><strong>name</strong> - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#setsectorsinfoenabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setObjectsInfoEnabled</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="#./doomGame.md#setsectorsinfoenabled"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame::setObjectsInfoEnabled</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>.</p></li>
 </ul>
 <p>Note: added in 1.1.8.</p>
@@ -444,7 +440,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p><strong>lines</strong> - contains list of line segments, that forms sector.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#setsectorsinfoenabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setSectorsInfoEnabled</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="#./doomGame.md#setsectorsinfoenabled"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame::setSectorsInfoEnabled</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>.</p></li>
 </ul>
 <p>Note: added in 1.1.8.</p>
@@ -464,10 +460,10 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int[]</span> <span class="pre">/</span> <span class="pre">list</span></code> **playersLastActionTic / players_last_action_tic **</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int[]</span> <span class="pre">/</span> <span class="pre">list</span></code> **playersLastKillTic / players_last_kill_tic **</p></li>
 </ul>
-<p>ServerState is the main object returned by <a class="reference internal" href="../doomGame/#getserverstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getServerState</span></code></span></a> method, and it purpose is to get more information about the state of the multi-player game.</p>
+<p>ServerState is the main object returned by <a class="reference internal" href="#./doomGame.md#getserverstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame::getServerState</span></code></span></a> method, and it purpose is to get more information about the state of the multi-player game.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#getserverstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::getServerState</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="#./doomGame.md#getserverstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame::getServerState</span></code></span></a>,</p></li>
 </ul>
 <p>Note: added in 1.1.6.</p>
 </section>
@@ -478,30 +474,8 @@ The declarations of all the enums can be found in the <code class="docutils lite
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../enums/">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">Enums</div>
-              </div>
-              <svg class="furo-related-icon">
-                <use href="#svg-arrow-right"></use>
-              </svg>
-            </a>
-            <a class="prev-page" href="../doomGame/">
-              <svg class="furo-related-icon">
-                <use href="#svg-arrow-right"></use>
-              </svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">DoomGame</div>
-                
-              </div>
-            </a>
+            
+            
           </div>
           <div class="bottom-of-page">
             <div class="left-details">

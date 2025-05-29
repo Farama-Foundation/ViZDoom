@@ -7,15 +7,15 @@
     <meta property="og:title" content="ViZDoom Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
-    <meta property="og:url" content="https://vizdoom.farama.org/api/python/gameState.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Enums" href="../enums/" /><link rel="prev" title="DoomGame" href="../doomGame/" />
-        <link rel="canonical" href="https://vizdoom.farama.org/api/python/gameState.html" />
+    <meta property="og:url" content="https://vizdoom.farama.org/api/python/game_state.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" />
+        <link rel="canonical" href="https://vizdoom.farama.org/api/python/game_state.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
         <title>GameState - ViZDoom Documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=3e7f4c72" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=49cbaffd" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=82c8b628" />
     
     
 
@@ -212,15 +212,13 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/pythonQuickstart/">Python quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/python_quickstart/">Python quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction/building/">Building from source</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/apisAndWrappers/">APIs and wrappers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/apis_and_wrappers/">APIs and wrappers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul class="current">
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../">Python API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../doomGame/">DoomGame</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">GameState</a></li>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../exceptions/">Exceptions</a></li>
@@ -229,20 +227,18 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../cpp/doomGame/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../cpp/gameState/">GameState</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../cpp/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../cpp/exceptions/">Exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../cpp/utils/">Utilities</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../configurationFiles/">Configuration files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration_files/">Configuration files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../environments/default/">Default scenarios/environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../environments/thirdParty/">Third-party environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../environments/creatingCustom/">Creating a custom environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environments/third_party/">Third-party environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environments/creating_custom/">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -280,7 +276,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/api/python/gameState.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/api/python/game_state.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -316,7 +312,8 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.GameState">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GameState</span></span><a class="headerlink" href="#vizdoom.GameState" title="Link to this definition">¶</a></dt>
-<dd><dl class="py property">
+<dd><p>Contains the state of the game including screen buffer, game variables, and world geometry, available information depand on the configuration of the game instance.</p>
+<dl class="py property">
 <dt class="sig sig-object py" id="vizdoom.GameState.audio_buffer">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">audio_buffer</span></span><a class="headerlink" href="#vizdoom.GameState.audio_buffer" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -377,7 +374,7 @@
 <p><strong>tic</strong> - ingame time, 1 tic is 1/35 of second in the game world. Note: added in 1.1.1.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.get_state"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_state</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="#./doomGame.md#vizdoom.DoomGame.get_state"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_state</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/basic.py">examples/python/basic.py</a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a>.</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a>.</p></li>
@@ -387,7 +384,8 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.Label">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Label</span></span><a class="headerlink" href="#vizdoom.Label" title="Link to this definition">¶</a></dt>
-<dd><dl class="py property">
+<dd><p>Represents object labels in the game world with associated properties.</p>
+<dl class="py property">
 <dt class="sig sig-object py" id="vizdoom.Label.height">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">height</span></span><a class="headerlink" href="#vizdoom.Label.height" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -475,13 +473,14 @@
 <p><strong>x</strong>, <strong>y</strong>, <strong>width</strong>, <strong>height</strong> - describes bounding box of this particular object in <strong>labels_buffer</strong>. Note: added in 1.1.5.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.set_labels_buffer_enabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_labels_buffer_enabled</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="#./doomGame.md#vizdoom.DoomGame.set_labels_buffer_enabled"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_labels_buffer_enabled</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels_buffer.py">examples/python/objects_and_sectors.py</a>.</p></li>
 </ul>
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.Object">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Object</span></span><a class="headerlink" href="#vizdoom.Object" title="Link to this definition">¶</a></dt>
-<dd><dl class="py property">
+<dd><p>Represents objects in the game world with position and other properties.</p>
+<dl class="py property">
 <dt class="sig sig-object py" id="vizdoom.Object.angle">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">angle</span></span><a class="headerlink" href="#vizdoom.Object.angle" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -542,14 +541,15 @@
 <p><strong>name</strong> - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.set_sectors_info_enabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_objects_info_enabled</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="#./doomGame.md#vizdoom.DoomGame.set_sectors_info_enabled"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_objects_info_enabled</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>.</p></li>
 </ul>
 <p>Note: added in 1.1.8.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.Line">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Line</span></span><a class="headerlink" href="#vizdoom.Line" title="Link to this definition">¶</a></dt>
-<dd><dl class="py property">
+<dd><p>Represents line segments in the game world geometry.</p>
+<dl class="py property">
 <dt class="sig sig-object py" id="vizdoom.Line.is_blocking">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_blocking</span></span><a class="headerlink" href="#vizdoom.Line.is_blocking" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -587,7 +587,8 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.Sector">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Sector</span></span><a class="headerlink" href="#vizdoom.Sector" title="Link to this definition">¶</a></dt>
-<dd><dl class="py property">
+<dd><p>Represents sectors (floor/ceiling areas) in the game world geometry.</p>
+<dl class="py property">
 <dt class="sig sig-object py" id="vizdoom.Sector.ceiling_height">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ceiling_height</span></span><a class="headerlink" href="#vizdoom.Sector.ceiling_height" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -609,14 +610,15 @@
 <p><strong>lines</strong> - contains list of line segments, that forms sector.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.set_sectors_info_enabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_sectors_info_enabled</span></code></span></a>,</p></li>
+<li><p><a class="reference internal" href="#./doomGame.md#vizdoom.DoomGame.set_sectors_info_enabled"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_sectors_info_enabled</span></code></span></a>,</p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>.</p></li>
 </ul>
 <p>Note: added in 1.1.8.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.ServerState">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ServerState</span></span><a class="headerlink" href="#vizdoom.ServerState" title="Link to this definition">¶</a></dt>
-<dd><dl class="py property">
+<dd><p>Contains the state of the multiplayer server.</p>
+<dl class="py property">
 <dt class="sig sig-object py" id="vizdoom.ServerState.player_count">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">player_count</span></span><a class="headerlink" href="#vizdoom.ServerState.player_count" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -658,10 +660,10 @@
 
 </dd></dl>
 
-<p>ServerState is the main object returned by <a class="reference internal" href="../doomGame/#vizdoom.DoomGame.get_server_state"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_server_state</span></code></span></a> method, and it purpose is to get more information about the state of the multi-player game.</p>
+<p>ServerState is the main object returned by <a class="reference internal" href="#./doomGame.md#vizdoom.DoomGame.get_server_state"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_server_state</span></code></span></a> method, and it purpose is to get more information about the state of the multi-player game.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../doomGame/#vizdoom.DoomGame.get_server_state"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_server_state</span></code></span></a>.</p></li>
+<li><p><a class="reference internal" href="#./doomGame.md#vizdoom.DoomGame.get_server_state"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.get_server_state</span></code></span></a>.</p></li>
 </ul>
 <p>Note: added in 1.1.6.</p>
 </section>
@@ -672,30 +674,8 @@
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../enums/">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">Enums</div>
-              </div>
-              <svg class="furo-related-icon">
-                <use href="#svg-arrow-right"></use>
-              </svg>
-            </a>
-            <a class="prev-page" href="../doomGame/">
-              <svg class="furo-related-icon">
-                <use href="#svg-arrow-right"></use>
-              </svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">DoomGame</div>
-                
-              </div>
-            </a>
+            
+            
           </div>
           <div class="bottom-of-page">
             <div class="left-details">
