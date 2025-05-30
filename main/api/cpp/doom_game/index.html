@@ -8,7 +8,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
     <meta property="og:url" content="https://vizdoom.farama.org/api/cpp/doom_game.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" />
+<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="GameState" href="../game_state/" /><link rel="prev" title="C++ API" href="../" />
         <link rel="canonical" href="https://vizdoom.farama.org/api/cpp/doom_game.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
@@ -217,8 +217,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction/apis_and_wrappers/">APIs and wrappers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../python/doom_game/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../python/game_state/">GameState</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../python/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../python/utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../python/exceptions/">Exceptions</a></li>
@@ -226,7 +228,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../python/gym/">OpenAI Gym Env</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../">C++ API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../game_state/">GameState</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../exceptions/">Exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils/">Utilities</a></li>
@@ -708,7 +712,7 @@ Some commands will be blocked in some modes.</p>
 </tbody>
 </table>
 </div>
-<p>Returns <a class="reference internal" href="#./gameState.md#gamestate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> object with the current game state.
+<p>Returns <a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> object with the current game state.
 If the current episode is finished, <code class="docutils literal notranslate"><span class="pre">nullptr/null/None</span></code> will be returned.</p>
 <p>Note: Changed in 1.1.0</p>
 </section>
@@ -729,7 +733,7 @@ If the current episode is finished, <code class="docutils literal notranslate"><
 </tbody>
 </table>
 </div>
-<p>Returns <a class="reference internal" href="#./gameState.md#serverstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">ServerState</span></code></span></a> object with the current server state.</p>
+<p>Returns <a class="reference internal" href="../game_state/#serverstate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">ServerState</span></code></span></a> object with the current server state.</p>
 <p>Note: added in 1.1.6.</p>
 </section>
 <hr class="docutils" />
@@ -1022,7 +1026,7 @@ that were added with <a class="reference internal" href="#setavailablegamevariab
 </tbody>
 </table>
 </div>
-<p>Sets list of <a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code></span></a> s as available game variables in the <a class="reference internal" href="#./gameState.md#gamestate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <a class="reference internal" href="#getstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getState</span></code></span></a> method.</p>
+<p>Sets list of <a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code></span></a> s as available game variables in the <a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <a class="reference internal" href="#getstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getState</span></code></span></a> method.</p>
 <p>Has no effect when the game is running.</p>
 <p>Default value: <code class="docutils literal notranslate"><span class="pre">[]</span></code> (empty vector/list, no game variables).</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">availableGameVariables</span></code>/<code class="docutils literal notranslate"><span class="pre">available_game_variables</span></code> (list of values)</p>
@@ -1044,7 +1048,7 @@ that were added with <a class="reference internal" href="#setavailablegamevariab
 </tbody>
 </table>
 </div>
-<p>Adds the specified <a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code></span></a> to the list of available game variables (e.g. <code class="docutils literal notranslate"><span class="pre">HEALTH</span></code>, <code class="docutils literal notranslate"><span class="pre">AMMO1</span></code>, <code class="docutils literal notranslate"><span class="pre">ATTACK_READY</span></code>) in the <a class="reference internal" href="#./gameState.md#gamestate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <a class="reference internal" href="#getstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getState</span></code></span></a> method.</p>
+<p>Adds the specified <a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code></span></a> to the list of available game variables (e.g. <code class="docutils literal notranslate"><span class="pre">HEALTH</span></code>, <code class="docutils literal notranslate"><span class="pre">AMMO1</span></code>, <code class="docutils literal notranslate"><span class="pre">ATTACK_READY</span></code>) in the <a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <a class="reference internal" href="#getstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getState</span></code></span></a> method.</p>
 <p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">availableGameVariables</span></code>/<code class="docutils literal notranslate"><span class="pre">available_game_variables</span></code> (list of values)</p>
 </section>
@@ -1065,7 +1069,7 @@ that were added with <a class="reference internal" href="#setavailablegamevariab
 </tbody>
 </table>
 </div>
-<p>Clears the list of available <a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code></span></a> s that are included in the <a class="reference internal" href="#./gameState.md#gamestate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <a class="reference internal" href="#getstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getState</span></code></span></a> method.</p>
+<p>Clears the list of available <a class="reference internal" href="../enums/#gamevariable"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameVariable</span></code></span></a> s that are included in the <a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a> returned by <a class="reference internal" href="#getstate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getState</span></code></span></a> method.</p>
 <p>Has no effect when the game is running.</p>
 </section>
 <hr class="docutils" />
@@ -1305,7 +1309,7 @@ Use with caution, as in rare cases it may prevent the library from working prope
 </tbody>
 </table>
 </div>
-<p>Returns the reward for the player’s death. It is equal to negation of value returned by <a class="reference internal" href="#getdeathreward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getDeathReward</span></code></span></a>).</p>
+<p>Returns the reward for the player’s death. It is equal to negation of value returned by <a class="reference internal" href="#getdeathreward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">getDeathReward</span></code></span></a>.</p>
 <p>Note: added in 1.3.0</p>
 </section>
 <hr class="docutils" />
@@ -2427,7 +2431,7 @@ Depth buffer will contain noise if <code class="docutils literal notranslate"><s
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">depthBufferEnabled</span></code>/<code class="docutils literal notranslate"><span class="pre">depth_buffer_enabled</span></code></p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#./gameState.md#gamestate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.0.</p>
@@ -2469,7 +2473,7 @@ Depth buffer will contain noise if <code class="docutils literal notranslate"><s
 </tbody>
 </table>
 </div>
-<p>Enables rendering of the labels buffer, it will be available in the state with the vector of <a class="reference internal" href="#./gameState.md#label"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">Label</span></code></span></a> s.
+<p>Enables rendering of the labels buffer, it will be available in the state with the vector of <a class="reference internal" href="../game_state/#label"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Label</span></code></span></a> s.
 The buffer always has the same resolution as the screen buffer.
 LabelsBuffer will contain noise if <code class="docutils literal notranslate"><span class="pre">viz_nocheat</span></code> is enabled.</p>
 <p>Default value: false</p>
@@ -2477,7 +2481,7 @@ LabelsBuffer will contain noise if <code class="docutils literal notranslate"><s
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">labelsBufferEnabled</span></code>/<code class="docutils literal notranslate"><span class="pre">labels_buffer_enabled</span></code></p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#./gameState.md#gamestate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels.py">examples/python/labels.py</a></p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
 </ul>
@@ -2527,7 +2531,7 @@ The buffer always has the same resolution as the screen buffer.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">automapBufferEnabled</span></code>/<code class="docutils literal notranslate"><span class="pre">automap_buffer_enabled</span></code></p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#./gameState.md#gamestate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a>,</p></li>
 </ul>
 <p>Note: added in 1.1.0.</p>
@@ -3040,14 +3044,14 @@ ViZDoom with window disabled can be used on Linux systems without X Server.</p>
 </tbody>
 </table>
 </div>
-<p>Enables information about all <a class="reference internal" href="#./gameState.md#object"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">Object</span></code></span></a> s present in the current episode/level.
+<p>Enables information about all <a class="reference internal" href="../game_state/#object"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Object</span></code></span></a> s present in the current episode/level.
 It will be available in the state.</p>
 <p>Default value: false</p>
 <p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">objectsInfoEnabled</span></code>/<code class="docutils literal notranslate"><span class="pre">objects_info_enabled</span></code></p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#./gameState.md#gamestate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>,</p></li>
 </ul>
 <p>Note: added in 1.1.8.</p>
@@ -3089,14 +3093,14 @@ It will be available in the state.</p>
 </tbody>
 </table>
 </div>
-<p>Enables information about all <a class="reference internal" href="#./gameState.md#sector"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">Sector</span></code></span></a> s (map layout) present in the current episode/level.
+<p>Enables information about all <a class="reference internal" href="../game_state/#sector"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">Sector</span></code></span></a> s (map layout) present in the current episode/level.
 It will be available in the state.</p>
 <p>Default value: false</p>
 <p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">sectorsInfoEnabled</span></code>/<code class="docutils literal notranslate"><span class="pre">sectors_info_enabled</span></code></p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#./gameState.md#gamestate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.8.</p>
@@ -3146,7 +3150,7 @@ Sampling rate can be set with <a class="reference internal" href="#setaudiosampl
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">audioBufferEnabled</span></code>/<code class="docutils literal notranslate"><span class="pre">audio_buffer_enabled</span></code></p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#./gameState.md#gamestate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
 <li><p><a class="reference internal" href="../enums/#sampling-rate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">SamplingRate</span></code></span></a></p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
 </ul>
@@ -3172,7 +3176,7 @@ Sampling rate can be set with <a class="reference internal" href="#setaudiosampl
 <p>Returns the <a class="reference internal" href="../enums/#sampling-rate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">SamplingRate</span></code></span></a> of the audio buffer.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#./gameState.md#gamestate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.9.</p>
@@ -3200,7 +3204,7 @@ Sampling rate can be set with <a class="reference internal" href="#setaudiosampl
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">audioSamplingRate</span></code>/<code class="docutils literal notranslate"><span class="pre">audio_sampling_rate</span></code></p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#./gameState.md#gamestate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.9.</p>
@@ -3226,7 +3230,7 @@ Sampling rate can be set with <a class="reference internal" href="#setaudiosampl
 <p>Note: added in 1.1.9.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#./gameState.md#gamestate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
 </ul>
 </section>
@@ -3255,7 +3259,7 @@ Doom uses 35 ticks per second.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">audioBufferSize</span></code>/<code class="docutils literal notranslate"><span class="pre">audio_buffer_size</span></code></p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#./gameState.md#gamestate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.9.</p>
@@ -3268,13 +3272,35 @@ Doom uses 35 ticks per second.</p>
         <footer>
           
           <div class="related-pages">
-            
-            
+            <a class="next-page" href="../game_state/">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">GameState</div>
+              </div>
+              <svg class="furo-related-icon">
+                <use href="#svg-arrow-right"></use>
+              </svg>
+            </a>
+            <a class="prev-page" href="../">
+              <svg class="furo-related-icon">
+                <use href="#svg-arrow-right"></use>
+              </svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">C++ API</div>
+                
+              </div>
+            </a>
           </div>
           <div class="bottom-of-page">
             <div class="left-details">
               <div class="copyright">
-                Copyright &#169; 2023 Farama Foundation
+                Copyright &#169; 2025 Farama Foundation
               </div>
               <!--
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s

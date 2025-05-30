@@ -219,6 +219,8 @@
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../python/doom_game/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python/game_state/">GameState</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../python/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../python/utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../python/exceptions/">Exceptions</a></li>
@@ -227,6 +229,8 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cpp/doom_game/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cpp/game_state/">GameState</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cpp/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cpp/exceptions/">Exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cpp/utils/">Utilities</a></li>
@@ -332,6 +336,7 @@
 <section id="supported-configuration-keys">
 <h3>Supported configuration keys:<a class="headerlink" href="#supported-configuration-keys" title="Link to this heading">¶</a></h3>
 <ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ammoReward/ammo_reward</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">audioBufferEnabled/audio_buffer_enabled</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">audioBufferSize/audio_buffer_size</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">audioSamplingRate/audio_samping_rate</span></code></p></li>
@@ -343,7 +348,9 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">availableGameVariables/available_game_variables</span></code> (list of values)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">consoleEnabled/console_enabled</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">deathPenalty/death_penalty</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deathReward/death_reward</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">depthBufferEnabled/depth_buffer_enabled</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">killReward/kill_reward</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">DoomConfigPath/doom_config_path</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">DoomGamePath/doom_game_path</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">DoomMap/doom_map</span></code></p></li>
@@ -351,7 +358,14 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">DoomSkill/doom_skill</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">episodeStartTime/episode_start_time</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">episodeTimeout/episode_timeout</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fragReward/frags_reward</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">gameArgs/game_args</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">healthReward/health_reward</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hitReward/hit_reward</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hitTakenPenalty/hit_taken_penalty</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hitTakenReward/hit_taken_reward</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">itemReward/item_reward</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">killReward/kill_reward</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">labelsBufferEnabled/labels_buffer_enabled</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">livingReward/living_reward</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">mode</span></code></p></li>
@@ -461,7 +475,7 @@
           <div class="bottom-of-page">
             <div class="left-details">
               <div class="copyright">
-                Copyright &#169; 2023 Farama Foundation
+                Copyright &#169; 2025 Farama Foundation
               </div>
               <!--
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
