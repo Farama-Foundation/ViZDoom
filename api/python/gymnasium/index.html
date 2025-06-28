@@ -219,6 +219,8 @@
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../">Python API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../doom_game/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../game_state/">GameState</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../exceptions/">Exceptions</a></li>
@@ -227,6 +229,8 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cpp/doom_game/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cpp/game_state/">GameState</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../cpp/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../cpp/exceptions/">Exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../cpp/utils/">Utilities</a></li>
@@ -311,13 +315,13 @@
 <h1>Gymnasium Env<a class="headerlink" href="#gymnasium-env" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VizdoomEnv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_buttons_pressed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">render_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv" title="Link to this definition">¶</a></dt>
-<dd><p>Base class for Gymnasium interface for ViZDoom. Thanks to <a class="reference external" href="https://github.com/shakenes/vizdoomgym">https://github.com/shakenes/vizdoomgym</a>
-Child classes are defined in gym_env_defns.py,</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VizdoomEnv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_buttons_pressed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">render_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">treat_episode_timeout_as_truncation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_multi_binary_action_space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv" title="Link to this definition">¶</a></dt>
+<dd><p>Base class for Gymnasium interface for ViZDoom.
+Child classes are defined in gymnasium_env_defns.py,</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>level</strong> (<em>str</em>) – The path to the config file to load. Most settings should be set by this config file.</p></li>
+<li><p><strong>config_file</strong> (<em>str</em>) – The path to the config file to load. Most settings should be set by this config file.</p></li>
 <li><p><strong>frame_skip</strong> (<em>int</em>) – The number of frames the will be advanced per action. 1 = take action on every frame. Default: 1.</p></li>
 <li><p><strong>max_buttons_pressed</strong> (<em>int</em>) – Defines the number of binary buttons that can be selected at once. Default: 1.
 Should be &gt;= 0. If &lt; 0 a RuntimeError is raised.
@@ -328,6 +332,14 @@ and <code class="docutils literal notranslate"><span class="pre">n</span></code>
 <code class="docutils literal notranslate"><span class="pre">n</span></code> is equal to number of possible buttons combinations
 with the number of buttons pressed &lt; <code class="docutils literal notranslate"><span class="pre">max_buttons_pressed</span></code>.</p></li>
 <li><p><strong>render_mode</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – The render mode to use could be either “human” or “rgb_array”</p></li>
+<li><p><strong>treat_episode_timeout_as_truncation</strong> (<em>bool</em>) – If True, the episode will be treated as truncated
+when the internal episode timeout is reached.
+This is compatibility option, ViZDoom versions &lt;1.3.0 behave as if this was set to False.
+Default: True.</p></li>
+<li><p><strong>use_multi_binary_action_space</strong> (<em>bool</em>) – If True, the <code class="docutils literal notranslate"><span class="pre">MultiBinary(len(num_binary_buttons))</span></code> action space
+will be used for buttons binary buttons instead of <code class="docutils literal notranslate"><span class="pre">MultiDiscrete([2]</span> <span class="pre">*</span> <span class="pre">len(num_binary_buttons))</span></code>.
+This is compatibility option, ViZDoom versions &lt;1.3.0 behave as if this was set to False.
+Default: True.</p></li>
 </ul>
 </dd>
 </dl>
@@ -344,8 +356,9 @@ For info on labels, access <cite>env.state.labels</cite> variable.</p></li>
 </ul>
 <p>Action space can be a single one of binary/continuous action space, or a <code class="docutils literal notranslate"><span class="pre">Dict</span></code> containing both:</p>
 <ul class="simple">
-<li><p>“binary”: Is <code class="docutils literal notranslate"><span class="pre">MultiDiscrete([2]</span> <span class="pre">*</span> <span class="pre">num_binary_buttons)</span></code> if <code class="xref py py-attr docutils literal notranslate"><span class="pre">max_buttons_pressed</span></code> == 0
-or <code class="docutils literal notranslate"><span class="pre">Discrete(num_binary_buttons</span> <span class="pre">+</span> <span class="pre">1)</span></code> if <code class="xref py py-attr docutils literal notranslate"><span class="pre">max_buttons_pressed</span></code> &gt;= 1.</p></li>
+<li><p>“binary”: Is <code class="docutils literal notranslate"><span class="pre">Discrete(num_binary_buttons</span> <span class="pre">+</span> <span class="pre">1)</span></code> if <code class="xref py py-attr docutils literal notranslate"><span class="pre">max_buttons_pressed</span></code> &gt;= 1
+or <code class="docutils literal notranslate"><span class="pre">MultiBinary(len(num_binary_buttons))</span></code> if <code class="xref py py-attr docutils literal notranslate"><span class="pre">max_buttons_pressed</span></code> == 0 and <code class="xref py py-attr docutils literal notranslate"><span class="pre">use_multi_binary_action_space</span></code> is True,
+or <code class="docutils literal notranslate"><span class="pre">MultiDiscrete([2]</span> <span class="pre">*</span> <span class="pre">num_binary_buttons)</span></code> if <code class="xref py py-attr docutils literal notranslate"><span class="pre">max_buttons_pressed</span></code> == 0 and <code class="xref py py-attr docutils literal notranslate"><span class="pre">use_multi_binary_action_space</span></code> is False,</p></li>
 <li><p>“continuous”: Is <code class="docutils literal notranslate"><span class="pre">Box(float32.min,</span> <span class="pre">float32.max,</span> <span class="pre">(num_delta_buttons,),</span> <span class="pre">float32)</span></code>.</p></li>
 </ul>
 <dl class="py method">
@@ -510,7 +523,7 @@ a certain timelimit was exceeded, or the physics simulation has entered an inval
           <div class="bottom-of-page">
             <div class="left-details">
               <div class="copyright">
-                Copyright &#169; 2023 Farama Foundation
+                Copyright &#169; 2025 Farama Foundation
               </div>
               <!--
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
