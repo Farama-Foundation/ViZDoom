@@ -552,18 +552,30 @@ namespace vizdoom {
         return this->doomController->getGameVariable(variable);
     }
 
+    std::string DoomGame::getViZDoomPath() { return this->doomController->getExePath(); }
+
     void DoomGame::setViZDoomPath(std::string filePath) { this->doomController->setExePath(filePath); }
+
+    std::string DoomGame::getDoomGamePath() { return this->doomController->getIwadPath(); }
 
     void DoomGame::setDoomGamePath(std::string filePath) { this->doomController->setIwadPath(filePath); }
 
+    std::string DoomGame::getDoomScenarioPath() { return this->doomController->getFilePath(); }
+
     void DoomGame::setDoomScenarioPath(std::string filePath) { this->doomController->setFilePath(filePath); }
+
+    std::string DoomGame::getDoomMap() { return this->doomController->getMap(); }
 
     void DoomGame::setDoomMap(std::string map) {
         this->doomController->setMap(map);
         if (this->isRunning()) this->resetState();
     }
 
+    int DoomGame::getDoomSkill() { return this->doomController->getSkill(); }
+
     void DoomGame::setDoomSkill(int skill) { this->doomController->setSkill(skill); }
+
+    std::string DoomGame::getDoomConfigPath() { return this->doomController->getConfigPath(); }
 
     void DoomGame::setDoomConfigPath(std::string filePath) { this->doomController->setConfigPath(filePath); }
 

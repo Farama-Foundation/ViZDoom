@@ -1108,6 +1108,16 @@ Note: added in 1.1.0.
 
 
 ---
+### `getViZDoomPath`
+
+| C++    | `std::string getViZDoomPath()` |
+| :--    | :--                            |
+| Python | `get_vizdoom_path() -> str`    |
+
+Returns the path to the ViZDoom engine executable vizdoom.
+
+
+---
 ### `setViZDoomPath`
 
 | C++    | `void setViZDoomPath(std::string filePath)` |
@@ -1115,10 +1125,21 @@ Note: added in 1.1.0.
 | Python | `set_vizdoom_path(file_path: str) -> None`  |
 
 Sets the path to the ViZDoom engine executable vizdoom.
+We recommend not changing this path unless you know what you are doing.
 
 Default value: `<ViZDoom library location>/<vizdoom or vizdoom.exe on Windows>`.
 
 Config key: `ViZDoomPath`/`vizdoom_path`
+
+
+---
+### `getDoomGamePath`
+
+| C++    | `std::string getDoomGamePath()` |
+| :--    | :--                             |
+| Python | `get_doom_game_path() -> str`   |
+
+Returns the path to the Doom engine based game file (wad format).
 
 
 ---
@@ -1137,6 +1158,16 @@ Config key: `DoomGamePath`/`doom_game_path`
 
 
 ---
+### `getDoomScenarioPath`
+
+| C++    | `std::string getDoomScenarioPath()` |
+| :--    | :--                                 |
+| Python | `get_doom_scenario_path() -> str`   |
+
+Returns the path to the additional scenario file (wad format).
+
+
+---
 ### `setDoomScenarioPath`
 
 | C++    | `void setDoomScenarioPath(std::string filePath)` |
@@ -1149,6 +1180,16 @@ If not provided, the default Doom single-player maps will be loaded.
 Default value: `""`
 
 Config key: `DoomScenarioPath`/`doom_scenario_path`
+
+
+---
+### `getDoomMap`
+
+| C++    | `std::string getDoomMap()` |
+| :--    | :--                        |
+| Python | `get_doom_map() -> str`    |
+
+Returns the map name to be used.
 
 
 ---
@@ -1166,6 +1207,16 @@ Config key: `DoomMap`/`doom_map`
 
 
 ---
+### `getDoomSkill`
+
+| C++    | `unsigned int getDoomSkill()` |
+| :--    | :--                           |
+| Python | `get_doom_skill() -> int`     |
+
+Returns the Doom game difficulty level (skill).
+
+
+---
 ### `setDoomSkill`
 
 | C++    | `void setDoomSkill(unsigned int skill)` |
@@ -1177,15 +1228,25 @@ The higher the skill, the harder the game becomes.
 Skill level affects monsters' aggressiveness, monsters' speed, weapon damage, ammunition quantities, etc.
 Takes effect from the next episode.
 
-- 1 - VERY EASY, “I'm Too Young to Die” in Doom.
-- 2 - EASY, “Hey, Not Too Rough" in Doom.
-- 3 - NORMAL, “Hurt Me Plenty” in Doom.
-- 4 - HARD, “Ultra-Violence” in Doom.
-- 5 - VERY HARD, “Nightmare!” in Doom.
+- 1 - VERY EASY, "I'm Too Young to Die" in Doom.
+- 2 - EASY, "Hey, Not Too Rough" in Doom.
+- 3 - NORMAL, "Hurt Me Plenty" in Doom.
+- 4 - HARD, "Ultra-Violence" in Doom.
+- 5 - VERY HARD, "Nightmare!" in Doom.
 
 Default value: 3
 
 Config key: `DoomSkill`/`doom_skill`
+
+
+---
+### `getDoomConfigPath`
+
+| C++    | `std::string getDoomConfigPath()` |
+| :--    | :--                               |
+| Python | `get_doom_config_path() -> str`   |
+
+Returns the path for ZDoom's configuration file.
 
 
 ---

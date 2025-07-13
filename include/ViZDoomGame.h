@@ -163,11 +163,17 @@ namespace vizdoom {
         unsigned int getTicrate();
         void setTicrate(unsigned int ticrate);
 
+        std::string getViZDoomPath();
         void setViZDoomPath(std::string filePath);
+        std::string getDoomGamePath();
         void setDoomGamePath(std::string filePath);
+        std::string getDoomScenarioPath();
         void setDoomScenarioPath(std::string filePath);
+        std::string getDoomMap();
         void setDoomMap(std::string map);
+        int getDoomSkill();
         void setDoomSkill(int skill);
+        std::string getDoomConfigPath();
         void setDoomConfigPath(std::string filePath);
 
         unsigned int getSeed();
