@@ -1227,25 +1227,48 @@ namespace vizdoom {
 
         // main wad
         if (this->iwadPath.length() == 0) {
-            std::string workingDoom2Path = "./doom2.wad";
-            std::string workingDoomPath = "./doom.wad";
-            std::string workingFreedoom2Path = "./freedoom2.wad";
-            std::string workingFreedoomPath = "./freedoom.wad";
-            std::string sharedDoom2Path = getThisSharedObjectPath() + "/doom2.wad";
-            std::string sharedDoomPath = getThisSharedObjectPath() + "/doom.wad";
-            std::string sharedFreedoom2Path = getThisSharedObjectPath() + "/freedoom2.wad";
-            std::string sharedFreedoomPath = getThisSharedObjectPath() + "/freedoom.wad";
+            // If no iwadPath is set, try to find default wads in the current directory or shared library directory
+            const std::vector<std::string> wadNames = {
+                "doom2.wad", "DOOM2.WAD", "doom.wad", "DOOM.WAD", 
+                "freedoom2.wad", "freedoom.wad"
+            };
 
-            if (fileExists(workingDoom2Path)) this->iwadPath = workingDoom2Path;
-            else if (fileExists(sharedDoom2Path)) this->iwadPath = sharedDoom2Path;
-            else if (fileExists(workingFreedoom2Path)) this->iwadPath = workingFreedoom2Path;
-            else if (fileExists(sharedFreedoom2Path)) this->iwadPath = sharedFreedoom2Path;
-            else throw FileDoesNotExistException(workingDoom2Path
-                                                 + " | " + workingFreedoom2Path
-                                                 + " | " + sharedDoom2Path
-                                                 + " | " + sharedFreedoom2Path);
+            std::string allWadsList = "<";
+            for (int i = 0; i < wadNames.size(); ++i) {
+                const std::string &wadName = wadNames[i];
+                std::string workingPath = "./" + wadName;
+                std::string sharedPath = getThisSharedObjectPath() + "/" + wadName;
+                allWadsList += wadName;
+                if (i < wadNames.size() - 1) allWadsList += " | ";
+
+                if (fileExists(workingPath)) {
+                    this->iwadPath = workingPath;
+                    break;
+                } else if (fileExists(sharedPath)) {
+                    this->iwadPath = sharedPath;
+                    break;
+                }
+            }
+
+            if (this->iwadPath.length() == 0){
+                // If no wad was found, throw an exception with the list of possible wads
+                allWadsList += ">";
+                throw FileDoesNotExistException("./" + allWadsList + " or " 
+                    + getThisSharedObjectPath() + "/" + allWadsList);
+            }
         }
-
+        } else if (!fileExists(this->iwadPath)) {
+            // If the iwadPath does not exist, check if it's filename and can be found in the library directory
+            if (this->iwadPath.find('/') == std::string::npos && this->iwadPath.find('\\') == std::string::npos) {
+                std::string sharedPath = getThisSharedObjectPath() + "/" + this->iwadPath;
+                std::string sharedPathCaps = getThisSharedObjectPath() + "/" + toUpper(this->iwadPath);
+                if (fileExists(sharedPath)) this->iwadPath = sharedPath;
+                else if (fileExists(sharedPathCaps)) this->iwadPath = sharedPathCaps;
+                else throw FileDoesNotExistException(this->iwadPath 
+                    + " or " + sharedPath + " or " + sharedPathCaps);
+            }
+        }
+            
         this->doomArgs.push_back("-iwad");
         this->doomArgs.push_back(prepareWadFilePath(this->iwadPath));
 
