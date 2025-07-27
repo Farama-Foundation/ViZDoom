@@ -175,6 +175,8 @@ namespace vizdoom {
         void setDoomSkill(int skill);
         std::string getDoomConfigPath();
         void setDoomConfigPath(std::string filePath);
+        bool isContinueOnMapExit();
+        void setContinueOnMapExit(bool continueOnMapExit);
 
         unsigned int getSeed();
         void setSeed(unsigned int seed);

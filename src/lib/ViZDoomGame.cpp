@@ -593,6 +593,10 @@ namespace vizdoom {
 
     unsigned int DoomGame::getEpisodeTime() { return this->doomController->getMapTic(); }
 
+    bool DoomGame::isContinueOnMapExit() { return this->doomController->isContinueOnIntermission(); }
+
+    void DoomGame::setContinueOnMapExit(bool continueOnMapExit) { this->doomController->setContinueOnIntermission(continueOnMapExit); }
+
     double DoomGame::getLivingReward() { return this->livingReward; }
 
     void DoomGame::setLivingReward(double livingReward) { this->livingReward = livingReward; }

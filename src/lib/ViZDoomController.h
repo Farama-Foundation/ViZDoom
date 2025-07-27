@@ -155,6 +155,9 @@ namespace vizdoom {
         bool isMapTimeoutReached();
         unsigned int getMapLastTic();
 
+        bool isContinueOnIntermission() const;
+        void setContinueOnIntermission(bool continueOnIntermission);
+
         void setNoConsole(bool console);
         void setNoSound(bool noSound);
         bool getNoSound() const;
@@ -393,6 +396,7 @@ namespace vizdoom {
         std::string configPath;
         int skill;
 
+        bool continueOnIntermission;
         bool allowDoomInput;
         bool runDoomAsync;
 

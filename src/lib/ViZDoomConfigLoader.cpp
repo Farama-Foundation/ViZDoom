@@ -783,6 +783,10 @@ namespace vizdoom {
                     this->game->setAudioBufferEnabled(stringToBool(val));
                     continue;
                 }
+                else if (key == "continue_on_map_exit" || key == "continueonmapexit") {
+                    this->game->setContinueOnMapExit(stringToBool(val));
+                    continue;
+                }
             }
             catch (std::exception) {
                 std::cerr << "WARNING! Loading config from: \"" << filePath <<

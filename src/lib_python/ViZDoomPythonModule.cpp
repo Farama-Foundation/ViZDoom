@@ -737,6 +737,9 @@ PYBIND11_MODULE(vizdoom, vz){
         CLASS_FUNC_2_PYT_WITH_ARGS("set_episode_timeout", DoomGamePython::setEpisodeTimeout, pyb::arg("timeout"))
         CLASS_FUNC_2_PYT("get_episode_time", DoomGamePython::getEpisodeTime)
 
+        CLASS_FUNC_2_PYT("is_continue_on_map_exit", DoomGamePython::isContinueOnMapExit)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_continue_on_map_exit", DoomGamePython::setContinueOnMapExit, pyb::arg("continue_on_map_exit"))
+
         CLASS_FUNC_2_PYT_WITH_ARGS("set_console_enabled", DoomGamePython::setConsoleEnabled, pyb::arg("console"))
         CLASS_FUNC_2_PYT_WITH_ARGS("set_sound_enabled", DoomGamePython::setSoundEnabled, pyb::arg("sound"))
 

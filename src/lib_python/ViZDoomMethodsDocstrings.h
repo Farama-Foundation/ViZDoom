@@ -569,6 +569,18 @@ Default value: 0
 
 Config key: ``episodeTimeout``/``episode_timeout``)DOCSTRING";
 
+    const char *isContinueOnMapExit = R"DOCSTRING(Returns ``True`` if the game is set to continue on map exit.
+
+Note: added in 1.3.0.)DOCSTRING";
+
+    const char *setContinueOnMapExit = R"DOCSTRING(Sets whether the game should continue on map exit or consider it as the end of the episode.
+
+Default value: ``False``
+
+Config key: ``continueOnMapExit``/``continue_on_map_exit``
+
+Note: added in 1.3.0.)DOCSTRING";
+
     const char *setScreenResolution = R"DOCSTRING(Sets the screen resolution and additional buffers (depth, labels, and automap). ZDoom engine supports only specific resolutions.
 Supported resolutions are part of :class:`.ScreenResolution` enumeration (e.g., ``RES_320X240``, ``RES_640X480``, ``RES_1920X1080``).
 The buffers, as well as the content of ViZDoom's display window, will be affected.

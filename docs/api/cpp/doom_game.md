@@ -1343,6 +1343,34 @@ Default value: 0
 Config key: `episodeTimeout`/`episode_timeout`
 
 
+---
+### `isContinueOnMapExit`
+
+| C++    | `bool isContinueOnMapExit()`        |
+| :--    | :--                                 |
+| Python | `is_continue_on_map_exit() -> bool` |
+
+Returns true if the game is set to continue on map exit.
+
+Note: added in 1.3.0.
+
+
+---
+### `setContinueOnMapExit`
+
+| C++    | `void setContinueOnMapExit(bool continueOnMapExit)`            |
+| :--    | :--                                                            |
+| Python | `set_continue_on_map_exit(continue_on_map_exit: bool) -> None` |
+
+Sets whether the game should continue on map exit or consider it as the end of the episode.
+
+Default value: false
+
+Config key: `continueOnMapExit`/`continue_on_map_exit`
+
+Note: added in 1.3.0.
+
+
 ## Output/rendering setting methods
 
 

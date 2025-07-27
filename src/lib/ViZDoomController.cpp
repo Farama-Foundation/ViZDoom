@@ -272,7 +272,6 @@ namespace vizdoom {
     void DoomController::tic(bool update) {
 
         if (this->doomRunning) {
-
             if (this->isTicPossible()) {
                 this->mapLastTic = this->gameState->MAP_TIC + 1;
                 if (update) this->MQDoom->send(MSG_CODE_TIC_AND_UPDATE);
@@ -522,8 +521,7 @@ namespace vizdoom {
 
     std::string DoomController::getConfigPath() { return this->configPath; }
 
-    void
-    DoomController::setConfigPath(std::string configPath) { if (!this->doomRunning) this->configPath = configPath; }
+    void DoomController::setConfigPath(std::string configPath) { if (!this->doomRunning) this->configPath = configPath; }
 
     int DoomController::getSkill() { return this->skill; }
 
@@ -595,6 +593,14 @@ namespace vizdoom {
 
     unsigned int DoomController::getMapLastTic() {
         return this->mapLastTic;
+    }
+
+    bool DoomController::isContinueOnIntermission() const {
+        return this->continueOnIntermission;
+    }
+
+    void DoomController::setContinueOnIntermission(bool continueOnIntermission) {
+        this->continueOnIntermission = continueOnIntermission;
     }
 
     void DoomController::setNoConsole(bool console) {
@@ -1256,7 +1262,6 @@ namespace vizdoom {
                 throw FileDoesNotExistException("./" + allWadsList + " or " 
                     + getThisSharedObjectPath() + "/" + allWadsList);
             }
-        }
         } else if (!fileExists(this->iwadPath)) {
             // If the iwadPath does not exist, check if it's filename and can be found in the library directory
             if (this->iwadPath.find('/') == std::string::npos && this->iwadPath.find('\\') == std::string::npos) {

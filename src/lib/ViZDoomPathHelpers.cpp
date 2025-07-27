@@ -44,12 +44,12 @@ namespace vizdoom {
     namespace bal   = boost::algorithm;
     namespace bfs   = boost::filesystem;
 
-    std::string uppercase(std::string str) {
+    std::string toUpper(std::string str) {
         bal::to_upper(str);
         return str;
     }
 
-    std::string lowercase(std::string str) {
+    std::string toLower(std::string str) {
         bal::to_lower(str);
         return str;
     }
