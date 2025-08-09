@@ -24,7 +24,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-13, macos-14]
+        os: [ubuntu-24.04, macos-14]
       fail-fast: false
 
     steps:
@@ -140,9 +140,7 @@ jobs:
         run: python -c "import vizdoom"
 
       - name: Run tests
-        # Skip tests on macOS with Apple Silicon, because they are slow (TODO: investigate)
-        if: matrix.os != 'macos-14'
-        run: pytest tests
+        run: pytest tests -s
 
   build_sdist:
     name: Build source distribution

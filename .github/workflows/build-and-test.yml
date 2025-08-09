@@ -59,7 +59,9 @@ jobs:
 
     - name: Install dependencies on MacOS
       if: runner.os == 'macOS'
-      run: brew install cmake boost openal-soft sdl2
+      run: |
+        brew config
+        brew install cmake boost openal-soft sdl2
 
     - name: Set up Python ${{ matrix.python-version }} environment
       uses: actions/setup-python@v4
@@ -76,6 +78,4 @@ jobs:
       run: python -c "import vizdoom"
 
     - name: Run tests
-      # Skip tests on macOS with Apple Silicon, because they are slow (TODO: investigate)
-      if: matrix.os != 'macos-14'
-      run: pytest tests
+      run: pytest tests -s
