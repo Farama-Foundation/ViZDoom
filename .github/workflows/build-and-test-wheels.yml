@@ -79,7 +79,7 @@ jobs:
           path: ./wheelhouse/*.whl
 
   test_wheels:
-    name: Test wheels on ${{ matrix.os }}
+    name: Test wheels on ${{ matrix.os }} with Python ${{ matrix.python-version }}
     needs: [build_wheels]
     runs-on: ${{ matrix.os }}
     strategy:
@@ -98,7 +98,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Download all dists
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           pattern: artifact-*
@@ -170,7 +170,7 @@ jobs:
       id-token: write
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
-      - name: Download all dists
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           pattern: artifact-*

@@ -38,6 +38,7 @@ env:
 
 jobs:
   build_and_test_wheels:
+    name: Build wheels on ${{ matrix.os }} for Python ${{ matrix.python-version }}
     strategy:
       matrix:
         os: [windows-2022]
@@ -144,20 +145,10 @@ jobs:
         python -m pip install --upgrade setuptools wheel twine
         python setup.py bdist_wheel
 
-    - name: Report built wheels (bash)
+    - name: Report built wheels
       shell: bash
       run: |
         ls -l ./dist/*.whl
-
-    # Test
-    # - name: Install wheel (bash)
-    #   shell: bash
-    #   run: |
-    #     python -m pip install $(ls dist/vizdoom-*.whl)[test]
-
-    # - name: Test
-    #   run: |
-    #     python -m pytest tests
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
@@ -185,13 +176,26 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Download all dists
+      - name: Download artificat
         uses: actions/download-artifact@v4
         with:
           name: artifact-${{ matrix.os }}-${{ matrix.python-version }}
           path: dist
 
+      - name: Report dist directory
+        shell: bash
+        run: ls -l dist
+
+      - name: Report environment
+        shell: bash
+        run: |
+          echo ${{ matrix.os }}
+          echo ${{ runner.os }}
+          uname -p
+          python -c "import sys; print(sys.version)"
+
       - name: Install wheel
+        shell: bash
         run: |
           python -m pip install $(ls dist/vizdoom-*.whl)[test]
 
@@ -212,7 +216,7 @@ jobs:
         id-token: write
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
-      - name: Download all dists
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
             pattern: artifact-*
