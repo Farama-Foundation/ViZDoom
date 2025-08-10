@@ -40,16 +40,17 @@ endif()
 # System dependent settings
 #-----------------------------------------------------------------------------------------------------------------------
 
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+
 if(UNIX)
+    message(STATUS "Unix-like system detected, setting up Unix specific options")
     set(Boost_USE_STATIC_LIBS OFF)
-    set(Boost_USE_MULTITHREADED ON)
-    set(Boost_USE_STATIC_RUNTIME OFF)
 endif()
 
 if(WIN32)
+    message(STATUS "Windows detected, setting up Windows specific options")
     set(Boost_USE_STATIC_LIBS ON)
-    set(Boost_USE_MULTITHREADED ON)
-    set(Boost_USE_STATIC_RUNTIME ON)
 
     macro(get_WIN32_WINNT version)
         if(WIN32 AND CMAKE_SYSTEM_VERSION)
@@ -68,6 +69,7 @@ if(WIN32)
 endif()
 
 if(APPLE)
+    message(STATUS "macOS detected, setting up macOS specific options")
     set(CMAKE_MACOSX_RPATH ON)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
 
