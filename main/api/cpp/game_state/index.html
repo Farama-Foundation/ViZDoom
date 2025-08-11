@@ -355,6 +355,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>objectId / object_id</strong></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">std::string</span> <span class="pre">/</span> <span class="pre">str</span></code> <strong>objectName / object_name</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std::string</span> <span class="pre">/</span> <span class="pre">str</span></code> <strong>objectCategory / object_category</strong></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">uint8_t</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>value</strong></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>x</strong></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>y</strong></p></li>
@@ -373,6 +374,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p>Description of the object in the labels buffer.</p>
 <p><strong>objectId / object_id</strong> - unique object ID, if both Labels and Objects information is enabled, this will be the same as <strong>id</strong> in corresponding <strong>Object</strong>.</p>
 <p><strong>objectName / object_name</strong> - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).</p>
+<p><strong>objectCategory / object_category</strong> - category of the object (e.g. “Monster”, “Weapon”, “Player”). Category “Self” is assigned to current player.</p>
 <p><strong>value</strong> - value that represents this particular object in <strong>labelsBuffer</strong>.</p>
 <p><strong>x</strong>, <strong>y</strong>, <strong>width</strong>, <strong>height</strong> - describes bounding box of this particular object in <strong>labelsBuffer</strong>. Note: added in 1.1.5.</p>
 <p>See also:</p>
