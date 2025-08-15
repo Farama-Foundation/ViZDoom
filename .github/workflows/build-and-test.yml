@@ -70,9 +70,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: Python environment report
-      run: |
-        python -c "import sys; print(sys.version)"
-        pip freeze
+      run: python -c "import sys; print(sys.version)"
 
     - name: CMake report
       run: |
@@ -81,13 +79,15 @@ jobs:
         rm -rf CMakeCache.txt
 
     - name: Pip install
-      run: pip install .[test]
+      run: |
+        pip install .[test]
+        pip freeze
 
     - name: Import check
       run: python -c "import vizdoom"
 
     - name: Init with console check
-      run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_sound_enabled(True); g.init()"
+      run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_audio_buffer_enabled(True); g.init()"
 
     - name: Run tests
       run: pytest tests
