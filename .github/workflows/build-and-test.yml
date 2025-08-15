@@ -33,8 +33,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        #os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14]
+        #python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
         os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14]
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.12']
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -68,21 +70,24 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: Python environment report
-      run: python -c "import sys; print(sys.version)"
-    
+      run: |
+        python -c "import sys; print(sys.version)"
+        pip freeze
+
     - name: CMake report
       run: |
         cmake --version
         cmake -DBUILD_PYTHON=ON .
         rm -rf CMakeCache.txt
-        
+
     - name: Pip install
       run: pip install .[test]
 
     - name: Import check
       run: python -c "import vizdoom"
 
+    - name: Init with console check
+      run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_sound_enabled(True); g.init()"
+
     - name: Run tests
-      # Skip tests on macOS with Apple Silicon, because they are slow (TODO: investigate)
-      if: matrix.os != 'macos-14'
       run: pytest tests

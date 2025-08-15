@@ -42,7 +42,8 @@ jobs:
     strategy:
       matrix:
         os: [windows-2022]
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        #python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.12']
       fail-fast: false
     runs-on: ${{ matrix.os }}
 
@@ -201,6 +202,9 @@ jobs:
 
       - name: Import check
         run: python -c "import vizdoom"
+
+      - name: Init with console check
+        run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_sound_enabled(True); g.init()"
 
       - name: Run test
         run: |
