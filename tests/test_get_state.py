@@ -155,7 +155,7 @@ def test_get_state(num_iterations=10, num_states=20):
         automap_buffer=True,
         objects_info=True,
         sectors_info=True,
-        audio_buffer=False,  # Turned off by default, because it fails on some systems without audio backend and OpenAL installed
+        audio_buffer=True,  # Turned off by default, because it fails on some systems without audio backend and OpenAL installed
     )
 
 

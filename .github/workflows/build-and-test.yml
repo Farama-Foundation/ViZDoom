@@ -31,6 +31,7 @@ env:
 jobs:
   build_and_test:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14]
         python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
@@ -68,7 +69,13 @@ jobs:
 
     - name: Python environment report
       run: python -c "import sys; print(sys.version)"
-
+    
+    - name: CMake report
+      run: |
+        cmake --version
+        cmake -DBUILD_PYTHON=ON .
+        rm -rf CMakeCache.txt
+        
     - name: Pip install
       run: pip install .[test]
 
