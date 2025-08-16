@@ -77,8 +77,6 @@ FIND_PATH(SDL2_INCLUDE_DIR SDL.h
   $ENV{SDL2DIR}
   PATH_SUFFIXES include/SDL2 include
   PATHS
-  ~/Library/Frameworks
-  /Library/Frameworks
   /usr/local/include/SDL2
   /usr/include/SDL2
   /usr/local/Cellar/sdl2 # Brew Intel
@@ -87,6 +85,8 @@ FIND_PATH(SDL2_INCLUDE_DIR SDL.h
   /opt/local # DarwinPorts
   /opt/csw # Blastwave
   /opt
+  ~/Library/Frameworks
+  /Library/Frameworks
   ${SDL2_SEARCH_PATHS} # Brew Intel and Apple Silicon with versions
 )
 #MESSAGE("SDL2_INCLUDE_DIR is ${SDL2_INCLUDE_DIR}")
@@ -103,6 +103,8 @@ FIND_LIBRARY(SDL2_LIBRARY_TEMP
   /opt/local
   /opt/csw
   /opt
+  ~/Library/Frameworks
+  /Library/Frameworks
   ${SDL2_SEARCH_PATHS}
 )
 #MESSAGE("SDL2_LIBRARY_TEMP is ${SDL2_LIBRARY_TEMP}")
