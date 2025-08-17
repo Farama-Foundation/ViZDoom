@@ -186,7 +186,7 @@ endif( WIN32 )
 
 
 if( NOT NO_OPENAL )
-    find_package( OpenAL )
+    find_package( OpenAL REQUIRED )
 	mark_as_advanced(CLEAR OPENAL_INCLUDE_DIR)
     if( OPENAL_INCLUDE_DIR )
 		message( STATUS "OpenAL include files found at ${OPENAL_INCLUDE_DIR}" )

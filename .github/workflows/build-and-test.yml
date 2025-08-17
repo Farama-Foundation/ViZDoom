@@ -27,6 +27,7 @@ on:
 env:
   HOMEBREW_NO_AUTO_UPDATE: 1
   HOMEBREW_NO_INSTALL_CLEANUP: 1
+  DYLD_LIBRARY_PATH: "/opt/homebrew/opt/openal-soft/lib:/usr/local/opt/openal-soft/lib"
 
 jobs:
   build_and_test:
@@ -55,10 +56,7 @@ jobs:
       run: |
         sudo apt update
         sudo apt install -y cmake git libboost-all-dev libsdl2-dev libopenal-dev
-
-    - name: Apt report
-      if: runner.os == 'Linux'
-      run: apt list --installed
+        apt list --installed
 
     - name: Install dependencies on MacOS
       if: runner.os == 'macOS'

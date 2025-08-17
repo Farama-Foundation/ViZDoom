@@ -18,6 +18,9 @@ on:
   release:
     types: [published]
 
+env:
+  DYLD_LIBRARY_PATH: "/opt/homebrew/opt/openal-soft/lib:/usr/local/opt/openal-soft/lib"
+
 jobs:
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
