@@ -88,7 +88,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14]
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        #python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.12']
       fail-fast: false
 
     steps:
@@ -117,6 +118,14 @@ jobs:
           echo ${{ runner.os }}
           uname -p
           python -c "import sys; print(sys.version)"
+
+      - name: Install OpenAL on macOS
+        if: runner.os == 'macOS'
+        run: brew install openal-soft
+
+      - name: Install OpenAL on Ubuntu
+        if: runner.os == 'Linux'
+        run: sudo apt install -y libopenal-dev
 
       - name: Install macOS Intel wheel on ${{ matrix.os }}
         if: matrix.os == 'macos-12' || matrix.os == 'macos-13'
