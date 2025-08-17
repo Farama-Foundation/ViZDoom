@@ -50,12 +50,11 @@ dnf install cmake git boost-devel SDL2-devel openal-soft-devel
 dnf install python3-devel python3-pip
 ```
 
-
 #### Anaconda/Miniconda
 
 If you do not have a root access, you can use a conda (e.g. [miniconda](https://docs.conda.io/en/latest/miniconda.html)) environment to install dependencies to your environment only:
 ```sh
-conda install -c conda-forge boost cmake gtk2 sdl2
+conda install -c conda-forge boost cmake gtk2 sdl2 openal-soft
 ```
 
 Note that to install ViZDoom in a conda environment you have to pull, build and install ViZDoom manually with
@@ -80,12 +79,16 @@ To get all the dependencies install [homebrew](https://brew.sh/) first, than exe
 brew install cmake boost sdl2 openal-soft
 ```
 
-⚠️ On Apple Silicon (M1, M2, M3 and M4), make sure you are using homebrew for `arm64`.
+⚠️ On Apple Silicon (M-series chip), make sure you are using homebrew for `arm64`.
 
 Here is a helpful command to set up the environment variables for homebrew on Apple Silicon if both `arm64` and `x86` versions were installed:
 ```sh
 eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
+
+We recommend using at least macOS High Sierra 10.13+ with Python 3.8+.
+On Apple Silicon, make sure you are using Python/Pip for Apple Silicon.
+
 
 ### Windows
 * CMake 3.12+
@@ -97,23 +100,7 @@ Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Window
 Most of them (except Boost) are gathered in this repository: [ViZDoomWinDepBin](https://github.com/mwydmuch/ViZDoomWinDepBin).
 You can download Boost from [here](https://www.boost.org/users/download).
 
-## Building Python Type Stubs (`vizdoom.pyi`)
 
-To enable Python typing support, the creation of a Python Interface file `vizdoom.pyi` is now part of the build process.
-
-To ensure `vizdoom.pyi` is properly created, the following dependencies are required:
-* pybind11-stubgen
-* black (optional)
-* isort (optional)
-
-They can all be installed via pip:
-```sh
-pip install pybind11-stubgen black isort
-```
-To test the generated stub manually:
-```
-stubtest vizdoom --allowlist stubtest_allowlists.txt
-```
 
 ## Building via pip (recommended for Python users)
 
@@ -138,6 +125,25 @@ On Windows you need to manually set following environment variables:
 * `VIZDOOM_WIN_DEPS_ROOT` - the path to the directory with ZDoom dependencies (e.g. `C:\ViZDoomWinDepBin`).
 
 The process of building ViZDoom this way on Windows is demonstarted in [scripts/windows_build_wheels.bat](https://github.com/Farama-Foundation/ViZDoom/tree/master/scripts/windows_build_wheels.bat).
+
+
+## Building Python Type Stubs (`vizdoom.pyi`)
+
+To enable Python typing support, the creation of a Python Interface file `vizdoom.pyi` is now part of the build process.
+
+To ensure `vizdoom.pyi` is properly created, the following dependencies are required:
+* pybind11-stubgen
+* black (optional)
+* isort (optional)
+
+They can all be installed via pip:
+```sh
+pip install pybind11-stubgen black isort
+```
+To test the generated stub manually:
+```
+stubtest vizdoom --allowlist stubtest_allowlists.txt
+```
 
 
 ## Building manylinux wheels

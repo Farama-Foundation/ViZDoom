@@ -12,29 +12,22 @@ ViZDoom is based on [ZDoom](https://zdoom.org) engine to provide the game mechan
 
 
 ## Features
-- Multi-platform (Linux, macOS, Windows),
 - API for Python (including [Gymnasium](https://gymnasium.farama.org/)/Gym wrappers) and C++,
-- Easy-to-create custom scenarios (visual editors, scripting language, and examples available),
-- Async and sync single-player and multiplayer modes,
+- Multi-platform (Linux, macOS, Windows),
 - Fast (up to 7000 frames/steps per second in sync mode, single-threaded on a modern CPU),
 - Lightweight (few MBs),
+- Easy-to-create custom scenarios (visual editors, scripting language, and examples available),
+- Async and sync single-player and multiplayer modes,
 - Customizable resolution and rendering parameters,
 - Access to the depth buffer (3D vision),
-- Automatic labeling of game objects visible in the frame,
-- Access to the audio buffer (),
+- Automatic labeling and categorization of game objects visible in the frame,
+- Access to the audio buffer,
 - Access to the list of actors/objects and map geometry,
 - Off-screen rendering,
 - Episodes recording,
 - In-game time scaling in async mode.
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
-
-
-
-
-
-
-Julia bindings (thanks to [Jun Tian](https://github.com/findmyway)), Lua, and Java bindings are available in other branches but are no longer maintained.
 
 
 ## Cite as
@@ -109,6 +102,17 @@ pip install vizdoom
 Both x86-64 and AArch64 (ARM64) architectures are supported.
 Wheels are available for Python 3.8+ on Linux.
 
+⚠️ To use audio features, you need OpenAL install in your system.
+On apt-based distros (Ubuntu, Debian, Linux Mint, etc.)
+```sh
+apt install libopenal-dev
+```
+
+On dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)
+```sh
+dnf install openal-soft-devel
+```
+
 If Python wheel is not available for your platform (Python version <3.8, distros below manylinux_2_28 standard), pip will try to install (build) ViZDoom from the source.
 ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.8+ to install from source. See [documentation](https://vizdoom.farama.org/introduction/python_quickstart/) for more details.
 
@@ -119,15 +123,11 @@ To install the latest release of ViZDoom, just run:
 pip install vizdoom
 ```
 Both Intel and Apple Silicon CPUs are supported.
-Pre-build wheels are available for Intel macOS 12.0+ and Apple Silicon macOS 14.0+.
+Pre-build wheels are available for Intel macOS 13.0+ and Apple Silicon (M-series chips) macOS 14.0+.
+
 
 If Python wheel is not available for your platform (Python version <3.8, older macOS version), pip will try to install (build) ViZDoom from the source.
-In this case, install the required dependencies using Homebrew:
-```sh
-brew install cmake boost sdl2
-```
-We recommend using at least macOS High Sierra 10.13+ with Python 3.8+.
-On Apple Silicon (M-series chips), make sure you are using Python/Pip for Apple Silicon.
+ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.8+ to install from source. See [documentation](https://vizdoom.farama.org/introduction/building/) for more details how to install dependencies.
 
 
 ### Windows
