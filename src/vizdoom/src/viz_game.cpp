@@ -340,7 +340,7 @@ void VIZ_GameStateUpdate(){
         if (*viz_objects) VIZ_GameStateUpdateObjects();
         if (*viz_sectors) VIZ_GameStateUpdateSectors();
     }
-    if (*viz_notifications) VIZ_GameStateUpdateNotifications();
+    //if (*viz_notifications) VIZ_GameStateUpdateNotifications();
 }
 
 void VIZ_GameStateUpdateVariables(){
@@ -642,7 +642,7 @@ void VIZ_GameStateUpdateSectors(){
 void VIZ_GameStateUpdateNotifications(){
     if(!vizGameStateSM) return;
 
-    std::string lastTic = std::to_string(gametic - viz_notifications_tics);
+    std::string lastTic = std::to_string(gametic - *viz_notifications_tics);
 
     // Update the notifications buffer
     // Remove old notifications from buffer
