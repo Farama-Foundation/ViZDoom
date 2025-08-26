@@ -38,6 +38,7 @@
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string>
 
 #include "version.h"
 #include "g_game.h"
@@ -68,6 +69,9 @@
 #include "c_consolebuffer.h"
 
 #include "gi.h"
+
+//VIZDOOM_CODE
+#include "viz_game.h" 
 
 #define LEFTMARGIN 8
 #define RIGHTMARGIN 8
@@ -128,6 +132,7 @@ static GameAtExit *ExitCmdList;
 
 EXTERN_CVAR (Bool, show_messages)
 EXTERN_CVAR(Bool, viz_noconsole)
+EXTERN_CVAR(Bool, viz_notifications)
 
 static unsigned int TickerAt, TickerMax;
 static bool TickerPercent;
@@ -560,6 +565,8 @@ int PrintString (int printlevel, const char *outline)
 		AddToConsole (printlevel, outline);
 		if (vidactive && screen && SmallFont)
 		{
+			//VIZDOOM_CODE
+			if(viz_notifications) vizNotificationsBuffer += std::string(outline);
 			C_AddNotifyString (printlevel, outline);
 			maybedrawnow (false, false);
 		}

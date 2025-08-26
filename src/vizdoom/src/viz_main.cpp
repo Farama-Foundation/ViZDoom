@@ -83,7 +83,6 @@ CVAR (Bool, viz_labels, false, 0)
 CVAR (Bool, viz_automap, false, 0)
 CVAR (Bool, viz_objects, false, 0)
 CVAR (Bool, viz_sectors, false, 0)
-CVAR (Bool, viz_NOTIFICATIONS_TEXT, false, 0) // text console log
 
 // rendering options (bitset)
 CVAR (Int, viz_render_mode, 0, 0)
@@ -115,7 +114,11 @@ CVAR (String, viz_bots_path, "", CVAR_NOSET)
 // audio buffer related
 CVAR (Bool, viz_soft_audio, false, 0)
 CVAR (Int, viz_samp_freq, 44100, 0)
-CVAR (Int, viz_audio_tics, 4, 0)
+CVAR (Int, viz_audio_tics, 1, 0)
+
+// notifications buffer
+CVAR (Bool, viz_notifications, false, 0)
+CVAR (Int, viz_notifications_tics, 1, 0)
 
 CCMD(viz_set_seed){
     viz_seed.CmdSet(argv[1]);
@@ -227,7 +230,8 @@ void VIZ_Tic(){
 
         VIZ_DebugMsg(5, VIZ_FUNC, vizCvarsStateMsg.c_str(),
                      *viz_controlled, *viz_instance_id, *viz_seed, *viz_async, *viz_allow_input, *viz_sync_timeout,
-                     *viz_screen_format, *viz_depth, *viz_labels, *viz_automap, *viz_render_mode, *viz_automap_mode,
+                     *viz_screen_format, *viz_depth, *viz_labels, *viz_automap, *viz_render_mode, *viz_automap_mode, 
+                     *viz_soft_audio, *viz_notifications,
                      *viz_render_corpses, *viz_render_all, *viz_window_hidden, *viz_noxserver, *viz_noconsole, *viz_nosound,
                      *viz_override_player, *viz_loop_map, *viz_nocheat, *viz_respawn_delay);
     }

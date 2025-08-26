@@ -1242,11 +1242,11 @@ void AM_changeWindowLoc ()
 //
 //=============================================================================
 
-// VIZDOOM_CODE
+//VIZDOOM_CODE
 EXTERN_CVAR (Float, viz_am_scale)
 EXTERN_CVAR (Bool, viz_am_center)
 
-// VIZDOOM_CODE
+//VIZDOOM_CODE
 void AM_initVariables ()
 {
 	int pnum;
@@ -1582,7 +1582,7 @@ CCMD(am_zoom)
 	}
 }
 
-// VIZDOOM_CODE
+//VIZDOOM_CODE
 CCMD(am_scale)
 {
 	if (argv.argc() >= 2)

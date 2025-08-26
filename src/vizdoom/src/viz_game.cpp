@@ -21,6 +21,9 @@
  THE SOFTWARE.
 */
 
+#include <algorithm>
+#include <sstream>
+
 #include "viz_game.h"
 
 #include "viz_defines.h"
@@ -40,8 +43,6 @@
 #include "p_acs.h"
 #include "p_setup.h"
 
-#include <algorithm>
-
 EXTERN_CVAR (Int, viz_debug)
 EXTERN_CVAR (Bool, viz_nocheat)
 EXTERN_CVAR (Int, viz_screen_format)
@@ -50,16 +51,18 @@ EXTERN_CVAR (Bool, viz_labels)
 EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_objects)
 EXTERN_CVAR (Bool, viz_sectors)
-EXTERN_CVAR (Bool, viz_NOTIFICATIONS_TEXT)
 EXTERN_CVAR (Bool, viz_loop_map)
 EXTERN_CVAR (Bool, viz_override_player)
 EXTERN_CVAR (Bool, viz_spectator)
 EXTERN_CVAR (Int, viz_afk_timeout)
 EXTERN_CVAR (Float, timelimit)
+EXTERN_CVAR (Bool, viz_notifications)
+EXTERN_CVAR (Int, viz_notifications_tics)
 
 VIZGameState *vizGameStateSM = NULL;
 VIZPlayerLogger vizPlayerLogger[VIZ_MAX_PLAYERS];
 unsigned int vizUniqueObjectsCount = 0;
+std::string vizNotificationsBuffer = "";
 
 /* Logger functions */
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -221,8 +224,9 @@ void VIZ_CopyActorName(AActor* actor, char* name) {
     //if(actor->health <= 0 || (actor->flags & MF_CORPSE) || (actor->flags6 & MF6_KILLED)) {
     if ((actor->flags & MF_CORPSE) || (actor->flags6 & MF6_KILLED)) {
         strncpy(name, "Dead", VIZ_MAX_NAME_LEN);
-        strncpy(name + 4, actor->GetClass()->TypeName.GetChars(), VIZ_MAX_NAME_LEN - 4);
-    } else strncpy(name, actor->GetClass()->TypeName.GetChars(), VIZ_MAX_NAME_LEN);
+        strncpy(name + 4, actor->GetClass()->TypeName.GetChars(), VIZ_MAX_NAME_LEN - 5);
+    } else strncpy(name, actor->GetClass()->TypeName.GetChars(), VIZ_MAX_NAME_LEN - 1);
+    name[VIZ_MAX_NAME_LEN - 1] = '\0';
 }
 
 inline unsigned int VIZ_GetActorId(AActor* actor){
@@ -336,6 +340,7 @@ void VIZ_GameStateUpdate(){
         if (*viz_objects) VIZ_GameStateUpdateObjects();
         if (*viz_sectors) VIZ_GameStateUpdateSectors();
     }
+    if (*viz_notifications) VIZ_GameStateUpdateNotifications();
 }
 
 void VIZ_GameStateUpdateVariables(){
@@ -632,6 +637,49 @@ void VIZ_GameStateUpdateSectors(){
 
     vizGameStateSM->SECTOR_COUNT = sectorCount;
     assert(sectorCount == numsectors);
+}
+
+void VIZ_GameStateUpdateNotifications(){
+    if(!vizGameStateSM) return;
+
+    std::string lastTic = std::to_string(gametic - viz_notifications_tics);
+
+    // Update the notifications buffer
+    // Remove old notifications from buffer
+    if (!vizNotificationsBuffer.empty()) {
+        std::string newBuffer = "";
+        std::istringstream stream(vizNotificationsBuffer);
+        std::string line;
+        
+        while (std::getline(stream, line)) {
+            if (!line.empty()) {
+                size_t firstSpace = line.find(' ');
+                if (firstSpace != std::string::npos) {
+                    std::string ticStr = line.substr(0, firstSpace);
+                    if (ticStr.length() > lastTic.length() || (ticStr.length() == lastTic.length() && ticStr >= lastTic)) {
+                        if (!newBuffer.empty()) newBuffer += "\n";
+                        newBuffer += line;
+                    }
+                } else {
+                    // If no space found, keep the line
+                    if (!newBuffer.empty()) newBuffer += "\n";
+                    newBuffer += line;
+                }
+            }
+        }
+        vizNotificationsBuffer = newBuffer;
+    }
+
+    // Copy the notifications buffer to shared memory, ensuring it's truncated if too long.
+    if (vizNotificationsBuffer.length() >= VIZ_MAX_NOTIFICATIONS_CHARS) {
+        // Truncate and add ellipsis
+        std::string truncated = vizNotificationsBuffer.substr(0, VIZ_MAX_NOTIFICATIONS_CHARS - 4);
+        truncated += "...";
+        strncpy(vizGameStateSM->NOTIFICATIONS_TEXT, truncated.c_str(), VIZ_MAX_NOTIFICATIONS_CHARS - 1);
+    } else {
+        strncpy(vizGameStateSM->NOTIFICATIONS_TEXT, vizNotificationsBuffer.c_str(), VIZ_MAX_NOTIFICATIONS_CHARS - 1);
+    }
+    vizGameStateSM->NOTIFICATIONS_TEXT[VIZ_MAX_NOTIFICATIONS_CHARS - 1] = '\0';
 }
 
 void VIZ_GameStateInitNew(){

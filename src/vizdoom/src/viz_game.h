@@ -24,10 +24,11 @@
 #ifndef __VIZ_GAME_H__
 #define __VIZ_GAME_H__
 
-#include <viz_defines.h>
-#include <viz_labels.h>
-#include <viz_shared_memory.h>
-#include <string.h>
+#include <string>
+
+#include "viz_defines.h"
+#include "viz_labels.h"
+#include "viz_shared_memory.h"
 
 #include "dobject.h"
 #include "dobjtype.h"
@@ -67,6 +68,7 @@ struct VIZPlayerLogger{
 
 extern unsigned int vizUniqueObjectsCount;
 extern VIZPlayerLogger vizPlayerLogger[VIZ_MAX_PLAYERS];
+extern std::string vizNotificationsBuffer;
 
 void VIZ_LogDmg(AActor *target, AActor *inflictor, AActor *source, int damage);
 
@@ -215,7 +217,7 @@ struct VIZGameState{
     
     // TEXT CONSOLE LOG
     unsigned int NOTIFICATIONS_TEXT_SIZE;
-    char NOTIFICATIONS_TEXT[VIZ_MAX_NOTIFY_CHARS];
+    char NOTIFICATIONS_TEXT[VIZ_MAX_NOTIFICATIONS_CHARS];
 };
 
 
@@ -234,6 +236,8 @@ void VIZ_GameStateUpdateLabels();
 void VIZ_GameStateUpdateObjects();
 
 void VIZ_GameStateUpdateSectors();
+
+void VIZ_GameStateUpdateNotifications();
 
 void VIZ_GameStateInitNew();
 

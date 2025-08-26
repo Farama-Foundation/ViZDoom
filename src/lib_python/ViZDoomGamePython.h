@@ -85,6 +85,8 @@ namespace vizdoom {
         pyb::list labels;
         pyb::list objects;
         pyb::list sectors;
+
+        std::string notificationsBuffer;
     };
 
     struct ServerStatePython {
