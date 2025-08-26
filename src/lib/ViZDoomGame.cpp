@@ -338,11 +338,13 @@ namespace vizdoom {
                 this->state->audioBuffer = std::make_shared<std::vector<int16_t>>(audioBuf, audioBuf + audioSize);
             }
 
+            /* Depth */
             if (this->doomController->isDepthBufferEnabled()) {
                 buf = this->doomController->getDepthBuffer();
                 this->state->depthBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + graySize);
             } else this->state->depthBuffer = nullptr;
 
+            /* Labels */
             this->state->labels.clear();
             if (this->doomController->isLabelsEnabled()) {
                 buf = this->doomController->getLabelsBuffer();
@@ -358,6 +360,7 @@ namespace vizdoom {
                 }
             } else this->state->labelsBuffer = nullptr;
 
+            /* Automap */
             if (this->doomController->isAutomapEnabled()) {
                 buf = this->doomController->getAutomapBuffer();
                 this->state->automapBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
@@ -389,6 +392,11 @@ namespace vizdoom {
                     }
                 }
             }
+
+            /* Update text console */
+            if (this->doomController->isNotificationsEnabled()) {
+                this->state->notificationsBuffer = std::string(smState->NOTIFICATIONS_TEXT, smState->NOTIFICATIONS_TEXT + smState->NOTIFICATIONS_TEXT_SIZE);
+            } else this->state->notificationsBuffer.clear();
 
         } else this->state = nullptr;
     }
@@ -797,7 +805,15 @@ namespace vizdoom {
 
     int DoomGame::getAudioBufferSize() { return this->doomController->getAudioBufferSize(); }
 
-    void DoomGame::setAudioBufferSize(int size) { this->doomController->setAudioBufferSize(size); }
+    void DoomGame::setAudioBufferSize(int tics) { this->doomController->setAudioBufferSize(tics); }
+
+    bool DoomGame::isNotificationsBufferEnabled() { return this->doomController->isNotificationsEnabled(); }
+
+    void DoomGame::setNotificationsBufferEnabled(bool notificationsBuffer) { this->doomController->setNotificationsEnabled(notificationsBuffer); }
+
+    int DoomGame::getNotificationsBufferSize() { return this->doomController->getNotificationsBufferSizeInTics(); }
+
+    void DoomGame::setNotificationsBufferSize(int tics) { this->doomController->setNotificationsBufferSizeInTics(tics); }
 
     int DoomGame::getScreenWidth() { return this->doomController->getScreenWidth(); }
 

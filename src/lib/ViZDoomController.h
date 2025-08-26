@@ -224,6 +224,11 @@ namespace vizdoom {
         int getAudioBufferSize() const;
         void setAudioBufferSize(int size);
 
+        void setNotificationsEnabled(bool notifications);
+        bool isNotificationsEnabled() const;
+        void setNotificationsBufferSizeInTics(int size);
+        int getNotificationsBufferSizeInTics() const;
+
         /* Buffers in SM */
         uint8_t *const getScreenBuffer();
         uint8_t *const getDepthBuffer();
@@ -369,6 +374,9 @@ namespace vizdoom {
         int audioSamplesPerTic;
         int audioSamplingFreq;
         int audioBufferSizeInTics;
+
+        bool notifications;
+        int notificationsBufferSizeInTics;
 
         bool hud, minHud, weapon, crosshair, decals, particles, sprites, messages, corpses, flashes, renderAll;
         AutomapMode amMode;

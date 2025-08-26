@@ -45,6 +45,7 @@
 #define VIZ_MAX_OBJECTS             4096
 #define VIZ_MAX_SECTORS             2048
 #define VIZ_MAX_LINES               8192
+#define VIZ_MAX_NOTIFY_CHARS       32768
 
 #ifdef __linux__
     #define VIZ_OS_LINUX

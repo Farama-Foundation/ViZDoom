@@ -31,12 +31,13 @@
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <cstdint>
 
-#define SM_REGION_COUNT 7
+#define SM_REGION_COUNT 8
 
 #define MAX_LABELS 256
 #define MAX_OBJECTS 4096
 #define MAX_SECTORS 2048
 #define MAX_LINES 8192
+#define MAX_NOTIFY_CHARS 32768
 
 namespace vizdoom {
 
@@ -205,6 +206,10 @@ namespace vizdoom {
         int PLAYER_HITS_TAKEN;
         int PLAYER_DAMAGECOUNT;
         int PLAYER_DAMAGE_TAKEN;
+
+        // TEXT CONSOLE LOG
+        unsigned int NOTIFICATIONS_TEXT_SIZE;
+        char NOTIFICATIONS_TEXT[MAX_NOTIFY_CHARS];
     };
 
     struct SMInputState {

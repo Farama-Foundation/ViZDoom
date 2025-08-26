@@ -8,7 +8,7 @@ import os
 import vizdoom as vzd
 
 
-def test_load_config():
+def test_load_config(remove_underscores):
     print("Testing all keys of config files ...")
 
     config_values = {
@@ -47,6 +47,7 @@ def test_load_config():
         "labels_buffer_enabled": True,
         "living_reward": 2,
         "mode": vzd.Mode.PLAYER,
+        "notifications_buffer_enabled": True,
         "objects_info_enabled": True,
         "render_all_frames": True,
         "render_corpses": False,
@@ -72,6 +73,8 @@ def test_load_config():
 
     with open("test_configs.cfg", "w") as f:
         for key, value in config_values.items():
+            if remove_underscores:
+                key = key.replace("_", "")
             if isinstance(value, list):
                 value = [v.name if hasattr(v, "name") else v for v in value]
                 value = "{" + " ".join(value) + "}"
@@ -100,7 +103,7 @@ def test_load_config():
     os.remove("test_configs.cfg")
 
 
-def test_senario_configs():
+def test_scenario_configs():
     print("Testing load_config() and default scenarios ...")
 
     for file in os.listdir(vzd.scenarios_path):
@@ -119,5 +122,6 @@ def test_senario_configs():
 
 
 if __name__ == "__main__":
-    test_load_config()
-    test_senario_configs()
+    test_load_config(False)
+    test_load_config(True)
+    test_scenario_configs()

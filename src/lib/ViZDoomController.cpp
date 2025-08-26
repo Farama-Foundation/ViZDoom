@@ -104,8 +104,10 @@ namespace vizdoom {
         this->softSoundAudio = false;
         this->audioSamplingFreq = 44100;
         this->audioSamplesPerTic = this->audioSamplingFreq / int(DEFAULT_TICRATE);
-        this->audioBufferSizeInTics = 4;
+        this->audioBufferSizeInTics = 1;
 
+        this->notifications = false;
+        this->notificationsBufferSizeInTics = 1;
 
         this->hud = false;
         this->minHud = false;
@@ -1427,6 +1429,14 @@ namespace vizdoom {
             this->doomArgs.push_back("-nosound");
             this->doomArgs.push_back("+viz_nosound");
             this->doomArgs.push_back("1");
+        }
+
+        // notifications buffer
+        if (this->notifications) {
+            this->doomArgs.push_back("+viz_notifications");
+            this->doomArgs.push_back("1");
+            this->doomArgs.push_back("+viz_notifications_tics");
+            this->doomArgs.push_back(b::lexical_cast<std::string>(this->notificationsBufferSizeInTics));
         }
 
         // ticrate

@@ -15,10 +15,13 @@ The declarations of all the enums can be found in the `include/ViZDoomTypes.h` h
 - `ImageBufferPtr / numpy.uint8[]`  **labelsBuffer / labels_buffer**
 - `ImageBufferPtr / numpy.uint8[]`  **automapBuffer / automap_buffer**
 - `AudioBufferPtr / numpy.int16[]` **audioBuffer / audio_buffer**
+- `std::string / str` **NotificationsBuffer / notifications_buffer**
 - `std::vector<Label> / list`  **labels**
 
 **number** - number of the state in the episode.
 **tic** - ingame time, 1 tic is 1/35 of second in the game world. Note: added in 1.1.1.
+**audioBuffer / audio_buffer** - note: added in 1.1.9.
+**NotificationsBuffer / notifications_buffer** - note: added in 1.3.0.
 
 See also:
 - [`DoomGame::getState`](./doom_game.md#getstate),

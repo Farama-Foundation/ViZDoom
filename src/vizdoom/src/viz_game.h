@@ -211,6 +211,11 @@ struct VIZGameState{
     int PLAYER_HITS_TAKEN;
     int PLAYER_DAMAGECOUNT;
     int PLAYER_DAMAGE_TAKEN;
+
+    
+    // TEXT CONSOLE LOG
+    unsigned int NOTIFICATIONS_TEXT_SIZE;
+    char NOTIFICATIONS_TEXT[VIZ_MAX_NOTIFY_CHARS];
 };
 
 

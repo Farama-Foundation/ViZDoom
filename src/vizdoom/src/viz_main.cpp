@@ -83,6 +83,7 @@ CVAR (Bool, viz_labels, false, 0)
 CVAR (Bool, viz_automap, false, 0)
 CVAR (Bool, viz_objects, false, 0)
 CVAR (Bool, viz_sectors, false, 0)
+CVAR (Bool, viz_NOTIFICATIONS_TEXT, false, 0) // text console log
 
 // rendering options (bitset)
 CVAR (Int, viz_render_mode, 0, 0)
