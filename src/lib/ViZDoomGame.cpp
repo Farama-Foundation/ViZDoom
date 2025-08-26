@@ -811,9 +811,9 @@ namespace vizdoom {
 
     void DoomGame::setNotificationsBufferEnabled(bool notificationsBuffer) { this->doomController->setNotificationsEnabled(notificationsBuffer); }
 
-    int DoomGame::getNotificationsBufferSize() { return this->doomController->getNotificationsBufferSizeInTics(); }
+    int DoomGame::getNotificationsBufferSize() { return this->doomController->getNotificationsBufferSize(); }
 
-    void DoomGame::setNotificationsBufferSize(int tics) { this->doomController->setNotificationsBufferSizeInTics(tics); }
+    void DoomGame::setNotificationsBufferSize(int tics) { this->doomController->setNotificationsBufferSize(tics); }
 
     int DoomGame::getScreenWidth() { return this->doomController->getScreenWidth(); }
 

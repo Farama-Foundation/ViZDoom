@@ -222,12 +222,12 @@ namespace vizdoom {
         void setAudioSamplingFreq(int freq);
         int getAudioSamplesPerTic();
         int getAudioBufferSize() const;
-        void setAudioBufferSize(int size);
+        void setAudioBufferSize(int tics);
 
         void setNotificationsEnabled(bool notifications);
         bool isNotificationsEnabled() const;
-        void setNotificationsBufferSizeInTics(int size);
-        int getNotificationsBufferSizeInTics() const;
+        void setNotificationsBufferSize(int tics);
+        int getNotificationsBufferSize() const;
 
         /* Buffers in SM */
         uint8_t *const getScreenBuffer();

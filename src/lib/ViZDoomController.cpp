@@ -900,10 +900,25 @@ namespace vizdoom {
         return this->audioBufferSizeInTics;
     }
 
-    void DoomController::setAudioBufferSize(int size) {
-        this->audioBufferSizeInTics = size;
+    void DoomController::setAudioBufferSize(int tics) {
+        this->audioBufferSizeInTics = tics;
     }
 
+    bool DoomController::isNotificationsEnabled() const {
+        return this->notifications;
+    }
+
+    void DoomController::setNotificationsEnabled(bool notifications) {
+        this->notifications = notifications;
+    }
+
+    int DoomController::getNotificationsBufferSize() const {
+        return this->notificationsBufferSizeInTics;
+    }
+
+    void DoomController::setNotificationsBufferSize(int tics) {
+        this->notificationsBufferSizeInTics = tics;
+    }
 
     /* SM setters & getters */
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -1001,11 +1016,11 @@ namespace vizdoom {
     double DoomController::getGameVariable(GameVariable var){
 
         switch (var) {
-            case KILLCOUNT :
+            case KILLCOUNT:
                 return this->gameState->MAP_KILLCOUNT;
-            case ITEMCOUNT :
+            case ITEMCOUNT:
                 return this->gameState->MAP_ITEMCOUNT;
-            case SECRETCOUNT :
+            case SECRETCOUNT:
                 return this->gameState->MAP_SECRETCOUNT;
             case FRAGCOUNT:
                 return this->gameState->PLAYER_FRAGCOUNT;
@@ -1019,21 +1034,21 @@ namespace vizdoom {
                 return this->gameState->PLAYER_DAMAGECOUNT;
             case DAMAGE_TAKEN:
                 return this->gameState->PLAYER_DAMAGE_TAKEN;
-            case HEALTH :
+            case HEALTH:
                 return this->gameState->PLAYER_HEALTH;
-            case ARMOR :
+            case ARMOR:
                 return this->gameState->PLAYER_ARMOR;
-            case DEAD :
+            case DEAD:
                 return this->gameState->PLAYER_DEAD;
-            case ON_GROUND :
+            case ON_GROUND:
                 return static_cast<double>(this->gameState->PLAYER_ON_GROUND);
-            case ATTACK_READY :
+            case ATTACK_READY:
                 return static_cast<double>(this->gameState->PLAYER_ATTACK_READY);
-            case ALTATTACK_READY :
+            case ALTATTACK_READY:
                 return static_cast<double>(this->gameState->PLAYER_ALTATTACK_READY);
-            case SELECTED_WEAPON :
+            case SELECTED_WEAPON:
                 return this->gameState->PLAYER_SELECTED_WEAPON;
-            case SELECTED_WEAPON_AMMO :
+            case SELECTED_WEAPON_AMMO:
                 return this->gameState->PLAYER_SELECTED_WEAPON_AMMO;
             case PLAYER_NUMBER:
                 return static_cast<double>(this->gameState->PLAYER_NUMBER);
