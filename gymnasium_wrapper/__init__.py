@@ -14,6 +14,12 @@ register(
 )
 
 register(
+    id="VizdoomMusic-v1",
+    entry_point="vizdoom.gymnasium_wrapper.gymnasium_env_defns:VizdoomScenarioEnv",
+    kwargs={"scenario_config_file": "music_sound.cfg", "max_buttons_pressed": 1},
+)
+
+register(
     id="VizdoomCorridor-v1",
     entry_point="vizdoom.gymnasium_wrapper.gymnasium_env_defns:VizdoomScenarioEnv",
     kwargs={"scenario_config_file": "deadly_corridor.cfg", "max_buttons_pressed": 1},
