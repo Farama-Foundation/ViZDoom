@@ -100,7 +100,7 @@ class VizdoomEnv(gym.Env, EzPickle):
         self.game = vzd.DoomGame()
         self.game.load_config(config_file)
         self.game.set_window_visible(False)
-
+        self.game.set_audio_buffer_size(frame_skip)
         screen_format = self.game.get_screen_format()
         if (
             screen_format != vzd.ScreenFormat.RGB24
@@ -117,12 +117,14 @@ class VizdoomEnv(gym.Env, EzPickle):
         self.window_surface = None
         self.isopen = True
         self.channels = 3
+
         if screen_format == vzd.ScreenFormat.GRAY8:
             self.channels = 1
 
         self.depth = self.game.is_depth_buffer_enabled()
         self.labels = self.game.is_labels_buffer_enabled()
         self.automap = self.game.is_automap_buffer_enabled()
+        self.audio = self.game.is_audio_buffer_enabled()
 
         # parse buttons defined by config file
         self.__parse_available_buttons()
@@ -227,7 +229,9 @@ class VizdoomEnv(gym.Env, EzPickle):
             if self.automap:
                 observation["automap"] = self.state.automap_buffer
                 if self.channels == 1:
-                    observation["automap"] = self.state.automap_buffer[..., None]  # type: ignore
+                    observation["automap"] = self.state.automap_buffer[..., None]
+            if self.audio:
+                observation["audio"] = self.state.audio_buffer
             if self.num_game_variables > 0:
                 observation["gamevariables"] = self.state.game_variables.astype(  # type: ignore
                     np.float32
@@ -442,7 +446,19 @@ class VizdoomEnv(gym.Env, EzPickle):
                 ),
                 dtype=np.uint8,
             )
-
+        if self.audio:
+            spaces["audio"] = gym.spaces.Box(
+                -32768,
+                32767,
+                (
+                    int(
+                        self.game.get_audio_sampling_rate() * 1 / 35 * self.frame_skip
+                    ),  # rate / 35tics * frameskip
+                    # 2 channels audio
+                    2,
+                ),
+                dtype=np.int16,
+            )
         self.num_game_variables = self.game.get_available_game_variables_size()
         if self.num_game_variables > 0:
             spaces["gamevariables"] = gym.spaces.Box(

@@ -186,12 +186,13 @@ endif( WIN32 )
 
 
 if( NOT NO_OPENAL )
-    find_package( OpenAL )
+    find_package( OpenAL REQUIRED )
 	mark_as_advanced(CLEAR OPENAL_INCLUDE_DIR)
     if( OPENAL_INCLUDE_DIR )
+		message( STATUS "OpenAL include files found at ${OPENAL_INCLUDE_DIR}" )
         include_directories( ${OPENAL_INCLUDE_DIR} )
-    else( OPENAL_INCLUDE_DIR )
-		set( NO_OPENAL ON )
+	else ( OPENAL_INCLUDE_DIR )
+		message( STATUS "Could not find OpenAL include files" )
     endif( OPENAL_INCLUDE_DIR )
 endif( NOT NO_OPENAL )
 
@@ -261,11 +262,9 @@ if( NO_OPENAL )
 	set(SNDFILE_FOUND NO)
 else( NO_OPENAL )
 	# Search for libSndFile
-
 	find_package( SndFile )
 
 	# Search for libmpg123
-
 	find_package( MPG123 )
 endif( NO_OPENAL )
 

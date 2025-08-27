@@ -24,6 +24,7 @@ import vizdoom.gymnasium_wrapper  # noqa
 
 DEFAULT_ENV = "VizdoomBasic-v1"
 AVAILABLE_ENVS = [env for env in gymnasium.envs.registry.keys() if "Vizdoom" in env]  # type: ignore
+
 # Height and width of the resized image
 IMAGE_SHAPE = (60, 80)
 

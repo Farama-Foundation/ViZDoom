@@ -129,6 +129,7 @@ def test_gymnasium_wrapper_obs_space():
     env_configs = [
         "basic_rgb_i_1_3",
         "basic_g8_i_1_0",
+        "basic_g8_i_1_0_wAudio",
         "basic_g8_idla_4_2",
         "basic_g8_idl_3_1",
         "basic_rgb_id_2_0",
@@ -136,9 +137,13 @@ def test_gymnasium_wrapper_obs_space():
     ]
     tri_channel_screen_obs_space = Box(0, 255, (240, 320, 3), dtype=np.uint8)
     single_channel_screen_obs_space = Box(0, 255, (240, 320, 1), dtype=np.uint8)
+    audio_obs_space = Box(
+        -32768, 32767, (int(44100 * 1 / 35 * 1), 2), dtype=np.int16
+    )  # sampling rate = 44100, frame_skip = 1
     observation_spaces = [
         Dict({"screen": tri_channel_screen_obs_space}),
         Dict({"screen": single_channel_screen_obs_space}),
+        Dict({"screen": single_channel_screen_obs_space, "audio": audio_obs_space}),
         Dict(
             {
                 "screen": single_channel_screen_obs_space,

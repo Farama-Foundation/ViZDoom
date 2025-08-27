@@ -96,7 +96,7 @@ if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 	set( PROFILE 0 CACHE BOOL "Enable profiling with gprof for Debug and RelWithDebInfo build types." )
 endif( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 
-option( NO_FMOD "Disable FMODEx sound support" OFF )
+option( NO_FMOD "Disable FMODEx sound support" ON )
 option( NO_OPENAL "Disable OpenAL sound support" OFF )
 
 find_package( BZip2 )
@@ -132,15 +132,6 @@ if( MSVC )
 			endif (MSVC_VERSION GREATER 1699)
 		endif (ZDOOM_USE_SSE2)
 	endif( CMAKE_SIZEOF_VOID_P MATCHES "4")
-
-	# Avoid CRT DLL dependancies in release builds, optionally generate assembly output for checking crash locations.
-	option( ZDOOM_GENERATE_ASM "Generate assembly output." OFF )
-	if( ZDOOM_GENERATE_ASM )
-		set( REL_C_FLAGS "/MT /Oy /Oi /FAcs" )
-	else( ZDOOM_GENERATE_ASM )
-		set( REL_C_FLAGS "/MT /Oy /Oi" )
-	endif( ZDOOM_GENERATE_ASM )
-
 
 	# Debug allocations in debug builds
 	set( DEB_C_FLAGS "/D _CRTDBG_MAP_ALLOC /MTd" )

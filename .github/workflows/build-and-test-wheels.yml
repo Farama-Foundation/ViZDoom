@@ -18,6 +18,9 @@ on:
   release:
     types: [published]
 
+env:
+  DYLD_LIBRARY_PATH: "/opt/homebrew/opt/openal-soft/lib:/usr/local/opt/openal-soft/lib"
+
 jobs:
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
@@ -79,7 +82,7 @@ jobs:
           path: ./wheelhouse/*.whl
 
   test_wheels:
-    name: Test wheels on ${{ matrix.os }}
+    name: Test wheels on ${{ matrix.os }} with Python ${{ matrix.python-version }}
     needs: [build_wheels]
     runs-on: ${{ matrix.os }}
     strategy:
@@ -98,7 +101,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Download all dists
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           pattern: artifact-*
@@ -114,6 +117,14 @@ jobs:
           echo ${{ runner.os }}
           uname -p
           python -c "import sys; print(sys.version)"
+
+      - name: Install OpenAL on macOS
+        if: runner.os == 'macOS'
+        run: brew install openal-soft
+
+      - name: Install OpenAL on Ubuntu
+        if: runner.os == 'Linux'
+        run: sudo apt install -y libopenal-dev
 
       - name: Install macOS Intel wheel on ${{ matrix.os }}
         if: matrix.os == 'macos-12' || matrix.os == 'macos-13'
@@ -168,7 +179,7 @@ jobs:
       id-token: write
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
-      - name: Download all dists
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           pattern: artifact-*

@@ -60,6 +60,7 @@ find_path(OPENAL_INCLUDE_DIR al.h
         ENV OPENALDIR
         PATHS
         /opt
+        /opt/homebrew/opt/openal-soft
         /usr/local/opt/openal-soft
         ~/Library/Frameworks
         /Library/Frameworks
@@ -79,6 +80,7 @@ find_library(OPENAL_LIBRARY
         ENV OPENALDIR
         PATHS
         /opt
+        /opt/homebrew/opt/openal-soft
         /usr/local/opt/openal-soft
         ~/Library/Frameworks
         /Library/Frameworks

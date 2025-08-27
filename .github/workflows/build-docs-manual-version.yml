@@ -34,7 +34,9 @@ jobs:
             python-version: '3.9'
 
       - name: Install ViZDoom dependencies
-        run: sudo apt install cmake git libboost-all-dev libsdl2-dev libopenal-dev
+        run: |
+          sudo apt update
+          sudo apt install cmake git libboost-all-dev libsdl2-dev libopenal-dev
 
       - name: Install ViZDoom
         run: pip install .

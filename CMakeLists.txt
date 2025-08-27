@@ -22,8 +22,20 @@ option(CREATE_PYTHON_STUBS "Build ViZDoom Python (3) .pyi type stubs" OFF)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_LINK)
-if(COMMAND cmake_policy)
+
+if(POLICY CMP0003)
     cmake_policy(SET CMP0003 NEW)
+endif()
+
+if(POLICY CMP0167)
+  find_package(Boost 1.70 QUIET CONFIG)
+  if(Boost_FOUND)
+    cmake_policy(SET CMP0167 NEW)
+  else()
+    cmake_policy(SET CMP0167 OLD)
+  endif()
+  unset(Boost_FOUND CACHE)
+  unset(Boost_DIR CACHE)
 endif()
 
 # Add cmake_modules to module
@@ -40,16 +52,17 @@ endif()
 # System dependent settings
 #-----------------------------------------------------------------------------------------------------------------------
 
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+
 if(UNIX)
+    message(STATUS "Unix-like system detected, setting up Unix specific options")
     set(Boost_USE_STATIC_LIBS OFF)
-    set(Boost_USE_MULTITHREADED ON)
-    set(Boost_USE_STATIC_RUNTIME OFF)
 endif()
 
 if(WIN32)
+    message(STATUS "Windows detected, setting up Windows specific options")
     set(Boost_USE_STATIC_LIBS ON)
-    set(Boost_USE_MULTITHREADED ON)
-    set(Boost_USE_STATIC_RUNTIME ON)
 
     macro(get_WIN32_WINNT version)
         if(WIN32 AND CMAKE_SYSTEM_VERSION)
@@ -68,6 +81,7 @@ if(WIN32)
 endif()
 
 if(APPLE)
+    message(STATUS "macOS detected, setting up macOS specific options")
     set(CMAKE_MACOSX_RPATH ON)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
 
@@ -93,14 +107,6 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     add_definitions("-Wno-implicit-fallthrough -Wno-shift-negative-value -Wno-stringop-truncation")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-class-memaccess -Wno-deprecated-copy") # C++ only
 endif()
-
-if(MSVC)
-    string(REPLACE "/MD " "/MT " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
-    string(REPLACE "/MD " "/MT " CMAKE_CXX_FLAGS_MINSIZEREL ${CMAKE_CXX_FLAGS_MINSIZEREL})
-    string(REPLACE "/MD " "/MT " CMAKE_CXX_FLAGS_RELWITHDEBINFO ${CMAKE_CXX_FLAGS_RELWITHDEBINFO})
-    string(REPLACE "/MDd " "/MTd " CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
-endif()
-
 
 # Main library
 #-----------------------------------------------------------------------------------------------------------------------
