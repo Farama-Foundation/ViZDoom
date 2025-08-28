@@ -564,10 +564,10 @@ PYBIND11_MODULE(vizdoom, vz){
                     t[5].cast<pyb::object>(),
                     t[6].cast<pyb::object>(),
                     t[7].cast<pyb::object>(),
-                    t[8].cast<pyb::list>(),
-                    t[9].cast<pyb::list>(),
-                    t[10].cast<pyb::list>(),
-                    t[11].cast<pyb::str>()
+                    t[8].cast<pyb::object>(),
+                    t[9].cast<pyb::object>(),
+                    t[10].cast<pyb::object>(),
+                    t[11].cast<pyb::object>()
                 };
             })
         )

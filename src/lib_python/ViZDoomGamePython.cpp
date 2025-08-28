@@ -86,6 +86,11 @@ namespace vizdoom {
             this->pyState->automapBuffer = this->dataToNumpyArray(this->colorShape, this->state->automapBuffer->data());
         else this->pyState->automapBuffer = pyb::none();
 
+        /* Update notifications buffer */
+        if (this->doomController->isNotificationsEnabled())
+            this->pyState->notificationsBuffer = pyb::str(this->state->notificationsBuffer);
+        else this->pyState->notificationsBuffer = pyb::none();
+
         /* Updates vars */
         if (!this->state->gameVariables.empty()) {
             // Numpy array version
@@ -100,7 +105,7 @@ namespace vizdoom {
         /* Update objects */
         if (this->isObjectsInfoEnabled()) {
             this->pyState->objects = DoomGamePython::vectorToPyList<Object>(this->state->objects);
-        } else this->pyState->objects = pyb::list();
+        } else this->pyState->objects = pyb::none();
 
         /* Update sectors */
         if (this->isSectorsInfoEnabled()) {
@@ -114,7 +119,7 @@ namespace vizdoom {
             }
             this->pyState->sectors = pySectors;
             //this->pyState->sectors = DoomGamePython::vectorToPyList<Sectors>(this->state->objects);
-        } else this->pyState->sectors = pyb::list();
+        } else this->pyState->sectors = pyb::none();
 
         return this->pyState;
     }

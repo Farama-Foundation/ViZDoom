@@ -566,7 +566,7 @@ int PrintString (int printlevel, const char *outline)
 		if (vidactive && screen && SmallFont)
 		{
 			//VIZDOOM_CODE
-			if(*viz_notifications) vizNotificationsBuffer += std::string(outline);
+			if(*viz_notifications) vizNotificationsBuffer += std::to_string(gametic) + ": " + std::string(outline) + "\n";
 			C_AddNotifyString (printlevel, outline);
 			maybedrawnow (false, false);
 		}

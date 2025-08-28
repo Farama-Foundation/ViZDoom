@@ -31,13 +31,13 @@
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <cstdint>
 
-#define SM_REGION_COUNT 8
+#define SM_REGION_COUNT         7
 
-#define MAX_LABELS 256
-#define MAX_OBJECTS 4096
-#define MAX_SECTORS 2048
-#define MAX_LINES 8192
-#define MAX_NOTIFY_CHARS 32768
+#define MAX_LABELS              256
+#define MAX_OBJECTS             4096
+#define MAX_SECTORS             2048
+#define MAX_LINES               8192
+#define MAX_NOTIFICATIONS_CHARS 32768
 
 namespace vizdoom {
 
@@ -209,7 +209,7 @@ namespace vizdoom {
 
         // TEXT CONSOLE LOG
         unsigned int NOTIFICATIONS_TEXT_SIZE;
-        char NOTIFICATIONS_TEXT[MAX_NOTIFY_CHARS];
+        char NOTIFICATIONS_TEXT[MAX_NOTIFICATIONS_CHARS];
     };
 
     struct SMInputState {
@@ -250,7 +250,7 @@ namespace vizdoom {
         void deleteRegion(SMRegion *regionPtr);
 
         //0 - GameState, 1 - InputState, 2 - ScreenBuffer, 3 - DepthBuffer, 4 - LabelsBuffer, 5 - AutomapBuffer, 6 - AudioBuffer
-        SMRegion region[7];
+        SMRegion region[SM_REGION_COUNT];
     };
 }
 
