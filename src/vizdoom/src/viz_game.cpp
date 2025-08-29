@@ -23,7 +23,6 @@
 
 #include <algorithm>
 #include <sstream>
-#include <iostream>
 
 #include "viz_game.h"
 
