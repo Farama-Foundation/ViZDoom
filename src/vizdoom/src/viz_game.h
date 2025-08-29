@@ -42,6 +42,18 @@
 #define VIZ_GV_USER_COUNT 60
 #define VIZ_GV_SLOTS_SIZE 10
 
+// Notification buffer
+
+struct VIZTicNotifications{
+    int gametic;
+    std::vector<std::string> messages;
+};
+
+extern std::vector<VIZTicNotifications> vizNotifications;
+
+void VIZ_LogNotification(int gametic, const char *message);
+
+// Player logger
 struct VIZPlayerLogger{
     int dmgCount;
     int dmgTaken;
@@ -68,7 +80,6 @@ struct VIZPlayerLogger{
 
 extern unsigned int vizUniqueObjectsCount;
 extern VIZPlayerLogger vizPlayerLogger[VIZ_MAX_PLAYERS];
-extern std::string vizNotificationsBuffer;
 
 void VIZ_LogDmg(AActor *target, AActor *inflictor, AActor *source, int damage);
 

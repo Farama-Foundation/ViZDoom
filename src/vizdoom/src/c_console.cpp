@@ -131,8 +131,9 @@ static GameAtExit *ExitCmdList;
 #define SCROLLNO 0
 
 EXTERN_CVAR (Bool, show_messages)
+
+//VIZDOOM_CODE
 EXTERN_CVAR(Bool, viz_noconsole)
-EXTERN_CVAR(Bool, viz_notifications)
 
 static unsigned int TickerAt, TickerMax;
 static bool TickerPercent;
@@ -566,7 +567,7 @@ int PrintString (int printlevel, const char *outline)
 		if (vidactive && screen && SmallFont)
 		{
 			//VIZDOOM_CODE
-			if(*viz_notifications) vizNotificationsBuffer += std::to_string(gametic) + ": " + std::string(outline) + "\n";
+			VIZ_LogNotification(gametic, outline);
 			C_AddNotifyString (printlevel, outline);
 			maybedrawnow (false, false);
 		}

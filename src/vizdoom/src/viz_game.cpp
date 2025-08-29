@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <sstream>
+#include <iostream>
 
 #include "viz_game.h"
 
@@ -62,10 +63,20 @@ EXTERN_CVAR (Int, viz_notifications_tics)
 VIZGameState *vizGameStateSM = NULL;
 VIZPlayerLogger vizPlayerLogger[VIZ_MAX_PLAYERS];
 unsigned int vizUniqueObjectsCount = 0;
-std::string vizNotificationsBuffer = "";
+std::vector<VIZTicNotifications> vizNotifications;
 
 /* Logger functions */
 /*--------------------------------------------------------------------------------------------------------------------*/
+
+void VIZ_LogNotification(int gametic, const char *message){
+    if(!*viz_notifications || gamestate != GS_LEVEL) return;
+
+    if(vizNotifications.empty() || vizNotifications.back().gametic != gametic) {
+        vizNotifications.push_back({gametic, {message}});
+    } else {
+        vizNotifications.back().messages.push_back(message);
+    }
+}
 
 void VIZ_LogDmg(AActor *target, AActor *inflictor, AActor *source, int amount){
     if(amount < 0) return;
@@ -642,44 +653,40 @@ void VIZ_GameStateUpdateSectors(){
 void VIZ_GameStateUpdateNotifications(){
     if(!vizGameStateSM) return;
 
-    std::string lastTic = std::to_string(gametic - *viz_notifications_tics);
+    int bufferStartTic = gametic - *viz_notifications_tics;
 
-    VIZ_DebugMsg(1, VIZ_FUNC, "length of notifications buffer: %d", vizNotificationsBuffer.length());
+    VIZ_DebugMsg(4, VIZ_FUNC, "gametic: %d, bufferStartTic: %d, number of tics in notifications: %d", gametic, bufferStartTic, vizNotifications.size());
 
     // Update the notifications buffer
-    // Remove old notifications from buffer
-    if (!vizNotificationsBuffer.empty()) {
-        std::string newBuffer = "";
-        std::istringstream stream(vizNotificationsBuffer);
-        std::string line;
-        
-        while (std::getline(stream, line)) {
-            if (!line.empty()) {
-                size_t firstSpace = line.find(' ');
-                if (firstSpace != std::string::npos) {
-                    std::string ticStr = line.substr(0, firstSpace);
-                    if (ticStr.length() > lastTic.length() || (ticStr.length() == lastTic.length() && ticStr >= lastTic)) {
-                        if (!newBuffer.empty()) newBuffer += "\n";
-                        newBuffer += line;
-                    }
-                } else {
-                    // If no space found, keep the line
-                    if (!newBuffer.empty()) newBuffer += "\n";
-                    newBuffer += line;
+    // Remove old notifications from the list
+    std::string newNotificationsBuffer = "";
+    int notificationCount = 0;
+    if (!vizNotifications.empty()) {
+        int toRemove = 0;
+        for (const auto& notification : vizNotifications) {
+            if (notification.gametic >= bufferStartTic && notification.gametic >= level.starttime) {
+                for (const auto& message : notification.messages) {
+                    newNotificationsBuffer += message;
+                    if (newNotificationsBuffer.back() != '\n') newNotificationsBuffer += '\n';
+                    ++notificationCount;
                 }
-            }
+            } else ++toRemove;
         }
-        vizNotificationsBuffer = newBuffer;
+        if (toRemove > 0) vizNotifications.erase(vizNotifications.begin(), vizNotifications.begin() + toRemove);
     }
 
+    VIZ_DebugMsg(4, VIZ_FUNC, "notifications buffer length: %d, notification count: %d, notifications: %s", newNotificationsBuffer.length(), notificationCount, newNotificationsBuffer.c_str());
+
     // Copy the notifications buffer to shared memory, ensuring it's truncated if too long.
-    if (vizNotificationsBuffer.length() >= VIZ_MAX_NOTIFICATIONS_CHARS) {
+    if (newNotificationsBuffer.length() >= VIZ_MAX_NOTIFICATIONS_CHARS) {
         // Truncate and add ellipsis
-        std::string truncated = vizNotificationsBuffer.substr(0, VIZ_MAX_NOTIFICATIONS_CHARS - 4);
+        std::string truncated = newNotificationsBuffer.substr(0, VIZ_MAX_NOTIFICATIONS_CHARS - 4);
         truncated += "...";
         strncpy(vizGameStateSM->NOTIFICATIONS_TEXT, truncated.c_str(), VIZ_MAX_NOTIFICATIONS_CHARS - 1);
+        vizGameStateSM->NOTIFICATIONS_TEXT_SIZE = truncated.length();
     } else {
-        strncpy(vizGameStateSM->NOTIFICATIONS_TEXT, vizNotificationsBuffer.c_str(), VIZ_MAX_NOTIFICATIONS_CHARS - 1);
+        strncpy(vizGameStateSM->NOTIFICATIONS_TEXT, newNotificationsBuffer.c_str(), VIZ_MAX_NOTIFICATIONS_CHARS - 1);
+        vizGameStateSM->NOTIFICATIONS_TEXT_SIZE = newNotificationsBuffer.length();
     }
     vizGameStateSM->NOTIFICATIONS_TEXT[VIZ_MAX_NOTIFICATIONS_CHARS - 1] = '\0';
 }

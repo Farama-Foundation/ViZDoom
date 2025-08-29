@@ -487,9 +487,9 @@ void VIZ_PrintFuncMsg(const char *func, const char *msg){
     int e = s;
     while (func[e] != NULL && func[e] != '(') ++e;
 
-    if(*viz_debug_instances) Printf("%s: ", *viz_instance_id);
-    if(e > s) Printf("%.*s: %s\n", e - s - 1, &func[s + 1], msg);
-    else Printf("%s: %s\n", func, msg);
+    if(*viz_debug_instances) printf("%s: ", *viz_instance_id);
+    if(e > s) printf("%.*s: %s\n", e - s - 1, &func[s + 1], msg);
+    else printf("%s: %s\n", func, msg);
 }
 
 void VIZ_Error(const char *func, const char *error, ...){
