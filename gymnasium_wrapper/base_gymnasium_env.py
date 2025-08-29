@@ -229,7 +229,7 @@ class VizdoomEnv(gym.Env, EzPickle):
             if self.automap:
                 observation["automap"] = self.state.automap_buffer
                 if self.channels == 1:
-                    observation["automap"] = self.state.automap_buffer[..., None]
+                    observation["automap"] = self.state.automap_buffer[..., None]  # type: ignore
             if self.audio:
                 observation["audio"] = self.state.audio_buffer
             if self.num_game_variables > 0:

@@ -1,7 +1,7 @@
 # DoomGame
 
-DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. 
-The object allows sending actions to the game, getting the game state, etc. 
+DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game.
+The object allows sending actions to the game, getting the game state, etc.
 The declarations of this class and its methods can be found in the `include/ViZDoomGame.h` header file.
 
 Here we document all the methods of the DoomGame class and their corresponding Python bindings implemented as pybind11 module.
@@ -1923,11 +1923,11 @@ See also:
 | :--    | :--                                          |
 | Python | `set_audio_buffer_size(tics: int) -> None`   |
 
-Sets the size/lenght of the audio buffer. The size is defined by a number of logic tics.
+Sets the size/length of the audio buffer. The size is defined by a number of logic tics.
 After each action audio buffer will contain audio from the specified number of the last processed tics.
 Doom uses 35 ticks per second.
 
-Default value: 4
+Default value: 1
 
 Has no effect when the game is running.
 
@@ -2003,7 +2003,7 @@ Sets the size of the notify buffer. The size is defined by a number of logic tic
 After each action notify buffer will contain text notifications from the specified number of the last processed tics.
 Doom uses 35 ticks per second.
 
-Default value: 4
+Default value: 1
 
 Has no effect when the game is running.
 
@@ -2014,5 +2014,3 @@ See also:
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
 
 Note: added in 1.3.0.
-
-

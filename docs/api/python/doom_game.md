@@ -1,6 +1,6 @@
 # DoomGame
-DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. 
-The object allows sending actions to the game, getting the game state, etc. 
+DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game.
+The object allows sending actions to the game, getting the game state, etc.
 
 ```{eval-rst}
 .. autoclass:: vizdoom.DoomGame

@@ -24,6 +24,7 @@ def _test_get_state(
     objects_info=False,
     sectors_info=False,
     audio_buffer=False,
+    notifications_buffer=False,
     seed=1993,
 ):
     print("Testing get_state() ...")
@@ -53,6 +54,7 @@ def _test_get_state(
     game.set_objects_info_enabled(objects_info)
     game.set_sectors_info_enabled(sectors_info)
     game.set_audio_buffer_enabled(audio_buffer)
+    game.set_notifications_enabled(notifications_buffer)
 
     buffers = ["screen_buffer"]
     if depth_buffer:
@@ -82,10 +84,12 @@ def _test_get_state(
                 game.new_episode()
 
             state = game.get_state()
+
             states.append(state)
             copies = {}
             for b in buffers:
                 copies[b] = np.copy(getattr(state, b))
+
             buffers_copies.append(copies)
             game.make_action(random.choice(actions), 4)
 
@@ -155,9 +159,54 @@ def test_get_state(num_iterations=10, num_states=20):
         automap_buffer=True,
         objects_info=True,
         sectors_info=True,
-        audio_buffer=True,  # Turned off by default, because it fails on some systems without audio backend and OpenAL installed
+        audio_buffer=True,
+        notifications_buffer=True,
     )
+
+
+def test_if_none():
+    game = vzd.DoomGame()
+    game.set_window_visible(False)
+    game.init()
+
+    state = game.get_state()
+    assert state is not None
+    assert state.depth_buffer is None
+    assert state.labels_buffer is None
+    assert state.automap_buffer is None
+    assert state.labels is None
+    assert state.objects is None
+    assert state.sectors is None
+    assert state.audio_buffer is None
+    assert state.notifications_buffer is None
+    assert state.game_variables is None
+
+    game.close()
+
+    game.add_available_variable([vzd.GameVariable.AMMO2])
+    game.set_depth_buffer_enabled(True)
+    game.set_labels_buffer_enabled(True)
+    game.set_automap_buffer_enabled(True)
+    game.set_objects_info_enabled(True)
+    game.set_sectors_info_enabled(True)
+    game.set_audio_buffer_enabled(True)
+    game.set_notifications_enabled(True)
+
+    game.init()
+
+    state = game.get_state()
+    assert state is not None
+    assert state.depth_buffer is not None
+    assert state.labels_buffer is not None
+    assert state.automap_buffer is not None
+    assert state.labels is not None
+    assert state.objects is not None
+    assert state.sectors is not None
+    assert state.audio_buffer is not None
+    assert state.notifications_buffer is not None
+    assert state.game_variables is not None
 
 
 if __name__ == "__main__":
     test_get_state()
+    test_if_none()

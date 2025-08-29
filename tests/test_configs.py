@@ -48,6 +48,7 @@ def test_load_config(remove_underscores):
         "living_reward": 2,
         "mode": vzd.Mode.PLAYER,
         "notifications_buffer_enabled": True,
+        "notifications_buffer_size": 8,
         "objects_info_enabled": True,
         "render_all_frames": True,
         "render_corpses": False,

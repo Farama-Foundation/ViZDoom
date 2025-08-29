@@ -876,11 +876,11 @@ See also:
 - :class:`.GameState`
 - `examples/python/audio_buffer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py>`_)DOCSTRING";
 
-    const char *setAudioBufferSize = R"DOCSTRING(Sets the size/lenght of the audio buffer. The size is defined by a number of logic tics.
+    const char *setAudioBufferSize = R"DOCSTRING(Sets the size/length of the audio buffer. The size is defined by a number of logic tics.
 After each action audio buffer will contain audio from the specified number of the last processed tics.
 Doom uses 35 ticks per second.
 
-Default value: 4
+Default value: 1
 
 Has no effect when the game is running.
 
@@ -927,7 +927,7 @@ See also:
 After each action notify buffer will contain text notifications from the specified number of the last processed tics.
 Doom uses 35 ticks per second.
 
-Default value: 4
+Default value: 1
 
 Has no effect when the game is running.
 

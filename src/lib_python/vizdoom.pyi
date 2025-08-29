@@ -14,6 +14,281 @@ import typing
 
 from numpy.typing import NDArray
 
+__all__: list[str] = [
+    "ABGR32",
+    "ACTIVATE_SELECTED_ITEM",
+    "ALTATTACK",
+    "ALTATTACK_READY",
+    "AMMO0",
+    "AMMO1",
+    "AMMO2",
+    "AMMO3",
+    "AMMO4",
+    "AMMO5",
+    "AMMO6",
+    "AMMO7",
+    "AMMO8",
+    "AMMO9",
+    "ANGLE",
+    "ARGB32",
+    "ARMOR",
+    "ASYNC_PLAYER",
+    "ASYNC_SPECTATOR",
+    "ATTACK",
+    "ATTACK_READY",
+    "AutomapMode",
+    "BGR24",
+    "BGRA32",
+    "BINARY_BUTTON_COUNT",
+    "BUTTON_COUNT",
+    "Button",
+    "CAMERA_ANGLE",
+    "CAMERA_FOV",
+    "CAMERA_PITCH",
+    "CAMERA_POSITION_X",
+    "CAMERA_POSITION_Y",
+    "CAMERA_POSITION_Z",
+    "CAMERA_ROLL",
+    "CBCGCR",
+    "CRCGCB",
+    "CROUCH",
+    "DAMAGECOUNT",
+    "DAMAGE_TAKEN",
+    "DEAD",
+    "DEATHCOUNT",
+    "DEFAULT_FPS",
+    "DEFAULT_FRAMETIME_MS",
+    "DEFAULT_FRAMETIME_S",
+    "DEFAULT_TICRATE",
+    "DELTA_BUTTON_COUNT",
+    "DOOM_256_COLORS8",
+    "DROP_SELECTED_ITEM",
+    "DROP_SELECTED_WEAPON",
+    "DoomGame",
+    "FRAGCOUNT",
+    "FileDoesNotExistException",
+    "GRAY8",
+    "GameState",
+    "GameVariable",
+    "HEALTH",
+    "HITCOUNT",
+    "HITS_TAKEN",
+    "ITEMCOUNT",
+    "JUMP",
+    "KILLCOUNT",
+    "LAND",
+    "LOOK_DOWN",
+    "LOOK_UP",
+    "LOOK_UP_DOWN_DELTA",
+    "Label",
+    "Line",
+    "MAX_PLAYERS",
+    "MAX_PLAYER_NAME_LENGTH",
+    "MOVE_BACKWARD",
+    "MOVE_DOWN",
+    "MOVE_FORWARD",
+    "MOVE_FORWARD_BACKWARD_DELTA",
+    "MOVE_LEFT",
+    "MOVE_LEFT_RIGHT_DELTA",
+    "MOVE_RIGHT",
+    "MOVE_UP",
+    "MOVE_UP_DOWN_DELTA",
+    "MessageQueueException",
+    "Mode",
+    "NORMAL",
+    "OBJECTS",
+    "OBJECTS_WITH_SIZE",
+    "ON_GROUND",
+    "Object",
+    "PITCH",
+    "PLAYER",
+    "PLAYER10_FRAGCOUNT",
+    "PLAYER11_FRAGCOUNT",
+    "PLAYER12_FRAGCOUNT",
+    "PLAYER13_FRAGCOUNT",
+    "PLAYER14_FRAGCOUNT",
+    "PLAYER15_FRAGCOUNT",
+    "PLAYER16_FRAGCOUNT",
+    "PLAYER1_FRAGCOUNT",
+    "PLAYER2_FRAGCOUNT",
+    "PLAYER3_FRAGCOUNT",
+    "PLAYER4_FRAGCOUNT",
+    "PLAYER5_FRAGCOUNT",
+    "PLAYER6_FRAGCOUNT",
+    "PLAYER7_FRAGCOUNT",
+    "PLAYER8_FRAGCOUNT",
+    "PLAYER9_FRAGCOUNT",
+    "PLAYER_COUNT",
+    "PLAYER_NUMBER",
+    "POSITION_X",
+    "POSITION_Y",
+    "POSITION_Z",
+    "RELOAD",
+    "RES_1024X576",
+    "RES_1024X640",
+    "RES_1024X768",
+    "RES_1280X1024",
+    "RES_1280X720",
+    "RES_1280X800",
+    "RES_1280X960",
+    "RES_1400X1050",
+    "RES_1400X787",
+    "RES_1400X875",
+    "RES_1600X1000",
+    "RES_1600X1200",
+    "RES_1600X900",
+    "RES_160X120",
+    "RES_1920X1080",
+    "RES_200X125",
+    "RES_200X150",
+    "RES_256X144",
+    "RES_256X160",
+    "RES_256X192",
+    "RES_320X180",
+    "RES_320X200",
+    "RES_320X240",
+    "RES_320X256",
+    "RES_400X225",
+    "RES_400X250",
+    "RES_400X300",
+    "RES_512X288",
+    "RES_512X320",
+    "RES_512X384",
+    "RES_640X360",
+    "RES_640X400",
+    "RES_640X480",
+    "RES_800X450",
+    "RES_800X500",
+    "RES_800X600",
+    "RGB24",
+    "RGBA32",
+    "ROLL",
+    "SECRETCOUNT",
+    "SELECTED_WEAPON",
+    "SELECTED_WEAPON_AMMO",
+    "SELECT_NEXT_ITEM",
+    "SELECT_NEXT_WEAPON",
+    "SELECT_PREV_ITEM",
+    "SELECT_PREV_WEAPON",
+    "SELECT_WEAPON0",
+    "SELECT_WEAPON1",
+    "SELECT_WEAPON2",
+    "SELECT_WEAPON3",
+    "SELECT_WEAPON4",
+    "SELECT_WEAPON5",
+    "SELECT_WEAPON6",
+    "SELECT_WEAPON7",
+    "SELECT_WEAPON8",
+    "SELECT_WEAPON9",
+    "SLOT_COUNT",
+    "SPECTATOR",
+    "SPEED",
+    "SR_11025",
+    "SR_22050",
+    "SR_44100",
+    "STRAFE",
+    "SamplingRate",
+    "ScreenFormat",
+    "ScreenResolution",
+    "Sector",
+    "ServerState",
+    "SharedMemoryException",
+    "TURN180",
+    "TURN_LEFT",
+    "TURN_LEFT_RIGHT_DELTA",
+    "TURN_RIGHT",
+    "USE",
+    "USER1",
+    "USER10",
+    "USER11",
+    "USER12",
+    "USER13",
+    "USER14",
+    "USER15",
+    "USER16",
+    "USER17",
+    "USER18",
+    "USER19",
+    "USER2",
+    "USER20",
+    "USER21",
+    "USER22",
+    "USER23",
+    "USER24",
+    "USER25",
+    "USER26",
+    "USER27",
+    "USER28",
+    "USER29",
+    "USER3",
+    "USER30",
+    "USER31",
+    "USER32",
+    "USER33",
+    "USER34",
+    "USER35",
+    "USER36",
+    "USER37",
+    "USER38",
+    "USER39",
+    "USER4",
+    "USER40",
+    "USER41",
+    "USER42",
+    "USER43",
+    "USER44",
+    "USER45",
+    "USER46",
+    "USER47",
+    "USER48",
+    "USER49",
+    "USER5",
+    "USER50",
+    "USER51",
+    "USER52",
+    "USER53",
+    "USER54",
+    "USER55",
+    "USER56",
+    "USER57",
+    "USER58",
+    "USER59",
+    "USER6",
+    "USER60",
+    "USER7",
+    "USER8",
+    "USER9",
+    "USER_VARIABLE_COUNT",
+    "VELOCITY_X",
+    "VELOCITY_Y",
+    "VELOCITY_Z",
+    "VIEW_HEIGHT",
+    "ViZDoomErrorException",
+    "ViZDoomIsNotRunningException",
+    "ViZDoomUnexpectedExitException",
+    "WEAPON0",
+    "WEAPON1",
+    "WEAPON2",
+    "WEAPON3",
+    "WEAPON4",
+    "WEAPON5",
+    "WEAPON6",
+    "WEAPON7",
+    "WEAPON8",
+    "WEAPON9",
+    "WHOLE",
+    "ZOOM",
+    "doom_fixed_to_double",
+    "doom_fixed_to_float",
+    "doom_tics_to_ms",
+    "doom_tics_to_sec",
+    "get_default_categories",
+    "is_binary_button",
+    "is_delta_button",
+    "ms_to_doom_tics",
+    "sec_to_doom_tics",
+]
+
 class AutomapMode:
     """
     Defines the automap rendering mode.
@@ -514,6 +789,19 @@ class DoomGame:
         Returns the current :class:`.Mode` (``PLAYER``, ``SPECTATOR``, ``ASYNC_PLAYER``, ``ASYNC_SPECTATOR``).
         """
 
+    def get_notifications_buffer_size(self) -> int:
+        """
+        Returns the size of the notify buffer.
+
+        Note: added in 1.3.0.
+
+
+        See also:
+
+        - :class:`.GameState`
+        - `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
+        """
+
     def get_screen_channels(self) -> int:
         """
         Returns number of channels in screen buffer and map buffer (depth and labels buffer always have one channel).
@@ -646,6 +934,13 @@ class DoomGame:
     def is_new_episode(self) -> bool:
         """
         Returns ``True`` if the current episode is in the initial state - the first state, no actions were performed yet.
+        """
+
+    def is_notifications_buffer_enabled(self) -> bool:
+        """
+        Returns ``True`` if the notify buffer is enabled.
+
+        Note: added in 1.3.0.
         """
 
     def is_objects_info_enabled(self) -> bool:
@@ -814,13 +1109,13 @@ class DoomGame:
         Note: added in 1.1.9.
         """
 
-    def set_audio_buffer_size(self, buffer_size: int) -> None:
+    def set_audio_buffer_size(self, tics: int) -> None:
         """
-        Sets the size of the audio buffer. The size is defined by a number of logic tics.
+        Sets the size/length of the audio buffer. The size is defined by a number of logic tics.
         After each action audio buffer will contain audio from the specified number of the last processed tics.
         Doom uses 35 ticks per second.
 
-        Default value: 4
+        Default value: 1
 
         Has no effect when the game is running.
 
@@ -1261,6 +1556,45 @@ class DoomGame:
         Config key: ``mode``
         """
 
+    def set_notifications_buffer_enabled(self, notifications_buffer: bool) -> None:
+        """
+        Enables notification buffer, it will be available in the state.
+        The notification buffer will contain text notifications from the number of the last tics specified by :meth:`set_notifications_buffer_size` method.
+
+        Default value: ``False``
+
+        Has no effect when the game is running.
+
+        Config key: ``notificationsBuffer``/``notifications_buffer``
+
+        See also:
+
+        - :class:`.GameState`
+        - `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
+
+        Note: added in 1.3.0.
+        """
+
+    def set_notifications_buffer_size(self, tics: int) -> None:
+        """
+        Sets the size of the notify buffer. The size is defined by a number of logic tics.
+        After each action notify buffer will contain text notifications from the specified number of the last processed tics.
+        Doom uses 35 ticks per second.
+
+        Default value: 1
+
+        Has no effect when the game is running.
+
+        Config key: ``notificationsBufferSize``/``notifications_buffer_size``
+
+        See also:
+
+        - :class:`.GameState`
+        - `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
+
+        Note: added in 1.3.0.
+        """
+
     def set_objects_info_enabled(self, objects_info: bool) -> None:
         """
         Enables information about all :class:`.Object` s present in the current episode/level.
@@ -1533,17 +1867,19 @@ class GameState:
     @property
     def game_variables(self) -> typing.Optional[NDArray]: ...
     @property
-    def labels(self) -> list: ...
+    def labels(self) -> typing.Any: ...
     @property
     def labels_buffer(self) -> typing.Optional[NDArray]: ...
     @property
+    def notifications_buffer(self) -> typing.Any: ...
+    @property
     def number(self) -> int: ...
     @property
-    def objects(self) -> list: ...
+    def objects(self) -> typing.Any: ...
     @property
     def screen_buffer(self) -> NDArray: ...
     @property
-    def sectors(self) -> list: ...
+    def sectors(self) -> typing.Any: ...
     @property
     def tic(self) -> int: ...
 
@@ -2552,7 +2888,7 @@ def doom_tics_to_sec(doom_tics: float, fps: int = 35) -> float:
 
 def get_default_categories() -> list[str]:
     """
-    Returns the default object categories of Doom.
+    Returns the default object categories of ViZDoom.
 
     Note: added in 1.3.0.
     """
