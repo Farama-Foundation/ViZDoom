@@ -1,7 +1,6 @@
 # DoomGame
 
-DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc.
-
+DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc. The declarations of this class and its methods can be found in the `include/ViZDoomGame.h` header file.
 
 
 ```{eval-rst}
@@ -117,11 +116,17 @@ DoomGame is the main object of the ViZDoom library, representing a single instan
 .. autofunction:: vizdoom.DoomGame.set_mode
 .. autofunction:: vizdoom.DoomGame.get_ticrate
 .. autofunction:: vizdoom.DoomGame.set_ticrate
+.. autofunction:: vizdoom.DoomGame.get_vizdoom_path
 .. autofunction:: vizdoom.DoomGame.set_vizdoom_path
+.. autofunction:: vizdoom.DoomGame.get_doom_game_path
 .. autofunction:: vizdoom.DoomGame.set_doom_game_path
+.. autofunction:: vizdoom.DoomGame.get_doom_scenario_path
 .. autofunction:: vizdoom.DoomGame.set_doom_scenario_path
+.. autofunction:: vizdoom.DoomGame.get_doom_map
 .. autofunction:: vizdoom.DoomGame.set_doom_map
+.. autofunction:: vizdoom.DoomGame.get_doom_skill
 .. autofunction:: vizdoom.DoomGame.set_doom_skill
+.. autofunction:: vizdoom.DoomGame.get_doom_config_path
 .. autofunction:: vizdoom.DoomGame.set_doom_config_path
 .. autofunction:: vizdoom.DoomGame.get_seed
 .. autofunction:: vizdoom.DoomGame.set_seed
@@ -129,6 +134,8 @@ DoomGame is the main object of the ViZDoom library, representing a single instan
 .. autofunction:: vizdoom.DoomGame.set_episode_start_time
 .. autofunction:: vizdoom.DoomGame.get_episode_timeout
 .. autofunction:: vizdoom.DoomGame.set_episode_timeout
+.. autofunction:: vizdoom.DoomGame.is_continue_on_map_exit
+.. autofunction:: vizdoom.DoomGame.set_continue_on_map_exit
 ```
 
 ## Output/rendering setting methods

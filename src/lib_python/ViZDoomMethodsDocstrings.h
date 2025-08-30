@@ -477,11 +477,16 @@ See also:
 
 Note: added in 1.1.0.)DOCSTRING";
 
+    const char *getViZDoomPath = R"DOCSTRING(Returns the path to the ViZDoom engine executable vizdoom.)DOCSTRING";
+
     const char *setViZDoomPath = R"DOCSTRING(Sets the path to the ViZDoom engine executable vizdoom.
+We recommend not changing this path unless you know what you are doing.
 
 Default value: ``<ViZDoom library location>/<vizdoom or vizdoom.exe on Windows>``.
 
 Config key: ``ViZDoomPath``/``vizdoom_path``)DOCSTRING";
+
+    const char *getDoomGamePath = R"DOCSTRING(Returns the path to the Doom engine based game file (wad format).)DOCSTRING";
 
     const char *setDoomGamePath = R"DOCSTRING(Sets the path to the Doom engine based game file (wad format).
 If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom library/pyd is).
@@ -490,6 +495,8 @@ Default value: ``<ViZDoom library location>/<doom2.wad, doom.wad, freedoom2.wad,
 
 Config key: ``DoomGamePath``/``doom_game_path``)DOCSTRING";
 
+    const char *getDoomScenarioPath = R"DOCSTRING(Returns the path to the additional scenario file (wad format).)DOCSTRING";
+
     const char *setDoomScenarioPath = R"DOCSTRING(Sets the path to an additional scenario file (wad format).
 If not provided, the default Doom single-player maps will be loaded.
 
@@ -497,26 +504,32 @@ Default value: ``""``
 
 Config key: ``DoomScenarioPath``/``doom_scenario_path``)DOCSTRING";
 
+    const char *getDoomMap = R"DOCSTRING(Returns the map name to be used.)DOCSTRING";
+
     const char *setDoomMap = R"DOCSTRING(Sets the map name to be used.
 
 Default value: ``"map01"``, if set to empty ``"map01"`` will be used.
 
 Config key: ``DoomMap``/``doom_map``)DOCSTRING";
 
+    const char *getDoomSkill = R"DOCSTRING(Returns the Doom game difficulty level (skill).)DOCSTRING";
+
     const char *setDoomSkill = R"DOCSTRING(Sets Doom game difficulty level, which is called skill in Doom.
 The higher the skill, the harder the game becomes.
 Skill level affects monsters' aggressiveness, monsters' speed, weapon damage, ammunition quantities, etc.
 Takes effect from the next episode.
 
-- 1 - VERY EASY, “I'm Too Young to Die” in Doom.
-- 2 - EASY, “Hey, Not Too Rough" in Doom.
-- 3 - NORMAL, “Hurt Me Plenty” in Doom.
-- 4 - HARD, “Ultra-Violence” in Doom.
-- 5 - VERY HARD, “Nightmare!” in Doom.
+- 1 - VERY EASY, "I'm Too Young to Die" in Doom.
+- 2 - EASY, "Hey, Not Too Rough" in Doom.
+- 3 - NORMAL, "Hurt Me Plenty" in Doom.
+- 4 - HARD, "Ultra-Violence" in Doom.
+- 5 - VERY HARD, "Nightmare!" in Doom.
 
 Default value: 3
 
 Config key: ``DoomSkill``/``doom_skill``)DOCSTRING";
+
+    const char *getDoomConfigPath = R"DOCSTRING(Returns the path for ZDoom's configuration file.)DOCSTRING";
 
     const char *setDoomConfigPath = R"DOCSTRING(Sets the path for ZDoom's configuration file.
 The file is responsible for the configuration of the ZDoom engine itself.
@@ -555,6 +568,18 @@ Config key: ``episodeStartTime``/``episode_start_time``)DOCSTRING";
 Default value: 0
 
 Config key: ``episodeTimeout``/``episode_timeout``)DOCSTRING";
+
+    const char *isContinueOnMapExit = R"DOCSTRING(Returns ``True`` if the game is set to continue on map exit.
+
+Note: added in 1.3.0.)DOCSTRING";
+
+    const char *setContinueOnMapExit = R"DOCSTRING(Sets whether the game should continue on map exit or consider it as the end of the episode.
+
+Default value: ``False``
+
+Config key: ``continueOnMapExit``/``continue_on_map_exit``
+
+Note: added in 1.3.0.)DOCSTRING";
 
     const char *setScreenResolution = R"DOCSTRING(Sets the screen resolution and additional buffers (depth, labels, and automap). ZDoom engine supports only specific resolutions.
 Supported resolutions are part of :class:`.ScreenResolution` enumeration (e.g., ``RES_320X240``, ``RES_640X480``, ``RES_1920X1080``).

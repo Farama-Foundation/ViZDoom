@@ -716,14 +716,20 @@ PYBIND11_MODULE(vizdoom, vz){
         CLASS_FUNC_2_PYT_WITH_ARGS("set_mode", DoomGamePython::setMode, pyb::arg("mode"))
 
         CLASS_FUNC_2_PYT("get_ticrate", DoomGamePython::getTicrate)
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_ticrate", DoomGamePython::setTicrate, pyb::arg("button"))
-
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_vizdoom_path", DoomGamePython::setViZDoomPath, pyb::arg("button"))
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_game_path", DoomGamePython::setDoomGamePath, pyb::arg("button"))
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_scenario_path", DoomGamePython::setDoomScenarioPath, pyb::arg("button"))
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_map", DoomGamePython::setDoomMap, pyb::arg("button"))
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_skill", DoomGamePython::setDoomSkill, pyb::arg("button"))
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_config_path", DoomGamePython::setDoomConfigPath, pyb::arg("button"))
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_ticrate", DoomGamePython::setTicrate, pyb::arg("ticrate"))
+        
+        CLASS_FUNC_2_PYT("get_vizdoom_path", DoomGamePython::getViZDoomPath)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_vizdoom_path", DoomGamePython::setViZDoomPath, pyb::arg("file_path"))
+        CLASS_FUNC_2_PYT("get_doom_game_path", DoomGamePython::getDoomGamePath)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_game_path", DoomGamePython::setDoomGamePath, pyb::arg("file_path"))
+        CLASS_FUNC_2_PYT("get_doom_scenario_path", DoomGamePython::getDoomScenarioPath)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_scenario_path", DoomGamePython::setDoomScenarioPath, pyb::arg("file_path"))
+        CLASS_FUNC_2_PYT("get_doom_map", DoomGamePython::getDoomMap)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_map", DoomGamePython::setDoomMap, pyb::arg("map"))
+        CLASS_FUNC_2_PYT("get_doom_skill", DoomGamePython::getDoomSkill)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_skill", DoomGamePython::setDoomSkill, pyb::arg("skill"))
+        CLASS_FUNC_2_PYT("get_doom_config_path", DoomGamePython::getDoomConfigPath)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_config_path", DoomGamePython::setDoomConfigPath, pyb::arg("file_path"))
 
         CLASS_FUNC_2_PYT("get_seed", DoomGamePython::getSeed)
         CLASS_FUNC_2_PYT_WITH_ARGS("set_seed", DoomGamePython::setSeed, pyb::arg("seed"))
@@ -733,6 +739,9 @@ PYBIND11_MODULE(vizdoom, vz){
         CLASS_FUNC_2_PYT("get_episode_timeout", DoomGamePython::getEpisodeTimeout)
         CLASS_FUNC_2_PYT_WITH_ARGS("set_episode_timeout", DoomGamePython::setEpisodeTimeout, pyb::arg("timeout"))
         CLASS_FUNC_2_PYT("get_episode_time", DoomGamePython::getEpisodeTime)
+
+        CLASS_FUNC_2_PYT("is_continue_on_map_exit", DoomGamePython::isContinueOnMapExit)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_continue_on_map_exit", DoomGamePython::setContinueOnMapExit, pyb::arg("continue_on_map_exit"))
 
         CLASS_FUNC_2_PYT_WITH_ARGS("set_console_enabled", DoomGamePython::setConsoleEnabled, pyb::arg("console"))
         CLASS_FUNC_2_PYT_WITH_ARGS("set_sound_enabled", DoomGamePython::setSoundEnabled, pyb::arg("sound"))
