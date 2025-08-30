@@ -62,7 +62,7 @@ jobs:
       run: |
         brew config
         brew uninstall cmake
-        brew install cmake boost openal-soft sdl2
+        brew install cmake boost@1.85 openal-soft sdl2
 
     - name: Set up Python ${{ matrix.python-version }} environment
       uses: actions/setup-python@v4
