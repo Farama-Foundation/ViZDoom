@@ -324,12 +324,22 @@ offering diverse environments and tools for reinforcement learning research and 
 </section>
 <section id="coom">
 <h2>COOM<a class="headerlink" href="#coom" title="Link to this heading">¶</a></h2>
-<p><a class="reference external" href="https://github.com/hyintell/COOM">COOM</a> is a Continual Learning benchmark for embodied pixel-based RL, consisting of task sequences in visually distinct 3D environments with diverse objectives and egocentric perception. COOM is designed for task-incremental learning, in which task boundaries are clearly defined. It contains 8 scenarios, every with at least 2 difficulty levels that are combined into sequences of tasks for Continual Learning. The sequence length varies between 4, 8, and 16. COOM provides two types of task sequences:</p>
+<p><a class="reference external" href="https://github.com/TTomilin/COOM">COOM</a> is a Continual Learning benchmark for embodied pixel-based RL, consisting of task sequences in visually distinct 3D environments with diverse objectives and egocentric perception. COOM is designed for task-incremental learning, in which task boundaries are clearly defined. It contains 8 scenarios, every with at least 2 difficulty levels that are combined into sequences of tasks for Continual Learning. The sequence length varies between 4, 8, and 16. COOM provides two types of task sequences:</p>
 <ul class="simple">
 <li><p>Cross-domain sequences compose modified versions of the same scenario (e.g., changing textures, enemy types, view height, and adding obstacles) while keeping the objective consistent.</p></li>
 <li><p>Cross-objective sequences contrast with Cross-Domain by changing both the visual characteristics and the objective for each task, requiring a more general policy from the agent for adequate performance.</p></li>
 </ul>
-<p>COOM provides environments using Gymnasium API and is available through PyPi. For more details, please refer to the <a class="reference external" href="https://github.com/hyintell/COOM">GitHub repository</a>.</p>
+<p>COOM provides environments using Gymnasium API and is available through PyPi. For more details, please refer to the <a class="reference external" href="https://proceedings.neurips.cc/paper_files/paper/2023/file/d61d9f4fe4357296cb658795fd7999f0-Paper-Datasets_and_Benchmarks.pdf">NeurIPS2023 paper</a> and <a class="reference external" href="https://github.com/TTomilin/COOM">GitHub repository</a>.</p>
+</section>
+<section id="hasard">
+<h2>HASARD<a class="headerlink" href="#hasard" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://sites.google.com/view/hasard-bench/">HASARD</a> is a benchmark for vision-based safe reinforcement learning.
+It features six scenarios at three difficulty levels with various task-dependent constraints.
+Agents must learn to balance maximizing the task objective with minimizing the cost.
+The environments are designed to evaluate safe exploration, constraint adherence, and safety-aware policy learning.
+HASARD integrates with Sample-Factory for high-throughput training, offering useful visualization tools.
+For more details, please refer to the <a class="reference external" href="https://sites.google.com/view/hasard-bench/">Project page</a>,
+<a class="reference external" href="https://openreview.net/pdf?id=5BRFddsAai">ICLR2025 paper</a>, and <a class="reference external" href="https://github.com/TTomilin/HASARD">GitHub repository</a>.</p>
 </section>
 </section>
 
@@ -405,6 +415,7 @@ offering diverse environments and tools for reinforcement learning research and 
 <li><a class="reference internal" href="#">Third-party environments</a><ul>
 <li><a class="reference internal" href="#levdoom">LevDoom</a></li>
 <li><a class="reference internal" href="#coom">COOM</a></li>
+<li><a class="reference internal" href="#hasard">HASARD</a></li>
 </ul>
 </li>
 </ul>
