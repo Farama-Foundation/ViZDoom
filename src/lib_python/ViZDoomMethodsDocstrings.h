@@ -904,7 +904,7 @@ Default value: ``False``
 
 Has no effect when the game is running.
 
-Config key: ``notificationsBuffer``/``notifications_buffer``
+Config key: ``notificationsBufferEnabled``/``notifications_buffer_enabled``
 
 See also:
 

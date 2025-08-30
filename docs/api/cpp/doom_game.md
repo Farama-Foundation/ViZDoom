@@ -1944,7 +1944,7 @@ Note: added in 1.1.9.
 ### `isNotificationsBufferEnabled`
 
 | C++    | `bool isNotificationsBufferEnabled()`       |
-| :--    | :--                                 |
+| :--    | :--                                         |
 | Python | `is_notifications_buffer_enabled() -> bool` |
 
 Returns true if the notify buffer is enabled.
@@ -1956,7 +1956,7 @@ Note: added in 1.3.0.
 ### `setNotificationsBufferEnabled`
 
 | C++    | `void setNotificationsBufferEnabled(bool notificationsBuffer)`         |
-| :--    | :--                                                    |
+| :--    | :--                                                                    |
 | Python | `set_notifications_buffer_enabled(notifications_buffer: bool) -> None` |
 
 Enables notification buffer, it will be available in the state.
@@ -1966,7 +1966,7 @@ Default value: false
 
 Has no effect when the game is running.
 
-Config key: `notificationsBuffer`/`notifications_buffer`
+Config key: `notificationsBufferEnabled`/`notifications_buffer_enabled`
 
 See also:
 - [`GameState`](./game_state.md#gamestate)
@@ -1979,7 +1979,7 @@ Note: added in 1.3.0.
 ### `getNotificationsBufferSize`
 
 | C++    | `int getNotificationsBufferSize()`       |
-| :--    | :--                              |
+| :--    | :--                                      |
 | Python | `get_notifications_buffer_size() -> int` |
 
 Returns the size of the notify buffer.
@@ -1996,7 +1996,7 @@ See also:
 ### `setNotificationsBufferSize`
 
 | C++    | `void setNotificationsBufferSize(unsigned int tics)` |
-| :--    | :--                                          |
+| :--    | :--                                                  |
 | Python | `set_notifications_buffer_size(tics: int) -> None`   |
 
 Sets the size of the notify buffer. The size is defined by a number of logic tics.

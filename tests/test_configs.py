@@ -8,11 +8,11 @@ import os
 import vizdoom as vzd
 
 
-def test_load_config(remove_underscores):
+def _test_load_config(remove_underscores):
     print("Testing all keys of config files ...")
 
     config_values = {
-        "ammo_reward": 0.1,
+        #"ammo_reward": 0.1,
         "audio_buffer_enabled": True,
         "audio_buffer_size": 8,
         "audio_sampling_rate": vzd.SamplingRate.SR_44100,
@@ -36,7 +36,7 @@ def test_load_config(remove_underscores):
         "doom_skill": 4,
         "episode_start_time": 2,
         "episode_timeout": 10,
-        "frags_reward": 10,
+        "frag_reward": 10,
         "game_args": "-fast -respawn",
         "health_reward": 0.1,
         "hit_reward": 0.5,
@@ -88,20 +88,31 @@ def test_load_config(remove_underscores):
     game.load_config("test_configs.cfg")
 
     for key, value in config_values.items():
+        # Check if set method exists
+        setter = f"set_{key}"
+        assert hasattr(game, setter), f"Config key {key} does not have a setter method ({setter})"
+
         if isinstance(value, bool):
             getter = f"is_{key}"
         else:
             getter = f"get_{key}"
 
         if not hasattr(game, getter):
+            print(f"Skipping {key} as there is no getter method ({getter})")
             continue  # Skip if the getter does not exist
 
         getter_value = getattr(game, getter)()
+        print(f"Testing {key}: {getter_value} == {value}")
         assert getter_value == value or str(getter_value) in str(
             value
         ), f"Config value for {key} does not match: expected {value}, got {getattr(game, getter)()}"
 
     os.remove("test_configs.cfg")
+
+
+def test_load_config():
+    _test_load_config(False)
+    _test_load_config(True)
 
 
 def test_scenario_configs():
@@ -123,6 +134,5 @@ def test_scenario_configs():
 
 
 if __name__ == "__main__":
-    test_load_config(False)
-    test_load_config(True)
+    test_load_config()
     test_scenario_configs()

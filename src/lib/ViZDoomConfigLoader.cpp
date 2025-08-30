@@ -586,7 +586,7 @@ namespace vizdoom {
                     this->game->setAudioBufferSize(stringToUint(val));
                     continue;
                 }
-                else if (key == "notifications_buffer_size" || key == "NotificationsBuffersize") {
+                else if (key == "notifications_buffer_size" || key == "notificationsbuffersize") {
                     this->game->setNotificationsBufferSize(stringToUint(val));
                     continue;
                 }

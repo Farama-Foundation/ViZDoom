@@ -239,7 +239,7 @@ namespace vizdoom {
         int getAudioSamplesPerTic();
         int getAudioBufferSize();
         void setAudioBufferSize(int tics);
-        
+
         /* Notify buffer */
         bool isNotificationsBufferEnabled();
         void setNotificationsBufferEnabled(bool notificationsBuffer);

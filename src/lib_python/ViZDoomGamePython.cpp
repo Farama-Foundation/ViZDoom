@@ -79,7 +79,7 @@ namespace vizdoom {
             this->pyState->labels = DoomGamePython::vectorToPyList<Label>(this->state->labels);
         }  else {
             this->pyState->labelsBuffer = pyb::none();
-            this->pyState->labels = pyb::list();
+            this->pyState->labels = pyb::none();
         }
 
         if (this->state->automapBuffer != nullptr)
