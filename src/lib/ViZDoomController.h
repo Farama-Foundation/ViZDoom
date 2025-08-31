@@ -50,7 +50,6 @@ namespace vizdoom {
     namespace ba        = boost::asio;
     namespace bip       = boost::interprocess;
     namespace br        = boost::random;
-    namespace bs        = boost::system;
     namespace bpr       = boost::process;
     namespace bpri      = boost::process::initializers;
 

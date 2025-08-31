@@ -36,7 +36,7 @@ jobs:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, macos-15]
         python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
-      fail-fast: false
+      fail-fast: true
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -62,7 +62,7 @@ jobs:
       run: |
         brew config
         brew uninstall cmake
-        brew install cmake boost@1.85 openal-soft sdl2
+        brew install cmake boost openal-soft sdl2
 
     - name: Set up Python ${{ matrix.python-version }} environment
       uses: actions/setup-python@v4
