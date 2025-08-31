@@ -50,7 +50,7 @@ manylinux-x86_64-image = "manylinux_2_28"
 manylinux-aarch64-image = "manylinux_2_28"
 
 [tool.cibuildwheel.macos]
-before-all = "brew install cmake boost sdl2 openal-soft"
+before-all = "brew uninstall cmake; brew install cmake boost sdl2 openal-soft;"
 repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
 
 # In addition, MACOSX_DEPLOYMENT_TARGET maybe needed to be set depending on the version of macOS
