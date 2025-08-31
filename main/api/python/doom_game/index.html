@@ -313,7 +313,8 @@
             
             <section class="tex2jax_ignore mathjax_ignore" id="doomgame">
 <h1>DoomGame<a class="headerlink" href="#doomgame" title="Link to this heading">¶</a></h1>
-<p>DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc.</p>
+<p>DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game.
+The object allows sending actions to the game, getting the game state, etc.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.DoomGame">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoomGame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.DoomGame" title="Link to this definition">¶</a></dt>
@@ -1533,11 +1534,11 @@ Sampling rate can be set with <a class="reference internal" href="#vizdoom.DoomG
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_audio_buffer_size">
-<span class="sig-name descname"><span class="pre">set_audio_buffer_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_audio_buffer_size" title="Link to this definition">¶</a></dt>
-<dd><p>Sets the size of the audio buffer. The size is defined by a number of logic tics.
+<span class="sig-name descname"><span class="pre">set_audio_buffer_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_audio_buffer_size" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the size/length of the audio buffer. The size is defined by a number of logic tics.
 After each action audio buffer will contain audio from the specified number of the last processed tics.
 Doom uses 35 ticks per second.</p>
-<p>Default value: 4</p>
+<p>Default value: 1</p>
 <p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">audioBufferSize</span></code>/<code class="docutils literal notranslate"><span class="pre">audio_buffer_size</span></code></p>
 <p>See also:</p>
@@ -1546,6 +1547,58 @@ Doom uses 35 ticks per second.</p>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.9.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.is_notifications_buffer_enabled">
+<span class="sig-name descname"><span class="pre">is_notifications_buffer_enabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.is_notifications_buffer_enabled" title="Link to this definition">¶</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the notify buffer is enabled.</p>
+<p>Note: added in 1.3.0.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.set_notifications_buffer_enabled">
+<span class="sig-name descname"><span class="pre">set_notifications_buffer_enabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">notifications_buffer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_notifications_buffer_enabled" title="Link to this definition">¶</a></dt>
+<dd><p>Enables notification buffer, it will be available in the state.
+The notification buffer will contain text notifications from the number of the last tics specified by <a class="reference internal" href="#vizdoom.DoomGame.set_notifications_buffer_size" title="vizdoom.DoomGame.set_notifications_buffer_size"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_notifications_buffer_size()</span></code></a> method.</p>
+<p>Default value: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+<p>Has no effect when the game is running.</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">notificationsBufferEnabled</span></code>/<code class="docutils literal notranslate"><span class="pre">notifications_buffer_enabled</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../game_state/#vizdoom.GameState" title="vizdoom.GameState"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameState</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
+</ul>
+<p>Note: added in 1.3.0.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_notifications_buffer_size">
+<span class="sig-name descname"><span class="pre">get_notifications_buffer_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_notifications_buffer_size" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the size of the notify buffer.</p>
+<p>Note: added in 1.3.0.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../game_state/#vizdoom.GameState" title="vizdoom.GameState"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameState</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.set_notifications_buffer_size">
+<span class="sig-name descname"><span class="pre">set_notifications_buffer_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_notifications_buffer_size" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the size of the notify buffer. The size is defined by a number of logic tics.
+After each action notify buffer will contain text notifications from the specified number of the last processed tics.
+Doom uses 35 ticks per second.</p>
+<p>Default value: 1</p>
+<p>Has no effect when the game is running.</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">notificationsBufferSize</span></code>/<code class="docutils literal notranslate"><span class="pre">notifications_buffer_size</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../game_state/#vizdoom.GameState" title="vizdoom.GameState"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameState</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
+</ul>
+<p>Note: added in 1.3.0.</p>
 </dd></dl>
 
 </section>
@@ -1774,6 +1827,10 @@ Doom uses 35 ticks per second.</p>
 <li><a class="reference internal" href="#vizdoom.DoomGame.set_audio_sampling_rate"><code class="docutils literal notranslate"><span class="pre">set_audio_sampling_rate()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.get_audio_buffer_size"><code class="docutils literal notranslate"><span class="pre">get_audio_buffer_size()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.set_audio_buffer_size"><code class="docutils literal notranslate"><span class="pre">set_audio_buffer_size()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.is_notifications_buffer_enabled"><code class="docutils literal notranslate"><span class="pre">is_notifications_buffer_enabled()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.set_notifications_buffer_enabled"><code class="docutils literal notranslate"><span class="pre">set_notifications_buffer_enabled()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_notifications_buffer_size"><code class="docutils literal notranslate"><span class="pre">get_notifications_buffer_size()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.set_notifications_buffer_size"><code class="docutils literal notranslate"><span class="pre">set_notifications_buffer_size()</span></code></a></li>
 </ul>
 </li>
 </ul>
