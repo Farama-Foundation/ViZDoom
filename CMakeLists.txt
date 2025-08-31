@@ -121,7 +121,11 @@ set(VIZDOOM_LIB_SRC_DIR ${VIZDOOM_SRC_DIR}/lib)
 set(VIZDOOM_LIB_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LIB_SRC_DIR})
 set(VIZDOOM_OUTPUT_NAME vizdoom)
 
-find_package(Boost 1.53 COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
+if(Boost_VERSION VERSION_LESS 1.89)
+    find_package(Boost 1.56 COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
+else()
+    find_package(Boost 1.89 COMPONENTS filesystem thread date_time chrono regex iostreams REQUIRED)
+endif()
 find_package(Threads REQUIRED)
 
 include_directories(${VIZDOOM_LIB_INCLUDE_DIR} ${Boost_INCLUDE_DIR})

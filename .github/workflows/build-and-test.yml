@@ -61,6 +61,7 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         brew config
+        brew uninstall cmake
         brew install cmake boost openal-soft sdl2
 
     - name: Set up Python ${{ matrix.python-version }} environment
