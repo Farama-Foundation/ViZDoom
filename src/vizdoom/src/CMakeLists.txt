@@ -387,10 +387,10 @@ endif( BACKPATCH )
 
 # Libraries ZDoom needs
 
-if(Boost_VERSION VERSION_LESS 1.89)
-	find_package(Boost 1.56 COMPONENTS thread system date_time chrono REQUIRED)
-else()
+if(Boost_VERSION VERSION_GREATER_EQUAL 1.89)
 	find_package(Boost 1.89 COMPONENTS thread date_time chrono REQUIRED)
+else()
+	find_package(Boost 1.56 COMPONENTS thread system date_time chrono REQUIRED)
 endif()
 
 message( STATUS "Fluid synth libs: ${FLUIDSYNTH_LIBRARIES}" )
