@@ -12,7 +12,7 @@ def _test_load_config(remove_underscores):
     print("Testing all keys of config files ...")
 
     config_values = {
-        #"ammo_reward": 0.1,
+        # "ammo_reward": 0.1,
         "audio_buffer_enabled": True,
         "audio_buffer_size": 8,
         "audio_sampling_rate": vzd.SamplingRate.SR_44100,
@@ -90,7 +90,9 @@ def _test_load_config(remove_underscores):
     for key, value in config_values.items():
         # Check if set method exists
         setter = f"set_{key}"
-        assert hasattr(game, setter), f"Config key {key} does not have a setter method ({setter})"
+        assert hasattr(
+            game, setter
+        ), f"Config key {key} does not have a setter method ({setter})"
 
         if isinstance(value, bool):
             getter = f"is_{key}"

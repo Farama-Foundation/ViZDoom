@@ -118,6 +118,7 @@ namespace vizdoom {
         bool GAME_DEATHMATCH;
         bool DEMO_RECORDING;
         bool DEMO_PLAYBACK;
+        bool OPENAL_SOUND;
 
         // SCREEN
         unsigned int SCREEN_WIDTH;

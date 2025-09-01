@@ -17,12 +17,16 @@ def test_game_args():
     args_all = args1 + " " + args2
 
     game.set_game_args(args_all)
-    assert game.get_game_args() == args_all, f"Game args not set correctly. Expected: {args_all}, Got: {game.get_game_args()}"
+    assert (
+        game.get_game_args() == args_all
+    ), f"Game args not set correctly. Expected: {args_all}, Got: {game.get_game_args()}"
 
     game.clear_game_args()
     game.add_game_args(args1)
     game.add_game_args(args2)
-    assert game.get_game_args() == args_all, f"Game args not set correctly. Expected: {args_all}, Got: {game.get_game_args()}"
+    assert (
+        game.get_game_args() == args_all
+    ), f"Game args not set correctly. Expected: {args_all}, Got: {game.get_game_args()}"
 
 
 if __name__ == "__main__":

@@ -171,16 +171,30 @@ def test_if_none():
 
     state = game.get_state()
     assert state is not None
-    assert isinstance(state.screen_buffer, np.ndarray), f"Screen buffer is: {state.screen_buffer}, expected np.ndarray"
-    assert state.depth_buffer is None, f"Depth buffer is: {state.depth_buffer}, expected None"
-    assert state.labels_buffer is None, f"Labels buffer is: {state.labels_buffer}, expected None"
-    assert state.automap_buffer is None, f"Automap buffer is: {state.automap_buffer}, expected None"
+    assert isinstance(
+        state.screen_buffer, np.ndarray
+    ), f"Screen buffer is: {state.screen_buffer}, expected np.ndarray"
+    assert (
+        state.depth_buffer is None
+    ), f"Depth buffer is: {state.depth_buffer}, expected None"
+    assert (
+        state.labels_buffer is None
+    ), f"Labels buffer is: {state.labels_buffer}, expected None"
+    assert (
+        state.automap_buffer is None
+    ), f"Automap buffer is: {state.automap_buffer}, expected None"
     assert state.labels is None, f"Labels are: {state.labels}, expected None"
     assert state.objects is None, f"Objects are: {state.objects}, expected None"
     assert state.sectors is None, f"Sectors are: {state.sectors}, expected None"
-    assert state.audio_buffer is None, f"Audio buffer is: {state.audio_buffer}, expected None"
-    assert state.notifications_buffer is None, f"Notifications buffer is: {state.notifications_buffer}, expected None"
-    assert state.game_variables is None, f"Game variables are: {state.game_variables}, expected None"
+    assert (
+        state.audio_buffer is None
+    ), f"Audio buffer is: {state.audio_buffer}, expected None"
+    assert (
+        state.notifications_buffer is None
+    ), f"Notifications buffer is: {state.notifications_buffer}, expected None"
+    assert (
+        state.game_variables is None
+    ), f"Game variables are: {state.game_variables}, expected None"
 
 
 def test_types():
@@ -198,18 +212,36 @@ def test_types():
 
     game.init()
     state = game.get_state()
-    
+
     assert state is not None
-    assert isinstance(state.screen_buffer, np.ndarray), f"Screen buffer is: {state.screen_buffer}, expected np.ndarray"
-    assert isinstance(state.depth_buffer, np.ndarray), f"Depth buffer is: {state.depth_buffer}, expected np.ndarray"
-    assert isinstance(state.labels_buffer, np.ndarray), f"Labels buffer is: {state.labels_buffer}, expected np.ndarray"
-    assert isinstance(state.automap_buffer, np.ndarray), f"Automap buffer is: {state.automap_buffer}, expected np.ndarray"
+    assert isinstance(
+        state.screen_buffer, np.ndarray
+    ), f"Screen buffer is: {state.screen_buffer}, expected np.ndarray"
+    assert isinstance(
+        state.depth_buffer, np.ndarray
+    ), f"Depth buffer is: {state.depth_buffer}, expected np.ndarray"
+    assert isinstance(
+        state.labels_buffer, np.ndarray
+    ), f"Labels buffer is: {state.labels_buffer}, expected np.ndarray"
+    assert isinstance(
+        state.automap_buffer, np.ndarray
+    ), f"Automap buffer is: {state.automap_buffer}, expected np.ndarray"
     assert isinstance(state.labels, list), f"Labels are: {state.labels}, expected list"
-    assert isinstance(state.objects, list), f"Objects are: {state.objects}, expected list"
-    assert isinstance(state.sectors, list), f"Sectors are: {state.sectors}, expected list"
-    assert isinstance(state.audio_buffer, np.ndarray), f"Audio buffer is: {state.audio_buffer}, expected np.ndarray"
-    assert isinstance(state.notifications_buffer, str), f"Notifications buffer is: {state.notifications_buffer}, expected str"
-    assert isinstance(state.game_variables, np.ndarray), f"Game variables are: {state.game_variables}, expected list"
+    assert isinstance(
+        state.objects, list
+    ), f"Objects are: {state.objects}, expected list"
+    assert isinstance(
+        state.sectors, list
+    ), f"Sectors are: {state.sectors}, expected list"
+    assert isinstance(
+        state.audio_buffer, np.ndarray
+    ), f"Audio buffer is: {state.audio_buffer}, expected np.ndarray"
+    assert isinstance(
+        state.notifications_buffer, str
+    ), f"Notifications buffer is: {state.notifications_buffer}, expected str"
+    assert isinstance(
+        state.game_variables, np.ndarray
+    ), f"Game variables are: {state.game_variables}, expected list"
 
 
 if __name__ == "__main__":

@@ -22,6 +22,8 @@
 */
 
 #include <algorithm>
+#include <cstring>
+#include <cstdio>
 #include <sstream>
 
 #include "viz_game.h"
@@ -35,11 +37,12 @@
 #include "viz_version.h"
 #include "viz_doom_classes.h"
 
+#include "c_dispatch.h"
 #include "d_netinf.h"
 #include "d_event.h"
 #include "d_dehacked.h"
 #include "g_game.h"
-#include "c_dispatch.h"
+#include "i_sound.h"
 #include "p_acs.h"
 #include "p_setup.h"
 
@@ -58,6 +61,7 @@ EXTERN_CVAR (Int, viz_afk_timeout)
 EXTERN_CVAR (Float, timelimit)
 EXTERN_CVAR (Bool, viz_notifications)
 EXTERN_CVAR (Int, viz_notifications_tics)
+EXTERN_CVAR (String, snd_backend)
 
 VIZGameState *vizGameStateSM = NULL;
 VIZPlayerLogger vizPlayerLogger[VIZ_MAX_PLAYERS];
@@ -318,6 +322,7 @@ void VIZ_GameStateTic(){
     vizGameStateSM->GAME_DEATHMATCH = (bool)deathmatch;
     vizGameStateSM->DEMO_RECORDING = demorecording;
     vizGameStateSM->DEMO_PLAYBACK = demoplayback;
+    vizGameStateSM->OPENAL_SOUND = ((stricmp(snd_backend, "openal") == 0) && GSnd && GSnd->IsValid());
 
     vizGameStateSM->MAP_END = gamestate != GS_LEVEL;
     vizGameStateSM->MAP_START_TIC = (unsigned int)level.starttime;

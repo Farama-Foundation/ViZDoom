@@ -333,6 +333,9 @@ namespace vizdoom {
 
             /* Audio */
             if (this->doomController->isAudioBufferEnabled()) {
+                if (!this->doomController->isOpenALSoundInitialized()) {
+                    throw ViZDoomOpenALSoundException();
+                }
                 const int16_t *audioBuf = this->doomController->getAudioBuffer();
                 const size_t audioSize = SOUND_NUM_CHANNELS * this->getAudioSamplesPerTic() * this->getAudioBufferSize();
                 this->state->audioBuffer = std::make_shared<std::vector<int16_t>>(audioBuf, audioBuf + audioSize);

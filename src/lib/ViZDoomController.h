@@ -271,6 +271,8 @@ namespace vizdoom {
         bool isNetGame();
         bool isRecording();
         bool isReplaying();
+        bool isOpenALSoundInitialized();
+
         unsigned int getMapTic();
         int getMapReward();
         int getKillCount();
@@ -284,7 +286,7 @@ namespace vizdoom {
         int getHealth();
         int getArmor();
         bool isPlayerDead();
-
+        
         int getPlayerCount();
         bool isPlayerInGame(unsigned int playerNumber);
         int getPlayerFrags(unsigned int playerNumber);

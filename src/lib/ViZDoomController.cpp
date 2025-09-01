@@ -1082,6 +1082,8 @@ namespace vizdoom {
 
     bool DoomController::isReplaying() { return this->gameState->DEMO_PLAYBACK; }
 
+    bool DoomController::isOpenALSoundInitialized() { return this->gameState->OPENAL_SOUND; }
+
     unsigned int DoomController::getMapTic() { return this->gameState->MAP_TIC; }
 
     int DoomController::getMapReward() { return this->gameState->MAP_REWARD; }
