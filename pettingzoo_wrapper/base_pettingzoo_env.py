@@ -32,7 +32,8 @@ from __future__ import annotations
 
 import math
 import time
-from multiprocessing import Process, Pipe
+import multiprocessing as mp
+ctx = mp.get_context("spawn")
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
@@ -234,11 +235,11 @@ class VizdoomParallelEnv(ParallelEnv):
 
         # Child processes and pipes
         self._pipes_parent = []
-        self._procs: List[Process] = []
+        self._procs: List[ctx.Process] = []
 
         for i in range(self._num_agents):
-            parent_end, child_end = Pipe(duplex=True)
-            p = Process(
+            parent_end, child_end = ctx.Pipe(duplex=True)
+            p = ctx.Process(
                 target=_agent_process,
                 kwargs=dict(
                     pipe_end=child_end,
@@ -351,7 +352,8 @@ class VizdoomParallelEnv(ParallelEnv):
         # 1) encode + send
         flat_actions: List[List[float]] = []
         for agent in self.agents:
-            env_action = self._encode_env_action(actions[agent])
+            a = actions.get(agent, self._noop_action())
+            env_action = self._encode_env_action(a)
             if len(env_action) != self._act_len:
                 raise ValueError(f"Encoded action length {len(env_action)} != expected {self._act_len}")
             flat_actions.append(env_action)
@@ -411,6 +413,28 @@ class VizdoomParallelEnv(ParallelEnv):
         self._screen = None
 
     # ------------- helpers -------------
+    def _noop_action(self):
+        """Build a valid 'do nothing' action matching self._action_space."""
+        if isinstance(self._action_space, spaces.Dict):
+            out = {}
+            if self._delta_count:
+                out["continuous"] = np.zeros((self._delta_count,), dtype=np.float32)
+            if self._binary_count:
+                if self.use_multi_binary_action_space:
+                    out["binary"] = np.zeros((self._binary_count,), dtype=np.int8)
+                else:
+                    out["binary"] = np.zeros((self._binary_count,), dtype=np.int64)
+            return out
+        else:
+            # MultiBinary or MultiDiscrete or Box
+            if isinstance(self._action_space, spaces.MultiBinary):
+                return np.zeros((self._binary_count,), dtype=np.int8)
+            if isinstance(self._action_space, spaces.MultiDiscrete):
+                return np.zeros((self._binary_count,), dtype=np.int64)
+            if isinstance(self._action_space, spaces.Box):
+                return np.zeros((self._delta_count,), dtype=np.float32)
+            raise NotImplementedError(type(self._action_space))
+
     def _encode_env_action(self, agent_action: Any) -> List[float]:
         """Map user action (matching self._action_space) -> flat vector [delta..., binary...]."""
         out = np.zeros((self._act_len,), dtype=np.float32)
