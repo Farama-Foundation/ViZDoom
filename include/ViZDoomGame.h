@@ -258,6 +258,7 @@ namespace vizdoom {
         Mode mode;
 
         GameStatePtr state;
+        ServerStatePtr serverState;
 
         void resetState();
         void updateState();

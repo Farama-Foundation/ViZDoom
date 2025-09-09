@@ -66,6 +66,7 @@ namespace vizdoom {
         this->mode = PLAYER;
 
         this->state = nullptr;
+        this->serverState = nullptr;
 
         this->doomController = new DoomController();
     }
@@ -402,6 +403,20 @@ namespace vizdoom {
             } else this->state->notificationsBuffer.clear();
 
         } else this->state = nullptr;
+
+        /* Update server state */
+        this->serverState = std::make_shared<ServerState>();
+
+        this->serverState->tic = this->doomController->getMapTic();
+        this->serverState->playerCount = this->doomController->getPlayerCount();
+        for(int i = 0; i < MAX_PLAYERS; ++i){
+            this->serverState->playersInGame[i] = this->doomController->isPlayerInGame(i);
+            this->serverState->playersNames[i] = this->doomController->getPlayerName(i);
+            this->serverState->playersFrags[i] = this->doomController->getPlayerFrags(i);
+            this->serverState->playersAfk[i] = this->doomController->isPlayerAfk(i);
+            this->serverState->playersLastActionTic[i] = this->doomController->getPlayerLastActionTic(i);
+            this->serverState->playersLastKillTic[i] = this->doomController->getPlayerLastKillTic(i);
+        }
     }
 
     GameStatePtr DoomGame::getState() {
@@ -410,20 +425,8 @@ namespace vizdoom {
     }
 
     ServerStatePtr DoomGame::getServerState(){
-        ServerStatePtr serverState = std::make_shared<ServerState>();
-
-        serverState->tic = this->doomController->getMapTic();
-        serverState->playerCount = this->doomController->getPlayerCount();
-        for(int i = 0; i < MAX_PLAYERS; ++i){
-            serverState->playersInGame[i] = this->doomController->isPlayerInGame(i);
-            serverState->playersNames[i] = this->doomController->getPlayerName(i);
-            serverState->playersFrags[i] = this->doomController->getPlayerFrags(i);
-            serverState->playersAfk[i] = this->doomController->isPlayerAfk(i);
-            serverState->playersLastActionTic[i] = this->doomController->getPlayerLastActionTic(i);
-            serverState->playersLastKillTic[i] = this->doomController->getPlayerLastKillTic(i);
-        }
-
-        return serverState;
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
+        return this->serverState;
     }
 
     std::vector<double> DoomGame::getLastAction() {

@@ -23,6 +23,7 @@
 
 #include "ViZDoomGamePython.h"
 #include "ViZDoomController.h"
+#include "ViZDoomExceptions.h"
 
 #include <cstddef>
 #include <cstring>
@@ -47,6 +48,7 @@ namespace vizdoom {
     }
 
     GameStatePython* DoomGamePython::getState() {
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         if (this->state == nullptr) return nullptr;
 
         // TODO: the following line causes:
@@ -125,20 +127,21 @@ namespace vizdoom {
     }
 
     ServerStatePython* DoomGamePython::getServerState() {
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         ServerStatePython* pyServerState = new ServerStatePython();
 
-        pyServerState->tic = this->doomController->getMapTic();
-        pyServerState->playerCount = this->doomController->getPlayerCount();
+        pyServerState->tic = this->serverState->tic;
+        pyServerState->playerCount = this->serverState->playerCount;
 
         pyb::list pyPlayersInGame, pyPlayersNames, pyPlayersFrags,
                 pyPlayersAfk, pyPlayersLastActionTic, pyPlayersLastKillTic;
         for(int i = 0; i < MAX_PLAYERS; ++i) {
-            pyPlayersInGame.append(this->doomController->isPlayerInGame(i));
-            pyPlayersNames.append(pyb::str(this->doomController->getPlayerName(i).c_str()));
-            pyPlayersFrags.append(this->doomController->getPlayerFrags(i));
-            pyPlayersAfk.append(this->doomController->isPlayerAfk(i));
-            pyPlayersLastActionTic.append(this->doomController->getPlayerLastActionTic(i));
-            pyPlayersLastKillTic.append(this->doomController->getPlayerLastKillTic(i));
+            pyPlayersInGame.append(this->serverState->playersInGame[i]);
+            pyPlayersNames.append(pyb::str(this->serverState->playersNames[i].c_str()));
+            pyPlayersFrags.append(this->serverState->playersFrags[i]);
+            pyPlayersAfk.append(this->serverState->playersAfk[i]);
+            pyPlayersLastActionTic.append(this->serverState->playersLastActionTic[i]);
+            pyPlayersLastKillTic.append(this->serverState->playersLastKillTic[i]);
         }
 
         pyServerState->playersInGame = pyPlayersInGame;
@@ -152,6 +155,7 @@ namespace vizdoom {
     }
 
     pyb::list DoomGamePython::getLastAction() {
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         return DoomGamePython::vectorToPyList(this->lastAction);
     }
 

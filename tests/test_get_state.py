@@ -244,7 +244,24 @@ def test_types():
     ), f"Game variables are: {state.game_variables}, expected list"
 
 
+def test_server_state():
+    game = vzd.DoomGame()
+    game.set_window_visible(False)
+    game.init()
+
+    state = game.get_state()
+    server_state = game.get_server_state()
+    
+    assert server_state is not None
+    assert server_state.tic == state.tic, f"State tic is: {state.tic}, server state tic is: {server_state.tic}, expected equal"
+    assert server_state.player_count == 1, f"Server state player count is: {server_state.player_count}, expected 1 for singeplayer game"
+
+
+# TODO: Add more tests for server state
+
+
 if __name__ == "__main__":
     test_get_state()
     test_if_none()
     test_types()
+    test_server_state()
