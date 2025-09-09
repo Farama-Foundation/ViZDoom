@@ -1,15 +1,16 @@
 import pytest
+
 import vizdoom as vzd
 
 
-def test_vizdoom_is_not_running_exception():    
+def test_vizdoom_is_not_running_exception():
     game = vzd.DoomGame()
     with pytest.raises(vzd.ViZDoomIsNotRunningException):
         game.advance_action()
-    
+
     with pytest.raises(vzd.ViZDoomIsNotRunningException):
         game.make_action([0, 1, 0])
-    
+
     with pytest.raises(vzd.ViZDoomIsNotRunningException):
         game.get_state()
 
@@ -87,4 +88,3 @@ if __name__ == "__main__":
     test_vizdoom_is_not_running_exception()
     test_file_does_not_exist_exception()
     test_vizdoom_no_sound_exception()
-    
