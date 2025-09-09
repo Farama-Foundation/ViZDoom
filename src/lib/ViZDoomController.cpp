@@ -1419,6 +1419,8 @@ namespace vizdoom {
         if (this->softSoundAudio) {
             this->doomArgs.push_back("+viz_soft_audio");
             this->doomArgs.push_back("1");
+            this->doomArgs.push_back("+snd_backend");
+            this->doomArgs.push_back("openal"); // Force OpenAL sound backendS
 
             this->doomArgs.push_back("+viz_samp_freq");
             this->doomArgs.push_back(std::to_string(this->audioSamplingFreq));
