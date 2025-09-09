@@ -79,6 +79,7 @@ def test_file_does_not_exist_exception():
 def test_vizdoom_no_sound_exception():
     game = vzd.DoomGame()
     game.set_audio_buffer_enabled(True)
+    game.set_window_visible(False)
     game.add_game_args("+snd_backend null")
     with pytest.raises(vzd.ViZDoomNoOpenALSoundException):
         game.init()
