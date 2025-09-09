@@ -122,6 +122,19 @@ def _agent_process(
 
     game.init()
 
+    # Get available game variables for mapping indices to names
+    available_game_vars = game.get_available_game_variables()
+
+    def get_game_variables_dict() -> Dict[str, float]:
+        """Extract game variables from current state and return as a dictionary."""
+        state = game.get_state()
+        game_vars_dict = {}
+        if state is not None and state.game_variables is not None and len(available_game_vars) > 0:
+            for i, var in enumerate(available_game_vars):
+                if i < len(state.game_variables):
+                    game_vars_dict[var.name] = float(state.game_variables[i])
+        return game_vars_dict
+
     def read_frame() -> np.ndarray:
         state = game.get_state()
         if state is not None and state.screen_buffer is not None:
@@ -143,11 +156,12 @@ def _agent_process(
                 game.new_episode()
                 game.respawn_player()
                 frame = read_frame()
+                game_vars = get_game_variables_dict()
                 pipe_end.send({
                     "obs": frame,
                     "reward": 0.0,
                     "terminated": False,
-                    "info": {"reset": True},
+                    "info": {"reset": True, "game_variables": game_vars},
                 })
 
             elif cmd == "step":
@@ -158,7 +172,8 @@ def _agent_process(
                     reward = float(game.make_action(action, skip_frames) if skip_frames else game.make_action(action))
                 frame = read_frame()
                 terminated = terminated or bool(game.is_player_dead() or game.is_episode_finished())
-                info = {"num_frames": (skip_frames if skip_frames else 1)}
+                game_vars = get_game_variables_dict()
+                info = {"num_frames": (skip_frames if skip_frames else 1), "game_variables": game_vars}
                 pipe_end.send({
                     "obs": frame,
                     "reward": reward,
