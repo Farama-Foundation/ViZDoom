@@ -31,7 +31,6 @@ shutil.rmtree(package_path, ignore_errors=True)
 os.makedirs(package_path, exist_ok=True)
 package_data = [
     "__init__.py",
-    "generate_vizdoom_stubs.py",
     "vizdoom.pyi",
     "py.typed",
     "bots.cfg",

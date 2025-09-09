@@ -105,7 +105,7 @@ add_dependencies(assemble_package libvizdoom_python vizdoom pk3)
 if (CREATE_PYTHON_STUBS)
     add_custom_command(
         TARGET assemble_package
-        COMMAND ${Python_EXECUTABLE} ${VIZDOOM_PYTHON_SRC_DIR}/generate_vizdoom_stubs.py --output ${VIZDOOM_PYTHON_SRC_DIR}/vizdoom.pyi --verbose --module ${VIZDOOM_PYTHON_OUTPUT_DIR}/vizdoom
+        COMMAND ${Python_EXECUTABLE} ${VIZDOOM_SRC_DIR}/../generate_vizdoom_stubs.py --output ${VIZDOOM_PYTHON_SRC_DIR}/vizdoom.pyi --verbose --module ${VIZDOOM_PYTHON_OUTPUT_DIR}/vizdoom
     )
 endif()
 

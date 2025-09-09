@@ -1597,7 +1597,7 @@ Note: added in 1.1.0.
 | :--    | :--                                           |
 | Python | `set_render_messages(messages: bool) -> None` |
 
-Determine if in-game messages (information about pickups, kills, etc.) will be rendered in the game.
+Determine if in-game messages and notifications (notifications about pickups, kills, scripted text messages, etc.) will be rendered in the game.
 
 Default value: false
 
@@ -2014,3 +2014,24 @@ See also:
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
 
 Note: added in 1.3.0.
+
+
+---
+### `setExtraNotificationsEnabled`
+
+| C++    | `void setExtraNotificationsEnabled(bool enabled)`          |
+| :--    | :--                                                           |
+| Python | `set_extra_notifications_enabled(enabled: bool) -> None`   |
+
+Enables extra notifications, that are not included in the default game, this includes information about damage taken 
+
+Default value: true
+
+Has no effect when the game is running.
+
+Config key: `extraNotificationsEnabled`/`extra_notifications_enabled`
+
+See also:
+
+Note: added in 1.3.0.
+
