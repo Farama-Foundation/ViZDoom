@@ -63,7 +63,7 @@ PYBIND11_MODULE(vizdoom, vz){
     EXCEPTION_TO_PYT(ViZDoomIsNotRunningException)
     EXCEPTION_TO_PYT(ViZDoomErrorException)
     EXCEPTION_TO_PYT(ViZDoomUnexpectedExitException)
-    EXCEPTION_TO_PYT(ViZDoomOpenALSoundException)
+    EXCEPTION_TO_PYT(ViZDoomNoOpenALSoundException)
 
     /* Helpers */
     /*----------------------------------------------------------------------------------------------------------------*/

@@ -265,6 +265,7 @@ __all__: list[str] = [
     "VIEW_HEIGHT",
     "ViZDoomErrorException",
     "ViZDoomIsNotRunningException",
+    "ViZDoomNoOpenALSoundException",
     "ViZDoomUnexpectedExitException",
     "WEAPON0",
     "WEAPON1",
@@ -1565,7 +1566,7 @@ class DoomGame:
 
         Has no effect when the game is running.
 
-        Config key: ``notificationsBuffer``/``notifications_buffer``
+        Config key: ``notificationsBufferEnabled``/``notifications_buffer_enabled``
 
         See also:
 
@@ -2831,6 +2832,9 @@ class ViZDoomErrorException(Exception):
     pass
 
 class ViZDoomIsNotRunningException(Exception):
+    pass
+
+class ViZDoomNoOpenALSoundException(Exception):
     pass
 
 class ViZDoomUnexpectedExitException(Exception):

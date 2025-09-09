@@ -335,7 +335,7 @@ namespace vizdoom {
             /* Audio */
             if (this->doomController->isAudioBufferEnabled()) {
                 if (!this->doomController->isOpenALSoundInitialized()) {
-                    throw ViZDoomOpenALSoundException();
+                    throw ViZDoomNoOpenALSoundException();
                 }
                 const int16_t *audioBuf = this->doomController->getAudioBuffer();
                 const size_t audioSize = SOUND_NUM_CHANNELS * this->getAudioSamplesPerTic() * this->getAudioBufferSize();

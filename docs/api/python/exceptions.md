@@ -37,3 +37,9 @@ Means that called method cannot be used when ViZDoom instance is not running.
 ```
 
 Means that ViZDoom's instance was closed/terminated/killed from the outside.
+
+```{eval-rst}
+.. autoexception:: vizdoom.ViZDoomNoOpenALSoundException
+```
+
+Means that sound was requested but could not be initialized. Usually means that no sound device is available or that the sound backend is not properly configured. Added in 1.3.0.

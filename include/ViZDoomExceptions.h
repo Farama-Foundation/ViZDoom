@@ -79,7 +79,7 @@ namespace vizdoom{
         const char* what() const throw();
     };
 
-    class ViZDoomOpenALSoundException : public std::exception {
+    class ViZDoomNoOpenALSoundException : public std::exception {
     public:
         const char* what() const throw();
     };
