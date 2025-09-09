@@ -670,7 +670,7 @@ namespace vizdoom {
     }
 
     void DoomController::setObjectsEnabled(bool objects) {
-        if (this->doomRunning) this->objects = objects;
+        if (!this->doomRunning) this->objects = objects;
     }
 
     bool DoomController::isSectorsEnabled() {
