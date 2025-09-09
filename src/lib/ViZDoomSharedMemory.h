@@ -127,11 +127,14 @@ namespace vizdoom {
         size_t SCREEN_SIZE;
         int SCREEN_FORMAT;
 
+        // BUFFERS
         bool DEPTH_BUFFER;
         bool LABELS;
         bool AUTOMAP;
         bool OBJECTS;
         bool SECTORS;
+        bool AUDIO_BUFFER;
+        bool NOTIFICATIONS;
 
         // MAP
         unsigned int MAP_START_TIC;

@@ -150,6 +150,8 @@ struct VIZGameState{
     bool AUTOMAP;
     bool OBJECTS;
     bool SECTORS;
+    bool AUDIO_BUFFER;
+    bool NOTIFICATIONS;
 
     // MAP
     unsigned int MAP_START_TIC;

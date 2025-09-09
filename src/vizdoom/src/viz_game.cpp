@@ -54,6 +54,7 @@ EXTERN_CVAR (Bool, viz_labels)
 EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_objects)
 EXTERN_CVAR (Bool, viz_sectors)
+EXTERN_CVAR (Bool, viz_soft_audio)
 EXTERN_CVAR (Bool, viz_loop_map)
 EXTERN_CVAR (Bool, viz_override_player)
 EXTERN_CVAR (Bool, viz_spectator)
@@ -298,6 +299,9 @@ void VIZ_GameStateSMUpdate(){
     vizGameStateSM->AUTOMAP = *viz_automap;
     vizGameStateSM->OBJECTS = *viz_objects;
     vizGameStateSM->SECTORS = *viz_sectors;
+    vizGameStateSM->OPENAL_SOUND = ((stricmp(snd_backend, "openal") == 0) && GSnd && GSnd->IsValid());
+    vizGameStateSM->AUDIO_BUFFER = *viz_soft_audio && vizGameStateSM->OPENAL_SOUND;
+    vizGameStateSM->NOTIFICATIONS = *viz_notifications;
 
     for(int i = 0; i < VIZ_SM_REGION_COUNT; ++i){
         vizGameStateSM->SM_REGION_OFFSET[i] = vizSMRegion[i].offset;
@@ -322,7 +326,6 @@ void VIZ_GameStateTic(){
     vizGameStateSM->GAME_DEATHMATCH = (bool)deathmatch;
     vizGameStateSM->DEMO_RECORDING = demorecording;
     vizGameStateSM->DEMO_PLAYBACK = demoplayback;
-    vizGameStateSM->OPENAL_SOUND = ((stricmp(snd_backend, "openal") == 0) && GSnd && GSnd->IsValid());
 
     vizGameStateSM->MAP_END = gamestate != GS_LEVEL;
     vizGameStateSM->MAP_START_TIC = (unsigned int)level.starttime;

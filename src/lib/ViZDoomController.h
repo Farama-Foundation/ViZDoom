@@ -383,8 +383,6 @@ namespace vizdoom {
         AutomapMode amMode;
         bool amRotate, amTextures;
 
-        bool updateSettings;
-
         int getRenderModeValue();
 
         void setRenderMode(int value);

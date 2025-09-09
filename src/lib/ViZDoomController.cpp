@@ -625,12 +625,7 @@ namespace vizdoom {
     }
 
     void DoomController::setDepthBufferEnabled(bool depthBuffer) {
-        this->depth = depthBuffer;
-        if (this->doomRunning) {
-            if (this->depth) this->sendCommand("viz_depth 1");
-            else this->sendCommand("viz_depth 0");
-        }
-        this->updateSettings = true;
+        if (!this->doomRunning) this->depth = depthBuffer;
     }
 
     /* Labels buffer */
@@ -640,11 +635,7 @@ namespace vizdoom {
     }
 
     void DoomController::setLabelsEnabled(bool labels) {
-        this->labels = labels;
-        if (this->doomRunning) {
-            if (this->labels) this->sendCommand("viz_labels 1");
-            else this->sendCommand("viz_labels 0");
-        }
+        if (!this->doomRunning) this->labels = labels;
     }
 
     /* Automap buffer */
@@ -654,11 +645,7 @@ namespace vizdoom {
     }
 
     void DoomController::setAutomapEnabled(bool automap) {
-        this->automap = automap;
-        if (this->doomRunning) {
-            if (this->automap) this->sendCommand("viz_automap 1");
-            else this->sendCommand("viz_automap 0");
-        }
+        if (!this->doomRunning) this->automap = automap;
     }
 
     void DoomController::setAutomapMode(AutomapMode mode) {
@@ -683,11 +670,7 @@ namespace vizdoom {
     }
 
     void DoomController::setObjectsEnabled(bool objects) {
-        this->objects = objects;
-        if (this->doomRunning) {
-            if (this->objects) this->sendCommand("viz_objects 1");
-            else this->sendCommand("viz_objects 0");
-        }
+        if (this->doomRunning) this->objects = objects;
     }
 
     bool DoomController::isSectorsEnabled() {
@@ -696,11 +679,7 @@ namespace vizdoom {
     }
 
     void DoomController::setSectorsEnabled(bool sectors) {
-        this->sectors = sectors;
-        if (this->doomRunning) {
-            if (this->sectors) this->sendCommand("viz_sectors 1");
-            else this->sendCommand("viz_sectors 0");
-        }
+        if (!this->doomRunning) this->sectors = sectors;
     }
 
     void DoomController::setScreenWidth(unsigned int width) {
@@ -876,7 +855,8 @@ namespace vizdoom {
     }
 
     bool DoomController::isAudioBufferEnabled() const{
-        return softSoundAudio;
+        if (this->doomRunning) return this->gameState->AUDIO_BUFFER;
+        else return this->softSoundAudio;
     }
 
     void DoomController::setAudioBufferEnabled(bool audioBuffer){
@@ -888,8 +868,10 @@ namespace vizdoom {
     }
 
     void DoomController::setAudioSamplingFreq(int freq) {
-        this->audioSamplingFreq = freq;
-        this->audioSamplesPerTic = freq / int(DEFAULT_TICRATE);
+        if (!this->doomRunning){ 
+            this->audioSamplingFreq = freq; 
+            this->audioSamplesPerTic = freq / int(DEFAULT_TICRATE);
+        }
     }
 
     int DoomController::getAudioSamplesPerTic() {
@@ -901,15 +883,16 @@ namespace vizdoom {
     }
 
     void DoomController::setAudioBufferSize(int tics) {
-        this->audioBufferSizeInTics = tics;
+        if (!this->doomRunning) this->audioBufferSizeInTics = tics;
     }
 
     bool DoomController::isNotificationsEnabled() const {
-        return this->notifications;
+        if (this->doomRunning) return this->gameState->NOTIFICATIONS;
+        else return this->notifications;
     }
 
     void DoomController::setNotificationsEnabled(bool notifications) {
-        this->notifications = notifications;
+        if (!this->doomRunning) this->notifications = notifications;
     }
 
     int DoomController::getNotificationsBufferSize() const {
@@ -917,7 +900,7 @@ namespace vizdoom {
     }
 
     void DoomController::setNotificationsBufferSize(int tics) {
-        this->notificationsBufferSizeInTics = tics;
+        if (!this->doomRunning) this->notificationsBufferSizeInTics = tics;
     }
 
     /* SM setters & getters */
