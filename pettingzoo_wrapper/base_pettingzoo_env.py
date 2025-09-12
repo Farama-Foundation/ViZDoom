@@ -99,6 +99,7 @@ def _agent_process(
     game.set_window_visible(False)
     game.set_sound_enabled(False)
     game.set_console_enabled(False)
+    game.set_render_hud(True)
     game.set_screen_resolution(_screen_res(resolution))
     game.set_episode_timeout(timeout)
     game.set_ticrate(ticrate)
@@ -121,6 +122,7 @@ def _agent_process(
     game.add_game_args(f"+playernumber {agent_idx}")
 
     game.init()
+    game.send_game_command("viz_respawn_delay 0")
 
     # Get available game variables for mapping indices to names
     available_game_vars = game.get_available_game_variables()
@@ -148,6 +150,7 @@ def _agent_process(
         return np.zeros((h, w, 3), dtype=np.uint8)
 
     steps = 0
+    is_dead = False
 
     try:
         while True:
@@ -165,19 +168,35 @@ def _agent_process(
                 })
 
             elif cmd == "step":
+                # If the player died, respawn them
+                if is_dead:
+                    # print(f"Player {agent} died at step {game.get_episode_time()}. Respawning...")
+                    game.respawn_player()
+                    # print(f"Player {agent} respawned at step {game.get_episode_time()}")
+
                 action = payload  # flat list (delta..., binary...)
-                terminated = bool(game.is_player_dead() or game.is_episode_finished())
-                reward = 0.0
-                if not terminated:
-                    reward = float(game.make_action(action, skip_frames) if skip_frames else game.make_action(action))
+
+                reward = float(game.make_action(action, skip_frames) if skip_frames else game.make_action(action))
+
+                # Check if player died during this step
+                is_dead = game.is_player_dead()
+                truncated = game.is_episode_finished()
+
                 frame = read_frame()
-                terminated = terminated or bool(game.is_player_dead() or game.is_episode_finished())
+
+                terminated = False  # How to determine?
+
                 game_vars = get_game_variables_dict()
-                info = {"num_frames": (skip_frames if skip_frames else 1), "game_variables": game_vars}
+                info = {
+                    "num_frames": (skip_frames if skip_frames else 1), 
+                    "game_variables": game_vars,
+                    "player_died": is_dead,
+                }
                 pipe_end.send({
                     "obs": frame,
                     "reward": reward,
                     "terminated": terminated,
+                    "truncated": truncated,
                     "info": info,
                 })
                 steps += info["num_frames"]
@@ -490,7 +509,7 @@ class VizdoomParallelEnv(ParallelEnv):
             if self._screen is None or self._screen.get_size() != (disp_w, disp_h):
                 pygame.init()
                 self._screen = pygame.display.set_mode((disp_w, disp_h))
-                pygame.display.set_caption("ViZDoom Multi-Agent (Simplified)")
+                pygame.display.set_caption("ViZDoom Multi-Agent")
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.close()
