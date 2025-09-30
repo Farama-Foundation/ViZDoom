@@ -18,11 +18,12 @@ import gymnasium
 import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
-
+from stable_baselines3.common.vec_env import VecVideoRecorder
 import vizdoom.gymnasium_wrapper  # noqa
 
 
-DEFAULT_ENV = "VizdoomBasic-v1"
+
+DEFAULT_ENV = "VizdoomMusic-v1"
 AVAILABLE_ENVS = [env for env in gymnasium.envs.registry.keys() if "Vizdoom" in env]  # type: ignore
 
 # Height and width of the resized image
@@ -31,7 +32,7 @@ IMAGE_SHAPE = (60, 80)
 # Training parameters
 TRAINING_TIMESTEPS = int(1e6)
 N_STEPS = 128
-N_ENVS = 8
+N_ENVS = 32
 FRAME_SKIP = 4
 
 
@@ -59,12 +60,15 @@ class ObservationWrapper(gymnasium.ObservationWrapper):
         print(env.observation_space)
         num_channels = env.observation_space["screen"].shape[-1]
         new_shape = (shape[0], shape[1], num_channels)
-        self.observation_space = gymnasium.spaces.Box(
+        self.observation_space = gymnasium.spaces.Dict({ "screen": gymnasium.spaces.Box(
             0, 255, shape=new_shape, dtype=np.uint8
-        )
+        ),})
+        #                                                 "audio": env.observation_space["audio"]})
 
     def observation(self, observation):
-        observation = cv2.resize(observation["screen"], self.image_shape_reverse)
+        observation = {#"audio": observation["audio"],
+                       "screen": cv2.resize(observation["screen"], self.image_shape_reverse)
+                       }
         return observation
 
 
@@ -85,14 +89,19 @@ def main(args):
         wrapper_class=wrap_env,
         env_kwargs=dict(frame_skip=FRAME_SKIP),
     )
-
-    agent = PPO("CnnPolicy", envs, n_steps=N_STEPS, verbose=1)
-
+    
+    video_folder = "logs/videos6/"
+    record_video_trigger = lambda x: x % 1000 == 0 # Record at the beginning of the episode
+    #envs = VecVideoRecorder(envs, video_folder,
+    #                           record_video_trigger, video_length=2000) # Adjust video_length as needed
+    agent = PPO("MultiInputPolicy", envs, n_steps=N_STEPS, verbose=1, tensorboard_log=f"{args.dir}")
+    
     # Do the actual learning
     # This will print out the results in the console.
     # If agent gets better, "ep_rew_mean" should increase steadily
+
     try:
-        agent.learn(total_timesteps=TRAINING_TIMESTEPS, progress_bar=True)
+        agent.learn(total_timesteps=TRAINING_TIMESTEPS, progress_bar=True, tb_log_name=f"{args.exp}")
     except ImportError:
         agent.learn(total_timesteps=TRAINING_TIMESTEPS)
 
@@ -105,5 +114,14 @@ if __name__ == "__main__":
         choices=AVAILABLE_ENVS,
         help="Name of the environment to play",
     )
+    parser.add_argument(
+        "--dir",
+        default="./logs/"
+        )
+    parser.add_argument(
+        "--exp",
+        default="Random"
+        )
+    
     args = parser.parse_args()
     main(args)
