@@ -50,7 +50,6 @@ namespace vizdoom {
     namespace ba        = boost::asio;
     namespace bip       = boost::interprocess;
     namespace br        = boost::random;
-    namespace bs        = boost::system;
     namespace bpr       = boost::process;
     namespace bpri      = boost::process::initializers;
 
@@ -222,7 +221,12 @@ namespace vizdoom {
         void setAudioSamplingFreq(int freq);
         int getAudioSamplesPerTic();
         int getAudioBufferSize() const;
-        void setAudioBufferSize(int size);
+        void setAudioBufferSize(int tics);
+
+        void setNotificationsEnabled(bool notifications);
+        bool isNotificationsEnabled() const;
+        void setNotificationsBufferSize(int tics);
+        int getNotificationsBufferSize() const;
 
         /* Buffers in SM */
         uint8_t *const getScreenBuffer();
@@ -267,6 +271,8 @@ namespace vizdoom {
         bool isNetGame();
         bool isRecording();
         bool isReplaying();
+        bool isOpenALSoundInitialized();
+
         unsigned int getMapTic();
         int getMapReward();
         int getKillCount();
@@ -280,7 +286,7 @@ namespace vizdoom {
         int getHealth();
         int getArmor();
         bool isPlayerDead();
-
+        
         int getPlayerCount();
         bool isPlayerInGame(unsigned int playerNumber);
         int getPlayerFrags(unsigned int playerNumber);
@@ -370,11 +376,12 @@ namespace vizdoom {
         int audioSamplingFreq;
         int audioBufferSizeInTics;
 
+        bool notifications;
+        int notificationsBufferSizeInTics;
+
         bool hud, minHud, weapon, crosshair, decals, particles, sprites, messages, corpses, flashes, renderAll;
         AutomapMode amMode;
         bool amRotate, amTextures;
-
-        bool updateSettings;
 
         int getRenderModeValue();
 

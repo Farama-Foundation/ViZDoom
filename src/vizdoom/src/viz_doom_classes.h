@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __VIZ_DOOM_CLASSES_H__
+#define __VIZ_DOOM_CLASSES_H__
 
 #include <string>
 #include <vector>
@@ -1415,3 +1416,5 @@ const std::unordered_map<std::string, std::string> classToCategory = {
     {"wraithvergedrop", "Weapon"},
     {"zorchpropulsor", "Weapon"},
 };
+
+#endif

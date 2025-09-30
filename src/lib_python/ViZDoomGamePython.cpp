@@ -23,6 +23,7 @@
 
 #include "ViZDoomGamePython.h"
 #include "ViZDoomController.h"
+#include "ViZDoomExceptions.h"
 
 #include <cstddef>
 #include <cstring>
@@ -47,6 +48,7 @@ namespace vizdoom {
     }
 
     GameStatePython* DoomGamePython::getState() {
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         if (this->state == nullptr) return nullptr;
 
         // TODO: the following line causes:
@@ -79,12 +81,17 @@ namespace vizdoom {
             this->pyState->labels = DoomGamePython::vectorToPyList<Label>(this->state->labels);
         }  else {
             this->pyState->labelsBuffer = pyb::none();
-            this->pyState->labels = pyb::list();
+            this->pyState->labels = pyb::none();
         }
 
         if (this->state->automapBuffer != nullptr)
             this->pyState->automapBuffer = this->dataToNumpyArray(this->colorShape, this->state->automapBuffer->data());
         else this->pyState->automapBuffer = pyb::none();
+
+        /* Update notifications buffer */
+        if (this->doomController->isNotificationsEnabled())
+            this->pyState->notificationsBuffer = pyb::str(this->state->notificationsBuffer);
+        else this->pyState->notificationsBuffer = pyb::none();
 
         /* Updates vars */
         if (!this->state->gameVariables.empty()) {
@@ -100,7 +107,7 @@ namespace vizdoom {
         /* Update objects */
         if (this->isObjectsInfoEnabled()) {
             this->pyState->objects = DoomGamePython::vectorToPyList<Object>(this->state->objects);
-        } else this->pyState->objects = pyb::list();
+        } else this->pyState->objects = pyb::none();
 
         /* Update sectors */
         if (this->isSectorsInfoEnabled()) {
@@ -114,26 +121,27 @@ namespace vizdoom {
             }
             this->pyState->sectors = pySectors;
             //this->pyState->sectors = DoomGamePython::vectorToPyList<Sectors>(this->state->objects);
-        } else this->pyState->sectors = pyb::list();
+        } else this->pyState->sectors = pyb::none();
 
         return this->pyState;
     }
 
     ServerStatePython* DoomGamePython::getServerState() {
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         ServerStatePython* pyServerState = new ServerStatePython();
 
-        pyServerState->tic = this->doomController->getMapTic();
-        pyServerState->playerCount = this->doomController->getPlayerCount();
+        pyServerState->tic = this->serverState->tic;
+        pyServerState->playerCount = this->serverState->playerCount;
 
         pyb::list pyPlayersInGame, pyPlayersNames, pyPlayersFrags,
                 pyPlayersAfk, pyPlayersLastActionTic, pyPlayersLastKillTic;
         for(int i = 0; i < MAX_PLAYERS; ++i) {
-            pyPlayersInGame.append(this->doomController->isPlayerInGame(i));
-            pyPlayersNames.append(pyb::str(this->doomController->getPlayerName(i).c_str()));
-            pyPlayersFrags.append(this->doomController->getPlayerFrags(i));
-            pyPlayersAfk.append(this->doomController->isPlayerAfk(i));
-            pyPlayersLastActionTic.append(this->doomController->getPlayerLastActionTic(i));
-            pyPlayersLastKillTic.append(this->doomController->getPlayerLastKillTic(i));
+            pyPlayersInGame.append(this->serverState->playersInGame[i]);
+            pyPlayersNames.append(pyb::str(this->serverState->playersNames[i].c_str()));
+            pyPlayersFrags.append(this->serverState->playersFrags[i]);
+            pyPlayersAfk.append(this->serverState->playersAfk[i]);
+            pyPlayersLastActionTic.append(this->serverState->playersLastActionTic[i]);
+            pyPlayersLastKillTic.append(this->serverState->playersLastKillTic[i]);
         }
 
         pyServerState->playersInGame = pyPlayersInGame;
@@ -147,6 +155,7 @@ namespace vizdoom {
     }
 
     pyb::list DoomGamePython::getLastAction() {
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         return DoomGamePython::vectorToPyList(this->lastAction);
     }
 

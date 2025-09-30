@@ -876,11 +876,11 @@ See also:
 - :class:`.GameState`
 - `examples/python/audio_buffer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py>`_)DOCSTRING";
 
-    const char *setAudioBufferSize = R"DOCSTRING(Sets the size of the audio buffer. The size is defined by a number of logic tics.
+    const char *setAudioBufferSize = R"DOCSTRING(Sets the size/length of the audio buffer. The size is defined by a number of logic tics.
 After each action audio buffer will contain audio from the specified number of the last processed tics.
 Doom uses 35 ticks per second.
 
-Default value: 4
+Default value: 1
 
 Has no effect when the game is running.
 
@@ -893,6 +893,53 @@ See also:
 
 Note: added in 1.1.9.)DOCSTRING";
 
+    const char *isNotificationsBufferEnabled = R"DOCSTRING(Returns ``True`` if the notify buffer is enabled.
+
+Note: added in 1.3.0.)DOCSTRING";
+
+    const char *setNotificationsBufferEnabled = R"DOCSTRING(Enables notification buffer, it will be available in the state.
+The notification buffer will contain text notifications from the number of the last tics specified by :meth:`set_notifications_buffer_size` method.
+
+Default value: ``False``
+
+Has no effect when the game is running.
+
+Config key: ``notificationsBufferEnabled``/``notifications_buffer_enabled``
+
+See also:
+
+- :class:`.GameState`
+- `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
+
+Note: added in 1.3.0.)DOCSTRING";
+
+    const char *getNotificationsBufferSize = R"DOCSTRING(Returns the size of the notify buffer.
+
+Note: added in 1.3.0.
+
+
+See also:
+
+- :class:`.GameState`
+- `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_)DOCSTRING";
+
+    const char *setNotificationsBufferSize = R"DOCSTRING(Sets the size of the notify buffer. The size is defined by a number of logic tics.
+After each action notify buffer will contain text notifications from the specified number of the last processed tics.
+Doom uses 35 ticks per second.
+
+Default value: 1
+
+Has no effect when the game is running.
+
+Config key: ``notificationsBufferSize``/``notifications_buffer_size``
+
+See also:
+
+- :class:`.GameState`
+- `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
+
+Note: added in 1.3.0.)DOCSTRING";
+
 } // namespace DoomGamePython
 
     const char *doomTicsToMs = R"DOCSTRING(Calculates how many tics will be made during given number of milliseconds.
@@ -902,10 +949,6 @@ Note: changed in 1.1.0)DOCSTRING";
     const char *msToDoomTics = R"DOCSTRING(Calculates the number of milliseconds that will pass during specified number of tics.
 
 Note: changed in 1.1.0)DOCSTRING";
-
-    const char *getDefaultCategories = R"DOCSTRING(Returns the default object categories of ViZDoom.
-
-Note: added in 1.3.0.)DOCSTRING";
 
     const char *doomTicsToSec = R"DOCSTRING(Calculates how many tics will be made during given number of seconds.
 
@@ -923,6 +966,10 @@ you can convert them to floating point by using this function.)DOCSTRING";
     const char *isBinaryButton = R"DOCSTRING(Returns ``True`` if :class:`.Button` is binary button.)DOCSTRING";
 
     const char *isDeltaButton = R"DOCSTRING(Returns ``True`` if :class:`.Button` is delta button.)DOCSTRING";
+
+    const char *getDefaultCategories = R"DOCSTRING(Returns the default object categories of ViZDoom.
+
+Note: added in 1.3.0.)DOCSTRING";
 
 
 } // namespace docstrings

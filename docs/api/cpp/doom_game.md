@@ -1,6 +1,8 @@
 # DoomGame
 
-DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc. The declarations of this class and its methods can be found in the `include/ViZDoomGame.h` header file.
+DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game.
+The object allows sending actions to the game, getting the game state, etc.
+The declarations of this class and its methods can be found in the `include/ViZDoomGame.h` header file.
 
 Here we document all the methods of the DoomGame class and their corresponding Python bindings implemented as pybind11 module.
 
@@ -1917,15 +1919,15 @@ See also:
 ---
 ### `setAudioBufferSize`
 
-| C++    | `void setAudioBufferSize(unsigned int size)` |
+| C++    | `void setAudioBufferSize(unsigned int tics)` |
 | :--    | :--                                          |
-| Python | `set_audio_buffer_size(size: int) -> None`   |
+| Python | `set_audio_buffer_size(tics: int) -> None`   |
 
-Sets the size of the audio buffer. The size is defined by a number of logic tics.
+Sets the size/length of the audio buffer. The size is defined by a number of logic tics.
 After each action audio buffer will contain audio from the specified number of the last processed tics.
 Doom uses 35 ticks per second.
 
-Default value: 4
+Default value: 1
 
 Has no effect when the game is running.
 
@@ -1936,3 +1938,79 @@ See also:
 - [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
 
 Note: added in 1.1.9.
+
+
+---
+### `isNotificationsBufferEnabled`
+
+| C++    | `bool isNotificationsBufferEnabled()`       |
+| :--    | :--                                         |
+| Python | `is_notifications_buffer_enabled() -> bool` |
+
+Returns true if the notify buffer is enabled.
+
+Note: added in 1.3.0.
+
+
+---
+### `setNotificationsBufferEnabled`
+
+| C++    | `void setNotificationsBufferEnabled(bool notificationsBuffer)`         |
+| :--    | :--                                                                    |
+| Python | `set_notifications_buffer_enabled(notifications_buffer: bool) -> None` |
+
+Enables notification buffer, it will be available in the state.
+The notification buffer will contain text notifications from the number of the last tics specified by [`setNotificationsBufferSize`](#setNotificationsBuffersize) method.
+
+Default value: false
+
+Has no effect when the game is running.
+
+Config key: `notificationsBufferEnabled`/`notifications_buffer_enabled`
+
+See also:
+- [`GameState`](./game_state.md#gamestate)
+- [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
+
+Note: added in 1.3.0.
+
+
+---
+### `getNotificationsBufferSize`
+
+| C++    | `int getNotificationsBufferSize()`       |
+| :--    | :--                                      |
+| Python | `get_notifications_buffer_size() -> int` |
+
+Returns the size of the notify buffer.
+
+Note: added in 1.3.0.
+
+
+See also:
+- [`GameState`](./game_state.md#gamestate)
+- [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
+
+
+---
+### `setNotificationsBufferSize`
+
+| C++    | `void setNotificationsBufferSize(unsigned int tics)` |
+| :--    | :--                                                  |
+| Python | `set_notifications_buffer_size(tics: int) -> None`   |
+
+Sets the size of the notify buffer. The size is defined by a number of logic tics.
+After each action notify buffer will contain text notifications from the specified number of the last processed tics.
+Doom uses 35 ticks per second.
+
+Default value: 1
+
+Has no effect when the game is running.
+
+Config key: `notificationsBufferSize`/`notifications_buffer_size`
+
+See also:
+- [`GameState`](./game_state.md#gamestate)
+- [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
+
+Note: added in 1.3.0.

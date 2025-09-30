@@ -80,7 +80,7 @@ extern HINSTANCE g_hInst;
 
 EXTERN_CVAR (Float, snd_sfxvolume)
 
-// VIZDOOM_CODE
+//VIZDOOM_CODE
 EXTERN_CVAR (Bool, viz_soft_audio)
 EXTERN_CVAR (Int, viz_samp_freq)
 

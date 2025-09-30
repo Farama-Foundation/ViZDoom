@@ -63,7 +63,7 @@ PYBIND11_MODULE(vizdoom, vz){
     EXCEPTION_TO_PYT(ViZDoomIsNotRunningException)
     EXCEPTION_TO_PYT(ViZDoomErrorException)
     EXCEPTION_TO_PYT(ViZDoomUnexpectedExitException)
-
+    EXCEPTION_TO_PYT(ViZDoomNoOpenALSoundException)
 
     /* Helpers */
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -550,7 +550,8 @@ PYBIND11_MODULE(vizdoom, vz){
                     o.audioBuffer, 
                     o.labels,
                     o.objects,
-                    o.sectors
+                    o.sectors,
+                    o.notificationsBuffer
                 );
             },
             [](pyb::tuple t) { // load
@@ -563,9 +564,10 @@ PYBIND11_MODULE(vizdoom, vz){
                     t[5].cast<pyb::object>(),
                     t[6].cast<pyb::object>(),
                     t[7].cast<pyb::object>(),
-                    t[8].cast<pyb::list>(),
-                    t[9].cast<pyb::list>(),
-                    t[10].cast<pyb::list>()
+                    t[8].cast<pyb::object>(),
+                    t[9].cast<pyb::object>(),
+                    t[10].cast<pyb::object>(),
+                    t[11].cast<pyb::object>()
                 };
             })
         )
@@ -581,7 +583,10 @@ PYBIND11_MODULE(vizdoom, vz){
 
         .def_readonly("labels", &GameStatePython::labels)
         .def_readonly("objects", &GameStatePython::objects)
-        .def_readonly("sectors", &GameStatePython::sectors);
+        .def_readonly("sectors", &GameStatePython::sectors)
+
+        .def_readonly("notifications_buffer", &GameStatePython::notificationsBuffer)
+        ;
 
     pyb::class_<ServerStatePython>(vz, "ServerState", docstrings::ServerState)
             .def(pyb::pickle(
@@ -742,7 +747,12 @@ PYBIND11_MODULE(vizdoom, vz){
         CLASS_FUNC_2_PYT("get_audio_sampling_rate", DoomGamePython::getAudioSamplingRate)
         CLASS_FUNC_2_PYT_WITH_ARGS("set_audio_sampling_rate", DoomGamePython::setAudioSamplingRate, pyb::arg("sampling_rate"))
         CLASS_FUNC_2_PYT("get_audio_buffer_size", DoomGamePython::getAudioBufferSize)
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_audio_buffer_size", DoomGamePython::setAudioBufferSize, pyb::arg("buffer_size"))
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_audio_buffer_size", DoomGamePython::setAudioBufferSize, pyb::arg("tics"))
+        
+        CLASS_FUNC_2_PYT("is_notifications_buffer_enabled", DoomGamePython::isNotificationsBufferEnabled)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_notifications_buffer_enabled", DoomGamePython::setNotificationsBufferEnabled, pyb::arg("notifications_buffer"))
+        CLASS_FUNC_2_PYT("get_notifications_buffer_size", DoomGamePython::getNotificationsBufferSize)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_notifications_buffer_size", DoomGamePython::setNotificationsBufferSize, pyb::arg("tics"))
 
         CLASS_FUNC_2_PYT_WITH_ARGS("set_screen_resolution", DoomGamePython::setScreenResolution, pyb::arg("resolution"))
         CLASS_FUNC_2_PYT_WITH_ARGS("set_screen_format", DoomGamePython::setScreenFormat, pyb::arg("format"))

@@ -586,6 +586,10 @@ namespace vizdoom {
                     this->game->setAudioBufferSize(stringToUint(val));
                     continue;
                 }
+                else if (key == "notifications_buffer_size" || key == "notificationsbuffersize") {
+                    this->game->setNotificationsBufferSize(stringToUint(val));
+                    continue;
+                }
             }
             catch (b::bad_lexical_cast &) {
                 std::cerr << "WARNING! Loading config from: \"" << filePath <<
@@ -781,6 +785,10 @@ namespace vizdoom {
                 }
                 else if (key == "audio_buffer_enabled" || key == "audiobufferenabled") {
                     this->game->setAudioBufferEnabled(stringToBool(val));
+                    continue;
+                }
+                else if (key == "notifications_buffer_enabled" || key == "notificationsbufferenabled") {
+                    this->game->setNotificationsBufferEnabled(stringToBool(val));
                     continue;
                 }
             }

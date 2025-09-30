@@ -66,6 +66,7 @@ namespace vizdoom {
         this->mode = PLAYER;
 
         this->state = nullptr;
+        this->serverState = nullptr;
 
         this->doomController = new DoomController();
     }
@@ -333,16 +334,21 @@ namespace vizdoom {
 
             /* Audio */
             if (this->doomController->isAudioBufferEnabled()) {
+                if (!this->doomController->isOpenALSoundInitialized()) {
+                    throw ViZDoomNoOpenALSoundException();
+                }
                 const int16_t *audioBuf = this->doomController->getAudioBuffer();
                 const size_t audioSize = SOUND_NUM_CHANNELS * this->getAudioSamplesPerTic() * this->getAudioBufferSize();
                 this->state->audioBuffer = std::make_shared<std::vector<int16_t>>(audioBuf, audioBuf + audioSize);
             }
 
+            /* Depth */
             if (this->doomController->isDepthBufferEnabled()) {
                 buf = this->doomController->getDepthBuffer();
                 this->state->depthBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + graySize);
             } else this->state->depthBuffer = nullptr;
 
+            /* Labels */
             this->state->labels.clear();
             if (this->doomController->isLabelsEnabled()) {
                 buf = this->doomController->getLabelsBuffer();
@@ -358,6 +364,7 @@ namespace vizdoom {
                 }
             } else this->state->labelsBuffer = nullptr;
 
+            /* Automap */
             if (this->doomController->isAutomapEnabled()) {
                 buf = this->doomController->getAutomapBuffer();
                 this->state->automapBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
@@ -390,7 +397,26 @@ namespace vizdoom {
                 }
             }
 
+            /* Update text console */
+            if (this->doomController->isNotificationsEnabled()) {
+                this->state->notificationsBuffer = std::string(smState->NOTIFICATIONS_TEXT, smState->NOTIFICATIONS_TEXT + MAX_NOTIFICATIONS_CHARS);
+            } else this->state->notificationsBuffer.clear();
+
         } else this->state = nullptr;
+
+        /* Update server state */
+        this->serverState = std::make_shared<ServerState>();
+
+        this->serverState->tic = this->doomController->getMapTic();
+        this->serverState->playerCount = this->doomController->getPlayerCount();
+        for(int i = 0; i < MAX_PLAYERS; ++i){
+            this->serverState->playersInGame[i] = this->doomController->isPlayerInGame(i);
+            this->serverState->playersNames[i] = this->doomController->getPlayerName(i);
+            this->serverState->playersFrags[i] = this->doomController->getPlayerFrags(i);
+            this->serverState->playersAfk[i] = this->doomController->isPlayerAfk(i);
+            this->serverState->playersLastActionTic[i] = this->doomController->getPlayerLastActionTic(i);
+            this->serverState->playersLastKillTic[i] = this->doomController->getPlayerLastKillTic(i);
+        }
     }
 
     GameStatePtr DoomGame::getState() {
@@ -399,20 +425,8 @@ namespace vizdoom {
     }
 
     ServerStatePtr DoomGame::getServerState(){
-        ServerStatePtr serverState = std::make_shared<ServerState>();
-
-        serverState->tic = this->doomController->getMapTic();
-        serverState->playerCount = this->doomController->getPlayerCount();
-        for(int i = 0; i < MAX_PLAYERS; ++i){
-            serverState->playersInGame[i] = this->doomController->isPlayerInGame(i);
-            serverState->playersNames[i] = this->doomController->getPlayerName(i);
-            serverState->playersFrags[i] = this->doomController->getPlayerFrags(i);
-            serverState->playersAfk[i] = this->doomController->isPlayerAfk(i);
-            serverState->playersLastActionTic[i] = this->doomController->getPlayerLastActionTic(i);
-            serverState->playersLastKillTic[i] = this->doomController->getPlayerLastKillTic(i);
-        }
-
-        return serverState;
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
+        return this->serverState;
     }
 
     std::vector<double> DoomGame::getLastAction() {
@@ -797,7 +811,15 @@ namespace vizdoom {
 
     int DoomGame::getAudioBufferSize() { return this->doomController->getAudioBufferSize(); }
 
-    void DoomGame::setAudioBufferSize(int size) { this->doomController->setAudioBufferSize(size); }
+    void DoomGame::setAudioBufferSize(int tics) { this->doomController->setAudioBufferSize(tics); }
+
+    bool DoomGame::isNotificationsBufferEnabled() { return this->doomController->isNotificationsEnabled(); }
+
+    void DoomGame::setNotificationsBufferEnabled(bool notificationsBuffer) { this->doomController->setNotificationsEnabled(notificationsBuffer); }
+
+    int DoomGame::getNotificationsBufferSize() { return this->doomController->getNotificationsBufferSize(); }
+
+    void DoomGame::setNotificationsBufferSize(int tics) { this->doomController->setNotificationsBufferSize(tics); }
 
     int DoomGame::getScreenWidth() { return this->doomController->getScreenWidth(); }
 

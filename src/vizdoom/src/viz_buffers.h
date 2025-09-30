@@ -25,6 +25,7 @@
 #define __VIZ_SCREEN_H__
 
 #include <cstddef>
+
 #include "viz_shared_memory.h"
 
 #include "v_video.h"

@@ -9,16 +9,22 @@ The declarations of all the enums can be found in the `include/ViZDoomTypes.h` h
 
 - `unsigned int / int` **number**
 - `unsigned int / int` **tic**
-- `std::vector<float> / numpy.double[]` **gameVariables / game_variables**
-- `ImageBufferPtr / numpy.uint8[]`  **screenBuffer / screen_buffer**
-- `ImageBufferPtr / numpy.uint8[]`  **depthBuffer / depth_buffer**
-- `ImageBufferPtr / numpy.uint8[]`  **labelsBuffer / labels_buffer**
-- `ImageBufferPtr / numpy.uint8[]`  **automapBuffer / automap_buffer**
-- `AudioBufferPtr / numpy.int16[]` **audioBuffer / audio_buffer**
-- `std::vector<Label> / list`  **labels**
+- `std::vector<float> / numpy.double[] | None` **gameVariables / game_variables**
+- `ImageBufferPtr / numpy.uint8[] | None`  **screenBuffer / screen_buffer**
+- `ImageBufferPtr / numpy.uint8[] | None`  **depthBuffer / depth_buffer**
+- `ImageBufferPtr / numpy.uint8[] | None`  **labelsBuffer / labels_buffer**
+- `ImageBufferPtr / numpy.uint8[] | None`  **automapBuffer / automap_buffer**
+- `AudioBufferPtr / numpy.int16[] | None` **audioBuffer / audio_buffer**
+- `std::string / str | None` **NotificationsBuffer / notifications_buffer**
+- `std::vector<Label> / list | None`  **labels / labels**
+- `std::vector<Objects> / list | None`  **objects / objects**
+- `std::vector<Sectors> / list | None`  **sectors / sectors**
 
 **number** - number of the state in the episode.
 **tic** - ingame time, 1 tic is 1/35 of second in the game world. Note: added in 1.1.1.
+**labels, objects, sectors** - note: added in 1.1.8.
+**audioBuffer / audio_buffer** - note: added in 1.1.9.
+**NotificationsBuffer / notifications_buffer** - note: added in 1.3.0.
 
 See also:
 - [`DoomGame::getState`](./doom_game.md#getstate),

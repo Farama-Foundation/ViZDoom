@@ -104,8 +104,10 @@ namespace vizdoom {
         this->softSoundAudio = false;
         this->audioSamplingFreq = 44100;
         this->audioSamplesPerTic = this->audioSamplingFreq / int(DEFAULT_TICRATE);
-        this->audioBufferSizeInTics = 4;
+        this->audioBufferSizeInTics = 1;
 
+        this->notifications = false;
+        this->notificationsBufferSizeInTics = 1;
 
         this->hud = false;
         this->minHud = false;
@@ -623,12 +625,7 @@ namespace vizdoom {
     }
 
     void DoomController::setDepthBufferEnabled(bool depthBuffer) {
-        this->depth = depthBuffer;
-        if (this->doomRunning) {
-            if (this->depth) this->sendCommand("viz_depth 1");
-            else this->sendCommand("viz_depth 0");
-        }
-        this->updateSettings = true;
+        if (!this->doomRunning) this->depth = depthBuffer;
     }
 
     /* Labels buffer */
@@ -638,11 +635,7 @@ namespace vizdoom {
     }
 
     void DoomController::setLabelsEnabled(bool labels) {
-        this->labels = labels;
-        if (this->doomRunning) {
-            if (this->labels) this->sendCommand("viz_labels 1");
-            else this->sendCommand("viz_labels 0");
-        }
+        if (!this->doomRunning) this->labels = labels;
     }
 
     /* Automap buffer */
@@ -652,11 +645,7 @@ namespace vizdoom {
     }
 
     void DoomController::setAutomapEnabled(bool automap) {
-        this->automap = automap;
-        if (this->doomRunning) {
-            if (this->automap) this->sendCommand("viz_automap 1");
-            else this->sendCommand("viz_automap 0");
-        }
+        if (!this->doomRunning) this->automap = automap;
     }
 
     void DoomController::setAutomapMode(AutomapMode mode) {
@@ -681,11 +670,7 @@ namespace vizdoom {
     }
 
     void DoomController::setObjectsEnabled(bool objects) {
-        this->objects = objects;
-        if (this->doomRunning) {
-            if (this->objects) this->sendCommand("viz_objects 1");
-            else this->sendCommand("viz_objects 0");
-        }
+        if (!this->doomRunning) this->objects = objects;
     }
 
     bool DoomController::isSectorsEnabled() {
@@ -694,11 +679,7 @@ namespace vizdoom {
     }
 
     void DoomController::setSectorsEnabled(bool sectors) {
-        this->sectors = sectors;
-        if (this->doomRunning) {
-            if (this->sectors) this->sendCommand("viz_sectors 1");
-            else this->sendCommand("viz_sectors 0");
-        }
+        if (!this->doomRunning) this->sectors = sectors;
     }
 
     void DoomController::setScreenWidth(unsigned int width) {
@@ -874,7 +855,8 @@ namespace vizdoom {
     }
 
     bool DoomController::isAudioBufferEnabled() const{
-        return softSoundAudio;
+        if (this->doomRunning) return this->gameState->AUDIO_BUFFER;
+        else return this->softSoundAudio;
     }
 
     void DoomController::setAudioBufferEnabled(bool audioBuffer){
@@ -886,8 +868,10 @@ namespace vizdoom {
     }
 
     void DoomController::setAudioSamplingFreq(int freq) {
-        this->audioSamplingFreq = freq;
-        this->audioSamplesPerTic = freq / int(DEFAULT_TICRATE);
+        if (!this->doomRunning){ 
+            this->audioSamplingFreq = freq; 
+            this->audioSamplesPerTic = freq / int(DEFAULT_TICRATE);
+        }
     }
 
     int DoomController::getAudioSamplesPerTic() {
@@ -898,10 +882,26 @@ namespace vizdoom {
         return this->audioBufferSizeInTics;
     }
 
-    void DoomController::setAudioBufferSize(int size) {
-        this->audioBufferSizeInTics = size;
+    void DoomController::setAudioBufferSize(int tics) {
+        if (!this->doomRunning) this->audioBufferSizeInTics = tics;
     }
 
+    bool DoomController::isNotificationsEnabled() const {
+        if (this->doomRunning) return this->gameState->NOTIFICATIONS;
+        else return this->notifications;
+    }
+
+    void DoomController::setNotificationsEnabled(bool notifications) {
+        if (!this->doomRunning) this->notifications = notifications;
+    }
+
+    int DoomController::getNotificationsBufferSize() const {
+        return this->notificationsBufferSizeInTics;
+    }
+
+    void DoomController::setNotificationsBufferSize(int tics) {
+        if (!this->doomRunning) this->notificationsBufferSizeInTics = tics;
+    }
 
     /* SM setters & getters */
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -999,11 +999,11 @@ namespace vizdoom {
     double DoomController::getGameVariable(GameVariable var){
 
         switch (var) {
-            case KILLCOUNT :
+            case KILLCOUNT:
                 return this->gameState->MAP_KILLCOUNT;
-            case ITEMCOUNT :
+            case ITEMCOUNT:
                 return this->gameState->MAP_ITEMCOUNT;
-            case SECRETCOUNT :
+            case SECRETCOUNT:
                 return this->gameState->MAP_SECRETCOUNT;
             case FRAGCOUNT:
                 return this->gameState->PLAYER_FRAGCOUNT;
@@ -1017,21 +1017,21 @@ namespace vizdoom {
                 return this->gameState->PLAYER_DAMAGECOUNT;
             case DAMAGE_TAKEN:
                 return this->gameState->PLAYER_DAMAGE_TAKEN;
-            case HEALTH :
+            case HEALTH:
                 return this->gameState->PLAYER_HEALTH;
-            case ARMOR :
+            case ARMOR:
                 return this->gameState->PLAYER_ARMOR;
-            case DEAD :
+            case DEAD:
                 return this->gameState->PLAYER_DEAD;
-            case ON_GROUND :
+            case ON_GROUND:
                 return static_cast<double>(this->gameState->PLAYER_ON_GROUND);
-            case ATTACK_READY :
+            case ATTACK_READY:
                 return static_cast<double>(this->gameState->PLAYER_ATTACK_READY);
-            case ALTATTACK_READY :
+            case ALTATTACK_READY:
                 return static_cast<double>(this->gameState->PLAYER_ALTATTACK_READY);
-            case SELECTED_WEAPON :
+            case SELECTED_WEAPON:
                 return this->gameState->PLAYER_SELECTED_WEAPON;
-            case SELECTED_WEAPON_AMMO :
+            case SELECTED_WEAPON_AMMO:
                 return this->gameState->PLAYER_SELECTED_WEAPON_AMMO;
             case PLAYER_NUMBER:
                 return static_cast<double>(this->gameState->PLAYER_NUMBER);
@@ -1064,6 +1064,8 @@ namespace vizdoom {
     bool DoomController::isRecording() { return this->gameState->DEMO_RECORDING; }
 
     bool DoomController::isReplaying() { return this->gameState->DEMO_PLAYBACK; }
+
+    bool DoomController::isOpenALSoundInitialized() { return this->gameState->OPENAL_SOUND; }
 
     unsigned int DoomController::getMapTic() { return this->gameState->MAP_TIC; }
 
@@ -1417,6 +1419,8 @@ namespace vizdoom {
         if (this->softSoundAudio) {
             this->doomArgs.push_back("+viz_soft_audio");
             this->doomArgs.push_back("1");
+            this->doomArgs.push_back("+snd_backend");
+            this->doomArgs.push_back("openal"); // Force OpenAL sound backendS
 
             this->doomArgs.push_back("+viz_samp_freq");
             this->doomArgs.push_back(std::to_string(this->audioSamplingFreq));
@@ -1427,6 +1431,14 @@ namespace vizdoom {
             this->doomArgs.push_back("-nosound");
             this->doomArgs.push_back("+viz_nosound");
             this->doomArgs.push_back("1");
+        }
+
+        // notifications buffer
+        if (this->notifications) {
+            this->doomArgs.push_back("+viz_notifications");
+            this->doomArgs.push_back("1");
+            this->doomArgs.push_back("+viz_notifications_tics");
+            this->doomArgs.push_back(b::lexical_cast<std::string>(this->notificationsBufferSizeInTics));
         }
 
         // ticrate

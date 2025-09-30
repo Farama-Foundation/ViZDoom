@@ -20,7 +20,6 @@ A violation of any of these rules will result in ignoring **only** the line with
 Each list assignment (**`KEY = { VALUES }`**)clears values specified for this key before (in other configuration files or in the code). That is why the **append operator (`KEY += { VALUES }`)** is available. This way you can more easily combine multiple configuration files and tinker in code.
 
 ### Supported configuration keys:
-* `ammoReward/ammo_reward`
 * `audioBufferEnabled/audio_buffer_enabled`
 * `audioBufferSize/audio_buffer_size`
 * `audioSamplingRate/audio_samping_rate`
@@ -53,6 +52,8 @@ Each list assignment (**`KEY = { VALUES }`**)clears values specified for this ke
 * `labelsBufferEnabled/labels_buffer_enabled`
 * `livingReward/living_reward`
 * `mode`
+* `notificationsBufferEnabled/notifications_buffer_enabled`
+* `notificationsBufferSize/notifications_buffer_size`
 * `objectsInfoEnabled/objects_info_enabled`
 * `renderAllFrames/render_all_frames`
 * `renderCorpses/render_corpses`

@@ -40,6 +40,7 @@ buffers = [
 def test_gymnasium_wrapper():
     print("Testing Gymnasium wrapper compatibility with gymnasium API")
     for env_name in vizdoom_envs:
+        print(f"  Env: {env_name}")
 
         # Skip environments with animated textures,
         # as they might render different states for the same seeds
@@ -79,6 +80,8 @@ def test_gymnasium_wrapper():
 def test_gymnasium_wrapper_terminal_state():
     print("Testing Gymnasium rollout (checking terminal state)")
     for env_name in vizdoom_envs:
+        print(f"  Env: {env_name}")
+
         for frame_skip in [1, 4]:
             env = gymnasium.make(env_name, frame_skip=frame_skip, max_buttons_pressed=0)
             obs = env.reset()
@@ -538,6 +541,8 @@ def _compare_envs(
 def test_gymnasium_wrapper_pickle():
     print("Testing Gymnasium wrapper pickling (EzPickle).")
     for env_name in vizdoom_envs:
+        print(f"  Env: {env_name}")
+
         env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
         env2 = pickle.loads(pickle.dumps(env1))
 
@@ -554,6 +559,8 @@ def test_gymnasium_wrapper_pickle():
 def test_gymnasium_wrapper_seed():
     print("Testing gymnasium wrapper seeding.")
     for env_name in vizdoom_envs:
+        print(f"  Env: {env_name}")
+
         env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
         env2 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
 

@@ -60,7 +60,7 @@ Everything that is changed is marked (maybe commented) with "Added by MC"
 #include "d_net.h"
 #include "d_netinf.h"
 
-// VIZDOOM_CODE
+//VIZDOOM_CODE
 EXTERN_CVAR (String, viz_bots_path)
 
 static FRandom pr_botspawn ("BotSpawn");

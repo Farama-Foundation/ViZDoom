@@ -30,6 +30,13 @@
 //UNCOMMENT TO ENABLE COLOR-BASED LABELS TEST
 //#define VIZ_LABELS_COLORS 1
 
+#include <vector>
+#include <unordered_map>
+
+#ifdef VIZ_LABELS_TEST
+#include <SDL_video.h>
+#endif
+
 #include "basictypes.h"
 #include "doomtype.h"
 #include "actor.h"
@@ -41,13 +48,6 @@
 #include "r_3dfloors.h"
 #include "a_sharedglobal.h"
 #include "g_level.h"
-
-#include <vector>
-#include <unordered_map>
-
-#ifdef VIZ_LABELS_TEST
-#include <SDL_video.h>
-#endif
 
 struct VIZSprite{
     AActor* actor;

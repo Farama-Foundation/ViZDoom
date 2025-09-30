@@ -74,7 +74,6 @@ namespace vizdoom {
         unsigned int tic;
 
         pyb::object gameVariables;
-        //pyb::list gameVariables;
 
         pyb::object screenBuffer;
         pyb::object depthBuffer;
@@ -82,9 +81,11 @@ namespace vizdoom {
         pyb::object automapBuffer;
         pyb::object audioBuffer;
 
-        pyb::list labels;
-        pyb::list objects;
-        pyb::list sectors;
+        pyb::object labels;
+        pyb::object objects;
+        pyb::object sectors;
+
+        pyb::object notificationsBuffer;
     };
 
     struct ServerStatePython {

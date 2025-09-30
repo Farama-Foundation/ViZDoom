@@ -192,7 +192,7 @@ void FTTYStartupScreen::NetInit(const char *message, int numplayers)
 	{
 		termios rawtermios;
 
-		// VIZDOOM_CODE
+		//VIZDOOM_CODE
 		//fprintf (stderr, "Press 'Q' to abort network game synchronization.\n"); // When using as controlled subpcrocess, this won't work.
 		
         fprintf (stderr, "Network game synchronization timeout: %ds.", (unsigned int)*viz_connect_timeout);

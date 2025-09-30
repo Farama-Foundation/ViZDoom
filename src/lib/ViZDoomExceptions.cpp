@@ -61,4 +61,9 @@ namespace vizdoom {
         return "Controlled ViZDoom instance exited unexpectedly.";
     }
 
+    /* ViZDoomNoOpenALSoundException */
+    const char *ViZDoomNoOpenALSoundException::what() const throw() {
+        return "Controlled ViZDoom instance requires OpenAL sound, however it was not correctly initialized.";
+    }
+
 }

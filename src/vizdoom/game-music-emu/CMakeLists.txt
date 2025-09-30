@@ -6,11 +6,7 @@ include (CheckCXXCompilerFlag)
 # When version is changed, also change the one in gme/gme.h to match
 set(GME_VERSION 0.6.0 CACHE INTERNAL "libgme Version")
 
-# 2.6+ always assumes FATAL_ERROR, but 2.4 and below don't.
-# Of course, 2.4 might work, in which case you're welcome to drop
-# down the requirement, but I can't test that.
-#cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.12)
 
 make_release_only()
 

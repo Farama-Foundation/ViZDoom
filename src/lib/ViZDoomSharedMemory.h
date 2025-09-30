@@ -31,12 +31,13 @@
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <cstdint>
 
-#define SM_REGION_COUNT 7
+#define SM_REGION_COUNT         7
 
-#define MAX_LABELS 256
-#define MAX_OBJECTS 4096
-#define MAX_SECTORS 2048
-#define MAX_LINES 8192
+#define MAX_LABELS              256
+#define MAX_OBJECTS             4096
+#define MAX_SECTORS             2048
+#define MAX_LINES               8192
+#define MAX_NOTIFICATIONS_CHARS 32768
 
 namespace vizdoom {
 
@@ -117,6 +118,7 @@ namespace vizdoom {
         bool GAME_DEATHMATCH;
         bool DEMO_RECORDING;
         bool DEMO_PLAYBACK;
+        bool OPENAL_SOUND;
 
         // SCREEN
         unsigned int SCREEN_WIDTH;
@@ -125,11 +127,14 @@ namespace vizdoom {
         size_t SCREEN_SIZE;
         int SCREEN_FORMAT;
 
+        // BUFFERS
         bool DEPTH_BUFFER;
         bool LABELS;
         bool AUTOMAP;
         bool OBJECTS;
         bool SECTORS;
+        bool AUDIO_BUFFER;
+        bool NOTIFICATIONS;
 
         // MAP
         unsigned int MAP_START_TIC;
@@ -205,6 +210,10 @@ namespace vizdoom {
         int PLAYER_HITS_TAKEN;
         int PLAYER_DAMAGECOUNT;
         int PLAYER_DAMAGE_TAKEN;
+
+        // TEXT CONSOLE LOG
+        unsigned int NOTIFICATIONS_TEXT_SIZE;
+        char NOTIFICATIONS_TEXT[MAX_NOTIFICATIONS_CHARS];
     };
 
     struct SMInputState {
@@ -245,7 +254,7 @@ namespace vizdoom {
         void deleteRegion(SMRegion *regionPtr);
 
         //0 - GameState, 1 - InputState, 2 - ScreenBuffer, 3 - DepthBuffer, 4 - LabelsBuffer, 5 - AutomapBuffer, 6 - AudioBuffer
-        SMRegion region[7];
+        SMRegion region[SM_REGION_COUNT];
     };
 }
 
