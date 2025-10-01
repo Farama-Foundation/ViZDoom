@@ -18,7 +18,7 @@ import gymnasium
 import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.vec_env import VecVideoRecorder
+#from stable_baselines3.common.vec_env import VecVideoRecorder
 import vizdoom.gymnasium_wrapper  # noqa
 
 
@@ -90,7 +90,7 @@ def main(args):
         env_kwargs=dict(frame_skip=FRAME_SKIP),
     )
     
-    video_folder = "logs/videos6/"
+    #video_folder = "logs/videos6/"
     record_video_trigger = lambda x: x % 1000 == 0 # Record at the beginning of the episode
     #envs = VecVideoRecorder(envs, video_folder,
     #                           record_video_trigger, video_length=2000) # Adjust video_length as needed
