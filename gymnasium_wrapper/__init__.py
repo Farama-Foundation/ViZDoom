@@ -14,6 +14,18 @@ register(
 )
 
 register(
+    id="VizdoomBasicAudio-v1",
+    entry_point="vizdoom.gymnasium_wrapper.gymnasium_env_defns:VizdoomScenarioEnv",
+    kwargs={"scenario_config_file": "basic_audio.cfg", "max_buttons_pressed": 1},
+)
+
+register(
+    id="VizdoomBasicAudio-MultiBinary-v1",
+    entry_point="vizdoom.gymnasium_wrapper.gymnasium_env_defns:VizdoomScenarioEnv",
+    kwargs={"scenario_config_file": "basic_audio.cfg", "max_buttons_pressed": 0},
+)
+
+register(
     id="VizdoomCorridor-v1",
     entry_point="vizdoom.gymnasium_wrapper.gymnasium_env_defns:VizdoomScenarioEnv",
     kwargs={"scenario_config_file": "deadly_corridor.cfg", "max_buttons_pressed": 1},
