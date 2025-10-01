@@ -91,7 +91,7 @@ def main(args):
     )
     
     #video_folder = "logs/videos6/"
-    record_video_trigger = lambda x: x % 1000 == 0 # Record at the beginning of the episode
+    #record_video_trigger = lambda x: x % 1000 == 0 # Record at the beginning of the episode
     #envs = VecVideoRecorder(envs, video_folder,
     #                           record_video_trigger, video_length=2000) # Adjust video_length as needed
     agent = PPO("MultiInputPolicy", envs, n_steps=N_STEPS, verbose=1, tensorboard_log=f"{args.dir}")
