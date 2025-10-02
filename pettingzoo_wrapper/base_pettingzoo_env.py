@@ -101,10 +101,11 @@ def _agent_process(
     game.set_console_enabled(False)
     game.set_render_hud(True)
     game.set_screen_resolution(_screen_res(resolution))
-    game.set_episode_timeout(timeout)
     game.set_ticrate(ticrate)
     game.set_mode(Mode.ASYNC_PLAYER if async_mode else Mode.PLAYER)
 
+    if timeout is not None:
+        game.set_episode_timeout(timeout)
     if seed is not None:
         game.set_seed(int(seed))
 
@@ -164,33 +165,33 @@ def _agent_process(
                     "obs": frame,
                     "reward": 0.0,
                     "terminated": False,
-                    "info": {"reset": True, "game_variables": game_vars},
+                    "info": {"reset": True, "game_variables": game_vars, "step": steps},
                 })
 
             elif cmd == "step":
-                # If the player died, respawn them
-                if is_dead:
-                    # print(f"Player {agent} died at step {game.get_episode_time()}. Respawning...")
-                    game.respawn_player()
-                    # print(f"Player {agent} respawned at step {game.get_episode_time()}")
-
                 action = payload  # flat list (delta..., binary...)
 
                 reward = float(game.make_action(action, skip_frames) if skip_frames else game.make_action(action))
 
                 # Check if player died during this step
+                was_dead_before = is_dead
                 is_dead = game.is_player_dead()
+                just_died = not was_dead_before and is_dead
                 truncated = game.is_episode_finished()
 
                 frame = read_frame()
 
-                terminated = False  # How to determine?
+                terminated = game.is_episode_finished()
+                if terminated:
+                    print(f"Player {agent} terminated at step {game.get_episode_time()}")
 
                 game_vars = get_game_variables_dict()
                 info = {
                     "num_frames": (skip_frames if skip_frames else 1), 
                     "game_variables": game_vars,
                     "player_died": is_dead,
+                    "just_died": just_died,  # Signal when death just occurred
+                    "step": steps
                 }
                 pipe_end.send({
                     "obs": frame,
@@ -200,6 +201,43 @@ def _agent_process(
                     "info": info,
                 })
                 steps += info["num_frames"]
+
+            elif cmd == "respawn":
+                # Only respawn if the player is actually dead
+                if is_dead:
+                    print(f"Player {agent} respawning at step {game.get_episode_time()}...")
+                    game.respawn_player()
+                    is_dead = False  # Reset death state after respawn
+                    print(f"Player {agent} respawned at step {game.get_episode_time()}")
+                    respawned = True
+                else:
+                    # Player is not dead, perform a no-op action
+                    zero_action = [0.0] * len(game.get_available_buttons())
+                    game.make_action(zero_action)
+                    respawned = False
+
+                # Return observation data like a regular step
+                frame = read_frame()
+                game_vars = get_game_variables_dict()
+                terminated = False
+                truncated = game.is_episode_finished()
+
+                info = {
+                    "num_frames": (skip_frames if skip_frames else 1),
+                    "game_variables": game_vars,
+                    "player_died": is_dead,
+                    "just_died": False,  # Can't die during respawn
+                    "step": steps
+                }
+
+                pipe_end.send({
+                    "obs": frame,
+                    "reward": 0.0,  # No reward for respawn
+                    "terminated": terminated,
+                    "truncated": truncated,
+                    "info": info,
+                    "respawned": respawned
+                })
 
             elif cmd == "close":
                 break
@@ -229,9 +267,9 @@ class VizdoomParallelEnv(ParallelEnv):
             config_file: str,
             num_agents: int = 2,
             resolution: str = "160x120",
-            timeout: int = 2100,
+            timeout: Optional[int] = None,
             skip_frames: Optional[int] = 1,
-            async_mode: bool = False,
+            async_mode: bool = True,
             host_address: str = "127.0.0.1",
             port: int = 5029,
             netmode: int = 0,
@@ -279,7 +317,7 @@ class VizdoomParallelEnv(ParallelEnv):
                     pipe_end=child_end,
                     config_path=self.config_file,
                     resolution=self.resolution,
-                    timeout=int(timeout),
+                    timeout=timeout,
                     skip_frames=skip_frames,
                     num_agents=self._num_agents,
                     agent_idx=i,
@@ -300,6 +338,9 @@ class VizdoomParallelEnv(ParallelEnv):
         # timeout / PZ bookkeeping
         self._frames_advanced = 0
         self._timeout = int(timeout) if timeout is not None else None
+
+        # Death tracking for respawn functionality
+        self._dead_agents = set()  # Track which agents are currently dead
         self._terminations: Dict[str, bool] = {a: False for a in self.agents}
         self._truncations: Dict[str, bool] = {a: False for a in self.agents}
 
@@ -362,6 +403,9 @@ class VizdoomParallelEnv(ParallelEnv):
         self._terminations = {a: False for a in self.agents}
         self._truncations = {a: False for a in self.agents}
 
+        # Clear dead agents tracking on reset
+        self._dead_agents.clear()
+
         # broadcast reset, collect results
         for pipe in self._pipes_parent:
             pipe.send(("reset", None))
@@ -383,7 +427,7 @@ class VizdoomParallelEnv(ParallelEnv):
         return obs, infos
 
     def step(self, actions: Dict[str, Any]):
-        # 1) encode + send
+        # 1) Handle dead agents from previous step and encode actions for alive agents
         flat_actions: List[List[float]] = []
         for agent in self.agents:
             a = actions.get(agent, self._noop_action())
@@ -391,8 +435,18 @@ class VizdoomParallelEnv(ParallelEnv):
             if len(env_action) != self._act_len:
                 raise ValueError(f"Encoded action length {len(env_action)} != expected {self._act_len}")
             flat_actions.append(env_action)
-        for i, pipe in enumerate(self._pipes_parent):
-            pipe.send(("step", flat_actions[i]))
+
+        # Send commands: respawn for dead agents, step for alive agents
+        for i, agent in enumerate(self.agents):
+            if agent in self._dead_agents:
+                # Agent died in previous step, send respawn command
+                self._pipes_parent[i].send(("respawn", None))
+
+        # Send commands: respawn for dead agents, step for alive agents
+        for i, agent in enumerate(self.agents):
+            if agent not in self._dead_agents:
+                # Agent is alive, send regular step command
+                self._pipes_parent[i].send(("step", flat_actions[i]))
 
         # 2) recv
         results = [pipe.recv() for pipe in self._pipes_parent]
@@ -401,6 +455,10 @@ class VizdoomParallelEnv(ParallelEnv):
         rewards: Dict[str, float] = {}
         infos: Dict[str, Dict[str, Any]] = {}
         any_term = False
+
+        # Track agents that were dead and got respawned this step
+        respawned_agents = set()
+
         for i, agent in enumerate(self.agents):
             r = results[i]
             frame = r["obs"]
@@ -411,6 +469,20 @@ class VizdoomParallelEnv(ParallelEnv):
             any_term = any_term or term
             infos[agent] = r.get("info", {})
             self._last_frames[agent] = frame
+
+            # Handle respawn results for agents that were dead
+            if agent in self._dead_agents:
+                respawned = r.get("respawned", False)
+                if respawned:
+                    respawned_agents.add(agent)
+
+        # Remove successfully respawned agents from dead set
+        self._dead_agents -= respawned_agents
+
+        # Track newly dead agents (but don't respawn them until next step)
+        for i, agent in enumerate(self.agents):
+            if infos[agent].get("player_died", False) and agent not in self._dead_agents:
+                self._dead_agents.add(agent)
 
         # 3) time-limit truncation (assume same num_frames for all)
         frames_advanced = next(iter(infos.values())).get("num_frames", 1) if infos else 1

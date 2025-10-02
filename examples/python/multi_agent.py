@@ -11,7 +11,10 @@ import atexit
 import os
 import signal
 import sys
+from pathlib import Path
 from random import choice
+
+from pettingzoo_wrapper import make
 
 # Add the project root to the Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
@@ -52,25 +55,35 @@ def main():
     atexit.register(cleanup_environment)
 
     # Configuration
-    config_file = os.path.join(vzd.scenarios_path, "health_gathering.cfg")
+    scenario = "pitfall"
     num_agents = 2
     episodes = 3
-    max_steps_per_episode = 1000
 
-    print(f"Starting multi-agent health gathering with {num_agents} agents")
-    print(f"Running {episodes} episodes, {max_steps_per_episode} steps per episode")
+    print(f"Starting multi-agent {scenario} with {num_agents} agents")
+    print(f"Running {episodes} episodes")
     print("=" * 60)
 
     # Create the multi-agent environment
     try:
-        env = VizdoomParallelEnv(
-            config_file=config_file,
+        env = make(
+            scenario=scenario,
             num_agents=num_agents,
             resolution="800x600",
-            timeout=max_steps_per_episode,  # This will limit steps per episode
-            render_mode="human",
-            use_multi_binary_action_space=False,  # Use MultiDiscrete instead of MultiBinary
-            seed=42
+            render_mode="rgb_array",
+            use_multi_binary_action_space=False,
+            seed=42,
+            netmode=1,
+            skip_frames=1,
+            async_mode=True,
+            ticrate=20,
+            reward="auto",
+            reward_params=dict(
+                scaler=0.1,
+                death_penalty=-1.0,
+                keep_lb=True,
+                goal_x=None,
+                goal_reward=1.0,
+            ),
         )
         print("Environment created successfully!")
     except Exception as e:
@@ -80,42 +93,51 @@ def main():
         cleanup_environment()
         return
 
-    # Define possible actions for each agent
-    # The health gathering scenario has 3 buttons: TURN_LEFT, TURN_RIGHT, MOVE_FORWARD
-    # Since we're using MultiDiscrete action space, each action is a list of 3 discrete values (0 or 1)
-    possible_actions = [
-        [1, 0, 0],  # TURN_LEFT
-        [0, 1, 0],  # TURN_RIGHT
-        [0, 0, 1],  # MOVE_FORWARD
-        [0, 0, 0],  # No action
-        [1, 0, 1],  # TURN_LEFT + MOVE_FORWARD
-        [0, 1, 1],  # TURN_RIGHT + MOVE_FORWARD
-    ]
-
     try:
         for episode in range(episodes):
             print(f"\n--- Episode {episode + 1} ---")
 
+            episode_key = f"episode_{episode + 1}"
+            episode_buffer = {episode_key: []}
+            last_infos = None
+
             # Reset environment
-            observations, infos = env.reset()
+            env.reset()
 
             # Initialize episode statistics
             episode_rewards = {agent: 0.0 for agent in env.agents}
             episode_steps = 0
+            done = False
 
             # Run episode
-            while episode_steps < max_steps_per_episode:
+            while not done:
                 # Choose random actions for each agent
                 actions = {}
                 for agent in env.agents:
-                    actions[agent] = choice(possible_actions)
+                    actions[agent] = env.action_space(agent).sample()
 
                 # Take step
                 observations, rewards, terminations, truncations, infos = env.step(actions)
 
+                last_infos = infos
+                step_record = {}
+
                 # Update statistics
-                for agent in env.agents:
+                for i, agent in enumerate(env.agents):
                     episode_rewards[agent] += rewards[agent]
+                    info = infos.get(agent, {}) or {}
+                    gv = info.get("game_variables", {}) or {}
+
+                    step_record[agent] = {
+                        "step": info.get("step", episode_steps),
+                        "dead": int(gv.get("DEAD", 0)),
+                        "position_x": gv.get("POSITION_X", None),
+                        "rewards": float(rewards.get(agent, 0.0)),              # single reward for this step
+                        "actions": actions.get(agent, None),                    # single action for this step
+                        "observations": observations.get(agent, None),          # single obs for this step
+                    }
+
+                episode_buffer[episode_key].append(step_record)
 
                 episode_steps += 1
 
@@ -126,32 +148,22 @@ def main():
                     print(f"Rendering error: {e}")
 
                 # Check if any agent is terminated or truncated
-                if any(terminations.values()) or any(truncations.values()):
-                    break
-
-                # Print step info occasionally
-                if episode_steps % 20 == 0:
-                    print(f"  Step {episode_steps}: ", end="")
-                    for agent in env.agents:
-                        health = infos[agent].get('game_variables', {}).get('HEALTH', 'N/A')
-                        print(f"{agent} health={health}, ", end="")
-                    print()
+                done = any(terminations.values()) or any(truncations.values())
 
             # Print episode results
             print(f"\nEpisode {episode + 1} Results:")
             print("-" * 40)
             for agent in env.agents:
                 total_reward = episode_rewards[agent]
-                health = infos[agent].get('game_variables', {}).get('HEALTH', 'N/A')
                 terminated = terminations[agent]
                 truncated = truncations[agent]
 
                 print(f"  {agent}:")
                 print(f"    Total Reward: {total_reward:.2f}")
-                print(f"    Final Health: {health}")
                 print(f"    Terminated: {terminated}")
                 print(f"    Truncated: {truncated}")
                 print(f"    Steps Completed: {episode_steps}")
+                print(f"    Agent steps: {last_infos.get(agent, {}).get('step', 'N/A') if last_infos else 'N/A'}")
 
             print("=" * 40)
 
@@ -162,7 +174,7 @@ def main():
     finally:
         # Clean up
         cleanup_environment()
-        print("\nMulti-agent health gathering demo completed!")
+        print(f"\nMulti-agent {scenario} example completed!")
 
 
 if __name__ == "__main__":
