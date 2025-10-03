@@ -12,7 +12,7 @@ from ray.rllib.algorithms.ppo import PPOConfig
 from ray.rllib.env.wrappers.pettingzoo_env import ParallelPettingZooEnv
 from ray.tune.registry import register_env
 
-from pettingzoo_wrapper.base_pettingzoo_env import VizdoomParallelEnv
+from pettingzoo_wrapper import make
 
 try:
     import cv2
@@ -161,7 +161,7 @@ def _free_port():
 def make_pz_env(env_config):
     cfg = deepcopy(env_config)
     cfg["port"] = _free_port()
-    base = VizdoomParallelEnv(**cfg)
+    base = make(**cfg)
     wrapped = ResizeNormalizePZ(base, size=(84, 84), normalize=True)
     return ParallelPettingZooEnv(wrapped)
 
@@ -169,22 +169,22 @@ def make_pz_env(env_config):
 def main():
     parser = argparse.ArgumentParser()
     # --- env ---
-    parser.add_argument("--config_file", type=str, default="health_gathering.cfg")
+    parser.add_argument("--scenario", type=str, default="pitfall")
     parser.add_argument("--num_agents", type=int, default=2)
     parser.add_argument("--resolution", type=str, default="160x120")
     parser.add_argument("--skip_frames", type=int, default=4)
-    parser.add_argument("--async_mode", type=int, default=0)
+    parser.add_argument("--async_mode", type=int, default=1)
     parser.add_argument("--port", type=int, default=5029)
     parser.add_argument("--netmode", type=int, default=1)
-    parser.add_argument("--ticrate", type=int, default=1000)
+    parser.add_argument("--ticrate", type=int, default=200)
     parser.add_argument("--seed", type=int, default=42)
 
     # --- training / resources ---
-    parser.add_argument("--num_workers", type=int, default=2)
+    parser.add_argument("--num_workers", type=int, default=10)
     parser.add_argument("--num_gpus", type=float, default=1)
-    parser.add_argument("--train_batch_size", type=int, default=32000)
-    parser.add_argument("--rollout_fragment_length", type=int, default=256)
-    parser.add_argument("--minibatch_size", type=int, default=2048)
+    parser.add_argument("--train_batch_size", type=int, default=4096)
+    parser.add_argument("--rollout_fragment_length", type=int, default=128)
+    parser.add_argument("--minibatch_size", type=int, default=256)
     parser.add_argument("--num_epochs", type=int, default=4)
     parser.add_argument("--lr", type=float, default=5e-4)
     parser.add_argument("--gamma", type=float, default=0.99)
@@ -211,8 +211,8 @@ def main():
     register_env(env_name, make_pz_env)
 
     # 2) Build a tiny dummy env to grab per-agent spaces (needed for IPPO = one policy per agent)
-    dummy_env = VizdoomParallelEnv(
-        config_file=args.config_file,
+    dummy_env = make(
+        scenario=args.scenario,
         num_agents=args.num_agents,
         resolution=args.resolution,
         skip_frames=args.skip_frames,
@@ -245,7 +245,7 @@ def main():
 
     # 4) RLlib environment config
     env_config = dict(
-        config_file=args.config_file,
+        scenario=args.scenario,
         num_agents=args.num_agents,
         resolution=args.resolution,
         skip_frames=args.skip_frames,
@@ -266,12 +266,12 @@ def main():
         .framework("torch")
         .environment(env=env_name, env_config=env_config)
         .resources(num_gpus=args.num_gpus)
-        .env_runners(  # old API
+        .env_runners(
             num_env_runners=args.num_workers,
-            rollout_fragment_length=args.rollout_fragment_length,
+            rollout_fragment_length='auto',
             batch_mode="truncate_episodes",
         )
-        .training(  # old API names
+        .training(
             gamma=args.gamma,
             lr=args.lr,
             lambda_=args.lambda_,
