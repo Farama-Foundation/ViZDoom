@@ -178,10 +178,10 @@ def _agent_process(
                 is_dead = game.is_player_dead()
                 just_died = not was_dead_before and is_dead
                 truncated = game.is_episode_finished()
+                terminated = game.is_episode_finished()
 
                 frame = read_frame()
 
-                terminated = game.is_episode_finished()
                 if terminated:
                     print(f"Player {agent} terminated at step {game.get_episode_time()}")
 
@@ -205,10 +205,10 @@ def _agent_process(
             elif cmd == "respawn":
                 # Only respawn if the player is actually dead
                 if is_dead:
-                    print(f"Player {agent} respawning at step {game.get_episode_time()}...")
+                    # print(f"Player {agent} respawning at step {game.get_episode_time()}...")
                     game.respawn_player()
                     is_dead = False  # Reset death state after respawn
-                    print(f"Player {agent} respawned at step {game.get_episode_time()}")
+                    # print(f"Player {agent} respawned at step {game.get_episode_time()}")
                     respawned = True
                 else:
                     # Player is not dead, perform a no-op action
@@ -495,6 +495,18 @@ class VizdoomParallelEnv(ParallelEnv):
 
         terminations = self._terminations.copy()
         truncations = self._truncations.copy()
+
+        any_term = any(bool(r.get("terminated", False)) for r in results)
+        any_trunc = any(bool(r.get("truncated",  False)) for r in results)
+
+        # If any agent finishes, finish the episode for ALL agents this step.
+        if any_term:
+            for a in self.agents:
+                self._terminations[a] = True
+        if any_trunc:
+            for a in self.agents:
+                self._truncations[a] = True
+
         return observations, rewards, terminations, truncations, infos
 
     def close(self):
