@@ -150,12 +150,11 @@ class ResizeNormalizePZ:
         return {aid: self._process_one(ob) for aid, ob in obs_dict.items()}
 
 
-def _free_port():
-    s = socket.socket()
-    s.bind(("", 0))
-    p = s.getsockname()[1]
-    s.close()
-    return p
+def _free_port() -> int:
+    import socket
+    with socket.socket() as s:
+        s.bind(("", 0))
+        return s.getsockname()[1]
 
 
 def make_pz_env(env_config):
