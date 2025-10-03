@@ -165,7 +165,12 @@ def _agent_process(
                     "obs": frame,
                     "reward": 0.0,
                     "terminated": False,
-                    "info": {"reset": True, "game_variables": game_vars, "step": steps},
+                    "info": {
+                        "num_frames": (skip_frames if skip_frames else 1),
+                        "player_died": False,
+                        "just_died": False,
+                        "step": steps
+                    },
                 })
 
             elif cmd == "step":
@@ -188,7 +193,6 @@ def _agent_process(
                 game_vars = get_game_variables_dict()
                 info = {
                     "num_frames": (skip_frames if skip_frames else 1), 
-                    "game_variables": game_vars,
                     "player_died": is_dead,
                     "just_died": just_died,  # Signal when death just occurred
                     "step": steps
@@ -224,7 +228,6 @@ def _agent_process(
 
                 info = {
                     "num_frames": (skip_frames if skip_frames else 1),
-                    "game_variables": game_vars,
                     "player_died": is_dead,
                     "just_died": False,  # Can't die during respawn
                     "step": steps
@@ -275,7 +278,8 @@ class VizdoomParallelEnv(ParallelEnv):
             netmode: int = 0,
             ticrate: int = vzd.DEFAULT_TICRATE,
             render_mode: Optional[str] = None,
-            use_multi_binary_action_space: bool = True,
+            use_multi_binary_action_space: bool = False,
+            simple_discrete: bool = True,
             seed: Optional[int] = None,
     ) -> None:
         assert num_agents >= 1
@@ -289,6 +293,7 @@ class VizdoomParallelEnv(ParallelEnv):
         self.ticrate = int(ticrate)
         self.render_mode = render_mode
         self.use_multi_binary_action_space = bool(use_multi_binary_action_space)
+        self.simple_discrete = bool(simple_discrete)
         self._ext_seed = seed
 
         # names
@@ -297,6 +302,7 @@ class VizdoomParallelEnv(ParallelEnv):
 
         # Discover spaces (no net init needed)
         self._delta_count, self._binary_count = self._discover_buttons(config_file)
+        self._simple_n = (3 ** self._delta_count) * (2 ** self._binary_count)
         self._act_len = self._delta_count + self._binary_count
         self._action_space = self._build_action_space()
 
@@ -367,6 +373,8 @@ class VizdoomParallelEnv(ParallelEnv):
         return len(delta), len(binary)
 
     def _build_action_space(self) -> spaces.Space:
+        if self.simple_discrete:
+            return spaces.Discrete(max(1, self._simple_n))
         if self._delta_count == 0:
             return self._binary_space()
         if self._binary_count == 0:
@@ -421,7 +429,12 @@ class VizdoomParallelEnv(ParallelEnv):
                 self._obs_shape = (self._obs_shape[0], self._obs_shape[1], c)
                 self._observation_space = spaces.Box(0, 255, shape=self._obs_shape, dtype=np.uint8)
             obs[agent] = frame
-            infos[agent] = {"reset": True}
+            infos[agent] = {
+                "num_frames": 1,
+                "player_died": False,
+                "just_died": False,
+                "step": 0,
+            }
             self._last_frames[agent] = frame
 
         return obs, infos
@@ -544,7 +557,8 @@ class VizdoomParallelEnv(ParallelEnv):
                     out["binary"] = np.zeros((self._binary_count,), dtype=np.int64)
             return out
         else:
-            # MultiBinary or MultiDiscrete or Box
+            if isinstance(self._action_space, spaces.Discrete):
+                return 0
             if isinstance(self._action_space, spaces.MultiBinary):
                 return np.zeros((self._binary_count,), dtype=np.int8)
             if isinstance(self._action_space, spaces.MultiDiscrete):
