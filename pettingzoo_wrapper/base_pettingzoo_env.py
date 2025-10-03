@@ -7,17 +7,14 @@ PettingZoo Parallel wrapper for multi-agent ViZDoom.
 
 Usage:
     env = VizdoomParallelEnv(
-        config_file="scenarios/basic.cfg",
+        scenario="health_gathering",
         num_agents=2,
         resolution="160x120",
         skip_frames=4,
-        timeout=3500,
         async_mode=True,
         host_address="127.0.0.1",
         port=5029,
         netmode=0,  # 0: p2p, 1: client-server
-        ticrate=1000,
-        use_multi_binary_action_space=True,
         seed=0,
     )
 
@@ -567,8 +564,35 @@ class VizdoomParallelEnv(ParallelEnv):
                 return np.zeros((self._delta_count,), dtype=np.float32)
             raise NotImplementedError(type(self._action_space))
 
+    def _decode_simple_discrete(self, idx: int) -> List[float]:
+        """Decode Discrete index -> flat [delta..., binary...] for ViZDoom.
+
+        delta in {-1, 0, +1} (radix-3), then binary in {0,1} (radix-2).
+        Order is [delta_0, ..., delta_{D-1}, bin_0, ..., bin_{B-1}]
+        """
+        D, B = self._delta_count, self._binary_count
+        out = np.zeros((self._act_len,), dtype=np.float32)
+        x = int(idx)
+
+        # Binary tail (radix-2)
+        for i in range(B):
+            out[D + i] = float(x & 1)
+            x >>= 1
+
+        # Delta head (radix-3) mapped {0,1,2} -> {-1,0,+1}
+        for i in range(D):
+            digit = x % 3
+            out[i] = float([-1, 0, +1][digit])
+            x //= 3
+
+        return out.tolist()
+
     def _encode_env_action(self, agent_action: Any) -> List[float]:
-        """Map user action (matching self._action_space) -> flat vector [delta..., binary...]."""
+        if self.simple_discrete:
+            # agent_action is an integer index from spaces.Discrete
+            return self._decode_simple_discrete(int(agent_action))
+
+        # Map user action (matching self._action_space) -> flat vector [delta..., binary...]
         out = np.zeros((self._act_len,), dtype=np.float32)
         if isinstance(self._action_space, spaces.Dict):
             # Dict with continuous and binary
