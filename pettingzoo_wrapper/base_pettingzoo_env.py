@@ -149,6 +149,7 @@ def _agent_process(
 
     steps = 0
     is_dead = False
+    frames_per_step = skip_frames if skip_frames else 1
 
     try:
         while True:
@@ -163,7 +164,8 @@ def _agent_process(
                     "reward": 0.0,
                     "terminated": False,
                     "info": {
-                        "num_frames": (skip_frames if skip_frames else 1),
+                        "num_frames": frames_per_step,
+                        "game_variables": game_vars,
                         "player_died": False,
                         "just_died": False,
                         "step": steps
@@ -188,20 +190,20 @@ def _agent_process(
                     print(f"Player {agent} terminated at step {game.get_episode_time()}")
 
                 game_vars = get_game_variables_dict()
-                info = {
-                    "num_frames": (skip_frames if skip_frames else 1), 
-                    "player_died": is_dead,
-                    "just_died": just_died,  # Signal when death just occurred
-                    "step": steps
-                }
                 pipe_end.send({
                     "obs": frame,
                     "reward": reward,
                     "terminated": terminated,
                     "truncated": truncated,
-                    "info": info,
+                    "info": {
+                        "num_frames": frames_per_step,
+                        "game_variables": game_vars,
+                        "player_died": is_dead,
+                        "just_died": just_died,
+                        "step": steps
+                    }
                 })
-                steps += info["num_frames"]
+                steps += frames_per_step
 
             elif cmd == "respawn":
                 # Only respawn if the player is actually dead
@@ -224,7 +226,8 @@ def _agent_process(
                 truncated = game.is_episode_finished()
 
                 info = {
-                    "num_frames": (skip_frames if skip_frames else 1),
+                    "num_frames": frames_per_step,
+                    "game_variables": game_vars,
                     "player_died": is_dead,
                     "just_died": False,  # Can't die during respawn
                     "step": steps
@@ -238,6 +241,7 @@ def _agent_process(
                     "info": info,
                     "respawned": respawned
                 })
+                steps += frames_per_step  # Respawning also counts as a step
 
             elif cmd == "close":
                 break

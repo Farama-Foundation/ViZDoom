@@ -46,13 +46,22 @@ class PitfallRewardWrapper(ParallelEnv):
     def num_agents(self) -> int:
         return getattr(self.env, "num_agents", len(self.possible_agents))
 
+    def _clean_infos(self, infos: Dict[str, dict]) -> Dict[str, dict]:
+        # return a copy without the "game_variables" dict, because BenchMARL doesn't like it
+        cleaned = {}
+        for a in self.agents:
+            info_a = dict(infos.get(a, {}) or {})
+            info_a.pop("game_variables", None)
+            cleaned[a] = info_a
+        return cleaned
+
     def reset(self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None):
         obs, infos = self.env.reset(seed=seed, options=options)
         self.agents = self.env.agents[:]
         self._prev_x = {a: self._extract_x(infos, a) for a in self.agents}
         self._best_x = {a: (self._prev_x[a] if self._prev_x[a] is not None else -np.inf) for a in self.agents}
         self._goal_given = {a: False for a in self.agents}
-        return obs, infos
+        return obs, self._clean_infos(infos)
 
     def step(self, actions: Dict[str, Any]):
         obs, base_rewards, terminations, truncations, infos = self.env.step(actions)
@@ -89,7 +98,7 @@ class PitfallRewardWrapper(ParallelEnv):
             shaped[a] = r
             self._prev_x[a] = x_cur
 
-        return obs, shaped, terminations, truncations, infos
+        return obs, shaped, terminations, truncations, self._clean_infos(infos)
 
     def render(self):
         return self.env.render()
