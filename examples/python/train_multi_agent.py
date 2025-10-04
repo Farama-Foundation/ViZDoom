@@ -141,6 +141,9 @@ class VizdoomTask(TaskClass):
                 ticrate=int(cfg.get("ticrate", 35)),
                 use_multi_binary_action_space=False,
                 seed=seed,
+                enable_video=bool(cfg.get("enable_video", True)),
+                record_every=int(cfg.get("record_every", 50)),
+                video_fps=int(cfg.get("video_fps", 35)),
             )
             env = PettingZooWrapper(
                 env=pz_env,
@@ -246,6 +249,12 @@ def main():
     ap.add_argument("--num_minibatches", type=int, default=15)
     ap.add_argument("--num_epochs", type=int, default=45)
     ap.add_argument("--num_envs", type=int, default=10)
+
+    # Video recording
+    ap.add_argument("--enable_video", type=bool, default=True)
+    ap.add_argument("--record_every", type=int, default=50)
+    ap.add_argument("--video_fps", type=int, default=35)
+
     args = ap.parse_args()
 
     root_path = Path(__file__).parent.parent.parent
@@ -356,6 +365,9 @@ def main():
         "port": args.port,
         "netmode": args.netmode,
         "ticrate": args.ticrate,
+        "enable_video": args.enable_video,
+        "record_every": args.record_every,
+        "video_fps": args.video_fps,
     }
     task = VizdoomTask(task_cfg)
 

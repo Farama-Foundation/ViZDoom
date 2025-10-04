@@ -5,6 +5,7 @@ from typing import Any, Dict, Optional
 
 from .base_pettingzoo_env import VizdoomParallelEnv
 from .reward_wrappers import PitfallRewardWrapper
+from .video_recorder import VideoLoggerParallelWrapper
 
 # where your .cfg files live (package data or repo path)
 _SCENARIO_DIR = os.path.join(Path(__file__).parent.parent, "scenarios")
@@ -50,6 +51,10 @@ def make(
         # reward
         reward: str = "auto",  # "auto" | "none" | scenario name
         reward_params: Optional[Dict[str, Any]] = None,
+        # video logging
+        enable_video: bool = True,
+        record_every: int = 50,  # every N episodes
+        video_fps: int = 35,
 ):
     cfg = config_file if config_file is not None else _resolve_cfg(scenario)
 
@@ -81,6 +86,13 @@ def make(
             wrapper_key = scen_key
     else:
         wrapper_key = reward.lower()
+
+    if enable_video:
+        env = VideoLoggerParallelWrapper(
+            env,
+            every_n_episodes=record_every,
+            fps=video_fps,
+        )
 
     if wrapper_key and wrapper_key in _SCENARIOS and _SCENARIOS[wrapper_key]["wrapper"]:
         params = {**_SCENARIOS[wrapper_key].get("defaults", {}), **(reward_params or {})}
