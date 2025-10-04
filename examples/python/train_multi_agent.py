@@ -2,6 +2,7 @@ import argparse
 import multiprocessing as mp
 import os
 import socket
+from dataclasses import fields
 from pathlib import Path
 from typing import Dict, Any, Optional
 
@@ -78,7 +79,6 @@ class AHWCToTensorResize(ObservationTransform):
         x = x.permute(0, 2, 3, 1).contiguous()  # A,h,w,C
         return x
 
-    # @_apply_to_composite
     def transform_observation_spec(self, obs_spec: Composite) -> Composite:
         leaf = obs_spec[self.key]
         A, H, W, C = leaf.shape
@@ -232,20 +232,20 @@ def main():
 
     # Train args
     ap.add_argument("--algo", type=str, default="mappo", choices=list(ALGOS))
-    ap.add_argument("--model", type=str, default="cnn")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--total_steps", type=int, default=1_000_000)
     ap.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
-    ap.add_argument("--rollout_steps", type=int, default=256)  # PPO horizon
-    ap.add_argument("--batch_size", type=int, default=16384)  # PPO batch
-    ap.add_argument("--lr", type=float, default=3e-4)
+    ap.add_argument("--rollout_steps", type=int, default=256)
+    ap.add_argument("--batch_size", type=int, default=6000)
+    ap.add_argument("--lr", type=float, default=5e-5)
     ap.add_argument("--gamma", type=float, default=0.99)
-    ap.add_argument("--gae_lambda", type=float, default=0.95)
+    ap.add_argument("--gae_lambda", type=float, default=0.9)
     ap.add_argument("--clip_eps", type=float, default=0.2)
     ap.add_argument("--entropy_coef", type=float, default=0.01)
-    ap.add_argument("--vf_coef", type=float, default=0.5)
-    ap.add_argument("--num_minibatches", type=int, default=8)
-    ap.add_argument("--num_epochs", type=int, default=2)
+    ap.add_argument("--vf_coef", type=float, default=1.0)
+    ap.add_argument("--num_minibatches", type=int, default=15)
+    ap.add_argument("--num_epochs", type=int, default=45)
+    ap.add_argument("--num_envs", type=int, default=10)
     args = ap.parse_args()
 
     root_path = Path(__file__).parent.parent.parent
@@ -261,9 +261,9 @@ def main():
             critic_coef=args.vf_coef,  # value loss coef
             loss_critic_type="l2",  # or "smooth_l1" (Huber)
             lmbda=args.gae_lambda,  # GAE lambda
-            scale_mapping="identity",  # no scaling of actions
-            use_tanh_normal=False,  # not using tanh Gaussian here
-            minibatch_advantage=True,  # compute adv per minibatch
+            scale_mapping="biased_softplus_1.0",  # softplus
+            use_tanh_normal=True,  # use tanh Gaussian here
+            minibatch_advantage=False,  # compute adv per minibatch
         )
     else:
         raise NotImplementedError(
@@ -302,71 +302,49 @@ def main():
         mlp_activation_class=mlp_activation_class,
     )
 
-    exp_cfg = ExperimentConfig(
-        # devices / execution
-        sampling_device=args.device,
-        train_device=args.device,  # "cuda" or "cpu"
-        buffer_device=args.device,
-        share_policy_params=True,
-        prefer_continuous_actions=False,
-        collect_with_grad=False,
-        parallel_collection=False,
+    exp_cfg = ExperimentConfig.get_from_yaml()
 
-        # RL basics
-        gamma=args.gamma,
-        lr=args.lr,
-        adam_eps=1e-5,
-        clip_grad_norm=0.5,
-        clip_grad_val=None,
+    # compute any derived values first
+    on_policy_minibatch_size = max(1, args.batch_size // max(1, args.num_minibatches))
 
-        # target updates (off-policy; harmless defaults for PPO/MAPPO)
-        soft_target_update=False,
-        polyak_tau=0.995,
-        hard_target_update_frequency=None,
+    # only the fields you want to control from CLI
+    overrides = {
+        "sampling_device": args.device,
+        "train_device": args.device,
+        "buffer_device": args.device,
+        "share_policy_params": True,
+        "parallel_collection": False,
+        "max_n_frames": args.total_steps,
+        "lr": args.lr,
 
-        # ε-greedy (ignored by PPO/MAPPO; keep sane defaults)
-        exploration_eps_init=0.2,
-        exploration_eps_end=0.01,
-        exploration_anneal_frames=100_000,
-
-        # training budget
-        max_n_iters=None,
-        max_n_frames=args.total_steps,
-
-        # on-policy collection (PPO/MAPPO)
-        on_policy_collected_frames_per_batch=args.rollout_steps,
-        on_policy_n_envs_per_worker=1,
-        on_policy_n_minibatch_iters=args.num_epochs,
-        on_policy_minibatch_size=max(1, args.batch_size // max(1, args.num_minibatches)),
-
-        # off-policy knobs (unused by MAPPO)
-        off_policy_collected_frames_per_batch=None,
-        off_policy_n_envs_per_worker=None,
-        off_policy_n_optimizer_steps=None,
-        off_policy_train_batch_size=None,
-        off_policy_memory_size=None,
-        off_policy_init_random_frames=None,
-        off_policy_use_prioritized_replay_buffer=False,
-        off_policy_prb_alpha=None,
-        off_policy_prb_beta=None,
+        # on-policy collection
+        "on_policy_collected_frames_per_batch": args.rollout_steps,
+        "on_policy_n_envs_per_worker": args.num_envs,
+        "on_policy_n_minibatch_iters": args.num_epochs,
+        "on_policy_minibatch_size": on_policy_minibatch_size,
 
         # eval / logging / ckpts
-        evaluation=True,
-        render=False,
-        evaluation_interval=args.rollout_steps * 30,
-        evaluation_episodes=5,
-        evaluation_deterministic_actions=True,
-        evaluation_static=False,
-        loggers=["wandb"],
-        project_name="benchmarl-vizdoom",
-        create_json=False,
-        save_folder=checkpoints_path,
-        restore_file=None,
-        restore_map_location="cpu",
-        checkpoint_interval=args.rollout_steps * 100,
-        checkpoint_at_end=True,
-        keep_checkpoints_num=3,
-    )
+        "evaluation": True,
+        "render": False,
+        "evaluation_interval": args.rollout_steps * 25,
+        "evaluation_episodes": 5,
+        "loggers": ["wandb"],
+        "project_name": "benchmarl-vizdoom",
+        "save_folder": str(checkpoints_path),
+        "checkpoint_interval": args.rollout_steps * 100,
+        "checkpoint_at_end": True,
+    }
+
+    # apply safely (only set known fields; skip Nones)
+    valid = {f.name for f in fields(ExperimentConfig)}
+    for k, v in overrides.items():
+        if v is not None and k in valid:
+            setattr(exp_cfg, k, v)
+
+    # keep eval interval aligned with horizon (collector-friendly)
+    h = exp_cfg.on_policy_collected_frames_per_batch
+    if h and exp_cfg.evaluation_interval % h != 0:
+        exp_cfg.evaluation_interval = ((exp_cfg.evaluation_interval + h - 1) // h) * h
 
     task_cfg = {
         "scenario": args.scenario,
