@@ -6,16 +6,21 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 
 import torch
+import torch.nn.functional as F
 from benchmarl.algorithms import MappoConfig, QmixConfig, MasacConfig
 from benchmarl.environments import TaskClass
 from benchmarl.experiment import Experiment, ExperimentConfig
 from benchmarl.models import CnnConfig
+from tensordict import TensorDictBase
 from torch import nn
 from torchrl.data import Composite
-from torchrl.envs import EnvCreator, EnvBase, RemoveEmptySpecs, ParallelEnv, ToTensorImage
+from torchrl.data.tensor_specs import UnboundedContinuous
+from torchrl.envs import EnvCreator, EnvBase, RemoveEmptySpecs
 from torchrl.envs import TransformedEnv, Compose
 from torchrl.envs.libs.pettingzoo import MarlGroupMapType, PettingZooWrapper
-from torchrl.envs.transforms import SelectTransform, Resize
+from torchrl.envs.transforms import ObservationTransform
+from torchrl.envs.transforms import SelectTransform
+from torchrl.envs.transforms.utils import _set_missing_tolerance
 
 from pettingzoo_wrapper import make
 
@@ -25,6 +30,71 @@ def available_cpu_count() -> int:
         return len(os.sched_getaffinity(0))
     except Exception:
         return mp.cpu_count() or 1
+
+
+class AHWCToTensorResize(ObservationTransform):
+    """
+    Keep AHWC layout, convert to float tensor, optional /255, then resize (H,W).
+    In/out: (A,H,W,C) -> (A,h,w,C)
+    """
+
+    def __init__(
+            self,
+            key=("agent", "observation"),
+            h: int = 72,
+            w: int = 96,
+            from_int: bool | None = None,  # True: /255, False: no, None: auto if not float
+            dtype: torch.dtype | None = None,
+            mode: str = "bilinear",
+            antialias: bool = True,
+    ):
+        super().__init__(in_keys=[key], out_keys=[key])
+        self.key = key
+        self.h, self.w = int(h), int(w)
+        self.from_int = from_int
+        self.dtype = dtype if dtype is not None else torch.get_default_dtype()
+        self.mode = mode
+        self.antialias = antialias
+
+    def _apply_transform(self, obs: torch.Tensor) -> torch.Tensor:
+        # obs is the leaf tensor for self.key; we expect (A,H,W,C)
+        if not isinstance(obs, torch.Tensor):
+            obs = torch.as_tensor(obs)
+
+        # normalize?
+        needs_div255 = self.from_int if self.from_int is not None else (not torch.is_floating_point(obs))
+        if needs_div255:
+            obs = obs.div(255)
+        obs = obs.to(self.dtype)
+
+        if obs.ndim != 4:
+            raise ValueError(f"{self.key} must be 4D AHWC, got {tuple(obs.shape)}")
+        A, H, W, C = obs.shape
+
+        # Resize through NCHW path for interpolate, then back to AHWC
+        x = obs.permute(0, 3, 1, 2)  # A,C,H,W
+        align = dict(align_corners=False) if self.mode in ("bilinear", "bicubic") else {}
+        x = F.interpolate(x, size=(self.h, self.w), mode=self.mode, antialias=self.antialias, **align)
+        x = x.permute(0, 2, 3, 1).contiguous()  # A,h,w,C
+        return x
+
+    # @_apply_to_composite
+    def transform_observation_spec(self, obs_spec: Composite) -> Composite:
+        leaf = obs_spec[self.key]
+        A, H, W, C = leaf.shape
+        obs_spec[self.key] = UnboundedContinuous(
+            shape=torch.Size([A, self.h, self.w, C]),
+            device=leaf.device,
+            dtype=self.dtype,
+        )
+        return obs_spec
+
+    def _reset(
+            self, tensordict: TensorDictBase, tensordict_reset: TensorDictBase
+    ) -> TensorDictBase:
+        with _set_missing_tolerance(self, True):
+            tensordict_reset = self._call(tensordict_reset)
+        return tensordict_reset
 
 
 class VizdoomTask(TaskClass):
@@ -77,8 +147,7 @@ class VizdoomTask(TaskClass):
             )
             env = TransformedEnv(env, Compose(
                 SelectTransform(("agent", "observation")),
-                Resize(in_keys=[("agent", "observation")], w=96, h=72, interpolation="bilinear"),
-                ToTensorImage(in_keys=[("agent", "observation")]),
+                AHWCToTensorResize(key=("agent", "observation"), h=72, w=96, mode="bilinear"),
                 RemoveEmptySpecs(),
             ))
             env = env.to(cfg.get("device", "cpu"))
