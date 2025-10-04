@@ -1,4 +1,6 @@
 import argparse
+import multiprocessing as mp
+import os
 import socket
 from pathlib import Path
 from typing import Dict, Any, Optional
@@ -10,12 +12,19 @@ from benchmarl.experiment import Experiment, ExperimentConfig
 from benchmarl.models import CnnConfig
 from torch import nn
 from torchrl.data import Composite
-from torchrl.envs import EnvCreator, EnvBase, RemoveEmptySpecs
+from torchrl.envs import EnvCreator, EnvBase, RemoveEmptySpecs, ParallelEnv, ToTensorImage
 from torchrl.envs import TransformedEnv, Compose
 from torchrl.envs.libs.pettingzoo import MarlGroupMapType, PettingZooWrapper
-from torchrl.envs.transforms import SelectTransform
+from torchrl.envs.transforms import SelectTransform, Resize
 
 from pettingzoo_wrapper import make
+
+
+def available_cpu_count() -> int:
+    try:
+        return len(os.sched_getaffinity(0))
+    except Exception:
+        return mp.cpu_count() or 1
 
 
 class VizdoomTask(TaskClass):
@@ -68,6 +77,8 @@ class VizdoomTask(TaskClass):
             )
             env = TransformedEnv(env, Compose(
                 SelectTransform(("agent", "observation")),
+                Resize(in_keys=[("agent", "observation")], w=96, h=72, interpolation="bilinear"),
+                ToTensorImage(in_keys=[("agent", "observation")]),
                 RemoveEmptySpecs(),
             ))
             env = env.to(cfg.get("device", "cpu"))
@@ -76,7 +87,9 @@ class VizdoomTask(TaskClass):
         return EnvCreator(_make)
 
     def get_env_fun(self, num_envs: int, continuous_actions: bool, seed: int | None, device=None):
-        return self.env_creator(seed if seed is not None else self.config.get("seed", 0))
+        make_single = self.env_creator(seed)
+        # return make_single if num_envs == 1 else EnvCreator(lambda: ParallelEnv(available_cpu_count(), make_single))
+        return make_single
 
     def action_spec(self, env: EnvBase) -> Composite:
         return self._action_spec
