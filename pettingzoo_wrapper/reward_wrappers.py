@@ -98,8 +98,6 @@ class PitfallRewardWrapper(ParallelEnv):
                     r += self.goal_reward
                     self._goal_given[a] = True
 
-            print(f"[{a}] x: {x_cur} (prev {x_prev}, best {self._best_x[a]}), step {infos[a]['step']}, shaped_r: {r}")
-
             shaped[a] = r
             self._prev_x[a] = x_cur
 
