@@ -18,6 +18,7 @@ class PitfallRewardWrapper(ParallelEnv):
             goal_reward: float = 10.0,
             pos_key: str = "POSITION_X",
             dead_key: str = "DEAD",
+            x_start: float = 32.0,
     ):
         self.env = env
         self.scaler = float(scaler)
@@ -27,6 +28,7 @@ class PitfallRewardWrapper(ParallelEnv):
         self.goal_reward = float(goal_reward)
         self.pos_key = pos_key
         self.dead_key = dead_key
+        self.x_start = float(x_start)
 
         self._prev_x: Dict[str, Optional[float]] = {}
         self._best_x: Dict[str, float] = {}
@@ -89,11 +91,14 @@ class PitfallRewardWrapper(ParallelEnv):
             dead_now = bool(gv.get(self.dead_key, 0))
             if just_died or (dead_now and not just_died):
                 r += self.death_penalty
+                self._best_x[a] = self.x_start  # reset best_x on death
 
             if self.goal_x is not None and not self._goal_given.get(a, False):
                 if x_cur is not None and x_cur > float(self.goal_x):
                     r += self.goal_reward
                     self._goal_given[a] = True
+
+            print(f"[{a}] x: {x_cur} (prev {x_prev}, best {self._best_x[a]}), step {infos[a]['step']}, shaped_r: {r}")
 
             shaped[a] = r
             self._prev_x[a] = x_cur
