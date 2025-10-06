@@ -17,6 +17,12 @@ _SCENARIOS = {
         "wrapper": PitfallRewardWrapper,
         "defaults": dict(scaler=0.1, death_penalty=-1.0, keep_lb=True, goal_x=None, goal_reward=1.0),
     },
+    "health_gathering": {
+        "cfg": "health_gathering.cfg",
+    },
+    "defend_the_center": {
+        "cfg": "defend_the_center.cfg",
+    },
     # add others here
 }
 
@@ -94,7 +100,7 @@ def make(
             fps=video_fps,
         )
 
-    if wrapper_key and wrapper_key in _SCENARIOS and _SCENARIOS[wrapper_key]["wrapper"]:
+    if wrapper_key and wrapper_key in _SCENARIOS and "wrapper" in _SCENARIOS[wrapper_key]:
         params = {**_SCENARIOS[wrapper_key].get("defaults", {}), **(reward_params or {})}
         return _SCENARIOS[wrapper_key]["wrapper"](env, **params)
 
