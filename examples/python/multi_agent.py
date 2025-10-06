@@ -14,6 +14,9 @@ import sys
 from pathlib import Path
 from random import choice
 
+# Add to Python path as pettingzoo_wrapper in root
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from pettingzoo_wrapper import make
 
 # Add the project root to the Python path
