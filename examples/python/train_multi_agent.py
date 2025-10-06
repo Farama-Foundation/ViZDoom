@@ -23,6 +23,9 @@ from torchrl.envs.transforms import ObservationTransform
 from torchrl.envs.transforms import SelectTransform
 from torchrl.envs.transforms.utils import _set_missing_tolerance
 
+# Add to Python path as pettingzoo_wrapper in root
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from pettingzoo_wrapper import make
 
 
@@ -224,6 +227,7 @@ def main():
     ap = argparse.ArgumentParser()
     # Env args
     ap.add_argument("--scenario", type=str, default="pitfall")
+    # ap.add_argument("--scenario", type=str, default="multi_duel")
     ap.add_argument("--num_agents", type=int, default=2)
     ap.add_argument("--resolution", type=str, default="160x120")
     ap.add_argument("--skip_frames", type=int, default=4)
