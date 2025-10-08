@@ -62,15 +62,11 @@ class AHWCToTensorResize(ObservationTransform):
         if not isinstance(obs, torch.Tensor):
             obs = torch.as_tensor(obs)
 
-        # normalize?
-        needs_div255 = self.from_int if self.from_int is not None else (not torch.is_floating_point(obs))
-        if needs_div255:
-            obs = obs.div(255)
-        obs = obs.to(self.dtype)
+        # normalize to [0, 1]
+        obs = obs.div(255).to(self.dtype)
 
         if obs.ndim != 4:
             raise ValueError(f"{self.key} must be 4D AHWC, got {tuple(obs.shape)}")
-        A, H, W, C = obs.shape
 
         # Resize through NCHW path for interpolate, then back to AHWC
         x = obs.permute(0, 3, 1, 2)  # A,C,H,W
@@ -89,9 +85,7 @@ class AHWCToTensorResize(ObservationTransform):
         )
         return obs_spec
 
-    def _reset(
-            self, tensordict: TensorDictBase, tensordict_reset: TensorDictBase
-    ) -> TensorDictBase:
+    def _reset(self, tensordict: TensorDictBase, tensordict_reset: TensorDictBase) -> TensorDictBase:
         with _set_missing_tolerance(self, True):
             tensordict_reset = self._call(tensordict_reset)
         return tensordict_reset
@@ -120,10 +114,11 @@ class VizdoomTask(TaskClass):
         # returns an EnvCreator (TorchRL) that builds the env when called
         def _make():
             cfg = self.config
+            host_address = cfg.get("host_address", "127.0.0.1")
 
             def _pick_free_port() -> int:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                    s.bind(("127.0.0.1", 0))  # 0 = ask OS for a free port
+                    s.bind((host_address, 0))  # 0 = ask OS for a free port
                     return s.getsockname()[1]
 
             # ensure each env instance gets its own port
@@ -135,7 +130,7 @@ class VizdoomTask(TaskClass):
                 resolution=str(cfg.get("resolution", "160x120")),
                 skip_frames=cfg.get("skip_frames", 4),
                 async_mode=bool(cfg.get("async_mode", True)),
-                host_address=str(cfg.get("host_address", "127.0.0.1")),
+                host_address=str(host_address),
                 port=port,
                 netmode=int(cfg.get("netmode", 1)),
                 ticrate=int(cfg.get("ticrate", 35)),
@@ -149,7 +144,7 @@ class VizdoomTask(TaskClass):
                 env=pz_env,
             )
             env = TransformedEnv(env, Compose(
-                SelectTransform(("agent", "observation")),
+                SelectTransform(("agent", "observation"), ("agent", "info")),
                 AHWCToTensorResize(key=("agent", "observation"), h=72, w=96, mode="bilinear"),
                 RemoveEmptySpecs(),
             ))
@@ -229,14 +224,14 @@ def main():
     ap.add_argument("--skip_frames", type=int, default=4)
     ap.add_argument("--async_mode", type=int, default=1)
     ap.add_argument("--host_address", type=str, default="127.0.0.1")
-    ap.add_argument("--port", type=int, default=5029)
     ap.add_argument("--netmode", type=int, default=1)
     ap.add_argument("--ticrate", type=int, default=35)
+    ap.add_argument("--verbose", action='store_true', default=False)
 
     # Train args
     ap.add_argument("--algo", type=str, default="mappo", choices=list(ALGOS))
     ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--total_steps", type=int, default=1_000_000)
+    ap.add_argument("--total_steps", type=lambda s: int(float(s)), default=1e6)
     ap.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--rollout_steps", type=int, default=256)
     ap.add_argument("--batch_size", type=int, default=6000)
