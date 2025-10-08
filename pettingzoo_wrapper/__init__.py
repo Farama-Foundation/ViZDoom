@@ -7,34 +7,13 @@ from .base_pettingzoo_env import VizdoomParallelEnv
 from .reward_wrappers import PitfallRewardWrapper
 from .video_recorder import VideoLoggerParallelWrapper
 
-# where your .cfg files live (package data or repo path)
+# where the scenario .cfg files live
 _SCENARIO_DIR = os.path.join(Path(__file__).parent.parent, "scenarios")
 
-# scenario -> { cfg, wrapper, wrapper_defaults }
-_SCENARIOS = {
-    "pitfall": {
-        "cfg": "pitfall.cfg",
-        "wrapper": PitfallRewardWrapper,
-        "defaults": dict(scaler=0.1, death_penalty=-1.0, keep_lb=True, goal_x=None, goal_reward=1.0),
-    },
-    "health_gathering": {
-        "cfg": "health_gathering.cfg",
-    },
-    "defend_the_center": {
-        "cfg": "defend_the_center.cfg",
-    },
-    # add others here
+# scenario-specific wrappers
+_WRAPPERS = {
+    "pitfall": PitfallRewardWrapper,
 }
-
-
-def _resolve_cfg(scenario: str) -> str:
-    key = scenario.lower()
-    if key not in _SCENARIOS:
-        raise ValueError(f"Unknown scenario '{scenario}'. Known: {list(_SCENARIOS)}")
-    p = os.path.join(_SCENARIO_DIR, _SCENARIOS[key]["cfg"])
-    if not os.path.exists(p):
-        raise FileNotFoundError(f"Config not found: {p}")
-    return p
 
 
 def make(
@@ -54,15 +33,13 @@ def make(
         render_mode: Optional[str] = None,
         use_multi_binary_action_space: bool = True,
         seed: Optional[int] = None,
-        # reward
-        reward: str = "auto",  # "auto" | "none" | scenario name
-        reward_params: Optional[Dict[str, Any]] = None,
         # video logging
         enable_video: bool = True,
         record_every: int = 50,  # every N episodes
         video_fps: int = 35,
 ):
-    cfg = config_file if config_file is not None else _resolve_cfg(scenario)
+    scenario = scenario.lower()
+    cfg = config_file if config_file is not None else f"{_SCENARIO_DIR}/{scenario}.cfg"
 
     env = VizdoomParallelEnv(
         config_file=cfg,
@@ -80,19 +57,6 @@ def make(
         seed=seed,
     )
 
-    if reward == "none":
-        return env
-
-    # pick wrapper key
-    wrapper_key = None
-    if reward == "auto":
-        # use scenario (from cfg basename) if known
-        scen_key = os.path.splitext(os.path.basename(cfg))[0].lower()
-        if scen_key in _SCENARIOS:
-            wrapper_key = scen_key
-    else:
-        wrapper_key = reward.lower()
-
     if enable_video:
         env = VideoLoggerParallelWrapper(
             env,
@@ -100,8 +64,7 @@ def make(
             fps=video_fps,
         )
 
-    if wrapper_key and wrapper_key in _SCENARIOS and "wrapper" in _SCENARIOS[wrapper_key]:
-        params = {**_SCENARIOS[wrapper_key].get("defaults", {}), **(reward_params or {})}
-        return _SCENARIOS[wrapper_key]["wrapper"](env, **params)
+    if scenario in _WRAPPERS:
+        return _WRAPPERS[scenario](env)
 
     return env
