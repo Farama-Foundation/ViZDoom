@@ -28,21 +28,19 @@ Usage:
 from __future__ import annotations
 
 import math
-import time
 import multiprocessing as mp
+import time
+
+from pettingzoo import ParallelEnv
+
 ctx = mp.get_context("spawn")
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 from gymnasium import spaces
 
-try:
-    from pettingzoo import ParallelEnv  # type: ignore
-except Exception:  # pragma: no cover
-    from pettingzoo.utils.env import ParallelEnv  # type: ignore
-
 import vizdoom as vzd
-from vizdoom import Mode, ScreenResolution, GameVariable
+from vizdoom import Mode, ScreenResolution
 import pygame
 import cv2
 
@@ -509,7 +507,7 @@ class VizdoomParallelEnv(ParallelEnv):
         truncations = self._truncations.copy()
 
         any_term = any(bool(r.get("terminated", False)) for r in results)
-        any_trunc = any(bool(r.get("truncated",  False)) for r in results)
+        any_trunc = any(bool(r.get("truncated", False)) for r in results)
 
         # If any agent finishes, finish the episode for ALL agents this step.
         if any_term:
@@ -660,7 +658,3 @@ class VizdoomParallelEnv(ParallelEnv):
                 x, y = col * sw, row * sh
                 canvas[y: y + sh, x: x + sw] = frame[: sh, : sw]
             return canvas
-
-
-def make_env(**kwargs) -> VizdoomParallelEnv:
-    return VizdoomParallelEnv(**kwargs)
