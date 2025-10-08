@@ -357,7 +357,6 @@ def main():
         "skip_frames": args.skip_frames,
         "async_mode": bool(args.async_mode),
         "host_address": args.host_address,
-        "port": args.port,
         "netmode": args.netmode,
         "ticrate": args.ticrate,
         "enable_video": args.enable_video,
