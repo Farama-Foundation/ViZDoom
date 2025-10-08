@@ -29,43 +29,21 @@ from __future__ import annotations
 
 import math
 import multiprocessing as mp
+
+ctx = mp.get_context("spawn")
 import time
 
 from pettingzoo import ParallelEnv
-
-ctx = mp.get_context("spawn")
+from pettingzoo_wrapper.utils import screen_res, parse_hw
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 from gymnasium import spaces
 
 import vizdoom as vzd
-from vizdoom import Mode, ScreenResolution
+from vizdoom import Mode
 import pygame
 import cv2
-
-# ------------------------------- utils ------------------------------------
-
-_RESOLUTIONS: Dict[str, ScreenResolution] = {
-    "1920x1080": ScreenResolution.RES_1920X1080,
-    "1600x1200": ScreenResolution.RES_1600X1200,
-    "1280x720": ScreenResolution.RES_1280X720,
-    "800x600": ScreenResolution.RES_800X600,
-    "640x480": ScreenResolution.RES_640X480,
-    "320x240": ScreenResolution.RES_320X240,
-    "160x120": ScreenResolution.RES_160X120,
-}
-
-
-def _parse_hw(res: str) -> Tuple[int, int]:
-    w, h = res.lower().split("x")
-    return int(w), int(h)
-
-
-def _screen_res(res: str) -> ScreenResolution:
-    if res not in _RESOLUTIONS:
-        raise ValueError(f"Invalid resolution: {res}")
-    return _RESOLUTIONS[res]
 
 
 # ------------------------- child process worker ---------------------------
@@ -96,7 +74,7 @@ def _agent_process(
     game.set_sound_enabled(False)
     game.set_console_enabled(False)
     game.set_render_hud(True)
-    game.set_screen_resolution(_screen_res(resolution))
+    game.set_screen_resolution(screen_res(resolution))
     game.set_ticrate(ticrate)
     game.set_mode(Mode.ASYNC_PLAYER if async_mode else Mode.PLAYER)
 
@@ -143,7 +121,7 @@ def _agent_process(
             else:
                 return sb[..., None]
         # fallback to zeros if no frame
-        h, w = _parse_hw(resolution)[1], _parse_hw(resolution)[0]
+        h, w = parse_hw(resolution)[1], parse_hw(resolution)[0]
         return np.zeros((h, w, 3), dtype=np.uint8)
 
     steps = 0
@@ -264,7 +242,7 @@ def _agent_process(
 # -------------------------- main PettingZoo env ---------------------------
 
 class VizdoomParallelEnv(ParallelEnv):
-    metadata = {"name": "vizdoom_pz_parallel_simplified", "render_modes": ["human", "rgb_array"], "render_fps": 35}
+    metadata = {"name": "vizdoom_pz_parallel", "render_modes": ["human", "rgb_array"], "render_fps": 35}
 
     def __init__(
             self,
@@ -309,7 +287,7 @@ class VizdoomParallelEnv(ParallelEnv):
         self._act_len = self._delta_count + self._binary_count
         self._action_space = self._build_action_space()
 
-        w, h = _parse_hw(resolution)
+        w, h = parse_hw(resolution)
         self._channels = 3  # will update on first reset if GRAY8
         self._obs_shape = (h, w, self._channels)
         self._observation_space = spaces.Box(0, 255, shape=self._obs_shape, dtype=np.uint8)
