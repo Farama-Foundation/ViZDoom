@@ -222,7 +222,6 @@ def main():
     ap = argparse.ArgumentParser()
     # Env args
     ap.add_argument("--scenario", type=str, default="pitfall")
-    # ap.add_argument("--scenario", type=str, default="multi_duel")
     ap.add_argument("--num_agents", type=int, default=2)
     ap.add_argument("--resolution", type=str, default="160x120")
     ap.add_argument("--skip_frames", type=int, default=4)
@@ -235,7 +234,7 @@ def main():
     # Train args
     ap.add_argument("--algo", type=str, default="mappo", choices=list(ALGOS))
     ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--total_steps", type=lambda s: int(float(s)), default=1e6)
+    ap.add_argument("--total_steps", type=float, default=1e6)
     ap.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--rollout_steps", type=int, default=256)
     ap.add_argument("--batch_size", type=int, default=6000)
@@ -247,7 +246,7 @@ def main():
     ap.add_argument("--vf_coef", type=float, default=1.0)
     ap.add_argument("--num_minibatches", type=int, default=15)
     ap.add_argument("--num_epochs", type=int, default=45)
-    ap.add_argument("--num_envs", type=int, default=10)
+    ap.add_argument("--num_envs", type=int, default=1)
 
     # Video recording
     ap.add_argument("--enable_video", type=bool, default=True)
@@ -322,7 +321,7 @@ def main():
         "buffer_device": args.device,
         "share_policy_params": True,
         "parallel_collection": False,
-        "max_n_frames": args.total_steps,
+        "max_n_frames": int(args.total_steps),
         "lr": args.lr,
 
         # on-policy collection
