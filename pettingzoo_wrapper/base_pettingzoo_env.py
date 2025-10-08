@@ -88,6 +88,7 @@ def _agent_process(
         netmode: int,
         ticrate: int,
         seed: Optional[int],
+        verbose: bool,
 ) -> None:
     game = vzd.DoomGame()
     game.load_config(config_path)
@@ -186,7 +187,7 @@ def _agent_process(
 
                 frame = read_frame()
 
-                if terminated:
+                if verbose and terminated:
                     print(f"Player {agent} terminated at step {game.get_episode_time()}")
 
                 game_vars = get_game_variables_dict()
@@ -208,10 +209,12 @@ def _agent_process(
             elif cmd == "respawn":
                 # Only respawn if the player is actually dead
                 if is_dead:
-                    # print(f"Player {agent} respawning at step {game.get_episode_time()}...")
+                    if verbose:
+                        print(f"Player {agent} respawning at step {game.get_episode_time()}...")
                     game.respawn_player()
                     is_dead = False  # Reset death state after respawn
-                    # print(f"Player {agent} respawned at step {game.get_episode_time()}")
+                    if verbose:
+                        print(f"Player {agent} respawned at step {game.get_episode_time()}")
                     respawned = True
                 else:
                     # Player is not dead, perform a no-op action
@@ -282,6 +285,7 @@ class VizdoomParallelEnv(ParallelEnv):
             use_multi_binary_action_space: bool = False,
             simple_discrete: bool = True,
             seed: Optional[int] = None,
+            verbose: bool = False,
     ) -> None:
         assert num_agents >= 1
         self.config_file = config_file
@@ -335,6 +339,7 @@ class VizdoomParallelEnv(ParallelEnv):
                     netmode=self.netmode,
                     ticrate=self.ticrate,
                     seed=(None if seed is None else int(seed) + i),
+                    verbose=verbose,
                 ),
                 daemon=True,
             )
@@ -452,15 +457,8 @@ class VizdoomParallelEnv(ParallelEnv):
 
         # Send commands: respawn for dead agents, step for alive agents
         for i, agent in enumerate(self.agents):
-            if agent in self._dead_agents:
-                # Agent died in previous step, send respawn command
-                self._pipes_parent[i].send(("respawn", None))
-
-        # Send commands: respawn for dead agents, step for alive agents
-        for i, agent in enumerate(self.agents):
-            if agent not in self._dead_agents:
-                # Agent is alive, send regular step command
-                self._pipes_parent[i].send(("step", flat_actions[i]))
+            cmd = "respawn" if agent in self._dead_agents else "step"
+            self._pipes_parent[i].send((cmd, flat_actions[i]))
 
         # 2) recv
         results = [pipe.recv() for pipe in self._pipes_parent]
