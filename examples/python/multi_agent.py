@@ -78,14 +78,6 @@ def main():
             skip_frames=1,
             async_mode=True,
             ticrate=20,
-            reward="auto",
-            reward_params=dict(
-                scaler=0.1,
-                death_penalty=-1.0,
-                keep_lb=True,
-                goal_x=None,
-                goal_reward=1.0,
-            ),
         )
         print("Environment created successfully!")
     except Exception as e:
