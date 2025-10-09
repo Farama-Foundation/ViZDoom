@@ -34,7 +34,7 @@ ctx = mp.get_context("spawn")
 import time
 
 from pettingzoo import ParallelEnv
-from pettingzoo_wrapper.utils import screen_res, parse_hw
+from pettingzoo_wrapper.utils import screen_res, parse_hw, get_flat_game_vars, read_frame
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
@@ -102,28 +102,6 @@ def _agent_process(
     # Get available game variables for mapping indices to names
     available_game_vars = game.get_available_game_variables()
 
-    def get_game_variables_dict() -> Dict[str, float]:
-        """Extract game variables from current state and return as a dictionary."""
-        state = game.get_state()
-        game_vars_dict = {}
-        if state is not None and state.game_variables is not None and len(available_game_vars) > 0:
-            for i, var in enumerate(available_game_vars):
-                if i < len(state.game_variables):
-                    game_vars_dict[var.name] = float(state.game_variables[i])
-        return game_vars_dict
-
-    def read_frame() -> np.ndarray:
-        state = game.get_state()
-        if state is not None and state.screen_buffer is not None:
-            sb = state.screen_buffer  # (C,H,W) or (H,W)
-            if sb.ndim == 3:
-                return np.transpose(sb, (1, 2, 0))
-            else:
-                return sb[..., None]
-        # fallback to zeros if no frame
-        h, w = parse_hw(resolution)[1], parse_hw(resolution)[0]
-        return np.zeros((h, w, 3), dtype=np.uint8)
-
     steps = 0
     is_dead = False
     frames_per_step = skip_frames if skip_frames else 1
@@ -134,19 +112,23 @@ def _agent_process(
             if cmd == "reset":
                 game.new_episode()
                 game.respawn_player()
-                frame = read_frame()
-                game_vars = get_game_variables_dict()
+
+                state = game.get_state()
+                frame = read_frame(state, resolution)
+
+                info = {
+                    "num_frames": frames_per_step,
+                    "player_died": False,
+                    "just_died": False,
+                    "step": steps
+                }
+                info.update(get_flat_game_vars(state, available_game_vars))
+
                 pipe_end.send({
                     "obs": frame,
                     "reward": 0.0,
                     "terminated": False,
-                    "info": {
-                        "num_frames": frames_per_step,
-                        "game_variables": game_vars,
-                        "player_died": False,
-                        "just_died": False,
-                        "step": steps
-                    },
+                    "info": info,
                 })
 
             elif cmd == "step":
@@ -161,24 +143,26 @@ def _agent_process(
                 truncated = game.is_episode_finished()
                 terminated = game.is_episode_finished()
 
-                frame = read_frame()
-
                 if verbose and terminated:
                     print(f"Player {agent} terminated at step {game.get_episode_time()}")
 
-                game_vars = get_game_variables_dict()
+                state = game.get_state()
+                frame = read_frame(state, resolution)
+
+                info = {
+                    "num_frames": frames_per_step,
+                    "player_died": is_dead,
+                    "just_died": just_died,
+                    "step": steps
+                }
+                info.update(get_flat_game_vars(state, available_game_vars))
+
                 pipe_end.send({
                     "obs": frame,
                     "reward": reward,
                     "terminated": terminated,
                     "truncated": truncated,
-                    "info": {
-                        "num_frames": frames_per_step,
-                        "game_variables": game_vars,
-                        "player_died": is_dead,
-                        "just_died": just_died,
-                        "step": steps
-                    }
+                    "info": info,
                 })
                 steps += frames_per_step
 
@@ -199,18 +183,18 @@ def _agent_process(
                     respawned = False
 
                 # Return observation data like a regular step
-                frame = read_frame()
-                game_vars = get_game_variables_dict()
+                state = game.get_state()
+                frame = read_frame(state, resolution)
                 terminated = False
                 truncated = game.is_episode_finished()
 
                 info = {
                     "num_frames": frames_per_step,
-                    "game_variables": game_vars,
                     "player_died": is_dead,
                     "just_died": False,  # Can't die during respawn
                     "step": steps
                 }
+                info.update(get_flat_game_vars(state, available_game_vars))
 
                 pipe_end.send({
                     "obs": frame,
@@ -411,12 +395,7 @@ class VizdoomParallelEnv(ParallelEnv):
                 self._obs_shape = (self._obs_shape[0], self._obs_shape[1], c)
                 self._observation_space = spaces.Box(0, 255, shape=self._obs_shape, dtype=np.uint8)
             obs[agent] = frame
-            infos[agent] = {
-                "num_frames": 1,
-                "player_died": False,
-                "just_died": False,
-                "step": 0,
-            }
+            infos[agent] = results[i].get("info", {})
             self._last_frames[agent] = frame
 
         return obs, infos
@@ -448,19 +427,19 @@ class VizdoomParallelEnv(ParallelEnv):
         respawned_agents = set()
 
         for i, agent in enumerate(self.agents):
-            r = results[i]
-            frame = r["obs"]
+            results_a = results[i]
+            frame = results_a["obs"]
             observations[agent] = frame
-            rewards[agent] = float(r.get("reward", 0.0))
-            term = bool(r.get("terminated", False))
+            rewards[agent] = float(results_a.get("reward", 0.0))
+            term = bool(results_a.get("terminated", False))
             self._terminations[agent] = term
             any_term = any_term or term
-            infos[agent] = r.get("info", {})
+            infos[agent] = results_a.get("info", {})
             self._last_frames[agent] = frame
 
             # Handle respawn results for agents that were dead
             if agent in self._dead_agents:
-                respawned = r.get("respawned", False)
+                respawned = results_a.get("respawned", False)
                 if respawned:
                     respawned_agents.add(agent)
 

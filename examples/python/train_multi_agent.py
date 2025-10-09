@@ -17,7 +17,7 @@ from tensordict import TensorDictBase
 from torch import nn
 from torchrl.data import Composite
 from torchrl.data.tensor_specs import UnboundedContinuous
-from torchrl.envs import EnvCreator, EnvBase, RemoveEmptySpecs
+from torchrl.envs import EnvCreator, EnvBase, RemoveEmptySpecs, ParallelEnv
 from torchrl.envs import TransformedEnv, Compose
 from torchrl.envs.libs.pettingzoo import MarlGroupMapType, PettingZooWrapper
 from torchrl.envs.transforms import ObservationTransform
@@ -203,8 +203,7 @@ class VizdoomTask(TaskClass):
 
     def get_env_fun(self, num_envs: int, continuous_actions: bool, seed: int | None, device=None):
         make_single = self.env_creator(seed)
-        # return make_single if num_envs == 1 else EnvCreator(lambda: ParallelEnv(available_cpu_count(), make_single))
-        return make_single
+        return make_single if num_envs == 1 else EnvCreator(lambda: ParallelEnv(available_cpu_count(), make_single))
 
     def action_spec(self, env: EnvBase) -> Composite:
         return self._action_spec
@@ -381,7 +380,7 @@ def main():
         "evaluation": True,
         "render": False,
         "evaluation_interval": args.rollout_steps * 25,
-        "evaluation_episodes": 5,
+        "evaluation_episodes": 1,
         "loggers": ["wandb"],
         "project_name": "benchmarl-vizdoom",
         "save_folder": str(checkpoints_path),

@@ -120,12 +120,11 @@ def main():
                 for i, agent in enumerate(env.agents):
                     episode_rewards[agent] += rewards[agent]
                     info = infos.get(agent, {}) or {}
-                    gv = info.get("game_variables", {}) or {}
 
                     step_record[agent] = {
                         "step": info.get("step", episode_steps),
-                        "dead": int(gv.get("DEAD", 0)),
-                        "position_x": gv.get("POSITION_X", None),
+                        "dead": int(info.get("DEAD", 0)),
+                        "position_x": info.get("POSITION_X", None),
                         "rewards": float(rewards.get(agent, 0.0)),              # single reward for this step
                         "actions": actions.get(agent, None),                    # single action for this step
                         "observations": observations.get(agent, None),          # single obs for this step
