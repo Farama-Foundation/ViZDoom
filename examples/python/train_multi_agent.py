@@ -8,7 +8,8 @@ from typing import Dict, Any, Optional
 
 import torch
 import torch.nn.functional as F
-from benchmarl.algorithms import MappoConfig, QmixConfig, MasacConfig
+from benchmarl.algorithms import QmixConfig, MasacConfig
+from benchmarl.algorithms.mappo import Mappo, MappoConfig
 from benchmarl.environments import TaskClass
 from benchmarl.experiment import Experiment, ExperimentConfig
 from benchmarl.models import CnnConfig
@@ -23,9 +24,6 @@ from torchrl.envs.transforms import ObservationTransform
 from torchrl.envs.transforms import SelectTransform
 from torchrl.envs.transforms.utils import _set_missing_tolerance
 
-# Add to Python path as pettingzoo_wrapper in root
-import sys
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from pettingzoo_wrapper import make
 
 
@@ -34,6 +32,52 @@ def available_cpu_count() -> int:
         return len(os.sched_getaffinity(0))
     except Exception:
         return mp.cpu_count() or 1
+
+
+class MappoOnDevice(Mappo):
+    def process_batch(self, group: str, batch: TensorDictBase) -> TensorDictBase:
+        keys = list(batch.keys(True, True))
+        group_shape = batch.get(group).shape
+
+        nested_done_key = ("next", group, "done")
+        nested_terminated_key = ("next", group, "terminated")
+        nested_reward_key = ("next", group, "reward")
+
+        if nested_done_key not in keys:
+            batch.set(nested_done_key, batch.get(("next", "done")).unsqueeze(-1).expand((*group_shape, 1)))
+        if nested_terminated_key not in keys:
+            batch.set(nested_terminated_key, batch.get(("next", "terminated")).unsqueeze(-1).expand((*group_shape, 1)))
+        if nested_reward_key not in keys:
+            batch.set(nested_reward_key, batch.get(("next", "reward")).unsqueeze(-1).expand((*group_shape, 1)))
+
+        loss = self.get_loss_and_updater(group)[0]
+        if self.minibatch_advantage:
+            increment = -(-self.experiment.config.train_minibatch_size(self.on_policy) // batch.shape[1])
+        else:
+            increment = batch.batch_size[0] + 1
+        last_start_index = 0
+        start_index = increment
+        minibatches = []
+        while last_start_index < batch.shape[0]:
+            minibatch = batch[last_start_index:start_index]
+            minibatch = minibatch.to(self.device, non_blocking=True)  # Move the minibatch to device
+            minibatches.append(minibatch)
+            with torch.no_grad():
+                loss.value_estimator(
+                    minibatch,
+                    params=loss.critic_network_params,
+                    target_params=loss.target_critic_network_params,
+                )
+            last_start_index = start_index
+            start_index += increment
+
+        return torch.cat(minibatches, dim=0)
+
+
+class MappoOnDeviceConfig(MappoConfig):
+    @staticmethod
+    def associated_class():
+        return MappoOnDevice
 
 
 class AHWCToTensorResize(ObservationTransform):
@@ -51,7 +95,6 @@ class AHWCToTensorResize(ObservationTransform):
             dtype: torch.dtype | None = None,
             mode: str = "bilinear",
             antialias: bool = True,
-            device: torch.device | str = "cpu",
     ):
         super().__init__(in_keys=[key], out_keys=[key])
         self.key = key
@@ -60,7 +103,6 @@ class AHWCToTensorResize(ObservationTransform):
         self.dtype = dtype if dtype is not None else torch.float32
         self.mode = mode
         self.antialias = antialias
-        self.device = torch.device(device)
 
     def _apply_transform(self, obs: torch.Tensor) -> torch.Tensor:
         # obs is the leaf tensor for self.key; we expect (A,H,W,C)
@@ -78,14 +120,14 @@ class AHWCToTensorResize(ObservationTransform):
         align = dict(align_corners=False) if self.mode in ("bilinear", "bicubic") else {}
         x = F.interpolate(x, size=(self.h, self.w), mode=self.mode, antialias=self.antialias, **align)
         x = x.permute(0, 2, 3, 1).contiguous()  # A,h,w,C
-        return x.to(self.device)
+        return x
 
     def transform_observation_spec(self, obs_spec: Composite) -> Composite:
         leaf = obs_spec[self.key]
         A, H, W, C = leaf.shape
         obs_spec[self.key] = UnboundedContinuous(
             shape=torch.Size([A, self.h, self.w, C]),
-            device=self.device,
+            device=leaf.device,
             dtype=self.dtype,
         )
         return obs_spec
@@ -135,6 +177,7 @@ class VizdoomTask(TaskClass):
                 resolution=str(cfg.get("resolution", "160x120")),
                 skip_frames=cfg.get("skip_frames", 4),
                 async_mode=bool(cfg.get("async_mode", True)),
+                render_mode=str(cfg.get("render_mode", "rgb_array")),
                 host_address=str(host_address),
                 port=port,
                 netmode=int(cfg.get("netmode", 1)),
@@ -150,8 +193,7 @@ class VizdoomTask(TaskClass):
             )
             env = TransformedEnv(env, Compose(
                 SelectTransform(("agent", "observation"), ("agent", "info")),
-                AHWCToTensorResize(key=("agent", "observation"), h=72, w=96, mode="bilinear",
-                                   device=cfg["train_device"]),
+                AHWCToTensorResize(key=("agent", "observation"), h=72, w=96, mode="bilinear"),
                 RemoveEmptySpecs(),
             ))
             env = env.to(cfg.get("sampling_device", "cpu"))
@@ -266,7 +308,7 @@ def main():
 
     if args.algo == "mappo":
         # Required ctor args for your MAPPO version
-        algo_cfg = MappoConfig(
+        algo_cfg = MappoOnDeviceConfig(
             share_param_critic=True,  # share critic across agents
             clip_epsilon=args.clip_eps,  # PPO clip
             entropy_coef=args.entropy_coef,  # entropy bonus
