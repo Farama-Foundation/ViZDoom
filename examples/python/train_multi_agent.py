@@ -51,6 +51,7 @@ class AHWCToTensorResize(ObservationTransform):
             dtype: torch.dtype | None = None,
             mode: str = "bilinear",
             antialias: bool = True,
+            device: torch.device | str = "cpu",
     ):
         super().__init__(in_keys=[key], out_keys=[key])
         self.key = key
@@ -59,6 +60,7 @@ class AHWCToTensorResize(ObservationTransform):
         self.dtype = dtype if dtype is not None else torch.float32
         self.mode = mode
         self.antialias = antialias
+        self.device = torch.device(device)
 
     def _apply_transform(self, obs: torch.Tensor) -> torch.Tensor:
         # obs is the leaf tensor for self.key; we expect (A,H,W,C)
@@ -76,14 +78,14 @@ class AHWCToTensorResize(ObservationTransform):
         align = dict(align_corners=False) if self.mode in ("bilinear", "bicubic") else {}
         x = F.interpolate(x, size=(self.h, self.w), mode=self.mode, antialias=self.antialias, **align)
         x = x.permute(0, 2, 3, 1).contiguous()  # A,h,w,C
-        return x
+        return x.to(self.device)
 
     def transform_observation_spec(self, obs_spec: Composite) -> Composite:
         leaf = obs_spec[self.key]
         A, H, W, C = leaf.shape
         obs_spec[self.key] = UnboundedContinuous(
             shape=torch.Size([A, self.h, self.w, C]),
-            device=leaf.device,
+            device=self.device,
             dtype=self.dtype,
         )
         return obs_spec
@@ -148,9 +150,11 @@ class VizdoomTask(TaskClass):
             )
             env = TransformedEnv(env, Compose(
                 SelectTransform(("agent", "observation"), ("agent", "info")),
-                AHWCToTensorResize(key=("agent", "observation"), h=72, w=96, mode="bilinear"),
+                AHWCToTensorResize(key=("agent", "observation"), h=72, w=96, mode="bilinear",
+                                   device=cfg["train_device"]),
                 RemoveEmptySpecs(),
             ))
+            env = env.to(cfg.get("sampling_device", "cpu"))
             return env
 
         return EnvCreator(_make)
@@ -366,6 +370,8 @@ def main():
         "enable_video": args.enable_video,
         "record_every": args.record_every,
         "video_fps": args.video_fps,
+        "train_device": args.train_device,
+        "sampling_device": args.sampling_device,
     }
     task = VizdoomTask(task_cfg)
 
@@ -377,6 +383,7 @@ def main():
         seed=args.seed,
         config=exp_cfg,
     )
+
     Path(exp_cfg.save_folder).mkdir(parents=True, exist_ok=True)
     experiment.run()
     experiment.close()
