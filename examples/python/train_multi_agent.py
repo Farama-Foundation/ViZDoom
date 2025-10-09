@@ -56,7 +56,7 @@ class AHWCToTensorResize(ObservationTransform):
         self.key = key
         self.h, self.w = int(h), int(w)
         self.from_int = from_int
-        self.dtype = dtype if dtype is not None else torch.get_default_dtype()
+        self.dtype = dtype if dtype is not None else torch.float32
         self.mode = mode
         self.antialias = antialias
 
@@ -151,7 +151,6 @@ class VizdoomTask(TaskClass):
                 AHWCToTensorResize(key=("agent", "observation"), h=72, w=96, mode="bilinear"),
                 RemoveEmptySpecs(),
             ))
-            env = env.to(cfg.get("device", "cpu"))
             return env
 
         return EnvCreator(_make)
@@ -235,7 +234,9 @@ def main():
     ap.add_argument("--algo", type=str, default="mappo", choices=list(ALGOS))
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--total_steps", type=float, default=1e6)
-    ap.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
+    ap.add_argument("--train_device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
+    ap.add_argument("--sampling_device", type=str, default="cpu")
+    ap.add_argument("--buffer_device", type=str, default="cpu")
     ap.add_argument("--rollout_steps", type=int, default=256)
     ap.add_argument("--batch_size", type=int, default=6000)
     ap.add_argument("--lr", type=float, default=5e-5)
@@ -316,9 +317,9 @@ def main():
 
     # only the fields you want to control from CLI
     overrides = {
-        "sampling_device": args.device,
-        "train_device": args.device,
-        "buffer_device": args.device,
+        "sampling_device": args.sampling_device,
+        "train_device": args.train_device,
+        "buffer_device": args.buffer_device,
         "share_policy_params": True,
         "parallel_collection": False,
         "max_n_frames": int(args.total_steps),
