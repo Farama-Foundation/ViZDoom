@@ -138,8 +138,5 @@ if __name__ == "__main__":
         choices=AVAILABLE_ENVS,
         help="Name of the environment to play",
     )
-    parser.add_argument("--dir", default="./logs/")
-    parser.add_argument("--exp", default="Random")
-
     args = parser.parse_args()
     main(args)
