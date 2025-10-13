@@ -18,12 +18,12 @@ import gymnasium
 import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
-
-# from stable_baselines3.common.vec_env import VecVideoRecorder
+from stable_baselines3.common.monitor import Monitor
+from stable_baselines3.common.vec_env import VecVideoRecorder
 import vizdoom.gymnasium_wrapper  # noqa
 
 
-DEFAULT_ENV = "VizdoomMusic-v1"
+DEFAULT_ENV = "VizdoomBasicAudio-v1"
 AVAILABLE_ENVS = [env for env in gymnasium.envs.registry.keys() if "Vizdoom" in env]  # type: ignore
 
 # Height and width of the resized image
@@ -56,21 +56,37 @@ class ObservationWrapper(gymnasium.ObservationWrapper):
         self.image_shape = shape
         self.image_shape_reverse = shape[::-1]
 
+        # Access doom game
+       # doom_game = self.env.unwrapped.game
+       # doom_game.set_audio_buffer_size(FRAME_SKIP)
+
         # Create new observation space with the new shape
-        print(env.observation_space)
         num_channels = env.observation_space["screen"].shape[-1]
         new_shape = (shape[0], shape[1], num_channels)
-        self.observation_space = gymnasium.spaces.Dict(
-            {
-                "screen": gymnasium.spaces.Box(0, 255, shape=new_shape, dtype=np.uint8),
-            }
-        )
-        #                                                 "audio": env.observation_space["audio"]})
+
+        # Get audio observation space if available
+        if "audio" in env.observation_space.spaces:
+            self.observation_space = gymnasium.spaces.Dict(
+                {
+                    "screen": gymnasium.spaces.Box(0, 255, shape=new_shape, dtype=np.uint8),
+                    "audio": env.observation_space["audio"]
+                })
+        else:
+            self.observation_space = gymnasium.spaces.Dict(
+                {
+                    "screen": gymnasium.spaces.Box(0, 255, shape=new_shape, dtype=np.uint8)
+                })
 
     def observation(self, observation):
-        observation = {  # "audio": observation["audio"],
-            "screen": cv2.resize(observation["screen"], self.image_shape_reverse)
-        }
+        if "audio" in env.observation_space.spaces:
+            observation = {   
+                "screen": cv2.resize(observation["screen"], self.image_shape_reverse),
+                "audio": observation["audio"]
+            }
+        else:
+             observation = {   
+                "screen": cv2.resize(observation["screen"], self.image_shape_reverse)
+             }
         return observation
 
 
@@ -92,15 +108,11 @@ def main(args):
         env_kwargs=dict(frame_skip=FRAME_SKIP),
     )
 
-    # video_folder = "logs/videos6/"
-    # record_video_trigger = lambda x: x % 1000 == 0 # Record at the beginning of the episode
-    # envs = VecVideoRecorder(envs, video_folder,
-    #                           record_video_trigger, video_length=2000) # Adjust video_length as needed
     agent = PPO(
         "MultiInputPolicy",
         envs,
         n_steps=N_STEPS,
-        verbose=1,
+        verbose=2,
         tensorboard_log=f"{args.dir}",
     )
 
