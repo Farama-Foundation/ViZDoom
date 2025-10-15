@@ -202,13 +202,13 @@ class VizdoomTask(TaskClass):
         return EnvCreator(_make)
 
     def get_env_fun(self, num_envs: int, continuous_actions: bool, seed: int | None, device=None):
-        make_single = self.env_creator(seed)
-        if num_envs is None:
-            num_envs = available_cpu_count()
-        return make_single if num_envs == 1 else EnvCreator(lambda: ParallelEnv(num_envs, make_single))
+        # make_single = self.env_creator(seed)
+        # if num_envs is None:
+        #     num_envs = available_cpu_count()
+        # return make_single if num_envs == 1 else EnvCreator(lambda: ParallelEnv(num_envs, make_single))
         
         # Return non-vec env, avoid vizdoom processes + env vectorization double parallelising
-        # return self.env_creator(seed if seed is not None else 0)
+        return self.env_creator(seed if seed is not None else 0)
 
     def action_spec(self, env: EnvBase) -> Composite:
         return self._action_spec
