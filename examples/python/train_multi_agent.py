@@ -310,7 +310,7 @@ def main():
 
     if args.algo == "mappo":
         # Required ctor args for your MAPPO version
-        algo_cfg = MappoOnDeviceConfig(
+        algo_cfg = MappoConfig(
             share_param_critic=True,  # share critic across agents
             clip_epsilon=args.clip_eps,  # PPO clip
             entropy_coef=args.entropy_coef,  # entropy bonus
@@ -427,7 +427,7 @@ def main():
         config=exp_cfg,
     )
 
-    Path(exp_cfg.save_folder).mkdir(parents=True, exist_ok=True)
+    Path(str(exp_cfg.save_folder)).mkdir(parents=True, exist_ok=True)
     experiment.run()
     experiment.close()
 
