@@ -18,8 +18,6 @@ import gymnasium
 import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.monitor import Monitor
-from stable_baselines3.common.vec_env import VecVideoRecorder
 import vizdoom.gymnasium_wrapper  # noqa
 
 
@@ -55,10 +53,6 @@ class ObservationWrapper(gymnasium.ObservationWrapper):
         super().__init__(env)
         self.image_shape = shape
         self.image_shape_reverse = shape[::-1]
-
-        # Access doom game
-       # doom_game = self.env.unwrapped.game
-       # doom_game.set_audio_buffer_size(FRAME_SKIP)
 
         # Create new observation space with the new shape
         num_channels = env.observation_space["screen"].shape[-1]
@@ -112,8 +106,7 @@ def main(args):
         "MultiInputPolicy",
         envs,
         n_steps=N_STEPS,
-        verbose=2,
-        tensorboard_log=f"{args.dir}",
+        verbose=2
     )
 
     # Do the actual learning
