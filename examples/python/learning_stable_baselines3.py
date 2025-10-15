@@ -119,7 +119,6 @@ def main(args):
         agent.learn(
             total_timesteps=TRAINING_TIMESTEPS,
             progress_bar=True,
-            tb_log_name=f"{args.exp}",
         )
     except ImportError:
         agent.learn(total_timesteps=TRAINING_TIMESTEPS)
