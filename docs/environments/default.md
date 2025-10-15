@@ -61,7 +61,7 @@ The episode ends after killing the monster or on timeout.
 
 
 ## BASIC AUDIO
-The environment is similar to the BASIC scenario, 
+The environment is similar to the BASIC scenario,
 but the monster is invisible instead it emits sounds.
 The purpose of this scenario is to check if the agent can
 learn to use audio information to find and kill the monster.
