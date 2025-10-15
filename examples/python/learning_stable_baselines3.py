@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 #####################################################################
 # Example script of training agents with stable-baselines3
 # on ViZDoom using the Gymnasium API
