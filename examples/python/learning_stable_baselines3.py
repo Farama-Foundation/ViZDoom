@@ -72,7 +72,7 @@ class ObservationWrapper(gymnasium.ObservationWrapper):
                 })
 
     def observation(self, observation):
-        if "audio" in env.observation_space.spaces:
+        if "audio" in self.observation_space.spaces:
             observation = {   
                 "screen": cv2.resize(observation["screen"], self.image_shape_reverse),
                 "audio": observation["audio"]
