@@ -60,6 +60,30 @@ The episode ends after killing the monster or on timeout.
 **Configuration file: [basic.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic.cfg)**
 
 
+## BASIC AUDIO
+The environment is similar to the BASIC scenario, 
+but the monster is invisible instead it emits sounds.
+The purpose of this scenario is to check if the agent can
+learn to use audio information to find and kill the monster.
+
+**REWARDS:**
+* +106 for killing the monster
+* -5 for every shot
+* +1 for every tic the agent is alive
+
+The episode ends after killing the monster or on timeout.
+
+**CONFIGURATION:**
+* 3 available buttons: move left/right, shoot (attack)
+* 1 available game variable: player's ammo
+* timeout = 300 tics
+
+
+**Gymnasium/Gym id: `"VizdoomBasicAudio-v0"`**
+
+**Configuration file: [basic_audio.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic_audio.cfg)**
+
+
 ## DEADLY CORRIDOR
 The purpose of this scenario is to teach the agent to navigate towards
 his fundamental goal (the vest) and make sure he survives at the
