@@ -18,6 +18,7 @@ import gymnasium
 import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
+
 import vizdoom.gymnasium_wrapper  # noqa
 
 
@@ -62,25 +63,31 @@ class ObservationWrapper(gymnasium.ObservationWrapper):
         if "audio" in env.observation_space.spaces:
             self.observation_space = gymnasium.spaces.Dict(
                 {
-                    "screen": gymnasium.spaces.Box(0, 255, shape=new_shape, dtype=np.uint8),
-                    "audio": env.observation_space["audio"]
-                })
+                    "screen": gymnasium.spaces.Box(
+                        0, 255, shape=new_shape, dtype=np.uint8
+                    ),
+                    "audio": env.observation_space["audio"],
+                }
+            )
         else:
             self.observation_space = gymnasium.spaces.Dict(
                 {
-                    "screen": gymnasium.spaces.Box(0, 255, shape=new_shape, dtype=np.uint8)
-                })
+                    "screen": gymnasium.spaces.Box(
+                        0, 255, shape=new_shape, dtype=np.uint8
+                    )
+                }
+            )
 
     def observation(self, observation):
         if "audio" in self.observation_space.spaces:
-            observation = {   
+            observation = {
                 "screen": cv2.resize(observation["screen"], self.image_shape_reverse),
-                "audio": observation["audio"]
+                "audio": observation["audio"],
             }
         else:
-             observation = {   
+            observation = {
                 "screen": cv2.resize(observation["screen"], self.image_shape_reverse)
-             }
+            }
         return observation
 
 
@@ -102,12 +109,7 @@ def main(args):
         env_kwargs=dict(frame_skip=FRAME_SKIP),
     )
 
-    agent = PPO(
-        "MultiInputPolicy",
-        envs,
-        n_steps=N_STEPS,
-        verbose=2
-    )
+    agent = PPO("MultiInputPolicy", envs, n_steps=N_STEPS, verbose=2)
 
     # Do the actual learning
     # This will print out the results in the console.
