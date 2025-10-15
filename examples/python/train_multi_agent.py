@@ -202,11 +202,13 @@ class VizdoomTask(TaskClass):
         return EnvCreator(_make)
 
     def get_env_fun(self, num_envs: int, continuous_actions: bool, seed: int | None, device=None):
-        # make_single = self.env_creator(seed)
-        # return make_single if num_envs == 1 else EnvCreator(lambda: ParallelEnv(available_cpu_count(), make_single))
+        make_single = self.env_creator(seed)
+        if num_envs is None:
+            num_envs = available_cpu_count()
+        return make_single if num_envs == 1 else EnvCreator(lambda: ParallelEnv(num_envs, make_single))
         
         # Return non-vec env, avoid vizdoom processes + env vectorization double parallelising
-        return self.env_creator(seed if seed is not None else 0)
+        # return self.env_creator(seed if seed is not None else 0)
 
     def action_spec(self, env: EnvBase) -> Composite:
         return self._action_spec
@@ -308,23 +310,20 @@ def main():
     checkpoints_path = root_path / "checkpoints"
     Path(checkpoints_path).mkdir(parents=True, exist_ok=True)
 
-    if args.algo == "mappo":
-        # Required ctor args for your MAPPO version
-        algo_cfg = MappoConfig(
-            share_param_critic=True,  # share critic across agents
-            clip_epsilon=args.clip_eps,  # PPO clip
-            entropy_coef=args.entropy_coef,  # entropy bonus
-            critic_coef=args.vf_coef,  # value loss coef
-            loss_critic_type="l2",  # or "smooth_l1" (Huber)
-            lmbda=args.gae_lambda,  # GAE lambda
-            scale_mapping="biased_softplus_1.0",  # softplus
-            use_tanh_normal=True,  # use tanh Gaussian here
-            minibatch_advantage=False,  # compute adv per minibatch
-        )
-    else:
-        raise NotImplementedError(
-            f"Only --algo mappo is wired without YAML in this script right now. Got: {args.algo}"
-        )
+    if args.algo not in ALGOS:
+        raise NotImplementedError(f"{args.algo} is not currently implemented in this script")
+
+    algo_cfg = ALGOS[args.algo](
+        share_param_critic=True,  # share critic across agents
+        clip_epsilon=args.clip_eps,  # PPO clip
+        entropy_coef=args.entropy_coef,  # entropy bonus
+        critic_coef=args.vf_coef,  # value loss coef
+        loss_critic_type="l2",  # or "smooth_l1" (Huber)
+        lmbda=args.gae_lambda,  # GAE lambda
+        scale_mapping="biased_softplus_1.0",  # softplus
+        use_tanh_normal=True,  # use tanh Gaussian here
+        minibatch_advantage=False,  # compute adv per minibatch
+    )
 
     # Nature-style front end + 512 MLP head
     cnn_num_cells = [32, 64, 64]
