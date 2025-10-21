@@ -27,7 +27,6 @@
 #include "viz_labels.h"
 #include "viz_main.h"
 
-
 unsigned int vizScreenWidth, vizScreenHeight;
 size_t vizScreenPitch, vizScreenSize, vizScreenChannelSize;
 size_t vizAudioSamplesPerTic, vizAudioSizePerTic, vizAudioSize;
@@ -299,6 +298,14 @@ void VIZ_AudioUpdate() {
     // the buffer), and then we copy the latest audio frame to the right side of the buffer.
     // This can be done more efficiently with a circular buffer to avoid the memmove, but this complicates the IPC
     // logic a bit. The current implementation should be fast enough.
+
+    if (*viz_audio_tics > level.maptime){ // If map time is less than the audio buffer size, zero the rest of the buffer
+        const size_t ticsToClear = *viz_audio_tics - level.maptime;
+        if(ticsToClear * vizAudioSizePerTic > vizAudioSize) {
+            VIZ_Error(VIZ_FUNC, "Tried to clear more audio buffer than its size.");
+        }
+        memset(vizAudioSM, 0, ticsToClear * vizAudioSizePerTic);
+    }
 
     const size_t lastTicOffset = vizAudioSize - vizAudioSizePerTic;
     memmove(vizAudioSM, vizAudioSM + vizAudioSizePerTic, lastTicOffset);

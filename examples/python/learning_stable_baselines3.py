@@ -30,7 +30,7 @@ IMAGE_SHAPE = (60, 80)
 # Training parameters
 TRAINING_TIMESTEPS = int(1e6)
 N_STEPS = 128
-N_ENVS = 32
+N_ENVS = 8
 FRAME_SKIP = 4
 
 

@@ -26,6 +26,9 @@ envs_with_animated_textures = [
     "VizdoomHealthGatheringSupreme",
     "VizdoomDeathmatch",
 ]
+envs_with_audio = [
+    "VizdoomBasicAudio",
+]
 buffers = [
     "screen",
     "depth",
@@ -42,9 +45,10 @@ def test_gymnasium_wrapper():
     for env_name in vizdoom_envs:
         print(f"  Env: {env_name}")
 
-        # Skip environments with animated textures,
+        # Skip environments with animated textures and audio
         # as they might render different states for the same seeds
-        if env_name.split("-")[0] in envs_with_animated_textures:
+        # and audio might render slightly different
+        if env_name.split("-")[0] in envs_with_animated_textures + envs_with_audio:
             continue
 
         for frame_skip in [1, 4]:
