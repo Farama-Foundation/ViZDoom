@@ -66,19 +66,6 @@ jobs:
         repository: mwydmuch/ViZDoomWinDepBin
         path: ${{ github.workspace }}\deps
 
-    - name: Cache 7-Zip
-      id: cache-7z
-      uses: actions/cache@v4
-      with:
-        path: |
-          C:\Program Files\7-Zip
-          C:\ProgramData\chocolatey\lib\7zip
-        key: 7zip-25.0-${{ runner.os }}
-
-    - name: Install 7-Zip 25.00 for compatibility
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: choco install 7zip --version=25.0 -y --force --allow-downgrade
-
     - name: Install boost
       uses: MarkusJx/install-boost@v2
       id: install-boost

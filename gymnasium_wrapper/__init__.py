@@ -1,6 +1,9 @@
 from gymnasium.envs.registration import register
 
-DEFAULT_VIZDOOM_ENTRYPOINT = "vizdoom.gymnasium_wrapper.gymnasium_env_defns:VizdoomScenarioEnv"
+
+DEFAULT_VIZDOOM_ENTRYPOINT = (
+    "vizdoom.gymnasium_wrapper.gymnasium_env_defns:VizdoomScenarioEnv"
+)
 
 register(
     id="VizdoomBasic-v1",
