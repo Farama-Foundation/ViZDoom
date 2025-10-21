@@ -174,7 +174,9 @@ jobs:
     name: Upload to PyPI
     needs: [build_wheels, build_sdist, test_wheels]
     runs-on: ubuntu-latest
-    environment: pypi
+    environment:
+      name: pypi
+      url: https://pypi.org/p/vizdoom
     permissions:
       id-token: write
     if: github.event_name == 'release' && github.event.action == 'published'
@@ -188,6 +190,3 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          username: ${{ secrets.PYPI_USERNAME }}
-          password: ${{ secrets.PYPI_PASSWORD }}
