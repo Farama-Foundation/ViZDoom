@@ -42,7 +42,7 @@ jobs:
     - name: Set up Python environment
       uses: actions/setup-python@v4
       with:
-        python-version: 3.12
+        python-version: '3.12'
 
     - name: Python environment report
       run: python -c "import sys; print(sys.version)"

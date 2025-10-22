@@ -34,11 +34,11 @@ reportAttributeAccessIssue = "warning"
 
 [tool.cibuildwheel]
 # We need to build for the following Python versions:
-build = "cp{39,310,311,312,313}-*"
+build = "cp{39,310,311,312,313,314}-*"
 
 [tool.cibuildwheel.linux]
 # Only manylinux is supported (no musl)
-build = "cp{39,310,311,312,313}-manylinux*"
+build = "cp{39,310,311,312,313,314}-manylinux*"
 repair-wheel-command = "auditwheel show {wheel} && auditwheel repair -w {dest_dir} {wheel}"
 
 # For manylinux_2_28 we need to install the following dependencies using yum:
