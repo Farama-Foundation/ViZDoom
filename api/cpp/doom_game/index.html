@@ -313,7 +313,9 @@
             
             <section class="tex2jax_ignore mathjax_ignore" id="doomgame">
 <h1>DoomGame<a class="headerlink" href="#doomgame" title="Link to this heading">¶</a></h1>
-<p>DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc. The declarations of this class and its methods can be found in the <code class="docutils literal notranslate"><span class="pre">include/ViZDoomGame.h</span></code> header file.</p>
+<p>DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game.
+The object allows sending actions to the game, getting the game state, etc.
+The declarations of this class and its methods can be found in the <code class="docutils literal notranslate"><span class="pre">include/ViZDoomGame.h</span></code> header file.</p>
 <p>Here we document all the methods of the DoomGame class and their corresponding Python bindings implemented as pybind11 module.</p>
 <section id="flow-control-methods">
 <h2>Flow control methods<a class="headerlink" href="#flow-control-methods" title="Link to this heading">¶</a></h2>
@@ -3241,20 +3243,20 @@ Sampling rate can be set with <a class="reference internal" href="#setaudiosampl
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head text-left"><p>C++</p></th>
-<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setAudioBufferSize(unsigned</span> <span class="pre">int</span> <span class="pre">size)</span></code></p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setAudioBufferSize(unsigned</span> <span class="pre">int</span> <span class="pre">tics)</span></code></p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td class="text-left"><p>Python</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_audio_buffer_size(size:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_audio_buffer_size(tics:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>Sets the size of the audio buffer. The size is defined by a number of logic tics.
+<p>Sets the size/length of the audio buffer. The size is defined by a number of logic tics.
 After each action audio buffer will contain audio from the specified number of the last processed tics.
 Doom uses 35 ticks per second.</p>
-<p>Default value: 4</p>
+<p>Default value: 1</p>
 <p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">audioBufferSize</span></code>/<code class="docutils literal notranslate"><span class="pre">audio_buffer_size</span></code></p>
 <p>See also:</p>
@@ -3263,6 +3265,110 @@ Doom uses 35 ticks per second.</p>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.9.</p>
+</section>
+<hr class="docutils" />
+<section id="isnotificationsbufferenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">isNotificationsBufferEnabled</span></code><a class="headerlink" href="#isnotificationsbufferenabled" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">isNotificationsBufferEnabled()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_notifications_buffer_enabled()</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns true if the notify buffer is enabled.</p>
+<p>Note: added in 1.3.0.</p>
+</section>
+<hr class="docutils" />
+<section id="setnotificationsbufferenabled">
+<h3><code class="docutils literal notranslate"><span class="pre">setNotificationsBufferEnabled</span></code><a class="headerlink" href="#setnotificationsbufferenabled" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setNotificationsBufferEnabled(bool</span> <span class="pre">notificationsBuffer)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_notifications_buffer_enabled(notifications_buffer:</span> <span class="pre">bool)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Enables notification buffer, it will be available in the state.
+The notification buffer will contain text notifications from the number of the last tics specified by <a class="reference internal" href="#setNotificationsBuffersize"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setNotificationsBufferSize</span></code></span></a> method.</p>
+<p>Default value: false</p>
+<p>Has no effect when the game is running.</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">notificationsBufferEnabled</span></code>/<code class="docutils literal notranslate"><span class="pre">notifications_buffer_enabled</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
+</ul>
+<p>Note: added in 1.3.0.</p>
+</section>
+<hr class="docutils" />
+<section id="getnotificationsbuffersize">
+<h3><code class="docutils literal notranslate"><span class="pre">getNotificationsBufferSize</span></code><a class="headerlink" href="#getnotificationsbuffersize" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">getNotificationsBufferSize()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_notifications_buffer_size()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the size of the notify buffer.</p>
+<p>Note: added in 1.3.0.</p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="setnotificationsbuffersize">
+<h3><code class="docutils literal notranslate"><span class="pre">setNotificationsBufferSize</span></code><a class="headerlink" href="#setnotificationsbuffersize" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">setNotificationsBufferSize(unsigned</span> <span class="pre">int</span> <span class="pre">tics)</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">set_notifications_buffer_size(tics:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sets the size of the notify buffer. The size is defined by a number of logic tics.
+After each action notify buffer will contain text notifications from the specified number of the last processed tics.
+Doom uses 35 ticks per second.</p>
+<p>Default value: 1</p>
+<p>Has no effect when the game is running.</p>
+<p>Config key: <code class="docutils literal notranslate"><span class="pre">notificationsBufferSize</span></code>/<code class="docutils literal notranslate"><span class="pre">notifications_buffer_size</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
+</ul>
+<p>Note: added in 1.3.0.</p>
 </section>
 </section>
 </section>
@@ -3489,6 +3595,10 @@ Doom uses 35 ticks per second.</p>
 <li><a class="reference internal" href="#setaudiosamplingrate"><code class="docutils literal notranslate"><span class="pre">setAudioSamplingRate</span></code></a></li>
 <li><a class="reference internal" href="#getaudiobuffersize"><code class="docutils literal notranslate"><span class="pre">getAudioBufferSize</span></code></a></li>
 <li><a class="reference internal" href="#setaudiobuffersize"><code class="docutils literal notranslate"><span class="pre">setAudioBufferSize</span></code></a></li>
+<li><a class="reference internal" href="#isnotificationsbufferenabled"><code class="docutils literal notranslate"><span class="pre">isNotificationsBufferEnabled</span></code></a></li>
+<li><a class="reference internal" href="#setnotificationsbufferenabled"><code class="docutils literal notranslate"><span class="pre">setNotificationsBufferEnabled</span></code></a></li>
+<li><a class="reference internal" href="#getnotificationsbuffersize"><code class="docutils literal notranslate"><span class="pre">getNotificationsBufferSize</span></code></a></li>
+<li><a class="reference internal" href="#setnotificationsbuffersize"><code class="docutils literal notranslate"><span class="pre">setNotificationsBufferSize</span></code></a></li>
 </ul>
 </li>
 </ul>

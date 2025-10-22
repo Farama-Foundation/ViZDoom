@@ -362,7 +362,7 @@ dnf<span class="w"> </span>install<span class="w"> </span>python3-devel<span cla
 <section id="anaconda-miniconda">
 <h4>Anaconda/Miniconda<a class="headerlink" href="#anaconda-miniconda" title="Link to this heading">¶</a></h4>
 <p>If you do not have a root access, you can use a conda (e.g. <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">miniconda</a>) environment to install dependencies to your environment only:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>boost<span class="w"> </span>cmake<span class="w"> </span>gtk2<span class="w"> </span>sdl2
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>boost<span class="w"> </span>cmake<span class="w"> </span>gtk2<span class="w"> </span>sdl2<span class="w"> </span>openal-soft
 </pre></div>
 </div>
 <p>Note that to install ViZDoom in a conda environment you have to pull, build and install ViZDoom manually with</p>
@@ -387,6 +387,13 @@ dnf<span class="w"> </span>install<span class="w"> </span>python3-devel<span cla
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>boost<span class="w"> </span>sdl2<span class="w"> </span>openal-soft
 </pre></div>
 </div>
+<p>⚠️ On Apple Silicon (M-series chip), make sure you are using homebrew for <code class="docutils literal notranslate"><span class="pre">arm64</span></code>.</p>
+<p>Here is a helpful command to set up the environment variables for homebrew on Apple Silicon if both <code class="docutils literal notranslate"><span class="pre">arm64</span></code> and <code class="docutils literal notranslate"><span class="pre">x86</span></code> versions were installed:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>/opt/homebrew/bin/brew<span class="w"> </span>shellenv<span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>We recommend using at least macOS High Sierra 10.13+ with Python 3.8+.
+On Apple Silicon, make sure you are using Python/Pip for Apple Silicon.</p>
 </section>
 <section id="windows">
 <h3>Windows<a class="headerlink" href="#windows" title="Link to this heading">¶</a></h3>
@@ -424,6 +431,24 @@ On Windows you need to manually set following environment variables:</p>
 </ul>
 <p>The process of building ViZDoom this way on Windows is demonstarted in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scripts/windows_build_wheels.bat">scripts/windows_build_wheels.bat</a>.</p>
 </section>
+<section id="building-python-type-stubs-vizdoom-pyi">
+<h2>Building Python Type Stubs (<code class="docutils literal notranslate"><span class="pre">vizdoom.pyi</span></code>)<a class="headerlink" href="#building-python-type-stubs-vizdoom-pyi" title="Link to this heading">¶</a></h2>
+<p>To enable Python typing support, the creation of a Python Interface file <code class="docutils literal notranslate"><span class="pre">vizdoom.pyi</span></code> is now part of the build process.</p>
+<p>To ensure <code class="docutils literal notranslate"><span class="pre">vizdoom.pyi</span></code> is properly created, the following dependencies are required:</p>
+<ul class="simple">
+<li><p>pybind11-stubgen</p></li>
+<li><p>black (optional)</p></li>
+<li><p>isort (optional)</p></li>
+</ul>
+<p>They can all be installed via pip:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pybind11-stubgen<span class="w"> </span>black<span class="w"> </span>isort
+</pre></div>
+</div>
+<p>To test the generated stub manually:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stubtest</span> <span class="n">vizdoom</span> <span class="o">--</span><span class="n">allowlist</span> <span class="n">stubtest_allowlists</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+</section>
 <section id="building-manylinux-wheels">
 <h2>Building manylinux wheels<a class="headerlink" href="#building-manylinux-wheels" title="Link to this heading">¶</a></h2>
 <p>To build manylinux wheels you need to install docker and cibuildwheel. Then on Linux and MacOS run in ViZDoom root directory:</p>
@@ -442,11 +467,11 @@ We recommend doing it only if you want to use C++ API, work on the ViZDoom, or i
 <p>In ViZDoom’s root directory:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>build
 <span class="nb">cd</span><span class="w"> </span>build
-cmake<span class="w"> </span>..<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release<span class="w"> </span>-DBUILD_ENGINE<span class="o">=</span>ON<span class="w"> </span>-DBUILD_PYTHON<span class="o">=</span>ON
+cmake<span class="w"> </span>..<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release<span class="w"> </span>-DBUILD_ENGINE<span class="o">=</span>ON<span class="w"> </span>-DBUILD_PYTHON<span class="o">=</span>ON<span class="w"> </span>-DCREATE_PYTHON_STUBS<span class="o">=</span>OFF
 make
 </pre></div>
 </div>
-<p>where <code class="docutils literal notranslate"><span class="pre">-DBUILD_ENGINE=ON</span></code> and <code class="docutils literal notranslate"><span class="pre">-DBUILD_PYTHON=ON</span></code> CMake options are optional (default ON).</p>
+<p>where <code class="docutils literal notranslate"><span class="pre">-DBUILD_ENGINE=ON</span></code> and <code class="docutils literal notranslate"><span class="pre">-DBUILD_PYTHON=ON</span></code>  CMake options are optional (default ON). Setting <code class="docutils literal notranslate"><span class="pre">-DCREATE_PYTHON_STUBS=OFF</span></code> will skip the creation of <code class="docutils literal notranslate"><span class="pre">vizdoom.pyi</span></code> (which is OFF by default).</p>
 </section>
 <section id="id1">
 <h3>Windows<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
@@ -461,8 +486,8 @@ make
 <li><p>PYTHON_LIBRARY (optional, for Python/Anaconda bindings)</p></li>
 <li><p>ZDoom dependencies paths</p></li>
 </ul>
-<ol class="arabic simple" start="2">
-<li><p>In configuration select <code class="docutils literal notranslate"><span class="pre">DBUILD_ENGINE</span></code> and <code class="docutils literal notranslate"><span class="pre">DBUILD_PYTHON</span></code> (optional, default ON).</p></li>
+<ol class="arabic simple">
+<li><p>In configuration select <code class="docutils literal notranslate"><span class="pre">DBUILD_ENGINE</span></code>, <code class="docutils literal notranslate"><span class="pre">DBUILD_PYTHON</span></code> (optional, default ON) and <code class="docutils literal notranslate"><span class="pre">DCREATE_PYTHON_STUBS</span></code> (optional, default OFF).</p></li>
 <li><p>Use generated Visual Studio solution to build all parts of ViZDoom environment.</p></li>
 </ol>
 <p>The process of building ViZDoom this way on Windows is demonstarted in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scripts/windows_build_cmake.bat">scripts/windows_build_cmake.bat</a> script.</p>
@@ -568,6 +593,7 @@ make
 </ul>
 </li>
 <li><a class="reference internal" href="#building-via-pip-recommended-for-python-users">Building via pip (recommended for Python users)</a></li>
+<li><a class="reference internal" href="#building-python-type-stubs-vizdoom-pyi">Building Python Type Stubs (<code class="docutils literal notranslate"><span class="pre">vizdoom.pyi</span></code>)</a></li>
 <li><a class="reference internal" href="#building-manylinux-wheels">Building manylinux wheels</a></li>
 <li><a class="reference internal" href="#building-manually-not-recommended">Building manually (not recommended)</a><ul>
 <li><a class="reference internal" href="#linux-macos">Linux / MacOS</a></li>

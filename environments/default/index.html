@@ -362,6 +362,28 @@ finishes when the monster is killed or on timeout.</p>
 <p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomBasic-v0&quot;</span></code></strong></p>
 <p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic.cfg">basic.cfg</a></strong></p>
 </section>
+<section id="basic-audio">
+<h2>BASIC AUDIO<a class="headerlink" href="#basic-audio" title="Link to this heading">¶</a></h2>
+<p>The environment is similar to the BASIC scenario,
+but the monster is invisible instead it emits sounds.
+The purpose of this scenario is to check if the agent can
+learn to use audio information to find and kill the monster.</p>
+<p><strong>REWARDS:</strong></p>
+<ul class="simple">
+<li><p>+106 for killing the monster</p></li>
+<li><p>-5 for every shot</p></li>
+<li><p>+1 for every tic the agent is alive</p></li>
+</ul>
+<p>The episode ends after killing the monster or on timeout.</p>
+<p><strong>CONFIGURATION:</strong></p>
+<ul class="simple">
+<li><p>3 available buttons: move left/right, shoot (attack)</p></li>
+<li><p>1 available game variable: player’s ammo</p></li>
+<li><p>timeout = 300 tics</p></li>
+</ul>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomBasicAudio-v0&quot;</span></code></strong></p>
+<p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic_audio.cfg">basic_audio.cfg</a></strong></p>
+</section>
 <section id="deadly-corridor">
 <h2>DEADLY CORRIDOR<a class="headerlink" href="#deadly-corridor" title="Link to this heading">¶</a></h2>
 <p>The purpose of this scenario is to teach the agent to navigate towards
@@ -640,6 +662,7 @@ the player dies.</p>
 <li><a class="reference internal" href="#how-to-use-default-scenarios">How to use default scenarios</a></li>
 <li><a class="reference internal" href="#note-on-wad-cfg-files-and-rewards">Note on .wad, .cfg files, and rewards</a></li>
 <li><a class="reference internal" href="#basic">BASIC</a></li>
+<li><a class="reference internal" href="#basic-audio">BASIC AUDIO</a></li>
 <li><a class="reference internal" href="#deadly-corridor">DEADLY CORRIDOR</a></li>
 <li><a class="reference internal" href="#deathmatch">DEATHMATCH</a></li>
 <li><a class="reference internal" href="#defend-the-center">DEFEND THE CENTER</a></li>
