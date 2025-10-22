@@ -235,7 +235,7 @@ setup(
         "test": ["pytest", "psutil"],
     },
     install_requires=["numpy", "gymnasium>=0.28.0", "pygame>=2.1.3"],
-    python_requires=">=3.9.0,<3.14",
+    python_requires=">=3.9.0,<3.15",
     packages=packages,
     package_dir={"": package_root},
     package_data={"vizdoom": package_data},
