@@ -21,7 +21,7 @@ When using Gymnasium API the scenario can be loaded by passing the scenario id t
 import gymnasium
 from vizdoom import gymnasium_wrapper # This import will register all the environments
 
-env = gymnasium.make("VizdoomBasic-v0") # or any other environment id
+env = gymnasium.make("VizdoomBasic-v1") # or any other environment id
 ```
 
 
@@ -45,7 +45,7 @@ finishes when the monster is killed or on timeout.
 **REWARDS:**
 * +106 for killing the monster
 * -5 for every shot
-* +1 for every tic the agent is alive
+* -1 for every tic the agent is alive
 
 The episode ends after killing the monster or on timeout.
 
@@ -55,7 +55,7 @@ The episode ends after killing the monster or on timeout.
 * timeout = 300 tics
 
 
-**Gymnasium/Gym id: `"VizdoomBasic-v0"`**
+**Gymnasium/Gym id: `"VizdoomBasic-v1"`**
 
 **Configuration file: [basic.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic.cfg)**
 
@@ -69,7 +69,7 @@ learn to use audio information to find and kill the monster.
 **REWARDS:**
 * +106 for killing the monster
 * -5 for every shot
-* +1 for every tic the agent is alive
+* -1 for every tic the agent is alive
 
 The episode ends after killing the monster or on timeout.
 
@@ -79,9 +79,37 @@ The episode ends after killing the monster or on timeout.
 * timeout = 300 tics
 
 
-**Gymnasium/Gym id: `"VizdoomBasicAudio-v0"`**
+**Gymnasium/Gym id: `"VizdoomBasicAudio-v1"`**
 
 **Configuration file: [basic_audio.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic_audio.cfg)**
+
+**Note:** Added in ViZDoom 1.3.0.
+
+
+## BASIC NOTIFICATIONS
+The environment is similar to the BASIC scenario,
+but this time 3 monsters are spawned instead of 1.
+The task is to kill one of them specified by a ingame message (notification).
+
+**REWARDS:**
+* +106 for killing the right monster
+* -44 for killing the wrong monster
+* -5 for every shot
+* -1 for every tic the agent is alive
+
+The episode ends after killing the monster or on timeout.
+
+**CONFIGURATION:**
+* 3 available buttons: move left/right, shoot (attack)
+* 1 available game variable: player's ammo
+* timeout = 300 tics
+
+
+**Gymnasium/Gym id: `"VizdoomBasicNotifications-v1"`**
+
+**Configuration file: [basic_notifications.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic_notifications.cfg)**
+
+**Note:** Added in ViZDoom 1.3.0.
 
 
 ## DEADLY CORRIDOR
@@ -108,7 +136,7 @@ needed.
 * timeout = 2100
 * difficulty level (`doom_skill`) = 5
 
-**Gymnasium/Gym id: `"VizdoomCorridor-v0"`**
+**Gymnasium/Gym id: `"VizdoomCorridor-v1"`**
 
 **Configuration file: [deadly_corridor.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deadly_corridor.cfg)**
 
@@ -130,7 +158,7 @@ before the time runs out or it's killed by monsters.
 * timeout = 4200
 * difficulty level (`doom_skill`) = 3
 
-**Gymnasium/Gym id: `"VizdoomDeathmatch-v0"`**
+**Gymnasium/Gym id: `"VizdoomDeathmatch-v1"`**
 
 **Configuration file: [scenarios/deathmatch.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deathmatch.cfg)**
 
@@ -157,7 +185,7 @@ because of limited ammo).
 * timeout = 2100
 * difficulty level (`doom_skill`) = 3
 
-**Gymnasium/Gym id: `"VizdoomDefendCenter-v0"`**
+**Gymnasium/Gym id: `"VizdoomDefendCenter-v1"`**
 
 **Configuration file: [defend_the_center.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_center.cfg)**
 
@@ -184,7 +212,7 @@ because of limited ammo).
 * 2 available game variables: player's health and ammo
 * difficulty level (`doom_skill`) = 3
 
-**Gymnasium/Gym id: `"VizdoomDefendLine-v0"`**
+**Gymnasium/Gym id: `"VizdoomDefendLine-v1"`**
 
 **Configuration file: [defend_the_line.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_line.cfg)**
 
@@ -213,7 +241,7 @@ that makes map layout more complex.
 * 3 available buttons: turn left/right, move forward
 * 1 available game variable: player's health
 
-**Gymnasium/Gym id: `"VizdoomHealthGathering-v0"`/`"VizdoomHealthGatheringSupreme-v0"`**
+**Gymnasium/Gym id: `"VizdoomHealthGathering-v1"`/`"VizdoomHealthGatheringSupreme-v1"`**
 
 **Configuration file: [health_gathering.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering.cfg)/[health_gathering_supreme.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering_supreme.cfg)**
 
@@ -237,7 +265,7 @@ direction. The episode ends when the vest is reached or on timeout/
 * 3 available buttons: turn left/right, move forward
 * timeout = 2100
 
-**Gymnasium/Gym id: `"VizdoomMyWayHome-v0"`**
+**Gymnasium/Gym id: `"VizdoomMyWayHome-v1"`**
 
 **Configuration file: [my_way_home.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/my_way_home.cfg)**
 
@@ -263,7 +291,7 @@ or on timeout.
 * 3 available buttons: turn left/right, shoot (attack)
 * timeout = 300
 
-**Gymnasium/Gym id: `"VizdoomPredictPosition-v0"`**
+**Gymnasium/Gym id: `"VizdoomPredictPosition-v1"`**
 
 **Configuration file: [predict_position.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/predict_position.cfg)**
 
@@ -290,6 +318,6 @@ the player dies.
 * 1 available game variable: player's health
 * difficulty level (`doom_skill`) = 4
 
-**Gymnasium/Gym id: `"VizdoomTakeCover-v0"`**
+**Gymnasium/Gym id: `"VizdoomTakeCover-v1"`**
 
 **Configuration file: [take_cover.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/take_cover.cfg)**

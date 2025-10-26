@@ -30,6 +30,24 @@ register(
 )
 
 register(
+    id="VizdoomBasicNotifications-v1",
+    entry_point=DEFAULT_VIZDOOM_ENTRYPOINT,
+    kwargs={
+        "scenario_config_file": "basic_notifications.cfg",
+        "max_buttons_pressed": 1,
+    },
+)
+
+register(
+    id="VizdoomBasicNotifications-MultiBinary-v1",
+    entry_point=DEFAULT_VIZDOOM_ENTRYPOINT,
+    kwargs={
+        "scenario_config_file": "basic_notifications.cfg",
+        "max_buttons_pressed": 0,
+    },
+)
+
+register(
     id="VizdoomCorridor-v1",
     entry_point=DEFAULT_VIZDOOM_ENTRYPOINT,
     kwargs={"scenario_config_file": "deadly_corridor.cfg", "max_buttons_pressed": 1},
