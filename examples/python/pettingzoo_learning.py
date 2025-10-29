@@ -202,13 +202,7 @@ class VizdoomTask(TaskClass):
         return EnvCreator(_make)
 
     def get_env_fun(self, num_envs: int, continuous_actions: bool, seed: int | None, device=None):
-        # make_single = self.env_creator(seed)
-        # if num_envs is None:
-        #     num_envs = available_cpu_count()
-        # return make_single if num_envs == 1 else EnvCreator(lambda: ParallelEnv(num_envs, make_single))
-        
-        # Return non-vec env, avoid vizdoom processes + env vectorization double parallelising
-        return self.env_creator(seed if seed is not None else 0)
+        return self.env_creator(seed)
 
     def action_spec(self, env: EnvBase) -> Composite:
         return self._action_spec
@@ -298,6 +292,7 @@ def main():
     ap.add_argument("--num_minibatches", type=int, default=15)
     ap.add_argument("--num_epochs", type=int, default=45)
     ap.add_argument("--num_envs", type=int, default=1)
+    ap.add_argument("--parallel_collection", type=bool, default=False)
 
     # Video recording
     ap.add_argument("--enable_video", type=bool, default=True)
@@ -368,7 +363,7 @@ def main():
         "train_device": args.train_device,
         "buffer_device": args.buffer_device,
         "share_policy_params": True,
-        "parallel_collection": True,
+        "parallel_collection": args.parallel_collection,
         "max_n_frames": int(args.total_steps),
         "lr": args.lr,
 

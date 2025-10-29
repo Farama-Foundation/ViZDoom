@@ -8,16 +8,10 @@
 #####################################################################
 
 import atexit
-import os
 import signal
 import sys
-from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from pettingzoo_wrapper import make
-
-# Add the project root to the Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
 # Global environment variable for cleanup
 env = None
@@ -53,7 +47,6 @@ def main():
 
     # Configuration
     scenario = "health_gathering_multi_agent"
-    # scenario = "pitfall_multi_agent"
     num_agents = 2
     episodes = 3
 
