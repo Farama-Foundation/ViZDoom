@@ -27,13 +27,6 @@ from torchrl.envs.transforms.utils import _set_missing_tolerance
 from pettingzoo_wrapper import make
 
 
-def available_cpu_count() -> int:
-    try:
-        return len(os.sched_getaffinity(0))
-    except Exception:
-        return mp.cpu_count() or 1
-
-
 class MappoOnDevice(Mappo):
     def process_batch(self, group: str, batch: TensorDictBase) -> TensorDictBase:
         keys = list(batch.keys(True, True))
