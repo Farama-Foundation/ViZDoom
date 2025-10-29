@@ -1,7 +1,7 @@
 # public factory
 import os
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Optional
 
 from .base_pettingzoo_env import VizdoomParallelEnv
 from .reward_wrappers import PitfallRewardWrapper
@@ -12,7 +12,7 @@ _SCENARIO_DIR = os.path.join(Path(__file__).parent.parent, "scenarios")
 
 # scenario-specific wrappers
 _WRAPPERS = {
-    "pitfall": PitfallRewardWrapper,
+    "pitfall_multi_agent": PitfallRewardWrapper,
 }
 
 
@@ -35,8 +35,9 @@ def make(
         seed: Optional[int] = None,
         # video logging
         enable_video: bool = True,
-        record_every: int = 50,  # every N episodes
+        record_every: int = 100,  # every N episodes
         video_fps: int = 35,
+        daemon: bool = True,
 ):
     scenario = scenario.lower()
     cfg = config_file if config_file is not None else f"{_SCENARIO_DIR}/{scenario}.cfg"
@@ -55,6 +56,7 @@ def make(
         render_mode=render_mode,
         use_multi_binary_action_space=use_multi_binary_action_space,
         seed=seed,
+        daemon=daemon,
     )
 
     if enable_video:
