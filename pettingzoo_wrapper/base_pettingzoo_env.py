@@ -34,8 +34,8 @@ ctx = mp.get_context("spawn")
 import time
 
 from pettingzoo import ParallelEnv
-from pettingzoo_wrapper.utils import screen_res, parse_hw, get_flat_game_vars, read_frame
-from typing import Any, Dict, List, Optional, Tuple
+from pettingzoo_wrapper.utils import get_screen_resolution, parse_hw, get_flat_game_vars, read_frame, discover_buttons
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 from gymnasium import spaces
@@ -70,11 +70,7 @@ def _agent_process(
     game.load_config(config_path)
 
     # headless
-    game.set_window_visible(False)
-    game.set_sound_enabled(False)
-    game.set_console_enabled(False)
-    game.set_render_hud(True)
-    game.set_screen_resolution(screen_res(resolution))
+    game.set_screen_resolution(get_screen_resolution(resolution))
     game.set_ticrate(ticrate)
     game.set_mode(Mode.ASYNC_PLAYER if async_mode else Mode.PLAYER)
 
@@ -271,7 +267,7 @@ class VizdoomParallelEnv(ParallelEnv):
         self.agents: List[str] = self.possible_agents[:]
 
         # Discover spaces (no net init needed)
-        self._delta_count, self._binary_count = self._discover_buttons(config_file)
+        self._delta_count, self._binary_count = discover_buttons(config_file)
         self._simple_n = (3 ** self._delta_count) * (2 ** self._binary_count)
         self._act_len = self._delta_count + self._binary_count
         self._action_space = self._build_action_space()
@@ -328,17 +324,6 @@ class VizdoomParallelEnv(ParallelEnv):
         self._screen: Optional[pygame.Surface] = None
 
     # ------------- space helpers -------------
-    def _discover_buttons(self, cfg: str) -> Tuple[int, int]:
-        game = vzd.DoomGame()
-        game.load_config(cfg)
-        game.set_window_visible(False)
-        delta, binary = [], []
-        for b in game.get_available_buttons():
-            if vzd.is_delta_button(b) and b not in delta:
-                delta.append(b)
-            else:
-                binary.append(b)
-        return len(delta), len(binary)
 
     def _build_action_space(self) -> spaces.Space:
         if self.simple_discrete:
