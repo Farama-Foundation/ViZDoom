@@ -166,21 +166,23 @@ class VizdoomTask(TaskClass):
 
             pz_env = make(
                 scenario=cfg["scenario"],
-                num_agents=int(cfg.get("num_agents", 2)),
-                resolution=str(cfg.get("resolution", "160x120")),
-                skip_frames=cfg.get("skip_frames", 4),
-                async_mode=bool(cfg.get("async_mode", True)),
-                render_mode=str(cfg.get("render_mode", "rgb_array")),
-                host_address=str(host_address),
+                num_agents=cfg["num_agents"],
+                resolution=cfg["resolution"],
+                skip_frames=cfg["skip_frames"],
+                async_mode=cfg["async_mode"],
+                render_mode=cfg["render_mode"],
+                host_address=host_address,
                 port=port,
-                netmode=int(cfg.get("netmode", 1)),
-                ticrate=int(cfg.get("ticrate", 35)),
+                netmode=cfg["netmode"],
+                ticrate=cfg["ticrate"],
                 use_multi_binary_action_space=False,
                 seed=seed,
-                enable_video=bool(cfg.get("enable_video", True)),
-                record_every=int(cfg.get("record_every", 50)),
-                video_fps=int(cfg.get("video_fps", 35)),
+                enable_video=cfg["enable_video"],
+                record_every=cfg["record_every"],
+                video_fps=cfg["video_fps"],
+                daemon=cfg["daemon"],
             )
+
             env = PettingZooWrapper(
                 env=pz_env,
             )
@@ -266,6 +268,7 @@ def main():
     ap.add_argument("--netmode", type=int, default=1)
     ap.add_argument("--ticrate", type=int, default=35)
     ap.add_argument("--verbose", action='store_true', default=False)
+    ap.add_argument("--daemon", type=bool, default=True)
 
     # Train args
     ap.add_argument("--algo", type=str, default="mappo", choices=list(ALGOS))
@@ -285,11 +288,11 @@ def main():
     ap.add_argument("--num_minibatches", type=int, default=15)
     ap.add_argument("--num_epochs", type=int, default=45)
     ap.add_argument("--num_envs", type=int, default=1)
-    ap.add_argument("--parallel_collection", type=bool, default=False)
+    ap.add_argument("--parallel_collection", action='store_true', default=False)
 
     # Video recording
     ap.add_argument("--enable_video", type=bool, default=True)
-    ap.add_argument("--record_every", type=int, default=50)
+    ap.add_argument("--record_every", type=int, default=100)
     ap.add_argument("--video_fps", type=int, default=35)
 
     args = ap.parse_args()
