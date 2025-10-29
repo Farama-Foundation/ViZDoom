@@ -22,7 +22,7 @@ def make(
         config_file: Optional[str] = None,
         # env kwargs
         num_agents: int = 2,
-        resolution: str = "160x120",
+        resolution: str = "160X120",
         timeout: Optional[int] = None,
         skip_frames: Optional[int] = 1,
         async_mode: bool = True,

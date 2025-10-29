@@ -9,7 +9,7 @@ Usage:
     env = VizdoomParallelEnv(
         scenario="health_gathering",
         num_agents=2,
-        resolution="160x120",
+        resolution="160X120",
         skip_frames=4,
         async_mode=True,
         host_address="127.0.0.1",
@@ -233,7 +233,7 @@ class VizdoomParallelEnv(ParallelEnv):
             *,
             config_file: str,
             num_agents: int = 2,
-            resolution: str = "160x120",
+            resolution: str = "160X120",
             timeout: Optional[int] = None,
             skip_frames: Optional[int] = 1,
             async_mode: bool = True,

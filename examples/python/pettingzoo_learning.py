@@ -261,7 +261,7 @@ def main():
     # Env args
     ap.add_argument("--scenario", type=str, default="pitfall")
     ap.add_argument("--num_agents", type=int, default=2)
-    ap.add_argument("--resolution", type=str, default="160x120")
+    ap.add_argument("--resolution", type=str, default="160X120")
     ap.add_argument("--skip_frames", type=int, default=4)
     ap.add_argument("--async_mode", type=int, default=1)
     ap.add_argument("--host_address", type=str, default="127.0.0.1")

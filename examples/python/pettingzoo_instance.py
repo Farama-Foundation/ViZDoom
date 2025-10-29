@@ -59,7 +59,7 @@ def main():
         env = make(
             scenario=scenario,
             num_agents=num_agents,
-            resolution="800x600",
+            resolution="800X600",
             render_mode="human",
             seed=42,
             netmode=1,
