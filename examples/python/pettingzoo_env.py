@@ -12,18 +12,12 @@ import os
 import signal
 import sys
 from pathlib import Path
-from random import choice
 
-# Add to Python path as pettingzoo_wrapper in root
-import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from pettingzoo_wrapper import make
 
 # Add the project root to the Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
-
-import vizdoom as vzd
-from pettingzoo_wrapper.base_pettingzoo_env import VizdoomParallelEnv
 
 # Global environment variable for cleanup
 env = None
@@ -58,7 +52,8 @@ def main():
     atexit.register(cleanup_environment)
 
     # Configuration
-    scenario = "pitfall"
+    scenario = "health_gathering_multi_agent"
+    # scenario = "pitfall_multi_agent"
     num_agents = 2
     episodes = 3
 
@@ -77,7 +72,7 @@ def main():
             netmode=1,
             skip_frames=1,
             async_mode=True,
-            ticrate=20,
+            ticrate=35,
         )
         print("Environment created successfully!")
     except Exception as e:
@@ -125,9 +120,9 @@ def main():
                         "step": info.get("step", episode_steps),
                         "dead": int(info.get("DEAD", 0)),
                         "position_x": info.get("POSITION_X", None),
-                        "rewards": float(rewards.get(agent, 0.0)),              # single reward for this step
-                        "actions": actions.get(agent, None),                    # single action for this step
-                        "observations": observations.get(agent, None),          # single obs for this step
+                        "rewards": float(rewards.get(agent, 0.0)),  # single reward for this step
+                        "actions": actions.get(agent, None),  # single action for this step
+                        "observations": observations.get(agent, None),  # single obs for this step
                     }
 
                 episode_buffer[episode_key].append(step_record)

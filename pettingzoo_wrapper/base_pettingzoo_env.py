@@ -41,7 +41,7 @@ import numpy as np
 from gymnasium import spaces
 
 import vizdoom as vzd
-from vizdoom import Mode
+from vizdoom import Mode, GameVariable
 import pygame
 import cv2
 
@@ -113,6 +113,11 @@ def _agent_process(
             game.add_game_args("+viz_connect_timeout 45")
         
         game.init()
+
+        max_players = int(game.get_game_variable(GameVariable.USER1))
+        if num_agents > max_players:
+            raise ValueError(f"Scenario supports {max_players} players, but you requested {num_agents}.")
+
         game.send_game_command("viz_respawn_delay 0")
         
     except Exception as e:
