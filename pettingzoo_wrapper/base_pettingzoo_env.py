@@ -153,7 +153,7 @@ def _agent_process(
 
                 info = {
                     "num_frames": frames_per_step,
-                    "player_died": False,
+                    "player_dead": False,
                     "just_died": False,
                     "step": steps
                 }
@@ -186,7 +186,7 @@ def _agent_process(
 
                 info = {
                     "num_frames": frames_per_step,
-                    "player_died": is_dead,
+                    "player_dead": is_dead,
                     "just_died": just_died,
                     "step": steps
                 }
@@ -225,7 +225,7 @@ def _agent_process(
 
                 info = {
                     "num_frames": frames_per_step,
-                    "player_died": is_dead,
+                    "player_dead": is_dead,
                     "just_died": False,  # Can't die during respawn
                     "step": steps
                 }
@@ -246,7 +246,9 @@ def _agent_process(
 
             else:
                 # ignore unknown
-                pipe_end.send({"obs": read_frame(), "reward": 0.0, "terminated": False, "info": {}})
+                h, w = parse_hw(resolution)
+                zero_frame = np.zeros((h, w, 3), dtype=np.uint8)
+                pipe_end.send({"obs": zero_frame, "reward": 0.0, "terminated": False, "info": {}})
     finally:
         try:
             game.close()
@@ -261,7 +263,6 @@ def _agent_process(
 # -------------------------- main PettingZoo env ---------------------------
 
 class VizdoomParallelEnv(ParallelEnv):
-    metadata = {"name": "vizdoom_pz_parallel", "render_modes": ["human", "rgb_array"], "render_fps": 35}
 
     def __init__(
             self,
@@ -315,7 +316,6 @@ class VizdoomParallelEnv(ParallelEnv):
         # Child processes and pipes
         self._pipes_parent = []
         self._procs: List[ctx.Process] = []
-
 
         for i in range(self._num_agents):
             parent_end, child_end = ctx.Pipe(duplex=True)
@@ -496,7 +496,7 @@ class VizdoomParallelEnv(ParallelEnv):
 
         # Track newly dead agents (but don't respawn them until next step)
         for i, agent in enumerate(self.agents):
-            if infos[agent].get("player_died", False) and agent not in self._dead_agents:
+            if infos[agent].get("player_dead", False) and agent not in self._dead_agents:
                 self._dead_agents.add(agent)
 
         # 3) time-limit truncation (assume same num_frames for all)

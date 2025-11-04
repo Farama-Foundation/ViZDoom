@@ -3,7 +3,7 @@
 #####################################################################
 # This script demonstrates how to use the multi-agent PettingZoo wrapper
 # for ViZDoom. It runs the health gathering scenario with multiple agents
-# for 3 episodes, 1000 steps per episode, and renders the screen.
+# for 3 episodes, 250 steps per episode, and renders the screen.
 # Results are printed after each episode for each agent.
 #####################################################################
 
@@ -66,6 +66,7 @@ def main():
             skip_frames=1,
             async_mode=True,
             ticrate=35,
+            timeout=250,
         )
         print("Environment created successfully!")
     except Exception as e:

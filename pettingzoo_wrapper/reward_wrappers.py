@@ -1,7 +1,70 @@
-# pettingzoo_wrapper/reward_wrappers.py
 from typing import Any, Dict, Optional
 import numpy as np
 from pettingzoo import ParallelEnv
+
+class HealthGatheringRewardWrapper(ParallelEnv):
+    """
+    Dense shaping on HEALTH. Optional sparse goal on reaching max health.
+    """
+    def __init__(
+            self,
+            env: ParallelEnv,
+            *,
+            death_penalty: float = -10.0,
+            medkit_reward: float = 1.0,
+            health_key: str = "HEALTH",
+            dead_key: str = "DEAD",
+    ):
+        self.env = env
+        self.death_penalty = death_penalty
+        self.medkit_reward = medkit_reward
+        self.health_key = health_key
+        self.dead_key = dead_key
+        self._prev_health: Dict[str, Optional[float]] = {}
+        self.possible_agents = env.possible_agents
+        self.agents = env.agents
+
+    def action_space(self, agent: str):
+        return self.env.action_space(agent)
+
+    def observation_space(self, agent: str):
+        return self.env.observation_space(agent)
+
+    @property
+    def num_agents(self) -> int:
+        return getattr(self.env, "num_agents", len(self.possible_agents))
+
+    def reset(self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None):
+        obs, infos = self.env.reset(seed=seed, options=options)
+        self.agents = self.env.agents[:]
+        self._prev_health = {a: infos[a][self.health_key] for a in self.agents}
+        return obs, infos
+
+    def step(self, actions: Dict[str, Any]):
+        obs, rewards, terminations, truncations, infos = self.env.step(actions)
+
+        for a in self.agents:
+            r = rewards[a]
+            h_cur = infos[a].get(self.health_key, 0.0)
+            h_prev = self._prev_health[a]
+
+            if h_cur > h_prev:
+                r += self.medkit_reward
+
+            if infos[a]["just_died"]:
+                r += self.death_penalty
+
+            rewards[a] = r
+            self._prev_health[a] = h_cur
+
+        return obs, rewards, terminations, truncations, infos
+
+    def render(self):
+        return self.env.render()
+
+    def close(self):
+        return self.env.close()
+
 
 class PitfallRewardWrapper(ParallelEnv):
     """
