@@ -1,6 +1,4 @@
 import argparse
-import multiprocessing as mp
-import os
 import socket
 from dataclasses import fields
 from pathlib import Path
@@ -9,7 +7,7 @@ from typing import Dict, Any, Optional
 import torch
 import torch.nn.functional as F
 from benchmarl.algorithms import QmixConfig, MasacConfig
-from benchmarl.algorithms.mappo import Mappo, MappoConfig
+from benchmarl.algorithms.mappo import MappoConfig
 from benchmarl.environments import TaskClass
 from benchmarl.experiment import Experiment, ExperimentConfig
 from benchmarl.models import CnnConfig
@@ -17,7 +15,7 @@ from tensordict import TensorDictBase
 from torch import nn
 from torchrl.data import Composite
 from torchrl.data.tensor_specs import UnboundedContinuous
-from torchrl.envs import EnvCreator, EnvBase, RemoveEmptySpecs, ParallelEnv
+from torchrl.envs import EnvCreator, EnvBase, RemoveEmptySpecs
 from torchrl.envs import TransformedEnv, Compose
 from torchrl.envs.libs.pettingzoo import MarlGroupMapType, PettingZooWrapper
 from torchrl.envs.transforms import ObservationTransform
@@ -25,52 +23,6 @@ from torchrl.envs.transforms import SelectTransform
 from torchrl.envs.transforms.utils import _set_missing_tolerance
 
 from pettingzoo_wrapper import make
-
-
-class MappoOnDevice(Mappo):
-    def process_batch(self, group: str, batch: TensorDictBase) -> TensorDictBase:
-        keys = list(batch.keys(True, True))
-        group_shape = batch.get(group).shape
-
-        nested_done_key = ("next", group, "done")
-        nested_terminated_key = ("next", group, "terminated")
-        nested_reward_key = ("next", group, "reward")
-
-        if nested_done_key not in keys:
-            batch.set(nested_done_key, batch.get(("next", "done")).unsqueeze(-1).expand((*group_shape, 1)))
-        if nested_terminated_key not in keys:
-            batch.set(nested_terminated_key, batch.get(("next", "terminated")).unsqueeze(-1).expand((*group_shape, 1)))
-        if nested_reward_key not in keys:
-            batch.set(nested_reward_key, batch.get(("next", "reward")).unsqueeze(-1).expand((*group_shape, 1)))
-
-        loss = self.get_loss_and_updater(group)[0]
-        if self.minibatch_advantage:
-            increment = -(-self.experiment.config.train_minibatch_size(self.on_policy) // batch.shape[1])
-        else:
-            increment = batch.batch_size[0] + 1
-        last_start_index = 0
-        start_index = increment
-        minibatches = []
-        while last_start_index < batch.shape[0]:
-            minibatch = batch[last_start_index:start_index]
-            minibatch = minibatch.to(self.device, non_blocking=True)  # Move the minibatch to device
-            minibatches.append(minibatch)
-            with torch.no_grad():
-                loss.value_estimator(
-                    minibatch,
-                    params=loss.critic_network_params,
-                    target_params=loss.target_critic_network_params,
-                )
-            last_start_index = start_index
-            start_index += increment
-
-        return torch.cat(minibatches, dim=0)
-
-
-class MappoOnDeviceConfig(MappoConfig):
-    @staticmethod
-    def associated_class():
-        return MappoOnDevice
 
 
 class AHWCToTensorResize(ObservationTransform):
@@ -263,7 +215,7 @@ def main():
     ap.add_argument("--num_agents", type=int, default=2)
     ap.add_argument("--resolution", type=str, default="160X120")
     ap.add_argument("--skip_frames", type=int, default=4)
-    ap.add_argument("--async_mode", type=int, default=1)
+    ap.add_argument("--async_mode", type=bool, default=True)
     ap.add_argument("--host_address", type=str, default="127.0.0.1")
     ap.add_argument("--netmode", type=int, default=1)
     ap.add_argument("--ticrate", type=int, default=35)
@@ -294,6 +246,7 @@ def main():
     ap.add_argument("--enable_video", type=bool, default=True)
     ap.add_argument("--record_every", type=int, default=100)
     ap.add_argument("--video_fps", type=int, default=35)
+    ap.add_argument("--render_mode", type=str, default="rgb_array", choices=["rgb_array", "human"])
 
     args = ap.parse_args()
 
@@ -397,7 +350,8 @@ def main():
         "num_agents": args.num_agents,
         "resolution": args.resolution,
         "skip_frames": args.skip_frames,
-        "async_mode": bool(args.async_mode),
+        "async_mode": args.async_mode,
+        "render_mode": args.render_mode,
         "host_address": args.host_address,
         "netmode": args.netmode,
         "ticrate": args.ticrate,
@@ -405,6 +359,7 @@ def main():
         "record_every": args.record_every,
         "video_fps": args.video_fps,
         "sampling_device": args.sampling_device,
+        "daemon": args.daemon,
     }
     task = VizdoomTask(task_cfg)
 
