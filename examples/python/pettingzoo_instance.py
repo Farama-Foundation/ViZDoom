@@ -67,6 +67,7 @@ def main():
             async_mode=True,
             ticrate=35,
             timeout=250,
+            verbose=True,
         )
         print("Environment created successfully!")
     except Exception as e:

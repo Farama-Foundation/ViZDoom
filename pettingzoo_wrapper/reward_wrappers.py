@@ -20,7 +20,7 @@ class HealthGatheringRewardWrapper(ParallelEnv):
         self.medkit_reward = medkit_reward
         self.health_key = health_key
         self.dead_key = dead_key
-        self._prev_health: Dict[str, Optional[float]] = {}
+        self.prev_health: Dict[str, Optional[float]] = {}
         self.possible_agents = env.possible_agents
         self.agents = env.agents
 
@@ -37,7 +37,7 @@ class HealthGatheringRewardWrapper(ParallelEnv):
     def reset(self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None):
         obs, infos = self.env.reset(seed=seed, options=options)
         self.agents = self.env.agents[:]
-        self._prev_health = {a: infos[a][self.health_key] for a in self.agents}
+        self.prev_health = {a: infos[a][self.health_key] for a in self.agents}
         return obs, infos
 
     def step(self, actions: Dict[str, Any]):
@@ -46,7 +46,7 @@ class HealthGatheringRewardWrapper(ParallelEnv):
         for a in self.agents:
             r = rewards[a]
             h_cur = infos[a].get(self.health_key, 0.0)
-            h_prev = self._prev_health[a]
+            h_prev = self.prev_health[a]
 
             if h_cur > h_prev:
                 r += self.medkit_reward
@@ -55,7 +55,7 @@ class HealthGatheringRewardWrapper(ParallelEnv):
                 r += self.death_penalty
 
             rewards[a] = r
-            self._prev_health[a] = h_cur
+            self.prev_health[a] = h_cur
 
         return obs, rewards, terminations, truncations, infos
 

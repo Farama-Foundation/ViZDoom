@@ -38,6 +38,7 @@ def make(
         enable_video: bool = True,
         record_every: int = 100,  # every N episodes
         video_fps: int = 35,
+        verbose: bool = False,
         daemon: bool = True,
 ):
     scenario = scenario.lower()
@@ -57,6 +58,7 @@ def make(
         render_mode=render_mode,
         use_multi_binary_action_space=use_multi_binary_action_space,
         seed=seed,
+        verbose=verbose,
         daemon=daemon,
     )
 
