@@ -1,5 +1,5 @@
-import argparse
 import socket
+from argparse import ArgumentParser, BooleanOptionalAction
 from dataclasses import fields
 from pathlib import Path
 from typing import Dict, Any, Optional
@@ -209,18 +209,18 @@ ALGOS: Dict[str, Any] = {
 
 
 def main():
-    ap = argparse.ArgumentParser()
+    ap = ArgumentParser()
     # Env args
     ap.add_argument("--scenario", type=str, default="pitfall")
     ap.add_argument("--num_agents", type=int, default=2)
     ap.add_argument("--resolution", type=str, default="160X120")
     ap.add_argument("--skip_frames", type=int, default=4)
-    ap.add_argument("--async_mode", type=bool, default=True)
+    ap.add_argument("--async-mode", action=BooleanOptionalAction, default=True)
     ap.add_argument("--host_address", type=str, default="127.0.0.1")
     ap.add_argument("--netmode", type=int, default=1)
     ap.add_argument("--ticrate", type=int, default=35)
     ap.add_argument("--verbose", action='store_true', default=False)
-    ap.add_argument("--daemon", type=bool, default=True)
+    ap.add_argument("--daemon", dest="daemon", action=BooleanOptionalAction, default=True)
 
     # Train args
     ap.add_argument("--algo", type=str, default="mappo", choices=list(ALGOS))
