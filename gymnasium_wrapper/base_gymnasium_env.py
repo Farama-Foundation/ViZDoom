@@ -463,8 +463,8 @@ class VizdoomEnv(gym.Env, EzPickle):
                 dtype=np.int16,
             )
         if self.notifications:
-            spaces["notifications"] = gym.spaces.Text(min_length = 1, max_length = 20) 
-            
+            spaces["notifications"] = gym.spaces.Text(min_length=1, max_length=20)
+
         self.num_game_variables = self.game.get_available_game_variables_size()
         if self.num_game_variables > 0:
             spaces["gamevariables"] = gym.spaces.Box(
