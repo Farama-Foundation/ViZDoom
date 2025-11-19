@@ -125,6 +125,7 @@ class VizdoomEnv(gym.Env, EzPickle):
         self.labels = self.game.is_labels_buffer_enabled()
         self.automap = self.game.is_automap_buffer_enabled()
         self.audio = self.game.is_audio_buffer_enabled()
+        self.notifications = self.game.is_notifications_buffer_enabled()
 
         # parse buttons defined by config file
         self.__parse_available_buttons()
@@ -232,6 +233,8 @@ class VizdoomEnv(gym.Env, EzPickle):
                     observation["automap"] = self.state.automap_buffer[..., None]  # type: ignore
             if self.audio:
                 observation["audio"] = self.state.audio_buffer
+            if self.notifications:
+                observation["notifications"] = self.state.notifications_buffer
             if self.num_game_variables > 0:
                 observation["gamevariables"] = self.state.game_variables.astype(  # type: ignore
                     np.float32
@@ -459,6 +462,9 @@ class VizdoomEnv(gym.Env, EzPickle):
                 ),
                 dtype=np.int16,
             )
+        if self.notifications:
+            spaces["notifications"] = gym.spaces.Text(min_length = 1, max_length = 20) 
+            
         self.num_game_variables = self.game.get_available_game_variables_size()
         if self.num_game_variables > 0:
             spaces["gamevariables"] = gym.spaces.Box(
