@@ -8,7 +8,7 @@ import pickle
 
 import gymnasium
 import numpy as np
-from gymnasium.spaces import Box, Dict, Discrete, MultiBinary, MultiDiscrete
+from gymnasium.spaces import Box, Text, Dict, Discrete, MultiBinary, MultiDiscrete
 from gymnasium.utils.env_checker import check_env, data_equivalence
 
 from vizdoom import gymnasium_wrapper  # noqa
@@ -35,6 +35,7 @@ buffers = [
     "labels",
     "automap",
     "audio",
+    "notifications"
 ]
 
 
@@ -133,6 +134,7 @@ def test_gymnasium_wrapper_obs_space():
     env_configs = [
         "basic_rgb_i_1_3",
         "basic_g8_i_1_0",
+        "basic_g8_i_1_0_wNotifications",
         "basic_g8_i_1_0_wAudio",
         "basic_g8_idla_4_2",
         "basic_g8_idl_3_1",
@@ -144,9 +146,11 @@ def test_gymnasium_wrapper_obs_space():
     audio_obs_space = Box(
         -32768, 32767, (int(44100 * 1 / 35 * 1), 2), dtype=np.int16
     )  # sampling rate = 44100, frame_skip = 1
+    notifications_obs_space = Text(min_length=1, max_length=32768)
     observation_spaces = [
         Dict({"screen": tri_channel_screen_obs_space}),
         Dict({"screen": single_channel_screen_obs_space}),
+        Dict({"screen": single_channel_screen_obs_space, "notifications": notifications_obs_space}),
         Dict({"screen": single_channel_screen_obs_space, "audio": audio_obs_space}),
         Dict(
             {
