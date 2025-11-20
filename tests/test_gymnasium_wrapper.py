@@ -8,7 +8,7 @@ import pickle
 
 import gymnasium
 import numpy as np
-from gymnasium.spaces import Box, Text, Dict, Discrete, MultiBinary, MultiDiscrete
+from gymnasium.spaces import Box, Dict, Discrete, MultiBinary, MultiDiscrete, Text
 from gymnasium.utils.env_checker import check_env, data_equivalence
 
 from vizdoom import gymnasium_wrapper  # noqa
@@ -29,14 +29,7 @@ envs_with_animated_textures = [
 envs_with_audio = [
     "VizdoomBasicAudio",
 ]
-buffers = [
-    "screen",
-    "depth",
-    "labels",
-    "automap",
-    "audio",
-    "notifications"
-]
+buffers = ["screen", "depth", "labels", "automap", "audio", "notifications"]
 
 
 # Testing with different non-default kwargs (since each has a different obs space)
@@ -150,7 +143,12 @@ def test_gymnasium_wrapper_obs_space():
     observation_spaces = [
         Dict({"screen": tri_channel_screen_obs_space}),
         Dict({"screen": single_channel_screen_obs_space}),
-        Dict({"screen": single_channel_screen_obs_space, "notifications": notifications_obs_space}),
+        Dict(
+            {
+                "screen": single_channel_screen_obs_space,
+                "notifications": notifications_obs_space,
+            }
+        ),
         Dict({"screen": single_channel_screen_obs_space, "audio": audio_obs_space}),
         Dict(
             {
