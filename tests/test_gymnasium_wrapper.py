@@ -29,7 +29,7 @@ envs_with_animated_textures = [
 envs_with_audio = [
     "VizdoomBasicAudio",
 ]
-envs_with_notificatoins =[
+envs_with_notifications =[
     "VizdoomBasicNotifications"
     ]
 buffers = ["screen", "depth", "labels", "automap", "audio", "notifications"]
