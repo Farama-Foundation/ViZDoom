@@ -55,8 +55,7 @@ class ObservationWrapper(gymnasium.ObservationWrapper):
         self.image_shape_reverse = shape[::-1]
         self.n_features = 256
         self.vectorizer = HashingVectorizer(
-            n_features=self.n_features, alternate_sign=False, norm=None
-        )
+            n_features=self.n_features)
 
         # Create new observation space with the new shape
         num_channels = env.observation_space["screen"].shape[-1]
@@ -94,7 +93,7 @@ class ObservationWrapper(gymnasium.ObservationWrapper):
         if "notifications" in self.observation_space.spaces:
             observation = {
                 "screen": cv2.resize(observation["screen"], self.image_shape_reverse),
-                "notifications" : self.vectorizer.transform([observation["notifications"]]).toarray().astype(np.float32)[0]
+                "notifications" : self.vectorizer.fit_transform([observation["notifications"]]).toarray().astype(np.float32)[0]
                 }
     
         else:
