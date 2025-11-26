@@ -77,7 +77,10 @@ class ObservationWrapper(gymnasium.ObservationWrapper):
                     "screen": gymnasium.spaces.Box(
                         0, 255, shape=new_shape, dtype=np.uint8
                     ),
-                    "notifications": env.observation_space["notifications"]
+                    "notifications": gymnasium.spaces.Box(
+                        low=-np.inf, high=np.inf, shape=(self.n_features,), dtype=np.float32
+                    )
+                    #"notifications": env.observation_space["notifications"]
                 }
             )
         else:
@@ -95,7 +98,7 @@ class ObservationWrapper(gymnasium.ObservationWrapper):
             if isinstance(notif, str):
                 notif_vector = self.vectorizer.fit_transform([notif]).toarray().astype(np.float32)[0]
             else:
-                noti_vector = notif
+                notif_vector = notif
             observation = {
                 "screen": cv2.resize(observation["screen"], self.image_shape_reverse),
                 "notifications" :  notif_vector
