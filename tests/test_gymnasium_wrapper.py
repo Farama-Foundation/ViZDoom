@@ -29,9 +29,6 @@ envs_with_animated_textures = [
 envs_with_audio = [
     "VizdoomBasicAudio",
 ]
-envs_with_notifications =[
-    "VizdoomBasicNotifications"
-    ]
 buffers = ["screen", "depth", "labels", "automap", "audio", "notifications"]
 
 
@@ -45,7 +42,10 @@ def test_gymnasium_wrapper():
         # Skip environments with animated textures and audio
         # as they might render different states for the same seeds
         # and audio might render slightly different
-        if env_name.split("-")[0] in envs_with_animated_textures + envs_with_audio + envs_with_notifications:
+        if (
+            env_name.split("-")[0]
+            in envs_with_animated_textures + envs_with_audio 
+        ):
             continue
 
         for frame_skip in [1, 4]:

@@ -15,11 +15,12 @@ from argparse import ArgumentParser
 import cv2
 import gymnasium
 import numpy as np
+from sklearn.feature_extraction.text import HashingVectorizer
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 
 import vizdoom.gymnasium_wrapper  # noqa
-from sklearn.feature_extraction.text import HashingVectorizer
+
 
 DEFAULT_ENV = "VizdoomBasicNotifications-v1"
 AVAILABLE_ENVS = [env for env in gymnasium.envs.registry.keys() if "Vizdoom" in env]  # type: ignore
@@ -54,8 +55,7 @@ class ObservationWrapper(gymnasium.ObservationWrapper):
         self.image_shape = shape
         self.image_shape_reverse = shape[::-1]
         self.n_features = 256
-        self.vectorizer = HashingVectorizer(
-            n_features=self.n_features)
+        self.vectorizer = HashingVectorizer(n_features=self.n_features)
 
         # Create new observation space with the new shape
         num_channels = env.observation_space["screen"].shape[-1]
@@ -78,9 +78,12 @@ class ObservationWrapper(gymnasium.ObservationWrapper):
                         0, 255, shape=new_shape, dtype=np.uint8
                     ),
                     "notifications": gymnasium.spaces.Box(
-                        low=-np.inf, high=np.inf, shape=(self.n_features,), dtype=np.float32
+                        low=-np.inf,
+                        high=np.inf,
+                        shape=(self.n_features,),
+                        dtype=np.float32,
                     )
-                    #"notifications": env.observation_space["notifications"]
+                    # "notifications": env.observation_space["notifications"]
                 }
             )
         else:
@@ -92,17 +95,21 @@ class ObservationWrapper(gymnasium.ObservationWrapper):
                 }
             )
 
-    def observation(self, observation):    
+    def observation(self, observation):
         if "notifications" in self.observation_space.spaces:
             notif = observation["notifications"]
             if isinstance(notif, str):
-                notif_vector = self.vectorizer.fit_transform([notif]).toarray().astype(np.float32)[0]
+                notif_vector = (
+                    self.vectorizer.fit_transform([notif])
+                    .toarray()
+                    .astype(np.float32)[0]
+                )
             else:
                 notif_vector = notif
             observation = {
                 "screen": cv2.resize(observation["screen"], self.image_shape_reverse),
-                "notifications" :  notif_vector
-                }
+                "notifications": notif_vector,
+            }
         else:
             observation = {
                 "screen": cv2.resize(observation["screen"], self.image_shape_reverse)
@@ -128,7 +135,13 @@ def main(args):
         env_kwargs=dict(frame_skip=FRAME_SKIP),
     )
 
-    agent = PPO("MultiInputPolicy", envs, n_steps=N_STEPS, verbose=2, tensorboard_log=f"{args.dir}")
+    agent = PPO(
+        "MultiInputPolicy",
+        envs,
+        n_steps=N_STEPS,
+        verbose=2,
+        tensorboard_log=f"{args.dir}",
+    )
 
     # Do the actual learning
     # This will print out the results in the console.
@@ -151,13 +164,7 @@ if __name__ == "__main__":
         choices=AVAILABLE_ENVS,
         help="Name of the environment to play",
     )
-    parser.add_argument(
-        "--dir",
-        default="./logs/"
-    )
-    parser.add_argument(
-        "--exp",
-        default="Notif"
-    )
+    parser.add_argument("--dir", default="./logs/")
+    parser.add_argument("--exp", default="Notif")
     args = parser.parse_args()
     main(args)
