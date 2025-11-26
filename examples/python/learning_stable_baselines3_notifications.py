@@ -78,8 +78,7 @@ class ObservationWrapper(gymnasium.ObservationWrapper):
                     "screen": gymnasium.spaces.Box(
                         0, 255, shape=new_shape, dtype=np.uint8
                     ),
-                    "notifications": gymnasium.spaces.Box(
-                        0, 1e10, shape = (256,), dtype=np.float32)
+                    "notifications": env.observation_space["notifications"]
                 }
             )
         else:
