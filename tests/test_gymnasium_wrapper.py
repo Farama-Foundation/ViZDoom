@@ -42,10 +42,7 @@ def test_gymnasium_wrapper():
         # Skip environments with animated textures and audio
         # as they might render different states for the same seeds
         # and audio might render slightly different
-        if (
-            env_name.split("-")[0]
-            in envs_with_animated_textures + envs_with_audio 
-        ):
+        if env_name.split("-")[0] in envs_with_animated_textures + envs_with_audio:
             continue
 
         for frame_skip in [1, 4]:
@@ -142,7 +139,7 @@ def test_gymnasium_wrapper_obs_space():
     audio_obs_space = Box(
         -32768, 32767, (int(44100 * 1 / 35 * 1), 2), dtype=np.int16
     )  # sampling rate = 44100, frame_skip = 1
-    notifications_obs_space = Text(min_length=1, max_length=32768)
+    notifications_obs_space = Text(min_length=0, max_length=32768)
     observation_spaces = [
         Dict({"screen": tri_channel_screen_obs_space}),
         Dict({"screen": single_channel_screen_obs_space}),

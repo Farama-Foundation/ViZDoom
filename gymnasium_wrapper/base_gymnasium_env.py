@@ -242,9 +242,16 @@ class VizdoomEnv(gym.Env, EzPickle):
         else:
             # there is no state in the terminal step, so a zero observation is returned instead
             for space_key, space_item in self.observation_space.spaces.items():
-                observation[space_key] = np.zeros(
-                    space_item.shape, dtype=space_item.dtype
-                )
+                if isinstance(space_item, gym.spaces.Box):
+                    observation[space_key] = np.zeros(
+                        space_item.shape, dtype=space_item.dtype
+                    )
+                elif isinstance(space_item, gym.spaces.Text):
+                    observation[space_key] = ""
+                else:
+                    warnings.warn(
+                        f"Observation space of type {type(space_item)} not supported when there is no game state."
+                    )
 
         return observation
 
@@ -463,7 +470,7 @@ class VizdoomEnv(gym.Env, EzPickle):
                 dtype=np.int16,
             )
         if self.notifications:
-            spaces["notifications"] = gym.spaces.Text(min_length=1, max_length=32768)
+            spaces["notifications"] = gym.spaces.Text(min_length=0, max_length=32768)
 
         self.num_game_variables = self.game.get_available_game_variables_size()
         if self.num_game_variables > 0:

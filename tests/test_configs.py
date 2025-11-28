@@ -121,6 +121,7 @@ def test_scenario_configs():
     print("Testing load_config() and default scenarios ...")
 
     for file in os.listdir(vzd.scenarios_path):
+        print(f"Testing for config file: {vzd.scenarios_path}/{file}")
         if file.endswith(".cfg"):
             game = vzd.DoomGame()
 
