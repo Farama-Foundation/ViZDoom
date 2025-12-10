@@ -125,6 +125,7 @@ class VizdoomEnv(gym.Env, EzPickle):
         self.labels = self.game.is_labels_buffer_enabled()
         self.automap = self.game.is_automap_buffer_enabled()
         self.audio = self.game.is_audio_buffer_enabled()
+        self.notifications = self.game.is_notifications_buffer_enabled()
 
         # parse buttons defined by config file
         self.__parse_available_buttons()
@@ -232,6 +233,8 @@ class VizdoomEnv(gym.Env, EzPickle):
                     observation["automap"] = self.state.automap_buffer[..., None]  # type: ignore
             if self.audio:
                 observation["audio"] = self.state.audio_buffer
+            if self.notifications:
+                observation["notifications"] = self.state.notifications_buffer
             if self.num_game_variables > 0:
                 observation["gamevariables"] = self.state.game_variables.astype(  # type: ignore
                     np.float32
@@ -239,9 +242,16 @@ class VizdoomEnv(gym.Env, EzPickle):
         else:
             # there is no state in the terminal step, so a zero observation is returned instead
             for space_key, space_item in self.observation_space.spaces.items():
-                observation[space_key] = np.zeros(
-                    space_item.shape, dtype=space_item.dtype
-                )
+                if isinstance(space_item, gym.spaces.Box):
+                    observation[space_key] = np.zeros(
+                        space_item.shape, dtype=space_item.dtype
+                    )
+                elif isinstance(space_item, gym.spaces.Text):
+                    observation[space_key] = ""
+                else:
+                    warnings.warn(
+                        f"Observation space of type {type(space_item)} not supported when there is no game state."
+                    )
 
         return observation
 
@@ -459,6 +469,9 @@ class VizdoomEnv(gym.Env, EzPickle):
                 ),
                 dtype=np.int16,
             )
+        if self.notifications:
+            spaces["notifications"] = gym.spaces.Text(min_length=0, max_length=32768)
+
         self.num_game_variables = self.game.get_available_game_variables_size()
         if self.num_game_variables > 0:
             spaces["gamevariables"] = gym.spaces.Box(

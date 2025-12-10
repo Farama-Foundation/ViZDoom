@@ -546,6 +546,8 @@ void C_AddNotifyString (int printlevel, const char *source)
 
 void AddToConsole (int printlevel, const char *text)
 {
+	//VIZDOOM_CODE
+	VIZ_LogNotification(gametic, text);
 	conbuffer->AddText(printlevel, text, Logfile);
 }
 
@@ -566,8 +568,6 @@ int PrintString (int printlevel, const char *outline)
 		AddToConsole (printlevel, outline);
 		if (vidactive && screen && SmallFont)
 		{
-			//VIZDOOM_CODE
-			VIZ_LogNotification(gametic, outline);
 			C_AddNotifyString (printlevel, outline);
 			maybedrawnow (false, false);
 		}

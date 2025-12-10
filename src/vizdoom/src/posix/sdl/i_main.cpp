@@ -203,9 +203,6 @@ int main (int argc, char **argv)
 		cc_install_handlers(argc, argv, 4, s, GAMENAMELOWERCASE "-crash.log", DoomSpecificInfo);
 	}
 #endif // !__APPLE__
-
-	//I'm not proud of this solution. Shame on me.
-
 	//VIZDOOM_CODE
 	for(int i = 0; i < argc; ++i){
 		if(strcmp("+viz_noconsole", argv[i]) == 0) {

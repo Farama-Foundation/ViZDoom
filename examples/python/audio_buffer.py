@@ -22,7 +22,7 @@ if __name__ == "__main__":
     game = vzd.DoomGame()
 
     # Load config of the basic scenario
-    game.load_config(os.path.join(vzd.scenarios_path, "basic.cfg"))
+    game.load_config(os.path.join(vzd.scenarios_path, "basic_audio.cfg"))
 
     # Turns on the audio buffer. (turned off by default)
     # If this is switched on, the audio will stop playing on device, even with game.set_sound_enabled(True)

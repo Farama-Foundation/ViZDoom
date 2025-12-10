@@ -399,7 +399,7 @@ namespace vizdoom {
 
             /* Update text console */
             if (this->doomController->isNotificationsEnabled()) {
-                this->state->notificationsBuffer = std::string(smState->NOTIFICATIONS_TEXT, smState->NOTIFICATIONS_TEXT + MAX_NOTIFICATIONS_CHARS);
+                this->state->notificationsBuffer = std::string(smState->NOTIFICATIONS_TEXT, smState->NOTIFICATIONS_TEXT + smState->NOTIFICATIONS_TEXT_SIZE);
             } else this->state->notificationsBuffer.clear();
 
         } else this->state = nullptr;
