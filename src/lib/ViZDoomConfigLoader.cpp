@@ -384,7 +384,7 @@ namespace vizdoom {
         return true;
     }
 
-    bool ConfigLoader::parseConfig(std::istream &input, const std::string &sourceDesc) {
+    bool ConfigLoader::parseConfig(std::istream &input, const std::string &sourceDesc, const std::string &configFilePath) {
         bool success = true;
 
         std::string line;
@@ -663,19 +663,19 @@ namespace vizdoom {
                 continue;
             }
             else if (key == "vizdoom_path" || key == "vizdoompath") {
-                this->game->setViZDoomPath(relativePath(originalVal, this->filePath));
+                this->game->setViZDoomPath(relativePath(originalVal, configFilePath));
                 continue;
             }
             else if (key == "doom_game_path" || key == "doomgamepath") {
-                this->game->setDoomGamePath(relativePath(originalVal, this->filePath));
+                this->game->setDoomGamePath(relativePath(originalVal, configFilePath));
                 continue;
             }
             else if (key == "doom_scenario_path" || key == "doomscenariopath") {
-                this->game->setDoomScenarioPath(relativePath(originalVal, this->filePath));
+                this->game->setDoomScenarioPath(relativePath(originalVal, configFilePath));
                 continue;
             }
             else if (key == "doom_config_path" || key == "doomconfigpath") {
-                this->game->setDoomConfigPath(relativePath(originalVal, this->filePath));
+                this->game->setDoomConfigPath(relativePath(originalVal, configFilePath));
                 continue;
             }
 
@@ -887,7 +887,8 @@ namespace vizdoom {
 
     bool ConfigLoader::set(std::string configStr) {
         std::istringstream configStream(configStr);
-        return parseConfig(configStream, "config string");
+        // When using set(), paths are relative to working directory (empty string)
+        return parseConfig(configStream, "config string", "");
     }
 
     bool ConfigLoader::load(std::string filePath) {
@@ -903,16 +904,19 @@ namespace vizdoom {
         std::string sharedConfigPath = getThisSharedObjectPath() + "/scenarios/" + scenarioName;
 
         // Check if scenario exists in library's scenerios directory
-        if (fileExistsAndCanBeRead(filePath)) this->filePath = filePath;
-        else if (fileExistsAndCanBeRead(workingConfigPath)) this->filePath = workingConfigPath;
-        else if (fileExistsAndCanBeRead(sharedConfigPath)) this->filePath = sharedConfigPath;
+        std::string actualConfigPath;
+        if (fileExistsAndCanBeRead(filePath)) actualConfigPath = filePath;
+        else if (fileExistsAndCanBeRead(workingConfigPath)) actualConfigPath = workingConfigPath;
+        else if (fileExistsAndCanBeRead(sharedConfigPath)) actualConfigPath = sharedConfigPath;
         else throw FileDoesNotExistException(filePath + " | " + workingConfigPath + " | " + sharedConfigPath);
 
-        std::ifstream file(this->filePath);
+        std::ifstream file(actualConfigPath);
         std::string configContent((std::istreambuf_iterator<char>(file)),
                                    std::istreambuf_iterator<char>());
         file.close();
 
-        return set(configContent);
+        // When using load(), paths are relative to the config file location
+        std::istringstream configStream(configContent);
+        return parseConfig(configStream, actualConfigPath, actualConfigPath);
     }
 }

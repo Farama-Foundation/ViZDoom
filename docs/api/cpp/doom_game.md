@@ -1048,6 +1048,8 @@ false if the file contained errors.
 
 If the file relative path is given, it will be searched for in the following order: `<current directory>`, `<current directory>/scenarios/`, `<ViZDoom library location>/scenarios/`.
 
+Relative paths in the config file (e.g. for `doom_scenario_path`) are resolved relative to the config file location.
+
 
 ### `setConfig`
 
@@ -1067,6 +1069,8 @@ When using a dictionary:
   - Enums: Button, GameVariable, ScreenResolution, ScreenFormat, SamplingRate, Mode, AutomapMode
   - Lists: for 'available_buttons' and 'available_game_variables'
 
+Relative paths (e.g., for 'doom_scenario_path') are resolved relative to the current working directory.
+
 Example:
 ```
     game.set_config({
@@ -1079,7 +1083,7 @@ Example:
     })
 ```
 
-Returns `True` if the configuration was successfully applied, `False` if errors occurred.
+Returns true if the configuration was successfully applied, false if errors occurred.
 
 
 ---

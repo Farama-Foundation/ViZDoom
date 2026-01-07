@@ -67,10 +67,9 @@ namespace vizdoom {
         parseListProperty(int &line_number, std::string &value, std::istream &input, std::vector<std::string> &output);
 
     private:
-        bool parseConfig(std::istream &input, const std::string &sourceDesc);
+        bool parseConfig(std::istream &input, const std::string &sourceDesc, const std::string &configFilePath);
 
         DoomGame *game;
-        std::string filePath;
     };
 }
 
