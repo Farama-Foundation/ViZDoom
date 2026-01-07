@@ -12,15 +12,15 @@ The naming convention of original Doom levels environments is as follows:
 `"Vizdoom<Game><Map>-S<X>-v0"`.
 
 Where `<Game>` is Freedoom, Freedoom2, Doom or Doom2, and S<X> is a skill level, with X being number from 1 to 5:
-* `S1` - VERY EASY, “I'm Too Young to Die”
-* `S2` - EASY, “Hey, Not Too Rough"
-* `S3` - NORMAL, “Hurt Me Plenty”
-* `S4` - HARD, “Ultra-Violence”
-* `S5` - VERY HARD, “Nightmare!”
+- `S1` - VERY EASY, “I'm Too Young to Die”
+- `S2` - EASY, “Hey, Not Too Rough"
+- `S3` - NORMAL, “Hurt Me Plenty”
+- `S4` - HARD, “Ultra-Violence”
+- `S5` - VERY HARD, “Nightmare!”
 
 For example:
-* `"VizdoomDoomE1M1-S1-v0"` environment uses original Doom 1 E1M1 and skill (difficulty) level 1 (VERY EASY, “I'm Too Young to Die”)
-* `"VizdoomDoom2MAP01-S3-v0"` environment uses original Doom 2 MAP01 level with skill level 3
+- `"VizdoomDoomE1M1-S1-v0"` environment uses original Doom 1 E1M1 and skill (difficulty) level 1 (VERY EASY, “I'm Too Young to Die”)
+- `"VizdoomDoom2MAP01-S3-v0"` environment uses original Doom 2 MAP01 level with skill level 3
 
 
 ## Using original Doom levels with Original ViZDoom API
@@ -38,10 +38,10 @@ game.set_skill_level(1)  # or 2, 3, 4, 5
 ```
 
 Configuration file:
-* Doom: [doom.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/doom.cfg)
-* Doom 2: [doom2.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/doom2.cfg)
-* Freedoom: [freedoom.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/freedoom.cfg)
-* Freedoom 2: [freedoom2.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/freedoom2.cfg)
+- Doom: [doom.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/doom.cfg)
+- Doom 2: [doom2.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/doom2.cfg)
+- Freedoom: [freedoom.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/freedoom.cfg)
+- Freedoom 2: [freedoom2.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/freedoom2.cfg)
 
 
 ## Original Doom 1 levels
@@ -51,7 +51,7 @@ The list of all original Doom 1 levels and their corresponding ViZDoom environme
 ### Episode 1: Knee-Deep in the Dead
 
 | Map ID   | Gymnasium Environment Name  | Level Name                                      |
-|----------|-----------------------------|-------------------------------------------------|
+| :--      | :--                         | :--                                             |
 | `"E1M1"` | `"VizdoomDoomE1M1-S<X>-v0"` | Doom 1 E1M1: Hangar                             |
 | `"E1M2"` | `"VizdoomDoomE1M2-S<X>-v0"` | Doom 1 E1M2: Nuclear Plant                      |
 | `"E1M3"` | `"VizdoomDoomE1M3-S<X>-v0"` | Doom 1 E1M3: Toxin Refinery                     |
@@ -65,7 +65,7 @@ The list of all original Doom 1 levels and their corresponding ViZDoom environme
 ### Episode 2: The Shores of Hell
 
 | Map ID   | Gymnasium Environment Name  | Level Name                                      |
-|----------|-----------------------------|-------------------------------------------------|
+| :--      | :--                         | :--                                             |
 | `"E2M1"` | `"VizdoomDoomE2M1-S<X>-v0"` | Doom 1 E2M1: Deimos Anomaly                     |
 | `"E2M2"` | `"VizdoomDoomE2M2-S<X>-v0"` | Doom 1 E2M2: Containment Area                   |
 | `"E2M3"` | `"VizdoomDoomE2M3-S<X>-v0"` | Doom 1 E2M3: Refinery                           |
@@ -80,7 +80,7 @@ The list of all original Doom 1 levels and their corresponding ViZDoom environme
 ### Episode 3: Inferno
 
 | Map ID   | Gymnasium Environment Name  | Level Name                                      |
-|----------|-----------------------------|-------------------------------------------------|
+| :--      | :--                         | :--                                             |
 | `"E3M1"` | `"VizdoomDoomE3M1-S<X>-v0"` | Doom 1 E3M1: Hell Keep                          |
 | `"E3M2"` | `"VizdoomDoomE3M2-S<X>-v0"` | Doom 1 E3M2: Slough of Despair                  |
 | `"E3M3"` | `"VizdoomDoomE3M3-S<X>-v0"` | Doom 1 E3M3: Pandemonium                        |
@@ -95,7 +95,7 @@ The list of all original Doom 1 levels and their corresponding ViZDoom environme
 ### Episode 4: Thy Flesh Consumed
 
 | Map ID   | Gymnasium Environment Name  | Level Name                                      |
-|----------|-----------------------------|-------------------------------------------------|
+| :--      | :--                         | :--                                             |
 | `"E4M1"` | `"VizdoomDoomE4M1-S<X>-v0"` | Doom 1 E4M1: Hell Beneath                       |
 | `"E4M2"` | `"VizdoomDoomE4M2-S<X>-v0"` | Doom 1 E4M2: Perfect Hatred                     |
 | `"E4M3"` | `"VizdoomDoomE4M3-S<X>-v0"` | Doom 1 E4M3: Sever the Wicked                   |
@@ -114,7 +114,7 @@ The list of all original Doom 2 levels and their corresponding ViZDoom environme
 ### Episode 1: The Space Station
 
 | Map ID    | Gymnasium Environment Name    | Level Name                                   |
-|-----------|-------------------------------|----------------------------------------------|
+| :--       | :--                           | :--                                          |
 | `"MAP01"` | `"VizdoomDoom2MAP01-S<X>-v0"` | Doom 2 MAP01: Entryway                       |
 | `"MAP02"` | `"VizdoomDoom2MAP02-S<X>-v0"` | Doom 2 MAP02: Underhalls                     |
 | `"MAP03"` | `"VizdoomDoom2MAP03-S<X>-v0"` | Doom 2 MAP03: The Gantlet                    |
@@ -131,7 +131,7 @@ The list of all original Doom 2 levels and their corresponding ViZDoom environme
 ### Episode 2: The City
 
 | Map ID    | Gymnasium Environment Name    | Level Name                                   |
-|-----------|-------------------------------|----------------------------------------------|
+| :--       | :--                           | :--                                          |
 | `"MAP12"` | `"VizdoomDoom2MAP12-S<X>-v0"` | Doom 2 MAP12: The Factory                    |
 | `"MAP13"` | `"VizdoomDoom2MAP13-S<X>-v0"` | Doom 2 MAP13: Downtown                       |
 | `"MAP14"` | `"VizdoomDoom2MAP14-S<X>-v0"` | Doom 2 MAP14: The Inmost Dens                |
@@ -145,7 +145,7 @@ The list of all original Doom 2 levels and their corresponding ViZDoom environme
 ### Episode 3: Hell
 
 | Map ID    | Gymnasium Environment Name    | Level Name                                   |
-|-----------|-------------------------------|----------------------------------------------|
+| :--       | :--                           | :--                                          |
 | `"MAP21"` | `"VizdoomDoom2MAP21-S<X>-v0"` | Doom 2 MAP21: Nirvana                        |
 | `"MAP22"` | `"VizdoomDoom2MAP22-S<X>-v0"` | Doom 2 MAP22: The Catacombs                  |
 | `"MAP23"` | `"VizdoomDoom2MAP23-S<X>-v0"` | Doom 2 MAP23: Barrels o' Fun                 |
@@ -161,7 +161,7 @@ The list of all original Doom 2 levels and their corresponding ViZDoom environme
 ### Secret levels:
 
 | Map ID    | Gymnasium Environment Name    | Level Name                                   |
-|-----------|-------------------------------|----------------------------------------------|
+| :--       | :--                           | :--                                          |
 | `"MAP31"` | `"VizdoomDoom2MAP31-S<X>-v0"` | Doom 2 MAP31: Wolfenstein2                   |
 | `"MAP32"` | `"VizdoomDoom2MAP32-S<X>-v0"` | Doom 2 MAP32: Grosse2                        |
 
@@ -172,8 +172,8 @@ The list of all Freedoom levels and their corresponding ViZDoom environment name
 
 ### Episode 1: Outpost Outbreak
 
-| Map ID   | Gymnasium Environment Name        | Level Name                                |
-|----------|---------------------------------|---------------------------------------------|
+| Map ID   | Gymnasium Environment Name      | Level Name                                  |
+| :--      | :--                             | :--                                         |
 | `"E1M1"` | `"VizdoomFreedoomE1M1-S<X>-v0"` | Freedoom E1M1: Outer Prison                 |
 | `"E1M2"` | `"VizdoomFreedoomE1M2-S<X>-v0"` | Freedoom E1M2: Communications Center        |
 | `"E1M3"` | `"VizdoomFreedoomE1M3-S<X>-v0"` | Freedoom E1M3: Waste Disposal               |
@@ -187,8 +187,8 @@ The list of all Freedoom levels and their corresponding ViZDoom environment name
 
 ### Episode 2: Military Labs
 
-| Map ID   | Gymnasium Environment Name        | Level Name                                |
-|----------|---------------------------------|---------------------------------------------|
+| Map ID   | Gymnasium Environment Name      | Level Name                                  |
+| :--      | :--                             | :--                                         |
 | `"E2M1"` | `"VizdoomFreedoomE2M1-S<X>-v0"` | Freedoom E2M1: Elemental Gate               |
 | `"E2M2"` | `"VizdoomFreedoomE2M2-S<X>-v0"` | Freedoom E2M2: Shifter                      |
 | `"E2M3"` | `"VizdoomFreedoomE2M3-S<X>-v0"` | Freedoom E2M3: Reclaimed Facilities         |
@@ -202,8 +202,8 @@ The list of all Freedoom levels and their corresponding ViZDoom environment name
 
 ### Episode 3: Event Horizon
 
-| Map ID   | Gymnasium Environment Name        | Level Name                                |
-|----------|---------------------------------|---------------------------------------------|
+| Map ID   | Gymnasium Environment Name      | Level Name                                  |
+| :--      | :--                             | :--                                         |
 | `"E3M1"` | `"VizdoomFreedoomE3M1-S<X>-v0"` | Freedoom E3M1: Land of the Lost             |
 | `"E3M2"` | `"VizdoomFreedoomE3M2-S<X>-v0"` | Freedoom E3M2: Geothermal Tunnels           |
 | `"E3M3"` | `"VizdoomFreedoomE3M3-S<X>-v0"` | Freedoom E3M3: Sacrificial Bastion          |
@@ -217,8 +217,8 @@ The list of all Freedoom levels and their corresponding ViZDoom environment name
 
 ### Episode 4: Double Impact
 
-| Map ID   | Gymnasium Environment Name        | Level Name                                |
-|----------|---------------------------------|---------------------------------------------|
+| Map ID   | Gymnasium Environment Name      | Level Name                                  |
+| :--      | :--                             | :--                                         |
 | `"E4M1"` | `"VizdoomFreedoomE4M1-S<X>-v0"` | Freedoom E4M1: Maintenance Area             |
 | `"E4M2"` | `"VizdoomFreedoomE4M2-S<X>-v0"` | Freedoom E4M2: Research Complex             |
 | `"E4M3"` | `"VizdoomFreedoomE4M3-S<X>-v0"` | Freedoom E4M3: Central Computing            |
@@ -235,7 +235,7 @@ The list of all Freedoom levels and their corresponding ViZDoom environment name
 The list of all Freedoom 2 (Freedoom: Phase 2) levels and their corresponding ViZDoom environment names:
 
 | Map ID    | Gymnasium Environment Name        | Level Name                                     |
-|-----------|-----------------------------------|------------------------------------------------|
+| :--       | :--                               | :--                                            |
 | `"MAP01"` | `"VizdoomFreedoom2MAP01-S<X>-v0"` | Freedoom 2 MAP01: Hydroelectric Plant          |
 | `"MAP02"` | `"VizdoomFreedoom2MAP02-S<X>-v0"` | Freedoom 2 MAP02: Filtration Tunnels           |
 | `"MAP03"` | `"VizdoomFreedoom2MAP03-S<X>-v0"` | Freedoom 2 MAP03: Crude Processing Center      |
