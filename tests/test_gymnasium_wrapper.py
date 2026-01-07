@@ -145,8 +145,8 @@ def test_gymnasium_wrapper_truncated_state():
     [
         ("basic_rgb_i_1_3", Dict(color_screen)),
         ("basic_g8_i_1_0", Dict(gray_screen)),
-        ("basic_g8_i_1_0_wNotifications", Dict(gray_screen | notifications)),
-        ("basic_g8_i_1_0_wAudio", Dict(gray_screen | audio_buffer)),
+        ("basic_g8_i_1_0_notifications", Dict(gray_screen | notifications)),
+        ("basic_g8_i_1_0_audio", Dict(gray_screen | audio_buffer)),
         (
             "basic_g8_idla_4_2",
             Dict(gray_screen | depth_buffer | labels_buffer | gray_automap),

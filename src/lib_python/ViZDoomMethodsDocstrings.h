@@ -538,7 +538,7 @@ Config key: ``DoomScenarioPath``/``doom_scenario_path``)DOCSTRING";
 
     const char *getDoomMap = R"DOCSTRING(Returns the map name to be used.)DOCSTRING";
 
-    const char *setDoomMap = R"DOCSTRING(Sets the map name to be used. String is case insensitive.
+    const char *setDoomMap = R"DOCSTRING(Sets the map name to be used. The map name is case insensitive.
 
 Default value: ``"map01"``, if set to empty ``"map01"`` will be used.
 

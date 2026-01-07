@@ -491,7 +491,7 @@ namespace vizdoom {
                         for (i = 0; i < str_variables.size(); ++i) {
                             variables.push_back(ConfigLoader::stringToGameVariable(str_variables[i]));
                         }
-                        
+
                         if (!append) this->game->clearAvailableGameVariables();
                         for (i = 0; i < variables.size(); ++i) {
                             this->game->addAvailableGameVariable(variables[i]);
