@@ -1133,7 +1133,7 @@ Config key: `ViZDoomPath`/`vizdoom_path`
 Sets the path to the Doom engine based game file (wad format).
 If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom library/pyd is).
 
-Default value: `<ViZDoom library location>/<doom2.wad, doom.wad, freedoom2.wad, or freedoom.wad - in this order>`
+Default value: `<ViZDoom library location>/<doom2.wad, freedoom2.wad - in this order>`
 
 Config key: `DoomGamePath`/`doom_game_path`
 
@@ -1160,7 +1160,7 @@ Config key: `DoomScenarioPath`/`doom_scenario_path`
 | :--    | :--                                |
 | Python | `set_doom_map(map: str) -> None`   |
 
-Sets the map name to be used.
+Sets the map name to be used. String is case insensitive.
 
 Default value: `"map01"`, if set to empty `"map01"` will be used.
 
@@ -1179,12 +1179,11 @@ The higher the skill, the harder the game becomes.
 Skill level affects monsters' aggressiveness, monsters' speed, weapon damage, ammunition quantities, etc.
 Takes effect from the next episode.
 
-- 1 - VERY EASY, “I'm Too Young to Die” in Doom.
-- 2 - EASY, “Hey, Not Too Rough" in Doom.
-- 3 - NORMAL, “Hurt Me Plenty” in Doom.
-- 4 - HARD, “Ultra-Violence” in Doom.
-- 5 - VERY HARD, “Nightmare!” in Doom.
-
+- 1 - VERY EASY, “I'm Too Young to Die” in Doom/Doom 2.
+- 2 - EASY, “Hey, Not Too Rough" in Doom/Doom 2.
+- 3 - NORMAL, “Hurt Me Plenty” in Doom/Doom 2.
+- 4 - HARD, “Ultra-Violence” in Doom/Doom 2.
+- 5 - VERY HARD, “Nightmare!” in Doom/Doom 2.
 Default value: 3
 
 Config key: `DoomSkill`/`doom_skill`

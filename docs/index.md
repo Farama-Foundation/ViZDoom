@@ -78,6 +78,7 @@ api/configuration_files
 :caption: Environments
 
 environments/default
+environments/original_doom_levels
 environments/third_party
 environments/creating_custom
 ```

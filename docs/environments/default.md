@@ -31,6 +31,11 @@ env = gymnasium.make("VizdoomBasic-v1") # or any other environment id
 A scenario usually consist of two files - .wad and .cfg ([see scenarios directory](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios)). The .wad file contains the map and script, and the .cfg file contains additional settings. The maps contained in .wad files (Doom's engine format for storing maps and assets) usually do not implement action constraints, the death penalty, and living rewards (however it is possible). To make it easier, this can be specified in ViZDoom .cfg files as well as other options like access to additional information. These can also be overridden in the code when using the original ViZDoom API. Every mention of any settings that are not included in .wad files is specified with "(config)" in the descriptions below. ViZDoom does not support setting certain rewards (such as killing opponents) in .cfg files. These must be programmed in the .wad files instead.
 
 
+## MultiBinary variants
+
+For each Gymnasium environment described below, there is also a MultiBinary variant available. These variants use `MultiBinary` action space instead of `Discrete` action space. This means that instead of selecting a single action from a list of predefined actions, the agent can press multiple buttons at the same time. This allows for more complex behaviors and combinations of actions. The MultiBinary variants have the same observation space, rewards, and configurations as their Discrete counterparts. The ViZDoom Gymnasium ids for MultiBinary variants are the same as the original ones, with the suffix `-MultiBinary` added before version. For example, the MultiBinary variant of `VizdoomBasic-v1` is `VizdoomBasic-MultiBinary-v1`. ViZDoom is intended to be played using multiple buttons at the same time, so using MultiBinary action space is often more natural. However, originally these environments were introduced with Discrete action space, becasue of that we decided to introduce MultiBinary variants alongside the original ones.
+
+
 ## BASIC
 The purpose of the scenario is just to check if using this
 framework to train some AI in a 3D environment is feasible.
@@ -55,7 +60,7 @@ The episode ends after killing the monster or on timeout.
 * timeout = 300 tics
 
 
-**Gymnasium/Gym id: `"VizdoomBasic-v1"`**
+**Gymnasium/Gym id: `"VizdoomBasic-v1"` / `"VizdoomBasic-MultiBinary-v1"`**
 
 **Configuration file: [basic.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic.cfg)**
 
@@ -79,7 +84,7 @@ The episode ends after killing the monster or on timeout.
 * timeout = 300 tics
 
 
-**Gymnasium/Gym id: `"VizdoomBasicAudio-v1"`**
+**Gymnasium/Gym id: `"VizdoomBasicAudio-v1"` / `"VizdoomBasicAudio-MultiBinary-v1"`**
 
 **Configuration file: [basic_audio.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic_audio.cfg)**
 
@@ -105,7 +110,7 @@ The episode ends after killing the monster or on timeout.
 * timeout = 300 tics
 
 
-**Gymnasium/Gym id: `"VizdoomBasicNotifications-v1"`**
+**Gymnasium/Gym id: `"VizdoomBasicNotifications-v1"` / `"VizdoomBasicNotifications-MultiBinary-v1"`**
 
 **Configuration file: [basic_notifications.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic_notifications.cfg)**
 
@@ -136,7 +141,7 @@ needed.
 * timeout = 2100
 * difficulty level (`doom_skill`) = 5
 
-**Gymnasium/Gym id: `"VizdoomCorridor-v1"`**
+**Gymnasium/Gym id: `"VizdoomCorridor-v1"` / `"VizdoomCorridor-MultiBinary-v1"`**
 
 **Configuration file: [deadly_corridor.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deadly_corridor.cfg)**
 
@@ -158,7 +163,7 @@ before the time runs out or it's killed by monsters.
 * timeout = 4200
 * difficulty level (`doom_skill`) = 3
 
-**Gymnasium/Gym id: `"VizdoomDeathmatch-v1"`**
+**Gymnasium/Gym id: `"VizdoomDeathmatch-v1"` / `"VizdoomDeathmatch-MultiBinary-v1"`**
 
 **Configuration file: [scenarios/deathmatch.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deathmatch.cfg)**
 
@@ -185,7 +190,7 @@ because of limited ammo).
 * timeout = 2100
 * difficulty level (`doom_skill`) = 3
 
-**Gymnasium/Gym id: `"VizdoomDefendCenter-v1"`**
+**Gymnasium/Gym id: `"VizdoomDefendCenter-v1"` / `"VizdoomDefendCenter-MultiBinary-v1"`**
 
 **Configuration file: [defend_the_center.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_center.cfg)**
 
@@ -212,7 +217,7 @@ because of limited ammo).
 * 2 available game variables: player's health and ammo
 * difficulty level (`doom_skill`) = 3
 
-**Gymnasium/Gym id: `"VizdoomDefendLine-v1"`**
+**Gymnasium/Gym id: `"VizdoomDefendLine-v1"` / `"VizdoomDefendLine-MultiBinary-v1"`**
 
 **Configuration file: [defend_the_line.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_line.cfg)**
 
@@ -241,7 +246,7 @@ that makes map layout more complex.
 * 3 available buttons: turn left/right, move forward
 * 1 available game variable: player's health
 
-**Gymnasium/Gym id: `"VizdoomHealthGathering-v1"`/`"VizdoomHealthGatheringSupreme-v1"`**
+**Gymnasium/Gym id: `"VizdoomHealthGathering-v1"` / `"VizdoomHealthGathering-MultiBinary-v1"` / `"VizdoomHealthGatheringSupreme-v1"` / `"VizdoomHealthGatheringSupreme-MultiBinary-v1"`**
 
 **Configuration file: [health_gathering.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering.cfg)/[health_gathering_supreme.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering_supreme.cfg)**
 
@@ -265,7 +270,7 @@ direction. The episode ends when the vest is reached or on timeout/
 * 3 available buttons: turn left/right, move forward
 * timeout = 2100
 
-**Gymnasium/Gym id: `"VizdoomMyWayHome-v1"`**
+**Gymnasium/Gym id: `"VizdoomMyWayHome-v1"` / `"VizdoomMyWayHome-MultiBinary-v1"`**
 
 **Configuration file: [my_way_home.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/my_way_home.cfg)**
 
@@ -291,7 +296,7 @@ or on timeout.
 * 3 available buttons: turn left/right, shoot (attack)
 * timeout = 300
 
-**Gymnasium/Gym id: `"VizdoomPredictPosition-v1"`**
+**Gymnasium/Gym id: `"VizdoomPredictPosition-v1"` / `"VizdoomPredictPosition-MultiBinary-v1"`**
 
 **Configuration file: [predict_position.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/predict_position.cfg)**
 
@@ -318,6 +323,6 @@ the player dies.
 * 1 available game variable: player's health
 * difficulty level (`doom_skill`) = 4
 
-**Gymnasium/Gym id: `"VizdoomTakeCover-v1"`**
+**Gymnasium/Gym id: `"VizdoomTakeCover-v1"` / `"VizdoomTakeCover-MultiBinary-v1"`**
 
 **Configuration file: [take_cover.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/take_cover.cfg)**
