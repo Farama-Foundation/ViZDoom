@@ -392,6 +392,7 @@ namespace vizdoom {
         if(!ends_with(scenarioName, ".cfg")) {
             scenarioName += ".cfg";
         }
+
         std::string workingConfigPath = "./scenarios/" + scenarioName;
         std::string sharedConfigPath = getThisSharedObjectPath() + "/scenarios/" + scenarioName;
 
@@ -507,10 +508,9 @@ namespace vizdoom {
                         std::vector<GameVariable> variables;
                         for (i = 0; i < str_variables.size(); ++i) {
                             variables.push_back(ConfigLoader::stringToGameVariable(str_variables[i]));
-
                         }
-                        if (!append)
-                            this->game->clearAvailableGameVariables();
+                        
+                        if (!append) this->game->clearAvailableGameVariables();
                         for (i = 0; i < variables.size(); ++i) {
                             this->game->addAvailableGameVariable(variables[i]);
                         }

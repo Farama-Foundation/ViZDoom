@@ -78,8 +78,6 @@ namespace vizdoom {
         outPath.remove_filename();
         outPath /= relativePath;
 
-        //return outPath.string();
-
         bfs::path normalizedPath;
         for (auto i = outPath.begin(); i != outPath.end(); ++i) {
             if (*i == "..") {

@@ -1160,7 +1160,7 @@ Config key: `DoomScenarioPath`/`doom_scenario_path`
 | :--    | :--                                |
 | Python | `set_doom_map(map: str) -> None`   |
 
-Sets the map name to be used. String is case insensitive.
+Sets the map name to be used. The map name is case insensitive.
 
 Default value: `"map01"`, if set to empty `"map01"` will be used.
 

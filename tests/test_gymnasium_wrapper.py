@@ -127,8 +127,8 @@ def test_gymnasium_wrapper_obs_space():
     env_configs = [
         "basic_rgb_i_1_3",
         "basic_g8_i_1_0",
-        "basic_g8_i_1_0_wNotifications",
-        "basic_g8_i_1_0_wAudio",
+        "basic_g8_i_1_0_notifications",
+        "basic_g8_i_1_0_audio",
         "basic_g8_idla_4_2",
         "basic_g8_idl_3_1",
         "basic_rgb_id_2_0",
