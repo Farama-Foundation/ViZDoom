@@ -237,21 +237,24 @@ DOOM2_MAPS = [
     "MAP32",
 ]
 
-for game_name, config_file, maps in [
-    ("Doom", "doom.cfg", DOOM_MAPS),
-    ("Doom2", "doom2.cfg", DOOM2_MAPS),
-    ("Freedoom", "freedoom.cfg", DOOM_MAPS),
-    ("Freedoom2", "freedoom2.cfg", DOOM2_MAPS),
-]:
-    for map in maps:
-        for skill in SKILL_LEVELS:
+for skill in SKILL_LEVELS:
+    skill_int = int(skill[1])
+    for game_name, config_file, maps in [
+        ("Doom", "doom.cfg", DOOM_MAPS),
+        ("Doom2", "doom2.cfg", DOOM2_MAPS),
+        ("Freedoom", "freedoom.cfg", DOOM_MAPS),
+        ("Freedoom2", "freedoom2.cfg", DOOM2_MAPS),
+    ]:
+        for map in maps:
             register(
                 id=f"Vizdoom{game_name}{map}-{skill}-v0",
                 entry_point=DEFAULT_VIZDOOM_ENTRYPOINT,
                 kwargs={
                     "scenario_config_file=": f"{config_file}",
-                    "map": map,
-                    "skill_level": int(skill[1]),
+                    "additional_config_dict": {
+                        "skill_level": skill_int,
+                        "map": map,
+                    },
                     "max_buttons_pressed": 0,
                 },
             )
