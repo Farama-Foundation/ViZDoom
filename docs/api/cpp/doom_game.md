@@ -1106,6 +1106,8 @@ When using a dictionary:
   - Enums: Button, GameVariable, ScreenResolution, ScreenFormat, SamplingRate, Mode, AutomapMode
   - Lists: for 'available_buttons' and 'available_game_variables'
 
+Relative paths (e.g., for 'doom_scenario_path') are resolved relative to the current working directory.
+
 Example:
 ```
     game.set_config({
@@ -1118,7 +1120,7 @@ Example:
     })
 ```
 
-Returns `True` if the configuration was successfully applied, `False` if errors occurred.
+Returns true if the configuration was successfully applied, false if errors occurred.
 
 
 ---
