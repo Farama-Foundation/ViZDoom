@@ -41,6 +41,8 @@ class VizdoomEnv(gym.Env, EzPickle):
         frame_skip: int = 1,
         max_buttons_pressed: int = 0,
         render_mode: Optional[str] = None,
+        skill_level: Optional[int] = None,
+        map: Optional[str] = None,
         treat_episode_timeout_as_truncation: bool = True,
         use_multi_binary_action_space: bool = True,
     ):
@@ -53,13 +55,17 @@ class VizdoomEnv(gym.Env, EzPickle):
             frame_skip (int): The number of frames the will be advanced per action. 1 = take action on every frame. Default: 1.
             max_buttons_pressed (int): Defines the number of binary buttons that can be selected at once. Default: 1.
                                        Should be >= 0. If < 0 a RuntimeError is raised.
-                                       If == 0, the binary action space becomes ``MultiDiscrete([2] * num_binary_buttons)``
+                                       If == 0, the binary action space becomes ``MultiBinary(len(num_binary_buttons))`` 
+                                       or ``MultiDiscrete([2] * num_binary_buttons)`` (depending on ``use_multi_binary_action_space`` flag)
                                        and [0, ``num_binary_buttons``] number of binary buttons can be selected.
                                        If > 0, the binary action space becomes ``Discrete(n)``
                                        and ``n`` actions can be selected.
                                        ``n`` is equal to number of possible buttons combinations
                                        with the number of buttons pressed < ``max_buttons_pressed``.
             render_mode(Optional[str]): The render mode to use could be either "human" or "rgb_array"
+            skill_level (Optional[int]): If specified, sets the skill level (difficulty) of the game (overrides config file).
+                                         Valid values are 1 to 5, where 1 is the easiest and 5 is the hardest.
+            map (Optional[str]): If specified, sets the map to start. Should be a valid map ID defined in the WAD file (overrides config file).
             treat_episode_timeout_as_truncation (bool): If True, the episode will be treated as truncated
                                                         when the internal episode timeout is reached.
                                                         This is compatibility option, ViZDoom versions <1.3.0 behave as if this was set to False.
@@ -89,7 +95,8 @@ class VizdoomEnv(gym.Env, EzPickle):
         - "continuous": Is ``Box(float32.min, float32.max, (num_delta_buttons,), float32)``.
         """
         EzPickle.__init__(
-            self, config_file, frame_skip, max_buttons_pressed, render_mode
+            self, config_file, frame_skip, max_buttons_pressed, render_mode, skill_level, map,
+            treat_episode_timeout_as_truncation, use_multi_binary_action_space
         )
         self.frame_skip = frame_skip
         self.render_mode = render_mode
@@ -99,6 +106,13 @@ class VizdoomEnv(gym.Env, EzPickle):
         # init game
         self.game = vzd.DoomGame()
         self.game.load_config(config_file)
+        
+        # override config file settings with skill level and map if specified
+        if skill_level is not None:
+            self.game.set_skill_level(skill_level)
+        if map is not None:
+            self.game.set_doom_map(map)
+
         self.game.set_window_visible(False)
         self.game.set_audio_buffer_size(frame_skip)
         screen_format = self.game.get_screen_format()
