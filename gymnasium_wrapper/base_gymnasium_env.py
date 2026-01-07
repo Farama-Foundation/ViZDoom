@@ -10,7 +10,7 @@ and [Mark Towers](https://github.com/pseudo-rnd-thoughts).
 
 import itertools
 import warnings
-from typing import Optional
+from typing import Any, Dict, Optional
 
 import gymnasium as gym
 import numpy as np
@@ -37,12 +37,11 @@ class VizdoomEnv(gym.Env, EzPickle):
 
     def __init__(
         self,
-        config_file: str,
+        config_file: Optional[str] = None,
+        config_dict: Optional[Dict[str, Any]] = None,
         frame_skip: int = 1,
         max_buttons_pressed: int = 0,
         render_mode: Optional[str] = None,
-        skill_level: Optional[int] = None,
-        map: Optional[str] = None,
         treat_episode_timeout_as_truncation: bool = True,
         use_multi_binary_action_space: bool = True,
     ):
@@ -51,7 +50,11 @@ class VizdoomEnv(gym.Env, EzPickle):
         Child classes are defined in gymnasium_env_defns.py,
 
         Arguments:
-            config_file (str): The path to the config file to load. Most settings should be set by this config file.
+            config_file (Optional[str]): The path to the config file to load.
+                                      Most settings should be set by this config file.
+                                      If None, config_dict must be provided.
+            config_dict (Optional[Dict[str, Any]]): The config provided in a form of a dictionary.
+                                                    If None, config_file must be provided.
             frame_skip (int): The number of frames the will be advanced per action. 1 = take action on every frame. Default: 1.
             max_buttons_pressed (int): Defines the number of binary buttons that can be selected at once. Default: 1.
                                        Should be >= 0. If < 0 a RuntimeError is raised.
@@ -62,7 +65,7 @@ class VizdoomEnv(gym.Env, EzPickle):
                                        and ``n`` actions can be selected.
                                        ``n`` is equal to number of possible buttons combinations
                                        with the number of buttons pressed < ``max_buttons_pressed``.
-            render_mode(Optional[str]): The render mode to use could be either "human" or "rgb_array"
+            render_mode (Optional[str]): The render mode to use could be either "human" or "rgb_array"
             skill_level (Optional[int]): If specified, sets the skill level (difficulty) of the game (overrides config file).
                                          Valid values are 1 to 5, where 1 is the easiest and 5 is the hardest.
             map (Optional[str]): If specified, sets the map to start. Should be a valid map ID defined in the WAD file (overrides config file).
@@ -97,11 +100,10 @@ class VizdoomEnv(gym.Env, EzPickle):
         EzPickle.__init__(
             self,
             config_file,
+            config_dict,
             frame_skip,
             max_buttons_pressed,
             render_mode,
-            skill_level,
-            map,
             treat_episode_timeout_as_truncation,
             use_multi_binary_action_space,
         )
@@ -112,13 +114,13 @@ class VizdoomEnv(gym.Env, EzPickle):
 
         # init game
         self.game = vzd.DoomGame()
-        self.game.load_config(config_file)
 
-        # override config file settings with skill level and map if specified
-        if skill_level is not None:
-            self.game.set_skill_level(skill_level)
-        if map is not None:
-            self.game.set_doom_map(map)
+        if config_file is not None:
+            self.game.load_config(config_file)
+        if config_dict is not None:
+            self.game.set_config(config_dict)
+        if config_file is None and config_dict is None:
+            raise RuntimeError("Either config_file or config_dict must be provided.")
 
         self.game.set_window_visible(False)
         self.game.set_audio_buffer_size(frame_skip)
@@ -173,7 +175,7 @@ class VizdoomEnv(gym.Env, EzPickle):
 
         self.game.init()
 
-    def step(self, action):
+    def step(self, action: Any):
         assert self.action_space.contains(
             action
         ), f"{action!r} ({type(action)}) invalid"
@@ -192,7 +194,7 @@ class VizdoomEnv(gym.Env, EzPickle):
             self.render()
         return self.__collect_observations(), reward, terminated, truncated, {}
 
-    def __parse_binary_buttons(self, env_action, agent_action):
+    def __parse_binary_buttons(self, env_action: Any, agent_action: Any):
         if self.num_binary_buttons != 0:
             if self.num_delta_buttons != 0:
                 agent_action = agent_action["binary"]
@@ -203,7 +205,7 @@ class VizdoomEnv(gym.Env, EzPickle):
             # binary actions offset by number of delta buttons
             env_action[self.num_delta_buttons :] = agent_action
 
-    def __parse_delta_buttons(self, env_action, agent_action):
+    def __parse_delta_buttons(self, env_action: Any, agent_action: Any):
         if self.num_delta_buttons != 0:
             if self.num_binary_buttons != 0:
                 agent_action = agent_action["continuous"]
@@ -211,7 +213,7 @@ class VizdoomEnv(gym.Env, EzPickle):
             # delta buttons have a direct mapping since they're reorganized to be prior to any binary buttons
             env_action[0 : self.num_delta_buttons] = agent_action
 
-    def __build_env_action(self, agent_action):
+    def __build_env_action(self, agent_action: Any):
         # encode users action as environment action
         env_action = np.array(
             [0 for _ in range(self.num_delta_buttons + self.num_binary_buttons)],
