@@ -2,7 +2,7 @@
 
 Beside the custom scenarios (original ViZDoom nomenclature)/environments (Gymnasium/Open AI Gym nomenclature) original introduced with ViZDoom and many user-created. It is possible to play the original Doom/Doom 2/Freedoom/Freedoom 2 levels as well.
 
-Becasue we cannot provide original Doom's and Doom's 2 levels, in order to play them you need to have original Doom or Doom 2 WAD files.
+Because we cannot provide original Doom's and Doom's 2 levels, in order to play them you need to have original Doom or Doom 2 WAD files.
 You can get them by purchasing the original game from [Steam](https://store.steampowered.com/app/2280/DOOM__DOOM_II/) or [GOG](https://www.gog.com/game/doom_doom_ii). You can then place the doom2.wad and doom.wad files into your working directory or vizdoom package directory (same directory as vizdoom(.exe)). On Unix you can also set `DOOMWADDIR` environment variable to directory with your wads files.
 
 ## Convention of environment names in Gymnasium
@@ -19,7 +19,7 @@ Where `<Game>` is Freedoom, Freedoom2, Doom or Doom2, and S<X> is a skill level,
 * `S5` - VERY HARD, “Nightmare!”
 
 For example:
-* `"VizdoomDoomE1M1-S1-v0"` environment uses original Doom 1 E1M1 and skill (difficulty) level 1 (VERY EASY, “I'm Too Young to Die”) 
+* `"VizdoomDoomE1M1-S1-v0"` environment uses original Doom 1 E1M1 and skill (difficulty) level 1 (VERY EASY, “I'm Too Young to Die”)
 * `"VizdoomDoom2MAP01-S3-v0"` environment uses original Doom 2 MAP01 level with skill level 3
 
 
@@ -37,7 +37,7 @@ game.set_doom_map("E1M1")  # see list of map IDs below
 game.set_skill_level(1)  # or 2, 3, 4, 5
 ```
 
-Configuration file: 
+Configuration file:
 * Doom: [doom.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/doom.cfg)
 * Doom 2: [doom2.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/doom2.cfg)
 * Freedoom: [freedoom.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/freedoom.cfg)
@@ -48,7 +48,7 @@ Configuration file:
 
 The list of all original Doom 1 levels and their corresponding ViZDoom environment names:
 
-### Episode 1: Knee-Deep in the Dead  
+### Episode 1: Knee-Deep in the Dead
 
 | Map ID   | Gymnasium Environment Name  | Level Name                                      |
 |----------|-----------------------------|-------------------------------------------------|
@@ -57,7 +57,7 @@ The list of all original Doom 1 levels and their corresponding ViZDoom environme
 | `"E1M3"` | `"VizdoomDoomE1M3-S<X>-v0"` | Doom 1 E1M3: Toxin Refinery                     |
 | `"E1M4"` | `"VizdoomDoomE1M4-S<X>-v0"` | Doom 1 E1M4: Command Control                    |
 | `"E1M5"` | `"VizdoomDoomE1M5-S<X>-v0"` | Doom 1 E1M5: Phobos Lab                         |
-| `"E1M6"` | `"VizdoomDoomE1M6-S<X>-v0"` | Doom 1 E1M6: Central Processing                 |    
+| `"E1M6"` | `"VizdoomDoomE1M6-S<X>-v0"` | Doom 1 E1M6: Central Processing                 |
 | `"E1M7"` | `"VizdoomDoomE1M7-S<X>-v0"` | Doom 1 E1M7: Computer Station                   |
 | `"E1M8"` | `"VizdoomDoomE1M8-S<X>-v0"` | Doom 1 E1M8: Phobos Anomaly                     |
 | `"E1M9"` | `"VizdoomDoomE1M9-S<X>-v0"` | Doom 1 E1M9: Military Base (Secret level)       |
@@ -236,11 +236,11 @@ The list of all Freedoom 2 (Freedoom: Phase 2) levels and their corresponding Vi
 
 | Map ID    | Gymnasium Environment Name        | Level Name                                     |
 |-----------|-----------------------------------|------------------------------------------------|
-| `"MAP01"` | `"VizdoomFreedoom2MAP01-S<X>-v0"` | Freedoom 2 MAP01: Hydroelectric Plant          | 
+| `"MAP01"` | `"VizdoomFreedoom2MAP01-S<X>-v0"` | Freedoom 2 MAP01: Hydroelectric Plant          |
 | `"MAP02"` | `"VizdoomFreedoom2MAP02-S<X>-v0"` | Freedoom 2 MAP02: Filtration Tunnels           |
 | `"MAP03"` | `"VizdoomFreedoom2MAP03-S<X>-v0"` | Freedoom 2 MAP03: Crude Processing Center      |
 | `"MAP04"` | `"VizdoomFreedoom2MAP04-S<X>-v0"` | Freedoom 2 MAP04: Containment Bay              |
-| `"MAP05"` | `"VizdoomFreedoom2MAP05-S<X>-v0"` | Freedoom 2 MAP05: Sludge Burrow                |  
+| `"MAP05"` | `"VizdoomFreedoom2MAP05-S<X>-v0"` | Freedoom 2 MAP05: Sludge Burrow                |
 | `"MAP06"` | `"VizdoomFreedoom2MAP06-S<X>-v0"` | Freedoom 2 MAP06: Janus Terminal               |
 | `"MAP07"` | `"VizdoomFreedoom2MAP07-S<X>-v0"` | Freedoom 2 MAP07: Logic Gate                   |
 | `"MAP08"` | `"VizdoomFreedoom2MAP08-S<X>-v0"` | Freedoom 2 MAP08: Astronomy Complex            |
@@ -267,4 +267,4 @@ The list of all Freedoom 2 (Freedoom: Phase 2) levels and their corresponding Vi
 | `"MAP29"` | `"VizdoomFreedoom2MAP29-S<X>-v0"` | Freedoom 2 MAP29: Melting Point                |
 | `"MAP30"` | `"VizdoomFreedoom2MAP30-S<X>-v0"` | Freedoom 2 MAP30: Jaws of Defeat               |
 | `"MAP31"` | `"VizdoomFreedoom2MAP31-S<X>-v0"` | Freedoom 2 MAP31: Be Quiet (secret level)      |
-| `"MAP32"` | `"VizdoomFreedoom2MAP32-S<X>-v0"` | Freedoom 2 MAP32: Not Sure (secret level)      | 
+| `"MAP32"` | `"VizdoomFreedoom2MAP32-S<X>-v0"` | Freedoom 2 MAP32: Not Sure (secret level)      |

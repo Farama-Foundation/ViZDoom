@@ -55,7 +55,7 @@ class VizdoomEnv(gym.Env, EzPickle):
             frame_skip (int): The number of frames the will be advanced per action. 1 = take action on every frame. Default: 1.
             max_buttons_pressed (int): Defines the number of binary buttons that can be selected at once. Default: 1.
                                        Should be >= 0. If < 0 a RuntimeError is raised.
-                                       If == 0, the binary action space becomes ``MultiBinary(len(num_binary_buttons))`` 
+                                       If == 0, the binary action space becomes ``MultiBinary(len(num_binary_buttons))``
                                        or ``MultiDiscrete([2] * num_binary_buttons)`` (depending on ``use_multi_binary_action_space`` flag)
                                        and [0, ``num_binary_buttons``] number of binary buttons can be selected.
                                        If > 0, the binary action space becomes ``Discrete(n)``
@@ -95,8 +95,15 @@ class VizdoomEnv(gym.Env, EzPickle):
         - "continuous": Is ``Box(float32.min, float32.max, (num_delta_buttons,), float32)``.
         """
         EzPickle.__init__(
-            self, config_file, frame_skip, max_buttons_pressed, render_mode, skill_level, map,
-            treat_episode_timeout_as_truncation, use_multi_binary_action_space
+            self,
+            config_file,
+            frame_skip,
+            max_buttons_pressed,
+            render_mode,
+            skill_level,
+            map,
+            treat_episode_timeout_as_truncation,
+            use_multi_binary_action_space,
         )
         self.frame_skip = frame_skip
         self.render_mode = render_mode
@@ -106,7 +113,7 @@ class VizdoomEnv(gym.Env, EzPickle):
         # init game
         self.game = vzd.DoomGame()
         self.game.load_config(config_file)
-        
+
         # override config file settings with skill level and map if specified
         if skill_level is not None:
             self.game.set_skill_level(skill_level)
