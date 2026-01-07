@@ -71,9 +71,9 @@ class VizdoomEnv(gym.Env, EzPickle):
                                                         This is compatibility option, ViZDoom versions <1.3.0 behave as if this was set to False.
                                                         Default: True.
             use_multi_binary_action_space (bool): If True, the ``MultiBinary(len(num_binary_buttons))`` action space
-                                                    will be used for buttons binary buttons instead of ``MultiDiscrete([2] * len(num_binary_buttons))``.
-                                                    This is compatibility option, ViZDoom versions <1.3.0 behave as if this was set to False.
-                                                    Default: True.
+                                                  will be used for buttons binary buttons instead of ``MultiDiscrete([2] * len(num_binary_buttons))``.
+                                                  This is compatibility option, ViZDoom versions <1.3.0 behave as if this was set to False.
+                                                  Default: True.
 
         This environment forces the game window to be hidden. Use :meth:`render` function to see the game.
 

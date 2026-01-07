@@ -40,6 +40,8 @@ namespace vizdoom {
 
         bool load(std::string filePath);
 
+        bool set(std::string configStr);
+
     protected:
 
         /* Load config helpers */
@@ -62,9 +64,11 @@ namespace vizdoom {
         static GameVariable stringToGameVariable(std::string str);
 
         static bool
-        parseListProperty(int &line_number, std::string &value, std::ifstream &input, std::vector<std::string> &output);
+        parseListProperty(int &line_number, std::string &value, std::istream &input, std::vector<std::string> &output);
 
     private:
+        bool parseConfig(std::istream &input, const std::string &sourceDesc);
+
         DoomGame *game;
         std::string filePath;
     };

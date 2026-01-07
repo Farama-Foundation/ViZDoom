@@ -25,8 +25,11 @@
 #include "ViZDoomController.h"
 #include "ViZDoomExceptions.h"
 
+#include <algorithm>
 #include <cstddef>
 #include <cstring>
+#include <sstream>
+#include <stdexcept>
 
 namespace vizdoom {
     DoomGamePython::DoomGamePython() {
@@ -173,6 +176,75 @@ namespace vizdoom {
 
     void DoomGamePython::setAvailableGameVariables(pyb::list const &pyGameVariables){
         DoomGame::setAvailableGameVariables(DoomGamePython::pyListToVector<GameVariable>(pyGameVariables));
+    }
+
+    bool DoomGamePython::setConfig(pyb::object const &config) {
+        // If config is a string, pass it directly to the C++ setConfig
+        if (pyb::isinstance<pyb::str>(config)) {
+            std::string configStr = config.cast<std::string>();
+            return DoomGame::setConfig(configStr);
+        }
+
+        // If config is a dict, convert it to a config string
+        if (pyb::isinstance<pyb::dict>(config)) {
+            pyb::dict configDict = config.cast<pyb::dict>();
+            std::ostringstream configStream;
+
+            for (auto item : configDict) {
+                std::string key = pyb::str(item.first).cast<std::string>();
+                pyb::object value = pyb::reinterpret_borrow<pyb::object>(item.second);
+
+                // Convert key to lowercase and replace spaces with underscores
+                std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+                std::replace(key.begin(), key.end(), ' ', '_');
+
+                configStream << key << " = ";
+
+                // Handle different value types
+                if (pyb::isinstance<pyb::list>(value)) {
+                    // List values (e.g., available_buttons, available_game_variables)
+                    pyb::list listValue = value.cast<pyb::list>();
+                    configStream << "{\n";
+                    for (auto listItem : listValue) {
+                        // Check if it's an enum value
+                        if (pyb::hasattr(listItem, "name")) {
+                            // It's an enum, get its name
+                            std::string enumName = pyb::str(pyb::getattr(listItem, "name")).cast<std::string>();
+                            configStream << "    " << enumName << "\n";
+                        } else {
+                            // It's a regular value, convert to string
+                            configStream << "    " << pyb::str(listItem).cast<std::string>() << "\n";
+                        }
+                    }
+                    configStream << "}\n";
+                } else if (pyb::isinstance<pyb::bool_>(value)) {
+                    // Boolean values
+                    bool boolValue = value.cast<bool>();
+                    configStream << (boolValue ? "true" : "false") << "\n";
+                } else if (pyb::isinstance<pyb::int_>(value)) {
+                    // Integer values
+                    configStream << value.cast<int>() << "\n";
+                } else if (pyb::isinstance<pyb::float_>(value)) {
+                    // Float values
+                    configStream << value.cast<double>() << "\n";
+                } else if (pyb::isinstance<pyb::str>(value)) {
+                    // String values
+                    configStream << value.cast<std::string>() << "\n";
+                } else if (pyb::hasattr(value, "name")) {
+                    // Enum value, get its name
+                    std::string enumName = pyb::str(pyb::getattr(value, "name")).cast<std::string>();
+                    configStream << enumName << "\n";
+                } else {
+                    // Fallback: convert to string
+                    configStream << pyb::str(value).cast<std::string>() << "\n";
+                }
+            }
+
+            return DoomGame::setConfig(configStream.str());
+        }
+
+        // If it's neither a string nor a dict, throw an error
+        throw std::invalid_argument("config must be either a string or a dict");
     }
 
     // These functions are wrapped for manual GIL management

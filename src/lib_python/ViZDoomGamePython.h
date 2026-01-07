@@ -117,6 +117,8 @@ namespace vizdoom {
         pyb::list getAvailableGameVariables();
         void setAvailableGameVariables(pyb::list const &pyGameVariables);
 
+        bool setConfig(pyb::object const &config);
+
         // These functions are wrapped for manual GIL management
         void init();
         void newEpisode(std::string filePath = "");

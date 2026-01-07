@@ -157,6 +157,7 @@ namespace vizdoom {
         /*------------------------------------------------------------------------------------------------------------*/
 
         bool loadConfig(std::string filePath);
+        bool setConfig(std::string configString);
         Mode getMode();
         void setMode(Mode mode);
 

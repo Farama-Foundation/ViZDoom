@@ -632,6 +632,7 @@ PYBIND11_MODULE(vizdoom, vz){
         .def(pyb::init<>())
         CLASS_FUNC_2_PYT("init", DoomGamePython::init)
         CLASS_FUNC_2_PYT_WITH_ARGS("load_config", DoomGamePython::loadConfig, pyb::arg("config"))
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_config", DoomGamePython::setConfig, pyb::arg("config"))
         CLASS_FUNC_2_PYT("close", DoomGamePython::close)
         CLASS_FUNC_2_PYT("is_running", DoomGamePython::isRunning)
         CLASS_FUNC_2_PYT("is_multiplayer_game", DoomGamePython::isMultiplayerGame)

@@ -838,6 +838,11 @@ namespace vizdoom {
         return configLoader.load(filePath);
     }
 
+    bool DoomGame::setConfig(std::string configString) {
+        ConfigLoader configLoader(this);
+        return configLoader.set(configString);
+    }
+
     void DoomGame::save(std::string filePath){
         if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         this->doomController->saveGame(filePath);

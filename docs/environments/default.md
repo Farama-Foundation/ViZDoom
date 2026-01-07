@@ -21,9 +21,10 @@ When using Gymnasium API the scenario can be loaded by passing the scenario id t
 import gymnasium
 from vizdoom import gymnasium_wrapper # This import will register all the environments
 
-env = gymnasium.make("VizdoomBasic-v1") # or any other environment id
+env = gymnasium.make("VizdoomBasic-v1", frame_skip=1) # or any other environment id
 ```
 
+Additionally, all ViZDoom Gymnasium environments support additional keyword arguments that can be passed to `make` method e.g. `frame_skip`.See [Gymnasium wrapper documentation](../api/python/gymnasium_wrapper.md) for more details.
 
 
 ## Note on .wad, .cfg files, and rewards

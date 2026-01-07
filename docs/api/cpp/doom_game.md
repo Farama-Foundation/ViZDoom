@@ -122,9 +122,9 @@ Note: added in 1.1.5.
 ---
 ### `setAction`
 
-| C++    | `void setAction(std::vector<double> const &action)`          |
-| :--    | :--                                                          |
-| Python | `set_action(action: list | tuple | ndarray [float]) -> None` |
+| C++    | `void setAction(std::vector<double> const &action)`                            |
+| :--    | :--                                                                            |
+| Python | `set_action(action: list[float] | tuple[float, ...] | ndarray[float]) -> None` |
 
 Sets the player's action for the following tics until the method is called again with new action.
 Each value corresponds to a button previously specified
@@ -149,9 +149,9 @@ To get the new state, use [`getState`](#getstate) and to get the new reward use 
 ---
 ### `makeAction`
 
-| C++    | `double makeAction(std::vector<double> const &actions, unsigned int tics = 1)` |
-| :--    | :--                                                                            |
-| Python | `make_action(actions: list | tuple | ndarray [float], tics: int = 1) -> float` |
+| C++    | `double makeAction(std::vector<double> const &actions, unsigned int tics = 1)`                   |
+| :--    | :--                                                                                              |
+| Python | `make_action(actions: list[float] | tuple[float, ...] | ndarray[float], tics: int = 1) -> float` |
 
 This method combines functionality of [`setAction`](#setaction), [`advanceAction`](#advanceaction),
 and [`getLastReward`](#getlastreward) called in this sequance.
@@ -184,8 +184,8 @@ will take no effect after this point (unless [`newEpisode`](#newepisode) method 
 ---
 ### `isEpisodeTimeoutReached`
 
-| C++    | `bool isEpisodeTimeoutReached()`      |
-| :--    | :--                             |
+| C++    | `bool isEpisodeTimeoutReached()`       |
+| :--    | :--                                    |
 | Python | `is_episode_timeout_reached() -> bool` |
 
 Returns true if the current episode is in the terminal state due to exceeding the time limit (timeout)
@@ -238,8 +238,8 @@ See also:
 ### `getState`
 
 | C++    | `GameStatePtr (std::shared_ptr<GameState>) getState()` |
-| :--    | :--                                                              |
-| Python | `get_state() -> GameState`                                       |
+| :--    | :--                                                    |
+| Python | `get_state() -> GameState`                             |
 
 Returns [`GameState`](./game_state.md#gamestate) object with the current game state.
 If the current episode is finished, `nullptr/null/None` will be returned.
@@ -251,8 +251,8 @@ Note: Changed in 1.1.0
 ### `getServerState`
 
 | C++    | `ServerStatePtr (std::shared_ptr<ServerState>) getServerState()` |
-| :--    | :--                                                                          |
-| Python | `get_state_state() -> ServerState`                                           |
+| :--    | :--                                                              |
+| Python | `get_server_state() -> ServerState`                              |
 
 Returns [`ServerState`](./game_state.md#serverstate) object with the current server state.
 
@@ -324,9 +324,9 @@ that were added with [`setAvailableButtons`](#setavailablebuttons) or/and [`addA
 ---
 ### `setAvailableButtons`
 
-| C++    | `void setAvailableButtons(std::vector<Button> buttons)`        |
-| :--    | :--                                                            |
-| Python | `add_available_buttons(buttons: list | tuple[Button]) -> None` |
+| C++    | `void setAvailableButtons(std::vector<Button> buttons)`                |
+| :--    | :--                                                                    |
+| Python | `add_available_buttons(buttons: list[Button] | tuple[Button]) -> None` |
 
 Sets given list of [`Button`](./enums.md#button) s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available buttons.
 
@@ -427,9 +427,9 @@ that were added with [`setAvailableGameVariables`](#setavailablegamevariables) o
 ---
 ### `setAvailableGameVariables`
 
-| C++    | `void setAvailableGameVariables(std::vector<GameVariable> variables)`          |
-| :--    | :--                                                                            |
-| Python | `set_available_game_variables(variables: list | tuple[GameVariables]) -> None` |
+| C++    | `void setAvailableGameVariables(std::vector<GameVariable> variables)`                       |
+| :--    | :--                                                                                         |
+| Python | `set_available_game_variables(variables: list[GameVariable] | tuple[GameVariable]) -> None` |
 
 Sets list of [`GameVariable`](./enums.md#gamevariable) s as available game variables in the [`GameState`](./game_state.md#gamestate) returned by [`getState`](#getstate) method.
 
@@ -1047,6 +1047,39 @@ The method returns true if the whole configuration file was correctly read and a
 false if the file contained errors.
 
 If the file relative path is given, it will be searched for in the following order: `<current directory>`, `<current directory>/scenarios/`, `<ViZDoom library location>/scenarios/`.
+
+
+### `setConfig`
+
+| C++    | `bool setConfig(std::string config)`               |
+| :--    | :--                                                |
+| Python | `set_config(config: str | dict[str, any]) -> bool` |
+
+Sets configuration from a config string or dictionary (Python only).
+
+This method accepts either a configuration string (in the same format as .cfg files)
+or a Python dictionary with configuration key-value pairs.
+
+When using a dictionary:
+- Keys should be configuration parameter names (e.g., 'screen_resolution', 'doom_skill')
+- Values can be:
+  - Primitive types: str, int, float, bool
+  - Enums: Button, GameVariable, ScreenResolution, ScreenFormat, SamplingRate, Mode, AutomapMode
+  - Lists: for 'available_buttons' and 'available_game_variables'
+
+Example:
+```
+    game.set_config({
+        'screen_resolution': ScreenResolution.RES_640X480,
+        'screen_format': ScreenFormat.CRCGCB,
+        'doom_skill': 5,
+        'available_buttons': [Button.MOVE_LEFT, Button.MOVE_RIGHT, Button.ATTACK],
+        'available_game_variables': [GameVariable.AMMO2],
+        'living_reward': -1
+    })
+```
+
+Returns `True` if the configuration was successfully applied, `False` if errors occurred.
 
 
 ---

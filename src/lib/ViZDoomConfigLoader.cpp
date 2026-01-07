@@ -31,6 +31,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 #include <fstream>
+#include <sstream>
 #include <iostream>
 
 // Why there aren't any beautiful macros here...
@@ -340,7 +341,7 @@ namespace vizdoom {
 
     typedef b::tokenizer<b::char_separator<char> > tokenizer;
 
-    bool ConfigLoader::parseListProperty(int &line_number, std::string &value, std::ifstream &input,
+    bool ConfigLoader::parseListProperty(int &line_number, std::string &value, std::istream &input,
                                          std::vector<std::string> &output) {
         using namespace b::algorithm;
         int start_line = line_number;
@@ -383,36 +384,17 @@ namespace vizdoom {
         return true;
     }
 
-    bool ConfigLoader::load(std::string filePath) {
-
-        std::string scenarioName = filePath;
-        trim_all(scenarioName);
-        to_lower(scenarioName);
-        replace_all(scenarioName, " ", "_");
-        if(!ends_with(scenarioName, ".cfg")) {
-            scenarioName += ".cfg";
-        }
-
-        std::string workingConfigPath = "./scenarios/" + scenarioName;
-        std::string sharedConfigPath = getThisSharedObjectPath() + "/scenarios/" + scenarioName;
-
-        // Check if scenario exists in library's scenerios directory
-        if (fileExistsAndCanBeRead(filePath)) this->filePath = filePath;
-        else if (fileExistsAndCanBeRead(workingConfigPath)) this->filePath = workingConfigPath;
-        else if (fileExistsAndCanBeRead(sharedConfigPath)) this->filePath = sharedConfigPath;
-        else throw FileDoesNotExistException(filePath + " | " + workingConfigPath + " | " + sharedConfigPath);
-
+    bool ConfigLoader::parseConfig(std::istream &input, const std::string &sourceDesc) {
         bool success = true;
-        std::ifstream file(this->filePath);
 
         std::string line;
         int lineNumber = 0;
 
         /* Process every line. */
-        while (!file.eof()) {
+        while (!input.eof()) {
             ++lineNumber;
 
-            std::getline(file, line);
+            std::getline(input, line);
 
             /* Ignore empty and comment lines */
             trim_all(line);
@@ -438,7 +420,7 @@ namespace vizdoom {
                 key = line.substr(0, equals_sign_pos);
                 val = line.substr(equals_sign_pos + 1);
             } else {
-                std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Syntax error in line #" <<
+                std::cerr << "WARNING! Loading config from: \"" << sourceDesc << "\". Syntax error in line #" <<
                           lineNumber << ". Line ignored.\n";
 
                 success = false;
@@ -453,7 +435,7 @@ namespace vizdoom {
             to_lower(val);
             to_lower(key);
             if (key.empty()) {
-                std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Empty key in line #" <<
+                std::cerr << "WARNING! Loading config from: \"" << sourceDesc << "\". Empty key in line #" <<
                           lineNumber << ". Line ignored.\n";
 
                 success = false;
@@ -466,7 +448,7 @@ namespace vizdoom {
             if (key == "available_buttons" || key == "availablebuttons") {
                 std::vector<std::string> strButtons;
                 int start_line = lineNumber;
-                bool parseSuccess = ConfigLoader::parseListProperty(lineNumber, val, file, strButtons);
+                bool parseSuccess = ConfigLoader::parseListProperty(lineNumber, val, input, strButtons);
                 if (parseSuccess) {
                     unsigned int i = 0;
                     try {
@@ -482,14 +464,14 @@ namespace vizdoom {
                         }
                     }
                     catch (std::exception) {
-                        std::cerr << "WARNING! Loading config from: \"" << filePath <<
+                        std::cerr << "WARNING! Loading config from: \"" << sourceDesc <<
                                   "\". Unsupported value in lines " << start_line << "-" << lineNumber << ": " <<
                                   strButtons[i] << ". Lines ignored.\n";
 
                         success = false;
                     }
                 } else {
-                    std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Syntax error in lines " <<
+                    std::cerr << "WARNING! Loading config from: \"" << sourceDesc << "\". Syntax error in lines " <<
                               start_line << "-" << lineNumber << ". Lines ignored.\n";
 
                     success = false;
@@ -501,7 +483,7 @@ namespace vizdoom {
             if (key == "available_game_variables" || key == "availablegamevariables") {
                 std::vector<std::string> str_variables;
                 int start_line = lineNumber;
-                bool parseSuccess = ConfigLoader::parseListProperty(lineNumber, val, file, str_variables);
+                bool parseSuccess = ConfigLoader::parseListProperty(lineNumber, val, input, str_variables);
                 if (parseSuccess) {
                     unsigned int i = 0;
                     try {
@@ -516,14 +498,14 @@ namespace vizdoom {
                         }
                     }
                     catch (std::exception) {
-                        std::cerr << "WARNING! Loading config from: \"" << filePath <<
+                        std::cerr << "WARNING! Loading config from: \"" << sourceDesc <<
                                   "\". Unsupported value in lines " << start_line << "-" << lineNumber << ": " <<
                                   str_variables[i] << ". Lines ignored.\n";
 
                         success = false;
                     }
                 } else {
-                    std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Syntax error in lines " <<
+                    std::cerr << "WARNING! Loading config from: \"" << sourceDesc << "\". Syntax error in lines " <<
                               start_line << "-" << lineNumber << ". Lines ignored.\n";
 
                     success = false;
@@ -543,7 +525,7 @@ namespace vizdoom {
 
             /* Check if "+=" was not used for non-list property */
             if (append) {
-                std::cerr << "WARNING! Loading config from: \"" << filePath <<
+                std::cerr << "WARNING! Loading config from: \"" << sourceDesc <<
                           "\". \"+=\" is not supported for non-list properties. Line #" << lineNumber << " ignored.\n";
 
                 success = false;
@@ -553,7 +535,7 @@ namespace vizdoom {
 
             /* Check if value is not empty */
             if (val.empty()) {
-                std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Empty value in line #" <<
+                std::cerr << "WARNING! Loading config from: \"" << sourceDesc << "\". Empty value in line #" <<
                           lineNumber << ". Line ignored.\n";
 
                 success = false;
@@ -592,7 +574,7 @@ namespace vizdoom {
                 }
             }
             catch (b::bad_lexical_cast &) {
-                std::cerr << "WARNING! Loading config from: \"" << filePath <<
+                std::cerr << "WARNING! Loading config from: \"" << sourceDesc <<
                           "\". Unsigned int value expected instead of: " << rawVal << " in line #" << lineNumber <<
                           ". Line ignored.\n";
 
@@ -668,7 +650,7 @@ namespace vizdoom {
                 }
             }
             catch (b::bad_lexical_cast &) {
-                std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Float value expected instead of: " <<
+                std::cerr << "WARNING! Loading config from: \"" << sourceDesc << "\". Float value expected instead of: " <<
                           rawVal << " in line #" << lineNumber << ". Line ignored.\n";
 
                 success = false;
@@ -793,7 +775,7 @@ namespace vizdoom {
                 }
             }
             catch (std::exception) {
-                std::cerr << "WARNING! Loading config from: \"" << filePath <<
+                std::cerr << "WARNING! Loading config from: \"" << sourceDesc <<
                           "\". Boolean value expected insted of: " << rawVal << " in line #" << lineNumber <<
                           ". Line ignored.\n";
 
@@ -822,7 +804,7 @@ namespace vizdoom {
                     continue;
                 }
 
-                std::cerr << "WARNING! Loading config from: \"" << filePath <<
+                std::cerr << "WARNING! Loading config from: \"" << sourceDesc <<
                           "\". (ASYNC_)SPECTATOR || (ASYNC_)PLAYER expected instead of: " << rawVal << " in line #"
                           << lineNumber <<
                           ". Line ignored.\n";
@@ -849,7 +831,7 @@ namespace vizdoom {
                     continue;
                 }
 
-                std::cerr << "WARNING! Loading config from: \"" << filePath <<
+                std::cerr << "WARNING! Loading config from: \"" << sourceDesc <<
                           "\". NORMAL || WHOLE || OBJECTS || OBJECTS_WITH_SIZE expected instead of: " << rawVal <<
                           " in line #" << lineNumber << ". Line ignored.\n";
 
@@ -887,21 +869,50 @@ namespace vizdoom {
                 }
             }
             catch (std::exception &) {
-                std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Unsupported value: " << rawVal <<
+                std::cerr << "WARNING! Loading config from: \"" << sourceDesc << "\". Unsupported value: " << rawVal <<
                           " in line #" << lineNumber << ". Line ignored.\n";
 
                 success = false;
                 continue;
             }
 
-            std::cerr << "WARNING! Loading config from: \"" << filePath << "\". Unsupported key: " << key <<
+            std::cerr << "WARNING! Loading config from: \"" << sourceDesc << "\". Unsupported key: " << key <<
                       " in line #" << lineNumber << ". Line ignored.\n";
 
             success = false;
         }
 
+        return success;
+    }
+
+    bool ConfigLoader::set(std::string configStr) {
+        std::istringstream configStream(configStr);
+        return parseConfig(configStream, "config string");
+    }
+
+    bool ConfigLoader::load(std::string filePath) {
+        std::string scenarioName = filePath;
+        trim_all(scenarioName);
+        to_lower(scenarioName);
+        replace_all(scenarioName, " ", "_");
+        if(!ends_with(scenarioName, ".cfg")) {
+            scenarioName += ".cfg";
+        }
+
+        std::string workingConfigPath = "./scenarios/" + scenarioName;
+        std::string sharedConfigPath = getThisSharedObjectPath() + "/scenarios/" + scenarioName;
+
+        // Check if scenario exists in library's scenerios directory
+        if (fileExistsAndCanBeRead(filePath)) this->filePath = filePath;
+        else if (fileExistsAndCanBeRead(workingConfigPath)) this->filePath = workingConfigPath;
+        else if (fileExistsAndCanBeRead(sharedConfigPath)) this->filePath = sharedConfigPath;
+        else throw FileDoesNotExistException(filePath + " | " + workingConfigPath + " | " + sharedConfigPath);
+
+        std::ifstream file(this->filePath);
+        std::string configContent((std::istreambuf_iterator<char>(file)),
+                                   std::istreambuf_iterator<char>());
         file.close();
 
-        return success;
+        return set(configContent);
     }
 }
