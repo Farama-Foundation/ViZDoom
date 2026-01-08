@@ -986,6 +986,7 @@ Overwriting does not involve resetting to default values. Thus only overlapping 
 The method returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the whole configuration file was correctly read and applied,
 <cite>False</cite> if the file contained errors.</p>
 <p>If the file relative path is given, it will be searched for in the following order: <code class="docutils literal notranslate"><span class="pre">&lt;current</span> <span class="pre">directory&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;current</span> <span class="pre">directory&gt;/scenarios/</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;ViZDoom</span> <span class="pre">library</span> <span class="pre">location&gt;/scenarios/</span></code>.</p>
+<p>Relative paths in the config file (e.g. for <code class="docutils literal notranslate"><span class="pre">doom_scenario_path</span></code>) are resolved relative to the config file location.</p>
 </dd></dl>
 
 <dl class="py function">
