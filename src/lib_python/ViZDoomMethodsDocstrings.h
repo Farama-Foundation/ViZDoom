@@ -448,6 +448,14 @@ The method returns ``True`` if the whole configuration file was correctly read a
 
 If the file relative path is given, it will be searched for in the following order: ``<current directory>``, ``<current directory>/scenarios/``, ``<ViZDoom library location>/scenarios/``.)DOCSTRING";
 
+    const char *setConfig = R"DOCSTRING(Set configuration (resolution, available buttons, game variables etc.) from a configuration dict.
+In case of multiple invocations, older configurations will be overwritten by the recent ones.
+Overwriting does not involve resetting to default values. Thus only overlapping parameters will be changed.
+The method returns ``True`` if the whole configuration dict was correctly read and applied,
+`False` if the dict contained errors.
+
+Note: added in 1.3.0.)DOCSTRING";
+
     const char *getMode = R"DOCSTRING(Returns the current :class:`.Mode` (``PLAYER``, ``SPECTATOR``, ``ASYNC_PLAYER``, ``ASYNC_SPECTATOR``).)DOCSTRING";
 
     const char *setMode = R"DOCSTRING(Sets the :class:`.Mode` (``PLAYER``, ``SPECTATOR``, ``ASYNC_PLAYER``, ``ASYNC_SPECTATOR``) in which the game will be running.
