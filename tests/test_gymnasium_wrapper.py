@@ -39,7 +39,7 @@ class RemoveScreenObs(
 
 
 # Register test-only envs (disable automap buffer, enable labels buffer)
-envs_from_freedoom = []
+envs_from_freedoom: list[str] = []
 for game_name, config_file, maps in [
     ("Freedoom", "freedoom.cfg", gymnasium_wrapper.DOOM_MAPS),
     ("Freedoom2", "freedoom2.cfg", gymnasium_wrapper.DOOM2_MAPS),
@@ -94,7 +94,10 @@ def test_gymnasium_wrapper():
         # Skip environments with animated textures and audio
         # as they might render different states for the same seeds
         # and audio might render slightly different
-        if env_name.split("-")[0] in envs_with_animated_textures + envs_with_audio:
+        if (
+            env_name.split("-")[0]
+            in envs_with_animated_textures + envs_with_audio + envs_from_freedoom
+        ):
             continue
 
         for frame_skip in [1, 4]:
