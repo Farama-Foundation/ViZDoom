@@ -7,6 +7,7 @@ import concurrent.futures
 import os
 import pickle
 import re
+import typing
 
 import gymnasium
 import numpy as np
@@ -17,7 +18,23 @@ from vizdoom import gymnasium_wrapper  # noqa
 from vizdoom.gymnasium_wrapper.base_gymnasium_env import VizdoomEnv
 
 
-# Register test-only envs (no automap buffer)
+class RemoveScreenObs(gymnasium.ObservationWrapper):
+    """Maps in Doom & Freedoom contain too many animated textures"""
+
+    def __init__(self, env: gymnasium.Env):
+        super().__init__(env)
+        assert isinstance(env.observation_space, Dict)
+        self.observation_space = Dict(
+            {k: v for k, v in env.observation_space.spaces.items() if k != "screen"}
+        )
+
+    def observation(self, obs: dict[str, typing.Any]):
+        obs = dict(obs)
+        obs.pop("screen", None)
+        return obs
+
+
+# Register test-only envs (disable automap buffer, enable labels buffer)
 envs_from_freedoom = []
 for game_name, config_file, maps in [
     ("Freedoom", "freedoom.cfg", gymnasium_wrapper.DOOM_MAPS),
@@ -34,6 +51,7 @@ for game_name, config_file, maps in [
                     "doom_skill": 1,
                     "doom_map": map,
                     "automap_buffer_enabled": False,
+                    "labels_buffer_enabled": True,
                 },
                 "max_buttons_pressed": 0,
             },
@@ -54,46 +72,6 @@ envs_with_animated_textures = [
     "VizdoomHealthGathering",
     "VizdoomHealthGatheringSupreme",
     "VizdoomDeathmatch",
-    "VizdoomFreedoom2MAP01",
-    "VizdoomFreedoom2MAP02",
-    "VizdoomFreedoom2MAP05",
-    "VizdoomFreedoom2MAP09",
-    "VizdoomFreedoom2MAP10",
-    "VizdoomFreedoom2MAP11",
-    "VizdoomFreedoom2MAP12",
-    "VizdoomFreedoom2MAP14",
-    "VizdoomFreedoom2MAP16",
-    "VizdoomFreedoom2MAP17",
-    "VizdoomFreedoom2MAP20",
-    "VizdoomFreedoom2MAP21",
-    "VizdoomFreedoom2MAP22",
-    "VizdoomFreedoom2MAP23",
-    "VizdoomFreedoom2MAP24",
-    "VizdoomFreedoom2MAP25",
-    "VizdoomFreedoom2MAP26",
-    "VizdoomFreedoom2MAP27",
-    "VizdoomFreedoom2MAP28",
-    "VizdoomFreedoom2MAP29",
-    "VizdoomFreedoom2MAP30",
-    "VizdoomFreedoomE1M1",
-    "VizdoomFreedoomE1M2",
-    "VizdoomFreedoomE1M8",
-    "VizdoomFreedoomE2M1",
-    "VizdoomFreedoomE2M2",
-    "VizdoomFreedoomE2M3",
-    "VizdoomFreedoomE2M6",
-    "VizdoomFreedoomE2M8",
-    "VizdoomFreedoomE3M1",
-    "VizdoomFreedoomE3M2",
-    "VizdoomFreedoomE3M3",
-    "VizdoomFreedoomE3M5",
-    "VizdoomFreedoomE3M6",
-    "VizdoomFreedoomE3M7",
-    "VizdoomFreedoomE3M8",
-    "VizdoomFreedoomE3M9",
-    "VizdoomFreedoomE4M1",
-    "VizdoomFreedoomE4M5",
-    "VizdoomFreedoomE4M7",
 ]
 envs_with_audio = [
     "VizdoomBasicAudio",
@@ -116,6 +94,8 @@ def test_gymnasium_wrapper():
 
         for frame_skip in [1, 4]:
             env = gymnasium.make(env_name, frame_skip=frame_skip)
+            if env_name.split("-")[0] in envs_from_freedoom:
+                env = RemoveScreenObs(env)
 
             # Test if env adheres to Gymnasium API
             check_env(env.unwrapped, skip_render_check=True)
@@ -151,6 +131,8 @@ def test_gymnasium_wrapper_terminal_state():
 
         for frame_skip in [1, 4]:
             env = gymnasium.make(env_name, frame_skip=frame_skip, max_buttons_pressed=0)
+            if env_name.split("-")[0] in envs_from_freedoom:
+                env = RemoveScreenObs(env)
             obs = env.reset()
             terminated = False
             truncated = False
@@ -619,6 +601,8 @@ def test_gymnasium_wrapper_pickle():
         futures = {}
         for env_name in vizdoom_envs:
             env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
+            if env_name.split("-")[0] in envs_from_freedoom:
+                env1 = RemoveScreenObs(env1)
             env2 = pickle.loads(pickle.dumps(env1))
 
             futures[
@@ -655,6 +639,9 @@ def test_gymnasium_wrapper_seed():
         for env_name in vizdoom_envs:
             env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
             env2 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
+            if env_name.split("-")[0] in envs_from_freedoom:
+                env1 = RemoveScreenObs(env1)
+                env2 = RemoveScreenObs(env2)
 
             futures[
                 executor.submit(
@@ -684,10 +671,10 @@ def test_gymnasium_wrapper_seed():
 
 
 if __name__ == "__main__":
-    test_gymnasium_wrapper()
-    test_gymnasium_wrapper_terminal_state()
-    test_gymnasium_wrapper_truncated_state()
-    test_gymnasium_wrapper_action_space()
-    test_gymnasium_wrapper_obs_space()
+    # test_gymnasium_wrapper()
+    # test_gymnasium_wrapper_terminal_state()
+    # test_gymnasium_wrapper_truncated_state()
+    # test_gymnasium_wrapper_action_space()
+    # test_gymnasium_wrapper_obs_space()
     test_gymnasium_wrapper_pickle()
-    test_gymnasium_wrapper_seed()
+    # test_gymnasium_wrapper_seed()
