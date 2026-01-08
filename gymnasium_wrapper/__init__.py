@@ -250,10 +250,10 @@ for skill in SKILL_LEVELS:
                 id=f"Vizdoom{game_name}{map}-{skill}-v0",
                 entry_point=DEFAULT_VIZDOOM_ENTRYPOINT,
                 kwargs={
-                    "scenario_config_file=": f"{config_file}",
+                    "scenario_config_file": f"{config_file}",
                     "additional_config_dict": {
-                        "skill_level": skill_int,
-                        "map": map,
+                        "doom_skill": int(skill[1]),
+                        "doom_map": map,
                     },
                     "max_buttons_pressed": 0,
                 },
