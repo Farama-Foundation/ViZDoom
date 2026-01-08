@@ -3,8 +3,10 @@
 # Tests for Gymnasium wrapper.
 # This test can be run as Python script or via PyTest
 
+import concurrent.futures
 import os
 import pickle
+import re
 
 import gymnasium
 import numpy as np
@@ -15,16 +17,83 @@ from vizdoom import gymnasium_wrapper  # noqa
 from vizdoom.gymnasium_wrapper.base_gymnasium_env import VizdoomEnv
 
 
+# Register test-only envs (no automap buffer)
+envs_from_freedoom = []
+for game_name, config_file, maps in [
+    ("Freedoom", "freedoom.cfg", gymnasium_wrapper.DOOM_MAPS),
+    ("Freedoom2", "freedoom2.cfg", gymnasium_wrapper.DOOM2_MAPS),
+]:
+    for map in maps:
+        envs_from_freedoom.append(f"Vizdoom{game_name}{map}")
+        gymnasium.register(
+            id=f"Vizdoom{game_name}{map}-TEST-v0",
+            entry_point=gymnasium_wrapper.DEFAULT_VIZDOOM_ENTRYPOINT,
+            kwargs={
+                "scenario_config_file": f"{config_file}",
+                "additional_config_dict": {
+                    "doom_skill": 1,
+                    "doom_map": map,
+                    "automap_buffer_enabled": False,
+                },
+                "max_buttons_pressed": 0,
+            },
+        )
+
+# Filter out not-for-test versions of envs
+ignore_pattern = re.compile(
+    r"Vizdoom(?:(?:(?:Freed|D)oomE[0-9]+M)|(?:(?:Freed|D)oom2MAP))[0-9]+-S[0-9]+"
+)
+
 vizdoom_envs = [
     env
     for env in [env_spec.id for env_spec in gymnasium.envs.registry.values()]  # type: ignore
-    if "Vizdoom" in env
+    if "Vizdoom" in env and not ignore_pattern.match(env)
 ]
 test_env_configs = f"{os.path.dirname(os.path.abspath(__file__))}/env_configs"
 envs_with_animated_textures = [
     "VizdoomHealthGathering",
     "VizdoomHealthGatheringSupreme",
     "VizdoomDeathmatch",
+    "VizdoomFreedoom2MAP01",
+    "VizdoomFreedoom2MAP02",
+    "VizdoomFreedoom2MAP05",
+    "VizdoomFreedoom2MAP09",
+    "VizdoomFreedoom2MAP10",
+    "VizdoomFreedoom2MAP11",
+    "VizdoomFreedoom2MAP12",
+    "VizdoomFreedoom2MAP14",
+    "VizdoomFreedoom2MAP16",
+    "VizdoomFreedoom2MAP17",
+    "VizdoomFreedoom2MAP20",
+    "VizdoomFreedoom2MAP21",
+    "VizdoomFreedoom2MAP22",
+    "VizdoomFreedoom2MAP23",
+    "VizdoomFreedoom2MAP24",
+    "VizdoomFreedoom2MAP25",
+    "VizdoomFreedoom2MAP26",
+    "VizdoomFreedoom2MAP27",
+    "VizdoomFreedoom2MAP28",
+    "VizdoomFreedoom2MAP29",
+    "VizdoomFreedoom2MAP30",
+    "VizdoomFreedoomE1M1",
+    "VizdoomFreedoomE1M2",
+    "VizdoomFreedoomE1M8",
+    "VizdoomFreedoomE2M1",
+    "VizdoomFreedoomE2M2",
+    "VizdoomFreedoomE2M3",
+    "VizdoomFreedoomE2M6",
+    "VizdoomFreedoomE2M8",
+    "VizdoomFreedoomE3M1",
+    "VizdoomFreedoomE3M2",
+    "VizdoomFreedoomE3M3",
+    "VizdoomFreedoomE3M5",
+    "VizdoomFreedoomE3M6",
+    "VizdoomFreedoomE3M7",
+    "VizdoomFreedoomE3M8",
+    "VizdoomFreedoomE3M9",
+    "VizdoomFreedoomE4M1",
+    "VizdoomFreedoomE4M5",
+    "VizdoomFreedoomE4M7",
 ]
 envs_with_audio = [
     "VizdoomBasicAudio",
@@ -546,38 +615,72 @@ def _compare_envs(
 
 def test_gymnasium_wrapper_pickle():
     print("Testing Gymnasium wrapper pickling (EzPickle).")
-    for env_name in vizdoom_envs:
-        print(f"  Env: {env_name}")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
+        futures = {}
+        for env_name in vizdoom_envs:
+            env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
+            env2 = pickle.loads(pickle.dumps(env1))
 
-        env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
-        env2 = pickle.loads(pickle.dumps(env1))
+            futures[
+                executor.submit(
+                    _compare_envs,
+                    env1,
+                    env2,
+                    env1_name="Original",
+                    env2_name="Pickled",
+                    seed=1993,
+                    compare_buffers=(
+                        env_name.split("-")[0] not in envs_with_animated_textures
+                    ),
+                )
+            ] = env_name
 
-        _compare_envs(
-            env1,
-            env2,
-            env1_name="Original",
-            env2_name="Pickled",
-            seed=1993,
-            compare_buffers=(env_name.split("-")[0] not in envs_with_animated_textures),
-        )
+        n_future = len(futures)
+        n_digits = len(str(n_future))
+        counter = 1
+        for future in concurrent.futures.as_completed(futures):
+            env_name = futures[future]
+            print(f"  Env ({counter:{n_digits}d}/{n_future}): {env_name}")
+            counter += 1
+            try:
+                future.result()
+            except Exception as e:
+                raise RuntimeError(f"Failed environment: {env_name}") from e
 
 
 def test_gymnasium_wrapper_seed():
     print("Testing gymnasium wrapper seeding.")
-    for env_name in vizdoom_envs:
-        print(f"  Env: {env_name}")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
+        futures = {}
+        for env_name in vizdoom_envs:
+            env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
+            env2 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
 
-        env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
-        env2 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
+            futures[
+                executor.submit(
+                    _compare_envs,
+                    env1,
+                    env2,
+                    env1_name="First",
+                    env2_name="Second",
+                    seed=1993,
+                    compare_buffers=(
+                        env_name.split("-")[0] not in envs_with_animated_textures
+                    ),
+                )
+            ] = env_name
 
-        _compare_envs(
-            env1,
-            env2,
-            env1_name="First",
-            env2_name="Second",
-            seed=1993,
-            compare_buffers=(env_name.split("-")[0] not in envs_with_animated_textures),
-        )
+        n_future = len(futures)
+        n_digits = len(str(n_future))
+        counter = 1
+        for future in concurrent.futures.as_completed(futures):
+            env_name = futures[future]
+            print(f"  Env ({counter:{n_digits}d}/{n_future}): {env_name}")
+            counter += 1
+            try:
+                future.result()
+            except Exception as e:
+                raise RuntimeError(f"Failed environment: {env_name}") from e
 
 
 if __name__ == "__main__":
