@@ -8,6 +8,7 @@ import os
 import pickle
 import re
 import typing
+import warnings
 
 import gymnasium
 import numpy as np
@@ -18,11 +19,14 @@ from vizdoom import gymnasium_wrapper  # noqa
 from vizdoom.gymnasium_wrapper.base_gymnasium_env import VizdoomEnv
 
 
-class RemoveScreenObs(gymnasium.ObservationWrapper):
+class RemoveScreenObs(
+    gymnasium.ObservationWrapper, gymnasium.utils.RecordConstructorArgs
+):
     """Maps in Doom & Freedoom contain too many animated textures"""
 
     def __init__(self, env: gymnasium.Env):
-        super().__init__(env)
+        gymnasium.utils.RecordConstructorArgs.__init__(self)
+        gymnasium.ObservationWrapper.__init__(self, env)
         assert isinstance(env.observation_space, Dict)
         self.observation_space = Dict(
             {k: v for k, v in env.observation_space.spaces.items() if k != "screen"}
@@ -48,10 +52,11 @@ for game_name, config_file, maps in [
             kwargs={
                 "scenario_config_file": f"{config_file}",
                 "additional_config_dict": {
-                    "doom_skill": 1,
+                    "doom_skill": 5,
                     "doom_map": map,
                     "automap_buffer_enabled": False,
                     "labels_buffer_enabled": True,
+                    "screen_format": "RGB24",
                 },
                 "max_buttons_pressed": 0,
             },
@@ -94,11 +99,15 @@ def test_gymnasium_wrapper():
 
         for frame_skip in [1, 4]:
             env = gymnasium.make(env_name, frame_skip=frame_skip)
-            if env_name.split("-")[0] in envs_from_freedoom:
-                env = RemoveScreenObs(env)
 
             # Test if env adheres to Gymnasium API
-            check_env(env.unwrapped, skip_render_check=True)
+            if env_name.split("-")[0] in envs_from_freedoom:
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore", category=UserWarning, append=True)
+                    env = RemoveScreenObs(env)
+                    check_env(env, skip_render_check=True)
+            else:
+                check_env(env.unwrapped, skip_render_check=True)
 
             ob_space = env.observation_space
             act_space = env.action_space
@@ -671,10 +680,10 @@ def test_gymnasium_wrapper_seed():
 
 
 if __name__ == "__main__":
-    # test_gymnasium_wrapper()
-    # test_gymnasium_wrapper_terminal_state()
-    # test_gymnasium_wrapper_truncated_state()
-    # test_gymnasium_wrapper_action_space()
-    # test_gymnasium_wrapper_obs_space()
+    test_gymnasium_wrapper()
+    test_gymnasium_wrapper_terminal_state()
+    test_gymnasium_wrapper_truncated_state()
+    test_gymnasium_wrapper_action_space()
+    test_gymnasium_wrapper_obs_space()
     test_gymnasium_wrapper_pickle()
-    # test_gymnasium_wrapper_seed()
+    test_gymnasium_wrapper_seed()
