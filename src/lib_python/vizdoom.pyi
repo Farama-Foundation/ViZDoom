@@ -1236,6 +1236,17 @@ class DoomGame:
         Has no effect when the game is running.
         """
 
+    def set_config(self, config: typing.Any) -> bool:
+        """
+        Set configuration (resolution, available buttons, game variables etc.) from a configuration dict.
+        In case of multiple invocations, older configurations will be overwritten by the recent ones.
+        Overwriting does not involve resetting to default values. Thus only overlapping parameters will be changed.
+        The method returns ``True`` if the whole configuration dict was correctly read and applied,
+        `False` if the dict contained errors.
+
+        Note: added in 1.3.0.
+        """
+
     def set_console_enabled(self, console: bool) -> None:
         """
         Determines if ViZDoom's console output will be enabled.
@@ -1342,14 +1353,14 @@ class DoomGame:
         Sets the path to the Doom engine based game file (wad format).
         If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom library/pyd is).
 
-        Default value: ``<ViZDoom library location>/<doom2.wad, doom.wad, freedoom2.wad, or freedoom.wad - in this order>``
+        Default value: ``<ViZDoom library location>/<doom2.wad, freedoom2.wad - in this order>``
 
         Config key: ``DoomGamePath``/``doom_game_path``
         """
 
     def set_doom_map(self, button: str) -> None:
         """
-        Sets the map name to be used.
+        Sets the map name to be used. The map name is case insensitive.
 
         Default value: ``"map01"``, if set to empty ``"map01"`` will be used.
 
@@ -1373,12 +1384,11 @@ class DoomGame:
         Skill level affects monsters' aggressiveness, monsters' speed, weapon damage, ammunition quantities, etc.
         Takes effect from the next episode.
 
-        - 1 - VERY EASY, “I'm Too Young to Die” in Doom.
-        - 2 - EASY, “Hey, Not Too Rough" in Doom.
-        - 3 - NORMAL, “Hurt Me Plenty” in Doom.
-        - 4 - HARD, “Ultra-Violence” in Doom.
-        - 5 - VERY HARD, “Nightmare!” in Doom.
-
+        - 1 - VERY EASY, “I'm Too Young to Die” in Doom/Doom 2.
+        - 2 - EASY, “Hey, Not Too Rough" in Doom/Doom 2.
+        - 3 - NORMAL, “Hurt Me Plenty” in Doom/Doom 2.
+        - 4 - HARD, “Ultra-Violence” in Doom/Doom 2.
+        - 5 - VERY HARD, “Nightmare!” in Doom/Doom 2.
         Default value: 3
 
         Config key: ``DoomSkill``/``doom_skill``
