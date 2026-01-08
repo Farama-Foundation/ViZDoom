@@ -192,6 +192,12 @@ class ViZDoomStubGenerator:
             # Step 5: Additionally treatment for properties of GameState object
             stub_content = self.annotate_gamestate_properties(stub_content)
 
+            # Step 5.5: The small patches
+            stub_content = stub_content.replace(
+                "set_config(self, config: typing.Any",
+                "set_config(self, config: typing.Union[str, dict[str, tying.Any]]",
+            )
+
             # Step 6: Write to output file
             output_dir = os.path.dirname(self.output_file)
             try:

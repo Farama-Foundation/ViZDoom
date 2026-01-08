@@ -448,11 +448,13 @@ The method returns ``True`` if the whole configuration file was correctly read a
 
 If the file relative path is given, it will be searched for in the following order: ``<current directory>``, ``<current directory>/scenarios/``, ``<ViZDoom library location>/scenarios/``.)DOCSTRING";
 
-    const char *setConfig = R"DOCSTRING(Set configuration (resolution, available buttons, game variables etc.) from a configuration dict.
+    const char *setConfig = R"DOCSTRING(Set configuration (resolution, available buttons, game variables etc.) from a configuration dict or string.
 In case of multiple invocations, older configurations will be overwritten by the recent ones.
 Overwriting does not involve resetting to default values. Thus only overlapping parameters will be changed.
-The method returns ``True`` if the whole configuration dict was correctly read and applied,
-`False` if the dict contained errors.
+The method returns ``True`` if the whole configuration was correctly read and applied,
+`False` if the config contained errors.
+
+Config key: ``config``
 
 Note: added in 1.3.0.)DOCSTRING";
 

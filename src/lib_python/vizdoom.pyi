@@ -1236,13 +1236,15 @@ class DoomGame:
         Has no effect when the game is running.
         """
 
-    def set_config(self, config: typing.Any) -> bool:
+    def set_config(self, config: typing.Union[str, dict[str, tying.Any]]) -> bool:
         """
-        Set configuration (resolution, available buttons, game variables etc.) from a configuration dict.
+        Set configuration (resolution, available buttons, game variables etc.) from a configuration dict or string.
         In case of multiple invocations, older configurations will be overwritten by the recent ones.
         Overwriting does not involve resetting to default values. Thus only overlapping parameters will be changed.
-        The method returns ``True`` if the whole configuration dict was correctly read and applied,
-        `False` if the dict contained errors.
+        The method returns ``True`` if the whole configuration was correctly read and applied,
+        `False` if the config contained errors.
+
+        Config key: ``config``
 
         Note: added in 1.3.0.
         """
