@@ -275,8 +275,6 @@ GAME_NAMES = {"doom", "doom2", "freedoom", "freedoom2"}
 # Use a file lock to be safe
 WAD_LOCK_FILE = os.path.join(VIZDOOM_DIR, "wad_check.lock")
 with suppress(OSError):
-    if os.path.isfile(WAD_LOCK_FILE):
-        os.remove(WAD_LOCK_FILE)
     WAD_CHECK_LOCK = filelock.FileLock(WAD_LOCK_FILE, thread_local=True)
     with WAD_CHECK_LOCK:
         # Normalize file names
@@ -311,6 +309,5 @@ with suppress(OSError):
                             "Removed a broken symlink in ViZDoom root dir: %s", wad_name
                         )
     del WAD_CHECK_LOCK, WORKING_DIR_WADS, VIZDOOM_DIR_WADS
-    os.remove(WAD_LOCK_FILE)
 
 del GAME_NAMES, WAD_PATTERN, VIZDOOM_DIR, WAD_LOCK_FILE
