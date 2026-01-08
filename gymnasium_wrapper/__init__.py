@@ -260,7 +260,7 @@ for skill in SKILL_LEVELS:
                 kwargs={
                     "scenario_config_file": f"{config_file}",
                     "additional_config_dict": {
-                        "doom_skill": int(skill[1]),
+                        "doom_skill": skill_int,
                         "doom_map": map,
                     },
                     "max_buttons_pressed": 0,
