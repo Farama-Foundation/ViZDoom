@@ -1,4 +1,12 @@
+import glob
+import os
+from contextlib import suppress
+
+import filelock
+import gymnasium
 from gymnasium.envs.registration import register
+
+import vizdoom
 
 
 DEFAULT_VIZDOOM_ENTRYPOINT = (
@@ -258,3 +266,51 @@ for skill in SKILL_LEVELS:
                     "max_buttons_pressed": 0,
                 },
             )
+
+# If WADs are in working dir, create symlink of them in vizdoom dir
+WAD_PATTERN = "*.[wW][aA][dD]"
+VIZDOOM_DIR = os.path.abspath(os.path.dirname(vizdoom.__file__))
+GAME_NAMES = {"doom", "doom2", "freedoom", "freedoom2"}
+
+# Use a file lock to be safe
+WAD_LOCK_FILE = os.path.join(VIZDOOM_DIR, "wad_check.lock")
+with suppress(OSError):
+    if os.path.isfile(WAD_LOCK_FILE):
+        os.remove(WAD_LOCK_FILE)
+    WAD_CHECK_LOCK = filelock.FileLock(WAD_LOCK_FILE, thread_local=True)
+    with WAD_CHECK_LOCK:
+        # Normalize file names
+        WORKING_DIR_WADS = {
+            wadfile.casefold(): wadfile for wadfile in glob.glob(WAD_PATTERN)
+        }
+        VIZDOOM_DIR_WADS = {
+            wadfile.casefold(): wadfile
+            for wadfile in glob.glob(WAD_PATTERN, root_dir=VIZDOOM_DIR)
+        }
+
+        # Check the four game WADs
+        for game_name in GAME_NAMES:
+            wad_name = game_name + ".wad"
+            wad_in_vizdoom_dir = os.path.join(VIZDOOM_DIR, wad_name)
+            if wad_name not in VIZDOOM_DIR_WADS:
+                wad_in_working_dir = WORKING_DIR_WADS.get(wad_name, "")
+                # If WAD in working directory but not in ViZDoom directory, make a symlink there
+                if os.path.isfile(wad_in_working_dir):
+                    os.symlink(os.path.abspath(wad_in_working_dir), wad_in_vizdoom_dir)
+                    gymnasium.logger.warn(
+                        "%s exists in working dir but not ViZDoom root dir, symlink created",
+                        wad_name,
+                    )
+            else:
+                # Check for any broken symlinks, and remove them, as that may confuse user
+                if os.path.islink(wad_in_vizdoom_dir):
+                    linked_file = os.path.realpath(wad_in_vizdoom_dir, strict=False)
+                    if not os.path.isfile(linked_file):
+                        os.remove(wad_in_vizdoom_dir)
+                        gymnasium.logger.warn(
+                            "Removed a broken symlink in ViZDoom root dir: %s", wad_name
+                        )
+    del WAD_CHECK_LOCK, WORKING_DIR_WADS, VIZDOOM_DIR_WADS
+    os.remove(WAD_LOCK_FILE)
+
+del GAME_NAMES, WAD_PATTERN, VIZDOOM_DIR, WAD_LOCK_FILE
