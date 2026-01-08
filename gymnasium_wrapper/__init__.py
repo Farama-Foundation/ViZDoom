@@ -284,8 +284,8 @@ with suppress(OSError):
             wadfile.casefold(): wadfile for wadfile in glob.glob(WAD_PATTERN)
         }
         VIZDOOM_DIR_WADS = {
-            wadfile.casefold(): wadfile
-            for wadfile in glob.glob(WAD_PATTERN, root_dir=VIZDOOM_DIR)
+            os.path.basename(wadfile).casefold()
+            for wadfile in glob.glob(os.path.join(VIZDOOM_DIR, WAD_PATTERN))
         }
 
         # Check the four game WADs
