@@ -1225,10 +1225,11 @@ Returns the path to the Doom engine based game file (wad format).
 | :--    | :--                                          |
 | Python | `set_doom_game_path(file_path: str) -> None` |
 
-Sets the path to the Doom engine based game file (wad format).
-If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom library/pyd is).
+Sets the path to the Doom engine-based game file (wad format).
+If set to empty, DoomGame will look for doom2.wad, DOOM2.WAD, and freedoom2.wad (in that order) in the working directory first and then in ViZDoom's installation directory
+(where vizdoom library/pyd is).
 
-Default value: `<ViZDoom library location>/<doom2.wad, freedoom2.wad - in this order>`
+Default value: `""`
 
 Config key: `DoomGamePath`/`doom_game_path`
 
@@ -1251,7 +1252,7 @@ Returns the path to the additional scenario file (wad format).
 | Python | `set_doom_scenario_path(file_path: str) -> None` |
 
 Sets the path to an additional scenario file (wad format).
-If not provided, the default Doom single-player maps will be loaded.
+If not provided, the default maps of selected Doom engine-based game will be used.
 
 Default value: `""`
 

@@ -523,14 +523,14 @@ Config key: ``ViZDoomPath``/``vizdoom_path``)DOCSTRING";
     const char *setDoomGamePath = R"DOCSTRING(Sets the path to the Doom engine based game file (wad format).
 If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom library/pyd is).
 
-Default value: ``<ViZDoom library location>/<doom2.wad, freedoom2.wad - in this order>``
+Default value: ``""``
 
 Config key: ``DoomGamePath``/``doom_game_path``)DOCSTRING";
 
     const char *getDoomScenarioPath = R"DOCSTRING(Returns the path to the additional scenario file (wad format).)DOCSTRING";
 
     const char *setDoomScenarioPath = R"DOCSTRING(Sets the path to an additional scenario file (wad format).
-If not provided, the default Doom single-player maps will be loaded.
+If not provided, the default maps of selected Doom engine-based game will be used.
 
 Default value: ``""``
 

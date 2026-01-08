@@ -90,9 +90,7 @@ Config keys are also mentioned for related methods in the documentation for `Doo
 ### Sample configuration file content:
 
 ```ini
-vizdoom_path = ../../bin/vizdoom
-#doom_game_path = ../../scenarios/doom2.wad
-doom_game_path = ../../scenarios/freedoom2.wad
+doom_game_path = freedoom2.wad
 doom_scenario_path = ../../scenarios/basic.wad
 doom_map = map01
 

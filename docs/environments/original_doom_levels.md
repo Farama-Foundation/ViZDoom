@@ -3,7 +3,8 @@
 Beside the custom scenarios (original ViZDoom nomenclature)/environments (Gymnasium/Open AI Gym nomenclature) original introduced with ViZDoom and many user-created. It is possible to play the original Doom/Doom 2/Freedoom/Freedoom 2 levels as well.
 
 Because we cannot provide original Doom's and Doom's 2 levels, in order to play them you need to have original Doom or Doom 2 WAD files.
-You can get them by purchasing the original game from [Steam](https://store.steampowered.com/app/2280/DOOM__DOOM_II/) or [GOG](https://www.gog.com/game/doom_doom_ii). You can then place the doom2.wad and doom.wad files into your working directory or vizdoom package directory (same directory as vizdoom(.exe)). On Unix you can also set `DOOMWADDIR` environment variable to directory with your wads files.
+You can get them by purchasing the original game from [Steam](https://store.steampowered.com/app/2280/DOOM__DOOM_II/) or [GOG](https://www.gog.com/game/doom_doom_ii).
+You can then place the doom2.wad and doom.wad files into your vizdoom package directory (same directory as vizdoom(.exe)).
 
 ## Convention of environment names in Gymnasium
 
@@ -32,7 +33,7 @@ Python example:
 import os
 import vizdoom as vzd
 game = vzd.DoomGame()
-game.load_config(os.path.join(vzd.scenarios_path, "doom.cfg")) # or doom2.cfg, freedoom.cfg, freedoom2.cfg
+game.load_config(os.path.join(vzd.scenarios_path, "doom.cfg")) # or doom2.cfg, freedoom1.cfg, freedoom2.cfg
 game.set_doom_map("E1M1")  # see list of map IDs below
 game.set_skill_level(1)  # or 2, 3, 4, 5
 ```
@@ -40,7 +41,7 @@ game.set_skill_level(1)  # or 2, 3, 4, 5
 Configuration file:
 - Doom: [doom.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/doom.cfg)
 - Doom 2: [doom2.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/doom2.cfg)
-- Freedoom: [freedoom.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/freedoom.cfg)
+- Freedoom: [freedoom1.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/freedoom.cfg)
 - Freedoom 2: [freedoom2.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/freedoom2.cfg)
 
 
@@ -166,68 +167,68 @@ The list of all original Doom 2 levels and their corresponding ViZDoom environme
 | `"MAP32"` | `"VizdoomDoom2MAP32-S<X>-v0"` | Doom 2 MAP32: Grosse2                        |
 
 
-## Freedoom levels
+## Freedoom 1 levels
 
-The list of all Freedoom levels and their corresponding ViZDoom environment names:
+The list of all Freedoom 1 (Freedoom: Phase 1) levels and their corresponding ViZDoom environment names:
 
 ### Episode 1: Outpost Outbreak
 
-| Map ID   | Gymnasium Environment Name      | Level Name                                  |
-| :--      | :--                             | :--                                         |
-| `"E1M1"` | `"VizdoomFreedoomE1M1-S<X>-v0"` | Freedoom E1M1: Outer Prison                 |
-| `"E1M2"` | `"VizdoomFreedoomE1M2-S<X>-v0"` | Freedoom E1M2: Communications Center        |
-| `"E1M3"` | `"VizdoomFreedoomE1M3-S<X>-v0"` | Freedoom E1M3: Waste Disposal               |
-| `"E1M4"` | `"VizdoomFreedoomE1M4-S<X>-v0"` | Freedoom E1M4: Supply Depot                 |
-| `"E1M5"` | `"VizdoomFreedoomE1M5-S<X>-v0"` | Freedoom E1M5: Armory                       |
-| `"E1M6"` | `"VizdoomFreedoomE1M6-S<X>-v0"` | Freedoom E1M6: Training Facility            |
-| `"E1M7"` | `"VizdoomFreedoomE1M7-S<X>-v0"` | Freedoom E1M7: Xenobiotic Materials Lab     |
-| `"E1M8"` | `"VizdoomFreedoomE1M8-S<X>-v0"` | Freedoom E1M8: Outpost Quarry               |
-| `"E1M9"` | `"VizdoomFreedoomE1M9-S<X>-v0"` | Freedoom E1M9: Nutrient Recycling           |
+| Map ID   | Gymnasium Environment Name       | Level Name                                 |
+| :--      | :--                              | :--                                        |
+| `"E1M1"` | `"VizdoomFreedoom1E1M1-S<X>-v0"` | Freedoom E1M1: Outer Prison                |
+| `"E1M2"` | `"VizdoomFreedoom1E1M2-S<X>-v0"` | Freedoom E1M2: Communications Center       |
+| `"E1M3"` | `"VizdoomFreedoom1E1M3-S<X>-v0"` | Freedoom E1M3: Waste Disposal              |
+| `"E1M4"` | `"VizdoomFreedoom1E1M4-S<X>-v0"` | Freedoom E1M4: Supply Depot                |
+| `"E1M5"` | `"VizdoomFreedoom1E1M5-S<X>-v0"` | Freedoom E1M5: Armory                      |
+| `"E1M6"` | `"VizdoomFreedoom1E1M6-S<X>-v0"` | Freedoom E1M6: Training Facility           |
+| `"E1M7"` | `"VizdoomFreedoom1E1M7-S<X>-v0"` | Freedoom E1M7: Xenobiotic Materials Lab    |
+| `"E1M8"` | `"VizdoomFreedoom1E1M8-S<X>-v0"` | Freedoom E1M8: Outpost Quarry              |
+| `"E1M9"` | `"VizdoomFreedoom1E1M9-S<X>-v0"` | Freedoom E1M9: Nutrient Recycling          |
 
 
 ### Episode 2: Military Labs
 
-| Map ID   | Gymnasium Environment Name      | Level Name                                  |
-| :--      | :--                             | :--                                         |
-| `"E2M1"` | `"VizdoomFreedoomE2M1-S<X>-v0"` | Freedoom E2M1: Elemental Gate               |
-| `"E2M2"` | `"VizdoomFreedoomE2M2-S<X>-v0"` | Freedoom E2M2: Shifter                      |
-| `"E2M3"` | `"VizdoomFreedoomE2M3-S<X>-v0"` | Freedoom E2M3: Reclaimed Facilities         |
-| `"E2M4"` | `"VizdoomFreedoomE2M4-S<X>-v0"` | Freedoom E2M4: Flooded Installation         |
-| `"E2M5"` | `"VizdoomFreedoomE2M5-S<X>-v0"` | Freedoom E2M5: Underground Hub              |
-| `"E2M6"` | `"VizdoomFreedoomE2M6-S<X>-v0"` | Freedoom E2M6: Hidden Sector                |
-| `"E2M7"` | `"VizdoomFreedoomE2M7-S<X>-v0"` | Freedoom E2M7: Control Complex              |
-| `"E2M8"` | `"VizdoomFreedoomE2M8-S<X>-v0"` | Freedoom E2M8: Containment Cell             |
-| `"E2M9"` | `"VizdoomFreedoomE2M9-S<X>-v0"` | Freedoom E2M9: Fortress 31                  |
+| Map ID   | Gymnasium Environment Name       | Level Name                                 |
+| :--      | :--                              | :--                                        |
+| `"E2M1"` | `"VizdoomFreedoom1E2M1-S<X>-v0"` | Freedoom E2M1: Elemental Gate              |
+| `"E2M2"` | `"VizdoomFreedoom1E2M2-S<X>-v0"` | Freedoom E2M2: Shifter                     |
+| `"E2M3"` | `"VizdoomFreedoom1E2M3-S<X>-v0"` | Freedoom E2M3: Reclaimed Facilities        |
+| `"E2M4"` | `"VizdoomFreedoom1E2M4-S<X>-v0"` | Freedoom E2M4: Flooded Installation        |
+| `"E2M5"` | `"VizdoomFreedoom1E2M5-S<X>-v0"` | Freedoom E2M5: Underground Hub             |
+| `"E2M6"` | `"VizdoomFreedoom1E2M6-S<X>-v0"` | Freedoom E2M6: Hidden Sector               |
+| `"E2M7"` | `"VizdoomFreedoom1E2M7-S<X>-v0"` | Freedoom E2M7: Control Complex             |
+| `"E2M8"` | `"VizdoomFreedoom1E2M8-S<X>-v0"` | Freedoom E2M8: Containment Cell            |
+| `"E2M9"` | `"VizdoomFreedoom1E2M9-S<X>-v0"` | Freedoom E2M9: Fortress 31                 |
 
 
 ### Episode 3: Event Horizon
 
-| Map ID   | Gymnasium Environment Name      | Level Name                                  |
-| :--      | :--                             | :--                                         |
-| `"E3M1"` | `"VizdoomFreedoomE3M1-S<X>-v0"` | Freedoom E3M1: Land of the Lost             |
-| `"E3M2"` | `"VizdoomFreedoomE3M2-S<X>-v0"` | Freedoom E3M2: Geothermal Tunnels           |
-| `"E3M3"` | `"VizdoomFreedoomE3M3-S<X>-v0"` | Freedoom E3M3: Sacrificial Bastion          |
-| `"E3M4"` | `"VizdoomFreedoomE3M4-S<X>-v0"` | Freedoom E3M4: Oblation Temple              |
-| `"E3M5"` | `"VizdoomFreedoomE3M5-S<X>-v0"` | Freedoom E3M5: Infernal Hallows             |
-| `"E3M6"` | `"VizdoomFreedoomE3M6-S<X>-v0"` | Freedoom E3M6: Igneous Intrusion            |
-| `"E3M7"` | `"VizdoomFreedoomE3M7-S<X>-v0"` | Freedoom E3M7: No Regrets                   |
-| `"E3M8"` | `"VizdoomFreedoomE3M8-S<X>-v0"` | Freedoom E3M8: Ancient Lair                 |
-| `"E3M9"` | `"VizdoomFreedoomE3M9-S<X>-v0"` | Freedoom E3M9: Acquainted With Grief        |
+| Map ID   | Gymnasium Environment Name       | Level Name                                 |
+| :--      | :--                              | :--                                        |
+| `"E3M1"` | `"VizdoomFreedoom1E3M1-S<X>-v0"` | Freedoom E3M1: Land of the Lost            |
+| `"E3M2"` | `"VizdoomFreedoom1E3M2-S<X>-v0"` | Freedoom E3M2: Geothermal Tunnels          |
+| `"E3M3"` | `"VizdoomFreedoom1E3M3-S<X>-v0"` | Freedoom E3M3: Sacrificial Bastion         |
+| `"E3M4"` | `"VizdoomFreedoom1E3M4-S<X>-v0"` | Freedoom E3M4: Oblation Temple             |
+| `"E3M5"` | `"VizdoomFreedoom1E3M5-S<X>-v0"` | Freedoom E3M5: Infernal Hallows            |
+| `"E3M6"` | `"VizdoomFreedoom1E3M6-S<X>-v0"` | Freedoom E3M6: Igneous Intrusion           |
+| `"E3M7"` | `"VizdoomFreedoom1E3M7-S<X>-v0"` | Freedoom E3M7: No Regrets                  |
+| `"E3M8"` | `"VizdoomFreedoom1E3M8-S<X>-v0"` | Freedoom E3M8: Ancient Lair                |
+| `"E3M9"` | `"VizdoomFreedoom1E3M9-S<X>-v0"` | Freedoom E3M9: Acquainted With Grief       |
 
 
 ### Episode 4: Double Impact
 
-| Map ID   | Gymnasium Environment Name      | Level Name                                  |
-| :--      | :--                             | :--                                         |
-| `"E4M1"` | `"VizdoomFreedoomE4M1-S<X>-v0"` | Freedoom E4M1: Maintenance Area             |
-| `"E4M2"` | `"VizdoomFreedoomE4M2-S<X>-v0"` | Freedoom E4M2: Research Complex             |
-| `"E4M3"` | `"VizdoomFreedoomE4M3-S<X>-v0"` | Freedoom E4M3: Central Computing            |
-| `"E4M4"` | `"VizdoomFreedoomE4M4-S<X>-v0"` | Freedoom E4M4: Hydroponic Facility          |
-| `"E4M5"` | `"VizdoomFreedoomE4M5-S<X>-v0"` | Freedoom E4M5: Engineering Station          |
-| `"E4M6"` | `"VizdoomFreedoomE4M6-S<X>-v0"` | Freedoom E4M6: Command Center               |
-| `"E4M7"` | `"VizdoomFreedoomE4M7-S<X>-v0"` | Freedoom E4M7: Waste Treatment              |
-| `"E4M8"` | `"VizdoomFreedoomE4M8-S<X>-v0"` | Freedoom E4M8: Launch Bay                   |
-| `"E4M9"` | `"VizdoomFreedoomE4M9-S<X>-v0"` | Freedoom E4M9: Operations                   |
+| Map ID   | Gymnasium Environment Name       | Level Name                                 |
+| :--      | :--                              | :--                                        |
+| `"E4M1"` | `"VizdoomFreedoom1E4M1-S<X>-v0"` | Freedoom E4M1: Maintenance Area            |
+| `"E4M2"` | `"VizdoomFreedoom1E4M2-S<X>-v0"` | Freedoom E4M2: Research Complex            |
+| `"E4M3"` | `"VizdoomFreedoom1E4M3-S<X>-v0"` | Freedoom E4M3: Central Computing           |
+| `"E4M4"` | `"VizdoomFreedoom1E4M4-S<X>-v0"` | Freedoom E4M4: Hydroponic Facility         |
+| `"E4M5"` | `"VizdoomFreedoom1E4M5-S<X>-v0"` | Freedoom E4M5: Engineering Station         |
+| `"E4M6"` | `"VizdoomFreedoom1E4M6-S<X>-v0"` | Freedoom E4M6: Command Center              |
+| `"E4M7"` | `"VizdoomFreedoom1E4M7-S<X>-v0"` | Freedoom E4M7: Waste Treatment             |
+| `"E4M8"` | `"VizdoomFreedoom1E4M8-S<X>-v0"` | Freedoom E4M8: Launch Bay                  |
+| `"E4M9"` | `"VizdoomFreedoom1E4M9-S<X>-v0"` | Freedoom E4M9: Operations                  |
 
 
 ## Freedoom 2 (Freedoom: Phase 2) levels

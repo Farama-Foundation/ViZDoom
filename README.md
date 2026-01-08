@@ -158,7 +158,7 @@ The API is almost identical between the languages, with the only difference bein
 
 ## Original Doom graphics
 Unfortunately, we cannot distribute ViZDoom with original Doom graphics.
-If you own original Doom or Doom 2 games, you can replace [Freedoom](https://freedoom.github.io/) graphics by placing `doom.wad` or `doom2.wad` into your working directory or `vizdoom` package directory.
+If you own original Doom and Doom 2 games, you can replace [Freedoom](https://freedoom.github.io/) graphics by placing `doom2.wad` into your working directory or `vizdoom` package directory.
 
 Alternatively, any base game WAD (including other Doom engine-based games and custom/community games) can be used by pointing to it with the [`set_doom_game_path/setDoomGamePath`](https://vizdoom.farama.org/main/api/python/doom_game/index.html#vizdoom.DoomGame.set_doom_game_path) method.
 

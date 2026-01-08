@@ -10,7 +10,7 @@ and [Mark Towers](https://github.com/pseudo-rnd-thoughts).
 
 import itertools
 import warnings
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import gymnasium as gym
 import numpy as np
@@ -38,12 +38,12 @@ class VizdoomEnv(gym.Env, EzPickle):
     def __init__(
         self,
         config_file: Optional[str] = None,
-        config_dict: Optional[Dict[str, Any]] = None,
         frame_skip: int = 1,
         max_buttons_pressed: int = 0,
         render_mode: Optional[str] = None,
         treat_episode_timeout_as_truncation: bool = True,
         use_multi_binary_action_space: bool = True,
+        **kwargs: Any,
     ):
         """
         Base class for Gymnasium interface for ViZDoom.
@@ -51,10 +51,8 @@ class VizdoomEnv(gym.Env, EzPickle):
 
         Arguments:
             config_file (Optional[str]): The path to the config file to load.
-                                      Most settings should be set by this config file.
-                                      If None, config_dict must be provided.
-            config_dict (Optional[Dict[str, Any]]): The config provided in a form of a dictionary.
-                                                    If None, config_file must be provided.
+                                         Most settings should be set by this config file.
+                                         If None, all the necessary config must be provided in **kwargs.
             frame_skip (int): The number of frames the will be advanced per action. 1 = take action on every frame. Default: 1.
             max_buttons_pressed (int): Defines the number of binary buttons that can be selected at once. Default: 1.
                                        Should be >= 0. If < 0 a RuntimeError is raised.
@@ -77,6 +75,7 @@ class VizdoomEnv(gym.Env, EzPickle):
                                                   will be used for buttons binary buttons instead of ``MultiDiscrete([2] * len(num_binary_buttons))``.
                                                   This is compatibility option, ViZDoom versions <1.3.0 behave as if this was set to False.
                                                   Default: True.
+            **kwargs: Additional config options to set in the DoomGame after loading the config file.
 
         This environment forces the game window to be hidden. Use :meth:`render` function to see the game.
 
@@ -100,12 +99,12 @@ class VizdoomEnv(gym.Env, EzPickle):
         EzPickle.__init__(
             self,
             config_file,
-            config_dict,
             frame_skip,
             max_buttons_pressed,
             render_mode,
             treat_episode_timeout_as_truncation,
             use_multi_binary_action_space,
+            **kwargs,
         )
         self.frame_skip = frame_skip
         self.render_mode = render_mode
@@ -117,10 +116,10 @@ class VizdoomEnv(gym.Env, EzPickle):
 
         if config_file is not None:
             self.game.load_config(config_file)
-        if config_dict is not None:
-            self.game.set_config(config_dict)
-        if config_file is None and config_dict is None:
-            raise RuntimeError("Either config_file or config_dict must be provided.")
+        if kwargs is not None and len(kwargs) > 0:
+            self.game.set_config(kwargs)
+        if config_file is None and not kwargs:
+            raise RuntimeError("Either config_file or kwargs must be provided.")
 
         self.game.set_window_visible(False)
         self.game.set_audio_buffer_size(frame_skip)
