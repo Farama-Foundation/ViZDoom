@@ -990,6 +990,42 @@ The method returns <code class="docutils literal notranslate"><span class="pre">
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.set_config">
+<span class="sig-name descname"><span class="pre">set_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_config" title="Link to this definition">¶</a></dt>
+<dd><p>Sets configuration from a config string or dictionary (Python only).</p>
+<p>This method accepts either a configuration string (in the same format as .cfg files)
+or a Python dictionary with configuration key-value pairs.</p>
+<p>When using a Python dictionary:
+- Keys should be configuration parameter names (e.g., ‘screen_resolution’, ‘doom_skill’)
+- Values can be:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Primitive types: str, int, float, bool</p></li>
+<li><p>Enums: Button, GameVariable, ScreenResolution, ScreenFormat, SamplingRate, Mode, AutomapMode</p></li>
+<li><p>Lists: for ‘available_buttons’ and ‘available_game_variables’</p></li>
+</ul>
+</div></blockquote>
+<p>Relative paths (e.g., for ‘doom_scenario_path’) are resolved relative to the current working directory.</p>
+<p>Python example:
+<a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a></p>
+<blockquote>
+<div><dl class="simple">
+<dt>game.set_config({</dt><dd><p>‘screen_resolution’: ScreenResolution.RES_640X480,
+‘screen_format’: ScreenFormat.CRCGCB,
+‘doom_skill’: 5,
+‘available_buttons’: [Button.MOVE_LEFT, Button.MOVE_RIGHT, Button.ATTACK],
+‘available_game_variables’: [GameVariable.AMMO2],
+‘living_reward’: -1</p>
+</dd>
+</dl>
+<p>})</p>
+</div></blockquote>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the configuration was successfully applied, <code class="docutils literal notranslate"><span class="pre">False</span></code> if errors occurred.</p>
+<p>Note: added in 1.3.0</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.get_mode">
 <span class="sig-name descname"><span class="pre">get_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../enums/#vizdoom.Mode" title="vizdoom.Mode"><span class="pre">vizdoom.Mode</span></a></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_mode" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the current <a class="reference internal" href="../enums/#vizdoom.Mode" title="vizdoom.Mode"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mode</span></code></a> (<code class="docutils literal notranslate"><span class="pre">PLAYER</span></code>, <code class="docutils literal notranslate"><span class="pre">SPECTATOR</span></code>, <code class="docutils literal notranslate"><span class="pre">ASYNC_PLAYER</span></code>, <code class="docutils literal notranslate"><span class="pre">ASYNC_SPECTATOR</span></code>).</p>
@@ -1013,7 +1049,7 @@ The method returns <code class="docutils literal notranslate"><span class="pre">
 
 <dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_ticrate">
-<span class="sig-name descname"><span class="pre">set_ticrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SupportsInt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_ticrate" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">set_ticrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ticrate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SupportsInt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_ticrate" title="Link to this definition">¶</a></dt>
 <dd><p>Sets the ticrate for ASNYC Modes - number of logic tics executed per second.
 The default Doom ticrate is 35. This value will play a game at normal speed.</p>
 <p>Default value: 35 (default Doom ticrate).</p>
@@ -1027,16 +1063,29 @@ The default Doom ticrate is 35. This value will play a game at normal speed.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_vizdoom_path">
+<span class="sig-name descname"><span class="pre">get_vizdoom_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_vizdoom_path" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the path to the ViZDoom engine executable vizdoom.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_vizdoom_path">
-<span class="sig-name descname"><span class="pre">set_vizdoom_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_vizdoom_path" title="Link to this definition">¶</a></dt>
-<dd><p>Sets the path to the ViZDoom engine executable vizdoom.</p>
+<span class="sig-name descname"><span class="pre">set_vizdoom_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_vizdoom_path" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the path to the ViZDoom engine executable vizdoom.
+We recommend not changing this path unless you know what you are doing.</p>
 <p>Default value: <code class="docutils literal notranslate"><span class="pre">&lt;ViZDoom</span> <span class="pre">library</span> <span class="pre">location&gt;/&lt;vizdoom</span> <span class="pre">or</span> <span class="pre">vizdoom.exe</span> <span class="pre">on</span> <span class="pre">Windows&gt;</span></code>.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">ViZDoomPath</span></code>/<code class="docutils literal notranslate"><span class="pre">vizdoom_path</span></code></p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_doom_game_path">
+<span class="sig-name descname"><span class="pre">get_doom_game_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_doom_game_path" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the path to the Doom engine based game file (wad format).</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_doom_game_path">
-<span class="sig-name descname"><span class="pre">set_doom_game_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_doom_game_path" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">set_doom_game_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_doom_game_path" title="Link to this definition">¶</a></dt>
 <dd><p>Sets the path to the Doom engine based game file (wad format).
 If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom’s installation (where vizdoom library/pyd is).</p>
 <p>Default value: <code class="docutils literal notranslate"><span class="pre">&lt;ViZDoom</span> <span class="pre">library</span> <span class="pre">location&gt;/&lt;doom2.wad,</span> <span class="pre">doom.wad,</span> <span class="pre">freedoom2.wad,</span> <span class="pre">or</span> <span class="pre">freedoom.wad</span> <span class="pre">-</span> <span class="pre">in</span> <span class="pre">this</span> <span class="pre">order&gt;</span></code></p>
@@ -1044,8 +1093,14 @@ If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) i
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_doom_scenario_path">
+<span class="sig-name descname"><span class="pre">get_doom_scenario_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_doom_scenario_path" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the path to the additional scenario file (wad format).</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_doom_scenario_path">
-<span class="sig-name descname"><span class="pre">set_doom_scenario_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_doom_scenario_path" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">set_doom_scenario_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_doom_scenario_path" title="Link to this definition">¶</a></dt>
 <dd><p>Sets the path to an additional scenario file (wad format).
 If not provided, the default Doom single-player maps will be loaded.</p>
 <p>Default value: <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
@@ -1053,16 +1108,28 @@ If not provided, the default Doom single-player maps will be loaded.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_doom_map">
+<span class="sig-name descname"><span class="pre">get_doom_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_doom_map" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the map name to be used.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_doom_map">
-<span class="sig-name descname"><span class="pre">set_doom_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_doom_map" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">set_doom_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_doom_map" title="Link to this definition">¶</a></dt>
 <dd><p>Sets the map name to be used.</p>
 <p>Default value: <code class="docutils literal notranslate"><span class="pre">&quot;map01&quot;</span></code>, if set to empty <code class="docutils literal notranslate"><span class="pre">&quot;map01&quot;</span></code> will be used.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">DoomMap</span></code>/<code class="docutils literal notranslate"><span class="pre">doom_map</span></code></p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_doom_skill">
+<span class="sig-name descname"><span class="pre">get_doom_skill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_doom_skill" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the Doom game difficulty level (skill).</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_doom_skill">
-<span class="sig-name descname"><span class="pre">set_doom_skill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SupportsInt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_doom_skill" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">set_doom_skill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">skill</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SupportsInt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_doom_skill" title="Link to this definition">¶</a></dt>
 <dd><p>Sets Doom game difficulty level, which is called skill in Doom.
 The higher the skill, the harder the game becomes.
 Skill level affects monsters’ aggressiveness, monsters’ speed, weapon damage, ammunition quantities, etc.
@@ -1079,8 +1146,14 @@ Takes effect from the next episode.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="vizdoom.DoomGame.get_doom_config_path">
+<span class="sig-name descname"><span class="pre">get_doom_config_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.get_doom_config_path" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the path for ZDoom’s configuration file.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="vizdoom.DoomGame.set_doom_config_path">
-<span class="sig-name descname"><span class="pre">set_doom_config_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_doom_config_path" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">set_doom_config_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vizdoom.DoomGame" title="vizdoom.DoomGame"><span class="pre">vizdoom.DoomGame</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#vizdoom.DoomGame.set_doom_config_path" title="Link to this definition">¶</a></dt>
 <dd><p>Sets the path for ZDoom’s configuration file.
 The file is responsible for the configuration of the ZDoom engine itself.
 If it does not exist, it will be created after the <code class="docutils literal notranslate"><span class="pre">vizdoom</span></code> executable is run.
@@ -1768,15 +1841,22 @@ Doom uses 35 ticks per second.</p>
 </li>
 <li><a class="reference internal" href="#general-game-setting-methods">General game setting methods</a><ul>
 <li><a class="reference internal" href="#vizdoom.DoomGame.load_config"><code class="docutils literal notranslate"><span class="pre">load_config()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.set_config"><code class="docutils literal notranslate"><span class="pre">set_config()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.get_mode"><code class="docutils literal notranslate"><span class="pre">get_mode()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.set_mode"><code class="docutils literal notranslate"><span class="pre">set_mode()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.get_ticrate"><code class="docutils literal notranslate"><span class="pre">get_ticrate()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.set_ticrate"><code class="docutils literal notranslate"><span class="pre">set_ticrate()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_vizdoom_path"><code class="docutils literal notranslate"><span class="pre">get_vizdoom_path()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.set_vizdoom_path"><code class="docutils literal notranslate"><span class="pre">set_vizdoom_path()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_doom_game_path"><code class="docutils literal notranslate"><span class="pre">get_doom_game_path()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.set_doom_game_path"><code class="docutils literal notranslate"><span class="pre">set_doom_game_path()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_doom_scenario_path"><code class="docutils literal notranslate"><span class="pre">get_doom_scenario_path()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.set_doom_scenario_path"><code class="docutils literal notranslate"><span class="pre">set_doom_scenario_path()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_doom_map"><code class="docutils literal notranslate"><span class="pre">get_doom_map()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.set_doom_map"><code class="docutils literal notranslate"><span class="pre">set_doom_map()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_doom_skill"><code class="docutils literal notranslate"><span class="pre">get_doom_skill()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.set_doom_skill"><code class="docutils literal notranslate"><span class="pre">set_doom_skill()</span></code></a></li>
+<li><a class="reference internal" href="#vizdoom.DoomGame.get_doom_config_path"><code class="docutils literal notranslate"><span class="pre">get_doom_config_path()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.set_doom_config_path"><code class="docutils literal notranslate"><span class="pre">set_doom_config_path()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.get_seed"><code class="docutils literal notranslate"><span class="pre">get_seed()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.DoomGame.set_seed"><code class="docutils literal notranslate"><span class="pre">set_seed()</span></code></a></li>

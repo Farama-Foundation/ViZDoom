@@ -2101,6 +2101,25 @@ The default Doom ticrate is 35. This value will play a game at normal speed.</p>
 <p>Note: added in 1.1.0.</p>
 </section>
 <hr class="docutils" />
+<section id="getvizdoompath">
+<h3><code class="docutils literal notranslate"><span class="pre">getViZDoomPath</span></code><a class="headerlink" href="#getvizdoompath" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">std::string</span> <span class="pre">getViZDoomPath()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_vizdoom_path()</span> <span class="pre">-&gt;</span> <span class="pre">str</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the path to the ViZDoom engine executable vizdoom.</p>
+</section>
+<hr class="docutils" />
 <section id="setvizdoompath">
 <h3><code class="docutils literal notranslate"><span class="pre">setViZDoomPath</span></code><a class="headerlink" href="#setvizdoompath" title="Link to this heading">¶</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -2117,9 +2136,29 @@ The default Doom ticrate is 35. This value will play a game at normal speed.</p>
 </tbody>
 </table>
 </div>
-<p>Sets the path to the ViZDoom engine executable vizdoom.</p>
+<p>Sets the path to the ViZDoom engine executable vizdoom.
+We recommend not changing this path unless you know what you are doing.</p>
 <p>Default value: <code class="docutils literal notranslate"><span class="pre">&lt;ViZDoom</span> <span class="pre">library</span> <span class="pre">location&gt;/&lt;vizdoom</span> <span class="pre">or</span> <span class="pre">vizdoom.exe</span> <span class="pre">on</span> <span class="pre">Windows&gt;</span></code>.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">ViZDoomPath</span></code>/<code class="docutils literal notranslate"><span class="pre">vizdoom_path</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="getdoomgamepath">
+<h3><code class="docutils literal notranslate"><span class="pre">getDoomGamePath</span></code><a class="headerlink" href="#getdoomgamepath" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">std::string</span> <span class="pre">getDoomGamePath()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_doom_game_path()</span> <span class="pre">-&gt;</span> <span class="pre">str</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the path to the Doom engine based game file (wad format).</p>
 </section>
 <hr class="docutils" />
 <section id="setdoomgamepath">
@@ -2144,6 +2183,25 @@ If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) i
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">DoomGamePath</span></code>/<code class="docutils literal notranslate"><span class="pre">doom_game_path</span></code></p>
 </section>
 <hr class="docutils" />
+<section id="getdoomscenariopath">
+<h3><code class="docutils literal notranslate"><span class="pre">getDoomScenarioPath</span></code><a class="headerlink" href="#getdoomscenariopath" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">std::string</span> <span class="pre">getDoomScenarioPath()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_doom_scenario_path()</span> <span class="pre">-&gt;</span> <span class="pre">str</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the path to the additional scenario file (wad format).</p>
+</section>
+<hr class="docutils" />
 <section id="setdoomscenariopath">
 <h3><code class="docutils literal notranslate"><span class="pre">setDoomScenarioPath</span></code><a class="headerlink" href="#setdoomscenariopath" title="Link to this heading">¶</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -2166,6 +2224,25 @@ If not provided, the default Doom single-player maps will be loaded.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">DoomScenarioPath</span></code>/<code class="docutils literal notranslate"><span class="pre">doom_scenario_path</span></code></p>
 </section>
 <hr class="docutils" />
+<section id="getdoommap">
+<h3><code class="docutils literal notranslate"><span class="pre">getDoomMap</span></code><a class="headerlink" href="#getdoommap" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">std::string</span> <span class="pre">getDoomMap()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_doom_map()</span> <span class="pre">-&gt;</span> <span class="pre">str</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the map name to be used.</p>
+</section>
+<hr class="docutils" />
 <section id="setdoommap">
 <h3><code class="docutils literal notranslate"><span class="pre">setDoomMap</span></code><a class="headerlink" href="#setdoommap" title="Link to this heading">¶</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -2185,6 +2262,25 @@ If not provided, the default Doom single-player maps will be loaded.</p>
 <p>Sets the map name to be used.</p>
 <p>Default value: <code class="docutils literal notranslate"><span class="pre">&quot;map01&quot;</span></code>, if set to empty <code class="docutils literal notranslate"><span class="pre">&quot;map01&quot;</span></code> will be used.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">DoomMap</span></code>/<code class="docutils literal notranslate"><span class="pre">doom_map</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="getdoomskill">
+<h3><code class="docutils literal notranslate"><span class="pre">getDoomSkill</span></code><a class="headerlink" href="#getdoomskill" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">getDoomSkill()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_doom_skill()</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the Doom game difficulty level (skill).</p>
 </section>
 <hr class="docutils" />
 <section id="setdoomskill">
@@ -2216,6 +2312,25 @@ Takes effect from the next episode.</p>
 </ul>
 <p>Default value: 3</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">DoomSkill</span></code>/<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code></p>
+</section>
+<hr class="docutils" />
+<section id="getdoomconfigpath">
+<h3><code class="docutils literal notranslate"><span class="pre">getDoomConfigPath</span></code><a class="headerlink" href="#getdoomconfigpath" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">std::string</span> <span class="pre">getDoomConfigPath()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_doom_config_path()</span> <span class="pre">-&gt;</span> <span class="pre">str</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the path for ZDoom’s configuration file.</p>
 </section>
 <hr class="docutils" />
 <section id="setdoomconfigpath">
@@ -3586,11 +3701,17 @@ Doom uses 35 ticks per second.</p>
 <li><a class="reference internal" href="#setmode"><code class="docutils literal notranslate"><span class="pre">setMode</span></code></a></li>
 <li><a class="reference internal" href="#getticrate"><code class="docutils literal notranslate"><span class="pre">getTicrate</span></code></a></li>
 <li><a class="reference internal" href="#setticrate"><code class="docutils literal notranslate"><span class="pre">setTicrate</span></code></a></li>
+<li><a class="reference internal" href="#getvizdoompath"><code class="docutils literal notranslate"><span class="pre">getViZDoomPath</span></code></a></li>
 <li><a class="reference internal" href="#setvizdoompath"><code class="docutils literal notranslate"><span class="pre">setViZDoomPath</span></code></a></li>
+<li><a class="reference internal" href="#getdoomgamepath"><code class="docutils literal notranslate"><span class="pre">getDoomGamePath</span></code></a></li>
 <li><a class="reference internal" href="#setdoomgamepath"><code class="docutils literal notranslate"><span class="pre">setDoomGamePath</span></code></a></li>
+<li><a class="reference internal" href="#getdoomscenariopath"><code class="docutils literal notranslate"><span class="pre">getDoomScenarioPath</span></code></a></li>
 <li><a class="reference internal" href="#setdoomscenariopath"><code class="docutils literal notranslate"><span class="pre">setDoomScenarioPath</span></code></a></li>
+<li><a class="reference internal" href="#getdoommap"><code class="docutils literal notranslate"><span class="pre">getDoomMap</span></code></a></li>
 <li><a class="reference internal" href="#setdoommap"><code class="docutils literal notranslate"><span class="pre">setDoomMap</span></code></a></li>
+<li><a class="reference internal" href="#getdoomskill"><code class="docutils literal notranslate"><span class="pre">getDoomSkill</span></code></a></li>
 <li><a class="reference internal" href="#setdoomskill"><code class="docutils literal notranslate"><span class="pre">setDoomSkill</span></code></a></li>
+<li><a class="reference internal" href="#getdoomconfigpath"><code class="docutils literal notranslate"><span class="pre">getDoomConfigPath</span></code></a></li>
 <li><a class="reference internal" href="#setdoomconfigpath"><code class="docutils literal notranslate"><span class="pre">setDoomConfigPath</span></code></a></li>
 <li><a class="reference internal" href="#getseed"><code class="docutils literal notranslate"><span class="pre">getSeed</span></code></a></li>
 <li><a class="reference internal" href="#setseed"><code class="docutils literal notranslate"><span class="pre">setSeed</span></code></a></li>
