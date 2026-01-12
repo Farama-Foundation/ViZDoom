@@ -194,7 +194,7 @@ jobs:
 
       - name: Run test
         run: |
-          python -m pytest tests
+          python -m pytest -n logical tests
 
 
   upload_pypi:

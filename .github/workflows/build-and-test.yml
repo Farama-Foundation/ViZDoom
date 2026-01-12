@@ -90,4 +90,4 @@ jobs:
       run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_audio_buffer_enabled(True); g.add_game_args('+snd_efx 0'); g.init()"
 
     - name: Run tests
-      run: pytest tests -s
+      run: pytest -n logical tests -s

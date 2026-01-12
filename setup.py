@@ -232,7 +232,7 @@ setup(
     author="Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, Farama Foundation, and the respective contributors",
     author_email="mwydmuch@cs.put.poznan.pl",
     extras_require={
-        "test": ["pytest", "psutil"],
+        "test": ["pytest", "pytest-xdist", "psutil"],
     },
     install_requires=["numpy", "gymnasium>=0.28.0", "pygame-ce>=2.1.3"],
     python_requires=">=3.9.0,<3.15",

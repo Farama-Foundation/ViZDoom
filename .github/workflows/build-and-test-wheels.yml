@@ -136,7 +136,7 @@ jobs:
         run: python -c "import vizdoom"
 
       - name: Run tests
-        run: pytest tests -s
+        run: pytest -n logical tests -s
 
   build_sdist:
     name: Build source distribution
