@@ -679,6 +679,31 @@ class DoomGame:
         Note: added in 1.3.0
         """
 
+    def get_doom_config_path(self) -> str:
+        """
+        Returns the path for ZDoom's configuration file.
+        """
+
+    def get_doom_game_path(self) -> str:
+        """
+        Returns the path to the Doom engine based game file (wad format).
+        """
+
+    def get_doom_map(self) -> str:
+        """
+        Returns the map name to be used.
+        """
+
+    def get_doom_scenario_path(self) -> str:
+        """
+        Returns the path to the additional scenario file (wad format).
+        """
+
+    def get_doom_skill(self) -> int:
+        """
+        Returns the Doom game difficulty level (skill).
+        """
+
     def get_episode_start_time(self) -> int:
         """
         Returns the start time (delay) of every episode in tics.
@@ -870,6 +895,11 @@ class DoomGame:
     def get_total_reward(self) -> float:
         """
         Returns the sum of all rewards gathered in the current episode.
+        """
+
+    def get_vizdoom_path(self) -> str:
+        """
+        Returns the path to the ViZDoom engine executable vizdoom.
         """
 
     def init(self) -> None:
@@ -1360,7 +1390,7 @@ class DoomGame:
         Note: added in 1.1.0.
         """
 
-    def set_doom_config_path(self, button: str) -> None:
+    def set_doom_config_path(self, file_path: str) -> None:
         """
         Sets the path for ZDoom's configuration file.
         The file is responsible for the configuration of the ZDoom engine itself.
@@ -1372,7 +1402,7 @@ class DoomGame:
         Config key: ``DoomConfigPath``/``doom_config_path``
         """
 
-    def set_doom_game_path(self, button: str) -> None:
+    def set_doom_game_path(self, file_path: str) -> None:
         """
         Sets the path to the Doom engine based game file (wad format).
         If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom library/pyd is).
@@ -1382,7 +1412,7 @@ class DoomGame:
         Config key: ``DoomGamePath``/``doom_game_path``
         """
 
-    def set_doom_map(self, button: str) -> None:
+    def set_doom_map(self, map: str) -> None:
         """
         Sets the map name to be used.
 
@@ -1391,7 +1421,7 @@ class DoomGame:
         Config key: ``DoomMap``/``doom_map``
         """
 
-    def set_doom_scenario_path(self, button: str) -> None:
+    def set_doom_scenario_path(self, file_path: str) -> None:
         """
         Sets the path to an additional scenario file (wad format).
         If not provided, the default Doom single-player maps will be loaded.
@@ -1401,18 +1431,18 @@ class DoomGame:
         Config key: ``DoomScenarioPath``/``doom_scenario_path``
         """
 
-    def set_doom_skill(self, button: int) -> None:
+    def set_doom_skill(self, skill: int) -> None:
         """
         Sets Doom game difficulty level, which is called skill in Doom.
         The higher the skill, the harder the game becomes.
         Skill level affects monsters' aggressiveness, monsters' speed, weapon damage, ammunition quantities, etc.
         Takes effect from the next episode.
 
-        - 1 - VERY EASY, “I'm Too Young to Die” in Doom.
-        - 2 - EASY, “Hey, Not Too Rough" in Doom.
-        - 3 - NORMAL, “Hurt Me Plenty” in Doom.
-        - 4 - HARD, “Ultra-Violence” in Doom.
-        - 5 - VERY HARD, “Nightmare!” in Doom.
+        - 1 - VERY EASY, "I'm Too Young to Die" in Doom.
+        - 2 - EASY, "Hey, Not Too Rough" in Doom.
+        - 3 - NORMAL, "Hurt Me Plenty" in Doom.
+        - 4 - HARD, "Ultra-Violence" in Doom.
+        - 5 - VERY HARD, "Nightmare!" in Doom.
 
         Default value: 3
 
@@ -1845,7 +1875,7 @@ class DoomGame:
         Config key: ``soundEnabled``/``sound_enabled``
         """
 
-    def set_ticrate(self, button: int) -> None:
+    def set_ticrate(self, ticrate: int) -> None:
         """
         Sets the ticrate for ASNYC Modes - number of logic tics executed per second.
         The default Doom ticrate is 35. This value will play a game at normal speed.
@@ -1863,9 +1893,10 @@ class DoomGame:
         Note: added in 1.1.0.
         """
 
-    def set_vizdoom_path(self, button: str) -> None:
+    def set_vizdoom_path(self, file_path: str) -> None:
         """
         Sets the path to the ViZDoom engine executable vizdoom.
+        We recommend not changing this path unless you know what you are doing.
 
         Default value: ``<ViZDoom library location>/<vizdoom or vizdoom.exe on Windows>``.
 
