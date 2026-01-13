@@ -5,7 +5,6 @@
 
 import os
 import pickle
-import re
 
 import gymnasium
 import numpy as np
@@ -35,38 +34,10 @@ except ImportError:
     del MockMark, MockPytest
 
 
-# Register test-only envs for freedoom (disable automap buffer, enable labels buffer)
-envs_from_freedoom: list[str] = []
-for game_name, config_file, maps in [
-    ("Freedoom", "freedoom.cfg", gymnasium_wrapper.DOOM_MAPS),
-    ("Freedoom2", "freedoom2.cfg", gymnasium_wrapper.DOOM2_MAPS),
-]:
-    for map in maps:
-        envs_from_freedoom.append(f"Vizdoom{game_name}{map}")
-        gymnasium.register(
-            id=f"Vizdoom{game_name}{map}-TEST-v0",
-            entry_point=gymnasium_wrapper.DEFAULT_VIZDOOM_ENTRYPOINT,
-            kwargs={
-                "scenario_config_file": f"{config_file}",
-                "additional_config_dict": {
-                    "doom_skill": 5,
-                    "doom_map": map,
-                    "automap_buffer_enabled": False,
-                    "labels_buffer_enabled": True,
-                    "screen_format": "RGB24",
-                },
-                "max_buttons_pressed": 0,
-            },
-        )
-
-# Filter out not-for-test versions of envs
-ignore_pattern = re.compile(
-    r"Vizdoom(?:(?:(?:Freed|D)oomE[0-9]+M)|(?:(?:Freed|D)oom2MAP))[0-9]+-S[0-9]+"
-)
 vizdoom_envs = [
     env
     for env in [env_spec.id for env_spec in gymnasium.envs.registry.values()]  # type: ignore
-    if "Vizdoom" in env and not ignore_pattern.match(env)
+    if "Vizdoom" in env
 ]
 test_env_configs = f"{os.path.dirname(os.path.abspath(__file__))}/env_configs"
 envs_with_animated_textures = [
@@ -82,12 +53,10 @@ buffers = ["screen", "depth", "labels", "automap", "audio", "notifications"]
 
 # Testing with different non-default kwargs (since each has a different obs space)
 # should give warning forcing RGB24 screen type
-@pytest.mark.parametrize("env_name", ["info"] + vizdoom_envs)
+@pytest.mark.parametrize("env_name", vizdoom_envs)
 def test_gymnasium_wrapper(env_name: str):
-    if env_name == "info":
-        return print("Testing Gymnasium wrapper compatibility with gymnasium API")
-
     print(f"  Env: {env_name}")
+
     # Skip environments with animated textures and audio
     # as they might render different states for the same seeds
     # and audio might render slightly different
@@ -120,12 +89,10 @@ def test_gymnasium_wrapper(env_name: str):
 
 # Testing obs on terminal state (terminal state is handled differently)
 # should give warning forcing RGB24 screen type
-@pytest.mark.parametrize("env_name", ["info"] + vizdoom_envs)
+@pytest.mark.parametrize("env_name", vizdoom_envs)
 def test_gymnasium_wrapper_terminal_state(env_name: str):
-    if env_name == "info":
-        return print("Testing Gymnasium rollout (checking terminal state)")
-
     print(f"  Env: {env_name}")
+
     for frame_skip in [1, 4]:
         env = gymnasium.make(env_name, frame_skip=frame_skip, max_buttons_pressed=0)
         obs = env.reset()
@@ -168,16 +135,13 @@ def test_gymnasium_wrapper_truncated_state():
 
 # Testing various observation spaces
 # Using both screen types `(GRAY8, RGB24)` for various combinations of buffers `(screen|depth|labels|automap)`
-@pytest.mark.parametrize("i", range(-1, 8))
+@pytest.mark.parametrize("i", range(8))
 def test_gymnasium_wrapper_obs_space(i: int):
-    if i < 0:
-        return print("Testing Gymnasium wrapper observation spaces")
-
     env_configs = [
         "basic_rgb_i_1_3",
         "basic_g8_i_1_0",
-        "basic_g8_i_1_0_notifications",
-        "basic_g8_i_1_0_audio",
+        "basic_g8_i_1_0_wNotifications",
+        "basic_g8_i_1_0_wAudio",
         "basic_g8_idla_4_2",
         "basic_g8_idl_3_1",
         "basic_rgb_id_2_0",
@@ -260,11 +224,8 @@ def _compare_action_spaces(env, expected_action_space):
 
 
 # Testing all possible action space combinations
-@pytest.mark.parametrize("i", range(-1, 6))
+@pytest.mark.parametrize("i", range(6))
 def test_gymnasium_wrapper_action_space(i: int):
-    if i < 0:
-        return print("Testing Gymnasium wrapper action spaces")
-
     env_configs = [
         "basic_rgb_i_1_3",
         "basic_g8_i_1_0",
@@ -591,12 +552,10 @@ def _compare_envs(
     env2.close()
 
 
-@pytest.mark.parametrize("env_name", ["info"] + vizdoom_envs)
+@pytest.mark.parametrize("env_name", vizdoom_envs)
 def test_gymnasium_wrapper_pickle(env_name: str):
-    if env_name == "info":
-        return print("Testing Gymnasium wrapper pickling (EzPickle).")
-
     print(f"  Env: {env_name}")
+
     env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
     env2 = pickle.loads(pickle.dumps(env1))
 
@@ -610,12 +569,10 @@ def test_gymnasium_wrapper_pickle(env_name: str):
     )
 
 
-@pytest.mark.parametrize("env_name", ["info"] + vizdoom_envs)
+@pytest.mark.parametrize("env_name", vizdoom_envs)
 def test_gymnasium_wrapper_seed(env_name: str):
-    if env_name == "info":
-        return print("Testing gymnasium wrapper seeding.")
-
     print(f"  Env: {env_name}")
+
     env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
     env2 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
 
@@ -630,16 +587,28 @@ def test_gymnasium_wrapper_seed(env_name: str):
 
 
 if __name__ == "__main__":
-    for env_name in ["info"] + vizdoom_envs:
+    print("Testing Gymnasium wrapper compatibility with gymnasium API")
+    for env_name in vizdoom_envs:
         test_gymnasium_wrapper(env_name)
-    for env_name in ["info"] + vizdoom_envs:
+
+    print("Testing Gymnasium rollout (checking terminal state)")
+    for env_name in vizdoom_envs:
         test_gymnasium_wrapper_terminal_state(env_name)
+
     test_gymnasium_wrapper_truncated_state()
-    for i in range(-1, 6):
+
+    print("Testing Gymnasium wrapper action spaces")
+    for i in range(6):
         test_gymnasium_wrapper_action_space(i)
-    for i in range(-1, 8):
+
+    print("Testing Gymnasium wrapper observation spaces")
+    for i in range(8):
         test_gymnasium_wrapper_obs_space(i)
-    for env_name in ["info"] + vizdoom_envs:
+
+    print("Testing Gymnasium wrapper pickling (EzPickle).")
+    for env_name in vizdoom_envs:
         test_gymnasium_wrapper_pickle(env_name)
-    for env_name in ["info"] + vizdoom_envs:
+
+    print("Testing gymnasium wrapper seeding.")
+    for env_name in vizdoom_envs:
         test_gymnasium_wrapper_seed(env_name)
