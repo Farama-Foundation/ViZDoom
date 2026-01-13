@@ -50,6 +50,25 @@ envs_with_audio = [
 ]
 buffers = ["screen", "depth", "labels", "automap", "audio", "notifications"]
 
+fp32_act_space = dict(
+    low=np.finfo(np.float32).min, high=np.finfo(np.float32).max, dtype=np.float32
+)
+tri_channel_screen_obs_space = Box(0, 255, (240, 320, 3), dtype=np.uint8)
+single_channel_screen_obs_space = Box(0, 255, (240, 320, 1), dtype=np.uint8)
+audio_obs_space = Box(
+    -32768, 32767, (int(44100 * 1 / 35 * 1), 2), dtype=np.int16
+)  # sampling rate = 44100, frame_skip = 1
+notifications_obs_space = Text(min_length=0, max_length=32768)
+
+color_screen: dict[str, gymnasium.Space] = {"screen": tri_channel_screen_obs_space}
+gray_screen: dict[str, gymnasium.Space] = {"screen": single_channel_screen_obs_space}
+depth_buffer: dict[str, gymnasium.Space] = {"depth": single_channel_screen_obs_space}
+labels_buffer: dict[str, gymnasium.Space] = {"labels": single_channel_screen_obs_space}
+color_automap: dict[str, gymnasium.Space] = {"automap": tri_channel_screen_obs_space}
+gray_automap: dict[str, gymnasium.Space] = {"automap": single_channel_screen_obs_space}
+notifications: dict[str, gymnasium.Space] = {"notifications": notifications_obs_space}
+audio_buffer: dict[str, gymnasium.Space] = {"audio": audio_obs_space}
+
 
 # Testing with different non-default kwargs (since each has a different obs space)
 # should give warning forcing RGB24 screen type
@@ -135,73 +154,34 @@ def test_gymnasium_wrapper_truncated_state():
 
 # Testing various observation spaces
 # Using both screen types `(GRAY8, RGB24)` for various combinations of buffers `(screen|depth|labels|automap)`
-@pytest.mark.parametrize("i", range(8))
-def test_gymnasium_wrapper_obs_space(i: int):
-    env_configs = [
-        "basic_rgb_i_1_3",
-        "basic_g8_i_1_0",
-        "basic_g8_i_1_0_wNotifications",
-        "basic_g8_i_1_0_wAudio",
-        "basic_g8_idla_4_2",
-        "basic_g8_idl_3_1",
-        "basic_rgb_id_2_0",
-        "basic_rgb_idla_0_1",
-    ]
-    tri_channel_screen_obs_space = Box(0, 255, (240, 320, 3), dtype=np.uint8)
-    single_channel_screen_obs_space = Box(0, 255, (240, 320, 1), dtype=np.uint8)
-    audio_obs_space = Box(
-        -32768, 32767, (int(44100 * 1 / 35 * 1), 2), dtype=np.int16
-    )  # sampling rate = 44100, frame_skip = 1
-    notifications_obs_space = Text(min_length=0, max_length=32768)
-    observation_spaces = [
-        Dict({"screen": tri_channel_screen_obs_space}),
-        Dict({"screen": single_channel_screen_obs_space}),
-        Dict(
-            {
-                "screen": single_channel_screen_obs_space,
-                "notifications": notifications_obs_space,
-            }
+@pytest.mark.parametrize(
+    "env_config,obs_space",
+    [
+        ("basic_rgb_i_1_3", Dict(color_screen)),
+        ("basic_g8_i_1_0", Dict(gray_screen)),
+        ("basic_g8_i_1_0_wNotifications", Dict(gray_screen | notifications)),
+        ("basic_g8_i_1_0_wAudio", Dict(gray_screen | audio_buffer)),
+        (
+            "basic_g8_idla_4_2",
+            Dict(gray_screen | depth_buffer | labels_buffer | gray_automap),
         ),
-        Dict({"screen": single_channel_screen_obs_space, "audio": audio_obs_space}),
-        Dict(
-            {
-                "screen": single_channel_screen_obs_space,
-                "depth": single_channel_screen_obs_space,
-                "labels": single_channel_screen_obs_space,
-                "automap": single_channel_screen_obs_space,
-            }
+        ("basic_g8_idl_3_1", Dict(gray_screen | depth_buffer | labels_buffer)),
+        ("basic_rgb_id_2_0", Dict(color_screen | depth_buffer)),
+        (
+            "basic_rgb_idla_0_1",
+            Dict(color_screen | depth_buffer | labels_buffer | color_automap),
         ),
-        Dict(
-            {
-                "screen": single_channel_screen_obs_space,
-                "depth": single_channel_screen_obs_space,
-                "labels": single_channel_screen_obs_space,
-            }
-        ),
-        Dict(
-            {
-                "screen": tri_channel_screen_obs_space,
-                "depth": single_channel_screen_obs_space,
-            }
-        ),
-        Dict(
-            {
-                "screen": tri_channel_screen_obs_space,
-                "depth": single_channel_screen_obs_space,
-                "labels": single_channel_screen_obs_space,
-                "automap": tri_channel_screen_obs_space,
-            }
-        ),
-    ]
-
+    ],
+)
+def test_gymnasium_wrapper_obs_space(env_config: str, obs_space: Dict):
     env = VizdoomEnv(
-        config_file=os.path.join(test_env_configs, env_configs[i] + ".cfg"),
+        config_file=os.path.join(test_env_configs, env_config + ".cfg"),
         frame_skip=1,
         max_buttons_pressed=0,
     )
-    assert env.observation_space == observation_spaces[i], (
+    assert env.observation_space == obs_space, (
         f"Incorrect observation space: {env.observation_space!r}, "
-        f"should be: {observation_spaces[i]!r}"
+        f"should be: {obs_space!r}"
     )
     obs, _ = env.reset()
     assert env.observation_space.contains(
@@ -239,44 +219,24 @@ def test_gymnasium_wrapper_action_space(i: int):
         Dict(
             {
                 "binary": MultiBinary(1),
-                "continuous": Box(
-                    np.finfo(np.float32).min,
-                    np.finfo(np.float32).max,
-                    (3,),
-                    dtype=np.float32,
-                ),
+                "continuous": Box(shape=(3,), **fp32_act_space),  # type: ignore
             }
         ),
         MultiBinary(1),
         Dict(
             {
                 "binary": MultiBinary(4),
-                "continuous": Box(
-                    np.finfo(np.float32).min,
-                    np.finfo(np.float32).max,
-                    (2,),
-                    dtype=np.float32,
-                ),
+                "continuous": Box(shape=(2,), **fp32_act_space),  # type: ignore
             }
         ),
         Dict(
             {
                 "binary": MultiBinary(3),
-                "continuous": Box(
-                    np.finfo(np.float32).min,
-                    np.finfo(np.float32).max,
-                    (1,),
-                    dtype=np.float32,
-                ),
+                "continuous": Box(shape=(1,), **fp32_act_space),  # type: ignore
             }
         ),
         MultiBinary(2),
-        Box(
-            np.finfo(np.float32).min,
-            np.finfo(np.float32).max,
-            (1,),
-            dtype=np.float32,
-        ),
+        Box(shape=(1,), **fp32_act_space),  # type: ignore
     ]
 
     # max_button_pressed = 0, binary action space is MultiBinary or MultiDiscrete
@@ -284,44 +244,24 @@ def test_gymnasium_wrapper_action_space(i: int):
         Dict(
             {
                 "binary": MultiDiscrete([2]),
-                "continuous": Box(
-                    np.finfo(np.float32).min,
-                    np.finfo(np.float32).max,
-                    (3,),
-                    dtype=np.float32,
-                ),
+                "continuous": Box(shape=(3,), **fp32_act_space),  # type: ignore
             }
         ),
         MultiDiscrete([2]),
         Dict(
             {
                 "binary": MultiDiscrete([2, 2, 2, 2]),
-                "continuous": Box(
-                    np.finfo(np.float32).min,
-                    np.finfo(np.float32).max,
-                    (2,),
-                    dtype=np.float32,
-                ),
+                "continuous": Box(shape=(2,), **fp32_act_space),  # type: ignore
             }
         ),
         Dict(
             {
                 "binary": MultiDiscrete([2, 2, 2]),
-                "continuous": Box(
-                    np.finfo(np.float32).min,
-                    np.finfo(np.float32).max,
-                    (1,),
-                    dtype=np.float32,
-                ),
+                "continuous": Box(shape=(1,), **fp32_act_space),  # type: ignore
             }
         ),
         MultiDiscrete([2, 2]),
-        Box(
-            np.finfo(np.float32).min,
-            np.finfo(np.float32).max,
-            (1,),
-            dtype=np.float32,
-        ),
+        Box(shape=(1,), **fp32_act_space),  # type: ignore
     ]
 
     # max_button_pressed = 1, binary action space is Discrete(num_binary_buttons + 1)
@@ -330,44 +270,24 @@ def test_gymnasium_wrapper_action_space(i: int):
             Dict(
                 {
                     "binary": Discrete(2),
-                    "continuous": Box(
-                        np.finfo(np.float32).min,
-                        np.finfo(np.float32).max,
-                        (3,),
-                        dtype=np.float32,
-                    ),
+                    "continuous": Box(shape=(3,), **fp32_act_space),  # type: ignore
                 }
             ),
             Discrete(2),
             Dict(
                 {
                     "binary": Discrete(5),
-                    "continuous": Box(
-                        np.finfo(np.float32).min,
-                        np.finfo(np.float32).max,
-                        (2,),
-                        dtype=np.float32,
-                    ),
+                    "continuous": Box(shape=(2,), **fp32_act_space),  # type: ignore
                 }
             ),
             Dict(
                 {
                     "binary": Discrete(4),
-                    "continuous": Box(
-                        np.finfo(np.float32).min,
-                        np.finfo(np.float32).max,
-                        (1,),
-                        dtype=np.float32,
-                    ),
+                    "continuous": Box(shape=(1,), **fp32_act_space),  # type: ignore
                 }
             ),
             Discrete(3),
-            Box(
-                np.finfo(np.float32).min,
-                np.finfo(np.float32).max,
-                (1,),
-                dtype=np.float32,
-            ),
+            Box(shape=(1,), **fp32_act_space),  # type: ignore
         ],
         # max_button_pressed = 2, binary action space is Discrete(m) m=all combinations
         # indices=[0,1] should give warning clipping max_buttons_pressed to 1
@@ -375,44 +295,24 @@ def test_gymnasium_wrapper_action_space(i: int):
             Dict(
                 {
                     "binary": Discrete(2),
-                    "continuous": Box(
-                        np.finfo(np.float32).min,
-                        np.finfo(np.float32).max,
-                        (3,),
-                        dtype=np.float32,
-                    ),
+                    "continuous": Box(shape=(3,), **fp32_act_space),  # type: ignore
                 }
             ),
             Discrete(2),
             Dict(
                 {
                     "binary": Discrete(11),
-                    "continuous": Box(
-                        np.finfo(np.float32).min,
-                        np.finfo(np.float32).max,
-                        (2,),
-                        dtype=np.float32,
-                    ),
+                    "continuous": Box(shape=(2,), **fp32_act_space),  # type: ignore
                 }
             ),
             Dict(
                 {
                     "binary": Discrete(7),
-                    "continuous": Box(
-                        np.finfo(np.float32).min,
-                        np.finfo(np.float32).max,
-                        (1,),
-                        dtype=np.float32,
-                    ),
+                    "continuous": Box(shape=(1,), **fp32_act_space),  # type: ignore
                 }
             ),
             Discrete(4),
-            Box(
-                np.finfo(np.float32).min,
-                np.finfo(np.float32).max,
-                (1,),
-                dtype=np.float32,
-            ),
+            Box(shape=(1,), **fp32_act_space),  # type: ignore
         ],
         # max_button_pressed = 3, binary action space is Discrete(m) m=all combinations
         # indices=[0,1,4] should give warning clipping max_buttons_pressed to 1 or 2
@@ -420,44 +320,24 @@ def test_gymnasium_wrapper_action_space(i: int):
             Dict(
                 {
                     "binary": Discrete(2),
-                    "continuous": Box(
-                        np.finfo(np.float32).min,
-                        np.finfo(np.float32).max,
-                        (3,),
-                        dtype=np.float32,
-                    ),
+                    "continuous": Box(shape=(3,), **fp32_act_space),  # type: ignore
                 }
             ),
             Discrete(2),
             Dict(
                 {
                     "binary": Discrete(15),
-                    "continuous": Box(
-                        np.finfo(np.float32).min,
-                        np.finfo(np.float32).max,
-                        (2,),
-                        dtype=np.float32,
-                    ),
+                    "continuous": Box(shape=(2,), **fp32_act_space),  # type: ignore
                 }
             ),
             Dict(
                 {
                     "binary": Discrete(8),
-                    "continuous": Box(
-                        np.finfo(np.float32).min,
-                        np.finfo(np.float32).max,
-                        (1,),
-                        dtype=np.float32,
-                    ),
+                    "continuous": Box(shape=(1,), **fp32_act_space),  # type: ignore
                 }
             ),
             Discrete(4),
-            Box(
-                np.finfo(np.float32).min,
-                np.finfo(np.float32).max,
-                (1,),
-                dtype=np.float32,
-            ),
+            Box(shape=(1,), **fp32_act_space),  # type: ignore
         ],
     ]
 
@@ -602,8 +482,23 @@ if __name__ == "__main__":
         test_gymnasium_wrapper_action_space(i)
 
     print("Testing Gymnasium wrapper observation spaces")
-    for i in range(8):
-        test_gymnasium_wrapper_obs_space(i)
+    for env_config, obs_space in [
+        ("basic_rgb_i_1_3", Dict(color_screen)),
+        ("basic_g8_i_1_0", Dict(gray_screen)),
+        ("basic_g8_i_1_0_wNotifications", Dict(gray_screen | notifications)),
+        ("basic_g8_i_1_0_wAudio", Dict(gray_screen | audio_buffer)),
+        (
+            "basic_g8_idla_4_2",
+            Dict(gray_screen | depth_buffer | labels_buffer | gray_automap),
+        ),
+        ("basic_g8_idl_3_1", Dict(gray_screen | depth_buffer | labels_buffer)),
+        ("basic_rgb_id_2_0", Dict(color_screen | depth_buffer)),
+        (
+            "basic_rgb_idla_0_1",
+            Dict(color_screen | depth_buffer | labels_buffer | color_automap),
+        ),
+    ]:
+        test_gymnasium_wrapper_obs_space(env_config, obs_space)
 
     print("Testing Gymnasium wrapper pickling (EzPickle).")
     for env_name in vizdoom_envs:
