@@ -195,7 +195,7 @@ class ViZDoomStubGenerator:
             # Step 5.5: The small patches
             stub_content = stub_content.replace(
                 "set_config(self, config: typing.Any",
-                "set_config(self, config: typing.Union[str, dict[str, tying.Any]]",
+                "set_config(self, config: typing.Union[str, dict[str, typing.Any]]",
             )
 
             # Step 6: Write to output file
