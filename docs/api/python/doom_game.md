@@ -151,6 +151,7 @@ The object allows sending actions to the game, getting the game state, etc.
 .. autofunction:: vizdoom.DoomGame.set_automap_mode
 .. autofunction:: vizdoom.DoomGame.set_automap_rotate
 .. autofunction:: vizdoom.DoomGame.set_automap_render_textures
+.. autofunction:: vizdoom.DoomGame.set_automap_render_objects_as_sprites
 .. autofunction:: vizdoom.DoomGame.set_render_hud
 .. autofunction:: vizdoom.DoomGame.set_render_minimal_hud
 .. autofunction:: vizdoom.DoomGame.set_render_weapon

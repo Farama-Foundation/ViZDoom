@@ -710,6 +710,17 @@ Config key: ``automapRenderTextures``/``automap_render_textures``
 
 Note: added in 1.1.0.)DOCSTRING";
 
+    const char *setAutomapRenderObjectsAsSprites = R"DOCSTRING(Controls whether things (objects, monsters, items, etc.) are rendered as sprites or as simple triangles on the automap.
+
+When enabled (```True```), things are displayed as rotated sprites with their actual appearance. When disabled (```False```), things are shown as simple triangular markers.
+Most of sprites are visible only with ``OBJECTS`` and ``OBJECTS_WITH_SIZE`` automap modes.
+
+Default value: ``False``
+
+Config key: ``automapRenderObjectsAsSprites``/``automap_render_objects_as_sprites``
+
+Note: added in 1.3.0.)DOCSTRING";
+
     const char *setRenderHud = R"DOCSTRING(Determine if the hud will be rendered in the game.
 
 Default value: ``False``

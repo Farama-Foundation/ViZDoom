@@ -1589,6 +1589,25 @@ Note: added in 1.1.0.
 
 
 ---
+### `setAutomapRenderObjectsAsSprites`
+
+| C++    | `void setAutomapRenderObjectsAsSprites(bool sprites)`          |
+| :--    | :--                                                            |
+| Python | `set_automap_render_objects_as_sprites(sprites: bool) -> None` |
+
+Controls whether things (objects, monsters, items, etc.) are rendered as sprites or as simple triangles on the automap.
+
+When enabled (`true`), things are displayed as rotated sprites with their actual appearance. When disabled (`false`), things are shown as simple triangular markers.
+Most of sprites are visible only with `OBJECTS` and `OBJECTS_WITH_SIZE` automap modes.
+
+Default value: false
+
+Config key: `automapRenderObjectsAsSprites`/`automap_render_objects_as_sprites`
+
+Note: added in 1.3.0.
+
+
+---
 ### `setRenderHud`
 
 | C++    | `void setRenderHud(bool hud)`       |

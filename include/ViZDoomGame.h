@@ -208,6 +208,7 @@ namespace vizdoom {
         void setAutomapMode(AutomapMode mode);
         void setAutomapRotate(bool rotate);
         void setAutomapRenderTextures(bool textures);
+        void setAutomapRenderObjectsAsSprites(bool sprites);
 
         /* Objects and sectors information */
         bool isObjectsInfoEnabled();

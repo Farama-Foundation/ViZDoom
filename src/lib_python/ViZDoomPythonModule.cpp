@@ -773,6 +773,7 @@ PYBIND11_MODULE(vizdoom, vz){
         CLASS_FUNC_2_PYT_WITH_ARGS("set_automap_mode", DoomGamePython::setAutomapMode, pyb::arg("mode"))
         CLASS_FUNC_2_PYT_WITH_ARGS("set_automap_rotate", DoomGamePython::setAutomapRotate, pyb::arg("rotate"))
         CLASS_FUNC_2_PYT_WITH_ARGS("set_automap_render_textures", DoomGamePython::setAutomapRenderTextures, pyb::arg("textures"))
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_automap_render_objects_as_sprites", DoomGamePython::setAutomapRenderObjectsAsSprites, pyb::arg("sprites"))
         CLASS_FUNC_2_PYT("is_objects_info_enabled", DoomGamePython::isObjectsInfoEnabled)
         CLASS_FUNC_2_PYT_WITH_ARGS("set_objects_info_enabled", DoomGamePython::setObjectsInfoEnabled, pyb::arg("objects_info"))
         CLASS_FUNC_2_PYT("is_sectors_info_enabled", DoomGamePython::isSectorsInfoEnabled)

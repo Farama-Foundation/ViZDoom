@@ -207,6 +207,7 @@ namespace vizdoom {
         void setAutomapMode(AutomapMode mode);
         void setAutomapRotate(bool rotate);
         void setAutomapRenderTextures(bool textures);
+        void setAutomapRenderObjectsAsSprites(bool sprites);
 
         /* Objects (actors) and sectors state */
         bool isObjectsEnabled();
@@ -381,7 +382,7 @@ namespace vizdoom {
 
         bool hud, minHud, weapon, crosshair, decals, particles, sprites, messages, corpses, flashes, renderAll;
         AutomapMode amMode;
-        bool amRotate, amTextures;
+        bool amRotate, amTextures, amSprites;
 
         int getRenderModeValue();
 

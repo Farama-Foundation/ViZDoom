@@ -701,6 +701,10 @@ namespace vizdoom {
                     this->game->setAutomapRenderTextures(stringToBool(val));
                     continue;
                 }
+                else if (key == "automap_render_objects_as_sprites" || key == "automaprenderobjectsassprites") {
+                    this->game->setAutomapRenderObjectsAsSprites(stringToBool(val));
+                    continue;
+                }
                 else if (key == "objects_info_enabled" || key == "objectsinfoenabled") {
                     this->game->setObjectsInfoEnabled(stringToBool(val));
                     continue;

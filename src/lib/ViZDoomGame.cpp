@@ -761,6 +761,8 @@ namespace vizdoom {
 
     void DoomGame::setAutomapRenderTextures(bool textures) { this->doomController->setAutomapRenderTextures(textures); }
 
+    void DoomGame::setAutomapRenderObjectsAsSprites(bool sprites) { this->doomController->setAutomapRenderObjectsAsSprites(sprites); }
+
     bool DoomGame::isObjectsInfoEnabled() { return this->doomController->isObjectsEnabled(); }
 
     void DoomGame::setObjectsInfoEnabled(bool objectsInfo) { return this->doomController->setObjectsEnabled(objectsInfo); }

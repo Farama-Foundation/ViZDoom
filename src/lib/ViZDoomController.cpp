@@ -97,6 +97,7 @@ namespace vizdoom {
         this->amMode = NORMAL;
         this->amRotate = false;
         this->amTextures = true;
+        this->amSprites = false;
 
         this->objects = false;
         this->sectors = false;
@@ -663,6 +664,12 @@ namespace vizdoom {
         if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
     }
 
+    void DoomController::setAutomapRenderObjectsAsSprites(bool sprites) {
+        this->amSprites = sprites;
+        if (this->doomRunning) this->setRenderMode(this->getRenderModeValue());
+
+    }
+
     /* Objects (actors) and map state */
     bool DoomController::isObjectsEnabled() {
         if (this->doomRunning) return this->gameState->OBJECTS;
@@ -844,8 +851,9 @@ namespace vizdoom {
         if(this->messages)      renderMode |= 128;
         if(this->amRotate)      renderMode |= 256;
         if(this->amTextures)    renderMode |= 512;
-        if(this->corpses)       renderMode |= 1024;
-        if(this->flashes)       renderMode |= 2048;
+        if(this->amSprites)     renderMode |= 1024;
+        if(this->corpses)       renderMode |= 2048;
+        if(this->flashes)       renderMode |= 4096;
 
         return renderMode;
     }
