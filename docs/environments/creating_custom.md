@@ -23,7 +23,11 @@ Due to the engine's architecture, the only area that ACS is a bit lacking is the
 
 ## Step 1: Creating a custom map
 
-To create a custom scenario (.wad file), you need to use a dedicated editor. [SLADE](http://slade.mancubus.net/index.php?page=downloads) (available for Linux, MacOS, and Windows) or [DoomBuilder](http://www.doombuilder.com/index.php?p=downloads) (a bit better editor, but only available for Windows), are software that we recommend using for this task.
+To create a custom scenario (.wad file), you need to use a dedicated editor. [SLADE](http://slade.mancubus.net/index.php?page=downloads) (available for Linux, MacOS, and Windows) or [DoomBuilder](http://www.doombuilder.com/index.php?p=downloads) (a bit better editor, but only available for Windows) or [UltimateDoomBuilder](https://ultimatedoombuilder.github.io/), are software that we recommend using for this task.
+
+See the [SLADE wiki](https://slade.mancubus.net/index.php?page=wiki) or [DoomBuilder Tutorials](http://www.doombuilder.com/index.php?p=tutorials) for instructions on how to use the editor.
+
+To see how to configure SLADE for ViZDoom, see [our tutorial](./slade_config.md).
 
 When creating a new map, select UDMF format for maps. If asked for a node builder, you can select none, as ViZDoom has it built in. You should not have any problems with creating a map using the editor, it is simple, and you can find a lot of tutorials on the internet.
 
