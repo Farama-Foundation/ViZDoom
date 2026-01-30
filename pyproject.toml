@@ -32,6 +32,11 @@ reportPrivateUsage = "warning"
 reportPrivateImportUsage = "warning"
 reportAttributeAccessIssue = "warning"
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+norecursedirs = ["src/lib_python/pybind11/tests", "examples", "docs", "build", "bin", "venv", ".venv", ".git"]
+
 [tool.cibuildwheel]
 # We need to build for the following Python versions:
 build = "cp{39,310,311,312,313,314}-*"
