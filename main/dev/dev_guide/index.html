@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en" data-content_root="../../../">
+<html class="no-js" lang="en" data-content_root="../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark">
@@ -7,15 +7,15 @@
     <meta property="og:title" content="ViZDoom Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
-    <meta property="og:url" content="https://vizdoom.farama.org/api/python/exceptions.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Gymnasium Env" href="../gymnasium/" /><link rel="prev" title="Utilities" href="../utils/" />
-        <link rel="canonical" href="https://vizdoom.farama.org/api/python/exceptions.html" />
+    <meta property="og:url" content="https://vizdoom.farama.org/dev/dev_guide.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Building ViZDoom from source" href="../building_from_source/" /><link rel="prev" title="Creating a custom environment" href="../../environments/creating_custom/" />
+        <link rel="canonical" href="https://vizdoom.farama.org/dev/dev_guide.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
-        <title>Exceptions - ViZDoom Documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=3e7f4c72" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=82c8b628" />
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
+        <title>ViZDoom Development Guide - ViZDoom Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=82c8b628" />
     
     
 
@@ -56,16 +56,16 @@
           </label>
         </div>
         <div class="farama-header__left farama-header__center--mobile">
-          <a href="../../../">
-              <img class="farama-header__logo only-light" src="../../../_static/img/vizdoom-black.svg" alt="Light Logo"/>
-              <img class="farama-header__logo only-dark" src="../../../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
+          <a href="../../">
+              <img class="farama-header__logo only-light" src="../../_static/img/vizdoom-black.svg" alt="Light Logo"/>
+              <img class="farama-header__logo only-dark" src="../../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
             <span class="farama-header__title">ViZDoom Documentation</span>
           </a>
         </div>
         <div class="farama-header__right">
           <div class="farama-header-menu">
             <button class="farama-header-menu__btn" aria-label="Open Farama Menu" aria-expanded="false" aria-haspopup="true" aria-controls="farama-menu">
-              <img class="farama-black-logo-invert" src="../../../_static/img/farama-logo-header.svg">
+              <img class="farama-black-logo-invert" src="../../_static/img/farama-logo-header.svg">
               <svg viewBox="0 0 24 24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <polyline style="stroke-linecap: round; stroke-linejoin: round; fill: none; stroke-width: 2px;" points="1 7 12 18 23 7"></polyline>
               </svg>
@@ -73,7 +73,7 @@
             <div class="farama-header-menu-container farama-hidden" aria-hidden="true" id="farama-menu">
               <div class="farama-header-menu__header">
                 <a href="https://farama.org">
-                  <img class="farama-header-menu__logo farama-white-logo-invert" src="../../../_static/img/farama_solid_white.svg" alt="Farama Foundation logo">
+                  <img class="farama-header-menu__logo farama-white-logo-invert" src="../../_static/img/farama_solid_white.svg" alt="Farama Foundation logo">
                   <span>Farama Foundation</span>
                 </a>
                 <div class="farama-header-menu-header__right">
@@ -180,7 +180,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../"><div class="brand">ViZDoom Documentation</div></a>
+      <a href="../../"><div class="brand">ViZDoom Documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -200,11 +200,11 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="farama-sidebar__title" href="../../../">
-      <img class="farama-header__logo only-light" src="../../../_static/img/vizdoom-black.svg" alt="Light Logo"/>
-      <img class="farama-header__logo only-dark" src="../../../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
+      <div class="sidebar-sticky"><a class="farama-sidebar__title" href="../../">
+      <img class="farama-header__logo only-light" src="../../_static/img/vizdoom-black.svg" alt="Light Logo"/>
+      <img class="farama-header__logo only-dark" src="../../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
     <span class="farama-header__title">ViZDoom Documentation</span>
-  </a><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
+  </a><form class="sidebar-search-container" method="get" action="../../search/" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
@@ -212,49 +212,49 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/python_quickstart/">Python quick start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/apis_and_wrappers/">APIs and wrappers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/python_quickstart/">Python quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/apis_and_wrappers/">APIs and wrappers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul class="current">
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../">Python API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../doom_game/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../game_state/">GameState</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../enums/">Enums</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utils/">Utilities</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gymnasium/">Gymnasium Env</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gym/">OpenAI Gym Env</a></li>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/doom_game/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/game_state/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/utils/">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium/">Gymnasium Env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym/">OpenAI Gym Env</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../cpp/doom_game/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../cpp/game_state/">GameState</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../cpp/enums/">Enums</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../cpp/exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../cpp/utils/">Utilities</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/doom_game/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/game_state/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/utils/">Utilities</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../configuration_files/">Configuration files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/configuration_files/">Configuration files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../environments/default/">Default scenarios/environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../environments/third_party/">Third-party environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../environments/creating_custom/">Creating a custom environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environments/default/">Default scenarios/environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environments/third_party/">Third-party environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environments/creating_custom/">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Dev guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../dev/dev_guide/">ViZDoom Development Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../dev/building_from_source/">Building ViZDoom from source</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../faq/">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../citation/">How to cite</a></li>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">ViZDoom Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_from_source/">Building ViZDoom from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation/">How to cite</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://vizdoom.cs.put.edu.pl/">Original website</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom">Github</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../release_notes/">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes/">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/blob/master/docs/README.md">Contribute to the Docs</a></li>
 </ul>
 
@@ -281,7 +281,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/api/python/exceptions.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/dev/dev_guide.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -312,52 +312,113 @@
           </div>
           <article role="main">
             
-            <section class="tex2jax_ignore mathjax_ignore" id="exceptions">
-<h1>Exceptions<a class="headerlink" href="#exceptions" title="Link to this heading">¶</a></h1>
-<p>ViZDoom defines several exceptions that can be thrown by its API.
-Most of the exceptions contain more information in the exception’s message.</p>
-<dl class="py exception">
-<dt class="sig sig-object py" id="vizdoom.FileDoesNotExistException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FileDoesNotExistException</span></span><a class="headerlink" href="#vizdoom.FileDoesNotExistException" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>Means that file specified as part of a configuration does not exist.</p>
-<dl class="py exception">
-<dt class="sig sig-object py" id="vizdoom.MessageQueueException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MessageQueueException</span></span><a class="headerlink" href="#vizdoom.MessageQueueException" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>Means that communication with ViZDoom’s instance failed. Usually, means a problem with permissions or system configuration.</p>
-<dl class="py exception">
-<dt class="sig sig-object py" id="vizdoom.SharedMemoryException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SharedMemoryException</span></span><a class="headerlink" href="#vizdoom.SharedMemoryException" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>Means that allocation/reading of shared memory failed. Usually, means a problem with permissions or system configuration.</p>
-<dl class="py exception">
-<dt class="sig sig-object py" id="vizdoom.ViZDoomErrorException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ViZDoomErrorException</span></span><a class="headerlink" href="#vizdoom.ViZDoomErrorException" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>Means that an error in the ViZDoom engine occurred.</p>
-<dl class="py exception">
-<dt class="sig sig-object py" id="vizdoom.ViZDoomIsNotRunningException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ViZDoomIsNotRunningException</span></span><a class="headerlink" href="#vizdoom.ViZDoomIsNotRunningException" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>Means that called method cannot be used when ViZDoom instance is not running.</p>
-<dl class="py exception">
-<dt class="sig sig-object py" id="vizdoom.ViZDoomUnexpectedExitException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ViZDoomUnexpectedExitException</span></span><a class="headerlink" href="#vizdoom.ViZDoomUnexpectedExitException" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>Means that ViZDoom’s instance was closed/terminated/killed from the outside.</p>
-<dl class="py exception">
-<dt class="sig sig-object py" id="vizdoom.ViZDoomNoOpenALSoundException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ViZDoomNoOpenALSoundException</span></span><a class="headerlink" href="#vizdoom.ViZDoomNoOpenALSoundException" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>Means that sound was requested but could not be initialized. Usually means that no sound device is available or that the sound backend is not properly configured. Added in 1.3.0.</p>
+            <section class="tex2jax_ignore mathjax_ignore" id="vizdoom-development-guide">
+<h1>ViZDoom Development Guide<a class="headerlink" href="#vizdoom-development-guide" title="Link to this heading">¶</a></h1>
+<section id="tech-stack-deps">
+<h2>Tech stack + deps<a class="headerlink" href="#tech-stack-deps" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>C++11 core + ZDoom engine fork, built with CMake and <code class="docutils literal notranslate"><span class="pre">make</span></code>.</p></li>
+<li><p>C++ code relies on Boost, SDL2, OpenAL, and other common libraries (BZip2, JPEG, Zlib, GME, etc., included in the src), they are found via CMake.</p></li>
+<li><p>Python bindings via pybind11; packaging via setuptools.</p></li>
+<li><p>Python runtime deps: <code class="docutils literal notranslate"><span class="pre">numpy</span></code>, <code class="docutils literal notranslate"><span class="pre">gymnasium</span></code>, <code class="docutils literal notranslate"><span class="pre">pygame-ce</span></code> (see <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>).</p></li>
+<li><p>Tests: <code class="docutils literal notranslate"><span class="pre">pytest</span></code>, <code class="docutils literal notranslate"><span class="pre">pytest-xdist</span></code>, <code class="docutils literal notranslate"><span class="pre">psutil</span></code>.</p></li>
+<li><p>Docs: Sphinx (see <code class="docutils literal notranslate"><span class="pre">docs/</span></code> and <code class="docutils literal notranslate"><span class="pre">docs/conf.py</span></code>).</p></li>
+</ul>
+</section>
+<section id="project-structure">
+<h2>Project structure<a class="headerlink" href="#project-structure" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">src/</span></code>: C++ core and engine (<code class="docutils literal notranslate"><span class="pre">src/lib/</span></code>, <code class="docutils literal notranslate"><span class="pre">src/vizdoom/</span></code>) plus Python bindings (<code class="docutils literal notranslate"><span class="pre">src/lib_python/</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">include/</span></code>: public C++ headers for the ViZDoom API.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">cmake_modules/</span></code>: CMake build configuration.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scenarios/</span></code>: <code class="docutils literal notranslate"><span class="pre">.cfg</span></code> and <code class="docutils literal notranslate"><span class="pre">.wad</span></code> scenario assets.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gymnasium_wrapper/</span></code>: Gymnasium integration for Python.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/</span></code>: example code and assets.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tests/</span></code>: pytest suite plus manual test scripts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docs/</span></code>: Sphinx documentation sources.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bin/pythonX/vizdoom</span></code>: assembled package output from the CMake build.</p></li>
+</ul>
+</section>
+<section id="coding-conventions">
+<h2>Coding conventions<a class="headerlink" href="#coding-conventions" title="Link to this heading">¶</a></h2>
+<section id="main-library-src-lib-src-lib-python-and-include">
+<h3>Main library (<code class="docutils literal notranslate"><span class="pre">src/lib/</span></code>, <code class="docutils literal notranslate"><span class="pre">src/lib_python/</span></code>, and <code class="docutils literal notranslate"><span class="pre">include/</span></code>)<a class="headerlink" href="#main-library-src-lib-src-lib-python-and-include" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Always update documentation in <code class="docutils literal notranslate"><span class="pre">docs/api/cpp</span></code> when changing public API and corresponding Python module docs in <code class="docutils literal notranslate"><span class="pre">src/lib_python</span></code>.</p></li>
+<li><p>To update Python docs and docstrings, modify the C++ doc comments run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/create_python_docs_from_cpp_docs.py</span></code> and <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/create_python_docstrings_from_cpp_docs.py</span></code>.</p></li>
+<li><p>Stubs (<code class="docutils literal notranslate"><span class="pre">src/lib_python/vizdoom.pyi</span></code>) are generated by cmake/make (using pybind11-stubgen).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/</span></code> is excluded from pre-commit hooks, so follow the existing C/C++ style in nearby files.</p></li>
+</ul>
+</section>
+<section id="zdoom-engine-src-vizdoom">
+<h3>ZDoom engine (<code class="docutils literal notranslate"><span class="pre">src/vizdoom</span></code>)<a class="headerlink" href="#zdoom-engine-src-vizdoom" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Keep changes minimal. Avoid refactoring or style changes unrelated to the feature/bugfix especially in the engine code.</p></li>
+<li><p>Use the coding style used in a file you are changing. Generally, follow the existing style in nearby code.</p></li>
+<li><p>Every code change in ZDoom engine (<code class="docutils literal notranslate"><span class="pre">src/vizdoom</span></code>) must be marked with <code class="docutils literal notranslate"><span class="pre">//VIZDOOM_CODE</span></code> comment.</p></li>
+</ul>
+</section>
+<section id="python-code-gymnasium-wrapper-examples-tests">
+<h3>Python code (<code class="docutils literal notranslate"><span class="pre">gymnasium_wrapper</span></code>, <code class="docutils literal notranslate"><span class="pre">examples</span></code>, <code class="docutils literal notranslate"><span class="pre">tests</span></code>)<a class="headerlink" href="#python-code-gymnasium-wrapper-examples-tests" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Python formatting/linting is enforced by pre-commit: Black, isort, flake8, pyupgrade, codespell.
+Configuration lives in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">.pre-commit-config.yaml</span></code>.</p></li>
+<li><p>Type checking uses pyright with settings in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="editable-install-builds-c-python-package">
+<h2>Editable install (builds C++ + Python package)<a class="headerlink" href="#editable-install-builds-c-python-package" title="Link to this heading">¶</a></h2>
+<section id="install-a-project-in-editable-mode">
+<h3>Install a project in editable mode<a class="headerlink" href="#install-a-project-in-editable-mode" title="Link to this heading">¶</a></h3>
+<p>First, install dependencies (depending on your system, see <a class="reference internal" href="../building_from_source/"><span class="std std-doc">Building from source</span></a> for more details).</p>
+<p>Now run:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>pip<span class="w"> </span>setuptools<span class="w"> </span>wheel<span class="w">  </span><span class="c1"># due to --no-build-isolation these need to be installed beforehand and be up-to-date</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="w"> </span>--no-build-isolation
+</pre></div>
+</div>
+<p>This will build ViZDoom and install it in editable mode.</p>
+<p>Notes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code> runs CMake + <code class="docutils literal notranslate"><span class="pre">make</span></code> via <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> and assembles the package under <code class="docutils literal notranslate"><span class="pre">bin/pythonX/vizdoom</span></code>.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">--no-build-isolation</span></code> to keep CMake stable (avoids temp build env paths).</p></li>
+</ul>
+</section>
+<section id="rebuild-after-changes">
+<h3>Rebuild after changes<a class="headerlink" href="#rebuild-after-changes" title="Link to this heading">¶</a></h3>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>-j
+</pre></div>
+</div>
+<p>This updates <code class="docutils literal notranslate"><span class="pre">bin/pythonX/vizdoom</span></code>, which is what the editable install points at.
+If you switch Python versions, remove <code class="docutils literal notranslate"><span class="pre">CMakeCache.txt</span></code> and rebuild via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span> <span class="pre">--no-build-isolation</span></code>.</p>
+</section>
+</section>
+<section id="running-tests">
+<h2>Running tests<a class="headerlink" href="#running-tests" title="Link to this heading">¶</a></h2>
+<p>Run tests after every change to ensure nothing is broken:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>-s<span class="w"> </span>tests
+</pre></div>
+</div>
+<p>to run the test suite in parallel using all available CPU cores you can use (recommended for faster feedback):</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>-n<span class="w"> </span>auto<span class="w"> </span>-s<span class="w"> </span>tests
+</pre></div>
+</div>
+<p>Manual tests live in <code class="docutils literal notranslate"><span class="pre">tests/manual_test_*.py</span></code> and are not run by default.</p>
+</section>
+<section id="running-pre-commit-hooks">
+<h2>Running pre-commit hooks<a class="headerlink" href="#running-pre-commit-hooks" title="Link to this heading">¶</a></h2>
+<p>Pre-commit hooks are used to enforce code formatting and linting for Python code (Black, isort, flake8, pyupgrade, codespell).</p>
+<p>To install pre-commit hooks, run:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pre-commit<span class="w"> </span>install
+</pre></div>
+</div>
+<p>To run pre-commit hooks manually, use:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
+</pre></div>
+</div>
+</section>
 </section>
 
           </article>
@@ -365,18 +426,18 @@ Most of the exceptions contain more information in the exception’s message.</p
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../gymnasium/">
+            <a class="next-page" href="../building_from_source/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Gymnasium Env</div>
+                <div class="title">Building ViZDoom from source</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            <a class="prev-page" href="../utils/">
+            <a class="prev-page" href="../../environments/creating_custom/">
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
@@ -385,7 +446,7 @@ Most of the exceptions contain more information in the exception’s message.</p
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Utilities</div>
+                <div class="title">Creating a custom environment</div>
                 
               </div>
             </a>
@@ -429,14 +490,22 @@ Most of the exceptions contain more information in the exception’s message.</p
           <div class="toc-tree-container">
             <div class="toc-tree">
               <ul>
-<li><a class="reference internal" href="#">Exceptions</a><ul>
-<li><a class="reference internal" href="#vizdoom.FileDoesNotExistException"><code class="docutils literal notranslate"><span class="pre">FileDoesNotExistException</span></code></a></li>
-<li><a class="reference internal" href="#vizdoom.MessageQueueException"><code class="docutils literal notranslate"><span class="pre">MessageQueueException</span></code></a></li>
-<li><a class="reference internal" href="#vizdoom.SharedMemoryException"><code class="docutils literal notranslate"><span class="pre">SharedMemoryException</span></code></a></li>
-<li><a class="reference internal" href="#vizdoom.ViZDoomErrorException"><code class="docutils literal notranslate"><span class="pre">ViZDoomErrorException</span></code></a></li>
-<li><a class="reference internal" href="#vizdoom.ViZDoomIsNotRunningException"><code class="docutils literal notranslate"><span class="pre">ViZDoomIsNotRunningException</span></code></a></li>
-<li><a class="reference internal" href="#vizdoom.ViZDoomUnexpectedExitException"><code class="docutils literal notranslate"><span class="pre">ViZDoomUnexpectedExitException</span></code></a></li>
-<li><a class="reference internal" href="#vizdoom.ViZDoomNoOpenALSoundException"><code class="docutils literal notranslate"><span class="pre">ViZDoomNoOpenALSoundException</span></code></a></li>
+<li><a class="reference internal" href="#">ViZDoom Development Guide</a><ul>
+<li><a class="reference internal" href="#tech-stack-deps">Tech stack + deps</a></li>
+<li><a class="reference internal" href="#project-structure">Project structure</a></li>
+<li><a class="reference internal" href="#coding-conventions">Coding conventions</a><ul>
+<li><a class="reference internal" href="#main-library-src-lib-src-lib-python-and-include">Main library (<code class="docutils literal notranslate"><span class="pre">src/lib/</span></code>, <code class="docutils literal notranslate"><span class="pre">src/lib_python/</span></code>, and <code class="docutils literal notranslate"><span class="pre">include/</span></code>)</a></li>
+<li><a class="reference internal" href="#zdoom-engine-src-vizdoom">ZDoom engine (<code class="docutils literal notranslate"><span class="pre">src/vizdoom</span></code>)</a></li>
+<li><a class="reference internal" href="#python-code-gymnasium-wrapper-examples-tests">Python code (<code class="docutils literal notranslate"><span class="pre">gymnasium_wrapper</span></code>, <code class="docutils literal notranslate"><span class="pre">examples</span></code>, <code class="docutils literal notranslate"><span class="pre">tests</span></code>)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#editable-install-builds-c-python-package">Editable install (builds C++ + Python package)</a><ul>
+<li><a class="reference internal" href="#install-a-project-in-editable-mode">Install a project in editable mode</a></li>
+<li><a class="reference internal" href="#rebuild-after-changes">Rebuild after changes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#running-tests">Running tests</a></li>
+<li><a class="reference internal" href="#running-pre-commit-hooks">Running pre-commit hooks</a></li>
 </ul>
 </li>
 </ul>
@@ -523,10 +592,10 @@ Most of the exceptions contain more information in the exception’s message.</p
         })()
       </script>
 
-    <script src="../../../_static/documentation_options.js?v=a5603611"></script>
-    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../../../_static/scripts/furo.js?v=7660844c"></script>
+    <script src="../../_static/documentation_options.js?v=a5603611"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     
     <script>
 
