@@ -353,7 +353,7 @@ EXTERN_CVAR(Bool, am_showmonsters)
 EXTERN_CVAR(Bool, am_showsecrets)
 EXTERN_CVAR(Bool, am_showtime)
 EXTERN_CVAR(Bool, am_showtotaltime)
-EXTERN_CVAR(Bool, am_showmaplabel)
+EXTERN_CVAR(Int, am_showmaplabel)
 EXTERN_CVAR(Int, am_showthingsprites)
 
 #ifdef VIZ_OS_WIN
