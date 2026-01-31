@@ -60,7 +60,6 @@ game.close()
 :caption: Introduction
 
 introduction/python_quickstart
-introduction/building
 introduction/apis_and_wrappers
 ```
 
@@ -81,6 +80,13 @@ environments/default
 environments/third_party
 environments/creating_custom
 ```
+
+```{toctree}
+:hidden:
+:caption: Dev guide
+
+dev/dev_guide
+dev/building_from_source
 
 ```{toctree}
 :hidden:

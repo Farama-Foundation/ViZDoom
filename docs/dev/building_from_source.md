@@ -1,7 +1,7 @@
-# Building from source
+# Building ViZDoom from source
 
 Here we describe how to build ViZDoom from source.
-If you want to install pre-build ViZDoom wheels for Python, see [Python quick start](./python_quickstart.md).
+If you just want to install pre-build ViZDoom wheels for Python, see [Python quick start](../introduction/python_quickstart.md).
 
 
 ## Dependencies
