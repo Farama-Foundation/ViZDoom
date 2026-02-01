@@ -2696,6 +2696,7 @@ The buffer always has the same resolution as the screen buffer.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/automap_buffer.py">examples/python/automap_buffer.py</a></p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a>,</p></li>
 </ul>
 <p>Note: added in 1.1.0.</p>
@@ -2787,9 +2788,13 @@ If false, north always will be at the top of the buffer.</p>
 </div>
 <p>Controls whether things (objects, monsters, items, etc.) are rendered as sprites or as simple triangles on the automap.</p>
 <p>When enabled (<code class="docutils literal notranslate"><span class="pre">true</span></code>), things are displayed as rotated sprites with their actual appearance. When disabled (<code class="docutils literal notranslate"><span class="pre">false</span></code>), things are shown as simple triangular markers.
-Most of sprites are visible only with <code class="docutils literal notranslate"><span class="pre">OBJECTS</span></code> and <code class="docutils literal notranslate"><span class="pre">OBJECTS_WITH_SIZE</span></code> automap modes.</p>
+Works only with <code class="docutils literal notranslate"><span class="pre">OBJECTS</span></code> and <code class="docutils literal notranslate"><span class="pre">OBJECTS_WITH_SIZE</span></code> automap modes.</p>
 <p>Default value: false</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">automapRenderObjectsAsSprites</span></code>/<code class="docutils literal notranslate"><span class="pre">automap_render_objects_as_sprites</span></code></p>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#setautomapmode"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAutomapMode</span></code></span></a>,</p></li>
+</ul>
 <p>Note: added in 1.3.0.</p>
 </section>
 <hr class="docutils" />
