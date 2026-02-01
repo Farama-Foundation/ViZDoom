@@ -242,7 +242,7 @@ for skill in SKILL_LEVELS:
     for game_name, config_file, maps in [
         ("Doom", "doom.cfg", DOOM_MAPS),
         ("Doom2", "doom2.cfg", DOOM2_MAPS),
-        ("Freedoom", "freedoom.cfg", DOOM_MAPS),
+        ("Freedoom1", "freedoom1.cfg", DOOM_MAPS),
         ("Freedoom2", "freedoom2.cfg", DOOM2_MAPS),
     ]:
         for map in maps:
@@ -250,7 +250,7 @@ for skill in SKILL_LEVELS:
                 id=f"Vizdoom{game_name}{map}-{skill}-v0",
                 entry_point=DEFAULT_VIZDOOM_ENTRYPOINT,
                 kwargs={
-                    "scenario_config_file=": f"{config_file}",
+                    "scenario_config_file": f"{config_file}",
                     "max_buttons_pressed": 0,
                     "doom_map": map,
                     "doom_skill": skill_int,

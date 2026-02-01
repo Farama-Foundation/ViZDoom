@@ -172,8 +172,6 @@ class VizdoomEnv(gym.Env, EzPickle):
         # specify observation space(s)
         self.observation_space = self.__get_observation_space()
 
-        self.game.init()
-
     def step(self, action: Any):
         assert self.action_space.contains(
             action
@@ -234,7 +232,11 @@ class VizdoomEnv(gym.Env, EzPickle):
             self.np_random.integers(0, np.iinfo(np.uint32).max + 1, dtype=np.uint32)
         )
         self.game.set_seed(game_seed)
-        self.game.new_episode()
+
+        if self.game.is_running():
+            self.game.new_episode()
+        else:
+            self.game.init()
         self.state = self.game.get_state()
 
         return self.__collect_observations(), {}
@@ -348,6 +350,7 @@ class VizdoomEnv(gym.Env, EzPickle):
             return self.isopen
 
     def close(self):
+        self.game.close()
         if self.window_surface:
             pygame.quit()
             self.isopen = False

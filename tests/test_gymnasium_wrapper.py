@@ -11,7 +11,7 @@ import numpy as np
 from gymnasium.spaces import Box, Dict, Discrete, MultiBinary, MultiDiscrete, Text
 from gymnasium.utils.env_checker import check_env, data_equivalence
 
-from vizdoom import gymnasium_wrapper  # noqa
+from vizdoom import gymnasium_wrapper, scenarios_path  # noqa
 from vizdoom.gymnasium_wrapper.base_gymnasium_env import VizdoomEnv
 
 
@@ -39,6 +39,10 @@ vizdoom_envs = [
     for env in [env_spec.id for env_spec in gymnasium.envs.registry.values()]  # type: ignore
     if "Vizdoom" in env
 ]
+# Skip environments with higher skills levels for testing purposes as they only differ with a single parameter
+for skill in ["-S2-", "-S3-", "-S4-", "-S5-"]:
+    vizdoom_envs = [env for env in vizdoom_envs if skill not in env]
+
 test_env_configs = f"{os.path.dirname(os.path.abspath(__file__))}/env_configs"
 buffers = ["screen", "depth", "labels", "automap", "audio", "notifications"]
 
@@ -62,14 +66,31 @@ notifications: dict[str, gymnasium.Space] = {"notifications": notifications_obs_
 audio_buffer: dict[str, gymnasium.Space] = {"audio": audio_obs_space}
 
 
+def _check_if_main_wad_available(env_name: str, env: gymnasium.Env) -> None:
+    """
+    Helper function to check if specified main WAD file is available for the given environment.
+    """
+    main_wad_path = env.unwrapped.game.get_doom_game_path()
+    if (
+        main_wad_path is not None
+        and main_wad_path != ""
+        and not os.path.exists(main_wad_path)
+        and not os.path.exists(os.path.join(scenarios_path, main_wad_path))
+    ):
+        pytest.skip(
+            f"Main WAD file {main_wad_path} not available for {env_name}, skipping test."
+        )
+
+
 # Testing with different non-default kwargs (since each has a different obs space)
 # should give warning forcing RGB24 screen type
 @pytest.mark.parametrize("env_name", vizdoom_envs)
 def test_gymnasium_wrapper(env_name: str):
-    print(f"  Env: {env_name}")
+    print(f"Testing Gymnasium wrapper - {env_name}")
 
     for frame_skip in [1, 4]:
         env = gymnasium.make(env_name, frame_skip=frame_skip)
+        _check_if_main_wad_available(env_name, env)
 
         # Test if env adheres to Gymnasium API
         check_env(env.unwrapped, skip_render_check=True)
@@ -96,10 +117,12 @@ def test_gymnasium_wrapper(env_name: str):
 # should give warning forcing RGB24 screen type
 @pytest.mark.parametrize("env_name", vizdoom_envs)
 def test_gymnasium_wrapper_terminal_state(env_name: str):
-    print(f"  Env: {env_name}")
+    print(f"Testing Gymnasium terminal state - {env_name}")
 
     for frame_skip in [1, 4]:
         env = gymnasium.make(env_name, frame_skip=frame_skip, max_buttons_pressed=0)
+        _check_if_main_wad_available(env_name, env)
+
         obs = env.reset()
         terminated = False
         truncated = False
@@ -125,6 +148,7 @@ def test_gymnasium_wrapper_truncated_state():
         max_buttons_pressed=0,
         treat_episode_timeout_as_truncation=True,
     )
+
     obs = env.reset()
     terminated = False
     truncated = False
@@ -165,6 +189,7 @@ def test_gymnasium_wrapper_obs_space(env_config: str, obs_space: Dict):
         frame_skip=1,
         max_buttons_pressed=0,
     )
+    _check_if_main_wad_available(env_config, env)
     assert env.observation_space == obs_space, (
         f"Incorrect observation space: {env.observation_space!r}, "
         f"should be: {obs_space!r}"
@@ -175,7 +200,7 @@ def test_gymnasium_wrapper_obs_space(env_config: str, obs_space: Dict):
     ), f"Step observation: {obs!r} not in space"
 
 
-def _compare_action_spaces(env, expected_action_space):
+def _compare_action_spaces(env: gymnasium.Env, expected_action_space: gymnasium.Space):
     """
     Helper function to compare the action space of the environment with the expected action space.
     """
@@ -405,9 +430,10 @@ def _compare_envs(env1, env2, env1_name="First", env2_name="Second", seed=1993):
 
 @pytest.mark.parametrize("env_name", vizdoom_envs)
 def test_gymnasium_wrapper_pickle(env_name: str):
-    print(f"  Env: {env_name}")
+    print(f"Testing Gymnasium wrapper pickle - {env_name}")
 
-    env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
+    env1 = gymnasium.make(env_name)
+    _check_if_main_wad_available(env_name, env1)
     env2 = pickle.loads(pickle.dumps(env1))
 
     _compare_envs(
@@ -421,10 +447,11 @@ def test_gymnasium_wrapper_pickle(env_name: str):
 
 @pytest.mark.parametrize("env_name", vizdoom_envs)
 def test_gymnasium_wrapper_seed(env_name: str):
-    print(f"  Env: {env_name}")
+    print(f"Testing Gymnasium wrapper seed - {env_name}")
 
-    env1 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
-    env2 = gymnasium.make(env_name, frame_skip=1, max_buttons_pressed=0)
+    env1 = gymnasium.make(env_name)
+    _check_if_main_wad_available(env_name, env1)
+    env2 = gymnasium.make(env_name)
 
     _compare_envs(
         env1,
