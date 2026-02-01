@@ -974,6 +974,7 @@ void G_DoLoadLevel (int position, bool autosave)
 	}
 
 	level.maptime = 0;
+	TexMan.ResetAnimations();
 	P_SetupLevel (level.MapName, position);
 
 	AM_LevelInit();

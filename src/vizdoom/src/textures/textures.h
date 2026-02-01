@@ -64,6 +64,7 @@ struct FAnimDef
 	WORD	NumFrames;
 	WORD	CurFrame;
 	BYTE	AnimType;
+	BYTE	InitialAnimType;    //VIZDOOM_CODE
 	bool	bDiscrete;			// taken out of AnimType to have better control
 	DWORD	SwitchTime;			// Time to advance to next frame
 	struct FAnimFrame
@@ -416,6 +417,9 @@ public:
 	int ReadTexture (FArchive &arc);
 
 	void UpdateAnimations (DWORD mstime);
+
+	//VIZDOOM_CODE
+	void ResetAnimations ();
 	int GuesstimateNumTextures ();
 
 	FSwitchDef *FindSwitch (FTextureID texture);

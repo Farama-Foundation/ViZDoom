@@ -104,6 +104,7 @@ FAnimDef *FTextureManager::AddSimpleAnim (FTextureID picnum, int animcount, DWOR
 		anim->BasePic = picnum;
 		anim->NumFrames = animcount;
 		anim->AnimType = FAnimDef::ANIM_Forward;
+		anim->InitialAnimType = anim->AnimType;
 		anim->bDiscrete = false;
 		anim->SwitchTime = 0;
 		anim->Frames[0].SpeedMin = speedmin;
@@ -129,6 +130,7 @@ FAnimDef *FTextureManager::AddComplexAnim (FTextureID picnum, const TArray<FAnim
 	anim->NumFrames = frames.Size();
 	anim->CurFrame = 0;
 	anim->AnimType = FAnimDef::ANIM_Forward;
+	anim->InitialAnimType = anim->AnimType;
 	anim->bDiscrete = true;
 	anim->SwitchTime = 0;
 	memcpy (&anim->Frames[0], &frames[0], frames.Size() * sizeof(frames[0]));
@@ -254,7 +256,11 @@ void FTextureManager::InitAnimated (void)
 
 				// Speed is stored as tics, but we want ms so scale accordingly.
 				FAnimDef *adef = AddSimpleAnim (pic1, pic2 - pic1 + 1, Scale (animspeed, 1000, 35));
-				if (adef != NULL) adef->AnimType = animtype;
+				if (adef != NULL)
+				{
+					adef->AnimType = animtype;
+					adef->InitialAnimType = adef->AnimType;
+				}
 			}
 		}
 	}
@@ -442,6 +448,10 @@ void FTextureManager::ParseAnim (FScanner &sc, int usetype)
 		if (ani->AnimType == FAnimDef::ANIM_Backward && type == FAnimDef::ANIM_OscillateUp) ani->AnimType = FAnimDef::ANIM_OscillateDown;
 		else ani->AnimType = type;
 	}
+	if (ani != NULL)
+	{
+		ani->InitialAnimType = ani->AnimType;
+	}
 }
 
 //==========================================================================
@@ -482,7 +492,11 @@ FAnimDef *FTextureManager::ParseRangeAnim (FScanner &sc, FTextureID picnum, int 
 		swapvalues (framenum, picnum);
 	}
 	FAnimDef *ani = AddSimpleAnim (picnum, framenum - picnum + 1, min, max - min);
-	if (ani != NULL) ani->AnimType = type;
+	if (ani != NULL)
+	{
+		ani->AnimType = type;
+		ani->InitialAnimType = ani->AnimType;
+	}
 	return ani;
 }
 
@@ -981,6 +995,38 @@ void FTextureManager::UpdateAnimations (DWORD mstime)
 			for (unsigned int i = 0; i < anim->NumFrames; i++)
 			{
 				SetTranslation (anim->BasePic + i, anim->BasePic + (i + anim->CurFrame) % anim->NumFrames);
+			}
+		}
+	}
+}
+
+//==========================================================================
+//
+// FTextureManager :: ResetAnimations
+//
+// Resets animation state for map restarts.
+//
+//==========================================================================
+
+void FTextureManager::ResetAnimations ()
+{
+	for (unsigned int j = 0; j < mAnimations.Size(); ++j)
+	{
+		FAnimDef *anim = mAnimations[j];
+
+		anim->CurFrame = 0;
+		anim->AnimType = anim->InitialAnimType;
+		anim->SwitchTime = 0;
+
+		if (anim->bDiscrete)
+		{
+			SetTranslation (anim->BasePic, anim->Frames[0].FramePic);
+		}
+		else
+		{
+			for (unsigned int i = 0; i < anim->NumFrames; i++)
+			{
+				SetTranslation (anim->BasePic + i, anim->BasePic + i);
 			}
 		}
 	}
