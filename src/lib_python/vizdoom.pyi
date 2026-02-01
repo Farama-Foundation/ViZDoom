@@ -1198,6 +1198,7 @@ class DoomGame:
         See also:
 
         - :class:`.GameState`
+        - `examples/python/automap_buffer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/automap_buffer.py>`_
         - `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_,
 
         Note: added in 1.1.0.
@@ -1220,11 +1221,15 @@ class DoomGame:
         Controls whether things (objects, monsters, items, etc.) are rendered as sprites or as simple triangles on the automap.
 
         When enabled (```True```), things are displayed as rotated sprites with their actual appearance. When disabled (```False```), things are shown as simple triangular markers.
-        Most of sprites are visible only with ``OBJECTS`` and ``OBJECTS_WITH_SIZE`` automap modes.
+        Works only with ``OBJECTS`` and ``OBJECTS_WITH_SIZE`` automap modes.
 
         Default value: ``False``
 
         Config key: ``automapRenderObjectsAsSprites``/``automap_render_objects_as_sprites``
+
+        See also:
+
+        - :meth:`set_automap_mode`,
 
         Note: added in 1.3.0.
         """

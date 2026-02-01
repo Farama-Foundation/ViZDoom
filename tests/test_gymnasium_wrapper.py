@@ -40,11 +40,6 @@ vizdoom_envs = [
     if "Vizdoom" in env
 ]
 test_env_configs = f"{os.path.dirname(os.path.abspath(__file__))}/env_configs"
-envs_with_animated_textures = [
-    "VizdoomHealthGathering",
-    "VizdoomHealthGatheringSupreme",
-    "VizdoomDeathmatch",
-]
 envs_with_audio = [
     "VizdoomBasicAudio",
 ]
@@ -79,7 +74,7 @@ def test_gymnasium_wrapper(env_name: str):
     # Skip environments with animated textures and audio
     # as they might render different states for the same seeds
     # and audio might render slightly different
-    if env_name.split("-")[0] in envs_with_animated_textures + envs_with_audio:
+    if env_name.split("-")[0] in envs_with_audio:
         return
 
     for frame_skip in [1, 4]:
@@ -445,9 +440,7 @@ def test_gymnasium_wrapper_pickle(env_name: str):
         env1_name="Original",
         env2_name="Pickled",
         seed=1993,
-        compare_buffers=(
-            env_name.split("-")[0] not in envs_with_animated_textures + envs_with_audio
-        ),
+        compare_buffers=(env_name.split("-")[0] not in envs_with_audio),
     )
 
 
@@ -464,9 +457,7 @@ def test_gymnasium_wrapper_seed(env_name: str):
         env1_name="First",
         env2_name="Second",
         seed=1993,
-        compare_buffers=(
-            env_name.split("-")[0] not in envs_with_animated_textures + envs_with_audio
-        ),
+        compare_buffers=(env_name.split("-")[0] not in envs_with_audio),
     )
 
 

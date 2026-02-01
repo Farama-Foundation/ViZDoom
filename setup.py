@@ -259,6 +259,8 @@ setup(
             "pytest-xdist",
             "psutil",
             "pybind11-stubgen",
+            "black",
+            "isort",
         ],
     },
     install_requires=["numpy", "gymnasium>=0.28.0", "pygame-ce>=2.1.3"],

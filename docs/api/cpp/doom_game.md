@@ -1533,6 +1533,7 @@ Config key: `automapBufferEnabled`/`automap_buffer_enabled`
 
 See also:
 - [`GameState`](./game_state.md#gamestate)
+- [examples/python/automap_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/automap_buffer.py)
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py),
 
 Note: added in 1.1.0.
@@ -1598,11 +1599,14 @@ Note: added in 1.1.0.
 Controls whether things (objects, monsters, items, etc.) are rendered as sprites or as simple triangles on the automap.
 
 When enabled (`true`), things are displayed as rotated sprites with their actual appearance. When disabled (`false`), things are shown as simple triangular markers.
-Most of sprites are visible only with `OBJECTS` and `OBJECTS_WITH_SIZE` automap modes.
+Works only with `OBJECTS` and `OBJECTS_WITH_SIZE` automap modes.
 
 Default value: false
 
 Config key: `automapRenderObjectsAsSprites`/`automap_render_objects_as_sprites`
+
+See also:
+- [`setAutomapMode`](#setautomapmode),
 
 Note: added in 1.3.0.
 
