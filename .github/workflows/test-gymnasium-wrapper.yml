@@ -54,4 +54,4 @@ jobs:
       run: python -c "import vizdoom"
 
     - name: Run tests
-      run: pytest -n logical tests/test_gymnasium_wrapper.py
+      run: pytest tests/test_gymnasium_wrapper.py
