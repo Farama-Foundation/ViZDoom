@@ -19,17 +19,6 @@ import tqdm
 import vizdoom as vzd
 
 
-# Rendering options:
-resolution = vzd.ScreenResolution.RES_320X240
-screen_format = vzd.ScreenFormat.CRCGCB
-depth_buffer = False
-labels_buffer = False
-automap_buffer = False
-audio_buffer = False
-objects_info = False
-sectors_info = False
-
-#####################################################################
 DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "basic.cfg")
 DEFAULT_ITERATIONS = 10000
 
@@ -58,29 +47,45 @@ if __name__ == "__main__":
     # Use other config file if you wish.
     game.load_config(args.config)
 
-    game.set_screen_resolution(resolution)
-    game.set_screen_format(screen_format)
+    # Override some options for the test if you wish.
+    # game.set_screen_resolution(vzd.ScreenResolution.RES_320X240)
+    # game.set_screen_format(vzd.ScreenFormat.CRCGCB)
 
-    game.set_depth_buffer_enabled(depth_buffer)
-    game.set_labels_buffer_enabled(labels_buffer)
-    game.set_automap_buffer_enabled(automap_buffer)
-    game.set_audio_buffer_enabled(audio_buffer)
-    game.set_objects_info_enabled(objects_info)
-    game.set_sectors_info_enabled(sectors_info)
+    # game.set_depth_buffer_enabled(False)
+    # game.set_labels_buffer_enabled(False)
+    # game.set_automap_buffer_enabled(False)
+    # game.set_audio_buffer_enabled(False)
+    # game.set_objects_info_enabled(False)
+    # game.set_sectors_info_enabled(False)
+    # game.set_notifications_buffer_enabled(False)
 
     game.set_window_visible(False)
 
     game.init()
 
-    actions = [[True, False, False], [False, True, False], [False, False, True]]
-    left = actions[0]
-    right = actions[1]
-    shoot = actions[2]
-    idle = [False, False, False]
+    actions_num = game.get_available_buttons_size()
+    actions = [
+        [True if i == j else False for i in range(actions_num)]
+        for j in range(actions_num)
+    ]
+    actions.append([False for _ in range(actions_num)])  # Idle action
 
     start = time()
 
-    print("Checking FPS with selected features. It may take some time. Be patient.")
+    print(
+        f"Checking FPS with {args.config} and selected features. It may take some time. Be patient."
+    )
+    print("Config:")
+    print("Iterations:", args.iterations)
+    print("Resolution:", game.get_screen_width(), "x", game.get_screen_height())
+    print("Depth buffer:", game.is_depth_buffer_enabled())
+    print("Labels buffer:", game.is_labels_buffer_enabled())
+    print("Automap buffer:", game.is_automap_buffer_enabled())
+    print("Audio buffer:", game.is_audio_buffer_enabled())
+    print("Objects info:", game.is_objects_info_enabled())
+    print("Sectors info:", game.is_sectors_info_enabled())
+    print("Notifications buffer:", game.is_notifications_buffer_enabled())
+    print("=====================")
 
     for i in tqdm.trange(args.iterations, leave=False):
 
@@ -93,10 +98,9 @@ if __name__ == "__main__":
 
     end = time()
     t = end - start
+
     print("Results:")
-    print("Iterations:", args.iterations)
-    print("Resolution:", resolution)
-    print("time:", round(t, 3), "s")
-    print("fps: ", round(args.iterations / t, 2))
+    print("Time:", round(t, 3), "s")
+    print("FPS:", round(args.iterations / t, 2))
 
     game.close()
