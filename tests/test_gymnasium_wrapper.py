@@ -40,9 +40,6 @@ vizdoom_envs = [
     if "Vizdoom" in env
 ]
 test_env_configs = f"{os.path.dirname(os.path.abspath(__file__))}/env_configs"
-envs_with_audio = [
-    "VizdoomBasicAudio",
-]
 buffers = ["screen", "depth", "labels", "automap", "audio", "notifications"]
 
 fp32_act_space = dict(
@@ -70,12 +67,6 @@ audio_buffer: dict[str, gymnasium.Space] = {"audio": audio_obs_space}
 @pytest.mark.parametrize("env_name", vizdoom_envs)
 def test_gymnasium_wrapper(env_name: str):
     print(f"  Env: {env_name}")
-
-    # Skip environments with animated textures and audio
-    # as they might render different states for the same seeds
-    # and audio might render slightly different
-    if env_name.split("-")[0] in envs_with_audio:
-        return
 
     for frame_skip in [1, 4]:
         env = gymnasium.make(env_name, frame_skip=frame_skip)
@@ -361,9 +352,7 @@ def test_gymnasium_wrapper_action_space(i: int):
         _compare_action_spaces(env, discrete_action_spaces[max_button_pressed - 1][i])
 
 
-def _compare_envs(
-    env1, env2, env1_name="First", env2_name="Second", seed=1993, compare_buffers=True
-):
+def _compare_envs(env1, env2, env1_name="First", env2_name="Second", seed=1993):
     """
     Helper function to compare two environments.
     It checks if the initial observations, actions, and subsequent observations,
@@ -376,12 +365,6 @@ def _compare_envs(
     # Seed action space sampler
     env1.action_space.seed(seed)
     env2.action_space.seed(seed)
-
-    # Compare initial states
-    if not compare_buffers:
-        if "screen" in obs1:
-            obs1["screen"] = np.zeros_like(obs1["screen"])
-            obs2["screen"] = np.zeros_like(obs2["screen"])
 
     assert data_equivalence(
         obs1, obs2
@@ -398,13 +381,6 @@ def _compare_envs(
 
         obs1, rew1, term1, trunc1, info1 = env1.step(a1)
         obs2, rew2, term2, trunc2, info2 = env2.step(a2)
-
-        if not compare_buffers:
-            for buffer in buffers:
-                if buffer in obs1:
-                    obs1[buffer] = np.zeros_like(obs1[buffer])
-                if buffer in obs2:
-                    obs2[buffer] = np.zeros_like(obs2[buffer])
 
         assert data_equivalence(
             obs1, obs2
@@ -440,7 +416,6 @@ def test_gymnasium_wrapper_pickle(env_name: str):
         env1_name="Original",
         env2_name="Pickled",
         seed=1993,
-        compare_buffers=(env_name.split("-")[0] not in envs_with_audio),
     )
 
 
@@ -457,7 +432,6 @@ def test_gymnasium_wrapper_seed(env_name: str):
         env1_name="First",
         env2_name="Second",
         seed=1993,
-        compare_buffers=(env_name.split("-")[0] not in envs_with_audio),
     )
 
 

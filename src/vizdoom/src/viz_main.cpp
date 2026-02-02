@@ -113,6 +113,7 @@ CVAR (String, viz_bots_path, "", CVAR_NOSET)
 
 // audio buffer related
 CVAR (Bool, viz_soft_audio, false, 0)
+CVAR (Bool, viz_reset_audio_on_map_change, true, 0)
 CVAR (Int, viz_samp_freq, 44100, 0)
 CVAR (Int, viz_audio_tics, 1, 0)
 
