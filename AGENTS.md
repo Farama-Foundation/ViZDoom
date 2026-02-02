@@ -33,7 +33,7 @@
 ### ZDoom engine (`src/vizdoom`)
 - Keep changes minimal. Avoid refactoring or style changes unrelated to the feature/bugfix especially in the engine code.
 - Use the coding style used in a file you are changing. Generally, follow the existing style in nearby code.
-- Every code change in ZDoom engine (`src/vizdoom`) must be marked with `//VIZDOOM_CODE` comment.
+- Every code change in ZDoom engine (`src/vizdoom`) that is not part of `viz_*` filesmust be marked with `//VIZDOOM_CODE` comment.
 
 ### Python code (`gymnasium_wrapper`, `examples`, `tests`)
 - Python formatting/linting is enforced by pre-commit: Black, isort, flake8, pyupgrade, codespell.

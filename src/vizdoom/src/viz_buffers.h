@@ -64,6 +64,8 @@ void VIZ_ScreenLevelMapUpdate();
 
 void VIZ_AudioUpdate();
 
+void VIZ_ClearAudioBuffer();
+
 void VIZ_ScreenClose();
 
 #endif

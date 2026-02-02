@@ -299,6 +299,10 @@ void VIZ_AudioUpdate() {
     // This can be done more efficiently with a circular buffer to avoid the memmove, but this complicates the IPC
     // logic a bit. The current implementation should be fast enough.
 
+    const size_t lastTicOffset = vizAudioSize - vizAudioSizePerTic;
+    memmove(vizAudioSM, vizAudioSM + vizAudioSizePerTic, lastTicOffset);
+    S_GetRender(vizAudioSM + lastTicOffset, vizAudioSamplesPerTic);
+
     if (*viz_audio_tics > level.maptime){ // If map time is less than the audio buffer size, zero the rest of the buffer
         const size_t ticsToClear = *viz_audio_tics - level.maptime;
         if(ticsToClear * vizAudioSizePerTic > vizAudioSize) {
@@ -306,8 +310,9 @@ void VIZ_AudioUpdate() {
         }
         memset(vizAudioSM, 0, ticsToClear * vizAudioSizePerTic);
     }
+}
 
-    const size_t lastTicOffset = vizAudioSize - vizAudioSizePerTic;
-    memmove(vizAudioSM, vizAudioSM + vizAudioSizePerTic, lastTicOffset);
-    S_GetRender(vizAudioSM + lastTicOffset, vizAudioSamplesPerTic);
+void VIZ_ClearAudioBuffer() {
+    if (!*viz_soft_audio || vizAudioSM == NULL || vizAudioSize == 0) return;
+    memset(vizAudioSM, 0, vizAudioSize);
 }

@@ -42,6 +42,7 @@
 #include "d_event.h"
 #include "d_dehacked.h"
 #include "g_game.h"
+#include "i_music.h" //VIZDOOM_CODE
 #include "i_sound.h"
 #include "p_acs.h"
 #include "p_setup.h"
@@ -711,6 +712,14 @@ void VIZ_GameStateInitNew(){
     }
 
     vizUniqueObjectsCount = 0;
+
+    //VIZDOOM_CODE
+    if (*viz_soft_audio) {
+        I_ShutdownMusic();
+        I_ShutdownSound();
+        I_InitSound();
+    }
+    VIZ_ClearAudioBuffer(); //VIZDOOM_CODE
 }
 
 void VIZ_GameStateClose(){
