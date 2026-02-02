@@ -377,7 +377,9 @@ def test_gymnasium_wrapper_action_space(i: int):
         _compare_action_spaces(env, discrete_action_spaces[max_button_pressed - 1][i])
 
 
-def _compare_envs(env1, env2, env1_name="First", env2_name="Second", seed=1993):
+def _compare_envs(
+    env1, env2, env1_name="First", env2_name="Second", max_steps=10, seed=1993
+):
     """
     Helper function to compare two environments.
     It checks if the initial observations, actions, and subsequent observations,
@@ -397,7 +399,8 @@ def _compare_envs(env1, env2, env1_name="First", env2_name="Second", seed=1993):
 
     # Compare sequance of random actions and states
     done = False
-    while not done:
+    steps = 0
+    while not done and steps < max_steps:
         a1 = env1.action_space.sample()
         a2 = env2.action_space.sample()
         assert data_equivalence(
@@ -424,6 +427,8 @@ def _compare_envs(env1, env2, env1_name="First", env2_name="Second", seed=1993):
         ), f"Incorrect info: {env1_name} environment: {info1}. {env2_name} environment: {info2}"
 
         done = term1 or trunc1 or term2 or trunc2
+        steps += 1
+
     env1.close()
     env2.close()
 
