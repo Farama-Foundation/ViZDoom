@@ -88,6 +88,7 @@ environments/creating_custom
 
 dev/dev_guide
 dev/building_from_source
+```
 
 ```{toctree}
 :hidden:

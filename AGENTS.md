@@ -45,21 +45,20 @@
 
 ### Install a project in editable mode
 
-First, install dependencies (depending on your system, see [Building from source](./building_from_source.md) for more details).
+Work on the project by installing it in editable mode. This way, changes to C++ code are reflected in the installed package without reinstalling.
+To set up an editable install run the following commands in the project root:
 
-Now run:
 ```sh
 python -m venv .venv
 source .venv/bin/activate
-pip install -U pip setuptools wheel  # due to --no-build-isolation these need to be installed beforehand and be up-to-date
+pip install -U pip setuptools wheel
 pip install -e . --no-build-isolation
 ```
-
-This will build ViZDoom and install it in editable mode.
 
 Notes:
 - `pip install -e .` runs CMake + `make` via `setup.py` and assembles the package under `bin/pythonX/vizdoom`.
 - Use `--no-build-isolation` to keep CMake stable (avoids temp build env paths).
+- Due to `--no-build-isolation`, `pip`, `setuptools`, and `wheel` need to be installed beforehand and be up-to-date.
 
 ### Rebuild after changes
 ```sh
