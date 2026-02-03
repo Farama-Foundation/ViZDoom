@@ -240,13 +240,17 @@
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../environments/default/">Default scenarios/environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environments/original_doom_levels/">Playing original Doom levels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../environments/third_party/">Third-party environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../environments/creating_custom/">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Dev guide</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../dev/dev_guide/">ViZDoom Development Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/building_from_source/">Building ViZDoom from source</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../citation/">How to cite</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://vizdoom.cs.put.edu.pl/">Original website</a></li>
@@ -321,7 +325,7 @@ You can find more questions and answers by searching for issues with “question
 <section id="how-to-use-original-doom-s-assets">
 <h2>How to use original Doom’s assets?<a class="headerlink" href="#how-to-use-original-doom-s-assets" title="Link to this heading">¶</a></h2>
 <p>We cannot provide original Doom’s assets due to licensing issues, that is why ViZDoom uses <a class="reference external" href="https://freedoom.github.io">freedoom2.wad</a> as default assets.
-If you own original Doom or Doom 2 game (can be bought them on Steam or GOG), you can replace Freedoom graphics with original Doom’s assets by placing doom.wad or doom2.wad into your working directory or vizdoom package directory (same directory as vizdoom(.exe)). Alternatively, any base game WAD (including other Doom engine-based games) can be used by pointing to it with the <a class="reference internal" href="../api/python/doom_game/#vizdoom.DoomGame.set_doom_game_path"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_doom_game_path</span></code></span></a> method. On Unix you can also set <code class="docutils literal notranslate"><span class="pre">DOOMWADDIR</span></code> environment variable to directory with your wads files.</p>
+If you own original Doom or Doom 2 game (can purchase them on purchasing them on <a class="reference external" href="https://store.steampowered.com/app/2280/DOOM__DOOM_II/">Steam</a> or <a class="reference external" href="https://www.gog.com/game/doom_doom_ii">GOG</a>), you can replace Freedoom graphics with original Doom’s assets by placing doom2.wad and doom.wad into your working directory or vizdoom package directory (same directory as vizdoom(.exe)). Alternatively, any base game WAD (including other Doom engine-based games) can be used by pointing to it with the <a class="reference internal" href="../api/python/doom_game/#vizdoom.DoomGame.set_doom_game_path"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_doom_game_path</span></code></span></a> method. On Unix you can also set <code class="docutils literal notranslate"><span class="pre">DOOMWADDIR</span></code> environment variable to directory with your wads files and provide only the WAD file name in the configuration.</p>
 </section>
 <section id="how-to-create-modify-scenarios">
 <h2>How to create/modify scenarios?<a class="headerlink" href="#how-to-create-modify-scenarios" title="Link to this heading">¶</a></h2>
