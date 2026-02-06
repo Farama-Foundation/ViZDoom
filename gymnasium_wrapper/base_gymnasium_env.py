@@ -28,6 +28,8 @@ LABEL_COLORS = (
     np.random.default_rng(42).uniform(25, 256, size=(256, 3)).astype(np.uint8)
 )
 
+ASCII_CHARS = [chr(i) for i in range(0, 127)]
+
 
 class VizdoomEnv(gym.Env, EzPickle):
     metadata = {
@@ -496,7 +498,9 @@ class VizdoomEnv(gym.Env, EzPickle):
                 dtype=np.int16,
             )
         if self.notifications:
-            spaces["notifications"] = gym.spaces.Text(min_length=0, max_length=32768)
+            spaces["notifications"] = gym.spaces.Text(
+                min_length=0, max_length=32768, charset=ASCII_CHARS
+            )
 
         self.num_game_variables = self.game.get_available_game_variables_size()
         if self.num_game_variables > 0:

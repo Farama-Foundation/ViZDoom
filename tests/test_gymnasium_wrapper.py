@@ -12,7 +12,7 @@ from gymnasium.spaces import Box, Dict, Discrete, MultiBinary, MultiDiscrete, Te
 from gymnasium.utils.env_checker import check_env, data_equivalence
 
 from vizdoom import gymnasium_wrapper, scenarios_path  # noqa
-from vizdoom.gymnasium_wrapper.base_gymnasium_env import VizdoomEnv
+from vizdoom.gymnasium_wrapper.base_gymnasium_env import ASCII_CHARS, VizdoomEnv
 
 
 # Ensure pytest.mark.parametrize decorator works without pytest
@@ -63,7 +63,7 @@ SINGLE_CHANNEL_SCREEN_OBS_SPACE = Box(0, 255, (240, 320, 1), dtype=np.uint8)
 AUDIO_OBS_SPACE = Box(
     -32768, 32767, (int(44100 * 1 / 35 * 1), 2), dtype=np.int16
 )  # sampling rate = 44100, frame_skip = 1
-NOTIFICATIONS_OBS_SPACE = Text(min_length=0, max_length=32768)
+NOTIFICATIONS_OBS_SPACE = Text(min_length=0, max_length=32768, charset=ASCII_CHARS)
 
 COLOR_SCREEN: dict[str, gymnasium.Space] = {"screen": TRI_CHANNEL_SCREEN_OBS_SPACE}
 GREY_SCREEN: dict[str, gymnasium.Space] = {"screen": SINGLE_CHANNEL_SCREEN_OBS_SPACE}
