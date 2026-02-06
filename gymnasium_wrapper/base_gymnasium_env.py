@@ -123,6 +123,7 @@ class VizdoomEnv(gym.Env, EzPickle):
 
         self.game.set_window_visible(False)
         self.game.set_audio_buffer_size(frame_skip)
+        self.game.set_notifications_buffer_size(frame_skip)
         screen_format = self.game.get_screen_format()
         if (
             screen_format != vzd.ScreenFormat.RGB24

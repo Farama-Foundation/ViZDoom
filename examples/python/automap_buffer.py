@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+#####################################################################
+# This script shows how to use the 'automap' (top-down view map).
+# Note: OpenCV is used here to display images, install it:
+#       pip install opencv-python
+#####################################################################
+
 from argparse import ArgumentParser
 from random import choice
 
