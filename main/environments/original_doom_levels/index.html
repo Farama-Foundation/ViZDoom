@@ -322,6 +322,48 @@
 <p>Because we cannot provide original Doom’s and Doom’s 2 levels, in order to play them you need to have original Doom or Doom 2 WAD files.
 You can get them by purchasing the original game from <a class="reference external" href="https://store.steampowered.com/app/2280/DOOM__DOOM_II/">Steam</a> or <a class="reference external" href="https://www.gog.com/game/doom_doom_ii">GOG</a>.
 You can then place the doom2.wad and doom.wad files into your vizdoom package directory (same directory as vizdoom(.exe)).</p>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h2>
+<p>All scenarios/environments based on original Doom levels use the same configuration file.</p>
+<p><strong>STATE/OBSERVATION</strong>
+Full Doom hud is rendered with in-game messages are rendered.
+As it contains all information about health, armor, ammo, keys, etc., no additional game variables are included in the state by default.
+Additionally the automap and audio buffers are enabled as a part of the state.
+By default, the original Doom resolution of 320x240 is used.</p>
+<p><strong>ACTION SPACE</strong>
+The action space includes all the buttons available in the original Doom, such as movement, shooting, weapon switching, etc.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ATTACK</span></code> - shoot</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SPEED</span></code> - run (move faster)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">STRAFE</span></code> - strafe (move sideways)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">USE</span></code> - use (open doors, activate switches, etc.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MOVE_RIGHT</span></code>, <code class="docutils literal notranslate"><span class="pre">MOVE_LEFT</span></code>, <code class="docutils literal notranslate"><span class="pre">MOVE_BACKWARD</span></code>, <code class="docutils literal notranslate"><span class="pre">MOVE_FORWARD</span></code> - move in the corresponding direction</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TURN_RIGHT</span></code>, <code class="docutils literal notranslate"><span class="pre">TURN_LEFT</span></code> - turn in the corresponding direction</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SELECT_WEAPON1</span></code>, <code class="docutils literal notranslate"><span class="pre">SELECT_WEAPON2</span></code>, …, <code class="docutils literal notranslate"><span class="pre">SELECT_WEAPON7</span></code> - select the corresponding weapon (if available)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SELECT_NEXT_WEAPON</span></code> - select the next weapon in the inventory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SELECT_PREV_WEAPON</span></code> - select the previous weapon in the inventory</p></li>
+</ul>
+<p><strong>REWARDS</strong>
+The reward structure is simgple, 1 is assigned for reaching the end of the level, and 0 otherwise.
+This means that the agent receives a reward of 1 only when it successfully completes the level, and receives a reward of 0 for all other actions and states.</p>
+<p>You can modify the reward structure by using ViZDoom’s built-in reward shaping features, such as assigning rewards for picking up items, killing enemies, or taking damage.
+See:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_living_reward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_living_reward</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_death_penalty"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_death_penalty</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_kill_reward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_kill_reward</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_item_reward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_item_reward</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_secret_reward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_secret_reward</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_hit_reward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_hit_reward</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_hit_taken_penalty"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_hit_taken_penalty</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_damage_made_reward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_damage_made_reward</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_damage_taken_penalty"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_damage_taken_penalty</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_health_reward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_health_reward</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_armor_reward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_armor_reward</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_last_reward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_last_reward</span></code></span></a></p></li>
+<li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_map_exit_reward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_map_exit_reward</span></code></span></a></p></li>
+</ul>
+</section>
 <section id="convention-of-environment-names-in-gymnasium">
 <h2>Convention of environment names in Gymnasium<a class="headerlink" href="#convention-of-environment-names-in-gymnasium" title="Link to this heading">¶</a></h2>
 <p>The naming convention of original Doom levels environments is as follows:</p>
@@ -1184,6 +1226,7 @@ You can then place the doom2.wad and doom.wad files into your vizdoom package di
             <div class="toc-tree">
               <ul>
 <li><a class="reference internal" href="#">Playing original Doom levels</a><ul>
+<li><a class="reference internal" href="#configuration">Configuration</a></li>
 <li><a class="reference internal" href="#convention-of-environment-names-in-gymnasium">Convention of environment names in Gymnasium</a></li>
 <li><a class="reference internal" href="#using-original-doom-levels-with-original-vizdoom-api">Using original Doom levels with Original ViZDoom API</a></li>
 <li><a class="reference internal" href="#original-doom-1-levels">Original Doom 1 levels</a><ul>
