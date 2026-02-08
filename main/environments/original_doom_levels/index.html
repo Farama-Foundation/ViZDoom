@@ -325,13 +325,16 @@ You can then place the doom2.wad and doom.wad files into your vizdoom package di
 <section id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h2>
 <p>All scenarios/environments based on original Doom levels use the same configuration file.</p>
-<p><strong>STATE/OBSERVATION</strong>
-Full Doom hud is rendered with in-game messages are rendered.
+<section id="state-observation">
+<h3>STATE/OBSERVATION<a class="headerlink" href="#state-observation" title="Link to this heading">¶</a></h3>
+<p>Full Doom hud is rendered with in-game messages are rendered.
 As it contains all information about health, armor, ammo, keys, etc., no additional game variables are included in the state by default.
 Additionally the automap and audio buffers are enabled as a part of the state.
 By default, the original Doom resolution of 320x240 is used.</p>
-<p><strong>ACTION SPACE</strong>
-The action space includes all the buttons available in the original Doom, such as movement, shooting, weapon switching, etc.</p>
+</section>
+<section id="action-space">
+<h3>ACTION SPACE<a class="headerlink" href="#action-space" title="Link to this heading">¶</a></h3>
+<p>The action space includes all the buttons available in the original Doom, such as movement, shooting, weapon switching, etc.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">ATTACK</span></code> - shoot</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SPEED</span></code> - run (move faster)</p></li>
@@ -343,8 +346,10 @@ The action space includes all the buttons available in the original Doom, such a
 <li><p><code class="docutils literal notranslate"><span class="pre">SELECT_NEXT_WEAPON</span></code> - select the next weapon in the inventory</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SELECT_PREV_WEAPON</span></code> - select the previous weapon in the inventory</p></li>
 </ul>
-<p><strong>REWARDS</strong>
-The reward structure is simgple, 1 is assigned for reaching the end of the level, and 0 otherwise.
+</section>
+<section id="rewards">
+<h3>REWARDS<a class="headerlink" href="#rewards" title="Link to this heading">¶</a></h3>
+<p>The reward structure by default is simple, 1 is assigned for reaching the end of the level, and 0 otherwise.
 This means that the agent receives a reward of 1 only when it successfully completes the level, and receives a reward of 0 for all other actions and states.</p>
 <p>You can modify the reward structure by using ViZDoom’s built-in reward shaping features, such as assigning rewards for picking up items, killing enemies, or taking damage.
 See:</p>
@@ -364,6 +369,7 @@ See:</p>
 <li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_map_exit_reward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_map_exit_reward</span></code></span></a></p></li>
 </ul>
 </section>
+</section>
 <section id="convention-of-environment-names-in-gymnasium">
 <h2>Convention of environment names in Gymnasium<a class="headerlink" href="#convention-of-environment-names-in-gymnasium" title="Link to this heading">¶</a></h2>
 <p>The naming convention of original Doom levels environments is as follows:</p>
@@ -381,6 +387,34 @@ See:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;VizdoomDoomE1M1-S1-v0&quot;</span></code> environment uses original Doom 1 E1M1 and skill (difficulty) level 1 (VERY EASY, “I’m Too Young to Die”)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;VizdoomDoom2MAP01-S3-v0&quot;</span></code> environment uses original Doom 2 MAP01 level with skill level 3</p></li>
 </ul>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
+<th class="head"><p>Freedoom assets</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="VizdoomDoomE1M1 with Doom 2 assets" src="_static/img/envs/VizdoomDoomE1M1-Doom2.gif" /></p></td>
+<td><p><img alt="VizdoomDoomE1M1 with Freedoom 2 assets" src="_static/img/envs/VizdoomDoomE1M1-Freedoom2.gif" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
+<th class="head"><p>Freedoom assets</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="VizdoomDoom2MAP01 with Doom 2 assets" src="_static/img/envs/VizdoomDoom2MAP01-Doom2.gif" /></p></td>
+<td><p><img alt="VizdoomDoom2MAP01 with Freedoom 2 assets" src="_static/img/envs/VizdoomDoom2MAP01-Freedoom2.gif" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
 <section id="using-original-doom-levels-with-original-vizdoom-api">
 <h2>Using original Doom levels with Original ViZDoom API<a class="headerlink" href="#using-original-doom-levels-with-original-vizdoom-api" title="Link to this heading">¶</a></h2>
@@ -1226,7 +1260,12 @@ See:</p>
             <div class="toc-tree">
               <ul>
 <li><a class="reference internal" href="#">Playing original Doom levels</a><ul>
-<li><a class="reference internal" href="#configuration">Configuration</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li><a class="reference internal" href="#state-observation">STATE/OBSERVATION</a></li>
+<li><a class="reference internal" href="#action-space">ACTION SPACE</a></li>
+<li><a class="reference internal" href="#rewards">REWARDS</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#convention-of-environment-names-in-gymnasium">Convention of environment names in Gymnasium</a></li>
 <li><a class="reference internal" href="#using-original-doom-levels-with-original-vizdoom-api">Using original Doom levels with Original ViZDoom API</a></li>
 <li><a class="reference internal" href="#original-doom-1-levels">Original Doom 1 levels</a><ul>
