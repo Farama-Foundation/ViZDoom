@@ -48,6 +48,10 @@ the opposite wall. A player can only (config) go left/right
 and shoot. 1 hit is enough to kill the monster. The episode
 finishes when the monster is killed or on timeout.
 
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomBasic with Doom 2 assets](../_static/img/envs/VizdoomBasic-Doom2.gif) | ![VizdoomBasic with Freedoom 2 assets](../_static/img/envs/VizdoomBasic-Freedoom2.gif) |
+
 **REWARDS:**
 * +106 for killing the monster
 * -5 for every shot
@@ -71,6 +75,10 @@ The environment is similar to the BASIC scenario,
 but the monster is invisible instead it emits sounds.
 The purpose of this scenario is to check if the agent can
 learn to use audio information to find and kill the monster.
+
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomBasicAudio with Doom 2 assets](../_static/img/envs/VizdoomBasicAudio-Doom2.gif) | ![VizdoomBasicAudio with Freedoom 2 assets](../_static/img/envs/VizdoomBasicAudio-Freedoom2.gif) |
 
 **REWARDS:**
 * +106 for killing the monster
@@ -96,6 +104,10 @@ The episode ends after killing the monster or on timeout.
 The environment is similar to the BASIC scenario,
 but this time 3 monsters are spawned instead of 1.
 The task is to kill one of them specified by a ingame message (notification).
+
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomBasicNotifications with Doom 2 assets](../_static/img/envs/VizdoomBasicNotifications-Doom2.gif) | ![VizdoomBasicNotifications with Freedoom 2 assets](../_static/img/envs/VizdoomBasicNotifications-Freedoom2.gif) |
 
 **REWARDS:**
 * +106 for killing the right monster
@@ -131,6 +143,10 @@ on the sides and runs straight for the vest, he will be killed somewhere
 along the way. To ensure this behavior difficulty level (`doom_skill`) = 5 (config) is
 needed.
 
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomCorridor with Doom 2 assets](../_static/img/envs/VizdoomCorridor-Doom2.gif) | ![VizdoomCorridor with Freedoom 2 assets](../_static/img/envs/VizdoomCorridor-Freedoom2.gif) |
+
 **REWARDS:**
 * +dX for getting closer to the vest.
 * -dX for getting further from the vest.
@@ -153,6 +169,10 @@ A random monster is spawned every few seconds that will try to kill the player.
 The reward for killing a monster depends on its difficulty.
 The aim of the agent is to kill as many monsters as possible
 before the time runs out or it's killed by monsters.
+
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomDeathmatch with Doom 2 assets](../_static/img/envs/VizdoomDeathmatch-Doom2.gif) | ![VizdoomDeathmatch with Freedoom 2 assets](../_static/img/envs/VizdoomDeathmatch-Freedoom2.gif) |
 
 **REWARDS:**
 * Different rewards are given for killing different monsters
@@ -181,6 +201,10 @@ killed after a single shot. After dying, each monster is respawned
 after some time. The episode ends when the player dies (it's inevitable
 because of limited ammo).
 
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomDefendCenter with Doom 2 assets](../_static/img/envs/VizdoomDefendCenter-Doom2.gif) | ![VizdoomDefendCenter with Freedoom 2 assets](../_static/img/envs/VizdoomDefendCenter-Freedoom2.gif) |
+
 **REWARDS:**
 * +1 for killing a monster
 * -1 for death
@@ -208,6 +232,10 @@ opposite wall. Monsters are killed after a single shot, at first.
 After dying, each monster is respawned after some time and can endure
 more damage. The episode ends when the player dies (it's inevitable
 because of limited ammo).
+
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomDefendLine with Doom 2 assets](../_static/img/envs/VizdoomDefendLine-Doom2.gif) | ![VizdoomDefendLine with Freedoom 2 assets](../_static/img/envs/VizdoomDefendLine-Freedoom2.gif) |
 
 **REWARDS:**
 * +1 for killing a monster
@@ -239,6 +267,14 @@ on timeout.
 There is more advance version of this scenario called HEALTH GATHERING SUPREME,
 that makes map layout more complex.
 
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomHealthGathering with Doom 2 assets](../_static/img/envs/VizdoomHealthGathering-Doom2.gif) | ![VizdoomHealthGathering with Freedoom 2 assets](../_static/img/envs/VizdoomHealthGathering-Freedoom2.gif) |
+
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomHealthGatheringSupreme with Doom 2 assets](../_static/img/envs/VizdoomHealthGatheringSupreme-Doom2.gif) | ![VizdoomHealthGatheringSupreme with Freedoom 2 assets](../_static/img/envs/VizdoomHealthGatheringSupreme-Freedoom2.gif) |
+
 **REWARDS:**
 * +1 for every tic the agent is alive
 * -100 for death
@@ -262,6 +298,10 @@ with a dead end. Each room has a different color. There is a
 green vest in one of the rooms (the same room every time).
 The player is spawned in a randomly chosen room facing a random
 direction. The episode ends when the vest is reached or on timeout/
+
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomMyWayHome with Doom 2 assets](../_static/img/envs/VizdoomMyWayHome-Doom2.gif) | ![VizdoomMyWayHome with Freedoom 2 assets](../_static/img/envs/VizdoomMyWayHome-Freedoom2.gif) |
 
 **REWARDS:**
 * +1 for reaching the vest
@@ -289,6 +329,10 @@ along the wall. The player is equipped with a rocket launcher and
 a single rocket. The episode ends when the missile hits a wall/the monster
 or on timeout.
 
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomPredictPosition with Doom 2 assets](../_static/img/envs/VizdoomPredictPosition-Doom2.gif) | ![VizdoomPredictPosition with Freedoom 2 assets](../_static/img/envs/VizdoomPredictPosition-Freedoom2.gif) |
+
 **REWARDS:**
 * +1 for killing the monster
 * -0.0001 for every tic the agent is alive
@@ -315,6 +359,10 @@ randomly somewhere along the opposite wall and try to kill
 the player with fireballs. The player can only (config) move
 left/right. More monsters appear with time. The episode ends when
 the player dies.
+
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomTakeCover with Doom 2 assets](../_static/img/envs/VizdoomTakeCover-Doom2.gif) | ![VizdoomTakeCover with Freedoom 2 assets](../_static/img/envs/VizdoomTakeCover-Freedoom2.gif) |
 
 **REWARDS:**
 * +1 for every tic the agent is alive

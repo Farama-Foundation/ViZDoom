@@ -10,14 +10,14 @@ You can then place the doom2.wad and doom.wad files into your vizdoom package di
 
 All scenarios/environments based on original Doom levels use the same configuration file.
 
-**STATE/OBSERVATION**
+### STATE/OBSERVATION
 Full Doom hud is rendered with in-game messages are rendered.
 As it contains all information about health, armor, ammo, keys, etc., no additional game variables are included in the state by default.
 Additionally the automap and audio buffers are enabled as a part of the state.
 By default, the original Doom resolution of 320x240 is used.
 
 
-**ACTION SPACE**
+### ACTION SPACE
 The action space includes all the buttons available in the original Doom, such as movement, shooting, weapon switching, etc.
 - `ATTACK` - shoot
 - `SPEED` - run (move faster)
@@ -30,8 +30,8 @@ The action space includes all the buttons available in the original Doom, such a
 - `SELECT_PREV_WEAPON` - select the previous weapon in the inventory
 
 
-**REWARDS**
-The reward structure is simgple, 1 is assigned for reaching the end of the level, and 0 otherwise.
+### REWARDS
+The reward structure by default is simple, 1 is assigned for reaching the end of the level, and 0 otherwise.
 This means that the agent receives a reward of 1 only when it successfully completes the level, and receives a reward of 0 for all other actions and states.
 
 You can modify the reward structure by using ViZDoom's built-in reward shaping features, such as assigning rewards for picking up items, killing enemies, or taking damage.
@@ -67,6 +67,14 @@ Where `<Game>` is Freedoom, Freedoom2, Doom or Doom2, and S<X> is a skill level,
 For example:
 - `"VizdoomDoomE1M1-S1-v0"` environment uses original Doom 1 E1M1 and skill (difficulty) level 1 (VERY EASY, “I'm Too Young to Die”)
 - `"VizdoomDoom2MAP01-S3-v0"` environment uses original Doom 2 MAP01 level with skill level 3
+
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomDoomE1M1 with Doom 2 assets](../_static/img/envs/VizdoomDoomE1M1-Doom2.gif) | ![VizdoomDoomE1M1 with Freedoom 2 assets](../_static/img/envs/VizdoomDoomE1M1-Freedoom2.gif) |
+
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomDoom2MAP01 with Doom 2 assets](../_static/img/envs/VizdoomDoom2MAP01-Doom2.gif) | ![VizdoomDoom2MAP01 with Freedoom 2 assets](../_static/img/envs/VizdoomDoom2MAP01-Freedoom2.gif) |
 
 
 ## Using original Doom levels with Original ViZDoom API
