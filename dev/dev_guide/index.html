@@ -7,12 +7,12 @@
     <meta property="og:title" content="ViZDoom Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
-    <meta property="og:url" content="https://vizdoom.farama.org/api/configuration_files.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Default scenarios/environments" href="../../environments/default/" /><link rel="prev" title="Utilities" href="../cpp/utils/" />
-        <link rel="canonical" href="https://vizdoom.farama.org/api/configuration_files.html" />
+    <meta property="og:url" content="https://vizdoom.farama.org/dev/dev_guide.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Building ViZDoom from source" href="../building_from_source/" /><link rel="prev" title="Creating a custom environment" href="../../environments/creating_custom/" />
+        <link rel="canonical" href="https://vizdoom.farama.org/dev/dev_guide.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
-        <title>Configuration files - ViZDoom Documentation</title>
+        <title>ViZDoom Development Guide - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=82c8b628" />
@@ -216,26 +216,26 @@
 <li class="toctree-l1"><a class="reference internal" href="../../introduction/apis_and_wrappers/">APIs and wrappers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul class="current">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../python/doom_game/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../python/game_state/">GameState</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../python/enums/">Enums</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../python/utils/">Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../python/exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../python/gymnasium/">Gymnasium Env</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../python/gym/">OpenAI Gym Env</a></li>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/doom_game/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/game_state/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/utils/">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium/">Gymnasium Env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym/">OpenAI Gym Env</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../cpp/doom_game/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cpp/game_state/">GameState</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cpp/enums/">Enums</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cpp/exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cpp/utils/">Utilities</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/doom_game/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/game_state/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/utils/">Utilities</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Configuration files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/configuration_files/">Configuration files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
@@ -245,9 +245,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../environments/creating_custom/">Creating a custom environment</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Dev guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../dev/dev_guide/">ViZDoom Development Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../dev/building_from_source/">Building ViZDoom from source</a></li>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">ViZDoom Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_from_source/">Building ViZDoom from source</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -285,7 +285,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/api/configuration_files.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/dev/dev_guide.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -316,134 +316,111 @@
           </div>
           <article role="main">
             
-            <section class="tex2jax_ignore mathjax_ignore" id="configuration-files">
-<h1>Configuration files<a class="headerlink" href="#configuration-files" title="Link to this heading">¶</a></h1>
-<p>Instead of configuring the ViZDoom in code, you can load it from the configuration file(s). Each file is read sequentially, so multiple entries with the same key will overwrite previous entries.</p>
-<section id="format">
-<h2>Format<a class="headerlink" href="#format" title="Link to this heading">¶</a></h2>
-<p>Each entry in a configraution file is a pair of <strong>key</strong> and <strong>value</strong> separated by an equal sign (<strong><code class="docutils literal notranslate"><span class="pre">=</span></code></strong>). The file format should also abide the following rules:</p>
+            <section class="tex2jax_ignore mathjax_ignore" id="vizdoom-development-guide">
+<h1>ViZDoom Development Guide<a class="headerlink" href="#vizdoom-development-guide" title="Link to this heading">¶</a></h1>
+<section id="tech-stack-deps">
+<h2>Tech stack + deps<a class="headerlink" href="#tech-stack-deps" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>one entry per line (except for list parameters),</p></li>
-<li><p>case insensitive</p></li>
-<li><p>lines starting with <strong>#</strong> and empty lines are ignored,</p></li>
-<li><p>underscores in <strong>keys</strong> are ignored (<em>episode_timeout</em> is equivalent to <em>episodetimeout</em>),</p></li>
-<li><p>string values should <strong>not</strong> be surrounded with apostrophes or quotation marks.</p></li>
-<li><p>relative paths are treated as <strong>relative to the configuration file location.</strong></p></li>
+<li><p>C++11 core + ZDoom engine fork, built with CMake and <code class="docutils literal notranslate"><span class="pre">make</span></code>.</p></li>
+<li><p>C++ code relies on Boost, SDL2, OpenAL, and other common libraries (BZip2, JPEG, Zlib, GME, etc., included in the src), they are found via CMake.</p></li>
+<li><p>Python bindings via pybind11; packaging via setuptools.</p></li>
+<li><p>Python runtime deps: <code class="docutils literal notranslate"><span class="pre">numpy</span></code>, <code class="docutils literal notranslate"><span class="pre">gymnasium</span></code>, <code class="docutils literal notranslate"><span class="pre">pygame-ce</span></code> (see <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>).</p></li>
+<li><p>Tests: <code class="docutils literal notranslate"><span class="pre">pytest</span></code>, <code class="docutils literal notranslate"><span class="pre">pytest-xdist</span></code>, <code class="docutils literal notranslate"><span class="pre">psutil</span></code>.</p></li>
+<li><p>Docs: Sphinx (see <code class="docutils literal notranslate"><span class="pre">docs/</span></code> and <code class="docutils literal notranslate"><span class="pre">docs/conf.py</span></code>).</p></li>
 </ul>
-<p>A violation of any of these rules will result in ignoring <strong>only</strong> the line with the error and sending a warning message to stderr (“WARNING! Loading config from: …”).</p>
-<section id="list-of-values">
-<h3>List of values<a class="headerlink" href="#list-of-values" title="Link to this heading">¶</a></h3>
-<p><strong>available_buttons</strong> and <strong>available_game_variables</strong> are special parameters, which use multiple values and instead of a single value they expect a list of values separated by whitespaces and enclosed within braces (<code class="docutils literal notranslate"><span class="pre">{</span></code> and <code class="docutils literal notranslate"><span class="pre">}</span></code>). The list can stretch throughout multiple lines as long as all values are separated from each other by whitespaces.</p>
 </section>
-<section id="appending-values">
-<h3>Appending values<a class="headerlink" href="#appending-values" title="Link to this heading">¶</a></h3>
-<p>Each list assignment (<strong><code class="docutils literal notranslate"><span class="pre">KEY</span> <span class="pre">=</span> <span class="pre">{</span> <span class="pre">VALUES</span> <span class="pre">}</span></code></strong>)clears values specified for this key before (in other configuration files or in the code). That is why the <strong>append operator (<code class="docutils literal notranslate"><span class="pre">KEY</span> <span class="pre">+=</span> <span class="pre">{</span> <span class="pre">VALUES</span> <span class="pre">}</span></code>)</strong> is available. This way you can more easily combine multiple configuration files and tinker in code.</p>
-</section>
-<section id="supported-configuration-keys">
-<h3>Supported configuration keys:<a class="headerlink" href="#supported-configuration-keys" title="Link to this heading">¶</a></h3>
+<section id="project-structure">
+<h2>Project structure<a class="headerlink" href="#project-structure" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">audioBufferEnabled/audio_buffer_enabled</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">audioBufferSize/audio_buffer_size</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">audioSamplingRate/audio_samping_rate</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">automapBufferEnabled/automap_buffer_enabled</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">automapMode/automap_mode</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">automapRenderTextures/automap_render_textures</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">automapRotate/automap_rotate</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">availableButtons/available_buttons</span></code> (list of values)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">availableGameVariables/available_game_variables</span></code> (list of values)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">consoleEnabled/console_enabled</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">deathPenalty/death_penalty</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">deathReward/death_reward</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">depthBufferEnabled/depth_buffer_enabled</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">killReward/kill_reward</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">DoomConfigPath/doom_config_path</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">DoomGamePath/doom_game_path</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">DoomMap/doom_map</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">DoomScenarioPath/doom_scenario_path</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">DoomSkill/doom_skill</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">episodeStartTime/episode_start_time</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">episodeTimeout/episode_timeout</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">fragReward/frags_reward</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">gameArgs/game_args</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">healthReward/health_reward</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hitReward/hit_reward</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hitTakenPenalty/hit_taken_penalty</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hitTakenReward/hit_taken_reward</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">itemReward/item_reward</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">killReward/kill_reward</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">labelsBufferEnabled/labels_buffer_enabled</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">livingReward/living_reward</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mode</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">notificationsBufferEnabled/notifications_buffer_enabled</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">notificationsBufferSize/notifications_buffer_size</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">objectsInfoEnabled/objects_info_enabled</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">renderAllFrames/render_all_frames</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">renderCorpses/render_corpses</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">renderCrosshair/render_crosshair</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">renderDecals/render_decals</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">renderEffectsSprites/render_effects_sprites</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">renderScreenFlashes/render_screen_flashes</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">renderHud/render_hud</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">renderMessages/render_messages</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">renderMinimalHud/render_minimal_hud</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">renderParticles/render_particles</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">renderWeapon/render_weapon</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">screenFormat/screen_format</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">screenResolution/screen_resolution</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sectorsInfoEnabled/sectors_info_enabled</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">soundEnabled/sound_enabled</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ticrate</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ViZDoomPath/vizdoom_path</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">windowVisible/window_visible</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/</span></code>: C++ core and engine (<code class="docutils literal notranslate"><span class="pre">src/lib/</span></code>, <code class="docutils literal notranslate"><span class="pre">src/vizdoom/</span></code>) plus Python bindings (<code class="docutils literal notranslate"><span class="pre">src/lib_python/</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">include/</span></code>: public C++ headers for the ViZDoom API.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">cmake_modules/</span></code>: CMake build configuration.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scenarios/</span></code>: <code class="docutils literal notranslate"><span class="pre">.cfg</span></code> and <code class="docutils literal notranslate"><span class="pre">.wad</span></code> scenario assets.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gymnasium_wrapper/</span></code>: Gymnasium integration for Python.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/</span></code>: example code and assets.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tests/</span></code>: pytest suite plus manual test scripts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docs/</span></code>: Sphinx documentation sources.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bin/pythonX/vizdoom</span></code>: assembled package output from the CMake build.</p></li>
 </ul>
-<p>Config keys are also mentioned for related methods in the documentation for <code class="docutils literal notranslate"><span class="pre">DoomGame</span></code> class.</p>
 </section>
-<section id="sample-configuration-file-content">
-<h3>Sample configuration file content:<a class="headerlink" href="#sample-configuration-file-content" title="Link to this heading">¶</a></h3>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">doom_game_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">freedoom2.wad</span>
-<span class="na">doom_scenario_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">../../scenarios/basic.wad</span>
-<span class="na">doom_map</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">map01</span>
-
-<span class="c1"># Rewards</span>
-<span class="na">living_reward</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">-1</span>
-
-<span class="c1"># Rendering options</span>
-<span class="na">screen_resolution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">RES_320X240</span>
-<span class="na">screen_format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">CRCGCB</span>
-<span class="na">render_hud</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
-<span class="na">render_crosshair</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">false</span>
-<span class="na">render_weapon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
-<span class="na">render_decals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">false</span>
-<span class="na">render_particles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">false</span>
-<span class="na">window_visible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
-
-<span class="c1"># make episodes start after 14 tics (after unholstering the gun)</span>
-<span class="na">episode_start_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">14</span>
-
-<span class="c1"># make episodes finish after 300 actions (tics)</span>
-<span class="na">episode_timeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">300</span>
-
-<span class="c1"># Available buttons</span>
-<span class="na">available_buttons</span><span class="w"> </span><span class="o">=</span>
-<span class="w">    </span><span class="na">{</span>
-<span class="w">        </span><span class="na">MOVE_LEFT</span>
-<span class="w">        </span><span class="na">MOVE_RIGHT</span>
-<span class="w">        </span><span class="na">ATTACK</span>
-<span class="w">    </span><span class="na">}</span>
-
-<span class="c1"># Game variables that will be in the state</span>
-<span class="na">available_game_variables</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">{ AMMO2 }</span>
-
-<span class="c1"># Default mode - the game is controlled from the code</span>
-<span class="na">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">PLAYER</span>
-
-<span class="c1"># Difficulty of gameplay ranging from 1 (baby) to 5 (nightmare)</span>
-<span class="na">doom_skill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">5</span>
+<section id="coding-conventions">
+<h2>Coding conventions<a class="headerlink" href="#coding-conventions" title="Link to this heading">¶</a></h2>
+<section id="main-library-src-lib-src-lib-python-and-include">
+<h3>Main library (<code class="docutils literal notranslate"><span class="pre">src/lib/</span></code>, <code class="docutils literal notranslate"><span class="pre">src/lib_python/</span></code>, and <code class="docutils literal notranslate"><span class="pre">include/</span></code>)<a class="headerlink" href="#main-library-src-lib-src-lib-python-and-include" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Always update documentation in <code class="docutils literal notranslate"><span class="pre">docs/api/cpp</span></code> when changing public API and corresponding Python module docs in <code class="docutils literal notranslate"><span class="pre">src/lib_python</span></code>.</p></li>
+<li><p>To update Python docs and docstrings, modify the C++ doc comments run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/create_python_docs_from_cpp_docs.py</span></code> and <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/create_python_docstrings_from_cpp_docs.py</span></code>.</p></li>
+<li><p>Stubs (<code class="docutils literal notranslate"><span class="pre">src/lib_python/vizdoom.pyi</span></code>) are generated by cmake/make (using pybind11-stubgen).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/</span></code> is excluded from pre-commit hooks, so follow the existing C/C++ style in nearby files.</p></li>
+</ul>
+</section>
+<section id="zdoom-engine-src-vizdoom">
+<h3>ZDoom engine (<code class="docutils literal notranslate"><span class="pre">src/vizdoom</span></code>)<a class="headerlink" href="#zdoom-engine-src-vizdoom" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Keep changes minimal. Avoid refactoring or style changes unrelated to the feature/bugfix especially in the engine code.</p></li>
+<li><p>Use the coding style used in a file you are changing. Generally, follow the existing style in nearby code.</p></li>
+<li><p>Every code change in ZDoom engine (<code class="docutils literal notranslate"><span class="pre">src/vizdoom</span></code>) must be marked with <code class="docutils literal notranslate"><span class="pre">//VIZDOOM_CODE</span></code> comment.</p></li>
+</ul>
+</section>
+<section id="python-code-gymnasium-wrapper-examples-tests">
+<h3>Python code (<code class="docutils literal notranslate"><span class="pre">gymnasium_wrapper</span></code>, <code class="docutils literal notranslate"><span class="pre">examples</span></code>, <code class="docutils literal notranslate"><span class="pre">tests</span></code>)<a class="headerlink" href="#python-code-gymnasium-wrapper-examples-tests" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Python formatting/linting is enforced by pre-commit: Black, isort, flake8, pyupgrade, codespell.
+Configuration lives in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">.pre-commit-config.yaml</span></code>.</p></li>
+<li><p>Type checking uses pyright with settings in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="editable-install-builds-c-python-package">
+<h2>Editable install (builds C++ + Python package)<a class="headerlink" href="#editable-install-builds-c-python-package" title="Link to this heading">¶</a></h2>
+<section id="install-a-project-in-editable-mode">
+<h3>Install a project in editable mode<a class="headerlink" href="#install-a-project-in-editable-mode" title="Link to this heading">¶</a></h3>
+<p>Work on the project by installing it in editable mode. This way, changes to C++ code are reflected in the installed package without reinstalling.
+First, install dependencies (depending on your system, see <a class="reference internal" href="../building_from_source/"><span class="std std-doc">Building from source</span></a> for more details).
+Now you should be able to install ViZDoom in editable mode by running the following commands in the project root:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>pip<span class="w"> </span>setuptools<span class="w"> </span>wheel
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="w"> </span>--no-build-isolation
 </pre></div>
 </div>
-<p>Other examples of configuration files can be found in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios">scenarios</a> directory.</p>
+<p>Notes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code> runs CMake + <code class="docutils literal notranslate"><span class="pre">make</span></code> via <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> and assembles the package under <code class="docutils literal notranslate"><span class="pre">bin/pythonX/vizdoom</span></code>.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">--no-build-isolation</span></code> to keep CMake stable (avoids temp build env paths).</p></li>
+<li><p>Due to <code class="docutils literal notranslate"><span class="pre">--no-build-isolation</span></code>, <code class="docutils literal notranslate"><span class="pre">pip</span></code>, <code class="docutils literal notranslate"><span class="pre">setuptools</span></code>, and <code class="docutils literal notranslate"><span class="pre">wheel</span></code> need to be installed beforehand and be up-to-date.</p></li>
+</ul>
 </section>
+<section id="rebuild-after-changes">
+<h3>Rebuild after changes<a class="headerlink" href="#rebuild-after-changes" title="Link to this heading">¶</a></h3>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>-j
+</pre></div>
+</div>
+<p>This updates <code class="docutils literal notranslate"><span class="pre">bin/pythonX/vizdoom</span></code>, which is what the editable install points at.
+If you switch Python versions, remove <code class="docutils literal notranslate"><span class="pre">CMakeCache.txt</span></code> and rebuild via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span> <span class="pre">--no-build-isolation</span></code>.</p>
+</section>
+</section>
+<section id="running-tests">
+<h2>Running tests<a class="headerlink" href="#running-tests" title="Link to this heading">¶</a></h2>
+<p>Run tests after every change to ensure nothing is broken:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>-s<span class="w"> </span>tests
+</pre></div>
+</div>
+<p>to run the test suite in parallel using all available CPU cores you can use (recommended for faster feedback):</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>-n<span class="w"> </span>auto<span class="w"> </span>-s<span class="w"> </span>tests
+</pre></div>
+</div>
+<p>Manual tests live in <code class="docutils literal notranslate"><span class="pre">tests/manual_test_*.py</span></code> and are not run by default.</p>
+</section>
+<section id="running-pre-commit-hooks">
+<h2>Running pre-commit hooks<a class="headerlink" href="#running-pre-commit-hooks" title="Link to this heading">¶</a></h2>
+<p>Pre-commit hooks are used to enforce code formatting and linting for Python code (Black, isort, flake8, pyupgrade, codespell).</p>
+<p>To install pre-commit hooks, run:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pre-commit<span class="w"> </span>install
+</pre></div>
+</div>
+<p>To run pre-commit hooks manually, use:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -452,18 +429,18 @@
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../../environments/default/">
+            <a class="next-page" href="../building_from_source/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Default scenarios/environments</div>
+                <div class="title">Building ViZDoom from source</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            <a class="prev-page" href="../cpp/utils/">
+            <a class="prev-page" href="../../environments/creating_custom/">
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
@@ -472,7 +449,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Utilities</div>
+                <div class="title">Creating a custom environment</div>
                 
               </div>
             </a>
@@ -516,14 +493,22 @@
           <div class="toc-tree-container">
             <div class="toc-tree">
               <ul>
-<li><a class="reference internal" href="#">Configuration files</a><ul>
-<li><a class="reference internal" href="#format">Format</a><ul>
-<li><a class="reference internal" href="#list-of-values">List of values</a></li>
-<li><a class="reference internal" href="#appending-values">Appending values</a></li>
-<li><a class="reference internal" href="#supported-configuration-keys">Supported configuration keys:</a></li>
-<li><a class="reference internal" href="#sample-configuration-file-content">Sample configuration file content:</a></li>
+<li><a class="reference internal" href="#">ViZDoom Development Guide</a><ul>
+<li><a class="reference internal" href="#tech-stack-deps">Tech stack + deps</a></li>
+<li><a class="reference internal" href="#project-structure">Project structure</a></li>
+<li><a class="reference internal" href="#coding-conventions">Coding conventions</a><ul>
+<li><a class="reference internal" href="#main-library-src-lib-src-lib-python-and-include">Main library (<code class="docutils literal notranslate"><span class="pre">src/lib/</span></code>, <code class="docutils literal notranslate"><span class="pre">src/lib_python/</span></code>, and <code class="docutils literal notranslate"><span class="pre">include/</span></code>)</a></li>
+<li><a class="reference internal" href="#zdoom-engine-src-vizdoom">ZDoom engine (<code class="docutils literal notranslate"><span class="pre">src/vizdoom</span></code>)</a></li>
+<li><a class="reference internal" href="#python-code-gymnasium-wrapper-examples-tests">Python code (<code class="docutils literal notranslate"><span class="pre">gymnasium_wrapper</span></code>, <code class="docutils literal notranslate"><span class="pre">examples</span></code>, <code class="docutils literal notranslate"><span class="pre">tests</span></code>)</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#editable-install-builds-c-python-package">Editable install (builds C++ + Python package)</a><ul>
+<li><a class="reference internal" href="#install-a-project-in-editable-mode">Install a project in editable mode</a></li>
+<li><a class="reference internal" href="#rebuild-after-changes">Rebuild after changes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#running-tests">Running tests</a></li>
+<li><a class="reference internal" href="#running-pre-commit-hooks">Running pre-commit hooks</a></li>
 </ul>
 </li>
 </ul>

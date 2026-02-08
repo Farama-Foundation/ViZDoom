@@ -7,12 +7,12 @@
     <meta property="og:title" content="ViZDoom Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
-    <meta property="og:url" content="https://vizdoom.farama.org/introduction/building.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="APIs and wrappers" href="../apis_and_wrappers/" /><link rel="prev" title="Python quick start" href="../python_quickstart/" />
-        <link rel="canonical" href="https://vizdoom.farama.org/introduction/building.html" />
+    <meta property="og:url" content="https://vizdoom.farama.org/dev/building_from_source.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="FAQ" href="../../faq/" /><link rel="prev" title="ViZDoom Development Guide" href="../dev_guide/" />
+        <link rel="canonical" href="https://vizdoom.farama.org/dev/building_from_source.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
-        <title>Building from source - ViZDoom Documentation</title>
+        <title>Building ViZDoom from source - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=82c8b628" />
@@ -211,10 +211,9 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../python_quickstart/">Python quick start</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Building from source</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../apis_and_wrappers/">APIs and wrappers</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/python_quickstart/">Python quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/apis_and_wrappers/">APIs and wrappers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -241,8 +240,14 @@
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../environments/default/">Default scenarios/environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environments/original_doom_levels/">Playing original Doom levels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../environments/third_party/">Third-party environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../environments/creating_custom/">Creating a custom environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Dev guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/">ViZDoom Development Guide</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Building ViZDoom from source</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -280,7 +285,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/introduction/building.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/dev/building_from_source.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -311,10 +316,10 @@
           </div>
           <article role="main">
             
-            <section class="tex2jax_ignore mathjax_ignore" id="building-from-source">
-<h1>Building from source<a class="headerlink" href="#building-from-source" title="Link to this heading">¶</a></h1>
+            <section class="tex2jax_ignore mathjax_ignore" id="building-vizdoom-from-source">
+<h1>Building ViZDoom from source<a class="headerlink" href="#building-vizdoom-from-source" title="Link to this heading">¶</a></h1>
 <p>Here we describe how to build ViZDoom from source.
-If you want to install pre-build ViZDoom wheels for Python, see <a class="reference internal" href="../python_quickstart/"><span class="std std-doc">Python quick start</span></a>.</p>
+If you just want to install pre-build ViZDoom wheels for Python, see <a class="reference internal" href="../../introduction/python_quickstart/"><span class="std std-doc">Python quick start</span></a>.</p>
 <section id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">¶</a></h2>
 <p>To build ViZDoom (regardless of the method), you need to install some dependencies in your system first.</p>
@@ -516,18 +521,18 @@ make
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../apis_and_wrappers/">
+            <a class="next-page" href="../../faq/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">APIs and wrappers</div>
+                <div class="title">FAQ</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            <a class="prev-page" href="../python_quickstart/">
+            <a class="prev-page" href="../dev_guide/">
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
@@ -536,7 +541,7 @@ make
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Python quick start</div>
+                <div class="title">ViZDoom Development Guide</div>
                 
               </div>
             </a>
@@ -580,7 +585,7 @@ make
           <div class="toc-tree-container">
             <div class="toc-tree">
               <ul>
-<li><a class="reference internal" href="#">Building from source</a><ul>
+<li><a class="reference internal" href="#">Building ViZDoom from source</a><ul>
 <li><a class="reference internal" href="#dependencies">Dependencies</a><ul>
 <li><a class="reference internal" href="#linux">Linux</a><ul>
 <li><a class="reference internal" href="#apt-based-distros-ubuntu-debian-linux-mint-etc">apt-based distros (Ubuntu, Debian, Linux Mint, etc.)</a></li>
