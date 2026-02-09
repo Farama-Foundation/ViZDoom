@@ -147,17 +147,32 @@ class VizdoomEnv(gym.Env, EzPickle):
         if config_file is None and not kwargs:
             raise RuntimeError("Either config_file or kwargs must be provided.")
 
-        self.game.set_window_visible(False)
-        self.game.set_audio_buffer_size(frame_skip)
-        self.game.set_notifications_buffer_size(frame_skip)
+        if "window_visible" not in kwargs:  # Gymnasium environments should not create a visible window by default, but allow users to override this in kwargs
+            self.game.set_window_visible(False)
+        
+        if "audio_buffer_size" not in kwargs:  # Gymnasium environments should have buffer size set to frame_skip for all buffers by default, but allow users to override this in kwargs
+            self.game.set_audio_buffer_size(frame_skip)
+        elif self.game.is_audio_buffer_enabled():
+            warnings.warn(
+                "audio_buffer_size is set in kwargs. Gymnasium wrapper sets this buffer size to frame_skip by default."
+            )
+
+        if "notifications_buffer_size" not in kwargs:  # Gymnasium environments should have buffer size set to frame_skip for all buffers by default, but allow users to override this in kwargs
+            self.game.set_notifications_buffer_size(frame_skip)
+        elif self.game.is_notifications_buffer_enabled():
+            warnings.warn(
+                "notifications_buffer_size is set in kwargs. Gymnasium wrapper sets this buffer size to frame_skip by default."
+            )
+
         screen_format = self.game.get_screen_format()
         if (
-            screen_format != vzd.ScreenFormat.RGB24
+            "screen_format" in kwargs  # Only warn if user explicitly set screen_format in kwargs
+            and screen_format != vzd.ScreenFormat.RGB24
             and screen_format != vzd.ScreenFormat.GRAY8
         ):
             warnings.warn(
-                f"Detected screen format {screen_format.name}. Only RGB24 and GRAY8 are supported in the Gymnasium"
-                f" wrapper. Forcing RGB24."
+                f"Detected screen format {screen_format.name} set in kwargs. "
+                f"Only RGB24 and GRAY8 are supported in the Gymnasium wrapper. Forcing RGB24."
             )
             self.game.set_screen_format(vzd.ScreenFormat.RGB24)
 

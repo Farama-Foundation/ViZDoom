@@ -35,7 +35,7 @@ if __name__ == "__main__":
     # Create the Gymnasium environment
     env = gymnasium.make(
         # Env ID, render_mode and frame_skip can be changed as needed
-        "VizdoomBasicAudio-v1",
+        "VizdoomBasic-v1",
         render_mode="human",
         frame_skip=4,
         # Additional parameters can be passed to override the default environment config, however they should not be used for evaluation
