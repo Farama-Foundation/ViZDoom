@@ -14,6 +14,6 @@ python/game_state
 python/enums
 python/utils
 python/exceptions
-python/gymnasium
-python/gym
+python/gymnasium_wrapper
+python/gym_wrapper
 ```

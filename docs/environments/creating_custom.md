@@ -49,7 +49,7 @@ Unfortunately, ACS does not support real floating point numbers.
 
 ## Step 2: Creating a custom config file
 
-After creating a map, it is a good idea to create an accompanying config file, that allows to easily define action space, available information in a state/observation, additional rewards, etc. The config file is a simple text file in an *.ini-like format that can be created using any text editor. The config files are documented under [api/configurationFiles.md](api/configurationFiles.md).
+After creating a map, it is a good idea to create an accompanying config file, that allows to easily define action space, available information in a state/observation, additional rewards, etc. The config file is a simple text file in an *.ini-like format that can be created using any text editor. The config files are documented under [api/configuration_file.md](api/configuration_file.md).
 
 The following is an example of a config file that can be used with the map created in the previous step:
 
@@ -72,7 +72,7 @@ available_game_variables = { # make information about ammo available in the stat
     AMMO3
 }
 
-depth_buffer = true     # add depth buffer to the state
+depth_buffer_enabled = true     # add depth buffer to the state
 ```
 
 

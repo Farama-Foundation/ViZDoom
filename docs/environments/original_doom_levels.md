@@ -68,14 +68,6 @@ For example:
 - `"VizdoomDoomE1M1-S1-v0"` environment uses original Doom 1 E1M1 and skill (difficulty) level 1 (VERY EASY, “I'm Too Young to Die”)
 - `"VizdoomDoom2MAP01-S3-v0"` environment uses original Doom 2 MAP01 level with skill level 3
 
-| Doom assets | Freedoom assets |
-| --- | --- |
-| ![VizdoomDoomE1M1 with Doom 2 assets](../_static/img/envs/VizdoomDoomE1M1-Doom2.gif) | ![VizdoomDoomE1M1 with Freedoom 2 assets](../_static/img/envs/VizdoomDoomE1M1-Freedoom2.gif) |
-
-| Doom assets | Freedoom assets |
-| --- | --- |
-| ![VizdoomDoom2MAP01 with Doom 2 assets](../_static/img/envs/VizdoomDoom2MAP01-Doom2.gif) | ![VizdoomDoom2MAP01 with Freedoom 2 assets](../_static/img/envs/VizdoomDoom2MAP01-Freedoom2.gif) |
-
 
 ## Using original Doom levels with Original ViZDoom API
 
@@ -88,7 +80,7 @@ import vizdoom as vzd
 game = vzd.DoomGame()
 game.load_config(os.path.join(vzd.scenarios_path, "doom.cfg")) # or doom2.cfg, freedoom1.cfg, freedoom2.cfg
 game.set_doom_map("E1M1")  # see list of map IDs below
-game.set_skill_level(1)  # or 2, 3, 4, 5
+game.set_doom_level(1)  # or 2, 3, 4, 5
 ```
 
 Configuration file:

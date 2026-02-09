@@ -70,13 +70,13 @@ register(
 )
 
 register(
-    id="VizdoomCorridor-v1",
+    id="VizdoomDeadlyCorridor-v1",
     entry_point=DEFAULT_VIZDOOM_ENTRYPOINT,
     kwargs={"scenario_config_file": "deadly_corridor.cfg", "max_buttons_pressed": 1},
 )
 
 register(
-    id="VizdoomCorridor-MultiBinary-v1",
+    id="VizdoomDeadlyCorridor-MultiBinary-v1",
     entry_point=DEFAULT_VIZDOOM_ENTRYPOINT,
     kwargs={"scenario_config_file": "deadly_corridor.cfg", "max_buttons_pressed": 0},
 )

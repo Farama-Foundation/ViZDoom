@@ -16,7 +16,7 @@ To build ViZDoom on Linux, the following dependencies are required:
 * Make
 * GCC 6.0+
 * Boost libraries 1.54.0+
-* Python 3.7+ for Python binding (optional)
+* Python 3.9+ for Python binding (optional)
 
 Also some of additionally [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
@@ -59,7 +59,7 @@ conda install -c conda-forge boost cmake gtk2 sdl2 openal-soft
 
 Note that to install ViZDoom in a conda environment you have to pull, build and install ViZDoom manually with
 ```
-git clone https://github.com/mwydmuch/ViZDoom.git
+git clone https://github.com/Farama-Foundation/ViZDoom.git
 cd ViZDoom
 python setup.py build && python setup.py install
 ```
@@ -70,7 +70,7 @@ To build ViZDoom on MacOS, the following dependencies are required:
 * CMake 3.12+
 * Clang 5.0+
 * Boost libraries 1.54.0+
-* Python 3.7+ for Python binding (optional)
+* Python 3.9+ for Python binding (optional)
 
 Also some of additionally [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X) are needed.
 
@@ -86,7 +86,7 @@ Here is a helpful command to set up the environment variables for homebrew on Ap
 eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
-We recommend using at least macOS High Sierra 10.13+ with Python 3.8+.
+We recommend using at least macOS High Sierra 10.13+.
 On Apple Silicon, make sure you are using Python/Pip for Apple Silicon.
 
 
@@ -94,7 +94,7 @@ On Apple Silicon, make sure you are using Python/Pip for Apple Silicon.
 * CMake 3.12+
 * Visual Studio 2012+
 * Boost libraries 1.54.0+
-* Python 3.7+ for Python binding (optional)
+* Python 3.9+ for Python binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Windows) are needed.
 Most of them (except Boost) are gathered in this repository: [ViZDoomWinDepBin](https://github.com/mwydmuch/ViZDoomWinDepBin).

@@ -31,7 +31,7 @@ Each list assignment (**`KEY = { VALUES }`**)clears values specified for this ke
 
 * `audioBufferEnabled/audio_buffer_enabled`
 * `audioBufferSize/audio_buffer_size`
-* `audioSamplingRate/audio_samping_rate`
+* `audioSamplingRate/audio_sampling_rate`
 * `automapBufferEnabled/automap_buffer_enabled`
 * `automapMode/automap_mode`
 * `automapRenderTextures/automap_render_textures`
@@ -50,7 +50,7 @@ Each list assignment (**`KEY = { VALUES }`**)clears values specified for this ke
 * `DoomSkill/doom_skill`
 * `episodeStartTime/episode_start_time`
 * `episodeTimeout/episode_timeout`
-* `fragReward/frags_reward`
+* `fragReward/frag_reward`
 * `gameArgs/game_args`
 * `healthReward/health_reward`
 * `hitReward/hit_reward`

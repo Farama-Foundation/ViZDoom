@@ -145,7 +145,7 @@ needed.
 
 | Doom assets | Freedoom assets |
 | --- | --- |
-| ![VizdoomCorridor with Doom 2 assets](../_static/img/envs/VizdoomCorridor-Doom2.gif) | ![VizdoomCorridor with Freedoom 2 assets](../_static/img/envs/VizdoomCorridor-Freedoom2.gif) |
+| ![VizdoomDeadlyCorridor with Doom 2 assets](../_static/img/envs/VizdoomDeadlyCorridor-Doom2.gif) | ![VizdoomDeadlyCorridor with Freedoom 2 assets](../_static/img/envs/VizdoomDeadlyCorridor-Freedoom2.gif) |
 
 **REWARDS:**
 * +dX for getting closer to the vest.
@@ -158,7 +158,7 @@ needed.
 * timeout = 2100
 * difficulty level (`doom_skill`) = 5
 
-**Gymnasium/Gym id: `"VizdoomCorridor-v1"` / `"VizdoomCorridor-MultiBinary-v1"`**
+**Gymnasium/Gym id: `"VizdoomDeadlyCorridor-v1"` / `"VizdoomDeadlyCorridor-MultiBinary-v1"`**
 
 **Configuration file: [deadly_corridor.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deadly_corridor.cfg)**
 

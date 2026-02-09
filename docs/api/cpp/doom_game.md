@@ -1472,7 +1472,7 @@ Config key: `screenFormat`/`screen_format`
 
 | C++    | `bool isDepthBufferEnabled()`       |
 | :--    | :--                                 |
-| Python | `is_depth_buffer_enabled() -> None` |
+| Python | `is_depth_buffer_enabled() -> bool` |
 
 Returns true if the depth buffer is enabled.
 
@@ -1506,7 +1506,7 @@ Note: added in 1.1.0.
 
 | C++    | `bool isLabelsBufferEnabled()`       |
 | :--    | :--                                  |
-| Python | `is_labels_buffer_enabled() -> None` |
+| Python | `is_labels_buffer_enabled() -> bool` |
 
 Returns true if the labels buffer is enabled.
 
@@ -1532,7 +1532,7 @@ Config key: `labelsBufferEnabled`/`labels_buffer_enabled`
 
 See also:
 - [`GameState`](./game_state.md#gamestate)
-- [examples/python/labels.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels.py)
+- [examples/python/labels_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels_buffer.py)
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
 
 Note: added in 1.1.0.
