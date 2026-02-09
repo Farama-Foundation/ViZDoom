@@ -17,7 +17,7 @@ import vizdoom.gymnasium_wrapper  # noqa
 def save_gif(frames, gif_path: Path, fps: float = 20):
     """Save a list of frames as a GIF."""
     if len(frames) > 0:
-        imageio.mimsave(gif_path, frames, fps=fps)
+        imageio.mimsave(gif_path, frames, fps=fps, loop=0)
         print(f"GIF saved to {gif_path}")
     else:
         print("No frames to save for GIF.")
@@ -104,7 +104,7 @@ def main():
         "VizdoomBasic-v1",
         "VizdoomBasicAudio-v1",
         "VizdoomBasicNotifications-v1",
-        "VizdoomCorridor-v1",
+        "VizdoomDeadlyCorridor-v1",
         "VizdoomDefendCenter-v1",
         "VizdoomDefendLine-v1",
         "VizdoomHealthGathering-v1",
