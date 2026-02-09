@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
     # Enables freelook (mouse look) in the engine
     game.add_game_args("+freelook 1")
-    
+
     # Increate screen resolution for better experience.
     game.set_screen_resolution(vzd.ScreenResolution.RES_800X600)
 

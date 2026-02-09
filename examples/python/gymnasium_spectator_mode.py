@@ -5,13 +5,11 @@
 # In SPECTATOR mode YOU play Doom and the script prints rewards and info.
 #####################################################################
 
-import time
-
 import gymnasium
-import numpy as np
 
 import vizdoom as vzd
 from vizdoom import gymnasium_wrapper  # noqa
+
 
 if __name__ == "__main__":
     # Create the Gymnasium environment
@@ -29,9 +27,13 @@ if __name__ == "__main__":
         obs, info = env.reset(seed=42)
         i = 0
         while not done:
-            obs, rew, terminated, truncated, info = env.step(env.action_space.sample())  # In spectator mode actions will be ignored, but we need to call step to advance the game
+            obs, rew, terminated, truncated, info = env.step(
+                env.action_space.sample()
+            )  # In spectator mode actions will be ignored, but we need to call step to advance the game
             done = terminated or truncated
-            print(f"State #{i} | Terminated: {terminated} | Truncated: {truncated} | Reward: {rew} | Info: {info}")
+            print(
+                f"State #{i} | Terminated: {terminated} | Truncated: {truncated} | Reward: {rew} | Info: {info}"
+            )
             i += 1
-            
+
     env.close()

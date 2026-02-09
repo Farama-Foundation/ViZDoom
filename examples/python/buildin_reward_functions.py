@@ -3,17 +3,10 @@
 #####################################################################
 # This script presents how to set simple rewards that are built-in into ViZDoom
 # Note that more complex rewards specific to a scenario can be programmed using ACS scripting language
-# In SPECTATOR mode YOU play Doom and the script prints rewards based on values set by:
-# - set_health_reward
-# - set_armor_reward
-# - set_item_reward
-# - set_kill_reward
-# - set_death_penalty
-# - set_living_reward
-# - set_map_exit_reward
 #
-# To see the scenario description go to "../../scenarios/README.md"
-#####################################################################
+# To see the scenario description go to
+# https://vizdoom.farama.org/main/environments/default/
+# #####################################################################
 
 import os
 from argparse import ArgumentParser
@@ -72,7 +65,9 @@ if __name__ == "__main__":
     game.set_armor_reward(2.0)
     game.set_item_reward(1.0)
     game.set_kill_reward(10.0)
-    game.set_death_penalty(100)  # Becasue it's a penalty, the value will be substracted from the total reward, so it should be given as a positive number
+    game.set_death_penalty(
+        100
+    )  # Because it's a penalty, the value will be subtracted from the total reward, so it should be given as a positive number
     # game.set_death_reward(-100)  # As an alternative to set_death_penalty, you can set a negative reward for death using set_death_reward
     game.set_living_reward(-1)
     game.set_map_exit_reward(100.0)
@@ -87,7 +82,7 @@ if __name__ == "__main__":
     # game.set_damage_made_reward(0.0)
     # game.set_damage_taken_reward(0.0)
     # game.set_damage_taken_penalty(0.0)
-    
+
     print("Configured rewards:")
     print(f"health_reward={game.get_health_reward()}")
     print(f"armor_reward={game.get_armor_reward()}")
