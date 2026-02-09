@@ -35,6 +35,13 @@ if __name__ == "__main__":
         type=int,
         help="Number of episodes to play.",
     )
+    parser.add_argument(
+        "-e",
+        "--episodes",
+        default=1,
+        type=int,
+        help="Number of episodes to play.",
+    )
     args = parser.parse_args()
     game = vzd.DoomGame()
 
@@ -44,6 +51,7 @@ if __name__ == "__main__":
 
     game.load_config(args.config)
 
+    # Enables freelook (mouse look) in the engine
     # Enables freelook (mouse look) in the engine
     game.add_game_args("+freelook 1")
 

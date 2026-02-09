@@ -172,7 +172,9 @@ class VizdoomEnv(gym.Env, EzPickle):
 
         screen_format = self.game.get_screen_format()
         if (
-            screen_format != vzd.ScreenFormat.RGB24
+            "screen_format"
+            in kwargs  # Only warn if user explicitly set screen_format in kwargs
+            and screen_format != vzd.ScreenFormat.RGB24
             and screen_format != vzd.ScreenFormat.GRAY8
         ):
             if (
