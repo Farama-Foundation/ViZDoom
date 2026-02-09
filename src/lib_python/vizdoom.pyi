@@ -1468,12 +1468,11 @@ class DoomGame:
         Skill level affects monsters' aggressiveness, monsters' speed, weapon damage, ammunition quantities, etc.
         Takes effect from the next episode.
 
-        - 1 - VERY EASY, "I'm Too Young to Die" in Doom.
-        - 2 - EASY, "Hey, Not Too Rough" in Doom.
-        - 3 - NORMAL, "Hurt Me Plenty" in Doom.
-        - 4 - HARD, "Ultra-Violence" in Doom.
-        - 5 - VERY HARD, "Nightmare!" in Doom.
-
+        - 1 - VERY EASY, "I'm Too Young to Die" in Doom/Doom 2.
+        - 2 - EASY, "Hey, Not Too Rough" in Doom/Doom 2.
+        - 3 - NORMAL, "Hurt Me Plenty" in Doom/Doom 2.
+        - 4 - HARD, "Ultra-Violence" in Doom/Doom 2.
+        - 5 - VERY HARD, "Nightmare!" in Doom/Doom 2.
         Default value: 3
 
         Config key: ``DoomSkill``/``doom_skill``
@@ -1615,7 +1614,7 @@ class DoomGame:
         See also:
 
         - :class:`.GameState`
-        - `examples/python/labels.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels.py>`_
+        - `examples/python/labels_buffer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels_buffer.py>`_
         - `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
 
         Note: added in 1.1.0.

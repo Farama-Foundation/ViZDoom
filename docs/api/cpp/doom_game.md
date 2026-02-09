@@ -1088,41 +1088,6 @@ Returns true if the configuration was successfully applied, false if errors occu
 Note: added in 1.3.0
 
 
-### `setConfig`
-
-| C++    | `bool setConfig(std::string config)`               |
-| :--    | :--                                                |
-| Python | `set_config(config: str | dict[str, any]) -> bool` |
-
-Sets configuration from a config string or dictionary (Python only).
-
-This method accepts either a configuration string (in the same format as .cfg files)
-or a Python dictionary with configuration key-value pairs.
-
-When using a dictionary:
-- Keys should be configuration parameter names (e.g., 'screen_resolution', 'doom_skill')
-- Values can be:
-  - Primitive types: str, int, float, bool
-  - Enums: Button, GameVariable, ScreenResolution, ScreenFormat, SamplingRate, Mode, AutomapMode
-  - Lists: for 'available_buttons' and 'available_game_variables'
-
-Relative paths (e.g., for 'doom_scenario_path') are resolved relative to the current working directory.
-
-Example:
-```
-    game.set_config({
-        'screen_resolution': ScreenResolution.RES_640X480,
-        'screen_format': ScreenFormat.CRCGCB,
-        'doom_skill': 5,
-        'available_buttons': [Button.MOVE_LEFT, Button.MOVE_RIGHT, Button.ATTACK],
-        'available_game_variables': [GameVariable.AMMO2],
-        'living_reward': -1
-    })
-```
-
-Returns true if the configuration was successfully applied, false if errors occurred.
-
-
 ---
 ### `getMode`
 

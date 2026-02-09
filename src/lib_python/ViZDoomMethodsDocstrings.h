@@ -520,8 +520,9 @@ Config key: ``ViZDoomPath``/``vizdoom_path``)DOCSTRING";
 
     const char *getDoomGamePath = R"DOCSTRING(Returns the path to the Doom engine based game file (wad format).)DOCSTRING";
 
-    const char *setDoomGamePath = R"DOCSTRING(Sets the path to the Doom engine based game file (wad format).
-If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom library/pyd is).
+    const char *setDoomGamePath = R"DOCSTRING(Sets the path to the Doom engine-based game file (wad format).
+If set to empty, DoomGame will look for doom2.wad, DOOM2.WAD, and freedoom2.wad (in that order) in the working directory first and then in ViZDoom's installation directory
+(where vizdoom library/pyd is).
 
 Default value: ``""``
 
@@ -658,7 +659,7 @@ Config key: ``labelsBufferEnabled``/``labels_buffer_enabled``
 See also:
 
 - :class:`.GameState`
-- `examples/python/labels.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels.py>`_
+- `examples/python/labels_buffer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels_buffer.py>`_
 - `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
 
 Note: added in 1.1.0.)DOCSTRING";
