@@ -29,7 +29,7 @@ if __name__ == "__main__":
         while not done:
             obs, rew, terminated, truncated, info = env.step(
                 env.action_space.sample()
-            )  # In spectator mode actions will be ignored, but we need to call step to advance the game
+            )  # In spectator mode actions will be ignored, but we need to call step to advance the game (this mode is kind of hack for envs testing)
             done = terminated or truncated
             print(
                 f"State #{i} | Terminated: {terminated} | Truncated: {truncated} | Reward: {rew} | Info: {info}"

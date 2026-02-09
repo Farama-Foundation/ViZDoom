@@ -45,14 +45,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
     game = vzd.DoomGame()
 
-    # Choose scenario config file you wish to watch.
-    # Don't load two configs cause the second will overwrite the first one.
-    # Multiple config files are ok but combining these ones doesn't make much sense.
-
+    # Choose scenario config file.
     game.load_config(args.config)
 
-    # Enables freelook (mouse look) in the engine
-    # Enables freelook (mouse look) in the engine
+    # Enables freelook (mouse look) in the engine.
     game.add_game_args("+freelook 1")
 
     # Increate screen resolution for better experience.
