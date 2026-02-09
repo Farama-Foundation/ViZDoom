@@ -1251,6 +1251,14 @@ namespace vizdoom {
                                                  + " | " + sharedDoom2Path
                                                  + " | " + sharedFreedoom2Path);
         }
+        else {
+            bool iwadPathContainsParent = bal::contains(this->iwadPath, "/") || bal::contains(this->iwadPath, "\\");
+            if (!iwadPathContainsParent && !fileExists(this->iwadPath)) {
+                std::string sharedIwadPath = getThisSharedObjectPath() + "/" + this->iwadPath;
+                if (fileExists(sharedIwadPath) || (!hasExtension(sharedIwadPath) && fileExists(sharedIwadPath + ".wad")))
+                    this->iwadPath = sharedIwadPath;
+            }
+        }
 
         this->doomArgs.push_back("-iwad");
         this->doomArgs.push_back(prepareWadFilePath(this->iwadPath));
