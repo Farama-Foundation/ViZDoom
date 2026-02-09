@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+#####################################################################
+# This script presents how to use delta buttons (continuous buttons).
+# Delta buttons are used to control the precision/speed of an action.
+# For example, they can be used to control the speed of movement or the angle of turning.
+#####################################################################
+
 from time import sleep
 
 import vizdoom as vzd
@@ -58,9 +64,7 @@ if __name__ == "__main__":
             if not time % 50:
                 action[3] = -action[3]
 
-            print(f"State #{state.number}")
-            print("Action made: ", action)
-            print("=====================")
+            print(f"State #{state.number} | Action made: {action}")
 
             if sleep_time > 0:
                 sleep(sleep_time)

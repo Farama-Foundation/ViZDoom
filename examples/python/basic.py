@@ -7,8 +7,6 @@
 # <episodes> number of episodes are played.
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
-#
-# To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
 import os
@@ -212,10 +210,7 @@ if __name__ == "__main__":
             # r = game.get_last_reward()
 
             # Prints state's game variables and reward.
-            print(f"State #{n}")
-            print("Game variables:", vars)
-            print("Reward:", r)
-            print("=====================")
+            print(f"State #{n} | Game variables: {vars} | Reward: {r}")
 
             if sleep_time > 0:
                 sleep(sleep_time)

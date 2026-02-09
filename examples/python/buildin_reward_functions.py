@@ -3,11 +3,14 @@
 #####################################################################
 # This script presents how to set simple rewards that are built-in into ViZDoom
 # Note that more complex rewards specific to a scenario can be programmed using ACS scripting language
-# In SPECTATOR mode YOU play Doom and the script prints rewards from:
+# In SPECTATOR mode YOU play Doom and the script prints rewards based on values set by:
 # - set_health_reward
 # - set_armor_reward
 # - set_item_reward
 # - set_kill_reward
+# - set_death_penalty
+# - set_living_reward
+# - set_map_exit_reward
 #
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
@@ -127,12 +130,12 @@ if __name__ == "__main__":
 
             print(
                 f"State #{state.number} | "
-                f"health={int(health)}({delta_health:+d}) | "
-                f"armor={int(armor)}({delta_armor:+d}) | "
-                f"items={items}({delta_items:+d}) | "
-                f"kills={kills}({delta_kills:+d}) | "
-                f"reward={total_reward}({game.get_last_reward():+0.3f}) | "
-                f"action={game.get_last_action()}"
+                f"Health: {int(health)}({delta_health:+d}) | "
+                f"Armor: {int(armor)}({delta_armor:+d}) | "
+                f"Items: {items}({delta_items:+d}) | "
+                f"Kills: {kills}({delta_kills:+d}) | "
+                f"Reward: {total_reward}({game.get_last_reward():+0.3f}) | "
+                f"Action: {game.get_last_action()}"
             )
 
             prev_health = health

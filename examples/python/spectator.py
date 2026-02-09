@@ -5,7 +5,8 @@
 # your agent can learn from it.
 # Configuration is loaded from "../../scenarios/<SCENARIO_NAME>.cfg" file.
 #
-# To see the scenario description go to "../../scenarios/README.md"
+# To see the scenario description go to
+# https://vizdoom.farama.org/main/environments/default/
 #####################################################################
 
 import os
@@ -69,9 +70,9 @@ if __name__ == "__main__":
 
             print(
                 f"State #{state.number} | "
-                f"vars={state.game_variables} | "
-                f"action={last_action} | "
-                f"reward={reward}"
+                f"Vars: {state.game_variables} | "
+                f"Action: {last_action} | "
+                f"Reward: {reward}"
             )
 
         print("Episode finished!")

@@ -2,6 +2,9 @@
 
 #####################################################################
 # Example for running a vizdoom scenario as a Gymnasium env
+#
+# To see the list of available environments go to
+# https://vizdoom.farama.org/main/environments/default/
 #####################################################################
 
 import time
@@ -54,6 +57,7 @@ if __name__ == "__main__":
             print(f"Reward: {rew}")
             print(f"Terminated: {terminated}, Truncated: {truncated}")
             print(f"Info: {info}")
+            print("=====================")
 
             time.sleep(
                 1.0 / vzd.DEFAULT_TICRATE * env.unwrapped.frame_skip
