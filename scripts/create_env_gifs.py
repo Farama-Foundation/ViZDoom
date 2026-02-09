@@ -320,12 +320,12 @@ def create_env_gif(
 
         env_doom_graphics = gym.make(
             env_name,
-            doom_game_path="/home/marek/Workspace/ViZDoom_dev_mode/bin/python3.13/vizdoom/doom2.wad",
+            doom_game_path="doom2.wad",
         )
         obs_doom_graphics, _ = env_doom_graphics.reset(seed=seed)
         env_freedoom_graphics = gym.make(
             env_name,
-            doom_game_path="/home/marek/Workspace/ViZDoom_dev_mode/bin/python3.13/vizdoom/freedoom2.wad",
+            doom_game_path="freedoom2.wad",
         )
         obs_freedoom_graphics, _ = env_freedoom_graphics.reset(seed=seed)
 
