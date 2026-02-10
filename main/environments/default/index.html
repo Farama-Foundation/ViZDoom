@@ -223,8 +223,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium/">Gymnasium Env</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym/">OpenAI Gym Env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium_wrapper/">Gymnasium Env Wrapper for ViZDoom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym_wrapper/">OpenAI Gym Env Wrapper for ViZDoom</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -336,7 +336,7 @@
 <span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">&quot;VizdoomBasic-v1&quot;</span><span class="p">,</span> <span class="n">frame_skip</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># or any other environment id</span>
 </pre></div>
 </div>
-<p>Additionally, all ViZDoom Gymnasium environments support additional keyword arguments that can be passed to <code class="docutils literal notranslate"><span class="pre">make</span></code> method e.g. <code class="docutils literal notranslate"><span class="pre">frame_skip</span></code>.See <a class="reference internal" href="#../api/python/gymnasium_wrapper.md"><span class="xref myst">Gymnasium wrapper documentation</span></a> for more details.</p>
+<p>Additionally, all ViZDoom Gymnasium environments support additional keyword arguments that can be passed to <code class="docutils literal notranslate"><span class="pre">make</span></code> method e.g. <code class="docutils literal notranslate"><span class="pre">frame_skip</span></code>.See <a class="reference internal" href="../../api/python/gymnasium_wrapper/"><span class="std std-doc">Gymnasium wrapper documentation</span></a> for more details.</p>
 </section>
 <section id="note-on-wad-cfg-files-and-rewards">
 <h2>Note on .wad, .cfg files, and rewards<a class="headerlink" href="#note-on-wad-cfg-files-and-rewards" title="Link to this heading">¶</a></h2>
@@ -480,8 +480,8 @@ needed.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><img alt="VizdoomCorridor with Doom 2 assets" src="../../_images/VizdoomCorridor-Doom2.gif" /></p></td>
-<td><p><img alt="VizdoomCorridor with Freedoom 2 assets" src="../../_images/VizdoomCorridor-Freedoom2.gif" /></p></td>
+<tr class="row-even"><td><p><img alt="VizdoomDeadlyCorridor with Doom 2 assets" src="../../_images/VizdoomDeadlyCorridor-Doom2.gif" /></p></td>
+<td><p><img alt="VizdoomDeadlyCorridor with Freedoom 2 assets" src="../../_images/VizdoomDeadlyCorridor-Freedoom2.gif" /></p></td>
 </tr>
 </tbody>
 </table>
@@ -499,7 +499,7 @@ needed.</p>
 <li><p>timeout = 2100</p></li>
 <li><p>difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 5</p></li>
 </ul>
-<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomCorridor-v1&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomCorridor-MultiBinary-v1&quot;</span></code></strong></p>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomDeadlyCorridor-v1&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomDeadlyCorridor-MultiBinary-v1&quot;</span></code></strong></p>
 <p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deadly_corridor.cfg">deadly_corridor.cfg</a></strong></p>
 </section>
 <section id="deathmatch">

@@ -223,8 +223,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium/">Gymnasium Env</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym/">OpenAI Gym Env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium_wrapper/">Gymnasium Env Wrapper for ViZDoom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym_wrapper/">OpenAI Gym Env Wrapper for ViZDoom</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -325,7 +325,7 @@
 </pre></div>
 </div>
 <p>Both x86-64 and AArch64 (ARM64) architectures are supported.
-Wheels are available for Python 3.8+ on Linux.</p>
+Wheels are available for Python 3.9+ on Linux.</p>
 <section id="audio-buffer-requirement">
 <h3>Audio buffer requirement<a class="headerlink" href="#audio-buffer-requirement" title="Link to this heading">¶</a></h3>
 <p>If you want to use audio buffer, you need to have OpenAL library installed.
@@ -343,7 +343,7 @@ On apt-based distros (Ubuntu, Debian, Linux Mint, etc.), you can install it by r
 <section id="installing-from-source-distribution-on-linux">
 <h3>Installing from source distribution on Linux<a class="headerlink" href="#installing-from-source-distribution-on-linux" title="Link to this heading">¶</a></h3>
 <p>If Python wheel is not available for your platform (distros incompatible with manylinux_2_28 standard), pip will try to install (build) ViZDoom from the source.
-ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.8+ to install from source.
+ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.9+ to install from source.
 Below, you will find instructions on how to install these dependencies.</p>
 <section id="apt-based-distros-ubuntu-debian-linux-mint-etc">
 <h4>apt-based distros (Ubuntu, Debian, Linux Mint, etc.)<a class="headerlink" href="#apt-based-distros-ubuntu-debian-linux-mint-etc" title="Link to this heading">¶</a></h4>
@@ -352,7 +352,7 @@ Below, you will find instructions on how to install these dependencies.</p>
 pip<span class="w"> </span>install<span class="w"> </span>vizdoom
 </pre></div>
 </div>
-<p>We recommend using at least Ubuntu 18.04+ or Debian 10+ with Python 3.7+.</p>
+<p>We recommend using at least Ubuntu 18.04+ or Debian 10+.</p>
 </section>
 <section id="dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc">
 <h4>dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)<a class="headerlink" href="#dnf-yum-based-distros-fedora-rhel-centos-alma-rocky-linux-etc" title="Link to this heading">¶</a></h4>
@@ -361,7 +361,7 @@ pip<span class="w"> </span>install<span class="w"> </span>vizdoom
 pip<span class="w"> </span>install<span class="w"> </span>vizdoom
 </pre></div>
 </div>
-<p>We recommend using at least Fedora 35+ or RHEL/CentOS/Alma/Rocky Linux 9+ with Python 3.8+.
+<p>We recommend using at least Fedora 35+ or RHEL/CentOS/Alma/Rocky Linux 9+.
 To install openal-soft-devel on RHEL/CentOS/Alma/Rocky Linux 9, one needs to enable crb repository first by running <code class="docutils literal notranslate"><span class="pre">dnf</span> <span class="pre">--enablerepo=crb</span> <span class="pre">install</span></code>.</p>
 </section>
 </section>
@@ -387,7 +387,7 @@ In this case, install the required dependencies using Homebrew:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>boost<span class="w"> </span>sdl2<span class="w"> </span>openal-soft
 </pre></div>
 </div>
-<p>We recommend using at least macOS High Sierra 10.13+ with Python 3.8+.
+<p>We recommend using at least macOS High Sierra 10.13+ with Python 3.9+.
 On Apple Silicon (M1, M2, and M3), make sure you are using Python/Pip for Apple Silicon.</p>
 <p>To install the master branch version of ViZDoom, run, in this case you also need to have the above dependencies installed:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/Farama-Foundation/ViZDoom

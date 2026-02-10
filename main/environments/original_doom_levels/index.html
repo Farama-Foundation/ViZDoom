@@ -223,8 +223,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium/">Gymnasium Env</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym/">OpenAI Gym Env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium_wrapper/">Gymnasium Env Wrapper for ViZDoom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym_wrapper/">OpenAI Gym Env Wrapper for ViZDoom</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -387,34 +387,6 @@ See:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;VizdoomDoomE1M1-S1-v0&quot;</span></code> environment uses original Doom 1 E1M1 and skill (difficulty) level 1 (VERY EASY, “I’m Too Young to Die”)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;VizdoomDoom2MAP01-S3-v0&quot;</span></code> environment uses original Doom 2 MAP01 level with skill level 3</p></li>
 </ul>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
-<th class="head"><p>Freedoom assets</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><img alt="VizdoomDoomE1M1 with Doom 2 assets" src="_static/img/envs/VizdoomDoomE1M1-Doom2.gif" /></p></td>
-<td><p><img alt="VizdoomDoomE1M1 with Freedoom 2 assets" src="_static/img/envs/VizdoomDoomE1M1-Freedoom2.gif" /></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
-<th class="head"><p>Freedoom assets</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><img alt="VizdoomDoom2MAP01 with Doom 2 assets" src="_static/img/envs/VizdoomDoom2MAP01-Doom2.gif" /></p></td>
-<td><p><img alt="VizdoomDoom2MAP01 with Freedoom 2 assets" src="_static/img/envs/VizdoomDoom2MAP01-Freedoom2.gif" /></p></td>
-</tr>
-</tbody>
-</table>
-</div>
 </section>
 <section id="using-original-doom-levels-with-original-vizdoom-api">
 <h2>Using original Doom levels with Original ViZDoom API<a class="headerlink" href="#using-original-doom-levels-with-original-vizdoom-api" title="Link to this heading">¶</a></h2>
@@ -425,7 +397,7 @@ See:</p>
 <span class="n">game</span> <span class="o">=</span> <span class="n">vzd</span><span class="o">.</span><span class="n">DoomGame</span><span class="p">()</span>
 <span class="n">game</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vzd</span><span class="o">.</span><span class="n">scenarios_path</span><span class="p">,</span> <span class="s2">&quot;doom.cfg&quot;</span><span class="p">))</span> <span class="c1"># or doom2.cfg, freedoom1.cfg, freedoom2.cfg</span>
 <span class="n">game</span><span class="o">.</span><span class="n">set_doom_map</span><span class="p">(</span><span class="s2">&quot;E1M1&quot;</span><span class="p">)</span>  <span class="c1"># see list of map IDs below</span>
-<span class="n">game</span><span class="o">.</span><span class="n">set_skill_level</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># or 2, 3, 4, 5</span>
+<span class="n">game</span><span class="o">.</span><span class="n">set_doom_level</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># or 2, 3, 4, 5</span>
 </pre></div>
 </div>
 <p>Configuration file:</p>

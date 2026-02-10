@@ -223,8 +223,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium/">Gymnasium Env</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym/">OpenAI Gym Env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium_wrapper/">Gymnasium Env Wrapper for ViZDoom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym_wrapper/">OpenAI Gym Env Wrapper for ViZDoom</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -362,7 +362,7 @@ Unfortunately, ACS does not support real floating point numbers.</p>
 </section>
 <section id="step-2-creating-a-custom-config-file">
 <h2>Step 2: Creating a custom config file<a class="headerlink" href="#step-2-creating-a-custom-config-file" title="Link to this heading">¶</a></h2>
-<p>After creating a map, it is a good idea to create an accompanying config file, that allows to easily define action space, available information in a state/observation, additional rewards, etc. The config file is a simple text file in an *.ini-like format that can be created using any text editor. The config files are documented under <a class="reference internal" href="#api/configurationFiles.md"><span class="xref myst">api/configurationFiles.md</span></a>.</p>
+<p>After creating a map, it is a good idea to create an accompanying config file, that allows to easily define action space, available information in a state/observation, additional rewards, etc. The config file is a simple text file in an *.ini-like format that can be created using any text editor. The config files are documented under <a class="reference internal" href="#api/configuration_file.md"><span class="xref myst">api/configuration_file.md</span></a>.</p>
 <p>The following is an example of a config file that can be used with the map created in the previous step:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">doom_scenario_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">mywad.wad</span>
 <span class="na">doom_map</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">map01</span><span class="w">        </span><span class="c1"># map in the wad file that will be used (wad can contain more than one map)</span>
@@ -382,7 +382,7 @@ Unfortunately, ACS does not support real floating point numbers.</p>
 <span class="w">    </span><span class="na">AMMO3</span>
 <span class="na">}</span>
 
-<span class="na">depth_buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span><span class="w">     </span><span class="c1"># add depth buffer to the state</span>
+<span class="na">depth_buffer_enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span><span class="w">     </span><span class="c1"># add depth buffer to the state</span>
 </pre></div>
 </div>
 </section>
