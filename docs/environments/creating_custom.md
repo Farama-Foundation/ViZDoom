@@ -29,7 +29,8 @@ See the [SLADE wiki](https://slade.mancubus.net/index.php?page=wiki) or [DoomBui
 
 To see how to configure SLADE for ViZDoom, see [our tutorial](./slade_config.md).
 
-When creating a new map, select UDMF format for maps. If asked for a node builder, you can select none, as ViZDoom has it built in. You should not have any problems with creating a map using the editor, it is simple, and you can find a lot of tutorials on the internet.
+When creating a new map, always select **UDMF format** for maps, as other formats does not support scripting.
+If asked for a node builder, you can select none, as ViZDoom has it built in. You should not have any problems with creating a map using the editor, it is simple, and you can find a lot of tutorials on the internet.
 
 You can add some custom ACS scripts to your map. This ACS script allows the implementation of a rewarding mechanism.
 To do that, you need to employ the global variable 0 like this:

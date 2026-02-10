@@ -2,7 +2,7 @@
 
 This is a short guide on how to configure [SLADE](http://slade.mancubus.net/index.php?page=downloads) for creating custom maps for ViZDoom. SLADE is a cross-platform editor for Doom-engine-based games, including Doom, Heretic, Hexen, Strife, and others.
 
-This is not ment to be a full tutorial on how to use SLADE. For more information and tutorials on how to use SLADE, please refer to the [official SLADE wiki](http://slade.mancubus.net/index.php?page=wiki).
+This is not meant to be a full tutorial on how to use SLADE. For more information and tutorials on how to use SLADE, please refer to the [official SLADE wiki](http://slade.mancubus.net/index.php?page=wiki).
 
 You can download SLADE for Linux, MacOS, and Windows from [here](http://slade.mancubus.net/index.php?page=downloads).
 It is also available as a Flatpak on [flathub](https://flathub.org/en/apps/net.mancubus.SLADE)
@@ -22,7 +22,7 @@ Click on the `Add archive` button and add the path to the base WAD file. In our 
 All default WAD files available in ViZDoom are created for Doom/Freedoom 2 games.
 Then in the `ZDoom PK3 Path` below select `vizdoom.pk3` file located in the ViZDoom package. In our case, it is `/home/marek/ViZDoom/venv/lib/python-3.13/site-packages/vizdoom/vizdoom.pk3`.
 After adding the paths, it should look like this:
-    
+
 ```{figure} _static/img/slade/base_resource_config.png
    :alt: SLADE resource paths
 ```
@@ -38,7 +38,7 @@ Next, you need to configure the ACS compiler. Go to `Edit` -> `Preferences` -> `
 ## 3. Launching map editor
 
 Now you are ready to edit maps using SLADE. You can load one of the existing WAD files available in ViZDoom repository or create a new WAD file.
-When lunching map editor it is important to select maching game and base resource. In our case it is `Doom2` game for `freedoom2.wad`. 
+When lunching map editor it is important to select matching game and base resource. In our case it is `Doom2` game for `freedoom2.wad`.
 For source port after select `ZDoom` which is a base of ViZDoom.
 
 ```{figure} _static/img/slade/map_editor_config.png
@@ -47,3 +47,15 @@ For source port after select `ZDoom` which is a base of ViZDoom.
 
 ## 4. Running the map
 
+When you are done with editing the map, you can run it using ViZDoom executable to see how it looks and plays.
+Map editor allows you to run the map directly from the editor. It will ask you to select game executable type (again select `ZDoom`) and path to the executable, select `vizdoom` executable located in the root directory of ViZDoom package (in our case, it is `/home/marek/ViZDoom/venv/lib/python-3.13/site-packages/vizdoom/vizdoom`).
+
+```{figure} _static/img/slade/run_map_config.png
+   :alt: SLADE run map from the map editor configuration
+```
+
+The editor may show a warning about missing node builder. You can ignore it, as ViZDoom has it built in and does not require it to be installed.
+
+```{figure} _static/img/slade/node_builder_warning.png
+   :alt: SLADE node builder warning
+```
