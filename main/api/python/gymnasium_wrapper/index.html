@@ -8,11 +8,11 @@
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
     <meta property="og:url" content="https://vizdoom.farama.org/api/python/gymnasium_wrapper.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="OpenAI Gym Env Wrapper for ViZDoom" href="../gym_wrapper/" /><link rel="prev" title="Exceptions" href="../exceptions/" />
+<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="OpenAI Gym Env Wrapper" href="../gym_wrapper/" /><link rel="prev" title="Exceptions" href="../exceptions/" />
         <link rel="canonical" href="https://vizdoom.farama.org/api/python/gymnasium_wrapper.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
-        <title>Gymnasium Env Wrapper for ViZDoom - ViZDoom Documentation</title>
+        <title>Gymnasium Env Wrapper - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=3e7f4c72" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=82c8b628" />
@@ -223,8 +223,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../exceptions/">Exceptions</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Gymnasium Env Wrapper for ViZDoom</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gym_wrapper/">OpenAI Gym Env Wrapper for ViZDoom</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Gymnasium Env Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gym_wrapper/">OpenAI Gym Env Wrapper</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -243,12 +243,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../environments/original_doom_levels/">Playing original Doom levels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environments/third_party/">Third-party environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environments/creating_custom/">Creating a custom environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../environments/slade_config/">SLADE configuration guide for ViZDoom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environments/slade_config/">SLADE configuration guide</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Dev guide</span></p>
+<p class="caption" role="heading"><span class="caption-text">Dev</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../dev/dev_guide/">ViZDoom Development Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../dev/building_from_source/">Building ViZDoom from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/dev_guide/">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/building_from_source/">Building from source</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -317,8 +317,8 @@
           </div>
           <article role="main">
             
-            <section class="tex2jax_ignore mathjax_ignore" id="gymnasium-env-wrapper-for-vizdoom">
-<h1>Gymnasium Env Wrapper for ViZDoom<a class="headerlink" href="#gymnasium-env-wrapper-for-vizdoom" title="Link to this heading">¶</a></h1>
+            <section class="tex2jax_ignore mathjax_ignore" id="gymnasium-env-wrapper">
+<h1>Gymnasium Env Wrapper<a class="headerlink" href="#gymnasium-env-wrapper" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VizdoomEnv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_buttons_pressed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">render_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">treat_episode_timeout_as_truncation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_multi_binary_action_space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv" title="Link to this definition">¶</a></dt>
@@ -513,7 +513,7 @@ a certain timelimit was exceeded, or the physics simulation has entered an inval
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">OpenAI Gym Env Wrapper for ViZDoom</div>
+                <div class="title">OpenAI Gym Env Wrapper</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
@@ -572,7 +572,7 @@ a certain timelimit was exceeded, or the physics simulation has entered an inval
           <div class="toc-tree-container">
             <div class="toc-tree">
               <ul>
-<li><a class="reference internal" href="#">Gymnasium Env Wrapper for ViZDoom</a><ul>
+<li><a class="reference internal" href="#">Gymnasium Env Wrapper</a><ul>
 <li><a class="reference internal" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv"><code class="docutils literal notranslate"><span class="pre">VizdoomEnv</span></code></a><ul>
 <li><a class="reference internal" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.close"><code class="docutils literal notranslate"><span class="pre">VizdoomEnv.close()</span></code></a></li>
 <li><a class="reference internal" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.render"><code class="docutils literal notranslate"><span class="pre">VizdoomEnv.render()</span></code></a></li>

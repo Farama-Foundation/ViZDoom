@@ -8,11 +8,11 @@
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
     <meta property="og:url" content="https://vizdoom.farama.org/environments/slade_config.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="ViZDoom Development Guide" href="../../dev/dev_guide/" /><link rel="prev" title="Creating a custom environment" href="../creating_custom/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Development Guide" href="../../dev/dev_guide/" /><link rel="prev" title="Creating a custom environment" href="../creating_custom/" />
         <link rel="canonical" href="https://vizdoom.farama.org/environments/slade_config.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
-        <title>SLADE configuration guide for ViZDoom - ViZDoom Documentation</title>
+        <title>SLADE configuration guide - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=82c8b628" />
@@ -223,8 +223,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium_wrapper/">Gymnasium Env Wrapper for ViZDoom</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym_wrapper/">OpenAI Gym Env Wrapper for ViZDoom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium_wrapper/">Gymnasium Env Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym_wrapper/">OpenAI Gym Env Wrapper</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -243,12 +243,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../original_doom_levels/">Playing original Doom levels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../third_party/">Third-party environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../creating_custom/">Creating a custom environment</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">SLADE configuration guide for ViZDoom</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">SLADE configuration guide</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Dev guide</span></p>
+<p class="caption" role="heading"><span class="caption-text">Dev</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../dev/dev_guide/">ViZDoom Development Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../dev/building_from_source/">Building ViZDoom from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/dev_guide/">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/building_from_source/">Building from source</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -317,8 +317,8 @@
           </div>
           <article role="main">
             
-            <section class="tex2jax_ignore mathjax_ignore" id="slade-configuration-guide-for-vizdoom">
-<h1>SLADE configuration guide for ViZDoom<a class="headerlink" href="#slade-configuration-guide-for-vizdoom" title="Link to this heading">¶</a></h1>
+            <section class="tex2jax_ignore mathjax_ignore" id="slade-configuration-guide">
+<h1>SLADE configuration guide<a class="headerlink" href="#slade-configuration-guide" title="Link to this heading">¶</a></h1>
 <p>This is a short guide on how to configure <a class="reference external" href="http://slade.mancubus.net/index.php?page=downloads">SLADE</a> for creating custom maps for ViZDoom. SLADE is a cross-platform editor for Doom-engine-based games, including Doom, Heretic, Hexen, Strife, and others.</p>
 <p>This is not meant to be a full tutorial on how to use SLADE. For more information and tutorials on how to use SLADE, please refer to the <a class="reference external" href="http://slade.mancubus.net/index.php?page=wiki">official SLADE wiki</a>.</p>
 <p>You can download SLADE for Linux, MacOS, and Windows from <a class="reference external" href="http://slade.mancubus.net/index.php?page=downloads">here</a>.
@@ -378,7 +378,7 @@ Map editor allows you to run the map directly from the editor. It will ask you t
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">ViZDoom Development Guide</div>
+                <div class="title">Development Guide</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
@@ -437,7 +437,7 @@ Map editor allows you to run the map directly from the editor. It will ask you t
           <div class="toc-tree-container">
             <div class="toc-tree">
               <ul>
-<li><a class="reference internal" href="#">SLADE configuration guide for ViZDoom</a><ul>
+<li><a class="reference internal" href="#">SLADE configuration guide</a><ul>
 <li><a class="reference internal" href="#configuring-slade-base-resource-paths">1. Configuring SLADE base resource paths</a></li>
 <li><a class="reference internal" href="#configuring-acs-compiler">2. Configuring ACS compiler</a></li>
 <li><a class="reference internal" href="#launching-map-editor">3. Launching map editor</a></li>
