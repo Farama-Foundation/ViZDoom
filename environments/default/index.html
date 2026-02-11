@@ -223,8 +223,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium/">Gymnasium Env</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym/">OpenAI Gym Env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium_wrapper/">Gymnasium Env Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym_wrapper/">OpenAI Gym Env Wrapper</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -243,11 +243,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../original_doom_levels/">Playing original Doom levels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../third_party/">Third-party environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../creating_custom/">Creating a custom environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../slade_config/">SLADE configuration guide</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Dev guide</span></p>
+<p class="caption" role="heading"><span class="caption-text">Dev</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../dev/dev_guide/">ViZDoom Development Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../dev/building_from_source/">Building ViZDoom from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/dev_guide/">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/building_from_source/">Building from source</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -336,7 +337,7 @@
 <span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">&quot;VizdoomBasic-v1&quot;</span><span class="p">,</span> <span class="n">frame_skip</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># or any other environment id</span>
 </pre></div>
 </div>
-<p>Additionally, all ViZDoom Gymnasium environments support additional keyword arguments that can be passed to <code class="docutils literal notranslate"><span class="pre">make</span></code> method e.g. <code class="docutils literal notranslate"><span class="pre">frame_skip</span></code>.See <a class="reference internal" href="#../api/python/gymnasium_wrapper.md"><span class="xref myst">Gymnasium wrapper documentation</span></a> for more details.</p>
+<p>Additionally, all ViZDoom Gymnasium environments support additional keyword arguments that can be passed to <code class="docutils literal notranslate"><span class="pre">make</span></code> method e.g. <code class="docutils literal notranslate"><span class="pre">frame_skip</span></code>.See <a class="reference internal" href="../../api/python/gymnasium_wrapper/"><span class="std std-doc">Gymnasium wrapper documentation</span></a> for more details.</p>
 </section>
 <section id="note-on-wad-cfg-files-and-rewards">
 <h2>Note on .wad, .cfg files, and rewards<a class="headerlink" href="#note-on-wad-cfg-files-and-rewards" title="Link to this heading">¶</a></h2>
@@ -356,6 +357,20 @@ A red, circular monster is spawned randomly somewhere along
 the opposite wall. A player can only (config) go left/right
 and shoot. 1 hit is enough to kill the monster. The episode
 finishes when the monster is killed or on timeout.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
+<th class="head"><p>Freedoom assets</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="VizdoomBasic with Doom 2 assets" src="../../_images/VizdoomBasic-Doom2.gif" /></p></td>
+<td><p><img alt="VizdoomBasic with Freedoom 2 assets" src="../../_images/VizdoomBasic-Freedoom2.gif" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p><strong>REWARDS:</strong></p>
 <ul class="simple">
 <li><p>+106 for killing the monster</p></li>
@@ -378,6 +393,20 @@ finishes when the monster is killed or on timeout.</p>
 but the monster is invisible instead it emits sounds.
 The purpose of this scenario is to check if the agent can
 learn to use audio information to find and kill the monster.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
+<th class="head"><p>Freedoom assets</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="VizdoomBasicAudio with Doom 2 assets" src="../../_images/VizdoomBasicAudio-Doom2.gif" /></p></td>
+<td><p><img alt="VizdoomBasicAudio with Freedoom 2 assets" src="../../_images/VizdoomBasicAudio-Freedoom2.gif" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p><strong>REWARDS:</strong></p>
 <ul class="simple">
 <li><p>+106 for killing the monster</p></li>
@@ -400,6 +429,20 @@ learn to use audio information to find and kill the monster.</p>
 <p>The environment is similar to the BASIC scenario,
 but this time 3 monsters are spawned instead of 1.
 The task is to kill one of them specified by a ingame message (notification).</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
+<th class="head"><p>Freedoom assets</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="VizdoomBasicNotifications with Doom 2 assets" src="../../_images/VizdoomBasicNotifications-Doom2.gif" /></p></td>
+<td><p><img alt="VizdoomBasicNotifications with Freedoom 2 assets" src="../../_images/VizdoomBasicNotifications-Freedoom2.gif" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p><strong>REWARDS:</strong></p>
 <ul class="simple">
 <li><p>+106 for killing the right monster</p></li>
@@ -430,6 +473,20 @@ distance between the player and the vest. If the player ignores monsters
 on the sides and runs straight for the vest, he will be killed somewhere
 along the way. To ensure this behavior difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 5 (config) is
 needed.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
+<th class="head"><p>Freedoom assets</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="VizdoomDeadlyCorridor with Doom 2 assets" src="../../_images/VizdoomDeadlyCorridor-Doom2.gif" /></p></td>
+<td><p><img alt="VizdoomDeadlyCorridor with Freedoom 2 assets" src="../../_images/VizdoomDeadlyCorridor-Freedoom2.gif" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p><strong>REWARDS:</strong></p>
 <ul class="simple">
 <li><p>+dX for getting closer to the vest.</p></li>
@@ -443,7 +500,7 @@ needed.</p>
 <li><p>timeout = 2100</p></li>
 <li><p>difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 5</p></li>
 </ul>
-<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomCorridor-v1&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomCorridor-MultiBinary-v1&quot;</span></code></strong></p>
+<p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomDeadlyCorridor-v1&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomDeadlyCorridor-MultiBinary-v1&quot;</span></code></strong></p>
 <p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deadly_corridor.cfg">deadly_corridor.cfg</a></strong></p>
 </section>
 <section id="deathmatch">
@@ -453,6 +510,20 @@ A random monster is spawned every few seconds that will try to kill the player.
 The reward for killing a monster depends on its difficulty.
 The aim of the agent is to kill as many monsters as possible
 before the time runs out or it’s killed by monsters.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
+<th class="head"><p>Freedoom assets</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="VizdoomDeathmatch with Doom 2 assets" src="../../_images/VizdoomDeathmatch-Doom2.gif" /></p></td>
+<td><p><img alt="VizdoomDeathmatch with Freedoom 2 assets" src="../../_images/VizdoomDeathmatch-Freedoom2.gif" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p><strong>REWARDS:</strong></p>
 <ul class="simple">
 <li><p>Different rewards are given for killing different monsters</p></li>
@@ -479,6 +550,20 @@ for killing monsters so he has to figure out the rest for himself.</p>
 killed after a single shot. After dying, each monster is respawned
 after some time. The episode ends when the player dies (it’s inevitable
 because of limited ammo).</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
+<th class="head"><p>Freedoom assets</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="VizdoomDefendCenter with Doom 2 assets" src="../../_images/VizdoomDefendCenter-Doom2.gif" /></p></td>
+<td><p><img alt="VizdoomDefendCenter with Freedoom 2 assets" src="../../_images/VizdoomDefendCenter-Freedoom2.gif" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p><strong>REWARDS:</strong></p>
 <ul class="simple">
 <li><p>+1 for killing a monster</p></li>
@@ -506,6 +591,20 @@ opposite wall. Monsters are killed after a single shot, at first.
 After dying, each monster is respawned after some time and can endure
 more damage. The episode ends when the player dies (it’s inevitable
 because of limited ammo).</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
+<th class="head"><p>Freedoom assets</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="VizdoomDefendLine with Doom 2 assets" src="../../_images/VizdoomDefendLine-Doom2.gif" /></p></td>
+<td><p><img alt="VizdoomDefendLine with Freedoom 2 assets" src="../../_images/VizdoomDefendLine-Freedoom2.gif" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p><strong>REWARDS:</strong></p>
 <ul class="simple">
 <li><p>+1 for killing a monster</p></li>
@@ -534,6 +633,34 @@ needs to pick them up. The episode finishes after the player’s death or
 on timeout.</p>
 <p>There is more advance version of this scenario called HEALTH GATHERING SUPREME,
 that makes map layout more complex.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
+<th class="head"><p>Freedoom assets</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="VizdoomHealthGathering with Doom 2 assets" src="../../_images/VizdoomHealthGathering-Doom2.gif" /></p></td>
+<td><p><img alt="VizdoomHealthGathering with Freedoom 2 assets" src="../../_images/VizdoomHealthGathering-Freedoom2.gif" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
+<th class="head"><p>Freedoom assets</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="VizdoomHealthGatheringSupreme with Doom 2 assets" src="../../_images/VizdoomHealthGatheringSupreme-Doom2.gif" /></p></td>
+<td><p><img alt="VizdoomHealthGatheringSupreme with Freedoom 2 assets" src="../../_images/VizdoomHealthGatheringSupreme-Freedoom2.gif" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p><strong>REWARDS:</strong></p>
 <ul class="simple">
 <li><p>+1 for every tic the agent is alive</p></li>
@@ -557,6 +684,20 @@ with a dead end. Each room has a different color. There is a
 green vest in one of the rooms (the same room every time).
 The player is spawned in a randomly chosen room facing a random
 direction. The episode ends when the vest is reached or on timeout/</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
+<th class="head"><p>Freedoom assets</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="VizdoomMyWayHome with Doom 2 assets" src="../../_images/VizdoomMyWayHome-Doom2.gif" /></p></td>
+<td><p><img alt="VizdoomMyWayHome with Freedoom 2 assets" src="../../_images/VizdoomMyWayHome-Freedoom2.gif" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p><strong>REWARDS:</strong></p>
 <ul class="simple">
 <li><p>+1 for reaching the vest</p></li>
@@ -582,6 +723,20 @@ along the opposite wall and walks between left and right corners
 along the wall. The player is equipped with a rocket launcher and
 a single rocket. The episode ends when the missile hits a wall/the monster
 or on timeout.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
+<th class="head"><p>Freedoom assets</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="VizdoomPredictPosition with Doom 2 assets" src="../../_images/VizdoomPredictPosition-Doom2.gif" /></p></td>
+<td><p><img alt="VizdoomPredictPosition with Freedoom 2 assets" src="../../_images/VizdoomPredictPosition-Freedoom2.gif" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p><strong>REWARDS:</strong></p>
 <ul class="simple">
 <li><p>+1 for killing the monster</p></li>
@@ -608,6 +763,20 @@ randomly somewhere along the opposite wall and try to kill
 the player with fireballs. The player can only (config) move
 left/right. More monsters appear with time. The episode ends when
 the player dies.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Doom assets</p></th>
+<th class="head"><p>Freedoom assets</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="VizdoomTakeCover with Doom 2 assets" src="../../_images/VizdoomTakeCover-Doom2.gif" /></p></td>
+<td><p><img alt="VizdoomTakeCover with Freedoom 2 assets" src="../../_images/VizdoomTakeCover-Freedoom2.gif" /></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p><strong>REWARDS:</strong></p>
 <ul class="simple">
 <li><p>+1 for every tic the agent is alive</p></li>

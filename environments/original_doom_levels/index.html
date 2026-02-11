@@ -223,8 +223,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/python/exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium/">Gymnasium Env</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym/">OpenAI Gym Env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium_wrapper/">Gymnasium Env Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym_wrapper/">OpenAI Gym Env Wrapper</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -243,11 +243,12 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Playing original Doom levels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../third_party/">Third-party environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../creating_custom/">Creating a custom environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../slade_config/">SLADE configuration guide</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Dev guide</span></p>
+<p class="caption" role="heading"><span class="caption-text">Dev</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../dev/dev_guide/">ViZDoom Development Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../dev/building_from_source/">Building ViZDoom from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/dev_guide/">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/building_from_source/">Building from source</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -321,17 +322,32 @@
 <p>Beside the custom scenarios (original ViZDoom nomenclature)/environments (Gymnasium/Open AI Gym nomenclature) original introduced with ViZDoom and many user-created. It is possible to play the original Doom/Doom 2/Freedoom/Freedoom 2 levels as well.</p>
 <p>Because we cannot provide original Doom’s and Doom’s 2 levels, in order to play them you need to have original Doom or Doom 2 WAD files.
 You can get them by purchasing the original game from <a class="reference external" href="https://store.steampowered.com/app/2280/DOOM__DOOM_II/">Steam</a> or <a class="reference external" href="https://www.gog.com/game/doom_doom_ii">GOG</a>.
-You can then place the doom2.wad and doom.wad files into your vizdoom package directory (same directory as vizdoom(.exe)).</p>
+You can then place the doom2.wad and doom.wad files into your vizdoom package root directory (same directory as vizdoom(.exe)).
+You can install an IWAD into the package location with one of the following one-line commands:</p>
+<p>Python only:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import os,shutil,sys,vizdoom; src=sys.argv[1]; dst=os.path.join(vizdoom.install_path, os.path.basename(src).lower()); shutil.copy2(src,dst);&#39;</span><span class="w"> </span>/path/to/file.wad
+</pre></div>
+</div>
+<p>Python + shell:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nv">src</span><span class="o">=</span>/path/to/file.wad<span class="p">;</span><span class="w"> </span><span class="nv">dst_dir</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import vizdoom; print(vizdoom.install_path)&#39;</span><span class="k">)</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span>cp<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$src</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$dst_dir</span><span class="s2">/</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">src</span><span class="p">,,</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>ViZDoom expects doom2.wad and doom.wad files to be in lowercase (they are sometimes distrubited with uppercased names).
+ViZDoom will autodetect <code class="docutils literal notranslate"><span class="pre">doom2.wad</span></code> filename installed in the package root directory without need to set <code class="docutils literal notranslate"><span class="pre">DoomGame.set_doom_game_path</span></code>.
+It will also automatically look for other IWAD files in the package root directory.</p>
 <section id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h2>
 <p>All scenarios/environments based on original Doom levels use the same configuration file.</p>
-<p><strong>STATE/OBSERVATION</strong>
-Full Doom hud is rendered with in-game messages are rendered.
+<section id="state-observation">
+<h3>STATE/OBSERVATION<a class="headerlink" href="#state-observation" title="Link to this heading">¶</a></h3>
+<p>Full Doom hud is rendered with in-game messages are rendered.
 As it contains all information about health, armor, ammo, keys, etc., no additional game variables are included in the state by default.
 Additionally the automap and audio buffers are enabled as a part of the state.
 By default, the original Doom resolution of 320x240 is used.</p>
-<p><strong>ACTION SPACE</strong>
-The action space includes all the buttons available in the original Doom, such as movement, shooting, weapon switching, etc.</p>
+</section>
+<section id="action-space">
+<h3>ACTION SPACE<a class="headerlink" href="#action-space" title="Link to this heading">¶</a></h3>
+<p>The action space includes all the buttons available in the original Doom, such as movement, shooting, weapon switching, etc.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">ATTACK</span></code> - shoot</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SPEED</span></code> - run (move faster)</p></li>
@@ -343,8 +359,10 @@ The action space includes all the buttons available in the original Doom, such a
 <li><p><code class="docutils literal notranslate"><span class="pre">SELECT_NEXT_WEAPON</span></code> - select the next weapon in the inventory</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SELECT_PREV_WEAPON</span></code> - select the previous weapon in the inventory</p></li>
 </ul>
-<p><strong>REWARDS</strong>
-The reward structure is simgple, 1 is assigned for reaching the end of the level, and 0 otherwise.
+</section>
+<section id="rewards">
+<h3>REWARDS<a class="headerlink" href="#rewards" title="Link to this heading">¶</a></h3>
+<p>The reward structure by default is simple, 1 is assigned for reaching the end of the level, and 0 otherwise.
 This means that the agent receives a reward of 1 only when it successfully completes the level, and receives a reward of 0 for all other actions and states.</p>
 <p>You can modify the reward structure by using ViZDoom’s built-in reward shaping features, such as assigning rewards for picking up items, killing enemies, or taking damage.
 See:</p>
@@ -363,6 +381,7 @@ See:</p>
 <li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_last_reward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_last_reward</span></code></span></a></p></li>
 <li><p><a class="reference internal" href="#../api/doom_game.md#vizdoom.DoomGame.set_map_exit_reward"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_map_exit_reward</span></code></span></a></p></li>
 </ul>
+</section>
 </section>
 <section id="convention-of-environment-names-in-gymnasium">
 <h2>Convention of environment names in Gymnasium<a class="headerlink" href="#convention-of-environment-names-in-gymnasium" title="Link to this heading">¶</a></h2>
@@ -391,7 +410,7 @@ See:</p>
 <span class="n">game</span> <span class="o">=</span> <span class="n">vzd</span><span class="o">.</span><span class="n">DoomGame</span><span class="p">()</span>
 <span class="n">game</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vzd</span><span class="o">.</span><span class="n">scenarios_path</span><span class="p">,</span> <span class="s2">&quot;doom.cfg&quot;</span><span class="p">))</span> <span class="c1"># or doom2.cfg, freedoom1.cfg, freedoom2.cfg</span>
 <span class="n">game</span><span class="o">.</span><span class="n">set_doom_map</span><span class="p">(</span><span class="s2">&quot;E1M1&quot;</span><span class="p">)</span>  <span class="c1"># see list of map IDs below</span>
-<span class="n">game</span><span class="o">.</span><span class="n">set_skill_level</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># or 2, 3, 4, 5</span>
+<span class="n">game</span><span class="o">.</span><span class="n">set_doom_level</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># or 2, 3, 4, 5</span>
 </pre></div>
 </div>
 <p>Configuration file:</p>
@@ -1226,7 +1245,12 @@ See:</p>
             <div class="toc-tree">
               <ul>
 <li><a class="reference internal" href="#">Playing original Doom levels</a><ul>
-<li><a class="reference internal" href="#configuration">Configuration</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li><a class="reference internal" href="#state-observation">STATE/OBSERVATION</a></li>
+<li><a class="reference internal" href="#action-space">ACTION SPACE</a></li>
+<li><a class="reference internal" href="#rewards">REWARDS</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#convention-of-environment-names-in-gymnasium">Convention of environment names in Gymnasium</a></li>
 <li><a class="reference internal" href="#using-original-doom-levels-with-original-vizdoom-api">Using original Doom levels with Original ViZDoom API</a></li>
 <li><a class="reference internal" href="#original-doom-1-levels">Original Doom 1 levels</a><ul>

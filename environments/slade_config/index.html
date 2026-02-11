@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en" data-content_root="../../../">
+<html class="no-js" lang="en" data-content_root="../../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark">
@@ -7,15 +7,15 @@
     <meta property="og:title" content="ViZDoom Documentation" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
-    <meta property="og:url" content="https://vizdoom.farama.org/api/python/gym.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="C++ API" href="../../cpp/" /><link rel="prev" title="Gymnasium Env" href="../gymnasium/" />
-        <link rel="canonical" href="https://vizdoom.farama.org/api/python/gym.html" />
+    <meta property="og:url" content="https://vizdoom.farama.org/environments/slade_config.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Development Guide" href="../../dev/dev_guide/" /><link rel="prev" title="Creating a custom environment" href="../creating_custom/" />
+        <link rel="canonical" href="https://vizdoom.farama.org/environments/slade_config.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
-        <title>OpenAI Gym Env - ViZDoom Documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=3e7f4c72" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=82c8b628" />
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
+        <title>SLADE configuration guide - ViZDoom Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=82c8b628" />
     
     
 
@@ -56,16 +56,16 @@
           </label>
         </div>
         <div class="farama-header__left farama-header__center--mobile">
-          <a href="../../../">
-              <img class="farama-header__logo only-light" src="../../../_static/img/vizdoom-black.svg" alt="Light Logo"/>
-              <img class="farama-header__logo only-dark" src="../../../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
+          <a href="../../">
+              <img class="farama-header__logo only-light" src="../../_static/img/vizdoom-black.svg" alt="Light Logo"/>
+              <img class="farama-header__logo only-dark" src="../../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
             <span class="farama-header__title">ViZDoom Documentation</span>
           </a>
         </div>
         <div class="farama-header__right">
           <div class="farama-header-menu">
             <button class="farama-header-menu__btn" aria-label="Open Farama Menu" aria-expanded="false" aria-haspopup="true" aria-controls="farama-menu">
-              <img class="farama-black-logo-invert" src="../../../_static/img/farama-logo-header.svg">
+              <img class="farama-black-logo-invert" src="../../_static/img/farama-logo-header.svg">
               <svg viewBox="0 0 24 24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <polyline style="stroke-linecap: round; stroke-linejoin: round; fill: none; stroke-width: 2px;" points="1 7 12 18 23 7"></polyline>
               </svg>
@@ -73,7 +73,7 @@
             <div class="farama-header-menu-container farama-hidden" aria-hidden="true" id="farama-menu">
               <div class="farama-header-menu__header">
                 <a href="https://farama.org">
-                  <img class="farama-header-menu__logo farama-white-logo-invert" src="../../../_static/img/farama_solid_white.svg" alt="Farama Foundation logo">
+                  <img class="farama-header-menu__logo farama-white-logo-invert" src="../../_static/img/farama_solid_white.svg" alt="Farama Foundation logo">
                   <span>Farama Foundation</span>
                 </a>
                 <div class="farama-header-menu-header__right">
@@ -180,7 +180,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../"><div class="brand">ViZDoom Documentation</div></a>
+      <a href="../../"><div class="brand">ViZDoom Documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -200,11 +200,11 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="farama-sidebar__title" href="../../../">
-      <img class="farama-header__logo only-light" src="../../../_static/img/vizdoom-black.svg" alt="Light Logo"/>
-      <img class="farama-header__logo only-dark" src="../../../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
+      <div class="sidebar-sticky"><a class="farama-sidebar__title" href="../../">
+      <img class="farama-header__logo only-light" src="../../_static/img/vizdoom-black.svg" alt="Light Logo"/>
+      <img class="farama-header__logo only-dark" src="../../_static/img/vizdoom-white.svg" alt="Dark Logo"/>
     <span class="farama-header__title">ViZDoom Documentation</span>
-  </a><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
+  </a><form class="sidebar-search-container" method="get" action="../../search/" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
@@ -212,53 +212,54 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/python_quickstart/">Python quick start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../introduction/apis_and_wrappers/">APIs and wrappers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/python_quickstart/">Python quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/apis_and_wrappers/">APIs and wrappers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul class="current">
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../">Python API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../doom_game/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../game_state/">GameState</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../enums/">Enums</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utils/">Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gymnasium/">Gymnasium Env</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">OpenAI Gym Env</a></li>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/python/">Python API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Python API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/doom_game/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/game_state/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/utils/">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gymnasium_wrapper/">Gymnasium Env Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/python/gym_wrapper/">OpenAI Gym Env Wrapper</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../cpp/doom_game/">DoomGame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../cpp/game_state/">GameState</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../cpp/enums/">Enums</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../cpp/exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../cpp/utils/">Utilities</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/cpp/">C++ API</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/doom_game/">DoomGame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/game_state/">GameState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/enums/">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/exceptions/">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cpp/utils/">Utilities</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../configuration_files/">Configuration files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/configuration_files/">Configuration files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../environments/default/">Default scenarios/environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../environments/original_doom_levels/">Playing original Doom levels</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../environments/third_party/">Third-party environments</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../environments/creating_custom/">Creating a custom environment</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../default/">Default scenarios/environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../original_doom_levels/">Playing original Doom levels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../third_party/">Third-party environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../creating_custom/">Creating a custom environment</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">SLADE configuration guide</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Dev guide</span></p>
+<p class="caption" role="heading"><span class="caption-text">Dev</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../dev/dev_guide/">ViZDoom Development Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../dev/building_from_source/">Building ViZDoom from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/dev_guide/">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/building_from_source/">Building from source</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../faq/">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../citation/">How to cite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation/">How to cite</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://vizdoom.cs.put.edu.pl/">Original website</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom">Github</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../release_notes/">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes/">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/blob/master/docs/README.md">Contribute to the Docs</a></li>
 </ul>
 
@@ -285,7 +286,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/api/python/gym.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/environments/slade_config.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -307,7 +308,7 @@
                 </svg>
               </button>
             </div>
-            <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-content-icon" for="__toc">
               <div class="visually-hidden">Toggle table of contents sidebar</div>
               <i class="icon"><svg>
                   <use href="#svg-toc"></use>
@@ -316,9 +317,55 @@
           </div>
           <article role="main">
             
-            <section class="tex2jax_ignore mathjax_ignore" id="openai-gym-env">
-<h1>OpenAI Gym Env<a class="headerlink" href="#openai-gym-env" title="Link to this heading">¶</a></h1>
-<p>Gym wrapper was removed in 1.3.0. If you still need it, it’s available in version 1.2.4 and earlier.</p>
+            <section class="tex2jax_ignore mathjax_ignore" id="slade-configuration-guide">
+<h1>SLADE configuration guide<a class="headerlink" href="#slade-configuration-guide" title="Link to this heading">¶</a></h1>
+<p>This is a short guide on how to configure <a class="reference external" href="http://slade.mancubus.net/index.php?page=downloads">SLADE</a> for creating custom maps for ViZDoom. SLADE is a cross-platform editor for Doom-engine-based games, including Doom, Heretic, Hexen, Strife, and others.</p>
+<p>This is not meant to be a full tutorial on how to use SLADE. For more information and tutorials on how to use SLADE, please refer to the <a class="reference external" href="http://slade.mancubus.net/index.php?page=wiki">official SLADE wiki</a>.</p>
+<p>You can download SLADE for Linux, MacOS, and Windows from <a class="reference external" href="http://slade.mancubus.net/index.php?page=downloads">here</a>.
+It is also available as a Flatpak on <a class="reference external" href="https://flathub.org/en/apps/net.mancubus.SLADE">flathub</a></p>
+<p>For all these steps it is assumed that user installed ViZDoom in venv under <code class="docutils literal notranslate"><span class="pre">/home/marek/ViZDoom/venv</span></code> and that ViZDoom repository is located in <code class="docutils literal notranslate"><span class="pre">/home/marek/ViZDoom</span></code>. Please adjust paths accordingly to your setup.</p>
+<section id="configuring-slade-base-resource-paths">
+<h2>1. Configuring SLADE base resource paths<a class="headerlink" href="#configuring-slade-base-resource-paths" title="Link to this heading">¶</a></h2>
+<figure class="align-default">
+<img alt="SLADE new window" src="../../_images/slade_new_window.png" />
+</figure>
+<p>After installing and starting SLADE, you need to configure the base resource paths. Go to <code class="docutils literal notranslate"><span class="pre">Edit</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Preferences</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Editing</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Base</span> <span class="pre">Resource</span> <span class="pre">Archive</span></code>. You need to add the path to the Doom2 WAD file (or any other IWAD file you want to use). If you do not have the Doom2 WAD file, you can use the free <a class="reference external" href="https://freedoom.github.io/">Freedoom2</a> WAD file. It is distributed as a part of ViZDoom package. You can also download Freedoom from <a class="reference external" href="https://freedoom.github.io/downloads/">here</a>.</p>
+<p>Click on the <code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">archive</span></code> button and add the path to the base WAD file. In our case, it is <code class="docutils literal notranslate"><span class="pre">/home/marek/ViZDoom/venv/lib/python-3.13/site-packages/vizdoom/freedoom2.wad</span></code>, but can be also <code class="docutils literal notranslate"><span class="pre">doom2.wad</span></code> or any other IWAD file you want to use.
+All default WAD files available in ViZDoom are created for Doom/Freedoom 2 games.
+Then in the <code class="docutils literal notranslate"><span class="pre">ZDoom</span> <span class="pre">PK3</span> <span class="pre">Path</span></code> below select <code class="docutils literal notranslate"><span class="pre">vizdoom.pk3</span></code> file located in the ViZDoom package. In our case, it is <code class="docutils literal notranslate"><span class="pre">/home/marek/ViZDoom/venv/lib/python-3.13/site-packages/vizdoom/vizdoom.pk3</span></code>.
+After adding the paths, it should look like this:</p>
+<figure class="align-default">
+<img alt="SLADE resource paths" src="../../_images/base_resource_config.png" />
+</figure>
+</section>
+<section id="configuring-acs-compiler">
+<h2>2. Configuring ACS compiler<a class="headerlink" href="#configuring-acs-compiler" title="Link to this heading">¶</a></h2>
+<figure class="align-default">
+<img alt="SLADE ACS compiler configuration" src="../../_images/acs_compiler_config.png" />
+</figure>
+<p>Next, you need to configure the ACS compiler. Go to <code class="docutils literal notranslate"><span class="pre">Edit</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Preferences</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Scripting</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">ACS</span></code>. In the <code class="docutils literal notranslate"><span class="pre">Location</span> <span class="pre">of</span> <span class="pre">acc</span> <span class="pre">executable</span></code> field, you need to select the path to the <code class="docutils literal notranslate"><span class="pre">acc</span></code> executable located in the ViZDoom venv. In our case, it is <code class="docutils literal notranslate"><span class="pre">/home/marek/ViZDoom/acc-1.60-linux64/acc</span></code>. You also need to add the following parameters in the <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> field:</p>
+</section>
+<section id="launching-map-editor">
+<h2>3. Launching map editor<a class="headerlink" href="#launching-map-editor" title="Link to this heading">¶</a></h2>
+<p>Now you are ready to edit maps using SLADE. You can load one of the existing WAD files available in ViZDoom repository or create a new WAD file.
+When lunching map editor it is important to select matching game and base resource. In our case it is <code class="docutils literal notranslate"><span class="pre">Doom2</span></code> game for <code class="docutils literal notranslate"><span class="pre">freedoom2.wad</span></code>.
+For source port after select <code class="docutils literal notranslate"><span class="pre">ZDoom</span></code> which is a base of ViZDoom.</p>
+<figure class="align-default">
+<img alt="SLADE map editor configuration" src="../../_images/map_editor_config.png" />
+</figure>
+</section>
+<section id="running-the-map">
+<h2>4. Running the map<a class="headerlink" href="#running-the-map" title="Link to this heading">¶</a></h2>
+<p>When you are done with editing the map, you can run it using ViZDoom executable to see how it looks and plays.
+Map editor allows you to run the map directly from the editor. It will ask you to select game executable type (again select <code class="docutils literal notranslate"><span class="pre">ZDoom</span></code>) and path to the executable, select <code class="docutils literal notranslate"><span class="pre">vizdoom</span></code> executable located in the root directory of ViZDoom package (in our case, it is <code class="docutils literal notranslate"><span class="pre">/home/marek/ViZDoom/venv/lib/python-3.13/site-packages/vizdoom/vizdoom</span></code>).</p>
+<figure class="align-default">
+<img alt="SLADE run map from the map editor configuration" src="environments/_static/img/slade/run_map_config.png" />
+</figure>
+<p>The editor may show a warning about missing node builder. You can ignore it, as ViZDoom has it built in and does not require it to be installed.</p>
+<figure class="align-default">
+<img alt="SLADE node builder warning" src="../../_images/node_builder_warning.png" />
+</figure>
+</section>
 </section>
 
           </article>
@@ -326,18 +373,18 @@
         <footer>
           
           <div class="related-pages">
-            <a class="next-page" href="../../cpp/">
+            <a class="next-page" href="../../dev/dev_guide/">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">C++ API</div>
+                <div class="title">Development Guide</div>
               </div>
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
             </a>
-            <a class="prev-page" href="../gymnasium/">
+            <a class="prev-page" href="../creating_custom/">
               <svg class="furo-related-icon">
                 <use href="#svg-arrow-right"></use>
               </svg>
@@ -346,7 +393,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Gymnasium Env</div>
+                <div class="title">Creating a custom environment</div>
                 
               </div>
             </a>
@@ -378,8 +425,30 @@
           
         </footer>
       </div>
-      <aside class="toc-drawer no-toc">
+      <aside class="toc-drawer">
         
+        
+        <div class="toc-sticky toc-scroll">
+          <div class="toc-title-container">
+            <span class="toc-title">
+              On this page
+            </span>
+          </div>
+          <div class="toc-tree-container">
+            <div class="toc-tree">
+              <ul>
+<li><a class="reference internal" href="#">SLADE configuration guide</a><ul>
+<li><a class="reference internal" href="#configuring-slade-base-resource-paths">1. Configuring SLADE base resource paths</a></li>
+<li><a class="reference internal" href="#configuring-acs-compiler">2. Configuring ACS compiler</a></li>
+<li><a class="reference internal" href="#launching-map-editor">3. Launching map editor</a></li>
+<li><a class="reference internal" href="#running-the-map">4. Running the map</a></li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
         
         
       </aside>
@@ -459,10 +528,10 @@
         })()
       </script>
 
-    <script src="../../../_static/documentation_options.js?v=a5603611"></script>
-    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../../../_static/scripts/furo.js?v=7660844c"></script>
+    <script src="../../_static/documentation_options.js?v=a5603611"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=7660844c"></script>
     
     <script>
 

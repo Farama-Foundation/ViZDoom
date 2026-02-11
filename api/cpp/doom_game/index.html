@@ -223,8 +223,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../python/enums/">Enums</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../python/utils/">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../python/exceptions/">Exceptions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../python/gymnasium/">Gymnasium Env</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../python/gym/">OpenAI Gym Env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../python/gymnasium_wrapper/">Gymnasium Env Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../python/gym_wrapper/">OpenAI Gym Env Wrapper</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../">C++ API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of C++ API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -243,11 +243,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../environments/original_doom_levels/">Playing original Doom levels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environments/third_party/">Third-party environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environments/creating_custom/">Creating a custom environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environments/slade_config/">SLADE configuration guide</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Dev guide</span></p>
+<p class="caption" role="heading"><span class="caption-text">Dev</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../dev/dev_guide/">ViZDoom Development Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../dev/building_from_source/">Building ViZDoom from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/dev_guide/">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/building_from_source/">Building from source</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -2016,50 +2017,6 @@ or a Python dictionary with configuration key-value pairs.</p>
 <p>Returns true if the configuration was successfully applied, false if errors occurred.</p>
 <p>Note: added in 1.3.0</p>
 </section>
-<section id="id1">
-<h3><code class="docutils literal notranslate"><span class="pre">setConfig</span></code><a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
-<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">setConfig(std::string</span> <span class="pre">config)</span></code></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td class="text-left"><p>Python</p></td>
-<td class="text-left"><p>`set_config(config: str</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>Sets configuration from a config string or dictionary (Python only).</p>
-<p>This method accepts either a configuration string (in the same format as .cfg files)
-or a Python dictionary with configuration key-value pairs.</p>
-<p>When using a dictionary:</p>
-<ul class="simple">
-<li><p>Keys should be configuration parameter names (e.g., ‘screen_resolution’, ‘doom_skill’)</p></li>
-<li><p>Values can be:</p>
-<ul>
-<li><p>Primitive types: str, int, float, bool</p></li>
-<li><p>Enums: Button, GameVariable, ScreenResolution, ScreenFormat, SamplingRate, Mode, AutomapMode</p></li>
-<li><p>Lists: for ‘available_buttons’ and ‘available_game_variables’</p></li>
-</ul>
-</li>
-</ul>
-<p>Relative paths (e.g., for ‘doom_scenario_path’) are resolved relative to the current working directory.</p>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">game</span><span class="o">.</span><span class="n">set_config</span><span class="p">({</span>
-        <span class="s1">&#39;screen_resolution&#39;</span><span class="p">:</span> <span class="n">ScreenResolution</span><span class="o">.</span><span class="n">RES_640X480</span><span class="p">,</span>
-        <span class="s1">&#39;screen_format&#39;</span><span class="p">:</span> <span class="n">ScreenFormat</span><span class="o">.</span><span class="n">CRCGCB</span><span class="p">,</span>
-        <span class="s1">&#39;doom_skill&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-        <span class="s1">&#39;available_buttons&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">Button</span><span class="o">.</span><span class="n">MOVE_LEFT</span><span class="p">,</span> <span class="n">Button</span><span class="o">.</span><span class="n">MOVE_RIGHT</span><span class="p">,</span> <span class="n">Button</span><span class="o">.</span><span class="n">ATTACK</span><span class="p">],</span>
-        <span class="s1">&#39;available_game_variables&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">GameVariable</span><span class="o">.</span><span class="n">AMMO2</span><span class="p">],</span>
-        <span class="s1">&#39;living_reward&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span>
-    <span class="p">})</span>
-</pre></div>
-</div>
-<p>Returns true if the configuration was successfully applied, false if errors occurred.</p>
-</section>
 <hr class="docutils" />
 <section id="getmode">
 <h3><code class="docutils literal notranslate"><span class="pre">getMode</span></code><a class="headerlink" href="#getmode" title="Link to this heading">¶</a></h3>
@@ -2227,8 +2184,9 @@ We recommend not changing this path unless you know what you are doing.</p>
 </table>
 </div>
 <p>Sets the path to the Doom engine-based game file (wad format).
-If set to empty, DoomGame will look for doom2.wad, DOOM2.WAD, and freedoom2.wad (in that order) in the working directory first and then in ViZDoom’s installation directory
-(where vizdoom library/pyd is).</p>
+If set to empty, DoomGame will look for doom2.wad, and freedoom2.wad (in that order) in the working directory first and then in ViZDoom’s installation directory
+(where vizdoom library/pyd is).
+If the path is set and the file does not exist, ViZDoom will check if the file exists in the working directory and then in ViZDoom’s installation directory.</p>
 <p>Default value: <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">DoomGamePath</span></code>/<code class="docutils literal notranslate"><span class="pre">doom_game_path</span></code></p>
 </section>
@@ -2612,7 +2570,7 @@ The format change affects only the buffers, so it will not have any effect on th
 </thead>
 <tbody>
 <tr class="row-even"><td class="text-left"><p>Python</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_depth_buffer_enabled()</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_depth_buffer_enabled()</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -2661,7 +2619,7 @@ Depth buffer will contain noise if <code class="docutils literal notranslate"><s
 </thead>
 <tbody>
 <tr class="row-even"><td class="text-left"><p>Python</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_labels_buffer_enabled()</span> <span class="pre">-&gt;</span> <span class="pre">None</span></code></p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">is_labels_buffer_enabled()</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -2695,7 +2653,7 @@ LabelsBuffer will contain noise if <code class="docutils literal notranslate"><s
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels.py">examples/python/labels.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels_buffer.py">examples/python/labels_buffer.py</a></p></li>
 <li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.0.</p>
@@ -3776,7 +3734,6 @@ Doom uses 35 ticks per second.</p>
 <li><a class="reference internal" href="#general-game-setting-methods">General game setting methods</a><ul>
 <li><a class="reference internal" href="#loadconfig"><code class="docutils literal notranslate"><span class="pre">loadConfig</span></code></a></li>
 <li><a class="reference internal" href="#setconfig"><code class="docutils literal notranslate"><span class="pre">setConfig</span></code></a></li>
-<li><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">setConfig</span></code></a></li>
 <li><a class="reference internal" href="#getmode"><code class="docutils literal notranslate"><span class="pre">getMode</span></code></a></li>
 <li><a class="reference internal" href="#setmode"><code class="docutils literal notranslate"><span class="pre">setMode</span></code></a></li>
 <li><a class="reference internal" href="#getticrate"><code class="docutils literal notranslate"><span class="pre">getTicrate</span></code></a></li>
