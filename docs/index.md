@@ -85,7 +85,7 @@ environments/slade_config
 
 ```{toctree}
 :hidden:
-:caption: Dev guide
+:caption: Dev
 
 dev/dev_guide
 dev/building_from_source

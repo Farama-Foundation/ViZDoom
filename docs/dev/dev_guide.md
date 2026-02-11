@@ -1,4 +1,4 @@
-# ViZDoom Development Guide
+# Development Guide
 
 
 ## Tech stack + deps
