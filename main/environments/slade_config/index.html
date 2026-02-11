@@ -8,7 +8,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:description" content="" />
     <meta property="og:url" content="https://vizdoom.farama.org/environments/slade_config.html" /><meta property="og:image" content="https://vizdoom.farama.org/_static/img/vizdoom-github.png" /><meta name="twitter:card" content="summary_large_image"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="ViZDoom Development Guide" href="../../dev/dev_guide/" /><link rel="prev" title="Creating a custom environment" href="../creating_custom/" />
         <link rel="canonical" href="https://vizdoom.farama.org/environments/slade_config.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
@@ -238,11 +238,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api/configuration_files/">Configuration files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Environments</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../default/">Default scenarios/environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../original_doom_levels/">Playing original Doom levels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../third_party/">Third-party environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../creating_custom/">Creating a custom environment</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">SLADE configuration guide for ViZDoom</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Dev guide</span></p>
 <ul>
@@ -326,7 +327,7 @@ It is also available as a Flatpak on <a class="reference external" href="https:/
 <section id="configuring-slade-base-resource-paths">
 <h2>1. Configuring SLADE base resource paths<a class="headerlink" href="#configuring-slade-base-resource-paths" title="Link to this heading">¶</a></h2>
 <figure class="align-default">
-<img alt="SLADE new window" src="environments/_static/img/slade/slade_new_window.png" />
+<img alt="SLADE new window" src="../../_images/slade_new_window.png" />
 </figure>
 <p>After installing and starting SLADE, you need to configure the base resource paths. Go to <code class="docutils literal notranslate"><span class="pre">Edit</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Preferences</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Editing</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Base</span> <span class="pre">Resource</span> <span class="pre">Archive</span></code>. You need to add the path to the Doom2 WAD file (or any other IWAD file you want to use). If you do not have the Doom2 WAD file, you can use the free <a class="reference external" href="https://freedoom.github.io/">Freedoom2</a> WAD file. It is distributed as a part of ViZDoom package. You can also download Freedoom from <a class="reference external" href="https://freedoom.github.io/downloads/">here</a>.</p>
 <p>Click on the <code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">archive</span></code> button and add the path to the base WAD file. In our case, it is <code class="docutils literal notranslate"><span class="pre">/home/marek/ViZDoom/venv/lib/python-3.13/site-packages/vizdoom/freedoom2.wad</span></code>, but can be also <code class="docutils literal notranslate"><span class="pre">doom2.wad</span></code> or any other IWAD file you want to use.
@@ -334,13 +335,13 @@ All default WAD files available in ViZDoom are created for Doom/Freedoom 2 games
 Then in the <code class="docutils literal notranslate"><span class="pre">ZDoom</span> <span class="pre">PK3</span> <span class="pre">Path</span></code> below select <code class="docutils literal notranslate"><span class="pre">vizdoom.pk3</span></code> file located in the ViZDoom package. In our case, it is <code class="docutils literal notranslate"><span class="pre">/home/marek/ViZDoom/venv/lib/python-3.13/site-packages/vizdoom/vizdoom.pk3</span></code>.
 After adding the paths, it should look like this:</p>
 <figure class="align-default">
-<img alt="SLADE resource paths" src="environments/_static/img/slade/base_resource_config.png" />
+<img alt="SLADE resource paths" src="../../_images/base_resource_config.png" />
 </figure>
 </section>
 <section id="configuring-acs-compiler">
 <h2>2. Configuring ACS compiler<a class="headerlink" href="#configuring-acs-compiler" title="Link to this heading">¶</a></h2>
 <figure class="align-default">
-<img alt="SLADE ACS compiler configuration" src="environments/_static/img/slade/acs_compiler_config.png" />
+<img alt="SLADE ACS compiler configuration" src="../../_images/acs_compiler_config.png" />
 </figure>
 <p>Next, you need to configure the ACS compiler. Go to <code class="docutils literal notranslate"><span class="pre">Edit</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Preferences</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Scripting</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">ACS</span></code>. In the <code class="docutils literal notranslate"><span class="pre">Location</span> <span class="pre">of</span> <span class="pre">acc</span> <span class="pre">executable</span></code> field, you need to select the path to the <code class="docutils literal notranslate"><span class="pre">acc</span></code> executable located in the ViZDoom venv. In our case, it is <code class="docutils literal notranslate"><span class="pre">/home/marek/ViZDoom/acc-1.60-linux64/acc</span></code>. You also need to add the following parameters in the <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> field:</p>
 </section>
@@ -350,7 +351,7 @@ After adding the paths, it should look like this:</p>
 When lunching map editor it is important to select matching game and base resource. In our case it is <code class="docutils literal notranslate"><span class="pre">Doom2</span></code> game for <code class="docutils literal notranslate"><span class="pre">freedoom2.wad</span></code>.
 For source port after select <code class="docutils literal notranslate"><span class="pre">ZDoom</span></code> which is a base of ViZDoom.</p>
 <figure class="align-default">
-<img alt="SLADE map editor configuration" src="environments/_static/img/slade/map_editor_config.png" />
+<img alt="SLADE map editor configuration" src="../../_images/map_editor_config.png" />
 </figure>
 </section>
 <section id="running-the-map">
@@ -362,7 +363,7 @@ Map editor allows you to run the map directly from the editor. It will ask you t
 </figure>
 <p>The editor may show a warning about missing node builder. You can ignore it, as ViZDoom has it built in and does not require it to be installed.</p>
 <figure class="align-default">
-<img alt="SLADE node builder warning" src="environments/_static/img/slade/node_builder_warning.png" />
+<img alt="SLADE node builder warning" src="../../_images/node_builder_warning.png" />
 </figure>
 </section>
 </section>
@@ -372,8 +373,30 @@ Map editor allows you to run the map directly from the editor. It will ask you t
         <footer>
           
           <div class="related-pages">
-            
-            
+            <a class="next-page" href="../../dev/dev_guide/">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">ViZDoom Development Guide</div>
+              </div>
+              <svg class="furo-related-icon">
+                <use href="#svg-arrow-right"></use>
+              </svg>
+            </a>
+            <a class="prev-page" href="../creating_custom/">
+              <svg class="furo-related-icon">
+                <use href="#svg-arrow-right"></use>
+              </svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Creating a custom environment</div>
+                
+              </div>
+            </a>
           </div>
           <div class="bottom-of-page">
             <div class="left-details">

@@ -243,6 +243,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../environments/original_doom_levels/">Playing original Doom levels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environments/third_party/">Third-party environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../environments/creating_custom/">Creating a custom environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environments/slade_config/">SLADE configuration guide for ViZDoom</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Dev guide</span></p>
 <ul>
@@ -2183,8 +2184,9 @@ We recommend not changing this path unless you know what you are doing.</p>
 </table>
 </div>
 <p>Sets the path to the Doom engine-based game file (wad format).
-If set to empty, DoomGame will look for doom2.wad, DOOM2.WAD, and freedoom2.wad (in that order) in the working directory first and then in ViZDoom’s installation directory
-(where vizdoom library/pyd is).</p>
+If set to empty, DoomGame will look for doom2.wad, and freedoom2.wad (in that order) in the working directory first and then in ViZDoom’s installation directory
+(where vizdoom library/pyd is).
+If the path is set and the file does not exist, ViZDoom will check if the file exists in the working directory and then in ViZDoom’s installation directory.</p>
 <p>Default value: <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">DoomGamePath</span></code>/<code class="docutils literal notranslate"><span class="pre">doom_game_path</span></code></p>
 </section>

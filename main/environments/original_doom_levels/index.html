@@ -243,6 +243,7 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Playing original Doom levels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../third_party/">Third-party environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../creating_custom/">Creating a custom environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../slade_config/">SLADE configuration guide for ViZDoom</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Dev guide</span></p>
 <ul>
@@ -321,7 +322,19 @@
 <p>Beside the custom scenarios (original ViZDoom nomenclature)/environments (Gymnasium/Open AI Gym nomenclature) original introduced with ViZDoom and many user-created. It is possible to play the original Doom/Doom 2/Freedoom/Freedoom 2 levels as well.</p>
 <p>Because we cannot provide original Doom’s and Doom’s 2 levels, in order to play them you need to have original Doom or Doom 2 WAD files.
 You can get them by purchasing the original game from <a class="reference external" href="https://store.steampowered.com/app/2280/DOOM__DOOM_II/">Steam</a> or <a class="reference external" href="https://www.gog.com/game/doom_doom_ii">GOG</a>.
-You can then place the doom2.wad and doom.wad files into your vizdoom package directory (same directory as vizdoom(.exe)).</p>
+You can then place the doom2.wad and doom.wad files into your vizdoom package root directory (same directory as vizdoom(.exe)).
+You can install an IWAD into the package location with one of the following one-line commands:</p>
+<p>Python only:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import os,shutil,sys,vizdoom; src=sys.argv[1]; dst=os.path.join(vizdoom.install_path, os.path.basename(src).lower()); shutil.copy2(src,dst);&#39;</span><span class="w"> </span>/path/to/file.wad
+</pre></div>
+</div>
+<p>Python + shell:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nv">src</span><span class="o">=</span>/path/to/file.wad<span class="p">;</span><span class="w"> </span><span class="nv">dst_dir</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import vizdoom; print(vizdoom.install_path)&#39;</span><span class="k">)</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span>cp<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$src</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$dst_dir</span><span class="s2">/</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">src</span><span class="p">,,</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>ViZDoom expects doom2.wad and doom.wad files to be in lowercase (they are sometimes distrubited with uppercased names).
+ViZDoom will autodetect <code class="docutils literal notranslate"><span class="pre">doom2.wad</span></code> filename installed in the package root directory without need to set <code class="docutils literal notranslate"><span class="pre">DoomGame.set_doom_game_path</span></code>.
+It will also automatically look for other IWAD files in the package root directory.</p>
 <section id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h2>
 <p>All scenarios/environments based on original Doom levels use the same configuration file.</p>
