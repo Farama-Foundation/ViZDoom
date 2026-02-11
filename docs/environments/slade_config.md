@@ -1,4 +1,4 @@
-# SLADE configuration guide for ViZDoom
+# SLADE configuration guide
 
 This is a short guide on how to configure [SLADE](http://slade.mancubus.net/index.php?page=downloads) for creating custom maps for ViZDoom. SLADE is a cross-platform editor for Doom-engine-based games, including Doom, Heretic, Hexen, Strife, and others.
 
