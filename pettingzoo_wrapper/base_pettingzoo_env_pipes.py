@@ -1,50 +1,22 @@
 """
-PettingZoo Parallel wrapper for multi-agent ViZDoom.
+PettingZoo Parallel wrapper for multi-agent ViZDoom — pipe-based IPC.
 
-- Spawns one process per agent (host + peers). Communication via duplex Pipes.
-- Parent sends simple commands ("reset", "step", "close") to each child and
-  receives observations, rewards, terminations, truncations, and infos.
-
-Usage:
-    env = VizdoomParallelEnv(
-        scenario="health_gathering",
-        num_agents=2,
-        resolution="160X120",
-        skip_frames=4,
-        async_mode=True,
-        host_address="127.0.0.1",
-        port=5029,
-        netmode=0,  # 0: p2p, 1: client-server
-        seed=0,
-    )
-
-    obs, infos = env.reset()
-    done = False
-    while not any(env._terminations.values()) and not any(env._truncations.values()):
-        actions = {a: env.action_space(a).sample() for a in env.agents}
-        obs, rew, term, trunc, infos = env.step(actions)
-    env.close()
+One process per agent; parent communicates via duplex Pipes.
+Commands: "reset", "step", "respawn", "close".
 """
 from __future__ import annotations
 
-import math
 import multiprocessing as mp
-
-ctx = mp.get_context("spawn")
 import time
-
-from pettingzoo import ParallelEnv
-from pettingzoo_wrapper.utils import get_screen_resolution, parse_hw, get_flat_game_vars, read_frame, discover_buttons, \
-    sync_agent_init
 from typing import Any, Dict, List, Optional
 
 import numpy as np
-from gymnasium import spaces
+from vizdoom import GameVariable
 
-import vizdoom as vzd
-from vizdoom import Mode, GameVariable
-import pygame
-import cv2
+from pettingzoo_wrapper.base_env_common import VizdoomParallelEnvBase, configure_doom_game
+from pettingzoo_wrapper.utils import get_flat_game_vars, parse_hw, read_frame, sync_agent_init
+
+ctx = mp.get_context("spawn")
 
 
 # ------------------------- child process worker ---------------------------
@@ -67,188 +39,119 @@ def _agent_process(
         seed: Optional[int],
         verbose: bool,
 ) -> None:
-    game = vzd.DoomGame()
-    game.load_config(config_path)
+    agent = "host" if is_host else f"peer{agent_idx}"
+    game = configure_doom_game(
+        config_path=config_path,
+        resolution=resolution,
+        ticrate=ticrate,
+        async_mode=async_mode,
+        timeout=timeout,
+        seed=seed,
+        is_host=is_host,
+        num_agents=num_agents,
+        host_address=host_address,
+        port=port,
+        netmode=netmode,
+        agent_idx=agent_idx,
+    )
 
-    # headless
-    game.set_screen_resolution(get_screen_resolution(resolution))
-    game.set_ticrate(ticrate)
-    game.set_mode(Mode.ASYNC_PLAYER if async_mode else Mode.PLAYER)
-
-    if timeout is not None:
-        game.set_episode_timeout(timeout)
-    if seed is not None:
-        game.set_seed(int(seed))
-
-    if is_host:
-        game.add_game_args(
-            f"-host {num_agents} -port {port} -netmode {netmode} +sv_spawnfarthest 1"
-        )
-        agent = "host"
-    else:
-        game.add_game_args(f"-join {host_address} -port {port} -netmode {netmode}")
-        agent = f"peer{agent_idx}"
-
-    # cosmetics / identity
-    game.add_game_args(f"+name Player{agent_idx} +colorset {agent_idx}")
-    game.add_game_args(f"+playernumber {agent_idx}")
-
-    # Signal to parent that child is about to init before blocking the network call
     pipe_end.send({"status": "initializing", "agent": agent})
 
     try:
-        # For peers, add connection timeout and retry logic
         if not is_host:
-            # Grant the host a bit of extra time to init by giving peers a random delay
             import random
-            delay = 0.5 + random.uniform(0.5, 1.0)
-            time.sleep(delay)
-
-        # Set the connection timeout to 45s to prevents game.init() from hanging indefinitely
-        if not is_host:
-            game.add_game_args("+viz_connect_timeout 45")  # Default is 60s
+            time.sleep(0.5 + random.uniform(0.5, 1.0))
+            game.add_game_args("+viz_connect_timeout 45")
         game.init()
-
         game.send_game_command("viz_respawn_delay 0")
-
     except Exception as e:
-        try: # Send when pipe closed too
+        try:
             pipe_end.send({"status": "init_failed", "error": str(e), "agent": agent})
         except (BrokenPipeError, EOFError):
             pass
         raise
 
-    # Send ready to check if pipe is still open before sending
     try:
         pipe_end.send({"status": "ready", "agent": agent})
     except (BrokenPipeError, EOFError):
-        # Parent kill child during init so return
         return
 
     max_players = int(game.get_game_variable(GameVariable.USER1))
     if num_agents > max_players:
-        raise ValueError(f"Scenario supports {max_players} players, but you requested {num_agents}.")
+        raise ValueError(f"Scenario supports {max_players} players, but {num_agents} were requested.")
 
-    # Get available game variables for mapping indices to names
     available_game_vars = game.get_available_game_variables()
-
-    steps = 0
-    is_dead = False
     frames_per_step = skip_frames if skip_frames else 1
+    steps = 0
 
     try:
         while True:
             try:
-                cmd, payload = pipe_end.recv()  # blocking, simple
+                cmd, payload = pipe_end.recv()
             except (EOFError, BrokenPipeError):
-                # Parent closed the pipe
                 break
 
             if cmd == "reset":
                 game.new_episode()
                 game.respawn_player()
-
                 state = game.get_state()
-                frame = read_frame(state, resolution)
-
                 info = {
                     "num_frames": frames_per_step,
                     "player_dead": False,
                     "just_died": False,
-                    "step": steps
+                    "step": steps,
                 }
                 info.update(get_flat_game_vars(state, available_game_vars))
-
                 pipe_end.send({
-                    "obs": frame,
+                    "obs": read_frame(state, resolution),
                     "reward": 0.0,
                     "terminated": False,
                     "info": info,
                 })
+                steps = 0
 
             elif cmd == "step":
-                action = payload  # flat list (delta..., binary...)
+                action = payload
 
-                reward = float(game.make_action(action, skip_frames) if skip_frames else game.make_action(action))
-
-                # Check if player died during this step
-                was_dead_before = is_dead
                 is_dead = game.is_player_dead()
-                just_died = not was_dead_before and is_dead
-                truncated = game.is_episode_finished()
-                terminated = game.is_episode_finished()
-
-                if verbose and terminated:
-                    print(f"Player {agent} terminated at step {game.get_episode_time()}")
-
-                state = game.get_state()
-                frame = read_frame(state, resolution)
-
-                info = {
-                    "num_frames": frames_per_step,
-                    "player_dead": is_dead,
-                    "just_died": just_died,
-                    "step": steps
-                }
-                info.update(get_flat_game_vars(state, available_game_vars))
-
-                pipe_end.send({
-                    "obs": frame,
-                    "reward": reward,
-                    "terminated": terminated,
-                    "truncated": truncated,
-                    "info": info,
-                })
-                steps += frames_per_step
-
-            elif cmd == "respawn":
-                # Only respawn if the player is actually dead
                 if is_dead:
                     if verbose:
                         print(f"Player {agent} respawning at step {game.get_episode_time()}...")
                     game.respawn_player()
-                    is_dead = False  # Reset death state after respawn
-                    if verbose:
-                        print(f"Player {agent} respawned at step {game.get_episode_time()}")
-                    respawned = True
+                    reward = 0.0
                 else:
-                    # Player is not dead, perform a no-op action
-                    zero_action = [0.0] * len(game.get_available_buttons())
-                    game.make_action(zero_action)
-                    respawned = False
+                    reward = game.make_action(action, skip_frames)
 
-                # Return observation data like a regular step
+                was_dead_before = is_dead
+                just_died = not was_dead_before and is_dead
+
+                terminated = game.is_episode_finished()
+                if verbose and terminated:
+                    print(f"Player {agent} terminated at step {game.get_episode_time()}")
                 state = game.get_state()
-                frame = read_frame(state, resolution)
-                terminated = False
-                truncated = game.is_episode_finished()
-
                 info = {
                     "num_frames": frames_per_step,
                     "player_dead": is_dead,
-                    "just_died": False,  # Can't die during respawn
-                    "step": steps
+                    "just_died": just_died,
+                    "step": steps,
                 }
                 info.update(get_flat_game_vars(state, available_game_vars))
-
                 pipe_end.send({
-                    "obs": frame,
-                    "reward": 0.0,  # No reward for respawn
+                    "obs": read_frame(state, resolution),
+                    "reward": reward,
                     "terminated": terminated,
-                    "truncated": truncated,
+                    "truncated": terminated,
                     "info": info,
-                    "respawned": respawned
                 })
-                steps += frames_per_step  # Respawning also counts as a step
+                steps += frames_per_step
 
             elif cmd == "close":
                 break
 
             else:
-                # ignore unknown
                 h, w = parse_hw(resolution)
-                zero_frame = np.zeros((h, w, 3), dtype=np.uint8)
-                pipe_end.send({"obs": zero_frame, "reward": 0.0, "terminated": False, "info": {}})
+                pipe_end.send(
+                    {"obs": np.zeros((h, w, 3), dtype=np.uint8), "reward": 0.0, "terminated": False, "info": {}})
     finally:
         try:
             game.close()
@@ -262,58 +165,17 @@ def _agent_process(
 
 # -------------------------- main PettingZoo env ---------------------------
 
-class VizdoomParallelEnv(ParallelEnv):
+class VizdoomParallelEnv(VizdoomParallelEnvBase):
 
-    def __init__(
-            self,
-            *,
-            config_file: str,
-            num_agents: int = 2,
-            resolution: str = "160X120",
-            timeout: Optional[int] = None,
-            skip_frames: Optional[int] = 1,
-            async_mode: bool = True,
-            host_address: str = "127.0.0.1",
-            port: int = 5029,
-            netmode: int = 0,
-            ticrate: int = vzd.DEFAULT_TICRATE,
-            render_mode: Optional[str] = None,
-            use_multi_binary_action_space: bool = False,
-            simple_discrete: bool = True,
-            seed: Optional[int] = None,
-            verbose: bool = False,
-            daemon: bool = True,
-    ) -> None:
-        assert num_agents >= 1
-        self.config_file = config_file
-        self._num_agents = num_agents
-        self.host_address = host_address
-        self.port = int(port)
-        self.resolution = resolution
-        self.netmode = int(netmode)
-        self.async_mode = bool(async_mode)
-        self.ticrate = int(ticrate)
-        self.render_mode = render_mode
-        self.use_multi_binary_action_space = bool(use_multi_binary_action_space)
-        self.simple_discrete = bool(simple_discrete)
-        self._ext_seed = seed
+    def __init__(self, **kwargs) -> None:
+        timeout = kwargs.get("timeout")
+        skip_frames = kwargs.get("skip_frames", 1)
+        seed = kwargs.get("seed")
+        verbose = kwargs.get("verbose", False)
+        daemon = kwargs.get("daemon", True)
 
-        # names
-        self.possible_agents: List[str] = [f"agent_{i}" for i in range(self._num_agents)]
-        self.agents: List[str] = self.possible_agents[:]
+        super().__init__(**kwargs)
 
-        # Discover spaces (no net init needed)
-        self._delta_count, self._binary_count = discover_buttons(config_file)
-        self._simple_n = (3 ** self._delta_count) * (2 ** self._binary_count)
-        self._act_len = self._delta_count + self._binary_count
-        self._action_space = self._build_action_space()
-
-        w, h = parse_hw(resolution)
-        self._channels = 3  # will update on first reset if GRAY8
-        self._obs_shape = (h, w, self._channels)
-        self._observation_space = spaces.Box(0, 255, shape=self._obs_shape, dtype=np.uint8)
-
-        # Child processes and pipes
         self._pipes_parent = []
         self._procs: List[ctx.Process] = []
 
@@ -338,66 +200,20 @@ class VizdoomParallelEnv(ParallelEnv):
                     seed=(None if seed is None else int(seed) + i),
                     verbose=verbose,
                 ),
-                daemon=daemon, # terminate child if parent dies
+                daemon=daemon,
             )
             p.start()
             self._pipes_parent.append(parent_end)
             self._procs.append(p)
 
-
-        # We should wait for children to report being ready to avoid a deadlock
-        # Otherwise, they might try to communicate before everyone has been initialized and thus we reach a deadlock
         sync_agent_init(self._pipes_parent, self._procs)
 
-        # timeout / PZ bookkeeping
         self._frames_advanced = 0
-        self._timeout = int(timeout) if timeout is not None else None
-
-        # Death tracking for respawn functionality
-        self._dead_agents = set()  # Track which agents are currently dead
         self._terminations: Dict[str, bool] = {a: False for a in self.agents}
         self._truncations: Dict[str, bool] = {a: False for a in self.agents}
 
-        # last frames for rendering
-        self._last_frames: Dict[str, np.ndarray] = {}
-
-        # Rendering surface
-        self._screen: Optional[pygame.Surface] = None
-
-    # ------------- space helpers -------------
-
-    def _build_action_space(self) -> spaces.Space:
-        if self.simple_discrete:
-            return spaces.Discrete(max(1, self._simple_n))
-        if self._delta_count == 0:
-            return self._binary_space()
-        if self._binary_count == 0:
-            return self._continuous_space()
-        return spaces.Dict({
-            "binary": self._binary_space(),
-            "continuous": self._continuous_space(),
-        })
-
-    def _binary_space(self) -> spaces.Space:
-        if self.use_multi_binary_action_space:
-            return spaces.MultiBinary(self._binary_count)
-        return spaces.MultiDiscrete([2] * self._binary_count)
-
-    def _continuous_space(self) -> spaces.Space:
-        low, high = np.finfo(np.float32).min, np.finfo(np.float32).max
-        return spaces.Box(low, high, (self._delta_count,), dtype=np.float32)
-
-    def action_space(self, agent: str) -> spaces.Space:
-        return self._action_space
-
-    def observation_space(self, agent: str) -> spaces.Space:
-        return self._observation_space
-
-    @property
-    def num_agents(self) -> int:
-        return self._num_agents
-
     # ------------- PZ API -------------
+
     def reset(self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None):
         if seed is not None:
             self._ext_seed = int(seed)
@@ -405,15 +221,9 @@ class VizdoomParallelEnv(ParallelEnv):
         self._terminations = {a: False for a in self.agents}
         self._truncations = {a: False for a in self.agents}
 
-        # Clear dead agents tracking on reset
-        self._dead_agents.clear()
-
-        # broadcast reset, collect results
         for pipe in self._pipes_parent:
             pipe.send(("reset", None))
 
-        # Add timeout to check for deadlocks
-        # In case of deadlock, the results might keep blocking data forever
         results = []
         for i, pipe in enumerate(self._pipes_parent):
             if pipe.poll(timeout=30.0):
@@ -428,10 +238,10 @@ class VizdoomParallelEnv(ParallelEnv):
         infos: Dict[str, Dict[str, Any]] = {}
         for i, agent in enumerate(self.agents):
             frame = results[i]["obs"]
-            # update channel inference once
             c = frame.shape[2]
             if c != self._obs_shape[2]:
                 self._obs_shape = (self._obs_shape[0], self._obs_shape[1], c)
+                from gymnasium import spaces
                 self._observation_space = spaces.Box(0, 255, shape=self._obs_shape, dtype=np.uint8)
             obs[agent] = frame
             infos[agent] = results[i].get("info", {})
@@ -440,7 +250,7 @@ class VizdoomParallelEnv(ParallelEnv):
         return obs, infos
 
     def step(self, actions: Dict[str, Any]):
-        # 1) Handle dead agents from previous step and encode actions for alive agents
+        # Encode all actions upfront
         flat_actions: List[List[float]] = []
         for agent in self.agents:
             a = actions.get(agent, self._noop_action())
@@ -449,13 +259,9 @@ class VizdoomParallelEnv(ParallelEnv):
                 raise ValueError(f"Encoded action length {len(env_action)} != expected {self._act_len}")
             flat_actions.append(env_action)
 
-        # Send commands: respawn for dead agents, step for alive agents
-        for i, agent in enumerate(self.agents):
-            cmd = "respawn" if agent in self._dead_agents else "step"
-            self._pipes_parent[i].send((cmd, flat_actions[i]))
+        for i in range(len(self.agents)):
+            self._pipes_parent[i].send(("step", flat_actions[i]))
 
-        # 2) recv
-        # Use poll to check for deadlocks
         results = []
         for i, pipe in enumerate(self._pipes_parent):
             if pipe.poll(timeout=30.0):
@@ -464,57 +270,29 @@ class VizdoomParallelEnv(ParallelEnv):
                 except Exception as e:
                     raise RuntimeError(f"No step result from agent {i}: {e}")
             else:
-                raise TimeoutError(f"Agent {i} step timeout 30s")
+                raise TimeoutError(f"Agent {i} step timeout: 30s")
 
         observations: Dict[str, np.ndarray] = {}
         rewards: Dict[str, float] = {}
         infos: Dict[str, Dict[str, Any]] = {}
-        any_term = False
-
-        # Track agents that were dead and got respawned this step
-        respawned_agents = set()
 
         for i, agent in enumerate(self.agents):
-            results_a = results[i]
-            frame = results_a["obs"]
-            observations[agent] = frame
-            rewards[agent] = float(results_a.get("reward", 0.0))
-            term = bool(results_a.get("terminated", False))
-            self._terminations[agent] = term
-            any_term = any_term or term
-            infos[agent] = results_a.get("info", {})
-            self._last_frames[agent] = frame
+            r = results[i]
+            observations[agent] = r["obs"]
+            rewards[agent] = float(r.get("reward", 0.0))
+            self._terminations[agent] = bool(r.get("terminated", False))
+            infos[agent] = r.get("info", {})
+            self._last_frames[agent] = r["obs"]
 
-            # Handle respawn results for agents that were dead
-            if agent in self._dead_agents:
-                respawned = results_a.get("respawned", False)
-                if respawned:
-                    respawned_agents.add(agent)
-
-        # Remove successfully respawned agents from dead set
-        self._dead_agents -= respawned_agents
-
-        # Track newly dead agents (but don't respawn them until next step)
-        for i, agent in enumerate(self.agents):
-            if infos[agent].get("player_dead", False) and agent not in self._dead_agents:
-                self._dead_agents.add(agent)
-
-        # 3) time-limit truncation (assume same num_frames for all)
         frames_advanced = next(iter(infos.values())).get("num_frames", 1) if infos else 1
         self._frames_advanced += int(frames_advanced)
-        timeout_hit = (self._timeout is not None) and (self._frames_advanced >= self._timeout)
-        if timeout_hit:
+        if self._timeout is not None and self._frames_advanced >= self._timeout:
             for a in self.agents:
                 self._truncations[a] = True
                 infos[a]["TimeLimit.truncated"] = True
 
-        terminations = self._terminations.copy()
-        truncations = self._truncations.copy()
-
         any_term = any(bool(r.get("terminated", False)) for r in results)
         any_trunc = any(bool(r.get("truncated", False)) for r in results)
-
-        # If any agent finishes, finish the episode for ALL agents this step.
         if any_term:
             for a in self.agents:
                 self._terminations[a] = True
@@ -522,15 +300,12 @@ class VizdoomParallelEnv(ParallelEnv):
             for a in self.agents:
                 self._truncations[a] = True
 
-        return observations, rewards, terminations, truncations, infos
+        return observations, rewards, self._terminations.copy(), self._truncations.copy(), infos
 
     def close(self):
-        # Tell the children to close
         for i, (pipe, proc) in enumerate(zip(self._pipes_parent, self._procs)):
             if pipe is None or pipe.closed:
                 continue
-
-            # If the process is already dead then don't send anything
             if proc is not None and not proc.is_alive():
                 try:
                     pipe.close()
@@ -538,18 +313,14 @@ class VizdoomParallelEnv(ParallelEnv):
                     pass
                 self._pipes_parent[i] = None
                 continue
-
             try:
-                # Drain pending messages
                 while pipe.poll(timeout=0.05):
                     try:
                         pipe.recv()
                     except (EOFError, BrokenPipeError, OSError):
                         break
-
                 pipe.send(("close", None))
             except (BrokenPipeError, EOFError, OSError):
-                # Check if the child has terminated after finishing the last command
                 try:
                     pipe.close()
                 except Exception:
@@ -558,22 +329,20 @@ class VizdoomParallelEnv(ParallelEnv):
             except Exception as e:
                 print(f"Send close to agent {i} failed: {e}")
 
-        time.sleep(0.5) # Short sleep to avoid occasional crashes
+        time.sleep(0.5)
 
-        # join but with timeout, then terminate if needed, then if not work then kill
         for i, p in enumerate(self._procs):
             try:
                 p.join(timeout=2.0)
                 if p.is_alive():
-                    print(f"Agent {i} didn't exit, terminating agent {i} now.")
+                    print(f"Agent {i} didn't exit, terminating.")
                     p.terminate()
                     p.join(timeout=1.0)
                     if p.is_alive():
-                        p.kill() # Kill if unable terminate
+                        p.kill()
             except Exception as e:
                 print(f"Join agent {i} failed: {e}")
 
-        # Close the parent pipe
         for i, pipe in enumerate(self._pipes_parent):
             if pipe is None:
                 continue
@@ -583,131 +352,10 @@ class VizdoomParallelEnv(ParallelEnv):
                 pass
             self._pipes_parent[i] = None
 
-        # pygame
         if self._screen is not None:
             try:
+                import pygame
                 pygame.quit()
             except Exception:
                 pass
-        self._screen = None
-
-    # ------------- helpers -------------
-    def _noop_action(self):
-        """Build a valid 'do nothing' action matching self._action_space."""
-        if isinstance(self._action_space, spaces.Dict):
-            out = {}
-            if self._delta_count:
-                out["continuous"] = np.zeros((self._delta_count,), dtype=np.float32)
-            if self._binary_count:
-                if self.use_multi_binary_action_space:
-                    out["binary"] = np.zeros((self._binary_count,), dtype=np.int8)
-                else:
-                    out["binary"] = np.zeros((self._binary_count,), dtype=np.int64)
-            return out
-        else:
-            if isinstance(self._action_space, spaces.Discrete):
-                return 0
-            if isinstance(self._action_space, spaces.MultiBinary):
-                return np.zeros((self._binary_count,), dtype=np.int8)
-            if isinstance(self._action_space, spaces.MultiDiscrete):
-                return np.zeros((self._binary_count,), dtype=np.int64)
-            if isinstance(self._action_space, spaces.Box):
-                return np.zeros((self._delta_count,), dtype=np.float32)
-            raise NotImplementedError(type(self._action_space))
-
-    def _decode_simple_discrete(self, idx: int) -> List[float]:
-        """Decode Discrete index -> flat [delta..., binary...] for ViZDoom.
-
-        delta in {-1, 0, +1} (radix-3), then binary in {0,1} (radix-2).
-        Order is [delta_0, ..., delta_{D-1}, bin_0, ..., bin_{B-1}]
-        """
-        D, B = self._delta_count, self._binary_count
-        out = np.zeros((self._act_len,), dtype=np.float32)
-        x = int(idx)
-
-        # Binary tail (radix-2)
-        for i in range(B):
-            out[D + i] = float(x & 1)
-            x >>= 1
-
-        # Delta head (radix-3) mapped {0,1,2} -> {-1,0,+1}
-        for i in range(D):
-            digit = x % 3
-            out[i] = float([-1, 0, +1][digit])
-            x //= 3
-
-        return out.tolist()
-
-    def _encode_env_action(self, agent_action: Any) -> List[float]:
-        if self.simple_discrete:
-            # agent_action is an integer index from spaces.Discrete
-            return self._decode_simple_discrete(int(agent_action))
-
-        # Map user action (matching self._action_space) -> flat vector [delta..., binary...]
-        out = np.zeros((self._act_len,), dtype=np.float32)
-        if isinstance(self._action_space, spaces.Dict):
-            # Dict with continuous and binary
-            if self._delta_count:
-                cont = agent_action["continuous"] if isinstance(agent_action, dict) else agent_action[0]
-                out[: self._delta_count] = np.asarray(cont, dtype=np.float32)
-            if self._binary_count:
-                bin_act = agent_action["binary"] if isinstance(agent_action, dict) else agent_action[1]
-                bin_arr = np.asarray(bin_act, dtype=np.float32)
-                out[self._delta_count:] = bin_arr.reshape(-1)
-        else:
-            if self._delta_count:
-                out[: self._delta_count] = np.asarray(agent_action, dtype=np.float32)
-            else:
-                out[self._delta_count:] = np.asarray(agent_action, dtype=np.float32)
-        return out.tolist()
-
-    # ------------------- rendering -------------------
-    def render(self) -> Optional[np.ndarray]:
-        if self.render_mode is None or not self._last_frames:
-            return None
-        frames = [self._last_frames[a] for a in self.agents if a in self._last_frames]
-        if not frames:
-            return None
-        h, w = frames[0].shape[:2]
-        cols = min(self._num_agents, max(1, 1920 // w))
-        rows = math.ceil(self._num_agents / cols)
-        total_w = cols * w
-        total_h = rows * h
-        max_w, max_h = 1920, 1080
-        scale = min(max_w / total_w if total_w > max_w else 1.0, max_h / total_h if total_h > max_h else 1.0)
-        sw, sh = int(w * scale), int(h * scale)
-        disp_w, disp_h = min(cols * sw, max_w), min(rows * sh, max_h)
-
-        if self.render_mode == "human":
-            if self._screen is None or self._screen.get_size() != (disp_w, disp_h):
-                pygame.init()
-                self._screen = pygame.display.set_mode((disp_w, disp_h))
-                pygame.display.set_caption("ViZDoom Multi-Agent")
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.close()
-                    return None
-            for i, frame in enumerate(frames):
-                if scale < 1.0:
-                    frame = cv2.resize(frame, (sw, sh))
-                col = i % cols
-                row = i // cols
-                x, y = col * sw, row * sh
-                surf = pygame.surfarray.make_surface(frame.swapaxes(0, 1))
-                self._screen.blit(surf, (x, y))
-            pygame.display.flip()
-            time.sleep(0.01)
-            return None
-        else:  # rgb_array
-            ch = frames[0].shape[2]
-            canvas = np.zeros((disp_h, disp_w, ch), dtype=frames[0].dtype)
-            for i, frame in enumerate(frames):
-                if scale < 1.0:
-                    frame = cv2.resize(frame, (sw, sh))
-                col = i % cols
-                row = i // cols
-                x, y = col * sw, row * sh
-                canvas[y: y + sh, x: x + sw] = frame[: sh, : sw]
-            return canvas
-
-
+            self._screen = None

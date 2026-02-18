@@ -64,7 +64,7 @@ def main():
             seed=42,
             netmode=1,
             skip_frames=1,
-            async_mode=True,
+            async_mode=False,
             ticrate=35,
             timeout=250,
             verbose=True,

@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from .base_pettingzoo_env import VizdoomParallelEnv
+from .base_pettingzoo_env_shm import VizdoomParallelEnv
 from .reward_wrappers import PitfallRewardWrapper, HealthGatheringRewardWrapper, RemedyRushRewardWrapper
 from .video_recorder import VideoLoggerParallelWrapper
 
