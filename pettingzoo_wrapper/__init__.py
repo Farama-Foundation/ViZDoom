@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Optional
 
 from .base_pettingzoo_env import VizdoomParallelEnv
-from .reward_wrappers import PitfallRewardWrapper, HealthGatheringRewardWrapper
+from .reward_wrappers import PitfallRewardWrapper, HealthGatheringRewardWrapper, RemedyRushRewardWrapper
 from .video_recorder import VideoLoggerParallelWrapper
 
 # where the scenario .cfg files live
@@ -13,6 +13,7 @@ _SCENARIO_DIR = os.path.join(Path(__file__).parent.parent, "scenarios")
 # scenario-specific wrappers
 _WRAPPERS = {
     "pitfall_multi_agent": PitfallRewardWrapper,
+    "remedy_rush_multi_agent": RemedyRushRewardWrapper,
     "health_gathering_multi_agent": HealthGatheringRewardWrapper,
 }
 

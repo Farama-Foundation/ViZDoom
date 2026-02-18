@@ -46,7 +46,7 @@ def main():
     atexit.register(cleanup_environment)
 
     # Configuration
-    scenario = "health_gathering_multi_agent"
+    scenario = "remedy_rush_multi_agent"
     num_agents = 2
     episodes = 3
 

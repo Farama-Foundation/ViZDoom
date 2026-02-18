@@ -66,6 +66,69 @@ class HealthGatheringRewardWrapper(ParallelEnv):
         return self.env.close()
 
 
+class RemedyRushRewardWrapper(ParallelEnv):
+    """
+    Reward shaping for remedy_rush. Health pickups give a positive reward;
+    armor pickups give a negative reward (penalty).
+    """
+    def __init__(
+            self,
+            env: ParallelEnv,
+            *,
+            health_key: str = "HEALTH",
+            armor_key: str = "ARMOR",
+    ):
+        self.env = env
+        self.health_key = health_key
+        self.armor_key = armor_key
+        self.prev_health: Dict[str, Optional[float]] = {}
+        self.prev_armor: Dict[str, Optional[float]] = {}
+        self.possible_agents = env.possible_agents
+        self.agents = env.agents
+
+    def action_space(self, agent: str):
+        return self.env.action_space(agent)
+
+    def observation_space(self, agent: str):
+        return self.env.observation_space(agent)
+
+    @property
+    def num_agents(self) -> int:
+        return getattr(self.env, "num_agents", len(self.possible_agents))
+
+    def reset(self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None):
+        obs, infos = self.env.reset(seed=seed, options=options)
+        self.agents = self.env.agents[:]
+        self.prev_health = {a: infos[a].get(self.health_key, 0.0) for a in self.agents}
+        self.prev_armor = {a: infos[a].get(self.armor_key, 0.0) for a in self.agents}
+        return obs, infos
+
+    def step(self, actions: Dict[str, Any]):
+        obs, rewards, terminations, truncations, infos = self.env.step(actions)
+
+        for a in self.agents:
+            r = rewards[a]
+            h_cur = infos[a].get(self.health_key, 0.0)
+            h_prev = self.prev_health[a]
+            armor_cur = infos[a].get(self.armor_key, 0.0)
+            armor_prev = self.prev_armor[a]
+
+            r += h_cur - h_prev
+            r -= armor_cur - armor_prev
+
+            rewards[a] = r
+            self.prev_health[a] = h_cur
+            self.prev_armor[a] = armor_cur
+
+        return obs, rewards, terminations, truncations, infos
+
+    def render(self):
+        return self.env.render()
+
+    def close(self):
+        return self.env.close()
+
+
 class PitfallRewardWrapper(ParallelEnv):
     """
     Dense shaping on POSITION_X (forward-only). Optional sparse goal on crossing goal_x.
