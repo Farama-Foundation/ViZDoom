@@ -1,6 +1,7 @@
 import socket
 from argparse import ArgumentParser, BooleanOptionalAction
 from dataclasses import fields
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional
 
@@ -9,7 +10,7 @@ import torch.nn.functional as F
 from benchmarl.algorithms import QmixConfig, MasacConfig
 from benchmarl.algorithms.mappo import MappoConfig
 from benchmarl.environments import TaskClass
-from benchmarl.experiment import Experiment, ExperimentConfig
+from benchmarl.experiment import ExperimentConfig, Experiment
 from benchmarl.models import CnnConfig
 from tensordict import TensorDictBase
 from torch import nn
@@ -23,6 +24,38 @@ from torchrl.envs.transforms import SelectTransform
 from torchrl.envs.transforms.utils import _set_missing_tolerance
 
 from pettingzoo_wrapper import make
+
+
+class VizdoomExperiment(Experiment):
+    """
+    Experiment subclass that injects structured W&B metadata:
+
+    - job_type  : algorithm name
+    - group     : "<environment>/<task>"
+    - id / name : "<algo>_<task>_<N>agents_seed<S>_<timestamp>"
+    """
+
+    def _setup_logger(self):
+        num_agents = sum(len(v) for v in self.group_map.values())
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        run_id = (
+            f"{self.algorithm_name}_{self.task_name}"
+            f"_{num_agents}agents_seed{self.seed}_{timestamp}"
+        )
+
+        extra = {
+            "job_type": self.algorithm_name,
+            "group": self.task_name,
+            "id": run_id,
+            "name": run_id,
+        }
+
+        original = self.config.wandb_extra_kwargs
+        self.config.wandb_extra_kwargs = {**original, **extra}
+        try:
+            super()._setup_logger()
+        finally:
+            self.config.wandb_extra_kwargs = original
 
 
 class AHWCToTensorResize(ObservationTransform):
@@ -85,7 +118,7 @@ class AHWCToTensorResize(ObservationTransform):
 
 class VizdoomTask(TaskClass):
     def __init__(self, config: Dict[str, Any]):
-        super().__init__("doom", config)
+        super().__init__(name=config["scenario"], config=config)
         # Build a prototype env ONCE to fetch specs
         proto_env = self.env_creator(seed=config.get("seed", 0))()
         try:
@@ -363,7 +396,7 @@ def main():
     }
     task = VizdoomTask(task_cfg)
 
-    experiment = Experiment(
+    experiment = VizdoomExperiment(
         task=task,
         algorithm_config=algo_cfg,
         model_config=model_cfg,
