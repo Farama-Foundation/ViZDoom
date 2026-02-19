@@ -455,10 +455,10 @@ namespace vizdoom {
                         std::vector<Button> buttons;
                         for (i = 0; i < strButtons.size(); ++i) {
                             buttons.push_back(ConfigLoader::stringToButton(strButtons[i]));
-
                         }
-                        if (!append)
-                            this->game->clearAvailableButtons();
+                        
+                        if (!append) this->game->clearAvailableButtons();
+                        
                         for (i = 0; i < buttons.size(); ++i) {
                             this->game->addAvailableButton(buttons[i]);
                         }
@@ -493,6 +493,7 @@ namespace vizdoom {
                         }
 
                         if (!append) this->game->clearAvailableGameVariables();
+                        
                         for (i = 0; i < variables.size(); ++i) {
                             this->game->addAvailableGameVariable(variables[i]);
                         }

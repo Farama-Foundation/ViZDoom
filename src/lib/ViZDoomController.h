@@ -314,6 +314,7 @@ namespace vizdoom {
         /* Seed */
         /*------------------------------------------------------------------------------------------------------------*/
 
+        unsigned int generateSeedSalt();
         void generateInstanceId();
 
         unsigned int getNextDoomSeed();
@@ -322,6 +323,7 @@ namespace vizdoom {
 
         bool doomStaticSeed;
         unsigned int doomSeed;
+        unsigned int seedSalt;
         unsigned int instanceSeed;
 
         br::mt19937 instanceRng;

@@ -31,7 +31,14 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/chrono.hpp>
 #include <boost/lexical_cast.hpp>
+#include <ctime>
+#include <random>
 
+#ifdef _WIN32
+    #include <windows.h>
+#else
+    #include <unistd.h>
+#endif
 
 namespace vizdoom {
 
@@ -131,8 +138,10 @@ namespace vizdoom {
 
         this->doomStaticSeed = true;
         this->doomSeed = 0;
+        this->seedSalt = this->generateSeedSalt();
 
-        this->instanceRng.seed(static_cast<unsigned int>(bc::high_resolution_clock::now().time_since_epoch().count()));
+        this->instanceSeed = static_cast<unsigned int>(bc::high_resolution_clock::now().time_since_epoch().count()) ^ this->seedSalt;
+        this->instanceRng.seed(this->instanceSeed);
 
         this->_input = new SMInputState();
     }
@@ -310,8 +319,7 @@ namespace vizdoom {
 
         if (this->allowDoomInput && !this->runDoomAsync) {
             for (int i = BINARY_BUTTON_COUNT; i < BUTTON_COUNT; ++i) {
-                this->input->BT_MAX_VALUE[i - BINARY_BUTTON_COUNT] = this->_input->BT_MAX_VALUE[i -
-                                                                                                BINARY_BUTTON_COUNT];
+                this->input->BT_MAX_VALUE[i - BINARY_BUTTON_COUNT] = this->_input->BT_MAX_VALUE[i - BINARY_BUTTON_COUNT];
                 this->input->BT[i] = this->input->BT[i] / ticsMade;
             }
         }
@@ -959,9 +967,11 @@ namespace vizdoom {
     }
 
     void DoomController::resetButtons() {
-        if (this->doomRunning)
-            for (int i = 0; i < BUTTON_COUNT; ++i)
+        if (this->doomRunning) {
+            for (int i = 0; i < BUTTON_COUNT; ++i) {
                 this->input->BT[i] = 0;
+            }
+        }
     }
 
     void DoomController::disableAllButtons() {
@@ -1131,13 +1141,28 @@ namespace vizdoom {
     /* Protected and private functions */
     /*----------------------------------------------------------------------------------------------------------------*/
 
+    unsigned int DoomController::generateSeedSalt() {
+        #ifdef OS_WIN
+            const unsigned int pid = static_cast<unsigned int>(GetCurrentProcessId());
+        #else
+            const unsigned int pid = static_cast<unsigned int>(getpid());
+        #endif
+
+        try {
+            std::random_device rd;
+            return static_cast<unsigned int>(rd()) ^ pid;
+        } catch (...) {
+            return pid ^ static_cast<unsigned int>(time(NULL));
+        }
+    }
+
     void DoomController::generateInstanceId() {
         std::string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         this->instanceId = "";
 
         br::uniform_int_distribution<size_t> charDist(0, static_cast<size_t>(chars.length() - 1));
         br::mt19937 rng;
-        rng.seed((unsigned int) bc::high_resolution_clock::now().time_since_epoch().count());
+        rng.seed(static_cast<unsigned int>(bc::high_resolution_clock::now().time_since_epoch().count()) ^ this->seedSalt);
 
         for (int i = 0; i < INSTANCE_ID_LENGTH; ++i) {
             this->instanceId += chars[charDist(rng)];
