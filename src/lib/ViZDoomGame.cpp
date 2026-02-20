@@ -124,6 +124,10 @@ namespace vizdoom {
         return this->running && this->doomController->isDoomRunning();
     }
 
+    std::string DoomGame::getInstanceId() {
+        return this->doomController->getInstanceId();
+    }
+
     bool DoomGame::isMultiplayerGame() {
         return this->running && this->doomController->isMultiplayerGame();
     }

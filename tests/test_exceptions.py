@@ -29,6 +29,9 @@ def test_vizdoom_is_not_running_exception():
         game.get_total_reward()
 
     with pytest.raises(vzd.ViZDoomIsNotRunningException):
+        game.get_instance_id()
+
+    with pytest.raises(vzd.ViZDoomIsNotRunningException):
         game.new_episode()
 
     with pytest.raises(vzd.ViZDoomIsNotRunningException):

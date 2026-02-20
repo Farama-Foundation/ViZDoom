@@ -80,6 +80,18 @@ Returns true if the controlled game instance is running.
 
 
 ---
+### `getInstanceId`
+
+| C++    | `std::string getInstanceId()` |
+| :--    | :--                           |
+| Python | `get_instance_id() -> str`    |
+
+Returns the unique identifier of the current running game instance.
+
+Note: added in 1.3.1.
+
+
+---
 ### `isMultiplayerGame`
 
 | C++    | `bool isMultiplayerGame()`      |

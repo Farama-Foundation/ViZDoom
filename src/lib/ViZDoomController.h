@@ -116,6 +116,7 @@ namespace vizdoom {
         void clearDoomSeed();
 
         unsigned int getInstanceSeed();
+        std::string getInstanceId();
         void setInstanceSeed(unsigned int seed);
 
         std::string getMap();

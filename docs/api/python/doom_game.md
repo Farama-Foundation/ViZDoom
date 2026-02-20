@@ -15,6 +15,7 @@ The object allows sending actions to the game, getting the game state, etc.
 .. autofunction:: vizdoom.DoomGame.new_episode
 .. autofunction:: vizdoom.DoomGame.replay_episode
 .. autofunction:: vizdoom.DoomGame.is_running
+.. autofunction:: vizdoom.DoomGame.get_instance_id
 .. autofunction:: vizdoom.DoomGame.is_multiplayer_game
 .. autofunction:: vizdoom.DoomGame.is_recording_episode
 .. autofunction:: vizdoom.DoomGame.is_replaying_episode

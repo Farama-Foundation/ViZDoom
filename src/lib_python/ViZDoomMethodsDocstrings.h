@@ -44,6 +44,10 @@ Note: added in 1.1.0.)DOCSTRING";
 
     const char *isRunning = R"DOCSTRING(Returns ``True`` if the controlled game instance is running.)DOCSTRING";
 
+    const char *getInstanceId = R"DOCSTRING(Returns the unique identifier of the current running game instance.
+
+Note: added in 1.3.1.)DOCSTRING";
+
     const char *isMultiplayerGame = R"DOCSTRING(Returns ``True`` if the game is in multiplayer mode.
 
 See also:

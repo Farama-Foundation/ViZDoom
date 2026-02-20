@@ -576,6 +576,11 @@ namespace vizdoom {
 
     unsigned int DoomController::getInstanceSeed() { return this->instanceSeed; }
 
+    std::string DoomController::getInstanceId() {
+        if (!this->doomRunning) throw ViZDoomIsNotRunningException();
+        return this->instanceId;
+    }
+
     unsigned int DoomController::getMapStartTime() { return this->mapStartTime; }
 
     void DoomController::setMapStartTime(unsigned int tics) { this->mapStartTime = tics ? tics : 1; }

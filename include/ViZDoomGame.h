@@ -53,6 +53,7 @@ namespace vizdoom {
         //void newEpisode(std::string recordingFilePath = "", std::string saveFilePath = ""); // TODO: save support for newEpisode
         void replayEpisode(std::string filePath, unsigned int player = 0);
         bool isRunning();
+        std::string getInstanceId();
         bool isMultiplayerGame();
         bool isRecordingEpisode();
         bool isReplayingEpisode();
