@@ -440,6 +440,26 @@ All rewards, variables, and states are available when replaying the episode.</p>
 <p>Returns true if the controlled game instance is running.</p>
 </section>
 <hr class="docutils" />
+<section id="getinstanceid">
+<h3><code class="docutils literal notranslate"><span class="pre">getInstanceId</span></code><a class="headerlink" href="#getinstanceid" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">std::string</span> <span class="pre">getInstanceId()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_instance_id()</span> <span class="pre">-&gt;</span> <span class="pre">str</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the unique identifier of the current running game instance.</p>
+<p>Note: added in 1.3.1.</p>
+</section>
+<hr class="docutils" />
 <section id="ismultiplayergame">
 <h3><code class="docutils literal notranslate"><span class="pre">isMultiplayerGame</span></code><a class="headerlink" href="#ismultiplayergame" title="Link to this heading">¶</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -3647,6 +3667,7 @@ Doom uses 35 ticks per second.</p>
 <li><a class="reference internal" href="#newepisode"><code class="docutils literal notranslate"><span class="pre">newEpisode</span></code></a></li>
 <li><a class="reference internal" href="#replayepisode"><code class="docutils literal notranslate"><span class="pre">replayEpisode</span></code></a></li>
 <li><a class="reference internal" href="#isrunning"><code class="docutils literal notranslate"><span class="pre">isRunning</span></code></a></li>
+<li><a class="reference internal" href="#getinstanceid"><code class="docutils literal notranslate"><span class="pre">getInstanceId</span></code></a></li>
 <li><a class="reference internal" href="#ismultiplayergame"><code class="docutils literal notranslate"><span class="pre">isMultiplayerGame</span></code></a></li>
 <li><a class="reference internal" href="#isrecordingepisode"><code class="docutils literal notranslate"><span class="pre">isRecordingEpisode</span></code></a></li>
 <li><a class="reference internal" href="#isreplayingepisode"><code class="docutils literal notranslate"><span class="pre">isReplayingEpisode</span></code></a></li>
