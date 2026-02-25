@@ -138,9 +138,8 @@ namespace vizdoom {
 
         this->doomStaticSeed = true;
         this->doomSeed = 0;
-        this->seedSalt = this->generateSeedSalt();
 
-        this->instanceSeed = static_cast<unsigned int>(bc::high_resolution_clock::now().time_since_epoch().count()) ^ this->seedSalt;
+        this->instanceSeed = this->getSeed();
         this->instanceRng.seed(this->instanceSeed);
 
         this->_input = new SMInputState();
@@ -1146,16 +1145,16 @@ namespace vizdoom {
     /* Protected and private functions */
     /*----------------------------------------------------------------------------------------------------------------*/
 
-    unsigned int DoomController::generateSeedSalt() {
+    unsigned int DoomController::getSeed() {
         #ifdef OS_WIN
             const unsigned int pid = static_cast<unsigned int>(GetCurrentProcessId());
         #else
             const unsigned int pid = static_cast<unsigned int>(getpid());
         #endif
-
+        
         try {
             std::random_device rd;
-            return static_cast<unsigned int>(rd()) ^ pid;
+            return pid ^ static_cast<unsigned int>(rd()) ^ static_cast<unsigned int>(bc::high_resolution_clock::now().time_since_epoch().count());
         } catch (...) {
             return pid ^ static_cast<unsigned int>(time(NULL));
         }
@@ -1167,7 +1166,7 @@ namespace vizdoom {
 
         br::uniform_int_distribution<size_t> charDist(0, static_cast<size_t>(chars.length() - 1));
         br::mt19937 rng;
-        rng.seed(static_cast<unsigned int>(bc::high_resolution_clock::now().time_since_epoch().count()) ^ this->seedSalt);
+        rng.seed(this->getSeed());
 
         for (int i = 0; i < INSTANCE_ID_LENGTH; ++i) {
             this->instanceId += chars[charDist(rng)];

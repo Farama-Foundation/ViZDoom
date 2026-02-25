@@ -315,7 +315,7 @@ namespace vizdoom {
         /* Seed */
         /*------------------------------------------------------------------------------------------------------------*/
 
-        unsigned int generateSeedSalt();
+        unsigned int getSeed();
         void generateInstanceId();
 
         unsigned int getNextDoomSeed();

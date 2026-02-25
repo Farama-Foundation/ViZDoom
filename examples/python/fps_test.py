@@ -38,7 +38,7 @@ if __name__ == "__main__":
         "--iterations",
         default=DEFAULT_ITERATIONS,
         type=int,
-        help="Number of iterations(actions) to run",
+        help="Number of iterations (actions/steps) to run",
     )
     args = parser.parse_args()
 
@@ -61,8 +61,6 @@ if __name__ == "__main__":
 
     game.set_window_visible(False)
 
-    game.init()
-
     actions_num = game.get_available_buttons_size()
     actions = [
         [True if i == j else False for i in range(actions_num)]
@@ -71,13 +69,15 @@ if __name__ == "__main__":
     actions.append([False for _ in range(actions_num)])  # Idle action
 
     start = time()
+    game.init()
 
     print(
         f"Checking FPS with {args.config} and selected features. It may take some time. Be patient."
     )
     print("Config:")
-    print("Iterations:", args.iterations)
+    print("Iterations/steps:", args.iterations)
     print("Resolution:", game.get_screen_width(), "x", game.get_screen_height())
+    print("Buffer format:", game.get_screen_format())
     print("Depth buffer:", game.is_depth_buffer_enabled())
     print("Labels buffer:", game.is_labels_buffer_enabled())
     print("Automap buffer:", game.is_automap_buffer_enabled())
