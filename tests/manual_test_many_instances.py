@@ -6,6 +6,7 @@ import os
 from multiprocessing import Manager, Process, cpu_count
 from random import choice, random
 from time import sleep, time
+
 import numpy as np
 
 import vizdoom as vzd
@@ -51,12 +52,18 @@ def get_all_players_frags_from_game_vars(game):
     server_state = game.get_server_state()
     num_players = server_state.player_count
     players_frags_from_server_state = server_state.players_frags[:num_players]
-    #assert num_players == players
-    #assert np.array_equal(players_frags_from_game_vars, players_frags_from_server_state)
+    # assert num_players == players
+    # assert np.array_equal(players_frags_from_game_vars, players_frags_from_server_state)
     if num_players != players:
-        print(f"WARNING: Player count mismatch between game vars and server state: {num_players} != {players}")
-    if not np.array_equal(players_frags_from_game_vars, players_frags_from_server_state):
-        print(f"WARNING: Frag mismatch between game vars and server state: {players_frags_from_game_vars} != {players_frags_from_server_state}")
+        print(
+            f"WARNING: Player count mismatch between game vars and server state: {num_players} != {players}"
+        )
+    if not np.array_equal(
+        players_frags_from_game_vars, players_frags_from_server_state
+    ):
+        print(
+            f"WARNING: Frag mismatch between game vars and server state: {players_frags_from_game_vars} != {players_frags_from_server_state}"
+        )
 
     return players_frags_from_game_vars, players_frags_from_server_state
 
@@ -66,21 +73,29 @@ def check_frag_agreement(frag_log, episodes):
     print("\n\n\nChecking frag agreement...")
     for episode_idx in range(episodes):
         episode_frags = [
-            (player, frags[0]) for (ep_idx, player, frags) in frag_log if ep_idx == episode_idx
+            (player, frags[0])
+            for (ep_idx, player, frags) in frag_log
+            if ep_idx == episode_idx
         ]
 
-        #assert len(episode_frags) == players, f"Missing frag reports for episode {episode_idx}"
+        # assert len(episode_frags) == players, f"Missing frag reports for episode {episode_idx}"
         if len(episode_frags) != players:
             print(f"Missing frag reports for episode {episode_idx}")
 
         first_frags = episode_frags[0]
-        # for frags in episode_frags[1:]:
-            # assert frags[1] == first_frags[1], f"Frag mismatch in episode {episode_idx}: {frags[0]} {frags[1]} != {first_frags[0]} {first_frags[1]}"
-            # diff = np.array(frags[1]) - np.array(first_frags[1])
-            # sum_diff = np.sum(np.abs(diff))
-            # assert sum_diff <= 1, f"Frag mismatch more than 1 in episode {episode_idx}: {frags[0]} {frags[1]} != {first_frags[0]} {first_frags[1]}"
-            # if sum_diff > 1:
-            #     print(f"Frag mismatch more than 1 in episode {episode_idx}: {frags[0]} {frags[1]} != {first_frags[0]} {first_frags[1]}")
+        for frags in episode_frags[1:]:
+            assert (
+                frags[1] == first_frags[1]
+            ), f"Frag mismatch in episode {episode_idx}: {frags[0]} {frags[1]} != {first_frags[0]} {first_frags[1]}"
+            diff = np.array(frags[1]) - np.array(first_frags[1])
+            sum_diff = np.sum(np.abs(diff))
+            assert (
+                sum_diff <= 1
+            ), f"Frag mismatch more than 1 in episode {episode_idx}: {frags[0]} {frags[1]} != {first_frags[0]} {first_frags[1]}"
+            if sum_diff > 1:
+                print(
+                    f"Frag mismatch more than 1 in episode {episode_idx}: {frags[0]} {frags[1]} != {first_frags[0]} {first_frags[1]}"
+                )
 
 
 def setup_player():
@@ -144,18 +159,43 @@ def player_host(p, frag_log):
             state = game.get_state()
             assert state is not None
 
-            players_frags_from_game_vars, players_frags_from_server_state = get_all_players_frags_from_game_vars(game)
+            (
+                players_frags_from_game_vars,
+                players_frags_from_server_state,
+            ) = get_all_players_frags_from_game_vars(game)
 
             if state.number % 100 == 0:
-                print("Player0 (host):", state.number, action_count, game.get_episode_time(), players_frags_from_game_vars, players_frags_from_server_state)
+                print(
+                    "Player0 (host):",
+                    state.number,
+                    action_count,
+                    game.get_episode_time(),
+                    players_frags_from_game_vars,
+                    players_frags_from_server_state,
+                )
 
             player_action(game, player_sleep_time, actions, player_skip)
             action_count += 1
 
-        players_frags_from_game_vars, players_frags_from_server_state = get_all_players_frags_from_game_vars(game)
+        (
+            players_frags_from_game_vars,
+            players_frags_from_server_state,
+        ) = get_all_players_frags_from_game_vars(game)
         server_state = game.get_server_state()
-        print(f"Player0 (host): Episode {episode_idx} finished! Frags: {players_frags_from_game_vars} {players_frags_from_server_state}, Time: {time() - episode_start_time:.2f}s, Tics: {server_state.tic}")
-        frag_log.append((episode_idx, f"Player{i}", (players_frags_from_game_vars, players_frags_from_server_state, server_state)))
+        print(
+            f"Player0 (host): Episode {episode_idx} finished! Frags: {players_frags_from_game_vars} {players_frags_from_server_state}, Time: {time() - episode_start_time:.2f}s, Tics: {server_state.tic}"
+        )
+        frag_log.append(
+            (
+                episode_idx,
+                f"Player{i}",
+                (
+                    players_frags_from_game_vars,
+                    players_frags_from_server_state,
+                    server_state,
+                ),
+            )
+        )
 
         # Starts a new episode. All players have to call new_episode() in multiplayer mode.
         sleep(random() * sleep_between_episodes)
@@ -188,21 +228,43 @@ def player_join(p, frag_log):
             state = game.get_state()
             assert state is not None
 
-            players_frags_from_game_vars, players_frags_from_server_state = get_all_players_frags_from_game_vars(game)
-
+            (
+                players_frags_from_game_vars,
+                players_frags_from_server_state,
+            ) = get_all_players_frags_from_game_vars(game)
 
             if state.number % 100 == 0:
                 print(
                     f"Player{p}:",
-                    state.number, action_count, game.get_episode_time(), players_frags_from_game_vars, players_frags_from_server_state)
+                    state.number,
+                    action_count,
+                    game.get_episode_time(),
+                    players_frags_from_game_vars,
+                    players_frags_from_server_state,
+                )
             player_action(game, player_sleep_time, actions, player_skip)
             action_count += 1
 
-        players_frags_from_game_vars, players_frags_from_server_state = get_all_players_frags_from_game_vars(game)
+        (
+            players_frags_from_game_vars,
+            players_frags_from_server_state,
+        ) = get_all_players_frags_from_game_vars(game)
         server_state = game.get_server_state()
-        print(f"Player{p}: Episode {episode_idx} finished! Frags: {players_frags_from_game_vars}, {players_frags_from_server_state}, Tics: {server_state.tic}")
-        frag_log.append((episode_idx, f"Player{i}", (players_frags_from_game_vars, players_frags_from_server_state, server_state)))
-            
+        print(
+            f"Player{p}: Episode {episode_idx} finished! Frags: {players_frags_from_game_vars}, {players_frags_from_server_state}, Tics: {server_state.tic}"
+        )
+        frag_log.append(
+            (
+                episode_idx,
+                f"Player{i}",
+                (
+                    players_frags_from_game_vars,
+                    players_frags_from_server_state,
+                    server_state,
+                ),
+            )
+        )
+
         sleep(random() * sleep_between_episodes)
         game.new_episode()
 
