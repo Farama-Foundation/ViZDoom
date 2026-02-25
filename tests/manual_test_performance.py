@@ -4,6 +4,7 @@ from random import choice
 from time import time
 
 from tqdm import tqdm
+
 import vizdoom as vzd
 
 
@@ -27,7 +28,7 @@ def _test_steps(game, steps=DEFAULT_ITERATIONS, skip=1):
             game.new_episode()
 
         # Copying happens here
-        s = game.get_state()
+        _ = game.get_state()
         if actions is not None:
             game.make_action(choice(actions), skip)
         else:
@@ -38,8 +39,11 @@ def _test_steps(game, steps=DEFAULT_ITERATIONS, skip=1):
 
     print("Results: Time:", round(t, 3), "s", "FPS:", round(steps / t, 2))
 
+
 def test_screen_formats():
-    print("Testing steps performance with different screen formats. It may take some time. Be patient.")
+    print(
+        "Testing steps performance with different screen formats. It may take some time. Be patient."
+    )
     for screen_foramt in [
         vzd.ScreenFormat.CRCGCB,
         vzd.ScreenFormat.RGB24,
@@ -54,7 +58,7 @@ def test_screen_formats():
         print("---------------------")
     print("=====================")
 
-    
+
 def test_buffers():
     buffers = [
         "depth_buffer",
@@ -66,7 +70,9 @@ def test_buffers():
         "notifications_buffer",
     ]
 
-    print("Testing steps performance with different buffers enabled. It may take some time. Be patient.")
+    print(
+        "Testing steps performance with different buffers enabled. It may take some time. Be patient."
+    )
     for buffer in buffers:
         print(f"Testing with {buffer} enabled")
         g = vzd.DoomGame()
@@ -85,7 +91,7 @@ def test_buffers():
     g.close()
     print("=====================")
 
-    
+
 def test_init_close(iterations=DEFAULT_INIT_CLOSE_ITERATIONS):
     print("Testing init/close performance. It may take some time. Be patient.")
 
@@ -98,7 +104,16 @@ def test_init_close(iterations=DEFAULT_INIT_CLOSE_ITERATIONS):
     end = time()
     t = end - start
 
-    print("Results: Time:", round(t, 3), "s", "Init/close per second:", round(iterations / t, 2), "Average time per init/close:", round(t / iterations, 3), "s")
+    print(
+        "Results: Time:",
+        round(t, 3),
+        "s",
+        "Init/close per second:",
+        round(iterations / t, 2),
+        "Average time per init/close:",
+        round(t / iterations, 3),
+        "s",
+    )
     print("=====================")
 
 

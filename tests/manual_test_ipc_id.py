@@ -8,6 +8,7 @@ import vizdoom as vzd
 
 DEFAULT_PROCESSES = 2
 
+
 def _ipc_paths():
     return [
         "/private/tmp/boost_interprocess",
@@ -36,7 +37,7 @@ def get_ipc_id(p):
 
 def game(q):
     g = vzd.DoomGame()
-    #g.set_console_enabled(True)
+    # g.set_console_enabled(True)
     g.set_window_visible(False)
     g.set_sound_enabled(False)
     g.init()
@@ -47,13 +48,16 @@ def game(q):
 
 if __name__ == "__main__":
     q = multiprocessing.Queue()
-    
+
     bef = now()
 
-    proc = [multiprocessing.Process(target=game, args=(q,)) for _ in range(DEFAULT_PROCESSES)]
+    proc = [
+        multiprocessing.Process(target=game, args=(q,))
+        for _ in range(DEFAULT_PROCESSES)
+    ]
     for p in proc:
         p.start()
-    
+
     time.sleep(1)
     ipc_ids = {get_ipc_id(f) for f in now() - bef}
 
