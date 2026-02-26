@@ -141,7 +141,7 @@ Note: added in 1.1.8.
 ### `Sector`
 (`C++ type / Python type` **name**)
 
-- `double / float` **floorHeight / floor_height**
+- `double / float` **floorHeight / floor_height** - Note: before 1.3.1 the value of floorHeight was inverted (negative). The bug was fixed in 1.3.1.
 - `double / float` **ceilingHeight / ceiling_height**
 - `std::vector<Label> / list` **lines**
 
