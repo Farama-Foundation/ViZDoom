@@ -14,6 +14,9 @@ import psutil
 import vizdoom as vzd
 
 
+GEOMETRY_TOLERANCE = 1e-5
+
+
 def _test_get_state(
     num_iterations=10,
     num_states=20,
@@ -339,6 +342,56 @@ def test_types():
     )
 
 
+def _point_on_segment_2d(px, py, x1, y1, x2, y2, tolerance=GEOMETRY_TOLERANCE):
+    dx = x2 - x1
+    dy = y2 - y1
+    cross = (px - x1) * dy - (py - y1) * dx
+    if abs(cross) > tolerance * max(1.0, abs(dx), abs(dy)):
+        return False
+
+    # Dot product is <= 0 when (px, py) is between segment endpoints.
+    dot = (px - x1) * (px - x2) + (py - y1) * (py - y2)
+    return dot <= tolerance
+
+
+def _point_in_sector_2d(px, py, sector, tolerance=GEOMETRY_TOLERANCE):
+    inside = False
+    for line in sector.lines:
+        x1, y1 = line.x1, line.y1
+        x2, y2 = line.x2, line.y2
+
+        if _point_on_segment_2d(px, py, x1, y1, x2, y2, tolerance):
+            return True
+
+        intersects = (y1 > py) != (y2 > py)
+        if intersects:
+            x_intersection = (x2 - x1) * (py - y1) / (y2 - y1) + x1
+            if px < x_intersection:
+                inside = not inside
+
+    return inside
+
+
+def _find_object_sector(obj, sectors, tolerance=GEOMETRY_TOLERANCE):
+    containing = [
+        sector
+        for sector in sectors
+        if _point_in_sector_2d(obj.position_x, obj.position_y, sector, tolerance)
+    ]
+    if not containing:
+        return None
+
+    candidate_with_floor_below = [
+        sector
+        for sector in containing
+        if obj.position_z + tolerance >= sector.floor_height
+    ]
+    if candidate_with_floor_below:
+        return max(candidate_with_floor_below, key=lambda sector: sector.floor_height)
+
+    return min(containing, key=lambda sector: abs(obj.position_z - sector.floor_height))
+
+
 def test_map01_sectors_floor_not_above_ceiling():
     game = vzd.DoomGame()
     try:
@@ -348,7 +401,6 @@ def test_map01_sectors_floor_not_above_ceiling():
         game.init()
 
         state = game.get_state()
-        assert state is not None, "Expected valid state after init"
         assert state.sectors is not None, "Expected sectors info to be available"
         assert len(state.sectors) > 0, "Expected at least one sector on map01"
 
@@ -357,6 +409,44 @@ def test_map01_sectors_floor_not_above_ceiling():
                 f"Sector #{i}: floor_height={sector.floor_height} should be <= "
                 f"ceiling_height={sector.ceiling_height}"
             )
+    finally:
+        game.close()
+
+
+def test_map01_objects_are_above_the_floor_of_their_sector():
+    game = vzd.DoomGame()
+    try:
+        game.set_window_visible(False)
+        game.set_doom_map("map01")
+        game.set_objects_info_enabled(True)
+        game.set_sectors_info_enabled(True)
+        game.init()
+
+        state = game.get_state()
+        assert state.objects is not None, "Expected objects info to be available"
+        assert state.sectors is not None, "Expected sectors info to be available"
+        assert len(state.objects) > 0, "Expected at least one object on map01"
+        assert len(state.sectors) > 0, "Expected at least one sector on map01"
+
+        errors = []
+        for obj in state.objects:
+            sector = _find_object_sector(obj, state.sectors)
+            if sector is None:
+                errors.append(
+                    f"Object id={obj.id}, name={obj.name} was not matched to any sector "
+                    f"at (x={obj.position_x}, y={obj.position_y}, z={obj.position_z})"
+                )
+                continue
+
+            if obj.position_z + GEOMETRY_TOLERANCE < sector.floor_height:
+                errors.append(
+                    f"Object id={obj.id}, name={obj.name} is below floor: "
+                    f"z={obj.position_z}, sector_floor={sector.floor_height}"
+                )
+
+        assert not errors, "Object-to-sector floor validation failed:\n" + "\n".join(
+            errors
+        )
     finally:
         game.close()
 
