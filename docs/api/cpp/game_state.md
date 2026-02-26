@@ -72,7 +72,8 @@ Description of the object in the labels buffer.
 
 **objectName / object_name** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
 
-**objectCategory / object_category** - category of the object (e.g. "Monster", "Weapon", "Player"). Category "Self" is assigned to current player.
+**objectCategory / object_category** - category of the object (e.g. "Monster", "Weapon", "Player"). Category "Self" is assigned to current player. 
+The category assigment may not be accurate, especcialy for custom objects and WADs other than Freedoom/Doom. Note: added in 1.3.0.
 
 **value** - value that represents this particular object in **labelsBuffer**.
 
@@ -89,7 +90,9 @@ See also:
 (`C++ type / Python type` **name**)
 
 - `unsigned int / int` **id**
+- `int / int` **sectorId / sector_id**
 - `std::string / str` **name**
+- `std::string / str` **category**
 - `double / float` **positionX / position_x**
 - `double / float` **positionY / position_y**
 - `double / float` **positionZ / position_z**
@@ -102,9 +105,14 @@ See also:
 
 Description of the object present in the game world.
 
-**id** - unique object ID.
+**id** - unique object ID. This is the value referenced by **Label.objectId / object_id**.
 
 **name** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
+
+**category** - category of the object (e.g. "Monster", "Weapon", "Player"). Category "Self" is assigned to current player.
+The category assigment may not be accurate, especcialy for custom objects and WADs other than Freedoom/Doom. Note: added in 1.3.1.
+
+**sectorId / sector_id** - ID of the sector the object currently belongs to (same as corresponding **Sector.id**). Note: added in 1.3.1.
 
 See also:
 - [`DoomGame::setObjectsInfoEnabled`](./doom_game.md#setsectorsinfoenabled),
@@ -141,11 +149,14 @@ Note: added in 1.1.8.
 ### `Sector`
 (`C++ type / Python type` **name**)
 
+- `unsigned int / int` **id**
 - `double / float` **floorHeight / floor_height** - Note: before 1.3.1 the value of floorHeight was inverted (negative). The bug was fixed in 1.3.1.
 - `double / float` **ceilingHeight / ceiling_height**
-- `std::vector<Label> / list` **lines**
+- `std::vector<Line> / list` **lines**
 
 Description of the sector, part of the map with the same floor and ceiling height.
+
+**id** - unique sector ID. This is the value referenced by **Object.sectorId / sector_id**. Note: added in 1.3.1.
 
 **floorHeight / floor_height** - height of the sector's floor.
 

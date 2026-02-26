@@ -247,6 +247,61 @@ void VIZ_CopyActorName(AActor* actor, char* name) {
     name[VIZ_MAX_NAME_LEN - 1] = '\0';
 }
 
+static void VIZ_CopyActorInfo(AActor* actor, char* name, char* category) {
+    const PClass *actorClass = actor->GetClass();
+
+    // Handle DehackedPickup names exactly like labels extraction.
+    if (actor->IsKindOf(RUNTIME_CLASS(ADehackedPickup))) {
+        actorClass = static_cast<ADehackedPickup *>(actor)->DetermineType();
+        strncpy(name, actorClass->TypeName.GetChars(), VIZ_MAX_NAME_LEN - 1);
+        name[VIZ_MAX_NAME_LEN - 1] = '\0';
+    } else {
+        VIZ_CopyActorName(actor, name);
+    }
+
+    if (strncmp(name, "Dead", 4) == 0) {
+        strncpy(category, "Gore", VIZ_MAX_NAME_LEN);
+        category[VIZ_MAX_NAME_LEN - 1] = '\0';
+        return;
+    }
+
+    if (VIZ_PLAYER.mo == actor) {
+        strncpy(category, "Self", VIZ_MAX_NAME_LEN);
+        category[VIZ_MAX_NAME_LEN - 1] = '\0';
+        return;
+    }
+
+    PClass *currentClass = const_cast<PClass *>(actorClass);
+    while (currentClass != nullptr) {
+        std::string className = currentClass->TypeName.GetChars();
+
+        // Special case: HealthPickup is parallel to Health but is Health category.
+        if (className.compare("HealthPickup") == 0) {
+            className = "Health";
+        }
+
+        // Class could be a category (like Health for CustomMedikit and Poison).
+        if (std::find(categories.begin(), categories.end(), className) != categories.end()) {
+            strncpy(category, className.c_str(), VIZ_MAX_NAME_LEN);
+            category[VIZ_MAX_NAME_LEN - 1] = '\0';
+            return;
+        }
+
+        std::transform(className.begin(), className.end(), className.begin(), tolower);
+        auto categoryIt = classToCategory.find(className);
+        if (categoryIt != classToCategory.end()) {
+            strncpy(category, categoryIt->second.c_str(), VIZ_MAX_NAME_LEN);
+            category[VIZ_MAX_NAME_LEN - 1] = '\0';
+            return;
+        }
+
+        currentClass = currentClass->ParentClass;
+    }
+
+    strncpy(category, "Unknown", VIZ_MAX_NAME_LEN);
+    category[VIZ_MAX_NAME_LEN - 1] = '\0';
+}
+
 inline unsigned int VIZ_GetActorId(AActor* actor){
     if(actor->viz_id == -1) {
         actor->viz_id = vizUniqueObjectsCount++;
@@ -480,65 +535,9 @@ void VIZ_GameStateUpdateLabels(){
         for(auto& sprite : vizLabels->sprites){
             if(sprite.labeled && sprite.pointCount > 0){
                 VIZLabel *vizLabel = &vizGameStateSM->LABEL[labelCount++];
-                const PClass *actorClass;
-
                 vizLabel->objectId = VIZ_GetActorId(sprite.actor);
                 vizLabel->value = sprite.label;
-
-                // Handle DehackedPickup
-                if (sprite.actor->IsKindOf(RUNTIME_CLASS(ADehackedPickup))) {
-                    actorClass = static_cast<ADehackedPickup *>(sprite.actor)->DetermineType();
-                    strncpy(vizLabel->objectName, actorClass->TypeName.GetChars(), VIZ_MAX_NAME_LEN);
-                } else {
-                    actorClass = sprite.actor->GetClass();
-                    VIZ_CopyActorName(sprite.actor, vizLabel->objectName);
-                }
-
-                // Check for special cases before matching category
-                if (strncmp(vizLabel->objectName, "Dead", 4) == 0) {
-                    // Align with the behavior of VIZ_CopyActorName
-                    strncpy(vizLabel->objectCategory, "Gore", VIZ_MAX_NAME_LEN);
-                } else if (VIZ_PLAYER.mo == sprite.actor) {
-                    // Detect whether this object is current player
-                    strncpy(vizLabel->objectCategory, "Self", VIZ_MAX_NAME_LEN);
-                } else {
-                    PClass *currentClass = const_cast<PClass *>(actorClass);
-                    bool isUnknown = true;
-
-                    while (currentClass != nullptr)
-                    {
-                        // Convert to lowercase for lookup since the mapping uses casefolded names
-                        std::string className = currentClass->TypeName.GetChars();
-
-                        // Special case: HealthPickup is parallel to Health but is Health category
-                        if (className.compare("HealthPickup") == 0) {
-                            className = "Health";
-                        }
-
-                        // Class could be a category (like Health for CustomMedikit and Poison)
-                        if (std::find(categories.begin(), categories.end(), className) != categories.end()) {
-                            strncpy(vizLabel->objectCategory, className.c_str(), VIZ_MAX_NAME_LEN);
-                            isUnknown = false;
-                            break;
-                        }
-
-                        std::transform(className.begin(), className.end(), className.begin(), tolower);
-
-                        auto categoryIt = classToCategory.find(className);
-                        if (categoryIt != classToCategory.end()) {
-                            strncpy(vizLabel->objectCategory, categoryIt->second.c_str(), VIZ_MAX_NAME_LEN);
-                            vizLabel->objectCategory[VIZ_MAX_NAME_LEN-1] = '\0';  // Safe-guard against long names
-                            isUnknown = false;
-                            break;
-                        } else {
-                            currentClass = currentClass->ParentClass;
-                        }
-                    }
-
-                    if (isUnknown) {
-                        strncpy(vizLabel->objectCategory, "Unknown", VIZ_MAX_NAME_LEN);
-                    }
-                }
+                VIZ_CopyActorInfo(sprite.actor, vizLabel->objectName, vizLabel->objectCategory);
 
                 if(sprite.minX >= vizGameStateSM->SCREEN_WIDTH) sprite.minX = vizGameStateSM->SCREEN_WIDTH - 1;
                 if(sprite.minY >= vizGameStateSM->SCREEN_HEIGHT) sprite.minY = vizGameStateSM->SCREEN_HEIGHT - 1;
@@ -578,10 +577,12 @@ void VIZ_GameStateUpdateObjects(){
 
         // Handle all things in sector
         for (AActor *actor = sector->thinglist; actor != NULL; actor = actor->snext) {
+            if(objectCount >= VIZ_MAX_OBJECTS) break;
             VIZObject *vizObject = &vizGameStateSM->OBJECT[objectCount++];
 
             vizObject->id = VIZ_GetActorId(actor);
-            VIZ_CopyActorName(actor, vizObject->name);
+            VIZ_CopyActorInfo(actor, vizObject->name, vizObject->category);
+            vizObject->sectorId = actor->Sector != NULL ? static_cast<int>(actor->Sector - sectors) : -1;
             vizObject->position[0] = VIZ_FixedToDouble(actor->__pos.x);
             vizObject->position[1] = VIZ_FixedToDouble(actor->__pos.y);
             vizObject->position[2] = VIZ_FixedToDouble(actor->__pos.z);
@@ -593,8 +594,8 @@ void VIZ_GameStateUpdateObjects(){
             vizObject->position[8] = VIZ_FixedToDouble(actor->velz);
 
             VIZ_DebugMsg(4, VIZ_FUNC, "objectCount: %d, id: %d, name: %s", objectCount, vizObject->id, vizObject->name);
-            if(objectCount >= VIZ_MAX_OBJECTS) break;
         }
+        if(objectCount >= VIZ_MAX_OBJECTS) break;
     }
 
     vizGameStateSM->OBJECT_COUNT = objectCount;
@@ -636,6 +637,7 @@ void VIZ_GameStateUpdateSectors(){
         sector_t *sector = &sectors[i];
         VIZSector *vizSector = &vizGameStateSM->SECTOR[sectorCount++];
 
+        vizSector->id = i;
         vizSector->ceilingHeight = VIZ_FixedToDouble(sector->ceilingplane.d);
         vizSector->floorHeight = -VIZ_FixedToDouble(sector->floorplane.d);
 

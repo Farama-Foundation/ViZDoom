@@ -118,6 +118,7 @@ namespace vizdoom {
             pyb::list pySectors;
             for (auto& sector : this->state->sectors){
                 SectorPython pySector;
+                pySector.id = sector.id;
                 pySector.floorHeight = sector.floorHeight;
                 pySector.ceilingHeight = sector.ceilingHeight;
                 pySector.lines = DoomGamePython::vectorToPyList<Line>(sector.lines);

@@ -97,11 +97,14 @@ struct VIZLabel{
 
 struct VIZObject{
     unsigned int id;
+    int sectorId;
     double position[9];
+    char category[VIZ_MAX_NAME_LEN];
     char name[VIZ_MAX_NAME_LEN];
 };
 
 struct VIZSector{
+    unsigned int id;
     double floorHeight;
     double ceilingHeight;
     unsigned int lineCount;

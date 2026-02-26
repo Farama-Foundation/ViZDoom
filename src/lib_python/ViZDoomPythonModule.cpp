@@ -448,6 +448,7 @@ PYBIND11_MODULE(vizdoom, vz){
             [](const Object& o) { // dump
                 return pyb::make_tuple(
                     o.id,
+                    o.sectorId,
                     o.positionX, 
                     o.positionY, 
                     o.positionZ,
@@ -457,13 +458,14 @@ PYBIND11_MODULE(vizdoom, vz){
                     o.velocityX,
                     o.velocityY,
                     o.velocityZ,
-                    o.name
+                    o.name,
+                    o.category
                 );
             },
             [](pyb::tuple t) { // load
                 return Object{
                     t[0].cast<unsigned int>(), 
-                    t[1].cast<double>(),
+                    t[1].cast<int>(),
                     t[2].cast<double>(),
                     t[3].cast<double>(),
                     t[4].cast<double>(),
@@ -472,11 +474,14 @@ PYBIND11_MODULE(vizdoom, vz){
                     t[7].cast<double>(),
                     t[8].cast<double>(),
                     t[9].cast<double>(),
-                    t[10].cast<std::string>()
+                    t[10].cast<double>(),
+                    t[11].cast<std::string>(),
+                    t[12].cast<std::string>()
                 };
             })
         )
         .def_readonly("id", &Object::id)
+        .def_readonly("sector_id", &Object::sectorId)
         .def_readonly("position_x", &Object::positionX)
         .def_readonly("position_y", &Object::positionY)
         .def_readonly("position_z", &Object::positionZ)
@@ -486,7 +491,8 @@ PYBIND11_MODULE(vizdoom, vz){
         .def_readonly("velocity_x", &Object::velocityX)
         .def_readonly("velocity_y", &Object::velocityY)
         .def_readonly("velocity_z", &Object::velocityZ)
-        .def_readonly("name", &Object::name);
+        .def_readonly("name", &Object::name)
+        .def_readonly("category", &Object::category);
 
     pyb::class_<Line>(vz, "Line", docstrings::Line)
         .def(pyb::pickle(
@@ -519,6 +525,7 @@ PYBIND11_MODULE(vizdoom, vz){
         .def(pyb::pickle(
             [](const SectorPython& o) { // dump
                 return pyb::make_tuple(
+                    o.id,
                     o.floorHeight, 
                     o.ceilingHeight, 
                     o.lines
@@ -526,12 +533,14 @@ PYBIND11_MODULE(vizdoom, vz){
             },
             [](pyb::tuple t) { // load
                 return SectorPython{
-                    t[0].cast<double>(), 
+                    t[0].cast<unsigned int>(), 
                     t[1].cast<double>(),
-                    t[2].cast<pyb::list>()
+                    t[2].cast<double>(),
+                    t[3].cast<pyb::list>()
                 };
             })
         )
+        .def_readonly("id", &SectorPython::id)
         .def_readonly("floor_height", &SectorPython::floorHeight)
         .def_readonly("ceiling_height", &SectorPython::ceilingHeight)
         .def_readonly("lines", &SectorPython::lines);
