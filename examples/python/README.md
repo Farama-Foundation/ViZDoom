@@ -84,6 +84,9 @@ Presents different scenarios that come with ViZDoom environment.
 - [seed.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/seed.py)
 Shows how to run deterministic episodes by setting the seed. After setting the seed every episode will look the same (if the agent behaves deterministically).
 
+- [sectors_visualization.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/sectors_visualization.py)
+Renders a one-shot 3D map of sectors (floor/ceiling/walls) and objects, then saves the plot.
+
 - [shaping.py](https://github.com/mwydmuch/ViZDoom/blob/master/examples/python/shaping.py)
 Demonstrates how to make use of the game variables to implement [shaping](https://en.wikipedia.org/wiki/Shaping_(psychology)) using health_guided.wad scenario.
 
