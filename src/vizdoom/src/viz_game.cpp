@@ -637,7 +637,7 @@ void VIZ_GameStateUpdateSectors(){
         VIZSector *vizSector = &vizGameStateSM->SECTOR[sectorCount++];
 
         vizSector->ceilingHeight = VIZ_FixedToDouble(sector->ceilingplane.d);
-        vizSector->floorHeight = VIZ_FixedToDouble(sector->floorplane.d);
+        vizSector->floorHeight = -VIZ_FixedToDouble(sector->floorplane.d);
 
         unsigned int sectorLineCount = 0;
         for(int l = 0; l < sector->linecount; ++l){

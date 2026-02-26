@@ -339,6 +339,28 @@ def test_types():
     )
 
 
+def test_map01_sectors_floor_not_above_ceiling():
+    game = vzd.DoomGame()
+    try:
+        game.set_window_visible(False)
+        game.set_doom_map("map01")
+        game.set_sectors_info_enabled(True)
+        game.init()
+
+        state = game.get_state()
+        assert state is not None, "Expected valid state after init"
+        assert state.sectors is not None, "Expected sectors info to be available"
+        assert len(state.sectors) > 0, "Expected at least one sector on map01"
+
+        for i, sector in enumerate(state.sectors):
+            assert sector.floor_height <= sector.ceiling_height, (
+                f"Sector #{i}: floor_height={sector.floor_height} should be <= "
+                f"ceiling_height={sector.ceiling_height}"
+            )
+    finally:
+        game.close()
+
+
 def test_modifing_buffers_while_game_is_running():
     game = vzd.DoomGame()
     game.set_window_visible(False)
