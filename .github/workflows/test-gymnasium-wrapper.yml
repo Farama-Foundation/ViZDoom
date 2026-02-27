@@ -5,7 +5,9 @@ on:
     paths:
       - '.github/workflows/test-gymnasium-wrapper.yml'
       - 'gymnasium_wrapper/**'
-      - 'tests/**'
+      - 'include/**'
+      - 'src/**'
+      - 'tests/test_gymnasium_wrapper.py'
       - 'CMakeLists.txt'
       - 'setup.py'
       - 'pyproject.toml'
@@ -14,7 +16,9 @@ on:
     paths:
       - '.github/workflows/test-gymnasium-wrapper.yml'
       - 'gymnasium_wrapper/**'
-      - 'tests/**'
+      - 'include/**'
+      - 'src/**'
+      - 'tests/test_gymnasium_wrapper.py'
       - 'CMakeLists.txt'
       - 'setup.py'
       - 'pyproject.toml'
@@ -54,4 +58,4 @@ jobs:
       run: python -c "import vizdoom"
 
     - name: Run tests
-      run: pytest tests/test_gymnasium_wrapper.py
+      run: pytest tests/test_gymnasium_wrapper.py -s
