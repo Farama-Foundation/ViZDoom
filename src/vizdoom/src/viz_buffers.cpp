@@ -230,9 +230,10 @@ void VIZ_CopyBuffer(BYTE *vizBuffer){
     if(screen == NULL) return;
 
     const BYTE *buffer = screen->GetBuffer();
-    PalEntry *palette = screen->GetPalette();
+    PalEntry palette[256];
+    screen->GetFlashedPalette(palette);
 
-    if(buffer == NULL || palette == NULL) return;
+    if(buffer == NULL) return;
 
     const unsigned int screenSize = screen->GetWidth() * screen->GetHeight();
     const unsigned int bufferPitch = screen->GetPitch();
