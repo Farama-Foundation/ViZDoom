@@ -13,8 +13,8 @@ from typing import Any, Dict, List, Optional
 import numpy as np
 from vizdoom import GameVariable
 
-from pettingzoo_wrapper.base_env_common import VizdoomParallelEnvBase, configure_doom_game
-from pettingzoo_wrapper.utils import get_flat_game_vars, parse_hw, read_frame, sync_agent_init
+from vizdoom.pettingzoo_wrapper.base_env_common import VizdoomParallelEnvBase, configure_doom_game
+from vizdoom.pettingzoo_wrapper.utils import get_flat_game_vars, parse_hw, read_frame, sync_agent_init
 
 ctx = mp.get_context("spawn")
 

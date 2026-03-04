@@ -17,8 +17,8 @@ from typing import Dict, List, Optional
 
 import numpy as np
 
-from pettingzoo_wrapper.base_env_common import VizdoomParallelEnvBase, configure_doom_game
-from pettingzoo_wrapper.utils import get_flat_game_vars, read_frame
+from vizdoom.pettingzoo_wrapper.base_env_common import VizdoomParallelEnvBase, configure_doom_game
+from vizdoom.pettingzoo_wrapper.utils import get_flat_game_vars, read_frame
 
 ctx = mp.get_context("spawn")
 
