@@ -15,7 +15,7 @@ from gymnasium import spaces
 from pettingzoo import ParallelEnv
 from vizdoom import Mode
 
-from pettingzoo_wrapper.utils import discover_buttons, get_screen_resolution, parse_hw
+from vizdoom.pettingzoo_wrapper.utils import discover_buttons, get_screen_resolution, parse_hw
 
 
 def configure_doom_game(

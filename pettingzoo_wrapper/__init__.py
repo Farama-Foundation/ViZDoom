@@ -3,9 +3,9 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from .base_pettingzoo_env_shm import VizdoomParallelEnv
-from .reward_wrappers import PitfallRewardWrapper, HealthGatheringRewardWrapper, RemedyRushRewardWrapper
-from .video_recorder import VideoLoggerParallelWrapper
+from vizdoom.pettingzoo_wrapper.base_pettingzoo_env_shm import VizdoomParallelEnv
+from vizdoom.pettingzoo_wrapper.reward_wrappers import PitfallRewardWrapper, HealthGatheringRewardWrapper, RemedyRushRewardWrapper
+from vizdoom.pettingzoo_wrapper.video_recorder import VideoLoggerParallelWrapper
 
 # where the scenario .cfg files live
 _SCENARIO_DIR = os.path.join(Path(__file__).parent.parent, "scenarios")

@@ -80,6 +80,7 @@ add_custom_target(assemble_package ALL
     COMMAND ${CMAKE_COMMAND} -E copy ${VIZDOOM_SRC_DIR}/freedoom2.wad ${VIZDOOM_PYTHON_PACKAGE_DIR}
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${VIZDOOM_ROOT_DIR}/scenarios ${VIZDOOM_PYTHON_PACKAGE_DIR}/scenarios
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${VIZDOOM_ROOT_DIR}/gymnasium_wrapper ${VIZDOOM_PYTHON_PACKAGE_DIR}/gymnasium_wrapper
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${VIZDOOM_ROOT_DIR}/gymnasium_wrapper ${VIZDOOM_PYTHON_PACKAGE_DIR}/pettingzoo_wrapper
     COMMENT "Assembling Python package in ${VIZDOOM_PYTHON_OUTPUT_DIR}/vizdoom"
 )
 
