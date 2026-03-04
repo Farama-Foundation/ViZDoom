@@ -14,6 +14,9 @@ import psutil
 import vizdoom as vzd
 
 
+GEOMETRY_TOLERANCE = 1e-5
+
+
 def _test_get_state(
     num_iterations=10,
     num_states=20,
@@ -24,6 +27,7 @@ def _test_get_state(
     objects_info=False,
     sectors_info=False,
     audio_buffer=False,
+    notifications_buffer=False,
     seed=1993,
 ):
     print("Testing get_state() ...")
@@ -53,6 +57,7 @@ def _test_get_state(
     game.set_objects_info_enabled(objects_info)
     game.set_sectors_info_enabled(sectors_info)
     game.set_audio_buffer_enabled(audio_buffer)
+    game.set_notifications_buffer_enabled(notifications_buffer)
 
     buffers = ["screen_buffer"]
     if depth_buffer:
@@ -82,10 +87,12 @@ def _test_get_state(
                 game.new_episode()
 
             state = game.get_state()
+
             states.append(state)
             copies = {}
             for b in buffers:
                 copies[b] = np.copy(getattr(state, b))
+
             buffers_copies.append(copies)
             game.make_action(random.choice(actions), 4)
 
@@ -155,9 +162,391 @@ def test_get_state(num_iterations=10, num_states=20):
         automap_buffer=True,
         objects_info=True,
         sectors_info=True,
-        audio_buffer=True,  # Turned off by default, because it fails on some systems without audio backend and OpenAL installed
+        audio_buffer=True,
+        notifications_buffer=True,
     )
+
+
+def _check_state(
+    state,
+    expect_game_variables=False,
+    expect_depth_buffer=False,
+    expect_labels_buffer=False,
+    expect_automap_buffer=False,
+    expect_objects_info=False,
+    expect_sectors_info=False,
+    expect_audio_buffer=False,
+    expect_notifications_buffer=False,
+):
+    assert state is not None
+    assert isinstance(state.tic, int), f"State tic is: {state.tic}, expected int"
+    assert isinstance(
+        state.screen_buffer, np.ndarray
+    ), f"Screen buffer is: {state.screen_buffer}, expected np.ndarray"
+
+    if expect_game_variables:
+        assert isinstance(
+            state.game_variables, np.ndarray
+        ), f"Game variables are: {state.game_variables}, expected np.ndarray"
+    else:
+        assert (
+            state.game_variables is None
+        ), f"Game variables are: {state.game_variables}, expected None"
+
+    if expect_depth_buffer:
+        assert isinstance(
+            state.depth_buffer, np.ndarray
+        ), f"Depth buffer is: {state.depth_buffer}, expected np.ndarray"
+    else:
+        assert (
+            state.depth_buffer is None
+        ), f"Depth buffer is: {state.depth_buffer}, expected None"
+
+    if expect_labels_buffer:
+        assert isinstance(
+            state.labels_buffer, np.ndarray
+        ), f"Labels buffer is: {state.labels_buffer}, expected np.ndarray"
+    else:
+        assert (
+            state.labels_buffer is None
+        ), f"Labels buffer is: {state.labels_buffer}, expected None"
+
+    if expect_automap_buffer:
+        assert isinstance(
+            state.automap_buffer, np.ndarray
+        ), f"Automap buffer is: {state.automap_buffer}, expected np.ndarray"
+        assert state.screen_buffer.shape == state.automap_buffer.shape, (
+            f"Screen buffer shape is: {state.screen_buffer.shape}, "
+            f"automap buffer shape is: {state.automap_buffer.shape}, expected equal",
+        )
+    else:
+        assert (
+            state.automap_buffer is None
+        ), f"Automap buffer is: {state.automap_buffer}, expected None"
+
+    if expect_objects_info:
+        assert isinstance(
+            state.objects, list
+        ), f"Objects are: {state.objects}, expected list"
+    else:
+        assert state.objects is None, f"Objects are: {state.objects}, expected None"
+
+    if expect_sectors_info:
+        assert isinstance(
+            state.sectors, list
+        ), f"Sectors are: {state.sectors}, expected list"
+    else:
+        assert state.sectors is None, f"Sectors are: {state.sectors}, expected None"
+
+    if expect_audio_buffer:
+        assert isinstance(
+            state.audio_buffer, np.ndarray
+        ), f"Audio buffer is: {state.audio_buffer}, expected np.ndarray"
+    else:
+        assert (
+            state.audio_buffer is None
+        ), f"Audio buffer is: {state.audio_buffer}, expected None"
+
+    if expect_notifications_buffer:
+        assert isinstance(
+            state.notifications_buffer, str
+        ), f"Notifications buffer is: {state.notifications_buffer}, expected str"
+    else:
+        assert (
+            state.notifications_buffer is None
+        ), f"Notifications buffer is: {state.notifications_buffer}, expected None"
+
+
+def test_buffer_sizes():
+    game = vzd.DoomGame()
+    game.set_window_visible(False)
+
+    game.set_depth_buffer_enabled(True)
+    game.set_labels_buffer_enabled(True)
+    game.set_automap_buffer_enabled(True)
+    game.set_audio_buffer_enabled(True)
+    game.set_notifications_buffer_enabled(True)
+    game.set_screen_resolution(vzd.ScreenResolution.RES_640X480)
+    game.set_screen_format(vzd.ScreenFormat.CRCGCB)
+    game.set_audio_sampling_rate(vzd.SamplingRate.SR_44100)
+    game.set_audio_buffer_size(8)
+    game.set_notifications_buffer_size(8)
+
+    screen_width = game.get_screen_width()
+    screen_height = game.get_screen_height()
+    assert screen_width == 640
+    assert screen_height == 480
+
+    audio_buf_size = game.get_audio_buffer_size()
+    notifications_buf_size = game.get_notifications_buffer_size()
+    assert audio_buf_size == 8
+    assert notifications_buf_size == 8
+
+    game.init()
+    state = game.get_state()
+    _check_state(
+        state,
+        expect_depth_buffer=True,
+        expect_labels_buffer=True,
+        expect_automap_buffer=True,
+        expect_audio_buffer=True,
+        expect_notifications_buffer=True,
+    )
+    assert state.screen_buffer.shape == (3, screen_height, screen_width)  # type: ignore
+    assert state.depth_buffer.shape == (screen_height, screen_width)  # type: ignore
+    assert state.labels_buffer.shape == (screen_height, screen_width)  # type: ignore
+    assert state.automap_buffer.shape == (3, screen_height, screen_width)  # type: ignore
+    assert state.audio_buffer.shape == (44100 // 35 * audio_buf_size, 2)  # type: ignore
+    assert isinstance(state.notifications_buffer, str)
+
+
+def test_if_none():
+    game = vzd.DoomGame()
+    game.set_window_visible(False)
+    game.init()
+
+    state = game.get_state()
+    _check_state(state)
+
+
+def test_types():
+    game = vzd.DoomGame()
+    game.set_window_visible(False)
+
+    game.add_available_game_variable(vzd.GameVariable.AMMO2)
+    game.set_depth_buffer_enabled(True)
+    game.set_labels_buffer_enabled(True)
+    game.set_automap_buffer_enabled(True)
+    game.set_objects_info_enabled(True)
+    game.set_sectors_info_enabled(True)
+    game.set_audio_buffer_enabled(True)
+    game.set_notifications_buffer_enabled(True)
+
+    # This fixes "BiquadFilter_setParams: Assertion `gain > 0.00001f' failed" issue
+    # or "no audio in buffer" issue caused by a bug in OpenAL version 1.19.
+    game.add_game_args("+snd_efx 0")
+
+    game.init()
+    state = game.get_state()
+
+    _check_state(
+        state,
+        expect_game_variables=True,
+        expect_depth_buffer=True,
+        expect_labels_buffer=True,
+        expect_automap_buffer=True,
+        expect_objects_info=True,
+        expect_sectors_info=True,
+        expect_audio_buffer=True,
+        expect_notifications_buffer=True,
+    )
+
+
+def _point_on_segment_2d(px, py, x1, y1, x2, y2, tolerance=GEOMETRY_TOLERANCE):
+    dx = x2 - x1
+    dy = y2 - y1
+    cross = (px - x1) * dy - (py - y1) * dx
+    if abs(cross) > tolerance * max(1.0, abs(dx), abs(dy)):
+        return False
+
+    # Dot product is <= 0 when (px, py) is between segment endpoints.
+    dot = (px - x1) * (px - x2) + (py - y1) * (py - y2)
+    return dot <= tolerance
+
+
+def _point_in_sector_2d(px, py, sector, tolerance=GEOMETRY_TOLERANCE):
+    inside = False
+    for line in sector.lines:
+        x1, y1 = line.x1, line.y1
+        x2, y2 = line.x2, line.y2
+
+        if _point_on_segment_2d(px, py, x1, y1, x2, y2, tolerance):
+            return True
+
+        intersects = (y1 > py) != (y2 > py)
+        if intersects:
+            x_intersection = (x2 - x1) * (py - y1) / (y2 - y1) + x1
+            if px < x_intersection:
+                inside = not inside
+
+    return inside
+
+
+def _find_object_sector(obj, sectors, tolerance=GEOMETRY_TOLERANCE):
+    containing = [
+        sector
+        for sector in sectors
+        if _point_in_sector_2d(obj.position_x, obj.position_y, sector, tolerance)
+    ]
+    if not containing:
+        return None
+
+    candidate_with_floor_below = [
+        sector
+        for sector in containing
+        if obj.position_z + tolerance >= sector.floor_height
+    ]
+    if candidate_with_floor_below:
+        return max(candidate_with_floor_below, key=lambda sector: sector.floor_height)
+
+    return min(containing, key=lambda sector: abs(obj.position_z - sector.floor_height))
+
+
+def test_map01_sectors_floor_not_above_ceiling():
+    game = vzd.DoomGame()
+    try:
+        game.set_window_visible(False)
+        game.set_doom_map("map01")
+        game.set_sectors_info_enabled(True)
+        game.init()
+
+        state = game.get_state()
+        assert state.sectors is not None, "Expected sectors info to be available"
+        assert len(state.sectors) > 0, "Expected at least one sector on map01"
+
+        for i, sector in enumerate(state.sectors):
+            assert sector.floor_height <= sector.ceiling_height, (
+                f"Sector #{i}: floor_height={sector.floor_height} should be <= "
+                f"ceiling_height={sector.ceiling_height}"
+            )
+    finally:
+        game.close()
+
+
+def test_map01_objects_are_above_the_floor_of_their_sector():
+    game = vzd.DoomGame()
+    try:
+        game.set_window_visible(False)
+        game.set_doom_map("map01")
+        game.set_objects_info_enabled(True)
+        game.set_sectors_info_enabled(True)
+        game.init()
+
+        state = game.get_state()
+        assert state.objects is not None, "Expected objects info to be available"
+        assert state.sectors is not None, "Expected sectors info to be available"
+        assert len(state.objects) > 0, "Expected at least one object on map01"
+        assert len(state.sectors) > 0, "Expected at least one sector on map01"
+
+        errors = []
+        for obj in state.objects:
+            sector = _find_object_sector(obj, state.sectors)
+            if sector is None:
+                errors.append(
+                    f"Object id={obj.id}, name={obj.name} was not matched to any sector "
+                    f"at (x={obj.position_x}, y={obj.position_y}, z={obj.position_z})"
+                )
+                continue
+
+            if obj.position_z + GEOMETRY_TOLERANCE < sector.floor_height:
+                errors.append(
+                    f"Object id={obj.id}, name={obj.name} is below floor: "
+                    f"z={obj.position_z}, sector_floor={sector.floor_height}"
+                )
+
+        assert not errors, "Object-to-sector floor validation failed:\n" + "\n".join(
+            errors
+        )
+    finally:
+        game.close()
+
+
+def test_modifing_buffers_while_game_is_running():
+    game = vzd.DoomGame()
+    game.set_window_visible(False)
+    game.set_screen_resolution(vzd.ScreenResolution.RES_320X240)
+    game.set_audio_buffer_size(4)
+    game.set_notifications_buffer_size(4)
+
+    # This fixes "BiquadFilter_setParams: Assertion `gain > 0.00001f' failed" issue
+    # or "no audio in buffer" issue caused by a bug in OpenAL version 1.19.
+    game.add_game_args("+snd_efx 0")
+
+    screen_width = game.get_screen_width()
+    screen_height = game.get_screen_height()
+    audio_buf_size = game.get_audio_buffer_size()
+    notifications_buf_size = game.get_notifications_buffer_size()
+
+    game.init()
+
+    # Initial state - no buffers enabled
+    state = game.get_state()
+    _check_state(state)
+
+    game.advance_action(4)
+
+    # Game is running, try to change buffers setting
+    game.set_depth_buffer_enabled(True)
+    game.set_labels_buffer_enabled(True)
+    game.set_automap_buffer_enabled(True)
+    game.set_objects_info_enabled(True)
+    game.set_sectors_info_enabled(True)
+    game.set_audio_buffer_enabled(True)
+    game.set_notifications_buffer_enabled(True)
+    game.set_screen_resolution(vzd.ScreenResolution.RES_640X480)
+    game.set_audio_buffer_size(8)
+    game.set_notifications_buffer_size(8)
+
+    game.advance_action(4)
+
+    state = game.get_state()
+    _check_state(state)
+
+    assert not game.is_depth_buffer_enabled()
+    assert not game.is_labels_buffer_enabled()
+    assert not game.is_automap_buffer_enabled()
+    assert not game.is_objects_info_enabled()
+    assert not game.is_sectors_info_enabled()
+    assert not game.is_audio_buffer_enabled()
+    assert not game.is_notifications_buffer_enabled()
+    assert game.get_screen_width() == screen_width == 320
+    assert game.get_screen_height() == screen_height == 240
+    assert game.get_audio_buffer_size() == audio_buf_size == 4
+    assert game.get_notifications_buffer_size() == notifications_buf_size == 4
+
+    game.close()
+    game.init()
+
+    state = game.get_state()
+    _check_state(state)
+
+    assert not game.is_depth_buffer_enabled()
+    assert not game.is_labels_buffer_enabled()
+    assert not game.is_automap_buffer_enabled()
+    assert not game.is_objects_info_enabled()
+    assert not game.is_sectors_info_enabled()
+    assert not game.is_audio_buffer_enabled()
+    assert not game.is_notifications_buffer_enabled()
+    assert game.get_screen_width() == screen_width == 320
+    assert game.get_screen_height() == screen_height == 240
+    assert game.get_audio_buffer_size() == audio_buf_size == 4
+    assert game.get_notifications_buffer_size() == notifications_buf_size == 4
+
+
+def test_server_state():
+    game = vzd.DoomGame()
+    game.set_window_visible(False)
+    game.init()
+
+    state = game.get_state()
+    server_state = game.get_server_state()
+
+    assert server_state is not None
+    assert (
+        server_state.tic == state.tic
+    ), f"State tic is: {state.tic}, server state tic is: {server_state.tic}, expected equal"
+    assert (
+        server_state.player_count == 1
+    ), f"Server state player count is: {server_state.player_count}, expected 1 for singeplayer game"
+
+
+# TODO: Add more tests for server state
 
 
 if __name__ == "__main__":
     test_get_state()
+    test_buffer_sizes()
+    test_if_none()
+    test_types()
+    test_modifing_buffers_while_game_is_running()
+    test_server_state()

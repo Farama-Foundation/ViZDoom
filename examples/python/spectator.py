@@ -5,7 +5,8 @@
 # your agent can learn from it.
 # Configuration is loaded from "../../scenarios/<SCENARIO_NAME>.cfg" file.
 #
-# To see the scenario description go to "../../scenarios/README.md"
+# To see the scenario description go to
+# https://vizdoom.farama.org/main/environments/default/
 #####################################################################
 
 import os
@@ -27,19 +28,31 @@ if __name__ == "__main__":
         " Please see "
         "../../scenarios/*cfg for more scenarios.",
     )
+    parser.add_argument(
+        "-e",
+        "--episodes",
+        default=1,
+        type=int,
+        help="Number of episodes to play.",
+    )
+    parser.add_argument(
+        "-e",
+        "--episodes",
+        default=1,
+        type=int,
+        help="Number of episodes to play.",
+    )
     args = parser.parse_args()
     game = vzd.DoomGame()
 
-    # Choose scenario config file you wish to watch.
-    # Don't load two configs cause the second will overwrite the first one.
-    # Multiple config files are ok but combining these ones doesn't make much sense.
-
+    # Choose scenario config file.
     game.load_config(args.config)
 
-    # Enables freelook in engine
+    # Enables freelook (mouse look) in the engine.
     game.add_game_args("+freelook 1")
 
-    game.set_screen_resolution(vzd.ScreenResolution.RES_640X480)
+    # Increate screen resolution for better experience.
+    game.set_screen_resolution(vzd.ScreenResolution.RES_800X600)
 
     # Enables spectator mode, so you can play. Sounds strange but it is the agent who is supposed to watch not you.
     game.set_window_visible(True)
@@ -47,9 +60,7 @@ if __name__ == "__main__":
 
     game.init()
 
-    episodes = 10
-
-    for i in range(episodes):
+    for i in range(args.episodes):
         print(f"Episode #{i + 1}")
 
         game.new_episode()
@@ -61,11 +72,12 @@ if __name__ == "__main__":
             last_action = game.get_last_action()
             reward = game.get_last_reward()
 
-            print(f"State #{state.number}")
-            print("Game variables: ", state.game_variables)
-            print("Action:", last_action)
-            print("Reward:", reward)
-            print("=====================")
+            print(
+                f"State #{state.number} | "
+                f"Game variables: {state.game_variables} | "
+                f"Action: {last_action} | "
+                f"Reward: {reward}"
+            )
 
         print("Episode finished!")
         print("Total reward:", game.get_total_reward())

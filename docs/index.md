@@ -24,7 +24,7 @@ The Gymnasium interface allows to initialize and interact with the ViZDoom defau
 ```{code-block} python
 import gymnasium
 from vizdoom import gymnasium_wrapper
-env = gymnasium.make("VizdoomDeadlyCorridor-v0")
+env = gymnasium.make("VizdoomDeadlyCorridor-v1")
 observation, info = env.reset()
 for _ in range(1000):
    action = policy(observation)  # this is where you would insert your policy
@@ -60,7 +60,6 @@ game.close()
 :caption: Introduction
 
 introduction/python_quickstart
-introduction/building
 introduction/apis_and_wrappers
 ```
 
@@ -78,8 +77,18 @@ api/configuration_files
 :caption: Environments
 
 environments/default
+environments/original_doom_levels
 environments/third_party
 environments/creating_custom
+environments/slade_config
+```
+
+```{toctree}
+:hidden:
+:caption: Dev
+
+dev/dev_guide
+dev/building_from_source
 ```
 
 ```{toctree}

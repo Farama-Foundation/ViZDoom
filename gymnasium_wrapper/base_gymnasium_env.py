@@ -2,15 +2,39 @@
 Implementation of the base Gymnasium environment for ViZDoom.
 
 The first version was based on Gym interface by [Simon Hakenes](https://github.com/shakenes/vizdoomgym),
-and developed by [Arjun KG](https://github.com/arjun-kg),
+and developed by
+[Arjun KG](https://github.com/arjun-kg),
 [Benjamin Noah Beal](https://github.com/bebeal),
 [Lawrence Francis](https://github.com/ldfrancis),
-and [Mark Towers](https://github.com/pseudo-rnd-thoughts).
+[Mark Towers](https://github.com/pseudo-rnd-thoughts).
+
+Modified and updated by
+[Muhammad Elnimr](https://github.com/melnimr),
+[Hugo Huang](https://github.com/Trenza1ore),
+[Marek Wydmuch](https://github.com/mwydmuch).
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 """
 
 import itertools
 import warnings
-from typing import Optional
+from typing import Any, Optional
 
 import gymnasium as gym
 import numpy as np
@@ -28,6 +52,8 @@ LABEL_COLORS = (
     np.random.default_rng(42).uniform(25, 256, size=(256, 3)).astype(np.uint8)
 )
 
+ASCII_CHARS = [chr(i) for i in range(0, 127)]
+
 
 class VizdoomEnv(gym.Env, EzPickle):
     metadata = {
@@ -37,37 +63,45 @@ class VizdoomEnv(gym.Env, EzPickle):
 
     def __init__(
         self,
-        config_file: str,
+        config_file: Optional[str] = None,
         frame_skip: int = 1,
         max_buttons_pressed: int = 0,
         render_mode: Optional[str] = None,
         treat_episode_timeout_as_truncation: bool = True,
         use_multi_binary_action_space: bool = True,
+        **kwargs: Any,
     ):
         """
         Base class for Gymnasium interface for ViZDoom.
         Child classes are defined in gymnasium_env_defns.py,
 
         Arguments:
-            config_file (str): The path to the config file to load. Most settings should be set by this config file.
+            config_file (Optional[str]): The path to the config file to load.
+                                         Most settings should be set by this config file.
+                                         If None, all the necessary config must be provided in **kwargs.
             frame_skip (int): The number of frames the will be advanced per action. 1 = take action on every frame. Default: 1.
             max_buttons_pressed (int): Defines the number of binary buttons that can be selected at once. Default: 1.
                                        Should be >= 0. If < 0 a RuntimeError is raised.
-                                       If == 0, the binary action space becomes ``MultiDiscrete([2] * num_binary_buttons)``
+                                       If == 0, the binary action space becomes ``MultiBinary(len(num_binary_buttons))``
+                                       or ``MultiDiscrete([2] * num_binary_buttons)`` (depending on ``use_multi_binary_action_space`` flag)
                                        and [0, ``num_binary_buttons``] number of binary buttons can be selected.
                                        If > 0, the binary action space becomes ``Discrete(n)``
                                        and ``n`` actions can be selected.
                                        ``n`` is equal to number of possible buttons combinations
                                        with the number of buttons pressed < ``max_buttons_pressed``.
-            render_mode(Optional[str]): The render mode to use could be either "human" or "rgb_array"
+            render_mode (Optional[str]): The render mode to use could be either "human" or "rgb_array"
+            skill_level (Optional[int]): If specified, sets the skill level (difficulty) of the game (overrides config file).
+                                         Valid values are 1 to 5, where 1 is the easiest and 5 is the hardest.
+            map (Optional[str]): If specified, sets the map to start. Should be a valid map ID defined in the WAD file (overrides config file).
             treat_episode_timeout_as_truncation (bool): If True, the episode will be treated as truncated
                                                         when the internal episode timeout is reached.
                                                         This is compatibility option, ViZDoom versions <1.3.0 behave as if this was set to False.
                                                         Default: True.
             use_multi_binary_action_space (bool): If True, the ``MultiBinary(len(num_binary_buttons))`` action space
-                                                    will be used for buttons binary buttons instead of ``MultiDiscrete([2] * len(num_binary_buttons))``.
-                                                    This is compatibility option, ViZDoom versions <1.3.0 behave as if this was set to False.
-                                                    Default: True.
+                                                  will be used for buttons binary buttons instead of ``MultiDiscrete([2] * len(num_binary_buttons))``.
+                                                  This is compatibility option, ViZDoom versions <1.3.0 behave as if this was set to False.
+                                                  Default: True.
+            **kwargs: Additional config options to set in the DoomGame after loading the config file.
 
         This environment forces the game window to be hidden. Use :meth:`render` function to see the game.
 
@@ -89,7 +123,14 @@ class VizdoomEnv(gym.Env, EzPickle):
         - "continuous": Is ``Box(float32.min, float32.max, (num_delta_buttons,), float32)``.
         """
         EzPickle.__init__(
-            self, config_file, frame_skip, max_buttons_pressed, render_mode
+            self,
+            config_file,
+            frame_skip,
+            max_buttons_pressed,
+            render_mode,
+            treat_episode_timeout_as_truncation,
+            use_multi_binary_action_space,
+            **kwargs,
         )
         self.frame_skip = frame_skip
         self.render_mode = render_mode
@@ -98,18 +139,49 @@ class VizdoomEnv(gym.Env, EzPickle):
 
         # init game
         self.game = vzd.DoomGame()
-        self.game.load_config(config_file)
-        self.game.set_window_visible(False)
+
+        if config_file is not None:
+            self.game.load_config(config_file)
+        if kwargs is not None and len(kwargs) > 0:
+            self.game.set_config(kwargs)
+        if config_file is None and not kwargs:
+            raise RuntimeError("Either config_file or kwargs must be provided.")
+
+        if (
+            kwargs is None or "window_visible" not in kwargs
+        ):  # Gymnasium environments should not create a visible window by default, but allow users to override this in kwargs
+            self.game.set_window_visible(False)
+
+        if (
+            kwargs is None or "audio_buffer_size" not in kwargs
+        ):  # Gymnasium environments should have buffer size set to frame_skip for all buffers by default, but allow users to override this in kwargs
+            self.game.set_audio_buffer_size(frame_skip)
+        elif self.game.is_audio_buffer_enabled():
+            warnings.warn(
+                "audio_buffer_size is set in kwargs. Gymnasium wrapper sets this buffer size to frame_skip by default."
+            )
+
+        if (
+            kwargs is None or "notifications_buffer_size" not in kwargs
+        ):  # Gymnasium environments should have buffer size set to frame_skip for all buffers by default, but allow users to override this in kwargs
+            self.game.set_notifications_buffer_size(frame_skip)
+        elif self.game.is_notifications_buffer_enabled():
+            warnings.warn(
+                "notifications_buffer_size is set in kwargs. Gymnasium wrapper sets this buffer size to frame_skip by default."
+            )
 
         screen_format = self.game.get_screen_format()
         if (
             screen_format != vzd.ScreenFormat.RGB24
             and screen_format != vzd.ScreenFormat.GRAY8
         ):
-            warnings.warn(
-                f"Detected screen format {screen_format.name}. Only RGB24 and GRAY8 are supported in the Gymnasium"
-                f" wrapper. Forcing RGB24."
-            )
+            if (
+                kwargs is not None and "screen_format" in kwargs
+            ):  # Only warn if user explicitly set screen_format in kwargs
+                warnings.warn(
+                    f"Detected screen format {screen_format.name} set in kwargs. "
+                    f"Only RGB24 and GRAY8 are supported in the Gymnasium wrapper. Forcing RGB24."
+                )
             self.game.set_screen_format(vzd.ScreenFormat.RGB24)
 
         self.state = None
@@ -117,12 +189,15 @@ class VizdoomEnv(gym.Env, EzPickle):
         self.window_surface = None
         self.isopen = True
         self.channels = 3
+
         if screen_format == vzd.ScreenFormat.GRAY8:
             self.channels = 1
 
         self.depth = self.game.is_depth_buffer_enabled()
         self.labels = self.game.is_labels_buffer_enabled()
         self.automap = self.game.is_automap_buffer_enabled()
+        self.audio = self.game.is_audio_buffer_enabled()
+        self.notifications = self.game.is_notifications_buffer_enabled()
 
         # parse buttons defined by config file
         self.__parse_available_buttons()
@@ -147,9 +222,7 @@ class VizdoomEnv(gym.Env, EzPickle):
         # specify observation space(s)
         self.observation_space = self.__get_observation_space()
 
-        self.game.init()
-
-    def step(self, action):
+    def step(self, action: Any):
         assert self.action_space.contains(
             action
         ), f"{action!r} ({type(action)}) invalid"
@@ -168,7 +241,7 @@ class VizdoomEnv(gym.Env, EzPickle):
             self.render()
         return self.__collect_observations(), reward, terminated, truncated, {}
 
-    def __parse_binary_buttons(self, env_action, agent_action):
+    def __parse_binary_buttons(self, env_action: Any, agent_action: Any):
         if self.num_binary_buttons != 0:
             if self.num_delta_buttons != 0:
                 agent_action = agent_action["binary"]
@@ -179,7 +252,7 @@ class VizdoomEnv(gym.Env, EzPickle):
             # binary actions offset by number of delta buttons
             env_action[self.num_delta_buttons :] = agent_action
 
-    def __parse_delta_buttons(self, env_action, agent_action):
+    def __parse_delta_buttons(self, env_action: Any, agent_action: Any):
         if self.num_delta_buttons != 0:
             if self.num_binary_buttons != 0:
                 agent_action = agent_action["continuous"]
@@ -187,7 +260,7 @@ class VizdoomEnv(gym.Env, EzPickle):
             # delta buttons have a direct mapping since they're reorganized to be prior to any binary buttons
             env_action[0 : self.num_delta_buttons] = agent_action
 
-    def __build_env_action(self, agent_action):
+    def __build_env_action(self, agent_action: Any):
         # encode users action as environment action
         env_action = np.array(
             [0 for _ in range(self.num_delta_buttons + self.num_binary_buttons)],
@@ -209,7 +282,11 @@ class VizdoomEnv(gym.Env, EzPickle):
             self.np_random.integers(0, np.iinfo(np.uint32).max + 1, dtype=np.uint32)
         )
         self.game.set_seed(game_seed)
-        self.game.new_episode()
+
+        if self.game.is_running():
+            self.game.new_episode()
+        else:
+            self.game.init()
         self.state = self.game.get_state()
 
         return self.__collect_observations(), {}
@@ -228,6 +305,10 @@ class VizdoomEnv(gym.Env, EzPickle):
                 observation["automap"] = self.state.automap_buffer
                 if self.channels == 1:
                     observation["automap"] = self.state.automap_buffer[..., None]  # type: ignore
+            if self.audio:
+                observation["audio"] = self.state.audio_buffer
+            if self.notifications:
+                observation["notifications"] = self.state.notifications_buffer
             if self.num_game_variables > 0:
                 observation["gamevariables"] = self.state.game_variables.astype(  # type: ignore
                     np.float32
@@ -235,9 +316,16 @@ class VizdoomEnv(gym.Env, EzPickle):
         else:
             # there is no state in the terminal step, so a zero observation is returned instead
             for space_key, space_item in self.observation_space.spaces.items():
-                observation[space_key] = np.zeros(
-                    space_item.shape, dtype=space_item.dtype
-                )
+                if isinstance(space_item, gym.spaces.Box):
+                    observation[space_key] = np.zeros(
+                        space_item.shape, dtype=space_item.dtype
+                    )
+                elif isinstance(space_item, gym.spaces.Text):
+                    observation[space_key] = ""
+                else:
+                    warnings.warn(
+                        f"Observation space of type {type(space_item)} not supported when there is no game state."
+                    )
 
         return observation
 
@@ -312,6 +400,7 @@ class VizdoomEnv(gym.Env, EzPickle):
             return self.isopen
 
     def close(self):
+        self.game.close()
         if self.window_surface:
             pygame.quit()
             self.isopen = False
@@ -441,6 +530,23 @@ class VizdoomEnv(gym.Env, EzPickle):
                     self.channels,
                 ),
                 dtype=np.uint8,
+            )
+        if self.audio:
+            spaces["audio"] = gym.spaces.Box(
+                -32768,
+                32767,
+                (
+                    int(
+                        self.game.get_audio_sampling_rate() * 1 / 35 * self.frame_skip
+                    ),  # rate / 35tics * frameskip
+                    # 2 channels audio
+                    2,
+                ),
+                dtype=np.int16,
+            )
+        if self.notifications:
+            spaces["notifications"] = gym.spaces.Text(
+                min_length=0, max_length=32768, charset=ASCII_CHARS
             )
 
         self.num_game_variables = self.game.get_available_game_variables_size()

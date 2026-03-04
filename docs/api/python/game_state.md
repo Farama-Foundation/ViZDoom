@@ -83,7 +83,7 @@ Note: added in 1.1.8.
    :undoc-members:
 ```
 
-**floor_height** - height of the sector's floor.
+**floor_height** - height of the sector's floor. Note: before 1.3.1 the value of floorHeight was inverted (negative). The bug was fixed in 1.3.1.
 
 **ceiling_height** - height of the sector's ceiling.
 

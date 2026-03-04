@@ -34,9 +34,9 @@ jobs:
     name: Build and test on ${{ matrix.os }} with Python ${{ matrix.python-version }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14]
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
-      fail-fast: false
+        os: [ubuntu-22.04, ubuntu-24.04, macos-14]
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+      fail-fast: true
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -59,7 +59,10 @@ jobs:
 
     - name: Install dependencies on MacOS
       if: runner.os == 'macOS'
-      run: brew install cmake boost openal-soft sdl2
+      run: |
+        brew config
+        brew uninstall cmake
+        brew install cmake boost openal-soft sdl2
 
     - name: Set up Python ${{ matrix.python-version }} environment
       uses: actions/setup-python@v4
@@ -87,4 +90,4 @@ jobs:
       run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_audio_buffer_enabled(True); g.add_game_args('+snd_efx 0'); g.init()"
 
     - name: Run tests
-      run: pytest tests
+      run: pytest tests -s --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run

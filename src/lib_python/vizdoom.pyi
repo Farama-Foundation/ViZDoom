@@ -14,6 +14,282 @@ import typing
 
 from numpy.typing import NDArray
 
+__all__: list[str] = [
+    "ABGR32",
+    "ACTIVATE_SELECTED_ITEM",
+    "ALTATTACK",
+    "ALTATTACK_READY",
+    "AMMO0",
+    "AMMO1",
+    "AMMO2",
+    "AMMO3",
+    "AMMO4",
+    "AMMO5",
+    "AMMO6",
+    "AMMO7",
+    "AMMO8",
+    "AMMO9",
+    "ANGLE",
+    "ARGB32",
+    "ARMOR",
+    "ASYNC_PLAYER",
+    "ASYNC_SPECTATOR",
+    "ATTACK",
+    "ATTACK_READY",
+    "AutomapMode",
+    "BGR24",
+    "BGRA32",
+    "BINARY_BUTTON_COUNT",
+    "BUTTON_COUNT",
+    "Button",
+    "CAMERA_ANGLE",
+    "CAMERA_FOV",
+    "CAMERA_PITCH",
+    "CAMERA_POSITION_X",
+    "CAMERA_POSITION_Y",
+    "CAMERA_POSITION_Z",
+    "CAMERA_ROLL",
+    "CBCGCR",
+    "CRCGCB",
+    "CROUCH",
+    "DAMAGECOUNT",
+    "DAMAGE_TAKEN",
+    "DEAD",
+    "DEATHCOUNT",
+    "DEFAULT_FPS",
+    "DEFAULT_FRAMETIME_MS",
+    "DEFAULT_FRAMETIME_S",
+    "DEFAULT_TICRATE",
+    "DELTA_BUTTON_COUNT",
+    "DOOM_256_COLORS8",
+    "DROP_SELECTED_ITEM",
+    "DROP_SELECTED_WEAPON",
+    "DoomGame",
+    "FRAGCOUNT",
+    "FileDoesNotExistException",
+    "GRAY8",
+    "GameState",
+    "GameVariable",
+    "HEALTH",
+    "HITCOUNT",
+    "HITS_TAKEN",
+    "ITEMCOUNT",
+    "JUMP",
+    "KILLCOUNT",
+    "LAND",
+    "LOOK_DOWN",
+    "LOOK_UP",
+    "LOOK_UP_DOWN_DELTA",
+    "Label",
+    "Line",
+    "MAX_PLAYERS",
+    "MAX_PLAYER_NAME_LENGTH",
+    "MOVE_BACKWARD",
+    "MOVE_DOWN",
+    "MOVE_FORWARD",
+    "MOVE_FORWARD_BACKWARD_DELTA",
+    "MOVE_LEFT",
+    "MOVE_LEFT_RIGHT_DELTA",
+    "MOVE_RIGHT",
+    "MOVE_UP",
+    "MOVE_UP_DOWN_DELTA",
+    "MessageQueueException",
+    "Mode",
+    "NORMAL",
+    "OBJECTS",
+    "OBJECTS_WITH_SIZE",
+    "ON_GROUND",
+    "Object",
+    "PITCH",
+    "PLAYER",
+    "PLAYER10_FRAGCOUNT",
+    "PLAYER11_FRAGCOUNT",
+    "PLAYER12_FRAGCOUNT",
+    "PLAYER13_FRAGCOUNT",
+    "PLAYER14_FRAGCOUNT",
+    "PLAYER15_FRAGCOUNT",
+    "PLAYER16_FRAGCOUNT",
+    "PLAYER1_FRAGCOUNT",
+    "PLAYER2_FRAGCOUNT",
+    "PLAYER3_FRAGCOUNT",
+    "PLAYER4_FRAGCOUNT",
+    "PLAYER5_FRAGCOUNT",
+    "PLAYER6_FRAGCOUNT",
+    "PLAYER7_FRAGCOUNT",
+    "PLAYER8_FRAGCOUNT",
+    "PLAYER9_FRAGCOUNT",
+    "PLAYER_COUNT",
+    "PLAYER_NUMBER",
+    "POSITION_X",
+    "POSITION_Y",
+    "POSITION_Z",
+    "RELOAD",
+    "RES_1024X576",
+    "RES_1024X640",
+    "RES_1024X768",
+    "RES_1280X1024",
+    "RES_1280X720",
+    "RES_1280X800",
+    "RES_1280X960",
+    "RES_1400X1050",
+    "RES_1400X787",
+    "RES_1400X875",
+    "RES_1600X1000",
+    "RES_1600X1200",
+    "RES_1600X900",
+    "RES_160X120",
+    "RES_1920X1080",
+    "RES_200X125",
+    "RES_200X150",
+    "RES_256X144",
+    "RES_256X160",
+    "RES_256X192",
+    "RES_320X180",
+    "RES_320X200",
+    "RES_320X240",
+    "RES_320X256",
+    "RES_400X225",
+    "RES_400X250",
+    "RES_400X300",
+    "RES_512X288",
+    "RES_512X320",
+    "RES_512X384",
+    "RES_640X360",
+    "RES_640X400",
+    "RES_640X480",
+    "RES_800X450",
+    "RES_800X500",
+    "RES_800X600",
+    "RGB24",
+    "RGBA32",
+    "ROLL",
+    "SECRETCOUNT",
+    "SELECTED_WEAPON",
+    "SELECTED_WEAPON_AMMO",
+    "SELECT_NEXT_ITEM",
+    "SELECT_NEXT_WEAPON",
+    "SELECT_PREV_ITEM",
+    "SELECT_PREV_WEAPON",
+    "SELECT_WEAPON0",
+    "SELECT_WEAPON1",
+    "SELECT_WEAPON2",
+    "SELECT_WEAPON3",
+    "SELECT_WEAPON4",
+    "SELECT_WEAPON5",
+    "SELECT_WEAPON6",
+    "SELECT_WEAPON7",
+    "SELECT_WEAPON8",
+    "SELECT_WEAPON9",
+    "SLOT_COUNT",
+    "SPECTATOR",
+    "SPEED",
+    "SR_11025",
+    "SR_22050",
+    "SR_44100",
+    "STRAFE",
+    "SamplingRate",
+    "ScreenFormat",
+    "ScreenResolution",
+    "Sector",
+    "ServerState",
+    "SharedMemoryException",
+    "TURN180",
+    "TURN_LEFT",
+    "TURN_LEFT_RIGHT_DELTA",
+    "TURN_RIGHT",
+    "USE",
+    "USER1",
+    "USER10",
+    "USER11",
+    "USER12",
+    "USER13",
+    "USER14",
+    "USER15",
+    "USER16",
+    "USER17",
+    "USER18",
+    "USER19",
+    "USER2",
+    "USER20",
+    "USER21",
+    "USER22",
+    "USER23",
+    "USER24",
+    "USER25",
+    "USER26",
+    "USER27",
+    "USER28",
+    "USER29",
+    "USER3",
+    "USER30",
+    "USER31",
+    "USER32",
+    "USER33",
+    "USER34",
+    "USER35",
+    "USER36",
+    "USER37",
+    "USER38",
+    "USER39",
+    "USER4",
+    "USER40",
+    "USER41",
+    "USER42",
+    "USER43",
+    "USER44",
+    "USER45",
+    "USER46",
+    "USER47",
+    "USER48",
+    "USER49",
+    "USER5",
+    "USER50",
+    "USER51",
+    "USER52",
+    "USER53",
+    "USER54",
+    "USER55",
+    "USER56",
+    "USER57",
+    "USER58",
+    "USER59",
+    "USER6",
+    "USER60",
+    "USER7",
+    "USER8",
+    "USER9",
+    "USER_VARIABLE_COUNT",
+    "VELOCITY_X",
+    "VELOCITY_Y",
+    "VELOCITY_Z",
+    "VIEW_HEIGHT",
+    "ViZDoomErrorException",
+    "ViZDoomIsNotRunningException",
+    "ViZDoomNoOpenALSoundException",
+    "ViZDoomUnexpectedExitException",
+    "WEAPON0",
+    "WEAPON1",
+    "WEAPON2",
+    "WEAPON3",
+    "WEAPON4",
+    "WEAPON5",
+    "WEAPON6",
+    "WEAPON7",
+    "WEAPON8",
+    "WEAPON9",
+    "WHOLE",
+    "ZOOM",
+    "doom_fixed_to_double",
+    "doom_fixed_to_float",
+    "doom_tics_to_ms",
+    "doom_tics_to_sec",
+    "get_default_categories",
+    "is_binary_button",
+    "is_delta_button",
+    "ms_to_doom_tics",
+    "sec_to_doom_tics",
+]
+
 class AutomapMode:
     """
     Defines the automap rendering mode.
@@ -42,11 +318,11 @@ class AutomapMode:
     def __getstate__(self) -> int: ...
     def __hash__(self) -> int: ...
     def __index__(self) -> int: ...
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value: typing.SupportsInt) -> None: ...
     def __int__(self) -> int: ...
     def __ne__(self, other: typing.Any) -> bool: ...
     def __repr__(self) -> str: ...
-    def __setstate__(self, state: int) -> None: ...
+    def __setstate__(self, state: typing.SupportsInt) -> None: ...
     def __str__(self) -> str: ...
     @property
     def name(self) -> str: ...
@@ -216,11 +492,11 @@ class Button:
     def __getstate__(self) -> int: ...
     def __hash__(self) -> int: ...
     def __index__(self) -> int: ...
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value: typing.SupportsInt) -> None: ...
     def __int__(self) -> int: ...
     def __ne__(self, other: typing.Any) -> bool: ...
     def __repr__(self) -> str: ...
-    def __setstate__(self, state: int) -> None: ...
+    def __setstate__(self, state: typing.SupportsInt) -> None: ...
     def __str__(self) -> str: ...
     @property
     def name(self) -> str: ...
@@ -233,7 +509,9 @@ class DoomGame:
     """
 
     def __init__(self) -> None: ...
-    def add_available_button(self, button: Button, max_value: float = -1) -> None:
+    def add_available_button(
+        self, button: Button, max_value: typing.SupportsFloat = -1
+    ) -> None:
         """
         Adds :class:`.Button` type (e.g. ``TURN_LEFT``, ``MOVE_FORWARD``) to available buttons and sets the maximum allowed, absolute value for the specified button.
         If the given button has already been added, it will not be added again, but the maximum value will be overridden.
@@ -266,7 +544,9 @@ class DoomGame:
         - `ZDoom Wiki: CVARs (Console Variables) <http://zdoom.org/wiki/CVARS>`_
         """
 
-    def advance_action(self, tics: int = 1, update_state: bool = True) -> None:
+    def advance_action(
+        self, tics: typing.SupportsInt = 1, update_state: bool = True
+    ) -> None:
         """
         Processes the specified number of tics, the last action set with :meth:`set_action`
         method will be repeated for each tic. If ``update_state`` argument is set,
@@ -403,6 +683,31 @@ class DoomGame:
         Note: added in 1.3.0
         """
 
+    def get_doom_config_path(self) -> str:
+        """
+        Returns the path for ZDoom's configuration file.
+        """
+
+    def get_doom_game_path(self) -> str:
+        """
+        Returns the path to the Doom engine based game file (wad format).
+        """
+
+    def get_doom_map(self) -> str:
+        """
+        Returns the map name to be used.
+        """
+
+    def get_doom_scenario_path(self) -> str:
+        """
+        Returns the path to the additional scenario file (wad format).
+        """
+
+    def get_doom_skill(self) -> int:
+        """
+        Returns the Doom game difficulty level (skill).
+        """
+
     def get_episode_start_time(self) -> int:
         """
         Returns the start time (delay) of every episode in tics.
@@ -470,6 +775,13 @@ class DoomGame:
         Note: added in 1.3.0
         """
 
+    def get_instance_id(self) -> str:
+        """
+        Returns the unique identifier of the current running game instance.
+
+        Note: added in 1.3.1.
+        """
+
     def get_item_reward(self) -> float:
         """
         Returns the reward granted to the player for picking up an item.
@@ -512,6 +824,19 @@ class DoomGame:
     def get_mode(self) -> Mode:
         """
         Returns the current :class:`.Mode` (``PLAYER``, ``SPECTATOR``, ``ASYNC_PLAYER``, ``ASYNC_SPECTATOR``).
+        """
+
+    def get_notifications_buffer_size(self) -> int:
+        """
+        Returns the size of the notify buffer.
+
+        Note: added in 1.3.0.
+
+
+        See also:
+
+        - :class:`.GameState`
+        - `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
         """
 
     def get_screen_channels(self) -> int:
@@ -583,6 +908,11 @@ class DoomGame:
         Returns the sum of all rewards gathered in the current episode.
         """
 
+    def get_vizdoom_path(self) -> str:
+        """
+        Returns the path to the ViZDoom engine executable vizdoom.
+        """
+
     def init(self) -> None:
         """
         Initializes ViZDoom game instance and starts a new episode.
@@ -648,6 +978,13 @@ class DoomGame:
         Returns ``True`` if the current episode is in the initial state - the first state, no actions were performed yet.
         """
 
+    def is_notifications_buffer_enabled(self) -> bool:
+        """
+        Returns ``True`` if the notify buffer is enabled.
+
+        Note: added in 1.3.0.
+        """
+
     def is_objects_info_enabled(self) -> bool:
         """
         Returns ``True`` if the objects information is enabled.
@@ -707,9 +1044,11 @@ class DoomGame:
         `False` if the file contained errors.
 
         If the file relative path is given, it will be searched for in the following order: ``<current directory>``, ``<current directory>/scenarios/``, ``<ViZDoom library location>/scenarios/``.
+
+        Relative paths in the config file (e.g. for ``doom_scenario_path``) are resolved relative to the config file location.
         """
 
-    def make_action(self, action: typing.Any, tics: int = 1) -> float:
+    def make_action(self, action: typing.Any, tics: typing.SupportsInt = 1) -> float:
         """
         This method combines functionality of :meth:`set_action`, :meth:`advance_action`,
         and :meth:`get_last_reward` called in this sequance.
@@ -729,7 +1068,7 @@ class DoomGame:
         Note: Changed in 1.1.0
         """
 
-    def replay_episode(self, file_path: str, player: int = 0) -> None:
+    def replay_episode(self, file_path: str, player: typing.SupportsInt = 0) -> None:
         """
         Replays the recorded episode from the given file using the perspective of the specified player.
         Players are numbered from 1, If ``player`` argument is equal to 0,
@@ -782,7 +1121,7 @@ class DoomGame:
         or in the configuration file (in order of appearance).
         """
 
-    def set_armor_reward(self, armor_reward: float) -> None:
+    def set_armor_reward(self, armor_reward: typing.SupportsFloat) -> None:
         """
         Sets the reward granted to the player for getting armor points. A negative value is also allowed.
 
@@ -814,13 +1153,13 @@ class DoomGame:
         Note: added in 1.1.9.
         """
 
-    def set_audio_buffer_size(self, buffer_size: int) -> None:
+    def set_audio_buffer_size(self, tics: typing.SupportsInt) -> None:
         """
-        Sets the size of the audio buffer. The size is defined by a number of logic tics.
+        Sets the size/length of the audio buffer. The size is defined by a number of logic tics.
         After each action audio buffer will contain audio from the specified number of the last processed tics.
         Doom uses 35 ticks per second.
 
-        Default value: 4
+        Default value: 1
 
         Has no effect when the game is running.
 
@@ -866,6 +1205,7 @@ class DoomGame:
         See also:
 
         - :class:`.GameState`
+        - `examples/python/automap_buffer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/automap_buffer.py>`_
         - `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_,
 
         Note: added in 1.1.0.
@@ -881,6 +1221,24 @@ class DoomGame:
         Config key: ``automapMode``/``automap_mode``
 
         Note: added in 1.1.0.
+        """
+
+    def set_automap_render_objects_as_sprites(self, sprites: bool) -> None:
+        """
+        Controls whether things (objects, monsters, items, etc.) are rendered as sprites or as simple triangles on the automap.
+
+        When enabled (```True```), things are displayed as rotated sprites with their actual appearance. When disabled (```False```), things are shown as simple triangular markers.
+        Works only with ``OBJECTS`` and ``OBJECTS_WITH_SIZE`` automap modes.
+
+        Default value: ``False``
+
+        Config key: ``automapRenderObjectsAsSprites``/``automap_render_objects_as_sprites``
+
+        See also:
+
+        - :meth:`set_automap_mode`,
+
+        Note: added in 1.3.0.
         """
 
     def set_automap_render_textures(self, textures: bool) -> None:
@@ -928,7 +1286,9 @@ class DoomGame:
         Config key: ``availableGameVariables``/``available_game_variables`` (list of values)
         """
 
-    def set_button_max_value(self, button: Button, max_value: float) -> None:
+    def set_button_max_value(
+        self, button: Button, max_value: typing.SupportsFloat
+    ) -> None:
         """
         Sets the maximum allowed absolute value for the specified :class:`.Button`.
         Setting the maximum value to 0 results in no constraint at all (infinity).
@@ -940,6 +1300,39 @@ class DoomGame:
         Has no effect when the game is running.
         """
 
+    def set_config(self, config: typing.Union[str, dict[str, typing.Any]]) -> bool:
+        """
+        Sets configuration from a config string or dictionary (Python only).
+
+        This method accepts either a configuration string (in the same format as .cfg files)
+        or a Python dictionary with configuration key-value pairs.
+
+        When using a Python dictionary:
+        - Keys should be configuration parameter names (e.g., 'screen_resolution', 'doom_skill')
+        - Values can be:
+          - Primitive types: str, int, float, bool
+          - Enums: Button, GameVariable, ScreenResolution, ScreenFormat, SamplingRate, Mode, AutomapMode
+          - Lists: for 'available_buttons' and 'available_game_variables'
+
+        Relative paths (e.g., for 'doom_scenario_path') are resolved relative to the current working directory.
+
+        Python example:
+        ```
+            game.set_config({
+                'screen_resolution': ScreenResolution.RES_640X480,
+                'screen_format': ScreenFormat.CRCGCB,
+                'doom_skill': 5,
+                'available_buttons': [Button.MOVE_LEFT, Button.MOVE_RIGHT, Button.ATTACK],
+                'available_game_variables': [GameVariable.AMMO2],
+                'living_reward': -1
+            })
+        ```
+
+        Returns ``True`` if the configuration was successfully applied, ``False`` if errors occurred.
+
+        Note: added in 1.3.0
+        """
+
     def set_console_enabled(self, console: bool) -> None:
         """
         Determines if ViZDoom's console output will be enabled.
@@ -949,7 +1342,7 @@ class DoomGame:
         Config key: ``consoleEnabled``/``console_enabled``
         """
 
-    def set_damage_made_reward(self, damage_made_reward: float) -> None:
+    def set_damage_made_reward(self, damage_made_reward: typing.SupportsFloat) -> None:
         """
         Sets the reward granted to the player for damaging an enemy, proportional to the damage dealt.
         Every point of damage dealt to an enemy will result in a reward equal to the value returned by this method.
@@ -963,7 +1356,9 @@ class DoomGame:
         Note: added in 1.3.0
         """
 
-    def set_damage_taken_penalty(self, damage_taken_penalty: float) -> None:
+    def set_damage_taken_penalty(
+        self, damage_taken_penalty: typing.SupportsFloat
+    ) -> None:
         """
         Sets a penalty for the player when damaged by an enemy, proportional to the damage received.
         Every point of damage taken will result in a penalty equal to the set value.
@@ -976,7 +1371,9 @@ class DoomGame:
         Note: added in 1.3.0
         """
 
-    def set_damage_taken_reward(self, damage_taken_reward: float) -> None:
+    def set_damage_taken_reward(
+        self, damage_taken_reward: typing.SupportsFloat
+    ) -> None:
         """
         Sets the reward granted to the player when damaged by an enemy, proportional to the damage received.
         Every point of damage taken will result in a reward equal to the set value.
@@ -989,7 +1386,7 @@ class DoomGame:
         Note: added in 1.3.0
         """
 
-    def set_death_penalty(self, death_penalty: float) -> None:
+    def set_death_penalty(self, death_penalty: typing.SupportsFloat) -> None:
         """
         Sets a penalty for the player's death. Note that in case of a negative value, the player will be rewarded upon dying.
 
@@ -998,7 +1395,7 @@ class DoomGame:
         Config key: ``deathPenalty``/``death_penalty``
         """
 
-    def set_death_reward(self, death_reward: float) -> None:
+    def set_death_reward(self, death_reward: typing.SupportsFloat) -> None:
         """
         Sets a reward for the player's death. A negative value is also allowed.
 
@@ -1029,7 +1426,7 @@ class DoomGame:
         Note: added in 1.1.0.
         """
 
-    def set_doom_config_path(self, button: str) -> None:
+    def set_doom_config_path(self, file_path: str) -> None:
         """
         Sets the path for ZDoom's configuration file.
         The file is responsible for the configuration of the ZDoom engine itself.
@@ -1041,54 +1438,55 @@ class DoomGame:
         Config key: ``DoomConfigPath``/``doom_config_path``
         """
 
-    def set_doom_game_path(self, button: str) -> None:
+    def set_doom_game_path(self, file_path: str) -> None:
         """
-        Sets the path to the Doom engine based game file (wad format).
-        If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom library/pyd is).
+        Sets the path to the Doom engine-based game file (wad format).
+        If set to empty, DoomGame will look for doom2.wad, and freedoom2.wad (in that order) in the working directory first and then in ViZDoom's installation directory
+        (where vizdoom library/pyd is).
+        If the path is set and the file does not exist, ViZDoom will check if the file exists in the working directory and then in ViZDoom's installation directory.
 
-        Default value: ``<ViZDoom library location>/<doom2.wad, doom.wad, freedoom2.wad, or freedoom.wad - in this order>``
+        Default value: ``""``
 
         Config key: ``DoomGamePath``/``doom_game_path``
         """
 
-    def set_doom_map(self, button: str) -> None:
+    def set_doom_map(self, map: str) -> None:
         """
-        Sets the map name to be used.
+        Sets the map name to be used. The map name is case insensitive.
 
         Default value: ``"map01"``, if set to empty ``"map01"`` will be used.
 
         Config key: ``DoomMap``/``doom_map``
         """
 
-    def set_doom_scenario_path(self, button: str) -> None:
+    def set_doom_scenario_path(self, file_path: str) -> None:
         """
         Sets the path to an additional scenario file (wad format).
-        If not provided, the default Doom single-player maps will be loaded.
+        If not provided, the default maps of selected Doom engine-based game will be used.
 
         Default value: ``""``
 
         Config key: ``DoomScenarioPath``/``doom_scenario_path``
         """
 
-    def set_doom_skill(self, button: int) -> None:
+    def set_doom_skill(self, skill: typing.SupportsInt) -> None:
         """
         Sets Doom game difficulty level, which is called skill in Doom.
         The higher the skill, the harder the game becomes.
         Skill level affects monsters' aggressiveness, monsters' speed, weapon damage, ammunition quantities, etc.
         Takes effect from the next episode.
 
-        - 1 - VERY EASY, “I'm Too Young to Die” in Doom.
-        - 2 - EASY, “Hey, Not Too Rough" in Doom.
-        - 3 - NORMAL, “Hurt Me Plenty” in Doom.
-        - 4 - HARD, “Ultra-Violence” in Doom.
-        - 5 - VERY HARD, “Nightmare!” in Doom.
-
+        - 1 - VERY EASY, "I'm Too Young to Die" in Doom/Doom 2.
+        - 2 - EASY, "Hey, Not Too Rough" in Doom/Doom 2.
+        - 3 - NORMAL, "Hurt Me Plenty" in Doom/Doom 2.
+        - 4 - HARD, "Ultra-Violence" in Doom/Doom 2.
+        - 5 - VERY HARD, "Nightmare!" in Doom/Doom 2.
         Default value: 3
 
         Config key: ``DoomSkill``/``doom_skill``
         """
 
-    def set_episode_start_time(self, start_time: int) -> None:
+    def set_episode_start_time(self, start_time: typing.SupportsInt) -> None:
         """
         Sets the start time (delay) of every episode in tics.
         Every episode will effectively start (from the user's perspective) after the provided number of tics.
@@ -1098,7 +1496,7 @@ class DoomGame:
         Config key: ``episodeStartTime``/``episode_start_time``
         """
 
-    def set_episode_timeout(self, timeout: int) -> None:
+    def set_episode_timeout(self, timeout: typing.SupportsInt) -> None:
         """
         Sets the number of tics after which the episode will be finished. 0 will result in no timeout.
 
@@ -1107,7 +1505,7 @@ class DoomGame:
         Config key: ``episodeTimeout``/``episode_timeout``
         """
 
-    def set_frag_reward(self, frag_reward: float) -> None:
+    def set_frag_reward(self, frag_reward: typing.SupportsFloat) -> None:
         """
         Sets the reward granted to the player for scoring a frag. A negative value is also allowed.
 
@@ -1137,7 +1535,7 @@ class DoomGame:
         Note: added in 1.2.3.
         """
 
-    def set_health_reward(self, health_reward: float) -> None:
+    def set_health_reward(self, health_reward: typing.SupportsFloat) -> None:
         """
         Sets the reward granted to the player for getting health points. A negative value is also allowed.
 
@@ -1148,7 +1546,7 @@ class DoomGame:
         Note: added in 1.3.0
         """
 
-    def set_hit_reward(self, hit_reward: float) -> None:
+    def set_hit_reward(self, hit_reward: typing.SupportsFloat) -> None:
         """
         Sets the reward granted to the player for hitting (damaging) an enemy.
         The reward is the same despite the amount of damage dealt.
@@ -1161,7 +1559,7 @@ class DoomGame:
         Note: added in 1.3.0
         """
 
-    def set_hit_taken_penalty(self, hit_taken_penalty: float) -> None:
+    def set_hit_taken_penalty(self, hit_taken_penalty: typing.SupportsFloat) -> None:
         """
         Sets a penalty for the player when hit (damaged) by an enemy.
         The penalty is the same despite the amount of damage taken.
@@ -1174,7 +1572,7 @@ class DoomGame:
         Note: added in 1.3.0
         """
 
-    def set_hit_taken_reward(self, hit_taken_reward: float) -> None:
+    def set_hit_taken_reward(self, hit_taken_reward: typing.SupportsFloat) -> None:
         """
         Sets the reward granted to the player when hit (damaged) by an enemy.
         The reward is the same despite the amount of damage taken.
@@ -1187,7 +1585,7 @@ class DoomGame:
         Note: added in 1.3.0
         """
 
-    def set_item_reward(self, item_reward: float) -> None:
+    def set_item_reward(self, item_reward: typing.SupportsFloat) -> None:
         """
         Sets the reward granted to the player for picking up an item. A negative value is also allowed.
 
@@ -1198,7 +1596,7 @@ class DoomGame:
         Note: added in 1.3.0
         """
 
-    def set_kill_reward(self, kill_reward: float) -> None:
+    def set_kill_reward(self, kill_reward: typing.SupportsFloat) -> None:
         """
         Sets the reward granted to the player for killing an enemy. A negative value is also allowed.
 
@@ -1224,13 +1622,13 @@ class DoomGame:
         See also:
 
         - :class:`.GameState`
-        - `examples/python/labels.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels.py>`_
+        - `examples/python/labels_buffer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels_buffer.py>`_
         - `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
 
         Note: added in 1.1.0.
         """
 
-    def set_living_reward(self, living_reward: float) -> None:
+    def set_living_reward(self, living_reward: typing.SupportsFloat) -> None:
         """
         Sets the reward granted to the player after every tic. A negative value is also allowed.
 
@@ -1239,7 +1637,7 @@ class DoomGame:
         Config key: ``livingReward``/``living_reward``
         """
 
-    def set_map_exit_reward(self, map_exit_reward: float) -> None:
+    def set_map_exit_reward(self, map_exit_reward: typing.SupportsFloat) -> None:
         """
         Sets a reward for finishing a map (finding an exit or succeeding in other programmed objective). A negative value is also allowed.
 
@@ -1259,6 +1657,45 @@ class DoomGame:
         Has no effect when the game is running.
 
         Config key: ``mode``
+        """
+
+    def set_notifications_buffer_enabled(self, notifications_buffer: bool) -> None:
+        """
+        Enables notification buffer, it will be available in the state.
+        The notification buffer will contain text notifications from the number of the last tics specified by :meth:`set_notifications_buffer_size` method.
+
+        Default value: ``False``
+
+        Has no effect when the game is running.
+
+        Config key: ``notificationsBufferEnabled``/``notifications_buffer_enabled``
+
+        See also:
+
+        - :class:`.GameState`
+        - `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
+
+        Note: added in 1.3.0.
+        """
+
+    def set_notifications_buffer_size(self, tics: typing.SupportsInt) -> None:
+        """
+        Sets the size of the notify buffer. The size is defined by a number of logic tics.
+        After each action notify buffer will contain text notifications from the specified number of the last processed tics.
+        Doom uses 35 ticks per second.
+
+        Default value: 1
+
+        Has no effect when the game is running.
+
+        Config key: ``notificationsBufferSize``/``notifications_buffer_size``
+
+        See also:
+
+        - :class:`.GameState`
+        - `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
+
+        Note: added in 1.3.0.
         """
 
     def set_objects_info_enabled(self, objects_info: bool) -> None:
@@ -1423,7 +1860,7 @@ class DoomGame:
         Config key: ``screenResolution``/``screen_resolution``
         """
 
-    def set_secret_reward(self, secret_reward: float) -> None:
+    def set_secret_reward(self, secret_reward: typing.SupportsFloat) -> None:
         """
         Sets the reward granted to the player for discovering a secret. A negative value is also allowed.
 
@@ -1453,7 +1890,7 @@ class DoomGame:
         Note: added in 1.1.8.
         """
 
-    def set_seed(self, seed: int) -> None:
+    def set_seed(self, seed: typing.SupportsInt) -> None:
         """
         Sets the seed of ViZDoom's RNG that generates seeds (initial state) for episodes.
 
@@ -1475,7 +1912,7 @@ class DoomGame:
         Config key: ``soundEnabled``/``sound_enabled``
         """
 
-    def set_ticrate(self, button: int) -> None:
+    def set_ticrate(self, ticrate: typing.SupportsInt) -> None:
         """
         Sets the ticrate for ASNYC Modes - number of logic tics executed per second.
         The default Doom ticrate is 35. This value will play a game at normal speed.
@@ -1493,9 +1930,10 @@ class DoomGame:
         Note: added in 1.1.0.
         """
 
-    def set_vizdoom_path(self, button: str) -> None:
+    def set_vizdoom_path(self, file_path: str) -> None:
         """
         Sets the path to the ViZDoom engine executable vizdoom.
+        We recommend not changing this path unless you know what you are doing.
 
         Default value: ``<ViZDoom library location>/<vizdoom or vizdoom.exe on Windows>``.
 
@@ -1533,17 +1971,19 @@ class GameState:
     @property
     def game_variables(self) -> typing.Optional[NDArray]: ...
     @property
-    def labels(self) -> list: ...
+    def labels(self) -> typing.Any: ...
     @property
     def labels_buffer(self) -> typing.Optional[NDArray]: ...
     @property
+    def notifications_buffer(self) -> typing.Any: ...
+    @property
     def number(self) -> int: ...
     @property
-    def objects(self) -> list: ...
+    def objects(self) -> typing.Any: ...
     @property
     def screen_buffer(self) -> NDArray: ...
     @property
-    def sectors(self) -> list: ...
+    def sectors(self) -> typing.Any: ...
     @property
     def tic(self) -> int: ...
 
@@ -2013,11 +2453,11 @@ class GameVariable:
     def __getstate__(self) -> int: ...
     def __hash__(self) -> int: ...
     def __index__(self) -> int: ...
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value: typing.SupportsInt) -> None: ...
     def __int__(self) -> int: ...
     def __ne__(self, other: typing.Any) -> bool: ...
     def __repr__(self) -> str: ...
-    def __setstate__(self, state: int) -> None: ...
+    def __setstate__(self, state: typing.SupportsInt) -> None: ...
     def __str__(self) -> str: ...
     @property
     def name(self) -> str: ...
@@ -2113,11 +2553,11 @@ class Mode:
     def __getstate__(self) -> int: ...
     def __hash__(self) -> int: ...
     def __index__(self) -> int: ...
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value: typing.SupportsInt) -> None: ...
     def __int__(self) -> int: ...
     def __ne__(self, other: typing.Any) -> bool: ...
     def __repr__(self) -> str: ...
-    def __setstate__(self, state: int) -> None: ...
+    def __setstate__(self, state: typing.SupportsInt) -> None: ...
     def __str__(self) -> str: ...
     @property
     def name(self) -> str: ...
@@ -2177,11 +2617,11 @@ class SamplingRate:
     def __getstate__(self) -> int: ...
     def __hash__(self) -> int: ...
     def __index__(self) -> int: ...
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value: typing.SupportsInt) -> None: ...
     def __int__(self) -> int: ...
     def __ne__(self, other: typing.Any) -> bool: ...
     def __repr__(self) -> str: ...
-    def __setstate__(self, state: int) -> None: ...
+    def __setstate__(self, state: typing.SupportsInt) -> None: ...
     def __str__(self) -> str: ...
     @property
     def name(self) -> str: ...
@@ -2234,11 +2674,11 @@ class ScreenFormat:
     def __getstate__(self) -> int: ...
     def __hash__(self) -> int: ...
     def __index__(self) -> int: ...
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value: typing.SupportsInt) -> None: ...
     def __int__(self) -> int: ...
     def __ne__(self, other: typing.Any) -> bool: ...
     def __repr__(self) -> str: ...
-    def __setstate__(self, state: int) -> None: ...
+    def __setstate__(self, state: typing.SupportsInt) -> None: ...
     def __str__(self) -> str: ...
     @property
     def name(self) -> str: ...
@@ -2439,11 +2879,11 @@ class ScreenResolution:
     def __getstate__(self) -> int: ...
     def __hash__(self) -> int: ...
     def __index__(self) -> int: ...
-    def __init__(self, value: int) -> None: ...
+    def __init__(self, value: typing.SupportsInt) -> None: ...
     def __int__(self) -> int: ...
     def __ne__(self, other: typing.Any) -> bool: ...
     def __repr__(self) -> str: ...
-    def __setstate__(self, state: int) -> None: ...
+    def __setstate__(self, state: typing.SupportsInt) -> None: ...
     def __str__(self) -> str: ...
     @property
     def name(self) -> str: ...
@@ -2497,11 +2937,14 @@ class ViZDoomErrorException(Exception):
 class ViZDoomIsNotRunningException(Exception):
     pass
 
+class ViZDoomNoOpenALSoundException(Exception):
+    pass
+
 class ViZDoomUnexpectedExitException(Exception):
     pass
 
 @typing.overload
-def doom_fixed_to_double(doom_fixed: int) -> float:
+def doom_fixed_to_double(doom_fixed: typing.SupportsInt) -> float:
     """
     Converts fixed point numeral to a floating point value.
     Doom engine internally use fixed point numbers.
@@ -2510,7 +2953,7 @@ def doom_fixed_to_double(doom_fixed: int) -> float:
     """
 
 @typing.overload
-def doom_fixed_to_double(doom_fixed: float) -> float:
+def doom_fixed_to_double(doom_fixed: typing.SupportsFloat) -> float:
     """
     Converts fixed point numeral to a floating point value.
     Doom engine internally use fixed point numbers.
@@ -2519,7 +2962,7 @@ def doom_fixed_to_double(doom_fixed: float) -> float:
     """
 
 @typing.overload
-def doom_fixed_to_float(doom_fixed: int) -> float:
+def doom_fixed_to_float(doom_fixed: typing.SupportsInt) -> float:
     """
     Converts fixed point numeral to a floating point value.
     Doom engine internally use fixed point numbers.
@@ -2528,7 +2971,7 @@ def doom_fixed_to_float(doom_fixed: int) -> float:
     """
 
 @typing.overload
-def doom_fixed_to_float(doom_fixed: float) -> float:
+def doom_fixed_to_float(doom_fixed: typing.SupportsFloat) -> float:
     """
     Converts fixed point numeral to a floating point value.
     Doom engine internally use fixed point numbers.
@@ -2536,14 +2979,18 @@ def doom_fixed_to_float(doom_fixed: float) -> float:
     you can convert them to floating point by using this function.
     """
 
-def doom_tics_to_ms(doom_tics: float, fps: int = 35) -> float:
+def doom_tics_to_ms(
+    doom_tics: typing.SupportsFloat, fps: typing.SupportsInt = 35
+) -> float:
     """
     Calculates how many tics will be made during given number of milliseconds.
 
     Note: changed in 1.1.0
     """
 
-def doom_tics_to_sec(doom_tics: float, fps: int = 35) -> float:
+def doom_tics_to_sec(
+    doom_tics: typing.SupportsFloat, fps: typing.SupportsInt = 35
+) -> float:
     """
     Calculates how many tics will be made during given number of seconds.
 
@@ -2552,7 +2999,7 @@ def doom_tics_to_sec(doom_tics: float, fps: int = 35) -> float:
 
 def get_default_categories() -> list[str]:
     """
-    Returns the default object categories of Doom.
+    Returns the default object categories of ViZDoom.
 
     Note: added in 1.3.0.
     """
@@ -2567,14 +3014,18 @@ def is_delta_button(button: Button) -> bool:
     Returns ``True`` if :class:`.Button` is delta button.
     """
 
-def ms_to_doom_tics(doom_tics: float, fps: int = 35) -> float:
+def ms_to_doom_tics(
+    doom_tics: typing.SupportsFloat, fps: typing.SupportsInt = 35
+) -> float:
     """
     Calculates the number of milliseconds that will pass during specified number of tics.
 
     Note: changed in 1.1.0
     """
 
-def sec_to_doom_tics(doom_tics: float, fps: int = 35) -> float:
+def sec_to_doom_tics(
+    doom_tics: typing.SupportsFloat, fps: typing.SupportsInt = 35
+) -> float:
     """
     Calculates the number of seconds that will pass during specified number of tics.
 

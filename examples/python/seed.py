@@ -10,7 +10,8 @@
 #
 # Game variables from state and last reward are printed.
 #
-# To see the scenario description go to "../../scenarios/README.md"
+# To see the scenario description go to
+# https://vizdoom.farama.org/main/environments/default/
 #####################################################################
 
 import itertools as it

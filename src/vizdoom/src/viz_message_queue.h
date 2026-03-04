@@ -61,6 +61,7 @@ void VIZ_MQReceive(void *msg);
 bool VIZ_MQTryReceive(void *msg);
 
 void VIZ_MQTic();
+void VIZ_MQPollNonBlocking();
 
 void VIZ_MQClose();
 

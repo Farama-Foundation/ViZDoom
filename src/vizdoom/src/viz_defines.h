@@ -26,6 +26,7 @@
 
 #include <stdlib.h>
 #include <boost/current_function.hpp>
+
 #include "doomdef.h"
 
 #define VIZ_TIME                    ((unsigned int)level.starttime + (unsigned int)level.maptime)
@@ -45,6 +46,7 @@
 #define VIZ_MAX_OBJECTS             4096
 #define VIZ_MAX_SECTORS             2048
 #define VIZ_MAX_LINES               8192
+#define VIZ_MAX_NOTIFICATIONS_CHARS 32768
 
 #ifdef __linux__
     #define VIZ_OS_LINUX

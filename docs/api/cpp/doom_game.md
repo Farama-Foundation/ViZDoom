@@ -1,6 +1,8 @@
 # DoomGame
 
-DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc. The declarations of this class and its methods can be found in the `include/ViZDoomGame.h` header file.
+DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game.
+The object allows sending actions to the game, getting the game state, etc.
+The declarations of this class and its methods can be found in the `include/ViZDoomGame.h` header file.
 
 Here we document all the methods of the DoomGame class and their corresponding Python bindings implemented as pybind11 module.
 
@@ -78,6 +80,18 @@ Returns true if the controlled game instance is running.
 
 
 ---
+### `getInstanceId`
+
+| C++    | `std::string getInstanceId()` |
+| :--    | :--                           |
+| Python | `get_instance_id() -> str`    |
+
+Returns the unique identifier of the current running game instance.
+
+Note: added in 1.3.1.
+
+
+---
 ### `isMultiplayerGame`
 
 | C++    | `bool isMultiplayerGame()`      |
@@ -120,9 +134,9 @@ Note: added in 1.1.5.
 ---
 ### `setAction`
 
-| C++    | `void setAction(std::vector<double> const &action)`          |
-| :--    | :--                                                          |
-| Python | `set_action(action: list | tuple | ndarray [float]) -> None` |
+| C++    | `void setAction(std::vector<double> const &action)`                            |
+| :--    | :--                                                                            |
+| Python | `set_action(action: list[float] | tuple[float, ...] | ndarray[float]) -> None` |
 
 Sets the player's action for the following tics until the method is called again with new action.
 Each value corresponds to a button previously specified
@@ -147,9 +161,9 @@ To get the new state, use [`getState`](#getstate) and to get the new reward use 
 ---
 ### `makeAction`
 
-| C++    | `double makeAction(std::vector<double> const &actions, unsigned int tics = 1)` |
-| :--    | :--                                                                            |
-| Python | `make_action(actions: list | tuple | ndarray [float], tics: int = 1) -> float` |
+| C++    | `double makeAction(std::vector<double> const &actions, unsigned int tics = 1)`                   |
+| :--    | :--                                                                                              |
+| Python | `make_action(actions: list[float] | tuple[float, ...] | ndarray[float], tics: int = 1) -> float` |
 
 This method combines functionality of [`setAction`](#setaction), [`advanceAction`](#advanceaction),
 and [`getLastReward`](#getlastreward) called in this sequance.
@@ -182,8 +196,8 @@ will take no effect after this point (unless [`newEpisode`](#newepisode) method 
 ---
 ### `isEpisodeTimeoutReached`
 
-| C++    | `bool isEpisodeTimeoutReached()`      |
-| :--    | :--                             |
+| C++    | `bool isEpisodeTimeoutReached()`       |
+| :--    | :--                                    |
 | Python | `is_episode_timeout_reached() -> bool` |
 
 Returns true if the current episode is in the terminal state due to exceeding the time limit (timeout)
@@ -236,8 +250,8 @@ See also:
 ### `getState`
 
 | C++    | `GameStatePtr (std::shared_ptr<GameState>) getState()` |
-| :--    | :--                                                              |
-| Python | `get_state() -> GameState`                                       |
+| :--    | :--                                                    |
+| Python | `get_state() -> GameState`                             |
 
 Returns [`GameState`](./game_state.md#gamestate) object with the current game state.
 If the current episode is finished, `nullptr/null/None` will be returned.
@@ -249,8 +263,8 @@ Note: Changed in 1.1.0
 ### `getServerState`
 
 | C++    | `ServerStatePtr (std::shared_ptr<ServerState>) getServerState()` |
-| :--    | :--                                                                          |
-| Python | `get_state_state() -> ServerState`                                           |
+| :--    | :--                                                              |
+| Python | `get_server_state() -> ServerState`                              |
 
 Returns [`ServerState`](./game_state.md#serverstate) object with the current server state.
 
@@ -322,9 +336,9 @@ that were added with [`setAvailableButtons`](#setavailablebuttons) or/and [`addA
 ---
 ### `setAvailableButtons`
 
-| C++    | `void setAvailableButtons(std::vector<Button> buttons)`        |
-| :--    | :--                                                            |
-| Python | `add_available_buttons(buttons: list | tuple[Button]) -> None` |
+| C++    | `void setAvailableButtons(std::vector<Button> buttons)`                |
+| :--    | :--                                                                    |
+| Python | `add_available_buttons(buttons: list[Button] | tuple[Button]) -> None` |
 
 Sets given list of [`Button`](./enums.md#button) s (e.g. `TURN_LEFT`, `MOVE_FORWARD`) as available buttons.
 
@@ -425,9 +439,9 @@ that were added with [`setAvailableGameVariables`](#setavailablegamevariables) o
 ---
 ### `setAvailableGameVariables`
 
-| C++    | `void setAvailableGameVariables(std::vector<GameVariable> variables)`          |
-| :--    | :--                                                                            |
-| Python | `set_available_game_variables(variables: list | tuple[GameVariables]) -> None` |
+| C++    | `void setAvailableGameVariables(std::vector<GameVariable> variables)`                       |
+| :--    | :--                                                                                         |
+| Python | `set_available_game_variables(variables: list[GameVariable] | tuple[GameVariable]) -> None` |
 
 Sets list of [`GameVariable`](./enums.md#gamevariable) s as available game variables in the [`GameState`](./game_state.md#gamestate) returned by [`getState`](#getstate) method.
 
@@ -1046,6 +1060,45 @@ false if the file contained errors.
 
 If the file relative path is given, it will be searched for in the following order: `<current directory>`, `<current directory>/scenarios/`, `<ViZDoom library location>/scenarios/`.
 
+Relative paths in the config file (e.g. for `doom_scenario_path`) are resolved relative to the config file location.
+
+
+### `setConfig`
+
+| C++    | `bool setConfig(std::string config)`               |
+| :--    | :--                                                |
+| Python | `set_config(config: str | dict[str, any]) -> bool` |
+
+Sets configuration from a config string or dictionary (Python only).
+
+This method accepts either a configuration string (in the same format as .cfg files)
+or a Python dictionary with configuration key-value pairs.
+
+When using a Python dictionary:
+- Keys should be configuration parameter names (e.g., 'screen_resolution', 'doom_skill')
+- Values can be:
+  - Primitive types: str, int, float, bool
+  - Enums: Button, GameVariable, ScreenResolution, ScreenFormat, SamplingRate, Mode, AutomapMode
+  - Lists: for 'available_buttons' and 'available_game_variables'
+
+Relative paths (e.g., for 'doom_scenario_path') are resolved relative to the current working directory.
+
+Python example:
+```
+    game.set_config({
+        'screen_resolution': ScreenResolution.RES_640X480,
+        'screen_format': ScreenFormat.CRCGCB,
+        'doom_skill': 5,
+        'available_buttons': [Button.MOVE_LEFT, Button.MOVE_RIGHT, Button.ATTACK],
+        'available_game_variables': [GameVariable.AMMO2],
+        'living_reward': -1
+    })
+```
+
+Returns true if the configuration was successfully applied, false if errors occurred.
+
+Note: added in 1.3.0
+
 
 ---
 ### `getMode`
@@ -1108,6 +1161,16 @@ Note: added in 1.1.0.
 
 
 ---
+### `getViZDoomPath`
+
+| C++    | `std::string getViZDoomPath()` |
+| :--    | :--                            |
+| Python | `get_vizdoom_path() -> str`    |
+
+Returns the path to the ViZDoom engine executable vizdoom.
+
+
+---
 ### `setViZDoomPath`
 
 | C++    | `void setViZDoomPath(std::string filePath)` |
@@ -1115,10 +1178,21 @@ Note: added in 1.1.0.
 | Python | `set_vizdoom_path(file_path: str) -> None`  |
 
 Sets the path to the ViZDoom engine executable vizdoom.
+We recommend not changing this path unless you know what you are doing.
 
 Default value: `<ViZDoom library location>/<vizdoom or vizdoom.exe on Windows>`.
 
 Config key: `ViZDoomPath`/`vizdoom_path`
+
+
+---
+### `getDoomGamePath`
+
+| C++    | `std::string getDoomGamePath()` |
+| :--    | :--                             |
+| Python | `get_doom_game_path() -> str`   |
+
+Returns the path to the Doom engine based game file (wad format).
 
 
 ---
@@ -1128,12 +1202,24 @@ Config key: `ViZDoomPath`/`vizdoom_path`
 | :--    | :--                                          |
 | Python | `set_doom_game_path(file_path: str) -> None` |
 
-Sets the path to the Doom engine based game file (wad format).
-If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom library/pyd is).
+Sets the path to the Doom engine-based game file (wad format).
+If set to empty, DoomGame will look for doom2.wad, and freedoom2.wad (in that order) in the working directory first and then in ViZDoom's installation directory
+(where vizdoom library/pyd is).
+If the path is set and the file does not exist, ViZDoom will check if the file exists in the working directory and then in ViZDoom's installation directory.
 
-Default value: `<ViZDoom library location>/<doom2.wad, doom.wad, freedoom2.wad, or freedoom.wad - in this order>`
+Default value: `""`
 
 Config key: `DoomGamePath`/`doom_game_path`
+
+
+---
+### `getDoomScenarioPath`
+
+| C++    | `std::string getDoomScenarioPath()` |
+| :--    | :--                                 |
+| Python | `get_doom_scenario_path() -> str`   |
+
+Returns the path to the additional scenario file (wad format).
 
 
 ---
@@ -1144,11 +1230,21 @@ Config key: `DoomGamePath`/`doom_game_path`
 | Python | `set_doom_scenario_path(file_path: str) -> None` |
 
 Sets the path to an additional scenario file (wad format).
-If not provided, the default Doom single-player maps will be loaded.
+If not provided, the default maps of selected Doom engine-based game will be used.
 
 Default value: `""`
 
 Config key: `DoomScenarioPath`/`doom_scenario_path`
+
+
+---
+### `getDoomMap`
+
+| C++    | `std::string getDoomMap()` |
+| :--    | :--                        |
+| Python | `get_doom_map() -> str`    |
+
+Returns the map name to be used.
 
 
 ---
@@ -1158,11 +1254,21 @@ Config key: `DoomScenarioPath`/`doom_scenario_path`
 | :--    | :--                                |
 | Python | `set_doom_map(map: str) -> None`   |
 
-Sets the map name to be used.
+Sets the map name to be used. The map name is case insensitive.
 
 Default value: `"map01"`, if set to empty `"map01"` will be used.
 
 Config key: `DoomMap`/`doom_map`
+
+
+---
+### `getDoomSkill`
+
+| C++    | `unsigned int getDoomSkill()` |
+| :--    | :--                           |
+| Python | `get_doom_skill() -> int`     |
+
+Returns the Doom game difficulty level (skill).
 
 
 ---
@@ -1177,15 +1283,24 @@ The higher the skill, the harder the game becomes.
 Skill level affects monsters' aggressiveness, monsters' speed, weapon damage, ammunition quantities, etc.
 Takes effect from the next episode.
 
-- 1 - VERY EASY, “I'm Too Young to Die” in Doom.
-- 2 - EASY, “Hey, Not Too Rough" in Doom.
-- 3 - NORMAL, “Hurt Me Plenty” in Doom.
-- 4 - HARD, “Ultra-Violence” in Doom.
-- 5 - VERY HARD, “Nightmare!” in Doom.
-
+- 1 - VERY EASY, "I'm Too Young to Die" in Doom/Doom 2.
+- 2 - EASY, "Hey, Not Too Rough" in Doom/Doom 2.
+- 3 - NORMAL, "Hurt Me Plenty" in Doom/Doom 2.
+- 4 - HARD, "Ultra-Violence" in Doom/Doom 2.
+- 5 - VERY HARD, "Nightmare!" in Doom/Doom 2.
 Default value: 3
 
 Config key: `DoomSkill`/`doom_skill`
+
+
+---
+### `getDoomConfigPath`
+
+| C++    | `std::string getDoomConfigPath()` |
+| :--    | :--                               |
+| Python | `get_doom_config_path() -> str`   |
+
+Returns the path for ZDoom's configuration file.
 
 
 ---
@@ -1335,7 +1450,7 @@ Config key: `screenFormat`/`screen_format`
 
 | C++    | `bool isDepthBufferEnabled()`       |
 | :--    | :--                                 |
-| Python | `is_depth_buffer_enabled() -> None` |
+| Python | `is_depth_buffer_enabled() -> bool` |
 
 Returns true if the depth buffer is enabled.
 
@@ -1369,7 +1484,7 @@ Note: added in 1.1.0.
 
 | C++    | `bool isLabelsBufferEnabled()`       |
 | :--    | :--                                  |
-| Python | `is_labels_buffer_enabled() -> None` |
+| Python | `is_labels_buffer_enabled() -> bool` |
 
 Returns true if the labels buffer is enabled.
 
@@ -1395,7 +1510,7 @@ Config key: `labelsBufferEnabled`/`labels_buffer_enabled`
 
 See also:
 - [`GameState`](./game_state.md#gamestate)
-- [examples/python/labels.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels.py)
+- [examples/python/labels_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels_buffer.py)
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
 
 Note: added in 1.1.0.
@@ -1431,6 +1546,7 @@ Config key: `automapBufferEnabled`/`automap_buffer_enabled`
 
 See also:
 - [`GameState`](./game_state.md#gamestate)
+- [examples/python/automap_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/automap_buffer.py)
 - [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py),
 
 Note: added in 1.1.0.
@@ -1484,6 +1600,28 @@ Default value: true
 Config key: `automapRenderTextures`/`automap_render_textures`
 
 Note: added in 1.1.0.
+
+
+---
+### `setAutomapRenderObjectsAsSprites`
+
+| C++    | `void setAutomapRenderObjectsAsSprites(bool sprites)`          |
+| :--    | :--                                                            |
+| Python | `set_automap_render_objects_as_sprites(sprites: bool) -> None` |
+
+Controls whether things (objects, monsters, items, etc.) are rendered as sprites or as simple triangles on the automap.
+
+When enabled (`true`), things are displayed as rotated sprites with their actual appearance. When disabled (`false`), things are shown as simple triangular markers.
+Works only with `OBJECTS` and `OBJECTS_WITH_SIZE` automap modes.
+
+Default value: false
+
+Config key: `automapRenderObjectsAsSprites`/`automap_render_objects_as_sprites`
+
+See also:
+- [`setAutomapMode`](#setautomapmode),
+
+Note: added in 1.3.0.
 
 
 ---
@@ -1917,15 +2055,15 @@ See also:
 ---
 ### `setAudioBufferSize`
 
-| C++    | `void setAudioBufferSize(unsigned int size)` |
+| C++    | `void setAudioBufferSize(unsigned int tics)` |
 | :--    | :--                                          |
-| Python | `set_audio_buffer_size(size: int) -> None`   |
+| Python | `set_audio_buffer_size(tics: int) -> None`   |
 
-Sets the size of the audio buffer. The size is defined by a number of logic tics.
+Sets the size/length of the audio buffer. The size is defined by a number of logic tics.
 After each action audio buffer will contain audio from the specified number of the last processed tics.
 Doom uses 35 ticks per second.
 
-Default value: 4
+Default value: 1
 
 Has no effect when the game is running.
 
@@ -1936,3 +2074,79 @@ See also:
 - [examples/python/audio_buffer.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py)
 
 Note: added in 1.1.9.
+
+
+---
+### `isNotificationsBufferEnabled`
+
+| C++    | `bool isNotificationsBufferEnabled()`       |
+| :--    | :--                                         |
+| Python | `is_notifications_buffer_enabled() -> bool` |
+
+Returns true if the notify buffer is enabled.
+
+Note: added in 1.3.0.
+
+
+---
+### `setNotificationsBufferEnabled`
+
+| C++    | `void setNotificationsBufferEnabled(bool notificationsBuffer)`         |
+| :--    | :--                                                                    |
+| Python | `set_notifications_buffer_enabled(notifications_buffer: bool) -> None` |
+
+Enables notification buffer, it will be available in the state.
+The notification buffer will contain text notifications from the number of the last tics specified by [`setNotificationsBufferSize`](#setNotificationsBuffersize) method.
+
+Default value: false
+
+Has no effect when the game is running.
+
+Config key: `notificationsBufferEnabled`/`notifications_buffer_enabled`
+
+See also:
+- [`GameState`](./game_state.md#gamestate)
+- [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
+
+Note: added in 1.3.0.
+
+
+---
+### `getNotificationsBufferSize`
+
+| C++    | `int getNotificationsBufferSize()`       |
+| :--    | :--                                      |
+| Python | `get_notifications_buffer_size() -> int` |
+
+Returns the size of the notify buffer.
+
+Note: added in 1.3.0.
+
+
+See also:
+- [`GameState`](./game_state.md#gamestate)
+- [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
+
+
+---
+### `setNotificationsBufferSize`
+
+| C++    | `void setNotificationsBufferSize(unsigned int tics)` |
+| :--    | :--                                                  |
+| Python | `set_notifications_buffer_size(tics: int) -> None`   |
+
+Sets the size of the notify buffer. The size is defined by a number of logic tics.
+After each action notify buffer will contain text notifications from the specified number of the last processed tics.
+Doom uses 35 ticks per second.
+
+Default value: 1
+
+Has no effect when the game is running.
+
+Config key: `notificationsBufferSize`/`notifications_buffer_size`
+
+See also:
+- [`GameState`](./game_state.md#gamestate)
+- [examples/python/buffers.py](https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py)
+
+Note: added in 1.3.0.

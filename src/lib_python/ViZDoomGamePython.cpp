@@ -1,6 +1,7 @@
 /*
  Copyright (C) 2016 by Wojciech Jaśkowski, Michał Kempka, Grzegorz Runc, Jakub Toczek, Marek Wydmuch
  Copyright (C) 2017 - 2022 by Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, and the respective contributors
+ Copyright (C) 2023 - 2026 by Marek Wydmuch, Farama Foundation, and the respective contributors
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +24,13 @@
 
 #include "ViZDoomGamePython.h"
 #include "ViZDoomController.h"
+#include "ViZDoomExceptions.h"
 
+#include <algorithm>
 #include <cstddef>
 #include <cstring>
+#include <sstream>
+#include <stdexcept>
 
 namespace vizdoom {
     DoomGamePython::DoomGamePython() {
@@ -47,6 +52,7 @@ namespace vizdoom {
     }
 
     GameStatePython* DoomGamePython::getState() {
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         if (this->state == nullptr) return nullptr;
 
         // TODO: the following line causes:
@@ -79,12 +85,17 @@ namespace vizdoom {
             this->pyState->labels = DoomGamePython::vectorToPyList<Label>(this->state->labels);
         }  else {
             this->pyState->labelsBuffer = pyb::none();
-            this->pyState->labels = pyb::list();
+            this->pyState->labels = pyb::none();
         }
 
         if (this->state->automapBuffer != nullptr)
             this->pyState->automapBuffer = this->dataToNumpyArray(this->colorShape, this->state->automapBuffer->data());
         else this->pyState->automapBuffer = pyb::none();
+
+        /* Update notifications buffer */
+        if (this->doomController->isNotificationsEnabled())
+            this->pyState->notificationsBuffer = pyb::str(this->state->notificationsBuffer);
+        else this->pyState->notificationsBuffer = pyb::none();
 
         /* Updates vars */
         if (!this->state->gameVariables.empty()) {
@@ -100,7 +111,7 @@ namespace vizdoom {
         /* Update objects */
         if (this->isObjectsInfoEnabled()) {
             this->pyState->objects = DoomGamePython::vectorToPyList<Object>(this->state->objects);
-        } else this->pyState->objects = pyb::list();
+        } else this->pyState->objects = pyb::none();
 
         /* Update sectors */
         if (this->isSectorsInfoEnabled()) {
@@ -114,26 +125,27 @@ namespace vizdoom {
             }
             this->pyState->sectors = pySectors;
             //this->pyState->sectors = DoomGamePython::vectorToPyList<Sectors>(this->state->objects);
-        } else this->pyState->sectors = pyb::list();
+        } else this->pyState->sectors = pyb::none();
 
         return this->pyState;
     }
 
     ServerStatePython* DoomGamePython::getServerState() {
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         ServerStatePython* pyServerState = new ServerStatePython();
 
-        pyServerState->tic = this->doomController->getMapTic();
-        pyServerState->playerCount = this->doomController->getPlayerCount();
+        pyServerState->tic = this->serverState->tic;
+        pyServerState->playerCount = this->serverState->playerCount;
 
         pyb::list pyPlayersInGame, pyPlayersNames, pyPlayersFrags,
                 pyPlayersAfk, pyPlayersLastActionTic, pyPlayersLastKillTic;
         for(int i = 0; i < MAX_PLAYERS; ++i) {
-            pyPlayersInGame.append(this->doomController->isPlayerInGame(i));
-            pyPlayersNames.append(pyb::str(this->doomController->getPlayerName(i).c_str()));
-            pyPlayersFrags.append(this->doomController->getPlayerFrags(i));
-            pyPlayersAfk.append(this->doomController->isPlayerAfk(i));
-            pyPlayersLastActionTic.append(this->doomController->getPlayerLastActionTic(i));
-            pyPlayersLastKillTic.append(this->doomController->getPlayerLastKillTic(i));
+            pyPlayersInGame.append(this->serverState->playersInGame[i]);
+            pyPlayersNames.append(pyb::str(this->serverState->playersNames[i].c_str()));
+            pyPlayersFrags.append(this->serverState->playersFrags[i]);
+            pyPlayersAfk.append(this->serverState->playersAfk[i]);
+            pyPlayersLastActionTic.append(this->serverState->playersLastActionTic[i]);
+            pyPlayersLastKillTic.append(this->serverState->playersLastKillTic[i]);
         }
 
         pyServerState->playersInGame = pyPlayersInGame;
@@ -147,6 +159,7 @@ namespace vizdoom {
     }
 
     pyb::list DoomGamePython::getLastAction() {
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
         return DoomGamePython::vectorToPyList(this->lastAction);
     }
 
@@ -164,6 +177,75 @@ namespace vizdoom {
 
     void DoomGamePython::setAvailableGameVariables(pyb::list const &pyGameVariables){
         DoomGame::setAvailableGameVariables(DoomGamePython::pyListToVector<GameVariable>(pyGameVariables));
+    }
+
+    bool DoomGamePython::setConfig(pyb::object const &config) {
+        // If config is a string, pass it directly to the C++ setConfig
+        if (pyb::isinstance<pyb::str>(config)) {
+            std::string configStr = config.cast<std::string>();
+            return DoomGame::setConfig(configStr);
+        }
+
+        // If config is a dict, convert it to a config string
+        if (pyb::isinstance<pyb::dict>(config)) {
+            pyb::dict configDict = config.cast<pyb::dict>();
+            std::ostringstream configStream;
+
+            for (auto item : configDict) {
+                std::string key = pyb::str(item.first).cast<std::string>();
+                pyb::object value = pyb::reinterpret_borrow<pyb::object>(item.second);
+
+                // Convert key to lowercase and replace spaces with underscores
+                std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+                std::replace(key.begin(), key.end(), ' ', '_');
+
+                configStream << key << " = ";
+
+                // Handle different value types
+                if (pyb::isinstance<pyb::list>(value)) {
+                    // List values (e.g., available_buttons, available_game_variables)
+                    pyb::list listValue = value.cast<pyb::list>();
+                    configStream << "{\n";
+                    for (auto listItem : listValue) {
+                        // Check if it's an enum value
+                        if (pyb::hasattr(listItem, "name")) {
+                            // It's an enum, get its name
+                            std::string enumName = pyb::str(pyb::getattr(listItem, "name")).cast<std::string>();
+                            configStream << "    " << enumName << "\n";
+                        } else {
+                            // It's a regular value, convert to string
+                            configStream << "    " << pyb::str(listItem).cast<std::string>() << "\n";
+                        }
+                    }
+                    configStream << "}\n";
+                } else if (pyb::isinstance<pyb::bool_>(value)) {
+                    // Boolean values
+                    bool boolValue = value.cast<bool>();
+                    configStream << (boolValue ? "true" : "false") << "\n";
+                } else if (pyb::isinstance<pyb::int_>(value)) {
+                    // Integer values
+                    configStream << value.cast<int>() << "\n";
+                } else if (pyb::isinstance<pyb::float_>(value)) {
+                    // Float values
+                    configStream << value.cast<double>() << "\n";
+                } else if (pyb::isinstance<pyb::str>(value)) {
+                    // String values
+                    configStream << value.cast<std::string>() << "\n";
+                } else if (pyb::hasattr(value, "name")) {
+                    // Enum value, get its name
+                    std::string enumName = pyb::str(pyb::getattr(value, "name")).cast<std::string>();
+                    configStream << enumName << "\n";
+                } else {
+                    // Fallback: convert to string
+                    configStream << pyb::str(value).cast<std::string>() << "\n";
+                }
+            }
+
+            return DoomGame::setConfig(configStream.str());
+        }
+
+        // If it's neither a string nor a dict, throw an error
+        throw std::invalid_argument("config must be either a string or a dict");
     }
 
     // These functions are wrapped for manual GIL management

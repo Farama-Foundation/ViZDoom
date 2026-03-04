@@ -44,6 +44,10 @@ Note: added in 1.1.0.)DOCSTRING";
 
     const char *isRunning = R"DOCSTRING(Returns ``True`` if the controlled game instance is running.)DOCSTRING";
 
+    const char *getInstanceId = R"DOCSTRING(Returns the unique identifier of the current running game instance.
+
+Note: added in 1.3.1.)DOCSTRING";
+
     const char *isMultiplayerGame = R"DOCSTRING(Returns ``True`` if the game is in multiplayer mode.
 
 See also:
@@ -446,7 +450,39 @@ Overwriting does not involve resetting to default values. Thus only overlapping 
 The method returns ``True`` if the whole configuration file was correctly read and applied,
 `False` if the file contained errors.
 
-If the file relative path is given, it will be searched for in the following order: ``<current directory>``, ``<current directory>/scenarios/``, ``<ViZDoom library location>/scenarios/``.)DOCSTRING";
+If the file relative path is given, it will be searched for in the following order: ``<current directory>``, ``<current directory>/scenarios/``, ``<ViZDoom library location>/scenarios/``.
+
+Relative paths in the config file (e.g. for ``doom_scenario_path``) are resolved relative to the config file location.)DOCSTRING";
+
+    const char *setConfig = R"DOCSTRING(Sets configuration from a config string or dictionary (Python only).
+
+This method accepts either a configuration string (in the same format as .cfg files)
+or a Python dictionary with configuration key-value pairs.
+
+When using a Python dictionary:
+- Keys should be configuration parameter names (e.g., 'screen_resolution', 'doom_skill')
+- Values can be:
+  - Primitive types: str, int, float, bool
+  - Enums: Button, GameVariable, ScreenResolution, ScreenFormat, SamplingRate, Mode, AutomapMode
+  - Lists: for 'available_buttons' and 'available_game_variables'
+
+Relative paths (e.g., for 'doom_scenario_path') are resolved relative to the current working directory.
+
+Python example:
+```
+    game.set_config({
+        'screen_resolution': ScreenResolution.RES_640X480,
+        'screen_format': ScreenFormat.CRCGCB,
+        'doom_skill': 5,
+        'available_buttons': [Button.MOVE_LEFT, Button.MOVE_RIGHT, Button.ATTACK],
+        'available_game_variables': [GameVariable.AMMO2],
+        'living_reward': -1
+    })
+```
+
+Returns ``True`` if the configuration was successfully applied, ``False`` if errors occurred.
+
+Note: added in 1.3.0)DOCSTRING";
 
     const char *getMode = R"DOCSTRING(Returns the current :class:`.Mode` (``PLAYER``, ``SPECTATOR``, ``ASYNC_PLAYER``, ``ASYNC_SPECTATOR``).)DOCSTRING";
 
@@ -477,46 +513,60 @@ See also:
 
 Note: added in 1.1.0.)DOCSTRING";
 
+    const char *getViZDoomPath = R"DOCSTRING(Returns the path to the ViZDoom engine executable vizdoom.)DOCSTRING";
+
     const char *setViZDoomPath = R"DOCSTRING(Sets the path to the ViZDoom engine executable vizdoom.
+We recommend not changing this path unless you know what you are doing.
 
 Default value: ``<ViZDoom library location>/<vizdoom or vizdoom.exe on Windows>``.
 
 Config key: ``ViZDoomPath``/``vizdoom_path``)DOCSTRING";
 
-    const char *setDoomGamePath = R"DOCSTRING(Sets the path to the Doom engine based game file (wad format).
-If not used DoomGame will look for doom2.wad and freedoom2.wad (in that order) in the directory of ViZDoom's installation (where vizdoom library/pyd is).
+    const char *getDoomGamePath = R"DOCSTRING(Returns the path to the Doom engine based game file (wad format).)DOCSTRING";
 
-Default value: ``<ViZDoom library location>/<doom2.wad, doom.wad, freedoom2.wad, or freedoom.wad - in this order>``
+    const char *setDoomGamePath = R"DOCSTRING(Sets the path to the Doom engine-based game file (wad format).
+If set to empty, DoomGame will look for doom2.wad, and freedoom2.wad (in that order) in the working directory first and then in ViZDoom's installation directory
+(where vizdoom library/pyd is).
+If the path is set and the file does not exist, ViZDoom will check if the file exists in the working directory and then in ViZDoom's installation directory.
+
+Default value: ``""``
 
 Config key: ``DoomGamePath``/``doom_game_path``)DOCSTRING";
 
+    const char *getDoomScenarioPath = R"DOCSTRING(Returns the path to the additional scenario file (wad format).)DOCSTRING";
+
     const char *setDoomScenarioPath = R"DOCSTRING(Sets the path to an additional scenario file (wad format).
-If not provided, the default Doom single-player maps will be loaded.
+If not provided, the default maps of selected Doom engine-based game will be used.
 
 Default value: ``""``
 
 Config key: ``DoomScenarioPath``/``doom_scenario_path``)DOCSTRING";
 
-    const char *setDoomMap = R"DOCSTRING(Sets the map name to be used.
+    const char *getDoomMap = R"DOCSTRING(Returns the map name to be used.)DOCSTRING";
+
+    const char *setDoomMap = R"DOCSTRING(Sets the map name to be used. The map name is case insensitive.
 
 Default value: ``"map01"``, if set to empty ``"map01"`` will be used.
 
 Config key: ``DoomMap``/``doom_map``)DOCSTRING";
+
+    const char *getDoomSkill = R"DOCSTRING(Returns the Doom game difficulty level (skill).)DOCSTRING";
 
     const char *setDoomSkill = R"DOCSTRING(Sets Doom game difficulty level, which is called skill in Doom.
 The higher the skill, the harder the game becomes.
 Skill level affects monsters' aggressiveness, monsters' speed, weapon damage, ammunition quantities, etc.
 Takes effect from the next episode.
 
-- 1 - VERY EASY, “I'm Too Young to Die” in Doom.
-- 2 - EASY, “Hey, Not Too Rough" in Doom.
-- 3 - NORMAL, “Hurt Me Plenty” in Doom.
-- 4 - HARD, “Ultra-Violence” in Doom.
-- 5 - VERY HARD, “Nightmare!” in Doom.
-
+- 1 - VERY EASY, "I'm Too Young to Die" in Doom/Doom 2.
+- 2 - EASY, "Hey, Not Too Rough" in Doom/Doom 2.
+- 3 - NORMAL, "Hurt Me Plenty" in Doom/Doom 2.
+- 4 - HARD, "Ultra-Violence" in Doom/Doom 2.
+- 5 - VERY HARD, "Nightmare!" in Doom/Doom 2.
 Default value: 3
 
 Config key: ``DoomSkill``/``doom_skill``)DOCSTRING";
+
+    const char *getDoomConfigPath = R"DOCSTRING(Returns the path for ZDoom's configuration file.)DOCSTRING";
 
     const char *setDoomConfigPath = R"DOCSTRING(Sets the path for ZDoom's configuration file.
 The file is responsible for the configuration of the ZDoom engine itself.
@@ -614,7 +664,7 @@ Config key: ``labelsBufferEnabled``/``labels_buffer_enabled``
 See also:
 
 - :class:`.GameState`
-- `examples/python/labels.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels.py>`_
+- `examples/python/labels_buffer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels_buffer.py>`_
 - `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
 
 Note: added in 1.1.0.)DOCSTRING";
@@ -635,6 +685,7 @@ Config key: ``automapBufferEnabled``/``automap_buffer_enabled``
 See also:
 
 - :class:`.GameState`
+- `examples/python/automap_buffer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/automap_buffer.py>`_
 - `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_,
 
 Note: added in 1.1.0.)DOCSTRING";
@@ -664,6 +715,21 @@ Default value: ``True``
 Config key: ``automapRenderTextures``/``automap_render_textures``
 
 Note: added in 1.1.0.)DOCSTRING";
+
+    const char *setAutomapRenderObjectsAsSprites = R"DOCSTRING(Controls whether things (objects, monsters, items, etc.) are rendered as sprites or as simple triangles on the automap.
+
+When enabled (```True```), things are displayed as rotated sprites with their actual appearance. When disabled (```False```), things are shown as simple triangular markers.
+Works only with ``OBJECTS`` and ``OBJECTS_WITH_SIZE`` automap modes.
+
+Default value: ``False``
+
+Config key: ``automapRenderObjectsAsSprites``/``automap_render_objects_as_sprites``
+
+See also:
+
+- :meth:`set_automap_mode`,
+
+Note: added in 1.3.0.)DOCSTRING";
 
     const char *setRenderHud = R"DOCSTRING(Determine if the hud will be rendered in the game.
 
@@ -876,11 +942,11 @@ See also:
 - :class:`.GameState`
 - `examples/python/audio_buffer.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py>`_)DOCSTRING";
 
-    const char *setAudioBufferSize = R"DOCSTRING(Sets the size of the audio buffer. The size is defined by a number of logic tics.
+    const char *setAudioBufferSize = R"DOCSTRING(Sets the size/length of the audio buffer. The size is defined by a number of logic tics.
 After each action audio buffer will contain audio from the specified number of the last processed tics.
 Doom uses 35 ticks per second.
 
-Default value: 4
+Default value: 1
 
 Has no effect when the game is running.
 
@@ -893,6 +959,53 @@ See also:
 
 Note: added in 1.1.9.)DOCSTRING";
 
+    const char *isNotificationsBufferEnabled = R"DOCSTRING(Returns ``True`` if the notify buffer is enabled.
+
+Note: added in 1.3.0.)DOCSTRING";
+
+    const char *setNotificationsBufferEnabled = R"DOCSTRING(Enables notification buffer, it will be available in the state.
+The notification buffer will contain text notifications from the number of the last tics specified by :meth:`set_notifications_buffer_size` method.
+
+Default value: ``False``
+
+Has no effect when the game is running.
+
+Config key: ``notificationsBufferEnabled``/``notifications_buffer_enabled``
+
+See also:
+
+- :class:`.GameState`
+- `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
+
+Note: added in 1.3.0.)DOCSTRING";
+
+    const char *getNotificationsBufferSize = R"DOCSTRING(Returns the size of the notify buffer.
+
+Note: added in 1.3.0.
+
+
+See also:
+
+- :class:`.GameState`
+- `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_)DOCSTRING";
+
+    const char *setNotificationsBufferSize = R"DOCSTRING(Sets the size of the notify buffer. The size is defined by a number of logic tics.
+After each action notify buffer will contain text notifications from the specified number of the last processed tics.
+Doom uses 35 ticks per second.
+
+Default value: 1
+
+Has no effect when the game is running.
+
+Config key: ``notificationsBufferSize``/``notifications_buffer_size``
+
+See also:
+
+- :class:`.GameState`
+- `examples/python/buffers.py <https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py>`_
+
+Note: added in 1.3.0.)DOCSTRING";
+
 } // namespace DoomGamePython
 
     const char *doomTicsToMs = R"DOCSTRING(Calculates how many tics will be made during given number of milliseconds.
@@ -902,10 +1015,6 @@ Note: changed in 1.1.0)DOCSTRING";
     const char *msToDoomTics = R"DOCSTRING(Calculates the number of milliseconds that will pass during specified number of tics.
 
 Note: changed in 1.1.0)DOCSTRING";
-
-    const char *getDefaultCategories = R"DOCSTRING(Returns the default object categories of ViZDoom.
-
-Note: added in 1.3.0.)DOCSTRING";
 
     const char *doomTicsToSec = R"DOCSTRING(Calculates how many tics will be made during given number of seconds.
 
@@ -923,6 +1032,10 @@ you can convert them to floating point by using this function.)DOCSTRING";
     const char *isBinaryButton = R"DOCSTRING(Returns ``True`` if :class:`.Button` is binary button.)DOCSTRING";
 
     const char *isDeltaButton = R"DOCSTRING(Returns ``True`` if :class:`.Button` is delta button.)DOCSTRING";
+
+    const char *getDefaultCategories = R"DOCSTRING(Returns the default object categories of ViZDoom.
+
+Note: added in 1.3.0.)DOCSTRING";
 
 
 } // namespace docstrings

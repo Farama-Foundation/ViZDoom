@@ -765,9 +765,6 @@ void D_Display ()
 	hw2d = false;
 
 	{
-		unsigned int nowtime = I_FPSTime();
-		TexMan.UpdateAnimations(nowtime);
-		R_UpdateSky(nowtime);
 		switch (gamestate)
 		{
 		case GS_FULLCONSOLE:
@@ -1072,9 +1069,6 @@ void VIZ_D_MapDisplay(){
 	hw2d = false;
 
 	{
-		unsigned int nowtime = I_FPSTime();
-		TexMan.UpdateAnimations(nowtime);
-		R_UpdateSky(nowtime);
 		switch (gamestate)
 		{
 			case GS_FULLCONSOLE:
@@ -1090,37 +1084,21 @@ void VIZ_D_MapDisplay(){
 				if (!gametic)
 					break;
 
-				if (StatusBar != NULL)
-				{
-					float blend[4] = { 0, 0, 0, 0 };
-					StatusBar->BlendView (blend);
-				}
-				screen->SetBlendingRect(viewwindowx, viewwindowy,
-										viewwindowx + viewwidth, viewwindowy + viewheight);
-
-				Renderer->RenderView(&players[consoleplayer]);
-
-				if ((hw2d = screen->Begin2D(viewactive)))
+				screen->SetBlendingRect(0,0,0,0);
+				if ((hw2d = screen->Begin2D(false)))
 				{
 					// Redraw everything every frame when using 2D accel
 					ST_SetNeedRefresh();
 					V_SetBorderNeedRefresh();
 				}
-				Renderer->DrawRemainingPlayerSprites();
-
-				screen->DrawBlendingRect();
 				if (automapactive)
 				{
 					int saved_ST_Y = ST_Y;
-					if (viewheight == SCREENHEIGHT)
-					{
-						ST_Y = viewheight;
-					}
+
+					ST_Y = screen->GetHeight();
 					AM_Drawer ();
 					ST_Y = saved_ST_Y;
 				}
-
-				CT_Drawer ();
 				break;
 
 			case GS_INTERMISSION:
@@ -1147,21 +1125,6 @@ void VIZ_D_MapDisplay(){
 			default:
 				break;
 		}
-	}
-
-	// [RH] Draw icon, if any
-	if (D_DrawIcon)
-	{
-		FTextureID picnum = TexMan.CheckForTexture (D_DrawIcon, FTexture::TEX_MiscPatch);
-
-		D_DrawIcon = NULL;
-		if (picnum.isValid())
-		{
-			FTexture *tex = TexMan[picnum];
-			screen->DrawTexture (tex, 160 - tex->GetScaledWidth()/2, 100 - tex->GetScaledHeight()/2,
-								 DTA_320x200, true, TAG_DONE);
-		}
-		NoWipe = 10;
 	}
 
 	cycles.Unclock();

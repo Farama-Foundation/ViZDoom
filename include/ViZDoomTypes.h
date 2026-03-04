@@ -120,6 +120,8 @@ namespace vizdoom{
         std::vector<Object> objects;
 
         std::vector<Sector> sectors;
+
+        std::string notificationsBuffer;
     };
 
     typedef std::shared_ptr<GameState> GameStatePtr;

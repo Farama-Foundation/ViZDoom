@@ -90,6 +90,37 @@ bool VIZ_MQTryReceive(void *msg){
     return vizMQDoom->try_receive(msg, sizeof(VIZMessage), size, priority);
 }
 
+static void VIZ_HandleMQMessage(const VIZMessage &msg){
+    switch(msg.code){
+        case VIZ_MSG_CODE_TIC :
+            vizNextTic = true;
+            break;
+
+        case VIZ_MSG_CODE_UPDATE:
+            VIZ_Update();
+            VIZ_GameStateTic();
+            VIZ_MQSend(VIZ_MSG_CODE_DOOM_DONE);
+            break;
+
+        case VIZ_MSG_CODE_TIC_AND_UPDATE:
+            vizUpdate = true;
+            vizNextTic = true;
+            break;
+
+        case VIZ_MSG_CODE_COMMAND:
+            if(msg.command[0] != '\0') VIZ_Command(strdup(msg.command));
+            VIZ_CVARsUpdate();
+            break;
+
+        case VIZ_MSG_CODE_CLOSE:
+        case VIZ_MSG_CODE_ERROR:
+            D_ClearAll();
+            exit(0);
+
+        default : break;
+    }
+}
+
 void VIZ_MQTic(){
 
     VIZMessage msg;
@@ -98,35 +129,15 @@ void VIZ_MQTic(){
         if(!*viz_async) VIZ_MQReceive(&msg);
         else if(!VIZ_MQTryReceive(&msg)) break;
 
-        switch(msg.code){
-            case VIZ_MSG_CODE_TIC :
-                vizNextTic = true;
-                break;
-
-            case VIZ_MSG_CODE_UPDATE:
-                VIZ_Update();
-                VIZ_GameStateTic();
-                VIZ_MQSend(VIZ_MSG_CODE_DOOM_DONE);
-                break;
-
-            case VIZ_MSG_CODE_TIC_AND_UPDATE:
-                vizUpdate = true;
-                vizNextTic = true;
-                break;
-
-            case VIZ_MSG_CODE_COMMAND:
-                if(msg.command[0] != '\0') VIZ_Command(strdup(msg.command));
-                VIZ_CVARsUpdate();
-                break;
-
-            case VIZ_MSG_CODE_CLOSE:
-            case VIZ_MSG_CODE_ERROR:
-                D_ClearAll();
-                exit(0);
-
-            default : break;
-        }
+        VIZ_HandleMQMessage(msg);
     } while(!vizNextTic);
+}
+
+void VIZ_MQPollNonBlocking(){
+    VIZMessage msg;
+    while(VIZ_MQTryReceive(&msg)){
+        VIZ_HandleMQMessage(msg);
+    }
 }
 
 void VIZ_MQClose(){

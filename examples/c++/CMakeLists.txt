@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.12)
 project(ViZDoomC++Examples)
 
 if(COMMAND cmake_policy)

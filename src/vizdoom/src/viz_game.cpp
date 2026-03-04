@@ -1,6 +1,7 @@
 /*
  Copyright (C) 2016 by Wojciech Jaśkowski, Michał Kempka, Grzegorz Runc, Jakub Toczek, Marek Wydmuch
  Copyright (C) 2017 - 2022 by Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, and the respective contributors
+ Copyright (C) 2023 - 2026 by Marek Wydmuch, Farama Foundation, and the respective contributors
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +22,11 @@
  THE SOFTWARE.
 */
 
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <sstream>
+
 #include "viz_game.h"
 
 #include "viz_defines.h"
@@ -32,15 +38,15 @@
 #include "viz_version.h"
 #include "viz_doom_classes.h"
 
+#include "c_dispatch.h"
 #include "d_netinf.h"
 #include "d_event.h"
 #include "d_dehacked.h"
 #include "g_game.h"
-#include "c_dispatch.h"
+#include "i_music.h"
+#include "i_sound.h"
 #include "p_acs.h"
 #include "p_setup.h"
-
-#include <algorithm>
 
 EXTERN_CVAR (Int, viz_debug)
 EXTERN_CVAR (Bool, viz_nocheat)
@@ -50,18 +56,34 @@ EXTERN_CVAR (Bool, viz_labels)
 EXTERN_CVAR (Bool, viz_automap)
 EXTERN_CVAR (Bool, viz_objects)
 EXTERN_CVAR (Bool, viz_sectors)
+EXTERN_CVAR (Bool, viz_soft_audio)
+EXTERN_CVAR (Bool, viz_reset_audio_on_map_change)
 EXTERN_CVAR (Bool, viz_loop_map)
 EXTERN_CVAR (Bool, viz_override_player)
 EXTERN_CVAR (Bool, viz_spectator)
 EXTERN_CVAR (Int, viz_afk_timeout)
 EXTERN_CVAR (Float, timelimit)
+EXTERN_CVAR (Bool, viz_notifications)
+EXTERN_CVAR (Int, viz_notifications_tics)
+EXTERN_CVAR (String, snd_backend)
 
 VIZGameState *vizGameStateSM = NULL;
 VIZPlayerLogger vizPlayerLogger[VIZ_MAX_PLAYERS];
 unsigned int vizUniqueObjectsCount = 0;
+std::vector<VIZTicNotifications> vizNotifications;
 
 /* Logger functions */
 /*--------------------------------------------------------------------------------------------------------------------*/
+
+void VIZ_LogNotification(int gametic, const char *message){
+    if(!*viz_notifications || gamestate != GS_LEVEL) return;
+
+    if(vizNotifications.empty() || vizNotifications.back().gametic != gametic) {
+        vizNotifications.push_back({gametic, {message}});
+    } else {
+        vizNotifications.back().messages.push_back(message);
+    }
+}
 
 void VIZ_LogDmg(AActor *target, AActor *inflictor, AActor *source, int amount){
     if(amount < 0) return;
@@ -220,8 +242,9 @@ void VIZ_CopyActorName(AActor* actor, char* name) {
     //if(actor->health <= 0 || (actor->flags & MF_CORPSE) || (actor->flags6 & MF6_KILLED)) {
     if ((actor->flags & MF_CORPSE) || (actor->flags6 & MF6_KILLED)) {
         strncpy(name, "Dead", VIZ_MAX_NAME_LEN);
-        strncpy(name + 4, actor->GetClass()->TypeName.GetChars(), VIZ_MAX_NAME_LEN - 4);
-    } else strncpy(name, actor->GetClass()->TypeName.GetChars(), VIZ_MAX_NAME_LEN);
+        strncpy(name + 4, actor->GetClass()->TypeName.GetChars(), VIZ_MAX_NAME_LEN - 5);
+    } else strncpy(name, actor->GetClass()->TypeName.GetChars(), VIZ_MAX_NAME_LEN - 1);
+    name[VIZ_MAX_NAME_LEN - 1] = '\0';
 }
 
 inline unsigned int VIZ_GetActorId(AActor* actor){
@@ -279,6 +302,9 @@ void VIZ_GameStateSMUpdate(){
     vizGameStateSM->AUTOMAP = *viz_automap;
     vizGameStateSM->OBJECTS = *viz_objects;
     vizGameStateSM->SECTORS = *viz_sectors;
+    vizGameStateSM->OPENAL_SOUND = ((stricmp(snd_backend, "openal") == 0) && GSnd && GSnd->IsValid());
+    vizGameStateSM->AUDIO_BUFFER = *viz_soft_audio && vizGameStateSM->OPENAL_SOUND;
+    vizGameStateSM->NOTIFICATIONS = *viz_notifications;
 
     for(int i = 0; i < VIZ_SM_REGION_COUNT; ++i){
         vizGameStateSM->SM_REGION_OFFSET[i] = vizSMRegion[i].offset;
@@ -335,6 +361,7 @@ void VIZ_GameStateUpdate(){
         if (*viz_objects) VIZ_GameStateUpdateObjects();
         if (*viz_sectors) VIZ_GameStateUpdateSectors();
     }
+    if (*viz_notifications) VIZ_GameStateUpdateNotifications();
 }
 
 void VIZ_GameStateUpdateVariables(){
@@ -610,7 +637,7 @@ void VIZ_GameStateUpdateSectors(){
         VIZSector *vizSector = &vizGameStateSM->SECTOR[sectorCount++];
 
         vizSector->ceilingHeight = VIZ_FixedToDouble(sector->ceilingplane.d);
-        vizSector->floorHeight = VIZ_FixedToDouble(sector->floorplane.d);
+        vizSector->floorHeight = -VIZ_FixedToDouble(sector->floorplane.d);
 
         unsigned int sectorLineCount = 0;
         for(int l = 0; l < sector->linecount; ++l){
@@ -633,6 +660,47 @@ void VIZ_GameStateUpdateSectors(){
     assert(sectorCount == numsectors);
 }
 
+void VIZ_GameStateUpdateNotifications(){
+    if(!vizGameStateSM) return;
+
+    int bufferStartTic = gametic - *viz_notifications_tics;
+
+    VIZ_DebugMsg(4, VIZ_FUNC, "gametic: %d, bufferStartTic: %d, number of tics in notifications: %d", gametic, bufferStartTic, vizNotifications.size());
+
+    // Update the notifications buffer
+    // Remove old notifications from the list
+    std::string newNotificationsBuffer = "";
+    int notificationCount = 0;
+    if (!vizNotifications.empty()) {
+        int toRemove = 0;
+        for (const auto& notification : vizNotifications) {
+            if (notification.gametic >= bufferStartTic && notification.gametic >= level.starttime) {
+                for (const auto& message : notification.messages) {
+                    newNotificationsBuffer += message;
+                    if (newNotificationsBuffer.back() != '\n') newNotificationsBuffer += '\n';
+                    ++notificationCount;
+                }
+            } else ++toRemove;
+        }
+        if (toRemove > 0) vizNotifications.erase(vizNotifications.begin(), vizNotifications.begin() + toRemove);
+    }
+
+    VIZ_DebugMsg(4, VIZ_FUNC, "notifications buffer length: %d, notification count: %d, notifications: %s", newNotificationsBuffer.length(), notificationCount, newNotificationsBuffer.c_str());
+
+    // Copy the notifications buffer to shared memory, ensuring it's truncated if too long.
+    if (newNotificationsBuffer.length() >= VIZ_MAX_NOTIFICATIONS_CHARS) {
+        // Truncate and add ellipsis
+        std::string truncated = newNotificationsBuffer.substr(0, VIZ_MAX_NOTIFICATIONS_CHARS - 4);
+        truncated += "...";
+        strncpy(vizGameStateSM->NOTIFICATIONS_TEXT, truncated.c_str(), VIZ_MAX_NOTIFICATIONS_CHARS - 1);
+        vizGameStateSM->NOTIFICATIONS_TEXT_SIZE = truncated.length();
+    } else {
+        strncpy(vizGameStateSM->NOTIFICATIONS_TEXT, newNotificationsBuffer.c_str(), VIZ_MAX_NOTIFICATIONS_CHARS - 1);
+        vizGameStateSM->NOTIFICATIONS_TEXT_SIZE = newNotificationsBuffer.length();
+    }
+    vizGameStateSM->NOTIFICATIONS_TEXT[VIZ_MAX_NOTIFICATIONS_CHARS - 1] = '\0';
+}
+
 void VIZ_GameStateInitNew(){
     if(!vizGameStateSM) return;
 
@@ -646,6 +714,13 @@ void VIZ_GameStateInitNew(){
     }
 
     vizUniqueObjectsCount = 0;
+
+    if (*viz_soft_audio && *viz_reset_audio_on_map_change) {
+        I_ShutdownMusic();
+        I_ShutdownSound();
+        I_InitSound();
+    }
+    VIZ_ClearAudioBuffer();
 }
 
 void VIZ_GameStateClose(){

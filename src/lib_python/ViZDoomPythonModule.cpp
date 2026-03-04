@@ -1,7 +1,7 @@
 /*
  Copyright (C) 2016 by Wojciech Jaśkowski, Michał Kempka, Grzegorz Runc, Jakub Toczek, Marek Wydmuch
  Copyright (C) 2017 - 2022 by Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, and the respective contributors
- Copyright (C) 2023 - 2024 by Marek Wydmuch, Farama Foundation, and the respective contributors
+ Copyright (C) 2023 - 2026 by Marek Wydmuch, Farama Foundation, and the respective contributors
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -63,7 +63,7 @@ PYBIND11_MODULE(vizdoom, vz){
     EXCEPTION_TO_PYT(ViZDoomIsNotRunningException)
     EXCEPTION_TO_PYT(ViZDoomErrorException)
     EXCEPTION_TO_PYT(ViZDoomUnexpectedExitException)
-
+    EXCEPTION_TO_PYT(ViZDoomNoOpenALSoundException)
 
     /* Helpers */
     /*----------------------------------------------------------------------------------------------------------------*/
@@ -550,7 +550,8 @@ PYBIND11_MODULE(vizdoom, vz){
                     o.audioBuffer, 
                     o.labels,
                     o.objects,
-                    o.sectors
+                    o.sectors,
+                    o.notificationsBuffer
                 );
             },
             [](pyb::tuple t) { // load
@@ -563,9 +564,10 @@ PYBIND11_MODULE(vizdoom, vz){
                     t[5].cast<pyb::object>(),
                     t[6].cast<pyb::object>(),
                     t[7].cast<pyb::object>(),
-                    t[8].cast<pyb::list>(),
-                    t[9].cast<pyb::list>(),
-                    t[10].cast<pyb::list>()
+                    t[8].cast<pyb::object>(),
+                    t[9].cast<pyb::object>(),
+                    t[10].cast<pyb::object>(),
+                    t[11].cast<pyb::object>()
                 };
             })
         )
@@ -581,7 +583,10 @@ PYBIND11_MODULE(vizdoom, vz){
 
         .def_readonly("labels", &GameStatePython::labels)
         .def_readonly("objects", &GameStatePython::objects)
-        .def_readonly("sectors", &GameStatePython::sectors);
+        .def_readonly("sectors", &GameStatePython::sectors)
+
+        .def_readonly("notifications_buffer", &GameStatePython::notificationsBuffer)
+        ;
 
     pyb::class_<ServerStatePython>(vz, "ServerState", docstrings::ServerState)
             .def(pyb::pickle(
@@ -627,8 +632,10 @@ PYBIND11_MODULE(vizdoom, vz){
         .def(pyb::init<>())
         CLASS_FUNC_2_PYT("init", DoomGamePython::init)
         CLASS_FUNC_2_PYT_WITH_ARGS("load_config", DoomGamePython::loadConfig, pyb::arg("config"))
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_config", DoomGamePython::setConfig, pyb::arg("config"))
         CLASS_FUNC_2_PYT("close", DoomGamePython::close)
         CLASS_FUNC_2_PYT("is_running", DoomGamePython::isRunning)
+        CLASS_FUNC_2_PYT("get_instance_id", DoomGamePython::getInstanceId)
         CLASS_FUNC_2_PYT("is_multiplayer_game", DoomGamePython::isMultiplayerGame)
         CLASS_FUNC_2_PYT("is_recording_episode", DoomGamePython::isRecordingEpisode)
         CLASS_FUNC_2_PYT("is_replaying_episode", DoomGamePython::isReplayingEpisode)
@@ -716,14 +723,20 @@ PYBIND11_MODULE(vizdoom, vz){
         CLASS_FUNC_2_PYT_WITH_ARGS("set_mode", DoomGamePython::setMode, pyb::arg("mode"))
 
         CLASS_FUNC_2_PYT("get_ticrate", DoomGamePython::getTicrate)
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_ticrate", DoomGamePython::setTicrate, pyb::arg("button"))
-
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_vizdoom_path", DoomGamePython::setViZDoomPath, pyb::arg("button"))
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_game_path", DoomGamePython::setDoomGamePath, pyb::arg("button"))
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_scenario_path", DoomGamePython::setDoomScenarioPath, pyb::arg("button"))
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_map", DoomGamePython::setDoomMap, pyb::arg("button"))
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_skill", DoomGamePython::setDoomSkill, pyb::arg("button"))
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_config_path", DoomGamePython::setDoomConfigPath, pyb::arg("button"))
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_ticrate", DoomGamePython::setTicrate, pyb::arg("ticrate"))
+        
+        CLASS_FUNC_2_PYT("get_vizdoom_path", DoomGamePython::getViZDoomPath)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_vizdoom_path", DoomGamePython::setViZDoomPath, pyb::arg("file_path"))
+        CLASS_FUNC_2_PYT("get_doom_game_path", DoomGamePython::getDoomGamePath)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_game_path", DoomGamePython::setDoomGamePath, pyb::arg("file_path"))
+        CLASS_FUNC_2_PYT("get_doom_scenario_path", DoomGamePython::getDoomScenarioPath)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_scenario_path", DoomGamePython::setDoomScenarioPath, pyb::arg("file_path"))
+        CLASS_FUNC_2_PYT("get_doom_map", DoomGamePython::getDoomMap)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_map", DoomGamePython::setDoomMap, pyb::arg("map"))
+        CLASS_FUNC_2_PYT("get_doom_skill", DoomGamePython::getDoomSkill)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_skill", DoomGamePython::setDoomSkill, pyb::arg("skill"))
+        CLASS_FUNC_2_PYT("get_doom_config_path", DoomGamePython::getDoomConfigPath)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_doom_config_path", DoomGamePython::setDoomConfigPath, pyb::arg("file_path"))
 
         CLASS_FUNC_2_PYT("get_seed", DoomGamePython::getSeed)
         CLASS_FUNC_2_PYT_WITH_ARGS("set_seed", DoomGamePython::setSeed, pyb::arg("seed"))
@@ -742,7 +755,12 @@ PYBIND11_MODULE(vizdoom, vz){
         CLASS_FUNC_2_PYT("get_audio_sampling_rate", DoomGamePython::getAudioSamplingRate)
         CLASS_FUNC_2_PYT_WITH_ARGS("set_audio_sampling_rate", DoomGamePython::setAudioSamplingRate, pyb::arg("sampling_rate"))
         CLASS_FUNC_2_PYT("get_audio_buffer_size", DoomGamePython::getAudioBufferSize)
-        CLASS_FUNC_2_PYT_WITH_ARGS("set_audio_buffer_size", DoomGamePython::setAudioBufferSize, pyb::arg("buffer_size"))
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_audio_buffer_size", DoomGamePython::setAudioBufferSize, pyb::arg("tics"))
+        
+        CLASS_FUNC_2_PYT("is_notifications_buffer_enabled", DoomGamePython::isNotificationsBufferEnabled)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_notifications_buffer_enabled", DoomGamePython::setNotificationsBufferEnabled, pyb::arg("notifications_buffer"))
+        CLASS_FUNC_2_PYT("get_notifications_buffer_size", DoomGamePython::getNotificationsBufferSize)
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_notifications_buffer_size", DoomGamePython::setNotificationsBufferSize, pyb::arg("tics"))
 
         CLASS_FUNC_2_PYT_WITH_ARGS("set_screen_resolution", DoomGamePython::setScreenResolution, pyb::arg("resolution"))
         CLASS_FUNC_2_PYT_WITH_ARGS("set_screen_format", DoomGamePython::setScreenFormat, pyb::arg("format"))
@@ -756,6 +774,7 @@ PYBIND11_MODULE(vizdoom, vz){
         CLASS_FUNC_2_PYT_WITH_ARGS("set_automap_mode", DoomGamePython::setAutomapMode, pyb::arg("mode"))
         CLASS_FUNC_2_PYT_WITH_ARGS("set_automap_rotate", DoomGamePython::setAutomapRotate, pyb::arg("rotate"))
         CLASS_FUNC_2_PYT_WITH_ARGS("set_automap_render_textures", DoomGamePython::setAutomapRenderTextures, pyb::arg("textures"))
+        CLASS_FUNC_2_PYT_WITH_ARGS("set_automap_render_objects_as_sprites", DoomGamePython::setAutomapRenderObjectsAsSprites, pyb::arg("sprites"))
         CLASS_FUNC_2_PYT("is_objects_info_enabled", DoomGamePython::isObjectsInfoEnabled)
         CLASS_FUNC_2_PYT_WITH_ARGS("set_objects_info_enabled", DoomGamePython::setObjectsInfoEnabled, pyb::arg("objects_info"))
         CLASS_FUNC_2_PYT("is_sectors_info_enabled", DoomGamePython::isSectorsInfoEnabled)

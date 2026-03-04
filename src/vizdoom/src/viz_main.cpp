@@ -1,6 +1,7 @@
 /*
  Copyright (C) 2016 by Wojciech Jaśkowski, Michał Kempka, Grzegorz Runc, Jakub Toczek, Marek Wydmuch
  Copyright (C) 2017 - 2022 by Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, and the respective contributors
+ Copyright (C) 2023 - 2026 by Marek Wydmuch, Farama Foundation, and the respective contributors
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -113,8 +114,13 @@ CVAR (String, viz_bots_path, "", CVAR_NOSET)
 
 // audio buffer related
 CVAR (Bool, viz_soft_audio, false, 0)
+CVAR (Bool, viz_reset_audio_on_map_change, true, 0)
 CVAR (Int, viz_samp_freq, 44100, 0)
-CVAR (Int, viz_audio_tics, 4, 0)
+CVAR (Int, viz_audio_tics, 1, 0)
+
+// notifications buffer
+CVAR (Bool, viz_notifications, false, 0)
+CVAR (Int, viz_notifications_tics, 1, 0)
 
 CCMD(viz_set_seed){
     viz_seed.CmdSet(argv[1]);
@@ -226,7 +232,8 @@ void VIZ_Tic(){
 
         VIZ_DebugMsg(5, VIZ_FUNC, vizCvarsStateMsg.c_str(),
                      *viz_controlled, *viz_instance_id, *viz_seed, *viz_async, *viz_allow_input, *viz_sync_timeout,
-                     *viz_screen_format, *viz_depth, *viz_labels, *viz_automap, *viz_render_mode, *viz_automap_mode,
+                     *viz_screen_format, *viz_depth, *viz_labels, *viz_automap, *viz_render_mode, *viz_automap_mode, 
+                     *viz_soft_audio, *viz_notifications,
                      *viz_render_corpses, *viz_render_all, *viz_window_hidden, *viz_noxserver, *viz_noconsole, *viz_nosound,
                      *viz_override_player, *viz_loop_map, *viz_nocheat, *viz_respawn_delay);
     }
@@ -348,6 +355,8 @@ EXTERN_CVAR(Bool, am_showmonsters)
 EXTERN_CVAR(Bool, am_showsecrets)
 EXTERN_CVAR(Bool, am_showtime)
 EXTERN_CVAR(Bool, am_showtotaltime)
+EXTERN_CVAR(Int, am_showmaplabel)
+EXTERN_CVAR(Int, am_showthingsprites)
 
 #ifdef VIZ_OS_WIN
     EXTERN_CVAR(Bool, vid_forceddraw);
@@ -421,23 +430,25 @@ void VIZ_CVARsUpdate(){
         am_rotate.CmdSet((*viz_render_mode & 256) != 0 ? "1" : "0");
         am_textured.CmdSet((*viz_render_mode & 512) != 0 ? "1" : "0");
         am_showtriggerlines.CmdSet("2");
-        am_drawmapback.CmdSet("0");
-        if(!*viz_am_center)
-            am_followplayer.CmdSet("1");
+        am_drawmapback.CmdSet("1");
+        if(!*viz_am_center) am_followplayer.CmdSet("1");
+        am_showthingsprites.CmdSet((*viz_render_mode & 1024) != 0 ? "3" : "0");
 
-        am_showitems.CmdSet("0");
-        am_showmonsters.CmdSet("0");
-        am_showsecrets.CmdSet("0");
-        am_showtime.CmdSet("0");
-        am_showtotaltime.CmdSet("0");
+        // automap stats
+        am_showitems.CmdSet(messages ? "1" : "0");
+        am_showmonsters.CmdSet(messages ? "1" : "0");
+        am_showsecrets.CmdSet(messages ? "1" : "0");
+        am_showtime.CmdSet(messages ? "1" : "0");
+        am_showtotaltime.CmdSet("0");  // never show total time
+        am_showmaplabel.CmdSet("0");  // never show map label
 
         // bodies
-        viz_render_corpses.CmdSet((*viz_render_mode & 1024) != 0 ? "1" : "0");
+        viz_render_corpses.CmdSet((*viz_render_mode & 2048) != 0 ? "1" : "0");
 
         // flashes
-        viz_render_flashes.CmdSet((*viz_render_mode & 2048) != 0 ? "1" : "0");
-        //blood_fade_scalar.CmdSet((*viz_render_mode & 2048) != 0 ? "1" : "0");
-        //pickup_fade_scalar.CmdSet((*viz_render_mode & 2048) != 0 ? "1" : "0");
+        viz_render_flashes.CmdSet((*viz_render_mode & 4096) != 0 ? "1" : "0");
+        //blood_fade_scalar.CmdSet((*viz_render_mode & 4096) != 0 ? "1" : "0");
+        //pickup_fade_scalar.CmdSet((*viz_render_mode & 4096) != 0 ? "1" : "0");
     }
 
     am_cheat = *viz_nocheat ? 0 : *viz_automap_mode;
@@ -482,9 +493,9 @@ void VIZ_PrintFuncMsg(const char *func, const char *msg){
     int e = s;
     while (func[e] != NULL && func[e] != '(') ++e;
 
-    if(*viz_debug_instances) Printf("%s: ", *viz_instance_id);
-    if(e > s) Printf("%.*s: %s\n", e - s - 1, &func[s + 1], msg);
-    else Printf("%s: %s\n", func, msg);
+    if(*viz_debug_instances) printf("%s: ", *viz_instance_id);
+    if(e > s) printf("%.*s: %s\n", e - s - 1, &func[s + 1], msg);
+    else printf("%s: %s\n", func, msg);
 }
 
 void VIZ_Error(const char *func, const char *error, ...){

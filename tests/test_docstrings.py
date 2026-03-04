@@ -25,13 +25,14 @@ def _check_object_docstrings(_object):
         if method.startswith("set_") and method not in {
             "set_action",
             "set_button_max_value",
+            "set_config",
         }:
-            search_reasult = re.search(r"Default value: (.+)", method_doc)
-            assert search_reasult is not None, f"Method {method} has no default value"
-            # default_value = search_reasult.group(1).strip(".").strip("`")
-            search_reasult = re.search(r"Config key: ``(.+)``", method_doc)
-            assert search_reasult is not None, f"Method {method} has no config key"
-            config_keys = search_reasult.group(1).split("/")
+            search_result = re.search(r"Default value: (.+)", method_doc)
+            assert search_result is not None, f"Method {method} has no default value"
+            # default_value = search_result.group(1).strip(".").strip("`")
+            search_result = re.search(r"Config key: ``(.+)``", method_doc)
+            assert search_result is not None, f"Method {method} has no config key"
+            config_keys = search_result.group(1).split("/")
             config_keys = [key.strip("`") for key in config_keys if key.strip()]
             if len(config_keys) > 1:
                 assert (

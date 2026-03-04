@@ -5,7 +5,9 @@ on:
     paths:
       - '.github/workflows/test-gymnasium-wrapper.yml'
       - 'gymnasium_wrapper/**'
-      - 'tests/**'
+      - 'include/**'
+      - 'src/**'
+      - 'tests/test_gymnasium_wrapper.py'
       - 'CMakeLists.txt'
       - 'setup.py'
       - 'pyproject.toml'
@@ -14,7 +16,9 @@ on:
     paths:
       - '.github/workflows/test-gymnasium-wrapper.yml'
       - 'gymnasium_wrapper/**'
-      - 'tests/**'
+      - 'include/**'
+      - 'src/**'
+      - 'tests/test_gymnasium_wrapper.py'
       - 'CMakeLists.txt'
       - 'setup.py'
       - 'pyproject.toml'
@@ -42,7 +46,7 @@ jobs:
     - name: Set up Python environment
       uses: actions/setup-python@v4
       with:
-        python-version: 3.12
+        python-version: '3.12'
 
     - name: Python environment report
       run: python -c "import sys; print(sys.version)"
@@ -54,4 +58,4 @@ jobs:
       run: python -c "import vizdoom"
 
     - name: Run tests
-      run: pytest tests/test_gymnasium_wrapper.py
+      run: pytest tests/test_gymnasium_wrapper.py -s

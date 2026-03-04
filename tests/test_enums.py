@@ -20,8 +20,12 @@ def _test_enums(enum_name, func_name):
     all_values = [
         eval("vzd." + enum_name + "." + v)
         for v in dir(eval("vzd." + enum_name))
-        if not v.startswith("__") and not v == "name" and not v == "value"
+        if not v.startswith("__")
+        and not v.startswith("_pybind11")
+        and not v == "name"
+        and not v == "value"
     ]
+
     all_values_names = [v.name for v in all_values]
 
     # set_X function test

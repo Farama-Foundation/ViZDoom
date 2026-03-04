@@ -25,6 +25,7 @@
 #define __VIZ_SCREEN_H__
 
 #include <cstddef>
+
 #include "viz_shared_memory.h"
 
 #include "v_video.h"
@@ -62,6 +63,8 @@ void VIZ_ScreenUpdate();
 void VIZ_ScreenLevelMapUpdate();
 
 void VIZ_AudioUpdate();
+
+void VIZ_ClearAudioBuffer();
 
 void VIZ_ScreenClose();
 

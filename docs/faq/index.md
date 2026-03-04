@@ -10,8 +10,19 @@ Did not find answer for your question? Post an [issue](https://github.com/Farama
 ## How to use original Doom's assets?
 
 We cannot provide original Doom's assets due to licensing issues, that is why ViZDoom uses [freedoom2.wad](https://freedoom.github.io) as default assets.
-If you own original Doom or Doom 2 game (can be bought them on Steam or GOG), you can replace Freedoom graphics with original Doom's assets by placing doom.wad or doom2.wad into your working directory or vizdoom package directory (same directory as vizdoom(.exe)). Alternatively, any base game WAD (including other Doom engine-based games) can be used by pointing to it with the [`DoomGame.set_doom_game_path`](../api/python/doom_game.md#vizdoom.DoomGame.set_doom_game_path) method. On Unix you can also set `DOOMWADDIR` environment variable to directory with your wads files.
+If you own original Doom or Doom 2 game (can purchase them on purchasing them on [Steam](https://store.steampowered.com/app/2280/DOOM__DOOM_II/) or [GOG](https://www.gog.com/game/doom_doom_ii)), you can replace Freedoom graphics with original Doom's assets by placing doom2.wad and doom.wad into your working directory or vizdoom package directory (same directory as vizdoom(.exe)). You can install an IWAD into the package location with one of these one-line commands:
 
+Python only:
+```{code-block} sh
+python -c 'import os,shutil,sys,vizdoom; src=sys.argv[1]; dst=os.path.join(vizdoom.install_path, os.path.basename(src).lower()); shutil.copy2(src,dst);' /path/to/file.wad
+```
+
+Python + shell:
+```{code-block} sh
+src=/path/to/file.wad; dst_dir="$(python -c 'import vizdoom; print(vizdoom.install_path)')"; cp "$src" "$dst_dir/$(basename "${src,,}")"
+```
+
+Alternatively, any base game WAD (including other Doom engine-based games) can be used by pointing to it with the [`DoomGame.set_doom_game_path`](../api/python/doom_game.md#vizdoom.DoomGame.set_doom_game_path) method.
 
 ## How to create/modify scenarios?
 

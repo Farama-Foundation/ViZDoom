@@ -1,7 +1,7 @@
 # Utilities
-
 Here we document the helpers functions that are not part of any object.
 They mostly help to deal with conversion of Doom's engine types.
+The declarations of all the enums can be found in the `include/ViZDoomUtils.h` header file.
 
 
 ## Time conversion functions

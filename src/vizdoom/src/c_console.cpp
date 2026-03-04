@@ -38,6 +38,7 @@
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string>
 
 #include "version.h"
 #include "g_game.h"
@@ -68,6 +69,9 @@
 #include "c_consolebuffer.h"
 
 #include "gi.h"
+
+//VIZDOOM_CODE
+#include "viz_game.h" 
 
 #define LEFTMARGIN 8
 #define RIGHTMARGIN 8
@@ -127,6 +131,8 @@ static GameAtExit *ExitCmdList;
 #define SCROLLNO 0
 
 EXTERN_CVAR (Bool, show_messages)
+
+//VIZDOOM_CODE
 EXTERN_CVAR(Bool, viz_noconsole)
 
 static unsigned int TickerAt, TickerMax;
@@ -540,6 +546,8 @@ void C_AddNotifyString (int printlevel, const char *source)
 
 void AddToConsole (int printlevel, const char *text)
 {
+	//VIZDOOM_CODE
+	VIZ_LogNotification(gametic, text);
 	conbuffer->AddText(printlevel, text, Logfile);
 }
 

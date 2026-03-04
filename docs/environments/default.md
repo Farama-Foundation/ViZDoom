@@ -21,14 +21,20 @@ When using Gymnasium API the scenario can be loaded by passing the scenario id t
 import gymnasium
 from vizdoom import gymnasium_wrapper # This import will register all the environments
 
-env = gymnasium.make("VizdoomBasic-v0") # or any other environment id
+env = gymnasium.make("VizdoomBasic-v1", frame_skip=1) # or any other environment id
 ```
 
+Additionally, all ViZDoom Gymnasium environments support additional keyword arguments that can be passed to `make` method e.g. `frame_skip`.See [Gymnasium wrapper documentation](../api/python/gymnasium_wrapper.md) for more details.
 
 
 ## Note on .wad, .cfg files, and rewards
 
 A scenario usually consist of two files - .wad and .cfg ([see scenarios directory](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios)). The .wad file contains the map and script, and the .cfg file contains additional settings. The maps contained in .wad files (Doom's engine format for storing maps and assets) usually do not implement action constraints, the death penalty, and living rewards (however it is possible). To make it easier, this can be specified in ViZDoom .cfg files as well as other options like access to additional information. These can also be overridden in the code when using the original ViZDoom API. Every mention of any settings that are not included in .wad files is specified with "(config)" in the descriptions below. ViZDoom does not support setting certain rewards (such as killing opponents) in .cfg files. These must be programmed in the .wad files instead.
+
+
+## MultiBinary variants
+
+For each Gymnasium environment described below, there is also a MultiBinary variant available. These variants use `MultiBinary` action space instead of `Discrete` action space. This means that instead of selecting a single action from a list of predefined actions, the agent can press multiple buttons at the same time. This allows for more complex behaviors and combinations of actions. The MultiBinary variants have the same observation space, rewards, and configurations as their Discrete counterparts. The ViZDoom Gymnasium ids for MultiBinary variants are the same as the original ones, with the suffix `-MultiBinary` added before version. For example, the MultiBinary variant of `VizdoomBasic-v1` is `VizdoomBasic-MultiBinary-v1`. ViZDoom is intended to be played using multiple buttons at the same time, so using MultiBinary action space is often more natural. However, originally these environments were introduced with Discrete action space, because of that we decided to introduce MultiBinary variants alongside the original ones.
 
 
 ## BASIC
@@ -42,10 +48,14 @@ the opposite wall. A player can only (config) go left/right
 and shoot. 1 hit is enough to kill the monster. The episode
 finishes when the monster is killed or on timeout.
 
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomBasic with Doom 2 assets](../_static/img/envs/VizdoomBasic-Doom2.gif) | ![VizdoomBasic with Freedoom 2 assets](../_static/img/envs/VizdoomBasic-Freedoom2.gif) |
+
 **REWARDS:**
 * +106 for killing the monster
 * -5 for every shot
-* +1 for every tic the agent is alive
+* -1 for every tic the agent is alive
 
 The episode ends after killing the monster or on timeout.
 
@@ -55,9 +65,69 @@ The episode ends after killing the monster or on timeout.
 * timeout = 300 tics
 
 
-**Gymnasium/Gym id: `"VizdoomBasic-v0"`**
+**Gymnasium/Gym id: `"VizdoomBasic-v1"` / `"VizdoomBasic-MultiBinary-v1"`**
 
 **Configuration file: [basic.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic.cfg)**
+
+
+## BASIC AUDIO
+The environment is similar to the BASIC scenario,
+but the monster is invisible instead it emits sounds.
+The purpose of this scenario is to check if the agent can
+learn to use audio information to find and kill the monster.
+
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomBasicAudio with Doom 2 assets](../_static/img/envs/VizdoomBasicAudio-Doom2.gif) | ![VizdoomBasicAudio with Freedoom 2 assets](../_static/img/envs/VizdoomBasicAudio-Freedoom2.gif) |
+
+**REWARDS:**
+* +106 for killing the monster
+* -5 for every shot
+* -1 for every tic the agent is alive
+
+The episode ends after killing the monster or on timeout.
+
+**CONFIGURATION:**
+* 3 available buttons: move left/right, shoot (attack)
+* 1 available game variable: player's ammo
+* timeout = 300 tics
+
+
+**Gymnasium/Gym id: `"VizdoomBasicAudio-v1"` / `"VizdoomBasicAudio-MultiBinary-v1"`**
+
+**Configuration file: [basic_audio.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic_audio.cfg)**
+
+**Note:** Added in ViZDoom 1.3.0.
+
+
+## BASIC NOTIFICATIONS
+The environment is similar to the BASIC scenario,
+but this time 3 monsters are spawned instead of 1.
+The task is to kill one of them specified by a ingame message (notification).
+
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomBasicNotifications with Doom 2 assets](../_static/img/envs/VizdoomBasicNotifications-Doom2.gif) | ![VizdoomBasicNotifications with Freedoom 2 assets](../_static/img/envs/VizdoomBasicNotifications-Freedoom2.gif) |
+
+**REWARDS:**
+* +106 for killing the right monster
+* -44 for killing the wrong monster
+* -5 for every shot
+* -1 for every tic the agent is alive
+
+The episode ends after killing the monster or on timeout.
+
+**CONFIGURATION:**
+* 3 available buttons: move left/right, shoot (attack)
+* 1 available game variable: player's ammo
+* timeout = 300 tics
+
+
+**Gymnasium/Gym id: `"VizdoomBasicNotifications-v1"` / `"VizdoomBasicNotifications-MultiBinary-v1"`**
+
+**Configuration file: [basic_notifications.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/basic_notifications.cfg)**
+
+**Note:** Added in ViZDoom 1.3.0.
 
 
 ## DEADLY CORRIDOR
@@ -73,6 +143,10 @@ on the sides and runs straight for the vest, he will be killed somewhere
 along the way. To ensure this behavior difficulty level (`doom_skill`) = 5 (config) is
 needed.
 
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomDeadlyCorridor with Doom 2 assets](../_static/img/envs/VizdoomDeadlyCorridor-Doom2.gif) | ![VizdoomDeadlyCorridor with Freedoom 2 assets](../_static/img/envs/VizdoomDeadlyCorridor-Freedoom2.gif) |
+
 **REWARDS:**
 * +dX for getting closer to the vest.
 * -dX for getting further from the vest.
@@ -84,7 +158,7 @@ needed.
 * timeout = 2100
 * difficulty level (`doom_skill`) = 5
 
-**Gymnasium/Gym id: `"VizdoomCorridor-v0"`**
+**Gymnasium/Gym id: `"VizdoomDeadlyCorridor-v1"` / `"VizdoomDeadlyCorridor-MultiBinary-v1"`**
 
 **Configuration file: [deadly_corridor.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deadly_corridor.cfg)**
 
@@ -96,6 +170,10 @@ The reward for killing a monster depends on its difficulty.
 The aim of the agent is to kill as many monsters as possible
 before the time runs out or it's killed by monsters.
 
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomDeathmatch with Doom 2 assets](../_static/img/envs/VizdoomDeathmatch-Doom2.gif) | ![VizdoomDeathmatch with Freedoom 2 assets](../_static/img/envs/VizdoomDeathmatch-Freedoom2.gif) |
+
 **REWARDS:**
 * Different rewards are given for killing different monsters
 
@@ -106,7 +184,7 @@ before the time runs out or it's killed by monsters.
 * timeout = 4200
 * difficulty level (`doom_skill`) = 3
 
-**Gymnasium/Gym id: `"VizdoomDeathmatch-v0"`**
+**Gymnasium/Gym id: `"VizdoomDeathmatch-v1"` / `"VizdoomDeathmatch-MultiBinary-v1"`**
 
 **Configuration file: [scenarios/deathmatch.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/deathmatch.cfg)**
 
@@ -123,6 +201,10 @@ killed after a single shot. After dying, each monster is respawned
 after some time. The episode ends when the player dies (it's inevitable
 because of limited ammo).
 
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomDefendCenter with Doom 2 assets](../_static/img/envs/VizdoomDefendCenter-Doom2.gif) | ![VizdoomDefendCenter with Freedoom 2 assets](../_static/img/envs/VizdoomDefendCenter-Freedoom2.gif) |
+
 **REWARDS:**
 * +1 for killing a monster
 * -1 for death
@@ -133,7 +215,7 @@ because of limited ammo).
 * timeout = 2100
 * difficulty level (`doom_skill`) = 3
 
-**Gymnasium/Gym id: `"VizdoomDefendCenter-v0"`**
+**Gymnasium/Gym id: `"VizdoomDefendCenter-v1"` / `"VizdoomDefendCenter-MultiBinary-v1"`**
 
 **Configuration file: [defend_the_center.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_center.cfg)**
 
@@ -151,6 +233,10 @@ After dying, each monster is respawned after some time and can endure
 more damage. The episode ends when the player dies (it's inevitable
 because of limited ammo).
 
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomDefendLine with Doom 2 assets](../_static/img/envs/VizdoomDefendLine-Doom2.gif) | ![VizdoomDefendLine with Freedoom 2 assets](../_static/img/envs/VizdoomDefendLine-Freedoom2.gif) |
+
 **REWARDS:**
 * +1 for killing a monster
 * -1 for death
@@ -160,7 +246,7 @@ because of limited ammo).
 * 2 available game variables: player's health and ammo
 * difficulty level (`doom_skill`) = 3
 
-**Gymnasium/Gym id: `"VizdoomDefendLine-v0"`**
+**Gymnasium/Gym id: `"VizdoomDefendLine-v1"` / `"VizdoomDefendLine-MultiBinary-v1"`**
 
 **Configuration file: [defend_the_line.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/defend_the_line.cfg)**
 
@@ -181,6 +267,14 @@ on timeout.
 There is more advance version of this scenario called HEALTH GATHERING SUPREME,
 that makes map layout more complex.
 
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomHealthGathering with Doom 2 assets](../_static/img/envs/VizdoomHealthGathering-Doom2.gif) | ![VizdoomHealthGathering with Freedoom 2 assets](../_static/img/envs/VizdoomHealthGathering-Freedoom2.gif) |
+
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomHealthGatheringSupreme with Doom 2 assets](../_static/img/envs/VizdoomHealthGatheringSupreme-Doom2.gif) | ![VizdoomHealthGatheringSupreme with Freedoom 2 assets](../_static/img/envs/VizdoomHealthGatheringSupreme-Freedoom2.gif) |
+
 **REWARDS:**
 * +1 for every tic the agent is alive
 * -100 for death
@@ -189,7 +283,7 @@ that makes map layout more complex.
 * 3 available buttons: turn left/right, move forward
 * 1 available game variable: player's health
 
-**Gymnasium/Gym id: `"VizdoomHealthGathering-v0"`/`"VizdoomHealthGatheringSupreme-v0"`**
+**Gymnasium/Gym id: `"VizdoomHealthGathering-v1"` / `"VizdoomHealthGathering-MultiBinary-v1"` / `"VizdoomHealthGatheringSupreme-v1"` / `"VizdoomHealthGatheringSupreme-MultiBinary-v1"`**
 
 **Configuration file: [health_gathering.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering.cfg)/[health_gathering_supreme.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/health_gathering_supreme.cfg)**
 
@@ -205,6 +299,10 @@ green vest in one of the rooms (the same room every time).
 The player is spawned in a randomly chosen room facing a random
 direction. The episode ends when the vest is reached or on timeout/
 
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomMyWayHome with Doom 2 assets](../_static/img/envs/VizdoomMyWayHome-Doom2.gif) | ![VizdoomMyWayHome with Freedoom 2 assets](../_static/img/envs/VizdoomMyWayHome-Freedoom2.gif) |
+
 **REWARDS:**
 * +1 for reaching the vest
 * -0.0001 for every tic the agent is alive
@@ -213,7 +311,7 @@ direction. The episode ends when the vest is reached or on timeout/
 * 3 available buttons: turn left/right, move forward
 * timeout = 2100
 
-**Gymnasium/Gym id: `"VizdoomMyWayHome-v0"`**
+**Gymnasium/Gym id: `"VizdoomMyWayHome-v1"` / `"VizdoomMyWayHome-MultiBinary-v1"`**
 
 **Configuration file: [my_way_home.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/my_way_home.cfg)**
 
@@ -231,6 +329,10 @@ along the wall. The player is equipped with a rocket launcher and
 a single rocket. The episode ends when the missile hits a wall/the monster
 or on timeout.
 
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomPredictPosition with Doom 2 assets](../_static/img/envs/VizdoomPredictPosition-Doom2.gif) | ![VizdoomPredictPosition with Freedoom 2 assets](../_static/img/envs/VizdoomPredictPosition-Freedoom2.gif) |
+
 **REWARDS:**
 * +1 for killing the monster
 * -0.0001 for every tic the agent is alive
@@ -239,7 +341,7 @@ or on timeout.
 * 3 available buttons: turn left/right, shoot (attack)
 * timeout = 300
 
-**Gymnasium/Gym id: `"VizdoomPredictPosition-v0"`**
+**Gymnasium/Gym id: `"VizdoomPredictPosition-v1"` / `"VizdoomPredictPosition-MultiBinary-v1"`**
 
 **Configuration file: [predict_position.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/predict_position.cfg)**
 
@@ -258,6 +360,10 @@ the player with fireballs. The player can only (config) move
 left/right. More monsters appear with time. The episode ends when
 the player dies.
 
+| Doom assets | Freedoom assets |
+| --- | --- |
+| ![VizdoomTakeCover with Doom 2 assets](../_static/img/envs/VizdoomTakeCover-Doom2.gif) | ![VizdoomTakeCover with Freedoom 2 assets](../_static/img/envs/VizdoomTakeCover-Freedoom2.gif) |
+
 **REWARDS:**
 * +1 for every tic the agent is alive
 
@@ -266,6 +372,6 @@ the player dies.
 * 1 available game variable: player's health
 * difficulty level (`doom_skill`) = 4
 
-**Gymnasium/Gym id: `"VizdoomTakeCover-v0"`**
+**Gymnasium/Gym id: `"VizdoomTakeCover-v1"` / `"VizdoomTakeCover-MultiBinary-v1"`**
 
 **Configuration file: [take_cover.cfg](https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/take_cover.cfg)**

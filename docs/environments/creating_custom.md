@@ -23,9 +23,16 @@ Due to the engine's architecture, the only area that ACS is a bit lacking is the
 
 ## Step 1: Creating a custom map
 
-To create a custom scenario (.wad file), you need to use a dedicated editor. [SLADE](http://slade.mancubus.net/index.php?page=downloads) (available for Linux, MacOS, and Windows) or [DoomBuilder](http://www.doombuilder.com/index.php?p=downloads) (a bit better editor, but only available for Windows), are software that we recommend using for this task.
+To create a custom scenario (.wad file), you need to use a dedicated editor. [SLADE](http://slade.mancubus.net/index.php?page=downloads) (available for Linux, MacOS, and Windows) or [DoomBuilder](http://www.doombuilder.com/index.php?p=downloads) (a bit better editor, but only available for Windows) or [UltimateDoomBuilder](https://ultimatedoombuilder.github.io/), are software that we recommend using for this task.
 
-When creating a new map, select UDMF format for maps. If asked for a node builder, you can select none, as ViZDoom has it built in. You should not have any problems with creating a map using the editor, it is simple, and you can find a lot of tutorials on the internet.
+See the [SLADE wiki](https://slade.mancubus.net/index.php?page=wiki) or [DoomBuilder Tutorials](http://www.doombuilder.com/index.php?p=tutorials) for instructions on how to use the editor.
+
+To see how to configure SLADE for ViZDoom, see [our tutorial](./slade_config.md).
+
+When creating a new map, always select **UDMF format** for maps, as other formats does not support scripting.
+Other Doom map formats can be converted to UMDF format using utilities like [Boom2UDMF](https://www.doomworld.com/forum/topic/128212-boom2udmf-convert-vanilla-maps-to-udmf-online-v120/) and [zwadconv.exe](https://zdoom.org/w/index.php?title=ZWADCONV).
+
+If asked for a node builder, you can select none, as ViZDoom has it built in. You should not have any problems with creating a map using the editor, it is simple, and you can find a lot of tutorials on the internet.
 
 You can add some custom ACS scripts to your map. This ACS script allows the implementation of a rewarding mechanism.
 To do that, you need to employ the global variable 0 like this:
@@ -49,7 +56,7 @@ Unfortunately, ACS does not support real floating point numbers.
 
 ## Step 2: Creating a custom config file
 
-After creating a map, it is a good idea to create an accompanying config file, that allows to easily define action space, available information in a state/observation, additional rewards, etc. The config file is a simple text file in an *.ini-like format that can be created using any text editor. The config files are documented under [api/configurationFiles.md](api/configurationFiles.md).
+After creating a map, it is a good idea to create an accompanying config file, that allows to easily define action space, available information in a state/observation, additional rewards, etc. The config file is a simple text file in an *.ini-like format that can be created using any text editor. The config files are documented under [api/configuration_file.md](api/configuration_file.md).
 
 The following is an example of a config file that can be used with the map created in the previous step:
 
@@ -72,7 +79,7 @@ available_game_variables = { # make information about ammo available in the stat
     AMMO3
 }
 
-depth_buffer = true     # add depth buffer to the state
+depth_buffer_enabled = true     # add depth buffer to the state
 ```
 
 

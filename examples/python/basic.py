@@ -7,8 +7,6 @@
 # <episodes> number of episodes are played.
 # Random combination of buttons is chosen for every action.
 # Game variables from state and last reward are printed.
-#
-# To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
 import os
@@ -122,6 +120,30 @@ if __name__ == "__main__":
     # Enables engine output to console, in case of a problem this might provide additional information.
     # game.set_console_enabled(True)
 
+    # Starting from ViZDoom version 1.3.0 you can set all config options using a single dictionary. E.g.:
+    config_dict = {
+        "screen_resolution": vzd.ScreenResolution.RES_640X480,
+        "doom_scenario_path": os.path.join(vzd.scenarios_path, "basic.wad"),
+        "doom_map": "map01",
+        "depth_buffer_enabled": True,
+        "labels_buffer_enabled": True,
+        "automap_buffer_enabled": True,
+        "objects_info_enabled": True,
+        "sectors_info_enabled": True,
+        "available_buttons": [
+            vzd.Button.MOVE_LEFT,
+            vzd.Button.MOVE_RIGHT,
+            vzd.Button.ATTACK,
+        ],
+        "available_game_variables": [vzd.GameVariable.AMMO2],
+        "episode_timeout": 200,
+        "episode_start_time": 10,
+        "living_reward": -1,
+        "mode": vzd.Mode.PLAYER,
+    }
+    game.set_config(config_dict)
+    # Set config only overrides settings specified in the dictionary, other settings remain unchanged.
+
     # Initialize the game. Further configuration won't take any effect from now on.
     game.init()
 
@@ -188,10 +210,7 @@ if __name__ == "__main__":
             # r = game.get_last_reward()
 
             # Prints state's game variables and reward.
-            print(f"State #{n}")
-            print("Game variables:", vars)
-            print("Reward:", r)
-            print("=====================")
+            print(f"State #{n} | Game variables: {vars} | Reward: {r}")
 
             if sleep_time > 0:
                 sleep(sleep_time)

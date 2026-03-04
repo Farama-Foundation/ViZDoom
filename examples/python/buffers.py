@@ -79,7 +79,8 @@ if __name__ == "__main__":
     game.set_automap_buffer_enabled(True)
     game.set_automap_mode(vzd.AutomapMode.OBJECTS)
     game.set_automap_rotate(False)
-    game.set_automap_render_textures(False)
+    game.set_automap_render_textures(True)
+    # See also automap_buffer.py example for more explanations.
 
     # There is also audio buffer which is not present here.
     # See audio_buffer.py example for more explanations.

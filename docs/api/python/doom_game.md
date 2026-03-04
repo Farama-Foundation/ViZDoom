@@ -1,8 +1,6 @@
 # DoomGame
-
-DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc.
-
-
+DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game.
+The object allows sending actions to the game, getting the game state, etc.
 
 ```{eval-rst}
 .. autoclass:: vizdoom.DoomGame
@@ -17,6 +15,7 @@ DoomGame is the main object of the ViZDoom library, representing a single instan
 .. autofunction:: vizdoom.DoomGame.new_episode
 .. autofunction:: vizdoom.DoomGame.replay_episode
 .. autofunction:: vizdoom.DoomGame.is_running
+.. autofunction:: vizdoom.DoomGame.get_instance_id
 .. autofunction:: vizdoom.DoomGame.is_multiplayer_game
 .. autofunction:: vizdoom.DoomGame.is_recording_episode
 .. autofunction:: vizdoom.DoomGame.is_replaying_episode
@@ -113,15 +112,22 @@ DoomGame is the main object of the ViZDoom library, representing a single instan
 
 ```{eval-rst}
 .. autofunction:: vizdoom.DoomGame.load_config
+.. autofunction:: vizdoom.DoomGame.set_config
 .. autofunction:: vizdoom.DoomGame.get_mode
 .. autofunction:: vizdoom.DoomGame.set_mode
 .. autofunction:: vizdoom.DoomGame.get_ticrate
 .. autofunction:: vizdoom.DoomGame.set_ticrate
+.. autofunction:: vizdoom.DoomGame.get_vizdoom_path
 .. autofunction:: vizdoom.DoomGame.set_vizdoom_path
+.. autofunction:: vizdoom.DoomGame.get_doom_game_path
 .. autofunction:: vizdoom.DoomGame.set_doom_game_path
+.. autofunction:: vizdoom.DoomGame.get_doom_scenario_path
 .. autofunction:: vizdoom.DoomGame.set_doom_scenario_path
+.. autofunction:: vizdoom.DoomGame.get_doom_map
 .. autofunction:: vizdoom.DoomGame.set_doom_map
+.. autofunction:: vizdoom.DoomGame.get_doom_skill
 .. autofunction:: vizdoom.DoomGame.set_doom_skill
+.. autofunction:: vizdoom.DoomGame.get_doom_config_path
 .. autofunction:: vizdoom.DoomGame.set_doom_config_path
 .. autofunction:: vizdoom.DoomGame.get_seed
 .. autofunction:: vizdoom.DoomGame.set_seed
@@ -146,6 +152,7 @@ DoomGame is the main object of the ViZDoom library, representing a single instan
 .. autofunction:: vizdoom.DoomGame.set_automap_mode
 .. autofunction:: vizdoom.DoomGame.set_automap_rotate
 .. autofunction:: vizdoom.DoomGame.set_automap_render_textures
+.. autofunction:: vizdoom.DoomGame.set_automap_render_objects_as_sprites
 .. autofunction:: vizdoom.DoomGame.set_render_hud
 .. autofunction:: vizdoom.DoomGame.set_render_minimal_hud
 .. autofunction:: vizdoom.DoomGame.set_render_weapon
@@ -175,4 +182,8 @@ DoomGame is the main object of the ViZDoom library, representing a single instan
 .. autofunction:: vizdoom.DoomGame.set_audio_sampling_rate
 .. autofunction:: vizdoom.DoomGame.get_audio_buffer_size
 .. autofunction:: vizdoom.DoomGame.set_audio_buffer_size
+.. autofunction:: vizdoom.DoomGame.is_notifications_buffer_enabled
+.. autofunction:: vizdoom.DoomGame.set_notifications_buffer_enabled
+.. autofunction:: vizdoom.DoomGame.get_notifications_buffer_size
+.. autofunction:: vizdoom.DoomGame.set_notifications_buffer_size
 ```

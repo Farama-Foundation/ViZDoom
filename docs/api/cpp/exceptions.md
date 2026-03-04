@@ -14,3 +14,5 @@ The declarations of all the enums can be found in the `include/ViZDoomExceptions
 * `ViZDoomIsNotRunningException` - means that called method cannot be used when ViZDoom instance is not running.
 
 * `ViZDoomUnexpectedExitException` - means that ViZDoom's instance was closed/terminated/killed from the outside.
+
+* `ViZDoomNoOpenALSoundException` - means that sound was requested but could not be initialized. Usually means that no sound device is available or that the sound backend is not properly configured. Added in 1.3.0.

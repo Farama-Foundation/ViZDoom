@@ -689,7 +689,7 @@ ALCdevice *OpenALSoundRenderer::InitDevice()
 	return device;
 }
 
-// VIZDOOM_CODE
+//VIZDOOM_CODE
 ALCdevice *OpenALSoundRenderer::InitSoftDevice()
 {
     ALCdevice *device = NULL;
@@ -730,7 +730,7 @@ OpenALSoundRenderer::OpenALSoundRenderer(unsigned int sampling_freq)
     }
     Printf("I_InitSound: Initializing OpenAL\n");
 
-    // VIZDOOM_CODE
+    //VIZDOOM_CODE
     if (sampling_freq > 0) {
         Device = InitSoftDevice();
     } else {

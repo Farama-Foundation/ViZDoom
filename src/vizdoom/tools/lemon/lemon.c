@@ -53,7 +53,11 @@ extern int access(char *path, int mode);
 #endif
 
 static int showPrecedenceConflict = 0;
-static void *msort(void *list, void *next, int (*cmp)());
+static void *msort(
+  void *list,
+  void *next,
+  int (*cmp)(const char *, const char *)
+);
 
 /*
 ** Compilers are getting increasingly pedantic about type conversions
@@ -72,12 +76,12 @@ static struct action *Action_new(void);
 static struct action *Action_sort(struct action *);
 
 /********** From the file "build.h" ************************************/
-void FindRulePrecedences();
-void FindFirstSets();
-void FindStates();
-void FindLinks();
-void FindFollowSets();
-void FindActions();
+void FindRulePrecedences(struct lemon *);
+void FindFirstSets(struct lemon *);
+void FindStates(struct lemon *);
+void FindLinks(struct lemon *);
+void FindFollowSets(struct lemon *);
+void FindActions(struct lemon *);
 
 /********* From the file "configlist.h" *********************************/
 void Configlist_init(void);
@@ -403,10 +407,10 @@ static struct action *Action_new(void){
 ** positive if the first action is less than, equal to, or greater than
 ** the first
 */
-static int actioncmp(ap1,ap2)
-struct action *ap1;
-struct action *ap2;
+static int actioncmp(const char *_ap1, const char *_ap2)
 {
+  const struct action *ap1 = (const struct action *)_ap1;
+  const struct action *ap2 = (const struct action *)_ap2;
   int rc;
   rc = ap1->sp->index - ap2->sp->index;
   if( rc==0 ){
@@ -1757,7 +1761,12 @@ int main(int argc, char **argv)
 **   The "next" pointers for elements in the lists a and b are
 **   changed.
 */
-static void *merge(void *a,void *b,int (*cmp)(),size_t offset)
+static void *merge(
+  void *a,
+  void *b,
+  int (*cmp)(const char *, const char *),
+  size_t offset
+)
 {
   char *ptr, *head;
 
@@ -1805,7 +1814,11 @@ static void *merge(void *a,void *b,int (*cmp)(),size_t offset)
 **   The "next" pointers for elements in list are changed.
 */
 #define LISTSIZE 30
-static void *msort(void *list,void *next,int (*cmp)())
+static void *msort(
+  void *list,
+  void *next,
+  int (*cmp)(const char *, const char *)
+)
 {
   size_t offset;
   char *ep;
@@ -2714,9 +2727,7 @@ static void preprocess_input(char *z){
   }
 }
 
-int strip_crlf(filebuf, filesize)
-char *filebuf;
-int filesize;
+int strip_crlf(char *filebuf, int filesize)
 {
 	int i, j;
 

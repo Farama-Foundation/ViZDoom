@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.12)
 # Project + versions
 #-----------------------------------------------------------------------------------------------------------------------
 
-project(ViZDoom VERSION 1.3.0)
-set(ViZDoom_VERSION_SUFFIX ".dev2")
+project(ViZDoom VERSION 1.3.1)
+set(ViZDoom_VERSION_SUFFIX ".dev1")
 set(ViZDoom_VERSION_STR ${ViZDoom_VERSION_MAJOR}.${ViZDoom_VERSION_MINOR}.${ViZDoom_VERSION_PATCH}${ViZDoom_VERSION_SUFFIX})
 set(ViZDoom_VERSION_ID ${ViZDoom_VERSION_MAJOR}${ViZDoom_VERSION_MINOR}${ViZDoom_VERSION_PATCH})
 
@@ -121,7 +121,11 @@ set(VIZDOOM_LIB_SRC_DIR ${VIZDOOM_SRC_DIR}/lib)
 set(VIZDOOM_LIB_INCLUDE_DIR ${VIZDOOM_INCLUDE_DIR} ${VIZDOOM_LIB_SRC_DIR})
 set(VIZDOOM_OUTPUT_NAME vizdoom)
 
-find_package(Boost 1.53 COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
+if(Boost_VERSION VERSION_GREATER_EQUAL 1.89)
+    find_package(Boost 1.89 COMPONENTS filesystem thread date_time chrono regex iostreams REQUIRED)
+else()
+    find_package(Boost 1.56 COMPONENTS filesystem thread system date_time chrono regex iostreams REQUIRED)
+endif()
 find_package(Threads REQUIRED)
 
 include_directories(${VIZDOOM_LIB_INCLUDE_DIR} ${Boost_INCLUDE_DIR})

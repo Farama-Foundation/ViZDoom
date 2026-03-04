@@ -18,6 +18,7 @@ from .vizdoom import *
 import os as _os
 
 root_path = __path__[0]
+install_path = root_path  # alias
 exe_path_windows = _os.path.join(__path__[0], "vizdoom.exe")
 exe_path_unix = _os.path.join(__path__[0], "vizdoom")
 exe_path = exe_path_windows if _os.path.exists(exe_path_windows) else exe_path_unix

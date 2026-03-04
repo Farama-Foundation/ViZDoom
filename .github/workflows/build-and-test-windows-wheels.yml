@@ -22,6 +22,7 @@ on:
       - 'CMakeLists.txt'
       - 'setup.py'
       - 'pyproject.toml'
+    branches: [master]
   release:
     types: [published]
 
@@ -42,7 +43,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-2022]
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
       fail-fast: false
     runs-on: ${{ matrix.os }}
 
@@ -65,19 +66,6 @@ jobs:
       with:
         repository: mwydmuch/ViZDoomWinDepBin
         path: ${{ github.workspace }}\deps
-
-    - name: Cache 7-Zip
-      id: cache-7z
-      uses: actions/cache@v4
-      with:
-        path: |
-          C:\Program Files\7-Zip
-          C:\ProgramData\chocolatey\lib\7zip
-        key: 7zip-25.0-${{ runner.os }}
-
-    - name: Install 7-Zip 25.00 for compatibility
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: choco install 7zip --version=25.0 -y --force --allow-downgrade
 
     - name: Install boost
       uses: MarkusJx/install-boost@v2
@@ -163,8 +151,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-2022]
-        #python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
-        python-version: ['3.12']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
       fail-fast: false
 
     steps:
@@ -207,15 +194,16 @@ jobs:
         run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_sound_enabled(True); g.init()"
 
       - name: Run test
-        run: |
-          python -m pytest tests
+        run: python -m pytest tests -s --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run
 
 
   upload_pypi:
     name: Upload to PyPI
     needs: [build_and_test_wheels, test_wheels]
     runs-on: ubuntu-latest
-    environment: pypi
+    environment:
+      name: pypi
+      url: https://pypi.org/p/vizdoom
     permissions:
         id-token: write
     if: github.event_name == 'release' && github.event.action == 'published'
@@ -229,6 +217,3 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          username: ${{ secrets.PYPI_USERNAME }}
-          password: ${{ secrets.PYPI_PASSWORD }}

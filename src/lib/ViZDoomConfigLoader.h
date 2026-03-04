@@ -1,6 +1,7 @@
 /*
  Copyright (C) 2016 by Wojciech Jaśkowski, Michał Kempka, Grzegorz Runc, Jakub Toczek, Marek Wydmuch
  Copyright (C) 2017 - 2022 by Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, and the respective contributors
+ Copyright (C) 2023 - 2026 by Marek Wydmuch, Farama Foundation, and the respective contributors
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +41,8 @@ namespace vizdoom {
 
         bool load(std::string filePath);
 
+        bool set(std::string configStr);
+
     protected:
 
         /* Load config helpers */
@@ -62,11 +65,12 @@ namespace vizdoom {
         static GameVariable stringToGameVariable(std::string str);
 
         static bool
-        parseListProperty(int &line_number, std::string &value, std::ifstream &input, std::vector<std::string> &output);
+        parseListProperty(int &line_number, std::string &value, std::istream &input, std::vector<std::string> &output);
 
     private:
+        bool parseConfig(std::istream &input, const std::string &sourceDesc, const std::string &configFilePath);
+
         DoomGame *game;
-        std::string filePath;
     };
 }
 

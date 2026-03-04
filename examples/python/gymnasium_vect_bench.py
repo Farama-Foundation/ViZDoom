@@ -1,12 +1,16 @@
+#!/usr/bin/env python3
+
 #####################################################################
 # Test and benchmark the vectorization of VizDoom in gymnasium
 #####################################################################
+
 import argparse
 import time
 import warnings
 
 import gymnasium
 
+# Importing the wrapper registers the ViZDoom environments in Gymnasium, so it should be imported before creating the environment
 from vizdoom import gymnasium_wrapper  # noqa
 
 
@@ -40,4 +44,5 @@ if __name__ == "__main__":
         # if terminated or truncated:
         #    observation, info = env.reset()
     print(f"{args.n_envs}  {n_steps * args.n_envs / round(time.time() - start, 1)}")
+
     envs.close()

@@ -264,4 +264,5 @@ if __name__ == "__main__":
         f"{args.output_dir}/{args.scenario}_{args.fps}fps.gif",
         images,
         duration=1 / args.fps * args.drop / args.speedup,
+        loop=0,
     )

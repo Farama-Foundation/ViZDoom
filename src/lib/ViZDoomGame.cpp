@@ -1,7 +1,7 @@
 /*
  Copyright (C) 2016 by Wojciech Jaśkowski, Michał Kempka, Grzegorz Runc, Jakub Toczek, Marek Wydmuch
  Copyright (C) 2017 - 2022 by Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, and the respective contributors
- Copyright (C) 2023 - 2025 by Marek Wydmuch, Farama Foundation, and the respective contributors
+ Copyright (C) 2023 - 2026 by Marek Wydmuch, Farama Foundation, and the respective contributors
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -66,6 +66,7 @@ namespace vizdoom {
         this->mode = PLAYER;
 
         this->state = nullptr;
+        this->serverState = nullptr;
 
         this->doomController = new DoomController();
     }
@@ -121,6 +122,10 @@ namespace vizdoom {
 
     bool DoomGame::isRunning() {
         return this->running && this->doomController->isDoomRunning();
+    }
+
+    std::string DoomGame::getInstanceId() {
+        return this->doomController->getInstanceId();
     }
 
     bool DoomGame::isMultiplayerGame() {
@@ -333,16 +338,21 @@ namespace vizdoom {
 
             /* Audio */
             if (this->doomController->isAudioBufferEnabled()) {
+                if (!this->doomController->isOpenALSoundInitialized()) {
+                    throw ViZDoomNoOpenALSoundException();
+                }
                 const int16_t *audioBuf = this->doomController->getAudioBuffer();
                 const size_t audioSize = SOUND_NUM_CHANNELS * this->getAudioSamplesPerTic() * this->getAudioBufferSize();
                 this->state->audioBuffer = std::make_shared<std::vector<int16_t>>(audioBuf, audioBuf + audioSize);
             }
 
+            /* Depth */
             if (this->doomController->isDepthBufferEnabled()) {
                 buf = this->doomController->getDepthBuffer();
                 this->state->depthBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + graySize);
             } else this->state->depthBuffer = nullptr;
 
+            /* Labels */
             this->state->labels.clear();
             if (this->doomController->isLabelsEnabled()) {
                 buf = this->doomController->getLabelsBuffer();
@@ -358,6 +368,7 @@ namespace vizdoom {
                 }
             } else this->state->labelsBuffer = nullptr;
 
+            /* Automap */
             if (this->doomController->isAutomapEnabled()) {
                 buf = this->doomController->getAutomapBuffer();
                 this->state->automapBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
@@ -390,7 +401,26 @@ namespace vizdoom {
                 }
             }
 
+            /* Update text console */
+            if (this->doomController->isNotificationsEnabled()) {
+                this->state->notificationsBuffer = std::string(smState->NOTIFICATIONS_TEXT, smState->NOTIFICATIONS_TEXT + smState->NOTIFICATIONS_TEXT_SIZE);
+            } else this->state->notificationsBuffer.clear();
+
         } else this->state = nullptr;
+
+        /* Update server state */
+        this->serverState = std::make_shared<ServerState>();
+
+        this->serverState->tic = this->doomController->getMapTic();
+        this->serverState->playerCount = this->doomController->getPlayerCount();
+        for(int i = 0; i < MAX_PLAYERS; ++i){
+            this->serverState->playersInGame[i] = this->doomController->isPlayerInGame(i);
+            this->serverState->playersNames[i] = this->doomController->getPlayerName(i);
+            this->serverState->playersFrags[i] = this->doomController->getPlayerFrags(i);
+            this->serverState->playersAfk[i] = this->doomController->isPlayerAfk(i);
+            this->serverState->playersLastActionTic[i] = this->doomController->getPlayerLastActionTic(i);
+            this->serverState->playersLastKillTic[i] = this->doomController->getPlayerLastKillTic(i);
+        }
     }
 
     GameStatePtr DoomGame::getState() {
@@ -399,20 +429,8 @@ namespace vizdoom {
     }
 
     ServerStatePtr DoomGame::getServerState(){
-        ServerStatePtr serverState = std::make_shared<ServerState>();
-
-        serverState->tic = this->doomController->getMapTic();
-        serverState->playerCount = this->doomController->getPlayerCount();
-        for(int i = 0; i < MAX_PLAYERS; ++i){
-            serverState->playersInGame[i] = this->doomController->isPlayerInGame(i);
-            serverState->playersNames[i] = this->doomController->getPlayerName(i);
-            serverState->playersFrags[i] = this->doomController->getPlayerFrags(i);
-            serverState->playersAfk[i] = this->doomController->isPlayerAfk(i);
-            serverState->playersLastActionTic[i] = this->doomController->getPlayerLastActionTic(i);
-            serverState->playersLastKillTic[i] = this->doomController->getPlayerLastKillTic(i);
-        }
-
-        return serverState;
+        if (!this->isRunning()) throw ViZDoomIsNotRunningException();
+        return this->serverState;
     }
 
     std::vector<double> DoomGame::getLastAction() {
@@ -554,18 +572,30 @@ namespace vizdoom {
         return this->doomController->getGameVariable(variable);
     }
 
+    std::string DoomGame::getViZDoomPath() { return this->doomController->getExePath(); }
+
     void DoomGame::setViZDoomPath(std::string filePath) { this->doomController->setExePath(filePath); }
+
+    std::string DoomGame::getDoomGamePath() { return this->doomController->getIwadPath(); }
 
     void DoomGame::setDoomGamePath(std::string filePath) { this->doomController->setIwadPath(filePath); }
 
+    std::string DoomGame::getDoomScenarioPath() { return this->doomController->getFilePath(); }
+
     void DoomGame::setDoomScenarioPath(std::string filePath) { this->doomController->setFilePath(filePath); }
+
+    std::string DoomGame::getDoomMap() { return this->doomController->getMap(); }
 
     void DoomGame::setDoomMap(std::string map) {
         this->doomController->setMap(map);
         if (this->isRunning()) this->resetState();
     }
 
+    int DoomGame::getDoomSkill() { return this->doomController->getSkill(); }
+
     void DoomGame::setDoomSkill(int skill) { this->doomController->setSkill(skill); }
+
+    std::string DoomGame::getDoomConfigPath() { return this->doomController->getConfigPath(); }
 
     void DoomGame::setDoomConfigPath(std::string filePath) { this->doomController->setConfigPath(filePath); }
 
@@ -735,6 +765,8 @@ namespace vizdoom {
 
     void DoomGame::setAutomapRenderTextures(bool textures) { this->doomController->setAutomapRenderTextures(textures); }
 
+    void DoomGame::setAutomapRenderObjectsAsSprites(bool sprites) { this->doomController->setAutomapRenderObjectsAsSprites(sprites); }
+
     bool DoomGame::isObjectsInfoEnabled() { return this->doomController->isObjectsEnabled(); }
 
     void DoomGame::setObjectsInfoEnabled(bool objectsInfo) { return this->doomController->setObjectsEnabled(objectsInfo); }
@@ -797,7 +829,15 @@ namespace vizdoom {
 
     int DoomGame::getAudioBufferSize() { return this->doomController->getAudioBufferSize(); }
 
-    void DoomGame::setAudioBufferSize(int size) { this->doomController->setAudioBufferSize(size); }
+    void DoomGame::setAudioBufferSize(int tics) { this->doomController->setAudioBufferSize(tics); }
+
+    bool DoomGame::isNotificationsBufferEnabled() { return this->doomController->isNotificationsEnabled(); }
+
+    void DoomGame::setNotificationsBufferEnabled(bool notificationsBuffer) { this->doomController->setNotificationsEnabled(notificationsBuffer); }
+
+    int DoomGame::getNotificationsBufferSize() { return this->doomController->getNotificationsBufferSize(); }
+
+    void DoomGame::setNotificationsBufferSize(int tics) { this->doomController->setNotificationsBufferSize(tics); }
 
     int DoomGame::getScreenWidth() { return this->doomController->getScreenWidth(); }
 
@@ -814,6 +854,11 @@ namespace vizdoom {
     bool DoomGame::loadConfig(std::string filePath) {
         ConfigLoader configLoader(this);
         return configLoader.load(filePath);
+    }
+
+    bool DoomGame::setConfig(std::string configString) {
+        ConfigLoader configLoader(this);
+        return configLoader.set(configString);
     }
 
     void DoomGame::save(std::string filePath){

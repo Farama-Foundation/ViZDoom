@@ -1,6 +1,7 @@
 /*
  Copyright (C) 2016 by Wojciech Jaśkowski, Michał Kempka, Grzegorz Runc, Jakub Toczek, Marek Wydmuch
  Copyright (C) 2017 - 2022 by Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, and the respective contributors
+ Copyright (C) 2023 - 2026 by Marek Wydmuch, Farama Foundation, and the respective contributors
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +27,6 @@
 #include "viz_depth.h"
 #include "viz_labels.h"
 #include "viz_main.h"
-
 
 unsigned int vizScreenWidth, vizScreenHeight;
 size_t vizScreenPitch, vizScreenSize, vizScreenChannelSize;
@@ -303,4 +303,17 @@ void VIZ_AudioUpdate() {
     const size_t lastTicOffset = vizAudioSize - vizAudioSizePerTic;
     memmove(vizAudioSM, vizAudioSM + vizAudioSizePerTic, lastTicOffset);
     S_GetRender(vizAudioSM + lastTicOffset, vizAudioSamplesPerTic);
+
+    if (*viz_audio_tics > level.maptime){ // If map time is less than the audio buffer size, zero the rest of the buffer
+        const size_t ticsToClear = *viz_audio_tics - level.maptime;
+        if(ticsToClear * vizAudioSizePerTic > vizAudioSize) {
+            VIZ_Error(VIZ_FUNC, "Tried to clear more audio buffer than its size.");
+        }
+        memset(vizAudioSM, 0, ticsToClear * vizAudioSizePerTic);
+    }
+}
+
+void VIZ_ClearAudioBuffer() {
+    if (!*viz_soft_audio || vizAudioSM == NULL || vizAudioSize == 0) return;
+    memset(vizAudioSM, 0, vizAudioSize);
 }

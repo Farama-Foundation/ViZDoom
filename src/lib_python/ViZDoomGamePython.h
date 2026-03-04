@@ -1,6 +1,7 @@
 /*
  Copyright (C) 2016 by Wojciech Jaśkowski, Michał Kempka, Grzegorz Runc, Jakub Toczek, Marek Wydmuch
  Copyright (C) 2017 - 2022 by Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, and the respective contributors
+ Copyright (C) 2023 - 2026 by Marek Wydmuch, Farama Foundation, and the respective contributors
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -74,7 +75,6 @@ namespace vizdoom {
         unsigned int tic;
 
         pyb::object gameVariables;
-        //pyb::list gameVariables;
 
         pyb::object screenBuffer;
         pyb::object depthBuffer;
@@ -82,9 +82,11 @@ namespace vizdoom {
         pyb::object automapBuffer;
         pyb::object audioBuffer;
 
-        pyb::list labels;
-        pyb::list objects;
-        pyb::list sectors;
+        pyb::object labels;
+        pyb::object objects;
+        pyb::object sectors;
+
+        pyb::object notificationsBuffer;
     };
 
     struct ServerStatePython {
@@ -115,6 +117,8 @@ namespace vizdoom {
 
         pyb::list getAvailableGameVariables();
         void setAvailableGameVariables(pyb::list const &pyGameVariables);
+
+        bool setConfig(pyb::object const &config);
 
         // These functions are wrapped for manual GIL management
         void init();

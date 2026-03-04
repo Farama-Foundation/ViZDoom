@@ -2,28 +2,36 @@
 
 Instead of configuring the ViZDoom in code, you can load it from the configuration file(s). Each file is read sequentially, so multiple entries with the same key will overwrite previous entries.
 
+
 ## Format
+
 Each entry in a configraution file is a pair of **key** and **value** separated by an equal sign (**`=`**). The file format should also abide the following rules:
 
 * one entry per line (except for list parameters),
 * case insensitive
-* lines starting with **#** are ignored,
+* lines starting with **#** and empty lines are ignored,
 * underscores in **keys** are ignored (*episode_timeout* is equivalent to *episodetimeout*),
 * string values should **not** be surrounded with apostrophes or quotation marks.
+* relative paths are treated as **relative to the configuration file location.**
 
 A violation of any of these rules will result in ignoring **only** the line with the error and sending a warning message to stderr ("WARNING! Loading config from: ...").
 
+
 ### List of values
+
 **available_buttons** and **available_game_variables** are special parameters, which use multiple values and instead of a single value they expect a list of values separated by whitespaces and enclosed within braces (`{` and `}`). The list can stretch throughout multiple lines as long as all values are separated from each other by whitespaces.
 
+
 ### Appending values
+
 Each list assignment (**`KEY = { VALUES }`**)clears values specified for this key before (in other configuration files or in the code). That is why the **append operator (`KEY += { VALUES }`)** is available. This way you can more easily combine multiple configuration files and tinker in code.
 
+
 ### Supported configuration keys:
-* `ammoReward/ammo_reward`
+
 * `audioBufferEnabled/audio_buffer_enabled`
 * `audioBufferSize/audio_buffer_size`
-* `audioSamplingRate/audio_samping_rate`
+* `audioSamplingRate/audio_sampling_rate`
 * `automapBufferEnabled/automap_buffer_enabled`
 * `automapMode/automap_mode`
 * `automapRenderTextures/automap_render_textures`
@@ -42,7 +50,7 @@ Each list assignment (**`KEY = { VALUES }`**)clears values specified for this ke
 * `DoomSkill/doom_skill`
 * `episodeStartTime/episode_start_time`
 * `episodeTimeout/episode_timeout`
-* `fragReward/frags_reward`
+* `fragReward/frag_reward`
 * `gameArgs/game_args`
 * `healthReward/health_reward`
 * `hitReward/hit_reward`
@@ -53,6 +61,8 @@ Each list assignment (**`KEY = { VALUES }`**)clears values specified for this ke
 * `labelsBufferEnabled/labels_buffer_enabled`
 * `livingReward/living_reward`
 * `mode`
+* `notificationsBufferEnabled/notifications_buffer_enabled`
+* `notificationsBufferSize/notifications_buffer_size`
 * `objectsInfoEnabled/objects_info_enabled`
 * `renderAllFrames/render_all_frames`
 * `renderCorpses/render_corpses`
@@ -80,9 +90,7 @@ Config keys are also mentioned for related methods in the documentation for `Doo
 ### Sample configuration file content:
 
 ```ini
-vizdoom_path = ../../bin/vizdoom
-#doom_game_path = ../../scenarios/doom2.wad
-doom_game_path = ../../scenarios/freedoom2.wad
+doom_game_path = freedoom2.wad
 doom_scenario_path = ../../scenarios/basic.wad
 doom_map = map01
 
