@@ -20,6 +20,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from typing import List
 
 
 vizdoom_stub_header = '''"""
@@ -56,7 +57,7 @@ class ViZDoomStubGenerator:
             print("Generating type stubs with stubgen...")
 
         # Add module directory to Python path if provided
-        env: dict[str, str] = os.environ.copy()
+        env = os.environ.copy()
         if os.path.isdir(self.module):
             print("module", self.module)
             module_path = self.module
@@ -102,7 +103,7 @@ class ViZDoomStubGenerator:
 
     def reformat_generated_stub(self):
         """Reformat generated type stubs with black and isort."""
-        finished_formatting: list[str] = []
+        finished_formatting: List[str] = []
         try:
             for tool in ["black", "isort"]:
                 if self.verbose:
@@ -132,7 +133,7 @@ class ViZDoomStubGenerator:
                 f"Stubgen did not create expected file: {stub_file}"
             )
 
-    def add_module_header(self, content: str, formatted_with: list[str]) -> str:
+    def add_module_header(self, content: str, formatted_with: List[str]) -> str:
         """Add a module header."""
         if self.verbose:
             print("Adding module header...")
@@ -147,6 +148,8 @@ class ViZDoomStubGenerator:
         if self.verbose:
             print("Annotating properties of the GameState class...", end=" ")
         replacements = []
+
+        # GameState.*_buffer / GameState.game_variables property
         match_game_state_properties = re.finditer(
             r"^(\s*def (screen|depth|audio|automap|labels|game)_"
             r"(?:buffer|variables)\(self\)\s*->\s*)(typing\.)?Any\s*(:.*)$",
@@ -161,6 +164,11 @@ class ViZDoomStubGenerator:
             actual_return_type = (
                 match_property.group(1) + return_type + match_property.group(4)
             )
+            replacements.append((match_property.group(0), actual_return_type))
+
+        # GameState.labels property: either pyb::list<Label> or pyb::none
+        for match_property in re.finditer(r"(def labels\(self\)\s*->\s*)[^:]+", content):
+            actual_return_type = match_property.group(1) + "typing.Optional[typing.List[Label]]"
             replacements.append((match_property.group(0), actual_return_type))
 
         for old_line, new_line in replacements:
@@ -193,14 +201,10 @@ class ViZDoomStubGenerator:
             stub_content = self.annotate_gamestate_properties(stub_content)
 
             # Step 5.5: The small patches
-            # DoomGame.set_config: config needs to be either str or dict[str, Any]
+            # DoomGame.set_config: config needs to be either str or Dict[str, Any]
             stub_content = stub_content.replace(
                 "set_config(self, config: typing.Any",
-                "set_config(self, config: typing.Union[str, dict[str, typing.Any]]",
-            )
-            # GameState.labels property: either pyb::list<Label> or pyb::none
-            stub_content = re.sub(
-                r"(def labels\(self\)\s*->\s*)[^:]+", r"\1typing.Optional[typing.List[Label]]", stub_content
+                "set_config(self, config: typing.Union[str, typing.Dict[str, typing.Any]]",
             )
 
             # Step 6: Write to output file

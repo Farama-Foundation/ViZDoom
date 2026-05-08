@@ -1300,7 +1300,7 @@ class DoomGame:
         Has no effect when the game is running.
         """
 
-    def set_config(self, config: typing.Union[str, dict[str, typing.Any]]) -> bool:
+    def set_config(self, config: typing.Union[str, typing.Dict[str, typing.Any]]) -> bool:
         """
         Sets configuration from a config string or dictionary (Python only).
 
