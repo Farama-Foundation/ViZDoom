@@ -193,9 +193,14 @@ class ViZDoomStubGenerator:
             stub_content = self.annotate_gamestate_properties(stub_content)
 
             # Step 5.5: The small patches
+            # DoomGame.set_config: config needs to be either str or dict[str, Any]
             stub_content = stub_content.replace(
                 "set_config(self, config: typing.Any",
                 "set_config(self, config: typing.Union[str, dict[str, typing.Any]]",
+            )
+            # GameState.labels property: either pyb::list<Label> or pyb::none
+            stub_content = re.sub(
+                r"(def labels\(self\)\s*->\s*)[^:]+", r"\1typing.Optional[typing.List[Label]]", stub_content
             )
 
             # Step 6: Write to output file
