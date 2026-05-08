@@ -6,11 +6,13 @@ This script uses pybind11-stubgen to generate stub file for ViZDoom, part of bui
 
 Workflow:
 - using `pybind11-stubgen` for generation
-- removing the `__all__ = ...` line
-- adding `import numpy as np` after `import typing`
+- putting the `__all__ = ...` lines to the end of file
+- adding `from numpy.typing import NDArray` after `import typing`
+- replacing typing of int / float for function arguments into typing.SupportsInt / typing.SupportsFloat
 - optionally, `black` and `isort` for simple formatting
 - adding a header comment
-- replacing the `-> typing.Any` properties with actual return behaviour (`np.ndarray` or `typing.Optional[np.ndarray]`)
+- replacing the `-> typing.Any` properties in GameState with actual return types
+- applying small manual patches
 """
 
 import argparse
@@ -81,15 +83,30 @@ class ViZDoomStubGenerator:
             if os.path.exists(stub_file):
                 with open(stub_file, "r", encoding="utf-8", errors="ignore") as f:
                     stub_content = []
+                    all_attribute = []
+                    enter_all_attribute = False
                     for line in f:
                         if line.startswith("import typing"):
-                            stub_content += (
+                            stub_content.append(
                                 "import typing\nfrom numpy.typing import NDArray\n"
                             )
-                        elif not line.startswith("__all__ = "):
-                            stub_content += line
+                        elif line.startswith("__all__"):
+                            enter_all_attribute = True
+                        if enter_all_attribute:
+                            if line.rstrip().endswith("]"):
+                                enter_all_attribute = False
+                            all_attribute.append(line)
+                        else:
+                            # Replace typing of int / float for function arguments
+                            if line.lstrip().startswith("def "):
+                                line = line.replace(
+                                    ": int", ": typing.SupportsInt"
+                                ).replace(
+                                    ": float", ": typing.SupportsFloat"
+                                )
+                            stub_content.append(line)
                 with open(stub_file, "w", encoding="utf-8", errors="ignore") as f:
-                    f.writelines(stub_content)
+                    f.writelines(stub_content + all_attribute)
             else:
                 raise FileNotFoundError(
                     f"Stubgen did not create expected file: {stub_file}"
