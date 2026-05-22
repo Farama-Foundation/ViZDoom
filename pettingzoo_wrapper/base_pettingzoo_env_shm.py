@@ -8,6 +8,9 @@ from __future__ import annotations
 
 import json
 import multiprocessing as mp
+import os
+import shutil
+import tempfile
 import time
 from multiprocessing import Process, Event, shared_memory, Array, Value
 from typing import Dict, List, Optional
@@ -57,6 +60,10 @@ def agent_process(
         verbose: bool,
 ) -> None:
     agent = "host" if is_host else f"peer{agent_id}"
+    agent_workdir = tempfile.mkdtemp(prefix=f"vizdoom_pz_agent{agent_id}_")
+    original_cwd = os.getcwd()
+    os.chdir(agent_workdir)
+
     game = configure_doom_game(
         config_path=config_path,
         resolution=resolution,
@@ -176,6 +183,8 @@ def agent_process(
             existing_shm.close()
         except Exception:
             pass
+        os.chdir(original_cwd)
+        shutil.rmtree(agent_workdir, ignore_errors=True)
 
 
 # -------------------------- main PettingZoo env ---------------------------
