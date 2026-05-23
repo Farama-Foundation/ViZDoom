@@ -6,6 +6,15 @@ from pettingzoo.utils import wrappers
 from pettingzoo.utils.env import ParallelEnv
 
 
+def _has_hidden_reset(infos):
+    if not isinstance(infos, dict):
+        return False
+    for info in infos.values():
+        if isinstance(info, dict) and info.get("_hidden_reset"):
+            return True
+    return False
+
+
 class VideoLoggerParallelWrapper(wrappers.BaseParallelWrapper):
     def __init__(
             self,
@@ -84,6 +93,11 @@ class VideoLoggerParallelWrapper(wrappers.BaseParallelWrapper):
     def step(self, actions):
         obs, rewards, term, trunc, info = self.env.step(actions)
         self.agents = self.env.agents[:]
+
+        if _has_hidden_reset(info):
+            self._finalize()
+            self._maybe_enable()
+
         self._push_frame_from_obs(obs)
 
         # end of episode if any agent done

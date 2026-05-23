@@ -1,6 +1,14 @@
 from typing import Any, Dict, Optional
+
 import numpy as np
 from pettingzoo import ParallelEnv
+
+
+def _reset_info(info):
+    reset_info = info.get("reset_info")
+    if isinstance(reset_info, dict):
+        return reset_info
+    return None
 
 class HealthGatheringRewardWrapper(ParallelEnv):
     """
@@ -44,6 +52,10 @@ class HealthGatheringRewardWrapper(ParallelEnv):
         obs, rewards, terminations, truncations, infos = self.env.step(actions)
 
         for a in self.agents:
+            reset_info = _reset_info(infos[a])
+            if reset_info is not None:
+                self.prev_health[a] = reset_info.get(self.health_key, self.prev_health[a])
+
             r = rewards[a]
             h_cur = infos[a].get(self.health_key, 0.0)
             h_prev = self.prev_health[a]
@@ -107,6 +119,11 @@ class RemedyRushRewardWrapper(ParallelEnv):
         obs, rewards, terminations, truncations, infos = self.env.step(actions)
 
         for a in self.agents:
+            reset_info = _reset_info(infos[a])
+            if reset_info is not None:
+                self.prev_health[a] = reset_info.get(self.health_key, self.prev_health[a])
+                self.prev_armor[a] = reset_info.get(self.armor_key, self.prev_armor[a])
+
             r = rewards[a]
             h_cur = infos[a].get(self.health_key, 0.0)
             h_prev = self.prev_health[a]
@@ -187,6 +204,13 @@ class PitfallRewardWrapper(ParallelEnv):
 
         shaped: Dict[str, float] = {}
         for a in self.agents:
+            reset_info = _reset_info(infos[a])
+            if reset_info is not None:
+                reset_x = reset_info.get(self.pos_key, None)
+                self._prev_x[a] = reset_x
+                self._best_x[a] = reset_x if reset_x is not None else self.x_start
+                self._goal_given[a] = False
+
             r = float(base_rewards.get(a, 0.0))
             x_cur = infos[a].get(self.pos_key, None)
             x_prev = self._prev_x.get(a, None)
