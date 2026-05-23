@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+import os
+import random
+import socket
+import tempfile
 import time
+from contextlib import contextmanager
 from typing import Tuple, Dict
 
+import fcntl
 import numpy as np
 import vizdoom as vzd
 
@@ -16,7 +22,7 @@ def get_screen_resolution(resolution: str) -> vzd.ScreenResolution:
     try:
         return getattr(vzd.ScreenResolution, f"RES_{resolution}")
     except AttributeError as e:
-        raise ValueError(f"Invalid resolution: {resolution}")
+        raise ValueError(f"Invalid resolution: {resolution}; Error: {e}")
 
 
 def get_flat_game_vars(state, available_game_vars) -> Dict[str, float]:
@@ -127,3 +133,79 @@ def sync_agent_init(pipes_parent, procs):
                     pass
 
             raise RuntimeError(".") from e
+
+
+def is_udp_port_available(host_address: str, port: int) -> bool:
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        sock.bind((host_address, port))
+    except OSError:
+        return False
+    finally:
+        sock.close()
+    return True
+
+
+def _port_lock_path(port: int) -> str:
+    return os.path.join(tempfile.gettempdir(), f"vizdoom_udp_port_{port}.lock")
+
+
+def _init_lock_path(slot: int) -> str:
+    return os.path.join(tempfile.gettempdir(), f"vizdoom_multi_init_{slot}.lock")
+
+
+@contextmanager
+def reserve_udp_port(host_address: str, start_port: int, increment: int = 1):
+    port = int(start_port)
+    while port < 65535:
+        lock_fd = os.open(_port_lock_path(port), os.O_CREAT | os.O_RDWR, 0o600)
+        try:
+            try:
+                fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                port += increment
+                continue
+
+            if is_udp_port_available(host_address, port):
+                try:
+                    yield port
+                finally:
+                    fcntl.flock(lock_fd, fcntl.LOCK_UN)
+                return
+        finally:
+            os.close(lock_fd)
+
+        port += increment
+
+    raise RuntimeError(f"Could not reserve an available UDP port starting from {start_port}")
+
+@contextmanager
+def reserve_init_slot(max_parallel: int = 20, timeout_sec: float = 10.0):
+    if max_parallel <= 1:
+        yield None
+        return
+
+    deadline = time.time() + timeout_sec
+    slot_indices = list(range(int(max_parallel)))
+    random.shuffle(slot_indices)
+
+    while time.time() < deadline:
+        for slot in slot_indices:
+            lock_fd = os.open(_init_lock_path(slot), os.O_CREAT | os.O_RDWR, 0o600)
+            try:
+                try:
+                    fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                except BlockingIOError:
+                    continue
+
+                try:
+                    yield slot
+                finally:
+                    fcntl.flock(lock_fd, fcntl.LOCK_UN)
+                return
+            finally:
+                os.close(lock_fd)
+
+        time.sleep(0.1)
+
+    raise TimeoutError(f"Could not acquire a ViZDoom multiplayer init slot within {timeout_sec:.1f}s")
