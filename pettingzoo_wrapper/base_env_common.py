@@ -15,7 +15,7 @@ from gymnasium import spaces
 from pettingzoo import ParallelEnv
 from vizdoom import Mode
 
-from vizdoom.pettingzoo_wrapper.utils import discover_buttons, get_screen_resolution, parse_hw
+from pettingzoo_wrapper.utils import discover_buttons, get_screen_resolution, parse_hw
 
 
 def configure_doom_game(
@@ -49,12 +49,16 @@ def configure_doom_game(
         game.set_seed(int(seed))
     if is_host:
         game.add_game_args(
-            f"-host {num_agents} -port {port} -netmode {netmode} +sv_spawnfarthest 1"
+            f"-host {num_agents} -port {port} -netmode {netmode} "
+            "+timelimit 0 +sv_noautoaim 1 +sv_nocrouch 1 +sv_nofreelook 1 "
+            "+sv_spawnfarthest 1 +sv_forcerespawn 1 +viz_respawn_delay 0 "
+            "+viz_connect_timeout 60"
         )
     else:
-        game.add_game_args(f"-join {host_address} -port {port} -netmode {netmode}")
+        game.add_game_args(
+            f"-join {host_address}:{port} -netmode {netmode} +viz_connect_timeout 60"
+        )
     game.add_game_args(f"+name Player{agent_idx} +colorset {agent_idx}")
-    game.add_game_args(f"+playernumber {agent_idx}")
     return game
 
 
@@ -64,7 +68,7 @@ class VizdoomParallelEnvBase(ParallelEnv):
 
     Handles everything that does not depend on the IPC mechanism:
     spaces, action encoding/decoding, and rendering. Subclasses implement
-    reset(), step(), and close() with their chosen transport (pipes / shm).
+    reset(), step(), and close() with their chosen transport.
     """
 
     def __init__(
