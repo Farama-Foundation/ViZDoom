@@ -248,7 +248,7 @@ def main():
     ap.add_argument("--num_agents", type=int, default=2)
     ap.add_argument("--resolution", type=str, default="160X120")
     ap.add_argument("--skip_frames", type=int, default=4)
-    ap.add_argument("--async-mode", action=BooleanOptionalAction, default=True)
+    ap.add_argument("--async-mode", action=BooleanOptionalAction, default=False)
     ap.add_argument("--host_address", type=str, default="127.0.0.1")
     ap.add_argument("--netmode", type=int, default=1)
     ap.add_argument("--ticrate", type=int, default=35)

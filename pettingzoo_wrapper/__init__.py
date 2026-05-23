@@ -3,9 +3,9 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from vizdoom.pettingzoo_wrapper.base_pettingzoo_env_shm import VizdoomParallelEnv
-from vizdoom.pettingzoo_wrapper.reward_wrappers import PitfallRewardWrapper, HealthGatheringRewardWrapper, RemedyRushRewardWrapper
-from vizdoom.pettingzoo_wrapper.video_recorder import VideoLoggerParallelWrapper
+from pettingzoo_wrapper.base_pettingzoo_env import VizdoomParallelEnv
+from pettingzoo_wrapper.reward_wrappers import PitfallRewardWrapper, HealthGatheringRewardWrapper, RemedyRushRewardWrapper
+from pettingzoo_wrapper.video_recorder import VideoLoggerParallelWrapper
 
 # where the scenario .cfg files live
 _SCENARIO_DIR = os.path.join(Path(__file__).parent.parent, "scenarios")
@@ -27,7 +27,7 @@ def make(
         resolution: str = "160X120",
         timeout: Optional[int] = None,
         skip_frames: Optional[int] = 1,
-        async_mode: bool = True,
+        async_mode: bool = False,
         host_address: str = "127.0.0.1",
         port: int = 5029,
         netmode: int = 0,
