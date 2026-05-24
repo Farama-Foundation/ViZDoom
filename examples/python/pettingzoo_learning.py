@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 
 import torch
-import torch.nn.functional as F
 import vizdoom as vzd
 from benchmarl.algorithms import QmixConfig, MasacConfig
 from benchmarl.algorithms.mappo import MappoConfig
@@ -95,53 +94,32 @@ class VizdoomExperiment(Experiment):
         self.collector = collector
 
 
-class AHWCToTensorResize(ObservationTransform):
+class AHWCToTensor(ObservationTransform):
     """
-    Keep AHWC layout, convert to float tensor, optional /255, then resize (H,W).
-    In/out: (A,H,W,C) -> (A,h,w,C)
+    Keep AHWC layout, convert to float tensor
     """
 
     def __init__(
             self,
             key=("agent", "observation"),
-            h: int = 72,
-            w: int = 128,
-            from_int: bool | None = None,  # True: /255, False: no, None: auto if not float
             dtype: torch.dtype | None = None,
-            mode: str = "bilinear",
-            antialias: bool = True,
     ):
         super().__init__(in_keys=[key], out_keys=[key])
         self.key = key
-        self.h, self.w = int(h), int(w)
-        self.from_int = from_int
         self.dtype = dtype if dtype is not None else torch.float32
-        self.mode = mode
-        self.antialias = antialias
 
     def _apply_transform(self, obs: torch.Tensor) -> torch.Tensor:
-        # obs is the leaf tensor for self.key; we expect (A,H,W,C)
         if not isinstance(obs, torch.Tensor):
             obs = torch.as_tensor(obs)
-
-        # normalize to [0, 1]
         obs = obs.div(255).to(self.dtype)
-
         if obs.ndim != 4:
             raise ValueError(f"{self.key} must be 4D AHWC, got {tuple(obs.shape)}")
-
-        # Resize through NCHW path for interpolate, then back to AHWC
-        x = obs.permute(0, 3, 1, 2)  # A,C,H,W
-        align = dict(align_corners=False) if self.mode in ("bilinear", "bicubic") else {}
-        x = F.interpolate(x, size=(self.h, self.w), mode=self.mode, antialias=self.antialias, **align)
-        x = x.permute(0, 2, 3, 1).contiguous()  # A,h,w,C
-        return x
+        return obs
 
     def transform_observation_spec(self, obs_spec: Composite) -> Composite:
         leaf = obs_spec[self.key]
-        A, H, W, C = leaf.shape
         obs_spec[self.key] = UnboundedContinuous(
-            shape=torch.Size([A, self.h, self.w, C]),
+            shape=leaf.shape,
             device=leaf.device,
             dtype=self.dtype,
         )
@@ -202,6 +180,8 @@ class VizdoomTask(TaskClass):
             video_fps=cfg["video_fps"],
             verbose=cfg.get("verbose", False),
             daemon=cfg["daemon"],
+            resize_width=128,
+            resize_height=72,
         )
 
     def _build_training_env(self, seed: int, slot_index: int):
@@ -211,7 +191,7 @@ class VizdoomTask(TaskClass):
         )
         env = TransformedEnv(env, Compose(
             SelectTransform(("agent", "observation"), ("agent", "info")),
-            AHWCToTensorResize(key=("agent", "observation"), h=72, w=128, mode="bilinear"),
+            AHWCToTensor(key=("agent", "observation")),
             RemoveEmptySpecs(),
         ))
         env = env.to(cfg.get("sampling_device", "cpu"))
@@ -286,7 +266,7 @@ def main():
     # Env args
     ap.add_argument("--scenario", type=str, default="pitfall_multi_agent")
     ap.add_argument("--num_agents", type=int, default=2)
-    ap.add_argument("--resolution", type=str, default="160X120")
+    ap.add_argument("--resolution", type=str, default="256X144")
     ap.add_argument("--skip_frames", type=int, default=4)
     ap.add_argument("--async-mode", action=BooleanOptionalAction, default=False)
     ap.add_argument("--host_address", type=str, default="127.0.0.1")

@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from typing import Optional
 
+from pettingzoo_wrapper.observation_wrappers import ObservationWrapper
 from pettingzoo_wrapper.base_pettingzoo_env import VizdoomParallelEnv
 from pettingzoo_wrapper.reward_wrappers import PitfallRewardWrapper, HealthGatheringRewardWrapper, RemedyRushRewardWrapper
 from pettingzoo_wrapper.video_recorder import VideoLoggerParallelWrapper
@@ -43,6 +44,8 @@ def make(
         video_fps: int = 35,
         verbose: bool = False,
         daemon: bool = True,
+        resize_width: Optional[int] = None,
+        resize_height: Optional[int] = None,
 ):
     scenario = scenario.lower()
     cfg = config_file if config_file is not None else f"{_SCENARIO_DIR}/{scenario}.cfg"
@@ -66,6 +69,15 @@ def make(
         verbose=verbose,
         daemon=daemon,
     )
+
+    if resize_width is not None or resize_height is not None:
+        if resize_width is None or resize_height is None:
+            raise ValueError("resize_width and resize_height missing")
+        env = ObservationWrapper(
+            env,
+            width=resize_width,
+            height=resize_height,
+        )
 
     if enable_video:
         env = VideoLoggerParallelWrapper(
