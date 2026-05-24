@@ -15,7 +15,7 @@ from tensordict import TensorDictBase
 from torch import nn
 from torchrl.data import Composite
 from torchrl.data.tensor_specs import UnboundedContinuous
-from torchrl.envs import EnvCreator, EnvBase, RemoveEmptySpecs
+from torchrl.envs import EnvBase, RemoveEmptySpecs
 from torchrl.envs import TransformedEnv, Compose
 from torchrl.envs.libs.pettingzoo import MarlGroupMapType, PettingZooWrapper
 from torchrl.envs.transforms import ObservationTransform
@@ -202,7 +202,7 @@ class VizdoomTask(TaskClass):
             slot_index = self._allocate_runtime_slot()
             return self._build_training_env(seed=seed, slot_index=slot_index)
 
-        return EnvCreator(_make)
+        return _make
 
     def action_spec(self, env: EnvBase) -> Composite:
         return env.action_spec
