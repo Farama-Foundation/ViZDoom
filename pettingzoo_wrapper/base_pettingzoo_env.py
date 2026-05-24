@@ -420,7 +420,8 @@ def _match_process_main(conn: Connection, kwargs: dict) -> None:
 
 class VizdoomParallelEnv(VizdoomParallelEnvBase):
     def __init__(self, **kwargs) -> None:
-        self._barrier_timeout = float(kwargs.pop("barrier_timeout", _STEP_TIMEOUT))
+        barrier_timeout = kwargs.pop("barrier_timeout", _STEP_TIMEOUT)
+        self._barrier_timeout = (_STEP_TIMEOUT if barrier_timeout is None else float(barrier_timeout))
         self._daemon = bool(kwargs.get("daemon", True))
         self._slot_index = int(kwargs.pop("slot_index", 0))
         super().__init__(**kwargs)
