@@ -1,4 +1,6 @@
+import time
 from argparse import ArgumentParser, BooleanOptionalAction
+from collections import deque
 from dataclasses import fields
 from datetime import datetime
 from pathlib import Path
@@ -10,6 +12,7 @@ from benchmarl.algorithms import QmixConfig, MasacConfig
 from benchmarl.algorithms.mappo import MappoConfig
 from benchmarl.environments import TaskClass
 from benchmarl.experiment import ExperimentConfig, Experiment
+from benchmarl.experiment.logger import Logger
 from benchmarl.models import CnnConfig
 from tensordict import TensorDictBase
 from torch import nn
@@ -21,6 +24,7 @@ from torchrl.envs.libs.pettingzoo import MarlGroupMapType, PettingZooWrapper
 from torchrl.envs.transforms import ObservationTransform
 from torchrl.envs.transforms import SelectTransform
 from torchrl.envs.transforms.utils import _set_missing_tolerance
+from torchrl.record.loggers.wandb import WandbLogger
 
 from pettingzoo_wrapper import make
 from pettingzoo_wrapper.collector import Collector
@@ -28,6 +32,72 @@ from pettingzoo_wrapper.collector import Collector
 DEFAULT_BASE_UDP_PORT = 40300
 SLOT_PORT_STRIDE = 100
 COLLECTOR_SLOT_INDEX_BASE = 100
+
+
+class WandbLoggingWrapper(Logger):
+    env_step_metric = "_env_steps"
+
+    def __init__(self, *args, skip_frames: int = 1, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._skip_frames = max(1, int(skip_frames))
+        self._env_steps = 0
+        self._fps_samples = deque(maxlen=12)
+        self._has_wandb_logger = any(
+            isinstance(logger, WandbLogger) for logger in self.loggers
+        )
+        self._pending_wandb_metrics = None
+        if self._has_wandb_logger:
+            import wandb
+
+            wandb.define_metric(self.env_step_metric, hidden=True)
+            wandb.define_metric("*", step_metric=self.env_step_metric)
+
+    def _prepare_iteration_metrics(self, total_frames: int):
+        self._env_steps = int(total_frames) * self._skip_frames
+        self._pending_wandb_metrics = None
+        now = time.perf_counter()
+        self._fps_samples.append((now, self._env_steps))
+        if len(self._fps_samples) > 1:
+            t0, env_steps0 = self._fps_samples[0]
+            delta_time = now - t0
+            delta_env_steps = self._env_steps - env_steps0
+            if delta_time > 0 and delta_env_steps > 0:
+                self._pending_wandb_metrics = {
+                    "counters/fps": float(delta_env_steps / delta_time)
+                }
+
+    def log_collection(self, batch: TensorDictBase, task: TaskClass, total_frames: int, step: int):
+        self._prepare_iteration_metrics(total_frames)
+        return super().log_collection(
+            batch=batch,
+            task=task,
+            total_frames=total_frames,
+            step=step,
+        )
+
+    def log_evaluation(self, rollouts, total_frames: int, step: int, video_frames=None):
+        self._env_steps = int(total_frames) * self._skip_frames
+        return super().log_evaluation(
+            rollouts=rollouts,
+            total_frames=total_frames,
+            step=step,
+            video_frames=video_frames,
+        )
+
+    def log(self, dict_to_log: Dict, step: int = None):
+        for logger in self.loggers:
+            if isinstance(logger, WandbLogger):
+                wandb_payload = {
+                    **dict_to_log,
+                    self.env_step_metric: float(self._env_steps),
+                }
+                if self._pending_wandb_metrics is not None:
+                    wandb_payload.update(self._pending_wandb_metrics)
+                logger.experiment.log(wandb_payload, commit=False)
+            else:
+                for key, value in dict_to_log.items():
+                    logger.log_scalar(key.replace("/", "_"), value, step=step)
+        self._pending_wandb_metrics = None
 
 
 class VizdoomExperiment(Experiment):
@@ -59,7 +129,39 @@ class VizdoomExperiment(Experiment):
         original = self.config.wandb_extra_kwargs
         self.config.wandb_extra_kwargs = {**original, **extra}
         try:
-            super()._setup_logger()
+            hparams_kwargs = {
+                "task_name": self.task_name,
+                "algorithm_name": self.algorithm_name,
+                "model_name": self.model_name,
+                "critic_model_name": self.critic_model_name,
+                "experiment_config": self.config.__dict__,
+                "algorithm_config": self.algorithm_config.__dict__,
+                "model_config": self.model_config.__dict__,
+                "critic_model_config": self.critic_model_config.__dict__,
+                "task_config": self.task.config,
+                "continuous_actions": self.continuous_actions,
+                "on_policy": self.on_policy,
+                "environment_name": self.environment_name,
+                "seed": self.seed,
+            }
+            self.logger = WandbLoggingWrapper(
+                experiment_name=self.name,
+                folder_name=str(self.folder_name),
+                experiment_config=self.config,
+                algorithm_name=self.algorithm_name,
+                model_name=self.model_name,
+                environment_name=self.environment_name,
+                task_name=self.task_name,
+                group_map=self.group_map,
+                seed=self.seed,
+                project_name=self.config.project_name,
+                wandb_extra_kwargs={
+                    **self.config.wandb_extra_kwargs,
+                    "config": hparams_kwargs,
+                },
+                skip_frames=self.task.config.get("skip_frames", 1),
+            )
+            self.logger.log_hparams(**hparams_kwargs)
         finally:
             self.config.wandb_extra_kwargs = original
 
