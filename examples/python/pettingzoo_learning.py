@@ -41,11 +41,13 @@ class VizdoomExperiment(Experiment):
 
     def _setup_logger(self):
         num_agents = sum(len(v) for v in self.group_map.values())
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        run_id = (
-            f"{self.algorithm_name}_{self.task_name}"
-            f"_{num_agents}agents_seed{self.seed}_{timestamp}"
-        )
+        run_id = self.task.config.get("run_id")
+        if run_id is None:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            run_id = (
+                f"{self.algorithm_name}_{self.task_name}"
+                f"_{num_agents}agents_seed{self.seed}_{timestamp}"
+            )
 
         extra = {
             "job_type": self.algorithm_name,
@@ -296,7 +298,7 @@ def main():
     ap.add_argument("--parallel_collection", action='store_true', default=False)
 
     # Video recording
-    ap.add_argument("--enable_video", type=bool, default=True)
+    ap.add_argument("--enable_video", action=BooleanOptionalAction, default=True)
     ap.add_argument("--record_every", type=int, default=100)
     ap.add_argument("--video_fps", type=int, default=35)
     ap.add_argument("--render_mode", type=str, default="rgb_array", choices=["rgb_array", "human"])
@@ -312,6 +314,11 @@ def main():
     root_path = Path(__file__).parent.parent.parent
     checkpoints_path = root_path / "checkpoints"
     Path(checkpoints_path).mkdir(parents=True, exist_ok=True)
+    run_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    run_id = (
+        f"{args.algo}_{args.scenario}"
+        f"_{args.num_agents}agents_seed{args.seed}_{run_timestamp}"
+    )
 
     if args.algo not in ALGOS:
         raise NotImplementedError(f"{args.algo} is not currently implemented in this script")
@@ -420,6 +427,7 @@ def main():
         "sampling_device": args.sampling_device,
         "daemon": args.daemon,
         "verbose": args.verbose,
+        "run_id": run_id,
     }
     task = VizdoomTask(task_cfg)
 

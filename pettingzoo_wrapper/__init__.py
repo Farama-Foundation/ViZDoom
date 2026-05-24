@@ -3,8 +3,8 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from pettingzoo_wrapper.observation_wrappers import ObservationWrapper
 from pettingzoo_wrapper.base_pettingzoo_env import VizdoomParallelEnv
+from pettingzoo_wrapper.observation_wrappers import ObservationWrapper
 from pettingzoo_wrapper.reward_wrappers import PitfallRewardWrapper, HealthGatheringRewardWrapper, RemedyRushRewardWrapper
 from pettingzoo_wrapper.video_recorder import VideoLoggerParallelWrapper
 
@@ -47,7 +47,7 @@ def make(
         resize_width: Optional[int] = None,
         resize_height: Optional[int] = None,
 ):
-    scenario = scenario.lower()
+    scenario = scenario.lower() if scenario is not None else None
     cfg = config_file if config_file is not None else f"{_SCENARIO_DIR}/{scenario}.cfg"
 
     env = VizdoomParallelEnv(
@@ -70,9 +70,7 @@ def make(
         daemon=daemon,
     )
 
-    if resize_width is not None or resize_height is not None:
-        if resize_width is None or resize_height is None:
-            raise ValueError("resize_width and resize_height missing")
+    if resize_width is not None and resize_height is not None:
         env = ObservationWrapper(
             env,
             width=resize_width,

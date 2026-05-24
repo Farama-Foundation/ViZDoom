@@ -1,5 +1,8 @@
 import math
+import os
+import tempfile
 
+import imageio.v2 as imageio
 import numpy as np
 import wandb
 from pettingzoo.utils import wrappers
@@ -39,6 +42,21 @@ class VideoLoggerParallelWrapper(wrappers.BaseParallelWrapper):
         self._recording = (self.every_n > 0) and (self._ep_idx % self.every_n == 0)
         self._frames.clear()
 
+    def _normalize_frame(self, frame: np.ndarray) -> np.ndarray:
+        if frame.dtype.kind == "f":
+            frame = np.clip(frame, 0.0, 1.0)
+            frame = (frame * 255.0).astype(np.uint8)
+        else:
+            frame = frame.astype(np.uint8, copy=False)
+
+        if frame.ndim == 2:
+            frame = frame[:, :, None]
+        if frame.shape[-1] == 1:
+            frame = np.repeat(frame, 3, axis=-1)
+        elif frame.shape[-1] > 3:
+            frame = frame[:, :, :3]
+        return np.ascontiguousarray(frame)
+
     def _tile_ahwc(self, per_agent_ahwc: np.ndarray) -> np.ndarray:
         # per_agent_ahwc: (A,H,W,C)
         A, H, W, C = per_agent_ahwc.shape
@@ -49,6 +67,13 @@ class VideoLoggerParallelWrapper(wrappers.BaseParallelWrapper):
             r, c = divmod(i, cols)
             canvas[r * H:(r + 1) * H, c * W:(c + 1) * W] = per_agent_ahwc[i]
         return canvas
+
+    def _push_frame(self, frame: np.ndarray | None):
+        if not self._recording or frame is None:
+            return
+        self._frames.append(self._normalize_frame(frame))
+        if len(self._frames) > self.max_frames:
+            self._frames.pop(0)
 
     def _push_frame_from_obs(self, obs_dict):
         if not self._recording or not obs_dict:
@@ -66,19 +91,61 @@ class VideoLoggerParallelWrapper(wrappers.BaseParallelWrapper):
             frames.append(x)
         ahwc = np.stack(frames, axis=0)  # (A,H,W,C)
         tiled = self._tile_ahwc(ahwc)
-        self._frames.append(tiled)
-        if len(self._frames) > self.max_frames:
-            self._frames.pop(0)
+        self._push_frame(tiled)
+
+    def _capture_frame(self, obs_dict):
+        if getattr(self.env, "render_mode", None) == "rgb_array":
+            frame = self.env.render()
+            if frame is not None:
+                self._push_frame(frame)
+                return
+        self._push_frame_from_obs(obs_dict)
+
+    def _write_video(self, path: str):
+        writer = imageio.get_writer(
+            path,
+            fps=float(self.fps),
+            quality=8,
+            macro_block_size=1,
+        )
+        try:
+            for frame in self._frames:
+                writer.append_data(frame)
+        finally:
+            writer.close()
+
+    def _upload_to_wandb(self, path: str):
+        if getattr(wandb, "run", None) is None:
+            return
+
+        key = f"videos/episode_{self._ep_idx:06d}"
+        try:
+            wandb.log({key: wandb.Video(path, format="mp4")})
+        except Exception as e:
+            print(f"[VideoLogger] wandb log failed: {e}")
 
     def _finalize(self):
         if not self._recording or not self._frames:
             return
-        arr = np.stack(self._frames, axis=0)  # THWC
-        arr = np.transpose(arr, (0, 3, 1, 2))  # TCHW for wandb.Video
+        if not (getattr(wandb, "run", None) is not None):
+            self._frames.clear()
+            return
+        temp_path = None
         try:
-            wandb.log({f"videos/episode_{self._ep_idx}": wandb.Video(arr, fps=self.fps, format="mp4")})
+            with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp:
+                temp_path = tmp.name
+            self._write_video(temp_path)
+            self._upload_to_wandb(temp_path)
         except Exception as e:
-            print(f"[VideoLogger] wandb log failed: {e}")
+            print(f"[VideoLogger] finalize failed: {e}")
+        finally:
+            if temp_path is not None:
+                try:
+                    os.unlink(temp_path)
+                except FileNotFoundError:
+                    pass
+                except Exception as e:
+                    print(f"[VideoLogger] cleanup failed: {e}")
         self._frames.clear()
 
     # ---- PZ ParallelEnv API ----
@@ -87,7 +154,7 @@ class VideoLoggerParallelWrapper(wrappers.BaseParallelWrapper):
         # sync agents list and episode counter
         self.agents = self.env.agents[:]
         self._maybe_enable()
-        self._push_frame_from_obs(obs)
+        self._capture_frame(obs)
         return obs, info
 
     def step(self, actions):
@@ -98,10 +165,15 @@ class VideoLoggerParallelWrapper(wrappers.BaseParallelWrapper):
             self._finalize()
             self._maybe_enable()
 
-        self._push_frame_from_obs(obs)
+        self._capture_frame(obs)
 
         # end of episode if any agent done
         any_done = any(term.values()) or any(trunc.values())
         if any_done:
             self._finalize()
         return obs, rewards, term, trunc, info
+
+    def close(self):
+        if self._frames:
+            self._finalize()
+        return self.env.close()
