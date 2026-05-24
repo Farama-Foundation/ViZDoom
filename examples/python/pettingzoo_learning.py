@@ -1,4 +1,3 @@
-import socket
 from argparse import ArgumentParser, BooleanOptionalAction
 from dataclasses import fields
 from datetime import datetime
@@ -7,6 +6,7 @@ from typing import Dict, Any, Optional
 
 import torch
 import torch.nn.functional as F
+import vizdoom as vzd
 from benchmarl.algorithms import QmixConfig, MasacConfig
 from benchmarl.algorithms.mappo import MappoConfig
 from benchmarl.environments import TaskClass
@@ -24,6 +24,11 @@ from torchrl.envs.transforms import SelectTransform
 from torchrl.envs.transforms.utils import _set_missing_tolerance
 
 from pettingzoo_wrapper import make
+from pettingzoo_wrapper.collector import Collector
+
+DEFAULT_BASE_UDP_PORT = 40300
+SLOT_PORT_STRIDE = 100
+COLLECTOR_SLOT_INDEX_BASE = 100
 
 
 class VizdoomExperiment(Experiment):
@@ -56,6 +61,38 @@ class VizdoomExperiment(Experiment):
             super()._setup_logger()
         finally:
             self.config.wandb_extra_kwargs = original
+
+    def _setup_collector(self):
+        self.policy = self.algorithm.get_policy_for_collection()
+        self.group_policies = {}
+        for group in self.group_map.keys():
+            group_policy = self.policy.select_subsequence(out_keys=[(group, "action")])
+            assert len(group_policy) == 1
+            self.group_policies[group] = group_policy[0]
+
+        group_name = next(iter(self.group_map.keys()))
+        n_agents = len(self.group_map[group_name])
+        collector_kwargs = dict(
+            policy=self.policy,
+            action_spec=self.test_env.input_spec["full_action_spec", group_name, "action"],
+            group_name=group_name,
+            n_agents=n_agents,
+            frames_per_batch=self.config.on_policy_collected_frames_per_batch,
+            num_envs=int(self.config.on_policy_n_envs_per_worker),
+            sampling_device=self.config.sampling_device,
+            seed=self.seed,
+        )
+        def env_builder(seed, slot_index):
+            return self.task.build_parallel_env(
+                seed=seed,
+                slot_index=self.task.collector_slot_index(slot_index),
+                enable_video=False,
+            )
+        collector = Collector(
+            env_builder=env_builder,
+            **collector_kwargs,
+        )
+        self.collector = collector
 
 
 class AHWCToTensorResize(ObservationTransform):
@@ -119,82 +156,85 @@ class AHWCToTensorResize(ObservationTransform):
 class VizdoomTask(TaskClass):
     def __init__(self, config: Dict[str, Any]):
         super().__init__(name=config["scenario"], config=config)
-        # Build a prototype env ONCE to fetch specs
-        proto_env = self.env_creator(seed=config.get("seed", 0))()
-        try:
-            self._action_spec = proto_env.action_spec
-            self._observation_spec = proto_env.observation_spec
-            self._action_mask_spec = getattr(proto_env, "action_mask_spec", None)
-            self._info_spec = getattr(proto_env, "info_spec", None)
-            self._state_spec = getattr(proto_env, "state_spec", None)
-            self._has_render = True
-        finally:
-            proto_env.close()
+        self._next_runtime_slot = 0
 
     @staticmethod
     def env_name() -> str:
         return "vizdoom"
 
-    def env_creator(self, seed: int):
-        # returns an EnvCreator (TorchRL) that builds the env when called
+    def _slot_base_port(self, slot_index: int) -> int:
+        base_port = int(self.config.get("base_port", DEFAULT_BASE_UDP_PORT))
+        return base_port + int(slot_index) * SLOT_PORT_STRIDE
+
+    def _allocate_runtime_slot(self) -> int:
+        slot_index = self._next_runtime_slot
+        self._next_runtime_slot += 1
+        return slot_index
+
+    def collector_slot_index(self, collector_slot: int) -> int:
+        return COLLECTOR_SLOT_INDEX_BASE + int(collector_slot)
+
+    def build_parallel_env(
+            self,
+            seed: int,
+            slot_index: int = 0,
+            enable_video: Optional[bool] = None,
+            async_mode: Optional[bool] = None,
+    ):
+        cfg = self.config
+        base_port = self._slot_base_port(slot_index)
+        return make(
+            scenario=cfg["scenario"],
+            num_agents=cfg["num_agents"],
+            resolution=cfg["resolution"],
+            skip_frames=cfg["skip_frames"],
+            async_mode=cfg["async_mode"],
+            render_mode=cfg["render_mode"],
+            host_address=cfg.get("host_address", "127.0.0.1"),
+            port=base_port,
+            slot_index=slot_index,
+            netmode=cfg["netmode"],
+            ticrate=cfg["ticrate"],
+            use_multi_binary_action_space=False,
+            seed=seed,
+            enable_video=cfg["enable_video"] if enable_video is None else enable_video,
+            record_every=cfg["record_every"],
+            video_fps=cfg["video_fps"],
+            verbose=cfg.get("verbose", False),
+            daemon=cfg["daemon"],
+        )
+
+    def _build_training_env(self, seed: int, slot_index: int):
+        cfg = self.config
+        env = PettingZooWrapper(
+            env=self.build_parallel_env(seed=seed, slot_index=slot_index)
+        )
+        env = TransformedEnv(env, Compose(
+            SelectTransform(("agent", "observation"), ("agent", "info")),
+            AHWCToTensorResize(key=("agent", "observation"), h=72, w=128, mode="bilinear"),
+            RemoveEmptySpecs(),
+        ))
+        env = env.to(cfg.get("sampling_device", "cpu"))
+        return env
+
+    def get_env_fun(self, num_envs: int, continuous_actions: bool, seed: int | None, device=None):
         def _make():
-            cfg = self.config
-            host_address = cfg.get("host_address", "127.0.0.1")
-
-            def _pick_free_port() -> int:
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                    s.bind((host_address, 0))  # 0 = ask OS for a free port
-                    return s.getsockname()[1]
-
-            # ensure each env instance gets its own port
-            port = _pick_free_port()
-
-            pz_env = make(
-                scenario=cfg["scenario"],
-                num_agents=cfg["num_agents"],
-                resolution=cfg["resolution"],
-                skip_frames=cfg["skip_frames"],
-                async_mode=cfg["async_mode"],
-                render_mode=cfg["render_mode"],
-                host_address=host_address,
-                port=port,
-                netmode=cfg["netmode"],
-                ticrate=cfg["ticrate"],
-                use_multi_binary_action_space=False,
-                seed=seed,
-                enable_video=cfg["enable_video"],
-                record_every=cfg["record_every"],
-                video_fps=cfg["video_fps"],
-                daemon=cfg["daemon"],
-            )
-
-            env = PettingZooWrapper(
-                env=pz_env,
-            )
-            env = TransformedEnv(env, Compose(
-                SelectTransform(("agent", "observation"), ("agent", "info")),
-                AHWCToTensorResize(key=("agent", "observation"), h=72, w=128, mode="bilinear"),
-                RemoveEmptySpecs(),
-            ))
-            env = env.to(cfg.get("sampling_device", "cpu"))
-            return env
+            slot_index = self._allocate_runtime_slot()
+            return self._build_training_env(seed=seed, slot_index=slot_index)
 
         return EnvCreator(_make)
 
-    def get_env_fun(self, num_envs: int, continuous_actions: bool, seed: int | None, device=None):
-        return self.env_creator(seed)
-
     def action_spec(self, env: EnvBase) -> Composite:
-        return self._action_spec
+        return env.action_spec
 
     def observation_spec(self, env: EnvBase) -> Composite:
-        return self._observation_spec
+        return env.observation_spec
 
     def action_mask_spec(self, env: EnvBase) -> Optional[Composite]:
-        return self._action_mask_spec
+        return getattr(env, "action_mask_spec", None)
 
     def info_spec(self, env: EnvBase) -> Optional[Composite]:
-        return self._info_spec
+        return getattr(env, "info_spec", None)
 
     def state_spec(self, env: EnvBase) -> Optional[Composite]:
         return None
@@ -221,7 +261,7 @@ class VizdoomTask(TaskClass):
         return MarlGroupMapType.ONE_GROUP_PER_AGENT.get_group_map(agents)
 
     def has_render(self, env: EnvBase) -> bool:
-        return self._has_render
+        return hasattr(env, "render")
 
     def max_steps(self, env: EnvBase) -> int:
         return int(self.config.get("timeout", 1000))
@@ -244,14 +284,14 @@ ALGOS: Dict[str, Any] = {
 def main():
     ap = ArgumentParser()
     # Env args
-    ap.add_argument("--scenario", type=str, default="pitfall")
+    ap.add_argument("--scenario", type=str, default="pitfall_multi_agent")
     ap.add_argument("--num_agents", type=int, default=2)
     ap.add_argument("--resolution", type=str, default="160X120")
     ap.add_argument("--skip_frames", type=int, default=4)
     ap.add_argument("--async-mode", action=BooleanOptionalAction, default=False)
     ap.add_argument("--host_address", type=str, default="127.0.0.1")
     ap.add_argument("--netmode", type=int, default=1)
-    ap.add_argument("--ticrate", type=int, default=35)
+    ap.add_argument("--ticrate", type=int, default=None)
     ap.add_argument("--verbose", action='store_true', default=False)
     ap.add_argument("--daemon", dest="daemon", action=BooleanOptionalAction, default=True)
 
@@ -283,6 +323,12 @@ def main():
 
     args = ap.parse_args()
 
+    torch.set_num_threads(1)
+    torch.set_num_interop_threads(1)
+
+    if not args.async_mode and args.ticrate is not None:
+        raise ValueError("--ticrate can only be set when --async-mode is enabled")
+    args.ticrate = int(args.ticrate) if args.ticrate is not None else vzd.DEFAULT_TICRATE
     root_path = Path(__file__).parent.parent.parent
     checkpoints_path = root_path / "checkpoints"
     Path(checkpoints_path).mkdir(parents=True, exist_ok=True)
@@ -393,6 +439,7 @@ def main():
         "video_fps": args.video_fps,
         "sampling_device": args.sampling_device,
         "daemon": args.daemon,
+        "verbose": args.verbose,
     }
     task = VizdoomTask(task_cfg)
 
