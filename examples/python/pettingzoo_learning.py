@@ -68,7 +68,7 @@ class AHWCToTensorResize(ObservationTransform):
             self,
             key=("agent", "observation"),
             h: int = 72,
-            w: int = 96,
+            w: int = 128,
             from_int: bool | None = None,  # True: /255, False: no, None: auto if not float
             dtype: torch.dtype | None = None,
             mode: str = "bilinear",
@@ -173,7 +173,7 @@ class VizdoomTask(TaskClass):
             )
             env = TransformedEnv(env, Compose(
                 SelectTransform(("agent", "observation"), ("agent", "info")),
-                AHWCToTensorResize(key=("agent", "observation"), h=72, w=96, mode="bilinear"),
+                AHWCToTensorResize(key=("agent", "observation"), h=72, w=128, mode="bilinear"),
                 RemoveEmptySpecs(),
             ))
             env = env.to(cfg.get("sampling_device", "cpu"))
