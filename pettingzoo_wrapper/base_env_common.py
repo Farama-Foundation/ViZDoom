@@ -79,7 +79,7 @@ class VizdoomParallelEnvBase(ParallelEnv):
             resolution: str = "160X120",
             timeout: Optional[int] = None,
             skip_frames: Optional[int] = 1,
-            async_mode: bool = True,
+            async_mode: bool = False,
             host_address: str = "127.0.0.1",
             port: int = 5029,
             netmode: int = 0,

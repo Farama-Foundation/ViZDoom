@@ -122,14 +122,6 @@ class _CollectorEnvSlot:
         self.last_error = self._format_error(reason)
         last_exc: BaseException | None = None
         delay_sec = min(1.0, 0.25 * self.consecutive_failures)
-        status = self.debug_status()
-        print(
-            "[comrad-collector] slot restart "
-            f"slot={self.slot_index} reason={self.last_error} "
-            f"seed={self.last_seed} total_restarts={self.total_restarts} "
-            f"status={status}",
-            flush=True,
-        )
         self.close()
         self.env = None
         self._obs = {}

@@ -9,8 +9,8 @@ from dataclasses import dataclass
 from multiprocessing.connection import Connection
 from typing import Dict, List, Optional
 
-from pettingzoo_wrapper.base_env_common import VizdoomParallelEnvBase, configure_doom_game
-from pettingzoo_wrapper.utils import (
+from .base_env_common import VizdoomParallelEnvBase, configure_doom_game
+from .utils import (
     get_flat_game_vars,
     read_frame,
     reserve_init_slot,
@@ -38,14 +38,6 @@ class _Task:
 
 class _WorkerCrashed(RuntimeError):
     pass
-
-
-def _backend_log(message: str) -> None:
-    print(f"{message}", flush=True)
-
-
-def _worker_log(message: str) -> None:
-    print(f"{message}", flush=True)
 
 
 def _agent_thread(
@@ -179,9 +171,6 @@ def _agent_thread(
                     }
                 )
             except Exception as exc:
-                _worker_log(
-                    f"agent={agent_id} cmd={task.cmd} crashed error={type(exc).__name__}: {exc}"
-                )
                 result_queue.put({"status": "crashed", "error": f"{type(exc).__name__}: {exc}"})
                 break
     finally:
@@ -273,13 +262,7 @@ class _MatchCoordinator:
             self._close_threads()
             self._spawn_threads()
             requested_port = self.base_port + (init_attempt - 1) * _INIT_PORT_STRIDE
-            init_start = time.perf_counter()
             try:
-                _backend_log(
-                    "init start "
-                    f"slot={self.slot_index} seed={self.seed} base_port={self.base_port} "
-                    f"requested_port={requested_port} attempt={init_attempt}/{_MAX_INIT_ATTEMPTS}"
-                )
                 with reserve_init_slot(max_parallel=_MAX_PARALLEL_INIT):
                     with reserve_udp_port(
                         self.host_address,
@@ -293,23 +276,9 @@ class _MatchCoordinator:
                                 time.sleep(_INIT_STAGGER_SEC)
                         self._await_startup()
                 self._init_attempts = init_attempt
-                _backend_log(
-                    "init success "
-                    f"slot={self.slot_index} seed={self.seed} base_port={self.base_port} "
-                    f"port={self._port} attempt={init_attempt}/{_MAX_INIT_ATTEMPTS} "
-                    f"duration={time.perf_counter() - init_start:.2f}s"
-                )
                 return
             except Exception as exc:
                 last_error = exc
-                _backend_log(
-                    "init failure "
-                    f"slot={self.slot_index} seed={self.seed} base_port={self.base_port} "
-                    f"requested_port={requested_port} current_port={self._port} "
-                    f"attempt={init_attempt}/{_MAX_INIT_ATTEMPTS} "
-                    f"duration={time.perf_counter() - init_start:.2f}s "
-                    f"error={type(exc).__name__}: {exc}"
-                )
                 self._close_threads()
                 if init_attempt < _MAX_INIT_ATTEMPTS:
                     time.sleep(min(1.0, 0.2 * init_attempt))
@@ -566,17 +535,21 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
 
     def _recover_after_error(self, phase: str, exc: BaseException) -> None:
         self._last_recovery_phase = phase
-        _backend_log(
-            f"hidden recovery start slot={self._slot_index} phase={phase} "
-            f"base_port={self.port} current_port={self._current_match_port} "
-            f"error={type(exc).__name__}: {exc}"
-        )
+        if self.verbose:
+            print(
+                f"hidden recovery start slot={self._slot_index} phase={phase} "
+                f"base_port={self.port} current_port={self._current_match_port} "
+                f"error={type(exc).__name__}: {exc}",
+                flush=True,
+            )
         self._restart_match_process()
         self._hidden_reset_after_recovery()
-        _backend_log(
-            f"hidden recovery success slot={self._slot_index} phase={phase} "
-            f"base_port={self.port} current_port={self._current_match_port}"
-        )
+        if self.verbose:
+            print(
+                f"hidden recovery success slot={self._slot_index} phase={phase} "
+                f"base_port={self.port} current_port={self._current_match_port}",
+                flush=True,
+            )
 
     def _format_backend_failure(self, phase: str, exc: BaseException) -> RuntimeError:
         return RuntimeError(
@@ -586,7 +559,9 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         )
 
     def reset(self, seed=None, options=None):
-        if seed is not None and int(seed) != int(self._ext_seed):
+        if seed is not None and (
+            self._ext_seed is None or int(seed) != int(self._ext_seed)
+        ):
             self._ext_seed = int(seed)
             self._restart_match_process()
 
