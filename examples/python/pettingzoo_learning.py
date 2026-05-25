@@ -374,6 +374,7 @@ def main():
     ap.add_argument("--skip_frames", type=int, default=4)
     ap.add_argument("--async-mode", action=BooleanOptionalAction, default=False)
     ap.add_argument("--host_address", type=str, default="127.0.0.1")
+    ap.add_argument("--base_port", type=int, default=DEFAULT_BASE_UDP_PORT)
     ap.add_argument("--netmode", type=int, default=1)
     ap.add_argument("--ticrate", type=int, default=None)
     ap.add_argument("--verbose", action='store_true', default=False)
@@ -381,23 +382,23 @@ def main():
 
     # Train args
     ap.add_argument("--algo", type=str, default="mappo", choices=list(ALGOS))
-    ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--total_steps", type=float, default=1e6)
     ap.add_argument("--train_device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--sampling_device", type=str, default="cpu")
     ap.add_argument("--buffer_device", type=str, default="cpu")
-    ap.add_argument("--rollout_steps", type=int, default=256)
-    ap.add_argument("--batch_size", type=int, default=6000)
+    ap.add_argument("--rollout_steps", type=int, default=2048)
+    ap.add_argument("--batch_size", type=int, default=2048)
     ap.add_argument("--lr", type=float, default=5e-5)
     ap.add_argument("--gamma", type=float, default=0.99)
-    ap.add_argument("--gae_lambda", type=float, default=0.9)
-    ap.add_argument("--clip_eps", type=float, default=0.2)
+    ap.add_argument("--gae_lambda", type=float, default=0.95)
+    ap.add_argument("--clip_eps", type=float, default=0.1)
     ap.add_argument("--entropy_coef", type=float, default=0.01)
     ap.add_argument("--vf_coef", type=float, default=1.0)
-    ap.add_argument("--num_minibatches", type=int, default=15)
-    ap.add_argument("--num_epochs", type=int, default=45)
-    ap.add_argument("--num_envs", type=int, default=1)
-    ap.add_argument("--parallel_collection", action='store_true', default=False)
+    ap.add_argument("--num_minibatches", type=int, default=4)
+    ap.add_argument("--num_epochs", type=int, default=8)
+    ap.add_argument("--num_envs", type=int, default=8)
+    ap.add_argument("--parallel_collection", action='store_true', default=False) # This is currently bypassed
 
     # Video recording
     ap.add_argument("--enable_video", action=BooleanOptionalAction, default=True)
@@ -482,6 +483,7 @@ def main():
         "share_policy_params": True,
         "parallel_collection": args.parallel_collection,
         "max_n_frames": int(args.total_steps),
+        "gamma": args.gamma,
         "lr": args.lr,
 
         # on-policy collection
@@ -494,7 +496,7 @@ def main():
         "evaluation": True,
         "render": False,
         "evaluation_interval": args.rollout_steps * 25,
-        "evaluation_episodes": 1,
+        "evaluation_episodes": 5,
         "loggers": ["wandb"],
         "project_name": "benchmarl-vizdoom",
         "save_folder": str(checkpoints_path),
@@ -521,6 +523,7 @@ def main():
         "async_mode": args.async_mode,
         "render_mode": args.render_mode,
         "host_address": args.host_address,
+        "base_port": args.base_port,
         "netmode": args.netmode,
         "ticrate": args.ticrate,
         "enable_video": args.enable_video,
