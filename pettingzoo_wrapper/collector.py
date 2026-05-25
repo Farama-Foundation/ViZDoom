@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 import time
 from typing import Any, Callable, Dict, List, Sequence
@@ -80,32 +81,20 @@ class _CollectorEnvSlot:
         self.ensure_ready()
         return np.stack([self._obs[agent] for agent in self.agent_names], axis=0)
 
-    def step(
-        self, actions: Sequence[Any]
-    ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    def step(self, actions):
         self.ensure_ready()
         if self.env is None or self._episode_reward is None:
             raise RuntimeError("Collector env slot step called before initialization")
 
-        action_dict = {
-            agent: actions[index] for index, agent in enumerate(self.agent_names)
-        }
+        action_dict = {agent: actions[index] for index, agent in enumerate(self.agent_names)}
         next_obs, rewards, terminations, truncations, _ = self.env.step(action_dict)
 
-        reward = np.asarray(
-            [float(rewards[agent]) for agent in self.agent_names], dtype=np.float32
-        ).reshape(self.n_agents, 1)
+        reward = np.asarray([float(rewards[agent]) for agent in self.agent_names], dtype=np.float32).reshape(self.n_agents, 1)
         self._episode_reward += reward
         episode_reward = self._episode_reward.copy()
-        terminated = np.asarray(
-            [bool(terminations[agent]) for agent in self.agent_names], dtype=np.bool_
-        ).reshape(self.n_agents, 1)
-        truncated = np.asarray(
-            [bool(truncations[agent]) for agent in self.agent_names], dtype=np.bool_
-        ).reshape(self.n_agents, 1)
-        next_observation = np.stack(
-            [next_obs[agent] for agent in self.agent_names], axis=0
-        )
+        terminated = np.asarray([bool(terminations[agent]) for agent in self.agent_names], dtype=np.bool_).reshape(self.n_agents, 1)
+        truncated = np.asarray([bool(truncations[agent]) for agent in self.agent_names], dtype=np.bool_).reshape(self.n_agents, 1)
+        next_observation = np.stack([next_obs[agent] for agent in self.agent_names], axis=0)
         done = np.logical_or(terminated, truncated)
 
         if bool(done.any()):
@@ -142,10 +131,7 @@ class _CollectorEnvSlot:
                 self._obs = {}
                 self._episode_reward = None
 
-        raise RuntimeError(
-            f"Collector slot {self.slot_index} failed to recover after "
-            f"{_MAX_SLOT_RECREATE_ATTEMPTS} recreate attempts ({self.last_error})"
-        ) from last_exc
+        raise RuntimeError(f"Collector slot {self.slot_index} failed to recover after "f"{_MAX_SLOT_RECREATE_ATTEMPTS} recreate attempts ({self.last_error})") from last_exc
 
     def debug_status(self) -> Dict[str, Any]:
         if self.env is None:
@@ -191,6 +177,7 @@ class Collector:
         num_envs: int,
         sampling_device: str | torch.device,
         seed: int,
+        parallel_collection: bool = True,
     ) -> None:
         self.policy = policy
         self.action_spec = action_spec
@@ -199,12 +186,19 @@ class Collector:
         self.frames_per_batch = int(frames_per_batch)
         self.num_envs = int(num_envs)
         self.sampling_device = torch.device(sampling_device)
+        self.parallel_collection = bool(parallel_collection) and self.num_envs > 1
         try:
             self.policy_device = next(policy.parameters()).device
         except StopIteration:
             self.policy_device = self.sampling_device
         self._slot_cursor = 0
         self._consecutive_failed_rounds = 0
+        self._step_executor = (
+            ThreadPoolExecutor(
+                max_workers=self.num_envs,
+                thread_name_prefix="vizdoom-collector",
+            ) if self.parallel_collection else None
+        )
 
         if self.num_envs < 1:
             raise ValueError("num_envs must be at least 1")
@@ -221,14 +215,12 @@ class Collector:
     def __iter__(self):
         return self
 
-    def __next__(self) -> TensorDict:
+    def __next__(self):
         transitions: List[_Transition] = []
 
         while len(transitions) < self.frames_per_batch:
             transitions_before_round = len(transitions)
-            slot_indices = self._next_slot_indices(
-                min(self.num_envs, self.frames_per_batch - len(transitions))
-            )
+            slot_indices = self._next_slot_indices(min(self.num_envs, self.frames_per_batch - len(transitions)))
 
             ready_indices = []
             current_obs_np = []
@@ -247,15 +239,15 @@ class Collector:
                 self._register_failed_round()
                 continue
 
-            current_obs = torch.from_numpy(np.stack(current_obs_np, axis=0)).to(torch.float32).div_(255.0)
+            current_obs = (torch.from_numpy(np.stack(current_obs_np, axis=0)).to(torch.float32).div_(255.0))
+            policy_obs = current_obs
+            if self.policy_device.type == "cuda":
+                policy_obs = policy_obs.pin_memory().to(self.policy_device, non_blocking=True)
+            elif self.policy_device != current_obs.device:
+                policy_obs = policy_obs.to(self.policy_device)
 
             policy_td = TensorDict(
-                {
-                    self.group_name: TensorDict(
-                        {"observation": current_obs.to(self.policy_device)},
-                        batch_size=[len(ready_indices), self.n_agents],
-                    )
-                },
+                {self.group_name: TensorDict({"observation": policy_obs}, batch_size=[len(ready_indices), self.n_agents])},
                 batch_size=[len(ready_indices)],
                 device=self.policy_device,
             )
@@ -268,24 +260,11 @@ class Collector:
             current_obs = current_obs.cpu()
             env_actions = self._decode_policy_actions(actions)
 
-            for offset, slot_index in enumerate(ready_indices):
-                env_slot = self._env_slots[slot_index]
-                try:
-                    (
-                        next_obs_np,
-                        reward_np,
-                        episode_reward_np,
-                        done_np,
-                        terminated_np,
-                        truncated_np,
-                    ) = env_slot.step(env_actions[offset])
-                except Exception as exc:
-                    try:
-                        env_slot.restart(exc)
-                    except Exception:
-                        pass
+            for offset, step_result in self._step_ready_slots(ready_indices=ready_indices, env_actions=env_actions):
+                if step_result is None:
                     continue
 
+                next_obs_np, reward_np, episode_reward_np, done_np, terminated_np, truncated_np = step_result
                 next_obs = torch.from_numpy(next_obs_np).to(torch.float32).div_(255.0)
                 done = torch.from_numpy(done_np)
                 terminated = torch.from_numpy(terminated_np)
@@ -317,20 +296,22 @@ class Collector:
 
         return self._stack_transitions(transitions)
 
-    def update_policy_weights_(self) -> None:
+    def update_policy_weights_(self):
         return None
 
     def state_dict(self) -> Dict[str, int]:
         return {"slot_cursor": self._slot_cursor}
 
-    def load_state_dict(self, state_dict: Dict[str, int]) -> None:
+    def load_state_dict(self, state_dict: Dict[str, int]):
         self._slot_cursor = int(state_dict.get("slot_cursor", 0)) % self.num_envs
 
-    def shutdown(self) -> None:
+    def shutdown(self):
         for env_slot in self._env_slots:
             env_slot.close()
+        if self._step_executor is not None:
+            self._step_executor.shutdown(wait=True)
 
-    def _register_failed_round(self) -> None:
+    def _register_failed_round(self):
         self._consecutive_failed_rounds += 1
         if self._consecutive_failed_rounds >= _MAX_FAILED_ROUNDS:
             raise RuntimeError(self._format_failure_summary())
@@ -346,11 +327,7 @@ class Collector:
                 f"last_error={env_slot.last_error},"
                 f"debug_status={env_slot.debug_status()}"
             )
-        return (
-            "Collector could not collect any transitions after "
-            f"{self._consecutive_failed_rounds} consecutive recovery rounds. "
-            + "; ".join(details)
-        )
+        return "Collector could not collect any transitions after {self._consecutive_failed_rounds} consecutive recovery rounds. " + "; ".join(details)
 
     def _next_slot_indices(self, count: int) -> List[int]:
         indices: List[int] = []
@@ -374,9 +351,7 @@ class Collector:
                 [int(action_np[slot_index, agent_index]) for agent_index in range(self.n_agents)]
                 for slot_index in range(action_np.shape[0])
             ]
-        raise TypeError(
-            f"Collector only supports ndarray discrete actions, got {type(action_np)!r}"
-        )
+        raise TypeError(f"Collector only supports ndarray discrete actions, got {type(action_np)!r}")
 
     def _stack_transitions(self, transitions: Sequence[_Transition]) -> TensorDict:
         batch_size = [len(transitions)]
@@ -384,22 +359,14 @@ class Collector:
         action = torch.stack([transition.action for transition in transitions], dim=0)
         log_prob = torch.stack([transition.log_prob for transition in transitions], dim=0)
         reward = torch.stack([transition.reward for transition in transitions], dim=0)
-        episode_reward = torch.stack(
-            [transition.episode_reward for transition in transitions], dim=0
-        )
+        episode_reward = torch.stack([transition.episode_reward for transition in transitions], dim=0)
         done = torch.stack([transition.done for transition in transitions], dim=0)
         terminated = torch.stack([transition.terminated for transition in transitions], dim=0)
         truncated = torch.stack([transition.truncated for transition in transitions], dim=0)
-        next_observation = torch.stack(
-            [transition.next_observation for transition in transitions], dim=0
-        )
+        next_observation = torch.stack([transition.next_observation for transition in transitions], dim=0)
         next_done = torch.stack([transition.next_done for transition in transitions], dim=0)
-        next_terminated = torch.stack(
-            [transition.next_terminated for transition in transitions], dim=0
-        )
-        next_truncated = torch.stack(
-            [transition.next_truncated for transition in transitions], dim=0
-        )
+        next_terminated = torch.stack([transition.next_terminated for transition in transitions], dim=0)
+        next_truncated = torch.stack([transition.next_truncated for transition in transitions], dim=0)
 
         group_td = TensorDict(
             {
@@ -444,3 +411,27 @@ class Collector:
             },
             batch_size=batch_size,
         )
+
+    def _step_env_slot(self, slot_index: int, env_action: Sequence[Any]):
+        env_slot = self._env_slots[slot_index]
+        try:
+            return slot_index, env_slot.step(env_action)
+        except Exception as exc:
+            try:
+                env_slot.restart(exc)
+            except Exception:
+                pass
+            return slot_index, None
+
+    def _step_ready_slots(self, *, ready_indices: Sequence[int], env_actions: Sequence[Sequence[Any]]):
+        slot_actions = list(zip(ready_indices, env_actions))
+        if self._step_executor is None or len(slot_actions) < 2:
+            return [self._step_env_slot(slot_index, env_action) for slot_index, env_action in slot_actions]
+
+        results = {}
+        future_to_slot = {self._step_executor.submit(self._step_env_slot, slot_index, env_action): slot_index for slot_index, env_action in slot_actions}
+        for future in as_completed(future_to_slot):
+            slot_index, step_result = future.result()
+            results[slot_index] = step_result
+
+        return [(slot_index, results.get(slot_index)) for slot_index, _ in slot_actions]

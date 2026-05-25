@@ -184,6 +184,7 @@ class VizdoomExperiment(Experiment):
             num_envs=int(self.config.on_policy_n_envs_per_worker),
             sampling_device=self.config.sampling_device,
             seed=self.seed,
+            parallel_collection=bool(getattr(self.config, "parallel_collection", True)),
         )
         def env_builder(seed, slot_index):
             return self.task.build_parallel_env(
@@ -370,7 +371,7 @@ def main():
     # Env args
     ap.add_argument("--scenario", type=str, default="pitfall_multi_agent")
     ap.add_argument("--num_agents", type=int, default=2)
-    ap.add_argument("--resolution", type=str, default="256X144")
+    ap.add_argument("--resolution", type=str, default="160X120")
     ap.add_argument("--skip_frames", type=int, default=4)
     ap.add_argument("--async-mode", action=BooleanOptionalAction, default=False)
     ap.add_argument("--host_address", type=str, default="127.0.0.1")
@@ -398,7 +399,7 @@ def main():
     ap.add_argument("--num_minibatches", type=int, default=4)
     ap.add_argument("--num_epochs", type=int, default=8)
     ap.add_argument("--num_envs", type=int, default=8)
-    ap.add_argument("--parallel_collection", action='store_true', default=False) # This is currently bypassed
+    ap.add_argument("--parallel_collection", action='store_true', default=True)
 
     # Video recording
     ap.add_argument("--enable_video", action=BooleanOptionalAction, default=True)
