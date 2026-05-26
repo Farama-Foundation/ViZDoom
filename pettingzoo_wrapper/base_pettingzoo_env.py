@@ -17,8 +17,8 @@ from .utils import (
     reserve_udp_port,
 )
 
-ctx = mp.get_context("spawn")
 
+ctx = mp.get_context("fork")
 _INIT_TIMEOUT = 90.0
 _STEP_TIMEOUT = 30.0
 _RESET_TIMEOUT = 30.0

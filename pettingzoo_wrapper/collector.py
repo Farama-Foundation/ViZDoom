@@ -203,14 +203,34 @@ class Collector:
         if self.num_envs < 1:
             raise ValueError("num_envs must be at least 1")
 
-        self._env_slots = [
-            _CollectorEnvSlot(
-                env_builder=env_builder,
-                seed=seed + slot_index * _SLOT_SEED_STRIDE,
-                slot_index=slot_index,
-            )
-            for slot_index in range(self.num_envs)
-        ]
+        self._env_slots = self._build_env_slots(env_builder=env_builder, seed=seed)
+
+    def _build_env_slots(self, *, env_builder, seed):
+        if self.num_envs == 1:
+            return [
+                _CollectorEnvSlot(
+                    env_builder=env_builder,
+                    seed=seed,
+                    slot_index=0,
+                )
+            ]
+
+        slots: List[_CollectorEnvSlot | None] = [None] * self.num_envs
+        with ThreadPoolExecutor(max_workers=self.num_envs, thread_name_prefix="vizdoom-collector-init") as executor:
+            futures = {
+                executor.submit(
+                    _CollectorEnvSlot,
+                    env_builder=env_builder,
+                    seed=seed + slot_index * _SLOT_SEED_STRIDE,
+                    slot_index=slot_index,
+                ): slot_index
+                for slot_index in range(self.num_envs)
+            }
+            for future in as_completed(futures):
+                slot_index = futures[future]
+                slots[slot_index] = future.result()
+
+        return [slot for slot in slots if slot is not None]
 
     def __iter__(self):
         return self
