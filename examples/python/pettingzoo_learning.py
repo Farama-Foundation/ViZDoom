@@ -376,7 +376,7 @@ def main():
     ap.add_argument("--async-mode", action=BooleanOptionalAction, default=False)
     ap.add_argument("--host_address", type=str, default="127.0.0.1")
     ap.add_argument("--base_port", type=int, default=DEFAULT_BASE_UDP_PORT)
-    ap.add_argument("--netmode", type=int, default=1)
+    ap.add_argument("--netmode", type=int, default=0)
     ap.add_argument("--ticrate", type=int, default=None)
     ap.add_argument("--verbose", action='store_true', default=False)
     ap.add_argument("--daemon", dest="daemon", action=BooleanOptionalAction, default=True)

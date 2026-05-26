@@ -62,7 +62,7 @@ def main():
             resolution="800X600",
             render_mode="human",
             seed=42,
-            netmode=1,
+            netmode=0,
             skip_frames=1,
             async_mode=False,
             ticrate=35,
