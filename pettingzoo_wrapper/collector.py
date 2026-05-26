@@ -11,9 +11,9 @@ from tensordict import TensorDict
 from tensordict.nn import TensorDictModuleBase
 from torchrl.envs.utils import ExplorationType, set_exploration_type
 
-_SLOT_SEED_STRIDE = 1_000
+_ENV_INSTANCE_SEED_STRIDE = 1_000
 _RESTART_SEED_STRIDE = 100_000
-_MAX_SLOT_RECREATE_ATTEMPTS = 1
+_MAX_ENV_INSTANCE_RECREATE_ATTEMPTS = 1
 _MAX_FAILED_ROUNDS = 3
 
 
@@ -33,16 +33,16 @@ class _Transition:
     next_truncated: torch.Tensor
 
 
-class _CollectorEnvSlot:
+class _EnvInstance:
     def __init__(
         self,
         env_builder: Callable[[int, int], Any],
         seed: int,
-        slot_index: int,
+        env_instance_index: int,
     ):
         self._env_builder = env_builder
         self._base_seed = int(seed)
-        self.slot_index = int(slot_index)
+        self.env_instance_index = int(env_instance_index)
         self.total_restarts = 0
         self.consecutive_failures = 0
         self.last_seed = self._base_seed
@@ -61,7 +61,7 @@ class _CollectorEnvSlot:
 
     def _recreate_env(self) -> None:
         self.last_seed = self._base_seed + self.total_restarts * _RESTART_SEED_STRIDE
-        env = self._env_builder(self.last_seed, self.slot_index)
+        env = self._env_builder(self.last_seed, self.env_instance_index)
         self.env = env
         self.agent_names = list(env.possible_agents)
         self.n_agents = len(self.agent_names)
@@ -69,13 +69,13 @@ class _CollectorEnvSlot:
 
     def _reset(self) -> None:
         if self.env is None:
-            raise RuntimeError("Collector env slot reset called before env creation")
+            raise RuntimeError("Collector env instance reset called before env creation")
         self._obs, _ = self.env.reset()
         self._episode_reward = np.zeros((self.n_agents, 1), dtype=np.float32)
 
     def ensure_ready(self) -> None:
         if self.env is None or self._episode_reward is None or not self._obs:
-            self.restart("slot was not ready for collection")
+            self.restart("env instance was not ready for collection")
 
     def current_observation(self) -> np.ndarray:
         self.ensure_ready()
@@ -84,7 +84,7 @@ class _CollectorEnvSlot:
     def step(self, actions):
         self.ensure_ready()
         if self.env is None or self._episode_reward is None:
-            raise RuntimeError("Collector env slot step called before initialization")
+            raise RuntimeError("Collector env instance step called before initialization")
 
         action_dict = {agent: actions[index] for index, agent in enumerate(self.agent_names)}
         next_obs, rewards, terminations, truncations, _ = self.env.step(action_dict)
@@ -116,7 +116,7 @@ class _CollectorEnvSlot:
         self._obs = {}
         self._episode_reward = None
 
-        for _ in range(_MAX_SLOT_RECREATE_ATTEMPTS):
+        for _ in range(_MAX_ENV_INSTANCE_RECREATE_ATTEMPTS):
             self.total_restarts += 1
             try:
                 if delay_sec > 0:
@@ -131,12 +131,15 @@ class _CollectorEnvSlot:
                 self._obs = {}
                 self._episode_reward = None
 
-        raise RuntimeError(f"Collector slot {self.slot_index} failed to recover after "f"{_MAX_SLOT_RECREATE_ATTEMPTS} recreate attempts ({self.last_error})") from last_exc
+        raise RuntimeError(
+            f"Collector env instance {self.env_instance_index} failed to recover after "
+            f"{_MAX_ENV_INSTANCE_RECREATE_ATTEMPTS} recreate attempts ({self.last_error})"
+        ) from last_exc
 
     def debug_status(self) -> Dict[str, Any]:
         if self.env is None:
             return {
-                "slot_index": self.slot_index,
+                "env_instance_index": self.env_instance_index,
                 "seed": self.last_seed,
                 "env": "missing",
             }
@@ -146,12 +149,12 @@ class _CollectorEnvSlot:
                 return debug_status()
             except Exception as exc:
                 return {
-                    "slot_index": self.slot_index,
+                    "env_instance_index": self.env_instance_index,
                     "seed": self.last_seed,
                     "debug_status_error": self._format_error(exc),
                 }
         return {
-            "slot_index": self.slot_index,
+            "env_instance_index": self.env_instance_index,
             "seed": self.last_seed,
             "env_type": type(self.env).__name__,
         }
@@ -191,7 +194,7 @@ class Collector:
             self.policy_device = next(policy.parameters()).device
         except StopIteration:
             self.policy_device = self.sampling_device
-        self._slot_cursor = 0
+        self._env_instance_cursor = 0
         self._consecutive_failed_rounds = 0
         self._step_executor = (
             ThreadPoolExecutor(
@@ -203,34 +206,34 @@ class Collector:
         if self.num_envs < 1:
             raise ValueError("num_envs must be at least 1")
 
-        self._env_slots = self._build_env_slots(env_builder=env_builder, seed=seed)
+        self._env_instances = self._build_env_instances(env_builder=env_builder, seed=seed)
 
-    def _build_env_slots(self, *, env_builder, seed):
+    def _build_env_instances(self, *, env_builder, seed):
         if self.num_envs == 1:
             return [
-                _CollectorEnvSlot(
+                _EnvInstance(
                     env_builder=env_builder,
                     seed=seed,
-                    slot_index=0,
+                    env_instance_index=0,
                 )
             ]
 
-        slots: List[_CollectorEnvSlot | None] = [None] * self.num_envs
+        env_instances: List[_EnvInstance | None] = [None] * self.num_envs
         with ThreadPoolExecutor(max_workers=self.num_envs, thread_name_prefix="vizdoom-collector-init") as executor:
             futures = {
                 executor.submit(
-                    _CollectorEnvSlot,
+                    _EnvInstance,
                     env_builder=env_builder,
-                    seed=seed + slot_index * _SLOT_SEED_STRIDE,
-                    slot_index=slot_index,
-                ): slot_index
-                for slot_index in range(self.num_envs)
+                    seed=seed + env_instance_index * _ENV_INSTANCE_SEED_STRIDE,
+                    env_instance_index=env_instance_index,
+                ): env_instance_index
+                for env_instance_index in range(self.num_envs)
             }
             for future in as_completed(futures):
-                slot_index = futures[future]
-                slots[slot_index] = future.result()
+                env_instance_index = futures[future]
+                env_instances[env_instance_index] = future.result()
 
-        return [slot for slot in slots if slot is not None]
+        return [env_instance for env_instance in env_instances if env_instance is not None]
 
     def __iter__(self):
         return self
@@ -240,22 +243,22 @@ class Collector:
 
         while len(transitions) < self.frames_per_batch:
             transitions_before_round = len(transitions)
-            slot_indices = self._next_slot_indices(min(self.num_envs, self.frames_per_batch - len(transitions)))
+            env_instance_indices = self._next_env_instance_indices(min(self.num_envs, self.frames_per_batch - len(transitions)))
 
-            ready_indices = []
+            ready_env_instance_indices = []
             current_obs_np = []
-            for slot_index in slot_indices:
-                env_slot = self._env_slots[slot_index]
+            for env_instance_index in env_instance_indices:
+                env_instance = self._env_instances[env_instance_index]
                 try:
-                    current_obs_np.append(env_slot.current_observation())
-                    ready_indices.append(slot_index)
+                    current_obs_np.append(env_instance.current_observation())
+                    ready_env_instance_indices.append(env_instance_index)
                 except Exception as exc:
                     try:
-                        env_slot.restart(exc)
+                        env_instance.restart(exc)
                     except Exception:
                         pass
 
-            if not ready_indices:
+            if not ready_env_instance_indices:
                 self._register_failed_round()
                 continue
 
@@ -267,8 +270,13 @@ class Collector:
                 policy_obs = policy_obs.to(self.policy_device)
 
             policy_td = TensorDict(
-                {self.group_name: TensorDict({"observation": policy_obs}, batch_size=[len(ready_indices), self.n_agents])},
-                batch_size=[len(ready_indices)],
+                {
+                    self.group_name: TensorDict(
+                        {"observation": policy_obs},
+                        batch_size=[len(ready_env_instance_indices), self.n_agents],
+                    )
+                },
+                batch_size=[len(ready_env_instance_indices)],
                 device=self.policy_device,
             )
 
@@ -280,7 +288,10 @@ class Collector:
             current_obs = current_obs.cpu()
             env_actions = self._decode_policy_actions(actions)
 
-            for offset, step_result in self._step_ready_slots(ready_indices=ready_indices, env_actions=env_actions):
+            for offset, step_result in self._step_ready_env_instances(
+                ready_env_instance_indices=ready_env_instance_indices,
+                env_actions=env_actions,
+            ):
                 if step_result is None:
                     continue
 
@@ -320,14 +331,15 @@ class Collector:
         return None
 
     def state_dict(self) -> Dict[str, int]:
-        return {"slot_cursor": self._slot_cursor}
+        return {"env_instance_cursor": self._env_instance_cursor}
 
     def load_state_dict(self, state_dict: Dict[str, int]):
-        self._slot_cursor = int(state_dict.get("slot_cursor", 0)) % self.num_envs
+        legacy_cursor = state_dict.get("slot_cursor", 0)
+        self._env_instance_cursor = int(state_dict.get("env_instance_cursor", legacy_cursor)) % self.num_envs
 
     def shutdown(self):
-        for env_slot in self._env_slots:
-            env_slot.close()
+        for env_instance in self._env_instances:
+            env_instance.close()
         if self._step_executor is not None:
             self._step_executor.shutdown(wait=True)
 
@@ -338,26 +350,26 @@ class Collector:
 
     def _format_failure_summary(self) -> str:
         details = []
-        for env_slot in self._env_slots:
+        for env_instance in self._env_instances:
             details.append(
-                "slot="
-                f"{env_slot.slot_index}:restarts={env_slot.total_restarts},"
-                f"consecutive_failures={env_slot.consecutive_failures},"
-                f"last_seed={env_slot.last_seed},"
-                f"last_error={env_slot.last_error},"
-                f"debug_status={env_slot.debug_status()}"
+                "env_instance="
+                f"{env_instance.env_instance_index}:restarts={env_instance.total_restarts},"
+                f"consecutive_failures={env_instance.consecutive_failures},"
+                f"last_seed={env_instance.last_seed},"
+                f"last_error={env_instance.last_error},"
+                f"debug_status={env_instance.debug_status()}"
             )
         return "Collector could not collect any transitions after {self._consecutive_failed_rounds} consecutive recovery rounds. " + "; ".join(details)
 
-    def _next_slot_indices(self, count: int) -> List[int]:
+    def _next_env_instance_indices(self, count: int) -> List[int]:
         indices: List[int] = []
         if count <= 0:
             return indices
-        cursor = self._slot_cursor
+        cursor = self._env_instance_cursor
         while len(indices) < count:
             indices.append(cursor)
             cursor = (cursor + 1) % self.num_envs
-        self._slot_cursor = cursor
+        self._env_instance_cursor = cursor
         return indices
 
     def _decode_policy_actions(self, actions: torch.Tensor) -> List[List[Any]]:
@@ -368,8 +380,8 @@ class Collector:
             if action_np.ndim == 1:
                 action_np = action_np.reshape(1, -1)
             return [
-                [int(action_np[slot_index, agent_index]) for agent_index in range(self.n_agents)]
-                for slot_index in range(action_np.shape[0])
+                [int(action_np[env_instance_index, agent_index]) for agent_index in range(self.n_agents)]
+                for env_instance_index in range(action_np.shape[0])
             ]
         raise TypeError(f"Collector only supports ndarray discrete actions, got {type(action_np)!r}")
 
@@ -432,26 +444,26 @@ class Collector:
             batch_size=batch_size,
         )
 
-    def _step_env_slot(self, slot_index: int, env_action: Sequence[Any]):
-        env_slot = self._env_slots[slot_index]
+    def _step_env_instance(self, env_instance_index: int, env_action: Sequence[Any]):
+        env_instance = self._env_instances[env_instance_index]
         try:
-            return slot_index, env_slot.step(env_action)
+            return env_instance_index, env_instance.step(env_action)
         except Exception as exc:
             try:
-                env_slot.restart(exc)
+                env_instance.restart(exc)
             except Exception:
                 pass
-            return slot_index, None
+            return env_instance_index, None
 
-    def _step_ready_slots(self, *, ready_indices: Sequence[int], env_actions: Sequence[Sequence[Any]]):
-        slot_actions = list(zip(ready_indices, env_actions))
-        if self._step_executor is None or len(slot_actions) < 2:
-            return [self._step_env_slot(slot_index, env_action) for slot_index, env_action in slot_actions]
+    def _step_ready_env_instances(self, *, ready_env_instance_indices: Sequence[int], env_actions: Sequence[Sequence[Any]]):
+        env_instance_actions = list(zip(ready_env_instance_indices, env_actions))
+        if self._step_executor is None or len(env_instance_actions) < 2:
+            return [self._step_env_instance(env_instance_index, env_action) for env_instance_index, env_action in env_instance_actions]
 
         results = {}
-        future_to_slot = {self._step_executor.submit(self._step_env_slot, slot_index, env_action): slot_index for slot_index, env_action in slot_actions}
-        for future in as_completed(future_to_slot):
-            slot_index, step_result = future.result()
-            results[slot_index] = step_result
+        future_to_env_instance = {self._step_executor.submit(self._step_env_instance, env_instance_index, env_action): env_instance_index for env_instance_index, env_action in env_instance_actions}
+        for future in as_completed(future_to_env_instance):
+            env_instance_index, step_result = future.result()
+            results[env_instance_index] = step_result
 
-        return [(slot_index, results.get(slot_index)) for slot_index, _ in slot_actions]
+        return [(env_instance_index, results.get(env_instance_index)) for env_instance_index, _ in env_instance_actions]

@@ -36,11 +36,11 @@ class _Task:
     port: Optional[int] = None
 
 
-class _WorkerCrashed(RuntimeError):
+class _AgentWorkerCrashed(RuntimeError):
     pass
 
 
-def _agent_thread(
+def _agent_worker_thread(
     *,
     task_queue: "queue.Queue[_Task]",
     result_queue: "queue.Queue[dict]",
@@ -208,31 +208,31 @@ class _MatchCoordinator:
         self.ticrate = int(ticrate)
         self.seed = seed
         self.verbose = bool(verbose)
-        self._task_queues: List["queue.Queue[_Task]"] = []
-        self._result_queues: List["queue.Queue[dict]"] = []
-        self._threads: List[threading.Thread] = []
+        self._agent_worker_task_queues: List["queue.Queue[_Task]"] = []
+        self._agent_worker_result_queues: List["queue.Queue[dict]"] = []
+        self._agent_worker_threads: List[threading.Thread] = []
         self._port = self.base_port
         self._init_attempts = 0
         self._initialize_match()
 
-    def _close_threads(self) -> None:
-        for task_queue in self._task_queues:
+    def _close_agent_worker_threads(self) -> None:
+        for task_queue in self._agent_worker_task_queues:
             try:
                 task_queue.put(_Task("close"))
             except Exception:
                 pass
-        for thread in self._threads:
+        for thread in self._agent_worker_threads:
             thread.join(timeout=1.0)
-        self._task_queues.clear()
-        self._result_queues.clear()
-        self._threads.clear()
+        self._agent_worker_task_queues.clear()
+        self._agent_worker_result_queues.clear()
+        self._agent_worker_threads.clear()
 
-    def _spawn_threads(self) -> None:
+    def _spawn_agent_worker_threads(self) -> None:
         for agent_id in range(self.num_agents):
             task_queue: "queue.Queue[_Task]" = queue.Queue()
             result_queue: "queue.Queue[dict]" = queue.Queue()
             thread = threading.Thread(
-                target=_agent_thread,
+                target=_agent_worker_thread,
                 kwargs=dict(
                     task_queue=task_queue,
                     result_queue=result_queue,
@@ -252,15 +252,15 @@ class _MatchCoordinator:
                 daemon=True,
             )
             thread.start()
-            self._task_queues.append(task_queue)
-            self._result_queues.append(result_queue)
-            self._threads.append(thread)
+            self._agent_worker_task_queues.append(task_queue)
+            self._agent_worker_result_queues.append(result_queue)
+            self._agent_worker_threads.append(thread)
 
     def _initialize_match(self) -> None:
         last_error: Exception | None = None
         for init_attempt in range(1, _MAX_INIT_ATTEMPTS + 1):
-            self._close_threads()
-            self._spawn_threads()
+            self._close_agent_worker_threads()
+            self._spawn_agent_worker_threads()
             requested_port = self.base_port + (init_attempt - 1) * _INIT_PORT_STRIDE
             try:
                 with reserve_init_slot(max_parallel=_MAX_PARALLEL_INIT):
@@ -270,7 +270,7 @@ class _MatchCoordinator:
                         increment=_INIT_PORT_STRIDE,
                     ) as port:
                         self._port = int(port)
-                        for agent_id, task_queue in enumerate(self._task_queues):
+                        for agent_id, task_queue in enumerate(self._agent_worker_task_queues):
                             task_queue.put(_Task("init", port=self._port))
                             if agent_id + 1 < self.num_agents:
                                 time.sleep(_INIT_STAGGER_SEC)
@@ -279,7 +279,7 @@ class _MatchCoordinator:
                 return
             except Exception as exc:
                 last_error = exc
-                self._close_threads()
+                self._close_agent_worker_threads()
                 if init_attempt < _MAX_INIT_ATTEMPTS:
                     time.sleep(min(1.0, 0.2 * init_attempt))
         raise RuntimeError(
@@ -289,7 +289,7 @@ class _MatchCoordinator:
 
     def _await_startup(self) -> None:
         deadline = time.time() + _INIT_TIMEOUT
-        for agent_id, result_queue in enumerate(self._result_queues):
+        for agent_id, result_queue in enumerate(self._agent_worker_result_queues):
             timeout = max(0.1, deadline - time.time())
             try:
                 result = result_queue.get(timeout=timeout)
@@ -304,12 +304,12 @@ class _MatchCoordinator:
             )
 
     def _dispatch(self, tasks: List[_Task], timeout: float) -> List[dict]:
-        for task_queue, task in zip(self._task_queues, tasks):
+        for task_queue, task in zip(self._agent_worker_task_queues, tasks):
             task_queue.put(task)
 
         results: List[dict] = []
         deadline = time.time() + timeout
-        for agent_id, result_queue in enumerate(self._result_queues):
+        for agent_id, result_queue in enumerate(self._agent_worker_result_queues):
             remaining = max(0.1, deadline - time.time())
             try:
                 result = result_queue.get(timeout=remaining)
@@ -318,7 +318,7 @@ class _MatchCoordinator:
                     f"Agent {agent_id} {tasks[agent_id].cmd} timeout after {timeout:.1f}s"
                 ) from exc
             if isinstance(result, dict) and result.get("status") == "crashed":
-                raise _WorkerCrashed(result.get("error", f"agent {agent_id} crashed"))
+                raise _AgentWorkerCrashed(result.get("error", f"agent {agent_id} crashed"))
             results.append(result)
         return results
 
@@ -380,7 +380,7 @@ class _MatchCoordinator:
         }
 
     def close(self) -> None:
-        self._close_threads()
+        self._close_agent_worker_threads()
 
 
 def _match_process_main(conn: Connection, kwargs: dict) -> None:

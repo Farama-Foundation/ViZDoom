@@ -31,7 +31,7 @@ from pettingzoo_wrapper.collector import Collector
 
 DEFAULT_BASE_UDP_PORT = 40300
 SLOT_PORT_STRIDE = 100
-COLLECTOR_SLOT_INDEX_BASE = 100
+ENV_INSTANCE_INDEX_BASE = 100
 
 
 class WandbLoggingWrapper(Logger):
@@ -186,10 +186,10 @@ class VizdoomExperiment(Experiment):
             seed=self.seed,
             parallel_collection=bool(getattr(self.config, "parallel_collection", True)),
         )
-        def env_builder(seed, slot_index):
+        def env_builder(seed, env_instance_index):
             return self.task.build_parallel_env(
                 seed=seed,
-                slot_index=self.task.collector_slot_index(slot_index),
+                env_instance_index=self.task.env_instance_index(env_instance_index),
                 enable_video=False,
             )
         collector = Collector(
@@ -239,33 +239,33 @@ class AHWCToTensor(ObservationTransform):
 class VizdoomTask(TaskClass):
     def __init__(self, config: Dict[str, Any]):
         super().__init__(name=config["scenario"], config=config)
-        self._next_runtime_slot = 0
+        self._next_env_instance_index = 0
 
     @staticmethod
     def env_name() -> str:
         return "vizdoom"
 
-    def _slot_base_port(self, slot_index: int) -> int:
+    def _env_instance_base_port(self, env_instance_index: int) -> int:
         base_port = int(self.config.get("base_port", DEFAULT_BASE_UDP_PORT))
-        return base_port + int(slot_index) * SLOT_PORT_STRIDE
+        return base_port + int(env_instance_index) * SLOT_PORT_STRIDE
 
-    def _allocate_runtime_slot(self) -> int:
-        slot_index = self._next_runtime_slot
-        self._next_runtime_slot += 1
-        return slot_index
+    def _allocate_env_instance_index(self) -> int:
+        env_instance_index = self._next_env_instance_index
+        self._next_env_instance_index += 1
+        return env_instance_index
 
-    def collector_slot_index(self, collector_slot: int) -> int:
-        return COLLECTOR_SLOT_INDEX_BASE + int(collector_slot)
+    def env_instance_index(self, env_instance_offset: int) -> int:
+        return ENV_INSTANCE_INDEX_BASE + int(env_instance_offset)
 
     def build_parallel_env(
             self,
             seed: int,
-            slot_index: int = 0,
+            env_instance_index: int = 0,
             enable_video: Optional[bool] = None,
             async_mode: Optional[bool] = None,
     ):
         cfg = self.config
-        base_port = self._slot_base_port(slot_index)
+        base_port = self._env_instance_base_port(env_instance_index)
         return make(
             scenario=cfg["scenario"],
             num_agents=cfg["num_agents"],
@@ -275,7 +275,7 @@ class VizdoomTask(TaskClass):
             render_mode=cfg["render_mode"],
             host_address=cfg.get("host_address", "127.0.0.1"),
             port=base_port,
-            slot_index=slot_index,
+            slot_index=env_instance_index,
             netmode=cfg["netmode"],
             ticrate=cfg["ticrate"],
             use_multi_binary_action_space=False,
@@ -289,10 +289,10 @@ class VizdoomTask(TaskClass):
             resize_height=72,
         )
 
-    def _build_training_env(self, seed: int, slot_index: int):
+    def _build_training_env(self, seed: int, env_instance_index: int):
         cfg = self.config
         env = PettingZooWrapper(
-            env=self.build_parallel_env(seed=seed, slot_index=slot_index)
+            env=self.build_parallel_env(seed=seed, env_instance_index=env_instance_index)
         )
         env = TransformedEnv(env, Compose(
             SelectTransform(("agent", "observation"), ("agent", "info")),
@@ -304,8 +304,8 @@ class VizdoomTask(TaskClass):
 
     def get_env_fun(self, num_envs: int, continuous_actions: bool, seed: int | None, device=None):
         def _make():
-            slot_index = self._allocate_runtime_slot()
-            return self._build_training_env(seed=seed, slot_index=slot_index)
+            env_instance_index = self._allocate_env_instance_index()
+            return self._build_training_env(seed=seed, env_instance_index=env_instance_index)
 
         return _make
 
