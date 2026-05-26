@@ -27,7 +27,7 @@ from torchrl.envs.transforms.utils import _set_missing_tolerance
 from torchrl.record.loggers.wandb import WandbLogger
 
 from pettingzoo_wrapper import make
-from pettingzoo_wrapper.collector import Collector
+from pettingzoo_wrapper.rollout_worker import RolloutWorker
 
 DEFAULT_BASE_UDP_PORT = 40300
 SLOT_PORT_STRIDE = 100
@@ -175,7 +175,7 @@ class VizdoomExperiment(Experiment):
 
         group_name = next(iter(self.group_map.keys()))
         n_agents = len(self.group_map[group_name])
-        collector_kwargs = dict(
+        rollout_worker_kwargs = dict(
             policy=self.policy,
             action_spec=self.test_env.input_spec["full_action_spec", group_name, "action"],
             group_name=group_name,
@@ -192,11 +192,11 @@ class VizdoomExperiment(Experiment):
                 env_instance_index=self.task.env_instance_index(env_instance_index),
                 enable_video=False,
             )
-        collector = Collector(
+        rollout_worker = RolloutWorker(
             env_builder=env_builder,
-            **collector_kwargs,
+            **rollout_worker_kwargs,
         )
-        self.collector = collector
+        self.collector = rollout_worker
 
 
 class AHWCToTensor(ObservationTransform):

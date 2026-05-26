@@ -69,7 +69,7 @@ class _EnvInstance:
 
     def _reset(self) -> None:
         if self.env is None:
-            raise RuntimeError("Collector env instance reset called before env creation")
+            raise RuntimeError("RolloutWorker env instance reset called before env creation")
         self._obs, _ = self.env.reset()
         self._episode_reward = np.zeros((self.n_agents, 1), dtype=np.float32)
 
@@ -84,7 +84,7 @@ class _EnvInstance:
     def step(self, actions):
         self.ensure_ready()
         if self.env is None or self._episode_reward is None:
-            raise RuntimeError("Collector env instance step called before initialization")
+            raise RuntimeError("RolloutWorker env instance step called before initialization")
 
         action_dict = {agent: actions[index] for index, agent in enumerate(self.agent_names)}
         next_obs, rewards, terminations, truncations, _ = self.env.step(action_dict)
@@ -132,7 +132,7 @@ class _EnvInstance:
                 self._episode_reward = None
 
         raise RuntimeError(
-            f"Collector env instance {self.env_instance_index} failed to recover after "
+            f"RolloutWorker env instance {self.env_instance_index} failed to recover after "
             f"{_MAX_ENV_INSTANCE_RECREATE_ATTEMPTS} recreate attempts ({self.last_error})"
         ) from last_exc
 
@@ -167,7 +167,7 @@ class _EnvInstance:
                 pass
 
 
-class Collector:
+class RolloutWorker:
     def __init__(
         self,
         *,
@@ -199,7 +199,7 @@ class Collector:
         self._step_executor = (
             ThreadPoolExecutor(
                 max_workers=self.num_envs,
-                thread_name_prefix="vizdoom-collector",
+                thread_name_prefix="vizdoom-rollout-worker",
             ) if self.parallel_collection else None
         )
 
@@ -219,7 +219,7 @@ class Collector:
             ]
 
         env_instances: List[_EnvInstance | None] = [None] * self.num_envs
-        with ThreadPoolExecutor(max_workers=self.num_envs, thread_name_prefix="vizdoom-collector-init") as executor:
+        with ThreadPoolExecutor(max_workers=self.num_envs, thread_name_prefix="vizdoom-rollout-worker-init") as executor:
             futures = {
                 executor.submit(
                     _EnvInstance,
@@ -359,7 +359,7 @@ class Collector:
                 f"last_error={env_instance.last_error},"
                 f"debug_status={env_instance.debug_status()}"
             )
-        return "Collector could not collect any transitions after {self._consecutive_failed_rounds} consecutive recovery rounds. " + "; ".join(details)
+        return "RolloutWorker could not collect any transitions after {self._consecutive_failed_rounds} consecutive recovery rounds. " + "; ".join(details)
 
     def _next_env_instance_indices(self, count: int) -> List[int]:
         indices: List[int] = []
@@ -383,7 +383,7 @@ class Collector:
                 [int(action_np[env_instance_index, agent_index]) for agent_index in range(self.n_agents)]
                 for env_instance_index in range(action_np.shape[0])
             ]
-        raise TypeError(f"Collector only supports ndarray discrete actions, got {type(action_np)!r}")
+        raise TypeError(f"RolloutWorker only supports ndarray discrete actions, got {type(action_np)!r}")
 
     def _stack_transitions(self, transitions: Sequence[_Transition]) -> TensorDict:
         batch_size = [len(transitions)]

@@ -177,7 +177,7 @@ def _agent_worker_thread(
         _close_game()
 
 
-class _MatchCoordinator:
+class _AgentWorkerCoordinator:
     def __init__(
         self,
         *,
@@ -213,7 +213,7 @@ class _MatchCoordinator:
         self._agent_worker_threads: List[threading.Thread] = []
         self._port = self.base_port
         self._init_attempts = 0
-        self._initialize_match()
+        self._initialize_agent_workers()
 
     def _close_agent_worker_threads(self) -> None:
         for task_queue in self._agent_worker_task_queues:
@@ -256,7 +256,7 @@ class _MatchCoordinator:
             self._agent_worker_result_queues.append(result_queue)
             self._agent_worker_threads.append(thread)
 
-    def _initialize_match(self) -> None:
+    def _initialize_agent_workers(self) -> None:
         last_error: Exception | None = None
         for init_attempt in range(1, _MAX_INIT_ATTEMPTS + 1):
             self._close_agent_worker_threads()
@@ -283,7 +283,7 @@ class _MatchCoordinator:
                 if init_attempt < _MAX_INIT_ATTEMPTS:
                     time.sleep(min(1.0, 0.2 * init_attempt))
         raise RuntimeError(
-            "Failed to initialize COMRAD match after retries "
+            "Failed to initialize COMRAD agent workers after retries "
             f"(slot={self.slot_index}, seed={self.seed}, base_port={self.base_port}): {last_error}"
         )
 
@@ -383,10 +383,10 @@ class _MatchCoordinator:
         self._close_agent_worker_threads()
 
 
-def _match_process_main(conn: Connection, kwargs: dict) -> None:
+def _agent_worker_process_main(conn: Connection, kwargs: dict) -> None:
     coordinator = None
     try:
-        coordinator = _MatchCoordinator(**kwargs)
+        coordinator = _AgentWorkerCoordinator(**kwargs)
         conn.send({"status": "ready", **coordinator.debug_status()})
         while True:
             try:
@@ -429,15 +429,15 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         self._process: Optional[ctx.Process] = None
         self._pending_reset_infos: Optional[Dict[str, Dict]] = None
         self._pending_hidden_reset = False
-        self._current_match_port = int(self.port)
+        self._current_agent_worker_port = int(self.port)
         self._last_init_attempts = 0
         self._last_recovery_phase = "none"
-        self._spawn_match_process()
+        self._spawn_agent_worker_process()
 
-    def _spawn_match_process(self) -> None:
+    def _spawn_agent_worker_process(self) -> None:
         parent_conn, child_conn = ctx.Pipe(duplex=True)
         process = ctx.Process(
-            target=_match_process_main,
+            target=_agent_worker_process_main,
             kwargs=dict(
                 conn=child_conn,
                 kwargs=dict(
@@ -462,24 +462,24 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         self._parent_conn = parent_conn
         self._process = process
         message = self._recv_message(timeout=_INIT_TIMEOUT)
-        self._current_match_port = int(message.get("port", self.port))
+        self._current_agent_worker_port = int(message.get("port", self.port))
         self._last_init_attempts = int(message.get("init_attempts", 0))
 
     def _recv_message(self, timeout: float) -> dict:
         if self._parent_conn is None:
-            raise RuntimeError("Match process is not available")
+            raise RuntimeError("Agent worker process is not available")
         if not self._parent_conn.poll(timeout):
             exitcode = None if self._process is None else self._process.exitcode
             raise TimeoutError(
-                f"Match process timeout after {timeout:.1f}s (exitcode={exitcode})"
+                f"Agent worker process timeout after {timeout:.1f}s (exitcode={exitcode})"
             )
         message = self._parent_conn.recv()
         status = message.get("status")
         if status in {"ready", "ok", "closed"}:
             return message
-        raise RuntimeError(message.get("error", "match process failed"))
+        raise RuntimeError(message.get("error", "agent worker process failed"))
 
-    def _shutdown_match_process(self) -> None:
+    def _shutdown_agent_worker_process(self) -> None:
         if self._parent_conn is not None:
             try:
                 self._parent_conn.send({"cmd": "close"})
@@ -503,9 +503,9 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
                 self._process.join(timeout=1.0)
             self._process = None
 
-    def _restart_match_process(self) -> None:
-        self._shutdown_match_process()
-        self._spawn_match_process()
+    def _restart_agent_worker_process(self) -> None:
+        self._shutdown_agent_worker_process()
+        self._spawn_agent_worker_process()
 
     def _hidden_reset_after_recovery(self) -> None:
         assert self._parent_conn is not None
@@ -539,23 +539,23 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         if self.verbose:
             print(
                 f"hidden recovery start slot={self._slot_index} phase={phase} "
-                f"base_port={self.port} current_port={self._current_match_port} "
+                f"base_port={self.port} current_port={self._current_agent_worker_port} "
                 f"error={type(exc).__name__}: {exc}",
                 flush=True,
             )
-        self._restart_match_process()
+        self._restart_agent_worker_process()
         self._hidden_reset_after_recovery()
         if self.verbose:
             print(
                 f"hidden recovery success slot={self._slot_index} phase={phase} "
-                f"base_port={self.port} current_port={self._current_match_port}",
+                f"base_port={self.port} current_port={self._current_agent_worker_port}",
                 flush=True,
             )
 
     def _format_backend_failure(self, phase: str, exc: BaseException) -> RuntimeError:
         return RuntimeError(
             f"COMRAD backend {phase} failed "
-            f"(slot={self._slot_index}, base_port={self.port}, current_port={self._current_match_port}, "
+            f"(slot={self._slot_index}, base_port={self.port}, current_port={self._current_agent_worker_port}, "
             f"init_attempts={self._last_init_attempts}): {type(exc).__name__}: {exc}"
         )
 
@@ -564,7 +564,7 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
             self._ext_seed is None or int(seed) != int(self._ext_seed)
         ):
             self._ext_seed = int(seed)
-            self._restart_match_process()
+            self._restart_agent_worker_process()
 
         def _do_reset():
             assert self._parent_conn is not None
@@ -625,13 +625,13 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
                 raise self._format_backend_failure("step", retry_exc) from first_error
 
     def close(self):
-        self._shutdown_match_process()
+        self._shutdown_agent_worker_process()
 
     def debug_status(self) -> Dict[str, int | str]:
         return {
             "slot_index": self._slot_index,
             "base_port": int(self.port),
-            "current_port": int(self._current_match_port),
+            "current_port": int(self._current_agent_worker_port),
             "seed": -1 if self._ext_seed is None else int(self._ext_seed),
             "init_attempts": int(self._last_init_attempts),
             "hidden_reset_pending": bool(self._pending_hidden_reset),
