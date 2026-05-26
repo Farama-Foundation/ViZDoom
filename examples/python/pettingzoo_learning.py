@@ -494,7 +494,7 @@ def main():
         "on_policy_minibatch_size": on_policy_minibatch_size,
 
         # eval / logging / ckpts
-        "evaluation": False, # Disable as I think this is not necessary + it causes sudden drop in throughput
+        "evaluation": True, # Must be enabled for video logging
         "render": False,
         "evaluation_interval": args.rollout_steps * 25,
         "evaluation_episodes": 5,
