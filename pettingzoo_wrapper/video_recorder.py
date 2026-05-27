@@ -149,6 +149,16 @@ class VideoLoggerParallelWrapper(wrappers.BaseParallelWrapper):
         self._frames.clear()
 
     # ---- PZ ParallelEnv API ----
+    @property
+    def state_space(self):
+        return self.env.state_space
+
+    def state(self):
+        return self.env.state()
+
+    def state_observation(self, agent: str):
+        return self.env.state_observation(agent)
+
     def reset(self, seed: int | None = None, options: dict | None = None):
         obs, info = self.env.reset(seed=seed, options=options)
         # sync agents list and episode counter

@@ -154,8 +154,29 @@ class VizdoomParallelEnvBase(ParallelEnv):
         return self._observation_space
 
     @property
+    def state_space(self) -> spaces.Space:
+        return spaces.Box(
+            0,
+            255,
+            shape=(self.num_agents, *self._obs_shape),
+            dtype=np.uint8,
+        )
+
+    @property
     def num_agents(self) -> int:
         return self._num_agents
+
+    def state_observation(self, agent: str) -> np.ndarray:
+        obs = self._last_frames.get(agent)
+        if obs is None:
+            return np.zeros(self._obs_shape, dtype=np.uint8)
+        return obs
+
+    def state(self) -> np.ndarray:
+        return np.stack(
+            [self.state_observation(agent) for agent in self.possible_agents],
+            axis=0,
+        )
 
     # ------------- action encoding -------------
 

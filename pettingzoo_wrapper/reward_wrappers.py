@@ -39,6 +39,16 @@ class HealthGatheringRewardWrapper(ParallelEnv):
         return self.env.observation_space(agent)
 
     @property
+    def state_space(self):
+        return self.env.state_space
+
+    def state(self):
+        return self.env.state()
+
+    def state_observation(self, agent: str):
+        return self.env.state_observation(agent)
+
+    @property
     def num_agents(self) -> int:
         return getattr(self.env, "num_agents", len(self.possible_agents))
 
@@ -103,6 +113,16 @@ class RemedyRushRewardWrapper(ParallelEnv):
 
     def observation_space(self, agent: str):
         return self.env.observation_space(agent)
+
+    @property
+    def state_space(self):
+        return self.env.state_space
+
+    def state(self):
+        return self.env.state()
+
+    def state_observation(self, agent: str):
+        return self.env.state_observation(agent)
 
     @property
     def num_agents(self) -> int:
@@ -186,6 +206,16 @@ class PitfallRewardWrapper(ParallelEnv):
 
     def observation_space(self, agent: str):
         return self.env.observation_space(agent)
+
+    @property
+    def state_space(self):
+        return self.env.state_space
+
+    def state(self):
+        return self.env.state()
+
+    def state_observation(self, agent: str):
+        return self.env.state_observation(agent)
 
     @property
     def num_agents(self) -> int:

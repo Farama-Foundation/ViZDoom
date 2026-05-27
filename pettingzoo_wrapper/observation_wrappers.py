@@ -48,8 +48,33 @@ class ObservationWrapper(ParallelEnv):
         return self._observation_space
 
     @property
+    def state_space(self):
+        return spaces.Box(
+            low=self._observation_space.low.flat[0],
+            high=self._observation_space.high.flat[0],
+            shape=(self.num_agents, *self._observation_space.shape),
+            dtype=self._observation_space.dtype,
+        )
+
+    @property
     def num_agents(self) -> int:
         return getattr(self.env, "num_agents", len(self.possible_agents))
+
+    def state(self):
+        return np.stack(
+            [self.env_state_observation(agent) for agent in self.possible_agents],
+            axis=0,
+        )
+
+    def env_state_observation(self, agent: str):
+        if hasattr(self.env, "state_observation"):
+            obs = self.env.state_observation(agent)
+        else:
+            obs = getattr(self.env, "_last_frames", {}).get(agent)
+        if obs is None:
+            observation_space = self.env.observation_space(agent)
+            obs = np.zeros(observation_space.shape, dtype=observation_space.dtype)
+        return self._resize_obs(obs)
 
     def reset(
         self,

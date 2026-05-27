@@ -3,7 +3,7 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 import time
-from typing import Any, Callable, Dict, List, Sequence
+from typing import Any, Callable, Dict, List, Optional, Sequence
 
 import numpy as np
 import torch
@@ -20,14 +20,16 @@ _MAX_FAILED_ROUNDS = 3
 @dataclass
 class _Transition:
     observation: torch.Tensor
+    state: Optional[torch.Tensor]
     action: torch.Tensor
-    log_prob: torch.Tensor
+    log_prob: Optional[torch.Tensor]
     reward: torch.Tensor
     episode_reward: torch.Tensor
     done: torch.Tensor
     terminated: torch.Tensor
     truncated: torch.Tensor
     next_observation: torch.Tensor
+    next_state: Optional[torch.Tensor]
     next_done: torch.Tensor
     next_terminated: torch.Tensor
     next_truncated: torch.Tensor
@@ -81,6 +83,12 @@ class _EnvInstance:
         self.ensure_ready()
         return np.stack([self._obs[agent] for agent in self.agent_names], axis=0)
 
+    def current_state(self) -> np.ndarray:
+        self.ensure_ready()
+        if self.env is not None and hasattr(self.env, "state"):
+            return np.asarray(self.env.state())
+        return self.current_observation()
+
     def step(self, actions):
         self.ensure_ready()
         if self.env is None or self._episode_reward is None:
@@ -95,6 +103,10 @@ class _EnvInstance:
         terminated = np.asarray([bool(terminations[agent]) for agent in self.agent_names], dtype=np.bool_).reshape(self.n_agents, 1)
         truncated = np.asarray([bool(truncations[agent]) for agent in self.agent_names], dtype=np.bool_).reshape(self.n_agents, 1)
         next_observation = np.stack([next_obs[agent] for agent in self.agent_names], axis=0)
+        if self.env is not None and hasattr(self.env, "state"):
+            next_state = np.asarray(self.env.state())
+        else:
+            next_state = next_observation
         done = np.logical_or(terminated, truncated)
 
         if bool(done.any()):
@@ -104,7 +116,7 @@ class _EnvInstance:
 
         self.consecutive_failures = 0
         self.last_error = "none"
-        return next_observation, reward, episode_reward, done, terminated, truncated
+        return next_observation, next_state, reward, episode_reward, done, terminated, truncated
 
     def restart(self, reason: BaseException | str) -> None:
         self.consecutive_failures += 1
@@ -181,6 +193,7 @@ class RolloutWorker:
         sampling_device: str | torch.device,
         seed: int,
         parallel_collection: bool = True,
+        collect_state: bool = False,
     ) -> None:
         self.policy = policy
         self.action_spec = action_spec
@@ -190,6 +203,7 @@ class RolloutWorker:
         self.num_envs = int(num_envs)
         self.sampling_device = torch.device(sampling_device)
         self.parallel_collection = bool(parallel_collection) and self.num_envs > 1
+        self.collect_state = bool(collect_state)
         try:
             self.policy_device = next(policy.parameters()).device
         except StopIteration:
@@ -247,10 +261,13 @@ class RolloutWorker:
 
             ready_env_instance_indices = []
             current_obs_np = []
+            current_state_np = []
             for env_instance_index in env_instance_indices:
                 env_instance = self._env_instances[env_instance_index]
                 try:
                     current_obs_np.append(env_instance.current_observation())
+                    if self.collect_state:
+                        current_state_np.append(env_instance.current_state())
                     ready_env_instance_indices.append(env_instance_index)
                 except Exception as exc:
                     try:
@@ -263,6 +280,13 @@ class RolloutWorker:
                 continue
 
             current_obs = (torch.from_numpy(np.stack(current_obs_np, axis=0)).to(torch.float32).div_(255.0))
+            current_state = None
+            if self.collect_state:
+                current_state = (
+                    torch.from_numpy(np.stack(current_state_np, axis=0))
+                    .to(torch.float32)
+                    .div_(255.0)
+                )
             policy_obs = current_obs
             if self.policy_device.type == "cuda":
                 policy_obs = policy_obs.pin_memory().to(self.policy_device, non_blocking=True)
@@ -297,8 +321,11 @@ class RolloutWorker:
                 if step_result is None:
                     continue
 
-                next_obs_np, reward_np, episode_reward_np, done_np, terminated_np, truncated_np = step_result
+                next_obs_np, next_state_np, reward_np, episode_reward_np, done_np, terminated_np, truncated_np = step_result
                 next_obs = torch.from_numpy(next_obs_np).to(torch.float32).div_(255.0)
+                next_state = None
+                if self.collect_state:
+                    next_state = torch.from_numpy(next_state_np).to(torch.float32).div_(255.0)
                 done = torch.from_numpy(done_np)
                 terminated = torch.from_numpy(terminated_np)
                 truncated = torch.from_numpy(truncated_np)
@@ -308,6 +335,7 @@ class RolloutWorker:
                 transitions.append(
                     _Transition(
                         observation=current_obs[offset],
+                        state=None if current_state is None else current_state[offset],
                         action=actions[offset],
                         log_prob=None if log_prob is None else log_prob[offset],
                         reward=torch.from_numpy(reward_np),
@@ -316,6 +344,7 @@ class RolloutWorker:
                         terminated=terminated,
                         truncated=truncated,
                         next_observation=next_obs,
+                        next_state=next_state,
                         next_done=next_done,
                         next_terminated=next_terminated,
                         next_truncated=next_truncated,
@@ -390,6 +419,9 @@ class RolloutWorker:
     def _stack_transitions(self, transitions: Sequence[_Transition]) -> TensorDict:
         batch_size = [len(transitions)]
         observation = torch.stack([transition.observation for transition in transitions], dim=0)
+        state = None
+        if transitions[0].state is not None:
+            state = torch.stack([transition.state for transition in transitions], dim=0)
         action = torch.stack([transition.action for transition in transitions], dim=0)
         reward = torch.stack([transition.reward for transition in transitions], dim=0)
         episode_reward = torch.stack([transition.episode_reward for transition in transitions], dim=0)
@@ -397,6 +429,9 @@ class RolloutWorker:
         terminated = torch.stack([transition.terminated for transition in transitions], dim=0)
         truncated = torch.stack([transition.truncated for transition in transitions], dim=0)
         next_observation = torch.stack([transition.next_observation for transition in transitions], dim=0)
+        next_state = None
+        if transitions[0].next_state is not None:
+            next_state = torch.stack([transition.next_state for transition in transitions], dim=0)
         next_done = torch.stack([transition.next_done for transition in transitions], dim=0)
         next_terminated = torch.stack([transition.next_terminated for transition in transitions], dim=0)
         next_truncated = torch.stack([transition.next_truncated for transition in transitions], dim=0)
@@ -435,16 +470,17 @@ class RolloutWorker:
             },
             batch_size=batch_size,
         )
-        return TensorDict(
-            {
-                self.group_name: group_td,
-                "done": next_done.clone(),
-                "terminated": next_terminated.clone(),
-                "truncated": next_truncated.clone(),
-                "next": next_td,
-            },
-            batch_size=batch_size,
-        )
+        root_data = {
+            self.group_name: group_td,
+            "done": next_done.clone(),
+            "terminated": next_terminated.clone(),
+            "truncated": next_truncated.clone(),
+            "next": next_td,
+        }
+        if state is not None and next_state is not None:
+            root_data["state"] = state
+            next_td["state"] = next_state
+        return TensorDict(root_data, batch_size=batch_size)
 
     def _step_env_instance(self, env_instance_index: int, env_action: Sequence[Any]):
         env_instance = self._env_instances[env_instance_index]

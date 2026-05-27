@@ -215,6 +215,7 @@ class VizdoomExperiment(Experiment):
             sampling_device=self.config.sampling_device,
             seed=self.seed,
             parallel_collection=bool(getattr(self.config, "parallel_collection", True)),
+            collect_state=self.task.config.get("state_source", "none") != "none",
         )
         def env_builder(seed, env_instance_index):
             return self.task.build_parallel_env(
@@ -324,12 +325,20 @@ class VizdoomTask(TaskClass):
         env = PettingZooWrapper(
             env=self.build_parallel_env(seed=seed, env_instance_index=env_instance_index),
             group_map=MarlGroupMapType.ALL_IN_ONE_GROUP,
+            return_state=cfg.get("state_source", "none") != "none",
         )
-        env = TransformedEnv(env, Compose(
-            SelectTransform(("agent", "observation"), ("agent", "info")),
-            AHWCToTensor(key=("agent", "observation")),
-            RemoveEmptySpecs(),
-        ))
+        group_name = next(iter(env.group_map.keys()))
+        selected_keys = [(group_name, "observation"), (group_name, "info")]
+        if cfg.get("state_source", "none") != "none":
+            selected_keys.append("state")
+        transforms = [
+            SelectTransform(*selected_keys),
+            AHWCToTensor(key=(group_name, "observation")),
+        ]
+        if cfg.get("state_source", "none") != "none":
+            transforms.append(AHWCToTensor(key="state"))
+        transforms.append(RemoveEmptySpecs())
+        env = TransformedEnv(env, Compose(*transforms))
         env = env.to(cfg.get("sampling_device", "cpu"))
         return env
 
@@ -353,7 +362,9 @@ class VizdoomTask(TaskClass):
         return getattr(env, "info_spec", None)
 
     def state_spec(self, env: EnvBase) -> Optional[Composite]:
-        return None
+        if self.config.get("state_source", "none") == "none":
+            return None
+        return Composite({"state": env.observation_spec["state"].clone()})
 
     def group_map(self, env=None):
         """
@@ -490,6 +501,7 @@ def main():
     ap.add_argument("--ticrate", type=int, default=None)
     ap.add_argument("--verbose", action='store_true', default=False)
     ap.add_argument("--daemon", dest="daemon", action=BooleanOptionalAction, default=True)
+    ap.add_argument("--state_source", type=str, default="none", choices=["none", "observations"])
 
     # Train args
     ap.add_argument("--algo", type=str, default="mappo", choices=list(ALGOS))
@@ -532,7 +544,7 @@ def main():
     Path(checkpoints_path).mkdir(parents=True, exist_ok=True)
     run_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_id = (
-        f"{args.algo}_{args.scenario}"
+        f"{args.algo}_{args.state_source}_{args.scenario}"
         f"_{args.num_agents}agents_seed{args.seed}_{run_timestamp}"
     )
 
@@ -609,6 +621,7 @@ def main():
         "sampling_device": args.sampling_device,
         "daemon": args.daemon,
         "verbose": args.verbose,
+        "state_source": args.state_source,
         "run_id": run_id,
     }
     task = VizdoomTask(task_cfg)
