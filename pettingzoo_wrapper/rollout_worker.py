@@ -359,7 +359,7 @@ class RolloutWorker:
                 f"last_error={env_instance.last_error},"
                 f"debug_status={env_instance.debug_status()}"
             )
-        return "RolloutWorker could not collect any transitions after {self._consecutive_failed_rounds} consecutive recovery rounds. " + "; ".join(details)
+        return f"RolloutWorker could not collect any transitions after {self._consecutive_failed_rounds} consecutive recovery rounds. " + "; ".join(details)
 
     def _next_env_instance_indices(self, count: int) -> List[int]:
         indices: List[int] = []
