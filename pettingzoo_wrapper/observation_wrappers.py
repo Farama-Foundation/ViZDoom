@@ -24,7 +24,12 @@ class ObservationWrapper(ParallelEnv):
         self.metadata = getattr(env, "metadata", {})
 
         sample_space = env.observation_space(self.possible_agents[0])
-        channels = 1 if len(sample_space.shape) < 3 else sample_space.shape[-1]
+        if not isinstance(sample_space, spaces.Box):
+            raise TypeError("ObservationWrapper requires Box observation spaces")
+        sample_shape = sample_space.shape
+        if sample_shape is None:
+            raise ValueError("Observation space shape must be defined")
+        channels = 1 if len(sample_shape) < 3 else sample_shape[-1]
         self._observation_space = spaces.Box(
             low=sample_space.low.flat[0],
             high=sample_space.high.flat[0],
@@ -33,12 +38,16 @@ class ObservationWrapper(ParallelEnv):
         )
 
     def _resize_obs(self, obs: np.ndarray) -> np.ndarray:
-        resized = cv2.resize(obs, (self.width, self.height), interpolation=self.interpolation)
+        resized = cv2.resize(
+            obs, (self.width, self.height), interpolation=self.interpolation
+        )
         if resized.ndim == 2:
             resized = resized[:, :, None]
         return resized
 
-    def _resize_obs_dict(self, obs_dict: Dict[str, np.ndarray]) -> Dict[str, np.ndarray]:
+    def _resize_obs_dict(
+        self, obs_dict: Dict[str, np.ndarray]
+    ) -> Dict[str, np.ndarray]:
         return {agent: self._resize_obs(obs) for agent, obs in obs_dict.items()}
 
     def action_space(self, agent: str):
@@ -77,7 +86,12 @@ class ObservationWrapper(ParallelEnv):
             obs = getattr(self.env, "_last_frames", {}).get(agent)
         if obs is None:
             observation_space = self.env.observation_space(agent)
-            obs = np.zeros(observation_space.shape, dtype=observation_space.dtype)
+            if not isinstance(observation_space, spaces.Box):
+                raise TypeError("ObservationWrapper requires Box observation spaces")
+            observation_shape = observation_space.shape
+            if observation_shape is None:
+                raise ValueError("Observation space shape must be defined")
+            obs = np.zeros(observation_shape, dtype=observation_space.dtype)
         return self._resize_obs(obs)
 
     def reset(

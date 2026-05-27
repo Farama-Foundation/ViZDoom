@@ -5,33 +5,33 @@ from __future__ import annotations
 
 import math
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import cv2
 import numpy as np
 import pygame
-import vizdoom as vzd
 from gymnasium import spaces
 from pettingzoo import ParallelEnv
-from vizdoom import Mode
 
+import vizdoom as vzd
 from pettingzoo_wrapper.utils import discover_buttons, get_screen_resolution, parse_hw
+from vizdoom import Mode
 
 
 def configure_doom_game(
-        *,
-        config_path: str,
-        resolution: str,
-        ticrate: int,
-        async_mode: bool,
-        timeout: Optional[int],
-        seed: Optional[int],
-        is_host: bool,
-        num_agents: int,
-        host_address: str,
-        port: int,
-        netmode: int,
-        agent_idx: int,
+    *,
+    config_path: str,
+    resolution: str,
+    ticrate: int,
+    async_mode: bool,
+    timeout: int | None,
+    seed: int | None,
+    is_host: bool,
+    num_agents: int,
+    host_address: str,
+    port: int,
+    netmode: int,
+    agent_idx: int,
 ) -> vzd.DoomGame:
     """
     Create and configure a DoomGame instance without calling game.init().
@@ -72,24 +72,24 @@ class VizdoomParallelEnvBase(ParallelEnv):
     """
 
     def __init__(
-            self,
-            *,
-            config_file: str,
-            num_agents: int = 2,
-            resolution: str = "160X120",
-            timeout: Optional[int] = None,
-            skip_frames: Optional[int] = 1,
-            async_mode: bool = False,
-            host_address: str = "127.0.0.1",
-            port: int = 5029,
-            netmode: int = 0,
-            ticrate: int = vzd.DEFAULT_TICRATE,
-            render_mode: Optional[str] = None,
-            use_multi_binary_action_space: bool = False,
-            simple_discrete: bool = True,
-            seed: Optional[int] = None,
-            verbose: bool = False,
-            daemon: bool = True,
+        self,
+        *,
+        config_file: str,
+        num_agents: int = 2,
+        resolution: str = "160X120",
+        timeout: int | None = None,
+        skip_frames: int | None = 1,
+        async_mode: bool = False,
+        host_address: str = "127.0.0.1",
+        port: int = 5029,
+        netmode: int = 0,
+        ticrate: int = vzd.DEFAULT_TICRATE,
+        render_mode: str | None = None,
+        use_multi_binary_action_space: bool = False,
+        simple_discrete: bool = True,
+        seed: int | None = None,
+        verbose: bool = False,
+        daemon: bool = True,
     ) -> None:
         assert num_agents >= 1
         self.config_file = config_file
@@ -109,20 +109,24 @@ class VizdoomParallelEnvBase(ParallelEnv):
         self.verbose = verbose
         self.daemon = daemon
 
-        self.possible_agents: List[str] = [f"agent_{i}" for i in range(self._num_agents)]
-        self.agents: List[str] = self.possible_agents[:]
+        self.possible_agents: list[str] = [
+            f"agent_{i}" for i in range(self._num_agents)
+        ]
+        self.agents: list[str] = self.possible_agents[:]
 
         self._delta_count, self._binary_count = discover_buttons(config_file)
-        self._simple_n = (3 ** self._delta_count) * (2 ** self._binary_count)
+        self._simple_n = (3**self._delta_count) * (2**self._binary_count)
         self._act_len = self._delta_count + self._binary_count
         self._action_space = self._build_action_space()
 
         w, h = parse_hw(resolution)
         self._obs_shape = (h, w, 3)
-        self._observation_space = spaces.Box(0, 255, shape=self._obs_shape, dtype=np.uint8)
+        self._observation_space = spaces.Box(
+            0, 255, shape=self._obs_shape, dtype=np.uint8
+        )
 
-        self._last_frames: Dict[str, np.ndarray] = {}
-        self._screen: Optional[pygame.Surface] = None
+        self._last_frames: dict[str, np.ndarray] = {}
+        self._screen: pygame.Surface | None = None
 
     # ------------- space helpers -------------
 
@@ -133,10 +137,12 @@ class VizdoomParallelEnvBase(ParallelEnv):
             return self._binary_space()
         if self._binary_count == 0:
             return self._continuous_space()
-        return spaces.Dict({
-            "binary": self._binary_space(),
-            "continuous": self._continuous_space(),
-        })
+        return spaces.Dict(
+            {
+                "binary": self._binary_space(),
+                "continuous": self._continuous_space(),
+            }
+        )
 
     def _binary_space(self) -> spaces.Space:
         if self.use_multi_binary_action_space:
@@ -200,7 +206,7 @@ class VizdoomParallelEnvBase(ParallelEnv):
             return np.zeros((self._delta_count,), dtype=np.float32)
         raise NotImplementedError(type(self._action_space))
 
-    def _decode_simple_discrete(self, idx: int) -> List[float]:
+    def _decode_simple_discrete(self, idx: int) -> list[float]:
         """Decode a Discrete index -> flat [delta..., binary...] list for ViZDoom.
 
         Deltas are radix-3 mapped {0,1,2} -> {-1,0,+1}; binaries are radix-2.
@@ -216,27 +222,37 @@ class VizdoomParallelEnvBase(ParallelEnv):
             x //= 3
         return out.tolist()
 
-    def _encode_env_action(self, agent_action: Any) -> List[float]:
+    def _encode_env_action(self, agent_action: Any) -> list[float]:
         if self.simple_discrete:
             return self._decode_simple_discrete(int(agent_action))
         out = np.zeros((self._act_len,), dtype=np.float32)
         if isinstance(self._action_space, spaces.Dict):
             if self._delta_count:
-                cont = agent_action["continuous"] if isinstance(agent_action, dict) else agent_action[0]
+                cont = (
+                    agent_action["continuous"]
+                    if isinstance(agent_action, dict)
+                    else agent_action[0]
+                )
                 out[: self._delta_count] = np.asarray(cont, dtype=np.float32)
             if self._binary_count:
-                bin_act = agent_action["binary"] if isinstance(agent_action, dict) else agent_action[1]
-                out[self._delta_count:] = np.asarray(bin_act, dtype=np.float32).reshape(-1)
+                bin_act = (
+                    agent_action["binary"]
+                    if isinstance(agent_action, dict)
+                    else agent_action[1]
+                )
+                out[self._delta_count :] = np.asarray(
+                    bin_act, dtype=np.float32
+                ).reshape(-1)
         else:
             if self._delta_count:
                 out[: self._delta_count] = np.asarray(agent_action, dtype=np.float32)
             else:
-                out[self._delta_count:] = np.asarray(agent_action, dtype=np.float32)
+                out[self._delta_count :] = np.asarray(agent_action, dtype=np.float32)
         return out.tolist()
 
     # ------------------- rendering -------------------
 
-    def render(self) -> Optional[np.ndarray]:
+    def render(self) -> np.ndarray | None:
         if self.render_mode is None or not self._last_frames:
             return None
         frames = [self._last_frames[a] for a in self.agents if a in self._last_frames]
@@ -281,5 +297,5 @@ class VizdoomParallelEnvBase(ParallelEnv):
                     frame = cv2.resize(frame, (sw, sh))
                 col, row = i % cols, i // cols
                 x, y = col * sw, row * sh
-                canvas[y: y + sh, x: x + sw] = frame[:sh, :sw]
+                canvas[y : y + sh, x : x + sw] = frame[:sh, :sw]
             return canvas

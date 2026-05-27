@@ -8,36 +8,46 @@ from __future__ import annotations
 
 import multiprocessing as mp
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import numpy as np
-from vizdoom import GameVariable
 
-from vizdoom.pettingzoo_wrapper.base_env_common import VizdoomParallelEnvBase, configure_doom_game
-from vizdoom.pettingzoo_wrapper.utils import get_flat_game_vars, parse_hw, read_frame, sync_agent_init
+from vizdoom import GameVariable
+from vizdoom.pettingzoo_wrapper.base_env_common import (
+    VizdoomParallelEnvBase,
+    configure_doom_game,
+)
+from vizdoom.pettingzoo_wrapper.utils import (
+    get_flat_game_vars,
+    parse_hw,
+    read_frame,
+    sync_agent_init,
+)
+
 
 ctx = mp.get_context("spawn")
 
 
 # ------------------------- child process worker ---------------------------
 
+
 def _agent_process(
-        *,
-        pipe_end,
-        config_path: str,
-        resolution: str,
-        timeout: int,
-        skip_frames: Optional[int],
-        num_agents: int,
-        agent_idx: int,
-        is_host: bool,
-        host_address: str,
-        port: int,
-        async_mode: bool,
-        netmode: int,
-        ticrate: int,
-        seed: Optional[int],
-        verbose: bool,
+    *,
+    pipe_end,
+    config_path: str,
+    resolution: str,
+    timeout: int,
+    skip_frames: int | None,
+    num_agents: int,
+    agent_idx: int,
+    is_host: bool,
+    host_address: str,
+    port: int,
+    async_mode: bool,
+    netmode: int,
+    ticrate: int,
+    seed: int | None,
+    verbose: bool,
 ) -> None:
     agent = "host" if is_host else f"peer{agent_idx}"
     game = configure_doom_game(
@@ -60,6 +70,7 @@ def _agent_process(
     try:
         if not is_host:
             import random
+
             time.sleep(0.5 + random.uniform(0.5, 1.0))
             game.add_game_args("+viz_connect_timeout 45")
         game.init()
@@ -78,7 +89,9 @@ def _agent_process(
 
     max_players = int(game.get_game_variable(GameVariable.USER1))
     if num_agents > max_players:
-        raise ValueError(f"Scenario supports {max_players} players, but {num_agents} were requested.")
+        raise ValueError(
+            f"Scenario supports {max_players} players, but {num_agents} were requested."
+        )
 
     available_game_vars = game.get_available_game_variables()
     frames_per_step = skip_frames if skip_frames else 1
@@ -102,12 +115,14 @@ def _agent_process(
                     "step": steps,
                 }
                 info.update(get_flat_game_vars(state, available_game_vars))
-                pipe_end.send({
-                    "obs": read_frame(state, resolution),
-                    "reward": 0.0,
-                    "terminated": False,
-                    "info": info,
-                })
+                pipe_end.send(
+                    {
+                        "obs": read_frame(state, resolution),
+                        "reward": 0.0,
+                        "terminated": False,
+                        "info": info,
+                    }
+                )
                 steps = 0
 
             elif cmd == "step":
@@ -116,7 +131,9 @@ def _agent_process(
                 is_dead = game.is_player_dead()
                 if is_dead:
                     if verbose:
-                        print(f"Player {agent} respawning at step {game.get_episode_time()}...")
+                        print(
+                            f"Player {agent} respawning at step {game.get_episode_time()}..."
+                        )
                     game.respawn_player()
                     reward = 0.0
                 else:
@@ -127,7 +144,9 @@ def _agent_process(
 
                 terminated = game.is_episode_finished()
                 if verbose and terminated:
-                    print(f"Player {agent} terminated at step {game.get_episode_time()}")
+                    print(
+                        f"Player {agent} terminated at step {game.get_episode_time()}"
+                    )
                 state = game.get_state()
                 info = {
                     "num_frames": frames_per_step,
@@ -136,13 +155,15 @@ def _agent_process(
                     "step": steps,
                 }
                 info.update(get_flat_game_vars(state, available_game_vars))
-                pipe_end.send({
-                    "obs": read_frame(state, resolution),
-                    "reward": reward,
-                    "terminated": terminated,
-                    "truncated": terminated,
-                    "info": info,
-                })
+                pipe_end.send(
+                    {
+                        "obs": read_frame(state, resolution),
+                        "reward": reward,
+                        "terminated": terminated,
+                        "truncated": terminated,
+                        "info": info,
+                    }
+                )
                 steps += frames_per_step
 
             elif cmd == "close":
@@ -151,7 +172,13 @@ def _agent_process(
             else:
                 h, w = parse_hw(resolution)
                 pipe_end.send(
-                    {"obs": np.zeros((h, w, 3), dtype=np.uint8), "reward": 0.0, "terminated": False, "info": {}})
+                    {
+                        "obs": np.zeros((h, w, 3), dtype=np.uint8),
+                        "reward": 0.0,
+                        "terminated": False,
+                        "info": {},
+                    }
+                )
     finally:
         try:
             game.close()
@@ -165,8 +192,8 @@ def _agent_process(
 
 # -------------------------- main PettingZoo env ---------------------------
 
-class VizdoomParallelEnv(VizdoomParallelEnvBase):
 
+class VizdoomParallelEnv(VizdoomParallelEnvBase):
     def __init__(self, **kwargs) -> None:
         timeout = kwargs.get("timeout")
         skip_frames = kwargs.get("skip_frames", 1)
@@ -177,7 +204,7 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         super().__init__(**kwargs)
 
         self._pipes_parent = []
-        self._procs: List[ctx.Process] = []
+        self._procs: list[ctx.Process] = []
 
         for i in range(self._num_agents):
             parent_end, child_end = ctx.Pipe(duplex=True)
@@ -209,12 +236,12 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         sync_agent_init(self._pipes_parent, self._procs)
 
         self._frames_advanced = 0
-        self._terminations: Dict[str, bool] = {a: False for a in self.agents}
-        self._truncations: Dict[str, bool] = {a: False for a in self.agents}
+        self._terminations: dict[str, bool] = {a: False for a in self.agents}
+        self._truncations: dict[str, bool] = {a: False for a in self.agents}
 
     # ------------- PZ API -------------
 
-    def reset(self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None):
+    def reset(self, seed: int | None = None, options: dict[str, Any] | None = None):
         if seed is not None:
             self._ext_seed = int(seed)
         self._frames_advanced = 0
@@ -234,29 +261,34 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
             else:
                 raise TimeoutError(f"Agent {i} reset timeout: 30s")
 
-        obs: Dict[str, np.ndarray] = {}
-        infos: Dict[str, Dict[str, Any]] = {}
+        obs: dict[str, np.ndarray] = {}
+        infos: dict[str, dict[str, Any]] = {}
         for i, agent in enumerate(self.agents):
             frame = results[i]["obs"]
             c = frame.shape[2]
             if c != self._obs_shape[2]:
                 self._obs_shape = (self._obs_shape[0], self._obs_shape[1], c)
                 from gymnasium import spaces
-                self._observation_space = spaces.Box(0, 255, shape=self._obs_shape, dtype=np.uint8)
+
+                self._observation_space = spaces.Box(
+                    0, 255, shape=self._obs_shape, dtype=np.uint8
+                )
             obs[agent] = frame
             infos[agent] = results[i].get("info", {})
             self._last_frames[agent] = frame
 
         return obs, infos
 
-    def step(self, actions: Dict[str, Any]):
+    def step(self, actions: dict[str, Any]):
         # Encode all actions upfront
-        flat_actions: List[List[float]] = []
+        flat_actions: list[list[float]] = []
         for agent in self.agents:
             a = actions.get(agent, self._noop_action())
             env_action = self._encode_env_action(a)
             if len(env_action) != self._act_len:
-                raise ValueError(f"Encoded action length {len(env_action)} != expected {self._act_len}")
+                raise ValueError(
+                    f"Encoded action length {len(env_action)} != expected {self._act_len}"
+                )
             flat_actions.append(env_action)
 
         for i in range(len(self.agents)):
@@ -272,9 +304,9 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
             else:
                 raise TimeoutError(f"Agent {i} step timeout: 30s")
 
-        observations: Dict[str, np.ndarray] = {}
-        rewards: Dict[str, float] = {}
-        infos: Dict[str, Dict[str, Any]] = {}
+        observations: dict[str, np.ndarray] = {}
+        rewards: dict[str, float] = {}
+        infos: dict[str, dict[str, Any]] = {}
 
         for i, agent in enumerate(self.agents):
             r = results[i]
@@ -284,7 +316,9 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
             infos[agent] = r.get("info", {})
             self._last_frames[agent] = r["obs"]
 
-        frames_advanced = next(iter(infos.values())).get("num_frames", 1) if infos else 1
+        frames_advanced = (
+            next(iter(infos.values())).get("num_frames", 1) if infos else 1
+        )
         self._frames_advanced += int(frames_advanced)
         if self._timeout is not None and self._frames_advanced >= self._timeout:
             for a in self.agents:
@@ -300,7 +334,13 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
             for a in self.agents:
                 self._truncations[a] = True
 
-        return observations, rewards, self._terminations.copy(), self._truncations.copy(), infos
+        return (
+            observations,
+            rewards,
+            self._terminations.copy(),
+            self._truncations.copy(),
+            infos,
+        )
 
     def close(self):
         for i, (pipe, proc) in enumerate(zip(self._pipes_parent, self._procs)):
@@ -355,6 +395,7 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         if self._screen is not None:
             try:
                 import pygame
+
                 pygame.quit()
             except Exception:
                 pass

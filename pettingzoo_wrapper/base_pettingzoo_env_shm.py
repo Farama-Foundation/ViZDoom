@@ -12,13 +12,16 @@ import os
 import shutil
 import tempfile
 import time
-from multiprocessing import Process, Event, shared_memory, Array, Value
-from typing import Dict, List, Optional
+from multiprocessing import Array, Event, Process, Value, shared_memory
 
 import numpy as np
 
-from vizdoom.pettingzoo_wrapper.base_env_common import VizdoomParallelEnvBase, configure_doom_game
+from vizdoom.pettingzoo_wrapper.base_env_common import (
+    VizdoomParallelEnvBase,
+    configure_doom_game,
+)
 from vizdoom.pettingzoo_wrapper.utils import get_flat_game_vars, read_frame
+
 
 ctx = mp.get_context("spawn")
 
@@ -28,36 +31,38 @@ _INIT_TIMEOUT = 90.0  # seconds to wait for each worker to finish game.init()
 
 # ------------------------- helpers ---------------------------
 
+
 def _write_info_to_mem(info: dict, shared_command: dict) -> None:
     info_bytes = json.dumps(info).encode()
-    info_bytes += b'\x00' * (1024 - len(info_bytes))
-    shared_command['info'][:] = info_bytes
+    info_bytes += b"\x00" * (1024 - len(info_bytes))
+    shared_command["info"][:] = info_bytes
 
 
 # ------------------------- child process worker ---------------------------
 
+
 def agent_process(
-        *,
-        shared_command,
-        step_event,
-        all_done_event,
-        num_completed,
-        shm_name: str,
-        obs_shape,
-        agent_id: int,
-        config_path: str,
-        resolution: str,
-        timeout: int,
-        skip_frames: Optional[int],
-        num_agents: int,
-        is_host: bool,
-        host_address: str,
-        port: int,
-        async_mode: bool,
-        netmode: int,
-        ticrate: int,
-        seed: Optional[int],
-        verbose: bool,
+    *,
+    shared_command,
+    step_event,
+    all_done_event,
+    num_completed,
+    shm_name: str,
+    obs_shape,
+    agent_id: int,
+    config_path: str,
+    resolution: str,
+    timeout: int,
+    skip_frames: int | None,
+    num_agents: int,
+    is_host: bool,
+    host_address: str,
+    port: int,
+    async_mode: bool,
+    netmode: int,
+    ticrate: int,
+    seed: int | None,
+    verbose: bool,
 ) -> None:
     agent = "host" if is_host else f"peer{agent_id}"
     agent_workdir = tempfile.mkdtemp(prefix=f"vizdoom_pz_agent{agent_id}_")
@@ -82,12 +87,12 @@ def agent_process(
     try:
         game.init()
         game.send_game_command("viz_respawn_delay 0")
-    except Exception as e:
-        shared_command['init_error'].value = True
+    except Exception:
+        shared_command["init_error"].value = True
         raise
 
     # Signal to the parent that this worker is ready
-    shared_command['ready'].value = True
+    shared_command["ready"].value = True
 
     existing_shm = shared_memory.SharedMemory(name=shm_name)
     observations = np.ndarray(obs_shape, dtype=np.uint8, buffer=existing_shm.buf)
@@ -101,8 +106,8 @@ def agent_process(
         while True:
             step_event.wait()
 
-            cmd = shared_command['cmd'].value.decode().strip()
-            data = list(shared_command['data'][:])
+            cmd = shared_command["cmd"].value.decode().strip()
+            data = list(shared_command["data"][:])
 
             if cmd == "reset":
                 game.new_episode()
@@ -119,10 +124,15 @@ def agent_process(
                 try:
                     _write_info_to_mem(info, shared_command)
                 except Exception as e:
-                    _write_info_to_mem({"error": f"reset_info_serialize_failed:{str(e)[:50]}", "agent_id": agent_id},
-                                       shared_command)
-                shared_command['reward'].value = 0.0
-                shared_command['terminated'].value = False
+                    _write_info_to_mem(
+                        {
+                            "error": f"reset_info_serialize_failed:{str(e)[:50]}",
+                            "agent_id": agent_id,
+                        },
+                        shared_command,
+                    )
+                shared_command["reward"].value = 0.0
+                shared_command["terminated"].value = False
                 episodes += 1
                 steps = 0
 
@@ -131,7 +141,9 @@ def agent_process(
                 is_dead = game.is_player_dead()
                 if is_dead:
                     if verbose:
-                        print(f"Player {agent} respawning at step {game.get_episode_time()}...")
+                        print(
+                            f"Player {agent} respawning at step {game.get_episode_time()}..."
+                        )
                     game.respawn_player()
                     reward = 0.0
                 else:
@@ -141,7 +153,9 @@ def agent_process(
                 just_died = not was_dead_before and is_dead
                 terminated = game.is_episode_finished()
                 if verbose and terminated:
-                    print(f"Player {agent} terminated at step {game.get_episode_time()}")
+                    print(
+                        f"Player {agent} terminated at step {game.get_episode_time()}"
+                    )
 
                 state = game.get_state()
                 observations[agent_id] = read_frame(state, resolution)
@@ -155,10 +169,15 @@ def agent_process(
                 try:
                     _write_info_to_mem(info, shared_command)
                 except Exception as e:
-                    _write_info_to_mem({"error": f"step_info_serialize_failed:{str(e)[:50]}", "agent_id": agent_id},
-                                       shared_command)
-                shared_command['reward'].value = reward
-                shared_command['terminated'].value = terminated
+                    _write_info_to_mem(
+                        {
+                            "error": f"step_info_serialize_failed:{str(e)[:50]}",
+                            "agent_id": agent_id,
+                        },
+                        shared_command,
+                    )
+                shared_command["reward"].value = reward
+                shared_command["terminated"].value = terminated
                 steps += frames_per_step
 
             elif cmd == "close":
@@ -189,8 +208,8 @@ def agent_process(
 
 # -------------------------- main PettingZoo env ---------------------------
 
-class VizdoomParallelEnv(VizdoomParallelEnvBase):
 
+class VizdoomParallelEnv(VizdoomParallelEnvBase):
     def __init__(self, **kwargs) -> None:
         timeout = kwargs.get("timeout")
         skip_frames = kwargs.get("skip_frames", 1)
@@ -203,24 +222,26 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         multi_obs_shape = (self._num_agents, *self._obs_shape)
         obs_size = int(np.prod(multi_obs_shape)) * np.dtype(np.uint8).itemsize
         self.shm = shared_memory.SharedMemory(create=True, size=obs_size)
-        self._shm_observations = np.ndarray(multi_obs_shape, dtype=np.uint8, buffer=self.shm.buf)
+        self._shm_observations = np.ndarray(
+            multi_obs_shape, dtype=np.uint8, buffer=self.shm.buf
+        )
 
         self.step_event = Event()
         self.all_done_event = Event()
-        self.num_completed = Value('i', 0)
+        self.num_completed = Value("i", 0)
 
-        self.shared_commands: List[dict] = []
-        self.processes: List[Process] = []
+        self.shared_commands: list[dict] = []
+        self.processes: list[Process] = []
 
         for agent_id in range(self._num_agents):
             shared_command = {
-                'cmd': Array('c', 10),
-                'data': Array('d', self._act_len),
-                'reward': Value('d', 0.0),
-                'terminated': Value('b', False),
-                'info': Array('c', 1024),
-                'ready': Value('b', False),  # set by worker after game.init()
-                'init_error': Value('b', False),  # set by worker on init failure
+                "cmd": Array("c", 10),
+                "data": Array("d", self._act_len),
+                "reward": Value("d", 0.0),
+                "terminated": Value("b", False),
+                "info": Array("c", 1024),
+                "ready": Value("b", False),  # set by worker after game.init()
+                "init_error": Value("b", False),  # set by worker on init failure
             }
             self.shared_commands.append(shared_command)
 
@@ -265,16 +286,14 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         for i, (proc, sc) in enumerate(zip(self.processes, self.shared_commands)):
             role = "host" if i == 0 else f"peer {i}"
             print(f"Waiting for agent {i} ({role}) to init...")
-            while not sc['ready'].value:
+            while not sc["ready"].value:
                 if time.monotonic() > deadline:
                     self._terminate_all()
-                    raise TimeoutError(
-                        f"Agent {i} init timeout after {_INIT_TIMEOUT}s"
-                    )
+                    raise TimeoutError(f"Agent {i} init timeout after {_INIT_TIMEOUT}s")
                 if not proc.is_alive():
                     self._terminate_all()
                     raise RuntimeError(f"Agent {i} process died during init")
-                if sc['init_error'].value:
+                if sc["init_error"].value:
                     self._terminate_all()
                     raise RuntimeError(f"Agent {i} reported an init error")
                 time.sleep(0.1)
@@ -303,47 +322,49 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         self.frames_advanced = 0
 
         for i in range(self._num_agents):
-            self.shared_commands[i]['cmd'].value = b'reset'
+            self.shared_commands[i]["cmd"].value = b"reset"
         self._barrier()
 
         obs = {a: self._shm_observations[i].copy() for i, a in enumerate(self.agents)}
         self._last_frames = dict(obs)
 
-        infos: Dict[str, Dict] = {}
+        infos: dict[str, dict] = {}
         for i, a in enumerate(self.agents):
-            info_bytes = bytes(self.shared_commands[i]['info'][:])
-            infos[a] = json.loads(info_bytes.decode().strip('\x00'))
+            info_bytes = bytes(self.shared_commands[i]["info"][:])
+            infos[a] = json.loads(info_bytes.decode().strip("\x00"))
 
         return obs, infos
 
     def step(self, actions):
-        flat_actions: List[List[int]] = []
+        flat_actions: list[list[int]] = []
         for agent in self.agents:
             a = actions.get(agent, self._noop_action())
             env_action = self._encode_env_action(a)
             if len(env_action) != self._act_len:
-                raise ValueError(f"Encoded action length {len(env_action)} != expected {self._act_len}")
+                raise ValueError(
+                    f"Encoded action length {len(env_action)} != expected {self._act_len}"
+                )
             flat_actions.append(env_action)
 
         for i, action in enumerate(flat_actions):
             sc = self.shared_commands[i]
-            sc['cmd'].value = b'step'
-            sc['data'][:] = action
+            sc["cmd"].value = b"step"
+            sc["data"][:] = action
         self._barrier()
 
         obs = {a: self._shm_observations[i].copy() for i, a in enumerate(self.agents)}
         self._last_frames = dict(obs)
 
-        rewards: Dict[str, float] = {}
-        terminations: Dict[str, bool] = {}
-        infos: Dict[str, Dict] = {}
+        rewards: dict[str, float] = {}
+        terminations: dict[str, bool] = {}
+        infos: dict[str, dict] = {}
 
         for i, a in enumerate(self.agents):
             sc = self.shared_commands[i]
-            rewards[a] = float(sc['reward'].value)
-            terminations[a] = bool(sc['terminated'].value)
-            info_bytes = bytes(sc['info'][:])
-            infos[a] = json.loads(info_bytes.decode().strip('\x00'))
+            rewards[a] = float(sc["reward"].value)
+            terminations[a] = bool(sc["terminated"].value)
+            info_bytes = bytes(sc["info"][:])
+            infos[a] = json.loads(info_bytes.decode().strip("\x00"))
 
         if any(terminations.values()):
             for a in self.agents:
@@ -372,7 +393,7 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
 
     def close(self) -> None:
         for sc in self.shared_commands:
-            sc['cmd'].value = b'close'
+            sc["cmd"].value = b"close"
         self.step_event.set()
 
         time.sleep(0.5)
@@ -392,6 +413,7 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         if self._screen is not None:
             try:
                 import pygame
+
                 pygame.quit()
             except Exception:
                 pass

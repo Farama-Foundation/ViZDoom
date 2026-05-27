@@ -1,19 +1,19 @@
 from __future__ import annotations
 
+import fcntl
 import os
 import random
 import socket
 import tempfile
 import time
 from contextlib import contextmanager
-from typing import Tuple, Dict
 
-import fcntl
 import numpy as np
+
 import vizdoom as vzd
 
 
-def parse_hw(res: str) -> Tuple[int, int]:
+def parse_hw(res: str) -> tuple[int, int]:
     w, h = res.lower().split("x")
     return int(w), int(h)
 
@@ -22,15 +22,15 @@ def get_screen_resolution(resolution: str) -> vzd.ScreenResolution:
     try:
         return getattr(vzd.ScreenResolution, f"RES_{resolution}")
     except AttributeError as e:
-        raise ValueError(f"Invalid resolution: {resolution}; Error: {e}")
+        raise ValueError(f"Invalid resolution: {resolution}. Error: {e}")
 
 
-def get_flat_game_vars(state, available_game_vars) -> Dict[str, float]:
+def get_flat_game_vars(state, available_game_vars) -> dict[str, float]:
     """Return game variables as flat scalars suitable for info (no nested dict)."""
     if state is None or state.game_variables is None:
         return {}
     game_variables = state.game_variables
-    out: Dict[str, float] = {}
+    out: dict[str, float] = {}
     n = min(len(available_game_vars), len(game_variables))
     for i in range(n):
         name = available_game_vars[i].name
@@ -48,7 +48,7 @@ def read_frame(state, resolution) -> np.ndarray:
     return np.zeros((h, w, 3), dtype=np.uint8)
 
 
-def discover_buttons(config_path: str) -> Tuple[int, int]:
+def discover_buttons(config_path: str) -> tuple[int, int]:
     game = vzd.DoomGame()
     game.load_config(config_path)
     game.set_window_visible(False)
@@ -93,10 +93,14 @@ def wait_for_child_init(idx: int, pipe, timeout_sec: float = 90.0):
                 if msg.get("status") == "ready":
                     return True
                 elif msg.get("status") == "init_failed":
-                    raise RuntimeError(f"Agent {idx} init failed: {msg.get('error', 'unknown')}")
+                    raise RuntimeError(
+                        f"Agent {idx} init failed: {msg.get('error', 'unknown')}"
+                    )
             except (EOFError, BrokenPipeError) as e:
                 # Child process died
-                raise RuntimeError(f"Agent {idx} process died init. Status msg: {status_msgs}") from e
+                raise RuntimeError(
+                    f"Agent {idx} process died init. Status msg: {status_msgs}"
+                ) from e
             except Exception as e:
                 raise RuntimeError(f"error from {idx}: {e}")
 
@@ -107,7 +111,9 @@ def sync_agent_init(pipes_parent, procs):
             # Host first and then wait for all children sequentially
             role = "host" if i == 0 else f"peer {i}"
             print(f"Waiting for agent {i} ({role}) to init")
-            wait_for_child_init(i, pipe, timeout_sec=90.0)  # 90s = 45s connection timeout + 30s buffer + max 15s init
+            wait_for_child_init(
+                i, pipe, timeout_sec=90.0
+            )  # 90s = 45s connection timeout + 30s buffer + max 15s init
             print(f"Agent {i} ({role}) ready")
         except Exception as e:
             print(f"Agent {i} init failed: {e}")
@@ -116,7 +122,7 @@ def sync_agent_init(pipes_parent, procs):
                 if p.is_alive():
                     try:
                         p.terminate()
-                    except:
+                    except Exception:
                         pass
 
             time.sleep(0.5)  # Wait for termination
@@ -125,11 +131,11 @@ def sync_agent_init(pipes_parent, procs):
                 if p.is_alive():
                     try:
                         p.kill()
-                    except:
+                    except Exception:
                         pass
                 try:
                     p.join(timeout=1.0)
-                except:
+                except Exception:
                     pass
 
             raise RuntimeError(".") from e
@@ -177,7 +183,10 @@ def reserve_udp_port(host_address: str, start_port: int, increment: int = 1):
 
         port += increment
 
-    raise RuntimeError(f"Could not reserve an available UDP port starting from {start_port}")
+    raise RuntimeError(
+        f"Could not reserve an available UDP port starting from {start_port}"
+    )
+
 
 @contextmanager
 def reserve_init_slot(max_parallel: int = 20, timeout_sec: float = 10.0):
@@ -208,4 +217,6 @@ def reserve_init_slot(max_parallel: int = 20, timeout_sec: float = 10.0):
 
         time.sleep(0.1)
 
-    raise TimeoutError(f"Could not acquire a ViZDoom multiplayer init slot within {timeout_sec:.1f}s")
+    raise TimeoutError(
+        f"Could not acquire a ViZDoom multiplayer init slot within {timeout_sec:.1f}s"
+    )

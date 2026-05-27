@@ -20,12 +20,12 @@ def _has_hidden_reset(infos):
 
 class VideoLoggerParallelWrapper(wrappers.BaseParallelWrapper):
     def __init__(
-            self,
-            env: ParallelEnv,
-            *,
-            every_n_episodes: int = 50,
-            fps: int = 35,
-            max_frames: int = 1000,
+        self,
+        env: ParallelEnv,
+        *,
+        every_n_episodes: int = 50,
+        fps: int = 35,
+        max_frames: int = 1000,
     ):
         super().__init__(env)
         self.every_n = int(every_n_episodes)
@@ -65,7 +65,7 @@ class VideoLoggerParallelWrapper(wrappers.BaseParallelWrapper):
         canvas = np.zeros((rows * H, cols * W, C), dtype=per_agent_ahwc.dtype)
         for i in range(A):
             r, c = divmod(i, cols)
-            canvas[r * H:(r + 1) * H, c * W:(c + 1) * W] = per_agent_ahwc[i]
+            canvas[r * H : (r + 1) * H, c * W : (c + 1) * W] = per_agent_ahwc[i]
         return canvas
 
     def _push_frame(self, frame: np.ndarray | None):

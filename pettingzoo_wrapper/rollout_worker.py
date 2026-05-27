@@ -1,15 +1,16 @@
 from __future__ import annotations
 
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
-import time
-from typing import Any, Callable, Dict, List, Optional, Sequence
+from typing import Any, Callable, Sequence
 
 import numpy as np
 import torch
 from tensordict import TensorDict
 from tensordict.nn import TensorDictModuleBase
 from torchrl.envs.utils import ExplorationType, set_exploration_type
+
 
 _ENV_INSTANCE_SEED_STRIDE = 1_000
 _RESTART_SEED_STRIDE = 100_000
@@ -20,16 +21,16 @@ _MAX_FAILED_ROUNDS = 3
 @dataclass
 class _Transition:
     observation: torch.Tensor
-    state: Optional[torch.Tensor]
+    state: torch.Tensor | None
     action: torch.Tensor
-    log_prob: Optional[torch.Tensor]
+    log_prob: torch.Tensor | None
     reward: torch.Tensor
     episode_reward: torch.Tensor
     done: torch.Tensor
     terminated: torch.Tensor
     truncated: torch.Tensor
     next_observation: torch.Tensor
-    next_state: Optional[torch.Tensor]
+    next_state: torch.Tensor | None
     next_done: torch.Tensor
     next_terminated: torch.Tensor
     next_truncated: torch.Tensor
@@ -50,9 +51,9 @@ class _EnvInstance:
         self.last_seed = self._base_seed
         self.last_error = "none"
         self.env: Any | None = None
-        self.agent_names: List[str] = []
+        self.agent_names: list[str] = []
         self.n_agents = 0
-        self._obs: Dict[str, np.ndarray] = {}
+        self._obs: dict[str, np.ndarray] = {}
         self._episode_reward: np.ndarray | None = None
         self._recreate_env()
 
@@ -71,7 +72,9 @@ class _EnvInstance:
 
     def _reset(self) -> None:
         if self.env is None:
-            raise RuntimeError("RolloutWorker env instance reset called before env creation")
+            raise RuntimeError(
+                "RolloutWorker env instance reset called before env creation"
+            )
         self._obs, _ = self.env.reset()
         self._episode_reward = np.zeros((self.n_agents, 1), dtype=np.float32)
 
@@ -92,17 +95,29 @@ class _EnvInstance:
     def step(self, actions):
         self.ensure_ready()
         if self.env is None or self._episode_reward is None:
-            raise RuntimeError("RolloutWorker env instance step called before initialization")
+            raise RuntimeError(
+                "RolloutWorker env instance step called before initialization"
+            )
 
-        action_dict = {agent: actions[index] for index, agent in enumerate(self.agent_names)}
+        action_dict = {
+            agent: actions[index] for index, agent in enumerate(self.agent_names)
+        }
         next_obs, rewards, terminations, truncations, _ = self.env.step(action_dict)
 
-        reward = np.asarray([float(rewards[agent]) for agent in self.agent_names], dtype=np.float32).reshape(self.n_agents, 1)
+        reward = np.asarray(
+            [float(rewards[agent]) for agent in self.agent_names], dtype=np.float32
+        ).reshape(self.n_agents, 1)
         self._episode_reward += reward
         episode_reward = self._episode_reward.copy()
-        terminated = np.asarray([bool(terminations[agent]) for agent in self.agent_names], dtype=np.bool_).reshape(self.n_agents, 1)
-        truncated = np.asarray([bool(truncations[agent]) for agent in self.agent_names], dtype=np.bool_).reshape(self.n_agents, 1)
-        next_observation = np.stack([next_obs[agent] for agent in self.agent_names], axis=0)
+        terminated = np.asarray(
+            [bool(terminations[agent]) for agent in self.agent_names], dtype=np.bool_
+        ).reshape(self.n_agents, 1)
+        truncated = np.asarray(
+            [bool(truncations[agent]) for agent in self.agent_names], dtype=np.bool_
+        ).reshape(self.n_agents, 1)
+        next_observation = np.stack(
+            [next_obs[agent] for agent in self.agent_names], axis=0
+        )
         if self.env is not None and hasattr(self.env, "state"):
             next_state = np.asarray(self.env.state())
         else:
@@ -116,7 +131,15 @@ class _EnvInstance:
 
         self.consecutive_failures = 0
         self.last_error = "none"
-        return next_observation, next_state, reward, episode_reward, done, terminated, truncated
+        return (
+            next_observation,
+            next_state,
+            reward,
+            episode_reward,
+            done,
+            terminated,
+            truncated,
+        )
 
     def restart(self, reason: BaseException | str) -> None:
         self.consecutive_failures += 1
@@ -148,7 +171,7 @@ class _EnvInstance:
             f"{_MAX_ENV_INSTANCE_RECREATE_ATTEMPTS} recreate attempts ({self.last_error})"
         ) from last_exc
 
-    def debug_status(self) -> Dict[str, Any]:
+    def debug_status(self) -> dict[str, Any]:
         if self.env is None:
             return {
                 "env_instance_index": self.env_instance_index,
@@ -214,13 +237,17 @@ class RolloutWorker:
             ThreadPoolExecutor(
                 max_workers=self.num_envs,
                 thread_name_prefix="vizdoom-rollout-worker",
-            ) if self.parallel_collection else None
+            )
+            if self.parallel_collection
+            else None
         )
 
         if self.num_envs < 1:
             raise ValueError("num_envs must be at least 1")
 
-        self._env_instances = self._build_env_instances(env_builder=env_builder, seed=seed)
+        self._env_instances = self._build_env_instances(
+            env_builder=env_builder, seed=seed
+        )
 
     def _build_env_instances(self, *, env_builder, seed):
         if self.num_envs == 1:
@@ -232,8 +259,10 @@ class RolloutWorker:
                 )
             ]
 
-        env_instances: List[_EnvInstance | None] = [None] * self.num_envs
-        with ThreadPoolExecutor(max_workers=self.num_envs, thread_name_prefix="vizdoom-rollout-worker-init") as executor:
+        env_instances: list[_EnvInstance | None] = [None] * self.num_envs
+        with ThreadPoolExecutor(
+            max_workers=self.num_envs, thread_name_prefix="vizdoom-rollout-worker-init"
+        ) as executor:
             futures = {
                 executor.submit(
                     _EnvInstance,
@@ -247,17 +276,21 @@ class RolloutWorker:
                 env_instance_index = futures[future]
                 env_instances[env_instance_index] = future.result()
 
-        return [env_instance for env_instance in env_instances if env_instance is not None]
+        return [
+            env_instance for env_instance in env_instances if env_instance is not None
+        ]
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        transitions: List[_Transition] = []
+        transitions: list[_Transition] = []
 
         while len(transitions) < self.frames_per_batch:
             transitions_before_round = len(transitions)
-            env_instance_indices = self._next_env_instance_indices(min(self.num_envs, self.frames_per_batch - len(transitions)))
+            env_instance_indices = self._next_env_instance_indices(
+                min(self.num_envs, self.frames_per_batch - len(transitions))
+            )
 
             ready_env_instance_indices = []
             current_obs_np = []
@@ -279,7 +312,11 @@ class RolloutWorker:
                 self._register_failed_round()
                 continue
 
-            current_obs = (torch.from_numpy(np.stack(current_obs_np, axis=0)).to(torch.float32).div_(255.0))
+            current_obs = (
+                torch.from_numpy(np.stack(current_obs_np, axis=0))
+                .to(torch.float32)
+                .div_(255.0)
+            )
             current_state = None
             if self.collect_state:
                 current_state = (
@@ -289,7 +326,9 @@ class RolloutWorker:
                 )
             policy_obs = current_obs
             if self.policy_device.type == "cuda":
-                policy_obs = policy_obs.pin_memory().to(self.policy_device, non_blocking=True)
+                policy_obs = policy_obs.pin_memory().to(
+                    self.policy_device, non_blocking=True
+                )
             elif self.policy_device != current_obs.device:
                 policy_obs = policy_obs.to(self.policy_device)
 
@@ -321,11 +360,21 @@ class RolloutWorker:
                 if step_result is None:
                     continue
 
-                next_obs_np, next_state_np, reward_np, episode_reward_np, done_np, terminated_np, truncated_np = step_result
+                (
+                    next_obs_np,
+                    next_state_np,
+                    reward_np,
+                    episode_reward_np,
+                    done_np,
+                    terminated_np,
+                    truncated_np,
+                ) = step_result
                 next_obs = torch.from_numpy(next_obs_np).to(torch.float32).div_(255.0)
                 next_state = None
                 if self.collect_state:
-                    next_state = torch.from_numpy(next_state_np).to(torch.float32).div_(255.0)
+                    next_state = (
+                        torch.from_numpy(next_state_np).to(torch.float32).div_(255.0)
+                    )
                 done = torch.from_numpy(done_np)
                 terminated = torch.from_numpy(terminated_np)
                 truncated = torch.from_numpy(truncated_np)
@@ -361,12 +410,14 @@ class RolloutWorker:
     def update_policy_weights_(self):
         return None
 
-    def state_dict(self) -> Dict[str, int]:
+    def state_dict(self) -> dict[str, int]:
         return {"env_instance_cursor": self._env_instance_cursor}
 
-    def load_state_dict(self, state_dict: Dict[str, int]):
+    def load_state_dict(self, state_dict: dict[str, int]):
         legacy_cursor = state_dict.get("slot_cursor", 0)
-        self._env_instance_cursor = int(state_dict.get("env_instance_cursor", legacy_cursor)) % self.num_envs
+        self._env_instance_cursor = (
+            int(state_dict.get("env_instance_cursor", legacy_cursor)) % self.num_envs
+        )
 
     def shutdown(self):
         for env_instance in self._env_instances:
@@ -390,10 +441,13 @@ class RolloutWorker:
                 f"last_error={env_instance.last_error},"
                 f"debug_status={env_instance.debug_status()}"
             )
-        return f"RolloutWorker could not collect any transitions after {self._consecutive_failed_rounds} consecutive recovery rounds. " + "; ".join(details)
+        return (
+            f"RolloutWorker could not collect any transitions after {self._consecutive_failed_rounds} consecutive recovery rounds. "
+            + "; ".join(details)
+        )
 
-    def _next_env_instance_indices(self, count: int) -> List[int]:
-        indices: List[int] = []
+    def _next_env_instance_indices(self, count: int) -> list[int]:
+        indices: list[int] = []
         if count <= 0:
             return indices
         cursor = self._env_instance_cursor
@@ -403,7 +457,7 @@ class RolloutWorker:
         self._env_instance_cursor = cursor
         return indices
 
-    def _decode_policy_actions(self, actions: torch.Tensor) -> List[List[Any]]:
+    def _decode_policy_actions(self, actions: torch.Tensor) -> list[list[Any]]:
         action_np = self.action_spec.to_numpy(actions)
         if isinstance(action_np, np.ndarray):
             if action_np.ndim == 3 and action_np.shape[-1] == 1:
@@ -411,30 +465,53 @@ class RolloutWorker:
             if action_np.ndim == 1:
                 action_np = action_np.reshape(1, -1)
             return [
-                [int(action_np[env_instance_index, agent_index]) for agent_index in range(self.n_agents)]
+                [
+                    int(action_np[env_instance_index, agent_index])
+                    for agent_index in range(self.n_agents)
+                ]
                 for env_instance_index in range(action_np.shape[0])
             ]
-        raise TypeError(f"RolloutWorker only supports ndarray discrete actions, got {type(action_np)!r}")
+        raise TypeError(
+            f"RolloutWorker only supports ndarray discrete actions, got {type(action_np)!r}"
+        )
 
     def _stack_transitions(self, transitions: Sequence[_Transition]) -> TensorDict:
         batch_size = [len(transitions)]
-        observation = torch.stack([transition.observation for transition in transitions], dim=0)
+        observation = torch.stack(
+            [transition.observation for transition in transitions], dim=0
+        )
         state = None
         if transitions[0].state is not None:
             state = torch.stack([transition.state for transition in transitions], dim=0)
         action = torch.stack([transition.action for transition in transitions], dim=0)
         reward = torch.stack([transition.reward for transition in transitions], dim=0)
-        episode_reward = torch.stack([transition.episode_reward for transition in transitions], dim=0)
+        episode_reward = torch.stack(
+            [transition.episode_reward for transition in transitions], dim=0
+        )
         done = torch.stack([transition.done for transition in transitions], dim=0)
-        terminated = torch.stack([transition.terminated for transition in transitions], dim=0)
-        truncated = torch.stack([transition.truncated for transition in transitions], dim=0)
-        next_observation = torch.stack([transition.next_observation for transition in transitions], dim=0)
+        terminated = torch.stack(
+            [transition.terminated for transition in transitions], dim=0
+        )
+        truncated = torch.stack(
+            [transition.truncated for transition in transitions], dim=0
+        )
+        next_observation = torch.stack(
+            [transition.next_observation for transition in transitions], dim=0
+        )
         next_state = None
         if transitions[0].next_state is not None:
-            next_state = torch.stack([transition.next_state for transition in transitions], dim=0)
-        next_done = torch.stack([transition.next_done for transition in transitions], dim=0)
-        next_terminated = torch.stack([transition.next_terminated for transition in transitions], dim=0)
-        next_truncated = torch.stack([transition.next_truncated for transition in transitions], dim=0)
+            next_state = torch.stack(
+                [transition.next_state for transition in transitions], dim=0
+            )
+        next_done = torch.stack(
+            [transition.next_done for transition in transitions], dim=0
+        )
+        next_terminated = torch.stack(
+            [transition.next_terminated for transition in transitions], dim=0
+        )
+        next_truncated = torch.stack(
+            [transition.next_truncated for transition in transitions], dim=0
+        )
 
         group_data = {
             "observation": observation,
@@ -493,15 +570,31 @@ class RolloutWorker:
                 pass
             return env_instance_index, None
 
-    def _step_ready_env_instances(self, *, ready_env_instance_indices: Sequence[int], env_actions: Sequence[Sequence[Any]]):
+    def _step_ready_env_instances(
+        self,
+        *,
+        ready_env_instance_indices: Sequence[int],
+        env_actions: Sequence[Sequence[Any]],
+    ):
         env_instance_actions = list(zip(ready_env_instance_indices, env_actions))
         if self._step_executor is None or len(env_instance_actions) < 2:
-            return [self._step_env_instance(env_instance_index, env_action) for env_instance_index, env_action in env_instance_actions]
+            return [
+                self._step_env_instance(env_instance_index, env_action)
+                for env_instance_index, env_action in env_instance_actions
+            ]
 
         results = {}
-        future_to_env_instance = {self._step_executor.submit(self._step_env_instance, env_instance_index, env_action): env_instance_index for env_instance_index, env_action in env_instance_actions}
+        future_to_env_instance = {
+            self._step_executor.submit(
+                self._step_env_instance, env_instance_index, env_action
+            ): env_instance_index
+            for env_instance_index, env_action in env_instance_actions
+        }
         for future in as_completed(future_to_env_instance):
             env_instance_index, step_result = future.result()
             results[env_instance_index] = step_result
 
-        return [(env_instance_index, results.get(env_instance_index)) for env_instance_index, _ in env_instance_actions]
+        return [
+            (env_instance_index, results.get(env_instance_index))
+            for env_instance_index, _ in env_instance_actions
+        ]

@@ -13,6 +13,7 @@ import sys
 
 from pettingzoo_wrapper import make
 
+
 # Global environment variable for cleanup
 env = None
 
@@ -73,6 +74,7 @@ def main():
     except Exception as e:
         print(f"Failed to create environment: {e}")
         import traceback
+
         traceback.print_exc()
         cleanup_environment()
         return
@@ -90,6 +92,8 @@ def main():
 
             # Initialize episode statistics
             episode_rewards = {agent: 0.0 for agent in env.agents}
+            terminations = {agent: False for agent in env.agents}
+            truncations = {agent: False for agent in env.agents}
             episode_steps = 0
             done = False
 
@@ -101,7 +105,9 @@ def main():
                     actions[agent] = env.action_space(agent).sample()
 
                 # Take step
-                observations, rewards, terminations, truncations, infos = env.step(actions)
+                observations, rewards, terminations, truncations, infos = env.step(
+                    actions
+                )
 
                 last_infos = infos
                 step_record = {}
@@ -115,9 +121,15 @@ def main():
                         "step": info.get("step", episode_steps),
                         "dead": int(info.get("DEAD", 0)),
                         "position_x": info.get("POSITION_X", None),
-                        "rewards": float(rewards.get(agent, 0.0)),  # single reward for this step
-                        "actions": actions.get(agent, None),  # single action for this step
-                        "observations": observations.get(agent, None),  # single obs for this step
+                        "rewards": float(
+                            rewards.get(agent, 0.0)
+                        ),  # single reward for this step
+                        "actions": actions.get(
+                            agent, None
+                        ),  # single action for this step
+                        "observations": observations.get(
+                            agent, None
+                        ),  # single obs for this step
                     }
 
                 episode_buffer[episode_key].append(step_record)
@@ -146,13 +158,16 @@ def main():
                 print(f"    Terminated: {terminated}")
                 print(f"    Truncated: {truncated}")
                 print(f"    Steps Completed: {episode_steps}")
-                print(f"    Agent steps: {last_infos.get(agent, {}).get('step', 'N/A') if last_infos else 'N/A'}")
+                print(
+                    f"    Agent steps: {last_infos.get(agent, {}).get('step', 'N/A') if last_infos else 'N/A'}"
+                )
 
             print("=" * 40)
 
     except Exception as e:
         print(f"\nError during execution: {e}")
         import traceback
+
         traceback.print_exc()
     finally:
         # Clean up

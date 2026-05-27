@@ -10,18 +10,20 @@ def _reset_info(info):
         return reset_info
     return None
 
+
 class HealthGatheringRewardWrapper(ParallelEnv):
     """
     Dense shaping on HEALTH. Optional sparse goal on reaching max health.
     """
+
     def __init__(
-            self,
-            env: ParallelEnv,
-            *,
-            death_penalty: float = -10.0,
-            medkit_reward: float = 1.0,
-            health_key: str = "HEALTH",
-            dead_key: str = "DEAD",
+        self,
+        env: ParallelEnv,
+        *,
+        death_penalty: float = -10.0,
+        medkit_reward: float = 1.0,
+        health_key: str = "HEALTH",
+        dead_key: str = "DEAD",
     ):
         self.env = env
         self.death_penalty = death_penalty
@@ -52,7 +54,9 @@ class HealthGatheringRewardWrapper(ParallelEnv):
     def num_agents(self) -> int:
         return getattr(self.env, "num_agents", len(self.possible_agents))
 
-    def reset(self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None):
+    def reset(
+        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
+    ):
         obs, infos = self.env.reset(seed=seed, options=options)
         self.agents = self.env.agents[:]
         self.prev_health = {a: infos[a][self.health_key] for a in self.agents}
@@ -64,7 +68,9 @@ class HealthGatheringRewardWrapper(ParallelEnv):
         for a in self.agents:
             reset_info = _reset_info(infos[a])
             if reset_info is not None:
-                self.prev_health[a] = reset_info.get(self.health_key, self.prev_health[a])
+                self.prev_health[a] = reset_info.get(
+                    self.health_key, self.prev_health[a]
+                )
 
             r = rewards[a]
             h_cur = infos[a].get(self.health_key, 0.0)
@@ -93,12 +99,13 @@ class RemedyRushRewardWrapper(ParallelEnv):
     Reward shaping for remedy_rush. Health pickups give a positive reward;
     armor pickups give a negative reward (penalty).
     """
+
     def __init__(
-            self,
-            env: ParallelEnv,
-            *,
-            health_key: str = "HEALTH",
-            armor_key: str = "ARMOR",
+        self,
+        env: ParallelEnv,
+        *,
+        health_key: str = "HEALTH",
+        armor_key: str = "ARMOR",
     ):
         self.env = env
         self.health_key = health_key
@@ -128,7 +135,9 @@ class RemedyRushRewardWrapper(ParallelEnv):
     def num_agents(self) -> int:
         return getattr(self.env, "num_agents", len(self.possible_agents))
 
-    def reset(self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None):
+    def reset(
+        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
+    ):
         obs, infos = self.env.reset(seed=seed, options=options)
         self.agents = self.env.agents[:]
         self.prev_health = {a: infos[a].get(self.health_key, 0.0) for a in self.agents}
@@ -141,7 +150,9 @@ class RemedyRushRewardWrapper(ParallelEnv):
         for a in self.agents:
             reset_info = _reset_info(infos[a])
             if reset_info is not None:
-                self.prev_health[a] = reset_info.get(self.health_key, self.prev_health[a])
+                self.prev_health[a] = reset_info.get(
+                    self.health_key, self.prev_health[a]
+                )
                 self.prev_armor[a] = reset_info.get(self.armor_key, self.prev_armor[a])
 
             r = rewards[a]
@@ -170,18 +181,19 @@ class PitfallRewardWrapper(ParallelEnv):
     """
     Dense shaping on POSITION_X (forward-only). Optional sparse goal on crossing goal_x.
     """
+
     def __init__(
-            self,
-            env: ParallelEnv,
-            *,
-            scaler: float = 0.01,
-            death_penalty: float = -1.0,
-            keep_lb: bool = True,
-            goal_x: Optional[float] = None,
-            goal_reward: float = 10.0,
-            pos_key: str = "POSITION_X",
-            dead_key: str = "DEAD",
-            x_start: float = 32.0,
+        self,
+        env: ParallelEnv,
+        *,
+        scaler: float = 0.01,
+        death_penalty: float = -1.0,
+        keep_lb: bool = True,
+        goal_x: Optional[float] = None,
+        goal_reward: float = 10.0,
+        pos_key: str = "POSITION_X",
+        dead_key: str = "DEAD",
+        x_start: float = 32.0,
     ):
         self.env = env
         self.scaler = float(scaler)
@@ -221,11 +233,16 @@ class PitfallRewardWrapper(ParallelEnv):
     def num_agents(self) -> int:
         return getattr(self.env, "num_agents", len(self.possible_agents))
 
-    def reset(self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None):
+    def reset(
+        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
+    ):
         obs, infos = self.env.reset(seed=seed, options=options)
         self.agents = self.env.agents[:]
         self._prev_x = {a: infos[a].get(self.pos_key, None) for a in self.agents}
-        self._best_x = {a: (self._prev_x[a] if self._prev_x[a] is not None else -np.inf) for a in self.agents}
+        self._best_x = {
+            a: (self._prev_x[a] if self._prev_x[a] is not None else -np.inf)
+            for a in self.agents
+        }
         self._goal_given = {a: False for a in self.agents}
         return obs, infos
 

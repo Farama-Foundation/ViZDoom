@@ -7,15 +7,9 @@ import threading
 import time
 from dataclasses import dataclass
 from multiprocessing.connection import Connection
-from typing import Dict, List, Optional
 
 from .base_env_common import VizdoomParallelEnvBase, configure_doom_game
-from .utils import (
-    get_flat_game_vars,
-    read_frame,
-    reserve_init_slot,
-    reserve_udp_port,
-)
+from .utils import get_flat_game_vars, read_frame, reserve_init_slot, reserve_udp_port
 
 
 ctx = mp.get_context("fork")
@@ -32,8 +26,8 @@ _INIT_PORT_STRIDE = 1000
 @dataclass(frozen=True)
 class _Task:
     cmd: str
-    action: Optional[List[float]] = None
-    port: Optional[int] = None
+    action: list[float] | None = None
+    port: int | None = None
 
 
 class _AgentWorkerCrashed(RuntimeError):
@@ -42,11 +36,11 @@ class _AgentWorkerCrashed(RuntimeError):
 
 def _agent_worker_thread(
     *,
-    task_queue: "queue.Queue[_Task]",
-    result_queue: "queue.Queue[dict]",
+    task_queue: queue.Queue[_Task],
+    result_queue: queue.Queue[dict],
     config_path: str,
     resolution: str,
-    timeout: Optional[int],
+    timeout: int | None,
     num_agents: int,
     agent_id: int,
     is_host: bool,
@@ -54,7 +48,7 @@ def _agent_worker_thread(
     async_mode: bool,
     netmode: int,
     ticrate: int,
-    seed: Optional[int],
+    seed: int | None,
     verbose: bool,
 ) -> None:
     game = None
@@ -107,7 +101,9 @@ def _agent_worker_thread(
                     continue
 
                 if game is None:
-                    raise RuntimeError(f"Agent {agent_id} received {task.cmd} before init")
+                    raise RuntimeError(
+                        f"Agent {agent_id} received {task.cmd} before init"
+                    )
 
                 if task.cmd == "reset":
                     if episode_count > 0:
@@ -171,7 +167,9 @@ def _agent_worker_thread(
                     }
                 )
             except Exception as exc:
-                result_queue.put({"status": "crashed", "error": f"{type(exc).__name__}: {exc}"})
+                result_queue.put(
+                    {"status": "crashed", "error": f"{type(exc).__name__}: {exc}"}
+                )
                 break
     finally:
         _close_game()
@@ -183,7 +181,7 @@ class _AgentWorkerCoordinator:
         *,
         config_path: str,
         resolution: str,
-        timeout: Optional[int],
+        timeout: int | None,
         skip_frames: int,
         num_agents: int,
         host_address: str,
@@ -192,7 +190,7 @@ class _AgentWorkerCoordinator:
         async_mode: bool,
         netmode: int,
         ticrate: int,
-        seed: Optional[int],
+        seed: int | None,
         verbose: bool,
     ) -> None:
         self.config_path = config_path
@@ -208,9 +206,9 @@ class _AgentWorkerCoordinator:
         self.ticrate = int(ticrate)
         self.seed = seed
         self.verbose = bool(verbose)
-        self._agent_worker_task_queues: List["queue.Queue[_Task]"] = []
-        self._agent_worker_result_queues: List["queue.Queue[dict]"] = []
-        self._agent_worker_threads: List[threading.Thread] = []
+        self._agent_worker_task_queues: list[queue.Queue[_Task]] = []
+        self._agent_worker_result_queues: list[queue.Queue[dict]] = []
+        self._agent_worker_threads: list[threading.Thread] = []
         self._port = self.base_port
         self._init_attempts = 0
         self._initialize_agent_workers()
@@ -229,8 +227,8 @@ class _AgentWorkerCoordinator:
 
     def _spawn_agent_worker_threads(self) -> None:
         for agent_id in range(self.num_agents):
-            task_queue: "queue.Queue[_Task]" = queue.Queue()
-            result_queue: "queue.Queue[dict]" = queue.Queue()
+            task_queue: queue.Queue[_Task] = queue.Queue()
+            result_queue: queue.Queue[dict] = queue.Queue()
             thread = threading.Thread(
                 target=_agent_worker_thread,
                 kwargs=dict(
@@ -270,7 +268,9 @@ class _AgentWorkerCoordinator:
                         increment=_INIT_PORT_STRIDE,
                     ) as port:
                         self._port = int(port)
-                        for agent_id, task_queue in enumerate(self._agent_worker_task_queues):
+                        for agent_id, task_queue in enumerate(
+                            self._agent_worker_task_queues
+                        ):
                             task_queue.put(_Task("init", port=self._port))
                             if agent_id + 1 < self.num_agents:
                                 time.sleep(_INIT_STAGGER_SEC)
@@ -303,11 +303,11 @@ class _AgentWorkerCoordinator:
                 f"Agent {agent_id} init failed: {result.get('error', 'unknown error')}"
             )
 
-    def _dispatch(self, tasks: List[_Task], timeout: float) -> List[dict]:
+    def _dispatch(self, tasks: list[_Task], timeout: float) -> list[dict]:
         for task_queue, task in zip(self._agent_worker_task_queues, tasks):
             task_queue.put(task)
 
-        results: List[dict] = []
+        results: list[dict] = []
         deadline = time.time() + timeout
         for agent_id, result_queue in enumerate(self._agent_worker_result_queues):
             remaining = max(0.1, deadline - time.time())
@@ -318,7 +318,9 @@ class _AgentWorkerCoordinator:
                     f"Agent {agent_id} {tasks[agent_id].cmd} timeout after {timeout:.1f}s"
                 ) from exc
             if isinstance(result, dict) and result.get("status") == "crashed":
-                raise _AgentWorkerCrashed(result.get("error", f"agent {agent_id} crashed"))
+                raise _AgentWorkerCrashed(
+                    result.get("error", f"agent {agent_id} crashed")
+                )
             results.append(result)
         return results
 
@@ -333,7 +335,7 @@ class _AgentWorkerCoordinator:
             infos[agent_name] = result["info"]
         return {"observations": observations, "infos": infos}
 
-    def step(self, actions: List[List[float]]) -> dict:
+    def step(self, actions: list[list[float]]) -> dict:
         for _ in range(self.skip_frames - 1):
             self._dispatch(
                 [_Task("step", action=action) for action in actions],
@@ -421,13 +423,15 @@ def _agent_worker_process_main(conn: Connection, kwargs: dict) -> None:
 class VizdoomParallelEnv(VizdoomParallelEnvBase):
     def __init__(self, **kwargs) -> None:
         barrier_timeout = kwargs.pop("barrier_timeout", _STEP_TIMEOUT)
-        self._barrier_timeout = (_STEP_TIMEOUT if barrier_timeout is None else float(barrier_timeout))
+        self._barrier_timeout = (
+            _STEP_TIMEOUT if barrier_timeout is None else float(barrier_timeout)
+        )
         self._daemon = bool(kwargs.get("daemon", True))
         self._slot_index = int(kwargs.pop("slot_index", 0))
         super().__init__(**kwargs)
-        self._parent_conn: Optional[Connection] = None
-        self._process: Optional[ctx.Process] = None
-        self._pending_reset_infos: Optional[Dict[str, Dict]] = None
+        self._parent_conn: Connection | None = None
+        self._process: ctx.Process | None = None
+        self._pending_reset_infos: dict[str, dict] | None = None
         self._pending_hidden_reset = False
         self._current_agent_worker_port = int(self.port)
         self._last_init_attempts = 0
@@ -518,7 +522,7 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         self._pending_reset_infos = infos
         self._pending_hidden_reset = True
 
-    def _attach_pending_reset_infos(self, infos: Dict[str, Dict]) -> None:
+    def _attach_pending_reset_infos(self, infos: dict[str, dict]) -> None:
         if self._pending_reset_infos is None or not self._pending_hidden_reset:
             return
 
@@ -583,7 +587,9 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         except Exception as exc:
             first_error = exc
             if _HIDDEN_RECOVERY_ATTEMPTS < 1:
-                raise self._format_backend_failure("reset", first_error) from first_error
+                raise self._format_backend_failure(
+                    "reset", first_error
+                ) from first_error
             try:
                 self._recover_after_error("reset", first_error)
                 return _do_reset()
@@ -591,12 +597,14 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
                 raise self._format_backend_failure("reset", retry_exc) from first_error
 
     def step(self, actions):
-        flat_actions: List[List[float]] = []
+        flat_actions: list[list[float]] = []
         for agent in self.agents:
             agent_action = actions.get(agent, self._noop_action())
             encoded = self._encode_env_action(agent_action)
             if len(encoded) != self._act_len:
-                raise ValueError(f"Encoded action length {len(encoded)} != expected {self._act_len}")
+                raise ValueError(
+                    f"Encoded action length {len(encoded)} != expected {self._act_len}"
+                )
             flat_actions.append(encoded)
 
         def _do_step():
@@ -627,7 +635,7 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
     def close(self):
         self._shutdown_agent_worker_process()
 
-    def debug_status(self) -> Dict[str, int | str]:
+    def debug_status(self) -> dict[str, int | str]:
         return {
             "slot_index": self._slot_index,
             "base_port": int(self.port),

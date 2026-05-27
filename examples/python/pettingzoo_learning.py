@@ -32,30 +32,29 @@ from collections import deque
 from dataclasses import fields
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 import torch
-import vizdoom as vzd
-from benchmarl.algorithms import QmixConfig, MasacConfig
+from benchmarl.algorithms import MasacConfig, QmixConfig
 from benchmarl.algorithms.mappo import MappoConfig
 from benchmarl.environments import TaskClass
-from benchmarl.experiment import ExperimentConfig, Experiment
+from benchmarl.experiment import Experiment, ExperimentConfig
 from benchmarl.experiment.logger import Logger
 from benchmarl.models import CnnConfig
 from tensordict import TensorDictBase
 from torch import nn
 from torchrl.data import Composite
 from torchrl.data.tensor_specs import UnboundedContinuous
-from torchrl.envs import EnvBase, RemoveEmptySpecs
-from torchrl.envs import TransformedEnv, Compose
+from torchrl.envs import Compose, EnvBase, RemoveEmptySpecs, TransformedEnv
 from torchrl.envs.libs.pettingzoo import MarlGroupMapType, PettingZooWrapper
-from torchrl.envs.transforms import ObservationTransform
-from torchrl.envs.transforms import SelectTransform
+from torchrl.envs.transforms import ObservationTransform, SelectTransform
 from torchrl.envs.transforms.utils import _set_missing_tolerance
 from torchrl.record.loggers.wandb import WandbLogger
 
+import vizdoom as vzd
 from pettingzoo_wrapper import make
 from pettingzoo_wrapper.rollout_worker import RolloutWorker
+
 
 DEFAULT_BASE_UDP_PORT = 40300
 SLOT_PORT_STRIDE = 100
@@ -101,13 +100,19 @@ class WandbLoggingWrapper(Logger):
 
         collection_time = payload.get("timers/collection_time")
         current_frames = payload.get("counters/current_frames")
-        if collection_time is not None and current_frames is not None and collection_time > 0:
+        if (
+            collection_time is not None
+            and current_frames is not None
+            and collection_time > 0
+        ):
             payload["counters/fps"] = (
                 float(current_frames) * self._skip_frames / float(collection_time)
             )
         return payload
 
-    def log_collection(self, batch: TensorDictBase, task: TaskClass, total_frames: int, step: int):
+    def log_collection(
+        self, batch: TensorDictBase, task: TaskClass, total_frames: int, step: int
+    ):
         self._prepare_iteration_metrics(total_frames)
         return super().log_collection(
             batch=batch,
@@ -219,7 +224,9 @@ class VizdoomExperiment(Experiment):
         n_agents = len(self.group_map[group_name])
         rollout_worker_kwargs = dict(
             policy=self.policy,
-            action_spec=self.test_env.input_spec["full_action_spec", group_name, "action"],
+            action_spec=self.test_env.input_spec[
+                "full_action_spec", group_name, "action"
+            ],
             group_name=group_name,
             n_agents=n_agents,
             frames_per_batch=self.config.collected_frames_per_batch(self.on_policy),
@@ -229,12 +236,14 @@ class VizdoomExperiment(Experiment):
             parallel_collection=bool(getattr(self.config, "parallel_collection", True)),
             collect_state=self.task.config.get("state_source", "none") != "none",
         )
+
         def env_builder(seed, env_instance_index):
             return self.task.build_parallel_env(
                 seed=seed,
                 env_instance_index=self.task.env_instance_index(env_instance_index),
                 enable_video=False,
             )
+
         rollout_worker = RolloutWorker(
             env_builder=env_builder,
             **rollout_worker_kwargs,
@@ -248,9 +257,9 @@ class AHWCToTensor(ObservationTransform):
     """
 
     def __init__(
-            self,
-            key=("agent", "observation"),
-            dtype: torch.dtype | None = None,
+        self,
+        key=("agent", "observation"),
+        dtype: torch.dtype | None = None,
     ):
         super().__init__(in_keys=[key], out_keys=[key])
         self.key = key
@@ -273,7 +282,9 @@ class AHWCToTensor(ObservationTransform):
         )
         return obs_spec
 
-    def _reset(self, tensordict: TensorDictBase, tensordict_reset: TensorDictBase) -> TensorDictBase:
+    def _reset(
+        self, tensordict: TensorDictBase, tensordict_reset: TensorDictBase
+    ) -> TensorDictBase:
         with _set_missing_tolerance(self, True):
             tensordict_reset = self._call(tensordict_reset)
         return tensordict_reset
@@ -301,11 +312,11 @@ class VizdoomTask(TaskClass):
         return ENV_INSTANCE_INDEX_BASE + int(env_instance_offset)
 
     def build_parallel_env(
-            self,
-            seed: int,
-            env_instance_index: int = 0,
-            enable_video: Optional[bool] = None,
-            async_mode: Optional[bool] = None,
+        self,
+        seed: int,
+        env_instance_index: int = 0,
+        enable_video: Optional[bool] = None,
+        async_mode: Optional[bool] = None,
     ):
         cfg = self.config
         base_port = self._env_instance_base_port(env_instance_index)
@@ -335,7 +346,9 @@ class VizdoomTask(TaskClass):
     def _build_training_env(self, seed: int, env_instance_index: int):
         cfg = self.config
         env = PettingZooWrapper(
-            env=self.build_parallel_env(seed=seed, env_instance_index=env_instance_index),
+            env=self.build_parallel_env(
+                seed=seed, env_instance_index=env_instance_index
+            ),
             group_map=MarlGroupMapType.ALL_IN_ONE_GROUP,
             return_state=cfg.get("state_source", "none") != "none",
         )
@@ -354,10 +367,14 @@ class VizdoomTask(TaskClass):
         env = env.to(cfg.get("sampling_device", "cpu"))
         return env
 
-    def get_env_fun(self, num_envs: int, continuous_actions: bool, seed: int | None, device=None):
+    def get_env_fun(
+        self, num_envs: int, continuous_actions: bool, seed: int | None, device=None
+    ):
         def _make():
             env_instance_index = self._allocate_env_instance_index()
-            return self._build_training_env(seed=seed, env_instance_index=env_instance_index)
+            return self._build_training_env(
+                seed=seed, env_instance_index=env_instance_index
+            )
 
         return _make
 
@@ -464,7 +481,6 @@ def override_experiment_config(args, on_policy: bool, on_policy_minibatch_size: 
         "max_n_frames": int(args.total_steps),
         "gamma": args.gamma,
         "lr": args.lr,
-
         # eval / logging / ckpts
         "evaluation": True,  # Must be enabled for video logging
         "render": False,
@@ -511,24 +527,34 @@ def main():
     ap.add_argument("--base_port", type=int, default=DEFAULT_BASE_UDP_PORT)
     ap.add_argument("--netmode", type=int, default=0)
     ap.add_argument("--ticrate", type=int, default=None)
-    ap.add_argument("--verbose", action='store_true', default=False)
-    ap.add_argument("--daemon", dest="daemon", action=BooleanOptionalAction, default=True)
+    ap.add_argument("--verbose", action="store_true", default=False)
+    ap.add_argument(
+        "--daemon", dest="daemon", action=BooleanOptionalAction, default=True
+    )
 
     # Optional root "state" exposed to BenchMARL for centralized training
     # "none" means stricter Dec-POMDP setting: critic doesn't get extra state beyond per-agent observations
     # "observations" means critic gets joint-observation state from all agents obs
-    ap.add_argument("--state_source", type=str, default="none", choices=["none", "observations"])
+    ap.add_argument(
+        "--state_source", type=str, default="none", choices=["none", "observations"]
+    )
 
     # Train args
     ap.add_argument("--algo", type=str, default="mappo", choices=list(ALGOS))
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--total_steps", type=float, default=1e6)
-    ap.add_argument("--train_device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
+    ap.add_argument(
+        "--train_device",
+        type=str,
+        default="cuda" if torch.cuda.is_available() else "cpu",
+    )
     ap.add_argument("--sampling_device", type=str, default="cpu")
     ap.add_argument("--buffer_device", type=str, default="cpu")
     ap.add_argument("--rollout_steps", type=int, default=2048)
     ap.add_argument("--batch_size", type=int, default=2048)
-    ap.add_argument("--off_policy_memory_size", type=int, default=16384)  # 2048 batch * 8 optimizer steps
+    ap.add_argument(
+        "--off_policy_memory_size", type=int, default=16384
+    )  # 2048 batch * 8 optimizer steps
     ap.add_argument("--lr", type=float, default=5e-5)
     ap.add_argument("--gamma", type=float, default=0.99)
     ap.add_argument("--gae_lambda", type=float, default=0.95)
@@ -545,7 +571,9 @@ def main():
     ap.add_argument("--enable_video", action=BooleanOptionalAction, default=True)
     ap.add_argument("--record_every", type=int, default=100)
     ap.add_argument("--video_fps", type=int, default=35)
-    ap.add_argument("--render_mode", type=str, default="rgb_array", choices=["rgb_array", "human"])
+    ap.add_argument(
+        "--render_mode", type=str, default="rgb_array", choices=["rgb_array", "human"]
+    )
 
     args = ap.parse_args()
 
@@ -554,7 +582,9 @@ def main():
 
     if not args.async_mode and args.ticrate is not None:
         raise ValueError("--ticrate can only be set when --async-mode is enabled")
-    args.ticrate = int(args.ticrate) if args.ticrate is not None else vzd.DEFAULT_TICRATE
+    args.ticrate = (
+        int(args.ticrate) if args.ticrate is not None else vzd.DEFAULT_TICRATE
+    )
     root_path = Path(__file__).parent.parent.parent
     checkpoints_path = root_path / "checkpoints"
     Path(checkpoints_path).mkdir(parents=True, exist_ok=True)
@@ -565,7 +595,9 @@ def main():
     )
 
     if args.algo not in ALGOS:
-        raise NotImplementedError(f"{args.algo} is not currently implemented in this script")
+        raise NotImplementedError(
+            f"{args.algo} is not currently implemented in this script"
+        )
 
     algo_cfg = override_algo_config(args)
 
