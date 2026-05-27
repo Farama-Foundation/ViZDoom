@@ -158,7 +158,7 @@ class VizdoomParallelEnvBase(ParallelEnv):
         return spaces.Box(
             0,
             255,
-            shape=(self.num_agents, *self._obs_shape),
+            shape=(*self._obs_shape[:2], self._obs_shape[2] * self.num_agents),
             dtype=np.uint8,
         )
 
@@ -173,9 +173,9 @@ class VizdoomParallelEnvBase(ParallelEnv):
         return obs
 
     def state(self) -> np.ndarray:
-        return np.stack(
+        return np.concatenate(
             [self.state_observation(agent) for agent in self.possible_agents],
-            axis=0,
+            axis=-1,
         )
 
     # ------------- action encoding -------------

@@ -52,7 +52,11 @@ class ObservationWrapper(ParallelEnv):
         return spaces.Box(
             low=self._observation_space.low.flat[0],
             high=self._observation_space.high.flat[0],
-            shape=(self.num_agents, *self._observation_space.shape),
+            shape=(
+                self.height,
+                self.width,
+                self._observation_space.shape[-1] * self.num_agents,
+            ),
             dtype=self._observation_space.dtype,
         )
 
@@ -61,9 +65,9 @@ class ObservationWrapper(ParallelEnv):
         return getattr(self.env, "num_agents", len(self.possible_agents))
 
     def state(self):
-        return np.stack(
+        return np.concatenate(
             [self.env_state_observation(agent) for agent in self.possible_agents],
-            axis=0,
+            axis=-1,
         )
 
     def env_state_observation(self, agent: str):

@@ -260,8 +260,8 @@ class AHWCToTensor(ObservationTransform):
         if not isinstance(obs, torch.Tensor):
             obs = torch.as_tensor(obs)
         obs = obs.div(255).to(self.dtype)
-        if obs.ndim != 4:
-            raise ValueError(f"{self.key} must be 4D AHWC, got {tuple(obs.shape)}")
+        if obs.ndim not in (3, 4):
+            raise ValueError(f"{self.key} must be 3D/4D AHWC, got {tuple(obs.shape)}")
         return obs
 
     def transform_observation_spec(self, obs_spec: Composite) -> Composite:
@@ -513,6 +513,10 @@ def main():
     ap.add_argument("--ticrate", type=int, default=None)
     ap.add_argument("--verbose", action='store_true', default=False)
     ap.add_argument("--daemon", dest="daemon", action=BooleanOptionalAction, default=True)
+
+    # Optional root "state" exposed to BenchMARL for centralized training
+    # "none" means stricter Dec-POMDP setting: critic doesn't get extra state beyond per-agent observations
+    # "observations" means critic gets joint-observation state from all agents obs
     ap.add_argument("--state_source", type=str, default="none", choices=["none", "observations"])
 
     # Train args
