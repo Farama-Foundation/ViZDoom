@@ -1,6 +1,18 @@
 """
 Example usage:
 
+pip install vizdoom==1.3.0 \
+            benchmarl==1.5.2 \
+            torchrl==0.11.1 \
+            tensordict==0.11.0 \
+            pettingzoo==1.24.3 \
+            wandb==0.22.1 \
+            gymnasium==0.29.1 \
+            pygame-ce==2.5.7 \
+            imageio==2.37.3 \
+            imageio-ffmpeg==0.6.0 \
+            opencv-python-headless
+
 python -m examples.python.pettingzoo_learning
     --algo mappo \
     --scenario health_gathering_multi_agent \
