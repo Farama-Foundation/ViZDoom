@@ -45,7 +45,7 @@ class WandbLoggingWrapper(Logger):
         self._has_wandb_logger = any(
             isinstance(logger, WandbLogger) for logger in self.loggers
         )
-        self._pending_wandb_metrics = None
+        self._pending_metrics = None
         if self._has_wandb_logger:
             import wandb
 
@@ -54,7 +54,7 @@ class WandbLoggingWrapper(Logger):
 
     def _prepare_iteration_metrics(self, total_frames: int):
         self._env_steps = int(total_frames) * self._skip_frames
-        self._pending_wandb_metrics = None
+        self._pending_metrics = None
         now = time.perf_counter()
         self._fps_samples.append((now, self._env_steps))
         if len(self._fps_samples) > 1:
@@ -62,9 +62,22 @@ class WandbLoggingWrapper(Logger):
             delta_time = now - t0
             delta_env_steps = self._env_steps - env_steps0
             if delta_time > 0 and delta_env_steps > 0:
-                self._pending_wandb_metrics = {
-                    "counters/fps": float(delta_env_steps / delta_time)
+                self._pending_metrics = {
+                    "counters/wallclock_fps": float(delta_env_steps / delta_time)
                 }
+
+    def _add_fps(self, dict_to_log):
+        payload = dict(dict_to_log)
+        if self._pending_metrics is not None:
+            payload.update(self._pending_metrics)
+
+        collection_time = payload.get("timers/collection_time")
+        current_frames = payload.get("counters/current_frames")
+        if collection_time is not None and current_frames is not None and collection_time > 0:
+            payload["counters/fps"] = (
+                float(current_frames) * self._skip_frames / float(collection_time)
+            )
+        return payload
 
     def log_collection(self, batch: TensorDictBase, task: TaskClass, total_frames: int, step: int):
         self._prepare_iteration_metrics(total_frames)
@@ -85,19 +98,18 @@ class WandbLoggingWrapper(Logger):
         )
 
     def log(self, dict_to_log: Dict, step: int = None):
+        payload = self._add_fps(dict_to_log)
         for logger in self.loggers:
             if isinstance(logger, WandbLogger):
                 wandb_payload = {
-                    **dict_to_log,
+                    **payload,
                     self.env_step_metric: float(self._env_steps),
                 }
-                if self._pending_wandb_metrics is not None:
-                    wandb_payload.update(self._pending_wandb_metrics)
                 logger.experiment.log(wandb_payload, commit=False)
             else:
-                for key, value in dict_to_log.items():
+                for key, value in payload.items():
                     logger.log_scalar(key.replace("/", "_"), value, step=step)
-        self._pending_wandb_metrics = None
+        self._pending_metrics = None
 
 
 class VizdoomExperiment(Experiment):
