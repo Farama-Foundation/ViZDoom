@@ -1,3 +1,19 @@
+"""
+Example usage:
+
+python -m examples.python.pettingzoo_learning
+    --algo mappo \
+    --scenario health_gathering_multi_agent \
+    --total_steps 3000000 \
+    --num_agents 2 \
+    --num_envs 8 \
+    --train_device cuda \
+    --sampling_device cpu \
+    --buffer_device cpu \
+    --record_every 10 \
+    --parallel_collection \
+"""
+
 import time
 from argparse import ArgumentParser, BooleanOptionalAction
 from collections import deque
