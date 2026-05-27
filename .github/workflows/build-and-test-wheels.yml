@@ -15,6 +15,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/build-and-test-wheels.yml'
+    branches: [master]
   release:
     types: [published]
 
@@ -136,7 +137,7 @@ jobs:
         run: python -c "import vizdoom"
 
       - name: Run tests
-        run: pytest tests -s
+        run: pytest tests -s --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run
 
   build_sdist:
     name: Build source distribution

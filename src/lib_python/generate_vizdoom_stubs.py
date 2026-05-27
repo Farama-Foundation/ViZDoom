@@ -6,11 +6,13 @@ This script uses pybind11-stubgen to generate stub file for ViZDoom, part of bui
 
 Workflow:
 - using `pybind11-stubgen` for generation
-- removing the `__all__ = ...` line
-- adding `import numpy as np` after `import typing`
+- putting the `__all__ = ...` lines to the end of file
+- adding `from numpy.typing import NDArray` after `import typing`
+- replacing typing of int / float for function arguments into typing.SupportsInt / typing.SupportsFloat
 - optionally, `black` and `isort` for simple formatting
 - adding a header comment
-- replacing the `-> typing.Any` properties with actual return behaviour (`np.ndarray` or `typing.Optional[np.ndarray]`)
+- replacing the `-> typing.Any` properties in GameState with actual return types
+- applying small manual patches
 """
 
 import argparse
@@ -20,6 +22,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from typing import List
 
 
 vizdoom_stub_header = '''"""
@@ -56,7 +59,7 @@ class ViZDoomStubGenerator:
             print("Generating type stubs with stubgen...")
 
         # Add module directory to Python path if provided
-        env: dict[str, str] = os.environ.copy()
+        env = os.environ.copy()
         if os.path.isdir(self.module):
             print("module", self.module)
             module_path = self.module
@@ -80,15 +83,30 @@ class ViZDoomStubGenerator:
             if os.path.exists(stub_file):
                 with open(stub_file, "r", encoding="utf-8", errors="ignore") as f:
                     stub_content = []
+                    all_attribute = []
+                    enter_all_attribute = False
                     for line in f:
                         if line.startswith("import typing"):
-                            stub_content += (
+                            stub_content.append(
                                 "import typing\nfrom numpy.typing import NDArray\n"
                             )
-                        elif not line.startswith("__all__ = "):
-                            stub_content += line
+                        elif line.startswith("__all__"):
+                            enter_all_attribute = True
+                        if enter_all_attribute:
+                            if line.rstrip().endswith("]"):
+                                enter_all_attribute = False
+                            all_attribute.append(line)
+                        else:
+                            # Replace typing of int / float for function arguments
+                            if line.lstrip().startswith("def "):
+                                line = line.replace(
+                                    ": int", ": typing.SupportsInt"
+                                ).replace(
+                                    ": float", ": typing.SupportsFloat"
+                                )
+                            stub_content.append(line)
                 with open(stub_file, "w", encoding="utf-8", errors="ignore") as f:
-                    f.writelines(stub_content)
+                    f.writelines(stub_content + all_attribute)
             else:
                 raise FileNotFoundError(
                     f"Stubgen did not create expected file: {stub_file}"
@@ -102,7 +120,7 @@ class ViZDoomStubGenerator:
 
     def reformat_generated_stub(self):
         """Reformat generated type stubs with black and isort."""
-        finished_formatting: list[str] = []
+        finished_formatting: List[str] = []
         try:
             for tool in ["black", "isort"]:
                 if self.verbose:
@@ -132,7 +150,7 @@ class ViZDoomStubGenerator:
                 f"Stubgen did not create expected file: {stub_file}"
             )
 
-    def add_module_header(self, content: str, formatted_with: list[str]) -> str:
+    def add_module_header(self, content: str, formatted_with: List[str]) -> str:
         """Add a module header."""
         if self.verbose:
             print("Adding module header...")
@@ -147,6 +165,8 @@ class ViZDoomStubGenerator:
         if self.verbose:
             print("Annotating properties of the GameState class...", end=" ")
         replacements = []
+
+        # GameState.*_buffer / GameState.game_variables property
         match_game_state_properties = re.finditer(
             r"^(\s*def (screen|depth|audio|automap|labels|game)_"
             r"(?:buffer|variables)\(self\)\s*->\s*)(typing\.)?Any\s*(:.*)$",
@@ -161,6 +181,11 @@ class ViZDoomStubGenerator:
             actual_return_type = (
                 match_property.group(1) + return_type + match_property.group(4)
             )
+            replacements.append((match_property.group(0), actual_return_type))
+
+        # GameState.labels property: either pyb::list<Label> or pyb::none
+        for match_property in re.finditer(r"(def labels\(self\)\s*->\s*)[^:]+", content):
+            actual_return_type = match_property.group(1) + "typing.Optional[typing.List[Label]]"
             replacements.append((match_property.group(0), actual_return_type))
 
         for old_line, new_line in replacements:
@@ -193,9 +218,10 @@ class ViZDoomStubGenerator:
             stub_content = self.annotate_gamestate_properties(stub_content)
 
             # Step 5.5: The small patches
+            # DoomGame.set_config: config needs to be either str or Dict[str, Any]
             stub_content = stub_content.replace(
                 "set_config(self, config: typing.Any",
-                "set_config(self, config: typing.Union[str, dict[str, typing.Any]]",
+                "set_config(self, config: typing.Union[str, typing.Dict[str, typing.Any]]",
             )
 
             # Step 6: Write to output file

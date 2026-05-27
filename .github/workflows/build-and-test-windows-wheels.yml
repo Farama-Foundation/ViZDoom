@@ -22,6 +22,7 @@ on:
       - 'CMakeLists.txt'
       - 'setup.py'
       - 'pyproject.toml'
+    branches: [master]
   release:
     types: [published]
 
@@ -193,8 +194,7 @@ jobs:
         run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_sound_enabled(True); g.init()"
 
       - name: Run test
-        run: |
-          python -m pytest tests
+        run: python -m pytest tests -s --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run
 
 
   upload_pypi:
