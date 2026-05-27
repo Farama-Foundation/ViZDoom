@@ -201,6 +201,8 @@ class VizdoomExperiment(Experiment):
             assert len(group_policy) == 1
             self.group_policies[group] = group_policy[0]
 
+        if len(self.group_map) != 1:
+            raise ValueError("The custom RolloutWorker supports only one agent group")
         group_name = next(iter(self.group_map.keys()))
         n_agents = len(self.group_map[group_name])
         rollout_worker_kwargs = dict(
@@ -357,7 +359,7 @@ class VizdoomTask(TaskClass):
         """
         Return a dict group_map (group_name -> [agent_names]).
         BenchMARL calls this with the env; use its computed map if available.
-        Fallback to ONE_GROUP_PER_AGENT using known agent names.
+        Fallback to ALL_IN_ONE_GROUP as we only have 1 group. Use ONE_GROUP_PER_AGENT otherwise.
         """
         # Try to use the env's own group_map (already a dict on PettingZooWrapper)
         if env is not None:
@@ -367,12 +369,12 @@ class VizdoomTask(TaskClass):
             # Fallback: build one-group-per-agent from possible_agents if present
             agents = getattr(env, "possible_agents", None)
             if agents:
-                return MarlGroupMapType.ONE_GROUP_PER_AGENT.get_group_map(list(agents))
+                return MarlGroupMapType.ALL_IN_ONE_GROUP.get_group_map(list(agents))
 
         # Last-resort fallback using config’s num_agents
         n = int(self.config.get("num_agents", 2))
         agents = [f"agent_{i}" for i in range(n)]
-        return MarlGroupMapType.ONE_GROUP_PER_AGENT.get_group_map(agents)
+        return MarlGroupMapType.ALL_IN_ONE_GROUP.get_group_map(agents)
 
     def has_render(self, env: EnvBase) -> bool:
         return hasattr(env, "render")
@@ -440,8 +442,8 @@ def override_experiment_config(args, on_policy: bool, on_policy_minibatch_size: 
         "gamma": args.gamma,
         "lr": args.lr,
 
-         # eval / logging / ckpts
-        "evaluation": True, # Must be enabled for video logging
+        # eval / logging / ckpts
+        "evaluation": True,  # Must be enabled for video logging
         "render": False,
         "evaluation_interval": args.rollout_steps * 25,
         "evaluation_episodes": 5,
@@ -498,7 +500,7 @@ def main():
     ap.add_argument("--buffer_device", type=str, default="cpu")
     ap.add_argument("--rollout_steps", type=int, default=2048)
     ap.add_argument("--batch_size", type=int, default=2048)
-    ap.add_argument("--off_policy_memory_size", type=int, default=16384) # 2048 batch * 8 optimizer steps
+    ap.add_argument("--off_policy_memory_size", type=int, default=16384)  # 2048 batch * 8 optimizer steps
     ap.add_argument("--lr", type=float, default=5e-5)
     ap.add_argument("--gamma", type=float, default=0.99)
     ap.add_argument("--gae_lambda", type=float, default=0.95)
