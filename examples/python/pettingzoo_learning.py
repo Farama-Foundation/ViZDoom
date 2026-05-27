@@ -192,8 +192,8 @@ class VizdoomExperiment(Experiment):
             action_spec=self.test_env.input_spec["full_action_spec", group_name, "action"],
             group_name=group_name,
             n_agents=n_agents,
-            frames_per_batch=self.config.on_policy_collected_frames_per_batch,
-            num_envs=int(self.config.on_policy_n_envs_per_worker),
+            frames_per_batch=self.config.collected_frames_per_batch(self.on_policy),
+            num_envs=int(self.config.n_envs_per_worker(self.on_policy)),
             sampling_device=self.config.sampling_device,
             seed=self.seed,
             parallel_collection=bool(getattr(self.config, "parallel_collection", True)),
@@ -304,7 +304,8 @@ class VizdoomTask(TaskClass):
     def _build_training_env(self, seed: int, env_instance_index: int):
         cfg = self.config
         env = PettingZooWrapper(
-            env=self.build_parallel_env(seed=seed, env_instance_index=env_instance_index)
+            env=self.build_parallel_env(seed=seed, env_instance_index=env_instance_index),
+            group_map=MarlGroupMapType.ALL_IN_ONE_GROUP,
         )
         env = TransformedEnv(env, Compose(
             SelectTransform(("agent", "observation"), ("agent", "info")),
@@ -378,6 +379,85 @@ ALGOS: Dict[str, Any] = {
 }
 
 
+def override_config(config, overrides) -> Any:
+    valid_fields = {field.name for field in fields(type(config))}
+    for key, value in overrides.items():
+        if value is not None and key in valid_fields:
+            setattr(config, key, value)
+    return config
+
+
+def override_algo_config(args):
+    algo_cfg = ALGOS[args.algo].get_from_yaml()
+
+    algo_overrides = {
+        "mappo": {
+            "share_param_critic": True,
+            "clip_epsilon": args.clip_eps,
+            "entropy_coef": args.entropy_coef,
+            "critic_coef": args.vf_coef,
+            "loss_critic_type": "l2",
+            "lmbda": args.gae_lambda,
+            "scale_mapping": "biased_softplus_1.0",
+            "use_tanh_normal": True,
+            "minibatch_advantage": False,
+        },
+        "qmix": {},
+        "masac": {
+            "share_param_critic": True,
+            "scale_mapping": "biased_softplus_1.0",
+            "use_tanh_normal": True,
+        },
+    }
+
+    return override_config(algo_cfg, algo_overrides[args.algo])
+
+
+def override_experiment_config(args, on_policy: bool, on_policy_minibatch_size: int):
+    overrides = {
+        "sampling_device": args.sampling_device,
+        "train_device": args.train_device,
+        "buffer_device": args.buffer_device,
+        "share_policy_params": True,
+        "parallel_collection": args.parallel_collection,
+        "max_n_frames": int(args.total_steps),
+        "gamma": args.gamma,
+        "lr": args.lr,
+
+         # eval / logging / ckpts
+        "evaluation": True, # Must be enabled for video logging
+        "render": False,
+        "evaluation_interval": args.rollout_steps * 25,
+        "evaluation_episodes": 5,
+        "loggers": ["wandb"],
+        "project_name": "benchmarl-vizdoom",
+        "checkpoint_interval": args.rollout_steps * 100,
+        "checkpoint_at_end": True,
+    }
+
+    if on_policy:
+        overrides.update(
+            {
+                "on_policy_collected_frames_per_batch": args.rollout_steps,
+                "on_policy_n_envs_per_worker": args.num_envs,
+                "on_policy_n_minibatch_iters": args.num_epochs,
+                "on_policy_minibatch_size": on_policy_minibatch_size,
+            }
+        )
+    else:
+        overrides.update(
+            {
+                "off_policy_collected_frames_per_batch": args.rollout_steps,
+                "off_policy_n_envs_per_worker": args.num_envs,
+                "off_policy_n_optimizer_steps": args.optimizer_steps,
+                "off_policy_train_batch_size": args.batch_size,
+                "off_policy_memory_size": args.off_policy_memory_size,
+            }
+        )
+
+    return overrides
+
+
 def main():
     ap = ArgumentParser()
     # Env args
@@ -402,6 +482,7 @@ def main():
     ap.add_argument("--buffer_device", type=str, default="cpu")
     ap.add_argument("--rollout_steps", type=int, default=2048)
     ap.add_argument("--batch_size", type=int, default=2048)
+    ap.add_argument("--off_policy_memory_size", type=int, default=16384) # 2048 batch * 8 optimizer steps
     ap.add_argument("--lr", type=float, default=5e-5)
     ap.add_argument("--gamma", type=float, default=0.99)
     ap.add_argument("--gae_lambda", type=float, default=0.95)
@@ -410,8 +491,9 @@ def main():
     ap.add_argument("--vf_coef", type=float, default=1.0)
     ap.add_argument("--num_minibatches", type=int, default=4)
     ap.add_argument("--num_epochs", type=int, default=8)
+    ap.add_argument("--optimizer_steps", type=int, default=8)
     ap.add_argument("--num_envs", type=int, default=8)
-    ap.add_argument("--parallel_collection", action='store_true', default=True)
+    ap.add_argument("--parallel_collection", action=BooleanOptionalAction, default=True)
 
     # Video recording
     ap.add_argument("--enable_video", action=BooleanOptionalAction, default=True)
@@ -439,17 +521,7 @@ def main():
     if args.algo not in ALGOS:
         raise NotImplementedError(f"{args.algo} is not currently implemented in this script")
 
-    algo_cfg = ALGOS[args.algo](
-        share_param_critic=True,  # share critic across agents
-        clip_epsilon=args.clip_eps,  # PPO clip
-        entropy_coef=args.entropy_coef,  # entropy bonus
-        critic_coef=args.vf_coef,  # value loss coef
-        loss_critic_type="l2",  # or "smooth_l1" (Huber)
-        lmbda=args.gae_lambda,  # GAE lambda
-        scale_mapping="biased_softplus_1.0",  # softplus
-        use_tanh_normal=True,  # use tanh Gaussian here
-        minibatch_advantage=False,  # compute adv per minibatch
-    )
+    algo_cfg = override_algo_config(args)
 
     # Nature-style front end + 512 MLP head
     cnn_num_cells = [32, 64, 64]
@@ -484,47 +556,21 @@ def main():
     )
 
     exp_cfg = ExperimentConfig.get_from_yaml()
+    is_on_policy = algo_cfg.on_policy()
 
     # compute any derived values first
     on_policy_minibatch_size = max(1, args.batch_size // max(1, args.num_minibatches))
 
-    # only the fields you want to control from CLI
-    overrides = {
-        "sampling_device": args.sampling_device,
-        "train_device": args.train_device,
-        "buffer_device": args.buffer_device,
-        "share_policy_params": True,
-        "parallel_collection": args.parallel_collection,
-        "max_n_frames": int(args.total_steps),
-        "gamma": args.gamma,
-        "lr": args.lr,
-
-        # on-policy collection
-        "on_policy_collected_frames_per_batch": args.rollout_steps,
-        "on_policy_n_envs_per_worker": args.num_envs,
-        "on_policy_n_minibatch_iters": args.num_epochs,
-        "on_policy_minibatch_size": on_policy_minibatch_size,
-
-        # eval / logging / ckpts
-        "evaluation": True, # Must be enabled for video logging
-        "render": False,
-        "evaluation_interval": args.rollout_steps * 25,
-        "evaluation_episodes": 5,
-        "loggers": ["wandb"],
-        "project_name": "benchmarl-vizdoom",
-        "save_folder": str(checkpoints_path),
-        "checkpoint_interval": args.rollout_steps * 100,
-        "checkpoint_at_end": True,
-    }
-
-    # apply safely (only set known fields; skip Nones)
-    valid = {f.name for f in fields(ExperimentConfig)}
-    for k, v in overrides.items():
-        if v is not None and k in valid:
-            setattr(exp_cfg, k, v)
+    overrides = override_experiment_config(
+        args,
+        on_policy=is_on_policy,
+        on_policy_minibatch_size=on_policy_minibatch_size,
+    )
+    overrides["save_folder"] = str(checkpoints_path)
+    override_config(exp_cfg, overrides)
 
     # keep eval interval aligned with horizon (collector-friendly)
-    h = exp_cfg.on_policy_collected_frames_per_batch
+    h = exp_cfg.collected_frames_per_batch(is_on_policy)
     if h and exp_cfg.evaluation_interval % h != 0:
         exp_cfg.evaluation_interval = ((exp_cfg.evaluation_interval + h - 1) // h) * h
 

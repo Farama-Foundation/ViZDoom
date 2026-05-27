@@ -284,7 +284,9 @@ class RolloutWorker:
                 policy_td = self.policy(policy_td)
 
             actions = policy_td.get((self.group_name, "action")).detach().cpu()
-            log_prob = policy_td.get((self.group_name, "log_prob")).detach().cpu()
+            log_prob = policy_td.get((self.group_name, "log_prob"), None)
+            if log_prob is not None:
+                log_prob = log_prob.detach().cpu()
             current_obs = current_obs.cpu()
             env_actions = self._decode_policy_actions(actions)
 
@@ -307,7 +309,7 @@ class RolloutWorker:
                     _Transition(
                         observation=current_obs[offset],
                         action=actions[offset],
-                        log_prob=log_prob[offset],
+                        log_prob=None if log_prob is None else log_prob[offset],
                         reward=torch.from_numpy(reward_np),
                         episode_reward=torch.from_numpy(episode_reward_np),
                         done=done,
@@ -389,7 +391,6 @@ class RolloutWorker:
         batch_size = [len(transitions)]
         observation = torch.stack([transition.observation for transition in transitions], dim=0)
         action = torch.stack([transition.action for transition in transitions], dim=0)
-        log_prob = torch.stack([transition.log_prob for transition in transitions], dim=0)
         reward = torch.stack([transition.reward for transition in transitions], dim=0)
         episode_reward = torch.stack([transition.episode_reward for transition in transitions], dim=0)
         done = torch.stack([transition.done for transition in transitions], dim=0)
@@ -400,19 +401,20 @@ class RolloutWorker:
         next_terminated = torch.stack([transition.next_terminated for transition in transitions], dim=0)
         next_truncated = torch.stack([transition.next_truncated for transition in transitions], dim=0)
 
-        group_td = TensorDict(
-            {
-                "observation": observation,
-                "action": action,
-                "log_prob": log_prob,
-                "reward": reward,
-                "episode_reward": episode_reward,
-                "done": done,
-                "terminated": terminated,
-                "truncated": truncated,
-            },
-            batch_size=[len(transitions), self.n_agents],
-        )
+        group_data = {
+            "observation": observation,
+            "action": action,
+            "reward": reward,
+            "episode_reward": episode_reward,
+            "done": done,
+            "terminated": terminated,
+            "truncated": truncated,
+        }
+        if transitions[0].log_prob is not None:
+            group_data["log_prob"] = torch.stack(
+                [transition.log_prob for transition in transitions], dim=0
+            )
+        group_td = TensorDict(group_data, batch_size=[len(transitions), self.n_agents])
         next_group_td = TensorDict(
             {
                 "observation": next_observation,
