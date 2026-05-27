@@ -126,6 +126,7 @@ namespace vizdoom {
         this->sprites = true;
         this->messages = false;
         this->corpses = true;
+        this->flashes = true;
         this->renderAll = false;
 
         this->windowHidden = false;
@@ -717,16 +718,25 @@ namespace vizdoom {
                 case RGB24:
                 case CBCGCR:
                 case BGR24:
+                case CRCGCB_FLASHED:
+                case RGB24_FLASHED:
+                case CBCGCR_FLASHED:
+                case BGR24_FLASHED:
                     this->screenChannels = 3;
                     break;
                 case RGBA32:
                 case ARGB32:
                 case BGRA32:
                 case ABGR32:
+                case RGBA32_FLASHED:
+                case ARGB32_FLASHED:
+                case BGRA32_FLASHED:
+                case ABGR32_FLASHED:
                     this->screenChannels = 4;
                     break;
                 case GRAY8:
                 case DOOM_256_COLORS8:
+                case GRAY8_FLASHED:
                     this->screenChannels = 1;
                     break;
                 default:
@@ -736,18 +746,27 @@ namespace vizdoom {
             switch (format) {
                 case RGB24:
                 case BGR24:
+                case RGB24_FLASHED:
+                case BGR24_FLASHED:
                     this->screenDepth = 24;
                     break;
                 case RGBA32:
                 case ARGB32:
                 case BGRA32:
                 case ABGR32:
+                case RGBA32_FLASHED:
+                case ARGB32_FLASHED:
+                case BGRA32_FLASHED:
+                case ABGR32_FLASHED:
                     this->screenDepth = 32;
                     break;
                 case CRCGCB:
                 case CBCGCR:
                 case GRAY8:
                 case DOOM_256_COLORS8:
+                case CRCGCB_FLASHED:
+                case CBCGCR_FLASHED:
+                case GRAY8_FLASHED:
                     this->screenDepth = 8;
                     break;
                 default:
