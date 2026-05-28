@@ -490,6 +490,8 @@ def override_experiment_config(args, on_policy: bool, on_policy_minibatch_size: 
         "project_name": "benchmarl-vizdoom",
         "checkpoint_interval": args.rollout_steps * 100,
         "checkpoint_at_end": True,
+        "keep_checkpoints_num": args.keep_checkpoints_num,
+        "exclude_buffer_from_checkpoint": not args.save_replay_buffer,
     }
 
     if on_policy:
@@ -566,6 +568,20 @@ def main():
     ap.add_argument("--optimizer_steps", type=int, default=8)
     ap.add_argument("--num_envs", type=int, default=8)
     ap.add_argument("--parallel_collection", action=BooleanOptionalAction, default=True)
+    ap.add_argument(
+        "--keep_checkpoints_num",
+        type=int,
+        default=1,
+        help="How many checkpoints to keep",
+    )
+    ap.add_argument(
+        "--save_replay_buffer",
+        action=BooleanOptionalAction,
+        default=False,
+        help=(
+            "Include replay buffers in checkpoints. This lets exact off-policy resume but can create really heavy checkpoint files for image observations."
+        ),
+    )
 
     # Video recording
     ap.add_argument("--enable_video", action=BooleanOptionalAction, default=True)
