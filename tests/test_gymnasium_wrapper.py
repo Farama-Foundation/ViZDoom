@@ -11,6 +11,7 @@ import numpy as np
 from gymnasium.spaces import Box, Dict, Discrete, MultiBinary, MultiDiscrete, Text
 from gymnasium.utils.env_checker import check_env, data_equivalence
 
+import vizdoom as vzd
 from vizdoom import gymnasium_wrapper, install_path  # noqa
 from vizdoom.gymnasium_wrapper.base_gymnasium_env import ASCII_CHARS, VizdoomEnv
 
@@ -220,6 +221,32 @@ def test_gymnasium_wrapper_obs_space(env_config: str, obs_space: Dict):
     assert env.observation_space.contains(
         obs
     ), f"Step observation: {obs!r} not in space"
+
+
+def test_gymnasium_wrapper_flashed_screen_formats():
+    rgb_env = VizdoomEnv(
+        config_file=os.path.join(TEST_ENV_CONFIGS, "basic_rgb_i_1_3.cfg"),
+        frame_skip=1,
+        max_buttons_pressed=0,
+        screen_format=vzd.ScreenFormat.RGB24_FLASHED,
+    )
+    assert rgb_env.game.get_screen_format() == vzd.ScreenFormat.RGB24_FLASHED
+    assert rgb_env.observation_space == Dict(COLOR_SCREEN)
+    rgb_obs, _ = rgb_env.reset()
+    assert rgb_env.observation_space.contains(rgb_obs)
+    rgb_env.close()
+
+    gray_env = VizdoomEnv(
+        config_file=os.path.join(TEST_ENV_CONFIGS, "basic_g8_i_1_0.cfg"),
+        frame_skip=1,
+        max_buttons_pressed=0,
+        screen_format=vzd.ScreenFormat.GRAY8_FLASHED,
+    )
+    assert gray_env.game.get_screen_format() == vzd.ScreenFormat.GRAY8_FLASHED
+    assert gray_env.observation_space == Dict(GREY_SCREEN)
+    gray_obs, _ = gray_env.reset()
+    assert gray_env.observation_space.contains(gray_obs)
+    gray_env.close()
 
 
 def _compare_action_spaces(env: gymnasium.Env, expected_action_space: gymnasium.Space):
