@@ -277,6 +277,8 @@ namespace vizdoom {
         switch(this->getScreenFormat()){
             case CRCGCB:
             case CBCGCR:
+            case CRCGCB_FLASHED:
+            case CBCGCR_FLASHED:
                 this->colorShape.resize(3);
                 this->colorShape[0] = channels;
                 this->colorShape[1] = height;
@@ -285,6 +287,7 @@ namespace vizdoom {
 
             case GRAY8:
             case DOOM_256_COLORS8:
+            case GRAY8_FLASHED:
                 this->colorShape.resize(2);
                 this->colorShape[0] = height;
                 this->colorShape[1] = width;

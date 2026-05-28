@@ -173,14 +173,16 @@ class VizdoomEnv(gym.Env, EzPickle):
         screen_format = self.game.get_screen_format()
         if (
             screen_format != vzd.ScreenFormat.RGB24
+            and screen_format != vzd.ScreenFormat.RGB24_FLASHED
             and screen_format != vzd.ScreenFormat.GRAY8
+            and screen_format != vzd.ScreenFormat.GRAY8_FLASHED
         ):
             if (
                 kwargs is not None and "screen_format" in kwargs
             ):  # Only warn if user explicitly set screen_format in kwargs
                 warnings.warn(
                     f"Detected screen format {screen_format.name} set in kwargs. "
-                    f"Only RGB24 and GRAY8 are supported in the Gymnasium wrapper. Forcing RGB24."
+                    f"Only RGB24, RGB24_FLASHED, GRAY8, and GRAY8_FLASHED are supported in the Gymnasium wrapper. Forcing RGB24."
                 )
             self.game.set_screen_format(vzd.ScreenFormat.RGB24)
 
@@ -190,7 +192,7 @@ class VizdoomEnv(gym.Env, EzPickle):
         self.isopen = True
         self.channels = 3
 
-        if screen_format == vzd.ScreenFormat.GRAY8:
+        if screen_format in (vzd.ScreenFormat.GRAY8, vzd.ScreenFormat.GRAY8_FLASHED):
             self.channels = 1
 
         self.depth = self.game.is_depth_buffer_enabled()
