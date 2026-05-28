@@ -95,19 +95,19 @@ def recording_test(
 
         normalize_action(action)
         history_of_actions.append(action)
-        assert type(action) == list
+        assert isinstance(action, list)
 
         state = game.get_state()
         assert state is not None
         variables = normalize_variables(state.game_variables)
         history_of_variables.append(variables)
-        assert type(variables) == list
+        assert isinstance(variables, list)
 
         reward = game.make_action(action)
         history_of_rewards.append(reward)
         last_action = game.get_last_action()
         normalize_action(last_action)
-        assert type(last_action) == list
+        assert isinstance(last_action, list)
 
         if verbose > 1:
             print(
@@ -134,13 +134,13 @@ def recording_test(
         state = game.get_state()
         assert state is not None
         variables = normalize_variables(state.game_variables)
-        assert type(variables) == list
+        assert isinstance(variables, list)
 
         game.advance_action()
         last_action = game.get_last_action()
         reward = game.get_last_reward()
         normalize_action(last_action)
-        assert type(last_action) == list
+        assert isinstance(last_action, list)
 
         sleep(sleep_time)
 
