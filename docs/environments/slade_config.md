@@ -4,7 +4,7 @@ This is a short guide on how to configure [SLADE](http://slade.mancubus.net/inde
 
 This is not meant to be a full tutorial on how to use SLADE. For more information and tutorials on how to use SLADE, please refer to the [official SLADE wiki](http://slade.mancubus.net/index.php?page=wiki).
 
-You can download SLADE for Linux, MacOS, and Windows from [here](http://slade.mancubus.net/index.php?page=downloads).
+You can download SLADE for Linux, macOS, and Windows from [here](http://slade.mancubus.net/index.php?page=downloads).
 It is also available as a Flatpak on [flathub](https://flathub.org/en/apps/net.mancubus.SLADE)
 
 For all these steps it is assumed that user installed ViZDoom in venv under `/home/marek/ViZDoom/venv` and that ViZDoom repository is located in `/home/marek/ViZDoom`. Please adjust paths accordingly to your setup.

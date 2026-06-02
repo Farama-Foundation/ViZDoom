@@ -65,8 +65,8 @@ python setup.py build && python setup.py install
 ```
 
 
-### MacOS
-To build ViZDoom on MacOS, the following dependencies are required:
+### macOS
+To build ViZDoom on macOS, the following dependencies are required:
 * CMake 3.12+
 * Clang 5.0+
 * Boost libraries 1.54.0+
@@ -104,7 +104,7 @@ You can download Boost from [here](https://www.boost.org/users/download).
 
 ## Building via pip (recommended for Python users)
 
-ViZDoom for Python can be build via **pip** on Linux, MacOS and Windows, and it is strongly recommended.
+ViZDoom for Python can be build via **pip** on Linux, macOS and Windows, and it is strongly recommended.
 Even when building using pip you still need to install dependencies.
 
 To build the newest version from the repository run:
@@ -118,7 +118,7 @@ cd ViZDoom
 pip install .
 ```
 
-On Linux and MacOS dependencies should be found automatically.
+On Linux and macOS dependencies should be found automatically.
 On Windows you need to manually set following environment variables:
 * `BOOST_ROOT` - the path to the directory with Boost libraries (e.g. `C:\boost_1_76_0`),
 * `VIZDOOM_BUILD_GENERATOR_NAME` - generator name (e.g. `Visual Studio 16 2019`),
@@ -148,7 +148,7 @@ stubtest vizdoom --allowlist stubtest_allowlists.txt
 
 ## Building manylinux wheels
 
-To build manylinux wheels you need to install docker and cibuildwheel. Then on Linux and MacOS run in ViZDoom root directory:
+To build manylinux wheels you need to install docker and cibuildwheel. Then on Linux and macOS run in ViZDoom root directory:
 ```sh
 cibuildwheel --platform linux
 ```
@@ -162,7 +162,7 @@ In case of building using cibuildwheel, the dependencies are installed automatic
 Instructions below can be used to build ViZDoom manually.
 We recommend doing it only if you want to use C++ API, work on the ViZDoom, or if you have problems with pip installation.
 
-### Linux / MacOS
+### Linux / macOS
 In ViZDoom's root directory:
 ```bash
 mkdir build

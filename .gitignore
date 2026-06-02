@@ -111,7 +111,7 @@ src/vizdoom/zlib/CTestTestfile.cmake
 **/freedm.wad
 **_vizdoom.ini
 
-# MacOS
+# macOS
 .DS_Store
 
 # Visual Studio Code

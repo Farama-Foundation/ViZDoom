@@ -28,7 +28,7 @@ Alternatively, any base game WAD (including other Doom engine-based games) can b
 
 You can create or modify existing scenarios using many available Doom map editors.
 We recommend using one of these two editors:
-- [SLADE3](http://slade.mancubus.net/) - great Doom map (scenario) editor for Linux, MacOS and Windows.
+- [SLADE3](http://slade.mancubus.net/) - great Doom map (scenario) editor for Linux, macOS and Windows.
 - [Doom Builder 2](http://www.doombuilder.com/) - another great Doom map editor for Windows.
 
 You should select ZDoom as your Doom engine version and UDMF map format (Universal Doom Map Format),
