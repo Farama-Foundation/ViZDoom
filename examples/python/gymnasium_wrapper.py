@@ -6,7 +6,9 @@
 
 import gymnasium
 
+
 from vizdoom import gymnasium_wrapper  # noqa
+
 
 
 if __name__ == "__main__":
@@ -21,5 +23,4 @@ if __name__ == "__main__":
         while not done:
             obs, rew, terminated, truncated, info = env.step(env.action_space.sample())
             env.render()
-            print(obs["telemetry"])
             done = terminated or truncated
