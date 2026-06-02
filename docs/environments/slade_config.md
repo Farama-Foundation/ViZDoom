@@ -50,7 +50,7 @@ For source port after select `ZDoom` which is a base of ViZDoom.
 When you are done with editing the map, you can run it using ViZDoom executable to see how it looks and plays.
 Map editor allows you to run the map directly from the editor. It will ask you to select game executable type (again select `ZDoom`) and path to the executable, select `vizdoom` executable located in the root directory of ViZDoom package (in our case, it is `/home/marek/ViZDoom/venv/lib/python-3.13/site-packages/vizdoom/vizdoom`).
 
-```{figure} _static/img/slade/run_map_config.png
+```{figure} ../_static/img/slade/run_map_config.png
    :alt: SLADE run map from the map editor configuration
 ```
 
