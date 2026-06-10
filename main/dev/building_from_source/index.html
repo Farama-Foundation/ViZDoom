@@ -380,8 +380,8 @@ dnf<span class="w"> </span>install<span class="w"> </span>python3-devel<span cla
 </section>
 </section>
 <section id="macos">
-<h3>MacOS<a class="headerlink" href="#macos" title="Link to this heading">¶</a></h3>
-<p>To build ViZDoom on MacOS, the following dependencies are required:</p>
+<h3>macOS<a class="headerlink" href="#macos" title="Link to this heading">¶</a></h3>
+<p>To build ViZDoom on macOS, the following dependencies are required:</p>
 <ul class="simple">
 <li><p>CMake 3.12+</p></li>
 <li><p>Clang 5.0+</p></li>
@@ -416,7 +416,7 @@ You can download Boost from <a class="reference external" href="https://www.boos
 </section>
 <section id="building-via-pip-recommended-for-python-users">
 <h2>Building via pip (recommended for Python users)<a class="headerlink" href="#building-via-pip-recommended-for-python-users" title="Link to this heading">¶</a></h2>
-<p>ViZDoom for Python can be build via <strong>pip</strong> on Linux, MacOS and Windows, and it is strongly recommended.
+<p>ViZDoom for Python can be build via <strong>pip</strong> on Linux, macOS and Windows, and it is strongly recommended.
 Even when building using pip you still need to install dependencies.</p>
 <p>To build the newest version from the repository run:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/mwydmuch/ViZDoom.git
@@ -428,7 +428,7 @@ Even when building using pip you still need to install dependencies.</p>
 pip<span class="w"> </span>install<span class="w"> </span>.
 </pre></div>
 </div>
-<p>On Linux and MacOS dependencies should be found automatically.
+<p>On Linux and macOS dependencies should be found automatically.
 On Windows you need to manually set following environment variables:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">BOOST_ROOT</span></code> - the path to the directory with Boost libraries (e.g. <code class="docutils literal notranslate"><span class="pre">C:\boost_1_76_0</span></code>),</p></li>
@@ -457,7 +457,7 @@ On Windows you need to manually set following environment variables:</p>
 </section>
 <section id="building-manylinux-wheels">
 <h2>Building manylinux wheels<a class="headerlink" href="#building-manylinux-wheels" title="Link to this heading">¶</a></h2>
-<p>To build manylinux wheels you need to install docker and cibuildwheel. Then on Linux and MacOS run in ViZDoom root directory:</p>
+<p>To build manylinux wheels you need to install docker and cibuildwheel. Then on Linux and macOS run in ViZDoom root directory:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>cibuildwheel<span class="w"> </span>--platform<span class="w"> </span>linux
 </pre></div>
 </div>
@@ -469,7 +469,7 @@ In case of building using cibuildwheel, the dependencies are installed automatic
 <p>Instructions below can be used to build ViZDoom manually.
 We recommend doing it only if you want to use C++ API, work on the ViZDoom, or if you have problems with pip installation.</p>
 <section id="linux-macos">
-<h3>Linux / MacOS<a class="headerlink" href="#linux-macos" title="Link to this heading">¶</a></h3>
+<h3>Linux / macOS<a class="headerlink" href="#linux-macos" title="Link to this heading">¶</a></h3>
 <p>In ViZDoom’s root directory:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>build
 <span class="nb">cd</span><span class="w"> </span>build
@@ -594,7 +594,7 @@ make
 <li><a class="reference internal" href="#anaconda-miniconda">Anaconda/Miniconda</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#macos">MacOS</a></li>
+<li><a class="reference internal" href="#macos">macOS</a></li>
 <li><a class="reference internal" href="#windows">Windows</a></li>
 </ul>
 </li>
@@ -602,7 +602,7 @@ make
 <li><a class="reference internal" href="#building-python-type-stubs-vizdoom-pyi">Building Python Type Stubs (<code class="docutils literal notranslate"><span class="pre">vizdoom.pyi</span></code>)</a></li>
 <li><a class="reference internal" href="#building-manylinux-wheels">Building manylinux wheels</a></li>
 <li><a class="reference internal" href="#building-manually-not-recommended">Building manually (not recommended)</a><ul>
-<li><a class="reference internal" href="#linux-macos">Linux / MacOS</a></li>
+<li><a class="reference internal" href="#linux-macos">Linux / macOS</a></li>
 <li><a class="reference internal" href="#id1">Windows</a></li>
 <li><a class="reference internal" href="#compilation-output">Compilation output</a></li>
 <li><a class="reference internal" href="#manual-installation">Manual installation</a></li>
