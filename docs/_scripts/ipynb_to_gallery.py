@@ -5,6 +5,7 @@ Usage: python ipynb_to_gallery.py <notebook.ipynb>
 Dependencies: pypandoc, beautifulsoup4, numpy
 install using `pip install pypandoc, beautifulsoup4, numpy`
 """
+
 import json
 import warnings
 
