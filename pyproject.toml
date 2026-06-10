@@ -1,9 +1,6 @@
 [build-system]
 requires = ["cmake>=3.12.0", "setuptools>=65", "wheel", "pybind11-stubgen"]
 
-[tool.black]
-safe = true
-
 [tool.isort]
 atomic = true
 profile = "black"

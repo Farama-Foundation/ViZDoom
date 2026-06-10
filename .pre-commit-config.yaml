@@ -33,11 +33,11 @@ repos:
         args:
           - --ignore-words-list=msdos,MSDOS,LTS,STLE,parms,bord,partialy,nd,siz,ore,CLER
   - repo: https://github.com/python/black
-    rev: 22.10.0
+    rev: 25.11.0
     hooks:
       - id: black
   - repo: https://github.com/PyCQA/flake8
-    rev: 5.0.4
+    rev: 7.3.0
     hooks:
       - id: flake8
         args:
@@ -47,11 +47,11 @@ repos:
           - --show-source
           - --statistics
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.3.0
+    rev: v3.21.2
     hooks:
       - id: pyupgrade
         exclude: src
-        args: ["--py37-plus"]
+        args: ["--py39-plus"]
   - repo: https://github.com/PyCQA/isort
     rev: 5.12.0
     hooks:
