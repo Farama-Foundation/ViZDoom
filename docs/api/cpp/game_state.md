@@ -72,8 +72,8 @@ Description of the object in the labels buffer.
 
 **objectName / object_name** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
 
-**objectCategory / object_category** - category of the object (e.g. "Monster", "Weapon", "Player"). Category "Self" is assigned to current player. 
-The category assigment may not be accurate, especcialy for custom objects and WADs other than Freedoom/Doom. Note: added in 1.3.0.
+**objectCategory / object_category** - category of the object (e.g. "Monster", "Weapon", "Player"). Category "Self" is assigned to current player.
+The category assignment may not be accurate, especcialy for custom objects and WADs other than Freedoom/Doom. Note: added in 1.3.0.
 
 **value** - value that represents this particular object in **labelsBuffer**.
 
@@ -110,7 +110,7 @@ Description of the object present in the game world.
 **name** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
 
 **category** - category of the object (e.g. "Monster", "Weapon", "Player"). Category "Self" is assigned to current player.
-The category assigment may not be accurate, especcialy for custom objects and WADs other than Freedoom/Doom. Note: added in 1.3.1.
+The category assignment may not be accurate, especcialy for custom objects and WADs other than Freedoom/Doom. Note: added in 1.3.1.
 
 **sectorId / sector_id** - ID of the sector the object currently belongs to (same as corresponding **Sector.id**). Note: added in 1.3.1.
 
