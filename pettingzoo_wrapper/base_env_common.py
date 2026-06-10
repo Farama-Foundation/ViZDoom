@@ -7,7 +7,6 @@ import math
 import time
 from typing import Any
 
-import cv2
 import numpy as np
 import pygame
 from gymnasium import spaces
@@ -262,40 +261,28 @@ class VizdoomParallelEnvBase(ParallelEnv):
         cols = min(self._num_agents, max(1, 1920 // w))
         rows = math.ceil(self._num_agents / cols)
         total_w, total_h = cols * w, rows * h
-        max_w, max_h = 1920, 1080
-        scale = min(
-            max_w / total_w if total_w > max_w else 1.0,
-            max_h / total_h if total_h > max_h else 1.0,
-        )
-        sw, sh = int(w * scale), int(h * scale)
-        disp_w = min(cols * sw, max_w)
-        disp_h = min(rows * sh, max_h)
 
         if self.render_mode == "human":
-            if self._screen is None or self._screen.get_size() != (disp_w, disp_h):
+            if self._screen is None or self._screen.get_size() != (total_w, total_h):
                 pygame.init()
-                self._screen = pygame.display.set_mode((disp_w, disp_h))
+                self._screen = pygame.display.set_mode((total_w, total_h))
                 pygame.display.set_caption("ViZDoom Multi-Agent")
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.close()
                     return None
             for i, frame in enumerate(frames):
-                if scale < 1.0:
-                    frame = cv2.resize(frame, (sw, sh))
                 col, row = i % cols, i // cols
                 surf = pygame.surfarray.make_surface(frame.swapaxes(0, 1))
-                self._screen.blit(surf, (col * sw, row * sh))
+                self._screen.blit(surf, (col * w, row * h))
             pygame.display.flip()
             time.sleep(0.01)
             return None
         else:  # rgb_array
             ch = frames[0].shape[2]
-            canvas = np.zeros((disp_h, disp_w, ch), dtype=frames[0].dtype)
+            canvas = np.zeros((total_h, total_w, ch), dtype=frames[0].dtype)
             for i, frame in enumerate(frames):
-                if scale < 1.0:
-                    frame = cv2.resize(frame, (sw, sh))
                 col, row = i % cols, i // cols
-                x, y = col * sw, row * sh
-                canvas[y : y + sh, x : x + sw] = frame[:sh, :sw]
+                x, y = col * w, row * h
+                canvas[y : y + h, x : x + w] = frame
             return canvas

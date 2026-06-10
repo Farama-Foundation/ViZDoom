@@ -339,8 +339,6 @@ class VizdoomTask(TaskClass):
             video_fps=cfg["video_fps"],
             verbose=cfg.get("verbose", False),
             daemon=cfg["daemon"],
-            resize_width=128,
-            resize_height=72,
         )
 
     def _build_training_env(self, seed: int, env_instance_index: int):
