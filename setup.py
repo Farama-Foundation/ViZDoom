@@ -149,7 +149,7 @@ class BuildCommand(build):
                 f"VIZDOOM_CMAKE_ARGS is set, the following arguments will be added to cmake command: {env_cmake_args}"
             )
 
-        # MacOS specific flag for specifying the architecture of the binary
+        # macOS specific flag for specifying the architecture of the binary
         if platform.startswith("darwin"):
             macos_arch = os.getenv("VIZDOOM_MACOS_ARCH")
             if macos_arch is not None:
@@ -304,7 +304,9 @@ setup(
         "vizdoom",
         "doom",
         "ai",
+        "artificial intelligence",
         "deep learning",
+        "rl",
         "reinforcement learning",
         "research",
     ],

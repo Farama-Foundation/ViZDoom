@@ -155,7 +155,7 @@ Useful articles (for advanced users who want to create custom environments/scena
 
 
 ## Awesome Doom tools/projects
-- [SLADE3](http://slade.mancubus.net/) - Great Doom map (scenario) editor for Linux, MacOS and Windows.
+- [SLADE3](http://slade.mancubus.net/) - Great Doom map (scenario) editor for Linux, macOS and Windows.
 - [Doom Builder 2](http://www.doombuilder.com/) - Another great Doom map editor for Windows.
 - [OBLIGE](http://oblige.sourceforge.net/) - Doom random map generator and [PyOblige](https://github.com/mwydmuch/PyOblige) is a simple Python wrapper for it.
 - [Omgifol](https://github.com/devinacker/omgifol) - Nice Python library for manipulating Doom maps.

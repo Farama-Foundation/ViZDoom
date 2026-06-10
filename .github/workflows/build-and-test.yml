@@ -57,7 +57,7 @@ jobs:
         sudo apt install -y cmake git libboost-all-dev libsdl2-dev libopenal-dev
         apt list --installed
 
-    - name: Install dependencies on MacOS
+    - name: Install dependencies on macOS
       if: runner.os == 'macOS'
       run: |
         brew config
