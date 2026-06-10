@@ -61,7 +61,9 @@ def main():
         )
         if error is None:
             status = "OK"
-            print(f"{map_name.upper():<8}{objects_count:>10}{sectors_count:>10}  {status}")
+            print(
+                f"{map_name.upper():<8}{objects_count:>10}{sectors_count:>10}  {status}"
+            )
             rows.append((map_name, objects_count, sectors_count))
         else:
             status = f"ERROR: {error}"
