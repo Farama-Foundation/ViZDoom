@@ -372,24 +372,8 @@ def _point_in_sector_2d(px, py, sector, tolerance=GEOMETRY_TOLERANCE):
     return inside
 
 
-def _find_object_sector(obj, sectors, tolerance=GEOMETRY_TOLERANCE):
-    containing = [
-        sector
-        for sector in sectors
-        if _point_in_sector_2d(obj.position_x, obj.position_y, sector, tolerance)
-    ]
-    if not containing:
-        return None
-
-    candidate_with_floor_below = [
-        sector
-        for sector in containing
-        if obj.position_z + tolerance >= sector.floor_height
-    ]
-    if candidate_with_floor_below:
-        return max(candidate_with_floor_below, key=lambda sector: sector.floor_height)
-
-    return min(containing, key=lambda sector: abs(obj.position_z - sector.floor_height))
+def _sector_map_by_id(sectors):
+    return {sector.id: sector for sector in sectors}
 
 
 def test_map01_sectors_floor_not_above_ceiling():
@@ -428,15 +412,28 @@ def test_map01_objects_are_above_the_floor_of_their_sector():
         assert len(state.objects) > 0, "Expected at least one object on map01"
         assert len(state.sectors) > 0, "Expected at least one sector on map01"
 
+        sectors_by_id = _sector_map_by_id(state.sectors)
+        assert len(sectors_by_id) == len(
+            state.sectors
+        ), "Expected unique sector IDs in map01 sectors"
+
         errors = []
         for obj in state.objects:
-            sector = _find_object_sector(obj, state.sectors)
+            sector = sectors_by_id.get(obj.sector_id)
             if sector is None:
                 errors.append(
-                    f"Object id={obj.id}, name={obj.name} was not matched to any sector "
-                    f"at (x={obj.position_x}, y={obj.position_y}, z={obj.position_z})"
+                    f"Object id={obj.id}, name={obj.name} references unknown sector_id="
+                    f"{obj.sector_id}"
                 )
                 continue
+
+            if not _point_in_sector_2d(
+                obj.position_x, obj.position_y, sector, GEOMETRY_TOLERANCE
+            ):
+                errors.append(
+                    f"Object id={obj.id}, name={obj.name} is outside referenced sector_id="
+                    f"{obj.sector_id} at (x={obj.position_x}, y={obj.position_y})"
+                )
 
             if obj.position_z + GEOMETRY_TOLERANCE < sector.floor_height:
                 errors.append(
@@ -447,6 +444,33 @@ def test_map01_objects_are_above_the_floor_of_their_sector():
         assert not errors, "Object-to-sector floor validation failed:\n" + "\n".join(
             errors
         )
+    finally:
+        game.close()
+
+
+def test_object_categories_match_label_categories():
+    game = vzd.DoomGame()
+    try:
+        game.set_window_visible(False)
+        game.set_doom_map("map01")
+        game.set_labels_buffer_enabled(True)
+        game.set_objects_info_enabled(True)
+        game.init()
+
+        state = game.get_state()
+        assert state.labels is not None, "Expected labels info to be available"
+        assert state.objects is not None, "Expected objects info to be available"
+
+        objects_by_id = {obj.id: obj for obj in state.objects}
+        for label in state.labels:
+            obj = objects_by_id.get(label.object_id)
+            if obj is None:
+                continue
+            assert obj.category == label.object_category, (
+                f"Object id={obj.id}, name={obj.name} category mismatch: "
+                f"category={obj.category}, "
+                f"label_category={label.object_category}"
+            )
     finally:
         game.close()
 

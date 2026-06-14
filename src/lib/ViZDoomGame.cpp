@@ -382,6 +382,7 @@ namespace vizdoom {
                     this->state->objects.emplace_back();
                     std::memcpy(&this->state->objects.back().id, &smState->OBJECT[i].id, objectPartSize);
                     this->state->objects.back().name = std::string(smState->OBJECT[i].name);
+                    this->state->objects.back().category = std::string(smState->OBJECT[i].category);
                 }
             }
             
@@ -391,6 +392,7 @@ namespace vizdoom {
             if(this->doomController->isSectorsEnabled()){
                 for (unsigned int i = 0; i < smState->SECTOR_COUNT; ++i) {
                     this->state->sectors.emplace_back();
+                    this->state->sectors.back().id = smState->SECTOR[i].id;
                     this->state->sectors.back().ceilingHeight = smState->SECTOR[i].ceilingHeight;
                     this->state->sectors.back().floorHeight = smState->SECTOR[i].floorHeight;
                     for (unsigned int j = 0; j < smState->SECTOR[i].lineCount; ++j) {

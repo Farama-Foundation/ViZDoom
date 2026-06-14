@@ -503,7 +503,7 @@ class DoomGame:
         """
         Returns the unique identifier of the current running game instance.
 
-        Note: added in 1.3.1.
+        Note: added in 1.4.0.
         """
 
     def get_item_reward(self) -> float:
@@ -1681,7 +1681,7 @@ class FileDoesNotExistException(Exception):
 
 class GameState:
     """
-    Contains the state of the game including screen buffer, game variables, and world geometry, available information depand on the configuration of the game instance.
+    Contains the state of the game including screen buffer, game variables, and world geometry, available information depends on the configuration of the game instance.
     """
 
     def __getstate__(self) -> tuple: ...
@@ -2298,6 +2298,8 @@ class Object:
     @property
     def angle(self) -> float: ...
     @property
+    def category(self) -> str: ...
+    @property
     def id(self) -> int: ...
     @property
     def name(self) -> str: ...
@@ -2311,6 +2313,8 @@ class Object:
     def position_z(self) -> float: ...
     @property
     def roll(self) -> float: ...
+    @property
+    def sector_id(self) -> int: ...
     @property
     def velocity_x(self) -> float: ...
     @property
@@ -2625,6 +2629,8 @@ class Sector:
     def ceiling_height(self) -> float: ...
     @property
     def floor_height(self) -> float: ...
+    @property
+    def id(self) -> int: ...
     @property
     def lines(self) -> list: ...
 
@@ -3000,7 +3006,7 @@ WEAPON9: GameVariable  # value = <GameVariable.WEAPON9: 36>
 WHOLE: AutomapMode  # value = <AutomapMode.WHOLE: 1>
 ZOOM: Button  # value = <Button.ZOOM: 7>
 __version__: str
-__all__ = [
+__all__: list[str] = [
     "ABGR32",
     "ACTIVATE_SELECTED_ITEM",
     "ALTATTACK",

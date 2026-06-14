@@ -16,7 +16,7 @@ namespace docstrings {
     const char *Sector = R"DOCSTRING(Represents sectors (floor/ceiling areas) in the game world geometry.)DOCSTRING";
     const char *Object = R"DOCSTRING(Represents objects in the game world with position and other properties.)DOCSTRING";
     const char *ServerState = R"DOCSTRING(Contains the state of the multiplayer server.)DOCSTRING";
-    const char *GameState = R"DOCSTRING(Contains the state of the game including screen buffer, game variables, and world geometry, available information depand on the configuration of the game instance.)DOCSTRING";
+    const char *GameState = R"DOCSTRING(Contains the state of the game including screen buffer, game variables, and world geometry, available information depends on the configuration of the game instance.)DOCSTRING";
     const char *DoomGame = R"DOCSTRING(DoomGame is the main object of the ViZDoom library, representing a single instance of the Doom game and providing the interface for a single agent/player to interact with the game. The object allows sending actions to the game, getting the game state, etc.)DOCSTRING";
 
 } // namespace docstrings

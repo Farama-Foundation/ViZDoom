@@ -65,6 +65,7 @@ namespace vizdoom {
     };
 
     struct SectorPython {
+        unsigned int id;
         double floorHeight;
         double ceilingHeight;
         pyb::list lines;
