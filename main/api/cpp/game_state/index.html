@@ -386,7 +386,8 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p>Description of the object in the labels buffer.</p>
 <p><strong>objectId / object_id</strong> - unique object ID, if both Labels and Objects information is enabled, this will be the same as <strong>id</strong> in corresponding <strong>Object</strong>.</p>
 <p><strong>objectName / object_name</strong> - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).</p>
-<p><strong>objectCategory / object_category</strong> - category of the object (e.g. “Monster”, “Weapon”, “Player”). Category “Self” is assigned to current player.</p>
+<p><strong>objectCategory / object_category</strong> - category of the object (e.g. “Monster”, “Weapon”, “Player”). Category “Self” is assigned to current player.
+The category assignment may not be accurate, especcialy for custom objects and WADs other than Freedoom/Doom. Note: added in 1.3.0.</p>
 <p><strong>value</strong> - value that represents this particular object in <strong>labelsBuffer</strong>.</p>
 <p><strong>x</strong>, <strong>y</strong>, <strong>width</strong>, <strong>height</strong> - describes bounding box of this particular object in <strong>labelsBuffer</strong>. Note: added in 1.1.5.</p>
 <p>See also:</p>
@@ -401,7 +402,9 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p>(<code class="docutils literal notranslate"><span class="pre">C++</span> <span class="pre">type</span> <span class="pre">/</span> <span class="pre">Python</span> <span class="pre">type</span></code> <strong>name</strong>)</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>id</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>sectorId / sector_id</strong></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">std::string</span> <span class="pre">/</span> <span class="pre">str</span></code> <strong>name</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std::string</span> <span class="pre">/</span> <span class="pre">str</span></code> <strong>category</strong></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>positionX / position_x</strong></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>positionY / position_y</strong></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>positionZ / position_z</strong></p></li>
@@ -413,8 +416,11 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>velocityZ / velocity_z</strong></p></li>
 </ul>
 <p>Description of the object present in the game world.</p>
-<p><strong>id</strong> - unique object ID.</p>
+<p><strong>id</strong> - unique object ID. This is the value referenced by <strong>Label.objectId / object_id</strong>.</p>
 <p><strong>name</strong> - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).</p>
+<p><strong>category</strong> - category of the object (e.g. “Monster”, “Weapon”, “Player”). Category “Self” is assigned to current player.
+The category assignment may not be accurate, especcialy for custom objects and WADs other than Freedoom/Doom. Note: added in 1.4.0.</p>
+<p><strong>sectorId / sector_id</strong> - ID of the sector the object currently belongs to (same as corresponding <strong>Sector.id</strong>). Note: added in 1.4.0.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../doom_game/#setsectorsinfoenabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setObjectsInfoEnabled</span></code></span></a>,</p></li>
@@ -448,11 +454,13 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <h3><code class="docutils literal notranslate"><span class="pre">Sector</span></code><a class="headerlink" href="#sector" title="Link to this heading">¶</a></h3>
 <p>(<code class="docutils literal notranslate"><span class="pre">C++</span> <span class="pre">type</span> <span class="pre">/</span> <span class="pre">Python</span> <span class="pre">type</span></code> <strong>name</strong>)</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>floorHeight / floor_height</strong> - Note: before 1.3.1 the value of floorHeight was inverted (negative). The bug was fixed in 1.3.1.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">/</span> <span class="pre">int</span></code> <strong>id</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>floorHeight / floor_height</strong> - Note: before 1.4.0 the value of floorHeight was inverted (negative). The bug was fixed in 1.4.0.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">/</span> <span class="pre">float</span></code> <strong>ceilingHeight / ceiling_height</strong></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">std::vector&lt;Label&gt;</span> <span class="pre">/</span> <span class="pre">list</span></code> <strong>lines</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std::vector&lt;Line&gt;</span> <span class="pre">/</span> <span class="pre">list</span></code> <strong>lines</strong></p></li>
 </ul>
 <p>Description of the sector, part of the map with the same floor and ceiling height.</p>
+<p><strong>id</strong> - unique sector ID. This is the value referenced by <strong>Object.sectorId / sector_id</strong>. Note: added in 1.4.0.</p>
 <p><strong>floorHeight / floor_height</strong> - height of the sector’s floor.</p>
 <p><strong>ceilingHeight / ceiling_height</strong> - height of the sector’s ceiling.</p>
 <p><strong>lines</strong> - contains list of line segments, that forms sector.</p>
