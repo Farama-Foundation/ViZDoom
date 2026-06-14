@@ -88,7 +88,7 @@ Returns true if the controlled game instance is running.
 
 Returns the unique identifier of the current running game instance.
 
-Note: added in 1.3.1.
+Note: added in 1.4.0.
 
 
 ---

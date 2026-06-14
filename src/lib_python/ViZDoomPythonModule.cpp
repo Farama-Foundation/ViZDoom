@@ -533,7 +533,7 @@ PYBIND11_MODULE(vizdoom, vz){
             },
             [](pyb::tuple t) { // load
                 return SectorPython{
-                    t[0].cast<unsigned int>(), 
+                    t[0].cast<unsigned int>(),
                     t[1].cast<double>(),
                     t[2].cast<double>(),
                     t[3].cast<pyb::list>()

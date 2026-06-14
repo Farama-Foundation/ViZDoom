@@ -503,7 +503,7 @@ class DoomGame:
         """
         Returns the unique identifier of the current running game instance.
 
-        Note: added in 1.3.1.
+        Note: added in 1.4.0.
         """
 
     def get_item_reward(self) -> float:
@@ -1681,7 +1681,7 @@ class FileDoesNotExistException(Exception):
 
 class GameState:
     """
-    Contains the state of the game including screen buffer, game variables, and world geometry, available information depand on the configuration of the game instance.
+    Contains the state of the game including screen buffer, game variables, and world geometry, available information depends on the configuration of the game instance.
     """
 
     def __getstate__(self) -> tuple: ...
@@ -2290,7 +2290,7 @@ class Mode:
 
 class Object:
     """
-    Represents objects in the game world with position and other properties, including ``category`` and ``sector_id``.
+    Represents objects in the game world with position and other properties.
     """
 
     def __getstate__(self) -> tuple: ...
@@ -2298,11 +2298,11 @@ class Object:
     @property
     def angle(self) -> float: ...
     @property
+    def category(self) -> str: ...
+    @property
     def id(self) -> int: ...
     @property
     def name(self) -> str: ...
-    @property
-    def category(self) -> str: ...
     @property
     def pitch(self) -> float: ...
     @property
@@ -2620,7 +2620,7 @@ class ScreenResolution:
 
 class Sector:
     """
-    Represents sectors (floor/ceiling areas) in the game world geometry. Each sector has a unique ``id``.
+    Represents sectors (floor/ceiling areas) in the game world geometry.
     """
 
     def __getstate__(self) -> tuple: ...
@@ -3006,7 +3006,7 @@ WEAPON9: GameVariable  # value = <GameVariable.WEAPON9: 36>
 WHOLE: AutomapMode  # value = <AutomapMode.WHOLE: 1>
 ZOOM: Button  # value = <Button.ZOOM: 7>
 __version__: str
-__all__ = [
+__all__: list[str] = [
     "ABGR32",
     "ACTIVATE_SELECTED_ITEM",
     "ALTATTACK",

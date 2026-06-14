@@ -52,9 +52,9 @@ See also:
 
 **name** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
 
-**category** - category of the object (e.g. "Monster", "Weapon", "Player"). Category "Self" is assigned to current player. Note: added in 1.3.1.
+**category** - category of the object (e.g. "Monster", "Weapon", "Player"). Category "Self" is assigned to current player. Note: added in 1.4.0.
 
-**sector_id** - ID of the sector the object currently belongs to (same as corresponding **Sector.id**). Note: added in 1.3.1.
+**sector_id** - ID of the sector the object currently belongs to (same as corresponding **Sector.id**). Note: added in 1.4.0.
 
 See also:
 - [`DoomGame.set_objects_info_enabled`](./doom_game.md#vizdoom.DoomGame.set_sectors_info_enabled),
@@ -87,9 +87,9 @@ Note: added in 1.1.8.
    :undoc-members:
 ```
 
-**id** - unique sector ID. This is the value referenced by **Object.sector_id**. Note: added in 1.3.1.
+**id** - unique sector ID. This is the value referenced by **Object.sector_id**. Note: added in 1.4.0.
 
-**floor_height** - height of the sector's floor. Note: before 1.3.1 the value of floorHeight was inverted (negative). The bug was fixed in 1.3.1.
+**floor_height** - height of the sector's floor. Note: before 1.4.0 the value of floorHeight was inverted (negative). The bug was fixed in 1.4.0.
 
 **ceiling_height** - height of the sector's ceiling.
 

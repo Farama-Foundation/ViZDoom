@@ -110,9 +110,9 @@ Description of the object present in the game world.
 **name** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
 
 **category** - category of the object (e.g. "Monster", "Weapon", "Player"). Category "Self" is assigned to current player.
-The category assignment may not be accurate, especcialy for custom objects and WADs other than Freedoom/Doom. Note: added in 1.3.1.
+The category assignment may not be accurate, especcialy for custom objects and WADs other than Freedoom/Doom. Note: added in 1.4.0.
 
-**sectorId / sector_id** - ID of the sector the object currently belongs to (same as corresponding **Sector.id**). Note: added in 1.3.1.
+**sectorId / sector_id** - ID of the sector the object currently belongs to (same as corresponding **Sector.id**). Note: added in 1.4.0.
 
 See also:
 - [`DoomGame::setObjectsInfoEnabled`](./doom_game.md#setsectorsinfoenabled),
@@ -150,13 +150,13 @@ Note: added in 1.1.8.
 (`C++ type / Python type` **name**)
 
 - `unsigned int / int` **id**
-- `double / float` **floorHeight / floor_height** - Note: before 1.3.1 the value of floorHeight was inverted (negative). The bug was fixed in 1.3.1.
+- `double / float` **floorHeight / floor_height** - Note: before 1.4.0 the value of floorHeight was inverted (negative). The bug was fixed in 1.4.0.
 - `double / float` **ceilingHeight / ceiling_height**
 - `std::vector<Line> / list` **lines**
 
 Description of the sector, part of the map with the same floor and ceiling height.
 
-**id** - unique sector ID. This is the value referenced by **Object.sectorId / sector_id**. Note: added in 1.3.1.
+**id** - unique sector ID. This is the value referenced by **Object.sectorId / sector_id**. Note: added in 1.4.0.
 
 **floorHeight / floor_height** - height of the sector's floor.
 
