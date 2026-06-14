@@ -3,13 +3,13 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from pettingzoo_wrapper.base_pettingzoo_env import VizdoomParallelEnv
-from pettingzoo_wrapper.reward_wrappers import (
+from vizdoom.pettingzoo_wrapper.base_pettingzoo_env import VizdoomParallelEnv
+from vizdoom.pettingzoo_wrapper.reward_wrappers import (
     HealthGatheringRewardWrapper,
     PitfallRewardWrapper,
     RemedyRushRewardWrapper,
 )
-from pettingzoo_wrapper.video_recorder import VideoLoggerParallelWrapper
+from vizdoom.pettingzoo_wrapper.video_recorder import VideoLoggerParallelWrapper
 
 
 # where the scenario .cfg files live

@@ -8,8 +8,16 @@ import time
 from dataclasses import dataclass
 from multiprocessing.connection import Connection
 
-from .base_env_common import VizdoomParallelEnvBase, configure_doom_game
-from .utils import get_flat_game_vars, read_frame, reserve_init_slot, reserve_udp_port
+from vizdoom.pettingzoo_wrapper.base_env_common import (
+    VizdoomParallelEnvBase,
+    configure_doom_game,
+)
+from vizdoom.pettingzoo_wrapper.utils import (
+    get_flat_game_vars,
+    read_frame,
+    reserve_init_slot,
+    reserve_udp_port,
+)
 
 
 ctx = mp.get_context("fork")

@@ -13,8 +13,11 @@ from gymnasium import spaces
 from pettingzoo import ParallelEnv
 
 import vizdoom as vzd
-from pettingzoo_wrapper.utils import discover_buttons, get_screen_resolution, parse_hw
-from vizdoom import Mode
+from vizdoom.pettingzoo_wrapper.utils import (
+    discover_buttons,
+    get_screen_resolution,
+    parse_hw,
+)
 
 
 def configure_doom_game(
@@ -41,7 +44,7 @@ def configure_doom_game(
     game.load_config(config_path)
     game.set_screen_resolution(get_screen_resolution(resolution))
     game.set_ticrate(ticrate)
-    game.set_mode(Mode.ASYNC_PLAYER if async_mode else Mode.PLAYER)
+    game.set_mode(vzd.Mode.ASYNC_PLAYER if async_mode else vzd.Mode.PLAYER)
     if timeout is not None:
         game.set_episode_timeout(timeout)
     if seed is not None:

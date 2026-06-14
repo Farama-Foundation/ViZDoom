@@ -258,6 +258,7 @@ setup(
         "dev": [
             "pytest",
             "pytest-xdist",
+            "pytest-rerunfailures",
             "psutil",
             "pybind11-stubgen",
             "black",
