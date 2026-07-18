@@ -42,6 +42,7 @@ def configure_doom_game(
     """
     game = vzd.DoomGame()
     game.load_config(config_path)
+    game.set_window_visible(False)
     game.set_screen_resolution(get_screen_resolution(resolution))
     game.set_ticrate(ticrate)
     game.set_mode(vzd.Mode.ASYNC_PLAYER if async_mode else vzd.Mode.PLAYER)
