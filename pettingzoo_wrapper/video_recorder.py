@@ -160,6 +160,8 @@ class VideoLoggerParallelWrapper(wrappers.BaseParallelWrapper):
         return self.env.state_observation(agent)
 
     def reset(self, seed: int | None = None, options: dict | None = None):
+        if self._frames:
+            self._finalize()
         obs, info = self.env.reset(seed=seed, options=options)
         # sync agents list and episode counter
         self.agents = self.env.agents[:]
