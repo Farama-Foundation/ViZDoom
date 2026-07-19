@@ -36,6 +36,7 @@ class _Task:
     cmd: str
     action: list[float] | None = None
     port: int | None = None
+    tics: int = 1
 
 
 class _AgentWorkerCrashed(RuntimeError):
@@ -46,6 +47,7 @@ def _agent_worker_thread(
     *,
     task_queue: queue.Queue[_Task],
     result_queue: queue.Queue[dict],
+    step_barrier: threading.Barrier,
     config_path: str,
     resolution: str,
     timeout: int | None,
@@ -137,26 +139,24 @@ def _agent_worker_thread(
                     )
                     continue
 
-                if task.cmd not in {"step", "step_update"}:
+                if task.cmd != "step":
                     raise ValueError(f"Unknown task {task.cmd}")
 
-                if task.cmd == "step":
-                    action = task.action if task.action is not None else []
-                    game.set_action(action)
-                    game.advance_action(1, False)
-                    frames_advanced += 1
-                    result_queue.put(None)
-                    continue
-
                 action = task.action if task.action is not None else []
+                tics = max(1, int(task.tics))
                 was_dead_before = game.is_player_dead()
                 game.set_action(action)
-                game.advance_action(1, True)
+                for tic in range(tics):
+                    update_state = tic == tics - 1
+                    game.advance_action(1, update_state)
+                    if not update_state:
+                        # Keep synchronous multiplayer peers on the same tic
+                        step_barrier.wait(timeout=_STEP_TIMEOUT)
                 reward = float(game.get_last_reward())
                 is_dead = game.is_player_dead()
                 just_died = (not was_dead_before) and is_dead
                 terminated = bool(game.is_episode_finished())
-                frames_advanced += 1
+                frames_advanced += tics
                 state = game.get_state()
                 info = {
                     "num_frames": 1,
@@ -217,11 +217,14 @@ class _AgentWorkerCoordinator:
         self._agent_worker_task_queues: list[queue.Queue[_Task]] = []
         self._agent_worker_result_queues: list[queue.Queue[dict]] = []
         self._agent_worker_threads: list[threading.Thread] = []
+        self._step_barrier: threading.Barrier | None = None
         self._port = self.base_port
         self._init_attempts = 0
         self._initialize_agent_workers()
 
     def _close_agent_worker_threads(self) -> None:
+        if self._step_barrier is not None:
+            self._step_barrier.abort()
         for task_queue in self._agent_worker_task_queues:
             try:
                 task_queue.put(_Task("close"))
@@ -232,8 +235,10 @@ class _AgentWorkerCoordinator:
         self._agent_worker_task_queues.clear()
         self._agent_worker_result_queues.clear()
         self._agent_worker_threads.clear()
+        self._step_barrier = None
 
     def _spawn_agent_worker_threads(self) -> None:
+        self._step_barrier = threading.Barrier(self.num_agents)
         for agent_id in range(self.num_agents):
             task_queue: queue.Queue[_Task] = queue.Queue()
             result_queue: queue.Queue[dict] = queue.Queue()
@@ -242,6 +247,7 @@ class _AgentWorkerCoordinator:
                 kwargs=dict(
                     task_queue=task_queue,
                     result_queue=result_queue,
+                    step_barrier=self._step_barrier,
                     config_path=self.config_path,
                     resolution=self.resolution,
                     timeout=self.timeout,
@@ -344,14 +350,8 @@ class _AgentWorkerCoordinator:
         return {"observations": observations, "infos": infos}
 
     def step(self, actions: list[list[float]]) -> dict:
-        for _ in range(self.skip_frames - 1):
-            self._dispatch(
-                [_Task("step", action=action) for action in actions],
-                _STEP_TIMEOUT,
-            )
-
         results = self._dispatch(
-            [_Task("step_update", action=action) for action in actions],
+            [_Task("step", action=action, tics=self.skip_frames) for action in actions],
             _STEP_TIMEOUT,
         )
         observations = {}
