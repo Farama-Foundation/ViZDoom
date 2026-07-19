@@ -97,6 +97,9 @@ class WandbLoggingWrapper(Logger):
         payload = dict(dict_to_log)
         if self._pending_metrics is not None:
             payload.update(self._pending_metrics)
+        collection_profile = getattr(self, "_collection_profile", None)
+        if callable(collection_profile):
+            payload.update(collection_profile())
 
         collection_time = payload.get("timers/collection_time")
         current_frames = payload.get("counters/current_frames")
@@ -206,6 +209,7 @@ class VizdoomExperiment(Experiment):
                 },
                 skip_frames=self.task.config.get("skip_frames", 1),
             )
+            self.logger._collection_profile = lambda: self.collector.last_profile
             self.logger.log_hparams(**hparams_kwargs)
         finally:
             self.config.wandb_extra_kwargs = original
@@ -482,8 +486,8 @@ def override_experiment_config(args, on_policy: bool, on_policy_minibatch_size: 
         # eval / logging / ckpts
         "evaluation": True,  # Must be enabled for video logging
         "render": False,
-        "evaluation_interval": args.rollout_steps * 25,
-        "evaluation_episodes": 5,
+        "evaluation_interval": args.rollout_steps * 100,
+        "evaluation_episodes": 1,
         "loggers": ["wandb"],
         "project_name": "benchmarl-vizdoom",
         "checkpoint_interval": args.rollout_steps * 100,
@@ -605,7 +609,8 @@ def main():
     run_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_id = (
         f"{args.algo}_{args.state_source}_{args.scenario}"
-        f"_{args.num_agents}agents_seed{args.seed}_{run_timestamp}"
+        f"_{args.num_agents}agents_{args.num_envs}envs"
+        f"_seed{args.seed}_{run_timestamp}"
     )
 
     if args.algo not in ALGOS:

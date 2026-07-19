@@ -233,6 +233,7 @@ class RolloutWorker:
             self.policy_device = self.sampling_device
         self._env_instance_cursor = 0
         self._consecutive_failed_rounds = 0
+        self.last_profile: dict[str, float] = {}
         self._step_executor = (
             ThreadPoolExecutor(
                 max_workers=self.num_envs,
@@ -244,6 +245,10 @@ class RolloutWorker:
 
         if self.num_envs < 1:
             raise ValueError("num_envs must be at least 1")
+        if self.frames_per_batch < self.num_envs:
+            raise ValueError("frames_per_batch must be at least num_envs")
+        if self.frames_per_batch % self.num_envs != 0:
+            raise ValueError("frames_per_batch must be divisible by num_envs")
 
         self._env_instances = self._build_env_instances(
             env_builder=env_builder, seed=seed
@@ -284,13 +289,20 @@ class RolloutWorker:
         return self
 
     def __next__(self):
-        transitions: list[_Transition] = []
+        collection_started = time.perf_counter()
+        policy_time = 0.0
+        env_step_time = 0.0
+        frames_per_env = self.frames_per_batch // self.num_envs
+        transitions: list[list[_Transition]] = [[] for _ in range(self.num_envs)]
+        transitions_collected = 0
 
-        while len(transitions) < self.frames_per_batch:
-            transitions_before_round = len(transitions)
-            env_instance_indices = self._next_env_instance_indices(
-                min(self.num_envs, self.frames_per_batch - len(transitions))
-            )
+        while transitions_collected < self.frames_per_batch:
+            transitions_before_round = transitions_collected
+            env_instance_indices = [
+                env_instance_index
+                for env_instance_index in self._next_env_instance_indices(self.num_envs)
+                if len(transitions[env_instance_index]) < frames_per_env
+            ]
 
             ready_env_instance_indices = []
             current_obs_np = []
@@ -324,6 +336,7 @@ class RolloutWorker:
                     .to(torch.float32)
                     .div_(255.0)
                 )
+            policy_started = time.perf_counter()
             policy_obs = current_obs
             if self.policy_device.type == "cuda":
                 policy_obs = policy_obs.pin_memory().to(
@@ -350,15 +363,24 @@ class RolloutWorker:
             log_prob = policy_td.get((self.group_name, "log_prob"), None)
             if log_prob is not None:
                 log_prob = log_prob.detach().cpu()
+            policy_time += time.perf_counter() - policy_started
             current_obs = current_obs.cpu()
             env_actions = self._decode_policy_actions(actions)
+            ready_env_instance_offsets = {
+                env_instance_index: offset
+                for offset, env_instance_index in enumerate(ready_env_instance_indices)
+            }
 
-            for offset, step_result in self._step_ready_env_instances(
+            env_step_started = time.perf_counter()
+            step_results = self._step_ready_env_instances(
                 ready_env_instance_indices=ready_env_instance_indices,
                 env_actions=env_actions,
-            ):
+            )
+            env_step_time += time.perf_counter() - env_step_started
+            for env_instance_index, step_result in step_results:
                 if step_result is None:
                     continue
+                offset = ready_env_instance_offsets[env_instance_index]
 
                 (
                     next_obs_np,
@@ -381,7 +403,7 @@ class RolloutWorker:
                 next_done = done.any().reshape(1)
                 next_terminated = terminated.any().reshape(1)
                 next_truncated = truncated.any().reshape(1)
-                transitions.append(
+                transitions[env_instance_index].append(
                     _Transition(
                         observation=current_obs[offset],
                         state=None if current_state is None else current_state[offset],
@@ -399,13 +421,27 @@ class RolloutWorker:
                         next_truncated=next_truncated,
                     )
                 )
+                transitions_collected += 1
 
-            if len(transitions) == transitions_before_round:
+            if transitions_collected == transitions_before_round:
                 self._register_failed_round()
             else:
                 self._consecutive_failed_rounds = 0
 
-        return self._stack_transitions(transitions)
+        batch_assembly_started = time.perf_counter()
+        batch = self._stack_transitions(transitions)
+        batch_assembly_time = time.perf_counter() - batch_assembly_started
+        collection_time = time.perf_counter() - collection_started
+        self.last_profile = {
+            "timers/collector_policy_inference": policy_time,
+            "timers/collector_env_step": env_step_time,
+            "timers/collector_batch_assembly": batch_assembly_time,
+            "timers/collector_other": max(
+                0.0,
+                collection_time - policy_time - env_step_time - batch_assembly_time,
+            ),
+        }
+        return batch
 
     def update_policy_weights_(self):
         return None
@@ -475,43 +511,44 @@ class RolloutWorker:
             f"RolloutWorker only supports ndarray discrete actions, got {type(action_np)!r}"
         )
 
-    def _stack_transitions(self, transitions: Sequence[_Transition]) -> TensorDict:
-        batch_size = [len(transitions)]
-        observation = torch.stack(
-            [transition.observation for transition in transitions], dim=0
-        )
-        state = None
-        if transitions[0].state is not None:
-            state = torch.stack([transition.state for transition in transitions], dim=0)
-        action = torch.stack([transition.action for transition in transitions], dim=0)
-        reward = torch.stack([transition.reward for transition in transitions], dim=0)
-        episode_reward = torch.stack(
-            [transition.episode_reward for transition in transitions], dim=0
-        )
-        done = torch.stack([transition.done for transition in transitions], dim=0)
-        terminated = torch.stack(
-            [transition.terminated for transition in transitions], dim=0
-        )
-        truncated = torch.stack(
-            [transition.truncated for transition in transitions], dim=0
-        )
-        next_observation = torch.stack(
-            [transition.next_observation for transition in transitions], dim=0
-        )
-        next_state = None
-        if transitions[0].next_state is not None:
-            next_state = torch.stack(
-                [transition.next_state for transition in transitions], dim=0
+    def _stack_transitions(self, transitions: Sequence[Sequence[_Transition]]) -> TensorDict:
+        if not transitions or not transitions[0]:
+            raise ValueError("Cannot stack an empty transition batch")
+        time_steps = len(transitions[0])
+        if any(len(env_transitions) != time_steps for env_transitions in transitions):
+            raise ValueError("All environments must contribute the same number of steps")
+
+        batch_size = [len(transitions), time_steps]
+
+        def stack_field(field: str) -> torch.Tensor:
+            return torch.stack(
+                [
+                    torch.stack(
+                        [getattr(transition, field) for transition in env_transitions],
+                        dim=0,
+                    )
+                    for env_transitions in transitions
+                ],
+                dim=0,
             )
-        next_done = torch.stack(
-            [transition.next_done for transition in transitions], dim=0
-        )
-        next_terminated = torch.stack(
-            [transition.next_terminated for transition in transitions], dim=0
-        )
-        next_truncated = torch.stack(
-            [transition.next_truncated for transition in transitions], dim=0
-        )
+
+        observation = stack_field("observation")
+        state = None
+        if transitions[0][0].state is not None:
+            state = stack_field("state")
+        action = stack_field("action")
+        reward = stack_field("reward")
+        episode_reward = stack_field("episode_reward")
+        done = stack_field("done")
+        terminated = stack_field("terminated")
+        truncated = stack_field("truncated")
+        next_observation = stack_field("next_observation")
+        next_state = None
+        if transitions[0][0].next_state is not None:
+            next_state = stack_field("next_state")
+        next_done = stack_field("next_done")
+        next_terminated = stack_field("next_terminated")
+        next_truncated = stack_field("next_truncated")
 
         group_data = {
             "observation": observation,
@@ -522,11 +559,9 @@ class RolloutWorker:
             "terminated": terminated,
             "truncated": truncated,
         }
-        if transitions[0].log_prob is not None:
-            group_data["log_prob"] = torch.stack(
-                [transition.log_prob for transition in transitions], dim=0
-            )
-        group_td = TensorDict(group_data, batch_size=[len(transitions), self.n_agents])
+        if transitions[0][0].log_prob is not None:
+            group_data["log_prob"] = stack_field("log_prob")
+        group_td = TensorDict(group_data, batch_size=[*batch_size, self.n_agents])
         next_group_td = TensorDict(
             {
                 "observation": next_observation,
@@ -536,7 +571,7 @@ class RolloutWorker:
                 "terminated": terminated,
                 "truncated": truncated,
             },
-            batch_size=[len(transitions), self.n_agents],
+            batch_size=[*batch_size, self.n_agents],
         )
         next_td = TensorDict(
             {
