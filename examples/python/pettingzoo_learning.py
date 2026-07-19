@@ -238,7 +238,7 @@ class VizdoomExperiment(Experiment):
             sampling_device=self.config.sampling_device,
             seed=self.seed,
             parallel_collection=bool(getattr(self.config, "parallel_collection", True)),
-            collect_state=self.task.config.get("state_source", "none") != "none",
+            collect_state=False,
         )
 
         def env_builder(seed, env_instance_index):
@@ -352,19 +352,15 @@ class VizdoomTask(TaskClass):
                 seed=seed, env_instance_index=env_instance_index
             ),
             group_map=MarlGroupMapType.ALL_IN_ONE_GROUP,
-            return_state=cfg.get("state_source", "none") != "none",
+            return_state=False,
         )
         group_name = next(iter(env.group_map.keys()))
         selected_keys = [(group_name, "observation"), (group_name, "info")]
-        if cfg.get("state_source", "none") != "none":
-            selected_keys.append("state")
         transforms = [
             SelectTransform(*selected_keys),
             AHWCToTensor(key=(group_name, "observation")),
+            RemoveEmptySpecs(),
         ]
-        if cfg.get("state_source", "none") != "none":
-            transforms.append(AHWCToTensor(key="state"))
-        transforms.append(RemoveEmptySpecs())
         env = TransformedEnv(env, Compose(*transforms))
         env = env.to(cfg.get("sampling_device", "cpu"))
         return env
@@ -393,9 +389,7 @@ class VizdoomTask(TaskClass):
         return getattr(env, "info_spec", None)
 
     def state_spec(self, env: EnvBase) -> Optional[Composite]:
-        if self.config.get("state_source", "none") == "none":
-            return None
-        return Composite({"state": env.observation_spec["state"].clone()})
+        return None
 
     def group_map(self, env=None):
         """
@@ -536,13 +530,6 @@ def main():
         "--daemon", dest="daemon", action=BooleanOptionalAction, default=True
     )
 
-    # Optional root "state" exposed to BenchMARL for centralized training
-    # "none" means stricter Dec-POMDP setting: critic doesn't get extra state beyond per-agent observations
-    # "observations" means critic gets joint-observation state from all agents obs
-    ap.add_argument(
-        "--state_source", type=str, default="none", choices=["none", "observations"]
-    )
-
     # Train args
     ap.add_argument("--algo", type=str, default="mappo", choices=list(ALGOS))
     ap.add_argument("--seed", type=int, default=42)
@@ -608,7 +595,7 @@ def main():
     Path(checkpoints_path).mkdir(parents=True, exist_ok=True)
     run_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_id = (
-        f"{args.algo}_{args.state_source}_{args.scenario}"
+        f"{args.algo}_{args.scenario}"
         f"_{args.num_agents}agents_{args.num_envs}envs"
         f"_seed{args.seed}_{run_timestamp}"
     )
@@ -688,7 +675,6 @@ def main():
         "sampling_device": args.sampling_device,
         "daemon": args.daemon,
         "verbose": args.verbose,
-        "state_source": args.state_source,
         "run_id": run_id,
     }
     task = VizdoomTask(task_cfg)
