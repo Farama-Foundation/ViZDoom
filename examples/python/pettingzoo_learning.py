@@ -124,6 +124,40 @@ class WandbLoggingWrapper(Logger):
             step=step,
         )
 
+    def _log_individual_and_group_rewards(
+        self,
+        group: str,
+        batch: TensorDictBase,
+        global_done: torch.Tensor,
+        any_episode_ended: bool,
+        to_log: Dict[str, torch.Tensor],
+        prefix: str = "collection",
+        log_individual_agents: bool = True,
+    ) -> torch.Tensor:
+        return super()._log_individual_and_group_rewards(
+            group=group,
+            batch=batch,
+            global_done=global_done,
+            any_episode_ended=any_episode_ended,
+            to_log=to_log,
+            prefix=prefix,
+            log_individual_agents=True,
+        )
+
+    def _log_global_episode_reward(
+        self,
+        episode_rewards: list[torch.Tensor],
+        to_log: Dict[str, torch.Tensor],
+        prefix: str,
+    ) -> torch.Tensor:
+        if prefix == "collection" and len(episode_rewards) == 1:
+            return episode_rewards[0]
+        return super()._log_global_episode_reward(
+            episode_rewards=episode_rewards,
+            to_log=to_log,
+            prefix=prefix,
+        )
+
     def log_evaluation(self, rollouts, total_frames: int, step: int, video_frames=None):
         self._env_steps = int(total_frames) * self._skip_frames
         return super().log_evaluation(
@@ -480,7 +514,7 @@ def override_experiment_config(args, on_policy: bool, on_policy_minibatch_size: 
         # eval / logging / ckpts
         "evaluation": True,  # Must be enabled for video logging
         "render": False,
-        "evaluation_interval": args.rollout_steps * 100,
+        "evaluation_interval": args.rollout_steps * 25,
         "evaluation_episodes": 1,
         "loggers": ["wandb"],
         "project_name": "benchmarl-vizdoom",
