@@ -64,7 +64,6 @@ def _agent_worker_thread(
     game = None
     available_game_vars = []
     frames_advanced = 0
-    episode_count = 0
 
     def _close_game() -> None:
         nonlocal game
@@ -103,10 +102,8 @@ def _agent_worker_thread(
                     if not is_host:
                         time.sleep(0.5 + random.uniform(0.5, 1.0))
                     game.init()
-                    game.send_game_command("viz_respawn_delay 0")
                     available_game_vars = game.get_available_game_variables()
                     frames_advanced = 0
-                    episode_count = 0
                     result_queue.put({"status": "ready"})
                     continue
 
@@ -116,8 +113,7 @@ def _agent_worker_thread(
                     )
 
                 if task.cmd == "reset":
-                    if episode_count > 0:
-                        game.new_episode()
+                    game.new_episode()
                     state = game.get_state()
                     info = {
                         "num_frames": 1,
@@ -127,7 +123,6 @@ def _agent_worker_thread(
                     }
                     info.update(get_flat_game_vars(state, available_game_vars))
                     frames_advanced = 0
-                    episode_count += 1
                     result_queue.put(
                         {
                             "obs": read_frame(state, resolution),
