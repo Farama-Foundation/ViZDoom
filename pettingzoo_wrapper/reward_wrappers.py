@@ -11,6 +11,97 @@ def _reset_info(info):
     return None
 
 
+_DEATHMATCH_DELTA_REWARDS = {
+    "FRAGCOUNT": (1.0, -0.001),
+    "DEATHCOUNT": (-1.0, 1.0),
+    "DAMAGECOUNT": (0.01, -0.01),
+    "HEALTH": (0.0, -0.01),
+}
+
+
+class DeathmatchRewardWrapper(ParallelEnv):
+    def __init__(self, env: ParallelEnv):
+        self.env = env
+        self.metadata = getattr(env, "metadata", {})
+        self.possible_agents = env.possible_agents
+        self.agents = env.agents
+        self.prev_vars: Dict[str, Dict[str, float]] = {}
+        self.prev_dead: Dict[str, bool] = {}
+
+    def action_space(self, agent: str):
+        return self.env.action_space(agent)
+
+    def observation_space(self, agent: str):
+        return self.env.observation_space(agent)
+
+    @property
+    def state_space(self):
+        return self.env.state_space
+
+    def state(self):
+        return self.env.state()
+
+    def state_observation(self, agent: str):
+        return self.env.state_observation(agent)
+
+    @property
+    def num_agents(self) -> int:
+        return getattr(self.env, "num_agents", len(self.possible_agents))
+
+    def reset(
+        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
+    ):
+        obs, infos = self.env.reset(seed=seed, options=options)
+        self.agents = self.env.agents[:]
+        self.prev_vars = {agent: {} for agent in self.agents}
+        self.prev_dead = {agent: True for agent in self.agents}
+        return obs, infos
+
+    def step(self, actions: Dict[str, Any]):
+        obs, rewards, terminations, truncations, infos = self.env.step(actions)
+
+        for agent in self.agents:
+            info = infos[agent]
+            if _reset_info(info) is not None:
+                self.prev_vars[agent] = {}
+                self.prev_dead[agent] = True
+
+            dead = bool(info.get("DEAD", 0.0))
+            done = bool(terminations[agent] or truncations[agent])
+            shaping_reward = 0.0
+            if not done and not (self.prev_dead[agent] and not dead):
+                previous = self.prev_vars[agent]
+                for name, (
+                    positive_reward,
+                    negative_reward,
+                ) in _DEATHMATCH_DELTA_REWARDS.items():
+                    if name not in previous:
+                        continue
+                    delta = info.get(name, 0.0) - previous[name]
+                    if name == "DAMAGECOUNT":
+                        delta = min(delta, 200.0)
+                    elif name == "HEALTH":
+                        delta = max(delta, -100.0)
+                    if delta > 1e-8:
+                        shaping_reward += delta * positive_reward
+                    elif delta < -1e-8:
+                        shaping_reward += -delta * negative_reward
+
+            rewards[agent] = float(rewards.get(agent, 0.0)) + shaping_reward
+            self.prev_vars[agent] = {
+                name: info.get(name, 0.0) for name in _DEATHMATCH_DELTA_REWARDS
+            }
+            self.prev_dead[agent] = dead
+
+        return obs, rewards, terminations, truncations, infos
+
+    def render(self):
+        return self.env.render()
+
+    def close(self):
+        return self.env.close()
+
+
 class HealthGatheringRewardWrapper(ParallelEnv):
     """
     Dense shaping on HEALTH. Optional sparse goal on reaching max health.

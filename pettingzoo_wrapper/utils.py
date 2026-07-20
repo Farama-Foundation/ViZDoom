@@ -48,18 +48,13 @@ def read_frame(state, resolution) -> np.ndarray:
     return np.zeros((h, w, 3), dtype=np.uint8)
 
 
-def discover_buttons(config_path: str) -> tuple[int, int]:
+def discover_buttons(config_path: str) -> tuple[vzd.Button, ...]:
     game = vzd.DoomGame()
     game.load_config(config_path)
     game.set_window_visible(False)
-    delta, binary = [], []
-    for b in game.get_available_buttons():
-        if vzd.is_delta_button(b) and b not in delta:
-            delta.append(b)
-        else:
-            binary.append(b)
+    buttons = tuple(game.get_available_buttons())
     game.close()
-    return len(delta), len(binary)
+    return buttons
 
 
 def wait_for_child_init(idx: int, pipe, timeout_sec: float = 90.0):

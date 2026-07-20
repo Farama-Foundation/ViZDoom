@@ -5,11 +5,14 @@ from typing import Optional
 
 from vizdoom.pettingzoo_wrapper.base_pettingzoo_env import VizdoomParallelEnv
 from vizdoom.pettingzoo_wrapper.reward_wrappers import (
+    DeathmatchRewardWrapper,
     HealthGatheringRewardWrapper,
     PitfallRewardWrapper,
     RemedyRushRewardWrapper,
 )
 from vizdoom.pettingzoo_wrapper.video_recorder import VideoLoggerParallelWrapper
+
+from .action_wrappers import ACTION_SETS, DiscreteActionWrapper
 
 
 # where the scenario .cfg files live
@@ -17,6 +20,9 @@ _SCENARIO_DIR = os.path.join(Path(__file__).parent.parent, "scenarios")
 
 # scenario-specific wrappers
 _WRAPPERS = {
+    "multi": DeathmatchRewardWrapper,
+    "multi_duel": DeathmatchRewardWrapper,
+    "ssl2": DeathmatchRewardWrapper,
     "pitfall_multi_agent": PitfallRewardWrapper,
     "remedy_rush_multi_agent": RemedyRushRewardWrapper,
     "health_gathering_multi_agent": HealthGatheringRewardWrapper,
@@ -71,6 +77,10 @@ def make(
         verbose=verbose,
         daemon=daemon,
     )
+
+    action_set = ACTION_SETS.get(scenario)
+    if action_set is not None:
+        env = DiscreteActionWrapper(env, action_set)
 
     if enable_video:
         env = VideoLoggerParallelWrapper(

@@ -54,7 +54,7 @@ def configure_doom_game(
         game.add_game_args(
             f"-host {num_agents} -port {port} -netmode {netmode} "
             "+timelimit 0 +sv_noautoaim 1 +sv_nocrouch 1 +sv_nofreelook 1 "
-            "+sv_spawnfarthest 1 +sv_forcerespawn 1 +viz_respawn_delay 0 "
+            "+sv_forcerespawn 1 +viz_respawn_delay 0 "
             "+viz_connect_timeout 60"
         )
     else:
@@ -117,7 +117,19 @@ class VizdoomParallelEnvBase(ParallelEnv):
         ]
         self.agents: list[str] = self.possible_agents[:]
 
-        self._delta_count, self._binary_count = discover_buttons(config_file)
+        self.available_buttons = discover_buttons(config_file)
+        self._delta_indices = [
+            i
+            for i, button in enumerate(self.available_buttons)
+            if vzd.is_delta_button(button)
+        ]
+        self._binary_indices = [
+            i
+            for i, button in enumerate(self.available_buttons)
+            if not vzd.is_delta_button(button)
+        ]
+        self._delta_count = len(self._delta_indices)
+        self._binary_count = len(self._binary_indices)
         self._simple_n = (3**self._delta_count) * (2**self._binary_count)
         self._act_len = self._delta_count + self._binary_count
         self._action_space = self._build_action_space()
@@ -210,22 +222,24 @@ class VizdoomParallelEnvBase(ParallelEnv):
         raise NotImplementedError(type(self._action_space))
 
     def _decode_simple_discrete(self, idx: int) -> list[float]:
-        """Decode a Discrete index -> flat [delta..., binary...] list for ViZDoom.
+        """Decode a Discrete index in the button order configured by ViZDoom.
 
-        Deltas are radix-3 mapped {0,1,2} -> {-1,0,+1}; binaries are radix-2.
+        Deltas are radix-3 mapped {0,1,2} -> {0,-1,+1}; binaries are radix-2.
         """
-        D, B = self._delta_count, self._binary_count
         out = np.zeros((self._act_len,), dtype=np.float32)
         x = int(idx)
-        for i in range(B):
-            out[D + i] = float(x & 1)
+        for button_index in self._binary_indices:
+            out[button_index] = float(x & 1)
             x >>= 1
-        for i in range(D):
-            out[i] = float([-1, 0, +1][x % 3])
+        for button_index in self._delta_indices:
+            out[button_index] = float([0, -1, +1][x % 3])
             x //= 3
         return out.tolist()
 
     def _encode_env_action(self, agent_action: Any) -> list[float]:
+        raw_action = np.asarray(agent_action)
+        if raw_action.ndim == 1 and raw_action.size == self._act_len:
+            return raw_action.astype(np.float32).tolist()
         if self.simple_discrete:
             raw_action = np.asarray(agent_action)
             if raw_action.ndim == 1 and raw_action.size == self._act_len:
@@ -239,21 +253,21 @@ class VizdoomParallelEnvBase(ParallelEnv):
                     if isinstance(agent_action, dict)
                     else agent_action[0]
                 )
-                out[: self._delta_count] = np.asarray(cont, dtype=np.float32)
+                out[self._delta_indices] = np.asarray(cont, dtype=np.float32)
             if self._binary_count:
                 bin_act = (
                     agent_action["binary"]
                     if isinstance(agent_action, dict)
                     else agent_action[1]
                 )
-                out[self._delta_count :] = np.asarray(
+                out[self._binary_indices] = np.asarray(
                     bin_act, dtype=np.float32
                 ).reshape(-1)
         else:
             if self._delta_count:
-                out[: self._delta_count] = np.asarray(agent_action, dtype=np.float32)
+                out[self._delta_indices] = np.asarray(agent_action, dtype=np.float32)
             else:
-                out[self._delta_count :] = np.asarray(agent_action, dtype=np.float32)
+                out[self._binary_indices] = np.asarray(agent_action, dtype=np.float32)
         return out.tolist()
 
     # ------------------- rendering -------------------
