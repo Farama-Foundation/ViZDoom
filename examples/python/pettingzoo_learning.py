@@ -59,14 +59,18 @@ from pettingzoo_wrapper.rollout_worker import RolloutWorker
 DEFAULT_BASE_UDP_PORT = 40300
 SLOT_PORT_STRIDE = 100
 ENV_INSTANCE_INDEX_BASE = 100
+DEATHMATCHH = {"multi_duel", "ssl2"}
 
 
 class WandbLoggingWrapper(Logger):
     env_step_metric = "_env_steps"
 
-    def __init__(self, *args, skip_frames: int = 1, **kwargs):
+    def __init__(
+        self, *args, skip_frames: int = 1, num_actions: int | None = None, **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self._skip_frames = max(1, int(skip_frames))
+        self._num_actions = num_actions
         self._env_steps = 0
         self._fps_samples = deque(maxlen=12)
         self._has_wandb_logger = any(
@@ -158,14 +162,79 @@ class WandbLoggingWrapper(Logger):
             prefix=prefix,
         )
 
+    def _evaluation_metrics(self, rollouts):
+        metrics = {}
+        if not rollouts:
+            return metrics
+        combat_info = {
+            "DAMAGECOUNT": "damage",
+            "FRAGCOUNT": "frags",
+            "DEATHCOUNT": "deaths",
+        }
+        for group, agents in self.group_map.items():
+            returns = torch.stack(
+                [
+                    self._get_reward(group, rollout).sum(0).squeeze(-1)
+                    for rollout in rollouts
+                ]
+            )
+            for agent_index, agent in enumerate(agents):
+                self._log_min_mean_max(
+                    metrics,
+                    f"eval/{group}/reward/{agent}/episode_reward",
+                    returns[:, agent_index],
+                )
+
+                for info_key, metric_name in combat_info.items():
+                    values = []
+                    for rollout in rollouts:
+                        info = rollout.get(("next", group, "info"), None)
+                        value = None if info is None else info.get(info_key, None)
+                        if value is None:
+                            break
+                        deltas = value[1:, agent_index] - value[:-1, agent_index]
+                        reset = torch.zeros_like(deltas, dtype=torch.bool)
+                        for reset_key in ("DAMAGECOUNT", "DEATHCOUNT"):
+                            counter = info.get(reset_key, None)
+                            if counter is not None:
+                                reset |= (
+                                    counter[1:, agent_index] < counter[:-1, agent_index]
+                                )
+                        values.append(
+                            deltas.masked_fill(reset, 0).sum(dim=0).float().mean()
+                        )
+                    if len(values) == len(rollouts):
+                        self._log_min_mean_max(
+                            metrics,
+                            f"eval/{group}/combat/{agent}/{metric_name}",
+                            torch.stack(values),
+                        )
+
+                if self._num_actions is not None:
+                    actions = torch.cat(
+                        [
+                            rollout.get((group, "action"))[:, agent_index]
+                            .reshape(-1)
+                            .long()
+                            for rollout in rollouts
+                        ]
+                    )
+                    for action in range(self._num_actions):
+                        metrics[
+                            f"eval/{group}/actions/{agent}/action_{action}_frequency"
+                        ] = ((actions == action).float().mean().item())
+        return metrics
+
     def log_evaluation(self, rollouts, total_frames: int, step: int, video_frames=None):
         self._env_steps = int(total_frames) * self._skip_frames
-        return super().log_evaluation(
+        result = super().log_evaluation(
             rollouts=rollouts,
             total_frames=total_frames,
             step=step,
             video_frames=video_frames,
         )
+        self.log(self._evaluation_metrics(rollouts), step=step)
+        return result
 
     def log(self, dict_to_log: Dict, step: int = None):
         payload = self._add_fps(dict_to_log)
@@ -242,6 +311,13 @@ class VizdoomExperiment(Experiment):
                     "config": hparams_kwargs,
                 },
                 skip_frames=self.task.config.get("skip_frames", 1),
+                num_actions=(
+                    self.test_env.input_spec[
+                        "full_action_spec", next(iter(self.group_map)), "action"
+                    ].n
+                    if self.task_name in DEATHMATCHH
+                    else None
+                ),
             )
             self.logger._collection_profile = lambda: self.collector.last_profile
             self.logger.log_hparams(**hparams_kwargs)
@@ -480,7 +556,7 @@ def override_algo_config(args):
 
     algo_overrides = {
         "mappo": {
-            "share_param_critic": True,
+            "share_param_critic": args.scenario not in DEATHMATCHH,
             "clip_epsilon": args.clip_eps,
             "entropy_coef": args.entropy_coef,
             "critic_coef": args.vf_coef,
@@ -506,7 +582,7 @@ def override_experiment_config(args, on_policy: bool, on_policy_minibatch_size: 
         "sampling_device": args.sampling_device,
         "train_device": args.train_device,
         "buffer_device": args.buffer_device,
-        "share_policy_params": True,
+        "share_policy_params": args.scenario not in DEATHMATCHH,
         "parallel_collection": args.parallel_collection,
         "max_n_frames": int(args.total_steps),
         "gamma": args.gamma,
