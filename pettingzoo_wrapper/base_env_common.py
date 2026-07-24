@@ -227,6 +227,9 @@ class VizdoomParallelEnvBase(ParallelEnv):
 
     def _encode_env_action(self, agent_action: Any) -> list[float]:
         if self.simple_discrete:
+            raw_action = np.asarray(agent_action)
+            if raw_action.ndim == 1 and raw_action.size == self._act_len:
+                return raw_action.astype(np.float32).tolist()
             return self._decode_simple_discrete(int(agent_action))
         out = np.zeros((self._act_len,), dtype=np.float32)
         if isinstance(self._action_space, spaces.Dict):
