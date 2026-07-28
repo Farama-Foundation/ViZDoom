@@ -53,7 +53,7 @@ class DiscreteActionWrapper(BaseParallelWrapper):
         return self.env.step(mapped)
 
 
-SSL2_ACTIONS = (
+MOVEMENT_COMBAT_ACTIONS = (
     action(),
     action(Button.MOVE_FORWARD),
     action(Button.MOVE_BACKWARD),
@@ -68,6 +68,9 @@ SSL2_ACTIONS = (
     action(Button.ATTACK, Button.MOVE_BACKWARD),
     action(Button.ATTACK, Button.MOVE_RIGHT),
     action(Button.ATTACK, Button.MOVE_LEFT),
+)
+
+SSL2_ACTIONS = MOVEMENT_COMBAT_ACTIONS + (
     action(Button.MOVE_FORWARD, Button.SPEED),
     action(Button.USE),
 )
@@ -82,6 +85,6 @@ MULTI_DUEL_ACTIONS = (
 )
 
 ACTION_SETS = {
-    "multi_duel": MULTI_DUEL_ACTIONS,
+    # "multi_duel": MULTI_DUEL_ACTIONS,
     "ssl2": SSL2_ACTIONS,
 }

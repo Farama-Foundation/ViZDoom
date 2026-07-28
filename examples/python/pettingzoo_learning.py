@@ -59,7 +59,6 @@ from pettingzoo_wrapper.rollout_worker import RolloutWorker
 DEFAULT_BASE_UDP_PORT = 40300
 SLOT_PORT_STRIDE = 100
 ENV_INSTANCE_INDEX_BASE = 100
-DEATHMATCHH = {"multi_duel", "ssl2"}
 
 
 class WandbLoggingWrapper(Logger):
@@ -311,13 +310,9 @@ class VizdoomExperiment(Experiment):
                     "config": hparams_kwargs,
                 },
                 skip_frames=self.task.config.get("skip_frames", 1),
-                num_actions=(
-                    self.test_env.input_spec[
-                        "full_action_spec", next(iter(self.group_map)), "action"
-                    ].n
-                    if self.task_name in DEATHMATCHH
-                    else None
-                ),
+                num_actions=self.test_env.input_spec[
+                    "full_action_spec", next(iter(self.group_map)), "action"
+                ].n,
             )
             self.logger._collection_profile = lambda: self.collector.last_profile
             self.logger.log_hparams(**hparams_kwargs)
@@ -556,7 +551,7 @@ def override_algo_config(args):
 
     algo_overrides = {
         "mappo": {
-            "share_param_critic": args.scenario not in DEATHMATCHH,
+            "share_param_critic": True,
             "clip_epsilon": args.clip_eps,
             "entropy_coef": args.entropy_coef,
             "critic_coef": args.vf_coef,
@@ -582,7 +577,7 @@ def override_experiment_config(args, on_policy: bool, on_policy_minibatch_size: 
         "sampling_device": args.sampling_device,
         "train_device": args.train_device,
         "buffer_device": args.buffer_device,
-        "share_policy_params": args.scenario not in DEATHMATCHH,
+        "share_policy_params": True,
         "parallel_collection": args.parallel_collection,
         "max_n_frames": int(args.total_steps),
         "gamma": args.gamma,
