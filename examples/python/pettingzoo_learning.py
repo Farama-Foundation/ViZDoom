@@ -35,7 +35,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 import torch
-from benchmarl.algorithms import MasacConfig, QmixConfig
+from benchmarl.algorithms import IppoConfig, MasacConfig, QmixConfig
 from benchmarl.algorithms.mappo import MappoConfig
 from benchmarl.environments import TaskClass
 from benchmarl.experiment import Experiment, ExperimentConfig
@@ -533,6 +533,7 @@ class VizdoomTask(TaskClass):
 # ----------------- Script entry -----------------
 ALGOS: Dict[str, Any] = {
     "mappo": MappoConfig,
+    "ippo": IppoConfig,
     "qmix": QmixConfig,
     "masac": MasacConfig,
 }
@@ -549,18 +550,21 @@ def override_config(config, overrides) -> Any:
 def override_algo_config(args):
     algo_cfg = ALGOS[args.algo].get_from_yaml()
 
+    ppo_overrides = {
+        "share_param_critic": True,
+        "clip_epsilon": args.clip_eps,
+        "entropy_coef": args.entropy_coef,
+        "critic_coef": args.vf_coef,
+        "loss_critic_type": "l2",
+        "lmbda": args.gae_lambda,
+        "scale_mapping": "biased_softplus_1.0",
+        "use_tanh_normal": True,
+        "minibatch_advantage": False,
+    }
+
     algo_overrides = {
-        "mappo": {
-            "share_param_critic": True,
-            "clip_epsilon": args.clip_eps,
-            "entropy_coef": args.entropy_coef,
-            "critic_coef": args.vf_coef,
-            "loss_critic_type": "l2",
-            "lmbda": args.gae_lambda,
-            "scale_mapping": "biased_softplus_1.0",
-            "use_tanh_normal": True,
-            "minibatch_advantage": False,
-        },
+        "mappo": ppo_overrides,
+        "ippo": ppo_overrides,
         "qmix": {},
         "masac": {
             "share_param_critic": True,

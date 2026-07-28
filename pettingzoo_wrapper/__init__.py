@@ -20,6 +20,7 @@ _SCENARIO_DIR = os.path.join(Path(__file__).parent.parent, "scenarios")
 
 # scenario-specific wrappers
 _WRAPPERS = {
+    "multi_duel": DeathmatchRewardWrapper,
     "multi_duel_pistol": DeathmatchRewardWrapper,
     "ssl2": DeathmatchRewardWrapper,
     "pitfall_multi_agent": PitfallRewardWrapper,

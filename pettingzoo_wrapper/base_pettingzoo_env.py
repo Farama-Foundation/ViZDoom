@@ -150,7 +150,9 @@ def _agent_worker_thread(
                 reward = float(game.get_last_reward())
                 is_dead = game.is_player_dead()
                 just_died = (not was_dead_before) and is_dead
-                terminated = bool(game.is_episode_finished())
+                episode_finished = bool(game.is_episode_finished())
+                truncated = episode_finished and bool(game.is_episode_timeout_reached())
+                terminated = episode_finished and not truncated
                 frames_advanced += tics
                 state = game.get_state()
                 info = {
@@ -165,7 +167,7 @@ def _agent_worker_thread(
                         "obs": read_frame(state, resolution),
                         "reward": reward,
                         "terminated": terminated,
-                        "truncated": False,
+                        "truncated": truncated,
                         "info": info,
                     }
                 )
