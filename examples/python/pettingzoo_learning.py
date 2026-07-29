@@ -361,6 +361,36 @@ class VizdoomExperiment(Experiment):
         self.collector = rollout_worker
 
 
+_OBS_SCALE = 1.0 / 255.0
+
+
+def _normalize_byte_observations(model):
+    obs_keys = [
+        key
+        for key in model.in_keys
+        if (key[-1] if isinstance(key, tuple) else key) in ("observation", "state")
+    ]
+    if not obs_keys:
+        return model
+
+    inner_forward = model._forward
+
+    def _forward(tensordict, *args, **kwargs):
+        for key in obs_keys:
+            obs = tensordict.get(key, None)
+            if obs is not None and obs.dtype == torch.uint8:
+                tensordict.set(key, obs.mul(_OBS_SCALE))
+        return inner_forward(tensordict, *args, **kwargs)
+
+    model._forward = _forward
+    return model
+
+
+class ByteObsCnnConfig(CnnConfig):
+    def get_model(self, *args, **kwargs):
+        return _normalize_byte_observations(super().get_model(*args, **kwargs))
+
+
 class AHWCToTensor(ObservationTransform):
     """
     Keep AHWC layout, convert to float tensor
@@ -733,7 +763,7 @@ def main():
     mlp_layer_class = nn.Linear
     mlp_activation_class = nn.ReLU
 
-    model_cfg = CnnConfig(
+    model_cfg = ByteObsCnnConfig(
         cnn_num_cells=cnn_num_cells,
         cnn_kernel_sizes=cnn_kernel_sizes,
         cnn_strides=cnn_strides,
@@ -744,7 +774,7 @@ def main():
         mlp_activation_class=mlp_activation_class,
     )
 
-    critic_cfg = CnnConfig(
+    critic_cfg = ByteObsCnnConfig(
         cnn_num_cells=cnn_num_cells,
         cnn_kernel_sizes=cnn_kernel_sizes,
         cnn_strides=cnn_strides,

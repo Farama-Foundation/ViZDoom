@@ -477,39 +477,39 @@ class RolloutWorker:
         for offset, (env_index, step_result) in enumerate(results):
             if step_result is None:
                 continue
-            (
-                next_obs_np,
-                next_state_np,
-                reward_np,
-                episode_reward_np,
-                done_np,
-                terminated_np,
-                truncated_np,
-            ) = step_result
-            done = torch.from_numpy(done_np)
-            terminated = torch.from_numpy(terminated_np)
-            truncated = torch.from_numpy(truncated_np)
-            fields: dict[str, torch.Tensor] = {
-                "observation": state.observation[offset],
-                "action": state.actions[offset],
-                "reward": torch.from_numpy(reward_np),
-                "episode_reward": torch.from_numpy(episode_reward_np),
-                "done": done,
-                "terminated": terminated,
-                "truncated": truncated,
-                "next_observation": torch.from_numpy(next_obs_np),
-                "next_done": done.any().reshape(1),
-                "next_terminated": terminated.any().reshape(1),
-                "next_truncated": truncated.any().reshape(1),
-            }
-            if state.log_prob is not None:
-                fields["log_prob"] = state.log_prob[offset]
-            if self.collect_state and state.state is not None:
-                fields["state"] = state.state[offset]
-                fields["next_state"] = torch.from_numpy(next_state_np)
-            storage.write(env_index, fields)
+            storage.write(env_index, self._env_fields(state, offset, step_result))
             wrote_any = True
         return wrote_any
+
+    def _env_fields(self, state: _GroupState, offset: int, step_result) -> dict:
+        (
+            next_obs_np,
+            next_state_np,
+            reward_np,
+            episode_reward_np,
+            done_np,
+            terminated_np,
+            truncated_np,
+        ) = step_result
+        done = torch.from_numpy(done_np)
+        terminated = torch.from_numpy(terminated_np)
+        truncated = torch.from_numpy(truncated_np)
+        fields: dict[str, torch.Tensor] = {
+            "observation": state.observation[offset],
+            "action": state.actions[offset],
+            "reward": torch.from_numpy(reward_np),
+            "episode_reward": torch.from_numpy(episode_reward_np),
+            "done": done,
+            "terminated": terminated,
+            "truncated": truncated,
+            "next_observation": torch.from_numpy(next_obs_np),
+        }
+        if state.log_prob is not None:
+            fields["log_prob"] = state.log_prob[offset]
+        if self.collect_state and state.state is not None:
+            fields["state"] = state.state[offset]
+            fields["next_state"] = torch.from_numpy(next_state_np)
+        return fields
 
     def _to_policy_obs(self, group_index: int, observation) -> torch.Tensor:
         if self.policy_device.type == "cuda":
@@ -528,11 +528,10 @@ class RolloutWorker:
                 self._pinned_buffers[group_index] = pinned
             k = observation.shape[0]
             pinned[:k].copy_(observation)
-            policy_obs = pinned[:k].to(self.policy_device, non_blocking=True)
-            return policy_obs.to(torch.float32).div_(255.0)
+            return pinned[:k].to(self.policy_device, non_blocking=True)
         if self.policy_device != observation.device:
             observation = observation.to(self.policy_device)
-        return observation.to(torch.float32).div_(255.0)
+        return observation
 
     def _finalize_batch(self, storage: _RolloutStorage) -> TensorDict:
         observation_u8 = storage.get("observation")
@@ -540,9 +539,9 @@ class RolloutWorker:
         if observation_u8 is None or next_observation_u8 is None:
             raise ValueError("Cannot assemble an empty transition batch")
 
-        # Single vectorized uint8 -> float conversion per batch.
-        observation = observation_u8.to(torch.float32).div_(255.0)
-        next_observation = next_observation_u8.to(torch.float32).div_(255.0)
+        # obs is unint8 before going into replay buffer
+        observation = observation_u8
+        next_observation = next_observation_u8
 
         action = storage.get("action")
         reward = storage.get("reward")
@@ -550,9 +549,15 @@ class RolloutWorker:
         done = storage.get("done")
         terminated = storage.get("terminated")
         truncated = storage.get("truncated")
-        next_done = storage.get("next_done")
-        next_terminated = storage.get("next_terminated")
-        next_truncated = storage.get("next_truncated")
+
+        def _any_over_agents(flags: torch.Tensor | None) -> torch.Tensor | None:
+            if flags is None:
+                return None
+            return flags.flatten(2).any(2, keepdim=True)
+
+        next_done = _any_over_agents(done)
+        next_terminated = _any_over_agents(terminated)
+        next_truncated = _any_over_agents(truncated)
         log_prob = storage.get("log_prob")
         state_u8 = storage.get("state")
         next_state_u8 = storage.get("next_state")
