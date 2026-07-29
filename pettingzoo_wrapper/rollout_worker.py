@@ -322,9 +322,23 @@ class RolloutWorker:
                 ): env_instance_index
                 for env_instance_index in range(self.num_envs)
             }
+            first_error = None
             for future in as_completed(futures):
                 env_instance_index = futures[future]
-                env_instances[env_instance_index] = future.result()
+                try:
+                    env_instances[env_instance_index] = future.result()
+                except BaseException as exc:
+                    if first_error is None:
+                        first_error = exc
+
+        if first_error is not None:
+            for env_instance in env_instances:
+                if env_instance is not None:
+                    try:
+                        env_instance.close()
+                    except Exception:
+                        pass
+            raise first_error
 
         return [
             env_instance for env_instance in env_instances if env_instance is not None

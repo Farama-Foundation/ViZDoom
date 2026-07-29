@@ -155,16 +155,43 @@ def _init_lock_path(slot: int) -> str:
     return os.path.join(tempfile.gettempdir(), f"vizdoom_multi_init_{slot}.lock")
 
 
+_MIN_UDP_PORT = 1024
+_MAX_UDP_PORT = 65535
+_MAX_PORT_PROBES = 4096
+
+
+def _candidate_ports(first: int, floor: int, span: int, increment: int):
+    if increment > 1:
+        for i in range(span // increment + 1):
+            yield floor + (first - floor + i * increment) % span
+    for i in range(span):
+        yield floor + (first - floor + i) % span
+
+
 @contextmanager
-def reserve_udp_port(host_address: str, start_port: int, increment: int = 1):
-    port = int(start_port)
-    while port < 65535:
+def reserve_udp_port(
+    host_address: str,
+    start_port: int,
+    increment: int = 1,
+    floor_port: int | None = None,
+):
+    increment = max(1, int(increment))
+    floor = _MIN_UDP_PORT if floor_port is None else max(_MIN_UDP_PORT, int(floor_port))
+    span = _MAX_UDP_PORT - floor + 1
+    if span < 1:
+        raise ValueError(f"No usable UDP ports at or above {floor}")
+    first = floor + (int(start_port) - floor) % span
+
+    probes = 0
+    for port in _candidate_ports(first, floor, span, increment):
+        if probes >= _MAX_PORT_PROBES:
+            break
+        probes += 1
         lock_fd = os.open(_port_lock_path(port), os.O_CREAT | os.O_RDWR, 0o600)
         try:
             try:
                 fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
-                port += increment
                 continue
 
             if is_udp_port_available(host_address, port):
@@ -176,10 +203,9 @@ def reserve_udp_port(host_address: str, start_port: int, increment: int = 1):
         finally:
             os.close(lock_fd)
 
-        port += increment
-
     raise RuntimeError(
-        f"Could not reserve an available UDP port starting from {start_port}"
+        f"Could not reserve an available UDP port after {probes} probes "
+        f"(hint={start_port}, searched {floor}-{_MAX_UDP_PORT})"
     )
 
 

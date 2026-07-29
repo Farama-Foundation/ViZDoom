@@ -441,7 +441,8 @@ class VizdoomTask(TaskClass):
 
     def _env_instance_base_port(self, env_instance_index: int) -> int:
         base_port = int(self.config.get("base_port", DEFAULT_BASE_UDP_PORT))
-        return base_port + int(env_instance_index) * SLOT_PORT_STRIDE
+        span = max(SLOT_PORT_STRIDE, 65535 - base_port - SLOT_PORT_STRIDE)
+        return base_port + (int(env_instance_index) * SLOT_PORT_STRIDE) % span
 
     def _allocate_env_instance_index(self) -> int:
         env_instance_index = self._next_env_instance_index
@@ -695,7 +696,7 @@ def main():
     ap.add_argument("--num_minibatches", type=int, default=4)
     ap.add_argument("--num_epochs", type=int, default=8)
     ap.add_argument("--optimizer_steps", type=int, default=8)
-    ap.add_argument("--num_envs", type=int, default=8)
+    ap.add_argument("--num_envs", type=int, default=64)
     ap.add_argument("--parallel_collection", action=BooleanOptionalAction, default=True)
     ap.add_argument(
         "--double_buffer",
