@@ -343,6 +343,7 @@ class VizdoomExperiment(Experiment):
             sampling_device=self.config.sampling_device,
             seed=self.seed,
             parallel_collection=bool(getattr(self.config, "parallel_collection", True)),
+            double_buffer=bool(self.task.config.get("double_buffer", True)),
             collect_state=False,
         )
 
@@ -667,6 +668,12 @@ def main():
     ap.add_argument("--num_envs", type=int, default=8)
     ap.add_argument("--parallel_collection", action=BooleanOptionalAction, default=True)
     ap.add_argument(
+        "--double_buffer",
+        action=BooleanOptionalAction,
+        default=True,
+        help=("policy inference in 1/2 of envs overlaps, env stepping the other 1/2."),
+    )
+    ap.add_argument(
         "--keep_checkpoints_num",
         type=int,
         default=1,
@@ -785,6 +792,7 @@ def main():
         "daemon": args.daemon,
         "verbose": args.verbose,
         "run_id": run_id,
+        "double_buffer": args.double_buffer,
     }
     task = VizdoomTask(task_cfg)
 

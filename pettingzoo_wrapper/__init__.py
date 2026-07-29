@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Optional
 
 from vizdoom.pettingzoo_wrapper.base_pettingzoo_env import VizdoomParallelEnv
+from vizdoom.pettingzoo_wrapper.info_wrappers import InternalInfoFilter
 from vizdoom.pettingzoo_wrapper.reward_wrappers import (
     DeathmatchRewardWrapper,
     HealthGatheringRewardWrapper,
@@ -90,6 +91,7 @@ def make(
         )
 
     if scenario in _WRAPPERS:
-        return _WRAPPERS[scenario](env)
+        env = _WRAPPERS[scenario](env)
 
-    return env
+    # filter info key that is not in its spec
+    return InternalInfoFilter(env)
