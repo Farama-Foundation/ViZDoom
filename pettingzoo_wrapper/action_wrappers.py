@@ -70,11 +70,6 @@ MOVEMENT_COMBAT_ACTIONS = (
     action(Button.ATTACK, Button.MOVE_LEFT),
 )
 
-SSL2_ACTIONS = MOVEMENT_COMBAT_ACTIONS + (
-    action(Button.MOVE_FORWARD, Button.SPEED),
-    action(Button.USE),
-)
-
 MULTI_DUEL_ACTIONS = (
     action(),
     action(Button.MOVE_LEFT),
@@ -84,7 +79,25 @@ MULTI_DUEL_ACTIONS = (
     action(Button.MOVE_RIGHT, Button.ATTACK),
 )
 
+
+def _all_nonconflicting() -> tuple[Action, ...]:
+    fwd = [None, Button.MOVE_FORWARD, Button.MOVE_BACKWARD]
+    strafe = [None, Button.MOVE_LEFT, Button.MOVE_RIGHT]
+    turn = [None, Button.TURN_LEFT, Button.TURN_RIGHT]
+    base = []
+    for fb in fwd:
+        for lr in strafe:
+            for tl in turn:
+                buttons = [b for b in (fb, lr, tl) if b is not None]
+                base.append(action(*buttons))
+    with_attack = [action(*list(a.keys()) + [Button.ATTACK]) for a in base]
+    return tuple(base + with_attack)
+
+
+MULTI_DUEL_BIG_ACTIONS = _all_nonconflicting()
+
 ACTION_SETS = {
     # "multi_duel": MULTI_DUEL_ACTIONS,
-    "ssl2": SSL2_ACTIONS,
+    # "multi_duel_pistol": MULTI_DUEL_ACTIONS,
+    # "multi_duel_pistol_big": MULTI_DUEL_BIG_ACTIONS,
 }
