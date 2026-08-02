@@ -93,7 +93,7 @@ jobs:
           submodules: recursive
 
       - name: Set up Python ${{ matrix.python-version }} environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
