@@ -20,6 +20,16 @@ from vizdoom.pettingzoo_wrapper.utils import (
 )
 
 
+# Button pairs that cancel out when pressed together
+CONFLICT_BUTTONS = (
+    (vzd.Button.MOVE_FORWARD, vzd.Button.MOVE_BACKWARD),
+    (vzd.Button.MOVE_LEFT, vzd.Button.MOVE_RIGHT),
+    (vzd.Button.TURN_LEFT, vzd.Button.TURN_RIGHT),
+    (vzd.Button.MOVE_UP, vzd.Button.MOVE_DOWN),
+    (vzd.Button.LOOK_UP, vzd.Button.LOOK_DOWN),
+)
+
+
 def configure_doom_game(
     *,
     config_path: str,
@@ -90,6 +100,7 @@ class VizdoomParallelEnvBase(ParallelEnv):
         render_mode: str | None = None,
         use_multi_binary_action_space: bool = False,
         simple_discrete: bool = True,
+        factored_actions: bool = True,
         seed: int | None = None,
         verbose: bool = False,
         daemon: bool = True,
@@ -108,6 +119,7 @@ class VizdoomParallelEnvBase(ParallelEnv):
         self.render_mode = render_mode
         self.use_multi_binary_action_space = bool(use_multi_binary_action_space)
         self.simple_discrete = bool(simple_discrete)
+        self.factored_actions = bool(factored_actions)
         self._ext_seed = seed
         self.verbose = verbose
         self.daemon = daemon
@@ -132,6 +144,7 @@ class VizdoomParallelEnvBase(ParallelEnv):
         self._binary_count = len(self._binary_indices)
         self._simple_n = (3**self._delta_count) * (2**self._binary_count)
         self._act_len = self._delta_count + self._binary_count
+        self._factors = self._build_factors() if self.factored_actions else []
         self._action_space = self._build_action_space()
 
         w, h = parse_hw(resolution)
@@ -145,7 +158,60 @@ class VizdoomParallelEnvBase(ParallelEnv):
 
     # ------------- space helpers -------------
 
+    def _build_factors(self) -> list[list[dict[int, float]]]:
+        """Group buttons into independent choices, one per physical axis.
+        Conflicting combo like MOVE_LEFT+MOVE_RIGHT can't be pressed at once.
+        - Single buttons become 2-way
+        - Delta buttons become 3-way over {0, -1, +1}
+        """
+        remaining = set(self._binary_indices)
+        by_button = {button: i for i, button in enumerate(self.available_buttons)}
+        factors: list[list[dict[int, float]]] = []
+
+        for first, second in CONFLICT_BUTTONS:
+            i, j = by_button.get(first), by_button.get(second)
+            if i in remaining and j in remaining:
+                remaining -= {i, j}
+                factors.append([{}, {i: 1.0}, {j: 1.0}])
+
+        # Keep button order
+        for i in sorted(remaining):
+            factors.append([{}, {i: 1.0}])
+
+        for i in self._delta_indices:
+            factors.append([{i: 0.0}, {i: -1.0}, {i: +1.0}])
+
+        if not factors:
+            raise ValueError(
+                f"factored_actions requires at least one available button,"
+                f"got {self.config_file}"
+            )
+        return factors
+
+    @property
+    def factor_sizes(self) -> list[int]:
+        """nvec of the factored action space. Empty unless factored_actions."""
+        return [len(options) for options in self._factors]
+
+    def _decode_factored(self, agent_action) -> list[float]:
+        out = np.zeros((self._act_len,), dtype=np.float32)
+        indices = np.asarray(agent_action, dtype=np.int64).reshape(-1)
+        if indices.size != len(self._factors):
+            raise ValueError(
+                f"expected {len(self._factors)} factor indices, got {indices.size}"
+            )
+        for factor, choice in zip(self._factors, indices):
+            if not 0 <= int(choice) < len(factor):
+                raise ValueError(
+                    f"factor index {int(choice)} out of range for size {len(factor)}"
+                )
+            for button_index, value in factor[int(choice)].items():
+                out[button_index] = value
+        return out.tolist()
+
     def _build_action_space(self) -> spaces.Space:
+        if self.factored_actions:
+            return spaces.MultiDiscrete(self.factor_sizes)
         if self.simple_discrete:
             return spaces.Discrete(max(1, self._simple_n))
         if self._delta_count == 0:
@@ -203,6 +269,8 @@ class VizdoomParallelEnvBase(ParallelEnv):
 
     def _noop_action(self):
         """Build a valid 'do nothing' action matching self._action_space."""
+        if self.factored_actions:
+            return np.zeros((len(self._factors),), dtype=np.int64)
         if isinstance(self._action_space, spaces.Dict):
             out = {}
             if self._delta_count:
@@ -237,6 +305,8 @@ class VizdoomParallelEnvBase(ParallelEnv):
         return out.tolist()
 
     def _encode_env_action(self, agent_action: Any) -> list[float]:
+        if self.factored_actions:
+            return self._decode_factored(agent_action)
         if self.simple_discrete:
             raw_action = np.asarray(agent_action)
             if raw_action.ndim == 1 and raw_action.size == self._act_len:

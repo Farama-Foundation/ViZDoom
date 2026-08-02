@@ -13,8 +13,6 @@ from vizdoom.pettingzoo_wrapper.reward_wrappers import (
 )
 from vizdoom.pettingzoo_wrapper.video_recorder import VideoLoggerParallelWrapper
 
-from .action_wrappers import ACTION_SETS, DiscreteActionWrapper
-
 
 # where the scenario .cfg files live
 _SCENARIO_DIR = os.path.join(Path(__file__).parent.parent, "scenarios")
@@ -48,6 +46,7 @@ def make(
     ticrate: int = 35,
     render_mode: Optional[str] = None,
     use_multi_binary_action_space: bool = True,
+    factored_actions: bool = True,
     seed: Optional[int] = None,
     # video logging
     enable_video: bool = True,
@@ -74,14 +73,11 @@ def make(
         ticrate=ticrate,
         render_mode=render_mode,
         use_multi_binary_action_space=use_multi_binary_action_space,
+        factored_actions=factored_actions,
         seed=seed,
         verbose=verbose,
         daemon=daemon,
     )
-
-    action_set = ACTION_SETS.get(scenario)
-    if action_set is not None:
-        env = DiscreteActionWrapper(env, action_set)
 
     if enable_video:
         env = VideoLoggerParallelWrapper(
