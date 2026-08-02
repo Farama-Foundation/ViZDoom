@@ -21,6 +21,9 @@ from vizdoom.pettingzoo_wrapper.utils import (
 
 
 # Button pairs that cancel out when pressed together
+# Player has 16 unit radius, so at the duel 632 unit spawn means 2*atan(16/632) = 2.9 deg
+# Binary TURN_LEFT/TURN_RIGHT turns a fixed 7.03 degrees per action at skip_frames=4,
+# which is more than 2 times wider than the target
 CONFLICT_BUTTONS = (
     (vzd.Button.MOVE_FORWARD, vzd.Button.MOVE_BACKWARD),
     (vzd.Button.MOVE_LEFT, vzd.Button.MOVE_RIGHT),
@@ -28,6 +31,17 @@ CONFLICT_BUTTONS = (
     (vzd.Button.MOVE_UP, vzd.Button.MOVE_DOWN),
     (vzd.Button.LOOK_UP, vzd.Button.LOOK_DOWN),
 )
+
+ANGLE_DELTA_BUTTONS = (
+    vzd.Button.TURN_LEFT_RIGHT_DELTA,
+    vzd.Button.LOOK_UP_DOWN_DELTA,
+)
+
+_DELTA_SUPERSEDES = {
+    vzd.Button.TURN_LEFT_RIGHT_DELTA: (vzd.Button.TURN_LEFT, vzd.Button.TURN_RIGHT),
+    vzd.Button.LOOK_UP_DOWN_DELTA: (vzd.Button.LOOK_UP, vzd.Button.LOOK_DOWN),
+}
+DEFAULT_ANGLE_DEGREES_PER_ACTION = (2.0, 6.0, 18.0, 50.0)
 
 
 def configure_doom_game(
@@ -101,6 +115,7 @@ class VizdoomParallelEnvBase(ParallelEnv):
         use_multi_binary_action_space: bool = False,
         simple_discrete: bool = True,
         factored_actions: bool = True,
+        angle_degrees_per_action: tuple = DEFAULT_ANGLE_DEGREES_PER_ACTION,
         seed: int | None = None,
         verbose: bool = False,
         daemon: bool = True,
@@ -120,6 +135,7 @@ class VizdoomParallelEnvBase(ParallelEnv):
         self.use_multi_binary_action_space = bool(use_multi_binary_action_space)
         self.simple_discrete = bool(simple_discrete)
         self.factored_actions = bool(factored_actions)
+        self._angle_degrees_per_action = tuple(angle_degrees_per_action)
         self._ext_seed = seed
         self.verbose = verbose
         self.daemon = daemon
@@ -162,11 +178,23 @@ class VizdoomParallelEnvBase(ParallelEnv):
         """Group buttons into independent choices, one per physical axis.
         Conflicting combo like MOVE_LEFT+MOVE_RIGHT can't be pressed at once.
         - Single buttons become 2-way
-        - Delta buttons become 3-way over {0, -1, +1}
+        - Angle delta buttons get magnitude incr. in degrees
+        - Other delta buttons become 3-way over {0, -1, +1}
         """
         remaining = set(self._binary_indices)
         by_button = {button: i for i, button in enumerate(self.available_buttons)}
         factors: list[list[dict[int, float]]] = []
+
+        # Avoid the both delta and discrete declared together
+        for delta_button, superseded in _DELTA_SUPERSEDES.items():
+            if delta_button in by_button:
+                clashing = [b.name for b in superseded if b in by_button]
+                if clashing:
+                    raise ValueError(
+                        f"{self.config_file} declares {delta_button.name} together with "
+                        f"{', '.join(clashing)}, both drive the same axis and would be "
+                        "summed. Remove the binary buttons and keep the delta or vice versa."
+                    )
 
         for first, second in CONFLICT_BUTTONS:
             i, j = by_button.get(first), by_button.get(second)
@@ -178,8 +206,23 @@ class VizdoomParallelEnvBase(ParallelEnv):
         for i in sorted(remaining):
             factors.append([{}, {i: 1.0}])
 
+        # delta button applies its value once per tic
+        tics = max(1, int(self._skip_frames or 1))
         for i in self._delta_indices:
-            factors.append([{i: 0.0}, {i: -1.0}, {i: +1.0}])
+            if self.available_buttons[i] in ANGLE_DELTA_BUTTONS:
+                magnitudes = [float(d) for d in self._angle_degrees_per_action if d > 0]
+                if not magnitudes:
+                    raise ValueError(
+                        "angle_degrees_per_action must contain a positive value"
+                    )
+                magnitudes.sort()
+                # Lower option index always means "further clockwise"
+                degrees = [-d for d in reversed(magnitudes)] + [0.0] + magnitudes
+                # Positive delta value decrease ANGLE (turns right)
+                # so we need to negate to make label match the rotation
+                factors.append([{i: -d / tics} for d in degrees])
+            else:
+                factors.append([{i: 0.0}, {i: -1.0}, {i: +1.0}])
 
         if not factors:
             raise ValueError(
@@ -187,6 +230,47 @@ class VizdoomParallelEnvBase(ParallelEnv):
                 f"got {self.config_file}"
             )
         return factors
+
+    def factor_description(self) -> list[str]:
+        """Label per factor, for logs. Same order as factor_sizes."""
+        labels = []
+        for options in self._factors:
+            touched = sorted({i for option in options for i in option})
+            names = "+".join(self.available_buttons[i].name for i in touched) or "noop"
+            if (
+                len(touched) == 1
+                and self.available_buttons[touched[0]] in ANGLE_DELTA_BUTTONS
+            ):
+                tics = max(1, int(self._skip_frames or 1))
+                # Negate to match _build_factors
+                degrees = [
+                    round(-next(iter(option.values())) * tics, 2) for option in options
+                ]
+                names = f"{names} yaw_deg/action={degrees}"
+            labels.append(f"{names} (n={len(options)})")
+        return labels
+
+    @property
+    def neutral_factor_indices(self) -> list[int]:
+        """
+        Option index that presses nothing/rotates by zero per factor.
+        """
+        indices = []
+        for factor_index, options in enumerate(self._factors):
+            neutral = next(
+                (
+                    option_index
+                    for option_index, option in enumerate(options)
+                    if all(value == 0.0 for value in option.values())
+                ),
+                None,
+            )
+            if neutral is None:
+                raise ValueError(
+                    f"factor {factor_index} has no neutral option, cannot build a noop"
+                )
+            indices.append(neutral)
+        return indices
 
     @property
     def factor_sizes(self) -> list[int]:
@@ -270,7 +354,7 @@ class VizdoomParallelEnvBase(ParallelEnv):
     def _noop_action(self):
         """Build a valid 'do nothing' action matching self._action_space."""
         if self.factored_actions:
-            return np.zeros((len(self._factors),), dtype=np.int64)
+            return np.asarray(self.neutral_factor_indices, dtype=np.int64)
         if isinstance(self._action_space, spaces.Dict):
             out = {}
             if self._delta_count:
