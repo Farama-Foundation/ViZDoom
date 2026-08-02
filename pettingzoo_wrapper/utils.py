@@ -25,8 +25,22 @@ def get_screen_resolution(resolution: str) -> vzd.ScreenResolution:
         raise ValueError(f"Invalid resolution: {resolution}. Error: {e}")
 
 
+def get_live_game_vars(game, available_game_vars) -> dict[str, float]:
+    """
+    Return game variables read straight from the engine, as flat scalars.
+    Prefer this over `get_flat_game_vars` as `get_state()` returns None
+    once the episode is finished, which drops all variable from terminal step info.
+    """
+    return {
+        variable.name: float(game.get_game_variable(variable))
+        for variable in available_game_vars
+    }
+
+
 def get_flat_game_vars(state, available_game_vars) -> dict[str, float]:
-    """Return game variables as flat scalars suitable for info (no nested dict)."""
+    """Return game variables as flat scalars suitable for info (no nested dict).
+    Returns {} on finished episode (see get_live_game_vars).
+    """
     if state is None or state.game_variables is None:
         return {}
     game_variables = state.game_variables

@@ -17,7 +17,7 @@ from vizdoom.pettingzoo_wrapper.base_env_common import (
     configure_doom_game,
 )
 from vizdoom.pettingzoo_wrapper.utils import (
-    get_flat_game_vars,
+    get_live_game_vars,
     read_frame,
     reserve_init_slot,
     reserve_udp_port,
@@ -151,7 +151,7 @@ def _agent_worker_thread(
                         "just_died": False,
                         "step": 0,
                     }
-                    info.update(get_flat_game_vars(state, available_game_vars))
+                    info.update(get_live_game_vars(game, available_game_vars))
                     frames_advanced = 0
                     # Frames go through shared memory
                     frame_out[...] = read_frame(state, resolution)
@@ -192,7 +192,8 @@ def _agent_worker_thread(
                     "just_died": just_died,
                     "step": frames_advanced,
                 }
-                info.update(get_flat_game_vars(state, available_game_vars))
+                # Read vars from the engine as `state` is None on terminal step
+                info.update(get_live_game_vars(game, available_game_vars))
                 frame_out[...] = read_frame(state, resolution)
                 result_queue.put(
                     {
