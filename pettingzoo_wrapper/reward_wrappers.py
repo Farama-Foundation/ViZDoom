@@ -12,9 +12,9 @@ def _reset_info(info):
 
 
 _DEATHMATCH_DELTA_REWARDS = {
-    "FRAGCOUNT": (1.0, -0.001),
-    "DEATHCOUNT": (-1.0, 1.0),
-    "DAMAGECOUNT": (0.01, -0.01),
+    "FRAGCOUNT": (1.0, 0.0),
+    "DEATHCOUNT": (-1.0, 0.0),
+    "DAMAGECOUNT": (0.01, 0.0),
     "HEALTH": (0.0, -0.01),
 }
 
@@ -67,17 +67,16 @@ class DeathmatchRewardWrapper(ParallelEnv):
                 self.prev_dead[agent] = True
 
             dead = bool(info.get("DEAD", 0.0))
-            done = bool(terminations[agent] or truncations[agent])
             shaping_reward = 0.0
-            if not done and not (self.prev_dead[agent] and not dead):
+            if not (self.prev_dead[agent] and not dead):
                 previous = self.prev_vars[agent]
                 for name, (
                     positive_reward,
                     negative_reward,
                 ) in _DEATHMATCH_DELTA_REWARDS.items():
-                    if name not in previous:
+                    if name not in previous or name not in info:
                         continue
-                    delta = info.get(name, 0.0) - previous[name]
+                    delta = info[name] - previous[name]
                     if name == "DAMAGECOUNT":
                         delta = min(delta, 200.0)
                     elif name == "HEALTH":
@@ -88,8 +87,11 @@ class DeathmatchRewardWrapper(ParallelEnv):
                         shaping_reward += -delta * negative_reward
 
             rewards[agent] = float(rewards.get(agent, 0.0)) + shaping_reward
+            # Carry last known value forward for anything absent this step
             self.prev_vars[agent] = {
-                name: info.get(name, 0.0) for name in _DEATHMATCH_DELTA_REWARDS
+                name: info[name] if name in info else self.prev_vars[agent][name]
+                for name in _DEATHMATCH_DELTA_REWARDS
+                if name in info or name in self.prev_vars[agent]
             }
             self.prev_dead[agent] = dead
 
