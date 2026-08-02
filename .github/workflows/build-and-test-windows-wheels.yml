@@ -57,7 +57,7 @@ jobs:
 
     # Gather all dependencies
     - name: Set up Python ${{ matrix.python-version }} environment
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -142,7 +142,7 @@ jobs:
         ls -l ./dist/*.whl
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: artifact-${{ matrix.os }}-${{ matrix.python-version }}
         path: ./dist/*.whl
@@ -163,7 +163,7 @@ jobs:
           submodules: recursive
 
       - name: Set up Python ${{ matrix.python-version }} environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 

@@ -17,7 +17,7 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v7
         with:
             python-version: '3.12'
 
