@@ -219,7 +219,9 @@ class WandbLoggingWrapper(Logger):
                     # Actions are (time, n_agents, n_factors)
                     per_agent = torch.cat(
                         [
-                            rollout.get((group, "action"))[:, agent_index].reshape(-1, len(self._factor_sizes)).long()
+                            rollout.get((group, "action"))[:, agent_index]
+                            .reshape(-1, len(self._factor_sizes))
+                            .long()
                             for rollout in rollouts
                         ]
                     )
@@ -352,7 +354,9 @@ def _patch_benchmarl_for_factored_actions() -> None:
 
             n_agents = len(self.group_map[group])
             actor_module = model_config.get_model(
-                input_spec=_Composite({group: self.observation_spec[group].clone().to(self.device)}),
+                input_spec=_Composite(
+                    {group: self.observation_spec[group].clone().to(self.device)}
+                ),
                 output_spec=_Composite(
                     {
                         group: _Composite(
@@ -395,6 +399,51 @@ def _patch_benchmarl_for_factored_actions() -> None:
 _ADVANTAGE_AGENT_DIM = -2
 
 
+def _enable_per_agent_advantage_normalization(
+    loss_module, group: str, n_agents: int
+) -> None:
+    """
+    BenchMARL hardcodes `normalize_advantage=False` and doesn't expose it on the config,
+    which deviates loss_obj from entropy bonus.
+
+    `normalize_advantage_exclude_dims` (in TorchRL) is what we want, but it's not implemented in BenchMARL.
+    The flag will be added in this PR: https://github.com/facebookresearch/BenchMARL/pull/256.
+    """
+    for attribute in ("normalize_advantage", "normalize_advantage_exclude_dims"):
+        if not hasattr(loss_module, attribute):
+            raise RuntimeError(
+                f"{type(loss_module).__name__} has no {attribute!r}. Check TorchRL version"
+            )
+
+    loss_module.normalize_advantage = True
+    loss_module.normalize_advantage_exclude_dims = (_ADVANTAGE_AGENT_DIM,)
+
+    # check -2 is agent dimension
+    advantage_key = loss_module.tensor_keys.advantage
+    inner_forward = loss_module.forward
+    state = {"verified": False}
+
+    def forward(tensordict, *args, **kwargs):
+        if not state["verified"]:
+            advantage = tensordict.get(advantage_key, None)
+            if advantage is None:
+                raise RuntimeError(
+                    f"[{group}] {advantage_key} absent before the loss forward"
+                )
+            shape = tuple(advantage.shape)
+            if advantage.ndim < 3 or shape[-1] != 1 or shape[-2] != n_agents:
+                raise RuntimeError(
+                    f"[{group}] expected advantage of shape (..., {n_agents}, 1) so "
+                    f"that dim {_ADVANTAGE_AGENT_DIM} holds agents, got {shape}."
+                )
+            print(
+                f"[adv-norm] {group}: (advantage {shape}, agent dim {_ADVANTAGE_AGENT_DIM}, {n_agents} agents)",
+                flush=True,
+            )
+            state["verified"] = True
+        return inner_forward(tensordict, *args, **kwargs)
+
+    loss_module.forward = forward
 
 
 class VizdoomExperiment(Experiment):
@@ -404,7 +453,17 @@ class VizdoomExperiment(Experiment):
     - job_type  : algorithm name
     - group     : "<environment>/<task>"
     - id / name : "<algo>_<task>_<N>agents_seed<S>_<timestamp>"
+
+    and turns on per-agent advantage normalization.
     """
+
+    def _setup_algorithm(self):
+        super()._setup_algorithm()
+        for group, loss_module in self.losses.items():
+            if hasattr(loss_module, "normalize_advantage"):
+                _enable_per_agent_advantage_normalization(
+                    loss_module, group, len(self.group_map[group])
+                )
 
     def _setup_logger(self):
         num_agents = sum(len(v) for v in self.group_map.values())
@@ -423,7 +482,9 @@ class VizdoomExperiment(Experiment):
             "name": run_id,
         }
 
-        action_spec = self.test_env.input_spec["full_action_spec", next(iter(self.group_map)), "action"]
+        action_spec = self.test_env.input_spec[
+            "full_action_spec", next(iter(self.group_map)), "action"
+        ]
         original = self.config.wandb_extra_kwargs
         self.config.wandb_extra_kwargs = {**original, **extra}
         try:
