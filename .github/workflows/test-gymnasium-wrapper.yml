@@ -24,6 +24,9 @@ on:
       - 'pyproject.toml'
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   test_gymnasium_wrapper:
     runs-on: ubuntu-latest
