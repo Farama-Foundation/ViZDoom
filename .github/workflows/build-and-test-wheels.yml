@@ -1,5 +1,8 @@
 name: Build and test Python wheels and make PyPI release
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
   push:
