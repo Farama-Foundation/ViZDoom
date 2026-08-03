@@ -67,7 +67,7 @@
 #define FORCE_PACKED
 #endif
 
-#ifndef __BIG_ENDIAN__
+#if !defined(__BIG_ENDIAN__) && (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
 #define MAKE_ID(a,b,c,d)	((a)|((b)<<8)|((c)<<16)|((d)<<24))
 #define LittleShort(x)		(x)
 #define LittleLong(x)		(x)
