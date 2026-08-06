@@ -26,6 +26,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
@@ -48,13 +51,13 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         submodules: recursive
 
     # Gather all dependencies
     - name: Set up Python ${{ matrix.python-version }} environment
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -62,7 +65,7 @@ jobs:
       run: python -c "import sys; print(sys.version)"
 
     - name: Get deps repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         repository: mwydmuch/ViZDoomWinDepBin
         path: ${{ github.workspace }}\deps
@@ -139,7 +142,7 @@ jobs:
         ls -l ./dist/*.whl
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: artifact-${{ matrix.os }}-${{ matrix.python-version }}
         path: ./dist/*.whl
@@ -155,12 +158,12 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
       - name: Set up Python ${{ matrix.python-version }} environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 

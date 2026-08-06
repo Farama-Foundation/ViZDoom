@@ -24,12 +24,15 @@ on:
       - 'pyproject.toml'
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   test_gymnasium_wrapper:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         submodules: recursive
 
@@ -44,7 +47,7 @@ jobs:
       run: apt list --installed
 
     - name: Set up Python environment
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v7
       with:
         python-version: '3.12'
 
