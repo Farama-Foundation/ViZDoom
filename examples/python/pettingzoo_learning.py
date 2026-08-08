@@ -831,7 +831,7 @@ def override_experiment_config(args, on_policy: bool, on_policy_minibatch_size: 
         "evaluation": True,  # Must be enabled for video logging
         "render": False,
         "evaluation_interval": args.rollout_steps * 25,
-        "evaluation_episodes": 2,
+        "evaluation_episodes": 20,
         "loggers": ["wandb"],
         "project_name": "benchmarl-vizdoom",
         "checkpoint_interval": args.rollout_steps * 100,
