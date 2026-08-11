@@ -326,7 +326,7 @@
 </pre></div>
 </div>
 <p>Both x86-64 and AArch64 (ARM64) architectures are supported.
-Wheels are available for Python 3.9+ on Linux.</p>
+Wheels are available for Python 3.10+ on Linux.</p>
 <section id="audio-buffer-requirement">
 <h3>Audio buffer requirement<a class="headerlink" href="#audio-buffer-requirement" title="Link to this heading">¶</a></h3>
 <p>If you want to use audio buffer, you need to have OpenAL library installed.
@@ -344,7 +344,7 @@ On apt-based distros (Ubuntu, Debian, Linux Mint, etc.), you can install it by r
 <section id="installing-from-source-distribution-on-linux">
 <h3>Installing from source distribution on Linux<a class="headerlink" href="#installing-from-source-distribution-on-linux" title="Link to this heading">¶</a></h3>
 <p>If Python wheel is not available for your platform (distros incompatible with manylinux_2_28 standard), pip will try to install (build) ViZDoom from the source.
-ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.9+ to install from source.
+ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.10+ to install from source.
 Below, you will find instructions on how to install these dependencies.</p>
 <section id="apt-based-distros-ubuntu-debian-linux-mint-etc">
 <h4>apt-based distros (Ubuntu, Debian, Linux Mint, etc.)<a class="headerlink" href="#apt-based-distros-ubuntu-debian-linux-mint-etc" title="Link to this heading">¶</a></h4>
@@ -388,7 +388,7 @@ In this case, install the required dependencies using Homebrew:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>boost<span class="w"> </span>sdl2<span class="w"> </span>openal-soft
 </pre></div>
 </div>
-<p>We recommend using at least macOS High Sierra 10.13+ with Python 3.9+.
+<p>We recommend using at least macOS High Sierra 10.13+ with Python 3.10+.
 On Apple Silicon (M1, M2, and M3), make sure you are using Python/Pip for Apple Silicon.</p>
 <p>To install the main branch version of ViZDoom, run, in this case you also need to have the above dependencies installed:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/Farama-Foundation/ViZDoom
@@ -402,7 +402,7 @@ On Apple Silicon (M1, M2, and M3), make sure you are using Python/Pip for Apple 
 </pre></div>
 </div>
 <p>At the moment, only x86-64 architecture is supported on Windows.
-Wheels are available for Python 3.9+ x86-64 on Windows.</p>
+Wheels are available for Python 3.10+ x86-64 on Windows.</p>
 <p>Please note that the Windows version is not as well-tested as Linux and macOS versions.
 It can be used for development and testing but if you want to conduct serious (time and resource-extensive) experiments on Windows,
 please consider using <a class="reference external" href="https://docs.docker.com/docker-for-windows/install/">Docker</a> or <a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl">WSL</a> with Linux version.
