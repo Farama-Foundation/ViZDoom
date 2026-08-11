@@ -16,7 +16,7 @@ To build ViZDoom on Linux, the following dependencies are required:
 * Make
 * GCC 6.0+
 * Boost libraries 1.54.0+
-* Python 3.9+ for Python binding (optional)
+* Python 3.10+ for Python binding (optional)
 
 Also some of additionally [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
 
@@ -70,7 +70,7 @@ To build ViZDoom on macOS, the following dependencies are required:
 * CMake 3.12+
 * Clang 5.0+
 * Boost libraries 1.54.0+
-* Python 3.9+ for Python binding (optional)
+* Python 3.10+ for Python binding (optional)
 
 Also some of additionally [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X) are needed.
 
@@ -94,7 +94,7 @@ On Apple Silicon, make sure you are using Python/Pip for Apple Silicon.
 * CMake 3.12+
 * Visual Studio 2012+
 * Boost libraries 1.54.0+
-* Python 3.9+ for Python binding (optional)
+* Python 3.10+ for Python binding (optional)
 
 Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Windows) are needed.
 Most of them (except Boost) are gathered in this repository: [ViZDoomWinDepBin](https://github.com/mwydmuch/ViZDoomWinDepBin).
