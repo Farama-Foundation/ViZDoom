@@ -311,6 +311,7 @@ namespace vizdoom {
         void waitForDoomMapStartTime();
         void createDoomArgs();
         void launchDoom();
+        bool hasNetGameArgs() const;
 
         /* Seed */
         /*------------------------------------------------------------------------------------------------------------*/
@@ -325,6 +326,7 @@ namespace vizdoom {
         bool doomStaticSeed;
         unsigned int doomSeed;
         unsigned int instanceSeed;
+        bool userSetSeed;
 
         br::mt19937 instanceRng;
         std::string instanceId;
