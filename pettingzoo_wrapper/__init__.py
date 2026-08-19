@@ -45,8 +45,6 @@ def make(
     netmode: int = 0,
     ticrate: int = 35,
     render_mode: Optional[str] = None,
-    use_multi_binary_action_space: bool = True,
-    factored_actions: bool = True,
     seed: Optional[int] = None,
     # video logging
     enable_video: bool = True,
@@ -72,8 +70,6 @@ def make(
         netmode=netmode,
         ticrate=ticrate,
         render_mode=render_mode,
-        use_multi_binary_action_space=use_multi_binary_action_space,
-        factored_actions=factored_actions,
         seed=seed,
         verbose=verbose,
         daemon=daemon,

@@ -20,28 +20,10 @@ from vizdoom.pettingzoo_wrapper.utils import (
 )
 
 
-# Button pairs that cancel out when pressed together
-# Player has 16 unit radius, so at the duel 632 unit spawn means 2*atan(16/632) = 2.9 deg
-# Binary TURN_LEFT/TURN_RIGHT turns a fixed 7.03 degrees per action at skip_frames=4,
-# which is more than 2 times wider than the target
-CONFLICT_BUTTONS = (
-    (vzd.Button.MOVE_FORWARD, vzd.Button.MOVE_BACKWARD),
-    (vzd.Button.MOVE_LEFT, vzd.Button.MOVE_RIGHT),
-    (vzd.Button.TURN_LEFT, vzd.Button.TURN_RIGHT),
-    (vzd.Button.MOVE_UP, vzd.Button.MOVE_DOWN),
-    (vzd.Button.LOOK_UP, vzd.Button.LOOK_DOWN),
-)
-
-ANGLE_DELTA_BUTTONS = (
-    vzd.Button.TURN_LEFT_RIGHT_DELTA,
-    vzd.Button.LOOK_UP_DOWN_DELTA,
-)
-
-_DELTA_SUPERSEDES = {
-    vzd.Button.TURN_LEFT_RIGHT_DELTA: (vzd.Button.TURN_LEFT, vzd.Button.TURN_RIGHT),
-    vzd.Button.LOOK_UP_DOWN_DELTA: (vzd.Button.LOOK_UP, vzd.Button.LOOK_DOWN),
-}
-DEFAULT_ANGLE_DEGREES_PER_ACTION = (2.0, 6.0, 18.0, 50.0)
+# Policy-facing limit for raw delta actions.  The value is expressed in the
+# native ViZDoom units (degrees for view-angle deltas); the value itself is
+# passed through to ViZDoom without quantisation.
+RAW_DELTA_ACTION_LIMIT = 180.0
 
 
 def configure_doom_game(
@@ -112,10 +94,6 @@ class VizdoomParallelEnvBase(ParallelEnv):
         netmode: int = 0,
         ticrate: int = vzd.DEFAULT_TICRATE,
         render_mode: str | None = None,
-        use_multi_binary_action_space: bool = False,
-        simple_discrete: bool = True,
-        factored_actions: bool = True,
-        angle_degrees_per_action: tuple = DEFAULT_ANGLE_DEGREES_PER_ACTION,
         seed: int | None = None,
         verbose: bool = False,
         daemon: bool = True,
@@ -132,10 +110,6 @@ class VizdoomParallelEnvBase(ParallelEnv):
         self._timeout = int(timeout) if timeout is not None else None
         self._skip_frames = skip_frames
         self.render_mode = render_mode
-        self.use_multi_binary_action_space = bool(use_multi_binary_action_space)
-        self.simple_discrete = bool(simple_discrete)
-        self.factored_actions = bool(factored_actions)
-        self._angle_degrees_per_action = tuple(angle_degrees_per_action)
         self._ext_seed = seed
         self.verbose = verbose
         self.daemon = daemon
@@ -158,10 +132,8 @@ class VizdoomParallelEnvBase(ParallelEnv):
         ]
         self._delta_count = len(self._delta_indices)
         self._binary_count = len(self._binary_indices)
-        self._simple_n = (3**self._delta_count) * (2**self._binary_count)
         self._act_len = self._delta_count + self._binary_count
-        self._factors = self._build_factors() if self.factored_actions else []
-        self._action_space = self._build_action_space()
+        self._action_space = self._continuous_space()
 
         w, h = parse_hw(resolution)
         self._obs_shape = (h, w, 3)
@@ -174,149 +146,13 @@ class VizdoomParallelEnvBase(ParallelEnv):
 
     # ------------- space helpers -------------
 
-    def _build_factors(self) -> list[list[dict[int, float]]]:
-        """Group buttons into independent choices, one per physical axis.
-        Conflicting combo like MOVE_LEFT+MOVE_RIGHT can't be pressed at once.
-        - Single buttons become 2-way
-        - Angle delta buttons get magnitude incr. in degrees
-        - Other delta buttons become 3-way over {0, -1, +1}
-        """
-        remaining = set(self._binary_indices)
-        by_button = {button: i for i, button in enumerate(self.available_buttons)}
-        factors: list[list[dict[int, float]]] = []
-
-        # Avoid the both delta and discrete declared together
-        for delta_button, superseded in _DELTA_SUPERSEDES.items():
-            if delta_button in by_button:
-                clashing = [b.name for b in superseded if b in by_button]
-                if clashing:
-                    raise ValueError(
-                        f"{self.config_file} declares {delta_button.name} together with "
-                        f"{', '.join(clashing)}, both drive the same axis and would be "
-                        "summed. Remove the binary buttons and keep the delta or vice versa."
-                    )
-
-        for first, second in CONFLICT_BUTTONS:
-            i, j = by_button.get(first), by_button.get(second)
-            if i in remaining and j in remaining:
-                remaining -= {i, j}
-                factors.append([{}, {i: 1.0}, {j: 1.0}])
-
-        # Keep button order
-        for i in sorted(remaining):
-            factors.append([{}, {i: 1.0}])
-
-        # delta button applies its value once per tic
-        tics = max(1, int(self._skip_frames or 1))
-        for i in self._delta_indices:
-            if self.available_buttons[i] in ANGLE_DELTA_BUTTONS:
-                magnitudes = [float(d) for d in self._angle_degrees_per_action if d > 0]
-                if not magnitudes:
-                    raise ValueError(
-                        "angle_degrees_per_action must contain a positive value"
-                    )
-                magnitudes.sort()
-                # Lower option index always means "further clockwise"
-                degrees = [-d for d in reversed(magnitudes)] + [0.0] + magnitudes
-                # Positive delta value decrease ANGLE (turns right)
-                # so we need to negate to make label match the rotation
-                factors.append([{i: -d / tics} for d in degrees])
-            else:
-                factors.append([{i: 0.0}, {i: -1.0}, {i: +1.0}])
-
-        if not factors:
-            raise ValueError(
-                f"factored_actions requires at least one available button,"
-                f"got {self.config_file}"
-            )
-        return factors
-
-    def factor_description(self) -> list[str]:
-        """Label per factor, for logs. Same order as factor_sizes."""
-        labels = []
-        for options in self._factors:
-            touched = sorted({i for option in options for i in option})
-            names = "+".join(self.available_buttons[i].name for i in touched) or "noop"
-            if (
-                len(touched) == 1
-                and self.available_buttons[touched[0]] in ANGLE_DELTA_BUTTONS
-            ):
-                tics = max(1, int(self._skip_frames or 1))
-                # Negate to match _build_factors
-                degrees = [
-                    round(-next(iter(option.values())) * tics, 2) for option in options
-                ]
-                names = f"{names} yaw_deg/action={degrees}"
-            labels.append(f"{names} (n={len(options)})")
-        return labels
-
-    @property
-    def neutral_factor_indices(self) -> list[int]:
-        """
-        Option index that presses nothing/rotates by zero per factor.
-        """
-        indices = []
-        for factor_index, options in enumerate(self._factors):
-            neutral = next(
-                (
-                    option_index
-                    for option_index, option in enumerate(options)
-                    if all(value == 0.0 for value in option.values())
-                ),
-                None,
-            )
-            if neutral is None:
-                raise ValueError(
-                    f"factor {factor_index} has no neutral option, cannot build a noop"
-                )
-            indices.append(neutral)
-        return indices
-
-    @property
-    def factor_sizes(self) -> list[int]:
-        """nvec of the factored action space. Empty unless factored_actions."""
-        return [len(options) for options in self._factors]
-
-    def _decode_factored(self, agent_action) -> list[float]:
-        out = np.zeros((self._act_len,), dtype=np.float32)
-        indices = np.asarray(agent_action, dtype=np.int64).reshape(-1)
-        if indices.size != len(self._factors):
-            raise ValueError(
-                f"expected {len(self._factors)} factor indices, got {indices.size}"
-            )
-        for factor, choice in zip(self._factors, indices):
-            if not 0 <= int(choice) < len(factor):
-                raise ValueError(
-                    f"factor index {int(choice)} out of range for size {len(factor)}"
-                )
-            for button_index, value in factor[int(choice)].items():
-                out[button_index] = value
-        return out.tolist()
-
-    def _build_action_space(self) -> spaces.Space:
-        if self.factored_actions:
-            return spaces.MultiDiscrete(self.factor_sizes)
-        if self.simple_discrete:
-            return spaces.Discrete(max(1, self._simple_n))
-        if self._delta_count == 0:
-            return self._binary_space()
-        if self._binary_count == 0:
-            return self._continuous_space()
-        return spaces.Dict(
-            {
-                "binary": self._binary_space(),
-                "continuous": self._continuous_space(),
-            }
-        )
-
-    def _binary_space(self) -> spaces.Space:
-        if self.use_multi_binary_action_space:
-            return spaces.MultiBinary(self._binary_count)
-        return spaces.MultiDiscrete([2] * self._binary_count)
-
     def _continuous_space(self) -> spaces.Space:
-        low, high = np.finfo(np.float32).min, np.finfo(np.float32).max
-        return spaces.Box(low, high, (self._delta_count,), dtype=np.float32)
+        low = np.zeros((self._act_len,), dtype=np.float32)
+        high = np.ones((self._act_len,), dtype=np.float32)
+        for button_index in self._delta_indices:
+            low[button_index] = -RAW_DELTA_ACTION_LIMIT
+            high[button_index] = RAW_DELTA_ACTION_LIMIT
+        return spaces.Box(low, high, dtype=np.float32)
 
     def action_space(self, agent: str) -> spaces.Space:
         return self._action_space
@@ -353,72 +189,21 @@ class VizdoomParallelEnvBase(ParallelEnv):
 
     def _noop_action(self):
         """Build a valid 'do nothing' action matching self._action_space."""
-        if self.factored_actions:
-            return np.asarray(self.neutral_factor_indices, dtype=np.int64)
-        if isinstance(self._action_space, spaces.Dict):
-            out = {}
-            if self._delta_count:
-                out["continuous"] = np.zeros((self._delta_count,), dtype=np.float32)
-            if self._binary_count:
-                dtype = np.int8 if self.use_multi_binary_action_space else np.int64
-                out["binary"] = np.zeros((self._binary_count,), dtype=dtype)
-            return out
-        if isinstance(self._action_space, spaces.Discrete):
-            return 0
-        if isinstance(self._action_space, spaces.MultiBinary):
-            return np.zeros((self._binary_count,), dtype=np.int8)
-        if isinstance(self._action_space, spaces.MultiDiscrete):
-            return np.zeros((self._binary_count,), dtype=np.int64)
-        if isinstance(self._action_space, spaces.Box):
-            return np.zeros((self._delta_count,), dtype=np.float32)
-        raise NotImplementedError(type(self._action_space))
-
-    def _decode_simple_discrete(self, idx: int) -> list[float]:
-        """Decode a Discrete index in the button order configured by ViZDoom.
-
-        Deltas are radix-3 mapped {0,1,2} -> {0,-1,+1}; binaries are radix-2.
-        """
-        out = np.zeros((self._act_len,), dtype=np.float32)
-        x = int(idx)
-        for button_index in self._binary_indices:
-            out[button_index] = float(x & 1)
-            x >>= 1
-        for button_index in self._delta_indices:
-            out[button_index] = float([0, -1, +1][x % 3])
-            x //= 3
-        return out.tolist()
+        return np.zeros((self._act_len,), dtype=np.float32)
 
     def _encode_env_action(self, agent_action: Any) -> list[float]:
-        if self.factored_actions:
-            return self._decode_factored(agent_action)
-        if self.simple_discrete:
-            raw_action = np.asarray(agent_action)
-            if raw_action.ndim == 1 and raw_action.size == self._act_len:
-                return raw_action.astype(np.float32).tolist()
-            return self._decode_simple_discrete(int(agent_action))
-        out = np.zeros((self._act_len,), dtype=np.float32)
-        if isinstance(self._action_space, spaces.Dict):
-            if self._delta_count:
-                cont = (
-                    agent_action["continuous"]
-                    if isinstance(agent_action, dict)
-                    else agent_action[0]
-                )
-                out[self._delta_indices] = np.asarray(cont, dtype=np.float32)
-            if self._binary_count:
-                bin_act = (
-                    agent_action["binary"]
-                    if isinstance(agent_action, dict)
-                    else agent_action[1]
-                )
-                out[self._binary_indices] = np.asarray(
-                    bin_act, dtype=np.float32
-                ).reshape(-1)
-        else:
-            if self._delta_count:
-                out[self._delta_indices] = np.asarray(agent_action, dtype=np.float32)
-            else:
-                out[self._binary_indices] = np.asarray(agent_action, dtype=np.float32)
+        raw = np.asarray(agent_action, dtype=np.float32).reshape(-1)
+        if raw.size != self._act_len:
+            raise ValueError(
+                f"expected {self._act_len} raw button values, got {raw.size}"
+            )
+        out = raw.copy()
+        # ViZDoom treats every non-zero binary value as pressed. Keep those
+        # dimensions well-defined while preserving continuous delta values.
+        if self._binary_count:
+            out[self._binary_indices] = (raw[self._binary_indices] >= 0.5).astype(
+                np.float32
+            )
         return out.tolist()
 
     # ------------------- rendering -------------------

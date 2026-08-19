@@ -256,11 +256,7 @@ class RolloutWorker:
     ) -> None:
         self.policy = policy
         self.action_spec = action_spec
-        # Number of factors for MultiDiscrete action space
-        nvec = getattr(action_spec, "nvec", None)
-        self._n_action_factors = (
-            None if nvec is None else int(torch.as_tensor(nvec).shape[-1])
-        )
+        self._action_shape = tuple(getattr(action_spec, "shape", ()))
         self.group_name = group_name
         self.n_agents = int(n_agents)
         self.frames_per_batch = int(frames_per_batch)
@@ -650,10 +646,23 @@ class RolloutWorker:
     def _decode_policy_actions(self, actions: torch.Tensor) -> list[list[Any]]:
         action_np = self.action_spec.to_numpy(actions)
         if isinstance(action_np, np.ndarray):
-            n_factors = getattr(self, "_n_action_factors", None)
-            if n_factors is not None and action_np.shape[-1] == n_factors:
-                if action_np.ndim == 2:
-                    action_np = action_np.reshape(1, *action_np.shape)
+            if action_np.ndim == 3 and action_np.shape[-1] == 1:
+                action_np = action_np.squeeze(-1)
+            if (
+                action_np.ndim == 2
+                and tuple(action_np.shape) == self._action_shape
+                and len(self._action_shape) >= 2
+            ):
+                action_np = action_np.reshape(1, *action_np.shape)
+            if (
+                action_np.ndim == 1
+                and len(self._action_shape) >= 2
+                and action_np.size == int(np.prod(self._action_shape))
+            ):
+                action_np = action_np.reshape(1, *self._action_shape)
+            elif action_np.ndim == 1:
+                action_np = action_np.reshape(1, -1)
+            if action_np.ndim == 3:
                 return [
                     [
                         action_np[env_instance_index, agent_index].tolist()
@@ -661,10 +670,6 @@ class RolloutWorker:
                     ]
                     for env_instance_index in range(action_np.shape[0])
                 ]
-            if action_np.ndim == 3 and action_np.shape[-1] == 1:
-                action_np = action_np.squeeze(-1)
-            if action_np.ndim == 1:
-                action_np = action_np.reshape(1, -1)
             return [
                 [
                     int(action_np[env_instance_index, agent_index])

@@ -68,14 +68,10 @@ class WandbLoggingWrapper(Logger):
         self,
         *args,
         skip_frames: int = 1,
-        num_actions: int | None = None,
-        factor_sizes: list | None = None,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self._skip_frames = max(1, int(skip_frames))
-        self._num_actions = num_actions
-        self._factor_sizes = factor_sizes
         self._env_steps = 0
         self._fps_samples = deque(maxlen=12)
         self._has_wandb_logger = any(
@@ -215,35 +211,6 @@ class WandbLoggingWrapper(Logger):
                             torch.stack(values),
                         )
 
-                if self._factor_sizes is not None:
-                    # Actions are (time, n_agents, n_factors)
-                    per_agent = torch.cat(
-                        [
-                            rollout.get((group, "action"))[:, agent_index]
-                            .reshape(-1, len(self._factor_sizes))
-                            .long()
-                            for rollout in rollouts
-                        ]
-                    )
-                    for factor_index, size in enumerate(self._factor_sizes):
-                        column = per_agent[:, factor_index]
-                        for option in range(size):
-                            metrics[
-                                f"eval/{group}/actions/{agent}/factor{factor_index}_option{option}_frequency"
-                            ] = ((column == option).float().mean().item())
-                elif self._num_actions is not None:
-                    actions = torch.cat(
-                        [
-                            rollout.get((group, "action"))[:, agent_index]
-                            .reshape(-1)
-                            .long()
-                            for rollout in rollouts
-                        ]
-                    )
-                    for action in range(self._num_actions):
-                        metrics[
-                            f"eval/{group}/actions/{agent}/action_{action}_frequency"
-                        ] = ((actions == action).float().mean().item())
         return metrics
 
     def log_evaluation(self, rollouts, total_frames: int, step: int, video_frames=None):
@@ -270,127 +237,6 @@ class WandbLoggingWrapper(Logger):
                 for key, value in payload.items():
                     logger.log_scalar(key.replace("/", "_"), value, step=step)
         self._pending_metrics = None
-
-
-class FactoredCategorical(torch.distributions.Distribution):
-    """
-    Split logit dimension to 1 chunk per factor, size nvec, then sums log-probs and entropies across factors
-    """
-
-    arg_constraints: Dict[str, Any] = {}
-    has_rsample = False
-
-    def __init__(self, logits: torch.Tensor, nvec, validate_args=None):
-        self.nvec = [int(n) for n in nvec]
-        expected = sum(self.nvec)
-        if logits.shape[-1] != expected:
-            raise ValueError(
-                f"FactoredCategorical expected {expected} logits for nvec {self.nvec}, "
-                f"got {logits.shape[-1]}"
-            )
-        self._dists = [
-            torch.distributions.Categorical(logits=chunk)
-            for chunk in logits.split(self.nvec, dim=-1)
-        ]
-        super().__init__(
-            batch_shape=logits.shape[:-1],
-            event_shape=torch.Size([len(self.nvec)]),
-            validate_args=False,
-        )
-
-    def sample(self, sample_shape=torch.Size()):
-        return torch.stack([d.sample(sample_shape) for d in self._dists], dim=-1)
-
-    def log_prob(self, value: torch.Tensor) -> torch.Tensor:
-        return torch.stack(
-            [d.log_prob(value[..., i]) for i, d in enumerate(self._dists)], dim=-1
-        ).sum(-1)
-
-    def entropy(self) -> torch.Tensor:
-        return torch.stack([d.entropy() for d in self._dists], dim=-1).sum(-1)
-
-    @property
-    def mode(self) -> torch.Tensor:
-        return torch.stack([d.logits.argmax(-1) for d in self._dists], dim=-1)
-
-    @property
-    def deterministic_sample(self) -> torch.Tensor:
-        # TorchRL ExplorationType.DETERMINISTIC looks for this first
-        return self.mode
-
-
-def _factored_nvec(spec) -> Optional[list]:
-    """nvec of a MultiDiscrete action spec. None if isn't one."""
-    nvec = getattr(spec, "nvec", None)
-    if nvec is None:
-        return None
-    nvec = torch.as_tensor(nvec)
-    while nvec.ndim > 1:
-        nvec = nvec[0]
-    return [int(n) for n in nvec.tolist()]
-
-
-def _patch_benchmarl_for_factored_actions() -> None:
-    """
-    BenchMARL decides discrete vs cont. with `not isinstance(action_space, (Categorical, OneHot))`,
-    so MultiCategorical spec is classified as continuous. This patches that.
-    """
-    from benchmarl.algorithms.ippo import Ippo
-    from benchmarl.algorithms.mappo import Mappo
-    from torchrl.data import Composite as _Composite
-    from torchrl.data import Unbounded as _Unbounded
-    from torchrl.modules import ProbabilisticActor
-
-    for cls in (Ippo, Mappo):
-        if getattr(cls, "_factored_patched", False):
-            continue
-        original = cls._get_policy_for_loss
-
-        def _get_policy_for_loss(self, group, model_config, continuous, _orig=original):
-            action_spec = self.action_spec[group, "action"]
-            nvec = _factored_nvec(action_spec)
-            if nvec is None:
-                return _orig(self, group, model_config, continuous)
-
-            n_agents = len(self.group_map[group])
-            actor_module = model_config.get_model(
-                input_spec=_Composite(
-                    {group: self.observation_spec[group].clone().to(self.device)}
-                ),
-                output_spec=_Composite(
-                    {
-                        group: _Composite(
-                            {"logits": _Unbounded(shape=[n_agents, sum(nvec)])},
-                            shape=(n_agents,),
-                        )
-                    }
-                ),
-                agent_group=group,
-                input_has_agent_dim=True,
-                n_agents=n_agents,
-                centralised=False,
-                share_params=self.experiment_config.share_policy_params,
-                device=self.device,
-                action_spec=self.action_spec,
-            )
-            print(
-                f"[factored-actions] {group}: MultiDiscrete nvec={nvec} "
-                f"({sum(nvec)} logits, {int(torch.tensor(nvec).prod())} combinations)",
-                flush=True,
-            )
-            return ProbabilisticActor(
-                module=actor_module,
-                spec=action_spec,
-                in_keys=[(group, "logits")],
-                out_keys=[(group, "action")],
-                distribution_class=FactoredCategorical,
-                distribution_kwargs={"nvec": nvec},
-                return_log_prob=True,
-                log_prob_key=(group, "log_prob"),
-            )
-
-        cls._get_policy_for_loss = _get_policy_for_loss
-        cls._factored_patched = True
 
 
 # BenchMARL builds (group, "advantage") as (*group_shape, 1), i.e.
@@ -482,9 +328,6 @@ class VizdoomExperiment(Experiment):
             "name": run_id,
         }
 
-        action_spec = self.test_env.input_spec[
-            "full_action_spec", next(iter(self.group_map)), "action"
-        ]
         original = self.config.wandb_extra_kwargs
         self.config.wandb_extra_kwargs = {**original, **extra}
         try:
@@ -519,8 +362,6 @@ class VizdoomExperiment(Experiment):
                     "config": hparams_kwargs,
                 },
                 skip_frames=self.task.config.get("skip_frames", 1),
-                num_actions=getattr(action_spec, "n", None),
-                factor_sizes=_factored_nvec(action_spec),
             )
             self.logger._collection_profile = lambda: self.collector.last_profile
             self.logger.log_hparams(**hparams_kwargs)
@@ -681,8 +522,6 @@ class VizdoomTask(TaskClass):
             slot_index=env_instance_index,
             netmode=cfg["netmode"],
             ticrate=cfg["ticrate"],
-            use_multi_binary_action_space=False,
-            factored_actions=cfg.get("factored_actions", True),
             seed=seed,
             enable_video=cfg["enable_video"] if enable_video is None else enable_video,
             record_every=cfg["record_every"],
@@ -765,10 +604,10 @@ class VizdoomTask(TaskClass):
         return int(self.config.get("timeout", 1000))
 
     def supports_continuous_actions(self) -> bool:
-        return False
+        return True
 
     def supports_discrete_actions(self) -> bool:
-        return True
+        return False
 
 
 # ----------------- Script entry -----------------
@@ -870,7 +709,6 @@ def main():
     ap.add_argument("--num_agents", type=int, default=2)
     ap.add_argument("--resolution", type=str, default="160X120")
     ap.add_argument("--skip_frames", type=int, default=4)
-    ap.add_argument("--factored_actions", action=BooleanOptionalAction, default=True)
     ap.add_argument("--async-mode", action=BooleanOptionalAction, default=False)
     ap.add_argument("--host_address", type=str, default="127.0.0.1")
     ap.add_argument("--base_port", type=int, default=DEFAULT_BASE_UDP_PORT)
@@ -956,7 +794,6 @@ def main():
         f"_{args.num_agents}agents_{args.num_envs}envs"
         f"_seed{args.seed}_{run_timestamp}"
     )
-
     if args.algo not in ALGOS:
         raise NotImplementedError(
             f"{args.algo} is not currently implemented in this script"
@@ -1020,7 +857,6 @@ def main():
         "num_agents": args.num_agents,
         "resolution": args.resolution,
         "skip_frames": args.skip_frames,
-        "factored_actions": args.factored_actions,
         "async_mode": args.async_mode,
         "render_mode": args.render_mode,
         "host_address": args.host_address,
@@ -1037,9 +873,6 @@ def main():
         "double_buffer": args.double_buffer,
     }
     task = VizdoomTask(task_cfg)
-
-    if args.factored_actions:
-        _patch_benchmarl_for_factored_actions()
 
     experiment = VizdoomExperiment(
         task=task,

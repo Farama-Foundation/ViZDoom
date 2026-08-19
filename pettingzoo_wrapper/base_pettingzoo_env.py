@@ -30,6 +30,7 @@ _CONNECT_TIMEOUT = 60.0
 _INIT_TIMEOUT = 90.0
 _STEP_TIMEOUT = 30.0
 _RESET_TIMEOUT = 30.0
+_RESET_SETTLE_TICS = 35
 _HIDDEN_RECOVERY_ATTEMPTS = 1
 _INIT_STAGGER_SEC = 0.05
 _MAX_INIT_ATTEMPTS = 5
@@ -42,6 +43,15 @@ _PROCESS_INIT_TIMEOUT = (
     * (_INIT_SLOT_TIMEOUT + _INIT_TIMEOUT + _CONNECT_TIMEOUT + _INIT_RETRY_BACKOFF_SEC)
     + 30.0
 )
+
+
+def _settle_game_after_reset(game, step_barrier) -> None:
+    """Advance ACS setup tics without exposing them as policy steps."""
+    noop = [0.0] * game.get_available_buttons_size()
+    game.set_action(noop)
+    for tic in range(_RESET_SETTLE_TICS):
+        game.advance_action(1, tic == _RESET_SETTLE_TICS - 1)
+        step_barrier.wait(timeout=_STEP_TIMEOUT)
 
 
 def _max_parallel_init(num_agents: int) -> int:
@@ -144,6 +154,7 @@ def _agent_worker_thread(
 
                 if task.cmd == "reset":
                     game.new_episode()
+                    _settle_game_after_reset(game, step_barrier)
                     state = game.get_state()
                     info = {
                         "num_frames": 1,
