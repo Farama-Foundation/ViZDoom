@@ -1970,7 +1970,8 @@ void TryRunTics (void)
 		if((unsigned int)*viz_sync_timeout > 0 &&
 		   (unsigned int)*viz_sync_timeout <= I_MSTime() - waitEnterTime){
 			// Break out instead of stalling forever under external control.
-			break;
+			// However, it shouldnt advance gametic without the required peer tic in network sync.
+			return;
 		}
 	}
 
