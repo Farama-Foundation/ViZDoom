@@ -110,6 +110,121 @@ class DeathmatchRewardWrapper(ParallelEnv):
         return self.env.close()
 
 
+class HideAndSeekRewardWrapper(ParallelEnv):
+    roles = {"agent_0": "shooter", "agent_1": "hider"}
+    role_codes = {"agent_0": 0.0, "agent_1": 1.0}
+    outcome_codes = {
+        "ongoing": 0.0,
+        "shooter_win": 1.0,
+        "hider_win": 2.0,
+        "hider_escape": 3.0,
+        "draw": 4.0,
+    }
+
+    def __init__(self, env: ParallelEnv, *, win_reward: float = 1.0):
+        self.env = env
+        self.win_reward = float(win_reward)
+        self.metadata = getattr(env, "metadata", {})
+        self.possible_agents = env.possible_agents
+        self.agents = env.agents
+        self._previous_deaths: Dict[str, float] = {}
+
+    def action_space(self, agent: str):
+        return self.env.action_space(agent)
+
+    def observation_space(self, agent: str):
+        return self.env.observation_space(agent)
+
+    @property
+    def state_space(self):
+        return self.env.state_space
+
+    def state(self):
+        return self.env.state()
+
+    def state_observation(self, agent: str):
+        return self.env.state_observation(agent)
+
+    @property
+    def num_agents(self) -> int:
+        return getattr(self.env, "num_agents", len(self.possible_agents))
+
+    def _validate_and_annotate(self, infos: Dict[str, Any]) -> None:
+        if set(self.agents) != set(self.roles):
+            raise ValueError(
+                "HideAndSeekRewardWrapper requires exactly agent_0 (shooter) "
+                "and agent_1 (hider)"
+            )
+        for agent in self.roles:
+            if "DEATHCOUNT" not in infos.get(agent, {}):
+                raise ValueError(
+                    "HideAndSeekRewardWrapper requires DEATHCOUNT in the "
+                    f"scenario's available_game_variables ({agent!r})"
+                )
+            infos[agent]["hide_and_seek_role_code"] = self.role_codes[agent]
+
+    def reset(
+        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
+    ):
+        obs, infos = self.env.reset(seed=seed, options=options)
+        self.agents = self.env.agents[:]
+        self._validate_and_annotate(infos)
+        self._previous_deaths = {
+            agent: float(infos[agent]["DEATHCOUNT"]) for agent in self.agents
+        }
+        return obs, infos
+
+    def step(self, actions: Dict[str, Any]):
+        obs, _, terminations, truncations, infos = self.env.step(actions)
+        self._validate_and_annotate(infos)
+
+        died = {}
+        for agent in self.agents:
+            reset_info = _reset_info(infos[agent])
+            if reset_info is not None and "DEATHCOUNT" in reset_info:
+                self._previous_deaths[agent] = float(reset_info["DEATHCOUNT"])
+            current = float(infos[agent]["DEATHCOUNT"])
+            died[agent] = bool(infos[agent].get("just_died", False)) or (
+                current > self._previous_deaths[agent]
+            )
+            self._previous_deaths[agent] = current
+
+        shooter_died = died["agent_0"]
+        hider_died = died["agent_1"]
+        timed_out = bool(truncations) and all(truncations.values())
+        rewards = {agent: 0.0 for agent in self.agents}
+
+        if shooter_died and hider_died:
+            outcome = "draw"
+        elif hider_died:
+            outcome = "shooter_win"
+            rewards = {"agent_0": self.win_reward, "agent_1": -self.win_reward}
+        elif shooter_died:
+            outcome = "hider_win"
+            rewards = {"agent_0": -self.win_reward, "agent_1": self.win_reward}
+        elif timed_out:
+            outcome = "hider_escape"
+            rewards = {"agent_0": -self.win_reward, "agent_1": self.win_reward}
+        else:
+            outcome = "ongoing"
+
+        if shooter_died or hider_died:
+            terminations = {agent: True for agent in self.agents}
+            truncations = {agent: False for agent in self.agents}
+        for info in infos.values():
+            info["hide_and_seek_outcome_code"] = self.outcome_codes[outcome]
+        if outcome != "ongoing":
+            self.agents = []
+
+        return obs, rewards, terminations, truncations, infos
+
+    def render(self):
+        return self.env.render()
+
+    def close(self):
+        return self.env.close()
+
+
 class HealthGatheringRewardWrapper(ParallelEnv):
     """
     Dense shaping on HEALTH. Optional sparse goal on reaching max health.

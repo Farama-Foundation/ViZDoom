@@ -8,6 +8,7 @@ from vizdoom.pettingzoo_wrapper.info_wrappers import InternalInfoFilter
 from vizdoom.pettingzoo_wrapper.reward_wrappers import (
     DeathmatchRewardWrapper,
     HealthGatheringRewardWrapper,
+    HideAndSeekRewardWrapper,
     PitfallRewardWrapper,
     RemedyRushRewardWrapper,
 )
@@ -20,6 +21,7 @@ _SCENARIO_DIR = os.path.join(Path(__file__).parent.parent, "scenarios")
 # scenario-specific wrappers
 _WRAPPERS = {
     "multi_duel": DeathmatchRewardWrapper,
+    "multi_duel_hide_and_seek": HideAndSeekRewardWrapper,
     "multi_duel_pistol": DeathmatchRewardWrapper,
     "multi_duel_pistol_big": DeathmatchRewardWrapper,
     "pitfall_multi_agent": PitfallRewardWrapper,

@@ -673,7 +673,7 @@ def override_algo_config(args):
     algo_cfg = ALGOS[args.algo].get_from_yaml()
 
     ppo_overrides = {
-        "share_param_critic": True,
+        "share_param_critic": args.share_critic_params,
         "clip_epsilon": args.clip_eps,
         "entropy_coef": args.entropy_coef,
         "critic_coef": args.vf_coef,
@@ -689,7 +689,7 @@ def override_algo_config(args):
         "ippo": ppo_overrides,
         "qmix": {},
         "masac": {
-            "share_param_critic": True,
+            "share_param_critic": args.share_critic_params,
             "scale_mapping": "biased_softplus_1.0",
             "use_tanh_normal": True,
         },
@@ -703,7 +703,7 @@ def override_experiment_config(args, on_policy: bool, on_policy_minibatch_size: 
         "sampling_device": args.sampling_device,
         "train_device": args.train_device,
         "buffer_device": args.buffer_device,
-        "share_policy_params": True,
+        "share_policy_params": args.share_policy_params,
         "parallel_collection": args.parallel_collection,
         "max_n_frames": int(args.total_steps),
         "gamma": args.gamma,
@@ -789,6 +789,24 @@ def main():
     ap.add_argument("--optimizer_steps", type=int, default=8)
     ap.add_argument("--num_envs", type=int, default=64)
     ap.add_argument("--parallel_collection", action=BooleanOptionalAction, default=True)
+    ap.add_argument(
+        "--share_policy_params",
+        action=BooleanOptionalAction,
+        default=None,
+        help=(
+            "Share actor parameters between agents. Defaults to false for "
+            "multi_duel_hide_and_seek and true for other scenarios."
+        ),
+    )
+    ap.add_argument(
+        "--share_critic_params",
+        action=BooleanOptionalAction,
+        default=None,
+        help=(
+            "Share critic parameters between agents. Defaults to false for "
+            "multi_duel_hide_and_seek and true for other scenarios."
+        ),
+    )
     ap.add_argument(
         "--double_buffer",
         action=BooleanOptionalAction,
@@ -895,6 +913,12 @@ def main():
         help="Skip the deathmatch check on the evaluation scenario",
     )
     args = ap.parse_args()
+    if args.share_policy_params is None:
+        args.share_policy_params = args.scenario != "multi_duel_hide_and_seek"
+    if args.share_critic_params is None:
+        args.share_critic_params = args.scenario != "multi_duel_hide_and_seek"
+    if args.scenario == "multi_duel_hide_and_seek" and args.num_agents != 2:
+        raise ValueError("multi_duel_hide_and_seek requires exactly 2 agents")
     if args.bot_eval_screening_max_attempts < args.bot_eval_screening_episodes:
         raise ValueError("screening attempts must cover the requested valid episodes")
     if args.bot_eval_final_max_attempts < args.bot_eval_final_episodes:
