@@ -60,6 +60,7 @@ from pettingzoo_wrapper.bot_eval_callback import (
     run_post_training_bot_eval,
 )
 from pettingzoo_wrapper.bot_eval_types import BotEvalConfig
+from pettingzoo_wrapper.hide_and_seek_metrics import hide_and_seek_success_metrics
 from pettingzoo_wrapper.rollout_worker import RolloutWorker
 from pettingzoo_wrapper.utils import discover_buttons
 
@@ -234,6 +235,45 @@ class WandbLoggingWrapper(Logger):
                             torch.stack(values),
                         )
 
+            if self.task_name == "multi_duel_hide_and_seek":
+                outcomes = []
+                durations_seconds = []
+                rocket_shots = []
+                for rollout in rollouts:
+                    info = rollout.get(("next", group, "info"), None)
+                    outcome = (
+                        None
+                        if info is None
+                        else info.get("hide_and_seek_outcome_code", None)
+                    )
+                    if outcome is None:
+                        continue
+                    terminal_codes = outcome[:, 0].reshape(outcome.shape[0], -1)[:, 0]
+                    terminal_codes = terminal_codes[terminal_codes != 0]
+                    if terminal_codes.numel() == 0:
+                        continue
+                    outcomes.append(int(terminal_codes[-1].item()))
+                    durations_seconds.append(
+                        float(rollout.shape[0] * self._skip_frames / self._ticrate)
+                    )
+                    shots = info.get("hide_and_seek_rocket_shots", None)
+                    if shots is not None:
+                        rocket_shots.append(shots[-1, 0].reshape(-1)[0].float())
+                metrics.update(
+                    {
+                        f"eval/hide_and_seek/{key}": value
+                        for key, value in hide_and_seek_success_metrics(
+                            outcomes, durations_seconds
+                        ).items()
+                    }
+                )
+                if len(rocket_shots) == len(outcomes):
+                    self._log_min_mean_max(
+                        metrics,
+                        "eval/hide_and_seek/diagnostics/shooter_rocket_shots",
+                        torch.stack(rocket_shots),
+                    )
+
         return metrics
 
     def log_evaluation(self, rollouts, total_frames: int, step: int, video_frames=None):
@@ -395,6 +435,7 @@ class VizdoomExperiment(Experiment):
                 },
                 skip_frames=self.task.config.get("skip_frames", 1),
             )
+            self.logger._ticrate = max(1, int(self.task.config.get("ticrate", 35)))
             self.logger._collection_profile = lambda: self.collector.last_profile
             self.logger.log_hparams(**hparams_kwargs)
         finally:

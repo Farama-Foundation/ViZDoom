@@ -128,6 +128,8 @@ class HideAndSeekRewardWrapper(ParallelEnv):
         self.possible_agents = env.possible_agents
         self.agents = env.agents
         self._previous_deaths: Dict[str, float] = {}
+        self._previous_shooter_ammo: Optional[float] = None
+        self._rocket_shots = 0.0
 
     def action_space(self, agent: str):
         return self.env.action_space(agent)
@@ -162,6 +164,8 @@ class HideAndSeekRewardWrapper(ParallelEnv):
                     f"scenario's available_game_variables ({agent!r})"
                 )
             infos[agent]["hide_and_seek_role_code"] = self.role_codes[agent]
+            infos[agent]["hide_and_seek_outcome_code"] = self.outcome_codes["ongoing"]
+            infos[agent]["hide_and_seek_rocket_shots"] = self._rocket_shots
 
     def reset(
         self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
@@ -172,11 +176,29 @@ class HideAndSeekRewardWrapper(ParallelEnv):
         self._previous_deaths = {
             agent: float(infos[agent]["DEATHCOUNT"]) for agent in self.agents
         }
+        shooter_ammo = infos["agent_0"].get("SELECTED_WEAPON_AMMO")
+        self._previous_shooter_ammo = (
+            None if shooter_ammo is None else float(shooter_ammo)
+        )
+        self._rocket_shots = 0.0
+        for info in infos.values():
+            info["hide_and_seek_rocket_shots"] = self._rocket_shots
         return obs, infos
 
     def step(self, actions: Dict[str, Any]):
         obs, _, terminations, truncations, infos = self.env.step(actions)
         self._validate_and_annotate(infos)
+
+        shooter_ammo = infos["agent_0"].get("SELECTED_WEAPON_AMMO")
+        if shooter_ammo is not None:
+            shooter_ammo = float(shooter_ammo)
+            if self._previous_shooter_ammo is not None:
+                self._rocket_shots += max(
+                    0.0, self._previous_shooter_ammo - shooter_ammo
+                )
+            self._previous_shooter_ammo = shooter_ammo
+        for info in infos.values():
+            info["hide_and_seek_rocket_shots"] = self._rocket_shots
 
         died = {}
         for agent in self.agents:
