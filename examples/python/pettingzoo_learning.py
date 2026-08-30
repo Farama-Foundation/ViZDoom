@@ -840,7 +840,7 @@ def main():
     )
 
     # learned policy vs. bot evaluation for deathmatch
-    ap.add_argument("--bot_eval", action="store_true")
+    ap.add_argument("--bot_eval", action="store_false")
     ap.add_argument(
         "--bot_eval_interval_episodes",
         type=int,
