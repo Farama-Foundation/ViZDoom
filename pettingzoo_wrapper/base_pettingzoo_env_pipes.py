@@ -1,4 +1,6 @@
 """
+Deprecated.
+
 PettingZoo Parallel wrapper for multi-agent ViZDoom — pipe-based IPC.
 
 One process per agent; parent communicates via duplex Pipes.

@@ -482,7 +482,7 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         self._slot_index = int(kwargs.pop("slot_index", 0))
         super().__init__(**kwargs)
         # the pipe carries rewards/flags/infos
-        self._shm_obs_shape = (self._num_agents, *self._obs_shape)
+        self._shm_obs_shape = (self._num_agents, *self._raw_obs_shape)
         with _FORK_LOCK:
             self._shm = shared_memory.SharedMemory(
                 create=True, size=int(np.prod(self._shm_obs_shape))
@@ -615,9 +615,8 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         assert self._parent_conn is not None
         self._parent_conn.send({"cmd": "reset"})
         message = self._recv_message(timeout=_RESET_TIMEOUT)
-        observations = self._read_shm_observations()
+        self._stack_observations(self._read_shm_observations(), reset=True)
         infos = message["infos"]
-        self._last_frames = dict(observations)
         self.agents = self.possible_agents[:]
         self._pending_reset_infos = infos
         self._pending_hidden_reset = True
@@ -675,9 +674,8 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
             assert self._parent_conn is not None
             self._parent_conn.send({"cmd": "reset"})
             message = self._recv_message(timeout=_RESET_TIMEOUT)
-            obs = self._read_shm_observations()
+            obs = self._stack_observations(self._read_shm_observations(), reset=True)
             infos = message["infos"]
-            self._last_frames = dict(obs)
             self.agents = self.possible_agents[:]
             self._pending_reset_infos = None
             self._pending_hidden_reset = False
@@ -712,12 +710,13 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
             assert self._parent_conn is not None
             self._parent_conn.send({"cmd": "step", "actions": flat_actions})
             message = self._recv_message(timeout=self._barrier_timeout)
-            observations = self._read_shm_observations()
+            observations = self._stack_observations(
+                self._read_shm_observations(), reset=False
+            )
             rewards = message["rewards"]
             terminations = message["terminations"]
             truncations = message["truncations"]
             infos = message["infos"]
-            self._last_frames = dict(observations)
             self._attach_pending_reset_infos(infos)
             return observations, rewards, terminations, truncations, infos
 

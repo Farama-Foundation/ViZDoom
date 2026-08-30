@@ -19,8 +19,47 @@
 #include "statnums.h"
 #include "d_net.h"
 #include "d_event.h"
+//VIZDOOM_CODE
+#include "viz_input.h"
 
 static FRandom pr_botmove ("BotMove");
+
+//VIZDOOM_CODE
+// Mask bot's movements to scenario's available_buttons
+// But aim is not masked, as skill.aiming is turning behaviour
+#define VIZ_BOT_MASKABLE_BUTTONS 20
+
+// Clamp movements but keep mo->angle and mo->pitch.
+static void VIZ_ConstrainBotMove(ticcmd_t *cmd)
+{
+	if (cmd->ucmd.forwardmove > 0 && !VIZ_IsBTAvailable(VIZ_BT_MOVE_FORWARD)
+		&& !VIZ_IsBTAvailable(VIZ_BT_FORWARD_BACKWARD_AXIS))
+		cmd->ucmd.forwardmove = 0;
+	if (cmd->ucmd.forwardmove < 0 && !VIZ_IsBTAvailable(VIZ_BT_MOVE_BACK)
+		&& !VIZ_IsBTAvailable(VIZ_BT_FORWARD_BACKWARD_AXIS))
+		cmd->ucmd.forwardmove = 0;
+
+	if (cmd->ucmd.sidemove > 0 && !VIZ_IsBTAvailable(VIZ_BT_MOVE_RIGHT)
+		&& !VIZ_IsBTAvailable(VIZ_BT_LEFT_RIGHT_AXIS))
+		cmd->ucmd.sidemove = 0;
+	if (cmd->ucmd.sidemove < 0 && !VIZ_IsBTAvailable(VIZ_BT_MOVE_LEFT)
+		&& !VIZ_IsBTAvailable(VIZ_BT_LEFT_RIGHT_AXIS))
+		cmd->ucmd.sidemove = 0;
+
+	if (cmd->ucmd.upmove > 0 && !VIZ_IsBTAvailable(VIZ_BT_MOVE_UP)
+		&& !VIZ_IsBTAvailable(VIZ_BT_UP_DOWN_AXIS))
+		cmd->ucmd.upmove = 0;
+	if (cmd->ucmd.upmove < 0 && !VIZ_IsBTAvailable(VIZ_BT_MOVE_DOWN)
+		&& !VIZ_IsBTAvailable(VIZ_BT_UP_DOWN_AXIS))
+		cmd->ucmd.upmove = 0;
+
+	for (int i = 0; i < VIZ_BOT_MASKABLE_BUTTONS; ++i)
+	{
+		//Keep BT_USE and BT_TURN180 as bot needs it to respawn
+		if (i == VIZ_BT_USE || i == VIZ_BT_TURN180) continue;
+		if (!VIZ_IsBTAvailable((VIZButton)i)) cmd->ucmd.buttons &= ~(1 << i);
+	}
+}
 
 //This function is called each tic for each bot,
 //so this is what the bot does.
@@ -44,6 +83,10 @@ void DBot::Think ()
 		Set_enemy ();
 		ThinkForMove (cmd);
 		TurnToAng ();
+
+		//VIZDOOM_CODE
+		//Apply movement constraint above.
+		VIZ_ConstrainBotMove (cmd);
 
 		cmd->ucmd.yaw = (short)((player->mo->angle - oldyaw) >> 16) / ticdup;
 		cmd->ucmd.pitch = (short)((oldpitch - player->mo->pitch) >> 16);

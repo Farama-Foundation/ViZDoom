@@ -117,6 +117,13 @@ bool VIZ_CommmandFilter(const char *cmd){
     return true;
 }
 
+bool VIZ_IsBTAvailable(VIZButton button){
+    if(!vizInputInited || vizInput == NULL) return true;
+    const int index = static_cast<int>(button);
+    if(index < 0 || index >= VIZ_BT_COUNT) return true;
+    return vizInput->BT_AVAILABLE[index];
+}
+
 void VIZ_ReadUserCmdState(usercmd_t *ucmd, int player){
     if(vizInputInited && player == consoleplayer) {
         for (size_t i = 0; i < 20; ++i) {

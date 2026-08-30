@@ -9,6 +9,59 @@ from pettingzoo.utils import wrappers
 from pettingzoo.utils.env import ParallelEnv
 
 
+def write_frames_to_mp4(frames, path, fps: float) -> None:
+    """Encode HWC uint8 frames to an mp4 file."""
+    writer = imageio.get_writer(
+        str(path),
+        fps=float(fps),
+        quality=8,
+        macro_block_size=1,
+    )
+    try:
+        for frame in frames:
+            writer.append_data(frame)
+    finally:
+        writer.close()
+
+
+def log_wandb_video(path, key: str) -> None:
+    """Log an mp4 file to the active wandb run."""
+    if getattr(wandb, "run", None) is None:
+        print(f"[VideoLogger] no active wandb run, not uploading {key} ({path})")
+        return
+    payload = {key: wandb.Video(str(path), format="mp4")}
+    try:
+        env_steps = dict(wandb.run.summary).get("_env_steps")
+        if env_steps is not None:
+            payload["_env_steps"] = float(env_steps)
+    except Exception:
+        pass
+    try:
+        wandb.log(payload)
+    except Exception as e:
+        print(f"[VideoLogger] wandb log failed: {e}")
+
+
+def record_and_log_wandb_video(frames, fps: float, key: str) -> None:
+    """Encode frames to temp mp4 and log it to the active wandb run"""
+    if not frames or getattr(wandb, "run", None) is None:
+        return
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp:
+            temp_path = tmp.name
+        write_frames_to_mp4(frames, temp_path, fps)
+        log_wandb_video(temp_path, key)
+    except Exception as e:
+        print(f"[VideoLogger] video log failed: {e}")
+    finally:
+        if temp_path is not None:
+            try:
+                os.unlink(temp_path)
+            except OSError:
+                pass
+
+
 def _has_hidden_reset(infos):
     if not isinstance(infos, dict):
         return False
@@ -101,51 +154,12 @@ class VideoLoggerParallelWrapper(wrappers.BaseParallelWrapper):
                 return
         self._push_frame_from_obs(obs_dict)
 
-    def _write_video(self, path: str):
-        writer = imageio.get_writer(
-            path,
-            fps=float(self.fps),
-            quality=8,
-            macro_block_size=1,
-        )
-        try:
-            for frame in self._frames:
-                writer.append_data(frame)
-        finally:
-            writer.close()
-
-    def _upload_to_wandb(self, path: str):
-        if getattr(wandb, "run", None) is None:
-            return
-
-        key = f"videos/episode_{self._ep_idx:06d}"
-        try:
-            wandb.log({key: wandb.Video(path, format="mp4")})
-        except Exception as e:
-            print(f"[VideoLogger] wandb log failed: {e}")
-
     def _finalize(self):
         if not self._recording or not self._frames:
             return
-        if not (getattr(wandb, "run", None) is not None):
-            self._frames.clear()
-            return
-        temp_path = None
-        try:
-            with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp:
-                temp_path = tmp.name
-            self._write_video(temp_path)
-            self._upload_to_wandb(temp_path)
-        except Exception as e:
-            print(f"[VideoLogger] finalize failed: {e}")
-        finally:
-            if temp_path is not None:
-                try:
-                    os.unlink(temp_path)
-                except FileNotFoundError:
-                    pass
-                except Exception as e:
-                    print(f"[VideoLogger] cleanup failed: {e}")
+        record_and_log_wandb_video(
+            self._frames, self.fps, f"videos/episode_{self._ep_idx:06d}"
+        )
         self._frames.clear()
 
     # ---- PZ ParallelEnv API ----

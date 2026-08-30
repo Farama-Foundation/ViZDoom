@@ -22,9 +22,44 @@ from vizdoom.pettingzoo_wrapper import base_env_common  # noqa: E402
 from vizdoom.pettingzoo_wrapper.base_pettingzoo_env import (  # noqa: E402
     _settle_game_after_reset,
 )
+from vizdoom.pettingzoo_wrapper.bot_eval_types import (  # noqa: E402
+    EpisodeResult,
+    build_seed_schedule,
+    summarize_tier,
+)
 
 
 _PORTS = itertools.count(50290, 1000)
+
+
+def test_bot_eval_schedule_and_summary_are_reproducible():
+    schedule = build_seed_schedule(7, tiers=("easy",), screening_attempts=2)
+    assert schedule == build_seed_schedule(7, tiers=("easy",), screening_attempts=2)
+    metrics = {
+        "learner_deaths": 0,
+        "learner_damage_made": 10,
+        "learner_damage_taken": 10,
+    }
+    results = [
+        EpisodeResult(
+            seed,
+            "easy",
+            True,
+            learner_frags=learner_frags,
+            bot_frags=bot_frags,
+            outcome=outcome,
+            **metrics,
+        )
+        for seed, learner_frags, bot_frags, outcome in (
+            (1, 3, 1, "win"),
+            (2, 1, 1, "tie"),
+        )
+    ]
+
+    summary = summarize_tier("easy", results, bootstrap_seed=7, bootstrap_samples=20)
+
+    assert summary.frag_diff_mean == 1.0
+    assert summary.win_rate == summary.tie_rate == 0.5
 
 
 def _make_test_env(seed: Optional[int] = None):
@@ -91,7 +126,50 @@ def test_base_env_exposes_direct_continuous_button_vector(monkeypatch):
     ]
 
 
-def test_pettingzoo_action_api_is_continuous_only():
+def test_base_env_exposes_joint_categorical_binary_actions(monkeypatch):
+    monkeypatch.setattr(
+        base_env_common,
+        "discover_buttons",
+        lambda _path: [Button.MOVE_LEFT, Button.MOVE_RIGHT, Button.ATTACK],
+    )
+    env = base_env_common.VizdoomParallelEnvBase(
+        config_file="unused.cfg",
+        num_agents=2,
+        skip_frames=4,
+    )
+
+    action_space = env.action_space("agent_0")
+    assert isinstance(action_space, base_env_common.spaces.Discrete)
+    assert action_space.n == 8
+    assert env._encode_env_action(0) == [0.0, 0.0, 0.0]
+    assert env._encode_env_action(5) == [1.0, 0.0, 1.0]
+    assert env._encode_env_action(7) == [1.0, 1.0, 1.0]
+
+
+def test_base_env_stacks_frames(monkeypatch):
+    monkeypatch.setattr(
+        base_env_common, "discover_buttons", lambda _path: [Button.ATTACK]
+    )
+    env = base_env_common.VizdoomParallelEnvBase(
+        config_file="unused.cfg",
+        num_agents=1,
+        resolution="4X3",
+        frame_stack=4,
+    )
+    first = np.full((3, 4, 3), 1, dtype=np.uint8)
+    second = np.full((3, 4, 3), 2, dtype=np.uint8)
+
+    reset_obs = env._stack_observations({"agent_0": first}, reset=True)["agent_0"]
+    step_obs = env._stack_observations({"agent_0": second}, reset=False)["agent_0"]
+
+    assert env.observation_space("agent_0").shape == (3, 4, 12)
+    assert np.array_equal(reset_obs, np.concatenate([first] * 4, axis=-1))
+    assert np.array_equal(
+        step_obs, np.concatenate([first, first, first, second], axis=-1)
+    )
+
+
+def test_pettingzoo_action_api_selects_space_from_scenario_buttons():
     parameters = inspect.signature(pettingzoo_wrapper.make).parameters
     assert "simple_discrete" not in parameters
     assert "use_multi_binary_action_space" not in parameters

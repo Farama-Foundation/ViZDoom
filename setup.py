@@ -42,6 +42,7 @@ package_data = [
     "vizdoom.pyi",
     "py.typed",
     "bots.cfg",
+    "deathmatch_eval_bots.cfg",
     "freedoom1.wad",
     "freedoom2.wad",
     "vizdoom.pk3",

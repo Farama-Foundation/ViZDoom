@@ -86,8 +86,12 @@ void VIZ_LogNotification(int gametic, const char *message){
 }
 
 void VIZ_LogDmg(AActor *target, AActor *inflictor, AActor *source, int amount){
-    if(amount < 0) return;
-    if(amount > 1000) return; // ignore things like telefrags
+    // Previous code
+    // if(amount < 0) return;
+    // if(amount > 1000) return; // ignore things like telefrags
+    if(amount <= 0 || target->health <= 0) return;
+    // telefrags counts as target's remaining health, to use DAMAGECOUNT and DAMAGE_TAKEN meaningful. Otherwise overkill damage is overcounted.
+    if(amount > target->health) amount = target->health;
 
     //printf("%s - %d -> %s (%d)\n", source->GetClass()->TypeName.GetChars(), amount, target->GetClass()->TypeName.GetChars(), target->health);
 

@@ -93,6 +93,9 @@ struct VIZInputState{
 
 void VIZ_Command(char *cmd);
 
+/* True when `button` is part of the scenario's available_buttons. This is for action masking used in bot evaluation in multi_duel. */
+bool VIZ_IsBTAvailable(VIZButton button);
+
 bool VIZ_CommmandFilter(const char *cmd);
 
 void VIZ_ReadUserCmdState(usercmd_t *ucmd, int player);

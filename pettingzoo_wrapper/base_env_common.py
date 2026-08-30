@@ -25,6 +25,38 @@ from vizdoom.pettingzoo_wrapper.utils import (
 # passed through to ViZDoom without quantisation.
 RAW_DELTA_ACTION_LIMIT = 180.0
 
+# Respawn delay in seconds (viz_respawn_delay is scaled by ticrate)
+# Export so bot eval can use the same (in BotEvalConfig.respawn_delay)
+TRAINING_RESPAWN_DELAY = 0
+
+
+def encode_env_action(
+    agent_action: Any, available_buttons: tuple[vzd.Button, ...] | list[vzd.Button]
+) -> list[float]:
+    """Discretize actions for those with buttons, otherwise the action distribution becomes weird"""
+    raw = np.asarray(agent_action, dtype=np.float32).reshape(-1)
+    if not any(vzd.is_delta_button(button) for button in available_buttons):
+        if raw.size != 1:
+            raise ValueError(f"expected one discrete action, got {raw.size} values")
+        action = int(raw.item())
+        action_count = 1 << len(available_buttons)
+        if action != raw.item() or not 0 <= action < action_count:
+            raise ValueError(f"discrete action must be in [0, {action_count})")
+        return [float((action >> index) & 1) for index in range(len(available_buttons))]
+    if raw.size != len(available_buttons):
+        raise ValueError(
+            f"expected {len(available_buttons)} raw button values, got {raw.size}"
+        )
+    encoded = raw.copy()
+    binary_indices = [
+        index
+        for index, button in enumerate(available_buttons)
+        if not vzd.is_delta_button(button)
+    ]
+    if binary_indices:
+        encoded[binary_indices] = (raw[binary_indices] >= 0.5).astype(np.float32)
+    return encoded.tolist()
+
 
 def configure_doom_game(
     *,
@@ -60,7 +92,7 @@ def configure_doom_game(
         game.add_game_args(
             f"-host {num_agents} -port {port} -netmode {netmode} "
             "+timelimit 0 +sv_noautoaim 1 +sv_nocrouch 1 +sv_nofreelook 1 "
-            "+sv_forcerespawn 1 +viz_respawn_delay 0 "
+            f"+sv_forcerespawn 1 +viz_respawn_delay {TRAINING_RESPAWN_DELAY} "
             "+viz_connect_timeout 60"
         )
     else:
@@ -88,6 +120,7 @@ class VizdoomParallelEnvBase(ParallelEnv):
         resolution: str = "160X120",
         timeout: int | None = None,
         skip_frames: int | None = 1,
+        frame_stack: int = 1,
         async_mode: bool = False,
         host_address: str = "127.0.0.1",
         port: int = 5029,
@@ -109,6 +142,7 @@ class VizdoomParallelEnvBase(ParallelEnv):
         self.ticrate = int(ticrate)
         self._timeout = int(timeout) if timeout is not None else None
         self._skip_frames = skip_frames
+        self.frame_stack = int(frame_stack)
         self.render_mode = render_mode
         self._ext_seed = seed
         self.verbose = verbose
@@ -133,15 +167,21 @@ class VizdoomParallelEnvBase(ParallelEnv):
         self._delta_count = len(self._delta_indices)
         self._binary_count = len(self._binary_indices)
         self._act_len = self._delta_count + self._binary_count
-        self._action_space = self._continuous_space()
+        self._action_space = (
+            self._continuous_space()
+            if self._delta_count
+            else spaces.Discrete(1 << self._binary_count)
+        )
 
         w, h = parse_hw(resolution)
-        self._obs_shape = (h, w, 3)
+        self._raw_obs_shape = (h, w, 3)
+        self._obs_shape = (h, w, 3 * self.frame_stack)
         self._observation_space = spaces.Box(
             0, 255, shape=self._obs_shape, dtype=np.uint8
         )
 
         self._last_frames: dict[str, np.ndarray] = {}
+        self._frame_history: dict[str, list[np.ndarray]] = {}
         self._screen: pygame.Surface | None = None
 
     # ------------- space helpers -------------
@@ -189,22 +229,28 @@ class VizdoomParallelEnvBase(ParallelEnv):
 
     def _noop_action(self):
         """Build a valid 'do nothing' action matching self._action_space."""
+        if isinstance(self._action_space, spaces.Discrete):
+            return 0
         return np.zeros((self._act_len,), dtype=np.float32)
 
     def _encode_env_action(self, agent_action: Any) -> list[float]:
-        raw = np.asarray(agent_action, dtype=np.float32).reshape(-1)
-        if raw.size != self._act_len:
-            raise ValueError(
-                f"expected {self._act_len} raw button values, got {raw.size}"
-            )
-        out = raw.copy()
-        # ViZDoom treats every non-zero binary value as pressed. Keep those
-        # dimensions well-defined while preserving continuous delta values.
-        if self._binary_count:
-            out[self._binary_indices] = (raw[self._binary_indices] >= 0.5).astype(
-                np.float32
-            )
-        return out.tolist()
+        return encode_env_action(agent_action, self.available_buttons)
+
+    def _stack_observations(
+        self, observations: dict[str, np.ndarray], *, reset: bool
+    ) -> dict[str, np.ndarray]:
+        stacked = {}
+        for agent, frame in observations.items():
+            if reset or agent not in self._frame_history:
+                self._frame_history[agent] = [frame] * self.frame_stack
+            else:
+                self._frame_history[agent] = [
+                    *self._frame_history[agent][1:],
+                    frame,
+                ]
+            stacked[agent] = np.concatenate(self._frame_history[agent], axis=-1)
+        self._last_frames = dict(stacked)
+        return stacked
 
     # ------------------- rendering -------------------
 

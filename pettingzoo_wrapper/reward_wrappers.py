@@ -12,10 +12,10 @@ def _reset_info(info):
 
 
 _DEATHMATCH_DELTA_REWARDS = {
-    "FRAGCOUNT": (1.0, 0.0),
-    "DEATHCOUNT": (-1.0, 0.0),
-    "DAMAGECOUNT": (0.01, 0.0),
-    "HEALTH": (0.0, -0.01),
+    "FRAGCOUNT": 1.0,
+    "DEATHCOUNT": -1.0,
+    "DAMAGECOUNT": 0.01,
+    "DAMAGE_TAKEN": -0.01,
 }
 
 
@@ -26,7 +26,7 @@ class DeathmatchRewardWrapper(ParallelEnv):
         self.possible_agents = env.possible_agents
         self.agents = env.agents
         self.prev_vars: Dict[str, Dict[str, float]] = {}
-        self.prev_dead: Dict[str, bool] = {}
+        self._counters_checked = False
 
     def action_space(self, agent: str):
         return self.env.action_space(agent)
@@ -54,8 +54,27 @@ class DeathmatchRewardWrapper(ParallelEnv):
         obs, infos = self.env.reset(seed=seed, options=options)
         self.agents = self.env.agents[:]
         self.prev_vars = {agent: {} for agent in self.agents}
-        self.prev_dead = {agent: True for agent in self.agents}
+        self.check_ctr(infos)
         return obs, infos
+
+    def check_ctr(self, infos: Dict[str, Any]) -> None:
+        if self._counters_checked:
+            return
+        for agent in self.agents:
+            info = infos.get(agent)
+            if not isinstance(info, dict):
+                return
+            present = [n for n in _DEATHMATCH_DELTA_REWARDS if n in info]
+            missing = [n for n in _DEATHMATCH_DELTA_REWARDS if n not in info]
+            if not present:
+                return
+            if missing:
+                raise ValueError(
+                    f"DeathmatchRewardWrapper needs {sorted(missing)} in the "
+                    f"scenario's available_game_variables (agent {agent!r} "
+                    f"reported {sorted(info)})"
+                )
+        self._counters_checked = True
 
     def step(self, actions: Dict[str, Any]):
         obs, rewards, terminations, truncations, infos = self.env.step(actions)
@@ -64,27 +83,15 @@ class DeathmatchRewardWrapper(ParallelEnv):
             info = infos[agent]
             if _reset_info(info) is not None:
                 self.prev_vars[agent] = {}
-                self.prev_dead[agent] = True
 
-            dead = bool(info.get("DEAD", 0.0))
             shaping_reward = 0.0
-            if not (self.prev_dead[agent] and not dead):
-                previous = self.prev_vars[agent]
-                for name, (
-                    positive_reward,
-                    negative_reward,
-                ) in _DEATHMATCH_DELTA_REWARDS.items():
-                    if name not in previous or name not in info:
-                        continue
-                    delta = info[name] - previous[name]
-                    if name == "DAMAGECOUNT":
-                        delta = min(delta, 200.0)
-                    elif name == "HEALTH":
-                        delta = max(delta, -100.0)
-                    if delta > 1e-8:
-                        shaping_reward += delta * positive_reward
-                    elif delta < -1e-8:
-                        shaping_reward += -delta * negative_reward
+            previous = self.prev_vars[agent]
+            for name, weight in _DEATHMATCH_DELTA_REWARDS.items():
+                if name not in previous or name not in info:
+                    continue
+                delta = info[name] - previous[name]
+                if delta > 1e-8:
+                    shaping_reward += delta * weight
 
             rewards[agent] = float(rewards.get(agent, 0.0)) + shaping_reward
             # Carry last known value forward for anything absent this step
@@ -93,7 +100,6 @@ class DeathmatchRewardWrapper(ParallelEnv):
                 for name in _DEATHMATCH_DELTA_REWARDS
                 if name in info or name in self.prev_vars[agent]
             }
-            self.prev_dead[agent] = dead
 
         return obs, rewards, terminations, truncations, infos
 

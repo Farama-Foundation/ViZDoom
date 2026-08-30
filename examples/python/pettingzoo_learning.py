@@ -53,7 +53,15 @@ from torchrl.record.loggers.wandb import WandbLogger
 
 import vizdoom as vzd
 from pettingzoo_wrapper import make
+from pettingzoo_wrapper.base_env_common import TRAINING_RESPAWN_DELAY
+from pettingzoo_wrapper.bot_eval_callback import (
+    BotEvaluationCallback,
+    BotEvaluationRunner,
+    run_post_training_bot_eval,
+)
+from pettingzoo_wrapper.bot_eval_types import BotEvalConfig
 from pettingzoo_wrapper.rollout_worker import RolloutWorker
+from pettingzoo_wrapper.utils import discover_buttons
 
 
 DEFAULT_BASE_UDP_PORT = 40300
@@ -122,6 +130,21 @@ class WandbLoggingWrapper(Logger):
         self, batch: TensorDictBase, task: TaskClass, total_frames: int, step: int
     ):
         self._prepare_iteration_metrics(total_frames)
+        policy_metrics = {}
+        for group in self.group_map:
+            action = batch.get((group, "action"), None)
+            if action is not None:
+                if not action.is_floating_point():
+                    for action_index, button in enumerate(task.action_buttons):
+                        pressed = ((action.long() >> action_index) & 1).float()
+                        policy_metrics[
+                            f"collection/{group}/{button.name.lower()}_rate"
+                        ] = float(pressed.mean().item())
+        if policy_metrics:
+            self._pending_metrics = {
+                **(self._pending_metrics or {}),
+                **policy_metrics,
+            }
         return super().log_collection(
             batch=batch,
             task=task,
@@ -303,6 +326,15 @@ class VizdoomExperiment(Experiment):
     and turns on per-agent advantage normalization.
     """
 
+    def close(self, finish_logger: bool = False):
+        finish = self.logger.finish
+        if not finish_logger:
+            self.logger.finish = lambda: None
+        try:
+            super().close()
+        finally:
+            self.logger.finish = finish
+
     def _setup_algorithm(self):
         super()._setup_algorithm()
         for group, loss_module in self.losses.items():
@@ -483,6 +515,15 @@ class VizdoomTask(TaskClass):
     def __init__(self, config: Dict[str, Any]):
         super().__init__(name=config["scenario"], config=config)
         self._next_env_instance_index = 0
+        scenario_path = (
+            Path(__file__).resolve().parents[2]
+            / "scenarios"
+            / f"{config['scenario']}.cfg"
+        )
+        self.action_buttons = discover_buttons(str(scenario_path))
+        self._continuous_actions = any(
+            vzd.is_delta_button(button) for button in self.action_buttons
+        )
 
     @staticmethod
     def env_name() -> str:
@@ -515,6 +556,7 @@ class VizdoomTask(TaskClass):
             num_agents=cfg["num_agents"],
             resolution=cfg["resolution"],
             skip_frames=cfg["skip_frames"],
+            frame_stack=cfg["frame_stack"],
             async_mode=cfg["async_mode"],
             render_mode=cfg["render_mode"],
             host_address=cfg.get("host_address", "127.0.0.1"),
@@ -604,10 +646,10 @@ class VizdoomTask(TaskClass):
         return int(self.config.get("timeout", 1000))
 
     def supports_continuous_actions(self) -> bool:
-        return True
+        return self._continuous_actions
 
     def supports_discrete_actions(self) -> bool:
-        return False
+        return not self._continuous_actions
 
 
 # ----------------- Script entry -----------------
@@ -743,6 +785,7 @@ def main():
     ap.add_argument("--vf_coef", type=float, default=1.0)
     ap.add_argument("--num_minibatches", type=int, default=4)
     ap.add_argument("--num_epochs", type=int, default=8)
+    ap.add_argument("--frame_stack", type=int, default=4)
     ap.add_argument("--optimizer_steps", type=int, default=8)
     ap.add_argument("--num_envs", type=int, default=64)
     ap.add_argument("--parallel_collection", action=BooleanOptionalAction, default=True)
@@ -758,6 +801,9 @@ def main():
         default=1,
         help="How many checkpoints to keep",
     )
+    ap.add_argument(
+        "--save_folder", type=str, default=None
+    )  # add because this is native benchmarl config
     ap.add_argument(
         "--save_replay_buffer",
         action=BooleanOptionalAction,
@@ -775,7 +821,91 @@ def main():
         "--render_mode", type=str, default="rgb_array", choices=["rgb_array", "human"]
     )
 
+    # learned policy vs. bot evaluation for deathmatch
+    ap.add_argument("--bot_eval", action="store_true")
+    ap.add_argument(
+        "--bot_eval_interval_episodes",
+        type=int,
+        default=100,
+        help="Run every N episodes",
+    )
+    ap.add_argument(
+        "--bot_eval_screening_episodes",
+        type=int,
+        default=10,
+        help="Number of valid episodes for each difficulty",
+    )
+    ap.add_argument(
+        "--bot_eval_screening_max_attempts",
+        type=int,
+        default=20,
+        help="Max attempts each difficulty, including invalid runs",
+    )
+    ap.add_argument(
+        "--bot_eval_final_episodes",
+        type=int,
+        default=50,
+        help="Number of valid episodes for final evaluation",
+    )
+    ap.add_argument(
+        "--bot_eval_final_max_attempts",
+        type=int,
+        default=100,
+        help="Max attempts for each difficulty",
+    )
+    ap.add_argument(
+        "--bot_eval_seed",
+        type=int,
+        default=42,
+        help="Base seed for evaluation",
+    )
+    ap.add_argument(
+        "--bot_eval_video_dir",
+        type=str,
+        default="bot_eval_videos",
+        help="Directory for final evaluation videos",
+    )
+    ap.add_argument(
+        "--bot_eval_scenario",
+        type=str,
+        default=None,
+        help="Scenario for bot evaluation (defaults to the training scenario)",
+    )
+    ap.add_argument(
+        "--bot_eval_scenario_config",
+        type=str,
+        default=None,
+        help="Explicit .cfg path for bot evaluation, overriding scenario lookup",
+    )
+    ap.add_argument(
+        "--bot_eval_num_bots",
+        type=int,
+        default=1,
+        help="Bots spawned against the learner (1 is a duel)",
+    )
+    ap.add_argument(
+        "--bot_eval_episode_timeout",
+        type=int,
+        default=None,
+        help="Override episode timeout in tics (defaults to the scenario cfg)",
+    )
+    ap.add_argument(
+        "--bot_eval_allow_non_deathmatch",
+        action="store_true",
+        help="Skip the deathmatch check on the evaluation scenario",
+    )
     args = ap.parse_args()
+    if args.bot_eval_screening_max_attempts < args.bot_eval_screening_episodes:
+        raise ValueError("screening attempts must cover the requested valid episodes")
+    if args.bot_eval_final_max_attempts < args.bot_eval_final_episodes:
+        raise ValueError("final attempts must cover the requested valid episodes")
+    if args.bot_eval_num_bots < 1:
+        raise ValueError("bot_eval_num_bots must be at least 1")
+    if args.bot_eval_episode_timeout is not None and args.bot_eval_episode_timeout < 1:
+        raise ValueError("bot_eval_episode_timeout must be positive")
+
+    if args.frame_stack < 1:
+        raise ValueError("--frame_stack must be at least 1")
 
     torch.set_num_threads(1)
     torch.set_num_interop_threads(1)
@@ -785,8 +915,21 @@ def main():
     args.ticrate = (
         int(args.ticrate) if args.ticrate is not None else vzd.DEFAULT_TICRATE
     )
+    callbacks = []
+    bot_eval_runner = None
+    if args.bot_eval:
+        bot_eval_config = build_bot_eval_config(args)
+        bot_eval_runner = BotEvaluationRunner(bot_eval_config)
+        callbacks.append(
+            BotEvaluationCallback(
+                interval_episodes=bot_eval_config.interval_episodes,
+                runner=bot_eval_runner,
+            )
+        )
     root_path = Path(__file__).parent.parent.parent
-    checkpoints_path = root_path / "checkpoints"
+    checkpoints_path = (
+        Path(args.save_folder) if args.save_folder else root_path / "checkpoints"
+    )
     Path(checkpoints_path).mkdir(parents=True, exist_ok=True)
     run_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_id = (
@@ -857,6 +1000,7 @@ def main():
         "num_agents": args.num_agents,
         "resolution": args.resolution,
         "skip_frames": args.skip_frames,
+        "frame_stack": args.frame_stack,
         "async_mode": args.async_mode,
         "render_mode": args.render_mode,
         "host_address": args.host_address,
@@ -881,11 +1025,56 @@ def main():
         critic_model_config=critic_cfg,
         seed=args.seed,
         config=exp_cfg,
+        callbacks=callbacks,
     )
+    if bot_eval_runner is not None:
+        bot_eval_runner.metric_logger = (
+            lambda payload, step=None: experiment.logger.log(payload, step=step)
+        )
 
     Path(str(exp_cfg.save_folder)).mkdir(parents=True, exist_ok=True)
+    # experiment.run() already closes the collector/envs at close(), but we dont call finish() so bot evaluation can be run and uploaded the videos.
     experiment.run()
-    experiment.close()
+    try:
+        if bot_eval_runner is not None:
+            run_post_training_bot_eval(experiment.folder_name, bot_eval_runner.config)
+    finally:
+        try:
+            import wandb
+
+            checkpoints = sorted((experiment.folder_name / "checkpoints").glob("*.pt"))
+            if not checkpoints:
+                raise RuntimeError("Training completed without a final checkpoint")
+            artifact = wandb.Artifact(f"{run_id}-checkpoint", type="model")
+            artifact.add_file(str(checkpoints[-1]), name=checkpoints[-1].name)
+            artifact.add_file(
+                str(experiment.folder_name / "config.pkl"), name="config.pkl"
+            )
+            wandb.log_artifact(artifact, aliases=["latest"])
+        finally:
+            experiment.logger.finish()
+
+
+def build_bot_eval_config(args) -> BotEvalConfig:
+    return BotEvalConfig(
+        scenario=args.bot_eval_scenario or args.scenario,
+        scenario_config=args.bot_eval_scenario_config,
+        resolution=args.resolution,
+        skip_frames=args.skip_frames,
+        episode_timeout=args.bot_eval_episode_timeout,
+        num_bots=args.bot_eval_num_bots,
+        require_deathmatch=not args.bot_eval_allow_non_deathmatch,
+        ticrate=args.ticrate,
+        respawn_delay=TRAINING_RESPAWN_DELAY,
+        interval_episodes=args.bot_eval_interval_episodes,
+        screening_valid_episodes=args.bot_eval_screening_episodes,
+        screening_max_attempts=args.bot_eval_screening_max_attempts,
+        final_valid_episodes=args.bot_eval_final_episodes,
+        final_max_attempts=args.bot_eval_final_max_attempts,
+        seed=args.bot_eval_seed,
+        video_dir=args.bot_eval_video_dir,
+        video_fps=args.video_fps,
+    )
 
 
 if __name__ == "__main__":

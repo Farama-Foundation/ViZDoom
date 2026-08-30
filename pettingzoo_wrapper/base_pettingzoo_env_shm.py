@@ -1,4 +1,6 @@
 """
+Deprecated.
+
 PettingZoo Parallel wrapper for multi-agent ViZDoom — shared-memory IPC.
 
 One process per agent; observations are exchanged via shared memory,
