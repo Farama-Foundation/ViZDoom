@@ -1,8 +1,9 @@
 # public factory
 import os
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Sequence
 
+import vizdoom as vzd
 from vizdoom.pettingzoo_wrapper.base_pettingzoo_env import VizdoomParallelEnv
 from vizdoom.pettingzoo_wrapper.info_wrappers import InternalInfoFilter
 from vizdoom.pettingzoo_wrapper.reward_wrappers import (
@@ -55,6 +56,7 @@ def make(
     video_fps: int = 35,
     verbose: bool = False,
     daemon: bool = True,
+    available_buttons: Optional[Sequence[vzd.Button]] = None,
 ):
     scenario = scenario.lower() if scenario is not None else None
     cfg = config_file if config_file is not None else f"{_SCENARIO_DIR}/{scenario}.cfg"
@@ -77,6 +79,7 @@ def make(
         seed=seed,
         verbose=verbose,
         daemon=daemon,
+        available_buttons=available_buttons,
     )
 
     if enable_video:

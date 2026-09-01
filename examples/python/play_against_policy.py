@@ -10,6 +10,9 @@ sys.path.insert(0, str(ROOT))
 DEFAULT_CHECKPOINT = (
     ROOT
     / "checkpoints"
+    # / "ippo_multi_duel_cnn__fae6ca1d_26_08_31-08_22_17"
+    # / "checkpoints"
+    # / "checkpoint_1251328.pt"
     / "ippo_multi_duel_cnn__79265ad4_26_08_30-09_48_53"
     / "checkpoints"
     / "checkpoint_1024000.pt"

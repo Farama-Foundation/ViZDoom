@@ -611,6 +611,7 @@ class VizdoomTask(TaskClass):
             video_fps=cfg["video_fps"],
             verbose=cfg.get("verbose", False),
             daemon=cfg["daemon"],
+            available_buttons=self.action_buttons,
         )
 
     def _build_training_env(self, seed: int, env_instance_index: int):
@@ -881,7 +882,7 @@ def main():
     )
 
     # learned policy vs. bot evaluation for deathmatch
-    ap.add_argument("--bot_eval", action="store_false")
+    ap.add_argument("--bot_eval", action="store_true")
     ap.add_argument(
         "--bot_eval_interval_episodes",
         type=int,

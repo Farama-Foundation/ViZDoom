@@ -12,6 +12,7 @@ from multiprocessing.connection import Connection
 
 import numpy as np
 
+import vizdoom as vzd
 from vizdoom.pettingzoo_wrapper.base_env_common import (
     VizdoomParallelEnvBase,
     configure_doom_game,
@@ -100,6 +101,7 @@ def _agent_worker_thread(
     ticrate: int,
     seed: int | None,
     verbose: bool,
+    available_buttons: tuple[vzd.Button, ...],
 ) -> None:
     game = None
     available_game_vars = []
@@ -138,6 +140,7 @@ def _agent_worker_thread(
                         port=int(task.port),
                         netmode=netmode,
                         agent_idx=agent_id,
+                        available_buttons=available_buttons,
                     )
                     if not is_host:
                         time.sleep(0.5 + random.uniform(0.5, 1.0))
@@ -240,6 +243,7 @@ class _AgentWorkerCoordinator:
         ticrate: int,
         seed: int | None,
         verbose: bool,
+        available_buttons: tuple[vzd.Button, ...],
         frames: np.ndarray,
     ) -> None:
         self.config_path = config_path
@@ -255,6 +259,7 @@ class _AgentWorkerCoordinator:
         self.ticrate = int(ticrate)
         self.seed = seed
         self.verbose = bool(verbose)
+        self.available_buttons = available_buttons
         self._shm_frames = (
             frames  # Inherit through fork(), mapped MAP_SHARED by the parent
         )
@@ -305,6 +310,7 @@ class _AgentWorkerCoordinator:
                     ticrate=self.ticrate,
                     seed=(None if self.seed is None else int(self.seed) + agent_id),
                     verbose=self.verbose,
+                    available_buttons=self.available_buttons,
                 ),
                 daemon=True,
             )
@@ -531,6 +537,7 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
                     ticrate=self.ticrate,
                     seed=self._ext_seed,
                     verbose=self.verbose,
+                    available_buttons=self.available_buttons,
                     frames=self._shm_frames,
                 ),
             ),

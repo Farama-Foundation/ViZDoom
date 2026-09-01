@@ -99,6 +99,7 @@ def _policy_worker(
         policy = TorchRLPolicyAdapter.from_experiment(
             experiment, group_name=group_name, agent_index=0, device="cpu"
         )
+        policy_buttons = tuple(experiment.task.action_buttons)
         _close_reloaded_experiment(experiment)
         connection.send(("loaded", None))
 
@@ -117,6 +118,7 @@ def _policy_worker(
                 port=port,
                 netmode=0,
                 agent_idx=0,
+                available_buttons=policy_buttons,
             )
             game.add_game_args(f"+name {POLICY_NAME} +colorset 0")
             try:

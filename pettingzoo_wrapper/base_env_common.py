@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import math
 import time
-from typing import Any
+from typing import Any, Sequence
 
 import numpy as np
 import pygame
@@ -72,6 +72,7 @@ def configure_doom_game(
     port: int,
     netmode: int,
     agent_idx: int,
+    available_buttons: Sequence[vzd.Button] | None = None,
 ) -> vzd.DoomGame:
     """
     Create and configure a DoomGame instance without calling game.init().
@@ -80,6 +81,8 @@ def configure_doom_game(
     """
     game = vzd.DoomGame()
     game.load_config(config_path)
+    if available_buttons is not None:
+        game.set_available_buttons(list(available_buttons))
     game.set_window_visible(False)
     game.set_screen_resolution(get_screen_resolution(resolution))
     game.set_ticrate(ticrate)
@@ -130,6 +133,7 @@ class VizdoomParallelEnvBase(ParallelEnv):
         seed: int | None = None,
         verbose: bool = False,
         daemon: bool = True,
+        available_buttons: Sequence[vzd.Button] | None = None,
     ) -> None:
         assert num_agents >= 1
         self.config_file = config_file
@@ -153,7 +157,11 @@ class VizdoomParallelEnvBase(ParallelEnv):
         ]
         self.agents: list[str] = self.possible_agents[:]
 
-        self.available_buttons = discover_buttons(config_file)
+        self.available_buttons = (
+            discover_buttons(config_file)
+            if available_buttons is None
+            else tuple(available_buttons)
+        )
         self._delta_indices = [
             i
             for i, button in enumerate(self.available_buttons)
