@@ -395,21 +395,21 @@ Unfortunately, ACS does not support real floating point numbers.</p>
 <h2>Step 3: Loading/using a custom environment/scenario<a class="headerlink" href="#step-3-loading-using-a-custom-environment-scenario" title="Link to this heading">¶</a></h2>
 <p>The easiest way to use a custom scenario in the original ViZDoom API is to load the config file using a dedicated method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">game</span> <span class="o">=</span> <span class="n">vzd</span><span class="o">.</span><span class="n">DoomGame</span><span class="p">()</span>
-<span class="n">game</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s2">&quot;&lt;path to .cfg file&gt;&quot;</span><span class="p">)</span>
+<span class="n">game</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s2">"&lt;path to .cfg file&gt;"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>It can also be registered as a Gymnasium environment using the following method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gymnasium.envs.registration</span><span class="w"> </span><span class="kn">import</span> <span class="n">register</span>
 
 <span class="n">register</span><span class="p">(</span>
-    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;&lt;name of your environment&gt;&quot;</span><span class="p">,</span>
-    <span class="n">entry_point</span><span class="o">=</span><span class="s2">&quot;vizdoom.gymnasium_wrapper.base_gymnasium_env:VizdoomEnv&quot;</span><span class="p">,</span>
-    <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;scenario_file&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;path to .cfg file&gt;&quot;</span><span class="p">},</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">"&lt;name of your environment&gt;"</span><span class="p">,</span>
+    <span class="n">entry_point</span><span class="o">=</span><span class="s2">"vizdoom.gymnasium_wrapper.base_gymnasium_env:VizdoomEnv"</span><span class="p">,</span>
+    <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">"scenario_file"</span><span class="p">:</span> <span class="s2">"&lt;path to .cfg file&gt;"</span><span class="p">},</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <p>And then used as any other Gymnasium environment:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">&quot;&lt;name of your environment&gt;&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">"&lt;name of your environment&gt;"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
