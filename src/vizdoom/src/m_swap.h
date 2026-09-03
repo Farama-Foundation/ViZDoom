@@ -77,7 +77,9 @@ inline unsigned int BigLong(unsigned int x)
 }
 
 #else
-#if defined(__BIG_ENDIAN__) || (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+//VIZDOOM_CODE
+#if defined(__BIG_ENDIAN__) || \
+	(defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__))
 
 // Swap 16bit, that is, MSB and LSB byte.
 // No masking with 0xFF should be necessary. 
@@ -91,6 +93,7 @@ inline unsigned short LittleShort (unsigned short x)
 	return (unsigned short)((x>>8) | (x<<8));
 }
 
+//VIZDOOM_CODE
 inline short LittleShort (int x)
 {
 	unsigned short s = (unsigned short)x;
@@ -210,7 +213,9 @@ inline int GetBigInt(const unsigned char *foo)
 	return int((foo[0] << 24) | (foo[1] << 16) | (foo[2] << 8) | foo[3]);
 }
 #endif
-#if defined(__BIG_ENDIAN__) || (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+//VIZDOOM_CODE
+#if defined(__BIG_ENDIAN__) || \
+	(defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__))
 inline int GetNativeInt(const unsigned char *foo)
 {
 	return GetBigInt(foo);

@@ -67,7 +67,9 @@
 #define FORCE_PACKED
 #endif
 
-#if !defined(__BIG_ENDIAN__) && (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
+//VIZDOOM_CODE
+#if !defined(__BIG_ENDIAN__) && \
+	(!defined(__BYTE_ORDER__) || !defined(__ORDER_BIG_ENDIAN__) || (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__))
 #define MAKE_ID(a,b,c,d)	((a)|((b)<<8)|((c)<<16)|((d)<<24))
 #define LittleShort(x)		(x)
 #define LittleLong(x)		(x)
