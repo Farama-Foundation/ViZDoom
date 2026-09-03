@@ -31,7 +31,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-14]
       fail-fast: false
 
     steps:
@@ -45,7 +45,6 @@ jobs:
           echo ${{ runner.os }}
           uname -p
 
-
       - name: Build manylinux x86_64 wheels
         if: matrix.os == 'ubuntu-24.04'
         uses: pypa/cibuildwheel@v4.2.0
@@ -55,7 +54,7 @@ jobs:
           CIBW_BUILD_VERBOSITY: 1
       
       - name: Build manylinux arm wheels
-        if: matrix.os == 'ubuntu-24.04'
+        if: matrix.os == 'ubuntu-24.04-arm'
         uses: pypa/cibuildwheel@v4.2.0
         env:
           # Configure cibuildwheel to build native archs, and some emulated ones
@@ -63,7 +62,7 @@ jobs:
           CIBW_BUILD_VERBOSITY: 1
 
       - name: Build macOS Apple Silicon wheels
-        if: matrix.os == 'macos-15'
+        if: matrix.os == 'macos-14'
         uses: pypa/cibuildwheel@v4.2.0
         env:
           CIBW_ARCHS_MACOS: arm64
