@@ -31,7 +31,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-14]
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-14]
       fail-fast: false
 
     steps:
@@ -45,18 +45,20 @@ jobs:
           echo ${{ runner.os }}
           uname -p
 
-      - name: Set up QEMU
-        if: runner.os == 'Linux'
-        uses: docker/setup-qemu-action@v4
-        with:
-          platforms: all
-
-      - name: Build manylinux wheels
+      - name: Build manylinux x86_64 wheels
         if: matrix.os == 'ubuntu-24.04'
         uses: pypa/cibuildwheel@v4.2.0
         env:
           # Configure cibuildwheel to build native archs, and some emulated ones
-          CIBW_ARCHS_LINUX: x86_64 aarch64
+          CIBW_ARCHS_LINUX: x86_64
+          CIBW_BUILD_VERBOSITY: 1
+
+      - name: Build manylinux arm wheels
+        if: matrix.os == 'ubuntu-24.04-arm'
+        uses: pypa/cibuildwheel@v4.2.0
+        env:
+          # Configure cibuildwheel to build native archs, and some emulated ones
+          CIBW_ARCHS_LINUX: aarch64
           CIBW_BUILD_VERBOSITY: 1
 
       - name: Build macOS Apple Silicon wheels
@@ -83,7 +85,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-14, macos-15]
+        os: [ubuntu-26.04, ubuntu-24.04, ubuntu-24.04-arm, macos-15]
         python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
       fail-fast: false
 
@@ -123,17 +125,24 @@ jobs:
         run: sudo apt install -y libopenal-dev
 
       - name: Install macOS Apple Silicon wheel on ${{ matrix.os }}
-        if: matrix.os == 'macos-14' || matrix.os == 'macos-15'
+        if: matrix.os == 'macos-15'
         run: |
           export PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
           export WHEEL=$(ls dist/vizdoom*cp${PYTHON_VERSION}*macosx*arm64.whl)
           python -m pip install ${WHEEL}[test]
 
       - name: Install manylinux wheel on ${{ matrix.os }}
-        if: matrix.os == 'ubuntu-22.04' || matrix.os == 'ubuntu-24.04'
+        if: matrix.os == 'ubuntu-26.04' || matrix.os == 'ubuntu-24.04'
         run: |
           export PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
           export WHEEL=$(ls dist/vizdoom*cp${PYTHON_VERSION}*manylinux*x86_64.whl)
+          python -m pip install ${WHEEL}[test]
+
+      - name: Install manylinux wheel on ${{ matrix.os }}
+        if: matrix.os == 'ubuntu-24.04-arm'
+        run: |
+          export PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
+          export WHEEL=$(ls dist/vizdoom*cp${PYTHON_VERSION}*manylinux*aarch64.whl)
           python -m pip install ${WHEEL}[test]
 
       - name: Import check
