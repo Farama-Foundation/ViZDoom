@@ -800,7 +800,7 @@ def override_experiment_config(args, on_policy: bool, on_policy_minibatch_size: 
         "project_name": "benchmarl-vizdoom",
         "checkpoint_interval": args.rollout_steps * 100,
         "checkpoint_at_end": True,
-        "keep_checkpoints_num": args.keep_checkpoints_num,
+        "keep_checkpoints_num": args.keep_checkpoints_num or None,
         "exclude_buffer_from_checkpoint": not args.save_replay_buffer,
     }
 
@@ -900,7 +900,7 @@ def main():
         "--keep_checkpoints_num",
         type=int,
         default=1,
-        help="How many checkpoints to keep",
+        help="How many checkpoints to keep (0 = keep all)",
     )
     ap.add_argument(
         "--save_folder", type=str, default=None

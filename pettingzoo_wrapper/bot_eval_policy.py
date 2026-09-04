@@ -36,6 +36,8 @@ class TorchRLPolicyAdapter:
         self.frame_stack = int(frame_stack)
         self.device = device
         self._frames: deque[np.ndarray] = deque(maxlen=self.frame_stack)
+        # Logits of the last act() call (categorical policies only), for entropy diagnostics
+        self.last_logits: np.ndarray | None = None
 
     @classmethod
     def from_experiment(
@@ -92,6 +94,9 @@ class TorchRLPolicyAdapter:
         )
         with torch.no_grad(), set_exploration_type(exploration):
             output = self.policy(td)
+        logits = output.get((self.group_name, "logits"), None)
+        if logits is not None and logits.ndim >= 2:
+            self.last_logits = logits[0, self.agent_index].detach().cpu().numpy()
         action = output.get((self.group_name, "action"))
         if action is None:
             raise RuntimeError(
@@ -102,6 +107,16 @@ class TorchRLPolicyAdapter:
         elif action.ndim >= 2:
             action = action[0, self.agent_index]
         return action.detach().cpu().numpy().reshape(-1).tolist()
+
+    def last_entropy(self) -> float | None:
+        """Entropy (nats) of the categorical distribution behind the last act() call."""
+        if self.last_logits is None:
+            return None
+        logits = self.last_logits.astype(np.float64)
+        logits = logits - logits.max()
+        probabilities = np.exp(logits)
+        probabilities /= probabilities.sum()
+        return float(-(probabilities * np.log(probabilities + 1e-12)).sum())
 
 
 def load_bot_eval_experiment(checkpoint_path: str | Path):

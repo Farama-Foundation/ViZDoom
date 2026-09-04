@@ -231,6 +231,7 @@ class BotDuelEvaluator:
         tier: str,
         policy: PolicyAdapter,
         capture_video: bool = False,
+        deterministic: bool = True,
     ) -> EpisodeRun:
         normalized_tier = str(tier).lower()
         profile = self.profiles.get(normalized_tier)
@@ -252,7 +253,7 @@ class BotDuelEvaluator:
                 frame = _screen_frame(state)
                 if frames is not None:
                     frames.append(frame.copy())
-                action = policy.act(frame, deterministic=True)
+                action = policy.act(frame, deterministic=deterministic)
                 if game.is_player_dead():
                     game.respawn_player()
                 else:
