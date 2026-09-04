@@ -235,6 +235,47 @@ class WandbLoggingWrapper(Logger):
                             torch.stack(values),
                         )
 
+            # Logging for multi_duel (check multi_duel.cfg for explanation)
+            los_values: dict[int, list[torch.Tensor]] = {0: [], 1: []}
+            yaw_values: dict[int, list[torch.Tensor]] = {0: [], 1: []}
+            aim_values: dict[int, list[torch.Tensor]] = {0: [], 1: []}
+            for rollout in rollouts:
+                info = rollout.get(("next", group, "info"), None)
+                if info is None:
+                    break
+                needed = [info.get(f"USER{i}", None) for i in (54, 55, 57, 58, 59, 60)]
+                if any(v is None for v in needed):
+                    break
+                alive0, alive1, los0, los1, yaw0, yaw1 = (
+                    v[:, 0].reshape(-1) for v in needed
+                )
+                both_alive = (alive0 > 0) & (alive1 > 0)
+                if int(both_alive.sum()) == 0:
+                    continue
+                for index, los, yaw in ((0, los0, yaw0), (1, los1, yaw1)):
+                    yaw_deg = yaw[both_alive].float() / 1000.0
+                    los_values[index].append(los[both_alive].float().mean())
+                    yaw_values[index].append(yaw_deg.mean())
+                    aim_values[index].append((yaw_deg < 10.0).float().mean())
+            for agent_index, agent in enumerate(agents):
+                if agent_index not in los_values or not los_values[agent_index]:
+                    continue
+                self._log_min_mean_max(
+                    metrics,
+                    f"eval/{group}/duel/{agent}/los_fraction",  # line of sight
+                    torch.stack(los_values[agent_index]),
+                )
+                self._log_min_mean_max(
+                    metrics,
+                    f"eval/{group}/duel/{agent}/yaw_error_deg",
+                    torch.stack(yaw_values[agent_index]),
+                )
+                self._log_min_mean_max(
+                    metrics,
+                    f"eval/{group}/duel/{agent}/aim_within_10deg_fraction",
+                    torch.stack(aim_values[agent_index]),
+                )
+
             if self.task_name == "multi_duel_hide_and_seek":
                 outcomes = []
                 durations_seconds = []

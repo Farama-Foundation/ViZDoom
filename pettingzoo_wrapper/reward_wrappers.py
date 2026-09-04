@@ -14,19 +14,39 @@ def _reset_info(info):
 _DEATHMATCH_DELTA_REWARDS = {
     "FRAGCOUNT": 1.0,
     "DEATHCOUNT": -1.0,
-    "DAMAGECOUNT": 0.01,
-    "DAMAGE_TAKEN": -0.01,
+    "DAMAGECOUNT": 0.0025,  # 0.0025/HP, but we use rocket which deals 100HP per hit
+    "DAMAGE_TAKEN": -0.0025,
 }
+_DEATHMATCH_SIGNED_COUNTERS = frozenset({"FRAGCOUNT"})
+_DEATHMATCH_AMMO_COST = 0.005
+_DEATHMATCH_AMMO_VARIABLE = "SELECTED_WEAPON_AMMO"
 
 
 class DeathmatchRewardWrapper(ParallelEnv):
-    def __init__(self, env: ParallelEnv):
+    def __init__(
+        self,
+        env: ParallelEnv,
+        *,
+        delta_rewards: Optional[Dict[str, float]] = None,
+        ammo_cost: float = _DEATHMATCH_AMMO_COST,
+    ):
         self.env = env
         self.metadata = getattr(env, "metadata", {})
         self.possible_agents = env.possible_agents
         self.agents = env.agents
+        self.delta_rewards = dict(
+            _DEATHMATCH_DELTA_REWARDS if delta_rewards is None else delta_rewards
+        )
+        self.ammo_cost = float(ammo_cost)
         self.prev_vars: Dict[str, Dict[str, float]] = {}
         self._counters_checked = False
+
+    @property
+    def _tracked_variables(self) -> tuple:
+        names = list(self.delta_rewards)
+        if self.ammo_cost:
+            names.append(_DEATHMATCH_AMMO_VARIABLE)
+        return tuple(names)
 
     def action_space(self, agent: str):
         return self.env.action_space(agent)
@@ -53,8 +73,16 @@ class DeathmatchRewardWrapper(ParallelEnv):
     ):
         obs, infos = self.env.reset(seed=seed, options=options)
         self.agents = self.env.agents[:]
-        self.prev_vars = {agent: {} for agent in self.agents}
         self.check_ctr(infos)
+        # Frst step
+        self.prev_vars = {
+            agent: {
+                name: infos[agent][name]
+                for name in self._tracked_variables
+                if isinstance(infos.get(agent), dict) and name in infos[agent]
+            }
+            for agent in self.agents
+        }
         return obs, infos
 
     def check_ctr(self, infos: Dict[str, Any]) -> None:
@@ -64,8 +92,8 @@ class DeathmatchRewardWrapper(ParallelEnv):
             info = infos.get(agent)
             if not isinstance(info, dict):
                 return
-            present = [n for n in _DEATHMATCH_DELTA_REWARDS if n in info]
-            missing = [n for n in _DEATHMATCH_DELTA_REWARDS if n not in info]
+            present = [n for n in self.delta_rewards if n in info]
+            missing = [n for n in self.delta_rewards if n not in info]
             if not present:
                 return
             if missing:
@@ -86,18 +114,36 @@ class DeathmatchRewardWrapper(ParallelEnv):
 
             shaping_reward = 0.0
             previous = self.prev_vars[agent]
-            for name, weight in _DEATHMATCH_DELTA_REWARDS.items():
+            for name, weight in self.delta_rewards.items():
                 if name not in previous or name not in info:
                     continue
                 delta = info[name] - previous[name]
-                if delta > 1e-8:
+                if delta > 1e-8 or (
+                    delta < -1e-8 and name in _DEATHMATCH_SIGNED_COUNTERS
+                ):
                     shaping_reward += delta * weight
+            ammo_known = (
+                _DEATHMATCH_AMMO_VARIABLE in info
+                and info[_DEATHMATCH_AMMO_VARIABLE] >= 0
+            )
+            if self.ammo_cost and ammo_known and _DEATHMATCH_AMMO_VARIABLE in previous:
+                spent = (
+                    previous[_DEATHMATCH_AMMO_VARIABLE]
+                    - info[_DEATHMATCH_AMMO_VARIABLE]
+                )
+                if spent > 1e-8:
+                    shaping_reward -= spent * self.ammo_cost
 
             rewards[agent] = float(rewards.get(agent, 0.0)) + shaping_reward
             # Carry last known value forward for anything absent this step
             self.prev_vars[agent] = {
-                name: info[name] if name in info else self.prev_vars[agent][name]
-                for name in _DEATHMATCH_DELTA_REWARDS
+                name: (
+                    info[name]
+                    if name in info
+                    and (name != _DEATHMATCH_AMMO_VARIABLE or ammo_known)
+                    else self.prev_vars[agent].get(name, info.get(name))
+                )
+                for name in self._tracked_variables
                 if name in info or name in self.prev_vars[agent]
             }
 
