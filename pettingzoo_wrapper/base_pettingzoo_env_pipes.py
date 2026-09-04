@@ -6,6 +6,7 @@ PettingZoo Parallel wrapper for multi-agent ViZDoom — pipe-based IPC.
 One process per agent; parent communicates via duplex Pipes.
 Commands: "reset", "step", "respawn", "close".
 """
+
 from __future__ import annotations
 
 import multiprocessing as mp
@@ -76,7 +77,6 @@ def _agent_process(
             time.sleep(0.5 + random.uniform(0.5, 1.0))
             game.add_game_args("+viz_connect_timeout 45")
         game.init()
-        game.send_game_command("viz_respawn_delay 0")
     except Exception as e:
         try:
             pipe_end.send({"status": "init_failed", "error": str(e), "agent": agent})

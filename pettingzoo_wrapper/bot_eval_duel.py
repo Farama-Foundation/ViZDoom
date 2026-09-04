@@ -40,6 +40,12 @@ def resolve_profile_path() -> Path:
 def resolve_scenario_config(config: BotEvalConfig) -> Path:
     if config.scenario_config:
         return Path(config.scenario_config).expanduser().resolve()
+    if not config.scenario:
+        raise ValueError(
+            "BotEvalConfig.scenario is unset: pass the training scenario name "
+            "(pettingzoo_learning does this via build_bot_eval_config) or "
+            "scenario_config"
+        )
     packaged = Path(vzd.__file__).with_name("scenarios") / f"{config.scenario}.cfg"
     if packaged.is_file():
         return packaged.resolve()

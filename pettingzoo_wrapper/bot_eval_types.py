@@ -6,6 +6,8 @@ from typing import Any, Mapping, Protocol, Sequence
 
 import numpy as np
 
+from .base_env_common import TRAINING_RESPAWN_DELAY
+
 
 DEFAULT_BOT_PROFILES: Mapping[str, str] = {
     "easy": "Easy",
@@ -28,7 +30,7 @@ class PolicyAdapter(Protocol):
 
 @dataclass(frozen=True)
 class BotEvalConfig:
-    scenario: str = "multi_duel_pistol_big"
+    scenario: str | None = None
     scenario_config: str | None = None
     resolution: str = "320X240"
     skip_frames: int = 1
@@ -39,7 +41,7 @@ class BotEvalConfig:
     require_deathmatch: bool = True
     ticrate: int = 35
     # Respawn delay in SECONDS
-    respawn_delay: int = 0
+    respawn_delay: int = TRAINING_RESPAWN_DELAY
     screening_valid_episodes: int = 10
     screening_max_attempts: int = 20
     final_valid_episodes: int = 50

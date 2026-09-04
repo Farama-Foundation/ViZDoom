@@ -1,6 +1,7 @@
 """
 Shared base class and DoomGame configuration helper for ViZDoom PettingZoo envs.
 """
+
 from __future__ import annotations
 
 import math
@@ -27,7 +28,7 @@ RAW_DELTA_ACTION_LIMIT = 180.0
 
 # Respawn delay in seconds (viz_respawn_delay is scaled by ticrate)
 # Export so bot eval can use the same (in BotEvalConfig.respawn_delay)
-TRAINING_RESPAWN_DELAY = 0
+TRAINING_RESPAWN_DELAY = 2
 
 
 def encode_env_action(

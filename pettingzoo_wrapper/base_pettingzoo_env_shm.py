@@ -6,6 +6,7 @@ PettingZoo Parallel wrapper for multi-agent ViZDoom — shared-memory IPC.
 One process per agent; observations are exchanged via shared memory,
 commands/rewards/info via multiprocessing Arrays/Values with a barrier.
 """
+
 from __future__ import annotations
 
 import json
@@ -88,7 +89,6 @@ def agent_process(
 
     try:
         game.init()
-        game.send_game_command("viz_respawn_delay 0")
     except Exception:
         shared_command["init_error"].value = True
         raise
