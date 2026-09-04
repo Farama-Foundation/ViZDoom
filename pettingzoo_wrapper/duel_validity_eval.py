@@ -988,7 +988,10 @@ def build_jobs(
     return jobs
 
 
-def run_jobs(jobs: Sequence[Job], workers: int) -> list[EpisodeStats]:
+def run_jobs(
+    jobs: Sequence[Job], workers: int, errors: list[str] | None = None
+) -> list[EpisodeStats]:
+    """Run all jobs; tracebacks of jobs that crashed are appended to `errors`."""
     episodes: list[EpisodeStats] = []
     started = time.monotonic()
     if workers <= 1:
@@ -996,6 +999,8 @@ def run_jobs(jobs: Sequence[Job], workers: int) -> list[EpisodeStats]:
         for job in jobs:
             _, results, error = run_job(job)
             _report_job(job, results, error, started)
+            if error and errors is not None:
+                errors.append(error)
             episodes.extend(results)
         return episodes
 
@@ -1012,6 +1017,8 @@ def run_jobs(jobs: Sequence[Job], workers: int) -> list[EpisodeStats]:
         for future in as_completed(futures):
             job, results, error = future.result()
             _report_job(job, results, error, started)
+            if error and errors is not None:
+                errors.append(error)
             episodes.extend(results)
     return episodes
 
@@ -1209,10 +1216,34 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     print(f"[ValidityEval] {len(jobs)} jobs, {args.workers} workers", flush=True)
     started = time.monotonic()
-    episodes = run_jobs(jobs, args.workers)
+    job_errors: list[str] = []
+    episodes = run_jobs(jobs, args.workers, job_errors)
     if not any(e.valid for e in episodes):
-        print("[ValidityEval] no valid episodes, nothing to report", file=sys.stderr)
+        print(
+            f"[ValidityEval] no valid episodes, nothing to report "
+            f"({len(job_errors)}/{len(jobs)} jobs crashed)",
+            file=sys.stderr,
+        )
+        if job_errors:
+            # the per-job tracebacks went to stdout as they happened; repeat the
+            # last line of the first one here so the failure is visible in stderr
+            first = job_errors[0].strip().splitlines()[-1]
+            print(f"[ValidityEval] first job error: {first}", file=sys.stderr)
+            if "Can't get attribute" in first and "__main__" in first:
+                print(
+                    "[ValidityEval] config.pkl references classes of the training "
+                    "script as __main__.<Name>; run with PYTHONPATH containing the "
+                    "repo root so examples.python.pettingzoo_learning can be "
+                    "imported (see bot_eval_policy.register_training_script_classes)",
+                    file=sys.stderr,
+                )
         return 1
+    if job_errors:
+        print(
+            f"[ValidityEval] warning: {len(job_errors)}/{len(jobs)} jobs crashed, "
+            "report is incomplete",
+            file=sys.stderr,
+        )
 
     with (output_dir / "episodes.jsonl").open("w", encoding="utf-8") as handle:
         for e in episodes:

@@ -800,7 +800,6 @@ def override_experiment_config(args, on_policy: bool, on_policy_minibatch_size: 
         "project_name": "benchmarl-vizdoom",
         "checkpoint_interval": args.rollout_steps * 100,
         "checkpoint_at_end": True,
-        "keep_checkpoints_num": args.keep_checkpoints_num or None,
         "exclude_buffer_from_checkpoint": not args.save_replay_buffer,
     }
 
@@ -1096,6 +1095,7 @@ def main():
     )
     overrides["save_folder"] = str(checkpoints_path)
     override_config(exp_cfg, overrides)
+    exp_cfg.keep_checkpoints_num = args.keep_checkpoints_num or None
 
     # keep eval interval aligned with horizon (collector-friendly)
     h = exp_cfg.collected_frames_per_batch(is_on_policy)

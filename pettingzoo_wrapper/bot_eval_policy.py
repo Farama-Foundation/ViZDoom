@@ -1,10 +1,16 @@
 from __future__ import annotations
 
+import importlib
+import inspect
+import sys
 from collections import deque
 from pathlib import Path
 from typing import Any
 
 import numpy as np
+
+
+TRAINING_SCRIPT_MODULE = "examples.python.pettingzoo_learning"
 
 
 def _policy_device(policy: Any) -> str:
@@ -119,9 +125,46 @@ class TorchRLPolicyAdapter:
         return float(-(probabilities * np.log(probabilities + 1e-12)).sum())
 
 
+def register_training_script_classes(
+    module_name: str = TRAINING_SCRIPT_MODULE,
+) -> list[str]:
+    """
+    Returns the names that were added. A no-op when ``__main__`` already is the training script
+    """
+    main_module = sys.modules.get("__main__")
+    if main_module is None:
+        return []
+    spec = getattr(main_module, "__spec__", None)
+    main_file = getattr(main_module, "__file__", None) or ""
+    if (spec is not None and spec.name == module_name) or main_file.endswith(
+        module_name.replace(".", "/") + ".py"
+    ):
+        # __main__ is the training script itself: nothing to alias
+        return []
+    try:
+        training = importlib.import_module(module_name)
+    except ImportError as exc:
+        print(
+            f"[bot_eval] cannot import {module_name} ({exc}) - __main__ pickles "
+            "of the training script will not resolve",
+            file=sys.stderr,
+        )
+        return []
+    added: list[str] = []
+    for name, value in vars(training).items():
+        if not inspect.isclass(value) or value.__module__ != training.__name__:
+            continue
+        if hasattr(main_module, name):
+            continue
+        setattr(main_module, name, value)
+        added.append(name)
+    return added
+
+
 def load_bot_eval_experiment(checkpoint_path: str | Path):
     from benchmarl.experiment import Experiment
 
+    register_training_script_classes()
     checkpoint = Path(checkpoint_path).resolve()
     event_dir = checkpoint.parent.parent
     return Experiment.reload_from_file(
