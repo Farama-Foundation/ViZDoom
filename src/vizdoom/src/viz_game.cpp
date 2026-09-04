@@ -713,9 +713,7 @@ void VIZ_GameStateInitNew(){
         level.NextSecretMap = level.MapName;
     }
 
-    for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
-        vizPlayerLogger[i].reset();
-    }
+    VIZ_GameStateResetEpisodeCounters();
 
     vizUniqueObjectsCount = 0;
 
@@ -725,6 +723,18 @@ void VIZ_GameStateInitNew(){
         I_InitSound();
     }
     VIZ_ClearAudioBuffer();
+}
+
+void VIZ_GameStateResetEpisodeCounters(){
+    // DEATHCOUNT, DAMAGECOUNT, DAMAGE_TAKEN, HITCOUNT and HITS_TAKEN are documented as per-episode counters.
+    // Called from G_DoLoadLevel so they also reset on multiplayer map changes (changemap), which skip G_InitNew.
+    if(!vizGameStateSM) return;
+
+    for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
+        vizPlayerLogger[i].reset();
+    }
+
+    vizGameStateSM->PLAYER_DEATHCOUNT = 0;
 }
 
 void VIZ_GameStateClose(){

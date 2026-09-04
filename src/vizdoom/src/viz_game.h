@@ -255,6 +255,8 @@ void VIZ_GameStateUpdateNotifications();
 
 void VIZ_GameStateInitNew();
 
+void VIZ_GameStateResetEpisodeCounters();
+
 void VIZ_GameStateClose();
 
 void VIZ_PrintPlayers();

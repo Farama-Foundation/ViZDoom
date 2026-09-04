@@ -960,6 +960,11 @@ void G_DoLoadLevel (int position, bool autosave)
 			players[i].fragcount = 0;
 	}
 
+	//VIZDOOM_CODE
+	// Reset per-episode counters together with the frags. Multiplayer map changes
+	// (changemap, used by new_episode()) reach here without going through G_InitNew.
+	VIZ_GameStateResetEpisodeCounters();
+
 	if (changeflags & CHANGELEVEL_NOMONSTERS)
 	{
 		level.flags2 |= LEVEL2_NOMONSTERS;
