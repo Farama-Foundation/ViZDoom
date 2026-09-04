@@ -48,6 +48,27 @@ EXTERN_CVAR (Bool, viz_soft_audio)
 EXTERN_CVAR (Int, viz_samp_freq)
 EXTERN_CVAR (Int, viz_audio_tics)
 
+static bool VIZ_IsFlashedScreenFormat(int screenFormat)
+{
+    return screenFormat >= VIZ_SCREEN_CRCGCB_FLASHED && screenFormat <= VIZ_SCREEN_GRAY8_FLASHED;
+}
+
+static int VIZ_BaseScreenFormat(int screenFormat)
+{
+    switch(screenFormat) {
+        case VIZ_SCREEN_CRCGCB_FLASHED: return VIZ_SCREEN_CRCGCB;
+        case VIZ_SCREEN_RGB24_FLASHED: return VIZ_SCREEN_RGB24;
+        case VIZ_SCREEN_RGBA32_FLASHED: return VIZ_SCREEN_RGBA32;
+        case VIZ_SCREEN_ARGB32_FLASHED: return VIZ_SCREEN_ARGB32;
+        case VIZ_SCREEN_CBCGCR_FLASHED: return VIZ_SCREEN_CBCGCR;
+        case VIZ_SCREEN_BGR24_FLASHED: return VIZ_SCREEN_BGR24;
+        case VIZ_SCREEN_BGRA32_FLASHED: return VIZ_SCREEN_BGRA32;
+        case VIZ_SCREEN_ABGR32_FLASHED: return VIZ_SCREEN_ABGR32;
+        case VIZ_SCREEN_GRAY8_FLASHED: return VIZ_SCREEN_GRAY8;
+        default: return screenFormat;
+    }
+}
+
 void VIZ_BuffersInit() {
 
     VIZ_BuffersFormatUpdate();
@@ -67,6 +88,15 @@ void VIZ_BuffersInit() {
         case VIZ_SCREEN_ABGR32:             Printf("ABGR32\n"); break;
         case VIZ_SCREEN_GRAY8:              Printf("GRAY8\n"); break;
         case VIZ_SCREEN_DOOM_256_COLORS8:   Printf("DOOM_256_COLORS\n"); break;
+        case VIZ_SCREEN_CRCGCB_FLASHED:     Printf("CRCGCB_FLASHED\n"); break;
+        case VIZ_SCREEN_RGB24_FLASHED:      Printf("RGB24_FLASHED\n"); break;
+        case VIZ_SCREEN_RGBA32_FLASHED:     Printf("RGBA32_FLASHED\n"); break;
+        case VIZ_SCREEN_ARGB32_FLASHED:     Printf("ARGB32_FLASHED\n"); break;
+        case VIZ_SCREEN_CBCGCR_FLASHED:     Printf("CBCGCR_FLASHED\n"); break;
+        case VIZ_SCREEN_BGR24_FLASHED:      Printf("BGR24_FLASHED\n"); break;
+        case VIZ_SCREEN_BGRA32_FLASHED:     Printf("BGRA32_FLASHED\n"); break;
+        case VIZ_SCREEN_ABGR32_FLASHED:     Printf("ABGR32_FLASHED\n"); break;
+        case VIZ_SCREEN_GRAY8_FLASHED:      Printf("GRAY8_FLASHED\n"); break;
         default:                            Printf("UNKNOWN\n");
     }
 
@@ -83,8 +113,9 @@ void VIZ_BuffersFormatUpdate(){
     vizScreenChannelSize = sizeof(BYTE) * vizScreenWidth * vizScreenHeight;
     vizScreenSize = vizScreenChannelSize;
     vizScreenPitch = vizScreenWidth;
+    const int screenFormat = VIZ_BaseScreenFormat(*viz_screen_format);
 
-    switch(*viz_screen_format){
+    switch(screenFormat){
         case VIZ_SCREEN_CRCGCB :
             posMulti = 1;
             rPos = 0; gPos = (int)vizScreenSize; bPos = 2 * (int)vizScreenSize;
@@ -230,9 +261,17 @@ void VIZ_CopyBuffer(BYTE *vizBuffer){
     if(screen == NULL) return;
 
     const BYTE *buffer = screen->GetBuffer();
-    PalEntry *palette = screen->GetPalette();
+    PalEntry flashedPalette[256];
+    const PalEntry *palette = screen->GetPalette();
+    const int screenFormat = VIZ_BaseScreenFormat(*viz_screen_format);
 
-    if(buffer == NULL || palette == NULL) return;
+    if(VIZ_IsFlashedScreenFormat(*viz_screen_format)){
+        screen->GetFlashedPalette(flashedPalette);
+        palette = flashedPalette;
+    }
+
+    if(buffer == NULL) return;
+    if(screenFormat != VIZ_SCREEN_DOOM_256_COLORS8 && palette == NULL) return;
 
     const unsigned int screenSize = screen->GetWidth() * screen->GetHeight();
     const unsigned int bufferPitch = screen->GetPitch();
@@ -244,13 +283,13 @@ void VIZ_CopyBuffer(BYTE *vizBuffer){
     if(vizScreenChannelSize != screenSize || vizScreenWidth != screenWidth)
         VIZ_Error(VIZ_FUNC, "Buffers size mismatch.");
 
-    if(*viz_screen_format == VIZ_SCREEN_DOOM_256_COLORS8){
+    if(screenFormat == VIZ_SCREEN_DOOM_256_COLORS8){
         for(unsigned int i = 0; i < screenSize; ++i){
             unsigned int b = i + (i / screenWidth) * bufferPitchWidthDiff;
             vizBuffer[i] = buffer[b];
         }
     }
-    else if(*viz_screen_format == VIZ_SCREEN_GRAY8){
+    else if(screenFormat == VIZ_SCREEN_GRAY8){
         for(unsigned int i = 0; i < screenSize; ++i){
             unsigned int b = i + (i / screenWidth) * bufferPitchWidthDiff;
             vizBuffer[i] = 0.21 * palette[buffer[b]].r + 0.72 * palette[buffer[b]].g + 0.07 * palette[buffer[b]].b;

@@ -44,15 +44,26 @@ Enum type that defines all supported **screenBuffer** and **automapBuffer** form
 - **ABGR32**    - channel of ABGR values stored in 32 bits, where A value is stored in the oldest 8 bits
 - **GRAY8**     - 8-bit gray channel
 - **DOOM_256_COLORS8** - 8-bit channel with Doom palette values
+- **CRCGCB_FLASHED** - same layout as **CRCGCB** with active screen flashes applied
+- **RGB24_FLASHED** - same layout as **RGB24** with active screen flashes applied
+- **RGBA32_FLASHED** - same layout as **RGBA32** with active screen flashes applied
+- **ARGB32_FLASHED** - same layout as **ARGB32** with active screen flashes applied
+- **CBCGCR_FLASHED** - same layout as **CBCGCR** with active screen flashes applied
+- **BGR24_FLASHED** - same layout as **BGR24** with active screen flashes applied
+- **BGRA32_FLASHED** - same layout as **BGRA32** with active screen flashes applied
+- **ABGR32_FLASHED** - same layout as **ABGR32** with active screen flashes applied
+- **GRAY8_FLASHED** - same layout as **GRAY8** with active screen flashes applied
 
 
-In **CRCGCB** and **CBCGCR** format **screenBuffer** and **automapBuffer** store all red 8-bit values then all green values and then all blue values, each channel is considered separately. As matrices they have [3, y, x] shape.
+In **CRCGCB**, **CBCGCR**, and their **_FLASHED** variants, **screenBuffer** and **automapBuffer** store all red 8-bit values then all green values and then all blue values, each channel is considered separately. As matrices they have [3, y, x] shape.
 
-In **RGB24** and **BGR24** format **screenBuffer** and **automapBuffer** store 24 bit RGB triples. As matrices they have [y, x, 3] shape.
+In **RGB24**, **BGR24**, and their **_FLASHED** variants, **screenBuffer** and **automapBuffer** store 24 bit RGB triples. As matrices they have [y, x, 3] shape.
 
-In **RGBA32**, **ARGB32**, **BGRA32** and **ABGR32** format **screenBuffer** and **automapBuffer** store 32 bit sets of RBG + alpha values. As matrices they have [y, x, 4] shape.
+In **RGBA32**, **ARGB32**, **BGRA32**, **ABGR32**, and their **_FLASHED** variants, **screenBuffer** and **automapBuffer** store 32 bit sets of RBG + alpha values. As matrices they have [y, x, 4] shape.
 
-In **GRAY8** and **DOOM_256_COLORS8** format **screenBuffer** and **automapBuffer** store single 8 bit values. As matrices they have [y, x] shape.
+In **GRAY8**, **GRAY8_FLASHED**, and **DOOM_256_COLORS8** format **screenBuffer** and **automapBuffer** store single 8 bit values. As matrices they have [y, x] shape.
+
+The **_FLASHED** formats apply active screen flash effects, such as damage and pickup flashes, when converting the engine palette to buffer values. Non-flashed formats keep the historical unflashed palette output.
 
 **depthBuffer** and **lablesBuffer** always store single 8-bit values, so they always have [y, x] shape.
 

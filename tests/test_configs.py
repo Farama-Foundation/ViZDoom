@@ -65,7 +65,7 @@ config_values = {
     "render_particles": False,
     "render_screen_flashes": False,
     "render_weapon": False,
-    "screen_format": vzd.ScreenFormat.BGR24,
+    "screen_format": vzd.ScreenFormat.BGR24_FLASHED,
     "screen_resolution": vzd.ScreenResolution.RES_640X480,
     "secret_reward": 50,
     "sectors_info_enabled": True,
@@ -171,6 +171,13 @@ def test_load_config():
 def test_set_config():
     _test_set_config(config_values, False)
     _test_set_config(config_values, True)
+
+
+def test_flashed_screen_format_config_value():
+    game = vzd.DoomGame()
+    assert game.set_config("screen_format = RGB24_FLASHED\n")
+    assert game.get_screen_format() == vzd.ScreenFormat.RGB24_FLASHED
+    assert game.get_screen_channels() == 3
 
 
 def test_scenario_configs():

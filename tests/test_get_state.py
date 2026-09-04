@@ -309,6 +309,20 @@ def test_if_none():
     _check_state(state)
 
 
+def test_flashed_screen_format_shape():
+    game = vzd.DoomGame()
+    try:
+        game.set_window_visible(False)
+        game.set_screen_format(vzd.ScreenFormat.RGB24_FLASHED)
+        game.init()
+
+        state = game.get_state()
+        _check_state(state)
+        assert state.screen_buffer.shape == (240, 320, 3)  # type: ignore
+    finally:
+        game.close()
+
+
 def test_types():
     game = vzd.DoomGame()
     game.set_window_visible(False)

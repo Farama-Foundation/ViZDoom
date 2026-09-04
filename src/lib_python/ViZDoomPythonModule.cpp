@@ -129,6 +129,15 @@ PYBIND11_MODULE(vizdoom, vz){
         ENUM_VAL_2_PYT(ABGR32)
         ENUM_VAL_2_PYT(GRAY8)
         ENUM_VAL_2_PYT(DOOM_256_COLORS8)
+        ENUM_VAL_2_PYT(CRCGCB_FLASHED)
+        ENUM_VAL_2_PYT(RGB24_FLASHED)
+        ENUM_VAL_2_PYT(RGBA32_FLASHED)
+        ENUM_VAL_2_PYT(ARGB32_FLASHED)
+        ENUM_VAL_2_PYT(CBCGCR_FLASHED)
+        ENUM_VAL_2_PYT(BGR24_FLASHED)
+        ENUM_VAL_2_PYT(BGRA32_FLASHED)
+        ENUM_VAL_2_PYT(ABGR32_FLASHED)
+        ENUM_VAL_2_PYT(GRAY8_FLASHED)
         .export_values();
 
     pyb::enum_<ScreenResolution>(vz, "ScreenResolution", docstrings::ScreenResolution)
