@@ -1,0 +1,32 @@
+services:
+  main:
+    depends_on:
+      vizdoom:
+        condition: service_healthy
+
+  vizdoom:
+    build:
+      context: ./vizdoom-server
+    expose:
+      - "8000"
+    environment:
+      VIZDOOM_ENVIRONMENT_ID: VizdoomDoom2MAP02-S1-v0
+      VIZDOOM_IWAD_PATH: /iwads/doom2.wad
+      VIZDOOM_MAX_DECISIONS: "1000"
+      VIZDOOM_REQUIRE_AUTOMAP: "1"
+      VIZDOOM_OBJECTIVE: Complete DOOM II MAP02 (Underhalls) by reaching its exit.
+      VIZDOOM_SEED: "${VIZDOOM_SEED:-}"
+    volumes:
+      - "${DOOM2_WAD_PATH:?Set DOOM2_WAD_PATH to your doom2.wad}:/iwads/doom2.wad:ro"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - >-
+          import socket; s = socket.create_connection(('localhost', 8000),
+          timeout=2); s.close()
+      interval: 2s
+      timeout: 5s
+      retries: 30
+      start_period: 10s

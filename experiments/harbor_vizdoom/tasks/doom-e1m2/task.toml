@@ -1,0 +1,52 @@
+schema_version = "1.4"
+
+artifacts = [
+    { source = "/vizdoom-results/result.json", service = "vizdoom" },
+    { source = "/vizdoom-results/events.jsonl", service = "vizdoom" },
+    { source = "/vizdoom-results/recording.mp4", service = "vizdoom" },
+]
+
+[task]
+name = "vizdoom/doom-e1m2-multibinary-mcp"
+description = "Complete DOOM E1M2 through multimodal ViZDoom MCP tools."
+authors = [{ name = "ViZDoom" }]
+keywords = ["vizdoom", "doom", "vision", "mcp", "game-agent", "multibinary"]
+
+[metadata]
+difficulty = "medium"
+category = "embodied-agent"
+environment_id = "VizdoomDoomE1M2-S1-v0"
+level = "Nuclear Plant"
+frame_skip = 4
+
+[agent]
+timeout_sec = 3600.0
+
+[verifier]
+timeout_sec = 120.0
+environment_mode = "separate"
+
+[[verifier.collect]]
+service = "vizdoom"
+command = 'kill -USR1 1; i=0; while [ ! -s /vizdoom-results/finalized ] && [ "$i" -lt 180 ]; do sleep 1; i=$((i + 1)); done; test -s /vizdoom-results/recording.mp4'
+timeout_sec = 240.0
+
+[environment]
+build_timeout_sec = 900.0
+cpus = 2
+memory_mb = 4096
+storage_mb = 10240
+
+[[environment.mcp_servers]]
+name = "vizdoom"
+transport = "streamable-http"
+url = "http://vizdoom:8000/mcp"
+args = []
+
+[solution.env]
+
+[verifier.env]
+EXPECTED_ENVIRONMENT_ID = "VizdoomDoomE1M2-S1-v0"
+EXPECTED_MAX_DECISIONS = "1000"
+
+[environment.env]

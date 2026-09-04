@@ -1,0 +1,27 @@
+# Harbor supplies the build, command, volumes, and limits for `main` and merges
+# this file over its generated Compose configuration.
+services:
+  main:
+    depends_on:
+      vizdoom:
+        condition: service_healthy
+
+  vizdoom:
+    build:
+      context: ./vizdoom-server
+    expose:
+      - "8000"
+    environment:
+      VIZDOOM_SEED: "${VIZDOOM_SEED:-}"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - >-
+          import socket; s = socket.create_connection(('localhost', 8000),
+          timeout=2); s.close()
+      interval: 2s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
