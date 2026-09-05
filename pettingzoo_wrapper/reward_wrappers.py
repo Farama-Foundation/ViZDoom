@@ -156,6 +156,15 @@ class DeathmatchRewardWrapper(ParallelEnv):
         return self.env.close()
 
 
+_HIDE_AND_SEEK_DAMAGE_SHAPING = 0.0025  # per hp, as in the symmetric duel
+_HIDE_AND_SEEK_YAW_SHAPING = 0  # scale of the shooter's yaw-error (was 0.05)
+_HS_ROUND_OVER = "USER53"  # budget spent + grace elapsed -> hider_escape
+_HS_SHOOTER_ALIVE = "USER54"
+_HS_HIDER_ALIVE = "USER55"
+_HS_ROCKETS_FIRED = "USER56"
+_HS_SHOOTER_YAW_ERROR_MDEG = "USER59"
+
+
 class HideAndSeekRewardWrapper(ParallelEnv):
     roles = {"agent_0": "shooter", "agent_1": "hider"}
     role_codes = {"agent_0": 0.0, "agent_1": 1.0}
@@ -165,17 +174,33 @@ class HideAndSeekRewardWrapper(ParallelEnv):
         "hider_win": 2.0,
         "hider_escape": 3.0,
         "draw": 4.0,
+        "hider_suicide": 5.0,
     }
+    max_spawn_retries = 3
 
-    def __init__(self, env: ParallelEnv, *, win_reward: float = 1.0):
+    def __init__(
+        self,
+        env: ParallelEnv,
+        *,
+        win_reward: float = 1.0,
+        damage_shaping: float = _HIDE_AND_SEEK_DAMAGE_SHAPING,
+        yaw_shaping: float = _HIDE_AND_SEEK_YAW_SHAPING,
+        gamma: float = 0.99,
+    ):
         self.env = env
         self.win_reward = float(win_reward)
+        self.damage_shaping = float(damage_shaping)
+        self.yaw_shaping = float(yaw_shaping)
+        self.gamma = float(gamma)
         self.metadata = getattr(env, "metadata", {})
         self.possible_agents = env.possible_agents
         self.agents = env.agents
         self._previous_deaths: Dict[str, float] = {}
         self._previous_shooter_ammo: Optional[float] = None
+        self._previous_damage: Optional[float] = None
+        self._previous_yaw_potential: Optional[float] = None
         self._rocket_shots = 0.0
+        self._spawn_retries = 0
 
     def action_space(self, agent: str):
         return self.env.action_space(agent)
@@ -212,13 +237,31 @@ class HideAndSeekRewardWrapper(ParallelEnv):
             infos[agent]["hide_and_seek_role_code"] = self.role_codes[agent]
             infos[agent]["hide_and_seek_outcome_code"] = self.outcome_codes["ongoing"]
             infos[agent]["hide_and_seek_rocket_shots"] = self._rocket_shots
+            infos[agent]["hide_and_seek_spawn_retries"] = float(self._spawn_retries)
 
-    def reset(
-        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
-    ):
-        obs, infos = self.env.reset(seed=seed, options=options)
-        self.agents = self.env.agents[:]
-        self._validate_and_annotate(infos)
+    @staticmethod
+    def _dead_at_reset(infos: Dict[str, Any]) -> bool:
+        for info in infos.values():
+            if not isinstance(info, dict):
+                continue
+            if info.get("player_dead") or float(info.get("DEAD", 0.0) or 0.0) > 0:
+                return True
+        return False
+
+    @staticmethod
+    def _yaw_potential(info: Dict[str, Any]) -> Optional[float]:
+        """phi(s) = -|yaw error| / 180 for the shooter, None when not measurable."""
+        yaw = info.get(_HS_SHOOTER_YAW_ERROR_MDEG)
+        if yaw is None:
+            return None
+        if _HS_SHOOTER_ALIVE in info and _HS_HIDER_ALIVE in info:
+            if not (
+                float(info[_HS_SHOOTER_ALIVE]) > 0 and float(info[_HS_HIDER_ALIVE]) > 0
+            ):
+                return None
+        return -min(max(float(yaw) / 1000.0, 0.0), 180.0) / 180.0
+
+    def _start_round(self, infos: Dict[str, Any]) -> None:
         self._previous_deaths = {
             agent: float(infos[agent]["DEATHCOUNT"]) for agent in self.agents
         }
@@ -226,15 +269,35 @@ class HideAndSeekRewardWrapper(ParallelEnv):
         self._previous_shooter_ammo = (
             None if shooter_ammo is None else float(shooter_ammo)
         )
+        self._previous_damage = float(infos["agent_0"].get("DAMAGECOUNT", 0.0))
+        self._previous_yaw_potential = self._yaw_potential(infos["agent_0"])
         self._rocket_shots = 0.0
         for info in infos.values():
             info["hide_and_seek_rocket_shots"] = self._rocket_shots
+            info["hide_and_seek_spawn_retries"] = float(self._spawn_retries)
+
+    def reset(
+        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
+    ):
+        obs, infos = self.env.reset(seed=seed, options=options)
+        self.agents = self.env.agents[:]
+        self._validate_and_annotate(infos)
+        self._spawn_retries = 0
+        while (
+            self._dead_at_reset(infos) and self._spawn_retries < self.max_spawn_retries
+        ):
+            self._spawn_retries += 1
+            obs, infos = self.env.reset(seed=None, options=options)
+            self.agents = self.env.agents[:]
+            self._validate_and_annotate(infos)
+        self._start_round(infos)
         return obs, infos
 
-    def step(self, actions: Dict[str, Any]):
-        obs, _, terminations, truncations, infos = self.env.step(actions)
-        self._validate_and_annotate(infos)
-
+    def _update_rocket_shots(self, infos: Dict[str, Any]) -> None:
+        fired = infos["agent_0"].get(_HS_ROCKETS_FIRED)
+        if fired is not None:
+            self._rocket_shots = float(fired)
+            return
         shooter_ammo = infos["agent_0"].get("SELECTED_WEAPON_AMMO")
         if shooter_ammo is not None:
             shooter_ammo = float(shooter_ammo)
@@ -243,6 +306,45 @@ class HideAndSeekRewardWrapper(ParallelEnv):
                     0.0, self._previous_shooter_ammo - shooter_ammo
                 )
             self._previous_shooter_ammo = shooter_ammo
+
+    def _shooter_damage_delta(self, infos: Dict[str, Any]) -> float:
+        """Damage dealt by the shooter this step"""
+        dealt = infos["agent_0"].get("DAMAGECOUNT")
+        if dealt is None:
+            return 0.0
+        dealt = float(dealt)
+        previous = dealt if self._previous_damage is None else self._previous_damage
+        self._previous_damage = dealt
+        delta = dealt - previous
+        # the counter only grows within a round; a drop means the engine reset it
+        return delta if delta > 1e-8 else 0.0
+
+    def _damage_shaping(self, dealt: float) -> Dict[str, float]:
+        """Zero sum"""
+        if not self.damage_shaping or dealt <= 0.0:
+            return {"agent_0": 0.0, "agent_1": 0.0}
+        return {
+            "agent_0": dealt * self.damage_shaping,
+            "agent_1": -dealt * self.damage_shaping,
+        }
+
+    def _yaw_shaping(self, infos: Dict[str, Any], terminal: bool) -> float:
+        """For shooter: scale * (gamma * phi(s') - phi(s))"""
+        if not self.yaw_shaping:
+            return 0.0
+        previous = self._previous_yaw_potential
+        current = None if terminal else self._yaw_potential(infos["agent_0"])
+        self._previous_yaw_potential = current
+        if previous is None:
+            return 0.0
+        next_potential = 0.0 if current is None else current
+        return self.yaw_shaping * (self.gamma * next_potential - previous)
+
+    def step(self, actions: Dict[str, Any]):
+        obs, _, terminations, truncations, infos = self.env.step(actions)
+        self._validate_and_annotate(infos)
+
+        self._update_rocket_shots(infos)
         for info in infos.values():
             info["hide_and_seek_rocket_shots"] = self._rocket_shots
 
@@ -260,23 +362,32 @@ class HideAndSeekRewardWrapper(ParallelEnv):
         shooter_died = died["agent_0"]
         hider_died = died["agent_1"]
         timed_out = bool(truncations) and all(truncations.values())
+        budget_spent = float(infos["agent_0"].get(_HS_ROUND_OVER, 0.0) or 0.0) > 0
+        dealt = self._shooter_damage_delta(infos)
         rewards = {agent: 0.0 for agent in self.agents}
 
         if shooter_died and hider_died:
             outcome = "draw"
         elif hider_died:
-            outcome = "shooter_win"
+            # a kill always comes with shooter damage in the same step; a death
+            # without it is the instant-death pit
+            outcome = "shooter_win" if dealt > 0.0 else "hider_suicide"
             rewards = {"agent_0": self.win_reward, "agent_1": -self.win_reward}
         elif shooter_died:
             outcome = "hider_win"
             rewards = {"agent_0": -self.win_reward, "agent_1": self.win_reward}
-        elif timed_out:
+        elif timed_out or budget_spent:
             outcome = "hider_escape"
             rewards = {"agent_0": -self.win_reward, "agent_1": self.win_reward}
         else:
             outcome = "ongoing"
 
-        if shooter_died or hider_died:
+        shaped = self._damage_shaping(dealt)
+        shaped["agent_0"] += self._yaw_shaping(infos, terminal=outcome != "ongoing")
+        for agent in self.agents:
+            rewards[agent] = float(rewards.get(agent, 0.0)) + shaped.get(agent, 0.0)
+
+        if shooter_died or hider_died or (budget_spent and not timed_out):
             terminations = {agent: True for agent in self.agents}
             truncations = {agent: False for agent in self.agents}
         for info in infos.values():

@@ -3,13 +3,16 @@ import statistics
 from typing import Dict, Sequence
 
 
-SHOOTER_WIN = 1
-HIDER_WIN = 2
-HIDER_ESCAPE = 3
+SHOOTER_WIN = 1  # hider killed by the shooter's rockets
+HIDER_WIN = 2  # shooter died (it is unarmed-opponent play, so always self-inflicted)
+HIDER_ESCAPE = 3  # timeout or rocket budget spent
 DRAW = 4
+HIDER_SUICIDE = 5  # hider died without shooter damage (walked into the pit)
+TERMINAL_OUTCOMES = (SHOOTER_WIN, HIDER_WIN, HIDER_ESCAPE, DRAW, HIDER_SUICIDE)
 
 
-def _wilson_interval(successes: int, total: int) -> tuple[float, float]:
+def wilson_interval(successes: int, total: int) -> tuple[float, float]:
+    """95% Wilson score interval of a proportion"""
     z = 1.959963984540054
     rate = successes / total
     denominator = 1.0 + z * z / total
@@ -30,10 +33,7 @@ def hide_and_seek_success_metrics(
         raise ValueError("outcomes and durations_seconds must have the same length")
     if not outcomes:
         return {}
-    if any(
-        outcome not in (SHOOTER_WIN, HIDER_WIN, HIDER_ESCAPE, DRAW)
-        for outcome in outcomes
-    ):
+    if any(outcome not in TERMINAL_OUTCOMES for outcome in outcomes):
         raise ValueError("all hide-and-seek outcomes must be terminal")
 
     total = len(outcomes)
@@ -42,14 +42,19 @@ def hide_and_seek_success_metrics(
         "hider_win": sum(outcome == HIDER_WIN for outcome in outcomes),
         "escape": sum(outcome == HIDER_ESCAPE for outcome in outcomes),
         "draw": sum(outcome == DRAW for outcome in outcomes),
+        "hider_suicide": sum(outcome == HIDER_SUICIDE for outcome in outcomes),
     }
     outcome_counts["hider_success"] = (
         outcome_counts["hider_win"] + outcome_counts["escape"]
     )
+    # what the shooter is paid for (+1): captures and hider suicides
+    outcome_counts["shooter_success"] = (
+        outcome_counts["capture"] + outcome_counts["hider_suicide"]
+    )
 
     metrics = {"episodes": float(total)}
     for name, count in outcome_counts.items():
-        low, high = _wilson_interval(count, total)
+        low, high = wilson_interval(count, total)
         metrics[f"{name}_count"] = float(count)
         metrics[f"{name}_rate"] = count / total
         metrics[f"{name}_rate_ci95_low"] = low

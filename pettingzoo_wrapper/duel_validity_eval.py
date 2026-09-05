@@ -384,16 +384,45 @@ _WORKER_THREADS = 1
 _BUNDLE_CACHE: dict[str, PolicyBundle] = {}
 
 
+def _canonical_module():
+    """This module under its import name (`<package>.duel_validity_eval`).
+
+    Under `python -m pettingzoo_wrapper.duel_validity_eval` this file runs as
+    `__main__` (and is re-imported as `__mp_main__` in spawned workers), while
+    `hide_and_seek_validity` imports `load_cached_bundle` from the *package*
+    module - a second module object with its own `_WORKER_LOCK`/`_BUNDLE_CACHE`.
+    Worker-side state must therefore live in (and pool tasks must reference)
+    the canonical module, otherwise the reload lock is silently never held.
+    """
+    spec = globals().get("__spec__")
+    name = getattr(spec, "name", None) or __name__
+    if name in ("__main__", "__mp_main__"):
+        name = f"{__package__}.duel_validity_eval" if __package__ else __name__
+    import importlib
+
+    return importlib.import_module(name)
+
+
+def allowed_cpu_count() -> int:
+    try:
+        return max(1, len(os.sched_getaffinity(0)))  # type: ignore[attr-defined]
+    except (AttributeError, OSError):
+        return max(1, os.cpu_count() or 1)
+
+
 def _worker_init(lock, threads: int) -> None:
     global _WORKER_LOCK, _WORKER_THREADS
     _WORKER_LOCK = lock
     _WORKER_THREADS = int(threads)
+    canonical = _canonical_module()
+    canonical._WORKER_LOCK = lock
+    canonical._WORKER_THREADS = int(threads)
     import torch
 
-    torch.set_num_threads(max(1, _WORKER_THREADS))
+    torch.set_num_threads(max(1, int(threads)))
 
 
-def _bundle(checkpoint: str) -> PolicyBundle:
+def load_cached_bundle(checkpoint: str) -> PolicyBundle:
     bundle = _BUNDLE_CACHE.get(checkpoint)
     if bundle is None:
         # Experiment.reload_from_file spins up real ViZDoom hosts on the task's
@@ -409,7 +438,7 @@ def _bundle(checkpoint: str) -> PolicyBundle:
     return bundle
 
 
-def _scenario_config_path(scenario: str, explicit: str | None) -> Path:
+def scenario_config_path(scenario: str, explicit: str | None) -> Path:
     if explicit:
         return Path(explicit).expanduser().resolve()
     import vizdoom as vzd
@@ -513,8 +542,12 @@ def _run_bot_job(job: Job, bundle: PolicyBundle) -> list[EpisodeStats]:
 
 def run_job(job: Job) -> tuple[Job, list[EpisodeStats], str | None]:
     """Executed in a worker process."""
+    if not isinstance(job, Job):
+        from .hide_and_seek_validity import run_job as run_hide_and_seek_job
+
+        return run_hide_and_seek_job(job)
     try:
-        bundle = _bundle(job.checkpoint)
+        bundle = load_cached_bundle(job.checkpoint)
         if job.opponent == "bots":
             return job, _run_bot_job(job, bundle), None
 
@@ -527,12 +560,12 @@ def run_job(job: Job) -> tuple[Job, list[EpisodeStats], str | None]:
         elif job.opponent == "prev":
             if job.prev_checkpoint is None:
                 return job, [], None
-            opponent_adapter = _bundle(job.prev_checkpoint).adapters[1]
+            opponent_adapter = load_cached_bundle(job.prev_checkpoint).adapters[1]
         opponent = _Opponent(job.opponent, len(bundle.buttons), opponent_adapter, rng)
 
         tmp_dir = Path(tempfile.mkdtemp(prefix="duel_validity_eval_"))
         cfg = write_eval_config(
-            _scenario_config_path(bundle.scenario, job.scenario_config), tmp_dir
+            scenario_config_path(bundle.scenario, job.scenario_config), tmp_dir
         )
         port = EVAL_BASE_PORT + (job.index * EVAL_PORT_STRIDE) % (
             65000 - EVAL_BASE_PORT
@@ -988,38 +1021,73 @@ def build_jobs(
     return jobs
 
 
+def chunk_jobs(jobs: Sequence[Any], workers: int) -> list[list[Any]]:
+    """Split jobs into chunks, no span checkpoints"""
+    if not jobs:
+        return []
+    target = max(1, len(jobs) // max(1, workers * 3))
+    chunks: list[list[Any]] = []
+    current: list[Any] = []
+    for job in jobs:
+        if current and (
+            job.checkpoint != current[-1].checkpoint or len(current) >= target
+        ):
+            chunks.append(current)
+            current = []
+        current.append(job)
+    if current:
+        chunks.append(current)
+    return chunks
+
+
+def run_job_chunk(jobs: Sequence[Any]) -> list[tuple[Any, list[Any], str | None]]:
+    """Run the jobs of one chunk"""
+    return [run_job(job) for job in jobs]
+
+
 def run_jobs(
-    jobs: Sequence[Job], workers: int, errors: list[str] | None = None
+    jobs: Sequence[Job],
+    workers: int,
+    errors: list[str] | None = None,
+    on_result: Any | None = None,
 ) -> list[EpisodeStats]:
     """Run all jobs; tracebacks of jobs that crashed are appended to `errors`."""
     episodes: list[EpisodeStats] = []
     started = time.monotonic()
+
+    def collect(job, results, error):
+        _report_job(job, results, error, started)
+        if error and errors is not None:
+            errors.append(error)
+        episodes.extend(results)
+        if on_result is not None:
+            on_result(job, results)
+
     if workers <= 1:
-        _worker_init(None, max(1, os.cpu_count() or 1))
+        _worker_init(None, allowed_cpu_count())
         for job in jobs:
             _, results, error = run_job(job)
-            _report_job(job, results, error, started)
-            if error and errors is not None:
-                errors.append(error)
-            episodes.extend(results)
+            collect(job, results, error)
         return episodes
 
+    # Pool tasks reference the canonical module so the initializer's globals (lock, cache) are the ones every code path in the worker sees.
+    canonical = _canonical_module()
     context = get_context("spawn")
     lock = context.Lock()
-    threads = max(1, (os.cpu_count() or workers) // workers)
+    threads = max(1, allowed_cpu_count() // workers)
     with ProcessPoolExecutor(
         max_workers=workers,
         mp_context=context,
-        initializer=_worker_init,
+        initializer=canonical._worker_init,
         initargs=(lock, threads),
     ) as pool:
-        futures = [pool.submit(run_job, job) for job in jobs]
+        futures = [
+            pool.submit(canonical.run_job_chunk, chunk)
+            for chunk in chunk_jobs(jobs, workers)
+        ]
         for future in as_completed(futures):
-            job, results, error = future.result()
-            _report_job(job, results, error, started)
-            if error and errors is not None:
-                errors.append(error)
-            episodes.extend(results)
+            for job, results, error in future.result():
+                collect(job, results, error)
     return episodes
 
 
@@ -1027,7 +1095,8 @@ def _report_job(
     job: Job, results: Sequence[EpisodeStats], error: str | None, started: float
 ) -> None:
     elapsed = time.monotonic() - started
-    label = f"ckpt={checkpoint_step(Path(job.checkpoint))} {job.mode} {_key(job.opponent, job.corruption)}"
+    condition = getattr(job, "condition", None) or _key(job.opponent, job.corruption)
+    label = f"ckpt={checkpoint_step(Path(job.checkpoint))} {job.mode} {condition}"
     if error:
         print(f"[ValidityEval {elapsed:7.0f}s] {label}: FAILED\n{error}", flush=True)
         return
@@ -1043,8 +1112,10 @@ def _report_job(
         f"{opp}: fd={np.mean([r.frag_diff for r in valid if r.opponent == opp]):+.2f}"
         for opp in by_opp
     )
+    seconds = sum(float(getattr(r, "duration_seconds", 0.0) or 0.0) for r in valid)
     print(
-        f"[ValidityEval {elapsed:7.0f}s] {label}: {len(valid)} episodes, {detail}",
+        f"[ValidityEval {elapsed:7.0f}s] {label}: {len(valid)} episodes, {detail} "
+        f"({seconds:.0f}s)",
         flush=True,
     )
 
@@ -1056,6 +1127,8 @@ def _log_wandb(
     gates: Mapping[str, Mapping[str, Mapping[str, Any]]],
     output_dir: Path,
     entity: str | None,
+    metric_columns: Sequence[str] | None = None,
+    button_rate_keys: Sequence[str] = ("button_rates",),
 ) -> None:
     import wandb
 
@@ -1070,26 +1143,24 @@ def _log_wandb(
         reinit=True,
     )
     try:
-        columns = [
-            "checkpoint_step",
-            "mode",
-            "opponent",
-            "episodes",
-            "frags",
-            "deaths",
-            "frag_diff",
-            "frag_diff_ci_low",
-            "frag_diff_ci_high",
-            "win_rate",
-            "damage_made",
-            "damage_taken",
-            "reward",
-            "rockets_fired",
-            "los_fraction",
-            "yaw_error_mean_deg",
-            "aim_within_10deg_fraction",
-            "policy_entropy_ratio",
-        ]
+        if metric_columns is None:
+            metric_columns = (
+                "frags",
+                "deaths",
+                "frag_diff",
+                "frag_diff_ci_low",
+                "frag_diff_ci_high",
+                "win_rate",
+                "damage_made",
+                "damage_taken",
+                "reward",
+                "rockets_fired",
+                "los_fraction",
+                "yaw_error_mean_deg",
+                "aim_within_10deg_fraction",
+                "policy_entropy_ratio",
+            )
+        columns = ["checkpoint_step", "mode", "opponent", "episodes", *metric_columns]
         rows = []
         for step in sorted(table):
             for mode, conditions in table[step].items():
@@ -1107,13 +1178,16 @@ def _log_wandb(
                                     "checkpoint_step": step,
                                 }
                             )
-                    for name, rate in (s.get("button_rates") or {}).items():
-                        wandb.log(
-                            {
-                                f"validity/{mode}/{condition}/{name.lower()}_rate": rate,
-                                "checkpoint_step": step,
-                            }
-                        )
+                    for rate_key in button_rate_keys:
+                        prefix = rate_key.removesuffix("button_rates").rstrip("_")
+                        prefix = f"{prefix}_" if prefix else ""
+                        for name, rate in (s.get(rate_key) or {}).items():
+                            wandb.log(
+                                {
+                                    f"validity/{mode}/{condition}/{prefix}{name.lower()}_rate": rate,
+                                    "checkpoint_step": step,
+                                }
+                            )
         wandb.log({"validity/crossplay": wandb.Table(columns=columns, data=rows)})
         for mode, mode_gates in gates.items():
             for name, gate in mode_gates.items():
@@ -1123,6 +1197,30 @@ def _log_wandb(
         run.log_artifact(artifact)
     finally:
         run.finish()
+
+
+HIDE_AND_SEEK_SCENARIO = "multi_duel_hide_and_seek"
+
+
+def experiment_meta(experiment_folder: Path) -> tuple[str | None, str | None]:
+    """(scenario, run_id) from BenchMARL's config.pkl, or (None, None)"""
+    config_pkl = experiment_folder / "config.pkl"
+    try:
+        import pickle
+
+        from .bot_eval_policy import register_training_script_classes
+
+        register_training_script_classes()
+        # BenchMARL pickles the task object itself (VizdoomTask.config holds the CLI task config)
+        with config_pkl.open("rb") as handle:
+            config = pickle.load(handle)
+        task = config.get("task") if isinstance(config, dict) else config
+        task_config = getattr(task, "config", None)
+        if isinstance(task_config, dict):
+            return task_config.get("scenario"), task_config.get("run_id")
+    except Exception:
+        pass
+    return None, None
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -1187,6 +1285,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     parser.add_argument("--wandb_project", default="benchmarl-vizdoom")
     parser.add_argument("--wandb_entity", default=None)
+    parser.add_argument(
+        "--scenario",
+        default=None,
+        help="override the scenario read from config.pkl (selects the job set)",
+    )
     args = parser.parse_args(argv)
 
     checkpoints = resolve_checkpoints(args.path)
@@ -1202,22 +1305,56 @@ def main(argv: Sequence[str] | None = None) -> int:
         f"[ValidityEval] checkpoints: {[checkpoint_step(c) for c in checkpoints]}",
         flush=True,
     )
+    scenario, run_id = experiment_meta(experiment_folder)
+    if args.scenario:
+        scenario = args.scenario
+    hide_and_seek = scenario == HIDE_AND_SEEK_SCENARIO
+    from . import hide_and_seek_validity as hs
 
-    jobs = build_jobs(
-        checkpoints,
-        episodes=args.episodes,
-        modes=args.modes,
-        seed=args.seed,
-        scenario_config=args.scenario_config,
-        blind_every_checkpoint=args.blind_every_checkpoint,
-        bots=args.bots,
-        opponents=args.opponents,
-        corruptions=args.corruptions,
+    if hide_and_seek:
+        print(
+            "[ValidityEval] asymmetric scenario: role-aware job set "
+            "(shooter = agent_0, hider = agent_1, ACS turret rows)",
+            flush=True,
+        )
+        jobs = hs.build_jobs(
+            checkpoints,
+            episodes=args.episodes,
+            modes=args.modes,
+            seed=args.seed,
+            scenario_config=args.scenario_config,
+            blind_every_checkpoint=args.blind_every_checkpoint,
+            corruptions=args.corruptions,
+        )
+    else:
+        jobs = build_jobs(
+            checkpoints,
+            episodes=args.episodes,
+            modes=args.modes,
+            seed=args.seed,
+            scenario_config=args.scenario_config,
+            blind_every_checkpoint=args.blind_every_checkpoint,
+            bots=args.bots,
+            opponents=args.opponents,
+            corruptions=args.corruptions,
+        )
+    print(
+        f"[ValidityEval] {len(jobs)} jobs, {args.workers} workers, "
+        f"{allowed_cpu_count()} allowed CPUs",
+        flush=True,
     )
-    print(f"[ValidityEval] {len(jobs)} jobs, {args.workers} workers", flush=True)
     started = time.monotonic()
     job_errors: list[str] = []
-    episodes = run_jobs(jobs, args.workers, job_errors)
+    # episodes are appended as jobs finish so a cancelled/killed eval keeps its data
+    episodes_path = output_dir / "episodes.jsonl"
+    with episodes_path.open("w", encoding="utf-8") as handle:
+
+        def persist(job, results):
+            for e in results:
+                handle.write(json.dumps(e.to_dict(), sort_keys=True) + "\n")
+            handle.flush()
+
+        episodes = run_jobs(jobs, args.workers, job_errors, on_result=persist)
     if not any(e.valid for e in episodes):
         print(
             f"[ValidityEval] no valid episodes, nothing to report "
@@ -1245,31 +1382,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             file=sys.stderr,
         )
 
-    with (output_dir / "episodes.jsonl").open("w", encoding="utf-8") as handle:
-        for e in episodes:
-            handle.write(json.dumps(e.to_dict(), sort_keys=True) + "\n")
+    if hide_and_seek:
+        table = hs.aggregate(episodes, seed=args.seed)
+        gates = {
+            mode: hs.evaluate_gates(table, mode, seed=args.seed) for mode in args.modes
+        }
+        public = hs.public_table(table)
+        render = hs.render_report
+        wandb_columns = hs.WANDB_COLUMNS
+        button_rate_keys = ("shooter_button_rates", "hider_button_rates")
+    else:
+        table = aggregate(episodes, seed=args.seed)
+        gates = {
+            mode: evaluate_gates(table, mode, TRAINING_RESPAWN_DELAY)
+            for mode in args.modes
+        }
+        public = {str(k): v for k, v in table.items()}
+        render = render_report
+        wandb_columns = None
+        button_rate_keys = ("button_rates",)
 
-    table = aggregate(episodes, seed=args.seed)
-    gates = {
-        mode: evaluate_gates(table, mode, TRAINING_RESPAWN_DELAY) for mode in args.modes
-    }
-
-    scenario = None
-    run_id = None
-    config_pkl = experiment_folder / "config.pkl"
-    try:
-        import pickle
-
-        # BenchMARL pickles the task object itself (VizdoomTask.config holds the CLI task config)
-        with config_pkl.open("rb") as handle:
-            config = pickle.load(handle)
-        task = config.get("task") if isinstance(config, dict) else config
-        task_config = getattr(task, "config", None)
-        if isinstance(task_config, dict):
-            scenario = task_config.get("scenario")
-            run_id = task_config.get("run_id")
-    except Exception:
-        pass
     meta = {
         "experiment": experiment_folder.name,
         "run_id": run_id,
@@ -1281,15 +1413,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         "respawn_delay_seconds": TRAINING_RESPAWN_DELAY,
         "elapsed_seconds": time.monotonic() - started,
     }
-    summary = {
-        "meta": meta,
-        "gates": gates,
-        "table": {str(k): v for k, v in table.items()},
-    }
+    summary = {"meta": meta, "gates": gates, "table": public}
     (output_dir / "summary.json").write_text(
         json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8"
     )
-    report = render_report(table, gates, meta)
+    report = render(table, gates, meta)
     (output_dir / "report.md").write_text(report, encoding="utf-8")
     print(report, flush=True)
     print(f"[ValidityEval] wrote {output_dir}", flush=True)
@@ -1297,7 +1425,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.wandb:
         try:
             _log_wandb(
-                args.wandb_project, meta, table, gates, output_dir, args.wandb_entity
+                args.wandb_project,
+                meta,
+                table,
+                gates,
+                output_dir,
+                args.wandb_entity,
+                metric_columns=wandb_columns,
+                button_rate_keys=button_rate_keys,
             )
         except Exception as exc:
             print(

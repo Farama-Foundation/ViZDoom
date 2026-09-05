@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+import atexit
 import importlib
 import inspect
+import os
+import pickle
+import shutil
 import sys
+import tempfile
 from collections import deque
 from pathlib import Path
 from typing import Any
@@ -11,6 +16,10 @@ import numpy as np
 
 
 TRAINING_SCRIPT_MODULE = "examples.python.pettingzoo_learning"
+RELOAD_PORT_BASE = 30000
+RELOAD_PORT_STRIDE = 200
+RELOAD_PORT_SLOTS = 85
+_RELOAD_SAVE_FOLDER: Path | None = None
 
 
 def _policy_device(policy: Any) -> str:
@@ -161,25 +170,70 @@ def register_training_script_classes(
     return added
 
 
+def reload_base_port(pid: int | None = None) -> int:
+    """UDP base port for the envs created by a checkpoint reload"""
+    pid = os.getpid() if pid is None else int(pid)
+    return RELOAD_PORT_BASE + (pid % RELOAD_PORT_SLOTS) * RELOAD_PORT_STRIDE
+
+
+def _reload_save_folder() -> Path:
+    global _RELOAD_SAVE_FOLDER
+    if _RELOAD_SAVE_FOLDER is None or not _RELOAD_SAVE_FOLDER.is_dir():
+        _RELOAD_SAVE_FOLDER = Path(tempfile.mkdtemp(prefix="benchmarl_reload_"))
+        atexit.register(shutil.rmtree, str(_RELOAD_SAVE_FOLDER), True)
+    return _RELOAD_SAVE_FOLDER
+
+
+RELOAD_EXPERIMENT_PATCH: dict[str, Any] = {
+    "collect_with_grad": True,
+    "on_policy_n_envs_per_worker": 1,
+    "off_policy_n_envs_per_worker": 1,
+    "sampling_device": "cpu",
+    "train_device": "cpu",
+    "buffer_device": "cpu",
+    "restore_map_location": "cpu",
+    "loggers": [],
+    "evaluation": False,
+    "render": False,
+}
+
+
 def load_bot_eval_experiment(checkpoint_path: str | Path):
+    """Reload a BenchMARL experiment from a checkpoint for evaluation."""
     from benchmarl.experiment import Experiment
 
     register_training_script_classes()
     checkpoint = Path(checkpoint_path).resolve()
-    event_dir = checkpoint.parent.parent
-    return Experiment.reload_from_file(
-        str(checkpoint),
-        experiment_patch={
-            "save_folder": str(event_dir.parent),
-            "collect_with_grad": True,
-            "on_policy_n_envs_per_worker": 1,
-            "off_policy_n_envs_per_worker": 1,
-            "sampling_device": "cpu",
-            "train_device": "cpu",
-            "buffer_device": "cpu",
-            "restore_map_location": "cpu",
-            "loggers": [],
-            "evaluation": False,
-            "render": False,
-        },
+    experiment_folder = checkpoint.parent.parent
+    config_file = experiment_folder / "config.pkl"
+    if not config_file.is_file():
+        raise ValueError(f"config.pkl missing in experiment folder {experiment_folder}")
+    with config_file.open("rb") as f:
+        task = pickle.load(f)
+        task_config = pickle.load(f)
+        algorithm_config = pickle.load(f)
+        model_config = pickle.load(f)
+        seed = pickle.load(f)
+        experiment_config = pickle.load(f)
+        critic_model_config = pickle.load(f)
+        callbacks = pickle.load(f)
+    task_config = dict(task_config) if task_config is not None else {}
+    task_config["base_port"] = reload_base_port()
+    task.config = task_config
+    experiment_config.restore_file = str(checkpoint)
+    patch = dict(RELOAD_EXPERIMENT_PATCH, save_folder=str(_reload_save_folder()))
+    for key, value in patch.items():
+        if not hasattr(experiment_config, key):
+            raise ValueError(f"Experiment config does not have attribute {key}")
+        setattr(experiment_config, key, value)
+    experiment = Experiment(
+        task=task,
+        algorithm_config=algorithm_config,
+        model_config=model_config,
+        seed=seed,
+        config=experiment_config,
+        callbacks=callbacks,
+        critic_model_config=critic_model_config,
     )
+    print(f"\nReloaded experiment {experiment.name} from {checkpoint}.")
+    return experiment

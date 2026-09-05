@@ -73,6 +73,7 @@ class _Task:
     action: list[float] | None = None
     port: int | None = None
     tics: int = 1
+    command: str | None = None
 
 
 class _AgentWorkerCrashed(RuntimeError):
@@ -177,6 +178,12 @@ def _agent_worker_thread(
                             "info": info,
                         }
                     )
+                    continue
+
+                if task.cmd == "command":
+                    # console command (like `puke <script> <arg>` to start an ACS script)
+                    game.send_game_command(str(task.command))
+                    result_queue.put({"status": "ok"})
                     continue
 
                 if task.cmd != "step":
@@ -430,6 +437,24 @@ class _AgentWorkerCoordinator:
             "infos": infos,
         }
 
+    def send_game_command(self, command: str, agent_id: int = 0) -> dict:
+        """Run a console command in one agent's game (only that worker is dispatched)."""
+        if not 0 <= int(agent_id) < self.num_agents:
+            raise ValueError(f"agent_id {agent_id} out of range")
+        self._agent_worker_task_queues[int(agent_id)].put(
+            _Task("command", command=str(command))
+        )
+        result_queue = self._agent_worker_result_queues[int(agent_id)]
+        try:
+            result = result_queue.get(timeout=_STEP_TIMEOUT)
+        except queue.Empty as exc:
+            raise TimeoutError(
+                f"Agent {agent_id} command timeout after {_STEP_TIMEOUT:.1f}s"
+            ) from exc
+        if isinstance(result, dict) and result.get("status") == "crashed":
+            raise _AgentWorkerCrashed(result.get("error", f"agent {agent_id} crashed"))
+        return {}
+
     def debug_status(self) -> dict:
         return {
             "slot_index": self.slot_index,
@@ -462,6 +487,16 @@ def _agent_worker_process_main(conn: Connection, kwargs: dict) -> None:
                 continue
             if cmd == "step":
                 conn.send({"status": "ok", **coordinator.step(message["actions"])})
+                continue
+            if cmd == "command":
+                conn.send(
+                    {
+                        "status": "ok",
+                        **coordinator.send_game_command(
+                            message["command"], int(message.get("agent_id", 0))
+                        ),
+                    }
+                )
                 continue
             raise ValueError(f"Unknown parent command: {cmd}")
     except Exception as exc:
@@ -738,6 +773,16 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
                 return _do_step()
             except Exception as retry_exc:
                 raise self._format_backend_failure("step", retry_exc) from first_error
+
+    def send_game_command(self, command: str, agent_id: int = 0) -> None:
+        """Send a ViZDoom console command through one agent's game.
+        Used for evaluation to start ACS scripts.
+        """
+        assert self._parent_conn is not None
+        self._parent_conn.send(
+            {"cmd": "command", "command": str(command), "agent_id": int(agent_id)}
+        )
+        self._recv_message(timeout=self._barrier_timeout)
 
     def close(self):
         self._shutdown_agent_worker_process()
