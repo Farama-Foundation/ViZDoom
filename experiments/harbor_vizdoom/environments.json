@@ -1,0 +1,127 @@
+{
+  "schema_version": 2,
+  "tasks": [
+    {
+      "slug": "basic",
+      "task_name": "vizdoom/basic-multibinary-mcp",
+      "environment_id": "VizdoomBasic-MultiBinary-v1",
+      "display_name": "ViZDoom Basic",
+      "family": "scenario",
+      "level_name": "Basic",
+      "description": "Kill the monster in ViZDoom BASIC through multimodal MCP tools.",
+      "objective": "Kill the red monster before the episode times out.",
+      "instruction_template": "basic.md.template",
+      "difficulty": "easy",
+      "keywords": ["vizdoom", "basic", "vision", "mcp", "game-agent", "multibinary"],
+      "max_decisions": 75,
+      "agent_timeout_sec": 900,
+      "require_automap": false,
+      "iwad": null
+    },
+    {
+      "slug": "my-way-home",
+      "task_name": "vizdoom/my-way-home-multibinary-mcp",
+      "environment_id": "VizdoomMyWayHome-MultiBinary-v1",
+      "display_name": "ViZDoom My Way Home",
+      "family": "scenario",
+      "level_name": "My Way Home",
+      "description": "Reach the armor in ViZDoom My Way Home through multimodal MCP tools.",
+      "objective": "Navigate the maze and reach the green armor vest.",
+      "instruction_template": "my-way-home.md.template",
+      "difficulty": "medium",
+      "keywords": ["vizdoom", "navigation", "vision", "mcp", "game-agent", "multibinary"],
+      "max_decisions": 525,
+      "agent_timeout_sec": 1800,
+      "require_automap": false,
+      "iwad": null
+    },
+    {
+      "slug": "doom-e1m1",
+      "task_name": "vizdoom/doom-e1m1-multibinary-mcp",
+      "environment_id": "VizdoomDoomE1M1-S1-v0",
+      "display_name": "DOOM E1M1: Hangar",
+      "family": "doom",
+      "game_title": "DOOM",
+      "map_id": "E1M1",
+      "level_name": "Hangar",
+      "description": "Complete DOOM E1M1 through multimodal ViZDoom MCP tools.",
+      "objective": "Complete DOOM E1M1 (Hangar) by reaching its exit.",
+      "instruction_template": "doom.md.template",
+      "difficulty": "medium",
+      "keywords": ["vizdoom", "doom", "vision", "mcp", "game-agent", "multibinary"],
+      "max_decisions": 1000,
+      "agent_timeout_sec": 3600,
+      "require_automap": true,
+      "iwad": {
+        "template_file": "doom.wad",
+        "container_path": "/iwads/doom.wad"
+      }
+    },
+    {
+      "slug": "doom-e1m2",
+      "task_name": "vizdoom/doom-e1m2-multibinary-mcp",
+      "environment_id": "VizdoomDoomE1M2-S1-v0",
+      "display_name": "DOOM E1M2: Nuclear Plant",
+      "family": "doom",
+      "game_title": "DOOM",
+      "map_id": "E1M2",
+      "level_name": "Nuclear Plant",
+      "description": "Complete DOOM E1M2 through multimodal ViZDoom MCP tools.",
+      "objective": "Complete DOOM E1M2 (Nuclear Plant) by reaching its exit.",
+      "instruction_template": "doom.md.template",
+      "difficulty": "medium",
+      "keywords": ["vizdoom", "doom", "vision", "mcp", "game-agent", "multibinary"],
+      "max_decisions": 1000,
+      "agent_timeout_sec": 3600,
+      "require_automap": true,
+      "iwad": {
+        "template_file": "doom.wad",
+        "container_path": "/iwads/doom.wad"
+      }
+    },
+    {
+      "slug": "doom2-map01",
+      "task_name": "vizdoom/doom2-map01-multibinary-mcp",
+      "environment_id": "VizdoomDoom2MAP01-S1-v0",
+      "display_name": "DOOM II MAP01: Entryway",
+      "family": "doom",
+      "game_title": "DOOM II",
+      "map_id": "MAP01",
+      "level_name": "Entryway",
+      "description": "Complete DOOM II MAP01 through multimodal ViZDoom MCP tools.",
+      "objective": "Complete DOOM II MAP01 (Entryway) by reaching its exit.",
+      "instruction_template": "doom.md.template",
+      "difficulty": "medium",
+      "keywords": ["vizdoom", "doom2", "vision", "mcp", "game-agent", "multibinary"],
+      "max_decisions": 1000,
+      "agent_timeout_sec": 3600,
+      "require_automap": true,
+      "iwad": {
+        "template_file": "doom2.wad",
+        "container_path": "/iwads/doom2.wad"
+      }
+    },
+    {
+      "slug": "doom2-map02",
+      "task_name": "vizdoom/doom2-map02-multibinary-mcp",
+      "environment_id": "VizdoomDoom2MAP02-S1-v0",
+      "display_name": "DOOM II MAP02: Underhalls",
+      "family": "doom",
+      "game_title": "DOOM II",
+      "map_id": "MAP02",
+      "level_name": "Underhalls",
+      "description": "Complete DOOM II MAP02 through multimodal ViZDoom MCP tools.",
+      "objective": "Complete DOOM II MAP02 (Underhalls) by reaching its exit.",
+      "instruction_template": "doom.md.template",
+      "difficulty": "medium",
+      "keywords": ["vizdoom", "doom2", "vision", "mcp", "game-agent", "multibinary"],
+      "max_decisions": 1000,
+      "agent_timeout_sec": 3600,
+      "require_automap": true,
+      "iwad": {
+        "template_file": "doom2.wad",
+        "container_path": "/iwads/doom2.wad"
+      }
+    }
+  ]
+}

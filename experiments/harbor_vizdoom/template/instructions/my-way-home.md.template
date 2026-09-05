@@ -1,0 +1,21 @@
+# Play ViZDoom My Way Home
+
+Navigate the maze and reach the green armor vest before the episode times out.
+The labyrinth contains differently colored interconnected rooms and a dead-end
+corridor. The vest remains in the same destination room, but your starting
+room and facing direction are random.
+
+Use the ViZDoom MCP tools to interact with the episode:
+
+- Call `get_current_state` first. It returns the current screen, valid button
+  names, and episode metadata.
+- Call `make_action` with a JSON list named `buttons`. You may press multiple
+  buttons together; an empty list waits. Every call advances four frames and
+  returns the resulting state and screen.
+
+Use only names listed in `available_buttons`. Continue until a tool result
+reports `done: true`. Reaching the vest is success; the decision limit or a
+timeout is failure.
+
+Do not use the internet or access the game by any route other than the
+provided ViZDoom MCP tools. Built-in web search and web fetch are disabled.

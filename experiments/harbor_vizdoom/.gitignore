@@ -1,0 +1,4 @@
+__pycache__/
+generated_tasks/
+jobs/
+random_agent_runs/

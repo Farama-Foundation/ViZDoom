@@ -1,0 +1,30 @@
+services:
+  main:
+    depends_on:
+      vizdoom:
+        condition: service_healthy
+
+  vizdoom:
+    build:
+      context: ./vizdoom-server
+    expose:
+      - "8000"
+    environment:
+      VIZDOOM_ENVIRONMENT_ID: {{environment_id}}
+      VIZDOOM_IWAD_PATH: {{iwad_container_path}}
+      VIZDOOM_MAX_DECISIONS: "{{max_decisions}}"
+      VIZDOOM_REQUIRE_AUTOMAP: "{{require_automap}}"
+      VIZDOOM_OBJECTIVE: {{objective}}
+      VIZDOOM_SEED: "${VIZDOOM_SEED:-}"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - >-
+          import socket; s = socket.create_connection(('localhost', 8000),
+          timeout=2); s.close()
+      interval: 2s
+      timeout: 5s
+      retries: 30
+      start_period: 10s

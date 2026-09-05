@@ -1,0 +1,22 @@
+# Play ViZDoom BASIC
+
+Kill the red monster before the episode times out.
+
+You are in a rectangular gray room. You start along one long wall, and one red
+monster is placed somewhere along the opposite wall. One accurate hit kills
+it. Shooting costs reward, and waiting also costs reward, so aim before firing.
+
+Use the ViZDoom MCP tools to interact with the episode:
+
+- Call `get_current_state` first. It returns the current screen, valid button
+  names, and episode metadata.
+- Call `make_action` with a JSON list named `buttons`. You may press multiple
+  buttons together; an empty list waits. Every call advances four frames and
+  returns the resulting state and screen.
+
+The available buttons are `MOVE_LEFT`, `MOVE_RIGHT`, and `ATTACK`. Continue
+until a tool result reports `done: true`. Success means the monster was killed;
+a timeout is failure.
+
+Do not use the internet or access the game by any route other than the
+provided ViZDoom MCP tools. Built-in web search and web fetch are disabled.
