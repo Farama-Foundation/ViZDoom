@@ -12,6 +12,7 @@ from vizdoom.pettingzoo_wrapper.reward_wrappers import (
     HideAndSeekRewardWrapper,
     PitfallRewardWrapper,
     RemedyRushRewardWrapper,
+    SimpleTagRewardWrapper,
 )
 from vizdoom.pettingzoo_wrapper.video_recorder import VideoLoggerParallelWrapper
 
@@ -21,6 +22,8 @@ _SCENARIO_DIR = os.path.join(Path(__file__).parent.parent, "scenarios")
 
 # scenario-specific wrappers
 _WRAPPERS = {
+    "simple_tag": SimpleTagRewardWrapper,
+    "simple_tag_audio": SimpleTagRewardWrapper,
     "multi_duel": DeathmatchRewardWrapper,
     "multi_duel_hide_and_seek": HideAndSeekRewardWrapper,
     "multi_duel_pistol": DeathmatchRewardWrapper,

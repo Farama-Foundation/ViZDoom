@@ -2,6 +2,73 @@ from typing import Any, Dict, Optional
 
 import numpy as np
 from pettingzoo import ParallelEnv
+from pettingzoo.utils.wrappers import BaseParallelWrapper
+
+
+class SimpleTagRewardWrapper(BaseParallelWrapper):
+    def __init__(self, env):
+        super().__init__(env)
+        if env.possible_agents != [f"agent_{i}" for i in range(4)]:
+            raise ValueError(
+                "Simple Tag requires exactly four agents (three hunters, one prey)"
+            )
+        self.agents = env.agents[:]
+
+    def _annotate(self, infos, outcome=0):
+        for index, agent in enumerate(self.possible_agents):
+            info = infos[agent]
+            if not all(key in info for key in ("USER50", "USER51", "USER52")):
+                raise ValueError("Simple Tag config requires USER50, USER51 and USER52")
+            info["tag_role_code"] = float(index == 3)
+            info["tag_outcome_code"] = float(outcome)
+            info["tag_round_seconds"] = float(info["USER52"]) / 35.0
+
+    def reset(self, seed=None, options=None):
+        for attempt in range(4):
+            obs, infos = self.env.reset(
+                seed=seed if attempt == 0 else None, options=options
+            )
+            self.agents = self.env.agents[:]
+            self._annotate(infos)
+            if not any(
+                info.get("player_dead") or info["USER50"] for info in infos.values()
+            ):
+                return obs, infos
+        raise RuntimeError(
+            "Simple Tag could not obtain a live, uncaught four-player reset"
+        )
+
+    def step(self, actions):
+        if not self.agents:
+            return {}, {}, {}, {}, {}
+        obs, _, terminations, truncations, infos = self.env.step(actions)
+        self._annotate(infos)
+        recovered = any(info.get("_hidden_reset") for info in infos.values())
+        caught = any(float(info["USER50"]) > 0 for info in infos.values())
+        timed_out = bool(truncations) and all(truncations.values())
+        unexpected_end = any(terminations.values()) or any(
+            info.get("player_dead") for info in infos.values()
+        )
+        outcome = 0
+        if recovered:
+            outcome = 3
+        elif caught:
+            outcome = 1
+        elif timed_out:
+            outcome = 2
+        elif unexpected_end:
+            outcome = 3
+        team_reward = 10.0 if outcome == 1 else -10.0 if outcome == 2 else 0.0
+        rewards = {
+            agent: team_reward if index < 3 else -team_reward
+            for index, agent in enumerate(self.possible_agents)
+        }
+        self._annotate(infos, outcome)
+        if outcome:
+            terminations = dict.fromkeys(self.possible_agents, outcome == 1)
+            truncations = dict.fromkeys(self.possible_agents, outcome != 1)
+            self.agents = []
+        return obs, rewards, terminations, truncations, infos
 
 
 def _reset_info(info):

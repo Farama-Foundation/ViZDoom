@@ -44,13 +44,6 @@ def hide_and_seek_success_metrics(
         "draw": sum(outcome == DRAW for outcome in outcomes),
         "hider_suicide": sum(outcome == HIDER_SUICIDE for outcome in outcomes),
     }
-    outcome_counts["hider_success"] = (
-        outcome_counts["hider_win"] + outcome_counts["escape"]
-    )
-    # what the shooter is paid for (+1): captures and hider suicides
-    outcome_counts["shooter_success"] = (
-        outcome_counts["capture"] + outcome_counts["hider_suicide"]
-    )
 
     metrics = {"episodes": float(total)}
     for name, count in outcome_counts.items():

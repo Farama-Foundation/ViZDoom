@@ -136,6 +136,8 @@ class VideoLoggerParallelWrapper(wrappers.BaseParallelWrapper):
         frames = []
         for a in agent_list:
             x = obs_dict[a]  # AHWC, uint8 or float
+            if hasattr(self.env, "rgb_observation"):
+                x = self.env.rgb_observation(x)
             if x.dtype.kind == "f":
                 x = np.clip(x, 0.0, 1.0)
                 x = (x * 255.0).astype(np.uint8)

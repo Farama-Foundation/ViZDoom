@@ -68,6 +68,7 @@ from pettingzoo_wrapper.utils import discover_buttons
 DEFAULT_BASE_UDP_PORT = 40300
 SLOT_PORT_STRIDE = 100
 ENV_INSTANCE_INDEX_BASE = 100
+TAG_SCENARIOS = ("simple_tag", "simple_tag_audio")
 
 
 class WandbLoggingWrapper(Logger):
@@ -275,6 +276,30 @@ class WandbLoggingWrapper(Logger):
                     f"eval/{group}/duel/{agent}/aim_within_10deg_fraction",
                     torch.stack(aim_values[agent_index]),
                 )
+
+            if self.task_name in TAG_SCENARIOS:
+                outcomes = []
+                durations = []
+                for rollout in rollouts:
+                    info = rollout.get(("next", group, "info"), None)
+                    if info is None or info.get("tag_outcome_code", None) is None:
+                        continue
+                    outcomes.append(info["tag_outcome_code"][-1, 0].reshape(-1)[0])
+                    durations.append(info["tag_round_seconds"][-1, 0].reshape(-1)[0])
+                if outcomes:
+                    codes = torch.stack(outcomes)
+                    valid = (codes == 1) | (codes == 2)
+                    metrics["eval/tag/invalid_fraction"] = (~valid).float().mean()
+                    if valid.any():
+                        metrics["eval/tag/capture_rate"] = (
+                            (codes[valid] == 1).float().mean()
+                        )
+                        metrics["eval/tag/prey_escape_rate"] = (
+                            (codes[valid] == 2).float().mean()
+                        )
+                        metrics["eval/tag/round_seconds"] = torch.stack(durations)[
+                            valid
+                        ].mean()
 
             if self.task_name == "multi_duel_hide_and_seek":
                 outcomes = []
@@ -637,6 +662,7 @@ class VizdoomTask(TaskClass):
             scenario=cfg["scenario"],
             num_agents=cfg["num_agents"],
             resolution=cfg["resolution"],
+            timeout=cfg.get("timeout"),
             skip_frames=cfg["skip_frames"],
             frame_stack=cfg["frame_stack"],
             async_mode=cfg["async_mode"],
@@ -726,6 +752,11 @@ class VizdoomTask(TaskClass):
         return hasattr(env, "render")
 
     def max_steps(self, env: EnvBase) -> int:
+        if self.config["scenario"] in TAG_SCENARIOS:
+            # Timeout is in engine tics; evaluation counts policy decisions.
+            timeout = int(self.config.get("timeout", 4235))
+            skip = max(1, int(self.config.get("skip_frames", 1)))
+            return (timeout + skip - 1) // skip
         return int(self.config.get("timeout", 1000))
 
     def supports_continuous_actions(self) -> bool:
@@ -877,7 +908,7 @@ def main():
         default=None,
         help=(
             "Share actor parameters between agents. Defaults to false for "
-            "multi_duel_hide_and_seek and true for other scenarios."
+            "asymmetric hide-and-seek/tag scenarios and true for other scenarios."
         ),
     )
     ap.add_argument(
@@ -886,7 +917,7 @@ def main():
         default=None,
         help=(
             "Share critic parameters between agents. Defaults to false for "
-            "multi_duel_hide_and_seek and true for other scenarios."
+            "asymmetric hide-and-seek/tag scenarios and true for other scenarios."
         ),
     )
     ap.add_argument(
@@ -995,10 +1026,26 @@ def main():
         help="Skip the deathmatch check on the evaluation scenario",
     )
     args = ap.parse_args()
+    asymmetric = args.scenario in ("multi_duel_hide_and_seek", *TAG_SCENARIOS)
     if args.share_policy_params is None:
-        args.share_policy_params = args.scenario != "multi_duel_hide_and_seek"
+        args.share_policy_params = not asymmetric
     if args.share_critic_params is None:
-        args.share_critic_params = args.scenario != "multi_duel_hide_and_seek"
+        args.share_critic_params = not asymmetric
+    if args.scenario in TAG_SCENARIOS:
+        if args.num_agents != 4:
+            raise ValueError("Simple Tag requires exactly 4 agents")
+        if args.algo not in ("ippo", "mappo"):
+            raise ValueError(
+                "Simple Tag supports IPPO/MAPPO, not cooperative value mixing"
+            )
+        if args.share_policy_params or args.share_critic_params:
+            raise ValueError(
+                "Simple Tag requires separate hunter/prey actor and critic parameters"
+            )
+        if args.bot_eval:
+            raise ValueError(
+                "The duel bot evaluator does not support four-player Simple Tag"
+            )
     if args.scenario == "multi_duel_hide_and_seek" and args.num_agents != 2:
         raise ValueError("multi_duel_hide_and_seek requires exactly 2 agents")
     if args.bot_eval_screening_max_attempts < args.bot_eval_screening_episodes:

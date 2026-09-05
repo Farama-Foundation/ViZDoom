@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import math
 import time
+from pathlib import Path
 from typing import Any, Sequence
 
 import numpy as np
@@ -14,6 +15,10 @@ from gymnasium import spaces
 from pettingzoo import ParallelEnv
 
 import vizdoom as vzd
+from vizdoom.pettingzoo_wrapper.audio_observations import (
+    AUDIO_BUFFER_TICS,
+    uses_audio_observations,
+)
 from vizdoom.pettingzoo_wrapper.utils import (
     discover_buttons,
     get_screen_resolution,
@@ -82,6 +87,11 @@ def configure_doom_game(
     """
     game = vzd.DoomGame()
     game.load_config(config_path)
+    if uses_audio_observations(config_path):
+        game.set_audio_buffer_enabled(True)
+        game.set_audio_sampling_rate(vzd.SamplingRate.SR_22050)
+        game.set_audio_buffer_size(AUDIO_BUFFER_TICS)
+        game.set_screen_format(vzd.ScreenFormat.CRCGCB)
     if available_buttons is not None:
         game.set_available_buttons(list(available_buttons))
     game.set_window_visible(False)
@@ -103,7 +113,11 @@ def configure_doom_game(
         game.add_game_args(
             f"-join {host_address}:{port} -netmode {netmode} +viz_connect_timeout 60"
         )
-    game.add_game_args(f"+name Player{agent_idx} +colorset {agent_idx}")
+    colorset = agent_idx
+    if Path(config_path).stem.lower() in {"simple_tag", "simple_tag_audio"}:
+        # WAD roles use Player{idx}: 0-2 (hunters) are red, 3 (prey) is green.
+        colorset = 0 if agent_idx == 3 else 3
+    game.add_game_args(f"+name Player{agent_idx} +colorset {colorset}")
     return game
 
 
@@ -183,8 +197,9 @@ class VizdoomParallelEnvBase(ParallelEnv):
         )
 
         w, h = parse_hw(resolution)
-        self._raw_obs_shape = (h, w, 3)
-        self._obs_shape = (h, w, 3 * self.frame_stack)
+        channels = 5 if uses_audio_observations(config_file) else 3
+        self._raw_obs_shape = (h, w, channels)
+        self._obs_shape = (h, w, channels * self.frame_stack)
         self._observation_space = spaces.Box(
             0, 255, shape=self._obs_shape, dtype=np.uint8
         )
@@ -263,10 +278,19 @@ class VizdoomParallelEnvBase(ParallelEnv):
 
     # ------------------- rendering -------------------
 
+    def rgb_observation(self, observation: np.ndarray) -> np.ndarray:
+        """Extract newest RGB for rendering/video"""
+        start = observation.shape[-1] - self._raw_obs_shape[-1]
+        return observation[..., start : start + 3]
+
     def render(self) -> np.ndarray | None:
         if self.render_mode is None or not self._last_frames:
             return None
-        frames = [self._last_frames[a] for a in self.agents if a in self._last_frames]
+        frames = [
+            self.rgb_observation(self._last_frames[a])
+            for a in self.agents
+            if a in self._last_frames
+        ]
         if not frames:
             return None
         h, w = frames[0].shape[:2]

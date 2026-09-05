@@ -11,6 +11,7 @@ from contextlib import contextmanager
 import numpy as np
 
 import vizdoom as vzd
+from vizdoom.pettingzoo_wrapper.audio_observations import stereo_spectrogram
 
 
 def parse_hw(res: str) -> tuple[int, int]:
@@ -60,6 +61,17 @@ def read_frame(state, resolution) -> np.ndarray:
     # fallback to zeros if no frame
     h, w = parse_hw(resolution)[1], parse_hw(resolution)[0]
     return np.zeros((h, w, 3), dtype=np.uint8)
+
+
+def read_observation(state, resolution, *, audio: bool = False) -> np.ndarray:
+    """Assemble one policy frame, read_frame is helper for RGB."""
+    rgb = read_frame(state, resolution)
+    if not audio:
+        return rgb
+    planes = stereo_spectrogram(
+        None if state is None else state.audio_buffer, *rgb.shape[:2]
+    )
+    return np.concatenate((rgb, planes), axis=-1)
 
 
 def discover_buttons(config_path: str) -> tuple[vzd.Button, ...]:

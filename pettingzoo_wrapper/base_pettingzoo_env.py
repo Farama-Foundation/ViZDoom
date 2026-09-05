@@ -13,13 +13,14 @@ from multiprocessing.connection import Connection
 import numpy as np
 
 import vizdoom as vzd
+from vizdoom.pettingzoo_wrapper.audio_observations import uses_audio_observations
 from vizdoom.pettingzoo_wrapper.base_env_common import (
     VizdoomParallelEnvBase,
     configure_doom_game,
 )
 from vizdoom.pettingzoo_wrapper.utils import (
     get_live_game_vars,
-    read_frame,
+    read_observation,
     reserve_init_slot,
     reserve_udp_port,
 )
@@ -107,6 +108,7 @@ def _agent_worker_thread(
     game = None
     available_game_vars = []
     frames_advanced = 0
+    audio = uses_audio_observations(config_path)
 
     def _close_game() -> None:
         nonlocal game
@@ -169,7 +171,7 @@ def _agent_worker_thread(
                     info.update(get_live_game_vars(game, available_game_vars))
                     frames_advanced = 0
                     # Frames go through shared memory
-                    frame_out[...] = read_frame(state, resolution)
+                    frame_out[...] = read_observation(state, resolution, audio=audio)
                     result_queue.put(
                         {
                             "reward": 0.0,
@@ -215,7 +217,7 @@ def _agent_worker_thread(
                 }
                 # Read vars from the engine as `state` is None on terminal step
                 info.update(get_live_game_vars(game, available_game_vars))
-                frame_out[...] = read_frame(state, resolution)
+                frame_out[...] = read_observation(state, resolution, audio=audio)
                 result_queue.put(
                     {
                         "reward": reward,
