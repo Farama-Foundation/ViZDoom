@@ -795,7 +795,8 @@ def override_algo_config(args):
         "lmbda": args.gae_lambda,
         "scale_mapping": "biased_softplus_1.0",
         "use_tanh_normal": True,
-        "minibatch_advantage": False,
+        # Chunk batch (full rollout image GAE can OOM)
+        "minibatch_advantage": True,
     }
 
     algo_overrides = {
