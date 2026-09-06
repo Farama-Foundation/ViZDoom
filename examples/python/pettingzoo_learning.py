@@ -62,6 +62,7 @@ from pettingzoo_wrapper.bot_eval_callback import (
 from pettingzoo_wrapper.bot_eval_types import BotEvalConfig
 from pettingzoo_wrapper.hide_and_seek_metrics import hide_and_seek_success_metrics
 from pettingzoo_wrapper.rollout_worker import RolloutWorker
+from pettingzoo_wrapper.streaming_evaluation import streaming_evaluation
 from pettingzoo_wrapper.utils import discover_buttons
 
 
@@ -431,6 +432,9 @@ class VizdoomExperiment(Experiment):
 
     and turns on per-agent advantage normalization.
     """
+
+    def _evaluation_loop(self):
+        return streaming_evaluation(self)
 
     def close(self, finish_logger: bool = False):
         finish = self.logger.finish
