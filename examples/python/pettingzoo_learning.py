@@ -11,6 +11,7 @@ pip install vizdoom==1.3.0 \
             pygame-ce==2.5.7 \
             imageio==2.37.3 \
             imageio-ffmpeg==0.6.0 \
+            moviepy==2.2.1 \
             opencv-python-headless
 
 python -m examples.python.pettingzoo_learning
@@ -22,7 +23,7 @@ python -m examples.python.pettingzoo_learning
     --train_device cuda \
     --sampling_device cpu \
     --buffer_device cpu \
-    --record_every 10 \
+    --evaluation_interval_iters 10 \
     --parallel_collection \
 """
 
@@ -34,6 +35,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+import numpy as np
 import torch
 from benchmarl.algorithms import IppoConfig, MasacConfig, QmixConfig
 from benchmarl.algorithms.mappo import MappoConfig
@@ -349,9 +351,29 @@ class WandbLoggingWrapper(Logger):
             rollouts=rollouts,
             total_frames=total_frames,
             step=step,
-            video_frames=video_frames,
+            video_frames=None,
         )
         self.log(self._evaluation_metrics(rollouts), step=step)
+        if video_frames and rollouts and self.loggers:
+            video = torch.from_numpy(np.stack(video_frames)).permute(0, 3, 1, 2)
+            video = video.to(torch.uint8).unsqueeze(0)
+            for logger in self.loggers:
+                if isinstance(logger, WandbLogger):
+                    # Use the batch number so checkpoint resumes keep unique keys.
+                    logger.log_video(
+                        f"videos/episode_{step + 1:06d}",
+                        video,
+                        fps=20,
+                        commit=False,
+                    )
+                else:
+                    even_video = video
+                    for index in (-1, -2):
+                        if even_video.shape[index] % 2:
+                            even_video = even_video.index_select(
+                                index, torch.arange(1, even_video.shape[index])
+                            )
+                    logger.log_video("eval_video", even_video, step=step)
         return result
 
     def log(self, dict_to_log: Dict, step: int = None):
@@ -678,7 +700,6 @@ class VizdoomTask(TaskClass):
             ticrate=cfg["ticrate"],
             seed=seed,
             enable_video=cfg["enable_video"] if enable_video is None else enable_video,
-            record_every=cfg["record_every"],
             video_fps=cfg["video_fps"],
             verbose=cfg.get("verbose", False),
             daemon=cfg["daemon"],
@@ -689,7 +710,7 @@ class VizdoomTask(TaskClass):
         cfg = self.config
         env = PettingZooWrapper(
             env=self.build_parallel_env(
-                seed=seed, env_instance_index=env_instance_index
+                seed=seed, env_instance_index=env_instance_index, enable_video=False
             ),
             group_map=MarlGroupMapType.ALL_IN_ONE_GROUP,
             return_state=False,
@@ -828,10 +849,10 @@ def override_experiment_config(args, on_policy: bool, on_policy_minibatch_size: 
         "gamma": args.gamma,
         "lr": args.lr,
         # eval / logging / ckpts
-        "evaluation": True,  # Must be enabled for video logging
-        "render": False,
-        "evaluation_interval": args.rollout_steps * 25,
-        "evaluation_episodes": 20,
+        "evaluation": args.evaluation,
+        "render": args.evaluation and args.enable_video,
+        "evaluation_interval": args.rollout_steps * args.evaluation_interval_iters,
+        "evaluation_episodes": args.evaluation_episodes,
         "loggers": ["wandb"],
         "project_name": "benchmarl-vizdoom",
         "checkpoint_interval": args.rollout_steps * 100,
@@ -949,9 +970,18 @@ def main():
         ),
     )
 
+    # Benchmarl evaluation (independent of bot/validity evaluation and video)
+    ap.add_argument("--evaluation", action=BooleanOptionalAction, default=True)
+    ap.add_argument("--evaluation_episodes", type=int, default=5)
+    ap.add_argument(
+        "--evaluation_interval_iters",
+        type=int,
+        default=100,
+        help="Evaluate (and record+upload video) initially and every N rollout batches",
+    )
+
     # Video recording
     ap.add_argument("--enable_video", action=BooleanOptionalAction, default=True)
-    ap.add_argument("--record_every", type=int, default=100)
     ap.add_argument("--video_fps", type=int, default=35)
     ap.add_argument(
         "--render_mode", type=str, default="rgb_array", choices=["rgb_array", "human"]
@@ -1065,6 +1095,9 @@ def main():
     if args.frame_stack < 1:
         raise ValueError("--frame_stack must be at least 1")
 
+    if args.evaluation_episodes < 1 or args.evaluation_interval_iters < 1:
+        raise ValueError("Evaluation episodes and interval must be positive")
+
     torch.set_num_threads(1)
     torch.set_num_interop_threads(1)
 
@@ -1167,7 +1200,6 @@ def main():
         "netmode": args.netmode,
         "ticrate": args.ticrate,
         "enable_video": args.enable_video,
-        "record_every": args.record_every,
         "video_fps": args.video_fps,
         "sampling_device": args.sampling_device,
         "daemon": args.daemon,

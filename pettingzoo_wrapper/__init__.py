@@ -14,7 +14,9 @@ from vizdoom.pettingzoo_wrapper.reward_wrappers import (
     RemedyRushRewardWrapper,
     SimpleTagRewardWrapper,
 )
-from vizdoom.pettingzoo_wrapper.video_recorder import VideoLoggerParallelWrapper
+
+
+# from vizdoom.pettingzoo_wrapper.video_recorder import VideoLoggerParallelWrapper
 
 
 # where the scenario .cfg files live
@@ -85,12 +87,12 @@ def make(
         available_buttons=available_buttons,
     )
 
-    if enable_video:
-        env = VideoLoggerParallelWrapper(
-            env,
-            every_n_episodes=record_every,
-            fps=video_fps,
-        )
+    # if enable_video:
+    #     env = VideoLoggerParallelWrapper(
+    #         env,
+    #         every_n_episodes=record_every,
+    #         fps=video_fps,
+    #     )
 
     if scenario in _WRAPPERS:
         env = _WRAPPERS[scenario](env)

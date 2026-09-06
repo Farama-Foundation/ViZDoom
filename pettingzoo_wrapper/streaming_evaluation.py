@@ -23,6 +23,8 @@ def metric_rollout(env, policy, max_steps, groups, callback=None):
     """Stream steps; retain only rewards, done flags and numeric info on CPU."""
     policy_device = next(policy.parameters(), torch.empty(0)).device
     td = env.reset()
+    if callback is not None:
+        callback(env, td)
     steps = []
     for index in range(max_steps):
         td = td.to(policy_device)
@@ -31,11 +33,8 @@ def metric_rollout(env, policy, max_steps, groups, callback=None):
             td = td.to(env.device)
         else:
             td.clear_device_()
-        if env.batch_size:
-            transition, td = env.step_and_maybe_reset(td)
-        else:
-            transition = env.step(td)
-            td = env.step_mdp(transition)
+        transition = env.step(td)
+        td = env.step_mdp(transition)
         steps.append(metric_transition(transition, groups))
         done = any(
             transition.get(
@@ -44,10 +43,14 @@ def metric_rollout(env, policy, max_steps, groups, callback=None):
             for key in env.done_keys
         )
         del transition
-        if index == max_steps - 1 or (not env.batch_size and done):
-            break
         if callback is not None:
             callback(env, td)
+            if done:
+                callback = None
+        if index == max_steps - 1 or (not env.batch_size and done):
+            break
+        if env.batch_size:
+            td = env.maybe_reset(td)
     return torch.stack(steps, dim=len(env.batch_size))
 
 
@@ -66,13 +69,12 @@ def streaming_evaluation(experiment):
     started = time.perf_counter()
     video_frames = None
     callback = None
-    if experiment.task.has_render(env) and config.render:
+    if config.render and experiment.task.has_render(env):
         video_frames = []
 
         def record_frame(env, td):
-            # Training metrics never require a full round video in memory
-            if len(video_frames) < 300:
-                frame = experiment.task.__class__.render_callback(experiment, env, td)
+            frame = experiment.task.__class__.render_callback(experiment, env, td)
+            if frame is not None:
                 video_frames.append(frame.copy())
 
         callback = record_frame
@@ -108,7 +110,7 @@ def streaming_evaluation(experiment):
     )
     experiment.logger.log_evaluation(
         rollouts,
-        video_frames=video_frames,
+        video_frames=video_frames or None,
         step=experiment.n_iters_performed,
         total_frames=experiment.total_frames,
     )

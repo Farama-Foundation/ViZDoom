@@ -36,6 +36,7 @@ class _EnvInstance:
         self.agent_names: list[str] = []
         self.n_agents = 0
         self._obs: dict[str, np.ndarray] = {}
+        self._stacked_obs: np.ndarray | None = None
         self._episode_reward: np.ndarray | None = None
         self._recreate_env()
 
@@ -58,6 +59,9 @@ class _EnvInstance:
                 "RolloutWorker env instance reset called before env creation"
             )
         self._obs, _ = self.env.reset()
+        self._stacked_obs = np.stack(
+            [self._obs[agent] for agent in self.agent_names], axis=0
+        )
         self._episode_reward = np.zeros((self.n_agents, 1), dtype=np.float32)
 
     def ensure_ready(self) -> None:
@@ -65,8 +69,10 @@ class _EnvInstance:
             self.restart("env instance was not ready for collection")
 
     def current_observation(self) -> np.ndarray:
+        # Env buffers may be shared/mutable, so cache the stack
         self.ensure_ready()
-        return np.stack([self._obs[agent] for agent in self.agent_names], axis=0)
+        assert self._stacked_obs is not None
+        return self._stacked_obs
 
     def current_state(self) -> np.ndarray:
         self.ensure_ready()
@@ -107,9 +113,13 @@ class _EnvInstance:
         done = np.logical_or(terminated, truncated)
 
         if bool(done.any()):
+            # Copy nonterminal state into rollout storage before env can step again.
+            if next_state is not next_observation:
+                next_state = next_state.copy()
             self._reset()
         else:
             self._obs = next_obs
+            self._stacked_obs = next_observation
 
         self.consecutive_failures = 0
         self.last_error = "none"
@@ -131,6 +141,7 @@ class _EnvInstance:
         self.close()
         self.env = None
         self._obs = {}
+        self._stacked_obs = None
         self._episode_reward = None
 
         for _ in range(_MAX_ENV_INSTANCE_RECREATE_ATTEMPTS):
@@ -146,6 +157,7 @@ class _EnvInstance:
                 self.close()
                 self.env = None
                 self._obs = {}
+                self._stacked_obs = None
                 self._episode_reward = None
 
         raise RuntimeError(
@@ -272,7 +284,12 @@ class RolloutWorker:
         self.last_profile: dict[str, float] = {}
         self._policy_time = 0.0
         self._env_wait_time = 0.0
+        self._observation_preparation_time = 0.0
+        self._action_decode_time = 0.0
+        self._transition_processing_time = 0.0
+        self._buffer_write_time = 0.0
         self._pinned_buffers: dict[int, torch.Tensor] = {}
+        self._observation_buffers: dict[int, np.ndarray] = {}
 
         if self.num_envs < 1:
             raise ValueError("num_envs must be at least 1")
@@ -352,6 +369,10 @@ class RolloutWorker:
         collection_started = time.perf_counter()
         self._policy_time = 0.0
         self._env_wait_time = 0.0
+        self._observation_preparation_time = 0.0
+        self._action_decode_time = 0.0
+        self._transition_processing_time = 0.0
+        self._buffer_write_time = 0.0
         storage = _RolloutStorage(
             num_envs=self.num_envs,
             steps_per_env=self.frames_per_batch // self.num_envs,
@@ -385,16 +406,29 @@ class RolloutWorker:
         batch = self._finalize_batch(storage)
         batch_assembly_time = time.perf_counter() - batch_assembly_started
         collection_time = time.perf_counter() - collection_started
+        other_time = max(
+            0.0,
+            collection_time
+            - self._policy_time
+            - self._env_wait_time
+            - batch_assembly_time,
+        )
         self.last_profile = {
             "timers/collector_policy_inference": self._policy_time,
             "timers/collector_env_step": self._env_wait_time,
             "timers/collector_batch_assembly": batch_assembly_time,
-            "timers/collector_other": max(
+            "timers/collector_other": other_time,
+            "timers/collector_observation_preparation": self._observation_preparation_time,
+            "timers/collector_action_decode": self._action_decode_time,
+            "timers/collector_transition_processing": self._transition_processing_time,
+            "timers/collector_buffer_write": self._buffer_write_time,
+            "timers/collector_residual": max(
                 0.0,
-                collection_time
-                - self._policy_time
-                - self._env_wait_time
-                - batch_assembly_time,
+                other_time
+                - self._observation_preparation_time
+                - self._action_decode_time
+                - self._transition_processing_time
+                - self._buffer_write_time,
             ),
         }
         return batch
@@ -408,6 +442,7 @@ class RolloutWorker:
         if not pending:
             return None
 
+        observation_started = time.perf_counter()
         ready_env_indices = []
         obs_list = []
         state_list = []
@@ -426,10 +461,14 @@ class RolloutWorker:
                 except Exception:
                     pass
         if not ready_env_indices:
+            self._observation_preparation_time += (
+                time.perf_counter() - observation_started
+            )
             return None
 
-        observation = torch.from_numpy(np.stack(obs_list, axis=0))
+        observation = self._stack_observations(group_index, obs_list)
         state = torch.from_numpy(np.stack(state_list, axis=0)) if state_list else None
+        self._observation_preparation_time += time.perf_counter() - observation_started
 
         policy_started = time.perf_counter()
         policy_obs = self._to_policy_obs(group_index, observation)
@@ -451,7 +490,9 @@ class RolloutWorker:
             log_prob = log_prob.detach().cpu()
         self._policy_time += time.perf_counter() - policy_started
 
+        action_decode_started = time.perf_counter()
         env_actions = self._decode_policy_actions(actions)
+        self._action_decode_time += time.perf_counter() - action_decode_started
         futures: list[Future] | None = None
         results: list[tuple[int, Any]] | None = None
         # go through the executor so double buffer overlap not lost
@@ -492,7 +533,12 @@ class RolloutWorker:
         for offset, (env_index, step_result) in enumerate(results):
             if step_result is None:
                 continue
-            storage.write(env_index, self._env_fields(state, offset, step_result))
+            transition_started = time.perf_counter()
+            fields = self._env_fields(state, offset, step_result)
+            self._transition_processing_time += time.perf_counter() - transition_started
+            write_started = time.perf_counter()
+            storage.write(env_index, fields)
+            self._buffer_write_time += time.perf_counter() - write_started
             wrote_any = True
         return wrote_any
 
@@ -526,6 +572,19 @@ class RolloutWorker:
             fields["next_state"] = torch.from_numpy(next_state_np)
         return fields
 
+    def _stack_observations(self, group_index: int, observations) -> torch.Tensor:
+        capacity = len(self._env_groups[group_index])
+        shape = (capacity, *observations[0].shape)
+        dtype = np.result_type(*(obs.dtype for obs in observations))
+        buffer = self._observation_buffers.get(group_index)
+        if buffer is None or buffer.shape != shape or buffer.dtype != dtype:
+            buffer = np.empty(shape, dtype=dtype)
+            self._observation_buffers[group_index] = buffer
+        # Each group is collected into independently owned rollout storage before next rollout.
+        stacked = buffer[: len(observations)]
+        np.stack(observations, axis=0, out=stacked)
+        return torch.from_numpy(stacked)
+
     def _to_policy_obs(self, group_index: int, observation) -> torch.Tensor:
         if self.policy_device.type == "cuda":
             capacity = len(self._env_groups[group_index])
@@ -534,6 +593,7 @@ class RolloutWorker:
                 pinned is None
                 or pinned.shape[0] < capacity
                 or pinned.shape[1:] != observation.shape[1:]
+                or pinned.dtype != observation.dtype
             ):
                 pinned = torch.empty(
                     (capacity, *observation.shape[1:]),
