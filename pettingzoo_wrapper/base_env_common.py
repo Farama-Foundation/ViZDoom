@@ -148,6 +148,7 @@ class VizdoomParallelEnvBase(ParallelEnv):
         seed: int | None = None,
         verbose: bool = False,
         daemon: bool = True,
+        audio_diagnostics: bool = False,
         available_buttons: Sequence[vzd.Button] | None = None,
     ) -> None:
         assert num_agents >= 1
@@ -166,6 +167,7 @@ class VizdoomParallelEnvBase(ParallelEnv):
         self._ext_seed = seed
         self.verbose = verbose
         self.daemon = daemon
+        self.audio_diagnostics = bool(audio_diagnostics)
 
         self.possible_agents: list[str] = [
             f"agent_{i}" for i in range(self._num_agents)

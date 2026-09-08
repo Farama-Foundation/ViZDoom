@@ -103,6 +103,7 @@ def _agent_worker_thread(
     ticrate: int,
     seed: int | None,
     verbose: bool,
+    audio_diagnostics: bool,
     available_buttons: tuple[vzd.Button, ...],
 ) -> None:
     game = None
@@ -145,6 +146,10 @@ def _agent_worker_thread(
                         agent_idx=agent_id,
                         available_buttons=available_buttons,
                     )
+                    if audio_diagnostics:
+                        game.add_available_game_variable(vzd.GameVariable.POSITION_X)
+                        game.add_available_game_variable(vzd.GameVariable.POSITION_Y)
+                        game.add_available_game_variable(vzd.GameVariable.ANGLE)
                     if not is_host:
                         time.sleep(0.5 + random.uniform(0.5, 1.0))
                     game.init()
@@ -169,6 +174,8 @@ def _agent_worker_thread(
                         "step": 0,
                     }
                     info.update(get_live_game_vars(game, available_game_vars))
+                    if audio_diagnostics:
+                        info["audio_buffer"] = np.array(state.audio_buffer, copy=True)
                     frames_advanced = 0
                     # Frames go through shared memory
                     frame_out[...] = read_observation(state, resolution, audio=audio)
@@ -217,6 +224,12 @@ def _agent_worker_thread(
                 }
                 # Read vars from the engine as `state` is None on terminal step
                 info.update(get_live_game_vars(game, available_game_vars))
+                if audio_diagnostics:
+                    info["audio_buffer"] = (
+                        None
+                        if state is None or state.audio_buffer is None
+                        else np.array(state.audio_buffer, copy=True)
+                    )
                 frame_out[...] = read_observation(state, resolution, audio=audio)
                 result_queue.put(
                     {
@@ -252,6 +265,7 @@ class _AgentWorkerCoordinator:
         ticrate: int,
         seed: int | None,
         verbose: bool,
+        audio_diagnostics: bool,
         available_buttons: tuple[vzd.Button, ...],
         frames: np.ndarray,
     ) -> None:
@@ -268,6 +282,7 @@ class _AgentWorkerCoordinator:
         self.ticrate = int(ticrate)
         self.seed = seed
         self.verbose = bool(verbose)
+        self.audio_diagnostics = bool(audio_diagnostics)
         self.available_buttons = available_buttons
         self._shm_frames = (
             frames  # Inherit through fork(), mapped MAP_SHARED by the parent
@@ -319,6 +334,7 @@ class _AgentWorkerCoordinator:
                     ticrate=self.ticrate,
                     seed=(None if self.seed is None else int(self.seed) + agent_id),
                     verbose=self.verbose,
+                    audio_diagnostics=self.audio_diagnostics,
                     available_buttons=self.available_buttons,
                 ),
                 daemon=True,
@@ -574,6 +590,7 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
                     ticrate=self.ticrate,
                     seed=self._ext_seed,
                     verbose=self.verbose,
+                    audio_diagnostics=self.audio_diagnostics,
                     available_buttons=self.available_buttons,
                     frames=self._shm_frames,
                 ),
