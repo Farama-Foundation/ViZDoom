@@ -102,3 +102,134 @@ def stereo_spectrogram(
     # We compress with log here, it shows weak components without erasing absolute levels.
     db = 20 * np.log10(np.maximum(magnitude, 10 ** (_DB_FLOOR / 20)))
     return np.rint(np.clip((db - _DB_FLOOR) / -_DB_FLOOR, 0, 1) * 255).astype(np.uint8)
+
+
+def plot_distance_comparison(
+    audio_buffers: [np.ndarray],
+    distances: [float],
+    output_path: str | Path,
+) -> Path:
+    """Plot raw waveforms and processed STFT observations over distance.
+
+    The three detailed rows are selected from audible buffers near the far,
+    middle, and close distance terciles. All waveform and spectrogram axes use
+    shared fixed scales, so attenuation remains directly visible.
+    """
+    if len(audio_buffers) != len(distances) or not audio_buffers:
+        raise ValueError("audio_buffers and distances must have equal non-zero length")
+
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError as exc:
+        raise RuntimeError(
+            "Audio visualization requires matplotlib (pip install matplotlib)"
+        ) from exc
+
+    buffers = [np.asarray(buffer) for buffer in audio_buffers]
+    for buffer in buffers:
+        if buffer.dtype != np.int16 or buffer.ndim != 2 or buffer.shape[1] != 2:
+            raise ValueError("each audio buffer must be int16 with shape (N, 2)")
+    distance_values = np.asarray(distances, dtype=np.float64)
+    if not np.all(np.isfinite(distance_values)):
+        raise ValueError("distances must be finite")
+
+    rms = np.asarray(
+        [
+            np.sqrt(np.mean((buffer.astype(np.float64) / 32768.0) ** 2))
+            for buffer in buffers
+        ]
+    )
+    audible = np.flatnonzero(rms > 0)
+    if len(audible) < 3:
+        raise ValueError("at least three non-silent audio buffers are required")
+
+    distance_edges = np.linspace(
+        distance_values[audible].min(), distance_values[audible].max(), 4
+    )
+    selected = []
+    for edge_index in range(2, -1, -1):
+        in_band = audible[
+            (distance_values[audible] >= distance_edges[edge_index])
+            & (distance_values[audible] <= distance_edges[edge_index + 1])
+        ]
+        if not len(in_band):
+            raise ValueError("audio buffers must cover three distinct distance bands")
+        strong = in_band[rms[in_band] >= 0.9 * rms[in_band].max()]
+        selected.append(strong[np.argmin(distance_values[strong])])
+
+    figure, axes = plt.subplots(4, 2, figsize=(13, 12), constrained_layout=True)
+    axes[0, 0].scatter(distance_values[audible], rms[audible], s=14, alpha=0.7)
+    axes[0, 0].set(
+        title="Raw audio level as prey approaches",
+        xlabel="Prey distance (map units)",
+        ylabel="Stereo RMS amplitude",
+    )
+    axes[0, 0].invert_xaxis()
+
+    stft_levels = np.asarray(
+        [stereo_spectrogram(buffer, 120, 160).max() for buffer in buffers]
+    )
+    axes[0, 1].scatter(distance_values[audible], stft_levels[audible], s=14, alpha=0.7)
+    axes[0, 1].set(
+        title="Processed STFT level as prey approaches",
+        xlabel="Prey distance (map units)",
+        ylabel="Peak uint8 dBFS intensity",
+        ylim=(0, 255),
+    )
+    axes[0, 1].invert_xaxis()
+
+    image = None
+    for row, index in enumerate(selected, start=1):
+        buffer = buffers[index]
+        times_ms = (
+            (np.arange(len(buffer), dtype=np.float64) - len(buffer) + 1)
+            / AUDIO_SAMPLE_RATE
+            * 1000
+        )
+        axes[row, 0].plot(times_ms, buffer[:, 0] / 32768.0, label="left", lw=0.8)
+        axes[row, 0].plot(
+            times_ms, buffer[:, 1] / 32768.0, label="right", lw=0.8, alpha=0.8
+        )
+        axes[row, 0].set(
+            title=f"Raw waveform — distance {distance_values[index]:.1f}",
+            xlabel="Time before observation (ms)",
+            ylabel="Amplitude",
+            ylim=(-1, 1),
+        )
+        axes[row, 0].legend(loc="upper right")
+
+        spectrogram = stereo_spectrogram(buffer, 120, 160).mean(axis=2)
+        # Plot the actual policy grid at STFT window-center times.
+        first_center = _FFT_SIZE / 2 - max(0, _FFT_SIZE - len(buffer))
+        last_center = len(buffer) - _FFT_SIZE / 2
+        last_center = max(first_center, last_center)
+        stft_times = (
+            (np.linspace(first_center, last_center, 160) - len(buffer))
+            / AUDIO_SAMPLE_RATE
+            * 1000
+        )
+        image = axes[row, 1].pcolormesh(
+            stft_times,
+            np.geomspace(_MIN_FREQUENCY, AUDIO_SAMPLE_RATE / 2, 120),
+            spectrogram,
+            shading="nearest",
+            vmin=0,
+            vmax=255,
+            cmap="magma",
+        )
+        axes[row, 1].set_yscale("log")
+        axes[row, 1].set(
+            title=f"Mean stereo STFT — distance {distance_values[index]:.1f}",
+            xlabel="Time before observation (ms)",
+            ylabel="Frequency (Hz)",
+        )
+
+    assert image is not None
+    figure.colorbar(
+        image, ax=axes[1:, 1], label="Fixed dBFS intensity: 0 = ≤−60 dBFS, 255 = 0 dBFS"
+    )
+    destination = Path(output_path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    figure.savefig(destination, dpi=180)
+    plt.close(figure)
+    return destination
