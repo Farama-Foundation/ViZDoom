@@ -30,7 +30,10 @@ def _policy_device(policy: Any) -> str:
 
 
 class TorchRLPolicyAdapter:
-    """Adapt a BenchMARL/TorchRL group policy to one raw DoomGame player."""
+    """Adapt a BenchMARL/TorchRL group policy to one raw DoomGame player's unstacked RGB or RGB/audio fields.
+
+    Packed RGB/audio checkpoints are incompatible with separate-field policies.
+    """
 
     def __init__(
         self,
@@ -50,7 +53,7 @@ class TorchRLPolicyAdapter:
         self.agent_count = int(agent_count)
         self.frame_stack = int(frame_stack)
         self.device = device
-        self._frames: deque[np.ndarray] = deque(maxlen=self.frame_stack)
+        self._frames: dict[str, deque[np.ndarray]] = {}
         # Logits of the last act() call (categorical policies only), for entropy diagnostics
         self.last_logits: np.ndarray | None = None
 
@@ -81,28 +84,52 @@ class TorchRLPolicyAdapter:
         if callable(reset):
             reset(seed)
 
-    def act(self, observation: np.ndarray, deterministic: bool = True):
+    def act(
+        self,
+        observation: np.ndarray | dict[str, np.ndarray],
+        deterministic: bool = True,
+    ):
         import torch
         from tensordict import TensorDict
         from torchrl.envs.utils import ExplorationType, set_exploration_type
 
-        obs = np.asarray(observation)
-        if obs.ndim != 3:
-            raise ValueError(f"expected HWC observation, got {tuple(obs.shape)}")
-        if not self._frames:
-            self._frames.extend([obs] * self.frame_stack)
-        else:
-            self._frames.append(obs)
-        obs = np.concatenate(self._frames, axis=-1)
-        obs_tensor = (
-            torch.as_tensor(obs, dtype=torch.float32, device=self.device) / 255.0
+        fields = (
+            observation
+            if isinstance(observation, dict)
+            else {"observation": observation}
         )
-        group_obs = torch.zeros(
-            (1, self.agent_count, *obs.shape), dtype=torch.float32, device=self.device
-        )
-        group_obs[:, self.agent_index] = obs_tensor
+        if isinstance(observation, dict) and set(fields) != {"observation", "audio"}:
+            raise ValueError("expected separate observation/audio fields")
+        if self._frames and set(fields) != set(self._frames):
+            raise ValueError("observation fields changed without reset")
+        for field, value in fields.items():
+            obs = np.asarray(value)
+            if obs.ndim != 3:
+                raise ValueError(f"expected HWC {field}, got {tuple(obs.shape)}")
+            channels = 2 if field == "audio" else 3
+            if isinstance(observation, dict) and obs.shape[-1] != channels:
+                raise ValueError(
+                    f"expected unstacked HWC {field} with {channels} channels, got {tuple(obs.shape)}"
+                )
         td = TensorDict({}, batch_size=[1], device=self.device)
-        td.set((self.group_name, "observation"), group_obs)
+        for field, value in fields.items():
+            obs = np.asarray(value).copy()
+            frames = self._frames.setdefault(field, deque(maxlen=self.frame_stack))
+            if not frames:
+                frames.extend([obs] * self.frame_stack)
+            else:
+                frames.append(obs)
+            obs = np.concatenate(frames, axis=-1)
+            obs_tensor = (
+                torch.as_tensor(obs, dtype=torch.float32, device=self.device) / 255.0
+            )
+            group_obs = torch.zeros(
+                (1, self.agent_count, *obs.shape),
+                dtype=torch.float32,
+                device=self.device,
+            )
+            group_obs[:, self.agent_index] = obs_tensor
+            td.set((self.group_name, field), group_obs)
 
         exploration = (
             ExplorationType.DETERMINISTIC if deterministic else ExplorationType.RANDOM

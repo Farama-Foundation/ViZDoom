@@ -18,6 +18,17 @@ _MAX_ENV_INSTANCE_RECREATE_ATTEMPTS = 1
 _MAX_FAILED_ROUNDS = 3
 
 
+def _observation_fields(observation):
+    return (
+        observation if isinstance(observation, dict) else {"observation": observation}
+    )
+
+
+def _stack_agent_observations(observations, agents):
+    fields = [_observation_fields(observations[agent]) for agent in agents]
+    return {key: np.stack([obs[key] for obs in fields]) for key in fields[0]}
+
+
 class _EnvInstance:
     def __init__(
         self,
@@ -35,8 +46,8 @@ class _EnvInstance:
         self.env: Any | None = None
         self.agent_names: list[str] = []
         self.n_agents = 0
-        self._obs: dict[str, np.ndarray] = {}
-        self._stacked_obs: np.ndarray | None = None
+        self._obs: dict = {}
+        self._stacked_obs: dict | None = None
         self._episode_reward: np.ndarray | None = None
         self._recreate_env()
 
@@ -59,26 +70,24 @@ class _EnvInstance:
                 "RolloutWorker env instance reset called before env creation"
             )
         self._obs, _ = self.env.reset()
-        self._stacked_obs = np.stack(
-            [self._obs[agent] for agent in self.agent_names], axis=0
-        )
+        self._stacked_obs = _stack_agent_observations(self._obs, self.agent_names)
         self._episode_reward = np.zeros((self.n_agents, 1), dtype=np.float32)
 
     def ensure_ready(self) -> None:
         if self.env is None or self._episode_reward is None or not self._obs:
             self.restart("env instance was not ready for collection")
 
-    def current_observation(self) -> np.ndarray:
+    def current_observation(self) -> dict:
         # Env buffers may be shared/mutable, so cache the stack
         self.ensure_ready()
         assert self._stacked_obs is not None
         return self._stacked_obs
 
-    def current_state(self) -> np.ndarray:
+    def current_state(self) -> np.ndarray | dict:
         self.ensure_ready()
         if self.env is not None and hasattr(self.env, "state"):
-            return np.asarray(self.env.state())
-        return self.current_observation()
+            return self.env.state()
+        return self.current_observation()["observation"]
 
     def step(self, actions):
         self.ensure_ready()
@@ -103,19 +112,21 @@ class _EnvInstance:
         truncated = np.asarray(
             [bool(truncations[agent]) for agent in self.agent_names], dtype=np.bool_
         ).reshape(self.n_agents, 1)
-        next_observation = np.stack(
-            [next_obs[agent] for agent in self.agent_names], axis=0
-        )
+        next_observation = _stack_agent_observations(next_obs, self.agent_names)
         if self.env is not None and hasattr(self.env, "state"):
-            next_state = np.asarray(self.env.state())
+            next_state = self.env.state()
         else:
-            next_state = next_observation
+            next_state = next_observation["observation"]
         done = np.logical_or(terminated, truncated)
 
         if bool(done.any()):
             # Copy nonterminal state into rollout storage before env can step again.
             if next_state is not next_observation:
-                next_state = next_state.copy()
+                next_state = (
+                    {key: value.copy() for key, value in next_state.items()}
+                    if isinstance(next_state, dict)
+                    else next_state.copy()
+                )
             self._reset()
         else:
             self._obs = next_obs
@@ -241,8 +252,8 @@ class _RolloutStorage:
 @dataclass
 class _GroupState:
     env_indices: list[int]
-    observation: torch.Tensor  # uint8 [k, n_agents, H, W, C]
-    state: torch.Tensor | None
+    observation: dict[str, torch.Tensor]  # uint8 [k, n_agents, H, W, C] per field
+    state: torch.Tensor | TensorDict | None
     actions: torch.Tensor
     log_prob: torch.Tensor | None
     futures: list[Future] | None
@@ -288,8 +299,8 @@ class RolloutWorker:
         self._action_decode_time = 0.0
         self._transition_processing_time = 0.0
         self._buffer_write_time = 0.0
-        self._pinned_buffers: dict[int, torch.Tensor] = {}
-        self._observation_buffers: dict[int, np.ndarray] = {}
+        self._pinned_buffers: dict[tuple[int, str], torch.Tensor] = {}
+        self._observation_buffers: dict[tuple[int, str], np.ndarray] = {}
 
         if self.num_envs < 1:
             raise ValueError("num_envs must be at least 1")
@@ -467,7 +478,19 @@ class RolloutWorker:
             return None
 
         observation = self._stack_observations(group_index, obs_list)
-        state = torch.from_numpy(np.stack(state_list, axis=0)) if state_list else None
+        state = None
+        if state_list:
+            state = (
+                TensorDict(
+                    {
+                        key: torch.from_numpy(np.stack([s[key] for s in state_list]))
+                        for key in state_list[0]
+                    },
+                    batch_size=[len(state_list)],
+                )
+                if isinstance(state_list[0], dict)
+                else torch.from_numpy(np.stack(state_list, axis=0))
+            )
         self._observation_preparation_time += time.perf_counter() - observation_started
 
         policy_started = time.perf_counter()
@@ -475,7 +498,7 @@ class RolloutWorker:
         policy_td = TensorDict(
             {
                 self.group_name: TensorDict(
-                    {"observation": policy_obs},
+                    policy_obs,
                     batch_size=[len(ready_env_indices), self.n_agents],
                 )
             },
@@ -556,39 +579,61 @@ class RolloutWorker:
         terminated = torch.from_numpy(terminated_np)
         truncated = torch.from_numpy(truncated_np)
         fields: dict[str, torch.Tensor] = {
-            "observation": state.observation[offset],
+            **{key: value[offset] for key, value in state.observation.items()},
             "action": state.actions[offset],
             "reward": torch.from_numpy(reward_np),
             "episode_reward": torch.from_numpy(episode_reward_np),
             "done": done,
             "terminated": terminated,
             "truncated": truncated,
-            "next_observation": torch.from_numpy(next_obs_np),
+            **{
+                f"next_{key}": torch.from_numpy(value)
+                for key, value in next_obs_np.items()
+            },
         }
         if state.log_prob is not None:
             fields["log_prob"] = state.log_prob[offset]
         if self.collect_state and state.state is not None:
-            fields["state"] = state.state[offset]
-            fields["next_state"] = torch.from_numpy(next_state_np)
+            if isinstance(next_state_np, dict):
+                for key, value in next_state_np.items():
+                    fields[f"state_{key}"] = state.state[key][offset]
+                    fields[f"next_state_{key}"] = torch.from_numpy(value)
+            else:
+                fields["state"] = state.state[offset]
+                fields["next_state"] = torch.from_numpy(next_state_np)
         return fields
 
-    def _stack_observations(self, group_index: int, observations) -> torch.Tensor:
+    def _stack_observations(self, group_index: int, observations) -> dict:
+        return {
+            key: self._stack_observation_field(
+                group_index, key, [obs[key] for obs in observations]
+            )
+            for key in observations[0]
+        }
+
+    def _stack_observation_field(self, group_index, key, observations):
         capacity = len(self._env_groups[group_index])
         shape = (capacity, *observations[0].shape)
         dtype = np.result_type(*(obs.dtype for obs in observations))
-        buffer = self._observation_buffers.get(group_index)
+        buffer = self._observation_buffers.get((group_index, key))
         if buffer is None or buffer.shape != shape or buffer.dtype != dtype:
             buffer = np.empty(shape, dtype=dtype)
-            self._observation_buffers[group_index] = buffer
+            self._observation_buffers[group_index, key] = buffer
         # Each group is collected into independently owned rollout storage before next rollout.
         stacked = buffer[: len(observations)]
         np.stack(observations, axis=0, out=stacked)
         return torch.from_numpy(stacked)
 
-    def _to_policy_obs(self, group_index: int, observation) -> torch.Tensor:
+    def _to_policy_obs(self, group_index: int, observation) -> dict:
+        return {
+            key: self._to_policy_field(group_index, key, value)
+            for key, value in observation.items()
+        }
+
+    def _to_policy_field(self, group_index, key, observation):
         if self.policy_device.type == "cuda":
             capacity = len(self._env_groups[group_index])
-            pinned = self._pinned_buffers.get(group_index)
+            pinned = self._pinned_buffers.get((group_index, key))
             if (
                 pinned is None
                 or pinned.shape[0] < capacity
@@ -600,7 +645,7 @@ class RolloutWorker:
                     dtype=observation.dtype,
                     pin_memory=True,
                 )
-                self._pinned_buffers[group_index] = pinned
+                self._pinned_buffers[group_index, key] = pinned
             k = observation.shape[0]
             pinned[:k].copy_(observation)
             return pinned[:k].to(self.policy_device, non_blocking=True)
@@ -662,6 +707,9 @@ class RolloutWorker:
             },
             batch_size=[*batch_size, self.n_agents],
         )
+        if storage.get("audio") is not None:
+            group_td.set("audio", storage.get("audio"))
+            next_group_td.set("audio", storage.get("next_audio"))
         next_td = TensorDict(
             {
                 self.group_name: next_group_td,
@@ -685,6 +733,18 @@ class RolloutWorker:
         if state_u8 is not None and next_state_u8 is not None:
             root_data["state"] = state_u8.to(torch.float32).div_(255.0)
             next_td["state"] = next_state_u8.to(torch.float32).div_(255.0)
+        elif storage.get("state_audio") is not None:
+            root_data["state"] = TensorDict(
+                {key: storage.get(f"state_{key}") for key in ("observation", "audio")},
+                batch_size=batch_size,
+            )
+            next_td["state"] = TensorDict(
+                {
+                    key: storage.get(f"next_state_{key}")
+                    for key in ("observation", "audio")
+                },
+                batch_size=batch_size,
+            )
         return TensorDict(root_data, batch_size=batch_size)
 
     # Other methods

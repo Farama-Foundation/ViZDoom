@@ -14,6 +14,18 @@ import vizdoom as vzd
 from vizdoom.pettingzoo_wrapper.audio_observations import stereo_spectrogram
 
 
+Observation = np.ndarray | dict[str, np.ndarray]
+
+
+def concatenate_observations(observations: list[Observation]) -> Observation:
+    if isinstance(observations[0], dict):
+        return {
+            key: np.concatenate([obs[key] for obs in observations], axis=-1)
+            for key in observations[0]
+        }
+    return np.concatenate(observations, axis=-1)
+
+
 def parse_hw(res: str) -> tuple[int, int]:
     w, h = res.lower().split("x")
     return int(w), int(h)
@@ -63,15 +75,15 @@ def read_frame(state, resolution) -> np.ndarray:
     return np.zeros((h, w, 3), dtype=np.uint8)
 
 
-def read_observation(state, resolution, *, audio: bool = False) -> np.ndarray:
-    """Assemble one policy frame, read_frame is helper for RGB."""
+def read_observation(state, resolution, *, audio: bool = False) -> Observation:
+    """Assemble one policy frame, read_frame is helper for RGB. This returns RGB, or separate RGB and stereo STFT policy frames."""
     rgb = read_frame(state, resolution)
     if not audio:
         return rgb
     planes = stereo_spectrogram(
         None if state is None else state.audio_buffer, *rgb.shape[:2]
     )
-    return np.concatenate((rgb, planes), axis=-1)
+    return {"observation": rgb, "audio": planes}
 
 
 def discover_buttons(config_path: str) -> tuple[vzd.Button, ...]:

@@ -49,7 +49,11 @@ from torchrl.data import Composite
 from torchrl.data.tensor_specs import UnboundedContinuous
 from torchrl.envs import Compose, EnvBase, RemoveEmptySpecs, TransformedEnv
 from torchrl.envs.libs.pettingzoo import MarlGroupMapType, PettingZooWrapper
-from torchrl.envs.transforms import ObservationTransform, SelectTransform
+from torchrl.envs.transforms import (
+    ObservationTransform,
+    RenameTransform,
+    SelectTransform,
+)
 from torchrl.envs.transforms.utils import _set_missing_tolerance
 from torchrl.record.loggers.wandb import WandbLogger
 
@@ -606,14 +610,11 @@ class ByteObsCnnConfig(CnnConfig):
         return _normalize_byte_observations(super().get_model(*args, **kwargs))
 
 
-def build_model_config(encoder="early_fusion"):
-    config_classes = {
-        "early_fusion": ByteObsCnnConfig,
-        "separate": AudioVisualCnnConfig,
-    }
-    if encoder not in config_classes:
-        raise ValueError(f"Unknown encoder: {encoder}")
-    return config_classes[encoder](
+def build_model_config(scenario):
+    config_class = (
+        AudioVisualCnnConfig if scenario == "simple_tag_audio" else ByteObsCnnConfig
+    )
+    return config_class(
         cnn_num_cells=[32, 64, 64],
         cnn_kernel_sizes=[8, 4, 3],
         cnn_strides=[4, 2, 1],
@@ -737,11 +738,31 @@ class VizdoomTask(TaskClass):
         )
         group_name = next(iter(env.group_map.keys()))
         selected_keys = [(group_name, "observation"), (group_name, "info")]
-        transforms = [
-            SelectTransform(*selected_keys),
-            AHWCToTensor(key=(group_name, "observation")),
-            RemoveEmptySpecs(),
-        ]
+        has_audio = (group_name, "observation", "audio") in env.observation_spec.keys(
+            True, True
+        )
+        transforms = []
+        if has_audio:
+            # PettingZooWrapper nests the entire Gym Dict under observation.
+            transforms.extend(
+                [
+                    RenameTransform(
+                        [(group_name, "observation")], [(group_name, "modalities")]
+                    ),
+                    RenameTransform(
+                        [
+                            (group_name, "modalities", key)
+                            for key in ("observation", "audio")
+                        ],
+                        [(group_name, key) for key in ("observation", "audio")],
+                    ),
+                ]
+            )
+            selected_keys.append((group_name, "audio"))
+        transforms.append(SelectTransform(*selected_keys))
+        if not has_audio:
+            transforms.append(AHWCToTensor(key=(group_name, "observation")))
+        transforms.append(RemoveEmptySpecs())
         env = TransformedEnv(env, Compose(*transforms))
         env = env.to(cfg.get("sampling_device", "cpu"))
         return env
@@ -761,7 +782,12 @@ class VizdoomTask(TaskClass):
         return env.action_spec
 
     def observation_spec(self, env: EnvBase) -> Composite:
-        return env.observation_spec
+        spec = env.observation_spec.clone()
+        for group in self.group_map(env):
+            for key in list(spec[group].keys()):
+                if key not in ("observation", "audio"):
+                    del spec[group, key]
+        return spec
 
     def action_mask_spec(self, env: EnvBase) -> Optional[Composite]:
         return getattr(env, "action_mask_spec", None)
@@ -922,12 +948,6 @@ def main():
 
     # Train args
     ap.add_argument("--algo", type=str, default="mappo", choices=list(ALGOS))
-    ap.add_argument(
-        "--encoder",
-        choices=("early_fusion", "separate"),
-        default="early_fusion",
-        help="Separate RGB/stereo-STFT CNNs with feature concatenation (simple_tag_audio only)",
-    )
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--total_steps", type=float, default=1e6)
     ap.add_argument(
@@ -1087,8 +1107,6 @@ def main():
         help="Skip the deathmatch check on the evaluation scenario",
     )
     args = ap.parse_args()
-    if args.encoder == "separate" and args.scenario != "simple_tag_audio":
-        raise ValueError("--encoder separate requires simple_tag_audio observations")
     asymmetric = args.scenario in ("multi_duel_hide_and_seek", *TAG_SCENARIOS)
     if args.share_policy_params is None:
         args.share_policy_params = not asymmetric
@@ -1151,9 +1169,8 @@ def main():
     )
     Path(checkpoints_path).mkdir(parents=True, exist_ok=True)
     run_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    encoder_suffix = "_separate" if args.encoder == "separate" else ""
     run_id = (
-        f"{args.algo}_{args.scenario}{encoder_suffix}"
+        f"{args.algo}_{args.scenario}"
         f"_{args.num_agents}agents_{args.num_envs}envs"
         f"_seed{args.seed}_{run_timestamp}"
     )
@@ -1164,8 +1181,8 @@ def main():
 
     algo_cfg = override_algo_config(args)
 
-    model_cfg = build_model_config(args.encoder)
-    critic_cfg = build_model_config(args.encoder)
+    model_cfg = build_model_config(args.scenario)
+    critic_cfg = build_model_config(args.scenario)
 
     exp_cfg = ExperimentConfig.get_from_yaml()
     is_on_policy = algo_cfg.on_policy()
@@ -1189,7 +1206,6 @@ def main():
 
     task_cfg = {
         "scenario": args.scenario,
-        "encoder": args.encoder,
         "num_agents": args.num_agents,
         "resolution": args.resolution,
         "skip_frames": args.skip_frames,
@@ -1219,9 +1235,7 @@ def main():
         config=exp_cfg,
         callbacks=callbacks,
     )
-    print(
-        f"Encoder: {args.encoder}, actor model: {type(model_cfg).__name__}", flush=True
-    )
+    print(f"Actor model: {type(model_cfg).__name__}", flush=True)
     for group, policy in experiment.group_policies.items():
         print(
             f"Actor parameters ({group}): {sum(p.numel() for p in policy.parameters()):,}",

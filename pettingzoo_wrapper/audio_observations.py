@@ -1,5 +1,5 @@
 """
-Stereo sound: Each frame is [R, G, B, audio_left, audio_right]. It's easier to fit in the existing codebase this way.
+Stereo sound: RGB and stereo STFT are separate uint8 HWC observations under "observation" and "audio", with 3 and 2 channels per stacked frame respectively.
 
 Audio rows run from 80 Hz to 11025 Hz on geometric grid (log scale frequency), columns run oldest to newest across the last 8 tics (we chose this for STFT frames).
 
@@ -8,7 +8,7 @@ Spectrograms are computed directly from the raw int16 stereo audio buffer via
 Both ears use the same fixed [-60, 0] dBFS magnitude scale mapped to [0, 255], with no per-ear or per-frame normalization. Distance attenuation and Interaural Level Differences (ILD) become additive intensity differences above the floor.
 Silence, missing audio, and magnitudes <= -60 dBFS map to zero.
 
-We append this to observation CNN so it scales these planes to [0, 1], so the level of frequency is visible/learnable but difference between phases/distances is not.
+Audio planes keep absolute levels and interaural level differences, but not phase.
 """
 
 from __future__ import annotations

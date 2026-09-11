@@ -20,6 +20,8 @@ from vizdoom.pettingzoo_wrapper.audio_observations import (
     uses_audio_observations,
 )
 from vizdoom.pettingzoo_wrapper.utils import (
+    Observation,
+    concatenate_observations,
     discover_buttons,
     get_screen_resolution,
     parse_hw,
@@ -199,15 +201,22 @@ class VizdoomParallelEnvBase(ParallelEnv):
         )
 
         w, h = parse_hw(resolution)
-        channels = 5 if uses_audio_observations(config_file) else 3
-        self._raw_obs_shape = (h, w, channels)
-        self._obs_shape = (h, w, channels * self.frame_stack)
+        self._audio_observations = uses_audio_observations(config_file)
+        self._raw_obs_shape = (h, w, 3)
+        self._obs_shape = (h, w, 3 * self.frame_stack)
         self._observation_space = spaces.Box(
             0, 255, shape=self._obs_shape, dtype=np.uint8
         )
+        if self._audio_observations:
+            self._raw_audio_shape = (h, w, 2)
+            self._audio_obs_shape = (h, w, 2 * self.frame_stack)
+            self._observation_space = spaces.Dict(
+                observation=self._observation_space,
+                audio=spaces.Box(0, 255, shape=self._audio_obs_shape, dtype=np.uint8),
+            )
 
-        self._last_frames: dict[str, np.ndarray] = {}
-        self._frame_history: dict[str, list[np.ndarray]] = {}
+        self._last_frames: dict[str, Observation] = {}
+        self._frame_history: dict[str, list[Observation]] = {}
         self._screen: pygame.Surface | None = None
 
     # ------------- space helpers -------------
@@ -228,6 +237,18 @@ class VizdoomParallelEnvBase(ParallelEnv):
 
     @property
     def state_space(self) -> spaces.Space:
+        if self._audio_observations:
+            return spaces.Dict(
+                {
+                    key: spaces.Box(
+                        0,
+                        255,
+                        shape=(*space.shape[:2], space.shape[2] * self.num_agents),
+                        dtype=np.uint8,
+                    )
+                    for key, space in self._observation_space.spaces.items()
+                }
+            )
         return spaces.Box(
             0,
             255,
@@ -239,16 +260,20 @@ class VizdoomParallelEnvBase(ParallelEnv):
     def num_agents(self) -> int:
         return self._num_agents
 
-    def state_observation(self, agent: str) -> np.ndarray:
+    def state_observation(self, agent: str) -> Observation:
         obs = self._last_frames.get(agent)
         if obs is None:
+            if self._audio_observations:
+                return {
+                    key: np.zeros(space.shape, dtype=np.uint8)
+                    for key, space in self._observation_space.spaces.items()
+                }
             return np.zeros(self._obs_shape, dtype=np.uint8)
         return obs
 
-    def state(self) -> np.ndarray:
-        return np.concatenate(
+    def state(self) -> Observation:
+        return concatenate_observations(
             [self.state_observation(agent) for agent in self.possible_agents],
-            axis=-1,
         )
 
     # ------------- action encoding -------------
@@ -263,8 +288,8 @@ class VizdoomParallelEnvBase(ParallelEnv):
         return encode_env_action(agent_action, self.available_buttons)
 
     def _stack_observations(
-        self, observations: dict[str, np.ndarray], *, reset: bool
-    ) -> dict[str, np.ndarray]:
+        self, observations: dict[str, Observation], *, reset: bool
+    ) -> dict[str, Observation]:
         stacked = {}
         for agent, frame in observations.items():
             if reset or agent not in self._frame_history:
@@ -274,14 +299,16 @@ class VizdoomParallelEnvBase(ParallelEnv):
                     *self._frame_history[agent][1:],
                     frame,
                 ]
-            stacked[agent] = np.concatenate(self._frame_history[agent], axis=-1)
+            stacked[agent] = concatenate_observations(self._frame_history[agent])
         self._last_frames = dict(stacked)
         return stacked
 
     # ------------------- rendering -------------------
 
-    def rgb_observation(self, observation: np.ndarray) -> np.ndarray:
+    def rgb_observation(self, observation: Observation) -> np.ndarray:
         """Extract newest RGB for rendering/video"""
+        if isinstance(observation, dict):
+            observation = observation["observation"]
         start = observation.shape[-1] - self._raw_obs_shape[-1]
         return observation[..., start : start + 3]
 

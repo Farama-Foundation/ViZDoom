@@ -19,6 +19,7 @@ from vizdoom.pettingzoo_wrapper.base_env_common import (
     configure_doom_game,
 )
 from vizdoom.pettingzoo_wrapper.utils import (
+    Observation,
     get_live_game_vars,
     read_observation,
     reserve_init_slot,
@@ -90,7 +91,7 @@ def _agent_worker_thread(
     task_queue: queue.Queue[_Task],
     result_queue: queue.Queue[dict],
     step_barrier: threading.Barrier,
-    frame_out: np.ndarray,
+    frame_out: Observation,
     config_path: str,
     resolution: str,
     timeout: int | None,
@@ -110,6 +111,14 @@ def _agent_worker_thread(
     available_game_vars = []
     frames_advanced = 0
     audio = uses_audio_observations(config_path)
+
+    def _write_frame(state) -> None:
+        observation = read_observation(state, resolution, audio=audio)
+        if isinstance(frame_out, dict):
+            for key, buffer in frame_out.items():
+                buffer[...] = observation[key]
+        else:
+            frame_out[...] = observation
 
     def _close_game() -> None:
         nonlocal game
@@ -178,7 +187,7 @@ def _agent_worker_thread(
                         info["audio_buffer"] = np.array(state.audio_buffer, copy=True)
                     frames_advanced = 0
                     # Frames go through shared memory
-                    frame_out[...] = read_observation(state, resolution, audio=audio)
+                    _write_frame(state)
                     result_queue.put(
                         {
                             "reward": 0.0,
@@ -230,7 +239,7 @@ def _agent_worker_thread(
                         if state is None or state.audio_buffer is None
                         else np.array(state.audio_buffer, copy=True)
                     )
-                frame_out[...] = read_observation(state, resolution, audio=audio)
+                _write_frame(state)
                 result_queue.put(
                     {
                         "reward": reward,
@@ -267,7 +276,7 @@ class _AgentWorkerCoordinator:
         verbose: bool,
         audio_diagnostics: bool,
         available_buttons: tuple[vzd.Button, ...],
-        frames: np.ndarray,
+        frames: Observation,
     ) -> None:
         self.config_path = config_path
         self.resolution = resolution
@@ -321,7 +330,14 @@ class _AgentWorkerCoordinator:
                     task_queue=task_queue,
                     result_queue=result_queue,
                     step_barrier=self._step_barrier,
-                    frame_out=self._shm_frames[agent_id],
+                    frame_out=(
+                        {
+                            key: frames[agent_id]
+                            for key, frames in self._shm_frames.items()
+                        }
+                        if isinstance(self._shm_frames, dict)
+                        else self._shm_frames[agent_id]
+                    ),
                     config_path=self.config_path,
                     resolution=self.resolution,
                     timeout=self.timeout,
@@ -542,13 +558,7 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         super().__init__(**kwargs)
         # the pipe carries rewards/flags/infos
         self._shm_obs_shape = (self._num_agents, *self._raw_obs_shape)
-        with _FORK_LOCK:
-            self._shm = shared_memory.SharedMemory(
-                create=True, size=int(np.prod(self._shm_obs_shape))
-            )
-        self._shm_frames = np.ndarray(
-            self._shm_obs_shape, dtype=np.uint8, buffer=self._shm.buf
-        )
+        self._shms: dict[str, shared_memory.SharedMemory] = {}
         self._parent_conn: Connection | None = None
         self._process: ctx.Process | None = None
         self._pending_reset_infos: dict[str, dict] | None = None
@@ -558,15 +568,23 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         self._last_recovery_phase = "none"
         self._recovery_count = 0
         try:
+            shapes = {"observation": self._shm_obs_shape}
+            if self._audio_observations:
+                shapes["audio"] = (self._num_agents, *self._raw_audio_shape)
+            frames = {}
+            for key, shape in shapes.items():
+                with _FORK_LOCK:
+                    shm = shared_memory.SharedMemory(
+                        create=True, size=int(np.prod(shape))
+                    )
+                self._shms[key] = shm
+                frames[key] = np.ndarray(shape, dtype=np.uint8, buffer=shm.buf)
+            self._shm_frames = (
+                frames if self._audio_observations else frames["observation"]
+            )
             self._spawn_agent_worker_process()
         except Exception:
-            shm = self._shm
-            self._shm = None
-            try:
-                shm.close()
-                shm.unlink()
-            except Exception:
-                pass
+            self.close()
             raise
 
     def _spawn_agent_worker_process(self) -> None:
@@ -666,7 +684,15 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
         self._shutdown_agent_worker_process()
         self._spawn_agent_worker_process()
 
-    def _read_shm_observations(self) -> dict[str, np.ndarray]:
+    def _read_shm_observations(self) -> dict[str, Observation]:
+        if isinstance(self._shm_frames, dict):
+            return {
+                agent: {
+                    key: frames[agent_id].copy()
+                    for key, frames in self._shm_frames.items()
+                }
+                for agent_id, agent in enumerate(self.possible_agents)
+            }
         return {
             agent: self._shm_frames[agent_id].copy()
             for agent_id, agent in enumerate(self.possible_agents)
@@ -805,9 +831,8 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
 
     def close(self):
         self._shutdown_agent_worker_process()
-        shm = getattr(self, "_shm", None)
-        if shm is not None:
-            self._shm = None
+        self._shm_frames = {}
+        for shm in self._shms.values():
             try:
                 shm.close()
             except Exception:
@@ -816,6 +841,7 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
                 shm.unlink()
             except Exception:
                 pass
+        self._shms.clear()
 
     def debug_status(self) -> dict[str, int | str]:
         return {

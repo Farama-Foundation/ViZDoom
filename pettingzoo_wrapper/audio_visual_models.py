@@ -1,15 +1,12 @@
 """
-Use ``AudioVisualCnnConfig`` with the same ``cnn_*`` and ``mlp_*`` arguments as
-BenchMARL's ``CnnConfig``. Nature CNN settings are [32, 64, 64] channels,
-[8, 4, 3] kernels, [4, 2, 1] strides, zero padding, ReLU, and a [512] ReLU MLP.
-Each branch receives all frames, with both stereo channels in the audio branch.
-There is no recurrence, attention, raw waveform processing, or normalization
-layer. Byte observations are divided by 255 once; floating inputs must already
-be normalized. Neither the input tensor nor its TensorDict entry is replaced.
+Use ``AudioVisualCnnConfig`` with the same ``cnn_*`` and ``mlp_*`` arguments as BenchMARL's ``CnnConfig``.
+
+CNN settings: [32, 64, 64] channels, [8, 4, 3] kernels, [4, 2, 1] strides, zero padding, ReLU, and a [512] ReLU MLP. Each branch receives all frames, with both stereo channels in the audio branch.
+
+Note: Byte observations are divided by 255 once, so floating inputs must already be normalized.
 """
 
 from dataclasses import dataclass
-from typing import Optional
 
 import torch
 from benchmarl.models.cnn import CnnConfig, _number_conv_outputs
@@ -18,56 +15,18 @@ from torch import nn
 from torchrl.modules import MLP, ConvNet, MultiAgentConvNet, MultiAgentMLP
 
 
-__all__ = ["AudioVisualCnn", "AudioVisualCnnConfig", "split_audio_visual_observation"]
-
-
-def split_audio_visual_observation(observation, frame_stack=None):
-    """Split ``(*batch, [agents,] H, W, 5 * frames)`` into CHW modalities.
-
-    The repeated per-frame order is ``[R, G, B, L_STFT, R_STFT]``, not a
-    contiguous RGB block followed by audio. Floating tensors are assumed to be
-    normalized already (no value-dependent scaling or per-frame normalization).
-    Returned tensors have fresh storage, including for floating-point inputs.
-    """
-    if not isinstance(observation, torch.Tensor):
-        raise TypeError("Packed observations must be torch tensors")
-    if observation.ndim < 3:
-        raise ValueError("Packed observations must end in H, W, channels")
-    channels = observation.shape[-1]
-    if channels == 0 or channels % 5:
-        raise ValueError(
-            "Packed channels must be 5 * frame_stack (RGB, L_STFT, R_STFT)"
-        )
-    if frame_stack is not None and channels != 5 * frame_stack:
-        raise ValueError("Packed channels do not match frame_stack")
-    if observation.dtype == torch.uint8:
-        image = observation.to(torch.float32) / 255
-    elif observation.is_floating_point():
-        image = observation.to(torch.float32)
-    else:
-        raise TypeError(
-            "Packed observations must be uint8 or normalized floating point"
-        )
-    frames = image.reshape(*image.shape[:-1], channels // 5, 5)
-    visual = frames[..., :3].flatten(-2).movedim(-1, -3).contiguous()
-    audio = frames[..., 3:].flatten(-2).movedim(-1, -3).contiguous()
-    return visual, audio
+__all__ = ["AudioVisualCnn", "AudioVisualCnnConfig"]
 
 
 class AudioVisualCnn(Model):
-    """Independent visual/audio CNNs, flattened feature concat, then one MLP.
-
-    Agent sharing and centralized pooling follow BenchMARL's Cnn: decentralized
-    agents never mix observations; centralized branches pool agents as channels.
-    A shared centralized critic returns one output without an agent dimension.
-    An unshared centralized critic retains per-agent outputs and its MLP pools
-    the per-agent branch features, as in the original Cnn. Global HWC image input
-    is supported for centralized models. Multiple observation keys and vector
-    observations are deliberately rejected rather than silently concatenated.
+    """
+    Independent visual/audio CNNs, flattened feature concat, then one MLP. Same as BenchMARL Cnn: decentralized agents don't mix observations, centralized branches pool agents as channels.
+    + Shared centralized critic returns one output without an agent dimension.
+    + Unshared centralized critic keeps per agent outputs and its MLP pools the per agent branch features, as in the original Cnn.
+    + Global HWC image input is supported for centralized models: inputs are separate HWC ``observation`` (RGB, 3 channels per frame) and ``audio`` (stereo STFT, 2 channels per frame) fields.
     """
 
-    def __init__(self, frame_stack=None, **kwargs):
-        self.frame_stack = frame_stack
+    def __init__(self, **kwargs):
         super().__init__(
             **{
                 key: kwargs.pop(key)
@@ -93,15 +52,19 @@ class AudioVisualCnn(Model):
             raise TypeError(f"Unexpected AudioVisualCnn arguments: {unexpected}")
         cnn_kwargs = {k[4:]: v for k, v in kwargs.items() if k.startswith("cnn_")}
         mlp_kwargs = {k[4:]: v for k, v in kwargs.items() if k.startswith("mlp_")}
-        self.visual_cnn = self._make_branch(3 * self.frame_stack, cnn_kwargs)
-        self.audio_cnn = self._make_branch(2 * self.frame_stack, cnn_kwargs)
+        self.visual_cnn = self._make_branch(
+            self.input_spec[self.visual_key].shape[-1], cnn_kwargs
+        )
+        self.audio_cnn = self._make_branch(
+            self.input_spec[self.audio_key].shape[-1], cnn_kwargs
+        )
         example = (
             self.visual_cnn._empty_net
             if self.input_has_agent_dim
             else self.visual_cnn[0]
         )
         out_h, out_w = _number_conv_outputs(
-            self.input_leaf_spec.shape[-3:-1],
+            self.input_spec[self.visual_key].shape[-3:-1],
             example.paddings,
             example.kernel_sizes,
             example.strides,
@@ -131,35 +94,25 @@ class AudioVisualCnn(Model):
 
     def _perform_checks(self):
         super()._perform_checks()
-        if len(self.in_keys) != 1:
+        keys = {key[-1] if isinstance(key, tuple) else key: key for key in self.in_keys}
+        if len(self.in_keys) != 2 or set(keys) != {"observation", "audio"}:
             raise ValueError(
-                "AudioVisualCnn requires exactly one packed observation key"
+                "AudioVisualCnn requires separate observation and audio keys"
             )
-        shape = self.input_leaf_spec.shape
+        self.visual_key, self.audio_key = keys["observation"], keys["audio"]
+        shape = self.input_spec[self.visual_key].shape
+        audio_shape = self.input_spec[self.audio_key].shape
         expected_rank = 4 if self.input_has_agent_dim else 3
-        if len(shape) != expected_rank:
+        if len(shape) != expected_rank or audio_shape[:-1] != shape[:-1]:
             raise ValueError(
-                "AudioVisualCnn expects an AHWC (or global HWC) image spec"
+                "AudioVisualCnn expects matching AHWC (or global HWC) image specs"
             )
         if self.input_has_agent_dim and shape[0] != self.n_agents:
             raise ValueError("Observation agent dimension must match n_agents")
         if any(size <= 0 for size in shape):
             raise ValueError("Observation dimensions must be positive")
-        if shape[-1] % 5:
-            raise ValueError(
-                "Packed channels must be 5 * frame_stack (RGB, L_STFT, R_STFT)"
-            )
-        if self.frame_stack is None:
-            self.frame_stack = shape[-1] // 5
-        if (
-            isinstance(self.frame_stack, bool)
-            or not isinstance(self.frame_stack, int)
-            or self.frame_stack <= 0
-            or shape[-1] != 5 * self.frame_stack
-        ):
-            raise ValueError(
-                "frame_stack must be positive and match the packed channels"
-            )
+        if shape[-1] % 3 or audio_shape[-1] != 2 * (shape[-1] // 3):
+            raise ValueError("Expected 3 RGB and 2 audio channels per stacked frame")
         output_shape = self.output_leaf_spec.shape
         expected_output_rank = 2 if self.output_has_agent_dim else 1
         if len(output_shape) != expected_output_rank or output_shape[-1] <= 0:
@@ -183,6 +136,11 @@ class AudioVisualCnn(Model):
         )
 
     def _branch_features(self, branch, image):
+        if image.dtype == torch.uint8:
+            image = image.float() / 255
+        else:
+            image = image.float()
+        image = image.movedim(-1, -3)
         if self.input_has_agent_dim:
             features = branch(image)
             return features if self.output_has_agent_dim else features[..., 0, :]
@@ -191,17 +149,10 @@ class AudioVisualCnn(Model):
         return torch.stack([net(image) for net in branch], dim=-2)
 
     def _forward(self, tensordict):
-        observation = tensordict.get(self.in_key)
-        if not isinstance(observation, torch.Tensor):
-            raise TypeError("Packed observations must be torch tensors")
-        shape = self.input_leaf_spec.shape
-        if observation.shape[-len(shape) :] != shape:
-            raise ValueError(f"Expected observation trailing shape {tuple(shape)}")
-        visual, audio = split_audio_visual_observation(observation, self.frame_stack)
         features = torch.cat(
             (
-                self._branch_features(self.visual_cnn, visual),
-                self._branch_features(self.audio_cnn, audio),
+                self._branch_features(self.visual_cnn, tensordict[self.visual_key]),
+                self._branch_features(self.audio_cnn, tensordict[self.audio_key]),
             ),
             dim=-1,
         )
@@ -211,14 +162,7 @@ class AudioVisualCnn(Model):
 
 @dataclass
 class AudioVisualCnnConfig(CnnConfig):
-    """Drop-in CnnConfig with a separate encoder for each modality.
-
-    ``frame_stack=None`` infers the stack from the single input spec; set an
-    integer to enforce an exact stack size. Twenty packed channels means four
-    frames. ``name`` is a string property, accessed as ``config.name``.
-    """
-
-    frame_stack: Optional[int] = None
+    """Separate RGB/stereo-STFT encoders; channel counts come from input specs."""
 
     @property
     def name(self):
