@@ -155,7 +155,7 @@ jobs:
         timeout-minutes: 10
 
       - name: Run tests
-        run: pytest tests -s --timeout=60 --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run
+        run: pytest tests -v -s --timeout=60 --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run
         timeout-minutes: 10
 
   build_sdist:
