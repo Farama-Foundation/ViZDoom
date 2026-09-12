@@ -58,7 +58,9 @@ jobs:
       run: pip install .[test]
 
     - name: Import check
-      run: python -c "import vizdoom"
+      run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_audio_buffer_enabled(True); g.add_game_args('+snd_efx 0'); g.init()"
+      timeout-minutes: 1
 
     - name: Run tests
-      run: pytest tests/test_gymnasium_wrapper.py -v -s --timeout=60
+      run: pytest tests/test_gymnasium_wrapper.py -v -s --timeout=60 --timeout-method=thread
+      timeout-minutes: 30
