@@ -61,4 +61,4 @@ jobs:
       run: python -c "import vizdoom"
 
     - name: Run tests
-      run: pytest tests/test_gymnasium_wrapper.py -s
+      run: pytest tests/test_gymnasium_wrapper.py -s --timeout=60

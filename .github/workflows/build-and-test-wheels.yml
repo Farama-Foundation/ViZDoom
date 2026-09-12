@@ -23,6 +23,8 @@ on:
     types: [published]
 
 env:
+  HOMEBREW_NO_AUTO_UPDATE: 1
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
   DYLD_LIBRARY_PATH: "/opt/homebrew/opt/openal-soft/lib:/usr/local/opt/openal-soft/lib"
 
 jobs:
@@ -118,7 +120,7 @@ jobs:
 
       - name: Install OpenAL on macOS
         if: runner.os == 'macOS'
-        run: brew install openal-soft
+        run: brew install cmake boost openal-soft sdl2
 
       - name: Install OpenAL on Ubuntu
         if: runner.os == 'Linux'
@@ -148,8 +150,13 @@ jobs:
       - name: Import check
         run: python -c "import vizdoom"
 
+      - name: Pytest collect tests
+        run: pytest tests --collect-only --ignore=tests/test_gymnasium_wrapper.py
+        timeout-minutes: 10
+
       - name: Run tests
-        run: pytest tests -s --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run
+        run: pytest tests -s --timeout=60 --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run
+        timeout-minutes: 10
 
   build_sdist:
     name: Build source distribution

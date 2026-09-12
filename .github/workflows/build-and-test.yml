@@ -92,5 +92,10 @@ jobs:
     - name: Init with console check (+snd_efx 0)
       run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_audio_buffer_enabled(True); g.add_game_args('+snd_efx 0'); g.init()"
 
+    - name: Pytest collect tests
+      run: pytest tests --collect-only --ignore=tests/test_gymnasium_wrapper.py
+      timeout-minutes: 10
+
     - name: Run tests
-      run: pytest tests -s --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run
+      run: pytest tests -s --timeout=60 --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run
+      timeout-minutes: 10
