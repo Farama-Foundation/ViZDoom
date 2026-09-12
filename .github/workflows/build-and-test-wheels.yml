@@ -85,7 +85,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-26.04, ubuntu-24.04, ubuntu-24.04-arm, macos-14]
+        os: [ubuntu-26.04, ubuntu-24.04, ubuntu-24.04-arm, macos-26, macos-14]
         python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
       fail-fast: false
 
@@ -125,7 +125,7 @@ jobs:
         run: sudo apt install -y libopenal-dev
 
       - name: Install macOS Apple Silicon wheel on ${{ matrix.os }}
-        if: matrix.os == 'macos-15'
+        if: matrix.os == 'macos-14' || matrix.os == 'macos-26'
         run: |
           export PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
           export WHEEL=$(ls dist/vizdoom*cp${PYTHON_VERSION}*macosx*arm64.whl)
