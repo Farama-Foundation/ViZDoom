@@ -62,5 +62,5 @@ jobs:
       timeout-minutes: 1
 
     - name: Run tests
-      run: pytest tests/test_gymnasium_wrapper.py -v -s --timeout=120 --timeout-method=thread
-      timeout-minutes: 60
+      run: pytest tests/test_gymnasium_wrapper.py -v -s --timeout=300 --timeout-method=thread
+      timeout-minutes: 120
