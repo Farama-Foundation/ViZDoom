@@ -23,6 +23,8 @@ on:
     types: [published]
 
 env:
+  HOMEBREW_NO_AUTO_UPDATE: 1
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
   DYLD_LIBRARY_PATH: "/opt/homebrew/opt/openal-soft/lib:/usr/local/opt/openal-soft/lib"
 
 jobs:
@@ -85,7 +87,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-26.04, ubuntu-24.04, ubuntu-24.04-arm, macos-15]
+        os: [ubuntu-26.04, ubuntu-24.04, ubuntu-24.04-arm, macos-26, macos-14]
         python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
       fail-fast: false
 
@@ -125,7 +127,7 @@ jobs:
         run: sudo apt install -y libopenal-dev
 
       - name: Install macOS Apple Silicon wheel on ${{ matrix.os }}
-        if: matrix.os == 'macos-15'
+        if: matrix.os == 'macos-14' || matrix.os == 'macos-26'
         run: |
           export PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
           export WHEEL=$(ls dist/vizdoom*cp${PYTHON_VERSION}*macosx*arm64.whl)
@@ -145,11 +147,13 @@ jobs:
           export WHEEL=$(ls dist/vizdoom*cp${PYTHON_VERSION}*manylinux*aarch64.whl)
           python -m pip install ${WHEEL}[test]
 
-      - name: Import check
-        run: python -c "import vizdoom"
+      - name: Import and init check
+        run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_audio_buffer_enabled(True); g.init()"
+        timeout-minutes: 1
 
       - name: Run tests
-        run: pytest tests -s --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run
+        run: pytest tests -v -s --timeout=300 --timeout-method=thread --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run
+        timeout-minutes: 15
 
   build_sdist:
     name: Build source distribution

@@ -253,10 +253,11 @@ setup(
     author="Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, Farama Foundation, and the respective contributors",
     author_email="mwydmuch@cs.put.poznan.pl",
     extras_require={
-        "test": ["pytest", "pytest-xdist", "psutil"],
+        "test": ["pytest", "pytest-xdist", "pytest-timeout", "psutil"],
         "dev": [
             "pytest",
             "pytest-xdist",
+            "pytest-timeout",
             "psutil",
             "pybind11-stubgen",
             "black",

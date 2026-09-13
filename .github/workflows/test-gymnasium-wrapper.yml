@@ -57,8 +57,10 @@ jobs:
     - name: Pip install
       run: pip install .[test]
 
-    - name: Import check
-      run: python -c "import vizdoom"
+    - name: Import and init check
+      run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_audio_buffer_enabled(True); g.init()"
+      timeout-minutes: 1
 
     - name: Run tests
-      run: pytest tests/test_gymnasium_wrapper.py -s
+      run: pytest tests/test_gymnasium_wrapper.py -v -s --timeout=300 --timeout-method=thread
+      timeout-minutes: 120
