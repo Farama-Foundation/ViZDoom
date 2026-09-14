@@ -75,6 +75,15 @@ namespace vizdoom {
             CASE_ENUM(ABGR32)
             CASE_ENUM(GRAY8)
             CASE_ENUM(DOOM_256_COLORS8)
+            CASE_ENUM(CRCGCB_FLASHED)
+            CASE_ENUM(RGB24_FLASHED)
+            CASE_ENUM(RGBA32_FLASHED)
+            CASE_ENUM(ARGB32_FLASHED)
+            CASE_ENUM(CBCGCR_FLASHED)
+            CASE_ENUM(BGR24_FLASHED)
+            CASE_ENUM(BGRA32_FLASHED)
+            CASE_ENUM(ABGR32_FLASHED)
+            CASE_ENUM(GRAY8_FLASHED)
             default: return "UNKNOWN";
         }
     }

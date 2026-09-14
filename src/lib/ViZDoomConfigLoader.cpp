@@ -132,6 +132,15 @@ namespace vizdoom {
         if (str == "abgr32") return ABGR32;
         if (str == "gray8") return GRAY8;
         if (str == "doom_256_colors8") return DOOM_256_COLORS8;
+        if (str == "crcgcb_flashed") return CRCGCB_FLASHED;
+        if (str == "rgb24_flashed") return RGB24_FLASHED;
+        if (str == "rgba32_flashed") return RGBA32_FLASHED;
+        if (str == "argb32_flashed") return ARGB32_FLASHED;
+        if (str == "cbcgcr_flashed") return CBCGCR_FLASHED;
+        if (str == "bgr24_flashed") return BGR24_FLASHED;
+        if (str == "bgra32_flashed") return BGRA32_FLASHED;
+        if (str == "abgr32_flashed") return ABGR32_FLASHED;
+        if (str == "gray8_flashed") return GRAY8_FLASHED;
 
         throw std::exception();
     }

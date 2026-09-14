@@ -160,6 +160,15 @@ namespace vizdoom{
         ABGR32              = 7, // channel of ABGR values stored in 32 bits, where A value is stored in the oldest 8 bits
         GRAY8               = 8, // 8-bit gray channel
         DOOM_256_COLORS8    = 9, // 8-bit channel with Doom palette values
+        CRCGCB_FLASHED      = 10, // 3 channels of 8-bit values in RGB order with active screen flashes applied
+        RGB24_FLASHED       = 11, // channel of RGB values stored in 24 bits with active screen flashes applied
+        RGBA32_FLASHED      = 12, // channel of RGBA values stored in 32 bits with active screen flashes applied
+        ARGB32_FLASHED      = 13, // channel of ARGB values stored in 32 bits with active screen flashes applied
+        CBCGCR_FLASHED      = 14, // 3 channels of 8-bit values in BGR order with active screen flashes applied
+        BGR24_FLASHED       = 15, // channel of BGR values stored in 24 bits with active screen flashes applied
+        BGRA32_FLASHED      = 16, // channel of BGRA values stored in 32 bits with active screen flashes applied
+        ABGR32_FLASHED      = 17, // channel of ABGR values stored in 32 bits with active screen flashes applied
+        GRAY8_FLASHED       = 18, // 8-bit gray channel with active screen flashes applied
     };
 
     enum ScreenResolution {

@@ -1435,8 +1435,9 @@ Returns the format of the screen buffer and the automap buffer.
 | Python | `set_screen_format(format: ScreenFormat) -> None` |
 
 Sets the format of the screen buffer and the automap buffer.
-Supported formats are defined in [`ScreenFormat`](./enums.md#screenformat) enumeration type (e.g. `CRCGCB`, `RGB24`, `GRAY8`).
+Supported formats are defined in [`ScreenFormat`](./enums.md#screenformat) enumeration type (e.g. `CRCGCB`, `RGB24`, `GRAY8`, `RGB24_FLASHED`).
 The format change affects only the buffers, so it will not have any effect on the content of ViZDoom's display window.
+Formats with `_FLASHED` suffix apply active screen flash effects to buffer values.
 
 Default value: `CRCGCB`
 
