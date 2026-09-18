@@ -13,10 +13,8 @@ import vizdoom as vzd
 
 DEFAULT_CONFIG = os.path.join(vzd.scenarios_path, "basic.cfg")
 DEFAULT_INTERVAL_SECONDS = 2.0
-DEFAULT_SCALE = 2
 FLASH_AMOUNT = 0.65
 TURN_DEGREES_PER_TIC = 1.0
-STATUS_BAR_HEIGHT = 24
 
 
 def set_flash(game, color, flashing):
@@ -25,25 +23,11 @@ def set_flash(game, color, flashing):
     print(f"Flash {color}: {'on' if flashing else 'off'}")
 
 
-def draw_buffer(window, state, color, render_flashes, flashing, scale):
+def draw_buffer(window, state, color, render_flashes, flashing):
     screen_buffer = state.screen_buffer
     screen_size = (screen_buffer.shape[1], screen_buffer.shape[0])
     buffer_surface = pygame.image.frombytes(screen_buffer.tobytes(), screen_size, "RGB")
-    buffer_size = (screen_size[0] * scale, screen_size[1] * scale)
-    window.blit(pygame.transform.scale(buffer_surface, buffer_size), (0, 0))
-
-    if not flashing:
-        status_color = (65, 65, 65)
-    elif render_flashes:
-        status_color = (20, 90, 20)
-    else:
-        status_color = (110, 25, 25)
-
-    pygame.draw.rect(
-        window,
-        status_color,
-        (0, buffer_size[1], buffer_size[0], STATUS_BAR_HEIGHT),
-    )
+    window.blit(buffer_surface, (0, 0))
     pygame.display.set_caption(
         f"ViZDoom screen buffer - {color} flash "
         f"{'active' if flashing else 'break'} - render flashes "
@@ -76,18 +60,10 @@ def main():
         type=float,
         help="Seconds between switching the flash on and off.",
     )
-    parser.add_argument(
-        "--scale",
-        default=DEFAULT_SCALE,
-        type=int,
-        help="Integer scale of the screen-buffer window.",
-    )
     args = parser.parse_args()
 
     if args.interval_seconds <= 0:
         parser.error("--interval-seconds must be greater than zero")
-    if args.scale <= 0:
-        parser.error("--scale must be greater than zero")
 
     render_flashes = args.render_flashes == "on"
 
@@ -108,9 +84,9 @@ def main():
         pygame.init()
         pygame_initialized = True
 
-        window_width = game.get_screen_width() * args.scale
-        window_height = game.get_screen_height() * args.scale + STATUS_BAR_HEIGHT
-        window = pygame.display.set_mode((window_width, window_height))
+        window = pygame.display.set_mode(
+            (game.get_screen_width(), game.get_screen_height())
+        )
         clock = pygame.time.Clock()
 
         print("The native ViZDoom window shows the engine output.")
@@ -158,7 +134,6 @@ def main():
                     args.color,
                     render_flashes,
                     flashing,
-                    args.scale,
                 )
 
             clock.tick(vzd.DEFAULT_TICRATE)
