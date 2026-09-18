@@ -47,6 +47,7 @@ EXTERN_CVAR (Bool, viz_nosound)
 EXTERN_CVAR (Bool, viz_soft_audio)
 EXTERN_CVAR (Int, viz_samp_freq)
 EXTERN_CVAR (Int, viz_audio_tics)
+EXTERN_CVAR (Bool, viz_render_flashes)
 
 void VIZ_BuffersInit() {
 
@@ -231,6 +232,12 @@ void VIZ_CopyBuffer(BYTE *vizBuffer){
 
     const BYTE *buffer = screen->GetBuffer();
     PalEntry *palette = screen->GetPalette();
+    PalEntry flashedPalette[256];
+
+    if(*viz_render_flashes){
+        screen->GetFlashedPalette(flashedPalette);
+        palette = flashedPalette;
+    }
 
     if(buffer == NULL || palette == NULL) return;
 
