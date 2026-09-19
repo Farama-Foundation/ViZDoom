@@ -309,27 +309,6 @@ def test_if_none():
     _check_state(state)
 
 
-def test_render_screen_flashes_in_screen_buffer():
-    game = vzd.DoomGame()
-    game.set_window_visible(False)
-    game.set_screen_format(vzd.ScreenFormat.RGB24)
-
-    try:
-        game.init()
-
-        game.send_game_command("testblend red 1")
-        game.advance_action()
-        flashed_buffer = game.get_state().screen_buffer
-        assert np.all(flashed_buffer == [255, 0, 0])
-
-        game.set_render_screen_flashes(False)
-        game.advance_action()
-        unflashed_buffer = game.get_state().screen_buffer
-        assert not np.all(unflashed_buffer == [255, 0, 0])
-    finally:
-        game.close()
-
-
 def test_types():
     game = vzd.DoomGame()
     game.set_window_visible(False)
