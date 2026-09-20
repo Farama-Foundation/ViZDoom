@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-# This script test recording functionality
 # This test should be run manually.
+# It tests recording functionality.
 
 import os
 from random import random

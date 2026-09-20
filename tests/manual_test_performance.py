@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# This test should be run manually.
+# It tests performance of steps and init/close with different screen formats and buffers enabled.
+
 from random import choice
 from time import time
 
