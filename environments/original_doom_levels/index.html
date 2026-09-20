@@ -11,11 +11,11 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Third-party environments" href="../third_party/" /><link rel="prev" title="Default scenarios/environments" href="../default/" />
         <link rel="canonical" href="https://vizdoom.farama.org/environments/original_doom_levels.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Celshast 0.0.1 -->
         <title>Playing original Doom levels - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=82c8b628" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/celshast.css?v=9fbfb63d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/celshast-extensions.css?v=42bfddca" />
     
     
 
@@ -260,7 +260,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom">Github</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release_notes/">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/blob/master/docs/README.md">Contribute to the Docs</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/blob/main/docs/README.md">Contribute to the Docs</a></li>
 </ul>
 
 </div>
@@ -286,7 +286,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/environments/original_doom_levels.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/main/docs/environments/original_doom_levels.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -325,11 +325,11 @@ You can get them by purchasing the original game from <a class="reference extern
 You can then place the doom2.wad and doom.wad files into your vizdoom package root directory (same directory as vizdoom(.exe)).
 You can install an IWAD into the package location with one of the following one-line commands:</p>
 <p>Python only:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import os,shutil,sys,vizdoom; src=sys.argv[1]; dst=os.path.join(vizdoom.install_path, os.path.basename(src).lower()); shutil.copy2(src,dst);&#39;</span><span class="w"> </span>/path/to/file.wad
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import os,shutil,sys,vizdoom; src=sys.argv[1]; dst=os.path.join(vizdoom.install_path, os.path.basename(src).lower()); shutil.copy2(src,dst);'</span><span class="w"> </span>/path/to/file.wad
 </pre></div>
 </div>
 <p>Python + shell:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nv">src</span><span class="o">=</span>/path/to/file.wad<span class="p">;</span><span class="w"> </span><span class="nv">dst_dir</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import vizdoom; print(vizdoom.install_path)&#39;</span><span class="k">)</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span>cp<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$src</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$dst_dir</span><span class="s2">/</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">src</span><span class="p">,,</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nv">src</span><span class="o">=</span>/path/to/file.wad<span class="p">;</span><span class="w"> </span><span class="nv">dst_dir</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import vizdoom; print(vizdoom.install_path)'</span><span class="k">)</span><span class="s2">"</span><span class="p">;</span><span class="w"> </span>cp<span class="w"> </span><span class="s2">"</span><span class="nv">$src</span><span class="s2">"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$dst_dir</span><span class="s2">/</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">src</span><span class="p">,,</span><span class="si">}</span><span class="s2">"</span><span class="k">)</span><span class="s2">"</span>
 </pre></div>
 </div>
 <p>ViZDoom expects doom2.wad and doom.wad files to be in lowercase (they are sometimes distrubited with uppercased names).
@@ -408,17 +408,17 @@ See:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">vizdoom</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vzd</span>
 <span class="n">game</span> <span class="o">=</span> <span class="n">vzd</span><span class="o">.</span><span class="n">DoomGame</span><span class="p">()</span>
-<span class="n">game</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vzd</span><span class="o">.</span><span class="n">scenarios_path</span><span class="p">,</span> <span class="s2">&quot;doom.cfg&quot;</span><span class="p">))</span> <span class="c1"># or doom2.cfg, freedoom1.cfg, freedoom2.cfg</span>
-<span class="n">game</span><span class="o">.</span><span class="n">set_doom_map</span><span class="p">(</span><span class="s2">&quot;E1M1&quot;</span><span class="p">)</span>  <span class="c1"># see list of map IDs below</span>
+<span class="n">game</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vzd</span><span class="o">.</span><span class="n">scenarios_path</span><span class="p">,</span> <span class="s2">"doom.cfg"</span><span class="p">))</span> <span class="c1"># or doom2.cfg, freedoom1.cfg, freedoom2.cfg</span>
+<span class="n">game</span><span class="o">.</span><span class="n">set_doom_map</span><span class="p">(</span><span class="s2">"E1M1"</span><span class="p">)</span>  <span class="c1"># see list of map IDs below</span>
 <span class="n">game</span><span class="o">.</span><span class="n">set_doom_level</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># or 2, 3, 4, 5</span>
 </pre></div>
 </div>
 <p>Configuration file:</p>
 <ul class="simple">
-<li><p>Doom: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/doom.cfg">doom.cfg</a></p></li>
-<li><p>Doom 2: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/doom2.cfg">doom2.cfg</a></p></li>
-<li><p>Freedoom: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/freedoom.cfg">freedoom1.cfg</a></p></li>
-<li><p>Freedoom 2: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scenarios/freedoom2.cfg">freedoom2.cfg</a></p></li>
+<li><p>Doom: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/scenarios/doom.cfg">doom.cfg</a></p></li>
+<li><p>Doom 2: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/scenarios/doom2.cfg">doom2.cfg</a></p></li>
+<li><p>Freedoom: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/scenarios/freedoom.cfg">freedoom1.cfg</a></p></li>
+<li><p>Freedoom 2: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/scenarios/freedoom2.cfg">freedoom2.cfg</a></p></li>
 </ul>
 </section>
 <section id="original-doom-1-levels">
@@ -1208,7 +1208,7 @@ See:</p>
           <div class="bottom-of-page">
             <div class="left-details">
               <div class="copyright">
-                Copyright &#169; 2025 Farama Foundation
+                Copyright &#169; 2026 Farama Foundation
               </div>
               <!--
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
@@ -1364,7 +1364,7 @@ See:</p>
     <script src="../../_static/documentation_options.js?v=a5603611"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../../_static/scripts/furo.js?v=7660844c"></script>
+    <script src="../../_static/scripts/celshast.js?v=a788a8c6"></script>
     
     <script>
 
@@ -1425,14 +1425,6 @@ See:</p>
         const jsonResponse = xhr.response;
         const sections = {
           "Core Projects": [],
-          "Mature Projects": {
-            "Documentation": [],
-            "Repositories": [],
-          },
-          "Incubating Projects": {
-            "Documentation": [],
-            "Repositories": [],
-          },
           "Foundation": [
             {
               name: "About",
@@ -1446,7 +1438,14 @@ See:</p>
               name: "Donate",
               link: "https://farama.org/donations"
             }
-          ]
+          ],
+          "Mature Projects": {
+            "Documentation": [],
+          },
+          "Incubating Projects": {
+            "Documentation": [],
+            "Repositories": [],
+          }
         }
 
         // Categorize projects
@@ -1462,8 +1461,6 @@ See:</p>
           } else if (projectJson.type == "mature") {
             if (projectJson.website !== null) {
               sections["Mature Projects"]["Documentation"].push(projectJson)
-            } else {
-              sections["Mature Projects"]["Repositories"].push(projectJson)
             }
           } else {
             if (projectJson.website !== null) {
@@ -1475,6 +1472,13 @@ See:</p>
         })
 
         const menuContainer = document.querySelector(".farama-header-menu__body");
+
+        const stackedColumnElem = Object.assign(
+          document.createElement('div'), {
+            style: 'display: flex; flex-direction: column;'
+          }
+        );
+        const stackedKeys = new Set(["Core Projects", "Foundation"]);
 
         Object.keys(sections).forEach((key, i) => {
           const sectionElem = Object.assign(
@@ -1519,7 +1523,14 @@ See:</p>
             const ulElem = createProjectsList(projects, true);
             sectionElem.appendChild(ulElem);
           }
-          menuContainer.appendChild(sectionElem)
+          if (stackedKeys.has(key)) {
+            if (!stackedColumnElem.parentNode) {
+              menuContainer.appendChild(stackedColumnElem);
+            }
+            stackedColumnElem.appendChild(sectionElem);
+          } else {
+            menuContainer.appendChild(sectionElem);
+          }
         });
       }
 

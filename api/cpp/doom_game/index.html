@@ -11,11 +11,11 @@
 <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="GameState" href="../game_state/" /><link rel="prev" title="C++ API" href="../" />
         <link rel="canonical" href="https://vizdoom.farama.org/api/cpp/doom_game.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Celshast 0.0.1 -->
         <title>DoomGame - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=3e7f4c72" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=82c8b628" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/celshast.css?v=9fbfb63d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/celshast-extensions.css?v=42bfddca" />
     
     
 
@@ -260,7 +260,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom">Github</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../release_notes/">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/blob/master/docs/README.md">Contribute to the Docs</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/blob/main/docs/README.md">Contribute to the Docs</a></li>
 </ul>
 
 </div>
@@ -286,7 +286,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/api/cpp/doom_game.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/main/docs/api/cpp/doom_game.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -415,8 +415,8 @@ After calling this method, the first state from the replay will be available.
 All rewards, variables, and states are available when replaying the episode.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/record_episodes.py">examples/python/record_episodes.py</a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/record_multiplayer.py">examples/python/record_multiplayer.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/record_episodes.py">examples/python/record_episodes.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/record_multiplayer.py">examples/python/record_multiplayer.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.0.</p>
 </section>
@@ -440,6 +440,26 @@ All rewards, variables, and states are available when replaying the episode.</p>
 <p>Returns true if the controlled game instance is running.</p>
 </section>
 <hr class="docutils" />
+<section id="getinstanceid">
+<h3><code class="docutils literal notranslate"><span class="pre">getInstanceId</span></code><a class="headerlink" href="#getinstanceid" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>C++</p></th>
+<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">std::string</span> <span class="pre">getInstanceId()</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Python</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">get_instance_id()</span> <span class="pre">-&gt;</span> <span class="pre">str</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Returns the unique identifier of the current running game instance.</p>
+<p>Note: added in 1.3.1.</p>
+</section>
+<hr class="docutils" />
 <section id="ismultiplayergame">
 <h3><code class="docutils literal notranslate"><span class="pre">isMultiplayerGame</span></code><a class="headerlink" href="#ismultiplayergame" title="Link to this heading">¶</a></h3>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -459,9 +479,9 @@ All rewards, variables, and states are available when replaying the episode.</p>
 <p>Returns true if the game is in multiplayer mode.</p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/multiple_instances.py">examples/python/multiple_instances.py</a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer.py">examples/python/cig_multiplayer.py</a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/cig_multiplayer_host.py">examples/python/cig_multiplayer_host.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/multiple_instances.py">examples/python/multiple_instances.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/cig_multiplayer.py">examples/python/cig_multiplayer.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/cig_multiplayer_host.py">examples/python/cig_multiplayer_host.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.2.</p>
 </section>
@@ -2005,12 +2025,12 @@ or a Python dictionary with configuration key-value pairs.</p>
 <p>Relative paths (e.g., for ‘doom_scenario_path’) are resolved relative to the current working directory.</p>
 <p>Python example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">game</span><span class="o">.</span><span class="n">set_config</span><span class="p">({</span>
-        <span class="s1">&#39;screen_resolution&#39;</span><span class="p">:</span> <span class="n">ScreenResolution</span><span class="o">.</span><span class="n">RES_640X480</span><span class="p">,</span>
-        <span class="s1">&#39;screen_format&#39;</span><span class="p">:</span> <span class="n">ScreenFormat</span><span class="o">.</span><span class="n">CRCGCB</span><span class="p">,</span>
-        <span class="s1">&#39;doom_skill&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-        <span class="s1">&#39;available_buttons&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">Button</span><span class="o">.</span><span class="n">MOVE_LEFT</span><span class="p">,</span> <span class="n">Button</span><span class="o">.</span><span class="n">MOVE_RIGHT</span><span class="p">,</span> <span class="n">Button</span><span class="o">.</span><span class="n">ATTACK</span><span class="p">],</span>
-        <span class="s1">&#39;available_game_variables&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">GameVariable</span><span class="o">.</span><span class="n">AMMO2</span><span class="p">],</span>
-        <span class="s1">&#39;living_reward&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="s1">'screen_resolution'</span><span class="p">:</span> <span class="n">ScreenResolution</span><span class="o">.</span><span class="n">RES_640X480</span><span class="p">,</span>
+        <span class="s1">'screen_format'</span><span class="p">:</span> <span class="n">ScreenFormat</span><span class="o">.</span><span class="n">CRCGCB</span><span class="p">,</span>
+        <span class="s1">'doom_skill'</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s1">'available_buttons'</span><span class="p">:</span> <span class="p">[</span><span class="n">Button</span><span class="o">.</span><span class="n">MOVE_LEFT</span><span class="p">,</span> <span class="n">Button</span><span class="o">.</span><span class="n">MOVE_RIGHT</span><span class="p">,</span> <span class="n">Button</span><span class="o">.</span><span class="n">ATTACK</span><span class="p">],</span>
+        <span class="s1">'available_game_variables'</span><span class="p">:</span> <span class="p">[</span><span class="n">GameVariable</span><span class="o">.</span><span class="n">AMMO2</span><span class="p">],</span>
+        <span class="s1">'living_reward'</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span>
     <span class="p">})</span>
 </pre></div>
 </div>
@@ -2102,7 +2122,7 @@ The default Doom ticrate is 35. This value will play a game at normal speed.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">ticrate</span></code></p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/ticrate.py">examples/python/ticrate.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/ticrate.py">examples/python/ticrate.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.0.</p>
 </section>
@@ -2405,7 +2425,7 @@ This method is not needed for most of the tasks and is added for the convenience
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">seed</span></code></p>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/seed.py">examples/python/seed.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/seed.py">examples/python/seed.py</a></p></li>
 </ul>
 </section>
 <hr class="docutils" />
@@ -2603,7 +2623,7 @@ Depth buffer will contain noise if <code class="docutils literal notranslate"><s
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.0.</p>
 </section>
@@ -2653,8 +2673,8 @@ LabelsBuffer will contain noise if <code class="docutils literal notranslate"><s
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/labels_buffer.py">examples/python/labels_buffer.py</a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/labels_buffer.py">examples/python/labels_buffer.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.0.</p>
 </section>
@@ -2703,8 +2723,8 @@ The buffer always has the same resolution as the screen buffer.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/automap_buffer.py">examples/python/automap_buffer.py</a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a>,</p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/automap_buffer.py">examples/python/automap_buffer.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/buffers.py">examples/python/buffers.py</a>,</p></li>
 </ul>
 <p>Note: added in 1.1.0.</p>
 </section>
@@ -3252,7 +3272,7 @@ It will be available in the state.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>,</p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a>,</p></li>
 </ul>
 <p>Note: added in 1.1.8.</p>
 </section>
@@ -3301,7 +3321,7 @@ It will be available in the state.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/objects_and_sectors.py">examples/python/objects_and_sectors.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.8.</p>
 </section>
@@ -3352,7 +3372,7 @@ Sampling rate can be set with <a class="reference internal" href="#setaudiosampl
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
 <li><p><a class="reference internal" href="../enums/#sampling-rate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">SamplingRate</span></code></span></a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.9.</p>
 </section>
@@ -3377,7 +3397,7 @@ Sampling rate can be set with <a class="reference internal" href="#setaudiosampl
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.9.</p>
 </section>
@@ -3405,7 +3425,7 @@ Sampling rate can be set with <a class="reference internal" href="#setaudiosampl
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.9.</p>
 </section>
@@ -3431,7 +3451,7 @@ Sampling rate can be set with <a class="reference internal" href="#setaudiosampl
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
 </ul>
 </section>
 <hr class="docutils" />
@@ -3460,7 +3480,7 @@ Doom uses 35 ticks per second.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/audio_buffer.py">examples/python/audio_buffer.py</a></p></li>
 </ul>
 <p>Note: added in 1.1.9.</p>
 </section>
@@ -3509,7 +3529,7 @@ The notification buffer will contain text notifications from the number of the l
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
 </ul>
 <p>Note: added in 1.3.0.</p>
 </section>
@@ -3535,7 +3555,7 @@ The notification buffer will contain text notifications from the number of the l
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
 </ul>
 </section>
 <hr class="docutils" />
@@ -3564,7 +3584,7 @@ Doom uses 35 ticks per second.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../game_state/#gamestate"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">GameState</span></code></span></a></p></li>
-<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/buffers.py">examples/python/buffers.py</a></p></li>
 </ul>
 <p>Note: added in 1.3.0.</p>
 </section>
@@ -3604,7 +3624,7 @@ Doom uses 35 ticks per second.</p>
           <div class="bottom-of-page">
             <div class="left-details">
               <div class="copyright">
-                Copyright &#169; 2025 Farama Foundation
+                Copyright &#169; 2026 Farama Foundation
               </div>
               <!--
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
@@ -3647,6 +3667,7 @@ Doom uses 35 ticks per second.</p>
 <li><a class="reference internal" href="#newepisode"><code class="docutils literal notranslate"><span class="pre">newEpisode</span></code></a></li>
 <li><a class="reference internal" href="#replayepisode"><code class="docutils literal notranslate"><span class="pre">replayEpisode</span></code></a></li>
 <li><a class="reference internal" href="#isrunning"><code class="docutils literal notranslate"><span class="pre">isRunning</span></code></a></li>
+<li><a class="reference internal" href="#getinstanceid"><code class="docutils literal notranslate"><span class="pre">getInstanceId</span></code></a></li>
 <li><a class="reference internal" href="#ismultiplayergame"><code class="docutils literal notranslate"><span class="pre">isMultiplayerGame</span></code></a></li>
 <li><a class="reference internal" href="#isrecordingepisode"><code class="docutils literal notranslate"><span class="pre">isRecordingEpisode</span></code></a></li>
 <li><a class="reference internal" href="#isreplayingepisode"><code class="docutils literal notranslate"><span class="pre">isReplayingEpisode</span></code></a></li>
@@ -3896,7 +3917,7 @@ Doom uses 35 ticks per second.</p>
     <script src="../../../_static/documentation_options.js?v=a5603611"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../../../_static/scripts/furo.js?v=7660844c"></script>
+    <script src="../../../_static/scripts/celshast.js?v=a788a8c6"></script>
     
     <script>
 
@@ -3957,14 +3978,6 @@ Doom uses 35 ticks per second.</p>
         const jsonResponse = xhr.response;
         const sections = {
           "Core Projects": [],
-          "Mature Projects": {
-            "Documentation": [],
-            "Repositories": [],
-          },
-          "Incubating Projects": {
-            "Documentation": [],
-            "Repositories": [],
-          },
           "Foundation": [
             {
               name: "About",
@@ -3978,7 +3991,14 @@ Doom uses 35 ticks per second.</p>
               name: "Donate",
               link: "https://farama.org/donations"
             }
-          ]
+          ],
+          "Mature Projects": {
+            "Documentation": [],
+          },
+          "Incubating Projects": {
+            "Documentation": [],
+            "Repositories": [],
+          }
         }
 
         // Categorize projects
@@ -3994,8 +4014,6 @@ Doom uses 35 ticks per second.</p>
           } else if (projectJson.type == "mature") {
             if (projectJson.website !== null) {
               sections["Mature Projects"]["Documentation"].push(projectJson)
-            } else {
-              sections["Mature Projects"]["Repositories"].push(projectJson)
             }
           } else {
             if (projectJson.website !== null) {
@@ -4007,6 +4025,13 @@ Doom uses 35 ticks per second.</p>
         })
 
         const menuContainer = document.querySelector(".farama-header-menu__body");
+
+        const stackedColumnElem = Object.assign(
+          document.createElement('div'), {
+            style: 'display: flex; flex-direction: column;'
+          }
+        );
+        const stackedKeys = new Set(["Core Projects", "Foundation"]);
 
         Object.keys(sections).forEach((key, i) => {
           const sectionElem = Object.assign(
@@ -4051,7 +4076,14 @@ Doom uses 35 ticks per second.</p>
             const ulElem = createProjectsList(projects, true);
             sectionElem.appendChild(ulElem);
           }
-          menuContainer.appendChild(sectionElem)
+          if (stackedKeys.has(key)) {
+            if (!stackedColumnElem.parentNode) {
+              menuContainer.appendChild(stackedColumnElem);
+            }
+            stackedColumnElem.appendChild(sectionElem);
+          } else {
+            menuContainer.appendChild(sectionElem);
+          }
         });
       }
 

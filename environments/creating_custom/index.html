@@ -11,11 +11,11 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="SLADE configuration guide" href="../slade_config/" /><link rel="prev" title="Third-party environments" href="../third_party/" />
         <link rel="canonical" href="https://vizdoom.farama.org/environments/creating_custom.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Celshast 0.0.1 -->
         <title>Creating a custom environment - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=82c8b628" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/celshast.css?v=9fbfb63d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/celshast-extensions.css?v=42bfddca" />
     
     
 
@@ -260,7 +260,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom">Github</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release_notes/">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/blob/master/docs/README.md">Contribute to the Docs</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/blob/main/docs/README.md">Contribute to the Docs</a></li>
 </ul>
 
 </div>
@@ -286,7 +286,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/environments/creating_custom.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/main/docs/environments/creating_custom.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -319,7 +319,7 @@
             
             <section class="tex2jax_ignore mathjax_ignore" id="creating-a-custom-environment">
 <h1>Creating a custom environment<a class="headerlink" href="#creating-a-custom-environment" title="Link to this heading">¶</a></h1>
-<p>ViZDoom allows the use of custom scenarios/environments that can be easily prepared using modern Doom map editors like <a class="reference external" href="http://slade.mancubus.net/index.php?page=downloads">SLADE</a> (available for Linux, MacOS, and Windows) or <a class="reference external" href="http://www.doombuilder.com/index.php?p=downloads">DoomBuilder</a> (a bit better editor, but only available for Windows), that we recommend using. These editors allow you to create a map used by the environment and program custom logic and rewards using ACS scripting language. In addition to a map+script created in one of the editors that is saved to a .wad file, ViZDoom uses .cfg config files that store additional information about the environment. Such .wad and .cfg together define a custom environment that can be used with ViZDoom. The following will guide you through the process of creating a custom environment.</p>
+<p>ViZDoom allows the use of custom scenarios/environments that can be easily prepared using modern Doom map editors like <a class="reference external" href="http://slade.mancubus.net/index.php?page=downloads">SLADE</a> (available for Linux, macOS, and Windows) or <a class="reference external" href="http://www.doombuilder.com/index.php?p=downloads">DoomBuilder</a> (a bit better editor, but only available for Windows), that we recommend using. These editors allow you to create a map used by the environment and program custom logic and rewards using ACS scripting language. In addition to a map+script created in one of the editors that is saved to a .wad file, ViZDoom uses .cfg config files that store additional information about the environment. Such .wad and .cfg together define a custom environment that can be used with ViZDoom. The following will guide you through the process of creating a custom environment.</p>
 <section id="limitations-and-possibilities">
 <h2>Limitations and possibilities<a class="headerlink" href="#limitations-and-possibilities" title="Link to this heading">¶</a></h2>
 <p>Before we start explaining the process of creating custom environments, one question you might ask is what kind of environments can be created using the old Doom engine. The following list summarizes the most important limitations and possibilities for creating the environments for ViZDoom:</p>
@@ -343,7 +343,7 @@ Due to the engine’s architecture, the only area that ACS is a bit lacking is t
 </section>
 <section id="step-1-creating-a-custom-map">
 <h2>Step 1: Creating a custom map<a class="headerlink" href="#step-1-creating-a-custom-map" title="Link to this heading">¶</a></h2>
-<p>To create a custom scenario (.wad file), you need to use a dedicated editor. <a class="reference external" href="http://slade.mancubus.net/index.php?page=downloads">SLADE</a> (available for Linux, MacOS, and Windows) or <a class="reference external" href="http://www.doombuilder.com/index.php?p=downloads">DoomBuilder</a> (a bit better editor, but only available for Windows) or <a class="reference external" href="https://ultimatedoombuilder.github.io/">UltimateDoomBuilder</a>, are software that we recommend using for this task.</p>
+<p>To create a custom scenario (.wad file), you need to use a dedicated editor. <a class="reference external" href="http://slade.mancubus.net/index.php?page=downloads">SLADE</a> (available for Linux, macOS, and Windows) or <a class="reference external" href="http://www.doombuilder.com/index.php?p=downloads">DoomBuilder</a> (a bit better editor, but only available for Windows) or <a class="reference external" href="https://ultimatedoombuilder.github.io/">UltimateDoomBuilder</a>, are software that we recommend using for this task.</p>
 <p>See the <a class="reference external" href="https://slade.mancubus.net/index.php?page=wiki">SLADE wiki</a> or <a class="reference external" href="http://www.doombuilder.com/index.php?p=tutorials">DoomBuilder Tutorials</a> for instructions on how to use the editor.</p>
 <p>To see how to configure SLADE for ViZDoom, see <a class="reference internal" href="../slade_config/"><span class="std std-doc">our tutorial</span></a>.</p>
 <p>When creating a new map, always select <strong>UDMF format</strong> for maps, as other formats does not support scripting.
@@ -395,21 +395,21 @@ Unfortunately, ACS does not support real floating point numbers.</p>
 <h2>Step 3: Loading/using a custom environment/scenario<a class="headerlink" href="#step-3-loading-using-a-custom-environment-scenario" title="Link to this heading">¶</a></h2>
 <p>The easiest way to use a custom scenario in the original ViZDoom API is to load the config file using a dedicated method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">game</span> <span class="o">=</span> <span class="n">vzd</span><span class="o">.</span><span class="n">DoomGame</span><span class="p">()</span>
-<span class="n">game</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s2">&quot;&lt;path to .cfg file&gt;&quot;</span><span class="p">)</span>
+<span class="n">game</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s2">"&lt;path to .cfg file&gt;"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>It can also be registered as a Gymnasium environment using the following method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gymnasium.envs.registration</span><span class="w"> </span><span class="kn">import</span> <span class="n">register</span>
 
 <span class="n">register</span><span class="p">(</span>
-    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;&lt;name of your environment&gt;&quot;</span><span class="p">,</span>
-    <span class="n">entry_point</span><span class="o">=</span><span class="s2">&quot;vizdoom.gymnasium_wrapper.base_gymnasium_env:VizdoomEnv&quot;</span><span class="p">,</span>
-    <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;scenario_file&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;path to .cfg file&gt;&quot;</span><span class="p">},</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">"&lt;name of your environment&gt;"</span><span class="p">,</span>
+    <span class="n">entry_point</span><span class="o">=</span><span class="s2">"vizdoom.gymnasium_wrapper.base_gymnasium_env:VizdoomEnv"</span><span class="p">,</span>
+    <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">"scenario_file"</span><span class="p">:</span> <span class="s2">"&lt;path to .cfg file&gt;"</span><span class="p">},</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <p>And then used as any other Gymnasium environment:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">&quot;&lt;name of your environment&gt;&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">gymnasium</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">"&lt;name of your environment&gt;"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -448,7 +448,7 @@ Unfortunately, ACS does not support real floating point numbers.</p>
           <div class="bottom-of-page">
             <div class="left-details">
               <div class="copyright">
-                Copyright &#169; 2025 Farama Foundation
+                Copyright &#169; 2026 Farama Foundation
               </div>
               <!--
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
@@ -578,7 +578,7 @@ Unfortunately, ACS does not support real floating point numbers.</p>
     <script src="../../_static/documentation_options.js?v=a5603611"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../../_static/scripts/furo.js?v=7660844c"></script>
+    <script src="../../_static/scripts/celshast.js?v=a788a8c6"></script>
     
     <script>
 
@@ -639,14 +639,6 @@ Unfortunately, ACS does not support real floating point numbers.</p>
         const jsonResponse = xhr.response;
         const sections = {
           "Core Projects": [],
-          "Mature Projects": {
-            "Documentation": [],
-            "Repositories": [],
-          },
-          "Incubating Projects": {
-            "Documentation": [],
-            "Repositories": [],
-          },
           "Foundation": [
             {
               name: "About",
@@ -660,7 +652,14 @@ Unfortunately, ACS does not support real floating point numbers.</p>
               name: "Donate",
               link: "https://farama.org/donations"
             }
-          ]
+          ],
+          "Mature Projects": {
+            "Documentation": [],
+          },
+          "Incubating Projects": {
+            "Documentation": [],
+            "Repositories": [],
+          }
         }
 
         // Categorize projects
@@ -676,8 +675,6 @@ Unfortunately, ACS does not support real floating point numbers.</p>
           } else if (projectJson.type == "mature") {
             if (projectJson.website !== null) {
               sections["Mature Projects"]["Documentation"].push(projectJson)
-            } else {
-              sections["Mature Projects"]["Repositories"].push(projectJson)
             }
           } else {
             if (projectJson.website !== null) {
@@ -689,6 +686,13 @@ Unfortunately, ACS does not support real floating point numbers.</p>
         })
 
         const menuContainer = document.querySelector(".farama-header-menu__body");
+
+        const stackedColumnElem = Object.assign(
+          document.createElement('div'), {
+            style: 'display: flex; flex-direction: column;'
+          }
+        );
+        const stackedKeys = new Set(["Core Projects", "Foundation"]);
 
         Object.keys(sections).forEach((key, i) => {
           const sectionElem = Object.assign(
@@ -733,7 +737,14 @@ Unfortunately, ACS does not support real floating point numbers.</p>
             const ulElem = createProjectsList(projects, true);
             sectionElem.appendChild(ulElem);
           }
-          menuContainer.appendChild(sectionElem)
+          if (stackedKeys.has(key)) {
+            if (!stackedColumnElem.parentNode) {
+              menuContainer.appendChild(stackedColumnElem);
+            }
+            stackedColumnElem.appendChild(sectionElem);
+          } else {
+            menuContainer.appendChild(sectionElem);
+          }
         });
       }
 

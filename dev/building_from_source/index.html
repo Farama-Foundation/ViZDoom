@@ -11,11 +11,11 @@
 <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="FAQ" href="../../faq/" /><link rel="prev" title="Development Guide" href="../dev_guide/" />
         <link rel="canonical" href="https://vizdoom.farama.org/dev/building_from_source.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2023.08.19.dev1 -->
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Celshast 0.0.1 -->
         <title>Building from source - ViZDoom Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=3e7f4c72" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=82c8b628" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/celshast.css?v=9fbfb63d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/celshast-extensions.css?v=42bfddca" />
     
     
 
@@ -260,7 +260,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom">Github</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release_notes/">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/blob/master/docs/README.md">Contribute to the Docs</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/blob/main/docs/README.md">Contribute to the Docs</a></li>
 </ul>
 
 </div>
@@ -286,7 +286,7 @@
             <span>Back to top</span>
           </a>
           <div class="content-icon-container"><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/master/docs/dev/building_from_source.md" title="Edit this page">
+  <a class="muted-link" href="https://github.com/Farama-Foundation/ViZDoom/edit/main/docs/dev/building_from_source.md" title="Edit this page">
     <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -332,7 +332,7 @@ If you just want to install pre-build ViZDoom wheels for Python, see <a class="r
 <li><p>Make</p></li>
 <li><p>GCC 6.0+</p></li>
 <li><p>Boost libraries 1.54.0+</p></li>
-<li><p>Python 3.9+ for Python binding (optional)</p></li>
+<li><p>Python 3.10+ for Python binding (optional)</p></li>
 </ul>
 <p>Also some of additionally <a class="reference external" href="http://zdoom.org/wiki/Compile_ZDoom_on_Linux">ZDoom dependencies</a> are needed.</p>
 <section id="apt-based-distros-ubuntu-debian-linux-mint-etc">
@@ -380,13 +380,13 @@ dnf<span class="w"> </span>install<span class="w"> </span>python3-devel<span cla
 </section>
 </section>
 <section id="macos">
-<h3>MacOS<a class="headerlink" href="#macos" title="Link to this heading">¶</a></h3>
-<p>To build ViZDoom on MacOS, the following dependencies are required:</p>
+<h3>macOS<a class="headerlink" href="#macos" title="Link to this heading">¶</a></h3>
+<p>To build ViZDoom on macOS, the following dependencies are required:</p>
 <ul class="simple">
 <li><p>CMake 3.12+</p></li>
 <li><p>Clang 5.0+</p></li>
 <li><p>Boost libraries 1.54.0+</p></li>
-<li><p>Python 3.9+ for Python binding (optional)</p></li>
+<li><p>Python 3.10+ for Python binding (optional)</p></li>
 </ul>
 <p>Also some of additionally <a class="reference external" href="http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X">ZDoom dependencies</a> are needed.</p>
 <p>To get all the dependencies install <a class="reference external" href="https://brew.sh/">homebrew</a> first, than execute the following commands in the shell:</p>
@@ -395,7 +395,7 @@ dnf<span class="w"> </span>install<span class="w"> </span>python3-devel<span cla
 </div>
 <p>⚠️ On Apple Silicon (M-series chip), make sure you are using homebrew for <code class="docutils literal notranslate"><span class="pre">arm64</span></code>.</p>
 <p>Here is a helpful command to set up the environment variables for homebrew on Apple Silicon if both <code class="docutils literal notranslate"><span class="pre">arm64</span></code> and <code class="docutils literal notranslate"><span class="pre">x86</span></code> versions were installed:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>/opt/homebrew/bin/brew<span class="w"> </span>shellenv<span class="k">)</span><span class="s2">&quot;</span>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">eval</span><span class="w"> </span><span class="s2">"</span><span class="k">$(</span>/opt/homebrew/bin/brew<span class="w"> </span>shellenv<span class="k">)</span><span class="s2">"</span>
 </pre></div>
 </div>
 <p>We recommend using at least macOS High Sierra 10.13+.
@@ -407,7 +407,7 @@ On Apple Silicon, make sure you are using Python/Pip for Apple Silicon.</p>
 <li><p>CMake 3.12+</p></li>
 <li><p>Visual Studio 2012+</p></li>
 <li><p>Boost libraries 1.54.0+</p></li>
-<li><p>Python 3.9+ for Python binding (optional)</p></li>
+<li><p>Python 3.10+ for Python binding (optional)</p></li>
 </ul>
 <p>Additionally, <a class="reference external" href="http://zdoom.org/wiki/Compile_ZDoom_on_Windows">ZDoom dependencies</a> are needed.
 Most of them (except Boost) are gathered in this repository: <a class="reference external" href="https://github.com/mwydmuch/ViZDoomWinDepBin">ViZDoomWinDepBin</a>.
@@ -416,7 +416,7 @@ You can download Boost from <a class="reference external" href="https://www.boos
 </section>
 <section id="building-via-pip-recommended-for-python-users">
 <h2>Building via pip (recommended for Python users)<a class="headerlink" href="#building-via-pip-recommended-for-python-users" title="Link to this heading">¶</a></h2>
-<p>ViZDoom for Python can be build via <strong>pip</strong> on Linux, MacOS and Windows, and it is strongly recommended.
+<p>ViZDoom for Python can be build via <strong>pip</strong> on Linux, macOS and Windows, and it is strongly recommended.
 Even when building using pip you still need to install dependencies.</p>
 <p>To build the newest version from the repository run:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/mwydmuch/ViZDoom.git
@@ -428,14 +428,14 @@ Even when building using pip you still need to install dependencies.</p>
 pip<span class="w"> </span>install<span class="w"> </span>.
 </pre></div>
 </div>
-<p>On Linux and MacOS dependencies should be found automatically.
+<p>On Linux and macOS dependencies should be found automatically.
 On Windows you need to manually set following environment variables:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">BOOST_ROOT</span></code> - the path to the directory with Boost libraries (e.g. <code class="docutils literal notranslate"><span class="pre">C:\boost_1_76_0</span></code>),</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">VIZDOOM_BUILD_GENERATOR_NAME</span></code> - generator name (e.g. <code class="docutils literal notranslate"><span class="pre">Visual</span> <span class="pre">Studio</span> <span class="pre">16</span> <span class="pre">2019</span></code>),</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">VIZDOOM_WIN_DEPS_ROOT</span></code> - the path to the directory with ZDoom dependencies (e.g. <code class="docutils literal notranslate"><span class="pre">C:\ViZDoomWinDepBin</span></code>).</p></li>
 </ul>
-<p>The process of building ViZDoom this way on Windows is demonstarted in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scripts/windows_build_wheels.bat">scripts/windows_build_wheels.bat</a>.</p>
+<p>The process of building ViZDoom this way on Windows is demonstarted in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/scripts/windows_build_wheels.bat">scripts/windows_build_wheels.bat</a>.</p>
 </section>
 <section id="building-python-type-stubs-vizdoom-pyi">
 <h2>Building Python Type Stubs (<code class="docutils literal notranslate"><span class="pre">vizdoom.pyi</span></code>)<a class="headerlink" href="#building-python-type-stubs-vizdoom-pyi" title="Link to this heading">¶</a></h2>
@@ -457,7 +457,7 @@ On Windows you need to manually set following environment variables:</p>
 </section>
 <section id="building-manylinux-wheels">
 <h2>Building manylinux wheels<a class="headerlink" href="#building-manylinux-wheels" title="Link to this heading">¶</a></h2>
-<p>To build manylinux wheels you need to install docker and cibuildwheel. Then on Linux and MacOS run in ViZDoom root directory:</p>
+<p>To build manylinux wheels you need to install docker and cibuildwheel. Then on Linux and macOS run in ViZDoom root directory:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>cibuildwheel<span class="w"> </span>--platform<span class="w"> </span>linux
 </pre></div>
 </div>
@@ -469,7 +469,7 @@ In case of building using cibuildwheel, the dependencies are installed automatic
 <p>Instructions below can be used to build ViZDoom manually.
 We recommend doing it only if you want to use C++ API, work on the ViZDoom, or if you have problems with pip installation.</p>
 <section id="linux-macos">
-<h3>Linux / MacOS<a class="headerlink" href="#linux-macos" title="Link to this heading">¶</a></h3>
+<h3>Linux / macOS<a class="headerlink" href="#linux-macos" title="Link to this heading">¶</a></h3>
 <p>In ViZDoom’s root directory:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>build
 <span class="nb">cd</span><span class="w"> </span>build
@@ -496,7 +496,7 @@ make
 <li><p>In configuration select <code class="docutils literal notranslate"><span class="pre">DBUILD_ENGINE</span></code>, <code class="docutils literal notranslate"><span class="pre">DBUILD_PYTHON</span></code> (optional, default ON) and <code class="docutils literal notranslate"><span class="pre">DCREATE_PYTHON_STUBS</span></code> (optional, default OFF).</p></li>
 <li><p>Use generated Visual Studio solution to build all parts of ViZDoom environment.</p></li>
 </ol>
-<p>The process of building ViZDoom this way on Windows is demonstarted in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/master/scripts/windows_build_cmake.bat">scripts/windows_build_cmake.bat</a> script.</p>
+<p>The process of building ViZDoom this way on Windows is demonstarted in <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/scripts/windows_build_cmake.bat">scripts/windows_build_cmake.bat</a> script.</p>
 </section>
 <section id="compilation-output">
 <h3>Compilation output<a class="headerlink" href="#compilation-output" title="Link to this heading">¶</a></h3>
@@ -550,7 +550,7 @@ make
           <div class="bottom-of-page">
             <div class="left-details">
               <div class="copyright">
-                Copyright &#169; 2025 Farama Foundation
+                Copyright &#169; 2026 Farama Foundation
               </div>
               <!--
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
@@ -594,7 +594,7 @@ make
 <li><a class="reference internal" href="#anaconda-miniconda">Anaconda/Miniconda</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#macos">MacOS</a></li>
+<li><a class="reference internal" href="#macos">macOS</a></li>
 <li><a class="reference internal" href="#windows">Windows</a></li>
 </ul>
 </li>
@@ -602,7 +602,7 @@ make
 <li><a class="reference internal" href="#building-python-type-stubs-vizdoom-pyi">Building Python Type Stubs (<code class="docutils literal notranslate"><span class="pre">vizdoom.pyi</span></code>)</a></li>
 <li><a class="reference internal" href="#building-manylinux-wheels">Building manylinux wheels</a></li>
 <li><a class="reference internal" href="#building-manually-not-recommended">Building manually (not recommended)</a><ul>
-<li><a class="reference internal" href="#linux-macos">Linux / MacOS</a></li>
+<li><a class="reference internal" href="#linux-macos">Linux / macOS</a></li>
 <li><a class="reference internal" href="#id1">Windows</a></li>
 <li><a class="reference internal" href="#compilation-output">Compilation output</a></li>
 <li><a class="reference internal" href="#manual-installation">Manual installation</a></li>
@@ -697,7 +697,7 @@ make
     <script src="../../_static/documentation_options.js?v=a5603611"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../../_static/scripts/furo.js?v=7660844c"></script>
+    <script src="../../_static/scripts/celshast.js?v=a788a8c6"></script>
     
     <script>
 
@@ -758,14 +758,6 @@ make
         const jsonResponse = xhr.response;
         const sections = {
           "Core Projects": [],
-          "Mature Projects": {
-            "Documentation": [],
-            "Repositories": [],
-          },
-          "Incubating Projects": {
-            "Documentation": [],
-            "Repositories": [],
-          },
           "Foundation": [
             {
               name: "About",
@@ -779,7 +771,14 @@ make
               name: "Donate",
               link: "https://farama.org/donations"
             }
-          ]
+          ],
+          "Mature Projects": {
+            "Documentation": [],
+          },
+          "Incubating Projects": {
+            "Documentation": [],
+            "Repositories": [],
+          }
         }
 
         // Categorize projects
@@ -795,8 +794,6 @@ make
           } else if (projectJson.type == "mature") {
             if (projectJson.website !== null) {
               sections["Mature Projects"]["Documentation"].push(projectJson)
-            } else {
-              sections["Mature Projects"]["Repositories"].push(projectJson)
             }
           } else {
             if (projectJson.website !== null) {
@@ -808,6 +805,13 @@ make
         })
 
         const menuContainer = document.querySelector(".farama-header-menu__body");
+
+        const stackedColumnElem = Object.assign(
+          document.createElement('div'), {
+            style: 'display: flex; flex-direction: column;'
+          }
+        );
+        const stackedKeys = new Set(["Core Projects", "Foundation"]);
 
         Object.keys(sections).forEach((key, i) => {
           const sectionElem = Object.assign(
@@ -852,7 +856,14 @@ make
             const ulElem = createProjectsList(projects, true);
             sectionElem.appendChild(ulElem);
           }
-          menuContainer.appendChild(sectionElem)
+          if (stackedKeys.has(key)) {
+            if (!stackedColumnElem.parentNode) {
+              menuContainer.appendChild(stackedColumnElem);
+            }
+            stackedColumnElem.appendChild(sectionElem);
+          } else {
+            menuContainer.appendChild(sectionElem);
+          }
         });
       }
 
