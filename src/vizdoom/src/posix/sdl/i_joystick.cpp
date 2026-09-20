@@ -1,4 +1,5 @@
-#include <SDL2/SDL.h>
+//VIZDOOM_CODE
+#include <SDL3/SDL.h>
 
 #include "doomdef.h"
 #include "templates.h"
@@ -10,22 +11,24 @@
 class SDLInputJoystick: public IJoystickConfig
 {
 public:
-	SDLInputJoystick(int DeviceIndex) : DeviceIndex(DeviceIndex), Multiplier(1.0f)
+	//VIZDOOM_CODE
+	SDLInputJoystick(int DeviceIndex, SDL_JoystickID DeviceID) : DeviceIndex(DeviceIndex), Multiplier(1.0f)
 	{
-		Device = SDL_JoystickOpen(DeviceIndex);
+		Device = SDL_OpenJoystick(DeviceID);
 		if(Device != NULL)
 		{
-			NumAxes = SDL_JoystickNumAxes(Device);
-			NumHats = SDL_JoystickNumHats(Device);
+			NumAxes = SDL_GetNumJoystickAxes(Device);
+			NumHats = SDL_GetNumJoystickHats(Device);
 
 			SetDefaultConfig();
 		}
 	}
+	//VIZDOOM_CODE
 	~SDLInputJoystick()
 	{
 		if(Device != NULL)
 			M_SaveJoystickConfig(this);
-		SDL_JoystickClose(Device);
+		SDL_CloseJoystick(Device);
 	}
 
 	bool IsValid() const
@@ -33,9 +36,10 @@ public:
 		return Device != NULL;
 	}
 
+	//VIZDOOM_CODE
 	FString GetName()
 	{
-		return SDL_JoystickName(Device);
+		return SDL_GetJoystickName(Device);
 	}
 	float GetSensitivity()
 	{
@@ -137,6 +141,7 @@ public:
 		}
 	}
 
+	//VIZDOOM_CODE
 	void ProcessInput()
 	{
 		BYTE buttonstate;
@@ -145,7 +150,7 @@ public:
 		{
 			buttonstate = 0;
 
-			Axes[i].Value = SDL_JoystickGetAxis(Device, i)/32767.0;
+			Axes[i].Value = SDL_GetJoystickAxis(Device, i)/32767.0;
 			Axes[i].Value = Joy_RemoveDeadZone(Axes[i].Value, Axes[i].DeadZone, &buttonstate);
 
 			// Map button to axis
@@ -173,7 +178,7 @@ public:
 			AxisInfo &x = Axes[NumAxes + i*2];
 			AxisInfo &y = Axes[NumAxes + i*2 + 1];
 
-			buttonstate = SDL_JoystickGetHat(Device, i);
+			buttonstate = SDL_GetJoystickHat(Device, i);
 
 			// If we're going to assume that we can pass SDL's value into
 			// Joy_GenerateButtonEvents then we might as well assume the format here.
@@ -223,16 +228,20 @@ const EJoyAxis SDLInputJoystick::DefaultAxes[5] = {JOYAXIS_Side, JOYAXIS_Forward
 class SDLInputJoystickManager
 {
 public:
+	//VIZDOOM_CODE
 	SDLInputJoystickManager()
 	{
-		for(int i = 0;i < SDL_NumJoysticks();i++)
+		int count = 0;
+		SDL_JoystickID *devices = SDL_GetJoysticks(&count);
+		for(int i = 0;devices != NULL && i < count;i++)
 		{
-			SDLInputJoystick *device = new SDLInputJoystick(i);
+			SDLInputJoystick *device = new SDLInputJoystick(i, devices[i]);
 			if(device->IsValid())
 				Joysticks.Push(device);
 			else
 				delete device;
 		}
+		SDL_free(devices);
 	}
 	~SDLInputJoystickManager()
 	{
@@ -264,9 +273,10 @@ protected:
 };
 static SDLInputJoystickManager *JoystickManager;
 
+//VIZDOOM_CODE
 void I_StartupJoysticks()
 {
-	if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) >= 0)
+	if(SDL_InitSubSystem(SDL_INIT_JOYSTICK))
 		JoystickManager = new SDLInputJoystickManager();
 }
 void I_ShutdownJoysticks()

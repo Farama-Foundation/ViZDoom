@@ -24,13 +24,15 @@ On RHEL/CentOS/Alma/Rocky Linux 9, you may need first enable crb repository by r
 
 ### Installing from source distribution on Linux
 If Python wheel is not available for your platform (distros incompatible with manylinux_2_28 standard), pip will try to install (build) ViZDoom from the source.
-ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.10+ to install from source.
+ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL3, OpenAL (optional), and Python 3.10+ to install from source.
 Below, you will find instructions on how to install these dependencies.
+
+If your distribution does not provide an SDL3 development package, follow the [SDL3 source installation instructions](../dev/building_from_source.md).
 
 #### apt-based distros (Ubuntu, Debian, Linux Mint, etc.)
 To build ViZDoom run (it may take a few minutes):
 ```sh
-apt install cmake git libboost-all-dev libsdl2-dev libopenal-dev
+apt install cmake git libboost-all-dev libsdl3-dev libopenal-dev
 pip install vizdoom
 ```
 We recommend using at least Ubuntu 18.04+ or Debian 10+.
@@ -38,7 +40,7 @@ We recommend using at least Ubuntu 18.04+ or Debian 10+.
 #### dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)
 To install ViZDoom, run (it may take a few minutes):
 ```sh
-dnf install cmake git boost-devel SDL2-devel openal-soft-devel
+dnf install cmake git boost-devel SDL3-devel openal-soft-devel
 pip install vizdoom
 ```
 We recommend using at least Fedora 35+ or RHEL/CentOS/Alma/Rocky Linux 9+.
@@ -63,7 +65,7 @@ Pre-build wheels are available for Intel macOS 12.0+ and Apple Silicon macOS 14.
 If Python wheel is not available for your platform (Python version <3.8, older macOS version), pip will try to install (build) ViZDoom from the source.
 In this case, install the required dependencies using Homebrew:
 ```sh
-brew install cmake boost sdl2 openal-soft
+brew install cmake boost sdl3 openal-soft
 ```
 We recommend using at least macOS High Sierra 10.13+ with Python 3.10+.
 On Apple Silicon (M1, M2, and M3), make sure you are using Python/Pip for Apple Silicon.

@@ -57,7 +57,8 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt update
-        sudo apt install -y cmake git libboost-all-dev libsdl2-dev libopenal-dev
+        sudo apt install -y cmake git libboost-all-dev libopenal-dev
+        sudo bash scripts/install_sdl3.sh
         apt list --installed
 
     - name: Install dependencies on macOS
@@ -65,7 +66,7 @@ jobs:
       run: |
         brew config
         brew uninstall cmake
-        brew install cmake boost openal-soft sdl2
+        brew install cmake boost openal-soft sdl3
 
     - name: Set up Python ${{ matrix.python-version }} environment
       uses: actions/setup-python@v7

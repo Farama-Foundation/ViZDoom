@@ -1,7 +1,7 @@
 recursive-include cmake_modules *cmake *.in
 recursive-include include *.h
 recursive-include gymnasium_wrapper *
-include scripts/repair_macos_wheel.py
+include scripts/install_sdl3.sh
 recursive-include scenarios *.wad *.cfg
 recursive-include src *
 recursive-include tests *

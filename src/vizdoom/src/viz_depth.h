@@ -33,7 +33,7 @@
 #include "basictypes.h"
 
 #ifdef VIZ_DEPTH_TEST
-#include <SDL_video.h>
+#include <SDL3/SDL.h>
 #endif
 
 class VIZDepthBuffer{

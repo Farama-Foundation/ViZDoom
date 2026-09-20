@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 if( NOT NO_FMOD AND FMOD_INCLUDE_DIR )
+	#VIZDOOM_CODE
+	find_package( SDL3 3.2 REQUIRED CONFIG )
 	add_library( output_sdl MODULE output_sdl.c )
-	include_directories( ${FMOD_INCLUDE_DIR} ${SDL2_INCLUDE_DIR} )
-	target_link_libraries( output_sdl ${SDL2_LIBRARY} )
+	include_directories( ${FMOD_INCLUDE_DIR} )
+	target_link_libraries( output_sdl SDL3::SDL3 )
 
 	FILE( WRITE ${CMAKE_CURRENT_BINARY_DIR}/link-make "if [ ! -e ${ZDOOM_OUTPUT_DIR}/liboutput_sdl.so ]; then ln -sf output_sdl/liboutput_sdl.so ${ZDOOM_OUTPUT_DIR}/liboutput_sdl.so; fi" )
 	add_custom_command( TARGET output_sdl POST_BUILD

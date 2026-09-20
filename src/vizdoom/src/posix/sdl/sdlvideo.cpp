@@ -13,7 +13,8 @@
 #include "sdlvideo.h"
 #include "r_swrenderer.h"
 #include "version.h"
-#include <SDL2/SDL.h>
+//VIZDOOM_CODE
+#include <SDL3/SDL.h>
 
 //VIZDOOM_CODE
 #include "viz_depth.h"
@@ -271,7 +272,7 @@ DFrameBuffer *SDLVideo::CreateFrameBuffer (int width, int height, bool fullscree
 			fb->Height == height)
 		{
 			if(!(*viz_noxserver)) {
-				bool fsnow = (SDL_GetWindowFlags (fb->Screen) & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0;
+				bool fsnow = (SDL_GetWindowFlags (fb->Screen) & SDL_WINDOW_FULLSCREEN) != 0;
 
 				if (fsnow != fullscreen) {
 					fb->SetFullscreen(fullscreen);
@@ -358,10 +359,14 @@ SDLFB::SDLFB (int width, int height, bool fullscreen, SDL_Window *oldwin)
 	UpdatePending = false;
 	NotPaletted = false;
 	FlashAmount = 0;
+	Screen = NULL;
+	Renderer = NULL;
+	Texture = NULL;
+	UsingRenderer = false;
 
 	if (oldwin)
 	{
-		// In some cases (Mac OS X fullscreen) SDL2 doesn't like having multiple windows which
+		// In some cases (Mac OS X fullscreen) SDL doesn't like having multiple windows which
 		// appears to inevitably happen while compositor animations are running. So lets try
 		// to reuse the existing window.
 		Screen = oldwin;
@@ -376,19 +381,30 @@ SDLFB::SDLFB (int width, int height, bool fullscreen, SDL_Window *oldwin)
 
 		if(!(*viz_noxserver))
 		{
-			Screen = SDL_CreateWindow (caption,
-			(win_x <= 0) ? SDL_WINDOWPOS_UNDEFINED_DISPLAY(vid_adapter) : win_x,
-			(win_x <= 0) ? SDL_WINDOWPOS_UNDEFINED_DISPLAY(vid_adapter) : win_y,
-			width, height, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0) |
-						   (*viz_window_hidden ? SDL_WINDOW_HIDDEN : SDL_WINDOW_RESIZABLE));
+			int count = 0;
+			SDL_DisplayID *displays = SDL_GetDisplays (&count);
+			SDL_DisplayID display = displays != NULL && vid_adapter >= 0 && vid_adapter < count
+				? displays[vid_adapter] : SDL_GetPrimaryDisplay();
+			SDL_free (displays);
+			SDL_PropertiesID props = SDL_CreateProperties ();
+			SDL_SetStringProperty (props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, caption);
+			SDL_SetNumberProperty (props, SDL_PROP_WINDOW_CREATE_X_NUMBER,
+				(win_x <= 0) ? SDL_WINDOWPOS_UNDEFINED_DISPLAY(display) : win_x);
+			SDL_SetNumberProperty (props, SDL_PROP_WINDOW_CREATE_Y_NUMBER,
+				(win_y <= 0) ? SDL_WINDOWPOS_UNDEFINED_DISPLAY(display) : win_y);
+			SDL_SetNumberProperty (props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, width);
+			SDL_SetNumberProperty (props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, height);
+			SDL_SetNumberProperty (props, SDL_PROP_WINDOW_CREATE_FLAGS_NUMBER,
+				(fullscreen ? SDL_WINDOW_FULLSCREEN : 0) |
+				(*viz_window_hidden ? SDL_WINDOW_HIDDEN : SDL_WINDOW_RESIZABLE));
+			Screen = SDL_CreateWindowWithProperties (props);
+			SDL_DestroyProperties (props);
 
 			if (Screen == NULL)
 				return;
 		}
 	}
 
-	Renderer = NULL;
-	Texture = NULL;
 	ResetSDLRenderer ();
 
 	for (i = 0; i < 256; i++)
@@ -422,7 +438,8 @@ SDLFB::~SDLFB ()
 //VIZDOOM_CODE
 bool SDLFB::IsValid ()
 {
-	return *viz_noxserver == true ? true : (DFrameBuffer::IsValid() && Screen != NULL);
+	return *viz_noxserver == true ? true : (DFrameBuffer::IsValid() && Screen != NULL &&
+		(UsingRenderer ? Renderer != NULL && Texture != NULL : Surface != NULL));
 }
 
 int SDLFB::GetPageCount ()
@@ -488,12 +505,12 @@ void SDLFB::Update ()
 	{
 		if (UsingRenderer)
 		{
-			if (SDL_LockTexture (Texture, NULL, &pixels, &pitch))
+			if (!SDL_LockTexture (Texture, NULL, &pixels, &pitch))
 				return;
 		}
 		else
 		{
-			if (SDL_LockSurface (Surface))
+			if (!SDL_LockSurface (Surface))
 				return;
 
 			pixels = Surface->pixels;
@@ -528,7 +545,7 @@ void SDLFB::Update ()
 
 		SDLFlipCycles.Clock();
 		SDL_RenderClear(Renderer);
-		SDL_RenderCopy(Renderer, Texture, NULL, NULL);
+		SDL_RenderTexture(Renderer, Texture, NULL, NULL);
 		SDL_RenderPresent(Renderer);
 		SDLFlipCycles.Unclock();
 	}
@@ -608,7 +625,7 @@ void SDLFB::UpdateColors ()
 				FlashAmount);
 		}
 		if(!(*viz_noxserver))
-			SDL_SetPaletteColors (Surface->format->palette, colors, 0, 256);
+			SDL_SetPaletteColors (SDL_GetSurfacePalette(Surface), colors, 0, 256);
 	}
 }
 
@@ -653,12 +670,13 @@ void SDLFB::GetFlashedPalette (PalEntry pal[256])
 	}
 }
 
+//VIZDOOM_CODE
 void SDLFB::SetFullscreen (bool fullscreen)
 {
 	if (IsFullscreen() == fullscreen)
 		return;
 
-	SDL_SetWindowFullscreen (Screen, fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+	SDL_SetWindowFullscreen (Screen, fullscreen);
 	if (!fullscreen)
 	{
 		// Restore proper window size
@@ -670,7 +688,7 @@ void SDLFB::SetFullscreen (bool fullscreen)
 //VIZDOOM_CODE
 bool SDLFB::IsFullscreen ()
 {
-	return (*viz_noxserver) == true ? false : ((SDL_GetWindowFlags (Screen) & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0);
+	return (*viz_noxserver) == true ? false : ((SDL_GetWindowFlags (Screen) & SDL_WINDOW_FULLSCREEN) != 0);
 }
 //VIZDOOM_CODE
 void SDLFB::ResetSDLRenderer ()
@@ -681,37 +699,40 @@ void SDLFB::ResetSDLRenderer ()
 			SDL_DestroyTexture (Texture);
 		SDL_DestroyRenderer (Renderer);
 	}
+	Renderer = NULL;
+	Texture = NULL;
 
 	UsingRenderer = (*viz_noxserver) == true ? false : !vid_forcesurface;
 	if (UsingRenderer)
 	{
-		Renderer = SDL_CreateRenderer (Screen, -1,SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE|
-										(vid_vsync ? SDL_RENDERER_PRESENTVSYNC : 0));
+		Renderer = SDL_CreateRenderer (Screen, NULL);
 		if (!Renderer)
 			return;
+		SDL_SetRenderVSync (Renderer, vid_vsync ? 1 : 0);
 
 		SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
 
-		Uint32 fmt;
+		SDL_PixelFormat fmt;
 		switch(vid_displaybits)
 		{
 			default: fmt = SDL_PIXELFORMAT_ARGB8888; break;
 			case 30: fmt = SDL_PIXELFORMAT_ARGB2101010; break;
-			case 24: fmt = SDL_PIXELFORMAT_RGB888; break;
+			case 24: fmt = SDL_PIXELFORMAT_XRGB8888; break;
 			case 16: fmt = SDL_PIXELFORMAT_RGB565; break;
 			case 15: fmt = SDL_PIXELFORMAT_ARGB1555; break;
 		}
 		Texture = SDL_CreateTexture (Renderer, fmt, SDL_TEXTUREACCESS_STREAMING, Width, Height);
+		if (!Texture)
+			return;
+		SDL_SetTextureBlendMode (Texture, SDL_BLENDMODE_NONE);
+		SDL_SetTextureScaleMode (Texture, SDL_SCALEMODE_NEAREST);
 
 		{
 			NotPaletted = true;
 
-			Uint32 format;
-			SDL_QueryTexture(Texture, &format, NULL, NULL, NULL);
-
 			Uint32 Rmask, Gmask, Bmask, Amask;
 			int bpp;
-			SDL_PixelFormatEnumToMasks(format, &bpp, &Rmask, &Gmask, &Bmask, &Amask);
+			SDL_GetMasksForPixelFormat(Texture->format, &bpp, &Rmask, &Gmask, &Bmask, &Amask);
 			GPfx.SetFormat (bpp, Rmask, Gmask, Bmask);
 		}
 	}
@@ -720,11 +741,14 @@ void SDLFB::ResetSDLRenderer ()
 		if(!(*viz_noxserver))
 		{
 			Surface = SDL_GetWindowSurface (Screen);
+			if (!Surface)
+				return;
 
-			if (Surface->format->palette == NULL)
+			if (SDL_GetSurfacePalette(Surface) == NULL)
 			{
 				NotPaletted = true;
-				GPfx.SetFormat (Surface->format->BitsPerPixel, Surface->format->Rmask, Surface->format->Gmask, Surface->format->Bmask);
+				const SDL_PixelFormatDetails *format = SDL_GetPixelFormatDetails(Surface->format);
+				GPfx.SetFormat (format->bits_per_pixel, format->Rmask, format->Gmask, format->Bmask);
 			}
 			else
 				NotPaletted = false;
@@ -733,17 +757,20 @@ void SDLFB::ResetSDLRenderer ()
 
 	// In fullscreen, set logical size according to animorphic ratio.
 	// Windowed modes are rendered to fill the window (usually 1:1)
-	if (IsFullscreen ())
+	if (UsingRenderer && IsFullscreen ())
 	{
 		int w, h;
 		SDL_GetWindowSize (Screen, &w, &h);
 		ScaleWithAspect (w, h, Width, Height);
-		SDL_RenderSetLogicalSize (Renderer, w, h);
+		SDL_SetRenderLogicalPresentation (Renderer, w, h, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 	}
 }
 
+//VIZDOOM_CODE
 void SDLFB::SetVSync (bool vsync)
 {
+	if (Renderer)
+		SDL_SetRenderVSync (Renderer, vsync ? 1 : 0);
 #ifdef __APPLE__
 	if (CGLContextObj context = CGLGetCurrentContext())
 	{
@@ -759,8 +786,6 @@ void SDLFB::SetVSync (bool vsync)
 		const GLint value = vsync ? 1 : 0;
 		CGLSetParameter(context, kCGLCPSwapInterval, &value);
 	}
-#else
-	ResetSDLRenderer ();
 #endif // __APPLE__
 }
 //VIZDOOM_CODE

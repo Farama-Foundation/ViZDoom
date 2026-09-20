@@ -14,7 +14,7 @@ RUN bash ~/miniconda.sh -b -p $HOME/miniconda
 ENV PATH="/root/miniconda/bin:${PATH}"
 
 # Install conda dependencies
-RUN conda install -y -c conda-forge boost sdl2 openal-soft
+RUN conda install -y -c conda-forge boost sdl3 openal-soft
 
 COPY . ./
 CMD ["bash", "./scripts/build_and_test_conda.sh"]

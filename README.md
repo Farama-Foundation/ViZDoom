@@ -90,7 +90,7 @@ dnf install openal-soft-devel
 ```
 
 If Python wheel is not available for your platform (Python version <3.10, distros below manylinux_2_28 standard), pip will try to install (build) ViZDoom from the source.
-ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional) to install from source.
+ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL3, OpenAL (optional) to install from source.
 See [documentation](https://vizdoom.farama.org/introduction/python_quickstart/) for more details.
 
 
@@ -106,7 +106,7 @@ Since 1.3.0+, pre-build wheels are available only for Apple Silicon (M-series ch
 pip install vizdoom==1.2.4
 ```
 If Python wheel is not available for your platform (Python version <3.10, older macOS version), pip will try to install (build) ViZDoom from the source.
-ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional) to install from source.
+ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL3, OpenAL (optional) to install from source.
 See [documentation](https://vizdoom.farama.org/introduction/building/) for more details how to install dependencies.
 
 

@@ -1,4 +1,5 @@
-#include <SDL2/SDL.h>
+//VIZDOOM_CODE
+#include <SDL3/SDL.h>
 #include <ctype.h>
 #include "doomtype.h"
 #include "c_dispatch.h"
@@ -35,17 +36,18 @@ EXTERN_CVAR (Bool, fullscreen)
 extern int WaitingForKey, chatmodeon;
 extern constate_e ConsoleState;
 
-static bool DownState[SDL_NUM_SCANCODES];
+//VIZDOOM_CODE
+static bool DownState[SDL_SCANCODE_COUNT];
 
 static const SDL_Keycode DIKToKeySym[256] =
 {
 	0, SDLK_ESCAPE, SDLK_1, SDLK_2, SDLK_3, SDLK_4, SDLK_5, SDLK_6,
 	SDLK_7, SDLK_8, SDLK_9, SDLK_0,SDLK_MINUS, SDLK_EQUALS, SDLK_BACKSPACE, SDLK_TAB,
-	SDLK_q, SDLK_w, SDLK_e, SDLK_r, SDLK_t, SDLK_y, SDLK_u, SDLK_i,
-	SDLK_o, SDLK_p, SDLK_LEFTBRACKET, SDLK_RIGHTBRACKET, SDLK_RETURN, SDLK_LCTRL, SDLK_a, SDLK_s,
-	SDLK_d, SDLK_f, SDLK_g, SDLK_h, SDLK_j, SDLK_k, SDLK_l, SDLK_SEMICOLON,
-	SDLK_QUOTE, SDLK_BACKQUOTE, SDLK_LSHIFT, SDLK_BACKSLASH, SDLK_z, SDLK_x, SDLK_c, SDLK_v,
-	SDLK_b, SDLK_n, SDLK_m, SDLK_COMMA, SDLK_PERIOD, SDLK_SLASH, SDLK_RSHIFT, SDLK_KP_MULTIPLY,
+	SDLK_Q, SDLK_W, SDLK_E, SDLK_R, SDLK_T, SDLK_Y, SDLK_U, SDLK_I,
+	SDLK_O, SDLK_P, SDLK_LEFTBRACKET, SDLK_RIGHTBRACKET, SDLK_RETURN, SDLK_LCTRL, SDLK_A, SDLK_S,
+	SDLK_D, SDLK_F, SDLK_G, SDLK_H, SDLK_J, SDLK_K, SDLK_L, SDLK_SEMICOLON,
+	SDLK_APOSTROPHE, SDLK_GRAVE, SDLK_LSHIFT, SDLK_BACKSLASH, SDLK_Z, SDLK_X, SDLK_C, SDLK_V,
+	SDLK_B, SDLK_N, SDLK_M, SDLK_COMMA, SDLK_PERIOD, SDLK_SLASH, SDLK_RSHIFT, SDLK_KP_MULTIPLY,
 	SDLK_LALT, SDLK_SPACE, SDLK_CAPSLOCK, SDLK_F1, SDLK_F2, SDLK_F3, SDLK_F4, SDLK_F5,
 	SDLK_F6, SDLK_F7, SDLK_F8, SDLK_F9, SDLK_F10, SDLK_NUMLOCKCLEAR, SDLK_SCROLLLOCK, SDLK_KP_7,
 	SDLK_KP_8, SDLK_KP_9, SDLK_KP_MINUS, SDLK_KP_4, SDLK_KP_5, SDLK_KP_6, SDLK_KP_PLUS, SDLK_KP_1,
@@ -68,11 +70,12 @@ static const SDL_Keycode DIKToKeySym[256] =
 	SDLK_DOWN, SDLK_PAGEDOWN, SDLK_INSERT, SDLK_DELETE, 0, 0, 0, 0,
 	0, 0, 0, SDLK_LGUI, SDLK_RGUI, SDLK_MENU, SDLK_POWER, SDLK_SLEEP,
 	0, 0, 0, 0, 0, SDLK_AC_SEARCH, SDLK_AC_BOOKMARKS, SDLK_AC_REFRESH,
-	SDLK_AC_STOP, SDLK_AC_FORWARD, SDLK_AC_BACK, SDLK_COMPUTER, SDLK_MAIL, SDLK_MEDIASELECT, 0, 0,
+	SDLK_AC_STOP, SDLK_AC_FORWARD, SDLK_AC_BACK, 0, 0, SDLK_MEDIA_SELECT, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0
 };
 
+//VIZDOOM_CODE
 static const SDL_Scancode DIKToKeyScan[256] =
 {
 	SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_ESCAPE, SDL_SCANCODE_1, SDL_SCANCODE_2, SDL_SCANCODE_3, SDL_SCANCODE_4, SDL_SCANCODE_5, SDL_SCANCODE_6,
@@ -104,7 +107,7 @@ static const SDL_Scancode DIKToKeyScan[256] =
 	SDL_SCANCODE_DOWN, SDL_SCANCODE_PAGEDOWN, SDL_SCANCODE_INSERT, SDL_SCANCODE_DELETE, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN,
 	SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_LGUI, SDL_SCANCODE_RGUI, SDL_SCANCODE_MENU, SDL_SCANCODE_POWER, SDL_SCANCODE_SLEEP,
 	SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_AC_SEARCH, SDL_SCANCODE_AC_BOOKMARKS, SDL_SCANCODE_AC_REFRESH,
-	SDL_SCANCODE_AC_STOP, SDL_SCANCODE_AC_FORWARD, SDL_SCANCODE_AC_BACK, SDL_SCANCODE_COMPUTER, SDL_SCANCODE_MAIL, SDL_SCANCODE_MEDIASELECT, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN,
+	SDL_SCANCODE_AC_STOP, SDL_SCANCODE_AC_FORWARD, SDL_SCANCODE_AC_BACK, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_MEDIA_SELECT, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN,
 	SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN,
 	SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN, SDL_SCANCODE_UNKNOWN
 };
@@ -141,6 +144,7 @@ static TMap<SDL_Scancode, BYTE> InitKeyScanMap ()
 }
 static const TMap<SDL_Scancode, BYTE> KeyScanToDIK(InitKeyScanMap());
 
+//VIZDOOM_CODE
 static void I_CheckGUICapture ()
 {
 	bool wantCapt;
@@ -162,18 +166,28 @@ static void I_CheckGUICapture ()
 			memset (DownState, 0, sizeof(DownState));
 		}
 	}
+	SDL_Window *window = SDL_GetKeyboardFocus();
+	if (window != NULL && SDL_TextInputActive(window) != wantCapt)
+	{
+		if (wantCapt)
+			SDL_StartTextInput(window);
+		else
+			SDL_StopTextInput(window);
+	}
 }
 
+//VIZDOOM_CODE
 void I_SetMouseCapture()
 {
 	// Clear out any mouse movement.
 	SDL_GetRelativeMouseState (NULL, NULL);
-	SDL_SetRelativeMouseMode (SDL_TRUE);
+	SDL_SetWindowRelativeMouseMode (SDL_GetKeyboardFocus(), true);
 }
 
+//VIZDOOM_CODE
 void I_ReleaseMouseCapture()
 {
-	SDL_SetRelativeMouseMode (SDL_FALSE);
+	SDL_SetWindowRelativeMouseMode (SDL_GetKeyboardFocus(), false);
 }
 
 static void PostMouseMove (int x, int y)
@@ -200,9 +214,10 @@ static void PostMouseMove (int x, int y)
 	}
 }
 
+//VIZDOOM_CODE
 static void MouseRead ()
 {
-	int x, y;
+	float x, y;
 
 	if (NativeMouse)
 	{
@@ -215,7 +230,7 @@ static void MouseRead ()
 		x *= 3;
 		y *= 2;
 	}
-	if (x | y)
+	if (x != 0 || y != 0)
 	{
 		PostMouseMove (x, -y);
 	}
@@ -241,6 +256,7 @@ static bool inGame()
 	}
 }
 
+//VIZDOOM_CODE
 static void I_CheckNativeMouse ()
 {
 	bool focus = SDL_GetKeyboardFocus() != NULL;
@@ -251,7 +267,10 @@ static void I_CheckNativeMouse ()
 	if (wantNative != NativeMouse)
 	{
 		NativeMouse = wantNative;
-		SDL_ShowCursor (wantNative);
+		if (wantNative)
+			SDL_ShowCursor ();
+		else
+			SDL_HideCursor ();
 		if (wantNative)
 			I_ReleaseMouseCapture ();
 		else
@@ -259,6 +278,7 @@ static void I_CheckNativeMouse ()
 	}
 }
 
+//VIZDOOM_CODE
 void MessagePump (const SDL_Event &sev)
 {
 	static int lastx = 0, lasty = 0;
@@ -267,27 +287,22 @@ void MessagePump (const SDL_Event &sev)
 	
 	switch (sev.type)
 	{
-	case SDL_QUIT:
+	case SDL_EVENT_QUIT:
 		exit (0);
 
-	case SDL_WINDOWEVENT:
-		switch (sev.window.event)
-		{
-			case SDL_WINDOWEVENT_FOCUS_GAINED:
-			case SDL_WINDOWEVENT_FOCUS_LOST:
-				S_SetSoundPaused(sev.window.event == SDL_WINDOWEVENT_FOCUS_GAINED);
-				break;
-		}
+	case SDL_EVENT_WINDOW_FOCUS_GAINED:
+	case SDL_EVENT_WINDOW_FOCUS_LOST:
+		S_SetSoundPaused(sev.type == SDL_EVENT_WINDOW_FOCUS_GAINED);
 		break;
 
-	case SDL_MOUSEBUTTONDOWN:
-	case SDL_MOUSEBUTTONUP:
-	case SDL_MOUSEMOTION:
+	case SDL_EVENT_MOUSE_BUTTON_DOWN:
+	case SDL_EVENT_MOUSE_BUTTON_UP:
+	case SDL_EVENT_MOUSE_MOTION:
 		if (!GUICapture || sev.button.button == 4 || sev.button.button == 5)
 		{
-			if(sev.type != SDL_MOUSEMOTION)
+			if(sev.type != SDL_EVENT_MOUSE_MOTION)
 			{
-				event.type = sev.type == SDL_MOUSEBUTTONDOWN ? EV_KeyDown : EV_KeyUp;
+				event.type = sev.type == SDL_EVENT_MOUSE_BUTTON_DOWN ? EV_KeyDown : EV_KeyUp;
 				/* These button mappings work with my Gentoo system using the
 				* evdev driver and a Logitech MX510 mouse. Whether or not they
 				* carry over to other Linux systems, I have no idea, but I sure
@@ -305,7 +320,7 @@ void MessagePump (const SDL_Event &sev)
 				case SDL_BUTTON_X2:		event.data1 = KEY_MOUSE7;		break;
 				case 6:		event.data1 = KEY_MOUSE8;		break;
 				default:	printf("SDL mouse button %s %d\n",
-					sev.type == SDL_MOUSEBUTTONDOWN ? "down" : "up", sev.button.button);	break;
+					sev.type == SDL_EVENT_MOUSE_BUTTON_DOWN ? "down" : "up", sev.button.button);	break;
 				}
 				if (event.data1 != 0)
 				{
@@ -313,9 +328,9 @@ void MessagePump (const SDL_Event &sev)
 				}
 			}
 		}
-		else if (sev.type == SDL_MOUSEMOTION || (sev.button.button >= 1 && sev.button.button <= 3))
+		else if (sev.type == SDL_EVENT_MOUSE_MOTION || (sev.button.button >= 1 && sev.button.button <= 3))
 		{
-			int x, y;
+			float x, y;
 			SDL_GetMouseState (&x, &y);
 
 			event.data1 = x;
@@ -324,18 +339,18 @@ void MessagePump (const SDL_Event &sev)
 			screen->ScaleCoordsFromWindow(event.data1, event.data2);
 
 			event.type = EV_GUI_Event;
-			if(sev.type == SDL_MOUSEMOTION)
+			if(sev.type == SDL_EVENT_MOUSE_MOTION)
 				event.subtype = EV_GUI_MouseMove;
 			else
 			{
-				event.subtype = sev.type == SDL_MOUSEBUTTONDOWN ? EV_GUI_LButtonDown : EV_GUI_LButtonUp;
+				event.subtype = sev.type == SDL_EVENT_MOUSE_BUTTON_DOWN ? EV_GUI_LButtonDown : EV_GUI_LButtonUp;
 				event.subtype += (sev.button.button - 1) * 3;
 			}
 			D_PostEvent(&event);
 		}
 		break;
 
-	case SDL_MOUSEWHEEL:
+	case SDL_EVENT_MOUSE_WHEEL:
 		if (GUICapture)
 		{
 			event.type = EV_GUI_Event;
@@ -352,26 +367,26 @@ void MessagePump (const SDL_Event &sev)
 		}
 		break;
 
-	case SDL_KEYDOWN:
-	case SDL_KEYUP:
+	case SDL_EVENT_KEY_DOWN:
+	case SDL_EVENT_KEY_UP:
 		if (!GUICapture)
 		{
-			event.type = sev.type == SDL_KEYDOWN ? EV_KeyDown : EV_KeyUp;
+			event.type = sev.type == SDL_EVENT_KEY_DOWN ? EV_KeyDown : EV_KeyUp;
 
 			// Try to look up our key mapped key for conversion to DirectInput.
 			// If that fails, then we'll do a lookup against the scan code,
 			// which may not return the right key, but at least the key should
 			// work in the game.
-			if (const BYTE *dik = KeySymToDIK.CheckKey (sev.key.keysym.sym))
+			if (const BYTE *dik = KeySymToDIK.CheckKey (sev.key.key))
 				event.data1 = *dik;
-			else if (const BYTE *dik = KeyScanToDIK.CheckKey (sev.key.keysym.scancode))
+			else if (const BYTE *dik = KeyScanToDIK.CheckKey (sev.key.scancode))
 				event.data1 = *dik;
 
 			if (event.data1)
 			{
-				if (sev.key.keysym.sym < 256)
+				if (sev.key.key < 256)
 				{
-					event.data2 = sev.key.keysym.sym;
+					event.data2 = sev.key.key;
 				}
 				D_PostEvent (&event);
 			}
@@ -379,25 +394,25 @@ void MessagePump (const SDL_Event &sev)
 		else
 		{
 			event.type = EV_GUI_Event;
-			event.subtype = sev.type == SDL_KEYDOWN ? EV_GUI_KeyDown : EV_GUI_KeyUp;
-			event.data3 = ((sev.key.keysym.mod & KMOD_SHIFT) ? GKM_SHIFT : 0) |
-						  ((sev.key.keysym.mod & KMOD_CTRL) ? GKM_CTRL : 0) |
-						  ((sev.key.keysym.mod & KMOD_ALT) ? GKM_ALT : 0);
+			event.subtype = sev.type == SDL_EVENT_KEY_DOWN ? EV_GUI_KeyDown : EV_GUI_KeyUp;
+			event.data3 = ((sev.key.mod & SDL_KMOD_SHIFT) ? GKM_SHIFT : 0) |
+						  ((sev.key.mod & SDL_KMOD_CTRL) ? GKM_CTRL : 0) |
+						  ((sev.key.mod & SDL_KMOD_ALT) ? GKM_ALT : 0);
 
 			if (event.subtype == EV_GUI_KeyDown)
 			{
-				if (DownState[sev.key.keysym.scancode])
+				if (DownState[sev.key.scancode])
 				{
 					event.subtype = EV_GUI_KeyRepeat;
 				}
-				DownState[sev.key.keysym.scancode] = 1;
+				DownState[sev.key.scancode] = 1;
 			}
 			else
 			{
-				DownState[sev.key.keysym.scancode] = 0;
+				DownState[sev.key.scancode] = 0;
 			}
 
-			switch (sev.key.keysym.sym)
+			switch (sev.key.key)
 			{
 			case SDLK_KP_ENTER:	event.data1 = GK_RETURN;	break;
 			case SDLK_PAGEUP:	event.data1 = GK_PGUP;		break;
@@ -423,9 +438,9 @@ void MessagePump (const SDL_Event &sev)
 			case SDLK_F11:		event.data1 = GK_F11;		break;
 			case SDLK_F12:		event.data1 = GK_F12;		break;
 			default:
-				if (sev.key.keysym.sym < 256)
+				if (sev.key.key < 256)
 				{
-					event.data1 = sev.key.keysym.sym;
+					event.data1 = sev.key.key;
 				}
 				break;
 			}
@@ -437,7 +452,7 @@ void MessagePump (const SDL_Event &sev)
 		}
 		break;
 
-	case SDL_TEXTINPUT:
+	case SDL_EVENT_TEXT_INPUT:
 		if (GUICapture)
 		{
 			event.type = EV_GUI_Event;
@@ -447,11 +462,11 @@ void MessagePump (const SDL_Event &sev)
 		}
 		break;
 
-	case SDL_JOYBUTTONDOWN:
-	case SDL_JOYBUTTONUP:
+	case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+	case SDL_EVENT_JOYSTICK_BUTTON_UP:
 		if (!GUICapture)
 		{
-			event.type = sev.type == SDL_JOYBUTTONDOWN ? EV_KeyDown : EV_KeyUp;
+			event.type = sev.type == SDL_EVENT_JOYSTICK_BUTTON_DOWN ? EV_KeyDown : EV_KeyUp;
 			event.data1 = KEY_FIRSTJOYBUTTON + sev.jbutton.button;
 			if(event.data1 != 0)
 				D_PostEvent(&event);

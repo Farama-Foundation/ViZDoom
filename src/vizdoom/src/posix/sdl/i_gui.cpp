@@ -3,12 +3,14 @@
 
 #include <string.h>
 
-#include <SDL2/SDL.h>
+//VIZDOOM_CODE
+#include <SDL3/SDL.h>
 
 #include "bitmap.h"
 #include "v_palette.h"
 #include "textures.h"
 
+//VIZDOOM_CODE
 bool I_SetCursor(FTexture *cursorpic)
 {
 	static SDL_Cursor *cursor;
@@ -23,7 +25,7 @@ bool I_SetCursor(FTexture *cursorpic)
 		}
 
 		if (cursorSurface == NULL)
-			cursorSurface = SDL_CreateRGBSurface (0, 32, 32, 32, MAKEARGB(0,255,0,0), MAKEARGB(0,0,255,0), MAKEARGB(0,0,0,255), MAKEARGB(255,0,0,0));
+			cursorSurface = SDL_CreateSurface (32, 32, SDL_PIXELFORMAT_ARGB8888);
 
 		SDL_LockSurface(cursorSurface);
 		BYTE buffer[32*32*4];
@@ -34,7 +36,7 @@ bool I_SetCursor(FTexture *cursorpic)
 		SDL_UnlockSurface(cursorSurface);
 
 		if (cursor)
-			SDL_FreeCursor (cursor);
+			SDL_DestroyCursor (cursor);
 		cursor = SDL_CreateColorCursor (cursorSurface, 0, 0);
 		SDL_SetCursor (cursor);
 	}
@@ -42,13 +44,13 @@ bool I_SetCursor(FTexture *cursorpic)
 	{
 		if (cursor)
 		{
-			SDL_SetCursor (NULL);
-			SDL_FreeCursor (cursor);
+			SDL_SetCursor (SDL_GetDefaultCursor());
+			SDL_DestroyCursor (cursor);
 			cursor = NULL;
 		}
 		if (cursorSurface != NULL)
 		{
-			SDL_FreeSurface(cursorSurface);
+			SDL_DestroySurface(cursorSurface);
 			cursorSurface = NULL;
 		}
 	}

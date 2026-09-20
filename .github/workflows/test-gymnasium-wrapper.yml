@@ -40,7 +40,8 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt update
-        sudo apt install -y cmake git libboost-all-dev libsdl2-dev libopenal-dev
+        sudo apt install -y cmake git libboost-all-dev libopenal-dev
+        sudo bash scripts/install_sdl3.sh
 
     - name: Apt report
       if: runner.os == 'Linux'

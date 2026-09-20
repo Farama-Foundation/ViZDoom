@@ -1,5 +1,6 @@
 #include <CoreFoundation/CoreFoundation.h>
-#include "SDL.h"
+//VIZDOOM_CODE
+#include <SDL3/SDL.h>
 
 void Mac_I_FatalError(const char* errortext)
 {

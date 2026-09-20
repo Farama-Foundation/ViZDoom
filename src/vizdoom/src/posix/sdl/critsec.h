@@ -5,8 +5,8 @@
 #ifndef CRITSEC_H
 #define CRITSEC_H
 
-#include "SDL2/SDL.h"
-#include "SDL_thread.h"
+//VIZDOOM_CODE
+#include <SDL3/SDL.h>
 #include "i_system.h"
 
 class FCriticalSection
@@ -27,22 +27,18 @@ public:
 			SDL_DestroyMutex(CritSec);
 		}
 	}
+	//VIZDOOM_CODE
 	void Enter()
 	{
-		if (SDL_mutexP(CritSec) != 0)
-		{
-			I_FatalError("Failed entering a critical section.");
-		}
+		SDL_LockMutex(CritSec);
 	}
+	//VIZDOOM_CODE
 	void Leave()
 	{
-		if (SDL_mutexV(CritSec) != 0)
-		{
-			I_FatalError("Failed to leave a critical section.");
-		}
+		SDL_UnlockMutex(CritSec);
 	}
 private:
-	SDL_mutex *CritSec;
+	SDL_Mutex *CritSec; //VIZDOOM_CODE
 };
 
 #endif

@@ -16,6 +16,7 @@ To build ViZDoom on Linux, the following dependencies are required:
 * Make
 * GCC 6.0+
 * Boost libraries 1.54.0+
+* SDL 3.2+
 * Python 3.10+ for Python binding (optional)
 
 Also some of additionally [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Linux) are needed.
@@ -27,34 +28,42 @@ To get all dependencies on apt-based Linux (Ubuntu, Debian, Linux Mint, etc.) ex
 # All possible ViZDoom dependencies,
 # most are optional and required only to support alternative sound and music backends in the engine
 # other can replace libraries that are included in the ViZDoom repository
-apt install build-essential cmake git libsdl2-dev libboost-all-dev libopenal-dev \
+apt install build-essential cmake git libsdl3-dev libboost-all-dev libopenal-dev \
 zlib1g-dev libjpeg-dev tar libbz2-dev libgtk2.0-dev libfluidsynth-dev libgme-dev \
 timidity libwildmidi-dev unzip
 
 # Only essential ViZDoom dependencies
-apt install build-essential cmake git libboost-all-dev libsdl2-dev libopenal-dev
+apt install build-essential cmake git libboost-all-dev libsdl3-dev libopenal-dev
 
 # Python 3 dependencies (alternatively Anaconda 3 installed)
 apt install python3-dev python3-pip
 # or install Anaconda 3 and add it to PATH
 ```
 
+If your distribution does not provide `libsdl3-dev` (for example, Ubuntu 24.04), omit it from the command above and build SDL3 from the ViZDoom checkout:
+```sh
+sudo bash scripts/install_sdl3.sh
+```
+This installs SDL3's build dependencies and a pinned SDL3 release under `/usr/local` (requires CMake 3.16+).
+
 #### dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)
 
 To get all dependencies on dnf/yum-based Linux (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.) execute the following commands in the shell (might require root access).
 ```sh
 # Essential ZDoom dependencies
-dnf install cmake git boost-devel SDL2-devel openal-soft-devel
+dnf install cmake git boost-devel SDL3-devel openal-soft-devel
 
 # Python 3 dependencies (alternatively Anaconda 3 installed)
 dnf install python3-devel python3-pip
 ```
 
+If `SDL3-devel` is unavailable, omit it and run `sudo bash scripts/install_sdl3.sh` from the ViZDoom checkout.
+
 #### Anaconda/Miniconda
 
 If you do not have a root access, you can use a conda (e.g. [miniconda](https://docs.conda.io/en/latest/miniconda.html)) environment to install dependencies to your environment only:
 ```sh
-conda install -c conda-forge boost cmake gtk2 sdl2 openal-soft
+conda install -c conda-forge boost cmake gtk2 sdl3 openal-soft
 ```
 
 Note that to install ViZDoom in a conda environment you have to pull, build and install ViZDoom manually with
@@ -70,13 +79,14 @@ To build ViZDoom on macOS, the following dependencies are required:
 * CMake 3.12+
 * Clang 5.0+
 * Boost libraries 1.54.0+
+* SDL 3.2+
 * Python 3.10+ for Python binding (optional)
 
 Also some of additionally [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Mac_OS_X) are needed.
 
 To get all the dependencies install [homebrew](https://brew.sh/) first, than execute the following commands in the shell:
 ```sh
-brew install cmake boost sdl2 openal-soft
+brew install cmake boost sdl3 openal-soft
 ```
 
 ⚠️ On Apple Silicon (M-series chip), make sure you are using homebrew for `arm64`.

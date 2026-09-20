@@ -178,10 +178,9 @@ else( WIN32 )
 		add_definitions( -DNO_GTK=1 )
 	endif( NO_GTK )
 
-	# Non-Windows version needs SDL2
-	find_package( SDL2 REQUIRED )
-	include_directories( "${SDL2_INCLUDE_DIR}" )
-	set( ZDOOM_LIBS ${ZDOOM_LIBS} "${SDL2_LIBRARY}" )
+	#VIZDOOM_CODE: Non-Windows version needs SDL3
+	find_package( SDL3 3.2 REQUIRED CONFIG )
+	set( ZDOOM_LIBS ${ZDOOM_LIBS} SDL3::SDL3 )
 endif( WIN32 )
 
 

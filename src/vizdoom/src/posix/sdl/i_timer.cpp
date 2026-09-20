@@ -5,7 +5,8 @@
 #include <signal.h>
 #include <sys/time.h>
 
-#include <SDL2/SDL.h>
+//VIZDOOM_CODE
+#include <SDL3/SDL.h>
 
 //VIZDOOM_CODE
 #include "basictypes.h"
@@ -202,17 +203,15 @@ fixed_t I_GetTimeFrac (uint32 *ms)
 	}
 }
 
+//VIZDOOM_CODE: SDL3 timers do not require subsystem initialization.
 void I_InitTimer ()
 {
-	if(SDL_InitSubSystem(SDL_INIT_TIMER) < 0)
-		I_FatalError("Could not initialize SDL timers:\n%s\n", SDL_GetError());
-
 	I_GetTime = I_GetTimeSelect;
 	I_WaitForTic = I_WaitForTicSelect;
 	I_FreezeTime = I_FreezeTimeSelect;
 }
 
+//VIZDOOM_CODE
 void I_ShutdownTimer ()
 {
-	SDL_QuitSubSystem(SDL_INIT_TIMER);
 }

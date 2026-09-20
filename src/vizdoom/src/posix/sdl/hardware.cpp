@@ -32,7 +32,8 @@
 **
 */
 
-#include <SDL2/SDL.h>
+//VIZDOOM_CODE
+#include <SDL3/SDL.h>
 #include <signal.h>
 #include <time.h>
 
@@ -82,7 +83,7 @@ void I_InitGraphics ()
 
 	if(!(*viz_noxserver))
 	{
-		if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) {
+		if (!SDL_InitSubSystem(SDL_INIT_VIDEO)) {
 			I_FatalError("Could not initialize SDL video:\n%s\n", SDL_GetError());
 			return;
 		}

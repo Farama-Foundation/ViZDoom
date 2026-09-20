@@ -34,7 +34,9 @@
 
 // HEADER FILES ------------------------------------------------------------
 
-#include <SDL2/SDL.h>
+//VIZDOOM_CODE
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -231,7 +233,8 @@ int main (int argc, char **argv)
 	
 	setlocale (LC_ALL, "C");
 
-	if (SDL_Init (0) < 0)
+	//VIZDOOM_CODE
+	if (!SDL_Init (0))
 	{
 		fprintf (stderr, "Could not initialize SDL:\n%s\n", SDL_GetError());
 		return -1;

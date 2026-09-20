@@ -3,7 +3,7 @@
 
 ## Tech stack + deps
 - C++11 core + ZDoom engine fork, built with CMake and `make`.
-- C++ code relies on Boost, SDL2, OpenAL, and other common libraries (BZip2, JPEG, Zlib, GME, etc., included in the src), they are found via CMake.
+- C++ code relies on Boost, SDL3, OpenAL, and other common libraries (BZip2, JPEG, Zlib, GME, etc., included in the src), they are found via CMake.
 - Python bindings via pybind11; packaging via setuptools.
 - Python runtime deps: `numpy`, `gymnasium`, `pygame-ce` (see `setup.py`).
 - Tests: `pytest`, `pytest-xdist`, `psutil`.

@@ -25,7 +25,7 @@
 #include "v_video.h"
 
 #ifdef VIZ_DEPTH_TEST
-#include <SDL_events.h>
+#include <SDL3/SDL_events.h>
 #endif
     
 VIZDepthBuffer* vizDepthMap = NULL;
@@ -41,6 +41,7 @@ VIZDepthBuffer::VIZDepthBuffer(unsigned int width, unsigned int height):
     #ifdef VIZ_DEPTH_TEST
         for(int j = 0; j < 256; j++){
 
+            colors[j].a = 255;
             #ifndef VIZ_DEPTH_COLORS
                 colors[j].r = colors[j].g = colors[j].b = j;
             #else
@@ -57,7 +58,7 @@ VIZDepthBuffer::VIZDepthBuffer(unsigned int width, unsigned int height):
                 }
             #endif
         }
-        this->window = SDL_CreateWindow("ViZDoom Depth Buffer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
+        this->window = SDL_CreateWindow("ViZDoom Depth Buffer", width, height, 0);
         this->surface =  SDL_GetWindowSurface( window );
     #endif
 }
@@ -68,7 +69,6 @@ VIZDepthBuffer::~VIZDepthBuffer() {
     #ifdef VIZ_DEPTH_TEST
         SDL_DestroyWindow(this->window);
         window = NULL;
-        SDL_FreeSurface(this->surface);
         surface = NULL;
     #endif
 }
@@ -205,10 +205,10 @@ void VIZDepthBuffer::sizeUpdate() {
 #ifdef VIZ_DEPTH_TEST
 // Update depth debug window
 void VIZDepthBuffer::testUpdate() {
-    SDL_Surface* surf = SDL_CreateRGBSurfaceFrom(this->buffer, this->bufferWidth, this->bufferHeight, 8,
-                                                 this->bufferWidth, 0, 0, 0, 0);
-    SDL_SetPaletteColors(surf->format->palette, colors, 0, 256);
+    SDL_Surface* surf = SDL_CreateSurfaceFrom(this->bufferWidth, this->bufferHeight, SDL_PIXELFORMAT_INDEX8, this->buffer, this->bufferWidth);
+    SDL_SetPaletteColors(SDL_CreateSurfacePalette(surf), colors, 0, 256);
     SDL_BlitSurface(surf, NULL, this->surface, NULL);
     SDL_UpdateWindowSurface(this->window);
+    SDL_DestroySurface(surf);
 }
 #endif
