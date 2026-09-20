@@ -10,6 +10,7 @@ import vizdoom as vzd
 
 
 def test_screen_buffer_always_uses_flashed_palette():
+    print("Testing that screen buffer always uses flashed palette ...")
     game = vzd.DoomGame()
     game.set_window_visible(False)
     game.set_screen_format(vzd.ScreenFormat.RGB24)
@@ -29,6 +30,9 @@ def test_screen_buffer_always_uses_flashed_palette():
 
 
 def _screen_buffer_after_health_bonus(render_screen_flashes):
+    print(
+        f"Testing screen buffer after HealthBonus with render_screen_flashes={render_screen_flashes} ..."
+    )
     game = vzd.DoomGame()
     game.load_config(os.path.join(vzd.scenarios_path, "predict_position.cfg"))
     game.set_seed(7)
@@ -59,3 +63,8 @@ def test_render_screen_flashes_disables_pickup_flash():
 
     changed_pixels = np.any(flashed_buffer != unflashed_buffer, axis=2)
     assert np.mean(changed_pixels) > 0.9
+
+
+if __name__ == "__main__":
+    test_screen_buffer_always_uses_flashed_palette()
+    test_render_screen_flashes_disables_pickup_flash()

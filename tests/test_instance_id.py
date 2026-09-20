@@ -82,3 +82,9 @@ def test_instance_id_unique_multiple_processes():
 
     instance_ids = [payload for status, payload in results if status == "ok"]
     assert len(instance_ids) == len(set(instance_ids))
+
+
+if __name__ == "__main__":
+    test_instance_id_unique_same_thread()
+    test_instance_id_unique_multiple_threads()
+    test_instance_id_unique_multiple_processes()

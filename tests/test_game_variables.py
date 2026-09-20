@@ -5,7 +5,8 @@ import os
 import vizdoom as vzd
 
 
-def test_weapon_related_variables():
+def test_weapon_ammo_related_variables():
+    print("Testing weapon and ammo related game variables ...")
     weapon_slots = (
         (
             ("Fist", "Chainsaw"),
@@ -119,4 +120,4 @@ def test_weapon_related_variables():
 
 
 if __name__ == "__main__":
-    test_weapon_related_variables()
+    test_weapon_ammo_related_variables()
