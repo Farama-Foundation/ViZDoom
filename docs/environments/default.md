@@ -34,7 +34,7 @@ A scenario usually consist of two files - .wad and .cfg ([see scenarios director
 
 ## MultiBinary variants
 
-For each Gymnasium environment described below, there is also a MultiBinary variant available. These variants use `MultiBinary` action space instead of `Discrete` action space. This means that instead of selecting a single action from a list of predefined actions, the agent can press multiple buttons at the same time. This allows for more complex behaviors and combinations of actions. The MultiBinary variants have the same observation space, rewards, and configurations as their Discrete counterparts. The ViZDoom Gymnasium ids for MultiBinary variants are the same as the original ones, with the suffix `-MultiBinary` added before version. For example, the MultiBinary variant of `VizdoomBasic-v1` is `VizdoomBasic-MultiBinary-v1`. ViZDoom is intended to be played using multiple buttons at the same time, so using MultiBinary action space is often more natural. However, originally these environments were introduced with Discrete action space, because of that we decided to introduce MultiBinary variants alongside the original ones.
+For each Gymnasium environment described below, there is also a MultiBinary variant available. These variants use `MultiBinary` action space instead of `Discrete` action space. This means that instead of selecting a single action from a list of predefined actions, the agent can press multiple buttons at the same time. This allows for more complex behaviors and combinations of actions. The MultiBinary variants have the same observation space, rewards, and configurations as their Discrete counterparts. The ViZDoom Gymnasium ids for MultiBinary variants are the same as the original ones, with the suffix `-MultiBinary` added before version. For example, the MultiBinary variant of `VizdoomBasic-v1` is `VizdoomBasic-MultiBinary-v1`. ViZDoom is intended to be played using multiple buttons at the same time, so using MultiBinary action space is often more natural. However, originally these environments were introduced with Discrete action space, because of that we decided to introduce MultiBinary variants alongside the original ones. We recommend using multi binary variants.
 
 
 ## BASIC
@@ -150,10 +150,11 @@ needed.
 **REWARDS:**
 * +dX for getting closer to the vest.
 * -dX for getting further from the vest.
+* +1000 for reaching the vest
 * -100 for death
 
 **CONFIGURATION:**
-* 7 available buttons: move forward/backwward/left/right, turn left/right, shoot (attack)
+* 7 available buttons: move forward/backward/left/right, turn left/right, shoot (attack)
 * 1 available game variable: player's health
 * timeout = 2100
 * difficulty level (`doom_skill`) = 5
@@ -178,7 +179,7 @@ before the time runs out or it's killed by monsters.
 * Different rewards are given for killing different monsters
 
 **CONFIGURATION:**
-* 16 available binary buttons: move forward/backwward/left/right, turn left/right, strafe, sprint (speed), shoot (attack), select weapon 1-6/next/previous
+* 17 available binary buttons: move forward/backward/left/right, turn left/right, strafe, sprint (speed), shoot (attack), select weapon 1-6/next/previous
 * 3 available delta buttons: look up/down, turn left/right, move left/right
 * 5 available game variables: player's health, armor, selected weapon and ammo, killcount
 * timeout = 4200
@@ -222,16 +223,15 @@ because of limited ammo).
 
 ## DEFEND THE LINE
 The purpose of this scenario is to teach an agent that killing the
-monsters is GOOD and when monsters kill you is BAD. In addition,
-wasting ammunition is not very good either. The agent is rewarded only
-for killing monsters, so it has to figure out the rest for itself.
+monsters is GOOD and when monsters kill you is BAD. The agent is rewarded
+only for killing monsters, so it has to figure out the rest for itself.
 
 The map is a rectangle. A player is spawned along the longer wall in the
 center. 3 melee-only and 3 shooting monsters are spawned along the
 opposite wall. Monsters are killed after a single shot, at first.
 After dying, each monster is respawned after some time and can endure
-more damage. The episode ends when the player dies (it's inevitable
-because of limited ammo).
+more damage. The map gives the player one bullet every tic, so ammunition
+is effectively unlimited. The episode ends when the player dies.
 
 | Doom assets | Freedoom assets |
 | --- | --- |
@@ -264,8 +264,9 @@ Medkits heal some portions of the player's health - to survive agent
 needs to pick them up. The episode finishes after the player's death or
 on timeout.
 
-There is more advance version of this scenario called HEALTH GATHERING SUPREME,
-that makes map layout more complex.
+There is a more advanced version of this scenario called HEALTH GATHERING SUPREME,
+which has a more complex map layout. It also spawns poison pickups alongside
+the medkits. Picking up poison inflicts 30 damage.
 
 | Doom assets | Freedoom assets |
 | --- | --- |
@@ -282,6 +283,7 @@ that makes map layout more complex.
 **CONFIGURATION:**
 * 3 available buttons: turn left/right, move forward
 * 1 available game variable: player's health
+* timeout = 2100 tics
 
 **Gymnasium/Gym id: `"VizdoomHealthGathering-v1"` / `"VizdoomHealthGathering-MultiBinary-v1"` / `"VizdoomHealthGatheringSupreme-v1"` / `"VizdoomHealthGatheringSupreme-MultiBinary-v1"`**
 
@@ -297,7 +299,7 @@ The map is a series of rooms with interconnection and 1 corridor
 with a dead end. Each room has a different color. There is a
 green vest in one of the rooms (the same room every time).
 The player is spawned in a randomly chosen room facing a random
-direction. The episode ends when the vest is reached or on timeout/
+direction. The episode ends when the vest is reached or on timeout.
 
 | Doom assets | Freedoom assets |
 | --- | --- |
@@ -308,7 +310,7 @@ direction. The episode ends when the vest is reached or on timeout/
 * -0.0001 for every tic the agent is alive
 
 **CONFIGURATION:**
-* 3 available buttons: turn left/right, move forward
+* 5 available buttons: turn left/right, move forward/left/right
 * timeout = 2100
 
 **Gymnasium/Gym id: `"VizdoomMyWayHome-v1"` / `"VizdoomMyWayHome-MultiBinary-v1"`**
@@ -335,7 +337,7 @@ or on timeout.
 
 **REWARDS:**
 * +1 for killing the monster
-* -0.0001 for every tic the agent is alive
+* -0.001 for every tic the agent is alive
 
 **CONFIGURATION:**
 * 3 available buttons: turn left/right, shoot (attack)
@@ -354,11 +356,11 @@ death which is undesirable. In effect, the agent should avoid
 missiles.
 
 The map is a rectangle. A player is spawned along the longer wall,
-in the center. A couple of shooting monsters are spawned
-randomly somewhere along the opposite wall and try to kill
-the player with fireballs. The player can only (config) move
-left/right. More monsters appear with time. The episode ends when
-the player dies.
+in the center. Three shooting monsters are initially spawned at fixed
+positions along the opposite wall and try to kill the player with
+fireballs. The player can only move left/right. More monsters
+appear at random positions along the opposite wall over time. The episode
+ends when the player dies.
 
 | Doom assets | Freedoom assets |
 | --- | --- |
