@@ -11,7 +11,7 @@ import numpy as np
 import vizdoom as vzd
 
 
-def check_label(labels_buffer, label):
+def _check_label(labels_buffer, label):
     assert label.value > 1
     if (
         label.width > 4 and label.height > 4
@@ -69,7 +69,7 @@ def test_labels_buffer():
         seen_labels += len(state.labels)
         for label in state.labels:
             seen_unique_objects.add(label.object_name)
-            check_label(labels_buffer, label)
+            _check_label(labels_buffer, label)
     game.close()
 
     print(

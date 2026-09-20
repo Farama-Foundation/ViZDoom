@@ -110,9 +110,9 @@ Description of the object present in the game world.
 **name** - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).
 
 **category** - category of the object (e.g. "Monster", "Weapon", "Player"). Category "Self" is assigned to current player.
-The category assignment may not be accurate, especcialy for custom objects and WADs other than Freedoom/Doom. Note: added in 1.4.0.
+The category assignment may not be accurate, especcialy for custom objects and WADs other than Freedoom/Doom. Note: added in 1.3.1.
 
-**sectorId / sector_id** - ID of the sector the object currently belongs to (same as corresponding **Sector.id**). Note: added in 1.4.0.
+**sectorId / sector_id** - ID of the sector the object currently belongs to (same as corresponding **Sector.id**). Note: added in 1.3.1.
 
 See also:
 - [`DoomGame::setObjectsInfoEnabled`](./doom_game.md#setsectorsinfoenabled),
@@ -156,7 +156,7 @@ Note: added in 1.1.8.
 
 Description of the sector, part of the map with the same floor and ceiling height.
 
-**id** - unique sector ID. This is the value referenced by **Object.sectorId / sector_id**. Note: added in 1.4.0.
+**id** - unique sector ID. This is the value referenced by **Object.sectorId / sector_id**. Note: added in 1.3.1.
 
 **floorHeight / floor_height** - height of the sector's floor.
 

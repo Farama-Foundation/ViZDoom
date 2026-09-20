@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+
+# This test should be run manually.
+
 import glob
 import multiprocessing
 import os
