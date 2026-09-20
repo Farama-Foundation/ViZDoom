@@ -92,3 +92,20 @@ To run pre-commit hooks manually, use:
 ```sh
 pre-commit run --all-files
 ```
+
+
+## Updating version
+
+To update the version modify `project(ViZDoom VERSION X.Y.Z)` at the top of `CMakeLists.txt`. This is the source used by CMake, the C++ library, and `setup.py` for the Python package version. For a pre-release or development build, set `ViZDoom_VERSION_SUFFIX` in `CMakeLists.txt` to a PEP 440-compatible suffix such as `a1`, `b1`, `rc1`, or `.dev1`; leave it empty for a final release.
+
+
+## Updating documentation
+
+Treat `docs/api/cpp/` as the source of truth for shared C++/Python API documentation. After changing it, regenerate the derived Python API pages and C++ docstring header from the repository root:
+
+```sh
+python scripts/create_python_docs_from_cpp_docs.py
+python scripts/create_python_docstrings_from_cpp_docs.py
+```
+
+Rebuild the project after regenerating docstrings. Public API changes also require regenerating `src/lib_python/vizdoom.pyi`, which happens during the CMake build.

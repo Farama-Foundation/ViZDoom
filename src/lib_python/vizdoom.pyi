@@ -503,7 +503,7 @@ class DoomGame:
         """
         Returns the unique identifier of the current running game instance.
 
-        Note: added in 1.4.0.
+        Note: added in 1.3.1.
         """
 
     def get_item_reward(self) -> float:
