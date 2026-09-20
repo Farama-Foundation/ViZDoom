@@ -345,7 +345,7 @@
 </section>
 <section id="multibinary-variants">
 <h2>MultiBinary variants<a class="headerlink" href="#multibinary-variants" title="Link to this heading">¶</a></h2>
-<p>For each Gymnasium environment described below, there is also a MultiBinary variant available. These variants use <code class="docutils literal notranslate"><span class="pre">MultiBinary</span></code> action space instead of <code class="docutils literal notranslate"><span class="pre">Discrete</span></code> action space. This means that instead of selecting a single action from a list of predefined actions, the agent can press multiple buttons at the same time. This allows for more complex behaviors and combinations of actions. The MultiBinary variants have the same observation space, rewards, and configurations as their Discrete counterparts. The ViZDoom Gymnasium ids for MultiBinary variants are the same as the original ones, with the suffix <code class="docutils literal notranslate"><span class="pre">-MultiBinary</span></code> added before version. For example, the MultiBinary variant of <code class="docutils literal notranslate"><span class="pre">VizdoomBasic-v1</span></code> is <code class="docutils literal notranslate"><span class="pre">VizdoomBasic-MultiBinary-v1</span></code>. ViZDoom is intended to be played using multiple buttons at the same time, so using MultiBinary action space is often more natural. However, originally these environments were introduced with Discrete action space, because of that we decided to introduce MultiBinary variants alongside the original ones.</p>
+<p>For each Gymnasium environment described below, there is also a MultiBinary variant available. These variants use <code class="docutils literal notranslate"><span class="pre">MultiBinary</span></code> action space instead of <code class="docutils literal notranslate"><span class="pre">Discrete</span></code> action space. This means that instead of selecting a single action from a list of predefined actions, the agent can press multiple buttons at the same time. This allows for more complex behaviors and combinations of actions. The MultiBinary variants have the same observation space, rewards, and configurations as their Discrete counterparts. The ViZDoom Gymnasium ids for MultiBinary variants are the same as the original ones, with the suffix <code class="docutils literal notranslate"><span class="pre">-MultiBinary</span></code> added before version. For example, the MultiBinary variant of <code class="docutils literal notranslate"><span class="pre">VizdoomBasic-v1</span></code> is <code class="docutils literal notranslate"><span class="pre">VizdoomBasic-MultiBinary-v1</span></code>. ViZDoom is intended to be played using multiple buttons at the same time, so using MultiBinary action space is often more natural. However, originally these environments were introduced with Discrete action space, because of that we decided to introduce MultiBinary variants alongside the original ones. We recommend using MultiBinary variants.</p>
 </section>
 <section id="basic">
 <h2>BASIC<a class="headerlink" href="#basic" title="Link to this heading">¶</a></h2>
@@ -491,11 +491,12 @@ needed.</p>
 <ul class="simple">
 <li><p>+dX for getting closer to the vest.</p></li>
 <li><p>-dX for getting further from the vest.</p></li>
+<li><p>+1000 for reaching the vest</p></li>
 <li><p>-100 for death</p></li>
 </ul>
 <p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
-<li><p>7 available buttons: move forward/backwward/left/right, turn left/right, shoot (attack)</p></li>
+<li><p>7 available buttons: move forward/backward/left/right, turn left/right, shoot (attack)</p></li>
 <li><p>1 available game variable: player’s health</p></li>
 <li><p>timeout = 2100</p></li>
 <li><p>difficulty level (<code class="docutils literal notranslate"><span class="pre">doom_skill</span></code>) = 5</p></li>
@@ -530,7 +531,7 @@ before the time runs out or it’s killed by monsters.</p>
 </ul>
 <p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
-<li><p>16 available binary buttons: move forward/backwward/left/right, turn left/right, strafe, sprint (speed), shoot (attack), select weapon 1-6/next/previous</p></li>
+<li><p>17 available binary buttons: move forward/backward/left/right, turn left/right, strafe, sprint (speed), shoot (attack), select weapon 1-6/next/previous</p></li>
 <li><p>3 available delta buttons: look up/down, turn left/right, move left/right</p></li>
 <li><p>5 available game variables: player’s health, armor, selected weapon and ammo, killcount</p></li>
 <li><p>timeout = 4200</p></li>
@@ -582,15 +583,14 @@ because of limited ammo).</p>
 <section id="defend-the-line">
 <h2>DEFEND THE LINE<a class="headerlink" href="#defend-the-line" title="Link to this heading">¶</a></h2>
 <p>The purpose of this scenario is to teach an agent that killing the
-monsters is GOOD and when monsters kill you is BAD. In addition,
-wasting ammunition is not very good either. The agent is rewarded only
-for killing monsters, so it has to figure out the rest for itself.</p>
+monsters is GOOD and when monsters kill you is BAD. The agent is rewarded
+only for killing monsters, so it has to figure out the rest for itself.</p>
 <p>The map is a rectangle. A player is spawned along the longer wall in the
 center. 3 melee-only and 3 shooting monsters are spawned along the
 opposite wall. Monsters are killed after a single shot, at first.
 After dying, each monster is respawned after some time and can endure
-more damage. The episode ends when the player dies (it’s inevitable
-because of limited ammo).</p>
+more damage. The map gives the player one bullet every tic, so ammunition
+is effectively unlimited. The episode ends when the player dies.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -631,8 +631,9 @@ over the map. A new medkit falls from the skies every now and then.
 Medkits heal some portions of the player’s health - to survive agent
 needs to pick them up. The episode finishes after the player’s death or
 on timeout.</p>
-<p>There is more advance version of this scenario called HEALTH GATHERING SUPREME,
-that makes map layout more complex.</p>
+<p>There is a more advanced version of this scenario called HEALTH GATHERING SUPREME,
+which has a more complex map layout. It also spawns poison pickups alongside
+the medkits. Picking up poison inflicts 30 damage.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -670,6 +671,7 @@ that makes map layout more complex.</p>
 <ul class="simple">
 <li><p>3 available buttons: turn left/right, move forward</p></li>
 <li><p>1 available game variable: player’s health</p></li>
+<li><p>timeout = 2100 tics</p></li>
 </ul>
 <p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomHealthGathering-v1&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomHealthGathering-MultiBinary-v1&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomHealthGatheringSupreme-v1&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomHealthGatheringSupreme-MultiBinary-v1&quot;</span></code></strong></p>
 <p><strong>Configuration file: <a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/scenarios/health_gathering.cfg">health_gathering.cfg</a>/<a class="reference external" href="https://github.com/Farama-Foundation/ViZDoom/tree/main/scenarios/health_gathering_supreme.cfg">health_gathering_supreme.cfg</a></strong></p>
@@ -683,7 +685,7 @@ in a labyrinth-like surrounding and reach his ultimate goal
 with a dead end. Each room has a different color. There is a
 green vest in one of the rooms (the same room every time).
 The player is spawned in a randomly chosen room facing a random
-direction. The episode ends when the vest is reached or on timeout/</p>
+direction. The episode ends when the vest is reached or on timeout.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -705,7 +707,7 @@ direction. The episode ends when the vest is reached or on timeout/</p>
 </ul>
 <p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
-<li><p>3 available buttons: turn left/right, move forward</p></li>
+<li><p>5 available buttons: turn left/right, move forward/left/right</p></li>
 <li><p>timeout = 2100</p></li>
 </ul>
 <p><strong>Gymnasium/Gym id: <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomMyWayHome-v1&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;VizdoomMyWayHome-MultiBinary-v1&quot;</span></code></strong></p>
@@ -740,7 +742,7 @@ or on timeout.</p>
 <p><strong>REWARDS:</strong></p>
 <ul class="simple">
 <li><p>+1 for killing the monster</p></li>
-<li><p>-0.0001 for every tic the agent is alive</p></li>
+<li><p>-0.001 for every tic the agent is alive</p></li>
 </ul>
 <p><strong>CONFIGURATION:</strong></p>
 <ul class="simple">
@@ -758,11 +760,11 @@ being hit means health decrease, and this in turn will lead to
 death which is undesirable. In effect, the agent should avoid
 missiles.</p>
 <p>The map is a rectangle. A player is spawned along the longer wall,
-in the center. A couple of shooting monsters are spawned
-randomly somewhere along the opposite wall and try to kill
-the player with fireballs. The player can only (config) move
-left/right. More monsters appear with time. The episode ends when
-the player dies.</p>
+in the center. Three shooting monsters are initially spawned at fixed
+positions along the opposite wall and try to kill the player with
+fireballs. The player can only move left/right. More monsters
+appear at random positions along the opposite wall over time. The episode
+ends when the player dies.</p>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
