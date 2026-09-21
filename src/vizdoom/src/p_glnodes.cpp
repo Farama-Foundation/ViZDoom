@@ -1159,7 +1159,7 @@ static void CreateCachedNodes(MapData *map)
 	}
 
 	uLongf outlen = ZNodes.Size();
-	BYTE *compressed;
+	BYTE *compressed = NULL;
 	int offset = numlines * 8 + 12 + 16;
 	int r;
 	do
@@ -1169,6 +1169,7 @@ static void CreateCachedNodes(MapData *map)
 		if (r == Z_BUF_ERROR)
 		{
 			delete[] compressed;
+			compressed = NULL;
 			outlen += 1024;
 		}
 	} 
