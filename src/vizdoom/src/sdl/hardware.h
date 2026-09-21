@@ -38,7 +38,10 @@
 #include "v_video.h"
 
 // Semaphores
-#ifdef __APPLE__
+//VIZDOOM_CODE
+#ifdef _WIN32
+void I_WaitForFPSLimit();
+#elif defined(__APPLE__)
 #include <mach/mach_init.h>
 #include <mach/semaphore.h>
 #include <mach/task.h>
@@ -88,7 +91,9 @@ void I_InitGraphics ();
 void I_ShutdownGraphics ();
 void I_CreateRenderer();
 
+#ifndef _WIN32 //VIZDOOM_CODE
 extern Semaphore FPSLimitSemaphore;
+#endif
 void I_SetFPSLimit(int limit);
 
 extern IVideo *Video;
