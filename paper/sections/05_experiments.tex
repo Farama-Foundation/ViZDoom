@@ -1,0 +1,44 @@
+\section{Experimental Design}
+\label{sec:experiments}
+The proposed evaluation asks four questions: (1) how well frontier models perform on individual \vzd{} skills; (2) how much harness design affects their performance; (3) whether those skills compose into full-level completion; and (4) when additional sensory information or memory changes the outcome. The first study centers on language-model agents. Multimodal learning and multi-agent experiments provide complementary follow-up studies.
+
+\subsection{Task Suite}
+\paragraph{Standard scenarios.}
+The standard suite spans target selection and aiming, navigation, combat, and survival. Basic, Predict Position, and My Way Home isolate relatively compact objectives. Deadly Corridor combines progress toward a goal with threats along the route. Defend the Center, Defend the Line, and Deathmatch emphasize combat and resource use; Health Gathering, Health Gathering Supreme, and Take Cover emphasize survival. Basic Audio and Basic Notifications introduce controlled sensory requirements. Table~\ref{tab:standard-results} reserves results for all twelve environments. The current MCP task set includes Basic and My Way Home; the remaining standard scenarios require task-specific integration and outcome validation before evaluation.
+
+\paragraph{Opening Doom levels.}
+The primary full-level comparison uses \emph{Hangar}, the first level of Doom, and \emph{Entryway}, the first level of Doom~II. Both are already represented in the MCP task set. The second levels, \emph{Nuclear Plant} and \emph{Underhalls}, form an extended opening-level comparison and are also represented in that set. We evaluate each level from an independent starting state, with completion defined by reaching a valid exit.
+
+These familiar levels provide interpretable reference tasks, not a test of unseen-map generalization. They also differ in the interactions needed to reach an exit. Before evaluation, we will annotate required keys, switches, and backtracking so that success is interpreted in relation to the actual dependencies of each map. A later transfer study will use held-out authored or generated layouts, with redistributable content where possible, to distinguish familiarity from general control capability.
+
+\subsection{Comparison Conditions}
+We plan to evaluate at least three frontier vision-language models using a common harness. Model selection will reflect availability at the evaluation freeze and include multiple model families. Compatible native systems using Codex and Claude Code will be evaluated separately. All systems will receive the same task objectives, game controls, and observation privileges within a comparison. Model-specific preprocessing and unavailable model--harness combinations will be disclosed.
+
+Within a fixed model, we will compare a common harness with bounded history, the same harness with selective visual memory, and a variant that adds structured planning within the same total budget. Disabling memory must remove both storage tools and any equivalent harness-provided persistent store. Ordinary conversation history will remain matched. An automap ablation on the full levels will isolate the effect of that additional spatial information.
+
+Random-action and reactive heuristic agents will establish task sanity checks. Feed-forward and recurrent reinforcement-learning policies will provide learned baselines under declared training budgets. These policies are reference points for different learning regimes: their task-specific training is not directly comparable to the unknown pretraining resources of frontier models. A matched-control comparison will give all agents the same permitted action durations and observations; any results from a different native RL interface will be presented separately.
+
+\subsection{Evaluation Protocol}
+All conditions will use the same prespecified episode seeds and starting rules for each task. The initial plan uses 30 paired episodes per task and inference condition; feasibility pilots may revise this count before the test protocol is frozen. Learned RL baselines will use five independent training seeds, each evaluated on the same episode suite. We will fix inference settings, action limits, and model choices before final evaluation and use separate validation tasks to choose prompts and harness settings.
+
+The primary full-level objective is sparse completion reward:
+\begin{equation}
+ r_t^{\mathrm{ext}}=\mathbb{1}\{\text{a valid level exit occurs at }t\}.
+\end{equation}
+No intermediate progress reward will be supplied in this condition. Standard scenarios will retain their declared task objectives and report native return alongside the relevant behavioral outcome. Episode termination, death, and budget exhaustion will be recorded separately; a positive intermediate reward is not a general definition of success.
+
+Budgets will separately constrain simulated game time, model calls, generated tokens, and elapsed wall time. The evaluation will record actual game advancement, since one tool call may contain several repeated actions. Primary comparisons will use a common interaction allowance, followed by performance-versus-cost analyses. Synchronous stepping measures control with deliberation between actions; it does not establish performance under real-time deadlines.
+
+\subsection{Measures and Analysis}
+For finite-goal tasks, the main outcome is the probability of completing the objective. Combat scenarios will report return and kills; survival scenarios will report survival duration. Completion times will be reported together with failures, preventing a system that succeeds only on easy episodes from appearing efficient solely through success-conditioned averages. Additional measures include model calls, tokens, billed inference cost, invalid actions, and repeated ineffective actions.
+
+Full-level completion will be reported separately for each map. A summary across the two primary maps will give each map equal weight. The standard finite-goal summary will likewise average success rates over a fixed subset: Basic, My Way Home, Deadly Corridor, and Predict Position. Audio- and text-dependent tasks will be reported separately until all compared systems receive the required modality. Native returns with different meanings and scales will not be averaged into a single score.
+
+We will report 95\% confidence intervals and paired differences between prespecified conditions. For trained policies, resampling will respect independent training runs rather than treating all evaluation episodes as independent agents. Uncertainty on the four opening maps will be conditional on that fixed suite; it cannot support a claim about an arbitrary population of Doom levels. Failures in infrastructure and interrupted episodes will be accounted for explicitly, with rerun rules fixed before evaluation.
+
+Interaction traces will support a failure taxonomy covering perceptual errors, ineffective control, missed interactions, loss of spatial context, resource depletion, and failure to revise a plan. Coding rules will be defined before the final trace review, with independent annotation of a subset to assess agreement. Agent-written explanations may aid inspection but will not determine the assigned cause without behavioral evidence.
+
+\subsection{Follow-up Studies}
+Modality studies will compare vision with audiovisual and visual-plus-notification conditions on tasks where those channels provide identifiable evidence. Corrupted or removed cues will test whether an agent actually uses the information. Semantic categories will be evaluated separately as training-only supervision and as privileged test-time input. Native audio and text must first be exposed through the MCP interface for corresponding language-model comparisons.
+
+The multi-agent study will compare fixed-opponent training, self-play, and population-based training through the PettingZoo wrapper. Evaluation will use held-out opponents, exchanged player roles, and cross-play outcomes on unseen maps. These studies extend the benchmark's research scope, while the initial empirical priority remains standard-scenario and opening-level performance of frontier models and harnesses.

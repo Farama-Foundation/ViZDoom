@@ -1,0 +1,87 @@
+\section{Results: Planned Presentation}
+\label{sec:results}
+This section reserves the empirical presentation for the planned evaluation. \textbf{No measurements have been collected for this manuscript.} An em dash denotes a pending measurement, not zero performance or an unavailable system. Labels C1--C3 denote frontier-model slots in the common harness; N1--N2 denote supported native systems. The final model names will replace these labels at the evaluation freeze. Unsupported model--harness or modality combinations will be marked explicitly rather than assigned a score.
+
+\subsection{Frontier Models and Agent Systems}
+Table~\ref{tab:model-results} will summarize task completion and inference cost. Common-harness rows will support comparisons among models; native-system rows will characterize the deployed model--harness combination. The analysis will report uncertainty and per-task variation before discussing any ranking. It will examine whether success on compact objectives predicts success on complete levels and whether differences persist at comparable interaction cost.
+
+\begin{table*}[t]
+\caption{Reserved comparison of frontier models and native agent systems. Goal SR is the macro-average success rate on the four standard finite-goal tasks defined in Section~\ref{sec:experiments}. Hangar and Entryway are the primary full-level tasks. Cost is mean billed inference cost per episode over those same six tasks, with tasks weighted equally. All scores and costs are pending; the completed table will include 95\% confidence intervals for success rates.}
+\label{tab:model-results}
+\small
+\begin{tabularx}{\textwidth}{@{}l Y l c c c c@{}}
+\toprule
+ID & Model slot & Harness & Goal SR (\%) & Hangar (\%) & Entryway (\%) & Cost (USD) \\
+\midrule
+C1 & Frontier model 1 & Common & \pending & \pending & \pending & \pending \\
+C2 & Frontier model 2 & Common & \pending & \pending & \pending & \pending \\
+C3 & Frontier model 3 & Common & \pending & \pending & \pending & \pending \\
+N1 & Compatible model & Codex & \pending & \pending & \pending & \pending \\
+N2 & Compatible model & Claude Code & \pending & \pending & \pending & \pending \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+\subsection{Standard ViZDoom Environments}
+Table~\ref{tab:standard-results} reserves a task-level profile across the standard environments. It will distinguish navigation and finite-goal control from combat and survival. Return, kill counts, and survival duration will accompany the primary measures where relevant. The sensory tasks will additionally compare intact and ablated observations. Performance differences will be interpreted within each task's objective rather than through an average of unrelated reward scales.
+
+\begin{table*}[t]
+\caption{Reserved results on the standard \vzd{} environments. FF-RL and RNN-RL denote planned feed-forward and recurrent learned baselines; C1--C3 use the common harness. SR means objective success rate. Survival is measured in simulated seconds. Every measurement is pending. $\dagger$ marks tasks requiring audio or notification support in the MCP interface before the relevant language-model evaluation. Native-system profiles will use the same task breakdown.}
+\label{tab:standard-results}
+\small
+\begin{tabularx}{\textwidth}{@{}Y P{0.24\textwidth}ccccc@{}}
+\toprule
+Environment & Primary measure & FF-RL & RNN-RL & C1 & C2 & C3 \\
+\midrule
+Basic & Target elimination SR (\%) & \pending & \pending & \pending & \pending & \pending \\
+Basic Audio$^\dagger$ & Target elimination SR (\%) & \pending & \pending & \pending & \pending & \pending \\
+Basic Notifications$^\dagger$ & Correct-target SR (\%) & \pending & \pending & \pending & \pending & \pending \\
+Deadly Corridor & Goal SR (\%) & \pending & \pending & \pending & \pending & \pending \\
+Deathmatch & Episode return & \pending & \pending & \pending & \pending & \pending \\
+Defend the Center & Episode return & \pending & \pending & \pending & \pending & \pending \\
+Defend the Line & Episode return & \pending & \pending & \pending & \pending & \pending \\
+Health Gathering & Survival (s) & \pending & \pending & \pending & \pending & \pending \\
+Health Gathering Supreme & Survival (s) & \pending & \pending & \pending & \pending & \pending \\
+My Way Home & Goal SR (\%) & \pending & \pending & \pending & \pending & \pending \\
+Predict Position & Target elimination SR (\%) & \pending & \pending & \pending & \pending & \pending \\
+Take Cover & Survival (s) & \pending & \pending & \pending & \pending & \pending \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+\subsection{Opening Doom Levels}
+Table~\ref{tab:level-results} reserves completion rates for the two primary levels and the extended pair. For each level, the final presentation will include completion-time distributions, deaths, budget exhaustion, and the most common observed failure categories. A companion analysis will compare the reference automap condition with first-person observations alone. These results will test composition on the named levels; transfer to unfamiliar maps will remain a separate claim.
+
+\begin{table*}[t]
+\caption{Reserved level-completion success rates (\%) for the opening levels of Doom and Doom~II. Hangar and Entryway form the primary comparison; Nuclear Plant and Underhalls extend it to the second level of each game. C1--C3 and N1--N2 are defined in Table~\ref{tab:model-results}. All entries are pending and will be reported with 95\% confidence intervals.}
+\label{tab:level-results}
+\small
+\begin{tabularx}{\textwidth}{@{}l Y l ccccc@{}}
+\toprule
+Game & Level & Role & C1 & C2 & C3 & N1 & N2 \\
+\midrule
+Doom & Hangar (E1M1) & Primary & \pending & \pending & \pending & \pending & \pending \\
+Doom II & Entryway (MAP01) & Primary & \pending & \pending & \pending & \pending & \pending \\
+Doom & Nuclear Plant (E1M2) & Extended & \pending & \pending & \pending & \pending & \pending \\
+Doom II & Underhalls (MAP02) & Extended & \pending & \pending & \pending & \pending & \pending \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+\subsection{Harness and Memory Ablations}
+Table~\ref{tab:harness-results} reserves a within-model comparison of memory and planning. We will relate completion to the number of model calls and the use of stored observations, and examine whether retrieval precedes useful behavioral changes. Additional cost curves will show the trade-off between interaction resources and completion. A native-harness comparison using the same model will be added only when that pairing is supported; otherwise it belongs to the complete-system comparison.
+
+\begin{table*}[t]
+\caption{Reserved harness ablation, holding the model, observation privileges, base history policy, and total budgets fixed. Calls and retrievals are per-episode means over the six primary tasks used in Table~\ref{tab:model-results}, with tasks weighted equally. A dash denotes a pending observation; ``disabled'' is an experimental condition. The model will be named when selected.}
+\label{tab:harness-results}
+\small
+\begin{tabularx}{\textwidth}{@{}Y ccccc@{}}
+\toprule
+Harness condition & Goal SR (\%) & Hangar (\%) & Entryway (\%) & Model calls & Retrievals \\
+\midrule
+Common, bounded history & \pending & \pending & \pending & \pending & Disabled \\
+Common + visual memory & \pending & \pending & \pending & \pending & \pending \\
+Common + memory + planning & \pending & \pending & \pending & \pending & \pending \\
+\bottomrule
+\end{tabularx}
+\end{table*}

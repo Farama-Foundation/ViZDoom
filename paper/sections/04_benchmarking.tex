@@ -1,0 +1,40 @@
+\section{An MCP Interface for Agent Evaluation}
+\label{sec:mcp}
+The MCP server makes \vzd{} available through a common set of tools. An agent can inspect the current state, execute an action, save a visual state under an identifier, and retrieve a previously saved state. These operations connect a model's decisions to a persistent environment and provide explicit support for selective memory. Figure~\ref{fig:interaction} summarizes the interaction.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+ box/.style={draw=linkblue,rounded corners=2pt,align=center,font=\small,minimum height=0.68cm,text width=2.35cm},
+ flow/.style={-{Latex[length=2mm]},draw=linkblue,thick}]
+\node[box] (world) {ViZDoom\\persistent world};
+\node[box,right=0.9cm of world] (tools) {MCP server\\observe, act, remember};
+\node[box,below=0.72cm of tools] (agent) {Model + harness\\interpret, plan, select};
+\node[box,below=0.72cm of world] (eval) {Evaluation\\outcomes, cost, traces};
+\draw[flow] (world.east) -- (tools.west);
+\draw[flow] (tools.south) -- (agent.north);
+\draw[flow] (agent.east) -- ++(0.3,0) |- (tools.east);
+\draw[flow] (tools.north) -- ++(0,0.32) -| (world.north);
+\draw[flow] (world.south) -- (eval.north);
+\draw[flow] (agent.west) -- (eval.east);
+\end{tikzpicture}
+\caption{Closed-loop interaction through MCP. The harness organizes model calls, history, and memory; the server mediates access to the game. Evaluation uses environment outcomes and interaction records.}
+\label{fig:interaction}
+\end{figure}
+
+\subsection{Observation and Action}
+The server presents the current first-person image together with task and episode information. Actions select game controls and their duration, after which the agent receives an updated observation. Synchronous interaction lets the model deliberate between actions without the world advancing during inference; action duration still determines how much game activity occurs before the next observation.
+
+The existing full-level tasks also provide an automap. This is meaningful assistance for navigation and will be retained in the reference condition and removed in a separate ablation. Episode feedback can include game variables and rewards, so the reference condition should be understood as a tool-mediated observation setting with declared assistance. A stricter visual condition must control those channels explicitly. The current MCP interface supplies images and structured feedback; exposing the core audio and notification buffers through it is a planned extension, not an established property of this interface.
+
+\subsection{Selective Visual Memory}
+The memory tools allow an agent to save a state it considers useful and retrieve it later. Possible uses include remembering a junction, a previously closed door, or a location associated with a task-relevant event. Retrieval is limited to explicitly stored states, making the decision to remember part of the agent's behavior.
+
+This mechanism supports experiments on memory selection and use. Does an agent save observations that later matter? Does retrieval change an ineffective action sequence? Does a bounded collection of visual memories help more than a textual summary of the same interaction? These questions require controlling the harness's ordinary conversation history, since retaining every previous image would provide a second memory mechanism. Performance alone should be complemented by analyses of what was stored, what was retrieved, and what the agent subsequently did.
+
+\subsection{Separating Models and Harnesses}
+The benchmark distinguishes three comparisons. A \emph{model comparison} places different models behind the same harness, with matched instructions, tool access, and interaction limits. A \emph{harness comparison} holds the model fixed while varying history management, explicit memory, or planning. A \emph{system comparison} evaluates a supported model together with its native agent harness.
+
+The existing evaluation integration supports Codex and Claude Code through Harbor, alongside the possibility of a common evaluation harness. These provide meaningful complete-system comparisons, but differences between native systems cannot automatically be attributed to the model or to the harness alone. A crossed comparison should be made only where the same model can actually be used through both interfaces. Frontier model identities will be selected and recorded when the evaluation is frozen, rather than inferred from example defaults.
+
+The server also records interactions for later analysis. Task success must be established from environment events, rather than from the agent's claim that it has finished. Any brief decision notes produced by the agent are self-reports of its intended behavior; they are not direct evidence of internal reasoning. Outcome records, actions, and retrieved observations together provide a basis for examining failures without relying on those self-reports alone.

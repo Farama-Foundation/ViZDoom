@@ -1,0 +1,18 @@
+\section{Introduction}
+Recognizing a scene and acting successfully within it place different demands on an intelligent system. An agent may correctly identify a door yet fail to return to it after finding a key, or describe an enemy while choosing actions that exhaust its ammunition. Interactive evaluation makes these gaps observable: decisions change the world, errors accumulate, and useful information may disappear before it becomes relevant. Such settings are increasingly important for understanding whether pretrained models can organize perception and tool use into sustained, goal-directed behavior.
+
+\vzd{} offers a compact setting for this question. Agents experience Doom from a first-person perspective and must act under partial observability. Short scenarios isolate behaviors such as aiming, dodging, or navigation. Complete levels combine those behaviors with exploration, resource management, and interactions whose consequences can unfold much later. The shared game mechanics make it possible to examine both individual skills and their composition without changing the underlying world.
+
+This paper revisits \vzd{} since the competition paper first published as a preprint in 2018. Its subsequent development broadens the information agents can receive and the forms of interaction researchers can study. Audio provides evidence about events outside the current view; textual notifications expose concise event feedback; and semantic categories associate visual objects with meaningful roles. Full-level environments make extended objectives easier to study through a common interface, while PettingZoo integration connects multiplayer Doom to the wider multi-agent learning ecosystem.
+
+A further contribution is an MCP server for evaluating language-model agents. It exposes the environment through tools for observation, action, and explicit visual memory, allowing compatible agent systems to engage with the same tasks. This creates two distinct objects of study: the model that interprets observations and chooses actions, and the \emph{harness} that manages its prompts, history, memory, and tool interactions. A capable model may still perform poorly with an unsuitable interaction strategy; conversely, a strong harness may compensate for limitations in individual decisions.
+
+We make four contributions:
+\begin{enumerate}[itemsep=3pt]
+\item \textbf{Multimodal and semantic observations.} We characterize how audio, text notifications, and object categories extend the questions that can be investigated in a first-person control environment.
+\item \textbf{Extended and social interaction.} We position full Doom levels and the PettingZoo wrapper as complementary settings for studying sparse rewards, skill composition, and interaction with other agents.
+\item \textbf{An MCP interface for language-model evaluation.} We introduce a server that provides observation, action, and selective visual-memory tools, supporting comparisons of frontier models and their harnesses.
+\item \textbf{A research evaluation framework.} We define a study spanning standard \vzd{} scenarios and the opening levels of Doom and Doom~II, with planned measurements of task performance, interaction cost, and failure modes.
+\end{enumerate}
+
+Our aim is to connect the library's new capabilities to testable research questions. The manuscript presents the benchmark design and the structure of its empirical evaluation; it does not yet report experimental measurements.

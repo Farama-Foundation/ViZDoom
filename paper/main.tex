@@ -1,0 +1,46 @@
+\documentclass[10pt,twocolumn]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[letterpaper,margin=0.75in,columnsep=0.25in]{geometry}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{xcolor}
+\definecolor{linkblue}{HTML}{174E78}
+\usepackage[colorlinks=true,allcolors=linkblue,breaklinks=true]{hyperref}
+\usepackage{xurl}
+\usepackage{enumitem}
+\usepackage{balance}
+\setlist{leftmargin=*,nosep}
+\setlength{\emergencystretch}{1.5em}
+\setlength{\tabcolsep}{4pt}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\vzd}{ViZDoom}
+\newcommand{\pending}{\textemdash}
+\raggedbottom
+\newcommand{\snapshot}{15 September 2026}
+\title{ViZDoom Beyond Pixels:\\A Testbed for Multimodal and Generalist Agents}
+\author{Research manuscript draft}
+\date{\snapshot}
+\begin{document}
+\maketitle
+\begin{abstract}
+Evaluating generalist agents requires environments in which perception, memory, and planning have consequences over sustained interaction. ViZDoom provides a first-person setting that connects controlled behavioral tasks with the richer objectives of complete Doom levels. We present its evolution since the previous competition paper, emphasizing audio observations, textual event feedback, semantic object categories, full-level evaluation, and multi-agent interaction through PettingZoo. We also introduce a Model Context Protocol (MCP) server that connects language-model agents to the environment through observation, action, and explicit visual-memory tools. This interface supports the study of both frontier models and the agent harnesses that organize their interaction. We develop an evaluation spanning standard ViZDoom scenarios and the opening levels of Doom and Doom~II, with separate comparisons of model capability, harness design, and sensory information. The resulting research agenda targets multimodal grounding, sparse-reward exploration, and the composition of skills over extended horizons. This draft specifies the methodology and reserves the results presentation; empirical evaluation remains future work.
+\end{abstract}
+\input{sections/01_introduction}
+\input{sections/03_research}
+\input{sections/02_updates}
+\input{sections/04_benchmarking}
+\input{sections/05_experiments}
+\input{sections/06_results}
+\input{sections/06_limitations}
+\balance
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{document}
