@@ -53,6 +53,8 @@ extern os_t OSPlatform;
 
 // Helper template so that we can access newer Win32 functions with a single static
 // variable declaration. If this were C++11 it could be totally transparent.
+//VIZDOOM_CODE: Only native Windows callers use this helper.
+#ifdef _WINDOWS_
 template<typename Proto>
 class TOptWin32Proc
 {
@@ -72,8 +74,10 @@ public:
 		: Call(GetOptionalWin32Proc(module, function)) {}
 
 	// Wrapper object can be tested against NULL, but not directly called.
-	operator const void*() const { return Call; }
+	operator const void*() const { return reinterpret_cast<const void *>(Call); } //VIZDOOM_CODE
 };
+
+#endif //VIZDOOM_CODE
 
 // Called by DoomMain.
 void I_Init (void);
@@ -135,7 +139,9 @@ void I_Tactile (int on, int off, int total);
 void STACK_ARGS I_Error (const char *error, ...) GCCPRINTF(1,2);
 void STACK_ARGS I_FatalError (const char *error, ...) GCCPRINTF(1,2);
 
-void atterm (void (*func)(void));
+//VIZDOOM_CODE: Shared SDL startup owns exit handlers.
+void addterm (void (*func)(void), const char *name);
+#define atterm(t) addterm (t, #t)
 void popterm ();
 
 // Set the mouse cursor. The texture must be 32x32.

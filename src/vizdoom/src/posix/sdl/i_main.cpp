@@ -34,12 +34,20 @@
 
 // HEADER FILES ------------------------------------------------------------
 
-#include <SDL2/SDL.h>
+#include <SDL.h> //VIZDOOM_CODE
+//VIZDOOM_CODE
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#define USE_WINDOWS_DWORD
+#include <windows.h>
+#include <objbase.h> //VIZDOOM_CODE
+#else
 #include <unistd.h>
+#include <sys/param.h>
+#endif
 #include <stdlib.h>
 #include <signal.h>
 #include <new>
-#include <sys/param.h>
 #ifndef NO_GTK
 #include <gtk/gtk.h>
 #endif
@@ -192,12 +200,20 @@ static int DoomSpecificInfo (char *buffer, char *end)
 	return p;
 }
 
+//VIZDOOM_CODE
+#ifdef _WIN32
+static void UnCOM()
+{
+	CoUninitialize();
+}
+#endif
+
 void I_StartupJoysticks();
 void I_ShutdownJoysticks();
 
 int main (int argc, char **argv)
 {
-#if !defined (__APPLE__)
+#if !defined (__APPLE__) && !defined (_WIN32) //VIZDOOM_CODE
 	{
 		int s[4] = { SIGSEGV, SIGILL, SIGFPE, SIGBUS };
 		cc_install_handlers(argc, argv, 4, s, GAMENAMELOWERCASE "-crash.log", DoomSpecificInfo);
@@ -217,13 +233,21 @@ int main (int argc, char **argv)
 	printf(GAMENAME" %s - SDL version\nCompiled on %s\n",
 		GetVersionString(), __DATE__);
 
+//VIZDOOM_CODE
+#ifndef _WIN32
 	seteuid (getuid ());
+#endif
     std::set_new_handler (NewFailure);
 
 	// Set LC_NUMERIC environment variable in case some library decides to
 	// clear the setlocale call at least this will be correct.
 	// Note that the LANG environment variable is overridden by LC_*
+//VIZDOOM_CODE
+#ifdef _WIN32
+	_putenv_s ("LC_NUMERIC", "C");
+#else
 	setenv ("LC_NUMERIC", "C", 1);
+#endif
 
 #ifndef NO_GTK
 	if(!viz_noxserver) GtkAvailable = gtk_init_check (&argc, &argv);
@@ -264,8 +288,16 @@ int main (int argc, char **argv)
 
 		// Should we even be doing anything with progdir on Unix systems?
 		char program[PATH_MAX];
+//VIZDOOM_CODE
+#ifdef _WIN32
+		if (GetModuleFileNameA(NULL, program, sizeof(program)) == 0)
+			I_FatalError("Could not determine program location.");
+		program[sizeof(program) - 1] = '\0';
+		FixPathSeperator(program);
+#else
 		if (realpath (argv[0], program) == NULL)
 			strcpy (program, argv[0]);
+#endif
 		char *slash = strrchr (program, '/');
 		if (slash != NULL)
 		{
@@ -277,7 +309,14 @@ int main (int argc, char **argv)
 			progdir = "./";
 		}
 
+//VIZDOOM_CODE
+#ifdef _WIN32
+		if (SUCCEEDED(CoInitialize(NULL)))
+			atterm(UnCOM);
+		I_DetectOS();
+#endif
 		I_StartupJoysticks();
+		atterm(I_ShutdownJoysticks);
 		C_InitConsole (80*8, 25*8, false);
 		D_DoomMain ();
     }

@@ -16,6 +16,9 @@ set VIZDOOM_WIN_DEPS_ROOT=C:/ViZDoomWinDepBin
 :: %%% Prebuild Boost for MSVC can be downloaded from https://sourceforge.net/projects/boost/files/boost-binaries/
 set BOOST_ROOT=%VIZDOOM_WIN_DEPS_ROOT%/boost
 
+:: Extract the SDL2 Visual C++ development archive to this directory.
+set SDL2DIR=%VIZDOOM_WIN_DEPS_ROOT%/SDL2
+
 
 :: Build wheels for all Python versions
 for %%P in (38 39 310 311) do (

@@ -31,40 +31,5 @@
 **
 */
 
-#ifndef __HARDWARE_H__
-#define __HARDWARE_H__
-
-#include "i_video.h"
-#include "v_video.h"
-
-class IVideo
-{
- public:
-	virtual ~IVideo () {}
-
-	virtual EDisplayType GetDisplayType () = 0;
-	virtual void SetWindowedScale (float scale) = 0;
-
-	virtual DFrameBuffer *CreateFrameBuffer (int width, int height, bool fs, DFrameBuffer *old) = 0;
-
-	virtual void StartModeIterator (int bits, bool fs) = 0;
-	virtual bool NextMode (int *width, int *height, bool *letterbox) = 0;
-
-	virtual bool SetResolution (int width, int height, int bits);
-
-	virtual void DumpAdapters();
-};
-
-void I_InitGraphics ();
-void I_ShutdownGraphics ();
-void I_CreateRenderer();
-
-void I_SaveWindowedPos ();
-void I_RestoreWindowedPos ();
-
-void I_SetFPSLimit(int limit);
-
-
-extern IVideo *Video;
-
-#endif	// __HARDWARE_H__
+//VIZDOOM_CODE: Windows uses the shared SDL2 backend.
+#include "../posix/hardware.h"
