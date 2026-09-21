@@ -1,0 +1,128 @@
+{
+  "source": "../docs/environments/default.md",
+  "environments": {
+    "VizdoomBasic-MultiBinary-v1": {
+      "name": "Basic",
+      "description": "A rectangular gray room. The player starts at the center of one long wall and a red circular monster starts at a random position along the opposite wall. The player can move sideways and shoot, and one hit kills the monster.",
+      "objective": "Kill the monster quickly while avoiding unnecessary shots.",
+      "rewards": [
+        "+106 for killing the monster",
+        "-5 for every shot",
+        "-1 for every tic the player remains alive"
+      ],
+      "episode_end": "The monster is killed or the 300-tic timeout is reached."
+    },
+    "VizdoomBasicAudio-MultiBinary-v1": {
+      "name": "Basic Audio",
+      "description": "The Basic scenario with an invisible monster that emits sounds. The player can move sideways and shoot, and one hit kills the monster.",
+      "objective": "Use the stereo-audio signal to locate and kill the invisible monster quickly while avoiding unnecessary shots.",
+      "rewards": [
+        "+106 for killing the monster",
+        "-5 for every shot",
+        "-1 for every tic the player remains alive"
+      ],
+      "episode_end": "The monster is killed or the 300-tic timeout is reached."
+    },
+    "VizdoomBasicNotifications-MultiBinary-v1": {
+      "name": "Basic Notifications",
+      "description": "The Basic scenario with three monsters instead of one. An in-game notification identifies which monster should be killed.",
+      "objective": "Read the latest notification and kill the specified monster without killing either wrong monster.",
+      "rewards": [
+        "+106 for killing the correct monster",
+        "-44 for killing a wrong monster",
+        "-5 for every shot",
+        "-1 for every tic the player remains alive"
+      ],
+      "episode_end": "A monster is killed or the 300-tic timeout is reached."
+    },
+    "VizdoomDeadlyCorridor-MultiBinary-v1": {
+      "name": "Deadly Corridor",
+      "description": "A corridor contains six shooting monsters, with monsters positioned on both sides. A green armor vest is at the far end. Running directly toward it without dealing with the monsters is usually fatal at difficulty level 5.",
+      "objective": "Survive the corridor and reach the green armor vest.",
+      "rewards": [
+        "Positive distance change for moving closer to the vest",
+        "Negative distance change for moving farther from the vest",
+        "-100 for death"
+      ],
+      "episode_end": "The vest is reached, the player dies, or the 2100-tic timeout is reached."
+    },
+    "VizdoomDeathmatch-MultiBinary-v1": {
+      "name": "Deathmatch",
+      "description": "The player starts at a random location in an arena containing resources. Random monsters spawn periodically and try to kill the player. Different monsters award different kill rewards. The scenario runs at difficulty level 3.",
+      "objective": "Collect useful resources, survive, and kill as many monsters as possible.",
+      "rewards": [
+        "Monster-dependent positive rewards for kills"
+      ],
+      "episode_end": "The player dies or the 4200-tic timeout is reached."
+    },
+    "VizdoomDefendCenter-MultiBinary-v1": {
+      "name": "Defend the Center",
+      "description": "The player is fixed at the center of a circular arena. Five melee-only monsters spawn along the wall, die from one shot, and respawn after a delay. Ammunition is limited and the scenario runs at difficulty level 3.",
+      "objective": "Turn and shoot efficiently to kill as many approaching monsters as possible before dying.",
+      "rewards": [
+        "+1 for killing a monster",
+        "-1 for death"
+      ],
+      "episode_end": "The player dies or the 2100-tic timeout is reached."
+    },
+    "VizdoomDefendLine-MultiBinary-v1": {
+      "name": "Defend the Line",
+      "description": "The player starts at the center of a long wall in a rectangular arena. Three melee monsters and three shooting monsters spawn along the opposite wall. Monsters respawn after death and become tougher over time. Ammunition is limited and the scenario runs at difficulty level 3.",
+      "objective": "Turn and shoot efficiently to kill as many monsters as possible before dying.",
+      "rewards": [
+        "+1 for killing a monster",
+        "-1 for death"
+      ],
+      "episode_end": "The player dies."
+    },
+    "VizdoomHealthGathering-MultiBinary-v1": {
+      "name": "Health Gathering",
+      "description": "A rectangular arena has a green acidic floor that periodically damages the player. Medkits are distributed around the map and additional medkits fall from above over time.",
+      "objective": "Keep moving, find medkits, and survive for as long as possible.",
+      "rewards": [
+        "+1 for every tic the player remains alive",
+        "-100 for death"
+      ],
+      "episode_end": "The player dies or the scenario timeout is reached."
+    },
+    "VizdoomHealthGatheringSupreme-MultiBinary-v1": {
+      "name": "Health Gathering Supreme",
+      "description": "A more advanced Health Gathering scenario with a complex map layout. The damaging green acidic floor drains health, while existing and newly spawned medkits restore it.",
+      "objective": "Navigate the complex map, collect medkits, and survive for as long as possible.",
+      "rewards": [
+        "+1 for every tic the player remains alive",
+        "-100 for death"
+      ],
+      "episode_end": "The player dies or the scenario timeout is reached."
+    },
+    "VizdoomMyWayHome-MultiBinary-v1": {
+      "name": "My Way Home",
+      "description": "A labyrinth-like map contains differently colored interconnected rooms and a dead-end corridor. A green armor vest is always located in the same room, while the player's starting room and facing direction are random.",
+      "objective": "Navigate the maze and reach the green armor vest as quickly as possible.",
+      "rewards": [
+        "+1 for reaching the vest",
+        "-0.0001 for every tic the player remains alive"
+      ],
+      "episode_end": "The vest is reached or the 2100-tic timeout is reached."
+    },
+    "VizdoomPredictPosition-MultiBinary-v1": {
+      "name": "Predict Position",
+      "description": "A monster moves between the left and right corners of the opposite wall. The player has a rocket launcher with one slow projectile, so the shot must be timed to intersect the moving target.",
+      "objective": "Predict the monster's movement and fire the single rocket so the projectile hits it.",
+      "rewards": [
+        "+1 for killing the monster",
+        "-0.0001 for every tic the player remains alive"
+      ],
+      "episode_end": "The rocket hits the monster or a wall, or the 300-tic timeout is reached."
+    },
+    "VizdoomTakeCover-MultiBinary-v1": {
+      "name": "Take Cover",
+      "description": "The player starts at the center of a long wall in a rectangular arena. Monsters on the opposite side fire projectiles, and more monsters appear over time. The player can only dodge sideways and the scenario runs at difficulty level 4.",
+      "objective": "Dodge incoming fireballs and survive for as long as possible.",
+      "rewards": [
+        "+1 for every tic the player remains alive"
+      ],
+      "episode_end": "The player dies."
+    }
+  }
+}

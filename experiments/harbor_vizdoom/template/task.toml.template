@@ -19,7 +19,7 @@ family = {{family}}
 environment_id = {{environment_id}}
 display_name = {{display_name}}
 level = {{level_name}}
-frame_skip = 4
+frame_skip = 2
 
 [agent]
 timeout_sec = {{agent_timeout_sec}}.0

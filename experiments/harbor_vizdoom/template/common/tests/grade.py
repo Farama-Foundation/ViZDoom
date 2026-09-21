@@ -25,6 +25,21 @@ EXPECTED_MAX_DECISIONS = int(os.environ.get("EXPECTED_MAX_DECISIONS", "75"))
 def _write_score(score: int, message: str, result: dict[str, Any] | None) -> None:
     REWARD_PATH.parent.mkdir(parents=True, exist_ok=True)
     REWARD_PATH.write_text(f"{score}\n", encoding="utf-8")
+    action_history = result.get("action_history") if result else None
+    actions = action_history if isinstance(action_history, list) else []
+    action_sequences = [
+        action
+        for action in actions
+        if isinstance(action, dict) and action.get("repeat_index") == 1
+    ]
+    narrated_sequences = [
+        action
+        for action in action_sequences
+        if isinstance(action.get("situation"), str)
+        and bool(action["situation"].strip())
+        and isinstance(action.get("agent_decision"), str)
+        and bool(action["agent_decision"].strip())
+    ]
     metrics = {
         "reward": score,
         "message": message,
@@ -32,6 +47,13 @@ def _write_score(score: int, message: str, result: dict[str, Any] | None) -> Non
         "episode_return": result.get("episode_return") if result else None,
         "decisions": result.get("decisions") if result else None,
         "seed": result.get("seed") if result else None,
+        "action_sequences": len(action_sequences),
+        "narrated_action_sequences": len(narrated_sequences),
+        "narration_coverage": (
+            len(narrated_sequences) / len(action_sequences)
+            if action_sequences
+            else None
+        ),
     }
     METRICS_PATH.write_text(
         json.dumps(metrics, indent=2, sort_keys=True) + "\n", encoding="utf-8"
@@ -78,6 +100,17 @@ def main() -> None:
             isinstance(button, str) for button in buttons
         ):
             _fail("action history contains invalid buttons", result)
+        for field in ("situation", "agent_decision"):
+            if action.get(field) is not None and not isinstance(action[field], str):
+                _fail(f"action history contains invalid {field}", result)
+        repeat_index = action.get("repeat_index")
+        requested_repeat = action.get("requested_repeat")
+        if (
+            not isinstance(repeat_index, int)
+            or not isinstance(requested_repeat, int)
+            or not 1 <= repeat_index <= requested_repeat <= 8
+        ):
+            _fail("action history contains invalid repetition metadata", result)
 
     if not EVENTS_PATH.is_file():
         _fail(f"missing event log {EVENTS_PATH}", result)

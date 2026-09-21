@@ -8,8 +8,10 @@ import json
 import os
 import re
 import secrets
+import shutil
 import subprocess
 import tempfile
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -22,7 +24,10 @@ from generate_tasks import (
 
 EXPERIMENT_DIR = Path(__file__).resolve().parent
 REPOSITORY_ROOT = EXPERIMENT_DIR.parents[1]
+HARBOR_NO_REDACTION_DIR = EXPERIMENT_DIR / "harbor_no_redaction"
 AUTH_CHOICES = ("api-key", "subscription")
+DOCKER_BASE_IMAGE = "python:3.12-slim"
+DOCKER_DESKTOP_BINARY = Path("/Applications/Docker.app/Contents/Resources/bin/docker")
 
 
 def _unsigned_seed(raw_seed: str | None) -> int:
@@ -92,7 +97,21 @@ def _parse_args() -> argparse.Namespace:
         action="store_true",
         help="Print the generated Harbor config without running it",
     )
-    return parser.parse_args()
+    parser.add_argument(
+        "--docker-pull-retries",
+        type=int,
+        default=3,
+        help="Attempts to cache a missing Docker base image (default: 3)",
+    )
+    parser.add_argument(
+        "--skip-docker-preflight",
+        action="store_true",
+        help="Do not check or pull the Docker base image before Harbor starts",
+    )
+    args = parser.parse_args()
+    if args.docker_pull_retries < 1:
+        parser.error("--docker-pull-retries must be positive")
+    return args
 
 
 def _auth_modes(args: argparse.Namespace) -> dict[str, str]:
@@ -160,6 +179,58 @@ def _agent_configs(
             }
         )
     return agents
+
+
+def _docker_command(environment: dict[str, str]) -> str:
+    executable = shutil.which("docker", path=environment.get("PATH"))
+    if executable is not None:
+        return executable
+    if DOCKER_DESKTOP_BINARY.is_file():
+        docker_bin = str(DOCKER_DESKTOP_BINARY.parent)
+        current_path = environment.get("PATH", "")
+        environment["PATH"] = os.pathsep.join(
+            entry for entry in (docker_bin, current_path) if entry
+        )
+        return str(DOCKER_DESKTOP_BINARY)
+    raise SystemExit("docker was not found on PATH and Docker Desktop is unavailable")
+
+
+def _ensure_docker_base_image(environment: dict[str, str], pull_retries: int) -> None:
+    docker = _docker_command(environment)
+    inspected = subprocess.run(
+        [docker, "image", "inspect", DOCKER_BASE_IMAGE],
+        env=environment,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if inspected.returncode == 0:
+        print(f"docker_base_image={DOCKER_BASE_IMAGE} (cached)")
+        return
+
+    last_error = ""
+    for attempt in range(1, pull_retries + 1):
+        print(
+            f"docker_base_image={DOCKER_BASE_IMAGE} "
+            f"pull_attempt={attempt}/{pull_retries}"
+        )
+        pulled = subprocess.run(
+            [docker, "pull", DOCKER_BASE_IMAGE],
+            env=environment,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if pulled.returncode == 0:
+            print(f"docker_base_image={DOCKER_BASE_IMAGE} (ready)")
+            return
+        last_error = (pulled.stderr or pulled.stdout).strip()
+        if attempt < pull_retries:
+            time.sleep(min(2**attempt, 8))
+    raise SystemExit(
+        f"Could not pull {DOCKER_BASE_IMAGE} after {pull_retries} attempts. "
+        f"Docker reported:\n{last_error}"
+    )
 
 
 def main() -> None:
@@ -232,6 +303,16 @@ def main() -> None:
 
         child_environment = os.environ.copy()
         child_environment["VIZDOOM_SEED"] = str(seed)
+        existing_pythonpath = child_environment.get("PYTHONPATH", "")
+        child_environment["PYTHONPATH"] = os.pathsep.join(
+            entry
+            for entry in (str(HARBOR_NO_REDACTION_DIR), existing_pythonpath)
+            if entry
+        )
+        if not args.skip_docker_preflight:
+            _ensure_docker_base_image(
+                child_environment, pull_retries=args.docker_pull_retries
+            )
 
         with tempfile.NamedTemporaryFile(
             mode="w", suffix=".json", encoding="utf-8"

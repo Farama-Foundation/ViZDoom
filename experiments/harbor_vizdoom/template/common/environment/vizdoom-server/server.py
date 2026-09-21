@@ -24,7 +24,8 @@ import numpy as np
 from vizdoom import gymnasium_wrapper  # noqa: F401  (register environments)
 
 ENVIRONMENT_ID = os.environ.get("VIZDOOM_ENVIRONMENT_ID", "VizdoomBasic-MultiBinary-v1")
-FRAME_SKIP = 4
+FRAME_SKIP = 2
+MAX_ACTION_REPEAT = 4
 MAX_DECISIONS = int(os.environ.get("VIZDOOM_MAX_DECISIONS", "75"))
 MAX_MEMORIES = int(os.environ.get("VIZDOOM_MAX_MEMORIES", "32"))
 RESULTS_DIR = Path(os.environ.get("VIZDOOM_RESULTS_DIR", "/vizdoom-results"))
@@ -269,6 +270,7 @@ class Episode:
         terminated: bool,
         truncated: bool,
         event: str,
+        event_details: dict[str, Any] | None = None,
     ) -> Snapshot:
         metadata = self._metadata(
             observation,
@@ -277,6 +279,8 @@ class Episode:
             terminated=terminated,
             truncated=truncated,
         )
+        if event_details:
+            metadata.update(event_details)
         screen = _observation_image(observation, "screen")
         assert screen is not None
         automap = _observation_image(observation, "automap", required=REQUIRE_AUTOMAP)
@@ -370,7 +374,15 @@ class Episode:
             self._write_result()
             FINALIZED_PATH.write_text("ready\n", encoding="utf-8")
 
-    def act(self, buttons: list[str]) -> Snapshot:
+    def act(
+        self,
+        buttons: list[str],
+        *,
+        situation: str | None = None,
+        agent_decision: str | None = None,
+        repeat_index: int = 1,
+        requested_repeat: int = 1,
+    ) -> Snapshot:
         with self.lock:
             if self.done:
                 raise RuntimeError(
@@ -405,6 +417,12 @@ class Episode:
             elif decision >= MAX_DECISIONS:
                 self.status = "decision_limit"
 
+            action_context = {
+                "situation": situation,
+                "agent_decision": agent_decision,
+                "repeat_index": repeat_index,
+                "requested_repeat": requested_repeat,
+            }
             self.action_history.append(
                 {
                     "decision": decision,
@@ -414,6 +432,7 @@ class Episode:
                     "terminated": bool(terminated),
                     "truncated": bool(truncated),
                     "status": self.status,
+                    **action_context,
                 }
             )
             snapshot = self._record_snapshot(
@@ -423,6 +442,7 @@ class Episode:
                 terminated=bool(terminated),
                 truncated=bool(truncated),
                 event="action",
+                event_details=action_context,
             )
             if self.done:
                 self.finalize()
@@ -440,13 +460,16 @@ def _serve_mcp(episode: Episode) -> None:
         instructions=(
             "Play the single ViZDoom episode through these tools. Call "
             "get_current_state first. State results label and return the screen "
-            "image followed by the automap image. Store selected states under "
-            "your own memory IDs if you need to revisit them. Continue until "
-            "done is true."
+            "image followed by the automap image. Before each make_action, "
+            "briefly state your situation interpretation and decision visibly, "
+            "then pass the same text in the situation and decision arguments. "
+            "Use repeat instead of loops that call make_action from one stale "
+            "observation. Store selected states under your own memory IDs if "
+            "you need to revisit them. Continue until done is true."
         ),
     )
 
-    def snapshot_result(snapshot: Snapshot, label: str) -> ToolResult:
+    def snapshot_result(snapshot: Snapshot, label: str) -> Any:
         content: list[Any] = [
             TextContent(
                 type="text",
@@ -465,18 +488,45 @@ def _serve_mcp(episode: Episode) -> None:
         return ToolResult(content=content, structured_content=snapshot.metadata)
 
     @mcp.tool()
-    def get_current_state() -> ToolResult:
+    def get_current_state() -> Any:
         """Get current metadata, then the labeled screen and automap images."""
         return snapshot_result(episode.current(), "Current state:")
 
     @mcp.tool()
-    def make_action(buttons: list[str]) -> ToolResult:
+    def make_action(
+        buttons: list[str],
+        repeat: int = 1,
+        situation: str | None = None,
+        decision: str | None = None,
+    ) -> Any:
         """Press named buttons together and return the resulting state.
 
         Args:
             buttons: Any subset of available_buttons. Use [] to wait.
+            repeat: Repeat this action 1-8 times, stopping early if done.
+            situation: Brief interpretation of the current visual state.
+            decision: Immediate goal, chosen action, and expected result.
         """
-        return snapshot_result(episode.act(buttons), "Resulting state:")
+        if isinstance(repeat, bool) or not 1 <= repeat <= MAX_ACTION_REPEAT:
+            raise ValueError(f"repeat must be an integer from 1 to {MAX_ACTION_REPEAT}")
+        for name, note in (("situation", situation), ("decision", decision)):
+            if note is not None and len(note) > 1000:
+                raise ValueError(f"{name} must be at most 1000 characters")
+
+        snapshot: Snapshot | None = None
+        for repeat_index in range(1, repeat + 1):
+            if episode.done:
+                break
+            snapshot = episode.act(
+                buttons,
+                situation=situation,
+                agent_decision=decision,
+                repeat_index=repeat_index,
+                requested_repeat=repeat,
+            )
+        if snapshot is None:
+            raise RuntimeError("Episode ended before the action could be applied")
+        return snapshot_result(snapshot, "Resulting state:")
 
     @mcp.tool()
     def store_state(memory_id: str) -> dict[str, Any]:
@@ -484,7 +534,7 @@ def _serve_mcp(episode: Episode) -> None:
         return episode.store(memory_id)
 
     @mcp.tool()
-    def get_stored_state(memory_id: str) -> ToolResult:
+    def get_stored_state(memory_id: str) -> Any:
         """Retrieve a stored state by an ID previously passed to store_state."""
         return snapshot_result(
             episode.retrieve(memory_id), f"Stored state {memory_id!r}:"
@@ -495,7 +545,7 @@ def _serve_mcp(episode: Episode) -> None:
 
     signal.signal(signal.SIGUSR1, finalize_from_signal)
     try:
-        mcp.run(transport="streamable-http", host="0.0.0.0", port=8000)
+        mcp.run(transport="http", host="0.0.0.0", port=8000)
     finally:
         if not episode.video_finalized:
             episode.finalize("server_stopped")

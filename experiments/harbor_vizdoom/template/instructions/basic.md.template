@@ -10,9 +10,19 @@ Use the ViZDoom MCP tools to interact with the episode:
 
 - Call `get_current_state` first. It returns the current screen, valid button
   names, and episode metadata.
-- Call `make_action` with a JSON list named `buttons`. You may press multiple
-  buttons together; an empty list waits. Every call advances four frames and
-  returns the resulting state and screen.
+- Before every `make_action`, write a visible note of at most 60 words with
+  `Situation:` describing relevant visual facts and `Decision:` stating the
+  immediate goal, selected buttons, repetition count, and expected result.
+- Pass the same note to `make_action` as this JSON object:
+  `{"buttons": [...], "repeat": 1, "situation": "...", "decision": "..."}`.
+  Although `situation` and `decision` are optional in the tool schema for
+  compatibility, you must always supply both. You may press multiple buttons
+  together; an empty list waits. `repeat` may be 1-8, and each repetition
+  advances four frames.
+- Make only one `make_action` call per tool invocation. Use `repeat` for a short
+  coherent action sequence, then inspect the returned state and screen before
+  deciding again. Do not run loops that call `make_action` repeatedly from one
+  observation.
 
 The available buttons are `MOVE_LEFT`, `MOVE_RIGHT`, and `ATTACK`. Continue
 until a tool result reports `done: true`. Success means the monster was killed;

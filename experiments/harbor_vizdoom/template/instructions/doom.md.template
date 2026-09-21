@@ -9,9 +9,20 @@ Use the ViZDoom MCP tools to interact with the episode:
 
 - Call `get_current_state` first. It returns episode metadata followed by two
   labeled images: the first-person screen and the automap.
-- Call `make_action` with a JSON list named `buttons`. You may press multiple
-  buttons together; an empty list waits. Every call advances four frames and
-  returns the resulting metadata, screen, and automap.
+- Before every `make_action`, write a visible note of at most 60 words with
+  `Situation:` describing relevant visual facts from the screen and automap,
+  and `Decision:` stating the immediate goal, selected buttons, repetition
+  count, and expected result.
+- Pass the same note to `make_action` as this JSON object:
+  `{"buttons": [...], "repeat": 1, "situation": "...", "decision": "..."}`.
+  Although `situation` and `decision` are optional in the tool schema for
+  compatibility, you must always supply both. You may press multiple buttons
+  together; an empty list waits. `repeat` may be 1-8, and each repetition
+  advances four frames.
+- Make only one `make_action` call per tool invocation. Use `repeat` for a short
+  coherent action sequence, then inspect the returned metadata, screen, and
+  automap before deciding again. Do not run loops that call `make_action`
+  repeatedly from one observation.
 - There is no automatic history lookup. Before leaving a state you may call
   `store_state` with your own `memory_id`. Retrieve that exact stored state
   later with `get_stored_state`. Reusing an ID replaces its earlier state.

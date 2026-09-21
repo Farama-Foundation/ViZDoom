@@ -23,6 +23,8 @@ first-person screen only.
 harbor_vizdoom/
 ├── environments.json                 # Task/map definitions
 ├── generate_tasks.py                 # Task generator
+├── harbor_no_redaction/
+│   └── sitecustomize.py              # Scoped Harbor redaction monkeypatch
 ├── random_agent_harness.py           # Local random-policy smoke tests
 ├── run_experiment.py                 # Generate temporarily and run Harbor
 └── template/
@@ -60,8 +62,11 @@ instruction template.
 The shared server exposes four tools:
 
 - `get_current_state()` returns metadata and the current image buffers.
-- `make_action(buttons)` presses zero or more named buttons and returns the new
-  state.
+- `make_action(buttons, repeat, situation, decision)` presses zero or more
+  named buttons for 1-8 repetitions and returns the new state. The two short
+  narrative fields are optional in the MCP schema for compatibility, but task
+  instructions require agents to provide them; they are persisted in both the
+  action history and event log.
 - `store_state(memory_id)` stores the current visual state under an
   agent-selected ID.
 - `get_stored_state(memory_id)` returns that explicitly stored state.
@@ -126,6 +131,20 @@ python experiments/harbor_vizdoom/run_experiment.py \
 The output directory includes the selected model, reasoning effort,
 authentication mode, and actual seed. Built-in web search is disabled for
 Codex and web search/fetch are disabled for Claude Code.
+
+The launcher also applies the scoped `harbor_no_redaction/sitecustomize.py`
+monkeypatch to the Harbor subprocess. It replaces Harbor's
+`Trial._scrub_jobs_dir()` with a no-op because Harbor 0.22.0 otherwise treats
+short authentication-control values such as `1` as secrets and corrupts every
+matching character in textual results. This leaves the installed Harbor
+package unchanged. It also means job logs are not scrubbed for actual secrets;
+inspect them before sharing or uploading a run.
+
+Before starting Harbor, the launcher checks that `python:3.12-slim` is present
+in Docker's local cache. If it is missing, the launcher retries the pull three
+times so a transient Docker Hub timeout fails early with a useful message
+instead of surfacing later as a sidecar collection error. Configure this with
+`--docker-pull-retries` or bypass it with `--skip-docker-preflight`.
 
 API-key authentication is the default. Export the applicable key before the
 run:
@@ -194,6 +213,16 @@ under the default gitignored directory first:
 
 ```bash
 python experiments/harbor_vizdoom/generate_tasks.py
+VIZDOOM_SEED=124343 harbor run \
+  -c experiments/harbor_vizdoom/generated_tasks/run.yaml
+```
+
+That direct `harbor` command does not receive the launcher's monkeypatch. To
+disable result redaction for a direct run too, prepend the hook directory to
+`PYTHONPATH`:
+
+```bash
+PYTHONPATH="experiments/harbor_vizdoom/harbor_no_redaction${PYTHONPATH:+:$PYTHONPATH}" \
 VIZDOOM_SEED=124343 harbor run \
   -c experiments/harbor_vizdoom/generated_tasks/run.yaml
 ```
