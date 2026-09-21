@@ -395,25 +395,25 @@ set( PLAT_WIN32_SOURCES
 set( PLAT_POSIX_SOURCES
 	posix/i_cd.cpp
 	posix/i_steam.cpp
-	posix/sdl/crashcatcher.c
-	posix/sdl/i_system.cpp
-	posix/sdl/i_timer.cpp )
+	posix/crashcatcher.c
+	posix/i_system.cpp
+	posix/i_timer.cpp )
 set( PLAT_SDL_SOURCES
-	posix/i_movie.cpp
-	posix/sdl/hardware.cpp
-	posix/sdl/i_gui.cpp
-	posix/sdl/i_input.cpp
-	posix/sdl/i_joystick.cpp
-	posix/sdl/i_main.cpp
-	posix/sdl/sdlvideo.cpp
-	posix/sdl/st_start.cpp )
+	sdl/i_movie.cpp
+	sdl/hardware.cpp
+	sdl/i_gui.cpp
+	sdl/i_input.cpp
+	sdl/i_joystick.cpp
+	sdl/i_main.cpp
+	sdl/sdlvideo.cpp
+	sdl/st_start.cpp )
 set( PLAT_OSX_SOURCES
 	posix/osx/iwadpicker_cocoa.mm
 	posix/osx/zdoom.icns )
 
 if( WIN32 )
-	# //VIZDOOM_CODE
-	set( SYSTEM_SOURCES_DIR win32 posix posix/sdl )
+	# //VIZDOOM_CODE: Native system headers take precedence over shared SDL headers.
+	set( SYSTEM_SOURCES_DIR win32 sdl )
 	set( SYSTEM_SOURCES ${PLAT_WIN32_SOURCES} ${PLAT_SDL_SOURCES} )
 	set( OTHER_SYSTEM_SOURCES ${PLAT_POSIX_SOURCES} ${PLAT_OSX_SOURCES} ${PLAT_COCOA_SOURCES} )
 
@@ -427,9 +427,9 @@ if( WIN32 )
 		set( SYSTEM_SOURCES ${SYSTEM_SOURCES} win32/zdoom.rc )
 	endif( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 elseif( APPLE )
-	set( SYSTEM_SOURCES_DIR posix posix/sdl )
+	set( SYSTEM_SOURCES_DIR posix sdl ) # //VIZDOOM_CODE
 	set( SYSTEM_SOURCES ${PLAT_SDL_SOURCES} )
-	set( PLAT_OSX_SOURCES ${PLAT_OSX_SOURCES} posix/sdl/i_system.mm )
+	set( PLAT_OSX_SOURCES ${PLAT_OSX_SOURCES} posix/osx/i_system.mm )
 	set( OTHER_SYSTEM_SOURCES ${PLAT_WIN32_SOURCES} ${PLAT_COCOA_SOURCES} )
 
 	set( SYSTEM_SOURCES ${SYSTEM_SOURCES} ${PLAT_POSIX_SOURCES} ${PLAT_OSX_SOURCES} "${FMOD_LIBRARY}" )
@@ -437,7 +437,7 @@ elseif( APPLE )
 	set_source_files_properties( posix/osx/zdoom.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
 	set_source_files_properties( "${FMOD_LIBRARY}" PROPERTIES MACOSX_PACKAGE_LOCATION Frameworks )
 else( WIN32 )
-	set( SYSTEM_SOURCES_DIR posix posix/sdl )
+	set( SYSTEM_SOURCES_DIR posix sdl ) # //VIZDOOM_CODE
 	set( SYSTEM_SOURCES ${PLAT_POSIX_SOURCES} ${PLAT_SDL_SOURCES} )
 	set( OTHER_SYSTEM_SOURCES ${PLAT_WIN32_SOURCES} ${PLAT_OSX_SOURCES} ${PLAT_COCOA_SOURCES} )
 endif( WIN32 )
@@ -468,12 +468,13 @@ endif( DYN_FLUIDSYNTH )
 
 # Project files should be aware of the header files. We can GLOB these since
 # there's generally a new cpp for every header so this file will get changed
+# //VIZDOOM_CODE: Shared SDL headers are included below for every platform.
 if( WIN32 )
 	set( EXTRA_HEADER_DIRS win32/*.h )
 elseif( APPLE )
-	set( EXTRA_HEADER_DIRS posix/*.h posix/sdl/*.h )
+	set( EXTRA_HEADER_DIRS posix/*.h )
 else( WIN32 )
-	set( EXTRA_HEADER_DIRS posix/*.h posix/sdl/*.h )
+	set( EXTRA_HEADER_DIRS posix/*.h )
 endif( WIN32 )
 file( GLOB HEADER_FILES
 	${EXTRA_HEADER_DIRS}
@@ -489,7 +490,7 @@ file( GLOB HEADER_FILES
 	oplsynth/*.h
 	oplsynth/dosbox/*.h
 	posix/*.h
-	posix/sdl/*.h
+	sdl/*.h # //VIZDOOM_CODE
 	r_data/*.h
 	resourcefiles/*.h
 	sfmt/*.h
@@ -1045,7 +1046,8 @@ source_group("Render Interface" FILES r_defs.h r_renderer.h r_sky.cpp r_sky.h r_
 source_group("Resource Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/resourcefiles/.+")
 source_group("POSIX Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/posix/.+")
 source_group("OS X Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/posix/osx/.+")
-source_group("SDL Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/posix/sdl/.+")
+# //VIZDOOM_CODE
+source_group("SDL Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/sdl/.+")
 source_group("SFMT" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/sfmt/.+")
 source_group("Shared Game" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/g_shared/.+")
 source_group("Versioning" FILES version.h win32/zdoom.rc)

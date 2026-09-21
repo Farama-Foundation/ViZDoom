@@ -1002,7 +1002,7 @@ int I_PickIWad(WadStuff *wads, int numwads, bool showwin, int defaultiwad)
 	return defaultiwad;
 }
 
-//VIZDOOM_CODE: I_SetCursor is provided by posix/sdl/i_gui.cpp.
+//VIZDOOM_CODE: I_SetCursor is provided by sdl/i_gui.cpp.
 
 //==========================================================================
 //
