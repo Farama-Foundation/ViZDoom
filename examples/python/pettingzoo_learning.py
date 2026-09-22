@@ -33,7 +33,7 @@ from collections import deque
 from dataclasses import fields
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import numpy as np
 import torch
@@ -168,7 +168,7 @@ class WandbLoggingWrapper(Logger):
         batch: TensorDictBase,
         global_done: torch.Tensor,
         any_episode_ended: bool,
-        to_log: Dict[str, torch.Tensor],
+        to_log: dict[str, torch.Tensor],
         prefix: str = "collection",
         log_individual_agents: bool = True,
     ) -> torch.Tensor:
@@ -185,7 +185,7 @@ class WandbLoggingWrapper(Logger):
     def _log_global_episode_reward(
         self,
         episode_rewards: list[torch.Tensor],
-        to_log: Dict[str, torch.Tensor],
+        to_log: dict[str, torch.Tensor],
         prefix: str,
     ) -> torch.Tensor:
         if prefix == "collection" and len(episode_rewards) == 1:
@@ -381,7 +381,7 @@ class WandbLoggingWrapper(Logger):
                     logger.log_video("eval_video", even_video, step=step)
         return result
 
-    def log(self, dict_to_log: Dict, step: int = None):
+    def log(self, dict_to_log: dict, step: int = None):
         payload = self._add_fps(dict_to_log)
         for logger in self.loggers:
             if isinstance(logger, WandbLogger):
@@ -666,7 +666,7 @@ class AHWCToTensor(ObservationTransform):
 
 
 class VizdoomTask(TaskClass):
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: dict[str, Any]):
         super().__init__(name=config["scenario"], config=config)
         self._next_env_instance_index = 0
         scenario_path = (
@@ -838,7 +838,7 @@ class VizdoomTask(TaskClass):
 
 
 # ----------------- Script entry -----------------
-ALGOS: Dict[str, Any] = {
+ALGOS: dict[str, Any] = {
     "mappo": MappoConfig,
     "ippo": IppoConfig,
     "qmix": QmixConfig,

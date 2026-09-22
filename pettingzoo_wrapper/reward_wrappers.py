@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import numpy as np
 from pettingzoo import ParallelEnv
@@ -94,7 +94,7 @@ class DeathmatchRewardWrapper(ParallelEnv):
         self,
         env: ParallelEnv,
         *,
-        delta_rewards: Optional[Dict[str, float]] = None,
+        delta_rewards: Optional[dict[str, float]] = None,
         ammo_cost: float = _DEATHMATCH_AMMO_COST,
     ):
         self.env = env
@@ -105,7 +105,7 @@ class DeathmatchRewardWrapper(ParallelEnv):
             _DEATHMATCH_DELTA_REWARDS if delta_rewards is None else delta_rewards
         )
         self.ammo_cost = float(ammo_cost)
-        self.prev_vars: Dict[str, Dict[str, float]] = {}
+        self.prev_vars: dict[str, dict[str, float]] = {}
         self._counters_checked = False
 
     @property
@@ -136,7 +136,7 @@ class DeathmatchRewardWrapper(ParallelEnv):
         return getattr(self.env, "num_agents", len(self.possible_agents))
 
     def reset(
-        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
+        self, seed: Optional[int] = None, options: Optional[dict[str, Any]] = None
     ):
         obs, infos = self.env.reset(seed=seed, options=options)
         self.agents = self.env.agents[:]
@@ -152,7 +152,7 @@ class DeathmatchRewardWrapper(ParallelEnv):
         }
         return obs, infos
 
-    def check_ctr(self, infos: Dict[str, Any]) -> None:
+    def check_ctr(self, infos: dict[str, Any]) -> None:
         if self._counters_checked:
             return
         for agent in self.agents:
@@ -171,7 +171,7 @@ class DeathmatchRewardWrapper(ParallelEnv):
                 )
         self._counters_checked = True
 
-    def step(self, actions: Dict[str, Any]):
+    def step(self, actions: dict[str, Any]):
         obs, rewards, terminations, truncations, infos = self.env.step(actions)
 
         for agent in self.agents:
@@ -262,7 +262,7 @@ class HideAndSeekRewardWrapper(ParallelEnv):
         self.metadata = getattr(env, "metadata", {})
         self.possible_agents = env.possible_agents
         self.agents = env.agents
-        self._previous_deaths: Dict[str, float] = {}
+        self._previous_deaths: dict[str, float] = {}
         self._previous_shooter_ammo: Optional[float] = None
         self._previous_damage: Optional[float] = None
         self._previous_yaw_potential: Optional[float] = None
@@ -289,7 +289,7 @@ class HideAndSeekRewardWrapper(ParallelEnv):
     def num_agents(self) -> int:
         return getattr(self.env, "num_agents", len(self.possible_agents))
 
-    def _validate_and_annotate(self, infos: Dict[str, Any]) -> None:
+    def _validate_and_annotate(self, infos: dict[str, Any]) -> None:
         if set(self.agents) != set(self.roles):
             raise ValueError(
                 "HideAndSeekRewardWrapper requires exactly agent_0 (shooter) "
@@ -307,7 +307,7 @@ class HideAndSeekRewardWrapper(ParallelEnv):
             infos[agent]["hide_and_seek_spawn_retries"] = float(self._spawn_retries)
 
     @staticmethod
-    def _dead_at_reset(infos: Dict[str, Any]) -> bool:
+    def _dead_at_reset(infos: dict[str, Any]) -> bool:
         for info in infos.values():
             if not isinstance(info, dict):
                 continue
@@ -316,7 +316,7 @@ class HideAndSeekRewardWrapper(ParallelEnv):
         return False
 
     @staticmethod
-    def _yaw_potential(info: Dict[str, Any]) -> Optional[float]:
+    def _yaw_potential(info: dict[str, Any]) -> Optional[float]:
         """phi(s) = -|yaw error| / 180 for the shooter, None when not measurable."""
         yaw = info.get(_HS_SHOOTER_YAW_ERROR_MDEG)
         if yaw is None:
@@ -328,7 +328,7 @@ class HideAndSeekRewardWrapper(ParallelEnv):
                 return None
         return -min(max(float(yaw) / 1000.0, 0.0), 180.0) / 180.0
 
-    def _start_round(self, infos: Dict[str, Any]) -> None:
+    def _start_round(self, infos: dict[str, Any]) -> None:
         self._previous_deaths = {
             agent: float(infos[agent]["DEATHCOUNT"]) for agent in self.agents
         }
@@ -344,7 +344,7 @@ class HideAndSeekRewardWrapper(ParallelEnv):
             info["hide_and_seek_spawn_retries"] = float(self._spawn_retries)
 
     def reset(
-        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
+        self, seed: Optional[int] = None, options: Optional[dict[str, Any]] = None
     ):
         obs, infos = self.env.reset(seed=seed, options=options)
         self.agents = self.env.agents[:]
@@ -360,7 +360,7 @@ class HideAndSeekRewardWrapper(ParallelEnv):
         self._start_round(infos)
         return obs, infos
 
-    def _update_rocket_shots(self, infos: Dict[str, Any]) -> None:
+    def _update_rocket_shots(self, infos: dict[str, Any]) -> None:
         fired = infos["agent_0"].get(_HS_ROCKETS_FIRED)
         if fired is not None:
             self._rocket_shots = float(fired)
@@ -374,7 +374,7 @@ class HideAndSeekRewardWrapper(ParallelEnv):
                 )
             self._previous_shooter_ammo = shooter_ammo
 
-    def _shooter_damage_delta(self, infos: Dict[str, Any]) -> float:
+    def _shooter_damage_delta(self, infos: dict[str, Any]) -> float:
         """Damage dealt by the shooter this step"""
         dealt = infos["agent_0"].get("DAMAGECOUNT")
         if dealt is None:
@@ -386,7 +386,7 @@ class HideAndSeekRewardWrapper(ParallelEnv):
         # the counter only grows within a round; a drop means the engine reset it
         return delta if delta > 1e-8 else 0.0
 
-    def _damage_shaping(self, dealt: float) -> Dict[str, float]:
+    def _damage_shaping(self, dealt: float) -> dict[str, float]:
         """Zero sum"""
         if not self.damage_shaping or dealt <= 0.0:
             return {"agent_0": 0.0, "agent_1": 0.0}
@@ -395,7 +395,7 @@ class HideAndSeekRewardWrapper(ParallelEnv):
             "agent_1": -dealt * self.damage_shaping,
         }
 
-    def _yaw_shaping(self, infos: Dict[str, Any], terminal: bool) -> float:
+    def _yaw_shaping(self, infos: dict[str, Any], terminal: bool) -> float:
         """For shooter: scale * (gamma * phi(s') - phi(s))"""
         if not self.yaw_shaping:
             return 0.0
@@ -407,7 +407,7 @@ class HideAndSeekRewardWrapper(ParallelEnv):
         next_potential = 0.0 if current is None else current
         return self.yaw_shaping * (self.gamma * next_potential - previous)
 
-    def step(self, actions: Dict[str, Any]):
+    def step(self, actions: dict[str, Any]):
         obs, _, terminations, truncations, infos = self.env.step(actions)
         self._validate_and_annotate(infos)
 
@@ -490,7 +490,7 @@ class HealthGatheringRewardWrapper(ParallelEnv):
         self.medkit_reward = medkit_reward
         self.health_key = health_key
         self.dead_key = dead_key
-        self.prev_health: Dict[str, Optional[float]] = {}
+        self.prev_health: dict[str, Optional[float]] = {}
         self.possible_agents = env.possible_agents
         self.agents = env.agents
 
@@ -515,14 +515,14 @@ class HealthGatheringRewardWrapper(ParallelEnv):
         return getattr(self.env, "num_agents", len(self.possible_agents))
 
     def reset(
-        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
+        self, seed: Optional[int] = None, options: Optional[dict[str, Any]] = None
     ):
         obs, infos = self.env.reset(seed=seed, options=options)
         self.agents = self.env.agents[:]
         self.prev_health = {a: infos[a][self.health_key] for a in self.agents}
         return obs, infos
 
-    def step(self, actions: Dict[str, Any]):
+    def step(self, actions: dict[str, Any]):
         obs, rewards, terminations, truncations, infos = self.env.step(actions)
 
         for a in self.agents:
@@ -570,8 +570,8 @@ class RemedyRushRewardWrapper(ParallelEnv):
         self.env = env
         self.health_key = health_key
         self.armor_key = armor_key
-        self.prev_health: Dict[str, Optional[float]] = {}
-        self.prev_armor: Dict[str, Optional[float]] = {}
+        self.prev_health: dict[str, Optional[float]] = {}
+        self.prev_armor: dict[str, Optional[float]] = {}
         self.possible_agents = env.possible_agents
         self.agents = env.agents
 
@@ -596,7 +596,7 @@ class RemedyRushRewardWrapper(ParallelEnv):
         return getattr(self.env, "num_agents", len(self.possible_agents))
 
     def reset(
-        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
+        self, seed: Optional[int] = None, options: Optional[dict[str, Any]] = None
     ):
         obs, infos = self.env.reset(seed=seed, options=options)
         self.agents = self.env.agents[:]
@@ -604,7 +604,7 @@ class RemedyRushRewardWrapper(ParallelEnv):
         self.prev_armor = {a: infos[a].get(self.armor_key, 0.0) for a in self.agents}
         return obs, infos
 
-    def step(self, actions: Dict[str, Any]):
+    def step(self, actions: dict[str, Any]):
         obs, rewards, terminations, truncations, infos = self.env.step(actions)
 
         for a in self.agents:
@@ -665,9 +665,9 @@ class PitfallRewardWrapper(ParallelEnv):
         self.dead_key = dead_key
         self.x_start = float(x_start)
 
-        self._prev_x: Dict[str, Optional[float]] = {}
-        self._best_x: Dict[str, float] = {}
-        self._goal_given: Dict[str, bool] = {}
+        self._prev_x: dict[str, Optional[float]] = {}
+        self._best_x: dict[str, float] = {}
+        self._goal_given: dict[str, bool] = {}
 
         self.metadata = getattr(env, "metadata", {})
         self.possible_agents = env.possible_agents
@@ -694,7 +694,7 @@ class PitfallRewardWrapper(ParallelEnv):
         return getattr(self.env, "num_agents", len(self.possible_agents))
 
     def reset(
-        self, seed: Optional[int] = None, options: Optional[Dict[str, Any]] = None
+        self, seed: Optional[int] = None, options: Optional[dict[str, Any]] = None
     ):
         obs, infos = self.env.reset(seed=seed, options=options)
         self.agents = self.env.agents[:]
@@ -706,10 +706,10 @@ class PitfallRewardWrapper(ParallelEnv):
         self._goal_given = {a: False for a in self.agents}
         return obs, infos
 
-    def step(self, actions: Dict[str, Any]):
+    def step(self, actions: dict[str, Any]):
         obs, base_rewards, terminations, truncations, infos = self.env.step(actions)
 
-        shaped: Dict[str, float] = {}
+        shaped: dict[str, float] = {}
         for a in self.agents:
             reset_info = _reset_info(infos[a])
             if reset_info is not None:
