@@ -57,6 +57,7 @@ def add_subpackage(dir_path):
 
 add_subpackage("scenarios")
 add_subpackage("gymnasium_wrapper")
+add_subpackage("pettingzoo_wrapper")
 
 # Platform specific package data
 if platform.startswith("win"):
