@@ -66,7 +66,7 @@ def _max_parallel_init(num_agents: int) -> int:
 
 
 # Info keys that _attach_pending_reset_infos adds for video and reward wrappers
-INTERNAL_INFO_KEYS = ("_hidden_reset", "reset_info")
+INTERNAL_INFO_KEYS = ("_hidden_reset", "reset_info", "_notifications")
 
 
 @dataclass(frozen=True)
@@ -111,6 +111,7 @@ def _agent_worker_thread(
     available_game_vars = []
     frames_advanced = 0
     audio = uses_audio_observations(config_path)
+    notifications = False
 
     def _write_frame(state) -> None:
         observation = read_observation(state, resolution, audio=audio)
@@ -161,6 +162,7 @@ def _agent_worker_thread(
                         game.add_available_game_variable(vzd.GameVariable.ANGLE)
                     if not is_host:
                         time.sleep(0.5 + random.uniform(0.5, 1.0))
+                    notifications = game.is_notifications_buffer_enabled()
                     game.init()
                     available_game_vars = game.get_available_game_variables()
                     frames_advanced = 0
@@ -183,6 +185,10 @@ def _agent_worker_thread(
                         "step": 0,
                     }
                     info.update(get_live_game_vars(game, available_game_vars))
+                    if notifications:
+                        info["_notifications"] = [
+                            state.notifications_buffer if state is not None else ""
+                        ]
                     if audio_diagnostics:
                         info["audio_buffer"] = np.array(state.audio_buffer, copy=True)
                     frames_advanced = 0
@@ -211,9 +217,19 @@ def _agent_worker_thread(
                 tics = max(1, int(task.tics))
                 was_dead_before = game.is_player_dead()
                 game.set_action(action)
+                snapshots = []
                 for tic in range(tics):
                     update_state = tic == tics - 1
-                    game.advance_action(1, update_state)
+                    game.advance_action(1, update_state or notifications)
+                    if notifications:
+                        text_state = game.get_state()
+                        snapshot = (
+                            text_state.notifications_buffer
+                            if text_state is not None
+                            else ""
+                        )
+                        if not snapshots or snapshot != snapshots[-1]:
+                            snapshots.append(snapshot)
                     if not update_state:
                         # Keep synchronous multiplayer peers on the same tic
                         step_barrier.wait(timeout=_STEP_TIMEOUT)
@@ -233,6 +249,8 @@ def _agent_worker_thread(
                 }
                 # Read vars from the engine as `state` is None on terminal step
                 info.update(get_live_game_vars(game, available_game_vars))
+                if notifications:
+                    info["_notifications"] = snapshots
                 if audio_diagnostics:
                     info["audio_buffer"] = (
                         None
