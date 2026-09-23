@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import time
+from collections.abc import Sequence
 from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
-from typing import Any, Callable, Sequence
+from typing import Any, Callable
 
 import numpy as np
 import torch
@@ -707,9 +708,10 @@ class RolloutWorker:
             },
             batch_size=[*batch_size, self.n_agents],
         )
-        if storage.get("audio") is not None:
-            group_td.set("audio", storage.get("audio"))
-            next_group_td.set("audio", storage.get("next_audio"))
+        for key in ("audio", "notifications", "features"):
+            if storage.get(key) is not None:
+                group_td.set(key, storage.get(key))
+                next_group_td.set(key, storage.get(f"next_{key}"))
         next_td = TensorDict(
             {
                 self.group_name: next_group_td,
