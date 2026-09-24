@@ -42,11 +42,11 @@ def metric_rollout(env, policy, max_steps, groups, callback=None):
             ).any()
             for key in env.done_keys
         )
-        del transition
         if callback is not None:
-            callback(env, td)
+            callback(env, transition["next"])
             if done:
                 callback = None
+        del transition
         if index == max_steps - 1 or (not env.batch_size and done):
             break
         if env.batch_size:
