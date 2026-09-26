@@ -5,6 +5,176 @@ from pettingzoo import ParallelEnv
 from pettingzoo.utils.wrappers import BaseParallelWrapper
 
 
+class CommunicationRewardWrapper(BaseParallelWrapper):
+    """Shared team rewards
+    USER40 starts at 1 and ends at n + 1 for n completed stages.
+    USER41 signals solved and USER42 counts wrong presses.
+    communication_outcome_code is:
+    + 0 while running (and at reset)
+    + 1 for success
+    + 2 for timeout
+    + 3 for recovery/counter rollback/death/unexpected end
+    + 4 for a wrong choice
+    """
+
+    def __init__(
+        self,
+        env,
+        *,
+        stage_reward=1.0,
+        success_reward=1.0,
+        wrong_press_penalty=10.0,
+        timeout_penalty=20.0,
+        step_cost=0.01,
+        clue_reward=0.0,
+    ):
+        super().__init__(env)
+        if len(env.possible_agents) != 2 or len(set(env.possible_agents)) != 2:
+            raise ValueError("Communication requires exactly two agents")
+        for name, value in (
+            ("stage_reward", stage_reward),
+            ("success_reward", success_reward),
+            ("wrong_press_penalty", wrong_press_penalty),
+            ("timeout_penalty", timeout_penalty),
+            ("step_cost", step_cost),
+            ("clue_reward", clue_reward),
+        ):
+            try:
+                value = float(value)
+            except (TypeError, ValueError, OverflowError) as exc:
+                raise ValueError(f"{name} must be finite and nonnegative") from exc
+            if not np.isfinite(value) or value < 0:
+                raise ValueError(f"{name} must be finite and nonnegative")
+            setattr(self, name, value)
+        self._counter_keys = ("USER40", "USER41", "USER42")
+        self._high_water = {}
+        self.agents = env.agents[:]
+
+    def _team_counters(self, infos):
+        counters = dict.fromkeys(self._counter_keys, 0.0)
+        for agent in self.possible_agents:
+            info = infos.get(agent)
+            if not isinstance(info, dict):
+                raise ValueError(f"Communication requires counter infos for {agent}")
+            for key in self._counter_keys:
+                try:
+                    value = float(info[key])
+                except (KeyError, TypeError, ValueError, OverflowError) as exc:
+                    raise ValueError(
+                        f"Communication requires finite nonnegative {key} for {agent}"
+                    ) from exc
+                if not np.isfinite(value) or value < 0:
+                    raise ValueError(
+                        f"Communication requires finite nonnegative {key} for {agent}"
+                    )
+                counters[key] = max(counters[key], value)
+        return counters
+
+    def _annotate(self, infos, outcome=0):
+        for agent in self.possible_agents:
+            infos[agent].update(
+                communication_success=float(self._high_water["USER41"] > 0),
+                communication_stages_completed=max(
+                    0.0, self._high_water["USER40"] - 1.0
+                ),
+                communication_wrong_presses=self._high_water["USER42"],
+                communication_outcome_code=float(outcome),
+                communication_first_choice_made=float(self._first_choice_made),
+                communication_first_choice_correct=float(self._first_choice_correct),
+                communication_first_choice_ambiguous=float(
+                    self._first_choice_ambiguous
+                ),
+            )
+
+    def reset(self, seed=None, options=None):
+        self._high_water = {}
+        obs, infos = self.env.reset(seed=seed, options=options)
+        self.agents = self.env.agents[:]
+        self._high_water = self._team_counters(infos)
+        self._first_choice_made = (
+            self._high_water["USER40"] > 1 or self._high_water["USER42"] > 0
+        )
+        self._first_choice_correct = -1
+        self._first_choice_ambiguous = self._first_choice_made
+        self._clue_rewarded = any(
+            info.get("communication_clue_seen", 0) > 0 for info in infos.values()
+        )
+        self._annotate(infos)
+        return obs, infos
+
+    def step(self, actions):
+        if not self.agents:
+            return {}, {}, {}, {}, {}
+        if not self._high_water:
+            raise RuntimeError("Communication requires reset before step")
+        obs, _, terminations, truncations, infos = self.env.step(actions)
+        counters = self._team_counters(infos)
+        recovered = any(
+            info.get("_hidden_reset") or _reset_info(info) is not None
+            for info in infos.values()
+        )
+        dead = any(
+            info.get("player_dead") or info.get("just_died") for info in infos.values()
+        )
+        dropped = any(
+            counters[key] < self._high_water[key] for key in self._counter_keys
+        )
+        success = counters["USER41"] > 0
+        wrong = counters["USER42"] > self._high_water["USER42"]
+        timed_out = any(truncations.values())
+        unexpected_end = any(terminations.values()) or set(self.env.agents) != set(
+            self.possible_agents
+        )
+        outcome = 0
+        if recovered or dead or dropped:
+            outcome = 3
+        elif success:
+            outcome = 1
+        elif wrong:
+            outcome = 4
+        elif timed_out:
+            outcome = 2
+        elif unexpected_end:
+            outcome = 3
+
+        team_reward = -self.step_cost
+        if outcome != 3:
+            if not self._clue_rewarded and any(
+                info.get("communication_clue_seen", 0) > 0 for info in infos.values()
+            ):
+                team_reward += self.clue_reward
+                self._clue_rewarded = True
+            if not self._first_choice_made:
+                advanced = counters["USER40"] > self._high_water["USER40"]
+                if advanced or wrong:
+                    self._first_choice_made = True
+                    self._first_choice_ambiguous = advanced and wrong
+                    self._first_choice_correct = (
+                        -1 if self._first_choice_ambiguous else int(advanced)
+                    )
+            team_reward += self.stage_reward * max(
+                0.0, counters["USER40"] - self._high_water["USER40"]
+            )
+            team_reward -= self.wrong_press_penalty * max(
+                0.0, counters["USER42"] - self._high_water["USER42"]
+            )
+            if success and self._high_water["USER41"] <= 0:
+                team_reward += self.success_reward
+            if outcome == 2:
+                team_reward -= self.timeout_penalty
+            self._high_water = {
+                key: max(self._high_water[key], counters[key])
+                for key in self._counter_keys
+            }
+        self._annotate(infos, outcome)
+        rewards = dict.fromkeys(self.possible_agents, team_reward)
+        terminations = dict.fromkeys(self.possible_agents, outcome in (1, 4))
+        truncations = dict.fromkeys(self.possible_agents, outcome in (2, 3))
+        if outcome:
+            self.agents = []
+        return obs, rewards, terminations, truncations, infos
+
+
 class SimpleTagRewardWrapper(BaseParallelWrapper):
     def __init__(self, env):
         super().__init__(env)
