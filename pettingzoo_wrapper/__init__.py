@@ -1,12 +1,15 @@
 # public factory
 import os
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Optional, Sequence
+from typing import Optional
 
 import vizdoom as vzd
 from vizdoom.pettingzoo_wrapper.base_pettingzoo_env import VizdoomParallelEnv
+from vizdoom.pettingzoo_wrapper.communication import CommunicationWrapper
 from vizdoom.pettingzoo_wrapper.info_wrappers import InternalInfoFilter
 from vizdoom.pettingzoo_wrapper.reward_wrappers import (
+    CommunicationRewardWrapper,
     DeathmatchRewardWrapper,
     HealthGatheringRewardWrapper,
     HideAndSeekRewardWrapper,
@@ -22,7 +25,13 @@ from vizdoom.pettingzoo_wrapper.reward_wrappers import (
 # where the scenario .cfg files live
 _SCENARIO_DIR = os.path.join(Path(__file__).parent.parent, "scenarios")
 
+# Only one agent moved and chat enabled
+COMMUNICATION_SCENARIOS = ("simple_communication", "simple_no_communication")
+# Both agents move and chat channel disabled
+NO_CHAT_SCENARIOS = ("simple_no_communication",)
+
 # scenario-specific wrappers
+# COMMUNICATION_SCENARIOS are built separately in make(), so they are configured separately below
 _WRAPPERS = {
     "simple_tag": SimpleTagRewardWrapper,
     "simple_tag_audio": SimpleTagRewardWrapper,
@@ -62,9 +71,27 @@ def make(
     verbose: bool = False,
     daemon: bool = True,
     available_buttons: Optional[Sequence[vzd.Button]] = None,
+    communication: bool = True,
+    reward_kwargs: Optional[dict] = None,
+    chat_tokens: Optional[Sequence[str]] = None,
+    chat_cooldown_tics: int = 35,
+    delivery: str = "natural",
+    delivery_seed: Optional[int] = None,
+    observer_info: bool = False,
 ):
     scenario = scenario.lower() if scenario is not None else None
     cfg = config_file if config_file is not None else f"{_SCENARIO_DIR}/{scenario}.cfg"
+
+    if scenario is None and config_file is not None:
+        if Path(config_file).stem.lower() in COMMUNICATION_SCENARIOS:
+            scenario = Path(config_file).stem.lower()
+    if scenario in COMMUNICATION_SCENARIOS:
+        if num_agents != 2:
+            raise ValueError(f"{scenario} requires exactly two agents")
+        if async_mode:
+            raise ValueError(f"{scenario} requires synchronous play")
+    if scenario in NO_CHAT_SCENARIOS:
+        communication = False
 
     env = VizdoomParallelEnv(
         config_file=cfg,
@@ -94,7 +121,22 @@ def make(
     #         fps=video_fps,
     #     )
 
-    if scenario in _WRAPPERS:
+    if scenario in COMMUNICATION_SCENARIOS:
+        try:
+            env = CommunicationWrapper(
+                env,
+                communication=communication,
+                chat_tokens=chat_tokens,
+                chat_cooldown_tics=chat_cooldown_tics,
+                delivery=delivery,
+                delivery_seed=delivery_seed,
+                observer_info=observer_info,
+            )
+            env = CommunicationRewardWrapper(env, **(reward_kwargs or {}))
+        except Exception:
+            env.close()
+            raise
+    elif scenario in _WRAPPERS:
         env = _WRAPPERS[scenario](env)
 
     # filter info key that is not in its spec
