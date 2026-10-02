@@ -58,7 +58,7 @@ from torchrl.envs.transforms.utils import _set_missing_tolerance
 from torchrl.record.loggers.wandb import WandbLogger
 
 import vizdoom as vzd
-from pettingzoo_wrapper import make
+from pettingzoo_wrapper import COMMUNICATION_SCENARIOS, NO_CHAT_SCENARIOS, make
 from pettingzoo_wrapper.audio_visual_models import AudioVisualCnnConfig
 from pettingzoo_wrapper.base_env_common import TRAINING_RESPAWN_DELAY
 from pettingzoo_wrapper.bot_eval_callback import (
@@ -67,9 +67,16 @@ from pettingzoo_wrapper.bot_eval_callback import (
     run_post_training_bot_eval,
 )
 from pettingzoo_wrapper.bot_eval_types import BotEvalConfig
+from pettingzoo_wrapper.communication import DEFAULT_ALPHABET_SIZE, make_chat_tokens
+from pettingzoo_wrapper.communication_diagnostics import render_communication_frame
+from pettingzoo_wrapper.factorized_policy import (
+    FactorizedIppoConfig,
+    FactorizedMappoConfig,
+)
 from pettingzoo_wrapper.hide_and_seek_metrics import hide_and_seek_success_metrics
 from pettingzoo_wrapper.rollout_worker import RolloutWorker
 from pettingzoo_wrapper.streaming_evaluation import streaming_evaluation
+from pettingzoo_wrapper.text_visual_models import TextVisualCnnConfig
 from pettingzoo_wrapper.utils import discover_buttons
 
 
@@ -90,6 +97,7 @@ class WandbLoggingWrapper(Logger):
     ):
         super().__init__(*args, **kwargs)
         self._skip_frames = max(1, int(skip_frames))
+        self._ticrate = vzd.DEFAULT_TICRATE
         self._env_steps = 0
         self._fps_samples = deque(maxlen=12)
         self._has_wandb_logger = any(
@@ -145,6 +153,13 @@ class WandbLoggingWrapper(Logger):
             action = batch.get((group, "action"), None)
             if action is not None:
                 if not action.is_floating_point():
+                    if task.config["scenario"] in COMMUNICATION_SCENARIOS:
+                        # Factorized action [motor, message]: log the chat attempt rate.
+                        message = action[..., 1].long()
+                        policy_metrics[f"collection/{group}/chat_attempt_rate"] = (
+                            (message != 0).float().mean().item()
+                        )
+                        continue
                     for action_index, button in enumerate(task.action_buttons):
                         pressed = ((action.long() >> action_index) & 1).float()
                         policy_metrics[
@@ -196,10 +211,97 @@ class WandbLoggingWrapper(Logger):
             prefix=prefix,
         )
 
+    def _communication_metrics(self, rollouts):
+        metrics = {}
+        for group in self.group_map:
+            for name in (
+                "communication_success",
+                "communication_stages_completed",
+                "communication_wrong_presses",
+                "communication_messages_attempted",
+                "communication_messages_sent",
+                "communication_chat_lines_received",
+                "communication_round_seconds",
+                "communication_outcome_code",
+            ):
+                values = [
+                    rollout.get(("next", group, "info", name), None)
+                    for rollout in rollouts
+                ]
+                if all(value is not None for value in values):
+                    terminal = torch.stack([value[-1].float() for value in values])
+                    if name == "communication_outcome_code":
+                        metrics["eval/communication/invalid_fraction"] = (
+                            (terminal == 3).float().mean()
+                        )
+                    else:
+                        metrics[
+                            f"eval/communication/{name.removeprefix('communication_')}"
+                        ] = terminal.mean()
+            clue_values = [
+                rollout.get(("next", group, "info", "communication_clue_seen"), None)
+                for rollout in rollouts
+            ]
+            if clue_values and all(value is not None for value in clue_values):
+                seen = torch.stack([value[-1].reshape(-1) for value in clue_values])
+                outcomes = torch.stack(
+                    [
+                        rollout.get(
+                            ("next", group, "info", "communication_outcome_code")
+                        )[-1].reshape(-1)[0]
+                        for rollout in rollouts
+                    ]
+                )
+                valid = (outcomes == 1) | (outcomes == 2) | (outcomes == 4)
+                metrics["eval/communication/clue_coverage_denominator"] = valid.sum()
+                if valid.any():
+                    metrics["eval/communication/clue_seen"] = (
+                        seen[valid].amax(-1).mean()
+                    )
+                    metrics["eval/communication/success_without_clue_fraction"] = (
+                        ((outcomes[valid] == 1) & (seen[valid].amax(-1) == 0))
+                        .float()
+                        .mean()
+                    )
+                    for index, agent in enumerate(self.group_map[group]):
+                        metrics[f"eval/communication/{agent}/clue_seen"] = seen[
+                            valid, index
+                        ].mean()
+            choices = [
+                rollout.get(
+                    ("next", group, "info", "communication_first_choice_correct"), None
+                )
+                for rollout in rollouts
+            ]
+            if all(choice is not None for choice in choices):
+                choices = torch.stack([choice[-1].float() for choice in choices])
+                outcomes = torch.stack(
+                    [
+                        rollout.get(
+                            ("next", group, "info", "communication_outcome_code")
+                        )[-1]
+                        for rollout in rollouts
+                    ]
+                )
+                valid = outcomes != 3
+                classified = (choices >= 0) & valid
+                metrics["eval/communication/first_choice_coverage"] = (
+                    classified.sum() / valid.sum().clamp_min(1)
+                )
+                metrics["eval/communication/first_choice_accuracy"] = (
+                    choices[classified] == 1
+                ).sum() / classified.sum().clamp_min(1)
+                metrics["eval/communication/first_choice_correct_fraction"] = (
+                    (choices == 1) & valid
+                ).sum() / valid.sum().clamp_min(1)
+        return metrics
+
     def _evaluation_metrics(self, rollouts):
         metrics = {}
         if not rollouts:
             return metrics
+        if self.task_name in COMMUNICATION_SCENARIOS:
+            metrics.update(self._communication_metrics(rollouts))
         combat_info = {
             "DAMAGECOUNT": "damage",
             "FRAGCOUNT": "frags",
@@ -368,7 +470,7 @@ class WandbLoggingWrapper(Logger):
                     logger.log_video(
                         f"videos/episode_{step + 1:06d}",
                         video,
-                        fps=20,
+                        fps=self._ticrate / self._skip_frames,
                         commit=False,
                     )
                 else:
@@ -611,9 +713,11 @@ class ByteObsCnnConfig(CnnConfig):
 
 
 def build_model_config(scenario):
-    config_class = (
-        AudioVisualCnnConfig if scenario == "simple_tag_audio" else ByteObsCnnConfig
-    )
+    config_class = {
+        "simple_tag_audio": AudioVisualCnnConfig,
+        "simple_communication": TextVisualCnnConfig,
+        "simple_no_communication": TextVisualCnnConfig,
+    }.get(scenario, ByteObsCnnConfig)
     return config_class(
         cnn_num_cells=[32, 64, 64],
         cnn_kernel_sizes=[8, 4, 3],
@@ -666,6 +770,16 @@ class AHWCToTensor(ObservationTransform):
 
 
 class VizdoomTask(TaskClass):
+    @staticmethod
+    def render_callback(experiment, env, data):
+        frame = TaskClass.render_callback(experiment, env, data)
+        if (
+            experiment.task.config["scenario"] in COMMUNICATION_SCENARIOS
+            and frame is not None
+        ):
+            return render_communication_frame(frame, data, experiment.group_map)
+        return frame
+
     def __init__(self, config: dict[str, Any]):
         super().__init__(name=config["scenario"], config=config)
         self._next_env_instance_index = 0
@@ -705,8 +819,22 @@ class VizdoomTask(TaskClass):
     ):
         cfg = self.config
         base_port = self._env_instance_base_port(env_instance_index)
+        # Optional evaluation overrides (held-out cfg/wad under the same scenario identity, chat timing, delivery interventions)
+        # Training omits them
+        eval_overrides = {
+            key: cfg[key]
+            for key in (
+                "chat_cooldown_tics",
+                "delivery",
+                "delivery_seed",
+                "observer_info",
+            )
+            if cfg.get(key) is not None
+        }
         return make(
             scenario=cfg["scenario"],
+            config_file=cfg.get("config_file"),
+            **eval_overrides,
             num_agents=cfg["num_agents"],
             resolution=cfg["resolution"],
             timeout=cfg.get("timeout"),
@@ -725,6 +853,9 @@ class VizdoomTask(TaskClass):
             verbose=cfg.get("verbose", False),
             daemon=cfg["daemon"],
             available_buttons=self.action_buttons,
+            communication=cfg.get("communication", True),
+            reward_kwargs=cfg.get("reward_kwargs"),
+            chat_tokens=cfg.get("chat_tokens"),
         )
 
     def _build_training_env(self, seed: int, env_instance_index: int):
@@ -738,11 +869,13 @@ class VizdoomTask(TaskClass):
         )
         group_name = next(iter(env.group_map.keys()))
         selected_keys = [(group_name, "observation"), (group_name, "info")]
-        has_audio = (group_name, "observation", "audio") in env.observation_spec.keys(
-            True, True
-        )
+        modalities = [
+            key
+            for key in ("audio", "notifications", "features")
+            if (group_name, "observation", key) in env.observation_spec.keys(True, True)
+        ]
         transforms = []
-        if has_audio:
+        if modalities:
             # PettingZooWrapper nests the entire Gym Dict under observation.
             transforms.extend(
                 [
@@ -752,15 +885,15 @@ class VizdoomTask(TaskClass):
                     RenameTransform(
                         [
                             (group_name, "modalities", key)
-                            for key in ("observation", "audio")
+                            for key in ("observation", *modalities)
                         ],
-                        [(group_name, key) for key in ("observation", "audio")],
+                        [(group_name, key) for key in ("observation", *modalities)],
                     ),
                 ]
             )
-            selected_keys.append((group_name, "audio"))
+            selected_keys.extend((group_name, key) for key in modalities)
         transforms.append(SelectTransform(*selected_keys))
-        if not has_audio:
+        if not modalities:
             transforms.append(AHWCToTensor(key=(group_name, "observation")))
         transforms.append(RemoveEmptySpecs())
         env = TransformedEnv(env, Compose(*transforms))
@@ -785,7 +918,7 @@ class VizdoomTask(TaskClass):
         spec = env.observation_spec.clone()
         for group in self.group_map(env):
             for key in list(spec[group].keys()):
-                if key not in ("observation", "audio"):
+                if key not in ("observation", "audio", "notifications", "features"):
                     del spec[group, key]
         return spec
 
@@ -823,9 +956,13 @@ class VizdoomTask(TaskClass):
         return hasattr(env, "render")
 
     def max_steps(self, env: EnvBase) -> int:
-        if self.config["scenario"] in TAG_SCENARIOS:
+        if self.config["scenario"] in (*TAG_SCENARIOS, *COMMUNICATION_SCENARIOS):
             # Timeout is in engine tics; evaluation counts policy decisions.
-            timeout = int(self.config.get("timeout", 4235))
+            default = {
+                "simple_communication": 700,
+                "simple_no_communication": 700,
+            }.get(self.config["scenario"], 4235)
+            timeout = int(self.config.get("timeout", default))
             skip = max(1, int(self.config.get("skip_frames", 1)))
             return (timeout + skip - 1) // skip
         return int(self.config.get("timeout", 1000))
@@ -845,6 +982,12 @@ ALGOS: dict[str, Any] = {
     "masac": MasacConfig,
 }
 
+# Communication scenarios keep movement and messaging as two categorical heads.
+FACTORIZED_ALGOS: dict[str, Any] = {
+    "mappo": FactorizedMappoConfig,
+    "ippo": FactorizedIppoConfig,
+}
+
 
 def override_config(config, overrides) -> Any:
     valid_fields = {field.name for field in fields(type(config))}
@@ -855,12 +998,19 @@ def override_config(config, overrides) -> Any:
 
 
 def override_algo_config(args):
-    algo_cfg = ALGOS[args.algo].get_from_yaml()
+    config_class = ALGOS[args.algo]
+    if args.scenario in COMMUNICATION_SCENARIOS:
+        config_class = FACTORIZED_ALGOS[args.algo]
+    algo_cfg = config_class.get_from_yaml()
 
     ppo_overrides = {
         "share_param_critic": args.share_critic_params,
         "clip_epsilon": args.clip_eps,
         "entropy_coef": args.entropy_coef,
+        # Ignored unless the factorized policy is in use.
+        "message_entropy_coef": args.message_entropy_coef,
+        # Remove the informer motor mask when the scenario lets the speaker move (in simple_no_communication).
+        "informer_can_move": args.scenario in NO_CHAT_SCENARIOS,
         "critic_coef": args.vf_coef,
         "loss_critic_type": "l2",
         "lmbda": args.gae_lambda,
@@ -945,6 +1095,35 @@ def main():
     ap.add_argument(
         "--daemon", dest="daemon", action=BooleanOptionalAction, default=True
     )
+
+    # Communication config
+    ap.add_argument("--communication", action=BooleanOptionalAction, default=True)
+    ap.add_argument(
+        "--alphabet-size",
+        type=int,
+        default=DEFAULT_ALPHABET_SIZE,
+        help="1-64 arbitrary symbols plus silence",
+    )
+    ap.add_argument(
+        "--message-entropy-coef",
+        type=float,
+        default=0.05,
+        help=(
+            "Entropy coefficient of the message head, kept separate from --entropy_coef and usually larger:"
+            "the head has no gradient signal until the receiver reacts, so it otherwise collapses to one token"
+        ),
+    )
+    ap.add_argument("--stage-reward", type=float, default=1.0)
+    ap.add_argument(
+        "--clue-reward",
+        type=float,
+        default=0.0,
+        help="Optional shared reward for first clue observation per episode",
+    )
+    ap.add_argument("--success-reward", type=float, default=10.0)
+    ap.add_argument("--wrong-press-penalty", type=float, default=1.0)
+    ap.add_argument("--timeout-penalty", type=float, default=20.0)
+    ap.add_argument("--step-cost", type=float, default=0.01)
 
     # Train args
     ap.add_argument("--algo", type=str, default="mappo", choices=list(ALGOS))
@@ -1107,6 +1286,19 @@ def main():
         help="Skip the deathmatch check on the evaluation scenario",
     )
     args = ap.parse_args()
+    chat_tokens = make_chat_tokens(args.alphabet_size)
+    if args.message_entropy_coef < 0:
+        raise ValueError("--message-entropy-coef must be nonnegative")
+    if args.scenario in COMMUNICATION_SCENARIOS:
+        if args.num_agents != 2 or args.algo not in FACTORIZED_ALGOS:
+            raise ValueError(f"{args.scenario} requires two agents and IPPO/MAPPO")
+        if args.bot_eval or args.async_mode:
+            raise ValueError(
+                f"{args.scenario} requires synchronous play without duel bot eval"
+            )
+    if args.scenario in NO_CHAT_SCENARIOS:
+        # Both agents move and nobody talks. make() enforces this as well.
+        args.communication = False
     asymmetric = args.scenario in ("multi_duel_hide_and_seek", *TAG_SCENARIOS)
     if args.share_policy_params is None:
         args.share_policy_params = not asymmetric
@@ -1174,6 +1366,11 @@ def main():
         f"_{args.num_agents}agents_{args.num_envs}envs"
         f"_seed{args.seed}_{run_timestamp}"
     )
+    if args.scenario in COMMUNICATION_SCENARIOS:
+        run_id += (
+            f"_symbols{len(chat_tokens) - 1}"
+            f"_{'chat' if args.communication else 'nochat'}"
+        )
     if args.algo not in ALGOS:
         raise NotImplementedError(
             f"{args.algo} is not currently implemented in this script"
@@ -1223,6 +1420,16 @@ def main():
         "verbose": args.verbose,
         "run_id": run_id,
         "double_buffer": args.double_buffer,
+        "communication": args.communication,
+        "chat_tokens": chat_tokens,
+        "reward_kwargs": {
+            "clue_reward": args.clue_reward,
+            "stage_reward": args.stage_reward,
+            "success_reward": args.success_reward,
+            "wrong_press_penalty": args.wrong_press_penalty,
+            "timeout_penalty": args.timeout_penalty,
+            "step_cost": args.step_cost,
+        },
     }
     task = VizdoomTask(task_cfg)
 
