@@ -19,7 +19,9 @@ family = {{family}}
 environment_id = {{environment_id}}
 display_name = {{display_name}}
 level = {{level_name}}
-frame_skip = 2
+frame_skip = 4
+episode_timeout_seconds = {{episode_timeout_seconds}}
+outcome_kind = {{outcome_kind}}
 
 [agent]
 timeout_sec = {{agent_timeout_sec}}.0
@@ -48,5 +50,7 @@ args = []
 [verifier.env]
 EXPECTED_ENVIRONMENT_ID = {{environment_id}}
 EXPECTED_MAX_DECISIONS = "{{max_decisions}}"
+EXPECTED_EPISODE_TIMEOUT_SECONDS = "{{episode_timeout_seconds}}"
+EXPECTED_OUTCOME_KIND = {{outcome_kind}}
 
 [environment.env]

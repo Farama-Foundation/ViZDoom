@@ -5,6 +5,8 @@ level 1. You must navigate, open doors or activate switches with `USE`, and
 fight or evade enemies as needed. The episode succeeds only when the level
 exit is reached.
 
+{{time_limit_instruction}}
+
 Use the ViZDoom MCP tools to interact with the episode:
 
 - Call `get_current_state` first. It returns episode metadata followed by two
@@ -17,7 +19,7 @@ Use the ViZDoom MCP tools to interact with the episode:
   `{"buttons": [...], "repeat": 1, "situation": "...", "decision": "..."}`.
   Although `situation` and `decision` are optional in the tool schema for
   compatibility, you must always supply both. You may press multiple buttons
-  together; an empty list waits. `repeat` may be 1-8, and each repetition
+  together; an empty list waits. `repeat` may be 1-2, and each repetition
   advances four frames.
 - Make only one `make_action` call per tool invocation. Use `repeat` for a short
   coherent action sequence, then inspect the returned metadata, screen, and

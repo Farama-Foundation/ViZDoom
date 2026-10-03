@@ -73,7 +73,11 @@ def _task_environment(
             "VIZDOOM_ENVIRONMENT_ID": task["environment_id"],
             "VIZDOOM_IWAD_PATH": "",
             "VIZDOOM_MAX_DECISIONS": str(task["max_decisions"]),
+            "VIZDOOM_EPISODE_TIMEOUT_SECONDS": str(
+                task.get("episode_timeout_seconds", 0)
+            ),
             "VIZDOOM_OBJECTIVE": task["objective"],
+            "VIZDOOM_OUTCOME_KIND": task["outcome_kind"],
             "VIZDOOM_REQUIRE_AUTOMAP": "1" if task["require_automap"] else "0",
             "VIZDOOM_RESULTS_DIR": str(results_dir),
             "VIZDOOM_SEED": str(seed),
@@ -132,6 +136,10 @@ def _run_task(
         {
             "EXPECTED_ENVIRONMENT_ID": task["environment_id"],
             "EXPECTED_MAX_DECISIONS": str(task["max_decisions"]),
+            "EXPECTED_EPISODE_TIMEOUT_SECONDS": str(
+                task.get("episode_timeout_seconds", 0)
+            ),
+            "EXPECTED_OUTCOME_KIND": task["outcome_kind"],
             "VERIFIER_LOG_DIR": str(verifier_log_dir),
             "VIZDOOM_RESULTS_DIR": str(results_dir),
         }

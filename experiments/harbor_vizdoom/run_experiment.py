@@ -74,8 +74,14 @@ def _parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--codex-model", default="openai/gpt-5.6-luna")
     parser.add_argument("--codex-reasoning", default="medium")
+    parser.add_argument("--codex-version", help="Pin the Codex CLI installed in trials")
     parser.add_argument("--claude-model", default="anthropic/claude-sonnet-4-6")
     parser.add_argument("--claude-reasoning", default="medium")
+    parser.add_argument(
+        "--source-root",
+        type=Path,
+        help="Archived experiment source directory containing manifest, templates, and harness patches",
+    )
     parser.add_argument(
         "--task",
         action="append",
@@ -91,6 +97,12 @@ def _parse_args() -> argparse.Namespace:
         "--jobs-root",
         type=Path,
         default=EXPERIMENT_DIR / "jobs",
+    )
+    parser.add_argument(
+        "--concurrent-trials",
+        type=int,
+        default=1,
+        help="Maximum Harbor trials in flight (default: 1)",
     )
     parser.add_argument(
         "--dry-run",
@@ -111,7 +123,33 @@ def _parse_args() -> argparse.Namespace:
     args = parser.parse_args()
     if args.docker_pull_retries < 1:
         parser.error("--docker-pull-retries must be positive")
+    if args.concurrent_trials < 1:
+        parser.error("--concurrent-trials must be positive")
     return args
+
+
+def _source_paths(source_root: Path | None) -> tuple[Path, Path, Path]:
+    """Resolve per-run sources without changing generator or auth globals."""
+    root = (source_root or EXPERIMENT_DIR).expanduser().resolve()
+    if not root.is_dir():
+        raise SystemExit(f"Experiment source root does not exist: {root}")
+    manifest_path = root / "environments.json"
+    template_dir = root / "template"
+    harness_dir = root / "harbor_no_redaction"
+    for path in (template_dir, template_dir / "common", harness_dir):
+        if not path.is_dir():
+            raise SystemExit(f"Missing experiment source directory: {path}")
+    for path in (
+        manifest_path,
+        template_dir / "task.toml.template",
+        template_dir / "docker-compose.yaml.template",
+        template_dir / "run.yaml.template",
+        harness_dir / "sitecustomize.py",
+        harness_dir / "episode_continuation.py",
+    ):
+        if not path.is_file():
+            raise SystemExit(f"Missing experiment source file: {path}")
+    return manifest_path, template_dir, harness_dir
 
 
 def _auth_modes(args: argparse.Namespace) -> dict[str, str]:
@@ -156,6 +194,7 @@ def _agent_configs(
                 "kwargs": {
                     "reasoning_effort": args.codex_reasoning,
                     "web_search": "disabled",
+                    **({"version": args.codex_version} if args.codex_version else {}),
                 },
             }
         )
@@ -197,6 +236,18 @@ def _docker_command(environment: dict[str, str]) -> str:
 
 def _ensure_docker_base_image(environment: dict[str, str], pull_retries: int) -> None:
     docker = _docker_command(environment)
+    daemon = subprocess.run(
+        [docker, "info", "--format", "{{.ServerVersion}}"],
+        env=environment,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if daemon.returncode != 0:
+        raise SystemExit(
+            "Cannot access the Docker daemon; check Docker Desktop and socket "
+            f"permissions before launching Harbor.\n{daemon.stderr.strip()}"
+        )
     inspected = subprocess.run(
         [docker, "image", "inspect", DOCKER_BASE_IMAGE],
         env=environment,
@@ -235,7 +286,11 @@ def _ensure_docker_base_image(environment: dict[str, str], pull_retries: int) ->
 
 def main() -> None:
     args = _parse_args()
-    definitions = load_task_definitions()
+    manifest_path, template_dir, harness_dir = _source_paths(args.source_root)
+    try:
+        definitions = load_task_definitions(manifest_path, template_dir)
+    except RuntimeError as exc:
+        raise SystemExit(str(exc)) from exc
     if args.list_tasks:
         for task in definitions:
             print(f"{task['slug']}: {task['display_name']}")
@@ -281,13 +336,15 @@ def main() -> None:
         generated_paths = generate_tasks(
             Path(temporary) / "tasks",
             [task["slug"] for task in selected_definitions],
+            manifest_path=manifest_path,
+            template_dir=template_dir,
         )
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         config = {
             "job_name": f"vizdoom-{timestamp}",
             "jobs_dir": str(jobs_dir),
             "n_attempts": 1,
-            "n_concurrent_trials": 1,
+            "n_concurrent_trials": args.concurrent_trials,
             "quiet": False,
             "environment": {
                 "type": "docker",
@@ -305,9 +362,7 @@ def main() -> None:
         child_environment["VIZDOOM_SEED"] = str(seed)
         existing_pythonpath = child_environment.get("PYTHONPATH", "")
         child_environment["PYTHONPATH"] = os.pathsep.join(
-            entry
-            for entry in (str(HARBOR_NO_REDACTION_DIR), existing_pythonpath)
-            if entry
+            entry for entry in (str(harness_dir), existing_pythonpath) if entry
         )
         if not args.skip_docker_preflight:
             _ensure_docker_base_image(

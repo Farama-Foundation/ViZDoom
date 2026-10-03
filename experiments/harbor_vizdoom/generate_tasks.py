@@ -33,6 +33,7 @@ REQUIRED_FIELDS = {
     "level_name",
     "description",
     "objective",
+    "outcome_kind",
     "instruction_template",
     "difficulty",
     "keywords",
@@ -43,12 +44,16 @@ REQUIRED_FIELDS = {
 }
 
 
-def load_task_definitions() -> list[dict[str, Any]]:
+def load_task_definitions(
+    manifest_path: Path | None = None, template_dir: Path | None = None
+) -> list[dict[str, Any]]:
     """Load and validate task definitions in manifest order."""
+    manifest_path = (manifest_path or MANIFEST_PATH).expanduser().resolve()
+    template_dir = (template_dir or TEMPLATE_DIR).expanduser().resolve()
     try:
-        manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        raise RuntimeError(f"Could not load {MANIFEST_PATH}: {exc}") from exc
+        raise RuntimeError(f"Could not load {manifest_path}: {exc}") from exc
     if manifest.get("schema_version") != 2:
         raise RuntimeError("environments.json must use schema_version 2")
     tasks = manifest.get("tasks")
@@ -87,14 +92,21 @@ def load_task_definitions() -> list[dict[str, Any]]:
             value = task[integer_field]
             if not isinstance(value, int) or isinstance(value, bool) or value < 1:
                 raise RuntimeError(f"{slug}.{integer_field} must be positive")
+        timeout = task.get("episode_timeout_seconds", 0)
+        if not isinstance(timeout, int) or isinstance(timeout, bool) or timeout < 0:
+            raise RuntimeError(f"{slug}.episode_timeout_seconds must be non-negative")
+        if timeout and task["max_decisions"] * 4 < timeout * 35:
+            raise RuntimeError(f"{slug}.max_decisions cannot cover the game-time limit")
         if not isinstance(task["require_automap"], bool):
             raise RuntimeError(f"{slug}.require_automap must be boolean")
+        if task["outcome_kind"] not in {"goal", "combat", "survival"}:
+            raise RuntimeError(f"{slug}.outcome_kind must be goal, combat, or survival")
         if not isinstance(task["keywords"], list) or not all(
             isinstance(keyword, str) for keyword in task["keywords"]
         ):
             raise RuntimeError(f"{slug}.keywords must be a list of strings")
 
-        instruction_path = INSTRUCTIONS_DIR / task["instruction_template"]
+        instruction_path = template_dir / "instructions" / task["instruction_template"]
         if not instruction_path.is_file():
             raise RuntimeError(f"Missing instruction template {instruction_path}")
         if task["family"] == "doom":
@@ -120,9 +132,9 @@ def load_task_definitions() -> list[dict[str, Any]]:
                 or Path(template_file).name != template_file
             ):
                 raise RuntimeError(f"{slug}.iwad.template_file must be a file name")
-            if not (TEMPLATE_DIR / template_file).is_file():
+            if not (template_dir / template_file).is_file():
                 raise RuntimeError(
-                    f"Missing bundled IWAD {TEMPLATE_DIR / template_file}"
+                    f"Missing bundled IWAD {template_dir / template_file}"
                 )
             container_path = iwad["container_path"]
             if not isinstance(container_path, str):
@@ -186,9 +198,18 @@ def _template_values(task: dict[str, Any]) -> dict[str, str]:
         "level_name": _quoted(task["level_name"]),
         "description": _quoted(task["description"]),
         "objective": _quoted(task["objective"]),
+        "outcome_kind": _quoted(task["outcome_kind"]),
         "difficulty": _quoted(task["difficulty"]),
         "keywords": _quoted(task["keywords"]),
         "max_decisions": str(task["max_decisions"]),
+        "episode_timeout_seconds": str(task.get("episode_timeout_seconds", 0)),
+        "time_limit_instruction": (
+            f"The episode has a {task['episode_timeout_seconds']}-second in-game "
+            "time limit. Time advances only when you make actions, not while you "
+            "think. Keep playing until done=true; the server enforces the limit."
+            if task.get("episode_timeout_seconds")
+            else "The server enforces the episode's time and decision limits."
+        ),
         "agent_timeout_sec": str(task["agent_timeout_sec"]),
         "require_automap": "1" if task["require_automap"] else "0",
         "iwad_container_path": _iwad_path(task),
@@ -198,10 +219,25 @@ def _template_values(task: dict[str, Any]) -> dict[str, str]:
 
 
 def generate_tasks(
-    output_dir: Path, selected_slugs: Iterable[str] | None = None
+    output_dir: Path,
+    selected_slugs: Iterable[str] | None = None,
+    manifest_path: Path | None = None,
+    template_dir: Path | None = None,
 ) -> list[Path]:
     """Atomically generate selected self-contained task directories."""
-    tasks = select_task_definitions(load_task_definitions(), selected_slugs)
+    template_dir = (template_dir or TEMPLATE_DIR).expanduser().resolve()
+    common_dir = template_dir / "common"
+    task_config_template = template_dir / "task.toml.template"
+    compose_template = template_dir / "docker-compose.yaml.template"
+    run_config_template = template_dir / "run.yaml.template"
+    if not common_dir.is_dir():
+        raise RuntimeError(f"Missing common task template directory {common_dir}")
+    for path in (task_config_template, compose_template, run_config_template):
+        if not path.is_file():
+            raise RuntimeError(f"Missing task template {path}")
+    tasks = select_task_definitions(
+        load_task_definitions(manifest_path, template_dir), selected_slugs
+    )
     output_dir = output_dir.expanduser().resolve()
     output_dir.parent.mkdir(parents=True, exist_ok=True)
     staging_dir = Path(
@@ -210,21 +246,23 @@ def generate_tasks(
     try:
         for task in tasks:
             task_dir = staging_dir / task["slug"]
-            shutil.copytree(COMMON_DIR, task_dir)
+            shutil.copytree(common_dir, task_dir)
             iwad = task["iwad"]
             if iwad is not None:
-                source = TEMPLATE_DIR / iwad["template_file"]
+                source = template_dir / iwad["template_file"]
                 destination = task_dir / "environment/vizdoom-server/iwads"
                 destination.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(source, destination / source.name)
             values = _template_values(task)
             (task_dir / "task.toml").write_text(
-                _render(TASK_CONFIG_TEMPLATE, values), encoding="utf-8"
+                _render(task_config_template, values), encoding="utf-8"
             )
             (task_dir / "environment/docker-compose.yaml").write_text(
-                _render(COMPOSE_TEMPLATE, values), encoding="utf-8"
+                _render(compose_template, values), encoding="utf-8"
             )
-            instruction_template = INSTRUCTIONS_DIR / task["instruction_template"]
+            instruction_template = (
+                template_dir / "instructions" / task["instruction_template"]
+            )
             (task_dir / "instruction.md").write_text(
                 _render(instruction_template, values), encoding="utf-8"
             )
@@ -232,7 +270,7 @@ def generate_tasks(
             f"  - path: {json.dumps(str(output_dir / task['slug']))}" for task in tasks
         )
         (staging_dir / "run.yaml").write_text(
-            _render(RUN_CONFIG_TEMPLATE, {"task_paths": task_paths}),
+            _render(run_config_template, {"task_paths": task_paths}),
             encoding="utf-8",
         )
         (staging_dir / GENERATED_MARKER).write_text(

@@ -20,13 +20,15 @@ from typing import Any, cast
 
 import gymnasium
 import numpy as np
+from streaming_video import StreamingRecordVideo
 
 from vizdoom import gymnasium_wrapper  # noqa: F401  (register environments)
 
 ENVIRONMENT_ID = os.environ.get("VIZDOOM_ENVIRONMENT_ID", "VizdoomBasic-MultiBinary-v1")
-FRAME_SKIP = 2
-MAX_ACTION_REPEAT = 4
+FRAME_SKIP = 4
+MAX_ACTION_REPEAT = 2
 MAX_DECISIONS = int(os.environ.get("VIZDOOM_MAX_DECISIONS", "75"))
+EPISODE_TIMEOUT_SECONDS = int(os.environ.get("VIZDOOM_EPISODE_TIMEOUT_SECONDS", "0"))
 MAX_MEMORIES = int(os.environ.get("VIZDOOM_MAX_MEMORIES", "32"))
 RESULTS_DIR = Path(os.environ.get("VIZDOOM_RESULTS_DIR", "/vizdoom-results"))
 RESULT_PATH = RESULTS_DIR / "result.json"
@@ -37,14 +39,21 @@ FINALIZED_PATH = RESULTS_DIR / "finalized"
 OBJECTIVE = os.environ.get(
     "VIZDOOM_OBJECTIVE", "Kill the red monster before the episode times out."
 )
+OUTCOME_KIND = os.environ.get("VIZDOOM_OUTCOME_KIND", "goal")
 IWAD_PATH = os.environ.get("VIZDOOM_IWAD_PATH", "").strip()
 REQUIRE_AUTOMAP = os.environ.get("VIZDOOM_REQUIRE_AUTOMAP", "0") == "1"
 MEMORY_ID_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,63}")
 
 if MAX_DECISIONS < 1:
     raise RuntimeError("VIZDOOM_MAX_DECISIONS must be a positive integer")
+if EPISODE_TIMEOUT_SECONDS < 0:
+    raise RuntimeError("VIZDOOM_EPISODE_TIMEOUT_SECONDS must be non-negative")
+if EPISODE_TIMEOUT_SECONDS * 35 > MAX_DECISIONS * FRAME_SKIP:
+    raise RuntimeError("Decision budget cannot cover the requested game-time limit")
 if MAX_MEMORIES < 1:
     raise RuntimeError("VIZDOOM_MAX_MEMORIES must be a positive integer")
+if OUTCOME_KIND not in {"goal", "combat", "survival"}:
+    raise RuntimeError("VIZDOOM_OUTCOME_KIND must be goal, combat, or survival")
 
 
 def _utc_now() -> str:
@@ -129,6 +138,8 @@ class Episode:
         self.lock = threading.RLock()
         self.seed = _choose_seed()
         self.episode_return = 0.0
+        self.elapsed_game_tics = 0
+        self.elapsed_game_tics_exact = True
         self.action_history: list[dict[str, Any]] = []
         self.memories: dict[str, Snapshot] = {}
         self.current_snapshot: Snapshot | None = None
@@ -142,6 +153,8 @@ class Episode:
             "frame_skip": FRAME_SKIP,
             "render_mode": "rgb_array",
         }
+        if EPISODE_TIMEOUT_SECONDS:
+            environment_options["episode_timeout"] = EPISODE_TIMEOUT_SECONDS * 35
         if IWAD_PATH:
             iwad_path = Path(IWAD_PATH)
             if not iwad_path.is_file():
@@ -150,7 +163,7 @@ class Episode:
         base_env = gymnasium.make(ENVIRONMENT_ID, **environment_options)
         render_fps = int(base_env.metadata.get("render_fps", 30))
         video_fps = max(1, round(render_fps / FRAME_SKIP))
-        self.env = gymnasium.wrappers.RecordVideo(
+        self.env = StreamingRecordVideo(
             base_env,
             video_folder=str(VIDEO_WORK_DIR),
             episode_trigger=lambda episode_id: episode_id == 0,
@@ -172,6 +185,7 @@ class Episode:
             raise RuntimeError("Action space does not match available buttons")
 
         observation, _ = self.env.reset(seed=self.seed)
+        self.start_episode_time = int(unwrapped.game.get_episode_time())
         if REQUIRE_AUTOMAP and "automap" not in observation:
             self.env.close()
             raise RuntimeError(f"{ENVIRONMENT_ID} did not expose an automap buffer")
@@ -204,8 +218,10 @@ class Episode:
         return {
             "environment": ENVIRONMENT_ID,
             "objective": OBJECTIVE,
+            "outcome_kind": OUTCOME_KIND,
             "seed": self.seed,
             "frame_skip": FRAME_SKIP,
+            "episode_timeout_seconds": EPISODE_TIMEOUT_SECONDS,
             "decision": decision,
             "max_decisions": MAX_DECISIONS,
             "remaining_decisions": max(0, MAX_DECISIONS - decision),
@@ -214,6 +230,8 @@ class Episode:
             "last_buttons": buttons,
             "last_reward": reward,
             "episode_return": self.episode_return,
+            "elapsed_game_tics": self.elapsed_game_tics,
+            "elapsed_game_tics_exact": self.elapsed_game_tics_exact,
             "game_variables": _game_variables(observation),
             "terminated": terminated,
             "truncated": truncated,
@@ -227,11 +245,15 @@ class Episode:
         return {
             "environment": ENVIRONMENT_ID,
             "objective": OBJECTIVE,
+            "outcome_kind": OUTCOME_KIND,
             "seed": self.seed,
             "frame_skip": FRAME_SKIP,
+            "episode_timeout_seconds": EPISODE_TIMEOUT_SECONDS,
             "max_decisions": MAX_DECISIONS,
             "decisions": len(self.action_history),
             "episode_return": self.episode_return,
+            "elapsed_game_tics": self.elapsed_game_tics,
+            "elapsed_game_tics_exact": self.elapsed_game_tics_exact,
             "status": self.status,
             "success": self.status == "success",
             "action_history": self.action_history,
@@ -407,13 +429,22 @@ class Episode:
             decision = len(self.action_history) + 1
 
             unwrapped = cast(Any, self.env.unwrapped)
+            observed_elapsed_tics = max(
+                0, int(unwrapped.game.get_episode_time()) - self.start_episode_time
+            )
+            if observed_elapsed_tics < self.elapsed_game_tics:
+                # Some scenarios reset the game clock when a goal ends the episode.
+                # Retain the last observed value as a lower bound, not an exact zero.
+                self.elapsed_game_tics_exact = False
+            else:
+                self.elapsed_game_tics = observed_elapsed_tics
             player_dead = bool(unwrapped.game.is_player_dead())
-            if self.episode_return > 0:
-                self.status = "success"
-            elif player_dead:
+            if player_dead:
                 self.status = "dead"
-            elif terminated or truncated:
+            elif truncated:
                 self.status = "timeout"
+            elif terminated:
+                self.status = "success" if OUTCOME_KIND == "goal" else "episode_ended"
             elif decision >= MAX_DECISIONS:
                 self.status = "decision_limit"
 
@@ -429,6 +460,8 @@ class Episode:
                     "buttons": list(buttons),
                     "reward": numeric_reward,
                     "episode_return": self.episode_return,
+                    "elapsed_game_tics": self.elapsed_game_tics,
+                    "elapsed_game_tics_exact": self.elapsed_game_tics_exact,
                     "terminated": bool(terminated),
                     "truncated": bool(truncated),
                     "status": self.status,
@@ -503,7 +536,7 @@ def _serve_mcp(episode: Episode) -> None:
 
         Args:
             buttons: Any subset of available_buttons. Use [] to wait.
-            repeat: Repeat this action 1-8 times, stopping early if done.
+            repeat: Repeat this action 1-2 times, stopping early if done.
             situation: Brief interpretation of the current visual state.
             decision: Immediate goal, chosen action, and expected result.
         """

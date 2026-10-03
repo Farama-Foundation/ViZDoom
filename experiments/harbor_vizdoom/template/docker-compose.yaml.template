@@ -13,8 +13,10 @@ services:
       VIZDOOM_ENVIRONMENT_ID: {{environment_id}}
       VIZDOOM_IWAD_PATH: {{iwad_container_path}}
       VIZDOOM_MAX_DECISIONS: "{{max_decisions}}"
+      VIZDOOM_EPISODE_TIMEOUT_SECONDS: "{{episode_timeout_seconds}}"
       VIZDOOM_REQUIRE_AUTOMAP: "{{require_automap}}"
       VIZDOOM_OBJECTIVE: {{objective}}
+      VIZDOOM_OUTCOME_KIND: {{outcome_kind}}
       VIZDOOM_SEED: "${VIZDOOM_SEED:-}"
     healthcheck:
       test:

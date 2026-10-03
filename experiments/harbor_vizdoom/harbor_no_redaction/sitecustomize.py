@@ -11,7 +11,10 @@ it for credentials first.
 
 from typing import Any
 
+from harbor.agents.installed.codex import Codex
 from harbor.trial.trial import Trial
+
+from episode_continuation import continue_codex_episode
 
 
 def _skip_jobs_dir_scrubbing(_trial: Any) -> None:
@@ -19,3 +22,28 @@ def _skip_jobs_dir_scrubbing(_trial: Any) -> None:
 
 
 setattr(Trial, "_scrub_jobs_dir", _skip_jobs_dir_scrubbing)
+
+
+_original_codex_exec_as_agent = Codex.exec_as_agent
+
+
+async def _exec_codex_until_episode_ends(
+    self: Codex,
+    environment: Any,
+    command: str,
+    env: dict[str, str] | None = None,
+    cwd: str | None = None,
+    timeout_sec: int | None = None,
+) -> Any:
+    return await continue_codex_episode(
+        _original_codex_exec_as_agent,
+        self,
+        environment,
+        command,
+        env=env,
+        cwd=cwd,
+        timeout_sec=timeout_sec,
+    )
+
+
+setattr(Codex, "exec_as_agent", _exec_codex_until_episode_ends)

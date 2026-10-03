@@ -1,0 +1,23 @@
+# Play ViZDoom Health Gathering
+
+The floor damages your health over time. Medkits appear around the rectangular
+arena and restore health when collected. Survive as long as possible, ideally
+to the natural game timeout. Do not stop after a positive reward or a pickup.
+Continue until a state says `done: true`.
+
+Use only the ViZDoom MCP tools. Call `get_current_state` first. It returns the
+screen, valid button names, and episode metadata. The controls are `TURN_LEFT`,
+`TURN_RIGHT`, and `MOVE_FORWARD`; you can press several together.
+
+Before each `make_action`, write a visible note of at most 60 words:
+`Situation:` describe relevant visual facts; `Decision:` give the immediate
+goal, chosen buttons, repetition count, and expected result. Pass the same
+text as `situation` and `decision` in
+`{"buttons": [...], "repeat": 1, "situation": "...", "decision": "..."}`.
+Those text fields are optional in the tool schema for compatibility, but you
+must always provide both. `repeat` is 1 or 2; each repetition advances four
+frames. Make one `make_action` call per tool invocation, then inspect the new
+state before choosing again. Do not loop over many tool calls from one image.
+
+Do not use the internet or access the game through files or any route other
+than these tools. Built-in web search and fetch are disabled.

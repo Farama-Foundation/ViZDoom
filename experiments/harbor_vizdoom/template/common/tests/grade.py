@@ -20,9 +20,14 @@ EXPECTED_ENVIRONMENT_ID = os.environ.get(
     "EXPECTED_ENVIRONMENT_ID", "VizdoomBasic-MultiBinary-v1"
 )
 EXPECTED_MAX_DECISIONS = int(os.environ.get("EXPECTED_MAX_DECISIONS", "75"))
+EXPECTED_EPISODE_TIMEOUT_SECONDS = int(
+    os.environ.get("EXPECTED_EPISODE_TIMEOUT_SECONDS", "0")
+)
+EXPECTED_OUTCOME_KIND = os.environ.get("EXPECTED_OUTCOME_KIND", "goal")
+NATURAL_STATUSES = {"success", "dead", "timeout", "episode_ended"}
 
 
-def _write_score(score: int, message: str, result: dict[str, Any] | None) -> None:
+def _write_score(score: float, message: str, result: dict[str, Any] | None) -> None:
     REWARD_PATH.parent.mkdir(parents=True, exist_ok=True)
     REWARD_PATH.write_text(f"{score}\n", encoding="utf-8")
     action_history = result.get("action_history") if result else None
@@ -40,11 +45,26 @@ def _write_score(score: int, message: str, result: dict[str, Any] | None) -> Non
         and isinstance(action.get("agent_decision"), str)
         and bool(action["agent_decision"].strip())
     ]
+    elapsed_game_tics = result.get("elapsed_game_tics") if result else None
     metrics = {
         "reward": score,
         "message": message,
+        "outcome_kind": result.get("outcome_kind") if result else None,
         "status": result.get("status") if result else None,
+        "natural_end": result.get("status") in NATURAL_STATUSES if result else False,
         "episode_return": result.get("episode_return") if result else None,
+        "elapsed_game_tics": elapsed_game_tics,
+        "elapsed_game_tics_exact": (
+            result.get("elapsed_game_tics_exact") if result else None
+        ),
+        "survival_seconds": (
+            elapsed_game_tics / 35
+            if isinstance(elapsed_game_tics, int)
+            and elapsed_game_tics >= 0
+            and result is not None
+            and result.get("elapsed_game_tics_exact") is True
+            else None
+        ),
         "decisions": result.get("decisions") if result else None,
         "seed": result.get("seed") if result else None,
         "action_sequences": len(action_sequences),
@@ -78,6 +98,8 @@ def main() -> None:
         _fail("result must be a JSON object")
     if result.get("environment") != EXPECTED_ENVIRONMENT_ID:
         _fail("unexpected environment", result)
+    if result.get("outcome_kind") != EXPECTED_OUTCOME_KIND:
+        _fail("unexpected outcome kind", result)
     if result.get("frame_skip") != 4:
         _fail("frame_skip must be 4", result)
     if result.get("video_finalized") is not True:
@@ -92,6 +114,21 @@ def main() -> None:
         )
     if not isinstance(action_history, list) or len(action_history) != decisions:
         _fail("action_history length does not match decisions", result)
+    elapsed_game_tics = result.get("elapsed_game_tics")
+    if not isinstance(elapsed_game_tics, int) or elapsed_game_tics < 0:
+        _fail("elapsed_game_tics must be a non-negative integer", result)
+    if not isinstance(result.get("elapsed_game_tics_exact"), bool):
+        _fail("elapsed_game_tics_exact must be boolean", result)
+    if result.get("episode_timeout_seconds", 0) != EXPECTED_EPISODE_TIMEOUT_SECONDS:
+        _fail("unexpected in-game time limit", result)
+    if EXPECTED_EPISODE_TIMEOUT_SECONDS:
+        if elapsed_game_tics > EXPECTED_EPISODE_TIMEOUT_SECONDS * 35:
+            _fail("episode exceeded the in-game time limit", result)
+        if result.get("status") == "timeout" and (
+            not result["elapsed_game_tics_exact"]
+            or elapsed_game_tics != EXPECTED_EPISODE_TIMEOUT_SECONDS * 35
+        ):
+            _fail("timeout did not reach the configured in-game time limit", result)
     for action in action_history:
         if not isinstance(action, dict) or not isinstance(action.get("buttons"), list):
             _fail("malformed action history", result)
@@ -108,7 +145,7 @@ def main() -> None:
         if (
             not isinstance(repeat_index, int)
             or not isinstance(requested_repeat, int)
-            or not 1 <= repeat_index <= requested_repeat <= 8
+            or not 1 <= repeat_index <= requested_repeat <= 2
         ):
             _fail("action history contains invalid repetition metadata", result)
 
@@ -142,14 +179,32 @@ def main() -> None:
     if result.get("video_size_bytes") != video_size:
         _fail("reported video size does not match recording", result)
 
-    success = (
-        result.get("success") is True
-        and result.get("status") == "success"
-        and isinstance(result.get("episode_return"), (int, float))
-        and result["episode_return"] >= 1
-    )
-    message = "level completed" if success else "level was not completed"
-    score = int(success)
+    status = result.get("status")
+    episode_return = result.get("episode_return")
+    if not isinstance(episode_return, (int, float)):
+        _fail("episode_return must be numeric", result)
+    if EXPECTED_OUTCOME_KIND == "goal":
+        success = result.get("success") is True and status == "success"
+        score = float(success)
+        message = "goal completed" if success else "goal not completed"
+    elif EXPECTED_OUTCOME_KIND == "combat":
+        score = float(episode_return) if status in NATURAL_STATUSES else 0.0
+        message = (
+            "combat episode ended"
+            if status in NATURAL_STATUSES
+            else "combat episode interrupted"
+        )
+    elif EXPECTED_OUTCOME_KIND == "survival":
+        if result["elapsed_game_tics_exact"] is not True:
+            _fail("survival time must be exact", result)
+        score = elapsed_game_tics / 35 if status in NATURAL_STATUSES else 0.0
+        message = (
+            "survival episode ended"
+            if status in NATURAL_STATUSES
+            else "survival episode interrupted"
+        )
+    else:
+        _fail("unknown outcome kind", result)
     _write_score(score, message, result)
     print(
         f"score={score} status={result.get('status')} "

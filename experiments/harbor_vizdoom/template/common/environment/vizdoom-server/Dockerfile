@@ -6,10 +6,13 @@ RUN apt-get update \
 
 RUN pip install --no-cache-dir \
         fastmcp==2.14.5 \
+        gymnasium==1.2.3 \
+        imageio-ffmpeg==0.6.0 \
         moviepy==2.1.2 \
         vizdoom==1.3.0
 
 COPY server.py /app/server.py
+COPY streaming_video.py /app/streaming_video.py
 COPY iwads/ /iwads/
 RUN mkdir -p /vizdoom-results
 
