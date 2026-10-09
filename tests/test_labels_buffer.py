@@ -113,5 +113,4 @@ def test_labels_buffer(seed):
 
 
 if __name__ == "__main__":
-    for seed in [0, 1, 2, 63]:
-        test_labels_buffer(seed)
+    raise SystemExit(pytest.main([__file__]))
