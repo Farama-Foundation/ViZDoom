@@ -18,9 +18,7 @@ def _check_label(labels_buffer, label):
     if (
         label.width > 4 and label.height > 4
     ):  # Sometimes very tiny objects may be obscured by level geometry or not rendered due to sprite size
-        box = np.s_[
-            label.y : label.y + label.height, label.x : label.x + label.width
-        ]
+        box = np.s_[label.y : label.y + label.height, label.x : label.x + label.width]
         # Only this object's pixels must stay inside its bounding box.
         outside = labels_buffer == label.value
         outside[box] = False
