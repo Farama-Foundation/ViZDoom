@@ -13,9 +13,6 @@ import pytest
 import vizdoom as vzd
 
 
-LABELS_BUFFER_REGRESSION_SEED = 63
-
-
 def _check_label(labels_buffer, label):
     assert label.value > 1
     if (
@@ -62,8 +59,8 @@ def test_label_box_edges_and_other_objects():
 
 # Seed 63 exposes a ShellBox at the screen edge whose only remaining labeled
 # pixels are in the last row/column of its bounding box (state 360).
-def test_labels_buffer():
-    seed = LABELS_BUFFER_REGRESSION_SEED
+@pytest.mark.parametrize("seed", [0, 1, 2, 63])
+def test_labels_buffer(seed):
     print("Testing labels buffer ...")
     game = vzd.DoomGame()
     game.load_config(os.path.join(vzd.scenarios_path, "deathmatch.cfg"))
@@ -116,4 +113,5 @@ def test_labels_buffer():
 
 
 if __name__ == "__main__":
-    test_labels_buffer()
+    for seed in [0, 1, 2, 63]:
+        test_labels_buffer(seed)
