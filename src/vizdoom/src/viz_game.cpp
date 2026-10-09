@@ -546,8 +546,9 @@ void VIZ_GameStateUpdateLabels(){
 
                 vizLabel->position[0] = sprite.minX;
                 vizLabel->position[1] = sprite.minY;
-                vizLabel->size[0] = sprite.maxX - sprite.minX;
-                vizLabel->size[1] = sprite.maxY - sprite.minY;
+                // Pixel bounds are inclusive; sizes must include the last column and row.
+                vizLabel->size[0] = sprite.maxX - sprite.minX + 1;
+                vizLabel->size[1] = sprite.maxY - sprite.minY + 1;
 
                 vizLabel->objectPosition[0] = VIZ_FixedToDouble(sprite.actor->__pos.x);
                 vizLabel->objectPosition[1] = VIZ_FixedToDouble(sprite.actor->__pos.y);
