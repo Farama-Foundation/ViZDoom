@@ -1,6 +1,7 @@
 name: Build and test
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - '.github/workflows/build-and-test.yml'
