@@ -57,7 +57,9 @@ def test_label_box_edges_and_other_objects():
     _check_label(buffer, label)
 
 
-@pytest.mark.parametrize("seed", [0, 1, 2])
+# Seed 63 exposes a ShellBox at the screen edge whose only remaining labeled
+# pixels are in the last row/column of its bounding box (state 360).
+@pytest.mark.parametrize("seed", [0, 1, 2, 63])
 def test_labels_buffer(seed):
     print("Testing labels buffer ...")
     game = vzd.DoomGame()
@@ -111,5 +113,5 @@ def test_labels_buffer(seed):
 
 
 if __name__ == "__main__":
-    for seed in [0, 1, 2]:
+    for seed in [0, 1, 2, 63]:
         test_labels_buffer(seed)
