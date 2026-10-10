@@ -1,6 +1,4 @@
-This directory contains files required to support POSIX-compatible OSes, like GNU/Linux, OS X or BSD.  
+This directory contains code specific to POSIX-compatible operating systems, including Linux, macOS, and BSD.
 
-Common files are placed in this directory directly.  
-SDL backend files are in `sdl` subdirectory.  
-Native OS X backend files are in `cocoa` subdirectory.  
-Shared files for both OS X backends are in `osx` subdirectory.
+Shared POSIX services, timers, and crash handling are kept here. macOS-specific code is in `osx/`.
+The SDL2 backend shared with Windows is in the sibling [`sdl/`](../sdl/) directory.

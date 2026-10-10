@@ -21,6 +21,8 @@ set BOOST_INCLUDEDIR=%BOOST_ROOT%
 set BOOST_LIBRARYDIR=%BOOST_ROOT%\libs
 
 :: ZDoom dependencies
+:: Extract the SDL2 Visual C++ development archive to %LIB_DIR%\SDL2.
+set SDL2DIR=%LIB_DIR%\SDL2
 set MPG123_INCLUDE_DIR=%LIB_DIR%\libmpg123
 set MPG123_LIBRARIES=%LIB_DIR%\libmpg123\libmpg123-0.lib
 set MPG123_DLL=%LIB_DIR%\libmpg123\libmpg123-0.dll

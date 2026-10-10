@@ -49,7 +49,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <mmsystem.h>
-#include <richedit.h>
+//VIZDOOM_CODE: SDL owns the window and cursor.
 #include <wincrypt.h>
 
 #define USE_WINDOWS_DWORD
@@ -102,7 +102,7 @@
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
 
 extern void CheckCPUID(CPUInfo *cpu);
-extern void LayoutMainWindow(HWND hWnd, HWND pane);
+//VIZDOOM_CODE: No native startup console.
 
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
 
@@ -119,23 +119,17 @@ static int I_WaitForTicEvent(int prevtic);
 static void I_FreezeTimeEventDriven(bool frozen);
 static void CALLBACK TimerTicked(UINT id, UINT msg, DWORD_PTR user, DWORD_PTR dw1, DWORD_PTR dw2);
 
-static HCURSOR CreateCompatibleCursor(FTexture *cursorpic);
-static HCURSOR CreateAlphaCursor(FTexture *cursorpic);
-static HCURSOR CreateBitmapCursor(int xhot, int yhot, HBITMAP and_mask, HBITMAP color_mask);
-static void DestroyCustomCursor();
+//VIZDOOM_CODE: Cursor handling is shared with SDL.
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
 EXTERN_CVAR(String, language);
 EXTERN_CVAR (Bool, queryiwad);
 
-extern HWND Window, ConWindow, GameTitleWindow;
-extern HANDLE StdOut;
-extern bool FancyStdOut;
-extern HINSTANCE g_hInst;
+//VIZDOOM_CODE: Native dialogs and CD audio still use the module handle.
+static HWND Window;
+HINSTANCE g_hInst = GetModuleHandle(NULL);
 extern FILE *Logfile;
-extern bool NativeMouse;
-extern bool ConWindowHidden;
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
@@ -175,7 +169,7 @@ static WadStuff *WadList;
 static int NumWads;
 static int DefaultWad;
 
-static HCURSOR CustomCursor;
+//VIZDOOM_CODE: SDL manages the cursor.
 
 // CODE --------------------------------------------------------------------
 
@@ -737,6 +731,10 @@ void CalculateCPUSpeed()
 
 void I_Init()
 {
+	//VIZDOOM_CODE: Previously initialized by the native window startup.
+	TIMECAPS tc;
+	TimerPeriod = timeGetDevCaps(&tc, sizeof(tc)) == TIMERR_NOERROR ? tc.wPeriodMin : 1;
+	timeBeginPeriod(TimerPeriod);
 	CheckCPUID(&CPU);
 	CalculateCPUSpeed();
 	DumpCPUInfo(&CPU);
@@ -840,224 +838,14 @@ void STACK_ARGS I_Error(const char *error, ...)
 	throw CRecoverableError(errortext);
 }
 
-//==========================================================================
-//
-// ToEditControl
-//
-// Converts string to Unicode and inserts it into the control.
-//
-//==========================================================================
-
-void ToEditControl(HWND edit, const char *buf, wchar_t *wbuf, int bpos)
+//VIZDOOM_CODE
+void I_SetIWADInfo()
 {
-	// Let's just do this ourself. It's not hard, and we can compensate for
-	// special console characters at the same time.
-#if 0
-	MultiByteToWideChar(1252 /* Western */, 0, buf, bpos, wbuf, countof(wbuf));
-	wbuf[bpos] = 0;
-#else
-	static wchar_t notlatin1[32] =		// code points 0x80-0x9F
-	{
-		0x20AC,		// Euro sign
-		0x0081,		// Undefined
-		0x201A,		// Single low-9 quotation mark
-		0x0192,		// Latin small letter f with hook
-		0x201E,		// Double low-9 quotation mark
-		0x2026,		// Horizontal ellipsis
-		0x2020,		// Dagger
-		0x2021,		// Double dagger
-		0x02C6,		// Modifier letter circumflex accent
-		0x2030,		// Per mille sign
-		0x0160,		// Latin capital letter S with caron
-		0x2039,		// Single left-pointing angle quotation mark
-		0x0152,		// Latin capital ligature OE
-		0x008D,		// Undefined
-		0x017D,		// Latin capital letter Z with caron
-		0x008F,		// Undefined
-		0x0090,		// Undefined
-		0x2018,		// Left single quotation mark
-		0x2019,		// Right single quotation mark
-		0x201C,		// Left double quotation mark
-		0x201D,		// Right double quotation mark
-		0x2022,		// Bullet
-		0x2013,		// En dash
-		0x2014,		// Em dash
-		0x02DC,		// Small tilde
-		0x2122,		// Trade mark sign
-		0x0161,		// Latin small letter s with caron
-		0x203A,		// Single right-pointing angle quotation mark
-		0x0153,		// Latin small ligature oe
-		0x009D,		// Undefined
-		0x017E,		// Latin small letter z with caron
-		0x0178		// Latin capital letter Y with diaeresis
-	};
-	for (int i = 0; i <= bpos; ++i)
-	{
-		wchar_t code = (BYTE)buf[i];
-		if (code >= 0x1D && code <= 0x1F)
-		{ // The bar characters, most commonly used to indicate map changes
-			code = 0x2550;	// Box Drawings Double Horizontal
-		}
-		else if (code >= 0x80 && code <= 0x9F)
-		{
-			code = notlatin1[code - 0x80];
-		}
-		wbuf[i] = code;
-	}
-#endif
-	SendMessageW(edit, EM_REPLACESEL, FALSE, (LPARAM)wbuf); 
 }
-
-//==========================================================================
-//
-// I_PrintStr
-//
-// Send output to the list box shown during startup (and hidden during
-// gameplay).
-//
-//==========================================================================
-
-static void DoPrintStr(const char *cp, HWND edit, HANDLE StdOut)
-{
-	if (edit == NULL && StdOut == NULL)
-		return;
-
-	char buf[256];
-	wchar_t wbuf[countof(buf)];
-	int bpos = 0;
-	CHARRANGE selection;
-	CHARRANGE endselection;
-	LONG lines_before = 0, lines_after;
-	CHARFORMAT format;
-
-	if (edit != NULL)
-	{
-		// Store the current selection and set it to the end so we can append text.
-		SendMessage(edit, EM_EXGETSEL, 0, (LPARAM)&selection);
-		endselection.cpMax = endselection.cpMin = GetWindowTextLength(edit);
-		SendMessage(edit, EM_EXSETSEL, 0, (LPARAM)&endselection);
-
-		// GetWindowTextLength and EM_EXSETSEL can disagree on where the end of
-		// the text is. Find out what EM_EXSETSEL thought it was and use that later.
-		SendMessage(edit, EM_EXGETSEL, 0, (LPARAM)&endselection);
-
-		// Remember how many lines there were before we added text.
-		lines_before = (LONG)SendMessage(edit, EM_GETLINECOUNT, 0, 0);
-	}
-
-	while (*cp != 0)
-	{
-		// 28 is the escape code for a color change.
-		if ((*cp == 28 && bpos != 0) || bpos == 255)
-		{
-			buf[bpos] = 0;
-			if (edit != NULL)
-			{
-				ToEditControl(edit, buf, wbuf, bpos);
-			}
-			if (StdOut != NULL)
-			{
-				DWORD bytes_written;
-				WriteFile(StdOut, buf, bpos, &bytes_written, NULL);
-			}
-			bpos = 0;
-		}
-		if (*cp != 28)
-		{
-			buf[bpos++] = *cp++;
-		}
-		else
-		{
-			const BYTE *color_id = (const BYTE *)cp + 1;
-			EColorRange range = V_ParseFontColor(color_id, CR_UNTRANSLATED, CR_YELLOW);
-			cp = (const char *)color_id;
-
-			if (range != CR_UNDEFINED)
-			{
-				// Change the color of future text added to the control.
-				PalEntry color = V_LogColorFromColorRange(range);
-				if (StdOut != NULL && FancyStdOut)
-				{
-					// Unfortunately, we are pretty limited here: There are only
-					// eight basic colors, and each comes in a dark and a bright
-					// variety.
-					float h, s, v, r, g, b;
-					WORD attrib = 0;
-
-					RGBtoHSV(color.r / 255.f, color.g / 255.f, color.b / 255.f, &h, &s, &v);
-					if (s != 0)
-					{ // color
-						HSVtoRGB(&r, &g, &b, h, 1, 1);
-						if (r == 1)  attrib  = FOREGROUND_RED;
-						if (g == 1)  attrib |= FOREGROUND_GREEN;
-						if (b == 1)  attrib |= FOREGROUND_BLUE;
-						if (v > 0.6) attrib |= FOREGROUND_INTENSITY;
-					}
-					else
-					{ // gray
-						     if (v < 0.33) attrib = FOREGROUND_INTENSITY;
-						else if (v < 0.90) attrib = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
-						else			   attrib = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY;
-					}
-					SetConsoleTextAttribute(StdOut, attrib);
-				}
-				if (edit != NULL)
-				{
-					// GDI uses BGR colors, but color is RGB, so swap the R and the B.
-					swapvalues(color.r, color.b);
-					// Change the color.
-					format.cbSize = sizeof(format);
-					format.dwMask = CFM_COLOR;
-					format.dwEffects = 0;
-					format.crTextColor = color;
-					SendMessage(edit, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&format);
-				}
-			}
-		}
-	}
-	if (bpos != 0)
-	{
-		buf[bpos] = 0;
-		if (edit != NULL)
-		{
-			ToEditControl(edit, buf, wbuf, bpos);
-		}
-		if (StdOut != NULL)
-		{
-			DWORD bytes_written;
-			WriteFile(StdOut, buf, bpos, &bytes_written, NULL);
-		}
-	}
-
-	if (edit != NULL)
-	{
-		// If the old selection was at the end of the text, keep it at the end and
-		// scroll. Don't scroll if the selection is anywhere else.
-		if (selection.cpMin == endselection.cpMin && selection.cpMax == endselection.cpMax)
-		{
-			selection.cpMax = selection.cpMin = GetWindowTextLength (edit);
-			lines_after = (LONG)SendMessage(edit, EM_GETLINECOUNT, 0, 0);
-			if (lines_after > lines_before)
-			{
-				SendMessage(edit, EM_LINESCROLL, 0, lines_after - lines_before);
-			}
-		}
-		// Restore the previous selection.
-		SendMessage(edit, EM_EXSETSEL, 0, (LPARAM)&selection);
-		// Give the edit control a chance to redraw itself.
-		I_GetEvent();
-	}
-	if (StdOut != NULL && FancyStdOut)
-	{ // Set text back to gray, in case it was changed.
-		SetConsoleTextAttribute(StdOut, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	}
-}
-
-static TArray<FString> bufferedConsoleStuff;
 
 void I_PrintStr(const char *cp)
 {
-	if (con_debugoutput)
+	//VIZDOOM_CODE: Preserve text output without creating a console window.
 	{
 		// Strip out any color escape sequences before writing to debug output
 		char * copy = new char[strlen(cp)+1];
@@ -1078,28 +866,11 @@ void I_PrintStr(const char *cp)
 		}
 		*dstp=0;
 
-		OutputDebugStringA(copy);
+		if (con_debugoutput) OutputDebugStringA(copy);
+		fputs(copy, stdout);
+		fflush(stdout);
 		delete [] copy;
 	}
-
-	if (ConWindowHidden)
-	{
-		bufferedConsoleStuff.Push(cp);
-		DoPrintStr(cp, NULL, StdOut);
-	}
-	else
-	{
-		DoPrintStr(cp, ConWindow, StdOut);
-	}
-}
-
-void I_FlushBufferedConsoleStuff()
-{
-	for (unsigned i = 0; i < bufferedConsoleStuff.Size(); i++)
-	{
-		DoPrintStr(bufferedConsoleStuff[i], ConWindow, NULL);
-	}
-	bufferedConsoleStuff.Clear();
 }
 
 //==========================================================================
@@ -1231,230 +1002,7 @@ int I_PickIWad(WadStuff *wads, int numwads, bool showwin, int defaultiwad)
 	return defaultiwad;
 }
 
-//==========================================================================
-//
-// I_SetCursor
-//
-// Returns true if the cursor was successfully changed.
-//
-//==========================================================================
-
-bool I_SetCursor(FTexture *cursorpic)
-{
-	HCURSOR cursor;
-
-	if (cursorpic != NULL && cursorpic->UseType != FTexture::TEX_Null &&
-		(screen == NULL || !screen->Is8BitMode()))
-	{
-		// Must be no larger than 32x32.
-		if (cursorpic->GetWidth() > 32 || cursorpic->GetHeight() > 32)
-		{
-			return false;
-		}
-
-		cursor = CreateAlphaCursor(cursorpic);
-		if (cursor == NULL)
-		{
-			cursor = CreateCompatibleCursor(cursorpic);
-		}
-		if (cursor == NULL)
-		{
-			return false;
-		}
-		// Replace the existing cursor with the new one.
-		DestroyCustomCursor();
-		CustomCursor = cursor;
-		atterm(DestroyCustomCursor);
-	}
-	else
-	{
-		DestroyCustomCursor();
-		cursor = LoadCursor(NULL, IDC_ARROW);
-	}
-	SetClassLongPtr(Window, GCLP_HCURSOR, (LONG_PTR)cursor);
-	if (NativeMouse)
-	{
-		POINT pt;
-		RECT client;
-
-		// If the mouse pointer is within the window's client rect, set it now.
-		if (GetCursorPos(&pt) && GetClientRect(Window, &client) &&
-			ClientToScreen(Window, (LPPOINT)&client.left) &&
-			ClientToScreen(Window, (LPPOINT)&client.right))
-		{
-			if (pt.x >= client.left && pt.x < client.right &&
-				pt.y >= client.top && pt.y < client.bottom)
-			{
-				SetCursor(cursor);
-			}
-		}
-	}
-	return true;
-}
-
-//==========================================================================
-//
-// CreateCompatibleCursor
-//
-// Creates a cursor with a 1-bit alpha channel.
-//
-//==========================================================================
-
-static HCURSOR CreateCompatibleCursor(FTexture *cursorpic)
-{
-	int picwidth = cursorpic->GetWidth();
-	int picheight = cursorpic->GetHeight();
-
-	// Create bitmap masks for the cursor from the texture.
-	HDC dc = GetDC(NULL);
-	if (dc == NULL)
-	{
-		return false;
-	}
-	HDC and_mask_dc = CreateCompatibleDC(dc);
-	HDC xor_mask_dc = CreateCompatibleDC(dc);
-	HBITMAP and_mask = CreateCompatibleBitmap(dc, 32, 32);
-	HBITMAP xor_mask = CreateCompatibleBitmap(dc, 32, 32);
-	ReleaseDC(NULL, dc);
-
-	SelectObject(and_mask_dc, and_mask);
-	SelectObject(xor_mask_dc, xor_mask);
-
-	// Initialize with an invisible cursor.
-	SelectObject(and_mask_dc, GetStockObject(WHITE_PEN));
-	SelectObject(and_mask_dc, GetStockObject(WHITE_BRUSH));
-	Rectangle(and_mask_dc, 0, 0, 32, 32);
-	SelectObject(xor_mask_dc, GetStockObject(BLACK_PEN));
-	SelectObject(xor_mask_dc, GetStockObject(BLACK_BRUSH));
-	Rectangle(xor_mask_dc, 0, 0, 32, 32);
-
-	FBitmap bmp;
-	const BYTE *pixels;
-
-	bmp.Create(picwidth, picheight);
-	cursorpic->CopyTrueColorPixels(&bmp, 0, 0);
-	pixels = bmp.GetPixels();
-
-	// Copy color data from the source texture to the cursor bitmaps.
-	for (int y = 0; y < picheight; ++y)
-	{
-		for (int x = 0; x < picwidth; ++x)
-		{
-			const BYTE *bgra = &pixels[x*4 + y*bmp.GetPitch()];
-			if (bgra[3] != 0)
-			{
-				SetPixelV(and_mask_dc, x, y, RGB(0,0,0));
-				SetPixelV(xor_mask_dc, x, y, RGB(bgra[2], bgra[1], bgra[0]));
-			}
-		}
-	}
-	DeleteDC(and_mask_dc);
-	DeleteDC(xor_mask_dc);
-
-	// Create the cursor from the bitmaps.
-	return CreateBitmapCursor(cursorpic->LeftOffset, cursorpic->TopOffset, and_mask, xor_mask);
-}
-
-//==========================================================================
-//
-// CreateAlphaCursor
-//
-// Creates a cursor with a full alpha channel.
-//
-//==========================================================================
-
-static HCURSOR CreateAlphaCursor(FTexture *cursorpic)
-{
-	HDC dc;
-	BITMAPV5HEADER bi;
-	HBITMAP color, mono;
-	void *bits;
-
-	memset(&bi, 0, sizeof(bi));
-	bi.bV5Size = sizeof(bi);
-	bi.bV5Width = 32;
-	bi.bV5Height = 32;
-	bi.bV5Planes = 1;
-	bi.bV5BitCount = 32;
-	bi.bV5Compression = BI_BITFIELDS;
-	bi.bV5RedMask   = 0x00FF0000;
-	bi.bV5GreenMask = 0x0000FF00;
-	bi.bV5BlueMask  = 0x000000FF;
-	bi.bV5AlphaMask = 0xFF000000;
-
-	dc = GetDC(NULL);
-	if (dc == NULL)
-	{
-		return NULL;
-	}
-
-	// Create the DIB section with an alpha channel.
-	color = CreateDIBSection(dc, (BITMAPINFO *)&bi, DIB_RGB_COLORS, &bits, NULL, 0);
-	ReleaseDC(NULL, dc);
-
-	if (color == NULL)
-	{
-		return NULL;
-	}
-
-	// Create an empty mask bitmap, since CreateIconIndirect requires this.
-	mono = CreateBitmap(32, 32, 1, 1, NULL);
-	if (mono == NULL)
-	{
-		DeleteObject(color);
-		return NULL;
-	}
-
-	// Copy cursor to the color bitmap. Note that GDI bitmaps are upside down compared
-	// to normal conventions, so we create the FBitmap pointing at the last row and use
-	// a negative pitch so that CopyTrueColorPixels will use GDI's orientation.
-	FBitmap bmp((BYTE *)bits + 31*32*4, -32*4, 32, 32);
-	cursorpic->CopyTrueColorPixels(&bmp, 0, 0);
-
-	return CreateBitmapCursor(cursorpic->LeftOffset, cursorpic->TopOffset, mono, color);
-}
-
-//==========================================================================
-//
-// CreateBitmapCursor
-//
-// Create the cursor from the bitmaps. Deletes the bitmaps before returning.
-//
-//==========================================================================
-
-static HCURSOR CreateBitmapCursor(int xhot, int yhot, HBITMAP and_mask, HBITMAP color_mask)
-{
-	ICONINFO iconinfo =
-	{
-		FALSE,		// fIcon
-		xhot,		// xHotspot
-		yhot,		// yHotspot
-		and_mask,	// hbmMask
-		color_mask	// hbmColor
-	};
-	HCURSOR cursor = CreateIconIndirect(&iconinfo);
-
-	// Delete the bitmaps.
-	DeleteObject(and_mask);
-	DeleteObject(color_mask);
-	
-	return cursor;
-}
-
-//==========================================================================
-//
-// DestroyCustomCursor
-//
-//==========================================================================
-
-static void DestroyCustomCursor()
-{
-	if (CustomCursor != NULL)
-	{
-		DestroyCursor(CustomCursor);
-		CustomCursor = NULL;
-	}
-}
+//VIZDOOM_CODE: I_SetCursor is provided by sdl/i_gui.cpp.
 
 //==========================================================================
 //

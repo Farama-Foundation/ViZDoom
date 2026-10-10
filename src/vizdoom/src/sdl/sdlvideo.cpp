@@ -13,7 +13,7 @@
 #include "sdlvideo.h"
 #include "r_swrenderer.h"
 #include "version.h"
-#include <SDL2/SDL.h>
+#include <SDL.h> //VIZDOOM_CODE
 
 //VIZDOOM_CODE
 #include "viz_depth.h"
@@ -49,6 +49,12 @@ public:
 	void SetFullscreen (bool fullscreen);
 	int GetPageCount ();
 	bool IsFullscreen ();
+	//VIZDOOM_CODE: SDL handles native palette messages internally.
+#ifdef _WIN32
+	void PaletteChanged () {}
+	int QueryNewPalette () { return 0; }
+	bool Is8BitMode () { return false; }
+#endif
 
 	friend class SDLVideo;
 
@@ -352,7 +358,12 @@ SDLFB::SDLFB (int width, int height, bool fullscreen, SDL_Window *oldwin)
 	: DFrameBuffer (width, height)
 {
 	int i;
-	
+	//VIZDOOM_CODE: The headless path does not create an SDL window.
+	Screen = NULL;
+	Renderer = NULL;
+	Texture = NULL;
+	UsingRenderer = false;
+
 	NeedPalUpdate = false;
 	NeedGammaUpdate = false;
 	UpdatePending = false;
@@ -467,7 +478,13 @@ void SDLFB::Update ()
 
 	DrawRateStuff ();
 
-#ifndef __APPLE__
+//VIZDOOM_CODE
+#ifdef _WIN32
+	if(vid_maxfps && !cl_capfps)
+	{
+		I_WaitForFPSLimit();
+	}
+#elif !defined(__APPLE__)
 	if(vid_maxfps && !cl_capfps)
 	{
 		SEMAPHORE_WAIT(FPSLimitSemaphore)

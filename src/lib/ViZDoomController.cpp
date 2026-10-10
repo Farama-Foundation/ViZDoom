@@ -1443,12 +1443,10 @@ namespace vizdoom {
             this->doomArgs.push_back("+viz_window_hidden");
             this->doomArgs.push_back("1");
 
-            #ifdef OS_POSIX
-                if (this->noXServer){
-                    this->doomArgs.push_back("+viz_noxserver");
-                    this->doomArgs.push_back("1");
-                }
-            #endif
+            if (this->noXServer){
+                this->doomArgs.push_back("+viz_noxserver");
+                this->doomArgs.push_back("1");
+            }
         }
         else{
             if(this->renderAll){
