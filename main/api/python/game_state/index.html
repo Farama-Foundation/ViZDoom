@@ -491,7 +491,7 @@
 <p><strong>object_name</strong> - ingame object name, many different objects can have the same name (e.g. Medikit, Clip, Zombie).</p>
 <p><strong>object_category</strong> - category of the object (e.g. “Monster”, “Weapon”, “Player”). Category “Self” is assigned to current player.</p>
 <p><strong>value</strong> - value that represents this particular object in <strong>labels_buffer</strong>.</p>
-<p><strong>x</strong>, <strong>y</strong>, <strong>width</strong>, <strong>height</strong> - describes bounding box of this particular object in <strong>labels_buffer</strong>. Note: added in 1.1.5.</p>
+<p><strong>x</strong>, <strong>y</strong>, <strong>width</strong>, <strong>height</strong> - describes bounding box of this particular object in <strong>labels_buffer</strong>. Note: added in 1.1.5. Width and height count pixels, including the rightmost column and bottom row. The box is <code class="docutils literal notranslate"><span class="pre">labels_buffer[y:y</span> <span class="pre">+</span> <span class="pre">height,</span> <span class="pre">x:x</span> <span class="pre">+</span> <span class="pre">width]</span></code>.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../doom_game/#vizdoom.DoomGame.set_labels_buffer_enabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame.set_labels_buffer_enabled</span></code></span></a>,</p></li>
