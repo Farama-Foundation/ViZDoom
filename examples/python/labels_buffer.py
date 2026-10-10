@@ -113,6 +113,7 @@ if __name__ == "__main__":
             # Get the state
             state = game.get_state()
             assert state is not None and state.game_variables is not None
+            assert state.labels is not None
 
             # Get labels buffer, that is always in 8-bit grey channel format.
             # Show only visible game objects (enemies, pickups, exploding barrels etc.), each with a unique label.

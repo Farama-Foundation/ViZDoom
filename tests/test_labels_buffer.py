@@ -4,7 +4,7 @@
 # This test can be run as Python script or via PyTest
 
 import os
-from random import Random
+import random
 from types import SimpleNamespace
 
 import numpy as np
@@ -13,7 +13,7 @@ import pytest
 import vizdoom as vzd
 
 
-def _check_label(labels_buffer, label):
+def _check_label(labels_buffer, label, context=""):
     assert label.value > 1
     if (
         label.width > 4 and label.height > 4
@@ -25,13 +25,12 @@ def _check_label(labels_buffer, label):
         value_outside_box = np.any(outside)
         # Closer objects can obscure this object's pixels inside the box.
         value_in_box = np.any(labels_buffer[box] >= label.value)
-        if value_outside_box or not value_in_box:
-            raise AssertionError(
-                f"object={label.object_name}, value={label.value}, "
-                f"box=({label.x}, {label.y}, {label.width}, {label.height}), "
-                f"inside_values={np.unique(labels_buffer[box]).tolist()}, "
-                f"outside_pixels={np.argwhere(outside).tolist()}"
-            )
+        assert not value_outside_box and value_in_box, (
+            f"{context}object={label.object_name}, value={label.value}, "
+            f"box=({label.x}, {label.y}, {label.width}, {label.height}), "
+            f"inside_values={np.unique(labels_buffer[box]).tolist()}, "
+            f"outside_pixels={np.argwhere(outside).tolist()}"
+        )
 
 
 @pytest.mark.parametrize("pixel", [(2, 7), (7, 2)])
@@ -72,7 +71,7 @@ def test_labels_buffer(seed):
     # game.set_mode(vzd.Mode.SPECTATOR)  # For manual testing
 
     game.set_seed(seed)
-    rng = Random(seed)
+    random.seed(seed)
     game.init()
 
     actions = [
@@ -91,19 +90,17 @@ def test_labels_buffer(seed):
         while not game.is_episode_finished():
             state = game.get_state()
             assert state is not None
+            assert state.labels is not None
             labels_buffer = state.labels_buffer
 
             state_count += 1
             seen_labels += len(state.labels)
             for label in state.labels:
                 seen_unique_objects.add(label.object_name)
-                try:
-                    _check_label(labels_buffer, label)
-                except AssertionError as error:
-                    raise AssertionError(
-                        f"seed={seed}, state={state_count}: {error}"
-                    ) from error
-            game.make_action(rng.choice(actions))
+                _check_label(
+                    labels_buffer, label, context=f"seed={seed}, state={state_count}: "
+                )
+            game.make_action(random.choice(actions))
     finally:
         game.close()
 
@@ -113,5 +110,8 @@ def test_labels_buffer(seed):
 
 
 if __name__ == "__main__":
+    test_label_pixels_outside_box((2, 7))
+    test_label_pixels_outside_box((7, 2))
+    test_label_box_edges_and_other_objects()
     for seed in [0, 1, 2, 63]:
         test_labels_buffer(seed)

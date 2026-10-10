@@ -364,6 +364,7 @@ class VizdoomEnv(gym.Env, EzPickle):
             # id via `value``
             labels_rgb = np.zeros_like(image_list[0])
             labels_buffer = game_state.labels_buffer
+            assert game_state.labels is not None
             for label in game_state.labels:
                 color = LABEL_COLORS[label.object_id % 256]
                 labels_rgb[labels_buffer == label.value] = color
