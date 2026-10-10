@@ -7,7 +7,7 @@ To install the latest release of ViZDoom, just run:
 pip install vizdoom
 ```
 Both x86-64 and AArch64 (ARM64) architectures are supported.
-Wheels are available for Python 3.9+ on Linux.
+Wheels are available for Python 3.10+ on Linux.
 
 ### Audio buffer requirement
 If you want to use audio buffer, you need to have OpenAL library installed.
@@ -24,7 +24,7 @@ On RHEL/CentOS/Alma/Rocky Linux 9, you may need first enable crb repository by r
 
 ### Installing from source distribution on Linux
 If Python wheel is not available for your platform (distros incompatible with manylinux_2_28 standard), pip will try to install (build) ViZDoom from the source.
-ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.9+ to install from source.
+ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional), and Python 3.10+ to install from source.
 Below, you will find instructions on how to install these dependencies.
 
 #### apt-based distros (Ubuntu, Debian, Linux Mint, etc.)
@@ -65,7 +65,7 @@ In this case, install the required dependencies using Homebrew:
 ```sh
 brew install cmake boost sdl2 openal-soft
 ```
-We recommend using at least macOS High Sierra 10.13+ with Python 3.9+.
+We recommend using at least macOS High Sierra 10.13+ with Python 3.10+.
 On Apple Silicon (M1, M2, and M3), make sure you are using Python/Pip for Apple Silicon.
 
 To install the main branch version of ViZDoom, run, in this case you also need to have the above dependencies installed:
@@ -80,7 +80,7 @@ To install the latest release of ViZDoom, just run:
 pip install vizdoom
 ```
 At the moment, only x86-64 architecture is supported on Windows.
-Wheels are available for Python 3.9+ x86-64 on Windows.
+Wheels are available for Python 3.10+ x86-64 on Windows.
 
 Please note that the Windows version is not as well-tested as Linux and macOS versions.
 It can be used for development and testing but if you want to conduct serious (time and resource-extensive) experiments on Windows,

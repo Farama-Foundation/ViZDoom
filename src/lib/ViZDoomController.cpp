@@ -126,6 +126,7 @@ namespace vizdoom {
         this->sprites = true;
         this->messages = false;
         this->corpses = true;
+        this->flashes = true;
         this->renderAll = false;
 
         this->windowHidden = false;

@@ -35,13 +35,6 @@ if __name__ == "__main__":
         type=int,
         help="Number of episodes to play.",
     )
-    parser.add_argument(
-        "-e",
-        "--episodes",
-        default=1,
-        type=int,
-        help="Number of episodes to play.",
-    )
     args = parser.parse_args()
     game = vzd.DoomGame()
 

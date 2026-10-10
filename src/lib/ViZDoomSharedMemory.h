@@ -80,11 +80,14 @@ namespace vizdoom {
 
     struct SMObject {
         unsigned int id;
+        int sectorId;
         double position[9];
+        char category[MAX_NAME_LENGTH];
         char name[MAX_NAME_LENGTH];
     };
 
     struct SMSector{
+        unsigned int id;
         double floorHeight;
         double ceilingHeight;
         unsigned int lineCount;

@@ -1,3 +1,4 @@
+[![Python](https://img.shields.io/pypi/pyversions/vizdoom.svg)](https://badge.fury.io/py/vizdoom)
 [![PyPI version](https://badge.fury.io/py/vizdoom.svg)](https://badge.fury.io/py/vizdoom) [![Build and test](https://github.com/Farama-Foundation/ViZDoom/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/Farama-Foundation/ViZDoom/actions/workflows/build-and-test.yml) [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 <p align="center">
@@ -75,7 +76,7 @@ To install the latest release of ViZDoom, just run:
 pip install vizdoom
 ```
 Both x86-64 and AArch64 (ARM64) architectures are supported.
-Wheels are available for Python 3.9+ on Linux.
+Wheels are available for Python 3.10+ on Linux.
 
 ⚠️ To use audio features, you need OpenAL install in your system.
 On apt-based distros (Ubuntu, Debian, Linux Mint, etc.)
@@ -88,7 +89,7 @@ On dnf/yum-based distros (Fedora, RHEL, CentOS, Alma/Rocky Linux, etc.)
 dnf install openal-soft-devel
 ```
 
-If Python wheel is not available for your platform (Python version <3.9, distros below manylinux_2_28 standard), pip will try to install (build) ViZDoom from the source.
+If Python wheel is not available for your platform (Python version <3.10, distros below manylinux_2_28 standard), pip will try to install (build) ViZDoom from the source.
 ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional) to install from source.
 See [documentation](https://vizdoom.farama.org/introduction/python_quickstart/) for more details.
 
@@ -104,7 +105,7 @@ Since 1.3.0+, pre-build wheels are available only for Apple Silicon (M-series ch
 ```sh
 pip install vizdoom==1.2.4
 ```
-If Python wheel is not available for your platform (Python version <3.9, older macOS version), pip will try to install (build) ViZDoom from the source.
+If Python wheel is not available for your platform (Python version <3.10, older macOS version), pip will try to install (build) ViZDoom from the source.
 ViZDoom requires a C++11 compiler, CMake 3.12+, Boost 1.54+ SDL2, OpenAL (optional) to install from source.
 See [documentation](https://vizdoom.farama.org/introduction/building/) for more details how to install dependencies.
 
@@ -115,7 +116,7 @@ To install the latest release of ViZDoom, just run:
 pip install vizdoom
 ```
 At the moment, only x86-64 architecture is supported on Windows.
-Wheels are available for Python 3.9+ on Windows.
+Wheels are available for Python 3.10+ on Windows.
 
 Please note that the Windows version is not as well-tested as Linux and macOS versions.
 It can be used for development and testing but if you want to conduct serious (time and resource-extensive) experiments on Windows,
@@ -155,7 +156,7 @@ Useful articles (for advanced users who want to create custom environments/scena
 
 
 ## Awesome Doom tools/projects
-- [SLADE3](http://slade.mancubus.net/) - Great Doom map (scenario) editor for Linux, MacOS and Windows.
+- [SLADE3](http://slade.mancubus.net/) - Great Doom map (scenario) editor for Linux, macOS and Windows.
 - [Doom Builder 2](http://www.doombuilder.com/) - Another great Doom map editor for Windows.
 - [OBLIGE](http://oblige.sourceforge.net/) - Doom random map generator and [PyOblige](https://github.com/mwydmuch/PyOblige) is a simple Python wrapper for it.
 - [Omgifol](https://github.com/devinacker/omgifol) - Nice Python library for manipulating Doom maps.

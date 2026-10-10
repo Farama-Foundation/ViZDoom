@@ -1,5 +1,8 @@
 name: Build and test Python wheels and make PyPI release
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
   push:
@@ -20,6 +23,8 @@ on:
     types: [published]
 
 env:
+  HOMEBREW_NO_AUTO_UPDATE: 1
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
   DYLD_LIBRARY_PATH: "/opt/homebrew/opt/openal-soft/lib:/usr/local/opt/openal-soft/lib"
 
 jobs:
@@ -28,11 +33,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-14]
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-14]
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -42,23 +47,25 @@ jobs:
           echo ${{ runner.os }}
           uname -p
 
-      - name: Set up QEMU
-        if: runner.os == 'Linux'
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Build manylinux wheels
+      - name: Build manylinux x86_64 wheels
         if: matrix.os == 'ubuntu-24.04'
-        uses: pypa/cibuildwheel@v3.3.1
+        uses: pypa/cibuildwheel@v4.3.0
         env:
           # Configure cibuildwheel to build native archs, and some emulated ones
-          CIBW_ARCHS_LINUX: x86_64 aarch64
+          CIBW_ARCHS_LINUX: x86_64
+          CIBW_BUILD_VERBOSITY: 1
+
+      - name: Build manylinux arm wheels
+        if: matrix.os == 'ubuntu-24.04-arm'
+        uses: pypa/cibuildwheel@v4.3.0
+        env:
+          # Configure cibuildwheel to build native archs, and some emulated ones
+          CIBW_ARCHS_LINUX: aarch64
           CIBW_BUILD_VERBOSITY: 1
 
       - name: Build macOS Apple Silicon wheels
         if: matrix.os == 'macos-14'
-        uses: pypa/cibuildwheel@v3.3.1
+        uses: pypa/cibuildwheel@v4.3.0
         env:
           CIBW_ARCHS_MACOS: arm64
           CIBW_ENVIRONMENT_MACOS: VIZDOOM_MACOS_ARCH=arm64 HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 MACOSX_DEPLOYMENT_TARGET=14.0
@@ -69,7 +76,7 @@ jobs:
           ls -l ./wheelhouse/*.whl
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: artifact-${{ matrix.os }}
           path: ./wheelhouse/*.whl
@@ -80,22 +87,22 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-14, macos-15]
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+        os: [ubuntu-26.04, ubuntu-24.04, ubuntu-24.04-arm, macos-26, macos-14]
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
       - name: Set up Python ${{ matrix.python-version }} environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: artifact-*
           merge-multiple: true
@@ -120,30 +127,39 @@ jobs:
         run: sudo apt install -y libopenal-dev
 
       - name: Install macOS Apple Silicon wheel on ${{ matrix.os }}
-        if: matrix.os == 'macos-14' || matrix.os == 'macos-15'
+        if: matrix.os == 'macos-14' || matrix.os == 'macos-26'
         run: |
           export PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
           export WHEEL=$(ls dist/vizdoom*cp${PYTHON_VERSION}*macosx*arm64.whl)
           python -m pip install ${WHEEL}[test]
 
       - name: Install manylinux wheel on ${{ matrix.os }}
-        if: matrix.os == 'ubuntu-22.04' || matrix.os == 'ubuntu-24.04'
+        if: matrix.os == 'ubuntu-26.04' || matrix.os == 'ubuntu-24.04'
         run: |
           export PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
           export WHEEL=$(ls dist/vizdoom*cp${PYTHON_VERSION}*manylinux*x86_64.whl)
           python -m pip install ${WHEEL}[test]
 
-      - name: Import check
-        run: python -c "import vizdoom"
+      - name: Install manylinux wheel on ${{ matrix.os }}
+        if: matrix.os == 'ubuntu-24.04-arm'
+        run: |
+          export PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
+          export WHEEL=$(ls dist/vizdoom*cp${PYTHON_VERSION}*manylinux*aarch64.whl)
+          python -m pip install ${WHEEL}[test]
+
+      - name: Import and init check
+        run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_audio_buffer_enabled(True); g.init()"
+        timeout-minutes: 1
 
       - name: Run tests
-        run: pytest tests -s --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run
+        run: pytest tests -v -s --timeout=300 --timeout-method=thread --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run
+        timeout-minutes: 15
 
   build_sdist:
     name: Build source distribution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -151,7 +167,7 @@ jobs:
         run: pipx run build --sdist
 
       - name: Upload sdist
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: artifact-sdist
           path: dist/*.tar.gz
@@ -168,7 +184,7 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: artifact-*
           merge-multiple: true

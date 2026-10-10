@@ -4,7 +4,7 @@ This is a short guide on how to configure [SLADE](http://slade.mancubus.net/inde
 
 This is not meant to be a full tutorial on how to use SLADE. For more information and tutorials on how to use SLADE, please refer to the [official SLADE wiki](http://slade.mancubus.net/index.php?page=wiki).
 
-You can download SLADE for Linux, MacOS, and Windows from [here](http://slade.mancubus.net/index.php?page=downloads).
+You can download SLADE for Linux, macOS, and Windows from [here](http://slade.mancubus.net/index.php?page=downloads).
 It is also available as a Flatpak on [flathub](https://flathub.org/en/apps/net.mancubus.SLADE)
 
 For all these steps it is assumed that user installed ViZDoom in venv under `/home/marek/ViZDoom/venv` and that ViZDoom repository is located in `/home/marek/ViZDoom`. Please adjust paths accordingly to your setup.
@@ -50,7 +50,7 @@ For source port after select `ZDoom` which is a base of ViZDoom.
 When you are done with editing the map, you can run it using ViZDoom executable to see how it looks and plays.
 Map editor allows you to run the map directly from the editor. It will ask you to select game executable type (again select `ZDoom`) and path to the executable, select `vizdoom` executable located in the root directory of ViZDoom package (in our case, it is `/home/marek/ViZDoom/venv/lib/python-3.13/site-packages/vizdoom/vizdoom`).
 
-```{figure} _static/img/slade/run_map_config.png
+```{figure} ../_static/img/slade/run_map_config.png
    :alt: SLADE run map from the map editor configuration
 ```
 

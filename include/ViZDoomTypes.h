@@ -73,6 +73,7 @@ namespace vizdoom{
     struct Object {
         // Actor properties
         unsigned int id;
+        int sectorId;
 
         double positionX;
         double positionY;
@@ -87,6 +88,7 @@ namespace vizdoom{
         double velocityZ;
 
         std::string name;
+        std::string category;
     };
 
     struct Line{
@@ -98,6 +100,7 @@ namespace vizdoom{
     };
 
     struct Sector{
+        unsigned int id;
         double floorHeight;
         double ceilingHeight;
         std::vector<Line> lines;

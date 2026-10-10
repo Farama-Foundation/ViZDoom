@@ -24,6 +24,9 @@ on:
       - 'pyproject.toml'
     branches: [main]
 
+permissions:
+  contents: read
+
 env:
   HOMEBREW_NO_AUTO_UPDATE: 1
   HOMEBREW_NO_INSTALL_CLEANUP: 1
@@ -34,13 +37,13 @@ jobs:
     name: Build and test on ${{ matrix.os }} with Python ${{ matrix.python-version }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, macos-14]
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-14]
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
       fail-fast: true
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         submodules: recursive
 
@@ -57,7 +60,7 @@ jobs:
         sudo apt install -y cmake git libboost-all-dev libsdl2-dev libopenal-dev
         apt list --installed
 
-    - name: Install dependencies on MacOS
+    - name: Install dependencies on macOS
       if: runner.os == 'macOS'
       run: |
         brew config
@@ -65,7 +68,7 @@ jobs:
         brew install cmake boost openal-soft sdl2
 
     - name: Set up Python ${{ matrix.python-version }} environment
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -83,11 +86,10 @@ jobs:
         pip install .[test]
         pip freeze
 
-    - name: Import check
-      run: python -c "import vizdoom"
-
-    - name: Init with console check (+snd_efx 0)
-      run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_audio_buffer_enabled(True); g.add_game_args('+snd_efx 0'); g.init()"
+    - name: Import and init check
+      run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_audio_buffer_enabled(True); g.init()"
+      timeout-minutes: 1
 
     - name: Run tests
-      run: pytest tests -s --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run
+      run: pytest tests -v -s --timeout=300 --timeout-method=thread --ignore=tests/test_gymnasium_wrapper.py  # Skip gymnasium wrapper tests as they are tested in a separate workflow and take a long time to run
+      timeout-minutes: 15

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3ch
 
-# Tests ViZDoom seed option.
-# This test can be run as Python script or via PyTest
+# This test should be run manually and can be run as Python script or via PyTest.
+# It tests seed option.
 
 import copy
 import itertools

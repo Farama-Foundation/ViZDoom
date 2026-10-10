@@ -36,7 +36,7 @@ import sys
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 import bs4
 
@@ -140,7 +140,7 @@ class CacheManager:
             except Exception as e:
                 print(f"Failed to delete {cache_file}: {e}", file=sys.stderr)
 
-    def get_stats(self) -> Dict[str, int]:
+    def get_stats(self) -> dict[str, int]:
         """Get cache statistics."""
         return self.stats.copy()
 
@@ -207,7 +207,7 @@ def fetch_doom_classes(
     cache_manager: CacheManager,
     url: str = "https://zdoom.org/wiki/Classes:Doom",
     force_refresh: bool = False,
-) -> List[str]:
+) -> list[str]:
     """
     Fetch Doom class names from the ZDoom wiki with caching.
 
@@ -235,7 +235,7 @@ def fetch_doom_classes(
     if not content:
         raise ValueError("Could not find main content area")
 
-    class_names: List[str] = []
+    class_names: list[str] = []
 
     # Look for class links in <pre> tags (where the class lists are)
     for pre_tag in content.find_all("pre"):  # type: ignore
@@ -257,10 +257,10 @@ def fetch_doom_classes(
 
 def fetch_class_data(
     cache_manager: CacheManager,
-    class_names: List[str],
+    class_names: list[str],
     fetch_delay: float = 5.0,
     force_refresh: bool = False,
-) -> Tuple[Dict[str, int], Dict[str, int], Dict[str, str]]:
+) -> tuple[dict[str, int], dict[str, int], dict[str, str]]:
     """
     Fetch DoomEd numbers, Spawn IDs, and Identifiers from individual class pages with caching.
 
@@ -281,9 +281,9 @@ def fetch_class_data(
             - spawn_ids: Dictionary mapping class names to Spawn IDs
             - identifiers: Dictionary mapping class names to Identifiers
     """
-    doomed_numbers: Dict[str, int] = {}
-    spawn_ids: Dict[str, int] = {}
-    identifiers: Dict[str, str] = {}
+    doomed_numbers: dict[str, int] = {}
+    spawn_ids: dict[str, int] = {}
+    identifiers: dict[str, str] = {}
 
     for class_name in tqdm(class_names):
         try:
@@ -340,7 +340,7 @@ def fetch_zdoom_categories_by_type(
     cache_manager: CacheManager,
     url: str = "https://zdoom.org/wiki/Category:Spawnable",
     force_refresh: bool = False,
-) -> Dict[str, List[str]]:
+) -> dict[str, list[str]]:
     """
     Fetch ZDoom categories and their associated classes from the Spawnable page.
 
@@ -393,7 +393,7 @@ def fetch_zdoom_categories_by_type(
     print(f"Found {len(category_links)} category links")
 
     # Fetch classes for each category
-    categories: Dict[str, List[str]] = {}
+    categories: dict[str, list[str]] = {}
 
     for category_name, category_href in tqdm(category_links):
         try:
@@ -475,8 +475,8 @@ def fetch_zdoom_categories_by_type(
 
 
 def generate_header_file(
-    class_names: List[str],
-    categories: Dict[str, List[str]],
+    class_names: list[str],
+    categories: dict[str, list[str]],
     output_base: str = "doom_classes",
 ) -> None:
     """

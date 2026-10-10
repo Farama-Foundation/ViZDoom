@@ -1,6 +1,6 @@
 # Creating a custom environment
 
-ViZDoom allows the use of custom scenarios/environments that can be easily prepared using modern Doom map editors like [SLADE](http://slade.mancubus.net/index.php?page=downloads) (available for Linux, MacOS, and Windows) or [DoomBuilder](http://www.doombuilder.com/index.php?p=downloads) (a bit better editor, but only available for Windows), that we recommend using. These editors allow you to create a map used by the environment and program custom logic and rewards using ACS scripting language. In addition to a map+script created in one of the editors that is saved to a .wad file, ViZDoom uses .cfg config files that store additional information about the environment. Such .wad and .cfg together define a custom environment that can be used with ViZDoom. The following will guide you through the process of creating a custom environment.
+ViZDoom allows the use of custom scenarios/environments that can be easily prepared using modern Doom map editors like [SLADE](http://slade.mancubus.net/index.php?page=downloads) (available for Linux, macOS, and Windows) or [DoomBuilder](http://www.doombuilder.com/index.php?p=downloads) (a bit better editor, but only available for Windows), that we recommend using. These editors allow you to create a map used by the environment and program custom logic and rewards using ACS scripting language. In addition to a map+script created in one of the editors that is saved to a .wad file, ViZDoom uses .cfg config files that store additional information about the environment. Such .wad and .cfg together define a custom environment that can be used with ViZDoom. The following will guide you through the process of creating a custom environment.
 
 
 ## Limitations and possibilities
@@ -23,7 +23,7 @@ Due to the engine's architecture, the only area that ACS is a bit lacking is the
 
 ## Step 1: Creating a custom map
 
-To create a custom scenario (.wad file), you need to use a dedicated editor. [SLADE](http://slade.mancubus.net/index.php?page=downloads) (available for Linux, MacOS, and Windows) or [DoomBuilder](http://www.doombuilder.com/index.php?p=downloads) (a bit better editor, but only available for Windows) or [UltimateDoomBuilder](https://ultimatedoombuilder.github.io/), are software that we recommend using for this task.
+To create a custom scenario (.wad file), you need to use a dedicated editor. [SLADE](http://slade.mancubus.net/index.php?page=downloads) (available for Linux, macOS, and Windows) or [DoomBuilder](http://www.doombuilder.com/index.php?p=downloads) (a bit better editor, but only available for Windows) or [UltimateDoomBuilder](https://ultimatedoombuilder.github.io/), are software that we recommend using for this task.
 
 See the [SLADE wiki](https://slade.mancubus.net/index.php?page=wiki) or [DoomBuilder Tutorials](http://www.doombuilder.com/index.php?p=tutorials) for instructions on how to use the editor.
 

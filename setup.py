@@ -151,7 +151,7 @@ class BuildCommand(build):
                 f"VIZDOOM_CMAKE_ARGS is set, the following arguments will be added to cmake command: {env_cmake_args}"
             )
 
-        # MacOS specific flag for specifying the architecture of the binary
+        # macOS specific flag for specifying the architecture of the binary
         if platform.startswith("darwin"):
             macos_arch = os.getenv("VIZDOOM_MACOS_ARCH")
             if macos_arch is not None:
@@ -255,11 +255,12 @@ setup(
     author="Marek Wydmuch, Michał Kempka, Wojciech Jaśkowski, Farama Foundation, and the respective contributors",
     author_email="mwydmuch@cs.put.poznan.pl",
     extras_require={
-        "test": ["pytest", "pytest-xdist", "psutil"],
+        "test": ["pytest", "pytest-xdist", "pytest-timeout", "psutil"],
         "dev": [
             "pytest",
             "pytest-xdist",
             "pytest-rerunfailures",
+            "pytest-timeout",
             "psutil",
             "pybind11-stubgen",
             "black",
@@ -267,7 +268,7 @@ setup(
         ],
     },
     install_requires=["numpy", "gymnasium>=0.28.0", "pygame-ce>=2.1.3"],
-    python_requires=">=3.9.0,<3.15",
+    python_requires=">=3.10.0,<3.15",
     packages=packages,
     package_dir={"": package_root},
     package_data={"vizdoom": package_data},
@@ -293,7 +294,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Programming Language :: C++",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
@@ -307,7 +307,9 @@ setup(
         "vizdoom",
         "doom",
         "ai",
+        "artificial intelligence",
         "deep learning",
+        "rl",
         "reinforcement learning",
         "research",
     ],

@@ -48,6 +48,7 @@ examples/python/*.cfg
 examples/python/*.ini
 dist
 venv
+.venv
 .eggs
 vizdoom.egg-info
 wheelhouse
@@ -111,7 +112,7 @@ src/vizdoom/zlib/CTestTestfile.cmake
 **/freedm.wad
 **_vizdoom.ini
 
-# MacOS
+# macOS
 .DS_Store
 
 # Visual Studio Code
