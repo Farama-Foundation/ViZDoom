@@ -86,7 +86,9 @@ def test_weapon_ammo_related_variables():
             game.make_action(action)
             game.make_action(no_action)
             state = game.get_state()
+            assert state is not None
             game_variable = state.game_variables
+            assert game_variable is not None
 
             # weapon checks
             selected_weapon = game.get_game_variable(vzd.GameVariable.SELECTED_WEAPON)
