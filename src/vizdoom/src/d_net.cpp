@@ -65,6 +65,7 @@
 //VIZDOOM_CODE
 #include "viz_main.h"
 #include "viz_system.h"
+#include "viz_message_queue.h"
 
 EXTERN_CVAR (Bool, viz_controlled)
 EXTERN_CVAR (Bool, viz_async)
@@ -931,7 +932,7 @@ void GetPackets (void)
 		}
 
 		//VIZDOOM_CODE
-        vizNodesRecv[netconsole] += nettics[netnode];
+		vizNodesRecv[netconsole] += nettics[netnode];
 		VIZ_InterruptionPoint();
 	}
 }
@@ -1912,23 +1913,25 @@ void TryRunTics (void)
 	if(*viz_controlled && !*viz_async && netgame){
 		int lowRecv = INT_MAX;
 
-        for (i = 1; i < numplaying; i++) {
-            if (lowRecv > vizNodesRecv[i]) lowRecv = vizNodesRecv[i];
-        }
+		for (i = 1; i < numplaying; i++) {
+			if (lowRecv > vizNodesRecv[i]) lowRecv = vizNodesRecv[i];
+		}
 
-        unsigned int enterTime = I_MSTime ();
-        while(lowRecv == lowtic && (unsigned int)*viz_sync_timeout > I_MSTime() - enterTime) {
-            //VIZ_Sleep(1);
+		unsigned int enterTime = I_MSTime ();
+		while(lowRecv == lowtic && (unsigned int)*viz_sync_timeout > I_MSTime() - enterTime) {
 			NetUpdate();
-            lowRecv = INT_MAX;
+			lowRecv = INT_MAX;
 
 			for (i = 1; i < numplaying; i++) {
 				if (lowRecv > vizNodesRecv[i]) lowRecv = vizNodesRecv[i];
 			}
+			// Pump controller messages so we don't deadlock waiting for TIC/UPDATE.
+			if(*viz_controlled) VIZ_MQPollNonBlocking();
 		}
 	}
 
 	// wait for new tics if needed
+	const unsigned int waitEnterTime = I_MSTime ();
 	while (lowtic < gametic + counts)
 	{
 
@@ -1955,7 +1958,19 @@ void TryRunTics (void)
 			// Repredict the player for new buffered movement
 			P_UnPredictPlayer();
 			P_PredictPlayer(&players[consoleplayer]);
+			
+			//VIZDOOM_CODE
+			if(*viz_controlled) VIZ_MQPollNonBlocking();
 			return;
+		}
+
+		//VIZDOOM_CODE
+		if(*viz_controlled) VIZ_MQPollNonBlocking();
+
+		if((unsigned int)*viz_sync_timeout > 0 &&
+		   (unsigned int)*viz_sync_timeout <= I_MSTime() - waitEnterTime){
+			// Break out instead of stalling forever under external control.
+			break;
 		}
 	}
 
