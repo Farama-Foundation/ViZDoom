@@ -56,6 +56,7 @@ ASCII_CHARS = [chr(i) for i in range(0, 127)]
 
 
 class VizdoomEnv(gym.Env, EzPickle):
+    observation_space: gym.spaces.Dict
     metadata = {
         "render_modes": ["human", "rgb_array"],
         "render_fps": vzd.DEFAULT_TICRATE,
