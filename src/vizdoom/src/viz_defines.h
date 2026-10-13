@@ -45,7 +45,7 @@
 #define VIZ_MAX_LABELS              256
 #define VIZ_MAX_OBJECTS             4096
 #define VIZ_MAX_SECTORS             2048
-#define VIZ_MAX_LINES               8192
+#define VIZ_MAX_LINES               16384
 #define VIZ_MAX_SECTOR_LINES        1024
 #define VIZ_MAX_NOTIFICATIONS_CHARS 32768
 

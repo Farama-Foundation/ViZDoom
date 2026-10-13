@@ -603,7 +603,6 @@ void VIZ_GameStateUpdateObjects(){
 }
 
 void VIZ_GameStateUpdateSectors(){
-    //std::unordered_map<sector_t *, int> sectorIds(numsectors);
     std::unordered_map<line_t *, int> lineIds(numlines);
 
     unsigned int lineCount = 0;
@@ -631,7 +630,6 @@ void VIZ_GameStateUpdateSectors(){
     VIZ_DebugMsg(4, VIZ_FUNC, "lineCount: %d, numlines: %d", lineCount, numlines);
 
     vizGameStateSM->LINE_COUNT = lineCount;
-    assert(lineCount == numlines);
 
     unsigned int sectorCount = 0;
     for(int i = 0; i < numsectors; ++i){
@@ -646,20 +644,15 @@ void VIZ_GameStateUpdateSectors(){
         for(int l = 0; l < sector->linecount && sectorLineCount < VIZ_MAX_SECTOR_LINES; ++l){
             line_t *line = sector->lines[l];
             vizSector->lines[sectorLineCount++] = lineIds[line];
-            //auto lineId = lineIds.find(line);
-            //if(lineId != lineIds.end()) vizSector->lines[lineCount++] = lineId->second;
-            //else  = lineIds.insert({line, lineIds.size()}).second;
         }
         vizSector->lineCount = sectorLineCount;
 
-        //sectorIds.insert({sector, sectorIds.size()});
         if(sectorCount >= VIZ_MAX_SECTORS) break;
     }
 
     VIZ_DebugMsg(4, VIZ_FUNC, "sectorCount: %d, numsectors: %d", sectorCount, numsectors);
 
     vizGameStateSM->SECTOR_COUNT = sectorCount;
-    assert(sectorCount == numsectors);
 }
 
 void VIZ_GameStateUpdateNotifications(){
