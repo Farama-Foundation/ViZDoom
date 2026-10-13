@@ -643,7 +643,7 @@ void VIZ_GameStateUpdateSectors(){
         vizSector->floorHeight = -VIZ_FixedToDouble(sector->floorplane.d);
 
         unsigned int sectorLineCount = 0;
-        for(int l = 0; l < sector->linecount; ++l){
+        for(int l = 0; l < sector->linecount && sectorLineCount < VIZ_MAX_SECTOR_LINES; ++l){
             line_t *line = sector->lines[l];
             vizSector->lines[sectorLineCount++] = lineIds[line];
             //auto lineId = lineIds.find(line);
@@ -651,7 +651,6 @@ void VIZ_GameStateUpdateSectors(){
             //else  = lineIds.insert({line, lineIds.size()}).second;
         }
         vizSector->lineCount = sectorLineCount;
-        assert(sectorLineCount == sector->linecount);
 
         //sectorIds.insert({sector, sectorIds.size()});
         if(sectorCount >= VIZ_MAX_SECTORS) break;
